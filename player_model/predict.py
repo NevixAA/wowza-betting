@@ -923,64 +923,26 @@ def tag_paper_feed(tips_df: pd.DataFrame, top_n: int | None = None) -> pd.DataFr
     return tips_df
 
 
-# Markets with no live Odds API coverage — tiered via calibration base rates.
+# Markets without a bookmaker quote on the live feeds today.
 _NO_ODDS_MARKETS = {"assists"}
 
 
 def enrich_no_odds_markets(tips_df: pd.DataFrame) -> pd.DataFrame:
+    """Leave an unpriced tip unpriced (hotfix on main, owner 2026-11-04: "repair what u can").
+
+    DATA TRUTH: this used to INVENT a bookmaker price from the calibration base rate
+    (1 / (base_rate x 1.10), "assumes 10% overround") and tier the tip on it, so an assists tip
+    could reach VALUABLE/MARKSMAN/SNIPER against a price no book ever offered (main's ledger,
+    2026-08-13..2026-11-04: 1,138 assists rows, 3 VALUABLE + 1 PAPER). Now a tip without a real
+    quote keeps market_odds / ev / edge unset and tier AVOID - the same code data-truth-100 has
+    run since 2026-11-01. A real quote still reaches the tip through enrich_with_odds.
     """
-    Assign tier for markets that have no Odds API coverage (assists).
-    Uses calibration base rates as synthetic bookmaker odds so these tips
-    can earn VALUABLE/MARKSMAN/SNIPER tier on model confidence alone.
-
-    Synthetic price = 1 / (base_rate × 1.10)  — assumes 10% overround.
-    """
-    if tips_df.empty:
+    if tips_df.empty or "market" not in tips_df.columns:
         return tips_df
-
-    cal_path = config.OUTPUT_DIR / "player_props_calibration.json"
-    try:
-        with open(cal_path) as _f:
-            calibration = json.load(_f)
-    except Exception:
+    if "market_odds" not in tips_df.columns:
         return tips_df
-
-    for idx, row in tips_df.iterrows():
-        market = row["market"]
-        if market not in _NO_ODDS_MARKETS:
-            continue
-        if row.get("market_odds"):   # already enriched by real Odds API
-            continue
-
-        cal       = calibration.get(market, {})
-        base_rate = cal.get("base_rate")
-        if not base_rate:
-            continue
-
-        # Synthetic market odds: base rate × 1.10 overround
-        implied_prob = base_rate * 1.10
-        mkt_odds     = round(1.0 / implied_prob, 2)
-
-        p_model    = float(row["model_prob"])
-        # Fair prob = base_rate (we know the true calibrated probability directly)
-        fair_prob  = base_rate
-        ev_val     = _ev(p_model, mkt_odds)
-        rel_edge   = _relative_edge(p_model, fair_prob)
-        confidence = float(row["confidence"])
-        lazy_count = len([f for f in str(row.get("lazy_factors", "")).split("|")
-                          if f and f != "WC_LOW_CONF"])   # WC_LOW_CONF is a PENALTY, not a positive factor
-        ges        = float(row["ges"]) if row.get("ges") is not None else 0.5
-
-        tier = _classify_tier(ev_val, mkt_odds, rel_edge, confidence, lazy_count, ges, market, row.get("position", ""))
-
-        src = str(row.get("data_source", "") or "")
-        tips_df.at[idx, "market_odds"]  = mkt_odds
-        tips_df.at[idx, "fair_implied"] = round(fair_prob, 4)
-        tips_df.at[idx, "edge_abs"]     = round(p_model - fair_prob, 4)
-        tips_df.at[idx, "edge_rel"]     = rel_edge
-        tips_df.at[idx, "ev"]           = ev_val
-        tips_df.at[idx, "tier"]         = tier
-        tips_df.at[idx, "data_source"]  = (src + "|calibration_implied").lstrip("|")
-        tips_df.at[idx, "kelly_stake"]  = _kelly_stake(ev_val, mkt_odds) if tier != "AVOID" else 0.0
-
+    unpriced = tips_df["market"].isin(_NO_ODDS_MARKETS) & tips_df["market_odds"].isna()
+    if unpriced.any():
+        print(f"[player_model] {int(unpriced.sum())} {sorted(_NO_ODDS_MARKETS)} tip(s) without a real "
+              f"bookmaker quote stay AVOID (no synthetic price)")
     return tips_df
