@@ -25,6 +25,34 @@ MARKET_LABEL = {
 }
 
 
+#: correction sidecars that flag player_ledger rows (output/corrections), each with `ledger_row`,
+#: `player_name` and `exclude`. Shown beside the record, never subtracted from it here.
+FLAG_FILES = {"props_sentinel_prob.csv": "model probability was a cap value",
+              "props_ghost_tips.csv": "tip not tied to the player's real fixture"}
+
+
+def flagged(settled: pd.DataFrame, corrections_dir) -> dict:
+    """{sidecar: n} of `settled` rows (index = player_ledger row) a sidecar flags with exclude=True, the
+    row proven by the same player_name. A sidecar that is missing is absent from the result."""
+    from pathlib import Path
+    out = {}
+    for name in FLAG_FILES:
+        p = Path(corrections_dir) / name
+        if not p.exists():
+            continue
+        try:
+            f = pd.read_csv(p, usecols=lambda c: c in ("ledger_row", "player_name", "exclude"))
+        except Exception:                                   # noqa: BLE001 - unreadable = not shown
+            continue
+        if "exclude" in f.columns:
+            f = f[f["exclude"].astype(str).str.lower().eq("true")]
+        f = f.drop_duplicates("ledger_row").set_index("ledger_row")
+        hit = settled.index.intersection(f.index)
+        same = [i for i in hit if str(settled.at[i, "player_name"]) == str(f.at[i, "player_name"])]
+        out[name] = len(same)
+    return out
+
+
 def _tz():
     try:
         return ZoneInfo(TZ_NAME)

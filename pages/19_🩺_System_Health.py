@@ -22,13 +22,14 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from dashboard_access import require as _require_tier  # noqa: E402
 _require_tier("admin")  # tier guard (dashboard_access.PAGES) - admin, like Overview
 
-from dashboard_data import freshness, system_view  # noqa: E402
+from dashboard_data import freshness, system_view, truth_view  # noqa: E402
 
 # STREAMLIT CLOUD KEEPS IMPORTED MODULES ACROSS A REDEPLOY (see 15_League_Scout): reload the helpers
 # so the page and its data modules are always the same version.
 import importlib  # noqa: E402
 freshness = importlib.reload(freshness)
 system_view = importlib.reload(system_view)
+truth_view = importlib.reload(truth_view)
 
 st.set_page_config(page_title="Wowza | System Health", page_icon="🩺", layout="wide")
 import dashboard_ui as ui  # noqa: E402
@@ -40,6 +41,11 @@ _SUB = ("Display only. Every status below was computed by CI and is shown with t
 @st.cache_data(ttl=300, show_spinner=False)
 def _load():
     return system_view.load()
+
+
+@st.cache_data(ttl=300, show_spinner=False)
+def _truth():
+    return truth_view.panel()
 
 
 sh, man = _load()
@@ -64,7 +70,17 @@ st.caption(sh.get("about", ""))
 cnt = sh.get("counts") or {}
 ui.metric_grid([{"label": "GREEN", "value": cnt.get("GREEN", 0)}, {"label": "AMBER", "value": cnt.get("AMBER", 0)},
                 {"label": "RED", "value": cnt.get("RED", 0)}, {"label": "NO_DATA", "value": cnt.get("NO_DATA", 0)},
-                {"label": "Contract violations", "value": ("—" if sh.get("contract_violations") is None else sh["contract_violations"])}], per_row=3)
+                # NEW violations only (not in config/contract_baseline.json). Until 2026-11-05 this was labelled
+                # "Contract violations" while the expander below listed every recorded one (2 shown vs 8 listed).
+                {"label": "Contract violations (new)",
+                 "value": ("—" if sh.get("contract_violations") is None else sh["contract_violations"])},
+                {"label": "Known (baseline)", "value": ("—" if (sh.get("contracts") or {}).get("n_known_historical") is None
+                                                        else sh["contracts"]["n_known_historical"])}], per_row=3)
+
+# ── data truth (Phase 2 dashtruth 2026-11-05): stoplight, what is unverified, collection progress ──
+ui.section_header("Data truth", "As recorded by the data truth checks and the collectors. Nothing here is "
+                  "recomputed or filled: a missing input reads NO_DATA.")
+truth_view.render(_truth())
 
 v = sh.get("versions") or {}
 sel = v.get("selection_engine_version") or {}

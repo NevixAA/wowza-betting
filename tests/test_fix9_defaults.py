@@ -83,7 +83,7 @@ def test_telegram_and_dashboard_label_the_global_bar():
     assert TT.gap_text("SNIPER", "GLOBAL").endswith(TT.GLOBAL_MARK)
     assert not TT.gap_text("SNIPER", "LEAGUE").endswith(TT.GLOBAL_MARK)
     assert TT._threshold_source(float("nan")) is None and TT._threshold_source("global") == "GLOBAL"
-    assert TV.BAR_LABEL["GLOBAL"] == "GLOBAL bar"
+    assert TV.BAR_LABEL["GLOBAL"] == "GLOBAL"            # the 'Bar' column reads "Bar: GLOBAL" (dashtruth)
 
 
 def test_png_draws_the_global_footnote():

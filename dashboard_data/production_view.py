@@ -37,7 +37,9 @@ def stake_plan(path: Path | None = None, today: str | None = None) -> pd.DataFra
         d = pd.read_csv(p, usecols=lambda c: c in PLAN_COLS).reindex(columns=PLAN_COLS)
     except Exception:                                                 # noqa: BLE001
         return pd.DataFrame(columns=PLAN_COLS)
-    d["final_fraction"] = pd.to_numeric(d["final_fraction"], errors="coerce").fillna(0.0)
+    # a final_fraction the plan did not record stays missing (dashtruth 2026-11-05: it was fillna(0.0),
+    # which showed an unrecorded stake as 0.000%)
+    d["final_fraction"] = pd.to_numeric(d["final_fraction"], errors="coerce")
     d["date"] = d["date"].astype(str).str[:10]
     if today:
         d = d[d["date"] >= today]

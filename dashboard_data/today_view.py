@@ -168,6 +168,10 @@ def performance(settled: pd.DataFrame, today=None) -> dict:
            "stake_units": U.total(su) if n else None,
            "stake_pnl": U.total(staked["_pnl"] * su) if n else None,
            "paper_n": int(len(paper)), "paper_pnl": U.total(paper["_pnl"]) if len(paper) else None,
+           # of the not-staked tips, those from BEFORE the first recorded policy decision (no stake could
+           # exist yet): the line mixes them with policy-era NOT_STAKED tips, so the split is shown
+           "paper_pre_policy_n": (int(paper["_stake_status"].eq("PRE_POLICY_NO_RECORD").sum())
+                                  if "_stake_status" in paper.columns else None),
            "drawdown": None, "peak": None, "last7_pnl": None, "last7_n": 0, "curve": pd.DataFrame(),
            "by_market": pd.DataFrame()}
     if not n:

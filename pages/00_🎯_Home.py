@@ -26,8 +26,8 @@ require("pro")
 
 import dashboard_ui as ui  # noqa: E402
 from src.tier_labels import GAP_EXPLAINER, PAPER_TIER_LABEL, STAKED_LABEL  # noqa: E402
-from dashboard_data import production_view, today_view  # noqa: E402
-from src.staked import DEFINITION as STAKED_DEF, plan_staked  # noqa: E402
+from dashboard_data import production_view, today_view, truth_view  # noqa: E402
+from src.staked import DEFINITION as STAKED_DEF, load_records, plan_staked, policy_start  # noqa: E402
 from src import units as U  # noqa: E402
 
 st.set_page_config(page_title="Wowza | Home", page_icon="🎯", layout="wide", initial_sidebar_state="expanded")
@@ -64,7 +64,8 @@ def _home(today: str, local_day: str) -> dict:
             "upcoming_ou": today_view.upcoming_staked_ou(plan),
             "act": today_view.action(plan), "ko_times": times,
             "gen": plan["generated_at"].dropna().astype(str).max() if len(plan) else None,
-            "bb": bb, "bb_frozen": bb_frozen, "sh": sh, "man": man, "budget": today_view.api_budget()}
+            "bb": bb, "bb_frozen": bb_frozen, "sh": sh, "man": man, "budget": today_view.api_budget(),
+            "truth": truth_view.panel(), "policy_start": policy_start(load_records())}
 
 
 today = pd.Timestamp.now(tz="UTC").strftime("%Y-%m-%d")
@@ -115,7 +116,7 @@ with b:
             "Staked P/L (flat 1u)", U.fmt(perf['pnl']), title="B · Current performance",
             help=f"{STAKED_DEF}. Flat 1u per staked bet, every policy market (O/U 2.5, side markets), settled "
                  "only. Same number as the Tips page.",
-            supporting=[("P/L at recorded stakes", f"{U.fmt(perf['stake_pnl'])} on {U.fmt(perf['stake_units'])} staked"),
+            supporting=[("P/L at recorded stakes", f"{U.fmt(perf['stake_pnl'])} on {perf['stake_units']:.2f}u staked"),
                         ("ROI", ui.fmt_roi(perf["roi"])),
                         ("Win rate — staked", f"{perf['win_rate'] * 100:.1f}%"),
                         ("Settled staked bets", f"{perf['n']}"),
@@ -130,7 +131,9 @@ with b:
             ui.stat_line([("Win rate — staked", "—"), ("Settled staked bets", "0")])
     st.caption("Not staked (every other settled tip, any tier) P/L: "
                + (f"**{U.fmt(perf['paper_pnl'])}** · {perf['paper_n']} tips, not bets" if perf["paper_n"] else "—")
-               + " — tracked, never in the staked P/L.")
+               + " — tracked, never in the staked P/L"
+               + (f"; {perf['paper_pre_policy_n']} of them predate the first recorded policy decision"
+                  if perf.get("paper_pre_policy_n") else "") + ".")
 
 with c:
     overall = str(sh.get("overall", "UNKNOWN")) if sh else "UNKNOWN"
@@ -157,8 +160,15 @@ with c:
                                                                              label="PROTECTED TRACKS: CHECK"))
                     + f" :gray[{_cnt.get('GREEN', 0)} green · {_cnt.get('AMBER', 0)} amber · {_cnt.get('RED', 0)} red]")
 
-st.caption(f"Settled since {_cut} (by match date), flat 1u stakes. Per-market breakdown on the "
-           f"Tips page — one market carries most of the total.")
+_ps = H["policy_start"]
+st.caption(f"Settled since {_cut} (by match date), flat 1u stakes. A staked bet needs a recorded policy stake, and the "
+           f"first recorded policy decision is "
+           + (f"{pd.Timestamp(_ps):%Y-%m-%d %H:%M} UTC" if pd.notna(_ps) else "not recorded (no stake record found)")
+           + ": no earlier tip can count as staked; it is in the not-staked line. Per-market breakdown on the "
+           "Tips page.")
+
+# ── data truth (Phase 2 dashtruth 2026-11-05): the stoplight and what is still unverified ──────────
+truth_view.render(H["truth"], compact=True)
 
 # ── best opportunities today ─────────────────────────────────────────────────────────────────
 ui.section_header("Best opportunities today",

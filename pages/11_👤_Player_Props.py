@@ -196,6 +196,11 @@ else:
                        supporting=[("Settled", f"{n}"), ("Record", f"{wins}W – {n - wins}L"),
                                    ("Flat ROI (1u, paper)", f"{roi:+.1f}%" if roi == roi else "—")],
                        status=ui.status_chip("PAPER", label="PAPER · NEVER STAKED"), n=n, container=left)
+        # dashtruth 2026-11-05: rows a correction sidecar flags are IN this record; say how many
+        _fl = {k: v for k, v in V.flagged(settled, BASE_DIR / "output" / "corrections").items() if v}
+        if _fl:
+            left.caption("Includes rows flagged in output/corrections (kept, not removed): " + "; ".join(
+                f"{v} of {n} in {k} ({V.FLAG_FILES[k]})" for k, v in _fl.items()) + ".")
         with right:
             cols = [c for c in ["match_date", "league", "player_name", "market", "tier",
                                 "market_odds", "result", "pnl"] if c in settled.columns]
