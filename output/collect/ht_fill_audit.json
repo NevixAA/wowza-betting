@@ -1,34 +1,35 @@
 {
  "calls": 0,
- "filled_rows_total": 33259,
+ "filled_rows_total": 33992,
+ "ft_calls": 0,
+ "ft_completed_from_competition_fixtures": 0,
+ "ft_planned_calls": 0,
  "history": "output/fd_history.parquet",
  "note": "Half-time scores for history rows that lack them, from API-Football; fd_history.parquet itself is not modified.",
  "per_league": {
   "Argentina Primera Division": {
-   "filled": 3643,
+   "filled": 3669,
    "history_rows_same_match_two_spellings": 1032,
-   "lacking": 4230,
-   "refused_fixture_claimed_twice": 180,
+   "lacking": 4076,
    "unmatched": 407
   },
   "Austrian Bundesliga": {
-   "filled": 1707,
-   "history_rows_same_match_two_spellings": 706,
+   "filled": 1780,
+   "history_rows_same_match_two_spellings": 804,
    "lacking": 1938,
-   "unmatched": 231
+   "unmatched": 158
   },
   "Brazil Serie A": {
-   "filled": 3110,
-   "history_rows_same_match_two_spellings": 606,
-   "lacking": 3599,
-   "refused_fixture_claimed_twice": 200,
-   "unmatched": 289
+   "filled": 3434,
+   "history_rows_same_match_two_spellings": 978,
+   "lacking": 3434
   },
   "China Super League": {
-   "filled": 1462,
-   "history_rows_same_match_two_spellings": 130,
+   "filled": 1528,
+   "history_rows_same_match_two_spellings": 190,
    "lacking": 2540,
-   "unmatched": 1078
+   "refused_ft_mismatch": 1,
+   "unmatched": 1011
   },
   "Denmark Superliga": {
    "filled": 1666,
@@ -37,16 +38,18 @@
    "unmatched": 1
   },
   "Finland Veikkausliiga": {
-   "filled": 1407,
+   "filled": 1406,
    "history_rows_same_match_two_spellings": 252,
    "lacking": 1518,
+   "refused_ft_mismatch": 1,
    "unmatched": 111
   },
   "Ireland Premier Division": {
-   "filled": 1582,
-   "history_rows_same_match_two_spellings": 506,
-   "lacking": 1657,
-   "unmatched": 75
+   "filled": 1653,
+   "history_rows_same_match_two_spellings": 614,
+   "lacking": 1656,
+   "refused_ft_mismatch": 1,
+   "unmatched": 2
   },
   "Japan J-League": {
    "filled": 2744,
@@ -59,10 +62,9 @@
    "lacking": 1074
   },
   "Mexico Liga MX": {
-   "filled": 3048,
-   "history_rows_same_match_two_spellings": 1330,
-   "lacking": 3160,
-   "refused_fixture_claimed_twice": 112
+   "filled": 3080,
+   "history_rows_same_match_two_spellings": 1328,
+   "lacking": 3080
   },
   "Norway Eliteserien": {
    "filled": 2068,
@@ -81,18 +83,20 @@
    "lacking": 1423
   },
   "Sweden Allsvenskan": {
-   "filled": 2530,
-   "history_rows_same_match_two_spellings": 1312,
+   "filled": 2556,
+   "history_rows_same_match_two_spellings": 1344,
    "lacking": 2648,
-   "unmatched": 118
+   "unmatched": 92
   },
   "USA MLS": {
-   "filled": 3670,
-   "history_rows_same_match_two_spellings": 540,
-   "lacking": 4376,
-   "refused_fixture_claimed_twice": 706
+   "filled": 3786,
+   "history_rows_same_match_two_spellings": 538,
+   "lacking": 3786
   }
  },
  "planned_calls": 0,
- "written_at": "2026-11-04T07:02:11.070708+00:00"
+ "refused_ft_mismatch": 3,
+ "stored_rows_dropped_history_corrections": 361,
+ "stored_rows_dropped_now_unanswered": 3,
+ "written_at": "2026-11-05T06:41:30.510788+00:00"
 }

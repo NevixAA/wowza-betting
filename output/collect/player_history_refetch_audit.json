@@ -1,0 +1,43 @@
+{
+ "generated_at": "2026-11-05T09:56:57.098138+00:00",
+ "owner_decision": "2026-11-04 fix round 8 (props item 3)",
+ "plan": {
+  "rows": 949536,
+  "rows_by_source": {
+   "history": 876130,
+   "cup_rows": 73406
+  },
+  "refused_fixtures": {
+   "fixture_not_in_lists": 247
+  },
+  "refused_rows": {
+   "fixture_not_in_lists": 6354
+  },
+  "rows_verified_at_parse": 286,
+  "rows_to_verify": 949250,
+  "rows_without_fixture_id": 0,
+  "rows_mapped_through_lists": 0,
+  "fixtures": 32971,
+  "proven_fixtures": 32724,
+  "journaled_fixtures": 0,
+  "planned_calls": 32724
+ },
+ "run": {
+  "calls": 0,
+  "fetched": 0,
+  "rows_stored": 0,
+  "rows_refused": {},
+  "empty_answers": 0,
+  "budget_stop": "job cap reached: 45,000 >= 45,000 calls today"
+ },
+ "stored_rows": 0,
+ "stored_rows_by_source": {},
+ "journal_fixtures": 0,
+ "journal_by_status": {},
+ "rows_refused_in_answers": 0,
+ "fields": {},
+ "not_counts": [
+  "passes_accuracy",
+  "rating"
+ ]
+}
