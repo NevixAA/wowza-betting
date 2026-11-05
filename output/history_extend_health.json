@@ -1,17 +1,17 @@
 {
-  "checked_at": "2026-11-04T11:45:21Z",
-  "run_number": "80",
+  "checked_at": "2026-11-05T11:40:57Z",
+  "run_number": "81",
   "gate": {
     "collect": "true",
-    "newest_before": "2026-11-03",
+    "newest_before": "2026-11-04",
     "age_days": "1",
-    "hours_since_commit": "24.0"
+    "hours_since_commit": "23.7"
   },
   "collect_outcome": "success",
-  "last_collect_at": "2026-11-04T11:45:21Z",
+  "last_collect_at": "2026-11-05T11:40:57Z",
   "parquet": {
-    "rows": 881391,
-    "newest_after": "2026-11-04"
+    "rows": 881648,
+    "newest_after": "2026-11-05"
   },
   "collect_log_tail": [
     "  [Sweden Allsvenskan 2026] 2827 player-match rows collected",
@@ -30,12 +30,12 @@
     "  [Ligue 2 2026] Fetching fixture list (last 99)...",
     "  [Ligue 2 2026] 99 fixtures (99 cached, 0 to fetch)...",
     "  [Ligue 2 2026] 2938 player-match rows collected",
-    "[DONE] 70356 total player-match rows across 26 leagues / 26 season-slots.",
-    "  [sp_events] 2,408 fixtures (16 need API calls)...",
+    "[DONE] 70384 total player-match rows across 26 leagues / 26 season-slots.",
+    "  [sp_events] 2,409 fixtures (9 need API calls)...",
     "  [sp_events] 0 SP goals (0 headers) | 0 SP assist rows matched",
-    "[collect] union: 880942 existing + 59123 fetched -> 881391 rows (+449 new, 15131 refreshed inside the 14-day window, 43543 frozen kept as stored, 0 removed)",
-    "[history] parts: 4 written (14.6 MB), 48 unchanged, 0 removed",
-    "[collect] Saved 881391 player rows, 21252 players -> player_history.parquet",
+    "[collect] union: 881391 existing + 59152 fetched -> 881648 rows (+257 new, 15051 refreshed inside the 14-day window, 43844 frozen kept as stored, 0 removed)",
+    "[history] parts: 2 written (6.7 MB), 50 unchanged, 0 removed",
+    "[collect] Saved 881648 player rows, 21254 players -> player_history.parquet",
     "  goals (target_goals): 8.1% positive rate",
     "  goals2 (target_goals2): 0.7% positive rate",
     "  assists (target_assists): 5.9% positive rate",
