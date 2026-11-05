@@ -289,8 +289,17 @@ def _cup_body():
 
 
 def test_parse_cups_keeps_only_national_cups_of_the_country():
-    rows = B.parse_cups(_cup_body(), "Argentina")
+    rows = B.parse_cups(_cup_body(), "Argentina", registry_ids={128})
     assert {r["league_id"] for r in rows} == {1032}
+
+
+def test_parse_cups_keeps_a_league_type_competition_that_is_not_a_registry_league():
+    """Run-day 4 (2026-11-05): the provider files Copa de la Liga Profesional as type 'League'."""
+    body = _cup_body()
+    body["response"][0]["league"]["type"] = "League"
+    rows = B.parse_cups(body, "Argentina", registry_ids={128})
+    assert {r["league_id"] for r in rows} == {1032}          # registry league 128 never listed
+    assert B.parse_cups(body, "Argentina", registry_ids={128, 1032}) == []
 
 
 def _cand(rows):
@@ -346,7 +355,7 @@ def test_fetch_cups_is_budget_guarded_and_journaled(tmp_path, monkeypatch):
         monkeypatch.setattr(B, name, tmp_path / getattr(B, name).name)
     cand = _cand([_row("2023-09-02", "River Plate", "Boca Juniors", league=ARG)])
     fixtures = {"response": [_fx(5, "2023-09-02T22:00:00+00:00", "River Plate", "Boca Juniors", ft=(1, 0))]}
-    c = _Client({("leagues", (("country", "Argentina"), ("type", "cup"))): _cup_body(),
+    c = _Client({("leagues", (("country", "Argentina"),)): _cup_body(),
                  ("fixtures", (("league", 1032), ("season", "2023"))): fixtures})
     st = B.fetch_cups(cand, client=c)
     assert st["calls"] == 2 and [x[0] for x in c.calls] == ["leagues", "fixtures"]

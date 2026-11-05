@@ -131,7 +131,8 @@ CUP_FIXTURES = COLLECT_DIR / "national_cup_fixtures.parquet"
 CUP_JOURNAL = COLLECT_DIR / "national_cup_seasons.parquet"
 MAX_CALLS = 40
 FINISHED = {"FT", "AET", "PEN"}
-CUPS_COLS = ["country", "league_id", "name", "type", "season", "start", "end", "fetched_at"]
+#: list_kind "all_types" = from the full /leagues?country list (2026-11-05); blank = the older cup-only list
+CUPS_COLS = ["country", "league_id", "name", "type", "season", "start", "end", "fetched_at", "list_kind"]
 CUP_FX_COLS = ["fixture_id", "league_id", "cup_name", "country", "season", "date", "kickoff",
                "home_id", "home_name", "away_id", "away_name", "ft_home", "ft_away", "status"]
 CUP_JOURNAL_COLS = ["league_id", "season", "country", "season_end", "n_fixtures", "n_finished", "fetched_at"]
@@ -714,21 +715,36 @@ def prove_cup_rows(cand: pd.DataFrame, cup_fx: pd.DataFrame) -> tuple[pd.DataFra
     return pd.DataFrame(proven), pd.DataFrame(unproven)
 
 
-def parse_cups(body: dict, country: str) -> list[dict]:
-    """National cups of `country` from /leagues?country&type=cup: provider type must be 'Cup' and its
-    country the registry country (anything else is not proof of a domestic cup)."""
+def _registry_league_ids() -> set:
+    """api_football_id of EVERY registry league (any model type): never a 'cup' candidate."""
+    from src import league_registry as LR
+    return {int(e["api_football_id"]) for e in LR.leagues() if e.get("api_football_id") is not None}
+
+
+def parse_cups(body: dict, country: str, registry_ids: set | None = None) -> list[dict]:
+    """Domestic competitions of `country` OTHER than the registry's league(s), from /leagues?country:
+    provider type 'Cup', or provider type 'League' that is not a registry league. Run-day 4
+    (2026-11-05) proved the type filter too narrow: API-Football files 'Copa de la Liga Profesional'
+    (Argentina, the 2023-08..2024-05 window of the 407 rows) as type 'League', so the cup-only list
+    never held it and 0 of 407 rows could be proven. The proof itself is unchanged and strict (one
+    fixture of that competition on the date, both clubs proven, same score), so listing the country's
+    other competitions can only place a row on a match that really belongs to another competition.
+    The country must be the registry country (anything else is not proof)."""
+    reg = _registry_league_ids() if registry_ids is None else set(registry_ids)
     now = datetime.now(timezone.utc).isoformat()
     rows = []
     for e in (body or {}).get("response") or []:
         lg, ct = e.get("league") or {}, e.get("country") or {}
-        if lg.get("type") != "Cup" or ct.get("name") != country or lg.get("id") is None:
+        if ct.get("name") != country or lg.get("id") is None:
+            continue
+        if not (lg.get("type") == "Cup" or (lg.get("type") == "League" and int(lg["id"]) not in reg)):
             continue
         for s in e.get("seasons") or []:
             if s.get("year") is None or not s.get("start") or not s.get("end"):
                 continue
             rows.append({"country": country, "league_id": int(lg["id"]), "name": lg.get("name"),
                          "type": lg.get("type"), "season": str(s["year"]), "start": str(s["start"]),
-                         "end": str(s["end"]), "fetched_at": now})
+                         "end": str(s["end"]), "fetched_at": now, "list_kind": "all_types"})
     return rows
 
 
@@ -762,7 +778,10 @@ def cup_plan(cand: pd.DataFrame, cups: pd.DataFrame, journal: pd.DataFrame) -> t
     countries = []
     for c, g in cand.groupby("country"):
         got = cups[cups["country"] == c] if not cups.empty else cups
-        if got.empty or pd.to_datetime(got["fetched_at"], utc=True).max().tz_localize(None) < g["date"].max():
+        # a list stored before 2026-11-05 is cup-only (no list_kind 'all_types'): fetch the full list once
+        full = got["list_kind"].eq("all_types").any() if "list_kind" in got.columns else False
+        if got.empty or not full or \
+                pd.to_datetime(got["fetched_at"], utc=True).max().tz_localize(None) < g["date"].max():
             countries.append(c)
     done = set()
     if not journal.empty:
@@ -801,14 +820,15 @@ def fetch_cups(cand: pd.DataFrame, client: AFClient | None = None, dry_run: bool
         for c in countries:
             if st["calls"] >= MAX_CALLS:
                 raise BudgetStop(f"MAX_CALLS {MAX_CALLS} for this step")
-            body = client.get("leagues", {"country": c, "type": "cup"})
+            body = client.get("leagues", {"country": c})        # all types; parse_cups filters
             if body is None:
                 continue
             st["calls"] += 1
             rows = parse_cups(body, c)
             if rows:
                 append_parquet(CUPS, rows, ["league_id", "season"], CUPS_COLS)
-            print(f"[cups] {c}: {len({r['league_id'] for r in rows})} national cup(s) from the provider")
+            print(f"[cups] {c}: {len({r['league_id'] for r in rows})} domestic competition(s) other than "
+                  f"the registry league(s) from the provider")
         _, todo = cup_plan(cand, read_parquet(CUPS), read_parquet(CUP_JOURNAL))
         st["planned_fixture_calls"] = len(todo)
         for t in todo:
