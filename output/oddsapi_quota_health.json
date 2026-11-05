@@ -1,23 +1,23 @@
 {
   "artifact": "oddsapi_quota_health",
   "rule_version": "oddsapi-quota-1.0",
-  "generated_at": "2026-11-04T16:29:10Z",
+  "generated_at": "2026-11-05T16:37:24Z",
   "window_hours": 24.0,
-  "runs_listed": 54,
-  "runs_parsed": 54,
+  "runs_listed": 51,
+  "runs_parsed": 51,
   "log_download_failures": 0,
-  "credits_logged_in_window": 1372,
-  "credits_per_day_logged_estimate": 1372,
-  "account_remaining_latest": 89737,
-  "account_remaining_latest_ts": "2026-11-04T16:13:13Z",
-  "account_burn_per_day_from_remaining": 3725,
-  "projected_days_to_exhaustion": 24.1,
+  "credits_logged_in_window": 1246,
+  "credits_per_day_logged_estimate": 1246,
+  "account_remaining_latest": 87022,
+  "account_remaining_latest_ts": "2026-11-05T16:26:38Z",
+  "account_burn_per_day_from_remaining": 4252,
+  "projected_days_to_exhaustion": 20.5,
   "monthly_allowance_assumed": 100000,
   "by_workflow": {
     "predict.yml": {
       "runs": 5,
-      "credits": 1288,
-      "calls": 610,
+      "credits": 1194,
+      "calls": 578,
       "runs_with_unknown_credits": 0
     },
     "sharp_tracker.yml": {
@@ -28,6 +28,12 @@
     },
     "update_results.yml": {
       "runs": 3,
+      "credits": 0,
+      "calls": 0,
+      "runs_with_unknown_credits": 0
+    },
+    "tests.yml": {
+      "runs": 1,
       "credits": 0,
       "calls": 0,
       "runs_with_unknown_credits": 0
@@ -56,12 +62,6 @@
       "calls": 0,
       "runs_with_unknown_credits": 0
     },
-    "std_odds_capture.yml": {
-      "runs": 8,
-      "credits": 0,
-      "calls": 0,
-      "runs_with_unknown_credits": 0
-    },
     "af_history_extend.yml": {
       "runs": 1,
       "credits": 0,
@@ -74,8 +74,8 @@
       "calls": 0,
       "runs_with_unknown_credits": 0
     },
-    "data_truth_gate.yml": {
-      "runs": 2,
+    "std_odds_capture.yml": {
+      "runs": 7,
       "credits": 0,
       "calls": 0,
       "runs_with_unknown_credits": 0
@@ -123,25 +123,24 @@
       "runs_with_unknown_credits": 0
     },
     "live_scanner.yml": {
-      "runs": 3,
+      "runs": 2,
       "credits": 0,
       "calls": 0,
       "runs_with_unknown_credits": 0
     },
     "exchange_odds_capture.yml": {
       "runs": 1,
-      "credits": 84,
+      "credits": 52,
       "calls": 0,
       "runs_with_unknown_credits": 0
     }
   },
   "by_league": {
-    "Championship": 156,
-    "League One": 20,
-    "Argentina Primera Division": 120,
+    "Argentina Primera Division": 142,
     "Austrian Bundesliga": 48,
-    "Brazil Serie A": 88,
+    "Brazil Serie A": 52,
     "Bundesliga 2": 72,
+    "Championship": 96,
     "China Super League": 64,
     "Denmark Superliga": 48,
     "Finland Veikkausliiga": 24,
@@ -156,12 +155,12 @@
     "USA MLS": 120
   },
   "by_market": {
-    "btts": 1288,
-    "exchange_h2h": 84
+    "btts": 1194,
+    "exchange_h2h": 52
   },
-  "btts_fixtures_considered": 757,
-  "btts_suppressed_by_refresh_clock": 147,
-  "btts_duplicate_fetch_suppression_rate": 0.1942,
+  "btts_fixtures_considered": 718,
+  "btts_suppressed_by_refresh_clock": 140,
+  "btts_duplicate_fetch_suppression_rate": 0.195,
   "thresholds": {
     "warn_remaining_fraction": 0.25,
     "warn_days_to_exhaustion": 7,
@@ -169,5 +168,5 @@
   },
   "status": "PASS",
   "reasons": [],
-  "health_check_line": "OddsAPI quota PASS: remaining 89737, burn 3725/day, 24.1 days left, BTTS suppression 19%"
+  "health_check_line": "OddsAPI quota PASS: remaining 87022, burn 4252/day, 20.5 days left, BTTS suppression 19%"
 }

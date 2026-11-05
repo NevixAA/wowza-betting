@@ -1,10 +1,10 @@
 {
   "artifact": "price_provenance_health",
   "version": "price-provenance-1.0",
-  "generated_at": "2026-11-04T16:28:29Z",
+  "generated_at": "2026-11-05T16:36:53Z",
   "capture_files": {
     "newformat_odds_history": {
-      "rows": 66213,
+      "rows": 66810,
       "invalid_rows": 5007,
       "invalid_by_reason": {
         "PARSER_PRE_FIX_OU_2026-08-10": 4074,
@@ -23,7 +23,7 @@
       "raw_file_rewritten": false
     },
     "standard_sidemarket_odds_history": {
-      "rows": 69462,
+      "rows": 69772,
       "invalid_rows": 271,
       "invalid_by_reason": {
         "FIRST_HALF_BTTS_PRICE_GT_3.20": 271
@@ -35,7 +35,7 @@
       "raw_file_rewritten": false
     },
     "standard_odds_history": {
-      "rows": 11073,
+      "rows": 11112,
       "invalid_rows": 0,
       "invalid_by_reason": {},
       "invalid_by_market": {},
@@ -191,55 +191,55 @@
       "source": "standard_sidemarket_odds_history",
       "period": "forward_valid",
       "line": "OU1.5",
-      "n": 852,
+      "n": 866,
       "median_over": 1.25,
-      "implied_over": 0.7579,
+      "implied_over": 0.758,
       "realised_over": 0.7864,
-      "gap": -0.0285,
+      "gap": -0.0284,
       "consistent_full_match": true
     },
     {
       "source": "standard_sidemarket_odds_history",
       "period": "forward_valid",
       "line": "OU2.5",
-      "n": 844,
-      "median_over": 1.85,
-      "implied_over": 0.5271,
-      "realised_over": 0.5687,
-      "gap": -0.0416,
+      "n": 858,
+      "median_over": 1.825,
+      "implied_over": 0.5273,
+      "realised_over": 0.5676,
+      "gap": -0.0403,
       "consistent_full_match": true
     },
     {
       "source": "standard_sidemarket_odds_history",
       "period": "forward_valid",
       "line": "OU3.5",
-      "n": 852,
+      "n": 866,
       "median_over": 3.0,
-      "implied_over": 0.3261,
-      "realised_over": 0.3392,
-      "gap": -0.0131,
+      "implied_over": 0.3262,
+      "realised_over": 0.3395,
+      "gap": -0.0133,
       "consistent_full_match": true
     },
     {
       "source": "standard_sidemarket_odds_history",
       "period": "forward_valid",
       "line": "BTTS",
-      "n": 738,
+      "n": 752,
       "median_over": 1.73,
-      "implied_over": 0.5432,
-      "realised_over": 0.5732,
-      "gap": -0.03,
+      "implied_over": 0.5436,
+      "realised_over": 0.5731,
+      "gap": -0.0295,
       "consistent_full_match": true
     },
     {
       "source": "standard_odds_history",
       "period": "forward_valid",
       "line": "OU2.5",
-      "n": 316,
-      "median_over": 1.895,
-      "implied_over": 0.4963,
-      "realised_over": 0.5095,
-      "gap": -0.0132,
+      "n": 317,
+      "median_over": 1.89,
+      "implied_over": 0.4966,
+      "realised_over": 0.5079,
+      "gap": -0.0113,
       "consistent_full_match": true
     }
   ],
