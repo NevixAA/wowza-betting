@@ -528,8 +528,12 @@ def main(argv=None) -> int:
         print("STOPLIGHT", "RED" if fails else "GREEN")
         return 1 if fails else 0
     checks = evaluate()
+    # the gate verdict travels with the checks (dashboard data truth panel, 2026-11-05), so a reader
+    # never re-derives it from the statuses
+    fails = gate(checks=checks)
     doc = {"artifact": "data_truth_health", "version": VERSION,
-           "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"), "checks": checks}
+           "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"), "checks": checks,
+           "stoplight": "RED" if fails else "GREEN", "gate_reasons": fails}
     HEALTH.write_text(json.dumps(doc, indent=1, default=str) + "\n", encoding="utf-8")
     for c in checks:
         print(f"{c['status']:7} {c['check']}: {c['value']}" + (f"  [{c['detail']}]" if c["detail"] else ""))

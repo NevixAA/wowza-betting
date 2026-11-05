@@ -33,8 +33,9 @@ STAKE = {"SNIPER": "tier multiplier · full", "MARKSMAN": "tier multiplier · ¾
 # SIGNAL TIER != EVIDENCE RANK (P1-6, 2026-10-22): on O/U 2.5 the edge size does not rank outcomes, so the
 # bankroll policy stakes every O/U tier the same and the page must not imply SNIPER is the stronger bet.
 STAKE_OU = "equal stake · tier ≠ confidence"
-#: threshold_source -> the 'Bar' column word (src/side_thresholds; a missing source stays blank)
-BAR_LABEL = {"LEAGUE": "League bar", "GLOBAL": "GLOBAL bar"}
+#: threshold_source -> the 'Bar' column word, so a row reads "Bar: GLOBAL" (src/side_thresholds; a missing
+#: source stays blank - never guessed)
+BAR_LABEL = {"LEAGUE": "LEAGUE", "GLOBAL": "GLOBAL"}
 
 PLAN_COLS = ["date", "fixture", "market", "side", "deployment_state", "base_fraction", "final_fraction",
              "stake_amount", "decision_state",

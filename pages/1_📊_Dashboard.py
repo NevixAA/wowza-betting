@@ -271,10 +271,11 @@ else:
         st.markdown(ui.status_chip("LIVE", label="PRODUCTION") + f" &nbsp;{_counts}")
         _ps = board["production_state"].value_counts()
         ui.stat_line([(s, f"{int(_ps.get(s, 0))}") for s in _STATES if int(_ps.get(s, 0))])
-        st.caption("Production state per tip, from the stake plan. O/U 2.5 tiers are staked equally "
-                   f"({tier_label('SNIPER')} −9.9%, {tier_label('MARKSMAN')} −5.8%, {tier_label('VALUABLE')} "
-                   "−0.8% since 26 Aug); on BTTS and Over 1.5 the edge "
-                   "does rank outcomes, so the ladder stays.")
+        # Until 2026-11-05 this caption carried typed per-tier ROIs ("-9.9% / -5.8% / -0.8% since 26 Aug")
+        # that nothing recomputed (dashtruth): the measured edge bands are on the Pro page, with their n.
+        st.caption("Production state per tip, from the stake plan. O/U 2.5 tiers are staked equally because the "
+                   "edge size does not rank O/U 2.5 outcomes (measured edge bands, with n, on the Pro page); on "
+                   "BTTS and Over 1.5 the edge does rank outcomes, so the ladder stays.")
     with sha.container(border=True):
         ui.eyebrow(f"Shadow · market-first ({_sh['engine'] or 'engine n/a'})")
         st.markdown(ui.status_chip("SHADOW") + " &nbsp;" + " · ".join(
