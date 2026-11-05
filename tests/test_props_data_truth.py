@@ -33,7 +33,10 @@ def _history(rounds: int = 24) -> list[dict]:
                 fid += 1
                 date = d0 + pd.Timedelta(days=7 * r)
                 for side, team in (("h", h), ("a", a)):
-                    base = abs(hash((lg, team))) % 1000 * 10
+                    # One fixed id block per club. It was abs(hash((lg, team))) % 1000 * 10, and str
+                    # hashes change per process (PYTHONHASHSEED), so about 1 run in 80 gave two clubs
+                    # the same player ids and two tests failed (e.g. PYTHONHASHSEED=35).
+                    base = (list(LEAGUES).index(lg) * 10 + teams.index(team) + 1) * 10
                     for pos, j in (("G", 0), ("D", 1), ("D", 2), ("M", 3), ("M", 4), ("F", 5)):
                         rows.append({
                             "fixture_id": fid, "player_id": base + j, "player_name": f"{team}-{pos}{j}",

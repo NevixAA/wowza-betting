@@ -367,7 +367,14 @@ def test_status_reread_dry_run_counts_the_committed_old_lists(capsys):
     sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
     H = importlib.import_module("collect_ht_scores")
     out = H.add_status(fetch=False)
-    j = pd.read_parquet(H.JOURNAL)
-    assert out["status_planned_calls"] == len(j.drop_duplicates(["league_id", "season"])) - (
-        len(pd.read_parquet(H.STATUS_JOURNAL)) if H.STATUS_JOURNAL.exists() else 0)
+    # Recount the plan from the committed journals: every stored HT list (journal + FT journal)
+    # minus the lists the status journal already re-read. The collection keeps growing all three
+    # (the status journal also holds registry-league lists), so this is a set difference.
+    def keys(p):
+        if not p.exists():
+            return set()
+        d = pd.read_parquet(p, columns=["league_id", "season"])
+        return {(int(a), str(b)) for a, b in zip(d["league_id"], d["season"])}
+    todo = (keys(H.JOURNAL) | keys(H.FT_JOURNAL)) - keys(H.STATUS_JOURNAL)
+    assert out["status_planned_calls"] == len(todo)
     assert out["status_calls"] == 0
