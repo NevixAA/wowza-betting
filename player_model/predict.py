@@ -210,6 +210,38 @@ def _team_strength_mult(team_win_prob: float, market: str) -> float:
     return 1.0  # 40–60%: balanced game, no adjustment
 
 
+#: fair_basis value of a priced tip: its fair probability rests on an ASSUMED overround
+#: (config.OVERROUND_BY_ODDS), because the quotes we hold are one-sided (no Under / No price).
+FAIR_BASIS_ASSUMED_OVERROUND = "assumed_overround"
+
+#: Markets the quality-mismatch discount applies to.
+_QUALITY_CAP_MARKETS = ("goals", "goals2", "sot", "sot2", "sot3")
+
+
+def hand_adjusted_prob(p_model: float, win_prob: float, market: str,
+                       career_q: float, opp_q: float) -> tuple[float, float, bool]:
+    """The tip probability after the two HAND adjustments, and what they did.
+
+    Returns (p, factor, quality_measured). p is p_model times the team-strength multiplier (only
+    when the fixture has a measured win probability) and then times the quality-mismatch discount
+    (only when BOTH qualities are measured and the market is a goals/SOT market); factor is the
+    product of the two. Both are typed formulas, not model output (propsdef 2026-11-05): the tip
+    carries the model's own probability (model_prob_raw) and this factor (prob_adjustment) BESIDE
+    the adjusted model_prob it has always written. The arithmetic and its order are unchanged.
+    """
+    factor = 1.0
+    if win_prob == win_prob:
+        m = _team_strength_mult(win_prob, market)
+        p_model, factor = p_model * m, factor * m
+    quality_measured = career_q == career_q and opp_q == opp_q
+    if quality_measured:
+        ctx_disc = float(career_q) / max(float(opp_q), 0.1)
+        if ctx_disc < 0.60 and market in _QUALITY_CAP_MARKETS:
+            # Discount scales: ctx_disc=0.50 -> x0.50, ctx_disc=0.30 -> x0.30
+            p_model, factor = p_model * ctx_disc, factor * ctx_disc
+    return p_model, factor, quality_measured
+
+
 # ── Confidence scoring ────────────────────────────────────────────────────────
 
 def _confidence_score(row: dict, lazy_factor_count: int = 0) -> float:
@@ -910,26 +942,18 @@ def run_player_predictions(
                 if not (p_model == p_model):
                     continue                                   # model gave no probability
                 p_model = float(p_model)
-                # Team-strength multiplier: boost for heavy favourites, penalty for underdogs.
-                # Skipped explicitly when the fixture has no measured win probability.
+                _p_raw = p_model                               # the model's own probability
+                # Team-strength multiplier (boost for heavy favourites, penalty for underdogs;
+                # skipped when the fixture has no measured win probability), then the hard
+                # quality-mismatch cap: player career tier << opponent tier, e.g. a Panama striker
+                # (career_quality=0.30) vs England CBs (opp_quality=1.0). The cap needs BOTH
+                # qualities measured; otherwise it is skipped (no 0.65 / 1.0 priors).
                 _is_home = float(feat_row.get("is_home")) > 0.5
                 _win_prob = home_win_prob if _is_home else away_win_prob
-                if _win_prob == _win_prob:
-                    p_model = p_model * _team_strength_mult(_win_prob, market)
-
-                # Hard quality-mismatch cap: player career tier << opponent tier
-                # e.g. Panama striker (career_quality=0.30) vs England CBs (opp_quality=1.0)
-                # context_quality_discount = 0.30 → apply extra cap so model can't output
-                # inflated probabilities for weak-league players vs elite opposition.
-                # Needs BOTH qualities measured; otherwise the cap is skipped (no 0.65 / 1.0 priors).
                 _career_q = pd.to_numeric(feat_row.get("player_career_avg_quality"), errors="coerce")
                 _opp_q = pd.to_numeric(feat_row.get("opp_def_player_quality"), errors="coerce")
-                if _career_q == _career_q and _opp_q == _opp_q:
-                    _ctx_disc = float(_career_q) / max(float(_opp_q), 0.1)
-                    if _ctx_disc < 0.60 and market in ("goals", "goals2", "sot", "sot2", "sot3"):
-                        # Discount scales: ctx_disc=0.50 → ×0.50, ctx_disc=0.30 → ×0.30
-                        p_model = p_model * _ctx_disc
-                else:
+                p_model, _adj, _q_ok = hand_adjusted_prob(p_model, _win_prob, market, _career_q, _opp_q)
+                if not _q_ok:
                     _n_quality_cap_skipped += 1
 
                 # A probability ABOVE the realistic maximum is not tipped at the cap. Writing the cap
@@ -1005,6 +1029,11 @@ def run_player_predictions(
                     "data_source":   feat_row.get("data_source", ""),
                     "tier":          "AVOID",   # updated when market odds available
                     "kelly_stake":   None,
+                    # BESIDE model_prob (propsdef 2026-11-05): the model's own probability and the
+                    # typed hand-adjustment factor that turned it into model_prob (1.0 = none).
+                    "model_prob_raw":  round(_p_raw, 4),
+                    "prob_adjustment": round(_adj, 4),
+                    "fair_basis":      None,    # set when a price arrives (enrich_with_odds)
                 })
 
     if _stale_dropped:
@@ -1056,6 +1085,8 @@ def enrich_with_odds(tips_df: pd.DataFrame, odds_data: dict) -> pd.DataFrame:
     # Fixture-scoped key ONLY (odds_fetcher.tip_price_key): two tips sharing a name in different
     # fixtures must not share a price. The plain "player|market" fallback is gone (Data Truth).
     _date_col = "date" if "date" in tips_df.columns else "match_date"
+    tips_df["fair_basis"] = (tips_df["fair_basis"] if "fair_basis" in tips_df.columns
+                             else pd.Series(None, index=tips_df.index)).astype(object)
     for idx, row in tips_df.iterrows():
         key        = f"{row['player_name']}|{row['market']}"
         scoped     = f"{key}|{str(row.get(_date_col, '') or '')[:10]}|{row.get('match', '')}"
@@ -1084,6 +1115,9 @@ def enrich_with_odds(tips_df: pd.DataFrame, odds_data: dict) -> pd.DataFrame:
         tips_df.at[idx, "ev"]           = ev_val
         tips_df.at[idx, "tier"]         = tier
         tips_df.at[idx, "kelly_stake"]  = _kelly_stake(ev_val, mkt_odds) if tier != "AVOID" else 0.0
+        # The fair probability is NOT a de-vigged two-sided price: it is 1/odds over an overround
+        # assumed from config.OVERROUND_BY_ODDS. Said on the row (propsdef 2026-11-05).
+        tips_df.at[idx, "fair_basis"]   = FAIR_BASIS_ASSUMED_OVERROUND
 
     return tips_df
 

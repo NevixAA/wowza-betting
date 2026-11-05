@@ -767,7 +767,8 @@ def mode_predict() -> None:
     else:
         print("[predict] No ODDS_API_KEY — skipping odds enrichment (tier will stay AVOID)")
 
-    # Tier markets with no live Odds API coverage (assists) via calibration base rates
+    # Markets with no live Odds API coverage (assists): an unpriced tip stays AVOID and is counted
+    # (no synthetic price since 2026-11-01; the old comment said "via calibration base rates")
     tips = enrich_no_odds_markets(tips)
     # PAPER feed: promote the top-N strongest AVOID picks (with odds) to tier='PAPER'
     # so the strongest props signals are tracked live (no edge — tracking only, never real money)
@@ -785,7 +786,7 @@ def mode_predict() -> None:
         print(f"[clv_tracker] skipped: {_e}")
     assists_tiered = tips[(tips["market"] == "assists") & (tips["tier"] != "AVOID")]
     if not assists_tiered.empty:
-        print(f"[predict] calibration-implied: {len(assists_tiered)} assists tip(s) tiered (AVOID excluded)")
+        print(f"[predict] {len(assists_tiered)} assists tip(s) tiered on a real bookmaker quote (AVOID excluded)")
 
     # Lineup availability filter — drops confirmed bench players, flags TBC
     if api_key:

@@ -792,99 +792,10 @@ def build_fantasy_projections(parquet_path: Path | None = None, min_minutes: flo
     return out
 
 
-def _team_defense_map(pl: pd.DataFrame) -> dict:
-    """{team_name: goals-conceded-per-game} approx from the opponent-concede feature.
-    Higher = leakier defence = easier fixture for attackers."""
-    need = ("opp_goals_conceded_pg", "is_home", "home_team", "away_team")
-    if pl.empty or any(c not in pl.columns for c in need):
-        return {}
-    # Unknown venue -> the opponent is unknown; those rows are skipped (was read as 'away').
-    is_home = pd.to_numeric(pl["is_home"], errors="coerce")
-    pl = pl[is_home.notna()]
-    is_home = is_home[is_home.notna()]
-    opp = np.where(is_home == 1, pl["away_team"], pl["home_team"])
-    tmp = pl.assign(_opp=opp)
-    d = tmp.groupby("_opp")["opp_goals_conceded_pg"].mean()
-    return {str(k): float(v) for k, v in d.items() if pd.notna(v) and str(k).strip()}
-
-
-def build_fantasy_projections_fixtures(next_n: int = 5, parquet_path: Path | None = None) -> pd.DataFrame:
-    """Fantasy projections with an opponent-adjusted (fixture-difficulty) layer.
-
-    Base points come from build_fantasy_projections() — the model's player-vs-player matchup
-    features are already baked into p_goal/p_assist/p_sot2. This layers a TEAM-vs-TEAM
-    adjustment: each player's points are scaled by the difficulty of their team's next
-    `next_n` fixtures (opponent goals-conceded rate × home/away), so an easy run of games
-    lifts projected points and a hard run lowers them.
-
-    Adds columns: next_fixtures, avg_fdr (mean multiplier; >1 = easy run), fixture_adj_pts,
-    fixtures_available (False off-season → fixture_adj_pts == base fantasy_pts).
-    """
-    base = build_fantasy_projections(parquet_path, next_n=next_n)
-    if base.empty:
-        return base
-    base = base.copy()
-    # Prefer the LIVE FPL fixtures/FDR already attached by build_fantasy_projections (official).
-    # If present, use it and skip the legacy API-Football opponent-adjustment path entirely.
-    if bool(base.get("fixtures_available", pd.Series([False])).iloc[0]):
-        return base.sort_values("fixture_adj_pts", ascending=False).reset_index(drop=True)
-
-    # ── Legacy fallback: API-Football fixtures + goals-conceded adjustment ──
-    base["next_fixtures"] = ""
-    base["avg_fdr"] = np.nan
-    # No opponent adjustment possible -> unknown, not the unadjusted figure relabelled.
-    base["fixture_adj_pts"] = np.nan
-
-    df = pd.read_parquet(parquet_path or _PARQUET)
-    pl = _fantasy_league_rows(df).copy()
-    dmap = _team_defense_map(pl)
-    fixtures = upcoming_by_team(next_n)     # {team: ["Opp (H)", ...]} — empty off-season
-
-    lg_avg = float(np.mean(list(dmap.values()))) if dmap else float("nan")
-    if not fixtures or not dmap or not lg_avg > 0:
-        log.info("fantasy: legacy fixture path has no fixtures / no opponent defence data - "
-                 "fixture_adj_pts unknown")
-        base["fixtures_available"] = False
-        return base
-    base["fixtures_available"] = True
-
-    # Clubs and opponents resolved onto each source's own spellings by src.team_names.resolve
-    # (league-scoped, ambiguity-refusing), not an alphanumeric-lowercase key.
-    dclubs, fclubs = list(dmap), list(fixtures)
-    skipped_opp = set()
-
-    adj, fdr, fxs = [], [], []
-    for _, r in base.iterrows():
-        fk = _resolve_club(r.get("team"), fclubs)
-        opps = fixtures.get(fk, []) if fk else []
-        minutes = pd.to_numeric(r.get("minutes_pg"), errors="coerce")
-        if not opps or minutes != minutes:
-            adj.append(np.nan); fdr.append(np.nan); fxs.append(" · ".join(opps)); continue
-        mults = []
-        for o in opps:
-            is_h = o.strip().endswith("(H)")
-            ok = _resolve_club(o.rsplit("(", 1)[0].strip(), dclubs)
-            if ok is None:
-                skipped_opp.add(o.rsplit("(", 1)[0].strip())   # no adjustment for that fixture
-                continue
-            m = (dmap[ok] / lg_avg) * (1.10 if is_h else 0.92)   # leaky opp + home = easier
-            mults.append(min(max(m, 0.6), 1.5))
-        if not mults:
-            adj.append(np.nan); fdr.append(np.nan); fxs.append(" · ".join(opps)); continue
-        mult = float(np.mean(mults))
-        # scale ONLY the opponent-dependent expectation, NOT the fixed appearance points
-        appr = 2.0 if minutes >= 60 else 1.0
-        adj.append(round(appr + mult * (r["fantasy_pts"] - appr), 3))
-        fdr.append(round(mult, 2))
-        fxs.append(" · ".join(opps))
-    if skipped_opp:
-        log.info("fantasy: %d opponent(s) not resolved to history clubs - those fixtures "
-                 "left out of the mean multiplier: %s", len(skipped_opp), ", ".join(sorted(skipped_opp)))
-    base["fixture_adj_pts"] = adj
-    base["avg_fdr"] = fdr
-    base["next_fixtures"] = fxs
-    return base.sort_values("fixture_adj_pts", ascending=False,
-                            na_position="last").reset_index(drop=True)
+# The legacy opponent-adjusted path (build_fantasy_projections_fixtures + _team_defense_map) was
+# removed 2026-11-05 (propsdef): no caller anywhere, and it scaled points by a TYPED home edge
+# (x1.10 home / x0.92 away) clipped to 0.6-1.5. The live next-gameweek fixture adjustment is the
+# FDR step inside build_fantasy_projections (reported in reports/P2_PROPS_DEFAULTS_AND_FANTASY.md).
 
 
 def generate_fantasy_tips(write: bool = True) -> pd.DataFrame:
