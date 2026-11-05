@@ -1,5 +1,10 @@
 {
  "cups": {
+  "fetch": {
+   "calls": 6,
+   "planned_country_calls": 3,
+   "planned_fixture_calls": 3
+  },
   "proven_by_league_cup": {},
   "proven_cup_rows": 0,
   "unplaced_by_league": {
@@ -10,57 +15,56 @@
   "unplaced_lacking_ht": 410,
   "unplaced_rows": 410,
   "unproven_by_reason": {
-   "no_cup_fixture_stored_within_pm1_day": 410
+   "club_not_resolved_among_cup_fixtures": 68,
+   "no_cup_fixture_stored_within_pm1_day": 342
   },
   "unproven_rows": 410
  },
  "duplicates": {
   "by_league": {
    "Argentina Primera Division": 180,
-   "Brazil Serie A": 200,
+   "Brazil Serie A": 246,
    "Mexico Liga MX": 112,
    "USA MLS": 706
   },
-  "claims": 34457,
+  "claims": 34985,
   "conflict_fixtures": 0,
   "conflict_rows": 0,
   "conflicts_by_reason": {},
-  "fixtures": 599,
+  "fixtures": 622,
   "removed_by_league": {
    "Argentina Primera Division": 90,
-   "Brazil Serie A": 100,
+   "Brazil Serie A": 123,
    "Mexico Liga MX": 56,
    "USA MLS": 353
   },
-  "removed_keys": 599,
-  "removed_rows": 599,
-  "rows_claiming_a_fixture_from_two_dates": 1198,
+  "removed_keys": 622,
+  "removed_rows": 622,
+  "rows_claiming_a_fixture_from_two_dates": 1244,
   "timezone": {
-   "kept_copy_is_provider_utc_date": 599,
+   "kept_copy_is_provider_utc_date": 622,
    "local_date_unknown": 0,
    "removed_copy_dated_by_local_kickoff_date": 0,
-   "removed_copy_not_local_date": 599
+   "removed_copy_not_local_date": 622
   }
  },
  "history": "output/fd_history.parquet",
  "history_rows": 65940,
  "loader_merge_duplicates": {
-  "conflict_rows": 60,
-  "conflicts_by_reason": {
-   "a_copy_claims_no_provider_fixture": 60
-  },
-  "history_pairs_one_to_three_days_apart": 388,
-  "loader_pairs": 398,
-  "pairs_proven": 358,
+  "conflict_rows": 0,
+  "conflicts_by_reason": {},
+  "history_pairs_one_to_three_days_apart": 365,
+  "loader_pairs": 375,
+  "pairs_proven": 365,
   "pairs_with_a_non_history_row_out_of_scope": 0,
   "removed_by_league": {
    "Argentina Primera Division": 64,
-   "Brazil Serie A": 35,
+   "Brazil Serie A": 42,
    "Ireland Premier Division": 1,
    "Mexico Liga MX": 22,
    "USA MLS": 236
   },
-  "removed_rows": 358,
+  "removed_rows": 365,
   "same_day_pairs_left_to_loader": 10,
   "survivor_changes_vs_loader_tiebreak": 0
  },
@@ -79,23 +83,27 @@
  "score_90min": {
   "aet_pen_history_already_90min": 61,
   "awarded_rows": 0,
-  "claims_of_aet_pen_fixtures": 65,
+  "claims_of_aet_pen_fixtures": 66,
   "claims_refused_fixture_claimed_from_two_dates": 0,
   "corrected_by_league": {
+   "Austrian Bundesliga": 1,
    "Mexico Liga MX": 1,
    "Romanian Superliga": 2,
    "USA MLS": 1
   },
-  "corrected_to_90min": 4,
-  "history_rows_claimed": 59930,
+  "corrected_to_90min": 5,
+  "history_rows_claimed": 60429,
   "pool_fixtures_by_status": {
+   "ABD": 5,
    "AET": 264,
-   "FT": 118445,
-   "PEN": 349
+   "AWD": 10,
+   "FT": 118465,
+   "PEN": 349,
+   "WO": 2
   },
   "refused_by_reason": {
    "ft_status_scores_differ": 6
   }
  },
- "written_at": "2026-11-04T11:52:13.727590+00:00"
+ "written_at": "2026-11-05T06:40:34.667529+00:00"
 }
