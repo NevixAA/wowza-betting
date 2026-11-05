@@ -1,0 +1,72 @@
+name: Tests and gates
+
+# Phase 2 (KEY=ci), 2026-11-05. The FULL pytest suite plus the production gates on every push and
+# pull request to main and data-truth-100. Before this, no workflow ran the whole suite: a few jobs
+# ran one or two test files each, and the data truth gate ran on main pushes only.
+#   tests  - python -m pytest tests (offline: tests/conftest.py refuses every non-loopback socket,
+#            and the session fails if the run changed any tracked file)
+#   gates  - research lock, track registry, dashboard manifest (--check each; every step runs)
+# The data truth stoplight (--gate, with its ratchet) stays in data_truth_gate.yml, which now also
+# runs on pushes to data-truth-100.
+# No secret is passed to either job: a test that needs an API key or the network is a bug.
+# Bot pushes (collect, predict, results) use GITHUB_TOKEN and so do not trigger this workflow.
+
+on:
+  push:
+    branches: [main, data-truth-100, 'phase2/**']
+  pull_request:
+    branches: [main, data-truth-100]
+  workflow_dispatch:
+
+concurrency:
+  group: tests-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+          cache-dependency-path: requirements.txt
+      - name: Install
+        run: pip install -r requirements.txt pytest pyyaml
+      - name: Full test suite (offline)
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python -m pytest -q -p no:cacheprovider tests
+      - name: The suite left the tree clean
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            git status --short
+            echo "::error title=Test hygiene::the test run changed or created files in the repo tree"
+            exit 1
+          fi
+
+  gates:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+          cache-dependency-path: requirements.txt
+      - name: Install
+        run: pip install -r requirements.txt
+      - name: Research lock
+        run: python -m src.research_lock --check
+      - name: Track registry is current
+        if: always()
+        run: python scripts/build_track_registry.py --check
+      - name: Dashboard manifest is complete
+        if: always()
+        run: python scripts/dashboard_manifest.py --check
