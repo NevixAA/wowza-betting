@@ -9,18 +9,28 @@ signal that live diverges from the (efficient-market) backtest.
 BASIS (2026-11-02): entry and close are both BEST-OF-BOOKS (see close_best_of_books); every
 entry logged since is labelled `clv_basis=best_vs_best` in its notes.
 
+INTEGRITY (2026-11-06, Phase 2 part 7): a close is written only for a record that passes the checks of
+player_model.clv_integrity - the entry price was quoted for this player / market / fixture by the tip
+time, the kickoff is recorded, the tip was logged before it, and the close is taken from quotes
+strictly BEFORE kickoff (in-play rows used to be eligible, AU4-P8-03). Every record gets `clv_status`;
+one that fails gets its status (IDENTITY_UNPROVEN, ENTRY_AFTER_KICKOFF, TIMING_UNPROVEN, NO_CLOSE)
+and no CLV value. The entry's kickoff is written with it (`kickoff_utc`).
+
 DATA REALITY: our prop odds are OVER-PRICE ONLY. So `clv_prob` (no-vig) can't be
 computed (needs two-sided), but `clv_pct = odds_entry/odds_close − 1` DOES work one-sided and
 is the metric we read. ISOLATION: props-only; writes only output/clv_records.csv. Standard
 model / team pipeline untouched.
 """
 from __future__ import annotations
+from collections import Counter
+
 import pandas as pd
 from datetime import datetime, timezone
 
 from src import clv_capture
 from player_model import config
-from player_model.odds_fetcher import _norm, same_fixture
+from player_model import clv_integrity as CI
+from player_model.odds_fetcher import _norm
 from player_model.club_rule import same_fixture_sides
 
 # Track CLV for EVERY tier that has odds (2026/27: keep the full open->close->CLV record for
@@ -52,18 +62,47 @@ def log_new_tips(tips_df: pd.DataFrame) -> int:
         bid = _bet_id(row.get("date"), row.get("player_name", ""), row.get("market", ""))
         if bid in existing:
             continue                      # keep first-seen entry price
+        ko = row.get("kickoff_utc")
         clv_capture.log_bet(bid, row.get("market", ""), row.get("player_name", ""),
                             row.get("match", ""), "over", odds, None,
-                            notes=f"{row.get('tier', '')};{CLV_BASIS}")
+                            notes=f"{row.get('tier', '')};{CLV_BASIS}",
+                            kickoff_utc=ko if isinstance(ko, str) else "")
         existing.add(bid); n += 1
     if n:
         print(f"[clv_tracker] logged {n} new tip entry prices")
     return n
 
 
+def _tip_kickoffs() -> dict:
+    """{(date, match): kickoff_utc} from the current board (output/player_tips.csv), for records
+    written before entries carried their kickoff. A (date, match) with two kickoffs is left out."""
+    try:
+        t = pd.read_csv(config.OUTPUT_DIR / "player_tips.csv", usecols=["date", "match", "kickoff_utc"],
+                        dtype=str)
+    except Exception:                                                    # noqa: BLE001 - no board
+        return {}
+    t = t.dropna().drop_duplicates()
+    t["date"] = t["date"].str[:10]
+    one = t.groupby(["date", "match"])["kickoff_utc"].nunique() == 1
+    t = t.set_index(["date", "match"])
+    return {k: t.loc[[k], "kickoff_utc"].iloc[0] for k in one[one].index}
+
+
+def _player_ids() -> dict:
+    """player_ledger provider ids per (name, market, date) - a name with two ids is a namesake."""
+    try:
+        led = pd.read_csv(config.OUTPUT_DIR / "player_ledger.csv", dtype=str,
+                          usecols=lambda c: c in ("player_name", "market", "match_date", "player_id"))
+    except Exception:                                                    # noqa: BLE001
+        return {}
+    return CI.ledger_ids(led)
+
+
 def close_out(odds_history_path=None, kickoff_map: dict | None = None) -> int:
-    """For open CLV records whose kickoff has passed, set the CLOSING price = the latest odds
-    snapshot for that (player, market, date) in the prop-odds history, then compute CLV."""
+    """For open CLV records whose kickoff has passed, set the CLOSING price = the best-of-books close
+    over quotes strictly before kickoff, for the same player / market / fixture, then compute CLV.
+    A record that fails identity or timing gets its clv_status instead (clv_integrity.decide_close).
+    `kickoff_map` = {bet_id: kickoff_utc}; else the record's own kickoff_utc, else the board's."""
     path = odds_history_path or (config.OUTPUT_DIR / "player_prop_odds_history.csv")
     rows = clv_capture._load()
     # The history is a ROLLING file (src/rolling_store): matches already played live in
@@ -71,7 +110,7 @@ def close_out(odds_history_path=None, kickoff_map: dict | None = None) -> int:
     # have open records, plus the live file -- so a record closed late still finds its close.
     open_days = set()
     for r in rows:
-        if r.get("odds_close") in ("", None):
+        if r.get("odds_close") in ("", None) and r.get("clv_status", "") not in CI.FINAL:
             parts = str(r.get("bet_id", "")).split("|", 3)
             if len(parts) == 4:
                 open_days.add(parts[1][:10])
@@ -82,48 +121,44 @@ def close_out(odds_history_path=None, kickoff_map: dict | None = None) -> int:
         print(f"[clv_tracker] no odds history at {path}"); return 0
     if oh.empty or "player" not in oh.columns:
         return 0
-    oh["_pk"] = oh["player"].astype(str).map(_norm)
-    oh["_d"] = oh["match_date"].astype(str).str[:10]
+    idx = CI.index_history(CI.prepare_history(oh))
+    board_ko = None
+    ids = _player_ids()
     now = datetime.now(timezone.utc)
-    closed = 0
+    closed, labelled = 0, Counter()
     for r in rows:
-        if r.get("odds_close") not in ("", None):
-            continue                      # already closed
-        # bet_id = PLAYER|date|player|market
-        try:
-            _, d, player, market = r["bet_id"].split("|", 3)
-        except ValueError:
+        if r.get("odds_close") not in ("", None) or r.get("clv_status", "") in CI.FINAL:
+            continue                      # already closed, or already given a final status
+        parsed = CI.parse_bet_id(r.get("bet_id"))
+        if parsed is None:
             continue
-        # only close after kickoff if we know it; else close once history has moved on
-        if kickoff_map:
-            ko = kickoff_map.get(r["bet_id"])
-            if ko:
-                try:
-                    if datetime.fromisoformat(ko.replace("Z", "+00:00")) > now:
-                        continue          # not kicked off yet
-                except Exception:
-                    pass
-            else:
-                if d >= now.strftime("%Y-%m-%d"):
-                    continue              # no kickoff info + match not in the past -> wait
+        d, player, market = parsed
+        ko = (kickoff_map or {}).get(r["bet_id"]) or r.get("kickoff_utc") or None
+        if not ko:
+            if board_ko is None:
+                board_ko = _tip_kickoffs()
+            ko = board_ko.get((d, str(r.get("match", "") or "")))
+        ko_t = CI.utc(ko)
+        if pd.notna(ko_t):
+            if ko_t > now:
+                continue                  # not kicked off yet
         elif d >= now.strftime("%Y-%m-%d"):
-            continue                      # no kickoff map + match today/future -> don't close early
-        pk = _norm(player)
-        m = oh[(oh["_pk"] == pk) & (oh["market"].astype(str) == market) & (oh["_d"] == d)]
+            continue                      # no kickoff + match today/future -> wait
+        pids = ids.get((_norm(player), market, d), set())
         # Same FIXTURE only (2026-10-25): a namesake playing elsewhere that day (Matheuzinho in
         # Vitoria v Atletico-PR vs Vasco v Corinthians) must not supply this record's close.
-        tip_match = str(r.get("match", "") or "")
-        if not m.empty and tip_match and "match" in m.columns:
-            ok = {mm for mm in m["match"].astype(str).unique() if same_fixture(tip_match, mm)}
-            m = m[m["match"].astype(str).isin(ok)]
-        if m.empty:
-            continue
-        closing = close_best_of_books(m)
-        if closing is not None and closing > 1.0:
-            clv_capture.capture_close(r["bet_id"], closing, None)
+        m = CI.identity_rows(idx, d, player, market, str(r.get("match", "") or ""),
+                             next(iter(pids)) if len(pids) == 1 else None)
+        dec = CI.decide_close(r, m, ko_t, namesake=len(pids) > 1)
+        if dec["status"] in CI.VALID:
+            clv_capture.capture_close(r["bet_id"], dec["close"], None, dec["status"], dec["reason"])
             closed += 1
-    if closed:
-        print(f"[clv_tracker] closed out {closed} records (basis: {CLV_BASIS})")
+        else:
+            clv_capture.mark_status(r["bet_id"], dec["status"], dec["reason"])
+            labelled[dec["status"]] += 1
+    if closed or labelled:
+        print(f"[clv_tracker] closed out {closed} records (basis: {CLV_BASIS}); "
+              f"no CLV (status): {dict(labelled) or 'none'}")
     return closed
 
 

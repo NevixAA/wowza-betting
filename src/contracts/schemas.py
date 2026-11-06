@@ -470,6 +470,10 @@ SETTLEMENT_ROW = Schema(
 )
 
 # ── CLV_RECORD ───────────────────────────────────────────────────────────────────────────────────
+#: player_model.clv_integrity.STATUSES / VALID (copied, so the contracts import nothing from player_model)
+CLV_STATUSES = ("VALID_SAME_BOOK", "VALID_CROSS_BOOK", "IDENTITY_UNPROVEN", "CLOSE_AFTER_KICKOFF",
+                "ENTRY_AFTER_KICKOFF", "TIMING_UNPROVEN", "NO_CLOSE")
+CLV_VALID = ("VALID_SAME_BOOK", "VALID_CROSS_BOOK")
 CLV_RECORD = Schema(
     "CLV_RECORD", "1", "One bet's entry vs closing price (output/clv_records.csv).",
     kind="clv", writers=("output/clv_records.csv",), key=("bet_id",), unique_key=True,
@@ -479,8 +483,15 @@ CLV_RECORD = Schema(
         ODDS("odds_bet", nullable=False), ODDS("under_odds_bet"), ODDS("odds_close"), ODDS("under_odds_close"),
         P("p_bet_novig"), P("p_close_novig"), Col("clv_pct", "float"), Col("clv_prob", "float"),
         Col("result", allowed=RESULTS), Col("pnl", "float"), Col("notes"),
+        # Phase 2 part 7 (2026-11-06): written by new entries / close-outs only; older rows have none
+        Col("kickoff_utc", "datetime", required=False),
+        Col("clv_status", allowed=CLV_STATUSES, required=False), Col("clv_status_reason", required=False),
     ),
     rules=(
+        Rule("clv_only_when_valid",
+             lambda d: num(d["clv_pct"]).notna() & ~null_mask(d["clv_status"])
+             & ~text(d["clv_status"]).isin(CLV_VALID),
+             "a CLV value only on a record whose identity and timing are proven", ("clv_pct", "clv_status")),
         Rule("close_has_clv", lambda d: num(d["odds_close"]).notna() & num(d["clv_pct"]).isna(),
              "a closing price has its CLV computed", ("odds_close", "clv_pct")),
         Rule("clv_without_close", lambda d: num(d["odds_close"]).isna() & num(d["clv_pct"]).notna(),
