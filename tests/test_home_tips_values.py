@@ -131,7 +131,7 @@ def test_home_new_values_come_from_canonical_functions(monkeypatch):
     assert stats["Paper / no stake"] == str(act["paper"])
     sh = json.loads((ROOT / "output" / "system_health.json").read_text(encoding="utf-8"))
     assert metrics["System health"] == str(sh.get("overall"))
-    perf = today_view.performance(today_view.load_settled(), today=pd.Timestamp.now().normalize())
+    perf = today_view.performance(today_view.load_settled(), today=pd.Timestamp.now(tz="UTC").tz_localize(None).normalize())
     if perf["n"]:
         assert stats["ROI"] == f"{perf['pnl'] / perf['n'] * 100:+.1f}%"
         assert stats["Drawdown from peak"] == U.fmt(perf['drawdown'])
@@ -171,7 +171,7 @@ def test_tips_board_is_tips_rows_unchanged(monkeypatch):
     # with no fixture in the current slate is not on the default board.
     import config
     bets = config.drop_paper_leagues(pd.read_csv(config.OUTPUT_DIR / "bets.csv"))
-    bets = bets[pd.to_datetime(bets["date"], errors="coerce") >= pd.Timestamp.now().normalize()]
+    bets = bets[pd.to_datetime(bets["date"], errors="coerce") >= pd.Timestamp.now(tz="UTC").tz_localize(None).normalize()]
     if len(want) and len(bets):
         want = want[want["league"].isin(set(bets["league"].dropna()))]
     got = _selections(at) if len(want) else pd.DataFrame()

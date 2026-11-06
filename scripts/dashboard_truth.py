@@ -62,7 +62,7 @@ def _child(root: Path, pages: list[str]) -> dict:
     warnings.filterwarnings("ignore")
     import config
     now = pd.Timestamp.now(tz="UTC")
-    ctx = {"now_utc": now.isoformat(), "today_local": pd.Timestamp.now().normalize().strftime("%Y-%m-%d"),
+    ctx = {"now_utc": now.isoformat(), "today_utc": pd.Timestamp.now(tz="UTC").strftime("%Y-%m-%d"),
            "cutoff": str(getattr(config, "PERFORMANCE_CUTOFF_DATE", "")),
            "paper_leagues": sorted(getattr(config, "PAPER_LEAGUES", []) or []),
            "thresholds": {k: getattr(config, k, None) for k in
@@ -186,7 +186,7 @@ def book(s: pd.DataFrame, mask: pd.Series, now, ctx: dict) -> dict:
         cum = o["pnl"].cumsum()
         peak = max(0.0, float(cum.max()))
         v["drawdown"] = float(cum.iloc[-1]) - peak
-        w = o[o["dt"] >= pd.Timestamp(ctx["today_local"]) - pd.Timedelta(days=6)]
+        w = o[o["dt"] >= pd.Timestamp(ctx["today_utc"]) - pd.Timedelta(days=6)]
         v["last7_pnl"], v["last7_n"] = _total(w["pnl"]), len(w)
         v["staked_pnl_ex_ou25"] = _total(st_.loc[st_["mkt"] != "O/U 2.5", "pnl"])
         for mt in ("new_format", "standard"):                   # a track with no staked bet sums to 0

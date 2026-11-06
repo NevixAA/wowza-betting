@@ -40,6 +40,7 @@ import config as app_config
 from src import clv_corrections as _CC
 from src import league_registry as _LRG
 from src import units as U
+from src.utc_clock import utc_now as _utc_now, utc_today_str as _utc_today_str
 from src.tier_labels import GAP_EXPLAINER, TIER_ICON, tier_label, tier_tag
 from player_model.fair_basis import label as _fair_basis_label
 
@@ -559,7 +560,7 @@ def notify_new_snipers() -> int:
     # (_approved_leagues stays available above for labelling if needed.)
 
     # Only upcoming games — never send finished matches
-    today_str = datetime.now().strftime("%Y-%m-%d")
+    today_str = _utc_today_str()   # UTC day: stored dates are UTC (src/utc_clock.py)
     tips = tips[tips["date"].astype(str).str[:10] >= today_str]
 
     if tips.empty:
@@ -873,7 +874,7 @@ def notify_ht_tips() -> int:
     if "p_ht_over05" not in df.columns:
         return 0
 
-    today_str = datetime.now().strftime("%Y-%m-%d")
+    today_str = _utc_today_str()   # UTC day: stored dates are UTC (src/utc_clock.py)
     df = df[df["date"].astype(str).str[:10] >= today_str]
     df = df[df["p_ht_over05"].notna()]
 
@@ -1027,7 +1028,7 @@ def notify_sharp_movement(move_thresh: float = 0.03) -> int:
     if "source" not in bl.columns:
         return 0
     live = bl[bl["source"] == "live"].copy()
-    today = datetime.now().strftime("%Y-%m-%d")
+    today = _utc_today_str()   # UTC day: stored dates are UTC (src/utc_clock.py)
     live = live[live["match_date"].astype(str).str[:10] >= today]
     # A sharp-move alert is only actionable BEFORE kickoff — never alert on a match that has
     # already started. The ledger stores only the date, so: (1) drop already-settled rows, and
@@ -1166,9 +1167,9 @@ def notify_weekly_summary() -> bool:
     if not token or token == "YOUR_BOT_TOKEN":
         return False
 
-    week_ago = datetime.now() - _dt.timedelta(days=7)
+    week_ago = _utc_now() - _dt.timedelta(days=7)   # naive UTC, like the stored dates
     week_start = week_ago.strftime("%b %d")
-    week_end   = datetime.now().strftime("%b %d, %Y")
+    week_end   = _utc_now().strftime("%b %d, %Y")
 
     def _stats(data: "pd.DataFrame") -> dict | None:
         d = _settled_only(data)
@@ -1481,7 +1482,7 @@ def notify_agent_analysis() -> int:
         (df["bet"].isin(["OVER", "UNDER"]))
     ].copy()
 
-    today_str = datetime.now().strftime("%Y-%m-%d")
+    today_str = _utc_today_str()   # UTC day: stored dates are UTC (src/utc_clock.py)
     snipers = snipers[snipers["date"].astype(str).str[:10] >= today_str]
 
     if snipers.empty:
@@ -1572,7 +1573,7 @@ def notify_player_props() -> int:
     if df.empty:
         return 0
 
-    today_str = datetime.now().strftime("%Y-%m-%d")
+    today_str = _utc_today_str()   # UTC day: stored dates are UTC (src/utc_clock.py)
     df = df[df["date"].astype(str).str[:10] >= today_str]
 
     # Pre-populate kickoff cache from ALL current tips (solves cold-start for cashout gate)
@@ -1723,7 +1724,7 @@ def notify_lineup_cashout() -> int:
     if not tips_file.exists():
         return 0
 
-    today_str = datetime.now().strftime("%Y-%m-%d")
+    today_str = _utc_today_str()   # UTC day: stored dates are UTC (src/utc_clock.py)
 
     # Build the set of keys that are CURRENTLY active in player_tips.csv.
     #
@@ -2057,9 +2058,9 @@ def notify_props_weekly_summary() -> bool:
     if not token or token == "YOUR_BOT_TOKEN":
         return False
 
-    week_ago   = datetime.now() - _dt.timedelta(days=7)
+    week_ago   = _utc_now() - _dt.timedelta(days=7)   # naive UTC, like the stored dates
     week_start = week_ago.strftime("%b %d")
-    week_end   = datetime.now().strftime("%b %d, %Y")
+    week_end   = _utc_now().strftime("%b %d, %Y")
 
     player_led = app_config.OUTPUT_DIR / "player_ledger.csv"
     if not player_led.exists():
@@ -2846,7 +2847,7 @@ def notify_side_bets() -> int:
     # each fixture+market once.
     df = df[df["signal_tier"].isin(["SNIPER", "MARKSMAN", "VALUABLE"])].copy()
 
-    today_str = datetime.now().strftime("%Y-%m-%d")
+    today_str = _utc_today_str()   # UTC day: stored dates are UTC (src/utc_clock.py)
     df = df[df["date"].astype(str).str[:10] >= today_str]
 
     if df.empty:

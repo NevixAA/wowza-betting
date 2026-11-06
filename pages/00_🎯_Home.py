@@ -69,7 +69,7 @@ def _home(today: str, local_day: str) -> dict:
 
 
 today = pd.Timestamp.now(tz="UTC").strftime("%Y-%m-%d")
-H = _home(today, pd.Timestamp.now().normalize().strftime("%Y-%m-%d"))
+H = _home(today, pd.Timestamp.now(tz="UTC").tz_localize(None).normalize().strftime("%Y-%m-%d"))
 perf, act, _gen, bb, bb_frozen = H["perf"], H["act"], H["gen"], H["bb"], H["bb_frozen"]
 sh, man, budget = H["sh"], H["man"], H["budget"]
 _ko_times = H["ko_times"]

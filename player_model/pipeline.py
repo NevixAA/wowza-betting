@@ -624,7 +624,7 @@ def _build_referee_profiles(history: pd.DataFrame) -> dict:
     profiles: dict = {}
     try:
         # Same 4-day window as predict, so every tipped fixture can carry its referee.
-        _today = pd.Timestamp.now().normalize()
+        _today = pd.Timestamp.now(tz="UTC").tz_localize(None).normalize()   # UTC day (fixture dates are UTC)
         _from, _to = _today.strftime("%Y-%m-%d"), (_today + pd.Timedelta(days=4)).strftime("%Y-%m-%d")
         for league, lg_id in config.PROP_LEAGUES.items():
             season = config.prop_season(league)
@@ -1039,7 +1039,7 @@ def mode_enrich_sidelined_live() -> None:
     total = len(active_pids)
     print(f"[enrich-sidelined-live] Refreshing {total} active players (last 60 days in prop leagues)...")
 
-    today = dt.date.today()
+    today = dt.datetime.now(dt.timezone.utc).date()   # UTC day
     active_df = df[df["player_id"].isin(set(active_pids))]
     # Safety rail, not a limiter. /sidelined is per-player with no bulk endpoint, so an
     # unbounded crawl is precisely what took out the old 7,500/day quota (~6,545 calls before

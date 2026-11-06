@@ -111,7 +111,7 @@ def out(tmp_path, monkeypatch):
 
 def _ctx():
     import config
-    return {"now_utc": NOW, "today_local": "2026-10-20", "cutoff": str(config.PERFORMANCE_CUTOFF_DATE),
+    return {"now_utc": NOW, "today_utc": "2026-10-20", "cutoff": str(config.PERFORMANCE_CUTOFF_DATE),
             "paper_leagues": sorted(config.PAPER_LEAGUES), "thresholds": {}}
 
 

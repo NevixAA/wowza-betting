@@ -57,7 +57,7 @@ def load_ht():
     if "p_ht_over05" not in df.columns:
         return pd.DataFrame()
     df["date"] = pd.to_datetime(df["date"], errors="coerce")
-    df = df[df["date"] >= pd.Timestamp.now().normalize()]
+    df = df[df["date"] >= pd.Timestamp.now(tz="UTC").tz_localize(None).normalize()]
     df = df[df["p_ht_over05"].notna()].copy()
     df["p_ht_over05"] = pd.to_numeric(df["p_ht_over05"], errors="coerce")
     df["p_ht_over15"] = pd.to_numeric(df.get("p_ht_over15"), errors="coerce")

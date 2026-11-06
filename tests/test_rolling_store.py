@@ -5,14 +5,14 @@ changing what any writer dedupes or any reader sees. These tests pin exactly tha
 """
 from __future__ import annotations
 
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta, timezone
 
 import pandas as pd
 import pytest
 
 import src.rolling_store as rs
 
-TODAY = date.today()
+TODAY = datetime.now(timezone.utc).date()   # the store's days are UTC days (fix13)
 
 
 def _d(offset: int) -> str:

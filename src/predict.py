@@ -524,7 +524,10 @@ def predict_upcoming(
             _ht_ok = False          # score HT only on features attached to the right fixtures
             try:
                 from src.ht_features import attach_ht_features, HT_FEATURE_COLS
-                _ht = attach_ht_features(historical, feat)
+                # board names meet the canonical history through the applied identity map
+                # (fix13; same proven-identity rule as the form features above)
+                _ht = attach_ht_features(historical, feat,
+                                         identity_aliases=getattr(_dl, "IDENTITY_ALIASES", None))
                 # Same fixture on every row, or nothing: a positional copy with a mere length
                 # check is how every HT feature landed on the wrong fixture until 2026-11-01.
                 _aligned = len(_ht) == len(feat) and all(

@@ -181,8 +181,8 @@ def _get(endpoint: str, params: dict, cache_hours: int = 24) -> Optional[dict]:
 
 def get_recent_fixtures(league_id: int, season: str, last_n: int = 10) -> list[dict]:
     """Get recently completed fixtures for a league (last 30 days)."""
-    from datetime import date, timedelta
-    today    = date.today()
+    from datetime import datetime as _dtm, timedelta, timezone as _tz
+    today    = _dtm.now(_tz.utc).date()   # UTC day: API-Football dates are UTC
     from_dt  = (today - timedelta(days=30)).isoformat()
     to_dt    = today.isoformat()
     data = _get("/fixtures", {

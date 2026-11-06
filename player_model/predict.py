@@ -416,7 +416,7 @@ def run_player_predictions(
               f"{ {m: round(c, 4) for m, c in _dead.items()} }. "
               f"Either the floor is wrong for them or they should be retired.")
 
-    today = pd.Timestamp.now().normalize()
+    today = pd.Timestamp.now(tz="UTC").tz_localize(None).normalize()   # UTC day (fixture dates are UTC)
     # Only the near-term slate. next_n pulls the next N fixtures per league even if weeks away
     # (off-season leagues), which balloons the per-match lineup/feature work — the main reason
     # a club-season run crawled to ~60 min while WC (one league, few games) ran in ~2 min.
@@ -556,8 +556,8 @@ def run_player_predictions(
     if _APIFOOTBALL_KEY:
         try:
             from player_model.api_football import get_injured_players as _gip
-            from datetime import date as _date
-            _today_str = _date.today().isoformat()
+            from datetime import datetime as _dtm, timezone as _tz
+            _today_str = _dtm.now(_tz.utc).date().isoformat()   # UTC day
             # Only leagues that actually have upcoming matches this run — skip the off-season
             # ones so we don't burn API calls (and time) on leagues with zero fixtures.
             _bet_leagues = set(bets["league"].astype(str).unique()) if not bets.empty else set()
@@ -758,7 +758,7 @@ def run_player_predictions(
     _squad_clubs = set(_live_squad.values())
     _last_seen = (history_df.assign(_d=pd.to_datetime(history_df["date"], errors="coerce"))
                   .groupby("player_id")["_d"].max())
-    _cutoff = pd.Timestamp.now() - pd.Timedelta(days=config.STALE_DAYS)
+    _cutoff = pd.Timestamp.now(tz="UTC").tz_localize(None) - pd.Timedelta(days=config.STALE_DAYS)   # naive UTC vs UTC dates
 
     def _eligible(pid, club) -> bool:
         try:

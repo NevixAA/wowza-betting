@@ -907,7 +907,7 @@ def _ci_download_all(have: set | None = None) -> list[pd.DataFrame]:
     # Same failure shape as COLLECT_SEASONS freezing at "2025" while PROP_SEASONS rolled to
     # "2026" (root CLAUDE.md): a season-keyed constant that someone must remember to bump, and
     # nobody does. Derive it and the July roll happens by itself.
-    _now = __import__("datetime").datetime.now()
+    _now = __import__("src.utc_clock", fromlist=["utc_now"]).utc_now()   # UTC: season rolls on the UTC day
     _start = _now.year if _now.month >= 7 else _now.year - 1
     SEASONS = [f"{str(y)[2:]}{str(y + 1)[2:]}" for y in range(_start, _start - 4, -1)]
 
@@ -2196,7 +2196,7 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
     # literal 2526 folder labelled '2025/26', so HT history never got the season being played
     # (Data Truth audit finding 44).
     _STD_URL = "https://www.football-data.co.uk/mmz4281/{season}/{code}.csv"
-    _n = __import__("datetime").datetime.now()
+    _n = __import__("src.utc_clock", fromlist=["utc_now"]).utc_now()   # UTC: season rolls on the UTC day
     _y0 = _n.year if _n.month >= 7 else _n.year - 1
     _ht_seasons = [(f"{y % 100:02d}{(y + 1) % 100:02d}", f"{y}/{(y + 1) % 100:02d}") for y in (_y0, _y0 - 1)]
     # Leagues already loaded via local CSV, decided ONCE - checked inside the loop, the current
