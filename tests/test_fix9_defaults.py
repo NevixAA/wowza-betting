@@ -272,16 +272,44 @@ def test_committed_lists_hold_the_two_owner_decisions():
     assert not ref["fixture_id"].isin([816403, 1142091]).any()
 
 
+#: rows in output/fd_history.parquet when this test was written (2026-11-04). The file only grows
+#: (Update Results appends), so this is a floor, never an exact count.
+FD_HISTORY_ROW_FLOOR = 65940
+
+
 def test_loader_corrections_remove_them_from_the_real_history():
+    import hashlib
     from src import history_corrections as HC
-    h = pd.read_parquet(HC.ROOT / "output" / "fd_history.parquet")
+    path = HC.ROOT / "output" / "fd_history.parquet"
+    digest = hashlib.sha256(path.read_bytes()).hexdigest()
+    h = pd.read_parquet(path)
+    before = h.copy(deep=True)
     out = HC.apply_history_corrections(h)
     d = pd.to_datetime(out["date"])
     q = out[(d == "2022-03-05") & out["away_team"].eq("Atlas") & out["home_team"].str.contains("Queretaro")]
     assert q.empty
     o = out[(d == "2023-11-25") & out["away_team"].eq("Columbus Crew") & out["home_team"].str.startswith("Orlando")]
     assert len(o) == 1 and (o.iloc[0]["home_goals"], o.iloc[0]["away_goals"]) == (0.0, 2.0)
-    assert len(h) == 65940                                             # the original is never rewritten
+    # the original is never rewritten: neither the frame handed in nor the file on disk
+    pd.testing.assert_frame_equal(h, before)
+    assert hashlib.sha256(path.read_bytes()).hexdigest() == digest
+    # bots append to the file: a floor and invariants, not a hard count of a growing file
+    assert len(h) >= FD_HISTORY_ROW_FLOOR
+    keys = HC._keys(h)
+    assert len(keys) == len(set(keys))                                 # no duplicate (league, date, home, away)
+    # the removals are exactly the listed rows whose key AND recorded FT match (counted independently)
+    corr = HC.read_corrections()
+    listed = {}
+    for r, k in zip(corr.itertuples(index=False), HC._keys(corr)):
+        listed.setdefault(k, set()).add(HC._ft(r.home_goals, r.away_goals))
+    eligible = h["row_source"].isin(HC.HISTORY_SOURCES).tolist() if "row_source" in h.columns else [True] * len(h)
+    expect = sum(1 for k, ok, a, b in zip(keys, eligible, h["home_goals"], h["away_goals"])
+                 if ok and k in listed and HC._ft(a, b) in listed[k])
+    rep = out.attrs["history_corrections"]
+    assert rep["rows_removed"] == expect > 0
+    assert len(out) == len(h) - expect
+    ko = HC._keys(out)
+    assert len(ko) == len(set(ko))
 
 
 def _bh():

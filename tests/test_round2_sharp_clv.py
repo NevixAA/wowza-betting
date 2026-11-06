@@ -231,8 +231,28 @@ def test_committed_clv_sidecar_matches_the_finding():
     clean = CC.exclude_contaminated_clv(b)
     nf = clean[clean["model_type"] == "new_format"]
     assert int(clean["clv_quarantined"].sum()) == 170
-    assert round(float(pd.to_numeric(nf["clv_pct_stored"], errors="coerce").mean()), 2) == 7.94
-    assert round(float(pd.to_numeric(nf["clv_pct"], errors="coerce").mean()), 2) == -0.14
+    # The finding is pinned to the rows the sidecar lists (a committed, fixed file), not to the live
+    # ledger: bots append settled bets, so the ledger-wide means move (7.94 -> 7.75 stored as of
+    # 2026-11-06). Every listed row is found once in the ledger, with the stored CLV the sidecar recorded.
+    assert round(float(s["clv_pct"].mean()), 2) == 48.15
+    q = clean[clean["clv_quarantined"]]
+    assert sorted(pd.to_numeric(q["clv_pct_stored"], errors="coerce").round(2)) == sorted(s["clv_pct"].round(2))
+    assert q["clv_pct"].isna().all()
+    # The ledger-wide means, recomputed from the committed file without the module under test
+    raw = b[b["model_type"] == "new_format"]
+    raw_v = pd.to_numeric(raw["clv_pct"], errors="coerce")
+    key = ["match_date", "league", "home_team", "away_team", "side"]
+    listed = set(map(tuple, s[key].astype(str).apply(lambda c: c.str.strip()).values))
+    in_list = raw[key].astype(str).apply(lambda c: c.str.strip()).apply(tuple, axis=1).isin(listed)
+    stored_mean = float(pd.to_numeric(nf["clv_pct_stored"], errors="coerce").mean())
+    clean_mean = float(pd.to_numeric(nf["clv_pct"], errors="coerce").mean())
+    assert stored_mean == pytest.approx(float(raw_v.mean()))
+    assert clean_mean == pytest.approx(float(raw_v[~in_list].mean()))
+    assert int(in_list.sum()) == 170
+    # the finding itself: the listed closes inflate the stored mean; no unlisted new_format row
+    # carries a first-half-sized |CLV| (the detection rule's threshold)
+    assert stored_mean > clean_mean
+    assert not (raw_v[~in_list].abs() > CC.CLV_CONTAMINATION_ABS).any()
     a = pd.read_csv(REPO / "output" / "corrections" / "clv_first_half_contaminated_archive_rows.csv")
     assert len(a) and set(a["status"]) == {"QUARANTINED"}
 
