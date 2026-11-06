@@ -1,9 +1,9 @@
 {
  "calls": 0,
- "filled_rows_this_run": 75492,
- "filled_rows_total": 75528,
- "history_rows": 93385,
- "matched_rows": 83892,
+ "filled_rows_this_run": 75497,
+ "filled_rows_total": 75533,
+ "history_rows": 93389,
+ "matched_rows": 83896,
  "non_null_share": {
   "away_blocked": 1.0,
   "away_corners": 1.0,
@@ -47,9 +47,9 @@
  "note": "Every /fixtures/statistics value for af_history matches whose answer is already cached; 0 API calls; a value the provider does not give is missing, never 0; af_history.parquet is not modified.",
  "per_league": {
   "Argentina Primera Division": {
-   "filled": 4391,
-   "lacking": 5289,
-   "matched": 4436,
+   "filled": 4393,
+   "lacking": 5291,
+   "matched": 4438,
    "refused_fixture_claimed_twice": 446,
    "teams_not_in_answer": 45,
    "unmatched": 407
@@ -68,9 +68,9 @@
    "unmatched": 211
   },
   "Brazil Serie A": {
-   "filled": 4162,
-   "lacking": 4676,
-   "matched": 4164,
+   "filled": 4164,
+   "lacking": 4678,
+   "matched": 4166,
    "refused_fixture_claimed_twice": 512,
    "teams_not_in_answer": 2
   },
@@ -101,10 +101,9 @@
    "unmatched": 1
   },
   "Dutch Eredivisie": {
-   "filled": 2090,
+   "filled": 2091,
    "lacking": 2092,
    "matched": 2091,
-   "not_cached": 1,
    "unmatched": 1
   },
   "Finland Veikkausliiga": {
@@ -261,5 +260,5 @@
   }
  },
  "unknown_provider_types": [],
- "written_at": "2026-11-05T09:59:19.619913+00:00"
+ "written_at": "2026-11-06T10:34:32.778561+00:00"
 }
