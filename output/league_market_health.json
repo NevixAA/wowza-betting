@@ -1,10 +1,14 @@
 {
- "generated_at": "2026-11-06T15:54:03Z",
+ "generated_at": "2026-11-06T21:00:38Z",
  "panel_version": "LWR-1",
  "tracked_leagues": 20,
  "current_tip_day": "2026-11-06",
  "leagues_with_current_week_data": 19,
- "missing_leagues": [],
+ "missing_leagues": [
+  "Austrian Bundesliga",
+  "Bundesliga 2",
+  "Serie B"
+ ],
  "missing_leagues_previous_week": [],
  "no_fixture_leagues": [
   "Romanian Superliga"
@@ -85,7 +89,7 @@
   "Austrian Bundesliga": {
    "current": {
     "league_week_id": "Austrian Bundesliga|2026-W45",
-    "state": "PROVISIONAL",
+    "state": "LOCKED_NOT_FROZEN",
     "fixtures_known": 6,
     "fixtures_before_panel_start": 0,
     "fixtures_with_candidates": 6,
@@ -209,7 +213,7 @@
   "Bundesliga 2": {
    "current": {
     "league_week_id": "Bundesliga 2|2026-W45",
-    "state": "PROVISIONAL",
+    "state": "LOCKED_NOT_FROZEN",
     "fixtures_known": 9,
     "fixtures_before_panel_start": 0,
     "fixtures_with_candidates": 9,
@@ -1077,7 +1081,7 @@
   "Serie B": {
    "current": {
     "league_week_id": "Serie B|2026-W45",
-    "state": "PROVISIONAL",
+    "state": "LOCKED_NOT_FROZEN",
     "fixtures_known": 10,
     "fixtures_before_panel_start": 0,
     "fixtures_with_candidates": 10,
