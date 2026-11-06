@@ -14,13 +14,17 @@ DAY = "2026-10-20"
 MATCH = "X vs Y"
 
 
-def _close(monkeypatch, hist):
+def _close(monkeypatch, hist, odds_bet):
     import src.rolling_store as rs
-    rec = {"bet_id": f"PLAYER|{DAY}|Ana Lima|sot", "match": MATCH, "odds_close": ""}
+    # the entry is quoted at 09:00, logged at 09:30; kickoff 18:00 (Phase 2 part 7 integrity checks)
+    rec = {"bet_id": f"PLAYER|{DAY}|Ana Lima|sot", "match": MATCH, "odds_close": "",
+           "odds_bet": str(odds_bet), "ts_bet": f"{DAY}T09:30:00+00:00", "kickoff_utc": f"{DAY}T18:00:00Z"}
     closes = {}
     monkeypatch.setattr(clv_tracker.clv_capture, "_load", lambda: [rec])
     monkeypatch.setattr(clv_tracker.clv_capture, "capture_close",
-                        lambda bid, o, u: closes.__setitem__(bid, o))
+                        lambda bid, o, u, *a: closes.__setitem__(bid, o))
+    monkeypatch.setattr(clv_tracker.clv_capture, "mark_status", lambda *a: None)
+    monkeypatch.setattr(clv_tracker, "_player_ids", lambda: {})
     monkeypatch.setattr(rs, "read_all", lambda path, dates=None: hist.copy())
     assert clv_tracker.close_out() == 1
     return closes[rec["bet_id"]]
@@ -37,14 +41,14 @@ def test_close_is_best_of_books_not_last_logged_book(monkeypatch):
     # moved. Best-vs-best close = 2.30 (CLV 0); the old rule took Bet365's 2.00 (+15% phantom CLV).
     hist = pd.DataFrame([_row("09:00", 2.10, "Bet365"), _row("09:00", 2.30, "Betano"),
                          _row("13:00", 2.00, "Bet365")])
-    assert _close(monkeypatch, hist) == 2.30
+    assert _close(monkeypatch, hist, 2.30) == 2.30
 
 
 def test_oddsapi_rows_are_one_best_of_books_series(monkeypatch):
     # OddsAPI rows carry no bookmaker: each is already best-of-books at its snapshot, so the latest
     # one is the close (an earlier, higher best price is not).
     hist = pd.DataFrame([_row("09:00", 3.0, None, "oddsapi"), _row("13:00", 2.6, None, "oddsapi")])
-    assert _close(monkeypatch, hist) == 2.6
+    assert _close(monkeypatch, hist, 3.0) == 2.6
 
 
 def test_new_entries_are_labelled_with_the_basis(monkeypatch):

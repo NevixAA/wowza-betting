@@ -112,16 +112,20 @@ def _close_out_with(monkeypatch, rec, hist):
     import src.rolling_store as rs
     closes = {}
     monkeypatch.setattr(clv_tracker.clv_capture, "_load", lambda: [rec])
-    monkeypatch.setattr(clv_tracker.clv_capture, "capture_close", lambda bid, o, u: closes.__setitem__(bid, o))
+    monkeypatch.setattr(clv_tracker.clv_capture, "capture_close", lambda bid, o, u, *a: closes.__setitem__(bid, o))
+    monkeypatch.setattr(clv_tracker.clv_capture, "mark_status", lambda *a: None)
+    monkeypatch.setattr(clv_tracker, "_player_ids", lambda: {})
     monkeypatch.setattr(rs, "read_all", lambda path, dates=None: hist.copy())
     clv_tracker.close_out()
     return closes
 
 
-@pytest.mark.xfail(strict=True, reason="AU4-P8-03 ACTIVE: close_out takes the last row even if it is post-kickoff")
+# AU4-P8-03 FIXED 2026-11-06 (Phase 2 part 7): the close is taken from quotes strictly before the
+# recorded kickoff (player_model.clv_integrity.decide_close).
 def test_prop_close_is_strictly_pre_kickoff(monkeypatch):
     # kickoff 15:00; the 15:05 row is an in-play price and must never be the close
-    rec = {"bet_id": f"PLAYER|{DAY}|Ana Lima|goals", "match": "X vs Y", "odds_close": ""}
+    rec = {"bet_id": f"PLAYER|{DAY}|Ana Lima|goals", "match": "X vs Y", "odds_close": "",
+           "odds_bet": "3.0", "ts_bet": f"{DAY}T14:40:00+00:00", "kickoff_utc": f"{DAY}T15:00:00Z"}
     hist = pd.DataFrame([
         {"snapshot_ts": f"{DAY}T14:30:00Z", "match_date": DAY, "match": "X vs Y", "player": "ana lima", "market": "goals", "odds": 3.0},
         {"snapshot_ts": f"{DAY}T15:05:00Z", "match_date": DAY, "match": "X vs Y", "player": "ana lima", "market": "goals", "odds": 1.4},
@@ -133,7 +137,8 @@ def test_prop_close_is_strictly_pre_kickoff(monkeypatch):
 # AU4-P8-04 FIXED 2026-11-02: the close is best-of-books (each book's last price, best of them),
 # the same basis as the best-of-books entry (player_model.clv_tracker.close_best_of_books).
 def test_prop_close_is_same_book_as_entry(monkeypatch):
-    rec = {"bet_id": f"PLAYER|{DAY}|Ana Lima|sot", "match": "X vs Y", "odds_close": "", "odds_bet": "2.0"}
+    rec = {"bet_id": f"PLAYER|{DAY}|Ana Lima|sot", "match": "X vs Y", "odds_close": "", "odds_bet": "2.0",
+           "ts_bet": f"{DAY}T09:30:00+00:00", "kickoff_utc": f"{DAY}T18:00:00Z"}
     hist = pd.DataFrame([
         {"snapshot_ts": f"{DAY}T09:00:00Z", "match_date": DAY, "match": "X vs Y", "player": "ana lima", "market": "sot", "odds": 2.0, "bookmaker": "Bet365"},
         {"snapshot_ts": f"{DAY}T13:00:00Z", "match_date": DAY, "match": "X vs Y", "player": "ana lima", "market": "sot", "odds": 1.6, "bookmaker": "Betano"},
@@ -142,7 +147,7 @@ def test_prop_close_is_same_book_as_entry(monkeypatch):
     assert closes.get(rec["bet_id"]) == 2.0      # Bet365 never moved; Betano's price is not this bet's close
 
 
-@pytest.mark.xfail(strict=True, reason="AU4-P8-01 ACTIVE: clv_report verdict = mean(odds ratio) > 0")
+# AU4-P8-01 FIXED 2026-11-06 (Phase 2 part 7): clv_report describes, it never judges an edge.
 def test_clv_verdict_not_positive_when_market_moved_against(monkeypatch, tmp_path):
     from src import clv_capture
     rows = []

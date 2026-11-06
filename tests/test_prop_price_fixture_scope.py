@@ -219,11 +219,14 @@ def test_oddsapi_no_side_is_never_the_yes_price():
 def test_clv_close_uses_own_fixture_only(monkeypatch):
     from player_model import clv_tracker
     import src.rolling_store as rs
-    rec = {"bet_id": f"PLAYER|{DAY}|Matheuzinho|goals", "match": VITORIA, "odds_close": ""}
+    rec = {"bet_id": f"PLAYER|{DAY}|Matheuzinho|goals", "match": VITORIA, "odds_close": "",
+           "odds_bet": "3.9", "ts_bet": f"{DAY}T10:30:00+00:00", "kickoff_utc": f"{DAY}T20:00:00Z"}
     closes = {}
     monkeypatch.setattr(clv_tracker.clv_capture, "_load", lambda: [rec])
     monkeypatch.setattr(clv_tracker.clv_capture, "capture_close",
-                        lambda bid, o, u: closes.__setitem__(bid, o))
+                        lambda bid, o, u, *a: closes.__setitem__(bid, o))
+    monkeypatch.setattr(clv_tracker.clv_capture, "mark_status", lambda *a: None)
+    monkeypatch.setattr(clv_tracker, "_player_ids", lambda: {})
     hist = pd.DataFrame([
         {"snapshot_ts": f"{DAY}T10:00:00Z", "match_date": DAY, "match": VITORIA,
          "player": "Matheuzinho", "market": "goals", "odds": 3.90},
