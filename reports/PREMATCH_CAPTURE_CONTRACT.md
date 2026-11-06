@@ -88,8 +88,16 @@ Types: `int` = int64 (nullable), `float` = float64, `str` = string, `bool` = boo
 A field the provider does not send is null. `odd` is null when `odd_raw` does not parse. `player_name`
 and `line` are null when `value_raw` does not parse under v9's own reader
 (`player_model/prop_odds_af._clean_player` / `_parse_line`). `line` is on the Over scale: provider
-`"Name - 1"` or `"Name - 1+"` = 1 or more = 0.5. `side_word` is `over` / `under` only when the value
-text says so. An `empty` slot (`n_items = 0`) is a real empty answer: for injuries, an observed empty
+`"Name - 1"` or `"Name - 1+"` = 1 or more = 0.5. `side_word` (`prop_odds_af.side_word`) is `over` /
+`under` when the value text has that whole word exactly once, `yes` / `no` when the value or its last
+`" - "` segment is exactly Yes / No, and null otherwise (a bare player name, the Yes side of a yes/no
+player prop, names no side).
+
+**Every side is kept** (owner decision 2026-11-05). Each provider value is its own row, so a book's
+Yes and No, or Over and Under at the same `line`, are both stored with their own `odd`, nothing is
+filtered by side. A real two-sided pair is: same `fixture_id, slot, bookmaker_id, bet_id, player_name,
+line`, one row per side. v9 de-vigs such a pair for a props tip's fair probability
+(`odds_fetcher.match_fair_to_tips`); where a book quotes one side only, nothing is paired. An `empty` slot (`n_items = 0`) is a real empty answer: for injuries, an observed empty
 list (a real zero); for lineups, none published yet at capture.
 
 ### Player props: which bets

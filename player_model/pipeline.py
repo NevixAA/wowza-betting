@@ -36,7 +36,7 @@ from player_model.league_quality import enrich_league_quality
 from player_model.feature_engineering import build_features
 from player_model.model import train, load_model
 from player_model.predict import run_player_predictions, enrich_with_odds, enrich_no_odds_markets, tag_paper_feed
-from player_model.odds_fetcher import fetch_prop_odds, match_odds_to_tips
+from player_model.odds_fetcher import fetch_prop_odds, match_odds_to_tips, match_fair_to_tips
 from player_model.ledger import append_player_signals
 from player_model import history_integrity as HI
 
@@ -756,7 +756,12 @@ def mode_predict() -> None:
             odds_raw = fetch_prop_odds(tips)
             if odds_raw:
                 odds_mapped = match_odds_to_tips(tips, odds_raw)
-                tips = enrich_with_odds(tips, odds_mapped)
+                # Fair probability from a REAL two-sided price where one exists (same book, same
+                # answer, de-vigged); the assumed overround only where none does (2026-11-05).
+                fair_mapped = match_fair_to_tips(tips)
+                tips = enrich_with_odds(tips, odds_mapped, fair_mapped)
+                print(f"[predict] fair probability: {len(fair_mapped)} priced tip(s) on a real "
+                      f"two-sided price, {len(odds_mapped) - len(fair_mapped)} on the assumed margin")
                 # Re-save enriched CSV
                 tips.to_csv(config.OUTPUT_DIR / "player_tips.csv", index=False)
                 print(f"[predict] Odds enriched for {len(odds_mapped)} player/market pairs")

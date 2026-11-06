@@ -14,6 +14,7 @@ from pathlib import Path
 import pandas as pd
 
 from . import config
+from . import fair_basis as _fair_basis
 
 _APIFOOTBALL_KEY = os.getenv("APIFOOTBALL_KEY", "")
 # Club identity: src.team_names.resolve (via config._v9_src), player identity: player_id. The
@@ -210,9 +211,11 @@ def _team_strength_mult(team_win_prob: float, market: str) -> float:
     return 1.0  # 40–60%: balanced game, no adjustment
 
 
-#: fair_basis value of a priced tip: its fair probability rests on an ASSUMED overround
-#: (config.OVERROUND_BY_ODDS), because the quotes we hold are one-sided (no Under / No price).
-FAIR_BASIS_ASSUMED_OVERROUND = "assumed_overround"
+#: fair_basis values of a priced tip (player_model/fair_basis.py). TWO_SIDED_DEVIG: the fair
+#: probability is the de-vigged real two-sided price (same book, same answer). ASSUMED_OVERROUND: only
+#: the tip's side is quoted, so it rests on an overround ASSUMED from config.OVERROUND_BY_ODDS.
+FAIR_BASIS_ASSUMED_OVERROUND = _fair_basis.ASSUMED_OVERROUND
+FAIR_BASIS_TWO_SIDED_DEVIG = _fair_basis.TWO_SIDED_DEVIG
 
 #: Markets the quality-mismatch discount applies to.
 _QUALITY_CAP_MARKETS = ("goals", "goals2", "sot", "sot2", "sot3")
@@ -225,9 +228,12 @@ def hand_adjusted_prob(p_model: float, win_prob: float, market: str,
     Returns (p, factor, quality_measured). p is p_model times the team-strength multiplier (only
     when the fixture has a measured win probability) and then times the quality-mismatch discount
     (only when BOTH qualities are measured and the market is a goals/SOT market); factor is the
-    product of the two. Both are typed formulas, not model output (propsdef 2026-11-05): the tip
-    carries the model's own probability (model_prob_raw) and this factor (prob_adjustment) BESIDE
-    the adjusted model_prob it has always written. The arithmetic and its order are unchanged.
+    product of the two. Both are typed formulas, not model output (propsdef 2026-11-05).
+
+    INFORMATION ONLY (owner decision 2026-11-05): a tip's probability, tier, EV, edge and Kelly are
+    decided on the model's own probability (model_prob = model_prob_raw). This value is logged beside
+    it as model_prob_hand_adjusted, with the factor as prob_adjustment; it never decides a tier.
+    The arithmetic and its order are unchanged.
     """
     factor = 1.0
     if win_prob == win_prob:
@@ -942,17 +948,21 @@ def run_player_predictions(
                 if not (p_model == p_model):
                     continue                                   # model gave no probability
                 p_model = float(p_model)
-                _p_raw = p_model                               # the model's own probability
-                # Team-strength multiplier (boost for heavy favourites, penalty for underdogs;
-                # skipped when the fixture has no measured win probability), then the hard
-                # quality-mismatch cap: player career tier << opponent tier, e.g. a Panama striker
-                # (career_quality=0.30) vs England CBs (opp_quality=1.0). The cap needs BOTH
-                # qualities measured; otherwise it is skipped (no 0.65 / 1.0 priors).
+                # THE MODEL'S OWN PROBABILITY DECIDES (owner decision 2026-11-05): the cap test, the
+                # signal floor, fair odds, and later EV / edge / tier / Kelly all read p_model as the
+                # model gave it. Measured on the committed board: 263 tips carried a lowered
+                # hand-adjusted probability, and 9 change tier (reports/P2_PROPS_DEFAULTS_AND_FANTASY.md
+                # section 7).
+                _p_raw = p_model
+                # INFORMATION ONLY, logged beside the tip: the team-strength multiplier (boost for
+                # heavy favourites, penalty for underdogs; skipped when the fixture has no measured
+                # win probability) and the quality-mismatch discount (player career tier << opponent
+                # tier, both qualities measured, goals/SOT markets). Never decides a tier.
                 _is_home = float(feat_row.get("is_home")) > 0.5
                 _win_prob = home_win_prob if _is_home else away_win_prob
                 _career_q = pd.to_numeric(feat_row.get("player_career_avg_quality"), errors="coerce")
                 _opp_q = pd.to_numeric(feat_row.get("opp_def_player_quality"), errors="coerce")
-                p_model, _adj, _q_ok = hand_adjusted_prob(p_model, _win_prob, market, _career_q, _opp_q)
+                _p_hand, _adj, _q_ok = hand_adjusted_prob(p_model, _win_prob, market, _career_q, _opp_q)
                 if not _q_ok:
                     _n_quality_cap_skipped += 1
 
@@ -1029,11 +1039,13 @@ def run_player_predictions(
                     "data_source":   feat_row.get("data_source", ""),
                     "tier":          "AVOID",   # updated when market odds available
                     "kelly_stake":   None,
-                    # BESIDE model_prob (propsdef 2026-11-05): the model's own probability and the
-                    # typed hand-adjustment factor that turned it into model_prob (1.0 = none).
+                    # model_prob IS the model's own probability (owner decision 2026-11-05);
+                    # model_prob_raw repeats it at 4 dp. The typed hand adjustment is INFORMATION
+                    # ONLY: its factor (1.0 = none) and the probability it would have given.
                     "model_prob_raw":  round(_p_raw, 4),
                     "prob_adjustment": round(_adj, 4),
                     "fair_basis":      None,    # set when a price arrives (enrich_with_odds)
+                    "model_prob_hand_adjusted": round(_p_hand, 4),
                 })
 
     if _stale_dropped:
@@ -1050,8 +1062,8 @@ def run_player_predictions(
         print(f"[predict] {_n_cap_bound} player-market(s) not tipped: probability above the market's "
               f"realistic cap (the cap is not written as a probability)")
     if _n_quality_cap_skipped:
-        print(f"[predict] quality-mismatch cap skipped on {_n_quality_cap_skipped} player-market(s): "
-              f"league/opponent quality not measured")
+        print(f"[predict] quality-mismatch discount (information only) not computed on "
+              f"{_n_quality_cap_skipped} player-market(s): league/opponent quality not measured")
     if _first_sight is not None:
         _first_sight.flush()
     if _r2_shadow is not None:
@@ -1073,10 +1085,15 @@ def run_player_predictions(
     return tips_df
 
 
-def enrich_with_odds(tips_df: pd.DataFrame, odds_data: dict) -> pd.DataFrame:
+def enrich_with_odds(tips_df: pd.DataFrame, odds_data: dict,
+                     fair_data: dict | None = None) -> pd.DataFrame:
     """
     Enrich player tips with market odds, compute EV, edge, tier.
-    odds_data: {"{player_name}|{market}": market_odds}
+    odds_data: {tip_price_key: market_odds}
+    fair_data: {tip_price_key: fair probability de-vigged from a REAL two-sided price}
+               (odds_fetcher.match_fair_to_tips). Where a tip has one, it is the fair probability
+               (fair_basis "two_sided_devig"); otherwise the assumed overround applies
+               (fair_basis "assumed_overround"). Owner decision 2026-11-05.
     Called separately when odds are available.
     """
     if tips_df.empty:
@@ -1094,8 +1111,16 @@ def enrich_with_odds(tips_df: pd.DataFrame, odds_data: dict) -> pd.DataFrame:
         if not mkt_odds:
             continue
 
-        p_model    = float(row["model_prob"])
-        fair_prob  = _devig_fair_prob(mkt_odds)
+        p_model    = float(row["model_prob"])      # the model's own probability (2026-11-05)
+        # A real two-sided price wins; the assumed overround is used ONLY when there is none.
+        try:
+            _pair_fair = float((fair_data or {}).get(scoped))
+        except (TypeError, ValueError):
+            _pair_fair = float("nan")                  # no two-sided price for this tip
+        if 0.0 < _pair_fair < 1.0:
+            fair_prob, basis = float(_pair_fair), FAIR_BASIS_TWO_SIDED_DEVIG
+        else:
+            fair_prob, basis = _devig_fair_prob(mkt_odds), FAIR_BASIS_ASSUMED_OVERROUND
         ev_val     = _ev(p_model, mkt_odds)
         rel_edge   = _relative_edge(p_model, fair_prob)
         confidence = float(row["confidence"])
@@ -1115,9 +1140,9 @@ def enrich_with_odds(tips_df: pd.DataFrame, odds_data: dict) -> pd.DataFrame:
         tips_df.at[idx, "ev"]           = ev_val
         tips_df.at[idx, "tier"]         = tier
         tips_df.at[idx, "kelly_stake"]  = _kelly_stake(ev_val, mkt_odds) if tier != "AVOID" else 0.0
-        # The fair probability is NOT a de-vigged two-sided price: it is 1/odds over an overround
-        # assumed from config.OVERROUND_BY_ODDS. Said on the row (propsdef 2026-11-05).
-        tips_df.at[idx, "fair_basis"]   = FAIR_BASIS_ASSUMED_OVERROUND
+        # Where the fair probability came from: a de-vigged real two-sided price, or 1/odds over an
+        # overround assumed from config.OVERROUND_BY_ODDS. Said on the row (2026-11-05).
+        tips_df.at[idx, "fair_basis"]   = basis
 
     return tips_df
 

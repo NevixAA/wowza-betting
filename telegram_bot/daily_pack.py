@@ -442,8 +442,11 @@ def props_image(today: str, freeze: bool = False, cutoff=None) -> list[bytes]:
     if freeze:
         _freeze_props_shown(today, pr, un)
     cols = [("Time", 62), ("Player", 190), ("Match", 300), ("Market", 160), ("Model", 70),
-            ("Odds", 70), ("Edge", 86)]
+            ("Odds", 70), ("Edge", 86), ("Fair price", 140)]
     rows = []
+    # Where the fair probability came from (owner decision 2026-11-05): "two-sided price" (both sides
+    # of one book, de-vigged) or "margin assumed" (one side only). "–" when the row carries no basis.
+    from player_model.fair_basis import label as _basis_label
 
     def _time(v):
         return v.strftime("%H:%M") if pd.notna(v) else "–"
@@ -454,18 +457,21 @@ def props_image(today: str, freeze: bool = False, cutoff=None) -> list[bytes]:
             e = r["_edge"]
             rows.append({"cells": [_time(r["_ko"]), r["player_name"], r["match"],
                                    PROP_LABEL.get(r["market"], r["market"]), f"{r['model_prob'] * 100:.0f}%",
-                                   f"{r['market_odds']:.2f}", f"{e:+.1f} pts"],
+                                   f"{r['market_odds']:.2f}", f"{e:+.1f} pts",
+                                   _basis_label(r.get("fair_basis")) or "–"],
                          "stripe": GREEN if e > 0 else RED, "bold": {"Edge"},
-                         "colours": {"Edge": GREEN if e > 0 else RED}})
+                         "colours": {"Edge": GREEN if e > 0 else RED, "Fair price": MUTED}})
     if len(un):
         rows.append({"band": f"Model only — no bookmaker price ({int((~t['_priced']).sum())} today, top {len(un)})"})
         for _, r in un.iterrows():
             rows.append({"cells": [_time(r["_ko"]), r["player_name"], r["match"],
                                    PROP_LABEL.get(r["market"], r["market"]), f"{r['model_prob'] * 100:.0f}%",
-                                   "–", "–"], "colours": {"Odds": MUTED, "Edge": MUTED}})
+                                   "–", "–", "–"], "colours": {"Odds": MUTED, "Edge": MUTED, "Fair price": MUTED}})
     label = pd.Timestamp(today).strftime("%a %d %b")
     return render_table(f"Player props — {label}", cols, rows,
                         subtitle="Edge = model probability minus the bookmaker's implied probability. "
+                                 "Fair price: two-sided price = both sides of one book, de-vigged; "
+                                 "margin assumed = one side quoted, margin assumed. "
                                  "Props are paper research — never staked.",
                         footer="Times UTC · paper leagues excluded · not betting advice")
 

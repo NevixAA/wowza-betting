@@ -14,6 +14,7 @@ import pandas as pd
 import streamlit as st
 
 import dashboard_ui as ui
+from player_model.fair_basis import label as fair_basis_label
 
 TZ_NAME = "Asia/Jerusalem"
 MARKET_LABEL = {
@@ -103,20 +104,32 @@ def board(d: pd.DataFrame, priced_view: bool, limit: int) -> tuple[pd.DataFrame,
         out["Edge (pts)"] = shown["_edge"]
         out["EV %"] = shown["ev"] * 100 if "ev" in shown.columns else None
         out["Tier"] = shown.get("tier", pd.Series("", index=shown.index)).astype(str)
+        # Where the fair probability behind EV / tier came from (owner decision 2026-11-05).
+        out["Fair price"] = shown.get("fair_basis", pd.Series(None, index=shown.index)).map(
+            lambda b: fair_basis_label(b) or "–")
     else:
         out["Fair odds"] = pd.to_numeric(shown.get("fair_odds"), errors="coerce")
     return out, days
 
 
+#: what the "Fair price" label means (props tables and cards)
+FAIR_PRICE_HELP = ("Where the fair probability behind EV and tier came from. two-sided price = both "
+                   "sides of the bet from one bookmaker in one answer, de-vigged. margin assumed = only "
+                   "this side is quoted, so the bookmaker's margin is assumed (1.06 / 1.10 / 1.15 by odds).")
+
+
 def board_config(priced_view: bool) -> dict:
-    cfg = {"Model %": ui.num_col("Model", fmt="%.0f%%", help="The model's probability."),
+    cfg = {"Model %": ui.num_col("Model", fmt="%.0f%%",
+                                 help="The model's own probability. It decides EV and tier; the hand "
+                                      "team-strength / quality adjustment is logged beside it, information only."),
            "Kickoff": ui.text_col("Kickoff", help=f"Local time ({TZ_NAME})"), "Pos": ui.text_col("Pos")}
     if priced_view:
         cfg.update({"Book odds": ui.num_col("Book odds"),
                     "Implied %": ui.num_col("Implied", fmt="%.0f%%", help="1 / book odds (includes the margin)."),
                     "Edge (pts)": ui.num_col("Edge", fmt="%+.1f pts",
                                              help="Model probability minus the bookmaker's implied probability."),
-                    "EV %": ui.num_col("EV", fmt="%+.0f%%"), "Tier": ui.text_col("Tier")})
+                    "EV %": ui.num_col("EV", fmt="%+.0f%%"), "Tier": ui.text_col("Tier"),
+                    "Fair price": ui.text_col("Fair price", help=FAIR_PRICE_HELP)})
     else:
         cfg["Fair odds"] = ui.num_col("Fair odds", help="1 / model probability.")
     return cfg
@@ -150,6 +163,7 @@ def prop_card(r, container=None) -> None:
                    supporting=[("Book odds", f"{r['market_odds']:.2f}"), ("Implied", f"{100 / r['market_odds']:.0f}%"),
                                ("Edge", f"{r['_edge']:+.1f} pts"),
                                ("EV", f"{r['ev']:+.0%}" if pd.notna(r.get("ev")) else "—"),
+                               ("Fair price", fair_basis_label(r.get("fair_basis")) or "—"),
                                ("Kickoff", when)],
                    status=ui.status_chip("PAPER", label="PAPER · NOT A BET")
                    + (" " + ui.status_chip(str(r["tier"])) if pd.notna(r.get("tier")) and str(r.get("tier")) else ""),
@@ -160,4 +174,7 @@ def prop_card(r, container=None) -> None:
 RESULTS_CONFIG = {"market_odds": ui.num_col("Odds"), "pnl": ui.num_col("P/L (u)", fmt="%+.2f")}
 RAW_CONFIG = {"model_prob": ui.pct_col("Model"), "fair_odds": ui.num_col("Fair odds"),
               "market_odds": ui.num_col("Book odds"), "ev": ui.num_col("EV", fmt="%+.3f"),
-              "confidence": ui.num_col("Confidence", fmt="%.3f")}
+              "confidence": ui.num_col("Confidence", fmt="%.3f"),
+              "fair_basis": ui.text_col("Fair price", help=FAIR_PRICE_HELP),
+              "model_prob_hand_adjusted": ui.pct_col("Hand-adjusted (info only)"),
+              "prob_adjustment": ui.num_col("Hand factor (info only)", fmt="%.3f")}

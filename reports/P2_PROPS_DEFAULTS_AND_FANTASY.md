@@ -173,3 +173,70 @@ no cross-repo contract moves.
   inputs. Should they be fitted in the Phase 2 retrain, or dropped, or kept as stated conventions?
 - **Q4:** should V2 `xpts_3gw` / `xpts_5gw` / `value_5gw_per_m` (shown as "Best value" on the Fantasy
   page) be marked as convention-based, or hidden until the shares and half-life are fitted?
+
+## 7. Owner decisions 2026-11-05 (branch `phase2/propsdecide`)
+
+Implemented on `phase2/propsdecide` from `origin/data-truth-100` 976dc9e9. Nothing was retrained,
+backtested or re-thresholded; no API was called. Props stay PAPER-only.
+
+### Q1: the model's own probability decides
+
+`run_player_predictions` now caps, floors and writes the model's own probability as `model_prob`
+(`model_prob_raw` repeats it at 4 dp). Tier, EV, edge and Kelly read it. `hand_adjusted_prob` is still
+computed and logged beside the tip as `model_prob_hand_adjusted` and `prob_adjustment` (information
+only). `player_ledger.csv` keeps its fixed column list.
+
+Measured on the committed board (`output/player_tips.csv`, 2,905 rows, written 2026-11-02 04:52Z by
+**main's** code), joined to the logged raw model output (`props_r2_shadow.csv` p_served +
+`props_shadow_h2h.csv` p_champion_raw, latest per market/fixture/player; all 2,905 rows join):
+
+* 271 rows carry a `model_prob` below the raw output beyond 3-dp rounding (0 above). **8 of them are
+  main's `min(p, cap)` sentinel, not the hand adjustment**: the run's cap values goals 0.685 (6 rows),
+  sot2 0.761 (1), assists 0.467 (1), each with a raw output above it. They are the 4 VALUABLE + 1 PAPER
+  section 2 counted as hand-adjusted. data-truth-100 drops them (`capped_prob`) under either rule, so
+  they are left out of the comparison below. The other **263** are the hand adjustment (all AVOID).
+* Tier recomputed with the branch's own functions (`enrich_with_odds`, `tag_paper_feed`, `capped_prob`,
+  `MIN_SIGNAL_PROB`); the board's own tiers reproduce on all 554 priced rows first. Caps: the run's
+  goals / sot2 / assists values above, the others from the committed `player_history.parquet`.
+
+| | AVOID | VALUABLE | PAPER | not tipped (raw above cap) |
+|---|---|---|---|---|
+| before (hand-adjusted decides) | 2,851 | 41 | 5 | 0 |
+| after (model's own probability) | 2,844 | 46 | 5 | 2 |
+
+**9 tips change tier**: 5 AVOID to VALUABLE (L. Fernandez sot and sot2, D. Sanches Fernandes goals,
+J. Taylor goals, J. Moreno goals), 1 AVOID to PAPER (J. Moylan sot) and 1 PAPER to AVOID (N. Krstovic
+goals, displaced from the top-5 EV), 2 AVOID no longer tipped because the raw output is above the goals
+cap (L. Fernandez goals 0.752, V. Osimhen goals 0.701). Cross-checked a second way (an independent
+script with `_classify_tier` directly): same counts. Not measurable from committed files: player-markets
+whose hand-adjusted probability fell under `MIN_SIGNAL_PROB` (never on the board) and may now appear.
+
+### Q2: both sides collected, real two-sided price first
+
+* OddsAPI and API-Football quotes already logged every side. New: `prop_odds_af.side_word` names
+  Yes / No as well as Over / Under; an API-Football "No" side is kept in the quote log and never read as a
+  tip price (it was read as the Yes side if the provider sent one). The pre-kickoff capture keeps every
+  value row and now names Yes / No in `side_word` (`PREMATCH_CAPTURE_CONTRACT.md`).
+* `odds_fetcher` builds real pairs per fixture (same book, same answer, same line, one price per side),
+  `match_fair_to_tips` resolves each tip to the same quoted player as its price and takes the median over
+  books of the power de-vig (`src.market_edge.power_devig`, as the side markets). `enrich_with_odds`
+  uses it (`fair_basis = "two_sided_devig"`); only without one does the assumed overround apply
+  (`fair_basis = "assumed_overround"`).
+* Labels: "two-sided price" / "margin assumed" on the Telegram instant alert and briefing, the daily props
+  picture ("Fair price" column) and the dashboard Player Props page (board, cards, raw table).
+* Committed quotes (`output/prop_quotes/`, 13 day files, 281,657 quotes): **139 real same-answer pairs**,
+  all Pinnacle anytime-scorer Yes/No via OddsAPI, in 38 fixtures (match dates 2026-10-14 to 2026-11-01).
+  Section 2's "0 of 42,395" did not hold on this count. The 16 API-Football "under" goals rows are the
+  old substring bug ("Noah Sa s"), not Under prices. Committed board: 0 of 554 priced tips have a pair
+  (its fixtures are 2026-11-02 to 11-09; the last pair is 11-01), so no board tip changes from Q2 today.
+  The quote log stores a price only the first time it is seen, so pairs whose one side did not move
+  are under-counted there; the live run pairs from the full answer.
+
+### Q4: Fantasy convention figures labelled
+
+The Fantasy page shows a note listing the fitted / real figures and the conventions. `xpts_3gw`,
+`xpts_5gw`, `value_5gw_per_m` (Best value cards, explorer columns, 3/5-GW transfer gains, squad solve)
+and every V1 points figure (V1 tools, chip advisor, lineup, mini-league) carry "convention-based, not
+fitted on data". No value changes.
+
+Tests: `tests/test_props_owner_decisions_20261105.py`.

@@ -41,6 +41,7 @@ from src import clv_corrections as _CC
 from src import league_registry as _LRG
 from src import units as U
 from src.tier_labels import GAP_EXPLAINER, TIER_ICON, tier_label, tier_tag
+from player_model.fair_basis import label as _fair_basis_label
 
 
 def _read_csv(*args, **kwargs):
@@ -1654,7 +1655,11 @@ def notify_player_props() -> int:
             "cards": "Yellow Card",
         }.get(row["market"], row["market"])
 
-        odds_line = f"📈 Odds: <b>{mkt_odds:.2f}</b>  |  Fair: <b>{fair:.2f}</b>  |  EV: <b>{ev_val:+.1%}</b>" \
+        # Where the market's fair probability came from (2026-11-05): "two-sided price" or
+        # "margin assumed". Absent on a row without a basis (unpriced, or written before the label).
+        _basis = _fair_basis_label(row.get("fair_basis"))
+        odds_line = (f"📈 Odds: <b>{mkt_odds:.2f}</b>  |  Fair: <b>{fair:.2f}</b>  |  EV: <b>{ev_val:+.1%}</b>"
+                     + (f"  |  <i>{_basis}</i>" if _basis else "")) \
                     if mkt_odds and not (isinstance(mkt_odds, float) and mkt_odds != mkt_odds) \
                        and ev_val and not (isinstance(ev_val, float) and ev_val != ev_val) \
                     else f"📊 Model P: <b>{p*100:.0f}%</b>  |  Fair Odds: <b>{fair:.2f}</b>"
@@ -1935,9 +1940,10 @@ def notify_props_daily_digest() -> bool:
                     _mp = pd.to_numeric(r.get("model_prob"), errors="coerce")
                     od_str = (f" @ {float(odds):.2f}" if pd.notna(odds)
                               else (f" {_mp*100:.0f}%" if pd.notna(_mp) else " –"))
+                    _basis = _fair_basis_label(r.get("fair_basis")) if pd.notna(odds) else None
                     lines.append(
                         f"  {sym} <b>{r['player_name']}</b> ({r.get('team','')})"
-                        f"{od_str}{ev_str}  [{r.get('league','')}]"
+                        f"{od_str}{ev_str}{f' ({_basis})' if _basis else ''}  [{r.get('league','')}]"
                     )
             lines.append("")
 
