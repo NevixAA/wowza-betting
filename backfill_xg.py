@@ -43,7 +43,7 @@ def get_seasons_for_league(league: str, today=None) -> list[str]:
     on the calendar year and went stale every year. Empty when the season is unresolvable."""
     import datetime as _dt
     from src.season_resolver import resolve_api_season, is_known
-    d = today or _dt.date.today()
+    d = today or _dt.datetime.now(_dt.timezone.utc).date()   # UTC day
     seen: list[str] = []
     for back in range(0, 12 * (N_SEASONS + 2)):             # walk back month by month
         y, m = divmod(d.year * 12 + d.month - 1 - back, 12)

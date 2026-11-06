@@ -203,7 +203,7 @@ def test_apply_injury_pit_rows_and_failed_players(tmp_path):
 
 def test_refresh_writes_only_the_recent_window_point_in_time(tmp_path, monkeypatch):
     path = tmp_path / "player_history.parquet"
-    today = dt.date.today()
+    today = dt.datetime.now(dt.timezone.utc).date()   # the refresh window is a UTC day
     old_d, new_d = today - dt.timedelta(days=400), today - dt.timedelta(days=10)
     df = pd.concat([_rows([old_d, new_d], pid=7), _rows([new_d], pid=8, start_fid=20)], ignore_index=True)
     df["days_since_last_injury"] = 999.0               # what a today-stamp would have left

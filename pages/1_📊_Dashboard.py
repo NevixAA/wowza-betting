@@ -107,7 +107,7 @@ def _top_scoreboard(days):
 from utils.access import is_public  # noqa: E402
 
 df_all = load_bets()
-df = df_all[df_all["date"] >= pd.Timestamp.now().normalize()].copy() if not df_all.empty else df_all
+df = df_all[df_all["date"] >= pd.Timestamp.now(tz="UTC").tz_localize(None).normalize()].copy() if not df_all.empty else df_all
 _today = pd.Timestamp.now(tz="UTC").strftime("%Y-%m-%d")
 _all_board = load_board(_today, "2099-12-31")
 # File mtime is NOT a freshness signal: a git checkout resets it on every deploy. The newest recorded
@@ -596,7 +596,7 @@ def load_predictions_ht():
     if "p_ht_over05" not in preds.columns:
         return pd.DataFrame()
     preds["date"] = pd.to_datetime(preds["date"], errors="coerce")
-    today = pd.Timestamp.now().normalize()
+    today = pd.Timestamp.now(tz="UTC").tz_localize(None).normalize()
     preds = preds[preds["date"] >= today].copy()
     # Only standard-format leagues (have HT data)
     preds = preds[preds["p_ht_over05"].notna()]

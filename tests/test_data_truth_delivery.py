@@ -120,7 +120,7 @@ def test_fantasy_guard_takes_the_fpl_league_from_the_registry(monkeypatch):
 
 
 def test_cashout_without_fixture_is_not_sent(tmp_path, tg, monkeypatch, capsys):
-    today = datetime.now().strftime("%Y-%m-%d")                  # the sender's own 'today'
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")      # the sender's own (UTC) 'today'
     key = f"PLAYER|{today}|A Player|goals"
     monkeypatch.setenv("PROPS_INSTANT_ALERTS", "1")
     monkeypatch.setattr(N, "PLAYER_NOTIFIED_FILE", tmp_path / "pn.json")

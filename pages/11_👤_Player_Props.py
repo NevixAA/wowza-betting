@@ -51,7 +51,7 @@ def load_tips() -> pd.DataFrame:
         return pd.DataFrame()
     df = pd.read_csv(TIPS_FILE, low_memory=False)
     df["date"] = pd.to_datetime(df["date"], errors="coerce")
-    df = df[df["date"] >= pd.Timestamp.now().normalize()].copy()
+    df = df[df["date"] >= pd.Timestamp.now(tz="UTC").tz_localize(None).normalize()].copy()
     for c in ("model_prob", "fair_odds", "market_odds", "ev", "edge_abs", "confidence"):
         if c in df.columns:
             df[c] = pd.to_numeric(df[c], errors="coerce")

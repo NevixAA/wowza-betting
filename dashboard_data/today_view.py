@@ -183,7 +183,7 @@ def performance(settled: pd.DataFrame, today=None) -> dict:
     out["drawdown"] = U.total([cum.iloc[-1], -peak])                        # <= 0: units below the peak
     daily = s.groupby(s["_dt"].dt.normalize())["_pnl"].agg(U.total)
     out["curve"] = pd.Series(U.running(daily), index=daily.index).rename("cum").reset_index().rename(columns={"_dt": "date"})
-    t = pd.Timestamp(today).normalize() if today is not None else pd.Timestamp.now().normalize()
+    t = pd.Timestamp(today).normalize() if today is not None else pd.Timestamp.now(tz="UTC").tz_localize(None).normalize()   # UTC day
     w = s[s["_dt"] >= t - pd.Timedelta(days=6)]
     out["last7_pnl"] = U.total(w["_pnl"]) if len(w) else 0.0
     out["last7_n"] = int(len(w))

@@ -17,7 +17,7 @@ import os
 import time
 import hashlib
 import json
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Optional
 
@@ -1401,9 +1401,9 @@ def fetch_player_profile(player_id: int) -> dict:
     # Age/height/weight do not depend on the season, but the endpoint needs one. The literal
     # "2025" meant a player first registered in 2026 never got a profile (Data Truth finding 41):
     # this year, then last year.
-    from datetime import date as _date
     resp = []
-    for _s in (_date.today().year, _date.today().year - 1):
+    _y = datetime.now(timezone.utc).year   # UTC year
+    for _s in (_y, _y - 1):
         resp = _api_get("players", {"id": player_id, "season": str(_s)}).get("response", [])
         if resp:
             break
@@ -1526,7 +1526,7 @@ def fetch_all_player_sidelined(df: "pd.DataFrame", max_workers: int = 5,
     _available = len(unique_pids)
     if max_players and _available > max_players:
         import datetime as _dt
-        _week   = _dt.date.today().isocalendar()[1]
+        _week   = _dt.datetime.now(_dt.timezone.utc).date().isocalendar()[1]   # UTC ISO week
         _offset = (_week * max_players) % _available
         unique_pids = (unique_pids + unique_pids)[_offset:_offset + max_players]
         print(f"[sidelined] quota cap: fetching {len(unique_pids)}/{_available} players "

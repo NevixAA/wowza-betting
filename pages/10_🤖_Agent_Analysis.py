@@ -242,7 +242,7 @@ def load_tips():
 
     bets["date"]  = pd.to_datetime(bets["date"],  errors="coerce")
     preds["date"] = pd.to_datetime(preds["date"], errors="coerce")
-    today = pd.Timestamp.now().normalize()
+    today = pd.Timestamp.now(tz="UTC").tz_localize(None).normalize()
     bets  = bets[bets["date"] >= today]
     bets  = bets[bets["signal_tier"].isin(["SNIPER","MARKSMAN","VALUABLE"]) & bets["bet"].isin(["OVER","UNDER"])].copy()
 

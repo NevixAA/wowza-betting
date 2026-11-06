@@ -820,7 +820,7 @@ def run() -> list[dict]:
     if tips:
         df = pd.DataFrame(tips)
         df = df.sort_values("elapsed_mins", ascending=False)
-        df["date"] = datetime.now().strftime("%Y-%m-%d")
+        df["date"] = datetime.now(timezone.utc).strftime("%Y-%m-%d")   # UTC day, like every stored date
         df.to_csv(LIVE_TIPS_FILE, index=False)
 
         # Append to history file for tracking signal usefulness over time
