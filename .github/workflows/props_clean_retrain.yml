@@ -1,0 +1,60 @@
+name: Props clean retrain (Phase 2, owner-gated)
+
+# Phase 2 props clean retrain harness (player_model/props_harness.py,
+# reports/P0_PROPS_CLEAN_RETRAIN_PLAN.md). Trains the three candidates on VERIFIED rows only,
+# walk-forward by matchday plus the fixed-date holdout, and reports log loss / Brier / calibration
+# per market and CLV against real two-sided prices.
+#
+# OWNER GATE. Manual dispatch only (no schedule, no push). The job runs only when the repository
+# variable PHASE2_RETRAIN_ENABLED is 'true', and the harness itself refuses unless every owner
+# decision in config/experiments/props_clean_retrain/plan.json is set and the verified share reaches
+# the owner's minimum. RETROSPECTIVE evidence only: it never writes a serving file
+# (models/model_player_*.pkl), never touches the props promotion gate and commits nothing; the
+# results are uploaded as a run artifact.
+
+concurrency:
+  group: props-clean-retrain
+  cancel-in-progress: false
+
+on:
+  workflow_dispatch:
+
+jobs:
+  retrain:
+    if: vars.PHASE2_RETRAIN_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt pytest
+
+      - name: Harness tests (synthetic data)
+        run: python -m pytest tests/test_props_harness.py -q -p no:cacheprovider
+
+      - name: Dry run (row counts per split and market)
+        run: python -m player_model.props_harness --dry-run --out output/props_harness/props_harness_dry_run.json
+
+      - name: Owner-gated run
+        env:
+          PHASE2_RETRAIN_ENABLED: ${{ vars.PHASE2_RETRAIN_ENABLED }}
+        run: |
+          start=$(date +%s)
+          python -m player_model.props_harness --run
+          echo "run took $(( ($(date +%s) - start) / 60 )) min"
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: props-clean-retrain
+          path: |
+            output/props_harness/
+            models/challengers/props_clean/
+          retention-days: 30

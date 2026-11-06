@@ -181,6 +181,31 @@ class _PlattCalibratedModel:
         return np.column_stack([1 - cal, cal])
 
 
+def recipe_estimators() -> dict:
+    """The props recipe's two unfitted estimators (one definition: train() and the Phase 2 props
+    harness, player_model.props_harness, build them here, so a harness candidate is the recipe)."""
+    return {
+        "logistic": Pipeline([
+            ("scaler", StandardScaler()),
+            ("clf", LogisticRegression(max_iter=2000, C=0.5, solver="lbfgs")),
+        ]),
+        # HistGradientBoosting since 2026-10-13 (was classic GradientBoostingClassifier: single-
+        # threaded, linear in rows; at 855k rows the weekly retrain took 3h50m and had silently
+        # timed out every Sunday from 09-27). Same trees (300 x depth 3, lr 0.05, min leaf 20);
+        # the key stays "gradient_boost" so predict and stored payloads are unchanged.
+        # Validated in Pro first (src/studies/props_learner.py, output/studies/PROPS_LEARNER.md):
+        # all 8 markets non-inferior under a rule fixed before the results, 6 of 8 significantly
+        # better, ~70x faster. Owner-approved 2026-10-12.
+        "gradient_boost": Pipeline([
+            ("usable", _UsableColumns()),
+            ("clf", HistGradientBoostingClassifier(
+                max_iter=300, max_depth=3, learning_rate=0.05,
+                min_samples_leaf=20, early_stopping=False, random_state=42,
+            )),
+        ]),
+    }
+
+
 def split_bounds(n: int) -> tuple[int, int]:
     """(split, cal_split) row indices of the chronological fit | calibration | holdout split.
     ONE definition, used by train() and by the promotion gate's holdout, so they cannot diverge."""
@@ -281,26 +306,7 @@ def train(df: pd.DataFrame, market: str, return_holdout: bool = False, recipe: s
             "training_rows": int(n),
         }
 
-    estimators = {
-        "logistic": Pipeline([
-            ("scaler", StandardScaler()),
-            ("clf", LogisticRegression(max_iter=2000, C=0.5, solver="lbfgs")),
-        ]),
-        # HistGradientBoosting since 2026-10-13 (was classic GradientBoostingClassifier: single-
-        # threaded, linear in rows; at 855k rows the weekly retrain took 3h50m and had silently
-        # timed out every Sunday from 09-27). Same trees (300 x depth 3, lr 0.05, min leaf 20);
-        # the key stays "gradient_boost" so predict and stored payloads are unchanged.
-        # Validated in Pro first (src/studies/props_learner.py, output/studies/PROPS_LEARNER.md):
-        # all 8 markets non-inferior under a rule fixed before the results, 6 of 8 significantly
-        # better, ~70x faster. Owner-approved 2026-10-12.
-        "gradient_boost": Pipeline([
-            ("usable", _UsableColumns()),
-            ("clf", HistGradientBoostingClassifier(
-                max_iter=300, max_depth=3, learning_rate=0.05,
-                min_samples_leaf=20, early_stopping=False, random_state=42,
-            )),
-        ]),
-    }
+    estimators = recipe_estimators()
 
     results = {}
     for name, est in estimators.items():
