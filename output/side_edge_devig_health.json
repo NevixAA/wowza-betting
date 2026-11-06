@@ -1,81 +1,72 @@
 {
   "artifact": "side_edge_devig_health",
   "shadow_version": "side_edge_devig_shadow-1.0",
-  "generated_at": "2026-11-05T16:36:59Z",
+  "generated_at": "2026-11-06T16:02:36Z",
   "production_rule": "two-sided de-vig since 2026-11-01 (config.SIDE_EDGE_FAIR_PRICE); edge_prod below = the old (1/odds)/1.08, kept for comparison",
   "shadow_rule": "edge = p_model - median_books(power_devig(same-book two-sided pair)), pre-kickoff, carried forward to the decision time; same thresholds",
   "quotes_from": "2026-08-19 09:23:27+00:00",
-  "quote_rows": 211461,
+  "quote_rows": 214996,
   "board": {
-    "generated_at": "2026-11-05T16:26:51Z",
-    "rows": 71,
-    "production_tips": 5,
+    "generated_at": "2026-11-06T15:53:57Z",
+    "rows": 101,
+    "production_tips": 4,
     "classification": {
-      "CONFIRMED_BY_DEVIG": 5
+      "CONFIRMED_BY_DEVIG": 3,
+      "ONLY_BECAUSE_OF_1_08": 1
     },
     "by_market": {
       "btts": {
-        "CONFIRMED_BY_DEVIG": 2
+        "ONLY_BECAUSE_OF_1_08": 1
       },
       "over15": {
         "CONFIRMED_BY_DEVIG": 3
       }
     },
-    "devigged_rows": 71,
-    "median_pair_overround": 0.076,
-    "median_edge_prod_minus_devig_pp": -0.18,
-    "mean_edge_prod_minus_devig_pp": -0.5,
-    "p90_edge_prod_minus_devig_pp": 2.26,
-    "rows_prod_edge_inflated_ge_2pp": 8,
-    "rows_pair_overround_below_6pct": 0
+    "devigged_rows": 101,
+    "median_pair_overround": 0.0791,
+    "median_edge_prod_minus_devig_pp": 0.1,
+    "mean_edge_prod_minus_devig_pp": 0.07,
+    "p90_edge_prod_minus_devig_pp": 3.51,
+    "rows_prod_edge_inflated_ge_2pp": 21,
+    "rows_pair_overround_below_6pct": 1,
+    "mean_inflation_pp_when_overround_below_6pct": -0.06
   },
   "ledger_retrospective": {
     "label": "RETROSPECTIVE",
-    "tips_since_quotes_exist": 669,
-    "rows": 669,
-    "production_tips": 669,
+    "tips_since_quotes_exist": 679,
+    "rows": 679,
+    "production_tips": 679,
     "classification": {
-      "CONFIRMED_BY_DEVIG": 469,
-      "UNVERIFIABLE_ONE_SIDED": 106,
-      "ONLY_BECAUSE_OF_1_08": 94
+      "CONFIRMED_BY_DEVIG": 473,
+      "UNVERIFIABLE_ONE_SIDED": 111,
+      "ONLY_BECAUSE_OF_1_08": 95
     },
     "by_market": {
       "btts": {
         "CONFIRMED_BY_DEVIG": 358,
         "UNVERIFIABLE_ONE_SIDED": 83,
-        "ONLY_BECAUSE_OF_1_08": 79
+        "ONLY_BECAUSE_OF_1_08": 80
       },
       "over15": {
-        "CONFIRMED_BY_DEVIG": 87,
-        "UNVERIFIABLE_ONE_SIDED": 21,
+        "CONFIRMED_BY_DEVIG": 89,
+        "UNVERIFIABLE_ONE_SIDED": 22,
         "ONLY_BECAUSE_OF_1_08": 8
       },
       "over35": {
-        "CONFIRMED_BY_DEVIG": 24,
+        "CONFIRMED_BY_DEVIG": 26,
         "ONLY_BECAUSE_OF_1_08": 7,
-        "UNVERIFIABLE_ONE_SIDED": 2
+        "UNVERIFIABLE_ONE_SIDED": 6
       }
     },
-    "devigged_rows": 563,
-    "median_pair_overround": 0.0798,
-    "median_edge_prod_minus_devig_pp": 0.1,
-    "mean_edge_prod_minus_devig_pp": 0.41,
+    "devigged_rows": 568,
+    "median_pair_overround": 0.0797,
+    "median_edge_prod_minus_devig_pp": 0.09,
+    "mean_edge_prod_minus_devig_pp": 0.4,
     "p90_edge_prod_minus_devig_pp": 2.5,
-    "rows_prod_edge_inflated_ge_2pp": 89,
+    "rows_prod_edge_inflated_ge_2pp": 90,
     "rows_pair_overround_below_6pct": 16,
     "mean_inflation_pp_when_overround_below_6pct": 2.66,
     "examples_only_because_of_1_08": [
-      {
-        "fixture": "New York City FC v CF Montreal",
-        "league": "USA MLS",
-        "market": "btts",
-        "tier_prod": "VALUABLE",
-        "edge_prod": 0.0444,
-        "edge_devig": 0.0379,
-        "odds": 1.65,
-        "p_fair_devig": 0.5677,
-        "books": "betfred_uk;coral;ladbrokes_uk;leovegas;livescorebet;mybookieag;onexbet;pinnacle;virginbet;williamhill"
-      },
       {
         "fixture": "Mj\u00e4llby AIF v Kalmar FF",
         "league": "Sweden Allsvenskan",
@@ -93,9 +84,9 @@
         "market": "btts",
         "tier_prod": "VALUABLE",
         "edge_prod": 0.0412,
-        "edge_devig": -0.0072,
+        "edge_devig": 0.0341,
         "odds": 1.8900000000000001,
-        "p_fair_devig": 0.5383,
+        "p_fair_devig": 0.497,
         "books": "betfred_uk;leovegas;livescorebet;onexbet;virginbet;williamhill"
       },
       {
@@ -152,35 +143,48 @@
         "odds": 1.755,
         "p_fair_devig": 0.5388,
         "books": "onexbet;williamhill"
+      },
+      {
+        "fixture": "Sabadell FC v Real Sociedad B",
+        "league": "La Liga 2",
+        "market": "btts",
+        "tier_prod": "VALUABLE",
+        "edge_prod": 0.0347,
+        "edge_devig": 0.0387,
+        "odds": 1.9,
+        "p_fair_devig": 0.4833,
+        "books": "betfred_uk;livescorebet;onexbet;virginbet;williamhill"
       }
     ]
   },
   "ledger_open_tips": {
-    "rows": 44,
-    "production_tips": 44,
+    "rows": 49,
+    "production_tips": 49,
     "classification": {
-      "CONFIRMED_BY_DEVIG": 34,
-      "UNVERIFIABLE_ONE_SIDED": 7,
-      "ONLY_BECAUSE_OF_1_08": 3
+      "CONFIRMED_BY_DEVIG": 31,
+      "UNVERIFIABLE_ONE_SIDED": 14,
+      "ONLY_BECAUSE_OF_1_08": 4
     },
     "by_market": {
       "btts": {
-        "CONFIRMED_BY_DEVIG": 26,
+        "CONFIRMED_BY_DEVIG": 23,
         "UNVERIFIABLE_ONE_SIDED": 7,
-        "ONLY_BECAUSE_OF_1_08": 3
+        "ONLY_BECAUSE_OF_1_08": 4
       },
       "over15": {
-        "CONFIRMED_BY_DEVIG": 7
+        "CONFIRMED_BY_DEVIG": 7,
+        "UNVERIFIABLE_ONE_SIDED": 2
       },
       "over35": {
+        "UNVERIFIABLE_ONE_SIDED": 5,
         "CONFIRMED_BY_DEVIG": 1
       }
     },
-    "devigged_rows": 37,
+    "devigged_rows": 35,
     "median_pair_overround": 0.0796,
-    "median_edge_prod_minus_devig_pp": -0.34,
-    "mean_edge_prod_minus_devig_pp": -0.11,
-    "p90_edge_prod_minus_devig_pp": 1.46,
+    "median_edge_prod_minus_devig_pp": -0.32,
+    "mean_edge_prod_minus_devig_pp": -0.03,
+    "p90_edge_prod_minus_devig_pp": 1.53,
     "rows_prod_edge_inflated_ge_2pp": 3,
     "rows_pair_overround_below_6pct": 1,
     "mean_inflation_pp_when_overround_below_6pct": 2.57
