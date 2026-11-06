@@ -176,7 +176,7 @@ Tests check that a row's probability is identical whether it is scored alone or 
 
 ## 9. Tests (synthetic only)
 
-`python -m pytest tests/test_phase2_retrain_harness.py -q`: **35 passed** in about 31 s. All fits use a generated frame of a few hundred matches. The tests cover:
+`python -m pytest tests/test_phase2_retrain_harness.py -q`: **35 passed** in about 31-37 s. Full suite on this branch: **2,711 passed**, 35 skipped, 9 xfailed (baseline 2,676 + these 35). `python -m src.integrity.data_truth --gate`: STOPLIGHT GREEN (0 new defaults). `scripts/dashboard_manifest.py --check`: no missing code or data. The dry run left `git status` clean. All fits use a generated frame of a few hundred matches. The tests cover:
 
 - **Config and guards:**
   - the committed config is valid and unapproved;
