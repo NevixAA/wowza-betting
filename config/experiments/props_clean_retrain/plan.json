@@ -1,0 +1,26 @@
+{
+  "plan_version": "PROPS-CLEAN-RETRAIN-1.0",
+  "status": "AWAITING_OWNER",
+  "note": "Phase 2 props clean retrain (reports/P0_PROPS_CLEAN_RETRAIN_PLAN.md). owner_decisions are null until the owner sets them; player_model.props_harness --run refuses while any is null. 'proposed' is shown by --dry-run only and is never used to train.",
+  "owner_decisions": {
+    "holdout_start": null,
+    "holdout_end": null,
+    "min_verified_share": null,
+    "markets": null,
+    "feature_rule": null
+  },
+  "proposed": {
+    "holdout_start": "2026-09-01",
+    "holdout_end": "2026-10-31",
+    "min_verified_share": null,
+    "markets": ["sot", "sot2", "goals", "assists", "cards"],
+    "feature_rule": "all_prior_verified"
+  },
+  "walk_forward": {
+    "unit": "matchday (one calendar match date, every league)",
+    "step_matchdays": 7,
+    "n_folds": 8
+  },
+  "candidates": ["recipe_retrained", "hgb_nan_native", "player_base_rate"],
+  "hand_adjustment": "none"
+}
