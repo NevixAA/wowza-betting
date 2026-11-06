@@ -161,7 +161,10 @@ def score_fixtures(fixtures: pd.DataFrame, history: pd.DataFrame, payload: dict)
     if bad:
         raise ValueError(f"non-Standard leagues passed to the Standard repaired scorer: {sorted(bad)}")
     ident = fixtures[["date", "league", "home_team", "away_team"]].reset_index(drop=True)
-    feats = build_upcoming_features_repaired(ident, history, price_mode="none", team_scope="league")
+    # the FROZEN map that canonicalised `history` (serving_history) also places the board's
+    # spelling of a renamed club ('Stockport County FC' -> 'Stockport'): the same evidence as train
+    feats = build_upcoming_features_repaired(ident, history, price_mode="none", team_scope="league",
+                                             identity_aliases=payload.get("identity_alias_map"))
     if len(feats) != len(ident) or not (
             feats["home_team"].astype(str).to_numpy() == ident["home_team"].astype(str).to_numpy()).all():
         raise ValueError("repaired feature rows do not line up with the fixtures")
