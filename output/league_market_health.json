@@ -1,14 +1,10 @@
 {
- "generated_at": "2026-11-06T21:00:38Z",
+ "generated_at": "2026-11-06T21:09:10Z",
  "panel_version": "LWR-1",
  "tracked_leagues": 20,
  "current_tip_day": "2026-11-06",
  "leagues_with_current_week_data": 19,
- "missing_leagues": [
-  "Austrian Bundesliga",
-  "Bundesliga 2",
-  "Serie B"
- ],
+ "missing_leagues": [],
  "missing_leagues_previous_week": [],
  "no_fixture_leagues": [
   "Romanian Superliga"
@@ -17,9 +13,9 @@
  "market_gap_leagues": [],
  "expected_candidate_rows": 780,
  "actual_candidate_rows": 748,
- "panel_rows": 656,
+ "panel_rows": 716,
  "settled_rows": 588,
- "pending_rows": 68,
+ "pending_rows": 128,
  "clv_certified_rows": 236,
  "clv_coverage": 0.4014,
  "protected_tracks_modified": false,
@@ -89,7 +85,7 @@
   "Austrian Bundesliga": {
    "current": {
     "league_week_id": "Austrian Bundesliga|2026-W45",
-    "state": "LOCKED_NOT_FROZEN",
+    "state": "FROZEN",
     "fixtures_known": 6,
     "fixtures_before_panel_start": 0,
     "fixtures_with_candidates": 6,
@@ -100,19 +96,19 @@
     "markets": {
      "OU25": {
       "candidates": 6,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "BTTS": {
       "candidates": 6,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER15": {
       "candidates": 6,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER35": {
       "candidates": 6,
-      "panel_rows": 0
+      "panel_rows": 5
      }
     },
     "expected_candidate_rows": 24,
@@ -213,7 +209,7 @@
   "Bundesliga 2": {
    "current": {
     "league_week_id": "Bundesliga 2|2026-W45",
-    "state": "LOCKED_NOT_FROZEN",
+    "state": "FROZEN",
     "fixtures_known": 9,
     "fixtures_before_panel_start": 0,
     "fixtures_with_candidates": 9,
@@ -224,19 +220,19 @@
     "markets": {
      "OU25": {
       "candidates": 9,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "BTTS": {
       "candidates": 9,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER15": {
       "candidates": 9,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER35": {
       "candidates": 9,
-      "panel_rows": 0
+      "panel_rows": 5
      }
     },
     "expected_candidate_rows": 36,
@@ -1081,7 +1077,7 @@
   "Serie B": {
    "current": {
     "league_week_id": "Serie B|2026-W45",
-    "state": "LOCKED_NOT_FROZEN",
+    "state": "FROZEN",
     "fixtures_known": 10,
     "fixtures_before_panel_start": 0,
     "fixtures_with_candidates": 10,
@@ -1092,19 +1088,19 @@
     "markets": {
      "OU25": {
       "candidates": 10,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "BTTS": {
       "candidates": 10,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER15": {
       "candidates": 10,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER35": {
       "candidates": 10,
-      "panel_rows": 0
+      "panel_rows": 5
      }
     },
     "expected_candidate_rows": 40,
