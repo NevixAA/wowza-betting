@@ -1,12 +1,14 @@
 {
  "cups": {
   "fetch": {
-   "calls": 6,
+   "calls": 21,
    "planned_country_calls": 3,
-   "planned_fixture_calls": 3
+   "planned_fixture_calls": 18
   },
-  "proven_by_league_cup": {},
-  "proven_cup_rows": 0,
+  "proven_by_league_cup": {
+   "Argentina Primera Division / Copa de la Liga Profesional": 404
+  },
+  "proven_cup_rows": 404,
   "unplaced_by_league": {
    "Argentina Primera Division": 407,
    "Japan J-League": 1,
@@ -15,10 +17,11 @@
   "unplaced_lacking_ht": 410,
   "unplaced_rows": 410,
   "unproven_by_reason": {
-   "club_not_resolved_among_cup_fixtures": 68,
-   "no_cup_fixture_stored_within_pm1_day": 342
+   "club_not_resolved_among_cup_fixtures": 3,
+   "clubs_resolved_no_cup_fixture_pairing": 2,
+   "full_time_score_differs": 1
   },
-  "unproven_rows": 410
+  "unproven_rows": 6
  },
  "duplicates": {
   "by_league": {
@@ -97,7 +100,7 @@
    "ABD": 5,
    "AET": 264,
    "AWD": 10,
-   "FT": 118465,
+   "FT": 118504,
    "PEN": 349,
    "WO": 2
   },
@@ -105,5 +108,5 @@
    "ft_status_scores_differ": 6
   }
  },
- "written_at": "2026-11-05T06:40:34.667529+00:00"
+ "written_at": "2026-11-06T07:14:13.022960+00:00"
 }
