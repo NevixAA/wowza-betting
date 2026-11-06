@@ -478,7 +478,8 @@ def board_delta(predictions_csv, historical: pd.DataFrame, repaired_std: dict | 
         rs = pay.get("research") or {}
         feats = build_upcoming_features_repaired(ident[mask], historical,
                                                  price_mode=rs.get("price_mode", price_mode),
-                                                 team_scope=rs.get("team_scope", "league"))
+                                                 team_scope=rs.get("team_scope", "league"),
+                                                 identity_aliases=pay.get("identity_alias_map"))
         out.loc[mask, "p_repaired"] = predict_proba(feats, payload=pay).to_numpy()
     out["repaired_minus_served"] = out["p_repaired"] - out["p_served"]
     return out

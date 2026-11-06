@@ -39,7 +39,7 @@ def _board(leagues):
     return pd.DataFrame(rows)
 
 
-def _fake_features(upcoming, historical):
+def _fake_features(upcoming, historical, **_kw):    # predict passes identity_aliases (fix12)
     f = upcoming.copy().reset_index(drop=True)
     for c in ("home_scored_last5", "away_scored_last5", "home_conceded_last5", "away_conceded_last5"):
         f[c] = 1.4

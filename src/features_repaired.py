@@ -314,10 +314,17 @@ def build_features_repaired(matches: pd.DataFrame, n: int | None = None,
     return df
 
 
-def _resolve_names(up: pd.DataFrame, hist: pd.DataFrame) -> pd.DataFrame:
-    """OddsAPI spelling -> history spelling, league-scoped, refusing ambiguity (invariant 11)."""
-    from src.team_names import resolve
+def _resolve_names(up: pd.DataFrame, hist: pd.DataFrame,
+                   identity_aliases: dict | None = None) -> pd.DataFrame:
+    """OddsAPI spelling -> history spelling, league-scoped, refusing ambiguity (invariant 11).
+
+    `identity_aliases` ({league: {alias: canonical}}): the identity map APPLIED to `hist` (Standard
+    serving: the payload's frozen identity_alias_map). The pool holds only canonical spellings
+    ('Stockport'), so a board spelling of the renamed club ('Stockport County FC') is matched
+    through its alias spelling (src.team_names.resolve_identity) - proven identity only."""
+    from src.team_names import resolve_identity
     up = up.copy()
+    amap = identity_aliases or {}
     clubs = {}
     for lg, g in hist.groupby("league"):
         clubs[str(lg)] = sorted(set(g["home_team"].astype(str)) | set(g["away_team"].astype(str)))
@@ -330,7 +337,7 @@ def _resolve_names(up: pd.DataFrame, hist: pd.DataFrame) -> pd.DataFrame:
             else:
                 # a refused/missed name stays None: reusing the raw spelling would silently
                 # give the fixture another identity's (empty) form instead of flagging it
-                hit = resolve(name, pool)
+                hit = resolve_identity(name, pool, amap.get(lg))
                 if not hit:
                     log.warning("name_unresolved: %r not resolved in %s history", name, lg)
                 out.append(hit if hit else None)
@@ -342,13 +349,17 @@ def _resolve_names(up: pd.DataFrame, hist: pd.DataFrame) -> pd.DataFrame:
 def build_upcoming_features_repaired(upcoming: pd.DataFrame, historical: pd.DataFrame,
                                      n: int | None = None, price_mode: str = "none",
                                      cutoff=None, team_scope: str = "league",
-                                     cold_start: str = "nan") -> pd.DataFrame:
+                                     cold_start: str = "nan",
+                                     identity_aliases: dict | None = None) -> pd.DataFrame:
     """Serve-time features through the SAME function training uses.
 
     `upcoming` needs date, league, home_team, away_team (+ odds_over25/odds_under25 if a price
     mode needs them). Live prices are the ENTRY price at scoring time, so in "asof" mode they
     are written to the *_entry columns. `cutoff` (optional Timestamp) drops history on/after it —
     used by the replay audit; live callers pass nothing because history is all in the past.
+    `identity_aliases` ({league: {alias: canonical}}) is the identity map applied to `historical`
+    (Standard serving passes the payload's frozen identity_alias_map): board names are matched
+    through it when the canonical pool alone proves nothing (fix12, 2026-11-07).
     Returns one row per upcoming fixture, in input order, with the upcoming columns preserved.
     """
     up = upcoming.copy().reset_index(drop=True)
@@ -364,7 +375,7 @@ def build_upcoming_features_repaired(upcoming: pd.DataFrame, historical: pd.Data
     hist = hist[hist["home_goals"].notna() & hist["away_goals"].notna()]
     leagues = set(up["league"].astype(str))
     in_lg = hist["league"].astype(str).isin(leagues)
-    up_named = _resolve_names(up, hist[in_lg])
+    up_named = _resolve_names(up, hist[in_lg], identity_aliases)
     if team_scope == "league":
         hist = hist[in_lg]                                     # every feature is league-scoped
     else:

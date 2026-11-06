@@ -398,7 +398,11 @@ def predict_upcoming(
 
     # 4. Build features
     log.info(f"Building features for {len(upcoming)} upcoming fixtures...")
-    feat = build_upcoming_features(upcoming, historical)
+    # board names meet the CANONICAL history through the identity map the loader applied to it
+    # (fix12: 'Stockport County FC' -> 'Stockport'); proven identity only, see team_names
+    from src import data_loader as _dl
+    feat = build_upcoming_features(upcoming, historical,
+                                   identity_aliases=getattr(_dl, "IDENTITY_ALIASES", None))
 
     # 5. Model prediction — route each fixture to the correct model
     log.info("Running ensemble model(s)...")

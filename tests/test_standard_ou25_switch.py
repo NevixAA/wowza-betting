@@ -103,7 +103,7 @@ def _upcoming():
                          for lg, h, a in fx])
 
 
-def _fake_legacy_features(upcoming, historical):
+def _fake_legacy_features(upcoming, historical, **_kw):    # predict passes identity_aliases (fix12)
     """Stand-in for feature_engineering.build_upcoming_features: deterministic per fixture."""
     f = upcoming.copy().reset_index(drop=True)
     for i, c in enumerate(FEATS):

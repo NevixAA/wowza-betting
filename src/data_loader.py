@@ -243,7 +243,7 @@ def _resolve_onto_history(right: pd.DataFrame, df: pd.DataFrame, home_col: str, 
     'Atletico Paranaense' -> 'Athletico-PR' - which resolve() cannot spell-match. Only when resolve()
     finds nothing: the spelling (or one resolve() proves equal to it) must be an alias of exactly ONE
     canonical club that is in THIS league's pool; otherwise the row stays unplaced."""
-    from src.team_names import resolve
+    from src.team_names import identity_alias_hit, resolve
     if right.empty or "league" not in right.columns or "league" not in df.columns:
         return right.iloc[0:0].assign(_h=pd.Series(dtype=object), _a=pd.Series(dtype=object))
     from src.integrity.duplicate_matches import fix_mojibake
@@ -255,10 +255,8 @@ def _resolve_onto_history(right: pd.DataFrame, df: pd.DataFrame, home_col: str, 
     pool_sets = {lg: set(p) for lg, p in pools.items()}
 
     def _by_identity_alias(lg, txt):
-        amap = (aliases or {}).get(lg) or {}
-        hits = {c for a, c in amap.items()
-                if c in pool_sets[lg] and (a == txt or resolve(txt, [a]) == a)}
-        return hits.pop() if len(hits) == 1 else None
+        # the one shared rule, also used where board names meet the served history
+        return identity_alias_hit(txt, pool_sets[lg], (aliases or {}).get(lg))
 
     def _one(lg, nm):
         if nm is None or (isinstance(nm, float) and np.isnan(nm)) or not str(nm).strip():
@@ -1180,7 +1178,8 @@ def _enrich_with_standard_sidemarket_odds(df: pd.DataFrame) -> pd.DataFrame:
         parts = oh["match"].astype(str).str.split(" vs ", n=1, expand=True)
         oh["_hraw"] = parts[0]
         oh["_araw"] = parts[1] if parts.shape[1] > 1 else None
-        oh = _resolve_onto_history(oh, df, "_hraw", "_araw", "std_sidemarket")
+        oh = _resolve_onto_history(oh, df, "_hraw", "_araw", "std_sidemarket",
+                                aliases=IDENTITY_ALIASES)    # df is canonical (fix12)
         oh["_d"] = oh["match_date"].astype(str).str[:10]
         oh["_col"] = oh["market"].map(_MKT)
 
@@ -1266,7 +1265,8 @@ def _enrich_ou25_from_captures(df: pd.DataFrame) -> pd.DataFrame:
         parts = oh["match"].astype(str).str.split(" vs ", n=1, expand=True)
         oh["_hraw"] = parts[0]
         oh["_araw"] = parts[1] if parts.shape[1] > 1 else None
-        oh = _resolve_onto_history(oh, df, "_hraw", "_araw", "ou25_captures")
+        oh = _resolve_onto_history(oh, df, "_hraw", "_araw", "ou25_captures",
+                                aliases=IDENTITY_ALIASES)    # df is canonical (fix12)
         oh["_d"] = oh["match_date"].astype(str).str[:10]
         oh["_col"] = oh["market"].map({"over25": "odds_over25", "under25": "odds_under25"})
 
@@ -1593,7 +1593,8 @@ def _enrich_with_api_shots(df: pd.DataFrame) -> pd.DataFrame:
                      f"by the old loader bank (no fixture_id, no FT score) - their statistics are "
                      f"not served; {int((~_wb).sum()):,} provider rows served")
             hist = hist.assign(_written_back=_wb.to_numpy())
-            hist = _resolve_onto_history(hist, df, "home_team", "away_team", "af_history")
+            hist = _resolve_onto_history(hist, df, "home_team", "away_team", "af_history",
+                                         aliases=IDENTITY_ALIASES)    # df is canonical (fix12)
             hist["_date_str"]  = hist["date"].dt.strftime("%Y-%m-%d")
 
             # Map af_history column names → internal names
@@ -1750,7 +1751,8 @@ def _enrich_with_api_shots(df: pd.DataFrame) -> pd.DataFrame:
         league_rows["_date_str"]  = league_rows["date"].dt.strftime("%Y-%m-%d")
         shots_df = _resolve_onto_history(shots_df.assign(league=league), league_rows,
                                          "home_team", "away_team",
-                                         f"api_football_live_shots[{league}]")
+                                         f"api_football_live_shots[{league}]",
+                                         aliases=IDENTITY_ALIASES)    # df is canonical (fix12)
 
         api_cols = ["home_shots", "away_shots", "home_sot", "away_sot",
                     "home_corners", "away_corners", "home_fouls", "away_fouls",

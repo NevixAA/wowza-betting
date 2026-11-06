@@ -48,7 +48,7 @@ from typing import Optional
 import numpy as np
 import pandas as pd
 
-from src.team_names import resolve as resolve_team
+from src.team_names import resolve_identity
 
 log = logging.getLogger(__name__)
 
@@ -561,6 +561,7 @@ def build_upcoming_features(
     n: int = None,
     recipe: str = "legacy_v9",
     price_mode: str = "none",
+    identity_aliases: dict | None = None,
 ) -> pd.DataFrame:
     """
     Compute features for upcoming (unplayed) fixtures using only historical data.
@@ -571,10 +572,17 @@ def build_upcoming_features(
     known train/serve defects (home_advantage=1.0, away HT form not league-scoped, ...), which are
     documented in src/features_repaired.py and measured by scripts/standard_feature_audit.py.
     recipe="v9_repaired" uses the SAME function as repaired training (no network enrichment).
+
+    `identity_aliases` ({league: {alias: canonical}}) is the club identity map APPLIED to
+    `historical` (predict passes data_loader.IDENTITY_ALIASES, the map load_all_matches applied).
+    `historical` holds only the canonical spelling of a renamed club, so a board name is matched
+    through its alias spelling when the pool alone proves nothing (src.team_names.resolve_identity,
+    fix12 2026-11-07). None = the pool alone, as before.
     """
     if recipe == "v9_repaired":
         from src.features_repaired import build_upcoming_features_repaired
-        return build_upcoming_features_repaired(upcoming, historical, n=n, price_mode=price_mode)
+        return build_upcoming_features_repaired(upcoming, historical, n=n, price_mode=price_mode,
+                                                identity_aliases=identity_aliases)
     if recipe != "legacy_v9":
         raise ValueError(f"unknown feature recipe {recipe!r}")
     if n is None:
@@ -615,7 +623,7 @@ def build_upcoming_features(
 
         key = (str(team), str(league))
         if key not in _resolved:
-            hit = resolve_team(team, _clubs_in(league))
+            hit = resolve_identity(team, _clubs_in(league), (identity_aliases or {}).get(league))
             _resolved[key] = hit
             if hit:
                 log.info(f"[names] {league}: '{team}' -> '{hit}'")
@@ -781,7 +789,8 @@ def build_upcoming_features(
             return None
         key = (str(team), str(league))
         if key not in _resolved:
-            _resolved[key] = resolve_team(team, _clubs_in(league))
+            _resolved[key] = resolve_identity(team, _clubs_in(league),
+                                              (identity_aliases or {}).get(league))
         return _resolved[key]
     _up = df[["date", "home_team", "away_team"]].copy()
     _lgs = df["league"] if "league" in df.columns else pd.Series("", index=df.index)
