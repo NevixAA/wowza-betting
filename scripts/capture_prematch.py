@@ -460,7 +460,6 @@ def parse_odds(body: dict | None, base: dict, page: int, row0: int = 0
                 for v in vals:
                     raw, odd_raw = v.get("value"), v.get("odd")
                     player = PA._clean_player(raw) if raw is not None else ""
-                    words = PA._SIDE_WORD_RE.findall(str(raw or ""))
                     rows.append({**base, "row": k, "page": page, "odds_update_utc": _iso(upd),
                                  "bookmaker_id": bid, "bookmaker_name": bm.get("name"),
                                  "bet_id": key[0], "bet_name": name, "bet_prefix": _bet_prefix(name),
@@ -469,7 +468,9 @@ def parse_odds(body: dict | None, base: dict, page: int, row0: int = 0
                                  "odd_raw": None if odd_raw is None else str(odd_raw),
                                  "odd": PA._to_float(odd_raw), "player_name": player or None,
                                  "line": PA._parse_line(raw) if raw is not None else None,
-                                 "side_word": words[0].lower() if len(words) == 1 else None})
+                                 # every side is kept (each value is its own row); this NAMES
+                                 # it: over / under / yes / no, None when the text names none
+                                 "side_word": PA.side_word(raw) if raw is not None else None})
                     k += 1
     return rows, bets
 

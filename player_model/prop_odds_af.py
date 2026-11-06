@@ -175,6 +175,26 @@ def _is_under(raw: str) -> bool:
     return bool(_UNDER_WORD_RE.search(str(raw or "")))
 
 
+_YES_NO = {"yes", "no"}
+
+
+def side_word(raw) -> str | None:
+    """The side a value string names, or None when it names none (or is ambiguous).
+
+    over / under: the WHOLE word, exactly once (as _is_under). yes / no: the whole value, or its last
+    " - " segment, is exactly Yes / No ("Joel Piroe - No"). A bare player name names no side: the
+    provider's yes/no player props list the Yes side as the name alone. Owner decision 2026-11-05:
+    every side the provider offers is kept and labelled, so a real two-sided pair can be read."""
+    s = str(raw or "").strip()
+    words = _SIDE_WORD_RE.findall(s)
+    if len(words) == 1:
+        return words[0].lower()
+    if words:
+        return None
+    tail = s.rsplit(" - ", 1)[-1].strip().lower()
+    return tail if tail in _YES_NO else None
+
+
 def _is_number(tok: str) -> bool:
     try:
         float(tok)
@@ -256,6 +276,8 @@ def fetch(fixtures: list[dict], *, verbose: bool = True) -> tuple[dict[str, floa
                         # Since 2026-10-14 it is KEPT, but only in the separate per-book quote
                         # log (QUOTES -> output/prop_quotes/), never in `best` or `records`.
                         under = _is_under(raw)
+                        # A "No" side is the other side of a yes/no bet: the same rule as Under.
+                        no_side = side_word(raw) == "no"
                         odd = _to_float(val.get("odd"))
                         if odd is None or not (_MIN_ODDS <= odd <= _MAX_ODDS):
                             continue
@@ -275,14 +297,15 @@ def fetch(fixtures: list[dict], *, verbose: bool = True) -> tuple[dict[str, floa
                             if line is not None and abs(line - spec) > 1e-9:
                                 continue
                         player = _clean_player(raw)
-                        if not player:
-                            continue
+                        if not player or player.lower() in _YES_NO:
+                            continue                  # a bare "Yes" / "No" names no player
                         QUOTES.append({"match_date": match_date, "league": league, "match": match,
                                        "player": player, "market": mkt,
-                                       "side": "under" if under else ("over" if spec is not None else "yes"),
+                                       "side": ("under" if under else "no" if no_side
+                                                else ("over" if spec is not None else "yes")),
                                        "point": line if spec is not None else None, "odds": odd,
                                        "bookmaker": book, "source": "api_football"})
-                        if under:
+                        if under or no_side:
                             continue                  # quote log only - never a tip price
                         k = f"{_key_name(player)}|{mkt}"
                         # Best available price across books, matching odds_fetcher's contract.

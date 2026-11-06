@@ -147,7 +147,10 @@ with tab_p:
         V.render_board(p, True, limit=60)
         st.caption("**Edge** = model probability minus the bookmaker's implied probability, in "
                    "percentage points; positive means the model rates the player higher than the price "
-                   "does. Bookmaker prices include their margin. Kickoff in Israel time. Paper only.")
+                   "does. Bookmaker prices include their margin. **Fair price** says where the fair "
+                   "probability behind EV and tier came from: *two-sided price* (both sides of one "
+                   "bookmaker's bet, de-vigged) or *margin assumed* (one side quoted, margin assumed). "
+                   "Model = the model's own probability. Kickoff in Israel time. Paper only.")
 with tab_u:
     u = _filt(unpriced)
     if u.empty:
@@ -159,8 +162,8 @@ with tab_u:
 
 with st.expander("Raw data — every upcoming prop"):
     show_cols = ["date", "kickoff_utc", "league", "match", "player_name", "position", "team",
-                 "market", "model_prob", "fair_odds", "market_odds", "ev", "tier", "confidence",
-                 "n_games"]
+                 "market", "model_prob", "fair_odds", "market_odds", "fair_basis", "ev", "tier",
+                 "confidence", "n_games", "model_prob_hand_adjusted", "prob_adjustment"]
     ui.compact_table(df.sort_values("model_prob", ascending=False)[[c for c in show_cols if c in df.columns]],
                      V.RAW_CONFIG)
 

@@ -368,6 +368,81 @@ def _quotes_from_oddsapi(bookmakers: list, match_date: str, league: str, match: 
     return out
 
 
+# ── REAL TWO-SIDED PRICES (owner decision 2026-11-05) ─────────────────────────────────────
+# A tip's fair probability comes from de-vigging a REAL pair when one exists: the tip's side
+# (Yes / Over at the tip's line) and the other side (No / Under at the same line) from the SAME
+# bookmaker in the SAME provider answer (one fetch = one snapshot). Power de-vig
+# (src.market_edge.power_devig, as the side markets use), median over the books that quoted both.
+# Only when no such pair exists does predict fall back to the ASSUMED overround. A side whose name
+# is not one of these four words never forms a pair.
+_PAIR_SIDE = {"yes": "a", "over": "a", "no": "b", "under": "b"}
+
+
+def _power_devig(odds_a: float, odds_b: float) -> Optional[float]:
+    return _pm_config._v9_src("market_edge").power_devig(odds_a, odds_b)
+
+
+def _add_fixture_pairs(fixture_pairs: dict, match_date, match, quotes: list[dict]) -> int:
+    """Add the two-sided pairs in `quotes` (ONE provider answer for ONE fixture) to fixture_pairs:
+    {(match_date, our "home vs away"): {"<norm player>|<market>": [pair, ...]}}. Returns pairs added.
+
+    A pair needs exactly one price per side in that book (a book quoting two different Yes prices
+    for one player in one answer is ambiguous, so it gives no pair) and both sides at the same line."""
+    if not quotes or not match:
+        return 0
+    sides: dict[tuple, dict[str, set]] = {}
+    for q in quotes:
+        side = _PAIR_SIDE.get(str(q.get("side") or "").strip().lower())
+        player = _norm(str(q.get("player") or ""))
+        try:
+            odds = float(q.get("odds"))
+        except (TypeError, ValueError):
+            continue
+        if side is None or not player or not q.get("market") or not (odds > 1.0):
+            continue
+        pt = q.get("point")
+        try:
+            pt = None if pt is None or pt != pt else round(float(pt), 2)
+        except (TypeError, ValueError):
+            continue
+        k = (player, str(q["market"]), pt, str(q.get("bookmaker") or ""))
+        sides.setdefault(k, {"a": set(), "b": set()})[side].add(odds)
+    added = 0
+    fx = None
+    for (player, market, pt, book), s in sides.items():
+        if len(s["a"]) != 1 or len(s["b"]) != 1:
+            continue                                    # one side missing, or ambiguous
+        oa, ob = next(iter(s["a"])), next(iter(s["b"]))
+        p = _power_devig(oa, ob)
+        if p is None:
+            continue
+        if fx is None:
+            fx = fixture_pairs.setdefault((str(match_date or "")[:10], str(match)), {})
+        fx.setdefault(f"{player}|{market}", []).append(
+            {"book": book, "odds_a": oa, "odds_b": ob, "p_fair": p, "point": pt})
+        added += 1
+    return added
+
+
+def _add_af_pairs(fixture_pairs: dict, af_quotes: list[dict]) -> int:
+    """API-Football quotes carry OUR fixture name; each fixture is one answer (prop_odds_af.fetch)."""
+    by_fx: dict[tuple[str, str], list[dict]] = {}
+    for q in af_quotes or []:
+        by_fx.setdefault((str(q.get("match_date") or "")[:10], str(q.get("match") or "")), []).append(q)
+    return sum(_add_fixture_pairs(fixture_pairs, d, m, qs) for (d, m), qs in by_fx.items())
+
+
+def pairs_for_fixture(fixture_pairs: dict, match_date, match) -> dict[str, list[dict]]:
+    """The two-sided pairs quoted for THIS fixture only (same rule as prices_for_fixture)."""
+    out: dict[str, list[dict]] = {}
+    for (fd, fm), pairs in (fixture_pairs or {}).items():
+        if not _dates_close(fd, match_date) or not same_fixture(match, fm):
+            continue
+        for k, v in pairs.items():
+            out.setdefault(k, []).extend(v)
+    return out
+
+
 def _append_quotes(quotes: list[dict]) -> None:
     """Per-book, both-sides prop quotes -> output/prop_quotes/<YYYY-MM-DD>.csv (DAY of capture).
 
@@ -758,6 +833,8 @@ def fetch_prop_odds(signals_df) -> dict[str, float]:
     # Per-FIXTURE best prices, keyed by OUR fixture name (see _add_fixture_price). `result` above
     # stays the old cross-fixture lookup for callers that only count it; tip pricing uses this.
     fixture_prices: dict[tuple[str, str], dict[str, float]] = {}
+    # Per-FIXTURE real two-sided pairs (same book, same answer), for the de-vigged fair probability.
+    fixture_pairs: dict[tuple[str, str], dict[str, list[dict]]] = {}
 
     from datetime import datetime as _dt, timezone as _tz
     today = _dt.now(_tz.utc).strftime("%Y-%m-%d")
@@ -841,7 +918,10 @@ def fetch_prop_odds(signals_df) -> dict[str, float]:
             _match_date = str(event.get("commence_time", ""))[:10]
             _league     = SPORT_KEY_TO_LEAGUE.get(sport_key, sport_key)
             try:
-                quotes.extend(_quotes_from_oddsapi(bookmakers, _match_date, _league, _match_str))
+                _ev_quotes = _quotes_from_oddsapi(bookmakers, _match_date, _league, _match_str)
+                quotes.extend(_ev_quotes)
+                # Real two-sided pairs of THIS answer, keyed by OUR fixture name like fixture_prices.
+                _add_fixture_pairs(fixture_pairs, _match_date, f"{_hit[0]} vs {_hit[1]}", _ev_quotes)
             except Exception as _qe:                         # logging must never break pricing
                 print(f"[odds_fetcher] quote log skipped for {_match_str}: {type(_qe).__name__}")
             for our_market, (api_key, point) in _MARKET_MAP.items():
@@ -887,13 +967,21 @@ def fetch_prop_odds(signals_df) -> dict[str, float]:
         # Never take the primary source down: a failure here must leave OddsAPI's result intact.
         print(f"[odds_fetcher] api-football second source skipped ({type(e).__name__}: {e})")
 
-    global _LAST_PRICE_DATES, _LAST_FIXTURE_PRICES
+    global _LAST_PRICE_DATES, _LAST_FIXTURE_PRICES, _LAST_FIXTURE_PAIRS
     _LAST_PRICE_DATES = _price_dates(history_records)
     _LAST_FIXTURE_PRICES = fixture_prices
+    _LAST_FIXTURE_PAIRS = fixture_pairs
 
     try:
         from player_model import prop_odds_af as _af
-        quotes.extend(_af.drain_quotes())
+        _af_quotes = _af.drain_quotes()
+        try:
+            _add_af_pairs(fixture_pairs, _af_quotes)
+        except Exception as _pe:                         # a pair failure never drops the quote log
+            print(f"[odds_fetcher] api-football two-sided pairs skipped: {type(_pe).__name__}: {_pe}")
+        quotes.extend(_af_quotes)
+        _n_pairs = sum(len(v) for fx in fixture_pairs.values() for v in fx.values())
+        print(f"[odds_fetcher] real two-sided prop prices (same book, same answer): {_n_pairs} pair(s)")
         _append_quotes(quotes)
         if quotes:
             print(f"[odds_fetcher] quote log: {len(quotes)} per-book quote(s) incl. both sides")
@@ -1045,6 +1133,9 @@ _LAST_PRICE_DATES: dict[str, set[str]] = {}
 # II, no SOT quote at all) took Adrian Marin's MLS 5.00 / 36.00. Filled by fetch_prop_odds:
 # {(match_date, our "home vs away"): {"<norm player>|<market>": best over/yes price}}.
 _LAST_FIXTURE_PRICES: Optional[dict[tuple[str, str], dict[str, float]]] = None
+# Filled by fetch_prop_odds: {(match_date, our "home vs away"): {"<norm player>|<market>": [pair]}},
+# the real two-sided prices match_fair_to_tips de-vigs (owner decision 2026-11-05).
+_LAST_FIXTURE_PAIRS: Optional[dict[tuple[str, str], dict[str, list[dict]]]] = None
 
 # OddsAPI dates a fixture by its UTC kickoff, the tips by theirs; allow one day of slack. A
 # different fixture can never pass, because BOTH clubs must also match.
@@ -1144,13 +1235,51 @@ def match_odds_to_tips(tips_df, odds_raw: dict[str, float],
     fixture price map nothing is priced (fail closed) rather than guessing across fixtures.
     """
     fixture_prices = _LAST_FIXTURE_PRICES if fixture_prices is None else fixture_prices
-    matched: dict[str, float] = {}
     if fixture_prices is None:
         if odds_raw:
             print("[odds_fetcher] name match: no per-fixture price map — refusing to price "
                   "tips from fixture-less keys")
-        return matched
+        return {}
+    resolved, fuzzy, refused = _resolve_tip_prices(tips_df, fixture_prices)
+    if fuzzy or refused:
+        print(f"[odds_fetcher] name match: {fuzzy} priced by initial+surname, "
+              f"{refused} refused as ambiguous")
+    return {out_key: price for out_key, (_ck, _name_key, price) in resolved.items()}
 
+
+def match_fair_to_tips(tips_df, fixture_pairs: Optional[dict] = None,
+                       fixture_prices: Optional[dict] = None) -> dict[str, float]:
+    """{tip_price_key: fair probability} for the tips that have a REAL two-sided price.
+
+    The tip is resolved to the SAME quoted player as its price (match_odds_to_tips' rule, on the
+    same fixture price map), then that player's pairs in the tip's own fixture are power de-vigged
+    per book and the median over books is the fair probability of the tip's side (Yes / Over).
+    A tip without a pair is absent: predict.enrich_with_odds then uses the assumed overround and
+    says so (fair_basis). Owner decision 2026-11-05."""
+    import statistics
+    fixture_prices = _LAST_FIXTURE_PRICES if fixture_prices is None else fixture_prices
+    fixture_pairs = _LAST_FIXTURE_PAIRS if fixture_pairs is None else fixture_pairs
+    if not fixture_prices or not fixture_pairs:
+        return {}
+    resolved, _f, _r = _resolve_tip_prices(tips_df, fixture_prices)
+    pair_cache: dict[tuple[str, str], dict] = {}
+    out: dict[str, float] = {}
+    for out_key, (ck, name_key, _price) in resolved.items():
+        if ck not in pair_cache:
+            pair_cache[ck] = pairs_for_fixture(fixture_pairs, *ck)
+        pairs = pair_cache[ck].get(name_key) or []
+        ps = [float(p["p_fair"]) for p in pairs if p.get("p_fair") is not None]
+        if ps:
+            out[out_key] = float(statistics.median(ps))
+    return out
+
+
+def _resolve_tip_prices(tips_df, fixture_prices: dict
+                        ) -> tuple[dict[str, tuple[tuple[str, str], str, float]], int, int]:
+    """({tip_price_key: ((tip_date, match), "<quoted norm player>|<market>", best price)},
+    n priced by initial+surname, n refused as ambiguous). The one name rule both the price and the
+    two-sided fair probability use, so they always describe the same quoted player."""
+    resolved: dict[str, tuple[tuple[str, str], str, float]] = {}
     fixture_cache: dict[tuple[str, str], tuple[dict, dict]] = {}
     fuzzy = refused = 0
     for _, row in tips_df.iterrows():
@@ -1174,18 +1303,16 @@ def match_odds_to_tips(tips_df, odds_raw: dict[str, float],
         out_key = tip_price_key(player, market, tip_date, match)
         key_norm = f"{_norm(player)}|{market}"
         if key_norm in prices:
-            matched[out_key] = prices[key_norm]
+            resolved[out_key] = (ck, key_norm, prices[key_norm])
             continue
         key = _initial_surname(player)
         if not key:
             continue
         cands = index.get((key, market), set())
         if len(cands) == 1:
-            matched[out_key] = prices[f"{next(iter(cands))}|{market}"]
+            name_key = f"{next(iter(cands))}|{market}"
+            resolved[out_key] = (ck, name_key, prices[name_key])
             fuzzy += 1
         elif len(cands) > 1:
             refused += 1
-    if fuzzy or refused:
-        print(f"[odds_fetcher] name match: {fuzzy} priced by initial+surname, "
-              f"{refused} refused as ambiguous")
-    return matched
+    return resolved, fuzzy, refused

@@ -37,6 +37,27 @@ RISK_STATE = {"Low": ("LOW RISK", "POSITIVE"), "Rotation": ("ROTATION RISK", "WA
               "Unavailable": ("UNAVAILABLE", "NEGATIVE")}
 _RISK_ICON = {"POSITIVE": "●", "WARNING": "▲", "NEGATIVE": "✕"}
 
+# ── Convention-based figures (owner decision 2026-11-05) ──────────────────────────────────────────
+# Shown, unchanged, but LABELLED: they rest on typed coefficients, not on a fit to data
+# (player_model/fantasy_defaults.py; reports/P2_PROPS_DEFAULTS_AND_FANTASY.md section 4).
+CONVENTION_LABEL = "convention-based, not fitted on data"
+#: V2 columns built from typed shares / half-life / bounds: the "Best value" figures and every
+#: 3- and 5-gameweek number (transfer gains, squad solve on those horizons)
+CONVENTION_COLS = ("xpts_3gw", "xpts_5gw", "value_5gw_per_m")
+V1_NOTE = f"Every V1 points figure (Exp pts / xPts on the V1 board) is {CONVENTION_LABEL}."
+FIGURES_NOTE = (
+    "**Which figures are fitted and which are conventions.** "
+    "**Real or fitted:** Final xPts and FPL ep (FPL's own expected points), P(start), xMin and the "
+    "minutes buckets (fitted on the FPL panel), the bonus expectation (the player's own bonus per "
+    "start) and the Wowza adjustment (fitted, shadow). P(goal), P(assist), P(CS) and the points "
+    "distribution (median, P90, ceiling) use fitted inputs inside typed bounds. "
+    "**Convention-based, not fitted on data:** 3-GW, 5-GW and 5-GW/£m (the Best value figures, "
+    "3- and 5-GW transfer gains, a squad solved on those horizons): typed position shares, long-run "
+    "play rate, availability half-life and fixture-multiplier bounds; and every V1 points figure "
+    "(the V1 board's differentials, lineup, transfer helper, alerts and chip advisor): typed bonus "
+    "formula, FDR-to-xG line, FDR step and home edge. Risk and confidence words use typed cut points."
+)
+
 
 # ═════════════════════════════════════════════════════════════════════════════════════════════
 # PURE HELPERS (no Streamlit) — tested directly
