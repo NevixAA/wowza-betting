@@ -49,14 +49,24 @@ def parse(body: dict | None, player_id: int) -> tuple[dict, list[dict]]:
              "fetched_at": datetime.now(timezone.utc).isoformat()}, spells)
 
 
-def todo_players() -> list[int]:
-    h = history_frame(["player_id", "date"])
+def invalid_rows(h: pd.DataFrame | None = None) -> int:
+    """History rows whose player id is not a provider id (> 0): never sent (post-collection check
+    2026-11-07: /sidelined?player=0 was asked on every run, the provider rejects it, nothing was
+    recorded, so it stayed 'to do' for ever - the same key rule as collect_player_profiles)."""
+    h = history_frame(["player_id"]) if h is None else h
+    if h.empty:
+        return 0
+    return int((~(pd.to_numeric(h["player_id"], errors="coerce") > 0)).sum())
+
+
+def todo_players(h: pd.DataFrame | None = None, have: pd.DataFrame | None = None) -> list[int]:
+    h = history_frame(["player_id", "date"]) if h is None else h.copy()
     if h.empty:
         return []
     h["player_id"] = pd.to_numeric(h["player_id"], errors="coerce")
-    h = h.dropna(subset=["player_id"])
+    h = h[h["player_id"] > 0]                         # an id of 0 / missing is never sent
     last = h.groupby("player_id")["date"].max().sort_values(ascending=False)   # active players first
-    have = read_parquet(PLAYERS)
+    have = read_parquet(PLAYERS) if have is None else have
     done = set(pd.to_numeric(have["player_id"], errors="coerce").dropna().astype(int)) if not have.empty else set()
     return [int(p) for p in last.index if int(p) not in done]
 
@@ -70,7 +80,8 @@ def _flush(pbuf, sbuf):
 
 def run(limit: int | None = None, dry_run: bool = False, client: AFClient | None = None) -> dict:
     todo = todo_players()
-    print(f"[sidelined] {len(todo):,} player(s) without a stored /sidelined answer")
+    print(f"[sidelined] {len(todo):,} player(s) without a stored /sidelined answer; "
+          f"{invalid_rows():,} history row(s) with player id 0 / missing never sent")
     if dry_run or not todo:
         return {"todo": len(todo), "fetched": 0}
     client = client or AFClient()
