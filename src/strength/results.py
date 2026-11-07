@@ -10,6 +10,9 @@ SOURCES (only results we hold; nothing typed):
       90-minute score.
   output/af_history.parquet   API-Football results of the new-format + standard leagues (names).
   output/fd_history.parquet   football-data.co.uk results (football-data spellings).
+Both history banks are read under the owner's corrections, as the loader serves them: af_history
+through src.af_history_corrections.apply_af_history_corrections, fd_history through
+src.history_corrections.serve_history (removal lists, 90-minute scores, provider dates).
 
 PRECEDENCE. Inside the date span of a collected (league, season) the league is read ONLY from the
 collected file (ids, full season; spans, not season labels, because the banks label seasons
@@ -195,6 +198,15 @@ def load_results(collected: Path | None = None, af: Path | None = None, fd: Path
 
     # 3. fd_history: football-data spellings, resolved onto the API names of the same scope only.
     f = _read(fd)
+    if not f.empty:
+        # the owner's history corrections exactly as the loader serves fd_history (fix16/readers,
+        # src.history_corrections.serve_history): proven cup / awarded rows and duplicate copies
+        # out, AET/PEN rows at the 90-minute score, one-day-off rows on the provider's date
+        from src.history_corrections import serve_history
+        f = serve_history(f, tag="strength.fd_history")
+        report["fd_history_corrections"] = dict(f.attrs.get("history_corrections") or {})
+        if "history_date_corrections" in f.attrs:
+            report["fd_history_corrections"]["rows_redated"] = f.attrs["history_date_corrections"]["rows_redated"]
     if not f.empty:
         f = f.assign(competition=f["league"].map(_canon))
         report["dropped_unknown_league"] += int(f["competition"].isna().sum())

@@ -118,19 +118,29 @@ def load_results_lookup():
     import pathlib
     out = pathlib.Path(__file__).resolve().parents[1] / "output"
     frames = []
+    # Both banks are read under the owner's corrections, as the loader serves them (fix16/readers):
+    # fd_history through src.history_corrections.serve_history (proven cup / awarded rows and
+    # duplicate copies out, AET/PEN rows at the 90-minute score - settlement is on 90 minutes -,
+    # one-day-off rows on the provider's date); af_history through
+    # src.af_history_corrections.apply_af_history_corrections (one row per proven fixture).
     try:
         # COLUMN-PROJECTED ON READ, not after. Reading the frame whole and slicing costs
         # 14 MB for fd and 21 MB for af that are then thrown away — and this is a cached
         # function, so the peak is what the deployment pays for the rest of its life.
-        fd = pd.read_parquet(out / "fd_history.parquet",
-                             columns=["league", "date", "home_team", "away_team",
-                                      "home_goals", "away_goals"])
-        frames.append(fd)
+        from src.history_corrections import SERVE_COLS, serve_history
+        fd = pd.read_parquet(out / "fd_history.parquet", columns=SERVE_COLS)
+        frames.append(serve_history(fd, tag="live.fd_history"))
     except Exception as e:                                              # noqa: BLE001
         print(f"[live] fd_history.parquet unreadable: {e}")
     try:
+        import pyarrow.parquet as pq
+        from src.af_history_corrections import FILL_COLS, KEY as AF_KEY, apply_af_history_corrections
+        _have = set(pq.read_schema(out / "af_history.parquet").names)
+        # the key plus the cells the af rule compares (SIGNATURE) and may fill (FILL_COLS)
         af = pd.read_parquet(out / "af_history.parquet",
-                             columns=["league", "date", "home_team", "away_team", "FTHG", "FTAG"])
+                             columns=AF_KEY + [c for c in FILL_COLS if c in _have])
+        af = apply_af_history_corrections(af, tag="live.af_history")
+        af = af[["league", "date", "home_team", "away_team", "FTHG", "FTAG"]]
         frames.append(af.rename(columns={"FTHG": "home_goals", "FTAG": "away_goals"}))
     except Exception as e:                                              # noqa: BLE001
         print(f"[live] af_history.parquet unreadable: {e}")

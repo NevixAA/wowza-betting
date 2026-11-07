@@ -31,9 +31,14 @@ def _lg(x) -> str:
 
 
 def outcomes() -> dict:
-    """{(canonical league, YYYY-MM-DD): {(home, away): (total goals, btts)}} from fd_history."""
+    """{(canonical league, YYYY-MM-DD): {(home, away): (total goals, btts)}} from fd_history, read
+    under the owner's corrections as the loader serves it (fix16/readers,
+    src.history_corrections.serve_history): removal lists, 90-minute scores, provider dates."""
     import pandas as pd
-    f = pd.read_parquet(ROOT / "output" / "fd_history.parquet")
+    from src.history_corrections import serve_history
+    f = serve_history(pd.read_parquet(ROOT / "output" / "fd_history.parquet"),
+                      tag="price_provenance.fd_history")
+    f = f.copy()
     f["md"] = pd.to_datetime(f["date"], errors="coerce").dt.strftime("%Y-%m-%d")
     f["tg"] = f["home_goals"] + f["away_goals"]
     f["bt"] = ((f["home_goals"] > 0) & (f["away_goals"] > 0)).astype(float)

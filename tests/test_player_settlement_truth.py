@@ -292,7 +292,7 @@ def test_ht_tip_settles_from_api_football_when_stores_miss_it(tmp_path, monkeypa
     pd.DataFrame([{"match_date": d, "league": "League One", "home_team": "Plymouth Argyle",
                    "away_team": "Wycombe Wanderers", "market": "ht_over05", "fair_odds": "1.4",
                    "result": "", "pnl": "", "notes": ""}]).to_csv(led, index=False)
-    pd.DataFrame(columns=["league", "date", "home_team", "away_team", "ht_home_goals",
+    pd.DataFrame(columns=["league", "date", "home_team", "away_team", "home_goals", "away_goals", "ht_home_goals",
                           "ht_away_goals"]).to_parquet(tmp_path / "fd_history.parquet")
     monkeypatch.setattr(U, "fetch_scores_apifootball", lambda league, match_date=None: [
         {"home_team": "Plymouth", "away_team": "Wycombe", "home_score": 2, "away_score": 1,

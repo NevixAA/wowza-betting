@@ -2082,6 +2082,19 @@ def _group_by_day_league(df: pd.DataFrame, day_col: str) -> dict:
     return {k: g for k, g in d.groupby([day_col, "_lk"], sort=False)}
 
 
+def _read_fd_ht(path: Path, tag: str) -> pd.DataFrame:
+    """fd_history's half-time scores as the loader serves the history (fix16/readers): the owner's
+    corrections through src.history_corrections.serve_history - proven cup / awarded rows and
+    duplicate copies out (a removed copy's HT fills the kept copy's EMPTY cell, the same match),
+    one-day-off rows on the provider's date. The full-time score is read only so a listed row is
+    recognised. Columns: league, date, home_team, away_team, hh, ha."""
+    from src.history_corrections import SERVE_COLS, serve_history
+    d = pd.read_parquet(path, columns=SERVE_COLS + ["ht_home_goals", "ht_away_goals"])
+    d = serve_history(d, tag=tag)
+    return d[["league", "date", "home_team", "away_team", "ht_home_goals", "ht_away_goals"]].rename(
+        columns={"ht_home_goals": "hh", "ht_away_goals": "ha"})
+
+
 def update_ht_observations() -> None:
     """Fill half-time scores into output/ht_observations.csv. Idempotent.
 
@@ -2117,6 +2130,9 @@ def update_ht_observations() -> None:
         if not path.exists():
             continue
         try:
+            if path.name == "fd_history.parquet":
+                frames.append(_read_fd_ht(path, "ht_observations.fd_history"))
+                continue
             d = pd.read_parquet(path, columns=["league", "date", "home_team", "away_team",
                                                *ren.keys()])
             frames.append(d.rename(columns=ren))
@@ -2202,9 +2218,7 @@ def update_ht_results(days: int = 3) -> None:
     _fdp = config.OUTPUT_DIR / "fd_history.parquet"
     if _fdp.exists():
         try:
-            _fd = pd.read_parquet(_fdp, columns=["league", "date", "home_team", "away_team",
-                                                 "ht_home_goals", "ht_away_goals"])
-            _frames.append(_fd.rename(columns={"ht_home_goals": "hh", "ht_away_goals": "ha"}))
+            _frames.append(_read_fd_ht(_fdp, "ht_ledger.fd_history"))
         except Exception as e:                                        # noqa: BLE001
             log.warning(f"ht_ledger: could not read fd_history.parquet ({e})")
     _afp = config.OUTPUT_DIR / "af_ht_history.parquet"
