@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-06T10:32:14.475328+00:00",
+ "generated_at": "2026-11-07T04:05:38.306814+00:00",
  "owner_decision": "2026-11-04 fix round 8 (props item 3)",
  "plan": {
   "rows": 950556,
@@ -23,19 +23,303 @@
   "planned_calls": 32724
  },
  "run": {
-  "calls": 0,
-  "fetched": 0,
-  "rows_stored": 0,
-  "rows_refused": {},
+  "calls": 1340,
+  "fetched": 1340,
+  "rows_stored": 37875,
+  "rows_refused": {
+   "player_id_invalid": 175,
+   "player_not_in_answer": 83,
+   "player_twice_in_answer": 6,
+   "side_unproven": 25
+  },
   "empty_answers": 0,
   "budget_stop": "job cap reached: 45,000 >= 45,000 calls today"
  },
- "stored_rows": 0,
- "stored_rows_by_source": {},
- "journal_fixtures": 0,
- "journal_by_status": {},
- "rows_refused_in_answers": 0,
- "fields": {},
+ "stored_rows": 37875,
+ "stored_rows_by_source": {
+  "history": 34423,
+  "cup_rows": 3452
+ },
+ "journal_fixtures": 1340,
+ "journal_by_status": {
+  "ok": 1340
+ },
+ "rows_refused_in_answers": 289,
+ "fields": {
+  "goals": {
+   "rows": 37873,
+   "sent_value": 3413,
+   "sent_zero": 17041,
+   "null_read_as_zero": 17419,
+   "missing": 0,
+   "orig_zero_now_zero": 34457,
+   "orig_zero_now_missing": 0,
+   "orig_zero_now_value": 3,
+   "orig_value_now_different": 4
+  },
+  "assists": {
+   "rows": 37873,
+   "sent_value": 2564,
+   "sent_zero": 34711,
+   "null_read_as_zero": 598,
+   "missing": 0,
+   "orig_zero_now_zero": 35298,
+   "orig_zero_now_missing": 0,
+   "orig_zero_now_value": 15,
+   "orig_value_now_different": 15
+  },
+  "shots_total": {
+   "rows": 37873,
+   "sent_value": 17488,
+   "sent_zero": 6540,
+   "null_read_as_zero": 13845,
+   "missing": 0,
+   "orig_zero_now_zero": 19006,
+   "orig_zero_now_missing": 0,
+   "orig_zero_now_value": 117,
+   "orig_value_now_different": 3891
+  },
+  "shots_on_target": {
+   "rows": 37873,
+   "sent_value": 9215,
+   "sent_zero": 14163,
+   "null_read_as_zero": 14495,
+   "missing": 0,
+   "orig_zero_now_zero": 28623,
+   "orig_zero_now_missing": 0,
+   "orig_zero_now_value": 33,
+   "orig_value_now_different": 78
+  },
+  "yellow_cards": {
+   "rows": 37873,
+   "sent_value": 4997,
+   "sent_zero": 32876,
+   "null_read_as_zero": 0,
+   "missing": 0,
+   "orig_zero_now_zero": 32777,
+   "orig_zero_now_missing": 0,
+   "orig_zero_now_value": 79,
+   "orig_value_now_different": 99
+  },
+  "red_cards": {
+   "rows": 37873,
+   "sent_value": 227,
+   "sent_zero": 37646,
+   "null_read_as_zero": 0,
+   "missing": 0,
+   "orig_zero_now_zero": 37643,
+   "orig_zero_now_missing": 0,
+   "orig_zero_now_value": 0,
+   "orig_value_now_different": 3
+  },
+  "key_passes": {
+   "rows": 37873,
+   "sent_value": 16307,
+   "sent_zero": 7670,
+   "null_read_as_zero": 13896,
+   "missing": 0,
+   "orig_zero_now_zero": 21461,
+   "orig_zero_now_missing": 0,
+   "orig_zero_now_value": 124,
+   "orig_value_now_different": 484
+  },
+  "passes_total": {
+   "rows": 37873,
+   "sent_value": 37775,
+   "sent_zero": 43,
+   "null_read_as_zero": 55,
+   "missing": 0,
+   "orig_zero_now_zero": 94,
+   "orig_zero_now_missing": 0,
+   "orig_zero_now_value": 2,
+   "orig_value_now_different": 5715
+  },
+  "fouls_committed": {
+   "rows": 37873,
+   "sent_value": 19409,
+   "sent_zero": 9127,
+   "null_read_as_zero": 9337,
+   "missing": 0,
+   "orig_zero_now_zero": 18413,
+   "orig_zero_now_missing": 0,
+   "orig_zero_now_value": 50,
+   "orig_value_now_different": 226
+  },
+  "fouls_drawn": {
+   "rows": 37873,
+   "sent_value": 18328,
+   "sent_zero": 9689,
+   "null_read_as_zero": 9856,
+   "missing": 0,
+   "orig_zero_now_zero": 19507,
+   "orig_zero_now_missing": 0,
+   "orig_zero_now_value": 34,
+   "orig_value_now_different": 155
+  },
+  "duels_total": {
+   "rows": 37873,
+   "sent_value": 35541,
+   "sent_zero": 794,
+   "null_read_as_zero": 1538,
+   "missing": 0,
+   "orig_zero_now_zero": 2301,
+   "orig_zero_now_missing": 0,
+   "orig_zero_now_value": 54,
+   "orig_value_now_different": 4571
+  },
+  "duels_won": {
+   "rows": 37873,
+   "sent_value": 32750,
+   "sent_zero": 2518,
+   "null_read_as_zero": 2605,
+   "missing": 0,
+   "orig_zero_now_zero": 5043,
+   "orig_zero_now_missing": 0,
+   "orig_zero_now_value": 111,
+   "orig_value_now_different": 3087
+  },
+  "offsides": {
+   "rows": 37873,
+   "sent_value": 3754,
+   "sent_zero": 16922,
+   "null_read_as_zero": 17197,
+   "missing": 0,
+   "orig_zero_now_zero": 34098,
+   "orig_zero_now_missing": 0,
+   "orig_zero_now_value": 20,
+   "orig_value_now_different": 36
+  },
+  "tackles_total": {
+   "rows": 37873,
+   "sent_value": 21084,
+   "sent_zero": 8345,
+   "null_read_as_zero": 8444,
+   "missing": 0,
+   "orig_zero_now_zero": 16538,
+   "orig_zero_now_missing": 0,
+   "orig_zero_now_value": 225,
+   "orig_value_now_different": 1392
+  },
+  "interceptions": {
+   "rows": 37873,
+   "sent_value": 15202,
+   "sent_zero": 11131,
+   "null_read_as_zero": 11540,
+   "missing": 0,
+   "orig_zero_now_zero": 22345,
+   "orig_zero_now_missing": 0,
+   "orig_zero_now_value": 332,
+   "orig_value_now_different": 1154
+  },
+  "dribbles_attempted": {
+   "rows": 37873,
+   "sent_value": 18509,
+   "sent_zero": 9573,
+   "null_read_as_zero": 9791,
+   "missing": 0,
+   "orig_zero_now_zero": 19097,
+   "orig_zero_now_missing": 0,
+   "orig_zero_now_value": 319,
+   "orig_value_now_different": 1416
+  },
+  "dribbles_success": {
+   "rows": 37873,
+   "sent_value": 11586,
+   "sent_zero": 12973,
+   "null_read_as_zero": 13314,
+   "missing": 0,
+   "orig_zero_now_zero": 26092,
+   "orig_zero_now_missing": 0,
+   "orig_zero_now_value": 253,
+   "orig_value_now_different": 575
+  },
+  "dribbles_past": {
+   "rows": 37873,
+   "sent_value": 8231,
+   "sent_zero": 3453,
+   "null_read_as_zero": 26189,
+   "missing": 0,
+   "orig_zero_now_zero": 29320,
+   "orig_zero_now_missing": 0,
+   "orig_zero_now_value": 5953,
+   "orig_value_now_different": 354
+  },
+  "goals_conceded": {
+   "rows": 37873,
+   "sent_value": 1256,
+   "sent_zero": 23182,
+   "null_read_as_zero": 13435,
+   "missing": 0,
+   "orig_zero_now_zero": 36574,
+   "orig_zero_now_missing": 0,
+   "orig_zero_now_value": 915,
+   "orig_value_now_different": 43
+  },
+  "saves": {
+   "rows": 37873,
+   "sent_value": 2423,
+   "sent_zero": 17518,
+   "null_read_as_zero": 17932,
+   "missing": 0,
+   "orig_zero_now_zero": 35449,
+   "orig_zero_now_missing": 0,
+   "orig_zero_now_value": 0,
+   "orig_value_now_different": 62
+  },
+  "penalty_scored": {
+   "rows": 37873,
+   "sent_value": 256,
+   "sent_zero": 37617,
+   "null_read_as_zero": 0,
+   "missing": 0,
+   "orig_zero_now_zero": 37611,
+   "orig_zero_now_missing": 0,
+   "orig_zero_now_value": 0,
+   "orig_value_now_different": 6
+  },
+  "penalty_missed": {
+   "rows": 37873,
+   "sent_value": 46,
+   "sent_zero": 24392,
+   "null_read_as_zero": 13435,
+   "missing": 0,
+   "orig_zero_now_zero": 37825,
+   "orig_zero_now_missing": 0,
+   "orig_zero_now_value": 26,
+   "orig_value_now_different": 2
+  },
+  "penalty_won": {
+   "rows": 37873,
+   "sent_value": 181,
+   "sent_zero": 5242,
+   "null_read_as_zero": 32450,
+   "missing": 0,
+   "orig_zero_now_zero": 37687,
+   "orig_zero_now_missing": 0,
+   "orig_zero_now_value": 123,
+   "orig_value_now_different": 5
+  },
+  "penalty_saved": {
+   "rows": 37873,
+   "sent_value": 34,
+   "sent_zero": 1644,
+   "null_read_as_zero": 36195,
+   "missing": 0,
+   "orig_zero_now_zero": 37838,
+   "orig_zero_now_missing": 0,
+   "orig_zero_now_value": 20,
+   "orig_value_now_different": 1
+  },
+  "rating": {
+   "rows": 37873,
+   "sent_value": 37851,
+   "missing": 0,
+   "orig_zero_now_zero": 20,
+   "orig_zero_now_missing": 0,
+   "orig_zero_now_value": 3,
+   "orig_value_now_different": 33989
+  }
+ },
  "not_counts": [
   "passes_accuracy",
   "rating"
