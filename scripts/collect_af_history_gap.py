@@ -121,6 +121,21 @@ def run(league: str | None = None, client: AFClient | None = None) -> dict:
 
 # ── --insidebox ─────────────────────────────────────────────────────────────────────────────────
 
+def _corrected(af: pd.DataFrame) -> pd.DataFrame:
+    """af_history under the owner's duplicate rule (src/af_history_corrections, fix14/afdupes): the
+    copy of a provider fixture filed one day off the provider's date is not a target and claims no
+    fixture, so the kept copy is matched alone instead of both being refused as 'claimed by two
+    dates'. The file itself is never rewritten."""
+    from src.af_history_corrections import apply_af_history_corrections
+    return apply_af_history_corrections(af, tag="af_history_gap")
+
+
+def _rekeyed(fill: pd.DataFrame | None, tag: str) -> pd.DataFrame | None:
+    """A sidecar's rows on a removed duplicate's key moved onto the kept copy's key (same fixture)."""
+    from src.af_history_corrections import rekey_sidecar
+    return fill if fill is None else rekey_sidecar(fill, tag=tag)
+
+
 def _af_ids() -> dict[str, int]:
     """{registry name: api_football_id} for EVERY registry league with an id (Standard included)."""
     from src import league_registry as LR
@@ -141,6 +156,7 @@ def lacking_insidebox(af: pd.DataFrame | None = None) -> pd.DataFrame:
     from src import league_registry as LR
     if af is None:
         af = pd.read_parquet(AF_HISTORY)
+    af = _corrected(af)
     ids = _af_ids()
     h = af.copy()
     for c in ("HIB", "AIB", "fixture_id", "home_team_id", "away_team_id"):
@@ -176,8 +192,10 @@ def stats_targets(af: pd.DataFrame | None = None, fullstats: pd.DataFrame | None
     from src.af_history_provenance import written_back_mask
     if af is None:
         af = pd.read_parquet(AF_HISTORY)
+    af = _corrected(af)
     if fullstats is None:
         fullstats = read_parquet(FULL_FILL)
+    fullstats = _rekeyed(fullstats, "af_fullstats_fill")
     ids = _af_ids()
     h = af.copy()
     for c in ("HIB", "AIB", "fixture_id", "home_team_id", "away_team_id") + tuple(
@@ -214,6 +232,7 @@ def stats_targets(af: pd.DataFrame | None = None, fullstats: pd.DataFrame | None
     # 'HIB is null' never selected), so it is a target unless a sidecar holds the value
     if statsfill is None:
         statsfill = read_parquet(FILL)
+    statsfill = _rekeyed(statsfill, "af_stats_fill")
     ib_h = pd.to_numeric(h["HIB"], errors="coerce").where(~wb)
     ib_a = pd.to_numeric(h["AIB"], errors="coerce").where(~wb)
     if "home_insidebox" in hk.columns:
@@ -255,10 +274,14 @@ def fixture_index(sources=None) -> pd.DataFrame:
     return fx.drop_duplicates("fixture_id", keep="last").reset_index(drop=True)
 
 
-def match_fixtures(lacking: pd.DataFrame, fx: pd.DataFrame) -> tuple[pd.DataFrame, dict]:
+def match_fixtures(lacking: pd.DataFrame, fx: pd.DataFrame,
+                   refuse_claimed_twice: bool = True) -> tuple[pd.DataFrame, dict]:
     """Each lacking af_history row -> (fixture_id, season, home_id, away_id, match_rule) or a counted
     refusal. Rule: the row's own fixture_id; else same league id + date, clubs resolved home->home
-    and away->away (team_names.resolve_result), adjacent date only when the same date has none."""
+    and away->away (team_names.resolve_result), adjacent date only when the same date has none.
+    `refuse_claimed_twice=False` (scripts/build_af_history_corrections.py only) keeps the rows that
+    claim one fixture from two dates, flagged `claimed_twice`, so the owner's duplicate rule can
+    prove them; every collector keeps the refusal."""
     from src.season_resolver import resolve_api_season
     from src.team_names import resolve_result
     stats: dict = defaultdict(lambda: defaultdict(int))
@@ -321,6 +344,8 @@ def match_fixtures(lacking: pd.DataFrame, fx: pd.DataFrame) -> tuple[pd.DataFram
     if not m.empty:
         # one fixture claimed by rows of DIFFERENT dates: two matches for one fixture -> refused
         twice = m.groupby("fixture_id")["date"].transform("nunique") > 1
+        if not refuse_claimed_twice:
+            return m.assign(claimed_twice=twice.to_numpy()).reset_index(drop=True),                 {k: dict(v) for k, v in stats.items()}
         for lg, n in m.loc[twice, "canon"].value_counts().items():
             stats[lg]["refused_fixture_claimed_twice"] += int(n)
         m = m[~twice]
@@ -384,7 +409,7 @@ def _write_fill(m: pd.DataFrame, store: pd.DataFrame) -> pd.DataFrame:
         j["date"] = pd.to_datetime(j["date"]).dt.strftime("%Y-%m-%d")
         j["source"], j["matched_at"] = SOURCE, now
         fill = j[FILL_COLS]
-    old = read_parquet(FILL)
+    old = _rekeyed(read_parquet(FILL), "af_stats_fill")    # rows on a removed duplicate's key
     if not old.empty:
         fill = pd.concat([old[FILL_COLS], fill], ignore_index=True)
     fill = fill.drop_duplicates(subset=["league", "date", "home_team", "away_team"], keep="last")
@@ -592,6 +617,7 @@ def run_fullstats(af: pd.DataFrame | None = None, cache_dir: Path = STATS_CACHE,
     from src import league_registry as LR
     if af is None:
         af = pd.read_parquet(AF_HISTORY)
+    af = _corrected(af)
     ids = _af_ids()
     h = af.copy()
     for c in ("fixture_id", "home_team_id", "away_team_id"):
@@ -634,7 +660,7 @@ def run_fullstats(af: pd.DataFrame | None = None, cache_dir: Path = STATS_CACHE,
                      "fixture_id": int(r.fixture_id), "home_id": hid, "away_id": aid, **parsed,
                      "match_rule": r.match_rule, "source": SOURCE, "matched_at": now})
     fill = pd.DataFrame(rows, columns=FULL_COLS)
-    old = read_parquet(FULL_FILL)
+    old = _rekeyed(read_parquet(FULL_FILL), "af_fullstats_fill")   # rows on a removed duplicate's key
     if not old.empty:
         # reindex: a sidecar written before a column existed (home/away_free_kicks, fix round 9)
         # keeps that column missing for its rows until this run re-parses them

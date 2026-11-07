@@ -169,6 +169,11 @@ def load_results(collected: Path | None = None, af: Path | None = None, fd: Path
 
     # 2. af_history: API-Football spellings. A name the id index does not know becomes its own key.
     a = _read(af)
+    if not a.empty:
+        # owner 2026-11-04 duplicate rule (src/af_history_corrections): the copy filed one day off
+        # the provider's date is removed; a provider copy's values fill the kept copy's empty cells
+        from src.af_history_corrections import apply_af_history_corrections
+        a = apply_af_history_corrections(a, tag="strength.af_history")
     rows = []
     if not a.empty:
         a = a.assign(competition=a["league"].map(_canon))

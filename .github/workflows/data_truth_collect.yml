@@ -113,6 +113,8 @@ jobs:
           # make git add skip the collected data above
           git add -f output/corrections/history_*.csv output/corrections/history_corrections_audit.json 2>/dev/null || true
           git add -f output/corrections/player_history_invalid_profile_keys.csv 2>/dev/null || true
+          # the owner's af_history duplicate rule (fix14/afdupes), rebuilt before steps 9 and 10
+          git add -f output/corrections/af_history_removed_duplicates.csv output/corrections/af_history_duplicate_conflicts.csv 2>/dev/null || true
           if git diff --staged --quiet; then echo "nothing new to commit"; exit 0; fi
           git commit -q -m "auto: data truth collect ($1) $(date -u '+%Y-%m-%d %H:%M UTC')"
           for i in 1 2 3 4 5; do
@@ -208,6 +210,10 @@ jobs:
         env:
           APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
         run: |
+          # owner 2026-11-04 duplicate rule for af_history (fix14/afdupes, 0 calls): the copy of a
+          # provider fixture filed one day off the provider's date is removed in the read, so the kept
+          # copy is matched alone instead of both being refused as "claimed by two dates"
+          python scripts/build_af_history_corrections.py || echo "::warning::af_history corrections not rebuilt - the committed list stays in force"
           python scripts/collect_af_history_gap.py --insidebox
           /tmp/commit_collected.sh insidebox
 
@@ -265,6 +271,7 @@ jobs:
       - name: 10. All cached fixture statistics for af_history (no API call)
         if: always() && contains(env.STEPS, 'fullstats')
         run: |
+          python scripts/build_af_history_corrections.py || echo "::warning::af_history corrections not rebuilt - the committed list stays in force"
           python scripts/collect_af_history_gap.py --fullstats
           /tmp/commit_collected.sh fullstats
 

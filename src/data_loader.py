@@ -1411,6 +1411,10 @@ def _enrich_af_stats_fill(df: pd.DataFrame, root: Path | None = None) -> pd.Data
         return df
     try:
         fill = pd.read_parquet(p)
+        # a row keyed on a removed af_history duplicate moves onto the kept copy's key (same
+        # provider fixture id only; src/af_history_corrections, owner 2026-11-04)
+        from src.af_history_corrections import add_join_aliases, rekey_sidecar
+        fill = add_join_aliases(rekey_sidecar(fill, tag="af_stats_fill"), tag="af_stats_fill")
         vals = [c for c in _AF_STATS_FILL_COLS if c in fill.columns]
         if "league" not in fill.columns or not vals:
             log.error("[af_stats_fill] no league / stat column - fill SKIPPED")
@@ -1501,6 +1505,8 @@ def _enrich_af_fullstats_fill(df: pd.DataFrame, root: Path | None = None) -> pd.
         return df
     try:
         fill = pd.read_parquet(p)
+        from src.af_history_corrections import add_join_aliases, rekey_sidecar  # as the stats fill
+        fill = add_join_aliases(rekey_sidecar(fill, tag="af_fullstats_fill"), tag="af_fullstats_fill")
         vals = [c for c in _AF_FULLSTATS_COLS if c in fill.columns]
         if "league" not in fill.columns or not vals:
             log.error("[af_fullstats_fill] no league / stat column - fill SKIPPED")
@@ -1587,6 +1593,15 @@ def _enrich_with_api_shots(df: pd.DataFrame) -> pd.DataFrame:
             from src.af_history_provenance import written_back_mask
             hist = pd.read_parquet(af_history_path)
             hist = _drop_misfiled_league_rows(hist, "af_history")
+            # owner 2026-11-04 duplicate rule (fix14/afdupes, src/af_history_corrections): the copy of
+            # a provider fixture filed one day off the provider's date is removed; its provider
+            # values fill the kept copy's empty cells, conflicting provider cells become missing.
+            # BEFORE the provenance mask, so a kept written-back row filled from a provider copy
+            # serves the provider values only.
+            # The served row of such a match is the football-data row, dated like the REMOVED copy
+            # (UK day), so the kept copy is also joinable under that key (add_join_aliases).
+            from src.af_history_corrections import add_join_aliases, apply_af_history_corrections
+            hist = add_join_aliases(apply_af_history_corrections(hist, tag="af_history"), tag="af_history")
             hist["date"] = pd.to_datetime(hist["date"], errors="coerce")
             _wb = written_back_mask(hist)
             log.info(f"[af_history] provenance: {int(_wb.sum()):,} of {len(hist):,} rows written back "
