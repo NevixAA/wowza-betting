@@ -10,6 +10,10 @@
                                          in the same run folder is refused
 
 Nothing here writes outside the run folder, touches models/, the registry or the promotion gate.
+
+With owner_decisions.new_format_ht_variant on, every new_format candidate that reads features also
+runs as '<name>+ht' (the HT block restored, protocol.feature_sets); both are in the Holm family.
+If the variant cannot run, the run is refused before anything is written.
 """
 from __future__ import annotations
 
@@ -59,15 +63,19 @@ def enabled_candidates(cfg: dict, only=None) -> list[str]:
     return names
 
 
-def _score(cand_names, cfg, track, market, feats, frames, stage, fold, errors, models_dir=None):
+def _score(runs, cfg, track, market, fsets, frames, stage, fold, errors, models_dir=None):
+    """`runs`: (label, base candidate, feature-set suffix) from protocol.candidate_runs;
+    `fsets`: {suffix: (features, excluded)} from protocol.feature_sets."""
     out = []
     test = frames["test"]
     if not len(test):
         return out
     y = pd.to_numeric(test[cfg["markets"][market]["target"]], errors="coerce").to_numpy(float)
     ids = _row_ids(test).to_numpy()
-    for name in cand_names:
-        cand = C.build(name, cfg, track, market, feats)
+    for name, base, suffix in runs:
+        feats = fsets[suffix][0]
+        cand = C.build(base, cfg, track, market, feats)
+        cand.name = name
         try:
             cand.fit(frames)
             p = np.asarray(cand.predict(test), float)
@@ -101,6 +109,10 @@ def run(feat: pd.DataFrame, cfg: dict, out_dir, *, stages=STAGES, only=None, tra
     tracks = list(tracks or cfg["tracks"])
     if set(tracks) - set(cfg["tracks"]):
         raise ValueError(f"tracks {sorted(set(tracks) - set(cfg['tracks']))} are not in the config")
+    if P.HT_VARIANT_TRACK in tracks:
+        b = P.ht_variant_blockers(cfg, feat.columns)        # the frame check: never skip silently
+        if b:
+            raise PermissionError("fitting refused: " + "; ".join(b))
     for s in stages:
         if s not in STAGES:
             raise ValueError(f"unknown stage {s!r}")
@@ -115,10 +127,13 @@ def run(feat: pd.DataFrame, cfg: dict, out_dir, *, stages=STAGES, only=None, tra
                 "config_sha256": P.config_sha(cfg), "config": cfg, "code_sha": _code_sha(),
                 "data": data_info or {}, "stages": list(stages), "tracks": tracks, "candidates": names,
                 "promotion": "none - the owner decides; this run wrote no serving file"}
-    preds, errors, features = [], [], {}
+    preds, errors, features, runs_by_track = [], [], {}, {}
     for track in tracks:
-        feats, excluded = P.feature_list(cfg, track, feat.columns)
-        features[track] = {"features": feats, "excluded": excluded}
+        fsets = P.feature_sets(cfg, track, feat.columns)
+        runs = P.candidate_runs(cfg, track, names)
+        runs_by_track[track] = [r[0] for r in runs]
+        features[track] = {"features": fsets[""][0], "excluded": fsets[""][1],
+                           "variants": {s: {"features": f, "excluded": ex} for s, (f, ex) in fsets.items() if s}}
         for market in cfg["markets"]:
             rows = P.eligible_rows(feat, cfg, track, market)
             pre, hold, _after = P.split_holdout(rows, cfg)
@@ -126,20 +141,20 @@ def run(feat: pd.DataFrame, cfg: dict, out_dir, *, stages=STAGES, only=None, tra
                 for fold in P.walk_forward_folds(pre, cfg):
                     fr = P.fold_frames(pre, fold)
                     P.assert_disjoint(fr)
-                    preds += _score(names, cfg, track, market, feats, fr, "walk_forward", fold["fold"], errors)
+                    preds += _score(runs, cfg, track, market, fsets, fr, "walk_forward", fold["fold"], errors)
             if "holdout" in stages and len(hold):
                 (folder / "holdout_opened.json").write_text(json.dumps(
                     {"opened_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
                      "holdout": cfg["holdout"]}, indent=2), encoding="utf-8")
                 fr = P.final_frames(pre, hold, cfg)
                 P.assert_disjoint(fr)
-                preds += _score(names, cfg, track, market, feats, fr, "holdout", -1, errors,
+                preds += _score(runs, cfg, track, market, fsets, fr, "holdout", -1, errors,
                                 models_dir=folder / "models")
     pred = pd.concat(preds, ignore_index=True) if preds else pd.DataFrame(
         columns=["stage", "fold", "track", "market", "candidate", "row_id", "date", "league", "y", "p"])
     pred.to_parquet(folder / "predictions.parquet", index=False)
     write_reports(pred, feat, cfg, folder)
-    manifest.update(features=features, errors=errors,
+    manifest.update(features=features, errors=errors, candidates_by_track=runs_by_track,
                     finished_at=datetime.now(timezone.utc).isoformat(timespec="seconds"))
     (folder / "manifest.json").write_text(json.dumps(manifest, indent=2, default=str), encoding="utf-8")
     return folder
