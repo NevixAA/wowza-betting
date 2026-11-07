@@ -21,8 +21,11 @@ INPUTS (all committed v9 data, nothing synthetic, nothing post-kickoff)
              last observation carried forward per book and side up to the entry instant, so a quote
              written after the entry instant can never reach the decision.
   results    output/af_history.parquet + fd_history.parquet (each under the owner's corrections as the
-             loader serves it: apply_af_history_corrections / history_corrections.serve_history), joined league-scoped through
-             src.team_names.resolve_result (unique match within +-1 day or the fixture is unsettled).
+             loader serves it: apply_af_history_corrections / history_corrections.serve_history), joined league-scoped:
+             each club is matched to the spellings ON the corrected rows that can settle the fixture
+             (same league, +-1 day) that src.team_names.resolve_identity (audited identity map,
+             config/standard_ou25_identity_aliases.json) or resolve_result proves; the rows found must
+             hold ONE score, else the fixture is unsettled (fix17).
 
 ENGINES
   LEGACY  OU25: the tier production RECORDED at first sight (signal_tier / best_side in that run's
@@ -70,6 +73,9 @@ TIERS = ("SNIPER", "MARKSMAN", "VALUABLE")
 CLOSE_WINDOW_MIN = 30
 CLOSE_MIN_BOOKS = 3
 SIDE_OVERROUND = 1.08
+#: the audited club identity map {league: {alias spelling: canonical spelling}} (identity/1.1; the map
+#: the repaired Standard payload froze from it) - settlement's proven alias -> canonical evidence
+IDENTITY_MAP = REPO / "config" / "standard_ou25_identity_aliases.json"
 
 #: family -> board columns. p is always P(side A).
 FAMILY_SPEC = {
@@ -453,28 +459,80 @@ def load_results(output_dir: Path) -> pd.DataFrame:
     return r.dropna(subset=["_d"])
 
 
-def settle(entries: pd.DataFrame, results: pd.DataFrame) -> pd.DataFrame:
-    """Attach hg/ag: same league, kickoff date within +-1 day, both names resolved league-scoped,
-    exactly one result row with goals. Anything else stays unsettled (NaN)."""
-    from src.team_names import resolve_result
+@lru_cache(maxsize=4)
+def _identity_map(path: str) -> dict:
+    from src.identity_repair import load_alias_map
+    return load_alias_map(path)
+
+
+def identity_map() -> dict:
+    """IDENTITY_MAP as {league: {alias: canonical}}; an absent file is NO map (never a guessed one)."""
+    return _identity_map(str(IDENTITY_MAP)) if IDENTITY_MAP.exists() else {}
+
+
+def proven_spellings(name: str, pool, identity_aliases: dict | None = None) -> frozenset:
+    """Every spelling of `pool` PROVEN to be club `name`, each on its own evidence (empty = none).
+
+    A spelling s is proven when src.team_names.resolve_identity(name, [s], identity_aliases) (resolve(),
+    then the applied identity map: `name` is an alias spelling whose canonical club is s) or
+    src.team_names.resolve_result(name, [s]) (resolve(), then the owner-approved result-settlement
+    aliases) returns s. resolve() has no fuzzy tier (normalised equality, the alias store, identical
+    identity-token sets), so testing one spelling at a time proves nothing a pool test would not; it
+    only stops one spelling of a club from hiding another - the bank holds many matches TWICE under
+    two spellings (an af_history copy and a fd_history copy: 'Accrington ST' / 'Accrington',
+    'SHANGHAI SIPG' / 'Shanghai Port'), and after the owner's duplicate removal the kept copy may carry
+    the spelling a pool test did not pick. settle() then demands one score across every row found."""
+    from src.team_names import resolve_identity, resolve_result
+    out = set()
+    for s in pool:
+        s = str(s)
+        if resolve_identity(name, [s], identity_aliases) == s or resolve_result(name, [s]) == s:
+            out.add(s)
+    return frozenset(out)
+
+
+def settle(entries: pd.DataFrame, results: pd.DataFrame, identity_aliases: dict | None = None) -> pd.DataFrame:
+    """Attach hg/ag: same league, kickoff date within +-1 day, both clubs proven, ONE score. Anything
+    else stays unsettled (NaN).
+
+    fix17 (2026-11-07). A club name is matched against the spellings ACTUALLY ON the corrected result
+    rows that can settle the fixture (same league, +-1 day): proven_spellings() of the league's names,
+    kept where a window row carries them. It used to be resolved ONCE against every spelling the
+    league ever used; after the owner's duplicate removal (history_corrections.serve_history) the kept
+    copy of a match may carry the bank's other spelling ('Central Cordoba de Santiago' kept, 'Central
+    Cordoba' removed), resolve() still found the removed spelling elsewhere in the league, and the
+    kept row was never looked at. The rows of the window carrying a proven spelling of the home club
+    at home and of the away club away must hold exactly ONE score (copies of one match agree), else
+    the fixture stays unsettled - never a pick between scores. `identity_aliases`:
+    {league: {alias: canonical}}; None = the audited identity_map(), {} = none."""
     e = entries.copy()
     e["hg"], e["ag"] = np.nan, np.nan
+    amap = identity_map() if identity_aliases is None else (identity_aliases or {})
     r = results.dropna(subset=["hg", "ag"])
     by_lg = {lg: g for lg, g in r.groupby("league")}
-    cache: dict = {}
+    pools: dict = {}
+    proven: dict = {}
     for i, row in e.iterrows():
         lg = str(row["league"])
         g = by_lg.get(lg)
         if g is None:
             continue
-        if lg not in cache:
-            cache[lg] = sorted(set(g["home_team"].astype(str)) | set(g["away_team"].astype(str)))
-        h = resolve_result(str(row["home_team"]), cache[lg])
-        a = resolve_result(str(row["away_team"]), cache[lg])
+        if lg not in pools:
+            pools[lg] = sorted(set(g["home_team"].astype(str)) | set(g["away_team"].astype(str)))
+        d = pd.Timestamp(str(row["date"])[:10])
+        w = g[(g["_d"] - d).abs() <= pd.Timedelta(days=1)]
+        if w.empty:
+            continue
+        sides = []
+        for side in ("home_team", "away_team"):
+            key = (lg, str(row[side]))
+            if key not in proven:
+                proven[key] = proven_spellings(key[1], pools[lg], amap.get(lg))
+            sides.append(proven[key])
+        h, a = sides
         if not h or not a:
             continue
-        d = pd.Timestamp(str(row["date"])[:10])
-        m = g[(g["home_team"] == h) & (g["away_team"] == a) & ((g["_d"] - d).abs() <= pd.Timedelta(days=1))]
+        m = w[w["home_team"].astype(str).isin(h) & w["away_team"].astype(str).isin(a)]
         m = m.drop_duplicates(["hg", "ag"])
         if len(m) == 1:
             e.at[i, "hg"], e.at[i, "ag"] = float(m["hg"].iloc[0]), float(m["ag"].iloc[0])
