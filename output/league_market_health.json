@@ -1,12 +1,10 @@
 {
- "generated_at": "2026-11-07T01:03:57Z",
+ "generated_at": "2026-11-07T05:53:01Z",
  "panel_version": "LWR-1",
  "tracked_leagues": 20,
  "current_tip_day": "2026-11-07",
  "leagues_with_current_week_data": 19,
- "missing_leagues": [
-  "Mexico Liga MX"
- ],
+ "missing_leagues": [],
  "missing_leagues_previous_week": [],
  "no_fixture_leagues": [
   "Romanian Superliga"
@@ -15,9 +13,9 @@
  "market_gap_leagues": [],
  "expected_candidate_rows": 780,
  "actual_candidate_rows": 748,
- "panel_rows": 716,
+ "panel_rows": 756,
  "settled_rows": 613,
- "pending_rows": 103,
+ "pending_rows": 143,
  "clv_certified_rows": 242,
  "clv_coverage": 0.3948,
  "protected_tracks_modified": false,
@@ -583,7 +581,7 @@
   "Japan J-League": {
    "current": {
     "league_week_id": "Japan J-League|2026-W45",
-    "state": "PROVISIONAL",
+    "state": "FROZEN",
     "fixtures_known": 10,
     "fixtures_before_panel_start": 0,
     "fixtures_with_candidates": 10,
@@ -594,19 +592,19 @@
     "markets": {
      "OU25": {
       "candidates": 10,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "BTTS": {
       "candidates": 10,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER15": {
       "candidates": 10,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER35": {
       "candidates": 10,
-      "panel_rows": 0
+      "panel_rows": 5
      }
     },
     "expected_candidate_rows": 40,
@@ -893,7 +891,7 @@
   "Mexico Liga MX": {
    "current": {
     "league_week_id": "Mexico Liga MX|2026-W45",
-    "state": "LOCKED_NOT_FROZEN",
+    "state": "FROZEN",
     "fixtures_known": 10,
     "fixtures_before_panel_start": 0,
     "fixtures_with_candidates": 9,
@@ -904,19 +902,19 @@
     "markets": {
      "OU25": {
       "candidates": 9,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "BTTS": {
       "candidates": 9,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER15": {
       "candidates": 9,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER35": {
       "candidates": 9,
-      "panel_rows": 0
+      "panel_rows": 5
      }
     },
     "expected_candidate_rows": 40,
