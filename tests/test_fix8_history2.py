@@ -246,7 +246,7 @@ def test_loader_pair_with_different_fixtures_is_a_conflict(no_corrections):
 
 def test_builder_writes_found_by_and_the_new_lists(tmp_path, monkeypatch, no_corrections):
     for name in ("DUP_OUT", "DUP_CONFLICTS", "CUP_OUT", "CUP_UNPROVEN", "SCORE_OUT", "SCORE_REFUSED",
-                 "AWARDED_OUT", "AUDIT"):
+                 "AWARDED_OUT", "AUDIT", "DATE_OUT", "DATE_UNPROVEN"):   # never the committed lists
         monkeypatch.setattr(B, name, tmp_path / getattr(B, name).name)
     h = pd.concat([_pair_history(), _hist([_row("2022-11-05")])], ignore_index=True)
     monkeypatch.setattr(B, "load_history", lambda: h)

@@ -157,6 +157,7 @@ def test_collection_job_rebuilds_and_commits_the_date_list():
 def test_committed_date_list_is_proven_one_day_and_unique():
     d = pd.read_csv(HC.DATE_CORR)
     assert set(HC.DATE_COLS) <= set(d.columns)
+    assert len(d) > 0                                   # a header-only list would serve nothing
     for c in ("provider_date", "provider_kickoff_utc", "fixture_id", "found_by"):
         assert d[c].notna().all(), c
     gap = (pd.to_datetime(d["history_date"]) - pd.to_datetime(d["provider_date"])).dt.days
