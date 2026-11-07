@@ -1,10 +1,10 @@
 {
   "artifact": "price_provenance_health",
   "version": "price-provenance-1.0",
-  "generated_at": "2026-11-06T16:02:31Z",
+  "generated_at": "2026-11-07T14:58:51Z",
   "capture_files": {
     "newformat_odds_history": {
-      "rows": 67276,
+      "rows": 67916,
       "invalid_rows": 5007,
       "invalid_by_reason": {
         "PARSER_PRE_FIX_OU_2026-08-10": 4074,
@@ -23,7 +23,7 @@
       "raw_file_rewritten": false
     },
     "standard_sidemarket_odds_history": {
-      "rows": 70582,
+      "rows": 71534,
       "invalid_rows": 271,
       "invalid_by_reason": {
         "FIRST_HALF_BTTS_PRICE_GT_3.20": 271
@@ -35,7 +35,7 @@
       "raw_file_rewritten": false
     },
     "standard_odds_history": {
-      "rows": 11224,
+      "rows": 11395,
       "invalid_rows": 0,
       "invalid_by_reason": {},
       "invalid_by_market": {},

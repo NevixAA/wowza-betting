@@ -1,7 +1,7 @@
 {
   "artifact": "join_integrity_health",
   "helper_version": "safe_left_enrich-1.0",
-  "generated_at": "2026-11-06T16:01:48Z",
+  "generated_at": "2026-11-07T14:58:20Z",
   "status": "FAIL",
   "joins": {
     "af_history_shots.legacy": {
@@ -14,7 +14,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
       "left_rows": 83275,
-      "right_rows": 91712,
+      "right_rows": 91735,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 5972,
       "right_duplicate_rows": 12139,
@@ -106,7 +106,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
       "left_rows": 83275,
-      "right_rows": 17622,
+      "right_rows": 17792,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -136,7 +136,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
       "left_rows": 83275,
-      "right_rows": 33334,
+      "right_rows": 33638,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -170,7 +170,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
       "left_rows": 83275,
-      "right_rows": 91712,
+      "right_rows": 91735,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 5972,
       "right_duplicate_rows": 12139,
@@ -201,7 +201,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "safe",
       "left_rows": 83275,
-      "right_rows": 91712,
+      "right_rows": 91735,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 5972,
       "right_duplicate_rows": 12139,
@@ -315,7 +315,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
       "left_rows": 83275,
-      "right_rows": 17622,
+      "right_rows": 17792,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -346,7 +346,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "safe",
       "left_rows": 83275,
-      "right_rows": 7637,
+      "right_rows": 7641,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -378,7 +378,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
       "left_rows": 83275,
-      "right_rows": 33334,
+      "right_rows": 33638,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -409,7 +409,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "safe",
       "left_rows": 83275,
-      "right_rows": 6427,
+      "right_rows": 6435,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -671,34 +671,18 @@
     }
   ],
   "serving_replay": {
-    "board_fixtures": 139,
+    "board_fixtures": 100,
     "recipe": "v9_repaired",
-    "tips_legacy": 33,
-    "tips_safe": 34,
+    "tips_legacy": 39,
+    "tips_safe": 37,
     "tips_only_legacy": [
       [
         "Argentina Primera Division",
-        "Barracas Central",
-        "Racing Club",
-        "over15",
-        "OVER",
-        "VALUABLE"
-      ],
-      [
-        "Argentina Primera Division",
-        "San Lorenzo",
-        "Platense",
-        "over15",
-        "OVER",
+        "Argentinos Juniors",
+        "Atl\u00e9tico Hurac\u00e1n",
+        "btts",
+        "YES",
         "MARKSMAN"
-      ],
-      [
-        "Austrian Bundesliga",
-        "Ried",
-        "LASK",
-        "OU25",
-        "UNDER",
-        "VALUABLE"
       ],
       [
         "China Super League",
@@ -709,6 +693,14 @@
         "VALUABLE"
       ],
       [
+        "Denmark Superliga",
+        "OB Odense BK",
+        "Viborg FF",
+        "OU25",
+        "UNDER",
+        "SNIPER"
+      ],
+      [
         "Finland Veikkausliiga",
         "IF Gnistan",
         "VPS Vaasa",
@@ -717,88 +709,88 @@
         "SNIPER"
       ],
       [
-        "Mexico Liga MX",
-        "Toluca",
-        "Monterrey",
-        "OU25",
-        "UNDER",
-        "SNIPER"
-      ]
-    ],
-    "tips_only_safe": [
-      [
-        "Argentina Primera Division",
-        "San Lorenzo",
-        "Platense",
-        "OU25",
-        "OVER",
-        "VALUABLE"
-      ],
-      [
-        "Argentina Primera Division",
-        "San Lorenzo",
-        "Platense",
+        "Ligue 2",
+        "Pau FC",
+        "Nantes",
         "over15",
         "OVER",
-        "SNIPER"
-      ],
-      [
-        "Finland Veikkausliiga",
-        "IF Gnistan",
-        "VPS Vaasa",
-        "OU25",
-        "UNDER",
         "VALUABLE"
       ],
       [
-        "Mexico Liga MX",
-        "Atl\u00e9tico San Luis",
-        "FC Ju\u00e1rez",
-        "OU25",
-        "UNDER",
-        "VALUABLE"
-      ],
-      [
-        "Mexico Liga MX",
-        "Toluca",
-        "Monterrey",
-        "OU25",
-        "UNDER",
-        "VALUABLE"
-      ],
-      [
-        "Sweden Allsvenskan",
-        "Hammarby IF",
-        "IF Elfsborg",
+        "Ligue 2",
+        "Saint Etienne",
+        "Stade Lavallois",
         "btts",
         "YES",
         "VALUABLE"
       ],
       [
-        "Sweden Allsvenskan",
-        "IFK Goteborg",
-        "Malmo FF",
+        "Norway Eliteserien",
+        "Rosenborg",
+        "IK Start",
+        "btts",
+        "YES",
+        "VALUABLE"
+      ]
+    ],
+    "tips_only_safe": [
+      [
+        "Argentina Primera Division",
+        "Argentinos Juniors",
+        "Atl\u00e9tico Hurac\u00e1n",
+        "btts",
+        "YES",
+        "VALUABLE"
+      ],
+      [
+        "Argentina Primera Division",
+        "Boca Juniors",
+        "Defensa y Justicia",
+        "btts",
+        "YES",
+        "VALUABLE"
+      ],
+      [
+        "Championship",
+        "Queens Park Rangers",
+        "Lincoln City",
+        "btts",
+        "YES",
+        "VALUABLE"
+      ],
+      [
+        "Denmark Superliga",
+        "OB Odense BK",
+        "Viborg FF",
+        "OU25",
+        "UNDER",
+        "VALUABLE"
+      ],
+      [
+        "Finland Veikkausliiga",
+        "IF Gnistan",
+        "VPS Vaasa",
         "OU25",
         "UNDER",
         "VALUABLE"
       ]
     ],
     "features_changed": {
-      "away_corners_pg_roll": 54,
-      "away_fouls_pg_roll": 54,
-      "away_insidebox_last5": 131,
-      "away_xg_last5": 133,
-      "combined_sot_ratio": 81,
-      "home_corners_pg_roll": 52,
-      "home_fouls_pg_roll": 52,
-      "home_insidebox_last5": 136,
-      "home_xg_last5": 136,
-      "p_over25": 87,
-      "p_btts": 139,
-      "p_over15": 138,
-      "p_over35": 139,
-      "p_ht_over05": 51,
-      "p_ht_over15": 51
+      "away_corners_pg_roll": 41,
+      "away_fouls_pg_roll": 41,
+      "away_insidebox_last5": 95,
+      "away_xg_last5": 96,
+      "combined_sot_ratio": 63,
+      "home_corners_pg_roll": 41,
+      "home_fouls_pg_roll": 41,
+      "home_insidebox_last5": 97,
+      "home_xg_last5": 97,
+      "p_over25": 68,
+      "p_btts": 100,
+      "p_over15": 100,
+      "p_over35": 100,
+      "p_ht_over05": 31,
+      "p_ht_over15": 31
     }
   }
 }
