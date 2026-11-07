@@ -1,19 +1,19 @@
 {
  "calls": 0,
- "filled_rows_this_run": 75497,
- "filled_rows_total": 75533,
- "history_rows": 93389,
- "matched_rows": 83896,
+ "filled_rows_this_run": 75506,
+ "filled_rows_total": 75542,
+ "history_rows": 93398,
+ "matched_rows": 83905,
  "non_null_share": {
   "away_blocked": 1.0,
   "away_corners": 1.0,
   "away_fouls": 0.9993,
-  "away_free_kicks": 0.0288,
+  "away_free_kicks": 0.0289,
   "away_goals_prevented": 0.1298,
   "away_insidebox": 0.9992,
   "away_offsides": 0.9981,
   "away_outsidebox": 0.9992,
-  "away_pass_pct": 0.9351,
+  "away_pass_pct": 0.935,
   "away_passes": 0.9631,
   "away_passes_accurate": 0.9631,
   "away_possession": 0.9904,
@@ -22,17 +22,17 @@
   "away_shots": 1.0,
   "away_shots_off": 1.0,
   "away_sot": 1.0,
-  "away_xg": 0.2978,
+  "away_xg": 0.2979,
   "away_yellow": 1.0,
   "home_blocked": 1.0,
   "home_corners": 1.0,
   "home_fouls": 0.9993,
-  "home_free_kicks": 0.0288,
+  "home_free_kicks": 0.0289,
   "home_goals_prevented": 0.1298,
   "home_insidebox": 0.9992,
   "home_offsides": 0.9981,
   "home_outsidebox": 0.9992,
-  "home_pass_pct": 0.9353,
+  "home_pass_pct": 0.9352,
   "home_passes": 0.9633,
   "home_passes_accurate": 0.9633,
   "home_possession": 0.9905,
@@ -41,23 +41,23 @@
   "home_shots": 1.0,
   "home_shots_off": 1.0,
   "home_sot": 1.0,
-  "home_xg": 0.2978,
+  "home_xg": 0.2979,
   "home_yellow": 1.0
  },
  "note": "Every /fixtures/statistics value for af_history matches whose answer is already cached; 0 API calls; a value the provider does not give is missing, never 0; af_history.parquet is not modified.",
  "per_league": {
   "Argentina Primera Division": {
-   "filled": 4393,
-   "lacking": 5291,
-   "matched": 4438,
+   "filled": 4397,
+   "lacking": 5295,
+   "matched": 4442,
    "refused_fixture_claimed_twice": 446,
    "teams_not_in_answer": 45,
    "unmatched": 407
   },
   "Austrian Bundesliga": {
-   "filled": 2752,
-   "lacking": 2910,
-   "matched": 2752,
+   "filled": 2753,
+   "lacking": 2911,
+   "matched": 2753,
    "unmatched": 158
   },
   "Belgian First Division A": {
@@ -95,9 +95,9 @@
    "unmatched": 1085
   },
   "Denmark Superliga": {
-   "filled": 2086,
-   "lacking": 2087,
-   "matched": 2086,
+   "filled": 2087,
+   "lacking": 2088,
+   "matched": 2087,
    "unmatched": 1
   },
   "Dutch Eredivisie": {
@@ -197,9 +197,9 @@
   },
   "Romanian Superliga": {
    "empty_answer": 1,
-   "filled": 2918,
-   "lacking": 3706,
-   "matched": 3069,
+   "filled": 2920,
+   "lacking": 3708,
+   "matched": 3071,
    "teams_not_in_answer": 150,
    "unmatched": 637
   },
@@ -240,9 +240,9 @@
   },
   "Sweden Allsvenskan": {
    "empty_answer": 1,
-   "filled": 4018,
-   "lacking": 4145,
-   "matched": 4019,
+   "filled": 4019,
+   "lacking": 4146,
+   "matched": 4020,
    "unmatched": 126
   },
   "Turkish Super Lig": {
@@ -260,5 +260,5 @@
   }
  },
  "unknown_provider_types": [],
- "written_at": "2026-11-06T10:34:32.778561+00:00"
+ "written_at": "2026-11-07T04:06:42.185750+00:00"
 }
