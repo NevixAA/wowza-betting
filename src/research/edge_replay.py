@@ -431,7 +431,11 @@ def load_results(output_dir: Path) -> pd.DataFrame:
     parts = []
     af = Path(output_dir) / "af_history.parquet"
     if af.exists():
-        a = pd.read_parquet(af, columns=["league", "date", "home_team", "away_team", "FTHG", "FTAG"])
+        from src.af_history_corrections import apply_af_history_corrections
+        a = pd.read_parquet(af)
+        # owner 2026-11-04 duplicate rule (src/af_history_corrections): one row per proven fixture
+        a = apply_af_history_corrections(a, tag="edge_replay.af_history")
+        a = a[["league", "date", "home_team", "away_team", "FTHG", "FTAG"]]
         parts.append(a.rename(columns={"FTHG": "hg", "FTAG": "ag"}))
     fd = Path(output_dir) / "fd_history.parquet"
     if fd.exists():
