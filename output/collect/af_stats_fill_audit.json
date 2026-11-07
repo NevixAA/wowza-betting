@@ -1,16 +1,16 @@
 {
- "calls": 1,
+ "calls": 0,
  "filled_rows_total": 67916,
  "fixtures_coverage_unknown": 0,
  "fixtures_in_local_cache": 352,
  "fixtures_skipped_no_provider_statistics": 6945,
- "fixtures_to_read": 7298,
+ "fixtures_to_read": 7297,
  "fixtures_to_read_by_reason": {
-  "insidebox+served_stats": 6950,
+  "insidebox+served_stats": 6949,
   "served_stats": 348
  },
- "lacking_rows": 17572,
- "matched_rows": 8840,
+ "lacking_rows": 17571,
+ "matched_rows": 8839,
  "note": "Shots insidebox / expected_goals for af_history rows that lack them, from API-Football; af_history.parquet itself is not modified.",
  "per_league": {
   "Argentina Primera Division": {
@@ -61,8 +61,7 @@
   },
   "Dutch Eredivisie": {
    "filled_total": 2091,
-   "lacking": 2,
-   "matched": 1,
+   "lacking": 1,
    "unmatched": 1
   },
   "Finland Veikkausliiga": {
@@ -197,12 +196,12 @@
   }
  },
  "planned_coverage_calls": 0,
- "planned_stats_calls_excluding_no_statistics_seasons": 1,
- "planned_stats_calls_upper_bound": 6946,
+ "planned_stats_calls_excluding_no_statistics_seasons": 0,
+ "planned_stats_calls_upper_bound": 6945,
  "target_rows_by_reason": {
   "insidebox": 10,
-  "insidebox+served_stats": 17149,
+  "insidebox+served_stats": 17148,
   "served_stats": 413
  },
- "written_at": "2026-11-06T07:17:07.365654+00:00"
+ "written_at": "2026-11-07T00:19:53.890183+00:00"
 }
