@@ -89,3 +89,21 @@ gw,status,source,bin,lo,hi,n,pred_mean,obs_rate
 9,FINAL,V2 minutes mixture,3,0.5,0.7,54,0.6071,0.6111
 9,FINAL,V2 minutes mixture,4,0.7,0.9,100,0.8264,0.89
 9,FINAL,V2 minutes mixture,5,0.9,1.0,54,0.9372,0.9815
+10,PROVISIONAL,FPL chance x usage heuristic,0,0.0,0.1,8,0.005,0.125
+10,PROVISIONAL,FPL chance x usage heuristic,1,0.1,0.3,9,0.1477,0.3333
+10,PROVISIONAL,FPL chance x usage heuristic,2,0.3,0.5,6,0.3578,0.3333
+10,PROVISIONAL,FPL chance x usage heuristic,3,0.5,0.7,6,0.5622,0.5
+10,PROVISIONAL,FPL chance x usage heuristic,4,0.7,0.9,7,0.7886,0.8571
+10,PROVISIONAL,FPL chance x usage heuristic,5,0.9,1.0,7,0.92,1.0
+10,PROVISIONAL,old Wowza p_start (60+ only),0,0.0,0.1,1,0.0,0.0
+10,PROVISIONAL,old Wowza p_start (60+ only),1,0.1,0.3,0,,
+10,PROVISIONAL,old Wowza p_start (60+ only),2,0.3,0.5,0,,
+10,PROVISIONAL,old Wowza p_start (60+ only),3,0.5,0.7,6,0.5917,0.3333
+10,PROVISIONAL,old Wowza p_start (60+ only),4,0.7,0.9,3,0.8,0.3333
+10,PROVISIONAL,old Wowza p_start (60+ only),5,0.9,1.0,16,0.9881,0.875
+10,PROVISIONAL,V2 minutes mixture,0,0.0,0.1,10,0.0597,0.1
+10,PROVISIONAL,V2 minutes mixture,1,0.1,0.3,9,0.1825,0.0
+10,PROVISIONAL,V2 minutes mixture,2,0.3,0.5,4,0.4068,0.5
+10,PROVISIONAL,V2 minutes mixture,3,0.5,0.7,5,0.6152,0.8
+10,PROVISIONAL,V2 minutes mixture,4,0.7,0.9,10,0.8334,1.0
+10,PROVISIONAL,V2 minutes mixture,5,0.9,1.0,5,0.9423,1.0
