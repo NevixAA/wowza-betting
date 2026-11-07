@@ -72,14 +72,41 @@ def _plan(**kw):
 
 # ── the owner gate ───────────────────────────────────────────────────────────────────────────────
 
-def test_committed_plan_waits_for_the_owner():
+STILL_OPEN = ["holdout_start", "holdout_end", "min_verified_share", "markets"]
+
+
+def test_committed_plan_has_the_feature_rule_and_waits_for_the_rest():
+    """Owner 2026-11-07: feature_rule = all_prior_verified (rule C). Holdout dates,
+    min_verified_share and markets stay null until the re-fetch's verified counts are known."""
     plan = H.load_plan()
     assert plan["hand_adjustment"] == "none"
-    assert H.missing_owner_decisions(plan) == list(H.OWNER_KEYS)
+    assert plan["owner_decisions"]["feature_rule"] == "all_prior_verified"
+    assert plan["owner_decisions"]["feature_rule"] in H.FEATURE_RULES
+    for k in STILL_OPEN:
+        assert plan["owner_decisions"][k] is None, k
+    assert H.missing_owner_decisions(plan) == STILL_OPEN
     with pytest.raises(PermissionError):
         H.owner_decisions(plan)
     assert set(plan["candidates"]) == set(H.CANDIDATES)
     assert set(plan["proposed"]["markets"]) <= set(H.MARKETS_IN_SCOPE)
+
+
+def test_run_refuses_the_committed_plan_even_with_the_enable_variable(monkeypatch, tmp_path):
+    monkeypatch.setenv(H.ENABLE_ENV, "true")
+    with pytest.raises(PermissionError, match="min_verified_share") as e:
+        H.run(H.load_plan(), raw=pd.DataFrame(), out_dir=tmp_path / "o", model_dir=tmp_path / "m")
+    for k in STILL_OPEN:
+        assert k in str(e.value)
+    assert not (tmp_path / "o").exists() and not (tmp_path / "m").exists()
+
+
+@pytest.mark.parametrize("key", STILL_OPEN)
+def test_run_refuses_while_any_open_decision_is_null(key, monkeypatch, tmp_path):
+    monkeypatch.setenv(H.ENABLE_ENV, "true")
+    plan = _plan(feature_rule="all_prior_verified")
+    plan["owner_decisions"][key] = None
+    with pytest.raises(PermissionError, match=key):
+        H.run(plan, raw=pd.DataFrame(), out_dir=tmp_path, model_dir=tmp_path)
 
 
 def test_run_refuses_without_the_enable_variable(monkeypatch, tmp_path):

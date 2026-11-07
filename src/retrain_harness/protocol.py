@@ -38,6 +38,13 @@ TRACKS = ("standard", "new_format")
 CANDIDATES = ("champion_recipe", "logistic", "hgb", "dixon_coles", "market_only", "model_market")
 #: Folders a run may never write into (serving models, registry, committed outputs).
 FORBIDDEN_RUN_ROOTS = ("models", "output", "config", "src", "registry")
+#: Candidates that read the feature list (dixon_coles reads goals, market_only reads prices).
+FEATURE_CANDIDATES = ("champion_recipe", "logistic", "hgb", "model_market")
+#: owner_decisions.new_format_ht_variant (owner 2026-11-07): the track that gets the HT variant,
+#: the suffix of the variant's candidate names, and the HT history indicators of the HT block.
+HT_VARIANT_TRACK = "new_format"
+HT_VARIANT_SUFFIX = "+ht"
+HT_HISTORY_COLS = ("home_has_ht_history", "away_has_ht_history")
 
 
 # ── config ──────────────────────────────────────────────────────────────────────────────────
@@ -84,6 +91,9 @@ def validate_config(cfg: dict) -> None:
         raise ValueError("comparison.reference must be one of the candidates")
     if cmp_.get("correction") != "holm":
         raise ValueError("comparison.correction must be 'holm' (pre-registered)")
+    od = cfg.get("owner_decisions") or {}
+    if "new_format_ht_variant" in od and not isinstance(od["new_format_ht_variant"], bool):
+        raise ValueError("owner_decisions.new_format_ht_variant must be true or false")
 
 
 def holdout_window(cfg: dict) -> tuple[pd.Timestamp, pd.Timestamp]:
@@ -106,6 +116,7 @@ def fit_blockers(cfg: dict, env=None) -> list[str]:
         out.append("holdout dates not approved by the owner (config holdout.approved_by / approved_at)")
     if str(env.get(ENABLE_VAR, "")).strip().lower() != "true":
         out.append(f"{ENABLE_VAR} is not 'true' (repository variable; set only after owner approval)")
+    out += ht_variant_blockers(cfg)
     return out
 
 
@@ -130,14 +141,16 @@ def assert_run_folder(path: Path | str, root: Path | None = None) -> Path:
 
 # ── features ────────────────────────────────────────────────────────────────────────────────
 
-def feature_list(cfg: dict, track: str, columns) -> tuple[list[str], dict]:
+def feature_list(cfg: dict, track: str, columns, restore=()) -> tuple[list[str], dict]:
     """(features, excluded{column: reason}) for a track, given the frame's columns.
 
-    A configured column that the frame does not have is EXCLUDED and listed - never created."""
+    A configured column that the frame does not have is EXCLUDED and listed - never created.
+    `restore` lifts those columns out of the track's exclusion list (the HT variant); it never
+    adds a column that is not in an included group or that is price-derived."""
     fcfg = cfg["features"]
     cols = set(columns)
     never = set(fcfg.get("never_model_inputs") or ())
-    track_ex = set((fcfg.get("track_exclude") or {}).get(track) or ())
+    track_ex = set((fcfg.get("track_exclude") or {}).get(track) or ()) - set(restore)
     feats, excluded = [], {}
     for gname, g in fcfg["groups"].items():
         for c in g["columns"]:
@@ -152,6 +165,69 @@ def feature_list(cfg: dict, track: str, columns) -> tuple[list[str], dict]:
             elif c not in feats:
                 feats.append(c)
     return feats, excluded
+
+
+# ── the new_format HT variant (owner_decisions.new_format_ht_variant) ───────────────────────────
+
+def ht_variant_on(cfg: dict) -> bool:
+    return (cfg.get("owner_decisions") or {}).get("new_format_ht_variant") is True
+
+
+def ht_block(cfg: dict) -> list[str]:
+    """The HT block: the HT columns of the new_format exclusion list (every name with '_ht_'; xG and
+    inside-box are not HT and stay excluded) plus the HT history indicators."""
+    ex = (cfg["features"].get("track_exclude") or {}).get(HT_VARIANT_TRACK) or ()
+    out = [c for c in ex if "_ht_" in c]
+    return out + [c for c in HT_HISTORY_COLS if c not in out]
+
+
+def ht_variant_blockers(cfg: dict, columns=None) -> list[str]:
+    """Every reason the HT variant cannot run while the owner flag is on. Empty = it can run, or
+    the flag is off. With `columns` (the feature frame's columns) the frame is checked too."""
+    if not ht_variant_on(cfg):
+        return []
+    why = []
+    if HT_VARIANT_TRACK not in cfg["tracks"]:
+        why.append(f"track {HT_VARIANT_TRACK} is not configured")
+    block = ht_block(cfg)
+    ex = set((cfg["features"].get("track_exclude") or {}).get(HT_VARIANT_TRACK) or ())
+    if not [c for c in block if c in ex]:
+        why.append(f"features.track_exclude.{HT_VARIANT_TRACK} holds no HT column, so the variant "
+                   "would equal the champion list")
+    grouped = {c for g in cfg["features"]["groups"].values() if g.get("include") for c in g["columns"]}
+    never = set(cfg["features"].get("never_model_inputs") or ())
+    off = [c for c in block if c not in grouped or c in never]
+    if off:
+        why.append(f"HT block column(s) not in an included feature group: {off}")
+    if not [n for n in FEATURE_CANDIDATES if (cfg["candidates"].get(n) or {}).get("enabled")]:
+        why.append("no enabled candidate uses features")
+    if columns is not None:
+        cols = set(columns)
+        missing = [c for c in block if c not in cols]
+        if missing:
+            why.append(f"HT block column(s) not in the feature frame: {missing}")
+    return [f"new_format HT variant (owner_decisions.new_format_ht_variant) cannot run: {w}" for w in why]
+
+
+def feature_sets(cfg: dict, track: str, columns) -> dict:
+    """{suffix: (features, excluded)} for a track: '' is the champion exclusion list; '+ht' (new_format,
+    flag on) is the same list with the HT block restored."""
+    out = {"": feature_list(cfg, track, columns)}
+    if ht_variant_on(cfg) and track == HT_VARIANT_TRACK:
+        out[HT_VARIANT_SUFFIX] = feature_list(cfg, track, columns, restore=ht_block(cfg))
+    return out
+
+
+def candidate_runs(cfg: dict, track: str, names) -> list[tuple[str, str, str]]:
+    """(label, base candidate, feature-set suffix) for every candidate a track trains and scores.
+    With the HT variant on, every new_format candidate that uses features appears twice
+    ('hgb' and 'hgb+ht'); market_only and dixon_coles read no features and appear once."""
+    out = []
+    for n in names:
+        out.append((n, n, ""))
+        if ht_variant_on(cfg) and track == HT_VARIANT_TRACK and n in FEATURE_CANDIDATES:
+            out.append((n + HT_VARIANT_SUFFIX, n, HT_VARIANT_SUFFIX))
+    return out
 
 
 # ── rows and splits ─────────────────────────────────────────────────────────────────────────
@@ -264,6 +340,13 @@ def price_coverage(rows: pd.DataFrame, mcfg: dict) -> dict:
     return {"two_sided": int(ok.sum()), "any": any_}
 
 
+def _rows_complete(df: pd.DataFrame, cols: list) -> int:
+    """Rows on which every column in `cols` holds a value (0 when there are no rows or columns)."""
+    if not len(df) or not cols:
+        return 0
+    return int(df[cols].apply(pd.to_numeric, errors="coerce").notna().all(axis=1).sum())
+
+
 def build_plan(feat: pd.DataFrame, cfg: dict) -> dict:
     """Everything --dry-run prints. Counts rows and lists columns; fits nothing."""
     plan = {"harness_version": cfg.get("harness_version"), "config_sha256": config_sha(cfg),
@@ -272,11 +355,24 @@ def build_plan(feat: pd.DataFrame, cfg: dict) -> dict:
             "frame": {"rows": int(len(feat)),
                       "date_min": str(pd.to_datetime(feat["date"]).min().date()) if len(feat) else None,
                       "date_max": str(pd.to_datetime(feat["date"]).max().date()) if len(feat) else None},
+            "ht_variant": {"on": ht_variant_on(cfg), "block": ht_block(cfg) if ht_variant_on(cfg) else [],
+                           "blockers": ht_variant_blockers(cfg, feat.columns)},
             "tracks": {}}
     min_league = cfg["comparison"].get("min_league_n")
+    enabled = [n for n in CANDIDATES if (cfg["candidates"].get(n) or {}).get("enabled")]
     for track in cfg["tracks"]:
-        feats, excluded = feature_list(cfg, track, feat.columns)
-        t = {"features": feats, "n_features": len(feats), "excluded_features": excluded, "markets": {}}
+        sets = feature_sets(cfg, track, feat.columns)
+        feats, excluded = sets[""]
+        t = {"features": feats, "n_features": len(feats), "excluded_features": excluded,
+             "candidates": [lbl for lbl, _b, _s in candidate_runs(cfg, track, enabled)], "markets": {},
+             "variants": {}}
+        for suf, (vf, vex) in sets.items():
+            if suf:
+                t["variants"][suf] = {"features": vf, "n_features": len(vf), "excluded_features": vex,
+                                      "restored": [c for c in vf if c not in feats],
+                                      "candidates": [lbl for lbl, _b, s in candidate_runs(cfg, track, enabled)
+                                                     if s == suf],
+                                      "markets": {}}
         for market, mcfg in cfg["markets"].items():
             rows = eligible_rows(feat, cfg, track, market)
             pre, hold, after = split_holdout(rows, cfg)
@@ -304,6 +400,14 @@ def build_plan(feat: pd.DataFrame, cfg: dict) -> dict:
                 "price": {"walk_forward_region": price_coverage(pre, mcfg) if len(pre) else None,
                           "holdout": price_coverage(hold, mcfg) if len(hold) else None},
                 "per_league": per_league}
+            for v in t["variants"].values():
+                # The variant trains and scores the SAME rows (eligibility never reads a feature);
+                # ht_block_complete counts the rows on which every restored HT value is present.
+                v["markets"][market] = {"eligible_rows": int(len(rows)), "walk_forward_region": int(len(pre)),
+                                        "holdout": int(len(hold)),
+                                        "ht_block_complete": {
+                                            "walk_forward_region": _rows_complete(pre, v["restored"]),
+                                            "holdout": _rows_complete(hold, v["restored"])}}
         plan["tracks"][track] = t
     return plan
 

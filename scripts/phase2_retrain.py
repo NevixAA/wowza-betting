@@ -3,7 +3,9 @@
     python scripts/phase2_retrain.py --dry-run [--json-out FILE]
         Loads the COMMITTED data offline (no download, network blocked), builds the point-in-time
         features, and prints the plan: holdout, folds, row counts per split and per league, price
-        coverage and the feature list per track. Fits nothing; writes nothing unless --json-out.
+        coverage and the feature list per track (and, with owner_decisions.new_format_ht_variant,
+        the new_format '+ht' variant's feature list and row counts). Fits nothing; writes nothing
+        unless --json-out.
 
     python scripts/phase2_retrain.py --out DIR [--stage walk_forward|holdout|all] [--only a,b]
                                      [--tracks standard|new_format] [--fd-raw DIR]
@@ -38,11 +40,30 @@ def print_plan(plan: dict, info: dict) -> None:
     print(f"frame: {plan['frame']['rows']:,} feature rows, {plan['frame']['date_min']}..{plan['frame']['date_max']}")
     for k, v in info.items():
         print(f"  data.{k}: {v}")
+    hv = plan.get("ht_variant") or {}
+    if hv.get("on"):
+        print(f"new_format HT variant: ON (owner_decisions.new_format_ht_variant); HT block {hv['block']}")
+        for b in hv["blockers"]:
+            print(f"  BLOCKER (fitting refused): {b}")
     for track, t in plan["tracks"].items():
         print(f"\n== track {track}: {t['n_features']} features")
         print("   " + ", ".join(t["features"]))
         if t["excluded_features"]:
             print("   excluded: " + "; ".join(f"{c} ({r})" for c, r in t["excluded_features"].items()))
+        print(f"   candidates ({len(t['candidates'])}): " + ", ".join(t["candidates"]))
+        for suf, v in t.get("variants", {}).items():
+            print(f"   -- variant '{suf}': {v['n_features']} features (restored {len(v['restored'])}: "
+                  f"{', '.join(v['restored'])})")
+            print("      " + ", ".join(v["features"]))
+            if v["excluded_features"]:
+                print("      excluded: " + "; ".join(f"{c} ({r})" for c, r in v["excluded_features"].items()))
+            print(f"      candidates: {', '.join(v['candidates'])}")
+            print(f"      {'market':10s} {'eligible':>9s} {'wf region':>9s} {'holdout':>8s} "
+                  f"{'HT complete wf/ho':>19s}")
+            for m, s in v["markets"].items():
+                hc = s["ht_block_complete"]
+                print(f"      {m:10s} {s['eligible_rows']:>9,} {s['walk_forward_region']:>9,} {s['holdout']:>8,} "
+                      f"{hc['walk_forward_region']:>9,}/{hc['holdout']:<9,}")
         print(f"   {'market':10s} {'eligible':>9s} {'wf region':>9s} {'holdout':>8s} {'unused':>7s} "
               f"{'wf days':>7s} {'ho days':>7s} {'folds':>5s} {'wf scored':>9s} {'2-sided px wf/ho':>17s}")
         for m, s in t["markets"].items():
@@ -69,7 +90,8 @@ def main(argv=None) -> int:
     ap.add_argument("--json-out", default=None, help="dry run: also write the plan JSON here")
     ap.add_argument("--out", default=None, help="run: parent folder of the run folder")
     ap.add_argument("--stage", default="all", choices=["walk_forward", "holdout", "all"])
-    ap.add_argument("--only", default=None, help="comma-separated candidate names")
+    ap.add_argument("--only", default=None, help="comma-separated base candidate names (a '+ht' "
+                                                     "variant runs with its base)")
     ap.add_argument("--tracks", default=None, help="comma-separated subset of the configured tracks")
     ap.add_argument("--fd-raw", default=None, help="folder of raw football-data CSVs (entry + closing O/U 2.5)")
     a = ap.parse_args(argv)

@@ -54,6 +54,7 @@ def _frame(seed: int = 7, days: int = 150, teams: int = 8) -> pd.DataFrame:
                     "home_goals": hg, "away_goals": ag, "ht_home_goals": hth, "ht_away_goals": hta,
                     "home_scored_last5": lh + rng.normal(0, 0.3), "away_scored_last5": la + rng.normal(0, 0.3),
                     "home_xg_last5": (lh + rng.normal(0, 0.2)) if rng.random() > 0.3 else np.nan,
+                    "home_ht_scored_last5": (0.45 * lh + rng.normal(0, 0.2)) if rng.random() > 0.2 else np.nan,
                     "home_rest_days": float(rng.integers(2, 8)),
                     "bookmaker_overround": 1.05,
                     "odds_over25": 1 / (p_over * 1.03), "odds_under25": 1 / ((1 - p_over) * 1.03),
@@ -64,17 +65,27 @@ def _frame(seed: int = 7, days: int = 150, teams: int = 8) -> pd.DataFrame:
     f["btts"] = ((f["home_goals"] > 0) & (f["away_goals"] > 0)) * 1.0
     ht = f["ht_home_goals"] + f["ht_away_goals"]
     f["ht_over05"], f["ht_over15"] = (ht >= 1) * 1.0, (ht >= 2) * 1.0
+    f["home_has_ht_history"] = f["home_ht_scored_last5"].notna().astype(float)
+    f["away_has_ht_history"] = 1.0
     return f
 
 
-def _cfg(approved: bool = False) -> dict:
+def _cfg(approved: bool = False, ht_variant: bool = False) -> dict:
+    """A FIXTURE copy of the committed config on synthetic dates. approved=False empties
+    approved_by/approved_at (the committed config is approved since 2026-11-07); the HT variant is
+    off unless asked for. new_format excludes xG (stays out) and one HT column (the HT block)."""
     cfg = copy.deepcopy(P.load_config())
     cfg["holdout"].update(start="2024-09-01", end="2024-10-15")
     if approved:
         cfg["holdout"].update(approved_by="synthetic test", approved_at="2026-11-06")
+    else:
+        cfg["holdout"].update(approved_by=None, approved_at=None)
+    cfg["owner_decisions"]["new_format_ht_variant"] = ht_variant
     cfg["walk_forward"].update(min_train_matchdays=50, block_matchdays=30, validation_matchdays=20)
-    cfg["features"]["groups"] = {"form": {"include": True, "parity": "test", "columns": FEATS + ["bookmaker_overround", "home_ht_scored_last5"]}}
-    cfg["features"]["track_exclude"] = {"standard": [], "new_format": ["home_xg_last5"]}
+    cfg["features"]["groups"] = {"form": {"include": True, "parity": "test",
+                                          "columns": FEATS + ["bookmaker_overround", "home_ht_scored_last5",
+                                                              "home_has_ht_history", "away_has_ht_history"]}}
+    cfg["features"]["track_exclude"] = {"standard": [], "new_format": ["home_xg_last5", "home_ht_scored_last5"]}
     cfg["candidates"]["hgb"].update(max_iter=40)
     cfg["comparison"].update(n_boot=300, min_n_rows=50, min_matchdays=5)
     P.validate_config(cfg)
@@ -94,11 +105,36 @@ def _frames(feat, cfg, track="standard", market="over25"):
 
 # ── config and guards ─────────────────────────────────────────────────────────────────────────
 
-def test_committed_config_is_valid_unapproved_and_reuses_the_gate_thresholds():
+def test_committed_config_holds_the_owner_decisions_of_2026_11_07():
+    """The COMMITTED config: holdout 2026-04-01..2026-11-08 approved by the owner, the comparison
+    thresholds still the PG-1.0 values (reused, not changed), the new_format HT variant on."""
     cfg = P.load_config()
-    assert not P.holdout_approved(cfg)
-    assert P.fit_blockers(cfg, ENV_ON), "an unapproved holdout must block fitting even with the flag on"
-    gate = json.loads((ROOT / "config" / "promotion_gate.json").read_text(encoding="utf-8"))["holdout"]
+    h = cfg["holdout"]
+    assert (h["start"], h["end"]) == ("2026-04-01", "2026-11-08")
+    assert P.holdout_approved(cfg)
+    assert str(h["approved_by"]).strip() and str(h["approved_at"]).startswith("2026-11-07")
+    od = cfg["owner_decisions"]
+    assert od["holdout_start"] == h["start"]
+    assert od["new_format_ht_variant"] is True and P.ht_variant_on(cfg)
+    assert "PG-1.0" in od["comparison_rules"]
+    # the committed config's own HT block can run: no config-level blocker
+    assert P.ht_variant_blockers(cfg) == []
+    assert set(P.ht_block(cfg)) == {
+        "home_ht_scored_last5", "away_ht_scored_last5", "home_ht_conceded_last5", "away_ht_conceded_last5",
+        "home_ht_attack_str", "away_ht_attack_str", "combined_ht_goals_avg", "home_ht_over05_rate",
+        "away_ht_over05_rate", "home_ht_over15_rate", "away_ht_over15_rate",
+        "home_has_ht_history", "away_has_ht_history"}
+    # with approval and the variant ready, only the repository flag still blocks fitting
+    assert P.fit_blockers(cfg, {}) == [
+        f"{P.ENABLE_VAR} is not 'true' (repository variable; set only after owner approval)"]
+    assert P.fit_blockers(cfg, ENV_ON) == []
+
+
+def test_committed_config_reuses_the_gate_thresholds_unchanged():
+    cfg = P.load_config()
+    gate_doc = json.loads((ROOT / "config" / "promotion_gate.json").read_text(encoding="utf-8"))
+    assert gate_doc["gate_version"] == "PG-1.0"
+    gate = gate_doc["holdout"]
     c = cfg["comparison"]
     assert c["min_effect_logloss"] == gate["material_ll_improvement"]
     assert c["min_n_rows"] == gate["min_n_per_track"]
@@ -119,6 +155,17 @@ def test_fitting_is_refused_without_owner_approval_or_the_repository_flag(feat, 
     with pytest.raises(PermissionError, match=P.ENABLE_VAR):
         R.run(feat, _cfg(approved=True), tmp_path, env={P.ENABLE_VAR: "false"})
     assert not any(tmp_path.iterdir()), "a refused run must not create anything"
+
+
+@pytest.mark.parametrize("field", ["approved_by", "approved_at"])
+def test_a_copy_of_the_committed_config_with_the_approval_emptied_refuses_fitting(field, feat, tmp_path):
+    cfg = copy.deepcopy(P.load_config())
+    cfg["holdout"][field] = None
+    assert not P.holdout_approved(cfg)
+    assert any("not approved" in b for b in P.fit_blockers(cfg, ENV_ON))
+    with pytest.raises(PermissionError, match="not approved"):
+        R.run(feat, cfg, tmp_path, env=ENV_ON)
+    assert not any(tmp_path.iterdir())
 
 
 @pytest.mark.parametrize("bad", ["models", "models/registry", "output", "output/x", "config", "src"])
@@ -420,15 +467,162 @@ def test_end_to_end_run_writes_only_its_run_folder(feat, tmp_path):
         R.run(feat, cfg, tmp_path, env=ENV_ON, run_id="synthetic", stages=("holdout",))
 
 
-def test_cli_refuses_a_real_run_before_loading_any_data(monkeypatch, tmp_path):
-    import scripts.phase2_retrain as cli
+# ── the new_format HT variant (owner_decisions.new_format_ht_variant, synthetic) ──────────────────
 
+def test_ht_variant_feature_sets_restore_the_ht_block_only(feat):
+    cfg = _cfg(ht_variant=True)
+    sets = P.feature_sets(cfg, "new_format", feat.columns)
+    assert set(sets) == {"", P.HT_VARIANT_SUFFIX}
+    base, ht = sets[""][0], sets[P.HT_VARIANT_SUFFIX][0]
+    assert "home_ht_scored_last5" not in base and "home_ht_scored_last5" in ht
+    assert "home_xg_last5" not in base and "home_xg_last5" not in ht            # xG stays excluded
+    assert sets[P.HT_VARIANT_SUFFIX][1]["home_xg_last5"] == "excluded for track new_format"
+    assert set(ht) - set(base) == {"home_ht_scored_last5"}
+    assert "bookmaker_overround" not in ht                                       # never a price
+    assert set(P.feature_sets(cfg, "standard", feat.columns)) == {""}
+    assert set(P.feature_sets(_cfg(ht_variant=False), "new_format", feat.columns)) == {""}
+
+
+def test_ht_variant_candidate_names_feature_candidates_twice_market_only_once():
+    cfg = _cfg(ht_variant=True)
+    labels = [r[0] for r in P.candidate_runs(cfg, "new_format", list(P.CANDIDATES))]
+    for n in P.FEATURE_CANDIDATES:
+        assert labels.count(n) == 1 and labels.count(n + "+ht") == 1
+    assert labels.count("market_only") == 1 and "market_only+ht" not in labels
+    assert labels.count("dixon_coles") == 1 and "dixon_coles+ht" not in labels
+    assert len(labels) == len(set(labels)) == len(P.CANDIDATES) + len(P.FEATURE_CANDIDATES)
+    assert [r[0] for r in P.candidate_runs(cfg, "standard", list(P.CANDIDATES))] == list(P.CANDIDATES)
+    off = _cfg(ht_variant=False)
+    assert [r[0] for r in P.candidate_runs(off, "new_format", list(P.CANDIDATES))] == list(P.CANDIDATES)
+
+
+def test_ht_variant_dry_run_lists_both_feature_lists_and_row_counts(feat, capsys):
+    import scripts.phase2_retrain as cli
+    cfg = _cfg(ht_variant=True)
+    plan = P.build_plan(feat, cfg)
+    assert plan["ht_variant"]["on"] and plan["ht_variant"]["blockers"] == []
+    t = plan["tracks"]["new_format"]
+    v = t["variants"]["+ht"]
+    assert v["restored"] == ["home_ht_scored_last5"]
+    assert set(v["candidates"]) == {n + "+ht" for n in P.FEATURE_CANDIDATES}
+    assert "hgb" in t["candidates"] and "hgb+ht" in t["candidates"] and "market_only+ht" not in t["candidates"]
+    for m, s in t["markets"].items():
+        vs = v["markets"][m]
+        assert (vs["eligible_rows"], vs["walk_forward_region"], vs["holdout"]) == \
+            (s["eligible_rows"], s["walk_forward_region"], s["holdout"])
+    rows = P.eligible_rows(feat, cfg, "new_format", "over25")
+    pre, hold, _ = P.split_holdout(rows, cfg)
+    hc = v["markets"]["over25"]["ht_block_complete"]
+    assert hc == {"walk_forward_region": int(pre["home_ht_scored_last5"].notna().sum()),
+                  "holdout": int(hold["home_ht_scored_last5"].notna().sum())}
+    assert 0 < hc["holdout"] < v["markets"]["over25"]["holdout"]
+    assert plan["tracks"]["standard"]["variants"] == {}
+    cli.print_plan(plan, {})
+    out = capsys.readouterr().out
+    assert "variant '+ht'" in out and "home_ht_scored_last5" in out and "hgb+ht" in out
+
+
+def test_ht_variant_that_cannot_run_refuses_fitting_never_skips(feat, tmp_path):
+    # (1) the frame lacks an HT block column
+    cfg = _cfg(approved=True, ht_variant=True)
+    with pytest.raises(PermissionError, match="HT variant.*not in the feature frame"):
+        R.run(feat.drop(columns=["home_ht_scored_last5"]), cfg, tmp_path, env=ENV_ON)
+    # (2) the exclusion list holds no HT column: the variant would equal the champion list
+    cfg2 = _cfg(approved=True, ht_variant=True)
+    cfg2["features"]["track_exclude"]["new_format"] = ["home_xg_last5"]
+    assert any("holds no HT column" in b for b in P.fit_blockers(cfg2, ENV_ON))
+    with pytest.raises(PermissionError, match="HT variant"):
+        R.run(feat, cfg2, tmp_path, env=ENV_ON)
+    # (3) an HT column outside the included feature groups would be dropped silently
+    cfg3 = _cfg(approved=True, ht_variant=True)
+    cfg3["features"]["groups"]["form"]["columns"].remove("away_has_ht_history")
+    assert any("not in an included feature group" in b for b in P.fit_blockers(cfg3, ENV_ON))
+    with pytest.raises(PermissionError, match="HT variant"):
+        R.run(feat, cfg3, tmp_path, env=ENV_ON)
+    # (4) the flag is on but the new_format track is not configured
+    cfg4 = _cfg(approved=True, ht_variant=True)
+    cfg4["tracks"] = ["standard"]
+    assert any("not configured" in b for b in P.fit_blockers(cfg4, ENV_ON))
+    assert not any(tmp_path.iterdir()), "a refused run must not create anything"
+    # the flag must be a boolean
+    bad = _cfg()
+    bad["owner_decisions"]["new_format_ht_variant"] = "yes"
+    with pytest.raises(ValueError, match="new_format_ht_variant"):
+        P.validate_config(bad)
+
+
+def test_ht_variant_end_to_end_scores_both_variants_in_one_holm_family(feat, tmp_path):
+    cfg = _cfg(approved=True, ht_variant=True)
+    for k in [m for m in cfg["markets"] if m != "over25"]:
+        cfg["markets"].pop(k)
+    folder = R.run(feat, cfg, tmp_path, env=ENV_ON, run_id="synthetic_ht")
+    man = json.loads((folder / "manifest.json").read_text(encoding="utf-8"))
+    assert not [e for e in man["errors"] if "error" in e], man["errors"]
+    nf_labels = set(man["candidates_by_track"]["new_format"])
+    assert nf_labels == set(P.CANDIDATES) | {n + "+ht" for n in P.FEATURE_CANDIDATES}
+    assert set(man["candidates_by_track"]["standard"]) == set(P.CANDIDATES)
+    assert "home_ht_scored_last5" in man["features"]["new_format"]["variants"]["+ht"]["features"]
+    assert "home_ht_scored_last5" not in man["features"]["new_format"]["features"]
+    pred = pd.read_parquet(folder / "predictions.parquet")
+    for stage in ("walk_forward", "holdout"):
+        g = pred[(pred["stage"] == stage) & (pred["track"] == "new_format")]
+        assert set(g["candidate"]) == nf_labels
+        assert not (pred[(pred["stage"] == stage) & (pred["track"] == "standard")]["candidate"]
+                    .str.endswith("+ht").any())
+    h = pred[(pred["stage"] == "holdout") & (pred["track"] == "new_format")].pivot_table(
+        index="row_id", columns="candidate", values="p")
+    assert not np.allclose(h["hgb"], h["hgb+ht"]), "the variant must train on the HT block"
+    cmp_ = pd.read_csv(folder / "comparison.csv")
+    nf = cmp_[cmp_["track"] == "new_format"]
+    for stage in ("walk_forward", "holdout"):
+        assert set(nf[nf["stage"] == stage]["candidate"]) == nf_labels - {"champion_recipe"}
+    assert (cmp_["family_size"] == np.isfinite(cmp_["p_one_sided"]).sum()).all()
+    assert int(cmp_["family_size"].iloc[0]) >= 2 * (len(nf_labels) - 1)
+    models = sorted(p.name for p in (folder / "models" / "new_format" / "over25").glob("*.pkl"))
+    assert models == sorted(f"{n}.pkl" for n in nf_labels)
+
+
+def _no_load(monkeypatch):
     def _boom(cfg):
         raise AssertionError("data must not be loaded when fitting is refused")
     monkeypatch.setattr(P, "load_committed_frame", _boom)
+
+
+def test_cli_refuses_an_unapproved_config_before_loading_any_data(monkeypatch, tmp_path):
+    import scripts.phase2_retrain as cli
+    _no_load(monkeypatch)
+    cfg = copy.deepcopy(P.load_config())
+    cfg["holdout"].update(approved_by=None, approved_at=None)
+    path = tmp_path / "phase2_retrain_unapproved.json"
+    path.write_text(json.dumps(cfg), encoding="utf-8")
     monkeypatch.setenv(P.ENABLE_VAR, "true")
     with pytest.raises(PermissionError, match="not approved"):
-        cli.main(["--out", str(tmp_path)])
+        cli.main(["--config", str(path), "--out", str(tmp_path / "runs")])
+    assert not (tmp_path / "runs").exists()
+
+
+def test_cli_refuses_the_committed_config_without_the_flag_before_loading_any_data(monkeypatch, tmp_path):
+    import scripts.phase2_retrain as cli
+    _no_load(monkeypatch)
+    monkeypatch.delenv(P.ENABLE_VAR, raising=False)
+    with pytest.raises(PermissionError, match=P.ENABLE_VAR):
+        cli.main(["--out", str(tmp_path / "runs")])
+    monkeypatch.setenv(P.ENABLE_VAR, "false")
+    with pytest.raises(PermissionError, match=P.ENABLE_VAR):
+        cli.main(["--out", str(tmp_path / "runs")])
+    assert not (tmp_path / "runs").exists()
+
+
+def test_cli_refuses_a_variant_that_cannot_run_before_loading_any_data(monkeypatch, tmp_path):
+    import scripts.phase2_retrain as cli
+    _no_load(monkeypatch)
+    cfg = copy.deepcopy(P.load_config())
+    cfg["features"]["track_exclude"]["new_format"] = ["home_xg_last5", "away_xg_last5"]   # no HT column
+    path = tmp_path / "phase2_retrain_no_ht.json"
+    path.write_text(json.dumps(cfg), encoding="utf-8")
+    monkeypatch.setenv(P.ENABLE_VAR, "true")
+    with pytest.raises(PermissionError, match="HT variant"):
+        cli.main(["--config", str(path), "--out", str(tmp_path / "runs")])
 
 
 # ── workflow and code hygiene ─────────────────────────────────────────────────────────────────
