@@ -1,46 +1,46 @@
 {
-  "computed_at": "2026-11-06T21:00:36.668129+00:00",
+  "computed_at": "2026-11-07T01:03:55.301384+00:00",
   "results": {
     "H-MODEL-01__newformat|newformat": {
-      "rows": 340,
-      "settled_paired": 237,
-      "challenger_logged": 340,
-      "ll_champion_raw": 0.7037714854248992,
-      "ll_challenger": 0.6775908466068429,
-      "ll_served": 0.7037714854248992,
-      "brier_champion_raw": 0.2552016364690675,
-      "brier_challenger": 0.2423256509094852,
-      "delta_log_loss": -0.026180638818056184,
-      "delta_brier": -0.012875985559582274,
+      "rows": 341,
+      "settled_paired": 241,
+      "challenger_logged": 341,
+      "ll_champion_raw": 0.7035778556520863,
+      "ll_challenger": 0.6768585987738269,
+      "ll_served": 0.7035778556520863,
+      "brier_champion_raw": 0.2551109551549585,
+      "brier_challenger": 0.2419619231880249,
+      "delta_log_loss": -0.026719256878259386,
+      "delta_brier": -0.013149031966933605,
       "n_matchdays": 15,
       "delta_log_loss_ci95": [
-        -0.042743148512725294,
-        -0.01343052670433076
+        -0.04331685888513195,
+        -0.013880300274547322
       ],
       "delta_brier_ci95": [
-        -0.021124511547907496,
-        -0.006650812319447469
+        -0.021447658966223665,
+        -0.006944531968649582
       ]
     },
     "H-MODEL-01__standard|standard": {
-      "rows": 236,
-      "settled_paired": 183,
-      "challenger_logged": 236,
-      "ll_champion_raw": 0.6947390940219287,
-      "ll_challenger": 0.7087360366633807,
-      "ll_served": 0.6960715285991486,
-      "brier_champion_raw": 0.25079450600042624,
-      "brier_challenger": 0.25769886336969944,
-      "delta_log_loss": 0.013996942641452114,
-      "delta_brier": 0.0069043573692732264,
-      "n_matchdays": 12,
+      "rows": 237,
+      "settled_paired": 193,
+      "challenger_logged": 237,
+      "ll_champion_raw": 0.6952356902991248,
+      "ll_challenger": 0.7083783713778262,
+      "ll_served": 0.6972758873541668,
+      "brier_champion_raw": 0.2510345417086943,
+      "brier_challenger": 0.2575293578741295,
+      "delta_log_loss": 0.013142681078701328,
+      "delta_brier": 0.006494816165435233,
+      "n_matchdays": 13,
       "delta_log_loss_ci95": [
-        0.00683235118293312,
-        0.01970657379272672
+        0.005791361907537465,
+        0.01853104197583424
       ],
       "delta_brier_ci95": [
-        0.003398273669783406,
-        0.009723618769157855
+        0.002899701841426865,
+        0.009176163830092331
       ]
     }
   }
