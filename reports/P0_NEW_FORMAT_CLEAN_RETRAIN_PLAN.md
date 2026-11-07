@@ -175,6 +175,28 @@ Belgian First Division A has 149 holdout rows, one short. Every league has at le
 | **2026-04-01 (approved)** | 2,649 (132) | 6 / 17 | 2,889 (180) | 10 / 15 | 11 / 17 |
 | 2026-07-01 (proposed earlier) | 1,592 (71) | 1 / 17 | 1,691 (111) | 3 / 15 | 11 / 18 |
 
+### 5a. Refresh after collection run-day 6 (2026-11-07, data-truth-100 `b3c340c5`)
+
+The same `python scripts/phase2_retrain.py --dry-run`, run on a scratch worktree (the loader never ran in the working copy; `git status` stayed clean). Counts only: nothing was fitted.
+
+| | 2026-11-06 (above) | 2026-11-07 |
+|---|---:|---:|
+| Loaded rows | 70,744 | 70,744 |
+| COVID rows excluded | 12,271 | 12,271 |
+| Feature rows | 58,473 (2019-02-15 .. 2026-10-30) | 58,473 (2019-02-15 .. 2026-10-30) |
+| Frame hash (keys + results) | `a4cb912462c730d2` | `a4cb912462c730d2` |
+| Written-back home shots: blanked / provider-replaced | 11,978 / 6,808 | 11,787 / 6,596 (5,191 missing) |
+| Written-back home xG: blanked / provider-replaced | 9,394 / 6,718 | 9,597 / 6,900 (2,697 missing) |
+| Written-back home inside-box: blanked / provider-replaced | 10,887 / 9,460 | 10,998 / 9,619 (1,379 missing) |
+| O/U 2.5 pairs flagged "not a price" | 434 | 434 |
+| Features standard / new_format | 43 / 28 | 43 / 28 (same lists; new_format still excludes the xG, inside-box and HT block) |
+| Eligible / WF region / holdout, every track and market | as in the table above | unchanged |
+| Per-league WF / holdout, O/U 2.5 and HT O0.5 | as in the table above | unchanged |
+| Two-sided O/U 2.5 price, new_format WF / holdout | 2,339 / 946 | 2,352 / 1,033 |
+| Two-sided O/U 2.5 price, standard WF / holdout | 29,420 / 1,592 | 29,420 / 1,592 |
+
+The matches, labels and eligible rows did not move: the frame ends 2026-10-30 because the result history these models read is not part of the collection. What moved is (a) which written-back shot / xG / inside-box cells are served from a provider sidecar (the inside-box and full-statistics collectors added fill rows) and (b) the captured new-format O/U 2.5 prices. The new data (lineups, injuries, coaches, transfers, sidelined, profiles, re-fetched player counts) feeds none of these team models yet.
+
 ## 6. Imputation
 
 This follows `reports/P9_MODEL_IMPUTATION.md`, options 1 and 2:
