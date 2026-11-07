@@ -7,8 +7,9 @@
     "holdout_end": null,
     "min_verified_share": null,
     "markets": null,
-    "feature_rule": null
+    "feature_rule": "all_prior_verified"
   },
+  "owner_decisions_note": "Owner 2026-11-07: feature_rule = all_prior_verified (rule C, the strictest: a row trains only if every earlier match of that player is verified). Still open: holdout dates, min_verified_share and markets - decided once the re-fetch has finished and the real verified counts are known.",
   "proposed": {
     "holdout_start": "2026-09-01",
     "holdout_end": "2026-10-31",

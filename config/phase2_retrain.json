@@ -13,10 +13,11 @@
   },
 
   "holdout": {
-    "start": "2026-07-01",
+    "start": "2026-04-01",
     "end": "2026-11-08",
-    "approved_by": null,
-    "approved_at": null,
+    "approved_by": "Nevo (owner)",
+    "approved_at": "2026-11-07T07:03:25Z",
+    "approval_note": "Owner 2026-11-07: holdout from 2026-04-01 (the recommended middle option: Standard 6/17 and new-format 10/15 leagues reach the per-league minimum of 150 holdout matches). Proposed earlier: 2026-07-01. Pass rules: the PG-1.0 values in 'comparison' reused as declared. New-format HT block: included as a CANDIDATE (owner_decisions.new_format_ht_variant), never forced in.",
     "note": "UNTOUCHED final holdout. Rows dated start..end (inclusive) are never in any walk-forward fold, never used to fit, calibrate, blend or choose anything, and are scored exactly once by the holdout stage. The dates are PROPOSED and must be confirmed by the owner (approved_by/approved_at) before any fitting run; after approval they must not change for this harness_version."
   },
 
@@ -31,6 +32,14 @@
   },
 
   "tracks": ["standard", "new_format"],
+
+  "owner_decisions": {
+    "decided_on": "2026-11-07",
+    "holdout_start": "2026-04-01",
+    "comparison_rules": "PG-1.0 reused (comparison block below, unchanged)",
+    "new_format_ht_variant": true,
+    "new_format_ht_variant_note": "Train new_format candidates twice: with the champion exclusion list, and with the HT block (home/away_ht_* form, ht strength, combined_ht_goals_avg, has_ht_history) restored. Each variant is a separate candidate in the Holm family. Requires harness support: until src/retrain_harness implements the variant, fitting must refuse rather than silently skip it."
+  },
 
   "markets": {
     "over25":    {"target": "over25",    "kind": "total", "line": 2.5, "goals": ["home_goals", "away_goals"],
@@ -85,7 +94,7 @@
                      "home_ht_attack_str", "away_ht_attack_str", "combined_ht_goals_avg",
                      "home_ht_over05_rate", "away_ht_over05_rate", "home_ht_over15_rate", "away_ht_over15_rate"]
     },
-    "track_exclude_note": "new_format keeps the serving champion's exclusion list (pipeline.mode_train _NF_DROP) so the retrained champion recipe is the same recipe. Whether the HT block should come back for new_format now that the HT fill exists is an owner decision (plan report)."
+    "track_exclude_note": "new_format keeps the serving champion's exclusion list (pipeline.mode_train _NF_DROP) so the retrained champion recipe is the same recipe. Owner 2026-11-07: the HT block comes back for new_format as an ADDITIONAL candidate variant (see owner_decisions.new_format_ht_variant); the holdout decides, nothing is forced in."
   },
 
   "candidates": {
