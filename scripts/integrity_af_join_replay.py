@@ -31,7 +31,12 @@ def base_history():
     import numpy as np
     import pandas as pd
     from src import data_loader as DL
-    cached = pd.read_parquet(ROOT / "output" / "fd_history.parquet")
+    from src.history_corrections import serve_history
+    # the owner's history corrections, as load_all_matches applies them to the fd_cache rows
+    # (fix16/readers): removal lists, 90-minute scores, provider dates - on fd_history alone, the
+    # only bank they are eligible on, so the archive rows are never touched
+    cached = serve_history(pd.read_parquet(ROOT / "output" / "fd_history.parquet"),
+                           tag="join_replay.fd_history")
     frames = [cached]
     arch = DL._load_backtest_archive()
     if len(arch):

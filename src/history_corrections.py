@@ -58,6 +58,11 @@ fix15/dates (owner decision 2026-11-07, "use the provider's date"):
       use the provider's date; the collectors keep reading the history's own key. A sidecar keyed on
       the history's own key (the HT fill) is moved onto the corrected date (rekey_dated_sidecar).
 
+fix16/readers: every DIRECT reader of output/fd_history.parquet that uses its results (the strength
+rating, the edge replay, the HT graders of update_results, the dashboard pages, the price provenance
+check, the join replay) applies all of the above through serve_history, the loader's order. The
+builders and collectors of these lists and the raw-bank audits keep reading the raw file.
+
 All are built by scripts/build_history_corrections.py (no call for the duplicates, scores, dates and
 awarded rows; the cup fixture lists via collect_common.AFClient, budget-guarded). A list that is
 absent means "no correction".
@@ -449,3 +454,23 @@ def redated_fixture_ids(dates: pd.DataFrame | None = None) -> dict:
 def drop_corrected_rows(history: pd.DataFrame, tag: str = "history") -> pd.DataFrame:
     """apply_history_corrections for a raw history frame (no row_source column)."""
     return apply_history_corrections(history, tag=tag)
+
+
+#: the columns a direct reader of fd_history must hold for serve_history to recognise a listed row
+#: (the key and the recorded full-time score)
+SERVE_COLS = KEY + ["home_goals", "away_goals"]
+
+
+def serve_history(history: pd.DataFrame, tag: str = "history", source_col: str = "row_source") -> pd.DataFrame:
+    """fd_history as the LOADER serves it (fix16/readers): every owner correction, in the loader's
+    order (src.data_loader.identity_before_one_match) - the removal lists (proven cup rows, awarded
+    results, duplicate copies; the kept copy's empty cells filled from the removed one) and the
+    90-minute scores (apply_history_corrections), then the provider dates (apply_date_corrections).
+    For a DIRECT reader of output/fd_history.parquet; it must read at least SERVE_COLS, else a listed
+    row is not recognised and is counted as changed (never removed / re-dated on a guess). The frame
+    must hold history rows only, or a row_source column (only football_data / fd_cache rows are
+    eligible). Counts in attrs['history_corrections'] and attrs['history_date_corrections']."""
+    if history is None or history.empty:
+        return history
+    out = apply_history_corrections(history, source_col=source_col, tag=tag)
+    return apply_date_corrections(out, source_col=source_col, tag=tag)

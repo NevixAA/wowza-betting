@@ -210,12 +210,17 @@ def match_prediction(row, preds):
 def league_goal_shares() -> dict:
     """{canonical league: {"home_share", "fh_share"}} measured from that league's own results in
     output/fd_history.parquet: home goals / all goals, and half-time goals / full-time goals.
-    A league with no results (or no HT scores) has no entry / None - never a global 55% or 44%."""
+    A league with no results (or no HT scores) has no entry / None - never a global 55% or 44%.
+    Read under the owner's corrections as the loader serves the history (fix16/readers,
+    src.history_corrections.serve_history): no proven cup / awarded row, no duplicate copy, AET/PEN
+    rows at the 90-minute score."""
     p = config.OUTPUT_DIR / "fd_history.parquet"
     if not p.exists():
         return {}
     from src.league_registry import canonical_name
-    h = pd.read_parquet(p, columns=["league", "home_goals", "away_goals", "ht_home_goals", "ht_away_goals"])
+    from src.history_corrections import SERVE_COLS, serve_history
+    h = pd.read_parquet(p, columns=SERVE_COLS + ["ht_home_goals", "ht_away_goals"])
+    h = serve_history(h, tag="agent_analysis.fd_history")
     h = h.dropna(subset=["home_goals", "away_goals"])
     h["league"] = h["league"].map(lambda x: canonical_name(x) or str(x))
     out = {}

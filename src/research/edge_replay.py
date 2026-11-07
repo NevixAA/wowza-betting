@@ -20,7 +20,8 @@ INPUTS (all committed v9 data, nothing synthetic, nothing post-kickoff)
              CHANGE-LOG). Pairs are formed ONLY within one book (src.edge_engine_shadow.book_pairs):
              last observation carried forward per book and side up to the entry instant, so a quote
              written after the entry instant can never reach the decision.
-  results    output/af_history.parquet + fd_history.parquet, joined league-scoped through
+  results    output/af_history.parquet + fd_history.parquet (each under the owner's corrections as the
+             loader serves it: apply_af_history_corrections / history_corrections.serve_history), joined league-scoped through
              src.team_names.resolve_result (unique match within +-1 day or the fixture is unsettled).
 
 ENGINES
@@ -439,7 +440,11 @@ def load_results(output_dir: Path) -> pd.DataFrame:
         parts.append(a.rename(columns={"FTHG": "hg", "FTAG": "ag"}))
     fd = Path(output_dir) / "fd_history.parquet"
     if fd.exists():
-        f = pd.read_parquet(fd, columns=["league", "date", "home_team", "away_team", "home_goals", "away_goals"])
+        from src.history_corrections import SERVE_COLS, serve_history
+        f = pd.read_parquet(fd, columns=SERVE_COLS)
+        # the owner's history corrections as the loader serves fd_history (fix16/readers): removal
+        # lists, 90-minute scores (settlement is on 90 minutes), provider dates
+        f = serve_history(f, tag="edge_replay.fd_history")
         parts.append(f.rename(columns={"home_goals": "hg", "away_goals": "ag"}))
     if not parts:
         return pd.DataFrame(columns=["league", "date", "home_team", "away_team", "hg", "ag", "_d"])

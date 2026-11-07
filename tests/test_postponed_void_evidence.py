@@ -155,7 +155,7 @@ def test_ht_postponed_is_void(af, monkeypatch, tmp_path):
     pd.DataFrame([{"source": "live", "match_date": _d(9), "league": LEAGUE, "home_team": "Inter Miami",
                    "away_team": "Orlando City", "market": "ht_over05", "result": "", "pnl": "",
                    "notes": ""}]).to_csv(led, index=False)
-    pd.DataFrame(columns=["league", "date", "home_team", "away_team", "ht_home_goals",
+    pd.DataFrame(columns=["league", "date", "home_team", "away_team", "home_goals", "away_goals", "ht_home_goals",
                           "ht_away_goals"]).to_parquet(tmp_path / "fd_history.parquet")
     monkeypatch.setattr(U, "fetch_scores_apifootball", lambda league, match_date=None: [])
     af["day"] = [_fx("ABD")]
