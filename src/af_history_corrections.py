@@ -68,6 +68,18 @@ the kept copy's values (after the rule above) are ALSO offered under the removed
 same proven fixture, one row per key, never a second match: af_history and the collectors still
 hold one row per fixture, and the served frame holds one row per match (data truth rule 5). Re-dating
 the served row to the provider date is the football-data side's decision, not made here.
+
+fix15/dates (owner 2026-11-07, "use the provider's date"): the football-data side now makes it -
+src.history_corrections.apply_date_corrections serves those football-data rows on the provider's
+date (output/corrections/history_date_corrections.csv), so the kept copy joins them directly and the
+alias of such a pair is no longer added (redundant; the fixture id and provider date must agree). The
+alias stays for a two-date pair whose served row is not re-dated.
+
+SAME-DAY SPELLING DUPLICATES (fix15/dates, found_by af_same_day_spelling): the same list also removes
+the extra copies of one provider fixture held on the provider's date under different club spellings
+('Club Leon' / 'Leon'), proven as above (same provider fixture id, both clubs, same score). The kept
+copy is on the same date, so plan_fill, the sidecar re-key and the identity check apply unchanged and
+no join alias is added.
 """
 from __future__ import annotations
 
@@ -303,24 +315,94 @@ def rekey_sidecar(fill: pd.DataFrame, corr: pd.DataFrame | None = None,
     return out
 
 
+def follow_redated_fixtures(frame: pd.DataFrame, redated: dict | None = None,
+                            tag: str = "af_redated") -> pd.DataFrame:
+    """For the LOADER's joins only (fix15/dates): a row of `frame` (af_history, or a sidecar keyed on
+    af_history's key) that carries the provider fixture id of a football-data row the loader re-dates
+    onto the provider's date (src.history_corrections.redated_fixture_ids) and is dated ONE day off
+    that provider date is offered on the provider date - the same proven fixture (its own fixture id),
+    so the provider statistics it holds still reach the served row (measured 2026-11-07: 3 served
+    matches, e.g. CF Montreal v Atlanta Utd 2024-10-23, fixture 1312300, whose only provider values
+    are the --insidebox / --fullstats answers keyed on af_history's football-data-dated copy). One row
+    per key: when the provider-date key is already held, the row is left where it is (counted).
+    Counts in out.attrs['af_redated_follow']."""
+    if redated is None:
+        try:
+            from src.history_corrections import redated_fixture_ids
+            redated = redated_fixture_ids()
+        except Exception as e:                                         # noqa: BLE001
+            log.error(f"[{tag}] history date list unreadable ({type(e).__name__}: {e}) - nothing moved")
+            redated = {}
+    if (frame is None or frame.empty or not redated or "fixture_id" not in frame.columns
+            or not set(KEY) <= set(frame.columns)):
+        return frame
+    keys = _keys(frame)
+    present = set(keys)
+    fids = pd.to_numeric(frame["fixture_id"], errors="coerce").tolist()
+    moved, held = [], 0
+    for i, (k, f) in enumerate(zip(keys, fids)):
+        if f != f or int(f) not in redated:
+            continue
+        pdate = redated[int(f)]
+        if k[1] == pdate or abs((pd.Timestamp(k[1]) - pd.Timestamp(pdate)).days) != 1:
+            continue
+        nk = (k[0], pdate, k[2], k[3])
+        if nk in present:
+            held += 1
+            continue
+        moved.append((i, pdate))
+        present.add(nk)
+    if not moved and not held:
+        return frame
+    attrs = dict(getattr(frame, "attrs", {}) or {})
+    out = frame.copy()
+    ci = out.columns.get_loc("date")
+    is_dt = pd.api.types.is_datetime64_any_dtype(out["date"])
+    for i, pdate in moved:
+        out.iat[i, ci] = pd.Timestamp(pdate) if is_dt else pdate
+    out.attrs = attrs
+    out.attrs["af_redated_follow"] = {"moved_to_provider_date": len(moved), "left_key_held": held}
+    log.info(f"[{tag}] provider date (fix15): {len(moved)} row(s) of a re-dated fixture (same fixture id) "
+             f"offered on the provider's date, {held} left (key already held)")
+    return out
+
+
 def add_join_aliases(frame: pd.DataFrame, corr: pd.DataFrame | None = None,
-                     tag: str = "af_join") -> pd.DataFrame:
+                     tag: str = "af_join", redated: dict | None = None) -> pd.DataFrame:
     """`frame` (af_history after apply_af_history_corrections, or a sidecar after rekey_sidecar) plus,
-    for every listed pair whose kept row is in it and whose removed key is NOT, a copy of the kept row
-    under the removed copy's key - so the loader's (league, date, clubs) join reaches the served row
-    whichever of the two days it is dated by (module docstring). For the loader's joins ONLY: the
-    collectors and the result readers never call it. Counts in out.attrs['af_join_aliases']."""
+    for every listed TWO-DATE pair whose kept row is in it and whose removed key is NOT, a copy of the
+    kept row under the removed copy's key - so the loader's (league, date, clubs) join reaches the
+    served row whichever of the two days it is dated by (module docstring). For the loader's joins
+    ONLY: the collectors and the result readers never call it. Not for a pair whose served
+    football-data row the loader re-dates onto the kept copy's (provider) date - `redated`, {fixture
+    id: provider date} of src.history_corrections.redated_fixture_ids (fix15/dates) - nor for a
+    same-day spelling duplicate. Counts in out.attrs['af_join_aliases']."""
     corr = read_af_corrections() if corr is None else corr
     if frame is None or frame.empty or corr is None or corr.empty or not set(KEY) <= set(frame.columns):
         return frame
+    if redated is None:
+        try:
+            from src.history_corrections import redated_fixture_ids
+            redated = redated_fixture_ids()
+        except Exception as e:                                         # noqa: BLE001
+            log.error(f"[{tag}] history date list unreadable ({type(e).__name__}: {e}) - every alias kept")
+            redated = {}
     keys = _keys(frame)
     pos = {}
     for i, k in enumerate(keys):
         pos.setdefault(k, i)
     present = set(keys)
     picks, new_keys = [], []
+    n_same_day, n_redated = 0, 0
     for r, k in zip(corr.to_dict("records"), _keys(corr)):
         kk = (k[0], str(r["kept_date"])[:10], str(r["kept_home_team"]), str(r["kept_away_team"]))
+        if kk[1] == k[1]:
+            n_same_day += 1          # a spelling duplicate (fix15): no other date to bridge
+            continue
+        fid = _num(r.get("provider_fixture_id"))
+        if fid is not None and not isinstance(fid, str) and redated.get(int(fid)) == kk[1]:
+            n_redated += 1           # the served row is re-dated onto the provider date: joins directly
+            continue
         if kk not in pos or k in present:
             continue
         picks.append(pos[kk])
@@ -336,7 +418,8 @@ def add_join_aliases(frame: pd.DataFrame, corr: pd.DataFrame | None = None,
     add["away_team"] = [k[3] for k in new_keys]
     out = pd.concat([frame, add], ignore_index=True)
     out.attrs = attrs
-    out.attrs["af_join_aliases"] = {"aliases_added": len(picks)}
+    out.attrs["af_join_aliases"] = {"aliases_added": len(picks), "skipped_served_row_redated": n_redated,
+                                    "skipped_same_day_spelling": n_same_day}
     log.info(f"[{tag}] af_history duplicates: the kept copy of {len(picks)} proven fixture(s) also "
              f"joinable under the removed copy's key (the served row's date)")
     return out

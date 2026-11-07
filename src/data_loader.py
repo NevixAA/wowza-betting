@@ -658,13 +658,30 @@ def one_club_one_match(out: pd.DataFrame) -> pd.DataFrame:
     return _one_match_one_row(identity_before_one_match(out))
 
 
+def _apply_date_corrections(df: pd.DataFrame, dates: pd.DataFrame | None = None) -> pd.DataFrame:
+    """src.history_corrections.apply_date_corrections (fix15/dates, owner 2026-11-07: "use the
+    provider's date"), never fatal: an unreadable list logs an error and the history keeps its own
+    dates. On the history's OWN key and spelling, so after the removal lists and before any club is
+    renamed, any enrichment joins (the HT fill sidecar is re-keyed onto the corrected date) and any
+    feature - rest days and the rolling-window order use the provider's date."""
+    try:
+        from src.history_corrections import apply_date_corrections
+        return apply_date_corrections(df, dates=dates, tag="history-dates")
+    except Exception as e:                                             # noqa: BLE001
+        log.error(f"[history-dates] NOT applied ({type(e).__name__}: {e})")
+        return df
+
+
 def identity_before_one_match(out: pd.DataFrame, corrections: pd.DataFrame | None = None,
-                              scores: pd.DataFrame | None = None) -> pd.DataFrame:
+                              scores: pd.DataFrame | None = None,
+                              dates: pd.DataFrame | None = None) -> pd.DataFrame:
     """one_club_one_match up to (not including) the last one-match de-duplication: the frame whose
     duplicate pairs (src.integrity.duplicate_matches.duplicate_pairs) are exactly what the loader
     merges. scripts/build_history_corrections.py proves the provider date of those pairs
-    (fix8/history2, 2026-11-04); `corrections` / `scores` override the committed lists."""
+    (fix8/history2, 2026-11-04); `corrections` / `scores` / `dates` override the committed lists
+    (the builder passes an empty `dates`: the date list is built after the pairs)."""
     out = _apply_history_corrections(out, corrections, scores)
+    out = _apply_date_corrections(out, dates)
     out = _repair_club_text(out)
     out = _canonicalise_clubs(out)
     return _canonical_identity_and_seasons(out)
@@ -1357,6 +1374,11 @@ def _enrich_ht_scores(df: pd.DataFrame, root: Path | None = None) -> pd.DataFram
                 continue
             ht = ht[ht["HTHG"].notna() & ht["HTAG"].notna()].copy()      # a null HT is missing
             ht["date"] = pd.to_datetime(ht["date"], errors="coerce")
+            if name == "fd_history_ht_fill":
+                # keyed on fd_history's OWN key: a row of a history match the loader re-dated onto the
+                # provider's date (fix15/dates, apply_date_corrections) moves with it
+                from src.history_corrections import rekey_dated_sidecar
+                ht = rekey_dated_sidecar(ht, tag=name)
             # keyed on the history's own spelling: let the identity map the loader applied to df
             # place a club it renamed (Phase 2 HT repair: 2,303 of 33,259 sidecar rows were lost)
             ht = _resolve_onto_history(ht, df, "home_team", "away_team", name,
@@ -1413,8 +1435,10 @@ def _enrich_af_stats_fill(df: pd.DataFrame, root: Path | None = None) -> pd.Data
         fill = pd.read_parquet(p)
         # a row keyed on a removed af_history duplicate moves onto the kept copy's key (same
         # provider fixture id only; src/af_history_corrections, owner 2026-11-04)
-        from src.af_history_corrections import add_join_aliases, rekey_sidecar
+        from src.af_history_corrections import add_join_aliases, follow_redated_fixtures, rekey_sidecar
         fill = add_join_aliases(rekey_sidecar(fill, tag="af_stats_fill"), tag="af_stats_fill")
+        # a row of a fixture whose football-data row is re-dated onto the provider date (fix15)
+        fill = follow_redated_fixtures(fill, tag="af_stats_fill")
         vals = [c for c in _AF_STATS_FILL_COLS if c in fill.columns]
         if "league" not in fill.columns or not vals:
             log.error("[af_stats_fill] no league / stat column - fill SKIPPED")
@@ -1505,8 +1529,10 @@ def _enrich_af_fullstats_fill(df: pd.DataFrame, root: Path | None = None) -> pd.
         return df
     try:
         fill = pd.read_parquet(p)
-        from src.af_history_corrections import add_join_aliases, rekey_sidecar  # as the stats fill
+        from src.af_history_corrections import (add_join_aliases, follow_redated_fixtures,  # as the stats fill
+                                                rekey_sidecar)
         fill = add_join_aliases(rekey_sidecar(fill, tag="af_fullstats_fill"), tag="af_fullstats_fill")
+        fill = follow_redated_fixtures(fill, tag="af_fullstats_fill")
         vals = [c for c in _AF_FULLSTATS_COLS if c in fill.columns]
         if "league" not in fill.columns or not vals:
             log.error("[af_fullstats_fill] no league / stat column - fill SKIPPED")
@@ -1600,8 +1626,13 @@ def _enrich_with_api_shots(df: pd.DataFrame) -> pd.DataFrame:
             # serves the provider values only.
             # The served row of such a match is the football-data row, dated like the REMOVED copy
             # (UK day), so the kept copy is also joinable under that key (add_join_aliases).
-            from src.af_history_corrections import add_join_aliases, apply_af_history_corrections
+            # fix15/dates: the football-data row of 352 such matches is now re-dated onto the provider
+            # date (history_date_corrections.csv), so their alias is no longer added; a row of a
+            # re-dated fixture filed one day off is offered on the provider date (same fixture id).
+            from src.af_history_corrections import (add_join_aliases, apply_af_history_corrections,
+                                                    follow_redated_fixtures)
             hist = add_join_aliases(apply_af_history_corrections(hist, tag="af_history"), tag="af_history")
+            hist = follow_redated_fixtures(hist, tag="af_history")
             hist["date"] = pd.to_datetime(hist["date"], errors="coerce")
             _wb = written_back_mask(hist)
             log.info(f"[af_history] provenance: {int(_wb.sum()):,} of {len(hist):,} rows written back "
@@ -2268,6 +2299,7 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
     out = pd.concat(frames, ignore_index=True)
     out = out[out["home_team"].notna() & out["away_team"].notna()]
     out = _apply_history_corrections(out)                 # owner 2026-11-04, as one_club_one_match
+    out = _apply_date_corrections(out)                    # owner 2026-11-07, as one_club_one_match
     out = _repair_club_text(out)
     out = _one_match_one_row(out)                         # same rule as the CI path
     out = out.sort_values("date").reset_index(drop=True)

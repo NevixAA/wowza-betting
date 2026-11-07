@@ -1,10 +1,5 @@
 {
  "cups": {
-  "fetch": {
-   "calls": 0,
-   "planned_country_calls": 0,
-   "planned_fixture_calls": 0
-  },
   "proven_by_league_cup": {
    "Argentina Primera Division / Copa de la Liga Profesional": 404
   },
@@ -76,6 +71,33 @@
   "fixtures_not_claimed": [],
   "rows": 2
  },
+ "provider_date": {
+  "claims_off_by_offset": {
+   "-1": 1,
+   "1": 351
+  },
+  "claims_off_provider_date": 352,
+  "history_date_is_local_kickoff_date": 0,
+  "history_date_not_local_kickoff_date": 352,
+  "history_rows": 64543,
+  "history_rows_claimed": 60429,
+  "local_date_unknown": 0,
+  "refused_by_league": {},
+  "refused_by_reason": {},
+  "refused_rows": 0,
+  "rows_redated": 352,
+  "rows_redated_by_league": {
+   "Argentina Primera Division": 35,
+   "Brazil Serie A": 57,
+   "Dutch Eredivisie": 1,
+   "Mexico Liga MX": 45,
+   "USA MLS": 214
+  },
+  "rows_redated_by_offset": {
+   "-1": 1,
+   "1": 351
+  }
+ },
  "same_day_copy_provider_agrees": {
   "removed_by_league": {
    "USA MLS": 1
@@ -108,5 +130,5 @@
    "ft_status_scores_differ": 6
   }
  },
- "written_at": "2026-11-07T00:17:52.833197+00:00"
+ "written_at": "2026-11-07T10:11:10.674543+00:00"
 }

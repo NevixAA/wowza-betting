@@ -42,9 +42,25 @@ Follow-ups of fix8/history2 (2026-11-04, same owner decisions):
       cup row. Empty until the provider's awarded fixtures are stored (collect_ht_scores keeps them
       from fix8/history2 on).
 
-All are built by scripts/build_history_corrections.py (no call for the duplicates, scores and awarded
-rows; the cup fixture lists via collect_common.AFClient, budget-guarded). A list that is absent means
-"no correction".
+fix15/dates (owner decision 2026-11-07, "use the provider's date"):
+
+  output/corrections/history_date_corrections.csv
+      A SINGLE history row dated one day off the provider's own date for the same proven fixture
+      (late Americas kick-offs, 23:xx UTC, filed under the next UK calendar day; no twin, so the
+      duplicate rule never saw them) is SERVED on the provider's date. Proven only when the row
+      claims exactly one provider fixture of the stored fixture lists (same league, both clubs
+      resolved home->home / away->away), no other history row claims that fixture, the full-time
+      scores agree where both hold one, the dates are exactly one day apart, and no other history
+      row of the same league and clubs sits on the provider date. The list keeps the original
+      date (history_date), the provider date, the provider kick-off UTC, the fixture id and the
+      evidence. Applied by the LOADER only (apply_date_corrections, after the lists above and
+      before any club renaming, enrichment or feature), so rest days and the rolling-window order
+      use the provider's date; the collectors keep reading the history's own key. A sidecar keyed on
+      the history's own key (the HT fill) is moved onto the corrected date (rekey_dated_sidecar).
+
+All are built by scripts/build_history_corrections.py (no call for the duplicates, scores, dates and
+awarded rows; the cup fixture lists via collect_common.AFClient, budget-guarded). A list that is
+absent means "no correction".
 
 APPLYING. A listed row is removed only when the frame holds a row with the SAME key (league, date,
 home_team, away_team - the history's own spelling) AND the same full-time score as recorded (a
@@ -74,7 +90,11 @@ CUP_EXCLUDED = CORRECTIONS_DIR / "history_excluded_cup_rows.csv"
 DUP_REMOVED = CORRECTIONS_DIR / "history_removed_duplicates.csv"
 AWARDED_EXCLUDED = CORRECTIONS_DIR / "history_awarded_results.csv"
 SCORE_90 = CORRECTIONS_DIR / "history_score_90min.csv"
-SCORE_COLS = ["history_ft_home", "history_ft_away", "ft90_home", "ft90_away"]
+DATE_CORR = CORRECTIONS_DIR / "history_date_corrections.csv"
+#: the columns apply_date_corrections needs (the list carries the evidence beside them)
+DATE_COLS = ["league", "history_date", "home_team", "away_team", "home_goals", "away_goals",
+             "provider_date", "fixture_id"]
+SCORE_COLS =["history_ft_home", "history_ft_away", "ft90_home", "ft90_away"]
 KEY = ["league", "date", "home_team", "away_team"]
 HISTORY_SOURCES = {"football_data", "fd_cache"}
 #: never copied from a removed duplicate onto the kept row (identity, provenance, derived labels)
@@ -299,6 +319,131 @@ def _apply_removals(df: pd.DataFrame, corr: pd.DataFrame, source_col: str, tag: 
                  f"of the kept copy filled from the removed one; {changed} listed row(s) differ from the "
                  f"listing (left in)")
     return out, rep
+
+
+def read_date_corrections(path: Path | None = None) -> pd.DataFrame:
+    """The date list (DATE_COLS + evidence), dates as YYYY-MM-DD. Empty when absent or unreadable
+    (logged: an unreadable list is NOT applied)."""
+    p = Path(path or DATE_CORR)
+    empty = pd.DataFrame(columns=DATE_COLS)
+    if not p.exists():
+        return empty
+    try:
+        d = pd.read_csv(p)
+    except (OSError, ValueError, pd.errors.EmptyDataError) as e:
+        log.error(f"[history-corrections] {p.name} unreadable ({e}) - NOT applied")
+        return empty
+    if d.empty:
+        return empty
+    if not set(DATE_COLS) <= set(d.columns):
+        log.error(f"[history-corrections] {p.name} lacks {sorted(set(DATE_COLS) - set(d.columns))} - NOT applied")
+        return empty
+    d = d.copy()
+    d["history_date"] = _day(d["history_date"]).to_numpy()
+    d["provider_date"] = _day(d["provider_date"]).to_numpy()
+    return d
+
+
+def _date_map(dates: pd.DataFrame) -> dict:
+    """{(league, history_date, home, away): (recorded FT or None, provider_date)}."""
+    out = {}
+    for r, k in zip(dates.itertuples(index=False),
+                    _keys(dates, ["league", "history_date", "home_team", "away_team"])):
+        if isinstance(r.provider_date, str) and r.provider_date:
+            out[k] = (_ft(r.home_goals, r.away_goals), r.provider_date)
+    return out
+
+
+def apply_date_corrections(df: pd.DataFrame, dates: pd.DataFrame | None = None,
+                           source_col: str = "row_source", tag: str = "history") -> pd.DataFrame:
+    """`df` with every listed history row served on the provider's date (module docstring,
+    fix15/dates). A row is re-dated only when its key (the history's own league, date and spelling)
+    is listed AND its full-time score equals the recorded one (a missing score equals a missing
+    score); else it is counted and left alone. History rows only (row_source football_data /
+    fd_cache, or a frame without row_source). Counts per league in df.attrs['history_date_corrections']."""
+    dates = read_date_corrections() if dates is None else dates
+    if df is None or df.empty or dates is None or dates.empty or not set(KEY) <= set(df.columns):
+        return df
+    rec = _date_map(dates)
+    eligible = (df[source_col].isin(HISTORY_SOURCES).tolist() if source_col in df.columns
+                else [True] * len(df))
+    hg = df["home_goals"].tolist() if "home_goals" in df.columns else [None] * len(df)
+    ag = df["away_goals"].tolist() if "away_goals" in df.columns else [None] * len(df)
+    hit, changed, per = [], 0, {}
+    for p, (k, ok) in enumerate(zip(_keys(df), eligible)):
+        if not ok or k not in rec:
+            continue
+        ft, pdate = rec[k]
+        lg = per.setdefault(k[0], {"rows_redated": 0, "listed_rows_changed_since_listing": 0})
+        if _ft(hg[p], ag[p]) != ft:
+            changed += 1
+            lg["listed_rows_changed_since_listing"] += 1
+            continue
+        hit.append((p, pdate))
+        lg["rows_redated"] += 1
+    if not hit and not changed:
+        return df
+    attrs = dict(getattr(df, "attrs", {}) or {})
+    out = df.copy()
+    ci = out.columns.get_loc("date")
+    is_dt = pd.api.types.is_datetime64_any_dtype(out["date"])
+    for p, pdate in hit:
+        out.iat[p, ci] = pd.Timestamp(pdate) if is_dt else pdate
+    out.attrs = attrs
+    out.attrs["history_date_corrections"] = {"per_league": per, "rows_redated": len(hit),
+                                             "listed_rows_changed_since_listing": changed}
+    log.info(f"[{tag}] provider date (owner 2026-11-07): {len(hit)} history row(s) dated one day off "
+             f"the provider's date for the same proven fixture served on the provider's date "
+             f"(originals kept in {DATE_CORR.name}); {changed} listed row(s) differ from the listing "
+             f"(left alone)")
+    return out
+
+
+def rekey_dated_sidecar(fill: pd.DataFrame, dates: pd.DataFrame | None = None,
+                        tag: str = "sidecar") -> pd.DataFrame:
+    """A sidecar keyed on the history's OWN key (league, date, home_team, away_team - e.g.
+    output/collect/fd_history_ht_fill.parquet) with its rows on a re-dated history key moved onto the
+    provider's date, so it still reaches the row apply_date_corrections re-dated. A row whose new key
+    is already held by another sidecar row is left where it is (counted): one answer per key."""
+    dates = read_date_corrections() if dates is None else dates
+    if fill is None or fill.empty or dates is None or dates.empty or not set(KEY) <= set(fill.columns):
+        return fill
+    rec = _date_map(dates)
+    keys = _keys(fill)
+    present = set(keys)
+    moved, held = [], 0
+    for i, k in enumerate(keys):
+        if k not in rec:
+            continue
+        nk = (k[0], rec[k][1], k[2], k[3])
+        if nk in present:
+            held += 1
+            continue
+        moved.append((i, rec[k][1]))
+        present.add(nk)
+    if not moved and not held:
+        return fill
+    attrs = dict(getattr(fill, "attrs", {}) or {})
+    out = fill.copy()
+    ci = out.columns.get_loc("date")
+    is_dt = pd.api.types.is_datetime64_any_dtype(out["date"])
+    for i, pdate in moved:
+        out.iat[i, ci] = pd.Timestamp(pdate) if is_dt else pdate
+    out.attrs = attrs
+    out.attrs["dated_sidecar_rekey"] = {"moved_to_provider_date": len(moved), "left_new_key_held": held}
+    log.info(f"[{tag}] provider date (owner 2026-11-07): {len(moved)} sidecar row(s) moved onto the "
+             f"re-dated history key, {held} left (the new key already answered)")
+    return out
+
+
+def redated_fixture_ids(dates: pd.DataFrame | None = None) -> dict:
+    """{provider fixture id: provider date} of the re-dated history rows (src/af_history_corrections
+    no longer bridges the af_history joins of these fixtures: the served row is on the provider date)."""
+    dates = read_date_corrections() if dates is None else dates
+    if dates is None or dates.empty:
+        return {}
+    f = pd.to_numeric(dates["fixture_id"], errors="coerce")
+    return {int(a): str(b) for a, b in zip(f, dates["provider_date"]) if a == a and isinstance(b, str)}
 
 
 def drop_corrected_rows(history: pd.DataFrame, tag: str = "history") -> pd.DataFrame:

@@ -174,7 +174,12 @@ def test_committed_list_holds_full_original_values_and_evidence():
     assert list(d.columns[:len(af_cols)]) == af_cols
     for c in AC.KEPT + ["provider_fixture_id", "provider_date", "provider_kickoff_utc", "found_by"]:
         assert d[c].notna().all(), c
-    assert (pd.to_datetime(d["kept_date"]) - pd.to_datetime(d["date"])).abs().dt.days.eq(1).all()
+    gap = (pd.to_datetime(d["kept_date"]) - pd.to_datetime(d["date"])).abs().dt.days
+    two = d["found_by"] == "af_claim_two_dates"
+    assert gap[two].eq(1).all()
+    # fix15/dates: the same-day spelling copies sit on the kept copy's (provider) date
+    assert set(d["found_by"]) <= {"af_claim_two_dates", "af_same_day_spelling"}
+    assert gap[~two].eq(0).all() and (d.loc[~two, "date"] == d.loc[~two, "provider_date"]).all()
     assert (d["kept_date"] == d["provider_date"]).all()
 
 
@@ -182,14 +187,17 @@ def test_join_alias_offers_the_kept_values_under_the_removed_key_for_the_loader_
     kept = _row("2026-10-24", "Leon", "Toluca", FTHG=1.0, FTAG=1.0, HS=16.0)
     rem = _row("2026-10-25", "Club Leon", "Toluca", HS=27.0)
     corr = _corr(rem, "2026-10-24", "Leon", "Toluca")
-    out = AC.add_join_aliases(AC.apply_af_history_corrections(pd.DataFrame([kept, rem]), corr), corr)
+    # redated={}: the served row is NOT re-dated here (fix15/dates drops the alias when it is)
+    out = AC.add_join_aliases(AC.apply_af_history_corrections(pd.DataFrame([kept, rem]), corr), corr,
+                              redated={})
     assert len(out) == 2
     alias = out[out["home_team"] == "Club Leon"].iloc[0]
     assert pd.Timestamp(alias["date"]) == pd.Timestamp("2026-10-25")
     assert alias["HS"] == 16.0 and alias["FTHG"] == 1.0         # the kept provider values, not the 27
     # the removed key still present (row changed since listing) -> no alias, no second row on a key
     changed = dict(rem, HS=26.0)
-    out2 = AC.add_join_aliases(AC.apply_af_history_corrections(pd.DataFrame([kept, changed]), corr), corr)
+    out2 = AC.add_join_aliases(AC.apply_af_history_corrections(pd.DataFrame([kept, changed]), corr), corr,
+                               redated={})
     assert len(out2) == 2 and out2["HS"].tolist() == [16.0, 26.0]
 
 
@@ -204,6 +212,9 @@ def test_loader_joins_the_kept_copy_onto_a_served_row_dated_like_the_removed_cop
     _corr(rem, "2026-10-24", "Leon", "Toluca").to_csv(corr_csv, index=False)
     monkeypatch.setattr(DL, "AF_HISTORY_PATH", p)
     monkeypatch.setattr(AC, "AF_DUP_REMOVED", corr_csv)
+    # a served row NOT re-dated (the committed fix15 date list re-dates this very fixture)
+    from src import history_corrections as HC
+    monkeypatch.setattr(HC, "DATE_CORR", tmp_path / "no_dates.csv")
     monkeypatch.setattr(DL, "_enrich_ht_scores", lambda d: d)
     monkeypatch.setattr(DL, "_finish_af_enrichment", lambda d, wb, recompute_sot_ratio: d)
     monkeypatch.delenv("APIFOOTBALL_KEY", raising=False)

@@ -152,6 +152,10 @@ jobs:
       # count), 1 call each, ONCE per league-season. Budget-guarded by AFClient (job cap and account
       # floor checked before every call; a stop is a clean exit) and resumable: each list read is
       # journaled in output/collect/ht_status_seasons.parquet and never asked again.
+      # fix15/dates (owner 2026-11-07, "use the provider's date"): build_history_corrections also
+      # rebuilds output/corrections/history_date_corrections.csv (+ history_date_unproven.csv, 0 calls),
+      # committed by the history_*.csv line of the commit helper; build_af_history_corrections (steps 9
+      # and 10) also lists the same-day spelling copies of af_history (found_by af_same_day_spelling).
       - name: 7. Half-time scores for the new-format history
         if: contains(env.STEPS, 'htscores')
         env:
