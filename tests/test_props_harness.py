@@ -57,7 +57,7 @@ def _raw(rows):
 
 def _decisions(**kw):
     d = {"holdout_start": "2026-03-01", "holdout_end": "2026-03-31", "min_verified_share": 0.5,
-         "markets": ["sot"], "feature_rule": "label_only"}
+         "min_verified_share_holdout": 0.5, "markets": ["sot"], "feature_rule": "label_only"}
     d.update(kw)
     return d
 
@@ -72,35 +72,33 @@ def _plan(**kw):
 
 # ── the owner gate ───────────────────────────────────────────────────────────────────────────────
 
-STILL_OPEN = ["holdout_start", "holdout_end", "min_verified_share", "markets"]
+OWNER_SET = ["holdout_start", "holdout_end", "min_verified_share", "min_verified_share_holdout", "markets"]
 
 
-def test_committed_plan_has_the_feature_rule_and_waits_for_the_rest():
-    """Owner 2026-11-07: feature_rule = all_prior_verified (rule C). Holdout dates,
-    min_verified_share and markets stay null until the re-fetch's verified counts are known."""
+def test_committed_plan_holds_every_owner_decision():
+    """Owner 2026-11-07 / 2026-11-08: feature rule C; holdout 2026-09-01..2026-10-31; training floor 95%,
+    holdout floor 85%; all five markets. Nothing is missing, so only the enable variable gates a run."""
     plan = H.load_plan()
+    d = plan["owner_decisions"]
     assert plan["hand_adjustment"] == "none"
-    assert plan["owner_decisions"]["feature_rule"] == "all_prior_verified"
-    assert plan["owner_decisions"]["feature_rule"] in H.FEATURE_RULES
-    for k in STILL_OPEN:
-        assert plan["owner_decisions"][k] is None, k
-    assert H.missing_owner_decisions(plan) == STILL_OPEN
-    with pytest.raises(PermissionError):
-        H.owner_decisions(plan)
+    assert d["feature_rule"] == "all_prior_verified" and d["feature_rule"] in H.FEATURE_RULES
+    assert (d["holdout_start"], d["holdout_end"]) == ("2026-09-01", "2026-10-31")
+    assert (d["min_verified_share"], d["min_verified_share_holdout"]) == (0.95, 0.85)
+    assert d["markets"] == ["sot", "sot2", "goals", "assists", "cards"]
+    assert H.missing_owner_decisions(plan) == []
+    H.validate_decisions(H.owner_decisions(plan))
     assert set(plan["candidates"]) == set(H.CANDIDATES)
     assert set(plan["proposed"]["markets"]) <= set(H.MARKETS_IN_SCOPE)
 
 
-def test_run_refuses_the_committed_plan_even_with_the_enable_variable(monkeypatch, tmp_path):
-    monkeypatch.setenv(H.ENABLE_ENV, "true")
-    with pytest.raises(PermissionError, match="min_verified_share") as e:
+def test_run_refuses_the_committed_plan_without_the_enable_variable(monkeypatch, tmp_path):
+    monkeypatch.delenv(H.ENABLE_ENV, raising=False)
+    with pytest.raises(PermissionError, match=H.ENABLE_ENV):
         H.run(H.load_plan(), raw=pd.DataFrame(), out_dir=tmp_path / "o", model_dir=tmp_path / "m")
-    for k in STILL_OPEN:
-        assert k in str(e.value)
     assert not (tmp_path / "o").exists() and not (tmp_path / "m").exists()
 
 
-@pytest.mark.parametrize("key", STILL_OPEN)
+@pytest.mark.parametrize("key", OWNER_SET)
 def test_run_refuses_while_any_open_decision_is_null(key, monkeypatch, tmp_path):
     monkeypatch.setenv(H.ENABLE_ENV, "true")
     plan = _plan(feature_rule="all_prior_verified")
@@ -124,7 +122,8 @@ def test_run_refuses_while_a_decision_is_missing(monkeypatch, tmp_path):
 
 
 @pytest.mark.parametrize("bad", [{"markets": ["sot3"]}, {"feature_rule": "anything"},
-                                 {"min_verified_share": 1.5}, {"holdout_end": "2026-02-01"}])
+                                 {"min_verified_share": 1.5}, {"min_verified_share_holdout": 0.0},
+                                 {"holdout_end": "2026-02-01"}])
 def test_unusable_decisions_are_refused(bad):
     with pytest.raises(ValueError):
         H.validate_decisions(_decisions(**bad))
@@ -367,6 +366,19 @@ def test_run_stops_under_the_owner_minimum(monkeypatch, tmp_path):
     rep = H.run(_plan(min_verified_share=0.9), raw=pd.DataFrame(), out_dir=tmp_path / "o",
                 model_dir=tmp_path / "m", quotes=pd.DataFrame())
     assert rep["status"].startswith("STOPPED") and not (tmp_path / "m").exists()
+
+
+def test_run_stops_when_only_the_holdout_floor_fails(monkeypatch, tmp_path):
+    """Owner 2026-11-08: the training floor and the holdout floor are checked SEPARATELY."""
+    monkeypatch.setenv(H.ENABLE_ENV, "true")
+    f = _run_frame()
+    hold = (pd.to_datetime(f["date"]) >= pd.Timestamp("2026-03-01")).to_numpy()
+    f["label_verified"] = ~hold                                   # all training rows verified, no holdout row
+    monkeypatch.setattr(H, "build_frame", lambda raw: f)
+    rep = H.run(_plan(min_verified_share=0.9, min_verified_share_holdout=0.9), raw=pd.DataFrame(),
+                out_dir=tmp_path / "o", model_dir=tmp_path / "m", quotes=pd.DataFrame())
+    assert rep["status"].startswith("STOPPED") and "holdout share" in rep["status"]
+    assert "training share" not in rep["status"] and not (tmp_path / "m").exists()
 
 
 def test_run_end_to_end_on_synthetic_rows(monkeypatch, tmp_path):

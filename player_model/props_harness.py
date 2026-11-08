@@ -95,7 +95,10 @@ FEATURE_RULES = ("label_only", "window_verified", "all_prior_verified")
 RULE_COLUMN = {"label_only": "label_verified", "window_verified": "window_verified",
                "all_prior_verified": "all_prior_verified"}
 CANDIDATES = ("recipe_retrained", "hgb_nan_native", "player_base_rate")
-OWNER_KEYS = ("holdout_start", "holdout_end", "min_verified_share", "markets", "feature_rule")
+#: min_verified_share = the TRAINING (pre-holdout) floor, min_verified_share_holdout = the HOLDOUT floor
+#: (owner 2026-11-08: 95% / 85%); both must pass under the owner's feature rule or nothing is fitted
+OWNER_KEYS = ("holdout_start", "holdout_end", "min_verified_share", "min_verified_share_holdout",
+              "markets", "feature_rule")
 #: build_features drops a row under this many minutes (bench / DNP); the population mirrors it
 MIN_ROW_MINUTES = 10
 #: the recipe's fit : calibration ratio (model.split_bounds: calibration = the last 15% of training)
@@ -134,9 +137,10 @@ def validate_decisions(d: dict) -> None:
         raise ValueError(f"markets outside the harness scope {MARKETS_IN_SCOPE}: {bad}")
     if d["feature_rule"] not in FEATURE_RULES:
         raise ValueError(f"feature_rule {d['feature_rule']!r} not one of {FEATURE_RULES}")
-    share = float(d["min_verified_share"])
-    if not 0.0 < share <= 1.0:
-        raise ValueError(f"min_verified_share {share} must be in (0, 1]")
+    for k in ("min_verified_share", "min_verified_share_holdout"):
+        share = float(d[k])
+        if not 0.0 < share <= 1.0:
+            raise ValueError(f"{k} {share} must be in (0, 1]")
 
 
 def owner_decisions(plan: dict) -> dict:
@@ -567,15 +571,26 @@ def run(plan: dict | None = None, raw: pd.DataFrame | None = None, out_dir: Path
     in_scope = split.isin(["pre_holdout", "holdout"]).to_numpy()
     ok = eligible(frame, dec["feature_rule"]).to_numpy()
     share = float(ok[in_scope].mean()) if in_scope.any() else 0.0
+    pre = (split == "pre_holdout").to_numpy()
+    hol = (split == "holdout").to_numpy()
+    share_train = float(ok[pre].mean()) if pre.any() else 0.0
+    share_holdout = float(ok[hol].mean()) if hol.any() else 0.0
     report = {"harness_version": HARNESS_VERSION, "plan_version": plan["plan_version"],
               "generated_at": _now(), "code_sha": _git_sha(), "evidence_class": "RETROSPECTIVE",
               "hand_adjustment": HAND_ADJUSTMENT, "owner_decisions": dec,
               "promotion": "NONE - no serving file is written; any cutover is an owner decision",
-              "verified_share": share, "rows_in_scope": int(in_scope.sum()), "markets": {}}
+              "verified_share": share, "verified_share_train": share_train,
+              "verified_share_holdout": share_holdout,
+              "rows_in_scope": int(in_scope.sum()), "markets": {}}
     out_dir.mkdir(parents=True, exist_ok=True)
-    if share < float(dec["min_verified_share"]):
-        report["status"] = (f"STOPPED: verified share {share:.4f} is under the owner's minimum "
-                            f"{float(dec['min_verified_share']):.4f}; nothing was fitted")
+    short = []
+    if share_train < float(dec["min_verified_share"]):
+        short.append(f"training share {share_train:.4f} < {float(dec['min_verified_share']):.4f}")
+    if share_holdout < float(dec["min_verified_share_holdout"]):
+        short.append(f"holdout share {share_holdout:.4f} < {float(dec['min_verified_share_holdout']):.4f}")
+    if short:
+        report["status"] = ("STOPPED: verified share under the owner's minimum (" + "; ".join(short)
+                            + "); nothing was fitted")
         _write_json(out_dir / "props_harness_report.json", report)
         return report
     elig = frame[ok]
