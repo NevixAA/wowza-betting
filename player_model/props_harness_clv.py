@@ -20,6 +20,14 @@ CLV. For a row the model would have backed at the first price seen (model probab
 > 1: the model's own probability, no threshold, no hand adjustment), clv = first price x the fair
 probability at the close - 1. Positive = the price taken beat the closing fair price.
 
+NOT A PRICE (fix 2026-11-08). A quote at odds <= PLACEHOLDER_MAX_ODDS (1.01, the minimum tick) is
+dropped before anything is read: it says the outcome is >= 99% certain, which no pre-match player prop
+is. In the log they are Betfair Exchange answers on an empty book (8,103 of Betfair's 25,295 quotes,
+all on the Yes side) and 3 Bet365 goal-or-assist quotes taken after a late kickoff. Read as the
+'close', one such quote turned into a fair probability of 0.934 (1.01 / the assumed overround) and a
+CLV of +51 on a 56.0 opening price (Getafe vs Rayo 2026-10-19, D. Dakonam). placeholder_counts()
+reports what was dropped, per bookmaker.
+
 KNOWN LIMITS (reported, not hidden). The quote log stores a price only the first time it is seen, so
 an answer whose one side did not move holds no pair there; kickoff times are not in the log, so "the
 close" is the last answer dated on or before the match day.
@@ -39,6 +47,18 @@ QUOTES_DIR = config.OUTPUT_DIR / "prop_quotes"
 _YES_SIDES = {"yes", "over"}
 CLV_COLS = ["market", "date", "player_name", "match", "p_model", "price_open", "p_fair_close",
             "fair_basis", "assumed_margin", "n_books_close", "selected", "clv", "y"]
+#: the minimum price tick: a quote at or under it is a placeholder, never a price (module docstring)
+PLACEHOLDER_MAX_ODDS = 1.01
+
+
+def placeholder_counts(quotes: pd.DataFrame) -> dict:
+    """Quotes dropped as placeholders (odds <= PLACEHOLDER_MAX_ODDS), per bookmaker, plus the total."""
+    if quotes is None or quotes.empty:
+        return {"total": 0, "by_bookmaker": {}}
+    o = pd.to_numeric(quotes["odds"], errors="coerce")
+    bad = quotes[o <= PLACEHOLDER_MAX_ODDS]
+    return {"total": int(len(bad)), "of_quotes": int(len(quotes)),
+            "by_bookmaker": {str(k): int(v) for k, v in bad["bookmaker"].value_counts().items()}}
 
 
 def load_quotes(qdir: Path | None = None) -> pd.DataFrame:
@@ -52,12 +72,16 @@ def load_quotes(qdir: Path | None = None) -> pd.DataFrame:
 
 def _prep(quotes: pd.DataFrame) -> pd.DataFrame:
     from .odds_fetcher import _norm
+    if quotes is None or quotes.empty:                      # no quote log: no price, no CLV
+        return pd.DataFrame(columns=["snapshot_ts", "match_date", "match", "player", "market", "side",
+                                     "point", "bookmaker", "odds", "source", "player_norm"])
     q = quotes.copy()
     q["side"] = q["side"].astype(str).str.strip().str.lower()
     q["odds"] = pd.to_numeric(q["odds"], errors="coerce")
     q["match_date"] = q["match_date"].astype(str).str[:10]
     q["player_norm"] = q["player"].astype(str).map(_norm)
     q["snapshot_ts"] = q["snapshot_ts"].astype(str)
+    q = q[q["odds"] > PLACEHOLDER_MAX_ODDS]                 # placeholders are not prices
     # the close is on or before the match day (no kickoff time in the log)
     return q[q["snapshot_ts"].str[:10] <= q["match_date"]]
 

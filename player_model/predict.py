@@ -26,6 +26,9 @@ from .club_rule import club_conflict
 import numpy as np
 
 
+from .serving_rules import position_status, serving_skip_reason  # noqa: E402  (owner rules 2026-11-08)
+
+
 def capped_prob(p: float, cap: float) -> float | None:
     """The model probability when it lies within the market's realistic cap (and the 0.95 absolute
     ceiling); None above it. The cap is a bound, never a value to write in the probability's place:
@@ -773,6 +776,11 @@ def run_player_predictions(
     _stale_dropped = set()
     _club_conflict_dropped = set()
     _n_cap_bound = 0
+    # Owner serving rules 2026-11-08 (config.GK_BLOCKED_MARKETS / HIDDEN_PENDING_CLEAN_RETRAIN):
+    # every skipped player-market is counted under its reason code and printed at the end.
+    from collections import Counter as _Counter
+    _skip_reasons: _Counter = _Counter()
+    _n_position_unknown = 0
 
     for _, match_row in bets.iterrows():
         home      = match_row["home_team"]
@@ -918,11 +926,15 @@ def run_player_predictions(
             if _pid is not None and _pid in injured_cache.get(league, set()):
                 continue
 
-            _is_gk = str(feat_row.get("position", "")).strip().upper().startswith("G")
+            _pos_status = position_status(feat_row.get("position"))
             # National-team competition by the registry (was: "world cup" in the league name).
             _is_wc = _is_nat
 
             for market in config.MARKETS:
+                _skip = serving_skip_reason(market, _pos_status)
+                if _skip:
+                    _skip_reasons[_skip] += 1
+                    continue
                 if market == "cards":
                     # The cards model is well-calibrated for CLUB leagues (mean ~0.13 vs the
                     # 12.8% base rate, AUC 0.69). World Cup features get imputed to league
@@ -938,10 +950,6 @@ def run_player_predictions(
                             continue
                     # GKs allowed for cards — a bunker/time-wasting GK with real booking history
                     # is a legitimate card tip; the history gate already filters the rest.
-                else:
-                    # Goalkeepers don't score / shoot / assist — skip them for those markets.
-                    if _is_gk:
-                        continue
                 if market not in _MARKET_CAPS:
                     continue                                   # no measurable cap -> no tip (logged)
                 p_model = pd.to_numeric(feat_row.get(f"p_{market}"), errors="coerce")
@@ -1024,6 +1032,10 @@ def run_player_predictions(
                     "player_name":   feat_row.get("player_name", ""),
                     "team":          feat_row.get("team", ""),
                     "position":      feat_row.get("position", ""),
+                    # owner 2026-11-08: an unknown position is never guessed - the tip is kept
+                    # and labelled UNKNOWN (KNOWN otherwise)
+                    "position_status": ("UNKNOWN" if _pos_status == config.POSITION_UNKNOWN
+                                        else "KNOWN"),
                     "market":        market,
                     "model_prob":    round(p_model, 3),
                     "fair_odds":     fair_o,
@@ -1058,6 +1070,13 @@ def run_player_predictions(
         print(f"[current_club] {len(_club_conflict_dropped)} player(s) not tipped: a club appearance "
               f"for another club within {config.CURRENT_CLUB_CONFLICT_DAYS} days contradicts the "
               f"club the tip would name")
+    for _reason, _n in sorted(_skip_reasons.items()):
+        print(f"[predict] {_n} player-market(s) not tipped: {_reason}")
+    if all_tips:
+        _n_position_unknown = sum(1 for t in all_tips if t.get("position_status") == "UNKNOWN")
+        if _n_position_unknown:
+            print(f"[predict] {_n_position_unknown} tip(s) with an UNKNOWN player position: kept, "
+                  f"labelled position_status=UNKNOWN (not guessed)")
     if _n_cap_bound:
         print(f"[predict] {_n_cap_bound} player-market(s) not tipped: probability above the market's "
               f"realistic cap (the cap is not written as a probability)")

@@ -60,6 +60,21 @@ MARKETS    = ["goals", "goals2", "assists", "sot", "sot2", "sot3", "sot4", "card
 # at -41% to -57%.
 MIN_SIGNAL_PROB = 0.15
 
+# ── Owner serving rules for props tips (2026-11-08) ──────────────────────────
+# "No GK attacking tips": a goalkeeper (position 'G') is never tipped on shots on target, goals or
+# assists. Cards stay allowed. Evidence: on the props clean-retrain holdout (2026-09-01..10-31) the
+# 2,992 goalkeeper rows had a real SOT and goal rate of 0%, while the model gave 6.5% / 3.2%.
+GK_BLOCKED_MARKETS = frozenset({"sot", "sot2", "sot3", "sot4", "goals", "goals2", "goals3", "assists"})
+#: "Retrain them too": these markets still serve models trained on the placeholder history
+#: (age 25 / 180 cm / 75 kg). Until the props clean retrain covers them they make NO tip and are
+#: not on the board. The model files stay where they are.
+HIDDEN_PENDING_CLEAN_RETRAIN = frozenset({"goals2", "goals3", "sot3", "sot4"})
+#: reason codes, counted and printed by predict.generate_tips (a skipped tip is never silent)
+SKIP_GK_ATTACKING = "GK_NO_ATTACKING_TIP"
+SKIP_HIDDEN_MARKET = "MARKET_HIDDEN_PENDING_CLEAN_RETRAIN"
+#: a tip whose player position is unknown is NOT guessed: it is kept and labelled
+POSITION_UNKNOWN = "UNKNOWN"
+
 # World Cup cards: features are imputed → predictions inflate to ~0.40 for everyone.
 # Only emit WC card tips for players whose REAL booking rate (max of cards_pg /
 # season_cards_pg) is at least this — for them, ~0.40 is roughly their true rate.
