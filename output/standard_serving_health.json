@@ -1,9 +1,9 @@
 {
- "generated_at": "2026-11-08T15:01:19+00:00",
+ "generated_at": "2026-11-08T19:31:36+00:00",
  "serving_recipe": "v9_repaired",
  "status": "PASS",
- "standard_fixtures": 34,
- "served_by_repaired": 34,
+ "standard_fixtures": 33,
+ "served_by_repaired": 33,
  "unscored_fail_closed": 0,
  "error": "",
  "policy": "v9_repaired failure -> no probability, no bet, status FAIL (no legacy fallback); invalid recipe -> ServingConfigError before odds are fetched; rollback: docs/STANDARD_REPAIRED_FAILCLOSED_ROLLBACK.md"
