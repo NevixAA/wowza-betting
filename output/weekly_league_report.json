@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-07T22:41:54Z",
+ "generated_at": "2026-11-08T00:52:36Z",
  "panel_version": "LWR-1",
  "selection_mode": "WEEKLY_LEAGUE_RESEARCH",
  "note": "Research panel, not bets. FROZEN rows were fixed at the week lock (first kickoff of the league-week) from first-sight scores; PROVISIONAL rows may still change until the lock.",
@@ -620,8 +620,8 @@
       "research_regime": "LEARNING",
       "production_selected": "False",
       "actually_bet": "False",
-      "result": "",
-      "flat_pnl": "",
+      "result": "WIN",
+      "flat_pnl": "0.7",
       "clv_pct": "",
       "status": "FROZEN"
      },
@@ -670,9 +670,9 @@
       "research_regime": "LEARNING",
       "production_selected": "False",
       "actually_bet": "False",
-      "result": "",
-      "flat_pnl": "",
-      "clv_pct": "",
+      "result": "WIN",
+      "flat_pnl": "0.39",
+      "clv_pct": "2.206",
       "status": "FROZEN"
      },
      {
@@ -722,9 +722,9 @@
       "research_regime": "LEARNING",
       "production_selected": "False",
       "actually_bet": "False",
-      "result": "",
-      "flat_pnl": "",
-      "clv_pct": "",
+      "result": "WIN",
+      "flat_pnl": "0.5",
+      "clv_pct": "0.0",
       "status": "FROZEN"
      },
      {
@@ -822,8 +822,8 @@
       "research_regime": "LEARNING",
       "production_selected": "False",
       "actually_bet": "False",
-      "result": "",
-      "flat_pnl": "",
+      "result": "WIN",
+      "flat_pnl": "0.58",
       "clv_pct": "",
       "status": "FROZEN"
      }
@@ -849,8 +849,8 @@
       "research_regime": "LEARNING",
       "production_selected": "False",
       "actually_bet": "False",
-      "result": "",
-      "flat_pnl": "",
+      "result": "WIN",
+      "flat_pnl": "0.2",
       "clv_pct": "",
       "status": "FROZEN"
      },
@@ -874,9 +874,9 @@
       "research_regime": "LEARNING",
       "production_selected": "False",
       "actually_bet": "False",
-      "result": "",
-      "flat_pnl": "",
-      "clv_pct": "",
+      "result": "WIN",
+      "flat_pnl": "0.09",
+      "clv_pct": "-0.909",
       "status": "FROZEN"
      },
      {
@@ -976,9 +976,9 @@
       "research_regime": "LEARNING",
       "production_selected": "False",
       "actually_bet": "False",
-      "result": "",
-      "flat_pnl": "",
-      "clv_pct": "",
+      "result": "WIN",
+      "flat_pnl": "0.99",
+      "clv_pct": "8.743",
       "status": "FROZEN"
      },
      {
@@ -1076,7 +1076,7 @@
       "research_regime": "LEARNING",
       "production_selected": "False",
       "actually_bet": "False",
-      "result": "",
+      "result": "LOSS",
       "flat_pnl": "",
       "clv_pct": "",
       "status": "FROZEN"
@@ -1404,9 +1404,9 @@
       "research_regime": "LEARNING",
       "production_selected": "False",
       "actually_bet": "False",
-      "result": "",
-      "flat_pnl": "",
-      "clv_pct": "",
+      "result": "WIN",
+      "flat_pnl": "0.35",
+      "clv_pct": "0.0",
       "status": "FROZEN"
      },
      {
@@ -1556,9 +1556,9 @@
       "research_regime": "LEARNING",
       "production_selected": "False",
       "actually_bet": "False",
-      "result": "",
-      "flat_pnl": "",
-      "clv_pct": "",
+      "result": "WIN",
+      "flat_pnl": "0.325",
+      "clv_pct": "-2.574",
       "status": "FROZEN"
      }
     ],
@@ -1710,9 +1710,9 @@
       "research_regime": "LEARNING",
       "production_selected": "False",
       "actually_bet": "False",
-      "result": "",
-      "flat_pnl": "",
-      "clv_pct": "",
+      "result": "LOSS",
+      "flat_pnl": "-1.0",
+      "clv_pct": "-0.562",
       "status": "FROZEN"
      },
      {
@@ -3281,7 +3281,7 @@
       "research_regime": "LEARNING",
       "production_selected": "False",
       "actually_bet": "False",
-      "result": "",
+      "result": "WIN",
       "flat_pnl": "",
       "clv_pct": "",
       "status": "FROZEN"
@@ -5053,11 +5053,11 @@
      "rank1_roi": 0.2467,
      "top3_n_priced_settled": 9,
      "top3_roi": 0.0156,
-     "top5_n_priced_settled": 12,
-     "top5_roi": -0.115,
-     "top5_clv_mean": -2.073,
-     "top5_clv_coverage": 0.6667,
-     "top5_dlogloss_model_minus_market": 0.0137,
+     "top5_n_priced_settled": 13,
+     "top5_roi": -0.1831,
+     "top5_clv_mean": -2.143,
+     "top5_clv_coverage": 0.6923,
+     "top5_dlogloss_model_minus_market": 0.01369,
      "status": "NOT_ENOUGH_DATA"
     },
     "OVER15": {
@@ -5075,15 +5075,15 @@
     },
     "OVER35": {
      "gameweeks": 3,
-     "rank1_n_priced_settled": 1,
-     "rank1_roi": 1.33,
-     "top3_n_priced_settled": 2,
-     "top3_roi": 2.1525,
-     "top5_n_priced_settled": 2,
-     "top5_roi": 2.1525,
-     "top5_clv_mean": 2.642,
+     "rank1_n_priced_settled": 2,
+     "rank1_roi": 0.165,
+     "top3_n_priced_settled": 3,
+     "top3_roi": 1.1017,
+     "top5_n_priced_settled": 3,
+     "top5_roi": 1.1017,
+     "top5_clv_mean": 2.761,
      "top5_clv_coverage": 1.0,
-     "top5_dlogloss_model_minus_market": 0.07807,
+     "top5_dlogloss_model_minus_market": -0.02692,
      "status": "NOT_ENOUGH_DATA"
     }
    }
@@ -6296,9 +6296,9 @@
       "research_regime": "LEARNING",
       "production_selected": "False",
       "actually_bet": "False",
-      "result": "",
-      "flat_pnl": "",
-      "clv_pct": "",
+      "result": "WIN",
+      "flat_pnl": "0.91",
+      "clv_pct": "14.371",
       "status": "FROZEN"
      },
      {
@@ -6423,9 +6423,9 @@
       "research_regime": "LEARNING",
       "production_selected": "False",
       "actually_bet": "False",
-      "result": "",
-      "flat_pnl": "",
-      "clv_pct": "",
+      "result": "LOSS",
+      "flat_pnl": "-1.0",
+      "clv_pct": "1.667",
       "status": "FROZEN"
      },
      {
@@ -6448,9 +6448,9 @@
       "research_regime": "LEARNING",
       "production_selected": "False",
       "actually_bet": "False",
-      "result": "",
-      "flat_pnl": "",
-      "clv_pct": "",
+      "result": "LOSS",
+      "flat_pnl": "-1.0",
+      "clv_pct": "-8.743",
       "status": "FROZEN"
      },
      {
@@ -6627,9 +6627,9 @@
       "research_regime": "LEARNING",
       "production_selected": "False",
       "actually_bet": "False",
-      "result": "",
-      "flat_pnl": "",
-      "clv_pct": "",
+      "result": "LOSS",
+      "flat_pnl": "-1.0",
+      "clv_pct": "-11.832",
       "status": "FROZEN"
      },
      {
@@ -7470,33 +7470,33 @@
    },
    "previous_weeks": {
     "BTTS": {
-     "gameweeks": 2,
+     "gameweeks": 3,
      "rank1_n_priced_settled": 2,
      "rank1_roi": 0.5425,
      "top3_n_priced_settled": 6,
      "top3_roi": 0.0358,
-     "top5_n_priced_settled": 10,
-     "top5_roi": 0.0585,
-     "top5_clv_mean": -1.606,
-     "top5_clv_coverage": 0.6,
-     "top5_dlogloss_model_minus_market": -0.01443,
+     "top5_n_priced_settled": 11,
+     "top5_roi": 0.1086,
+     "top5_clv_mean": -2.519,
+     "top5_clv_coverage": 0.6364,
+     "top5_dlogloss_model_minus_market": -0.00827,
      "status": "NOT_ENOUGH_DATA"
     },
     "OU25": {
-     "gameweeks": 2,
-     "rank1_n_priced_settled": 2,
-     "rank1_roi": -0.15,
-     "top3_n_priced_settled": 6,
-     "top3_roi": 0.2317,
-     "top5_n_priced_settled": 10,
-     "top5_roi": 0.388,
-     "top5_clv_mean": 2.684,
-     "top5_clv_coverage": 0.5,
-     "top5_dlogloss_model_minus_market": 0.07964,
+     "gameweeks": 3,
+     "rank1_n_priced_settled": 3,
+     "rank1_roi": 0.0233,
+     "top3_n_priced_settled": 7,
+     "top3_roi": 0.2514,
+     "top5_n_priced_settled": 11,
+     "top5_roi": 0.3864,
+     "top5_clv_mean": 1.879,
+     "top5_clv_coverage": 0.5455,
+     "top5_dlogloss_model_minus_market": 0.07429,
      "status": "NOT_ENOUGH_DATA"
     },
     "OVER15": {
-     "gameweeks": 2,
+     "gameweeks": 3,
      "rank1_n_priced_settled": 0,
      "rank1_roi": null,
      "top3_n_priced_settled": 0,
@@ -7509,16 +7509,16 @@
      "status": "NOT_ENOUGH_DATA"
     },
     "OVER35": {
-     "gameweeks": 2,
-     "rank1_n_priced_settled": 2,
-     "rank1_roi": 0.93,
-     "top3_n_priced_settled": 6,
-     "top3_roi": 1.03,
-     "top5_n_priced_settled": 9,
-     "top5_roi": 0.7967,
-     "top5_clv_mean": 0.584,
-     "top5_clv_coverage": 0.5556,
-     "top5_dlogloss_model_minus_market": -0.00562,
+     "gameweeks": 3,
+     "rank1_n_priced_settled": 3,
+     "rank1_roi": 0.94,
+     "top3_n_priced_settled": 7,
+     "top3_roi": 1.02,
+     "top5_n_priced_settled": 10,
+     "top5_roi": 0.813,
+     "top5_clv_mean": 0.923,
+     "top5_clv_coverage": 0.6,
+     "top5_dlogloss_model_minus_market": -0.00495,
      "status": "NOT_ENOUGH_DATA"
     }
    }
@@ -7607,9 +7607,9 @@
       "research_regime": "LEARNING",
       "production_selected": "False",
       "actually_bet": "False",
-      "result": "",
-      "flat_pnl": "",
-      "clv_pct": "",
+      "result": "WIN",
+      "flat_pnl": "0.8",
+      "clv_pct": "-10.0",
       "status": "FROZEN"
      },
      {
@@ -7632,9 +7632,9 @@
       "research_regime": "LEARNING",
       "production_selected": "False",
       "actually_bet": "False",
-      "result": "",
-      "flat_pnl": "",
-      "clv_pct": "",
+      "result": "LOSS",
+      "flat_pnl": "-1.0",
+      "clv_pct": "-9.744",
       "status": "FROZEN"
      },
      {
@@ -8199,8 +8199,8 @@
       "research_regime": "LEARNING",
       "production_selected": "True",
       "actually_bet": "True",
-      "result": "",
-      "flat_pnl": "",
+      "result": "LOSS",
+      "flat_pnl": "-1.0",
       "clv_pct": "",
       "status": "FROZEN"
      },
@@ -8326,8 +8326,8 @@
       "research_regime": "LEARNING",
       "production_selected": "False",
       "actually_bet": "False",
-      "result": "",
-      "flat_pnl": "",
+      "result": "WIN",
+      "flat_pnl": "0.71",
       "clv_pct": "",
       "status": "FROZEN"
      },
@@ -8478,7 +8478,7 @@
       "research_regime": "LEARNING",
       "production_selected": "False",
       "actually_bet": "False",
-      "result": "",
+      "result": "WIN",
       "flat_pnl": "",
       "clv_pct": "",
       "status": "FROZEN"
