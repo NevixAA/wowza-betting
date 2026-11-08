@@ -1,7 +1,7 @@
 {
   "artifact": "join_integrity_health",
   "helper_version": "safe_left_enrich-1.0",
-  "generated_at": "2026-11-07T14:58:20Z",
+  "generated_at": "2026-11-08T15:24:07Z",
   "status": "FAIL",
   "joins": {
     "af_history_shots.legacy": {
@@ -14,7 +14,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
       "left_rows": 83275,
-      "right_rows": 91735,
+      "right_rows": 91786,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 5972,
       "right_duplicate_rows": 12139,
@@ -106,7 +106,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
       "left_rows": 83275,
-      "right_rows": 17792,
+      "right_rows": 17978,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -136,7 +136,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
       "left_rows": 83275,
-      "right_rows": 33638,
+      "right_rows": 33965,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -170,7 +170,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
       "left_rows": 83275,
-      "right_rows": 91735,
+      "right_rows": 91786,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 5972,
       "right_duplicate_rows": 12139,
@@ -201,7 +201,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "safe",
       "left_rows": 83275,
-      "right_rows": 91735,
+      "right_rows": 91786,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 5972,
       "right_duplicate_rows": 12139,
@@ -315,7 +315,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
       "left_rows": 83275,
-      "right_rows": 17792,
+      "right_rows": 17978,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -346,7 +346,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "safe",
       "left_rows": 83275,
-      "right_rows": 7641,
+      "right_rows": 7658,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -378,7 +378,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
       "left_rows": 83275,
-      "right_rows": 33638,
+      "right_rows": 33965,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -409,7 +409,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "safe",
       "left_rows": 83275,
-      "right_rows": 6435,
+      "right_rows": 6470,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -671,126 +671,54 @@
     }
   ],
   "serving_replay": {
-    "board_fixtures": 100,
+    "board_fixtures": 51,
     "recipe": "v9_repaired",
-    "tips_legacy": 39,
-    "tips_safe": 37,
+    "tips_legacy": 11,
+    "tips_safe": 10,
     "tips_only_legacy": [
       [
-        "Argentina Primera Division",
-        "Argentinos Juniors",
-        "Atl\u00e9tico Hurac\u00e1n",
-        "btts",
-        "YES",
-        "MARKSMAN"
-      ],
-      [
-        "China Super League",
-        "Shanghai Shenhua FC",
-        "Qingdao West Coast FC",
-        "over35",
-        "OVER",
-        "VALUABLE"
-      ],
-      [
-        "Denmark Superliga",
-        "OB Odense BK",
-        "Viborg FF",
+        "Mexico Liga MX",
+        "Le\u00f3n",
+        "Guadalajara",
         "OU25",
         "UNDER",
-        "SNIPER"
-      ],
-      [
-        "Finland Veikkausliiga",
-        "IF Gnistan",
-        "VPS Vaasa",
-        "OU25",
-        "UNDER",
-        "SNIPER"
-      ],
-      [
-        "Ligue 2",
-        "Pau FC",
-        "Nantes",
-        "over15",
-        "OVER",
-        "VALUABLE"
-      ],
-      [
-        "Ligue 2",
-        "Saint Etienne",
-        "Stade Lavallois",
-        "btts",
-        "YES",
         "VALUABLE"
       ],
       [
         "Norway Eliteserien",
-        "Rosenborg",
-        "IK Start",
-        "btts",
-        "YES",
+        "HamKam",
+        "Sarpsborg FK",
+        "over35",
+        "OVER",
         "VALUABLE"
       ]
     ],
     "tips_only_safe": [
       [
-        "Argentina Primera Division",
-        "Argentinos Juniors",
-        "Atl\u00e9tico Hurac\u00e1n",
-        "btts",
-        "YES",
-        "VALUABLE"
-      ],
-      [
-        "Argentina Primera Division",
-        "Boca Juniors",
-        "Defensa y Justicia",
-        "btts",
-        "YES",
-        "VALUABLE"
-      ],
-      [
-        "Championship",
-        "Queens Park Rangers",
-        "Lincoln City",
-        "btts",
-        "YES",
-        "VALUABLE"
-      ],
-      [
-        "Denmark Superliga",
-        "OB Odense BK",
-        "Viborg FF",
-        "OU25",
-        "UNDER",
-        "VALUABLE"
-      ],
-      [
-        "Finland Veikkausliiga",
-        "IF Gnistan",
-        "VPS Vaasa",
+        "Brazil Serie A",
+        "Chapecoense",
+        "Vasco da Gama",
         "OU25",
         "UNDER",
         "VALUABLE"
       ]
     ],
     "features_changed": {
-      "away_corners_pg_roll": 41,
-      "away_fouls_pg_roll": 41,
-      "away_insidebox_last5": 95,
-      "away_xg_last5": 96,
-      "combined_sot_ratio": 63,
-      "home_corners_pg_roll": 41,
-      "home_fouls_pg_roll": 41,
-      "home_insidebox_last5": 97,
-      "home_xg_last5": 97,
-      "p_over25": 68,
-      "p_btts": 100,
-      "p_over15": 100,
-      "p_over35": 100,
-      "p_ht_over05": 31,
-      "p_ht_over15": 31
+      "away_corners_pg_roll": 11,
+      "away_fouls_pg_roll": 11,
+      "away_insidebox_last5": 51,
+      "away_xg_last5": 51,
+      "combined_sot_ratio": 17,
+      "home_corners_pg_roll": 10,
+      "home_fouls_pg_roll": 10,
+      "home_insidebox_last5": 50,
+      "home_xg_last5": 51,
+      "p_over25": 17,
+      "p_btts": 51,
+      "p_over15": 51,
+      "p_over35": 51,
+      "p_ht_over05": 34,
+      "p_ht_over15": 34
     }
   }
 }

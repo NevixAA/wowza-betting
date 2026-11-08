@@ -21,7 +21,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
       "left_rows": 83275,
-      "right_rows": 91735,
+      "right_rows": 91786,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 5972,
       "right_duplicate_rows": 12139,
@@ -113,7 +113,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
       "left_rows": 83275,
-      "right_rows": 17792,
+      "right_rows": 17978,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -143,7 +143,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
       "left_rows": 83275,
-      "right_rows": 33638,
+      "right_rows": 33965,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -175,7 +175,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
       "left_rows": 83275,
-      "right_rows": 91735,
+      "right_rows": 91786,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 5972,
       "right_duplicate_rows": 12139,
@@ -206,7 +206,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "safe",
       "left_rows": 83275,
-      "right_rows": 91735,
+      "right_rows": 91786,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 5972,
       "right_duplicate_rows": 12139,
@@ -320,7 +320,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
       "left_rows": 83275,
-      "right_rows": 17792,
+      "right_rows": 17978,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -351,7 +351,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "safe",
       "left_rows": 83275,
-      "right_rows": 7641,
+      "right_rows": 7658,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -383,7 +383,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
       "left_rows": 83275,
-      "right_rows": 33638,
+      "right_rows": 33965,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -414,7 +414,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "safe",
       "left_rows": 83275,
-      "right_rows": 6435,
+      "right_rows": 6470,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -1159,234 +1159,162 @@
     ]
   },
   "serving_diff": {
-    "board_fixtures": 100,
+    "board_fixtures": 51,
     "recipe": "v9_repaired",
     "serving_features_changed": {
       "away_corners_pg_roll": {
-        "fixtures_changed": 41,
+        "fixtures_changed": 11,
         "by_model_type": {
-          "new_format": 41
+          "new_format": 11
         },
         "mean_abs_delta": null,
         "max_abs_delta": null
       },
       "away_fouls_pg_roll": {
-        "fixtures_changed": 41,
+        "fixtures_changed": 11,
         "by_model_type": {
-          "new_format": 41
+          "new_format": 11
         },
         "mean_abs_delta": null,
         "max_abs_delta": null
       },
       "away_insidebox_last5": {
-        "fixtures_changed": 95,
+        "fixtures_changed": 51,
         "by_model_type": {
-          "new_format": 65,
-          "standard": 30
+          "standard": 34,
+          "new_format": 17
         },
-        "mean_abs_delta": 2.2240350877192983,
-        "max_abs_delta": 9.8
+        "mean_abs_delta": 2.5281045751633986,
+        "max_abs_delta": 8.25
       },
       "away_xg_last5": {
-        "fixtures_changed": 96,
+        "fixtures_changed": 51,
         "by_model_type": {
-          "new_format": 65,
-          "standard": 31
+          "standard": 34,
+          "new_format": 17
         },
-        "mean_abs_delta": 0.5537234042553191,
-        "max_abs_delta": 1.6691666666666667
+        "mean_abs_delta": 0.523202614379085,
+        "max_abs_delta": 1.7933333333333334
       },
       "combined_sot_ratio": {
-        "fixtures_changed": 63,
+        "fixtures_changed": 17,
         "by_model_type": {
-          "new_format": 63
+          "new_format": 17
         },
-        "mean_abs_delta": 0.04676399848656176,
-        "max_abs_delta": 0.18249907909160706
+        "mean_abs_delta": 0.04632587775209662,
+        "max_abs_delta": 0.14220120840161765
       },
       "home_corners_pg_roll": {
-        "fixtures_changed": 41,
+        "fixtures_changed": 10,
         "by_model_type": {
-          "new_format": 41
+          "new_format": 10
         },
         "mean_abs_delta": null,
         "max_abs_delta": null
       },
       "home_fouls_pg_roll": {
-        "fixtures_changed": 41,
+        "fixtures_changed": 10,
         "by_model_type": {
-          "new_format": 41
+          "new_format": 10
         },
         "mean_abs_delta": null,
         "max_abs_delta": null
       },
       "home_insidebox_last5": {
-        "fixtures_changed": 97,
+        "fixtures_changed": 50,
         "by_model_type": {
-          "new_format": 67,
-          "standard": 30
+          "standard": 33,
+          "new_format": 17
         },
-        "mean_abs_delta": 2.543986254295533,
-        "max_abs_delta": 7.533333333333332
+        "mean_abs_delta": 2.543333333333333,
+        "max_abs_delta": 8.8
       },
       "home_xg_last5": {
-        "fixtures_changed": 97,
+        "fixtures_changed": 51,
         "by_model_type": {
-          "new_format": 67,
-          "standard": 30
+          "standard": 34,
+          "new_format": 17
         },
-        "mean_abs_delta": 0.4525677083333333,
-        "max_abs_delta": 2.463333333333333
+        "mean_abs_delta": 0.5091601307189543,
+        "max_abs_delta": 1.3249999999999997
       },
       "p_over25": {
-        "fixtures_changed": 68,
+        "fixtures_changed": 17,
         "by_model_type": {
-          "new_format": 68
+          "new_format": 17
         },
-        "mean_abs_delta": 0.013340940752735463,
-        "max_abs_delta": 0.056670497409525566
+        "mean_abs_delta": 0.013245232857922958,
+        "max_abs_delta": 0.0380767511704076
       },
       "p_btts": {
-        "fixtures_changed": 100,
+        "fixtures_changed": 51,
         "by_model_type": {
-          "new_format": 69,
-          "standard": 31
+          "standard": 34,
+          "new_format": 17
         },
-        "mean_abs_delta": 0.013246958570609828,
-        "max_abs_delta": 0.05919136278179438
+        "mean_abs_delta": 0.011172868972591798,
+        "max_abs_delta": 0.04645275558882167
       },
       "p_over15": {
-        "fixtures_changed": 100,
+        "fixtures_changed": 51,
         "by_model_type": {
-          "new_format": 69,
-          "standard": 31
+          "standard": 34,
+          "new_format": 17
         },
-        "mean_abs_delta": 0.01349767407183082,
-        "max_abs_delta": 0.055875308813959745
+        "mean_abs_delta": 0.013852063516807924,
+        "max_abs_delta": 0.06088381541769716
       },
       "p_over35": {
-        "fixtures_changed": 100,
+        "fixtures_changed": 51,
         "by_model_type": {
-          "new_format": 69,
-          "standard": 31
+          "standard": 34,
+          "new_format": 17
         },
-        "mean_abs_delta": 0.015836945206660024,
-        "max_abs_delta": 0.09882139584246807
+        "mean_abs_delta": 0.01117395360593161,
+        "max_abs_delta": 0.038011405840216894
       },
       "p_ht_over05": {
-        "fixtures_changed": 31,
+        "fixtures_changed": 34,
         "by_model_type": {
-          "standard": 31
+          "standard": 34
         },
-        "mean_abs_delta": 0.00196487178608769,
-        "max_abs_delta": 0.006120185875993833
+        "mean_abs_delta": 0.0017295413478980416,
+        "max_abs_delta": 0.006018505400416041
       },
       "p_ht_over15": {
-        "fixtures_changed": 31,
+        "fixtures_changed": 34,
         "by_model_type": {
-          "standard": 31
+          "standard": 34
         },
-        "mean_abs_delta": 0.0064897895362031,
+        "mean_abs_delta": 0.0057539553427523185,
         "max_abs_delta": 0.022860169520944273
       }
     },
-    "tips_legacy": 39,
-    "tips_safe": 37,
+    "tips_legacy": 11,
+    "tips_safe": 10,
     "tips_only_legacy": [
       [
-        "Argentina Primera Division",
-        "Argentinos Juniors",
-        "Atl\u00e9tico Hurac\u00e1n",
-        "btts",
-        "YES",
-        "MARKSMAN"
-      ],
-      [
-        "China Super League",
-        "Shanghai Shenhua FC",
-        "Qingdao West Coast FC",
-        "over35",
-        "OVER",
-        "VALUABLE"
-      ],
-      [
-        "Denmark Superliga",
-        "OB Odense BK",
-        "Viborg FF",
+        "Mexico Liga MX",
+        "Le\u00f3n",
+        "Guadalajara",
         "OU25",
         "UNDER",
-        "SNIPER"
-      ],
-      [
-        "Finland Veikkausliiga",
-        "IF Gnistan",
-        "VPS Vaasa",
-        "OU25",
-        "UNDER",
-        "SNIPER"
-      ],
-      [
-        "Ligue 2",
-        "Pau FC",
-        "Nantes",
-        "over15",
-        "OVER",
-        "VALUABLE"
-      ],
-      [
-        "Ligue 2",
-        "Saint Etienne",
-        "Stade Lavallois",
-        "btts",
-        "YES",
         "VALUABLE"
       ],
       [
         "Norway Eliteserien",
-        "Rosenborg",
-        "IK Start",
-        "btts",
-        "YES",
+        "HamKam",
+        "Sarpsborg FK",
+        "over35",
+        "OVER",
         "VALUABLE"
       ]
     ],
     "tips_only_safe": [
       [
-        "Argentina Primera Division",
-        "Argentinos Juniors",
-        "Atl\u00e9tico Hurac\u00e1n",
-        "btts",
-        "YES",
-        "VALUABLE"
-      ],
-      [
-        "Argentina Primera Division",
-        "Boca Juniors",
-        "Defensa y Justicia",
-        "btts",
-        "YES",
-        "VALUABLE"
-      ],
-      [
-        "Championship",
-        "Queens Park Rangers",
-        "Lincoln City",
-        "btts",
-        "YES",
-        "VALUABLE"
-      ],
-      [
-        "Denmark Superliga",
-        "OB Odense BK",
-        "Viborg FF",
-        "OU25",
-        "UNDER",
-        "VALUABLE"
-      ],
-      [
-        "Finland Veikkausliiga",
-        "IF Gnistan",
-        "VPS Vaasa",
+        "Brazil Serie A",
+        "Chapecoense",
+        "Vasco da Gama",
         "OU25",
         "UNDER",
         "VALUABLE"
