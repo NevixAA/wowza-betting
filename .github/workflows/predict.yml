@@ -252,6 +252,21 @@ jobs:
       - name: Weekly league research panel (research only)
         run: python -m src.research.league_weekly || echo "::warning::league_weekly research panel failed (research only - tips unaffected)"
 
+      # TOP-3 PER LEAGUE PER GAMEWEEK (owner 2026-11-08, src/top3_league.py). PRODUCTION TIPS, OFF until the owner
+      # switches it on at go-live: repository variables TOP3_LEAGUE_ENABLED (true) and TOP3_FREEZE_LEAD_MIN (the
+      # owner's minutes before a league-week's first kickoff; no default - unset = nothing is frozen or sent).
+      # Each league's 3 best value tips of the week on the league's OWN owner-applied bars (never a global bar),
+      # fewer when fewer clear the bar. Never sizes a stake. Tolerant: a failure cannot stop the commit below.
+      - name: TOP-3 per league per gameweek (flag, default off)
+        env:
+          TOP3_LEAGUE_ENABLED: ${{ vars.TOP3_LEAGUE_ENABLED }}
+          TOP3_FREEZE_LEAD_MIN: ${{ vars.TOP3_FREEZE_LEAD_MIN }}
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          python -m src.top3_league run || echo "::warning::TOP-3 per league failed (other tips unaffected)"
+          python -m src.top3_league notify || echo "::warning::TOP-3 per league notify failed"
+
       # QUALITY-LAYER SHADOW (2026-10-26, docs/QUALITY_TIERS_STUDY_2026_10.md). RESEARCH ONLY: logs, at first sight,
       # the learned Best / Second / Third layer of every tip on the board to output/quality_tier_shadow.csv. Reads
       # the ledgers and predictions.csv; never writes a tip, tier, stake, threshold, ledger or Telegram file.
@@ -295,6 +310,9 @@ jobs:
                    output/league_weekly_candidates.csv output/league_weekly_research.csv \
                    output/league_weekly_research.csv.first_sight.json output/league_weekly_research_summary.json \
                    output/league_market_health.json output/weekly_league_report.json \
+                   output/top3_league_candidates.csv output/top3_league_ledger.csv \
+                   output/top3_league_ledger.csv.first_sight.json output/top3_league_weeks.csv \
+                   output/top3_league_report.json output/top3_league_notified.json \
                    output/fd_history.parquet \
                    output/book_odds_snapshots.csv output/btts_fetch_clock.json \
                    output/v91_shadow.csv \

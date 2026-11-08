@@ -192,6 +192,28 @@ else:
         "Edge %": pd.to_numeric(u["edge"], errors="coerce").round(1)}),
         {"Odds": ui.num_col("Odds", fmt="%.2f"), "Edge %": ui.num_col("Edge %", fmt="%.1f")})
 
+# TOP-3 per league per gameweek (owner 2026-11-08; src/top3_league.py writes, this only reads)
+from dashboard_data import top3_league as T3  # noqa: E402
+ui.section_header("TOP-3 this gameweek", "This league's 3 best value tips of the week across O/U 2.5, BTTS, "
+                  "Over 1.5 and Over 3.5, on the league's OWN owner-approved bars - fewer when fewer clear "
+                  "the bar. The same picks Telegram sent.")
+_t3 = T3.report()
+if not _t3:
+    ui.empty_state("NO_DATA", "TOP-3 per league is not switched on yet (owner switch-on at go-live).")
+else:
+    _v = T3.league_view(_t3, pick)
+    _tf = T3.latest_picks_frame(_v)
+    if _tf.empty:
+        _why = ", ".join(f"{k} {n}" for k, n in sorted((_v.get("latest_excluded") or {}).items()))
+        ui.empty_state("NO_DATA", f"No TOP-3 tip for {pick} in {_v.get('latest_league_week_id') or 'the latest week'}"
+                       + (f" - {_why}" if _why else "") + ".")
+    else:
+        st.caption(f"Gameweek {str(_v.get('latest_league_week_id', '')).split('|')[-1]}")
+        ui.compact_table(_tf, {"Odds": ui.num_col("Odds", fmt="%.2f"), "Edge %": ui.num_col("Edge %", fmt="%.1f")})
+    if _v.get("settled"):
+        st.caption(f"Settled TOP-3 picks for {pick}: {_v['settled']} ({_v['won']} won), flat "
+                   f"{ui.fmt_units(_v.get('flat_pnl_units'))}, ROI {ui.fmt_roi(_v.get('roi'))}.")
+
 # research status: regimes per market + Pro season ranking
 ui.section_header("Research status", "Research regime per market (where research effort goes, never a stake) and "
                   "Pro's season ranking as context.")
