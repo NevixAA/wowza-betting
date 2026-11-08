@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-07T13:27:05Z",
+  "generated_at": "2026-11-08T13:48:34Z",
   "thresholds_hours": {
     "fpl_bootstrap": {
       "aging": 12,
@@ -34,31 +34,31 @@
     "official_squads": {
       "file": "pl_squads_official.csv",
       "exists": true,
-      "age_hours": 0.13,
+      "age_hours": 0.5,
       "state": "CURRENT"
     }
   },
   "coverage": {
-    "projection_players": 138,
+    "projection_players": 134,
     "clubs": 20,
-    "available": 77,
-    "doubtful": 9,
-    "unavailable": 52,
+    "available": 79,
+    "doubtful": 4,
+    "unavailable": 51,
     "availability_breakdown": {
-      "available": 77,
+      "available": 79,
       "unavailable": 32,
-      "injured": 19,
-      "doubtful": 9,
+      "injured": 18,
+      "doubtful": 4,
       "suspended": 1
     },
-    "p_start_zero": 52,
+    "p_start_zero": 51,
     "fpl_match_rate": 1.0,
     "fixture_coverage": 1.0
   },
   "projection_log": {
-    "rows": 11652,
-    "distinct_days": 52,
-    "rows_with_gameweek": 3286,
+    "rows": 11786,
+    "distinct_days": 53,
+    "rows_with_gameweek": 3420,
     "settleable": true,
     "gameweeks_logged": [
       6,
@@ -75,7 +75,7 @@
   "live_gameweek": 10,
   "last_finished_gameweek": 9,
   "season_complete": false,
-  "hours_to_deadline": 333.5,
+  "hours_to_deadline": 309.2,
   "status": "OK",
   "settlement_ready": true,
   "defaults_audit": {
@@ -140,7 +140,7 @@
     ],
     "suspected_bugs": [],
     "fire_counts": {
-      "v1_rows": 138,
+      "v1_rows": 134,
       "p_start_exactly_0_6": 2,
       "fpl_unmatched_rows": 0,
       "fixtures_unavailable_rows": 0,
@@ -148,12 +148,12 @@
       "p_assist_all_zero": false,
       "p_sot2_all_zero": false,
       "mean_dc_pts_by_position": {
-        "DEF": 0.297,
+        "DEF": 0.268,
         "FWD": 0.008,
         "GKP": 0.0,
-        "MID": 0.118
+        "MID": 0.116
       },
-      "v2_rows": 455,
+      "v2_rows": 454,
       "v2_blank_gw_rows": 0,
       "v2_start_rate_missing": 0
     },
