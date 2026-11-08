@@ -796,6 +796,7 @@ def main(argv=None) -> int:
     rep["owner_decisions_missing"] = missing_owner_decisions(plan)
     text = json.dumps(rep, indent=2, default=str)
     if a.out:
+        Path(a.out).parent.mkdir(parents=True, exist_ok=True)
         Path(a.out).write_text(text + "\n", encoding="utf-8")
     print(text)
     return 0
