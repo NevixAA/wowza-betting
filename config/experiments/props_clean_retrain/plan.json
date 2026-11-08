@@ -1,20 +1,33 @@
 {
   "plan_version": "PROPS-CLEAN-RETRAIN-1.0",
-  "status": "AWAITING_OWNER",
+  "status": "OWNER_DECIDED (2026-11-08); a run still needs PHASE2_RETRAIN_ENABLED=true",
   "note": "Phase 2 props clean retrain (reports/P0_PROPS_CLEAN_RETRAIN_PLAN.md). owner_decisions are null until the owner sets them; player_model.props_harness --run refuses while any is null. 'proposed' is shown by --dry-run only and is never used to train.",
   "owner_decisions": {
-    "holdout_start": null,
-    "holdout_end": null,
-    "min_verified_share": null,
-    "markets": null,
+    "holdout_start": "2026-09-01",
+    "holdout_end": "2026-10-31",
+    "min_verified_share": 0.95,
+    "min_verified_share_holdout": 0.85,
+    "markets": [
+      "sot",
+      "sot2",
+      "goals",
+      "assists",
+      "cards"
+    ],
     "feature_rule": "all_prior_verified"
   },
-  "owner_decisions_note": "Owner 2026-11-07: feature_rule = all_prior_verified (rule C, the strictest: a row trains only if every earlier match of that player is verified). Still open: holdout dates, min_verified_share and markets - decided once the re-fetch has finished and the real verified counts are known.",
+  "owner_decisions_note": "Owner 2026-11-07: feature_rule all_prior_verified (rule C). Owner 2026-11-08, after the re-fetch finished (939,831 of 950,556 rows verified): holdout 2026-09-01..2026-10-31 (includes the 38 fixtures with real two-sided anytime-scorer prices); training floor 95% and holdout floor 85% under rule C (measured 96.0% / 86.6%); markets sot, sot2, goals, assists, cards (only goals has real two-sided prices; the others use the labelled assumed margin for CLV).",
   "proposed": {
     "holdout_start": "2026-09-01",
     "holdout_end": "2026-10-31",
     "min_verified_share": null,
-    "markets": ["sot", "sot2", "goals", "assists", "cards"],
+    "markets": [
+      "sot",
+      "sot2",
+      "goals",
+      "assists",
+      "cards"
+    ],
     "feature_rule": "all_prior_verified"
   },
   "walk_forward": {
@@ -22,6 +35,10 @@
     "step_matchdays": 7,
     "n_folds": 8
   },
-  "candidates": ["recipe_retrained", "hgb_nan_native", "player_base_rate"],
+  "candidates": [
+    "recipe_retrained",
+    "hgb_nan_native",
+    "player_base_rate"
+  ],
   "hand_adjustment": "none"
 }
