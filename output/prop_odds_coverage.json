@@ -4,17 +4,17 @@
     "last_priced": "2026-11-08",
     "last_probe": "2026-11-08",
     "league": "Argentina Primera Division",
-    "priced_events": 575,
-    "probes": 577,
+    "priced_events": 576,
+    "probes": 578,
     "source": "api_football"
   },
   "apifootball:Austrian Bundesliga": {
-    "empty_streak": 0,
+    "empty_streak": 1,
     "last_priced": "2026-11-08",
     "last_probe": "2026-11-08",
     "league": "Austrian Bundesliga",
     "priced_events": 530,
-    "probes": 543,
+    "probes": 544,
     "source": "api_football"
   },
   "apifootball:Brazil Serie A": {
@@ -22,8 +22,8 @@
     "last_priced": "2026-11-08",
     "last_probe": "2026-11-08",
     "league": "Brazil Serie A",
-    "priced_events": 575,
-    "probes": 575,
+    "priced_events": 576,
+    "probes": 576,
     "source": "api_football"
   },
   "apifootball:Bundesliga 2": {
@@ -74,8 +74,8 @@
     "last_priced": "2026-11-08",
     "last_probe": "2026-11-08",
     "league": "Denmark Superliga",
-    "priced_events": 491,
-    "probes": 544,
+    "priced_events": 492,
+    "probes": 545,
     "source": "api_football"
   },
   "apifootball:Europa League": {
@@ -117,8 +117,8 @@
     "last_priced": "2026-11-08",
     "last_probe": "2026-11-08",
     "league": "La Liga 2",
-    "priced_events": 693,
-    "probes": 704,
+    "priced_events": 694,
+    "probes": 705,
     "source": "api_football"
   },
   "apifootball:League One": {
@@ -126,8 +126,8 @@
     "last_priced": "2026-11-08",
     "last_probe": "2026-11-08",
     "league": "League One",
-    "priced_events": 616,
-    "probes": 680,
+    "priced_events": 617,
+    "probes": 681,
     "source": "api_football"
   },
   "apifootball:League Two": {
@@ -135,8 +135,8 @@
     "last_priced": "2026-11-08",
     "last_probe": "2026-11-08",
     "league": "League Two",
-    "priced_events": 555,
-    "probes": 626,
+    "priced_events": 556,
+    "probes": 627,
     "source": "api_football"
   },
   "apifootball:Ligue 2": {
@@ -153,8 +153,8 @@
     "last_priced": "2026-11-08",
     "last_probe": "2026-11-08",
     "league": "Mexico Liga MX",
-    "priced_events": 572,
-    "probes": 603,
+    "priced_events": 573,
+    "probes": 604,
     "source": "api_football"
   },
   "apifootball:Norway Eliteserien": {
@@ -162,17 +162,17 @@
     "last_priced": "2026-11-08",
     "last_probe": "2026-11-08",
     "league": "Norway Eliteserien",
-    "priced_events": 424,
-    "probes": 520,
+    "priced_events": 425,
+    "probes": 521,
     "source": "api_football"
   },
   "apifootball:Romanian Superliga": {
-    "empty_streak": 127,
+    "empty_streak": 128,
     "last_priced": "2026-10-24",
     "last_probe": "2026-11-08",
     "league": "Romanian Superliga",
     "priced_events": 273,
-    "probes": 531,
+    "probes": 532,
     "source": "api_football"
   },
   "apifootball:Serie B": {
@@ -180,8 +180,8 @@
     "last_priced": "2026-11-08",
     "last_probe": "2026-11-08",
     "league": "Serie B",
-    "priced_events": 465,
-    "probes": 622,
+    "priced_events": 466,
+    "probes": 623,
     "source": "api_football"
   },
   "apifootball:Sweden Allsvenskan": {
@@ -189,8 +189,8 @@
     "last_priced": "2026-11-08",
     "last_probe": "2026-11-08",
     "league": "Sweden Allsvenskan",
-    "priced_events": 476,
-    "probes": 523,
+    "priced_events": 477,
+    "probes": 524,
     "source": "api_football"
   },
   "soccer_efl_champ": {
@@ -241,11 +241,11 @@
     "last_priced": "2026-11-08",
     "last_probe": "2026-11-08",
     "league": "Ligue 1",
-    "matched_events": 6,
-    "priced_events": 2847,
-    "probes": 3072,
+    "matched_events": 1,
+    "priced_events": 2848,
+    "probes": 3073,
     "unmatched_sample": [],
-    "wanted_fixtures": 6
+    "wanted_fixtures": 1
   },
   "soccer_germany_bundesliga": {
     "empty_streak": 0,
@@ -253,11 +253,11 @@
     "last_priced": "2026-11-08",
     "last_probe": "2026-11-08",
     "league": "Bundesliga",
-    "matched_events": 3,
-    "priced_events": 2009,
-    "probes": 2311,
+    "matched_events": 1,
+    "priced_events": 2010,
+    "probes": 2312,
     "unmatched_sample": [],
-    "wanted_fixtures": 3
+    "wanted_fixtures": 1
   },
   "soccer_germany_bundesliga2": {
     "empty_streak": 24,
@@ -281,13 +281,11 @@
     "last_priced": "2026-11-08",
     "last_probe": "2026-11-08",
     "league": "Serie A",
-    "matched_events": 4,
-    "priced_events": 3228,
-    "probes": 3429,
-    "unmatched_sample": [
-      "Napoli vs Lazio"
-    ],
-    "wanted_fixtures": 5
+    "matched_events": 2,
+    "priced_events": 3230,
+    "probes": 3431,
+    "unmatched_sample": [],
+    "wanted_fixtures": 2
   },
   "soccer_spain_la_liga": {
     "empty_streak": 0,
@@ -296,13 +294,11 @@
     "last_priced": "2026-11-08",
     "last_probe": "2026-11-08",
     "league": "La Liga",
-    "matched_events": 4,
-    "priced_events": 2541,
-    "probes": 2946,
-    "unmatched_sample": [
-      "Elche vs Real Betis"
-    ],
-    "wanted_fixtures": 5
+    "matched_events": 3,
+    "priced_events": 2544,
+    "probes": 2949,
+    "unmatched_sample": [],
+    "wanted_fixtures": 3
   },
   "soccer_uefa_champs_league": {
     "empty_streak": 2,
