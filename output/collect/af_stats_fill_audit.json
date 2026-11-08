@@ -1,27 +1,26 @@
 {
- "calls": 0,
- "filled_rows_total": 67916,
+ "calls": 896,
+ "filled_rows_total": 55769,
  "fixtures_coverage_unknown": 0,
- "fixtures_in_local_cache": 352,
+ "fixtures_in_local_cache": 70,
  "fixtures_skipped_no_provider_statistics": 6945,
- "fixtures_to_read": 7297,
+ "fixtures_to_read": 7911,
  "fixtures_to_read_by_reason": {
-  "insidebox+served_stats": 6949,
-  "served_stats": 348
+  "insidebox+served_stats": 7873,
+  "served_stats": 38
  },
- "lacking_rows": 17571,
- "matched_rows": 8839,
+ "lacking_rows": 15601,
+ "matched_rows": 9137,
  "note": "Shots insidebox / expected_goals for af_history rows that lack them, from API-Football; af_history.parquet itself is not modified.",
  "per_league": {
   "Argentina Primera Division": {
-   "filled_total": 3820,
-   "lacking": 863,
-   "matched": 79,
-   "refused_fixture_claimed_twice": 377,
+   "filled_total": 2965,
+   "lacking": 599,
+   "matched": 192,
    "unmatched": 407
   },
   "Austrian Bundesliga": {
-   "filled_total": 2388,
+   "filled_total": 1307,
    "lacking": 158,
    "unmatched": 158
   },
@@ -32,30 +31,29 @@
    "unmatched": 211
   },
   "Brazil Serie A": {
-   "filled_total": 3818,
-   "lacking": 422,
-   "matched": 86,
-   "refused_fixture_claimed_twice": 336
+   "filled_total": 2725,
+   "lacking": 139,
+   "matched": 139
   },
   "Bundesliga 2": {
-   "filled_total": 2901,
+   "filled_total": 1807,
    "lacking": 266,
    "matched": 1,
    "unmatched": 265
   },
   "Championship": {
-   "filled_total": 3919,
+   "filled_total": 3463,
    "lacking": 2,
    "matched": 2
   },
   "China Super League": {
-   "filled_total": 1714,
-   "lacking": 1104,
-   "matched": 19,
+   "filled_total": 1575,
+   "lacking": 1102,
+   "matched": 17,
    "unmatched": 1085
   },
   "Denmark Superliga": {
-   "filled_total": 1824,
+   "filled_total": 1338,
    "lacking": 1,
    "unmatched": 1
   },
@@ -65,50 +63,49 @@
    "unmatched": 1
   },
   "Finland Veikkausliiga": {
-   "filled_total": 185,
-   "lacking": 893,
-   "matched": 782,
+   "filled_total": 156,
+   "lacking": 803,
+   "matched": 692,
    "no_provider_statistics": 303,
    "unmatched": 111
   },
   "Greek Super League": {
-   "filled_total": 811,
+   "filled_total": 810,
    "lacking": 1126,
    "matched": 2,
    "unmatched": 1124
   },
   "Ireland Premier Division": {
-   "filled_total": 762,
-   "lacking": 927,
-   "matched": 923,
+   "filled_total": 558,
+   "lacking": 762,
+   "matched": 761,
    "no_provider_statistics": 632,
-   "refused_fixture_claimed_twice": 3,
    "unmatched": 1
   },
   "Japan J-League": {
-   "filled_total": 3195,
+   "filled_total": 2498,
    "lacking": 313,
    "matched": 1,
    "unmatched": 312
   },
   "K-League 1": {
    "filled_total": 1016,
-   "lacking": 356,
-   "matched": 356
+   "lacking": 358,
+   "matched": 358
   },
   "La Liga 2": {
-   "filled_total": 3371,
+   "filled_total": 2726,
    "lacking": 314,
    "matched": 1,
    "unmatched": 313
   },
   "League One": {
-   "filled_total": 4103,
+   "filled_total": 3464,
    "lacking": 1,
    "matched": 1
   },
   "League Two": {
-   "filled_total": 4086
+   "filled_total": 3474
   },
   "Ligue 2": {
    "filled_total": 2062,
@@ -117,10 +114,9 @@
    "unmatched": 153
   },
   "Mexico Liga MX": {
-   "filled_total": 3458,
-   "lacking": 273,
-   "matched": 49,
-   "refused_fixture_claimed_twice": 224
+   "filled_total": 2240,
+   "lacking": 80,
+   "matched": 80
   },
   "National League": {
    "lacking": 3316,
@@ -129,7 +125,7 @@
    "unmatched": 697
   },
   "Norway Eliteserien": {
-   "filled_total": 2300,
+   "filled_total": 1825,
    "lacking": 184,
    "matched": 1,
    "unmatched": 183
@@ -140,9 +136,9 @@
    "unmatched": 28
   },
   "Romanian Superliga": {
-   "filled_total": 1371,
-   "lacking": 788,
-   "matched": 151,
+   "filled_total": 994,
+   "lacking": 771,
+   "matched": 134,
    "unmatched": 637
   },
   "Saudi Pro League": {
@@ -173,14 +169,14 @@
    "matched": 114
   },
   "Serie B": {
-   "filled_total": 2319,
+   "filled_total": 2278,
    "lacking": 114,
    "unmatched": 114
   },
   "Sweden Allsvenskan": {
-   "filled_total": 3683,
-   "lacking": 129,
-   "matched": 3,
+   "filled_total": 1830,
+   "lacking": 128,
+   "matched": 2,
    "unmatched": 126
   },
   "Turkish Super Lig": {
@@ -189,19 +185,18 @@
    "unmatched": 394
   },
   "USA MLS": {
-   "filled_total": 3634,
-   "lacking": 1555,
-   "matched": 227,
-   "refused_fixture_claimed_twice": 1328
+   "filled_total": 3482,
+   "lacking": 598,
+   "matched": 598
   }
  },
  "planned_coverage_calls": 0,
- "planned_stats_calls_excluding_no_statistics_seasons": 0,
- "planned_stats_calls_upper_bound": 6945,
+ "planned_stats_calls_excluding_no_statistics_seasons": 896,
+ "planned_stats_calls_upper_bound": 7841,
  "target_rows_by_reason": {
-  "insidebox": 10,
-  "insidebox+served_stats": 17148,
-  "served_stats": 413
+  "insidebox": 7,
+  "insidebox+served_stats": 15556,
+  "served_stats": 38
  },
- "written_at": "2026-11-07T00:19:53.890183+00:00"
+ "written_at": "2026-11-08T00:34:29.147750+00:00"
 }
