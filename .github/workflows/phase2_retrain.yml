@@ -1,0 +1,75 @@
+name: Phase 2 clean retrain (team models) - owner-gated
+
+# Phase 2 part 4 (reports/P0_NEW_FORMAT_CLEAN_RETRAIN_PLAN.md). The ONLY place the clean retrain
+# harness (src/retrain_harness, config/phase2_retrain.json) may fit models on real data.
+#
+# DISPATCH ONLY: no schedule, no push trigger. The job runs only when the repository variable
+# PHASE2_RETRAIN_ENABLED is 'true', which the owner sets after approving the plan; the harness
+# itself ALSO refuses to fit unless config/phase2_retrain.json carries the owner's holdout approval.
+#
+# Read-only for the repository: contents: read, nothing is committed or pushed, no serving model,
+# registry or promotion file is written. Every output (models, predictions, metrics, per-league
+# tables, the comparison) goes to the run folder, uploaded as one artifact per track. Promotion is
+# never automatic: the owner reads the artifact and decides.
+
+on:
+  workflow_dispatch:
+    inputs:
+      stage:
+        description: 'walk_forward | holdout | all (the holdout is scored once per run folder)'
+        required: true
+        default: 'walk_forward'
+        type: choice
+        options: [walk_forward, holdout, all]
+      only:
+        description: 'optional comma-separated candidate subset (blank = every enabled candidate)'
+        required: false
+        default: ''
+
+env:
+  PYTHONIOENCODING: utf-8
+  PYTHONDONTWRITEBYTECODE: '1'
+
+jobs:
+  retrain:
+    if: vars.PHASE2_RETRAIN_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    permissions:
+      contents: read
+    concurrency:
+      group: phase2-retrain-${{ matrix.track }}
+      cancel-in-progress: false
+    strategy:
+      fail-fast: false
+      matrix:
+        track: [standard, new_format]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Plan (dry run, committed data, no fitting)
+        run: python scripts/phase2_retrain.py --dry-run --json-out _phase2/plan_${{ matrix.track }}.json
+      - name: Fit and score (refused unless the holdout is owner-approved in the config)
+        env:
+          PHASE2_RETRAIN_ENABLED: ${{ vars.PHASE2_RETRAIN_ENABLED }}
+          STAGE: ${{ inputs.stage }}
+          ONLY: ${{ inputs.only }}
+        run: |
+          set -euo pipefail
+          args=(--out _phase2 --stage "$STAGE" --tracks "${{ matrix.track }}")
+          [ -n "$ONLY" ] && args+=(--only "$ONLY")
+          python scripts/phase2_retrain.py "${args[@]}"
+      - name: Nothing in the repository changed
+        run: |
+          git status --porcelain -- . ':!_phase2' | tee /tmp/changed
+          [ ! -s /tmp/changed ] || { echo "::error::the run changed tracked files"; exit 1; }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: phase2-retrain-${{ matrix.track }}-${{ github.run_id }}
+          path: _phase2/
+          retention-days: 90
