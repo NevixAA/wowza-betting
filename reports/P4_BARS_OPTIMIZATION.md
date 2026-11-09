@@ -122,3 +122,53 @@ Per track × market × side, one configuration = a × b × d:
 * ROI > 0 with a CI including zero is direction only.
 * If neither happens, the honest conclusion is that no bar setting makes the current models profitable,
   and the report says so plainly.
+
+## 10. Amendment 1 (2026-11-09, BEFORE any search was run) - owner direction: monthly, live test this season
+
+Owner: *"optimized as u can, and from month to month. This season it's the live test with research live and
+Pro tools. Next season is the big deal. Right now we need to optimize as best as we can."*
+Added BEFORE any configuration was evaluated; sections 1-9 are unchanged except as stated here.
+
+**10.1 Search space, maximum effort.**
+* A 4th probability source is added: **LEARNED**.
+  * It is ported from Pro `src/studies/learned_tiers.py` (owner 2026-10-22, "it must be per league").
+  * It fits an L2-regularised logistic regression of WIN on logit(fair), logit(p_model), the raw edge,
+    log odds, league one-hot, and league × raw edge.
+  * It is fitted only on earlier rows; the L2 penalty is the per-league shrinkage.
+* Configurations: 4 × 2 × 6 = **48 per cell family, 480 in total**.
+* The multiple-testing rules of section 4 are unchanged and apply to all 480.
+
+**10.2 Statistics reused from Pro** (`src/studies/evidence.py`, ported as pure functions, credited in the code):
+* White's reality check: max over configurations, centred block bootstrap over match dates.
+* The SE used for intervals: the LARGEST of independent, matchday-block and ISO-week-block SEs.
+* The anytime-valid normal-mixture confidence sequence on monthly live ROI and CLV, which may be read after
+  every bet.
+
+**10.3 Monthly rolling re-optimization is part of the design.**
+* At the start of each month M, configurations and bars per league × market-side are re-selected:
+  * on every priced row dated before M;
+  * with the same nested protocol;
+  * then frozen and served for month M.
+* Month M is scored as fresh out-of-sample evidence.
+* Two results are reported:
+  * **(a) Walk-forward simulation over SELECT.** For every month from the first month with at least 6 months
+    of earlier priced data in that cell family, up to August 2026: the monthly re-fit is chosen only on
+    earlier data, against STATIC choices (made once, on data before the first simulated month). Both are
+    scored on the same months, out of sample.
+  * **(b) The monthly cycle on the FINAL window, as a design check.**
+    * September is scored with the SELECT choice.
+    * October is scored with a re-selection on data before October.
+    * November 1-8 is scored with a re-selection on data before November.
+    * Each month is scored out of sample, but (b) reads FINAL months for the later re-selections. So the
+      **main verdict stays the STATIC frozen-on-SELECT result of section 5**, and (b) is reported separately,
+      labelled MONTHLY_ROLLING.
+* A scheduled monthly job writes PROPOSALS through the existing `src/threshold_proposals` monthly path
+  (`output/threshold_proposals/<YYYY-MM>`). The owner approves and `src/threshold_apply` applies.
+  * It is off unless a repository variable is set.
+  * Its data: the retrain predictions plus the live first-sight rows after them.
+
+**10.4 Framing.**
+* From 2026-11-21 this season is the **LIVE TEST**: research tracks run live beside the Pro tools.
+* Each month's live results per league × market-side × month are the evidence trail that can justify real
+  money next season.
+* Nothing in this study is called profitable unless its out-of-sample interval says so.
