@@ -73,11 +73,44 @@ No verdict depended on the missing folds: every verdict is unchanged, and the ho
 - **NF calibration restarts.** The shift's fit window starts at the new champion's install time (n = 0 until 150 settled rows).
 - **Track registry regenerated.** Only the champion fields change.
 
-**Open (owner only):** the research lock (`python -m src.research_lock --check`) reports the
-predict.yml switch change `STANDARD_OU25_SERVING_RECIPE "v9_repaired" -> "legacy_v9"`. Re-approval
-records the owner's name and is not done by an agent:
-`python -m src.research_lock --approve --by "Nevo (owner)" --note "2026-11-09 decision A: Standard O/U 2.5 serves the clean recipe"`.
-Until then that check and the 5 tests that read the lock stay red, and the branch is not merged.
+**Research lock:** re-approved by the owner on 2026-11-09T15:00:30Z ("Approve now", digest
+`0fed49b8bf27`) for the predict.yml switch `STANDARD_OU25_SERVING_RECIPE "v9_repaired" -> "legacy_v9"`
+(commit `bb02a955`).
+
+## Merge of data-truth-100, second refit, re-run on the merged frame (2026-11-09)
+
+**Merge.** `origin/data-truth-100` (28 commits: the props promotion and the P7 missing-data collection
+with the results sync) was merged into this branch without conflicts (`fdd28bc1`); the lock needed no
+further approval. The merged data changed the training inputs of rows the installed models were
+trained on:
+- frame `4638ab5ee15f3a7f` (70,744 rows) → `8d973b3f2f1f04f7` (71,014 rows);
+- 5,151 of 58,322 matched rows with changed inputs, mainly provider fills of inside-box shots, xG and half-time scores;
+- 421 rows added and 151 removed (proven aliases, results sync).
+
+**Owner decisions:** "Approve 2nd + final refit" and "Yes, re-run". Refit on the merged data (training to
+2026-11-01, tail 2026-11-02..11-08): parity 0 of 5,375 cells, 12 × 125/125 identical. The override
+record holds the stages first_refit / second_refit / final_refit (Nov 19-20 window); runbook step R6.
+
+**Re-run on the merged frame** (`reports/phase2_runs/standard_run_20261109T154317Z`,
+`new_format_run_20261109T162137Z`; code `a29fdb1e`, local, single-threaded):
+
+| Track | Comparisons | Verdict changes vs the pre-merge run | NOT_FITTED / ERROR |
+|---|---|---|---|
+| Standard | 60 | 0 | 0 / 0 |
+| New-Format | 108 | 4 | 0 / 0 |
+
+| Stage | Market | Candidate | Before | Merged frame |
+|---|---|---|---|---|
+| holdout | HT Over 1.5 | logistic | BETTER (−0.00437) | NOT_SHOWN_BETTER (−0.00329, Holm p 0.20) |
+| holdout | HT Over 1.5 | logistic+ht | BETTER (−0.00438) | NOT_SHOWN_BETTER (−0.00327, Holm p 0.52) |
+| holdout | O/U 2.5 | model_market+ht | NOT_SHOWN_BETTER (−0.00705) | BETTER (−0.00750, Holm p 0.039, n 1,866) |
+| walk-forward | Over 1.5 | logistic | BETTER | NOT_SHOWN_BETTER (Holm p 0.14) |
+
+**Owner acceptance (2026-11-09, "Yes, install + merge"):** the four changes do not affect which model
+serves.
+- Three challengers dropped out (both HT Over 1.5 logistic variants, Over 1.5 logistic in walk-forward).
+- The one new BETTER, `model_market+ht` on New-Format O/U 2.5, blends the model with the loader's CLOSING-preferred O/U 2.5 price. That price is not known at bet time, so it is a benchmark and cannot serve.
+- **champion_recipe stays the best deployable model on every market of both tracks.** The second refit is installed through the gate (stage second_refit).
 
 ## What this branch changes
 
