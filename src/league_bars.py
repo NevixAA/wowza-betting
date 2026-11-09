@@ -86,7 +86,7 @@ SNAPSHOT_KEYS = {**ONE_SIDED_BET, **TWO_SIDED_BET}
 
 # ── prices ──────────────────────────────────────────────────────────────────────────────────────
 
-def snapshot_pairs(raw: pd.DataFrame, source: str, market: str) -> pd.DataFrame:
+def snapshot_pairs(raw: pd.DataFrame, source: str, market: str, which: str = "first") -> pd.DataFrame:
     """One bet-time two-sided pair per (match_date, league, match) from a snapshot capture file.
 
     Rules: only rows price_provenance marks market_mapping_valid; both sides from the SAME snapshot;
@@ -114,7 +114,10 @@ def snapshot_pairs(raw: pd.DataFrame, source: str, market: str) -> pd.DataFrame:
     if yes_k not in w or no_k not in w:
         return pd.DataFrame(columns=["match_date", "league", "match", "yes", "no", "snapshot_ts", "price_origin"])
     w = w[w[yes_k].notna() & w[no_k].notna()].sort_values("ts")
-    w = w.groupby(["match_date", "league", "match"], as_index=False).first()
+    if which not in ("first", "last"):
+        raise ValueError(f"which={which!r}: 'first' (bet-time price) or 'last' (closing, CLV only)")
+    g = w.groupby(["match_date", "league", "match"], as_index=False)
+    w = g.first() if which == "first" else g.last()     # last = the latest pre-kickoff pair (CLV only)
     return w.rename(columns={yes_k: "yes", no_k: "no", "ts": "snapshot_ts"})[
         ["match_date", "league", "match", "yes", "no", "snapshot_ts", "price_origin"]]
 
