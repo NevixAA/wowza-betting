@@ -74,9 +74,10 @@ def production_view(league: str, market: str, side: str, model_type: str, policy
     """What production applies to this cell. Mirrors src/bankroll_policy.size_day (track state, base
     fraction, paper-league override, odds caps) and config (ENABLED/PAPER leagues, provider support,
     NF O/U cap, min O/U odds), with eligibility resolved under the deployed env."""
-    from src.bankroll_policy import track_key
+    from src.bankroll_policy import stake_entry, track_key
     track = track_key(model_type, market, side)          # O/U 2.5 per side since 2026-10-26
-    t = (policy.get("tracks") or {}).get(track) or {}
+    # the CELL's entry when per-cell staking is on (owner 2026-11-09), else the track's - as size_day reads it
+    t = stake_entry(policy, track, league) or {}
     track_state = t.get("state", "UNSUPPORTED")
     # Policy values as written; an absent one is None (no stake can be sized from it), never 0.0 / 3.0.
     base = None if t.get("base_fraction") is None else float(t["base_fraction"])
@@ -95,7 +96,7 @@ def production_view(league: str, market: str, side: str, model_type: str, policy
         caps["min_side_odds"] = elig.get("MIN_OVER_ODDS") if side == "OVER" else elig.get("MIN_UNDER_ODDS")
         if model_type == "new_format":
             caps["nf_max_ou_odds"] = elig.get("NF_MAX_OU_ODDS")
-    tt = (policy.get("track_tier_multipliers") or {}).get(track)
+    tt = t.get("tier_multipliers") if isinstance(t.get("tier_multipliers"), dict) else         (policy.get("track_tier_multipliers") or {}).get(track)          # a cell's own first, as size_day
     return {
         "track": track, "track_state": track_state, "production_state": state,
         "enabled": enabled, "paper_league": paper,
@@ -106,7 +107,8 @@ def production_view(league: str, market: str, side: str, model_type: str, policy
         "odds_caps": caps,
         "stake_policy": {"policy_version": policy.get("policy_version"), "base_fraction": base,
                          "tier_multipliers": tt if tt is not None else policy.get("tier_multipliers"),
-                         "tier_multiplier_source": "track_tier_multipliers" if tt is not None else "tier_multipliers",
+                         "tier_multiplier_source": ("cell_staking" if isinstance(t.get("tier_multipliers"), dict)
+                                                    else "track_tier_multipliers" if tt is not None else "tier_multipliers"),
                          "evidence_score": t.get("evidence_score")},
     }
 

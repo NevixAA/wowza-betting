@@ -337,7 +337,7 @@ def freeze_due(cands: pd.DataFrame, weeks_done: set, ctx: dict, now: pd.Timestam
         return pd.DataFrame(columns=PICK_COLS), pd.DataFrame(columns=WEEK_COLS)
     cands = LW._plain(cands)
     policy = policy or {}
-    real_checker = real_checker or (lambda *a: False)
+    real_checker = real_checker or (lambda *a, **k: False)
     locks = LW.week_locks(cands)
     stamp = LW._stamp(now)
     picks_out, weeks_out = [], []
@@ -369,7 +369,8 @@ def freeze_due(cands: pd.DataFrame, weeks_done: set, ctx: dict, now: pd.Timestam
                 "bar_valuable": LW._r(r["bar_valuable"]), "bar_marksman": LW._r(r["bar_marksman"]),
                 "bar_sniper": LW._r(r["bar_sniper"]), "bar_source": BAR_SOURCE,
                 "bar_status": r["bar_status"], "bar_evidence": r["bar_evidence"],
-                "policy_switch": sw, "track_is_real": bool(real_checker(r.get("model_type"), mk, r.get("side"))),
+                "policy_switch": sw, "track_is_real": bool(real_checker(r.get("model_type"), mk, r.get("side"),
+                                                                     r.get("league"))),
                 "stake_effect": "NONE (TOP-3 never sizes a stake; stake plan unchanged)",
             })
     return (pd.DataFrame(picks_out).reindex(columns=PICK_COLS) if picks_out else pd.DataFrame(columns=PICK_COLS),

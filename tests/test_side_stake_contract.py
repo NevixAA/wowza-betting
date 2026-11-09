@@ -252,3 +252,12 @@ def _legacy_side_fair_price(monkeypatch):
     monkeypatch.setattr(_SE, "load_quotes", lambda *a, **k: __import__("pandas").DataFrame())
     monkeypatch.setattr(_SE, "production_fair_probs",
                         lambda df, target, quotes, asof: (1.0 / df["market_odds"]) / 1.08)
+
+
+@pytest.fixture(autouse=True)
+def _per_track_policy(monkeypatch):
+    """These tests pin the TRACK mechanics: per-track staking (tests/policy_helpers). The live per-cell
+    staking (owner 2026-11-09) is pinned in tests/test_cell_staking.py."""
+    import sys
+    from tests.policy_helpers import install_per_track
+    install_per_track(monkeypatch, sys.modules[__name__])

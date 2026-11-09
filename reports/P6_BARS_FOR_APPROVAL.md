@@ -9,10 +9,41 @@ Built 2026-11-09 by `python scripts/bars_opt.py serving-cells --month 2026-11` (
 ## Go-live day: what you approve, in order
 
 1. Merge `prep/bars-serving` into data-truth-100 together with go-live (it contains prep/no-global-bars, prep/bars-opt and prep/top3-league). On its own, before step 3, it silences every tip (no league has an applied cell yet).
-2. **Re-approve the research lock** (it is RED on the branch, by design): the only PROTECTED real-money track, Argentina Primera Division BTTS YES, loses its old global gates (0.10/0.08/0.04 → none until its cell is applied), and predict.yml no longer sets LEAGUE_SNIPER_CAP / MARKSMAN_THRESHOLD / VALUABLE_THRESHOLD (not read by serving). Command: `python -m src.research_lock --approve --by "Nevo (owner)" --note "bars_opt serving, no global vars"`. threshold_apply refuses while the lock is RED.
+2. **Re-approve the research lock** (it is RED on the branch, by design): the only PROTECTED real-money track, Argentina Primera Division BTTS YES, loses its old global gates (0.10/0.08/0.04 → none until its cell is applied); predict.yml no longer sets LEAGUE_SNIPER_CAP / MARKSMAN_THRESHOLD / VALUABLE_THRESHOLD (not read by serving); and config/bankroll_policy.json stakes per CELL (section Staking). Prepared note (runbook step U3a): `python -m src.research_lock --approve --by "Nevo (owner)" --note "2026-11 go-live: bars_opt serving (no global bars, NO_LEAGUE_BAR), predict.yml global threshold variables removed, per-cell staking 'Paper + PROMISING small' (10 staked cells, reports/P6_BARS_FOR_APPROVAL.md)"`. threshold_apply refuses while the lock is RED.
 3. **Approve the entries** you want in `config/threshold_approvals.json` → `approvals`, by entry_id + entry_hash only (hashes are listed per league below), with proposal_id / proposal_hash above, approved_by and approved_at. Then `python -m src.threshold_apply --proposal output/threshold_proposals/2026-11_c2414fcf.json --dry-run`, then without --dry-run.
 4. Argentina Primera Division BTTS YES (PROTECTED, real money) keeps tipping only if `btts|Argentina Primera Division` is approved: its cell is LEAGUE_WIDE (every match up to odds 2.50), UNPROVEN, 350 selection bets at +5.4%.
-5. Set `TOP3_LEAGUE_ENABLED=true` and `TOP3_FREEZE_LEAD_MIN` (repository variables) if TOP-3 goes live; TOP-3 reads the same approved cells and ranks by the cell's expected value.
+5. **TOP-3 on** (owner 2026-11-09, runbook step U3c): repository variables `TOP3_FREEZE_LEAD_MIN = 120` (freeze 2 h before each league-week's first kickoff) and `TOP3_LEAGUE_ENABLED = true`, both AT GO-LIVE. TOP-3 reads the same approved cells, ranks by the cell's expected value, and its picks follow their cell's staking state (no extra stake).
+
+**Standard Over 1.5** (3 learned-blend cells under RAW|EDGE, NO_SELECTION_EVIDENCE): **owner-approved in principle 2026-11-09 as PAPER / UNPROVEN.** They are not staked (no cell_staking entry); the owner still approves their entries by id + hash on go-live day.
+
+## Staking this season: "Paper + PROMISING small" (owner 2026-11-09)
+
+`config/bankroll_policy.json` → `cell_staking` (enabled): staking is per CELL (league × market × side, key `<track>|<league>`). Only the cells below stake; **every other cell is PAPER** (shown and recorded, stake 0, reason NO_REAL_STAKE_PAPER_NO_CELL_ENTRY), never inherited from its track. A BLOCKED track (Over 3.5, player props) stays blocked for its cells. Portfolio caps (single 2%, fixture 2%, daily 6%, league 3%), the drawdown throttle, paper leagues (USA MLS) and the direction rule are unchanged. Cloudbet stays PAPER_ONLY: the stake plan only sizes and records.
+
+| Staked cell | State | Base fraction | Max odds | Tier multipliers S / M / V |
+|---|---|---|---|---|
+| `new_format|BTTS|Argentina Primera Division` | ACTIVE | 0.0125 | 2.6 | 1.1 / 0.9 / 1.0 |
+| `new_format|BTTS|Brazil Serie A` | ACTIVE_LOW | 0.005 | 2.5 | 1.0 / 1.0 / 1.0 |
+| `new_format|BTTS|Ireland Premier Division` | ACTIVE_LOW | 0.005 | 2.5 | 1.0 / 1.0 / 1.0 |
+| `new_format|BTTS|Norway Eliteserien` | ACTIVE_LOW | 0.005 | 2.5 | 1.0 / 1.0 / 1.0 |
+| `new_format|OU25_OVER|Brazil Serie A` | ACTIVE_LOW | 0.005 | 2.5 | 1.0 / 1.0 / 1.0 |
+| `new_format|OU25_OVER|Sweden Allsvenskan` | ACTIVE_LOW | 0.005 | 2.5 | 1.0 / 1.0 / 1.0 |
+| `standard|BTTS|La Liga 2` | ACTIVE_LOW | 0.005 | 2.5 | 1.0 / 1.0 / 1.0 |
+| `standard|BTTS|Serie B` | ACTIVE_LOW | 0.005 | 2.5 | 1.0 / 1.0 / 1.0 |
+| `standard|OU25_OVER|Serie B` | ACTIVE_LOW | 0.005 | HARD ceiling 2.75 | 1.0 / 1.0 / 1.0 |
+| `standard|OU25_UNDER|Scottish League Two` | ACTIVE_LOW | 0.005 | 2.5 | 1.0 / 1.0 / 1.0 |
+
+Tier multipliers per cell (a decision for you): the 9 PROMISING cells stake every tier flat (1.0), the way their evidence was measured (flat stakes on every tip at or above VALUABLE). Argentina BTTS keeps SNIPER 1.1 / MARKSMAN 0.9 as today **plus VALUABLE 1.0**: its cell is LEAGUE_WIDE and every league-wide tip is served as VALUABLE, so without it the protected track would stop staking. Scottish League Two is not a tracked registry league (the registry shows 8 ACTIVE_LOW cells), but its cell stakes like the others.
+
+**Stake replay, 2026-10-16..2026-11-14** (`scripts/stake_cells_replay.py`, notional bankroll 1, P/L on settled stakes; `output/threshold_proposals/bars_opt_serving/2026-11_stake_replay.json`):
+
+| View | Selections | Staked | Total fraction | Settled staked | P/L (bankroll units) | ROI on staked |
+|---|---|---|---|---|---|---|
+| A: same live selections, CURRENT per-track policy | 731 | 47 | 0.2983 | 41 | -0.03641 | -13.0% |
+| A: same live selections, NEW per-cell policy | 731 | 93 | 0.5725 | 86 | -0.13207 | -24.3% |
+| B: tips the proposed cells produce, NEW per-cell policy | 106 | 91 | 0.53 | 69 | 0.00013 | +0.0% |
+
+View A isolates the staking change on the tips the OLD bars produced (pre-retrain engines); view B sizes what the new cells would have tipped. Both are short samples on old-model probabilities: they show what gets staked, not future profit. Staked cells in B: `new_format|BTTS|Argentina Primera Division` 39; `new_format|BTTS|Brazil Serie A` 9; `new_format|BTTS|Norway Eliteserien` 1; `new_format|OU25_OVER|Brazil Serie A` 2; `standard|BTTS|La Liga 2` 37; `standard|BTTS|Serie B` 1; `standard|OU25_OVER|Serie B` 2.
 
 ## Cell counts
 

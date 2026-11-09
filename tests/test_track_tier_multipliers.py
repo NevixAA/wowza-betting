@@ -1,5 +1,6 @@
 """Per-track tier multipliers (owner 2026-10-22): OU25 tiers staked equally, other tracks keep the ladder."""
 import pandas as pd
+import pytest
 
 from src.bankroll_policy import load_policy, size_day
 
@@ -43,3 +44,12 @@ def test_no_override_means_global_ladder():
     pol = {**pol, "track_tier_multipliers": {}}
     out = size_day(_sel("OU25", ["SNIPER", "VALUABLE"]), pol, bankroll=100.0, peak=100.0)
     assert dict(zip(out["signal_tier"], out["tier_multiplier"]))["VALUABLE"] == 0.0
+
+
+@pytest.fixture(autouse=True)
+def _per_track_policy(monkeypatch):
+    """These tests pin the TRACK mechanics: per-track staking (tests/policy_helpers). The live per-cell
+    staking (owner 2026-11-09) is pinned in tests/test_cell_staking.py."""
+    import sys
+    from tests.policy_helpers import install_per_track
+    install_per_track(monkeypatch, sys.modules[__name__])

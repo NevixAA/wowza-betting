@@ -1,5 +1,5 @@
 {
-  "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04",
+  "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
   "name": "WOWZA BALANCED",
   "status": "WIRED_PAPER",
   "note": "Read by src/bankroll_policy.py. WIRED since 2026-10-14: pipeline.py sizes every tip through src/stake_plan.py into output/stake_plan.csv. PAPER: no bet is placed (Cloudbet PAPER_ONLY). Staking is downstream of prediction: this file never decides whether a tip exists. Updated only by a reviewed PR from the monthly Pro bankroll review.",
@@ -134,5 +134,142 @@
     }
   },
   "track_tier_multipliers_note": "Owner decision 2026-10-22: on OU25 the edge does not rank outcomes (since Aug 26, flat 1u: SNIPER -9.9% n125, MARKSMAN -5.8% n294, VALUABLE -0.8% n366; Spearman edge vs P/L ~0 on both tracks, Pro WOWZA_EDGE_REASSESSMENT_2026_10), so every OU25 tier is staked the same and VALUABLE is staked. Other tracks keep tier_multipliers. Pro's monthly review derives this per track from evidence.",
-  "track_side_split_note": "Owner decision 2026-10-26: O/U 2.5 is staked and reviewed per SIDE. The tracks new_format|OU25 and standard|OU25 were replaced by new_format|OU25_OVER, new_format|OU25_UNDER, standard|OU25_OVER and standard|OU25_UNDER, each starting with EXACTLY its parent's settings (state, base_fraction, odds caps, evidence_score, track_tier_multipliers), so every stake on the day of the split is identical. Key = src/bankroll_policy.track_key(model_type, market, side); an O/U 2.5 tip with no valid side gets no stake. From the 2026-11-01 review Pro evaluates each side as its own track under the unchanged rules (reductions-only until the allocator is walk-forward validated). Evidence at the split (settled live from 2026-08-10, flat 1u): NF OVER n147 ROI +4.0% [-15.6,+25.1]; NF UNDER n402 -0.4% [-13.5,+11.9]; STD OVER n197 -12.4%; STD UNDER n197 -14.8% - not significant, so no stake change."
+  "track_side_split_note": "Owner decision 2026-10-26: O/U 2.5 is staked and reviewed per SIDE. The tracks new_format|OU25 and standard|OU25 were replaced by new_format|OU25_OVER, new_format|OU25_UNDER, standard|OU25_OVER and standard|OU25_UNDER, each starting with EXACTLY its parent's settings (state, base_fraction, odds caps, evidence_score, track_tier_multipliers), so every stake on the day of the split is identical. Key = src/bankroll_policy.track_key(model_type, market, side); an O/U 2.5 tip with no valid side gets no stake. From the 2026-11-01 review Pro evaluates each side as its own track under the unchanged rules (reductions-only until the allocator is walk-forward validated). Evidence at the split (settled live from 2026-08-10, flat 1u): NF OVER n147 ROI +4.0% [-15.6,+25.1]; NF UNDER n402 -0.4% [-13.5,+11.9]; STD OVER n197 -12.4%; STD UNDER n197 -14.8% - not significant, so no stake change.",
+  "cell_staking": {
+    "enabled": true,
+    "rule": "Owner 2026-11-09 'Paper + PROMISING small': staking is per CELL (league x market x side, key '<track>|<league>', src/bankroll_policy.cell_key). Only a cell listed here stakes; every other cell is PAPER (shown and recorded, stake 0, reason NO_REAL_STAKE_PAPER_NO_CELL_ENTRY) - never inherited from its track. Portfolio caps, drawdown throttle, paper_leagues and the direction rule are unchanged. Cloudbet stays PAPER_ONLY: the stake plan sizes and records, no bet is placed. TOP-3 picks follow their cell's state (no extra stake).",
+    "decided": "2026-11-09",
+    "previous_state": "per-track staking (tracks{} below), unchanged and still read when enabled is false",
+    "cells": {
+      "new_format|BTTS|Argentina Primera Division": {
+        "state": "ACTIVE",
+        "base_fraction": 0.0125,
+        "max_odds": 2.6,
+        "evidence_score": 3.0,
+        "source": "PROTECTED real-money track, kept exactly as the new_format|BTTS track stakes it today (owner 2026-11-09); its bars_opt cell is LEAGUE_WIDE up to odds 2.50, UNPROVEN, 350 selection bets +5.4%",
+        "tier_multipliers": {
+          "SNIPER": 1.1,
+          "MARKSMAN": 0.9,
+          "VALUABLE": 1.0
+        },
+        "tier_multipliers_note": "SNIPER / MARKSMAN as the track stakes them today; its bars_opt cell is LEAGUE_WIDE, whose tips are served as VALUABLE (bar_mode LEAGUE_WIDE), so VALUABLE stakes the unchanged base 0.0125 - without it the protected track would stop staking"
+      },
+      "standard|OU25_OVER|Serie B": {
+        "state": "ACTIVE_LOW",
+        "base_fraction": 0.005,
+        "source": "PROMISING bars_opt cell (proposal TP-2026-11-09-c2414fcf, study FINAL 2026-09-01..11-08); owner 2026-11-09 'Paper + PROMISING small': the policy's ACTIVE_LOW level",
+        "max_odds_source": "the cell has no odds range: the reader's HARD max_odds ceiling applies",
+        "tier_multipliers": {
+          "SNIPER": 1.0,
+          "MARKSMAN": 1.0,
+          "VALUABLE": 1.0
+        },
+        "tier_multipliers_note": "flat at every tier: the cell's PROMISING evidence (study FINAL) is flat stakes on every tip at or above its VALUABLE bar"
+      },
+      "standard|OU25_UNDER|Scottish League Two": {
+        "state": "ACTIVE_LOW",
+        "base_fraction": 0.005,
+        "source": "PROMISING bars_opt cell (proposal TP-2026-11-09-c2414fcf, study FINAL 2026-09-01..11-08); owner 2026-11-09 'Paper + PROMISING small': the policy's ACTIVE_LOW level",
+        "max_odds": 2.5,
+        "max_odds_source": "the cell's own odds_max",
+        "tier_multipliers": {
+          "SNIPER": 1.0,
+          "MARKSMAN": 1.0,
+          "VALUABLE": 1.0
+        },
+        "tier_multipliers_note": "flat at every tier: the cell's PROMISING evidence (study FINAL) is flat stakes on every tip at or above its VALUABLE bar"
+      },
+      "standard|BTTS|La Liga 2": {
+        "state": "ACTIVE_LOW",
+        "base_fraction": 0.005,
+        "source": "PROMISING bars_opt cell (proposal TP-2026-11-09-c2414fcf, study FINAL 2026-09-01..11-08); owner 2026-11-09 'Paper + PROMISING small': the policy's ACTIVE_LOW level",
+        "max_odds": 2.5,
+        "max_odds_source": "the cell's own odds_max",
+        "tier_multipliers": {
+          "SNIPER": 1.0,
+          "MARKSMAN": 1.0,
+          "VALUABLE": 1.0
+        },
+        "tier_multipliers_note": "flat at every tier: the cell's PROMISING evidence (study FINAL) is flat stakes on every tip at or above its VALUABLE bar"
+      },
+      "standard|BTTS|Serie B": {
+        "state": "ACTIVE_LOW",
+        "base_fraction": 0.005,
+        "source": "PROMISING bars_opt cell (proposal TP-2026-11-09-c2414fcf, study FINAL 2026-09-01..11-08); owner 2026-11-09 'Paper + PROMISING small': the policy's ACTIVE_LOW level",
+        "max_odds": 2.5,
+        "max_odds_source": "the cell's own odds_max",
+        "tier_multipliers": {
+          "SNIPER": 1.0,
+          "MARKSMAN": 1.0,
+          "VALUABLE": 1.0
+        },
+        "tier_multipliers_note": "flat at every tier: the cell's PROMISING evidence (study FINAL) is flat stakes on every tip at or above its VALUABLE bar"
+      },
+      "new_format|OU25_OVER|Brazil Serie A": {
+        "state": "ACTIVE_LOW",
+        "base_fraction": 0.005,
+        "source": "PROMISING bars_opt cell (proposal TP-2026-11-09-c2414fcf, study FINAL 2026-09-01..11-08); owner 2026-11-09 'Paper + PROMISING small': the policy's ACTIVE_LOW level",
+        "max_odds": 2.5,
+        "max_odds_source": "the cell's own odds_max",
+        "tier_multipliers": {
+          "SNIPER": 1.0,
+          "MARKSMAN": 1.0,
+          "VALUABLE": 1.0
+        },
+        "tier_multipliers_note": "flat at every tier: the cell's PROMISING evidence (study FINAL) is flat stakes on every tip at or above its VALUABLE bar"
+      },
+      "new_format|OU25_OVER|Sweden Allsvenskan": {
+        "state": "ACTIVE_LOW",
+        "base_fraction": 0.005,
+        "source": "PROMISING bars_opt cell (proposal TP-2026-11-09-c2414fcf, study FINAL 2026-09-01..11-08); owner 2026-11-09 'Paper + PROMISING small': the policy's ACTIVE_LOW level",
+        "max_odds": 2.5,
+        "max_odds_source": "the cell's own odds_max",
+        "tier_multipliers": {
+          "SNIPER": 1.0,
+          "MARKSMAN": 1.0,
+          "VALUABLE": 1.0
+        },
+        "tier_multipliers_note": "flat at every tier: the cell's PROMISING evidence (study FINAL) is flat stakes on every tip at or above its VALUABLE bar"
+      },
+      "new_format|BTTS|Brazil Serie A": {
+        "state": "ACTIVE_LOW",
+        "base_fraction": 0.005,
+        "source": "PROMISING bars_opt cell (proposal TP-2026-11-09-c2414fcf, study FINAL 2026-09-01..11-08); owner 2026-11-09 'Paper + PROMISING small': the policy's ACTIVE_LOW level",
+        "max_odds": 2.5,
+        "max_odds_source": "the cell's own odds_max",
+        "tier_multipliers": {
+          "SNIPER": 1.0,
+          "MARKSMAN": 1.0,
+          "VALUABLE": 1.0
+        },
+        "tier_multipliers_note": "flat at every tier: the cell's PROMISING evidence (study FINAL) is flat stakes on every tip at or above its VALUABLE bar"
+      },
+      "new_format|BTTS|Ireland Premier Division": {
+        "state": "ACTIVE_LOW",
+        "base_fraction": 0.005,
+        "source": "PROMISING bars_opt cell (proposal TP-2026-11-09-c2414fcf, study FINAL 2026-09-01..11-08); owner 2026-11-09 'Paper + PROMISING small': the policy's ACTIVE_LOW level",
+        "max_odds": 2.5,
+        "max_odds_source": "the cell's own odds_max",
+        "tier_multipliers": {
+          "SNIPER": 1.0,
+          "MARKSMAN": 1.0,
+          "VALUABLE": 1.0
+        },
+        "tier_multipliers_note": "flat at every tier: the cell's PROMISING evidence (study FINAL) is flat stakes on every tip at or above its VALUABLE bar"
+      },
+      "new_format|BTTS|Norway Eliteserien": {
+        "state": "ACTIVE_LOW",
+        "base_fraction": 0.005,
+        "source": "PROMISING bars_opt cell (proposal TP-2026-11-09-c2414fcf, study FINAL 2026-09-01..11-08); owner 2026-11-09 'Paper + PROMISING small': the policy's ACTIVE_LOW level",
+        "max_odds": 2.5,
+        "max_odds_source": "the cell's own odds_max",
+        "tier_multipliers": {
+          "SNIPER": 1.0,
+          "MARKSMAN": 1.0,
+          "VALUABLE": 1.0
+        },
+        "tier_multipliers_note": "flat at every tier: the cell's PROMISING evidence (study FINAL) is flat stakes on every tip at or above its VALUABLE bar"
+      }
+    }
+  }
 }

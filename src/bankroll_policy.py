@@ -91,6 +91,40 @@ def track_key(model_type, market, side=None) -> str:
     return f"{mt}|{mk}_{s if s in sides else UNKNOWN_SIDE}"
 
 
+#: deployment state of a cell with no staking entry while per-cell staking is on: shown and recorded, never
+#: staked (owner 2026-11-09 "Paper + PROMISING small"); its reason says why (no entry, not a track state)
+CELL_PAPER = {"state": "PAPER", "base_fraction": 0.0, "_no_cell_entry": True}
+NO_CELL_ENTRY_REASON = "NO_REAL_STAKE_PAPER_NO_CELL_ENTRY"
+#: track states that mean "never staked" (a market switched off); kept for the cells of such a track
+BLOCKED_TRACK_STATES = ("BLOCKED", "BLOCKED_FROM_REAL")
+
+
+def cell_key(track: str, league) -> str:
+    """The per-cell staking key: `<track key>|<league>` (new_format|BTTS|Argentina Primera Division,
+    standard|OU25_UNDER|Scottish League Two). A cell = league x market x side, the unit the bars_opt cells
+    are chosen and approved in."""
+    return f"{track}|{league}"
+
+
+def cell_staking_on(policy: dict) -> bool:
+    return bool((policy.get("cell_staking") or {}).get("enabled") is True)
+
+
+def stake_entry(policy: dict, track: str, league) -> dict:
+    """The staking settings of one tip. With per-cell staking ON (policy.cell_staking.enabled, owner
+    2026-11-09) ONLY the cell's own entry stakes; a cell without one is PAPER (never inherited from its
+    track). OFF: the track entry, as before (a track the policy does not define is UNSUPPORTED)."""
+    if cell_staking_on(policy):
+        own = (policy["cell_staking"].get("cells") or {}).get(cell_key(track, league))
+        if own:
+            return own
+        # a BLOCKED track stays blocked for its cells (a block can never create a stake); everything else
+        # without its own cell entry is PAPER
+        ts = (policy["tracks"].get(track) or {}).get("state")
+        return dict(CELL_PAPER, state=ts) if ts in BLOCKED_TRACK_STATES else CELL_PAPER
+    return policy["tracks"].get(track, {"state": "UNSUPPORTED", "base_fraction": 0.0})
+
+
 def split_track(track) -> tuple[str, str, str | None]:
     """Inverse of track_key: 'new_format|OU25_OVER' -> ('new_format', 'OU25', 'OVER');
     'new_format|BTTS' -> ('new_format', 'BTTS', None); 'player_props' -> ('player_props', '', None)."""
@@ -204,7 +238,7 @@ def size_day(selections: pd.DataFrame, policy: dict, bankroll: float, peak: floa
              else pd.Series(True, index=d.index, dtype=object))
     out = []
     for i, r in enumerate(d.itertuples(index=False)):
-        t = policy["tracks"].get(r.track, {"state": "UNSUPPORTED", "base_fraction": 0.0})
+        t = stake_entry(policy, r.track, r.league)
         # no recorded base fraction stakes nothing (fail closed; it was a typed .get(..., 0.0))
         base = min(float(t["base_fraction"]), HARD["base_fraction"]) if positive_fraction(t) else 0.0
         state = t.get("state", "UNSUPPORTED")
@@ -212,7 +246,8 @@ def size_day(selections: pd.DataFrame, policy: dict, bankroll: float, peak: floa
         # PER-TRACK TIER MULTIPLIERS (owner 2026-10-22): a track whose edge does not rank outcomes
         # (OU25: SNIPER -9.9% < MARKSMAN -5.8% < VALUABLE -0.8% since Aug 26) stakes every tier the
         # same instead of paying most on the biggest raw edge. Absent override -> the global ladder.
-        tt = (policy.get("track_tier_multipliers") or {}).get(r.track)
+        # a CELL entry's own tier multipliers first (per-cell staking, owner 2026-11-09), then the track's
+        tt = t.get("tier_multipliers") if isinstance(t.get("tier_multipliers"), dict) else             (policy.get("track_tier_multipliers") or {}).get(r.track)
         tm = float((tt if tt is not None else tiers).get(str(r.signal_tier), 0.0))
         lm = conv_mult if r.league in conv_leagues else 1.0
         reason = "OK"
@@ -220,6 +255,8 @@ def size_day(selections: pd.DataFrame, policy: dict, bankroll: float, peak: floa
             reason = "NO_REAL_STAKE_UNKNOWN_SIDE"           # side-split market without a usable side
         elif has_side and not side_valid(r.market, side_in.iloc[i]):
             reason = "NO_REAL_STAKE_INVALID_SIDE"           # e.g. BTTS "YES/OVER" / blank (2026-11-03)
+        elif t.get("_no_cell_entry") and state not in BLOCKED_TRACK_STATES:
+            reason = NO_CELL_ENTRY_REASON                   # per-cell staking: this cell has no entry
         elif state not in REAL_STATES or base <= 0:
             reason = f"NO_REAL_STAKE_{state}"
         elif r.league in paper:

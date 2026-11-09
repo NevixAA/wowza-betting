@@ -43,7 +43,11 @@ DAY = (pd.Timestamp.now(tz="UTC") + pd.Timedelta(days=2)).strftime("%Y-%m-%d")
 
 
 def _policy() -> dict:
-    return json.loads((ROOT / "config" / "bankroll_policy.json").read_text(encoding="utf-8"))
+    """The committed policy with PER-TRACK staking: these tests flip the NF Under TRACK and pin its
+    mechanics; the live per-cell staking (owner 2026-11-09) is pinned in tests/test_cell_staking.py."""
+    p = json.loads((ROOT / "config" / "bankroll_policy.json").read_text(encoding="utf-8"))
+    p.setdefault("cell_staking", {})["enabled"] = False
+    return p
 
 
 def _board(day: str = DAY) -> pd.DataFrame:
@@ -250,3 +254,12 @@ def test_ledger_still_records_nf_under_tips(tmp_path, monkeypatch):
     u = d[(d["side"] == "UNDER") & (d["model_type"] == "new_format")]
     assert len(u) == 1 and u["signal_tier"].iloc[0] in ("SNIPER", "MARKSMAN")
     assert float(u["odds"].iloc[0]) == 2.20 and pd.notna(u["edge_pct"].iloc[0])
+
+
+@pytest.fixture(autouse=True)
+def _per_track_policy(monkeypatch):
+    """These tests pin the TRACK mechanics: per-track staking (tests/policy_helpers). The live per-cell
+    staking (owner 2026-11-09) is pinned in tests/test_cell_staking.py."""
+    import sys
+    from tests.policy_helpers import install_per_track
+    install_per_track(monkeypatch, sys.modules[__name__])

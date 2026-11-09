@@ -195,3 +195,12 @@ def test_the_daily_exposure_cap_stops_the_run(monkeypatch, ledger):
                staking=StakingRules(fraction=0.045, max_fraction_per_day=0.10))
     assert 0 < len(out) <= 3
     assert pd.to_numeric(out["stake"]).sum() <= 2000 * 0.10 + 1e-6
+
+
+@pytest.fixture(autouse=True)
+def _per_track_policy(monkeypatch):
+    """These tests pin the bot's mechanics on a REAL track: per-track staking (tests/policy_helpers). The live
+    per-cell staking (owner 2026-11-09) is pinned in tests/test_cell_staking.py."""
+    import sys
+    from tests.policy_helpers import install_per_track
+    install_per_track(monkeypatch, sys.modules[__name__])

@@ -1,0 +1,162 @@
+{
+ "window": [
+  "2026-10-16",
+  "2026-11-14"
+ ],
+ "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
+ "A_same_selections": {
+  "current_per_track": {
+   "selections": 731,
+   "staked": 47,
+   "total_fraction": 0.2983,
+   "settled_staked": 41,
+   "pnl_units_of_bankroll": -0.03641,
+   "roi_on_staked": -0.1297,
+   "reasons": {
+    "NO_REAL_STAKE_PAPER": 461,
+    "NO_REAL_STAKE_INVALID_SIDE": 107,
+    "TIER_NOT_STAKED": 70,
+    "OK": 47,
+    "NO_REAL_STAKE_BLOCKED": 27,
+    "ODDS_ABOVE_TRACK_CAP": 14,
+    "ODDS_BELOW_TRACK_FLOOR": 3,
+    "PAPER_LEAGUE": 2
+   },
+   "staked_by_cell": {
+    "new_format|BTTS|Argentina Primera Division": {
+     "stakes": 16,
+     "total_fraction": 0.1484
+    },
+    "new_format|BTTS|Brazil Serie A": {
+     "stakes": 1,
+     "total_fraction": 0.0138
+    },
+    "new_format|BTTS|Japan J-League": {
+     "stakes": 1,
+     "total_fraction": 0.0138
+    },
+    "new_format|OU25_OVER|Argentina Primera Division": {
+     "stakes": 4,
+     "total_fraction": 0.0091
+    },
+    "new_format|OU25_OVER|Austrian Bundesliga": {
+     "stakes": 2,
+     "total_fraction": 0.01
+    },
+    "new_format|OU25_OVER|Brazil Serie A": {
+     "stakes": 5,
+     "total_fraction": 0.025
+    },
+    "new_format|OU25_OVER|Japan J-League": {
+     "stakes": 7,
+     "total_fraction": 0.035
+    },
+    "new_format|OVER15|Argentina Primera Division": {
+     "stakes": 10,
+     "total_fraction": 0.0377
+    },
+    "new_format|OVER15|Japan J-League": {
+     "stakes": 1,
+     "total_fraction": 0.0055
+    }
+   }
+  },
+  "new_per_cell": {
+   "selections": 731,
+   "staked": 93,
+   "total_fraction": 0.5725,
+   "settled_staked": 86,
+   "pnl_units_of_bankroll": -0.13207,
+   "roi_on_staked": -0.2429,
+   "reasons": {
+    "NO_REAL_STAKE_PAPER_NO_CELL_ENTRY": 503,
+    "NO_REAL_STAKE_INVALID_SIDE": 107,
+    "OK": 93,
+    "NO_REAL_STAKE_BLOCKED": 27,
+    "ODDS_ABOVE_TRACK_CAP": 1
+   },
+   "staked_by_cell": {
+    "new_format|BTTS|Argentina Primera Division": {
+     "stakes": 39,
+     "total_fraction": 0.3025
+    },
+    "new_format|BTTS|Brazil Serie A": {
+     "stakes": 10,
+     "total_fraction": 0.05
+    },
+    "new_format|BTTS|Ireland Premier Division": {
+     "stakes": 1,
+     "total_fraction": 0.005
+    },
+    "new_format|BTTS|Norway Eliteserien": {
+     "stakes": 3,
+     "total_fraction": 0.015
+    },
+    "new_format|OU25_OVER|Brazil Serie A": {
+     "stakes": 5,
+     "total_fraction": 0.025
+    },
+    "standard|BTTS|La Liga 2": {
+     "stakes": 8,
+     "total_fraction": 0.04
+    },
+    "standard|BTTS|Serie B": {
+     "stakes": 9,
+     "total_fraction": 0.045
+    },
+    "standard|OU25_OVER|Serie B": {
+     "stakes": 18,
+     "total_fraction": 0.09
+    }
+   }
+  },
+  "as_recorded_live": {
+   "staked": 143,
+   "total_fraction": 0.6508
+  }
+ },
+ "B_cell_tips": {
+  "new_per_cell": {
+   "selections": 106,
+   "staked": 91,
+   "total_fraction": 0.53,
+   "settled_staked": 69,
+   "pnl_units_of_bankroll": 0.00013,
+   "roi_on_staked": 0.0003,
+   "reasons": {
+    "OK": 91,
+    "NO_REAL_STAKE_PAPER_NO_CELL_ENTRY": 15
+   },
+   "staked_by_cell": {
+    "new_format|BTTS|Argentina Primera Division": {
+     "stakes": 39,
+     "total_fraction": 0.27
+    },
+    "new_format|BTTS|Brazil Serie A": {
+     "stakes": 9,
+     "total_fraction": 0.045
+    },
+    "new_format|BTTS|Norway Eliteserien": {
+     "stakes": 1,
+     "total_fraction": 0.005
+    },
+    "new_format|OU25_OVER|Brazil Serie A": {
+     "stakes": 2,
+     "total_fraction": 0.01
+    },
+    "standard|BTTS|La Liga 2": {
+     "stakes": 37,
+     "total_fraction": 0.185
+    },
+    "standard|BTTS|Serie B": {
+     "stakes": 1,
+     "total_fraction": 0.005
+    },
+    "standard|OU25_OVER|Serie B": {
+     "stakes": 2,
+     "total_fraction": 0.01
+    }
+   }
+  }
+ }
+}

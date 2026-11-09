@@ -139,6 +139,12 @@ def run(proposal_path: Path, cand_path: Path, results_path: Path, days: int, gws
             "window_by_league_market": table(win),
             "board_rows": int(len(board)), "board_tips": int((board["tier"] != "").sum()),
             "board_by_league_market": table(board) if len(board) else [],
+            # stake-plan shaped tipped rows (scripts/stake_cells_replay.py sizes them per cell)
+            "tipped_rows": tipped.assign(
+                date=tipped["date"].dt.strftime("%Y-%m-%d"),
+                fixture=tipped["date"].dt.strftime("%Y-%m-%d") + "|" + tipped["home_team"] + "|" + tipped["away_team"],
+                side=tipped["panel_side"], signal_tier=tipped["tier"], odds=tipped["odds_side"].astype(float))[
+                ["date", "fixture", "league", "model_type", "market", "side", "signal_tier", "odds"]].to_dict("records"),
             "top3_last_gws": top3}
 
 

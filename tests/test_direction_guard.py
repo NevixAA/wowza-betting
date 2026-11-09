@@ -55,7 +55,7 @@ def _tracks(monkeypatch):
     """Pin the guard's real-money view (the live policy changes); each test sets REAL itself."""
     REAL.clear()
     monkeypatch.setattr(DG, "real_track_checker",
-                        lambda: (lambda mt, m, s: (str(m).lower(), str(s).upper()) in REAL))
+                        lambda: (lambda mt, m, s, lg=None: (str(m).lower(), str(s).upper()) in REAL))
 
 
 @pytest.fixture
@@ -194,13 +194,17 @@ def test_paper_tip_never_blocks_real_one_regardless_of_order_in_the_run(out):
 
 
 def test_policy_view_of_the_live_policy():
-    """The real checker reads config/bankroll_policy.json: new-format BTTS is real, Under paper."""
+    """The real checker reads config/bankroll_policy.json. Per-cell staking (owner 2026-11-09): the PROTECTED
+    Argentina BTTS YES cell is real; another New-Format BTTS league with no cell entry is paper (never
+    inherited from the track), and so is a tip without a league."""
     from importlib import reload
     import src.direction_guard as fresh
     chk = reload(fresh).real_track_checker()
-    assert chk("new_format", "btts", "YES") is True
-    assert chk("new_format", "ou25", "UNDER") is False
-    assert chk("", "btts", "YES") is False
+    assert chk("new_format", "btts", "YES", "Argentina Primera Division") is True
+    assert chk("new_format", "btts", "YES", "Japan J-League") is False
+    assert chk("new_format", "btts", "YES") is False
+    assert chk("new_format", "ou25", "UNDER", "Argentina Primera Division") is False
+    assert chk("", "btts", "YES", "Argentina Primera Division") is False
 
 
 def test_other_fixtures_are_untouched(out):

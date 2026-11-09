@@ -90,3 +90,12 @@ def test_threshold_evidence_comes_from_the_real_gates(monkeypatch):
     s = sp.selections(b, None).set_index("league")
     assert bool(s.loc["Championship", "league_threshold_evidence"]) is True
     assert bool(s.loc["Brazil Serie A", "league_threshold_evidence"]) is False
+
+
+@pytest.fixture(autouse=True)
+def _per_track_policy(monkeypatch):
+    """These tests pin the TRACK mechanics: per-track staking (tests/policy_helpers). The live per-cell
+    staking (owner 2026-11-09) is pinned in tests/test_cell_staking.py."""
+    import sys
+    from tests.policy_helpers import install_per_track
+    install_per_track(monkeypatch, sys.modules[__name__])

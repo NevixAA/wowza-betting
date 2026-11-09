@@ -77,7 +77,9 @@ def test_production_state_is_what_production_applies():
     sel = []
     for i, e in enumerate(REG["entries"]):
         if e["model_type"] == "standard" and e["market"] == "OU25":
-            assert e["production_state"] == "PAPER"
+            # per-cell staking (owner 2026-11-09): PAPER unless the cell has its own staking entry
+            staked = f"{e['track']}|{e['league']}" in policy["cell_staking"]["cells"]
+            assert e["production_state"] == ("ACTIVE_LOW" if staked else "PAPER"), e["key"]
         if e["market"] == "OVER35":
             assert e["production_state"] in ("BLOCKED", "PAPER_LEAGUE")
         if config.is_paper_league(e["league"]):
