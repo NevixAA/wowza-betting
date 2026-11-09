@@ -136,7 +136,12 @@ def market_leaderboards(markets=("goals", "goals2", "assists", "sot2", "cards"),
     if pl.empty:
         return {}
     out = {}
+    from player_model import config as _pc
     for mkt in markets:
+        if mkt in _pc.HIDDEN_PENDING_CLEAN_RETRAIN:
+            # owner 2026-11-08/09: a placeholder-trained model shows nowhere, Fantasy included
+            log.info("market_leaderboards: %s hidden (%s)", mkt, _pc.SKIP_HIDDEN_MARKET)
+            continue
         from player_model.model import load_model, predict_proba
         payload = load_model(mkt)
         if payload is None:

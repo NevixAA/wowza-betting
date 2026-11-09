@@ -440,11 +440,11 @@ def test_serving_reads_the_collected_data(collect_dir):
         collect_dir / "sidelined_players.parquet", index=False)
     pd.DataFrame(columns=["player_id", "type", "start", "end"]).to_parquet(
         collect_dir / "sidelined_spells.parquet", index=False)
-    FE._SERVE_CACHE.clear()
-    hist = FE.build_features(_rows())
-    up = [{"player_id": 1, "team": "Arsenal", "opponent": "Chelsea", "is_home": 1, "position": "F",
-           "fixture_league": "Premier League", "fixture_date": "2025-10-01"}]
-    out = FE.build_upcoming_features(up, hist, {}, {}, FE._build_history_index(hist))
+    FE._LINEUP_CACHE.clear()
+    hist = pd.DataFrame(_rows())                       # the raw history serving reads
+    up = [{"player_id": 1, "fixture_id": 999001, "team": "Arsenal", "home_team": "Arsenal",
+           "away_team": "Chelsea", "is_home": 1, "league": "Premier League", "date": "2025-10-01"}]
+    out = FE.build_upcoming_features(up, hist)
     r = out.iloc[0]
     assert r["height_cm"] == 191.0 and r["age"] == pytest.approx(
         (pd.Timestamp("2025-10-01") - pd.Timestamp("2000-08-01")).days / 365.25)

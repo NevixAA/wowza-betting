@@ -109,7 +109,7 @@ def world(tmp_path, monkeypatch):
             pass
         lookup._LOADED.clear()
         FE._COLLECTED.clear()
-        FE._SERVE_CACHE.clear()
+        FE._LINEUP_CACHE.clear()
     _clear()
     yield rows, fx, cup_day
     _clear()
@@ -127,11 +127,11 @@ def _chelsea_conceded(fx, before):
 
 def test_serving_cup_opponent_reads_its_league_matches(world):
     rows, fx, cup_day = world
-    hist = FE.build_features(rows)
-    up = [{"player_id": IDS["Arsenal"] * 100 + 3, "team": "Arsenal", "opponent": "Chelsea", "is_home": 1,
-           "position": "F", "fixture_league": "Champions League",
-           "fixture_date": str((cup_day + pd.Timedelta(days=30)).date())}]
-    out = FE.build_upcoming_features(up, hist, {}, {}, FE._build_history_index(hist))
+    hist = pd.DataFrame(rows)                           # the raw history serving reads
+    up = [{"player_id": IDS["Arsenal"] * 100 + 3, "fixture_id": 990001, "team": "Arsenal",
+           "home_team": "Arsenal", "away_team": "Chelsea", "is_home": 1, "league": "Champions League",
+           "date": str((cup_day + pd.Timedelta(days=30)).date())}]
+    out = FE.build_upcoming_features(up, hist)
     got = out["opp_goals_conceded_pg"].iloc[0]
     # Before the fix: the cup is its own scope with no Chelsea rows -> NaN.
     assert got == pytest.approx(_chelsea_conceded(fx, cup_day + pd.Timedelta(days=30)))
@@ -182,10 +182,8 @@ def test_unmeasured_fixtures_are_skipped_not_counted():
     assert got.iloc[:3].isna().all()                         # fewer than 2 measured before
     assert got.iloc[3] == pytest.approx(1.5) and got.iloc[4] == pytest.approx(1.5)
     assert got.iloc[5:].isna().all()                         # per team
-    rows = t[t["_tkey"] == "af:1"].assign(**{c: np.nan for c in FE._TEAM_ROLL if c != "sot_conceded"})
-    # serving: last n=MIN_OPP_MATCHES measured fixtures (1, 2, 3), the two score-only ties skipped
-    assert C.MIN_OPP_MATCHES == 3
-    assert FE._team_now(rows, 3)["opp_sot_conceded_pg"] == pytest.approx(2.0)
+    # serving computes the same rolling: build_upcoming_features runs build_features itself
+    # (tests/test_props_train_serve_parity_2026_11_09.py proves the serving rows equal training's)
 
 
 # ── (c) league strength of a cup fixture: measured ─────────────────────────────────────────────
@@ -244,11 +242,10 @@ def test_serving_rest_days_and_form_include_cup_appearances(world):
     assert len(served) == len(hist) + len(cups)
     pid = IDS["Arsenal"] * 100 + 3
     fday = cup_day + pd.Timedelta(days=3)
-    up = [{"player_id": pid, "team": "Arsenal", "opponent": "Chelsea", "is_home": 1, "position": "F",
-           "fixture_league": "Premier League", "fixture_date": str(fday.date())}]
-    before = FE.build_upcoming_features(up, hist, {}, {}, FE._build_history_index(hist)).iloc[0]
-    FE._SERVE_CACHE.clear()
-    after = FE.build_upcoming_features(up, served, {}, {}, FE._build_history_index(served)).iloc[0]
+    up = [{"player_id": pid, "fixture_id": 990002, "team": "Arsenal", "home_team": "Arsenal",
+           "away_team": "Chelsea", "is_home": 1, "league": "Premier League", "date": str(fday.date())}]
+    before = FE.build_upcoming_features(up, hist).iloc[0]
+    after = FE.build_upcoming_features(up, served).iloc[0]
     assert after["rest_days"] == 3 and before["rest_days"] > 3
     assert after["goals_pg"] != before["goals_pg"]                  # the 2-goal cup game counts
     assert with_cup_rows(served, cups) is served                    # nothing twice

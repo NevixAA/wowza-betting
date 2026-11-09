@@ -286,9 +286,17 @@ def ft_plan(scores: pd.DataFrame, ft_journal: pd.DataFrame) -> list[dict]:
     return sorted(out, key=lambda x: (x["league"], x["season"]))
 
 
-def _resolve(name, candidates):
+def _resolve(name, candidates, canon=None, date=None):
+    """resolve_result, else (P7 item 1) the league-scoped alias PROVEN from same-fixture evidence
+    (config/af_history_proven_aliases.json) when `canon` and the row `date` are given."""
     from src.team_names import resolve_result
-    return resolve_result(str(name), [str(c) for c in candidates]) if candidates else None
+    if not len(candidates):
+        return None
+    if canon is None or date is None:
+        return resolve_result(str(name), [str(c) for c in candidates])
+    from prove_af_history_aliases import resolve_with_proven
+    return resolve_with_proven(str(name), [str(c) for c in candidates], canon, str(date)[:10],
+                               resolve_result)
 
 
 def claims(lacking: pd.DataFrame, scores: pd.DataFrame, stats: dict | None = None,
@@ -333,8 +341,8 @@ def claims(lacking: pd.DataFrame, scores: pd.DataFrame, stats: dict | None = Non
             if not parts:
                 continue
             pool = pd.concat(parts)
-            h = _resolve(r.home_team, pool["home_name"].unique())
-            a = _resolve(r.away_team, pool["away_name"].unique())
+            h = _resolve(r.home_team, pool["home_name"].unique(), r.canon, d.date())
+            a = _resolve(r.away_team, pool["away_name"].unique(), r.canon, d.date())
             if h is None or a is None:
                 continue
             found = pool[(pool["home_name"] == h) & (pool["away_name"] == a)]

@@ -77,11 +77,14 @@ OUT = COLLECT_DIR / "player_history_refetch.parquet"
 JOURNAL = COLLECT_DIR / "player_refetch_fixtures.parquet"
 AUDIT = COLLECT_DIR / "player_history_refetch_audit.json"
 CUP_ROWS = COLLECT_DIR / "cup_player_rows.parquet"
+#: provider-proven fixtures outside the collected lists (scripts/collect_refetch_extra_fixtures.py)
+EXTRA_FIXTURES = COLLECT_DIR / "refetch_extra_fixtures.parquet"
 
 #: the columns that are re-read and replaced: every per-player count player_history stores + rating
 VALUE_COLS = list(PSN.HISTORY_COUNT_COLS) + ["rating"]
 KEY_COLS = ["fixture_id", "player_id", "date", "home_team", "away_team", "team", "is_home"]
-COLS = (["fixture_id", "player_id", "source", "team_id", "is_home", "minutes_refetch"] + VALUE_COLS
+COLS = (["fixture_id", "player_id", "source", "team_id", "is_home", "is_home_orig", "is_home_corrected",
+         "minutes_refetch"] + VALUE_COLS
         + [f"orig_{c}" for c in VALUE_COLS] + ["filled_cols", "fetched_at"])
 J_COLS = ["fixture_id", "source", "status", "n_teams", "n_players", "n_rows", "n_refused", "fetched_at"]
 
@@ -133,11 +136,19 @@ def map_fixture_ids(rows: pd.DataFrame, fx: pd.DataFrame) -> tuple[pd.Series, in
 
 
 def plan(rows: pd.DataFrame | None = None, fx: pd.DataFrame | None = None,
-         journal: pd.DataFrame | None = None) -> dict:
+         journal: pd.DataFrame | None = None, redo_refused: bool = False) -> dict:
     """The proven fixtures still to fetch (newest first) + every refusal, counted by reason."""
     from player_model.club_rule import same_fixture_sides
     rows = source_rows() if rows is None else rows
-    fx = AL.fixture_list() if fx is None else fx
+    if fx is None:
+        fx = AL.fixture_list()
+        # P7 item 5: fixtures outside the collected lists (national teams etc.), proven by the
+        # provider's own /fixtures?ids answer (scripts/collect_refetch_extra_fixtures.py). Read HERE
+        # only, never by collect_af_lists.fixture_list (the team-id collectors must not see them).
+        extra = AL.fixture_list(EXTRA_FIXTURES) if EXTRA_FIXTURES.exists() else pd.DataFrame()
+        if len(extra):
+            fx = pd.concat([fx, extra[[c for c in fx.columns if c in extra.columns]]],
+                           ignore_index=True).drop_duplicates("fixture_id", keep="first")
     journal = read_parquet(JOURNAL) if journal is None else journal
     out = {"rows": int(len(rows)), "rows_by_source": rows["source"].value_counts().to_dict() if len(rows) else {},
            "refused_fixtures": {}, "refused_rows": {}}
@@ -191,6 +202,20 @@ def plan(rows: pd.DataFrame | None = None, fx: pd.DataFrame | None = None,
     proven = g[reason.isna()].copy()
     out["proven_fixtures"] = int(len(proven))
     done = set(pd.to_numeric(journal["fixture_id"], errors="coerce").dropna().astype(int)) if len(journal) else set()
+    if redo_refused and done:
+        # P7 item 6: re-read the journaled fixtures that still hold a source row with no stored
+        # result (refused at the time, e.g. side_unproven before the is_home proof existed)
+        st_rows = read_parquet(OUT)
+        stored = set()
+        if len(st_rows):
+            keys = pd.DataFrame({"f": pd.to_numeric(st_rows["fixture_id"], errors="coerce"),
+                                 "p": pd.to_numeric(st_rows["player_id"], errors="coerce")}).dropna()
+            stored = set(zip(keys["f"].astype(int), keys["p"].astype(int)))
+        src = rows[rows["fixture_id"].notna() & rows["player_id"].notna()]
+        unstored = {int(f) for f, p_ in zip(src["fixture_id"], src["player_id"])
+                    if (int(f), int(p_)) not in stored}
+        out["redo_refused_fixtures"] = int(len(done & unstored))
+        done = done - unstored
     proven["_done"] = [int(f) in done for f in proven.index]
     out["journaled_fixtures"] = int(proven["_done"].sum())
     todo = proven[~proven["_done"]].copy()
@@ -203,6 +228,17 @@ def plan(rows: pd.DataFrame | None = None, fx: pd.DataFrame | None = None,
     return out
 
 
+def _club_on_side(team, fxrow, home: bool) -> bool:
+    """True only when `team` (the history row's club) is proven to be the fixture-list club on the
+    given side and NOT the other one (team_names.resolve_identity over the two list names)."""
+    from src.team_names import resolve_identity
+    if team is None or (isinstance(team, float) and pd.isna(team)):
+        return False
+    h, a = str(fxrow.get("home_name")), str(fxrow.get("away_name"))
+    hit = resolve_identity(str(team), [h, a])
+    return hit == (h if home else a)
+
+
 # ── one answer ───────────────────────────────────────────────────────────────────────────────────
 
 def parse_answer(body: dict | None, fid: int, fxrow, rows: pd.DataFrame, now: str) -> tuple[list[dict], dict]:
@@ -212,7 +248,7 @@ def parse_answer(body: dict | None, fid: int, fxrow, rows: pd.DataFrame, now: st
     resp = (body or {}).get("response") or []
     j = {"fixture_id": int(fid), "source": str(rows["source"].iloc[0]) if len(rows) else None,
          "status": "ok" if resp else "empty", "n_teams": len(resp), "n_players": 0, "n_rows": 0,
-         "n_refused": 0, "fetched_at": now, "refused": {}}
+         "n_refused": 0, "is_home_corrected": 0, "fetched_at": now, "refused": {}}
     if not resp:
         j["n_refused"] = int(len(rows))
         j["refused"]["empty_answer"] = int(len(rows))
@@ -249,9 +285,22 @@ def parse_answer(body: dict | None, fid: int, fxrow, rows: pd.DataFrame, now: st
             continue
         side, tid, pe = hits[0]
         row_home = AL.int_or_none(r.is_home)
-        if side is None or row_home is None or bool(row_home) != bool(side):
+        home_corrected = False
+        if side is None or row_home is None:
             _refuse("side_unproven")
             continue
+        if bool(row_home) != bool(side):
+            # P7 item 6 (2026-11-09): the history's is_home disagrees with the provider. 3,566 such rows
+            # were measured, all of one shape: the row's own club IS the list's home club while the row
+            # says away (e.g. VfL Bochum, 1. FC Koln home matches stored as away). Accepted ONLY when
+            # the row's club resolves (team_names.resolve_identity) to the club on the provider's side
+            # and not to the other one; the provider side is stored and the original kept beside it
+            # (is_home_orig, is_home_corrected). Anything else stays refused.
+            if not _club_on_side(getattr(r, "team", None), fxrow, bool(side)):
+                _refuse("side_unproven")
+                continue
+            home_corrected = True
+            j["is_home_corrected"] += 1
         own_tid = AL.int_or_none(getattr(r, "team_id", None))
         if own_tid is not None and own_tid != tid:
             _refuse("team_id_differs")
@@ -262,7 +311,8 @@ def parse_answer(body: dict | None, fid: int, fxrow, rows: pd.DataFrame, now: st
         filled = [c for c in PSN.HISTORY_COUNT_COLS
                   if counts[c] == 0 and PSN.as_count(PSN.raw_value(st, c)) is None]
         rec = {"fixture_id": int(fid), "player_id": pid, "source": r.source, "team_id": tid,
-               "is_home": int(bool(side)), "minutes_refetch": mins,
+               "is_home": int(bool(side)), "is_home_orig": int(bool(row_home)),
+               "is_home_corrected": bool(home_corrected), "minutes_refetch": mins,
                **{c: counts[c] for c in PSN.HISTORY_COUNT_COLS}, "rating": PSN.rating_of(st),
                **{f"orig_{c}": getattr(r, c, None) for c in VALUE_COLS},
                "filled_cols": ",".join(filled), "fetched_at": now}
@@ -329,8 +379,8 @@ def _flush(buf, jbuf):
 
 
 def run(limit: int | None = None, dry_run: bool = False, client: AFClient | None = None,
-        rows: pd.DataFrame | None = None, fx: pd.DataFrame | None = None) -> dict:
-    p = plan(rows, fx)
+        rows: pd.DataFrame | None = None, fx: pd.DataFrame | None = None, redo_refused: bool = False) -> dict:
+    p = plan(rows, fx, redo_refused=redo_refused)
     pub = {k: v for k, v in p.items() if k not in ("todo", "fx", "rows_frame")}
     print(f"[playerrefetch] {json.dumps(pub, default=str)}")
     print(f"[playerrefetch] plan: exactly {p['planned_calls']:,} /fixtures/players call(s) "
@@ -379,8 +429,10 @@ def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description="re-read /fixtures/players for every player_history fixture")
     ap.add_argument("--limit", type=int, default=None, help="at most N fixture calls")
     ap.add_argument("--dry-run", action="store_true", help="print the exact planned call count; no call")
+    ap.add_argument("--redo-refused", action="store_true",
+                    help="also re-read journaled fixtures that still hold refused rows (P7 item 6)")
     a = ap.parse_args(argv)
-    run(limit=a.limit, dry_run=a.dry_run)
+    run(limit=a.limit, dry_run=a.dry_run, redo_refused=a.redo_refused)
     return 0
 
 
