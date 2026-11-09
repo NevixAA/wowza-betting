@@ -8,6 +8,7 @@
     python scripts/bars_opt.py final --universe <dir> --out <dir>      # phase 2: FINAL once, verdicts, TOP-3
     python scripts/bars_opt.py monthly-sim --universe <dir> --out <dir>  # walk-forward monthly vs static + FINAL rolling
     python scripts/bars_opt.py monthly --universe <dir> --month YYYY-MM --out <dir>   # one monthly re-selection
+    python scripts/bars_opt.py monthly-job --month YYYY-MM   # the scheduled job: proposals via src/threshold_proposals
 
 Never writes models/ or config/threshold_approvals.json.
 """
@@ -66,6 +67,15 @@ def cmd_monthly(a) -> int:
     return 0
 
 
+def cmd_monthly_job(a) -> int:
+    """The scheduled monthly re-selection: base universe + live clean-engine rows -> PROPOSALS."""
+    import tempfile
+    from src.bars_opt import live as L
+    with tempfile.TemporaryDirectory() as work:
+        print(json.dumps(L.run_month(a.month, Path(work)), indent=1, default=str))
+    return 0
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -87,9 +97,11 @@ def main(argv=None) -> int:
     m.add_argument("--universe", required=True)
     m.add_argument("--month", required=True)
     m.add_argument("--out", required=True)
+    j = sub.add_parser("monthly-job")
+    j.add_argument("--month", required=True)
     a = ap.parse_args(argv)
     return {"universe": cmd_universe, "select": cmd_select, "final": cmd_final, "monthly-sim": cmd_monthly_sim,
-            "monthly": cmd_monthly}[a.cmd](a)
+            "monthly": cmd_monthly, "monthly-job": cmd_monthly_job}[a.cmd](a)
 
 
 if __name__ == "__main__":

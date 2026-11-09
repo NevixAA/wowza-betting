@@ -1,0 +1,61 @@
+name: Bars monthly re-selection (proposals only, owner-gated)
+
+# reports/P4_BARS_OPTIMIZATION.md amendment 1 (owner 2026-11-09: "optimized as u can, and from month to month").
+# On the 1st of each month every track x market-side is re-selected on all priced rows before the month (the
+# committed clean-retrain universe output/bars_opt/ + the live first-sight rows of the CLEAN engines listed in
+# config/bars_opt.json), with the same pre-registered nested protocol. The per-league bars are written as
+# PROPOSALS through src/threshold_proposals (output/threshold_proposals/<YYYY-MM>.json/.md); nothing is served
+# until the owner approves entries in config/threshold_approvals.json and src/threshold_apply applies them.
+#
+# OFF unless the repository variable BARS_MONTHLY_ENABLED is 'true'. Commits only output/threshold_proposals/.
+
+on:
+  schedule:
+    - cron: '0 5 1 * *'
+  workflow_dispatch:
+    inputs:
+      month:
+        description: 'YYYY-MM to re-select for (blank = the current UTC month)'
+        required: false
+        default: ''
+
+concurrency:
+  group: bars-monthly
+  cancel-in-progress: false
+
+env:
+  PYTHONIOENCODING: utf-8
+  PYTHONDONTWRITEBYTECODE: '1'
+
+jobs:
+  reselect:
+    if: vars.BARS_MONTHLY_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Re-select and write proposals
+        env:
+          MONTH: ${{ inputs.month }}
+        run: |
+          set -euo pipefail
+          m="${MONTH:-}"
+          [ -n "$m" ] || m=$(date -u +%Y-%m)
+          python scripts/bars_opt.py monthly-job --month "$m"
+      - name: Commit the proposals only
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add output/threshold_proposals/
+          git diff --cached --quiet && { echo "nothing to commit"; exit 0; }
+          git diff --cached --name-only | grep -v '^output/threshold_proposals/' && { echo "::error::staged a file outside output/threshold_proposals"; exit 1; } || true
+          git commit -m "auto: bars monthly re-selection proposals $(date -u +%Y-%m-%d)"
+          for i in 1 2 3; do git pull --rebase -q && git push -q && break; sleep 10; done
