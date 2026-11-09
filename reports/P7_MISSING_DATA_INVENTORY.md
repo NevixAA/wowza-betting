@@ -82,3 +82,20 @@ Total API-Football calls for Phase 2: about 300 plus up to about 1 per newly mat
 
 Every collected value goes beside the existing data (sidecars, corrections) with provenance; no ledger is
 rewritten in place.
+
+## Phase 2 progress (2026-11-09)
+
+| Item | Done | Commit (prep/missing-data unless noted) | Effect |
+|---|---|---|---|
+| 1 Unmatched rows | 74 league-scoped aliases proven (forced-opponent evidence, a known score must agree, >= 3 dates, one-to-one, never contradicted; a provider rename becomes date ranges, e.g. Regensburg); iterated to a fixpoint (3 rounds); read only by the collectors' matchers | `3ac9f507f` | insidebox-lacking rows unmatched **6,041 -> 1,008**, 0 ambiguous. Left: Argentina 407 (the owner-removed Copa de la Liga rows, expected), China 298, Greece 135, Bundesliga 2 40. The fills run in the collection job |
+| 2 Standard HT prices | joined into src/league_bars + bars_opt (Over side, same snapshot rule) | branch `prep/ht-bars-join` `680f714fc` (on prep/bars-serving) | 528 / 567 bet-time HT pairs, 17 leagues, 2026-08-21..11-03; merge after prep/bars-serving, then re-run the study |
+| 3 New-Format HT prices | parser in capture_nf_odds_forward.py, 0 extra calls | `fe1620192` | accrues once the parser is on main (the capture runs from main) |
+| 4 football-data | scripts/collect_fd_raw.py + step 0 'fdraw' (free) | `3ac9f507f` | 85 files (17 leagues x 2022-23..2026-27) into output/collect/fd_raw with a manifest; runs in Actions (this PC cannot reach the site) |
+| 5 National-team rows | scripts/collect_refetch_extra_fixtures.py + step 15a 'refetchlists' | `3ac9f507f` | 247 fixtures proven by /fixtures?ids (13 calls), then the re-fetch reads them (about 247 calls) |
+| 6 side_unproven | is_home proven from the provider when the row's club resolves to the provider's side; --redo-refused + step 15b 'playerredo' | `b7cfaa481`, `f9b651edb` | 3,566 of 4,371 refused rows had a wrong history is_home (e.g. Bochum / Koln home matches stored as away); 915 calls to re-read. **The corrected is_home is stored beside the original (is_home_orig): props training should read it (props owner)** |
+| 7 J-League prices | diagnosed: wrong API-Football season until the 2026-10-22 config fix (`33c643b5`); since 10-24 every J-League fixture is priced | — | the 35 fixtures of 10-09..10-21 are unrecoverable (no odds history at the provider) |
+| Results sync | scripts/sync_results_from_main.py + step 0b 'syncmain'; files this branch never changed are taken from main (what go-live does anyway), af_history gains only the rows main added since the branch point (three-way, removed duplicates never return) | `42814ff2b` | fd_history to 2026-11-06, player_history months 2026-08..11 from main, af_history +28 rows (2026-11-07/08) with a sidecar; identity pipeline 70,743 -> 71,013 matches, 0 duplicates. **Rerun 'syncmain' right before the go-live merge** |
+
+Calls for the collection run: about 13 + 247 + 915 + up to about 1 per newly matched uncached fixture
+(insidebox; at most about 5,000) + the journaled steady-state steps; 0 OddsAPI credits. Full suite: 2,913
+passed (the one failure, a reader-classification test for the two new scripts, fixed in `c1a44afa5`).
