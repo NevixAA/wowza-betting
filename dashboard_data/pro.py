@@ -301,6 +301,23 @@ def valuable() -> dict:
     return out
 
 
+def specials() -> dict:
+    """Specials research tracker (Pro src/specials, owner 2026-11-09). Research only - no tips.
+
+    Every frame/dict is EMPTY when Pro has not written it yet (the tracker is OFF until the owner sets
+    PRO_SPECIALS_ENABLED); the page renders that as an empty state, never as sample data."""
+    base = "output/specials/"
+    out = {"eval": read_json(_f(base + "specials_eval.json")),
+           "study": read_json(_f(base + "study_summary.json")),
+           "cutoffs": read_json(_f(base + "cutoffs.json"))}
+    for name in ("specials_log", "specials_settled", "study_calibration_grid", "study_calibration_bands"):
+        try:
+            out[name] = read_csv(_f(base + f"{name}.csv"), low_memory=False)
+        except Exception:                                             # noqa: BLE001 - one missing file never hides the rest
+            out[name] = pd.DataFrame()
+    return out
+
+
 def candidate_forward() -> dict:
     """Frozen candidate forward tests, daily progress (Pro src/studies/candidate_forward.py)."""
     return read_json(_f("output/edge_reassessment/candidate_forward_progress.json")) or {}
