@@ -1,63 +1,63 @@
 {
  "caveat": "the live candidates come from the engines serving when they were logged (the\nPRE-RETRAIN models until go-live), while the cells were fitted on the clean retrained models' predictions. The\nreplay therefore shows how the cells filter the board (volume per league x market, the TOP-3 mechanics), not\nhow the clean models will perform.",
- "proposal_id": "TP-2026-11-09-c2414fcf",
- "asof": "2026-11-09 02:35:54+00:00",
- "cells": 57,
- "candidate_rows": 2345,
+ "proposal_id": "TP-2026-11-09-abfb5dc4",
+ "asof": "2026-11-02 05:59:16+00:00",
+ "cells": 68,
+ "candidate_rows": 2090,
  "engines": {
-  "btts_20261005T101905Z_238e3419": 469,
-  "over15_20261018T080423Z_da4743a2": 469,
-  "over35_20261005T101905Z_f546ce72": 469,
-  "newformat_20261018T080423Z_9eb6b4b4": 263,
+  "btts_20261005T101905Z_238e3419": 418,
+  "over15_20261018T080423Z_da4743a2": 418,
+  "over35_20261005T101905Z_f546ce72": 418,
+  "newformat_20261018T080423Z_9eb6b4b4": 246,
   "standard_20261018T080423Z_64313878": 115,
-  "standard_repaired_20261028T123040Z_1f5805e6": 91
+  "standard_repaired_20261028T123040Z_1f5805e6": 57
  },
  "last_days": 30,
- "window_rows": 2345,
- "window_tips": 106,
- "window_tips_settled": 84,
- "window_roi_all_tips": -0.0018,
+ "window_rows": 2090,
+ "window_tips": 169,
+ "window_tips_settled": 85,
+ "window_roi_all_tips": -0.2362,
  "reasons": {
-  "NO_PROPOSED_CELL": 1286,
-  "BELOW_LEAGUE_BAR": 605,
-  "NO_TWO_SIDED_PRICE": 333,
-  "TIPPED": 106,
-  "OUTSIDE_ODDS_RANGE": 15
+  "NO_PROPOSED_CELL": 916,
+  "BELOW_LEAGUE_BAR": 636,
+  "NO_TWO_SIDED_PRICE": 329,
+  "TIPPED": 169,
+  "OUTSIDE_ODDS_RANGE": 40
  },
  "window_by_league_market": [
   {
    "track": "new_format",
    "league": "Argentina Primera Division",
    "mside": "btts_yes",
-   "rows": 45,
-   "tips": 39
+   "rows": 37,
+   "tips": 18
   },
   {
    "track": "new_format",
    "league": "Argentina Primera Division",
    "mside": "over15_over",
-   "rows": 45,
+   "rows": 37,
    "tips": 0
   },
   {
    "track": "new_format",
    "league": "Argentina Primera Division",
    "mside": "over25_over",
-   "rows": 45,
-   "tips": 1
+   "rows": 37,
+   "tips": 8
   },
   {
    "track": "new_format",
    "league": "Argentina Primera Division",
    "mside": "over25_under",
-   "rows": 45,
-   "tips": 0
+   "rows": 37,
+   "tips": 2
   },
   {
    "track": "new_format",
    "league": "Argentina Primera Division",
    "mside": "over35_over",
-   "rows": 45,
+   "rows": 37,
    "tips": 0
   },
   {
@@ -99,35 +99,35 @@
    "track": "new_format",
    "league": "Brazil Serie A",
    "mside": "btts_yes",
-   "rows": 24,
+   "rows": 22,
+   "tips": 3
+  },
+  {
+   "track": "new_format",
+   "league": "Brazil Serie A",
+   "mside": "over15_over",
+   "rows": 22,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Brazil Serie A",
+   "mside": "over25_over",
+   "rows": 22,
+   "tips": 3
+  },
+  {
+   "track": "new_format",
+   "league": "Brazil Serie A",
+   "mside": "over25_under",
+   "rows": 22,
    "tips": 9
   },
   {
    "track": "new_format",
    "league": "Brazil Serie A",
-   "mside": "over15_over",
-   "rows": 24,
-   "tips": 0
-  },
-  {
-   "track": "new_format",
-   "league": "Brazil Serie A",
-   "mside": "over25_over",
-   "rows": 24,
-   "tips": 2
-  },
-  {
-   "track": "new_format",
-   "league": "Brazil Serie A",
-   "mside": "over25_under",
-   "rows": 24,
-   "tips": 0
-  },
-  {
-   "track": "new_format",
-   "league": "Brazil Serie A",
    "mside": "over35_over",
-   "rows": 24,
+   "rows": 22,
    "tips": 0
   },
   {
@@ -135,7 +135,7 @@
    "league": "China Super League",
    "mside": "btts_yes",
    "rows": 8,
-   "tips": 1
+   "tips": 0
   },
   {
    "track": "new_format",
@@ -156,129 +156,129 @@
    "league": "China Super League",
    "mside": "over25_under",
    "rows": 8,
-   "tips": 0
-  },
-  {
-   "track": "new_format",
-   "league": "China Super League",
-   "mside": "over35_over",
-   "rows": 8,
-   "tips": 0
-  },
-  {
-   "track": "new_format",
-   "league": "Denmark Superliga",
-   "mside": "btts_yes",
-   "rows": 17,
-   "tips": 2
-  },
-  {
-   "track": "new_format",
-   "league": "Denmark Superliga",
-   "mside": "over15_over",
-   "rows": 17,
-   "tips": 0
-  },
-  {
-   "track": "new_format",
-   "league": "Denmark Superliga",
-   "mside": "over25_over",
-   "rows": 17,
-   "tips": 0
-  },
-  {
-   "track": "new_format",
-   "league": "Denmark Superliga",
-   "mside": "over25_under",
-   "rows": 17,
-   "tips": 0
-  },
-  {
-   "track": "new_format",
-   "league": "Denmark Superliga",
-   "mside": "over35_over",
-   "rows": 17,
-   "tips": 0
-  },
-  {
-   "track": "new_format",
-   "league": "Finland Veikkausliiga",
-   "mside": "btts_yes",
-   "rows": 11,
-   "tips": 1
-  },
-  {
-   "track": "new_format",
-   "league": "Finland Veikkausliiga",
-   "mside": "over15_over",
-   "rows": 11,
-   "tips": 0
-  },
-  {
-   "track": "new_format",
-   "league": "Finland Veikkausliiga",
-   "mside": "over25_over",
-   "rows": 11,
-   "tips": 0
-  },
-  {
-   "track": "new_format",
-   "league": "Finland Veikkausliiga",
-   "mside": "over25_under",
-   "rows": 11,
-   "tips": 0
-  },
-  {
-   "track": "new_format",
-   "league": "Finland Veikkausliiga",
-   "mside": "over35_over",
-   "rows": 11,
-   "tips": 0
-  },
-  {
-   "track": "new_format",
-   "league": "Ireland Premier Division",
-   "mside": "btts_yes",
-   "rows": 6,
-   "tips": 0
-  },
-  {
-   "track": "new_format",
-   "league": "Ireland Premier Division",
-   "mside": "over15_over",
-   "rows": 6,
-   "tips": 0
-  },
-  {
-   "track": "new_format",
-   "league": "Ireland Premier Division",
-   "mside": "over25_over",
-   "rows": 6,
-   "tips": 0
-  },
-  {
-   "track": "new_format",
-   "league": "Ireland Premier Division",
-   "mside": "over25_under",
-   "rows": 6,
-   "tips": 0
-  },
-  {
-   "track": "new_format",
-   "league": "Ireland Premier Division",
-   "mside": "over35_over",
-   "rows": 6,
-   "tips": 0
-  },
-  {
-   "track": "new_format",
-   "league": "Japan J-League",
-   "mside": "btts_yes",
-   "rows": 20,
    "tips": 5
   },
   {
    "track": "new_format",
+   "league": "China Super League",
+   "mside": "over35_over",
+   "rows": 8,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Denmark Superliga",
+   "mside": "btts_yes",
+   "rows": 16,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Denmark Superliga",
+   "mside": "over15_over",
+   "rows": 16,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Denmark Superliga",
+   "mside": "over25_over",
+   "rows": 16,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Denmark Superliga",
+   "mside": "over25_under",
+   "rows": 16,
+   "tips": 10
+  },
+  {
+   "track": "new_format",
+   "league": "Denmark Superliga",
+   "mside": "over35_over",
+   "rows": 16,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Finland Veikkausliiga",
+   "mside": "btts_yes",
+   "rows": 8,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Finland Veikkausliiga",
+   "mside": "over15_over",
+   "rows": 8,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Finland Veikkausliiga",
+   "mside": "over25_over",
+   "rows": 8,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Finland Veikkausliiga",
+   "mside": "over25_under",
+   "rows": 8,
+   "tips": 4
+  },
+  {
+   "track": "new_format",
+   "league": "Finland Veikkausliiga",
+   "mside": "over35_over",
+   "rows": 8,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Ireland Premier Division",
+   "mside": "btts_yes",
+   "rows": 5,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Ireland Premier Division",
+   "mside": "over15_over",
+   "rows": 5,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Ireland Premier Division",
+   "mside": "over25_over",
+   "rows": 5,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Ireland Premier Division",
+   "mside": "over25_under",
+   "rows": 5,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Ireland Premier Division",
+   "mside": "over35_over",
+   "rows": 5,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Japan J-League",
+   "mside": "btts_yes",
+   "rows": 20,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
    "league": "Japan J-League",
    "mside": "over15_over",
    "rows": 20,
@@ -289,623 +289,1053 @@
    "league": "Japan J-League",
    "mside": "over25_over",
    "rows": 20,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Japan J-League",
+   "mside": "over25_under",
+   "rows": 20,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Japan J-League",
+   "mside": "over35_over",
+   "rows": 20,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Mexico Liga MX",
+   "mside": "btts_yes",
+   "rows": 23,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Mexico Liga MX",
+   "mside": "over15_over",
+   "rows": 23,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Mexico Liga MX",
+   "mside": "over25_over",
+   "rows": 23,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Mexico Liga MX",
+   "mside": "over25_under",
+   "rows": 23,
+   "tips": 13
+  },
+  {
+   "track": "new_format",
+   "league": "Mexico Liga MX",
+   "mside": "over35_over",
+   "rows": 23,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Norway Eliteserien",
+   "mside": "btts_yes",
+   "rows": 22,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Norway Eliteserien",
+   "mside": "over15_over",
+   "rows": 22,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Norway Eliteserien",
+   "mside": "over25_over",
+   "rows": 22,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Norway Eliteserien",
+   "mside": "over25_under",
+   "rows": 22,
+   "tips": 14
+  },
+  {
+   "track": "new_format",
+   "league": "Norway Eliteserien",
+   "mside": "over35_over",
+   "rows": 22,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Sweden Allsvenskan",
+   "mside": "btts_yes",
+   "rows": 26,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Sweden Allsvenskan",
+   "mside": "over15_over",
+   "rows": 26,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Sweden Allsvenskan",
+   "mside": "over25_over",
+   "rows": 26,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Sweden Allsvenskan",
+   "mside": "over25_under",
+   "rows": 26,
+   "tips": 15
+  },
+  {
+   "track": "new_format",
+   "league": "Sweden Allsvenskan",
+   "mside": "over35_over",
+   "rows": 26,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "USA MLS",
+   "mside": "btts_yes",
+   "rows": 45,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "USA MLS",
+   "mside": "over15_over",
+   "rows": 45,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "USA MLS",
+   "mside": "over25_over",
+   "rows": 45,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "USA MLS",
+   "mside": "over25_under",
+   "rows": 45,
+   "tips": 35
+  },
+  {
+   "track": "new_format",
+   "league": "USA MLS",
+   "mside": "over35_over",
+   "rows": 45,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "Bundesliga 2",
+   "mside": "btts_yes",
+   "rows": 21,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "Bundesliga 2",
+   "mside": "over15_over",
+   "rows": 21,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "Bundesliga 2",
+   "mside": "over25_over",
+   "rows": 21,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "Bundesliga 2",
+   "mside": "over25_under",
+   "rows": 21,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "Bundesliga 2",
+   "mside": "over35_over",
+   "rows": 21,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "Championship",
+   "mside": "btts_yes",
+   "rows": 36,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "Championship",
+   "mside": "over15_over",
+   "rows": 36,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "Championship",
+   "mside": "over25_over",
+   "rows": 36,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "Championship",
+   "mside": "over25_under",
+   "rows": 36,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "Championship",
+   "mside": "over35_over",
+   "rows": 36,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "La Liga 2",
+   "mside": "btts_yes",
+   "rows": 27,
+   "tips": 26
+  },
+  {
+   "track": "standard",
+   "league": "La Liga 2",
+   "mside": "over15_over",
+   "rows": 27,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "La Liga 2",
+   "mside": "over25_over",
+   "rows": 27,
+   "tips": 1
+  },
+  {
+   "track": "standard",
+   "league": "La Liga 2",
+   "mside": "over25_under",
+   "rows": 27,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "La Liga 2",
+   "mside": "over35_over",
+   "rows": 27,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "League One",
+   "mside": "btts_yes",
+   "rows": 20,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "League One",
+   "mside": "over15_over",
+   "rows": 20,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "League One",
+   "mside": "over25_over",
+   "rows": 20,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "League One",
+   "mside": "over25_under",
+   "rows": 20,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "League One",
+   "mside": "over35_over",
+   "rows": 20,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "League Two",
+   "mside": "btts_yes",
+   "rows": 15,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "League Two",
+   "mside": "over15_over",
+   "rows": 15,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "League Two",
+   "mside": "over25_over",
+   "rows": 15,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "League Two",
+   "mside": "over25_under",
+   "rows": 15,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "League Two",
+   "mside": "over35_over",
+   "rows": 15,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "Ligue 2",
+   "mside": "btts_yes",
+   "rows": 21,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "Ligue 2",
+   "mside": "over15_over",
+   "rows": 21,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "Ligue 2",
+   "mside": "over25_over",
+   "rows": 21,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "Ligue 2",
+   "mside": "over25_under",
+   "rows": 21,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "Ligue 2",
+   "mside": "over35_over",
+   "rows": 21,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "Serie B",
+   "mside": "btts_yes",
+   "rows": 32,
+   "tips": 1
+  },
+  {
+   "track": "standard",
+   "league": "Serie B",
+   "mside": "over15_over",
+   "rows": 32,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "Serie B",
+   "mside": "over25_over",
+   "rows": 32,
+   "tips": 1
+  },
+  {
+   "track": "standard",
+   "league": "Serie B",
+   "mside": "over25_under",
+   "rows": 32,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "Serie B",
+   "mside": "over35_over",
+   "rows": 32,
+   "tips": 0
+  }
+ ],
+ "board_rows": 870,
+ "board_tips": 75,
+ "board_by_league_market": [
+  {
+   "track": "new_format",
+   "league": "Argentina Primera Division",
+   "mside": "btts_yes",
+   "rows": 17,
+   "tips": 6
+  },
+  {
+   "track": "new_format",
+   "league": "Argentina Primera Division",
+   "mside": "over15_over",
+   "rows": 17,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Argentina Primera Division",
+   "mside": "over25_over",
+   "rows": 17,
+   "tips": 4
+  },
+  {
+   "track": "new_format",
+   "league": "Argentina Primera Division",
+   "mside": "over25_under",
+   "rows": 17,
+   "tips": 2
+  },
+  {
+   "track": "new_format",
+   "league": "Argentina Primera Division",
+   "mside": "over35_over",
+   "rows": 17,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Austrian Bundesliga",
+   "mside": "btts_yes",
+   "rows": 6,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Austrian Bundesliga",
+   "mside": "over15_over",
+   "rows": 6,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Austrian Bundesliga",
+   "mside": "over25_over",
+   "rows": 6,
+   "tips": 1
+  },
+  {
+   "track": "new_format",
+   "league": "Austrian Bundesliga",
+   "mside": "over25_under",
+   "rows": 6,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Austrian Bundesliga",
+   "mside": "over35_over",
+   "rows": 6,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Brazil Serie A",
+   "mside": "btts_yes",
+   "rows": 10,
+   "tips": 2
+  },
+  {
+   "track": "new_format",
+   "league": "Brazil Serie A",
+   "mside": "over15_over",
+   "rows": 10,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Brazil Serie A",
+   "mside": "over25_over",
+   "rows": 10,
+   "tips": 2
+  },
+  {
+   "track": "new_format",
+   "league": "Brazil Serie A",
+   "mside": "over25_under",
+   "rows": 10,
+   "tips": 5
+  },
+  {
+   "track": "new_format",
+   "league": "Brazil Serie A",
+   "mside": "over35_over",
+   "rows": 10,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "China Super League",
+   "mside": "btts_yes",
+   "rows": 8,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "China Super League",
+   "mside": "over15_over",
+   "rows": 8,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "China Super League",
+   "mside": "over25_over",
+   "rows": 8,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "China Super League",
+   "mside": "over25_under",
+   "rows": 8,
+   "tips": 5
+  },
+  {
+   "track": "new_format",
+   "league": "China Super League",
+   "mside": "over35_over",
+   "rows": 8,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Denmark Superliga",
+   "mside": "btts_yes",
+   "rows": 6,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Denmark Superliga",
+   "mside": "over15_over",
+   "rows": 6,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Denmark Superliga",
+   "mside": "over25_over",
+   "rows": 6,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Denmark Superliga",
+   "mside": "over25_under",
+   "rows": 6,
    "tips": 3
   },
   {
    "track": "new_format",
-   "league": "Japan J-League",
-   "mside": "over25_under",
-   "rows": 20,
-   "tips": 0
-  },
-  {
-   "track": "new_format",
-   "league": "Japan J-League",
+   "league": "Denmark Superliga",
    "mside": "over35_over",
-   "rows": 20,
+   "rows": 6,
    "tips": 0
   },
   {
    "track": "new_format",
-   "league": "Mexico Liga MX",
+   "league": "Finland Veikkausliiga",
    "mside": "btts_yes",
-   "rows": 24,
+   "rows": 2,
    "tips": 0
   },
   {
    "track": "new_format",
-   "league": "Mexico Liga MX",
+   "league": "Finland Veikkausliiga",
    "mside": "over15_over",
-   "rows": 24,
+   "rows": 2,
    "tips": 0
   },
   {
    "track": "new_format",
-   "league": "Mexico Liga MX",
+   "league": "Finland Veikkausliiga",
    "mside": "over25_over",
-   "rows": 24,
+   "rows": 2,
    "tips": 0
   },
   {
    "track": "new_format",
-   "league": "Mexico Liga MX",
+   "league": "Finland Veikkausliiga",
    "mside": "over25_under",
-   "rows": 24,
-   "tips": 0
-  },
-  {
-   "track": "new_format",
-   "league": "Mexico Liga MX",
-   "mside": "over35_over",
-   "rows": 24,
-   "tips": 0
-  },
-  {
-   "track": "new_format",
-   "league": "Norway Eliteserien",
-   "mside": "btts_yes",
-   "rows": 23,
-   "tips": 1
-  },
-  {
-   "track": "new_format",
-   "league": "Norway Eliteserien",
-   "mside": "over15_over",
-   "rows": 23,
-   "tips": 0
-  },
-  {
-   "track": "new_format",
-   "league": "Norway Eliteserien",
-   "mside": "over25_over",
-   "rows": 23,
-   "tips": 0
-  },
-  {
-   "track": "new_format",
-   "league": "Norway Eliteserien",
-   "mside": "over25_under",
-   "rows": 23,
-   "tips": 0
-  },
-  {
-   "track": "new_format",
-   "league": "Norway Eliteserien",
-   "mside": "over35_over",
-   "rows": 23,
-   "tips": 0
-  },
-  {
-   "track": "new_format",
-   "league": "Sweden Allsvenskan",
-   "mside": "btts_yes",
-   "rows": 26,
-   "tips": 1
-  },
-  {
-   "track": "new_format",
-   "league": "Sweden Allsvenskan",
-   "mside": "over15_over",
-   "rows": 26,
-   "tips": 0
-  },
-  {
-   "track": "new_format",
-   "league": "Sweden Allsvenskan",
-   "mside": "over25_over",
-   "rows": 26,
-   "tips": 0
-  },
-  {
-   "track": "new_format",
-   "league": "Sweden Allsvenskan",
-   "mside": "over25_under",
-   "rows": 26,
-   "tips": 0
-  },
-  {
-   "track": "new_format",
-   "league": "Sweden Allsvenskan",
-   "mside": "over35_over",
-   "rows": 26,
-   "tips": 0
-  },
-  {
-   "track": "new_format",
-   "league": "USA MLS",
-   "mside": "btts_yes",
-   "rows": 45,
-   "tips": 0
-  },
-  {
-   "track": "new_format",
-   "league": "USA MLS",
-   "mside": "over15_over",
-   "rows": 45,
-   "tips": 0
-  },
-  {
-   "track": "new_format",
-   "league": "USA MLS",
-   "mside": "over25_over",
-   "rows": 45,
-   "tips": 0
-  },
-  {
-   "track": "new_format",
-   "league": "USA MLS",
-   "mside": "over25_under",
-   "rows": 45,
-   "tips": 0
-  },
-  {
-   "track": "new_format",
-   "league": "USA MLS",
-   "mside": "over35_over",
-   "rows": 45,
-   "tips": 0
-  },
-  {
-   "track": "standard",
-   "league": "Bundesliga 2",
-   "mside": "btts_yes",
-   "rows": 21,
-   "tips": 0
-  },
-  {
-   "track": "standard",
-   "league": "Bundesliga 2",
-   "mside": "over15_over",
-   "rows": 21,
-   "tips": 0
-  },
-  {
-   "track": "standard",
-   "league": "Bundesliga 2",
-   "mside": "over25_over",
-   "rows": 21,
-   "tips": 0
-  },
-  {
-   "track": "standard",
-   "league": "Bundesliga 2",
-   "mside": "over25_under",
-   "rows": 21,
-   "tips": 0
-  },
-  {
-   "track": "standard",
-   "league": "Bundesliga 2",
-   "mside": "over35_over",
-   "rows": 21,
-   "tips": 0
-  },
-  {
-   "track": "standard",
-   "league": "Championship",
-   "mside": "btts_yes",
-   "rows": 36,
-   "tips": 0
-  },
-  {
-   "track": "standard",
-   "league": "Championship",
-   "mside": "over15_over",
-   "rows": 36,
-   "tips": 0
-  },
-  {
-   "track": "standard",
-   "league": "Championship",
-   "mside": "over25_over",
-   "rows": 36,
-   "tips": 0
-  },
-  {
-   "track": "standard",
-   "league": "Championship",
-   "mside": "over25_under",
-   "rows": 36,
-   "tips": 0
-  },
-  {
-   "track": "standard",
-   "league": "Championship",
-   "mside": "over35_over",
-   "rows": 36,
-   "tips": 0
-  },
-  {
-   "track": "standard",
-   "league": "La Liga 2",
-   "mside": "btts_yes",
-   "rows": 38,
-   "tips": 37
-  },
-  {
-   "track": "standard",
-   "league": "La Liga 2",
-   "mside": "over15_over",
-   "rows": 38,
-   "tips": 0
-  },
-  {
-   "track": "standard",
-   "league": "La Liga 2",
-   "mside": "over25_over",
-   "rows": 38,
-   "tips": 0
-  },
-  {
-   "track": "standard",
-   "league": "La Liga 2",
-   "mside": "over25_under",
-   "rows": 38,
-   "tips": 0
-  },
-  {
-   "track": "standard",
-   "league": "La Liga 2",
-   "mside": "over35_over",
-   "rows": 38,
-   "tips": 0
-  },
-  {
-   "track": "standard",
-   "league": "League One",
-   "mside": "btts_yes",
-   "rows": 32,
-   "tips": 0
-  },
-  {
-   "track": "standard",
-   "league": "League One",
-   "mside": "over15_over",
-   "rows": 32,
-   "tips": 0
-  },
-  {
-   "track": "standard",
-   "league": "League One",
-   "mside": "over25_over",
-   "rows": 32,
-   "tips": 0
-  },
-  {
-   "track": "standard",
-   "league": "League One",
-   "mside": "over25_under",
-   "rows": 32,
-   "tips": 0
-  },
-  {
-   "track": "standard",
-   "league": "League One",
-   "mside": "over35_over",
-   "rows": 32,
-   "tips": 0
-  },
-  {
-   "track": "standard",
-   "league": "League Two",
-   "mside": "btts_yes",
-   "rows": 26,
-   "tips": 0
-  },
-  {
-   "track": "standard",
-   "league": "League Two",
-   "mside": "over15_over",
-   "rows": 26,
-   "tips": 0
-  },
-  {
-   "track": "standard",
-   "league": "League Two",
-   "mside": "over25_over",
-   "rows": 26,
-   "tips": 0
-  },
-  {
-   "track": "standard",
-   "league": "League Two",
-   "mside": "over25_under",
-   "rows": 26,
-   "tips": 0
-  },
-  {
-   "track": "standard",
-   "league": "League Two",
-   "mside": "over35_over",
-   "rows": 26,
-   "tips": 0
-  },
-  {
-   "track": "standard",
-   "league": "Ligue 2",
-   "mside": "btts_yes",
-   "rows": 21,
-   "tips": 0
-  },
-  {
-   "track": "standard",
-   "league": "Ligue 2",
-   "mside": "over15_over",
-   "rows": 21,
-   "tips": 0
-  },
-  {
-   "track": "standard",
-   "league": "Ligue 2",
-   "mside": "over25_over",
-   "rows": 21,
-   "tips": 0
-  },
-  {
-   "track": "standard",
-   "league": "Ligue 2",
-   "mside": "over25_under",
-   "rows": 21,
-   "tips": 0
-  },
-  {
-   "track": "standard",
-   "league": "Ligue 2",
-   "mside": "over35_over",
-   "rows": 21,
-   "tips": 0
-  },
-  {
-   "track": "standard",
-   "league": "Serie B",
-   "mside": "btts_yes",
-   "rows": 32,
-   "tips": 1
-  },
-  {
-   "track": "standard",
-   "league": "Serie B",
-   "mside": "over15_over",
-   "rows": 32,
-   "tips": 0
-  },
-  {
-   "track": "standard",
-   "league": "Serie B",
-   "mside": "over25_over",
-   "rows": 32,
+   "rows": 2,
    "tips": 2
   },
   {
+   "track": "new_format",
+   "league": "Finland Veikkausliiga",
+   "mside": "over35_over",
+   "rows": 2,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Japan J-League",
+   "mside": "btts_yes",
+   "rows": 10,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Japan J-League",
+   "mside": "over15_over",
+   "rows": 10,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Japan J-League",
+   "mside": "over25_over",
+   "rows": 10,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Japan J-League",
+   "mside": "over25_under",
+   "rows": 10,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Japan J-League",
+   "mside": "over35_over",
+   "rows": 10,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Mexico Liga MX",
+   "mside": "btts_yes",
+   "rows": 9,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Mexico Liga MX",
+   "mside": "over15_over",
+   "rows": 9,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Mexico Liga MX",
+   "mside": "over25_over",
+   "rows": 9,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Mexico Liga MX",
+   "mside": "over25_under",
+   "rows": 9,
+   "tips": 5
+  },
+  {
+   "track": "new_format",
+   "league": "Mexico Liga MX",
+   "mside": "over35_over",
+   "rows": 9,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Norway Eliteserien",
+   "mside": "btts_yes",
+   "rows": 8,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Norway Eliteserien",
+   "mside": "over15_over",
+   "rows": 8,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Norway Eliteserien",
+   "mside": "over25_over",
+   "rows": 8,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Norway Eliteserien",
+   "mside": "over25_under",
+   "rows": 8,
+   "tips": 5
+  },
+  {
+   "track": "new_format",
+   "league": "Norway Eliteserien",
+   "mside": "over35_over",
+   "rows": 8,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Sweden Allsvenskan",
+   "mside": "btts_yes",
+   "rows": 11,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Sweden Allsvenskan",
+   "mside": "over15_over",
+   "rows": 11,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Sweden Allsvenskan",
+   "mside": "over25_over",
+   "rows": 11,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Sweden Allsvenskan",
+   "mside": "over25_under",
+   "rows": 11,
+   "tips": 7
+  },
+  {
+   "track": "new_format",
+   "league": "Sweden Allsvenskan",
+   "mside": "over35_over",
+   "rows": 11,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "USA MLS",
+   "mside": "btts_yes",
+   "rows": 15,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "USA MLS",
+   "mside": "over15_over",
+   "rows": 15,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "USA MLS",
+   "mside": "over25_over",
+   "rows": 15,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "USA MLS",
+   "mside": "over25_under",
+   "rows": 15,
+   "tips": 10
+  },
+  {
+   "track": "new_format",
+   "league": "USA MLS",
+   "mside": "over35_over",
+   "rows": 15,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "Bundesliga 2",
+   "mside": "btts_yes",
+   "rows": 9,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "Bundesliga 2",
+   "mside": "over15_over",
+   "rows": 9,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "Bundesliga 2",
+   "mside": "over25_over",
+   "rows": 9,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "Bundesliga 2",
+   "mside": "over25_under",
+   "rows": 9,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "Bundesliga 2",
+   "mside": "over35_over",
+   "rows": 9,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "Championship",
+   "mside": "btts_yes",
+   "rows": 24,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "Championship",
+   "mside": "over15_over",
+   "rows": 24,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "Championship",
+   "mside": "over25_over",
+   "rows": 24,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "Championship",
+   "mside": "over25_under",
+   "rows": 24,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "Championship",
+   "mside": "over35_over",
+   "rows": 24,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "La Liga 2",
+   "mside": "btts_yes",
+   "rows": 14,
+   "tips": 14
+  },
+  {
+   "track": "standard",
+   "league": "La Liga 2",
+   "mside": "over15_over",
+   "rows": 14,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "La Liga 2",
+   "mside": "over25_over",
+   "rows": 14,
+   "tips": 1
+  },
+  {
+   "track": "standard",
+   "league": "La Liga 2",
+   "mside": "over25_under",
+   "rows": 14,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "La Liga 2",
+   "mside": "over35_over",
+   "rows": 14,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "League One",
+   "mside": "btts_yes",
+   "rows": 3,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "League One",
+   "mside": "over15_over",
+   "rows": 3,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "League One",
+   "mside": "over25_over",
+   "rows": 3,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "League One",
+   "mside": "over25_under",
+   "rows": 3,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "League One",
+   "mside": "over35_over",
+   "rows": 3,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "League Two",
+   "mside": "btts_yes",
+   "rows": 1,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "League Two",
+   "mside": "over15_over",
+   "rows": 1,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "League Two",
+   "mside": "over25_over",
+   "rows": 1,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "League Two",
+   "mside": "over25_under",
+   "rows": 1,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "League Two",
+   "mside": "over35_over",
+   "rows": 1,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "Ligue 2",
+   "mside": "btts_yes",
+   "rows": 11,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "Ligue 2",
+   "mside": "over15_over",
+   "rows": 11,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "Ligue 2",
+   "mside": "over25_over",
+   "rows": 11,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "Ligue 2",
+   "mside": "over25_under",
+   "rows": 11,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "Ligue 2",
+   "mside": "over35_over",
+   "rows": 11,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "Serie B",
+   "mside": "btts_yes",
+   "rows": 10,
+   "tips": 1
+  },
+  {
+   "track": "standard",
+   "league": "Serie B",
+   "mside": "over15_over",
+   "rows": 10,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "Serie B",
+   "mside": "over25_over",
+   "rows": 10,
+   "tips": 0
+  },
+  {
    "track": "standard",
    "league": "Serie B",
    "mside": "over25_under",
-   "rows": 32,
+   "rows": 10,
    "tips": 0
   },
   {
    "track": "standard",
    "league": "Serie B",
    "mside": "over35_over",
-   "rows": 32,
-   "tips": 0
-  }
- ],
- "board_rows": 190,
- "board_tips": 11,
- "board_by_league_market": [
-  {
-   "track": "new_format",
-   "league": "Brazil Serie A",
-   "mside": "btts_yes",
-   "rows": 2,
-   "tips": 0
-  },
-  {
-   "track": "new_format",
-   "league": "Brazil Serie A",
-   "mside": "over15_over",
-   "rows": 2,
-   "tips": 0
-  },
-  {
-   "track": "new_format",
-   "league": "Brazil Serie A",
-   "mside": "over25_over",
-   "rows": 2,
-   "tips": 0
-  },
-  {
-   "track": "new_format",
-   "league": "Brazil Serie A",
-   "mside": "over25_under",
-   "rows": 2,
-   "tips": 0
-  },
-  {
-   "track": "new_format",
-   "league": "Brazil Serie A",
-   "mside": "over35_over",
-   "rows": 2,
-   "tips": 0
-  },
-  {
-   "track": "new_format",
-   "league": "Mexico Liga MX",
-   "mside": "btts_yes",
-   "rows": 1,
-   "tips": 0
-  },
-  {
-   "track": "new_format",
-   "league": "Mexico Liga MX",
-   "mside": "over15_over",
-   "rows": 1,
-   "tips": 0
-  },
-  {
-   "track": "new_format",
-   "league": "Mexico Liga MX",
-   "mside": "over25_over",
-   "rows": 1,
-   "tips": 0
-  },
-  {
-   "track": "new_format",
-   "league": "Mexico Liga MX",
-   "mside": "over25_under",
-   "rows": 1,
-   "tips": 0
-  },
-  {
-   "track": "new_format",
-   "league": "Mexico Liga MX",
-   "mside": "over35_over",
-   "rows": 1,
-   "tips": 0
-  },
-  {
-   "track": "new_format",
-   "league": "Norway Eliteserien",
-   "mside": "btts_yes",
-   "rows": 1,
-   "tips": 0
-  },
-  {
-   "track": "new_format",
-   "league": "Norway Eliteserien",
-   "mside": "over15_over",
-   "rows": 1,
-   "tips": 0
-  },
-  {
-   "track": "new_format",
-   "league": "Norway Eliteserien",
-   "mside": "over25_over",
-   "rows": 1,
-   "tips": 0
-  },
-  {
-   "track": "new_format",
-   "league": "Norway Eliteserien",
-   "mside": "over25_under",
-   "rows": 1,
-   "tips": 0
-  },
-  {
-   "track": "new_format",
-   "league": "Norway Eliteserien",
-   "mside": "over35_over",
-   "rows": 1,
-   "tips": 0
-  },
-  {
-   "track": "standard",
-   "league": "La Liga 2",
-   "mside": "btts_yes",
-   "rows": 11,
-   "tips": 11
-  },
-  {
-   "track": "standard",
-   "league": "La Liga 2",
-   "mside": "over15_over",
-   "rows": 11,
-   "tips": 0
-  },
-  {
-   "track": "standard",
-   "league": "La Liga 2",
-   "mside": "over25_over",
-   "rows": 11,
-   "tips": 0
-  },
-  {
-   "track": "standard",
-   "league": "La Liga 2",
-   "mside": "over25_under",
-   "rows": 11,
-   "tips": 0
-  },
-  {
-   "track": "standard",
-   "league": "La Liga 2",
-   "mside": "over35_over",
-   "rows": 11,
-   "tips": 0
-  },
-  {
-   "track": "standard",
-   "league": "League One",
-   "mside": "btts_yes",
-   "rows": 12,
-   "tips": 0
-  },
-  {
-   "track": "standard",
-   "league": "League One",
-   "mside": "over15_over",
-   "rows": 12,
-   "tips": 0
-  },
-  {
-   "track": "standard",
-   "league": "League One",
-   "mside": "over25_over",
-   "rows": 12,
-   "tips": 0
-  },
-  {
-   "track": "standard",
-   "league": "League One",
-   "mside": "over25_under",
-   "rows": 12,
-   "tips": 0
-  },
-  {
-   "track": "standard",
-   "league": "League One",
-   "mside": "over35_over",
-   "rows": 12,
-   "tips": 0
-  },
-  {
-   "track": "standard",
-   "league": "League Two",
-   "mside": "btts_yes",
-   "rows": 11,
-   "tips": 0
-  },
-  {
-   "track": "standard",
-   "league": "League Two",
-   "mside": "over15_over",
-   "rows": 11,
-   "tips": 0
-  },
-  {
-   "track": "standard",
-   "league": "League Two",
-   "mside": "over25_over",
-   "rows": 11,
-   "tips": 0
-  },
-  {
-   "track": "standard",
-   "league": "League Two",
-   "mside": "over25_under",
-   "rows": 11,
-   "tips": 0
-  },
-  {
-   "track": "standard",
-   "league": "League Two",
-   "mside": "over35_over",
-   "rows": 11,
+   "rows": 10,
    "tips": 0
   }
  ],
  "tipped_rows": [
+  {
+   "date": "2026-10-29",
+   "fixture": "2026-10-29|San Jose Earthquakes|Colorado Rapids",
+   "league": "USA MLS",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.31
+  },
   {
    "date": "2026-10-31",
    "fixture": "2026-10-31|Albacete|Sabadell FC",
@@ -933,28 +1363,38 @@
    "model_type": "new_format",
    "market": "BTTS",
    "side": "YES",
-   "signal_tier": "VALUABLE",
+   "signal_tier": "SNIPER",
    "odds": 2.32
   },
   {
-   "date": "2026-10-25",
-   "fixture": "2026-10-25|Independiente|Boca Juniors",
-   "league": "Argentina Primera Division",
+   "date": "2026-10-28",
+   "fixture": "2026-10-28|Toronto FC|D.C. United",
+   "league": "USA MLS",
    "model_type": "new_format",
-   "market": "BTTS",
-   "side": "YES",
+   "market": "OU25",
+   "side": "UNDER",
    "signal_tier": "VALUABLE",
-   "odds": 2.1
+   "odds": 2.38
   },
   {
-   "date": "2026-10-25",
-   "fixture": "2026-10-25|Molde|Fredrikstad FK",
-   "league": "Norway Eliteserien",
+   "date": "2026-10-29",
+   "fixture": "2026-10-29|Minnesota United FC|Sporting Kansas City",
+   "league": "USA MLS",
    "model_type": "new_format",
-   "market": "BTTS",
-   "side": "YES",
+   "market": "OU25",
+   "side": "UNDER",
    "signal_tier": "SNIPER",
-   "odds": 1.56
+   "odds": 3.0
+  },
+  {
+   "date": "2026-10-28",
+   "fixture": "2026-10-28|New England Revolution|New York Red Bulls",
+   "league": "USA MLS",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.8
   },
   {
    "date": "2026-10-31",
@@ -967,24 +1407,74 @@
    "odds": 1.46
   },
   {
-   "date": "2026-10-31",
-   "fixture": "2026-10-31|Defensa y Justicia|Independiente",
-   "league": "Argentina Primera Division",
+   "date": "2026-10-26",
+   "fixture": "2026-10-26|FC Copenhagen|OB Odense BK",
+   "league": "Denmark Superliga",
    "model_type": "new_format",
-   "market": "BTTS",
-   "side": "YES",
+   "market": "OU25",
+   "side": "UNDER",
    "signal_tier": "VALUABLE",
-   "odds": 1.91
+   "odds": 2.42
+  },
+  {
+   "date": "2026-10-25",
+   "fixture": "2026-10-25|Viking FK|Tromso",
+   "league": "Norway Eliteserien",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.6
+  },
+  {
+   "date": "2026-10-25",
+   "fixture": "2026-10-25|AGF Aarhus|Viborg FF",
+   "league": "Denmark Superliga",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.31
+  },
+  {
+   "date": "2026-10-29",
+   "fixture": "2026-10-29|\u00d6rgryte IS|Mj\u00e4llby AIF",
+   "league": "Sweden Allsvenskan",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "VALUABLE",
+   "odds": 2.02
+  },
+  {
+   "date": "2026-10-29",
+   "fixture": "2026-10-29|St. Louis City SC|Portland Timbers",
+   "league": "USA MLS",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.9
+  },
+  {
+   "date": "2026-10-26",
+   "fixture": "2026-10-26|Coritiba|Gr\u00eamio",
+   "league": "Brazil Serie A",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 1.93
   },
   {
    "date": "2026-10-31",
    "fixture": "2026-10-31|Sarmiento de Junin|Rosario Central",
    "league": "Argentina Primera Division",
    "model_type": "new_format",
-   "market": "BTTS",
-   "side": "YES",
-   "signal_tier": "VALUABLE",
-   "odds": 2.0
+   "market": "OU25",
+   "side": "OVER",
+   "signal_tier": "SNIPER",
+   "odds": 2.26
   },
   {
    "date": "2026-10-30",
@@ -993,7 +1483,7 @@
    "model_type": "new_format",
    "market": "BTTS",
    "side": "YES",
-   "signal_tier": "VALUABLE",
+   "signal_tier": "MARKSMAN",
    "odds": 2.32
   },
   {
@@ -1003,18 +1493,38 @@
    "model_type": "new_format",
    "market": "BTTS",
    "side": "YES",
-   "signal_tier": "VALUABLE",
+   "signal_tier": "SNIPER",
    "odds": 2.2
+  },
+  {
+   "date": "2026-10-31",
+   "fixture": "2026-10-31|FC Ju\u00e1rez|Quer\u00e9taro",
+   "league": "Mexico Liga MX",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.1
   },
   {
    "date": "2026-10-28",
    "fixture": "2026-10-28|Bragantino-SP|Chapecoense",
    "league": "Brazil Serie A",
    "model_type": "new_format",
-   "market": "BTTS",
-   "side": "YES",
-   "signal_tier": "MARKSMAN",
-   "odds": 1.85
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.5
+  },
+  {
+   "date": "2026-10-25",
+   "fixture": "2026-10-25|Sarpsborg FK|Aalesund",
+   "league": "Norway Eliteserien",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.88
   },
   {
    "date": "2026-10-26",
@@ -1023,8 +1533,28 @@
    "model_type": "new_format",
    "market": "BTTS",
    "side": "YES",
-   "signal_tier": "VALUABLE",
+   "signal_tier": "MARKSMAN",
    "odds": 1.88
+  },
+  {
+   "date": "2026-10-28",
+   "fixture": "2026-10-28|Charlotte FC|CF Montreal",
+   "league": "USA MLS",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "VALUABLE",
+   "odds": 2.62
+  },
+  {
+   "date": "2026-10-29",
+   "fixture": "2026-10-29|FC Inter Turku|HJK Helsinki",
+   "league": "Finland Veikkausliiga",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 1.96
   },
   {
    "date": "2026-10-25",
@@ -1033,18 +1563,28 @@
    "model_type": "new_format",
    "market": "BTTS",
    "side": "YES",
-   "signal_tier": "VALUABLE",
+   "signal_tier": "SNIPER",
    "odds": 1.98
   },
   {
-   "date": "2026-11-01",
-   "fixture": "2026-11-01|FC Machida Zelvia|Gamba Osaka",
-   "league": "Japan J-League",
+   "date": "2026-10-31",
+   "fixture": "2026-10-31|Puebla|Pumas",
+   "league": "Mexico Liga MX",
    "model_type": "new_format",
-   "market": "BTTS",
-   "side": "YES",
+   "market": "OU25",
+   "side": "UNDER",
    "signal_tier": "SNIPER",
-   "odds": 1.67
+   "odds": 1.95
+  },
+  {
+   "date": "2026-11-01",
+   "fixture": "2026-11-01|Guadalajara|Atlante FC",
+   "league": "Mexico Liga MX",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.31
   },
   {
    "date": "2026-10-30",
@@ -1053,38 +1593,28 @@
    "model_type": "new_format",
    "market": "BTTS",
    "side": "YES",
-   "signal_tier": "MARKSMAN",
+   "signal_tier": "VALUABLE",
    "odds": 2.0
   },
   {
-   "date": "2026-11-01",
-   "fixture": "2026-11-01|JEF United Chiba|Avispa Fukuoka",
-   "league": "Japan J-League",
+   "date": "2026-10-29",
+   "fixture": "2026-10-29|KuPS Kuopio|IF Gnistan",
+   "league": "Finland Veikkausliiga",
    "model_type": "new_format",
    "market": "OU25",
-   "side": "OVER",
+   "side": "UNDER",
    "signal_tier": "SNIPER",
-   "odds": 2.05
-  },
-  {
-   "date": "2026-11-01",
-   "fixture": "2026-11-01|JEF United Chiba|Avispa Fukuoka",
-   "league": "Japan J-League",
-   "model_type": "new_format",
-   "market": "BTTS",
-   "side": "YES",
-   "signal_tier": "SNIPER",
-   "odds": 1.8
+   "odds": 2.3
   },
   {
    "date": "2026-10-27",
    "fixture": "2026-10-27|Argentinos Juniors|Independiente Rivadavia",
    "league": "Argentina Primera Division",
    "model_type": "new_format",
-   "market": "BTTS",
-   "side": "YES",
-   "signal_tier": "VALUABLE",
-   "odds": 1.95
+   "market": "OU25",
+   "side": "OVER",
+   "signal_tier": "SNIPER",
+   "odds": 2.29
   },
   {
    "date": "2026-10-26",
@@ -1093,48 +1623,68 @@
    "model_type": "new_format",
    "market": "BTTS",
    "side": "YES",
-   "signal_tier": "VALUABLE",
+   "signal_tier": "MARKSMAN",
    "odds": 1.98
+  },
+  {
+   "date": "2026-10-29",
+   "fixture": "2026-10-29|Nashville SC|Philadelphia Union",
+   "league": "USA MLS",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.4
   },
   {
    "date": "2026-10-25",
    "fixture": "2026-10-25|Mj\u00e4llby AIF|Hammarby IF",
    "league": "Sweden Allsvenskan",
    "model_type": "new_format",
-   "market": "BTTS",
-   "side": "YES",
+   "market": "OU25",
+   "side": "UNDER",
    "signal_tier": "SNIPER",
-   "odds": 1.7
+   "odds": 2.38
+  },
+  {
+   "date": "2026-10-29",
+   "fixture": "2026-10-29|Remo|Botafogo",
+   "league": "Brazil Serie A",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.07
   },
   {
    "date": "2026-10-28",
    "fixture": "2026-10-28|Fluminense|Internacional",
    "league": "Brazil Serie A",
    "model_type": "new_format",
-   "market": "BTTS",
-   "side": "YES",
-   "signal_tier": "MARKSMAN",
-   "odds": 1.85
+   "market": "OU25",
+   "side": "OVER",
+   "signal_tier": "SNIPER",
+   "odds": 2.0
+  },
+  {
+   "date": "2026-10-25",
+   "fixture": "2026-10-25|Atlas|Puebla",
+   "league": "Mexico Liga MX",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 1.97
   },
   {
    "date": "2026-10-26",
    "fixture": "2026-10-26|Flamengo|Atletico Mineiro",
    "league": "Brazil Serie A",
    "model_type": "new_format",
-   "market": "BTTS",
-   "side": "YES",
+   "market": "OU25",
+   "side": "UNDER",
    "signal_tier": "SNIPER",
-   "odds": 1.905
-  },
-  {
-   "date": "2026-10-31",
-   "fixture": "2026-10-31|Fagiano Okayama|FC Tokyo",
-   "league": "Japan J-League",
-   "model_type": "new_format",
-   "market": "BTTS",
-   "side": "YES",
-   "signal_tier": "SNIPER",
-   "odds": 1.8
+   "odds": 2.27
   },
   {
    "date": "2026-10-27",
@@ -1143,8 +1693,28 @@
    "model_type": "new_format",
    "market": "BTTS",
    "side": "YES",
-   "signal_tier": "VALUABLE",
+   "signal_tier": "SNIPER",
    "odds": 2.45
+  },
+  {
+   "date": "2026-10-29",
+   "fixture": "2026-10-29|Chicago Fire|Orlando City SC",
+   "league": "USA MLS",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 3.3
+  },
+  {
+   "date": "2026-10-28",
+   "fixture": "2026-10-28|IF Brommapojkarna|BK Hacken",
+   "league": "Sweden Allsvenskan",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.48
   },
   {
    "date": "2026-10-31",
@@ -1163,8 +1733,28 @@
    "model_type": "new_format",
    "market": "BTTS",
    "side": "YES",
-   "signal_tier": "VALUABLE",
+   "signal_tier": "SNIPER",
    "odds": 2.25
+  },
+  {
+   "date": "2026-10-29",
+   "fixture": "2026-10-29|FC Dallas|Columbus Crew SC",
+   "league": "USA MLS",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "VALUABLE",
+   "odds": 2.45
+  },
+  {
+   "date": "2026-10-29",
+   "fixture": "2026-10-29|Vancouver Whitecaps FC|San Diego FC",
+   "league": "USA MLS",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 3.25
   },
   {
    "date": "2026-10-26",
@@ -1178,13 +1768,13 @@
   },
   {
    "date": "2026-10-25",
-   "fixture": "2026-10-25|River Plate|Racing Club",
-   "league": "Argentina Primera Division",
+   "fixture": "2026-10-25|IK Start|Sandefjord",
+   "league": "Norway Eliteserien",
    "model_type": "new_format",
-   "market": "BTTS",
-   "side": "YES",
-   "signal_tier": "VALUABLE",
-   "odds": 2.1
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.3
   },
   {
    "date": "2026-10-31",
@@ -1208,13 +1798,33 @@
   },
   {
    "date": "2026-10-28",
-   "fixture": "2026-10-28|Pisa|Palermo",
-   "league": "Serie B",
-   "model_type": "standard",
+   "fixture": "2026-10-28|New York City FC|Atlanta United FC",
+   "league": "USA MLS",
+   "model_type": "new_format",
    "market": "OU25",
-   "side": "OVER",
+   "side": "UNDER",
+   "signal_tier": "VALUABLE",
+   "odds": 2.34
+  },
+  {
+   "date": "2026-10-29",
+   "fixture": "2026-10-29|Austin FC|Real Salt Lake",
+   "league": "USA MLS",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
    "signal_tier": "SNIPER",
-   "odds": 1.82
+   "odds": 2.27
+  },
+  {
+   "date": "2026-10-28",
+   "fixture": "2026-10-28|Halmstads BK|Malmo FF",
+   "league": "Sweden Allsvenskan",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.12
   },
   {
    "date": "2026-10-25",
@@ -1227,14 +1837,54 @@
    "odds": 1.74
   },
   {
-   "date": "2026-11-01",
-   "fixture": "2026-11-01|V-Varen Nagasaki|Tokyo Verdy",
-   "league": "Japan J-League",
+   "date": "2026-10-31",
+   "fixture": "2026-10-31|New York City FC|CF Montreal",
+   "league": "USA MLS",
    "model_type": "new_format",
-   "market": "BTTS",
-   "side": "YES",
+   "market": "OU25",
+   "side": "UNDER",
    "signal_tier": "SNIPER",
-   "odds": 1.83
+   "odds": 2.35
+  },
+  {
+   "date": "2026-10-26",
+   "fixture": "2026-10-26|Tijuana|Santos Laguna",
+   "league": "Mexico Liga MX",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.07
+  },
+  {
+   "date": "2026-10-26",
+   "fixture": "2026-10-26|Los Angeles FC|LA Galaxy",
+   "league": "USA MLS",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.62
+  },
+  {
+   "date": "2026-10-30",
+   "fixture": "2026-10-30|Lyngby|Randers FC",
+   "league": "Denmark Superliga",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.25
+  },
+  {
+   "date": "2026-10-25",
+   "fixture": "2026-10-25|Lillestrom|SK Brann",
+   "league": "Norway Eliteserien",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "VALUABLE",
+   "odds": 2.9
   },
   {
    "date": "2026-10-31",
@@ -1243,7 +1893,7 @@
    "model_type": "new_format",
    "market": "BTTS",
    "side": "YES",
-   "signal_tier": "VALUABLE",
+   "signal_tier": "SNIPER",
    "odds": 2.15
   },
   {
@@ -1258,6 +1908,16 @@
   },
   {
    "date": "2026-11-01",
+   "fixture": "2026-11-01|Malmo FF|Hammarby IF",
+   "league": "Sweden Allsvenskan",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.23
+  },
+  {
+   "date": "2026-11-01",
    "fixture": "2026-11-01|AD Ceuta FC|Sporting Gij\u00f3n",
    "league": "La Liga 2",
    "model_type": "standard",
@@ -1267,14 +1927,74 @@
    "odds": 1.64
   },
   {
+   "date": "2026-10-30",
+   "fixture": "2026-10-30|Bod\u00f8/Glimt|Viking FK",
+   "league": "Norway Eliteserien",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 3.4
+  },
+  {
+   "date": "2026-11-01",
+   "fixture": "2026-11-01|IF Elfsborg|\u00d6rgryte IS",
+   "league": "Sweden Allsvenskan",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.3
+  },
+  {
+   "date": "2026-10-31",
+   "fixture": "2026-10-31|Pachuca|Tigres",
+   "league": "Mexico Liga MX",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 1.93
+  },
+  {
+   "date": "2026-11-01",
+   "fixture": "2026-11-01|OB Odense BK|Silkeborg IF",
+   "league": "Denmark Superliga",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.58
+  },
+  {
+   "date": "2026-11-01",
+   "fixture": "2026-11-01|FC Nordsjaelland|FC Midtjylland",
+   "league": "Denmark Superliga",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.62
+  },
+  {
    "date": "2026-11-01",
    "fixture": "2026-11-01|Viborg FF|AC Horsens",
    "league": "Denmark Superliga",
    "model_type": "new_format",
-   "market": "BTTS",
-   "side": "YES",
-   "signal_tier": "VALUABLE",
-   "odds": 1.69
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.24
+  },
+  {
+   "date": "2026-10-29",
+   "fixture": "2026-10-29|Hammarby IF|IK Sirius",
+   "league": "Sweden Allsvenskan",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.62
   },
   {
    "date": "2026-11-01",
@@ -1283,18 +2003,58 @@
    "model_type": "standard",
    "market": "OU25",
    "side": "OVER",
-   "signal_tier": "SNIPER",
+   "signal_tier": "VALUABLE",
    "odds": 2.06
+  },
+  {
+   "date": "2026-11-01",
+   "fixture": "2026-11-01|IK Start|Lillestrom",
+   "league": "Norway Eliteserien",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "VALUABLE",
+   "odds": 2.3
+  },
+  {
+   "date": "2026-11-01",
+   "fixture": "2026-11-01|Sarpsborg FK|Kristiansund BK",
+   "league": "Norway Eliteserien",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.62
+  },
+  {
+   "date": "2026-10-31",
+   "fixture": "2026-10-31|Aalesund|Sandefjord",
+   "league": "Norway Eliteserien",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.62
+  },
+  {
+   "date": "2026-11-01",
+   "fixture": "2026-11-01|SK Brann|Molde",
+   "league": "Norway Eliteserien",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "VALUABLE",
+   "odds": 3.1
   },
   {
    "date": "2026-11-01",
    "fixture": "2026-11-01|Boca Juniors|River Plate",
    "league": "Argentina Primera Division",
    "model_type": "new_format",
-   "market": "BTTS",
-   "side": "YES",
-   "signal_tier": "VALUABLE",
-   "odds": 2.05
+   "market": "OU25",
+   "side": "OVER",
+   "signal_tier": "SNIPER",
+   "odds": 2.42
   },
   {
    "date": "2026-11-01",
@@ -1308,12 +2068,22 @@
   },
   {
    "date": "2026-11-01",
+   "fixture": "2026-11-01|Brondby IF|AGF Aarhus",
+   "league": "Denmark Superliga",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.45
+  },
+  {
+   "date": "2026-11-01",
    "fixture": "2026-11-01|Belgrano de Cordoba|Barracas Central",
    "league": "Argentina Primera Division",
    "model_type": "new_format",
    "market": "BTTS",
    "side": "YES",
-   "signal_tier": "VALUABLE",
+   "signal_tier": "SNIPER",
    "odds": 2.48
   },
   {
@@ -1338,23 +2108,43 @@
   },
   {
    "date": "2026-11-01",
-   "fixture": "2026-11-01|Newells Old Boys|Union Santa Fe",
-   "league": "Argentina Primera Division",
-   "model_type": "new_format",
-   "market": "BTTS",
-   "side": "YES",
-   "signal_tier": "VALUABLE",
-   "odds": 2.02
-  },
-  {
-   "date": "2026-11-01",
    "fixture": "2026-11-01|Lanus|Gimnasia Mendoza",
    "league": "Argentina Primera Division",
    "model_type": "new_format",
    "market": "BTTS",
    "side": "YES",
-   "signal_tier": "VALUABLE",
+   "signal_tier": "MARKSMAN",
    "odds": 2.1
+  },
+  {
+   "date": "2026-11-01",
+   "fixture": "2026-11-01|Santos Laguna|Necaxa",
+   "league": "Mexico Liga MX",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.62
+  },
+  {
+   "date": "2026-11-01",
+   "fixture": "2026-11-01|Djurgardens IF|Degerfors IF",
+   "league": "Sweden Allsvenskan",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.58
+  },
+  {
+   "date": "2026-11-02",
+   "fixture": "2026-11-02|VPS Vaasa|HJK Helsinki",
+   "league": "Finland Veikkausliiga",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.2
   },
   {
    "date": "2026-11-02",
@@ -1378,6 +2168,26 @@
   },
   {
    "date": "2026-11-02",
+   "fixture": "2026-11-02|GAIS|AIK",
+   "league": "Sweden Allsvenskan",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.12
+  },
+  {
+   "date": "2026-11-01",
+   "fixture": "2026-11-01|Monterrey|Tijuana",
+   "league": "Mexico Liga MX",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.45
+  },
+  {
+   "date": "2026-11-02",
    "fixture": "2026-11-02|Mallorca|C\u00e1diz CF",
    "league": "La Liga 2",
    "model_type": "standard",
@@ -1388,23 +2198,33 @@
   },
   {
    "date": "2026-11-02",
+   "fixture": "2026-11-02|SonderjyskE|FC Copenhagen",
+   "league": "Denmark Superliga",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "VALUABLE",
+   "odds": 2.5
+  },
+  {
+   "date": "2026-11-02",
+   "fixture": "2026-11-02|Platense|Central C\u00f3rdoba",
+   "league": "Argentina Primera Division",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "OVER",
+   "signal_tier": "SNIPER",
+   "odds": 2.39
+  },
+  {
+   "date": "2026-11-02",
    "fixture": "2026-11-02|Platense|Central C\u00f3rdoba",
    "league": "Argentina Primera Division",
    "model_type": "new_format",
    "market": "BTTS",
    "side": "YES",
-   "signal_tier": "VALUABLE",
+   "signal_tier": "MARKSMAN",
    "odds": 2.25
-  },
-  {
-   "date": "2026-11-03",
-   "fixture": "2026-11-03|Independiente Rivadavia|Banfield",
-   "league": "Argentina Primera Division",
-   "model_type": "new_format",
-   "market": "BTTS",
-   "side": "YES",
-   "signal_tier": "VALUABLE",
-   "odds": 2.02
   },
   {
    "date": "2026-11-03",
@@ -1413,18 +2233,18 @@
    "model_type": "new_format",
    "market": "BTTS",
    "side": "YES",
-   "signal_tier": "VALUABLE",
+   "signal_tier": "MARKSMAN",
    "odds": 1.99
   },
   {
-   "date": "2026-11-02",
-   "fixture": "2026-11-02|Defensa y Justicia|Independiente",
-   "league": "Argentina Primera Division",
+   "date": "2026-11-03",
+   "fixture": "2026-11-03|Chapecoense|Mirassol",
+   "league": "Brazil Serie A",
    "model_type": "new_format",
-   "market": "BTTS",
-   "side": "YES",
-   "signal_tier": "VALUABLE",
-   "odds": 1.87
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.18
   },
   {
    "date": "2026-11-04",
@@ -1437,23 +2257,13 @@
    "odds": 1.8
   },
   {
-   "date": "2026-11-04",
-   "fixture": "2026-11-04|Internacional|Coritiba",
-   "league": "Brazil Serie A",
-   "model_type": "new_format",
-   "market": "BTTS",
-   "side": "YES",
-   "signal_tier": "MARKSMAN",
-   "odds": 1.825
-  },
-  {
    "date": "2026-11-01",
    "fixture": "2026-11-01|Estudiantes|Instituto de C\u00f3rdoba",
    "league": "Argentina Primera Division",
    "model_type": "new_format",
    "market": "BTTS",
    "side": "YES",
-   "signal_tier": "VALUABLE",
+   "signal_tier": "MARKSMAN",
    "odds": 2.15
   },
   {
@@ -1461,10 +2271,90 @@
    "fixture": "2026-11-04|Flamengo|Gr\u00eamio",
    "league": "Brazil Serie A",
    "model_type": "new_format",
-   "market": "BTTS",
-   "side": "YES",
+   "market": "OU25",
+   "side": "UNDER",
    "signal_tier": "SNIPER",
-   "odds": 2.05
+   "odds": 2.5
+  },
+  {
+   "date": "2026-10-31",
+   "fixture": "2026-10-31|San Jose Earthquakes|Real Salt Lake",
+   "league": "USA MLS",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.62
+  },
+  {
+   "date": "2026-10-31",
+   "fixture": "2026-10-31|Sporting Kansas City|FC Dallas",
+   "league": "USA MLS",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "VALUABLE",
+   "odds": 2.75
+  },
+  {
+   "date": "2026-11-01",
+   "fixture": "2026-11-01|Vancouver Whitecaps FC|Seattle Sounders FC",
+   "league": "USA MLS",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.68
+  },
+  {
+   "date": "2026-10-31",
+   "fixture": "2026-10-31|LA Galaxy|Austin FC",
+   "league": "USA MLS",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.82
+  },
+  {
+   "date": "2026-11-01",
+   "fixture": "2026-11-01|Atlanta United FC|Toronto FC",
+   "league": "USA MLS",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.75
+  },
+  {
+   "date": "2026-10-31",
+   "fixture": "2026-10-31|Charlotte FC|Orlando City SC",
+   "league": "USA MLS",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 3.45
+  },
+  {
+   "date": "2026-10-31",
+   "fixture": "2026-10-31|FC Cincinnati|Philadelphia Union",
+   "league": "USA MLS",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 3.35
+  },
+  {
+   "date": "2026-11-01",
+   "fixture": "2026-11-01|Nashville SC|New York Red Bulls",
+   "league": "USA MLS",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.92
   },
   {
    "date": "2026-11-05",
@@ -1483,8 +2373,78 @@
    "model_type": "new_format",
    "market": "BTTS",
    "side": "YES",
-   "signal_tier": "MARKSMAN",
+   "signal_tier": "VALUABLE",
    "odds": 2.07
+  },
+  {
+   "date": "2026-10-31",
+   "fixture": "2026-10-31|St. Louis City SC|San Diego FC",
+   "league": "USA MLS",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 3.15
+  },
+  {
+   "date": "2026-11-02",
+   "fixture": "2026-11-02|New England Revolution|Inter Miami CF",
+   "league": "USA MLS",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 3.35
+  },
+  {
+   "date": "2026-10-31",
+   "fixture": "2026-10-31|Columbus Crew SC|D.C. United",
+   "league": "USA MLS",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.75
+  },
+  {
+   "date": "2026-11-05",
+   "fixture": "2026-11-05|Botafogo|Atletico Mineiro",
+   "league": "Brazil Serie A",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.05
+  },
+  {
+   "date": "2026-11-03",
+   "fixture": "2026-11-03|IK Sirius|Halmstads BK",
+   "league": "Sweden Allsvenskan",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.95
+  },
+  {
+   "date": "2026-11-02",
+   "fixture": "2026-11-02|FC Inter Turku|IF Gnistan",
+   "league": "Finland Veikkausliiga",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.32
+  },
+  {
+   "date": "2026-11-05",
+   "fixture": "2026-11-05|Palmeiras|Remo",
+   "league": "Brazil Serie A",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.3
   },
   {
    "date": "2026-11-05",
@@ -1493,8 +2453,28 @@
    "model_type": "new_format",
    "market": "BTTS",
    "side": "YES",
-   "signal_tier": "SNIPER",
+   "signal_tier": "VALUABLE",
    "odds": 2.175
+  },
+  {
+   "date": "2026-11-06",
+   "fixture": "2026-11-06|Cruzeiro|Bahia",
+   "league": "Brazil Serie A",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.25
+  },
+  {
+   "date": "2026-11-06",
+   "fixture": "2026-11-06|Hammarby IF|IF Elfsborg",
+   "league": "Sweden Allsvenskan",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.3
   },
   {
    "date": "2026-11-06",
@@ -1507,14 +2487,14 @@
    "odds": 1.6
   },
   {
-   "date": "2026-11-06",
-   "fixture": "2026-11-06|Vitoria|Fluminense",
-   "league": "Brazil Serie A",
+   "date": "2026-11-07",
+   "fixture": "2026-11-07|Degerfors IF|GAIS",
+   "league": "Sweden Allsvenskan",
    "model_type": "new_format",
-   "market": "BTTS",
-   "side": "YES",
-   "signal_tier": "MARKSMAN",
-   "odds": 1.76
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "VALUABLE",
+   "odds": 1.82
   },
   {
    "date": "2026-11-07",
@@ -1523,7 +2503,7 @@
    "model_type": "standard",
    "market": "BTTS",
    "side": "YES",
-   "signal_tier": "SNIPER",
+   "signal_tier": "VALUABLE",
    "odds": 1.89
   },
   {
@@ -1538,6 +2518,26 @@
   },
   {
    "date": "2026-11-07",
+   "fixture": "2026-11-07|Necaxa|Tijuana",
+   "league": "Mexico Liga MX",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.3
+  },
+  {
+   "date": "2026-11-07",
+   "fixture": "2026-11-07|D.C. United|New York City FC",
+   "league": "USA MLS",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.33
+  },
+  {
+   "date": "2026-11-07",
    "fixture": "2026-11-07|Burgos CF|Celta Fortuna",
    "league": "La Liga 2",
    "model_type": "standard",
@@ -1545,6 +2545,26 @@
    "side": "YES",
    "signal_tier": "VALUABLE",
    "odds": 1.81
+  },
+  {
+   "date": "2026-11-07",
+   "fixture": "2026-11-07|Atlante FC|Santos Laguna",
+   "league": "Mexico Liga MX",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.3
+  },
+  {
+   "date": "2026-11-07",
+   "fixture": "2026-11-07|C\u00e1diz CF|Oviedo",
+   "league": "La Liga 2",
+   "model_type": "standard",
+   "market": "OU25",
+   "side": "OVER",
+   "signal_tier": "VALUABLE",
+   "odds": 2.3
   },
   {
    "date": "2026-11-07",
@@ -1567,44 +2587,94 @@
    "odds": 1.84
   },
   {
-   "date": "2026-11-07",
-   "fixture": "2026-11-07|Shimizu S Pulse|Tokyo Verdy",
-   "league": "Japan J-League",
+   "date": "2026-11-08",
+   "fixture": "2026-11-08|Toluca|Monterrey",
+   "league": "Mexico Liga MX",
    "model_type": "new_format",
    "market": "OU25",
-   "side": "OVER",
-   "signal_tier": "VALUABLE",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.82
+  },
+  {
+   "date": "2026-11-07",
+   "fixture": "2026-11-07|Chicago Fire|Columbus Crew SC",
+   "league": "USA MLS",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.75
+  },
+  {
+   "date": "2026-11-08",
+   "fixture": "2026-11-08|Pumas|Am\u00e9rica",
+   "league": "Mexico Liga MX",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
    "odds": 2.25
   },
   {
-   "date": "2026-11-07",
-   "fixture": "2026-11-07|Shimizu S Pulse|Tokyo Verdy",
-   "league": "Japan J-League",
-   "model_type": "new_format",
-   "market": "BTTS",
-   "side": "YES",
-   "signal_tier": "SNIPER",
-   "odds": 2.0
-  },
-  {
    "date": "2026-11-08",
-   "fixture": "2026-11-08|Dalian Yingbo|Tianjin Jinmen Tiger FC",
-   "league": "China Super League",
-   "model_type": "new_format",
-   "market": "BTTS",
-   "side": "YES",
-   "signal_tier": "SNIPER",
-   "odds": 1.91
-  },
-  {
-   "date": "2026-11-08",
-   "fixture": "2026-11-08|JEF United Chiba|Mito HollyHock",
-   "league": "Japan J-League",
+   "fixture": "2026-11-08|Real Salt Lake|LA Galaxy",
+   "league": "USA MLS",
    "model_type": "new_format",
    "market": "OU25",
-   "side": "OVER",
+   "side": "UNDER",
    "signal_tier": "SNIPER",
-   "odds": 1.94
+   "odds": 2.8
+  },
+  {
+   "date": "2026-11-08",
+   "fixture": "2026-11-08|Beijing FC|Chongqing Tonglianglong FC",
+   "league": "China Super League",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.58
+  },
+  {
+   "date": "2026-11-08",
+   "fixture": "2026-11-08|Qingdao Hainiu FC|Shenzhen Peng City FC",
+   "league": "China Super League",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.58
+  },
+  {
+   "date": "2026-11-08",
+   "fixture": "2026-11-08|Shandong Luneng Taishan FC|Chengdu Rongcheng FC",
+   "league": "China Super League",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 3.4
+  },
+  {
+   "date": "2026-11-08",
+   "fixture": "2026-11-08|Shanghai Shenhua FC|Qingdao West Coast FC",
+   "league": "China Super League",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 3.5
+  },
+  {
+   "date": "2026-11-08",
+   "fixture": "2026-11-08|Shanghai SIPG FC|Liaoning Tieren FC",
+   "league": "China Super League",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 3.1
   },
   {
    "date": "2026-11-08",
@@ -1618,13 +2688,13 @@
   },
   {
    "date": "2026-11-08",
-   "fixture": "2026-11-08|Gimnasia Mendoza|Independiente Rivadavia",
+   "fixture": "2026-11-08|Aldosivi Mar del Plata|River Plate",
    "league": "Argentina Primera Division",
    "model_type": "new_format",
-   "market": "BTTS",
-   "side": "YES",
-   "signal_tier": "VALUABLE",
-   "odds": 1.74
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 1.83
   },
   {
    "date": "2026-11-08",
@@ -1633,7 +2703,7 @@
    "model_type": "new_format",
    "market": "BTTS",
    "side": "YES",
-   "signal_tier": "VALUABLE",
+   "signal_tier": "MARKSMAN",
    "odds": 2.045
   },
   {
@@ -1643,28 +2713,28 @@
    "model_type": "new_format",
    "market": "OU25",
    "side": "OVER",
-   "signal_tier": "VALUABLE",
+   "signal_tier": "SNIPER",
    "odds": 1.75
-  },
-  {
-   "date": "2026-11-08",
-   "fixture": "2026-11-08|Banfield|Atl\u00e9tico Tucuman",
-   "league": "Argentina Primera Division",
-   "model_type": "new_format",
-   "market": "BTTS",
-   "side": "YES",
-   "signal_tier": "VALUABLE",
-   "odds": 1.825
   },
   {
    "date": "2026-11-08",
    "fixture": "2026-11-08|Instituto de C\u00f3rdoba|Newells Old Boys",
    "league": "Argentina Primera Division",
    "model_type": "new_format",
-   "market": "BTTS",
-   "side": "YES",
-   "signal_tier": "VALUABLE",
-   "odds": 2.1
+   "market": "OU25",
+   "side": "OVER",
+   "signal_tier": "SNIPER",
+   "odds": 2.43
+  },
+  {
+   "date": "2026-11-08",
+   "fixture": "2026-11-08|Argentinos Juniors|Atl\u00e9tico Hurac\u00e1n",
+   "league": "Argentina Primera Division",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "OVER",
+   "signal_tier": "SNIPER",
+   "odds": 2.38
   },
   {
    "date": "2026-11-08",
@@ -1673,38 +2743,18 @@
    "model_type": "new_format",
    "market": "BTTS",
    "side": "YES",
-   "signal_tier": "VALUABLE",
+   "signal_tier": "MARKSMAN",
    "odds": 2.16
   },
   {
    "date": "2026-11-08",
-   "fixture": "2026-11-08|Gimnasia La Plata|Belgrano de Cordoba",
+   "fixture": "2026-11-08|Rosario Central|Estudiantes de R\u00edo Cuarto",
    "league": "Argentina Primera Division",
    "model_type": "new_format",
-   "market": "BTTS",
-   "side": "YES",
-   "signal_tier": "VALUABLE",
-   "odds": 1.775
-  },
-  {
-   "date": "2026-11-08",
-   "fixture": "2026-11-08|CA Tigre BA|Sarmiento de Junin",
-   "league": "Argentina Primera Division",
-   "model_type": "new_format",
-   "market": "BTTS",
-   "side": "YES",
-   "signal_tier": "VALUABLE",
-   "odds": 2.045
-  },
-  {
-   "date": "2026-11-08",
-   "fixture": "2026-11-08|Central C\u00f3rdoba|Lanus",
-   "league": "Argentina Primera Division",
-   "model_type": "new_format",
-   "market": "BTTS",
-   "side": "YES",
-   "signal_tier": "VALUABLE",
-   "odds": 1.975
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 1.92
   },
   {
    "date": "2026-11-08",
@@ -1713,18 +2763,28 @@
    "model_type": "new_format",
    "market": "BTTS",
    "side": "YES",
-   "signal_tier": "VALUABLE",
+   "signal_tier": "MARKSMAN",
    "odds": 1.89
   },
   {
+   "date": "2026-11-07",
+   "fixture": "2026-11-07|OB Odense BK|Viborg FF",
+   "league": "Denmark Superliga",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.42
+  },
+  {
    "date": "2026-11-08",
-   "fixture": "2026-11-08|Boca Juniors|Defensa y Justicia",
+   "fixture": "2026-11-08|Barracas Central|Racing Club",
    "league": "Argentina Primera Division",
    "model_type": "new_format",
-   "market": "BTTS",
-   "side": "YES",
-   "signal_tier": "VALUABLE",
-   "odds": 1.98
+   "market": "OU25",
+   "side": "OVER",
+   "signal_tier": "SNIPER",
+   "odds": 2.48
   },
   {
    "date": "2026-11-08",
@@ -1733,18 +2793,58 @@
    "model_type": "new_format",
    "market": "BTTS",
    "side": "YES",
-   "signal_tier": "VALUABLE",
+   "signal_tier": "MARKSMAN",
    "odds": 2.01
   },
   {
    "date": "2026-11-08",
-   "fixture": "2026-11-08|Union Santa Fe|Velez Sarsfield BA",
-   "league": "Argentina Primera Division",
+   "fixture": "2026-11-08|Viking FK|KFUM",
+   "league": "Norway Eliteserien",
    "model_type": "new_format",
-   "market": "BTTS",
-   "side": "YES",
+   "market": "OU25",
+   "side": "UNDER",
    "signal_tier": "VALUABLE",
-   "odds": 1.845
+   "odds": 3.4
+  },
+  {
+   "date": "2026-11-08",
+   "fixture": "2026-11-08|Lillestrom|Aalesund",
+   "league": "Norway Eliteserien",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 3.2
+  },
+  {
+   "date": "2026-11-08",
+   "fixture": "2026-11-08|Kalmar FF|IK Sirius",
+   "league": "Sweden Allsvenskan",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "VALUABLE",
+   "odds": 2.04
+  },
+  {
+   "date": "2026-11-08",
+   "fixture": "2026-11-08|Sandefjord|Molde",
+   "league": "Norway Eliteserien",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.98
+  },
+  {
+   "date": "2026-11-08",
+   "fixture": "2026-11-08|Randers FC|FC Nordsjaelland",
+   "league": "Denmark Superliga",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.92
   },
   {
    "date": "2026-11-08",
@@ -1767,6 +2867,16 @@
    "odds": 1.68
   },
   {
+   "date": "2026-11-07",
+   "fixture": "2026-11-07|Kristiansund BK|V\u00e5lerenga",
+   "league": "Norway Eliteserien",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.85
+  },
+  {
    "date": "2026-11-08",
    "fixture": "2026-11-08|Sporting Gij\u00f3n|Real Valladolid CF",
    "league": "La Liga 2",
@@ -1778,13 +2888,13 @@
   },
   {
    "date": "2026-11-08",
-   "fixture": "2026-11-08|AGF Aarhus|AC Horsens",
-   "league": "Denmark Superliga",
+   "fixture": "2026-11-08|Tromso|Bod\u00f8/Glimt",
+   "league": "Norway Eliteserien",
    "model_type": "new_format",
-   "market": "BTTS",
-   "side": "YES",
-   "signal_tier": "VALUABLE",
-   "odds": 1.61
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.95
   },
   {
    "date": "2026-11-02",
@@ -1798,6 +2908,96 @@
   },
   {
    "date": "2026-11-07",
+   "fixture": "2026-11-07|CF Montreal|Vancouver Whitecaps FC",
+   "league": "USA MLS",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.62
+  },
+  {
+   "date": "2026-11-07",
+   "fixture": "2026-11-07|Orlando City SC|New England Revolution",
+   "league": "USA MLS",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 3.25
+  },
+  {
+   "date": "2026-11-07",
+   "fixture": "2026-11-07|Inter Miami CF|Charlotte FC",
+   "league": "USA MLS",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 3.5
+  },
+  {
+   "date": "2026-11-07",
+   "fixture": "2026-11-07|Philadelphia Union|Toronto FC",
+   "league": "USA MLS",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 3.0
+  },
+  {
+   "date": "2026-11-07",
+   "fixture": "2026-11-07|FC Cincinnati|Nashville SC",
+   "league": "USA MLS",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.7
+  },
+  {
+   "date": "2026-11-07",
+   "fixture": "2026-11-07|New York Red Bulls|Atlanta United FC",
+   "league": "USA MLS",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.7
+  },
+  {
+   "date": "2026-11-09",
+   "fixture": "2026-11-09|Quer\u00e9taro|Puebla",
+   "league": "Mexico Liga MX",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.2
+  },
+  {
+   "date": "2026-11-08",
+   "fixture": "2026-11-08|AIK|BK Hacken",
+   "league": "Sweden Allsvenskan",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.68
+  },
+  {
+   "date": "2026-11-08",
+   "fixture": "2026-11-08|Minnesota United FC|San Jose Earthquakes",
+   "league": "USA MLS",
+   "model_type": "new_format",
+   "market": "OU25",
+   "side": "UNDER",
+   "signal_tier": "SNIPER",
+   "odds": 2.62
+  },
+  {
+   "date": "2026-11-07",
    "fixture": "2026-11-07|C\u00f3rdoba|AD Ceuta FC",
    "league": "La Liga 2",
    "model_type": "standard",
@@ -1808,344 +3008,111 @@
   },
   {
    "date": "2026-11-08",
-   "fixture": "2026-11-08|San Lorenzo|Platense",
-   "league": "Argentina Primera Division",
+   "fixture": "2026-11-08|Halmstads BK|Djurgardens IF",
+   "league": "Sweden Allsvenskan",
    "model_type": "new_format",
-   "market": "BTTS",
-   "side": "YES",
-   "signal_tier": "VALUABLE",
-   "odds": 2.2
-  },
-  {
-   "date": "2026-11-08",
-   "fixture": "2026-11-08|Independiente|Deportivo Riestra",
-   "league": "Argentina Primera Division",
-   "model_type": "new_format",
-   "market": "BTTS",
-   "side": "YES",
-   "signal_tier": "VALUABLE",
-   "odds": 2.17
-  },
-  {
-   "date": "2026-11-08",
-   "fixture": "2026-11-08|HJK Helsinki|AC Oulu",
-   "league": "Finland Veikkausliiga",
-   "model_type": "new_format",
-   "market": "BTTS",
-   "side": "YES",
+   "market": "OU25",
+   "side": "UNDER",
    "signal_tier": "SNIPER",
-   "odds": 1.75
-  },
-  {
-   "date": "2026-11-09",
-   "fixture": "2026-11-09|Sabadell FC|Real Sociedad B",
-   "league": "La Liga 2",
-   "model_type": "standard",
-   "market": "BTTS",
-   "side": "YES",
-   "signal_tier": "VALUABLE",
-   "odds": 1.88
-  },
-  {
-   "date": "2026-11-06",
-   "fixture": "2026-11-06|Barracas Central|Racing Club",
-   "league": "Argentina Primera Division",
-   "model_type": "new_format",
-   "market": "BTTS",
-   "side": "YES",
-   "signal_tier": "VALUABLE",
-   "odds": 2.0
-  },
-  {
-   "date": "2026-11-06",
-   "fixture": "2026-11-06|Union Santa Fe|Velez Sarsfield BA",
-   "league": "Argentina Primera Division",
-   "model_type": "new_format",
-   "market": "BTTS",
-   "side": "YES",
-   "signal_tier": "VALUABLE",
-   "odds": 1.8
-  },
-  {
-   "date": "2026-11-13",
-   "fixture": "2026-11-13|Legan\u00e9s|Burgos CF",
-   "league": "La Liga 2",
-   "model_type": "standard",
-   "market": "BTTS",
-   "side": "YES",
-   "signal_tier": "VALUABLE",
-   "odds": 1.86
-  },
-  {
-   "date": "2026-11-14",
-   "fixture": "2026-11-14|Real Valladolid CF|CD Castell\u00f3n",
-   "league": "La Liga 2",
-   "model_type": "standard",
-   "market": "BTTS",
-   "side": "YES",
-   "signal_tier": "VALUABLE",
-   "odds": 1.58
-  },
-  {
-   "date": "2026-11-14",
-   "fixture": "2026-11-14|Mallorca|C\u00f3rdoba",
-   "league": "La Liga 2",
-   "model_type": "standard",
-   "market": "BTTS",
-   "side": "YES",
-   "signal_tier": "VALUABLE",
-   "odds": 1.57
-  },
-  {
-   "date": "2026-11-14",
-   "fixture": "2026-11-14|Real Sociedad B|Sporting Gij\u00f3n",
-   "league": "La Liga 2",
-   "model_type": "standard",
-   "market": "BTTS",
-   "side": "YES",
-   "signal_tier": "VALUABLE",
-   "odds": 1.66
-  },
-  {
-   "date": "2026-11-14",
-   "fixture": "2026-11-14|Oviedo|Girona FC",
-   "league": "La Liga 2",
-   "model_type": "standard",
-   "market": "BTTS",
-   "side": "YES",
-   "signal_tier": "VALUABLE",
-   "odds": 1.74
-  },
-  {
-   "date": "2026-11-15",
-   "fixture": "2026-11-15|Tenerife|AD Ceuta FC",
-   "league": "La Liga 2",
-   "model_type": "standard",
-   "market": "BTTS",
-   "side": "YES",
-   "signal_tier": "VALUABLE",
-   "odds": 1.78
-  },
-  {
-   "date": "2026-11-15",
-   "fixture": "2026-11-15|SD Eibar|C\u00e1diz CF",
-   "league": "La Liga 2",
-   "model_type": "standard",
-   "market": "BTTS",
-   "side": "YES",
-   "signal_tier": "VALUABLE",
-   "odds": 1.75
-  },
-  {
-   "date": "2026-11-14",
-   "fixture": "2026-11-14|Almer\u00eda|Andorra CF",
-   "league": "La Liga 2",
-   "model_type": "standard",
-   "market": "BTTS",
-   "side": "YES",
-   "signal_tier": "VALUABLE",
-   "odds": 1.6
-  },
-  {
-   "date": "2026-11-15",
-   "fixture": "2026-11-15|CD Eldense|Sabadell FC",
-   "league": "La Liga 2",
-   "model_type": "standard",
-   "market": "BTTS",
-   "side": "YES",
-   "signal_tier": "VALUABLE",
-   "odds": 1.86
-  },
-  {
-   "date": "2026-11-15",
-   "fixture": "2026-11-15|Granada CF|Las Palmas",
-   "league": "La Liga 2",
-   "model_type": "standard",
-   "market": "BTTS",
-   "side": "YES",
-   "signal_tier": "VALUABLE",
-   "odds": 1.7
+   "odds": 2.32
   }
  ],
  "top3_last_gws": {
   "weeks": [
    "2026-W43",
-   "2026-W44",
-   "2026-W45"
+   "2026-W44"
   ],
-  "picks": 40,
-  "roi": -0.03,
-  "won": 21,
+  "picks": 37,
+  "roi": -0.4951,
+  "won": 9,
   "by_week": {
    "2026-W43": {
-    "picks": 8,
-    "roi": -0.5875
+    "picks": 10,
+    "roi": -0.358
    },
    "2026-W44": {
-    "picks": 15,
-    "roi": -0.033
-   },
-   "2026-W45": {
-    "picks": 17,
-    "roi": 0.235
+    "picks": 27,
+    "roi": -0.5459
    }
   },
   "list": [
    {
-    "date": "2026-11-08",
+    "date": "2026-10-29",
     "track": "new_format",
-    "league": "Japan J-League",
-    "home_team": "JEF United Chiba",
-    "away_team": "Mito HollyHock",
-    "mside": "over25_over",
-    "odds_side": 1.94,
+    "league": "USA MLS",
+    "home_team": "Vancouver Whitecaps FC",
+    "away_team": "San Diego FC",
+    "mside": "over25_under",
+    "odds_side": 3.25,
     "tier": "SNIPER",
-    "ev_est": 0.1775373200000001,
+    "ev_est": 0.5206685000000002,
     "won": false,
     "pnl": -1.0
-   },
-   {
-    "date": "2026-11-07",
-    "track": "new_format",
-    "league": "Japan J-League",
-    "home_team": "Shimizu S Pulse",
-    "away_team": "Tokyo Verdy",
-    "mside": "btts_yes",
-    "odds_side": 2.0,
-    "tier": "SNIPER",
-    "ev_est": 0.10380600000000006,
-    "won": false,
-    "pnl": -1.0
-   },
-   {
-    "date": "2026-11-07",
-    "track": "new_format",
-    "league": "Japan J-League",
-    "home_team": "Shimizu S Pulse",
-    "away_team": "Tokyo Verdy",
-    "mside": "over25_over",
-    "odds_side": 2.25,
-    "tier": "VALUABLE",
-    "ev_est": 0.02908025000000003,
-    "won": false,
-    "pnl": -1.0
-   },
-   {
-    "date": "2026-11-08",
-    "track": "new_format",
-    "league": "Austrian Bundesliga",
-    "home_team": "Hartberg",
-    "away_team": "Rheindorf Altach",
-    "mside": "over25_over",
-    "odds_side": 1.75,
-    "tier": "VALUABLE",
-    "ev_est": 0.1256997499999999,
-    "won": true,
-    "pnl": 0.75
-   },
-   {
-    "date": "2026-11-05",
-    "track": "new_format",
-    "league": "Brazil Serie A",
-    "home_team": "Palmeiras",
-    "away_team": "Remo",
-    "mside": "btts_yes",
-    "odds_side": 2.175,
-    "tier": "SNIPER",
-    "ev_est": 0.08074662499999996,
-    "won": true,
-    "pnl": 1.1749999999999998
-   },
-   {
-    "date": "2026-11-05",
-    "track": "new_format",
-    "league": "Brazil Serie A",
-    "home_team": "Sao Paulo",
-    "away_team": "Corinthians",
-    "mside": "over25_over",
-    "odds_side": 2.5,
-    "tier": "SNIPER",
-    "ev_est": 0.07392500000000002,
-    "won": false,
-    "pnl": -1.0
-   },
-   {
-    "date": "2026-11-04",
-    "track": "new_format",
-    "league": "Brazil Serie A",
-    "home_team": "Flamengo",
-    "away_team": "Gr\u00eamio",
-    "mside": "btts_yes",
-    "odds_side": 2.05,
-    "tier": "SNIPER",
-    "ev_est": 0.055850449999999885,
-    "won": true,
-    "pnl": 1.0499999999999998
-   },
-   {
-    "date": "2026-10-31",
-    "track": "new_format",
-    "league": "Japan J-League",
-    "home_team": "Fagiano Okayama",
-    "away_team": "FC Tokyo",
-    "mside": "btts_yes",
-    "odds_side": 1.8,
-    "tier": "SNIPER",
-    "ev_est": 0.0627542000000001,
-    "won": false,
-    "pnl": -1.0
-   },
-   {
-    "date": "2026-11-01",
-    "track": "new_format",
-    "league": "Japan J-League",
-    "home_team": "JEF United Chiba",
-    "away_team": "Avispa Fukuoka",
-    "mside": "over25_over",
-    "odds_side": 2.05,
-    "tier": "SNIPER",
-    "ev_est": 0.05287795000000006,
-    "won": true,
-    "pnl": 1.0499999999999998
-   },
-   {
-    "date": "2026-11-01",
-    "track": "new_format",
-    "league": "Japan J-League",
-    "home_team": "V-Varen Nagasaki",
-    "away_team": "Tokyo Verdy",
-    "mside": "btts_yes",
-    "odds_side": 1.83,
-    "tier": "SNIPER",
-    "ev_est": -0.0060080499999999315,
-    "won": true,
-    "pnl": 0.8300000000000001
-   },
-   {
-    "date": "2026-11-07",
-    "track": "standard",
-    "league": "Serie B",
-    "home_team": "Pisa",
-    "away_team": "S\u00fcdtirol",
-    "mside": "btts_yes",
-    "odds_side": 1.89,
-    "tier": "SNIPER",
-    "ev_est": 0.05950942999999986,
-    "won": true,
-    "pnl": 0.8899999999999999
    },
    {
     "date": "2026-10-26",
     "track": "new_format",
-    "league": "Brazil Serie A",
-    "home_team": "Flamengo",
-    "away_team": "Atletico Mineiro",
-    "mside": "btts_yes",
-    "odds_side": 1.905,
+    "league": "USA MLS",
+    "home_team": "Los Angeles FC",
+    "away_team": "LA Galaxy",
+    "mside": "over25_under",
+    "odds_side": 2.62,
     "tier": "SNIPER",
-    "ev_est": 0.04952927000000007,
-    "won": true,
-    "pnl": 0.905
+    "ev_est": 0.4750704800000003,
+    "won": false,
+    "pnl": -1.0
+   },
+   {
+    "date": "2026-10-28",
+    "track": "new_format",
+    "league": "USA MLS",
+    "home_team": "New England Revolution",
+    "away_team": "New York Red Bulls",
+    "mside": "over25_under",
+    "odds_side": 2.8,
+    "tier": "SNIPER",
+    "ev_est": 0.4618211999999997,
+    "won": false,
+    "pnl": -1.0
+   },
+   {
+    "date": "2026-10-30",
+    "track": "new_format",
+    "league": "Norway Eliteserien",
+    "home_team": "Bod\u00f8/Glimt",
+    "away_team": "Viking FK",
+    "mside": "over25_under",
+    "odds_side": 3.4,
+    "tier": "SNIPER",
+    "ev_est": 0.46835459999999984,
+    "won": false,
+    "pnl": -1.0
+   },
+   {
+    "date": "2026-11-01",
+    "track": "new_format",
+    "league": "Norway Eliteserien",
+    "home_team": "Sarpsborg FK",
+    "away_team": "Kristiansund BK",
+    "mside": "over25_under",
+    "odds_side": 2.62,
+    "tier": "SNIPER",
+    "ev_est": 0.18175362000000006,
+    "won": false,
+    "pnl": -1.0
+   },
+   {
+    "date": "2026-10-31",
+    "track": "new_format",
+    "league": "Norway Eliteserien",
+    "home_team": "Aalesund",
+    "away_team": "Sandefjord",
+    "mside": "over25_under",
+    "odds_side": 2.62,
+    "tier": "SNIPER",
+    "ev_est": 0.1410388199999999,
+    "won": false,
+    "pnl": -1.0
    },
    {
     "date": "2026-10-28",
@@ -2153,88 +3120,114 @@
     "league": "Brazil Serie A",
     "home_team": "Bragantino-SP",
     "away_team": "Chapecoense",
-    "mside": "btts_yes",
-    "odds_side": 1.85,
-    "tier": "MARKSMAN",
-    "ev_est": 0.01918905000000004,
+    "mside": "over25_under",
+    "odds_side": 2.5,
+    "tier": "SNIPER",
+    "ev_est": 0.3757975,
+    "won": false,
+    "pnl": -1.0
+   },
+   {
+    "date": "2026-10-26",
+    "track": "new_format",
+    "league": "Brazil Serie A",
+    "home_team": "Flamengo",
+    "away_team": "Atletico Mineiro",
+    "mside": "over25_under",
+    "odds_side": 2.27,
+    "tier": "SNIPER",
+    "ev_est": 0.24739905000000006,
+    "won": false,
+    "pnl": -1.0
+   },
+   {
+    "date": "2026-10-29",
+    "track": "new_format",
+    "league": "Brazil Serie A",
+    "home_team": "Remo",
+    "away_team": "Botafogo",
+    "mside": "over25_under",
+    "odds_side": 2.07,
+    "tier": "SNIPER",
+    "ev_est": 0.23765092999999982,
+    "won": false,
+    "pnl": -1.0
+   },
+   {
+    "date": "2026-11-01",
+    "track": "new_format",
+    "league": "Denmark Superliga",
+    "home_team": "OB Odense BK",
+    "away_team": "Silkeborg IF",
+    "mside": "over25_under",
+    "odds_side": 2.58,
+    "tier": "SNIPER",
+    "ev_est": 0.35920076,
+    "won": false,
+    "pnl": -1.0
+   },
+   {
+    "date": "2026-11-01",
+    "track": "new_format",
+    "league": "Denmark Superliga",
+    "home_team": "FC Nordsjaelland",
+    "away_team": "FC Midtjylland",
+    "mside": "over25_under",
+    "odds_side": 2.62,
+    "tier": "SNIPER",
+    "ev_est": 0.35430420000000007,
     "won": false,
     "pnl": -1.0
    },
    {
     "date": "2026-10-30",
     "track": "new_format",
-    "league": "Brazil Serie A",
-    "home_team": "Corinthians",
-    "away_team": "Mirassol",
-    "mside": "btts_yes",
-    "odds_side": 2.0,
-    "tier": "MARKSMAN",
-    "ev_est": 0.015994000000000064,
+    "league": "Denmark Superliga",
+    "home_team": "Lyngby",
+    "away_team": "Randers FC",
+    "mside": "over25_under",
+    "odds_side": 2.25,
+    "tier": "SNIPER",
+    "ev_est": 0.24857225000000005,
     "won": false,
     "pnl": -1.0
    },
    {
-    "date": "2026-11-08",
+    "date": "2026-10-29",
     "track": "new_format",
-    "league": "Finland Veikkausliiga",
-    "home_team": "HJK Helsinki",
-    "away_team": "AC Oulu",
-    "mside": "btts_yes",
-    "odds_side": 1.75,
+    "league": "Sweden Allsvenskan",
+    "home_team": "Hammarby IF",
+    "away_team": "IK Sirius",
+    "mside": "over25_under",
+    "odds_side": 2.62,
     "tier": "SNIPER",
-    "ev_est": 0.046424749999999904,
+    "ev_est": 0.32737322000000013,
     "won": true,
-    "pnl": 0.75
-   },
-   {
-    "date": "2026-11-08",
-    "track": "new_format",
-    "league": "China Super League",
-    "home_team": "Dalian Yingbo",
-    "away_team": "Tianjin Jinmen Tiger FC",
-    "mside": "btts_yes",
-    "odds_side": 1.91,
-    "tier": "SNIPER",
-    "ev_est": 0.0405622699999999,
-    "won": true,
-    "pnl": 0.9099999999999999
+    "pnl": 1.62
    },
    {
     "date": "2026-11-01",
     "track": "new_format",
-    "league": "Argentina Primera Division",
-    "home_team": "Newells Old Boys",
-    "away_team": "Union Santa Fe",
-    "mside": "over25_over",
-    "odds_side": 2.44,
+    "league": "Sweden Allsvenskan",
+    "home_team": "Malmo FF",
+    "away_team": "Hammarby IF",
+    "mside": "over25_under",
+    "odds_side": 2.23,
     "tier": "SNIPER",
-    "ev_est": 0.03915696000000013,
+    "ev_est": 0.32664706999999993,
     "won": false,
     "pnl": -1.0
    },
    {
-    "date": "2026-10-26",
+    "date": "2026-11-01",
     "track": "new_format",
-    "league": "Argentina Primera Division",
-    "home_team": "Union Santa Fe",
-    "away_team": "Estudiantes",
-    "mside": "btts_yes",
-    "odds_side": 1.88,
-    "tier": "VALUABLE",
-    "ev_est": 0.0028,
-    "won": true,
-    "pnl": 0.8799999999999999
-   },
-   {
-    "date": "2026-10-26",
-    "track": "new_format",
-    "league": "Argentina Primera Division",
-    "home_team": "Central C\u00f3rdoba",
-    "away_team": "Velez Sarsfield BA",
-    "mside": "btts_yes",
-    "odds_side": 1.98,
-    "tier": "VALUABLE",
-    "ev_est": 0.0028,
+    "league": "Sweden Allsvenskan",
+    "home_team": "Djurgardens IF",
+    "away_team": "Degerfors IF",
+    "mside": "over25_under",
+    "odds_side": 2.58,
+    "tier": "SNIPER",
+    "ev_est": 0.2965299800000003,
     "won": false,
     "pnl": -1.0
    },
@@ -2242,14 +3235,209 @@
     "date": "2026-10-25",
     "track": "new_format",
     "league": "Norway Eliteserien",
-    "home_team": "Molde",
-    "away_team": "Fredrikstad FK",
-    "mside": "btts_yes",
-    "odds_side": 1.56,
+    "home_team": "Sarpsborg FK",
+    "away_team": "Aalesund",
+    "mside": "over25_under",
+    "odds_side": 2.88,
     "tier": "SNIPER",
-    "ev_est": 0.027391039999999922,
+    "ev_est": 0.2810556799999999,
+    "won": false,
+    "pnl": -1.0
+   },
+   {
+    "date": "2026-10-25",
+    "track": "new_format",
+    "league": "Norway Eliteserien",
+    "home_team": "Viking FK",
+    "away_team": "Tromso",
+    "mside": "over25_under",
+    "odds_side": 2.6,
+    "tier": "SNIPER",
+    "ev_est": 0.2322595999999999,
+    "won": false,
+    "pnl": -1.0
+   },
+   {
+    "date": "2026-10-25",
+    "track": "new_format",
+    "league": "Norway Eliteserien",
+    "home_team": "IK Start",
+    "away_team": "Sandefjord",
+    "mside": "over25_under",
+    "odds_side": 2.3,
+    "tier": "SNIPER",
+    "ev_est": 0.152806,
     "won": true,
-    "pnl": 0.56
+    "pnl": 1.2999999999999998
+   },
+   {
+    "date": "2026-11-01",
+    "track": "new_format",
+    "league": "Mexico Liga MX",
+    "home_team": "Guadalajara",
+    "away_team": "Atlante FC",
+    "mside": "over25_under",
+    "odds_side": 2.31,
+    "tier": "SNIPER",
+    "ev_est": 0.28057622000000015,
+    "won": false,
+    "pnl": -1.0
+   },
+   {
+    "date": "2026-10-31",
+    "track": "new_format",
+    "league": "Mexico Liga MX",
+    "home_team": "Puebla",
+    "away_team": "Pumas",
+    "mside": "over25_under",
+    "odds_side": 1.95,
+    "tier": "SNIPER",
+    "ev_est": 0.2556985999999999,
+    "won": false,
+    "pnl": -1.0
+   },
+   {
+    "date": "2026-11-01",
+    "track": "new_format",
+    "league": "Mexico Liga MX",
+    "home_team": "Monterrey",
+    "away_team": "Tijuana",
+    "mside": "over25_under",
+    "odds_side": 2.45,
+    "tier": "SNIPER",
+    "ev_est": 0.21819390000000016,
+    "won": false,
+    "pnl": -1.0
+   },
+   {
+    "date": "2026-10-29",
+    "track": "new_format",
+    "league": "Finland Veikkausliiga",
+    "home_team": "KuPS Kuopio",
+    "away_team": "IF Gnistan",
+    "mside": "over25_under",
+    "odds_side": 2.3,
+    "tier": "SNIPER",
+    "ev_est": 0.27932669999999993,
+    "won": true,
+    "pnl": 1.2999999999999998
+   },
+   {
+    "date": "2026-10-29",
+    "track": "new_format",
+    "league": "Finland Veikkausliiga",
+    "home_team": "FC Inter Turku",
+    "away_team": "HJK Helsinki",
+    "mside": "over25_under",
+    "odds_side": 1.96,
+    "tier": "SNIPER",
+    "ev_est": 0.1599868000000002,
+    "won": false,
+    "pnl": -1.0
+   },
+   {
+    "date": "2026-10-25",
+    "track": "new_format",
+    "league": "Mexico Liga MX",
+    "home_team": "Atlas",
+    "away_team": "Puebla",
+    "mside": "over25_under",
+    "odds_side": 1.97,
+    "tier": "SNIPER",
+    "ev_est": 0.27577790999999996,
+    "won": false,
+    "pnl": -1.0
+   },
+   {
+    "date": "2026-10-25",
+    "track": "new_format",
+    "league": "Denmark Superliga",
+    "home_team": "AGF Aarhus",
+    "away_team": "Viborg FF",
+    "mside": "over25_under",
+    "odds_side": 2.31,
+    "tier": "SNIPER",
+    "ev_est": 0.20271998000000013,
+    "won": false,
+    "pnl": -1.0
+   },
+   {
+    "date": "2026-10-25",
+    "track": "new_format",
+    "league": "Sweden Allsvenskan",
+    "home_team": "Mj\u00e4llby AIF",
+    "away_team": "Hammarby IF",
+    "mside": "over25_under",
+    "odds_side": 2.38,
+    "tier": "SNIPER",
+    "ev_est": 0.20021258000000008,
+    "won": true,
+    "pnl": 1.38
+   },
+   {
+    "date": "2026-11-01",
+    "track": "standard",
+    "league": "Serie B",
+    "home_team": "Avellino",
+    "away_team": "Pisa",
+    "mside": "over25_over",
+    "odds_side": 2.06,
+    "tier": "VALUABLE",
+    "ev_est": 0.15402230000000006,
+    "won": false,
+    "pnl": -1.0
+   },
+   {
+    "date": "2026-10-27",
+    "track": "new_format",
+    "league": "Argentina Primera Division",
+    "home_team": "Instituto de C\u00f3rdoba",
+    "away_team": "Deportivo Riestra",
+    "mside": "btts_yes",
+    "odds_side": 2.45,
+    "tier": "SNIPER",
+    "ev_est": 0.06515537787170445,
+    "won": false,
+    "pnl": -1.0
+   },
+   {
+    "date": "2026-10-31",
+    "track": "new_format",
+    "league": "Argentina Primera Division",
+    "home_team": "Deportivo Riestra",
+    "away_team": "Talleres",
+    "mside": "btts_yes",
+    "odds_side": 2.25,
+    "tier": "SNIPER",
+    "ev_est": 0.060342162608662875,
+    "won": false,
+    "pnl": -1.0
+   },
+   {
+    "date": "2026-10-30",
+    "track": "new_format",
+    "league": "Argentina Primera Division",
+    "home_team": "Estudiantes de R\u00edo Cuarto",
+    "away_team": "Gimnasia La Plata",
+    "mside": "btts_yes",
+    "odds_side": 2.32,
+    "tier": "SNIPER",
+    "ev_est": 0.0560175439466184,
+    "won": true,
+    "pnl": 1.3199999999999998
+   },
+   {
+    "date": "2026-10-25",
+    "track": "new_format",
+    "league": "Argentina Primera Division",
+    "home_team": "Aldosivi Mar del Plata",
+    "away_team": "Belgrano de Cordoba",
+    "mside": "btts_yes",
+    "odds_side": 1.98,
+    "tier": "SNIPER",
+    "ev_est": 0.05099232670413034,
+    "won": false,
+    "pnl": -1.0
    },
    {
     "date": "2026-10-25",
@@ -2260,7 +3448,7 @@
     "mside": "btts_yes",
     "odds_side": 1.75,
     "tier": "VALUABLE",
-    "ev_est": 0.0227,
+    "ev_est": 0.016,
     "won": false,
     "pnl": -1.0
    },
@@ -2273,7 +3461,7 @@
     "mside": "btts_yes",
     "odds_side": 1.62,
     "tier": "VALUABLE",
-    "ev_est": 0.0227,
+    "ev_est": 0.016,
     "won": false,
     "pnl": -1.0
    },
@@ -2286,7 +3474,7 @@
     "mside": "btts_yes",
     "odds_side": 1.74,
     "tier": "VALUABLE",
-    "ev_est": 0.0227,
+    "ev_est": 0.016,
     "won": true,
     "pnl": 0.74
    },
@@ -2299,7 +3487,7 @@
     "mside": "btts_yes",
     "odds_side": 1.75,
     "tier": "VALUABLE",
-    "ev_est": 0.0227,
+    "ev_est": 0.016,
     "won": true,
     "pnl": 0.75
    },
@@ -2312,7 +3500,7 @@
     "mside": "btts_yes",
     "odds_side": 1.81,
     "tier": "VALUABLE",
-    "ev_est": 0.0227,
+    "ev_est": 0.016,
     "won": true,
     "pnl": 0.81
    },
@@ -2325,191 +3513,9 @@
     "mside": "btts_yes",
     "odds_side": 1.46,
     "tier": "VALUABLE",
-    "ev_est": 0.0227,
+    "ev_est": 0.016,
     "won": true,
     "pnl": 0.45999999999999996
-   },
-   {
-    "date": "2026-11-02",
-    "track": "standard",
-    "league": "La Liga 2",
-    "home_team": "Oviedo",
-    "away_team": "Las Palmas",
-    "mside": "btts_yes",
-    "odds_side": 1.83,
-    "tier": "VALUABLE",
-    "ev_est": 0.0227,
-    "won": true,
-    "pnl": 0.8300000000000001
-   },
-   {
-    "date": "2026-11-02",
-    "track": "standard",
-    "league": "La Liga 2",
-    "home_team": "Real Valladolid CF",
-    "away_team": "Legan\u00e9s",
-    "mside": "btts_yes",
-    "odds_side": 1.82,
-    "tier": "VALUABLE",
-    "ev_est": 0.0227,
-    "won": true,
-    "pnl": 0.8200000000000001
-   },
-   {
-    "date": "2026-11-02",
-    "track": "standard",
-    "league": "La Liga 2",
-    "home_team": "Mallorca",
-    "away_team": "C\u00e1diz CF",
-    "mside": "btts_yes",
-    "odds_side": 1.93,
-    "tier": "VALUABLE",
-    "ev_est": 0.0227,
-    "won": true,
-    "pnl": 0.9299999999999999
-   },
-   {
-    "date": "2026-11-01",
-    "track": "new_format",
-    "league": "Denmark Superliga",
-    "home_team": "Viborg FF",
-    "away_team": "AC Horsens",
-    "mside": "btts_yes",
-    "odds_side": 1.69,
-    "tier": "VALUABLE",
-    "ev_est": 0.004640780000000122,
-    "won": false,
-    "pnl": -1.0
-   },
-   {
-    "date": "2026-10-25",
-    "track": "new_format",
-    "league": "Argentina Primera Division",
-    "home_team": "Independiente",
-    "away_team": "Boca Juniors",
-    "mside": "btts_yes",
-    "odds_side": 2.1,
-    "tier": "VALUABLE",
-    "ev_est": 0.0028,
-    "won": false,
-    "pnl": -1.0
-   },
-   {
-    "date": "2026-10-25",
-    "track": "new_format",
-    "league": "Argentina Primera Division",
-    "home_team": "Aldosivi Mar del Plata",
-    "away_team": "Belgrano de Cordoba",
-    "mside": "btts_yes",
-    "odds_side": 1.98,
-    "tier": "VALUABLE",
-    "ev_est": 0.0028,
-    "won": false,
-    "pnl": -1.0
-   },
-   {
-    "date": "2026-10-25",
-    "track": "new_format",
-    "league": "Argentina Primera Division",
-    "home_team": "River Plate",
-    "away_team": "Racing Club",
-    "mside": "btts_yes",
-    "odds_side": 2.1,
-    "tier": "VALUABLE",
-    "ev_est": 0.0028,
-    "won": false,
-    "pnl": -1.0
-   },
-   {
-    "date": "2026-11-02",
-    "track": "new_format",
-    "league": "Argentina Primera Division",
-    "home_team": "Platense",
-    "away_team": "Central C\u00f3rdoba",
-    "mside": "btts_yes",
-    "odds_side": 2.25,
-    "tier": "VALUABLE",
-    "ev_est": 0.0028,
-    "won": false,
-    "pnl": -1.0
-   },
-   {
-    "date": "2026-11-02",
-    "track": "new_format",
-    "league": "Argentina Primera Division",
-    "home_team": "Defensa y Justicia",
-    "away_team": "Independiente",
-    "mside": "btts_yes",
-    "odds_side": 1.87,
-    "tier": "VALUABLE",
-    "ev_est": 0.0028,
-    "won": true,
-    "pnl": 0.8700000000000001
-   },
-   {
-    "date": "2026-11-03",
-    "track": "new_format",
-    "league": "Argentina Primera Division",
-    "home_team": "Independiente Rivadavia",
-    "away_team": "Banfield",
-    "mside": "btts_yes",
-    "odds_side": 2.02,
-    "tier": "VALUABLE",
-    "ev_est": 0.0028,
-    "won": true,
-    "pnl": 1.02
-   },
-   {
-    "date": "2026-11-08",
-    "track": "new_format",
-    "league": "Denmark Superliga",
-    "home_team": "AGF Aarhus",
-    "away_team": "AC Horsens",
-    "mside": "btts_yes",
-    "odds_side": 1.61,
-    "tier": "VALUABLE",
-    "ev_est": -0.009679339999999925,
-    "won": false,
-    "pnl": -1.0
-   },
-   {
-    "date": "2026-10-25",
-    "track": "new_format",
-    "league": "Sweden Allsvenskan",
-    "home_team": "Mj\u00e4llby AIF",
-    "away_team": "Hammarby IF",
-    "mside": "btts_yes",
-    "odds_side": 1.7,
-    "tier": "SNIPER",
-    "ev_est": -0.010996099999999953,
-    "won": false,
-    "pnl": -1.0
-   },
-   {
-    "date": "2026-10-28",
-    "track": "standard",
-    "league": "Serie B",
-    "home_team": "Pisa",
-    "away_team": "Palermo",
-    "mside": "over25_over",
-    "odds_side": 1.82,
-    "tier": "SNIPER",
-    "ev_est": -0.0443730349102599,
-    "won": true,
-    "pnl": 0.8200000000000001
-   },
-   {
-    "date": "2026-11-01",
-    "track": "standard",
-    "league": "Serie B",
-    "home_team": "Avellino",
-    "away_team": "Pisa",
-    "mside": "over25_over",
-    "odds_side": 2.06,
-    "tier": "SNIPER",
-    "ev_est": -0.05041524034853062,
-    "won": false,
-    "pnl": -1.0
    }
   ]
  }

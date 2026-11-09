@@ -157,8 +157,9 @@
       "standard|OU25_OVER|Serie B": {
         "state": "ACTIVE_LOW",
         "base_fraction": 0.005,
-        "source": "PROMISING bars_opt cell (proposal TP-2026-11-09-c2414fcf, study FINAL 2026-09-01..11-08); owner 2026-11-09 'Paper + PROMISING small': the policy's ACTIVE_LOW level",
-        "max_odds_source": "the cell has no odds range: the reader's HARD max_odds ceiling applies",
+        "source": "PROMISING bars_opt cell (proposal TP-2026-11-09-abfb5dc4, study FINAL 2026-09-01..11-08); owner 2026-11-09 'Paper + PROMISING small': the policy's ACTIVE_LOW level",
+        "max_odds": 3.5,
+        "max_odds_source": "the cell's own odds_max",
         "tier_multipliers": {
           "SNIPER": 1.0,
           "MARKSMAN": 1.0,
@@ -166,10 +167,10 @@
         },
         "tier_multipliers_note": "flat at every tier: the cell's PROMISING evidence (study FINAL) is flat stakes on every tip at or above its VALUABLE bar"
       },
-      "standard|OU25_UNDER|Scottish League Two": {
+      "new_format|BTTS|Brazil Serie A": {
         "state": "ACTIVE_LOW",
         "base_fraction": 0.005,
-        "source": "PROMISING bars_opt cell (proposal TP-2026-11-09-c2414fcf, study FINAL 2026-09-01..11-08); owner 2026-11-09 'Paper + PROMISING small': the policy's ACTIVE_LOW level",
+        "source": "PROMISING bars_opt cell (proposal TP-2026-11-09-abfb5dc4, study FINAL 2026-09-01..11-08); owner 2026-11-09 'Paper + PROMISING small': the policy's ACTIVE_LOW level",
         "max_odds": 2.5,
         "max_odds_source": "the cell's own odds_max",
         "tier_multipliers": {
@@ -182,9 +183,8 @@
       "standard|BTTS|La Liga 2": {
         "state": "ACTIVE_LOW",
         "base_fraction": 0.005,
-        "source": "PROMISING bars_opt cell (proposal TP-2026-11-09-c2414fcf, study FINAL 2026-09-01..11-08); owner 2026-11-09 'Paper + PROMISING small': the policy's ACTIVE_LOW level",
-        "max_odds": 2.5,
-        "max_odds_source": "the cell's own odds_max",
+        "source": "PROMISING bars_opt cell (proposal TP-2026-11-09-abfb5dc4, study FINAL 2026-09-01..11-08); owner 2026-11-09 'Paper + PROMISING small': the policy's ACTIVE_LOW level",
+        "max_odds_source": "the cell has no odds range: the reader's HARD max_odds ceiling applies",
         "tier_multipliers": {
           "SNIPER": 1.0,
           "MARKSMAN": 1.0,
@@ -195,74 +195,8 @@
       "standard|BTTS|Serie B": {
         "state": "ACTIVE_LOW",
         "base_fraction": 0.005,
-        "source": "PROMISING bars_opt cell (proposal TP-2026-11-09-c2414fcf, study FINAL 2026-09-01..11-08); owner 2026-11-09 'Paper + PROMISING small': the policy's ACTIVE_LOW level",
-        "max_odds": 2.5,
-        "max_odds_source": "the cell's own odds_max",
-        "tier_multipliers": {
-          "SNIPER": 1.0,
-          "MARKSMAN": 1.0,
-          "VALUABLE": 1.0
-        },
-        "tier_multipliers_note": "flat at every tier: the cell's PROMISING evidence (study FINAL) is flat stakes on every tip at or above its VALUABLE bar"
-      },
-      "new_format|OU25_OVER|Brazil Serie A": {
-        "state": "ACTIVE_LOW",
-        "base_fraction": 0.005,
-        "source": "PROMISING bars_opt cell (proposal TP-2026-11-09-c2414fcf, study FINAL 2026-09-01..11-08); owner 2026-11-09 'Paper + PROMISING small': the policy's ACTIVE_LOW level",
-        "max_odds": 2.5,
-        "max_odds_source": "the cell's own odds_max",
-        "tier_multipliers": {
-          "SNIPER": 1.0,
-          "MARKSMAN": 1.0,
-          "VALUABLE": 1.0
-        },
-        "tier_multipliers_note": "flat at every tier: the cell's PROMISING evidence (study FINAL) is flat stakes on every tip at or above its VALUABLE bar"
-      },
-      "new_format|OU25_OVER|Sweden Allsvenskan": {
-        "state": "ACTIVE_LOW",
-        "base_fraction": 0.005,
-        "source": "PROMISING bars_opt cell (proposal TP-2026-11-09-c2414fcf, study FINAL 2026-09-01..11-08); owner 2026-11-09 'Paper + PROMISING small': the policy's ACTIVE_LOW level",
-        "max_odds": 2.5,
-        "max_odds_source": "the cell's own odds_max",
-        "tier_multipliers": {
-          "SNIPER": 1.0,
-          "MARKSMAN": 1.0,
-          "VALUABLE": 1.0
-        },
-        "tier_multipliers_note": "flat at every tier: the cell's PROMISING evidence (study FINAL) is flat stakes on every tip at or above its VALUABLE bar"
-      },
-      "new_format|BTTS|Brazil Serie A": {
-        "state": "ACTIVE_LOW",
-        "base_fraction": 0.005,
-        "source": "PROMISING bars_opt cell (proposal TP-2026-11-09-c2414fcf, study FINAL 2026-09-01..11-08); owner 2026-11-09 'Paper + PROMISING small': the policy's ACTIVE_LOW level",
-        "max_odds": 2.5,
-        "max_odds_source": "the cell's own odds_max",
-        "tier_multipliers": {
-          "SNIPER": 1.0,
-          "MARKSMAN": 1.0,
-          "VALUABLE": 1.0
-        },
-        "tier_multipliers_note": "flat at every tier: the cell's PROMISING evidence (study FINAL) is flat stakes on every tip at or above its VALUABLE bar"
-      },
-      "new_format|BTTS|Ireland Premier Division": {
-        "state": "ACTIVE_LOW",
-        "base_fraction": 0.005,
-        "source": "PROMISING bars_opt cell (proposal TP-2026-11-09-c2414fcf, study FINAL 2026-09-01..11-08); owner 2026-11-09 'Paper + PROMISING small': the policy's ACTIVE_LOW level",
-        "max_odds": 2.5,
-        "max_odds_source": "the cell's own odds_max",
-        "tier_multipliers": {
-          "SNIPER": 1.0,
-          "MARKSMAN": 1.0,
-          "VALUABLE": 1.0
-        },
-        "tier_multipliers_note": "flat at every tier: the cell's PROMISING evidence (study FINAL) is flat stakes on every tip at or above its VALUABLE bar"
-      },
-      "new_format|BTTS|Norway Eliteserien": {
-        "state": "ACTIVE_LOW",
-        "base_fraction": 0.005,
-        "source": "PROMISING bars_opt cell (proposal TP-2026-11-09-c2414fcf, study FINAL 2026-09-01..11-08); owner 2026-11-09 'Paper + PROMISING small': the policy's ACTIVE_LOW level",
-        "max_odds": 2.5,
-        "max_odds_source": "the cell's own odds_max",
+        "source": "PROMISING bars_opt cell (proposal TP-2026-11-09-abfb5dc4, study FINAL 2026-09-01..11-08); owner 2026-11-09 'Paper + PROMISING small': the policy's ACTIVE_LOW level",
+        "max_odds_source": "the cell has no odds range: the reader's HARD max_odds ceiling applies",
         "tier_multipliers": {
           "SNIPER": 1.0,
           "MARKSMAN": 1.0,

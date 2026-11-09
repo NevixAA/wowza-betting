@@ -150,8 +150,17 @@ def family_cells(args) -> dict:
     return out
 
 
+def not_served_families(universe_dir: Path) -> list[tuple[str, str]]:
+    """(track, mside) families the study scores but production does not tip (no serving market:
+    the HT Over 0.5 / 1.5 families joined 2026-11-09, P7 item 2). They get study bars and verdicts in
+    the report only; they never enter a serving proposal."""
+    return sorted({(track, mside) for _f, track, mside in S.load_families(Path(universe_dir))
+                   if mside not in PROD_OF})
+
+
 def build(universe_dir: Path, month: str, workers: int = 4, verdict_path: Path = STUDY_CELLS) -> list[dict]:
-    fams = S.load_families(Path(universe_dir))
+    # only families production can serve (PROD_OF); the rest are study-only (not_served_families)
+    fams = [x for x in S.load_families(Path(universe_dir)) if x[2] in PROD_OF]
     v = study_verdicts(verdict_path)
     args = [(f, track, mside, month, v) for f, track, mside in fams]
     if workers > 1:

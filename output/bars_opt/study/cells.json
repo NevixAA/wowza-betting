@@ -3,9 +3,9 @@
   "track":"standard",
   "mside":"over25_over",
   "league":"Belgian First Division A",
-  "config":"SHRINK|EDGE|max-|min-",
+  "config":"RAW|EDGE|max3.5|min-",
   "verdict":"OFF",
-  "reason":"OWN_DATA_TOO_THIN",
+  "reason":"NO_POSITIVE_BAR",
   "mode":"MODEL",
   "final":{
    "bets":0,
@@ -18,8 +18,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":0.0,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -31,15 +30,16 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
   "mside":"over25_over",
   "league":"Bundesliga 2",
-  "config":"SHRINK|EDGE|max-|min-",
+  "config":"RAW|EDGE|max3.5|min-",
   "verdict":"OFF",
-  "reason":"OWN_DATA_TOO_THIN",
+  "reason":"NO_POSITIVE_BAR",
   "mode":"MODEL",
   "final":{
    "bets":0,
@@ -52,8 +52,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":0.0,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -65,15 +64,16 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
   "mside":"over25_over",
   "league":"Championship",
-  "config":"SHRINK|EDGE|max-|min-",
+  "config":"RAW|EDGE|max3.5|min-",
   "verdict":"OFF",
-  "reason":"OWN_DATA_TOO_THIN",
+  "reason":"NO_POSITIVE_BAR",
   "mode":"MODEL",
   "final":{
    "bets":0,
@@ -86,8 +86,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":0.0,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -99,15 +98,16 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
   "mside":"over25_over",
   "league":"Dutch Eredivisie",
-  "config":"SHRINK|EDGE|max-|min-",
+  "config":"RAW|EDGE|max3.5|min-",
   "verdict":"OFF",
-  "reason":"OWN_DATA_TOO_THIN",
+  "reason":"NO_POSITIVE_BAR",
   "mode":"MODEL",
   "final":{
    "bets":0,
@@ -120,8 +120,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":0.0,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -133,414 +132,40 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
   "mside":"over25_over",
   "league":"Greek Super League",
-  "config":"SHRINK|EDGE|max-|min-",
-  "verdict":"OFF",
-  "reason":"OWN_DATA_TOO_THIN",
-  "mode":"MODEL",
-  "final":{
-   "bets":0,
-   "roi":null,
-   "ci95":[
-    null,
-    null
-   ],
-   "p_one_sided":null,
-   "clv":null,
-   "clv_n":0
-  },
-  "own_weight":0.0,
-  "family_size":33,
-  "valuable_th":null,
-  "marksman_th":null,
-  "sniper_th":null,
-  "shrink_weight_at_valuable":null,
-  "wf_bets":null,
-  "wf_roi":null,
-  "wf_roi_shrunk":null,
-  "tier2":null,
-  "tier2_bets":null,
-  "tier2_roi":null,
-  "final_tier2":null,
-  "p_holm":null
- },
- {
-  "track":"standard",
-  "mside":"over25_over",
-  "league":"La Liga 2",
-  "config":"SHRINK|EDGE|max-|min-",
-  "verdict":"OFF",
-  "reason":"OWN_DATA_TOO_THIN",
-  "mode":"MODEL",
-  "final":{
-   "bets":0,
-   "roi":null,
-   "ci95":[
-    null,
-    null
-   ],
-   "p_one_sided":null,
-   "clv":null,
-   "clv_n":0
-  },
-  "own_weight":0.0,
-  "family_size":33,
-  "valuable_th":null,
-  "marksman_th":null,
-  "sniper_th":null,
-  "shrink_weight_at_valuable":null,
-  "wf_bets":null,
-  "wf_roi":null,
-  "wf_roi_shrunk":null,
-  "tier2":null,
-  "tier2_bets":null,
-  "tier2_roi":null,
-  "final_tier2":null,
-  "p_holm":null
- },
- {
-  "track":"standard",
-  "mside":"over25_over",
-  "league":"League One",
-  "config":"SHRINK|EDGE|max-|min-",
-  "verdict":"OFF",
-  "reason":"OWN_DATA_TOO_THIN",
-  "mode":"MODEL",
-  "final":{
-   "bets":0,
-   "roi":null,
-   "ci95":[
-    null,
-    null
-   ],
-   "p_one_sided":null,
-   "clv":null,
-   "clv_n":0
-  },
-  "own_weight":0.0,
-  "family_size":33,
-  "valuable_th":null,
-  "marksman_th":null,
-  "sniper_th":null,
-  "shrink_weight_at_valuable":null,
-  "wf_bets":null,
-  "wf_roi":null,
-  "wf_roi_shrunk":null,
-  "tier2":null,
-  "tier2_bets":null,
-  "tier2_roi":null,
-  "final_tier2":null,
-  "p_holm":null
- },
- {
-  "track":"standard",
-  "mside":"over25_over",
-  "league":"League Two",
-  "config":"SHRINK|EDGE|max-|min-",
-  "verdict":"OFF",
-  "reason":"OWN_DATA_TOO_THIN",
-  "mode":"MODEL",
-  "final":{
-   "bets":0,
-   "roi":null,
-   "ci95":[
-    null,
-    null
-   ],
-   "p_one_sided":null,
-   "clv":null,
-   "clv_n":0
-  },
-  "own_weight":0.0,
-  "family_size":33,
-  "valuable_th":null,
-  "marksman_th":null,
-  "sniper_th":null,
-  "shrink_weight_at_valuable":null,
-  "wf_bets":null,
-  "wf_roi":null,
-  "wf_roi_shrunk":null,
-  "tier2":null,
-  "tier2_bets":null,
-  "tier2_roi":null,
-  "final_tier2":null,
-  "p_holm":null
- },
- {
-  "track":"standard",
-  "mside":"over25_over",
-  "league":"Ligue 2",
-  "config":"SHRINK|EDGE|max-|min-",
-  "verdict":"OFF",
-  "reason":"OWN_DATA_TOO_THIN",
-  "mode":"MODEL",
-  "final":{
-   "bets":0,
-   "roi":null,
-   "ci95":[
-    null,
-    null
-   ],
-   "p_one_sided":null,
-   "clv":null,
-   "clv_n":0
-  },
-  "own_weight":0.0,
-  "family_size":33,
-  "valuable_th":null,
-  "marksman_th":null,
-  "sniper_th":null,
-  "shrink_weight_at_valuable":null,
-  "wf_bets":null,
-  "wf_roi":null,
-  "wf_roi_shrunk":null,
-  "tier2":null,
-  "tier2_bets":null,
-  "tier2_roi":null,
-  "final_tier2":null,
-  "p_holm":null
- },
- {
-  "track":"standard",
-  "mside":"over25_over",
-  "league":"National League",
-  "config":"SHRINK|EDGE|max-|min-",
-  "verdict":"OFF",
-  "reason":"OWN_DATA_TOO_THIN",
-  "mode":"MODEL",
-  "final":{
-   "bets":0,
-   "roi":null,
-   "ci95":[
-    null,
-    null
-   ],
-   "p_one_sided":null,
-   "clv":null,
-   "clv_n":0
-  },
-  "own_weight":0.0,
-  "family_size":33,
-  "valuable_th":null,
-  "marksman_th":null,
-  "sniper_th":null,
-  "shrink_weight_at_valuable":null,
-  "wf_bets":null,
-  "wf_roi":null,
-  "wf_roi_shrunk":null,
-  "tier2":null,
-  "tier2_bets":null,
-  "tier2_roi":null,
-  "final_tier2":null,
-  "p_holm":null
- },
- {
-  "track":"standard",
-  "mside":"over25_over",
-  "league":"Portuguese Primeira Liga",
-  "config":"SHRINK|EDGE|max-|min-",
-  "verdict":"OFF",
-  "reason":"OWN_DATA_TOO_THIN",
-  "mode":"MODEL",
-  "final":{
-   "bets":0,
-   "roi":null,
-   "ci95":[
-    null,
-    null
-   ],
-   "p_one_sided":null,
-   "clv":null,
-   "clv_n":0
-  },
-  "own_weight":0.0,
-  "family_size":33,
-  "valuable_th":null,
-  "marksman_th":null,
-  "sniper_th":null,
-  "shrink_weight_at_valuable":null,
-  "wf_bets":null,
-  "wf_roi":null,
-  "wf_roi_shrunk":null,
-  "tier2":null,
-  "tier2_bets":null,
-  "tier2_roi":null,
-  "final_tier2":null,
-  "p_holm":null
- },
- {
-  "track":"standard",
-  "mside":"over25_over",
-  "league":"Scottish Championship",
-  "config":"SHRINK|EDGE|max-|min-",
-  "verdict":"OFF",
-  "reason":"OWN_DATA_TOO_THIN",
-  "mode":"MODEL",
-  "final":{
-   "bets":0,
-   "roi":null,
-   "ci95":[
-    null,
-    null
-   ],
-   "p_one_sided":null,
-   "clv":null,
-   "clv_n":0
-  },
-  "own_weight":0.0,
-  "family_size":33,
-  "valuable_th":null,
-  "marksman_th":null,
-  "sniper_th":null,
-  "shrink_weight_at_valuable":null,
-  "wf_bets":null,
-  "wf_roi":null,
-  "wf_roi_shrunk":null,
-  "tier2":null,
-  "tier2_bets":null,
-  "tier2_roi":null,
-  "final_tier2":null,
-  "p_holm":null
- },
- {
-  "track":"standard",
-  "mside":"over25_over",
-  "league":"Scottish League One",
-  "config":"SHRINK|EDGE|max-|min-",
-  "verdict":"OFF",
-  "reason":"OWN_DATA_TOO_THIN",
-  "mode":"MODEL",
-  "final":{
-   "bets":0,
-   "roi":null,
-   "ci95":[
-    null,
-    null
-   ],
-   "p_one_sided":null,
-   "clv":null,
-   "clv_n":0
-  },
-  "own_weight":0.0,
-  "family_size":33,
-  "valuable_th":null,
-  "marksman_th":null,
-  "sniper_th":null,
-  "shrink_weight_at_valuable":null,
-  "wf_bets":null,
-  "wf_roi":null,
-  "wf_roi_shrunk":null,
-  "tier2":null,
-  "tier2_bets":null,
-  "tier2_roi":null,
-  "final_tier2":null,
-  "p_holm":null
- },
- {
-  "track":"standard",
-  "mside":"over25_over",
-  "league":"Scottish League Two",
-  "config":"SHRINK|EDGE|max-|min-",
-  "verdict":"OFF",
-  "reason":"OWN_DATA_TOO_THIN",
-  "mode":"MODEL",
-  "final":{
-   "bets":0,
-   "roi":null,
-   "ci95":[
-    null,
-    null
-   ],
-   "p_one_sided":null,
-   "clv":null,
-   "clv_n":0
-  },
-  "own_weight":0.0,
-  "family_size":33,
-  "valuable_th":null,
-  "marksman_th":null,
-  "sniper_th":null,
-  "shrink_weight_at_valuable":null,
-  "wf_bets":null,
-  "wf_roi":null,
-  "wf_roi_shrunk":null,
-  "tier2":null,
-  "tier2_bets":null,
-  "tier2_roi":null,
-  "final_tier2":null,
-  "p_holm":null
- },
- {
-  "track":"standard",
-  "mside":"over25_over",
-  "league":"Scottish Premiership",
-  "config":"SHRINK|EDGE|max-|min-",
-  "verdict":"OFF",
-  "reason":"OWN_DATA_TOO_THIN",
-  "mode":"MODEL",
-  "final":{
-   "bets":0,
-   "roi":null,
-   "ci95":[
-    null,
-    null
-   ],
-   "p_one_sided":null,
-   "clv":null,
-   "clv_n":0
-  },
-  "own_weight":0.0,
-  "family_size":33,
-  "valuable_th":null,
-  "marksman_th":null,
-  "sniper_th":null,
-  "shrink_weight_at_valuable":null,
-  "wf_bets":null,
-  "wf_roi":null,
-  "wf_roi_shrunk":null,
-  "tier2":null,
-  "tier2_bets":null,
-  "tier2_roi":null,
-  "final_tier2":null,
-  "p_holm":null
- },
- {
-  "track":"standard",
-  "mside":"over25_over",
-  "league":"Serie B",
-  "config":"SHRINK|EDGE|max-|min-",
-  "verdict":"PROMISING",
+  "config":"RAW|EDGE|max3.5|min-",
+  "verdict":"UNPROVEN",
   "reason":null,
   "mode":"MODEL",
   "final":{
-   "bets":2,
-   "roi":1.325,
-   "matchdays":2,
+   "bets":5,
+   "roi":-0.08,
+   "matchdays":4,
    "ci95":[
-    1.178,
-    1.472
+    -1.3639,
+    1.3
    ],
-   "p_one_sided":null,
-   "clv":0.0939,
-   "clv_n":2
+   "p_one_sided":0.5942,
+   "clv":0.0312,
+   "clv_n":5
   },
-  "own_weight":null,
-  "family_size":33,
-  "valuable_th":0.02,
-  "marksman_th":0.02,
-  "sniper_th":0.02,
-  "shrink_weight_at_valuable":0.0,
-  "wf_bets":117.0,
-  "wf_roi":0.0574,
-  "wf_roi_shrunk":0.0574,
+  "family_size":34,
+  "valuable_th":0.1,
+  "marksman_th":0.11,
+  "sniper_th":0.11,
+  "shrink_weight_at_valuable":0.9666,
+  "wf_bets":95.0,
+  "wf_roi":0.0732,
+  "wf_roi_shrunk":0.0698,
   "tier2":false,
-  "tier2_bets":0.0,
-  "tier2_roi":null,
+  "tier2_bets":30.0,
+  "tier2_roi":-0.215,
   "final_tier2":{
    "bets":0,
    "roi":null,
@@ -552,71 +177,477 @@
    "clv":null,
    "clv_n":0
   },
-  "p_holm":null
+  "p_holm":1.0,
+  "own_weight":null
  },
  {
   "track":"standard",
   "mside":"over25_over",
-  "league":"Turkish Super Lig",
-  "config":"SHRINK|EDGE|max-|min-",
-  "verdict":"OFF",
-  "reason":"OWN_DATA_TOO_THIN",
-  "mode":"MODEL",
-  "final":{
-   "bets":0,
-   "roi":null,
-   "ci95":[
-    null,
-    null
-   ],
-   "p_one_sided":null,
-   "clv":null,
-   "clv_n":0
-  },
-  "own_weight":0.0,
-  "family_size":33,
-  "valuable_th":null,
-  "marksman_th":null,
-  "sniper_th":null,
-  "shrink_weight_at_valuable":null,
-  "wf_bets":null,
-  "wf_roi":null,
-  "wf_roi_shrunk":null,
-  "tier2":null,
-  "tier2_bets":null,
-  "tier2_roi":null,
-  "final_tier2":null,
-  "p_holm":null
- },
- {
-  "track":"standard",
-  "mside":"over25_under",
-  "league":"Belgian First Division A",
-  "config":"RAW|EV|max2.5|min-",
+  "league":"La Liga 2",
+  "config":"RAW|EDGE|max3.5|min-",
   "verdict":"UNPROVEN",
   "reason":null,
   "mode":"MODEL",
   "final":{
    "bets":10,
-   "roi":-0.14,
+   "roi":-0.2,
    "matchdays":8,
    "ci95":[
-    -0.9839,
-    0.7039
+    -1.005,
+    0.605
    ],
-   "p_one_sided":0.6807,
-   "clv":0.008,
+   "p_one_sided":0.7276,
+   "clv":0.0043,
    "clv_n":10
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
+  "valuable_th":0.11,
+  "marksman_th":0.15,
+  "sniper_th":0.18,
+  "shrink_weight_at_valuable":0.9932,
+  "wf_bets":452.0,
+  "wf_roi":0.0115,
+  "wf_roi_shrunk":0.0114,
+  "tier2":false,
+  "tier2_bets":265.0,
+  "tier2_roi":-0.0255,
+  "final_tier2":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "p_holm":1.0,
+  "own_weight":null
+ },
+ {
+  "track":"standard",
+  "mside":"over25_over",
+  "league":"League One",
+  "config":"RAW|EDGE|max3.5|min-",
+  "verdict":"UNPROVEN",
+  "reason":null,
+  "mode":"MODEL",
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":0.11,
+  "marksman_th":0.12,
+  "sniper_th":0.12,
+  "shrink_weight_at_valuable":0.9563,
+  "wf_bets":59.0,
+  "wf_roi":0.0666,
+  "wf_roi_shrunk":0.0635,
+  "tier2":false,
+  "tier2_bets":17.0,
+  "tier2_roi":-0.3218,
+  "final_tier2":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "p_holm":null,
+  "own_weight":null
+ },
+ {
+  "track":"standard",
+  "mside":"over25_over",
+  "league":"League Two",
+  "config":"RAW|EDGE|max3.5|min-",
+  "verdict":"OFF",
+  "reason":"NO_POSITIVE_BAR",
+  "mode":"MODEL",
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":null
+ },
+ {
+  "track":"standard",
+  "mside":"over25_over",
+  "league":"Ligue 2",
+  "config":"RAW|EDGE|max3.5|min-",
+  "verdict":"OFF",
+  "reason":"NO_POSITIVE_BAR",
+  "mode":"MODEL",
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":null
+ },
+ {
+  "track":"standard",
+  "mside":"over25_over",
+  "league":"National League",
+  "config":"RAW|EDGE|max3.5|min-",
+  "verdict":"OFF",
+  "reason":"NO_POSITIVE_BAR",
+  "mode":"MODEL",
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":null
+ },
+ {
+  "track":"standard",
+  "mside":"over25_over",
+  "league":"Portuguese Primeira Liga",
+  "config":"RAW|EDGE|max3.5|min-",
+  "verdict":"OFF",
+  "reason":"NO_POSITIVE_BAR",
+  "mode":"MODEL",
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":null
+ },
+ {
+  "track":"standard",
+  "mside":"over25_over",
+  "league":"Scottish Championship",
+  "config":"RAW|EDGE|max3.5|min-",
+  "verdict":"OFF",
+  "reason":"NO_POSITIVE_BAR",
+  "mode":"MODEL",
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":null
+ },
+ {
+  "track":"standard",
+  "mside":"over25_over",
+  "league":"Scottish League One",
+  "config":"RAW|EDGE|max3.5|min-",
+  "verdict":"OFF",
+  "reason":"NO_POSITIVE_BAR",
+  "mode":"MODEL",
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":null
+ },
+ {
+  "track":"standard",
+  "mside":"over25_over",
+  "league":"Scottish League Two",
+  "config":"RAW|EDGE|max3.5|min-",
+  "verdict":"OFF",
+  "reason":"NO_POSITIVE_BAR",
+  "mode":"MODEL",
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":null
+ },
+ {
+  "track":"standard",
+  "mside":"over25_over",
+  "league":"Scottish Premiership",
+  "config":"RAW|EDGE|max3.5|min-",
+  "verdict":"OFF",
+  "reason":"NO_POSITIVE_BAR",
+  "mode":"MODEL",
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":null
+ },
+ {
+  "track":"standard",
+  "mside":"over25_over",
+  "league":"Serie B",
+  "config":"RAW|EDGE|max3.5|min-",
+  "verdict":"PROMISING",
+  "reason":null,
+  "mode":"MODEL",
+  "final":{
+   "bets":4,
+   "roi":0.1625,
+   "matchdays":4,
+   "ci95":[
+    -1.1544,
+    1.4794
+   ],
+   "p_one_sided":0.3078,
+   "clv":0.0895,
+   "clv_n":4
+  },
+  "family_size":34,
+  "valuable_th":0.1,
+  "marksman_th":0.11,
+  "sniper_th":0.11,
+  "shrink_weight_at_valuable":0.985,
+  "wf_bets":211.0,
+  "wf_roi":0.0741,
+  "wf_roi_shrunk":0.0726,
+  "tier2":false,
+  "tier2_bets":58.0,
+  "tier2_roi":-0.046,
+  "final_tier2":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "p_holm":1.0,
+  "own_weight":null
+ },
+ {
+  "track":"standard",
+  "mside":"over25_over",
+  "league":"Turkish Super Lig",
+  "config":"RAW|EDGE|max3.5|min-",
+  "verdict":"OFF",
+  "reason":"NO_POSITIVE_BAR",
+  "mode":"MODEL",
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":null
+ },
+ {
+  "track":"standard",
+  "mside":"over25_under",
+  "league":"Belgian First Division A",
+  "config":"RAW|EDGE|max2.5|min-",
+  "verdict":"UNPROVEN",
+  "reason":null,
+  "mode":"MODEL",
+  "final":{
+   "bets":22,
+   "roi":-0.3977,
+   "matchdays":14,
+   "ci95":[
+    -0.9945,
+    0.199
+   ],
+   "p_one_sided":0.9295,
+   "clv":0.0147,
+   "clv_n":22
+  },
+  "family_size":34,
   "valuable_th":0.02,
   "marksman_th":0.02,
   "sniper_th":0.02,
-  "shrink_weight_at_valuable":0.6051,
-  "wf_bets":412.0,
-  "wf_roi":0.0932,
-  "wf_roi_shrunk":0.0214,
+  "shrink_weight_at_valuable":0.6374,
+  "wf_bets":554.0,
+  "wf_roi":0.0719,
+  "wf_roi_shrunk":0.0134,
   "tier2":false,
   "tier2_bets":0.0,
   "tier2_roi":null,
@@ -631,13 +662,14 @@
    "clv":null,
    "clv_n":0
   },
-  "p_holm":1.0
+  "p_holm":1.0,
+  "own_weight":null
  },
  {
   "track":"standard",
   "mside":"over25_under",
   "league":"Bundesliga 2",
-  "config":"RAW|EV|max2.5|min-",
+  "config":"RAW|EDGE|max2.5|min-",
   "verdict":"OFF",
   "reason":"NO_POSITIVE_BAR",
   "mode":"MODEL",
@@ -652,8 +684,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -665,13 +696,14 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
   "mside":"over25_under",
   "league":"Championship",
-  "config":"RAW|EV|max2.5|min-",
+  "config":"RAW|EDGE|max2.5|min-",
   "verdict":"OFF",
   "reason":"NO_POSITIVE_BAR",
   "mode":"MODEL",
@@ -686,8 +718,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -699,13 +730,14 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
   "mside":"over25_under",
   "league":"Dutch Eredivisie",
-  "config":"RAW|EV|max2.5|min-",
+  "config":"RAW|EDGE|max2.5|min-",
   "verdict":"OFF",
   "reason":"NO_POSITIVE_BAR",
   "mode":"MODEL",
@@ -720,8 +752,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -733,13 +764,14 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
   "mside":"over25_under",
   "league":"Greek Super League",
-  "config":"RAW|EV|max2.5|min-",
+  "config":"RAW|EDGE|max2.5|min-",
   "verdict":"OFF",
   "reason":"NO_POSITIVE_BAR",
   "mode":"MODEL",
@@ -754,8 +786,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -767,13 +798,14 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
   "mside":"over25_under",
   "league":"La Liga 2",
-  "config":"RAW|EV|max2.5|min-",
+  "config":"RAW|EDGE|max2.5|min-",
   "verdict":"OFF",
   "reason":"NO_POSITIVE_BAR",
   "mode":"MODEL",
@@ -788,8 +820,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -801,13 +832,14 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
   "mside":"over25_under",
   "league":"League One",
-  "config":"RAW|EV|max2.5|min-",
+  "config":"RAW|EDGE|max2.5|min-",
   "verdict":"OFF",
   "reason":"NO_POSITIVE_BAR",
   "mode":"MODEL",
@@ -822,8 +854,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -835,13 +866,14 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
   "mside":"over25_under",
   "league":"League Two",
-  "config":"RAW|EV|max2.5|min-",
+  "config":"RAW|EDGE|max2.5|min-",
   "verdict":"OFF",
   "reason":"NO_POSITIVE_BAR",
   "mode":"MODEL",
@@ -856,8 +888,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -869,13 +900,14 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
   "mside":"over25_under",
   "league":"Ligue 2",
-  "config":"RAW|EV|max2.5|min-",
+  "config":"RAW|EDGE|max2.5|min-",
   "verdict":"OFF",
   "reason":"NO_POSITIVE_BAR",
   "mode":"MODEL",
@@ -890,8 +922,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -903,13 +934,14 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
   "mside":"over25_under",
   "league":"National League",
-  "config":"RAW|EV|max2.5|min-",
+  "config":"RAW|EDGE|max2.5|min-",
   "verdict":"OFF",
   "reason":"NO_POSITIVE_BAR",
   "mode":"MODEL",
@@ -924,8 +956,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -937,13 +968,14 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
   "mside":"over25_under",
   "league":"Portuguese Primeira Liga",
-  "config":"RAW|EV|max2.5|min-",
+  "config":"RAW|EDGE|max2.5|min-",
   "verdict":"OFF",
   "reason":"NO_POSITIVE_BAR",
   "mode":"MODEL",
@@ -958,8 +990,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -971,13 +1002,14 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
   "mside":"over25_under",
   "league":"Scottish Championship",
-  "config":"RAW|EV|max2.5|min-",
+  "config":"RAW|EDGE|max2.5|min-",
   "verdict":"OFF",
   "reason":"NO_POSITIVE_BAR",
   "mode":"MODEL",
@@ -992,8 +1024,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -1005,13 +1036,14 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
   "mside":"over25_under",
   "league":"Scottish League One",
-  "config":"RAW|EV|max2.5|min-",
+  "config":"RAW|EDGE|max2.5|min-",
   "verdict":"OFF",
   "reason":"NO_POSITIVE_BAR",
   "mode":"MODEL",
@@ -1026,8 +1058,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -1039,41 +1070,18 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
   "mside":"over25_under",
   "league":"Scottish League Two",
-  "config":"RAW|EV|max2.5|min-",
-  "verdict":"PROMISING",
-  "reason":null,
+  "config":"RAW|EDGE|max2.5|min-",
+  "verdict":"OFF",
+  "reason":"NO_POSITIVE_BAR",
   "mode":"MODEL",
   "final":{
-   "bets":9,
-   "roi":0.04,
-   "matchdays":4,
-   "ci95":[
-    -0.7661,
-    0.8461
-   ],
-   "p_one_sided":0.4093,
-   "clv":0.0109,
-   "clv_n":9
-  },
-  "own_weight":null,
-  "family_size":33,
-  "valuable_th":0.02,
-  "marksman_th":0.03,
-  "sniper_th":0.03,
-  "shrink_weight_at_valuable":0.4585,
-  "wf_bets":215.0,
-  "wf_roi":0.107,
-  "wf_roi_shrunk":0.0011,
-  "tier2":false,
-  "tier2_bets":18.0,
-  "tier2_roi":0.0239,
-  "final_tier2":{
    "bets":0,
    "roi":null,
    "ci95":[
@@ -1084,13 +1092,26 @@
    "clv":null,
    "clv_n":0
   },
-  "p_holm":1.0
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
   "mside":"over25_under",
   "league":"Scottish Premiership",
-  "config":"RAW|EV|max2.5|min-",
+  "config":"RAW|EDGE|max2.5|min-",
   "verdict":"OFF",
   "reason":"NO_POSITIVE_BAR",
   "mode":"MODEL",
@@ -1105,8 +1126,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -1118,13 +1138,14 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
   "mside":"over25_under",
   "league":"Serie B",
-  "config":"RAW|EV|max2.5|min-",
+  "config":"RAW|EDGE|max2.5|min-",
   "verdict":"OFF",
   "reason":"NO_POSITIVE_BAR",
   "mode":"MODEL",
@@ -1139,8 +1160,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -1152,13 +1172,14 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
   "mside":"over25_under",
   "league":"Turkish Super Lig",
-  "config":"RAW|EV|max2.5|min-",
+  "config":"RAW|EDGE|max2.5|min-",
   "verdict":"OFF",
   "reason":"NO_POSITIVE_BAR",
   "mode":"MODEL",
@@ -1173,8 +1194,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -1186,7 +1206,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
@@ -1207,8 +1228,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -1220,7 +1240,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
@@ -1241,8 +1262,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":0.0,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -1254,7 +1274,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":0.0
  },
  {
   "track":"standard",
@@ -1275,8 +1296,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":0.0,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -1288,7 +1308,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":0.0247
  },
  {
   "track":"standard",
@@ -1309,8 +1330,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -1322,7 +1342,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
@@ -1343,8 +1364,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":0.0,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -1356,7 +1376,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":0.0
  },
  {
   "track":"standard",
@@ -1378,15 +1399,14 @@
    "clv":0.0037,
    "clv_n":5
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":0.02,
   "marksman_th":0.02,
   "sniper_th":0.02,
-  "shrink_weight_at_valuable":0.0,
-  "wf_bets":53.0,
-  "wf_roi":0.3321,
-  "wf_roi_shrunk":0.1426,
+  "shrink_weight_at_valuable":0.2297,
+  "wf_bets":45.0,
+  "wf_roi":0.4687,
+  "wf_roi_shrunk":0.2315,
   "tier2":false,
   "tier2_bets":0.0,
   "tier2_roi":null,
@@ -1401,7 +1421,8 @@
    "clv":null,
    "clv_n":0
   },
-  "p_holm":1.0
+  "p_holm":1.0,
+  "own_weight":null
  },
  {
   "track":"standard",
@@ -1422,8 +1443,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":0.0,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -1435,7 +1455,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":0.0
  },
  {
   "track":"standard",
@@ -1456,8 +1477,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":0.0,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -1469,7 +1489,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":0.192
  },
  {
   "track":"standard",
@@ -1490,8 +1511,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":0.0,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -1503,7 +1523,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":0.0
  },
  {
   "track":"standard",
@@ -1524,8 +1545,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -1537,7 +1557,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
@@ -1558,8 +1579,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -1571,7 +1591,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
@@ -1592,8 +1613,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -1605,7 +1625,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
@@ -1626,8 +1647,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -1639,7 +1659,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
@@ -1660,8 +1681,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -1673,7 +1693,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
@@ -1694,8 +1715,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -1707,7 +1727,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
@@ -1718,26 +1739,25 @@
   "reason":null,
   "mode":"MODEL",
   "final":{
-   "bets":6,
-   "roi":0.325,
-   "matchdays":5,
+   "bets":7,
+   "roi":0.1357,
+   "matchdays":6,
    "ci95":[
-    -0.7421,
-    1.3921
+    -0.9145,
+    1.186
    ],
-   "p_one_sided":0.2804,
-   "clv":0.011,
-   "clv_n":6
+   "p_one_sided":0.3993,
+   "clv":0.0095,
+   "clv_n":7
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":0.02,
   "marksman_th":0.02,
-  "sniper_th":0.02,
-  "shrink_weight_at_valuable":0.0,
-  "wf_bets":288.0,
-  "wf_roi":0.1064,
-  "wf_roi_shrunk":0.1426,
+  "sniper_th":0.04,
+  "shrink_weight_at_valuable":0.7154,
+  "wf_bets":297.0,
+  "wf_roi":0.1189,
+  "wf_roi_shrunk":0.1308,
   "tier2":false,
   "tier2_bets":0.0,
   "tier2_roi":null,
@@ -1752,7 +1772,8 @@
    "clv":null,
    "clv_n":0
   },
-  "p_holm":1.0
+  "p_holm":1.0,
+  "own_weight":null
  },
  {
   "track":"standard",
@@ -1773,8 +1794,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -1786,7 +1806,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
@@ -1807,8 +1828,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -1820,7 +1840,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
@@ -1841,8 +1862,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -1854,7 +1874,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
@@ -1875,8 +1896,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -1888,7 +1908,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
@@ -1909,8 +1930,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -1922,7 +1942,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
@@ -1943,8 +1964,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -1956,7 +1976,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
@@ -1977,8 +1998,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -1990,7 +2010,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
@@ -2011,8 +2032,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -2024,7 +2044,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
@@ -2045,8 +2066,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -2058,7 +2078,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
@@ -2079,8 +2100,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -2092,7 +2112,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
@@ -2113,8 +2134,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -2126,7 +2146,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
@@ -2147,8 +2168,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -2160,7 +2180,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
@@ -2181,8 +2202,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -2194,7 +2214,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
@@ -2215,8 +2236,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -2228,7 +2248,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
@@ -2249,8 +2270,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -2262,7 +2282,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
@@ -2283,8 +2304,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -2296,7 +2316,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
@@ -2317,8 +2338,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -2330,7 +2350,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
@@ -2351,8 +2372,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -2364,7 +2384,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
@@ -2385,8 +2406,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -2398,7 +2418,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
@@ -2419,8 +2440,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -2432,7 +2452,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
@@ -2453,8 +2474,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -2466,7 +2486,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
@@ -2487,8 +2508,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -2500,7 +2520,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
@@ -2521,8 +2542,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -2534,7 +2554,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
@@ -2555,8 +2576,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -2568,7 +2588,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
@@ -2589,8 +2610,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -2602,7 +2622,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
@@ -2623,8 +2644,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -2636,7 +2656,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
@@ -2657,8 +2678,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -2670,7 +2690,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
@@ -2691,8 +2712,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -2704,7 +2724,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
@@ -2725,8 +2746,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -2738,7 +2758,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
@@ -2759,8 +2780,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -2772,7 +2792,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
@@ -2793,8 +2814,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -2806,7 +2826,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
@@ -2827,8 +2848,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -2840,7 +2860,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
@@ -2861,8 +2882,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -2874,7 +2894,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
@@ -2895,8 +2916,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -2908,7 +2928,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"standard",
@@ -2929,8 +2950,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -2942,7 +2962,1164 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
+ },
+ {
+  "track":"standard",
+  "mside":"ht_over05_over",
+  "league":"Belgian First Division A",
+  "config":null,
+  "verdict":"OFF",
+  "reason":"INSUFFICIENT_SELECTION_EVIDENCE",
+  "mode":null,
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":null
+ },
+ {
+  "track":"standard",
+  "mside":"ht_over05_over",
+  "league":"Bundesliga 2",
+  "config":null,
+  "verdict":"OFF",
+  "reason":"INSUFFICIENT_SELECTION_EVIDENCE",
+  "mode":null,
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":null
+ },
+ {
+  "track":"standard",
+  "mside":"ht_over05_over",
+  "league":"Championship",
+  "config":null,
+  "verdict":"OFF",
+  "reason":"INSUFFICIENT_SELECTION_EVIDENCE",
+  "mode":null,
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":null
+ },
+ {
+  "track":"standard",
+  "mside":"ht_over05_over",
+  "league":"Dutch Eredivisie",
+  "config":null,
+  "verdict":"OFF",
+  "reason":"INSUFFICIENT_SELECTION_EVIDENCE",
+  "mode":null,
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":null
+ },
+ {
+  "track":"standard",
+  "mside":"ht_over05_over",
+  "league":"Greek Super League",
+  "config":null,
+  "verdict":"OFF",
+  "reason":"INSUFFICIENT_SELECTION_EVIDENCE",
+  "mode":null,
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":null
+ },
+ {
+  "track":"standard",
+  "mside":"ht_over05_over",
+  "league":"La Liga 2",
+  "config":null,
+  "verdict":"OFF",
+  "reason":"INSUFFICIENT_SELECTION_EVIDENCE",
+  "mode":null,
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":null
+ },
+ {
+  "track":"standard",
+  "mside":"ht_over05_over",
+  "league":"League One",
+  "config":null,
+  "verdict":"OFF",
+  "reason":"INSUFFICIENT_SELECTION_EVIDENCE",
+  "mode":null,
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":null
+ },
+ {
+  "track":"standard",
+  "mside":"ht_over05_over",
+  "league":"League Two",
+  "config":null,
+  "verdict":"OFF",
+  "reason":"INSUFFICIENT_SELECTION_EVIDENCE",
+  "mode":null,
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":null
+ },
+ {
+  "track":"standard",
+  "mside":"ht_over05_over",
+  "league":"Ligue 2",
+  "config":null,
+  "verdict":"OFF",
+  "reason":"INSUFFICIENT_SELECTION_EVIDENCE",
+  "mode":null,
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":null
+ },
+ {
+  "track":"standard",
+  "mside":"ht_over05_over",
+  "league":"National League",
+  "config":null,
+  "verdict":"OFF",
+  "reason":"INSUFFICIENT_SELECTION_EVIDENCE",
+  "mode":null,
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":null
+ },
+ {
+  "track":"standard",
+  "mside":"ht_over05_over",
+  "league":"Portuguese Primeira Liga",
+  "config":null,
+  "verdict":"OFF",
+  "reason":"INSUFFICIENT_SELECTION_EVIDENCE",
+  "mode":null,
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":null
+ },
+ {
+  "track":"standard",
+  "mside":"ht_over05_over",
+  "league":"Scottish Championship",
+  "config":null,
+  "verdict":"OFF",
+  "reason":"INSUFFICIENT_SELECTION_EVIDENCE",
+  "mode":null,
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":null
+ },
+ {
+  "track":"standard",
+  "mside":"ht_over05_over",
+  "league":"Scottish League One",
+  "config":null,
+  "verdict":"OFF",
+  "reason":"INSUFFICIENT_SELECTION_EVIDENCE",
+  "mode":null,
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":null
+ },
+ {
+  "track":"standard",
+  "mside":"ht_over05_over",
+  "league":"Scottish League Two",
+  "config":null,
+  "verdict":"OFF",
+  "reason":"INSUFFICIENT_SELECTION_EVIDENCE",
+  "mode":null,
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":null
+ },
+ {
+  "track":"standard",
+  "mside":"ht_over05_over",
+  "league":"Scottish Premiership",
+  "config":null,
+  "verdict":"OFF",
+  "reason":"INSUFFICIENT_SELECTION_EVIDENCE",
+  "mode":null,
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":null
+ },
+ {
+  "track":"standard",
+  "mside":"ht_over05_over",
+  "league":"Serie B",
+  "config":null,
+  "verdict":"OFF",
+  "reason":"INSUFFICIENT_SELECTION_EVIDENCE",
+  "mode":null,
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":null
+ },
+ {
+  "track":"standard",
+  "mside":"ht_over05_over",
+  "league":"Turkish Super Lig",
+  "config":null,
+  "verdict":"OFF",
+  "reason":"INSUFFICIENT_SELECTION_EVIDENCE",
+  "mode":null,
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":null
+ },
+ {
+  "track":"standard",
+  "mside":"ht_over15_over",
+  "league":"Belgian First Division A",
+  "config":null,
+  "verdict":"OFF",
+  "reason":"INSUFFICIENT_SELECTION_EVIDENCE",
+  "mode":null,
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":null
+ },
+ {
+  "track":"standard",
+  "mside":"ht_over15_over",
+  "league":"Bundesliga 2",
+  "config":null,
+  "verdict":"OFF",
+  "reason":"INSUFFICIENT_SELECTION_EVIDENCE",
+  "mode":null,
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":null
+ },
+ {
+  "track":"standard",
+  "mside":"ht_over15_over",
+  "league":"Championship",
+  "config":null,
+  "verdict":"OFF",
+  "reason":"INSUFFICIENT_SELECTION_EVIDENCE",
+  "mode":null,
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":null
+ },
+ {
+  "track":"standard",
+  "mside":"ht_over15_over",
+  "league":"Dutch Eredivisie",
+  "config":null,
+  "verdict":"OFF",
+  "reason":"INSUFFICIENT_SELECTION_EVIDENCE",
+  "mode":null,
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":null
+ },
+ {
+  "track":"standard",
+  "mside":"ht_over15_over",
+  "league":"Greek Super League",
+  "config":null,
+  "verdict":"OFF",
+  "reason":"INSUFFICIENT_SELECTION_EVIDENCE",
+  "mode":null,
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":null
+ },
+ {
+  "track":"standard",
+  "mside":"ht_over15_over",
+  "league":"La Liga 2",
+  "config":null,
+  "verdict":"OFF",
+  "reason":"INSUFFICIENT_SELECTION_EVIDENCE",
+  "mode":null,
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":null
+ },
+ {
+  "track":"standard",
+  "mside":"ht_over15_over",
+  "league":"League One",
+  "config":null,
+  "verdict":"OFF",
+  "reason":"INSUFFICIENT_SELECTION_EVIDENCE",
+  "mode":null,
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":null
+ },
+ {
+  "track":"standard",
+  "mside":"ht_over15_over",
+  "league":"League Two",
+  "config":null,
+  "verdict":"OFF",
+  "reason":"INSUFFICIENT_SELECTION_EVIDENCE",
+  "mode":null,
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":null
+ },
+ {
+  "track":"standard",
+  "mside":"ht_over15_over",
+  "league":"Ligue 2",
+  "config":null,
+  "verdict":"OFF",
+  "reason":"INSUFFICIENT_SELECTION_EVIDENCE",
+  "mode":null,
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":null
+ },
+ {
+  "track":"standard",
+  "mside":"ht_over15_over",
+  "league":"National League",
+  "config":null,
+  "verdict":"OFF",
+  "reason":"INSUFFICIENT_SELECTION_EVIDENCE",
+  "mode":null,
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":null
+ },
+ {
+  "track":"standard",
+  "mside":"ht_over15_over",
+  "league":"Portuguese Primeira Liga",
+  "config":null,
+  "verdict":"OFF",
+  "reason":"INSUFFICIENT_SELECTION_EVIDENCE",
+  "mode":null,
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":null
+ },
+ {
+  "track":"standard",
+  "mside":"ht_over15_over",
+  "league":"Scottish Championship",
+  "config":null,
+  "verdict":"OFF",
+  "reason":"INSUFFICIENT_SELECTION_EVIDENCE",
+  "mode":null,
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":null
+ },
+ {
+  "track":"standard",
+  "mside":"ht_over15_over",
+  "league":"Scottish League One",
+  "config":null,
+  "verdict":"OFF",
+  "reason":"INSUFFICIENT_SELECTION_EVIDENCE",
+  "mode":null,
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":null
+ },
+ {
+  "track":"standard",
+  "mside":"ht_over15_over",
+  "league":"Scottish League Two",
+  "config":null,
+  "verdict":"OFF",
+  "reason":"INSUFFICIENT_SELECTION_EVIDENCE",
+  "mode":null,
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":null
+ },
+ {
+  "track":"standard",
+  "mside":"ht_over15_over",
+  "league":"Scottish Premiership",
+  "config":null,
+  "verdict":"OFF",
+  "reason":"INSUFFICIENT_SELECTION_EVIDENCE",
+  "mode":null,
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":null
+ },
+ {
+  "track":"standard",
+  "mside":"ht_over15_over",
+  "league":"Serie B",
+  "config":null,
+  "verdict":"OFF",
+  "reason":"INSUFFICIENT_SELECTION_EVIDENCE",
+  "mode":null,
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":null
+ },
+ {
+  "track":"standard",
+  "mside":"ht_over15_over",
+  "league":"Turkish Super Lig",
+  "config":null,
+  "verdict":"OFF",
+  "reason":"INSUFFICIENT_SELECTION_EVIDENCE",
+  "mode":null,
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"new_format",
@@ -2963,8 +4140,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":0.8812,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -2976,7 +4152,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":0.0
  },
  {
   "track":"new_format",
@@ -2987,29 +4164,28 @@
   "reason":null,
   "mode":"MODEL",
   "final":{
-   "bets":1,
-   "roi":0.9,
-   "matchdays":1,
+   "bets":3,
+   "roi":0.2833,
+   "matchdays":3,
    "ci95":[
-    null,
-    null
+    -1.0,
+    1.5413
    ],
-   "p_one_sided":null,
-   "clv":-0.0256,
-   "clv_n":1
+   "p_one_sided":0.2509,
+   "clv":-0.0085,
+   "clv_n":3
   },
-  "own_weight":null,
-  "family_size":33,
-  "valuable_th":0.03,
-  "marksman_th":0.14,
-  "sniper_th":0.15,
+  "family_size":34,
+  "valuable_th":0.02,
+  "marksman_th":0.17,
+  "sniper_th":0.17,
   "shrink_weight_at_valuable":0.0,
   "wf_bets":120.0,
-  "wf_roi":-0.0106,
-  "wf_roi_shrunk":0.0885,
+  "wf_roi":0.0071,
+  "wf_roi_shrunk":0.0737,
   "tier2":false,
-  "tier2_bets":62.0,
-  "tier2_roi":-0.2744,
+  "tier2_bets":80.0,
+  "tier2_roi":-0.1696,
   "final_tier2":{
    "bets":0,
    "roi":null,
@@ -3021,37 +4197,37 @@
    "clv":null,
    "clv_n":0
   },
-  "p_holm":null
+  "p_holm":1.0,
+  "own_weight":null
  },
  {
   "track":"new_format",
   "mside":"over25_over",
   "league":"Brazil Serie A",
   "config":"RAW|EV|max2.5|min-",
-  "verdict":"PROMISING",
+  "verdict":"UNPROVEN",
   "reason":null,
-  "mode":"MODEL",
+  "mode":"LEAGUE_WIDE",
   "final":{
-   "bets":11,
-   "roi":0.3,
-   "matchdays":9,
+   "bets":67,
+   "roi":-0.0924,
+   "matchdays":31,
    "ci95":[
-    -0.3133,
-    0.9133
+    -0.317,
+    0.1322
    ],
-   "p_one_sided":0.1649,
-   "clv":0.0079,
-   "clv_n":11
+   "p_one_sided":0.8331,
+   "clv":0.0137,
+   "clv_n":67
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":0.02,
   "marksman_th":0.02,
-  "sniper_th":0.02,
-  "shrink_weight_at_valuable":0.9828,
-  "wf_bets":151.0,
-  "wf_roi":0.1959,
-  "wf_roi_shrunk":0.1941,
+  "sniper_th":0.3,
+  "shrink_weight_at_valuable":0.0,
+  "wf_bets":329.0,
+  "wf_roi":0.1473,
+  "wf_roi_shrunk":0.0106,
   "tier2":false,
   "tier2_bets":0.0,
   "tier2_roi":null,
@@ -3066,15 +4242,16 @@
    "clv":null,
    "clv_n":0
   },
-  "p_holm":1.0
+  "p_holm":1.0,
+  "own_weight":null
  },
  {
   "track":"new_format",
   "mside":"over25_over",
   "league":"China Super League",
   "config":"RAW|EV|max2.5|min-",
-  "verdict":"OFF",
-  "reason":"OWN_DATA_TOO_THIN",
+  "verdict":"UNPROVEN",
+  "reason":null,
   "mode":"MODEL",
   "final":{
    "bets":0,
@@ -3087,20 +4264,30 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":0.9481,
-  "family_size":33,
-  "valuable_th":null,
-  "marksman_th":null,
-  "sniper_th":null,
-  "shrink_weight_at_valuable":null,
-  "wf_bets":null,
-  "wf_roi":null,
-  "wf_roi_shrunk":null,
-  "tier2":null,
-  "tier2_bets":null,
+  "family_size":34,
+  "valuable_th":0.02,
+  "marksman_th":0.02,
+  "sniper_th":0.02,
+  "shrink_weight_at_valuable":0.0,
+  "wf_bets":51.0,
+  "wf_roi":0.0663,
+  "wf_roi_shrunk":0.0737,
+  "tier2":false,
+  "tier2_bets":0.0,
   "tier2_roi":null,
-  "final_tier2":null,
-  "p_holm":null
+  "final_tier2":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"new_format",
@@ -3121,15 +4308,14 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":0.02,
   "marksman_th":0.02,
   "sniper_th":0.02,
-  "shrink_weight_at_valuable":0.9708,
-  "wf_bets":54.0,
-  "wf_roi":0.1009,
-  "wf_roi_shrunk":0.1007,
+  "shrink_weight_at_valuable":0.0,
+  "wf_bets":55.0,
+  "wf_roi":0.0782,
+  "wf_roi_shrunk":0.0737,
   "tier2":false,
   "tier2_bets":0.0,
   "tier2_roi":null,
@@ -3144,7 +4330,8 @@
    "clv":null,
    "clv_n":0
   },
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"new_format",
@@ -3165,8 +4352,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":0.0,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -3178,7 +4364,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":0.0
  },
  {
   "track":"new_format",
@@ -3200,15 +4387,59 @@
    "clv":-0.0278,
    "clv_n":1
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
+  "valuable_th":0.02,
+  "marksman_th":0.05,
+  "sniper_th":0.05,
+  "shrink_weight_at_valuable":0.0,
+  "wf_bets":57.0,
+  "wf_roi":0.1312,
+  "wf_roi_shrunk":0.0737,
+  "tier2":false,
+  "tier2_bets":8.0,
+  "tier2_roi":0.35,
+  "final_tier2":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "p_holm":null,
+  "own_weight":null
+ },
+ {
+  "track":"new_format",
+  "mside":"over25_over",
+  "league":"Japan J-League",
+  "config":"RAW|EV|max2.5|min-",
+  "verdict":"UNPROVEN",
+  "reason":null,
+  "mode":"MODEL",
+  "final":{
+   "bets":2,
+   "roi":0.05,
+   "matchdays":2,
+   "ci95":[
+    -2.008,
+    2.108
+   ],
+   "p_one_sided":null,
+   "clv":0.0,
+   "clv_n":2
+  },
+  "family_size":34,
   "valuable_th":0.02,
   "marksman_th":0.02,
   "sniper_th":0.02,
-  "shrink_weight_at_valuable":0.9616,
-  "wf_bets":64.0,
-  "wf_roi":0.1003,
-  "wf_roi_shrunk":0.1,
+  "shrink_weight_at_valuable":0.0,
+  "wf_bets":46.0,
+  "wf_roi":0.1054,
+  "wf_roi_shrunk":0.0737,
   "tier2":false,
   "tier2_bets":0.0,
   "tier2_roi":null,
@@ -3223,52 +4454,8 @@
    "clv":null,
    "clv_n":0
   },
-  "p_holm":null
- },
- {
-  "track":"new_format",
-  "mside":"over25_over",
-  "league":"Japan J-League",
-  "config":"RAW|EV|max2.5|min-",
-  "verdict":"UNPROVEN",
-  "reason":null,
-  "mode":"MODEL",
-  "final":{
-   "bets":1,
-   "roi":-1.0,
-   "matchdays":1,
-   "ci95":[
-    null,
-    null
-   ],
-   "p_one_sided":null,
-   "clv":0.0,
-   "clv_n":1
-  },
-  "own_weight":null,
-  "family_size":33,
-  "valuable_th":0.02,
-  "marksman_th":0.03,
-  "sniper_th":0.03,
-  "shrink_weight_at_valuable":0.9498,
-  "wf_bets":48.0,
-  "wf_roi":0.0521,
-  "wf_roi_shrunk":0.0541,
-  "tier2":false,
-  "tier2_bets":4.0,
-  "tier2_roi":0.5575,
-  "final_tier2":{
-   "bets":0,
-   "roi":null,
-   "ci95":[
-    null,
-    null
-   ],
-   "p_one_sided":null,
-   "clv":null,
-   "clv_n":0
-  },
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"new_format",
@@ -3289,8 +4476,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":0.6027,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -3302,7 +4488,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":0.0
  },
  {
   "track":"new_format",
@@ -3317,22 +4504,66 @@
    "roi":-0.5375,
    "matchdays":4,
    "ci95":[
-    -1.444,
-    0.3875
+    -1.576,
+    0.501
    ],
-   "p_one_sided":0.951,
-   "clv":0.0069,
+   "p_one_sided":0.956,
+   "clv":0.0139,
    "clv_n":4
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
+  "valuable_th":0.02,
+  "marksman_th":0.04,
+  "sniper_th":0.06,
+  "shrink_weight_at_valuable":0.0,
+  "wf_bets":65.0,
+  "wf_roi":0.1775,
+  "wf_roi_shrunk":0.0737,
+  "tier2":false,
+  "tier2_bets":10.0,
+  "tier2_roi":0.37,
+  "final_tier2":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "p_holm":1.0,
+  "own_weight":null
+ },
+ {
+  "track":"new_format",
+  "mside":"over25_over",
+  "league":"Norway Eliteserien",
+  "config":"RAW|EV|max2.5|min-",
+  "verdict":"UNPROVEN",
+  "reason":null,
+  "mode":"MODEL",
+  "final":{
+   "bets":4,
+   "roi":0.22,
+   "matchdays":3,
+   "ci95":[
+    -1.0,
+    1.1377
+   ],
+   "p_one_sided":0.2594,
+   "clv":-0.0068,
+   "clv_n":4
+  },
+  "family_size":34,
   "valuable_th":0.02,
   "marksman_th":0.02,
-  "sniper_th":0.06,
-  "shrink_weight_at_valuable":0.9686,
-  "wf_bets":63.0,
-  "wf_roi":0.2124,
-  "wf_roi_shrunk":0.2086,
+  "sniper_th":0.02,
+  "shrink_weight_at_valuable":0.0,
+  "wf_bets":77.0,
+  "wf_roi":-0.0168,
+  "wf_roi_shrunk":0.0737,
   "tier2":false,
   "tier2_bets":0.0,
   "tier2_roi":null,
@@ -3347,52 +4578,8 @@
    "clv":null,
    "clv_n":0
   },
-  "p_holm":1.0
- },
- {
-  "track":"new_format",
-  "mside":"over25_over",
-  "league":"Norway Eliteserien",
-  "config":"RAW|EV|max2.5|min-",
-  "verdict":"UNPROVEN",
-  "reason":null,
-  "mode":"MODEL",
-  "final":{
-   "bets":2,
-   "roi":0.64,
-   "matchdays":1,
-   "ci95":[
-    0.3264,
-    0.9536
-   ],
-   "p_one_sided":null,
-   "clv":-0.0135,
-   "clv_n":2
-  },
-  "own_weight":null,
-  "family_size":33,
-  "valuable_th":0.02,
-  "marksman_th":0.03,
-  "sniper_th":0.03,
-  "shrink_weight_at_valuable":0.9734,
-  "wf_bets":70.0,
-  "wf_roi":0.0039,
-  "wf_roi_shrunk":0.0062,
-  "tier2":false,
-  "tier2_bets":9.0,
-  "tier2_roi":-0.0378,
-  "final_tier2":{
-   "bets":0,
-   "roi":null,
-   "ci95":[
-    null,
-    null
-   ],
-   "p_one_sided":null,
-   "clv":null,
-   "clv_n":0
-  },
-  "p_holm":null
+  "p_holm":1.0,
+  "own_weight":null
  },
  {
   "track":"new_format",
@@ -3413,8 +4600,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":0.0,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -3426,7 +4612,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":0.0
  },
  {
   "track":"new_format",
@@ -3447,8 +4634,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":0.9998,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -3460,37 +4646,82 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":0.0
  },
  {
   "track":"new_format",
   "mside":"over25_over",
   "league":"Sweden Allsvenskan",
   "config":"RAW|EV|max2.5|min-",
-  "verdict":"PROMISING",
+  "verdict":"UNPROVEN",
   "reason":null,
   "mode":"MODEL",
   "final":{
    "bets":2,
-   "roi":0.815,
+   "roi":-0.135,
    "matchdays":2,
    "ci95":[
-    0.6484,
-    0.9816
+    -1.8304,
+    1.5604
    ],
    "p_one_sided":null,
    "clv":0.051,
    "clv_n":2
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
+  "valuable_th":0.02,
+  "marksman_th":0.04,
+  "sniper_th":0.04,
+  "shrink_weight_at_valuable":0.0,
+  "wf_bets":66.0,
+  "wf_roi":0.1873,
+  "wf_roi_shrunk":0.0737,
+  "tier2":false,
+  "tier2_bets":8.0,
+  "tier2_roi":0.605,
+  "final_tier2":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "p_holm":null,
+  "own_weight":null
+ },
+ {
+  "track":"new_format",
+  "mside":"over25_over",
+  "league":"USA MLS",
+  "config":"RAW|EV|max2.5|min-",
+  "verdict":"PROMISING",
+  "reason":null,
+  "mode":"MODEL",
+  "final":{
+   "bets":4,
+   "roi":0.235,
+   "matchdays":3,
+   "ci95":[
+    -1.0,
+    1.4453
+   ],
+   "p_one_sided":0.2639,
+   "clv":0.0099,
+   "clv_n":4
+  },
+  "family_size":34,
   "valuable_th":0.02,
   "marksman_th":0.02,
-  "sniper_th":0.02,
-  "shrink_weight_at_valuable":0.9703,
-  "wf_bets":67.0,
-  "wf_roi":0.2287,
-  "wf_roi_shrunk":0.2246,
+  "sniper_th":0.08,
+  "shrink_weight_at_valuable":0.0,
+  "wf_bets":75.0,
+  "wf_roi":-0.0127,
+  "wf_roi_shrunk":0.0737,
   "tier2":false,
   "tier2_bets":0.0,
   "tier2_roi":null,
@@ -3505,51 +4736,8 @@
    "clv":null,
    "clv_n":0
   },
-  "p_holm":null
- },
- {
-  "track":"new_format",
-  "mside":"over25_over",
-  "league":"USA MLS",
-  "config":"RAW|EV|max2.5|min-",
-  "verdict":"UNPROVEN",
-  "reason":null,
-  "mode":"MODEL",
-  "final":{
-   "bets":0,
-   "roi":null,
-   "ci95":[
-    null,
-    null
-   ],
-   "p_one_sided":null,
-   "clv":null,
-   "clv_n":0
-  },
-  "own_weight":null,
-  "family_size":33,
-  "valuable_th":0.02,
-  "marksman_th":0.03,
-  "sniper_th":0.03,
-  "shrink_weight_at_valuable":0.9728,
-  "wf_bets":66.0,
-  "wf_roi":0.0217,
-  "wf_roi_shrunk":0.0236,
-  "tier2":false,
-  "tier2_bets":5.0,
-  "tier2_roi":0.784,
-  "final_tier2":{
-   "bets":0,
-   "roi":null,
-   "ci95":[
-    null,
-    null
-   ],
-   "p_one_sided":null,
-   "clv":null,
-   "clv_n":0
-  },
-  "p_holm":null
+  "p_holm":1.0,
+  "own_weight":null
  },
  {
   "track":"new_format",
@@ -3570,8 +4758,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":0.495,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -3583,7 +4770,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":0.0048
  },
  {
   "track":"new_format",
@@ -3604,8 +4792,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -3617,7 +4804,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"new_format",
@@ -3629,205 +4817,24 @@
   "mode":"MODEL",
   "final":{
    "bets":18,
-   "roi":-0.0372,
-   "matchdays":17,
+   "roi":0.0667,
+   "matchdays":18,
    "ci95":[
-    -0.5529,
-    0.4785
+    -0.4456,
+    0.579
    ],
-   "p_one_sided":0.5787,
-   "clv":-0.0219,
+   "p_one_sided":0.4108,
+   "clv":-0.0347,
    "clv_n":18
   },
-  "own_weight":null,
-  "family_size":33,
-  "valuable_th":0.06,
-  "marksman_th":0.07,
-  "sniper_th":0.07,
-  "shrink_weight_at_valuable":0.9324,
-  "wf_bets":75.0,
-  "wf_roi":0.0364,
-  "wf_roi_shrunk":0.0322,
-  "tier2":false,
-  "tier2_bets":11.0,
-  "tier2_roi":-0.2736,
-  "final_tier2":{
-   "bets":0,
-   "roi":null,
-   "ci95":[
-    null,
-    null
-   ],
-   "p_one_sided":null,
-   "clv":null,
-   "clv_n":0
-  },
-  "p_holm":1.0
- },
- {
-  "track":"new_format",
-  "mside":"over25_under",
-  "league":"China Super League",
-  "config":"RAW|EV|max-|min-",
-  "verdict":"UNPROVEN",
-  "reason":null,
-  "mode":"MODEL",
-  "final":{
-   "bets":9,
-   "roi":-0.3667,
-   "matchdays":5,
-   "ci95":[
-    -1.4104,
-    1.28
-   ],
-   "p_one_sided":0.7381,
-   "clv":-0.0082,
-   "clv_n":9
-  },
-  "own_weight":null,
-  "family_size":33,
-  "valuable_th":0.11,
-  "marksman_th":0.12,
-  "sniper_th":0.27,
-  "shrink_weight_at_valuable":0.0,
-  "wf_bets":137.0,
-  "wf_roi":-0.067,
-  "wf_roi_shrunk":0.0181,
-  "tier2":false,
-  "tier2_bets":5.0,
-  "tier2_roi":-0.488,
-  "final_tier2":{
-   "bets":0,
-   "roi":null,
-   "ci95":[
-    null,
-    null
-   ],
-   "p_one_sided":null,
-   "clv":null,
-   "clv_n":0
-  },
-  "p_holm":1.0
- },
- {
-  "track":"new_format",
-  "mside":"over25_under",
-  "league":"Denmark Superliga",
-  "config":"RAW|EV|max-|min-",
-  "verdict":"UNPROVEN",
-  "reason":null,
-  "mode":"MODEL",
-  "final":{
-   "bets":5,
-   "roi":0.636,
-   "matchdays":5,
-   "ci95":[
-    -0.676,
-    1.948
-   ],
-   "p_one_sided":0.0735,
-   "clv":-0.0125,
-   "clv_n":5
-  },
-  "own_weight":null,
-  "family_size":33,
-  "valuable_th":0.11,
-  "marksman_th":0.12,
-  "sniper_th":0.12,
-  "shrink_weight_at_valuable":0.0,
-  "wf_bets":49.0,
-  "wf_roi":-0.1543,
-  "wf_roi_shrunk":0.0181,
-  "tier2":false,
-  "tier2_bets":3.0,
-  "tier2_roi":-0.1733,
-  "final_tier2":{
-   "bets":0,
-   "roi":null,
-   "ci95":[
-    null,
-    null
-   ],
-   "p_one_sided":null,
-   "clv":null,
-   "clv_n":0
-  },
-  "p_holm":1.0
- },
- {
-  "track":"new_format",
-  "mside":"over25_under",
-  "league":"Finland Veikkausliiga",
-  "config":"RAW|EV|max-|min-",
-  "verdict":"PROMISING",
-  "reason":null,
-  "mode":"MODEL",
-  "final":{
-   "bets":9,
-   "roi":0.1833,
-   "matchdays":6,
-   "ci95":[
-    -0.6596,
-    1.0263
-   ],
-   "p_one_sided":0.2979,
-   "clv":0.0406,
-   "clv_n":9
-  },
-  "own_weight":null,
-  "family_size":33,
-  "valuable_th":0.11,
-  "marksman_th":0.12,
-  "sniper_th":0.12,
-  "shrink_weight_at_valuable":0.0,
-  "wf_bets":64.0,
-  "wf_roi":-0.1506,
-  "wf_roi_shrunk":0.0181,
-  "tier2":false,
-  "tier2_bets":3.0,
-  "tier2_roi":-0.2667,
-  "final_tier2":{
-   "bets":0,
-   "roi":null,
-   "ci95":[
-    null,
-    null
-   ],
-   "p_one_sided":null,
-   "clv":null,
-   "clv_n":0
-  },
-  "p_holm":1.0
- },
- {
-  "track":"new_format",
-  "mside":"over25_under",
-  "league":"Ireland Premier Division",
-  "config":"RAW|EV|max-|min-",
-  "verdict":"UNPROVEN",
-  "reason":null,
-  "mode":"MODEL",
-  "final":{
-   "bets":10,
-   "roi":-0.79,
-   "matchdays":8,
-   "ci95":[
-    -1.2409,
-    -0.3
-   ],
-   "p_one_sided":0.995,
-   "clv":0.0068,
-   "clv_n":10
-  },
-  "own_weight":null,
-  "family_size":33,
-  "valuable_th":0.04,
-  "marksman_th":0.04,
-  "sniper_th":0.04,
-  "shrink_weight_at_valuable":0.9256,
-  "wf_bets":70.0,
-  "wf_roi":0.2203,
-  "wf_roi_shrunk":0.2027,
+  "family_size":34,
+  "valuable_th":0.08,
+  "marksman_th":0.08,
+  "sniper_th":0.08,
+  "shrink_weight_at_valuable":0.9343,
+  "wf_bets":67.0,
+  "wf_roi":0.0419,
+  "wf_roi_shrunk":0.0365,
   "tier2":false,
   "tier2_bets":0.0,
   "tier2_roi":null,
@@ -3842,37 +4849,669 @@
    "clv":null,
    "clv_n":0
   },
-  "p_holm":1.0
+  "p_holm":1.0,
+  "own_weight":null
+ },
+ {
+  "track":"new_format",
+  "mside":"over25_under",
+  "league":"China Super League",
+  "config":"RAW|EV|max-|min-",
+  "verdict":"OFF",
+  "reason":"NO_POSITIVE_BAR",
+  "mode":"MODEL",
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":null
+ },
+ {
+  "track":"new_format",
+  "mside":"over25_under",
+  "league":"Denmark Superliga",
+  "config":"RAW|EV|max-|min-",
+  "verdict":"OFF",
+  "reason":"NO_POSITIVE_BAR",
+  "mode":"MODEL",
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":null
+ },
+ {
+  "track":"new_format",
+  "mside":"over25_under",
+  "league":"Finland Veikkausliiga",
+  "config":"RAW|EV|max-|min-",
+  "verdict":"OFF",
+  "reason":"NO_POSITIVE_BAR",
+  "mode":"MODEL",
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":null
+ },
+ {
+  "track":"new_format",
+  "mside":"over25_under",
+  "league":"Ireland Premier Division",
+  "config":"RAW|EV|max-|min-",
+  "verdict":"UNPROVEN",
+  "reason":null,
+  "mode":"MODEL",
+  "final":{
+   "bets":12,
+   "roi":-0.6542,
+   "matchdays":9,
+   "ci95":[
+    -1.1112,
+    -0.1971
+   ],
+   "p_one_sided":0.999,
+   "clv":0.0064,
+   "clv_n":12
+  },
+  "family_size":34,
+  "valuable_th":0.08,
+  "marksman_th":0.08,
+  "sniper_th":0.08,
+  "shrink_weight_at_valuable":0.9123,
+  "wf_bets":49.0,
+  "wf_roi":0.1143,
+  "wf_roi_shrunk":0.1007,
+  "tier2":false,
+  "tier2_bets":0.0,
+  "tier2_roi":null,
+  "final_tier2":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "p_holm":1.0,
+  "own_weight":null
  },
  {
   "track":"new_format",
   "mside":"over25_under",
   "league":"Japan J-League",
   "config":"RAW|EV|max-|min-",
+  "verdict":"OFF",
+  "reason":"NO_POSITIVE_BAR",
+  "mode":"MODEL",
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":null
+ },
+ {
+  "track":"new_format",
+  "mside":"over25_under",
+  "league":"K-League 1",
+  "config":"RAW|EV|max-|min-",
+  "verdict":"OFF",
+  "reason":"OWN_DATA_TOO_THIN",
+  "mode":"MODEL",
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":0.0
+ },
+ {
+  "track":"new_format",
+  "mside":"over25_under",
+  "league":"Mexico Liga MX",
+  "config":"RAW|EV|max-|min-",
+  "verdict":"UNPROVEN",
+  "reason":null,
+  "mode":"MODEL",
+  "final":{
+   "bets":11,
+   "roi":-0.3864,
+   "matchdays":9,
+   "ci95":[
+    -1.0101,
+    0.2374
+   ],
+   "p_one_sided":0.9075,
+   "clv":0.017,
+   "clv_n":11
+  },
+  "family_size":34,
+  "valuable_th":0.08,
+  "marksman_th":0.13,
+  "sniper_th":0.13,
+  "shrink_weight_at_valuable":0.9333,
+  "wf_bets":80.0,
+  "wf_roi":0.008,
+  "wf_roi_shrunk":0.0048,
+  "tier2":false,
+  "tier2_bets":23.0,
+  "tier2_roi":-0.1043,
+  "final_tier2":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "p_holm":1.0,
+  "own_weight":null
+ },
+ {
+  "track":"new_format",
+  "mside":"over25_under",
+  "league":"Norway Eliteserien",
+  "config":"RAW|EV|max-|min-",
+  "verdict":"UNPROVEN",
+  "reason":null,
+  "mode":"MODEL",
+  "final":{
+   "bets":13,
+   "roi":0.0385,
+   "matchdays":9,
+   "ci95":[
+    -1.1028,
+    1.1797
+   ],
+   "p_one_sided":0.4808,
+   "clv":-0.0023,
+   "clv_n":13
+  },
+  "family_size":34,
+  "valuable_th":0.08,
+  "marksman_th":0.08,
+  "sniper_th":0.08,
+  "shrink_weight_at_valuable":0.903,
+  "wf_bets":81.0,
+  "wf_roi":0.0662,
+  "wf_roi_shrunk":0.0558,
+  "tier2":false,
+  "tier2_bets":0.0,
+  "tier2_roi":null,
+  "final_tier2":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "p_holm":1.0,
+  "own_weight":null
+ },
+ {
+  "track":"new_format",
+  "mside":"over25_under",
+  "league":"Romanian Superliga",
+  "config":"RAW|EV|max-|min-",
+  "verdict":"OFF",
+  "reason":"OWN_DATA_TOO_THIN",
+  "mode":"MODEL",
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":0.9789
+ },
+ {
+  "track":"new_format",
+  "mside":"over25_under",
+  "league":"Saudi Pro League",
+  "config":"RAW|EV|max-|min-",
+  "verdict":"OFF",
+  "reason":"OWN_DATA_TOO_THIN",
+  "mode":"MODEL",
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":0.0084
+ },
+ {
+  "track":"new_format",
+  "mside":"over25_under",
+  "league":"Sweden Allsvenskan",
+  "config":"RAW|EV|max-|min-",
+  "verdict":"PROMISING",
+  "reason":null,
+  "mode":"MODEL",
+  "final":{
+   "bets":13,
+   "roi":0.3692,
+   "matchdays":11,
+   "ci95":[
+    -0.3702,
+    1.1087
+   ],
+   "p_one_sided":0.1014,
+   "clv":0.0174,
+   "clv_n":13
+  },
+  "family_size":34,
+  "valuable_th":0.08,
+  "marksman_th":0.08,
+  "sniper_th":0.08,
+  "shrink_weight_at_valuable":0.9331,
+  "wf_bets":77.0,
+  "wf_roi":0.05,
+  "wf_roi_shrunk":0.044,
+  "tier2":false,
+  "tier2_bets":0.0,
+  "tier2_roi":null,
+  "final_tier2":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "p_holm":1.0,
+  "own_weight":null
+ },
+ {
+  "track":"new_format",
+  "mside":"over25_under",
+  "league":"USA MLS",
+  "config":"RAW|EV|max-|min-",
+  "verdict":"OFF",
+  "reason":"NO_POSITIVE_BAR",
+  "mode":"MODEL",
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":null
+ },
+ {
+  "track":"new_format",
+  "mside":"btts_yes",
+  "league":"Argentina Primera Division",
+  "config":"BLEND|EDGE|max2.5|min-",
+  "verdict":"PROMISING",
+  "reason":null,
+  "mode":"MODEL",
+  "final":{
+   "bets":83,
+   "roi":0.1384,
+   "matchdays":35,
+   "ci95":[
+    -0.0969,
+    0.372
+   ],
+   "p_one_sided":0.1309,
+   "clv":0.0025,
+   "clv_n":83
+  },
+  "family_size":34,
+  "valuable_th":0.02,
+  "marksman_th":0.05,
+  "sniper_th":0.05,
+  "shrink_weight_at_valuable":0.0,
+  "wf_bets":278.0,
+  "wf_roi":0.0381,
+  "wf_roi_shrunk":0.0272,
+  "tier2":false,
+  "tier2_bets":50.0,
+  "tier2_roi":-0.1912,
+  "final_tier2":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "p_holm":1.0,
+  "own_weight":null
+ },
+ {
+  "track":"new_format",
+  "mside":"btts_yes",
+  "league":"Austrian Bundesliga",
+  "config":"BLEND|EDGE|max2.5|min-",
+  "verdict":"PROMISING",
+  "reason":null,
+  "mode":"MODEL",
+  "final":{
+   "bets":9,
+   "roi":0.3067,
+   "matchdays":8,
+   "ci95":[
+    -0.1964,
+    0.8097
+   ],
+   "p_one_sided":0.1064,
+   "clv":0.0043,
+   "clv_n":9
+  },
+  "family_size":34,
+  "valuable_th":0.02,
+  "marksman_th":0.02,
+  "sniper_th":0.03,
+  "shrink_weight_at_valuable":0.0,
+  "wf_bets":139.0,
+  "wf_roi":0.0009,
+  "wf_roi_shrunk":0.0272,
+  "tier2":false,
+  "tier2_bets":0.0,
+  "tier2_roi":null,
+  "final_tier2":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "p_holm":1.0,
+  "own_weight":null
+ },
+ {
+  "track":"new_format",
+  "mside":"btts_yes",
+  "league":"Brazil Serie A",
+  "config":"BLEND|EDGE|max2.5|min-",
+  "verdict":"PROMISING",
+  "reason":null,
+  "mode":"MODEL",
+  "final":{
+   "bets":61,
+   "roi":0.0795,
+   "matchdays":28,
+   "ci95":[
+    -0.1882,
+    0.3274
+   ],
+   "p_one_sided":0.2654,
+   "clv":0.0023,
+   "clv_n":61
+  },
+  "family_size":34,
+  "valuable_th":0.02,
+  "marksman_th":0.03,
+  "sniper_th":0.05,
+  "shrink_weight_at_valuable":0.0,
+  "wf_bets":387.0,
+  "wf_roi":0.0712,
+  "wf_roi_shrunk":0.0272,
+  "tier2":false,
+  "tier2_bets":35.0,
+  "tier2_roi":0.124,
+  "final_tier2":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "p_holm":1.0,
+  "own_weight":null
+ },
+ {
+  "track":"new_format",
+  "mside":"btts_yes",
+  "league":"China Super League",
+  "config":"BLEND|EDGE|max2.5|min-",
+  "verdict":"UNPROVEN",
+  "reason":null,
+  "mode":"MODEL",
+  "final":{
+   "bets":6,
+   "roi":-0.13,
+   "matchdays":5,
+   "ci95":[
+    -1.0384,
+    0.7784
+   ],
+   "p_one_sided":0.5942,
+   "clv":0.0012,
+   "clv_n":6
+  },
+  "family_size":34,
+  "valuable_th":0.02,
+  "marksman_th":0.02,
+  "sniper_th":0.02,
+  "shrink_weight_at_valuable":0.0,
+  "wf_bets":80.0,
+  "wf_roi":0.1409,
+  "wf_roi_shrunk":0.0272,
+  "tier2":false,
+  "tier2_bets":0.0,
+  "tier2_roi":null,
+  "final_tier2":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "p_holm":1.0,
+  "own_weight":null
+ },
+ {
+  "track":"new_format",
+  "mside":"btts_yes",
+  "league":"Denmark Superliga",
+  "config":"BLEND|EDGE|max2.5|min-",
   "verdict":"UNPROVEN",
   "reason":null,
   "mode":"MODEL",
   "final":{
    "bets":4,
-   "roi":-0.4875,
-   "matchdays":2,
+   "roi":-0.1575,
+   "matchdays":4,
    "ci95":[
-    -1.492,
-    0.517
+    -1.111,
+    0.796
    ],
-   "p_one_sided":null,
-   "clv":-0.0074,
+   "p_one_sided":0.7081,
+   "clv":-0.0073,
    "clv_n":4
   },
-  "own_weight":null,
-  "family_size":33,
-  "valuable_th":0.04,
-  "marksman_th":0.04,
-  "sniper_th":0.04,
-  "shrink_weight_at_valuable":0.881,
-  "wf_bets":48.0,
-  "wf_roi":0.0544,
-  "wf_roi_shrunk":0.0459,
+  "family_size":34,
+  "valuable_th":0.02,
+  "marksman_th":0.02,
+  "sniper_th":0.02,
+  "shrink_weight_at_valuable":0.0,
+  "wf_bets":40.0,
+  "wf_roi":0.1008,
+  "wf_roi_shrunk":0.0272,
   "tier2":false,
   "tier2_bets":0.0,
   "tier2_roi":null,
@@ -3887,13 +5526,149 @@
    "clv":null,
    "clv_n":0
   },
-  "p_holm":null
+  "p_holm":1.0,
+  "own_weight":null
  },
  {
   "track":"new_format",
-  "mside":"over25_under",
+  "mside":"btts_yes",
+  "league":"Finland Veikkausliiga",
+  "config":"BLEND|EDGE|max2.5|min-",
+  "verdict":"UNPROVEN",
+  "reason":null,
+  "mode":"MODEL",
+  "final":{
+   "bets":15,
+   "roi":-0.3693,
+   "matchdays":13,
+   "ci95":[
+    -0.8531,
+    0.1045
+   ],
+   "p_one_sided":0.9565,
+   "clv":-0.0026,
+   "clv_n":15
+  },
+  "family_size":34,
+  "valuable_th":0.02,
+  "marksman_th":0.02,
+  "sniper_th":0.02,
+  "shrink_weight_at_valuable":0.0,
+  "wf_bets":74.0,
+  "wf_roi":-0.0136,
+  "wf_roi_shrunk":0.0272,
+  "tier2":false,
+  "tier2_bets":0.0,
+  "tier2_roi":null,
+  "final_tier2":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "p_holm":1.0,
+  "own_weight":null
+ },
+ {
+  "track":"new_format",
+  "mside":"btts_yes",
+  "league":"Ireland Premier Division",
+  "config":"BLEND|EDGE|max2.5|min-",
+  "verdict":"UNPROVEN",
+  "reason":null,
+  "mode":"MODEL",
+  "final":{
+   "bets":21,
+   "roi":-0.159,
+   "matchdays":10,
+   "ci95":[
+    -0.5474,
+    0.2293
+   ],
+   "p_one_sided":0.8541,
+   "clv":0.0089,
+   "clv_n":21
+  },
+  "family_size":34,
+  "valuable_th":0.02,
+  "marksman_th":0.04,
+  "sniper_th":0.04,
+  "shrink_weight_at_valuable":0.0,
+  "wf_bets":181.0,
+  "wf_roi":0.0809,
+  "wf_roi_shrunk":0.0272,
+  "tier2":false,
+  "tier2_bets":55.0,
+  "tier2_roi":-0.0147,
+  "final_tier2":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "p_holm":1.0,
+  "own_weight":null
+ },
+ {
+  "track":"new_format",
+  "mside":"btts_yes",
+  "league":"Japan J-League",
+  "config":"BLEND|EDGE|max2.5|min-",
+  "verdict":"UNPROVEN",
+  "reason":null,
+  "mode":"MODEL",
+  "final":{
+   "bets":2,
+   "roi":0.67,
+   "matchdays":1,
+   "ci95":[
+    0.67,
+    0.67
+   ],
+   "p_one_sided":null,
+   "clv":0.0,
+   "clv_n":2
+  },
+  "family_size":34,
+  "valuable_th":0.02,
+  "marksman_th":0.02,
+  "sniper_th":0.02,
+  "shrink_weight_at_valuable":0.0,
+  "wf_bets":125.0,
+  "wf_roi":-0.1248,
+  "wf_roi_shrunk":0.0272,
+  "tier2":false,
+  "tier2_bets":0.0,
+  "tier2_roi":null,
+  "final_tier2":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "p_holm":null,
+  "own_weight":null
+ },
+ {
+  "track":"new_format",
+  "mside":"btts_yes",
   "league":"K-League 1",
-  "config":"RAW|EV|max-|min-",
+  "config":"BLEND|EDGE|max2.5|min-",
   "verdict":"OFF",
   "reason":"OWN_DATA_TOO_THIN",
   "mode":"MODEL",
@@ -3908,8 +5683,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":0.4467,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -3921,420 +5695,195 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":0.0
  },
  {
   "track":"new_format",
-  "mside":"over25_under",
+  "mside":"btts_yes",
   "league":"Mexico Liga MX",
-  "config":"RAW|EV|max-|min-",
+  "config":"BLEND|EDGE|max2.5|min-",
+  "verdict":"UNPROVEN",
+  "reason":null,
+  "mode":"MODEL",
+  "final":{
+   "bets":26,
+   "roi":-0.0838,
+   "matchdays":16,
+   "ci95":[
+    -0.4423,
+    0.2936
+   ],
+   "p_one_sided":0.6562,
+   "clv":0.0009,
+   "clv_n":26
+  },
+  "family_size":34,
+  "valuable_th":0.02,
+  "marksman_th":0.02,
+  "sniper_th":0.02,
+  "shrink_weight_at_valuable":0.0,
+  "wf_bets":128.0,
+  "wf_roi":0.0654,
+  "wf_roi_shrunk":0.0272,
+  "tier2":false,
+  "tier2_bets":0.0,
+  "tier2_roi":null,
+  "final_tier2":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "p_holm":1.0,
+  "own_weight":null
+ },
+ {
+  "track":"new_format",
+  "mside":"btts_yes",
+  "league":"Norway Eliteserien",
+  "config":"BLEND|EDGE|max2.5|min-",
+  "verdict":"PROMISING",
+  "reason":null,
+  "mode":"MODEL",
+  "final":{
+   "bets":4,
+   "roi":0.69,
+   "matchdays":4,
+   "ci95":[
+    0.6451,
+    0.7349
+   ],
+   "p_one_sided":0.0005,
+   "clv":0.0201,
+   "clv_n":4
+  },
+  "family_size":34,
+  "valuable_th":0.02,
+  "marksman_th":0.02,
+  "sniper_th":0.02,
+  "shrink_weight_at_valuable":0.0,
+  "wf_bets":78.0,
+  "wf_roi":0.0265,
+  "wf_roi_shrunk":0.0272,
+  "tier2":false,
+  "tier2_bets":0.0,
+  "tier2_roi":null,
+  "final_tier2":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "p_holm":0.0145,
+  "own_weight":null
+ },
+ {
+  "track":"new_format",
+  "mside":"btts_yes",
+  "league":"Romanian Superliga",
+  "config":"BLEND|EDGE|max2.5|min-",
+  "verdict":"OFF",
+  "reason":"OWN_DATA_TOO_THIN",
+  "mode":"MODEL",
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":0.0
+ },
+ {
+  "track":"new_format",
+  "mside":"btts_yes",
+  "league":"Saudi Pro League",
+  "config":"BLEND|EDGE|max2.5|min-",
+  "verdict":"OFF",
+  "reason":"OWN_DATA_TOO_THIN",
+  "mode":"MODEL",
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":0.0
+ },
+ {
+  "track":"new_format",
+  "mside":"btts_yes",
+  "league":"Sweden Allsvenskan",
+  "config":"BLEND|EDGE|max2.5|min-",
   "verdict":"UNPROVEN",
   "reason":null,
   "mode":"MODEL",
   "final":{
    "bets":18,
-   "roi":-0.1056,
-   "matchdays":13,
-   "ci95":[
-    -0.6427,
-    0.4316
-   ],
-   "p_one_sided":0.6622,
-   "clv":0.0109,
-   "clv_n":18
-  },
-  "own_weight":null,
-  "family_size":33,
-  "valuable_th":0.04,
-  "marksman_th":0.05,
-  "sniper_th":0.05,
-  "shrink_weight_at_valuable":0.9329,
-  "wf_bets":103.0,
-  "wf_roi":0.0202,
-  "wf_roi_shrunk":0.0177,
-  "tier2":false,
-  "tier2_bets":2.0,
-  "tier2_roi":-1.0,
-  "final_tier2":{
-   "bets":0,
-   "roi":null,
-   "ci95":[
-    null,
-    null
-   ],
-   "p_one_sided":null,
-   "clv":null,
-   "clv_n":0
-  },
-  "p_holm":1.0
- },
- {
-  "track":"new_format",
-  "mside":"over25_under",
-  "league":"Norway Eliteserien",
-  "config":"RAW|EV|max-|min-",
-  "verdict":"PROMISING",
-  "reason":null,
-  "mode":"MODEL",
-  "final":{
-   "bets":19,
-   "roi":0.15,
-   "matchdays":12,
-   "ci95":[
-    -0.8128,
-    1.1128
-   ],
-   "p_one_sided":0.3278,
-   "clv":0.0035,
-   "clv_n":19
-  },
-  "own_weight":null,
-  "family_size":33,
-  "valuable_th":0.04,
-  "marksman_th":0.07,
-  "sniper_th":0.07,
-  "shrink_weight_at_valuable":0.9164,
-  "wf_bets":114.0,
-  "wf_roi":0.0479,
-  "wf_roi_shrunk":0.0425,
-  "tier2":false,
-  "tier2_bets":21.0,
-  "tier2_roi":-0.1095,
-  "final_tier2":{
-   "bets":0,
-   "roi":null,
-   "ci95":[
-    null,
-    null
-   ],
-   "p_one_sided":null,
-   "clv":null,
-   "clv_n":0
-  },
-  "p_holm":1.0
- },
- {
-  "track":"new_format",
-  "mside":"over25_under",
-  "league":"Romanian Superliga",
-  "config":"RAW|EV|max-|min-",
-  "verdict":"OFF",
-  "reason":"OWN_DATA_TOO_THIN",
-  "mode":"MODEL",
-  "final":{
-   "bets":0,
-   "roi":null,
-   "ci95":[
-    null,
-    null
-   ],
-   "p_one_sided":null,
-   "clv":null,
-   "clv_n":0
-  },
-  "own_weight":0.9719,
-  "family_size":33,
-  "valuable_th":null,
-  "marksman_th":null,
-  "sniper_th":null,
-  "shrink_weight_at_valuable":null,
-  "wf_bets":null,
-  "wf_roi":null,
-  "wf_roi_shrunk":null,
-  "tier2":null,
-  "tier2_bets":null,
-  "tier2_roi":null,
-  "final_tier2":null,
-  "p_holm":null
- },
- {
-  "track":"new_format",
-  "mside":"over25_under",
-  "league":"Saudi Pro League",
-  "config":"RAW|EV|max-|min-",
-  "verdict":"OFF",
-  "reason":"OWN_DATA_TOO_THIN",
-  "mode":"MODEL",
-  "final":{
-   "bets":0,
-   "roi":null,
-   "ci95":[
-    null,
-    null
-   ],
-   "p_one_sided":null,
-   "clv":null,
-   "clv_n":0
-  },
-  "own_weight":0.6565,
-  "family_size":33,
-  "valuable_th":null,
-  "marksman_th":null,
-  "sniper_th":null,
-  "shrink_weight_at_valuable":null,
-  "wf_bets":null,
-  "wf_roi":null,
-  "wf_roi_shrunk":null,
-  "tier2":null,
-  "tier2_bets":null,
-  "tier2_roi":null,
-  "final_tier2":null,
-  "p_holm":null
- },
- {
-  "track":"new_format",
-  "mside":"over25_under",
-  "league":"Sweden Allsvenskan",
-  "config":"RAW|EV|max-|min-",
-  "verdict":"PROMISING",
-  "reason":null,
-  "mode":"MODEL",
-  "final":{
-   "bets":17,
-   "roi":0.3206,
-   "matchdays":13,
-   "ci95":[
-    -0.3053,
-    0.9465
-   ],
-   "p_one_sided":0.0865,
-   "clv":0.0125,
-   "clv_n":17
-  },
-  "own_weight":null,
-  "family_size":33,
-  "valuable_th":0.04,
-  "marksman_th":0.05,
-  "sniper_th":0.05,
-  "shrink_weight_at_valuable":0.9376,
-  "wf_bets":106.0,
-  "wf_roi":0.0672,
-  "wf_roi_shrunk":0.0619,
-  "tier2":false,
-  "tier2_bets":12.0,
-  "tier2_roi":-0.4733,
-  "final_tier2":{
-   "bets":0,
-   "roi":null,
-   "ci95":[
-    null,
-    null
-   ],
-   "p_one_sided":null,
-   "clv":null,
-   "clv_n":0
-  },
-  "p_holm":1.0
- },
- {
-  "track":"new_format",
-  "mside":"over25_under",
-  "league":"USA MLS",
-  "config":"RAW|EV|max-|min-",
-  "verdict":"UNPROVEN",
-  "reason":null,
-  "mode":"MODEL",
-  "final":{
-   "bets":40,
-   "roi":-0.216,
-   "matchdays":21,
-   "ci95":[
-    -0.7035,
-    0.2715
-   ],
-   "p_one_sided":0.8266,
-   "clv":-0.0081,
-   "clv_n":40
-  },
-  "own_weight":null,
-  "family_size":33,
-  "valuable_th":0.11,
-  "marksman_th":0.12,
-  "sniper_th":0.12,
-  "shrink_weight_at_valuable":0.0,
-  "wf_bets":110.0,
-  "wf_roi":-0.0135,
-  "wf_roi_shrunk":0.0181,
-  "tier2":false,
-  "tier2_bets":8.0,
-  "tier2_roi":0.1975,
-  "final_tier2":{
-   "bets":0,
-   "roi":null,
-   "ci95":[
-    null,
-    null
-   ],
-   "p_one_sided":null,
-   "clv":null,
-   "clv_n":0
-  },
-  "p_holm":1.0
- },
- {
-  "track":"new_format",
-  "mside":"btts_yes",
-  "league":"Argentina Primera Division",
-  "config":"RAW|EDGE|max2.5|min-",
-  "verdict":"UNPROVEN",
-  "reason":null,
-  "mode":"MODEL",
-  "final":{
-   "bets":68,
-   "roi":0.0924,
-   "matchdays":31,
-   "ci95":[
-    -0.175,
-    0.3678
-   ],
-   "p_one_sided":0.2479,
-   "clv":-0.0007,
-   "clv_n":68
-  },
-  "own_weight":null,
-  "family_size":33,
-  "valuable_th":0.02,
-  "marksman_th":0.02,
-  "sniper_th":0.08,
-  "shrink_weight_at_valuable":0.0,
-  "wf_bets":258.0,
-  "wf_roi":0.0261,
-  "wf_roi_shrunk":0.054,
-  "tier2":false,
-  "tier2_bets":0.0,
-  "tier2_roi":null,
-  "final_tier2":{
-   "bets":0,
-   "roi":null,
-   "ci95":[
-    null,
-    null
-   ],
-   "p_one_sided":null,
-   "clv":null,
-   "clv_n":0
-  },
-  "p_holm":1.0
- },
- {
-  "track":"new_format",
-  "mside":"btts_yes",
-  "league":"Austrian Bundesliga",
-  "config":"RAW|EDGE|max2.5|min-",
-  "verdict":"UNPROVEN",
-  "reason":null,
-  "mode":"MODEL",
-  "final":{
-   "bets":3,
-   "roi":-0.4,
-   "matchdays":3,
-   "ci95":[
-    -1.576,
-    0.8
-   ],
-   "p_one_sided":0.7496,
-   "clv":0.0166,
-   "clv_n":3
-  },
-  "own_weight":null,
-  "family_size":33,
-  "valuable_th":0.02,
-  "marksman_th":0.02,
-  "sniper_th":0.02,
-  "shrink_weight_at_valuable":0.0,
-  "wf_bets":101.0,
-  "wf_roi":0.1143,
-  "wf_roi_shrunk":0.054,
-  "tier2":false,
-  "tier2_bets":0.0,
-  "tier2_roi":null,
-  "final_tier2":{
-   "bets":0,
-   "roi":null,
-   "ci95":[
-    null,
-    null
-   ],
-   "p_one_sided":null,
-   "clv":null,
-   "clv_n":0
-  },
-  "p_holm":1.0
- },
- {
-  "track":"new_format",
-  "mside":"btts_yes",
-  "league":"Brazil Serie A",
-  "config":"RAW|EDGE|max2.5|min-",
-  "verdict":"PROMISING",
-  "reason":null,
-  "mode":"MODEL",
-  "final":{
-   "bets":22,
-   "roi":0.2827,
+   "roi":-0.5194,
    "matchdays":14,
    "ci95":[
-    -0.1338,
-    0.6993
+    -0.8886,
+    -0.1503
    ],
-   "p_one_sided":0.038,
-   "clv":0.0004,
-   "clv_n":22
+   "p_one_sided":0.998,
+   "clv":-0.0069,
+   "clv_n":18
   },
-  "own_weight":null,
-  "family_size":33,
-  "valuable_th":0.02,
-  "marksman_th":0.02,
-  "sniper_th":0.08,
-  "shrink_weight_at_valuable":0.0,
-  "wf_bets":224.0,
-  "wf_roi":0.1289,
-  "wf_roi_shrunk":0.054,
-  "tier2":false,
-  "tier2_bets":0.0,
-  "tier2_roi":null,
-  "final_tier2":{
-   "bets":0,
-   "roi":null,
-   "ci95":[
-    null,
-    null
-   ],
-   "p_one_sided":null,
-   "clv":null,
-   "clv_n":0
-  },
-  "p_holm":0.912
- },
- {
-  "track":"new_format",
-  "mside":"btts_yes",
-  "league":"China Super League",
-  "config":"RAW|EDGE|max2.5|min-",
-  "verdict":"UNPROVEN",
-  "reason":null,
-  "mode":"MODEL",
-  "final":{
-   "bets":3,
-   "roi":-0.4,
-   "matchdays":3,
-   "ci95":[
-    -1.576,
-    0.8
-   ],
-   "p_one_sided":0.7411,
-   "clv":0.0024,
-   "clv_n":3
-  },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":0.02,
   "marksman_th":0.02,
   "sniper_th":0.02,
   "shrink_weight_at_valuable":0.0,
-  "wf_bets":73.0,
-  "wf_roi":-0.0759,
-  "wf_roi_shrunk":0.054,
+  "wf_bets":147.0,
+  "wf_roi":-0.0556,
+  "wf_roi_shrunk":0.0272,
   "tier2":false,
   "tier2_bets":0.0,
   "tier2_roi":null,
@@ -4349,411 +5898,41 @@
    "clv":null,
    "clv_n":0
   },
-  "p_holm":1.0
- },
- {
-  "track":"new_format",
-  "mside":"btts_yes",
-  "league":"Denmark Superliga",
-  "config":"RAW|EDGE|max2.5|min-",
-  "verdict":"OFF",
-  "reason":"OWN_DATA_TOO_THIN",
-  "mode":"MODEL",
-  "final":{
-   "bets":0,
-   "roi":null,
-   "ci95":[
-    null,
-    null
-   ],
-   "p_one_sided":null,
-   "clv":null,
-   "clv_n":0
-  },
-  "own_weight":0.0,
-  "family_size":33,
-  "valuable_th":null,
-  "marksman_th":null,
-  "sniper_th":null,
-  "shrink_weight_at_valuable":null,
-  "wf_bets":null,
-  "wf_roi":null,
-  "wf_roi_shrunk":null,
-  "tier2":null,
-  "tier2_bets":null,
-  "tier2_roi":null,
-  "final_tier2":null,
-  "p_holm":null
- },
- {
-  "track":"new_format",
-  "mside":"btts_yes",
-  "league":"Finland Veikkausliiga",
-  "config":"RAW|EDGE|max2.5|min-",
-  "verdict":"OFF",
-  "reason":"OWN_DATA_TOO_THIN",
-  "mode":"MODEL",
-  "final":{
-   "bets":0,
-   "roi":null,
-   "ci95":[
-    null,
-    null
-   ],
-   "p_one_sided":null,
-   "clv":null,
-   "clv_n":0
-  },
-  "own_weight":0.0,
-  "family_size":33,
-  "valuable_th":null,
-  "marksman_th":null,
-  "sniper_th":null,
-  "shrink_weight_at_valuable":null,
-  "wf_bets":null,
-  "wf_roi":null,
-  "wf_roi_shrunk":null,
-  "tier2":null,
-  "tier2_bets":null,
-  "tier2_roi":null,
-  "final_tier2":null,
-  "p_holm":null
- },
- {
-  "track":"new_format",
-  "mside":"btts_yes",
-  "league":"Ireland Premier Division",
-  "config":"RAW|EDGE|max2.5|min-",
-  "verdict":"PROMISING",
-  "reason":null,
-  "mode":"MODEL",
-  "final":{
-   "bets":6,
-   "roi":0.2583,
-   "matchdays":6,
-   "ci95":[
-    -0.6955,
-    1.2122
-   ],
-   "p_one_sided":0.3268,
-   "clv":0.0139,
-   "clv_n":6
-  },
-  "own_weight":null,
-  "family_size":33,
-  "valuable_th":0.02,
-  "marksman_th":0.02,
-  "sniper_th":0.02,
-  "shrink_weight_at_valuable":0.0,
-  "wf_bets":107.0,
-  "wf_roi":0.1001,
-  "wf_roi_shrunk":0.054,
-  "tier2":false,
-  "tier2_bets":0.0,
-  "tier2_roi":null,
-  "final_tier2":{
-   "bets":0,
-   "roi":null,
-   "ci95":[
-    null,
-    null
-   ],
-   "p_one_sided":null,
-   "clv":null,
-   "clv_n":0
-  },
-  "p_holm":1.0
- },
- {
-  "track":"new_format",
-  "mside":"btts_yes",
-  "league":"Japan J-League",
-  "config":"RAW|EDGE|max2.5|min-",
-  "verdict":"UNPROVEN",
-  "reason":null,
-  "mode":"MODEL",
-  "final":{
-   "bets":0,
-   "roi":null,
-   "ci95":[
-    null,
-    null
-   ],
-   "p_one_sided":null,
-   "clv":null,
-   "clv_n":0
-  },
-  "own_weight":null,
-  "family_size":33,
-  "valuable_th":0.02,
-  "marksman_th":0.02,
-  "sniper_th":0.02,
-  "shrink_weight_at_valuable":0.0,
-  "wf_bets":41.0,
-  "wf_roi":-0.3407,
-  "wf_roi_shrunk":0.054,
-  "tier2":false,
-  "tier2_bets":0.0,
-  "tier2_roi":null,
-  "final_tier2":{
-   "bets":0,
-   "roi":null,
-   "ci95":[
-    null,
-    null
-   ],
-   "p_one_sided":null,
-   "clv":null,
-   "clv_n":0
-  },
-  "p_holm":null
- },
- {
-  "track":"new_format",
-  "mside":"btts_yes",
-  "league":"K-League 1",
-  "config":"RAW|EDGE|max2.5|min-",
-  "verdict":"OFF",
-  "reason":"OWN_DATA_TOO_THIN",
-  "mode":"MODEL",
-  "final":{
-   "bets":0,
-   "roi":null,
-   "ci95":[
-    null,
-    null
-   ],
-   "p_one_sided":null,
-   "clv":null,
-   "clv_n":0
-  },
-  "own_weight":0.0,
-  "family_size":33,
-  "valuable_th":null,
-  "marksman_th":null,
-  "sniper_th":null,
-  "shrink_weight_at_valuable":null,
-  "wf_bets":null,
-  "wf_roi":null,
-  "wf_roi_shrunk":null,
-  "tier2":null,
-  "tier2_bets":null,
-  "tier2_roi":null,
-  "final_tier2":null,
-  "p_holm":null
- },
- {
-  "track":"new_format",
-  "mside":"btts_yes",
-  "league":"Mexico Liga MX",
-  "config":"RAW|EDGE|max2.5|min-",
-  "verdict":"UNPROVEN",
-  "reason":null,
-  "mode":"MODEL",
-  "final":{
-   "bets":6,
-   "roi":0.4317,
-   "matchdays":6,
-   "ci95":[
-    -0.1467,
-    0.9943
-   ],
-   "p_one_sided":0.056,
-   "clv":-0.0043,
-   "clv_n":6
-  },
-  "own_weight":null,
-  "family_size":33,
-  "valuable_th":0.02,
-  "marksman_th":0.02,
-  "sniper_th":0.02,
-  "shrink_weight_at_valuable":0.0,
-  "wf_bets":42.0,
-  "wf_roi":0.1174,
-  "wf_roi_shrunk":0.054,
-  "tier2":false,
-  "tier2_bets":0.0,
-  "tier2_roi":null,
-  "final_tier2":{
-   "bets":0,
-   "roi":null,
-   "ci95":[
-    null,
-    null
-   ],
-   "p_one_sided":null,
-   "clv":null,
-   "clv_n":0
-  },
-  "p_holm":1.0
- },
- {
-  "track":"new_format",
-  "mside":"btts_yes",
-  "league":"Norway Eliteserien",
-  "config":"RAW|EDGE|max2.5|min-",
-  "verdict":"PROMISING",
-  "reason":null,
-  "mode":"MODEL",
-  "final":{
-   "bets":6,
-   "roi":0.4617,
-   "matchdays":5,
-   "ci95":[
-    -0.1131,
-    1.0365
-   ],
-   "p_one_sided":0.007,
-   "clv":0.003,
-   "clv_n":6
-  },
-  "own_weight":null,
-  "family_size":33,
-  "valuable_th":0.02,
-  "marksman_th":0.02,
-  "sniper_th":0.02,
-  "shrink_weight_at_valuable":0.0,
-  "wf_bets":57.0,
-  "wf_roi":0.0533,
-  "wf_roi_shrunk":0.054,
-  "tier2":false,
-  "tier2_bets":0.0,
-  "tier2_roi":null,
-  "final_tier2":{
-   "bets":0,
-   "roi":null,
-   "ci95":[
-    null,
-    null
-   ],
-   "p_one_sided":null,
-   "clv":null,
-   "clv_n":0
-  },
-  "p_holm":0.175
- },
- {
-  "track":"new_format",
-  "mside":"btts_yes",
-  "league":"Romanian Superliga",
-  "config":"RAW|EDGE|max2.5|min-",
-  "verdict":"OFF",
-  "reason":"OWN_DATA_TOO_THIN",
-  "mode":"MODEL",
-  "final":{
-   "bets":0,
-   "roi":null,
-   "ci95":[
-    null,
-    null
-   ],
-   "p_one_sided":null,
-   "clv":null,
-   "clv_n":0
-  },
-  "own_weight":0.0,
-  "family_size":33,
-  "valuable_th":null,
-  "marksman_th":null,
-  "sniper_th":null,
-  "shrink_weight_at_valuable":null,
-  "wf_bets":null,
-  "wf_roi":null,
-  "wf_roi_shrunk":null,
-  "tier2":null,
-  "tier2_bets":null,
-  "tier2_roi":null,
-  "final_tier2":null,
-  "p_holm":null
- },
- {
-  "track":"new_format",
-  "mside":"btts_yes",
-  "league":"Saudi Pro League",
-  "config":"RAW|EDGE|max2.5|min-",
-  "verdict":"OFF",
-  "reason":"OWN_DATA_TOO_THIN",
-  "mode":"MODEL",
-  "final":{
-   "bets":0,
-   "roi":null,
-   "ci95":[
-    null,
-    null
-   ],
-   "p_one_sided":null,
-   "clv":null,
-   "clv_n":0
-  },
-  "own_weight":0.0,
-  "family_size":33,
-  "valuable_th":null,
-  "marksman_th":null,
-  "sniper_th":null,
-  "shrink_weight_at_valuable":null,
-  "wf_bets":null,
-  "wf_roi":null,
-  "wf_roi_shrunk":null,
-  "tier2":null,
-  "tier2_bets":null,
-  "tier2_roi":null,
-  "final_tier2":null,
-  "p_holm":null
- },
- {
-  "track":"new_format",
-  "mside":"btts_yes",
-  "league":"Sweden Allsvenskan",
-  "config":"RAW|EDGE|max2.5|min-",
-  "verdict":"UNPROVEN",
-  "reason":null,
-  "mode":"MODEL",
-  "final":{
-   "bets":3,
-   "roi":-0.3633,
-   "matchdays":2,
-   "ci95":[
-    -1.6112,
-    0.8845
-   ],
-   "p_one_sided":null,
-   "clv":-0.0068,
-   "clv_n":3
-  },
-  "own_weight":null,
-  "family_size":33,
-  "valuable_th":0.02,
-  "marksman_th":0.02,
-  "sniper_th":0.02,
-  "shrink_weight_at_valuable":0.0,
-  "wf_bets":44.0,
-  "wf_roi":-0.0011,
-  "wf_roi_shrunk":0.054,
-  "tier2":false,
-  "tier2_bets":0.0,
-  "tier2_roi":null,
-  "final_tier2":{
-   "bets":0,
-   "roi":null,
-   "ci95":[
-    null,
-    null
-   ],
-   "p_one_sided":null,
-   "clv":null,
-   "clv_n":0
-  },
-  "p_holm":null
+  "p_holm":1.0,
+  "own_weight":null
  },
  {
   "track":"new_format",
   "mside":"btts_yes",
   "league":"USA MLS",
-  "config":"RAW|EDGE|max2.5|min-",
-  "verdict":"OFF",
-  "reason":"OWN_DATA_TOO_THIN",
+  "config":"BLEND|EDGE|max2.5|min-",
+  "verdict":"PROMISING",
+  "reason":null,
   "mode":"MODEL",
   "final":{
+   "bets":10,
+   "roi":0.345,
+   "matchdays":8,
+   "ci95":[
+    -0.0983,
+    0.7883
+   ],
+   "p_one_sided":0.0405,
+   "clv":0.0084,
+   "clv_n":10
+  },
+  "family_size":34,
+  "valuable_th":0.02,
+  "marksman_th":0.02,
+  "sniper_th":0.02,
+  "shrink_weight_at_valuable":0.0,
+  "wf_bets":46.0,
+  "wf_roi":-0.2141,
+  "wf_roi_shrunk":0.0272,
+  "tier2":false,
+  "tier2_bets":0.0,
+  "tier2_roi":null,
+  "final_tier2":{
    "bets":0,
    "roi":null,
    "ci95":[
@@ -4764,20 +5943,8 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":0.0,
-  "family_size":33,
-  "valuable_th":null,
-  "marksman_th":null,
-  "sniper_th":null,
-  "shrink_weight_at_valuable":null,
-  "wf_bets":null,
-  "wf_roi":null,
-  "wf_roi_shrunk":null,
-  "tier2":null,
-  "tier2_bets":null,
-  "tier2_roi":null,
-  "final_tier2":null,
-  "p_holm":null
+  "p_holm":1.0,
+  "own_weight":null
  },
  {
   "track":"new_format",
@@ -4798,18 +5965,17 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":0.02,
   "marksman_th":0.03,
-  "sniper_th":0.06,
-  "shrink_weight_at_valuable":0.9269,
-  "wf_bets":238.0,
-  "wf_roi":0.0373,
-  "wf_roi_shrunk":0.0394,
+  "sniper_th":0.04,
+  "shrink_weight_at_valuable":0.928,
+  "wf_bets":240.0,
+  "wf_roi":0.028,
+  "wf_roi_shrunk":0.0302,
   "tier2":false,
-  "tier2_bets":41.0,
-  "tier2_roi":-0.1941,
+  "tier2_bets":40.0,
+  "tier2_roi":-0.2622,
   "final_tier2":{
    "bets":0,
    "roi":null,
@@ -4821,7 +5987,8 @@
    "clv":null,
    "clv_n":0
   },
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":null
  },
  {
   "track":"new_format",
@@ -4842,8 +6009,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":0.9483,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -4855,7 +6021,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":0.9489
  },
  {
   "track":"new_format",
@@ -4876,8 +6043,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":0.6455,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -4889,7 +6055,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":0.6481
  },
  {
   "track":"new_format",
@@ -4910,8 +6077,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":0.0,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -4923,7 +6089,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":0.0
  },
  {
   "track":"new_format",
@@ -4944,8 +6111,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":0.9959,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -4957,7 +6123,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":0.9959
  },
  {
   "track":"new_format",
@@ -4978,8 +6145,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":0.0,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -4991,7 +6157,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":0.0
  },
  {
   "track":"new_format",
@@ -5012,8 +6179,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":0.6238,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -5025,7 +6191,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":0.6265
  },
  {
   "track":"new_format",
@@ -5046,8 +6213,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":0.0,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -5059,7 +6225,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":0.0
  },
  {
   "track":"new_format",
@@ -5080,8 +6247,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":0.0,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -5093,7 +6259,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":0.0
  },
  {
   "track":"new_format",
@@ -5114,8 +6281,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":0.894,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -5127,7 +6293,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":0.8951
  },
  {
   "track":"new_format",
@@ -5148,8 +6315,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":0.0,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -5161,7 +6327,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":0.0
  },
  {
   "track":"new_format",
@@ -5182,8 +6349,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":0.0,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -5195,7 +6361,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":0.0
  },
  {
   "track":"new_format",
@@ -5216,8 +6383,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":0.0,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -5229,7 +6395,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":0.0
  },
  {
   "track":"new_format",
@@ -5250,8 +6417,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":0.0,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -5263,7 +6429,8 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":0.0
  },
  {
   "track":"new_format",
@@ -5284,8 +6451,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":0.0,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -5297,13 +6463,14 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":0.0
  },
  {
   "track":"new_format",
   "mside":"over35_over",
   "league":"Argentina Primera Division",
-  "config":"BLEND|EDGE|max-|min-",
+  "config":"BLEND|EV|max-|min-",
   "verdict":"OFF",
   "reason":"OWN_DATA_TOO_THIN",
   "mode":"MODEL",
@@ -5318,8 +6485,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":0.0,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -5331,13 +6497,14 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":0.0
  },
  {
   "track":"new_format",
   "mside":"over35_over",
   "league":"Austrian Bundesliga",
-  "config":"BLEND|EDGE|max-|min-",
+  "config":"BLEND|EV|max-|min-",
   "verdict":"OFF",
   "reason":"OWN_DATA_TOO_THIN",
   "mode":"MODEL",
@@ -5352,8 +6519,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":0.0,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -5365,13 +6531,14 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":0.0
  },
  {
   "track":"new_format",
   "mside":"over35_over",
   "league":"Brazil Serie A",
-  "config":"BLEND|EDGE|max-|min-",
+  "config":"BLEND|EV|max-|min-",
   "verdict":"OFF",
   "reason":"OWN_DATA_TOO_THIN",
   "mode":"MODEL",
@@ -5386,8 +6553,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":0.0,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -5399,40 +6565,299 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":0.0
  },
  {
   "track":"new_format",
   "mside":"over35_over",
   "league":"China Super League",
-  "config":"BLEND|EDGE|max-|min-",
+  "config":"BLEND|EV|max-|min-",
   "verdict":"UNPROVEN",
   "reason":null,
   "mode":"MODEL",
   "final":{
-   "bets":6,
-   "roi":0.1483,
-   "matchdays":5,
+   "bets":1,
+   "roi":0.8,
+   "matchdays":1,
    "ci95":[
-    -0.5657,
-    0.8623
+    null,
+    null
    ],
-   "p_one_sided":0.2889,
+   "p_one_sided":null,
    "clv":0.0,
-   "clv_n":6
+   "clv_n":1
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":0.02,
-  "marksman_th":0.02,
+  "marksman_th":0.03,
+  "sniper_th":0.03,
+  "shrink_weight_at_valuable":0.0,
+  "wf_bets":73.0,
+  "wf_roi":0.0037,
+  "wf_roi_shrunk":0.065,
+  "tier2":false,
+  "tier2_bets":17.0,
+  "tier2_roi":-0.1406,
+  "final_tier2":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "p_holm":null,
+  "own_weight":null
+ },
+ {
+  "track":"new_format",
+  "mside":"over35_over",
+  "league":"Denmark Superliga",
+  "config":"BLEND|EV|max-|min-",
+  "verdict":"OFF",
+  "reason":"OWN_DATA_TOO_THIN",
+  "mode":"MODEL",
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":0.0
+ },
+ {
+  "track":"new_format",
+  "mside":"over35_over",
+  "league":"Finland Veikkausliiga",
+  "config":"BLEND|EV|max-|min-",
+  "verdict":"UNPROVEN",
+  "reason":null,
+  "mode":"MODEL",
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":0.02,
+  "marksman_th":0.03,
+  "sniper_th":0.03,
+  "shrink_weight_at_valuable":0.0,
+  "wf_bets":49.0,
+  "wf_roi":0.0443,
+  "wf_roi_shrunk":0.065,
+  "tier2":false,
+  "tier2_bets":8.0,
+  "tier2_roi":0.7113,
+  "final_tier2":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "p_holm":null,
+  "own_weight":null
+ },
+ {
+  "track":"new_format",
+  "mside":"over35_over",
+  "league":"Ireland Premier Division",
+  "config":"BLEND|EV|max-|min-",
+  "verdict":"OFF",
+  "reason":"OWN_DATA_TOO_THIN",
+  "mode":"MODEL",
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":0.0
+ },
+ {
+  "track":"new_format",
+  "mside":"over35_over",
+  "league":"Japan J-League",
+  "config":"BLEND|EV|max-|min-",
+  "verdict":"OFF",
+  "reason":"OWN_DATA_TOO_THIN",
+  "mode":"MODEL",
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":0.0
+ },
+ {
+  "track":"new_format",
+  "mside":"over35_over",
+  "league":"K-League 1",
+  "config":"BLEND|EV|max-|min-",
+  "verdict":"OFF",
+  "reason":"OWN_DATA_TOO_THIN",
+  "mode":"MODEL",
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":0.0
+ },
+ {
+  "track":"new_format",
+  "mside":"over35_over",
+  "league":"Mexico Liga MX",
+  "config":"BLEND|EV|max-|min-",
+  "verdict":"OFF",
+  "reason":"OWN_DATA_TOO_THIN",
+  "mode":"MODEL",
+  "final":{
+   "bets":0,
+   "roi":null,
+   "ci95":[
+    null,
+    null
+   ],
+   "p_one_sided":null,
+   "clv":null,
+   "clv_n":0
+  },
+  "family_size":34,
+  "valuable_th":null,
+  "marksman_th":null,
+  "sniper_th":null,
+  "shrink_weight_at_valuable":null,
+  "wf_bets":null,
+  "wf_roi":null,
+  "wf_roi_shrunk":null,
+  "tier2":null,
+  "tier2_bets":null,
+  "tier2_roi":null,
+  "final_tier2":null,
+  "p_holm":null,
+  "own_weight":0.0
+ },
+ {
+  "track":"new_format",
+  "mside":"over35_over",
+  "league":"Norway Eliteserien",
+  "config":"BLEND|EV|max-|min-",
+  "verdict":"PROMISING",
+  "reason":null,
+  "mode":"MODEL",
+  "final":{
+   "bets":8,
+   "roi":0.1225,
+   "matchdays":8,
+   "ci95":[
+    -0.6143,
+    0.8593
+   ],
+   "p_one_sided":0.3348,
+   "clv":0.0019,
+   "clv_n":8
+  },
+  "family_size":34,
+  "valuable_th":0.02,
+  "marksman_th":0.03,
   "sniper_th":0.03,
   "shrink_weight_at_valuable":0.0,
   "wf_bets":78.0,
-  "wf_roi":0.0449,
-  "wf_roi_shrunk":0.0758,
+  "wf_roi":-0.034,
+  "wf_roi_shrunk":0.065,
   "tier2":false,
-  "tier2_bets":0.0,
-  "tier2_roi":null,
+  "tier2_bets":10.0,
+  "tier2_roi":-0.385,
   "final_tier2":{
    "bets":0,
    "roi":null,
@@ -5444,262 +6869,14 @@
    "clv":null,
    "clv_n":0
   },
-  "p_holm":1.0
- },
- {
-  "track":"new_format",
-  "mside":"over35_over",
-  "league":"Denmark Superliga",
-  "config":"BLEND|EDGE|max-|min-",
-  "verdict":"OFF",
-  "reason":"OWN_DATA_TOO_THIN",
-  "mode":"MODEL",
-  "final":{
-   "bets":0,
-   "roi":null,
-   "ci95":[
-    null,
-    null
-   ],
-   "p_one_sided":null,
-   "clv":null,
-   "clv_n":0
-  },
-  "own_weight":0.0,
-  "family_size":33,
-  "valuable_th":null,
-  "marksman_th":null,
-  "sniper_th":null,
-  "shrink_weight_at_valuable":null,
-  "wf_bets":null,
-  "wf_roi":null,
-  "wf_roi_shrunk":null,
-  "tier2":null,
-  "tier2_bets":null,
-  "tier2_roi":null,
-  "final_tier2":null,
-  "p_holm":null
- },
- {
-  "track":"new_format",
-  "mside":"over35_over",
-  "league":"Finland Veikkausliiga",
-  "config":"BLEND|EDGE|max-|min-",
-  "verdict":"OFF",
-  "reason":"OWN_DATA_TOO_THIN",
-  "mode":"MODEL",
-  "final":{
-   "bets":0,
-   "roi":null,
-   "ci95":[
-    null,
-    null
-   ],
-   "p_one_sided":null,
-   "clv":null,
-   "clv_n":0
-  },
-  "own_weight":0.0,
-  "family_size":33,
-  "valuable_th":null,
-  "marksman_th":null,
-  "sniper_th":null,
-  "shrink_weight_at_valuable":null,
-  "wf_bets":null,
-  "wf_roi":null,
-  "wf_roi_shrunk":null,
-  "tier2":null,
-  "tier2_bets":null,
-  "tier2_roi":null,
-  "final_tier2":null,
-  "p_holm":null
- },
- {
-  "track":"new_format",
-  "mside":"over35_over",
-  "league":"Ireland Premier Division",
-  "config":"BLEND|EDGE|max-|min-",
-  "verdict":"OFF",
-  "reason":"OWN_DATA_TOO_THIN",
-  "mode":"MODEL",
-  "final":{
-   "bets":0,
-   "roi":null,
-   "ci95":[
-    null,
-    null
-   ],
-   "p_one_sided":null,
-   "clv":null,
-   "clv_n":0
-  },
-  "own_weight":0.0,
-  "family_size":33,
-  "valuable_th":null,
-  "marksman_th":null,
-  "sniper_th":null,
-  "shrink_weight_at_valuable":null,
-  "wf_bets":null,
-  "wf_roi":null,
-  "wf_roi_shrunk":null,
-  "tier2":null,
-  "tier2_bets":null,
-  "tier2_roi":null,
-  "final_tier2":null,
-  "p_holm":null
- },
- {
-  "track":"new_format",
-  "mside":"over35_over",
-  "league":"Japan J-League",
-  "config":"BLEND|EDGE|max-|min-",
-  "verdict":"OFF",
-  "reason":"OWN_DATA_TOO_THIN",
-  "mode":"MODEL",
-  "final":{
-   "bets":0,
-   "roi":null,
-   "ci95":[
-    null,
-    null
-   ],
-   "p_one_sided":null,
-   "clv":null,
-   "clv_n":0
-  },
-  "own_weight":0.0,
-  "family_size":33,
-  "valuable_th":null,
-  "marksman_th":null,
-  "sniper_th":null,
-  "shrink_weight_at_valuable":null,
-  "wf_bets":null,
-  "wf_roi":null,
-  "wf_roi_shrunk":null,
-  "tier2":null,
-  "tier2_bets":null,
-  "tier2_roi":null,
-  "final_tier2":null,
-  "p_holm":null
- },
- {
-  "track":"new_format",
-  "mside":"over35_over",
-  "league":"K-League 1",
-  "config":"BLEND|EDGE|max-|min-",
-  "verdict":"OFF",
-  "reason":"OWN_DATA_TOO_THIN",
-  "mode":"MODEL",
-  "final":{
-   "bets":0,
-   "roi":null,
-   "ci95":[
-    null,
-    null
-   ],
-   "p_one_sided":null,
-   "clv":null,
-   "clv_n":0
-  },
-  "own_weight":0.0,
-  "family_size":33,
-  "valuable_th":null,
-  "marksman_th":null,
-  "sniper_th":null,
-  "shrink_weight_at_valuable":null,
-  "wf_bets":null,
-  "wf_roi":null,
-  "wf_roi_shrunk":null,
-  "tier2":null,
-  "tier2_bets":null,
-  "tier2_roi":null,
-  "final_tier2":null,
-  "p_holm":null
- },
- {
-  "track":"new_format",
-  "mside":"over35_over",
-  "league":"Mexico Liga MX",
-  "config":"BLEND|EDGE|max-|min-",
-  "verdict":"OFF",
-  "reason":"OWN_DATA_TOO_THIN",
-  "mode":"MODEL",
-  "final":{
-   "bets":0,
-   "roi":null,
-   "ci95":[
-    null,
-    null
-   ],
-   "p_one_sided":null,
-   "clv":null,
-   "clv_n":0
-  },
-  "own_weight":0.0,
-  "family_size":33,
-  "valuable_th":null,
-  "marksman_th":null,
-  "sniper_th":null,
-  "shrink_weight_at_valuable":null,
-  "wf_bets":null,
-  "wf_roi":null,
-  "wf_roi_shrunk":null,
-  "tier2":null,
-  "tier2_bets":null,
-  "tier2_roi":null,
-  "final_tier2":null,
-  "p_holm":null
- },
- {
-  "track":"new_format",
-  "mside":"over35_over",
-  "league":"Norway Eliteserien",
-  "config":"BLEND|EDGE|max-|min-",
-  "verdict":"UNPROVEN",
-  "reason":null,
-  "mode":"MODEL",
-  "final":{
-   "bets":17,
-   "roi":-0.33,
-   "matchdays":11,
-   "ci95":[
-    -0.7775,
-    0.1175
-   ],
-   "p_one_sided":0.947,
-   "clv":0.0016,
-   "clv_n":17
-  },
-  "own_weight":null,
-  "family_size":33,
-  "valuable_th":0.02,
-  "marksman_th":0.02,
-  "sniper_th":0.02,
-  "shrink_weight_at_valuable":0.0,
-  "wf_bets":63.0,
-  "wf_roi":-0.0078,
-  "wf_roi_shrunk":0.0758,
-  "tier2":false,
-  "tier2_bets":0.0,
-  "tier2_roi":null,
-  "final_tier2":{
-   "bets":0,
-   "roi":null,
-   "ci95":[
-    null,
-    null
-   ],
-   "p_one_sided":null,
-   "clv":null,
-   "clv_n":0
-  },
-  "p_holm":1.0
+  "p_holm":1.0,
+  "own_weight":null
  },
  {
   "track":"new_format",
   "mside":"over35_over",
   "league":"Romanian Superliga",
-  "config":"BLEND|EDGE|max-|min-",
+  "config":"BLEND|EV|max-|min-",
   "verdict":"OFF",
   "reason":"OWN_DATA_TOO_THIN",
   "mode":"MODEL",
@@ -5714,8 +6891,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":0.0,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -5727,13 +6903,14 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":0.0
  },
  {
   "track":"new_format",
   "mside":"over35_over",
   "league":"Saudi Pro League",
-  "config":"BLEND|EDGE|max-|min-",
+  "config":"BLEND|EV|max-|min-",
   "verdict":"OFF",
   "reason":"OWN_DATA_TOO_THIN",
   "mode":"MODEL",
@@ -5748,8 +6925,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":0.0,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -5761,13 +6937,14 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":0.0
  },
  {
   "track":"new_format",
   "mside":"over35_over",
   "league":"Sweden Allsvenskan",
-  "config":"BLEND|EDGE|max-|min-",
+  "config":"BLEND|EV|max-|min-",
   "verdict":"OFF",
   "reason":"OWN_DATA_TOO_THIN",
   "mode":"MODEL",
@@ -5782,8 +6959,7 @@
    "clv":null,
    "clv_n":0
   },
-  "own_weight":0.0,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":null,
   "marksman_th":null,
   "sniper_th":null,
@@ -5795,40 +6971,40 @@
   "tier2_bets":null,
   "tier2_roi":null,
   "final_tier2":null,
-  "p_holm":null
+  "p_holm":null,
+  "own_weight":0.0
  },
  {
   "track":"new_format",
   "mside":"over35_over",
   "league":"USA MLS",
-  "config":"BLEND|EDGE|max-|min-",
+  "config":"BLEND|EV|max-|min-",
   "verdict":"UNPROVEN",
   "reason":null,
   "mode":"MODEL",
   "final":{
-   "bets":57,
-   "roi":-0.1311,
-   "matchdays":21,
+   "bets":3,
+   "roi":-0.4433,
+   "matchdays":3,
    "ci95":[
-    -0.3814,
-    0.1193
+    -1.5344,
+    0.67
    ],
-   "p_one_sided":0.9255,
-   "clv":0.0126,
-   "clv_n":57
+   "p_one_sided":0.7366,
+   "clv":-0.0027,
+   "clv_n":3
   },
-  "own_weight":null,
-  "family_size":33,
+  "family_size":34,
   "valuable_th":0.02,
-  "marksman_th":0.02,
-  "sniper_th":0.02,
+  "marksman_th":0.03,
+  "sniper_th":0.03,
   "shrink_weight_at_valuable":0.0,
-  "wf_bets":63.0,
-  "wf_roi":0.1537,
-  "wf_roi_shrunk":0.0758,
+  "wf_bets":74.0,
+  "wf_roi":0.2855,
+  "wf_roi_shrunk":0.065,
   "tier2":false,
-  "tier2_bets":0.0,
-  "tier2_roi":null,
+  "tier2_bets":10.0,
+  "tier2_roi":0.58,
   "final_tier2":{
    "bets":0,
    "roi":null,
@@ -5840,6 +7016,7 @@
    "clv":null,
    "clv_n":0
   },
-  "p_holm":1.0
+  "p_holm":1.0,
+  "own_weight":null
  }
 ]
