@@ -81,7 +81,9 @@ def _history():
         _h(100, 21, "2025-08-16", "Arsenal", "Chelsea", "Chelsea", 0),
         _h(100, 99, "2025-08-16", "Arsenal", "Chelsea", "Arsenal", 1),           # not in the answer
         _h(100, 22, "2025-08-16", "Arsenal", "Chelsea", "Arsenal", 1),           # wrong side
-        _h(200, 21, "2025-08-24", "Chelsea", "Everton", "Chelsea", 1),           # date differs
+        # date differs by TWO days (owner 2026-11-09: exactly one day with the provider's fixture id and
+        # both clubs proven is accepted, tests/test_p7_missing_data.py; two days stays refused)
+        _h(200, 21, "2025-08-25", "Chelsea", "Everton", "Chelsea", 1),
         _h(300, 11, "2025-08-30", "Everton", "Fulham", "Arsenal", 0),            # clubs differ
         _h(400, 11, "2025-09-06", "Arsenal", "Everton", "Arsenal", 1),           # empty answer
         _h(555, 11, "2025-09-10", "England", "Wales", "England", 1),             # not in the lists

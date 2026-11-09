@@ -213,3 +213,35 @@ def test_sync_takes_untouched_files_and_only_newer_rows_of_a_file_both_changed(t
     assert ("E", "F") in pairs and ("C", "D") not in pairs and len(af) == 2
     assert r["rows_appended"]["output/af_history.parquet"] == 1
     assert len(pd.read_parquet(repo / "output" / "fd_history.parquet")) == 2
+
+
+# ── owner 2026-11-09: date formats and the one-day rule for re-fetch rows ──────────────────
+
+def _plan_case(list_date, hist_date, home="Uruguay", away="Dominican Republic", lh="Uruguay", la="Dominican Republic"):
+    import collect_player_refetch as RF
+    from test_player_refetch import _h
+    fx = pd.DataFrame([{"fixture_id": 900, "league_id": 10, "season": "2025", "date": list_date,
+                        "home_id": 1, "home_name": lh, "away_id": 2, "away_name": la, "status": "FT"},
+                       {"fixture_id": 901, "league_id": 39, "season": "2025", "date": "2025-10-01",
+                        "home_id": 3, "home_name": "Arsenal", "away_id": 4, "away_name": "Chelsea", "status": "FT"}])
+    rows = RF.source_rows(pd.DataFrame([_h(900, 7, hist_date, home, away, home, 1)]), pd.DataFrame())
+    return RF.plan(rows, fx, pd.DataFrame())
+
+
+def test_a_list_date_with_an_offset_is_read_in_utc_not_dropped():
+    p = _plan_case("2025-10-10T22:00:00+00:00", "2025-10-10")
+    assert p["proven_fixtures"] == 1 and p["refused_fixtures"] == {}
+
+
+def test_one_day_apart_with_both_clubs_proven_is_accepted_and_recorded():
+    p = _plan_case("2025-10-11T01:30:00+00:00", "2025-10-10")
+    assert p["proven_fixtures"] == 1 and p["date_shift_accepted_fixtures"] == 1
+    dc = p["date_corrections"]
+    assert (dc["history_date"].iloc[0], dc["provider_date"].iloc[0]) == ("2025-10-10", "2025-10-11")
+
+
+def test_one_day_apart_with_a_club_unproven_or_two_days_apart_is_refused():
+    p = _plan_case("2025-10-11T01:30:00+00:00", "2025-10-10", lh="Paraguay")
+    assert p["proven_fixtures"] == 0 and p["refused_fixtures"] == {"clubs_unproven": 1}
+    p = _plan_case("2025-10-12T01:30:00+00:00", "2025-10-10")
+    assert p["proven_fixtures"] == 0 and p["refused_fixtures"] == {"date_differs_from_list": 1}
