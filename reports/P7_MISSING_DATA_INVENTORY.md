@@ -144,3 +144,33 @@ month on the 5M plan (about $60 more than 100K) covers H1 + H2 + H3 (realistic) 
 2M to spare; H1 alone (59k) fits only after a plan step up or in a month where the live burn is below
 about 40k. Before any purchase: a probe of 1 event per league for btts / alternate_totals / props
 (at most 20-160 credits per league, free where empty) to confirm the soccer history exists.
+
+## Probe result and FINAL buy list (owner 2026-11-09: "probe first"; nothing bought beyond the probe)
+
+Probe: run 42648635984, `output/collect/oddsapi_history_probe.json`. **1,590 credits spent** (116 calls,
+0 calls of unknown cost), one event per league on our busiest match day 2024-03..2025-03, 31 leagues.
+
+What exists in OddsAPI soccer history (confirmed on the probed event):
+* featured `totals` + `h2h`: every probed league (Saudi Pro League: no event on its probe day, so
+  unconfirmed). BUT the featured `totals` main line is 2.5 for only **56% of New-Format events (64/114)**
+  and 49% overall: the main line is often 2.25 / 2.75. So O/U 2.5 history is best bought per event.
+* event `alternate_totals` (lines 0.5..3.5 and more; 1.5 and 2.5 in every probed event, 3.5 seen in 17
+  leagues and hidden in the other 13 only by the probe's own 12-line summary cap) and `btts`: every
+  probed league, 1-5 books.
+* player props: ONLY Premier League (4 markets, 160 credits/event), Ligue 1 (2 markets, 80) and MLS
+  (3 markets, 120). Every 2nd-division and New-Format prop league returned nothing (free), and so did
+  Bundesliga / La Liga / Serie A on their probe days.
+
+| Buy | What | Size | Credits | Unlocks |
+|---|---|---|---|---|
+| B1 = H1 + H2 together | per event `btts` + `alternate_totals` (eu), one call gives BTTS, O1.5, O2.5, O3.5; 2023-05-03 onwards; leagues with a key, Saudi excluded until confirmed | 24,527 events, 7,298 league-days | **497,838** | 72,834 unpriced rows: New-Format O/U 2.5 9,365, BTTS 8,772, O1.5 10,480, O3.5 10,289; Standard BTTS 7,634, O1.5 13,147, O3.5 13,147. Walk-forward bars for O1.5 / O3.5 (today only IN_PERIOD_SPLIT) and for New-Format O/U 2.5 and BTTS |
+| B2 = H1 before 2023-05-03 | featured `totals` snapshot per league-day before the first kickoff (the only history before 2023-05-03) | 2,277 league-days, 6,860 rows | **22,770** | about 3,851 rows priced (the 56% with a 2.5 main line); the rest stays unpriced and is billed anyway |
+| B3 = H3 | player props per event, Premier League / Ligue 1 / MLS only | 1,246 + 1,029 + 1,575 fixtures | **471,730** | props CLV and rare-props bars in those 3 leagues only; nothing for the 2nd divisions or New-Format (no history exists) |
+| B4 = H4 | `h2h` + `totals`, 8 snapshots per league-day | 7,349 league-days | **1,175,840** | the sharp-agreement filter over 3 seasons |
+| | **B1 + B2 + B3** | | **992,338** | |
+| | **all four** | | **2,168,178** | |
+
+Fit (plan prices from the provider's page, which may be dated): the live burn is about 117,000 credits a
+month. B1 + B2 (520,608) or all four need a month on the 5M plan; on 100K none fits. Recommended order, by
+value per credit: **B1** (the bars' largest evidence gap, 2 markets per call), then **B2** (cheap), then B3
+(3 leagues only), then B4 (largest cost for one filter). Nothing beyond the probe was bought.
