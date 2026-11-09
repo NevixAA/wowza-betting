@@ -44,7 +44,8 @@ def flagged_frame(log: pd.DataFrame, now: pd.Timestamp, group: tuple[str, ...]) 
     """One row per (upcoming fixture, flagged special in `group`): the model's probability, the league's
     own base rate and the ratio, exactly as logged."""
     up = upcoming(log, now)
-    cols = ["kickoff", "league", "match", "special", "model", "league base", "ratio", "score"]
+    cols = ["kickoff", "league", "match", "special", "model (raw)", "calibrated", "league base", "ratio",
+            "best price", "books", "score"]
     rows = []
     for _, r in up.iterrows():
         for k in group:
@@ -56,8 +57,10 @@ def flagged_frame(log: pd.DataFrame, now: pd.Timestamp, group: tuple[str, ...]) 
             else:
                 p, b, ratio, score = r.get(f"p_{k}"), r.get(f"base_{k}"), r.get(f"ratio_{k}"), ""
             rows.append({"kickoff": str(r.get("kickoff_utc"))[:16].replace("T", " "), "league": r.get("league"),
-                         "match": match_label(r), "special": SPECIAL_LABELS.get(k, k), "model": p,
-                         "league base": b, "ratio": ratio, "score": score})
+                         "match": match_label(r), "special": SPECIAL_LABELS.get(k, k), "model (raw)": p,
+                         "calibrated": r.get(f"p_cal_{k}"), "league base": b, "ratio": ratio,
+                         "best price": r.get(f"price_{k}_best"), "books": r.get(f"price_{k}_books"),
+                         "score": score})
     return pd.DataFrame(rows, columns=cols)
 
 
@@ -77,15 +80,19 @@ def grid_frame(row: pd.Series) -> pd.DataFrame:
 
 def bands_frame(row: pd.Series) -> pd.DataFrame:
     out = []
-    for k, label in list(BAND_LABELS.items()) + [(k, SPECIAL_LABELS[k]) for k in HIGH + LOW]:
+    # a band that IS a special (6+ goals, 0-1 goals) is shown once, with the special's calibration
+    same = {"tot_6p": "ge6", "tot_0_1": "tot_le1"}
+    specials = [(k, SPECIAL_LABELS[k]) for k in HIGH + LOW if k not in same.values()]
+    for k, label in list(BAND_LABELS.items()) + specials:
         if f"p_{k}" not in row:
             continue
         p, b = row.get(f"p_{k}"), row.get(f"base_{k}")
-        out.append({"outcome": label, "model": p, "league base": b,
+        out.append({"outcome": label, "model (raw)": p, "calibrated": row.get(f"p_cal_{same.get(k, k)}"),
+                    "league base": b,
                     "ratio": (p / b) if (pd.notna(p) and pd.notna(b) and b > 0) else None})
     if "p_cs_other" in row:
-        out.append({"outcome": "other score (a side 7+)", "model": row.get("p_cs_other"),
-                    "league base": row.get("base_cs_other"), "ratio": None})
+        out.append({"outcome": "other score (a side 7+)", "model (raw)": row.get("p_cs_other"),
+                    "calibrated": None, "league base": row.get("base_cs_other"), "ratio": None})
     return pd.DataFrame(out)
 
 
@@ -129,6 +136,20 @@ def study_table(study: dict) -> pd.DataFrame:
                      "candidates": ce.get("candidates"), "candidate events": ce.get("events"),
                      "candidate hit": ce.get("hit_rate"), "their base": ce.get("mean_base"),
                      "lift": ce.get("lift"), "p (Holm)": ce.get("p_holm"), "verdict": ce.get("verdict")})
+    return pd.DataFrame(rows)
+
+
+def calibration_before_after(study: dict) -> pd.DataFrame:
+    """CAL-1 before/after per special, as Pro's history study wrote it (raw vs calibrated vs base)."""
+    ba = ((study or {}).get("calibration") or {}).get("before_after") or {}
+    rows = []
+    for k, v in ba.items():
+        f = v.get("flagged") or {}
+        rows.append({"special": SPECIAL_LABELS.get(k, k), "rows": v.get("n"), "actual": v.get("actual"),
+                     "raw mean": v.get("mean_raw"), "calibrated mean": v.get("mean_cal"),
+                     "skill raw": v.get("brier_skill_raw"), "skill calibrated": v.get("brier_skill_cal"),
+                     "flagged actual": f.get("actual"), "flagged raw": f.get("mean_raw"),
+                     "flagged calibrated": f.get("mean_cal")})
     return pd.DataFrame(rows)
 
 

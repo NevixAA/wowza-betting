@@ -32,7 +32,25 @@ def test_flagged_frame_lists_only_upcoming_flagged_rows_with_their_logged_number
                         _row(row_id="r2", kickoff_utc="2029-12-30T15:00:00Z", cand_ge6=1.0)])
     f = V.flagged_frame(log, NOW, V.HIGH)
     assert len(f) == 1 and f.iloc[0]["special"] == "6+ goals"
-    assert f.iloc[0]["model"] == 0.21 and f.iloc[0]["league base"] == 0.07 and f.iloc[0]["ratio"] == 3.0
+    assert f.iloc[0]["model (raw)"] == 0.21 and f.iloc[0]["league base"] == 0.07 and f.iloc[0]["ratio"] == 3.0
+    assert pd.isna(f.iloc[0]["calibrated"]) and pd.isna(f.iloc[0]["best price"])   # not logged -> empty
+
+
+def test_calibrated_and_real_price_are_shown_beside_the_raw_probability():
+    log = pd.DataFrame([_row(cand_ge6=1.0, p_ge6=0.21, p_cal_ge6=0.12, price_ge6_best=9.5, price_ge6_books=7)])
+    f = V.flagged_frame(log, NOW, V.HIGH).iloc[0]
+    assert (f["model (raw)"], f["calibrated"], f["best price"], f["books"]) == (0.21, 0.12, 9.5, 7)
+    b = V.bands_frame(pd.Series(_row(p_cal_ge6=0.12)))
+    assert b.loc[b["outcome"] == "6+ goals", "calibrated"].iloc[0] == 0.12
+
+
+def test_calibration_before_after_reads_the_study_block():
+    study = {"calibration": {"before_after": {"ge6": {"n": 10, "actual": 0.05, "mean_raw": 0.06, "mean_cal": 0.05,
+                                                      "brier_skill_raw": -0.01, "brier_skill_cal": 0.01,
+                                                      "flagged": {"actual": 0.09, "mean_raw": 0.15, "mean_cal": 0.09}}}}}
+    t = V.calibration_before_after(study)
+    assert t.iloc[0]["special"] == "6+ goals" and t.iloc[0]["skill calibrated"] == 0.01
+    assert V.calibration_before_after({}).empty
 
 
 def test_unusual_score_row_names_the_score():
@@ -76,7 +94,11 @@ def test_page_renders_with_stored_rows(monkeypatch, tmp_path):
         d / "specials_settled.csv", index=False)
     rule = {"version": "SPC-1", "candidate_quantile": 0.9, "min_candidate_events": 30}
     (d / "study_summary.json").write_text(json.dumps({"rule": rule, "rows": 10, "leagues": 1,
-                                                     "skill": {}, "candidates": {}}), encoding="utf-8")
+                                                     "skill": {}, "candidates": {},
+                                                     "calibration": {"before_after": {"ge6": {
+                                                         "n": 10, "actual": 0.05, "mean_raw": 0.06,
+                                                         "mean_cal": 0.05, "brier_skill_raw": -0.01,
+                                                         "brier_skill_cal": 0.01}}}}), encoding="utf-8")
     pd.DataFrame([{"league": "A", "score": "0-0", "n": 10, "events": 1, "mean_p": 0.07, "actual": 0.1,
                    "base_mean": 0.08}]).to_csv(d / "study_calibration_grid.csv", index=False)
     monkeypatch.setitem(core.REPOS["pro"], "candidates", [tmp_path])

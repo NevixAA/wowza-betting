@@ -76,8 +76,16 @@ else:
         if f.empty:
             st.caption("Nothing flagged in the upcoming fixtures.")
         else:
-            ui.table(f, column_config={"model": ui.pct_col("Model"), "league base": ui.pct_col("League base"),
-                                       "ratio": ui.num_col("Ratio", fmt="%.2f×")})
+            ui.table(f, column_config={"model (raw)": ui.pct_col("Model (raw)"),
+                                       "calibrated": ui.pct_col("Calibrated"),
+                                       "league base": ui.pct_col("League base"),
+                                       "ratio": ui.num_col("Ratio (raw)", fmt="%.2f×"),
+                                       "best price": ui.num_col("Best price", fmt="%.2f"),
+                                       "books": ui.num_col("Books", fmt="%d")})
+    st.caption("Model (raw) is the score model as it is - overconfident in history. Calibrated is the "
+               "CAL-1 probability (per outcome, with the league's own learned adjustment); empty when the "
+               "league has no fitted adjustment. Best price = the highest real quote collected before "
+               "logging, with the number of bookmakers quoting it; empty when none was collected.")
 
 # ── one match: the grid and the bands ────────────────────────────────────────────────────────
 ui.section_header("Exact-score grid", "Pick a logged fixture: the model's probability per score, 0-0 to 6-6, "
@@ -109,7 +117,8 @@ if not log.empty:
         st.caption(f"Scores outside the grid (a side scoring 7+): {ui.fmt_prob(other, 2)} model · "
                    f"{ui.fmt_prob(row.get('base_cs_other'), 2)} league base. Logged {row.get('logged_at')} · "
                    f"{row.get('n_league_history')} league matches of history.")
-    ui.table(V.bands_frame(row), column_config={"model": ui.pct_col("Model"),
+    ui.table(V.bands_frame(row), column_config={"model (raw)": ui.pct_col("Model (raw)"),
+                                                "calibrated": ui.pct_col("Calibrated"),
                                                 "league base": ui.pct_col("League base"),
                                                 "ratio": ui.num_col("Ratio", fmt="%.2f×")})
 
@@ -139,6 +148,17 @@ else:
     ui.table(st_t, column_config={"candidate hit": ui.pct_col("Candidate hit"), "their base": ui.pct_col("Their base"),
                                   "Brier skill vs base": ui.num_col("Brier skill vs base", fmt="%+.4f"),
                                   "lift": ui.num_col("Lift", fmt="%.2f×"), "p (Holm)": ui.num_col("p (Holm)", fmt="%.4f")})
+
+cal_t = V.calibration_before_after(study)
+if not cal_t.empty:
+    ui.section_header("Calibration (CAL-1)", "The raw special probabilities against the calibrated ones, on the "
+                      "history study's out-of-sample rows (each month calibrated on earlier months only). "
+                      "Skill = Brier skill against the league's own base rate; above 0 beats the base.")
+    ui.table(cal_t, column_config={c: ui.pct_col(c.capitalize()) for c in
+                                   ("actual", "raw mean", "calibrated mean", "flagged actual", "flagged raw",
+                                    "flagged calibrated")}
+             | {"skill raw": ui.num_col("Skill raw", fmt="%+.4f"),
+                "skill calibrated": ui.num_col("Skill calibrated", fmt="%+.4f")})
 
 grid = data.get("study_calibration_grid", pd.DataFrame())
 if not grid.empty:
