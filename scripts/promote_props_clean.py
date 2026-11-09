@@ -31,6 +31,7 @@ sys.path.insert(0, str(ROOT))
 
 from player_model import props_gate as PPG  # noqa: E402
 
+#: the owner's words recorded with each promotion (--approval / --approved-on override them)
 APPROVAL = "u can upload the new props ofcourse, and still collect the opening moving closing"
 APPROVED_ON = "2026-11-08"
 BOOT = 4000
@@ -76,6 +77,8 @@ def main(argv=None) -> int:
     ap.add_argument("--run-id", required=True)
     ap.add_argument("--markets", required=True)
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--approval", default=APPROVAL)
+    ap.add_argument("--approved-on", default=APPROVED_ON)
     a = ap.parse_args(argv)
     d = Path(a.artifact_dir)
     rep = json.loads((d / "output" / "props_harness" / "props_harness_report.json").read_text(encoding="utf-8"))
@@ -106,7 +109,7 @@ def main(argv=None) -> int:
         else:
             rec = PPG.promote_clean_retrain(m, raw, expected_sha256=art["sha256"], run_id=a.run_id,
                                             code_sha=rep["code_sha"], holdout_metrics=metrics,
-                                            approval=APPROVAL, approved_on=APPROVED_ON)
+                                            approval=a.approval, approved_on=a.approved_on)
             row.update(artifact_sha256=art["sha256"], serving_sha256=rec["serving_sha256"],
                        model_version=rec["model_version"], prior=rec["champion_version"])
         out.append(row)
