@@ -36,9 +36,44 @@ def _logit(p):
     return np.log(p / (1 - p))
 
 
-def fit(log_path: Path = LOG, since: str = SINCE) -> dict:
-    """{'n', 'shift', 'se', 'ci95', 'active', 'reason'} from settled NF O/U 2.5 first-sight rows."""
-    out = {"since": since, "n": 0, "shift": 0.0, "se": None, "ci95": None, "active": False}
+#: The serving-champion registry. The shift is fitted against ONE model's errors, so it may only be
+#: fitted on rows that model predicted: rows logged before the serving NF champion was installed
+#: belong to the previous model (owner 2026-11-09, clean retrain promotion).
+CHAMPIONS = ROOT / "models" / "registry" / "current_champions.json"
+
+
+def champion_since(path: Path = CHAMPIONS) -> str | None:
+    """`champion_since` of the serving new-format O/U 2.5 champion, or None when it cannot be read."""
+    import json
+    try:
+        v = json.loads(Path(path).read_text(encoding="utf-8"))["newformat"]["champion_since"]
+    except Exception:                                                  # noqa: BLE001
+        return None
+    return str(v) if v else None
+
+
+def fit_window(since: str = SINCE, champions: Path = CHAMPIONS) -> tuple[str | None, str]:
+    """The first logged_at a calibration row may carry: the later of the fixed-pipeline start and the
+    serving champion's install time. (None, reason) when the champion's install time is unknown:
+    a shift cannot be tied to the model it would correct, so nothing is fitted (fail closed)."""
+    cs = champion_since(champions)
+    if cs is None:
+        return None, "serving new-format champion's champion_since unreadable - not fitted"
+    a, b = pd.Timestamp(since), pd.Timestamp(cs)
+    a = a.tz_localize("UTC") if a.tzinfo is None else a
+    b = b.tz_localize("UTC") if b.tzinfo is None else b
+    return (since, "fixed-pipeline start") if a >= b else (cs, "serving champion installed")
+
+
+def fit(log_path: Path = LOG, since: str = SINCE, champions: Path = CHAMPIONS) -> dict:
+    """{'n', 'shift', 'se', 'ci95', 'active', 'reason'} from settled NF O/U 2.5 first-sight rows
+    predicted by the serving champion (rows logged since max(`since`, its champion_since))."""
+    window, basis = fit_window(since, champions)
+    out = {"since": window, "since_basis": basis, "n": 0, "shift": 0.0, "se": None, "ci95": None,
+           "active": False}
+    if window is None:
+        return {**out, "reason": basis}
+    since = window
     try:
         s = pd.read_csv(log_path, low_memory=False)
     except Exception as e:                                             # noqa: BLE001
