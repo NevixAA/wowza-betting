@@ -61,9 +61,9 @@ on:
   workflow_dispatch:
     inputs:
       steps:
-        description: 'Comma list of steps to run (fdraw,refetchlists,playerredo,fixtures,htscores,cupstats,afgap,insidebox,fullstats,sidelined,profiles,injuries,coaches,transfers,lineups,playerrefetch,strength)'
+        description: 'Comma list of steps to run (fdraw,syncmain,refetchlists,playerredo,fixtures,htscores,cupstats,afgap,insidebox,fullstats,sidelined,profiles,injuries,coaches,transfers,lineups,playerrefetch,strength)'
         required: false
-        default: 'fdraw,refetchlists,playerredo,fixtures,htscores,cupstats,afgap,insidebox,fullstats,sidelined,profiles,injuries,coaches,transfers,lineups,playerrefetch,strength'
+        default: 'fdraw,syncmain,refetchlists,playerredo,fixtures,htscores,cupstats,afgap,insidebox,fullstats,sidelined,profiles,injuries,coaches,transfers,lineups,playerrefetch,strength'
 
 concurrency:
   group: data-truth-collect
@@ -76,7 +76,7 @@ jobs:
     permissions:
       contents: write
     env:
-      STEPS: ${{ github.event.inputs.steps || 'fdraw,refetchlists,playerredo,fixtures,htscores,cupstats,afgap,insidebox,fullstats,sidelined,profiles,injuries,coaches,transfers,lineups,playerrefetch,strength' }}
+      STEPS: ${{ github.event.inputs.steps || 'fdraw,syncmain,refetchlists,playerredo,fixtures,htscores,cupstats,afgap,insidebox,fullstats,sidelined,profiles,injuries,coaches,transfers,lineups,playerrefetch,strength' }}
 
     steps:
       - uses: actions/checkout@v4
@@ -135,6 +135,19 @@ jobs:
         run: |
           python scripts/collect_fd_raw.py
           /tmp/commit_collected.sh fdraw
+
+      # P7 (2026-11-09): main's newest results into this frozen branch. Files this branch never
+      # changed are taken from main (what the go-live merge does anyway); af_history, changed on both,
+      # gains only main's rows NEWER than this branch's last date per league (sidecar
+      # output/corrections/af_history_synced_from_main.csv). No API call. Rerun right before go-live.
+      - name: 0b. Newest results from main (no API call)
+        if: contains(env.STEPS, 'syncmain')
+        run: |
+          git fetch --unshallow origin data-truth-100 || true
+          git fetch origin main
+          python scripts/sync_results_from_main.py
+          git add -f output/fd_history.parquet player_history.parquet output/corrections/af_history_synced_from_main.csv 2>/dev/null || true
+          /tmp/commit_collected.sh syncmain
 
       - name: 1. Cross-league competition fixtures
         if: contains(env.STEPS, 'fixtures')

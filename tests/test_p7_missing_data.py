@@ -170,3 +170,46 @@ def test_is_home_is_corrected_only_when_the_rows_club_is_proven_on_the_provider_
     got = {r["player_id"]: r for r in out}
     assert 21 in got and got[21]["is_home"] == 0 and got[21]["is_home_orig"] == 1 and got[21]["is_home_corrected"]
     assert 22 not in got and j["refused"].get("side_unproven") == 1 and j["is_home_corrected"] == 1
+
+
+# ── results sync from main ──────────────────────────────────────────────────────────────────
+
+def _git(repo, *a):
+    import subprocess
+    subprocess.run(["git", "-c", "user.name=t", "-c", "user.email=t@t", *a], cwd=repo, check=True,
+                   capture_output=True)
+
+
+def test_sync_takes_untouched_files_and_only_newer_rows_of_a_file_both_changed(tmp_path, monkeypatch):
+    import sync_results_from_main as SY
+    repo = tmp_path / "r"
+    (repo / "output").mkdir(parents=True)
+    _git(repo, "init", "-q", "-b", "main")
+    base = pd.DataFrame({"league": ["L", "L"], "date": pd.to_datetime(["2026-10-01", "2026-10-02"]),
+                         "home_team": ["A", "C"], "away_team": ["B", "D"]})
+    base.to_parquet(repo / "output" / "af_history.parquet", index=False)
+    pd.DataFrame({"x": [1]}).to_parquet(repo / "output" / "fd_history.parquet", index=False)
+    _git(repo, "add", "-A"); _git(repo, "commit", "-q", "-m", "base")
+    _git(repo, "checkout", "-q", "-b", "dt")
+    # this branch removes a proven duplicate: keep A-B, drop C-D (its newest date)
+    base.iloc[:1].to_parquet(repo / "output" / "af_history.parquet", index=False)
+    _git(repo, "commit", "-qam", "dt repair")
+    _git(repo, "checkout", "-q", "main")
+    newer = pd.concat([base, pd.DataFrame({"league": ["L"], "date": pd.to_datetime(["2026-11-05"]),
+                                           "home_team": ["E"], "away_team": ["F"]})], ignore_index=True)
+    newer.to_parquet(repo / "output" / "af_history.parquet", index=False)
+    pd.DataFrame({"x": [1, 2]}).to_parquet(repo / "output" / "fd_history.parquet", index=False)
+    _git(repo, "commit", "-qam", "main results")
+    _git(repo, "checkout", "-q", "dt")
+    monkeypatch.setattr(SY, "ROOT", repo)
+    monkeypatch.setattr(SY, "MAIN", "main")
+    monkeypatch.setattr(SY, "WHOLE_DIRS", [])
+    monkeypatch.setattr(SY, "SIDECAR", repo / "output" / "corrections" / "synced.csv")
+    r = SY.run()
+    assert r["take_main"] == ["output/fd_history.parquet"] and r["both_changed"] == ["output/af_history.parquet"]
+    af = pd.read_parquet(repo / "output" / "af_history.parquet")
+    pairs = set(zip(af.home_team, af.away_team))
+    # main's NEW row is added; the row this branch REMOVED (C-D, the branch's newest date) never returns
+    assert ("E", "F") in pairs and ("C", "D") not in pairs and len(af) == 2
+    assert r["rows_appended"]["output/af_history.parquet"] == 1
+    assert len(pd.read_parquet(repo / "output" / "fd_history.parquet")) == 2
