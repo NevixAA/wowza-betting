@@ -1,9 +1,27 @@
 # Team-model promotion review after the Phase 2 clean retrain (2026-11-09)
 
 Owner request, 2026-11-09: "why didn't push new format?". Goal: install the clean-retrained team
-models (both tracks) into serving for go-live. **Result: nothing was installed.** Three findings
-block an honest promotion, and each needs an owner decision. This branch carries the run evidence,
-the calibration fix that any promotion needs, and a train/serve parity tool.
+models (both tracks) into serving for go-live. The first pass found four blockers (findings 1-3 and
+the parity section below). The owner decided them the same day; the section "Owner decisions and
+what was done" records the result.
+
+## Owner decisions (2026-11-09) and what was done
+
+| Decision | Owner's words | Done on this branch |
+|---|---|---|
+| A | "the models that worked before we reach 100% clean data are irrelevant" | `predict.yml` `STANDARD_OU25_SERVING_RECIPE` `v9_repaired` → `legacy_v9`: Standard O/U 2.5 serves `models/model_v9_standard.pkl`, the clean recipe, scored on `build_upcoming_features` (the builder it was trained with; no identity map added to the model). The 2026-10-28 `v9_repaired` model is archived (decision log stage ARCHIVE); its file, champion pointer and stored artifact stay as the rollback. `src/integrity/model_health.py` reads the payload that actually serves and recognises the clean recipes |
+| B + D | "Yes, fix leak + refit." | Leak fixed (`src/feature_engineering._league_prior_dates_mean`; commit `2d1d900b`). It also covered `_add_home_advantage`'s `league_avg_away_goals`, the same row-order pattern. Serving's away-goals reference no longer falls back to an all-league mean. Parity after the fix: **0 of 6,837 cells differ, 159/159 probabilities identical** on both tracks. The Phase 2 comparison is re-run locally on both tracks with the fix; then `scripts/phase2_refit_serving.py` refits `champion_recipe` per track × market on all clean data through 2026-11-08 |
+| C | "Override for this switch." | `src/promotion_gate.owner_clean_switch`: a ONE-TIME override of PG-1.0's prospective-period rule, bound to the exact sha256 of each refit artifact listed in `config/promotion_overrides.json`, each installable once, recorded as stage OWNER_CLEAN_SWITCH / PROMOTE with the owner's words. The two-period rule stays in force for later promotions |
+
+Also fixed (coordinator, "no bugs"): 11 walk-forward fits of the first Standard run (hgb on
+over25/btts/over15/over35 folds 0-1, model_market on over25 folds 0-2) crashed with "window shape
+cannot be larger than input array shape". **Cause:** sklearn 1.9's HistGradientBoosting binning
+raises on any column with no non-missing value; Standard training windows in 2021-2022 have no xG
+and no half-time history at all (13 such columns in fold 0). HGB now drops such columns and records
+them (the champion recipe's rule), a candidate that truly cannot fit is recorded NOT_FITTED with the
+reason, any other exception fails the run after its reports are written, and every run writes
+`coverage.csv` (commit `4a4bd06c`). The holdout stage never failed, so no holdout verdict depended on
+the missing folds; the walk-forward comparisons for hgb and model_market ran on fewer folds.
 
 ## What this branch changes
 

@@ -62,8 +62,7 @@ def raw_columns(payload: dict) -> list[str]:
 def main(out_dir: str, payload_files: str, k: int = 6) -> dict:
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
-    payloads = {Path(p).parent.name + "/" + Path(p).parent.parent.name: _payload(p)
-                for p in payload_files.split(",")}
+    payloads = {"/".join(Path(p).parts[-3:]): _payload(p) for p in payload_files.split(",")}
     cols = sorted({c for p in payloads.values() for c in raw_columns(p)})
 
     DL._ci_download_all = lambda have=None: []

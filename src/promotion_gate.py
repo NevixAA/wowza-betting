@@ -41,6 +41,10 @@ Verdicts: PROMOTE | KEEP_CHAMPION | SHADOW_MORE (+ BOOTSTRAP / ROLLBACK, both ex
 OWNER OVERRIDE (2026-10-28): `owner_install` installs a FROZEN model type (reg.FROZEN_MODEL_TYPES,
 today only "standard_repaired") on the owner's recorded approval, without either period — logged
 as stage OWNER_INSTALL / PROMOTE. Retrains never submit to a frozen type (submit_candidate refuses).
+CLEAN-DATA SWITCH (owner 2026-11-09, "Override for this switch."): `owner_clean_switch` installs the
+models retrained on the repaired data WITHOUT the prospective period, ONCE: only artifacts whose exact
+sha256 is listed in the owner's record in config/promotion_overrides.json, each once - logged as
+stage OWNER_CLEAN_SWITCH / PROMOTE. The two-period rule stays in force for every later promotion.
 Every decision, with every metric and the gate version, is appended to
 output/model_lineage/promotion_decisions.csv (and, for retrain decisions, retrain_batches.csv).
 
@@ -704,6 +708,164 @@ def owner_install(model_type: str, raw: bytes, *, approval: str, approved_by: st
                                                       "promotion_source": OWNER_INSTALL}})
     log.warning(f"[{model_type}] OWNER_INSTALL {version} (prior: {prior or 'none'}) — {reason[:200]}")
     return manifest
+
+
+OWNER_CLEAN_SWITCH = "OWNER_CLEAN_SWITCH"
+#: Owner-approved ONE-TIME overrides of PG-1.0's prospective-period rule. Each record names the exact
+#: artifacts (sha256) it covers, so it can never install anything else; each artifact installs once.
+OVERRIDES_FILE = config.BASE_DIR / "config" / "promotion_overrides.json"
+
+
+def read_overrides(path: Path | None = None) -> dict:
+    p = Path(path or OVERRIDES_FILE)
+    if not p.exists():
+        return {"overrides": []}
+    return json.loads(p.read_text(encoding="utf-8"))
+
+
+def _override_used(override_id: str, model_type: str) -> bool:
+    p = decisions_file()
+    if not p.exists():
+        return False
+    d = pd.read_csv(p, dtype=str, keep_default_na=False)
+    if d.empty or "stage" not in d.columns or "reason" not in d.columns:
+        return False
+    hit = d[(d["stage"] == OWNER_CLEAN_SWITCH) & (d["model_type"] == model_type)
+            & d["reason"].str.contains(f"[{override_id}]", regex=False)]
+    return bool(len(hit))
+
+
+def _validate_clean_payload(model_type: str, payload: dict) -> None:
+    """A clean-retrain payload this serving code reads correctly: a repaired recipe with its
+    persisted train-only imputer, the model type's target, and - for the labels served from ONE
+    file to both league tracks - a complete New-Format payload under `tracks` (src.model
+    _predict_by_track routes every row to its own track)."""
+    from src import model as M
+
+    def _one(p, where):
+        if not isinstance(p, dict):
+            raise ValueError(f"{where}: payload is not a dict")
+        if p.get("recipe") not in M.REPAIRED_RECIPES:
+            raise ValueError(f"{where}: recipe {p.get('recipe')!r} is not a repaired recipe")
+        if not p.get("imputer"):
+            raise ValueError(f"{where}: no persisted train-only imputer")
+        if not p.get("feature_cols") or not p.get("models"):
+            raise ValueError(f"{where}: no feature_cols / models")
+        if p.get("target") != reg.TARGET[model_type]:
+            raise ValueError(f"{where}: target {p.get('target')!r} != {reg.TARGET[model_type]!r}")
+
+    _one(payload, model_type)
+    if model_type in M.TRACK_SPLIT_LABELS:
+        tr = payload.get("tracks")
+        if not isinstance(tr, dict) or set(tr) != set(M.ROUTED_TRACKS):
+            raise ValueError(f"{model_type}: a track-split payload needs tracks={list(M.ROUTED_TRACKS)}")
+        for name, sub in tr.items():
+            _one(sub, f"{model_type}/tracks/{name}")
+    elif payload.get("tracks") is not None:
+        raise ValueError(f"{model_type} is served per track by its own file; no `tracks` expected")
+
+
+def owner_clean_switch(model_type: str, raw: bytes, *, override_id: str, supersede: str = "",
+                       training: dict | None = None, now: datetime | None = None,
+                       overrides_path: Path | None = None) -> dict:
+    """ONE-TIME OWNER OVERRIDE of PG-1.0 for the clean-data switch (owner 2026-11-09).
+
+    PG-1.0 promotes only after a holdout qualification AND >= 1,000 prospective first-sight rows
+    against the serving champion. The owner overrode that rule ONCE, for the switch to the models
+    retrained on the repaired data: "Override for this switch." The rule stays in force for every
+    later promotion. Safeguards:
+
+      * the override record in config/promotion_overrides.json (owner quote, date, scope) must list
+        `model_type` with the EXACT sha256 of `raw` - it can never install a different artifact;
+      * each (override, model type) installs once (promotion_decisions.csv is checked);
+      * the payload must be a clean repaired payload the serving code reads correctly
+        (_validate_clean_payload);
+      * an existing champion is replaced only when `supersede` names it exactly.
+
+    Written through `_install_champion` (this module stays the only writer of serving files and of
+    current_champions.json) and recorded as stage OWNER_CLEAN_SWITCH / PROMOTE with the owner's words.
+    Raises on any refusal; nothing is written then.
+    """
+    import hashlib
+    import pickle
+    now = now or reg.utcnow()
+    training = dict(training or {})
+    if model_type not in reg.MODEL_FILES or model_type in reg.FROZEN_MODEL_TYPES:
+        raise PermissionError(f"{model_type!r} is not a model type this override can install")
+    recs = [o for o in read_overrides(overrides_path).get("overrides", []) if o.get("id") == override_id]
+    if len(recs) != 1:
+        raise PermissionError(f"no single owner override record {override_id!r} in {OVERRIDES_FILE.name}")
+    o = recs[0]
+    for k in ("owner_quote", "approved_by", "approved_on", "scope", "artifacts"):
+        if not o.get(k):
+            raise PermissionError(f"override {override_id}: '{k}' missing")
+    art = (o["artifacts"] or {}).get(model_type) or {}
+    sha = reg.sha256_bytes(raw)
+    if art.get("sha256") != sha:
+        raise PermissionError(f"override {override_id} does not cover this {model_type} artifact "
+                              f"(sha256 {sha[:16]}; record: {str(art.get('sha256'))[:16]})")
+    if _override_used(override_id, model_type):
+        raise PermissionError(f"override {override_id} was already used for {model_type}; it is one-time")
+    payload = pickle.loads(raw)
+    _validate_clean_payload(model_type, payload)
+    prior = (reg.read_pointer().get(model_type) or {}).get("model_version", "")
+    if prior and supersede != prior:
+        raise PermissionError(f"{model_type} already has champion {prior}; pass supersede={prior!r} "
+                              f"to replace it deliberately")
+    trained_at = pd.to_datetime(training.get("trained_at") or reg.iso(now), utc=True).to_pydatetime()
+    version = reg.make_version(model_type, trained_at, sha)
+    fcols = list(payload.get("feature_cols") or [])
+    held = payload.get("served_holdout_metrics") or {}
+    approval = {"override_id": override_id, "owner_quote": o["owner_quote"], "approved_by": o["approved_by"],
+                "approved_on": o["approved_on"], "scope": o["scope"], "installed_at": reg.iso(now),
+                "gate_version_overridden": GATE_VERSION, "rule_overridden": o.get("rule_overridden", "")}
+    manifest = {
+        "model_type": model_type, "model_version": version,
+        "retrain_batch_id": training.get("retrain_batch_id") or f"owner_override_{override_id}",
+        "trained_at": reg.iso(trained_at),
+        "training_start": training.get("training_start"), "training_end": training.get("training_end"),
+        "training_cutoff": training.get("training_cutoff") or payload.get("training_cutoff"),
+        "training_rows": training.get("training_rows") or payload.get("training_rows"),
+        "target": reg.TARGET[model_type], "recipe": payload.get("recipe"),
+        "model_recipe_version": payload.get("model_recipe_version"),
+        "imputer_version": payload.get("imputer_version"),
+        "feature_schema_version": hashlib.sha256("|".join(sorted(map(str, fcols))).encode()).hexdigest()[:12],
+        "n_features": len(fcols),
+        "track_split": payload.get("track_split"),
+        "code_commit_sha": training.get("code_commit_sha") or os.getenv("GITHUB_SHA", "")[:12] or "local",
+        "artifact_sha256": sha, "parent_champion_version": prior,
+        "validation_metrics": {"served_holdout": held, "blocks": payload.get("blocks"),
+                               "evidence": training.get("evidence")},
+        "promotion_status": OWNER_CLEAN_SWITCH, "model_role": "CHAMPION",
+        "owner_approval": approval,
+    }
+    reason = (f"{OWNER_CLEAN_SWITCH} [{override_id}] by {o['approved_by']} ({o['approved_on']}): "
+              f"\"{o['owner_quote']}\" - {o['scope']}")
+    _install_champion(model_type, manifest, raw, reason=reason, batch=manifest["retrain_batch_id"],
+                      source=OWNER_CLEAN_SWITCH, holdout=held, at=now)
+    stem = reg.MODEL_FILES[model_type].stem
+    reg._atomic_write_bytes(config.MODELS_DIR / f"metrics_{stem}.json",
+                            json.dumps(payload.get("metrics") or {}, indent=2, default=str).encode("utf-8"))
+    record_decision({"stage": OWNER_CLEAN_SWITCH, "model_type": model_type, "candidate_version": version,
+                     "champion_version": prior, "verdict": PROMOTE, "promoted": True,
+                     "qualified": False, "parked": False,
+                     "retrain_batch_id": manifest["retrain_batch_id"], "prospective_status": "NONE",
+                     "metrics": {"served_holdout": held}, "reason": reason[:600]})
+    reg.update_high_water(model_type, {"champion_version": version,
+                                       "historical": {**held, "promoted_at": reg.iso(now),
+                                                      "gate_version": GATE_VERSION,
+                                                      "promotion_source": OWNER_CLEAN_SWITCH}})
+    log.warning(f"[{model_type}] OWNER_CLEAN_SWITCH {version} (prior: {prior or 'none'}) — {reason[:200]}")
+    return manifest
+
+
+def record_archive(model_type: str, reason: str) -> None:
+    """Log that a model type stopped serving by owner decision. Its champion pointer, stored
+    artifact and serving file stay as they are (the rollback); the decision log records the act."""
+    ent = reg.read_pointer().get(model_type) or {}
+    record_decision({"stage": "ARCHIVE", "model_type": model_type,
+                     "candidate_version": "", "champion_version": ent.get("model_version", ""),
+                     "verdict": "ARCHIVED", "promoted": False, "reason": reason[:600]})
 
 
 def reconstruct_pointer_if_missing(pointer: dict, source: str = "LEGACY_GIT") -> bool:

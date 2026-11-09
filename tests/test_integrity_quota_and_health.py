@@ -101,4 +101,7 @@ def test_model_integrity_health_skeleton(tmp_path):
         assert need <= set(t), (k, need - set(t))
         if t["unknown_checks"]:
             assert t["status"] != "PASS"                       # UNKNOWN never counts as PASS
-    assert doc["tracks"]["standard|OU25"]["recipe"] in ("v9_repaired", "UNKNOWN")
+    # owner 2026-11-09 (clean-data switch): Standard O/U 2.5 serves the clean-retrain recipe from
+    # model_v9_standard.pkl; whatever serves must be a repaired recipe (persisted train-only imputer)
+    from src.model import REPAIRED_RECIPES
+    assert doc["tracks"]["standard|OU25"]["recipe"] in set(REPAIRED_RECIPES) | {"UNKNOWN"}
