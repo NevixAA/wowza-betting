@@ -63,6 +63,38 @@ def enabled_candidates(cfg: dict, only=None) -> list[str]:
     return names
 
 
+NOT_FITTED, ERROR = "NOT_FITTED", "ERROR"
+
+
+class RunErrors(RuntimeError):
+    """A run in which a candidate raised something other than NotFitted: a bug."""
+
+
+def coverage(pred: pd.DataFrame, errors: list) -> list[dict]:
+    """Per (stage, track, market, candidate): folds scored, rows scored, folds NOT_FITTED / ERROR."""
+    rows = {}
+    if len(pred):
+        g = pred.groupby(["stage", "track", "market", "candidate"])
+        for k, d in g:
+            rows[k] = {"folds_scored": int(d["fold"].nunique()), "rows_scored": int(len(d)),
+                       "rows_with_probability": int(np.isfinite(d["p"].astype(float)).sum()),
+                       "folds_not_fitted": 0, "folds_error": 0, "not_fitted_reasons": []}
+    for e in errors:
+        st = e.get("status")
+        if st not in (NOT_FITTED, ERROR):
+            continue
+        k = (e["stage"], e["track"], e["market"], e["candidate"])
+        r = rows.setdefault(k, {"folds_scored": 0, "rows_scored": 0, "rows_with_probability": 0,
+                                "folds_not_fitted": 0, "folds_error": 0, "not_fitted_reasons": []})
+        if st == NOT_FITTED:
+            r["folds_not_fitted"] += 1
+            r["not_fitted_reasons"].append(f"fold {e['fold']}: {e['reason']}")
+        else:
+            r["folds_error"] += 1
+    return [{"stage": k[0], "track": k[1], "market": k[2], "candidate": k[3], **v}
+            for k, v in sorted(rows.items())]
+
+
 def _score(runs, cfg, track, market, fsets, frames, stage, fold, errors, models_dir=None):
     """`runs`: (label, base candidate, feature-set suffix) from protocol.candidate_runs;
     `fsets`: {suffix: (features, excluded)} from protocol.feature_sets."""
@@ -79,10 +111,18 @@ def _score(runs, cfg, track, market, fsets, frames, stage, fold, errors, models_
         try:
             cand.fit(frames)
             p = np.asarray(cand.predict(test), float)
-        except Exception as e:                                         # noqa: BLE001
+        except C.NotFitted as e:
+            # a candidate that genuinely cannot be fitted on this fold's data: recorded, not a crash
             errors.append({"stage": stage, "fold": fold, "track": track, "market": market,
-                           "candidate": name, "error": f"{type(e).__name__}: {e}"})
-            log.warning(f"  [{stage} f{fold}] {track}/{market}/{name} failed: {e}")
+                           "candidate": name, "status": NOT_FITTED, "reason": str(e),
+                           "test_rows": int(len(test))})
+            log.info(f"  [{stage} f{fold}] {track}/{market}/{name} NOT_FITTED: {e}")
+            continue
+        except Exception as e:                                         # noqa: BLE001
+            # anything else is a BUG: recorded here, and the run fails once its reports are written
+            errors.append({"stage": stage, "fold": fold, "track": track, "market": market,
+                           "candidate": name, "status": ERROR, "error": f"{type(e).__name__}: {e}"})
+            log.error(f"  [{stage} f{fold}] {track}/{market}/{name} ERROR: {e}")
             continue
         if models_dir is not None:
             d = models_dir / track / market
@@ -154,9 +194,17 @@ def run(feat: pd.DataFrame, cfg: dict, out_dir, *, stages=STAGES, only=None, tra
         columns=["stage", "fold", "track", "market", "candidate", "row_id", "date", "league", "y", "p"])
     pred.to_parquet(folder / "predictions.parquet", index=False)
     write_reports(pred, feat, cfg, folder)
+    cov = coverage(pred, errors)
+    pd.DataFrame(cov).to_csv(folder / "coverage.csv", index=False)
     manifest.update(features=features, errors=errors, candidates_by_track=runs_by_track,
+                    coverage=cov,
                     finished_at=datetime.now(timezone.utc).isoformat(timespec="seconds"))
     (folder / "manifest.json").write_text(json.dumps(manifest, indent=2, default=str), encoding="utf-8")
+    bugs = [e for e in errors if e.get("status") == ERROR]
+    if bugs:
+        raise RunErrors(f"{len(bugs)} candidate fit(s) raised an unexpected error (reports written to "
+                        f"{folder}): " + "; ".join(f"{e['stage']} f{e['fold']} {e['track']}/{e['market']}/"
+                                                  f"{e['candidate']}: {e['error']}" for e in bugs[:5]))
     return folder
 
 

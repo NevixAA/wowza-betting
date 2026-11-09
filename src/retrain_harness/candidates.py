@@ -51,11 +51,27 @@ def _weights(df: pd.DataFrame, how: str | None):
     return derived_weights(df).to_numpy(dtype=float)
 
 
+def trainable_features(df: pd.DataFrame, features: list) -> tuple[list, list]:
+    """(kept, dropped): a column with NO value in the training rows cannot be learned from and is
+    dropped and recorded - the champion recipe's rule (src.imputer all_missing='drop'). It is
+    never filled. Early Standard folds (2021-2022) have no xG and no half-time history at all;
+    sklearn 1.9's HistGradientBoosting binning raises 'window shape cannot be larger than input
+    array shape' on any column with no non-missing value (11 walk-forward fits, run 42512834177)."""
+    X = _X(df, features)
+    dropped = [c for c in features if not X[c].notna().any()]
+    return [c for c in features if c not in dropped], dropped
+
+
 def _y(df: pd.DataFrame, target: str) -> np.ndarray:
     y = pd.to_numeric(df[target], errors="coerce").to_numpy(dtype=float)
     if np.isnan(y).any():
         raise ValueError(f"{target}: unlabelled rows reached a fit")
     return y
+
+
+class NotFitted(Exception):
+    """A candidate that genuinely cannot be fitted on this fold's data. The runner records it as
+    NOT_FITTED with this reason (never a crash, never a silent skip)."""
 
 
 class Candidate:
@@ -174,10 +190,21 @@ class HGB(Candidate):
               "random_state")
 
     def _fit_on(self, df: pd.DataFrame):
+        """Fit on the columns that have at least one training value; the dropped ones are recorded
+        in the notes and `predict` scores on exactly the fitted columns."""
         from sklearn.ensemble import HistGradientBoostingClassifier
+        kept, dropped = trainable_features(df, self.features)
+        if not kept:
+            raise NotFitted("no feature column has a training value")
+        if dropped:
+            self.notes.append(f"dropped (no training value): {dropped}")
+        self.fit_features = kept
+        y = _y(df, self.target)
+        if len(set(y)) < 2:
+            raise NotFitted(f"only one outcome class in the {len(y)} training rows")
         kw = {k: self.params[k] for k in self.PARAMS}
         m = HistGradientBoostingClassifier(early_stopping=False, **kw)
-        m.fit(_X(df, self.features), _y(df, self.target), sample_weight=_weights(df, self.params.get("weights")))
+        m.fit(_X(df, kept), y, sample_weight=_weights(df, self.params.get("weights")))
         return m
 
     def fit(self, frames: dict) -> "HGB":
@@ -186,7 +213,7 @@ class HGB(Candidate):
         return self
 
     def predict(self, df: pd.DataFrame) -> np.ndarray:
-        return self.model.predict_proba(_X(df, self.features))[:, 1]
+        return self.model.predict_proba(_X(df, self.fit_features))[:, 1]
 
 
 # ── Dixon-Coles ─────────────────────────────────────────────────────────────────────────────
@@ -328,11 +355,12 @@ class ModelMarket(Candidate):
         ok = np.isfinite(pm)
         y = _y(val, self.target)
         if not ok.any() or len(set(y[ok])) < 2:
-            self.notes.append("validation block has no two-sided price with both outcomes: not fitted")
+            self.notes.append("NOT_FITTED: validation block has no two-sided price with both outcomes")
             self.fitted = True
             return self
         self.base = HGB(self.base_params, self.market, self.features, self.track, self.market_name)
         self.base.model = self.base._fit_on(frames["fit"])
+        self.notes += [f"base: {n}" for n in self.base.notes]
         pb = self.base.predict(val)
         Z = np.column_stack([_logit(pb[ok]), _logit(pm[ok])])
         self.stack = LogisticRegression(C=1e6, max_iter=1000).fit(Z, y[ok])
