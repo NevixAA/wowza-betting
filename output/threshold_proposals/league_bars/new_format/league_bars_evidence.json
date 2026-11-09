@@ -1,0 +1,3595 @@
+{
+ "meta": {
+  "track": "new_format",
+  "candidate": "champion_recipe",
+  "predictions": "C:/Users/nevo/AppData/Local/Temp/claude/1ee106cff9d5ca11/84b5f38e-4e7e-4236-9e42-6479e0aff4a9/scratchpad/nf_local/out/run_20261108T214340Z/predictions.parquet",
+  "note": "The New-Format retrain predictions come from a LOCAL run (run_20261108T214340Z), not GitHub Actions: the GitHub job (run 42512834177, ubuntu-latest, 16 GB) died twice in the comparison step, which peaks at about 10 GB. Same code (data-truth-100 804799a1), same committed data, same owner-approved holdout (2026-04-01..2026-11-08). champion_recipe is the design for every market: no '+ht' variant beat it (deltas about 0 or worse). Logistic beat the recipe only on ht_over15 (Holm p 0.039), a market with no price, so it changes no bar.",
+  "created_at": "2026-11-08T23:47:03Z",
+  "price_sources": {
+   "btts": "output/newformat_odds_history.csv: earliest provable pre-kickoff same-snapshot pair from match_date-1d ({'BACKFILL_HISTORICAL': 2807, 'FORWARD_CAPTURE': 744})",
+   "ht_over05": "no price exists for this market",
+   "ht_over15": "no price exists for this market",
+   "over15": "output/newformat_odds_history.csv: earliest provable pre-kickoff same-snapshot pair from match_date-1d ({'FORWARD_CAPTURE': 829, 'BACKFILL_HISTORICAL': 393})",
+   "over25": "output/newformat_odds_history.csv: earliest provable pre-kickoff same-snapshot pair from match_date-1d ({'BACKFILL_HISTORICAL': 2780, 'FORWARD_CAPTURE': 895})",
+   "over35": "output/newformat_odds_history.csv: earliest provable pre-kickoff same-snapshot pair from match_date-1d ({'FORWARD_CAPTURE': 861, 'BACKFILL_HISTORICAL': 746})"
+  },
+  "price_match": {
+   "btts": {
+    "Argentina Primera Division": {
+     "rows": 2612,
+     "priced": 461
+    },
+    "Austrian Bundesliga": {
+     "rows": 1023,
+     "priced": 210
+    },
+    "Brazil Serie A": {
+     "rows": 2103,
+     "priced": 466
+    },
+    "China Super League": {
+     "rows": 1366,
+     "priced": 264
+    },
+    "Denmark Superliga": {
+     "rows": 1025,
+     "priced": 219
+    },
+    "Finland Veikkausliiga": {
+     "rows": 945,
+     "priced": 210
+    },
+    "Ireland Premier Division": {
+     "rows": 974,
+     "priced": 216
+    },
+    "Japan J-League": {
+     "rows": 1799,
+     "priced": 141
+    },
+    "K-League 1": {
+     "rows": 1185,
+     "priced": 9
+    },
+    "Mexico Liga MX": {
+     "rows": 1814,
+     "priced": 243
+    },
+    "Norway Eliteserien": {
+     "rows": 1287,
+     "priced": 274
+    },
+    "Romanian Superliga": {
+     "rows": 1682,
+     "priced": 40
+    },
+    "Saudi Pro League": {
+     "rows": 1420,
+     "priced": 19
+    },
+    "Sweden Allsvenskan": {
+     "rows": 1319,
+     "priced": 261
+    },
+    "USA MLS": {
+     "rows": 2829,
+     "priced": 390
+    }
+   },
+   "ht_over05": {
+    "Argentina Primera Division": {
+     "rows": 2609,
+     "priced": 0
+    },
+    "Austrian Bundesliga": {
+     "rows": 1023,
+     "priced": 0
+    },
+    "Brazil Serie A": {
+     "rows": 2103,
+     "priced": 0
+    },
+    "China Super League": {
+     "rows": 1164,
+     "priced": 0
+    },
+    "Denmark Superliga": {
+     "rows": 1024,
+     "priced": 0
+    },
+    "Finland Veikkausliiga": {
+     "rows": 942,
+     "priced": 0
+    },
+    "Ireland Premier Division": {
+     "rows": 973,
+     "priced": 0
+    },
+    "Japan J-League": {
+     "rows": 1775,
+     "priced": 0
+    },
+    "K-League 1": {
+     "rows": 1185,
+     "priced": 0
+    },
+    "Mexico Liga MX": {
+     "rows": 1814,
+     "priced": 0
+    },
+    "Norway Eliteserien": {
+     "rows": 1286,
+     "priced": 0
+    },
+    "Romanian Superliga": {
+     "rows": 1644,
+     "priced": 0
+    },
+    "Saudi Pro League": {
+     "rows": 1420,
+     "priced": 0
+    },
+    "Sweden Allsvenskan": {
+     "rows": 1319,
+     "priced": 0
+    },
+    "USA MLS": {
+     "rows": 2829,
+     "priced": 0
+    }
+   },
+   "ht_over15": {
+    "Argentina Primera Division": {
+     "rows": 2609,
+     "priced": 0
+    },
+    "Austrian Bundesliga": {
+     "rows": 1023,
+     "priced": 0
+    },
+    "Brazil Serie A": {
+     "rows": 2103,
+     "priced": 0
+    },
+    "China Super League": {
+     "rows": 1164,
+     "priced": 0
+    },
+    "Denmark Superliga": {
+     "rows": 1024,
+     "priced": 0
+    },
+    "Finland Veikkausliiga": {
+     "rows": 942,
+     "priced": 0
+    },
+    "Ireland Premier Division": {
+     "rows": 973,
+     "priced": 0
+    },
+    "Japan J-League": {
+     "rows": 1775,
+     "priced": 0
+    },
+    "K-League 1": {
+     "rows": 1185,
+     "priced": 0
+    },
+    "Mexico Liga MX": {
+     "rows": 1814,
+     "priced": 0
+    },
+    "Norway Eliteserien": {
+     "rows": 1286,
+     "priced": 0
+    },
+    "Romanian Superliga": {
+     "rows": 1644,
+     "priced": 0
+    },
+    "Saudi Pro League": {
+     "rows": 1420,
+     "priced": 0
+    },
+    "Sweden Allsvenskan": {
+     "rows": 1319,
+     "priced": 0
+    },
+    "USA MLS": {
+     "rows": 2829,
+     "priced": 0
+    }
+   },
+   "over15": {
+    "Argentina Primera Division": {
+     "rows": 2612,
+     "priced": 417
+    },
+    "Austrian Bundesliga": {
+     "rows": 1023,
+     "priced": 32
+    },
+    "Brazil Serie A": {
+     "rows": 2103,
+     "priced": 117
+    },
+    "China Super League": {
+     "rows": 1366,
+     "priced": 34
+    },
+    "Denmark Superliga": {
+     "rows": 1025,
+     "priced": 26
+    },
+    "Finland Veikkausliiga": {
+     "rows": 945,
+     "priced": 33
+    },
+    "Ireland Premier Division": {
+     "rows": 974,
+     "priced": 42
+    },
+    "Japan J-League": {
+     "rows": 1799,
+     "priced": 16
+    },
+    "K-League 1": {
+     "rows": 1185,
+     "priced": 12
+    },
+    "Mexico Liga MX": {
+     "rows": 1814,
+     "priced": 73
+    },
+    "Norway Eliteserien": {
+     "rows": 1287,
+     "priced": 37
+    },
+    "Romanian Superliga": {
+     "rows": 1682,
+     "priced": 48
+    },
+    "Saudi Pro League": {
+     "rows": 1420,
+     "priced": 33
+    },
+    "Sweden Allsvenskan": {
+     "rows": 1319,
+     "priced": 45
+    },
+    "USA MLS": {
+     "rows": 2829,
+     "priced": 135
+    }
+   },
+   "over25": {
+    "Argentina Primera Division": {
+     "rows": 2612,
+     "priced": 457
+    },
+    "Austrian Bundesliga": {
+     "rows": 1023,
+     "priced": 220
+    },
+    "Brazil Serie A": {
+     "rows": 2103,
+     "priced": 469
+    },
+    "China Super League": {
+     "rows": 1366,
+     "priced": 270
+    },
+    "Denmark Superliga": {
+     "rows": 1025,
+     "priced": 220
+    },
+    "Finland Veikkausliiga": {
+     "rows": 945,
+     "priced": 220
+    },
+    "Ireland Premier Division": {
+     "rows": 974,
+     "priced": 218
+    },
+    "Japan J-League": {
+     "rows": 1799,
+     "priced": 144
+    },
+    "K-League 1": {
+     "rows": 1185,
+     "priced": 14
+    },
+    "Mexico Liga MX": {
+     "rows": 1814,
+     "priced": 265
+    },
+    "Norway Eliteserien": {
+     "rows": 1287,
+     "priced": 280
+    },
+    "Romanian Superliga": {
+     "rows": 1682,
+     "priced": 47
+    },
+    "Saudi Pro League": {
+     "rows": 1420,
+     "priced": 33
+    },
+    "Sweden Allsvenskan": {
+     "rows": 1319,
+     "priced": 269
+    },
+    "USA MLS": {
+     "rows": 2829,
+     "priced": 404
+    }
+   },
+   "over35": {
+    "Argentina Primera Division": {
+     "rows": 2612,
+     "priced": 95
+    },
+    "Austrian Bundesliga": {
+     "rows": 1023,
+     "priced": 44
+    },
+    "Brazil Serie A": {
+     "rows": 2103,
+     "priced": 78
+    },
+    "China Super League": {
+     "rows": 1366,
+     "priced": 179
+    },
+    "Denmark Superliga": {
+     "rows": 1025,
+     "priced": 109
+    },
+    "Finland Veikkausliiga": {
+     "rows": 945,
+     "priced": 119
+    },
+    "Ireland Premier Division": {
+     "rows": 974,
+     "priced": 42
+    },
+    "Japan J-League": {
+     "rows": 1799,
+     "priced": 13
+    },
+    "K-League 1": {
+     "rows": 1185,
+     "priced": 14
+    },
+    "Mexico Liga MX": {
+     "rows": 1814,
+     "priced": 123
+    },
+    "Norway Eliteserien": {
+     "rows": 1287,
+     "priced": 174
+    },
+    "Romanian Superliga": {
+     "rows": 1682,
+     "priced": 44
+    },
+    "Saudi Pro League": {
+     "rows": 1420,
+     "priced": 34
+    },
+    "Sweden Allsvenskan": {
+     "rows": 1319,
+     "priced": 98
+    },
+    "USA MLS": {
+     "rows": 2829,
+     "priced": 305
+    }
+   }
+  },
+  "rules": {
+   "grid": [
+    0.02,
+    0.03,
+    0.04,
+    0.05,
+    0.06,
+    0.07,
+    0.08,
+    0.09,
+    0.1,
+    0.11,
+    0.12,
+    0.13,
+    0.14,
+    0.15,
+    0.16,
+    0.17,
+    0.18,
+    0.19,
+    0.2,
+    0.21,
+    0.22,
+    0.23,
+    0.24,
+    0.25,
+    0.26,
+    0.27,
+    0.28,
+    0.29,
+    0.3
+   ],
+   "min_bets_fit": 40,
+   "min_holdout_bets": 150,
+   "holm_alpha_one_sided": 0.025,
+   "n_boot": 2000
+  }
+ },
+ "rows": [
+  {
+   "track": "new_format",
+   "market": "btts",
+   "league": "Argentina Primera Division",
+   "wf_rows": 2312,
+   "wf_priced": 303,
+   "ho_rows": 300,
+   "ho_priced": 158,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.02,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.7203,
+   "wf_bets": 289,
+   "wf_roi": -0.0124,
+   "wf_roi_shrunk": -0.0038,
+   "note": "no bar has a positive shrunk selection-period ROI: all three bars set to the least-negative bar",
+   "ho_bets": 148,
+   "ho_roi": 0.1057,
+   "ho_ci95": [
+    -0.0659,
+    0.2829
+   ],
+   "ho_matchdays": 65,
+   "p_one_sided": 0.1099,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 148,
+     "roi": 0.1057
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "148 out-of-sample bets < 150; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "btts",
+   "league": "Austrian Bundesliga",
+   "wf_rows": 915,
+   "wf_priced": 142,
+   "ho_rows": 108,
+   "ho_priced": 68,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.05,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.5177,
+   "wf_bets": 76,
+   "wf_roi": 0.2293,
+   "wf_roi_shrunk": 0.1276,
+   "note": "",
+   "ho_bets": 28,
+   "ho_roi": -0.2532,
+   "ho_ci95": [
+    -0.5556,
+    0.0684
+   ],
+   "ho_matchdays": 22,
+   "p_one_sided": 0.933,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 18,
+     "roi": -0.3733
+    },
+    "SNIPER": {
+     "bets": 10,
+     "roi": -0.037
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "28 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "btts",
+   "league": "Brazil Serie A",
+   "wf_rows": 1853,
+   "wf_priced": 302,
+   "ho_rows": 250,
+   "ho_priced": 164,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.08,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.6522,
+   "wf_bets": 179,
+   "wf_roi": 0.1064,
+   "wf_roi_shrunk": 0.0758,
+   "note": "",
+   "ho_bets": 73,
+   "ho_roi": 0.2777,
+   "ho_ci95": [
+    0.0921,
+    0.4605
+   ],
+   "ho_matchdays": 37,
+   "p_one_sided": 0.001,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 59,
+     "roi": 0.2541
+    },
+    "SNIPER": {
+     "bets": 14,
+     "roi": 0.3771
+    }
+   },
+   "p_holm": 0.07,
+   "family_size": 70,
+   "reason": "73 out-of-sample bets < 150; Holm-adjusted p 0.07 not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "btts",
+   "league": "China Super League",
+   "wf_rows": 1158,
+   "wf_priced": 145,
+   "ho_rows": 208,
+   "ho_priced": 119,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.03,
+   "marksman_th": 0.03,
+   "sniper_th": 0.03,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.3711,
+   "wf_bets": 41,
+   "wf_roi": -0.1827,
+   "wf_roi_shrunk": -0.0568,
+   "note": "no bar has a positive shrunk selection-period ROI: all three bars set to the least-negative bar",
+   "ho_bets": 23,
+   "ho_roi": 0.1587,
+   "ho_ci95": [
+    -0.2704,
+    0.6362
+   ],
+   "ho_matchdays": 20,
+   "p_one_sided": 0.2289,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 23,
+     "roi": 0.1587
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "23 out-of-sample bets < 150; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "btts",
+   "league": "Denmark Superliga",
+   "wf_rows": 905,
+   "wf_priced": 143,
+   "ho_rows": 120,
+   "ho_priced": 76,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.06,
+   "sniper_th": 0.06,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.2089,
+   "wf_bets": 15,
+   "wf_roi": 0.3193,
+   "wf_roi_shrunk": 0.0813,
+   "note": "",
+   "ho_bets": 7,
+   "ho_roi": -0.2814,
+   "ho_ci95": [
+    -0.7629,
+    0.4314
+   ],
+   "ho_matchdays": 7,
+   "p_one_sided": 0.8661,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 7,
+     "roi": -0.2814
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 0,
+     "roi": null
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "7 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "btts",
+   "league": "Finland Veikkausliiga",
+   "wf_rows": 773,
+   "wf_priced": 107,
+   "ho_rows": 172,
+   "ho_priced": 103,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.02,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0504,
+   "wf_bets": 4,
+   "wf_roi": 0.4325,
+   "wf_roi_shrunk": 0.0393,
+   "note": "",
+   "ho_bets": 24,
+   "ho_roi": 0.0417,
+   "ho_ci95": [
+    -0.2842,
+    0.4064
+   ],
+   "ho_matchdays": 17,
+   "p_one_sided": 0.4118,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 24,
+     "roi": 0.0417
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "24 out-of-sample bets < 150; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "btts",
+   "league": "Ireland Premier Division",
+   "wf_rows": 839,
+   "wf_priced": 116,
+   "ho_rows": 135,
+   "ho_priced": 100,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.03,
+   "marksman_th": 0.03,
+   "sniper_th": 0.03,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.3641,
+   "wf_bets": 52,
+   "wf_roi": 0.0117,
+   "wf_roi_shrunk": 0.0153,
+   "note": "",
+   "ho_bets": 40,
+   "ho_roi": 0.2397,
+   "ho_ci95": [
+    -0.0245,
+    0.4692
+   ],
+   "ho_matchdays": 20,
+   "p_one_sided": 0.0385,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 40,
+     "roi": 0.2397
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "40 out-of-sample bets < 150; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "btts",
+   "league": "Japan J-League",
+   "wf_rows": 1587,
+   "wf_priced": 139,
+   "ho_rows": 212,
+   "ho_priced": 2,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.02,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.365,
+   "wf_bets": 44,
+   "wf_roi": -0.3857,
+   "wf_roi_shrunk": -0.1291,
+   "note": "no bar has a positive shrunk selection-period ROI: all three bars set to the least-negative bar",
+   "ho_bets": 0,
+   "ho_roi": null,
+   "ho_ci95": [
+    null,
+    null
+   ],
+   "ho_matchdays": 0,
+   "p_one_sided": null,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 0,
+     "roi": null
+    }
+   },
+   "p_holm": null,
+   "family_size": 70,
+   "reason": "0 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p None not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "btts",
+   "league": "K-League 1",
+   "wf_rows": 1059,
+   "wf_priced": 0,
+   "ho_rows": 126,
+   "ho_priced": 9,
+   "evidence": "IN_PERIOD_SPLIT",
+   "split": {
+    "select_from": "2026-08-23",
+    "select_to": "2026-08-26",
+    "check_from": "2026-08-29",
+    "check_to": "2026-08-30",
+    "check_share_of_matchdays": 0.4
+   },
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.1,
+   "sniper_th": 0.1,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 4,
+   "wf_roi": 0.02,
+   "wf_roi_shrunk": 0.1464,
+   "note": "",
+   "ho_bets": 0,
+   "ho_roi": null,
+   "ho_ci95": [
+    null,
+    null
+   ],
+   "ho_matchdays": 0,
+   "p_one_sided": null,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 0,
+     "roi": null
+    }
+   },
+   "p_holm": null,
+   "family_size": 70,
+   "reason": "0 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p None not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "btts",
+   "league": "Mexico Liga MX",
+   "wf_rows": 1630,
+   "wf_priced": 156,
+   "ho_rows": 184,
+   "ho_priced": 87,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.06,
+   "sniper_th": 0.06,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.327,
+   "wf_bets": 36,
+   "wf_roi": 0.0406,
+   "wf_roi_shrunk": 0.0257,
+   "note": "",
+   "ho_bets": 12,
+   "ho_roi": 0.505,
+   "ho_ci95": [
+    0.0366,
+    0.8346
+   ],
+   "ho_matchdays": 11,
+   "p_one_sided": 0.021,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 11,
+     "roi": 0.4473
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 1,
+     "roi": 1.14
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "12 out-of-sample bets < 150; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "btts",
+   "league": "Norway Eliteserien",
+   "wf_rows": 1108,
+   "wf_priced": 166,
+   "ho_rows": 179,
+   "ho_priced": 108,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.02,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.3938,
+   "wf_bets": 46,
+   "wf_roi": 0.0822,
+   "wf_roi_shrunk": 0.0435,
+   "note": "",
+   "ho_bets": 17,
+   "ho_roi": 0.1194,
+   "ho_ci95": [
+    -0.1853,
+    0.4493
+   ],
+   "ho_matchdays": 14,
+   "p_one_sided": 0.2284,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 17,
+     "roi": 0.1194
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "17 out-of-sample bets < 150; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "btts",
+   "league": "Romanian Superliga",
+   "wf_rows": 1514,
+   "wf_priced": 0,
+   "ho_rows": 168,
+   "ho_priced": 40,
+   "evidence": "IN_PERIOD_SPLIT",
+   "split": {
+    "select_from": "2026-08-23",
+    "select_to": "2026-09-20",
+    "check_from": "2026-10-08",
+    "check_to": "2026-10-25",
+    "check_share_of_matchdays": 0.36
+   },
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.1,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0094,
+   "wf_bets": 14,
+   "wf_roi": 0.3807,
+   "wf_roi_shrunk": 0.1674,
+   "note": "",
+   "ho_bets": 5,
+   "ho_roi": 0.058,
+   "ho_ci95": [
+    -0.676,
+    0.792
+   ],
+   "ho_matchdays": 5,
+   "p_one_sided": 0.3948,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 5,
+     "roi": 0.058
+    },
+    "SNIPER": {
+     "bets": 0,
+     "roi": null
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "5 out-of-sample bets < 150; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "btts",
+   "league": "Saudi Pro League",
+   "wf_rows": 1307,
+   "wf_priced": 0,
+   "ho_rows": 113,
+   "ho_priced": 19,
+   "evidence": "IN_PERIOD_SPLIT",
+   "split": {
+    "select_from": "2026-08-24",
+    "select_to": "2026-08-30",
+    "check_from": "2026-09-01",
+    "check_to": "2026-09-04",
+    "check_share_of_matchdays": 0.333
+   },
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.1,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 4,
+   "wf_roi": 0.3475,
+   "wf_roi_shrunk": 0.1499,
+   "note": "",
+   "ho_bets": 2,
+   "ho_roi": -1.0,
+   "ho_ci95": [
+    null,
+    null
+   ],
+   "ho_matchdays": 2,
+   "p_one_sided": null,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 2,
+     "roi": -1.0
+    },
+    "SNIPER": {
+     "bets": 0,
+     "roi": null
+    }
+   },
+   "p_holm": null,
+   "family_size": 70,
+   "reason": "2 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p None not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "btts",
+   "league": "Sweden Allsvenskan",
+   "wf_rows": 1111,
+   "wf_priced": 142,
+   "ho_rows": 208,
+   "ho_priced": 119,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.04,
+   "marksman_th": 0.08,
+   "sniper_th": 0.08,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0716,
+   "wf_bets": 11,
+   "wf_roi": -0.1091,
+   "wf_roi_shrunk": 0.0027,
+   "note": "",
+   "ho_bets": 15,
+   "ho_roi": 0.0527,
+   "ho_ci95": [
+    -0.3823,
+    0.4936
+   ],
+   "ho_matchdays": 13,
+   "p_one_sided": 0.4243,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 14,
+     "roi": -0.0193
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 1,
+     "roi": 1.06
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "15 out-of-sample bets < 150; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "btts",
+   "league": "USA MLS",
+   "wf_rows": 2423,
+   "wf_priced": 180,
+   "ho_rows": 406,
+   "ho_priced": 210,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.03,
+   "sniper_th": 0.03,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.125,
+   "wf_bets": 10,
+   "wf_roi": 0.069,
+   "wf_roi_shrunk": 0.0248,
+   "note": "",
+   "ho_bets": 16,
+   "ho_roi": 0.5231,
+   "ho_ci95": [
+    0.0213,
+    1.0431
+   ],
+   "ho_matchdays": 13,
+   "p_one_sided": 0.0195,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 4,
+     "roi": 0.32
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 12,
+     "roi": 0.5908
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "16 out-of-sample bets < 150; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "ht_over05",
+   "league": "Argentina Primera Division",
+   "wf_rows": 2309,
+   "wf_priced": 0,
+   "ho_rows": 300,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "new_format",
+   "market": "ht_over05",
+   "league": "Austrian Bundesliga",
+   "wf_rows": 915,
+   "wf_priced": 0,
+   "ho_rows": 108,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "new_format",
+   "market": "ht_over05",
+   "league": "Brazil Serie A",
+   "wf_rows": 1853,
+   "wf_priced": 0,
+   "ho_rows": 250,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "new_format",
+   "market": "ht_over05",
+   "league": "China Super League",
+   "wf_rows": 982,
+   "wf_priced": 0,
+   "ho_rows": 182,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "new_format",
+   "market": "ht_over05",
+   "league": "Denmark Superliga",
+   "wf_rows": 904,
+   "wf_priced": 0,
+   "ho_rows": 120,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "new_format",
+   "market": "ht_over05",
+   "league": "Finland Veikkausliiga",
+   "wf_rows": 770,
+   "wf_priced": 0,
+   "ho_rows": 172,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "new_format",
+   "market": "ht_over05",
+   "league": "Ireland Premier Division",
+   "wf_rows": 838,
+   "wf_priced": 0,
+   "ho_rows": 135,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "new_format",
+   "market": "ht_over05",
+   "league": "Japan J-League",
+   "wf_rows": 1585,
+   "wf_priced": 0,
+   "ho_rows": 190,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "new_format",
+   "market": "ht_over05",
+   "league": "K-League 1",
+   "wf_rows": 1059,
+   "wf_priced": 0,
+   "ho_rows": 126,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "new_format",
+   "market": "ht_over05",
+   "league": "Mexico Liga MX",
+   "wf_rows": 1630,
+   "wf_priced": 0,
+   "ho_rows": 184,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "new_format",
+   "market": "ht_over05",
+   "league": "Norway Eliteserien",
+   "wf_rows": 1107,
+   "wf_priced": 0,
+   "ho_rows": 179,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "new_format",
+   "market": "ht_over05",
+   "league": "Romanian Superliga",
+   "wf_rows": 1511,
+   "wf_priced": 0,
+   "ho_rows": 133,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "new_format",
+   "market": "ht_over05",
+   "league": "Saudi Pro League",
+   "wf_rows": 1307,
+   "wf_priced": 0,
+   "ho_rows": 113,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "new_format",
+   "market": "ht_over05",
+   "league": "Sweden Allsvenskan",
+   "wf_rows": 1111,
+   "wf_priced": 0,
+   "ho_rows": 208,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "new_format",
+   "market": "ht_over05",
+   "league": "USA MLS",
+   "wf_rows": 2423,
+   "wf_priced": 0,
+   "ho_rows": 406,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "new_format",
+   "market": "ht_over15",
+   "league": "Argentina Primera Division",
+   "wf_rows": 2309,
+   "wf_priced": 0,
+   "ho_rows": 300,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "new_format",
+   "market": "ht_over15",
+   "league": "Austrian Bundesliga",
+   "wf_rows": 915,
+   "wf_priced": 0,
+   "ho_rows": 108,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "new_format",
+   "market": "ht_over15",
+   "league": "Brazil Serie A",
+   "wf_rows": 1853,
+   "wf_priced": 0,
+   "ho_rows": 250,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "new_format",
+   "market": "ht_over15",
+   "league": "China Super League",
+   "wf_rows": 982,
+   "wf_priced": 0,
+   "ho_rows": 182,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "new_format",
+   "market": "ht_over15",
+   "league": "Denmark Superliga",
+   "wf_rows": 904,
+   "wf_priced": 0,
+   "ho_rows": 120,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "new_format",
+   "market": "ht_over15",
+   "league": "Finland Veikkausliiga",
+   "wf_rows": 770,
+   "wf_priced": 0,
+   "ho_rows": 172,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "new_format",
+   "market": "ht_over15",
+   "league": "Ireland Premier Division",
+   "wf_rows": 838,
+   "wf_priced": 0,
+   "ho_rows": 135,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "new_format",
+   "market": "ht_over15",
+   "league": "Japan J-League",
+   "wf_rows": 1585,
+   "wf_priced": 0,
+   "ho_rows": 190,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "new_format",
+   "market": "ht_over15",
+   "league": "K-League 1",
+   "wf_rows": 1059,
+   "wf_priced": 0,
+   "ho_rows": 126,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "new_format",
+   "market": "ht_over15",
+   "league": "Mexico Liga MX",
+   "wf_rows": 1630,
+   "wf_priced": 0,
+   "ho_rows": 184,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "new_format",
+   "market": "ht_over15",
+   "league": "Norway Eliteserien",
+   "wf_rows": 1107,
+   "wf_priced": 0,
+   "ho_rows": 179,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "new_format",
+   "market": "ht_over15",
+   "league": "Romanian Superliga",
+   "wf_rows": 1511,
+   "wf_priced": 0,
+   "ho_rows": 133,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "new_format",
+   "market": "ht_over15",
+   "league": "Saudi Pro League",
+   "wf_rows": 1307,
+   "wf_priced": 0,
+   "ho_rows": 113,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "new_format",
+   "market": "ht_over15",
+   "league": "Sweden Allsvenskan",
+   "wf_rows": 1111,
+   "wf_priced": 0,
+   "ho_rows": 208,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "new_format",
+   "market": "ht_over15",
+   "league": "USA MLS",
+   "wf_rows": 2423,
+   "wf_priced": 0,
+   "ho_rows": 406,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "new_format",
+   "market": "over15",
+   "league": "Argentina Primera Division",
+   "wf_rows": 2312,
+   "wf_priced": 260,
+   "ho_rows": 300,
+   "ho_priced": 157,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.03,
+   "sniper_th": 0.12,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.9162,
+   "wf_bets": 259,
+   "wf_roi": 0.0489,
+   "wf_roi_shrunk": 0.0474,
+   "note": "",
+   "ho_bets": 124,
+   "ho_roi": 0.0159,
+   "ho_ci95": [
+    -0.1125,
+    0.1338
+   ],
+   "ho_matchdays": 62,
+   "p_one_sided": 0.4173,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 4,
+     "roi": 0.42
+    },
+    "MARKSMAN": {
+     "bets": 98,
+     "roi": -0.0006
+    },
+    "SNIPER": {
+     "bets": 22,
+     "roi": 0.0159
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "124 out-of-sample bets < 150; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "over15",
+   "league": "Austrian Bundesliga",
+   "wf_rows": 915,
+   "wf_priced": 5,
+   "ho_rows": 108,
+   "ho_priced": 27,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.07,
+   "sniper_th": 0.07,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.1569,
+   "wf_bets": 4,
+   "wf_roi": 0.1875,
+   "wf_roi_shrunk": 0.0558,
+   "note": "",
+   "ho_bets": 0,
+   "ho_roi": null,
+   "ho_ci95": [
+    null,
+    null
+   ],
+   "ho_matchdays": 0,
+   "p_one_sided": null,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 0,
+     "roi": null
+    }
+   },
+   "p_holm": null,
+   "family_size": 70,
+   "reason": "0 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p None not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "over15",
+   "league": "Brazil Serie A",
+   "wf_rows": 1853,
+   "wf_priced": 44,
+   "ho_rows": 250,
+   "ho_priced": 73,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.02,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.6814,
+   "wf_bets": 42,
+   "wf_roi": 0.056,
+   "wf_roi_shrunk": 0.0481,
+   "note": "",
+   "ho_bets": 15,
+   "ho_roi": 0.224,
+   "ho_ci95": [
+    -0.02,
+    0.42
+   ],
+   "ho_matchdays": 12,
+   "p_one_sided": 0.035,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 15,
+     "roi": 0.224
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "15 out-of-sample bets < 150; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "over15",
+   "league": "China Super League",
+   "wf_rows": 1158,
+   "wf_priced": 0,
+   "ho_rows": 208,
+   "ho_priced": 34,
+   "evidence": "IN_PERIOD_SPLIT",
+   "split": {
+    "select_from": "2026-04-18",
+    "select_to": "2026-09-18",
+    "check_from": "2026-10-09",
+    "check_to": "2026-10-24",
+    "check_share_of_matchdays": 0.35
+   },
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.02,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 0,
+   "wf_roi": null,
+   "wf_roi_shrunk": 0.0147,
+   "note": "",
+   "ho_bets": 0,
+   "ho_roi": null,
+   "ho_ci95": [
+    null,
+    null
+   ],
+   "ho_matchdays": 0,
+   "p_one_sided": null,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 0,
+     "roi": null
+    }
+   },
+   "p_holm": null,
+   "family_size": 70,
+   "reason": "0 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p None not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "over15",
+   "league": "Denmark Superliga",
+   "wf_rows": 905,
+   "wf_priced": 0,
+   "ho_rows": 120,
+   "ho_priced": 26,
+   "evidence": "IN_PERIOD_SPLIT",
+   "split": {
+    "select_from": "2026-08-17",
+    "select_to": "2026-09-20",
+    "check_from": "2026-10-09",
+    "check_to": "2026-10-26",
+    "check_share_of_matchdays": 0.316
+   },
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.02,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 0,
+   "wf_roi": null,
+   "wf_roi_shrunk": 0.0147,
+   "note": "",
+   "ho_bets": 0,
+   "ho_roi": null,
+   "ho_ci95": [
+    null,
+    null
+   ],
+   "ho_matchdays": 0,
+   "p_one_sided": null,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 0,
+     "roi": null
+    }
+   },
+   "p_holm": null,
+   "family_size": 70,
+   "reason": "0 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p None not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "over15",
+   "league": "Finland Veikkausliiga",
+   "wf_rows": 773,
+   "wf_priced": 1,
+   "ho_rows": 172,
+   "ho_priced": 32,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.12,
+   "sniper_th": 0.12,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 0,
+   "wf_roi": null,
+   "wf_roi_shrunk": 0.0312,
+   "note": "",
+   "ho_bets": 1,
+   "ho_roi": -1.0,
+   "ho_ci95": [
+    null,
+    null
+   ],
+   "ho_matchdays": 1,
+   "p_one_sided": null,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 1,
+     "roi": -1.0
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 0,
+     "roi": null
+    }
+   },
+   "p_holm": null,
+   "family_size": 70,
+   "reason": "1 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p None not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "over15",
+   "league": "Ireland Premier Division",
+   "wf_rows": 839,
+   "wf_priced": 7,
+   "ho_rows": 135,
+   "ho_priced": 35,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.04,
+   "sniper_th": 0.04,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.2576,
+   "wf_bets": 7,
+   "wf_roi": 0.1229,
+   "wf_roi_shrunk": 0.0548,
+   "note": "",
+   "ho_bets": 1,
+   "ho_roi": 0.48,
+   "ho_ci95": [
+    null,
+    null
+   ],
+   "ho_matchdays": 1,
+   "p_one_sided": null,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 1,
+     "roi": 0.48
+    }
+   },
+   "p_holm": null,
+   "family_size": 70,
+   "reason": "1 out-of-sample bets < 150; Holm-adjusted p None not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "over15",
+   "league": "Japan J-League",
+   "wf_rows": 1587,
+   "wf_priced": 12,
+   "ho_rows": 212,
+   "ho_priced": 4,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.12,
+   "marksman_th": 0.12,
+   "sniper_th": 0.12,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 2,
+   "wf_roi": -0.11,
+   "wf_roi_shrunk": 0.0529,
+   "note": "",
+   "ho_bets": 0,
+   "ho_roi": null,
+   "ho_ci95": [
+    null,
+    null
+   ],
+   "ho_matchdays": 0,
+   "p_one_sided": null,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 0,
+     "roi": null
+    }
+   },
+   "p_holm": null,
+   "family_size": 70,
+   "reason": "0 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p None not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "over15",
+   "league": "K-League 1",
+   "wf_rows": 1059,
+   "wf_priced": 0,
+   "ho_rows": 126,
+   "ho_priced": 12,
+   "evidence": "IN_PERIOD_SPLIT",
+   "split": {
+    "select_from": "2026-08-15",
+    "select_to": "2026-08-23",
+    "check_from": "2026-08-25",
+    "check_to": "2026-08-30",
+    "check_share_of_matchdays": 0.429
+   },
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.04,
+   "sniper_th": 0.04,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 2,
+   "wf_roi": 0.33,
+   "wf_roi_shrunk": 0.005,
+   "note": "",
+   "ho_bets": 2,
+   "ho_roi": 0.36,
+   "ho_ci95": [
+    null,
+    null
+   ],
+   "ho_matchdays": 2,
+   "p_one_sided": null,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 2,
+     "roi": 0.36
+    }
+   },
+   "p_holm": null,
+   "family_size": 70,
+   "reason": "2 out-of-sample bets < 150; Holm-adjusted p None not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "over15",
+   "league": "Mexico Liga MX",
+   "wf_rows": 1630,
+   "wf_priced": 2,
+   "ho_rows": 184,
+   "ho_priced": 71,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.12,
+   "sniper_th": 0.12,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 0,
+   "wf_roi": null,
+   "wf_roi_shrunk": 0.0312,
+   "note": "",
+   "ho_bets": 2,
+   "ho_roi": 0.305,
+   "ho_ci95": [
+    null,
+    null
+   ],
+   "ho_matchdays": 2,
+   "p_one_sided": null,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 2,
+     "roi": 0.305
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 0,
+     "roi": null
+    }
+   },
+   "p_holm": null,
+   "family_size": 70,
+   "reason": "2 out-of-sample bets < 150; Holm-adjusted p None not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "over15",
+   "league": "Norway Eliteserien",
+   "wf_rows": 1108,
+   "wf_priced": 1,
+   "ho_rows": 179,
+   "ho_priced": 36,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.12,
+   "sniper_th": 0.12,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 0,
+   "wf_roi": null,
+   "wf_roi_shrunk": 0.0312,
+   "note": "",
+   "ho_bets": 0,
+   "ho_roi": null,
+   "ho_ci95": [
+    null,
+    null
+   ],
+   "ho_matchdays": 0,
+   "p_one_sided": null,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 0,
+     "roi": null
+    }
+   },
+   "p_holm": null,
+   "family_size": 70,
+   "reason": "0 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p None not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "over15",
+   "league": "Romanian Superliga",
+   "wf_rows": 1514,
+   "wf_priced": 0,
+   "ho_rows": 168,
+   "ho_priced": 48,
+   "evidence": "IN_PERIOD_SPLIT",
+   "split": {
+    "select_from": "2026-08-14",
+    "select_to": "2026-09-21",
+    "check_from": "2026-10-08",
+    "check_to": "2026-10-26",
+    "check_share_of_matchdays": 0.375
+   },
+   "status": "UNPROVEN",
+   "valuable_th": 0.04,
+   "marksman_th": 0.04,
+   "sniper_th": 0.04,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 4,
+   "wf_roi": -0.3,
+   "wf_roi_shrunk": 0.014,
+   "note": "",
+   "ho_bets": 2,
+   "ho_roi": 0.29,
+   "ho_ci95": [
+    null,
+    null
+   ],
+   "ho_matchdays": 2,
+   "p_one_sided": null,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 2,
+     "roi": 0.29
+    }
+   },
+   "p_holm": null,
+   "family_size": 70,
+   "reason": "2 out-of-sample bets < 150; Holm-adjusted p None not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "over15",
+   "league": "Saudi Pro League",
+   "wf_rows": 1307,
+   "wf_priced": 0,
+   "ho_rows": 113,
+   "ho_priced": 33,
+   "evidence": "IN_PERIOD_SPLIT",
+   "split": {
+    "select_from": "2026-08-13",
+    "select_to": "2026-08-30",
+    "check_from": "2026-09-01",
+    "check_to": "2026-09-04",
+    "check_share_of_matchdays": 0.214
+   },
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.04,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 2,
+   "wf_roi": 0.33,
+   "wf_roi_shrunk": 0.0303,
+   "note": "",
+   "ho_bets": 1,
+   "ho_roi": 0.33,
+   "ho_ci95": [
+    null,
+    null
+   ],
+   "ho_matchdays": 1,
+   "p_one_sided": null,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 1,
+     "roi": 0.33
+    },
+    "SNIPER": {
+     "bets": 0,
+     "roi": null
+    }
+   },
+   "p_holm": null,
+   "family_size": 70,
+   "reason": "1 out-of-sample bets < 150; Holm-adjusted p None not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "over15",
+   "league": "Sweden Allsvenskan",
+   "wf_rows": 1111,
+   "wf_priced": 1,
+   "ho_rows": 208,
+   "ho_priced": 44,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.12,
+   "sniper_th": 0.12,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 0,
+   "wf_roi": null,
+   "wf_roi_shrunk": 0.0312,
+   "note": "",
+   "ho_bets": 0,
+   "ho_roi": null,
+   "ho_ci95": [
+    null,
+    null
+   ],
+   "ho_matchdays": 0,
+   "p_one_sided": null,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 0,
+     "roi": null
+    }
+   },
+   "p_holm": null,
+   "family_size": 70,
+   "reason": "0 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p None not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "over15",
+   "league": "USA MLS",
+   "wf_rows": 2423,
+   "wf_priced": 0,
+   "ho_rows": 406,
+   "ho_priced": 135,
+   "evidence": "IN_PERIOD_SPLIT",
+   "split": {
+    "select_from": "2026-08-16",
+    "select_to": "2026-09-30",
+    "check_from": "2026-10-02",
+    "check_to": "2026-10-29",
+    "check_share_of_matchdays": 0.382
+   },
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.02,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 0,
+   "wf_roi": null,
+   "wf_roi_shrunk": 0.0147,
+   "note": "",
+   "ho_bets": 0,
+   "ho_roi": null,
+   "ho_ci95": [
+    null,
+    null
+   ],
+   "ho_matchdays": 0,
+   "p_one_sided": null,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 0,
+     "roi": null
+    }
+   },
+   "p_holm": null,
+   "family_size": 70,
+   "reason": "0 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p None not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "over25",
+   "league": "Argentina Primera Division",
+   "wf_rows": 2312,
+   "wf_priced": 280,
+   "ho_rows": 300,
+   "ho_priced": 177,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.05,
+   "marksman_th": 0.06,
+   "sniper_th": 0.06,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.635,
+   "wf_bets": 221,
+   "wf_roi": 0.0336,
+   "wf_roi_shrunk": 0.0085,
+   "note": "",
+   "ho_bets": 115,
+   "ho_roi": -0.0057,
+   "ho_ci95": [
+    -0.2479,
+    0.2384
+   ],
+   "ho_matchdays": 59,
+   "p_one_sided": 0.5387,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 13,
+     "roi": -0.0462
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 102,
+     "roi": -0.0005
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "115 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "over25",
+   "league": "Austrian Bundesliga",
+   "wf_rows": 915,
+   "wf_priced": 142,
+   "ho_rows": 108,
+   "ho_priced": 78,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.03,
+   "marksman_th": 0.06,
+   "sniper_th": 0.06,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.3832,
+   "wf_bets": 105,
+   "wf_roi": 0.0684,
+   "wf_roi_shrunk": 0.0025,
+   "note": "",
+   "ho_bets": 64,
+   "ho_roi": -0.0003,
+   "ho_ci95": [
+    -0.24,
+    0.2332
+   ],
+   "ho_matchdays": 38,
+   "p_one_sided": 0.4918,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 25,
+     "roi": 0.0052
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 39,
+     "roi": -0.0038
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "64 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "over25",
+   "league": "Brazil Serie A",
+   "wf_rows": 1853,
+   "wf_priced": 302,
+   "ho_rows": 250,
+   "ho_priced": 167,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.05,
+   "marksman_th": 0.06,
+   "sniper_th": 0.09,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.5619,
+   "wf_bets": 121,
+   "wf_roi": 0.1035,
+   "wf_roi_shrunk": 0.0428,
+   "note": "",
+   "ho_bets": 69,
+   "ho_roi": 0.0514,
+   "ho_ci95": [
+    -0.2005,
+    0.2821
+   ],
+   "ho_matchdays": 42,
+   "p_one_sided": 0.3473,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 16,
+     "roi": 0.0281
+    },
+    "MARKSMAN": {
+     "bets": 28,
+     "roi": 0.0129
+    },
+    "SNIPER": {
+     "bets": 25,
+     "roi": 0.1096
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "69 out-of-sample bets < 150; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "over25",
+   "league": "China Super League",
+   "wf_rows": 1158,
+   "wf_priced": 145,
+   "ho_rows": 208,
+   "ho_priced": 125,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.14,
+   "marksman_th": 0.14,
+   "sniper_th": 0.14,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 63,
+   "wf_roi": -0.1637,
+   "wf_roi_shrunk": -0.0329,
+   "note": "no bar has a positive shrunk selection-period ROI: all three bars set to the least-negative bar",
+   "ho_bets": 11,
+   "ho_roi": -0.5382,
+   "ho_ci95": [
+    -1.0,
+    0.1582
+   ],
+   "ho_matchdays": 10,
+   "p_one_sided": 0.932,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 11,
+     "roi": -0.5382
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "11 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "over25",
+   "league": "Denmark Superliga",
+   "wf_rows": 905,
+   "wf_priced": 143,
+   "ho_rows": 120,
+   "ho_priced": 77,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.02,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.2218,
+   "wf_bets": 104,
+   "wf_roi": 0.003,
+   "wf_roi_shrunk": -0.0172,
+   "note": "no bar has a positive shrunk selection-period ROI: all three bars set to the least-negative bar",
+   "ho_bets": 64,
+   "ho_roi": -0.1891,
+   "ho_ci95": [
+    -0.4716,
+    0.0799
+   ],
+   "ho_matchdays": 33,
+   "p_one_sided": 0.911,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 64,
+     "roi": -0.1891
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "64 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "over25",
+   "league": "Finland Veikkausliiga",
+   "wf_rows": 773,
+   "wf_priced": 107,
+   "ho_rows": 172,
+   "ho_priced": 113,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.02,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.2018,
+   "wf_bets": 89,
+   "wf_roi": -0.3954,
+   "wf_roi_shrunk": -0.0981,
+   "note": "no bar has a positive shrunk selection-period ROI: all three bars set to the least-negative bar",
+   "ho_bets": 81,
+   "ho_roi": 0.0235,
+   "ho_ci95": [
+    -0.1864,
+    0.2499
+   ],
+   "ho_matchdays": 37,
+   "p_one_sided": 0.4208,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 81,
+     "roi": 0.0235
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "81 out-of-sample bets < 150; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "over25",
+   "league": "Ireland Premier Division",
+   "wf_rows": 839,
+   "wf_priced": 116,
+   "ho_rows": 135,
+   "ho_priced": 102,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.02,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.1914,
+   "wf_bets": 89,
+   "wf_roi": 0.0362,
+   "wf_roi_shrunk": -0.0116,
+   "note": "no bar has a positive shrunk selection-period ROI: all three bars set to the least-negative bar",
+   "ho_bets": 78,
+   "ho_roi": 0.1704,
+   "ho_ci95": [
+    -0.042,
+    0.3718
+   ],
+   "ho_matchdays": 30,
+   "p_one_sided": 0.061,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 78,
+     "roi": 0.1704
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "78 out-of-sample bets < 150; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "over25",
+   "league": "Japan J-League",
+   "wf_rows": 1587,
+   "wf_priced": 139,
+   "ho_rows": 212,
+   "ho_priced": 5,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.02,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.2102,
+   "wf_bets": 109,
+   "wf_roi": -0.0217,
+   "wf_roi_shrunk": -0.0227,
+   "note": "no bar has a positive shrunk selection-period ROI: all three bars set to the least-negative bar",
+   "ho_bets": 5,
+   "ho_roi": -0.59,
+   "ho_ci95": [
+    null,
+    null
+   ],
+   "ho_matchdays": 2,
+   "p_one_sided": null,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 5,
+     "roi": -0.59
+    }
+   },
+   "p_holm": null,
+   "family_size": 70,
+   "reason": "5 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p None not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "over25",
+   "league": "K-League 1",
+   "wf_rows": 1059,
+   "wf_priced": 0,
+   "ho_rows": 126,
+   "ho_priced": 14,
+   "evidence": "IN_PERIOD_SPLIT",
+   "split": {
+    "select_from": "2026-08-15",
+    "select_to": "2026-08-25",
+    "check_from": "2026-08-26",
+    "check_to": "2026-08-30",
+    "check_share_of_matchdays": 0.429
+   },
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.1,
+   "sniper_th": 0.1,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0983,
+   "wf_bets": 8,
+   "wf_roi": 0.8313,
+   "wf_roi_shrunk": 0.1361,
+   "note": "",
+   "ho_bets": 2,
+   "ho_roi": 0.025,
+   "ho_ci95": [
+    null,
+    null
+   ],
+   "ho_matchdays": 2,
+   "p_one_sided": null,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 2,
+     "roi": 0.025
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 0,
+     "roi": null
+    }
+   },
+   "p_holm": null,
+   "family_size": 70,
+   "reason": "2 out-of-sample bets < 150; Holm-adjusted p None not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "over25",
+   "league": "Mexico Liga MX",
+   "wf_rows": 1630,
+   "wf_priced": 156,
+   "ho_rows": 184,
+   "ho_priced": 109,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.02,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.2365,
+   "wf_bets": 124,
+   "wf_roi": 0.0385,
+   "wf_roi_shrunk": -0.0084,
+   "note": "no bar has a positive shrunk selection-period ROI: all three bars set to the least-negative bar",
+   "ho_bets": 81,
+   "ho_roi": 0.0415,
+   "ho_ci95": [
+    -0.2215,
+    0.33
+   ],
+   "ho_matchdays": 47,
+   "p_one_sided": 0.3843,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 81,
+     "roi": 0.0415
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "81 out-of-sample bets < 150; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "over25",
+   "league": "Norway Eliteserien",
+   "wf_rows": 1108,
+   "wf_priced": 166,
+   "ho_rows": 179,
+   "ho_priced": 114,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.02,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.207,
+   "wf_bets": 139,
+   "wf_roi": -0.0363,
+   "wf_roi_shrunk": -0.0257,
+   "note": "no bar has a positive shrunk selection-period ROI: all three bars set to the least-negative bar",
+   "ho_bets": 97,
+   "ho_roi": 0.0298,
+   "ho_ci95": [
+    -0.2376,
+    0.3056
+   ],
+   "ho_matchdays": 39,
+   "p_one_sided": 0.4018,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 97,
+     "roi": 0.0298
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "97 out-of-sample bets < 150; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "over25",
+   "league": "Romanian Superliga",
+   "wf_rows": 1514,
+   "wf_priced": 0,
+   "ho_rows": 168,
+   "ho_priced": 47,
+   "evidence": "IN_PERIOD_SPLIT",
+   "split": {
+    "select_from": "2026-08-14",
+    "select_to": "2026-09-21",
+    "check_from": "2026-10-08",
+    "check_to": "2026-10-25",
+    "check_share_of_matchdays": 0.333
+   },
+   "status": "UNPROVEN",
+   "valuable_th": 0.05,
+   "marksman_th": 0.15,
+   "sniper_th": 0.15,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0448,
+   "wf_bets": 13,
+   "wf_roi": -0.5154,
+   "wf_roi_shrunk": 0.0047,
+   "note": "",
+   "ho_bets": 11,
+   "ho_roi": -0.0727,
+   "ho_ci95": [
+    -0.6351,
+    0.6944
+   ],
+   "ho_matchdays": 9,
+   "p_one_sided": 0.5937,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 10,
+     "roi": 0.02
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 1,
+     "roi": -1.0
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "11 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "over25",
+   "league": "Saudi Pro League",
+   "wf_rows": 1307,
+   "wf_priced": 0,
+   "ho_rows": 113,
+   "ho_priced": 33,
+   "evidence": "IN_PERIOD_SPLIT",
+   "split": {
+    "select_from": "2026-08-13",
+    "select_to": "2026-08-30",
+    "check_from": "2026-09-01",
+    "check_to": "2026-09-04",
+    "check_share_of_matchdays": 0.2
+   },
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.07,
+   "sniper_th": 0.07,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0804,
+   "wf_bets": 21,
+   "wf_roi": 0.0014,
+   "wf_roi_shrunk": 0.0399,
+   "note": "",
+   "ho_bets": 4,
+   "ho_roi": 0.9,
+   "ho_ci95": [
+    null,
+    null
+   ],
+   "ho_matchdays": 2,
+   "p_one_sided": null,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 2,
+     "roi": 0.55
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 2,
+     "roi": 1.25
+    }
+   },
+   "p_holm": null,
+   "family_size": 70,
+   "reason": "4 out-of-sample bets < 150; Holm-adjusted p None not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "over25",
+   "league": "Sweden Allsvenskan",
+   "wf_rows": 1111,
+   "wf_priced": 141,
+   "ho_rows": 208,
+   "ho_priced": 128,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.06,
+   "sniper_th": 0.06,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.2249,
+   "wf_bets": 120,
+   "wf_roi": 0.0893,
+   "wf_roi_shrunk": 0.0023,
+   "note": "",
+   "ho_bets": 95,
+   "ho_roi": 0.1577,
+   "ho_ci95": [
+    -0.0883,
+    0.3838
+   ],
+   "ho_matchdays": 53,
+   "p_one_sided": 0.1064,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 52,
+     "roi": 0.1523
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 43,
+     "roi": 0.1642
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "95 out-of-sample bets < 150; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "over25",
+   "league": "USA MLS",
+   "wf_rows": 2423,
+   "wf_priced": 180,
+   "ho_rows": 406,
+   "ho_priced": 224,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.03,
+   "marksman_th": 0.03,
+   "sniper_th": 0.03,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.4359,
+   "wf_bets": 147,
+   "wf_roi": -0.0256,
+   "wf_roi_shrunk": -0.0328,
+   "note": "no bar has a positive shrunk selection-period ROI: all three bars set to the least-negative bar",
+   "ho_bets": 163,
+   "ho_roi": -0.1757,
+   "ho_ci95": [
+    -0.358,
+    -0.006
+   ],
+   "ho_matchdays": 52,
+   "p_one_sided": 0.9775,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 163,
+     "roi": -0.1757
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "out-of-sample ROI not above 0; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "over35",
+   "league": "Argentina Primera Division",
+   "wf_rows": 2312,
+   "wf_priced": 1,
+   "ho_rows": 300,
+   "ho_priced": 94,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.03,
+   "sniper_th": 0.03,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 1,
+   "wf_roi": -1.0,
+   "wf_roi_shrunk": 0.0781,
+   "note": "",
+   "ho_bets": 76,
+   "ho_roi": 0.0076,
+   "ho_ci95": [
+    -0.4143,
+    0.4394
+   ],
+   "ho_matchdays": 39,
+   "p_one_sided": 0.5012,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 7,
+     "roi": 0.2143
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 69,
+     "roi": -0.0133
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "76 out-of-sample bets < 150; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "over35",
+   "league": "Austrian Bundesliga",
+   "wf_rows": 915,
+   "wf_priced": 8,
+   "ho_rows": 108,
+   "ho_priced": 36,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.03,
+   "sniper_th": 0.03,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 2,
+   "wf_roi": 0.26,
+   "wf_roi_shrunk": 0.0781,
+   "note": "",
+   "ho_bets": 9,
+   "ho_roi": 0.2444,
+   "ho_ci95": [
+    -0.6944,
+    1.2446
+   ],
+   "ho_matchdays": 9,
+   "p_one_sided": 0.3428,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 2,
+     "roi": -1.0
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 7,
+     "roi": 0.6
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "9 out-of-sample bets < 150; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "over35",
+   "league": "Brazil Serie A",
+   "wf_rows": 1853,
+   "wf_priced": 7,
+   "ho_rows": 250,
+   "ho_priced": 71,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.03,
+   "sniper_th": 0.03,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 0,
+   "wf_roi": null,
+   "wf_roi_shrunk": 0.0781,
+   "note": "",
+   "ho_bets": 16,
+   "ho_roi": -0.5106,
+   "ho_ci95": [
+    -1.0,
+    0.1106
+   ],
+   "ho_matchdays": 13,
+   "p_one_sided": 0.947,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 4,
+     "roi": -1.0
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 12,
+     "roi": -0.3475
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "16 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "over35",
+   "league": "China Super League",
+   "wf_rows": 1158,
+   "wf_priced": 99,
+   "ho_rows": 208,
+   "ho_priced": 80,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.03,
+   "sniper_th": 0.03,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 18,
+   "wf_roi": 0.0678,
+   "wf_roi_shrunk": 0.0781,
+   "note": "",
+   "ho_bets": 12,
+   "ho_roi": -0.33,
+   "ho_ci95": [
+    -1.0,
+    0.415
+   ],
+   "ho_matchdays": 12,
+   "p_one_sided": 0.8341,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 1,
+     "roi": -1.0
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 11,
+     "roi": -0.2691
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "12 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "over35",
+   "league": "Denmark Superliga",
+   "wf_rows": 905,
+   "wf_priced": 57,
+   "ho_rows": 120,
+   "ho_priced": 52,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.03,
+   "sniper_th": 0.03,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 4,
+   "wf_roi": 0.735,
+   "wf_roi_shrunk": 0.0781,
+   "note": "",
+   "ho_bets": 6,
+   "ho_roi": -0.65,
+   "ho_ci95": [
+    -1.0,
+    0.05
+   ],
+   "ho_matchdays": 6,
+   "p_one_sided": 0.9345,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 2,
+     "roi": -1.0
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 4,
+     "roi": -0.475
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "6 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "over35",
+   "league": "Finland Veikkausliiga",
+   "wf_rows": 773,
+   "wf_priced": 72,
+   "ho_rows": 172,
+   "ho_priced": 47,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.03,
+   "sniper_th": 0.03,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 10,
+   "wf_roi": -0.151,
+   "wf_roi_shrunk": 0.0781,
+   "note": "",
+   "ho_bets": 3,
+   "ho_roi": -1.0,
+   "ho_ci95": [
+    -1.0,
+    -1.0
+   ],
+   "ho_matchdays": 3,
+   "p_one_sided": 1.0,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 2,
+     "roi": -1.0
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 1,
+     "roi": -1.0
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "3 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "over35",
+   "league": "Ireland Premier Division",
+   "wf_rows": 839,
+   "wf_priced": 3,
+   "ho_rows": 135,
+   "ho_priced": 39,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.03,
+   "sniper_th": 0.03,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 0,
+   "wf_roi": null,
+   "wf_roi_shrunk": 0.0781,
+   "note": "",
+   "ho_bets": 8,
+   "ho_roi": -0.2,
+   "ho_ci95": [
+    -1.0,
+    0.8
+   ],
+   "ho_matchdays": 6,
+   "p_one_sided": 0.6932,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 1,
+     "roi": -1.0
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 7,
+     "roi": -0.0857
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "8 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "over35",
+   "league": "Japan J-League",
+   "wf_rows": 1587,
+   "wf_priced": 9,
+   "ho_rows": 212,
+   "ho_priced": 4,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.03,
+   "sniper_th": 0.03,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 0,
+   "wf_roi": null,
+   "wf_roi_shrunk": 0.0781,
+   "note": "",
+   "ho_bets": 1,
+   "ho_roi": -1.0,
+   "ho_ci95": [
+    null,
+    null
+   ],
+   "ho_matchdays": 1,
+   "p_one_sided": null,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 1,
+     "roi": -1.0
+    }
+   },
+   "p_holm": null,
+   "family_size": 70,
+   "reason": "1 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p None not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "over35",
+   "league": "K-League 1",
+   "wf_rows": 1059,
+   "wf_priced": 0,
+   "ho_rows": 126,
+   "ho_priced": 14,
+   "evidence": "IN_PERIOD_SPLIT",
+   "split": {
+    "select_from": "2026-08-15",
+    "select_to": "2026-08-25",
+    "check_from": "2026-08-26",
+    "check_to": "2026-08-30",
+    "check_share_of_matchdays": 0.333
+   },
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.02,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 4,
+   "wf_roi": -1.0,
+   "wf_roi_shrunk": -0.3,
+   "note": "no bar has a positive shrunk selection-period ROI: all three bars set to the least-negative bar",
+   "ho_bets": 3,
+   "ho_roi": 0.3333,
+   "ho_ci95": [
+    null,
+    null
+   ],
+   "ho_matchdays": 2,
+   "p_one_sided": null,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 3,
+     "roi": 0.3333
+    }
+   },
+   "p_holm": null,
+   "family_size": 70,
+   "reason": "3 out-of-sample bets < 150; Holm-adjusted p None not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "over35",
+   "league": "Mexico Liga MX",
+   "wf_rows": 1630,
+   "wf_priced": 36,
+   "ho_rows": 184,
+   "ho_priced": 87,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.03,
+   "sniper_th": 0.03,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 0,
+   "wf_roi": null,
+   "wf_roi_shrunk": 0.0781,
+   "note": "",
+   "ho_bets": 11,
+   "ho_roi": -0.2618,
+   "ho_ci95": [
+    -1.0,
+    0.4124
+   ],
+   "ho_matchdays": 10,
+   "p_one_sided": 0.7831,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 2,
+     "roi": 1.56
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 9,
+     "roi": -0.6667
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "11 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "over35",
+   "league": "Norway Eliteserien",
+   "wf_rows": 1108,
+   "wf_priced": 93,
+   "ho_rows": 179,
+   "ho_priced": 81,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.03,
+   "sniper_th": 0.03,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 6,
+   "wf_roi": 0.355,
+   "wf_roi_shrunk": 0.0781,
+   "note": "",
+   "ho_bets": 15,
+   "ho_roi": 0.46,
+   "ho_ci95": [
+    -0.0515,
+    0.9054
+   ],
+   "ho_matchdays": 10,
+   "p_one_sided": 0.04,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 4,
+     "roi": -0.0275
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 11,
+     "roi": 0.6373
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "15 out-of-sample bets < 150; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "over35",
+   "league": "Romanian Superliga",
+   "wf_rows": 1514,
+   "wf_priced": 0,
+   "ho_rows": 168,
+   "ho_priced": 44,
+   "evidence": "IN_PERIOD_SPLIT",
+   "split": {
+    "select_from": "2026-08-14",
+    "select_to": "2026-09-21",
+    "check_from": "2026-10-08",
+    "check_to": "2026-10-25",
+    "check_share_of_matchdays": 0.344
+   },
+   "status": "UNPROVEN",
+   "valuable_th": 0.03,
+   "marksman_th": 0.03,
+   "sniper_th": 0.03,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 6,
+   "wf_roi": 0.3333,
+   "wf_roi_shrunk": -0.1754,
+   "note": "no bar has a positive shrunk selection-period ROI: all three bars set to the least-negative bar",
+   "ho_bets": 3,
+   "ho_roi": 1.2667,
+   "ho_ci95": [
+    -1.0,
+    2.4
+   ],
+   "ho_matchdays": 3,
+   "p_one_sided": 0.0425,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 3,
+     "roi": 1.2667
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "3 out-of-sample bets < 150; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "over35",
+   "league": "Saudi Pro League",
+   "wf_rows": 1307,
+   "wf_priced": 0,
+   "ho_rows": 113,
+   "ho_priced": 34,
+   "evidence": "IN_PERIOD_SPLIT",
+   "split": {
+    "select_from": "2026-08-13",
+    "select_to": "2026-08-30",
+    "check_from": "2026-09-01",
+    "check_to": "2026-09-04",
+    "check_share_of_matchdays": 0.214
+   },
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.02,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 3,
+   "wf_roi": -1.0,
+   "wf_roi_shrunk": -0.1505,
+   "note": "no bar has a positive shrunk selection-period ROI: all three bars set to the least-negative bar",
+   "ho_bets": 2,
+   "ho_roi": 0.875,
+   "ho_ci95": [
+    null,
+    null
+   ],
+   "ho_matchdays": 2,
+   "p_one_sided": null,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 2,
+     "roi": 0.875
+    }
+   },
+   "p_holm": null,
+   "family_size": 70,
+   "reason": "2 out-of-sample bets < 150; Holm-adjusted p None not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "over35",
+   "league": "Sweden Allsvenskan",
+   "wf_rows": 1111,
+   "wf_priced": 43,
+   "ho_rows": 208,
+   "ho_priced": 55,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.03,
+   "sniper_th": 0.03,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 0,
+   "wf_roi": null,
+   "wf_roi_shrunk": 0.0781,
+   "note": "",
+   "ho_bets": 5,
+   "ho_roi": 0.054,
+   "ho_ci95": [
+    -1.0,
+    1.154
+   ],
+   "ho_matchdays": 5,
+   "p_one_sided": 0.3308,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 1,
+     "roi": 1.75
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 4,
+     "roi": -0.37
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "5 out-of-sample bets < 150; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "new_format",
+   "market": "over35",
+   "league": "USA MLS",
+   "wf_rows": 2423,
+   "wf_priced": 96,
+   "ho_rows": 406,
+   "ho_priced": 209,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.03,
+   "sniper_th": 0.03,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 6,
+   "wf_roi": -0.105,
+   "wf_roi_shrunk": 0.0781,
+   "note": "",
+   "ho_bets": 28,
+   "ho_roi": -0.4136,
+   "ho_ci95": [
+    -0.7535,
+    0.0255
+   ],
+   "ho_matchdays": 24,
+   "p_one_sided": 0.9675,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 4,
+     "roi": 0.0675
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 24,
+     "roi": -0.4937
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "28 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p 1.0 not < 0.025"
+  }
+ ]
+}

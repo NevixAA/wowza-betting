@@ -1,0 +1,4133 @@
+{
+ "meta": {
+  "track": "standard",
+  "candidate": "champion_recipe",
+  "predictions": "C:/Users/nevo/AppData/Local/Temp/claude/1ee106cff9d5ca11/84b5f38e-4e7e-4236-9e42-6479e0aff4a9/scratchpad/retrain_std/run_20261108T190758Z/predictions.parquet",
+  "created_at": "2026-11-08T20:24:02Z",
+  "price_sources": {
+   "btts": "output/standard_sidemarket_odds_history.csv: earliest provable pre-kickoff same-snapshot pair from match_date-1d ({'BACKFILL_HISTORICAL': 6087, 'FORWARD_CAPTURE': 769})",
+   "ht_over05": "no price exists for this market",
+   "ht_over15": "no price exists for this market",
+   "over15": "output/standard_sidemarket_odds_history.csv: earliest provable pre-kickoff same-snapshot pair from match_date-1d ({'FORWARD_CAPTURE': 830, 'BACKFILL_HISTORICAL': 1})",
+   "over25": "football-data PRE-MATCH same-book pair ({'B365': 24547, 'Pinnacle': 13})",
+   "over35": "output/standard_sidemarket_odds_history.csv: earliest provable pre-kickoff same-snapshot pair from match_date-1d ({'FORWARD_CAPTURE': 888, 'BACKFILL_HISTORICAL': 18})"
+  },
+  "price_match": {
+   "btts": {
+    "Belgian First Division A": {
+     "rows": 1163,
+     "priced": 28
+    },
+    "Bundesliga 2": {
+     "rows": 1145,
+     "priced": 593
+    },
+    "Championship": {
+     "rows": 2102,
+     "priced": 1077
+    },
+    "Dutch Eredivisie": {
+     "rows": 1184,
+     "priced": 42
+    },
+    "Greek Super League": {
+     "rows": 909,
+     "priced": 32
+    },
+    "La Liga 2": {
+     "rows": 1770,
+     "priced": 965
+    },
+    "League One": {
+     "rows": 2113,
+     "priced": 1159
+    },
+    "League Two": {
+     "rows": 2120,
+     "priced": 1166
+    },
+    "Ligue 2": {
+     "rows": 1299,
+     "priced": 615
+    },
+    "National League": {
+     "rows": 2113,
+     "priced": 62
+    },
+    "Portuguese Primeira Liga": {
+     "rows": 1183,
+     "priced": 36
+    },
+    "Scottish Championship": {
+     "rows": 687,
+     "priced": 20
+    },
+    "Scottish League One": {
+     "rows": 687,
+     "priced": 7
+    },
+    "Scottish League Two": {
+     "rows": 691,
+     "priced": 4
+    },
+    "Scottish Premiership": {
+     "rows": 884,
+     "priced": 29
+    },
+    "Serie B": {
+     "rows": 1470,
+     "priced": 807
+    },
+    "Turkish Super Lig": {
+     "rows": 1289,
+     "priced": 35
+    }
+   },
+   "ht_over05": {
+    "Belgian First Division A": {
+     "rows": 564,
+     "priced": 0
+    },
+    "Bundesliga 2": {
+     "rows": 555,
+     "priced": 0
+    },
+    "Championship": {
+     "rows": 1006,
+     "priced": 0
+    },
+    "Dutch Eredivisie": {
+     "rows": 565,
+     "priced": 0
+    },
+    "Greek Super League": {
+     "rows": 423,
+     "priced": 0
+    },
+    "La Liga 2": {
+     "rows": 843,
+     "priced": 0
+    },
+    "League One": {
+     "rows": 1026,
+     "priced": 0
+    },
+    "League Two": {
+     "rows": 1031,
+     "priced": 0
+    },
+    "Ligue 2": {
+     "rows": 562,
+     "priced": 0
+    },
+    "National League": {
+     "rows": 1026,
+     "priced": 0
+    },
+    "Portuguese Primeira Liga": {
+     "rows": 575,
+     "priced": 0
+    },
+    "Scottish Championship": {
+     "rows": 339,
+     "priced": 0
+    },
+    "Scottish League One": {
+     "rows": 339,
+     "priced": 0
+    },
+    "Scottish League Two": {
+     "rows": 343,
+     "priced": 0
+    },
+    "Scottish Premiership": {
+     "rows": 427,
+     "priced": 0
+    },
+    "Serie B": {
+     "rows": 684,
+     "priced": 0
+    },
+    "Turkish Super Lig": {
+     "rows": 589,
+     "priced": 0
+    }
+   },
+   "ht_over15": {
+    "Belgian First Division A": {
+     "rows": 564,
+     "priced": 0
+    },
+    "Bundesliga 2": {
+     "rows": 555,
+     "priced": 0
+    },
+    "Championship": {
+     "rows": 1006,
+     "priced": 0
+    },
+    "Dutch Eredivisie": {
+     "rows": 565,
+     "priced": 0
+    },
+    "Greek Super League": {
+     "rows": 423,
+     "priced": 0
+    },
+    "La Liga 2": {
+     "rows": 843,
+     "priced": 0
+    },
+    "League One": {
+     "rows": 1026,
+     "priced": 0
+    },
+    "League Two": {
+     "rows": 1031,
+     "priced": 0
+    },
+    "Ligue 2": {
+     "rows": 562,
+     "priced": 0
+    },
+    "National League": {
+     "rows": 1026,
+     "priced": 0
+    },
+    "Portuguese Primeira Liga": {
+     "rows": 575,
+     "priced": 0
+    },
+    "Scottish Championship": {
+     "rows": 339,
+     "priced": 0
+    },
+    "Scottish League One": {
+     "rows": 339,
+     "priced": 0
+    },
+    "Scottish League Two": {
+     "rows": 343,
+     "priced": 0
+    },
+    "Scottish Premiership": {
+     "rows": 427,
+     "priced": 0
+    },
+    "Serie B": {
+     "rows": 684,
+     "priced": 0
+    },
+    "Turkish Super Lig": {
+     "rows": 589,
+     "priced": 0
+    }
+   },
+   "over15": {
+    "Belgian First Division A": {
+     "rows": 1163,
+     "priced": 30
+    },
+    "Bundesliga 2": {
+     "rows": 1145,
+     "priced": 41
+    },
+    "Championship": {
+     "rows": 2102,
+     "priced": 73
+    },
+    "Dutch Eredivisie": {
+     "rows": 1184,
+     "priced": 40
+    },
+    "Greek Super League": {
+     "rows": 909,
+     "priced": 43
+    },
+    "La Liga 2": {
+     "rows": 1770,
+     "priced": 79
+    },
+    "League One": {
+     "rows": 2113,
+     "priced": 78
+    },
+    "League Two": {
+     "rows": 2120,
+     "priced": 81
+    },
+    "Ligue 2": {
+     "rows": 1299,
+     "priced": 18
+    },
+    "National League": {
+     "rows": 2113,
+     "priced": 52
+    },
+    "Portuguese Primeira Liga": {
+     "rows": 1183,
+     "priced": 34
+    },
+    "Scottish Championship": {
+     "rows": 687,
+     "priced": 19
+    },
+    "Scottish League One": {
+     "rows": 687,
+     "priced": 8
+    },
+    "Scottish League Two": {
+     "rows": 691,
+     "priced": 2
+    },
+    "Scottish Premiership": {
+     "rows": 884,
+     "priced": 21
+    },
+    "Serie B": {
+     "rows": 1470,
+     "priced": 67
+    },
+    "Turkish Super Lig": {
+     "rows": 1289,
+     "priced": 37
+    }
+   },
+   "over25": {
+    "Belgian First Division A": {
+     "rows": 1163,
+     "priced": 1151
+    },
+    "Bundesliga 2": {
+     "rows": 1145,
+     "priced": 1124
+    },
+    "Championship": {
+     "rows": 2102,
+     "priced": 2064
+    },
+    "Dutch Eredivisie": {
+     "rows": 1184,
+     "priced": 1166
+    },
+    "Greek Super League": {
+     "rows": 909,
+     "priced": 885
+    },
+    "La Liga 2": {
+     "rows": 1770,
+     "priced": 1730
+    },
+    "League One": {
+     "rows": 2113,
+     "priced": 1511
+    },
+    "League Two": {
+     "rows": 2120,
+     "priced": 2070
+    },
+    "Ligue 2": {
+     "rows": 1299,
+     "priced": 1278
+    },
+    "National League": {
+     "rows": 2113,
+     "priced": 2078
+    },
+    "Portuguese Primeira Liga": {
+     "rows": 1183,
+     "priced": 1173
+    },
+    "Scottish Championship": {
+     "rows": 687,
+     "priced": 676
+    },
+    "Scottish League One": {
+     "rows": 687,
+     "priced": 675
+    },
+    "Scottish League Two": {
+     "rows": 691,
+     "priced": 686
+    },
+    "Scottish Premiership": {
+     "rows": 884,
+     "priced": 866
+    },
+    "Serie B": {
+     "rows": 1470,
+     "priced": 1412
+    },
+    "Turkish Super Lig": {
+     "rows": 1289,
+     "priced": 1271
+    }
+   },
+   "over35": {
+    "Belgian First Division A": {
+     "rows": 1163,
+     "priced": 33
+    },
+    "Bundesliga 2": {
+     "rows": 1145,
+     "priced": 50
+    },
+    "Championship": {
+     "rows": 2102,
+     "priced": 86
+    },
+    "Dutch Eredivisie": {
+     "rows": 1184,
+     "priced": 43
+    },
+    "Greek Super League": {
+     "rows": 909,
+     "priced": 34
+    },
+    "La Liga 2": {
+     "rows": 1770,
+     "priced": 92
+    },
+    "League One": {
+     "rows": 2113,
+     "priced": 84
+    },
+    "League Two": {
+     "rows": 2120,
+     "priced": 88
+    },
+    "Ligue 2": {
+     "rows": 1299,
+     "priced": 14
+    },
+    "National League": {
+     "rows": 2113,
+     "priced": 61
+    },
+    "Portuguese Primeira Liga": {
+     "rows": 1183,
+     "priced": 35
+    },
+    "Scottish Championship": {
+     "rows": 687,
+     "priced": 22
+    },
+    "Scottish League One": {
+     "rows": 687,
+     "priced": 6
+    },
+    "Scottish League Two": {
+     "rows": 691,
+     "priced": 4
+    },
+    "Scottish Premiership": {
+     "rows": 884,
+     "priced": 27
+    },
+    "Serie B": {
+     "rows": 1470,
+     "priced": 61
+    },
+    "Turkish Super Lig": {
+     "rows": 1289,
+     "priced": 45
+    }
+   }
+  },
+  "rules": {
+   "grid": [
+    0.02,
+    0.03,
+    0.04,
+    0.05,
+    0.06,
+    0.07,
+    0.08,
+    0.09,
+    0.1,
+    0.11,
+    0.12,
+    0.13,
+    0.14,
+    0.15,
+    0.16,
+    0.17,
+    0.18,
+    0.19,
+    0.2,
+    0.21,
+    0.22,
+    0.23,
+    0.24,
+    0.25,
+    0.26,
+    0.27,
+    0.28,
+    0.29,
+    0.3
+   ],
+   "min_bets_fit": 40,
+   "min_holdout_bets": 150,
+   "holm_alpha_one_sided": 0.025,
+   "n_boot": 2000
+  }
+ },
+ "rows": [
+  {
+   "track": "standard",
+   "market": "btts",
+   "league": "Belgian First Division A",
+   "wf_rows": 1014,
+   "wf_priced": 0,
+   "ho_rows": 149,
+   "ho_priced": 28,
+   "evidence": "IN_PERIOD_SPLIT",
+   "split": {
+    "select_from": "2026-09-06",
+    "select_to": "2026-09-20",
+    "check_from": "2026-10-09",
+    "check_to": "2026-10-25",
+    "check_share_of_matchdays": 0.364
+   },
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.02,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0258,
+   "wf_bets": 2,
+   "wf_roi": -0.025,
+   "wf_roi_shrunk": -0.0331,
+   "note": "no bar has a positive shrunk selection-period ROI: all three bars set to the least-negative bar",
+   "ho_bets": 2,
+   "ho_roi": 0.8,
+   "ho_ci95": [
+    null,
+    null
+   ],
+   "ho_matchdays": 2,
+   "p_one_sided": null,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 2,
+     "roi": 0.8
+    }
+   },
+   "p_holm": null,
+   "family_size": 70,
+   "reason": "2 out-of-sample bets < 150; Holm-adjusted p None not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "btts",
+   "league": "Bundesliga 2",
+   "wf_rows": 1002,
+   "wf_priced": 510,
+   "ho_rows": 143,
+   "ho_priced": 83,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.05,
+   "marksman_th": 0.13,
+   "sniper_th": 0.13,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 0,
+   "wf_roi": null,
+   "wf_roi_shrunk": 0.0056,
+   "note": "",
+   "ho_bets": 0,
+   "ho_roi": null,
+   "ho_ci95": [
+    null,
+    null
+   ],
+   "ho_matchdays": 0,
+   "p_one_sided": null,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 0,
+     "roi": null
+    }
+   },
+   "p_holm": null,
+   "family_size": 70,
+   "reason": "0 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p None not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "btts",
+   "league": "Championship",
+   "wf_rows": 1873,
+   "wf_priced": 928,
+   "ho_rows": 229,
+   "ho_priced": 149,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.04,
+   "marksman_th": 0.07,
+   "sniper_th": 0.09,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.6114,
+   "wf_bets": 266,
+   "wf_roi": 0.0145,
+   "wf_roi_shrunk": 0.004,
+   "note": "",
+   "ho_bets": 18,
+   "ho_roi": -0.2344,
+   "ho_ci95": [
+    -0.6472,
+    0.1939
+   ],
+   "ho_matchdays": 11,
+   "p_one_sided": 0.8636,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 14,
+     "roi": -0.3079
+    },
+    "MARKSMAN": {
+     "bets": 3,
+     "roi": 0.3633
+    },
+    "SNIPER": {
+     "bets": 1,
+     "roi": -1.0
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "18 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "btts",
+   "league": "Dutch Eredivisie",
+   "wf_rows": 1041,
+   "wf_priced": 0,
+   "ho_rows": 143,
+   "ho_priced": 42,
+   "evidence": "IN_PERIOD_SPLIT",
+   "split": {
+    "select_from": "2026-09-06",
+    "select_to": "2026-09-20",
+    "check_from": "2026-10-09",
+    "check_to": "2026-10-25",
+    "check_share_of_matchdays": 0.474
+   },
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.02,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 1,
+   "wf_roi": 0.8,
+   "wf_roi_shrunk": -0.0333,
+   "note": "no bar has a positive shrunk selection-period ROI: all three bars set to the least-negative bar",
+   "ho_bets": 0,
+   "ho_roi": null,
+   "ho_ci95": [
+    null,
+    null
+   ],
+   "ho_matchdays": 0,
+   "p_one_sided": null,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 0,
+     "roi": null
+    }
+   },
+   "p_holm": null,
+   "family_size": 70,
+   "reason": "0 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p None not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "btts",
+   "league": "Greek Super League",
+   "wf_rows": 802,
+   "wf_priced": 0,
+   "ho_rows": 107,
+   "ho_priced": 32,
+   "evidence": "IN_PERIOD_SPLIT",
+   "split": {
+    "select_from": "2026-08-23",
+    "select_to": "2026-09-20",
+    "check_from": "2026-10-10",
+    "check_to": "2026-10-25",
+    "check_share_of_matchdays": 0.312
+   },
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.02,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.3605,
+   "wf_bets": 23,
+   "wf_roi": 0.0317,
+   "wf_roi_shrunk": -0.0099,
+   "note": "no bar has a positive shrunk selection-period ROI: all three bars set to the least-negative bar",
+   "ho_bets": 7,
+   "ho_roi": -0.4071,
+   "ho_ci95": [
+    -1.0,
+    0.66
+   ],
+   "ho_matchdays": 5,
+   "p_one_sided": 0.8006,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 7,
+     "roi": -0.4071
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "7 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "btts",
+   "league": "La Liga 2",
+   "wf_rows": 1539,
+   "wf_priced": 809,
+   "ho_rows": 231,
+   "ho_priced": 156,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.12,
+   "sniper_th": 0.13,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.4999,
+   "wf_bets": 508,
+   "wf_roi": 0.0361,
+   "wf_roi_shrunk": 0.0104,
+   "note": "",
+   "ho_bets": 81,
+   "ho_roi": 0.1302,
+   "ho_ci95": [
+    -0.0876,
+    0.3489
+   ],
+   "ho_matchdays": 48,
+   "p_one_sided": 0.1044,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 76,
+     "roi": 0.0863
+    },
+    "MARKSMAN": {
+     "bets": 3,
+     "roi": 0.4667
+    },
+    "SNIPER": {
+     "bets": 2,
+     "roi": 1.295
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "81 out-of-sample bets < 150; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "btts",
+   "league": "League One",
+   "wf_rows": 1881,
+   "wf_priced": 1009,
+   "ho_rows": 232,
+   "ho_priced": 150,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.07,
+   "marksman_th": 0.09,
+   "sniper_th": 0.09,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.1897,
+   "wf_bets": 93,
+   "wf_roi": -0.0362,
+   "wf_roi_shrunk": 0.0173,
+   "note": "",
+   "ho_bets": 9,
+   "ho_roi": -0.7667,
+   "ho_ci95": [
+    -1.0,
+    -0.1
+   ],
+   "ho_matchdays": 7,
+   "p_one_sided": 0.993,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 4,
+     "roi": -0.475
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 5,
+     "roi": -1.0
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "9 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "btts",
+   "league": "League Two",
+   "wf_rows": 1889,
+   "wf_priced": 1019,
+   "ho_rows": 231,
+   "ho_priced": 147,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.07,
+   "marksman_th": 0.07,
+   "sniper_th": 0.08,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.1697,
+   "wf_bets": 77,
+   "wf_roi": 0.1245,
+   "wf_roi_shrunk": 0.0459,
+   "note": "",
+   "ho_bets": 10,
+   "ho_roi": 0.064,
+   "ho_ci95": [
+    -0.62,
+    0.848
+   ],
+   "ho_matchdays": 8,
+   "p_one_sided": 0.4503,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 3,
+     "roi": -0.33
+    },
+    "SNIPER": {
+     "bets": 7,
+     "roi": 0.2329
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "10 out-of-sample bets < 150; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "btts",
+   "league": "Ligue 2",
+   "wf_rows": 1156,
+   "wf_priced": 548,
+   "ho_rows": 143,
+   "ho_priced": 67,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.08,
+   "marksman_th": 0.09,
+   "sniper_th": 0.09,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 59,
+   "wf_roi": -0.14,
+   "wf_roi_shrunk": 0.0524,
+   "note": "",
+   "ho_bets": 3,
+   "ho_roi": -0.3167,
+   "ho_ci95": [
+    -1.0,
+    1.05
+   ],
+   "ho_matchdays": 3,
+   "p_one_sided": 0.7366,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 3,
+     "roi": -0.3167
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "3 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "btts",
+   "league": "National League",
+   "wf_rows": 1876,
+   "wf_priced": 0,
+   "ho_rows": 237,
+   "ho_priced": 62,
+   "evidence": "IN_PERIOD_SPLIT",
+   "split": {
+    "select_from": "2026-09-11",
+    "select_to": "2026-09-30",
+    "check_from": "2026-10-03",
+    "check_to": "2026-10-27",
+    "check_share_of_matchdays": 0.357
+   },
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.02,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 1,
+   "wf_roi": -1.0,
+   "wf_roi_shrunk": -0.0333,
+   "note": "no bar has a positive shrunk selection-period ROI: all three bars set to the least-negative bar",
+   "ho_bets": 2,
+   "ho_roi": 0.91,
+   "ho_ci95": [
+    null,
+    null
+   ],
+   "ho_matchdays": 2,
+   "p_one_sided": null,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 2,
+     "roi": 0.91
+    }
+   },
+   "p_holm": null,
+   "family_size": 70,
+   "reason": "2 out-of-sample bets < 150; Holm-adjusted p None not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "btts",
+   "league": "Portuguese Primeira Liga",
+   "wf_rows": 1038,
+   "wf_priced": 0,
+   "ho_rows": 145,
+   "ho_priced": 36,
+   "evidence": "IN_PERIOD_SPLIT",
+   "split": {
+    "select_from": "2026-09-06",
+    "select_to": "2026-09-20",
+    "check_from": "2026-10-09",
+    "check_to": "2026-10-26",
+    "check_share_of_matchdays": 0.529
+   },
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.02,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.2496,
+   "wf_bets": 14,
+   "wf_roi": 0.1364,
+   "wf_roi_shrunk": 0.009,
+   "note": "",
+   "ho_bets": 12,
+   "ho_roi": -0.1383,
+   "ho_ci95": [
+    -0.5759,
+    0.3858
+   ],
+   "ho_matchdays": 9,
+   "p_one_sided": 0.7181,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 12,
+     "roi": -0.1383
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "12 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "btts",
+   "league": "Scottish Championship",
+   "wf_rows": 602,
+   "wf_priced": 0,
+   "ho_rows": 85,
+   "ho_priced": 20,
+   "evidence": "IN_PERIOD_SPLIT",
+   "split": {
+    "select_from": "2026-09-11",
+    "select_to": "2026-09-19",
+    "check_from": "2026-10-03",
+    "check_to": "2026-10-27",
+    "check_share_of_matchdays": 0.667
+   },
+   "status": "UNPROVEN",
+   "valuable_th": 0.04,
+   "marksman_th": 0.04,
+   "sniper_th": 0.04,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 4,
+   "wf_roi": -1.0,
+   "wf_roi_shrunk": -0.0449,
+   "note": "no bar has a positive shrunk selection-period ROI: all three bars set to the least-negative bar",
+   "ho_bets": 7,
+   "ho_roi": 0.1343,
+   "ho_ci95": [
+    -0.345,
+    0.61
+   ],
+   "ho_matchdays": 5,
+   "p_one_sided": 0.2729,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 7,
+     "roi": 0.1343
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "7 out-of-sample bets < 150; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "btts",
+   "league": "Scottish League One",
+   "wf_rows": 604,
+   "wf_priced": 0,
+   "ho_rows": 83,
+   "ho_priced": 7,
+   "evidence": "IN_PERIOD_SPLIT",
+   "split": {
+    "select_from": "2026-10-17",
+    "select_to": "2026-10-24",
+    "check_from": "2026-10-27",
+    "check_to": "2026-10-27",
+    "check_share_of_matchdays": 0.333
+   },
+   "status": "UNPROVEN",
+   "valuable_th": 0.1,
+   "marksman_th": 0.1,
+   "sniper_th": 0.1,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 0,
+   "wf_roi": null,
+   "wf_roi_shrunk": -0.0105,
+   "note": "no bar has a positive shrunk selection-period ROI: all three bars set to the least-negative bar",
+   "ho_bets": 0,
+   "ho_roi": null,
+   "ho_ci95": [
+    null,
+    null
+   ],
+   "ho_matchdays": 0,
+   "p_one_sided": null,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 0,
+     "roi": null
+    }
+   },
+   "p_holm": null,
+   "family_size": 70,
+   "reason": "0 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p None not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "btts",
+   "league": "Scottish League Two",
+   "wf_rows": 611,
+   "wf_priced": 0,
+   "ho_rows": 80,
+   "ho_priced": 4,
+   "status": "INSUFFICIENT_BETS",
+   "evidence": "IN_PERIOD_SPLIT",
+   "reason": "real prices on fewer than 2 matchdays: no earlier part to pick bars on"
+  },
+  {
+   "track": "standard",
+   "market": "btts",
+   "league": "Scottish Premiership",
+   "wf_rows": 776,
+   "wf_priced": 0,
+   "ho_rows": 108,
+   "ho_priced": 29,
+   "evidence": "IN_PERIOD_SPLIT",
+   "split": {
+    "select_from": "2026-09-05",
+    "select_to": "2026-09-20",
+    "check_from": "2026-10-10",
+    "check_to": "2026-10-28",
+    "check_share_of_matchdays": 0.5
+   },
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.02,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 1,
+   "wf_roi": 0.91,
+   "wf_roi_shrunk": -0.0333,
+   "note": "no bar has a positive shrunk selection-period ROI: all three bars set to the least-negative bar",
+   "ho_bets": 3,
+   "ho_roi": 0.2667,
+   "ho_ci95": [
+    -1.0,
+    1.0
+   ],
+   "ho_matchdays": 3,
+   "p_one_sided": 0.2639,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 3,
+     "roi": 0.2667
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "3 out-of-sample bets < 150; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "btts",
+   "league": "Serie B",
+   "wf_rows": 1311,
+   "wf_priced": 690,
+   "ho_rows": 159,
+   "ho_priced": 117,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.04,
+   "sniper_th": 0.04,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.492,
+   "wf_bets": 441,
+   "wf_roi": 0.0802,
+   "wf_roi_shrunk": 0.0316,
+   "note": "",
+   "ho_bets": 54,
+   "ho_roi": -0.1693,
+   "ho_ci95": [
+    -0.4351,
+    0.095
+   ],
+   "ho_matchdays": 23,
+   "p_one_sided": 0.8796,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 16,
+     "roi": -0.3069
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 38,
+     "roi": -0.1113
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "54 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "btts",
+   "league": "Turkish Super Lig",
+   "wf_rows": 1145,
+   "wf_priced": 0,
+   "ho_rows": 144,
+   "ho_priced": 35,
+   "evidence": "IN_PERIOD_SPLIT",
+   "split": {
+    "select_from": "2026-09-05",
+    "select_to": "2026-09-20",
+    "check_from": "2026-10-09",
+    "check_to": "2026-10-26",
+    "check_share_of_matchdays": 0.579
+   },
+   "status": "UNPROVEN",
+   "valuable_th": 0.05,
+   "marksman_th": 0.05,
+   "sniper_th": 0.05,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 2,
+   "wf_roi": -1.0,
+   "wf_roi_shrunk": -0.0561,
+   "note": "no bar has a positive shrunk selection-period ROI: all three bars set to the least-negative bar",
+   "ho_bets": 2,
+   "ho_roi": 0.05,
+   "ho_ci95": [
+    null,
+    null
+   ],
+   "ho_matchdays": 2,
+   "p_one_sided": null,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 2,
+     "roi": 0.05
+    }
+   },
+   "p_holm": null,
+   "family_size": 70,
+   "reason": "2 out-of-sample bets < 150; Holm-adjusted p None not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "ht_over05",
+   "league": "Belgian First Division A",
+   "wf_rows": 415,
+   "wf_priced": 0,
+   "ho_rows": 149,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "standard",
+   "market": "ht_over05",
+   "league": "Bundesliga 2",
+   "wf_rows": 413,
+   "wf_priced": 0,
+   "ho_rows": 142,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "standard",
+   "market": "ht_over05",
+   "league": "Championship",
+   "wf_rows": 781,
+   "wf_priced": 0,
+   "ho_rows": 225,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "standard",
+   "market": "ht_over05",
+   "league": "Dutch Eredivisie",
+   "wf_rows": 422,
+   "wf_priced": 0,
+   "ho_rows": 143,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "standard",
+   "market": "ht_over05",
+   "league": "Greek Super League",
+   "wf_rows": 316,
+   "wf_priced": 0,
+   "ho_rows": 107,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "standard",
+   "market": "ht_over05",
+   "league": "La Liga 2",
+   "wf_rows": 618,
+   "wf_priced": 0,
+   "ho_rows": 225,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "standard",
+   "market": "ht_over05",
+   "league": "League One",
+   "wf_rows": 799,
+   "wf_priced": 0,
+   "ho_rows": 227,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "standard",
+   "market": "ht_over05",
+   "league": "League Two",
+   "wf_rows": 804,
+   "wf_priced": 0,
+   "ho_rows": 227,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "standard",
+   "market": "ht_over05",
+   "league": "Ligue 2",
+   "wf_rows": 419,
+   "wf_priced": 0,
+   "ho_rows": 143,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "standard",
+   "market": "ht_over05",
+   "league": "National League",
+   "wf_rows": 789,
+   "wf_priced": 0,
+   "ho_rows": 237,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "standard",
+   "market": "ht_over05",
+   "league": "Portuguese Primeira Liga",
+   "wf_rows": 430,
+   "wf_priced": 0,
+   "ho_rows": 145,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "standard",
+   "market": "ht_over05",
+   "league": "Scottish Championship",
+   "wf_rows": 254,
+   "wf_priced": 0,
+   "ho_rows": 85,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "standard",
+   "market": "ht_over05",
+   "league": "Scottish League One",
+   "wf_rows": 256,
+   "wf_priced": 0,
+   "ho_rows": 83,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "standard",
+   "market": "ht_over05",
+   "league": "Scottish League Two",
+   "wf_rows": 263,
+   "wf_priced": 0,
+   "ho_rows": 80,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "standard",
+   "market": "ht_over05",
+   "league": "Scottish Premiership",
+   "wf_rows": 319,
+   "wf_priced": 0,
+   "ho_rows": 108,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "standard",
+   "market": "ht_over05",
+   "league": "Serie B",
+   "wf_rows": 535,
+   "wf_priced": 0,
+   "ho_rows": 149,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "standard",
+   "market": "ht_over05",
+   "league": "Turkish Super Lig",
+   "wf_rows": 445,
+   "wf_priced": 0,
+   "ho_rows": 144,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "standard",
+   "market": "ht_over15",
+   "league": "Belgian First Division A",
+   "wf_rows": 415,
+   "wf_priced": 0,
+   "ho_rows": 149,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "standard",
+   "market": "ht_over15",
+   "league": "Bundesliga 2",
+   "wf_rows": 413,
+   "wf_priced": 0,
+   "ho_rows": 142,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "standard",
+   "market": "ht_over15",
+   "league": "Championship",
+   "wf_rows": 781,
+   "wf_priced": 0,
+   "ho_rows": 225,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "standard",
+   "market": "ht_over15",
+   "league": "Dutch Eredivisie",
+   "wf_rows": 422,
+   "wf_priced": 0,
+   "ho_rows": 143,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "standard",
+   "market": "ht_over15",
+   "league": "Greek Super League",
+   "wf_rows": 316,
+   "wf_priced": 0,
+   "ho_rows": 107,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "standard",
+   "market": "ht_over15",
+   "league": "La Liga 2",
+   "wf_rows": 618,
+   "wf_priced": 0,
+   "ho_rows": 225,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "standard",
+   "market": "ht_over15",
+   "league": "League One",
+   "wf_rows": 799,
+   "wf_priced": 0,
+   "ho_rows": 227,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "standard",
+   "market": "ht_over15",
+   "league": "League Two",
+   "wf_rows": 804,
+   "wf_priced": 0,
+   "ho_rows": 227,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "standard",
+   "market": "ht_over15",
+   "league": "Ligue 2",
+   "wf_rows": 419,
+   "wf_priced": 0,
+   "ho_rows": 143,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "standard",
+   "market": "ht_over15",
+   "league": "National League",
+   "wf_rows": 789,
+   "wf_priced": 0,
+   "ho_rows": 237,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "standard",
+   "market": "ht_over15",
+   "league": "Portuguese Primeira Liga",
+   "wf_rows": 430,
+   "wf_priced": 0,
+   "ho_rows": 145,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "standard",
+   "market": "ht_over15",
+   "league": "Scottish Championship",
+   "wf_rows": 254,
+   "wf_priced": 0,
+   "ho_rows": 85,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "standard",
+   "market": "ht_over15",
+   "league": "Scottish League One",
+   "wf_rows": 256,
+   "wf_priced": 0,
+   "ho_rows": 83,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "standard",
+   "market": "ht_over15",
+   "league": "Scottish League Two",
+   "wf_rows": 263,
+   "wf_priced": 0,
+   "ho_rows": 80,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "standard",
+   "market": "ht_over15",
+   "league": "Scottish Premiership",
+   "wf_rows": 319,
+   "wf_priced": 0,
+   "ho_rows": 108,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "standard",
+   "market": "ht_over15",
+   "league": "Serie B",
+   "wf_rows": 535,
+   "wf_priced": 0,
+   "ho_rows": 149,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "standard",
+   "market": "ht_over15",
+   "league": "Turkish Super Lig",
+   "wf_rows": 445,
+   "wf_priced": 0,
+   "ho_rows": 144,
+   "ho_priced": 0,
+   "status": "NO_PRICE_DATA",
+   "evidence": null,
+   "reason": "no real two-sided bet-time price at any time"
+  },
+  {
+   "track": "standard",
+   "market": "over15",
+   "league": "Belgian First Division A",
+   "wf_rows": 1014,
+   "wf_priced": 0,
+   "ho_rows": 149,
+   "ho_priced": 30,
+   "evidence": "IN_PERIOD_SPLIT",
+   "split": {
+    "select_from": "2026-09-06",
+    "select_to": "2026-09-20",
+    "check_from": "2026-10-09",
+    "check_to": "2026-10-25",
+    "check_share_of_matchdays": 0.417
+   },
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.02,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 0,
+   "wf_roi": null,
+   "wf_roi_shrunk": -0.0032,
+   "note": "no bar has a positive shrunk selection-period ROI: all three bars set to the least-negative bar",
+   "ho_bets": 1,
+   "ho_roi": 0.36,
+   "ho_ci95": [
+    null,
+    null
+   ],
+   "ho_matchdays": 1,
+   "p_one_sided": null,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 1,
+     "roi": 0.36
+    }
+   },
+   "p_holm": null,
+   "family_size": 70,
+   "reason": "1 out-of-sample bets < 150; Holm-adjusted p None not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "over15",
+   "league": "Bundesliga 2",
+   "wf_rows": 1002,
+   "wf_priced": 0,
+   "ho_rows": 143,
+   "ho_priced": 41,
+   "evidence": "IN_PERIOD_SPLIT",
+   "split": {
+    "select_from": "2026-08-07",
+    "select_to": "2026-09-20",
+    "check_from": "2026-10-09",
+    "check_to": "2026-10-25",
+    "check_share_of_matchdays": 0.381
+   },
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.02,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 0,
+   "wf_roi": null,
+   "wf_roi_shrunk": -0.0032,
+   "note": "no bar has a positive shrunk selection-period ROI: all three bars set to the least-negative bar",
+   "ho_bets": 0,
+   "ho_roi": null,
+   "ho_ci95": [
+    null,
+    null
+   ],
+   "ho_matchdays": 0,
+   "p_one_sided": null,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 0,
+     "roi": null
+    }
+   },
+   "p_holm": null,
+   "family_size": 70,
+   "reason": "0 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p None not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "over15",
+   "league": "Championship",
+   "wf_rows": 1873,
+   "wf_priced": 0,
+   "ho_rows": 229,
+   "ho_priced": 73,
+   "evidence": "IN_PERIOD_SPLIT",
+   "split": {
+    "select_from": "2026-08-17",
+    "select_to": "2026-09-20",
+    "check_from": "2026-10-10",
+    "check_to": "2026-10-24",
+    "check_share_of_matchdays": 0.304
+   },
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.02,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.9594,
+   "wf_bets": 3,
+   "wf_roi": 0.34,
+   "wf_roi_shrunk": 0.326,
+   "note": "",
+   "ho_bets": 2,
+   "ho_roi": -0.335,
+   "ho_ci95": [
+    null,
+    null
+   ],
+   "ho_matchdays": 2,
+   "p_one_sided": null,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 2,
+     "roi": -0.335
+    }
+   },
+   "p_holm": null,
+   "family_size": 70,
+   "reason": "2 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p None not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "over15",
+   "league": "Dutch Eredivisie",
+   "wf_rows": 1041,
+   "wf_priced": 0,
+   "ho_rows": 143,
+   "ho_priced": 40,
+   "evidence": "IN_PERIOD_SPLIT",
+   "split": {
+    "select_from": "2026-09-06",
+    "select_to": "2026-09-20",
+    "check_from": "2026-10-09",
+    "check_to": "2026-10-25",
+    "check_share_of_matchdays": 0.474
+   },
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.02,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 0,
+   "wf_roi": null,
+   "wf_roi_shrunk": -0.0032,
+   "note": "no bar has a positive shrunk selection-period ROI: all three bars set to the least-negative bar",
+   "ho_bets": 0,
+   "ho_roi": null,
+   "ho_ci95": [
+    null,
+    null
+   ],
+   "ho_matchdays": 0,
+   "p_one_sided": null,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 0,
+     "roi": null
+    }
+   },
+   "p_holm": null,
+   "family_size": 70,
+   "reason": "0 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p None not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "over15",
+   "league": "Greek Super League",
+   "wf_rows": 802,
+   "wf_priced": 0,
+   "ho_rows": 107,
+   "ho_priced": 43,
+   "evidence": "IN_PERIOD_SPLIT",
+   "split": {
+    "select_from": "2026-08-22",
+    "select_to": "2026-09-20",
+    "check_from": "2026-10-10",
+    "check_to": "2026-10-25",
+    "check_share_of_matchdays": 0.368
+   },
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.02,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.8655,
+   "wf_bets": 4,
+   "wf_roi": 0.39,
+   "wf_roi_shrunk": 0.3371,
+   "note": "",
+   "ho_bets": 3,
+   "ho_roi": -0.5333,
+   "ho_ci95": [
+    null,
+    null
+   ],
+   "ho_matchdays": 2,
+   "p_one_sided": null,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 3,
+     "roi": -0.5333
+    }
+   },
+   "p_holm": null,
+   "family_size": 70,
+   "reason": "3 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p None not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "over15",
+   "league": "La Liga 2",
+   "wf_rows": 1539,
+   "wf_priced": 0,
+   "ho_rows": 231,
+   "ho_priced": 79,
+   "evidence": "IN_PERIOD_SPLIT",
+   "split": {
+    "select_from": "2026-05-16",
+    "select_to": "2026-09-28",
+    "check_from": "2026-10-02",
+    "check_to": "2026-10-26",
+    "check_share_of_matchdays": 0.371
+   },
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.02,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0621,
+   "wf_bets": 15,
+   "wf_roi": -0.138,
+   "wf_roi_shrunk": -0.0116,
+   "note": "no bar has a positive shrunk selection-period ROI: all three bars set to the least-negative bar",
+   "ho_bets": 8,
+   "ho_roi": -0.145,
+   "ho_ci95": [
+    -0.5135,
+    0.2225
+   ],
+   "ho_matchdays": 7,
+   "p_one_sided": 0.7166,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 8,
+     "roi": -0.145
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "8 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "over15",
+   "league": "League One",
+   "wf_rows": 1881,
+   "wf_priced": 0,
+   "ho_rows": 232,
+   "ho_priced": 78,
+   "evidence": "IN_PERIOD_SPLIT",
+   "split": {
+    "select_from": "2026-08-15",
+    "select_to": "2026-09-26",
+    "check_from": "2026-10-03",
+    "check_to": "2026-10-27",
+    "check_share_of_matchdays": 0.368
+   },
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.02,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 2,
+   "wf_roi": 0.36,
+   "wf_roi_shrunk": -0.0032,
+   "note": "no bar has a positive shrunk selection-period ROI: all three bars set to the least-negative bar",
+   "ho_bets": 2,
+   "ho_roi": -0.3,
+   "ho_ci95": [
+    null,
+    null
+   ],
+   "ho_matchdays": 2,
+   "p_one_sided": null,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 2,
+     "roi": -0.3
+    }
+   },
+   "p_holm": null,
+   "family_size": 70,
+   "reason": "2 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p None not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "over15",
+   "league": "League Two",
+   "wf_rows": 1889,
+   "wf_priced": 0,
+   "ho_rows": 231,
+   "ho_priced": 81,
+   "evidence": "IN_PERIOD_SPLIT",
+   "split": {
+    "select_from": "2026-08-15",
+    "select_to": "2026-09-26",
+    "check_from": "2026-10-03",
+    "check_to": "2026-10-27",
+    "check_share_of_matchdays": 0.467
+   },
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.02,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.6583,
+   "wf_bets": 2,
+   "wf_roi": 0.365,
+   "wf_roi_shrunk": 0.2392,
+   "note": "",
+   "ho_bets": 4,
+   "ho_roi": -0.335,
+   "ho_ci95": [
+    -1.0,
+    0.33
+   ],
+   "ho_matchdays": 4,
+   "p_one_sided": 0.9425,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 4,
+     "roi": -0.335
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "4 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "over15",
+   "league": "Ligue 2",
+   "wf_rows": 1156,
+   "wf_priced": 0,
+   "ho_rows": 143,
+   "ho_priced": 18,
+   "evidence": "IN_PERIOD_SPLIT",
+   "split": {
+    "select_from": "2026-10-09",
+    "select_to": "2026-10-17",
+    "check_from": "2026-10-19",
+    "check_to": "2026-10-26",
+    "check_share_of_matchdays": 0.444
+   },
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.04,
+   "sniper_th": 0.04,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.8847,
+   "wf_bets": 2,
+   "wf_roi": 0.42,
+   "wf_roi_shrunk": 0.3617,
+   "note": "",
+   "ho_bets": 0,
+   "ho_roi": null,
+   "ho_ci95": [
+    null,
+    null
+   ],
+   "ho_matchdays": 0,
+   "p_one_sided": null,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 0,
+     "roi": null
+    }
+   },
+   "p_holm": null,
+   "family_size": 70,
+   "reason": "0 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p None not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "over15",
+   "league": "National League",
+   "wf_rows": 1876,
+   "wf_priced": 0,
+   "ho_rows": 237,
+   "ho_priced": 52,
+   "evidence": "IN_PERIOD_SPLIT",
+   "split": {
+    "select_from": "2026-09-11",
+    "select_to": "2026-09-30",
+    "check_from": "2026-10-03",
+    "check_to": "2026-10-28",
+    "check_share_of_matchdays": 0.4
+   },
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.02,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 0,
+   "wf_roi": null,
+   "wf_roi_shrunk": -0.0032,
+   "note": "no bar has a positive shrunk selection-period ROI: all three bars set to the least-negative bar",
+   "ho_bets": 0,
+   "ho_roi": null,
+   "ho_ci95": [
+    null,
+    null
+   ],
+   "ho_matchdays": 0,
+   "p_one_sided": null,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 0,
+     "roi": null
+    }
+   },
+   "p_holm": null,
+   "family_size": 70,
+   "reason": "0 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p None not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "over15",
+   "league": "Portuguese Primeira Liga",
+   "wf_rows": 1038,
+   "wf_priced": 0,
+   "ho_rows": 145,
+   "ho_priced": 34,
+   "evidence": "IN_PERIOD_SPLIT",
+   "split": {
+    "select_from": "2026-09-06",
+    "select_to": "2026-09-20",
+    "check_from": "2026-10-09",
+    "check_to": "2026-10-26",
+    "check_share_of_matchdays": 0.471
+   },
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.02,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0204,
+   "wf_bets": 5,
+   "wf_roi": -0.176,
+   "wf_roi_shrunk": -0.0067,
+   "note": "no bar has a positive shrunk selection-period ROI: all three bars set to the least-negative bar",
+   "ho_bets": 2,
+   "ho_roi": -1.0,
+   "ho_ci95": [
+    null,
+    null
+   ],
+   "ho_matchdays": 2,
+   "p_one_sided": null,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 2,
+     "roi": -1.0
+    }
+   },
+   "p_holm": null,
+   "family_size": 70,
+   "reason": "2 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p None not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "over15",
+   "league": "Scottish Championship",
+   "wf_rows": 602,
+   "wf_priced": 0,
+   "ho_rows": 85,
+   "ho_priced": 19,
+   "evidence": "IN_PERIOD_SPLIT",
+   "split": {
+    "select_from": "2026-09-12",
+    "select_to": "2026-09-25",
+    "check_from": "2026-10-03",
+    "check_to": "2026-10-27",
+    "check_share_of_matchdays": 0.636
+   },
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.02,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0053,
+   "wf_bets": 2,
+   "wf_roi": -0.335,
+   "wf_roi_shrunk": -0.005,
+   "note": "no bar has a positive shrunk selection-period ROI: all three bars set to the least-negative bar",
+   "ho_bets": 2,
+   "ho_roi": 0.43,
+   "ho_ci95": [
+    null,
+    null
+   ],
+   "ho_matchdays": 2,
+   "p_one_sided": null,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 2,
+     "roi": 0.43
+    }
+   },
+   "p_holm": null,
+   "family_size": 70,
+   "reason": "2 out-of-sample bets < 150; Holm-adjusted p None not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "over15",
+   "league": "Scottish League One",
+   "wf_rows": 604,
+   "wf_priced": 0,
+   "ho_rows": 83,
+   "ho_priced": 8,
+   "evidence": "IN_PERIOD_SPLIT",
+   "split": {
+    "select_from": "2026-10-17",
+    "select_to": "2026-10-24",
+    "check_from": "2026-10-27",
+    "check_to": "2026-10-27",
+    "check_share_of_matchdays": 0.333
+   },
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.02,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 0,
+   "wf_roi": null,
+   "wf_roi_shrunk": -0.1087,
+   "note": "no bar has a positive shrunk selection-period ROI: all three bars set to the least-negative bar",
+   "ho_bets": 0,
+   "ho_roi": null,
+   "ho_ci95": [
+    null,
+    null
+   ],
+   "ho_matchdays": 0,
+   "p_one_sided": null,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 0,
+     "roi": null
+    }
+   },
+   "p_holm": null,
+   "family_size": 70,
+   "reason": "0 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p None not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "over15",
+   "league": "Scottish League Two",
+   "wf_rows": 611,
+   "wf_priced": 0,
+   "ho_rows": 80,
+   "ho_priced": 2,
+   "status": "INSUFFICIENT_BETS",
+   "evidence": "IN_PERIOD_SPLIT",
+   "reason": "real prices on fewer than 2 matchdays: no earlier part to pick bars on"
+  },
+  {
+   "track": "standard",
+   "market": "over15",
+   "league": "Scottish Premiership",
+   "wf_rows": 776,
+   "wf_priced": 0,
+   "ho_rows": 108,
+   "ho_priced": 21,
+   "evidence": "IN_PERIOD_SPLIT",
+   "split": {
+    "select_from": "2026-09-05",
+    "select_to": "2026-09-19",
+    "check_from": "2026-10-10",
+    "check_to": "2026-10-28",
+    "check_share_of_matchdays": 0.5
+   },
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.02,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 0,
+   "wf_roi": null,
+   "wf_roi_shrunk": -0.0032,
+   "note": "no bar has a positive shrunk selection-period ROI: all three bars set to the least-negative bar",
+   "ho_bets": 0,
+   "ho_roi": null,
+   "ho_ci95": [
+    null,
+    null
+   ],
+   "ho_matchdays": 0,
+   "p_one_sided": null,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 0,
+     "roi": null
+    }
+   },
+   "p_holm": null,
+   "family_size": 70,
+   "reason": "0 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p None not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "over15",
+   "league": "Serie B",
+   "wf_rows": 1311,
+   "wf_priced": 0,
+   "ho_rows": 159,
+   "ho_priced": 67,
+   "evidence": "IN_PERIOD_SPLIT",
+   "split": {
+    "select_from": "2026-08-21",
+    "select_to": "2026-09-20",
+    "check_from": "2026-10-10",
+    "check_to": "2026-10-28",
+    "check_share_of_matchdays": 0.364
+   },
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.02,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.1074,
+   "wf_bets": 18,
+   "wf_roi": 0.0789,
+   "wf_roi_shrunk": 0.0056,
+   "note": "",
+   "ho_bets": 6,
+   "ho_roi": -0.33,
+   "ho_ci95": [
+    -0.675,
+    0.33
+   ],
+   "ho_matchdays": 4,
+   "p_one_sided": 0.8786,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 6,
+     "roi": -0.33
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "6 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "over15",
+   "league": "Turkish Super Lig",
+   "wf_rows": 1145,
+   "wf_priced": 0,
+   "ho_rows": 144,
+   "ho_priced": 37,
+   "evidence": "IN_PERIOD_SPLIT",
+   "split": {
+    "select_from": "2026-09-05",
+    "select_to": "2026-09-20",
+    "check_from": "2026-10-09",
+    "check_to": "2026-10-25",
+    "check_share_of_matchdays": 0.5
+   },
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.02,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 2,
+   "wf_roi": -1.0,
+   "wf_roi_shrunk": -0.0032,
+   "note": "no bar has a positive shrunk selection-period ROI: all three bars set to the least-negative bar",
+   "ho_bets": 3,
+   "ho_roi": -0.5467,
+   "ho_ci95": [
+    -1.0,
+    0.36
+   ],
+   "ho_matchdays": 3,
+   "p_one_sided": 0.9685,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 3,
+     "roi": -0.5467
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "3 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "over25",
+   "league": "Belgian First Division A",
+   "wf_rows": 1014,
+   "wf_priced": 1013,
+   "ho_rows": 149,
+   "ho_priced": 138,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.02,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.5285,
+   "wf_bets": 772,
+   "wf_roi": 0.0147,
+   "wf_roi_shrunk": -0.0251,
+   "note": "no bar has a positive shrunk selection-period ROI: all three bars set to the least-negative bar",
+   "ho_bets": 101,
+   "ho_roi": 0.0919,
+   "ho_ci95": [
+    -0.1241,
+    0.322
+   ],
+   "ho_matchdays": 50,
+   "p_one_sided": 0.1979,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 101,
+     "roi": 0.0919
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "101 out-of-sample bets < 150; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "over25",
+   "league": "Bundesliga 2",
+   "wf_rows": 1002,
+   "wf_priced": 1000,
+   "ho_rows": 143,
+   "ho_priced": 124,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.12,
+   "marksman_th": 0.12,
+   "sniper_th": 0.12,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 112,
+   "wf_roi": -0.1151,
+   "wf_roi_shrunk": -0.0532,
+   "note": "no bar has a positive shrunk selection-period ROI: all three bars set to the least-negative bar",
+   "ho_bets": 21,
+   "ho_roi": -0.4724,
+   "ho_ci95": [
+    -1.0,
+    -0.0698
+   ],
+   "ho_matchdays": 13,
+   "p_one_sided": 0.989,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 21,
+     "roi": -0.4724
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "21 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "over25",
+   "league": "Championship",
+   "wf_rows": 1873,
+   "wf_priced": 1864,
+   "ho_rows": 229,
+   "ho_priced": 200,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.07,
+   "marksman_th": 0.07,
+   "sniper_th": 0.07,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.344,
+   "wf_bets": 402,
+   "wf_roi": 0.0178,
+   "wf_roi_shrunk": -0.0457,
+   "note": "no bar has a positive shrunk selection-period ROI: all three bars set to the least-negative bar",
+   "ho_bets": 29,
+   "ho_roi": -0.0852,
+   "ho_ci95": [
+    -0.4488,
+    0.3216
+   ],
+   "ho_matchdays": 21,
+   "p_one_sided": 0.6827,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 29,
+     "roi": -0.0852
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "29 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "over25",
+   "league": "Dutch Eredivisie",
+   "wf_rows": 1041,
+   "wf_priced": 1041,
+   "ho_rows": 143,
+   "ho_priced": 125,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.18,
+   "marksman_th": 0.18,
+   "sniper_th": 0.18,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 76,
+   "wf_roi": -0.075,
+   "wf_roi_shrunk": -0.0486,
+   "note": "no bar has a positive shrunk selection-period ROI: all three bars set to the least-negative bar",
+   "ho_bets": 10,
+   "ho_roi": 0.343,
+   "ho_ci95": [
+    -0.65,
+    1.4055
+   ],
+   "ho_matchdays": 10,
+   "p_one_sided": 0.2839,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 10,
+     "roi": 0.343
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "10 out-of-sample bets < 150; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "over25",
+   "league": "Greek Super League",
+   "wf_rows": 802,
+   "wf_priced": 799,
+   "ho_rows": 107,
+   "ho_priced": 86,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.02,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.4791,
+   "wf_bets": 659,
+   "wf_roi": -0.0334,
+   "wf_roi_shrunk": -0.0523,
+   "note": "no bar has a positive shrunk selection-period ROI: all three bars set to the least-negative bar",
+   "ho_bets": 74,
+   "ho_roi": -0.0519,
+   "ho_ci95": [
+    -0.246,
+    0.1364
+   ],
+   "ho_matchdays": 29,
+   "p_one_sided": 0.6982,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 74,
+     "roi": -0.0519
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "74 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "over25",
+   "league": "La Liga 2",
+   "wf_rows": 1539,
+   "wf_priced": 1527,
+   "ho_rows": 231,
+   "ho_priced": 203,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.18,
+   "marksman_th": 0.18,
+   "sniper_th": 0.18,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 57,
+   "wf_roi": -0.0221,
+   "wf_roi_shrunk": -0.0486,
+   "note": "no bar has a positive shrunk selection-period ROI: all three bars set to the least-negative bar",
+   "ho_bets": 2,
+   "ho_roi": 1.7,
+   "ho_ci95": [
+    null,
+    null
+   ],
+   "ho_matchdays": 2,
+   "p_one_sided": null,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 2,
+     "roi": 1.7
+    }
+   },
+   "p_holm": null,
+   "family_size": 70,
+   "reason": "2 out-of-sample bets < 150; Holm-adjusted p None not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "over25",
+   "league": "League One",
+   "wf_rows": 1881,
+   "wf_priced": 1325,
+   "ho_rows": 232,
+   "ho_priced": 186,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.12,
+   "marksman_th": 0.12,
+   "sniper_th": 0.12,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 55,
+   "wf_roi": 0.1009,
+   "wf_roi_shrunk": -0.0532,
+   "note": "no bar has a positive shrunk selection-period ROI: all three bars set to the least-negative bar",
+   "ho_bets": 5,
+   "ho_roi": -0.52,
+   "ho_ci95": [
+    -1.0,
+    0.44
+   ],
+   "ho_matchdays": 5,
+   "p_one_sided": 0.949,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 5,
+     "roi": -0.52
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "5 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "over25",
+   "league": "League Two",
+   "wf_rows": 1889,
+   "wf_priced": 1880,
+   "ho_rows": 231,
+   "ho_priced": 190,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.12,
+   "marksman_th": 0.12,
+   "sniper_th": 0.12,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 44,
+   "wf_roi": -0.0705,
+   "wf_roi_shrunk": -0.0532,
+   "note": "no bar has a positive shrunk selection-period ROI: all three bars set to the least-negative bar",
+   "ho_bets": 1,
+   "ho_roi": -1.0,
+   "ho_ci95": [
+    null,
+    null
+   ],
+   "ho_matchdays": 1,
+   "p_one_sided": null,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 1,
+     "roi": -1.0
+    }
+   },
+   "p_holm": null,
+   "family_size": 70,
+   "reason": "1 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p None not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "over25",
+   "league": "Ligue 2",
+   "wf_rows": 1156,
+   "wf_priced": 1153,
+   "ho_rows": 143,
+   "ho_priced": 125,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.02,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.5594,
+   "wf_bets": 903,
+   "wf_roi": -0.0184,
+   "wf_roi_shrunk": -0.041,
+   "note": "no bar has a positive shrunk selection-period ROI: all three bars set to the least-negative bar",
+   "ho_bets": 92,
+   "ho_roi": -0.2078,
+   "ho_ci95": [
+    -0.367,
+    -0.0355
+   ],
+   "ho_matchdays": 30,
+   "p_one_sided": 0.9885,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 92,
+     "roi": -0.2078
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "92 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "over25",
+   "league": "National League",
+   "wf_rows": 1876,
+   "wf_priced": 1863,
+   "ho_rows": 237,
+   "ho_priced": 215,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.09,
+   "marksman_th": 0.09,
+   "sniper_th": 0.09,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.2062,
+   "wf_bets": 318,
+   "wf_roi": 0.041,
+   "wf_roi_shrunk": -0.0476,
+   "note": "no bar has a positive shrunk selection-period ROI: all three bars set to the least-negative bar",
+   "ho_bets": 40,
+   "ho_roi": -0.3267,
+   "ho_ci95": [
+    -0.6572,
+    0.0352
+   ],
+   "ho_matchdays": 18,
+   "p_one_sided": 0.9665,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 40,
+     "roi": -0.3267
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "40 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "over25",
+   "league": "Portuguese Primeira Liga",
+   "wf_rows": 1038,
+   "wf_priced": 1038,
+   "ho_rows": 145,
+   "ho_priced": 135,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.12,
+   "marksman_th": 0.12,
+   "sniper_th": 0.12,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 153,
+   "wf_roi": -0.0843,
+   "wf_roi_shrunk": -0.0532,
+   "note": "no bar has a positive shrunk selection-period ROI: all three bars set to the least-negative bar",
+   "ho_bets": 13,
+   "ho_roi": -0.0769,
+   "ho_ci95": [
+    -0.775,
+    0.65
+   ],
+   "ho_matchdays": 12,
+   "p_one_sided": 0.5947,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 13,
+     "roi": -0.0769
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "13 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "over25",
+   "league": "Scottish Championship",
+   "wf_rows": 602,
+   "wf_priced": 602,
+   "ho_rows": 85,
+   "ho_priced": 74,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.1,
+   "marksman_th": 0.1,
+   "sniper_th": 0.1,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.0026,
+   "wf_bets": 57,
+   "wf_roi": -0.0793,
+   "wf_roi_shrunk": -0.0727,
+   "note": "no bar has a positive shrunk selection-period ROI: all three bars set to the least-negative bar",
+   "ho_bets": 6,
+   "ho_roi": -0.2,
+   "ho_ci95": [
+    -1.0,
+    0.8
+   ],
+   "ho_matchdays": 5,
+   "p_one_sided": 0.7521,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 6,
+     "roi": -0.2
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "6 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "over25",
+   "league": "Scottish League One",
+   "wf_rows": 604,
+   "wf_priced": 602,
+   "ho_rows": 83,
+   "ho_priced": 73,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.1,
+   "marksman_th": 0.1,
+   "sniper_th": 0.1,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.0027,
+   "wf_bets": 64,
+   "wf_roi": -0.1692,
+   "wf_roi_shrunk": -0.0729,
+   "note": "no bar has a positive shrunk selection-period ROI: all three bars set to the least-negative bar",
+   "ho_bets": 4,
+   "ho_roi": -1.0,
+   "ho_ci95": [
+    -1.0,
+    -1.0
+   ],
+   "ho_matchdays": 4,
+   "p_one_sided": 1.0,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 4,
+     "roi": -1.0
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "4 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "over25",
+   "league": "Scottish League Two",
+   "wf_rows": 611,
+   "wf_priced": 611,
+   "ho_rows": 80,
+   "ho_priced": 75,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.02,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.421,
+   "wf_bets": 461,
+   "wf_roi": 0.0854,
+   "wf_roi_shrunk": -0.0044,
+   "note": "no bar has a positive shrunk selection-period ROI: all three bars set to the least-negative bar",
+   "ho_bets": 47,
+   "ho_roi": -0.2626,
+   "ho_ci95": [
+    -0.4907,
+    -0.0485
+   ],
+   "ho_matchdays": 16,
+   "p_one_sided": 0.9905,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 47,
+     "roi": -0.2626
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "47 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "over25",
+   "league": "Scottish Premiership",
+   "wf_rows": 776,
+   "wf_priced": 776,
+   "ho_rows": 108,
+   "ho_priced": 90,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.18,
+   "marksman_th": 0.18,
+   "sniper_th": 0.18,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 40,
+   "wf_roi": -0.0635,
+   "wf_roi_shrunk": -0.0486,
+   "note": "no bar has a positive shrunk selection-period ROI: all three bars set to the least-negative bar",
+   "ho_bets": 1,
+   "ho_roi": 2.2,
+   "ho_ci95": [
+    null,
+    null
+   ],
+   "ho_matchdays": 1,
+   "p_one_sided": null,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 1,
+     "roi": 2.2
+    }
+   },
+   "p_holm": null,
+   "family_size": 70,
+   "reason": "1 out-of-sample bets < 150; Holm-adjusted p None not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "over25",
+   "league": "Serie B",
+   "wf_rows": 1311,
+   "wf_priced": 1293,
+   "ho_rows": 159,
+   "ho_priced": 119,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.02,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.592,
+   "wf_bets": 1059,
+   "wf_roi": 0.0131,
+   "wf_roi_shrunk": -0.0207,
+   "note": "no bar has a positive shrunk selection-period ROI: all three bars set to the least-negative bar",
+   "ho_bets": 86,
+   "ho_roi": -0.1806,
+   "ho_ci95": [
+    -0.4043,
+    0.0703
+   ],
+   "ho_matchdays": 28,
+   "p_one_sided": 0.932,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 86,
+     "roi": -0.1806
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "86 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "over25",
+   "league": "Turkish Super Lig",
+   "wf_rows": 1145,
+   "wf_priced": 1145,
+   "ho_rows": 144,
+   "ho_priced": 126,
+   "evidence": "WALK_FORWARD_HOLDOUT",
+   "status": "UNPROVEN",
+   "valuable_th": 0.18,
+   "marksman_th": 0.18,
+   "sniper_th": 0.18,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 70,
+   "wf_roi": -0.2106,
+   "wf_roi_shrunk": -0.0486,
+   "note": "no bar has a positive shrunk selection-period ROI: all three bars set to the least-negative bar",
+   "ho_bets": 0,
+   "ho_roi": null,
+   "ho_ci95": [
+    null,
+    null
+   ],
+   "ho_matchdays": 0,
+   "p_one_sided": null,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 0,
+     "roi": null
+    }
+   },
+   "p_holm": null,
+   "family_size": 70,
+   "reason": "0 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p None not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "over35",
+   "league": "Belgian First Division A",
+   "wf_rows": 1014,
+   "wf_priced": 0,
+   "ho_rows": 149,
+   "ho_priced": 33,
+   "evidence": "IN_PERIOD_SPLIT",
+   "split": {
+    "select_from": "2026-09-06",
+    "select_to": "2026-09-20",
+    "check_from": "2026-10-09",
+    "check_to": "2026-10-25",
+    "check_share_of_matchdays": 0.417
+   },
+   "status": "UNPROVEN",
+   "valuable_th": 0.03,
+   "marksman_th": 0.04,
+   "sniper_th": 0.04,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 1,
+   "wf_roi": -1.0,
+   "wf_roi_shrunk": 0.0026,
+   "note": "",
+   "ho_bets": 0,
+   "ho_roi": null,
+   "ho_ci95": [
+    null,
+    null
+   ],
+   "ho_matchdays": 0,
+   "p_one_sided": null,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 0,
+     "roi": null
+    }
+   },
+   "p_holm": null,
+   "family_size": 70,
+   "reason": "0 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p None not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "over35",
+   "league": "Bundesliga 2",
+   "wf_rows": 1002,
+   "wf_priced": 0,
+   "ho_rows": 143,
+   "ho_priced": 50,
+   "evidence": "IN_PERIOD_SPLIT",
+   "split": {
+    "select_from": "2026-05-10",
+    "select_to": "2026-09-19",
+    "check_from": "2026-10-09",
+    "check_to": "2026-10-25",
+    "check_share_of_matchdays": 0.375
+   },
+   "status": "UNPROVEN",
+   "valuable_th": 0.03,
+   "marksman_th": 0.04,
+   "sniper_th": 0.04,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 0,
+   "wf_roi": null,
+   "wf_roi_shrunk": 0.0026,
+   "note": "",
+   "ho_bets": 0,
+   "ho_roi": null,
+   "ho_ci95": [
+    null,
+    null
+   ],
+   "ho_matchdays": 0,
+   "p_one_sided": null,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 0,
+     "roi": null
+    }
+   },
+   "p_holm": null,
+   "family_size": 70,
+   "reason": "0 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p None not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "over35",
+   "league": "Championship",
+   "wf_rows": 1873,
+   "wf_priced": 0,
+   "ho_rows": 229,
+   "ho_priced": 86,
+   "evidence": "IN_PERIOD_SPLIT",
+   "split": {
+    "select_from": "2026-08-17",
+    "select_to": "2026-09-20",
+    "check_from": "2026-10-10",
+    "check_to": "2026-10-24",
+    "check_share_of_matchdays": 0.364
+   },
+   "status": "UNPROVEN",
+   "valuable_th": 0.03,
+   "marksman_th": 0.04,
+   "sniper_th": 0.04,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 10,
+   "wf_roi": -0.325,
+   "wf_roi_shrunk": 0.0026,
+   "note": "",
+   "ho_bets": 3,
+   "ho_roi": 0.25,
+   "ho_ci95": [
+    null,
+    null
+   ],
+   "ho_matchdays": 2,
+   "p_one_sided": null,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 1,
+     "roi": 2.75
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 2,
+     "roi": -1.0
+    }
+   },
+   "p_holm": null,
+   "family_size": 70,
+   "reason": "3 out-of-sample bets < 150; Holm-adjusted p None not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "over35",
+   "league": "Dutch Eredivisie",
+   "wf_rows": 1041,
+   "wf_priced": 0,
+   "ho_rows": 143,
+   "ho_priced": 43,
+   "evidence": "IN_PERIOD_SPLIT",
+   "split": {
+    "select_from": "2026-09-06",
+    "select_to": "2026-09-20",
+    "check_from": "2026-10-09",
+    "check_to": "2026-10-25",
+    "check_share_of_matchdays": 0.474
+   },
+   "status": "UNPROVEN",
+   "valuable_th": 0.03,
+   "marksman_th": 0.04,
+   "sniper_th": 0.04,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 0,
+   "wf_roi": null,
+   "wf_roi_shrunk": 0.0026,
+   "note": "",
+   "ho_bets": 0,
+   "ho_roi": null,
+   "ho_ci95": [
+    null,
+    null
+   ],
+   "ho_matchdays": 0,
+   "p_one_sided": null,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 0,
+     "roi": null
+    }
+   },
+   "p_holm": null,
+   "family_size": 70,
+   "reason": "0 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p None not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "over35",
+   "league": "Greek Super League",
+   "wf_rows": 802,
+   "wf_priced": 0,
+   "ho_rows": 107,
+   "ho_priced": 34,
+   "evidence": "IN_PERIOD_SPLIT",
+   "split": {
+    "select_from": "2026-08-22",
+    "select_to": "2026-09-20",
+    "check_from": "2026-10-10",
+    "check_to": "2026-10-25",
+    "check_share_of_matchdays": 0.316
+   },
+   "status": "UNPROVEN",
+   "valuable_th": 0.03,
+   "marksman_th": 0.04,
+   "sniper_th": 0.04,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 8,
+   "wf_roi": -0.5,
+   "wf_roi_shrunk": 0.0026,
+   "note": "",
+   "ho_bets": 2,
+   "ho_roi": 1.0,
+   "ho_ci95": [
+    null,
+    null
+   ],
+   "ho_matchdays": 2,
+   "p_one_sided": null,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 2,
+     "roi": 1.0
+    }
+   },
+   "p_holm": null,
+   "family_size": 70,
+   "reason": "2 out-of-sample bets < 150; Holm-adjusted p None not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "over35",
+   "league": "La Liga 2",
+   "wf_rows": 1539,
+   "wf_priced": 0,
+   "ho_rows": 231,
+   "ho_priced": 92,
+   "evidence": "IN_PERIOD_SPLIT",
+   "split": {
+    "select_from": "2026-05-10",
+    "select_to": "2026-09-27",
+    "check_from": "2026-10-02",
+    "check_to": "2026-10-26",
+    "check_share_of_matchdays": 0.35
+   },
+   "status": "UNPROVEN",
+   "valuable_th": 0.03,
+   "marksman_th": 0.04,
+   "sniper_th": 0.04,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 24,
+   "wf_roi": 0.2533,
+   "wf_roi_shrunk": 0.0026,
+   "note": "",
+   "ho_bets": 12,
+   "ho_roi": 0.3383,
+   "ho_ci95": [
+    -0.5189,
+    1.3371
+   ],
+   "ho_matchdays": 9,
+   "p_one_sided": 0.2684,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 1,
+     "roi": 2.4
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 11,
+     "roi": 0.1509
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "12 out-of-sample bets < 150; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "over35",
+   "league": "League One",
+   "wf_rows": 1881,
+   "wf_priced": 0,
+   "ho_rows": 232,
+   "ho_priced": 84,
+   "evidence": "IN_PERIOD_SPLIT",
+   "split": {
+    "select_from": "2026-08-15",
+    "select_to": "2026-09-26",
+    "check_from": "2026-10-03",
+    "check_to": "2026-10-27",
+    "check_share_of_matchdays": 0.333
+   },
+   "status": "UNPROVEN",
+   "valuable_th": 0.03,
+   "marksman_th": 0.04,
+   "sniper_th": 0.04,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 13,
+   "wf_roi": 0.05,
+   "wf_roi_shrunk": 0.0026,
+   "note": "",
+   "ho_bets": 3,
+   "ho_roi": 0.25,
+   "ho_ci95": [
+    -1.0,
+    2.75
+   ],
+   "ho_matchdays": 3,
+   "p_one_sided": 0.2959,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 3,
+     "roi": 0.25
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "3 out-of-sample bets < 150; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "over35",
+   "league": "League Two",
+   "wf_rows": 1889,
+   "wf_priced": 0,
+   "ho_rows": 231,
+   "ho_priced": 88,
+   "evidence": "IN_PERIOD_SPLIT",
+   "split": {
+    "select_from": "2026-08-15",
+    "select_to": "2026-09-26",
+    "check_from": "2026-10-03",
+    "check_to": "2026-10-27",
+    "check_share_of_matchdays": 0.467
+   },
+   "status": "UNPROVEN",
+   "valuable_th": 0.03,
+   "marksman_th": 0.04,
+   "sniper_th": 0.04,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 7,
+   "wf_roi": 0.45,
+   "wf_roi_shrunk": 0.0026,
+   "note": "",
+   "ho_bets": 7,
+   "ho_roi": -0.5,
+   "ho_ci95": [
+    -1.0,
+    0.05
+   ],
+   "ho_matchdays": 4,
+   "p_one_sided": 0.974,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 7,
+     "roi": -0.5
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "7 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "over35",
+   "league": "Ligue 2",
+   "wf_rows": 1156,
+   "wf_priced": 0,
+   "ho_rows": 143,
+   "ho_priced": 14,
+   "evidence": "IN_PERIOD_SPLIT",
+   "split": {
+    "select_from": "2026-10-09",
+    "select_to": "2026-10-17",
+    "check_from": "2026-10-19",
+    "check_to": "2026-10-26",
+    "check_share_of_matchdays": 0.444
+   },
+   "status": "UNPROVEN",
+   "valuable_th": 0.03,
+   "marksman_th": 0.03,
+   "sniper_th": 0.03,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 3,
+   "wf_roi": -1.0,
+   "wf_roi_shrunk": -0.0192,
+   "note": "no bar has a positive shrunk selection-period ROI: all three bars set to the least-negative bar",
+   "ho_bets": 1,
+   "ho_roi": -1.0,
+   "ho_ci95": [
+    null,
+    null
+   ],
+   "ho_matchdays": 1,
+   "p_one_sided": null,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 1,
+     "roi": -1.0
+    }
+   },
+   "p_holm": null,
+   "family_size": 70,
+   "reason": "1 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p None not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "over35",
+   "league": "National League",
+   "wf_rows": 1876,
+   "wf_priced": 0,
+   "ho_rows": 237,
+   "ho_priced": 61,
+   "evidence": "IN_PERIOD_SPLIT",
+   "split": {
+    "select_from": "2026-09-11",
+    "select_to": "2026-09-30",
+    "check_from": "2026-10-03",
+    "check_to": "2026-10-28",
+    "check_share_of_matchdays": 0.4
+   },
+   "status": "UNPROVEN",
+   "valuable_th": 0.03,
+   "marksman_th": 0.04,
+   "sniper_th": 0.04,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 0,
+   "wf_roi": null,
+   "wf_roi_shrunk": 0.0026,
+   "note": "",
+   "ho_bets": 0,
+   "ho_roi": null,
+   "ho_ci95": [
+    null,
+    null
+   ],
+   "ho_matchdays": 0,
+   "p_one_sided": null,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 0,
+     "roi": null
+    }
+   },
+   "p_holm": null,
+   "family_size": 70,
+   "reason": "0 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p None not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "over35",
+   "league": "Portuguese Primeira Liga",
+   "wf_rows": 1038,
+   "wf_priced": 0,
+   "ho_rows": 145,
+   "ho_priced": 35,
+   "evidence": "IN_PERIOD_SPLIT",
+   "split": {
+    "select_from": "2026-09-06",
+    "select_to": "2026-09-20",
+    "check_from": "2026-10-09",
+    "check_to": "2026-10-26",
+    "check_share_of_matchdays": 0.471
+   },
+   "status": "UNPROVEN",
+   "valuable_th": 0.03,
+   "marksman_th": 0.04,
+   "sniper_th": 0.04,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 11,
+   "wf_roi": 0.3409,
+   "wf_roi_shrunk": 0.0026,
+   "note": "",
+   "ho_bets": 2,
+   "ho_roi": -1.0,
+   "ho_ci95": [
+    null,
+    null
+   ],
+   "ho_matchdays": 2,
+   "p_one_sided": null,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 2,
+     "roi": -1.0
+    }
+   },
+   "p_holm": null,
+   "family_size": 70,
+   "reason": "2 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p None not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "over35",
+   "league": "Scottish Championship",
+   "wf_rows": 602,
+   "wf_priced": 0,
+   "ho_rows": 85,
+   "ho_priced": 22,
+   "evidence": "IN_PERIOD_SPLIT",
+   "split": {
+    "select_from": "2026-09-12",
+    "select_to": "2026-09-25",
+    "check_from": "2026-10-03",
+    "check_to": "2026-10-27",
+    "check_share_of_matchdays": 0.583
+   },
+   "status": "UNPROVEN",
+   "valuable_th": 0.03,
+   "marksman_th": 0.04,
+   "sniper_th": 0.04,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 6,
+   "wf_roi": 0.1667,
+   "wf_roi_shrunk": 0.0026,
+   "note": "",
+   "ho_bets": 1,
+   "ho_roi": -1.0,
+   "ho_ci95": [
+    null,
+    null
+   ],
+   "ho_matchdays": 1,
+   "p_one_sided": null,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 1,
+     "roi": -1.0
+    }
+   },
+   "p_holm": null,
+   "family_size": 70,
+   "reason": "1 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p None not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "over35",
+   "league": "Scottish League One",
+   "wf_rows": 604,
+   "wf_priced": 0,
+   "ho_rows": 83,
+   "ho_priced": 6,
+   "evidence": "IN_PERIOD_SPLIT",
+   "split": {
+    "select_from": "2026-10-17",
+    "select_to": "2026-10-24",
+    "check_from": "2026-10-27",
+    "check_to": "2026-10-27",
+    "check_share_of_matchdays": 0.333
+   },
+   "status": "UNPROVEN",
+   "valuable_th": 0.07,
+   "marksman_th": 0.07,
+   "sniper_th": 0.07,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 0,
+   "wf_roi": null,
+   "wf_roi_shrunk": -0.0236,
+   "note": "no bar has a positive shrunk selection-period ROI: all three bars set to the least-negative bar",
+   "ho_bets": 0,
+   "ho_roi": null,
+   "ho_ci95": [
+    null,
+    null
+   ],
+   "ho_matchdays": 0,
+   "p_one_sided": null,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 0,
+     "roi": null
+    }
+   },
+   "p_holm": null,
+   "family_size": 70,
+   "reason": "0 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p None not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "over35",
+   "league": "Scottish League Two",
+   "wf_rows": 611,
+   "wf_priced": 0,
+   "ho_rows": 80,
+   "ho_priced": 4,
+   "status": "INSUFFICIENT_BETS",
+   "evidence": "IN_PERIOD_SPLIT",
+   "reason": "real prices on fewer than 2 matchdays: no earlier part to pick bars on"
+  },
+  {
+   "track": "standard",
+   "market": "over35",
+   "league": "Scottish Premiership",
+   "wf_rows": 776,
+   "wf_priced": 0,
+   "ho_rows": 108,
+   "ho_priced": 27,
+   "evidence": "IN_PERIOD_SPLIT",
+   "split": {
+    "select_from": "2026-09-05",
+    "select_to": "2026-09-19",
+    "check_from": "2026-10-10",
+    "check_to": "2026-10-28",
+    "check_share_of_matchdays": 0.545
+   },
+   "status": "UNPROVEN",
+   "valuable_th": 0.03,
+   "marksman_th": 0.04,
+   "sniper_th": 0.04,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 1,
+   "wf_roi": -1.0,
+   "wf_roi_shrunk": 0.0026,
+   "note": "",
+   "ho_bets": 0,
+   "ho_roi": null,
+   "ho_ci95": [
+    null,
+    null
+   ],
+   "ho_matchdays": 0,
+   "p_one_sided": null,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 0,
+     "roi": null
+    }
+   },
+   "p_holm": null,
+   "family_size": 70,
+   "reason": "0 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p None not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "over35",
+   "league": "Serie B",
+   "wf_rows": 1311,
+   "wf_priced": 0,
+   "ho_rows": 159,
+   "ho_priced": 61,
+   "evidence": "IN_PERIOD_SPLIT",
+   "split": {
+    "select_from": "2026-08-22",
+    "select_to": "2026-09-20",
+    "check_from": "2026-10-10",
+    "check_to": "2026-10-28",
+    "check_share_of_matchdays": 0.435
+   },
+   "status": "UNPROVEN",
+   "valuable_th": 0.03,
+   "marksman_th": 0.04,
+   "sniper_th": 0.04,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 23,
+   "wf_roi": -0.33,
+   "wf_roi_shrunk": 0.0026,
+   "note": "",
+   "ho_bets": 6,
+   "ho_roi": -0.4583,
+   "ho_ci95": [
+    -1.0,
+    2.25
+   ],
+   "ho_matchdays": 3,
+   "p_one_sided": 0.7411,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 1,
+     "roi": -1.0
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 5,
+     "roi": -0.35
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "6 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p 1.0 not < 0.025"
+  },
+  {
+   "track": "standard",
+   "market": "over35",
+   "league": "Turkish Super Lig",
+   "wf_rows": 1145,
+   "wf_priced": 0,
+   "ho_rows": 144,
+   "ho_priced": 45,
+   "evidence": "IN_PERIOD_SPLIT",
+   "split": {
+    "select_from": "2026-09-05",
+    "select_to": "2026-09-20",
+    "check_from": "2026-10-09",
+    "check_to": "2026-10-26",
+    "check_share_of_matchdays": 0.524
+   },
+   "status": "UNPROVEN",
+   "valuable_th": 0.03,
+   "marksman_th": 0.04,
+   "sniper_th": 0.04,
+   "bar_basis": "SHRUNK_TO_POOL",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 8,
+   "wf_roi": 0.3125,
+   "wf_roi_shrunk": 0.0026,
+   "note": "",
+   "ho_bets": 4,
+   "ho_roi": -1.0,
+   "ho_ci95": [
+    -1.0,
+    -1.0
+   ],
+   "ho_matchdays": 4,
+   "p_one_sided": 1.0,
+   "ho_tiers": {
+    "VALUABLE": {
+     "bets": 0,
+     "roi": null
+    },
+    "MARKSMAN": {
+     "bets": 0,
+     "roi": null
+    },
+    "SNIPER": {
+     "bets": 4,
+     "roi": -1.0
+    }
+   },
+   "p_holm": 1.0,
+   "family_size": 70,
+   "reason": "4 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p 1.0 not < 0.025"
+  }
+ ]
+}

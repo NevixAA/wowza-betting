@@ -1,0 +1,3494 @@
+{
+ "sim_select": {
+  "monthly": {
+   "bets": 4532,
+   "roi": -0.0009,
+   "matchdays": 560,
+   "ci95": [
+    -0.0327,
+    0.031
+   ],
+   "p_one_sided": 0.5262,
+   "clv": 0.0003,
+   "clv_n": 4532
+  },
+  "static": {
+   "bets": 5669,
+   "roi": -0.0293,
+   "matchdays": 636,
+   "ci95": [
+    -0.0555,
+    -0.0032
+   ],
+   "p_one_sided": 0.9875,
+   "clv": -0.0003,
+   "clv_n": 5669
+  },
+  "monthly_top3": {
+   "TOP_ONLY_V": {
+    "bets": 2204,
+    "roi": -0.0265,
+    "matchdays": 501,
+    "ci95": [
+     -0.0715,
+     0.0185
+    ],
+    "clv": 0.0033,
+    "clv_n": 2204,
+    "league_weeks": 897,
+    "by_market": {
+     "btts_yes": {
+      "picks": 318,
+      "roi": -0.0086
+     },
+     "over15_over": {
+      "picks": 29,
+      "roi": -0.0297
+     },
+     "over25_over": {
+      "picks": 1314,
+      "roi": -0.0136
+     },
+     "over25_under": {
+      "picks": 478,
+      "roi": -0.0389
+     },
+     "over35_over": {
+      "picks": 65,
+      "roi": -0.2828
+     }
+    },
+    "by_league": {
+     "new_format|Argentina Primera Division": {
+      "picks": 55,
+      "roi": 0.2189
+     },
+     "new_format|Austrian Bundesliga": {
+      "picks": 50,
+      "roi": 0.196
+     },
+     "new_format|Brazil Serie A": {
+      "picks": 55,
+      "roi": 0.082
+     },
+     "new_format|China Super League": {
+      "picks": 39,
+      "roi": -0.36
+     },
+     "new_format|Denmark Superliga": {
+      "picks": 42,
+      "roi": -0.0162
+     },
+     "new_format|Finland Veikkausliiga": {
+      "picks": 19,
+      "roi": -0.2937
+     },
+     "new_format|Ireland Premier Division": {
+      "picks": 61,
+      "roi": 0.0966
+     },
+     "new_format|Japan J-League": {
+      "picks": 2,
+      "roi": -1.0
+     },
+     "new_format|Mexico Liga MX": {
+      "picks": 57,
+      "roi": 0.0888
+     },
+     "new_format|Norway Eliteserien": {
+      "picks": 28,
+      "roi": -0.1786
+     },
+     "new_format|Sweden Allsvenskan": {
+      "picks": 19,
+      "roi": -0.4379
+     },
+     "new_format|USA MLS": {
+      "picks": 45,
+      "roi": -0.0371
+     },
+     "standard|Belgian First Division A": {
+      "picks": 212,
+      "roi": -0.0221
+     },
+     "standard|Bundesliga 2": {
+      "picks": 74,
+      "roi": 0.0292
+     },
+     "standard|Championship": {
+      "picks": 142,
+      "roi": 0.0304
+     },
+     "standard|Dutch Eredivisie": {
+      "picks": 54,
+      "roi": -0.0822
+     },
+     "standard|Greek Super League": {
+      "picks": 111,
+      "roi": 0.0607
+     },
+     "standard|La Liga 2": {
+      "picks": 196,
+      "roi": -0.0703
+     },
+     "standard|League One": {
+      "picks": 35,
+      "roi": -0.0963
+     },
+     "standard|League Two": {
+      "picks": 88,
+      "roi": -0.072
+     },
+     "standard|Ligue 2": {
+      "picks": 103,
+      "roi": -0.0555
+     },
+     "standard|National League": {
+      "picks": 91,
+      "roi": -0.1059
+     },
+     "standard|Portuguese Primeira Liga": {
+      "picks": 58,
+      "roi": 0.0345
+     },
+     "standard|Scottish Championship": {
+      "picks": 50,
+      "roi": -0.127
+     },
+     "standard|Scottish League One": {
+      "picks": 77,
+      "roi": 0.0025
+     },
+     "standard|Scottish League Two": {
+      "picks": 159,
+      "roi": -0.0081
+     },
+     "standard|Scottish Premiership": {
+      "picks": 38,
+      "roi": 0.0255
+     },
+     "standard|Serie B": {
+      "picks": 196,
+      "roi": -0.0249
+     },
+     "standard|Turkish Super Lig": {
+      "picks": 48,
+      "roi": -0.2971
+     }
+    },
+    "by_slot": {
+     "TOP": {
+      "bets": 2204,
+      "roi": -0.0265,
+      "matchdays": 501,
+      "ci95": [
+       -0.0715,
+       0.0185
+      ],
+      "p_one_sided": null,
+      "clv": 0.0033,
+      "clv_n": 2204
+     }
+    }
+   },
+   "TOP_ONLY_M": {
+    "bets": 2031,
+    "roi": -0.0212,
+    "matchdays": 484,
+    "ci95": [
+     -0.0679,
+     0.0271
+    ],
+    "clv": 0.0035,
+    "clv_n": 2031,
+    "league_weeks": 859,
+    "by_market": {
+     "btts_yes": {
+      "picks": 319,
+      "roi": 0.0538
+     },
+     "over15_over": {
+      "picks": 26,
+      "roi": -0.0408
+     },
+     "over25_over": {
+      "picks": 1181,
+      "roi": -0.0145
+     },
+     "over25_under": {
+      "picks": 433,
+      "roi": -0.0534
+     },
+     "over35_over": {
+      "picks": 72,
+      "roi": -0.2621
+     }
+    },
+    "by_league": {
+     "new_format|Argentina Primera Division": {
+      "picks": 52,
+      "roi": 0.2277
+     },
+     "new_format|Austrian Bundesliga": {
+      "picks": 50,
+      "roi": 0.159
+     },
+     "new_format|Brazil Serie A": {
+      "picks": 55,
+      "roi": 0.0805
+     },
+     "new_format|China Super League": {
+      "picks": 33,
+      "roi": -0.5321
+     },
+     "new_format|Denmark Superliga": {
+      "picks": 41,
+      "roi": -0.0549
+     },
+     "new_format|Finland Veikkausliiga": {
+      "picks": 19,
+      "roi": -0.2937
+     },
+     "new_format|Ireland Premier Division": {
+      "picks": 60,
+      "roi": 0.1465
+     },
+     "new_format|Japan J-League": {
+      "picks": 2,
+      "roi": -1.0
+     },
+     "new_format|Mexico Liga MX": {
+      "picks": 53,
+      "roi": 0.0992
+     },
+     "new_format|Norway Eliteserien": {
+      "picks": 27,
+      "roi": -0.1574
+     },
+     "new_format|Sweden Allsvenskan": {
+      "picks": 19,
+      "roi": -0.4379
+     },
+     "new_format|USA MLS": {
+      "picks": 45,
+      "roi": -0.0371
+     },
+     "standard|Belgian First Division A": {
+      "picks": 185,
+      "roi": -0.002
+     },
+     "standard|Bundesliga 2": {
+      "picks": 74,
+      "roi": 0.0292
+     },
+     "standard|Championship": {
+      "picks": 126,
+      "roi": 0.0168
+     },
+     "standard|Dutch Eredivisie": {
+      "picks": 54,
+      "roi": -0.0822
+     },
+     "standard|Greek Super League": {
+      "picks": 99,
+      "roi": 0.0349
+     },
+     "standard|La Liga 2": {
+      "picks": 152,
+      "roi": 0.0361
+     },
+     "standard|League One": {
+      "picks": 25,
+      "roi": 0.1004
+     },
+     "standard|League Two": {
+      "picks": 88,
+      "roi": -0.072
+     },
+     "standard|Ligue 2": {
+      "picks": 102,
+      "roi": -0.0463
+     },
+     "standard|National League": {
+      "picks": 91,
+      "roi": -0.1059
+     },
+     "standard|Portuguese Primeira Liga": {
+      "picks": 58,
+      "roi": 0.0345
+     },
+     "standard|Scottish Championship": {
+      "picks": 50,
+      "roi": -0.127
+     },
+     "standard|Scottish League One": {
+      "picks": 77,
+      "roi": 0.0025
+     },
+     "standard|Scottish League Two": {
+      "picks": 145,
+      "roi": -0.049
+     },
+     "standard|Scottish Premiership": {
+      "picks": 37,
+      "roi": 0.0532
+     },
+     "standard|Serie B": {
+      "picks": 164,
+      "roi": -0.0384
+     },
+     "standard|Turkish Super Lig": {
+      "picks": 48,
+      "roi": -0.2971
+     }
+    },
+    "by_slot": {
+     "TOP": {
+      "bets": 2031,
+      "roi": -0.0212,
+      "matchdays": 484,
+      "ci95": [
+       -0.0679,
+       0.0271
+      ],
+      "p_one_sided": null,
+      "clv": 0.0035,
+      "clv_n": 2031
+     }
+    }
+   },
+   "TOP_M_PLUS_TIER2": {
+    "bets": 2075,
+    "roi": -0.0181,
+    "matchdays": 489,
+    "ci95": [
+     -0.0643,
+     0.0285
+    ],
+    "clv": 0.0036,
+    "clv_n": 2075,
+    "league_weeks": 865,
+    "by_market": {
+     "btts_yes": {
+      "picks": 332,
+      "roi": 0.0548
+     },
+     "over15_over": {
+      "picks": 26,
+      "roi": -0.0408
+     },
+     "over25_over": {
+      "picks": 1208,
+      "roi": -0.0105
+     },
+     "over25_under": {
+      "picks": 437,
+      "roi": -0.0529
+     },
+     "over35_over": {
+      "picks": 72,
+      "roi": -0.2621
+     }
+    },
+    "by_league": {
+     "new_format|Argentina Primera Division": {
+      "picks": 52,
+      "roi": 0.2277
+     },
+     "new_format|Austrian Bundesliga": {
+      "picks": 50,
+      "roi": 0.159
+     },
+     "new_format|Brazil Serie A": {
+      "picks": 55,
+      "roi": 0.0805
+     },
+     "new_format|China Super League": {
+      "picks": 33,
+      "roi": -0.5321
+     },
+     "new_format|Denmark Superliga": {
+      "picks": 41,
+      "roi": -0.0549
+     },
+     "new_format|Finland Veikkausliiga": {
+      "picks": 19,
+      "roi": -0.2937
+     },
+     "new_format|Ireland Premier Division": {
+      "picks": 60,
+      "roi": 0.1465
+     },
+     "new_format|Japan J-League": {
+      "picks": 2,
+      "roi": -1.0
+     },
+     "new_format|Mexico Liga MX": {
+      "picks": 56,
+      "roi": 0.0752
+     },
+     "new_format|Norway Eliteserien": {
+      "picks": 28,
+      "roi": -0.1132
+     },
+     "new_format|Sweden Allsvenskan": {
+      "picks": 19,
+      "roi": -0.4379
+     },
+     "new_format|USA MLS": {
+      "picks": 45,
+      "roi": -0.0371
+     },
+     "standard|Belgian First Division A": {
+      "picks": 185,
+      "roi": -0.002
+     },
+     "standard|Bundesliga 2": {
+      "picks": 74,
+      "roi": 0.0292
+     },
+     "standard|Championship": {
+      "picks": 139,
+      "roi": 0.0228
+     },
+     "standard|Dutch Eredivisie": {
+      "picks": 54,
+      "roi": -0.0822
+     },
+     "standard|Greek Super League": {
+      "picks": 101,
+      "roi": 0.0499
+     },
+     "standard|La Liga 2": {
+      "picks": 152,
+      "roi": 0.0361
+     },
+     "standard|League One": {
+      "picks": 25,
+      "roi": 0.1004
+     },
+     "standard|League Two": {
+      "picks": 88,
+      "roi": -0.072
+     },
+     "standard|Ligue 2": {
+      "picks": 102,
+      "roi": -0.0463
+     },
+     "standard|National League": {
+      "picks": 91,
+      "roi": -0.1059
+     },
+     "standard|Portuguese Primeira Liga": {
+      "picks": 58,
+      "roi": 0.0345
+     },
+     "standard|Scottish Championship": {
+      "picks": 50,
+      "roi": -0.127
+     },
+     "standard|Scottish League One": {
+      "picks": 77,
+      "roi": 0.0025
+     },
+     "standard|Scottish League Two": {
+      "picks": 145,
+      "roi": -0.049
+     },
+     "standard|Scottish Premiership": {
+      "picks": 37,
+      "roi": 0.0532
+     },
+     "standard|Serie B": {
+      "picks": 189,
+      "roi": -0.0185
+     },
+     "standard|Turkish Super Lig": {
+      "picks": 48,
+      "roi": -0.2971
+     }
+    },
+    "by_slot": {
+     "TIER2": {
+      "bets": 44,
+      "roi": 0.1243,
+      "matchdays": 31,
+      "ci95": [
+       -0.2015,
+       0.4501
+      ],
+      "p_one_sided": null,
+      "clv": 0.0071,
+      "clv_n": 44
+     },
+     "TOP": {
+      "bets": 2031,
+      "roi": -0.0212,
+      "matchdays": 484,
+      "ci95": [
+       -0.0679,
+       0.0271
+      ],
+      "p_one_sided": null,
+      "clv": 0.0035,
+      "clv_n": 2031
+     }
+    }
+   }
+  },
+  "static_top3": {
+   "TOP_ONLY_V": {
+    "bets": 2487,
+    "roi": -0.0185,
+    "matchdays": 539,
+    "ci95": [
+     -0.0586,
+     0.0217
+    ],
+    "clv": 0.0027,
+    "clv_n": 2487,
+    "league_weeks": 913,
+    "by_market": {
+     "btts_yes": {
+      "picks": 163,
+      "roi": 0.1089
+     },
+     "over25_over": {
+      "picks": 1849,
+      "roi": -0.0335
+     },
+     "over25_under": {
+      "picks": 373,
+      "roi": -0.0214
+     },
+     "over35_over": {
+      "picks": 102,
+      "roi": 0.0617
+     }
+    },
+    "by_league": {
+     "new_format|Austrian Bundesliga": {
+      "picks": 56,
+      "roi": 0.1704
+     },
+     "new_format|Brazil Serie A": {
+      "picks": 59,
+      "roi": 0.2347
+     },
+     "new_format|China Super League": {
+      "picks": 45,
+      "roi": -0.0371
+     },
+     "new_format|Finland Veikkausliiga": {
+      "picks": 45,
+      "roi": -0.3536
+     },
+     "new_format|Ireland Premier Division": {
+      "picks": 39,
+      "roi": 0.189
+     },
+     "new_format|Japan J-League": {
+      "picks": 2,
+      "roi": -1.0
+     },
+     "new_format|Mexico Liga MX": {
+      "picks": 65,
+      "roi": -0.0137
+     },
+     "new_format|Norway Eliteserien": {
+      "picks": 34,
+      "roi": -0.0062
+     },
+     "new_format|Sweden Allsvenskan": {
+      "picks": 35,
+      "roi": 0.0966
+     },
+     "new_format|USA MLS": {
+      "picks": 49,
+      "roi": 0.2043
+     },
+     "standard|Bundesliga 2": {
+      "picks": 315,
+      "roi": -0.004
+     },
+     "standard|La Liga 2": {
+      "picks": 140,
+      "roi": 0.1433
+     },
+     "standard|League One": {
+      "picks": 146,
+      "roi": -0.1386
+     },
+     "standard|Ligue 2": {
+      "picks": 319,
+      "roi": -0.0151
+     },
+     "standard|Scottish League One": {
+      "picks": 337,
+      "roi": -0.04
+     },
+     "standard|Scottish League Two": {
+      "picks": 116,
+      "roi": 0.0724
+     },
+     "standard|Scottish Premiership": {
+      "picks": 315,
+      "roi": -0.0446
+     },
+     "standard|Serie B": {
+      "picks": 23,
+      "roi": -0.1004
+     },
+     "standard|Turkish Super Lig": {
+      "picks": 347,
+      "roi": -0.1203
+     }
+    },
+    "by_slot": {
+     "TOP": {
+      "bets": 2487,
+      "roi": -0.0185,
+      "matchdays": 539,
+      "ci95": [
+       -0.0586,
+       0.0217
+      ],
+      "p_one_sided": null,
+      "clv": 0.0027,
+      "clv_n": 2487
+     }
+    }
+   },
+   "TOP_ONLY_M": {
+    "bets": 2429,
+    "roi": -0.0257,
+    "matchdays": 538,
+    "ci95": [
+     -0.0647,
+     0.0133
+    ],
+    "clv": 0.0029,
+    "clv_n": 2429,
+    "league_weeks": 896,
+    "by_market": {
+     "btts_yes": {
+      "picks": 132,
+      "roi": 0.1311
+     },
+     "over25_over": {
+      "picks": 1843,
+      "roi": -0.0346
+     },
+     "over25_under": {
+      "picks": 349,
+      "roi": -0.0552
+     },
+     "over35_over": {
+      "picks": 105,
+      "roi": 0.0313
+     }
+    },
+    "by_league": {
+     "new_format|Austrian Bundesliga": {
+      "picks": 56,
+      "roi": 0.1704
+     },
+     "new_format|Brazil Serie A": {
+      "picks": 59,
+      "roi": 0.2347
+     },
+     "new_format|China Super League": {
+      "picks": 45,
+      "roi": -0.2233
+     },
+     "new_format|Finland Veikkausliiga": {
+      "picks": 45,
+      "roi": -0.3536
+     },
+     "new_format|Ireland Premier Division": {
+      "picks": 39,
+      "roi": 0.189
+     },
+     "new_format|Japan J-League": {
+      "picks": 2,
+      "roi": -1.0
+     },
+     "new_format|Mexico Liga MX": {
+      "picks": 65,
+      "roi": -0.0137
+     },
+     "new_format|Norway Eliteserien": {
+      "picks": 34,
+      "roi": -0.0062
+     },
+     "new_format|Sweden Allsvenskan": {
+      "picks": 35,
+      "roi": 0.0966
+     },
+     "new_format|USA MLS": {
+      "picks": 49,
+      "roi": 0.2043
+     },
+     "standard|Bundesliga 2": {
+      "picks": 315,
+      "roi": -0.004
+     },
+     "standard|La Liga 2": {
+      "picks": 109,
+      "roi": 0.18
+     },
+     "standard|League One": {
+      "picks": 146,
+      "roi": -0.1386
+     },
+     "standard|Ligue 2": {
+      "picks": 319,
+      "roi": -0.0151
+     },
+     "standard|Scottish League One": {
+      "picks": 334,
+      "roi": -0.0422
+     },
+     "standard|Scottish League Two": {
+      "picks": 95,
+      "roi": 0.0264
+     },
+     "standard|Scottish Premiership": {
+      "picks": 312,
+      "roi": -0.0481
+     },
+     "standard|Serie B": {
+      "picks": 23,
+      "roi": -0.1004
+     },
+     "standard|Turkish Super Lig": {
+      "picks": 347,
+      "roi": -0.1211
+     }
+    },
+    "by_slot": {
+     "TOP": {
+      "bets": 2429,
+      "roi": -0.0257,
+      "matchdays": 538,
+      "ci95": [
+       -0.0647,
+       0.0133
+      ],
+      "p_one_sided": null,
+      "clv": 0.0029,
+      "clv_n": 2429
+     }
+    }
+   },
+   "TOP_M_PLUS_TIER2": {
+    "bets": 2429,
+    "roi": -0.0257,
+    "matchdays": 538,
+    "ci95": [
+     -0.0647,
+     0.0133
+    ],
+    "clv": 0.0029,
+    "clv_n": 2429,
+    "league_weeks": 896,
+    "by_market": {
+     "btts_yes": {
+      "picks": 132,
+      "roi": 0.1311
+     },
+     "over25_over": {
+      "picks": 1843,
+      "roi": -0.0346
+     },
+     "over25_under": {
+      "picks": 349,
+      "roi": -0.0552
+     },
+     "over35_over": {
+      "picks": 105,
+      "roi": 0.0313
+     }
+    },
+    "by_league": {
+     "new_format|Austrian Bundesliga": {
+      "picks": 56,
+      "roi": 0.1704
+     },
+     "new_format|Brazil Serie A": {
+      "picks": 59,
+      "roi": 0.2347
+     },
+     "new_format|China Super League": {
+      "picks": 45,
+      "roi": -0.2233
+     },
+     "new_format|Finland Veikkausliiga": {
+      "picks": 45,
+      "roi": -0.3536
+     },
+     "new_format|Ireland Premier Division": {
+      "picks": 39,
+      "roi": 0.189
+     },
+     "new_format|Japan J-League": {
+      "picks": 2,
+      "roi": -1.0
+     },
+     "new_format|Mexico Liga MX": {
+      "picks": 65,
+      "roi": -0.0137
+     },
+     "new_format|Norway Eliteserien": {
+      "picks": 34,
+      "roi": -0.0062
+     },
+     "new_format|Sweden Allsvenskan": {
+      "picks": 35,
+      "roi": 0.0966
+     },
+     "new_format|USA MLS": {
+      "picks": 49,
+      "roi": 0.2043
+     },
+     "standard|Bundesliga 2": {
+      "picks": 315,
+      "roi": -0.004
+     },
+     "standard|La Liga 2": {
+      "picks": 109,
+      "roi": 0.18
+     },
+     "standard|League One": {
+      "picks": 146,
+      "roi": -0.1386
+     },
+     "standard|Ligue 2": {
+      "picks": 319,
+      "roi": -0.0151
+     },
+     "standard|Scottish League One": {
+      "picks": 334,
+      "roi": -0.0422
+     },
+     "standard|Scottish League Two": {
+      "picks": 95,
+      "roi": 0.0264
+     },
+     "standard|Scottish Premiership": {
+      "picks": 312,
+      "roi": -0.0481
+     },
+     "standard|Serie B": {
+      "picks": 23,
+      "roi": -0.1004
+     },
+     "standard|Turkish Super Lig": {
+      "picks": 347,
+      "roi": -0.1211
+     }
+    },
+    "by_slot": {
+     "TOP": {
+      "bets": 2429,
+      "roi": -0.0257,
+      "matchdays": 538,
+      "ci95": [
+       -0.0647,
+       0.0133
+      ],
+      "p_one_sided": null,
+      "clv": 0.0029,
+      "clv_n": 2429
+     }
+    }
+   }
+  },
+  "by_month": {
+   "2023-06": {
+    "monthly": {
+     "bets": 21,
+     "roi": -0.19,
+     "matchdays": 5,
+     "ci95": [
+      -0.5301,
+      0.1501
+     ],
+     "p_one_sided": 0.9095,
+     "clv": 0.0246,
+     "clv_n": 21
+    },
+    "static": {
+     "bets": 21,
+     "roi": -0.19,
+     "matchdays": 5,
+     "ci95": [
+      -0.5301,
+      0.1501
+     ],
+     "p_one_sided": 0.9095,
+     "clv": 0.0246,
+     "clv_n": 21
+    }
+   },
+   "2023-07": {
+    "monthly": {
+     "bets": 5,
+     "roi": -0.01,
+     "matchdays": 3,
+     "ci95": [
+      -0.8117,
+      0.83
+     ],
+     "p_one_sided": 0.5997,
+     "clv": -0.0694,
+     "clv_n": 5
+    },
+    "static": {
+     "bets": 5,
+     "roi": -0.01,
+     "matchdays": 3,
+     "ci95": [
+      -0.8117,
+      0.83
+     ],
+     "p_one_sided": 0.5997,
+     "clv": -0.0694,
+     "clv_n": 5
+    }
+   },
+   "2023-08": {
+    "monthly": {
+     "bets": 110,
+     "roi": -0.0743,
+     "matchdays": 15,
+     "ci95": [
+      -0.2439,
+      0.0954
+     ],
+     "p_one_sided": 0.8936,
+     "clv": -0.009,
+     "clv_n": 110
+    },
+    "static": {
+     "bets": 134,
+     "roi": -0.1008,
+     "matchdays": 17,
+     "ci95": [
+      -0.2767,
+      0.0565
+     ],
+     "p_one_sided": 0.9735,
+     "clv": -0.0139,
+     "clv_n": 134
+    }
+   },
+   "2023-09": {
+    "monthly": {
+     "bets": 0,
+     "roi": null,
+     "ci95": [
+      null,
+      null
+     ],
+     "p_one_sided": null,
+     "clv": null,
+     "clv_n": 0
+    },
+    "static": {
+     "bets": 160,
+     "roi": -0.0337,
+     "matchdays": 16,
+     "ci95": [
+      -0.2151,
+      0.1478
+     ],
+     "p_one_sided": 0.6552,
+     "clv": -0.0052,
+     "clv_n": 160
+    }
+   },
+   "2023-10": {
+    "monthly": {
+     "bets": 304,
+     "roi": -0.0725,
+     "matchdays": 19,
+     "ci95": [
+      -0.198,
+      0.053
+     ],
+     "p_one_sided": 0.941,
+     "clv": 0.0017,
+     "clv_n": 304
+    },
+    "static": {
+     "bets": 129,
+     "roi": -0.0394,
+     "matchdays": 17,
+     "ci95": [
+      -0.2324,
+      0.1176
+     ],
+     "p_one_sided": 0.7091,
+     "clv": -0.0129,
+     "clv_n": 129
+    }
+   },
+   "2023-11": {
+    "monthly": {
+     "bets": 0,
+     "roi": null,
+     "ci95": [
+      null,
+      null
+     ],
+     "p_one_sided": null,
+     "clv": null,
+     "clv_n": 0
+    },
+    "static": {
+     "bets": 122,
+     "roi": 0.0251,
+     "matchdays": 17,
+     "ci95": [
+      -0.1516,
+      0.2048
+     ],
+     "p_one_sided": 0.3838,
+     "clv": -0.0126,
+     "clv_n": 122
+    }
+   },
+   "2023-12": {
+    "monthly": {
+     "bets": 12,
+     "roi": 0.2875,
+     "matchdays": 10,
+     "ci95": [
+      -0.5473,
+      1.1223
+     ],
+     "p_one_sided": 0.1824,
+     "clv": -0.0111,
+     "clv_n": 12
+    },
+    "static": {
+     "bets": 158,
+     "roi": -0.0866,
+     "matchdays": 22,
+     "ci95": [
+      -0.2849,
+      0.1221
+     ],
+     "p_one_sided": 0.7976,
+     "clv": -0.006,
+     "clv_n": 158
+    }
+   },
+   "2024-01": {
+    "monthly": {
+     "bets": 309,
+     "roi": 0.0354,
+     "matchdays": 30,
+     "ci95": [
+      -0.0891,
+      0.1599
+     ],
+     "p_one_sided": 0.2169,
+     "clv": -0.01,
+     "clv_n": 309
+    },
+    "static": {
+     "bets": 136,
+     "roi": -0.0985,
+     "matchdays": 22,
+     "ci95": [
+      -0.2562,
+      0.0593
+     ],
+     "p_one_sided": 0.912,
+     "clv": -0.0197,
+     "clv_n": 136
+    }
+   },
+   "2024-02": {
+    "monthly": {
+     "bets": 332,
+     "roi": -0.0432,
+     "matchdays": 23,
+     "ci95": [
+      -0.1746,
+      0.0882
+     ],
+     "p_one_sided": 0.7581,
+     "clv": -0.0041,
+     "clv_n": 332
+    },
+    "static": {
+     "bets": 166,
+     "roi": -0.1084,
+     "matchdays": 23,
+     "ci95": [
+      -0.2686,
+      0.0519
+     ],
+     "p_one_sided": 0.95,
+     "clv": -0.0104,
+     "clv_n": 166
+    }
+   },
+   "2024-03": {
+    "monthly": {
+     "bets": 189,
+     "roi": -0.0328,
+     "matchdays": 20,
+     "ci95": [
+      -0.1487,
+      0.0832
+     ],
+     "p_one_sided": 0.7421,
+     "clv": -0.001,
+     "clv_n": 189
+    },
+    "static": {
+     "bets": 145,
+     "roi": 0.0218,
+     "matchdays": 17,
+     "ci95": [
+      -0.1343,
+      0.1779
+     ],
+     "p_one_sided": 0.3748,
+     "clv": -0.0242,
+     "clv_n": 145
+    }
+   },
+   "2024-04": {
+    "monthly": {
+     "bets": 218,
+     "roi": 0.0525,
+     "matchdays": 23,
+     "ci95": [
+      -0.0968,
+      0.2017
+     ],
+     "p_one_sided": 0.1979,
+     "clv": 0.0196,
+     "clv_n": 218
+    },
+    "static": {
+     "bets": 157,
+     "roi": -0.0764,
+     "matchdays": 23,
+     "ci95": [
+      -0.2201,
+      0.0673
+     ],
+     "p_one_sided": 0.8771,
+     "clv": 0.0128,
+     "clv_n": 157
+    }
+   },
+   "2024-05": {
+    "monthly": {
+     "bets": 51,
+     "roi": -0.152,
+     "matchdays": 12,
+     "ci95": [
+      -0.652,
+      0.3481
+     ],
+     "p_one_sided": 0.8211,
+     "clv": -0.0104,
+     "clv_n": 51
+    },
+    "static": {
+     "bets": 116,
+     "roi": 0.1964,
+     "matchdays": 15,
+     "ci95": [
+      0.0216,
+      0.3712
+     ],
+     "p_one_sided": 0.0045,
+     "clv": 0.027,
+     "clv_n": 116
+    }
+   },
+   "2024-06": {
+    "monthly": {
+     "bets": 1,
+     "roi": -1.0,
+     "matchdays": 1,
+     "ci95": [
+      null,
+      null
+     ],
+     "p_one_sided": null,
+     "clv": 0.0191,
+     "clv_n": 1
+    },
+    "static": {
+     "bets": 0,
+     "roi": null,
+     "ci95": [
+      null,
+      null
+     ],
+     "p_one_sided": null,
+     "clv": null,
+     "clv_n": 0
+    }
+   },
+   "2024-07": {
+    "monthly": {
+     "bets": 7,
+     "roi": 0.9043,
+     "matchdays": 3,
+     "ci95": [
+      0.2756,
+      1.533
+     ],
+     "p_one_sided": 0.0005,
+     "clv": 0.0256,
+     "clv_n": 7
+    },
+    "static": {
+     "bets": 0,
+     "roi": null,
+     "ci95": [
+      null,
+      null
+     ],
+     "p_one_sided": null,
+     "clv": null,
+     "clv_n": 0
+    }
+   },
+   "2024-08": {
+    "monthly": {
+     "bets": 125,
+     "roi": -0.1785,
+     "matchdays": 17,
+     "ci95": [
+      -0.3486,
+      -0.0157
+     ],
+     "p_one_sided": 0.9915,
+     "clv": 0.0016,
+     "clv_n": 125
+    },
+    "static": {
+     "bets": 142,
+     "roi": -0.0866,
+     "matchdays": 17,
+     "ci95": [
+      -0.2407,
+      0.0675
+     ],
+     "p_one_sided": 0.8866,
+     "clv": -0.0059,
+     "clv_n": 142
+    }
+   },
+   "2024-09": {
+    "monthly": {
+     "bets": 51,
+     "roi": 0.1263,
+     "matchdays": 16,
+     "ci95": [
+      -0.2104,
+      0.4773
+     ],
+     "p_one_sided": 0.2059,
+     "clv": -0.0093,
+     "clv_n": 51
+    },
+    "static": {
+     "bets": 139,
+     "roi": 0.057,
+     "matchdays": 16,
+     "ci95": [
+      -0.1529,
+      0.2668
+     ],
+     "p_one_sided": 0.2819,
+     "clv": -0.0007,
+     "clv_n": 139
+    }
+   },
+   "2024-10": {
+    "monthly": {
+     "bets": 61,
+     "roi": -0.0961,
+     "matchdays": 19,
+     "ci95": [
+      -0.396,
+      0.2039
+     ],
+     "p_one_sided": 0.7416,
+     "clv": -0.0088,
+     "clv_n": 61
+    },
+    "static": {
+     "bets": 142,
+     "roi": 0.0263,
+     "matchdays": 16,
+     "ci95": [
+      -0.1286,
+      0.1811
+     ],
+     "p_one_sided": 0.3353,
+     "clv": -0.0067,
+     "clv_n": 142
+    }
+   },
+   "2024-11": {
+    "monthly": {
+     "bets": 5,
+     "roi": 0.26,
+     "matchdays": 3,
+     "ci95": [
+      -0.7487,
+      1.2687
+     ],
+     "p_one_sided": 0.0005,
+     "clv": 0.0039,
+     "clv_n": 5
+    },
+    "static": {
+     "bets": 135,
+     "roi": -0.0436,
+     "matchdays": 15,
+     "ci95": [
+      -0.2021,
+      0.115
+     ],
+     "p_one_sided": 0.7961,
+     "clv": -0.0031,
+     "clv_n": 135
+    }
+   },
+   "2024-12": {
+    "monthly": {
+     "bets": 40,
+     "roi": 0.0415,
+     "matchdays": 15,
+     "ci95": [
+      -0.3431,
+      0.4261
+     ],
+     "p_one_sided": 0.3963,
+     "clv": -0.0116,
+     "clv_n": 40
+    },
+    "static": {
+     "bets": 149,
+     "roi": -0.0505,
+     "matchdays": 20,
+     "ci95": [
+      -0.2009,
+      0.1
+     ],
+     "p_one_sided": 0.7976,
+     "clv": 0.0104,
+     "clv_n": 149
+    }
+   },
+   "2025-01": {
+    "monthly": {
+     "bets": 31,
+     "roi": 0.0787,
+     "matchdays": 17,
+     "ci95": [
+      -0.3634,
+      0.5208
+     ],
+     "p_one_sided": 0.3418,
+     "clv": -0.0015,
+     "clv_n": 31
+    },
+    "static": {
+     "bets": 149,
+     "roi": -0.0222,
+     "matchdays": 24,
+     "ci95": [
+      -0.2939,
+      0.2494
+     ],
+     "p_one_sided": 0.6027,
+     "clv": 0.0037,
+     "clv_n": 149
+    }
+   },
+   "2025-02": {
+    "monthly": {
+     "bets": 85,
+     "roi": -0.0128,
+     "matchdays": 15,
+     "ci95": [
+      -0.3502,
+      0.3246
+     ],
+     "p_one_sided": 0.5212,
+     "clv": -0.0002,
+     "clv_n": 85
+    },
+    "static": {
+     "bets": 216,
+     "roi": -0.0674,
+     "matchdays": 19,
+     "ci95": [
+      -0.2323,
+      0.0743
+     ],
+     "p_one_sided": 0.8511,
+     "clv": -0.0078,
+     "clv_n": 216
+    }
+   },
+   "2025-03": {
+    "monthly": {
+     "bets": 176,
+     "roi": 0.1466,
+     "matchdays": 21,
+     "ci95": [
+      -0.0506,
+      0.3551
+     ],
+     "p_one_sided": 0.067,
+     "clv": 0.0002,
+     "clv_n": 176
+    },
+    "static": {
+     "bets": 223,
+     "roi": 0.1013,
+     "matchdays": 22,
+     "ci95": [
+      -0.0261,
+      0.2286
+     ],
+     "p_one_sided": 0.0285,
+     "clv": -0.0005,
+     "clv_n": 223
+    }
+   },
+   "2025-04": {
+    "monthly": {
+     "bets": 137,
+     "roi": 0.1452,
+     "matchdays": 19,
+     "ci95": [
+      -0.0568,
+      0.36
+     ],
+     "p_one_sided": 0.059,
+     "clv": 0.0078,
+     "clv_n": 137
+    },
+    "static": {
+     "bets": 202,
+     "roi": -0.0853,
+     "matchdays": 20,
+     "ci95": [
+      -0.2293,
+      0.0587
+     ],
+     "p_one_sided": 0.91,
+     "clv": 0.0173,
+     "clv_n": 202
+    }
+   },
+   "2025-05": {
+    "monthly": {
+     "bets": 61,
+     "roi": -0.1744,
+     "matchdays": 14,
+     "ci95": [
+      -0.4548,
+      0.106
+     ],
+     "p_one_sided": 0.9405,
+     "clv": -0.0109,
+     "clv_n": 61
+    },
+    "static": {
+     "bets": 146,
+     "roi": -0.0177,
+     "matchdays": 16,
+     "ci95": [
+      -0.177,
+      0.1437
+     ],
+     "p_one_sided": 0.5812,
+     "clv": 0.0139,
+     "clv_n": 146
+    }
+   },
+   "2025-06": {
+    "monthly": {
+     "bets": 4,
+     "roi": 0.735,
+     "matchdays": 1,
+     "ci95": [
+      -0.4205,
+      1.8905
+     ],
+     "p_one_sided": null,
+     "clv": 0.0702,
+     "clv_n": 4
+    },
+    "static": {
+     "bets": 7,
+     "roi": 0.0829,
+     "matchdays": 1,
+     "ci95": [
+      -0.688,
+      0.8538
+     ],
+     "p_one_sided": null,
+     "clv": 0.026,
+     "clv_n": 7
+    }
+   },
+   "2025-07": {
+    "monthly": {
+     "bets": 5,
+     "roi": -0.57,
+     "matchdays": 2,
+     "ci95": [
+      -1.9185,
+      0.7785
+     ],
+     "p_one_sided": null,
+     "clv": -0.0555,
+     "clv_n": 5
+    },
+    "static": {
+     "bets": 0,
+     "roi": null,
+     "ci95": [
+      null,
+      null
+     ],
+     "p_one_sided": null,
+     "clv": null,
+     "clv_n": 0
+    }
+   },
+   "2025-08": {
+    "monthly": {
+     "bets": 51,
+     "roi": -0.2655,
+     "matchdays": 12,
+     "ci95": [
+      -0.7543,
+      0.2234
+     ],
+     "p_one_sided": 0.9655,
+     "clv": -0.0119,
+     "clv_n": 51
+    },
+    "static": {
+     "bets": 177,
+     "roi": -0.0947,
+     "matchdays": 20,
+     "ci95": [
+      -0.2414,
+      0.052
+     ],
+     "p_one_sided": 0.915,
+     "clv": -0.0026,
+     "clv_n": 177
+    }
+   },
+   "2025-09": {
+    "monthly": {
+     "bets": 100,
+     "roi": 0.1769,
+     "matchdays": 16,
+     "ci95": [
+      -0.113,
+      0.4811
+     ],
+     "p_one_sided": 0.096,
+     "clv": 0.0014,
+     "clv_n": 100
+    },
+    "static": {
+     "bets": 143,
+     "roi": -0.0202,
+     "matchdays": 18,
+     "ci95": [
+      -0.199,
+      0.189
+     ],
+     "p_one_sided": 0.5612,
+     "clv": 0.0081,
+     "clv_n": 143
+    }
+   },
+   "2025-10": {
+    "monthly": {
+     "bets": 147,
+     "roi": -0.0159,
+     "matchdays": 19,
+     "ci95": [
+      -0.274,
+      0.2385
+     ],
+     "p_one_sided": 0.5592,
+     "clv": 0.0047,
+     "clv_n": 147
+    },
+    "static": {
+     "bets": 157,
+     "roi": -0.0482,
+     "matchdays": 18,
+     "ci95": [
+      -0.2087,
+      0.1081
+     ],
+     "p_one_sided": 0.7596,
+     "clv": 0.0085,
+     "clv_n": 157
+    }
+   },
+   "2025-11": {
+    "monthly": {
+     "bets": 93,
+     "roi": -0.1647,
+     "matchdays": 16,
+     "ci95": [
+      -0.3761,
+      0.0467
+     ],
+     "p_one_sided": 0.944,
+     "clv": 0.0059,
+     "clv_n": 93
+    },
+    "static": {
+     "bets": 160,
+     "roi": -0.0298,
+     "matchdays": 18,
+     "ci95": [
+      -0.2297,
+      0.1586
+     ],
+     "p_one_sided": 0.6392,
+     "clv": 0.0028,
+     "clv_n": 160
+    }
+   },
+   "2025-12": {
+    "monthly": {
+     "bets": 172,
+     "roi": 0.1651,
+     "matchdays": 20,
+     "ci95": [
+      0.0063,
+      0.324
+     ],
+     "p_one_sided": 0.0085,
+     "clv": 0.0031,
+     "clv_n": 172
+    },
+    "static": {
+     "bets": 185,
+     "roi": 0.0284,
+     "matchdays": 20,
+     "ci95": [
+      -0.1129,
+      0.1697
+     ],
+     "p_one_sided": 0.3148,
+     "clv": -0.0029,
+     "clv_n": 185
+    }
+   },
+   "2026-01": {
+    "monthly": {
+     "bets": 132,
+     "roi": -0.0589,
+     "matchdays": 23,
+     "ci95": [
+      -0.239,
+      0.1213
+     ],
+     "p_one_sided": 0.7636,
+     "clv": 0.005,
+     "clv_n": 132
+    },
+    "static": {
+     "bets": 180,
+     "roi": -0.0631,
+     "matchdays": 24,
+     "ci95": [
+      -0.2087,
+      0.0825
+     ],
+     "p_one_sided": 0.8546,
+     "clv": 0.0004,
+     "clv_n": 180
+    }
+   },
+   "2026-02": {
+    "monthly": {
+     "bets": 335,
+     "roi": 0.0318,
+     "matchdays": 27,
+     "ci95": [
+      -0.1069,
+      0.1706
+     ],
+     "p_one_sided": 0.2749,
+     "clv": 0.0011,
+     "clv_n": 335
+    },
+    "static": {
+     "bets": 254,
+     "roi": -0.0343,
+     "matchdays": 26,
+     "ci95": [
+      -0.3011,
+      0.2325
+     ],
+     "p_one_sided": 0.6422,
+     "clv": 0.0014,
+     "clv_n": 254
+    }
+   },
+   "2026-03": {
+    "monthly": {
+     "bets": 429,
+     "roi": -0.0294,
+     "matchdays": 28,
+     "ci95": [
+      -0.1322,
+      0.0818
+     ],
+     "p_one_sided": 0.6907,
+     "clv": 0.0003,
+     "clv_n": 429
+    },
+    "static": {
+     "bets": 271,
+     "roi": -0.0333,
+     "matchdays": 27,
+     "ci95": [
+      -0.1741,
+      0.1076
+     ],
+     "p_one_sided": 0.7021,
+     "clv": 0.0035,
+     "clv_n": 271
+    }
+   },
+   "2026-04": {
+    "monthly": {
+     "bets": 367,
+     "roi": -0.0093,
+     "matchdays": 26,
+     "ci95": [
+      -0.1257,
+      0.1072
+     ],
+     "p_one_sided": 0.5922,
+     "clv": 0.0013,
+     "clv_n": 367
+    },
+    "static": {
+     "bets": 392,
+     "roi": 0.0126,
+     "matchdays": 29,
+     "ci95": [
+      -0.0965,
+      0.1319
+     ],
+     "p_one_sided": 0.4013,
+     "clv": 0.0008,
+     "clv_n": 392
+    }
+   },
+   "2026-05": {
+    "monthly": {
+     "bets": 175,
+     "roi": -0.0421,
+     "matchdays": 26,
+     "ci95": [
+      -0.2067,
+      0.1409
+     ],
+     "p_one_sided": 0.6992,
+     "clv": -0.0012,
+     "clv_n": 175
+    },
+    "static": {
+     "bets": 350,
+     "roi": -0.0119,
+     "matchdays": 26,
+     "ci95": [
+      -0.1642,
+      0.1405
+     ],
+     "p_one_sided": 0.5607,
+     "clv": 0.002,
+     "clv_n": 350
+    }
+   },
+   "2026-06": {
+    "monthly": {
+     "bets": 39,
+     "roi": 0.1349,
+     "matchdays": 7,
+     "ci95": [
+      -0.1874,
+      0.4571
+     ],
+     "p_one_sided": 0.1344,
+     "clv": 0.0,
+     "clv_n": 39
+    },
+    "static": {
+     "bets": 26,
+     "roi": 0.26,
+     "matchdays": 6,
+     "ci95": [
+      -0.1094,
+      0.6294
+     ],
+     "p_one_sided": 0.0005,
+     "clv": 0.0,
+     "clv_n": 26
+    }
+   },
+   "2026-07": {
+    "monthly": {
+     "bets": 0,
+     "roi": null,
+     "ci95": [
+      null,
+      null
+     ],
+     "p_one_sided": null,
+     "clv": null,
+     "clv_n": 0
+    },
+    "static": {
+     "bets": 1,
+     "roi": -1.0,
+     "matchdays": 1,
+     "ci95": [
+      null,
+      null
+     ],
+     "p_one_sided": null,
+     "clv": -0.0556,
+     "clv_n": 1
+    }
+   },
+   "2026-08": {
+    "monthly": {
+     "bets": 152,
+     "roi": 0.0667,
+     "matchdays": 17,
+     "ci95": [
+      -0.1072,
+      0.2406
+     ],
+     "p_one_sided": 0.1499,
+     "clv": 0.0031,
+     "clv_n": 152
+    },
+    "static": {
+     "bets": 274,
+     "roi": -0.1178,
+     "matchdays": 20,
+     "ci95": [
+      -0.2846,
+      0.0489
+     ],
+     "p_one_sided": 0.9875,
+     "clv": -0.0016,
+     "clv_n": 274
+    }
+   }
+  },
+  "families": [
+   {
+    "track": "standard",
+    "mside": "over25_over",
+    "static_config": "LEARNED|EDGE|max-|min1.4",
+    "months": [
+     {
+      "month": "2023-06",
+      "monthly_config": "LEARNED|EDGE|max-|min1.4",
+      "monthly_bets": 21,
+      "monthly_pnl": -3.99,
+      "static_bets": 21,
+      "static_pnl": -3.99
+     },
+     {
+      "month": "2023-07",
+      "monthly_config": "LEARNED|EDGE|max-|min1.4",
+      "monthly_bets": 5,
+      "monthly_pnl": -0.05,
+      "static_bets": 5,
+      "static_pnl": -0.05
+     },
+     {
+      "month": "2023-08",
+      "monthly_config": "LEARNED|EV|max2.5|min1.4",
+      "monthly_bets": 72,
+      "monthly_pnl": -7.75,
+      "static_bets": 120,
+      "static_pnl": -19.54
+     },
+     {
+      "month": "2023-09",
+      "monthly_config": "NONE|ALL|max-|min-",
+      "monthly_bets": 0,
+      "monthly_pnl": 0.0,
+      "static_bets": 159,
+      "static_pnl": -6.44
+     },
+     {
+      "month": "2023-10",
+      "monthly_config": "LEARNED|EDGE|max-|min-",
+      "monthly_bets": 303,
+      "monthly_pnl": -23.09,
+      "static_bets": 128,
+      "static_pnl": -6.13
+     },
+     {
+      "month": "2023-11",
+      "monthly_config": "NONE|ALL|max-|min-",
+      "monthly_bets": 0,
+      "monthly_pnl": 0.0,
+      "static_bets": 122,
+      "static_pnl": 3.06
+     },
+     {
+      "month": "2023-12",
+      "monthly_config": "NONE|ALL|max-|min1.4",
+      "monthly_bets": 0,
+      "monthly_pnl": 0.0,
+      "static_bets": 158,
+      "static_pnl": -13.69
+     },
+     {
+      "month": "2024-01",
+      "monthly_config": "LEARNED|EDGE|max2.5|min-",
+      "monthly_bets": 301,
+      "monthly_pnl": 9.79,
+      "static_bets": 134,
+      "static_pnl": -13.69
+     },
+     {
+      "month": "2024-02",
+      "monthly_config": "BLEND|EDGE|max-|min-",
+      "monthly_bets": 331,
+      "monthly_pnl": -13.34,
+      "static_bets": 165,
+      "static_pnl": -16.99
+     },
+     {
+      "month": "2024-03",
+      "monthly_config": "BLEND|EDGE|max-|min-",
+      "monthly_bets": 189,
+      "monthly_pnl": -6.19,
+      "static_bets": 144,
+      "static_pnl": 4.16
+     },
+     {
+      "month": "2024-04",
+      "monthly_config": "LEARNED|EDGE|max-|min1.4",
+      "monthly_bets": 187,
+      "monthly_pnl": -0.63,
+      "static_bets": 153,
+      "static_pnl": -13.99
+     },
+     {
+      "month": "2024-05",
+      "monthly_config": "LEARNED|EV|max-|min-",
+      "monthly_bets": 15,
+      "monthly_pnl": -2.54,
+      "static_bets": 115,
+      "static_pnl": 21.95
+     },
+     {
+      "month": "2024-06",
+      "monthly_config": "BLEND|EDGE|max-|min1.4",
+      "monthly_bets": 1,
+      "monthly_pnl": -1.0,
+      "static_bets": 0,
+      "static_pnl": 0.0
+     },
+     {
+      "month": "2024-07",
+      "monthly_config": "BLEND|EDGE|max-|min1.4",
+      "monthly_bets": 0,
+      "monthly_pnl": 0.0,
+      "static_bets": 0,
+      "static_pnl": 0.0
+     },
+     {
+      "month": "2024-08",
+      "monthly_config": "BLEND|EDGE|max-|min-",
+      "monthly_bets": 86,
+      "monthly_pnl": -12.92,
+      "static_bets": 117,
+      "static_pnl": -11.87
+     },
+     {
+      "month": "2024-09",
+      "monthly_config": "RAW|EV|max3.5|min-",
+      "monthly_bets": 40,
+      "monthly_pnl": 8.04,
+      "static_bets": 127,
+      "static_pnl": 15.47
+     },
+     {
+      "month": "2024-10",
+      "monthly_config": "RAW|EV|max3.5|min-",
+      "monthly_bets": 54,
+      "monthly_pnl": -5.32,
+      "static_bets": 124,
+      "static_pnl": 2.47
+     },
+     {
+      "month": "2024-11",
+      "monthly_config": "BLEND|EV|max-|min-",
+      "monthly_bets": 0,
+      "monthly_pnl": 0.0,
+      "static_bets": 128,
+      "static_pnl": -7.58
+     },
+     {
+      "month": "2024-12",
+      "monthly_config": "RAW|EV|max-|min-",
+      "monthly_bets": 39,
+      "monthly_pnl": 0.58,
+      "static_bets": 130,
+      "static_pnl": -5.93
+     },
+     {
+      "month": "2025-01",
+      "monthly_config": "RAW|EDGE|max-|min-",
+      "monthly_bets": 28,
+      "monthly_pnl": 3.56,
+      "static_bets": 134,
+      "static_pnl": -2.94
+     },
+     {
+      "month": "2025-02",
+      "monthly_config": "RAW|EDGE|max3.5|min-",
+      "monthly_bets": 19,
+      "monthly_pnl": -1.47,
+      "static_bets": 145,
+      "static_pnl": -11.92
+     },
+     {
+      "month": "2025-03",
+      "monthly_config": "RAW|EV|max3.5|min-",
+      "monthly_bets": 60,
+      "monthly_pnl": 4.33,
+      "static_bets": 145,
+      "static_pnl": 13.13
+     },
+     {
+      "month": "2025-04",
+      "monthly_config": "RAW|EDGE|max-|min-",
+      "monthly_bets": 30,
+      "monthly_pnl": -3.77,
+      "static_bets": 141,
+      "static_pnl": -18.11
+     },
+     {
+      "month": "2025-05",
+      "monthly_config": "RAW|EV|max3.5|min-",
+      "monthly_bets": 16,
+      "monthly_pnl": -0.95,
+      "static_bets": 104,
+      "static_pnl": 2.45
+     },
+     {
+      "month": "2025-06",
+      "monthly_config": "RAW|EV|max-|min-",
+      "monthly_bets": 1,
+      "monthly_pnl": 1.6,
+      "static_bets": 2,
+      "static_pnl": 1.24
+     },
+     {
+      "month": "2025-07",
+      "monthly_config": "RAW|EV|max-|min-",
+      "monthly_bets": 0,
+      "monthly_pnl": 0.0,
+      "static_bets": 0,
+      "static_pnl": 0.0
+     },
+     {
+      "month": "2025-08",
+      "monthly_config": "RAW|EV|max-|min-",
+      "monthly_bets": 18,
+      "monthly_pnl": -8.6,
+      "static_bets": 135,
+      "static_pnl": -17.55
+     },
+     {
+      "month": "2025-09",
+      "monthly_config": "RAW|EV|max-|min-",
+      "monthly_bets": 42,
+      "monthly_pnl": 5.13,
+      "static_bets": 125,
+      "static_pnl": -5.51
+     },
+     {
+      "month": "2025-10",
+      "monthly_config": "RAW|EDGE|max-|min-",
+      "monthly_bets": 51,
+      "monthly_pnl": -2.82,
+      "static_bets": 137,
+      "static_pnl": -7.28
+     },
+     {
+      "month": "2025-11",
+      "monthly_config": "RAW|EDGE|max3.5|min-",
+      "monthly_bets": 34,
+      "monthly_pnl": -9.05,
+      "static_bets": 128,
+      "static_pnl": -9.14
+     },
+     {
+      "month": "2025-12",
+      "monthly_config": "RAW|EV|max-|min-",
+      "monthly_bets": 33,
+      "monthly_pnl": -1.06,
+      "static_bets": 124,
+      "static_pnl": -11.11
+     },
+     {
+      "month": "2026-01",
+      "monthly_config": "BLEND|EDGE|max-|min1.4",
+      "monthly_bets": 0,
+      "monthly_pnl": 0.0,
+      "static_bets": 124,
+      "static_pnl": -8.95
+     },
+     {
+      "month": "2026-02",
+      "monthly_config": "RAW|EV|max-|min-",
+      "monthly_bets": 56,
+      "monthly_pnl": -4.97,
+      "static_bets": 153,
+      "static_pnl": 0.74
+     },
+     {
+      "month": "2026-03",
+      "monthly_config": "RAW|EV|max3.5|min-",
+      "monthly_bets": 43,
+      "monthly_pnl": 1.18,
+      "static_bets": 125,
+      "static_pnl": -5.3
+     },
+     {
+      "month": "2026-04",
+      "monthly_config": "RAW|EV|max3.5|min-",
+      "monthly_bets": 33,
+      "monthly_pnl": 4.1,
+      "static_bets": 149,
+      "static_pnl": -12.6
+     },
+     {
+      "month": "2026-05",
+      "monthly_config": "SHRINK|EDGE|max-|min-",
+      "monthly_bets": 0,
+      "monthly_pnl": 0.0,
+      "static_bets": 95,
+      "static_pnl": 0.32
+     },
+     {
+      "month": "2026-06",
+      "monthly_config": "BLEND|EDGE|max-|min-",
+      "monthly_bets": 0,
+      "monthly_pnl": 0.0,
+      "static_bets": 0,
+      "static_pnl": 0.0
+     },
+     {
+      "month": "2026-07",
+      "monthly_config": "BLEND|EDGE|max-|min-",
+      "monthly_bets": 0,
+      "monthly_pnl": 0.0,
+      "static_bets": 1,
+      "static_pnl": -1.0
+     },
+     {
+      "month": "2026-08",
+      "monthly_config": "BLEND|EDGE|max-|min-",
+      "monthly_bets": 0,
+      "monthly_pnl": 0.0,
+      "static_bets": 123,
+      "static_pnl": -11.44
+     }
+    ]
+   },
+   {
+    "track": "standard",
+    "mside": "over25_under",
+    "static_config": "RAW|EV|max2.5|min-",
+    "months": [
+     {
+      "month": "2023-06",
+      "monthly_config": "RAW|EV|max2.5|min-",
+      "monthly_bets": 0,
+      "monthly_pnl": 0.0,
+      "static_bets": 0,
+      "static_pnl": 0.0
+     },
+     {
+      "month": "2023-07",
+      "monthly_config": "RAW|EV|max2.5|min-",
+      "monthly_bets": 0,
+      "monthly_pnl": 0.0,
+      "static_bets": 0,
+      "static_pnl": 0.0
+     },
+     {
+      "month": "2023-08",
+      "monthly_config": "RAW|EV|max2.5|min-",
+      "monthly_bets": 38,
+      "monthly_pnl": -0.42,
+      "static_bets": 14,
+      "static_pnl": 6.03
+     },
+     {
+      "month": "2023-09",
+      "monthly_config": "BLEND|EDGE|max-|min1.4",
+      "monthly_bets": 0,
+      "monthly_pnl": 0.0,
+      "static_bets": 1,
+      "static_pnl": 1.05
+     },
+     {
+      "month": "2023-10",
+      "monthly_config": "RAW|EDGE|max2.5|min-",
+      "monthly_bets": 1,
+      "monthly_pnl": 1.05,
+      "static_bets": 1,
+      "static_pnl": 1.05
+     },
+     {
+      "month": "2023-11",
+      "monthly_config": "NONE|ALL|max-|min1.4",
+      "monthly_bets": 0,
+      "monthly_pnl": 0.0,
+      "static_bets": 0,
+      "static_pnl": 0.0
+     },
+     {
+      "month": "2023-12",
+      "monthly_config": "RAW|EDGE|max2.5|min-",
+      "monthly_bets": 12,
+      "monthly_pnl": 3.45,
+      "static_bets": 0,
+      "static_pnl": 0.0
+     },
+     {
+      "month": "2024-01",
+      "monthly_config": "RAW|EDGE|max2.5|min-",
+      "monthly_bets": 8,
+      "monthly_pnl": 1.15,
+      "static_bets": 2,
+      "static_pnl": 0.3
+     },
+     {
+      "month": "2024-02",
+      "monthly_config": "RAW|EV|max2.5|min-",
+      "monthly_bets": 1,
+      "monthly_pnl": -1.0,
+      "static_bets": 1,
+      "static_pnl": -1.0
+     },
+     {
+      "month": "2024-03",
+      "monthly_config": "BLEND|EDGE|max-|min-",
+      "monthly_bets": 0,
+      "monthly_pnl": 0.0,
+      "static_bets": 1,
+      "static_pnl": -1.0
+     },
+     {
+      "month": "2024-04",
+      "monthly_config": "RAW|EDGE|max2.5|min-",
+      "monthly_bets": 31,
+      "monthly_pnl": 12.07,
+      "static_bets": 4,
+      "static_pnl": 1.99
+     },
+     {
+      "month": "2024-05",
+      "monthly_config": "RAW|EDGE|max2.5|min-",
+      "monthly_bets": 36,
+      "monthly_pnl": -5.21,
+      "static_bets": 1,
+      "static_pnl": 0.83
+     },
+     {
+      "month": "2024-06",
+      "monthly_config": "RAW|EDGE|max2.5|min-",
+      "monthly_bets": 0,
+      "monthly_pnl": 0.0,
+      "static_bets": 0,
+      "static_pnl": 0.0
+     },
+     {
+      "month": "2024-07",
+      "monthly_config": "RAW|EDGE|max2.5|min-",
+      "monthly_bets": 7,
+      "monthly_pnl": 6.33,
+      "static_bets": 0,
+      "static_pnl": 0.0
+     },
+     {
+      "month": "2024-08",
+      "monthly_config": "RAW|EDGE|max2.5|min-",
+      "monthly_bets": 39,
+      "monthly_pnl": -9.39,
+      "static_bets": 25,
+      "static_pnl": -0.43
+     },
+     {
+      "month": "2024-09",
+      "monthly_config": "RAW|EDGE|max2.5|min-",
+      "monthly_bets": 11,
+      "monthly_pnl": -1.6,
+      "static_bets": 12,
+      "static_pnl": -7.55
+     },
+     {
+      "month": "2024-10",
+      "monthly_config": "RAW|EV|max2.5|min-",
+      "monthly_bets": 7,
+      "monthly_pnl": -0.54,
+      "static_bets": 18,
+      "static_pnl": 1.26
+     },
+     {
+      "month": "2024-11",
+      "monthly_config": "RAW|EV|max2.5|min-",
+      "monthly_bets": 5,
+      "monthly_pnl": 1.3,
+      "static_bets": 7,
+      "static_pnl": 1.7
+     },
+     {
+      "month": "2024-12",
+      "monthly_config": "RAW|EDGE|max3.5|min-",
+      "monthly_bets": 1,
+      "monthly_pnl": 1.08,
+      "static_bets": 19,
+      "static_pnl": -1.59
+     },
+     {
+      "month": "2025-01",
+      "monthly_config": "RAW|EV|max2.5|min-",
+      "monthly_bets": 3,
+      "monthly_pnl": -1.12,
+      "static_bets": 15,
+      "static_pnl": -0.37
+     },
+     {
+      "month": "2025-02",
+      "monthly_config": "RAW|EV|max2.5|min-",
+      "monthly_bets": 3,
+      "monthly_pnl": 1.38,
+      "static_bets": 8,
+      "static_pnl": -1.64
+     },
+     {
+      "month": "2025-03",
+      "monthly_config": "RAW|EDGE|max2.5|min-",
+      "monthly_bets": 22,
+      "monthly_pnl": 7.0,
+      "static_bets": 12,
+      "static_pnl": 0.63
+     },
+     {
+      "month": "2025-04",
+      "monthly_config": "RAW|EV|max2.5|min-",
+      "monthly_bets": 33,
+      "monthly_pnl": 0.01,
+      "static_bets": 23,
+      "static_pnl": -7.75
+     },
+     {
+      "month": "2025-05",
+      "monthly_config": "RAW|EV|max2.5|min-",
+      "monthly_bets": 26,
+      "monthly_pnl": -1.24,
+      "static_bets": 9,
+      "static_pnl": -4.92
+     },
+     {
+      "month": "2025-06",
+      "monthly_config": "RAW|EV|max2.5|min-",
+      "monthly_bets": 0,
+      "monthly_pnl": 0.0,
+      "static_bets": 0,
+      "static_pnl": 0.0
+     },
+     {
+      "month": "2025-07",
+      "monthly_config": "RAW|EV|max2.5|min-",
+      "monthly_bets": 5,
+      "monthly_pnl": -2.85,
+      "static_bets": 0,
+      "static_pnl": 0.0
+     },
+     {
+      "month": "2025-08",
+      "monthly_config": "RAW|EV|max2.5|min-",
+      "monthly_bets": 13,
+      "monthly_pnl": -6.67,
+      "static_bets": 23,
+      "static_pnl": -0.04
+     },
+     {
+      "month": "2025-09",
+      "monthly_config": "LEARNED|EV|max-|min-",
+      "monthly_bets": 8,
+      "monthly_pnl": 1.27,
+      "static_bets": 8,
+      "static_pnl": -3.15
+     },
+     {
+      "month": "2025-10",
+      "monthly_config": "LEARNED|EV|max-|min-",
+      "monthly_bets": 9,
+      "monthly_pnl": 2.45,
+      "static_bets": 9,
+      "static_pnl": -0.54
+     },
+     {
+      "month": "2025-11",
+      "monthly_config": "LEARNED|EV|max-|min-",
+      "monthly_bets": 11,
+      "monthly_pnl": 0.4,
+      "static_bets": 14,
+      "static_pnl": 5.34
+     },
+     {
+      "month": "2025-12",
+      "monthly_config": "RAW|EDGE|max-|min-",
+      "monthly_bets": 24,
+      "monthly_pnl": -3.54,
+      "static_bets": 12,
+      "static_pnl": -1.33
+     },
+     {
+      "month": "2026-01",
+      "monthly_config": "RAW|EDGE|max2.5|min-",
+      "monthly_bets": 20,
+      "monthly_pnl": 2.39,
+      "static_bets": 15,
+      "static_pnl": -3.62
+     },
+     {
+      "month": "2026-02",
+      "monthly_config": "RAW|EDGE|max2.5|min-",
+      "monthly_bets": 30,
+      "monthly_pnl": -6.24,
+      "static_bets": 21,
+      "static_pnl": -3.52
+     },
+     {
+      "month": "2026-03",
+      "monthly_config": "RAW|EDGE|max2.5|min-",
+      "monthly_bets": 21,
+      "monthly_pnl": 2.38,
+      "static_bets": 12,
+      "static_pnl": -2.7
+     },
+     {
+      "month": "2026-04",
+      "monthly_config": "RAW|EDGE|max2.5|min-",
+      "monthly_bets": 22,
+      "monthly_pnl": 0.13,
+      "static_bets": 14,
+      "static_pnl": 5.03
+     },
+     {
+      "month": "2026-05",
+      "monthly_config": "RAW|EV|max2.5|min-",
+      "monthly_bets": 11,
+      "monthly_pnl": 0.4,
+      "static_bets": 6,
+      "static_pnl": -6.0
+     },
+     {
+      "month": "2026-06",
+      "monthly_config": "RAW|EV|max2.5|min-",
+      "monthly_bets": 0,
+      "monthly_pnl": 0.0,
+      "static_bets": 0,
+      "static_pnl": 0.0
+     },
+     {
+      "month": "2026-07",
+      "monthly_config": "RAW|EV|max2.5|min-",
+      "monthly_bets": 0,
+      "monthly_pnl": 0.0,
+      "static_bets": 0,
+      "static_pnl": 0.0
+     },
+     {
+      "month": "2026-08",
+      "monthly_config": "RAW|EV|max2.5|min-",
+      "monthly_bets": 7,
+      "monthly_pnl": -0.12,
+      "static_bets": 8,
+      "static_pnl": -3.72
+     }
+    ]
+   },
+   {
+    "track": "standard",
+    "mside": "btts_yes",
+    "static_config": "LEARNED|EV|max-|min-",
+    "months": [
+     {
+      "month": "2025-02",
+      "monthly_config": "LEARNED|EV|max-|min-",
+      "monthly_bets": 63,
+      "monthly_pnl": -1.0,
+      "static_bets": 63,
+      "static_pnl": -1.0
+     },
+     {
+      "month": "2025-03",
+      "monthly_config": "LEARNED|EDGE|max-|min-",
+      "monthly_bets": 94,
+      "monthly_pnl": 14.48,
+      "static_bets": 66,
+      "static_pnl": 8.82
+     },
+     {
+      "month": "2025-04",
+      "monthly_config": "LEARNED|EDGE|max-|min-",
+      "monthly_bets": 74,
+      "monthly_pnl": 23.65,
+      "static_bets": 38,
+      "static_pnl": 8.63
+     },
+     {
+      "month": "2025-05",
+      "monthly_config": "RAW|EV|max-|min-",
+      "monthly_bets": 19,
+      "monthly_pnl": -8.45,
+      "static_bets": 33,
+      "static_pnl": -0.11
+     },
+     {
+      "month": "2025-06",
+      "monthly_config": "RAW|EV|max-|min-",
+      "monthly_bets": 3,
+      "monthly_pnl": 1.34,
+      "static_bets": 5,
+      "static_pnl": -0.66
+     },
+     {
+      "month": "2025-07",
+      "monthly_config": "RAW|EV|max-|min-",
+      "monthly_bets": 0,
+      "monthly_pnl": 0.0,
+      "static_bets": 0,
+      "static_pnl": 0.0
+     },
+     {
+      "month": "2025-08",
+      "monthly_config": "RAW|EV|max-|min-",
+      "monthly_bets": 20,
+      "monthly_pnl": 1.73,
+      "static_bets": 19,
+      "static_pnl": 0.83
+     },
+     {
+      "month": "2025-09",
+      "monthly_config": "RAW|EV|max-|min-",
+      "monthly_bets": 50,
+      "monthly_pnl": 11.29,
+      "static_bets": 10,
+      "static_pnl": 5.77
+     },
+     {
+      "month": "2025-10",
+      "monthly_config": "NONE|ALL|max-|min-",
+      "monthly_bets": 87,
+      "monthly_pnl": -1.96,
+      "static_bets": 11,
+      "static_pnl": 0.25
+     },
+     {
+      "month": "2025-11",
+      "monthly_config": "RAW|EDGE|max2.5|min-",
+      "monthly_bets": 48,
+      "monthly_pnl": -6.67,
+      "static_bets": 18,
+      "static_pnl": -0.97
+     },
+     {
+      "month": "2025-12",
+      "monthly_config": "RAW|EV|max2.5|min-",
+      "monthly_bets": 76,
+      "monthly_pnl": 18.06,
+      "static_bets": 10,
+      "static_pnl": 2.75
+     },
+     {
+      "month": "2026-01",
+      "monthly_config": "RAW|EV|max2.5|min-",
+      "monthly_bets": 92,
+      "monthly_pnl": -13.65,
+      "static_bets": 14,
+      "static_pnl": 1.16
+     },
+     {
+      "month": "2026-02",
+      "monthly_config": "RAW|EV|max-|min-",
+      "monthly_bets": 101,
+      "monthly_pnl": 16.66,
+      "static_bets": 11,
+      "static_pnl": 2.13
+     },
+     {
+      "month": "2026-03",
+      "monthly_config": "RAW|EDGE|max2.5|min-",
+      "monthly_bets": 107,
+      "monthly_pnl": -3.39,
+      "static_bets": 11,
+      "static_pnl": -0.67
+     },
+     {
+      "month": "2026-04",
+      "monthly_config": "SHRINK|EDGE|max-|min-",
+      "monthly_bets": 15,
+      "monthly_pnl": -0.53,
+      "static_bets": 5,
+      "static_pnl": 1.61
+     },
+     {
+      "month": "2026-05",
+      "monthly_config": "SHRINK|EDGE|max-|min-",
+      "monthly_bets": 4,
+      "monthly_pnl": -1.9,
+      "static_bets": 4,
+      "static_pnl": 1.98
+     },
+     {
+      "month": "2026-06",
+      "monthly_config": "SHRINK|EDGE|max2.5|min-",
+      "monthly_bets": 0,
+      "monthly_pnl": 0.0,
+      "static_bets": 0,
+      "static_pnl": 0.0
+     },
+     {
+      "month": "2026-07",
+      "monthly_config": "SHRINK|EDGE|max2.5|min-",
+      "monthly_bets": 0,
+      "monthly_pnl": 0.0,
+      "static_bets": 0,
+      "static_pnl": 0.0
+     },
+     {
+      "month": "2026-08",
+      "monthly_config": "SHRINK|EDGE|max2.5|min-",
+      "monthly_bets": 9,
+      "monthly_pnl": 3.1,
+      "static_bets": 0,
+      "static_pnl": 0.0
+     }
+    ]
+   },
+   {
+    "track": "standard",
+    "mside": "over15_over",
+    "months": []
+   },
+   {
+    "track": "standard",
+    "mside": "over35_over",
+    "months": []
+   },
+   {
+    "track": "new_format",
+    "mside": "over25_over",
+    "static_config": "LEARNED|EDGE|max2.5|min-",
+    "months": [
+     {
+      "month": "2025-12",
+      "monthly_config": "LEARNED|EDGE|max2.5|min-",
+      "monthly_bets": 36,
+      "monthly_pnl": 15.66,
+      "static_bets": 36,
+      "static_pnl": 15.66
+     },
+     {
+      "month": "2026-01",
+      "monthly_config": "BLEND|EV|max2.5|min-",
+      "monthly_bets": 20,
+      "monthly_pnl": 3.49,
+      "static_bets": 27,
+      "static_pnl": 0.05
+     },
+     {
+      "month": "2026-02",
+      "monthly_config": "BLEND|EV|max2.5|min-",
+      "monthly_bets": 88,
+      "monthly_pnl": -5.09,
+      "static_bets": 59,
+      "static_pnl": -6.43
+     },
+     {
+      "month": "2026-03",
+      "monthly_config": "BLEND|EV|max-|min-",
+      "monthly_bets": 119,
+      "monthly_pnl": 1.22,
+      "static_bets": 73,
+      "static_pnl": -1.59
+     },
+     {
+      "month": "2026-04",
+      "monthly_config": "BLEND|EV|max2.5|min-",
+      "monthly_bets": 90,
+      "monthly_pnl": 20.4,
+      "static_bets": 108,
+      "static_pnl": -0.48
+     },
+     {
+      "month": "2026-05",
+      "monthly_config": "RAW|EV|max2.5|min-",
+      "monthly_bets": 82,
+      "monthly_pnl": 5.13,
+      "static_bets": 98,
+      "static_pnl": 0.13
+     },
+     {
+      "month": "2026-06",
+      "monthly_config": "RAW|EV|max2.5|min-",
+      "monthly_bets": 2,
+      "monthly_pnl": 2.58,
+      "static_bets": 18,
+      "static_pnl": 1.35
+     },
+     {
+      "month": "2026-07",
+      "monthly_config": "RAW|EV|max2.5|min-",
+      "monthly_bets": 0,
+      "monthly_pnl": 0.0,
+      "static_bets": 0,
+      "static_pnl": 0.0
+     },
+     {
+      "month": "2026-08",
+      "monthly_config": "RAW|EV|max2.5|min-",
+      "monthly_bets": 12,
+      "monthly_pnl": 2.72,
+      "static_bets": 55,
+      "static_pnl": -1.17
+     }
+    ]
+   },
+   {
+    "track": "new_format",
+    "mside": "over25_under",
+    "static_config": "RAW|EV|max-|min-",
+    "months": [
+     {
+      "month": "2025-12",
+      "monthly_config": "RAW|EV|max-|min-",
+      "monthly_bets": 2,
+      "monthly_pnl": -2.0,
+      "static_bets": 2,
+      "static_pnl": -2.0
+     },
+     {
+      "month": "2026-01",
+      "monthly_config": "LEARNED|EDGE|max3.5|min-",
+      "monthly_bets": 0,
+      "monthly_pnl": 0.0,
+      "static_bets": 0,
+      "static_pnl": 0.0
+     },
+     {
+      "month": "2026-02",
+      "monthly_config": "RAW|EV|max-|min-",
+      "monthly_bets": 7,
+      "monthly_pnl": -1.32,
+      "static_bets": 5,
+      "static_pnl": -1.31
+     },
+     {
+      "month": "2026-03",
+      "monthly_config": "LEARNED|EV|max3.5|min-",
+      "monthly_bets": 22,
+      "monthly_pnl": 2.57,
+      "static_bets": 19,
+      "static_pnl": 3.22
+     },
+     {
+      "month": "2026-04",
+      "monthly_config": "LEARNED|EV|max2.5|min-",
+      "monthly_bets": 23,
+      "monthly_pnl": -3.96,
+      "static_bets": 47,
+      "static_pnl": 19.52
+     },
+     {
+      "month": "2026-05",
+      "monthly_config": "RAW|EV|max2.5|min-",
+      "monthly_bets": 65,
+      "monthly_pnl": -13.17,
+      "static_bets": 50,
+      "static_pnl": -2.55
+     },
+     {
+      "month": "2026-06",
+      "monthly_config": "RAW|EV|max2.5|min-",
+      "monthly_bets": 15,
+      "monthly_pnl": 0.78,
+      "static_bets": 5,
+      "static_pnl": 1.66
+     },
+     {
+      "month": "2026-07",
+      "monthly_config": "RAW|EV|max3.5|min-",
+      "monthly_bets": 0,
+      "monthly_pnl": 0.0,
+      "static_bets": 0,
+      "static_pnl": 0.0
+     },
+     {
+      "month": "2026-08",
+      "monthly_config": "RAW|EV|max3.5|min-",
+      "monthly_bets": 38,
+      "monthly_pnl": 0.46,
+      "static_bets": 15,
+      "static_pnl": -6.32
+     }
+    ]
+   },
+   {
+    "track": "new_format",
+    "mside": "btts_yes",
+    "static_config": "NONE|ALL|max2.5|min1.4",
+    "months": [
+     {
+      "month": "2025-12",
+      "monthly_config": "NONE|ALL|max2.5|min1.4",
+      "monthly_bets": 0,
+      "monthly_pnl": 0.0,
+      "static_bets": 0,
+      "static_pnl": 0.0
+     },
+     {
+      "month": "2026-01",
+      "monthly_config": "NONE|ALL|max-|min1.4",
+      "monthly_bets": 0,
+      "monthly_pnl": 0.0,
+      "static_bets": 0,
+      "static_pnl": 0.0
+     },
+     {
+      "month": "2026-02",
+      "monthly_config": "RAW|EV|max2.5|min-",
+      "monthly_bets": 42,
+      "monthly_pnl": 11.01,
+      "static_bets": 0,
+      "static_pnl": 0.0
+     },
+     {
+      "month": "2026-03",
+      "monthly_config": "RAW|EV|max2.5|min-",
+      "monthly_bets": 45,
+      "monthly_pnl": -11.06,
+      "static_bets": 0,
+      "static_pnl": 0.0
+     },
+     {
+      "month": "2026-04",
+      "monthly_config": "RAW|EDGE|max2.5|min-",
+      "monthly_bets": 101,
+      "monthly_pnl": -2.75,
+      "static_bets": 0,
+      "static_pnl": 0.0
+     },
+     {
+      "month": "2026-05",
+      "monthly_config": "NONE|ALL|max2.5|min1.4",
+      "monthly_bets": 0,
+      "monthly_pnl": 0.0,
+      "static_bets": 0,
+      "static_pnl": 0.0
+     },
+     {
+      "month": "2026-06",
+      "monthly_config": "BLEND|EDGE|max2.5|min1.4",
+      "monthly_bets": 22,
+      "monthly_pnl": 1.9,
+      "static_bets": 0,
+      "static_pnl": 0.0
+     },
+     {
+      "month": "2026-07",
+      "monthly_config": "RAW|EDGE|max2.5|min-",
+      "monthly_bets": 0,
+      "monthly_pnl": 0.0,
+      "static_bets": 0,
+      "static_pnl": 0.0
+     },
+     {
+      "month": "2026-08",
+      "monthly_config": "RAW|EDGE|max2.5|min-",
+      "monthly_bets": 25,
+      "monthly_pnl": 6.33,
+      "static_bets": 0,
+      "static_pnl": 0.0
+     }
+    ]
+   },
+   {
+    "track": "new_format",
+    "mside": "over15_over",
+    "static_config": null,
+    "months": [
+     {
+      "month": "2025-12",
+      "monthly_config": null,
+      "monthly_bets": 0,
+      "monthly_pnl": 0.0,
+      "static_bets": 0,
+      "static_pnl": 0.0
+     },
+     {
+      "month": "2026-01",
+      "monthly_config": null,
+      "monthly_bets": 0,
+      "monthly_pnl": 0.0,
+      "static_bets": 0,
+      "static_pnl": 0.0
+     },
+     {
+      "month": "2026-02",
+      "monthly_config": null,
+      "monthly_bets": 0,
+      "monthly_pnl": 0.0,
+      "static_bets": 0,
+      "static_pnl": 0.0
+     },
+     {
+      "month": "2026-03",
+      "monthly_config": "RAW|EV|max-|min1.4",
+      "monthly_bets": 33,
+      "monthly_pnl": 4.45,
+      "static_bets": 0,
+      "static_pnl": 0.0
+     },
+     {
+      "month": "2026-04",
+      "monthly_config": "RAW|EV|max-|min-",
+      "monthly_bets": 36,
+      "monthly_pnl": -2.95,
+      "static_bets": 0,
+      "static_pnl": 0.0
+     },
+     {
+      "month": "2026-05",
+      "monthly_config": "LEARNED|EV|max-|min-",
+      "monthly_bets": 13,
+      "monthly_pnl": 2.17,
+      "static_bets": 0,
+      "static_pnl": 0.0
+     },
+     {
+      "month": "2026-06",
+      "monthly_config": "LEARNED|EV|max-|min-",
+      "monthly_bets": 0,
+      "monthly_pnl": 0.0,
+      "static_bets": 0,
+      "static_pnl": 0.0
+     },
+     {
+      "month": "2026-07",
+      "monthly_config": "LEARNED|EV|max-|min-",
+      "monthly_bets": 0,
+      "monthly_pnl": 0.0,
+      "static_bets": 0,
+      "static_pnl": 0.0
+     },
+     {
+      "month": "2026-08",
+      "monthly_config": "LEARNED|EV|max-|min-",
+      "monthly_bets": 1,
+      "monthly_pnl": -1.0,
+      "static_bets": 0,
+      "static_pnl": 0.0
+     }
+    ]
+   },
+   {
+    "track": "new_format",
+    "mside": "over35_over",
+    "static_config": "NONE|ALL|max-|min-",
+    "months": [
+     {
+      "month": "2025-12",
+      "monthly_config": "NONE|ALL|max-|min-",
+      "monthly_bets": 1,
+      "monthly_pnl": 1.28,
+      "static_bets": 1,
+      "static_pnl": 1.28
+     },
+     {
+      "month": "2026-01",
+      "monthly_config": "NONE|ALL|max-|min-",
+      "monthly_bets": 0,
+      "monthly_pnl": 0.0,
+      "static_bets": 0,
+      "static_pnl": 0.0
+     },
+     {
+      "month": "2026-02",
+      "monthly_config": "NONE|ALL|max-|min-",
+      "monthly_bets": 11,
+      "monthly_pnl": 0.61,
+      "static_bets": 5,
+      "static_pnl": -0.32
+     },
+     {
+      "month": "2026-03",
+      "monthly_config": "NONE|ALL|max-|min-",
+      "monthly_bets": 39,
+      "monthly_pnl": -9.98,
+      "static_bets": 31,
+      "static_pnl": -1.98
+     },
+     {
+      "month": "2026-04",
+      "monthly_config": "NONE|ALL|max2.5|min-",
+      "monthly_bets": 47,
+      "monthly_pnl": -17.85,
+      "static_bets": 69,
+      "static_pnl": -8.15
+     },
+     {
+      "month": "2026-05",
+      "monthly_config": "NONE|ALL|max2.5|min-",
+      "monthly_bets": 0,
+      "monthly_pnl": 0.0,
+      "static_bets": 97,
+      "static_pnl": 1.96
+     },
+     {
+      "month": "2026-06",
+      "monthly_config": "BLEND|EV|max-|min-",
+      "monthly_bets": 0,
+      "monthly_pnl": 0.0,
+      "static_bets": 3,
+      "static_pnl": 3.75
+     },
+     {
+      "month": "2026-07",
+      "monthly_config": "NONE|ALL|max2.5|min-",
+      "monthly_bets": 0,
+      "monthly_pnl": 0.0,
+      "static_bets": 0,
+      "static_pnl": 0.0
+     },
+     {
+      "month": "2026-08",
+      "monthly_config": "NONE|ALL|max2.5|min-",
+      "monthly_bets": 60,
+      "monthly_pnl": -1.35,
+      "static_bets": 73,
+      "static_pnl": -9.64
+     }
+    ]
+   }
+  ]
+ },
+ "final_monthly_rolling": {
+  "bets": {
+   "bets": 319,
+   "roi": 0.0594,
+   "matchdays": 47,
+   "ci95": [
+    -0.0588,
+    0.1775
+   ],
+   "p_one_sided": 0.1399,
+   "clv": 0.0042,
+   "clv_n": 319
+  },
+  "top3": {
+   "TOP_ONLY_V": {
+    "bets": 178,
+    "roi": 0.1521,
+    "matchdays": 42,
+    "ci95": [
+     -0.0659,
+     0.37
+    ],
+    "clv": 0.0044,
+    "clv_n": 178,
+    "league_weeks": 85,
+    "by_market": {
+     "btts_yes": {
+      "picks": 80,
+      "roi": 0.17
+     },
+     "over25_over": {
+      "picks": 18,
+      "roi": 0.2894
+     },
+     "over25_under": {
+      "picks": 79,
+      "roi": 0.0944
+     },
+     "over35_over": {
+      "picks": 1,
+      "roi": 0.8
+     }
+    },
+    "by_league": {
+     "new_format|Argentina Primera Division": {
+      "picks": 26,
+      "roi": -0.0308
+     },
+     "new_format|Austrian Bundesliga": {
+      "picks": 4,
+      "roi": -0.075
+     },
+     "new_format|Brazil Serie A": {
+      "picks": 19,
+      "roi": 0.2979
+     },
+     "new_format|China Super League": {
+      "picks": 5,
+      "roi": 0.34
+     },
+     "new_format|Denmark Superliga": {
+      "picks": 2,
+      "roi": 0.3
+     },
+     "new_format|Finland Veikkausliiga": {
+      "picks": 13,
+      "roi": 0.5362
+     },
+     "new_format|Ireland Premier Division": {
+      "picks": 10,
+      "roi": -0.22
+     },
+     "new_format|Japan J-League": {
+      "picks": 1,
+      "roi": -1.0
+     },
+     "new_format|Mexico Liga MX": {
+      "picks": 13,
+      "roi": -0.1
+     },
+     "new_format|Norway Eliteserien": {
+      "picks": 15,
+      "roi": 0.1587
+     },
+     "new_format|Sweden Allsvenskan": {
+      "picks": 12,
+      "roi": 0.3408
+     },
+     "new_format|USA MLS": {
+      "picks": 12,
+      "roi": 0.0817
+     },
+     "standard|Belgian First Division A": {
+      "picks": 10,
+      "roi": -0.14
+     },
+     "standard|La Liga 2": {
+      "picks": 16,
+      "roi": 0.6294
+     },
+     "standard|Scottish League Two": {
+      "picks": 9,
+      "roi": 0.04
+     },
+     "standard|Serie B": {
+      "picks": 11,
+      "roi": 0.1145
+     }
+    },
+    "by_slot": {
+     "TOP": {
+      "bets": 178,
+      "roi": 0.1521,
+      "matchdays": 42,
+      "ci95": [
+       -0.0659,
+       0.37
+      ],
+      "p_one_sided": null,
+      "clv": 0.0044,
+      "clv_n": 178
+     }
+    }
+   },
+   "TOP_ONLY_M": {
+    "bets": 167,
+    "roi": 0.1684,
+    "matchdays": 42,
+    "ci95": [
+     -0.0507,
+     0.3876
+    ],
+    "clv": 0.0039,
+    "clv_n": 167,
+    "league_weeks": 81,
+    "by_market": {
+     "btts_yes": {
+      "picks": 75,
+      "roi": 0.2225
+     },
+     "over25_over": {
+      "picks": 15,
+      "roi": 0.322
+     },
+     "over25_under": {
+      "picks": 75,
+      "roi": 0.0908
+     },
+     "over35_over": {
+      "picks": 2,
+      "roi": -0.1
+     }
+    },
+    "by_league": {
+     "new_format|Argentina Primera Division": {
+      "picks": 25,
+      "roi": 0.008
+     },
+     "new_format|Austrian Bundesliga": {
+      "picks": 3,
+      "roi": -0.4
+     },
+     "new_format|Brazil Serie A": {
+      "picks": 19,
+      "roi": 0.2979
+     },
+     "new_format|China Super League": {
+      "picks": 5,
+      "roi": 0.34
+     },
+     "new_format|Denmark Superliga": {
+      "picks": 2,
+      "roi": 0.3
+     },
+     "new_format|Finland Veikkausliiga": {
+      "picks": 12,
+      "roi": 0.5017
+     },
+     "new_format|Ireland Premier Division": {
+      "picks": 10,
+      "roi": -0.22
+     },
+     "new_format|Japan J-League": {
+      "picks": 1,
+      "roi": -1.0
+     },
+     "new_format|Mexico Liga MX": {
+      "picks": 12,
+      "roi": -0.025
+     },
+     "new_format|Norway Eliteserien": {
+      "picks": 13,
+      "roi": 0.0154
+     },
+     "new_format|Sweden Allsvenskan": {
+      "picks": 12,
+      "roi": 0.3408
+     },
+     "new_format|USA MLS": {
+      "picks": 12,
+      "roi": 0.0817
+     },
+     "standard|Belgian First Division A": {
+      "picks": 10,
+      "roi": -0.14
+     },
+     "standard|La Liga 2": {
+      "picks": 16,
+      "roi": 0.6294
+     },
+     "standard|Scottish League Two": {
+      "picks": 8,
+      "roi": 0.17
+     },
+     "standard|Serie B": {
+      "picks": 7,
+      "roi": 0.4786
+     }
+    },
+    "by_slot": {
+     "TOP": {
+      "bets": 167,
+      "roi": 0.1684,
+      "matchdays": 42,
+      "ci95": [
+       -0.0507,
+       0.3876
+      ],
+      "p_one_sided": null,
+      "clv": 0.0039,
+      "clv_n": 167
+     }
+    }
+   },
+   "TOP_M_PLUS_TIER2": {
+    "bets": 167,
+    "roi": 0.1684,
+    "matchdays": 42,
+    "ci95": [
+     -0.0507,
+     0.3876
+    ],
+    "clv": 0.0039,
+    "clv_n": 167,
+    "league_weeks": 81,
+    "by_market": {
+     "btts_yes": {
+      "picks": 75,
+      "roi": 0.2225
+     },
+     "over25_over": {
+      "picks": 15,
+      "roi": 0.322
+     },
+     "over25_under": {
+      "picks": 75,
+      "roi": 0.0908
+     },
+     "over35_over": {
+      "picks": 2,
+      "roi": -0.1
+     }
+    },
+    "by_league": {
+     "new_format|Argentina Primera Division": {
+      "picks": 25,
+      "roi": 0.008
+     },
+     "new_format|Austrian Bundesliga": {
+      "picks": 3,
+      "roi": -0.4
+     },
+     "new_format|Brazil Serie A": {
+      "picks": 19,
+      "roi": 0.2979
+     },
+     "new_format|China Super League": {
+      "picks": 5,
+      "roi": 0.34
+     },
+     "new_format|Denmark Superliga": {
+      "picks": 2,
+      "roi": 0.3
+     },
+     "new_format|Finland Veikkausliiga": {
+      "picks": 12,
+      "roi": 0.5017
+     },
+     "new_format|Ireland Premier Division": {
+      "picks": 10,
+      "roi": -0.22
+     },
+     "new_format|Japan J-League": {
+      "picks": 1,
+      "roi": -1.0
+     },
+     "new_format|Mexico Liga MX": {
+      "picks": 12,
+      "roi": -0.025
+     },
+     "new_format|Norway Eliteserien": {
+      "picks": 13,
+      "roi": 0.0154
+     },
+     "new_format|Sweden Allsvenskan": {
+      "picks": 12,
+      "roi": 0.3408
+     },
+     "new_format|USA MLS": {
+      "picks": 12,
+      "roi": 0.0817
+     },
+     "standard|Belgian First Division A": {
+      "picks": 10,
+      "roi": -0.14
+     },
+     "standard|La Liga 2": {
+      "picks": 16,
+      "roi": 0.6294
+     },
+     "standard|Scottish League Two": {
+      "picks": 8,
+      "roi": 0.17
+     },
+     "standard|Serie B": {
+      "picks": 7,
+      "roi": 0.4786
+     }
+    },
+    "by_slot": {
+     "TOP": {
+      "bets": 167,
+      "roi": 0.1684,
+      "matchdays": 42,
+      "ci95": [
+       -0.0507,
+       0.3876
+      ],
+      "p_one_sided": null,
+      "clv": 0.0039,
+      "clv_n": 167
+     }
+    }
+   }
+  },
+  "by_month": {
+   "2026-09": {
+    "bets": 186,
+    "roi": 0.0533,
+    "matchdays": 22,
+    "ci95": [
+     -0.1105,
+     0.2172
+    ],
+    "p_one_sided": 0.2584,
+    "clv": 0.0064,
+    "clv_n": 186
+   },
+   "2026-10": {
+    "bets": 133,
+    "roi": 0.0678,
+    "matchdays": 25,
+    "ci95": [
+     -0.1082,
+     0.2438
+    ],
+    "p_one_sided": 0.1764,
+    "clv": 0.001,
+    "clv_n": 133
+   }
+  }
+ }
+}
