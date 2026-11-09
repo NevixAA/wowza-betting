@@ -207,10 +207,20 @@ def _latest_form(hist: pd.DataFrame, n: int) -> pd.DataFrame:
     Index (league, team); one column per _FORM_FEATURES stat present in the history."""
     tc = _build_team_centric(hist)
     stats = _form_stats(tc, _add_ht_flags(tc))
-    # tc is sorted by (league, team, date): the group's last n rows ARE its window, and the mean of
-    # the values present over them equals _window_mean at the group's last row.
-    last = tc.groupby(["league", "team"], sort=False).tail(n)
-    out = last.groupby(["league", "team"], sort=False)[stats + [_HT_KNOWN]].mean()
+    cols = stats + [_HT_KNOWN]
+    # TRAINING'S OWN FUNCTION, BIT FOR BIT (owner 2026-11-09: parity at 0). Append one "next match"
+    # row per (league, team) after its own rows and take _rolling there - literally the value
+    # build_features assigns that team's next match. The plain mean of the last n values that was
+    # here is mathematically equal but adds in a different order than pandas' rolling sum: a
+    # 1-ulp difference (away_xg_last5 1.104 vs 1.1040000000000003) flipped a tree split and moved
+    # three Standard probabilities by up to 0.36 points (scripts/team_train_serve_parity.py).
+    nxt = tc.groupby(["league", "team"], sort=False).tail(1).copy()
+    nxt[cols] = np.nan
+    both = pd.concat([tc.assign(_next=False), nxt.assign(_next=True)], ignore_index=True)
+    # groupby keeps each group's rows in frame order: the appended row comes after all its own rows
+    for s in cols:
+        both[s] = _rolling(both, s, n)
+    out = both[both["_next"]].set_index(["league", "team"])[cols]
     out[_HT_KNOWN] = _ht_history_flag(out[_HT_KNOWN])
     return out
 
