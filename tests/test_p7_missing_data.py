@@ -213,3 +213,81 @@ def test_sync_takes_untouched_files_and_only_newer_rows_of_a_file_both_changed(t
     assert ("E", "F") in pairs and ("C", "D") not in pairs and len(af) == 2
     assert r["rows_appended"]["output/af_history.parquet"] == 1
     assert len(pd.read_parquet(repo / "output" / "fd_history.parquet")) == 2
+
+
+# ── owner 2026-11-09: date formats and the one-day rule for re-fetch rows ──────────────────
+
+def _plan_case(list_date, hist_date, home="Uruguay", away="Dominican Republic", lh="Uruguay", la="Dominican Republic"):
+    import collect_player_refetch as RF
+    from test_player_refetch import _h
+    fx = pd.DataFrame([{"fixture_id": 900, "league_id": 10, "season": "2025", "date": list_date,
+                        "home_id": 1, "home_name": lh, "away_id": 2, "away_name": la, "status": "FT"},
+                       {"fixture_id": 901, "league_id": 39, "season": "2025", "date": "2025-10-01",
+                        "home_id": 3, "home_name": "Arsenal", "away_id": 4, "away_name": "Chelsea", "status": "FT"}])
+    rows = RF.source_rows(pd.DataFrame([_h(900, 7, hist_date, home, away, home, 1)]), pd.DataFrame())
+    return RF.plan(rows, fx, pd.DataFrame())
+
+
+def test_a_list_date_with_an_offset_is_read_in_utc_not_dropped():
+    p = _plan_case("2025-10-10T22:00:00+00:00", "2025-10-10")
+    assert p["proven_fixtures"] == 1 and p["refused_fixtures"] == {}
+
+
+def test_one_day_apart_with_both_clubs_proven_is_accepted_and_recorded():
+    p = _plan_case("2025-10-11T01:30:00+00:00", "2025-10-10")
+    assert p["proven_fixtures"] == 1 and p["date_shift_accepted_fixtures"] == 1
+    dc = p["date_corrections"]
+    assert (dc["history_date"].iloc[0], dc["provider_date"].iloc[0]) == ("2025-10-10", "2025-10-11")
+
+
+def test_one_day_apart_with_a_club_unproven_or_two_days_apart_is_refused():
+    p = _plan_case("2025-10-11T01:30:00+00:00", "2025-10-10", lh="Paraguay")
+    assert p["proven_fixtures"] == 0 and p["refused_fixtures"] == {"clubs_unproven": 1}
+    p = _plan_case("2025-10-12T01:30:00+00:00", "2025-10-10")
+    assert p["proven_fixtures"] == 0 and p["refused_fixtures"] == {"date_differs_from_list": 1}
+
+
+def test_every_refetch_output_path_is_redirected_by_the_test_fixture():
+    """A collector path the shared test fixture does not redirect is written into the repository by
+    the tests (it happened with DATE_CORRECTIONS on 2026-11-09)."""
+    import inspect
+    import collect_player_refetch as RF
+    import test_player_refetch as T
+    src = inspect.getsource(T.env.__wrapped__ if hasattr(T.env, "__wrapped__") else T.env)
+    for n in ("OUT", "JOURNAL", "AUDIT", "DATE_CORRECTIONS"):
+        assert f'"{n}"' in src, n
+    assert RF.DATE_CORRECTIONS.name == "player_history_date_corrections.csv"
+
+
+# ── OddsAPI historical probe (no network) ───────────────────────────────────────────────────
+
+import probe_oddsapi_history as PR  # noqa: E402
+
+
+def test_probe_summaries_count_only_what_came_back():
+    feat = {"timestamp": "2024-11-02T08:00:00Z", "data": [
+        {"bookmakers": [{"key": "pinnacle", "markets": [
+            {"key": "totals", "outcomes": [{"name": "Over", "point": 2.5}, {"name": "Under", "point": 2.5}]},
+            {"key": "h2h", "outcomes": []}]}]},
+        {"bookmakers": [{"key": "bet365", "markets": [{"key": "h2h", "outcomes": []}]}]}]}
+    s = PR.summarise_featured(feat)
+    assert (s["events"], s["with_totals"], s["with_totals_2_5"], s["with_h2h"], s["books"]) == (2, 1, 1, 2, 2)
+    ev = {"data": {"bookmakers": [{"key": "b", "markets": [
+        {"key": "alternate_totals", "outcomes": [{"name": "Over", "point": 1.5}, {"name": "Over", "point": 3.5}]}]}]}}
+    e = PR.summarise_event(ev)
+    assert e["markets"]["alternate_totals"]["points"] == [1.5, 3.5] and "btts" not in e["markets"]
+
+
+def test_probe_stops_at_the_credit_cap(monkeypatch):
+    class R:
+        status_code, headers, text = 200, {"x-requests-last": "20"}, ""
+
+        def json(self):
+            return {"data": []}
+    monkeypatch.setattr(PR, "CAP", 40)
+    monkeypatch.setattr(PR.requests, "get", lambda *a, **k: R())
+    monkeypatch.setattr(PR.time, "sleep", lambda s: None)
+    m = PR.Meter("k")
+    for _ in range(5):
+        m.get("u")
+    assert m.spent == 40 and m.calls == 2 and m.stopped

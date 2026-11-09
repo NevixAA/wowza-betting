@@ -99,3 +99,78 @@ rewritten in place.
 Calls for the collection run: about 13 + 247 + 915 + up to about 1 per newly matched uncached fixture
 (insidebox; at most about 5,000) + the journaled steady-state steps; 0 OddsAPI credits. Full suite: 2,913
 passed (the one failure, a reader-classification test for the two new scripts, fixed in `c1a44afa5`).
+
+## OddsAPI: credits reset monthly (owner 2026-11-09)
+
+Owner: OddsAPI "resets monthly, fine". The provider's docs: usage credits reset on the first of every
+month. The projected exhaustion (#13, about 2026-11-28 at about 3,900 credits/day) is therefore no
+action item. It still bounds any historical purchase below: the menu has to fit beside the live burn
+(about 117,000 credits a month), or a plan change.
+
+## Historical odds: costed menu (owner 2026-11-09: "cost it, then ask"). NOTHING SPENT.
+
+Pricing used (The Odds API v4 docs and its historical-data page; the pricing page may be dated, so
+confirm on the live site before buying):
+* historical odds (FEATURED markets h2h / totals main line; one request returns a whole sport at one
+  snapshot): **10 credits x markets x regions** per snapshot; empty answers are free; history from
+  2020-06-06 (5-minute snapshots from 2022-09);
+* historical EVENT odds (additional markets: btts, alternate_totals, player props; one event per
+  request): **10 x markets RETURNED x regions** per event; history only from **2023-05-03 05:30 UTC**;
+  the docs say additional markets are "currently limited to US sports and selected bookmakers", so
+  soccer availability must be probed before buying;
+* historical events (event ids for the event-odds endpoint): **1 credit per call**, free when empty;
+* paid plans only. Terms of use: storing indefinitely and training statistical / ML models are listed
+  as permitted; reselling or redistributing the data as a product is prohibited. Our use (training,
+  bars, internal tools) is permitted; the data must not be published as a dataset.
+
+Counts come from the bars-study price universes (output/bars_opt/universe_*.parquet on prep/bars-serving,
+the clean-retrain prediction rows with their bet-time prices) and player_history; computed in code with a
+second, independent sum (scratchpad cost.py); both agree exactly. Leagues with no OddsAPI sport key cannot
+be filled at any price: National League, Portuguese Primeira Liga, Romanian Superliga, Scottish
+Championship, Scottish League One, Scottish League Two.
+
+| # | Gap | What the purchase is | Size | Credits (1 region = eu) | Unlocks |
+|---|---|---|---|---|---|
+| H1 | New-Format O/U 2.5 before 2026-08 | one sport-level `totals` snapshot per league-day, taken before that day's first kickoff (pre-kickoff for every match that day); 1 market x 1 region x 10 | 5,933 league-days, 14 leagues (Romania has no key) | **59,330** (uk+eu 118,660) | 17,604 of the 19,200 unpriced New-Format O/U 2.5 prediction rows (2021-07..2026-07; MLS 2,335, Argentina 2,086, Brazil 1,591, J-League 1,542, Liga MX 1,520, Saudi 1,379, K-League 1,150, China 1,053, ...): New-Format O/U 2.5 bars from the full walk-forward instead of about one season. Risk: the `totals` main line is not always 2.5; such rows stay unpriced but are still billed |
+| H2 | Side markets two-sided (BTTS, O1.5, O3.5) before 2026-04, both tracks | per event: `btts` + `alternate_totals` (up to 2 markets) x 1 region x 10, plus 1 events lookup per league-day | 24,839 events, 42,126 market slots, 7,372 league-days, 2023-05-03..2026-03-31 | **up to 428,632** (billed only on markets returned) | 66,112 unpriced side rows (Standard BTTS 7,634 / O1.5 13,147 / O3.5 13,147; New-Format 9,653 / 11,361 / 11,170): O1.5 / O3.5 bars from walk-forward data instead of IN_PERIOD_SPLIT, BTTS walk-forward for the leagues priced only since 2024-08. Not reachable at any price: 32,652 rows before 2023-05-03 (no additional-market history) and 14,787 in leagues without a key |
+| H3 | Props before 2026-10-14 | per event: anytime scorer, shots on target, assists, cards (4 markets) x 4 regions (uk, eu, us, us2: props come from US books) x 10, plus lookups | 26,543 fixtures in the 24 OddsAPI prop leagues, 2023-05-03..2026-10-13 | **upper bound 4,254,634**; realistic **about 1,185,182** (only the 7,393 fixtures of the top-5 leagues + MLS are likely to return props; empty answers are free) | props CLV on real two-sided prices (today 8 rows), the rare-props exceptional bars, the props bars. goals2 has no OddsAPI line at all |
+| H4 | Sharp money before 2026-06-14 | `h2h` + `totals` (2 markets) x 1 region x 10 x 8 snapshots per league-day (T-72h, -48h, -24h, -12h, -6h, -2h, -1h, close) | 7,655 league-days, 25,709 matches, 2023-06-14..2026-06-13 | **1,224,800** | the sharp-agreement filter in the bars study (excluded today because its data starts 2026-06-14), backtested over 3 seasons |
+| — | **All four (H3 realistic)** | | | **2,897,944** | |
+
+Plan arithmetic (prices from the provider's pricing page, which may be dated): 20K = $30/mo, 100K =
+$59/mo, 5M = $119/mo, 15M = $249/mo. The live burn is about 117,000 credits a month (the quota file assumes a
+100K allowance), so on a 100K plan **none** of H1-H4 fits beside the live collection. Break-even: one
+month on the 5M plan (about $60 more than 100K) covers H1 + H2 + H3 (realistic) + H4 (2.9M) with about
+2M to spare; H1 alone (59k) fits only after a plan step up or in a month where the live burn is below
+about 40k. Before any purchase: a probe of 1 event per league for btts / alternate_totals / props
+(at most 20-160 credits per league, free where empty) to confirm the soccer history exists.
+
+## Probe result and FINAL buy list (owner 2026-11-09: "probe first"; nothing bought beyond the probe)
+
+Probe: run 42648635984, `output/collect/oddsapi_history_probe.json`. **1,590 credits spent** (116 calls,
+0 calls of unknown cost), one event per league on our busiest match day 2024-03..2025-03, 31 leagues.
+
+What exists in OddsAPI soccer history (confirmed on the probed event):
+* featured `totals` + `h2h`: every probed league (Saudi Pro League: no event on its probe day, so
+  unconfirmed). BUT the featured `totals` main line is 2.5 for only **56% of New-Format events (64/114)**
+  and 49% overall: the main line is often 2.25 / 2.75. So O/U 2.5 history is best bought per event.
+* event `alternate_totals` (lines 0.5..3.5 and more; 1.5 and 2.5 in every probed event, 3.5 seen in 17
+  leagues and hidden in the other 13 only by the probe's own 12-line summary cap) and `btts`: every
+  probed league, 1-5 books.
+* player props: ONLY Premier League (4 markets, 160 credits/event), Ligue 1 (2 markets, 80) and MLS
+  (3 markets, 120). Every 2nd-division and New-Format prop league returned nothing (free), and so did
+  Bundesliga / La Liga / Serie A on their probe days.
+
+| Buy | What | Size | Credits | Unlocks |
+|---|---|---|---|---|
+| B1 = H1 + H2 together | per event `btts` + `alternate_totals` (eu), one call gives BTTS, O1.5, O2.5, O3.5; 2023-05-03 onwards; leagues with a key, Saudi excluded until confirmed | 24,527 events, 7,298 league-days | **497,838** | 72,834 unpriced rows: New-Format O/U 2.5 9,365, BTTS 8,772, O1.5 10,480, O3.5 10,289; Standard BTTS 7,634, O1.5 13,147, O3.5 13,147. Walk-forward bars for O1.5 / O3.5 (today only IN_PERIOD_SPLIT) and for New-Format O/U 2.5 and BTTS |
+| B2 = H1 before 2023-05-03 | featured `totals` snapshot per league-day before the first kickoff (the only history before 2023-05-03) | 2,277 league-days, 6,860 rows | **22,770** | about 3,851 rows priced (the 56% with a 2.5 main line); the rest stays unpriced and is billed anyway |
+| B3 = H3 | player props per event, Premier League / Ligue 1 / MLS only | 1,246 + 1,029 + 1,575 fixtures | **471,730** | props CLV and rare-props bars in those 3 leagues only; nothing for the 2nd divisions or New-Format (no history exists) |
+| B4 = H4 | `h2h` + `totals`, 8 snapshots per league-day | 7,349 league-days | **1,175,840** | the sharp-agreement filter over 3 seasons |
+| | **B1 + B2 + B3** | | **992,338** | |
+| | **all four** | | **2,168,178** | |
+
+Fit (plan prices from the provider's page, which may be dated): the live burn is about 117,000 credits a
+month. B1 + B2 (520,608) or all four need a month on the 5M plan; on 100K none fits. Recommended order, by
+value per credit: **B1** (the bars' largest evidence gap, 2 markets per call), then **B2** (cheap), then B3
+(3 leagues only), then B4 (largest cost for one filter). Nothing beyond the probe was bought.

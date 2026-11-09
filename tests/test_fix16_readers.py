@@ -227,6 +227,8 @@ RAW = {                # why the raw file is the right input
                                             "rows the collectors' matchers read (no result is served)"),
     "scripts/sync_results_from_main.py": ("P7: copies main's newer rows into the raw bank file itself; "
                                           "corrections stay beside it (sidecar), nothing is served"),
+    "scripts/probe_oddsapi_history.py": ("P7: reads league / date only to pick one probe match day per "
+                                         "league for the OddsAPI history probe (no result is served)"),
 }
 
 

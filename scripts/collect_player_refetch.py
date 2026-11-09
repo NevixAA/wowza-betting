@@ -79,6 +79,8 @@ AUDIT = COLLECT_DIR / "player_history_refetch_audit.json"
 CUP_ROWS = COLLECT_DIR / "cup_player_rows.parquet"
 #: provider-proven fixtures outside the collected lists (scripts/collect_refetch_extra_fixtures.py)
 EXTRA_FIXTURES = COLLECT_DIR / "refetch_extra_fixtures.parquet"
+#: owner 2026-11-09: history date 1 day off the provider's, same fixture id + clubs proven
+DATE_CORRECTIONS = ROOT / "output" / "corrections" / "player_history_date_corrections.csv"
 
 #: the columns that are re-read and replaced: every per-player count player_history stores + rating
 VALUE_COLS = list(PSN.HISTORY_COUNT_COLS) + ["rating"]
@@ -120,7 +122,9 @@ def map_fixture_ids(rows: pd.DataFrame, fx: pd.DataFrame) -> tuple[pd.Series, in
     miss = rows[ids.isna()]
     if miss.empty or fx.empty:
         return ids, int(len(miss))
-    day = pd.to_datetime(fx["date"], errors="coerce").dt.strftime("%Y-%m-%d")
+    # utc + mixed: the extra lists carry ISO timestamps with an offset, the collected lists date-only
+    # strings; without utc=True pandas turns the offset ones into NaT (P7 item 2 bug, 2026-11-09)
+    day = pd.to_datetime(fx["date"], errors="coerce", utc=True, format="mixed").dt.strftime("%Y-%m-%d")
     by_day = {d: g for d, g in fx.assign(_day=day).groupby("_day")}
     refused = 0
     for (d, hm, aw), g in miss.groupby(["_day", "home_team", "away_team"], dropna=False):
@@ -172,7 +176,7 @@ def plan(rows: pd.DataFrame | None = None, fx: pd.DataFrame | None = None,
         out["refused_rows"]["no_fixture_id_unmapped"] = int(n_unmapped)
     rows = rows[rows["fixture_id"].notna()]
     fx = fx.drop_duplicates("fixture_id").set_index("fixture_id")
-    fx_day = pd.to_datetime(fx["date"], errors="coerce").dt.strftime("%Y-%m-%d")
+    fx_day = pd.to_datetime(fx["date"], errors="coerce", utc=True, format="mixed").dt.strftime("%Y-%m-%d")
     g = rows.groupby("fixture_id").agg(day=("_day", "unique"), home=("home_team", "unique"),
                                        away=("away_team", "unique"), source=("source", "first"),
                                        n=("player_id", "size"))
@@ -184,7 +188,14 @@ def plan(rows: pd.DataFrame | None = None, fx: pd.DataFrame | None = None,
     reason[in_list & multi.to_numpy()] = "history_disagrees_with_itself"
     ok = reason.isna()
     day = g.loc[ok, "day"].map(lambda a: a[0])
-    reason[ok & (day != fx_day.reindex(day.index)).reindex(g.index, fill_value=False)] = "date_differs_from_list"
+    lday = fx_day.reindex(day.index)
+    gap = (pd.to_datetime(day, errors="coerce") - pd.to_datetime(lday, errors="coerce")).dt.days.abs()
+    # Owner 2026-11-09 ("yes, same rule" as the 2026-11-07 club-history ruling): a history date ONE day
+    # off the provider's date is the same match when the row carries the provider's own fixture id
+    # and BOTH clubs are proven (same_fixture_sides below). The provider's date wins; the history date
+    # is kept beside it (out["date_corrections"] -> output/corrections/player_history_date_corrections.csv).
+    one_day = (gap == 1).reindex(g.index, fill_value=False)
+    reason[ok & (day != lday).reindex(g.index, fill_value=False) & ~one_day] = "date_differs_from_list"
     ok = reason.isna()
     pairs = pd.DataFrame({"h": g.loc[ok, "home"].map(lambda a: a[0]), "a": g.loc[ok, "away"].map(lambda a: a[0]),
                           "lh": fx.loc[g.index[ok], "home_name"].to_numpy(),
@@ -196,6 +207,15 @@ def plan(rows: pd.DataFrame | None = None, fx: pd.DataFrame | None = None,
             memo[k] = bool(same_fixture_sides(h, a, lh, la))
         if not memo[k]:
             reason[fid] = "clubs_unproven"
+    shifted = one_day & reason.isna()
+    out["date_corrections"] = pd.DataFrame({
+        "fixture_id": g.index[shifted].astype(int),
+        "history_date": day.reindex(g.index[shifted]).to_numpy(),
+        "provider_date": fx_day.reindex(g.index[shifted]).to_numpy(),
+        "rows": g.loc[shifted, "n"].astype(int).to_numpy(),
+        "rule": "owner 2026-11-09: provider fixture id + both clubs proven, 1 day apart; provider date wins"})
+    out["date_shift_accepted_fixtures"] = int(shifted.sum())
+    out["date_shift_accepted_rows"] = int(g.loc[shifted, "n"].sum())
     for r, n in reason.dropna().value_counts().items():
         out["refused_fixtures"][r] = int(n)
         out["refused_rows"][r] = int(g.loc[reason == r, "n"].sum())
@@ -216,7 +236,9 @@ def plan(rows: pd.DataFrame | None = None, fx: pd.DataFrame | None = None,
                     if (int(f), int(p_)) not in stored}
         out["redo_refused_fixtures"] = int(len(done & unstored))
         done = done - unstored
-    proven["_done"] = [int(f) in done for f in proven.index]
+    # bool dtype explicitly: with no proven fixture the list is empty, an empty OBJECT column, and
+    # proven[~empty_object] selects COLUMNS (all dropped) instead of rows - a KeyError downstream
+    proven["_done"] = pd.Series([int(f) in done for f in proven.index], index=proven.index, dtype=bool)
     out["journaled_fixtures"] = int(proven["_done"].sum())
     todo = proven[~proven["_done"]].copy()
     todo["date"] = fx_day.reindex(todo.index)
@@ -349,11 +371,24 @@ def field_audit(stored: pd.DataFrame) -> dict:
     return out
 
 
+def write_date_corrections(dc) -> int:
+    """Owner 2026-11-09: the provider's date beside the history's one, per accepted fixture (upsert
+    by fixture_id; the history file itself is never rewritten)."""
+    if dc is None or not len(dc):
+        return 0
+    old = pd.read_csv(DATE_CORRECTIONS) if DATE_CORRECTIONS.exists() else pd.DataFrame(columns=dc.columns)
+    allc = pd.concat([old, dc.assign(recorded_at=AL.now_iso())], ignore_index=True)
+    allc = allc.drop_duplicates("fixture_id", keep="first")
+    DATE_CORRECTIONS.parent.mkdir(parents=True, exist_ok=True)
+    allc.to_csv(DATE_CORRECTIONS, index=False)
+    return int(len(dc))
+
+
 def write_audit(p: dict, st: dict) -> dict:
     stored = read_parquet(OUT)
     journal = read_parquet(JOURNAL)
     a = {"generated_at": AL.now_iso(), "owner_decision": "2026-11-04 fix round 8 (props item 3)",
-         "plan": {k: v for k, v in p.items() if k not in ("todo", "fx", "rows_frame")},
+         "plan": {k: v for k, v in p.items() if k not in ("todo", "fx", "rows_frame", "date_corrections")},
          "run": st,
          "stored_rows": int(len(stored)),
          "stored_rows_by_source": stored["source"].value_counts().to_dict() if len(stored) else {},
@@ -381,13 +416,14 @@ def _flush(buf, jbuf):
 def run(limit: int | None = None, dry_run: bool = False, client: AFClient | None = None,
         rows: pd.DataFrame | None = None, fx: pd.DataFrame | None = None, redo_refused: bool = False) -> dict:
     p = plan(rows, fx, redo_refused=redo_refused)
-    pub = {k: v for k, v in p.items() if k not in ("todo", "fx", "rows_frame")}
+    pub = {k: v for k, v in p.items() if k not in ("todo", "fx", "rows_frame", "date_corrections")}
     print(f"[playerrefetch] {json.dumps(pub, default=str)}")
     print(f"[playerrefetch] plan: exactly {p['planned_calls']:,} /fixtures/players call(s) "
           f"(1 per proven fixture not yet journaled; a failed call is retried next run)")
     st = {"calls": 0, "fetched": 0, "rows_stored": 0, "rows_refused": {}, "empty_answers": 0}
     if dry_run:
         return {**pub, **st}
+    write_date_corrections(p.get("date_corrections"))
     if p["planned_calls"] == 0:
         write_audit(p, st)
         return {**pub, **st}
