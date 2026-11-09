@@ -289,10 +289,15 @@ def match_fixtures(lacking: pd.DataFrame, fx: pd.DataFrame,
     by_id = fx.set_index("fixture_id") if len(fx) else pd.DataFrame()
     memo: dict = {}
 
-    def _res(name, pool, key):
+    from prove_af_history_aliases import resolve_with_proven
+
+    def _res(name, pool, key, canon=None):
         k = key + (str(name),)
         if k not in memo:
-            memo[k] = resolve_result(str(name), [str(c) for c in pool])
+            # P7 item 1: resolve_result, else the league-scoped alias PROVEN from same-fixture
+            # evidence (config/af_history_proven_aliases.json); key[1] is the history row's date
+            memo[k] = resolve_with_proven(str(name), [str(c) for c in pool], canon,
+                                          str(pd.Timestamp(key[1]).date()), resolve_result)
         return memo[k]
 
     picks = []
@@ -318,8 +323,8 @@ def match_fixtures(lacking: pd.DataFrame, fx: pd.DataFrame,
             if not parts:
                 continue
             pool = pd.concat(parts)
-            h = _res(r.home_team, pool["home_name"].unique(), (r.league_id, r.date, name, "h"))
-            a = _res(r.away_team, pool["away_name"].unique(), (r.league_id, r.date, name, "a"))
+            h = _res(r.home_team, pool["home_name"].unique(), (r.league_id, r.date, name, "h"), r.canon)
+            a = _res(r.away_team, pool["away_name"].unique(), (r.league_id, r.date, name, "a"), r.canon)
             if h is None or a is None:
                 continue
             found = pool[(pool["home_name"] == h) & (pool["away_name"] == a)]

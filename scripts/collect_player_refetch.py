@@ -77,6 +77,8 @@ OUT = COLLECT_DIR / "player_history_refetch.parquet"
 JOURNAL = COLLECT_DIR / "player_refetch_fixtures.parquet"
 AUDIT = COLLECT_DIR / "player_history_refetch_audit.json"
 CUP_ROWS = COLLECT_DIR / "cup_player_rows.parquet"
+#: provider-proven fixtures outside the collected lists (scripts/collect_refetch_extra_fixtures.py)
+EXTRA_FIXTURES = COLLECT_DIR / "refetch_extra_fixtures.parquet"
 
 #: the columns that are re-read and replaced: every per-player count player_history stores + rating
 VALUE_COLS = list(PSN.HISTORY_COUNT_COLS) + ["rating"]
@@ -137,7 +139,15 @@ def plan(rows: pd.DataFrame | None = None, fx: pd.DataFrame | None = None,
     """The proven fixtures still to fetch (newest first) + every refusal, counted by reason."""
     from player_model.club_rule import same_fixture_sides
     rows = source_rows() if rows is None else rows
-    fx = AL.fixture_list() if fx is None else fx
+    if fx is None:
+        fx = AL.fixture_list()
+        # P7 item 5: fixtures outside the collected lists (national teams etc.), proven by the
+        # provider's own /fixtures?ids answer (scripts/collect_refetch_extra_fixtures.py). Read HERE
+        # only, never by collect_af_lists.fixture_list (the team-id collectors must not see them).
+        extra = AL.fixture_list(EXTRA_FIXTURES) if EXTRA_FIXTURES.exists() else pd.DataFrame()
+        if len(extra):
+            fx = pd.concat([fx, extra[[c for c in fx.columns if c in extra.columns]]],
+                           ignore_index=True).drop_duplicates("fixture_id", keep="first")
     journal = read_parquet(JOURNAL) if journal is None else journal
     out = {"rows": int(len(rows)), "rows_by_source": rows["source"].value_counts().to_dict() if len(rows) else {},
            "refused_fixtures": {}, "refused_rows": {}}

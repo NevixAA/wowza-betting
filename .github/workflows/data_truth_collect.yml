@@ -61,9 +61,9 @@ on:
   workflow_dispatch:
     inputs:
       steps:
-        description: 'Comma list of steps to run (fixtures,htscores,cupstats,afgap,insidebox,fullstats,sidelined,profiles,injuries,coaches,transfers,lineups,playerrefetch,strength)'
+        description: 'Comma list of steps to run (fdraw,fixtures,htscores,cupstats,afgap,insidebox,fullstats,sidelined,profiles,injuries,coaches,transfers,lineups,refetchlists,playerrefetch,strength)'
         required: false
-        default: 'fixtures,htscores,cupstats,afgap,insidebox,fullstats,sidelined,profiles,injuries,coaches,transfers,lineups,playerrefetch,strength'
+        default: 'fdraw,fixtures,htscores,cupstats,afgap,insidebox,fullstats,sidelined,profiles,injuries,coaches,transfers,lineups,refetchlists,playerrefetch,strength'
 
 concurrency:
   group: data-truth-collect
@@ -76,7 +76,7 @@ jobs:
     permissions:
       contents: write
     env:
-      STEPS: ${{ github.event.inputs.steps || 'fixtures,htscores,cupstats,afgap,insidebox,fullstats,sidelined,profiles,injuries,coaches,transfers,lineups,playerrefetch,strength' }}
+      STEPS: ${{ github.event.inputs.steps || 'fdraw,fixtures,htscores,cupstats,afgap,insidebox,fullstats,sidelined,profiles,injuries,coaches,transfers,lineups,refetchlists,playerrefetch,strength' }}
 
     steps:
       - uses: actions/checkout@v4
@@ -126,6 +126,15 @@ jobs:
           echo "push failed after 5 retries"; exit 1
           EOF
           chmod +x /tmp/commit_collected.sh
+
+      # P7 item 4 (2026-11-09): football-data raw season files (free, no key) for the Standard entry
+      # prices: League One 2023-24 was missing and every current-season file stopped about 2026-10-10.
+      # A failed download never replaces a stored file; manifest with url / sha256 / rows.
+      - name: 0. football-data raw season files (no API call)
+        if: contains(env.STEPS, 'fdraw')
+        run: |
+          python scripts/collect_fd_raw.py
+          /tmp/commit_collected.sh fdraw
 
       - name: 1. Cross-league competition fixtures
         if: contains(env.STEPS, 'fixtures')
@@ -260,6 +269,17 @@ jobs:
       # Owner 2026-11-04 (fix round 8): AFTER lineups. player_history (and the UEFA cup rows) hold 0
       # for every null the provider sent; one /fixtures/players re-read per proven fixture stores the
       # counts under the owner's null rule beside the history. Budget-guarded, journaled, resumable.
+      # P7 item 5 (2026-11-09): fixtures the re-fetch rows carry but no collected list holds (national
+      # teams 2025-06..2026-07, a Serie B playout ...), proven by the provider's own /fixtures?ids answer
+      # (20 ids per call, about 13 calls). Read only by the re-fetch plan below, never by the shared list.
+      - name: 15a. Fixture lists for re-fetch rows outside the collected lists
+        if: contains(env.STEPS, 'refetchlists')
+        env:
+          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
+        run: |
+          python scripts/collect_refetch_extra_fixtures.py
+          /tmp/commit_collected.sh refetchlists
+
       - name: 15. Player history re-fetch (null rule)
         if: contains(env.STEPS, 'playerrefetch')
         env:
