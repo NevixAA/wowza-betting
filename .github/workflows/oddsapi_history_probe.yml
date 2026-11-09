@@ -1,0 +1,50 @@
+name: OddsAPI historical probe (owner-approved, one-off)
+
+# Owner 2026-11-09 ("probe first"): one event per league to confirm what soccer HISTORY The Odds API
+# holds (main totals, h2h, btts, alternate totals, player props) before any purchase, with the exact
+# credits recorded. scripts/probe_oddsapi_history.py, hard cap PROBE_CREDIT_CAP (6,000; worst case on
+# 2026-11-09: 5,111). Triggered only by a push to .github/oddsapi_probe_trigger.txt on data-truth-100;
+# commits only output/collect/oddsapi_history_probe.json. Buys nothing.
+
+on:
+  push:
+    branches: [data-truth-100]
+    paths: ['.github/oddsapi_probe_trigger.txt']
+
+concurrency:
+  group: oddsapi-history-probe
+  cancel-in-progress: false
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: data-truth-100
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Probe
+        env:
+          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+          PROBE_CREDIT_CAP: '6000'
+        run: python scripts/probe_oddsapi_history.py
+      - name: Commit the probe result
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -f output/collect/oddsapi_history_probe.json 2>/dev/null || true
+          if git diff --staged --quiet; then echo "nothing to commit"; exit 0; fi
+          git commit -q -m "auto: OddsAPI historical probe $(date -u '+%Y-%m-%d %H:%M UTC')"
+          for i in 1 2 3 4 5; do
+            git pull --rebase --autostash -X theirs origin data-truth-100 && git push origin HEAD:data-truth-100 && exit 0
+            sleep $((RANDOM % 5 + 3))
+          done
+          exit 1

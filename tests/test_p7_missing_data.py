@@ -257,3 +257,37 @@ def test_every_refetch_output_path_is_redirected_by_the_test_fixture():
     for n in ("OUT", "JOURNAL", "AUDIT", "DATE_CORRECTIONS"):
         assert f'"{n}"' in src, n
     assert RF.DATE_CORRECTIONS.name == "player_history_date_corrections.csv"
+
+
+# ── OddsAPI historical probe (no network) ───────────────────────────────────────────────────
+
+import probe_oddsapi_history as PR  # noqa: E402
+
+
+def test_probe_summaries_count_only_what_came_back():
+    feat = {"timestamp": "2024-11-02T08:00:00Z", "data": [
+        {"bookmakers": [{"key": "pinnacle", "markets": [
+            {"key": "totals", "outcomes": [{"name": "Over", "point": 2.5}, {"name": "Under", "point": 2.5}]},
+            {"key": "h2h", "outcomes": []}]}]},
+        {"bookmakers": [{"key": "bet365", "markets": [{"key": "h2h", "outcomes": []}]}]}]}
+    s = PR.summarise_featured(feat)
+    assert (s["events"], s["with_totals"], s["with_totals_2_5"], s["with_h2h"], s["books"]) == (2, 1, 1, 2, 2)
+    ev = {"data": {"bookmakers": [{"key": "b", "markets": [
+        {"key": "alternate_totals", "outcomes": [{"name": "Over", "point": 1.5}, {"name": "Over", "point": 3.5}]}]}]}}
+    e = PR.summarise_event(ev)
+    assert e["markets"]["alternate_totals"]["points"] == [1.5, 3.5] and "btts" not in e["markets"]
+
+
+def test_probe_stops_at_the_credit_cap(monkeypatch):
+    class R:
+        status_code, headers, text = 200, {"x-requests-last": "20"}, ""
+
+        def json(self):
+            return {"data": []}
+    monkeypatch.setattr(PR, "CAP", 40)
+    monkeypatch.setattr(PR.requests, "get", lambda *a, **k: R())
+    monkeypatch.setattr(PR.time, "sleep", lambda s: None)
+    m = PR.Meter("k")
+    for _ in range(5):
+        m.get("u")
+    assert m.spent == 40 and m.calls == 2 and m.stopped
