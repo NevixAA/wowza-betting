@@ -1,10 +1,10 @@
 {
-  "checked_at": "2026-11-09T01:36:37Z",
-  "run_id": "42545670331",
-  "run_number": "1609",
+  "checked_at": "2026-11-09T02:57:31Z",
+  "run_id": "42553297968",
+  "run_number": "1610",
   "event": "schedule",
   "schedule": "",
-  "sha": "c9b91e878d3d",
+  "sha": "a30a1832949d",
   "history_freshness": {
     "newest_match": "2026-11-08",
     "age_days": "1",
@@ -16,58 +16,49 @@
     "notify": "success"
   },
   "output/player_tips.csv": {
-    "rows": 152,
-    "fixtures": 14,
-    "mtime": "2026-11-09T01:33:50Z"
+    "rows": 135,
+    "fixtures": 12,
+    "mtime": "2026-11-09T02:56:17Z"
   },
   "output/player_ledger.csv": {
     "rows": 37838,
     "fixtures": null,
-    "mtime": "2026-11-09T01:36:36Z"
+    "mtime": "2026-11-09T02:53:09Z"
   },
   "git_dirty_outputs": [
-    "M output/clv_records.csv",
-    " M output/model_lineage/props_shadow_h2h.csv",
-    " M output/player_ledger.csv",
-    " M output/player_prop_odds_history.csv",
+    "M output/player_prop_odds_history.csv",
     " M output/player_tips.csv",
     " M output/prop_odds_coverage.json",
-    " M output/props_r2_shadow.csv",
-    "?? output/player_prop_odds_history_archive/2026-11-06.csv",
-    "?? output/prop_quotes/2026-11-09.csv"
+    " M output/prop_quotes/2026-11-09.csv"
   ],
   "predict_log_tail": [
     "[predict] API-Football key found \u2014 will fetch recent match stats for rolling features.",
     "  [Serie A] 5 recent fixtures fetched",
     "  [League One] 5 recent fixtures fetched",
     "  [League Two] 5 recent fixtures fetched",
-    "  [Mexico Liga MX] 5 recent fixtures fetched",
     "  [Brazil Serie A] 5 recent fixtures fetched",
     "  [Norway Eliteserien] 5 recent fixtures fetched",
     "[pipeline] Win probs loaded for 102 WC matches",
     "[player_model] market caps (top-1% real player): {'goals': 0.6846, 'goals2': 0.2807, 'assists': 0.4667, 'sot': 0.95, 'sot2': 0.7574, 'sot3': 0.4926, 'cards': 0.6087}",
-    "[predict] fixture slate: 4 from PROP_LEAGUES via API-Football, 10 from bets.csv supplement",
+    "[predict] fixture slate: 3 from PROP_LEAGUES via API-Football, 9 from bets.csv supplement",
     "[squad_overlay] 19560 live squad entries; current club taken from the live squad for 12634 player(s); 45810 history row(s) corrected where the latest appearance was a former club",
-    "[stale_club] 273 player(s) dropped: not in their club's current squad list, or unseen for 120+ days where no list exists",
-    "[props_gate] first-sight: 47 champion-vs-challenger row(s) -> props_shadow_h2h.csv",
-    "[props_r2_shadow] +376 first-sight row(s) -> output/props_r2_shadow.csv",
-    "[player_model] 152 player prop rows -> /home/runner/work/wowza-betting/wowza-betting/output/player_tips.csv",
+    "[stale_club] 236 player(s) dropped: not in their club's current squad list, or unseen for 120+ days where no list exists",
+    "[props_r2_shadow] +0 first-sight row(s) -> output/props_r2_shadow.csv",
+    "[player_model] 135 player prop rows -> /home/runner/work/wowza-betting/wowza-betting/output/player_tips.csv",
     "[predict] Fetching player prop odds from The Odds API...",
-    "[odds_fetcher] 10 fixture(s) in leagues with no OddsAPI sport key \u2014 never asked, so their players stay AVOID by construction: {'La Liga 2': 2, 'Mexico Liga MX': 2, 'League Two': 2, 'Brazil Serie A': 2, 'Norway Eliteserien': 1, 'Romanian Superliga': 1}",
+    "[odds_fetcher] 8 fixture(s) in leagues with no OddsAPI sport key \u2014 never asked, so their players stay AVOID by construction: {'La Liga 2': 2, 'League Two': 2, 'Brazil Serie A': 2, 'Norway Eliteserien': 1, 'Romanian Superliga': 1}",
     "[odds_fetcher] out of season (valid key, nothing to fetch): ['World Cup', 'Champions League Qualifying', 'Bundesliga 2', 'Conference League', 'USA MLS']",
     "[odds_fetcher] soccer_england_league1: parked \u2014 25 consecutive events with no bookmaker, last probed 2026-11-07; retries every 7d",
-    "[odds_fetcher] api-football second source: +899 quote(s)",
-    "[odds_fetcher] quote log: 1412 per-book quote(s) incl. both sides",
-    "[odds_fetcher] 899 player-market prices | leagues with any prop coverage: ['apifootball:Argentina Primera Division', 'apifootball:Austrian Bundesliga', 'apifootball:Brazil Serie A', 'apifootball:Bundesliga 2', 'apifootball:Championship', 'apifootball:China Super League', 'apifootball:Conference League', 'apifootball:Denmark Superliga', 'apifootball:Europa League', 'apifootball:Ireland Premier Division', 'apifootball:Japan J-League', 'apifootball:La Liga 2', 'apifootball:League One', 'apifootball:League Two', 'apifootball:Ligue 2', 'apifootball:Mexico Liga MX', 'apifootball:Norway Eliteserien', 'apifootball:Romanian Superliga', 'apifootball:Serie B', 'apifootball:Sweden Allsvenskan', 'Premier League', 'Ligue 1', 'Bundesliga', 'Serie A', 'La Liga', 'Champions League', 'USA MLS']",
-    "[odds_fetcher] name match: 8 priced by initial+surname, 0 refused as ambiguous",
-    "[predict] Odds enriched for 16 player/market pairs",
+    "[odds_fetcher] api-football second source: +727 quote(s)",
+    "[odds_fetcher] quote log: 1182 per-book quote(s) incl. both sides",
+    "[odds_fetcher] 727 player-market prices | leagues with any prop coverage: ['apifootball:Argentina Primera Division', 'apifootball:Austrian Bundesliga', 'apifootball:Brazil Serie A', 'apifootball:Bundesliga 2', 'apifootball:Championship', 'apifootball:China Super League', 'apifootball:Conference League', 'apifootball:Denmark Superliga', 'apifootball:Europa League', 'apifootball:Ireland Premier Division', 'apifootball:Japan J-League', 'apifootball:La Liga 2', 'apifootball:League One', 'apifootball:League Two', 'apifootball:Ligue 2', 'apifootball:Mexico Liga MX', 'apifootball:Norway Eliteserien', 'apifootball:Romanian Superliga', 'apifootball:Serie B', 'apifootball:Sweden Allsvenskan', 'Premier League', 'Ligue 1', 'Bundesliga', 'Serie A', 'La Liga', 'Champions League', 'USA MLS']",
+    "[odds_fetcher] name match: 5 priced by initial+surname, 0 refused as ambiguous",
+    "[predict] Odds enriched for 13 player/market pairs",
     "[player_model] 5 ['assists'] tip(s) without a real bookmaker quote stay AVOID (no synthetic price)",
     "[player_model] PAPER feed: promoted 5 top picks (tracking-only, no edge)",
-    "[clv_tracker] closed out 125 records",
     "[clv_tracker] CLV report: {'n': 4926, 'mean_clv_pct': 0.0027, 'mean_clv_prob': None, 'beat_close_rate': 0.297, 'verdict': 'POSITIVE CLV \u2014 genuine edge signal'}",
-    "[lineup] 0 confirmed starters | 152 lineup TBC",
+    "[lineup] 0 confirmed starters | 135 lineup TBC",
     "[predict] SNIPER:0  MARKSMAN:0  VALUABLE:1",
-    "[predict] player_ledger: +28 new signal(s) recorded",
-    "[api_usage] workflow=Player Props af_calls=107 cache_hits=36 cache_hit_rate=25% errors=0  quota_remaining 74593->74487 (account-wide delta 106)"
+    "[api_usage] workflow=Player Props af_calls=100 cache_hits=35 cache_hit_rate=26% errors=0  quota_remaining 74465->74367 (account-wide delta 98)"
   ]
 }
