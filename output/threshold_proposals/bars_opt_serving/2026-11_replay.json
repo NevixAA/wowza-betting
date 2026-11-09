@@ -1,0 +1,1454 @@
+{
+ "caveat": "the live candidates come from the engines serving when they were logged (the\nPRE-RETRAIN models until go-live), while the cells were fitted on the clean retrained models' predictions. The\nreplay therefore shows how the cells filter the board (volume per league x market, the TOP-3 mechanics), not\nhow the clean models will perform.",
+ "proposal_id": "TP-2026-11-09-c2414fcf",
+ "asof": "2026-11-09 02:35:54+00:00",
+ "cells": 57,
+ "candidate_rows": 2345,
+ "engines": {
+  "btts_20261005T101905Z_238e3419": 469,
+  "over15_20261018T080423Z_da4743a2": 469,
+  "over35_20261005T101905Z_f546ce72": 469,
+  "newformat_20261018T080423Z_9eb6b4b4": 263,
+  "standard_20261018T080423Z_64313878": 115,
+  "standard_repaired_20261028T123040Z_1f5805e6": 91
+ },
+ "last_days": 30,
+ "window_rows": 2345,
+ "window_tips": 106,
+ "window_tips_settled": 84,
+ "window_roi_all_tips": -0.0018,
+ "reasons": {
+  "NO_PROPOSED_CELL": 1286,
+  "BELOW_LEAGUE_BAR": 605,
+  "NO_TWO_SIDED_PRICE": 333,
+  "TIPPED": 106,
+  "OUTSIDE_ODDS_RANGE": 15
+ },
+ "window_by_league_market": [
+  {
+   "track": "new_format",
+   "league": "Argentina Primera Division",
+   "mside": "btts_yes",
+   "rows": 45,
+   "tips": 39
+  },
+  {
+   "track": "new_format",
+   "league": "Argentina Primera Division",
+   "mside": "over15_over",
+   "rows": 45,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Argentina Primera Division",
+   "mside": "over25_over",
+   "rows": 45,
+   "tips": 1
+  },
+  {
+   "track": "new_format",
+   "league": "Argentina Primera Division",
+   "mside": "over25_under",
+   "rows": 45,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Argentina Primera Division",
+   "mside": "over35_over",
+   "rows": 45,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Austrian Bundesliga",
+   "mside": "btts_yes",
+   "rows": 14,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Austrian Bundesliga",
+   "mside": "over15_over",
+   "rows": 14,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Austrian Bundesliga",
+   "mside": "over25_over",
+   "rows": 14,
+   "tips": 1
+  },
+  {
+   "track": "new_format",
+   "league": "Austrian Bundesliga",
+   "mside": "over25_under",
+   "rows": 14,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Austrian Bundesliga",
+   "mside": "over35_over",
+   "rows": 14,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Brazil Serie A",
+   "mside": "btts_yes",
+   "rows": 24,
+   "tips": 9
+  },
+  {
+   "track": "new_format",
+   "league": "Brazil Serie A",
+   "mside": "over15_over",
+   "rows": 24,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Brazil Serie A",
+   "mside": "over25_over",
+   "rows": 24,
+   "tips": 2
+  },
+  {
+   "track": "new_format",
+   "league": "Brazil Serie A",
+   "mside": "over25_under",
+   "rows": 24,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Brazil Serie A",
+   "mside": "over35_over",
+   "rows": 24,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "China Super League",
+   "mside": "btts_yes",
+   "rows": 8,
+   "tips": 1
+  },
+  {
+   "track": "new_format",
+   "league": "China Super League",
+   "mside": "over15_over",
+   "rows": 8,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "China Super League",
+   "mside": "over25_over",
+   "rows": 8,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "China Super League",
+   "mside": "over25_under",
+   "rows": 8,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "China Super League",
+   "mside": "over35_over",
+   "rows": 8,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Denmark Superliga",
+   "mside": "btts_yes",
+   "rows": 17,
+   "tips": 2
+  },
+  {
+   "track": "new_format",
+   "league": "Denmark Superliga",
+   "mside": "over15_over",
+   "rows": 17,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Denmark Superliga",
+   "mside": "over25_over",
+   "rows": 17,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Denmark Superliga",
+   "mside": "over25_under",
+   "rows": 17,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Denmark Superliga",
+   "mside": "over35_over",
+   "rows": 17,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Finland Veikkausliiga",
+   "mside": "btts_yes",
+   "rows": 11,
+   "tips": 1
+  },
+  {
+   "track": "new_format",
+   "league": "Finland Veikkausliiga",
+   "mside": "over15_over",
+   "rows": 11,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Finland Veikkausliiga",
+   "mside": "over25_over",
+   "rows": 11,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Finland Veikkausliiga",
+   "mside": "over25_under",
+   "rows": 11,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Finland Veikkausliiga",
+   "mside": "over35_over",
+   "rows": 11,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Ireland Premier Division",
+   "mside": "btts_yes",
+   "rows": 6,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Ireland Premier Division",
+   "mside": "over15_over",
+   "rows": 6,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Ireland Premier Division",
+   "mside": "over25_over",
+   "rows": 6,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Ireland Premier Division",
+   "mside": "over25_under",
+   "rows": 6,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Ireland Premier Division",
+   "mside": "over35_over",
+   "rows": 6,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Japan J-League",
+   "mside": "btts_yes",
+   "rows": 20,
+   "tips": 5
+  },
+  {
+   "track": "new_format",
+   "league": "Japan J-League",
+   "mside": "over15_over",
+   "rows": 20,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Japan J-League",
+   "mside": "over25_over",
+   "rows": 20,
+   "tips": 3
+  },
+  {
+   "track": "new_format",
+   "league": "Japan J-League",
+   "mside": "over25_under",
+   "rows": 20,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Japan J-League",
+   "mside": "over35_over",
+   "rows": 20,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Mexico Liga MX",
+   "mside": "btts_yes",
+   "rows": 24,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Mexico Liga MX",
+   "mside": "over15_over",
+   "rows": 24,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Mexico Liga MX",
+   "mside": "over25_over",
+   "rows": 24,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Mexico Liga MX",
+   "mside": "over25_under",
+   "rows": 24,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Mexico Liga MX",
+   "mside": "over35_over",
+   "rows": 24,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Norway Eliteserien",
+   "mside": "btts_yes",
+   "rows": 23,
+   "tips": 1
+  },
+  {
+   "track": "new_format",
+   "league": "Norway Eliteserien",
+   "mside": "over15_over",
+   "rows": 23,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Norway Eliteserien",
+   "mside": "over25_over",
+   "rows": 23,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Norway Eliteserien",
+   "mside": "over25_under",
+   "rows": 23,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Norway Eliteserien",
+   "mside": "over35_over",
+   "rows": 23,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Sweden Allsvenskan",
+   "mside": "btts_yes",
+   "rows": 26,
+   "tips": 1
+  },
+  {
+   "track": "new_format",
+   "league": "Sweden Allsvenskan",
+   "mside": "over15_over",
+   "rows": 26,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Sweden Allsvenskan",
+   "mside": "over25_over",
+   "rows": 26,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Sweden Allsvenskan",
+   "mside": "over25_under",
+   "rows": 26,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Sweden Allsvenskan",
+   "mside": "over35_over",
+   "rows": 26,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "USA MLS",
+   "mside": "btts_yes",
+   "rows": 45,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "USA MLS",
+   "mside": "over15_over",
+   "rows": 45,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "USA MLS",
+   "mside": "over25_over",
+   "rows": 45,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "USA MLS",
+   "mside": "over25_under",
+   "rows": 45,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "USA MLS",
+   "mside": "over35_over",
+   "rows": 45,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "Bundesliga 2",
+   "mside": "btts_yes",
+   "rows": 21,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "Bundesliga 2",
+   "mside": "over15_over",
+   "rows": 21,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "Bundesliga 2",
+   "mside": "over25_over",
+   "rows": 21,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "Bundesliga 2",
+   "mside": "over25_under",
+   "rows": 21,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "Bundesliga 2",
+   "mside": "over35_over",
+   "rows": 21,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "Championship",
+   "mside": "btts_yes",
+   "rows": 36,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "Championship",
+   "mside": "over15_over",
+   "rows": 36,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "Championship",
+   "mside": "over25_over",
+   "rows": 36,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "Championship",
+   "mside": "over25_under",
+   "rows": 36,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "Championship",
+   "mside": "over35_over",
+   "rows": 36,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "La Liga 2",
+   "mside": "btts_yes",
+   "rows": 38,
+   "tips": 37
+  },
+  {
+   "track": "standard",
+   "league": "La Liga 2",
+   "mside": "over15_over",
+   "rows": 38,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "La Liga 2",
+   "mside": "over25_over",
+   "rows": 38,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "La Liga 2",
+   "mside": "over25_under",
+   "rows": 38,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "La Liga 2",
+   "mside": "over35_over",
+   "rows": 38,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "League One",
+   "mside": "btts_yes",
+   "rows": 32,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "League One",
+   "mside": "over15_over",
+   "rows": 32,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "League One",
+   "mside": "over25_over",
+   "rows": 32,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "League One",
+   "mside": "over25_under",
+   "rows": 32,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "League One",
+   "mside": "over35_over",
+   "rows": 32,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "League Two",
+   "mside": "btts_yes",
+   "rows": 26,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "League Two",
+   "mside": "over15_over",
+   "rows": 26,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "League Two",
+   "mside": "over25_over",
+   "rows": 26,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "League Two",
+   "mside": "over25_under",
+   "rows": 26,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "League Two",
+   "mside": "over35_over",
+   "rows": 26,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "Ligue 2",
+   "mside": "btts_yes",
+   "rows": 21,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "Ligue 2",
+   "mside": "over15_over",
+   "rows": 21,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "Ligue 2",
+   "mside": "over25_over",
+   "rows": 21,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "Ligue 2",
+   "mside": "over25_under",
+   "rows": 21,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "Ligue 2",
+   "mside": "over35_over",
+   "rows": 21,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "Serie B",
+   "mside": "btts_yes",
+   "rows": 32,
+   "tips": 1
+  },
+  {
+   "track": "standard",
+   "league": "Serie B",
+   "mside": "over15_over",
+   "rows": 32,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "Serie B",
+   "mside": "over25_over",
+   "rows": 32,
+   "tips": 2
+  },
+  {
+   "track": "standard",
+   "league": "Serie B",
+   "mside": "over25_under",
+   "rows": 32,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "Serie B",
+   "mside": "over35_over",
+   "rows": 32,
+   "tips": 0
+  }
+ ],
+ "board_rows": 190,
+ "board_tips": 11,
+ "board_by_league_market": [
+  {
+   "track": "new_format",
+   "league": "Brazil Serie A",
+   "mside": "btts_yes",
+   "rows": 2,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Brazil Serie A",
+   "mside": "over15_over",
+   "rows": 2,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Brazil Serie A",
+   "mside": "over25_over",
+   "rows": 2,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Brazil Serie A",
+   "mside": "over25_under",
+   "rows": 2,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Brazil Serie A",
+   "mside": "over35_over",
+   "rows": 2,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Mexico Liga MX",
+   "mside": "btts_yes",
+   "rows": 1,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Mexico Liga MX",
+   "mside": "over15_over",
+   "rows": 1,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Mexico Liga MX",
+   "mside": "over25_over",
+   "rows": 1,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Mexico Liga MX",
+   "mside": "over25_under",
+   "rows": 1,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Mexico Liga MX",
+   "mside": "over35_over",
+   "rows": 1,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Norway Eliteserien",
+   "mside": "btts_yes",
+   "rows": 1,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Norway Eliteserien",
+   "mside": "over15_over",
+   "rows": 1,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Norway Eliteserien",
+   "mside": "over25_over",
+   "rows": 1,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Norway Eliteserien",
+   "mside": "over25_under",
+   "rows": 1,
+   "tips": 0
+  },
+  {
+   "track": "new_format",
+   "league": "Norway Eliteserien",
+   "mside": "over35_over",
+   "rows": 1,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "La Liga 2",
+   "mside": "btts_yes",
+   "rows": 11,
+   "tips": 11
+  },
+  {
+   "track": "standard",
+   "league": "La Liga 2",
+   "mside": "over15_over",
+   "rows": 11,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "La Liga 2",
+   "mside": "over25_over",
+   "rows": 11,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "La Liga 2",
+   "mside": "over25_under",
+   "rows": 11,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "La Liga 2",
+   "mside": "over35_over",
+   "rows": 11,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "League One",
+   "mside": "btts_yes",
+   "rows": 12,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "League One",
+   "mside": "over15_over",
+   "rows": 12,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "League One",
+   "mside": "over25_over",
+   "rows": 12,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "League One",
+   "mside": "over25_under",
+   "rows": 12,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "League One",
+   "mside": "over35_over",
+   "rows": 12,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "League Two",
+   "mside": "btts_yes",
+   "rows": 11,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "League Two",
+   "mside": "over15_over",
+   "rows": 11,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "League Two",
+   "mside": "over25_over",
+   "rows": 11,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "League Two",
+   "mside": "over25_under",
+   "rows": 11,
+   "tips": 0
+  },
+  {
+   "track": "standard",
+   "league": "League Two",
+   "mside": "over35_over",
+   "rows": 11,
+   "tips": 0
+  }
+ ],
+ "top3_last_gws": {
+  "weeks": [
+   "2026-W43",
+   "2026-W44",
+   "2026-W45"
+  ],
+  "picks": 40,
+  "roi": -0.03,
+  "won": 21,
+  "by_week": {
+   "2026-W43": {
+    "picks": 8,
+    "roi": -0.5875
+   },
+   "2026-W44": {
+    "picks": 15,
+    "roi": -0.033
+   },
+   "2026-W45": {
+    "picks": 17,
+    "roi": 0.235
+   }
+  },
+  "list": [
+   {
+    "date": "2026-11-08",
+    "track": "new_format",
+    "league": "Japan J-League",
+    "home_team": "JEF United Chiba",
+    "away_team": "Mito HollyHock",
+    "mside": "over25_over",
+    "odds_side": 1.94,
+    "tier": "SNIPER",
+    "ev_est": 0.1775373200000001,
+    "won": false,
+    "pnl": -1.0
+   },
+   {
+    "date": "2026-11-07",
+    "track": "new_format",
+    "league": "Japan J-League",
+    "home_team": "Shimizu S Pulse",
+    "away_team": "Tokyo Verdy",
+    "mside": "btts_yes",
+    "odds_side": 2.0,
+    "tier": "SNIPER",
+    "ev_est": 0.10380600000000006,
+    "won": false,
+    "pnl": -1.0
+   },
+   {
+    "date": "2026-11-07",
+    "track": "new_format",
+    "league": "Japan J-League",
+    "home_team": "Shimizu S Pulse",
+    "away_team": "Tokyo Verdy",
+    "mside": "over25_over",
+    "odds_side": 2.25,
+    "tier": "VALUABLE",
+    "ev_est": 0.02908025000000003,
+    "won": false,
+    "pnl": -1.0
+   },
+   {
+    "date": "2026-11-08",
+    "track": "new_format",
+    "league": "Austrian Bundesliga",
+    "home_team": "Hartberg",
+    "away_team": "Rheindorf Altach",
+    "mside": "over25_over",
+    "odds_side": 1.75,
+    "tier": "VALUABLE",
+    "ev_est": 0.1256997499999999,
+    "won": true,
+    "pnl": 0.75
+   },
+   {
+    "date": "2026-11-05",
+    "track": "new_format",
+    "league": "Brazil Serie A",
+    "home_team": "Palmeiras",
+    "away_team": "Remo",
+    "mside": "btts_yes",
+    "odds_side": 2.175,
+    "tier": "SNIPER",
+    "ev_est": 0.08074662499999996,
+    "won": true,
+    "pnl": 1.1749999999999998
+   },
+   {
+    "date": "2026-11-05",
+    "track": "new_format",
+    "league": "Brazil Serie A",
+    "home_team": "Sao Paulo",
+    "away_team": "Corinthians",
+    "mside": "over25_over",
+    "odds_side": 2.5,
+    "tier": "SNIPER",
+    "ev_est": 0.07392500000000002,
+    "won": false,
+    "pnl": -1.0
+   },
+   {
+    "date": "2026-11-04",
+    "track": "new_format",
+    "league": "Brazil Serie A",
+    "home_team": "Flamengo",
+    "away_team": "Gr\u00eamio",
+    "mside": "btts_yes",
+    "odds_side": 2.05,
+    "tier": "SNIPER",
+    "ev_est": 0.055850449999999885,
+    "won": true,
+    "pnl": 1.0499999999999998
+   },
+   {
+    "date": "2026-10-31",
+    "track": "new_format",
+    "league": "Japan J-League",
+    "home_team": "Fagiano Okayama",
+    "away_team": "FC Tokyo",
+    "mside": "btts_yes",
+    "odds_side": 1.8,
+    "tier": "SNIPER",
+    "ev_est": 0.0627542000000001,
+    "won": false,
+    "pnl": -1.0
+   },
+   {
+    "date": "2026-11-01",
+    "track": "new_format",
+    "league": "Japan J-League",
+    "home_team": "JEF United Chiba",
+    "away_team": "Avispa Fukuoka",
+    "mside": "over25_over",
+    "odds_side": 2.05,
+    "tier": "SNIPER",
+    "ev_est": 0.05287795000000006,
+    "won": true,
+    "pnl": 1.0499999999999998
+   },
+   {
+    "date": "2026-11-01",
+    "track": "new_format",
+    "league": "Japan J-League",
+    "home_team": "V-Varen Nagasaki",
+    "away_team": "Tokyo Verdy",
+    "mside": "btts_yes",
+    "odds_side": 1.83,
+    "tier": "SNIPER",
+    "ev_est": -0.0060080499999999315,
+    "won": true,
+    "pnl": 0.8300000000000001
+   },
+   {
+    "date": "2026-11-07",
+    "track": "standard",
+    "league": "Serie B",
+    "home_team": "Pisa",
+    "away_team": "S\u00fcdtirol",
+    "mside": "btts_yes",
+    "odds_side": 1.89,
+    "tier": "SNIPER",
+    "ev_est": 0.05950942999999986,
+    "won": true,
+    "pnl": 0.8899999999999999
+   },
+   {
+    "date": "2026-10-26",
+    "track": "new_format",
+    "league": "Brazil Serie A",
+    "home_team": "Flamengo",
+    "away_team": "Atletico Mineiro",
+    "mside": "btts_yes",
+    "odds_side": 1.905,
+    "tier": "SNIPER",
+    "ev_est": 0.04952927000000007,
+    "won": true,
+    "pnl": 0.905
+   },
+   {
+    "date": "2026-10-28",
+    "track": "new_format",
+    "league": "Brazil Serie A",
+    "home_team": "Bragantino-SP",
+    "away_team": "Chapecoense",
+    "mside": "btts_yes",
+    "odds_side": 1.85,
+    "tier": "MARKSMAN",
+    "ev_est": 0.01918905000000004,
+    "won": false,
+    "pnl": -1.0
+   },
+   {
+    "date": "2026-10-30",
+    "track": "new_format",
+    "league": "Brazil Serie A",
+    "home_team": "Corinthians",
+    "away_team": "Mirassol",
+    "mside": "btts_yes",
+    "odds_side": 2.0,
+    "tier": "MARKSMAN",
+    "ev_est": 0.015994000000000064,
+    "won": false,
+    "pnl": -1.0
+   },
+   {
+    "date": "2026-11-08",
+    "track": "new_format",
+    "league": "Finland Veikkausliiga",
+    "home_team": "HJK Helsinki",
+    "away_team": "AC Oulu",
+    "mside": "btts_yes",
+    "odds_side": 1.75,
+    "tier": "SNIPER",
+    "ev_est": 0.046424749999999904,
+    "won": true,
+    "pnl": 0.75
+   },
+   {
+    "date": "2026-11-08",
+    "track": "new_format",
+    "league": "China Super League",
+    "home_team": "Dalian Yingbo",
+    "away_team": "Tianjin Jinmen Tiger FC",
+    "mside": "btts_yes",
+    "odds_side": 1.91,
+    "tier": "SNIPER",
+    "ev_est": 0.0405622699999999,
+    "won": true,
+    "pnl": 0.9099999999999999
+   },
+   {
+    "date": "2026-11-01",
+    "track": "new_format",
+    "league": "Argentina Primera Division",
+    "home_team": "Newells Old Boys",
+    "away_team": "Union Santa Fe",
+    "mside": "over25_over",
+    "odds_side": 2.44,
+    "tier": "SNIPER",
+    "ev_est": 0.03915696000000013,
+    "won": false,
+    "pnl": -1.0
+   },
+   {
+    "date": "2026-10-26",
+    "track": "new_format",
+    "league": "Argentina Primera Division",
+    "home_team": "Union Santa Fe",
+    "away_team": "Estudiantes",
+    "mside": "btts_yes",
+    "odds_side": 1.88,
+    "tier": "VALUABLE",
+    "ev_est": 0.0028,
+    "won": true,
+    "pnl": 0.8799999999999999
+   },
+   {
+    "date": "2026-10-26",
+    "track": "new_format",
+    "league": "Argentina Primera Division",
+    "home_team": "Central C\u00f3rdoba",
+    "away_team": "Velez Sarsfield BA",
+    "mside": "btts_yes",
+    "odds_side": 1.98,
+    "tier": "VALUABLE",
+    "ev_est": 0.0028,
+    "won": false,
+    "pnl": -1.0
+   },
+   {
+    "date": "2026-10-25",
+    "track": "new_format",
+    "league": "Norway Eliteserien",
+    "home_team": "Molde",
+    "away_team": "Fredrikstad FK",
+    "mside": "btts_yes",
+    "odds_side": 1.56,
+    "tier": "SNIPER",
+    "ev_est": 0.027391039999999922,
+    "won": true,
+    "pnl": 0.56
+   },
+   {
+    "date": "2026-10-25",
+    "track": "standard",
+    "league": "La Liga 2",
+    "home_team": "CD Castell\u00f3n",
+    "away_team": "Sporting Gij\u00f3n",
+    "mside": "btts_yes",
+    "odds_side": 1.75,
+    "tier": "VALUABLE",
+    "ev_est": 0.0227,
+    "won": false,
+    "pnl": -1.0
+   },
+   {
+    "date": "2026-10-25",
+    "track": "standard",
+    "league": "La Liga 2",
+    "home_team": "Albacete",
+    "away_team": "CD Eldense",
+    "mside": "btts_yes",
+    "odds_side": 1.62,
+    "tier": "VALUABLE",
+    "ev_est": 0.0227,
+    "won": false,
+    "pnl": -1.0
+   },
+   {
+    "date": "2026-10-25",
+    "track": "standard",
+    "league": "La Liga 2",
+    "home_team": "C\u00e1diz CF",
+    "away_team": "AD Ceuta FC",
+    "mside": "btts_yes",
+    "odds_side": 1.74,
+    "tier": "VALUABLE",
+    "ev_est": 0.0227,
+    "won": true,
+    "pnl": 0.74
+   },
+   {
+    "date": "2026-10-26",
+    "track": "standard",
+    "league": "La Liga 2",
+    "home_team": "Andorra CF",
+    "away_team": "Burgos CF",
+    "mside": "btts_yes",
+    "odds_side": 1.75,
+    "tier": "VALUABLE",
+    "ev_est": 0.0227,
+    "won": true,
+    "pnl": 0.75
+   },
+   {
+    "date": "2026-10-31",
+    "track": "standard",
+    "league": "La Liga 2",
+    "home_team": "Albacete",
+    "away_team": "Sabadell FC",
+    "mside": "btts_yes",
+    "odds_side": 1.81,
+    "tier": "VALUABLE",
+    "ev_est": 0.0227,
+    "won": true,
+    "pnl": 0.81
+   },
+   {
+    "date": "2026-10-31",
+    "track": "standard",
+    "league": "La Liga 2",
+    "home_team": "Celta Fortuna",
+    "away_team": "C\u00f3rdoba",
+    "mside": "btts_yes",
+    "odds_side": 1.46,
+    "tier": "VALUABLE",
+    "ev_est": 0.0227,
+    "won": true,
+    "pnl": 0.45999999999999996
+   },
+   {
+    "date": "2026-11-02",
+    "track": "standard",
+    "league": "La Liga 2",
+    "home_team": "Oviedo",
+    "away_team": "Las Palmas",
+    "mside": "btts_yes",
+    "odds_side": 1.83,
+    "tier": "VALUABLE",
+    "ev_est": 0.0227,
+    "won": true,
+    "pnl": 0.8300000000000001
+   },
+   {
+    "date": "2026-11-02",
+    "track": "standard",
+    "league": "La Liga 2",
+    "home_team": "Real Valladolid CF",
+    "away_team": "Legan\u00e9s",
+    "mside": "btts_yes",
+    "odds_side": 1.82,
+    "tier": "VALUABLE",
+    "ev_est": 0.0227,
+    "won": true,
+    "pnl": 0.8200000000000001
+   },
+   {
+    "date": "2026-11-02",
+    "track": "standard",
+    "league": "La Liga 2",
+    "home_team": "Mallorca",
+    "away_team": "C\u00e1diz CF",
+    "mside": "btts_yes",
+    "odds_side": 1.93,
+    "tier": "VALUABLE",
+    "ev_est": 0.0227,
+    "won": true,
+    "pnl": 0.9299999999999999
+   },
+   {
+    "date": "2026-11-01",
+    "track": "new_format",
+    "league": "Denmark Superliga",
+    "home_team": "Viborg FF",
+    "away_team": "AC Horsens",
+    "mside": "btts_yes",
+    "odds_side": 1.69,
+    "tier": "VALUABLE",
+    "ev_est": 0.004640780000000122,
+    "won": false,
+    "pnl": -1.0
+   },
+   {
+    "date": "2026-10-25",
+    "track": "new_format",
+    "league": "Argentina Primera Division",
+    "home_team": "Independiente",
+    "away_team": "Boca Juniors",
+    "mside": "btts_yes",
+    "odds_side": 2.1,
+    "tier": "VALUABLE",
+    "ev_est": 0.0028,
+    "won": false,
+    "pnl": -1.0
+   },
+   {
+    "date": "2026-10-25",
+    "track": "new_format",
+    "league": "Argentina Primera Division",
+    "home_team": "Aldosivi Mar del Plata",
+    "away_team": "Belgrano de Cordoba",
+    "mside": "btts_yes",
+    "odds_side": 1.98,
+    "tier": "VALUABLE",
+    "ev_est": 0.0028,
+    "won": false,
+    "pnl": -1.0
+   },
+   {
+    "date": "2026-10-25",
+    "track": "new_format",
+    "league": "Argentina Primera Division",
+    "home_team": "River Plate",
+    "away_team": "Racing Club",
+    "mside": "btts_yes",
+    "odds_side": 2.1,
+    "tier": "VALUABLE",
+    "ev_est": 0.0028,
+    "won": false,
+    "pnl": -1.0
+   },
+   {
+    "date": "2026-11-02",
+    "track": "new_format",
+    "league": "Argentina Primera Division",
+    "home_team": "Platense",
+    "away_team": "Central C\u00f3rdoba",
+    "mside": "btts_yes",
+    "odds_side": 2.25,
+    "tier": "VALUABLE",
+    "ev_est": 0.0028,
+    "won": false,
+    "pnl": -1.0
+   },
+   {
+    "date": "2026-11-02",
+    "track": "new_format",
+    "league": "Argentina Primera Division",
+    "home_team": "Defensa y Justicia",
+    "away_team": "Independiente",
+    "mside": "btts_yes",
+    "odds_side": 1.87,
+    "tier": "VALUABLE",
+    "ev_est": 0.0028,
+    "won": true,
+    "pnl": 0.8700000000000001
+   },
+   {
+    "date": "2026-11-03",
+    "track": "new_format",
+    "league": "Argentina Primera Division",
+    "home_team": "Independiente Rivadavia",
+    "away_team": "Banfield",
+    "mside": "btts_yes",
+    "odds_side": 2.02,
+    "tier": "VALUABLE",
+    "ev_est": 0.0028,
+    "won": true,
+    "pnl": 1.02
+   },
+   {
+    "date": "2026-11-08",
+    "track": "new_format",
+    "league": "Denmark Superliga",
+    "home_team": "AGF Aarhus",
+    "away_team": "AC Horsens",
+    "mside": "btts_yes",
+    "odds_side": 1.61,
+    "tier": "VALUABLE",
+    "ev_est": -0.009679339999999925,
+    "won": false,
+    "pnl": -1.0
+   },
+   {
+    "date": "2026-10-25",
+    "track": "new_format",
+    "league": "Sweden Allsvenskan",
+    "home_team": "Mj\u00e4llby AIF",
+    "away_team": "Hammarby IF",
+    "mside": "btts_yes",
+    "odds_side": 1.7,
+    "tier": "SNIPER",
+    "ev_est": -0.010996099999999953,
+    "won": false,
+    "pnl": -1.0
+   },
+   {
+    "date": "2026-10-28",
+    "track": "standard",
+    "league": "Serie B",
+    "home_team": "Pisa",
+    "away_team": "Palermo",
+    "mside": "over25_over",
+    "odds_side": 1.82,
+    "tier": "SNIPER",
+    "ev_est": -0.0443730349102599,
+    "won": true,
+    "pnl": 0.8200000000000001
+   },
+   {
+    "date": "2026-11-01",
+    "track": "standard",
+    "league": "Serie B",
+    "home_team": "Avellino",
+    "away_team": "Pisa",
+    "mside": "over25_over",
+    "odds_side": 2.06,
+    "tier": "SNIPER",
+    "ev_est": -0.05041524034853062,
+    "won": false,
+    "pnl": -1.0
+   }
+  ]
+ }
+}

@@ -178,12 +178,31 @@ def _num(v) -> float:
     return x if math.isfinite(x) else float("nan")
 
 
-def league_bars(ctx: dict, league: str, market: str) -> tuple[dict | None, str]:
-    """(bars, "") or (None, reason) for one league x panel market. Never a global value."""
+#: panel side -> the bars_opt cell side of each params key (src/bars_opt/serve.py)
+_CELL_SIDE = {("ou25", "OVER"): "over", ("ou25", "UNDER"): "under", ("btts", "YES"): "yes",
+              ("over15", "OVER"): "yes", ("over35", "OVER"): "yes"}
+
+
+def league_bars(ctx: dict, league: str, market: str, side: str | None = None) -> tuple[dict | None, str]:
+    """(bars, "") or (None, reason) for one league x panel market (x side). Never a global value.
+    An OPTIMIZED entry (bars_opt cells) returns its owner-applied cell for the side under "cell"."""
     key = MARKETS[market][0]
     lp = (ctx["standard"] if key == "ou25" else (ctx["side"].get(key) or {})).get(league)
     if not isinstance(lp, dict):
         return None, R_NO_BAR
+    from src.bars_opt import serve as BS
+    if BS.CELL_KEY in lp:
+        cs = _CELL_SIDE.get((key, str(side or "").upper()))
+        if cs is None:
+            return None, R_NO_BAR
+        cell, why = BS.served_cell(lp, key, league, cs, frozenset(ctx["applied"]))
+        if cell is None:
+            return None, (R_NOT_APPLIED if "not applied" in why else (R_BAD_BAR if "cell lacks" in why
+                                                                      or "not ordered" in why else R_NO_BAR))
+        return {"valuable": float(cell["valuable_th"]), "marksman": float(cell["marksman_th"]),
+                "sniper": float(cell["sniper_th"]), "status": str(cell["verdict"]),
+                "evidence": f"bars_opt {cell['config']} {cell['mode']} {cell.get('bar_basis') or ''}".strip(),
+                "cell": cell}, ""
     val, mm, sn = _num(lp.get("valuable_th")), _num(lp.get("marksman_th")), _num(lp.get("sniper_th"))
     if any(math.isnan(x) for x in (val, mm, sn)):
         return None, R_NO_BAR
@@ -207,14 +226,24 @@ def qualify(cands: pd.DataFrame, ctx: dict) -> pd.DataFrame:
     d = LW._plain(cands.copy()) if len(cands) else cands.copy()
     if d.empty:
         return d.assign(edge=pd.Series(dtype=float), tier="", reason="")
-    edge, tier, reason, bv, bm, bs, bst, bev = [], [], [], [], [], [], [], []
+    edge, tier, reason, bv, bm, bs, bst, bev, evr = [], [], [], [], [], [], [], [], []
     for r in d.to_dict("records"):
         pm, pf = _num(r.get("p_model_raw")), _num(r.get("p_market_fair"))
         e = pm - pf if not (math.isnan(pm) or math.isnan(pf)) else float("nan")
-        b, why = league_bars(ctx, str(r.get("league")), str(r.get("market")))
-        t = ""
+        b, why = league_bars(ctx, str(r.get("league")), str(r.get("market")), str(r.get("side")))
+        t, ev_rank = "", float("nan")
         if str(r.get("price_quality_state")) not in LW.PRICED_STATES or math.isnan(e) or not (_num(r.get("odds")) > 1):
             why = R_NO_PRICE
+        elif b is not None and "cell" in b:
+            # the OPTIMIZED cell decides (src/bars_opt/serve.py): its probability source, measure, odds range
+            from src.bars_opt import serve as BS
+            res = BS.score(pd.DataFrame([{"league": str(r.get("league")), "p_side": pm, "fair": pf,
+                                          "odds": _num(r.get("odds"))}]), b["cell"])
+            t = str(res["tier"].iloc[0] or "")
+            if not t:
+                why, t = (R_BELOW if res["reason"].iloc[0] == BS.R_BELOW else str(res["reason"].iloc[0])), "AVOID"
+            else:
+                ev_rank = _num(res["ev_est"].iloc[0])
         elif b is not None:
             t = tier_for(e, b)
             if t == "AVOID":
@@ -227,8 +256,9 @@ def qualify(cands: pd.DataFrame, ctx: dict) -> pd.DataFrame:
         bs.append(b["sniper"] if b else float("nan"))
         bst.append(b["status"] if b else "")
         bev.append(b["evidence"] if b else "")
+        evr.append(ev_rank)
     return d.assign(edge=edge, tier=tier, reason=reason, bar_valuable=bv, bar_marksman=bm, bar_sniper=bs,
-                    bar_status=bst, bar_evidence=bev)
+                    bar_status=bst, bar_evidence=bev, ev_rank=evr)
 
 
 def _direction(market: str, side: str) -> str | None:
@@ -256,10 +286,13 @@ def select_week(q: pd.DataFrame, freeze: pd.Timestamp, issue: pd.Timestamp,
         elif r.get("reason"):
             bump(r["reason"])
         else:
-            pool.append((LW.rs1_key(r), i))
+            # a cell-served candidate ranks by its cell's expected value first (the study's TOP-3 rule,
+            # src/bars_opt/study.top3: ev_est descending), then RS-1; a legacy-bar candidate by RS-1 alone
+            evk = _num(r.get("ev_rank"))
+            pool.append(((0, -evk) if not math.isnan(evk) else (1, 0.0), LW.rs1_key(r), i))
     pool.sort()
     taken, dirs = [], {}
-    for _key, i in pool:
+    for _ev, _key, i in pool:
         r = q.iloc[i]
         if len(taken) >= TOP_N:
             bump(R_RANK)

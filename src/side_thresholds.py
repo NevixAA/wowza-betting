@@ -79,6 +79,18 @@ def own_bars(lp: dict | None, market: str, league: str,
         return None, f"{NO_LEAGUE_BAR}: no {market} params entry for {league}"
     if lp.get("drop") is True:
         return None, f"{NO_LEAGUE_BAR}: {market} switched OFF for {league} (drop)"
+    if "bars_opt" in lp:
+        # an OPTIMIZED entry (src/bars_opt/serve.py): tiering reads its cells (per side, with the cell's own
+        # probability source, edge measure and odds range); this returns the bars of its first owner-applied
+        # cell for the readers that only need to know THAT the league has its own bars (gates, staking)
+        from src.bars_opt import serve as BS
+        reasons = []
+        for side in BS.SIDES.get(market, ()):
+            cell, why = BS.served_cell(lp, market, league, side, applied)
+            if cell is not None:
+                return (float(cell["sniper_th"]), float(cell["marksman_th"]), float(cell["valuable_th"])), ""
+            reasons.append(why)
+        return None, "; ".join(reasons) or f"{NO_LEAGUE_BAR}: {market} {league} has no bars_opt cell"
     sn, mm, val = _num(lp.get("sniper_th")), _num(lp.get("marksman_th")), _num(lp.get("valuable_th"))
     missing = [k for k, v in (("sniper_th", sn), ("marksman_th", mm), ("valuable_th", val)) if v is None]
     if missing:

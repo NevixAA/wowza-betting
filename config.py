@@ -89,10 +89,11 @@ SIDE_MARKETS = {
 }
 # Side-market fair price (owner decision 2026-11-01, R2-C finding 4). "devig_two_sided": the median
 # over books of the power-de-vigged same-book pair (src/integrity/side_edge_devig); a fixture with no
-# two-sided pair gets NO tip. "legacy_1_08": the old (1/odds)/1.08, which inflated edges in the tails
+# two-sided pair gets NO tip. The old "legacy_1_08" ((1/odds)/1.08) inflated edges in the tails
 # (+2.67pp on sharp books) and produced 92 of 617 logged tips on its own.
-# ROLLBACK: set SIDE_EDGE_FAIR_PRICE: "legacy_1_08" in predict.yml (or here).
-SIDE_EDGE_FAIR_PRICES = ("devig_two_sided", "legacy_1_08")
+# legacy_1_08 (an ASSUMED 8% margin = a fake price) was removed 2026-11-09 (owner: no fakes, no global vars);
+# the only fair price is the two-sided de-vig, and pipeline._generate_side_bets no longer reads this switch.
+SIDE_EDGE_FAIR_PRICES = ("devig_two_sided",)
 SIDE_EDGE_FAIR_PRICE = os.getenv("SIDE_EDGE_FAIR_PRICE", "devig_two_sided").strip() or "devig_two_sided"
 if SIDE_EDGE_FAIR_PRICE not in SIDE_EDGE_FAIR_PRICES:     # a typo falls to the STRICTER rule
     import logging as _logging
@@ -524,6 +525,10 @@ KELLY_FRACTION = float(os.getenv("KELLY_FRACTION", "0.25"))
 FLAT_STAKE     = float(os.getenv("FLAT_STAKE",     "1.0"))
 USE_KELLY      = os.getenv("USE_KELLY", "0") == "1"
 
+# HISTORICAL (served until 2026-11-09; NOT READ BY SERVING). The global minimum O/U 2.5 odds. Since the
+# owner rule "no global vars" a served tip uses its league's OWN odds range: the bars_opt cell's odds_min /
+# odds_max (src/bars_opt/serve.py), or a legacy entry's own min_over_odds / min_under_odds. Kept for the
+# research replays and the research-lock history.
 MIN_OVER_ODDS  = float(os.getenv("MIN_OVER_ODDS",  "1.75"))
 MIN_UNDER_ODDS = float(os.getenv("MIN_UNDER_ODDS", "1.75"))
 
@@ -533,6 +538,7 @@ MIN_UNDER_ODDS = float(os.getenv("MIN_UNDER_ODDS", "1.75"))
 # (Pro docs/WOWZA_EDGE_REASSESSMENT_2026_10.md). NEW-FORMAT TRACK ONLY - standard is untouched
 # (invariant 1). The fixture is still scored, written to predictions.csv and both shadow logs, so
 # collection continues; it just never becomes a tip. Set to 0 to disable.
+# HISTORICAL since 2026-11-09 (NOT READ BY SERVING): a served tip uses its league's own odds range (bars_opt).
 NF_MAX_OU_ODDS = float(os.getenv("NF_MAX_OU_ODDS", "3.00"))
 
 # ── Drift settings ────────────────────────────────────────────────────────────

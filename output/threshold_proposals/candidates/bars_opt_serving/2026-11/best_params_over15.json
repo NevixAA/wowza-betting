@@ -1,0 +1,390 @@
+{
+  "Championship": {
+    "bars_opt": {
+      "yes": {
+        "mside": "over15_over",
+        "track": "standard",
+        "league": "Championship",
+        "month": "2026-11",
+        "config": "RAW|EDGE|max-|min-",
+        "config_basis": "NO_SELECTION_EVIDENCE",
+        "source": "RAW",
+        "measure": "EDGE",
+        "odds_max": null,
+        "odds_min": null,
+        "mode": "MODEL",
+        "valuable_th": 0.02,
+        "marksman_th": 0.03,
+        "sniper_th": 0.03,
+        "bar_basis": "LEARNED_BLEND",
+        "shrink_weight_at_valuable": 0.6588,
+        "wf_bets": 5,
+        "wf_roi": 0.07,
+        "wf_roi_shrunk": 0.0108,
+        "tier2": false,
+        "tier2_bets": 3,
+        "tier2_roi": -0.1133,
+        "source_params": {},
+        "verdict": "UNPROVEN",
+        "study_final": {
+          "bets": 0,
+          "roi": null,
+          "ci95": [
+            null,
+            null
+          ],
+          "p_one_sided": null,
+          "clv": null,
+          "clv_n": 0
+        },
+        "study_verdict": "OFF",
+        "study_reason": "INSUFFICIENT_SELECTION_EVIDENCE",
+        "prod_market": "over15",
+        "side": "yes"
+      }
+    },
+    "drop": false,
+    "source": "bars_opt",
+    "month": "2026-11",
+    "status": "UNPROVEN",
+    "approved": false,
+    "bets": 5,
+    "roi": 0.07
+  },
+  "League One": {
+    "bars_opt": {
+      "yes": {
+        "mside": "over15_over",
+        "track": "standard",
+        "league": "League One",
+        "month": "2026-11",
+        "config": "RAW|EDGE|max-|min-",
+        "config_basis": "NO_SELECTION_EVIDENCE",
+        "source": "RAW",
+        "measure": "EDGE",
+        "odds_max": null,
+        "odds_min": null,
+        "mode": "MODEL",
+        "valuable_th": 0.03,
+        "marksman_th": 0.03,
+        "sniper_th": 0.04,
+        "bar_basis": "LEARNED_BLEND",
+        "shrink_weight_at_valuable": 0.9699,
+        "wf_bets": 3,
+        "wf_roi": 0.3733,
+        "wf_roi_shrunk": 0.358,
+        "tier2": false,
+        "tier2_bets": 0,
+        "tier2_roi": null,
+        "source_params": {},
+        "verdict": "UNPROVEN",
+        "study_final": {
+          "bets": 0,
+          "roi": null,
+          "ci95": [
+            null,
+            null
+          ],
+          "p_one_sided": null,
+          "clv": null,
+          "clv_n": 0
+        },
+        "study_verdict": "OFF",
+        "study_reason": "INSUFFICIENT_SELECTION_EVIDENCE",
+        "prod_market": "over15",
+        "side": "yes"
+      }
+    },
+    "drop": false,
+    "source": "bars_opt",
+    "month": "2026-11",
+    "status": "UNPROVEN",
+    "approved": false,
+    "bets": 3,
+    "roi": 0.3733
+  },
+  "Ligue 2": {
+    "bars_opt": {
+      "yes": {
+        "mside": "over15_over",
+        "track": "standard",
+        "league": "Ligue 2",
+        "month": "2026-11",
+        "config": "RAW|EDGE|max-|min-",
+        "config_basis": "NO_SELECTION_EVIDENCE",
+        "source": "RAW",
+        "measure": "EDGE",
+        "odds_max": null,
+        "odds_min": null,
+        "mode": "MODEL",
+        "valuable_th": 0.02,
+        "marksman_th": 0.02,
+        "sniper_th": 0.02,
+        "bar_basis": "LEARNED_BLEND",
+        "shrink_weight_at_valuable": 0.9971,
+        "wf_bets": 2,
+        "wf_roi": 0.42,
+        "wf_roi_shrunk": 0.4185,
+        "tier2": false,
+        "tier2_bets": 0,
+        "tier2_roi": null,
+        "source_params": {},
+        "verdict": "UNPROVEN",
+        "study_final": {
+          "bets": 0,
+          "roi": null,
+          "ci95": [
+            null,
+            null
+          ],
+          "p_one_sided": null,
+          "clv": null,
+          "clv_n": 0
+        },
+        "study_verdict": "OFF",
+        "study_reason": "INSUFFICIENT_SELECTION_EVIDENCE",
+        "prod_market": "over15",
+        "side": "yes"
+      }
+    },
+    "drop": false,
+    "source": "bars_opt",
+    "month": "2026-11",
+    "status": "UNPROVEN",
+    "approved": false,
+    "bets": 2,
+    "roi": 0.42
+  },
+  "Argentina Primera Division": {
+    "bars_opt": {
+      "yes": {
+        "mside": "over15_over",
+        "track": "new_format",
+        "league": "Argentina Primera Division",
+        "month": "2026-11",
+        "config": "BLEND|EV|max-|min-",
+        "config_basis": "SELECTED",
+        "source": "BLEND",
+        "measure": "EV",
+        "odds_max": null,
+        "odds_min": null,
+        "mode": "MODEL",
+        "valuable_th": 0.02,
+        "marksman_th": 0.04,
+        "sniper_th": 0.04,
+        "bar_basis": "OWN_BETS",
+        "shrink_weight_at_valuable": 0.978,
+        "wf_bets": 193,
+        "wf_roi": 0.0642,
+        "wf_roi_shrunk": 0.0642,
+        "tier2": false,
+        "tier2_bets": 60,
+        "tier2_roi": -0.038,
+        "source_params": {
+          "coef": [
+            -0.6061947590465098,
+            1.069529066048919
+          ],
+          "intercept": 0.5722060176400151
+        },
+        "verdict": "UNPROVEN",
+        "study_final": {
+          "bets": 0,
+          "roi": null,
+          "ci95": [
+            null,
+            null
+          ],
+          "p_one_sided": null,
+          "clv": null,
+          "clv_n": 0
+        },
+        "study_verdict": "UNPROVEN",
+        "study_reason": null,
+        "prod_market": "over15",
+        "side": "yes"
+      }
+    },
+    "drop": false,
+    "source": "bars_opt",
+    "month": "2026-11",
+    "status": "UNPROVEN",
+    "approved": false,
+    "bets": 193,
+    "roi": 0.0642
+  },
+  "Brazil Serie A": {
+    "bars_opt": {
+      "yes": {
+        "mside": "over15_over",
+        "track": "new_format",
+        "league": "Brazil Serie A",
+        "month": "2026-11",
+        "config": "BLEND|EV|max-|min-",
+        "config_basis": "SELECTED",
+        "source": "BLEND",
+        "measure": "EV",
+        "odds_max": null,
+        "odds_min": null,
+        "mode": "MODEL",
+        "valuable_th": 0.02,
+        "marksman_th": 0.03,
+        "sniper_th": 0.03,
+        "bar_basis": "LEARNED_BLEND",
+        "shrink_weight_at_valuable": 0.878,
+        "wf_bets": 23,
+        "wf_roi": 0.2043,
+        "wf_roi_shrunk": 0.1869,
+        "tier2": false,
+        "tier2_bets": 4,
+        "tier2_roi": -0.1775,
+        "source_params": {
+          "coef": [
+            -0.6061947590465098,
+            1.069529066048919
+          ],
+          "intercept": 0.5722060176400151
+        },
+        "verdict": "UNPROVEN",
+        "study_final": {
+          "bets": 0,
+          "roi": null,
+          "ci95": [
+            null,
+            null
+          ],
+          "p_one_sided": null,
+          "clv": null,
+          "clv_n": 0
+        },
+        "study_verdict": "OFF",
+        "study_reason": "OWN_DATA_TOO_THIN",
+        "prod_market": "over15",
+        "side": "yes"
+      }
+    },
+    "drop": false,
+    "source": "bars_opt",
+    "month": "2026-11",
+    "status": "UNPROVEN",
+    "approved": false,
+    "bets": 23,
+    "roi": 0.2043
+  },
+  "Ireland Premier Division": {
+    "bars_opt": {
+      "yes": {
+        "mside": "over15_over",
+        "track": "new_format",
+        "league": "Ireland Premier Division",
+        "month": "2026-11",
+        "config": "BLEND|EV|max-|min-",
+        "config_basis": "SELECTED",
+        "source": "BLEND",
+        "measure": "EV",
+        "odds_max": null,
+        "odds_min": null,
+        "mode": "MODEL",
+        "valuable_th": 0.02,
+        "marksman_th": 0.02,
+        "sniper_th": 0.02,
+        "bar_basis": "LEARNED_BLEND",
+        "shrink_weight_at_valuable": 0.9987,
+        "wf_bets": 2,
+        "wf_roi": 0.645,
+        "wf_roi_shrunk": 0.6442,
+        "tier2": false,
+        "tier2_bets": 0,
+        "tier2_roi": null,
+        "source_params": {
+          "coef": [
+            -0.6061947590465098,
+            1.069529066048919
+          ],
+          "intercept": 0.5722060176400151
+        },
+        "verdict": "UNPROVEN",
+        "study_final": {
+          "bets": 0,
+          "roi": null,
+          "ci95": [
+            null,
+            null
+          ],
+          "p_one_sided": null,
+          "clv": null,
+          "clv_n": 0
+        },
+        "study_verdict": "OFF",
+        "study_reason": "OWN_DATA_TOO_THIN",
+        "prod_market": "over15",
+        "side": "yes"
+      }
+    },
+    "drop": false,
+    "source": "bars_opt",
+    "month": "2026-11",
+    "status": "UNPROVEN",
+    "approved": false,
+    "bets": 2,
+    "roi": 0.645
+  },
+  "Japan J-League": {
+    "bars_opt": {
+      "yes": {
+        "mside": "over15_over",
+        "track": "new_format",
+        "league": "Japan J-League",
+        "month": "2026-11",
+        "config": "BLEND|EV|max-|min-",
+        "config_basis": "SELECTED",
+        "source": "BLEND",
+        "measure": "EV",
+        "odds_max": null,
+        "odds_min": null,
+        "mode": "MODEL",
+        "valuable_th": 0.04,
+        "marksman_th": 0.07,
+        "sniper_th": 0.07,
+        "bar_basis": "LEARNED_BLEND",
+        "shrink_weight_at_valuable": 0.0075,
+        "wf_bets": 4,
+        "wf_roi": -0.1475,
+        "wf_roi_shrunk": 0.119,
+        "tier2": false,
+        "tier2_bets": 2,
+        "tier2_roi": -1.0,
+        "source_params": {
+          "coef": [
+            -0.6061947590465098,
+            1.069529066048919
+          ],
+          "intercept": 0.5722060176400151
+        },
+        "verdict": "UNPROVEN",
+        "study_final": {
+          "bets": 0,
+          "roi": null,
+          "ci95": [
+            null,
+            null
+          ],
+          "p_one_sided": null,
+          "clv": null,
+          "clv_n": 0
+        },
+        "study_verdict": "OFF",
+        "study_reason": "OWN_DATA_TOO_THIN",
+        "prod_market": "over15",
+        "side": "yes"
+      }
+    },
+    "drop": false,
+    "source": "bars_opt",
+    "month": "2026-11",
+    "status": "UNPROVEN",
+    "approved": false,
+    "bets": 4,
+    "roi": -0.1475
+  }
+}

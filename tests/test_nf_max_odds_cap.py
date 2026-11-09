@@ -1,4 +1,6 @@
-"""New-format OU25 price cap (owner 2026-10-22): no tip above NF_MAX_OU_ODDS on new_format; standard untouched."""
+"""The GLOBAL new-format O/U 2.5 price cap (config.NF_MAX_OU_ODDS, owner 2026-10-22) no longer decides a served
+tip (owner 2026-11-09: "no global vars"). An odds limit now belongs to the league itself: a bars_opt cell's
+odds_min / odds_max (tests/test_bars_serving.py), or a legacy entry's own min_over_odds / min_under_odds."""
 import pandas as pd
 
 import config
@@ -8,8 +10,7 @@ import pytest
 
 @pytest.fixture(autouse=True)
 def _own_bars(monkeypatch):
-    """Owner 2026-11-09: no global bars. These tests predate the cutover and assert the tiers the
-    removed global path served, so every league gets exactly those values as its OWN owner-applied
+    """Owner 2026-11-09: no global bars. Every league gets the historical values as its OWN owner-applied
     bars (tests/own_bars.install_historical)."""
     from tests.own_bars import install_historical
     install_historical(monkeypatch)
@@ -27,23 +28,22 @@ def _nf_and_std():
     return nf, std
 
 
-def test_new_format_over_priced_above_cap_is_not_a_tip_but_is_still_scored():
+def test_global_nf_cap_no_longer_blocks_a_tip():
     nf, std = _nf_and_std()
     df = evaluate_value(pd.DataFrame([_row(nf, 0.45, 3.40, 1.33), _row(std, 0.45, 3.40, 1.33)]))
-    a, b = df.iloc[0], df.iloc[1]
-    assert a["edge_over"] > config.VALUE_THRESHOLD                       # still scored and recorded
-    assert a["bet"] == "AVOID" and a["signal_tier"] == "AVOID" and bool(a["max_odds_blocked"])
-    assert b["bet"] == "OVER" and not bool(b["max_odds_blocked"])        # standard track untouched
+    for _, r in df.iterrows():
+        assert r["bet"] == "OVER" and not bool(r["max_odds_blocked"])
 
 
-def test_new_format_below_cap_still_tips():
+def test_global_nf_cap_value_is_not_read_by_serving(monkeypatch):
     nf, _ = _nf_and_std()
+    monkeypatch.setattr(config, "NF_MAX_OU_ODDS", 1.01)            # would block every price if it were read
     df = evaluate_value(pd.DataFrame([_row(nf, 0.60, 2.40, 1.62)]))
     assert df.iloc[0]["bet"] == "OVER" and not bool(df.iloc[0]["max_odds_blocked"])
 
 
-def test_cap_can_be_disabled(monkeypatch):
+def test_global_min_odds_value_is_not_read_by_serving(monkeypatch):
     nf, _ = _nf_and_std()
-    monkeypatch.setattr(config, "NF_MAX_OU_ODDS", 0.0)
-    df = evaluate_value(pd.DataFrame([_row(nf, 0.45, 3.40, 1.33)]))
+    monkeypatch.setattr(config, "MIN_OVER_ODDS", 99.0)             # would block every price if it were read
+    df = evaluate_value(pd.DataFrame([_row(nf, 0.60, 2.40, 1.62)]))
     assert df.iloc[0]["bet"] == "OVER"

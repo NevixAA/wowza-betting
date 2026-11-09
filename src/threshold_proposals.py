@@ -42,7 +42,7 @@ SIDE_MARKETS = ("btts", "over15", "over35")
 MARKETS = ("ou25",) + SIDE_MARKETS
 SCHEMA = "wowza.threshold_proposal/1"
 #: the fields that decide what production serves (src/betting.py::_base_tier, pipeline._generate_side_bets)
-SERVING_FIELDS = ("approved", "drop", "sniper_th", "marksman_th")
+SERVING_FIELDS = ("approved", "drop", "sniper_th", "marksman_th", "valuable_th", "bars_opt")
 EVIDENCE_FIELDS = ("bets_oos", "roi_oos", "oos_matchdays", "oos_roi_ci95", "bets_insample", "roi_insample",
                    "bets", "roi")
 APPROVAL_RULE = ("optimizer rule (src/backtest.py): approved = walk-forward OOS ROI > 0 on >= 20 OOS bets; "

@@ -458,13 +458,16 @@ def one_match(banks: dict | None = None) -> dict:
 #: does not exist on this branch is skipped (the TOP-3 selection lives on its own branch until merged).
 SERVING_FILES = ("pipeline.py", "src/betting.py", "src/side_thresholds.py", "src/gate_resolver.py",
                  "src/integrity/side_edge_devig.py", "src/stake_plan.py", "src/bankroll_policy.py",
-                 "src/cloudbet/bot.py", "src/top3_league.py")
+                 "src/cloudbet/bot.py", "src/top3_league.py", "src/bars_opt/serve.py", "src/bars_opt/cells.py")
 #: global / pooled / hand-set bars that served before 2026-11-09 (now historical values in config.py)
 GLOBAL_BAR_NAMES = ("HISTORICAL_SIDE_GLOBAL_BARS", "SIDE_GLOBAL_BARS", "VALUABLE_THRESHOLD", "VALUE_THRESHOLD",
                     "MARKSMAN_THRESHOLD", "SNIPER_THRESHOLD", "SNIPER_THRESHOLD_OVER", "SNIPER_THRESHOLD_UNDER",
                     "EDGE_CEILING", "LEAGUE_EDGE_CEILING", "LEAGUE_SNIPER_THRESHOLDS",
                     "LEAGUE_MARKSMAN_THRESHOLDS", "_LEAGUE_SNIPER_CALIBRATED", "_LEAGUE_MARKSMAN_CALIBRATED",
-                    "THRESHOLD_SOURCE_GLOBAL")
+                    "THRESHOLD_SOURCE_GLOBAL",
+                    # 2026-11-09 (bars_opt serving): the global odds limits and the assumed-margin fair-price
+                    # switch - a served tip uses its league's own cell odds range and a real two-sided de-vig
+                    "MIN_OVER_ODDS", "MIN_UNDER_ODDS", "NF_MAX_OU_ODDS", "SIDE_EDGE_FAIR_PRICE")
 _GLOBAL_BAR_RE = re.compile(
     r"\b(?:app_)?config\s*\.\s*(" + "|".join(GLOBAL_BAR_NAMES) + r")\b"
     r"|getattr\(\s*(?:app_)?config\s*,\s*[\"'](" + "|".join(GLOBAL_BAR_NAMES) + r")[\"']"

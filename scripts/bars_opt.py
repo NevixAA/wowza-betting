@@ -76,6 +76,16 @@ def cmd_monthly_job(a) -> int:
     return 0
 
 
+def cmd_serving_cells(a) -> int:
+    """The month's SERVING cells (src/bars_opt/cells.py) and their owner proposal. Nothing is applied."""
+    import json as _json
+    from src.bars_opt import cells as C
+    fams = C.build(Path(a.universe), a.month, workers=a.workers)
+    res = C.write_proposal(fams, a.month, resolve=not a.no_resolve)
+    print(_json.dumps({"proposal": res, "counts": C.counts(fams)}, indent=1, default=str))
+    return 0
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -99,9 +109,14 @@ def main(argv=None) -> int:
     m.add_argument("--out", required=True)
     j = sub.add_parser("monthly-job")
     j.add_argument("--month", required=True)
+    sc = sub.add_parser("serving-cells")
+    sc.add_argument("--month", required=True)
+    sc.add_argument("--universe", default=str(Path("output") / "bars_opt"))
+    sc.add_argument("--workers", type=int, default=4)
+    sc.add_argument("--no-resolve", action="store_true", help="skip the served-gate subprocess resolution")
     a = ap.parse_args(argv)
     return {"universe": cmd_universe, "select": cmd_select, "final": cmd_final, "monthly-sim": cmd_monthly_sim,
-            "monthly": cmd_monthly, "monthly-job": cmd_monthly_job}[a.cmd](a)
+            "monthly": cmd_monthly, "monthly-job": cmd_monthly_job, "serving-cells": cmd_serving_cells}[a.cmd](a)
 
 
 if __name__ == "__main__":

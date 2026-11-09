@@ -75,9 +75,11 @@ def _load_league_params() -> dict:
                 if "both_losing" not in params[league]:
                     params[league]["both_losing"] = lp.get("both_losing", False)
                 if "min_over_odds" not in params[league]:
-                    params[league]["min_over_odds"] = lp.get("min_over_odds", config.MIN_OVER_ODDS)
+                    if lp.get("min_over_odds") is not None:
+                        params[league]["min_over_odds"] = lp["min_over_odds"]
                 if "min_under_odds" not in params[league]:
-                    params[league]["min_under_odds"] = lp.get("min_under_odds", config.MIN_UNDER_ODDS)
+                    if lp.get("min_under_odds") is not None:
+                        params[league]["min_under_odds"] = lp["min_under_odds"]
         except Exception as e:
             log.debug(f"Could not load v7 best_params: {e}")
 
@@ -103,10 +105,12 @@ def _is_both_losing(league: str) -> bool:
 
 
 def _get_min_odds(league: str) -> tuple[float, float]:
+    """The league's OWN minimum odds (its params entry), or no minimum (NaN) when the entry has none.
+    Until 2026-11-09 an entry without one used the global config.MIN_OVER_ODDS / MIN_UNDER_ODDS
+    (owner rule: no global vars). A cell-served league uses its cell's own odds range instead."""
     lp = _get_league_cfg(league)
-    mo = float(lp.get("min_over_odds",  config.MIN_OVER_ODDS))
-    mu = float(lp.get("min_under_odds", config.MIN_UNDER_ODDS))
-    return mo, mu
+    mo, mu = lp.get("min_over_odds"), lp.get("min_under_odds")
+    return (float(mo) if mo is not None else float("nan"), float(mu) if mu is not None else float("nan"))
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
@@ -198,6 +202,95 @@ def _base_tier(edge: float, side: str = "", league: str = "") -> str:
     return tier_for(edge, bars)
 
 
+_OU25_SIDE_COLS = {"over": ("OVER", "tier_over", "edge_over", "stake_over"),
+                   "under": ("UNDER", "tier_under", "edge_under", "stake_under")}
+
+
+def _apply_ou25_cells(df: pd.DataFrame, p_over: pd.Series, ov_odds: pd.Series, un_odds: pd.Series) -> pd.DataFrame:
+    """O/U 2.5 rows of leagues with owner-applied bars_opt cells: tier, bet, stake and edge from the cells
+    (src/bars_opt/serve.py). Rows of other leagues are returned unchanged."""
+    from src.bars_opt import serve as BS
+    params = _load_standard_thresholds()
+    cells = {}
+    for lg in pd.unique(df["league"].astype(str)):
+        lp = params.get(lg)
+        if isinstance(lp, dict) and BS.CELL_KEY in lp:
+            cells[lg] = {s: BS.served_cell(lp, "ou25", lg, s) for s in ("over", "under")}
+    if not cells:
+        return df
+    df = df.copy()
+    for c in ("bar_mode_over", "bar_mode_under", "bar_config_over", "bar_config_under", "bar_verdict_over",
+              "bar_verdict_under", "bar_measure_over", "bar_measure_under", "ev_used_over", "ev_used_under"):
+        if c not in df.columns:
+            df[c] = None
+    fair_over = pd.Series([BS.fair_yes(a, b) for a, b in zip(ov_odds, un_odds)], index=df.index, dtype=float)
+    for lg, sides in cells.items():
+        m = (df["league"].astype(str) == lg).to_numpy()
+        idx = df.index[m]
+        ok = {}
+        for side, (cell, why) in sides.items():
+            name, tcol, ecol, scol = _OU25_SIDE_COLS[side]
+            p_side = p_over[idx] if side == "over" else 1.0 - p_over[idx]
+            fair = fair_over[idx] if side == "over" else 1.0 - fair_over[idx]
+            odds = ov_odds[idx] if side == "over" else un_odds[idx]
+            df.loc[idx, ecol] = (p_side - fair).to_numpy()            # the real de-vigged edge, for display
+            df.loc[idx, tcol] = "AVOID"
+            df.loc[idx, scol] = 0.0
+            if cell is None:
+                ok[side] = pd.Series(False, index=idx)
+                continue
+            res = BS.score(pd.DataFrame({"league": lg, "p_side": p_side, "fair": fair, "odds": odds}, index=idx), cell)
+            hit = res["tier"].astype(str) != ""
+            ok[side] = hit
+            df.loc[idx[hit.to_numpy()], tcol] = res.loc[hit, "tier"].to_numpy()
+            df.loc[idx, f"bar_mode_{side}"] = cell["mode"]
+            df.loc[idx, f"bar_config_{side}"] = cell["config"]
+            df.loc[idx, f"bar_verdict_{side}"] = cell["verdict"]
+            df.loc[idx, f"bar_measure_{side}"] = pd.to_numeric(res["measure"], errors="coerce").to_numpy()
+            ev = [BS.ev_point(p, o) for p, o in zip(pd.to_numeric(res["p_used"], errors="coerce"), odds)]
+            df.loc[idx, f"ev_used_{side}"] = ev
+            stake = config.FLAT_STAKE if not config.USE_KELLY else None
+            for i, h in zip(idx, hit):
+                if not h:
+                    continue
+                if config.USE_KELLY:
+                    pu = _num_or_nan(res.at[i, "p_used"]) if cell["mode"] == "MODEL" else float(p_side[i])
+                    stake = round(_kelly(pu, float(odds[i])) * config.KELLY_FRACTION * config.FLAT_STAKE, 4)
+                df.at[i, scol] = stake
+        o_ok, u_ok = ok["over"].to_numpy(), ok["under"].to_numpy()
+        ev_o = pd.to_numeric(df.loc[idx, "ev_used_over"], errors="coerce").to_numpy(float)
+        ev_u = pd.to_numeric(df.loc[idx, "ev_used_under"], errors="coerce").to_numpy(float)
+        pick_over = o_ok & (~u_ok | (np.nan_to_num(ev_o, nan=-np.inf) >= np.nan_to_num(ev_u, nan=-np.inf)))
+        pick_under = u_ok & ~pick_over
+        bet = np.where(pick_over, "OVER", np.where(pick_under, "UNDER", "AVOID"))
+        df.loc[idx, "bet"] = bet
+        df.loc[idx, "bet_stake"] = np.where(bet == "OVER", df.loc[idx, "stake_over"],
+                                            np.where(bet == "UNDER", df.loc[idx, "stake_under"], 0.0))
+        eo = pd.to_numeric(df.loc[idx, "edge_over"], errors="coerce").to_numpy(float)
+        eu = pd.to_numeric(df.loc[idx, "edge_under"], errors="coerce").to_numpy(float)
+        side_over = np.where(bet == "OVER", True, np.where(bet == "UNDER", False,
+                                                           np.nan_to_num(eo, nan=-np.inf) >= np.nan_to_num(eu, nan=-np.inf)))
+        df.loc[idx, "best_side"] = np.where(side_over, "OVER", "UNDER")
+        df.loc[idx, "best_edge"] = np.where(side_over, eo, eu)
+        df.loc[idx, "signal_tier"] = np.where(bet == "OVER", df.loc[idx, "tier_over"],
+                                              np.where(bet == "UNDER", df.loc[idx, "tier_under"], "AVOID"))
+        df.loc[idx, "min_odds_blocked"] = False
+        df.loc[idx, "max_odds_blocked"] = False
+        reasons = [w for (c, w) in sides.values() if c is None]
+        df.loc[idx, "threshold_source"] = THRESHOLD_SOURCE_LEAGUE if any(c is not None for c, _ in sides.values()) \
+            else NO_LEAGUE_BAR
+        df.loc[idx, "tier_reason"] = "" if any(c is not None for c, _ in sides.values()) else "; ".join(reasons)
+    return df
+
+
+def _num_or_nan(v) -> float:
+    try:
+        x = float(v)
+    except (TypeError, ValueError):
+        return float("nan")
+    return x
+
+
 def _apply_drift_adjustment(tier: str, drift_signal: str, best_edge: float) -> str:
     """
     The REMOVED drift rule (owner decision 2026-10-26), kept only to compute drift_shadow_tier:
@@ -264,8 +357,8 @@ def evaluate_value(df: pd.DataFrame, p_col: str = "p_over25") -> pd.DataFrame:
 
     # Per-league min-odds
     n = len(df)
-    mo_arr = np.full(n, config.MIN_OVER_ODDS)
-    mu_arr = np.full(n, config.MIN_UNDER_ODDS)
+    mo_arr = np.full(n, np.nan)                     # no minimum unless the league's own entry sets one
+    mu_arr = np.full(n, np.nan)
     if "league" in df.columns:
         for lg in df["league"].unique():
             mask = (df["league"] == lg).values
@@ -307,24 +400,14 @@ def evaluate_value(df: pd.DataFrame, p_col: str = "p_over25") -> pd.DataFrame:
     df["tier_over"]  = [_base_tier(e, "OVER",  lg) for e, lg in zip(df["edge_over"],  leagues)]
     df["tier_under"] = [_base_tier(e, "UNDER", lg) for e, lg in zip(df["edge_under"], leagues)]
 
-    # Min-odds filter
-    over_odds_ok  = ov_odds >= mo_s
-    under_odds_ok = un_odds >= mu_s
+    # Min-odds filter: the league's OWN minimum only (NaN = none). A real price is required either way.
+    over_odds_ok  = ov_odds.notna() & ((ov_odds >= mo_s) | mo_s.isna())
+    under_odds_ok = un_odds.notna() & ((un_odds >= mu_s) | mu_s.isna())
 
-    # New-format price cap (config.NF_MAX_OU_ODDS, owner 2026-10-22): a new-format side priced above
-    # the cap is not bettable. Still scored and logged - only the tip is withheld.
-    # an unset cap means "no cap" (a config switch, not a price); read without a typed 0 stand-in
-    _cap = getattr(config, "NF_MAX_OU_ODDS", None)
-    cap = float(_cap) if _cap else None
-    if cap is not None and cap > 0 and "league" in df.columns:
-        nf = df["league"].map(lambda lg: config.model_type_for_league(str(lg)) == "new_format").astype(bool)
-        over_cap, under_cap = nf & (ov_odds > cap), nf & (un_odds > cap)
-        df["max_odds_blocked"] = (((df["edge_over"] >= val_bar) & over_cap) |
-                                  ((df["edge_under"] >= val_bar) & under_cap))
-        over_odds_ok = over_odds_ok & ~over_cap
-        under_odds_ok = under_odds_ok & ~under_cap
-    else:
-        df["max_odds_blocked"] = False
+    # The global new-format price cap (config.NF_MAX_OU_ODDS, 2026-10-22) no longer applies to a served tip
+    # (owner 2026-11-09: no global vars): a cell-served league uses its cell's own odds range
+    # (src/bars_opt/serve.py), and the cap is listed as HISTORICAL in config.py.
+    df["max_odds_blocked"] = False
 
     df["min_odds_blocked"] = (
         ((df["edge_over"]  >= val_bar) & ~over_odds_ok.fillna(False)) |
@@ -375,6 +458,15 @@ def evaluate_value(df: pd.DataFrame, p_col: str = "p_over25") -> pd.DataFrame:
     # settle, and quietly distort win-rate denominators.
     # Example: Molde v Tromso @1.71 with MIN_OVER_ODDS=1.75 — tagged MARKSMAN, unbettable.
     df.loc[~df["bet"].isin(["OVER", "UNDER"]), "signal_tier"] = "AVOID"
+
+    # ── OPTIMIZED CELLS (owner 2026-11-09: "Yes, build the adapter") ───────────────────────────────
+    # A league whose O/U 2.5 entry carries owner-applied bars_opt cells is decided ENTIRELY by its cells:
+    # per side, the cell's probability source, edge measure, odds range and the league's own bars
+    # (src/bars_opt/serve.py, the study's own functions). The fair price is the power de-vig of the row's
+    # two-sided pair. Every column the legacy path set is overwritten for those rows, so no global value
+    # (min odds, new-format cap, global bar) touches a cell-served tip.
+    if p_col == "p_over25" and "league" in df.columns:
+        df = _apply_ou25_cells(df, p_over, ov_odds, un_odds)
 
     # ── Blind-fixture guard ───────────────────────────────────────────────────
     # A fixture with no rolling-form history does NOT produce a cautious prediction — it

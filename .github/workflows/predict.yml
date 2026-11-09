@@ -199,9 +199,8 @@ jobs:
           # value other than legacy_v9 / v9_repaired stops predict (configuration error).
           # Owner rollback doc: docs/STANDARD_REPAIRED_FAILCLOSED_ROLLBACK.md
           STANDARD_OU25_SERVING_RECIPE: "v9_repaired"
-          LEAGUE_SNIPER_CAP: "0.12"
-          MARKSMAN_THRESHOLD: "0.08"
-          VALUABLE_THRESHOLD: "0.03"
+          # LEAGUE_SNIPER_CAP / MARKSMAN_THRESHOLD / VALUABLE_THRESHOLD removed 2026-11-09: global bars,
+          # no longer read by serving (owner rule "no global vars"); every bar is the league's own cell.
           # RE-ENABLED 2026-08-16, after the two preconditions were met: the API-Football
           # plan moved to 75,000/day, and the cache step above now persists
           # api_football_cache/ between runs.

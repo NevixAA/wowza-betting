@@ -85,7 +85,9 @@ def test_never_padded_when_fewer_clear_the_bar():
 
 
 def test_no_global_bar_ever(monkeypatch):
-    monkeypatch.setattr(config, "SIDE_GLOBAL_BARS", {"sniper": 0.0, "marksman": 0.0, "valuable": -1.0})
+    # renamed HISTORICAL_SIDE_GLOBAL_BARS by prep/no-global-bars (serving cannot read it); even a zero bar
+    # there must not let a candidate through
+    monkeypatch.setattr(config, "HISTORICAL_SIDE_GLOBAL_BARS", {"sniper": 0.0, "marksman": 0.0, "valuable": -1.0})
     rows = [_cand(1, pm=0.95, pf=0.50, ev_lb=0.5), _cand(2, "BTTS", "YES", pm=0.95, pf=0.40)]
     picks, weeks = _freeze(_frame(rows), {"standard": {}, "side": {}, "applied": set()})
     assert picks.empty

@@ -492,7 +492,10 @@ def test_pipeline_wires_shadow_beside_legacy_not_into_it():
 
 @pytest.fixture(autouse=True)
 def _legacy_side_fair_price(monkeypatch):
-    """Synthetic rows here carry no book quotes, and these tests pin other behaviour. The two-sided
-    de-vig fair price (production since 2026-11-01) has its own tests: test_side_devig_production.py."""
-    import config as _cfg
-    monkeypatch.setattr(_cfg, "SIDE_EDGE_FAIR_PRICE", "legacy_1_08")
+    """Synthetic rows here carry no book quotes, and these tests pin other behaviour. TEST-ONLY fair price:
+    the synthetic rows' fair probability is supplied directly (production reads a real two-sided de-vig,
+    tested in test_side_devig_production.py; the legacy_1_08 switch these tests used was removed 2026-11-09)."""
+    from src.integrity import side_edge_devig as _SE
+    monkeypatch.setattr(_SE, "load_quotes", lambda *a, **k: __import__("pandas").DataFrame())
+    monkeypatch.setattr(_SE, "production_fair_probs",
+                        lambda df, target, quotes, asof: (1.0 / df["market_odds"]) / 1.08)

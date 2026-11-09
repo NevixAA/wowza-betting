@@ -96,23 +96,22 @@ def _generate_side_bets(preds: "pd.DataFrame", side_markets: dict) -> "pd.DataFr
     import numpy as np
     from src.stake_plan import SIDE_SELECTION_COLUMNS
     from src.side_thresholds import NO_LEAGUE_BAR, side_bars, tier_for
+    from src.bars_opt import serve as _BS
     frames = []
-    OVERROUND    = 1.08          # legacy_1_08 only (config.SIDE_EDGE_FAIR_PRICE rollback)
     league_params = _load_side_market_thresholds()  # {target: {league: {sniper_th, marksman_th, drop}}}
 
-    # FAIR PRICE = TWO-SIDED DE-VIG (owner cutover 2026-11-01, R2-C finding 4). The shadow that ran
-    # beside production proved the same thresholds; only the fair-price definition changes. A
-    # fixture/market with no same-book two-sided pair gets NO tip (fail closed, owner choice).
-    _devig = getattr(config, "SIDE_EDGE_FAIR_PRICE", "devig_two_sided") == "devig_two_sided"
+    # FAIR PRICE = TWO-SIDED DE-VIG (owner cutover 2026-11-01, R2-C finding 4). A fixture/market with no
+    # same-book two-sided pair gets NO tip (fail closed, owner choice). The old rollback switch
+    # (config.SIDE_EDGE_FAIR_PRICE = legacy_1_08) divided one price by an ASSUMED 8% margin - a fake price -
+    # and was removed 2026-11-09 (owner: "100% real data, no fakes ... no global vars").
     _quotes, _asof = None, pd.Timestamp.now(tz="UTC")
-    if _devig:
-        try:
-            from src.integrity import side_edge_devig as _SE
-            _quotes = _SE.load_quotes(config.OUTPUT_DIR, since=_asof - pd.Timedelta(days=14))
-            log.info(f"side markets: fair price = two-sided de-vig ({len(_quotes)} recent book quotes)")
-        except Exception as e:                                         # noqa: BLE001
-            log.error(f"side markets: book quotes unavailable ({e}) — NO side tips this run (fail closed)")
-            _quotes = None
+    try:
+        from src.integrity import side_edge_devig as _SE
+        _quotes = _SE.load_quotes(config.OUTPUT_DIR, since=_asof - pd.Timedelta(days=14))
+        log.info(f"side markets: fair price = two-sided de-vig ({len(_quotes)} recent book quotes)")
+    except Exception as e:                                             # noqa: BLE001
+        log.error(f"side markets: book quotes unavailable ({e}) — NO side tips this run (fail closed)")
+        _quotes = None
 
     for target in side_markets:
         if target not in SIDE_OF_TARGET:
@@ -160,17 +159,14 @@ def _generate_side_bets(preds: "pd.DataFrame", side_markets: dict) -> "pd.DataFr
         df["model_prob"]  = df[prob_col]
         df["market_odds"] = df[odds_col]
         df["odds"]        = df["market_odds"]   # canonical name (src/stake_plan.SIDE_SELECTION_COLUMNS)
-        if _devig:
-            df["fair_prob"] = (_SE.production_fair_probs(df, target, _quotes, _asof)
-                               if _quotes is not None else np.nan)
-            _n0 = len(df)
-            df = df.dropna(subset=["fair_prob"])
-            if _n0 - len(df):
-                log.info(f"side {target}: {_n0 - len(df)} of {_n0} fixture(s) skipped — no two-sided price")
-            if df.empty:
-                continue
-        else:
-            df["fair_prob"] = (1.0 / df["market_odds"]) / OVERROUND
+        df["fair_prob"] = (_SE.production_fair_probs(df, target, _quotes, _asof)
+                           if _quotes is not None else np.nan)
+        _n0 = len(df)
+        df = df.dropna(subset=["fair_prob"])
+        if _n0 - len(df):
+            log.info(f"side {target}: {_n0 - len(df)} of {_n0} fixture(s) skipped — no two-sided price")
+        if df.empty:
+            continue
         df["edge"]        = df["model_prob"] - df["fair_prob"]
         df["ev"]          = df["model_prob"] * df["market_odds"] - 1.0
         df["market"]      = target
@@ -194,13 +190,37 @@ def _generate_side_bets(preds: "pd.DataFrame", side_markets: dict) -> "pd.DataFr
         # only on its own owner-applied sniper / marksman / valuable bars (src/side_thresholds.own_bars);
         # without them it gets AVOID with reason NO_LEAGUE_BAR - no tip, no stake, no message. No
         # league is suppressed by policy: every league with its own bars still emits every tip.
-        _bars = {lg: side_bars(market_params.get(lg, {}), target, lg) for lg in df["league"].unique()}
+        # An OPTIMIZED entry (bars_opt cells, src/bars_opt/serve.py) is decided by its own cell: probability
+        # source, edge measure, odds range and bars. A legacy own-bars entry tiers on its bars as before.
+        _bars, _cell = {}, {}
+        for lg in df["league"].unique():
+            lp = market_params.get(lg, {})
+            if isinstance(lp, dict) and _BS.CELL_KEY in lp:
+                _cell[lg], _why = _BS.served_cell(lp, target, lg, "yes")
+                _bars[lg] = None if _cell[lg] is None else (float(_cell[lg]["sniper_th"]),
+                                                            float(_cell[lg]["marksman_th"]),
+                                                            float(_cell[lg]["valuable_th"]), config.THRESHOLD_SOURCE_LEAGUE)
+            else:
+                _bars[lg] = side_bars(lp, target, lg)
         _no_bar = sorted(lg for lg, b in _bars.items() if b is None)
         if _no_bar:
             log.info(f"side {target}: {int(df['league'].isin(_no_bar).sum())} fixture(s) in "
                      f"{len(_no_bar)} league(s) not tiered - {NO_LEAGUE_BAR} (no own owner-applied bars): "
                      f"{', '.join(_no_bar)}")
-        df["signal_tier"] = [tier_for(e, _bars[lg]) for e, lg in zip(df["edge"], df["league"])]
+        df["signal_tier"] = [tier_for(e, _bars[lg]) if lg not in _cell else "AVOID"
+                             for e, lg in zip(df["edge"], df["league"])]
+        df["bar_mode"] = ""
+        for lg, cell in _cell.items():
+            if cell is None:
+                continue
+            m = df["league"] == lg
+            res = _BS.score(pd.DataFrame({"league": lg, "p_side": df.loc[m, "model_prob"],
+                                          "fair": df.loc[m, "fair_prob"], "odds": df.loc[m, "market_odds"]}), cell)
+            df.loc[m, "signal_tier"] = res["tier"].where(res["tier"].astype(str) != "", "AVOID").to_numpy()
+            df.loc[m, "bar_mode"] = cell["mode"]
+            ev = [_BS.ev_point(p, o) for p, o in zip(pd.to_numeric(res["p_used"], errors="coerce"),
+                                                     df.loc[m, "market_odds"])]
+            df.loc[m, "ev"] = np.where(np.isfinite(ev), ev, df.loc[m, "ev"])
         df["threshold_source"] = [(_bars[lg][3] if _bars[lg] is not None else NO_LEAGUE_BAR)
                                   for lg in df["league"]]
         df = df[df["signal_tier"] != "AVOID"]
@@ -208,7 +228,7 @@ def _generate_side_bets(preds: "pd.DataFrame", side_markets: dict) -> "pd.DataFr
         # ONE SCHEMA, defined once in src/stake_plan.py and read by the stake plan. `market_odds`
         # is kept beside the canonical `odds` for the side_bets.csv / ledger / notify readers;
         # `threshold_source` beside both for the ledger / Telegram / dashboard (not a stake input).
-        frames.append(df[list(SIDE_SELECTION_COLUMNS) + ["market_odds", "threshold_source"]])
+        frames.append(df[list(SIDE_SELECTION_COLUMNS) + ["market_odds", "threshold_source", "bar_mode"]])
 
     if not frames:
         return pd.DataFrame()

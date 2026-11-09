@@ -128,35 +128,63 @@ def _learned_design(d: pd.DataFrame, leagues: list[str]) -> np.ndarray:
     return np.c_[base, lg, lg * raw[:, None]]
 
 
-def fit_source(src: str, t: pd.DataFrame):
-    """Returns a function rows -> p_used (NaN where the source has no fitted value for the row)."""
-    if src in ("RAW",):
-        return lambda e: e["p_side"].to_numpy(float)
-    if src == LEAGUE_WIDE_SOURCE:
-        return lambda e: np.full(len(e), np.nan)
+def source_params(src: str, t: pd.DataFrame) -> dict:
+    """The FITTED parameters of a probability source on training rows t, as plain JSON numbers. Serving
+    stores them in the owner-applied cell and src/bars_opt/serve.py rebuilds the function with source_fn:
+    ONE implementation for the study and for serving."""
+    if src in ("RAW", LEAGUE_WIDE_SOURCE):
+        return {}
     if src == "BLEND":
         from sklearn.linear_model import LogisticRegression
         X = np.c_[_logit(t["p_side"]), _logit(t["fair"])]
         m = LogisticRegression(penalty=None, max_iter=2000).fit(X, t["won"].astype(int))
-        return lambda e: m.predict_proba(np.c_[_logit(e["p_side"]), _logit(e["fair"])])[:, 1] if len(e) else np.array([])
+        return {"coef": [float(c) for c in m.coef_[0]], "intercept": float(m.intercept_[0])}
     if src == "SHRINK":
-        w = shrink_weights(t)
-        return lambda e: np.where(e["league"].isin(list(w)).to_numpy(),
-                                  e["fair"].to_numpy(float) + e["league"].map(w).to_numpy(float)
-                                  * (e["p_side"] - e["fair"]).to_numpy(float), np.nan)
+        return {"weights": shrink_weights(t)}
     if src == "LEARNED":
         from sklearn.linear_model import LogisticRegression
         leagues = sorted(t["league"].unique())
         m = LogisticRegression(C=LEARNED_C, max_iter=3000).fit(_learned_design(t, leagues), t["won"].astype(int))
+        return {"leagues": leagues, "coef": [float(c) for c in m.coef_[0]], "intercept": float(m.intercept_[0])}
+    raise ValueError(src)
+
+
+def _sigmoid(z):
+    return 1.0 / (1.0 + np.exp(-np.asarray(z, float)))
+
+
+def source_fn(src: str, params: dict):
+    """rows -> p_used from fitted parameters (NaN where the source has no fitted value for the row)."""
+    if src == "RAW":
+        return lambda e: e["p_side"].to_numpy(float)
+    if src == LEAGUE_WIDE_SOURCE:
+        return lambda e: np.full(len(e), np.nan)
+    if src == "BLEND":
+        w, b = np.asarray(params["coef"], float), float(params["intercept"])
+        return lambda e: (_sigmoid(np.c_[_logit(e["p_side"]), _logit(e["fair"])] @ w + b) if len(e)
+                          else np.array([]))
+    if src == "SHRINK":
+        w = {str(k): float(v) for k, v in params["weights"].items()}
+        return lambda e: np.where(e["league"].isin(list(w)).to_numpy(),
+                                  e["fair"].to_numpy(float) + e["league"].map(w).to_numpy(float)
+                                  * (e["p_side"] - e["fair"]).to_numpy(float), np.nan)
+    if src == "LEARNED":
+        leagues = [str(x) for x in params["leagues"]]
+        w, b = np.asarray(params["coef"], float), float(params["intercept"])
 
         def pred(e):
             out = np.full(len(e), np.nan)
             known = e["league"].isin(leagues).to_numpy()      # a league unseen in training: no value
             if known.any():
-                out[known] = m.predict_proba(_learned_design(e[known], leagues))[:, 1]
+                out[known] = _sigmoid(_learned_design(e[known], leagues) @ w + b)
             return out
         return pred
     raise ValueError(src)
+
+
+def fit_source(src: str, t: pd.DataFrame):
+    """Returns a function rows -> p_used (NaN where the source has no fitted value for the row)."""
+    return source_fn(src, source_params(src, t))
 
 
 def shrink_weights(t: pd.DataFrame) -> dict:
@@ -209,8 +237,17 @@ def in_odds_range(e: pd.DataFrame, hi, lo) -> np.ndarray:
 
 # ── bars per league (src.league_bars, own data only) + TIER2 ────────────────────────────────
 
-def league_bars(t: pd.DataFrame, league_wide: bool) -> dict:
-    """t: training rows with league, edge, pnl, p_used, odds. {league: bars | {'off': reason}}."""
+#: bar_basis of a thin league's bars under the owner's 2026-11-09 decision "Learned blend, own number": the
+#: league's own ROI curve pulled toward the all-league curve by the weight src.league_bars.choose_bars learns
+#: per bar (tau^2 / (tau^2 + se^2)); reported per league as shrink_weight_at_valuable
+BASIS_BLEND = "LEARNED_BLEND"
+
+
+def league_bars(t: pd.DataFrame, league_wide: bool, allow_blend: bool = False) -> dict:
+    """t: training rows with league, edge, pnl, p_used, odds. {league: bars | {'off': reason}}.
+    allow_blend (serving, owner 2026-11-09): a league whose bars come from its learned blend with the pool
+    (basis SHRUNK_TO_POOL) keeps them, labelled LEARNED_BLEND, instead of OFF. The pre-registered study runs
+    with allow_blend False, so its committed results are unchanged."""
     leagues = sorted(t["league"].unique())
     curves, pooled, tau2 = LB._bars_for(t, leagues)
     out = {}
@@ -218,13 +255,15 @@ def league_bars(t: pd.DataFrame, league_wide: bool) -> dict:
         b = LB.choose_bars(curves[lg], pooled, tau2)
         if b["status"] == LB.STATUS_THIN:
             out[lg] = {"off": OFF_THIN}
-        elif b["bar_basis"] != "OWN_BETS":
+        elif b["bar_basis"] != "OWN_BETS" and not allow_blend:
             out[lg] = {"off": OFF_POOL, "own_weight": b["shrink_weight_at_valuable"]}
         elif b["note"]:
             out[lg] = {"off": OFF_NO_VALUABLE}
         else:
             b = {k: b[k] for k in ("valuable_th", "marksman_th", "sniper_th", "bar_basis",
                                     "shrink_weight_at_valuable", "wf_bets", "wf_roi", "wf_roi_shrunk")}
+            if b["bar_basis"] != "OWN_BETS":
+                b["bar_basis"] = BASIS_BLEND
             if league_wide:
                 b |= {"tier2": False, "tier2_bets": 0, "tier2_roi": None}
             else:
@@ -239,7 +278,7 @@ def league_bars(t: pd.DataFrame, league_wide: bool) -> dict:
     return out
 
 
-def fit_cfg(t: pd.DataFrame, cfg, src_fns: dict | None = None):
+def fit_cfg(t: pd.DataFrame, cfg, src_fns: dict | None = None, allow_blend: bool = False):
     """(bars, scorer) for cfg fitted on t. scorer(rows) -> rows with p_used / edge (odds range applied)."""
     src, how, hi, lo = cfg
     fn = (src_fns or {}).get(src) or fit_source(src, t)
@@ -250,7 +289,7 @@ def fit_cfg(t: pd.DataFrame, cfg, src_fns: dict | None = None):
         ee["edge"] = measure(ee, ee["p_used"].to_numpy(float), how) if len(ee) else np.array([])
         return ee[~np.isnan(ee["edge"].to_numpy(float))] if len(ee) else ee
     tt = scorer(t)
-    bars = league_bars(tt, src == LEAGUE_WIDE_SOURCE) if len(tt) else {}
+    bars = league_bars(tt, src == LEAGUE_WIDE_SOURCE, allow_blend) if len(tt) else {}
     return bars, scorer
 
 
@@ -357,7 +396,7 @@ def choose(bets: dict) -> tuple[tuple | None, pd.DataFrame]:
     return parse_cfg(name), tab
 
 
-def select_core(sel: pd.DataFrame, seed: int = 0) -> dict:
+def select_core(sel: pd.DataFrame, seed: int = 0, allow_blend: bool = False) -> dict:
     """The whole pre-registered choice on `sel`: the family configuration, then per league MODEL vs
     LEAGUE_WIDE on its own inner bets, then the frozen bars (with mode and TIER2)."""
     bets = inner_validate(sel) if len(sel) else {}
@@ -369,8 +408,10 @@ def select_core(sel: pd.DataFrame, seed: int = 0) -> dict:
     if chosen is None:
         return out
     lw = lw_of(chosen)
-    model_bars, _ = fit_cfg(sel, chosen)
-    lw_bars, _ = fit_cfg(sel, lw)
+    # the CHOICE (inner validation) is the pre-registered one; allow_blend only changes which leagues keep
+    # the frozen bars of that choice (owner 2026-11-09: thin leagues get their learned-blend bars)
+    model_bars, _ = fit_cfg(sel, chosen, allow_blend=allow_blend)
+    lw_bars, _ = fit_cfg(sel, lw, allow_blend=allow_blend)
     mb, lb = bets[cfg_name(chosen)], bets[cfg_name(lw)]
     for lg in sorted(set(model_bars) | set(lw_bars)):
         use_lw = chosen[0] == LEAGUE_WIDE_SOURCE
