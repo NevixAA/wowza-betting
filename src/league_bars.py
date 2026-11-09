@@ -79,7 +79,11 @@ STATUS_THIN = "INSUFFICIENT_BETS"
 
 #: markets that bet one side only (the production side generator bets Yes / Over); O/U 2.5 bets both
 ONE_SIDED_BET = {"btts": ("btts_yes", "btts_no"), "over15": ("over15", "under15"),
-                 "over35": ("over35", "under35")}
+                 "over35": ("over35", "under35"),
+                 # P7 item 2 (2026-11-09): first-half goals O/U 0.5 / 1.5. Two-sided pairs ARE captured
+                 # (standard_sidemarket_odds_history since 2026-08-21, 17 leagues; new_format from the
+                 # P7 item 3 parser on). The bars had them as NO_PRICE_DATA only because no loader read them.
+                 "ht_over05": ("ht_over05", "ht_under05"), "ht_over15": ("ht_over15", "ht_under15")}
 TWO_SIDED_BET = {"over25": ("over25", "under25")}
 SNAPSHOT_KEYS = {**ONE_SIDED_BET, **TWO_SIDED_BET}
 

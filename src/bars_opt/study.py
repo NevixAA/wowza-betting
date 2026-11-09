@@ -51,8 +51,11 @@ MONTHLY_MIN_HISTORY_MONTHS = 6
 MIN_FINAL_BETS = LB.MIN_HOLDOUT_BETS              # 150, the owner's strict rule
 HOLM_ALPHA = LB.HOLM_ALPHA_ONE_SIDED              # 0.025 one-sided
 MARKET_SIDES = {"over25_over": ("over25", "yes"), "over25_under": ("over25", "no"),
-                "btts_yes": ("btts", "yes"), "over15_over": ("over15", "yes"), "over35_over": ("over35", "yes")}
-OVER_DIRECTION = {"over25_over", "btts_yes", "over15_over", "over35_over"}   # BTTS Yes counts as Over
+                "btts_yes": ("btts", "yes"), "over15_over": ("over15", "yes"), "over35_over": ("over35", "yes"),
+                # P7 item 2: first-half goals O/U, Over side (the HT generator bets Over)
+                "ht_over05_over": ("ht_over05", "yes"), "ht_over15_over": ("ht_over15", "yes")}
+OVER_DIRECTION = {"over25_over", "btts_yes", "over15_over", "over35_over",
+                  "ht_over05_over", "ht_over15_over"}   # BTTS Yes counts as Over
 
 OFF_THIN = "INSUFFICIENT_BETS"
 OFF_POOL = "OWN_DATA_TOO_THIN"
