@@ -10,7 +10,8 @@ ISOLATION: touches ONLY `output/newformat_odds_history.csv` (new-format team odd
 Does NOT touch the standard model, its data, props, or any shared model code.
 
 Source: API-Football /odds, Bet365 (id 8). Markets captured (match the existing schema):
-over25/under25, btts_yes/btts_no, over15/under15, over35/under35.
+over25/under25, btts_yes/btts_no, over15/under15, over35/under35, and since 2026-11-09 the
+first-half goals O/U ht_over05/ht_under05, ht_over15/ht_under15 (same answer, 0 extra calls).
 Run in CI daily (has APIFOOTBALL_KEY). Idempotent: dedups on (snapshot_date, match, market).
 """
 import os, sys, json, time
@@ -178,6 +179,24 @@ def _parse_all_odds(data: dict) -> dict:
                                 out["btts_no"] = float(v["odd"])
                         except (TypeError, ValueError, KeyError):
                             pass
+                elif ("Over/Under" in name and ("First Half" in name or "1st Half" in name)
+                        and not any(x in name for x in ("Corner", "Card", "Team", "Player",
+                                                        "Shot", "Foul", "Handicap"))):
+                    # FIRST-HALF GOALS O/U 0.5 / 1.5 (P7 item 3, 2026-11-09). The same /odds answer
+                    # always carried this market; the new-format parser skipped it, so the HT models
+                    # had no two-sided price on this track. Same keys and rule as the standard
+                    # capture (capture_std_sidemarket_odds_forward.py). 0 extra API calls.
+                    for v in vals:
+                        label = v.get("value", "")
+                        try:
+                            odd = float(v["odd"])
+                        except (TypeError, ValueError, KeyError):
+                            continue
+                        for ln, key in (("0.5", "05"), ("1.5", "15")):
+                            if f"Over {ln}" in label:
+                                out[f"ht_over{key}"] = odd
+                            elif f"Under {ln}" in label:
+                                out[f"ht_under{key}"] = odd
                 elif ("Over/Under" in name and not any(
                         x in name for x in ("Half", "Corner", "Card", "Team",
                                             "Player", "Shot", "Foul", "Handicap"))):
