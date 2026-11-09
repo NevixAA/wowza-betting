@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-09T17:45:00Z",
+ "generated_at": "2026-11-09T18:43:22Z",
  "panel_version": "LWR-1",
  "tracked_leagues": 20,
  "current_tip_day": "2026-11-09",
@@ -26,9 +26,9 @@
  "market_gap_leagues": [],
  "expected_candidate_rows": 160,
  "actual_candidate_rows": 160,
- "panel_rows": 820,
+ "panel_rows": 824,
  "settled_rows": 808,
- "pending_rows": 12,
+ "pending_rows": 16,
  "clv_certified_rows": 357,
  "clv_coverage": 0.4418,
  "protected_tracks_modified": false,
@@ -966,7 +966,7 @@
   "Norway Eliteserien": {
    "current": {
     "league_week_id": "Norway Eliteserien|2026-W46",
-    "state": "PROVISIONAL",
+    "state": "FROZEN",
     "fixtures_known": 1,
     "fixtures_before_panel_start": 0,
     "fixtures_with_candidates": 1,
@@ -977,19 +977,19 @@
     "markets": {
      "OU25": {
       "candidates": 1,
-      "panel_rows": 0
+      "panel_rows": 1
      },
      "BTTS": {
       "candidates": 1,
-      "panel_rows": 0
+      "panel_rows": 1
      },
      "OVER15": {
       "candidates": 1,
-      "panel_rows": 0
+      "panel_rows": 1
      },
      "OVER35": {
       "candidates": 1,
-      "panel_rows": 0
+      "panel_rows": 1
      }
     },
     "expected_candidate_rows": 4,

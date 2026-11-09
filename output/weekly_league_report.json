@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-09T17:45:00Z",
+ "generated_at": "2026-11-09T18:43:22Z",
  "panel_version": "LWR-1",
  "selection_mode": "WEEKLY_LEAGUE_RESEARCH",
  "note": "Research panel, not bets. FROZEN rows were fixed at the week lock (first kickoff of the league-week) from first-sight scores; PROVISIONAL rows may still change until the lock.",
@@ -7061,7 +7061,7 @@
    "top5": {
     "OU25": [
      {
-      "league_market_rank": 1,
+      "league_market_rank": "1",
       "fixture_id": "a878bfc5e7eae6808debf217c23c93f5",
       "home_team": "Kristiansund BK",
       "away_team": "V\u00e5lerenga",
@@ -7075,7 +7075,7 @@
       "p_market_fair": "0.703748",
       "odds": "1.36",
       "legacy_tier": "VALUABLE",
-      "legacy_rank": 1,
+      "legacy_rank": "1",
       "production_state": "ACTIVE_LOW",
       "research_regime": "LEARNING",
       "production_selected": "False",
@@ -7083,12 +7083,12 @@
       "result": "",
       "flat_pnl": "",
       "clv_pct": "",
-      "status": "PROVISIONAL"
+      "status": "FROZEN"
      }
     ],
     "BTTS": [
      {
-      "league_market_rank": 1,
+      "league_market_rank": "1",
       "fixture_id": "a878bfc5e7eae6808debf217c23c93f5",
       "home_team": "Kristiansund BK",
       "away_team": "V\u00e5lerenga",
@@ -7102,7 +7102,7 @@
       "p_market_fair": "0.707813",
       "odds": "1.35",
       "legacy_tier": "AVOID",
-      "legacy_rank": 1,
+      "legacy_rank": "1",
       "production_state": "ACTIVE",
       "research_regime": "LEARNING",
       "production_selected": "False",
@@ -7110,12 +7110,12 @@
       "result": "",
       "flat_pnl": "",
       "clv_pct": "",
-      "status": "PROVISIONAL"
+      "status": "FROZEN"
      }
     ],
     "OVER15": [
      {
-      "league_market_rank": 1,
+      "league_market_rank": "1",
       "fixture_id": "a878bfc5e7eae6808debf217c23c93f5",
       "home_team": "Kristiansund BK",
       "away_team": "V\u00e5lerenga",
@@ -7129,7 +7129,7 @@
       "p_market_fair": "",
       "odds": "",
       "legacy_tier": "NOT_EVALUATED",
-      "legacy_rank": 1,
+      "legacy_rank": "1",
       "production_state": "ACTIVE_LOW",
       "research_regime": "LEARNING",
       "production_selected": "False",
@@ -7137,12 +7137,12 @@
       "result": "",
       "flat_pnl": "",
       "clv_pct": "",
-      "status": "PROVISIONAL"
+      "status": "FROZEN"
      }
     ],
     "OVER35": [
      {
-      "league_market_rank": 1,
+      "league_market_rank": "1",
       "fixture_id": "a878bfc5e7eae6808debf217c23c93f5",
       "home_team": "Kristiansund BK",
       "away_team": "V\u00e5lerenga",
@@ -7156,7 +7156,7 @@
       "p_market_fair": "0.475019",
       "odds": "1.95",
       "legacy_tier": "AVOID",
-      "legacy_rank": 1,
+      "legacy_rank": "1",
       "production_state": "BLOCKED",
       "research_regime": "LEARNING",
       "production_selected": "False",
@@ -7164,7 +7164,7 @@
       "result": "",
       "flat_pnl": "",
       "clv_pct": "",
-      "status": "PROVISIONAL"
+      "status": "FROZEN"
      }
     ]
    },
