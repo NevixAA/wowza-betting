@@ -205,3 +205,117 @@ RAW_CONFIG = {"model_prob": ui.pct_col("Model"), "fair_odds": ui.num_col("Fair o
               "fair_basis": ui.text_col("Fair price", help=FAIR_PRICE_HELP),
               "model_prob_hand_adjusted": ui.pct_col("Hand-adjusted (info only)"),
               "prob_adjustment": ui.num_col("Hand factor (info only)", fmt="%.3f")}
+
+
+# ═══ RESULTS — settled record (rebuilt 2026-11-09, owner: "the % isn't correct, the last 2 months ════════
+# were crazy results and we don't show it") ═══════════════════════════════════════════════════════════════
+# The old section showed ONE all-time number over SNIPER + MARKSMAN only: 111 of its 117 bets were from
+# June-July, and VALUABLE (where the recent results are) was never shown. Now: a period, every tip tier
+# (VALUABLE included) with void / pending counts, a month table and a market table. Every number is
+# computed from output/player_ledger.csv; P/L comes only from rows that carry a real price (pnl present).
+# AVOID rows are logged for research, they are NOT tips, and are never counted in the tip record.
+PERIODS = ("Last 30 days", "Last 60 days", "This month", "All time")
+DEFAULT_PERIOD = "Last 60 days"
+NOT_A_TIP = "AVOID"
+SETTLED = ("WIN", "LOSS")
+
+
+def prepare_ledger(led: pd.DataFrame) -> pd.DataFrame:
+    """Normalised copy: R (result), T (tier), md (match date), pnl / odds numeric."""
+    d = led.copy()
+    d["R"] = d["result"].astype("string").str.strip().str.upper() if "result" in d else pd.NA
+    d["T"] = d["tier"].astype("string").str.strip().str.upper() if "tier" in d else pd.NA
+    d["md"] = pd.to_datetime(d["match_date"], errors="coerce") if "match_date" in d else pd.NaT
+    d["pnl"] = pd.to_numeric(d["pnl"], errors="coerce") if "pnl" in d else float("nan")
+    d["odds"] = pd.to_numeric(d["market_odds"], errors="coerce") if "market_odds" in d else float("nan")
+    return d
+
+
+def period_start(period: str, today: pd.Timestamp) -> pd.Timestamp | None:
+    """First match date in the period (inclusive); None = all time."""
+    today = pd.Timestamp(today).normalize()
+    if period == "Last 30 days":
+        return today - pd.Timedelta(days=30)
+    if period == "Last 60 days":
+        return today - pd.Timedelta(days=60)
+    if period == "This month":
+        return today.replace(day=1)
+    if period == "All time":
+        return None
+    raise ValueError(f"unknown period {period!r}")
+
+
+def in_period(d: pd.DataFrame, period: str, today: pd.Timestamp) -> pd.DataFrame:
+    start = period_start(period, today)
+    return d if start is None else d[d["md"] >= start]
+
+
+def _summary(g: pd.DataFrame) -> dict:
+    settled = g[g["R"].isin(SETTLED)]
+    priced = settled[settled["pnl"].notna()]
+    n, wins = len(settled), int((settled["R"] == "WIN").sum())
+    return {"Settled": n, "Wins": wins,
+            "Win %": wins / n * 100 if n else float("nan"),
+            "Priced": len(priced),
+            "ROI %": priced["pnl"].mean() * 100 if len(priced) else float("nan"),
+            "Profit (u)": priced["pnl"].sum() if len(priced) else float("nan"),
+            "Avg odds": priced["odds"].mean() if len(priced) else float("nan"),
+            "Void": int((g["R"] == "VOID").sum()),
+            "Pending": int(g["R"].isna().sum() + (~g["R"].isin(SETTLED + ("VOID",)) & g["R"].notna()).sum()),
+            "Sample": "small sample" if ui.small_sample(len(priced)) else ""}
+
+
+def tips(d: pd.DataFrame) -> pd.DataFrame:
+    """Tip rows only: every tier except AVOID (a logged non-tip) and rows without a tier."""
+    return d[d["T"].notna() & (d["T"] != NOT_A_TIP) & (d["T"] != "NAN")]
+
+
+def tier_table(d: pd.DataFrame) -> pd.DataFrame:
+    """One row per tip tier present (SNIPER, MARKSMAN, VALUABLE, PAPER, ...) plus 'All tips'."""
+    t = tips(d)
+    order = [x for x in ("SNIPER", "MARKSMAN", "VALUABLE", "PAPER") if x in set(t["T"])]
+    order += sorted(set(t["T"]) - set(order))
+    rows = [{"Tier": tier, **_summary(t[t["T"] == tier])} for tier in order]
+    if rows:
+        rows.append({"Tier": "All tips", **_summary(t)})
+    return pd.DataFrame(rows)
+
+
+def month_table(d: pd.DataFrame) -> pd.DataFrame:
+    """Month x tier: settled n, wins, ROI and profit (priced rows), newest month first."""
+    t = tips(d)
+    t = t[t["md"].notna()]
+    rows = []
+    for (m, tier), g in t.groupby([t["md"].dt.to_period("M"), "T"]):
+        s = _summary(g)
+        rows.append({"Month": str(m), "Tier": tier, "Settled": s["Settled"], "Wins": s["Wins"],
+                     "ROI %": s["ROI %"], "Profit (u)": s["Profit (u)"], "Pending": s["Pending"]})
+    out = pd.DataFrame(rows)
+    return out.sort_values(["Month", "Tier"], ascending=[False, True]) if len(out) else out
+
+
+def market_table(d: pd.DataFrame) -> pd.DataFrame:
+    t = tips(d)
+    rows = [{"Market": MARKET_LABEL.get(m, str(m)), **_summary(g)} for m, g in t.groupby("market")]
+    out = pd.DataFrame(rows)
+    return out.sort_values("Settled", ascending=False) if len(out) else out
+
+
+def avoid_count(d: pd.DataFrame) -> int:
+    return int((d["T"] == NOT_A_TIP).sum())
+
+
+def model_era(d: pd.DataFrame, clean_from) -> pd.Series:
+    """'pre-repair models' / 'clean models' per row. `clean_from` = the date the clean props models went live
+    (None = not live yet, so every row is from the pre-repair models)."""
+    if clean_from is None:
+        return pd.Series("pre-repair models", index=d.index)
+    return pd.Series(["clean models" if x else "pre-repair models"
+                      for x in (d["md"] >= pd.Timestamp(clean_from)).fillna(False)], index=d.index)
+
+
+TIER_CONFIG = {"Win %": ui.num_col("Win %", fmt="%.1f%%"), "ROI %": ui.num_col("ROI (1u)", fmt="%+.1f%%"),
+               "Profit (u)": ui.num_col("Profit", fmt="%+.2fu"), "Avg odds": ui.num_col("Avg odds"),
+               "Priced": ui.num_col("Priced", fmt="%d", help="Settled tips with a real price: ROI and profit "
+                                    "use only these. Unpriced tips are counted, never given a P/L."),
+               "Sample": ui.text_col("Sample", help=f"Marked below {ui.SMALL_SAMPLE_FLOOR} priced bets.")}
