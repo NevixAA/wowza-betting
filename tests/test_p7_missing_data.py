@@ -152,3 +152,21 @@ def test_extra_fixtures_are_not_in_the_shared_fixture_list():
     import collect_af_lists as AL
     import inspect
     assert "refetch_extra_fixtures" not in inspect.getsource(AL)
+
+
+# ── item 6: a history row whose is_home disagrees with the provider ─────────────────────────
+
+def test_is_home_is_corrected_only_when_the_rows_club_is_proven_on_the_provider_side():
+    import collect_player_refetch as RF
+    from test_player_refetch import ANSWER_100, _fx, _h
+    fxrow = _fx().set_index("fixture_id").loc[100]
+    rows = RF.source_rows(pd.DataFrame([
+        # Chelsea's player stored as HOME while Chelsea is the list's AWAY club: proven -> corrected
+        _h(100, 21, "2025-08-16", "Arsenal", "Chelsea", "Chelsea", 1),
+        # an Arsenal row for a player the answer puts in Chelsea's block: the club is NOT on that side
+        _h(100, 22, "2025-08-16", "Arsenal", "Chelsea", "Arsenal", 1),
+    ]), pd.DataFrame())
+    out, j = RF.parse_answer(ANSWER_100, 100, fxrow, rows, "2026-11-09T00:00:00Z")
+    got = {r["player_id"]: r for r in out}
+    assert 21 in got and got[21]["is_home"] == 0 and got[21]["is_home_orig"] == 1 and got[21]["is_home_corrected"]
+    assert 22 not in got and j["refused"].get("side_unproven") == 1 and j["is_home_corrected"] == 1
