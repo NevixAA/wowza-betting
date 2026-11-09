@@ -143,8 +143,9 @@ def test_props_serving_rest_days_is_days_since_last_match():
         dict(base, player_id=1, fixture_id=102, date=pd.Timestamp("2026-10-15"), rest_days=14.0),
         dict(base, player_id=1, fixture_id=103, date=pd.Timestamp("2026-10-18"), rest_days=3.0),
     ])
-    up = hist.iloc[-1].to_dict()                     # production passes the latest history row
-    f = build_upcoming_features([up], hist, {}, {})
-    # upcoming fixture on 2026-10-25 is not passed at all: the builder cannot know it.
-    # Training's rest_days for that match would be 7; serving copies 3.0 (the previous match's rest).
-    assert float(f["rest_days"].iloc[0]) != 3.0
+    # the serving row of the upcoming fixture on 2026-10-25 (identity only, no result)
+    up = {"player_id": 1, "player_name": "X", "fixture_id": 104, "date": "2026-10-25",
+          "league": "Championship", "team": "A1", "home_team": "A1", "away_team": "B1", "is_home": 1}
+    f = build_upcoming_features([up], hist)
+    # serving = training's definition: 7 days since the last match (2026-10-18), not a copied 3.0
+    assert float(f["rest_days"].iloc[0]) == 7.0

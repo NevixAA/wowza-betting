@@ -506,44 +506,27 @@ def _build_match_contexts() -> dict:
 
 # ── Referee profiles ─────────────────────────────────────────────────────────
 
-def _build_referee_profiles(history: pd.DataFrame) -> dict:
-    """
-    Fetch referee names for all upcoming prop-league fixtures and build strictness profiles.
-    Returns {fixture_id: {yellows_per_game, strictness_score, n_games, lg_yellows_per_match}}.
-
-    The profile is MEASURED from player_history with the training definition
-    (feature_engineering.referee_profile_from_history: the referee's yellows/match in the league's
-    scope, z-scored against the league's measured mean/sd, NaN below the minimum samples). It used
-    to come from api_football.build_referee_profile, whose league mean/sd were a typed 3.5 / 1.0.
-    Referee NAMES still come from API-Football (cached in api_football._get()).
-    """
+def _build_fixture_referees() -> dict:
+    """{API-Football fixture id: referee name} for the upcoming prop-league fixtures (same 4-day
+    window as predict). The referee FEATURES are computed by build_features from the held history,
+    exactly as in training (owner 2026-11-09); only the name comes from API-Football (cached in
+    api_football._get()). A fixture the provider names no referee for has none (no feature value)."""
     from player_model.api_football import get_fixtures_between, get_fixture_referee
-    from player_model.feature_engineering import referee_profile_from_history
-    profiles: dict = {}
+    names: dict = {}
     try:
-        # Same 4-day window as predict, so every tipped fixture can carry its referee.
         _today = pd.Timestamp.now(tz="UTC").tz_localize(None).normalize()   # UTC day (fixture dates are UTC)
         _from, _to = _today.strftime("%Y-%m-%d"), (_today + pd.Timedelta(days=4)).strftime("%Y-%m-%d")
         for league, lg_id in config.PROP_LEAGUES.items():
-            season = config.prop_season(league)
-            fixtures = get_fixtures_between(lg_id, season, _from, _to)
-            for fix in fixtures:
-                teams    = fix.get("teams", {})
-                home     = teams.get("home", {}).get("name", "")
-                away     = teams.get("away", {}).get("name", "")
-                dt       = fix.get("fixture", {}).get("date", "")[:10]
-                fid      = fix.get("fixture", {}).get("id")
+            for fix in get_fixtures_between(lg_id, config.prop_season(league), _from, _to):
+                fid = fix.get("fixture", {}).get("id")
                 if not fid:
                     continue
-                referee   = get_fixture_referee(fid)
+                referee = get_fixture_referee(fid)
                 if referee:
-                    # keyed by the API-Football fixture id (predict looks it up by id first)
-                    # only fixtures dated before this one, as training (train/serve parity 2026-11-09)
-                    profiles[int(fid)] = referee_profile_from_history(history, referee, league,
-                                                                      before=(dt or None))
+                    names[int(fid)] = referee
     except Exception as e:
-        print(f"[pipeline] Referee profile build failed: {e}")
-    return profiles
+        print(f"[pipeline] Referee names not fetched: {e}")
+    return names
 
 
 # ── Match-day gating ─────────────────────────────────────────────────────────────
@@ -611,13 +594,11 @@ def mode_predict() -> None:
 
     # The collected UEFA cup rows (output/collect/cup_player_rows.parquet) join the serving history:
     # a player's form / minutes / rest days and the opponent tables include his cup matches.
-    from player_model.cup_history import with_cup_rows
-    history = with_cup_rows(pd.read_parquet(HISTORY_CACHE))
-    # Owner 2026-11-04 (fix round 8): the re-fetched per-player counts (output/collect/
-    # player_history_refetch.parquet, scripts/collect_player_refetch.py) replace the suspect 0s the
-    # old `or 0` parser stored; rows not yet re-fetched keep their values, marked 'zeros_unverified'.
-    from player_model.history_refetch import with_refetched
-    history = with_refetched(history)
+    # THE history the props clean retrain trains on (props_harness.source_frame): player_history +
+    # the collected cup rows it does not hold + the re-fetched counts - the conflicted player ids
+    # (identity_conflicts). One function, so serving and training read the same rows (2026-11-09).
+    from player_model.props_harness import source_frame
+    history = source_frame()
 
     # (The old _enrich_with_recent_form overwrote a player's last stored goals_pg / sot_pg /
     # cards_pg with ONE match's raw counts, `stat.get(..., 0)`; recent matches belong in history
@@ -634,7 +615,7 @@ def mode_predict() -> None:
         tips = run_player_predictions(
             bets_csv=config.OUTPUT_DIR / "bets.csv",
             history_df=history,
-            referee_profiles=_build_referee_profiles(history) if api_key else None,
+            fixture_referees=_build_fixture_referees() if api_key else None,
             match_contexts=_build_match_contexts(),
         )
     finally:

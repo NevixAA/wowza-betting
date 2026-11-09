@@ -38,6 +38,21 @@ PURGED = ("sp_taker_score", "sp_receiver_score", "set_piece_threat_score", "set_
           "career_sp_assist_rate", "sp_goals_pg", "aerial_height_sp_composite",
           "sp_goal_probability_composite", "sp_assist_pg", "career_sp_goals_rate", "sp_goals_share")
 
+def _serve(up: list[dict], hist) -> "pd.DataFrame":
+    """The serving rows the new builder takes (2026-11-09): identity of the upcoming fixture only.
+    Converts the old test dicts (team, opponent, is_home, fixture_league, fixture_date)."""
+    rows = []
+    for u in up:
+        home = u["team"] if float(u.get("is_home", 0)) > 0.5 else u["opponent"]
+        away = u["opponent"] if home == u["team"] else u["team"]
+        rows.append({"player_id": u["player_id"], "player_name": u.get("player_name", ""),
+                     "fixture_id": 8_800_000 + abs(hash((u.get("fixture_date"), home, away))) % 100_000,
+                     "date": u.get("fixture_date") or u.get("date"), "league": u.get("fixture_league") or u.get("league"),
+                     "team": u["team"], "home_team": home, "away_team": away, "is_home": u.get("is_home"),
+                     "referee": u.get("referee")})
+    return FE.build_upcoming_features(rows, hist)
+
+
 
 def _player_rows(fid, date, home, away, season, shots=2, sot=1, minutes=90, league="Premier League"):
     rows = []
@@ -89,7 +104,7 @@ def iso(tmp_path, monkeypatch):
         TI._CACHE.clear()
         lookup._LOADED.clear()
         FE._COLLECTED.clear()
-        FE._SERVE_CACHE.clear()
+        FE._LINEUP_CACHE.clear()
     _clear()
     yield tmp_path
     _clear()
@@ -103,7 +118,7 @@ def test_setpiece_proxies_are_not_built_for_training_or_serving(iso):
     assert not [c for c in PURGED if c in b.columns]
     up = [{"player_id": IDS["Arsenal"] * 100 + 1, "team": "Arsenal", "opponent": "Chelsea", "is_home": 1,
            "position": "D", "fixture_league": "Premier League", "fixture_date": "2024-10-20"}]
-    out = FE.build_upcoming_features(up, b, {}, {}, FE._build_history_index(b))
+    out = _serve(up, b)
     assert len(out) == 1 and not [c for c in PURGED if c in out.columns]
     # the Understat set-piece features are the only set-piece columns (NaN: no Understat data)
     assert all(c in out.columns and math.isnan(out[c].iloc[0]) for c in SPF.SETPIECE_COLUMNS)
@@ -220,7 +235,7 @@ def test_prev_season_and_l10_serving_use_the_training_definition(iso):
     b = pd.DataFrame(rows).assign(date=lambda d: pd.to_datetime(d["date"]))   # every match held
     up = [{"player_id": ARS_F, "team": "Arsenal", "opponent": "Chelsea", "is_home": 1, "position": "F",
            "fixture_league": "Premier League", "fixture_date": "2024-10-20"}]
-    r = FE.build_upcoming_features(up, b, {}, {}, FE._build_history_index(b)).iloc[0]
+    r = _serve(up, b).iloc[0]
     assert r["prev_season_goals_pg"] == pytest.approx(0.5) and r["prev_season_appearances"] == 8
     assert r["prev_season_shot_accuracy"] == pytest.approx(0.5)
     assert r["prev_season_team_goals_pg"] == pytest.approx(0.5)
@@ -269,11 +284,10 @@ def test_serving_rest_days_count_collected_cup_matches(iso):
     _cup_file(iso, "2024-09-03")
     up = [{"player_id": ARS_F, "team": "Arsenal", "opponent": "Chelsea", "is_home": 1, "position": "F",
            "fixture_league": "Premier League", "fixture_date": "2024-09-07"}]
-    r = FE.build_upcoming_features(up, hist, {}, {}, FE._build_history_index(hist)).iloc[0]
+    r = _serve(up, hist).iloc[0]
     assert r["rest_days"] == 4             # since the collected cup tie (was 7: league history only)
-    FE._SERVE_CACHE.clear()
     up[0]["fixture_date"] = "2024-11-30"
-    r = FE.build_upcoming_features(up, hist, {}, {}, FE._build_history_index(hist)).iloc[0]
+    r = _serve(up, hist).iloc[0]
     assert r["rest_days"] == 88            # uncapped (was 30)
 
 

@@ -219,7 +219,12 @@ def test_predict_reads_history_through_the_refetch_reader():
     src = (ROOT / "player_model" / "pipeline.py").read_text(encoding="utf-8")
     i = src.index("def mode_predict")
     body = src[i:src.index("\ndef ", i + 10)]
-    assert body.index("with_cup_rows(pd.read_parquet(HISTORY_CACHE))") < body.index("history = with_refetched(history)")
+    # 2026-11-09: predict reads props_harness.source_frame - the cup rows + the re-fetched counts
+    assert "history = source_frame()" in body
+    from player_model import props_harness as PH
+    import inspect
+    sf = inspect.getsource(PH.source_frame)
+    assert "new_cup_rows(" in sf and "with_refetched(raw, refetch)" in sf
 
 
 def test_workflow_runs_playerrefetch_after_lineups_before_fullstats_and_strength():

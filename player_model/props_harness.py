@@ -179,6 +179,10 @@ def source_frame(history: pd.DataFrame | None = None, cups: pd.DataFrame | None 
     raw = pd.concat(parts, ignore_index=True, sort=False)
     raw["date"] = pd.to_datetime(raw["date"], errors="coerce")
     raw = with_refetched(raw, refetch)
+    # one provider id carrying two real players: every row excluded (identity_conflicts; the
+    # decision and its evidence are output/corrections/player_id_conflicts.csv)
+    from .identity_conflicts import apply as _drop_conflicted
+    raw = _drop_conflicted(raw)
     return raw.sort_values("date", kind="stable").reset_index(drop=True)
 
 

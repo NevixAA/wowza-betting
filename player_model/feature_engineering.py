@@ -7,8 +7,9 @@ build_features(match_rows)
   Output: DataFrame with proper rolling features (shift=1, no leakage)
           and per-match binary targets.
 
-build_upcoming_features(players, history_df)
-  Uses actual rolling history from build_features() output.
+build_upcoming_features(upcoming, history_df)
+  Runs build_features ITSELF on the history plus the upcoming rows (no result yet) and returns
+  those rows: every serving input is the training definition, value for value (2026-11-09).
 
 DATA TRUTH (owner rule, 2026-11-01). No feature is ever a typed value:
   * every opponent / keeper / referee / league quantity is COMPUTED from the matches we hold
@@ -18,9 +19,9 @@ DATA TRUTH (owner rule, 2026-11-01). No feature is ever a typed value:
     (`_league_asof`), never 1.3 / 6.0 / 3.5 / 6.8 / 0.12;
   * a missing value stays NaN (no fillna(0.0) / fillna(<prior>)); the serving model's imputer
     (model.predict_proba) decides what a missing input means, and logs it;
-  * training and serving share ONE definition: `team_match_table` + `_team_rolling` for training,
-    `_team_now` for serving, and `_add_composites` for every derived feature, so a composite can
-    no longer be computed one way in training and another way at serve time.
+  * training and serving share ONE code path: serving rows are computed by build_features on the
+    same history (build_upcoming_features), so no feature can be computed one way in training and
+    another way at serve time.
 """
 from __future__ import annotations
 
@@ -217,6 +218,17 @@ def _season_pen_totals(hist: pd.DataFrame) -> pd.DataFrame:
     return t[cols]
 
 
+def _known_before(v: pd.Series, key) -> pd.Series:
+    """Per group: the sum of the RECORDED values on earlier rows (an unrecorded value adds nothing;
+    the row's own value is never read, so an upcoming row - no result yet - and a played row get the
+    same pre-match value). The pattern of league_quality.career averages."""
+    k = v.notna()
+    vz = v.where(k, 0.0)                                    # unrecorded -> contributes no attempt
+    # the prefix sum up to the PREVIOUS row (exact: (S + x) - x is not always S in floating point)
+    prev = vz.groupby(key).cumsum().groupby(key).shift(1)
+    return prev.where(prev.notna(), 0.0)                    # no earlier row: an empty sum
+
+
 def _penalty_asof(df: pd.DataFrame) -> pd.Series:
     """penalty_conversion_rate per row of a frame sorted by (player_id, date): earlier seasons'
     totals (_season_pen_totals) + this season's per-match attempts strictly before the row; NaN
@@ -226,13 +238,13 @@ def _penalty_asof(df: pd.DataFrame) -> pd.Series:
     ps, pm = _num(df, "penalty_scored"), _num(df, "penalty_missed")
     att = ps + pm
     if "season" not in df.columns:                  # no season: the per-match record only
-        cs = ps.groupby(df["player_id"]).cumsum() - ps
-        ca = att.groupby(df["player_id"]).cumsum() - att
+        cs = _known_before(ps, [df["player_id"]])
+        ca = _known_before(att, [df["player_id"]])
         return (cs / ca).where(ca >= config.MIN_PEN_ATTEMPTS)
     y = pd.Series(_season_year(df["season"]).to_numpy(), index=df.index)
     key = [df["player_id"], y]
-    in_s = ps.groupby(key).cumsum() - ps
-    in_a = att.groupby(key).cumsum() - att
+    in_s = _known_before(ps, key)
+    in_a = _known_before(att, key)
     tot = _season_pen_totals(df)
     prior_s = pd.Series(0.0, index=df.index)
     prior_a = pd.Series(0.0, index=df.index)
@@ -447,8 +459,13 @@ def team_match_table(df: pd.DataFrame) -> pd.DataFrame:
 
     t = d.groupby(key).agg(date=("date", "first"), league=("league", "first"),
                            _okey=("_okey", "first"),
-                           goals_scored=("goals", "sum"), sot_scored=("shots_on_target", "sum"),
+                           goals_scored=("goals", "sum"), _gs_n=("goals", "count"),
+                           sot_scored=("shots_on_target", "sum"), _ss_n=("shots_on_target", "count"),
                            team_corners=("team_corners", "first"))
+    # A sum over rows that carry NO count is missing, never 0 (an unplayed upcoming fixture, or a
+    # fixture the provider sent without counts; owner 2026-11-09: no defaults).
+    t["goals_scored"] = t["goals_scored"].where(t.pop("_gs_n") > 0)
+    t["sot_scored"] = t["sot_scored"].where(t.pop("_ss_n") > 0)
 
     def _role(letter, **aggs):
         sub = d[pos == letter]
@@ -456,21 +473,30 @@ def team_match_table(df: pd.DataFrame) -> pd.DataFrame:
             return pd.DataFrame(index=t.index)
         return sub.groupby(key).agg(**aggs)
 
-    dd = _role("D", _dw=("duels_won", "sum"), _dt=("duels_total", "sum"),
+    dd = _role("D", _dw=("duels_won", "sum"), _dw_n=("duels_won", "count"),
+               _dt=("duels_total", "sum"), _dt_n=("duels_total", "count"),
                def_fouls_pg=("fouls_committed", "mean"), def_cards_pg=("yellow_cards", "mean"),
                def_rating=("_rating", "mean"), def_rating_top=("_rating", "max"),
                def_height=("_height", "mean"))
     if not dd.empty:
-        dd["def_aerial"] = _ratio(dd.pop("_dw"), dd.pop("_dt"))
+        dd["def_aerial"] = _ratio(dd.pop("_dw").where(dd.pop("_dw_n") > 0),
+                                  dd.pop("_dt").where(dd.pop("_dt_n") > 0))
     gk = _role("G", gk_saves=("saves", "sum"), _sn=("saves", "count"),
                _gc=("goals_conceded", "sum"), _gn=("goals_conceded", "count"))
     if not gk.empty:
         gk["gk_saves"] = gk["gk_saves"].where(gk.pop("_sn") > 0)
         _gc = gk.pop("_gc").where(gk.pop("_gn") > 0)
         gk["gk_save_rate"] = _ratio(gk["gk_saves"], gk["gk_saves"] + _gc)
-    fw = _role("F", fwd_goals=("goals", "sum"), fwd_sot=("shots_on_target", "sum"))
-    md = _role("M", mid_goals=("goals", "sum"), mid_sot=("shots_on_target", "sum"),
+    fw = _role("F", fwd_goals=("goals", "sum"), _fg_n=("goals", "count"),
+               fwd_sot=("shots_on_target", "sum"), _fs_n=("shots_on_target", "count"))
+    md = _role("M", mid_goals=("goals", "sum"), _mg_n=("goals", "count"),
+               mid_sot=("shots_on_target", "sum"), _ms_n=("shots_on_target", "count"),
                mid_fouls_pg=("fouls_committed", "mean"), mid_cards_pg=("yellow_cards", "mean"))
+    for _x, _pairs in ((fw, (("fwd_goals", "_fg_n"), ("fwd_sot", "_fs_n"))),
+                       (md, (("mid_goals", "_mg_n"), ("mid_sot", "_ms_n")))):
+        for _c, _n in _pairs:
+            if _c in _x.columns:
+                _x[_c] = _x[_c].where(_x.pop(_n) > 0)
     t = t.join([x for x in (dd, gk, fw, md) if not x.empty], how="left")
     for c in ("def_aerial", "def_fouls_pg", "def_cards_pg", "def_rating", "def_rating_top",
               "def_height", "gk_saves", "gk_save_rate", "fwd_goals", "fwd_sot", "mid_goals",
@@ -493,6 +519,20 @@ def team_match_table(df: pd.DataFrame) -> pd.DataFrame:
     # Only the side we hold rows for can be measured: a fixture whose opponent was not collected
     # leaves every conceded quantity NaN (it used to drop out of an inner self-join silently).
     t = _with_fixture_scores(t)
+    # An UPCOMING fixture (serving: no result yet) has no score row. The opponent side's row is
+    # added with every quantity missing, so the opponent's pre-match rolling is read at this
+    # fixture exactly as training reads it from the score-only row of the played fixture.
+    if UPCOMING_COL in d.columns and d[UPCOMING_COL].astype(bool).any():
+        u = (d[d[UPCOMING_COL].astype(bool)].groupby(["fixture_id", "_tkey"])
+             .agg(date=("date", "first"), league=("league", "first"), _okey=("_okey", "first"))
+             .reset_index())
+        opp = u.rename(columns={"_tkey": "_okey", "_okey": "_tkey"})
+        opp = opp[opp["_tkey"].notna()]
+        held = set(zip(pd.to_numeric(t["fixture_id"], errors="coerce"), t["_tkey"]))
+        opp = opp[[(f, k) not in held for f, k in zip(pd.to_numeric(opp["fixture_id"], errors="coerce"),
+                                                      opp["_tkey"])]]
+        if len(opp):
+            t = pd.concat([t, opp.reindex(columns=t.columns)], ignore_index=True)
     t["date"] = pd.to_datetime(t["date"], errors="coerce")
     t["_day"] = t["date"].dt.normalize()
     return t.sort_values(["_tkey", "date", "fixture_id"]).reset_index(drop=True)
@@ -590,29 +630,6 @@ def _team_rolling(t: pd.DataFrame, n: int) -> pd.DataFrame:
     return out
 
 
-def _before_day(rows: pd.DataFrame, fdate) -> pd.DataFrame:
-    """Rows dated strictly BEFORE the fixture's day (training's 'strictly before' / 'strictly earlier
-    dates'). A fixture without a date keeps every row (nothing to cut on; logged by the caller)."""
-    if fdate is None or fdate != fdate or rows is None or not len(rows):
-        return rows
-    day = pd.Timestamp(fdate).normalize()
-    d = rows["_day"] if "_day" in rows.columns else pd.to_datetime(rows["date"], errors="coerce").dt.normalize()
-    return rows[d < day]
-
-
-def _team_now(rows: pd.DataFrame, n: int, fdate=None) -> dict:
-    """Serving counterpart of _team_rolling: the team's state BEFORE its next match = the mean of
-    its last n fixtures we hold that measure each quantity, same minimum samples. Only fixtures
-    dated before the match's day count (train/serve parity 2026-11-09: a same-day earlier result,
-    or a result that arrived after the fixture, is not in the training value)."""
-    rows = _before_day(rows, fdate)
-    out = {}
-    for src, (feat, min_attr) in _TEAM_ROLL.items():
-        s = pd.to_numeric(rows[src], errors="coerce").dropna().tail(n)
-        out[feat] = float(s.mean()) if len(s) >= getattr(config, min_attr) else NAN
-    return out
-
-
 # ── league averages, measured from the league's own prior fixtures ──────────────────────────────
 
 # League normaliser -> the team-table column it averages (per team-match)
@@ -635,7 +652,9 @@ def _league_asof(t: pd.DataFrame) -> pd.DataFrame:
     for name, col in _LEAGUE_NORMS.items():
         day = (t.assign(_v=pd.to_numeric(t[col], errors="coerce"))
                 .groupby(["league", "_day"])["_v"].agg(["sum", "count"]).sort_index())
-        cum = day.groupby(level="league").cumsum() - day        # strictly earlier dates
+        # strictly earlier dates: the prefix sum up to the previous date (exact in floating point;
+        # cumsum - day is not, so serving and training could differ in the last bit)
+        cum = day.groupby(level="league").cumsum().groupby(level="league").shift(1)
         mean = (cum["sum"] / cum["count"]).where(cum["count"] >= 2 * config.MIN_LEAGUE_MATCHES)
         out = mean.rename(name).to_frame() if out is None else out.join(mean.rename(name))
     return out.reset_index()
@@ -660,47 +679,7 @@ def _same_league(col: pd.Series, league) -> pd.Series:
     return col.map(_canon) == target
 
 
-def _league_rows(frame: pd.DataFrame, league) -> pd.DataFrame:
-    """Rows of `league` exactly as training groups them (_league_asof / _referee_asof group by the
-    row's own league string): the same string when the frame holds it, else the frame's single
-    string with the same registry name. A competition the registry does not know (the continental
-    cups) is found by its string - _same_league alone returned nothing for it."""
-    if frame.empty:
-        return frame
-    names = frame["league"].astype(str)
-    if str(league) in set(names.unique()):
-        return frame[names == str(league)]
-    target = _canon(league)
-    if target is None:
-        return frame.iloc[0:0]
-    hits = [x for x in names.unique() if _canon(x) == target]
-    return frame[names == hits[0]] if len(hits) == 1 else frame.iloc[0:0]
-
-
-def _league_now(t: pd.DataFrame, league, fdate=None) -> dict:
-    """Serving counterpart of _league_asof: the league's averages over its fixtures on EARLIER
-    dates (never the match's own day), the league identified as training groups it."""
-    rows = _before_day(_league_rows(t, league), fdate) if not t.empty else t
-    out = {}
-    for name, col in _LEAGUE_NORMS.items():
-        s = pd.to_numeric(rows[col], errors="coerce") if len(rows) else pd.Series(dtype=float)
-        out[name] = (float(s.mean()) if s.notna().sum() >= 2 * config.MIN_LEAGUE_MATCHES else NAN)
-    return out
-
-
 # ── referee, measured ────────────────────────────────────────────────────────────────────────────
-
-def _training_rowset(df: pd.DataFrame) -> pd.DataFrame:
-    """The rows build_features builds its team table and referee table from: a real player id,
-    unrecorded 0-0 corners blanked (on the full frame, as build_features does), then >= 10 minutes.
-    Serving builds the same tables from the same rows (train/serve parity 2026-11-09)."""
-    if df is None or df.empty:
-        return df
-    pid = pd.to_numeric(df["player_id"], errors="coerce") if "player_id" in df.columns else None
-    d = df[(pid > 0).to_numpy()] if pid is not None else df
-    d = _blank_unrecorded_corners(d)
-    return d[_num(d, "minutes") >= 10] if "minutes" in d.columns else d
-
 
 def _referee_key(name) -> str | None:
     if name is None or (isinstance(name, float) and np.isnan(name)) or not str(name).strip():
@@ -714,7 +693,8 @@ def _fixture_yellows(df: pd.DataFrame) -> pd.DataFrame:
     f = (df.assign(_yc=_num(df, "yellow_cards"))
            .groupby("fixture_id")
            .agg(date=("date", "first"), league=("league", "first"),
-                referee=("referee", "first"), yellows=("_yc", "sum")))
+                referee=("referee", "first"), yellows=("_yc", "sum"), _yn=("_yc", "count")))
+    f["yellows"] = f["yellows"].where(f.pop("_yn") > 0)     # no recorded card count -> missing, not 0
     f["date"] = pd.to_datetime(f["date"], errors="coerce")
     f["_scope"] = f["league"].map(team_scope)
     f["_rkey"] = f["referee"].map(_referee_key)
@@ -734,7 +714,7 @@ def _referee_asof(df: pd.DataFrame) -> pd.DataFrame:
     # League mean / sd per date from strictly earlier dates.
     day = f.groupby(["league", "date"])["yellows"].agg(["sum", "count"])
     day["sq"] = f.assign(_sq=f["yellows"] ** 2).groupby(["league", "date"])["_sq"].sum()
-    cum = day.groupby(level="league").cumsum() - day
+    cum = day.groupby(level="league").cumsum().groupby(level="league").shift(1)   # exact prefix
     mu = cum["sum"] / cum["count"]
     sd = np.sqrt((cum["sq"] / cum["count"] - mu ** 2).clip(lower=0) * cum["count"] / (cum["count"] - 1))
     ok = cum["count"] >= config.MIN_LEAGUE_MATCHES
@@ -743,46 +723,6 @@ def _referee_asof(df: pd.DataFrame) -> pd.DataFrame:
     f["referee_strictness"] = (f["referee_yellows_pg"] - f["_lg_mu"]) / f["_lg_sd"]
     f["lg_yellows_per_match"] = f["_lg_mu"]
     return f[["fixture_id", "referee_yellows_pg", "referee_strictness", "lg_yellows_per_match"]]
-
-
-def league_yellow_stats(history: pd.DataFrame, league, before=None) -> tuple[float, float]:
-    """(mean, sd) of total yellows per fixture in `league` (grouped as _referee_asof groups it, by
-    the league string) over its fixtures dated before `before` (all held fixtures when None), NaN
-    below config.MIN_LEAGUE_MATCHES fixtures. For callers building a referee z-score at serve time."""
-    if history is None or history.empty or "fixture_id" not in history.columns:
-        return NAN, NAN
-    f = _fixture_yellows(_league_rows(_training_rowset(history), league))
-    if before is not None and before == before:
-        f = f[f["date"].dt.normalize() < pd.Timestamp(before).normalize()]
-    if len(f) < config.MIN_LEAGUE_MATCHES:
-        return NAN, NAN
-    sd = float(f["yellows"].std())
-    return float(f["yellows"].mean()), (sd if sd > 0 else NAN)
-
-
-def referee_profile_from_history(history: pd.DataFrame, referee_name, league, before=None) -> dict:
-    """Serving referee profile with EXACTLY the training definition (_referee_asof): the referee's
-    yellows/match over his fixtures in the league's scope dated before the match (`before`, the
-    fixture date; every held fixture when None), z-scored against the league's mean/sd over its
-    earlier dates. NaN below the minimum samples. Keys match build_upcoming_features."""
-    out = {"yellows_per_game": NAN, "strictness_score": NAN, "n_games": 0,
-           "lg_yellows_per_match": NAN}
-    rkey, scope = _referee_key(referee_name), team_scope(league)
-    if history is None or history.empty or rkey is None or scope is None:
-        return out
-    h = _training_rowset(history)
-    f = _fixture_yellows(h[h["league"].map(team_scope) == scope])
-    if before is not None and before == before:
-        f = f[f["date"].dt.normalize() < pd.Timestamp(before).normalize()]
-    mine = f[f["_rkey"] == rkey]
-    out["n_games"] = int(len(mine))
-    mu, sd = league_yellow_stats(history, league, before=before)
-    out["lg_yellows_per_match"] = mu
-    if len(mine) >= config.MIN_REF_MATCHES:
-        out["yellows_per_game"] = float(mine["yellows"].mean())
-        if sd == sd and mu == mu:
-            out["strictness_score"] = (out["yellows_per_game"] - mu) / sd
-    return out
 
 
 # ── season, as of date ───────────────────────────────────────────────────────────────────────────
@@ -1121,6 +1061,64 @@ def _ensure(df: pd.DataFrame, cols) -> None:
 
 # ── training ─────────────────────────────────────────────────────────────────────────────────────
 
+#: marks a serving row (an upcoming fixture, no result yet) inside build_features
+UPCOMING_COL = "is_upcoming"     # kept in the output (columns starting with _ are dropped)
+#: position_source values
+POSITION_FROM_LINEUP = "LINEUP_ANNOUNCED"
+POSITION_FROM_LATEST = "LATEST_EARLIER_MATCH"
+POSITION_NONE = "NONE"
+_LINEUP_CACHE: dict = {}
+
+
+def collected_lineup_positions() -> pd.DataFrame:
+    """(fixture_id, player_id, pos) from the collected API-Football lineups
+    (output/collect/lineups/players_*.parquet, scripts/collect_lineups.py): the ANNOUNCED position of
+    every listed player, starters and substitutes. Empty when none are collected."""
+    d = COLLECT_DIR / "lineups"
+    files = sorted(d.glob("players_*.parquet")) if d.exists() else []
+    key = tuple((f.name, f.stat().st_mtime_ns) for f in files)
+    if _LINEUP_CACHE.get("key") != key:
+        parts = [pd.read_parquet(f, columns=["fixture_id", "player_id", "pos"]) for f in files]
+        lp = pd.concat(parts, ignore_index=True) if parts else pd.DataFrame(columns=["fixture_id", "player_id", "pos"])
+        lp["fixture_id"] = pd.to_numeric(lp["fixture_id"], errors="coerce")
+        lp["player_id"] = pd.to_numeric(lp["player_id"], errors="coerce")
+        lp["pos"] = lp["pos"].map(_pos_letter)
+        lp = lp[lp["fixture_id"].notna() & lp["player_id"].notna() & (lp["pos"] != "")]
+        _LINEUP_CACHE.clear()
+        _LINEUP_CACHE.update(key=key, frame=lp.drop_duplicates(["fixture_id", "player_id"], keep="last"))
+    return _LINEUP_CACHE["frame"]
+
+
+def _pos_letter(v) -> str:
+    s = "" if v is None or (isinstance(v, float) and v != v) else str(v).strip().upper()
+    return s[:1] if s[:1] in ("G", "D", "M", "F") else ""
+
+
+def _prematch_position(df: pd.DataFrame) -> tuple[pd.Series, pd.Series]:
+    """(position letter or '', source) per row from pre-match evidence: the row's lineup_position
+    (serving: the live announced lineup), else the collected announced lineup of the row's fixture,
+    else the position of the player's latest EARLIER row in this frame (rows are ordered by player,
+    date, fixture). One definition for training and serving."""
+    idx = df.index
+    lineup = (df["lineup_position"].map(_pos_letter) if "lineup_position" in df.columns
+              else pd.Series("", index=idx))
+    lp = collected_lineup_positions()
+    if len(lp) and "fixture_id" in df.columns:
+        k = pd.DataFrame({"fixture_id": pd.to_numeric(df["fixture_id"], errors="coerce").to_numpy(),
+                          "player_id": pd.to_numeric(df["player_id"], errors="coerce").to_numpy()})
+        got = k.merge(lp, on=["fixture_id", "player_id"], how="left")["pos"].fillna("").to_numpy()
+        lineup = lineup.where(lineup != "", pd.Series(got, index=idx))
+    own = df["position"].map(_pos_letter) if "position" in df.columns else pd.Series("", index=idx)
+    if UPCOMING_COL in df.columns:                      # an upcoming row has no match position yet
+        own = own.where(~df[UPCOMING_COL].astype(bool), "")
+    prev = own.replace("", np.nan).groupby(df["player_id"]).shift(1)
+    prev = prev.groupby(df["player_id"]).ffill().fillna("")
+    pos = lineup.where(lineup != "", prev)
+    src = pd.Series(np.where(lineup != "", POSITION_FROM_LINEUP,
+                             np.where(prev != "", POSITION_FROM_LATEST, POSITION_NONE)), index=idx)
+    return pos.astype(str), src
+
+
 def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
     """
     Build ML training data from per-match player stats.
@@ -1145,7 +1143,13 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
     if (~(_pid > 0)).any():
         print(f"[features] {int((~(_pid > 0)).sum()):,} row(s) without a real player_id dropped")
         df = df[(_pid > 0).to_numpy()]
-    df = df.sort_values(["player_id", "date"]).reset_index(drop=True)
+    # Stable order with a tie-break (two fixtures of one player on one day; owner 2026-11-09): the
+    # training frame and the serving rows (build_upcoming_features) order history identically.
+    _order = ["player_id", "date"] + (["fixture_id"] if "fixture_id" in df.columns else [])
+    df = df.sort_values(_order, kind="mergesort").reset_index(drop=True)
+    if UPCOMING_COL not in df.columns:
+        df[UPCOMING_COL] = False
+    df[UPCOMING_COL] = df[UPCOMING_COL].fillna(False).astype(bool)
     # Before the minutes filter: the rule needs both teams' rows of a fixture.
     df = _blank_unrecorded_corners(df)
     # Every match each player played (this frame before the minutes filter + the collected cup rows):
@@ -1153,7 +1157,8 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
     _played = played_days(df)
 
     # Drop bench/DNP rows (< 10 min)
-    df = df[df["minutes"] >= 10].copy()
+    # (an UPCOMING row - serving, no result yet - has no minutes; it is kept: build_upcoming_features)
+    df = df[(df["minutes"] >= 10) | df[UPCOMING_COL]].copy()
     # Minutes above a match's maximum are a provider error: the raw value stays, every
     # minutes-derived feature reads it as missing (_minutes_ok).
     df["_minutes_ok"] = minutes_ok(df["minutes"])
@@ -1329,11 +1334,17 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
     _ensure(df, PREV_SEASON_COLUMNS)
     df["shot_accuracy_l10"] = shot_accuracy_before(df).to_numpy()
 
-    # ── Position encoding ─────────────────────────────────────────────────────
-    pos = _first_letter(df["position"]) if "position" in df.columns else pd.Series("", index=df.index)
-    df["pos_forward"] = (pos == "F").astype(int)
-    df["pos_midfielder"] = (pos == "M").astype(int)
-    df["pos_defender"] = (pos == "D").astype(int)
+    # ── Position encoding: PRE-MATCH evidence only (owner 2026-11-09) ─────────
+    # The match-statistics position is published with the match (after kickoff), so it is not an
+    # input. The row's position is the ANNOUNCED lineup position for this fixture (the caller's
+    # lineup_position, else the collected API-Football lineups), else the player's latest EARLIER
+    # match position; position_source says which. No real source -> the flags are missing (never
+    # 0/0/0, which reads as a goalkeeper).
+    df["position_prematch"], df["position_source"] = _prematch_position(df)
+    _pp = df["position_prematch"]
+    _known = _pp != ""
+    for _flag, _letter in (("pos_forward", "F"), ("pos_midfielder", "M"), ("pos_defender", "D")):
+        df[_flag] = (_pp == _letter).astype(float).where(_known)
 
     _ensure(df, _COMPOSITE_INPUTS)
     df = _add_composites(df)
@@ -1366,384 +1377,66 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
     return df.reset_index(drop=True)
 
 
-# ── serving ──────────────────────────────────────────────────────────────────────────────────────
+# ── Serving: the TRAINING code on history + the upcoming rows (owner 2026-11-09) ───────────────
 
-def _build_history_index(history: pd.DataFrame):
-    """Index match-history ONCE for O(1) per-player lookup in build_upcoming_features.
-    Returns (by_player_id, {}) of date-sorted per-player frames. Replaces the full 230k-row scan
-    that ran once PER PLAYER PER MATCH. Lookup is by player_id ONLY (Data Truth: the old by-name
-    index matched two players sharing a lower-cased name); the second element is kept empty for
-    callers that unpack two values."""
-    if history is None or history.empty:
-        return {}, {}
-    h = history.sort_values("date")
-    by_pid = {pid: g for pid, g in h.groupby("player_id")} if "player_id" in h.columns else {}
-    return by_pid, {}
+#: fields a serving row carries (predict.run_player_predictions); everything else is computed
+UPCOMING_FIELDS = ("player_id", "player_name", "fixture_id", "date", "league", "team", "home_team",
+                   "away_team", "is_home", "referee", "lineup_position")
 
 
-_SERVE_CACHE: dict = {}
-
-
-def _serving_context(history: pd.DataFrame) -> dict:
-    """Team table and per-scope team lists over the WHOLE history, built once per history frame."""
-    key = (id(history), len(history))
-    hit = _SERVE_CACHE.get("key") == key
-    if not hit:
-        h = history.copy()
-        h["date"] = pd.to_datetime(h["date"], errors="coerce")
-        if "opponent" not in h.columns:
-            h["opponent"] = h["away_team"].where(h["is_home"].astype(bool), h["home_team"])
-        t = team_match_table(_training_rowset(h))          # the rows build_features uses
-        teams_by_scope: dict = {}
-        if not t.empty:
-            t["_y"] = _team_seasons(t).to_numpy()          # prev_season_* team features
-            named = t["_tkey"].astype(str)
-            named = named[named.str.contains("|", regex=False)]      # national teams / no id
-            if len(named):
-                names = named.str.rsplit("|", n=1, expand=True)
-                for scope, sub in names.groupby(1):
-                    teams_by_scope[scope] = sorted(sub[0].unique())
-        # Measured strength over the whole history (career averages) and the collected real data.
-        hs = _LQ.attach_strength(h) if "team" in h.columns else h
-        by_pid_strength = ({p: g[["league_elo", "opp_club_elo", "_scope"]] for p, g in hs.groupby("player_id")}
-                           if "player_id" in hs.columns else {})
-        prof = collected_profiles()
-        blank = set()
-        if {"fixture_id", "team_corners"} <= set(h.columns):
-            hb = _blank_unrecorded_corners(h)
-            blank = set(hb.loc[hb["team_corners"].isna() & _num(h, "team_corners").notna(), "fixture_id"])
-        played = played_days(h)                # rest_days: every competition we hold
-        _SERVE_CACHE.clear()
-        _SERVE_CACHE.update({"key": key, "table": t,
-                             "played_by_pid": {p: g for p, g in played.groupby("player_id")},
-                             "by_team": ({k: g for k, g in t.groupby("_tkey")} if not t.empty else {}),
-                             "teams_by_scope": teams_by_scope,
-                             "blank_corner_fixtures": blank,
-                             "strength_by_pid": by_pid_strength,
-                             "profiles": prof.set_index("player_id") if not prof.empty else prof,
-                             "sidelined": collected_sidelined(),
-                             "pen_totals": _season_pen_totals(h),
-                             "sp_app": (_SP.load(history_dates=h[["fixture_id", "date"]])
-                                        if "fixture_id" in h.columns else pd.DataFrame())})
-    return _SERVE_CACHE
-
-
-def _opponent_state(ctx: dict, opponent: str, league, n: int, fdate=None) -> dict:
-    """Opponent features for the upcoming fixture, from the opponent's last n fixtures in ANY
-    competition: the opponent's API-Football id (team_identity.club_key: among the clubs of the
-    fixture's competition, else the strength name index) is the key of the training table
-    (team_match_table / _team_keys). A national team, or a club no id source resolves, falls back
-    to src.team_names.resolve among the names held in the fixture league's identity scope.
-    Unresolvable -> every opponent feature NaN (logged by the caller)."""
-    nan_state = {feat: NAN for feat, _ in _TEAM_ROLL.values()}
-    rows = _team_rows_now(ctx, opponent, league)
-    return _team_now(rows, n, fdate) if rows is not None else nan_state
-
-
-def _team_rows_now(ctx: dict, team, league):
-    """The team-table rows of `team` for a fixture of `league` (the training key: API-Football id via
-    team_identity.club_key, else src.team_names.resolve among the names of the league's identity
-    scope), or None when unresolvable."""
-    if not team:
-        return None
-    from . import team_identity as TI
-    k = TI.club_key(str(team), league) if team_scope(league) != "national_teams" else None
-    rows = ctx["by_team"].get(k) if k else None
-    if rows is not None and len(rows):
+def upcoming_rows(upcoming: list[dict]) -> pd.DataFrame:
+    """Serving rows in the training row shape: identity and fixture context only, no result (every
+    count missing), marked UPCOMING_COL. `fixture_date` / `fixture_league` are accepted for `date` /
+    `league`. The season is the registry rule (_resolve_seasons), the one the collector's history
+    rows carry. A row without a real player id or fixture date is dropped and counted."""
+    rows = pd.DataFrame(upcoming)
+    if rows.empty:
         return rows
-    scope = team_scope(league)
-    if scope is None:
-        return None
-    cands = ctx["teams_by_scope"].get(scope, [])
-    hit = config._v9_src("team_names").resolve(str(team), cands) if cands else None
-    if not hit:
-        return None
-    rows = ctx["by_team"].get(f"{hit}|{scope}")
-    return rows if rows is not None and len(rows) else None
+    if "date" not in rows.columns and "fixture_date" in rows.columns:
+        rows["date"] = rows["fixture_date"]
+    if "league" not in rows.columns and "fixture_league" in rows.columns:
+        rows["league"] = rows["fixture_league"]
+    for alias, col in (("fixture_date", "date"), ("fixture_league", "league")):
+        if alias in rows.columns:
+            rows[col] = rows[alias].where(rows[alias].notna(), rows[col])
+    rows = rows[[c for c in UPCOMING_FIELDS if c in rows.columns]].copy()
+    rows["date"] = pd.to_datetime(rows["date"], errors="coerce")
+    ok = (pd.to_numeric(rows["player_id"], errors="coerce") > 0) & rows["date"].notna()
+    if (~ok).any():
+        print(f"[features] upcoming: {int((~ok).sum())} row(s) without a player id or fixture date dropped")
+    rows = rows[ok.to_numpy()].copy()
+    rows["player_id"] = pd.to_numeric(rows["player_id"]).astype("int64")
+    rows["season"] = _resolve_seasons(rows)
+    rows[UPCOMING_COL] = True
+    return rows
 
 
-#: position_source values on a serving row
-POSITION_FROM_LINEUP = "LINEUP_ANNOUNCED"
-POSITION_FROM_LATEST = "LATEST_HELD_MATCH"
-POSITION_NONE = "NONE"
-
-
-def _letter(v) -> str:
-    s = "" if v is None or (isinstance(v, float) and v != v) else str(v).strip().upper()
-    return s[:1] if s[:1] in ("G", "D", "M", "F") else ""
-
-
-def _upcoming_position(p: dict, phist: pd.DataFrame) -> tuple[str, str]:
-    """(position letter, source) for an upcoming fixture: the announced lineup position when the
-    caller has it, else the latest held match's position (the player's own last row). ('', NONE)
-    when neither is a real G/D/M/F."""
-    lp = _letter(p.get("lineup_position"))
-    if lp:
-        return lp, POSITION_FROM_LINEUP
-    lat = _letter(p.get("position"))
-    if not lat and "position" in phist.columns and len(phist):
-        lat = _letter(phist["position"].iloc[-1])
-    return (lat, POSITION_FROM_LATEST) if lat else ("", POSITION_NONE)
-
-
-def _f(x) -> float:
-    """float(x), or NaN for None / non-numeric."""
-    try:
-        return float(x)
-    except (TypeError, ValueError):
-        return NAN
-
-
-def _mean_last(s: pd.Series, n: int, min_n: int = 1) -> float:
-    s = pd.to_numeric(s, errors="coerce").tail(n)
-    return float(s.mean()) if s.notna().sum() >= min_n else NAN
-
-
-def build_upcoming_features(
-    upcoming: list[dict],
-    history: pd.DataFrame,
-    referee_profile: dict | None = None,
-    match_context:   dict | None = None,
-    history_index: tuple | None = None,
-) -> pd.DataFrame:
-    """
-    Build feature rows for upcoming player predictions.
-    Uses the player's last N matches from match-level history as rolling features, and the SAME
-    definitions as build_features for everything else (team table, league averages, composites).
-
-    upcoming: list of player dicts (player_id, player_name, team, opponent, is_home, and the
-              fixture's `fixture_league` / `fixture_date` when the caller knows them)
-    history:  match-level DataFrame from build_features()
-    referee_profile: {yellows_per_game, strictness_score, lg_yellows_per_match} for THIS fixture
-              (referee_profile_from_history); absent keys are NaN.
-    match_context: kept for callers; no feature is read from it any more (the opponent's concede
-              rates used to come from it with 1.3 / 4.5 defaults and were never supplied).
-    history_index: optional pre-built (by_pid, _) from _build_history_index(history).
-    """
-    if not upcoming or history.empty:
+def build_upcoming_features(upcoming: list[dict], history: pd.DataFrame, n: int = None) -> pd.DataFrame:
+    """Feature rows for upcoming player-fixtures, built by build_features ITSELF on the history plus
+    the upcoming rows, so every input is the training definition, value for value (shift-based
+    rolling, strictly-earlier team / league / referee tables, the pre-match position). The rows
+    returned are the upcoming ones; `position` is their pre-match position (position_source says
+    from where). A player with no earlier row has no features (counted, as build_features drops
+    first appearances)."""
+    up = upcoming_rows(upcoming)
+    if up.empty or history is None or history.empty:
         return pd.DataFrame()
-
-    by_pid, _ = history_index if history_index is not None else _build_history_index(history)
-    n = config.ROLLING_N
-    ref = referee_profile or {}
-    ctx = _serving_context(history)
-    rows = []
-    no_pid = no_hist = 0
-    opp_cache: dict = {}
-    lg_cache: dict = {}
-
-    for p in upcoming:
-        pid = p.get("player_id")
-        # player_id only: a player without one is not identifiable (skipped, counted).
-        if pid is None or (isinstance(pid, float) and np.isnan(pid)):
-            no_pid += 1
-            continue
-        phist_all = by_pid.get(pid)
-        if phist_all is None or phist_all.empty:
-            no_hist += 1
-            continue
-        phist = phist_all.tail(n)
-        league = p.get("fixture_league") or p.get("league")
-        fdate = pd.to_datetime(p.get("fixture_date"), errors="coerce")
-
-        r: dict = {
-            "player_id": pid, "player_name": p.get("player_name", ""),
-            "team": p.get("team", ""), "opponent": p.get("opponent", ""),
-            "position": p.get("position", ""),
-            "n_games": len(phist), "n_prev_games": len(phist_all), "data_source": "match_level",
-        }
-        # Minutes above a match's maximum read as missing - the same rule as build_features.
-        phist = phist.assign(_minutes_ok=minutes_ok(_num(phist, "minutes")).to_numpy())
-        mins = _num(phist, "_minutes_ok")
-        r["minutes_est"] = p.get("minutes", NAN)
-        if "fixture_id" in phist.columns and ctx["blank_corner_fixtures"]:
-            phist = phist.assign(team_corners=_num(phist, "team_corners").where(
-                ~phist["fixture_id"].isin(ctx["blank_corner_fixtures"])))
-        for feat, raw in (("goals_pg", "goals"), ("assists_pg", "assists"), ("shots_pg", "shots_total"),
-                          ("sot_pg", "shots_on_target"), ("cards_pg", "yellow_cards"),
-                          ("minutes_pg", "_minutes_ok"), ("key_passes_pg", "key_passes"),
-                          ("starter_rate", "started"), ("team_corners_pg", "team_corners"),
-                          ("tackles_pg", "tackles_total"), ("interceptions_pg", "interceptions"),
-                          ("dribbles_pg", "dribbles_success"), ("dribbled_past_pg", "dribbles_past"),
-                          ("red_cards_pg", "red_cards"), ("passes_pg", "passes_total"),
-                          ("offsides_pg", "offsides"), ("penalties_won_pg", "penalty_won"),
-                          ("saves_pg", "saves"), ("goals_conceded_gk_pg", "goals_conceded"),
-                          ("headed_goals_pg", "headed_goal"), ("fk_goals_pg", "fk_goal")):
-            r[feat] = _mean_last(_num(phist, raw), n)
-        r["rating_pg"] = _mean_last(_num(phist, "rating").where(lambda s: s > 0), n)
-        _fc, _fd = _num(phist, "fouls_committed"), _num(phist, "fouls_drawn")
-        for feat, ser in (
-                ("shot_accuracy_rate", _ratio(_num(phist, "shots_on_target"), _num(phist, "shots_total"))),
-                ("kp_per90", _ratio(_num(phist, "key_passes"), mins) * 90),
-                ("goal_involvement_rate", _ratio(_num(phist, "goals") + _num(phist, "assists"), mins) * 90),
-                ("box_actions_per90", _ratio(_num(phist, "shots_total") + _num(phist, "duels_won"), mins) * 90),
-                ("aerial_won_rate", _ratio(_num(phist, "duels_won"), _num(phist, "duels_total"))),
-                ("duel_intensity_per90", _ratio(_num(phist, "duels_total"), mins) * 90),
-                ("fouls_drawn_per90", _ratio(_fd, mins) * 90),
-                ("fouls_per90", _ratio(_fc, mins) * 90),
-                ("foul_committer_ratio", _ratio(_fc, _fc + _fd)),
-                ("tackles_per90", _ratio(_num(phist, "tackles_total"), mins) * 90),
-                ("defensive_actions_per90",
-                 _ratio(_num(phist, "tackles_total") + _num(phist, "interceptions"), mins) * 90),
-                ("dribble_success_rate", _ratio(_num(phist, "dribbles_success"), _num(phist, "dribbles_attempted")))):
-            r[feat] = _mean_last(ser, n)
-        r["gk_save_rate"] = _mean_last(_ratio(_num(phist, "saves"),
-                                              _num(phist, "saves") + _num(phist, "goals_conceded")),
-                                       n, config.MIN_GK_MATCHES)
-
-        # Venue split: the player's last n games AT THIS VENUE (training definition).
-        if "is_home" in phist_all.columns:
-            _h = phist_all["is_home"].astype(bool)
-            for raw, pref in (("goals", "goals"), ("shots_total", "shots"), ("shots_on_target", "sot")):
-                r[f"{pref}_home_pg"] = _mean_last(_num(phist_all[_h], raw), n)
-                r[f"{pref}_away_pg"] = _mean_last(_num(phist_all[~_h], raw), n)
-
-        # Career-to-date (full history).
-        for feat, raw in (("career_goals_pg", "goals"), ("career_sot_pg", "shots_on_target"),
-                          ("career_shots_pg", "shots_total"), ("career_assists_pg", "assists")):
-            s = _num(phist_all, raw)
-            r[feat] = float(s.mean()) if s.notna().any() else NAN
-        # Season to date: the player's games in the UPCOMING fixture's season (as-of definition).
-        season = config.prop_season(league, fdate.date()) if (league and fdate == fdate) else None
-        _sr = config._v9_src("season_resolver")
-        r["penalty_conversion_rate"] = _penalty_now(ctx["pen_totals"], pid, phist_all,
-                                                    season if season and _sr.is_known(season) else None)
-        if season and _sr.is_known(season) and "season" in phist_all.columns:
-            cur = phist_all[phist_all["season"].astype(str) == str(season)]
-        else:
-            cur = phist_all.iloc[0:0]
-        for feat, raw in _SEASON_SRC.items():
-            s = _num(cur, raw)
-            r[feat] = float(s.mean()) if s.notna().any() else NAN
-        r["season_appearances"] = float(len(cur)) if season and _sr.is_known(season) else NAN
-
-        # Previous season (player, own team, opponent) and the 10-match shot accuracy: the training
-        # functions, queried at the fixture date for the fixture's season.
-        y = float(_season_year([season]).iloc[0]) if season and _sr.is_known(season) else NAN
-        q = pd.DataFrame({"player_id": [pid], "_y": [y], "date": [fdate]})
-        src = phist_all.assign(_y=(_season_year(phist_all["season"]).to_numpy()
-                                   if "season" in phist_all.columns else NAN))
-        r.update(_prev_season_player(src, q).iloc[0].to_dict())
-        for side, name in (("own", p.get("team", "")), ("opp", p.get("opponent", ""))):
-            tk = (side, str(name), league, y, fdate)
-            if tk not in lg_cache:
-                trows = _team_rows_now(ctx, name, league)
-                tq = pd.DataFrame({"_tkey": [trows["_tkey"].iloc[0] if trows is not None else None],
-                                   "_y": [y], "date": [fdate]})
-                lg_cache[tk] = (_prev_season_team(trows, tq, side).iloc[0].to_dict() if trows is not None
-                                else {f: NAN for f, (sd, _) in PREV_SEASON_TEAM.items() if sd == side})
-            r.update(lg_cache[tk])
-        _acc = pd.concat([phist_all[[c for c in ("player_id", "shots_total", "shots_on_target")
-                                     if c in phist_all.columns]],
-                          pd.DataFrame({"player_id": [pid]})], ignore_index=True)
-        r["shot_accuracy_l10"] = float(shot_accuracy_before(_acc).iloc[-1])
-
-        # Profile: a real age from the caller (live squad list) first, then the collected /players
-        # record (age at the fixture date from the birth date; latest height / weight), else the
-        # history's measured value; the old code's placeholders count as missing.
-        prof = ctx["profiles"]
-        prow = prof.loc[pid] if (len(prof) and pid in prof.index) else None
-        for c in ("age", "height_cm", "weight_kg"):
-            given = _f(p.get(c)) if c == "age" else NAN
-            if given == given and given > 0:
-                r[c] = given
-                continue
-            if prow is not None:
-                if c == "age":
-                    bd = pd.to_datetime(prow["birth_date"], errors="coerce")
-                    given = (fdate - bd).days / 365.25 if (bd == bd and fdate == fdate) else NAN
-                else:
-                    given = _f(prow[c])
-                if given == given:
-                    r[c] = given
-                    continue
-            s = _profile(phist_all, c).dropna()
-            r[c] = float(s.iloc[-1]) if len(s) else NAN
-
-        # Injury: the collected /sidelined answer as of the fixture date; else the LATEST stored
-        # row's values (NaN stays NaN; never an older row's value).
-        _sid = ctx["sidelined"].get(int(pid)) if isinstance(pid, (int, np.integer, float)) else None
-        if _sid is not None and fdate == fdate:
-            from .history_integrity import injury_features_asof
-            r.update(injury_features_asof(_sid, fdate))
-        else:
-            for c in ("chronic_injury_risk", "days_since_last_injury", "return_from_injury_flag"):
-                v = _num(phist_all, c)
-                r[c] = float(v.iloc[-1]) if len(v) else NAN
-            # Rows written before 2026-11-01 encode "no recorded spell" as the 365 sentinel: decode
-            # it to the current meaning (NaN days, history_integrity.injury_features_asof).
-            from .history_integrity import NO_INJURY_DAYS as _LEGACY_NONE
-            if r["days_since_last_injury"] == _LEGACY_NONE:
-                r["days_since_last_injury"] = NAN
-
-        # Set-piece roles from mapped Understat shots, as of the fixture date.
-        if fdate == fdate and len(ctx["sp_app"]):
-            _sp = _SP.asof(ctx["sp_app"], [pid], [fdate]).iloc[0]
-            r.update({c: float(_sp[c]) for c in _SP.SETPIECE_COLUMNS})
-        else:
-            r.update({c: NAN for c in _SP.SETPIECE_COLUMNS})
-
-        # Referee, measured (pipeline passes referee_profile_from_history).
-        r["referee_yellows_pg"] = _f(ref.get("yellows_per_game"))
-        r["referee_strictness"] = _f(ref.get("strictness_score"))
-
-        # Venue, position.
-        r["is_home"] = _f(p.get("is_home"))
-        # Position for THIS fixture from the best pre-match evidence, with its source (owner
-        # 2026-11-09): the announced lineup position (API-Football /fixtures/lineups, passed by the
-        # caller as lineup_position), else the position of the player's latest held match. No real
-        # source -> the flags stay missing (never a typed 0).
-        _pos, _src = _upcoming_position(p, phist)
-        r["position_source"] = _src
-        r["position"] = _pos                 # the tip's position = the same evidence ('' = unknown)
-        if _pos:
-            r["pos_forward"], r["pos_midfielder"], r["pos_defender"] = (
-                int(_pos == "F"), int(_pos == "M"), int(_pos == "D"))
-        else:
-            r["pos_forward"] = r["pos_midfielder"] = r["pos_defender"] = NAN
-
-        # Rest days: from the player's last match in ANY competition we hold to THIS fixture (the
-        # training function; NaN without a fixture date).
-        _pl = ctx["played_by_pid"].get(float(pid)) if isinstance(pid, (int, np.integer, float)) else None
-        r["rest_days"] = (float(rest_days_before(_pl, pd.DataFrame({"player_id": [pid], "date": [fdate]})).iloc[0])
-                          if _pl is not None and fdate == fdate else NAN)
-
-        # Opponent (measured) and league averages.
-        okey = (str(p.get("opponent", "")), league, fdate)
-        if okey not in opp_cache:
-            opp_cache[okey] = _opponent_state(ctx, okey[0], league, n, fdate)
-        r.update(opp_cache[okey])
-        if (league, fdate) not in lg_cache:
-            lg_cache[(league, fdate)] = (_league_now(ctx["table"], league, fdate)
-                                         if not ctx["table"].empty else {})
-        r.update(lg_cache[(league, fdate)])
-        r["lg_yellows_per_match"] = _f(ref.get("lg_yellows_per_match"))
-
-        # Measured strength (league_quality.py): the fixture's clubs and league as of its date, and
-        # the player's career averages over his stored rows. Legacy hand-tier columns: NaN.
-        skey = (str(p.get("team", "")), okey[0], league, fdate)
-        if skey not in lg_cache:
-            lg_cache[skey] = _LQ.fixture_strength(skey[0], skey[1], league, fdate)
-        r.update(lg_cache[skey])
-        _rows = ctx["strength_by_pid"].get(pid)
-        r.update(_LQ.career_now(_rows, league) if _rows is not None else
-                 {"player_career_avg_league_elo": NAN, "player_career_avg_opp_elo": NAN})
-        r["league_tier"] = r["league_quality"] = r["player_career_avg_quality"] = NAN
-        rows.append(r)
-
-    if no_pid or no_hist:
-        print(f"[features] upcoming: {no_pid} player(s) without player_id and {no_hist} without "
-              f"history skipped")
-    if not rows:
+    n = n or config.ROLLING_N
+    h = history.copy()
+    h[UPCOMING_COL] = False
+    if "fixture_id" in h.columns and "fixture_id" in up.columns:
+        h = h[~pd.to_numeric(h["fixture_id"], errors="coerce").isin(pd.to_numeric(up["fixture_id"], errors="coerce"))]
+    frame = build_features(pd.concat([h, up], ignore_index=True, sort=False), n)
+    if frame.empty or UPCOMING_COL not in frame.columns:
         return pd.DataFrame()
-    out = pd.DataFrame(rows)
-    _ensure(out, _COMPOSITE_INPUTS)
-    out = _add_composites(out)
-    n_no_opp = int(out["opp_goals_conceded_pg"].isna().sum())
-    if n_no_opp:
-        print(f"[features] upcoming: {n_no_opp}/{len(out)} row(s) without measured opponent "
-              f"concede rates (opponent unresolved or < {config.MIN_OPP_MATCHES} prior matches)")
-    return out
+    out = frame[frame[UPCOMING_COL].astype(bool)].copy()
+    n_none = len(up) - len(out)
+    if n_none:
+        print(f"[features] upcoming: {n_none} player(s) without an earlier match: no features")
+    out["position"] = out["position_prematch"]
+    out["n_games"] = np.minimum(pd.to_numeric(out["n_prev_games"], errors="coerce"), n)
+    out["data_source"] = "match_level"
+    return out.reset_index(drop=True)
 
 
 def build_rolling_features(match_rows: list[dict], n: int = None) -> dict:

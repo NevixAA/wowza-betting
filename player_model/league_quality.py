@@ -170,7 +170,8 @@ def attach_strength(df: pd.DataFrame, strength=None) -> pd.DataFrame:
                                 ("opp_club_elo", "player_career_avg_opp_elo",
                                  [o["player_id"], o["_scope"].fillna("")])):
             v = o[src]
-            prev_sum = v.fillna(0.0).groupby(keys).cumsum() - v.fillna(0.0)
+            # prefix sum up to the previous row: exact (cumsum - own is not, in floating point)
+            prev_sum = v.fillna(0.0).groupby(keys).cumsum().groupby(keys).shift(1)
             prev_n = v.notna().astype(int).groupby(keys).cumsum() - v.notna().astype(int)
             avg = (prev_sum / prev_n.where(prev_n > 0)).where(prev_n >= MIN_CAREER_ROWS)
             out.loc[o.index, feat] = avg.to_numpy()
