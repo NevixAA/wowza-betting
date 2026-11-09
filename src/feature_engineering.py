@@ -4,7 +4,8 @@ Feature Engineering — ZERO DATA LEAKAGE.
 All rolling/form features use only past data:
   - Each team's stats are shifted by 1 before rolling, so the current match
     is never included in its own features.
-  - League averages are expanding (up to but not including the current match).
+  - League averages use only the league's matches on STRICTLY EARLIER DATES (never another
+    match of the same day), exactly as serving computes them.
   - Rest days use only the previous match date.
 
 Features produced per match row
@@ -206,22 +207,52 @@ def _latest_form(hist: pd.DataFrame, n: int) -> pd.DataFrame:
     Index (league, team); one column per _FORM_FEATURES stat present in the history."""
     tc = _build_team_centric(hist)
     stats = _form_stats(tc, _add_ht_flags(tc))
-    # tc is sorted by (league, team, date): the group's last n rows ARE its window, and the mean of
-    # the values present over them equals _window_mean at the group's last row.
-    last = tc.groupby(["league", "team"], sort=False).tail(n)
-    out = last.groupby(["league", "team"], sort=False)[stats + [_HT_KNOWN]].mean()
+    cols = stats + [_HT_KNOWN]
+    # TRAINING'S OWN FUNCTION, BIT FOR BIT (owner 2026-11-09: parity at 0). Append one "next match"
+    # row per (league, team) after its own rows and take _rolling there - literally the value
+    # build_features assigns that team's next match. The plain mean of the last n values that was
+    # here is mathematically equal but adds in a different order than pandas' rolling sum: a
+    # 1-ulp difference (away_xg_last5 1.104 vs 1.1040000000000003) flipped a tree split and moved
+    # three Standard probabilities by up to 0.36 points (scripts/team_train_serve_parity.py).
+    nxt = tc.groupby(["league", "team"], sort=False).tail(1).copy()
+    nxt[cols] = np.nan
+    both = pd.concat([tc.assign(_next=False), nxt.assign(_next=True)], ignore_index=True)
+    # groupby keeps each group's rows in frame order: the appended row comes after all its own rows
+    for s in cols:
+        both[s] = _rolling(both, s, n)
+    out = both[both["_next"]].set_index(["league", "team"])[cols]
     out[_HT_KNOWN] = _ht_history_flag(out[_HT_KNOWN])
     return out
 
 
+def _league_prior_dates_mean(df: pd.DataFrame, col: str) -> pd.Series:
+    """Per row: the mean of `col` over the SAME league's matches on STRICTLY EARLIER DATES (NaN
+    values skipped; no earlier value -> NaN; a row without a league -> NaN).
+
+    This is the rule serving uses (build_upcoming_features averages the history strictly before the
+    fixture's date). The previous row-order `expanding().mean().shift(1)` also counted league
+    matches played EARLIER THE SAME DAY - results nobody knows before kickoff - so training saw
+    slightly different averages than serving could ever compute (owner 2026-11-09, fix the leak;
+    reports/P3_TEAM_PROMOTION_REVIEW.md decision D)."""
+    out = pd.Series(np.nan, index=df.index)
+    if df.empty or "league" not in df.columns:
+        return out
+    day = pd.to_datetime(df["date"]).dt.normalize()
+    val = pd.to_numeric(df[col], errors="coerce")
+    frame = pd.DataFrame({"league": df["league"], "day": day, "s": val.fillna(0.0),
+                          "c": val.notna().astype(float)}, index=df.index)
+    frame = frame[frame["league"].notna()]
+    daily = frame.groupby(["league", "day"], sort=True)[["s", "c"]].sum()
+    prior = daily.groupby(level="league").cumsum() - daily        # strictly earlier dates only
+    mean = (prior["s"] / prior["c"]).where(prior["c"] > 0)
+    keys = pd.MultiIndex.from_arrays([frame["league"], frame["day"]])
+    out.loc[frame.index] = mean.reindex(keys).to_numpy()
+    return out
+
+
 def _league_expanding_avg(df: pd.DataFrame) -> pd.Series:
-    """Expanding league-wide goal average up to (not including) each match."""
-    df = df.copy()
-    result = pd.Series(np.nan, index=df.index)
-    for league, grp in df.groupby("league"):
-        exp = grp["total_goals"].expanding().mean().shift(1)
-        result.loc[grp.index] = exp.values
-    return result
+    """League-wide goal average over the league's matches on strictly earlier dates."""
+    return _league_prior_dates_mean(df, "total_goals")
 
 
 # ── Rest days ────────────────────────────────────────────────────────────────
@@ -240,8 +271,9 @@ def _add_home_advantage(df: pd.DataFrame) -> pd.DataFrame:
     # PER LEAGUE, in row order. `groupby().expanding().mean().shift(1).values` came back GROUPED BY
     # LEAGUE and was pasted onto date-ordered rows, so each row got another league's running
     # average, and the shift leaked across league boundaries (Data Truth audit, found with 12).
-    df_sorted["league_avg_away_goals"] = df_sorted.groupby("league")["away_goals"].transform(
-        lambda s: s.expanding().mean().shift(1))
+    # STRICTLY EARLIER DATES (owner 2026-11-09): the row-order expanding mean also counted league
+    # matches played earlier the same day, which serving cannot know before kickoff.
+    df_sorted["league_avg_away_goals"] = _league_prior_dates_mean(df_sorted, "away_goals").to_numpy()
 
     home_ha: dict[str, float] = {}
     away_ha: dict[str, float] = {}
@@ -725,7 +757,9 @@ def build_upcoming_features(
         (feat["away_season_goals_a"], feat["away_season_conceded_a"], feat["away_cs_rate_a"]) = \
             _venue_season_stats(at, "away_team", "away_goals", "home_goals", lg, row.get("date"))
 
-        lg_avg_away = hist[hist["league"] == lg]["away_goals"].mean() if lg else hist["away_goals"].mean()
+        # The fixture's OWN league only (no league -> no reference -> NaN, as in training; the
+        # all-league mean it used to fall back to was a global stand-in).
+        lg_avg_away = hist[hist["league"] == lg]["away_goals"].mean() if lg else np.nan
         # No league history -> no reference average -> home-advantage features stay NaN below
         # (was an invented 1.1; Data Truth audit finding 12).
         _no_ref = not (pd.notna(lg_avg_away) and lg_avg_away > 0)

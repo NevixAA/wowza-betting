@@ -18,7 +18,7 @@
   },
   "current_champions": {
    "path": "models/registry/current_champions.json",
-   "sha256_16": "d0dbab4fe81b4b11"
+   "sha256_16": "d07769992e92e02b"
   },
   "deployed_eligibility": {
    "path": "config.py under .github/workflows/predict.yml env",
@@ -30,7 +30,7 @@
   },
   "research_lock_snapshot": {
    "path": "config/research_lock_snapshot.json",
-   "approved_at": "2026-11-04T07:54:14Z",
+   "approved_at": "2026-11-09T15:00:30Z",
    "approved_by": "Nevo (owner)"
   }
  },
@@ -96,10 +96,10 @@
    },
    "prediction_engine": {
     "model_slot": "btts",
-    "model_version": "btts_20261005T101905Z_238e3419",
-    "champion_since": "2026-10-05T10:19:05Z",
-    "artifact_sha256_16": "238e3419f4144956",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "btts_20261109T211852Z_d7cd2762",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "d7cd27622674f767",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -125,7 +125,7 @@
    "last_reviewed": {
     "research_regime": "2026-10-25",
     "bankroll_policy": "2026-10-13",
-    "owner_lock_approved_at": "2026-11-04T07:54:14Z"
+    "owner_lock_approved_at": "2026-11-09T15:00:30Z"
    }
   },
   {
@@ -166,10 +166,10 @@
    },
    "prediction_engine": {
     "model_slot": "newformat",
-    "model_version": "newformat_20261018T080423Z_9eb6b4b4",
-    "champion_since": "2026-10-25T08:46:05Z",
-    "artifact_sha256_16": "9eb6b4b4860c7970",
-    "promotion_source": "ROLLBACK"
+    "model_version": "newformat_20261109T211851Z_9198e5bd",
+    "champion_since": "2026-11-09T21:18:51Z",
+    "artifact_sha256_16": "9198e5bd0003023d",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -236,10 +236,10 @@
    },
    "prediction_engine": {
     "model_slot": "newformat",
-    "model_version": "newformat_20261018T080423Z_9eb6b4b4",
-    "champion_since": "2026-10-25T08:46:05Z",
-    "artifact_sha256_16": "9eb6b4b4860c7970",
-    "promotion_source": "ROLLBACK"
+    "model_version": "newformat_20261109T211851Z_9198e5bd",
+    "champion_since": "2026-11-09T21:18:51Z",
+    "artifact_sha256_16": "9198e5bd0003023d",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -304,10 +304,10 @@
    },
    "prediction_engine": {
     "model_slot": "over15",
-    "model_version": "over15_20261018T080423Z_da4743a2",
-    "champion_since": "2026-10-18T08:04:23Z",
-    "artifact_sha256_16": "da4743a2669fef13",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "over15_20261109T211852Z_2af54e42",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "2af54e42b8af630d",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -371,10 +371,10 @@
    },
    "prediction_engine": {
     "model_slot": "over35",
-    "model_version": "over35_20261005T101905Z_f546ce72",
-    "champion_since": "2026-10-05T10:19:05Z",
-    "artifact_sha256_16": "f546ce723bdb31f6",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "over35_20261109T211852Z_ffeaa631",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "ffeaa631f6e67b23",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -438,10 +438,10 @@
    },
    "prediction_engine": {
     "model_slot": "btts",
-    "model_version": "btts_20261005T101905Z_238e3419",
-    "champion_since": "2026-10-05T10:19:05Z",
-    "artifact_sha256_16": "238e3419f4144956",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "btts_20261109T211852Z_d7cd2762",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "d7cd27622674f767",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -507,10 +507,10 @@
    },
    "prediction_engine": {
     "model_slot": "newformat",
-    "model_version": "newformat_20261018T080423Z_9eb6b4b4",
-    "champion_since": "2026-10-25T08:46:05Z",
-    "artifact_sha256_16": "9eb6b4b4860c7970",
-    "promotion_source": "ROLLBACK"
+    "model_version": "newformat_20261109T211851Z_9198e5bd",
+    "champion_since": "2026-11-09T21:18:51Z",
+    "artifact_sha256_16": "9198e5bd0003023d",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -577,10 +577,10 @@
    },
    "prediction_engine": {
     "model_slot": "newformat",
-    "model_version": "newformat_20261018T080423Z_9eb6b4b4",
-    "champion_since": "2026-10-25T08:46:05Z",
-    "artifact_sha256_16": "9eb6b4b4860c7970",
-    "promotion_source": "ROLLBACK"
+    "model_version": "newformat_20261109T211851Z_9198e5bd",
+    "champion_since": "2026-11-09T21:18:51Z",
+    "artifact_sha256_16": "9198e5bd0003023d",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -645,10 +645,10 @@
    },
    "prediction_engine": {
     "model_slot": "over15",
-    "model_version": "over15_20261018T080423Z_da4743a2",
-    "champion_since": "2026-10-18T08:04:23Z",
-    "artifact_sha256_16": "da4743a2669fef13",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "over15_20261109T211852Z_2af54e42",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "2af54e42b8af630d",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -712,10 +712,10 @@
    },
    "prediction_engine": {
     "model_slot": "over35",
-    "model_version": "over35_20261005T101905Z_f546ce72",
-    "champion_since": "2026-10-05T10:19:05Z",
-    "artifact_sha256_16": "f546ce723bdb31f6",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "over35_20261109T211852Z_ffeaa631",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "ffeaa631f6e67b23",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -779,10 +779,10 @@
    },
    "prediction_engine": {
     "model_slot": "btts",
-    "model_version": "btts_20261005T101905Z_238e3419",
-    "champion_since": "2026-10-05T10:19:05Z",
-    "artifact_sha256_16": "238e3419f4144956",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "btts_20261109T211852Z_d7cd2762",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "d7cd27622674f767",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -849,10 +849,10 @@
    },
    "prediction_engine": {
     "model_slot": "newformat",
-    "model_version": "newformat_20261018T080423Z_9eb6b4b4",
-    "champion_since": "2026-10-25T08:46:05Z",
-    "artifact_sha256_16": "9eb6b4b4860c7970",
-    "promotion_source": "ROLLBACK"
+    "model_version": "newformat_20261109T211851Z_9198e5bd",
+    "champion_since": "2026-11-09T21:18:51Z",
+    "artifact_sha256_16": "9198e5bd0003023d",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -919,10 +919,10 @@
    },
    "prediction_engine": {
     "model_slot": "newformat",
-    "model_version": "newformat_20261018T080423Z_9eb6b4b4",
-    "champion_since": "2026-10-25T08:46:05Z",
-    "artifact_sha256_16": "9eb6b4b4860c7970",
-    "promotion_source": "ROLLBACK"
+    "model_version": "newformat_20261109T211851Z_9198e5bd",
+    "champion_since": "2026-11-09T21:18:51Z",
+    "artifact_sha256_16": "9198e5bd0003023d",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -987,10 +987,10 @@
    },
    "prediction_engine": {
     "model_slot": "over15",
-    "model_version": "over15_20261018T080423Z_da4743a2",
-    "champion_since": "2026-10-18T08:04:23Z",
-    "artifact_sha256_16": "da4743a2669fef13",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "over15_20261109T211852Z_2af54e42",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "2af54e42b8af630d",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -1054,10 +1054,10 @@
    },
    "prediction_engine": {
     "model_slot": "over35",
-    "model_version": "over35_20261005T101905Z_f546ce72",
-    "champion_since": "2026-10-05T10:19:05Z",
-    "artifact_sha256_16": "f546ce723bdb31f6",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "over35_20261109T211852Z_ffeaa631",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "ffeaa631f6e67b23",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -1121,10 +1121,10 @@
    },
    "prediction_engine": {
     "model_slot": "btts",
-    "model_version": "btts_20261005T101905Z_238e3419",
-    "champion_since": "2026-10-05T10:19:05Z",
-    "artifact_sha256_16": "238e3419f4144956",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "btts_20261109T211852Z_d7cd2762",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "d7cd27622674f767",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -1189,10 +1189,10 @@
    },
    "prediction_engine": {
     "model_slot": "standard",
-    "model_version": "standard_20261018T080423Z_64313878",
-    "champion_since": "2026-10-18T08:04:23Z",
-    "artifact_sha256_16": "643138788406aa03",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "standard_20261109T211851Z_4025384d",
+    "champion_since": "2026-11-09T21:18:51Z",
+    "artifact_sha256_16": "4025384d6cb2a2f3",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -1258,10 +1258,10 @@
    },
    "prediction_engine": {
     "model_slot": "standard",
-    "model_version": "standard_20261018T080423Z_64313878",
-    "champion_since": "2026-10-18T08:04:23Z",
-    "artifact_sha256_16": "643138788406aa03",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "standard_20261109T211851Z_4025384d",
+    "champion_since": "2026-11-09T21:18:51Z",
+    "artifact_sha256_16": "4025384d6cb2a2f3",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -1326,10 +1326,10 @@
    },
    "prediction_engine": {
     "model_slot": "over15",
-    "model_version": "over15_20261018T080423Z_da4743a2",
-    "champion_since": "2026-10-18T08:04:23Z",
-    "artifact_sha256_16": "da4743a2669fef13",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "over15_20261109T211852Z_2af54e42",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "2af54e42b8af630d",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -1393,10 +1393,10 @@
    },
    "prediction_engine": {
     "model_slot": "over35",
-    "model_version": "over35_20261005T101905Z_f546ce72",
-    "champion_since": "2026-10-05T10:19:05Z",
-    "artifact_sha256_16": "f546ce723bdb31f6",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "over35_20261109T211852Z_ffeaa631",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "ffeaa631f6e67b23",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -1460,10 +1460,10 @@
    },
    "prediction_engine": {
     "model_slot": "btts",
-    "model_version": "btts_20261005T101905Z_238e3419",
-    "champion_since": "2026-10-05T10:19:05Z",
-    "artifact_sha256_16": "238e3419f4144956",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "btts_20261109T211852Z_d7cd2762",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "d7cd27622674f767",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -1528,10 +1528,10 @@
    },
    "prediction_engine": {
     "model_slot": "standard",
-    "model_version": "standard_20261018T080423Z_64313878",
-    "champion_since": "2026-10-18T08:04:23Z",
-    "artifact_sha256_16": "643138788406aa03",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "standard_20261109T211851Z_4025384d",
+    "champion_since": "2026-11-09T21:18:51Z",
+    "artifact_sha256_16": "4025384d6cb2a2f3",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -1597,10 +1597,10 @@
    },
    "prediction_engine": {
     "model_slot": "standard",
-    "model_version": "standard_20261018T080423Z_64313878",
-    "champion_since": "2026-10-18T08:04:23Z",
-    "artifact_sha256_16": "643138788406aa03",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "standard_20261109T211851Z_4025384d",
+    "champion_since": "2026-11-09T21:18:51Z",
+    "artifact_sha256_16": "4025384d6cb2a2f3",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -1665,10 +1665,10 @@
    },
    "prediction_engine": {
     "model_slot": "over15",
-    "model_version": "over15_20261018T080423Z_da4743a2",
-    "champion_since": "2026-10-18T08:04:23Z",
-    "artifact_sha256_16": "da4743a2669fef13",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "over15_20261109T211852Z_2af54e42",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "2af54e42b8af630d",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -1732,10 +1732,10 @@
    },
    "prediction_engine": {
     "model_slot": "over35",
-    "model_version": "over35_20261005T101905Z_f546ce72",
-    "champion_since": "2026-10-05T10:19:05Z",
-    "artifact_sha256_16": "f546ce723bdb31f6",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "over35_20261109T211852Z_ffeaa631",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "ffeaa631f6e67b23",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -1799,10 +1799,10 @@
    },
    "prediction_engine": {
     "model_slot": "btts",
-    "model_version": "btts_20261005T101905Z_238e3419",
-    "champion_since": "2026-10-05T10:19:05Z",
-    "artifact_sha256_16": "238e3419f4144956",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "btts_20261109T211852Z_d7cd2762",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "d7cd27622674f767",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -1868,10 +1868,10 @@
    },
    "prediction_engine": {
     "model_slot": "newformat",
-    "model_version": "newformat_20261018T080423Z_9eb6b4b4",
-    "champion_since": "2026-10-25T08:46:05Z",
-    "artifact_sha256_16": "9eb6b4b4860c7970",
-    "promotion_source": "ROLLBACK"
+    "model_version": "newformat_20261109T211851Z_9198e5bd",
+    "champion_since": "2026-11-09T21:18:51Z",
+    "artifact_sha256_16": "9198e5bd0003023d",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -1938,10 +1938,10 @@
    },
    "prediction_engine": {
     "model_slot": "newformat",
-    "model_version": "newformat_20261018T080423Z_9eb6b4b4",
-    "champion_since": "2026-10-25T08:46:05Z",
-    "artifact_sha256_16": "9eb6b4b4860c7970",
-    "promotion_source": "ROLLBACK"
+    "model_version": "newformat_20261109T211851Z_9198e5bd",
+    "champion_since": "2026-11-09T21:18:51Z",
+    "artifact_sha256_16": "9198e5bd0003023d",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -2006,10 +2006,10 @@
    },
    "prediction_engine": {
     "model_slot": "over15",
-    "model_version": "over15_20261018T080423Z_da4743a2",
-    "champion_since": "2026-10-18T08:04:23Z",
-    "artifact_sha256_16": "da4743a2669fef13",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "over15_20261109T211852Z_2af54e42",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "2af54e42b8af630d",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -2073,10 +2073,10 @@
    },
    "prediction_engine": {
     "model_slot": "over35",
-    "model_version": "over35_20261005T101905Z_f546ce72",
-    "champion_since": "2026-10-05T10:19:05Z",
-    "artifact_sha256_16": "f546ce723bdb31f6",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "over35_20261109T211852Z_ffeaa631",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "ffeaa631f6e67b23",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -2140,10 +2140,10 @@
    },
    "prediction_engine": {
     "model_slot": "btts",
-    "model_version": "btts_20261005T101905Z_238e3419",
-    "champion_since": "2026-10-05T10:19:05Z",
-    "artifact_sha256_16": "238e3419f4144956",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "btts_20261109T211852Z_d7cd2762",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "d7cd27622674f767",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -2209,10 +2209,10 @@
    },
    "prediction_engine": {
     "model_slot": "newformat",
-    "model_version": "newformat_20261018T080423Z_9eb6b4b4",
-    "champion_since": "2026-10-25T08:46:05Z",
-    "artifact_sha256_16": "9eb6b4b4860c7970",
-    "promotion_source": "ROLLBACK"
+    "model_version": "newformat_20261109T211851Z_9198e5bd",
+    "champion_since": "2026-11-09T21:18:51Z",
+    "artifact_sha256_16": "9198e5bd0003023d",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -2279,10 +2279,10 @@
    },
    "prediction_engine": {
     "model_slot": "newformat",
-    "model_version": "newformat_20261018T080423Z_9eb6b4b4",
-    "champion_since": "2026-10-25T08:46:05Z",
-    "artifact_sha256_16": "9eb6b4b4860c7970",
-    "promotion_source": "ROLLBACK"
+    "model_version": "newformat_20261109T211851Z_9198e5bd",
+    "champion_since": "2026-11-09T21:18:51Z",
+    "artifact_sha256_16": "9198e5bd0003023d",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -2347,10 +2347,10 @@
    },
    "prediction_engine": {
     "model_slot": "over15",
-    "model_version": "over15_20261018T080423Z_da4743a2",
-    "champion_since": "2026-10-18T08:04:23Z",
-    "artifact_sha256_16": "da4743a2669fef13",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "over15_20261109T211852Z_2af54e42",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "2af54e42b8af630d",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -2414,10 +2414,10 @@
    },
    "prediction_engine": {
     "model_slot": "over35",
-    "model_version": "over35_20261005T101905Z_f546ce72",
-    "champion_since": "2026-10-05T10:19:05Z",
-    "artifact_sha256_16": "f546ce723bdb31f6",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "over35_20261109T211852Z_ffeaa631",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "ffeaa631f6e67b23",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -2481,10 +2481,10 @@
    },
    "prediction_engine": {
     "model_slot": "btts",
-    "model_version": "btts_20261005T101905Z_238e3419",
-    "champion_since": "2026-10-05T10:19:05Z",
-    "artifact_sha256_16": "238e3419f4144956",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "btts_20261109T211852Z_d7cd2762",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "d7cd27622674f767",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -2550,10 +2550,10 @@
    },
    "prediction_engine": {
     "model_slot": "newformat",
-    "model_version": "newformat_20261018T080423Z_9eb6b4b4",
-    "champion_since": "2026-10-25T08:46:05Z",
-    "artifact_sha256_16": "9eb6b4b4860c7970",
-    "promotion_source": "ROLLBACK"
+    "model_version": "newformat_20261109T211851Z_9198e5bd",
+    "champion_since": "2026-11-09T21:18:51Z",
+    "artifact_sha256_16": "9198e5bd0003023d",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -2620,10 +2620,10 @@
    },
    "prediction_engine": {
     "model_slot": "newformat",
-    "model_version": "newformat_20261018T080423Z_9eb6b4b4",
-    "champion_since": "2026-10-25T08:46:05Z",
-    "artifact_sha256_16": "9eb6b4b4860c7970",
-    "promotion_source": "ROLLBACK"
+    "model_version": "newformat_20261109T211851Z_9198e5bd",
+    "champion_since": "2026-11-09T21:18:51Z",
+    "artifact_sha256_16": "9198e5bd0003023d",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -2688,10 +2688,10 @@
    },
    "prediction_engine": {
     "model_slot": "over15",
-    "model_version": "over15_20261018T080423Z_da4743a2",
-    "champion_since": "2026-10-18T08:04:23Z",
-    "artifact_sha256_16": "da4743a2669fef13",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "over15_20261109T211852Z_2af54e42",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "2af54e42b8af630d",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -2755,10 +2755,10 @@
    },
    "prediction_engine": {
     "model_slot": "over35",
-    "model_version": "over35_20261005T101905Z_f546ce72",
-    "champion_since": "2026-10-05T10:19:05Z",
-    "artifact_sha256_16": "f546ce723bdb31f6",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "over35_20261109T211852Z_ffeaa631",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "ffeaa631f6e67b23",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -2822,10 +2822,10 @@
    },
    "prediction_engine": {
     "model_slot": "btts",
-    "model_version": "btts_20261005T101905Z_238e3419",
-    "champion_since": "2026-10-05T10:19:05Z",
-    "artifact_sha256_16": "238e3419f4144956",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "btts_20261109T211852Z_d7cd2762",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "d7cd27622674f767",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -2892,10 +2892,10 @@
    },
    "prediction_engine": {
     "model_slot": "newformat",
-    "model_version": "newformat_20261018T080423Z_9eb6b4b4",
-    "champion_since": "2026-10-25T08:46:05Z",
-    "artifact_sha256_16": "9eb6b4b4860c7970",
-    "promotion_source": "ROLLBACK"
+    "model_version": "newformat_20261109T211851Z_9198e5bd",
+    "champion_since": "2026-11-09T21:18:51Z",
+    "artifact_sha256_16": "9198e5bd0003023d",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -2962,10 +2962,10 @@
    },
    "prediction_engine": {
     "model_slot": "newformat",
-    "model_version": "newformat_20261018T080423Z_9eb6b4b4",
-    "champion_since": "2026-10-25T08:46:05Z",
-    "artifact_sha256_16": "9eb6b4b4860c7970",
-    "promotion_source": "ROLLBACK"
+    "model_version": "newformat_20261109T211851Z_9198e5bd",
+    "champion_since": "2026-11-09T21:18:51Z",
+    "artifact_sha256_16": "9198e5bd0003023d",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -3030,10 +3030,10 @@
    },
    "prediction_engine": {
     "model_slot": "over15",
-    "model_version": "over15_20261018T080423Z_da4743a2",
-    "champion_since": "2026-10-18T08:04:23Z",
-    "artifact_sha256_16": "da4743a2669fef13",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "over15_20261109T211852Z_2af54e42",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "2af54e42b8af630d",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -3097,10 +3097,10 @@
    },
    "prediction_engine": {
     "model_slot": "over35",
-    "model_version": "over35_20261005T101905Z_f546ce72",
-    "champion_since": "2026-10-05T10:19:05Z",
-    "artifact_sha256_16": "f546ce723bdb31f6",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "over35_20261109T211852Z_ffeaa631",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "ffeaa631f6e67b23",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -3164,10 +3164,10 @@
    },
    "prediction_engine": {
     "model_slot": "btts",
-    "model_version": "btts_20261005T101905Z_238e3419",
-    "champion_since": "2026-10-05T10:19:05Z",
-    "artifact_sha256_16": "238e3419f4144956",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "btts_20261109T211852Z_d7cd2762",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "d7cd27622674f767",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -3233,10 +3233,10 @@
    },
    "prediction_engine": {
     "model_slot": "newformat",
-    "model_version": "newformat_20261018T080423Z_9eb6b4b4",
-    "champion_since": "2026-10-25T08:46:05Z",
-    "artifact_sha256_16": "9eb6b4b4860c7970",
-    "promotion_source": "ROLLBACK"
+    "model_version": "newformat_20261109T211851Z_9198e5bd",
+    "champion_since": "2026-11-09T21:18:51Z",
+    "artifact_sha256_16": "9198e5bd0003023d",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -3303,10 +3303,10 @@
    },
    "prediction_engine": {
     "model_slot": "newformat",
-    "model_version": "newformat_20261018T080423Z_9eb6b4b4",
-    "champion_since": "2026-10-25T08:46:05Z",
-    "artifact_sha256_16": "9eb6b4b4860c7970",
-    "promotion_source": "ROLLBACK"
+    "model_version": "newformat_20261109T211851Z_9198e5bd",
+    "champion_since": "2026-11-09T21:18:51Z",
+    "artifact_sha256_16": "9198e5bd0003023d",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -3371,10 +3371,10 @@
    },
    "prediction_engine": {
     "model_slot": "over15",
-    "model_version": "over15_20261018T080423Z_da4743a2",
-    "champion_since": "2026-10-18T08:04:23Z",
-    "artifact_sha256_16": "da4743a2669fef13",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "over15_20261109T211852Z_2af54e42",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "2af54e42b8af630d",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -3438,10 +3438,10 @@
    },
    "prediction_engine": {
     "model_slot": "over35",
-    "model_version": "over35_20261005T101905Z_f546ce72",
-    "champion_since": "2026-10-05T10:19:05Z",
-    "artifact_sha256_16": "f546ce723bdb31f6",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "over35_20261109T211852Z_ffeaa631",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "ffeaa631f6e67b23",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -3505,10 +3505,10 @@
    },
    "prediction_engine": {
     "model_slot": "btts",
-    "model_version": "btts_20261005T101905Z_238e3419",
-    "champion_since": "2026-10-05T10:19:05Z",
-    "artifact_sha256_16": "238e3419f4144956",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "btts_20261109T211852Z_d7cd2762",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "d7cd27622674f767",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -3574,10 +3574,10 @@
    },
    "prediction_engine": {
     "model_slot": "standard",
-    "model_version": "standard_20261018T080423Z_64313878",
-    "champion_since": "2026-10-18T08:04:23Z",
-    "artifact_sha256_16": "643138788406aa03",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "standard_20261109T211851Z_4025384d",
+    "champion_since": "2026-11-09T21:18:51Z",
+    "artifact_sha256_16": "4025384d6cb2a2f3",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -3643,10 +3643,10 @@
    },
    "prediction_engine": {
     "model_slot": "standard",
-    "model_version": "standard_20261018T080423Z_64313878",
-    "champion_since": "2026-10-18T08:04:23Z",
-    "artifact_sha256_16": "643138788406aa03",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "standard_20261109T211851Z_4025384d",
+    "champion_since": "2026-11-09T21:18:51Z",
+    "artifact_sha256_16": "4025384d6cb2a2f3",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -3711,10 +3711,10 @@
    },
    "prediction_engine": {
     "model_slot": "over15",
-    "model_version": "over15_20261018T080423Z_da4743a2",
-    "champion_since": "2026-10-18T08:04:23Z",
-    "artifact_sha256_16": "da4743a2669fef13",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "over15_20261109T211852Z_2af54e42",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "2af54e42b8af630d",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -3778,10 +3778,10 @@
    },
    "prediction_engine": {
     "model_slot": "over35",
-    "model_version": "over35_20261005T101905Z_f546ce72",
-    "champion_since": "2026-10-05T10:19:05Z",
-    "artifact_sha256_16": "f546ce723bdb31f6",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "over35_20261109T211852Z_ffeaa631",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "ffeaa631f6e67b23",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -3845,10 +3845,10 @@
    },
    "prediction_engine": {
     "model_slot": "btts",
-    "model_version": "btts_20261005T101905Z_238e3419",
-    "champion_since": "2026-10-05T10:19:05Z",
-    "artifact_sha256_16": "238e3419f4144956",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "btts_20261109T211852Z_d7cd2762",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "d7cd27622674f767",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -3913,10 +3913,10 @@
    },
    "prediction_engine": {
     "model_slot": "standard",
-    "model_version": "standard_20261018T080423Z_64313878",
-    "champion_since": "2026-10-18T08:04:23Z",
-    "artifact_sha256_16": "643138788406aa03",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "standard_20261109T211851Z_4025384d",
+    "champion_since": "2026-11-09T21:18:51Z",
+    "artifact_sha256_16": "4025384d6cb2a2f3",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -3982,10 +3982,10 @@
    },
    "prediction_engine": {
     "model_slot": "standard",
-    "model_version": "standard_20261018T080423Z_64313878",
-    "champion_since": "2026-10-18T08:04:23Z",
-    "artifact_sha256_16": "643138788406aa03",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "standard_20261109T211851Z_4025384d",
+    "champion_since": "2026-11-09T21:18:51Z",
+    "artifact_sha256_16": "4025384d6cb2a2f3",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -4050,10 +4050,10 @@
    },
    "prediction_engine": {
     "model_slot": "over15",
-    "model_version": "over15_20261018T080423Z_da4743a2",
-    "champion_since": "2026-10-18T08:04:23Z",
-    "artifact_sha256_16": "da4743a2669fef13",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "over15_20261109T211852Z_2af54e42",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "2af54e42b8af630d",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -4117,10 +4117,10 @@
    },
    "prediction_engine": {
     "model_slot": "over35",
-    "model_version": "over35_20261005T101905Z_f546ce72",
-    "champion_since": "2026-10-05T10:19:05Z",
-    "artifact_sha256_16": "f546ce723bdb31f6",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "over35_20261109T211852Z_ffeaa631",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "ffeaa631f6e67b23",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -4184,10 +4184,10 @@
    },
    "prediction_engine": {
     "model_slot": "btts",
-    "model_version": "btts_20261005T101905Z_238e3419",
-    "champion_since": "2026-10-05T10:19:05Z",
-    "artifact_sha256_16": "238e3419f4144956",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "btts_20261109T211852Z_d7cd2762",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "d7cd27622674f767",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -4252,10 +4252,10 @@
    },
    "prediction_engine": {
     "model_slot": "standard",
-    "model_version": "standard_20261018T080423Z_64313878",
-    "champion_since": "2026-10-18T08:04:23Z",
-    "artifact_sha256_16": "643138788406aa03",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "standard_20261109T211851Z_4025384d",
+    "champion_since": "2026-11-09T21:18:51Z",
+    "artifact_sha256_16": "4025384d6cb2a2f3",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -4321,10 +4321,10 @@
    },
    "prediction_engine": {
     "model_slot": "standard",
-    "model_version": "standard_20261018T080423Z_64313878",
-    "champion_since": "2026-10-18T08:04:23Z",
-    "artifact_sha256_16": "643138788406aa03",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "standard_20261109T211851Z_4025384d",
+    "champion_since": "2026-11-09T21:18:51Z",
+    "artifact_sha256_16": "4025384d6cb2a2f3",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -4389,10 +4389,10 @@
    },
    "prediction_engine": {
     "model_slot": "over15",
-    "model_version": "over15_20261018T080423Z_da4743a2",
-    "champion_since": "2026-10-18T08:04:23Z",
-    "artifact_sha256_16": "da4743a2669fef13",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "over15_20261109T211852Z_2af54e42",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "2af54e42b8af630d",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -4456,10 +4456,10 @@
    },
    "prediction_engine": {
     "model_slot": "over35",
-    "model_version": "over35_20261005T101905Z_f546ce72",
-    "champion_since": "2026-10-05T10:19:05Z",
-    "artifact_sha256_16": "f546ce723bdb31f6",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "over35_20261109T211852Z_ffeaa631",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "ffeaa631f6e67b23",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -4523,10 +4523,10 @@
    },
    "prediction_engine": {
     "model_slot": "btts",
-    "model_version": "btts_20261005T101905Z_238e3419",
-    "champion_since": "2026-10-05T10:19:05Z",
-    "artifact_sha256_16": "238e3419f4144956",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "btts_20261109T211852Z_d7cd2762",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "d7cd27622674f767",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -4591,10 +4591,10 @@
    },
    "prediction_engine": {
     "model_slot": "standard",
-    "model_version": "standard_20261018T080423Z_64313878",
-    "champion_since": "2026-10-18T08:04:23Z",
-    "artifact_sha256_16": "643138788406aa03",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "standard_20261109T211851Z_4025384d",
+    "champion_since": "2026-11-09T21:18:51Z",
+    "artifact_sha256_16": "4025384d6cb2a2f3",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -4660,10 +4660,10 @@
    },
    "prediction_engine": {
     "model_slot": "standard",
-    "model_version": "standard_20261018T080423Z_64313878",
-    "champion_since": "2026-10-18T08:04:23Z",
-    "artifact_sha256_16": "643138788406aa03",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "standard_20261109T211851Z_4025384d",
+    "champion_since": "2026-11-09T21:18:51Z",
+    "artifact_sha256_16": "4025384d6cb2a2f3",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -4728,10 +4728,10 @@
    },
    "prediction_engine": {
     "model_slot": "over15",
-    "model_version": "over15_20261018T080423Z_da4743a2",
-    "champion_since": "2026-10-18T08:04:23Z",
-    "artifact_sha256_16": "da4743a2669fef13",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "over15_20261109T211852Z_2af54e42",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "2af54e42b8af630d",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -4795,10 +4795,10 @@
    },
    "prediction_engine": {
     "model_slot": "over35",
-    "model_version": "over35_20261005T101905Z_f546ce72",
-    "champion_since": "2026-10-05T10:19:05Z",
-    "artifact_sha256_16": "f546ce723bdb31f6",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "over35_20261109T211852Z_ffeaa631",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "ffeaa631f6e67b23",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -4862,10 +4862,10 @@
    },
    "prediction_engine": {
     "model_slot": "btts",
-    "model_version": "btts_20261005T101905Z_238e3419",
-    "champion_since": "2026-10-05T10:19:05Z",
-    "artifact_sha256_16": "238e3419f4144956",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "btts_20261109T211852Z_d7cd2762",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "d7cd27622674f767",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -4931,10 +4931,10 @@
    },
    "prediction_engine": {
     "model_slot": "newformat",
-    "model_version": "newformat_20261018T080423Z_9eb6b4b4",
-    "champion_since": "2026-10-25T08:46:05Z",
-    "artifact_sha256_16": "9eb6b4b4860c7970",
-    "promotion_source": "ROLLBACK"
+    "model_version": "newformat_20261109T211851Z_9198e5bd",
+    "champion_since": "2026-11-09T21:18:51Z",
+    "artifact_sha256_16": "9198e5bd0003023d",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -5001,10 +5001,10 @@
    },
    "prediction_engine": {
     "model_slot": "newformat",
-    "model_version": "newformat_20261018T080423Z_9eb6b4b4",
-    "champion_since": "2026-10-25T08:46:05Z",
-    "artifact_sha256_16": "9eb6b4b4860c7970",
-    "promotion_source": "ROLLBACK"
+    "model_version": "newformat_20261109T211851Z_9198e5bd",
+    "champion_since": "2026-11-09T21:18:51Z",
+    "artifact_sha256_16": "9198e5bd0003023d",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -5069,10 +5069,10 @@
    },
    "prediction_engine": {
     "model_slot": "over15",
-    "model_version": "over15_20261018T080423Z_da4743a2",
-    "champion_since": "2026-10-18T08:04:23Z",
-    "artifact_sha256_16": "da4743a2669fef13",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "over15_20261109T211852Z_2af54e42",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "2af54e42b8af630d",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -5136,10 +5136,10 @@
    },
    "prediction_engine": {
     "model_slot": "over35",
-    "model_version": "over35_20261005T101905Z_f546ce72",
-    "champion_since": "2026-10-05T10:19:05Z",
-    "artifact_sha256_16": "f546ce723bdb31f6",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "over35_20261109T211852Z_ffeaa631",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "ffeaa631f6e67b23",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -5203,10 +5203,10 @@
    },
    "prediction_engine": {
     "model_slot": "btts",
-    "model_version": "btts_20261005T101905Z_238e3419",
-    "champion_since": "2026-10-05T10:19:05Z",
-    "artifact_sha256_16": "238e3419f4144956",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "btts_20261109T211852Z_d7cd2762",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "d7cd27622674f767",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -5273,10 +5273,10 @@
    },
    "prediction_engine": {
     "model_slot": "newformat",
-    "model_version": "newformat_20261018T080423Z_9eb6b4b4",
-    "champion_since": "2026-10-25T08:46:05Z",
-    "artifact_sha256_16": "9eb6b4b4860c7970",
-    "promotion_source": "ROLLBACK"
+    "model_version": "newformat_20261109T211851Z_9198e5bd",
+    "champion_since": "2026-11-09T21:18:51Z",
+    "artifact_sha256_16": "9198e5bd0003023d",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -5343,10 +5343,10 @@
    },
    "prediction_engine": {
     "model_slot": "newformat",
-    "model_version": "newformat_20261018T080423Z_9eb6b4b4",
-    "champion_since": "2026-10-25T08:46:05Z",
-    "artifact_sha256_16": "9eb6b4b4860c7970",
-    "promotion_source": "ROLLBACK"
+    "model_version": "newformat_20261109T211851Z_9198e5bd",
+    "champion_since": "2026-11-09T21:18:51Z",
+    "artifact_sha256_16": "9198e5bd0003023d",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -5411,10 +5411,10 @@
    },
    "prediction_engine": {
     "model_slot": "over15",
-    "model_version": "over15_20261018T080423Z_da4743a2",
-    "champion_since": "2026-10-18T08:04:23Z",
-    "artifact_sha256_16": "da4743a2669fef13",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "over15_20261109T211852Z_2af54e42",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "2af54e42b8af630d",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -5478,10 +5478,10 @@
    },
    "prediction_engine": {
     "model_slot": "over35",
-    "model_version": "over35_20261005T101905Z_f546ce72",
-    "champion_since": "2026-10-05T10:19:05Z",
-    "artifact_sha256_16": "f546ce723bdb31f6",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "over35_20261109T211852Z_ffeaa631",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "ffeaa631f6e67b23",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -5545,10 +5545,10 @@
    },
    "prediction_engine": {
     "model_slot": "btts",
-    "model_version": "btts_20261005T101905Z_238e3419",
-    "champion_since": "2026-10-05T10:19:05Z",
-    "artifact_sha256_16": "238e3419f4144956",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "btts_20261109T211852Z_d7cd2762",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "d7cd27622674f767",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -5614,10 +5614,10 @@
    },
    "prediction_engine": {
     "model_slot": "newformat",
-    "model_version": "newformat_20261018T080423Z_9eb6b4b4",
-    "champion_since": "2026-10-25T08:46:05Z",
-    "artifact_sha256_16": "9eb6b4b4860c7970",
-    "promotion_source": "ROLLBACK"
+    "model_version": "newformat_20261109T211851Z_9198e5bd",
+    "champion_since": "2026-11-09T21:18:51Z",
+    "artifact_sha256_16": "9198e5bd0003023d",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -5684,10 +5684,10 @@
    },
    "prediction_engine": {
     "model_slot": "newformat",
-    "model_version": "newformat_20261018T080423Z_9eb6b4b4",
-    "champion_since": "2026-10-25T08:46:05Z",
-    "artifact_sha256_16": "9eb6b4b4860c7970",
-    "promotion_source": "ROLLBACK"
+    "model_version": "newformat_20261109T211851Z_9198e5bd",
+    "champion_since": "2026-11-09T21:18:51Z",
+    "artifact_sha256_16": "9198e5bd0003023d",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -5752,10 +5752,10 @@
    },
    "prediction_engine": {
     "model_slot": "over15",
-    "model_version": "over15_20261018T080423Z_da4743a2",
-    "champion_since": "2026-10-18T08:04:23Z",
-    "artifact_sha256_16": "da4743a2669fef13",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "over15_20261109T211852Z_2af54e42",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "2af54e42b8af630d",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -5819,10 +5819,10 @@
    },
    "prediction_engine": {
     "model_slot": "over35",
-    "model_version": "over35_20261005T101905Z_f546ce72",
-    "champion_since": "2026-10-05T10:19:05Z",
-    "artifact_sha256_16": "f546ce723bdb31f6",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "over35_20261109T211852Z_ffeaa631",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "ffeaa631f6e67b23",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -5886,10 +5886,10 @@
    },
    "prediction_engine": {
     "model_slot": "btts",
-    "model_version": "btts_20261005T101905Z_238e3419",
-    "champion_since": "2026-10-05T10:19:05Z",
-    "artifact_sha256_16": "238e3419f4144956",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "btts_20261109T211852Z_d7cd2762",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "d7cd27622674f767",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -5955,10 +5955,10 @@
    },
    "prediction_engine": {
     "model_slot": "standard",
-    "model_version": "standard_20261018T080423Z_64313878",
-    "champion_since": "2026-10-18T08:04:23Z",
-    "artifact_sha256_16": "643138788406aa03",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "standard_20261109T211851Z_4025384d",
+    "champion_since": "2026-11-09T21:18:51Z",
+    "artifact_sha256_16": "4025384d6cb2a2f3",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -6024,10 +6024,10 @@
    },
    "prediction_engine": {
     "model_slot": "standard",
-    "model_version": "standard_20261018T080423Z_64313878",
-    "champion_since": "2026-10-18T08:04:23Z",
-    "artifact_sha256_16": "643138788406aa03",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "standard_20261109T211851Z_4025384d",
+    "champion_since": "2026-11-09T21:18:51Z",
+    "artifact_sha256_16": "4025384d6cb2a2f3",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -6092,10 +6092,10 @@
    },
    "prediction_engine": {
     "model_slot": "over15",
-    "model_version": "over15_20261018T080423Z_da4743a2",
-    "champion_since": "2026-10-18T08:04:23Z",
-    "artifact_sha256_16": "da4743a2669fef13",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "over15_20261109T211852Z_2af54e42",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "2af54e42b8af630d",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -6159,10 +6159,10 @@
    },
    "prediction_engine": {
     "model_slot": "over35",
-    "model_version": "over35_20261005T101905Z_f546ce72",
-    "champion_since": "2026-10-05T10:19:05Z",
-    "artifact_sha256_16": "f546ce723bdb31f6",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "over35_20261109T211852Z_ffeaa631",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "ffeaa631f6e67b23",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -6226,10 +6226,10 @@
    },
    "prediction_engine": {
     "model_slot": "btts",
-    "model_version": "btts_20261005T101905Z_238e3419",
-    "champion_since": "2026-10-05T10:19:05Z",
-    "artifact_sha256_16": "238e3419f4144956",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "btts_20261109T211852Z_d7cd2762",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "d7cd27622674f767",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -6295,10 +6295,10 @@
    },
    "prediction_engine": {
     "model_slot": "newformat",
-    "model_version": "newformat_20261018T080423Z_9eb6b4b4",
-    "champion_since": "2026-10-25T08:46:05Z",
-    "artifact_sha256_16": "9eb6b4b4860c7970",
-    "promotion_source": "ROLLBACK"
+    "model_version": "newformat_20261109T211851Z_9198e5bd",
+    "champion_since": "2026-11-09T21:18:51Z",
+    "artifact_sha256_16": "9198e5bd0003023d",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -6365,10 +6365,10 @@
    },
    "prediction_engine": {
     "model_slot": "newformat",
-    "model_version": "newformat_20261018T080423Z_9eb6b4b4",
-    "champion_since": "2026-10-25T08:46:05Z",
-    "artifact_sha256_16": "9eb6b4b4860c7970",
-    "promotion_source": "ROLLBACK"
+    "model_version": "newformat_20261109T211851Z_9198e5bd",
+    "champion_since": "2026-11-09T21:18:51Z",
+    "artifact_sha256_16": "9198e5bd0003023d",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -6433,10 +6433,10 @@
    },
    "prediction_engine": {
     "model_slot": "over15",
-    "model_version": "over15_20261018T080423Z_da4743a2",
-    "champion_since": "2026-10-18T08:04:23Z",
-    "artifact_sha256_16": "da4743a2669fef13",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "over15_20261109T211852Z_2af54e42",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "2af54e42b8af630d",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -6500,10 +6500,10 @@
    },
    "prediction_engine": {
     "model_slot": "over35",
-    "model_version": "over35_20261005T101905Z_f546ce72",
-    "champion_since": "2026-10-05T10:19:05Z",
-    "artifact_sha256_16": "f546ce723bdb31f6",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "over35_20261109T211852Z_ffeaa631",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "ffeaa631f6e67b23",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -6567,10 +6567,10 @@
    },
    "prediction_engine": {
     "model_slot": "btts",
-    "model_version": "btts_20261005T101905Z_238e3419",
-    "champion_since": "2026-10-05T10:19:05Z",
-    "artifact_sha256_16": "238e3419f4144956",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "btts_20261109T211852Z_d7cd2762",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "d7cd27622674f767",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -6636,10 +6636,10 @@
    },
    "prediction_engine": {
     "model_slot": "newformat",
-    "model_version": "newformat_20261018T080423Z_9eb6b4b4",
-    "champion_since": "2026-10-25T08:46:05Z",
-    "artifact_sha256_16": "9eb6b4b4860c7970",
-    "promotion_source": "ROLLBACK"
+    "model_version": "newformat_20261109T211851Z_9198e5bd",
+    "champion_since": "2026-11-09T21:18:51Z",
+    "artifact_sha256_16": "9198e5bd0003023d",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -6706,10 +6706,10 @@
    },
    "prediction_engine": {
     "model_slot": "newformat",
-    "model_version": "newformat_20261018T080423Z_9eb6b4b4",
-    "champion_since": "2026-10-25T08:46:05Z",
-    "artifact_sha256_16": "9eb6b4b4860c7970",
-    "promotion_source": "ROLLBACK"
+    "model_version": "newformat_20261109T211851Z_9198e5bd",
+    "champion_since": "2026-11-09T21:18:51Z",
+    "artifact_sha256_16": "9198e5bd0003023d",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -6774,10 +6774,10 @@
    },
    "prediction_engine": {
     "model_slot": "over15",
-    "model_version": "over15_20261018T080423Z_da4743a2",
-    "champion_since": "2026-10-18T08:04:23Z",
-    "artifact_sha256_16": "da4743a2669fef13",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "over15_20261109T211852Z_2af54e42",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "2af54e42b8af630d",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",
@@ -6841,10 +6841,10 @@
    },
    "prediction_engine": {
     "model_slot": "over35",
-    "model_version": "over35_20261005T101905Z_f546ce72",
-    "champion_since": "2026-10-05T10:19:05Z",
-    "artifact_sha256_16": "f546ce723bdb31f6",
-    "promotion_source": "LEGACY_GIT"
+    "model_version": "over35_20261109T211852Z_ffeaa631",
+    "champion_since": "2026-11-09T21:18:52Z",
+    "artifact_sha256_16": "ffeaa631f6e67b23",
+    "promotion_source": "OWNER_CLEAN_SWITCH"
    },
    "selection_engine": {
     "production": "legacy_raw_edge",

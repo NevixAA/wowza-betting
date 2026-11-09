@@ -81,7 +81,9 @@ def _history():
         _h(100, 21, "2025-08-16", "Arsenal", "Chelsea", "Chelsea", 0),
         _h(100, 99, "2025-08-16", "Arsenal", "Chelsea", "Arsenal", 1),           # not in the answer
         _h(100, 22, "2025-08-16", "Arsenal", "Chelsea", "Arsenal", 1),           # wrong side
-        _h(200, 21, "2025-08-24", "Chelsea", "Everton", "Chelsea", 1),           # date differs
+        # date differs by TWO days (owner 2026-11-09: exactly one day with the provider's fixture id and
+        # both clubs proven is accepted, tests/test_p7_missing_data.py; two days stays refused)
+        _h(200, 21, "2025-08-25", "Chelsea", "Everton", "Chelsea", 1),
         _h(300, 11, "2025-08-30", "Everton", "Fulham", "Arsenal", 0),            # clubs differ
         _h(400, 11, "2025-09-06", "Arsenal", "Everton", "Arsenal", 1),           # empty answer
         _h(555, 11, "2025-09-10", "England", "Wales", "England", 1),             # not in the lists
@@ -114,7 +116,9 @@ def _bodies(fid):
 @pytest.fixture()
 def env(tmp_path, monkeypatch):
     cdir = tmp_path / "collect"
-    for n in ("OUT", "JOURNAL", "AUDIT"):
+    # every path the collector WRITES goes to tmp (DATE_CORRECTIONS added 2026-11-09: without it a test
+    # run wrote output/corrections/player_history_date_corrections.csv into the repository)
+    for n in ("OUT", "JOURNAL", "AUDIT", "DATE_CORRECTIONS"):
         monkeypatch.setattr(RF, n, cdir / Path(getattr(RF, n)).name)
     monkeypatch.setattr(CC, "BUDGET_FILE", cdir / "af_budget.json")
     return tmp_path
@@ -219,7 +223,12 @@ def test_predict_reads_history_through_the_refetch_reader():
     src = (ROOT / "player_model" / "pipeline.py").read_text(encoding="utf-8")
     i = src.index("def mode_predict")
     body = src[i:src.index("\ndef ", i + 10)]
-    assert body.index("with_cup_rows(pd.read_parquet(HISTORY_CACHE))") < body.index("history = with_refetched(history)")
+    # 2026-11-09: predict reads props_harness.source_frame - the cup rows + the re-fetched counts
+    assert "history = source_frame()" in body
+    from player_model import props_harness as PH
+    import inspect
+    sf = inspect.getsource(PH.source_frame)
+    assert "new_cup_rows(" in sf and "with_refetched(raw, refetch)" in sf
 
 
 def test_workflow_runs_playerrefetch_after_lineups_before_fullstats_and_strength():

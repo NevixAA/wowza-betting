@@ -77,14 +77,16 @@ OWNER_SET = ["holdout_start", "holdout_end", "min_verified_share", "min_verified
 
 def test_committed_plan_holds_every_owner_decision():
     """Owner 2026-11-07 / 2026-11-08: feature rule C; holdout 2026-09-01..2026-10-31; training floor 95%,
-    holdout floor 85%; all five markets. Nothing is missing, so only the enable variable gates a run."""
+    holdout floor 85%; the five markets plus (owner 2026-11-08, "Retrain them too") goals2, goals3, sot3,
+    sot4. Nothing is missing, so only the enable variable gates a run."""
     plan = H.load_plan()
     d = plan["owner_decisions"]
     assert plan["hand_adjustment"] == "none"
     assert d["feature_rule"] == "all_prior_verified" and d["feature_rule"] in H.FEATURE_RULES
     assert (d["holdout_start"], d["holdout_end"]) == ("2026-09-01", "2026-10-31")
     assert (d["min_verified_share"], d["min_verified_share_holdout"]) == (0.95, 0.85)
-    assert d["markets"] == ["sot", "sot2", "goals", "assists", "cards"]
+    assert d["markets"] == ["sot", "sot2", "goals", "assists", "cards", "goals2", "goals3", "sot3", "sot4"]
+    assert "Retrain them too" in plan["owner_decisions_note"]
     assert H.missing_owner_decisions(plan) == []
     H.validate_decisions(H.owner_decisions(plan))
     assert set(plan["candidates"]) == set(H.CANDIDATES)
@@ -121,7 +123,7 @@ def test_run_refuses_while_a_decision_is_missing(monkeypatch, tmp_path):
         H.run(plan, raw=pd.DataFrame(), out_dir=tmp_path, model_dir=tmp_path)
 
 
-@pytest.mark.parametrize("bad", [{"markets": ["sot3"]}, {"feature_rule": "anything"},
+@pytest.mark.parametrize("bad", [{"markets": ["goals4"]}, {"feature_rule": "anything"},
                                  {"min_verified_share": 1.5}, {"min_verified_share_holdout": 0.0},
                                  {"holdout_end": "2026-02-01"}])
 def test_unusable_decisions_are_refused(bad):

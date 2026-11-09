@@ -25,7 +25,9 @@ DATA (owner 2026-11-04 / 2026-11-06).
     and the row is dropped for that market, never read as 0.
 
 TARGETS. The props markets as the tips use them (config.MARKET_TARGETS, labels from
-feature_engineering._label): sot (SOT 1+), sot2 (SOT 2+), goals (anytime scorer), assists, cards.
+feature_engineering._label): sot (SOT 1+), sot2 (SOT 2+), goals (anytime scorer), assists, cards, and
+(owner 2026-11-08, "Retrain them too") goals2 (2+ goals), goals3 (hat-trick: target_goals3, built
+here from the goals count with the same _label rule; it has no serving model entry), sot3, sot4.
 
 CANDIDATES (same rows, same windows).
   recipe_retrained  the current recipe (model.recipe_estimators: logistic + HistGradientBoosting,
@@ -84,9 +86,11 @@ ENABLE_ENV = "PHASE2_RETRAIN_ENABLED"
 
 #: owner 2026-11-05: the model's own probability decides; recorded in every output
 HAND_ADJUSTMENT = "none"
-MARKETS_IN_SCOPE = ("sot", "sot2", "goals", "assists", "cards")
+MARKETS_IN_SCOPE = ("sot", "sot2", "goals", "assists", "cards", "goals2", "goals3", "sot3", "sot4")
+#: market -> target column; config.MARKET_TARGETS plus goals3, which only the harness builds
+TARGETS = {**config.MARKET_TARGETS, "goals3": "target_goals3"}
 #: market -> (raw count column, threshold): the same reading build_features uses for target_<market>
-LABEL_RULE = {"goals": ("goals", 1), "goals2": ("goals", 2), "assists": ("assists", 1),
+LABEL_RULE = {"goals": ("goals", 1), "goals2": ("goals", 2), "goals3": ("goals", 3), "assists": ("assists", 1),
               "sot": ("shots_on_target", 1), "sot2": ("shots_on_target", 2),
               "sot3": ("shots_on_target", 3), "sot4": ("shots_on_target", 4),
               "cards": ("yellow_cards", 1)}
@@ -175,6 +179,10 @@ def source_frame(history: pd.DataFrame | None = None, cups: pd.DataFrame | None 
     raw = pd.concat(parts, ignore_index=True, sort=False)
     raw["date"] = pd.to_datetime(raw["date"], errors="coerce")
     raw = with_refetched(raw, refetch)
+    # one provider id carrying two real players: every row excluded (identity_conflicts; the
+    # decision and its evidence are output/corrections/player_id_conflicts.csv)
+    from .identity_conflicts import apply as _drop_conflicted
+    raw = _drop_conflicted(raw)
     return raw.sort_values("date", kind="stable").reset_index(drop=True)
 
 
@@ -485,12 +493,27 @@ def block_ci(delta, blocks, reps: int = 1000, seed: int = 7) -> dict:
 
 # ── evaluation (real data only through --run, owner-gated) ───────────────────────────────────────
 
+def market_verified_share(frame: pd.DataFrame, ok, split: pd.Series, market: str) -> dict:
+    """The verified share of ONE market's labelled rows, training (pre_holdout) and holdout apart.
+    The owner's floors apply per market as well as overall: a market whose labelled rows fall under
+    either floor is not fitted."""
+    lab = frame[TARGETS[market]].notna().to_numpy() if TARGETS[market] in frame.columns \
+        else np.zeros(len(frame), bool)
+    ok = np.asarray(ok, dtype=bool)
+    out = {}
+    for name, s in (("train", "pre_holdout"), ("holdout", "holdout")):
+        m = lab & (split == s).to_numpy()
+        out[name] = float(ok[m].mean()) if m.any() else 0.0
+        out[f"{name}_rows"] = int(m.sum())
+    return out
+
+
 def evaluate_market(frame: pd.DataFrame, market: str, features: list[str], decisions: dict,
                     folds: list[dict], names=CANDIDATES) -> tuple[dict, pd.DataFrame, dict]:
     """Walk-forward folds + the fixed-date holdout for one market on an ELIGIBLE frame (verified rows
     under the decided feature rule, label present). Returns (report, holdout scored rows, fitted
     holdout candidates)."""
-    y_col = config.MARKET_TARGETS[market]
+    y_col = TARGETS[market]
     f = frame[frame[y_col].notna()].copy()
     d = pd.to_datetime(f["date"]).dt.normalize()
     hs, he = pd.Timestamp(decisions["holdout_start"]), pd.Timestamp(decisions["holdout_end"])
@@ -552,6 +575,9 @@ def build_frame(raw: pd.DataFrame) -> pd.DataFrame:
     for c in key:
         built[c] = pd.to_numeric(built[c], errors="coerce")
         ver[c] = pd.to_numeric(ver[c], errors="coerce")
+    for m, t in TARGETS.items():                       # goals3: the same _label rule, harness-only
+        if t not in built.columns and LABEL_RULE[m][0] in built.columns:
+            built[t] = label(built, m)
     return built.merge(ver, on=key, how="inner")
 
 
@@ -605,7 +631,20 @@ def run(plan: dict | None = None, raw: pd.DataFrame | None = None, out_dir: Path
     model_dir.mkdir(parents=True, exist_ok=True)
     scored_parts = []
     for market in dec["markets"]:
+        ms = market_verified_share(frame, ok, split, market)
+        short_m = []
+        if ms["train"] < float(dec["min_verified_share"]):
+            short_m.append(f"training share {ms['train']:.4f} < {float(dec['min_verified_share']):.4f}")
+        if ms["holdout"] < float(dec["min_verified_share_holdout"]):
+            short_m.append(f"holdout share {ms['holdout']:.4f} < {float(dec['min_verified_share_holdout']):.4f}")
+        if short_m:                                    # this market alone is not fitted
+            report["markets"][market] = {"market": market, "target": TARGETS[market],
+                                         "verified_share": ms,
+                                         "status": ("STOPPED: verified share under the owner's minimum ("
+                                                    + "; ".join(short_m) + "); this market was not fitted")}
+            continue
         rep, scored, fitted = evaluate_market(elig, market, features, dec, folds)
+        rep["verified_share"] = ms
         for n, m in fitted.items():
             if n.startswith("_"):
                 continue
@@ -624,6 +663,7 @@ def run(plan: dict | None = None, raw: pd.DataFrame | None = None, out_dir: Path
         allsc.to_csv(out_dir / "props_harness_holdout_scored.csv.gz", index=False)
         q = CLV.load_quotes() if quotes is None else quotes
         report["clv"] = {n: CLV.summarise(CLV.clv_rows(allsc, q, f"p_{n}")) for n in CANDIDATES}
+        report["clv_placeholder_quotes_dropped"] = CLV.placeholder_counts(q)
     report["status"] = "OK"
     _write_json(out_dir / "props_harness_report.json", report)
     return report
@@ -803,4 +843,8 @@ def main(argv=None) -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    # Run through the IMPORTED module, so every fitted candidate pickles as
+    # player_model.props_harness.<Class> (the first run pickled them as __main__.<Class>, which only a
+    # module-mapping unpickler can read).
+    from player_model import props_harness as _module
+    raise SystemExit(_module.main())

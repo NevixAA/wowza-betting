@@ -443,124 +443,22 @@ def mode_merge_cups(dry_run: bool = False) -> None:
 # ── Phase 3: Train ────────────────────────────────────────────────────────────
 
 
+#: printed by the retired legacy props retrain (owner 2026-11-09)
+LEGACY_PROPS_RETRAIN_RETIRED = "LEGACY_PROPS_RETRAIN_RETIRED"
+
+
 def mode_train() -> None:
-    """Weekly props retrain. Retraining keeps running and keeps producing candidates; ONLY the
-    canonical promotion gate (player_model.props_gate, PG-PROPS) may change a serving props model.
+    """RETIRED weekly props retrain (owner 2026-11-09: "only the clean harness trains props").
 
-    History. Until 2026-10-25 this function called save_model() whenever the candidate's mean
-    log loss had not risen by more than PROPS_MAX_LOGLOSS_RISE (0.030) over the incumbent's — and
-    the two numbers were each model's OWN holdout, different rows. Every market was replaced at
-    every retrain (39 serving-file replacements in five retrains, 2026-10-12..10-25), most of them
-    by candidates whose own-holdout log loss was worse. Owner decision 2026-10-25: props promote
-    only through the canonical gate, like the team models. See props_gate's docstring.
+    It trained the legacy recipe on every history row, verified or not, and parked candidates for
+    the promotion gate. It now trains, scores, parks and reviews nothing. Props models are trained
+    only by the owner-gated props clean retrain (player_model.props_harness,
+    .github/workflows/props_clean_retrain.yml) and promoted only by the owner
+    (props_gate.promote_clean_retrain). The removed body is in git history (before 2026-11-09)."""
+    print(f"[train] {LEGACY_PROPS_RETRAIN_RETIRED}: only the owner-gated props clean retrain "
+          f"(player_model.props_harness) trains props models - nothing trained, scored or parked")
+    return
 
-    Per market, in order:
-      1. review_parked  — period 2 for the challenger parked by an earlier retrain (first-sight
-                          rows logged by props predict). The ONLY path to PROMOTE.
-      2. train          — candidate + the untouched chronological holdout train() scored it on.
-      3. submit_candidate — period 1: champion and candidate on the SAME holdout rows. Never
-                          PROMOTE; a qualified candidate is parked for period 2.
-    """
-    if not HISTORY_CACHE.exists():
-        print("[train] No history. Run --mode collect first.")
-        return
-
-    from player_model import props_gate as PPG
-
-    df = pd.read_parquet(HISTORY_CACHE)
-    print(f"[train] Training on {len(df)} rows, {df['player_id'].nunique()} players.")
-
-    # HOW MUCH OF THIS IS NEW? A retrain that consumes zero new observations is not learning,
-    # it is churn — and props had exactly that: player_history.parquet's newest match was
-    # 2026-08-17 while the Sunday retrain kept firing and kept overwriting the models. Printed
-    # first so the answer is at the top of the log rather than inferred from it.
-    try:
-        _d = pd.to_datetime(df["date"], errors="coerce")
-        _newest = _d.max()
-        _age = (pd.Timestamp.utcnow().tz_localize(None).normalize() - _newest.normalize()).days
-        print(f"[train] newest match in training data: {str(_newest)[:10]} ({_age}d old)"
-              f"{'   <-- STALE, this retrain cannot learn anything new' if _age > 10 else ''}")
-    except Exception:
-        pass
-
-    log_path = config.OUTPUT_DIR / "props_retrain_log.json"
-    decisions: dict = {}
-    now = PPG.utcnow()
-    batch = PPG.batch_id(now)
-    print(f"[train] promotion gate {PPG.GATE_VERSION} (canonical {PPG.CANONICAL_VERSION}), "
-          f"batch {batch}")
-
-    for market in config.MARKETS:
-        print(f"\n  Training market: {market}")
-        review = None
-        try:
-            review = PPG.review_parked(market, now=now, batch=batch, outcomes=PPG.load_outcomes(market, df))
-            if review:
-                print(f"  [{market}] parked challenger: {review.get('verdict')} - "
-                      f"{str(review.get('reason'))[:200]}")
-            results, holdout, cutoff = train(df, market, return_holdout=True)
-            gate = PPG.submit_candidate(market, results, holdout, training_cutoff=cutoff,
-                                        training_rows=int(len(df)), batch=batch, now=now)
-            del holdout
-            ev = gate.get("holdout") or {}
-            promoted = bool(gate.get("promoted")) or bool(review and review.get("promoted"))
-            print(f"  [{market}] candidate {gate.get('candidate_version')}: {gate['verdict']} - "
-                  f"{gate['reason'][:300]}")
-            decisions[market] = {
-                "promoted": promoted,
-                "verdict": gate["verdict"],
-                "why": gate["reason"][:400],
-                "gate_version": PPG.GATE_VERSION,
-                "candidate_version": gate.get("candidate_version"),
-                "champion_version": gate.get("champion_version"),
-                "parked": bool(gate.get("parked")),
-                "rows": int(len(df)),
-                # SAME-HOLDOUT numbers (champion and candidate on identical rows). The pre-gate
-                # log compared each model's own holdout, which are different rows.
-                "holdout_n": ev.get("n"), "holdout_events": ev.get("events"),
-                "logloss_old": (ev.get("champion") or {}).get("log_loss"),
-                "logloss_new": (ev.get("candidate") or {}).get("log_loss"),
-                "ll_delta": ev.get("ll_delta"), "ll_ci": ev.get("ci"),
-                "review": None if not review else {
-                    "verdict": review.get("verdict"), "promoted": bool(review.get("promoted")),
-                    "candidate_version": review.get("candidate_version"),
-                    "reason": str(review.get("reason"))[:300]},
-            }
-        except ValueError as e:
-            print(f"  [SKIP] {market}: {e}")
-            decisions[market] = {"promoted": bool(review and review.get("promoted")),
-                                 "why": f"skipped: {e}", "gate_version": PPG.GATE_VERSION}
-        except Exception as e:
-            print(f"  [ERROR] {market}: {e}")
-            decisions[market] = {"promoted": bool(review and review.get("promoted")),
-                                 "why": f"error: {type(e).__name__}: {e}",
-                                 "gate_version": PPG.GATE_VERSION}
-
-    try:
-        import json as _json
-        blob = _json.loads(log_path.read_text(encoding="utf-8")) if log_path.exists() else {}
-        run = datetime.utcnow().strftime("%Y-%m-%d")
-        runs = blob.setdefault("runs", {})
-        # Two retrains on one day used to overwrite each other (2026-10-13 ran twice; only the
-        # second survives). A later same-day run now gets its own key.
-        key, i = run, 2
-        while key in runs:
-            key, i = f"{run}#{i}", i + 1
-        runs[key] = decisions
-        blob["latest_run"] = run
-        log_path.parent.mkdir(parents=True, exist_ok=True)
-        log_path.write_text(_json.dumps(blob, indent=2), encoding="utf-8")
-        print(f"\n[train] decisions -> {log_path.name}")
-    except Exception as e:
-        print(f"[train] could not write the decision log: {e}")
-
-    n_prom = sum(1 for v in decisions.values() if v.get("promoted"))
-    n_park = sum(1 for v in decisions.values() if v.get("parked"))
-    print(f"\n[train] Done. {n_prom}/{len(decisions)} market(s) promoted, {n_park} candidate(s) "
-          f"parked for the prospective period.")
-
-
-# ── Match contexts (team win probs for opponent-weakness multiplier) ──────────
 
 def _build_match_contexts() -> dict:
     """
@@ -608,42 +506,27 @@ def _build_match_contexts() -> dict:
 
 # ── Referee profiles ─────────────────────────────────────────────────────────
 
-def _build_referee_profiles(history: pd.DataFrame) -> dict:
-    """
-    Fetch referee names for all upcoming prop-league fixtures and build strictness profiles.
-    Returns {fixture_id: {yellows_per_game, strictness_score, n_games, lg_yellows_per_match}}.
-
-    The profile is MEASURED from player_history with the training definition
-    (feature_engineering.referee_profile_from_history: the referee's yellows/match in the league's
-    scope, z-scored against the league's measured mean/sd, NaN below the minimum samples). It used
-    to come from api_football.build_referee_profile, whose league mean/sd were a typed 3.5 / 1.0.
-    Referee NAMES still come from API-Football (cached in api_football._get()).
-    """
+def _build_fixture_referees() -> dict:
+    """{API-Football fixture id: referee name} for the upcoming prop-league fixtures (same 4-day
+    window as predict). The referee FEATURES are computed by build_features from the held history,
+    exactly as in training (owner 2026-11-09); only the name comes from API-Football (cached in
+    api_football._get()). A fixture the provider names no referee for has none (no feature value)."""
     from player_model.api_football import get_fixtures_between, get_fixture_referee
-    from player_model.feature_engineering import referee_profile_from_history
-    profiles: dict = {}
+    names: dict = {}
     try:
-        # Same 4-day window as predict, so every tipped fixture can carry its referee.
         _today = pd.Timestamp.now(tz="UTC").tz_localize(None).normalize()   # UTC day (fixture dates are UTC)
         _from, _to = _today.strftime("%Y-%m-%d"), (_today + pd.Timedelta(days=4)).strftime("%Y-%m-%d")
         for league, lg_id in config.PROP_LEAGUES.items():
-            season = config.prop_season(league)
-            fixtures = get_fixtures_between(lg_id, season, _from, _to)
-            for fix in fixtures:
-                teams    = fix.get("teams", {})
-                home     = teams.get("home", {}).get("name", "")
-                away     = teams.get("away", {}).get("name", "")
-                dt       = fix.get("fixture", {}).get("date", "")[:10]
-                fid      = fix.get("fixture", {}).get("id")
+            for fix in get_fixtures_between(lg_id, config.prop_season(league), _from, _to):
+                fid = fix.get("fixture", {}).get("id")
                 if not fid:
                     continue
-                referee   = get_fixture_referee(fid)
+                referee = get_fixture_referee(fid)
                 if referee:
-                    # keyed by the API-Football fixture id (predict looks it up by id first)
-                    profiles[int(fid)] = referee_profile_from_history(history, referee, league)
+                    names[int(fid)] = referee
     except Exception as e:
-        print(f"[pipeline] Referee profile build failed: {e}")
-    return profiles
+        print(f"[pipeline] Referee names not fetched: {e}")
+    return names
 
 
 # ── Match-day gating ─────────────────────────────────────────────────────────────
@@ -711,13 +594,11 @@ def mode_predict() -> None:
 
     # The collected UEFA cup rows (output/collect/cup_player_rows.parquet) join the serving history:
     # a player's form / minutes / rest days and the opponent tables include his cup matches.
-    from player_model.cup_history import with_cup_rows
-    history = with_cup_rows(pd.read_parquet(HISTORY_CACHE))
-    # Owner 2026-11-04 (fix round 8): the re-fetched per-player counts (output/collect/
-    # player_history_refetch.parquet, scripts/collect_player_refetch.py) replace the suspect 0s the
-    # old `or 0` parser stored; rows not yet re-fetched keep their values, marked 'zeros_unverified'.
-    from player_model.history_refetch import with_refetched
-    history = with_refetched(history)
+    # THE history the props clean retrain trains on (props_harness.source_frame): player_history +
+    # the collected cup rows it does not hold + the re-fetched counts - the conflicted player ids
+    # (identity_conflicts). One function, so serving and training read the same rows (2026-11-09).
+    from player_model.props_harness import source_frame
+    history = source_frame()
 
     # (The old _enrich_with_recent_form overwrote a player's last stored goals_pg / sot_pg /
     # cards_pg with ONE match's raw counts, `stat.get(..., 0)`; recent matches belong in history
@@ -734,7 +615,7 @@ def mode_predict() -> None:
         tips = run_player_predictions(
             bets_csv=config.OUTPUT_DIR / "bets.csv",
             history_df=history,
-            referee_profiles=_build_referee_profiles(history) if api_key else None,
+            fixture_referees=_build_fixture_referees() if api_key else None,
             match_contexts=_build_match_contexts(),
         )
     finally:
@@ -760,6 +641,15 @@ def mode_predict() -> None:
                 # answer, de-vigged); the assumed overround only where none does (2026-11-05).
                 fair_mapped = match_fair_to_tips(tips)
                 tips = enrich_with_odds(tips, odds_mapped, fair_mapped)
+                # Rare markets (goals2/goals3/sot3/sot4): RESEARCH picks only, priced from the SAME
+                # answer, at most 3 per gameweek, each market only with its own study bar (owner 2026-11-09)
+                try:
+                    from player_model import rare_props as _RP
+                    _rc = _RP.read_candidates()
+                    _RP.run(_RP.attach_prices(_rc, match_odds_to_tips(_rc, odds_raw),
+                                              match_fair_to_tips(_rc)) if len(_rc) else _rc)
+                except Exception as _e:                                # noqa: BLE001
+                    print(f"[rare_props] skipped: {type(_e).__name__}: {_e}")
                 print(f"[predict] fair probability: {len(fair_mapped)} priced tip(s) on a real "
                       f"two-sided price, {len(odds_mapped) - len(fair_mapped)} on the assumed margin")
                 # Re-save enriched CSV

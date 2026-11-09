@@ -30,7 +30,7 @@
    "Mexico Liga MX": 112,
    "USA MLS": 706
   },
-  "claims": 34985,
+  "claims": 37386,
   "conflict_fixtures": 0,
   "conflict_rows": 0,
   "conflicts_by_reason": {},
@@ -52,7 +52,7 @@
   }
  },
  "history": "output/fd_history.parquet",
- "history_rows": 65940,
+ "history_rows": 66213,
  "loader_merge_duplicates": {
   "conflict_rows": 0,
   "conflicts_by_reason": {},
@@ -84,8 +84,8 @@
   "claims_off_provider_date": 352,
   "history_date_is_local_kickoff_date": 0,
   "history_date_not_local_kickoff_date": 352,
-  "history_rows": 64543,
-  "history_rows_claimed": 60429,
+  "history_rows": 64815,
+  "history_rows_claimed": 64373,
   "local_date_unknown": 0,
   "refused_by_league": {},
   "refused_by_reason": {},
@@ -105,35 +105,36 @@
  },
  "same_day_copy_provider_agrees": {
   "removed_by_league": {
+   "Greek Super League": 1,
    "USA MLS": 1
   },
-  "removed_rows": 1,
-  "same_day_multi_copy_fixtures_with_disagreement": 1
+  "removed_rows": 2,
+  "same_day_multi_copy_fixtures_with_disagreement": 2
  },
  "score_90min": {
   "aet_pen_history_already_90min": 61,
   "awarded_rows": 0,
-  "claims_of_aet_pen_fixtures": 66,
+  "claims_of_aet_pen_fixtures": 67,
   "claims_refused_fixture_claimed_from_two_dates": 0,
   "corrected_by_league": {
    "Austrian Bundesliga": 1,
    "Mexico Liga MX": 1,
-   "Romanian Superliga": 2,
+   "Romanian Superliga": 3,
    "USA MLS": 1
   },
-  "corrected_to_90min": 5,
-  "history_rows_claimed": 60429,
+  "corrected_to_90min": 6,
+  "history_rows_claimed": 64373,
   "pool_fixtures_by_status": {
    "ABD": 5,
    "AET": 264,
    "AWD": 10,
-   "FT": 118676,
+   "FT": 118809,
    "PEN": 349,
    "WO": 2
   },
   "refused_by_reason": {
-   "ft_status_scores_differ": 6
+   "ft_status_scores_differ": 7
   }
  },
- "written_at": "2026-11-08T00:23:13.430105+00:00"
+ "written_at": "2026-11-09T15:55:42.427053+00:00"
 }

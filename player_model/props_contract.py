@@ -39,6 +39,10 @@ CONTRACT_VERSION = "PFC-1.0"
 IMPUTER_VERSION = "PROPS-IMPUTER-1.0"
 RECIPE_REPAIRED = "props_r2_repaired"
 RECIPE_LEGACY = "props_legacy_batch_median"
+#: a model fitted by the props clean retrain (player_model.props_harness, owner-gated) and promoted by
+#: the owner (props_gate.promote_clean_retrain). The payload carries the harness model object itself,
+#: so serving calls exactly the predict() the harness scored the holdout with.
+RECIPE_CLEAN_HARNESS = "props_clean_harness"
 
 CONTRACT_PATH = Path(__file__).resolve().parent / "props_feature_contract.json"
 

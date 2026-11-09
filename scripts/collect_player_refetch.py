@@ -77,11 +77,16 @@ OUT = COLLECT_DIR / "player_history_refetch.parquet"
 JOURNAL = COLLECT_DIR / "player_refetch_fixtures.parquet"
 AUDIT = COLLECT_DIR / "player_history_refetch_audit.json"
 CUP_ROWS = COLLECT_DIR / "cup_player_rows.parquet"
+#: provider-proven fixtures outside the collected lists (scripts/collect_refetch_extra_fixtures.py)
+EXTRA_FIXTURES = COLLECT_DIR / "refetch_extra_fixtures.parquet"
+#: owner 2026-11-09: history date 1 day off the provider's, same fixture id + clubs proven
+DATE_CORRECTIONS = ROOT / "output" / "corrections" / "player_history_date_corrections.csv"
 
 #: the columns that are re-read and replaced: every per-player count player_history stores + rating
 VALUE_COLS = list(PSN.HISTORY_COUNT_COLS) + ["rating"]
 KEY_COLS = ["fixture_id", "player_id", "date", "home_team", "away_team", "team", "is_home"]
-COLS = (["fixture_id", "player_id", "source", "team_id", "is_home", "minutes_refetch"] + VALUE_COLS
+COLS = (["fixture_id", "player_id", "source", "team_id", "is_home", "is_home_orig", "is_home_corrected",
+         "minutes_refetch"] + VALUE_COLS
         + [f"orig_{c}" for c in VALUE_COLS] + ["filled_cols", "fetched_at"])
 J_COLS = ["fixture_id", "source", "status", "n_teams", "n_players", "n_rows", "n_refused", "fetched_at"]
 
@@ -117,7 +122,9 @@ def map_fixture_ids(rows: pd.DataFrame, fx: pd.DataFrame) -> tuple[pd.Series, in
     miss = rows[ids.isna()]
     if miss.empty or fx.empty:
         return ids, int(len(miss))
-    day = pd.to_datetime(fx["date"], errors="coerce").dt.strftime("%Y-%m-%d")
+    # utc + mixed: the extra lists carry ISO timestamps with an offset, the collected lists date-only
+    # strings; without utc=True pandas turns the offset ones into NaT (P7 item 2 bug, 2026-11-09)
+    day = pd.to_datetime(fx["date"], errors="coerce", utc=True, format="mixed").dt.strftime("%Y-%m-%d")
     by_day = {d: g for d, g in fx.assign(_day=day).groupby("_day")}
     refused = 0
     for (d, hm, aw), g in miss.groupby(["_day", "home_team", "away_team"], dropna=False):
@@ -133,11 +140,19 @@ def map_fixture_ids(rows: pd.DataFrame, fx: pd.DataFrame) -> tuple[pd.Series, in
 
 
 def plan(rows: pd.DataFrame | None = None, fx: pd.DataFrame | None = None,
-         journal: pd.DataFrame | None = None) -> dict:
+         journal: pd.DataFrame | None = None, redo_refused: bool = False) -> dict:
     """The proven fixtures still to fetch (newest first) + every refusal, counted by reason."""
     from player_model.club_rule import same_fixture_sides
     rows = source_rows() if rows is None else rows
-    fx = AL.fixture_list() if fx is None else fx
+    if fx is None:
+        fx = AL.fixture_list()
+        # P7 item 5: fixtures outside the collected lists (national teams etc.), proven by the
+        # provider's own /fixtures?ids answer (scripts/collect_refetch_extra_fixtures.py). Read HERE
+        # only, never by collect_af_lists.fixture_list (the team-id collectors must not see them).
+        extra = AL.fixture_list(EXTRA_FIXTURES) if EXTRA_FIXTURES.exists() else pd.DataFrame()
+        if len(extra):
+            fx = pd.concat([fx, extra[[c for c in fx.columns if c in extra.columns]]],
+                           ignore_index=True).drop_duplicates("fixture_id", keep="first")
     journal = read_parquet(JOURNAL) if journal is None else journal
     out = {"rows": int(len(rows)), "rows_by_source": rows["source"].value_counts().to_dict() if len(rows) else {},
            "refused_fixtures": {}, "refused_rows": {}}
@@ -161,7 +176,7 @@ def plan(rows: pd.DataFrame | None = None, fx: pd.DataFrame | None = None,
         out["refused_rows"]["no_fixture_id_unmapped"] = int(n_unmapped)
     rows = rows[rows["fixture_id"].notna()]
     fx = fx.drop_duplicates("fixture_id").set_index("fixture_id")
-    fx_day = pd.to_datetime(fx["date"], errors="coerce").dt.strftime("%Y-%m-%d")
+    fx_day = pd.to_datetime(fx["date"], errors="coerce", utc=True, format="mixed").dt.strftime("%Y-%m-%d")
     g = rows.groupby("fixture_id").agg(day=("_day", "unique"), home=("home_team", "unique"),
                                        away=("away_team", "unique"), source=("source", "first"),
                                        n=("player_id", "size"))
@@ -173,7 +188,14 @@ def plan(rows: pd.DataFrame | None = None, fx: pd.DataFrame | None = None,
     reason[in_list & multi.to_numpy()] = "history_disagrees_with_itself"
     ok = reason.isna()
     day = g.loc[ok, "day"].map(lambda a: a[0])
-    reason[ok & (day != fx_day.reindex(day.index)).reindex(g.index, fill_value=False)] = "date_differs_from_list"
+    lday = fx_day.reindex(day.index)
+    gap = (pd.to_datetime(day, errors="coerce") - pd.to_datetime(lday, errors="coerce")).dt.days.abs()
+    # Owner 2026-11-09 ("yes, same rule" as the 2026-11-07 club-history ruling): a history date ONE day
+    # off the provider's date is the same match when the row carries the provider's own fixture id
+    # and BOTH clubs are proven (same_fixture_sides below). The provider's date wins; the history date
+    # is kept beside it (out["date_corrections"] -> output/corrections/player_history_date_corrections.csv).
+    one_day = (gap == 1).reindex(g.index, fill_value=False)
+    reason[ok & (day != lday).reindex(g.index, fill_value=False) & ~one_day] = "date_differs_from_list"
     ok = reason.isna()
     pairs = pd.DataFrame({"h": g.loc[ok, "home"].map(lambda a: a[0]), "a": g.loc[ok, "away"].map(lambda a: a[0]),
                           "lh": fx.loc[g.index[ok], "home_name"].to_numpy(),
@@ -185,13 +207,38 @@ def plan(rows: pd.DataFrame | None = None, fx: pd.DataFrame | None = None,
             memo[k] = bool(same_fixture_sides(h, a, lh, la))
         if not memo[k]:
             reason[fid] = "clubs_unproven"
+    shifted = one_day & reason.isna()
+    out["date_corrections"] = pd.DataFrame({
+        "fixture_id": g.index[shifted].astype(int),
+        "history_date": day.reindex(g.index[shifted]).to_numpy(),
+        "provider_date": fx_day.reindex(g.index[shifted]).to_numpy(),
+        "rows": g.loc[shifted, "n"].astype(int).to_numpy(),
+        "rule": "owner 2026-11-09: provider fixture id + both clubs proven, 1 day apart; provider date wins"})
+    out["date_shift_accepted_fixtures"] = int(shifted.sum())
+    out["date_shift_accepted_rows"] = int(g.loc[shifted, "n"].sum())
     for r, n in reason.dropna().value_counts().items():
         out["refused_fixtures"][r] = int(n)
         out["refused_rows"][r] = int(g.loc[reason == r, "n"].sum())
     proven = g[reason.isna()].copy()
     out["proven_fixtures"] = int(len(proven))
     done = set(pd.to_numeric(journal["fixture_id"], errors="coerce").dropna().astype(int)) if len(journal) else set()
-    proven["_done"] = [int(f) in done for f in proven.index]
+    if redo_refused and done:
+        # P7 item 6: re-read the journaled fixtures that still hold a source row with no stored
+        # result (refused at the time, e.g. side_unproven before the is_home proof existed)
+        st_rows = read_parquet(OUT)
+        stored = set()
+        if len(st_rows):
+            keys = pd.DataFrame({"f": pd.to_numeric(st_rows["fixture_id"], errors="coerce"),
+                                 "p": pd.to_numeric(st_rows["player_id"], errors="coerce")}).dropna()
+            stored = set(zip(keys["f"].astype(int), keys["p"].astype(int)))
+        src = rows[rows["fixture_id"].notna() & rows["player_id"].notna()]
+        unstored = {int(f) for f, p_ in zip(src["fixture_id"], src["player_id"])
+                    if (int(f), int(p_)) not in stored}
+        out["redo_refused_fixtures"] = int(len(done & unstored))
+        done = done - unstored
+    # bool dtype explicitly: with no proven fixture the list is empty, an empty OBJECT column, and
+    # proven[~empty_object] selects COLUMNS (all dropped) instead of rows - a KeyError downstream
+    proven["_done"] = pd.Series([int(f) in done for f in proven.index], index=proven.index, dtype=bool)
     out["journaled_fixtures"] = int(proven["_done"].sum())
     todo = proven[~proven["_done"]].copy()
     todo["date"] = fx_day.reindex(todo.index)
@@ -203,6 +250,17 @@ def plan(rows: pd.DataFrame | None = None, fx: pd.DataFrame | None = None,
     return out
 
 
+def _club_on_side(team, fxrow, home: bool) -> bool:
+    """True only when `team` (the history row's club) is proven to be the fixture-list club on the
+    given side and NOT the other one (team_names.resolve_identity over the two list names)."""
+    from src.team_names import resolve_identity
+    if team is None or (isinstance(team, float) and pd.isna(team)):
+        return False
+    h, a = str(fxrow.get("home_name")), str(fxrow.get("away_name"))
+    hit = resolve_identity(str(team), [h, a])
+    return hit == (h if home else a)
+
+
 # ── one answer ───────────────────────────────────────────────────────────────────────────────────
 
 def parse_answer(body: dict | None, fid: int, fxrow, rows: pd.DataFrame, now: str) -> tuple[list[dict], dict]:
@@ -212,7 +270,7 @@ def parse_answer(body: dict | None, fid: int, fxrow, rows: pd.DataFrame, now: st
     resp = (body or {}).get("response") or []
     j = {"fixture_id": int(fid), "source": str(rows["source"].iloc[0]) if len(rows) else None,
          "status": "ok" if resp else "empty", "n_teams": len(resp), "n_players": 0, "n_rows": 0,
-         "n_refused": 0, "fetched_at": now, "refused": {}}
+         "n_refused": 0, "is_home_corrected": 0, "fetched_at": now, "refused": {}}
     if not resp:
         j["n_refused"] = int(len(rows))
         j["refused"]["empty_answer"] = int(len(rows))
@@ -249,9 +307,22 @@ def parse_answer(body: dict | None, fid: int, fxrow, rows: pd.DataFrame, now: st
             continue
         side, tid, pe = hits[0]
         row_home = AL.int_or_none(r.is_home)
-        if side is None or row_home is None or bool(row_home) != bool(side):
+        home_corrected = False
+        if side is None or row_home is None:
             _refuse("side_unproven")
             continue
+        if bool(row_home) != bool(side):
+            # P7 item 6 (2026-11-09): the history's is_home disagrees with the provider. 3,566 such rows
+            # were measured, all of one shape: the row's own club IS the list's home club while the row
+            # says away (e.g. VfL Bochum, 1. FC Koln home matches stored as away). Accepted ONLY when
+            # the row's club resolves (team_names.resolve_identity) to the club on the provider's side
+            # and not to the other one; the provider side is stored and the original kept beside it
+            # (is_home_orig, is_home_corrected). Anything else stays refused.
+            if not _club_on_side(getattr(r, "team", None), fxrow, bool(side)):
+                _refuse("side_unproven")
+                continue
+            home_corrected = True
+            j["is_home_corrected"] += 1
         own_tid = AL.int_or_none(getattr(r, "team_id", None))
         if own_tid is not None and own_tid != tid:
             _refuse("team_id_differs")
@@ -262,7 +333,8 @@ def parse_answer(body: dict | None, fid: int, fxrow, rows: pd.DataFrame, now: st
         filled = [c for c in PSN.HISTORY_COUNT_COLS
                   if counts[c] == 0 and PSN.as_count(PSN.raw_value(st, c)) is None]
         rec = {"fixture_id": int(fid), "player_id": pid, "source": r.source, "team_id": tid,
-               "is_home": int(bool(side)), "minutes_refetch": mins,
+               "is_home": int(bool(side)), "is_home_orig": int(bool(row_home)),
+               "is_home_corrected": bool(home_corrected), "minutes_refetch": mins,
                **{c: counts[c] for c in PSN.HISTORY_COUNT_COLS}, "rating": PSN.rating_of(st),
                **{f"orig_{c}": getattr(r, c, None) for c in VALUE_COLS},
                "filled_cols": ",".join(filled), "fetched_at": now}
@@ -299,11 +371,24 @@ def field_audit(stored: pd.DataFrame) -> dict:
     return out
 
 
+def write_date_corrections(dc) -> int:
+    """Owner 2026-11-09: the provider's date beside the history's one, per accepted fixture (upsert
+    by fixture_id; the history file itself is never rewritten)."""
+    if dc is None or not len(dc):
+        return 0
+    old = pd.read_csv(DATE_CORRECTIONS) if DATE_CORRECTIONS.exists() else pd.DataFrame(columns=dc.columns)
+    allc = pd.concat([old, dc.assign(recorded_at=AL.now_iso())], ignore_index=True)
+    allc = allc.drop_duplicates("fixture_id", keep="first")
+    DATE_CORRECTIONS.parent.mkdir(parents=True, exist_ok=True)
+    allc.to_csv(DATE_CORRECTIONS, index=False)
+    return int(len(dc))
+
+
 def write_audit(p: dict, st: dict) -> dict:
     stored = read_parquet(OUT)
     journal = read_parquet(JOURNAL)
     a = {"generated_at": AL.now_iso(), "owner_decision": "2026-11-04 fix round 8 (props item 3)",
-         "plan": {k: v for k, v in p.items() if k not in ("todo", "fx", "rows_frame")},
+         "plan": {k: v for k, v in p.items() if k not in ("todo", "fx", "rows_frame", "date_corrections")},
          "run": st,
          "stored_rows": int(len(stored)),
          "stored_rows_by_source": stored["source"].value_counts().to_dict() if len(stored) else {},
@@ -329,15 +414,16 @@ def _flush(buf, jbuf):
 
 
 def run(limit: int | None = None, dry_run: bool = False, client: AFClient | None = None,
-        rows: pd.DataFrame | None = None, fx: pd.DataFrame | None = None) -> dict:
-    p = plan(rows, fx)
-    pub = {k: v for k, v in p.items() if k not in ("todo", "fx", "rows_frame")}
+        rows: pd.DataFrame | None = None, fx: pd.DataFrame | None = None, redo_refused: bool = False) -> dict:
+    p = plan(rows, fx, redo_refused=redo_refused)
+    pub = {k: v for k, v in p.items() if k not in ("todo", "fx", "rows_frame", "date_corrections")}
     print(f"[playerrefetch] {json.dumps(pub, default=str)}")
     print(f"[playerrefetch] plan: exactly {p['planned_calls']:,} /fixtures/players call(s) "
           f"(1 per proven fixture not yet journaled; a failed call is retried next run)")
     st = {"calls": 0, "fetched": 0, "rows_stored": 0, "rows_refused": {}, "empty_answers": 0}
     if dry_run:
         return {**pub, **st}
+    write_date_corrections(p.get("date_corrections"))
     if p["planned_calls"] == 0:
         write_audit(p, st)
         return {**pub, **st}
@@ -379,8 +465,10 @@ def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description="re-read /fixtures/players for every player_history fixture")
     ap.add_argument("--limit", type=int, default=None, help="at most N fixture calls")
     ap.add_argument("--dry-run", action="store_true", help="print the exact planned call count; no call")
+    ap.add_argument("--redo-refused", action="store_true",
+                    help="also re-read journaled fixtures that still hold refused rows (P7 item 6)")
     a = ap.parse_args(argv)
-    run(limit=a.limit, dry_run=a.dry_run)
+    run(limit=a.limit, dry_run=a.dry_run, redo_refused=a.redo_refused)
     return 0
 
 

@@ -1,7 +1,7 @@
 {
  "about": "Approved production-facing fingerprint for src/research_lock.py. Re-approve ONLY for a deliberate, owner-approved production change. Do not hand-edit.",
- "approval_note": "2026-11-04 owner: several same-direction bets per match; fixture_cap bounds the fixture total",
- "approved_at": "2026-11-04T07:54:14Z",
+ "approval_note": "2026-11-09 decision A: Standard O/U 2.5 serves the clean recipe (clean team models, one-time owner override of the shadow rule)",
+ "approved_at": "2026-11-09T15:00:30Z",
  "approved_by": "Nevo (owner)",
  "fingerprint": {
   "global": {
@@ -132,7 +132,7 @@
    "deployed_env": {
     "LEAGUE_SNIPER_CAP": "0.12",
     "MARKSMAN_THRESHOLD": "0.08",
-    "STANDARD_OU25_SERVING_RECIPE": "v9_repaired",
+    "STANDARD_OU25_SERVING_RECIPE": "legacy_v9",
     "VALUABLE_THRESHOLD": "0.03"
    },
    "eligibility": {
@@ -300,5 +300,5 @@
    }
   }
  },
- "fingerprint_sha256": "cb72cae73e83ad6000f31892b982b3e2e6ba16a61882d338b7bfdade8e217868"
+ "fingerprint_sha256": "0fed49b8bf27378c313cdbeabcd76d28f7dbb83cfdfa899774950db1a6001e91"
 }

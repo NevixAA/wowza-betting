@@ -648,3 +648,77 @@ def test_harness_code_has_no_invented_defaults_and_no_forbidden_claims():
         t = (ROOT / f).read_text(encoding="utf-8").lower()
         for phrase in ("edge found", "no edge", "all fixed"):
             assert phrase not in t, (f, phrase)
+
+
+# ── NOT_FITTED, never a crash (coordinator 2026-11-09: the 11 early-fold failures were a bug) ─────
+
+def test_hgb_fits_when_a_feature_has_no_training_value_and_records_it(feat):
+    """Reproduces run 42512834177: early Standard folds (2021-2022) have NO xG / HT history at all.
+    sklearn 1.9's HistGradientBoosting binning raises 'window shape cannot be larger than input array
+    shape' on any all-missing column. Now the column is dropped and recorded (the
+    champion recipe's rule), and predict scores on exactly the fitted columns."""
+    cfg = _cfg()
+    fr = _frames(feat, cfg)
+    for k in ("train", "fit", "validation"):
+        fr[k] = fr[k].copy()
+        fr[k]["home_xg_last5"] = np.nan                      # no training value in this window
+    for name in ("hgb", "model_market"):
+        c = _cand(name, cfg)
+        c.fit(fr)
+        p = np.asarray(c.predict(fr["test"]), float)
+        assert np.isfinite(p).any(), name
+        assert any("home_xg_last5" in n and "no training value" in n for n in c.notes), (name, c.notes)
+
+
+def test_hgb_without_any_usable_column_or_with_one_class_is_not_fitted(feat):
+    cfg = _cfg()
+    fr = _frames(feat, cfg)
+    c = _cand("hgb", cfg)
+    allnan = {k: v.assign(**{f: np.nan for f in c.features}) for k, v in fr.items()}
+    with pytest.raises(C.NotFitted, match="no feature column"):
+        c.fit(allnan)
+    one = {k: v.copy() for k, v in fr.items()}
+    one["train"][c.target] = 1.0
+    with pytest.raises(C.NotFitted, match="one outcome class"):
+        _cand("hgb", cfg).fit(one)
+
+
+def test_runner_records_not_fitted_and_fails_the_run_on_a_real_error(feat, tmp_path, monkeypatch):
+    cfg = _cfg(approved=True)
+    for k in ("over15", "over35", "ht_over15", "btts", "ht_over05"):
+        cfg["markets"].pop(k, None)
+    real_build = C.build
+
+    class _NF(C.Candidate):
+        name = "x"
+
+        def fit(self, frames):
+            raise C.NotFitted("synthetic reason")
+
+    def build_nf(name, *a, **k):
+        if name == "hgb":
+            return _NF({}, cfg["markets"]["over25"], [], "standard", "over25")
+        return real_build(name, *a, **k)
+    monkeypatch.setattr(C, "build", build_nf)
+    folder = R.run(feat, cfg, tmp_path, env=ENV_ON, run_id="nf")
+    man = json.loads((folder / "manifest.json").read_text(encoding="utf-8"))
+    nf = [e for e in man["errors"] if e.get("status") == R.NOT_FITTED]
+    assert nf and all(e["candidate"] == "hgb" and e["reason"] == "synthetic reason" for e in nf)
+    cov = pd.read_csv(folder / "coverage.csv")
+    h = cov[cov["candidate"] == "hgb"]
+    assert (h["folds_not_fitted"] > 0).all() and (h["folds_scored"] == 0).all()
+
+    class _Boom(C.Candidate):
+        name = "y"
+
+        def fit(self, frames):
+            raise ZeroDivisionError("a bug")
+
+    def build_boom(name, *a, **k):
+        if name == "hgb":
+            return _Boom({}, cfg["markets"]["over25"], [], "standard", "over25")
+        return real_build(name, *a, **k)
+    monkeypatch.setattr(C, "build", build_boom)
+    with pytest.raises(R.RunErrors, match="a bug"):
+        R.run(feat, cfg, tmp_path, env=ENV_ON, run_id="boom")
+    assert (tmp_path / "boom" / "manifest.json").exists()           # reports written first

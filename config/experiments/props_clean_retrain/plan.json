@@ -12,11 +12,15 @@
       "sot2",
       "goals",
       "assists",
-      "cards"
+      "cards",
+      "goals2",
+      "goals3",
+      "sot3",
+      "sot4"
     ],
     "feature_rule": "all_prior_verified"
   },
-  "owner_decisions_note": "Owner 2026-11-07: feature_rule all_prior_verified (rule C). Owner 2026-11-08, after the re-fetch finished (939,831 of 950,556 rows verified): holdout 2026-09-01..2026-10-31 (includes the 38 fixtures with real two-sided anytime-scorer prices); training floor 95% and holdout floor 85% under rule C (measured 96.0% / 86.6%); markets sot, sot2, goals, assists, cards (only goals has real two-sided prices; the others use the labelled assumed margin for CLV).",
+  "owner_decisions_note": "Owner 2026-11-07: feature_rule all_prior_verified (rule C). Owner 2026-11-08, after the re-fetch finished (939,831 of 950,556 rows verified): holdout 2026-09-01..2026-10-31 (includes the 38 fixtures with real two-sided anytime-scorer prices); training floor 95% and holdout floor 85% under rule C (measured 96.0% / 86.6%); markets sot, sot2, goals, assists, cards (only goals has real two-sided prices; the others use the labelled assumed margin for CLV). Owner 2026-11-08, on goals2, goals3, sot3, sot4 (the markets still on placeholder-trained models): \"Retrain them too\" - added to markets with the same holdout, floors and feature rule C; until they are retrained they are hidden from tips and the board (player_model.config.HIDDEN_PENDING_CLEAN_RETRAIN).",
   "proposed": {
     "holdout_start": "2026-09-01",
     "holdout_end": "2026-10-31",

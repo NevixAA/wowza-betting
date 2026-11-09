@@ -397,9 +397,26 @@ def predict_with_diagnostics(df: pd.DataFrame, payload: dict, _fill_telemetry: b
     """Per-row probability plus the R2 integrity record. Columns: p, n_missing, n_degraded,
     n_required_missing, required_fail, imputer_version, contract_version, recipe.
 
+    Clean-harness payload (props clean retrain, promoted by the owner): the harness model's OWN
+    predict() - NaN-native (hgb_nan_native) or its persisted fit-block medians (recipe_retrained);
+    an absent column reaches the model as NaN, never as a typed value.
     Repaired payload: persisted train-fitted imputer, batch-invariant, REQUIRED_FAIL_ROW -> p NaN.
     Legacy payload: EXACTLY the pre-R2 computation (batch medians, absent column -> 0.0); the
     diagnostics then describe the raw input and imputer_version says BATCH_MEDIAN_LEGACY."""
+    if payload_recipe(payload) == PC.RECIPE_CLEAN_HARNESS:
+        feat_cols = list(payload["feature_cols"])
+        raw = pd.DataFrame({c: (pd.to_numeric(df[c], errors="coerce") if c in df.columns
+                                else pd.Series(np.nan, index=df.index)) for c in feat_cols},
+                           index=df.index)
+        out = pd.DataFrame({"p": np.asarray(payload["model"].predict(raw), dtype=float)}, index=df.index)
+        out["n_missing"] = raw.isna().sum(axis=1).astype(int)
+        out["n_degraded"] = -1
+        out["n_required_missing"] = -1
+        out["required_fail"] = False
+        out["imputer_version"] = payload.get("imputer_version", "")
+        out["contract_version"] = payload.get("contract_version", "")
+        out["recipe"] = PC.RECIPE_CLEAN_HARNESS
+        return out
     if payload_recipe(payload) == PC.RECIPE_REPAIRED:
         imp = PC.PropsImputer.from_state(payload["imputer"])
         X, diag = imp.transform(df)
@@ -439,7 +456,7 @@ def predict_proba(df: pd.DataFrame, payload: dict) -> pd.Series:
     original code path unchanged - batch-median `_prep` - so serving probabilities are
     bit-identical to pre-R2 until an owner-approved retrain. Repaired payloads use the persisted
     train-fitted imputer and return NaN on rows that fail the feature contract."""
-    if payload_recipe(payload) == PC.RECIPE_REPAIRED:
+    if payload_recipe(payload) in (PC.RECIPE_REPAIRED, PC.RECIPE_CLEAN_HARNESS):
         return predict_with_diagnostics(df, payload, _fill_telemetry=True)["p"]
     feat_cols = payload["feature_cols"]
     X, _ = _prep(df, feat_cols)

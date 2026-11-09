@@ -223,6 +223,12 @@ RAW = {                # why the raw file is the right input
     "scripts/collect_competition_fixtures.py": "reads the earliest date only to plan fetches",
     "scripts/audit_data_files.py": "profiles the raw committed files (not run by a workflow)",
     "scripts/dashboard_manifest.py": "lists the files the pages open (an audit hook, no results)",
+    "scripts/prove_af_history_aliases.py": ("P7: proves aliases from the history names AS STORED, the same raw "
+                                            "rows the collectors' matchers read (no result is served)"),
+    "scripts/sync_results_from_main.py": ("P7: copies main's newer rows into the raw bank file itself; "
+                                          "corrections stay beside it (sidecar), nothing is served"),
+    "scripts/probe_oddsapi_history.py": ("P7: reads league / date only to pick one probe match day per "
+                                         "league for the OddsAPI history probe (no result is served)"),
 }
 
 

@@ -381,6 +381,95 @@ def rollback_props(market: str, to_version: str, reason: str = "operational roll
                      "reason": reason})
 
 
+# ── OWNER-APPROVED CLEAN-RETRAIN PROMOTION (owner 2026-11-08) ─────────────────────────────────
+#: the source recorded on a promotion the owner approved in chat from the props clean retrain
+CLEAN_RETRAIN_SOURCE = "OWNER_APPROVED_CLEAN_RETRAIN"
+
+
+class _HarnessUnpickler(pickle.Unpickler):
+    """The clean-retrain artifacts were pickled by `python -m player_model.props_harness`, so their
+    classes are recorded under `__main__`; they ARE player_model.props_harness's classes."""
+
+    def find_class(self, module, name):
+        if module == "__main__":
+            module = "player_model.props_harness"
+        return super().find_class(module, name)
+
+
+def load_clean_artifact(raw: bytes, expected_sha256: str) -> dict:
+    """The props clean-retrain artifact, verified against the sha256 its run reported."""
+    import io
+    sha = reg.sha256_bytes(raw)
+    if sha != expected_sha256:
+        raise ValueError(f"clean-retrain artifact sha256 {sha[:12]} != reported {expected_sha256[:12]}")
+    art = _HarnessUnpickler(io.BytesIO(raw)).load()
+    for k in ("market", "candidate", "model", "state", "window", "harness_version"):
+        if k not in art:
+            raise ValueError(f"clean-retrain artifact has no '{k}'")
+    return art
+
+
+def clean_serving_payload(art: dict, provenance: dict) -> dict:
+    """The serving payload of a clean-retrain model: the harness model object itself (so serving
+    calls the predict() the holdout was scored with), its feature columns and the provenance."""
+    from player_model import props_contract as PC
+    m = art["model"]
+    imputer = ("NONE_NAN_NATIVE" if art["candidate"] == "hgb_nan_native"
+               else "FIT_BLOCK_MEDIAN_PERSISTED")
+    return {"market": art["market"], "recipe": PC.RECIPE_CLEAN_HARNESS, "candidate": art["candidate"],
+            "model": m, "feature_cols": list(m.feature_cols_), "state": art["state"],
+            "window": art["window"], "harness_version": art["harness_version"],
+            "hand_adjustment": art.get("hand_adjustment"), "owner_decisions": art.get("owner_decisions"),
+            "imputer_version": imputer, "contract_version": art["harness_version"],
+            "metrics": {}, "provenance": dict(provenance)}
+
+
+def promote_clean_retrain(market: str, artifact_raw: bytes, *, expected_sha256: str, run_id: str,
+                          code_sha: str, holdout_metrics: dict, approval: str, approved_on: str,
+                          now: datetime | None = None) -> dict:
+    """Install a props clean-retrain model as the serving champion of `market`, approved by the owner.
+
+    The serving model in place is registered first (its exact bytes are kept in the registry, so
+    rollback_props restores it); the new payload is written through _install_props_champion, the only
+    writer of a serving props file, and the decision is logged with the run, code and hashes."""
+    if market not in pconfig.MODEL_FILES:
+        raise ValueError(f"unknown props market {market!r}")
+    if market in pconfig.HIDDEN_PENDING_CLEAN_RETRAIN:
+        raise PermissionError(f"{market} is hidden pending its own clean retrain")
+    now = now or utcnow()
+    art = load_clean_artifact(artifact_raw, expected_sha256)
+    if art["market"] != market:
+        raise ValueError(f"artifact is for {art['market']}, not {market}")
+    prior = champion_identity(market, now=now)             # registers (archives) the model in place
+    prov = {"run_id": run_id, "code_sha": code_sha, "artifact_sha256": expected_sha256,
+            "candidate": art["candidate"], "holdout": holdout_metrics, "approval": approval,
+            "approved_on": approved_on, "prior_champion": prior}
+    payload = clean_serving_payload(art, prov)
+    raw = pickle.dumps(payload, protocol=pickle.HIGHEST_PROTOCOL)
+    sha = reg.sha256_bytes(raw)
+    version = f"props_{market}_clean_{art['candidate']}_{sha[:8]}"
+    win = art["window"] or {}
+    cutoff = (win.get("calibration_dates") or [""])[-1] or ""
+    manifest = {"market": market, "model_version": version, "artifact_sha256": sha,
+                "registered_at": reg.iso(now), "training_cutoff": cutoff,
+                "training_rows": {"fit": win.get("fit_rows"), "calibration": win.get("calibration_rows")},
+                "candidate": art["candidate"], "harness_version": art["harness_version"],
+                "clean_retrain": prov}
+    _install_props_champion(market, manifest, raw, reason=f"{CLEAN_RETRAIN_SOURCE}: {approval}",
+                            source=CLEAN_RETRAIN_SOURCE, at=now)
+    rec = {"stage": CLEAN_RETRAIN_SOURCE, "market": market, "candidate_version": version,
+           "champion_version": prior, "verdict": PROMOTE, "promoted": True, "qualified": True,
+           "parked": False, "holdout_n": holdout_metrics.get("n"),
+           "holdout_events": holdout_metrics.get("events"),
+           "holdout_ll_delta": holdout_metrics.get("ll_delta_vs_recipe"),
+           "holdout_ci_lo": holdout_metrics.get("ci95_lo"), "holdout_ci_hi": holdout_metrics.get("ci95_hi"),
+           "metrics": {"holdout": holdout_metrics, "run_id": run_id, "code_sha": code_sha,
+                       "harness_artifact_sha256": expected_sha256},
+           "reason": f"owner approved {approved_on}: {approval}"}
+    record_decision(rec)
+    return {**rec, "serving_sha256": sha, "model_version": version}
+
+
 # ── PERIOD 1: the untouched holdout, per market ───────────────────────────────────────────────
 def evaluate_holdout(market: str, y, p_champion, p_candidate, *, dates, leagues=None,
                      champion_cutoff=None) -> dict:

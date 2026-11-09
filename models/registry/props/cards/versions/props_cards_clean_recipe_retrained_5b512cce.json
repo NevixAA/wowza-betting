@@ -1,0 +1,57 @@
+{
+  "market": "cards",
+  "model_version": "props_cards_clean_recipe_retrained_5b512cce",
+  "artifact_sha256": "5b512cce69a1ab548e28ac833a3d284e8cb6e3a9358e0e6181b38806f983f035",
+  "registered_at": "2026-11-09T17:25:35Z",
+  "training_cutoff": "2026-08-31",
+  "training_rows": {
+    "fit": 720129,
+    "calibration": 128019
+  },
+  "candidate": "recipe_retrained",
+  "harness_version": "PROPS-HARNESS-1.0",
+  "clean_retrain": {
+    "run_id": "42640972400",
+    "code_sha": "34fe9fc88ad0997c6c6129803afbe2199dbe670b",
+    "artifact_sha256": "9b38c795cc77c309fee868a432b04b7c65772d98e9be4a2686b546b02d8b7e5a",
+    "candidate": "recipe_retrained",
+    "holdout": {
+      "n": 49818,
+      "events": 6466,
+      "log_loss": 0.3735419712169584,
+      "brier": 0.11016363000424624,
+      "ece10": 0.011984482773360871,
+      "calib_slope": 1.0915887901488033,
+      "ll_minus_player_base_rate": {
+        "mean": -0.004355659077886494,
+        "ci95": [
+          -0.005834439771916144,
+          -0.003197462525230376
+        ],
+        "week_blocks": 9
+      },
+      "ll_delta_vs_recipe": 0.0,
+      "ci95_lo": -0.00030780182191126015,
+      "ci95_hi": 0.00011486524539023002,
+      "head_to_head": {
+        "n": 49818,
+        "weeks": 9,
+        "ll_delta_hgb_minus_recipe": -0.00010680002600922576,
+        "ci95_lo": -0.00030780182191126015,
+        "ci95_hi": 0.00011486524539023002,
+        "p_one_sided": 0.171457135716071,
+        "boot": 4000,
+        "seed": 1
+      },
+      "holdout_dates": [
+        "2026-09-01",
+        "2026-10-31"
+      ],
+      "rule": "hgb_nan_native not shown better than the recipe; recipe beats player_base_rate"
+    },
+    "approval": "Yes, retrain (owner 2026-11-09): props training and serving read the provider-proven home/away side",
+    "approved_on": "2026-11-09",
+    "prior_champion": "props_cards_clean_recipe_retrained_935bff26"
+  },
+  "model_role": "CHAMPION"
+}

@@ -81,13 +81,13 @@ def _no_collected_tables(tmp_path_factory):
     TI._CACHE.clear()
     lookup._LOADED.clear()
     FE._COLLECTED.clear()
-    FE._SERVE_CACHE.clear()
+    FE._LINEUP_CACHE.clear()
     yield
     mp.undo()
     TI._CACHE.clear()
     lookup._LOADED.clear()
     FE._COLLECTED.clear()
-    FE._SERVE_CACHE.clear()
+    FE._LINEUP_CACHE.clear()
 
 
 @pytest.fixture(scope="module")
@@ -167,26 +167,26 @@ def test_placeholder_profiles_rest_and_rating_are_missing_not_typed(built):
 
 
 def test_serving_uses_the_training_definitions(built):
-    hist = built
+    raw = pd.DataFrame(_history())                       # serving reads the raw history
+    raw["date"] = pd.to_datetime(raw["date"])
     nxt = pd.Timestamp("2025-08-01") + pd.Timedelta(days=7 * 24)
-    up = hist[hist["team"] == "Arsenal"].drop_duplicates("player_id", keep="last").copy()
-    up["opponent"] = "Chelsea FC"                      # a spelling variant: resolved, not compared
-    up["is_home"] = 1.0
-    up["fixture_league"] = "Premier League"
-    up["fixture_date"] = str(nxt.date())
-    ref = FE.referee_profile_from_history(hist, "Ref P0", "Premier League")
-    out = FE.build_upcoming_features(up.to_dict("records"), hist, ref, {}, FE._build_history_index(hist))
-    assert len(out) == len(up)
-    t = FE.team_match_table(hist)
+    ars = raw[raw["team"] == "Arsenal"].drop_duplicates("player_id", keep="last")
+
+    def rows(opponent, referee):
+        return [{"player_id": r["player_id"], "player_name": r["player_name"], "fixture_id": 7_700_001,
+                 "date": nxt, "league": "Premier League", "team": "Arsenal", "home_team": "Arsenal",
+                 "away_team": opponent, "is_home": 1, "referee": referee} for _, r in ars.iterrows()]
+    out = FE.build_upcoming_features(rows("Chelsea", "Ref P0"), raw)
+    assert len(out) == len(ars)
+    t = FE.team_match_table(built)
     chelsea = t[t["_tkey"].str.startswith("Chelsea|")].sort_values("date").tail(C.ROLLING_N)
     assert out["opp_goals_conceded_pg"].iloc[0] == pytest.approx(chelsea["goals_conceded"].mean())
     assert out["opp_mid_cards_pg"].iloc[0] == pytest.approx(1.0)
     assert (out["rest_days"] == 7).all()
-    assert out["referee_yellows_pg"].notna().all() and ref["n_games"] >= C.MIN_REF_MATCHES
+    assert out["referee_yellows_pg"].notna().all()
     # every model feature exists at serve time; typed defaults are gone
     assert not [c for c in C.PLAYER_FEATURE_COLS if c not in out.columns]
-    unknown = FE.build_upcoming_features(
-        [dict(up.iloc[0], opponent="Nobody United")], hist, {}, {}, FE._build_history_index(hist))
+    unknown = FE.build_upcoming_features(rows("Nobody United", None), raw)
     assert math.isnan(unknown["opp_goals_conceded_pg"].iloc[0])
     assert math.isnan(unknown["referee_yellows_pg"].iloc[0])
 

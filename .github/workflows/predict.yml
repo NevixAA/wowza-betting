@@ -187,18 +187,17 @@ jobs:
           # comparison would pool the two silently.
           REQUIRE_FORM_DATA: "0"
           REQUIRE_FORM_DATA_UNTIL: "2026-09-15"
-          # STANDARD O/U 2.5 SERVING RECIPE (owner Nevo, 2026-10-28: "switch Standard now"). Standard
-          # fixtures' p_over25 comes from models/model_v9_standard_repaired.pkl on repaired as-of features
-          # (src/standard_serving.py). New Format, BTTS/O1.5/O3.5 and HT are unaffected; thresholds,
-          # tiers, stakes and Telegram logic are unchanged. Every row says which served it
-          # (predictions.csv serving_recipe + model_version; ledger model_version).
-          # ROLLBACK = set this to "legacy_v9" (or delete the line). models/model_v9_standard.pkl is the
-          # untouched legacy champion. FAIL CLOSED since R2-A (2026-11-01): a missing/broken repaired file
-          # leaves Standard O/U 2.5 with NO probability and NO tip (stamped v9_repaired_failed,
-          # output/standard_serving_health.json FAIL, system_health RED) - no silent legacy fallback. Any
-          # value other than legacy_v9 / v9_repaired stops predict (configuration error).
-          # Owner rollback doc: docs/STANDARD_REPAIRED_FAILCLOSED_ROLLBACK.md
-          STANDARD_OU25_SERVING_RECIPE: "v9_repaired"
+          # STANDARD O/U 2.5 SERVING (owner Nevo, 2026-11-09, clean-data switch: "the models that worked
+          # before we reach 100% clean data are irrelevant"). Standard fixtures' p_over25 comes from
+          # models/model_v9_standard.pkl - the clean-retrain recipe (std_v9_repaired) installed by
+          # src/promotion_gate.owner_clean_switch - scored on build_upcoming_features, the same builder
+          # pair it was trained on (exactly like New Format and the side/HT models). The 2026-10-28
+          # research model (v9_repaired, models/model_v9_standard_repaired.pkl) is ARCHIVED: its file,
+          # registry entry and champion artifact stay as the rollback.
+          # ROLLBACK = set this to "v9_repaired" (src/standard_serving.py, fail closed). Any value other
+          # than legacy_v9 / v9_repaired stops predict (configuration error). "legacy_v9" is the
+          # switch's historical name for "serve models/model_v9_standard.pkl".
+          STANDARD_OU25_SERVING_RECIPE: "legacy_v9"
           # LEAGUE_SNIPER_CAP / MARKSMAN_THRESHOLD / VALUABLE_THRESHOLD removed 2026-11-09: global bars,
           # no longer read by serving (owner rule "no global vars"); every bar is the league's own cell.
           # RE-ENABLED 2026-08-16, after the two preconditions were met: the API-Football

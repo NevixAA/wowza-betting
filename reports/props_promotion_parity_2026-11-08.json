@@ -1,0 +1,709 @@
+{
+ "paired_rows": 1414,
+ "fixtures": 50,
+ "features": {
+  "goals_pg": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "assists_pg": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "shots_pg": {
+   "mismatch": 1,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "sot_pg": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "cards_pg": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "minutes_pg": {
+   "mismatch": 1,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "key_passes_pg": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "sot_rate": {
+   "mismatch": 1,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "starter_rate": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "n_prev_games": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "rating_pg": {
+   "mismatch": 1,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "career_goals_pg": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "career_sot_pg": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "career_shots_pg": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "career_assists_pg": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "shot_accuracy_rate": {
+   "mismatch": 1,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "kp_per90": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "goal_involvement_rate": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "shooting_efficiency_index": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "box_actions_per90": {
+   "mismatch": 1,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "aerial_won_rate": {
+   "mismatch": 1,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "duel_intensity_per90": {
+   "mismatch": 1,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "fouls_drawn_per90": {
+   "mismatch": 1,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "fouls_per90": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "foul_committer_ratio": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "card_exposure_index": {
+   "mismatch": 44,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "sot_quality_score": {
+   "mismatch": 1,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "opp_adjusted_shot_threat": {
+   "mismatch": 56,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "team_corners_pg": {
+   "mismatch": 1,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "is_home": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "opp_goals_conceded_pg": {
+   "mismatch": 1186,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "opp_sot_conceded_pg": {
+   "mismatch": 67,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "team_goals_pg_roll": {
+   "mismatch": 1198,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "opp_def_aerial_win_rate": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "opp_def_fouls_pg": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "opp_def_cards_pg": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "aerial_matchup_score": {
+   "mismatch": 1,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "foul_draw_matchup_score": {
+   "mismatch": 1,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "opp_def_aggression": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "pos_forward": {
+   "mismatch": 92,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "pos_midfielder": {
+   "mismatch": 144,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "pos_defender": {
+   "mismatch": 56,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "rest_days": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "goals_home_pg": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "goals_away_pg": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "shots_home_pg": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "shots_away_pg": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "sot_home_pg": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "sot_away_pg": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "tackles_pg": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "interceptions_pg": {
+   "mismatch": 1,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "defensive_actions_per90": {
+   "mismatch": 1,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "dribbles_pg": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "dribble_success_rate": {
+   "mismatch": 1,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "dribbled_past_pg": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "red_cards_pg": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "passes_pg": {
+   "mismatch": 1,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "offsides_pg": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "penalties_won_pg": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "penalty_conversion_rate": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "opp_gk_save_rate": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "opp_gk_saves_pg": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "att_vs_gk_threat": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "clinical_vs_gk": {
+   "mismatch": 1,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "volume_shot_penetration": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "finishing_threat_index": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "box_dominance_vs_gk": {
+   "mismatch": 1,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "dribble_creativity_score": {
+   "mismatch": 1,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "offside_aggressiveness": {
+   "mismatch": 55,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "season_goals_pg": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "season_assists_pg": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "season_shots_pg": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "season_sot_pg": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "season_cards_pg": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "season_minutes_pg": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "season_appearances": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "season_start_rate": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "season_dribble_pg": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "season_fouls_pg": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "season_fouls_drawn_pg": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "days_since_last_injury": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "return_from_injury_flag": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "chronic_injury_risk": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "referee_yellows_pg": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "referee_strictness": {
+   "mismatch": 730,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "opp_goals_conceded_vs_fwd_pg": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "opp_sot_conceded_vs_fwd_pg": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "opp_goals_conceded_vs_mid_pg": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "opp_sot_conceded_vs_mid_pg": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "forward_matchup_score": {
+   "mismatch": 76,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "mid_threat_vs_defense": {
+   "mismatch": 128,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "box_threat_vs_leaky_defense": {
+   "mismatch": 1174,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "efficiency_vs_leaky_keeper": {
+   "mismatch": 24,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "kp_vs_aggressive_defense": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "team_momentum_forward_matchup": {
+   "mismatch": 332,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "dribbler_vs_defensive_line": {
+   "mismatch": 1,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "opp_mid_fouls_pg": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "opp_mid_cards_pg": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "dribble_contact_rate": {
+   "mismatch": 1,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "tackle_dribble_clash": {
+   "mismatch": 1,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "card_clash_index": {
+   "mismatch": 606,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "opp_strength_index": {
+   "mismatch": 1414,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "quality_adj_goals_pg": {
+   "mismatch": 464,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "quality_adj_sot_pg": {
+   "mismatch": 916,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "league_tier": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "league_quality": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "player_career_avg_quality": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "opp_def_player_rating_pg": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "opp_top_def_rating": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "opp_def_player_quality": {
+   "mismatch": 571,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "context_quality_discount": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "quality_mismatch_goals": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "quality_mismatch_sot": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "prev_season_goals_pg": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "prev_season_assists_pg": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "prev_season_shots_pg": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "prev_season_sot_pg": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "prev_season_cards_pg": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "prev_season_minutes_pg": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "prev_season_start_rate": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "prev_season_appearances": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "prev_season_shot_accuracy": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "prev_season_team_goals_pg": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "prev_season_team_conceded_pg": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "prev_season_opp_goals_pg": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "prev_season_opp_conceded_pg": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "shot_accuracy_l10": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "age": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "age_peak_delta": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "height_advantage_score": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "height_aerial_interaction": {
+   "mismatch": 1,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "height_cm": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "height_diff_vs_opp_def": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  },
+  "opp_def_mean_height": {
+   "mismatch": 0,
+   "nan_serve_only": 0,
+   "nan_train_only": 0
+  }
+ },
+ "features_mismatched": 44,
+ "probabilities": {
+  "sot": {
+   "max_abs_diff": 0.1308796081783422,
+   "mean_abs_diff": 0.004579517892203151,
+   "rows_diff_gt_1e-9": 828,
+   "rows_diff_gt_0.01": 144
+  },
+  "sot2": {
+   "max_abs_diff": 0.1280546703883978,
+   "mean_abs_diff": 0.002125687375356024,
+   "rows_diff_gt_1e-9": 1172,
+   "rows_diff_gt_0.01": 83
+  },
+  "goals": {
+   "max_abs_diff": 0.11687641154011008,
+   "mean_abs_diff": 0.0033954852372114785,
+   "rows_diff_gt_1e-9": 1038,
+   "rows_diff_gt_0.01": 125
+  },
+  "assists": {
+   "max_abs_diff": 0.07337440258876726,
+   "mean_abs_diff": 0.0017429317056789518,
+   "rows_diff_gt_1e-9": 991,
+   "rows_diff_gt_0.01": 55
+  },
+  "cards": {
+   "max_abs_diff": 0.04170288504617725,
+   "mean_abs_diff": 0.0031289585693034935,
+   "rows_diff_gt_1e-9": 1414,
+   "rows_diff_gt_0.01": 88
+  }
+ }
+}
