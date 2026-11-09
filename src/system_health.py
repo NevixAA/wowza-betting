@@ -88,6 +88,12 @@ def shadow_settlement(h: dict) -> dict:
               f"{v}% ({h.get('settled_rows')}/{h.get('finished_prospective_rows')})", rule, f"as of {h.get('generated_at')}")
 
 
+def _active_experiments() -> list[dict]:
+    """ACTIVE challenger experiments in models/registry/experiments.json (the ones predict scores)."""
+    reg = _json(ROOT / "models" / "registry" / "experiments.json").get("experiments", [])
+    return [e for e in reg if str(e.get("status", "ACTIVE")).upper() == "ACTIVE"]
+
+
 def _experiment_start() -> pd.Timestamp | None:
     """Earliest registration of an ACTIVE challenger experiment (models/registry/experiments.json)."""
     reg = _json(ROOT / "models" / "registry" / "experiments.json").get("experiments", [])
@@ -102,6 +108,10 @@ def challenger_coverage(shadow: pd.DataFrame, now: datetime) -> dict:
             "probability; AMBER > 0%; RED 0%")
     if shadow.empty:
         return _c("Challenger prediction coverage", GREY, "no shadow log", rule)
+    if not _active_experiments():
+        # no challenger is registered (e.g. the 2026-11-09 clean-data switch retired H-MODEL-01):
+        # there is nothing a row could carry, which is not a coverage failure
+        return _c("Challenger prediction coverage", GREY, "no active challenger experiment", rule)
     ts = pd.to_datetime(shadow.get("logged_at"), utc=True, errors="coerce")
     since = pd.Timestamp(now) - pd.Timedelta(days=7)
     start = _experiment_start()

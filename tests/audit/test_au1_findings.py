@@ -128,9 +128,10 @@ def test_side_ledger_has_no_missing_or_nonpositive_prices():
     assert odds.notna().all() and (odds > 1.0).all()
 
 
-# ── AU1-B05: legacy serving payloads are batch-dependent (known P0 bug 1, quantified) ───────
-@pytest.mark.xfail(strict=True, raises=AssertionError, reason="AU1-B05: legacy _prep imputes from the scoring batch (0.0 when "
-                   "scored alone) -> the same fixture gets a different probability depending on its neighbours")
+# ── AU1-B05: legacy serving payloads were batch-dependent (known P0 bug 1, quantified) ───────
+# RESOLVED 2026-11-09 by the clean-data switch: the New-Format champion is the clean-retrain recipe
+# with a persisted train-only imputer, so a fixture's probability no longer depends on the other
+# fixtures scored with it. The test now guards that (it was a strict xfail recording the bug).
 def test_newformat_probability_independent_of_batch():
     import config
     from src.model import predict_proba

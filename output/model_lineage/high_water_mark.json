@@ -1,9 +1,15 @@
 {
   "standard": {
-    "champion_version": "standard_20261018T080423Z_64313878",
+    "champion_version": "standard_20261109T125211Z_254623a0",
     "historical": {
-      "source": "LEGACY_GIT",
-      "note": "no same-holdout validation was recorded at promotion; the first new-gate retrain sets the current-regime benchmark"
+      "accuracy": 0.5909,
+      "auc": 0.6296,
+      "log_loss": 0.66594,
+      "brier": 0.23655,
+      "ece": 0.05939,
+      "promoted_at": "2026-11-09T12:52:11Z",
+      "gate_version": "PG-1.0",
+      "promotion_source": "OWNER_CLEAN_SWITCH"
     },
     "current_regime": {
       "holdout_n": 3936,
@@ -25,17 +31,19 @@
       ],
       "gate_version": "PG-1.0"
     },
-    "updated_at": "2026-11-01T17:08:44Z"
+    "updated_at": "2026-11-09T12:52:12Z"
   },
   "newformat": {
-    "champion_version": "newformat_20261018T080423Z_9eb6b4b4",
+    "champion_version": "newformat_20261109T125212Z_4268cf9f",
     "historical": {
-      "n": 7747,
-      "log_loss": 0.675239,
-      "brier": 0.241222,
-      "ece": 0.014921,
-      "promoted_at": "2026-10-25T08:20:56Z",
-      "retrain_batch_id": "rb_20261025T081424Z"
+      "accuracy": 0.617,
+      "auc": 0.5784,
+      "log_loss": 0.66647,
+      "brier": 0.23685,
+      "ece": 0.09146,
+      "promoted_at": "2026-11-09T12:52:12Z",
+      "gate_version": "PG-1.0",
+      "promotion_source": "OWNER_CLEAN_SWITCH"
     },
     "current_regime": {
       "holdout_n": 6465,
@@ -57,13 +65,19 @@
       ],
       "gate_version": "PG-1.0"
     },
-    "updated_at": "2026-11-01T17:09:12Z"
+    "updated_at": "2026-11-09T12:52:12Z"
   },
   "btts": {
-    "champion_version": "btts_20261005T101905Z_238e3419",
+    "champion_version": "btts_20261109T125212Z_5a7f72b4",
     "historical": {
-      "source": "LEGACY_GIT",
-      "note": "no same-holdout validation was recorded at promotion; the first new-gate retrain sets the current-regime benchmark"
+      "accuracy": 0.7045,
+      "auc": 0.6998,
+      "log_loss": 0.65356,
+      "brier": 0.23028,
+      "ece": 0.15381,
+      "promoted_at": "2026-11-09T12:52:12Z",
+      "gate_version": "PG-1.0",
+      "promotion_source": "OWNER_CLEAN_SWITCH"
     },
     "current_regime": {
       "holdout_n": 10400,
@@ -85,13 +99,19 @@
       ],
       "gate_version": "PG-1.0"
     },
-    "updated_at": "2026-11-01T17:12:01Z"
+    "updated_at": "2026-11-09T12:52:12Z"
   },
   "over15": {
-    "champion_version": "over15_20261018T080423Z_da4743a2",
+    "champion_version": "over15_20261109T125212Z_a343092b",
     "historical": {
-      "source": "LEGACY_GIT",
-      "note": "no same-holdout validation was recorded at promotion; the first new-gate retrain sets the current-regime benchmark"
+      "accuracy": 0.8864,
+      "auc": 0.641,
+      "log_loss": 0.3897,
+      "brier": 0.11143,
+      "ece": 0.10461,
+      "promoted_at": "2026-11-09T12:52:12Z",
+      "gate_version": "PG-1.0",
+      "promotion_source": "OWNER_CLEAN_SWITCH"
     },
     "current_regime": {
       "holdout_n": 10400,
@@ -113,13 +133,19 @@
       ],
       "gate_version": "PG-1.0"
     },
-    "updated_at": "2026-11-01T17:12:56Z"
+    "updated_at": "2026-11-09T12:52:12Z"
   },
   "over35": {
-    "champion_version": "over35_20261005T101905Z_f546ce72",
+    "champion_version": "over35_20261109T125212Z_c05e41a4",
     "historical": {
-      "source": "LEGACY_GIT",
-      "note": "no same-holdout validation was recorded at promotion; the first new-gate retrain sets the current-regime benchmark"
+      "accuracy": 0.6364,
+      "auc": 0.6607,
+      "log_loss": 0.64246,
+      "brier": 0.22551,
+      "ece": 0.07862,
+      "promoted_at": "2026-11-09T12:52:12Z",
+      "gate_version": "PG-1.0",
+      "promotion_source": "OWNER_CLEAN_SWITCH"
     },
     "current_regime": {
       "holdout_n": 10400,
@@ -141,13 +167,19 @@
       ],
       "gate_version": "PG-1.0"
     },
-    "updated_at": "2026-11-01T17:13:50Z"
+    "updated_at": "2026-11-09T12:52:12Z"
   },
   "ht_over05": {
-    "champion_version": "ht_over05_20261018T080423Z_359b491a",
+    "champion_version": "ht_over05_20261109T125212Z_bd7223e7",
     "historical": {
-      "source": "LEGACY_GIT",
-      "note": "no same-holdout validation was recorded at promotion; the first new-gate retrain sets the current-regime benchmark"
+      "accuracy": 0.7273,
+      "auc": 0.5651,
+      "log_loss": 0.585,
+      "brier": 0.19798,
+      "ece": 0.00743,
+      "promoted_at": "2026-11-09T12:52:12Z",
+      "gate_version": "PG-1.0",
+      "promotion_source": "OWNER_CLEAN_SWITCH"
     },
     "current_regime": {
       "holdout_n": 4544,
@@ -169,13 +201,19 @@
       ],
       "gate_version": "PG-1.0"
     },
-    "updated_at": "2026-11-01T17:10:11Z"
+    "updated_at": "2026-11-09T12:52:12Z"
   },
   "ht_over15": {
-    "champion_version": "ht_over15_20261004T093828Z_6f370f63",
+    "champion_version": "ht_over15_20261109T125212Z_df6dc412",
     "historical": {
-      "source": "LEGACY_GIT",
-      "note": "no same-holdout validation was recorded at promotion; the first new-gate retrain sets the current-regime benchmark"
+      "accuracy": 0.6591,
+      "auc": 0.692,
+      "log_loss": 0.63876,
+      "brier": 0.22331,
+      "ece": 0.03541,
+      "promoted_at": "2026-11-09T12:52:12Z",
+      "gate_version": "PG-1.0",
+      "promotion_source": "OWNER_CLEAN_SWITCH"
     },
     "current_regime": {
       "holdout_n": 4544,
@@ -197,7 +235,7 @@
       ],
       "gate_version": "PG-1.0"
     },
-    "updated_at": "2026-11-01T17:11:07Z"
+    "updated_at": "2026-11-09T12:52:12Z"
   },
   "standard_repaired": {
     "champion_version": "standard_repaired_20261028T123040Z_1f5805e6",

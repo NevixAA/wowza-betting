@@ -25,6 +25,7 @@ def test_lost_model_type_or_odds_turns_mapping_red():
 
 
 def test_registered_challenger_with_no_probabilities_is_red(monkeypatch):
+    monkeypatch.setattr(S, "_active_experiments", lambda: [{"experiment_id": "x"}])
     monkeypatch.setattr(S, "_experiment_start", lambda: None)
     now = datetime(2026, 10, 22, tzinfo=timezone.utc)
     sh = pd.DataFrame({"logged_at": ["2026-10-21T10:00:00Z"] * 3, "p_pro_hgb": [None, None, None]})
@@ -84,6 +85,7 @@ def test_every_check_states_its_rule():
 
 
 def test_challenger_rows_before_the_experiment_do_not_count(monkeypatch):
+    monkeypatch.setattr(S, "_active_experiments", lambda: [{"experiment_id": "x"}])
     monkeypatch.setattr(S, "_experiment_start", lambda: pd.Timestamp("2026-10-22 11:00", tz="UTC"))
     now = datetime(2026, 10, 25, tzinfo=timezone.utc)
     sh = pd.DataFrame({"logged_at": ["2026-10-21T10:00:00Z"] * 5 + ["2026-10-23T10:00:00Z"] * 5,
@@ -109,3 +111,13 @@ def test_new_contract_violation_beyond_the_baseline_is_amber(monkeypatch):
     assert S.contracts_check()[0]["status"] == "GREEN"         # acknowledged historical rows
     known["output/stake_audit.csv"]["violations"] = [{"kind": "null", "column": "odds", "n_rows": 111}]
     assert S.contracts_check()[0]["status"] == "AMBER"         # one more row than acknowledged
+
+
+def test_no_active_challenger_is_grey_not_red(monkeypatch):
+    """The 2026-11-09 clean-data switch retired H-MODEL-01: no row can carry a challenger, which is
+    not a coverage failure."""
+    monkeypatch.setattr(S, "_active_experiments", lambda: [])
+    now = datetime(2026, 11, 10, tzinfo=timezone.utc)
+    sh = pd.DataFrame({"logged_at": ["2026-11-09T10:00:00Z"] * 3, "p_pro_hgb": [None, None, None]})
+    c = S.challenger_coverage(sh, now)
+    assert c["status"] == S.GREY and "no active challenger" in c["value"]

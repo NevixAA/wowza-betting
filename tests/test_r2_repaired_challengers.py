@@ -343,12 +343,28 @@ def test_serving_payload_scores_identically_to_main(name):
     with open(path, "rb") as f:
         pay = pickle.load(f)
     rng = np.random.default_rng(7)
-    cols = list(pay["feature_cols"])
+    if pay.get("tracks") is None:
+        cols = list(pay["feature_cols"])
+        df = pd.DataFrame(rng.normal(1.0, 0.6, (64, len(cols))), columns=cols)
+        df = df.mask(rng.random(df.shape) < 0.15)                        # NaNs to impute
+        new = M.predict_proba(df, payload=pay).to_numpy()
+        ref = _reference_predict(df, pay)
+        assert np.array_equal(new, ref), f"{path.name}: serving probability changed"
+        return
+    # A track-split payload (train_by_track format; the 2026-11-09 clean-data switch): every row is
+    # scored by ITS OWN track's payload, exactly as main's flat code scores that payload.
+    subs = {M.PRIMARY_TRACK: pay, **pay["tracks"]}
+    lg = {"standard": sorted(config.STANDARD_FORMAT_LEAGUES)[0],
+          "new_format": sorted(config.NEW_FORMAT_LEAGUES)[0]}
+    cols = sorted({c for s in subs.values() for c in s["feature_cols"]})
     df = pd.DataFrame(rng.normal(1.0, 0.6, (64, len(cols))), columns=cols)
-    df = df.mask(rng.random(df.shape) < 0.15)                            # NaNs to impute
+    df = df.mask(rng.random(df.shape) < 0.15)
+    df["league"] = [lg["standard"] if i % 2 == 0 else lg["new_format"] for i in range(len(df))]
     new = M.predict_proba(df, payload=pay).to_numpy()
-    ref = _reference_predict(df, pay)
-    assert np.array_equal(new, ref), f"{path.name}: serving probability changed"
+    for track, sub in subs.items():
+        m = (df["league"] == lg[track]).to_numpy()
+        ref = _reference_predict(df[m].reset_index(drop=True), sub)
+        assert np.array_equal(new[m], ref), f"{path.name}/{track}: serving probability changed"
 
 
 # ── finding 16: cold-start option leaves the default untouched ──────────────────────────────

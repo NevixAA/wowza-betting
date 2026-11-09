@@ -3,7 +3,7 @@
     {
       "experiment_id": "H-MODEL-01__standard",
       "hypothesis_id": "H-MODEL-01",
-      "status": "ACTIVE",
+      "status": "RETIRED",
       "model_type": "standard",
       "market": "over25",
       "pred_column": "p_over25",
@@ -31,12 +31,14 @@
       "comparator": "serving_champion",
       "n_min_scope": "per_track",
       "n_min_per_track": 1000,
-      "owner_decision": "2026-10-25: owner confirmed the prospective comparison is against the champion actually serving (not the never-built corrected stack), and the 1,000-fixture minimum applies to EACH track separately. Window starts at registration; 2026-10-02..10-22 is unrecoverable."
+      "owner_decision": "2026-10-25: owner confirmed the prospective comparison is against the champion actually serving (not the never-built corrected stack), and the 1,000-fixture minimum applies to EACH track separately. Window starts at registration; 2026-10-02..10-22 is unrecoverable.",
+      "retired_at": "2026-11-09T13:20:00Z",
+      "retired_reason": "owner 2026-11-09 decision A (\"the models that worked before we reach 100% clean data are irrelevant\"): the clean-data switch replaced the champion it was registered against (standard_20261018T080423Z_64313878) with standard_20261109T125211Z_254623a0; its comparison basis (the serving champion's feature_cols and model) no longer serves. Artifact kept for audit."
     },
     {
       "experiment_id": "H-MODEL-01__newformat",
       "hypothesis_id": "H-MODEL-01",
-      "status": "ACTIVE",
+      "status": "RETIRED",
       "model_type": "newformat",
       "market": "over25",
       "pred_column": "p_over25",
@@ -64,7 +66,9 @@
       "comparator": "serving_champion",
       "n_min_scope": "per_track",
       "n_min_per_track": 1000,
-      "owner_decision": "2026-10-25: owner confirmed the prospective comparison is against the champion actually serving (not the never-built corrected stack), and the 1,000-fixture minimum applies to EACH track separately. Window starts at registration; 2026-10-02..10-22 is unrecoverable."
+      "owner_decision": "2026-10-25: owner confirmed the prospective comparison is against the champion actually serving (not the never-built corrected stack), and the 1,000-fixture minimum applies to EACH track separately. Window starts at registration; 2026-10-02..10-22 is unrecoverable.",
+      "retired_at": "2026-11-09T13:20:00Z",
+      "retired_reason": "owner 2026-11-09 decision A (\"the models that worked before we reach 100% clean data are irrelevant\"): the clean-data switch replaced the champion it was registered against (newformat_20261018T080423Z_9eb6b4b4) with newformat_20261109T125212Z_4268cf9f; its comparison basis (the serving champion's feature_cols and model) no longer serves. Artifact kept for audit."
     }
   ]
 }

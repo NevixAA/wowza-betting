@@ -23,6 +23,62 @@ reason, any other exception fails the run after its reports are written, and eve
 `coverage.csv` (commit `4a4bd06c`). The holdout stage never failed, so no holdout verdict depended on
 the missing folds; the walk-forward comparisons for hgb and model_market ran on fewer folds.
 
+## Results (2026-11-09)
+
+**1. Re-run with the leak fix and the harness fix** (local, code `4a4bd06c`, the same data frame
+`4638ab5ee15f3a7f`, the same approved holdout; `reports/phase2_runs/standard_run_20261109T104641Z`,
+`new_format_run_20261109T112024Z`):
+
+| Track | Comparisons | Verdict changes vs the pre-fix run | NOT_FITTED | ERROR | Holdout BETTER_THAN_REFERENCE |
+|---|---|---|---|---|---|
+| Standard | 60 | **0** | 0 | 0 | market_only and model_market on O/U 2.5 (closing price: a benchmark, not bettable) |
+| New-Format | 108 | **0** | 0 | 0 | logistic and logistic+ht on HT Over 1.5 (no price; not tipped) |
+
+champion_recipe holds for every market on both tracks; no `+ht` variant improves anything.
+
+Coverage of the formerly failing candidates (Standard walk-forward):
+- **hgb:** now scored in all 4 folds, 20,160 rows on every market (before: 2 of 4 folds, 16,281 rows).
+- **model_market on O/U 2.5:** 20,088 rows (before: 14,024).
+
+No verdict depended on the missing folds: every verdict is unchanged, and the holdout stage never lost a fit.
+
+**2. Refit** (`scripts/phase2_refit_serving.py`, code `406c1260`): champion_recipe per track × market.
+- **Training window:** Standard 2021-07-30 → 2026-10-25 (HT models from 2023-07-28); New-Format 2019-02-22 → 2026-10-25.
+- **The recipe's own untouched tail:** 2026-10-26 → 11-08, 44-47 rows. Under the declared rule two ISO weeks were needed to reach 20 rows; the last week alone had fewer (the international break).
+- **Dropped columns:** none.
+
+**3. Parity** (`scripts/team_train_serve_parity.py`, the last 6 match dates, 159 fixtures, all 43 raw inputs, all 12 refit models):
+- After the leak fix every cell matched within 1e-9, but three Standard models (O1.5, O2.5, O3.5) still differed on one fixture each, by up to 0.36 pp.
+  - Cause: `away_xg_last5` 1.104 vs 1.1040000000000003. Serving's plain mean of the last 5 values sums in a different order than training's rolling sum, and the 1-ulp difference flipped a tree split.
+  - Fix: `_latest_form` now runs training's own `_rolling` on a row appended after each team's matches (commit `63057046`).
+- **Final: 0 of 6,837 cells differ, 159/159 probabilities identical for all 12 models.**
+
+**4. Installed through the gate** (`owner_clean_switch`, override `clean-data-switch-2026-11-09`):
+
+| Model type | New champion | sha256 (16) | Replaces (kept as the rollback) |
+|---|---|---|---|
+| standard | standard_20261109T125211Z_254623a0 | 254623a04a51bdc3 | standard_20261018T080423Z_64313878 |
+| newformat | newformat_20261109T125212Z_4268cf9f | 4268cf9fd694c34c | newformat_20261018T080423Z_9eb6b4b4 |
+| btts (track-split) | btts_20261109T125212Z_5a7f72b4 | 5a7f72b4bf4ff952 | btts_20261005T101905Z_238e3419 |
+| over15 (track-split) | over15_20261109T125212Z_a343092b | a343092b9f76a708 | over15_20261018T080423Z_da4743a2 |
+| over35 (track-split) | over35_20261109T125212Z_c05e41a4 | c05e41a45e55f5c9 | over35_20261005T101905Z_f546ce72 |
+| ht_over05 | ht_over05_20261109T125212Z_bd7223e7 | bd7223e7cc5311bd | ht_over05_20261018T080423Z_359b491a |
+| ht_over15 | ht_over15_20261109T125212Z_df6dc412 | df6dc41205a6dce9 | ht_over15_20261004T093828Z_6f370f63 |
+
+`standard_repaired` (v9_repaired, 2026-10-28) is archived: decision-log stage ARCHIVE; its pointer, file and stored artifact are kept.
+
+**5. Consequences handled:**
+- **H-MODEL-01 shadow challengers RETIRED.** They were registered against the pre-switch champions, so their comparison basis is gone. Artifacts kept and verified. The challenger-coverage health check reads GREY ("no active challenger") instead of a false RED.
+- **AU1-B05 resolved.** The batch-dependent New-Format probability, a strict xfail, now passes as a guard.
+- **NF calibration restarts.** The shift's fit window starts at the new champion's install time (n = 0 until 150 settled rows).
+- **Track registry regenerated.** Only the champion fields change.
+
+**Open (owner only):** the research lock (`python -m src.research_lock --check`) reports the
+predict.yml switch change `STANDARD_OU25_SERVING_RECIPE "v9_repaired" -> "legacy_v9"`. Re-approval
+records the owner's name and is not done by an agent:
+`python -m src.research_lock --approve --by "Nevo (owner)" --note "2026-11-09 decision A: Standard O/U 2.5 serves the clean recipe"`.
+Until then that check and the 5 tests that read the lock stay red, and the branch is not merged.
+
 ## What this branch changes
 
 | Path | Change |
