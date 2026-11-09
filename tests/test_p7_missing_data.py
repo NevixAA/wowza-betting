@@ -245,3 +245,15 @@ def test_one_day_apart_with_a_club_unproven_or_two_days_apart_is_refused():
     assert p["proven_fixtures"] == 0 and p["refused_fixtures"] == {"clubs_unproven": 1}
     p = _plan_case("2025-10-12T01:30:00+00:00", "2025-10-10")
     assert p["proven_fixtures"] == 0 and p["refused_fixtures"] == {"date_differs_from_list": 1}
+
+
+def test_every_refetch_output_path_is_redirected_by_the_test_fixture():
+    """A collector path the shared test fixture does not redirect is written into the repository by
+    the tests (it happened with DATE_CORRECTIONS on 2026-11-09)."""
+    import inspect
+    import collect_player_refetch as RF
+    import test_player_refetch as T
+    src = inspect.getsource(T.env.__wrapped__ if hasattr(T.env, "__wrapped__") else T.env)
+    for n in ("OUT", "JOURNAL", "AUDIT", "DATE_CORRECTIONS"):
+        assert f'"{n}"' in src, n
+    assert RF.DATE_CORRECTIONS.name == "player_history_date_corrections.csv"

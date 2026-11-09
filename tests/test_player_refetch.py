@@ -116,7 +116,9 @@ def _bodies(fid):
 @pytest.fixture()
 def env(tmp_path, monkeypatch):
     cdir = tmp_path / "collect"
-    for n in ("OUT", "JOURNAL", "AUDIT"):
+    # every path the collector WRITES goes to tmp (DATE_CORRECTIONS added 2026-11-09: without it a test
+    # run wrote output/corrections/player_history_date_corrections.csv into the repository)
+    for n in ("OUT", "JOURNAL", "AUDIT", "DATE_CORRECTIONS"):
         monkeypatch.setattr(RF, n, cdir / Path(getattr(RF, n)).name)
     monkeypatch.setattr(CC, "BUDGET_FILE", cdir / "af_budget.json")
     return tmp_path
