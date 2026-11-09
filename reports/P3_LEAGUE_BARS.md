@@ -15,6 +15,152 @@ Context: on the Standard holdout the de-vigged CLOSING O/U 2.5 price beat every 
 * VALUABLE = lowest bar with shrunk walk-forward ROI > 0; MARKSMAN = bar maximising shrunk total profit; SNIPER = bar maximising shrunk ROI per bet; only bars with >= 40 own selection bets (basis OWN_BETS), else where the pooled bets reach it (basis SHRUNK_TO_POOL: mostly the pooled curve; the league's own weight is the 'Shrink w' column).
 * Out-of-sample bets = every tip at or above VALUABLE, 1 unit flat; 95% CI by block bootstrap over match dates.
 
+## new_format
+
+Predictions: `C:/Users/nevo/AppData/Local/Temp/claude/1ee106cff9d5ca11/84b5f38e-4e7e-4236-9e42-6479e0aff4a9/scratchpad/nf_local/out/run_20261108T214340Z/predictions.parquet`; built 2026-11-08T23:47:03Z.
+
+**Provenance note:** The New-Format retrain predictions come from a LOCAL run (run_20261108T214340Z), not GitHub Actions: the GitHub job (run 42512834177, ubuntu-latest, 16 GB) died twice in the comparison step, which peaks at about 10 GB. Same code (data-truth-100 804799a1), same committed data, same owner-approved holdout (2026-04-01..2026-11-08). champion_recipe is the design for every market: no '+ht' variant beat it (deltas about 0 or worse). Logistic beat the recipe only on ht_over15 (Holm p 0.039), a market with no price, so it changes no bar.
+
+Price sources:
+
+* **btts**: output/newformat_odds_history.csv: earliest provable pre-kickoff same-snapshot pair from match_date-1d ({'BACKFILL_HISTORICAL': 2807, 'FORWARD_CAPTURE': 744})
+* **ht_over05**: no price exists for this market
+* **ht_over15**: no price exists for this market
+* **over15**: output/newformat_odds_history.csv: earliest provable pre-kickoff same-snapshot pair from match_date-1d ({'FORWARD_CAPTURE': 829, 'BACKFILL_HISTORICAL': 393})
+* **over25**: output/newformat_odds_history.csv: earliest provable pre-kickoff same-snapshot pair from match_date-1d ({'BACKFILL_HISTORICAL': 2780, 'FORWARD_CAPTURE': 895})
+* **over35**: output/newformat_odds_history.csv: earliest provable pre-kickoff same-snapshot pair from match_date-1d ({'FORWARD_CAPTURE': 861, 'BACKFILL_HISTORICAL': 746})
+
+Status count per market:
+
+| Market | NO_PRICE_DATA | UNPROVEN (IN_PERIOD_SPLIT) | UNPROVEN (WALK_FORWARD_HOLDOUT) |
+|---|---|---|---|
+| btts | 0 | 3 | 12 |
+| ht_over05 | 15 | 0 | 0 |
+| ht_over15 | 15 | 0 | 0 |
+| over15 | 0 | 6 | 9 |
+| over25 | 0 | 3 | 12 |
+| over35 | 0 | 3 | 12 |
+
+### new_format / btts
+
+| League | Status | Evidence | Split: select / check (check share) | Basis | VALUABLE | MARKSMAN | SNIPER | Shrink w | Selection bets | Selection ROI | OOS bets | OOS ROI | 95% CI | p Holm | Price match (rows priced / rows) | Reason |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| Argentina Primera Division | UNPROVEN | WALK_FORWARD_HOLDOUT | - | OWN_BETS | 0.02 | 0.02 | 0.02 | 0.7203 | 289 | -1.2% | 148 | +10.6% | [-6.6%, +28.3%] | 1 | 461/2612 | 148 out-of-sample bets < 150; Holm-adjusted p 1.0 not < 0.025 |
+| Austrian Bundesliga | UNPROVEN | WALK_FORWARD_HOLDOUT | - | OWN_BETS | 0.02 | 0.02 | 0.05 | 0.5177 | 76 | +22.9% | 28 | -25.3% | [-55.6%, +6.8%] | 1 | 210/1023 | 28 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p 1.0 not < 0.025 |
+| Brazil Serie A | UNPROVEN | WALK_FORWARD_HOLDOUT | - | OWN_BETS | 0.02 | 0.02 | 0.08 | 0.6522 | 179 | +10.6% | 73 | +27.8% | [+9.2%, +46.1%] | 0.07 | 466/2103 | 73 out-of-sample bets < 150; Holm-adjusted p 0.07 not < 0.025 |
+| China Super League | UNPROVEN | WALK_FORWARD_HOLDOUT | - | OWN_BETS | 0.03 | 0.03 | 0.03 | 0.3711 | 41 | -18.3% | 23 | +15.9% | [-27.0%, +63.6%] | 1 | 264/1366 | 23 out-of-sample bets < 150; Holm-adjusted p 1.0 not < 0.025 |
+| Denmark Superliga | UNPROVEN | WALK_FORWARD_HOLDOUT | - | SHRUNK_TO_POOL | 0.02 | 0.06 | 0.06 | 0.2089 | 15 | +31.9% | 7 | -28.1% | [-76.3%, +43.1%] | 1 | 219/1025 | 7 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p 1.0 not < 0.025 |
+| Finland Veikkausliiga | UNPROVEN | WALK_FORWARD_HOLDOUT | - | SHRUNK_TO_POOL | 0.02 | 0.02 | 0.02 | 0.0504 | 4 | +43.2% | 24 | +4.2% | [-28.4%, +40.6%] | 1 | 210/945 | 24 out-of-sample bets < 150; Holm-adjusted p 1.0 not < 0.025 |
+| Ireland Premier Division | UNPROVEN | WALK_FORWARD_HOLDOUT | - | OWN_BETS | 0.03 | 0.03 | 0.03 | 0.3641 | 52 | +1.2% | 40 | +24.0% | [-2.5%, +46.9%] | 1 | 216/974 | 40 out-of-sample bets < 150; Holm-adjusted p 1.0 not < 0.025 |
+| Japan J-League | UNPROVEN | WALK_FORWARD_HOLDOUT | - | OWN_BETS | 0.02 | 0.02 | 0.02 | 0.365 | 44 | -38.6% | 0 | - | [-, -] | - | 141/1799 | 0 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p None not < 0.025 |
+| K-League 1 | UNPROVEN | IN_PERIOD_SPLIT | 2026-08-23..2026-08-26 / 2026-08-29..2026-08-30 (40%) | SHRUNK_TO_POOL | 0.02 | 0.1 | 0.1 | 0 | 4 | +2.0% | 0 | - | [-, -] | - | 9/1185 | 0 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p None not < 0.025 |
+| Mexico Liga MX | UNPROVEN | WALK_FORWARD_HOLDOUT | - | SHRUNK_TO_POOL | 0.02 | 0.06 | 0.06 | 0.327 | 36 | +4.1% | 12 | +50.5% | [+3.7%, +83.5%] | 1 | 243/1814 | 12 out-of-sample bets < 150; Holm-adjusted p 1.0 not < 0.025 |
+| Norway Eliteserien | UNPROVEN | WALK_FORWARD_HOLDOUT | - | OWN_BETS | 0.02 | 0.02 | 0.02 | 0.3938 | 46 | +8.2% | 17 | +11.9% | [-18.5%, +44.9%] | 1 | 274/1287 | 17 out-of-sample bets < 150; Holm-adjusted p 1.0 not < 0.025 |
+| Romanian Superliga | UNPROVEN | IN_PERIOD_SPLIT | 2026-08-23..2026-09-20 / 2026-10-08..2026-10-25 (36%) | SHRUNK_TO_POOL | 0.02 | 0.02 | 0.1 | 0.0094 | 14 | +38.1% | 5 | +5.8% | [-67.6%, +79.2%] | 1 | 40/1682 | 5 out-of-sample bets < 150; Holm-adjusted p 1.0 not < 0.025 |
+| Saudi Pro League | UNPROVEN | IN_PERIOD_SPLIT | 2026-08-24..2026-08-30 / 2026-09-01..2026-09-04 (33%) | SHRUNK_TO_POOL | 0.02 | 0.02 | 0.1 | 0 | 4 | +34.8% | 2 | -100.0% | [-, -] | - | 19/1420 | 2 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p None not < 0.025 |
+| Sweden Allsvenskan | UNPROVEN | WALK_FORWARD_HOLDOUT | - | SHRUNK_TO_POOL | 0.04 | 0.08 | 0.08 | 0.0716 | 11 | -10.9% | 15 | +5.3% | [-38.2%, +49.4%] | 1 | 261/1319 | 15 out-of-sample bets < 150; Holm-adjusted p 1.0 not < 0.025 |
+| USA MLS | UNPROVEN | WALK_FORWARD_HOLDOUT | - | SHRUNK_TO_POOL | 0.02 | 0.03 | 0.03 | 0.125 | 10 | +6.9% | 16 | +52.3% | [+2.1%, +104.3%] | 1 | 390/2829 | 16 out-of-sample bets < 150; Holm-adjusted p 1.0 not < 0.025 |
+
+### new_format / ht_over05
+
+| League | Status | Evidence | Split: select / check (check share) | Basis | VALUABLE | MARKSMAN | SNIPER | Shrink w | Selection bets | Selection ROI | OOS bets | OOS ROI | 95% CI | p Holm | Price match (rows priced / rows) | Reason |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| Argentina Primera Division | NO_PRICE_DATA | - | - | - | - | - | - | - | - | - | - | - | [-, -] | - | 0/2609 | no real two-sided bet-time price at any time |
+| Austrian Bundesliga | NO_PRICE_DATA | - | - | - | - | - | - | - | - | - | - | - | [-, -] | - | 0/1023 | no real two-sided bet-time price at any time |
+| Brazil Serie A | NO_PRICE_DATA | - | - | - | - | - | - | - | - | - | - | - | [-, -] | - | 0/2103 | no real two-sided bet-time price at any time |
+| China Super League | NO_PRICE_DATA | - | - | - | - | - | - | - | - | - | - | - | [-, -] | - | 0/1164 | no real two-sided bet-time price at any time |
+| Denmark Superliga | NO_PRICE_DATA | - | - | - | - | - | - | - | - | - | - | - | [-, -] | - | 0/1024 | no real two-sided bet-time price at any time |
+| Finland Veikkausliiga | NO_PRICE_DATA | - | - | - | - | - | - | - | - | - | - | - | [-, -] | - | 0/942 | no real two-sided bet-time price at any time |
+| Ireland Premier Division | NO_PRICE_DATA | - | - | - | - | - | - | - | - | - | - | - | [-, -] | - | 0/973 | no real two-sided bet-time price at any time |
+| Japan J-League | NO_PRICE_DATA | - | - | - | - | - | - | - | - | - | - | - | [-, -] | - | 0/1775 | no real two-sided bet-time price at any time |
+| K-League 1 | NO_PRICE_DATA | - | - | - | - | - | - | - | - | - | - | - | [-, -] | - | 0/1185 | no real two-sided bet-time price at any time |
+| Mexico Liga MX | NO_PRICE_DATA | - | - | - | - | - | - | - | - | - | - | - | [-, -] | - | 0/1814 | no real two-sided bet-time price at any time |
+| Norway Eliteserien | NO_PRICE_DATA | - | - | - | - | - | - | - | - | - | - | - | [-, -] | - | 0/1286 | no real two-sided bet-time price at any time |
+| Romanian Superliga | NO_PRICE_DATA | - | - | - | - | - | - | - | - | - | - | - | [-, -] | - | 0/1644 | no real two-sided bet-time price at any time |
+| Saudi Pro League | NO_PRICE_DATA | - | - | - | - | - | - | - | - | - | - | - | [-, -] | - | 0/1420 | no real two-sided bet-time price at any time |
+| Sweden Allsvenskan | NO_PRICE_DATA | - | - | - | - | - | - | - | - | - | - | - | [-, -] | - | 0/1319 | no real two-sided bet-time price at any time |
+| USA MLS | NO_PRICE_DATA | - | - | - | - | - | - | - | - | - | - | - | [-, -] | - | 0/2829 | no real two-sided bet-time price at any time |
+
+### new_format / ht_over15
+
+| League | Status | Evidence | Split: select / check (check share) | Basis | VALUABLE | MARKSMAN | SNIPER | Shrink w | Selection bets | Selection ROI | OOS bets | OOS ROI | 95% CI | p Holm | Price match (rows priced / rows) | Reason |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| Argentina Primera Division | NO_PRICE_DATA | - | - | - | - | - | - | - | - | - | - | - | [-, -] | - | 0/2609 | no real two-sided bet-time price at any time |
+| Austrian Bundesliga | NO_PRICE_DATA | - | - | - | - | - | - | - | - | - | - | - | [-, -] | - | 0/1023 | no real two-sided bet-time price at any time |
+| Brazil Serie A | NO_PRICE_DATA | - | - | - | - | - | - | - | - | - | - | - | [-, -] | - | 0/2103 | no real two-sided bet-time price at any time |
+| China Super League | NO_PRICE_DATA | - | - | - | - | - | - | - | - | - | - | - | [-, -] | - | 0/1164 | no real two-sided bet-time price at any time |
+| Denmark Superliga | NO_PRICE_DATA | - | - | - | - | - | - | - | - | - | - | - | [-, -] | - | 0/1024 | no real two-sided bet-time price at any time |
+| Finland Veikkausliiga | NO_PRICE_DATA | - | - | - | - | - | - | - | - | - | - | - | [-, -] | - | 0/942 | no real two-sided bet-time price at any time |
+| Ireland Premier Division | NO_PRICE_DATA | - | - | - | - | - | - | - | - | - | - | - | [-, -] | - | 0/973 | no real two-sided bet-time price at any time |
+| Japan J-League | NO_PRICE_DATA | - | - | - | - | - | - | - | - | - | - | - | [-, -] | - | 0/1775 | no real two-sided bet-time price at any time |
+| K-League 1 | NO_PRICE_DATA | - | - | - | - | - | - | - | - | - | - | - | [-, -] | - | 0/1185 | no real two-sided bet-time price at any time |
+| Mexico Liga MX | NO_PRICE_DATA | - | - | - | - | - | - | - | - | - | - | - | [-, -] | - | 0/1814 | no real two-sided bet-time price at any time |
+| Norway Eliteserien | NO_PRICE_DATA | - | - | - | - | - | - | - | - | - | - | - | [-, -] | - | 0/1286 | no real two-sided bet-time price at any time |
+| Romanian Superliga | NO_PRICE_DATA | - | - | - | - | - | - | - | - | - | - | - | [-, -] | - | 0/1644 | no real two-sided bet-time price at any time |
+| Saudi Pro League | NO_PRICE_DATA | - | - | - | - | - | - | - | - | - | - | - | [-, -] | - | 0/1420 | no real two-sided bet-time price at any time |
+| Sweden Allsvenskan | NO_PRICE_DATA | - | - | - | - | - | - | - | - | - | - | - | [-, -] | - | 0/1319 | no real two-sided bet-time price at any time |
+| USA MLS | NO_PRICE_DATA | - | - | - | - | - | - | - | - | - | - | - | [-, -] | - | 0/2829 | no real two-sided bet-time price at any time |
+
+### new_format / over15
+
+| League | Status | Evidence | Split: select / check (check share) | Basis | VALUABLE | MARKSMAN | SNIPER | Shrink w | Selection bets | Selection ROI | OOS bets | OOS ROI | 95% CI | p Holm | Price match (rows priced / rows) | Reason |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| Argentina Primera Division | UNPROVEN | WALK_FORWARD_HOLDOUT | - | OWN_BETS | 0.02 | 0.03 | 0.12 | 0.9162 | 259 | +4.9% | 124 | +1.6% | [-11.2%, +13.4%] | 1 | 417/2612 | 124 out-of-sample bets < 150; Holm-adjusted p 1.0 not < 0.025 |
+| Austrian Bundesliga | UNPROVEN | WALK_FORWARD_HOLDOUT | - | SHRUNK_TO_POOL | 0.02 | 0.07 | 0.07 | 0.1569 | 4 | +18.8% | 0 | - | [-, -] | - | 32/1023 | 0 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p None not < 0.025 |
+| Brazil Serie A | UNPROVEN | WALK_FORWARD_HOLDOUT | - | OWN_BETS | 0.02 | 0.02 | 0.02 | 0.6814 | 42 | +5.6% | 15 | +22.4% | [-2.0%, +42.0%] | 1 | 117/2103 | 15 out-of-sample bets < 150; Holm-adjusted p 1.0 not < 0.025 |
+| China Super League | UNPROVEN | IN_PERIOD_SPLIT | 2026-04-18..2026-09-18 / 2026-10-09..2026-10-24 (35%) | SHRUNK_TO_POOL | 0.02 | 0.02 | 0.02 | 0 | 0 | - | 0 | - | [-, -] | - | 34/1366 | 0 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p None not < 0.025 |
+| Denmark Superliga | UNPROVEN | IN_PERIOD_SPLIT | 2026-08-17..2026-09-20 / 2026-10-09..2026-10-26 (32%) | SHRUNK_TO_POOL | 0.02 | 0.02 | 0.02 | 0 | 0 | - | 0 | - | [-, -] | - | 26/1025 | 0 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p None not < 0.025 |
+| Finland Veikkausliiga | UNPROVEN | WALK_FORWARD_HOLDOUT | - | SHRUNK_TO_POOL | 0.02 | 0.12 | 0.12 | 0 | 0 | - | 1 | -100.0% | [-, -] | - | 33/945 | 1 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p None not < 0.025 |
+| Ireland Premier Division | UNPROVEN | WALK_FORWARD_HOLDOUT | - | SHRUNK_TO_POOL | 0.02 | 0.04 | 0.04 | 0.2576 | 7 | +12.3% | 1 | +48.0% | [-, -] | - | 42/974 | 1 out-of-sample bets < 150; Holm-adjusted p None not < 0.025 |
+| Japan J-League | UNPROVEN | WALK_FORWARD_HOLDOUT | - | SHRUNK_TO_POOL | 0.12 | 0.12 | 0.12 | 0 | 2 | -11.0% | 0 | - | [-, -] | - | 16/1799 | 0 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p None not < 0.025 |
+| K-League 1 | UNPROVEN | IN_PERIOD_SPLIT | 2026-08-15..2026-08-23 / 2026-08-25..2026-08-30 (43%) | SHRUNK_TO_POOL | 0.02 | 0.04 | 0.04 | 0 | 2 | +33.0% | 2 | +36.0% | [-, -] | - | 12/1185 | 2 out-of-sample bets < 150; Holm-adjusted p None not < 0.025 |
+| Mexico Liga MX | UNPROVEN | WALK_FORWARD_HOLDOUT | - | SHRUNK_TO_POOL | 0.02 | 0.12 | 0.12 | 0 | 0 | - | 2 | +30.5% | [-, -] | - | 73/1814 | 2 out-of-sample bets < 150; Holm-adjusted p None not < 0.025 |
+| Norway Eliteserien | UNPROVEN | WALK_FORWARD_HOLDOUT | - | SHRUNK_TO_POOL | 0.02 | 0.12 | 0.12 | 0 | 0 | - | 0 | - | [-, -] | - | 37/1287 | 0 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p None not < 0.025 |
+| Romanian Superliga | UNPROVEN | IN_PERIOD_SPLIT | 2026-08-14..2026-09-21 / 2026-10-08..2026-10-26 (38%) | SHRUNK_TO_POOL | 0.04 | 0.04 | 0.04 | 0 | 4 | -30.0% | 2 | +29.0% | [-, -] | - | 48/1682 | 2 out-of-sample bets < 150; Holm-adjusted p None not < 0.025 |
+| Saudi Pro League | UNPROVEN | IN_PERIOD_SPLIT | 2026-08-13..2026-08-30 / 2026-09-01..2026-09-04 (21%) | SHRUNK_TO_POOL | 0.02 | 0.02 | 0.04 | 0 | 2 | +33.0% | 1 | +33.0% | [-, -] | - | 33/1420 | 1 out-of-sample bets < 150; Holm-adjusted p None not < 0.025 |
+| Sweden Allsvenskan | UNPROVEN | WALK_FORWARD_HOLDOUT | - | SHRUNK_TO_POOL | 0.02 | 0.12 | 0.12 | 0 | 0 | - | 0 | - | [-, -] | - | 45/1319 | 0 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p None not < 0.025 |
+| USA MLS | UNPROVEN | IN_PERIOD_SPLIT | 2026-08-16..2026-09-30 / 2026-10-02..2026-10-29 (38%) | SHRUNK_TO_POOL | 0.02 | 0.02 | 0.02 | 0 | 0 | - | 0 | - | [-, -] | - | 135/2829 | 0 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p None not < 0.025 |
+
+### new_format / over25
+
+| League | Status | Evidence | Split: select / check (check share) | Basis | VALUABLE | MARKSMAN | SNIPER | Shrink w | Selection bets | Selection ROI | OOS bets | OOS ROI | 95% CI | p Holm | Price match (rows priced / rows) | Reason |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| Argentina Primera Division | UNPROVEN | WALK_FORWARD_HOLDOUT | - | OWN_BETS | 0.05 | 0.06 | 0.06 | 0.635 | 221 | +3.4% | 115 | -0.6% | [-24.8%, +23.8%] | 1 | 457/2612 | 115 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p 1.0 not < 0.025 |
+| Austrian Bundesliga | UNPROVEN | WALK_FORWARD_HOLDOUT | - | OWN_BETS | 0.03 | 0.06 | 0.06 | 0.3832 | 105 | +6.8% | 64 | -0.0% | [-24.0%, +23.3%] | 1 | 220/1023 | 64 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p 1.0 not < 0.025 |
+| Brazil Serie A | UNPROVEN | WALK_FORWARD_HOLDOUT | - | OWN_BETS | 0.05 | 0.06 | 0.09 | 0.5619 | 121 | +10.3% | 69 | +5.1% | [-20.1%, +28.2%] | 1 | 469/2103 | 69 out-of-sample bets < 150; Holm-adjusted p 1.0 not < 0.025 |
+| China Super League | UNPROVEN | WALK_FORWARD_HOLDOUT | - | OWN_BETS | 0.14 | 0.14 | 0.14 | 0 | 63 | -16.4% | 11 | -53.8% | [-100.0%, +15.8%] | 1 | 270/1366 | 11 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p 1.0 not < 0.025 |
+| Denmark Superliga | UNPROVEN | WALK_FORWARD_HOLDOUT | - | OWN_BETS | 0.02 | 0.02 | 0.02 | 0.2218 | 104 | +0.3% | 64 | -18.9% | [-47.2%, +8.0%] | 1 | 220/1025 | 64 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p 1.0 not < 0.025 |
+| Finland Veikkausliiga | UNPROVEN | WALK_FORWARD_HOLDOUT | - | OWN_BETS | 0.02 | 0.02 | 0.02 | 0.2018 | 89 | -39.5% | 81 | +2.4% | [-18.6%, +25.0%] | 1 | 220/945 | 81 out-of-sample bets < 150; Holm-adjusted p 1.0 not < 0.025 |
+| Ireland Premier Division | UNPROVEN | WALK_FORWARD_HOLDOUT | - | OWN_BETS | 0.02 | 0.02 | 0.02 | 0.1914 | 89 | +3.6% | 78 | +17.0% | [-4.2%, +37.2%] | 1 | 218/974 | 78 out-of-sample bets < 150; Holm-adjusted p 1.0 not < 0.025 |
+| Japan J-League | UNPROVEN | WALK_FORWARD_HOLDOUT | - | OWN_BETS | 0.02 | 0.02 | 0.02 | 0.2102 | 109 | -2.2% | 5 | -59.0% | [-, -] | - | 144/1799 | 5 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p None not < 0.025 |
+| K-League 1 | UNPROVEN | IN_PERIOD_SPLIT | 2026-08-15..2026-08-25 / 2026-08-26..2026-08-30 (43%) | SHRUNK_TO_POOL | 0.02 | 0.1 | 0.1 | 0.0983 | 8 | +83.1% | 2 | +2.5% | [-, -] | - | 14/1185 | 2 out-of-sample bets < 150; Holm-adjusted p None not < 0.025 |
+| Mexico Liga MX | UNPROVEN | WALK_FORWARD_HOLDOUT | - | OWN_BETS | 0.02 | 0.02 | 0.02 | 0.2365 | 124 | +3.9% | 81 | +4.2% | [-22.1%, +33.0%] | 1 | 265/1814 | 81 out-of-sample bets < 150; Holm-adjusted p 1.0 not < 0.025 |
+| Norway Eliteserien | UNPROVEN | WALK_FORWARD_HOLDOUT | - | OWN_BETS | 0.02 | 0.02 | 0.02 | 0.207 | 139 | -3.6% | 97 | +3.0% | [-23.8%, +30.6%] | 1 | 280/1287 | 97 out-of-sample bets < 150; Holm-adjusted p 1.0 not < 0.025 |
+| Romanian Superliga | UNPROVEN | IN_PERIOD_SPLIT | 2026-08-14..2026-09-21 / 2026-10-08..2026-10-25 (33%) | SHRUNK_TO_POOL | 0.05 | 0.15 | 0.15 | 0.0448 | 13 | -51.5% | 11 | -7.3% | [-63.5%, +69.4%] | 1 | 47/1682 | 11 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p 1.0 not < 0.025 |
+| Saudi Pro League | UNPROVEN | IN_PERIOD_SPLIT | 2026-08-13..2026-08-30 / 2026-09-01..2026-09-04 (20%) | SHRUNK_TO_POOL | 0.02 | 0.07 | 0.07 | 0.0804 | 21 | +0.1% | 4 | +90.0% | [-, -] | - | 33/1420 | 4 out-of-sample bets < 150; Holm-adjusted p None not < 0.025 |
+| Sweden Allsvenskan | UNPROVEN | WALK_FORWARD_HOLDOUT | - | OWN_BETS | 0.02 | 0.06 | 0.06 | 0.2249 | 120 | +8.9% | 95 | +15.8% | [-8.8%, +38.4%] | 1 | 269/1319 | 95 out-of-sample bets < 150; Holm-adjusted p 1.0 not < 0.025 |
+| USA MLS | UNPROVEN | WALK_FORWARD_HOLDOUT | - | OWN_BETS | 0.03 | 0.03 | 0.03 | 0.4359 | 147 | -2.6% | 163 | -17.6% | [-35.8%, -0.6%] | 1 | 404/2829 | out-of-sample ROI not above 0; Holm-adjusted p 1.0 not < 0.025 |
+
+### new_format / over35
+
+| League | Status | Evidence | Split: select / check (check share) | Basis | VALUABLE | MARKSMAN | SNIPER | Shrink w | Selection bets | Selection ROI | OOS bets | OOS ROI | 95% CI | p Holm | Price match (rows priced / rows) | Reason |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| Argentina Primera Division | UNPROVEN | WALK_FORWARD_HOLDOUT | - | SHRUNK_TO_POOL | 0.02 | 0.03 | 0.03 | 0 | 1 | -100.0% | 76 | +0.8% | [-41.4%, +43.9%] | 1 | 95/2612 | 76 out-of-sample bets < 150; Holm-adjusted p 1.0 not < 0.025 |
+| Austrian Bundesliga | UNPROVEN | WALK_FORWARD_HOLDOUT | - | SHRUNK_TO_POOL | 0.02 | 0.03 | 0.03 | 0 | 2 | +26.0% | 9 | +24.4% | [-69.4%, +124.5%] | 1 | 44/1023 | 9 out-of-sample bets < 150; Holm-adjusted p 1.0 not < 0.025 |
+| Brazil Serie A | UNPROVEN | WALK_FORWARD_HOLDOUT | - | SHRUNK_TO_POOL | 0.02 | 0.03 | 0.03 | 0 | 0 | - | 16 | -51.1% | [-100.0%, +11.1%] | 1 | 78/2103 | 16 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p 1.0 not < 0.025 |
+| China Super League | UNPROVEN | WALK_FORWARD_HOLDOUT | - | SHRUNK_TO_POOL | 0.02 | 0.03 | 0.03 | 0 | 18 | +6.8% | 12 | -33.0% | [-100.0%, +41.5%] | 1 | 179/1366 | 12 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p 1.0 not < 0.025 |
+| Denmark Superliga | UNPROVEN | WALK_FORWARD_HOLDOUT | - | SHRUNK_TO_POOL | 0.02 | 0.03 | 0.03 | 0 | 4 | +73.5% | 6 | -65.0% | [-100.0%, +5.0%] | 1 | 109/1025 | 6 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p 1.0 not < 0.025 |
+| Finland Veikkausliiga | UNPROVEN | WALK_FORWARD_HOLDOUT | - | SHRUNK_TO_POOL | 0.02 | 0.03 | 0.03 | 0 | 10 | -15.1% | 3 | -100.0% | [-100.0%, -100.0%] | 1 | 119/945 | 3 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p 1.0 not < 0.025 |
+| Ireland Premier Division | UNPROVEN | WALK_FORWARD_HOLDOUT | - | SHRUNK_TO_POOL | 0.02 | 0.03 | 0.03 | 0 | 0 | - | 8 | -20.0% | [-100.0%, +80.0%] | 1 | 42/974 | 8 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p 1.0 not < 0.025 |
+| Japan J-League | UNPROVEN | WALK_FORWARD_HOLDOUT | - | SHRUNK_TO_POOL | 0.02 | 0.03 | 0.03 | 0 | 0 | - | 1 | -100.0% | [-, -] | - | 13/1799 | 1 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p None not < 0.025 |
+| K-League 1 | UNPROVEN | IN_PERIOD_SPLIT | 2026-08-15..2026-08-25 / 2026-08-26..2026-08-30 (33%) | SHRUNK_TO_POOL | 0.02 | 0.02 | 0.02 | 0 | 4 | -100.0% | 3 | +33.3% | [-, -] | - | 14/1185 | 3 out-of-sample bets < 150; Holm-adjusted p None not < 0.025 |
+| Mexico Liga MX | UNPROVEN | WALK_FORWARD_HOLDOUT | - | SHRUNK_TO_POOL | 0.02 | 0.03 | 0.03 | 0 | 0 | - | 11 | -26.2% | [-100.0%, +41.2%] | 1 | 123/1814 | 11 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p 1.0 not < 0.025 |
+| Norway Eliteserien | UNPROVEN | WALK_FORWARD_HOLDOUT | - | SHRUNK_TO_POOL | 0.02 | 0.03 | 0.03 | 0 | 6 | +35.5% | 15 | +46.0% | [-5.1%, +90.5%] | 1 | 174/1287 | 15 out-of-sample bets < 150; Holm-adjusted p 1.0 not < 0.025 |
+| Romanian Superliga | UNPROVEN | IN_PERIOD_SPLIT | 2026-08-14..2026-09-21 / 2026-10-08..2026-10-25 (34%) | SHRUNK_TO_POOL | 0.03 | 0.03 | 0.03 | 0 | 6 | +33.3% | 3 | +126.7% | [-100.0%, +240.0%] | 1 | 44/1682 | 3 out-of-sample bets < 150; Holm-adjusted p 1.0 not < 0.025 |
+| Saudi Pro League | UNPROVEN | IN_PERIOD_SPLIT | 2026-08-13..2026-08-30 / 2026-09-01..2026-09-04 (21%) | SHRUNK_TO_POOL | 0.02 | 0.02 | 0.02 | 0 | 3 | -100.0% | 2 | +87.5% | [-, -] | - | 34/1420 | 2 out-of-sample bets < 150; Holm-adjusted p None not < 0.025 |
+| Sweden Allsvenskan | UNPROVEN | WALK_FORWARD_HOLDOUT | - | SHRUNK_TO_POOL | 0.02 | 0.03 | 0.03 | 0 | 0 | - | 5 | +5.4% | [-100.0%, +115.4%] | 1 | 98/1319 | 5 out-of-sample bets < 150; Holm-adjusted p 1.0 not < 0.025 |
+| USA MLS | UNPROVEN | WALK_FORWARD_HOLDOUT | - | SHRUNK_TO_POOL | 0.02 | 0.03 | 0.03 | 0 | 6 | -10.5% | 28 | -41.4% | [-75.3%, +2.5%] | 1 | 305/2829 | 28 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p 1.0 not < 0.025 |
+
 ## standard
 
 Predictions: `C:/Users/nevo/AppData/Local/Temp/claude/1ee106cff9d5ca11/84b5f38e-4e7e-4236-9e42-6479e0aff4a9/scratchpad/retrain_std/run_20261108T190758Z/predictions.parquet`; built 2026-11-08T20:24:02Z.
@@ -170,10 +316,6 @@ Status count per market:
 | Scottish Premiership | UNPROVEN | IN_PERIOD_SPLIT | 2026-09-05..2026-09-19 / 2026-10-10..2026-10-28 (55%) | SHRUNK_TO_POOL | 0.03 | 0.04 | 0.04 | 0 | 1 | -100.0% | 0 | - | [-, -] | - | 27/884 | 0 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p None not < 0.025 |
 | Serie B | UNPROVEN | IN_PERIOD_SPLIT | 2026-08-22..2026-09-20 / 2026-10-10..2026-10-28 (44%) | SHRUNK_TO_POOL | 0.03 | 0.04 | 0.04 | 0 | 23 | -33.0% | 6 | -45.8% | [-100.0%, +225.0%] | 1 | 61/1470 | 6 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p 1.0 not < 0.025 |
 | Turkish Super Lig | UNPROVEN | IN_PERIOD_SPLIT | 2026-09-05..2026-09-20 / 2026-10-09..2026-10-26 (52%) | SHRUNK_TO_POOL | 0.03 | 0.04 | 0.04 | 0 | 8 | +31.2% | 4 | -100.0% | [-100.0%, -100.0%] | 1 | 45/1289 | 4 out-of-sample bets < 150; out-of-sample ROI not above 0; Holm-adjusted p 1.0 not < 0.025 |
-
-## new_format
-
-NOT BUILT: no `new_format` retrain predictions are available (the job did not finish with an artifact). Run `scripts/league_bars.py --track new_format` on its predictions.parquet, then `--report`.
 
 ## What the owner decides
 

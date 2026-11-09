@@ -73,7 +73,7 @@ def run_track(a) -> int:
         match_rates[market] = stats
         price_notes[market] = note
         rows += LB.run_market(priced, market, a.track)
-    meta = {"track": a.track, "candidate": a.candidate, "predictions": str(a.predictions),
+    meta = {"track": a.track, "candidate": a.candidate, "predictions": str(a.predictions), "note": a.note,
             "created_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "price_sources": price_notes, "price_match": match_rates,
             "rules": {"grid": [float(x) for x in LB.GRID], "min_bets_fit": LB.MIN_BETS_FIT,
@@ -138,7 +138,10 @@ def build_report() -> str:
          "dates.", ""]
     for track, t in ev.items():
         m = t["meta"]
-        L += [f"## {track}", "", f"Predictions: `{m['predictions']}`; built {m['created_at']}.", "",
+        L += [f"## {track}", "", f"Predictions: `{m['predictions']}`; built {m['created_at']}.", ""]
+        if m.get("note"):
+            L += [f"**Provenance note:** {m['note']}", ""]
+        L += [
               "Price sources:", ""]
         L += [f"* **{k}**: {v}" for k, v in m["price_sources"].items()]
         L += [""]
@@ -190,6 +193,7 @@ def main(argv=None) -> int:
     ap.add_argument("--candidate", default="champion_recipe")
     ap.add_argument("--fd-raw")
     ap.add_argument("--aliases", help="cached identity alias map (JSON); default: run the committed loader")
+    ap.add_argument("--note", help="provenance note for this track's predictions (shown in the report)")
     ap.add_argument("--report", action="store_true")
     a = ap.parse_args(argv)
     if a.track:
