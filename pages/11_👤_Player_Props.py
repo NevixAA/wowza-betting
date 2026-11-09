@@ -25,7 +25,7 @@ import pandas as pd
 import streamlit as st
 
 import dashboard_ui as ui
-from src.tier_labels import STAKED_LABEL
+from src.tier_labels import tier_label
 
 st.set_page_config(page_title="Player Props | Wowza", page_icon="👤", layout="wide")
 import sys as _sys; from pathlib import Path as _P; _sys.path.insert(0, str(_P(__file__).resolve().parents[1]))
@@ -164,9 +164,11 @@ with st.expander("Raw data — every upcoming prop"):
     ui.compact_table(df.sort_values("model_prob", ascending=False)[[c for c in show_cols if c in df.columns]],
                      V.RAW_CONFIG)
 
-# ═══ PERFORMANCE — settled record ════════════════════════════════════════════════════════════════
-ui.section_header("Results — settled player-prop signals", f"{STAKED_LABEL} only, flat 1u paper stakes. A rate is "
-                  "shown with its n; a small n is marked.")
+# ═══ PERFORMANCE — settled record (rebuilt 2026-11-09, see dashboard_data/props_view.py) ═══════════════════
+ui.section_header("Results — settled player-prop tips",
+                  f"Every tip tier ({tier_label('VALUABLE')} included), flat 1u paper stakes, for the period you "
+                  "pick. ROI and "
+                  "profit use only tips with a real bookmaker price; a small sample is marked.")
 
 
 @st.cache_data(ttl=120)
@@ -177,29 +179,55 @@ def load_results():
 
 
 led = load_results()
-# The all-time record counts SNIPER + MARKSMAN only; the raw ledger logs every tier for data.
-if not led.empty and "tier" in led.columns:
-    led = led[led["tier"].astype(str).str.upper().isin(["SNIPER", "MARKSMAN"])].copy()
-if led.empty or "result" not in led.columns:
-    ui.empty_state("NO_DATA", f"No {STAKED_LABEL} prop results yet (`output/player_ledger.csv`).")
+if led.empty or "result" not in led.columns or "tier" not in led.columns:
+    ui.empty_state("NO_DATA", "No prop results yet (`output/player_ledger.csv`).")
 else:
-    settled = led[led["result"].astype(str).str.upper().isin(["WIN", "LOSS"])].copy()
-    if settled.empty:
-        ui.empty_state("NO_DATA", "No settled (WIN/LOSS) signals yet — pending/void only.")
+    import config as _cfg  # noqa: E402
+    clean_from = getattr(_cfg, "PROPS_CLEAN_MODELS_LIVE_DATE", None)
+    allr = V.prepare_ledger(led)
+    allr["era"] = V.model_era(allr, clean_from)
+    period = st.radio("Period", list(V.PERIODS), index=V.PERIODS.index(V.DEFAULT_PERIOD), horizontal=True,
+                      key="pp_results_period")
+    today = pd.Timestamp.now(tz="UTC").tz_convert(None).normalize()
+    d = V.in_period(allr, period, today)
+    start = V.period_start(period, today)
+    ui.caption(f"{period}: matches from {start:%d %b %Y} on" if start is not None else "All time")
+    if clean_from is None:
+        ui.caption("Every result here comes from the **pre-repair props models**. The clean retrained props "
+                   "models go live at go-live; their results start the Clean Record and will be shown apart.")
+    if V.tips(d).empty:
+        ui.empty_state("NO_DATA", f"No prop tips with a match date in this period ({period.lower()}).")
     else:
-        wins = int((settled["result"].astype(str).str.upper() == "WIN").sum())
-        n = len(settled)
-        roi = (pd.to_numeric(settled["pnl"], errors="coerce").mean() * 100
-               if "pnl" in settled.columns else float("nan"))
-        left, right = st.columns([1, 2])
-        ui.metric_card("Win rate", f"{wins / n * 100:.0f}%", title="Settled record · paper",
-                       supporting=[("Settled", f"{n}"), ("Record", f"{wins}W – {n - wins}L"),
-                                   ("Flat ROI (1u, paper)", f"{roi:+.1f}%" if roi == roi else "—")],
-                       status=ui.status_chip("PAPER", label="PAPER · NEVER STAKED"), n=n, container=left)
-        with right:
+        for era in [e for e in ("clean models", "pre-repair models") if (d["era"] == e).any()]:
+            de = d[d["era"] == era]
+            tt = V.tier_table(de)
+            if tt.empty:
+                continue
+            tot = tt[tt["Tier"] == "All tips"].iloc[0]
+            ui.metric_card("Flat ROI (1u, paper)", ui.fmt_roi(tot["ROI %"] / 100) if tot["Priced"] else "—",
+                           title=f"All tips · {era} · {period.lower()}",
+                           supporting=[("Settled", f"{int(tot['Settled'])}"),
+                                       ("Record", f"{int(tot['Wins'])}W – {int(tot['Settled'] - tot['Wins'])}L"),
+                                       ("Profit", ui.fmt_units(tot["Profit (u)"]) if tot["Priced"] else "—"),
+                                       ("Void / pending", f"{int(tot['Void'])} / {int(tot['Pending'])}")],
+                           status=ui.status_chip("PAPER", label="PAPER · NEVER STAKED")
+                           + (" " + ui.sample_marker(int(tot["Priced"])) if ui.small_sample(int(tot["Priced"])) else ""),
+                           n=int(tot["Priced"]))
+            ui.eyebrow(f"By tier · {era}")
+            ui.compact_table(tt, V.TIER_CONFIG)
+            ui.eyebrow(f"By market · {era}")
+            ui.compact_table(V.market_table(de), V.TIER_CONFIG)
+            ui.eyebrow(f"Month by month · {era}")
+            ui.compact_table(V.month_table(de), V.TIER_CONFIG)
+        n_avoid = V.avoid_count(d)
+        if n_avoid:
+            ui.caption(f"Logged, not tipped: {n_avoid:,} AVOID rows in this period are recorded for research and "
+                       "are not part of the tip record above.")
+        with st.expander("Settled tips — newest first"):
+            sett = V.tips(d)[V.tips(d)["R"].isin(V.SETTLED)]
             cols = [c for c in ["match_date", "league", "player_name", "market", "tier",
-                                "market_odds", "result", "pnl"] if c in settled.columns]
-            ui.compact_table(settled.sort_values("match_date", ascending=False)[cols].head(150), V.RESULTS_CONFIG)
+                                "market_odds", "result", "pnl", "era"] if c in sett.columns]
+            ui.compact_table(sett.sort_values("match_date", ascending=False)[cols].head(300), V.RESULTS_CONFIG)
 
 st.caption("Player props are paper research only — the model is accurate but has shown no betting "
            "edge against the market.")

@@ -441,6 +441,12 @@ DRIFT_CONFLICT_THRESHOLD = 0.03
 # two in sync. Rows are NOT deleted: they stay in the ledgers so CLV keeps every data point.
 PERFORMANCE_CUTOFF_DATE = "2026-08-10"
 
+# The date the CLEAN retrained props models (Phase 2 props harness, promoted on data-truth-100) start serving.
+# None = they are not live yet, so every props result on the dashboard comes from the pre-repair models and
+# is labelled so (pages/11 Player Props). Set at go-live (reports/GO_LIVE_RUNBOOK.md); results from that date
+# start the Clean Record and are shown apart from the pre-repair record, never in one headline.
+PROPS_CLEAN_MODELS_LIVE_DATE = None
+
 # ── Backtesting ───────────────────────────────────────────────────────────────
 BACKTEST_WALK_SIZE = 60
 BACKTEST_MIN_TRAIN = 400
