@@ -21,7 +21,9 @@ from src import league_bars as LB
 ROOT = Path(__file__).resolve().parents[2]
 SNAPSHOT_FILES = {"standard": ("standard_sidemarket_odds_history", "output/standard_sidemarket_odds_history.csv"),
                   "new_format": ("newformat_odds_history", "output/newformat_odds_history.csv")}
-PRICED_MARKETS = ("over25", "btts", "over15", "over35")
+#: ht_over05 / ht_over15 (P7 item 2, 2026-11-09): the captured first-half two-sided pairs, joined so the
+#: HT markets are no longer NO_PRICE_DATA. Snapshot files only (football-data has no HT price).
+PRICED_MARKETS = ("over25", "btts", "over15", "over35", "ht_over05", "ht_over15")
 
 
 def fd_ou25_close_pairs(fd_raw_dir) -> pd.DataFrame:
