@@ -780,6 +780,8 @@ def run_player_predictions(
     # every skipped player-market is counted under its reason code and printed at the end.
     from collections import Counter as _Counter
     _skip_reasons: _Counter = _Counter()
+    # rare markets (hidden from normal tips) -> research candidates for player_model.rare_props
+    _rare_cands: list[dict] = []
     _n_position_unknown = 0
 
     for _, match_row in bets.iterrows():
@@ -807,6 +809,8 @@ def run_player_predictions(
         # ── Lineup check: confirmed starter IDS for this fixture ──────────────
         lineup_starters: set[int] = set()
         lineup_available = False
+        # announced position per player id (real provider lineup only; train/serve parity 2026-11-09)
+        lineup_pos: dict[int, str] = {}
         fid = match_row.get("fixture_id")
         if _APIFOOTBALL_KEY and fid and not pd.isna(fid):
             try:
@@ -817,6 +821,8 @@ def run_player_predictions(
                         for _p in _team_players:
                             if _p.get("started") and _p.get("player_id") is not None:
                                 lineup_starters.add(int(_p["player_id"]))
+                            if _p.get("player_id") is not None and _p.get("position"):
+                                lineup_pos[int(_p["player_id"])] = str(_p["position"])
                     # Only treat lineup as confirmed when both teams have starters posted
                     # (empty startXI = lineup not yet submitted → don't drop any player)
                     if len(lineup_starters) >= 18:
@@ -883,6 +889,10 @@ def run_player_predictions(
             lambda x: _live_age.get(int(x)) if x == x and x is not None else None)
 
         upcoming_list = team_players.to_dict("records")
+        for _rec in upcoming_list:                    # announced lineup position, when posted
+            _lp = lineup_pos.get(int(_rec["player_id"])) if _rec.get("player_id") == _rec.get("player_id") else None
+            if _lp:
+                _rec["lineup_position"] = _lp
         feat_df = build_upcoming_features(upcoming_list, history_df, ref, ctx, history_index=_hist_index)
 
         if feat_df.empty:
@@ -934,6 +944,17 @@ def run_player_predictions(
                 _skip = serving_skip_reason(market, _pos_status)
                 if _skip:
                     _skip_reasons[_skip] += 1
+                    if _skip == config.SKIP_HIDDEN_MARKET and _pos_status != "G":   # GK: attacking rule
+                        _pr = pd.to_numeric(feat_row.get(f"p_{market}"), errors="coerce")
+                        if _pr == _pr:                 # the model's own probability; none -> no candidate
+                            _rare_cands.append({"date": date_str, "kickoff_utc": match_row.get("kickoff_utc", ""),
+                                                "league": league, "match": f"{home} vs {away}",
+                                                "fixture_id": match_row.get("fixture_id"),
+                                                "player_id": feat_row.get("player_id"),
+                                                "player_name": feat_row.get("player_name", ""),
+                                                "team": feat_row.get("team", ""),
+                                                "position": feat_row.get("position", ""),
+                                                "market": market, "model_prob": float(_pr)})
                     continue
                 if market == "cards":
                     # The cards model is well-calibrated for CLUB leagues (mean ~0.13 vs the
@@ -1070,6 +1091,11 @@ def run_player_predictions(
         print(f"[current_club] {len(_club_conflict_dropped)} player(s) not tipped: a club appearance "
               f"for another club within {config.CURRENT_CLUB_CONFLICT_DAYS} days contradicts the "
               f"club the tip would name")
+    try:
+        from player_model import rare_props as _RP
+        print(f"[predict] rare-market research candidates: {_RP.write_candidates(_rare_cands)}")
+    except Exception as _e:                                            # noqa: BLE001
+        print(f"[predict] rare-market candidates not written: {type(_e).__name__}: {_e}")
     for _reason, _n in sorted(_skip_reasons.items()):
         print(f"[predict] {_n} player-market(s) not tipped: {_reason}")
     if all_tips:

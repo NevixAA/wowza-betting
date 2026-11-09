@@ -590,9 +590,22 @@ def _team_rolling(t: pd.DataFrame, n: int) -> pd.DataFrame:
     return out
 
 
-def _team_now(rows: pd.DataFrame, n: int) -> dict:
+def _before_day(rows: pd.DataFrame, fdate) -> pd.DataFrame:
+    """Rows dated strictly BEFORE the fixture's day (training's 'strictly before' / 'strictly earlier
+    dates'). A fixture without a date keeps every row (nothing to cut on; logged by the caller)."""
+    if fdate is None or fdate != fdate or rows is None or not len(rows):
+        return rows
+    day = pd.Timestamp(fdate).normalize()
+    d = rows["_day"] if "_day" in rows.columns else pd.to_datetime(rows["date"], errors="coerce").dt.normalize()
+    return rows[d < day]
+
+
+def _team_now(rows: pd.DataFrame, n: int, fdate=None) -> dict:
     """Serving counterpart of _team_rolling: the team's state BEFORE its next match = the mean of
-    its last n fixtures we hold that measure each quantity, same minimum samples."""
+    its last n fixtures we hold that measure each quantity, same minimum samples. Only fixtures
+    dated before the match's day count (train/serve parity 2026-11-09: a same-day earlier result,
+    or a result that arrived after the fixture, is not in the training value)."""
+    rows = _before_day(rows, fdate)
     out = {}
     for src, (feat, min_attr) in _TEAM_ROLL.items():
         s = pd.to_numeric(rows[src], errors="coerce").dropna().tail(n)
@@ -647,9 +660,27 @@ def _same_league(col: pd.Series, league) -> pd.Series:
     return col.map(_canon) == target
 
 
-def _league_now(t: pd.DataFrame, league) -> dict:
-    """Serving counterpart of _league_asof: the league's averages over every fixture we hold."""
-    rows = t[_same_league(t["league"], league)] if not t.empty else t
+def _league_rows(frame: pd.DataFrame, league) -> pd.DataFrame:
+    """Rows of `league` exactly as training groups them (_league_asof / _referee_asof group by the
+    row's own league string): the same string when the frame holds it, else the frame's single
+    string with the same registry name. A competition the registry does not know (the continental
+    cups) is found by its string - _same_league alone returned nothing for it."""
+    if frame.empty:
+        return frame
+    names = frame["league"].astype(str)
+    if str(league) in set(names.unique()):
+        return frame[names == str(league)]
+    target = _canon(league)
+    if target is None:
+        return frame.iloc[0:0]
+    hits = [x for x in names.unique() if _canon(x) == target]
+    return frame[names == hits[0]] if len(hits) == 1 else frame.iloc[0:0]
+
+
+def _league_now(t: pd.DataFrame, league, fdate=None) -> dict:
+    """Serving counterpart of _league_asof: the league's averages over its fixtures on EARLIER
+    dates (never the match's own day), the league identified as training groups it."""
+    rows = _before_day(_league_rows(t, league), fdate) if not t.empty else t
     out = {}
     for name, col in _LEAGUE_NORMS.items():
         s = pd.to_numeric(rows[col], errors="coerce") if len(rows) else pd.Series(dtype=float)
@@ -658,6 +689,18 @@ def _league_now(t: pd.DataFrame, league) -> dict:
 
 
 # ── referee, measured ────────────────────────────────────────────────────────────────────────────
+
+def _training_rowset(df: pd.DataFrame) -> pd.DataFrame:
+    """The rows build_features builds its team table and referee table from: a real player id,
+    unrecorded 0-0 corners blanked (on the full frame, as build_features does), then >= 10 minutes.
+    Serving builds the same tables from the same rows (train/serve parity 2026-11-09)."""
+    if df is None or df.empty:
+        return df
+    pid = pd.to_numeric(df["player_id"], errors="coerce") if "player_id" in df.columns else None
+    d = df[(pid > 0).to_numpy()] if pid is not None else df
+    d = _blank_unrecorded_corners(d)
+    return d[_num(d, "minutes") >= 10] if "minutes" in d.columns else d
+
 
 def _referee_key(name) -> str | None:
     if name is None or (isinstance(name, float) and np.isnan(name)) or not str(name).strip():
@@ -702,31 +745,38 @@ def _referee_asof(df: pd.DataFrame) -> pd.DataFrame:
     return f[["fixture_id", "referee_yellows_pg", "referee_strictness", "lg_yellows_per_match"]]
 
 
-def league_yellow_stats(history: pd.DataFrame, league) -> tuple[float, float]:
-    """(mean, sd) of total yellows per fixture in `league` over every fixture we hold, NaN below
-    config.MIN_LEAGUE_MATCHES fixtures. For callers building a referee z-score at serve time."""
+def league_yellow_stats(history: pd.DataFrame, league, before=None) -> tuple[float, float]:
+    """(mean, sd) of total yellows per fixture in `league` (grouped as _referee_asof groups it, by
+    the league string) over its fixtures dated before `before` (all held fixtures when None), NaN
+    below config.MIN_LEAGUE_MATCHES fixtures. For callers building a referee z-score at serve time."""
     if history is None or history.empty or "fixture_id" not in history.columns:
         return NAN, NAN
-    f = _fixture_yellows(history[_same_league(history["league"], league)])
+    f = _fixture_yellows(_league_rows(_training_rowset(history), league))
+    if before is not None and before == before:
+        f = f[f["date"].dt.normalize() < pd.Timestamp(before).normalize()]
     if len(f) < config.MIN_LEAGUE_MATCHES:
         return NAN, NAN
     sd = float(f["yellows"].std())
     return float(f["yellows"].mean()), (sd if sd > 0 else NAN)
 
 
-def referee_profile_from_history(history: pd.DataFrame, referee_name, league) -> dict:
+def referee_profile_from_history(history: pd.DataFrame, referee_name, league, before=None) -> dict:
     """Serving referee profile with EXACTLY the training definition (_referee_asof): the referee's
-    yellows/match over every fixture we hold for him in the league's scope, z-scored against the
-    league's measured mean/sd. NaN below the minimum samples. Keys match build_upcoming_features."""
+    yellows/match over his fixtures in the league's scope dated before the match (`before`, the
+    fixture date; every held fixture when None), z-scored against the league's mean/sd over its
+    earlier dates. NaN below the minimum samples. Keys match build_upcoming_features."""
     out = {"yellows_per_game": NAN, "strictness_score": NAN, "n_games": 0,
            "lg_yellows_per_match": NAN}
     rkey, scope = _referee_key(referee_name), team_scope(league)
     if history is None or history.empty or rkey is None or scope is None:
         return out
-    f = _fixture_yellows(history[history["league"].map(team_scope) == scope])
+    h = _training_rowset(history)
+    f = _fixture_yellows(h[h["league"].map(team_scope) == scope])
+    if before is not None and before == before:
+        f = f[f["date"].dt.normalize() < pd.Timestamp(before).normalize()]
     mine = f[f["_rkey"] == rkey]
     out["n_games"] = int(len(mine))
-    mu, sd = league_yellow_stats(history, league)
+    mu, sd = league_yellow_stats(history, league, before=before)
     out["lg_yellows_per_match"] = mu
     if len(mine) >= config.MIN_REF_MATCHES:
         out["yellows_per_game"] = float(mine["yellows"].mean())
@@ -1343,7 +1393,7 @@ def _serving_context(history: pd.DataFrame) -> dict:
         h["date"] = pd.to_datetime(h["date"], errors="coerce")
         if "opponent" not in h.columns:
             h["opponent"] = h["away_team"].where(h["is_home"].astype(bool), h["home_team"])
-        t = team_match_table(h)
+        t = team_match_table(_training_rowset(h))          # the rows build_features uses
         teams_by_scope: dict = {}
         if not t.empty:
             t["_y"] = _team_seasons(t).to_numpy()          # prev_season_* team features
@@ -1378,7 +1428,7 @@ def _serving_context(history: pd.DataFrame) -> dict:
     return _SERVE_CACHE
 
 
-def _opponent_state(ctx: dict, opponent: str, league, n: int) -> dict:
+def _opponent_state(ctx: dict, opponent: str, league, n: int, fdate=None) -> dict:
     """Opponent features for the upcoming fixture, from the opponent's last n fixtures in ANY
     competition: the opponent's API-Football id (team_identity.club_key: among the clubs of the
     fixture's competition, else the strength name index) is the key of the training table
@@ -1387,7 +1437,7 @@ def _opponent_state(ctx: dict, opponent: str, league, n: int) -> dict:
     Unresolvable -> every opponent feature NaN (logged by the caller)."""
     nan_state = {feat: NAN for feat, _ in _TEAM_ROLL.values()}
     rows = _team_rows_now(ctx, opponent, league)
-    return _team_now(rows, n) if rows is not None else nan_state
+    return _team_now(rows, n, fdate) if rows is not None else nan_state
 
 
 def _team_rows_now(ctx: dict, team, league):
@@ -1410,6 +1460,30 @@ def _team_rows_now(ctx: dict, team, league):
         return None
     rows = ctx["by_team"].get(f"{hit}|{scope}")
     return rows if rows is not None and len(rows) else None
+
+
+#: position_source values on a serving row
+POSITION_FROM_LINEUP = "LINEUP_ANNOUNCED"
+POSITION_FROM_LATEST = "LATEST_HELD_MATCH"
+POSITION_NONE = "NONE"
+
+
+def _letter(v) -> str:
+    s = "" if v is None or (isinstance(v, float) and v != v) else str(v).strip().upper()
+    return s[:1] if s[:1] in ("G", "D", "M", "F") else ""
+
+
+def _upcoming_position(p: dict, phist: pd.DataFrame) -> tuple[str, str]:
+    """(position letter, source) for an upcoming fixture: the announced lineup position when the
+    caller has it, else the latest held match's position (the player's own last row). ('', NONE)
+    when neither is a real G/D/M/F."""
+    lp = _letter(p.get("lineup_position"))
+    if lp:
+        return lp, POSITION_FROM_LINEUP
+    lat = _letter(p.get("position"))
+    if not lat and "position" in phist.columns and len(phist):
+        lat = _letter(phist["position"].iloc[-1])
+    return (lat, POSITION_FROM_LATEST) if lat else ("", POSITION_NONE)
 
 
 def _f(x) -> float:
@@ -1615,10 +1689,18 @@ def build_upcoming_features(
 
         # Venue, position.
         r["is_home"] = _f(p.get("is_home"))
-        _pos = str(p.get("position") or (phist["position"].iloc[-1] if "position" in phist.columns else "")
-                   ).strip().upper()[:1]
-        r["pos_forward"], r["pos_midfielder"], r["pos_defender"] = (
-            int(_pos == "F"), int(_pos == "M"), int(_pos == "D"))
+        # Position for THIS fixture from the best pre-match evidence, with its source (owner
+        # 2026-11-09): the announced lineup position (API-Football /fixtures/lineups, passed by the
+        # caller as lineup_position), else the position of the player's latest held match. No real
+        # source -> the flags stay missing (never a typed 0).
+        _pos, _src = _upcoming_position(p, phist)
+        r["position_source"] = _src
+        r["position"] = _pos                 # the tip's position = the same evidence ('' = unknown)
+        if _pos:
+            r["pos_forward"], r["pos_midfielder"], r["pos_defender"] = (
+                int(_pos == "F"), int(_pos == "M"), int(_pos == "D"))
+        else:
+            r["pos_forward"] = r["pos_midfielder"] = r["pos_defender"] = NAN
 
         # Rest days: from the player's last match in ANY competition we hold to THIS fixture (the
         # training function; NaN without a fixture date).
@@ -1627,13 +1709,14 @@ def build_upcoming_features(
                           if _pl is not None and fdate == fdate else NAN)
 
         # Opponent (measured) and league averages.
-        okey = (str(p.get("opponent", "")), league)
+        okey = (str(p.get("opponent", "")), league, fdate)
         if okey not in opp_cache:
-            opp_cache[okey] = _opponent_state(ctx, okey[0], league, n)
+            opp_cache[okey] = _opponent_state(ctx, okey[0], league, n, fdate)
         r.update(opp_cache[okey])
-        if league not in lg_cache:
-            lg_cache[league] = _league_now(ctx["table"], league) if not ctx["table"].empty else {}
-        r.update(lg_cache[league])
+        if (league, fdate) not in lg_cache:
+            lg_cache[(league, fdate)] = (_league_now(ctx["table"], league, fdate)
+                                         if not ctx["table"].empty else {})
+        r.update(lg_cache[(league, fdate)])
         r["lg_yellows_per_match"] = _f(ref.get("lg_yellows_per_match"))
 
         # Measured strength (league_quality.py): the fixture's clubs and league as of its date, and
