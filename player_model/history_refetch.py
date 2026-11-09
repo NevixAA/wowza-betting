@@ -18,6 +18,15 @@ re-fetched. Every other row - written by the old `or 0` parser before the fix - 
 values and is marked 'zeros_unverified' in `count_source`, so the Phase 2 props retrain can exclude
 it (owner 2026-11-04). Nothing is written back: player_history.parquet is never rewritten here.
 
+HOME / AWAY SIDE (owner 2026-11-09, P7 item 6). For 3,566 rows the history's is_home was wrong: the
+writer compared the row's club name with the fixture's home name by spelling ('Pachuca' vs 'CF
+Pachuca'). The re-fetch proves the provider side when the row's club resolves to the list club on
+that side (scripts/collect_player_refetch.py: is_home, is_home_orig, is_home_corrected). Where
+is_home_corrected is true the proven side REPLACES is_home and the opponent name follows it; the
+stored values stay beside as is_home_orig / opponent_orig, and is_home_source says which rows carry
+the provider side. Every feature that reads the side (opponent, team and opponent keys, home / away
+splits, strength, set-piece mapping) reads the corrected one, in training and serving alike.
+
 NOT HERE. Stored derived columns (rolling per-game rates, target_* labels) were computed from the
 old values; serving recomputes its rolling features from the raw rows, and the Phase 2 retrain must
 rebuild features and labels from these raw counts. This reader changes raw counts only.
@@ -71,7 +80,7 @@ def with_refetched(history: pd.DataFrame, refetch: pd.DataFrame | None = None) -
     # a row parsed with the rule is the newer reading of the same answer: a re-fetch never overrides it
     hit = key.isin(rf.index) & ~ruled.to_numpy()
     if not hit.any():
-        return out
+        return _with_proven_side(out, rf, key)
     sel = rf.reindex(key[hit])
     for c in REPLACED:
         if c not in rf.columns:
@@ -84,6 +93,39 @@ def with_refetched(history: pd.DataFrame, refetch: pd.DataFrame | None = None) -
     print(f"[refetch] {int(hit.sum()):,} of {len(out):,} row(s) carry re-fetched counts; "
           f"{int((out[STATUS_COL] == PARSED_WITH_RULE).sum()):,} parsed with the rule; "
           f"{int((out[STATUS_COL] == UNVERIFIED).sum()):,} marked {UNVERIFIED}")
+    return _with_proven_side(out, rf, key)
+
+
+#: is_home_source values
+SIDE_FROM_HISTORY = "history"
+SIDE_PROVIDER_PROVEN = "provider_side_proven"
+
+
+def _with_proven_side(out: pd.DataFrame, rf: pd.DataFrame, key: pd.MultiIndex) -> pd.DataFrame:
+    """is_home (and the opponent name) from the provider side where the re-fetch proved it
+    (is_home_corrected), the stored values kept beside (is_home_orig, opponent_orig). Applies to any
+    row of a proven (fixture, player), whatever its count_source: the side is identity, not a count."""
+    if not {"is_home", "is_home_corrected"} <= set(rf.columns) or "is_home" not in out.columns:
+        return out
+    proven = rf[rf["is_home_corrected"] == True]                       # noqa: E712
+    m = key.isin(proven.index)
+    out["is_home_orig"] = out["is_home"]
+    out["is_home_source"] = SIDE_FROM_HISTORY
+    if not m.any():
+        return out
+    side = pd.to_numeric(proven.reindex(key[m])["is_home"], errors="coerce").to_numpy()
+    was = pd.to_numeric(out.loc[m, "is_home"], errors="coerce").to_numpy()
+    out["is_home"] = pd.to_numeric(out["is_home"], errors="coerce")
+    out.loc[m, "is_home"] = side
+    out.loc[m, "is_home_source"] = SIDE_PROVIDER_PROVEN
+    if {"home_team", "away_team"} <= set(out.columns):
+        out["opponent_orig"] = out["opponent"] if "opponent" in out.columns else pd.Series(None, index=out.index)
+        opp = out.loc[m, "away_team"].where(out.loc[m, "is_home"].astype(bool), out.loc[m, "home_team"])
+        if "opponent" not in out.columns:
+            out["opponent"] = out["opponent_orig"]
+        out.loc[m, "opponent"] = opp
+    print(f"[refetch] home/away side proven by the provider on {int(m.sum()):,} row(s); "
+          f"{int((side != was).sum()):,} changed side (is_home_orig kept beside)")
     return out
 
 
