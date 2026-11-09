@@ -132,36 +132,58 @@
       "top10_overlap_wowza": 4,
       "top10_overlap_fpl": 5,
       "top10_of": 10
+    },
+    {
+      "gw": 10,
+      "n": 127,
+      "wowza": {
+        "n": 127,
+        "mae": 1.4049,
+        "rmse": 2.1559,
+        "spearman": 0.5051,
+        "bias": 0.87
+      },
+      "fpl_ep_next": {
+        "n": 127,
+        "mae": 0.6299,
+        "rmse": 1.4397,
+        "spearman": 0.7272,
+        "bias": 0.0173
+      },
+      "wowza_better_mae": false,
+      "top10_overlap_wowza": 3,
+      "top10_overlap_fpl": 5,
+      "top10_of": 10
     }
   ],
   "overall": {
     "wowza": {
-      "n": 1123,
-      "mae": 1.9372,
-      "rmse": 2.7552,
-      "spearman": 0.5832,
-      "bias": 1.0918
+      "n": 1250,
+      "mae": 1.8831,
+      "rmse": 2.7004,
+      "spearman": 0.5846,
+      "bias": 1.0692
     },
     "wowza_conditional": {
-      "n": 1123,
-      "mae": 3.5819,
-      "rmse": 3.917,
-      "spearman": 0.2284,
-      "bias": 2.8736
+      "n": 1250,
+      "mae": 3.5255,
+      "rmse": 3.8567,
+      "spearman": 0.2331,
+      "bias": 2.8397
     },
     "fpl_ep_next": {
-      "n": 1123,
-      "mae": 1.1637,
-      "rmse": 2.2577,
-      "spearman": 0.7377,
-      "bias": -0.0588
+      "n": 1250,
+      "mae": 1.1094,
+      "rmse": 2.1886,
+      "spearman": 0.741,
+      "bias": -0.051
     }
   },
   "wowza_column": "proj_uncond",
   "wowza_conditional_column": "proj_fixture_adj",
-  "actual_zero_share": 0.5922,
+  "actual_zero_share": 0.6072,
   "verdict": "FPL ep_next beats Wowza on MAE",
-  "mae_gap": 0.7735,
+  "mae_gap": 0.7737,
   "meta": {
     "settled_gameweeks": [
       4,
@@ -169,7 +191,8 @@
       6,
       7,
       8,
-      9
+      9,
+      10
     ],
     "unsettleable": [
       {
@@ -192,7 +215,9 @@
       "GW8: dropped 213 players with no snapshot between the previous gameweek's end and this deadline (stale total)",
       "GW8: dropped 3 players with no snapshot after the gameweek's last match (never imputed as zero)",
       "GW9: dropped 96 players with no snapshot between the previous gameweek's end and this deadline (stale total)",
-      "GW9: dropped 157 players with no snapshot after the gameweek's last match (never imputed as zero)"
+      "GW9: dropped 157 players with no snapshot after the gameweek's last match (never imputed as zero)",
+      "GW10: dropped 252 players with no snapshot between the previous gameweek's end and this deadline (stale total)",
+      "GW10: dropped 10 players with no snapshot after the gameweek's last match (never imputed as zero)"
     ]
   }
 }
