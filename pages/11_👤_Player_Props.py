@@ -66,6 +66,7 @@ def load_tips() -> pd.DataFrame:
                 .assign(_d=df["date"].dt.date)
                 .drop_duplicates(["_d", *key], keep="first")
                 .drop(columns=["_d", "_has_ko"]))
+    df, _ = V.board_rows(df)              # owner serving rules 2026-11-08 (hidden markets, GK)
     return df
 
 
@@ -102,6 +103,7 @@ st.caption(
     "Why so many are unpriced: bookmakers price **anytime scorer** deeply but rarely offer "
     "**1+ shot on target**, which is where most of the model's strongest signals sit. Markets "
     "deepen toward kickoff, so prices appear over the last 1–3 days.")
+st.caption(V.hidden_markets_note())
 
 # ═══ Filters — market visible, the rest under Advanced filters ═══════════════════════════════════
 _mk = [m for m in MARKET_LABEL if m in set(df["market"])] + \

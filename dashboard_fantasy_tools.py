@@ -95,7 +95,9 @@ def differentials(df: pd.DataFrame) -> None:
 
 
 def prop_leaderboards() -> None:
-    st.caption("Per-market probabilities from the **calibrated** prop models (this game).")
+    st.caption("Per-market probabilities from the **calibrated** prop models (this game). "
+               "2+ goals is hidden until its clean retrain (MARKET_HIDDEN_PENDING_CLEAN_RETRAIN): "
+               "its model was trained on placeholder player profiles.")
     try:
         lbs = _leaderboards()
         if not lbs:

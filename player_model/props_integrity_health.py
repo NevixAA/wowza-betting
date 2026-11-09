@@ -130,9 +130,18 @@ def build() -> dict:
             "feature_contract_version": payload.get("contract_version", "NONE"),
             "n_features": len(payload["feature_cols"]),
             "missing_feature_policy": ("absent column -> 0.0; NaN -> median of the scoring batch"
-                                       if legacy else "feature contract " + str(payload.get("contract_version"))),
+                                       if legacy else
+                                       f"clean retrain: {payload.get('imputer_version')} (absent column -> NaN)"
+                                       if recipe == PC.RECIPE_CLEAN_HARNESS else
+                                       "feature contract " + str(payload.get("contract_version"))),
             "holdout_independence": "FAIL (imputer medians include holdout rows)" if legacy else "PASS",
-            "chronology": "PASS (fit 0-68% | calibration 68-80% | holdout 80-100%, by date)",
+            "chronology": (("PASS (props clean retrain: fit "
+                            + " .. ".join((payload.get("window") or {}).get("fit_dates") or [])
+                            + " | calibration "
+                            + " .. ".join((payload.get("window") or {}).get("calibration_dates") or [])
+                            + " | fixed-date holdout after it, by date)")
+                           if recipe == PC.RECIPE_CLEAN_HARNESS else
+                           "PASS (fit 0-68% | calibration 68-80% | holdout 80-100%, by date)"),
             "serving_fallback_policy": "none (props have no row-level fallback)",
             "price_provenance": "N/A - props are PAPER permanently",
             "training_data_note": (

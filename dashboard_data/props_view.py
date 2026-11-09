@@ -26,6 +26,33 @@ MARKET_LABEL = {
 }
 
 
+def board_rows(tips: pd.DataFrame) -> tuple[pd.DataFrame, dict]:
+    """The upcoming board under the owner's serving rules (2026-11-08), applied again here so a
+    tips file written before the rules cannot show a blocked row: markets still on a
+    placeholder-trained model are HIDDEN (player_model.config.HIDDEN_PENDING_CLEAN_RETRAIN) and a
+    goalkeeper is never shown on shots on target / goals / assists (GK_BLOCKED_MARKETS). Returns
+    (rows kept, {reason code: rows removed})."""
+    from player_model import config as pconfig
+    from player_model.serving_rules import position_status, serving_skip_reason
+    if tips.empty or "market" not in tips.columns:
+        return tips, {}
+    pos = tips["position"] if "position" in tips.columns else pd.Series(None, index=tips.index)
+    why = pd.Series([serving_skip_reason(m, position_status(p)) for m, p in zip(tips["market"], pos)],
+                    index=tips.index, dtype=object)
+    removed = {r: int((why == r).sum()) for r in (pconfig.SKIP_HIDDEN_MARKET, pconfig.SKIP_GK_ATTACKING)
+               if int((why == r).sum())}
+    return tips[why.isna()].copy(), removed
+
+
+def hidden_markets_note() -> str:
+    """The reason label shown on the board for the hidden markets."""
+    from player_model import config as pconfig
+    names = ", ".join(MARKET_LABEL.get(m, m) for m in sorted(pconfig.HIDDEN_PENDING_CLEAN_RETRAIN))
+    return (f"Hidden until their clean retrain ({pconfig.SKIP_HIDDEN_MARKET}): {names}. Their models "
+            f"were trained on placeholder player profiles. Goalkeepers are never tipped on shots on "
+            f"target, goals or assists ({pconfig.SKIP_GK_ATTACKING}).")
+
+
 #: correction sidecars that flag player_ledger rows (output/corrections), each with `ledger_row`,
 #: `player_name` and `exclude`. Shown beside the record, never subtracted from it here.
 FLAG_FILES = {"props_sentinel_prob.csv": "model probability was a cap value",
