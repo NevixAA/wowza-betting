@@ -209,3 +209,48 @@ Owner: *"100% real data, no fakes, no bugs, no defaults, no global vars."* This 
 | Monthly simulation start | at least 6 months of earlier priced data |
 
 * `python -m src.integrity.data_truth --gate` runs before every commit of this study.
+
+## 12. Amendment 3 (2026-11-09, BEFORE any result was read) - league-wide edges and second-tier tips
+
+A first SELECT run was started and then stopped after about 2 minutes, before it wrote any output (its log
+is empty and no choices file exists). No result has been seen. Two owner rules are added:
+
+**12.1 League-wide edges are allowed.**
+* Owner: *"If we find an edge that says 'bet BTTS Y for every match in league X', it's OK if the data supports
+  it. Don't treat it as a bug."*
+* A 5th probability source, **NONE**, is added: there is no model filter, and every eligible match of the
+  league × market-side is bet (within the configuration's odds range).
+* It is implemented with the same machinery: every row's edge sits above every grid bar, so the bars reduce
+  to the league's own shrunk SELECT ROI.
+  * The league is ON only if that ROI is > 0 with at least MIN_BETS_FIT own bets.
+  * Otherwise it is OFF. A pooled stand-in is never used (amendment 2).
+* With EDGE / EV meaningless without a model, NONE contributes 6 configurations (the odds ranges) per family.
+  **Total: 4 × 2 × 6 + 6 = 54 per family, 540 in total.**
+* **Per-league competition.** After a family's configuration is chosen, each league is compared on its own
+  inner out-of-sample bets:
+  * the chosen MODEL configuration vs LEAGUE_WIDE (NONE with the same odds range);
+  * the league takes LEAGUE_WIDE only if both have at least MIN_BETS_FIT inner bets and LEAGUE_WIDE's inner
+    ROI is higher.
+  * That is one extra comparison per league, counted. Those cells are reported as **LEAGUE_WIDE**.
+* Known example to TEST, not assume: Argentina BTTS Yes (Pro: its profit was a league-wide regime, not model
+  skill).
+* In TOP-3 ranking, a LEAGUE_WIDE bet's expected value is the league's shrunk SELECT ROI. That is a real
+  estimate from data; there is no model probability.
+
+**12.2 Second-tier tips (TIER2).**
+* Owner: *"When we have bars and can tip 3 top bets for every league, we will have a tier for second tips if
+  the 3 is missing."*
+* By construction, every band BELOW the VALUABLE bar has a non-positive SELECT ROI. VALUABLE is the lowest
+  bar whose cumulative ROI is positive, so the bets just below it lose on SELECT. A TIER2 below VALUABLE can
+  therefore never be real value, and it is **not** built that way.
+* Pre-registered TIER2 instead:
+  * **TOP** = edge ≥ the league's MARKSMAN bar (the profit-maximising bar).
+  * **TIER2** = VALUABLE ≤ edge < MARKSMAN, only if that band's own SELECT ROI is > 0 with at least
+    MIN_BETS_FIT own bets and each bet has EV > 0 against the fair price. Otherwise the league has no TIER2.
+  * When MARKSMAN = VALUABLE, the band is empty and there is no TIER2.
+* TIER2's FINAL ROI and CI are reported separately.
+* **TOP-3 replay variants on FINAL:**
+  * **(i) TOP-ONLY-V:** qualify at VALUABLE, the 2026-11-08 owner rule.
+  * **(ii) TOP-ONLY-M:** qualify at MARKSMAN.
+  * **(iii) TOP-M + TIER2:** fill empty slots with TIER2 bets, labelled TIER2 and ranked after every TOP bet.
+  * The baseline is unchanged.
