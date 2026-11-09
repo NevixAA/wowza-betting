@@ -172,3 +172,40 @@ Added BEFORE any configuration was evaluated; sections 1-9 are unchanged except 
 * Each month's live results per league × market-side × month are the evidence trail that can justify real
   money next season.
 * Nothing in this study is called profitable unless its out-of-sample interval says so.
+
+## 11. Amendment 2 (2026-11-09, BEFORE any search was run) - the owner's biggest rule
+
+Owner: *"100% real data, no fakes, no bugs, no defaults, no global vars."* This overrides any optimization gain.
+
+* **Prices.** Only real, provable two-sided pairs are used.
+  * There are no assumed margins and no synthetic prices.
+  * The closing price is used only to measure CLV, and only where a real closing pair exists. Otherwise CLV
+    is missing and counted as missing.
+* **No default or fallback values.**
+  * A row missing a price, a result or a probability is excluded and counted.
+  * Section 4's fallback ("keep RAW/EDGE/no-cap when no configuration has 100 inner bets") is **withdrawn**.
+    Such a cell family is **OFF** with the reason `INSUFFICIENT_SELECTION_EVIDENCE`.
+* **No global bar and no pooled stand-in served to a league.** Shrinkage toward the pooled curve is allowed
+  only as a learned weight inside a league's own estimate, and that weight is reported per league.
+  * A league whose bars would come only from the pooled curve (`src/league_bars` basis `SHRUNK_TO_POOL`,
+    fewer than MIN_BETS_FIT = 40 own selection bets at every bar) gets **no bars**.
+  * Such a league is **OFF** with the reason `OWN_DATA_TOO_THIN`, its own counts reported. It would otherwise
+    serve a pooled stand-in.
+  * This tightens the 2026-11-08 instruction "every league gets its own bars". The owner is told which leagues
+    it affects.
+* **Every constant that decides a tip is declared here and reported:**
+
+| Constant | Value |
+|---|---|
+| Bar grid (`scripts/league_thresholds.GRID`) | 0.02..0.30 in steps of 0.01 |
+| MIN_BETS_FIT (own selection bets for a bar) | 40 |
+| Odds caps | max {none, 2.50, 3.50} × min {none, 1.40} |
+| Inner validation blocks | 5 (4 scored) |
+| Minimum inner bets to choose a configuration | 100 |
+| LEARNED L2 strength | C = 0.5 (Pro's frozen value) |
+| SELECT / FINAL dates | as in section 2 |
+| PROVEN rule | ≥ 150 bets, Holm one-sided p < 0.025 |
+| Bootstrap resamples | 2,000 |
+| Monthly simulation start | at least 6 months of earlier priced data |
+
+* `python -m src.integrity.data_truth --gate` runs before every commit of this study.
