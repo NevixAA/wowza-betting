@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-09T13:46:22.826716+00:00",
+ "generated_at": "2026-11-09T13:46:44.362334+00:00",
  "owner_decision": "2026-11-04 fix round 8 (props item 3)",
  "plan": {
   "rows": 961433,
@@ -21,20 +21,14 @@
   "rows_mapped_through_lists": 0,
   "fixtures": 33358,
   "proven_fixtures": 33110,
-  "redo_refused_fixtures": 921,
-  "journaled_fixtures": 31803,
-  "planned_calls": 1307
+  "journaled_fixtures": 33110,
+  "planned_calls": 0
  },
  "run": {
-  "calls": 1307,
-  "fetched": 1307,
-  "rows_stored": 36269,
-  "rows_refused": {
-   "player_id_invalid": 312,
-   "player_twice_in_answer": 44,
-   "player_not_in_answer": 495,
-   "side_unproven": 25
-  },
+  "calls": 0,
+  "fetched": 0,
+  "rows_stored": 0,
+  "rows_refused": {},
   "empty_answers": 0
  },
  "stored_rows": 952891,
