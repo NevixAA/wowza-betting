@@ -206,9 +206,11 @@ def plan(rows: pd.DataFrame | None = None, fx: pd.DataFrame | None = None,
         # P7 item 6: re-read the journaled fixtures that still hold a source row with no stored
         # result (refused at the time, e.g. side_unproven before the is_home proof existed)
         st_rows = read_parquet(OUT)
-        stored = (set(zip(pd.to_numeric(st_rows["fixture_id"], errors="coerce").fillna(-1).astype(int),
-                          pd.to_numeric(st_rows["player_id"], errors="coerce").fillna(-1).astype(int)))
-                  if len(st_rows) else set())
+        stored = set()
+        if len(st_rows):
+            keys = pd.DataFrame({"f": pd.to_numeric(st_rows["fixture_id"], errors="coerce"),
+                                 "p": pd.to_numeric(st_rows["player_id"], errors="coerce")}).dropna()
+            stored = set(zip(keys["f"].astype(int), keys["p"].astype(int)))
         src = rows[rows["fixture_id"].notna() & rows["player_id"].notna()]
         unstored = {int(f) for f, p_ in zip(src["fixture_id"], src["player_id"])
                     if (int(f), int(p_)) not in stored}
@@ -246,7 +248,7 @@ def parse_answer(body: dict | None, fid: int, fxrow, rows: pd.DataFrame, now: st
     resp = (body or {}).get("response") or []
     j = {"fixture_id": int(fid), "source": str(rows["source"].iloc[0]) if len(rows) else None,
          "status": "ok" if resp else "empty", "n_teams": len(resp), "n_players": 0, "n_rows": 0,
-         "n_refused": 0, "fetched_at": now, "refused": {}}
+         "n_refused": 0, "is_home_corrected": 0, "fetched_at": now, "refused": {}}
     if not resp:
         j["n_refused"] = int(len(rows))
         j["refused"]["empty_answer"] = int(len(rows))
@@ -298,7 +300,7 @@ def parse_answer(body: dict | None, fid: int, fxrow, rows: pd.DataFrame, now: st
                 _refuse("side_unproven")
                 continue
             home_corrected = True
-            j["is_home_corrected"] = j.get("is_home_corrected", 0) + 1
+            j["is_home_corrected"] += 1
         own_tid = AL.int_or_none(getattr(r, "team_id", None))
         if own_tid is not None and own_tid != tid:
             _refuse("team_id_differs")
