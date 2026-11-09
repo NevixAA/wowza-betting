@@ -723,7 +723,9 @@ def read_overrides(path: Path | None = None) -> dict:
     return json.loads(p.read_text(encoding="utf-8"))
 
 
-def _override_used(override_id: str, model_type: str) -> bool:
+def _override_used(override_id: str, model_type: str, sha: str) -> bool:
+    """True when THIS artifact (override, model type, sha256) was already installed: each listed
+    artifact installs once. The decision row's candidate_version embeds the sha's first 8 hex."""
     p = decisions_file()
     if not p.exists():
         return False
@@ -731,8 +733,35 @@ def _override_used(override_id: str, model_type: str) -> bool:
     if d.empty or "stage" not in d.columns or "reason" not in d.columns:
         return False
     hit = d[(d["stage"] == OWNER_CLEAN_SWITCH) & (d["model_type"] == model_type)
-            & d["reason"].str.contains(f"[{override_id}]", regex=False)]
+            & d["reason"].str.contains(f"[{override_id}]", regex=False)
+            & d["candidate_version"].str.endswith(f"_{sha[:8]}")]
     return bool(len(hit))
+
+
+def override_stages(o: dict) -> list[dict]:
+    """The approved stages of an override record. A record written before stages existed carries
+    one `artifacts` map: that is its only stage ('first_refit')."""
+    if o.get("stages"):
+        return list(o["stages"])
+    return [{"stage": "first_refit", "artifacts": o.get("artifacts") or {}}] if o.get("artifacts") else []
+
+
+def _covering_stage(o: dict, model_type: str, sha: str, now: datetime) -> dict:
+    """The stage whose artifacts list this exact (model type, sha256); its install window, when it has
+    one, must contain `now`. Raises PermissionError otherwise."""
+    for st in override_stages(o):
+        art = (st.get("artifacts") or {}).get(model_type) or {}
+        if art.get("sha256") != sha:
+            continue
+        win = st.get("install_window")
+        if win:
+            lo = pd.Timestamp(win[0], tz="UTC")
+            hi = pd.Timestamp(win[1], tz="UTC") + pd.Timedelta(days=1)       # inclusive end date
+            if not (lo <= pd.Timestamp(now) < hi):
+                raise PermissionError(f"stage {st.get('stage')} of override {o.get('id')} installs only "
+                                      f"between {win[0]} and {win[1]} (now {reg.iso(now)})")
+        return st
+    raise PermissionError(f"override {o.get('id')} does not cover this {model_type} artifact (sha256 {sha[:16]})")
 
 
 def _validate_clean_payload(model_type: str, payload: dict) -> None:
@@ -796,16 +825,16 @@ def owner_clean_switch(model_type: str, raw: bytes, *, override_id: str, superse
     if len(recs) != 1:
         raise PermissionError(f"no single owner override record {override_id!r} in {OVERRIDES_FILE.name}")
     o = recs[0]
-    for k in ("owner_quote", "approved_by", "approved_on", "scope", "artifacts"):
+    for k in ("owner_quote", "approved_by", "approved_on", "scope"):
         if not o.get(k):
             raise PermissionError(f"override {override_id}: '{k}' missing")
-    art = (o["artifacts"] or {}).get(model_type) or {}
+    if not override_stages(o):
+        raise PermissionError(f"override {override_id}: no approved artifacts")
     sha = reg.sha256_bytes(raw)
-    if art.get("sha256") != sha:
-        raise PermissionError(f"override {override_id} does not cover this {model_type} artifact "
-                              f"(sha256 {sha[:16]}; record: {str(art.get('sha256'))[:16]})")
-    if _override_used(override_id, model_type):
-        raise PermissionError(f"override {override_id} was already used for {model_type}; it is one-time")
+    stage = _covering_stage(o, model_type, sha, now)
+    if _override_used(override_id, model_type, sha):
+        raise PermissionError(f"override {override_id} was already used for this {model_type} artifact; "
+                              f"each artifact installs once")
     payload = pickle.loads(raw)
     _validate_clean_payload(model_type, payload)
     prior = (reg.read_pointer().get(model_type) or {}).get("model_version", "")
@@ -816,7 +845,9 @@ def owner_clean_switch(model_type: str, raw: bytes, *, override_id: str, superse
     version = reg.make_version(model_type, trained_at, sha)
     fcols = list(payload.get("feature_cols") or [])
     held = payload.get("served_holdout_metrics") or {}
-    approval = {"override_id": override_id, "owner_quote": o["owner_quote"], "approved_by": o["approved_by"],
+    approval = {"override_id": override_id, "override_stage": stage.get("stage"),
+                "stage_quote": stage.get("owner_quote") or o["owner_quote"],
+                "owner_quote": o["owner_quote"], "approved_by": o["approved_by"],
                 "approved_on": o["approved_on"], "scope": o["scope"], "installed_at": reg.iso(now),
                 "gate_version_overridden": GATE_VERSION, "rule_overridden": o.get("rule_overridden", "")}
     manifest = {
@@ -839,8 +870,9 @@ def owner_clean_switch(model_type: str, raw: bytes, *, override_id: str, superse
         "promotion_status": OWNER_CLEAN_SWITCH, "model_role": "CHAMPION",
         "owner_approval": approval,
     }
-    reason = (f"{OWNER_CLEAN_SWITCH} [{override_id}] by {o['approved_by']} ({o['approved_on']}): "
-              f"\"{o['owner_quote']}\" - {o['scope']}")
+    reason = (f"{OWNER_CLEAN_SWITCH} [{override_id}] stage {stage.get('stage')} by {o['approved_by']} "
+              f"({stage.get('approved_on') or o['approved_on']}): "
+              f"\"{stage.get('owner_quote') or o['owner_quote']}\" - {stage.get('scope') or o['scope']}")
     _install_champion(model_type, manifest, raw, reason=reason, batch=manifest["retrain_batch_id"],
                       source=OWNER_CLEAN_SWITCH, holdout=held, at=now)
     stem = reg.MODEL_FILES[model_type].stem

@@ -87,7 +87,7 @@ def test_is_one_time(tmpreg):
     rec = _record(tmpreg, {"standard": raw})
     m = PG.owner_clean_switch("standard", raw, override_id="clean-data-switch-2026-11-09",
                               overrides_path=rec, now=T0)
-    with pytest.raises(PermissionError, match="one-time"):
+    with pytest.raises(PermissionError, match="installs once"):
         PG.owner_clean_switch("standard", raw, override_id="clean-data-switch-2026-11-09",
                               overrides_path=rec, now=T0, supersede=m["model_version"])
 
@@ -177,3 +177,55 @@ def test_track_split_payload_routes_each_row_to_its_own_track():
     df = pd.DataFrame({"league": [std, nf, std], "a": [1.0, 2.0, 3.0]})
     p = M.predict_proba(df, payload=pay).to_numpy()
     assert np.allclose(p, [0.2, 0.8, 0.2])
+
+
+# ── staged records (owner 2026-11-09: "Approve 2nd + final refit") ─────────────────────────────
+
+def _staged(tmp_path, stages, oid="clean-data-switch-2026-11-09"):
+    f = tmp_path / "staged.json"
+    f.write_text(json.dumps({"overrides": [{
+        "id": oid, "owner_quote": "Override for this switch.", "approved_by": "Nevo (owner)",
+        "approved_on": "2026-11-09", "scope": "the clean-data switch only", "stages": stages}]}),
+        encoding="utf-8")
+    return f
+
+
+def test_a_later_stage_installs_its_own_artifact_after_the_first(tmpreg):
+    r1, r2 = _raw(_payload()), _raw({**_payload(), "feature_cols": ["a", "b", "c"]})
+    rec = _staged(tmpreg, [
+        {"stage": "first_refit", "artifacts": {"standard": {"sha256": reg.sha256_bytes(r1)}}},
+        {"stage": "second_refit", "owner_quote": "Approve 2nd + final refit",
+         "artifacts": {"standard": {"sha256": reg.sha256_bytes(r2)}}}])
+    m1 = PG.owner_clean_switch("standard", r1, override_id="clean-data-switch-2026-11-09",
+                               overrides_path=rec, now=T0)
+    m2 = PG.owner_clean_switch("standard", r2, override_id="clean-data-switch-2026-11-09",
+                               overrides_path=rec, now=T0, supersede=m1["model_version"])
+    assert m2["owner_approval"]["override_stage"] == "second_refit"
+    assert m2["owner_approval"]["stage_quote"] == "Approve 2nd + final refit"
+    assert reg.read_pointer()["standard"]["model_version"] == m2["model_version"]
+    with pytest.raises(PermissionError, match="installs once"):        # the first is not re-installable
+        PG.owner_clean_switch("standard", r1, override_id="clean-data-switch-2026-11-09",
+                              overrides_path=rec, now=T0, supersede=m2["model_version"])
+
+
+def test_the_final_stage_installs_only_inside_its_window(tmpreg):
+    raw = _raw(_payload())
+    rec = _staged(tmpreg, [{"stage": "final_refit", "install_window": ["2026-11-19", "2026-11-20"],
+                            "artifacts": {"standard": {"sha256": reg.sha256_bytes(raw)}}}])
+    with pytest.raises(PermissionError, match="installs only between"):
+        PG.owner_clean_switch("standard", raw, override_id="clean-data-switch-2026-11-09",
+                              overrides_path=rec, now=datetime(2026, 11, 18, 23, 0, tzinfo=timezone.utc))
+    with pytest.raises(PermissionError, match="installs only between"):
+        PG.owner_clean_switch("standard", raw, override_id="clean-data-switch-2026-11-09",
+                              overrides_path=rec, now=datetime(2026, 11, 21, 0, 0, tzinfo=timezone.utc))
+    PG.owner_clean_switch("standard", raw, override_id="clean-data-switch-2026-11-09",
+                          overrides_path=rec, now=datetime(2026, 11, 20, 22, 0, tzinfo=timezone.utc))
+
+
+def test_a_stage_without_artifacts_covers_nothing(tmpreg):
+    raw = _raw(_payload())
+    rec = _staged(tmpreg, [{"stage": "final_refit", "install_window": ["2026-11-19", "2026-11-20"],
+                            "artifacts": {}}])
+    with pytest.raises(PermissionError, match="does not cover"):
+        PG.owner_clean_switch("standard", raw, override_id="clean-data-switch-2026-11-09",
+                              overrides_path=rec, now=datetime(2026, 11, 19, 12, 0, tzinfo=timezone.utc))

@@ -1,78 +1,166 @@
 {
-  "about": "Owner-approved ONE-TIME overrides of the promotion gate's prospective-period rule (PG-1.0). src/promotion_gate.owner_clean_switch installs ONLY an artifact whose exact sha256 is listed here, each once. Do not hand-edit an existing record; a new override needs a new owner decision.",
+  "about": "Owner-approved ONE-TIME overrides of the promotion gate's prospective-period rule (PG-1.0). src/promotion_gate.owner_clean_switch installs ONLY an artifact whose exact sha256 is listed in a stage here, each once, and a stage with an install_window only inside it. Do not hand-edit an approved stage; the final_refit stage's artifacts are filled once, by the final refit, within its window.",
   "overrides": [
     {
       "id": "clean-data-switch-2026-11-09",
       "owner_quote": "Override for this switch.",
       "approved_by": "Nevo (owner)",
       "approved_on": "2026-11-09",
-      "scope": "the one-time switch of every team model to the Phase 2 clean-retrain recipe refitted on the repaired data through 2026-11-08 (decisions A/B/C/D, reports/P3_TEAM_PROMOTION_REVIEW.md); the 1,000-settled-row prospective rule stays in force for every later promotion",
+      "scope": "the one-time switch of every team model to the Phase 2 clean-retrain recipe on the repaired data, in exactly the stages below (first_refit, second_refit, final_refit); the 1,000-settled-row prospective rule (PG-1.0 Period 2) stays in force for every later promotion",
       "rule_overridden": "PG-1.0 Period 2: >= 1,000 prospective first-sight settled rows per track before PROMOTE",
-      "evidence": {
-        "phase2_reruns": [
-          "reports/phase2_runs/standard_run_20261109T104641Z",
-          "reports/phase2_runs/new_format_run_20261109T112024Z"
-        ],
-        "refit_code_sha": "406c1260b1c748116d2c87b04f8f6c6d19c6e17e",
-        "data": {
-          "loaded_rows": 70744,
-          "frame_hash": "4638ab5ee15f3a7f"
+      "stages": [
+        {
+          "stage": "first_refit",
+          "approved_on": "2026-11-09",
+          "owner_quote": "Override for this switch.",
+          "scope": "Phase 2 champion_recipe refitted on the repaired data (frame 4638ab5ee15f3a7f), training to 2026-10-25",
+          "evidence": {
+            "phase2_reruns": [
+              "reports/phase2_runs/standard_run_20261109T104641Z",
+              "reports/phase2_runs/new_format_run_20261109T112024Z"
+            ],
+            "refit_code_sha": "406c1260b1c748116d2c87b04f8f6c6d19c6e17e",
+            "data": {
+              "loaded_rows": 70744,
+              "frame_hash": "4638ab5ee15f3a7f"
+            }
+          },
+          "artifacts": {
+            "standard": {
+              "sha256": "254623a04a51bdc314d0cc26670247b1492d5c9eb3ac70fbbc0e3d66e73491d0",
+              "sources": [
+                "standard/over25"
+              ],
+              "recipe": "std_v9_repaired"
+            },
+            "newformat": {
+              "sha256": "4268cf9fd694c34c919af6f30e6020bbc6212d1802c32e49043541ff721423e3",
+              "sources": [
+                "new_format/over25"
+              ],
+              "recipe": "nf_v9_repaired"
+            },
+            "ht_over05": {
+              "sha256": "bd7223e7cc5311bd36fb74f1a0347bbd8fcf6397a1bd93648fae0d704b46d03f",
+              "sources": [
+                "standard/ht_over05"
+              ],
+              "recipe": "ht_v9_repaired"
+            },
+            "ht_over15": {
+              "sha256": "df6dc41205a6dce9f36db55bb415e46f4626077c3b0eb93831c352e8992e27cb",
+              "sources": [
+                "standard/ht_over15"
+              ],
+              "recipe": "ht_v9_repaired"
+            },
+            "btts": {
+              "sha256": "5a7f72b4bf4ff952ca6c23ab837d9bfb7c4d7763f76468bd032ce92c6dc2441b",
+              "sources": [
+                "standard/btts",
+                "new_format/btts"
+              ],
+              "recipe": "side_v9_repaired"
+            },
+            "over15": {
+              "sha256": "a343092b9f76a70848712f55a783f4b43b067367d85773ff6aa4da381f2f9bb9",
+              "sources": [
+                "standard/over15",
+                "new_format/over15"
+              ],
+              "recipe": "side_v9_repaired"
+            },
+            "over35": {
+              "sha256": "c05e41a45e55f5c97bf74738e3cf798582b6a6d29d356649f6853e56abddaa22",
+              "sources": [
+                "standard/over35",
+                "new_format/over35"
+              ],
+              "recipe": "side_v9_repaired"
+            }
+          },
+          "status": "INSTALLED 2026-11-09"
+        },
+        {
+          "stage": "second_refit",
+          "approved_on": "2026-11-09",
+          "owner_quote": "Approve 2nd + final refit",
+          "scope": "the same clean-data switch refitted on the merged data (data-truth-100 with the P7 collection and the results sync; frame 8d973b3f2f1f04f7), training to 2026-11-01; live = training at 0 differences (scripts/team_train_serve_parity.py: 0 of 5,375 cells, 12 x 125/125)",
+          "evidence": {
+            "refit_code_sha": "a29fdb1ef5f60ca096a3140a919d8124f598b399",
+            "data": {
+              "loaded_rows": 71014,
+              "frame_hash": "8d973b3f2f1f04f7"
+            }
+          },
+          "artifacts": {
+            "standard": {
+              "sha256": "4025384d6cb2a2f3201aec60f3ade16e59a152f4369352a48be9ce77ec3fc3b9",
+              "sources": [
+                "standard/over25"
+              ],
+              "recipe": "std_v9_repaired"
+            },
+            "newformat": {
+              "sha256": "9198e5bd0003023d12bc0a6e58341a25bf64d9714941346bf612da5435faa7f6",
+              "sources": [
+                "new_format/over25"
+              ],
+              "recipe": "nf_v9_repaired"
+            },
+            "ht_over05": {
+              "sha256": "de69dff4c40f68065f6ad5a94b1e11518febddfc862ed7fa1858e2d429623bde",
+              "sources": [
+                "standard/ht_over05"
+              ],
+              "recipe": "ht_v9_repaired"
+            },
+            "ht_over15": {
+              "sha256": "68f5c41c597c223882c47c5ca6986f1f987e74ab994bc8b8376a4efe43ed7811",
+              "sources": [
+                "standard/ht_over15"
+              ],
+              "recipe": "ht_v9_repaired"
+            },
+            "btts": {
+              "sha256": "d7cd27622674f7670867148c01397dfbd3ce20386c24b8e8fe8466b601d7a7e1",
+              "sources": [
+                "standard/btts",
+                "new_format/btts"
+              ],
+              "recipe": "side_v9_repaired"
+            },
+            "over15": {
+              "sha256": "2af54e42b8af630d00236c234a05342a307da1c474721da7e2c00b767b0b9c82",
+              "sources": [
+                "standard/over15",
+                "new_format/over15"
+              ],
+              "recipe": "side_v9_repaired"
+            },
+            "over35": {
+              "sha256": "ffeaa631f6e67b23854fc9235cd45068865ea919741cdbab968a156187650d62",
+              "sources": [
+                "standard/over35",
+                "new_format/over35"
+              ],
+              "recipe": "side_v9_repaired"
+            }
+          }
+        },
+        {
+          "stage": "final_refit",
+          "approved_on": "2026-11-09",
+          "owner_quote": "Approve 2nd + final refit",
+          "scope": "ONE final refit right before go-live, on the final collected data (after the last collection and results sync): the same recipe (scripts/phase2_refit_serving.py, champion_recipe per track x market), live = training at 0 differences required (scripts/team_train_serve_parity.py) before install. Its artifact sha256s are added to `artifacts` at that time under this same owner approval; no further owner ask is needed for it, and nothing beyond it is covered.",
+          "install_window": [
+            "2026-11-19",
+            "2026-11-20"
+          ],
+          "gate": "scripts/team_train_serve_parity.py on all refit models: 0 differing cells and every probability identical",
+          "artifacts": {}
         }
-      },
-      "artifacts": {
-        "standard": {
-          "sha256": "254623a04a51bdc314d0cc26670247b1492d5c9eb3ac70fbbc0e3d66e73491d0",
-          "sources": [
-            "standard/over25"
-          ],
-          "recipe": "std_v9_repaired"
-        },
-        "newformat": {
-          "sha256": "4268cf9fd694c34c919af6f30e6020bbc6212d1802c32e49043541ff721423e3",
-          "sources": [
-            "new_format/over25"
-          ],
-          "recipe": "nf_v9_repaired"
-        },
-        "ht_over05": {
-          "sha256": "bd7223e7cc5311bd36fb74f1a0347bbd8fcf6397a1bd93648fae0d704b46d03f",
-          "sources": [
-            "standard/ht_over05"
-          ],
-          "recipe": "ht_v9_repaired"
-        },
-        "ht_over15": {
-          "sha256": "df6dc41205a6dce9f36db55bb415e46f4626077c3b0eb93831c352e8992e27cb",
-          "sources": [
-            "standard/ht_over15"
-          ],
-          "recipe": "ht_v9_repaired"
-        },
-        "btts": {
-          "sha256": "5a7f72b4bf4ff952ca6c23ab837d9bfb7c4d7763f76468bd032ce92c6dc2441b",
-          "sources": [
-            "standard/btts",
-            "new_format/btts"
-          ],
-          "recipe": "side_v9_repaired"
-        },
-        "over15": {
-          "sha256": "a343092b9f76a70848712f55a783f4b43b067367d85773ff6aa4da381f2f9bb9",
-          "sources": [
-            "standard/over15",
-            "new_format/over15"
-          ],
-          "recipe": "side_v9_repaired"
-        },
-        "over35": {
-          "sha256": "c05e41a45e55f5c97bf74738e3cf798582b6a6d29d356649f6853e56abddaa22",
-          "sources": [
-            "standard/over35",
-            "new_format/over35"
-          ],
-          "recipe": "side_v9_repaired"
-        }
-      }
+      ]
     }
   ]
 }

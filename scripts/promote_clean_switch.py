@@ -95,6 +95,11 @@ def install(assembled: Path, override_id: str) -> list[dict]:
                      "prior": prior})
         print(mt, m["model_version"], "replaces", prior or "-", flush=True)
     o = [x for x in PG.read_overrides().get("overrides", []) if x.get("id") == override_id][0]
+    import pandas as pd
+    dec = PG.decisions_file()
+    d = pd.read_csv(dec, dtype=str, keep_default_na=False) if dec.exists() else pd.DataFrame()
+    if len(d) and ((d.get("stage") == "ARCHIVE") & (d.get("model_type") == "standard_repaired")).any():
+        return done                                  # archived once (first stage); never re-logged
     PG.record_archive("standard_repaired",
                       f"owner {o['approved_on']}: \"the models that worked before we reach 100% clean data are "
                       f"irrelevant\" - the 2026-10-28 v9_repaired Standard O/U 2.5 model stops serving "
