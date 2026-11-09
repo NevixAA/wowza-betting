@@ -80,9 +80,11 @@ def test_unknown_side_gets_no_odds():
 
 
 def test_threshold_evidence_comes_from_the_real_gates(monkeypatch):
-    """Championship O/U 2.5 has a calibrated per-league SNIPER threshold; Brazil Serie A O/U 2.5 is
-    tiered on the global bar and so is planned with NO stake."""
+    """Owner 2026-11-09: evidence = the league's OWN owner-applied bars. Championship O/U 2.5 has them
+    (installed here); Brazil Serie A O/U 2.5 has none, so it gets no tier and, if planned, NO stake."""
     monkeypatch.undo()                                   # the real league_threshold_evidence
+    from tests.own_bars import install
+    install(monkeypatch, ["Championship"], markets=("ou25",))
     b =pd.DataFrame([{**_bets().iloc[0].to_dict(), "league": lg, "home_team": lg}
                       for lg in ("Championship", "Brazil Serie A")])
     s = sp.selections(b, None).set_index("league")

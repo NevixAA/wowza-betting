@@ -236,6 +236,10 @@ with tab_live:
 # ── Tab 5: Thresholds ──────────────────────────────────────────────────────────
 with tab_thr:
     st.markdown("### 🎚 Signal Thresholds & Calibration")
+    st.warning("Since 2026-11-09 every tip is tiered ONLY on its league's own owner-approved bars "
+               f"({TIER_LABEL['SNIPER']} / {TIER_LABEL['MARKSMAN']} / {TIER_LABEL['VALUABLE']} per league and "
+               "market). A league without its own bars gets no tip. The global values and the hand-set table "
+               "below are HISTORICAL: they show what served before that date and no longer decide any tip.")
 
     col1, col2, col3 = st.columns(3)
     with col1:

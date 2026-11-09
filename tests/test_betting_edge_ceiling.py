@@ -1,42 +1,27 @@
-"""Estate scan 2026-11-02 finding (e): the documented SNIPER edge ceiling never fired, because the
-SNIPER return came first and every ceiling is above the global SNIPER bar. The ceiling now applies
-before SNIPER — only when the owner switches it on (SNIPER_EDGE_CEILING_ENFORCED); off, tiers are
-byte-for-byte what they were. No threshold or ceiling value is touched."""
-from __future__ import annotations
+"""Estate scan 2026-11-02 finding (e) + owner 2026-11-09 ("no global vars").
 
-import pytest
+The documented SNIPER edge ceiling (config.EDGE_CEILING / LEAGUE_EDGE_CEILING) only ever applied to a
+fixture tiered on the GLOBAL bar (no per-league threshold). Since 2026-11-09 serving has no global bar:
+a league tiers on its own owner-applied bars or not at all (NO_LEAGUE_BAR). So the ceiling can no longer
+apply anywhere, and an edge above the old ceiling in a league with its own bars is tiered by those bars.
+"""
+from __future__ import annotations
 
 import config
 from src import betting as B
+from tests.own_bars import install
 
 
-@pytest.fixture
-def global_bar(monkeypatch):
-    """A league tiered on the GLOBAL bar (no per-league threshold, no approved optimiser value)."""
-    monkeypatch.setattr(B, "_STANDARD_TH_CACHE", {})
-    return ""
+def test_no_global_tier_exists_for_a_ceiling_to_demote(monkeypatch):
+    install(monkeypatch, [], markets=("ou25",))
+    assert B._base_tier(config.EDGE_CEILING + 0.05, "OVER", "Any League") == "AVOID"
 
 
-def test_ceiling_downgrades_over_ceiling_edge_when_enforced(monkeypatch, global_bar):
+def test_own_bars_tier_an_edge_above_the_old_ceiling(monkeypatch):
+    install(monkeypatch, ["L"], markets=("ou25",), bars=(0.12, 0.08, 0.04))
     monkeypatch.setattr(config, "SNIPER_EDGE_CEILING_ENFORCED", True, raising=False)
-    edge = config.EDGE_CEILING + 0.05
-    assert edge >= config.SNIPER_THRESHOLD_OVER
-    assert B._base_tier(edge, "OVER", global_bar) == "MARKSMAN"
-    assert B._base_tier(edge, "UNDER", global_bar) == "MARKSMAN"
-    # below the ceiling, above the SNIPER bar: still SNIPER
-    assert B._base_tier(config.SNIPER_THRESHOLD_OVER + 0.001, "OVER", global_bar) == "SNIPER"
+    assert B._base_tier(config.EDGE_CEILING + 0.05, "OVER", "L") == "SNIPER"
 
 
-def test_ceiling_off_by_default_keeps_current_tiers(monkeypatch, global_bar):
-    monkeypatch.setattr(config, "SNIPER_EDGE_CEILING_ENFORCED", None, raising=False)
-    monkeypatch.delenv("WOWZA_SNIPER_EDGE_CEILING", raising=False)
-    assert not B.sniper_edge_ceiling_enforced()
-    assert B._base_tier(config.EDGE_CEILING + 0.05, "OVER", global_bar) == "SNIPER"
-
-
-def test_ceiling_never_applies_to_per_league_thresholds(monkeypatch):
-    monkeypatch.setattr(config, "SNIPER_EDGE_CEILING_ENFORCED", True, raising=False)
-    monkeypatch.setattr(B, "_STANDARD_TH_CACHE", {})
-    lg = next(iter(config.LEAGUE_SNIPER_THRESHOLDS))
-    th = config.LEAGUE_SNIPER_THRESHOLDS[lg]
-    assert B._base_tier(max(th, config.EDGE_CEILING) + 0.05, "OVER", lg) == "SNIPER"
+def test_the_ceiling_switch_is_gone_from_serving():
+    assert not hasattr(B, "sniper_edge_ceiling_enforced")

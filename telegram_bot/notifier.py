@@ -2815,7 +2815,7 @@ def notify_retrain_result() -> bool:
 
 def threshold_source_line(src) -> str:
     """The alert line that says a side tip was tiered on the GLOBAL bar (fix9/defaults 2026-11-04).
-    A tier on the declared global policy bar (config.SIDE_GLOBAL_BARS) must never read like a
+    A tier on the historical global bar (config.HISTORICAL_SIDE_GLOBAL_BARS, served until 2026-11-09) must never read like a
     per-league tier; a LEAGUE tier, or a row that does not record its bar, adds no line."""
     s = str(src).strip().upper() if src is not None and not (isinstance(src, float) and src != src) else ""
     if s == app_config.THRESHOLD_SOURCE_GLOBAL:

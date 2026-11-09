@@ -450,7 +450,7 @@ SIDE_LEDGER_COLS = [
     # model attribution, appended (2026-10-18) — see LEDGER_COLS
     *VERSION_FIELDS,
     # WHICH BAR TIERED THE TIP, appended (fix9/defaults 2026-11-04): "LEAGUE" = the league's own
-    # approved sniper/marksman bars, "GLOBAL" = the declared global policy bar (config.SIDE_GLOBAL_BARS;
+    # approved sniper/marksman bars, "GLOBAL" = the global bar that served until 2026-11-09 (config.HISTORICAL_SIDE_GLOBAL_BARS;
     # src/side_thresholds). Rows logged before it are blank: the bar of a past tip was not recorded
     # in its row, so it is not written in afterwards (logged rows stand). Reconstructed 2026-11-04
     # from the params file in force at each generated_at: 525 of 664 live tips were GLOBAL-bar tiers.

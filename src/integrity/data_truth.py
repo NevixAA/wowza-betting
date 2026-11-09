@@ -24,6 +24,11 @@ turns system health RED instead of waiting for the next audit:
     5 ONE MATCH  the banks, through the loader's identity pipeline, hold no match twice (same day
                  under two spellings, or 1-3 days apart) and no row whose form window holds its own
                  match (2026-11-02).
+    6 NO GLOBAL  (owner 2026-11-09: "no global vars") no serving module reads a global tier bar:
+                 config.HISTORICAL_SIDE_GLOBAL_BARS / SIDE_GLOBAL_BARS, VALUABLE_THRESHOLD /
+                 VALUE_THRESHOLD, MARKSMAN_THRESHOLD, SNIPER_THRESHOLD(_OVER/_UNDER), EDGE_CEILING,
+                 LEAGUE_EDGE_CEILING, the hand-set LEAGUE_SNIPER/MARKSMAN tables, or writes the GLOBAL
+                 threshold source. Tiers come only from each league's own owner-applied bars.
 
 A check whose input is missing is NO_DATA (or RED where the input is a production bank), never GREEN.
 
@@ -448,6 +453,54 @@ def one_match(banks: dict | None = None) -> dict:
               rule, ex)
 
 
+# ── 6 NO GLOBAL BAR IN SERVING ───────────────────────────────────────────────────────────────────
+#: the modules that tier, gate or stake a tip (and the gate mirror they share). A file listed here that
+#: does not exist on this branch is skipped (the TOP-3 selection lives on its own branch until merged).
+SERVING_FILES = ("pipeline.py", "src/betting.py", "src/side_thresholds.py", "src/gate_resolver.py",
+                 "src/integrity/side_edge_devig.py", "src/stake_plan.py", "src/bankroll_policy.py",
+                 "src/cloudbet/bot.py", "src/top3_league.py")
+#: global / pooled / hand-set bars that served before 2026-11-09 (now historical values in config.py)
+GLOBAL_BAR_NAMES = ("HISTORICAL_SIDE_GLOBAL_BARS", "SIDE_GLOBAL_BARS", "VALUABLE_THRESHOLD", "VALUE_THRESHOLD",
+                    "MARKSMAN_THRESHOLD", "SNIPER_THRESHOLD", "SNIPER_THRESHOLD_OVER", "SNIPER_THRESHOLD_UNDER",
+                    "EDGE_CEILING", "LEAGUE_EDGE_CEILING", "LEAGUE_SNIPER_THRESHOLDS",
+                    "LEAGUE_MARKSMAN_THRESHOLDS", "_LEAGUE_SNIPER_CALIBRATED", "_LEAGUE_MARKSMAN_CALIBRATED",
+                    "THRESHOLD_SOURCE_GLOBAL")
+_GLOBAL_BAR_RE = re.compile(
+    r"\b(?:app_)?config\s*\.\s*(" + "|".join(GLOBAL_BAR_NAMES) + r")\b"
+    r"|getattr\(\s*(?:app_)?config\s*,\s*[\"'](" + "|".join(GLOBAL_BAR_NAMES) + r")[\"']"
+    r"|\bglobal_bars\s*\(")
+
+
+def scan_global_bars(files=None, root: Path | None = None) -> list[dict]:
+    """Every code line (not a comment or docstring) of a serving module that reads a global bar."""
+    r = Path(root) if root is not None else ROOT
+    hits = []
+    for rel in (SERVING_FILES if files is None else files):
+        p = r / rel
+        if not p.exists():
+            continue
+        text = p.read_text(encoding="utf-8", errors="replace")
+        skip = _docstring_lines(text)
+        for i, ln in enumerate(text.splitlines(), start=1):
+            code = ln.split("#", 1)[0]
+            if i in skip or not code.strip():
+                continue
+            if _GLOBAL_BAR_RE.search(code):
+                hits.append({"file": rel, "line": i, "code": code.strip()})
+    return hits
+
+
+def no_global_bars() -> dict:
+    rule = ("no serving module (tiering, gates, staking) reads a global / pooled / hand-set tier bar or "
+            "writes the GLOBAL threshold source: every tier is the league's own owner-applied bars "
+            "(src/side_thresholds.own_bars) or none (NO_LEAGUE_BAR); RED on any hit")
+    hits = scan_global_bars()
+    scanned = sum((ROOT / f).exists() for f in SERVING_FILES)
+    return _c("Data truth 6: no global bars in serving", RED if hits else GREEN,
+              f"{len(hits)} global-bar read(s) in {scanned} serving module(s)", rule,
+              "; ".join(f"{h['file']}:{h['line']}: {h['code'][:70]}" for h in hits[:5]))
+
+
 def evaluate(now: datetime | None = None) -> list[dict]:
     """The rule checks. Never raises: a check that cannot run is itself RED."""
     out = []
@@ -457,7 +510,8 @@ def evaluate(now: datetime | None = None) -> list[dict]:
                       ("Data truth 2: no silent defaults", defaults),
                       ("Data truth 3: no missing data", lambda: missing(now)),
                       ("Data truth 4: right league relations", leagues),
-                      ("Data truth 5: one match, one row", lambda: one_match())):
+                      ("Data truth 5: one match, one row", lambda: one_match()),
+                      ("Data truth 6: no global bars in serving", no_global_bars)):
         try:
             out.append(fn())
         except Exception as e:                                         # noqa: BLE001
@@ -484,7 +538,7 @@ RATCHET = ROOT / "config" / "data_truth_ratchet.json"
 #: must not merge. It runs the loader's identity pipeline on the committed banks (~15 s; it was
 #: ~19-60 s before team_names memoised norm/identity_key and duplicate_pairs stopped slicing
 #: pandas groups).
-GATED = ("Data truth 1", "Data truth 2", "Data truth 4", "Data truth 5")
+GATED = ("Data truth 1", "Data truth 2", "Data truth 4", "Data truth 5", "Data truth 6")
 
 
 def _ratchet() -> dict:

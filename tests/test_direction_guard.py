@@ -21,6 +21,15 @@ from src import ledger as L
 from src.bankroll_policy import goal_direction as bp_direction
 from src.bankroll_policy import size_day
 
+@pytest.fixture(autouse=True)
+def _own_bars(monkeypatch):
+    """Owner 2026-11-09: no global bars. These tests predate the cutover and assert the tiers the
+    removed global path served, so every league gets exactly those values as its OWN owner-applied
+    bars (tests/own_bars.install_historical)."""
+    from tests.own_bars import install_historical
+    install_historical(monkeypatch)
+
+
 DAY = (datetime.now(timezone.utc) + timedelta(days=2)).strftime("%Y-%m-%d")
 HOME, AWAY, LG = "Viking FK", "Tromso", "Testland League"
 

@@ -83,8 +83,9 @@ def _load_side_market_thresholds() -> dict:
 def _generate_side_bets(preds: "pd.DataFrame", side_markets: dict) -> "pd.DataFrame":
     """
     Generate SNIPER/MARKSMAN/VALUABLE tips for BTTS / Over 1.5 / Over 3.5.
-    Uses per-league optimized thresholds from best_params_side_markets.json when that league's
-    threshold has been APPROVED out of sample, falling back to the fixed global bar otherwise.
+    Tiers ONLY on each league's own owner-applied bars in best_params_side_markets.json (sniper,
+    marksman AND valuable; src/side_thresholds.own_bars). A league x market without them gets no
+    tier (NO_LEAGUE_BAR) - there is no global bar (owner 2026-11-09).
 
     NO LEAGUE IS EVER SUPPRESSED. This docstring used to say "leagues marked 'drop=True' are
     suppressed entirely", which has not been true since the 2026/27 live-test policy — the code
@@ -94,7 +95,7 @@ def _generate_side_bets(preds: "pd.DataFrame", side_markets: dict) -> "pd.DataFr
     import pandas as pd
     import numpy as np
     from src.stake_plan import SIDE_SELECTION_COLUMNS
-    from src.side_thresholds import side_bars, tier_for
+    from src.side_thresholds import NO_LEAGUE_BAR, side_bars, tier_for
     frames = []
     OVERROUND    = 1.08          # legacy_1_08 only (config.SIDE_EDGE_FAIR_PRICE rollback)
     league_params = _load_side_market_thresholds()  # {target: {league: {sniper_th, marksman_th, drop}}}
@@ -187,38 +188,21 @@ def _generate_side_bets(preds: "pd.DataFrame", side_markets: dict) -> "pd.DataFr
         # would systematically bet a calibration error 61 times. Recalibrate p_btts first.
         df["side"]        = SIDE_OF_TARGET[target]
 
-        def _tier(row):
-            lg = row["league"]
-            lp = market_params.get(lg, {})
-            # Live-test policy (2026/27): NEVER SUPPRESS A LEAGUE. Every league emits signals
-            # all season so it builds a CLV/ROI record — a league you stopped tipping is a
-            # league you can never learn about. Real-money gating is a separate downstream
-            # decision, not a notification filter.
-            #
-            # What the gate decides is narrower: whether to trust THIS league's own learned
-            # threshold, or fall back to the global bar. A league's threshold is used only once
-            # `approved` — meaning a walk-forward pass tuned it on earlier seasons, bet the next
-            # one blind, and came out positive (src/backtest.optimize_side_market_thresholds).
-            #
-            # Before 2026-09-22 that optimizer had no out-of-sample pass at all: it grid-searched
-            # ~17 thresholds on all the data and shipped the winner. Pro's threshold study then
-            # showed what that costs — of the four cells with enough data to check, THREE were
-            # worse out of sample (Norway -29.7pp, China -40.9pp, Finland -61.6pp). An
-            # in-sample-optimal bar is not just unproven, it lost money on fresh fixtures.
-            #
-            # `approved` missing (an older best_params file) falls back to the previous rule, so
-            # this can never regress an environment that has not rerun the optimizer yet.
-            #
-            # THE GLOBAL BAR IS A DECLARED POLICY (fix9/defaults 2026-11-04): config.SIDE_GLOBAL_BARS,
-            # read through src/side_thresholds.side_bars - it was a typed lp.get("sniper_th", 0.10)
-            # here and in two research copies. Same values, same rule; the tip now also records
-            # WHICH bar tiered it (threshold_source LEAGUE / GLOBAL), so a global-bar tier is never
-            # shown as a per-league one.
-            bars = side_bars(lp)
-            return tier_for(row["edge"], bars), bars[3]
-
-        _tiers = df.apply(_tier, axis=1, result_type="expand")
-        df["signal_tier"], df["threshold_source"] = _tiers[0], _tiers[1]
+        # THE LEAGUE'S OWN BARS OR NO TIER (owner 2026-11-09: "no global vars"). Until then a league
+        # whose own threshold was not approved was tiered on the global bar config.SIDE_GLOBAL_BARS
+        # (0.10 / 0.08 / 0.04; 525 of 664 live side tips by 2026-11-04). Now a league x market tiers
+        # only on its own owner-applied sniper / marksman / valuable bars (src/side_thresholds.own_bars);
+        # without them it gets AVOID with reason NO_LEAGUE_BAR - no tip, no stake, no message. No
+        # league is suppressed by policy: every league with its own bars still emits every tip.
+        _bars = {lg: side_bars(market_params.get(lg, {}), target, lg) for lg in df["league"].unique()}
+        _no_bar = sorted(lg for lg, b in _bars.items() if b is None)
+        if _no_bar:
+            log.info(f"side {target}: {int(df['league'].isin(_no_bar).sum())} fixture(s) in "
+                     f"{len(_no_bar)} league(s) not tiered - {NO_LEAGUE_BAR} (no own owner-applied bars): "
+                     f"{', '.join(_no_bar)}")
+        df["signal_tier"] = [tier_for(e, _bars[lg]) for e, lg in zip(df["edge"], df["league"])]
+        df["threshold_source"] = [(_bars[lg][3] if _bars[lg] is not None else NO_LEAGUE_BAR)
+                                  for lg in df["league"]]
         df = df[df["signal_tier"] != "AVOID"]
         df = df.sort_values("edge", ascending=False)
         # ONE SCHEMA, defined once in src/stake_plan.py and read by the stake plan. `market_odds`

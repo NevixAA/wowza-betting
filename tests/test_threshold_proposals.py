@@ -135,7 +135,7 @@ def _candidates(root):
     """Two cells moved: Serie B ou25 (approved, new threshold) and Championship btts (approval revoked)."""
     prod = TP.production_params(root)
     ou = copy.deepcopy(prod["ou25"])
-    ou["Serie B"] = dict(ou["Serie B"], sniper_th=0.15, marksman_th=0.13, bets_oos=88, roi_oos=6.1,
+    ou["Serie B"] = dict(ou["Serie B"], sniper_th=0.15, marksman_th=0.13, valuable_th=0.05, bets_oos=88, roi_oos=6.1,
                          oos_matchdays=61, oos_roi_ci95=[-12.0, 24.2])
     bt = copy.deepcopy(prod["btts"])
     bt["Championship"] = dict(bt["Championship"], approved=False, roi_oos=-3.0)
@@ -166,10 +166,15 @@ def test_proposal_compares_with_production_and_resolves_served_gates(sandbox):
     assert set(by) == {"ou25|Serie B", "btts|Championship"}
     sb = by["ou25|Serie B"]
     assert sb["change"] == "THRESHOLD_CHANGE" and sb["serves_change"]
-    assert sb["served_now"]["sniper"] == 0.12 and sb["served_if_approved"]["sniper"] == 0.15
+    # owner 2026-11-09 (no global bars): today's pre-repair entry has no valuable_th, so nothing serves it;
+    # once applied, the league's own three bars serve
+    assert sb["served_now"]["sniper"] is None and not sb["served_now"]["own_bars"]
+    assert (sb["served_if_approved"]["sniper"], sb["served_if_approved"]["valuable"]) == (0.15, 0.05)
     assert sb["evidence"]["bets_oos"] == 88 and sb["evidence"]["oos_matchdays"] == 61
     ch = by["btts|Championship"]
-    assert ch["change"] == "APPROVAL_REVOKED" and ch["served_if_approved"]["sniper"] == 0.10
+    # the approved (PROVEN) flag alone no longer moves serving, and there is no global bar to fall to
+    assert ch["change"] == "APPROVAL_REVOKED" and ch["served_if_approved"]["sniper"] is None
+    assert not ch["serves_change"]
     assert p["status"] == "AWAITING_OWNER" and p["proposal_id"].startswith("TP-2026-11-01-")
     md = TP.to_markdown(p)
     assert "ou25|Serie B" in md and "How to approve" in md
@@ -289,7 +294,7 @@ def test_full_propose_run_on_the_real_repo_leaves_every_served_gate_unchanged(tm
     monkeypatch.setattr(TP, "PROPOSAL_DIR", tmp_path / "proposals")
     assert TP.main(["propose", "--candidates", str(cand), "--evidence-dir", str(tmp_path), "--month", "2026-11"]) == 0
     latest = json.loads((tmp_path / "proposals" / "latest.json").read_text(encoding="utf-8"))
-    assert latest["n_serving_changes"] == 2 and latest["status"] == "AWAITING_OWNER"
+    assert latest["n_serving_changes"] == 1 and latest["status"] == "AWAITING_OWNER"   # Serie B only (2026-11-09)
     assert (tmp_path / "proposals" / "2026-11.md").exists()
     # nothing approved -> the committed approvals file has no entry -> apply refuses, nothing served moves
     with pytest.raises(A.ApplyRefused):

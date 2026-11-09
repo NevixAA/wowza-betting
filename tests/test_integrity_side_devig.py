@@ -11,10 +11,23 @@ import numpy as np
 import pandas as pd
 import pytest
 
+@pytest.fixture(autouse=True)
+def _own_bars(monkeypatch):
+    """Owner 2026-11-09: no global bars. These tests predate the cutover and assert the tiers the
+    removed global path served, so every league gets exactly those values as its OWN owner-applied
+    bars (tests/own_bars.install_historical)."""
+    from tests.own_bars import install_historical
+    install_historical(monkeypatch)
+
+
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from src.integrity import side_edge_devig as SE  # noqa: E402
 from src.market_edge import power_devig  # noqa: E402
+
+
+#: League Two's own owner-applied BTTS bars, equal to what the removed global path served (2026-11-09)
+HIST = {"btts": {"League Two": {"sniper_th": 0.10, "marksman_th": 0.08, "valuable_th": 0.04}}}
 
 
 def _q(rows):
@@ -41,7 +54,7 @@ def test_tip_that_exists_only_because_of_the_1_08_assumption():
     # (VALUABLE). De-vigged fair ~0.510 -> edge 3.0pp, below the 4pp bar.
     q = _q([["2026-11-01T10:00:00Z", "H vs A", "sharp", "BTTS", "YES", 1.90],
             ["2026-11-01T10:00:00Z", "H vs A", "sharp", "BTTS", "NO", 1.98]])
-    ev = SE.evaluate_rows(_row(), q, {})
+    ev = SE.evaluate_rows(_row(), q, HIST)
     r = ev.iloc[0]
     assert r.tier_prod == "VALUABLE" and r.tier_shadow == "AVOID"
     assert r.classification == "ONLY_BECAUSE_OF_1_08" and r.devig_state == "DEVIGGED_TWO_SIDED"
@@ -51,7 +64,7 @@ def test_tip_that_exists_only_because_of_the_1_08_assumption():
 def test_eight_percent_book_reproduces_production_and_is_confirmed():
     q = _q([["2026-11-01T10:00:00Z", "H vs A", "b1", "BTTS", "YES", 1.80],
             ["2026-11-01T10:00:00Z", "H vs A", "b1", "BTTS", "NO", 1.92]])
-    ev = SE.evaluate_rows(_row(p_model=0.62, odds=1.80), q, {})
+    ev = SE.evaluate_rows(_row(p_model=0.62, odds=1.80), q, HIST)
     assert ev.iloc[0].classification == "CONFIRMED_BY_DEVIG"
     assert abs(ev.iloc[0].edge_prod - ev.iloc[0].edge_devig) < 0.01
 
@@ -63,7 +76,7 @@ def test_pairs_only_within_one_book_and_carry_forward():
             ["2026-11-01T11:00:00Z", "H vs A", "b3", "BTTS", "NO", 1.95],     # carried-forward pair
             ["2026-11-01T13:00:00Z", "H vs A", "b4", "BTTS", "YES", 1.70],    # after decision time
             ["2026-11-01T13:00:00Z", "H vs A", "b4", "BTTS", "NO", 2.10]])
-    ev = SE.evaluate_rows(_row(), q, {})
+    ev = SE.evaluate_rows(_row(), q, HIST)
     assert ev.iloc[0].n_two_sided_books == 1 and ev.iloc[0].books == "b3"
 
 
@@ -88,10 +101,10 @@ def test_append_first_sight_never_rewrites(tmp_path):
     p = tmp_path / "s.csv"
     q = _q([["2026-11-01T10:00:00Z", "H vs A", "b", "BTTS", "YES", 1.9],
             ["2026-11-01T10:00:00Z", "H vs A", "b", "BTTS", "NO", 1.98]])
-    ev = SE.evaluate_rows(_row(), q, {})
+    ev = SE.evaluate_rows(_row(), q, HIST)
     assert SE.append_first_sight(ev, p) == 1
     before = p.read_bytes()
-    ev2 = SE.evaluate_rows(_row(p_model=0.70), q, {})
+    ev2 = SE.evaluate_rows(_row(p_model=0.70), q, HIST)
     assert SE.append_first_sight(ev2, p) == 0 and p.read_bytes() == before
 
 

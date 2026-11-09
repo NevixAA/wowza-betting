@@ -19,6 +19,15 @@ import pipeline
 from src import stake_plan as sp
 from src.bankroll_policy import load_policy, size_day
 
+@pytest.fixture(autouse=True)
+def _own_bars(monkeypatch):
+    """Owner 2026-11-09: no global bars. These tests predate the cutover and assert the tiers the
+    removed global path served, so every league gets exactly those values as its OWN owner-applied
+    bars (tests/own_bars.install_historical)."""
+    from tests.own_bars import install_historical
+    install_historical(monkeypatch)
+
+
 NF = "Argentina Primera Division"
 NF2 = "Brazil Serie A"
 STD = "Championship"
@@ -84,7 +93,8 @@ def test_producer_emits_the_contract():
                                         config.SIDE_MARKETS)
     # threshold_source (fix9/defaults 2026-11-04): which bar tiered the tip, for ledger / Telegram / dashboard
     assert list(side.columns) == list(sp.SIDE_SELECTION_COLUMNS) + ["market_odds", "threshold_source"]
-    assert (side["threshold_source"] == "GLOBAL").all()             # no per-league file -> global bar
+    # owner 2026-11-09: a tip exists only on the league's OWN owner-applied bars, so the source is LEAGUE
+    assert (side["threshold_source"] == "LEAGUE").all()
     sp.check_side_selections(side)                                  # does not raise
 
 

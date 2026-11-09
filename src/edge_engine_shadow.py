@@ -129,7 +129,9 @@ class _Gates:
         g = self._c[k]
         if g is None:
             return float("nan")
-        return float({"SNIPER": g.sniper, "MARKSMAN": g.marksman}.get(tier, g.valuable))
+        v = {"SNIPER": g.sniper, "MARKSMAN": g.marksman}.get(tier, g.valuable)
+        # None = the league has no own bars (NO_LEAGUE_BAR): no threshold, never a stand-in
+        return float(v) if v is not None else float("nan")
 
 
 def _num(v) -> float:

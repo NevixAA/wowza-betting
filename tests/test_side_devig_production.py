@@ -12,6 +12,15 @@ import pipeline
 from src.integrity import side_edge_devig as SE
 from src.market_edge import power_devig
 
+@pytest.fixture(autouse=True)
+def _own_bars(monkeypatch):
+    """Owner 2026-11-09: no global bars. These tests predate the cutover and assert the tiers the
+    removed global path served, so every league gets exactly those values as its OWN owner-applied
+    bars (tests/own_bars.install_historical)."""
+    from tests.own_bars import install_historical
+    install_historical(monkeypatch)
+
+
 NOW = pd.Timestamp.now(tz="UTC")
 KO = (NOW + pd.Timedelta(days=1)).strftime("%Y-%m-%dT%H:%M:%SZ")
 

@@ -87,12 +87,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no btts params entry for Argentina Primera Division",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no btts params entry for Argentina Primera Division",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no btts params entry for Argentina Primera Division"
    },
    "prediction_engine": {
     "model_slot": "btts",
@@ -153,15 +153,15 @@
    },
    "gates": {
     "approved_optimizer_applied": false,
-    "edge_ceiling": 0.18,
-    "edge_ceiling_active": true,
+    "edge_ceiling": null,
+    "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "config.MARKSMAN_THRESHOLD (global, env-overridable)",
-    "sniper": 0.12,
-    "sniper_source": "config.SNIPER_THRESHOLD_OVER (global)",
-    "valuable": 0.03,
-    "valuable_source": "config.VALUABLE_THRESHOLD (global, env-overridable)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for Argentina Primera Division",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for Argentina Primera Division",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no ou25 params entry for Argentina Primera Division"
    },
    "prediction_engine": {
     "model_slot": "newformat",
@@ -223,15 +223,15 @@
    },
    "gates": {
     "approved_optimizer_applied": false,
-    "edge_ceiling": 0.18,
-    "edge_ceiling_active": true,
+    "edge_ceiling": null,
+    "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "config.MARKSMAN_THRESHOLD (global, env-overridable)",
-    "sniper": 0.12,
-    "sniper_source": "config.SNIPER_THRESHOLD_UNDER (global)",
-    "valuable": 0.03,
-    "valuable_source": "config.VALUABLE_THRESHOLD (global, env-overridable)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for Argentina Primera Division",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for Argentina Primera Division",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no ou25 params entry for Argentina Primera Division"
    },
    "prediction_engine": {
     "model_slot": "newformat",
@@ -294,12 +294,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no over15 params entry for Argentina Primera Division",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over15 params entry for Argentina Primera Division",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no over15 params entry for Argentina Primera Division"
    },
    "prediction_engine": {
     "model_slot": "over15",
@@ -361,12 +361,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no over35 params entry for Argentina Primera Division",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over35 params entry for Argentina Primera Division",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no over35 params entry for Argentina Primera Division"
    },
    "prediction_engine": {
     "model_slot": "over35",
@@ -428,12 +428,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no btts params entry for Austrian Bundesliga",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no btts params entry for Austrian Bundesliga",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no btts params entry for Austrian Bundesliga"
    },
    "prediction_engine": {
     "model_slot": "btts",
@@ -494,15 +494,15 @@
    },
    "gates": {
     "approved_optimizer_applied": false,
-    "edge_ceiling": 0.17,
-    "edge_ceiling_active": true,
+    "edge_ceiling": null,
+    "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "config.MARKSMAN_THRESHOLD (global, env-overridable)",
-    "sniper": 0.12,
-    "sniper_source": "config.SNIPER_THRESHOLD_OVER (global)",
-    "valuable": 0.03,
-    "valuable_source": "config.VALUABLE_THRESHOLD (global, env-overridable)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for Austrian Bundesliga",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for Austrian Bundesliga",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no ou25 params entry for Austrian Bundesliga"
    },
    "prediction_engine": {
     "model_slot": "newformat",
@@ -564,15 +564,15 @@
    },
    "gates": {
     "approved_optimizer_applied": false,
-    "edge_ceiling": 0.17,
-    "edge_ceiling_active": true,
+    "edge_ceiling": null,
+    "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "config.MARKSMAN_THRESHOLD (global, env-overridable)",
-    "sniper": 0.12,
-    "sniper_source": "config.SNIPER_THRESHOLD_UNDER (global)",
-    "valuable": 0.03,
-    "valuable_source": "config.VALUABLE_THRESHOLD (global, env-overridable)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for Austrian Bundesliga",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for Austrian Bundesliga",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no ou25 params entry for Austrian Bundesliga"
    },
    "prediction_engine": {
     "model_slot": "newformat",
@@ -635,12 +635,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no over15 params entry for Austrian Bundesliga",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over15 params entry for Austrian Bundesliga",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no over15 params entry for Austrian Bundesliga"
    },
    "prediction_engine": {
     "model_slot": "over15",
@@ -702,12 +702,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no over35 params entry for Austrian Bundesliga",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over35 params entry for Austrian Bundesliga",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no over35 params entry for Austrian Bundesliga"
    },
    "prediction_engine": {
     "model_slot": "over35",
@@ -769,12 +769,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no btts params entry for Brazil Serie A",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no btts params entry for Brazil Serie A",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no btts params entry for Brazil Serie A"
    },
    "prediction_engine": {
     "model_slot": "btts",
@@ -835,15 +835,15 @@
    },
    "gates": {
     "approved_optimizer_applied": false,
-    "edge_ceiling": 0.17,
-    "edge_ceiling_active": true,
+    "edge_ceiling": null,
+    "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "config.MARKSMAN_THRESHOLD (global, env-overridable)",
-    "sniper": 0.12,
-    "sniper_source": "config.SNIPER_THRESHOLD_OVER (global)",
-    "valuable": 0.03,
-    "valuable_source": "config.VALUABLE_THRESHOLD (global, env-overridable)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for Brazil Serie A",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for Brazil Serie A",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no ou25 params entry for Brazil Serie A"
    },
    "prediction_engine": {
     "model_slot": "newformat",
@@ -905,15 +905,15 @@
    },
    "gates": {
     "approved_optimizer_applied": false,
-    "edge_ceiling": 0.17,
-    "edge_ceiling_active": true,
+    "edge_ceiling": null,
+    "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "config.MARKSMAN_THRESHOLD (global, env-overridable)",
-    "sniper": 0.12,
-    "sniper_source": "config.SNIPER_THRESHOLD_UNDER (global)",
-    "valuable": 0.03,
-    "valuable_source": "config.VALUABLE_THRESHOLD (global, env-overridable)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for Brazil Serie A",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for Brazil Serie A",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no ou25 params entry for Brazil Serie A"
    },
    "prediction_engine": {
     "model_slot": "newformat",
@@ -976,12 +976,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no over15 params entry for Brazil Serie A",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over15 params entry for Brazil Serie A",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no over15 params entry for Brazil Serie A"
    },
    "prediction_engine": {
     "model_slot": "over15",
@@ -1043,12 +1043,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no over35 params entry for Brazil Serie A",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over35 params entry for Brazil Serie A",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no over35 params entry for Brazil Serie A"
    },
    "prediction_engine": {
     "model_slot": "over35",
@@ -1106,16 +1106,16 @@
     "track_max_odds": null
    },
    "gates": {
-    "approved_optimizer_applied": true,
+    "approved_optimizer_applied": false,
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.04,
-    "marksman_source": "best_params_side_markets[btts][Bundesliga 2] (approved)",
-    "sniper": 0.06,
-    "sniper_source": "best_params_side_markets[btts][Bundesliga 2] (approved)",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: btts Bundesliga 2 lacks valuable_th",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: btts Bundesliga 2 lacks valuable_th",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: btts Bundesliga 2 lacks valuable_th"
    },
    "prediction_engine": {
     "model_slot": "btts",
@@ -1175,15 +1175,15 @@
    },
    "gates": {
     "approved_optimizer_applied": false,
-    "edge_ceiling": 0.19,
+    "edge_ceiling": null,
     "edge_ceiling_active": false,
-    "league_cap_applied": true,
-    "marksman": 0.12,
-    "marksman_source": "config.LEAGUE_MARKSMAN_THRESHOLDS",
-    "sniper": 0.12,
-    "sniper_source": "config.LEAGUE_SNIPER_THRESHOLDS (calibrated 0.20, CAPPED to 0.12 by LEAGUE_SNIPER_CAP=0.12)",
-    "valuable": 0.03,
-    "valuable_source": "config.VALUABLE_THRESHOLD (global, env-overridable)"
+    "league_cap_applied": false,
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: ou25 Bundesliga 2 lacks valuable_th",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: ou25 Bundesliga 2 lacks valuable_th",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: ou25 Bundesliga 2 lacks valuable_th"
    },
    "prediction_engine": {
     "model_slot": "standard",
@@ -1244,15 +1244,15 @@
    },
    "gates": {
     "approved_optimizer_applied": false,
-    "edge_ceiling": 0.19,
+    "edge_ceiling": null,
     "edge_ceiling_active": false,
-    "league_cap_applied": true,
-    "marksman": 0.12,
-    "marksman_source": "config.LEAGUE_MARKSMAN_THRESHOLDS",
-    "sniper": 0.12,
-    "sniper_source": "config.LEAGUE_SNIPER_THRESHOLDS (calibrated 0.20, CAPPED to 0.12 by LEAGUE_SNIPER_CAP=0.12)",
-    "valuable": 0.03,
-    "valuable_source": "config.VALUABLE_THRESHOLD (global, env-overridable)"
+    "league_cap_applied": false,
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: ou25 Bundesliga 2 lacks valuable_th",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: ou25 Bundesliga 2 lacks valuable_th",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: ou25 Bundesliga 2 lacks valuable_th"
    },
    "prediction_engine": {
     "model_slot": "standard",
@@ -1315,12 +1315,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: over15 switched OFF for Bundesliga 2 (drop)",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: over15 switched OFF for Bundesliga 2 (drop)",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: over15 switched OFF for Bundesliga 2 (drop)"
    },
    "prediction_engine": {
     "model_slot": "over15",
@@ -1382,12 +1382,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: over35 switched OFF for Bundesliga 2 (drop)",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: over35 switched OFF for Bundesliga 2 (drop)",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: over35 switched OFF for Bundesliga 2 (drop)"
    },
    "prediction_engine": {
     "model_slot": "over35",
@@ -1445,16 +1445,16 @@
     "track_max_odds": null
    },
    "gates": {
-    "approved_optimizer_applied": true,
+    "approved_optimizer_applied": false,
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.07,
-    "marksman_source": "best_params_side_markets[btts][Championship] (approved)",
-    "sniper": 0.09,
-    "sniper_source": "best_params_side_markets[btts][Championship] (approved)",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: btts Championship lacks valuable_th",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: btts Championship lacks valuable_th",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: btts Championship lacks valuable_th"
    },
    "prediction_engine": {
     "model_slot": "btts",
@@ -1514,15 +1514,15 @@
    },
    "gates": {
     "approved_optimizer_applied": false,
-    "edge_ceiling": 0.19,
+    "edge_ceiling": null,
     "edge_ceiling_active": false,
-    "league_cap_applied": true,
-    "marksman": 0.08,
-    "marksman_source": "config.MARKSMAN_THRESHOLD (global, env-overridable)",
-    "sniper": 0.12,
-    "sniper_source": "config.LEAGUE_SNIPER_THRESHOLDS (calibrated 0.15, CAPPED to 0.12 by LEAGUE_SNIPER_CAP=0.12)",
-    "valuable": 0.03,
-    "valuable_source": "config.VALUABLE_THRESHOLD (global, env-overridable)"
+    "league_cap_applied": false,
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: ou25 Championship lacks valuable_th",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: ou25 Championship lacks valuable_th",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: ou25 Championship lacks valuable_th"
    },
    "prediction_engine": {
     "model_slot": "standard",
@@ -1583,15 +1583,15 @@
    },
    "gates": {
     "approved_optimizer_applied": false,
-    "edge_ceiling": 0.19,
+    "edge_ceiling": null,
     "edge_ceiling_active": false,
-    "league_cap_applied": true,
-    "marksman": 0.08,
-    "marksman_source": "config.MARKSMAN_THRESHOLD (global, env-overridable)",
-    "sniper": 0.12,
-    "sniper_source": "config.LEAGUE_SNIPER_THRESHOLDS (calibrated 0.15, CAPPED to 0.12 by LEAGUE_SNIPER_CAP=0.12)",
-    "valuable": 0.03,
-    "valuable_source": "config.VALUABLE_THRESHOLD (global, env-overridable)"
+    "league_cap_applied": false,
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: ou25 Championship lacks valuable_th",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: ou25 Championship lacks valuable_th",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: ou25 Championship lacks valuable_th"
    },
    "prediction_engine": {
     "model_slot": "standard",
@@ -1654,12 +1654,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: over15 switched OFF for Championship (drop)",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: over15 switched OFF for Championship (drop)",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: over15 switched OFF for Championship (drop)"
    },
    "prediction_engine": {
     "model_slot": "over15",
@@ -1721,12 +1721,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: over35 switched OFF for Championship (drop)",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: over35 switched OFF for Championship (drop)",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: over35 switched OFF for Championship (drop)"
    },
    "prediction_engine": {
     "model_slot": "over35",
@@ -1788,12 +1788,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no btts params entry for China Super League",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no btts params entry for China Super League",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no btts params entry for China Super League"
    },
    "prediction_engine": {
     "model_slot": "btts",
@@ -1854,15 +1854,15 @@
    },
    "gates": {
     "approved_optimizer_applied": false,
-    "edge_ceiling": 0.15,
-    "edge_ceiling_active": true,
+    "edge_ceiling": null,
+    "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "config.MARKSMAN_THRESHOLD (global, env-overridable)",
-    "sniper": 0.12,
-    "sniper_source": "config.SNIPER_THRESHOLD_OVER (global)",
-    "valuable": 0.03,
-    "valuable_source": "config.VALUABLE_THRESHOLD (global, env-overridable)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for China Super League",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for China Super League",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no ou25 params entry for China Super League"
    },
    "prediction_engine": {
     "model_slot": "newformat",
@@ -1924,15 +1924,15 @@
    },
    "gates": {
     "approved_optimizer_applied": false,
-    "edge_ceiling": 0.15,
-    "edge_ceiling_active": true,
+    "edge_ceiling": null,
+    "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "config.MARKSMAN_THRESHOLD (global, env-overridable)",
-    "sniper": 0.12,
-    "sniper_source": "config.SNIPER_THRESHOLD_UNDER (global)",
-    "valuable": 0.03,
-    "valuable_source": "config.VALUABLE_THRESHOLD (global, env-overridable)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for China Super League",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for China Super League",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no ou25 params entry for China Super League"
    },
    "prediction_engine": {
     "model_slot": "newformat",
@@ -1995,12 +1995,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no over15 params entry for China Super League",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over15 params entry for China Super League",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no over15 params entry for China Super League"
    },
    "prediction_engine": {
     "model_slot": "over15",
@@ -2062,12 +2062,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no over35 params entry for China Super League",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over35 params entry for China Super League",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no over35 params entry for China Super League"
    },
    "prediction_engine": {
     "model_slot": "over35",
@@ -2129,12 +2129,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no btts params entry for Denmark Superliga",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no btts params entry for Denmark Superliga",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no btts params entry for Denmark Superliga"
    },
    "prediction_engine": {
     "model_slot": "btts",
@@ -2195,15 +2195,15 @@
    },
    "gates": {
     "approved_optimizer_applied": false,
-    "edge_ceiling": 0.17,
-    "edge_ceiling_active": true,
+    "edge_ceiling": null,
+    "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "config.MARKSMAN_THRESHOLD (global, env-overridable)",
-    "sniper": 0.12,
-    "sniper_source": "config.SNIPER_THRESHOLD_OVER (global)",
-    "valuable": 0.03,
-    "valuable_source": "config.VALUABLE_THRESHOLD (global, env-overridable)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for Denmark Superliga",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for Denmark Superliga",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no ou25 params entry for Denmark Superliga"
    },
    "prediction_engine": {
     "model_slot": "newformat",
@@ -2265,15 +2265,15 @@
    },
    "gates": {
     "approved_optimizer_applied": false,
-    "edge_ceiling": 0.17,
-    "edge_ceiling_active": true,
+    "edge_ceiling": null,
+    "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "config.MARKSMAN_THRESHOLD (global, env-overridable)",
-    "sniper": 0.12,
-    "sniper_source": "config.SNIPER_THRESHOLD_UNDER (global)",
-    "valuable": 0.03,
-    "valuable_source": "config.VALUABLE_THRESHOLD (global, env-overridable)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for Denmark Superliga",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for Denmark Superliga",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no ou25 params entry for Denmark Superliga"
    },
    "prediction_engine": {
     "model_slot": "newformat",
@@ -2336,12 +2336,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no over15 params entry for Denmark Superliga",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over15 params entry for Denmark Superliga",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no over15 params entry for Denmark Superliga"
    },
    "prediction_engine": {
     "model_slot": "over15",
@@ -2403,12 +2403,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no over35 params entry for Denmark Superliga",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over35 params entry for Denmark Superliga",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no over35 params entry for Denmark Superliga"
    },
    "prediction_engine": {
     "model_slot": "over35",
@@ -2470,12 +2470,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no btts params entry for Finland Veikkausliiga",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no btts params entry for Finland Veikkausliiga",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no btts params entry for Finland Veikkausliiga"
    },
    "prediction_engine": {
     "model_slot": "btts",
@@ -2536,15 +2536,15 @@
    },
    "gates": {
     "approved_optimizer_applied": false,
-    "edge_ceiling": 0.16,
-    "edge_ceiling_active": true,
+    "edge_ceiling": null,
+    "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "config.MARKSMAN_THRESHOLD (global, env-overridable)",
-    "sniper": 0.12,
-    "sniper_source": "config.SNIPER_THRESHOLD_OVER (global)",
-    "valuable": 0.03,
-    "valuable_source": "config.VALUABLE_THRESHOLD (global, env-overridable)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for Finland Veikkausliiga",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for Finland Veikkausliiga",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no ou25 params entry for Finland Veikkausliiga"
    },
    "prediction_engine": {
     "model_slot": "newformat",
@@ -2606,15 +2606,15 @@
    },
    "gates": {
     "approved_optimizer_applied": false,
-    "edge_ceiling": 0.16,
-    "edge_ceiling_active": true,
+    "edge_ceiling": null,
+    "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "config.MARKSMAN_THRESHOLD (global, env-overridable)",
-    "sniper": 0.12,
-    "sniper_source": "config.SNIPER_THRESHOLD_UNDER (global)",
-    "valuable": 0.03,
-    "valuable_source": "config.VALUABLE_THRESHOLD (global, env-overridable)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for Finland Veikkausliiga",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for Finland Veikkausliiga",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no ou25 params entry for Finland Veikkausliiga"
    },
    "prediction_engine": {
     "model_slot": "newformat",
@@ -2677,12 +2677,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no over15 params entry for Finland Veikkausliiga",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over15 params entry for Finland Veikkausliiga",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no over15 params entry for Finland Veikkausliiga"
    },
    "prediction_engine": {
     "model_slot": "over15",
@@ -2744,12 +2744,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no over35 params entry for Finland Veikkausliiga",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over35 params entry for Finland Veikkausliiga",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no over35 params entry for Finland Veikkausliiga"
    },
    "prediction_engine": {
     "model_slot": "over35",
@@ -2811,12 +2811,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no btts params entry for Ireland Premier Division",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no btts params entry for Ireland Premier Division",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no btts params entry for Ireland Premier Division"
    },
    "prediction_engine": {
     "model_slot": "btts",
@@ -2877,15 +2877,15 @@
    },
    "gates": {
     "approved_optimizer_applied": false,
-    "edge_ceiling": 0.16,
-    "edge_ceiling_active": true,
+    "edge_ceiling": null,
+    "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "config.MARKSMAN_THRESHOLD (global, env-overridable)",
-    "sniper": 0.12,
-    "sniper_source": "config.SNIPER_THRESHOLD_OVER (global)",
-    "valuable": 0.03,
-    "valuable_source": "config.VALUABLE_THRESHOLD (global, env-overridable)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for Ireland Premier Division",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for Ireland Premier Division",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no ou25 params entry for Ireland Premier Division"
    },
    "prediction_engine": {
     "model_slot": "newformat",
@@ -2947,15 +2947,15 @@
    },
    "gates": {
     "approved_optimizer_applied": false,
-    "edge_ceiling": 0.16,
-    "edge_ceiling_active": true,
+    "edge_ceiling": null,
+    "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "config.MARKSMAN_THRESHOLD (global, env-overridable)",
-    "sniper": 0.12,
-    "sniper_source": "config.SNIPER_THRESHOLD_UNDER (global)",
-    "valuable": 0.03,
-    "valuable_source": "config.VALUABLE_THRESHOLD (global, env-overridable)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for Ireland Premier Division",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for Ireland Premier Division",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no ou25 params entry for Ireland Premier Division"
    },
    "prediction_engine": {
     "model_slot": "newformat",
@@ -3018,12 +3018,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no over15 params entry for Ireland Premier Division",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over15 params entry for Ireland Premier Division",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no over15 params entry for Ireland Premier Division"
    },
    "prediction_engine": {
     "model_slot": "over15",
@@ -3085,12 +3085,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no over35 params entry for Ireland Premier Division",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over35 params entry for Ireland Premier Division",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no over35 params entry for Ireland Premier Division"
    },
    "prediction_engine": {
     "model_slot": "over35",
@@ -3152,12 +3152,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no btts params entry for Japan J-League",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no btts params entry for Japan J-League",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no btts params entry for Japan J-League"
    },
    "prediction_engine": {
     "model_slot": "btts",
@@ -3218,15 +3218,15 @@
    },
    "gates": {
     "approved_optimizer_applied": false,
-    "edge_ceiling": 0.17,
-    "edge_ceiling_active": true,
+    "edge_ceiling": null,
+    "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "config.MARKSMAN_THRESHOLD (global, env-overridable)",
-    "sniper": 0.12,
-    "sniper_source": "config.SNIPER_THRESHOLD_OVER (global)",
-    "valuable": 0.03,
-    "valuable_source": "config.VALUABLE_THRESHOLD (global, env-overridable)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for Japan J-League",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for Japan J-League",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no ou25 params entry for Japan J-League"
    },
    "prediction_engine": {
     "model_slot": "newformat",
@@ -3288,15 +3288,15 @@
    },
    "gates": {
     "approved_optimizer_applied": false,
-    "edge_ceiling": 0.17,
-    "edge_ceiling_active": true,
+    "edge_ceiling": null,
+    "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "config.MARKSMAN_THRESHOLD (global, env-overridable)",
-    "sniper": 0.12,
-    "sniper_source": "config.SNIPER_THRESHOLD_UNDER (global)",
-    "valuable": 0.03,
-    "valuable_source": "config.VALUABLE_THRESHOLD (global, env-overridable)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for Japan J-League",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for Japan J-League",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no ou25 params entry for Japan J-League"
    },
    "prediction_engine": {
     "model_slot": "newformat",
@@ -3359,12 +3359,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no over15 params entry for Japan J-League",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over15 params entry for Japan J-League",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no over15 params entry for Japan J-League"
    },
    "prediction_engine": {
     "model_slot": "over15",
@@ -3426,12 +3426,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no over35 params entry for Japan J-League",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over35 params entry for Japan J-League",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no over35 params entry for Japan J-League"
    },
    "prediction_engine": {
     "model_slot": "over35",
@@ -3493,12 +3493,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: btts La Liga 2 lacks valuable_th",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: btts La Liga 2 lacks valuable_th",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: btts La Liga 2 lacks valuable_th"
    },
    "prediction_engine": {
     "model_slot": "btts",
@@ -3558,15 +3558,15 @@
    },
    "gates": {
     "approved_optimizer_applied": false,
-    "edge_ceiling": 0.19,
+    "edge_ceiling": null,
     "edge_ceiling_active": false,
-    "league_cap_applied": true,
-    "marksman": 0.08,
-    "marksman_source": "config.MARKSMAN_THRESHOLD (global, env-overridable)",
-    "sniper": 0.12,
-    "sniper_source": "config.LEAGUE_SNIPER_THRESHOLDS (calibrated 0.20, CAPPED to 0.12 by LEAGUE_SNIPER_CAP=0.12)",
-    "valuable": 0.03,
-    "valuable_source": "config.VALUABLE_THRESHOLD (global, env-overridable)"
+    "league_cap_applied": false,
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: ou25 La Liga 2 lacks valuable_th",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: ou25 La Liga 2 lacks valuable_th",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: ou25 La Liga 2 lacks valuable_th"
    },
    "prediction_engine": {
     "model_slot": "standard",
@@ -3627,15 +3627,15 @@
    },
    "gates": {
     "approved_optimizer_applied": false,
-    "edge_ceiling": 0.19,
+    "edge_ceiling": null,
     "edge_ceiling_active": false,
-    "league_cap_applied": true,
-    "marksman": 0.08,
-    "marksman_source": "config.MARKSMAN_THRESHOLD (global, env-overridable)",
-    "sniper": 0.12,
-    "sniper_source": "config.LEAGUE_SNIPER_THRESHOLDS (calibrated 0.20, CAPPED to 0.12 by LEAGUE_SNIPER_CAP=0.12)",
-    "valuable": 0.03,
-    "valuable_source": "config.VALUABLE_THRESHOLD (global, env-overridable)"
+    "league_cap_applied": false,
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: ou25 La Liga 2 lacks valuable_th",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: ou25 La Liga 2 lacks valuable_th",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: ou25 La Liga 2 lacks valuable_th"
    },
    "prediction_engine": {
     "model_slot": "standard",
@@ -3698,12 +3698,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: over15 switched OFF for La Liga 2 (drop)",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: over15 switched OFF for La Liga 2 (drop)",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: over15 switched OFF for La Liga 2 (drop)"
    },
    "prediction_engine": {
     "model_slot": "over15",
@@ -3765,12 +3765,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: over35 switched OFF for La Liga 2 (drop)",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: over35 switched OFF for La Liga 2 (drop)",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: over35 switched OFF for La Liga 2 (drop)"
    },
    "prediction_engine": {
     "model_slot": "over35",
@@ -3832,12 +3832,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: btts League One lacks valuable_th",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: btts League One lacks valuable_th",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: btts League One lacks valuable_th"
    },
    "prediction_engine": {
     "model_slot": "btts",
@@ -3897,15 +3897,15 @@
    },
    "gates": {
     "approved_optimizer_applied": false,
-    "edge_ceiling": 0.19,
+    "edge_ceiling": null,
     "edge_ceiling_active": false,
-    "league_cap_applied": true,
-    "marksman": 0.08,
-    "marksman_source": "config.MARKSMAN_THRESHOLD (global, env-overridable)",
-    "sniper": 0.12,
-    "sniper_source": "config.LEAGUE_SNIPER_THRESHOLDS (calibrated 0.25, CAPPED to 0.12 by LEAGUE_SNIPER_CAP=0.12)",
-    "valuable": 0.03,
-    "valuable_source": "config.VALUABLE_THRESHOLD (global, env-overridable)"
+    "league_cap_applied": false,
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: ou25 League One lacks valuable_th",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: ou25 League One lacks valuable_th",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: ou25 League One lacks valuable_th"
    },
    "prediction_engine": {
     "model_slot": "standard",
@@ -3966,15 +3966,15 @@
    },
    "gates": {
     "approved_optimizer_applied": false,
-    "edge_ceiling": 0.19,
+    "edge_ceiling": null,
     "edge_ceiling_active": false,
-    "league_cap_applied": true,
-    "marksman": 0.08,
-    "marksman_source": "config.MARKSMAN_THRESHOLD (global, env-overridable)",
-    "sniper": 0.12,
-    "sniper_source": "config.LEAGUE_SNIPER_THRESHOLDS (calibrated 0.25, CAPPED to 0.12 by LEAGUE_SNIPER_CAP=0.12)",
-    "valuable": 0.03,
-    "valuable_source": "config.VALUABLE_THRESHOLD (global, env-overridable)"
+    "league_cap_applied": false,
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: ou25 League One lacks valuable_th",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: ou25 League One lacks valuable_th",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: ou25 League One lacks valuable_th"
    },
    "prediction_engine": {
     "model_slot": "standard",
@@ -4037,12 +4037,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: over15 switched OFF for League One (drop)",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: over15 switched OFF for League One (drop)",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: over15 switched OFF for League One (drop)"
    },
    "prediction_engine": {
     "model_slot": "over15",
@@ -4104,12 +4104,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: over35 switched OFF for League One (drop)",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: over35 switched OFF for League One (drop)",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: over35 switched OFF for League One (drop)"
    },
    "prediction_engine": {
     "model_slot": "over35",
@@ -4171,12 +4171,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: btts League Two lacks valuable_th",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: btts League Two lacks valuable_th",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: btts League Two lacks valuable_th"
    },
    "prediction_engine": {
     "model_slot": "btts",
@@ -4235,16 +4235,16 @@
     "min_side_odds": 1.75
    },
    "gates": {
-    "approved_optimizer_applied": true,
-    "edge_ceiling": 0.19,
+    "approved_optimizer_applied": false,
+    "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.11,
-    "marksman_source": "best_params_standard[League Two] (approved)",
-    "sniper": 0.13,
-    "sniper_source": "best_params_standard[League Two] (approved, OOS-positive)",
-    "valuable": 0.03,
-    "valuable_source": "config.VALUABLE_THRESHOLD (global, env-overridable)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: ou25 League Two lacks valuable_th",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: ou25 League Two lacks valuable_th",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: ou25 League Two lacks valuable_th"
    },
    "prediction_engine": {
     "model_slot": "standard",
@@ -4304,16 +4304,16 @@
     "min_side_odds": 1.75
    },
    "gates": {
-    "approved_optimizer_applied": true,
-    "edge_ceiling": 0.19,
+    "approved_optimizer_applied": false,
+    "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.11,
-    "marksman_source": "best_params_standard[League Two] (approved)",
-    "sniper": 0.13,
-    "sniper_source": "best_params_standard[League Two] (approved, OOS-positive)",
-    "valuable": 0.03,
-    "valuable_source": "config.VALUABLE_THRESHOLD (global, env-overridable)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: ou25 League Two lacks valuable_th",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: ou25 League Two lacks valuable_th",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: ou25 League Two lacks valuable_th"
    },
    "prediction_engine": {
     "model_slot": "standard",
@@ -4376,12 +4376,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: over15 switched OFF for League Two (drop)",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: over15 switched OFF for League Two (drop)",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: over15 switched OFF for League Two (drop)"
    },
    "prediction_engine": {
     "model_slot": "over15",
@@ -4443,12 +4443,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: over35 switched OFF for League Two (drop)",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: over35 switched OFF for League Two (drop)",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: over35 switched OFF for League Two (drop)"
    },
    "prediction_engine": {
     "model_slot": "over35",
@@ -4510,12 +4510,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: btts Ligue 2 lacks valuable_th",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: btts Ligue 2 lacks valuable_th",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: btts Ligue 2 lacks valuable_th"
    },
    "prediction_engine": {
     "model_slot": "btts",
@@ -4575,15 +4575,15 @@
    },
    "gates": {
     "approved_optimizer_applied": false,
-    "edge_ceiling": 0.19,
+    "edge_ceiling": null,
     "edge_ceiling_active": false,
-    "league_cap_applied": true,
-    "marksman": 0.08,
-    "marksman_source": "config.MARKSMAN_THRESHOLD (global, env-overridable)",
-    "sniper": 0.12,
-    "sniper_source": "config.LEAGUE_SNIPER_THRESHOLDS (calibrated 0.25, CAPPED to 0.12 by LEAGUE_SNIPER_CAP=0.12)",
-    "valuable": 0.03,
-    "valuable_source": "config.VALUABLE_THRESHOLD (global, env-overridable)"
+    "league_cap_applied": false,
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: ou25 Ligue 2 lacks valuable_th",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: ou25 Ligue 2 lacks valuable_th",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: ou25 Ligue 2 lacks valuable_th"
    },
    "prediction_engine": {
     "model_slot": "standard",
@@ -4644,15 +4644,15 @@
    },
    "gates": {
     "approved_optimizer_applied": false,
-    "edge_ceiling": 0.19,
+    "edge_ceiling": null,
     "edge_ceiling_active": false,
-    "league_cap_applied": true,
-    "marksman": 0.08,
-    "marksman_source": "config.MARKSMAN_THRESHOLD (global, env-overridable)",
-    "sniper": 0.12,
-    "sniper_source": "config.LEAGUE_SNIPER_THRESHOLDS (calibrated 0.25, CAPPED to 0.12 by LEAGUE_SNIPER_CAP=0.12)",
-    "valuable": 0.03,
-    "valuable_source": "config.VALUABLE_THRESHOLD (global, env-overridable)"
+    "league_cap_applied": false,
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: ou25 Ligue 2 lacks valuable_th",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: ou25 Ligue 2 lacks valuable_th",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: ou25 Ligue 2 lacks valuable_th"
    },
    "prediction_engine": {
     "model_slot": "standard",
@@ -4715,12 +4715,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: over15 switched OFF for Ligue 2 (drop)",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: over15 switched OFF for Ligue 2 (drop)",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: over15 switched OFF for Ligue 2 (drop)"
    },
    "prediction_engine": {
     "model_slot": "over15",
@@ -4782,12 +4782,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: over35 switched OFF for Ligue 2 (drop)",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: over35 switched OFF for Ligue 2 (drop)",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: over35 switched OFF for Ligue 2 (drop)"
    },
    "prediction_engine": {
     "model_slot": "over35",
@@ -4849,12 +4849,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no btts params entry for Mexico Liga MX",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no btts params entry for Mexico Liga MX",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no btts params entry for Mexico Liga MX"
    },
    "prediction_engine": {
     "model_slot": "btts",
@@ -4915,15 +4915,15 @@
    },
    "gates": {
     "approved_optimizer_applied": false,
-    "edge_ceiling": 0.18,
-    "edge_ceiling_active": true,
+    "edge_ceiling": null,
+    "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "config.MARKSMAN_THRESHOLD (global, env-overridable)",
-    "sniper": 0.12,
-    "sniper_source": "config.SNIPER_THRESHOLD_OVER (global)",
-    "valuable": 0.03,
-    "valuable_source": "config.VALUABLE_THRESHOLD (global, env-overridable)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for Mexico Liga MX",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for Mexico Liga MX",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no ou25 params entry for Mexico Liga MX"
    },
    "prediction_engine": {
     "model_slot": "newformat",
@@ -4985,15 +4985,15 @@
    },
    "gates": {
     "approved_optimizer_applied": false,
-    "edge_ceiling": 0.18,
-    "edge_ceiling_active": true,
+    "edge_ceiling": null,
+    "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "config.MARKSMAN_THRESHOLD (global, env-overridable)",
-    "sniper": 0.12,
-    "sniper_source": "config.SNIPER_THRESHOLD_UNDER (global)",
-    "valuable": 0.03,
-    "valuable_source": "config.VALUABLE_THRESHOLD (global, env-overridable)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for Mexico Liga MX",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for Mexico Liga MX",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no ou25 params entry for Mexico Liga MX"
    },
    "prediction_engine": {
     "model_slot": "newformat",
@@ -5056,12 +5056,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no over15 params entry for Mexico Liga MX",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over15 params entry for Mexico Liga MX",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no over15 params entry for Mexico Liga MX"
    },
    "prediction_engine": {
     "model_slot": "over15",
@@ -5123,12 +5123,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no over35 params entry for Mexico Liga MX",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over35 params entry for Mexico Liga MX",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no over35 params entry for Mexico Liga MX"
    },
    "prediction_engine": {
     "model_slot": "over35",
@@ -5190,12 +5190,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no btts params entry for Norway Eliteserien",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no btts params entry for Norway Eliteserien",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no btts params entry for Norway Eliteserien"
    },
    "prediction_engine": {
     "model_slot": "btts",
@@ -5256,15 +5256,15 @@
    },
    "gates": {
     "approved_optimizer_applied": false,
-    "edge_ceiling": 0.17,
-    "edge_ceiling_active": true,
+    "edge_ceiling": null,
+    "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "config.MARKSMAN_THRESHOLD (global, env-overridable)",
-    "sniper": 0.12,
-    "sniper_source": "config.SNIPER_THRESHOLD_OVER (global)",
-    "valuable": 0.03,
-    "valuable_source": "config.VALUABLE_THRESHOLD (global, env-overridable)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for Norway Eliteserien",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for Norway Eliteserien",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no ou25 params entry for Norway Eliteserien"
    },
    "prediction_engine": {
     "model_slot": "newformat",
@@ -5326,15 +5326,15 @@
    },
    "gates": {
     "approved_optimizer_applied": false,
-    "edge_ceiling": 0.17,
-    "edge_ceiling_active": true,
+    "edge_ceiling": null,
+    "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "config.MARKSMAN_THRESHOLD (global, env-overridable)",
-    "sniper": 0.12,
-    "sniper_source": "config.SNIPER_THRESHOLD_UNDER (global)",
-    "valuable": 0.03,
-    "valuable_source": "config.VALUABLE_THRESHOLD (global, env-overridable)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for Norway Eliteserien",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for Norway Eliteserien",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no ou25 params entry for Norway Eliteserien"
    },
    "prediction_engine": {
     "model_slot": "newformat",
@@ -5397,12 +5397,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no over15 params entry for Norway Eliteserien",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over15 params entry for Norway Eliteserien",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no over15 params entry for Norway Eliteserien"
    },
    "prediction_engine": {
     "model_slot": "over15",
@@ -5464,12 +5464,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no over35 params entry for Norway Eliteserien",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over35 params entry for Norway Eliteserien",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no over35 params entry for Norway Eliteserien"
    },
    "prediction_engine": {
     "model_slot": "over35",
@@ -5531,12 +5531,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no btts params entry for Romanian Superliga",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no btts params entry for Romanian Superliga",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no btts params entry for Romanian Superliga"
    },
    "prediction_engine": {
     "model_slot": "btts",
@@ -5597,15 +5597,15 @@
    },
    "gates": {
     "approved_optimizer_applied": false,
-    "edge_ceiling": 0.15,
-    "edge_ceiling_active": true,
+    "edge_ceiling": null,
+    "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "config.MARKSMAN_THRESHOLD (global, env-overridable)",
-    "sniper": 0.12,
-    "sniper_source": "config.SNIPER_THRESHOLD_OVER (global)",
-    "valuable": 0.03,
-    "valuable_source": "config.VALUABLE_THRESHOLD (global, env-overridable)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for Romanian Superliga",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for Romanian Superliga",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no ou25 params entry for Romanian Superliga"
    },
    "prediction_engine": {
     "model_slot": "newformat",
@@ -5667,15 +5667,15 @@
    },
    "gates": {
     "approved_optimizer_applied": false,
-    "edge_ceiling": 0.15,
-    "edge_ceiling_active": true,
+    "edge_ceiling": null,
+    "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "config.MARKSMAN_THRESHOLD (global, env-overridable)",
-    "sniper": 0.12,
-    "sniper_source": "config.SNIPER_THRESHOLD_UNDER (global)",
-    "valuable": 0.03,
-    "valuable_source": "config.VALUABLE_THRESHOLD (global, env-overridable)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for Romanian Superliga",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for Romanian Superliga",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no ou25 params entry for Romanian Superliga"
    },
    "prediction_engine": {
     "model_slot": "newformat",
@@ -5738,12 +5738,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no over15 params entry for Romanian Superliga",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over15 params entry for Romanian Superliga",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no over15 params entry for Romanian Superliga"
    },
    "prediction_engine": {
     "model_slot": "over15",
@@ -5805,12 +5805,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no over35 params entry for Romanian Superliga",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over35 params entry for Romanian Superliga",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no over35 params entry for Romanian Superliga"
    },
    "prediction_engine": {
     "model_slot": "over35",
@@ -5872,12 +5872,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: btts Serie B lacks valuable_th",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: btts Serie B lacks valuable_th",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: btts Serie B lacks valuable_th"
    },
    "prediction_engine": {
     "model_slot": "btts",
@@ -5936,16 +5936,16 @@
     "min_side_odds": 1.75
    },
    "gates": {
-    "approved_optimizer_applied": true,
-    "edge_ceiling": 0.19,
+    "approved_optimizer_applied": false,
+    "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.1,
-    "marksman_source": "best_params_standard[Serie B] (approved)",
-    "sniper": 0.12,
-    "sniper_source": "best_params_standard[Serie B] (approved, OOS-positive)",
-    "valuable": 0.03,
-    "valuable_source": "config.VALUABLE_THRESHOLD (global, env-overridable)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: ou25 Serie B lacks valuable_th",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: ou25 Serie B lacks valuable_th",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: ou25 Serie B lacks valuable_th"
    },
    "prediction_engine": {
     "model_slot": "standard",
@@ -6005,16 +6005,16 @@
     "min_side_odds": 1.75
    },
    "gates": {
-    "approved_optimizer_applied": true,
-    "edge_ceiling": 0.19,
+    "approved_optimizer_applied": false,
+    "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.1,
-    "marksman_source": "best_params_standard[Serie B] (approved)",
-    "sniper": 0.12,
-    "sniper_source": "best_params_standard[Serie B] (approved, OOS-positive)",
-    "valuable": 0.03,
-    "valuable_source": "config.VALUABLE_THRESHOLD (global, env-overridable)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: ou25 Serie B lacks valuable_th",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: ou25 Serie B lacks valuable_th",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: ou25 Serie B lacks valuable_th"
    },
    "prediction_engine": {
     "model_slot": "standard",
@@ -6077,12 +6077,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: over15 switched OFF for Serie B (drop)",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: over15 switched OFF for Serie B (drop)",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: over15 switched OFF for Serie B (drop)"
    },
    "prediction_engine": {
     "model_slot": "over15",
@@ -6144,12 +6144,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: over35 switched OFF for Serie B (drop)",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: over35 switched OFF for Serie B (drop)",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: over35 switched OFF for Serie B (drop)"
    },
    "prediction_engine": {
     "model_slot": "over35",
@@ -6211,12 +6211,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no btts params entry for Sweden Allsvenskan",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no btts params entry for Sweden Allsvenskan",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no btts params entry for Sweden Allsvenskan"
    },
    "prediction_engine": {
     "model_slot": "btts",
@@ -6277,15 +6277,15 @@
    },
    "gates": {
     "approved_optimizer_applied": false,
-    "edge_ceiling": 0.17,
-    "edge_ceiling_active": true,
+    "edge_ceiling": null,
+    "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "config.MARKSMAN_THRESHOLD (global, env-overridable)",
-    "sniper": 0.12,
-    "sniper_source": "config.SNIPER_THRESHOLD_OVER (global)",
-    "valuable": 0.03,
-    "valuable_source": "config.VALUABLE_THRESHOLD (global, env-overridable)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for Sweden Allsvenskan",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for Sweden Allsvenskan",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no ou25 params entry for Sweden Allsvenskan"
    },
    "prediction_engine": {
     "model_slot": "newformat",
@@ -6347,15 +6347,15 @@
    },
    "gates": {
     "approved_optimizer_applied": false,
-    "edge_ceiling": 0.17,
-    "edge_ceiling_active": true,
+    "edge_ceiling": null,
+    "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "config.MARKSMAN_THRESHOLD (global, env-overridable)",
-    "sniper": 0.12,
-    "sniper_source": "config.SNIPER_THRESHOLD_UNDER (global)",
-    "valuable": 0.03,
-    "valuable_source": "config.VALUABLE_THRESHOLD (global, env-overridable)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for Sweden Allsvenskan",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for Sweden Allsvenskan",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no ou25 params entry for Sweden Allsvenskan"
    },
    "prediction_engine": {
     "model_slot": "newformat",
@@ -6418,12 +6418,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no over15 params entry for Sweden Allsvenskan",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over15 params entry for Sweden Allsvenskan",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no over15 params entry for Sweden Allsvenskan"
    },
    "prediction_engine": {
     "model_slot": "over15",
@@ -6485,12 +6485,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no over35 params entry for Sweden Allsvenskan",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over35 params entry for Sweden Allsvenskan",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no over35 params entry for Sweden Allsvenskan"
    },
    "prediction_engine": {
     "model_slot": "over35",
@@ -6552,12 +6552,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no btts params entry for USA MLS",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no btts params entry for USA MLS",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no btts params entry for USA MLS"
    },
    "prediction_engine": {
     "model_slot": "btts",
@@ -6618,15 +6618,15 @@
    },
    "gates": {
     "approved_optimizer_applied": false,
-    "edge_ceiling": 0.17,
-    "edge_ceiling_active": true,
+    "edge_ceiling": null,
+    "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "config.MARKSMAN_THRESHOLD (global, env-overridable)",
-    "sniper": 0.12,
-    "sniper_source": "config.SNIPER_THRESHOLD_OVER (global)",
-    "valuable": 0.03,
-    "valuable_source": "config.VALUABLE_THRESHOLD (global, env-overridable)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for USA MLS",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for USA MLS",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no ou25 params entry for USA MLS"
    },
    "prediction_engine": {
     "model_slot": "newformat",
@@ -6688,15 +6688,15 @@
    },
    "gates": {
     "approved_optimizer_applied": false,
-    "edge_ceiling": 0.17,
-    "edge_ceiling_active": true,
+    "edge_ceiling": null,
+    "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "config.MARKSMAN_THRESHOLD (global, env-overridable)",
-    "sniper": 0.12,
-    "sniper_source": "config.SNIPER_THRESHOLD_UNDER (global)",
-    "valuable": 0.03,
-    "valuable_source": "config.VALUABLE_THRESHOLD (global, env-overridable)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for USA MLS",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for USA MLS",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no ou25 params entry for USA MLS"
    },
    "prediction_engine": {
     "model_slot": "newformat",
@@ -6759,12 +6759,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no over15 params entry for USA MLS",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over15 params entry for USA MLS",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no over15 params entry for USA MLS"
    },
    "prediction_engine": {
     "model_slot": "over15",
@@ -6826,12 +6826,12 @@
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": 0.08,
-    "marksman_source": "pipeline.py fixed side-market global",
-    "sniper": 0.1,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "valuable": 0.04,
-    "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    "marksman": null,
+    "marksman_source": "NO_LEAGUE_BAR: no over35 params entry for USA MLS",
+    "sniper": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over35 params entry for USA MLS",
+    "valuable": null,
+    "valuable_source": "NO_LEAGUE_BAR: no over35 params entry for USA MLS"
    },
    "prediction_engine": {
     "model_slot": "over35",
