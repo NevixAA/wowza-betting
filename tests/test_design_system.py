@@ -135,6 +135,7 @@ REDESIGNED = ("pages/00_🎯_Home.py", "pages/1_📊_Dashboard.py", "pages/18_�
               "pages/17_🏟️_Leagues.py", "pages/0_🏠_Overview.py", "pages/6_⚡_Live.py", "pages/13_⚽_Fantasy.py",
               "dashboard_data/league_research_view.py", "dashboard_data/leagues_view.py",
               "dashboard_data/overview_view.py", "dashboard_data/live_view.py", "dashboard_data/fantasy_view.py",
+              "pages/23_🎲_Specials.py", "dashboard_data/specials_view.py",   # owner 2026-11-09, research
               ) + STAGE3_PAGES + STAGE3_VIEWS
 
 

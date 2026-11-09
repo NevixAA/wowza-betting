@@ -84,6 +84,7 @@ NEW_PAGES = [
     ("pages/20_🧪_Model_Lab.py", "Research Lab"),
     ("pages/21_📡_Market_Intelligence.py", "Research Lab"),
     ("pages/22_🏭_Production.py", "System"),
+    ("pages/23_🎲_Specials.py", "Research Lab"),     # owner 2026-11-09, Pro specials tracker (research)
 ]
 
 
