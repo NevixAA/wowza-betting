@@ -1,10 +1,10 @@
 {
-  "checked_at": "2026-11-10T01:07:57Z",
-  "run_id": "42733342854",
-  "run_number": "1614",
+  "checked_at": "2026-11-10T04:44:22Z",
+  "run_id": "42757585709",
+  "run_number": "1615",
   "event": "schedule",
   "schedule": "",
-  "sha": "5fc786fc6ad8",
+  "sha": "e2013366f80d",
   "history_freshness": {
     "newest_match": "2026-11-09",
     "age_days": "1",
@@ -18,16 +18,16 @@
   "output/player_tips.csv": {
     "rows": 178,
     "fixtures": 14,
-    "mtime": "2026-11-10T01:07:12Z"
+    "mtime": "2026-11-10T04:43:33Z"
   },
   "output/player_ledger.csv": {
     "rows": 37876,
     "fixtures": null,
-    "mtime": "2026-11-10T01:07:12Z"
+    "mtime": "2026-11-10T04:43:32Z"
   },
   "git_dirty_outputs": [],
   "predict_log_tail": [
     "[predict] Post-WC match-day gating: no prop fixtures in next 72h \u2014 skipping.",
-    "[api_usage] workflow=Player Props af_calls=29 cache_hits=0 cache_hit_rate=0% errors=0  quota_remaining 74374->74346 (account-wide delta 28)"
+    "[api_usage] workflow=Player Props af_calls=29 cache_hits=0 cache_hit_rate=0% errors=0  quota_remaining 73411->73383 (account-wide delta 28)"
   ]
 }
