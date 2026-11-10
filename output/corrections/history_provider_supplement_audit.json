@@ -1,19 +1,18 @@
 {
  "artifact": "history_provider_supplement_audit",
- "generated_at": "2026-11-10T16:51:30Z",
+ "generated_at": "2026-11-10T18:23:49Z",
  "served_rows_without_supplement": 71011,
- "added": 598,
- "refused": 439,
+ "added": 608,
+ "refused": 429,
  "added_by_status": {
-  "FT": 438,
+  "FT": 448,
   "PEN": 107,
   "AET": 53
  },
- "added_with_ht": 598,
+ "added_with_ht": 608,
  "refused_by_reason": {
   "window_edge: before the first served fixture of this league-season": 398,
   "provider record holds no half-time score": 29,
-  "club spelling not proven": 10,
   "named by an owner correction list": 2
  },
  "per_league": {
@@ -107,8 +106,7 @@
   },
   "Scottish League One": {
    "window_edge: before the first served fixture of this league-season": 35,
-   "added:after_last_served": 32,
-   "club spelling not proven (served_spellings_ambiguous:Edinburgh City|FC Edinburgh)": 10,
+   "added:after_last_served": 42,
    "added:inside": 1
   },
   "Scottish League Two": {

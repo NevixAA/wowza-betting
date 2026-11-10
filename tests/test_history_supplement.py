@@ -180,3 +180,18 @@ def test_committed_china_cancelled_rows_are_excluded_as_not_played():
     c = aw[aw["fixture_id"].isin([927036, 926930])]
     assert set(zip(c["home_team"], c["away_team"], c["provider_status"])) == {
         ("Zhejiang Professional", "Tianjin Jinmen Tiger", "CANC"), ("Henan Songshan Longmen", "Shenzhen", "CANC")}
+
+
+def test_edinburgh_city_is_one_club_in_scottish_league_one():
+    # af-alias-proof/1.0 proved FC Edinburgh -> Edinburgh City (35 dates, league-scoped); the registry
+    # pair makes the served history use one spelling, so the play-offs can be placed
+    import json
+    from src import league_registry as LR
+    assert ("Edinburgh City", "FC Edinburgh") in LR.same_club_spellings("Scottish League One")
+    assert LR.same_club_spellings("Scottish League Two") == []
+    proven = json.loads((ROOT / "config" / "af_history_proven_aliases.json").read_text(encoding="utf-8"))
+    assert proven["map"]["Scottish League One"]["FC Edinburgh"] == "Edinburgh City"
+    s = pd.read_csv(HS.SUPPLEMENT)
+    e = s[(s["league"] == "Scottish League One")
+          & (s["home_team"].str.contains("Edinburgh") | s["away_team"].str.contains("Edinburgh"))]
+    assert len(e) == 11 and not (s["home_team"] == "FC Edinburgh").any() and not (s["away_team"] == "FC Edinburgh").any()
