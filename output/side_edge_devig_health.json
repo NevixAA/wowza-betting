@@ -1,29 +1,23 @@
 {
   "artifact": "side_edge_devig_health",
   "shadow_version": "side_edge_devig_shadow-1.0",
-  "generated_at": "2026-11-09T18:58:17Z",
+  "generated_at": "2026-11-10T16:31:04Z",
   "production_rule": "two-sided de-vig since 2026-11-01 (config.SIDE_EDGE_FAIR_PRICE); edge_prod below = the old (1/odds)/1.08, kept for comparison",
   "shadow_rule": "edge = p_model - median_books(power_devig(same-book two-sided pair)), pre-kickoff, carried forward to the decision time; same thresholds",
   "quotes_from": "2026-08-19 09:23:27+00:00",
-  "quote_rows": 223942,
+  "quote_rows": 224102,
   "board": {
-    "generated_at": "2026-11-09T18:43:20Z",
-    "rows": 10,
-    "production_tips": 1,
-    "classification": {
-      "ONLY_BECAUSE_OF_1_08": 1
-    },
-    "by_market": {
-      "over15": {
-        "ONLY_BECAUSE_OF_1_08": 1
-      }
-    },
-    "devigged_rows": 10,
-    "median_pair_overround": 0.0833,
-    "median_edge_prod_minus_devig_pp": -1.08,
-    "mean_edge_prod_minus_devig_pp": -0.21,
-    "p90_edge_prod_minus_devig_pp": 3.57,
-    "rows_prod_edge_inflated_ge_2pp": 2,
+    "generated_at": "2026-11-10T16:25:22Z",
+    "rows": 41,
+    "production_tips": 0,
+    "classification": {},
+    "by_market": {},
+    "devigged_rows": 41,
+    "median_pair_overround": 0.0814,
+    "median_edge_prod_minus_devig_pp": 0.54,
+    "mean_edge_prod_minus_devig_pp": 0.42,
+    "p90_edge_prod_minus_devig_pp": 1.2,
+    "rows_prod_edge_inflated_ge_2pp": 0,
     "rows_pair_overround_below_6pct": 0
   },
   "ledger_retrospective": {
@@ -153,26 +147,6 @@
     ]
   },
   "ledger_open_tips": {
-    "rows": 2,
-    "production_tips": 2,
-    "classification": {
-      "ONLY_BECAUSE_OF_1_08": 1,
-      "UNVERIFIABLE_ONE_SIDED": 1
-    },
-    "by_market": {
-      "btts": {
-        "ONLY_BECAUSE_OF_1_08": 1
-      },
-      "over35": {
-        "UNVERIFIABLE_ONE_SIDED": 1
-      }
-    },
-    "devigged_rows": 1,
-    "median_pair_overround": 0.0791,
-    "median_edge_prod_minus_devig_pp": -0.4,
-    "mean_edge_prod_minus_devig_pp": -0.4,
-    "p90_edge_prod_minus_devig_pp": -0.4,
-    "rows_prod_edge_inflated_ge_2pp": 0,
-    "rows_pair_overround_below_6pct": 0
+    "rows": 0
   }
 }
