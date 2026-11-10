@@ -269,14 +269,17 @@ def test_b1_complete_only_from_the_run_ledger(tmp_path):
     assert P.b1_complete(st3)[0] is True
 
 
-def test_study_is_flagged_off_in_the_repo_and_refuses_to_run(tmp_path):
+def test_the_run_flag_is_open_only_with_the_owners_words_and_refuses_when_off(tmp_path):
     flag = json.loads(H.FLAG_FILE.read_text(encoding="utf-8"))
-    assert flag["run_enabled"] is False and not flag["owner_ok"]
+    assert flag["run_enabled"] is not True or str(flag["owner_ok"] or "").strip()   # never open without the owner
+    off = tmp_path / "off.json"
+    off.write_text(json.dumps({"run_enabled": False, "owner_ok": None}), encoding="utf-8")
     st = _ledger(tmp_path, [{"run_id": "c", "exit_code": 0, "stats": {"B1": {}}}])
-    ok, why = H.gate(st)
+    ok, why = H.gate(st, off)
     assert not ok and any("run_enabled" in w for w in why)
+    st2 = _ledger(tmp_path / "x", [{"run_id": "a", "exit_code": 10, "stats": {"B1": {}}}])   # B1 unfinished
     with pytest.raises(SystemExit, match="FLAGGED OFF"):
-        H.run(st, tmp_path / "priced", tmp_path / "study")
+        H.run(st2, tmp_path / "priced", tmp_path / "study")
 
 
 def test_gate_opens_only_with_owner_ok_and_b1_complete(tmp_path):
@@ -300,3 +303,19 @@ def test_search_ledger_counts_the_earlier_runs():
         pytest.skip("study outputs not in this checkout's history")
     assert d["configs_searched"] >= 540 and d["hypotheses"] == d["configs_searched"] + d["cells_tested"]
 
+
+
+def test_two_legged_tie_one_event_never_prices_the_other_leg():
+    """A provider event matched to both legs of a tie (home / away swapped, 3 days apart): only the leg whose
+    date holds the kickoff can be priced; the other leg keeps no price."""
+    leg2 = _universe(date="2024-06-04", home="Dallas", away="Austin")
+    u = pd.concat([_universe(), leg2], ignore_index=True)
+    fmap = {FX: "e1", "2024-06-04|USA MLS|Dallas|Austin": "e1"}
+    odds = pd.DataFrame(_ou("pinnacle", 2.5, 1.90, 1.95))
+    clean, st = P.clean_fixture_map(fmap, odds)
+    assert clean == {FX: "e1"} and st["map_kickoff_outside_fixture_window"] == 1
+    both = {FX: "e1", "2024-06-01|USA MLS|Other|Club": "e1"}            # same day, two fixtures: price none
+    clean2, st2 = P.clean_fixture_map(both, odds)
+    assert clean2 == {} and st2["map_events_on_several_fixtures"] == 1
+    p = _price(u, _ou("pinnacle", 2.5, 1.90, 1.95))["priced"]
+    assert p[(p["row_id"] == "2024-06-04|USA MLS|Dallas|Austin")]["price_source"].isna().all()

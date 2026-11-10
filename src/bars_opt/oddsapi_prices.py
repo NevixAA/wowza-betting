@@ -231,13 +231,41 @@ def price_track(universe: pd.DataFrame, store_root: Path) -> dict:
     return price_frames(universe, odds, AD.load_context(store_root, universe))
 
 
+def clean_fixture_map(fmap: dict, odds: pd.DataFrame) -> tuple[dict, dict]:
+    """The adapter's fixture -> event map, made one-to-one by the kickoff: a mapping whose provider kickoff is
+    outside the fixture's day window is removed (e.g. a two-legged tie, home and away swapped three days
+    apart, where one event was matched to both legs); an event still mapped to more than one fixture prices
+    none of them. Returns (clean map, counts)."""
+    from src import oddsapi_history as OH
+    ko = _utc(odds.drop_duplicates("event_id").set_index("event_id")["commence_time"])
+    keep, out_window = {}, 0
+    for f, e in fmap.items():
+        lo, hi = OH.day_window(str(f).split("|")[0])
+        k = ko.get(e)
+        if k is None or pd.isna(k) or not (pd.Timestamp(lo) <= k < pd.Timestamp(hi)):
+            out_window += 1
+            continue
+        keep[f] = e
+    inv: dict = {}
+    for f, e in keep.items():
+        inv.setdefault(e, []).append(f)
+    multi = {e for e, fs in inv.items() if len(fs) > 1}
+    clean = {f: e for f, e in keep.items() if e not in multi}
+    return clean, {"map_kickoff_outside_fixture_window": out_window,
+                   "map_events_on_several_fixtures": len(multi),
+                   "map_fixtures_dropped_ambiguous": len(keep) - len(clean)}
+
+
 def price_frames(universe: pd.DataFrame, odds: pd.DataFrame, ctx: dict | None) -> dict:
     """price_track on frames (ctx None = the events the odds rows carry, the adapter's own fallback)."""
     from src import oddsapi_history_adapter as AD
     odds = odds[odds["league"].isin(set(universe["league"]))]
     fmap, unmatched = AD.match_universe(universe, odds, ctx)
+    fmap, clean = clean_fixture_map(fmap, odds)
     long, _summary, _ = AD.attach(universe, odds, ctx)
+    long = long[long["fixture_id"].isin(set(fmap))] if len(long) else long
     pairs, pst = history_pairs(long)
+    pst.update(clean)
     fx = universe.assign(fixture_id=universe["row_id"].astype(str)).drop_duplicates("fixture_id")
     picked = pick_pairs(pairs, fx.set_index("fixture_id")["date"], pst)
     priced, overlap = build_priced(universe, picked)
