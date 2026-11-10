@@ -40,10 +40,13 @@ def _table(rows: list[dict], cols: list[str]) -> str:
 def cmd_prepare(a) -> int:
     out = P.assert_outside_repo(a.out)
     (out / "priced").mkdir(parents=True, exist_ok=True)
-    cov, fams, agree, stats = [], [], [], {}
+    from src.bars_opt import fresh_holdout as FH
+    tiers = FH.price_tiers()
+    (out / "priced" / "price_tiers.json").write_text(json.dumps(tiers), encoding="utf-8")
+    cov, fams, agree, stats = [], [], [], {"price_tiers": tiers}
     for t in TRACKS:
         u = pd.read_parquet(Path(a.universe) / f"universe_{t}.parquet")
-        r = P.price_track(u, Path(a.store))
+        r = P.price_track(u, Path(a.store), tiers)
         r["priced"].to_parquet(out / "priced" / f"universe_{t}.parquet", index=False)
         c, f = P.coverage(r["priced"])
         cov += c
@@ -51,14 +54,14 @@ def cmd_prepare(a) -> int:
         agree += P.agreement(r["overlap"])
         stats[t] = r["stats"] | {"price_source": r["priced"]["price_source"].value_counts().to_dict(),
                                  "close_source": r["priced"]["close_source"].value_counts().to_dict()}
-    ok, why = P.b1_complete(Path(a.store))
-    stats["b1_complete"] = {"complete": ok, "reason": why}
+    ok, why = P.tiers_complete(Path(a.store), tiers)
+    stats["tiers_complete"] = {"tiers": tiers, "complete": ok, "reason": why}
     for name, obj in (("coverage.json", cov), ("coverage_families.json", fams), ("agreement.json", agree),
                       ("prepare_stats.json", stats)):
         (out / name).write_text(json.dumps(obj, indent=1, default=str), encoding="utf-8")
     changed = [r for r in cov if r["priced_after"] != r["priced_before"]]
     md = ["# Priced universes: coverage (counts only)", "",
-          f"B1 complete: {ok} ({why})", "",
+          f"Price tiers {tiers} complete: {ok} ({why})", "",
           "## League x market rows that gain history prices", "",
           _table(changed, ["track", "market", "league", "rows", "priced_before", "priced_after", "after_own",
                            "after_oddsapi_hist", "select_before", "select_after", "select_months_before",

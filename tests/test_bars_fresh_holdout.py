@@ -99,7 +99,10 @@ def test_protocol_v2_skips_a_later_run_whose_holdout_gives_no_league_150_rows():
 
 def test_protocol_history_keeps_version_1_and_states_nothing_was_scored():
     proto, sha = FH.protocol()
-    assert proto["protocol"] == "bars-fresh-holdout/2"
+    assert proto["protocol"] == "bars-fresh-holdout/3"
+    assert proto["data"]["price_tiers"] == ["B1", "B2"] == FH.price_tiers()
+    assert [x["version"] for x in proto["history"]] == ["bars-fresh-holdout/1", "bars-fresh-holdout/2"]
+    assert proto["history"][1]["sha256"].startswith("6b112c6e")
     h = proto["history"][0]
     assert h["sha256"].startswith("de4d7547") and "Fix the rule" in h["owner_words"]
     assert "NO holdout row has been scored" in h["nothing_scored"] and sha != h["sha256"]
@@ -148,6 +151,7 @@ def rigged(tmp_path, monkeypatch):
     priced.mkdir()
     for t in ("standard", "new_format"):
         pd.DataFrame({"x": [1]}).to_parquet(priced / f"universe_{t}.parquet")
+    (priced / "price_tiers.json").write_text(json.dumps(FH.price_tiers()), encoding="utf-8")
     log = {"select": [], "bet": []}
 
     def select_core(sel, seed=0, allow_blend=False):
@@ -194,6 +198,12 @@ def test_selection_never_sees_a_holdout_row_and_each_cell_is_tested_once(rigged)
 def test_a_second_test_on_the_same_output_is_refused(rigged):
     H.run(rigged["tmp"] / "store", rigged["priced"], rigged["tmp"] / "study", workers=1)
     with pytest.raises(SystemExit, match="ONCE"):
+        H.run(rigged["tmp"] / "store", rigged["priced"], rigged["tmp"] / "study", workers=1)
+
+
+def test_a_universe_priced_with_other_tiers_is_refused(rigged):
+    (rigged["priced"] / "price_tiers.json").write_text(json.dumps(["B1", "B2", "C3"]), encoding="utf-8")
+    with pytest.raises(SystemExit, match="re-run prepare"):
         H.run(rigged["tmp"] / "store", rigged["priced"], rigged["tmp"] / "study", workers=1)
 
 

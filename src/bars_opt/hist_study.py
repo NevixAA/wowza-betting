@@ -6,8 +6,8 @@ tested on the owner's FRESH HOLDOUT - VERDICTS ONLY.
         --out <local dir>/study
 
 FLAGGED OFF. `study` refuses unless (a) config/bars_oddsapi_hist.json has run_enabled true and an owner_ok
-note (the owner said "run"), and (b) the store's run ledger shows tier B1 finished (oddsapi_prices.
-b1_complete). Data-truth rule: no study on unclean / partial data.
+note (the owner said "run"), and (b) the store's run ledger shows every price tier the protocol pins
+finished (oddsapi_prices.tiers_complete). Data-truth rule: no study on unclean / partial data.
 
 PROTOCOL: the owner's FRESH HOLDOUT (2026-11-10), pre-registered in config/bars_fresh_holdout_protocol.json
 (must be committed and unchanged; its sha256 goes into the proposal). Per family: selection with the study's
@@ -39,9 +39,11 @@ def gate(store_root: Path, flag_file: Path = FLAG_FILE) -> tuple[bool, list[str]
         why.append(f"{Path(flag_file).name}: run_enabled is not true (the owner has not said 'run')")
     if not str(flag.get("owner_ok") or "").strip():
         why.append(f"{Path(flag_file).name}: owner_ok is empty (quote the owner's 'run' and its date)")
-    ok, reason = P.b1_complete(store_root)
+    from src.bars_opt import fresh_holdout as FH
+    tiers = FH.price_tiers()
+    ok, reason = P.tiers_complete(store_root, tiers)
     if not ok:
-        why.append(f"B1 not complete: {reason}")
+        why.append(f"price tiers {tiers} not complete: {reason}")
     return not why, why
 
 
@@ -85,6 +87,10 @@ def run(store_root: Path, priced_dir: Path, out_dir: Path, workers: int = 4) -> 
     priced_dir, out_dir = P.assert_outside_repo(priced_dir), P.assert_outside_repo(out_dir)
     if (out_dir / "fresh_result.json").exists() or (out_dir / "fresh_choices.json").exists():
         raise SystemExit(f"{out_dir}: a fresh-holdout test already ran here - each cell is tested ONCE")
+    stamp = priced_dir / "price_tiers.json"
+    got = json.loads(stamp.read_text(encoding="utf-8")) if stamp.exists() else None
+    if got != FH.price_tiers():
+        raise SystemExit(f"{priced_dir}: priced with tiers {got}, the protocol pins {FH.price_tiers()} - re-run prepare")
     priced = {}
     for t in ("standard", "new_format"):
         f = priced_dir / f"universe_{t}.parquet"

@@ -282,14 +282,26 @@ def test_the_run_flag_is_open_only_with_the_owners_words_and_refuses_when_off(tm
         H.run(st2, tmp_path / "priced", tmp_path / "study")
 
 
-def test_gate_opens_only_with_owner_ok_and_b1_complete(tmp_path):
+def test_gate_opens_only_with_owner_ok_and_every_pinned_tier_complete(tmp_path):
     f = tmp_path / "flag.json"
     f.write_text(json.dumps({"run_enabled": True, "owner_ok": "owner 2026-12-01: run"}), encoding="utf-8")
-    st = _ledger(tmp_path, [{"run_id": "a", "exit_code": 10, "stats": {"B1": {}}}])
+    st = _ledger(tmp_path, [{"run_id": "a", "exit_code": 10, "stats": {"B1": {}, "B2": {}}}])   # B2 unfinished
     ok, why = H.gate(st, f)
-    assert not ok and any("B1 not complete" in w for w in why)
-    st2 = _ledger(tmp_path / "b", [{"run_id": "b", "exit_code": 0, "stats": {"B1": {}}}])
+    assert not ok and any("not complete" in w and "B2" in w for w in why)
+    st2 = _ledger(tmp_path / "b", [{"run_id": "b", "exit_code": 10, "stats": {"B1": {}, "B2": {}, "B4": {}}}])
     assert H.gate(st2, f) == (True, [])
+
+
+def test_a_later_tier_alone_never_proves_an_earlier_one(tmp_path):
+    st = _ledger(tmp_path, [{"run_id": "a", "exit_code": 10, "stats": {"B4": {}}}])
+    assert P.tier_complete(st, "B2")[0] is False and P.b1_complete(st)[0] is False
+
+
+def test_prepare_prices_only_from_the_pinned_tiers():
+    q = _ou("pinnacle", 2.5, 1.90, 1.95)
+    odds = pd.DataFrame(q).assign(tier="C3")
+    r = P.price_frames(_universe(), odds[odds["tier"].isin(["B1", "B2"])], None)
+    assert r["priced"]["price_source"].isna().all()
 
 
 def test_search_ledger_counts_the_earlier_runs():

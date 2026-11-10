@@ -200,6 +200,14 @@ def protocol() -> tuple[dict, str]:
     return json.loads(b.decode("utf-8")), hashlib.sha256(b).hexdigest()
 
 
+def price_tiers() -> list[str]:
+    """The collector tiers the protocol pins as price sources (v3: exactly B1 and B2)."""
+    t = protocol()[0]["data"].get("price_tiers")
+    if not t:
+        raise SystemExit("the fresh-holdout protocol pins no price_tiers")
+    return list(t)
+
+
 def protocol_committed() -> tuple[bool, str]:
     rel = PROTOCOL_FILE.relative_to(ROOT).as_posix()
     if not L._git("ls-files", "--", rel).strip():

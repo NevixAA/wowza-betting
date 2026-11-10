@@ -1,11 +1,16 @@
 {
- "protocol": "bars-fresh-holdout/2",
+ "protocol": "bars-fresh-holdout/3",
  "owner_decision": "owner 2026-11-10: \"Fresh holdout\" (relayed by the coordinator); P_RESOLUTION_HITS = 10 approved as part of it",
  "written_before_any_run": true,
  "runs_only_when": "tier B1 of the OddsAPI history is complete (store run ledger) AND config/bars_oddsapi_hist.json run_enabled true with owner_ok",
  "data": {
   "universe": "the bars study universes (output/bars_opt/universe_{standard,new_format}.parquet) priced by src/bars_opt/oddsapi_prices.py: own two-sided pair always wins; else the OddsAPI history pair under the study's own rules (earliest provable pre-kickoff same-snapshot pair from match day - 1; one book's pair, Bet365 else Pinnacle; exact line per side). Priced universes stay LOCAL.",
-  "fresh_row": "price_source oddsapi_hist AND (row_id, market) never priced in any committed version of the study universes AND not priced by any own source today; proven from git history by src/bars_opt/fresh_holdout.earlier_runs (fail-closed)"
+  "fresh_row": "price_source oddsapi_hist AND (row_id, market) never priced in any committed version of the study universes AND not priced by any own source today; proven from git history by src/bars_opt/fresh_holdout.earlier_runs (fail-closed)",
+  "price_tiers": [
+   "B1",
+   "B2"
+  ],
+  "price_tiers_rule": "history prices come ONLY from the collector tiers listed in price_tiers (src.oddsapi_history.TIERS): B1 (btts + alternate totals at close, 2023-05..) and B2 (New-Format featured totals at close, 2020-06..2023-05). Both must be finished in the store's run ledger before the study runs. Later tiers (C3 h2h+totals open/close 2020-2023, C1 T-48h, ...) never price a row in this study, so the fresh holdout cannot move as the collector goes on."
  },
  "holdout": {
   "unit": "family = track x market-side; cells = league inside the family",
@@ -39,6 +44,15 @@
    "owner_words": "owner 2026-11-10: \"Fix the rule\" (with \"Rebuild first\": the Phase 2 predictions are rebuilt on data-truth-100 before the one-time test)",
    "reason": "on the complete B1 store, version 1 picked, for New-Format O/U 2.5 / Over 1.5 / Over 3.5, a short mid-2026 fresh run (442-531 rows, ending 2026-08-10) whose holdout part (2026-08-01..08-10, 160-165 rows over 13 leagues) gives no league 150 rows: no cell could be PROVEN, and the owner's named stretch (New-Format before 2025-06) would have been spent as selection data. Only the choice of run changes; every other term is unchanged.",
    "nothing_scored": "NO holdout row has been scored or looked at under version 1 or 2: no study, no bet, no ROI, no p-value. Only row counts and dates of the candidate windows were computed (fresh_holdout coverage)."
+  },
+  {
+   "version": "bars-fresh-holdout/2",
+   "sha256": "6b112c6ee63c0050a7225411c57f97533c4c33934de4dfcf63cf05dfe9673a18",
+   "replaced_on": "2026-11-10",
+   "owner_words": "owner 2026-11-10: \"Fix the rule\", \"Rebuild first\"",
+   "amended_by": "the coordinator's clarification BEFORE any scoring: price sources pinned to tiers {B1, B2} exactly",
+   "reason": "on the rebuilt universes the store already held part of B2 (still being collected), which priced 526 earlier New-Format O/U 2.5 rows and moved that family's holdout split; later tiers (C3: h2h + totals open/close 2020-2023) would keep shifting it. A pinned tier set freezes the holdout. Only the price-source tiers change.",
+   "nothing_scored": "NO holdout row has been scored or looked at under versions 1, 2 or 3: only row counts and window dates were computed."
   }
  ]
 }

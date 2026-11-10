@@ -223,11 +223,14 @@ def verify_join(priced: pd.DataFrame, fmap: dict, event_sport: dict) -> dict:
 
 # ── one track, from the store ────────────────────────────────────────────────────────────────────
 
-def price_track(universe: pd.DataFrame, store_root: Path) -> dict:
+def price_track(universe: pd.DataFrame, store_root: Path, tiers=None) -> dict:
     """The whole chain for one track's universe: adapter match + attach, pairs, pick, priced universe,
-    integrity check. Returns {"priced", "overlap", "stats"}."""
+    integrity check. `tiers`: the collector tiers whose prices may be used (the protocol pins them; None =
+    every stored tier). Returns {"priced", "overlap", "stats"}."""
     from src import oddsapi_history_adapter as AD
     odds = AD.load_store(store_root)
+    if tiers is not None:
+        odds = odds[odds["tier"].isin(list(tiers))]
     return price_frames(universe, odds, AD.load_context(store_root, universe))
 
 
@@ -371,17 +374,32 @@ def agreement(overlap: pd.DataFrame) -> list[dict]:
 
 # ── B1 completeness (the store's own run ledger) ────────────────────────────────────────────────
 
-def b1_complete(store_root: Path) -> tuple[bool, str]:
-    """True only when a collector run finished tier B1: exit code 0 (all planned tiers done) with B1 in it,
-    or a run that went on to a LATER tier (tiers run strictly in order, src.oddsapi_history.TIERS)."""
+def tier_complete(store_root: Path, tier: str) -> tuple[bool, str]:
+    """True only when ONE collector run processed `tier` and then either finished every planned tier (exit
+    code 0) or went on to a LATER tier in the same run (tiers run strictly in order, src.oddsapi_history.TIERS)."""
     from src import oddsapi_history as OH
-    later = set(OH.TIER_ORDER[OH.TIER_ORDER.index("B1") + 1:])
+    later = set(OH.TIER_ORDER[OH.TIER_ORDER.index(tier) + 1:])
     runs = sorted((Path(store_root) / "ledger" / "runs").glob("*.json"))
     for f in runs:
         r = json.loads(f.read_text(encoding="utf-8"))
         tiers = set((r.get("stats") or {}).keys()) | set((r.get("credits_by_tier") or {}).keys())
-        if "B1" in tiers and r.get("exit_code") == OH.EXIT_DONE:
-            return True, f"run {r.get('run_id')} finished all planned tiers (B1 included)"
+        if tier not in tiers:
+            continue
+        if r.get("exit_code") == OH.EXIT_DONE:
+            return True, f"run {r.get('run_id')} finished all planned tiers ({tier} included)"
         if tiers & later:
-            return True, f"run {r.get('run_id')} reached tier(s) {sorted(tiers & later)} after B1"
-    return False, f"no run in {len(runs)} ledger run file(s) finished B1"
+            return True, f"run {r.get('run_id')} reached tier(s) {sorted(tiers & later)} after {tier}"
+    return False, f"no run in {len(runs)} ledger run file(s) finished {tier}"
+
+
+def tiers_complete(store_root: Path, tiers) -> tuple[bool, str]:
+    why = []
+    for t in tiers:
+        ok, r = tier_complete(store_root, t)
+        if not ok:
+            why.append(r)
+    return (not why), ("; ".join(why) if why else "all of " + ", ".join(tiers) + " finished")
+
+
+def b1_complete(store_root: Path) -> tuple[bool, str]:
+    return tier_complete(store_root, "B1")
