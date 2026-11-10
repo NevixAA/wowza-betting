@@ -23,7 +23,9 @@ turns system health RED instead of waiting for the next audit:
                  league-keyed.
     5 ONE MATCH  the banks, through the loader's identity pipeline, hold no match twice (same day
                  under two spellings, or 1-3 days apart) and no row whose form window holds its own
-                 match (2026-11-02).
+                 match (2026-11-02); and (2026-11-10) no PROVIDER fixture claimed by two served rows,
+                 nor by two served af_history provider rows (src.integrity.fixture_claims: a match
+                 filed under both clubs' old AND new names has no side in common by name).
 
 A check whose input is missing is NO_DATA (or RED where the input is a production bank), never GREEN.
 
@@ -412,16 +414,53 @@ def _bank_matches(f: str) -> pd.DataFrame:
     return d.dropna(subset=["date", "home_team", "away_team", "home_goals", "away_goals"])
 
 
-def one_match(banks: dict | None = None) -> dict:
+def _af_provider_rows() -> pd.DataFrame | None:
+    """af_history as every reader serves it: the owner's duplicate lists applied
+    (src.af_history_corrections), the rows the old loader wrote back dropped (never served,
+    src.af_history_provenance). None when af_history is unreadable."""
+    d = _read(OUT / "af_history.parquet")
+    if d.empty:
+        return None
+    from src.af_history_corrections import apply_af_history_corrections
+    from src.af_history_provenance import written_back_mask
+    d = apply_af_history_corrections(d, tag="data_truth")
+    return d[~written_back_mask(d).to_numpy()]
+
+
+def _fixture_dupes(frame: pd.DataFrame, pool: pd.DataFrame, home_goals: str, away_goals: str,
+                   fixture_col: str | None = None) -> pd.DataFrame:
+    """Claims (src.integrity.fixture_claims) of every provider fixture two or more rows claim."""
+    from src import league_registry as LR
+    from src.integrity.fixture_claims import claims, duplicate_claims
+    f = frame.copy()
+    f["league"] = f["league"].map(lambda x: LR.canonical_name(x) if isinstance(x, str) else None)
+    return duplicate_claims(claims(f, pool, home_goals=home_goals, away_goals=away_goals,
+                                   fixture_col=fixture_col))
+
+
+def one_match(banks: dict | None = None, pool: pd.DataFrame | None = None,
+              af: pd.DataFrame | None = None) -> dict:
     """The banks the training frame is built from, merged and put through the loader's own identity
     pipeline (src/data_loader.one_club_one_match - the same code train and serve run), must hold
-    no match twice. `banks` {name: frame} overrides the committed files (tests)."""
+    no match twice. `banks` {name: frame} overrides the committed files (tests).
+
+    2026-11-10 (fix/history-dupes): also by the PROVIDER's fixture id. A match filed under BOTH
+    clubs' old and new names ('Tianjin Teda v Meizhou Kejia' / 'Tianjin Jinmen Tiger v Meizhou
+    Hakka') has no side in common by name, so duplicate_pairs cannot see it; both rows claim one
+    API-Football fixture (src.integrity.fixture_claims). RED when any provider fixture is claimed by
+    two served rows, or by two served af_history provider rows. `pool` (the provider fixture lists)
+    and `af` (af_history provider rows) override the committed files (tests); a missing provider
+    pool is RED (the check could not run). With `banks` given and `af` not, af_history is not read."""
     rule = ("one match, one row: fd_history + the backtest archive, through data_loader.one_club_one_match, "
             "hold 0 duplicate-match pairs (same league, canonical clubs, same score, dates <= 3 d apart; or "
-            "same day, same score, one side the same club) and 0 rows whose last-5 window holds their own "
-            "match: RED on any; NO_DATA if fd_history is missing")
+            "same day, same score, one side the same club), 0 rows whose last-5 window holds their own "
+            "match, and 0 provider fixtures (API-Football fixture id) claimed by two served rows or by two "
+            "served af_history provider rows: RED on any, or when the provider fixture lists are missing; "
+            "NO_DATA if fd_history is missing")
     from src import data_loader as DL
     from src.integrity.duplicate_matches import duplicate_pairs, self_containing_rows
+    from src.integrity.fixture_claims import provider_pool
+    read_af = banks is None and af is None
     if banks is None:
         banks = {"fd_cache": _bank_matches("fd_history.parquet"),
                  "backtest_archive": _bank_matches("backtest_all_leagues.csv")}
@@ -440,11 +479,28 @@ def one_match(banks: dict | None = None) -> dict:
     pairs = duplicate_pairs(clean)
     sc = self_containing_rows(clean, pairs)
     removed = len(merged) - len(clean)
-    st = RED if (len(pairs) or int(sc.sum())) else GREEN
+    pool = provider_pool() if pool is None else pool
+    if read_af:
+        af = _af_provider_rows()
+    no_pool = pool is None or pool.empty
+    fx = (pd.DataFrame(columns=["fixture_id", "league", "date", "idx"]) if no_pool
+          else _fixture_dupes(clean, pool, "home_goals", "away_goals"))
+    afx = (pd.DataFrame(columns=["fixture_id", "league", "date", "idx"]) if no_pool or af is None or af.empty
+           else _fixture_dupes(af, pool, "FTHG", "FTAG", fixture_col="fixture_id"))
+    n_fx, n_afx = fx["fixture_id"].nunique(), afx["fixture_id"].nunique()
+    st = RED if (len(pairs) or int(sc.sum()) or n_fx or n_afx or no_pool) else GREEN
     ex = "; ".join(f"{p.league}: rows {p.i}/{p.j} {p.gap_days} d ({p.kind})" for p in pairs.head(3).itertuples())
+    for name, g in (("served", fx), ("af_history", afx)):
+        for fid, gg in list(g.groupby("fixture_id", sort=False))[:3]:
+            ex += (("; " if ex else "") + f"{name} {gg['league'].iloc[0]} {gg['date'].iloc[0]}: provider fixture "
+                   f"{int(fid)} claimed by rows {list(gg['idx'])}")
+    fx_txt = ("provider fixture check NOT RUN (no provider fixture lists)" if no_pool else
+              f"{n_fx} provider fixture(s) claimed by 2+ served rows"
+              + ("" if af is None else f", {n_afx} by 2+ af_history provider rows"))
     return _c("Data truth 5: one match, one row", st,
               f"{len(pairs)} duplicate pair(s), {int(sc.sum())} self-containing row(s) after the loader's "
-              f"identity pipeline ({len(merged):,} bank rows -> {len(clean):,}; {removed:,} copies removed)",
+              f"identity pipeline ({len(merged):,} bank rows -> {len(clean):,}; {removed:,} copies removed); "
+              f"{fx_txt}",
               rule, ex)
 
 
