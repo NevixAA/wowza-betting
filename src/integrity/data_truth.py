@@ -451,7 +451,8 @@ def one_match(banks: dict | None = None, pool: pd.DataFrame | None = None,
     two served rows, or by two served af_history provider rows. `pool` (the provider fixture lists)
     and `af` (af_history provider rows) override the committed files (tests); a missing provider
     pool is RED (the check could not run). With `banks` given and `af` not, af_history is not read."""
-    rule = ("one match, one row: fd_history + the backtest archive, through data_loader.one_club_one_match, "
+    rule = ("one match, one row: fd_history + the backtest archive + the provider supplement, through "
+            "data_loader.one_club_one_match, "
             "hold 0 duplicate-match pairs (same league, canonical clubs, same score, dates <= 3 d apart; or "
             "same day, same score, one side the same club), 0 rows whose last-5 window holds their own "
             "match, and 0 provider fixtures (API-Football fixture id) claimed by two served rows or by two "
@@ -462,8 +463,11 @@ def one_match(banks: dict | None = None, pool: pd.DataFrame | None = None,
     from src.integrity.fixture_claims import provider_pool
     read_af = banks is None and af is None
     if banks is None:
+        from src.history_supplement import read_supplement
         banks = {"fd_cache": _bank_matches("fd_history.parquet"),
-                 "backtest_archive": _bank_matches("backtest_all_leagues.csv")}
+                 "backtest_archive": _bank_matches("backtest_all_leagues.csv"),
+                 # provider fixtures no bank holds, as the loader adds them (owner 2026-11-10)
+                 "provider_supplement": read_supplement().drop(columns=["provider_fixture_id"])}
     fd = banks.get("fd_cache", pd.DataFrame())
     if fd is None or fd.empty:
         return _c("Data truth 5: one match, one row", GREY, "no fd_history to check", rule)

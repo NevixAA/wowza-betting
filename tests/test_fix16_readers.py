@@ -230,6 +230,9 @@ RAW = {                # why the raw file is the right input
     "scripts/audit_history_fixture_claims.py": ("fix/history-dupes: counts provider fixtures claimed twice "
                                                 "in the RAW, corrected (apply_af_history_corrections / "
                                                 "apply_history_corrections) and served frames; nothing is served"),
+    "scripts/build_history_supplement.py": ("fix/history-supplement: reads the banks through data_loader."
+                                            "one_club_one_match (which applies the lists) to find the provider "
+                                            "fixtures the served history lacks"),
     "scripts/probe_oddsapi_history.py": ("P7: reads league / date only to pick one probe match day per "
                                          "league for the OddsAPI history probe (no result is served)"),
 }
