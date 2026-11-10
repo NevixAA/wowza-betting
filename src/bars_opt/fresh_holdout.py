@@ -184,8 +184,8 @@ def coverage(fams: list[dict]) -> tuple[list[dict], list[dict]]:
 
 
 def protocol() -> tuple[dict, str]:
-    """(protocol, sha256 of the file bytes)."""
-    b = PROTOCOL_FILE.read_bytes()
+    """(protocol, sha256 of the file's text with LF line ends - the same on every checkout, CRLF or not)."""
+    b = PROTOCOL_FILE.read_bytes().replace(b"\r\n", b"\n")
     import hashlib
     return json.loads(b.decode("utf-8")), hashlib.sha256(b).hexdigest()
 
