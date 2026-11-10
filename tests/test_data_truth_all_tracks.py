@@ -115,3 +115,20 @@ def test_rule_3_stays_operational_and_the_ratchet_is_untouched():
     # the ceiling may still only go down
     ceiling = int(DT._ratchet()["max_known_defaults"])
     assert any("may only go down" in f for f in DT.gate(ceiling - 1, []))
+
+
+def test_imputer_missing_indicators_are_checked_through_their_base_column():
+    """'<f>__missing' is built from <f> at scoring time, so no board carries it: <f> is what counts.
+    An indicator whose base is not in the payload still counts as missing (fail closed)."""
+    import pandas as pd
+    from src.integrity import data_truth as DT
+    p = pd.DataFrame({"model_type": ["standard"] * 4, "x": [1.0, 2.0, 3.0, 4.0]})
+    for c in DT.HT_FORM_INPUTS + DT.REST_INPUTS:
+        p[c] = 1.0
+    ok = DT.track_gaps(p, {("standard", "O/U 2.5"): ["x", "x__missing"]})
+    assert ok["standard|O/U 2.5"]["status"] == DT.GREEN
+    p.loc[:2, "x"] = None                                   # 75% of the base value missing -> RED
+    red = DT.track_gaps(p, {("standard", "O/U 2.5"): ["x", "x__missing"]})
+    assert red["standard|O/U 2.5"]["status"] == DT.RED and "x" in red["standard|O/U 2.5"]["missing"]
+    orphan = DT.track_gaps(p.assign(x=1.0), {("standard", "O/U 2.5"): ["y__missing"]})
+    assert orphan["standard|O/U 2.5"]["missing"].get("y__missing") == 100.0
