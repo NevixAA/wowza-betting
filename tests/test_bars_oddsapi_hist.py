@@ -331,3 +331,10 @@ def test_two_legged_tie_one_event_never_prices_the_other_leg():
     assert clean2 == {} and st2["map_events_on_several_fixtures"] == 1
     p = _price(u, _ou("pinnacle", 2.5, 1.90, 1.95))["priced"]
     assert p[(p["row_id"] == "2024-06-04|USA MLS|Dallas|Austin")]["price_source"].isna().all()
+
+
+def test_a_single_snapshot_gives_no_closing_pair():
+    """One snapshot is the bet-time price; it is not also a closing price (CLV would be 0 by construction)."""
+    o25 = _row(_price(_universe(), _ou("pinnacle", 2.5, 1.90, 1.95))["priced"], "over25")
+    assert (o25["yes"], o25["no"]) == (1.90, 1.95)
+    assert np.isnan(o25["yes_c"]) and pd.isna(o25["close_source"])

@@ -253,9 +253,8 @@ def combine(fresh: dict, families: list[dict], study_cells: list[dict], month: s
     for m, data in C.production_candidates(fams).items():
         TP.write_candidate("standard" if m == "ou25" else m, data, cand_dir)
     table = status_table(fams, study_cells)
-    counts: dict = {}
-    for r in table:
-        counts[r["status"]] = counts.get(r["status"], 0) + 1
+    from collections import Counter
+    counts = dict(Counter(r["status"] for r in table))
     prop_dir = TP.PROPOSAL_DIR / NAMESPACE
     TP._safe_write(prop_dir / f"evidence_{month}.json", json.dumps(
         {"month": month, "meta": meta, "fresh_cells_replaced": replaced, "fresh_cells_refused": refused,

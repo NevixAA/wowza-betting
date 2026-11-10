@@ -151,7 +151,14 @@ def pick_pairs(pairs: pd.DataFrame, fixture_dates: pd.Series, stats: dict | None
     first, last = g.first(), g.last()
     last = last[["fixture_id", "market", "ts", "yes", "no"]].rename(columns={"ts": "ts_c", "yes": "yes_c",
                                                                              "no": "no_c"})
-    return first.merge(last, on=["fixture_id", "market"])[out_cols]
+    out = first.merge(last, on=["fixture_id", "market"])[out_cols]
+    # a closing pair from the SAME snapshot as the bet-time pair is no CLV measurement (CLV would read 0 by
+    # construction, found on the 2026-11-10 fresh-holdout run where B1/B2 hold one close snapshot): no pair
+    same = (out["ts_c"] <= out["ts"]).to_numpy()
+    for c in ("yes_c", "no_c"):
+        out[c] = np.where(same, np.nan, out[c].astype(float))
+    out["ts_c"] = out["ts_c"].where(~same)
+    return out
 
 
 # ── the priced universe ──────────────────────────────────────────────────────────────────────────
