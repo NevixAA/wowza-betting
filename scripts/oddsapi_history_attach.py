@@ -35,7 +35,7 @@ def main(argv=None) -> int:
         pass
     u = pd.read_parquet(a.universe)
     odds = AD.load_store(a.store)
-    long, summary, unmatched = AD.attach(u, odds)
+    long, summary, unmatched = AD.attach(u, odds, AD.load_context(a.store, u))
     a.out.mkdir(parents=True, exist_ok=True)
     long.to_parquet(a.out / "prices_long.parquet", index=False)
     summary.to_parquet(a.out / "prices_summary.parquet", index=False)

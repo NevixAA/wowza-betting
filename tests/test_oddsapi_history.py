@@ -236,7 +236,8 @@ def test_featured_snapshot_is_timed_off_the_first_matched_kickoff(tmp_path):
 
 def test_cli_refuses_a_store_inside_the_public_repo_and_missing_settings(monkeypatch):
     import oddsapi_history_collect as CLI
-    monkeypatch.setattr(CLI.OH, "load_fixtures", lambda: pd.DataFrame(columns=["league", "date", "home", "away", "source"]))
+    monkeypatch.setattr(CLI.OH, "load_fixtures",
+                        lambda: (pd.DataFrame(columns=["league", "date", "home", "away", "source"]), {}))
     with pytest.raises(SystemExit, match="public"):
         CLI.main(["--store", str(ROOT / "output" / "x"), "--max-minutes", "1"])
     monkeypatch.delenv("ODDS_HIST_FLOOR", raising=False)
@@ -286,14 +287,13 @@ def test_adapter_never_joins_across_leagues_and_reports_unmatched(tmp_path):
     u = _universe().assign(league="Japan J-League")                           # same names, other league
     long, _, unmatched = AD.attach(u, _odds(tmp_path))
     assert long.empty
-    assert (unmatched["kind"] == "fixture_without_event").sum() == 2
-    assert (unmatched["kind"] == "event_without_fixture").sum() == 2
+    assert (unmatched["kind"] == "fixture_without_event").sum() == 2       # MLS events never seen by Japan
 
 
 def test_adapter_counts_one_quote_per_book():
     odds = pd.DataFrame([
         {"unit_key": "u1", "endpoint": "event_odds", "tier": "B1", "snapshot_label": "close", "event_id": "e",
-         "sport_key": SK, "league": LG, "requested_at": "t", "snapshot_ts": "2024-06-02T00:20:00Z",
+         "sport_key": SK, "league": LG, "league_date": D, "requested_at": "t", "snapshot_ts": "2024-06-02T00:20:00Z",
          "commence_time": "2024-06-02T00:30:00Z", "home_team": "Austin FC", "away_team": "FC Dallas",
          "bookmaker": "b", "market": mk, "outcome_name": "Over", "outcome_description": None, "point": 2.5,
          "price": p} for mk, p in (("alternate_totals", 1.9), ("totals", 1.95))])
@@ -309,3 +309,116 @@ def test_classify_places_only_exact_outcomes():
     assert AD.classify("h2h", "Someone", None, None, "H", "A") is None
     assert AD.classify("team_totals", "Over", "A", 1.5, "H", "A")["market"] == "team_total_away"
     assert AD.classify("team_totals", "Over", "Z", 1.5, "H", "A") is None
+
+
+# ── matching: v9 spellings, proven OddsAPI aliases, rescheduled events, +-1 day ─────────────────────
+def _ev(i, h, a, ko):
+    return {"id": i, "home_team": h, "away_team": a, "commence_time": ko}
+
+
+def test_resolver_uses_v9_identity_spellings_and_refuses_two_clubs():
+    spell = {LG: {"SK Rapid": {"SK Rapid", "Rapid Vienna"}, "Austin": {"Austin"}}}
+    R = OH.Resolver(spell)
+    assert R.club(LG, "Rapid Vienna", ["SK Rapid", "Austin"]) == "SK Rapid"
+    assert R.club(LG, "Wiener Sportclub", ["SK Rapid", "Austin"]) is None    # unproven: never guessed
+    assert OH.Resolver(spell, {LG: {"Wiener Sportclub": "SK Rapid"}}).club(LG, "Wiener Sportclub", ["SK Rapid"]) == "SK Rapid"
+
+
+def _three_days(oddsapi_name="Leuven", dates=("2024-01-06", "2024-01-13", "2024-01-20")):
+    days, ebd = {}, {}
+    for i, d in enumerate(dates):
+        days[(LG, d)] = [("Charleroi", "Oud-Heverlee Leuven"), ("Gent", "Genk")]
+        ebd[(LG, d)] = [_ev(f"a{i}", "Charleroi", oddsapi_name, f"{d}T15:00:00Z"),
+                        _ev(f"b{i}", "Gent", "Genk", f"{d}T18:00:00Z")]
+    return days, ebd
+
+
+def test_forced_opponent_on_three_days_proves_a_league_scoped_alias():
+    days, ebd = _three_days()
+    spell = OH.club_spellings({}, days)
+    proof = OH.prove_provider_aliases(days, ebd, spell)
+    assert proof["map"] == {LG: {"Leuven": "Oud-Heverlee Leuven"}}
+    R = OH.Resolver(spell, proof["map"])
+    m, rep = OH.match_day(LG, "2024-01-13", days[(LG, "2024-01-13")], ebd, R)
+    assert len(m) == 2 and rep["unmatched_fixtures"] == []
+    # the alias is league-scoped: another league never sees it
+    assert OH.Resolver(spell, proof["map"]).club("Japan J-League", "Leuven", ["Oud-Heverlee Leuven"]) is None
+
+
+def test_two_days_of_evidence_prove_nothing():
+    days, ebd = _three_days(dates=("2024-01-06", "2024-01-13"))
+    assert OH.prove_provider_aliases(days, ebd, OH.club_spellings({}, days))["map"] == {}
+
+
+def test_a_name_pointing_at_two_clubs_is_refused():
+    days, ebd = _three_days()
+    days[(LG, "2024-01-27")] = [("Charleroi", "Westerlo"), ("Gent", "Genk")]
+    ebd[(LG, "2024-01-27")] = [_ev("x", "Charleroi", "Leuven", "2024-01-27T15:00:00Z"),
+                               _ev("y", "Gent", "Genk", "2024-01-27T18:00:00Z")]
+    proof = OH.prove_provider_aliases(days, ebd, OH.club_spellings({}, days))
+    assert proof["map"] == {} and proof["refused"]["name_points_at_two_clubs"] == 1
+
+
+def test_a_rescheduled_match_takes_the_event_on_the_played_date_only():
+    d = "2025-11-10"
+    fx = [("Dep. Riestra", "Independiente")]
+    R = OH.Resolver({LG: {"Dep. Riestra": {"Dep. Riestra", "Deportivo Riestra"}, "Independiente": {"Independiente"}}})
+    ebd = {(LG, d): [_ev("stale", "Deportivo Riestra", "Independiente", "2025-11-09T21:00:00Z"),
+                     _ev("real", "Deportivo Riestra", "Independiente", "2025-11-10T22:00:00Z")]}
+    m, rep = OH.match_day(LG, d, fx, ebd, R)
+    assert m[fx[0]]["id"] == "real" and rep["ambiguous"] == []
+    ebd = {(LG, d): [_ev("one", "Deportivo Riestra", "Independiente", "2025-11-10T12:00:00Z"),
+                     _ev("two", "Deportivo Riestra", "Independiente", "2025-11-10T22:00:00Z")]}
+    m, rep = OH.match_day(LG, d, fx, ebd, R)
+    assert m == {} and rep["ambiguous"] == fx                                 # two on the day: neither
+
+
+def test_an_adjacent_day_event_needs_both_clubs_proven():
+    d = "2024-03-10"
+    fx = [("Austin", "Dallas"), ("Portland Timbers", "Seattle Sounders")]
+    R = OH.Resolver(OH.club_spellings({}, {(LG, d): fx}))
+    ebd = {(LG, d): [], (LG, "2024-03-11"): [_ev("late", "Austin FC", "FC Dallas", "2024-03-12T13:00:00Z"),
+                                              _ev("half", "Austin FC", "Nowhere", "2024-03-12T15:00:00Z")]}
+    m, rep = OH.match_day(LG, d, fx, ebd, R)
+    assert {f: e["id"] for f, e in m.items()} == {("Austin", "Dallas"): "late"}
+    assert rep["matched_adjacent_day"] == 1
+
+
+def test_run_proves_aliases_from_its_listings_then_buys_and_unmatched_units_stay_retryable(tmp_path):
+    dates = ["2024-06-01", "2024-06-08", "2024-06-15"]
+    days = {(LG, d): [("Austin", "Dallas"), ("Portland Timbers", "Seattle")] for d in dates}
+
+    class API(FakeAPI):
+        def get(self, url, params=None, timeout=None):
+            if url.endswith("/events"):
+                d = params["commenceTimeFrom"][:10]
+                nxt = (pd.Timestamp(d) + pd.Timedelta(days=1)).strftime("%Y-%m-%d")
+                self.events = [{"id": f"aus-{nxt}", "commence_time": f"{nxt}T00:30:00Z", "home_team": "Austin FC",
+                                "away_team": "FC Dallas"},
+                               {"id": f"por-{nxt}", "commence_time": f"{nxt}T02:30:00Z",
+                                "home_team": "Portland Timbers", "away_team": "Seattle Sounders FC"}]
+            elif "/events/" in url:
+                eid = url.split("/events/")[1].split("/")[0]
+                self.events = [{"id": eid, "commence_time": "2024-06-02T00:30:00Z", "home_team": "x", "away_team": "y"}]
+            return super().get(url, params, timeout)
+
+    api = API()
+    code, _, store, meter = _run(tmp_path, api, days=days)
+    assert code == OH.EXIT_DONE
+    lookups = [c for c in api.calls if c[0].endswith("/events")]
+    odds = [c for c in api.calls if "/events/" in c[0]]
+    assert len(lookups) == 3 and len(odds) == 6        # 'Seattle Sounders FC' proven on 3 days -> all bought
+    al = json.loads((tmp_path / "store" / "ledger" / "provider_aliases.json").read_text())
+    assert al["map"] == {LG: {"Seattle Sounders FC": "Seattle"}}
+
+    # with only 2 days nothing is proven: those units are NOT done and a later run retries them
+    days2 = {k: v for k, v in days.items() if k[1] != "2024-06-15"}
+    api2 = API()
+    _run(tmp_path / "two", api2, days=days2)
+    led = pd.concat([pd.read_csv(f) for f in (tmp_path / "two" / "store" / "ledger" / "units").glob("*.csv")])
+    assert len([c for c in api2.calls if "/events/" in c[0]]) == 2            # Austin only
+    assert set(led["status"]) <= {"ok", "empty"} and led["unit_key"].str.contains("por-").sum() == 0
+    api3 = API()
+    _run(tmp_path / "two", api3, days=days, run_id="r2")
+    assert len([c for c in api3.calls if c[0].endswith("/events")]) == 1      # only the NEW day's listing
+    assert len([c for c in api3.calls if "/events/" in c[0]]) == 4            # 3 Portland retried + new Austin

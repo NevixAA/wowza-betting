@@ -168,40 +168,81 @@ def s_probe_leagues(store_root: Path | None) -> set | None:
 
 
 # ── our fixture universe ─────────────────────────────────────────────────────────────────────────
-def load_fixtures(root: Path = ROOT) -> pd.DataFrame:
-    """[league, date (YYYY-MM-DD), home, away, source] from the committed banks, with the owner's
-    history corrections (fd_history through serve_history, af_history through the af rule), keyed
-    leagues only. player_history adds the props-only leagues (Premier League, Ligue 1, ...)."""
-    from src.af_history_corrections import apply_af_history_corrections
-    from src.history_corrections import serve_history
-    parts = []
-    af = root / "output" / "af_history.parquet"
-    if af.exists():
-        a = apply_af_history_corrections(pd.read_parquet(af), tag="oddsapi_history.af_history")
-        parts.append(a.assign(source="af")[["league", "date", "home_team", "away_team", "source"]])
-    fd = root / "output" / "fd_history.parquet"
-    if fd.exists():
-        f = serve_history(pd.read_parquet(fd), tag="oddsapi_history.fd_history")
-        parts.append(f.assign(source="fd")[["league", "date", "home_team", "away_team", "source"]])
+def load_served_history() -> tuple[pd.DataFrame, dict]:
+    """v9's SERVED history, exactly as its clean retrain reads it: src.data_loader.load_all_matches
+    (force=True) with the football-data download switched off and every socket refused while it runs
+    (committed rows only, every loader correction applied: history corrections, provider dates, ONE
+    club ONE spelling ONE fixture through src.identity_repair - Altach/SCR Altach, SK Rapid/Rapid
+    Vienna, the China renames). Returns ([league, date, home, away], {league: {spelling: canonical}}
+    = data_loader.IDENTITY_ALIASES as applied). The loader's own log lines are silenced: they name
+    clubs, and this runs in a workflow whose log carries counts only."""
+    import contextlib
+    import io
+    import logging
+    import socket
+    from src import data_loader as DL
+    real = (socket.socket.connect, socket.create_connection)
+
+    def _no_net(*a, **k):
+        raise OSError("network blocked (oddsapi_history reads committed history only)")
+    socket.socket.connect, socket.create_connection = _no_net, _no_net
+    dl_fetch, dl_cov = DL._ci_download_all, DL._report_training_coverage
+    DL._ci_download_all = lambda have=None: []
+    DL._report_training_coverage = lambda out: None
+    prev = logging.root.manager.disable
+    logging.disable(logging.CRITICAL)
+    try:
+        with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+            raw = DL.load_all_matches(force=True)
+        identity = {lg: dict(m) for lg, m in DL.IDENTITY_ALIASES.items()}
+    finally:
+        socket.socket.connect, socket.create_connection = real
+        DL._ci_download_all, DL._report_training_coverage = dl_fetch, dl_cov
+        logging.disable(prev)
+    h = raw[["league", "date", "home_team", "away_team"]].copy()
+    h["date"] = pd.to_datetime(h["date"], errors="coerce").dt.strftime("%Y-%m-%d")
+    h = h.dropna().rename(columns={"home_team": "home", "away_team": "away"})
+    return h.drop_duplicates().reset_index(drop=True), identity
+
+
+def load_fixtures(root: Path = ROOT, served: tuple | None = None) -> tuple[pd.DataFrame, dict]:
+    """([league, date, home, away, source], identity aliases). Team leagues come from v9's served
+    history (canonical clubs, one fixture each); keyed leagues the served history does not hold (the
+    props-only top divisions: Premier League, Ligue 1, ...) come from player_history. Keyed leagues
+    only."""
+    h, identity = served if served is not None else load_served_history()
+    parts = [h.assign(source="v9")]
     ph = root / "player_history.parquet"
     if ph.exists():
         import pyarrow.dataset as ds
         p = ds.dataset(str(ph), format="parquet").to_table(
             columns=["league", "date", "home_team", "away_team"]).to_pandas().drop_duplicates()
-        parts.append(p.assign(source="ph"))
-    if not parts:
-        return pd.DataFrame(columns=["league", "date", "home", "away", "source"])
-    h = pd.concat(parts, ignore_index=True)
-    h["date"] = pd.to_datetime(h["date"], errors="coerce").dt.strftime("%Y-%m-%d")
-    h = h.dropna(subset=["league", "date", "home_team", "away_team"])
-    keyed = {lg for lg in h["league"].unique() if sport_key(lg)}
-    h = h[h["league"].isin(keyed)]
-    return (h.rename(columns={"home_team": "home", "away_team": "away"})
-             .drop_duplicates(["league", "date", "home", "away", "source"])
-             .reset_index(drop=True)[["league", "date", "home", "away", "source"]])
+        p = p[~p["league"].isin(set(h["league"]))]
+        p["date"] = pd.to_datetime(p["date"], errors="coerce").dt.strftime("%Y-%m-%d")
+        parts.append(p.rename(columns={"home_team": "home", "away_team": "away"}).assign(source="ph"))
+    f = pd.concat(parts, ignore_index=True).dropna(subset=["league", "date", "home", "away"])
+    keyed = {lg for lg in f["league"].unique() if sport_key(lg)}
+    f = f[f["league"].isin(keyed)]
+    return (f.drop_duplicates(["league", "date", "home", "away", "source"])
+             .reset_index(drop=True)[["league", "date", "home", "away", "source"]], identity)
 
 
-_SOURCE_RANK = {"af": 0, "fd": 1, "ph": 2}
+def club_spellings(identity: dict, days: dict) -> dict:
+    """{league: {canonical club: {every spelling v9 maps onto it}}} over the clubs of `days`."""
+    out: dict = {}
+    for (lg, _), fx in days.items():
+        m = out.setdefault(lg, {})
+        for h, a in fx:
+            m.setdefault(h, {h})
+            m.setdefault(a, {a})
+    for lg, amap in identity.items():
+        for alias, canon in amap.items():
+            if canon in out.get(lg, {}):
+                out[lg][canon].add(alias)
+    return out
+
+
+_SOURCE_RANK = {"v9": 0, "af": 1, "fd": 2, "ph": 3}
 
 
 def dedupe_day(rows: list[tuple]) -> list[tuple]:
@@ -353,37 +394,193 @@ def summarise_plan(plan: dict, days: dict, sec_per_call: tuple = (0.5, 1.0),
     return out
 
 
-# ── provider-event matching (one league, one match day) ───────────────────────────────────────────
-def match_events(fixtures: list[tuple], events: list[dict], league_date: str) -> tuple[dict, dict]:
-    """({(home, away): event}, report). An event is ours only when BOTH clubs resolve
-    (src.team_names.resolve, OddsAPI spelling -> our spelling) onto one fixture of this league-day,
-    its kickoff is inside the day window, and the pairing is one-to-one; anything else is reported."""
-    from src.team_names import resolve
+# ── provider-event matching (one league; the match day, or +-1 day with both clubs proven) ────────
+MIN_ALIAS_DATES = 3   # the identity_repair / prove_af_history_aliases evidence rule, not a new number
+
+
+class Resolver:
+    """OddsAPI spelling -> ONE of our canonical clubs among `clubs` (one league, one side, one day).
+    A club is hit when the league's PROVEN provider alias names it, or src.team_names.resolve proves
+    the name is one of v9's spellings of that club (canonical + every identity alias v9 applied).
+    Exactly one club hit -> that club; none or several -> None. Nothing fuzzy."""
+
+    def __init__(self, spell: dict, proven: dict | None = None):
+        self.spell, self.proven = spell, proven or {}
+        self._memo: dict = {}
+
+    def club(self, league: str, name, clubs) -> str | None:
+        from src.team_names import resolve
+        name = "" if name is None else str(name)
+        clubs = tuple(sorted(set(clubs)))
+        k = (league, name, clubs)
+        if k in self._memo:
+            return self._memo[k]
+        p = self.proven.get(league, {}).get(name)
+        if p is not None:
+            hit = p if p in clubs else None
+        else:
+            sp = self.spell.get(league, {})
+            hits = [c for c in clubs if any(resolve(name, [x]) == x for x in sorted(sp.get(c, {c})))]
+            hit = hits[0] if len(hits) == 1 else None
+        self._memo[k] = hit
+        return hit
+
+
+def _in_window(e: dict, league_date: str) -> bool:
     lo, hi = day_window(league_date)
+    try:
+        return lo <= parse_iso(e["commence_time"]) < hi
+    except Exception:                                               # noqa: BLE001
+        return False
+
+
+def _adjacent(d: str) -> tuple[str, str]:
+    x = datetime.strptime(d, "%Y-%m-%d")
+    return ((x - timedelta(days=1)).strftime("%Y-%m-%d"), (x + timedelta(days=1)).strftime("%Y-%m-%d"))
+
+
+def match_day(league: str, d: str, fixtures: list[tuple], events_by_day: dict, R: Resolver) -> tuple[dict, dict]:
+    """({(home, away): event}, report) for one league-day. First the provider events of THIS day's
+    window; a fixture still unmatched may then take an event from the stored listings of the day
+    before / after (a UTC vs local date), only with BOTH clubs proven. One-to-one: a fixture with two
+    event ids, or an event claimed by two fixtures, is ambiguous and bought for neither."""
+    rep = {"events_in_window": 0, "unmatched_events": [], "ambiguous": [], "unmatched_fixtures": [],
+           "matched_adjacent_day": 0}
+    if not fixtures:
+        return {}, rep
     homes, aways = [h for h, _ in fixtures], [a for _, a in fixtures]
+    prim = [e for e in events_by_day.get((league, d), []) if _in_window(e, d)]
+    rep["events_in_window"] = len({e["id"] for e in prim})
+    seen = {e["id"] for e in prim}
+    adj = []
+    for dd in _adjacent(d):
+        for e in events_by_day.get((league, dd), []):
+            if e["id"] not in seen:
+                seen.add(e["id"])
+                adj.append(e)
     cand: dict = {}
-    rep = {"events_in_window": 0, "unmatched_events": [], "ambiguous": [], "unmatched_fixtures": []}
-    for e in events:
-        try:
-            ko = parse_iso(e["commence_time"])
-        except Exception:                                           # noqa: BLE001
-            continue
-        if not (lo <= ko < hi):
-            continue
-        rep["events_in_window"] += 1
-        rh, ra = resolve(str(e.get("home_team") or ""), homes), resolve(str(e.get("away_team") or ""), aways)
-        if rh and ra and (rh, ra) in fixtures:
-            cand.setdefault((rh, ra), []).append(e)
-        else:
-            rep["unmatched_events"].append((e.get("home_team"), e.get("away_team")))
+
+    def scan(evs, only=None, tag="day"):
+        for e in evs:
+            rh, ra = R.club(league, e.get("home_team"), homes), R.club(league, e.get("away_team"), aways)
+            if rh and ra and (rh, ra) in fixtures and (only is None or (rh, ra) in only):
+                cand.setdefault((rh, ra), {})[e["id"]] = (e, tag)
+    scan(prim)
+    left = {f for f in fixtures if f not in cand}
+    if left and adj:
+        scan(adj, only=left, tag="adjacent")
+    # A RESCHEDULED match: the listing still holds the stale event id beside the new one, both clubs
+    # proven on both. The match was played on OUR date (the results provider's), so the one event
+    # whose UTC kickoff date is that date is it; none or several such -> ambiguous, bought for neither.
+    rep["rescheduled_picked"] = 0
+    for f, es in list(cand.items()):
+        if len(es) > 1:
+            on_day = {k: v for k, v in es.items() if str(v[0].get("commence_time", ""))[:10] == d}
+            if len(on_day) == 1:
+                cand[f] = on_day
+                rep["rescheduled_picked"] += 1
+    claims: dict = {}
+    for f, es in cand.items():
+        for eid in es:
+            claims.setdefault(eid, []).append(f)
     out = {}
-    for fx, es in cand.items():
-        if len({x["id"] for x in es}) == 1:
-            out[fx] = es[0]
-        else:
-            rep["ambiguous"].append(fx)
-    rep["unmatched_fixtures"] = [fx for fx in fixtures if fx not in out]
+    for f, es in cand.items():
+        if len(es) != 1 or len(claims[next(iter(es))]) != 1:
+            rep["ambiguous"].append(f)
+            continue
+        e, tag = next(iter(es.values()))
+        out[f] = e
+        rep["matched_adjacent_day"] += tag == "adjacent"
+    used = {e["id"] for e in out.values()}
+    rep["unmatched_events"] = [(e.get("home_team"), e.get("away_team")) for e in prim if e["id"] not in used]
+    rep["unmatched_fixtures"] = [f for f in fixtures if f not in out]
     return out, rep
+
+
+def match_events(fixtures: list[tuple], events: list[dict], league_date: str, league: str = "_",
+                 R: Resolver | None = None) -> tuple[dict, dict]:
+    """One league-day against one plain event list."""
+    return match_day(league, league_date, fixtures, {(league, league_date): events}, R or Resolver({}))
+
+
+def prove_provider_aliases(days: dict, events_by_day: dict, spell: dict, min_dates: int = MIN_ALIAS_DATES,
+                           max_rounds: int = 6) -> dict:
+    """League-scoped OddsAPI spelling -> our canonical club, PROVEN by forced-opponent evidence on the
+    provider's own listings (the prove_af_history_aliases rule; listings carry no score):
+      * on league-day D an event's one side is proven to be our club X, X plays exactly one fixture
+        that day on that side, X v Y, Y is not matched by any other event that day, and the event's
+        other name N is not proven to be anyone -> evidence (N, Y, D);
+      * (N -> Y) is PROVEN when it has evidence on >= min_dates distinct days and N never has
+        evidence for another club; two names claiming Y that appear in the SAME listing are refused;
+      * rounds iterate to a fixpoint: a pair proven in round k anchors the forced opponent in k+1.
+    Returns {"map": {league: {N: Y}}, "evidence": {...}, "refused": {...}, "rounds": n}."""
+    known: dict = {}
+    res: dict = {"map": {}, "evidence": {}, "refused": {}, "rounds": 0}
+    for rnd in range(1, max_rounds + 1):
+        R = Resolver(spell, known)
+        ev: dict = {}
+        cooccur: dict = {}
+        for (lg, d), fx in days.items():
+            evs = [e for e in events_by_day.get((lg, d), []) if _in_window(e, d)]
+            if not evs or not fx:
+                continue
+            homes, aways = [h for h, _ in fx], [a for _, a in fx]
+            cooccur.setdefault(lg, []).append({str(e.get("home_team")) for e in evs}
+                                              | {str(e.get("away_team")) for e in evs})
+            res_e = [(e, R.club(lg, e.get("home_team"), homes), R.club(lg, e.get("away_team"), aways))
+                     for e in evs]
+            matched_clubs = {c for _, rh, ra in res_e if rh and ra for c in (rh, ra)}
+            for e, rh, ra in res_e:
+                if rh and ra:
+                    continue
+                for anc, other_name, side in ((rh, e.get("away_team"), 0), (ra, e.get("home_team"), 1)):
+                    if not anc:
+                        continue
+                    f = [x for x in fx if x[side] == anc]
+                    if len(f) != 1:
+                        continue
+                    y = f[0][1 - side]
+                    if y in matched_clubs:
+                        continue
+                    ev.setdefault(lg, {}).setdefault(str(other_name), {}).setdefault(y, set()).add(d)
+        # a pair proven in an earlier round stays proven: its names now resolve, so they produce no
+        # new evidence (re-deriving them from scratch would make the rounds oscillate)
+        new_map: dict = {lg: dict(m) for lg, m in known.items()}
+        evidence: dict = {lg: dict(m) for lg, m in res.get("evidence", {}).items()}
+        refused = Counter()
+        for lg, by_name in ev.items():
+            cands = {}
+            for n, ys in by_name.items():
+                if n in new_map.get(lg, {}):
+                    continue
+                if len(ys) > 1:
+                    refused["name_points_at_two_clubs"] += 1
+                    continue
+                (y, ds), = ys.items()
+                if len(ds) < min_dates:
+                    refused["fewer_than_min_dates"] += 1
+                    continue
+                cands[n] = (y, ds)
+            by_club: dict = {}
+            for n, (y, _) in cands.items():
+                by_club.setdefault(y, []).append(n)
+            for y, ns in by_club.items():
+                ns = ns + [n for n, c in new_map.get(lg, {}).items() if c == y and n not in ns]
+                if len(ns) > 1 and any(sum(n in names for n in ns) > 1 for names in cooccur.get(lg, [])):
+                    refused["club_claimed_by_two_names_together"] += len(ns)
+                    continue
+                for n in ns:
+                    if n not in cands:
+                        continue
+                    ds = cands[n][1]
+                    new_map.setdefault(lg, {})[n] = y
+                    evidence.setdefault(lg, {})[n] = {"club": y, "dates": len(ds), "first": min(ds),
+                                                      "last": max(ds)}
+        res = {"map": new_map, "evidence": evidence, "refused": dict(refused), "rounds": rnd}
+        if new_map == known:
+            break
+        known = new_map
+    return res
 
 
 # ── response -> rows (real prices only) ──────────────────────────────────────────────────────────
@@ -456,12 +653,38 @@ class Store:
 
     def _load_lookups(self) -> dict:
         out: dict = {}
+        self.events_by_day: dict = {}
         files = sorted((self.root / "data" / "events").glob("*.parquet"))
         if files:
             ev = pd.concat([pd.read_parquet(f) for f in files], ignore_index=True)
             for k, g in ev.groupby("unit_key"):
-                out[k] = g.drop_duplicates("event_id").to_dict("records")
+                rows = g.drop_duplicates("event_id").to_dict("records")
+                out[k] = rows
+                self._index(rows[0]["league"], rows[0]["league_date"], rows)
         return out
+
+    def _index(self, league: str, d: str, rows: list[dict]):
+        """events_by_day[(league, date)]: the listing's events with `id` (what the matcher reads)."""
+        have = self.events_by_day.setdefault((league, d), [])
+        ids = {e["id"] for e in have}
+        have += [{**r, "id": r["event_id"]} for r in rows if r["event_id"] not in ids]
+
+    def put_lookup(self, key: str, league: str, d: str, rows: list[dict]):
+        self.lookups[key] = rows
+        self._index(league, d, rows)
+
+    def write_identity(self, identity: dict):
+        """ledger/identity_aliases.json: v9's applied identity map this run matched with (the
+        adapter reads the same spellings)."""
+        f = self.root / "ledger" / "identity_aliases.json"
+        f.parent.mkdir(parents=True, exist_ok=True)
+        f.write_text(json.dumps(identity, indent=1, sort_keys=True, ensure_ascii=False) + "\n", encoding="utf-8")
+
+    def write_aliases(self, proof: dict):
+        """ledger/provider_aliases.json: the proven OddsAPI spellings (private: derived from listings)."""
+        f = self.root / "ledger" / "provider_aliases.json"
+        f.parent.mkdir(parents=True, exist_ok=True)
+        f.write_text(json.dumps(proof, indent=1, sort_keys=True, default=sorted) + "\n", encoding="utf-8")
 
     def add(self, kind: str, rows: list[dict]):
         self.buf[kind].extend(rows)
@@ -618,53 +841,72 @@ def say(msg: str):
 
 
 class Collector:
-    def __init__(self, store: Store, meter: Meter, days: dict, plan: dict, tiers: Iterable[str] = TIER_ORDER):
+    """Per tier, in the owner's priority order: (1) the provider's event listing of every league-day
+    the tier needs (1 credit each, bought once and reused by every tier and every later run); (2) the
+    league-scoped OddsAPI aliases PROVEN from every stored listing (prove_provider_aliases), written
+    to ledger/provider_aliases.json; (3) the odds units, each bought only for a proven provider event.
+    A unit whose fixture has no proven event is NOT written to the ledger, so a later run retries it
+    (with the aliases the new listings prove) without re-buying the listing."""
+
+    def __init__(self, store: Store, meter: Meter, days: dict, plan: dict, tiers: Iterable[str] = TIER_ORDER,
+                 spell: dict | None = None):
         self.store, self.m, self.days, self.plan = store, meter, days, plan
         self.tiers = [t for t in TIER_ORDER if t in set(tiers)]
+        self.spell = spell if spell is not None else club_spellings({}, days)
         self.stats: dict = {}
         self._matched: dict = {}
+        self.R = Resolver(self.spell)
+        self.proof: dict = {}
 
     def _st(self, tier, k, n=1):
         self.stats.setdefault(tier, Counter())[k] += n
 
-    def events_for(self, league: str, d: str, tier: str) -> dict | None:
-        """{(home, away): provider event} for one league-day (the lookup bought once, then reused)."""
-        if (league, d) in self._matched:
-            return self._matched[(league, d)]
+    def ensure_lookup(self, league: str, d: str, tier: str):
         sk = sport_key(league)
         k = lookup_key(sk, d)
         if k in self.store.done:
-            evs = self.store.lookups.get(k, [])
-        else:
-            lo, hi = day_window(d)
-            at = lookup_at(d)
-            status, body, c = self.m.call(f"/historical/sports/{sk}/events",
-                                          {"date": iso(at), "commenceTimeFrom": iso(lo), "commenceTimeTo": iso(hi)},
-                                          LOOKUP_MAX_COST, tier)
-            self._st(tier, "lookup_calls")
-            self._st(tier, "credits", c)
-            data = (body or {}).get("data") or [] if status == 200 else []
-            rows = [{"unit_key": k, "sport_key": sk, "league": league, "league_date": d, "lookup_at": iso(at),
-                     "snapshot_ts": (body or {}).get("timestamp"), "event_id": e.get("id"),
-                     "commence_time": e.get("commence_time"), "home_team": e.get("home_team"),
-                     "away_team": e.get("away_team")} for e in data if e.get("id")]
-            self.store.add("events", rows)
-            st = "ok" if rows else ("empty" if status == 200 else f"http_{status}")
-            self.store.finish_unit(k, tier, st, c, len(rows), (body or {}).get("timestamp"))
-            self.store.lookups[k] = rows
-            evs = rows
+            return
+        lo, hi = day_window(d)
+        at = lookup_at(d)
+        status, body, c = self.m.call(f"/historical/sports/{sk}/events",
+                                      {"date": iso(at), "commenceTimeFrom": iso(lo), "commenceTimeTo": iso(hi)},
+                                      LOOKUP_MAX_COST, tier)
+        self._st(tier, "lookup_calls")
+        self._st(tier, "credits", c)
+        data = ((body or {}).get("data") or []) if status == 200 else []
+        rows = [{"unit_key": k, "sport_key": sk, "league": league, "league_date": d, "lookup_at": iso(at),
+                 "snapshot_ts": (body or {}).get("timestamp"), "event_id": e.get("id"),
+                 "commence_time": e.get("commence_time"), "home_team": e.get("home_team"),
+                 "away_team": e.get("away_team")} for e in data if e.get("id")]
+        self.store.add("events", rows)
+        st = "ok" if rows else ("empty" if status == 200 else f"http_{status}")
+        self.store.finish_unit(k, tier, st, c, len(rows), (body or {}).get("timestamp"))
+        self.store.put_lookup(k, league, d, rows)
+
+    def reprove(self):
+        """Re-derive the proven aliases from EVERY stored listing; drop the cached day matches."""
+        self.proof = prove_provider_aliases(self.days, self.store.events_by_day, self.spell)
+        self.R = Resolver(self.spell, self.proof["map"])
+        self._matched = {}
+        self.store.write_aliases(self.proof)
+        say(f"provider aliases proven {sum(len(v) for v in self.proof['map'].values()):,} "
+            f"in {len(self.proof['map'])} league(s); refused {sum(self.proof['refused'].values()):,}")
+
+    def events_for(self, league: str, d: str, tier: str) -> dict:
+        """{(home, away): provider event} for one league-day."""
+        if (league, d) in self._matched:
+            return self._matched[(league, d)]
+        self.ensure_lookup(league, d, tier)
         fx = self.days.get((league, d), [])
-        matched, rep = match_events(fx, [{"id": e["event_id"], **e} for e in evs], d)
-        for h, a in rep["unmatched_fixtures"]:
-            self.store.match_buf.append({"league": league, "league_date": d, "kind": "unmatched_fixture",
-                                         "home": h, "away": a})
-        for h, a in rep["unmatched_events"]:
-            self.store.match_buf.append({"league": league, "league_date": d, "kind": "unmatched_event",
-                                         "home": h, "away": a})
-        for h, a in rep["ambiguous"]:
-            self.store.match_buf.append({"league": league, "league_date": d, "kind": "ambiguous",
-                                         "home": h, "away": a})
+        matched, rep = match_day(league, d, fx, self.store.events_by_day, self.R)
+        for kind, pairs in (("unmatched_fixture", rep["unmatched_fixtures"]),
+                            ("unmatched_event", rep["unmatched_events"]), ("ambiguous", rep["ambiguous"])):
+            for h, a in pairs:
+                self.store.match_buf.append({"league": league, "league_date": d, "kind": kind,
+                                             "home": h, "away": a})
+        self._st(tier, "fixtures_matched", len(matched))
         self._st(tier, "fixtures_unmatched", len(rep["unmatched_fixtures"]))
+        self._st(tier, "fixtures_matched_adjacent_day", rep["matched_adjacent_day"])
         self._matched[(league, d)] = matched
         return matched
 
@@ -674,7 +916,7 @@ class Collector:
         if u.kind == "event":
             e = matched.get((u.home, u.away))
             if e is None:
-                self._st(u.tier, "units_no_provider_event")
+                self._st(u.tier, "units_no_provider_event")      # NOT in the ledger: retried next run
                 return
             snap = parse_iso(e["commence_time"]) + timedelta(seconds=u.offset_s)
             if snap < EVENT_HISTORY_START:
@@ -728,8 +970,15 @@ class Collector:
                 f"run cap {self.m.run_cap:,}")
             for t in self.tiers:
                 units = self.plan["units"].get(t, [])
-                say(f"tier {t}: {len(units):,} planned units")
-                for u in units:
+                days = list(dict.fromkeys((u.league, u.date) for u in units))
+                say(f"tier {t}: {len(units):,} planned units over {len(days):,} league-days")
+                for i, (lg, d) in enumerate(days, 1):         # (1) listings first
+                    self.ensure_lookup(lg, d, t)
+                    if i % flush_every == 0:
+                        self.store.flush()
+                self.store.flush()
+                self.reprove()                                 # (2) aliases from every listing
+                for u in units:                                # (3) odds
                     self.do_unit(u)
                     n += 1
                     if n % flush_every == 0:

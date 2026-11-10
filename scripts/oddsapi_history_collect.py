@@ -52,7 +52,9 @@ def main(argv=None) -> int:
     ap.add_argument("--tiers", help="comma list, a subset of the priority order (default: every tier)")
     a = ap.parse_args(argv)
 
-    days = OH.fixture_days(OH.load_fixtures())
+    fx, identity = OH.load_fixtures()
+    days = OH.fixture_days(fx)
+    spell = OH.club_spellings(identity, days)
     tiers = OH.TIERS if not a.tiers else tuple(t for t in OH.TIERS if t.name in set(a.tiers.split(",")))
 
     if a.dry_run:
@@ -88,8 +90,9 @@ def main(argv=None) -> int:
     run_id = os.getenv("GITHUB_RUN_ID") or datetime.now(timezone.utc).strftime("local%Y%m%d%H%M%S")
     run_id = f"{run_id}-{os.getenv('GITHUB_RUN_ATTEMPT', '1')}-{datetime.now(timezone.utc):%H%M%S}"
     store = OH.Store(a.store, run_id)
+    store.write_identity(identity)
     OH.say(f"plan digest {OH.plan_digest(plan)}; units already stored {len(store.done):,}")
-    code, _ = OH.Collector(store, meter, days, plan, [t.name for t in tiers]).run()
+    code, _ = OH.Collector(store, meter, days, plan, [t.name for t in tiers], spell=spell).run()
     return code
 
 

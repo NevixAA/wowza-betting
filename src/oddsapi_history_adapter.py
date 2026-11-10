@@ -13,6 +13,7 @@ real book prices (n_books, best, median) and is NaN where there is none.
 """
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 import numpy as np
@@ -78,42 +79,72 @@ def classify(market: str, name, desc, point, home: str, away: str) -> dict | Non
     return None
 
 
-def match_universe(universe: pd.DataFrame, odds: pd.DataFrame) -> tuple[dict, pd.DataFrame]:
-    """({fixture_id: event_id}, unmatched report rows)."""
-    from src import league_registry as LR
+def load_context(store_root: Path, universe: pd.DataFrame) -> dict:
+    """The collector's own matching context, read from the PRIVATE store: every stored provider
+    listing (events_by_day, keyed by league and match day: one league's sport key only), the proven
+    OddsAPI aliases (ledger/provider_aliases.json) and v9's identity spellings the run used
+    (ledger/identity_aliases.json)."""
+    root = Path(store_root)
+    st = OH.Store(root, "read-only")
+    proven = {}
+    f = root / "ledger" / "provider_aliases.json"
+    if f.exists():
+        proven = json.loads(f.read_text(encoding="utf-8")).get("map", {})
+    identity = {}
+    f = root / "ledger" / "identity_aliases.json"
+    if f.exists():
+        identity = json.loads(f.read_text(encoding="utf-8"))
+    return {"events_by_day": st.events_by_day, "identity": identity, "proven": proven}
+
+
+def _context_from_odds(odds: pd.DataFrame) -> dict:
+    """Without a store: the events the odds rows themselves carry, keyed by their league-day."""
+    ebd: dict = {}
+    ev = odds.drop_duplicates("event_id")
+    for r in ev.itertuples():
+        ebd.setdefault((r.league, r.league_date), []).append(
+            {"id": r.event_id, "commence_time": r.commence_time, "home_team": r.home_team,
+             "away_team": r.away_team})
+    return {"events_by_day": ebd, "identity": {}, "proven": {}}
+
+
+def match_universe(universe: pd.DataFrame, odds: pd.DataFrame, ctx: dict | None = None) -> tuple[dict, pd.DataFrame]:
+    """({fixture_id: event_id}, unmatched report rows), by the collector's own rule
+    (src.oddsapi_history.match_day: one league, the match day or +-1 day with both clubs proven,
+    one-to-one, proven aliases and v9 identity spellings only)."""
+    ctx = ctx or _context_from_odds(odds)
     u = universe.copy()
     u["date"] = pd.to_datetime(u["date"]).dt.strftime("%Y-%m-%d")
     u["fixture_id"] = fixture_id(universe).values
     fx = u.drop_duplicates(FIXTURE_KEY)[FIXTURE_KEY + ["fixture_id"]]
-    ev = odds.drop_duplicates("event_id")[["event_id", "sport_key", "commence_time", "home_team", "away_team"]]
-    ev = ev.assign(ko=pd.to_datetime(ev["commence_time"], utc=True, errors="coerce")).dropna(subset=["ko"])
-    by_sport = {k: g for k, g in ev.groupby("sport_key")}
+    days = {(lg, d): list(zip(g["home"], g["away"])) for (lg, d), g in fx.groupby(["league", "date"])}
+    R = OH.Resolver(OH.club_spellings(ctx["identity"], days), ctx["proven"])
+    ebd = ctx["events_by_day"]
     out, rep, used = {}, [], set()
+    from src import league_registry as LR
     for (lg, d), g in fx.groupby(["league", "date"]):
-        keys = LR.odds_api_sport_keys_for(lg)
-        if not keys:
+        if not LR.odds_api_sport_keys_for(lg):
             rep += [{"kind": "league_without_sport_key", "league": lg, "date": d, "home": h, "away": a}
                     for h, a in zip(g["home"], g["away"])]
             continue
-        lo, hi = OH.day_window(d)
-        cands = pd.concat([by_sport[k] for k in keys if k in by_sport]) if any(k in by_sport for k in keys) \
-            else ev.iloc[0:0]
-        cands = cands[(cands["ko"] >= pd.Timestamp(lo)) & (cands["ko"] < pd.Timestamp(hi))]
-        fixtures = list(zip(g["home"], g["away"]))
-        matched, r = OH.match_events(fixtures, [{"id": e.event_id, "commence_time": e.commence_time,
-                                                 "home_team": e.home_team, "away_team": e.away_team}
-                                                for e in cands.itertuples()], d)
+        matched, r = OH.match_day(lg, d, days[(lg, d)], ebd, R)
         ids = dict(zip(zip(g["home"], g["away"]), g["fixture_id"]))
         for f, e in matched.items():
             out[ids[f]] = e["id"]
             used.add(e["id"])
         for h, a in r["unmatched_fixtures"]:
             rep.append({"kind": "fixture_without_event", "league": lg, "date": d, "home": h, "away": a})
-    for e in ev.itertuples():
-        if e.event_id not in used:
-            rep.append({"kind": "event_without_fixture", "league": OH_league(e.sport_key), "date": None,
-                        "home": e.home_team, "away": e.away_team, "event_id": e.event_id,
-                        "commence_time": e.commence_time})
+    leagues = set(fx["league"])
+    seen = set()
+    for (lg, _), evs in ebd.items():
+        if lg not in leagues:
+            continue
+        for e in evs:
+            if e["id"] in used or e["id"] in seen:
+                continue
+            seen.add(e["id"])
+            rep.append({"kind": "event_without_fixture", "league": lg, "date": None, "home": e.get("home_team"),
+                        "away": e.get("away_team"), "event_id": e["id"], "commence_time": e.get("commence_time")})
     return out, pd.DataFrame(rep, columns=UNMATCHED_COLS)
 
 
@@ -122,11 +153,12 @@ def OH_league(sport_key: str) -> str | None:
     return LR.sport_key_to_league().get(sport_key)
 
 
-def attach(universe: pd.DataFrame, odds: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+def attach(universe: pd.DataFrame, odds: pd.DataFrame, ctx: dict | None = None
+           ) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     """(long prices, summary, unmatched). long: one row per fixture x book x outcome x snapshot with
     our market vocabulary; summary: per fixture x market x line x side x snapshot label, n_books /
     best / median of the real prices."""
-    fmap, unmatched = match_universe(universe, odds)
+    fmap, unmatched = match_universe(universe, odds, ctx)
     if not fmap:
         return pd.DataFrame(), pd.DataFrame(), unmatched
     inv = pd.DataFrame({"fixture_id": list(fmap), "event_id": list(fmap.values())})
