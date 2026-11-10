@@ -1,12 +1,12 @@
 {
  "artifact": "data_truth_health",
  "version": "DATA-TRUTH-1",
- "generated_at": "2026-11-09T16:55:45Z",
+ "generated_at": "2026-11-10T15:17:03Z",
  "checks": [
   {
    "check": "Data truth 1: one canonical name",
    "status": "GREEN",
-   "value": "0 unknown league name(s); blind board fixtures 0.0%",
+   "value": "0 unknown league name(s); blind board fixtures 2.7%",
    "rule": "every league value in predictions / ledgers / player tips / history banks is a registry league (canonical or alias): RED if any is not; AMBER if > 10% of board fixtures are blind (no form)",
    "detail": ""
   },
