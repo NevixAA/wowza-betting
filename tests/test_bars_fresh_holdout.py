@@ -70,12 +70,12 @@ def test_earlier_runs_cover_every_committed_universe_priced_row():
 
 def test_most_recent_long_fresh_run_is_split_and_later_stragglers_are_skipped():
     f = _family([("2023-01-07", 20, 10, False),      # touched (own-priced earlier)
-                 ("2023-06-03", 60, 10, True),       # 600 fresh rows: the run
-                 ("2024-08-03", 10, 10, False),      # touched again
-                 ("2025-01-04", 3, 10, True)])       # short later straggler: cannot host a test
+                 ("2023-06-03", 100, 10, True),      # 1,000 fresh rows: the run
+                 ("2025-06-07", 10, 10, False),      # touched again
+                 ("2025-09-06", 3, 10, True)])       # short later straggler: cannot host a test
     w = FH.holdout_window(f)
     assert w["status"] == "OK" and w["later_short_runs_skipped"] == 1
-    assert w["run_start"] == pd.Timestamp("2023-06-03") and w["run_rows"] == 600
+    assert w["run_start"] == pd.Timestamp("2023-06-03") and w["run_rows"] == 1000
     sel, ho = FH.split_family(f, w)
     assert ho["fresh"].all() and ho["date"].min() >= w["holdout_start"] and ho["date"].max() <= w["run_end"]
     assert sel["date"].max() < w["holdout_start"]
@@ -85,11 +85,31 @@ def test_most_recent_long_fresh_run_is_split_and_later_stragglers_are_skipped():
     assert abs(share - LB.IN_PERIOD_CHECK_SHARE) < 0.1
 
 
+def test_protocol_v2_skips_a_later_run_whose_holdout_gives_no_league_150_rows():
+    f = _family([("2023-01-07", 20, 10, False),
+                 ("2023-06-03", 100, 10, True),      # holdout part ~40 dates x 5 rows per league: >= 150
+                 ("2025-06-07", 2, 10, False),
+                 ("2025-07-05", 45, 10, True)])      # 450 rows >= 375, but ~18 dates x 5 = 90 per league
+    w = FH.holdout_window(f)
+    assert w["status"] == "OK" and w["run_start"] == pd.Timestamp("2023-06-03")
+    assert w["later_short_runs_skipped"] == 1
+    _, ho = FH.split_family(f, w)
+    assert (ho.groupby("league").size() >= LB.MIN_HOLDOUT_BETS).any()
+
+
+def test_protocol_history_keeps_version_1_and_states_nothing_was_scored():
+    proto, sha = FH.protocol()
+    assert proto["protocol"] == "bars-fresh-holdout/2"
+    h = proto["history"][0]
+    assert h["sha256"].startswith("de4d7547") and "Fix the rule" in h["owner_words"]
+    assert "NO holdout row has been scored" in h["nothing_scored"] and sha != h["sha256"]
+
+
 def test_one_touched_row_breaks_a_run():
-    f = _family([("2023-06-03", 100, 10, True)])
+    f = _family([("2023-06-03", 130, 10, True)])
     f.loc[f["date"] == pd.Timestamp("2023-06-03") + pd.Timedelta(days=7 * 30), "fresh"] = [True] * 9 + [False]
     w = FH.holdout_window(f)
-    assert w["status"] == "OK" and w["run_rows"] == 690          # the later 69 dates only
+    assert w["status"] == "OK" and w["run_rows"] == 990          # the later 99 dates only
     assert w["run_start"] == pd.Timestamp("2023-06-03") + pd.Timedelta(days=7 * 31)
 
 

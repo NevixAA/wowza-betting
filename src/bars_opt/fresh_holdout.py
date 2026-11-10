@@ -14,9 +14,9 @@ PROOF OF "NEVER AVAILABLE" (earlier_runs), from git history, fail-closed:
 THE HOLDOUT per family (track x market-side), holdout_window:
   1. the family's study-eligible rows (study.family_frame on the priced universe), grouped by match date;
   2. FRESH RUNS = maximal stretches of consecutive match dates on which EVERY eligible row is fresh;
-  3. the MOST RECENT fresh run holding at least MIN_RUN_ROWS rows (= MIN_HOLDOUT_BETS / IN_PERIOD_CHECK_SHARE:
-     a shorter run cannot give its check part the owner's 150-bet minimum) - a shorter, later straggler run
-     cannot host a test and is skipped (listed);
+  3. (protocol v2, owner 2026-11-10 "Fix the rule") the MOST RECENT fresh run of at least MIN_RUN_ROWS rows
+     (= MIN_HOLDOUT_BETS / IN_PERIOD_CHECK_SHARE) whose HOLDOUT PART (step 4) gives at least one league
+     MIN_HOLDOUT_BETS rows - a later run that cannot host a 150-bet test is skipped (counted);
   4. that run is split in time order at a month boundary by src.league_bars.in_period_split (the owner's
      2026-11-08 split rule, CHECK part ~40%): HOLDOUT = the run's rows dated >= the split;
   5. SELECTION = every eligible row of the family dated < the split. Rows dated after the run's end are used
@@ -118,15 +118,25 @@ def holdout_window(f: pd.DataFrame) -> dict:
     day = f.groupby("date")["fresh"].agg(all_fresh="all", n="size").sort_index()
     runs = _runs(day)
     big = [r for r in runs if r["rows"] >= MIN_RUN_ROWS]
-    skipped = [r for r in runs if big and r["start"] > big[-1]["end"]]
     if not big:
         return {"status": NO_FRESH, "reason": f"no fresh run with >= {MIN_RUN_ROWS} rows "
                 f"(largest {max((r['rows'] for r in runs), default=0)})", "fresh_runs": len(runs)}
-    run = big[-1]
-    in_run = f[(f["date"] >= run["start"]) & (f["date"] <= run["end"])]
-    split = LB.in_period_split(in_run["date"])
-    if split is None:
-        return {"status": NO_FRESH, "reason": "fresh run spans fewer than 2 match dates"}
+    # protocol v2 (owner 2026-11-10 "Fix the rule"): the most recent run whose HOLDOUT PART gives at least one
+    # league MIN_HOLDOUT_BETS rows; a later run that cannot host a 150-bet test is skipped (counted)
+    run = split = None
+    for r in reversed(big):
+        in_run = f[(f["date"] >= r["start"]) & (f["date"] <= r["end"])]
+        sp = LB.in_period_split(in_run["date"])
+        if sp is None:
+            continue
+        ho = in_run[in_run["date"] >= sp]
+        if (ho.groupby("league").size() >= LB.MIN_HOLDOUT_BETS).any():
+            run, split = r, sp
+            break
+    if run is None:
+        return {"status": NO_FRESH, "reason": f"no fresh run of >= {MIN_RUN_ROWS} rows whose holdout part gives "
+                f"a league {LB.MIN_HOLDOUT_BETS} rows", "fresh_runs": len(runs)}
+    skipped = [r for r in runs if r["start"] > run["end"]]
     return {"status": "OK", "run_start": run["start"], "run_end": run["end"], "run_rows": run["rows"],
             "holdout_start": pd.Timestamp(split), "holdout_end": run["end"], "selection_before": pd.Timestamp(split),
             "later_short_runs_skipped": len(skipped), "fresh_runs": len(runs)}
