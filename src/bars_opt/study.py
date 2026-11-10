@@ -472,6 +472,55 @@ def max_se(pnl: np.ndarray, days: np.ndarray) -> float:
     return max(ses)
 
 
+#: owner's strict rule with every searched configuration counted makes the Holm threshold of the best cell
+#: HOLM_ALPHA / m with m in the tens of thousands, far below the 1 / (N_BOOT + 1) resolution of a 2,000-draw
+#: bootstrap p - so no cell could ever pass, whatever its data. A cell whose bootstrap p sits at that floor
+#: (no resample at or below 0) is re-drawn with enough resamples that HOLM_ALPHA / m equals P_RESOLUTION_HITS
+#: exceedances; the same block bootstrap by match date (fast_one_sided_p), never an approximation.
+P_RESOLUTION_HITS = 10
+
+
+def fast_one_sided_p(pnl: np.ndarray, days: np.ndarray, n_boot: int, seed: int = 0, chunk: int = 50_000) -> float:
+    """src.league_bars.one_sided_p vectorised: days resampled with replacement (multinomial counts), the
+    resample mean = sum(count * day P/L) / sum(count * day bets); p = (k + 1) / (B + 1), k = means <= 0."""
+    if len(pnl) == 0:
+        return float("nan")
+    uniq, inv = np.unique(days, return_inverse=True)
+    if len(uniq) < 3:
+        return float("nan")
+    s_d = np.bincount(inv, weights=np.asarray(pnl, float))
+    n_d = np.bincount(inv).astype(float)
+    rng = np.random.default_rng(seed)
+    k, done, D = 0, 0, len(uniq)
+    while done < n_boot:
+        b = min(chunk, n_boot - done)
+        c = rng.multinomial(D, np.full(D, 1.0 / D), size=b)
+        k += int(((c @ s_d) / (c @ n_d) <= 0).sum())
+        done += b
+    return (k + 1) / (n_boot + 1)
+
+
+def refine_floor_p(cells: list[dict], results: list[dict], hypotheses: int, seed: int = 0) -> list[dict]:
+    """Re-draw the p of every tested cell whose bootstrap p is at the N_BOOT floor (see P_RESOLUTION_HITS).
+    hypotheses = the whole Holm family (prior + this run). Returns what was re-drawn (cell, B, p)."""
+    floor = round(1.0 / (N_BOOT + 1), 4)
+    n_boot = int(math.ceil(P_RESOLUTION_HITS * hypotheses / HOLM_ALPHA))
+    bets = {(r["track"], r["mside"]): r["final_bets"] for r in results}
+    done = []
+    for c in cells:
+        f = c.get("final") or {}
+        if c.get("verdict") is not None or not f.get("bets") or f.get("p_one_sided") is None:
+            continue
+        if f["p_one_sided"] > floor or n_boot <= N_BOOT:
+            continue
+        fb = bets[(c["track"], c["mside"])]
+        mine = fb[fb["league"] == c["league"]]
+        p = fast_one_sided_p(mine["pnl"].to_numpy(float), mine["date"].dt.strftime("%Y-%m-%d").to_numpy(), n_boot, seed)
+        f["p_one_sided"], f["p_resamples"] = p, n_boot
+        done.append({"track": c["track"], "mside": c["mside"], "league": c["league"], "resamples": n_boot})
+    return done
+
+
 def score(b: pd.DataFrame, seed: int = 0) -> dict:
     if b is None or b.empty:
         return {"bets": 0, "roi": None, "ci95": [None, None], "p_one_sided": None, "clv": None, "clv_n": 0}
@@ -492,11 +541,14 @@ def score(b: pd.DataFrame, seed: int = 0) -> dict:
             "clv": round(float(clv.mean()), 4) if len(clv) else None, "clv_n": int(len(clv))}
 
 
-def verdicts(cells: list[dict]) -> None:
-    """Holm across every tested cell, then PROVEN / PROMISING / UNPROVEN (OFF / NO_PRICE_DATA stay)."""
+def verdicts(cells: list[dict], prior_hypotheses: int = 0) -> None:
+    """Holm across every tested cell, then PROVEN / PROMISING / UNPROVEN (OFF / NO_PRICE_DATA stay).
+    prior_hypotheses: configurations searched and cells tested OUTSIDE this list (earlier runs, this run's
+    configuration search; src/bars_opt/search_ledger) - they enlarge the Holm family (owner: "counting
+    every configuration searched")."""
     tested = [i for i, r in enumerate(cells) if r.get("verdict") is None and r["final"]["bets"] > 0]
     ph = LB.holm(np.array([np.nan if cells[i]["final"]["p_one_sided"] is None else cells[i]["final"]["p_one_sided"]
-                           for i in tested], float))
+                           for i in tested], float), extra=prior_hypotheses)
     for i, adj in zip(tested, ph):
         r, f = cells[i], cells[i]["final"]
         r["p_holm"] = None if not np.isfinite(adj) else round(float(adj), 4)
@@ -512,7 +564,7 @@ def verdicts(cells: list[dict]) -> None:
         if r.get("verdict") is None:
             r["verdict"] = "UNPROVEN"
     for r in cells:
-        r["family_size"] = len(tested)
+        r["family_size"] = len(tested) + int(prior_hypotheses)
 
 
 # ── TOP-3 per league per gameweek ────────────────────────────────────────────────────────────
@@ -669,14 +721,21 @@ def _cells(res: dict) -> list[dict]:
     return cells
 
 
-def run_final(universe_dir: Path, out_dir: Path, workers: int = 6) -> dict:
+def run_final(universe_dir: Path, out_dir: Path, workers: int = 6, prior_hypotheses: int = 0) -> dict:
+    """prior_hypotheses > 0 (src/bars_opt/hist_study): the Holm family also counts every configuration
+    searched and cell tested outside this FINAL (search ledger), and floor p-values are re-drawn at the
+    resolution that family needs (refine_floor_p)."""
     raw = json.loads((out_dir / "choices.json").read_text(encoding="utf-8"))
     choices = {(c["track"], c["mside"]): c for c in raw}
     fams = load_families(universe_dir)
     with ProcessPoolExecutor(max_workers=workers) as ex:
         results = list(ex.map(final_family, [(f, choices[(t, m)]) for f, t, m in fams]))
     cells = [c for r in results for c in _cells(r)]
-    verdicts(cells)
+    redrawn = []
+    if prior_hypotheses:
+        n_tested = sum(1 for c in cells if c.get("verdict") is None and c["final"]["bets"] > 0)
+        redrawn = refine_floor_p(cells, results, prior_hypotheses + n_tested)
+    verdicts(cells, prior_hypotheses)
     keep = [r["final_bets"] for r in results if len(r["final_bets"])]
     fb = pd.concat(keep, ignore_index=True) if keep else pd.DataFrame()
     keepb = [r["baseline_bets"] for r in results if len(r["baseline_bets"])]
@@ -686,6 +745,7 @@ def run_final(universe_dir: Path, out_dir: Path, workers: int = 6) -> dict:
     t2 = fb[fb["tier2_ok"].astype(bool)] if len(fb) else pd.DataFrame()
     summary = {
         "families": len(results), "configs_total": len(configs()) * len(results),
+        "prior_hypotheses": int(prior_hypotheses), "p_redrawn": redrawn,
         "verdict_counts": pd.DataFrame(cells).groupby(["track", "mside", "verdict"]).size()
                           .rename("n").reset_index().to_dict("records"),
         "all_final_bets": {"optimized": top3_summary(fb), "baseline": top3_summary(bb),

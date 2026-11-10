@@ -325,11 +325,16 @@ def one_sided_p(pnl: np.ndarray, days: np.ndarray, n_boot: int = N_BOOT, seed: i
     return (k + 1) / (n_boot + 1)
 
 
-def holm(p: np.ndarray) -> np.ndarray:
+def holm(p: np.ndarray, extra: int = 0) -> np.ndarray:
+    """Holm step-down adjusted p-values. `extra` = hypotheses searched or tested ELSEWHERE (earlier runs,
+    the configurations of this one) whose p-values are not in `p`: they enlarge the family and are never
+    credited as rejected (each counts as if its p were 1, the conservative placement)."""
     p = np.asarray(p, float)
+    if extra < 0:
+        raise ValueError("extra hypotheses must be >= 0")
     out = np.full(len(p), np.nan)
     fin = np.where(np.isfinite(p))[0]
-    m = len(fin)
+    m = len(fin) + int(extra)
     if not m:
         return out
     order = fin[np.argsort(p[fin])]
