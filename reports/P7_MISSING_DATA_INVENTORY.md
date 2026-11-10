@@ -174,3 +174,77 @@ Fit (plan prices from the provider's page, which may be dated): the live burn is
 month. B1 + B2 (520,608) or all four need a month on the 5M plan; on 100K none fits. Recommended order, by
 value per credit: **B1** (the bars' largest evidence gap, 2 markets per call), then **B2** (cheap), then B3
 (3 leagues only), then B4 (largest cost for one filter). Nothing beyond the probe was bought.
+
+## Historical collector: dry-run plan (2026-11-10, 5M plan; NOTHING SPENT)
+
+Owner 2026-11-10: "use all the 5M credits this month". Code: `src/oddsapi_history.py`,
+`scripts/oddsapi_history_collect.py --dry-run` (plan: `output/collect/oddsapi_history_plan.json`, counts only).
+The bought data goes ONLY to the private repo `NevixAA/wowza-exec`, orphan branch `odds-history`
+(terms: storing and training allowed, redistribution prohibited); `src/oddsapi_history_adapter.py` attaches
+it to universe rows by fixture id, output local / private only.
+
+Universe: every fixture of our banks (af_history and fd_history under the owner's corrections, plus
+player_history for the props-only leagues), keyed leagues only, deduplicated across sources per league-day.
+A provider event is bought only when the provider's own listing of that league-day proves it is one of our
+fixtures (src.team_names.resolve, one league, one day, one-to-one), so every count is an exact upper bound.
+Credits are MAXIMA: billed only on markets returned, empty answers free, unmatched fixtures not bought. A
+later tier never re-buys a market an earlier tier requested for the same match / league-day, snapshot and
+region (C3 close asks h2h only where B2 bought totals; C4 asks uk only; C5 skips T-48h and close).
+
+| Tier | Kind | Markets | Regions | Snapshots | Window | League-days | Matches | Odds calls | Lookups | Max credits | Cumulative | Wall clock (0.5-1 s/call) |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| B1 | event | btts,alternate_totals | eu | close | 2023-05-03..2026-11-09 | 9,188 | 39,863 | 39,863 | 9,188 | **806,448** | 806,448 | 6.8-13.6 h |
+| B2 | featured | totals | eu | close | 2020-06-06..2023-05-02 | 4,033 | 0 | 4,033 | 4,033 | **44,363** | 850,811 | 1.1-2.2 h |
+| B4 | featured | h2h,totals | eu | T-72h/T-48h/T-24h/T-12h/T-6h/T-2h/T-1h/close | 2023-06-14..2026-06-13 | 7,850 | 0 | 62,800 | 0 | **1,256,000** | 2,106,811 | 8.7-17.4 h |
+| B3 | event | props | uk,eu,us,us2 | close | 2023-05-03..2026-11-09 | 1,141 | 4,564 | 4,564 | 741 | **557,261** | 2,664,072 | 0.7-1.5 h |
+| S | event | correct_score | uk,eu | close | 2023-05-03..2026-11-09 | 9,188 | 39,863 | 39,863 | 0 | **797,260** | 3,461,332 | 5.5-11.1 h |
+| C1 | event | btts,alternate_totals | eu | T-48h | 2023-05-03..2026-11-09 | 9,188 | 39,863 | 39,863 | 0 | **797,260** | 4,258,592 | 5.5-11.1 h |
+| C3 | featured | h2h,totals | eu | T-48h/close | 2020-06-06..2023-06-13 | 7,933 | 0 | 15,866 | 3,596 | **280,586** | 4,539,178 | 2.7-5.4 h |
+| C2 | event | props | uk,eu,us,us2 | T-48h | 2023-05-03..2026-11-09 | 1,141 | 4,564 | 4,564 | 0 | **556,520** | 5,095,698 | 0.6-1.3 h |
+| C4 | event | btts,alternate_totals | uk | close | 2023-05-03..2026-11-09 | 9,188 | 39,863 | 39,863 | 0 | **797,260** | 5,892,958 | 5.5-11.1 h |
+| C5 | featured | h2h,totals | eu | T-72h..close (6 new) | 2020-06-06..2023-06-13 | 7,933 | 0 | 47,598 | 0 | **951,960** | 6,844,918 | 6.6-13.2 h |
+
+Usable: 5,000,000 - floor 260,000 = 4,740,000. B1..C3 (4,539,178 max) fit; C2, C4, C5 run only on what the
+returned-markets billing leaves. Props markets per the probe: Premier League 4, Ligue 1 2, MLS 3. S is
+`correct_score` (listed in the provider's soccer markets; its HISTORY is unconfirmed): it runs only for leagues
+where `--probe-s` (one P7 probe event per league, at most 20 credits each, free when empty) sees it returned.
+Saudi Pro League is included only where the provider lists the event (the P7 probe found none); its share is
+at most 179,584 of the total.
+
+### Matching fix after chunk 1 (2026-11-10; run 42802646906 paused at 36,696 credits)
+
+Chunk 1 (Argentina, Austria, Belgium) left 2,022 fixtures unmatched: OddsAPI spellings our resolver could not
+prove ("Leuven", "Sint Truiden", "FC Blau-Weiss Linz") and DUPLICATE fixtures in the bank-built universe
+("Altach"/"SCR Altach", "SK Rapid"/"Rapid Vienna", China's renamed clubs) that broke the one-to-one rule. Fix:
+* the universe is now v9's SERVED history (`data_loader.load_all_matches`, committed rows only, network off):
+  one club one spelling one fixture through identity_repair; every v9 spelling of a club resolves to it;
+* OddsAPI spellings are PROVEN per league from the provider's own listings (forced opponent on >= 3 days, one
+  club per name, never two names for one club in the same listing; ledger/provider_aliases.json, private);
+* a rescheduled match (stale + new event id) takes the event kicking off on the date it was played; an event of
+  the adjacent day is used only with both clubs proven;
+* per tier: every listing first (1 credit each, reused), then the alias proof, then the odds; a fixture without
+  a proven event is never marked done, so the next run retries it without re-buying its listing.
+
+Offline rematch on the 1,069 stored chunk-1 listings: Argentina 1,547 / 1,551 fixtures (99.7%), Austria 680 / 680,
+Belgium 294 / 294; 98.5-99.0% of the unique provider events matched (the rest are mostly stale ids of
+rescheduled matches). All 1,818 chunk-1 purchases are real matches; 21 are not in the served universe (the last
+days of 2026-11-06..08 and May 2026 Austrian play-off games) and are reported as events without a fixture.
+
+S probe (run 42802318536): `correct_score` returned in NO league (0 credits), so tier S buys nothing.
+
+New dry run (served universe, S probe applied):
+
+| Tier | League-days | Matches | Odds calls | Lookups | Max credits | Cumulative | Wall clock (0.5-1 s/call) |
+|---|---|---|---|---|---|---|---|
+| B1 | 8,943 | 29,983 | 29,983 | 8,943 | **608,603** | 608,603 | 5.4-10.8 h |
+| B2 | 4,033 | 0 | 4,033 | 4,033 | **44,363** | 652,966 | 1.1-2.2 h |
+| B4 | 7,683 | 0 | 61,464 | 0 | **1,229,280** | 1,882,246 | 8.5-17.1 h |
+| B3 | 1,138 | 4,291 | 4,291 | 741 | **524,501** | 2,406,747 | 0.7-1.4 h |
+| S | 0 | 0 | 0 | 0 | **0** | 2,406,747 | 0 |
+| C1 | 8,943 | 29,983 | 29,983 | 0 | **599,660** | 3,006,407 | 4.2-8.3 h |
+| C3 | 7,933 | 0 | 15,866 | 3,596 | **280,586** | 3,286,993 | 2.7-5.4 h |
+| C2 | 1,138 | 4,291 | 4,291 | 0 | **523,760** | 3,810,753 | 0.6-1.2 h |
+| C4 | 8,943 | 29,983 | 29,983 | 0 | **599,660** | 4,410,413 | 4.2-8.3 h |
+| C5 | 7,933 | 0 | 47,598 | 0 | **951,960** | 5,362,373 | 6.6-13.2 h |
+
+B1..C4 (4,410,413 max) fit in the 4,740,000 usable; C5 runs on what the returned-markets billing leaves.
