@@ -1,0 +1,52 @@
+name: One-off - China Super League 2022-12-23 provider probe (2026-11-10)
+
+# Settles two history rows (Zhejiang 3-0 Tianjin, Henan 3-0 Shenzhen, 2022-12-23) against
+# API-Football's own record: scripts/probe_china_2022_12_23.py on data-truth-100, at most 3
+# /fixtures calls (league+day, two team-seasons), every status kept (AWD / WO watched).
+# Manual only. Commits ONLY output/collect/china_2022_12_23_probe.json to data-truth-100.
+# Delete this file once it has run.
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: oneoff-china-2022-probe
+  cancel-in-progress: false
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: data-truth-100
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install requests pandas pyarrow
+      - name: Probe (3 calls max)
+        env:
+          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
+          COLLECT_AF_FLOOR: '10000'
+        run: |
+          python scripts/probe_china_2022_12_23.py | tee probe.txt
+          { echo '## China 2022-12-23 probe'; echo '```'; cat probe.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+      - name: Commit the probe answer to data-truth-100
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          cp output/collect/china_2022_12_23_probe.json "$RUNNER_TEMP/probe.json"
+          for i in 1 2 3 4 5; do
+            git fetch -q origin data-truth-100 && git reset -q --hard origin/data-truth-100
+            cp "$RUNNER_TEMP/probe.json" output/collect/china_2022_12_23_probe.json
+            git add -f output/collect/china_2022_12_23_probe.json
+            git diff --staged --quiet && { echo "nothing to commit"; exit 0; }
+            git commit -q -m "data(probe): China Super League 2022-12-23, API-Football fixtures answer"
+            git push origin HEAD:data-truth-100 && exit 0
+            sleep $((i * 10))
+          done
+          echo "::error::could not push the probe answer"; exit 1
