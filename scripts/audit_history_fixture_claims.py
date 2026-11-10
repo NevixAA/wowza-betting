@@ -18,7 +18,8 @@ adjacent day with the same score). A fixture claimed by two or more rows of one 
   af_history_served       the corrected file's provider rows (what the loader serves)
   fd_history_raw          output/fd_history.parquet as committed
   fd_history_corrected    after src.history_corrections (removal lists + provider dates)
-  served                  fd_history + the backtest archive through src.data_loader.one_club_one_match
+  served                  fd_history + the backtest archive + the provider supplement through
+                          src.data_loader.one_club_one_match
                           (the training frame; data truth rule 5's input)
 
 Also recorded, each from the stored provider fixture lists:
@@ -153,6 +154,10 @@ def run(dry_run: bool = False) -> dict:
     parts = [DT._bank_matches("fd_history.parquet").assign(row_source="fd_cache"),
              DL._drop_misfiled_league_rows(DT._bank_matches("backtest_all_leagues.csv"), "audit")
              .assign(row_source="backtest_archive")]
+    from src.history_supplement import read_supplement
+    sup = read_supplement().drop(columns=["provider_fixture_id"])
+    if len(sup):
+        parts.append(sup.assign(row_source="provider_supplement"))
     merged = pd.concat(parts, ignore_index=True).sort_values("date", kind="mergesort").reset_index(drop=True)
     served = DL.one_club_one_match(merged)
     doc["frames"]["served"], c_sv = _summary(served, pool, "home_goals", "away_goals")

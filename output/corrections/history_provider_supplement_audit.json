@@ -1,0 +1,137 @@
+{
+ "artifact": "history_provider_supplement_audit",
+ "generated_at": "2026-11-10T18:23:49Z",
+ "served_rows_without_supplement": 71011,
+ "added": 608,
+ "refused": 429,
+ "added_by_status": {
+  "FT": 448,
+  "PEN": 107,
+  "AET": 53
+ },
+ "added_with_ht": 608,
+ "refused_by_reason": {
+  "window_edge: before the first served fixture of this league-season": 398,
+  "provider record holds no half-time score": 29,
+  "named by an owner correction list": 2
+ },
+ "per_league": {
+  "Argentina Primera Division": {
+   "added:after_last_served": 1,
+   "added:inside": 5
+  },
+  "Austrian Bundesliga": {
+   "added:after_last_served": 3
+  },
+  "Belgian First Division A": {
+   "window_edge: before the first served fixture of this league-season": 62,
+   "added:inside": 16,
+   "added:after_last_served": 78
+  },
+  "Bundesliga 2": {
+   "added:after_last_served": 7,
+   "window_edge: before the first served fixture of this league-season": 2,
+   "added:inside": 4
+  },
+  "Championship": {
+   "added:after_last_served": 15,
+   "added:inside": 6
+  },
+  "China Super League": {
+   "added:inside": 7
+  },
+  "Denmark Superliga": {
+   "added:after_last_served": 2
+  },
+  "Dutch Eredivisie": {
+   "window_edge: before the first served fixture of this league-season": 65,
+   "added:inside": 29,
+   "added:after_last_served": 51
+  },
+  "Finland Veikkausliiga": {
+   "added:inside": 3
+  },
+  "Greek Super League": {
+   "window_edge: before the first served fixture of this league-season": 28,
+   "added:after_last_served": 6,
+   "added:inside": 1,
+   "named by an owner correction list": 1
+  },
+  "Japan J-League": {
+   "added:inside": 52
+  },
+  "K-League 1": {
+   "added:inside": 3
+  },
+  "La Liga 2": {
+   "added:after_last_served": 19,
+   "added:inside": 3,
+   "window_edge: before the first served fixture of this league-season": 1
+  },
+  "League One": {
+   "added:after_last_served": 15,
+   "added:inside": 4
+  },
+  "League Two": {
+   "added:after_last_served": 15,
+   "added:inside": 3
+  },
+  "Ligue 2": {
+   "added:after_last_served": 18,
+   "added:inside": 6
+  },
+  "Mexico Liga MX": {
+   "added:inside": 4,
+   "named by an owner correction list": 1
+  },
+  "National League": {
+   "added:after_last_served": 29,
+   "added:inside": 2
+  },
+  "Norway Eliteserien": {
+   "added:after_last_served": 1
+  },
+  "Portuguese Primeira Liga": {
+   "window_edge: before the first served fixture of this league-season": 55,
+   "added:inside": 3,
+   "added:after_last_served": 12
+  },
+  "Romanian Superliga": {
+   "added:after_last_served": 1
+  },
+  "Scottish Championship": {
+   "window_edge: before the first served fixture of this league-season": 32,
+   "added:inside": 3,
+   "added:after_last_served": 30
+  },
+  "Scottish League One": {
+   "window_edge: before the first served fixture of this league-season": 35,
+   "added:after_last_served": 42,
+   "added:inside": 1
+  },
+  "Scottish League Two": {
+   "window_edge: before the first served fixture of this league-season": 35,
+   "added:after_last_served": 16,
+   "added:inside": 1
+  },
+  "Scottish Premiership": {
+   "window_edge: before the first served fixture of this league-season": 36,
+   "added:inside": 24,
+   "added:after_last_served": 12
+  },
+  "Serie B": {
+   "provider record holds no half-time score (an awarded result filed FT)": 1,
+   "added:after_last_served": 28,
+   "added:inside": 6
+  },
+  "Turkish Super Lig": {
+   "window_edge: before the first served fixture of this league-season": 47,
+   "added:inside": 5,
+   "provider record holds no half-time score (an awarded result filed FT)": 28
+  },
+  "USA MLS": {
+   "added:inside": 15,
+   "added:after_last_served": 1
+  }
+ }
+}

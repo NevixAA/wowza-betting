@@ -38,7 +38,8 @@ import pandas as pd
 
 WINDOW_DAYS = 3
 #: lower = preferred survivor
-SOURCE_PRIORITY = {"football_data": 0, "fd_cache": 1, "api_football": 2, "backtest_archive": 3}
+SOURCE_PRIORITY = {"football_data": 0, "fd_cache": 1, "api_football": 2, "provider_supplement": 2,
+                   "backtest_archive": 3}
 _MOJIBAKE_MARKS = ("Ã", "Â", "Å", "Ä", "Æ", "Ð", "Ñ", "â€")
 
 

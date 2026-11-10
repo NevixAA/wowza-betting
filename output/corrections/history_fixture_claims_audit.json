@@ -1,13 +1,13 @@
 {
  "artifact": "history_fixture_claims_audit",
- "generated_at": "2026-11-10T15:28:51Z",
+ "generated_at": "2026-11-10T16:51:38Z",
  "rule": "(the matcher of scripts/collect_ht_scores.claims and scripts/prove_af_history_aliases,\nnothing looser). A row claims a provider fixture of its league when\n  * it stores that fixture id (rule 'fixture_id'), else\n  * SAME DAY, both clubs resolved home->home and away->away (src.team_names.resolve_result, else the\n    league-scoped PROVEN alias of config/af_history_proven_aliases.json on that date) onto exactly\n    one finished fixture (rule 'both_clubs'), else\n  * SAME DAY, one club resolved, it plays exactly one finished fixture of the league that day on that\n    side, and the row's full-time score is that fixture's score.fulltime (rule\n    'forced_opponent+score': a club does not play twice in a day), else\n  * ADJACENT DAY (+-1, the UTC/local date split), both clubs resolved onto exactly one fixture AND\n    the row's score is the fixture's score (rule 'both_clubs_adjacent_day').\nAnything else claims nothing. A provider fixture claimed by TWO OR MORE rows is one match filed\ntwice: the frame double-counts it.",
  "frames": {
   "af_history_raw": {
    "rows": 93489,
-   "claimed": 91081,
-   "fixtures_claimed_twice": 18161,
-   "extra_rows": 20315,
+   "claimed": 91431,
+   "fixtures_claimed_twice": 18501,
+   "extra_rows": 20665,
    "per_league": {
     "Argentina Primera Division": {
      "fixtures_claimed_twice": 1387,
@@ -45,10 +45,10 @@
      "provider_only": 0
     },
     "China Super League": {
-     "fixtures_claimed_twice": 932,
-     "extra_rows": 970,
-     "written_back_and_provider": 187,
-     "written_back_only": 745,
+     "fixtures_claimed_twice": 1272,
+     "extra_rows": 1320,
+     "written_back_and_provider": 254,
+     "written_back_only": 1018,
      "provider_only": 0
     },
     "Denmark Superliga": {
@@ -152,30 +152,23 @@
    }
   },
   "af_history_corrected": {
-   "rows": 71837,
+   "rows": 71487,
    "claimed": 70766,
    "fixtures_claimed_twice": 0,
    "extra_rows": 0,
    "per_league": {}
   },
   "af_history_shadows": {
-   "rows": 71837,
-   "claimed": 71173,
-   "fixtures_claimed_twice": 403,
-   "extra_rows": 403,
+   "rows": 71487,
+   "claimed": 70840,
+   "fixtures_claimed_twice": 70,
+   "extra_rows": 70,
    "per_league": {
     "Bundesliga 2": {
      "fixtures_claimed_twice": 34,
      "extra_rows": 34,
      "written_back_and_provider": 0,
      "written_back_only": 34,
-     "provider_only": 0
-    },
-    "China Super League": {
-     "fixtures_claimed_twice": 333,
-     "extra_rows": 333,
-     "written_back_and_provider": 64,
-     "written_back_only": 269,
      "provider_only": 0
     },
     "Greek Super League": {
@@ -210,9 +203,9 @@
   },
   "fd_history_raw": {
    "rows": 66213,
-   "claimed": 65773,
-   "fixtures_claimed_twice": 14037,
-   "extra_rows": 14037,
+   "claimed": 65790,
+   "fixtures_claimed_twice": 14051,
+   "extra_rows": 14051,
    "per_league": {
     "Argentina Primera Division": {
      "fixtures_claimed_twice": 880,
@@ -239,8 +232,8 @@
      "extra_rows": 561
     },
     "China Super League": {
-     "fixtures_claimed_twice": 922,
-     "extra_rows": 922
+     "fixtures_claimed_twice": 936,
+     "extra_rows": 936
     },
     "Denmark Superliga": {
      "fixtures_claimed_twice": 299,
@@ -301,10 +294,10 @@
    }
   },
   "fd_history_corrected": {
-   "rows": 64818,
-   "claimed": 64782,
-   "fixtures_claimed_twice": 13047,
-   "extra_rows": 13047,
+   "rows": 64816,
+   "claimed": 64799,
+   "fixtures_claimed_twice": 13061,
+   "extra_rows": 13061,
    "per_league": {
     "Argentina Primera Division": {
      "fixtures_claimed_twice": 726,
@@ -331,8 +324,8 @@
      "extra_rows": 561
     },
     "China Super League": {
-     "fixtures_claimed_twice": 922,
-     "extra_rows": 922
+     "fixtures_claimed_twice": 936,
+     "extra_rows": 936
     },
     "Denmark Superliga": {
      "fixtures_claimed_twice": 299,
@@ -393,8 +386,8 @@
    }
   },
   "served": {
-   "rows": 71013,
-   "claimed": 70975,
+   "rows": 71608,
+   "claimed": 71588,
    "fixtures_claimed_twice": 0,
    "extra_rows": 0,
    "per_league": {}
@@ -434,48 +427,5 @@
    "verdict": "HISTORY_CORRECT: the provider's fixture record names the history's clubs and score; left as it is"
   }
  ],
- "provider_fixtures_not_served": [
-  {
-   "league": "Austrian Bundesliga",
-   "season": "2025",
-   "fixture_id": 1545407,
-   "date": "2026-05-19",
-   "home": "Ried",
-   "away": "Wolfsberger AC",
-   "score": "2-1",
-   "rows_claiming_it": {
-    "af_history": 1,
-    "fd_history": 0,
-    "served": 0
-   }
-  },
-  {
-   "league": "Austrian Bundesliga",
-   "season": "2025",
-   "fixture_id": 1545664,
-   "date": "2026-05-22",
-   "home": "Ried",
-   "away": "Rapid Vienna",
-   "score": "2-1",
-   "rows_claiming_it": {
-    "af_history": 1,
-    "fd_history": 0,
-    "served": 0
-   }
-  },
-  {
-   "league": "Austrian Bundesliga",
-   "season": "2025",
-   "fixture_id": 1545665,
-   "date": "2026-05-25",
-   "home": "Rapid Vienna",
-   "away": "Ried",
-   "score": "3-0",
-   "rows_claiming_it": {
-    "af_history": 1,
-    "fd_history": 0,
-    "served": 0
-   }
-  }
- ]
+ "provider_fixtures_not_served": []
 }
