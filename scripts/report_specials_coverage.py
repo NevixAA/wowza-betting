@@ -13,7 +13,7 @@ take. Nothing here makes an API call, and no call is added: the owner decides.
   * one pre-kickoff snapshot per fixture = fixtures a day /odds calls (+ one shared /fixtures?date list
     call a day for all of them).
   * at the existing captures' cadence = fixtures a day x the MEASURED /odds calls per fixture of the
-    existing captures (distinct capture times per fixture in book_quotes since --since), plus their
+    existing captures (distinct capture times per fixture in book_quotes over the last --cadence-days days), plus their
     per-league fixture-list calls.
 """
 from __future__ import annotations
@@ -113,13 +113,16 @@ def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--since", default=None, help="first capture day counted (default: first sidecar day)")
     ap.add_argument("--fixtures", default=str(FIXTURES))
+    ap.add_argument("--cadence-days", type=int, default=7,
+                    help="days of book_quotes the measured /odds calls per fixture come from")
     ap.add_argument("--out", default=str(PROJ / "reports" / "SPECIALS_QUOTES_COVERAGE.md"))
     a = ap.parse_args(argv)
     sq = SQ.load()
     since = a.since or (str(sq["captured_at"].astype(str).min())[:10] if len(sq)
                         else datetime.now(timezone.utc).strftime("%Y-%m-%d"))
     cov = covered_table(since)
-    cpf = odds_calls_per_fixture(since)
+    cad_since = (datetime.now(timezone.utc) - timedelta(days=a.cadence_days)).strftime("%Y-%m-%d")
+    cpf = odds_calls_per_fixture(cad_since)
     un = unreached_table(Path(a.fixtures), cpf)
     now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
     lines = [
@@ -142,10 +145,10 @@ def main(argv=None) -> int:
         "",
         "These are COLLECTION_ONLY registry leagues: neither the std nor the new-format capture lists their",
         "fixtures. No call was added for them; the owner decides. Fixtures a day come from the last 365 days",
-        f"of `{Path(a.fixtures).as_posix().split('/output/')[-1] if '/output/' in Path(a.fixtures).as_posix() else a.fixtures}`;",
+        f"of `{Path(a.fixtures).name}`;",
         "calls a day = fixtures a day x 1 (one pre-kickoff snapshot each) or x "
         + (f"{cpf:.1f}" if cpf is not None else "unknown")
-        + " (the measured /odds calls per fixture of the existing captures since " + since + ").",
+        + " (the measured /odds calls per fixture of the existing captures since " + cad_since + ").",
         "Either option also needs fixture-list calls (one shared /fixtures?date call a day, or the captures'",
         "per-league list calls).",
         "",
