@@ -80,8 +80,28 @@ def cmd_prepare(a) -> int:
 
 def cmd_study(a) -> int:
     from src.bars_opt import hist_study as H
-    res = H.run(Path(a.store), Path(a.priced), Path(a.out), a.month, workers=a.workers)
+    res = H.run(Path(a.store), Path(a.priced), Path(a.out), workers=a.workers)
     print(json.dumps(res, indent=1, default=str))
+    return 0
+
+
+def cmd_holdout(a) -> int:
+    """Fresh-holdout coverage per family / league (counts and dates only), from the priced universes."""
+    from src.bars_opt import fresh_holdout as FH
+    out = P.assert_outside_repo(a.out)
+    priced = {t: pd.read_parquet(Path(a.priced) / f"universe_{t}.parquet") for t in TRACKS}
+    seen, runs = FH.earlier_runs()
+    fam, lg = FH.coverage(FH.families(priced, seen))
+    (out / "fresh_holdout_coverage.json").write_text(json.dumps({"families": fam, "leagues": lg, "earlier_runs": runs},
+                                                                indent=1, default=str), encoding="utf-8")
+    md = ["# Fresh holdout coverage (counts and dates only)", "",
+          f"Earlier runs proven from git: {len(runs)} entries; seen priced keys {len(seen):,}", "",
+          _table(fam, ["track", "mside", "status", "holdout_from", "holdout_to", "holdout_rows", "selection_rows",
+                       "holdout_leagues", "cells_ge_150", "fresh_rows", "eligible_rows", "reason"]), "",
+          "## Leagues in the holdouts", "",
+          _table(lg, ["track", "mside", "league", "holdout_rows", "selection_rows", "ge_150"]), ""]
+    (out / "fresh_holdout_coverage.md").write_text("\n".join(md), encoding="utf-8")
+    print("\n".join(md))
     return 0
 
 
@@ -103,12 +123,14 @@ def main(argv=None) -> int:
     s.add_argument("--store", required=True)
     s.add_argument("--priced", required=True)
     s.add_argument("--out", required=True)
-    s.add_argument("--month", required=True)
     s.add_argument("--workers", type=int, default=4)
+    h = sub.add_parser("holdout")
+    h.add_argument("--priced", required=True)
+    h.add_argument("--out", required=True, type=Path)
     g = sub.add_parser("gate")
     g.add_argument("--store", required=True)
     a = ap.parse_args(argv)
-    return {"prepare": cmd_prepare, "study": cmd_study, "gate": cmd_gate}[a.cmd](a)
+    return {"prepare": cmd_prepare, "study": cmd_study, "holdout": cmd_holdout, "gate": cmd_gate}[a.cmd](a)
 
 
 if __name__ == "__main__":

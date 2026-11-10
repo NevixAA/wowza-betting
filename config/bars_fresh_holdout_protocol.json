@@ -1,0 +1,34 @@
+{
+ "protocol": "bars-fresh-holdout/1",
+ "owner_decision": "owner 2026-11-10: \"Fresh holdout\" (relayed by the coordinator); P_RESOLUTION_HITS = 10 approved as part of it",
+ "written_before_any_run": true,
+ "runs_only_when": "tier B1 of the OddsAPI history is complete (store run ledger) AND config/bars_oddsapi_hist.json run_enabled true with owner_ok",
+ "data": {
+  "universe": "the bars study universes (output/bars_opt/universe_{standard,new_format}.parquet) priced by src/bars_opt/oddsapi_prices.py: own two-sided pair always wins; else the OddsAPI history pair under the study's own rules (earliest provable pre-kickoff same-snapshot pair from match day - 1; one book's pair, Bet365 else Pinnacle; exact line per side). Priced universes stay LOCAL.",
+  "fresh_row": "price_source oddsapi_hist AND (row_id, market) never priced in any committed version of the study universes AND not priced by any own source today; proven from git history by src/bars_opt/fresh_holdout.earlier_runs (fail-closed)"
+ },
+ "holdout": {
+  "unit": "family = track x market-side; cells = league inside the family",
+  "fresh_run": "maximal stretch of consecutive match dates of the family on which EVERY study-eligible row is fresh",
+  "choice": "the MOST RECENT fresh run holding at least MIN_RUN_ROWS rows; later shorter runs cannot host a 150-bet test and are skipped (counted)",
+  "MIN_RUN_ROWS": "ceil(MIN_HOLDOUT_BETS / IN_PERIOD_CHECK_SHARE) = ceil(150 / 0.40) = 375",
+  "split": "src.league_bars.in_period_split on the run's dates (owner 2026-11-08 rule: month boundary, CHECK part ~40% of match dates); HOLDOUT = run rows dated >= the split",
+  "selection": "every study-eligible row of the family dated < the split; rows dated after the run's end are used by neither",
+  "no_fresh_run": "the family gets NO historical PROVEN test (NO_FRESH_HOLDOUT); its cells stay PROMISING / UNPROVEN and wait for the live Clean Record from 2026-11-21; touched rows are never reused as a holdout"
+ },
+ "procedure": {
+  "selection": "src.bars_opt.study.select_core on the selection rows only (54 configurations, inner blocks, White reality check, per-league MODEL vs LEAGUE_WIDE, frozen per-league bars) - unchanged pre-registered protocol",
+  "frozen": "the choices (configuration + per-league bars) are written with their sha256 BEFORE any holdout row is scored",
+  "test_once": "each cell (family x league with frozen ON bars and >= 1 holdout row) is scored exactly once on its holdout rows with study.bet_with; the refit must equal the frozen choice; a second test into the same output is refused",
+  "no_peek": "the monthly simulation (study.run_monthly) is NOT run in this protocol (it would read rows after the selection cut); every frame given to selection is asserted to hold no holdout row"
+ },
+ "proven_rule": {
+  "min_holdout_bets": 150,
+  "ci": "ROI 95% CI (block bootstrap by match date / max-of-three SE) lower bound above 0 AND Holm-adjusted one-sided p < 0.025",
+  "holm_family": "every cell to be tested on the fresh holdout, counted after selection and BEFORE the test (a cell with no bet or no p-value still counts)",
+  "why_earlier_searches_do_not_enter": "every earlier search (bars_opt SELECT / FINAL / monthly / serving, league_bars) chose among configurations using rows that are, by construction, NOT in this holdout: no holdout row's price existed for any of them. Selection here sees only pre-holdout rows. So the holdout is untouched data; the only multiplicity at the test is the number of cells tested on it.",
+  "P_RESOLUTION_HITS": 10,
+  "p_resolution": "a cell whose 2,000-draw bootstrap p sits at its floor is re-drawn (same block bootstrap by match date, vectorised) with ceil(P_RESOLUTION_HITS * holm_family / 0.025) draws"
+ },
+ "outputs": "a verdicts-only proposal (TP-FH-<date>-<hash8>) under output/threshold_proposals/bars_oddsapi_hist/ with this file's sha256; no served bar changes. Live serving is unchanged: the monthly re-optimization on live data continues as before."
+}

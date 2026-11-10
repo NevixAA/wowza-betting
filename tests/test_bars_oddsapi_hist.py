@@ -276,7 +276,7 @@ def test_study_is_flagged_off_in_the_repo_and_refuses_to_run(tmp_path):
     ok, why = H.gate(st)
     assert not ok and any("run_enabled" in w for w in why)
     with pytest.raises(SystemExit, match="FLAGGED OFF"):
-        H.run(st, tmp_path / "priced", tmp_path / "study", "2026-12")
+        H.run(st, tmp_path / "priced", tmp_path / "study")
 
 
 def test_gate_opens_only_with_owner_ok_and_b1_complete(tmp_path):
@@ -300,52 +300,3 @@ def test_search_ledger_counts_the_earlier_runs():
         pytest.skip("study outputs not in this checkout's history")
     assert d["configs_searched"] >= 540 and d["hypotheses"] == d["configs_searched"] + d["cells_tested"]
 
-
-def test_study_run_wiring_counts_prior_and_this_run_and_writes_its_own_namespace(tmp_path, monkeypatch):
-    """The protocol steps are the study's own (stubbed here: no study is run on any data); the Holm family
-    handed to run_final = ledger hypotheses + this run's configurations; the proposal goes to its own
-    folder with the run's search counts."""
-    from src import threshold_proposals as TP
-    from src.bars_opt import cells as C
-    from src.bars_opt import search_ledger as L
-    priced, out = tmp_path / "priced", tmp_path / "study"
-    priced.mkdir()
-    for t in ("standard", "new_format"):
-        (priced / f"universe_{t}.parquet").write_bytes(b"")
-    monkeypatch.setattr(H, "gate", lambda store: (True, []))
-    monkeypatch.setattr(L, "build", lambda: {"hypotheses": 1000, "runs": []})
-    seen = {}
-
-    def sel(u, o, seed=0, workers=6):
-        o.mkdir(parents=True, exist_ok=True)
-        (o / "choices.json").write_text(json.dumps([{"configs_searched": 54}] * 2), encoding="utf-8")
-
-    def mon(u, o, workers=6):
-        (o / "monthly.json").write_text(json.dumps({"sim_select": {"families": [{"months": [1, 2]}, {"months": []}]}}),
-                                        encoding="utf-8")
-
-    def fin(u, o, workers=6, prior_hypotheses=0):
-        seen["prior"] = prior_hypotheses
-        return {"cells": [{"p_holm": 0.5}, {"p_holm": None}], "summary": {"verdict_counts": [], "p_redrawn": []}}
-
-    monkeypatch.setattr(S, "run_select", sel)
-    monkeypatch.setattr(S, "run_monthly", mon)
-    monkeypatch.setattr(S, "run_final", fin)
-    monkeypatch.setattr(S, "load_families", lambda d: [(None, "standard", "over25_over"), (None, "standard", "ht_over05_over")])
-    monkeypatch.setattr(C, "build", lambda d, m, workers=4, verdict_path=None: seen.setdefault("verdicts", verdict_path) and [])
-    monkeypatch.setattr(TP, "PROPOSAL_DIR", tmp_path / "proposals")
-    monkeypatch.setattr(TP, "CANDIDATE_DIR", tmp_path / "proposals" / "candidates")
-    monkeypatch.setattr(TP, "build_proposal", lambda c, **k: seen.setdefault("source", k["source"]) and
-                        {"proposal_id": "TP-x", "proposal_hash": "h", "entries": [], "status": "NO_SERVING_CHANGE",
-                         "month": "2026-12"})
-    monkeypatch.setattr(TP, "write_proposal", lambda p, d: seen.setdefault("dir", d) / "2026-12.json")
-    monkeypatch.setattr(H, "ROOT", tmp_path)
-    res = H.run(tmp_path / "store", priced, out, "2026-12", workers=1)
-    # this run: select 108 + monthly (2 months + 3 rolling x 2 families) x 54 + serving 1 family x 54
-    assert seen["prior"] == 1000 + 108 + (2 + 3 * 2) * 54 + 54
-    assert seen["verdicts"] == out.resolve() / "cells.json"
-    assert seen["dir"] == tmp_path / "proposals" / H.NAMESPACE
-    assert seen["source"]["holm_family"] == seen["prior"] + 1
-    ev = json.loads((tmp_path / "proposals" / H.NAMESPACE / "evidence_2026-12.json").read_text(encoding="utf-8"))
-    assert ev["search"]["holm_family_extra"] == seen["prior"]
-    assert res["proposal_id"] == "TP-x"
