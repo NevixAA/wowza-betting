@@ -238,11 +238,14 @@ def clean_fixture_map(fmap: dict, odds: pd.DataFrame) -> tuple[dict, dict]:
     none of them. Returns (clean map, counts)."""
     from src import oddsapi_history as OH
     ko = _utc(odds.drop_duplicates("event_id").set_index("event_id")["commence_time"])
-    keep, out_window = {}, 0
+    keep, out_window, no_odds = {}, 0, 0
     for f, e in fmap.items():
         lo, hi = OH.day_window(str(f).split("|")[0])
         k = ko.get(e)
-        if k is None or pd.isna(k) or not (pd.Timestamp(lo) <= k < pd.Timestamp(hi)):
+        if k is None or pd.isna(k):              # the event has no stored odds row: nothing to price
+            no_odds += 1
+            continue
+        if not (pd.Timestamp(lo) <= k < pd.Timestamp(hi)):
             out_window += 1
             continue
         keep[f] = e
@@ -251,7 +254,7 @@ def clean_fixture_map(fmap: dict, odds: pd.DataFrame) -> tuple[dict, dict]:
         inv.setdefault(e, []).append(f)
     multi = {e for e, fs in inv.items() if len(fs) > 1}
     clean = {f: e for f, e in keep.items() if e not in multi}
-    return clean, {"map_kickoff_outside_fixture_window": out_window,
+    return clean, {"map_event_without_odds": no_odds, "map_kickoff_outside_fixture_window": out_window,
                    "map_events_on_several_fixtures": len(multi),
                    "map_fixtures_dropped_ambiguous": len(keep) - len(clean)}
 
