@@ -745,13 +745,27 @@ class Stop(Exception):
         self.code, self.reason = code, reason
 
 
+RETRY_WAITS = (5, 20, 60)        # owner 2026-11-10: at most 3 retries per request, exponential back-off
+RETRYABLE_STATUS = {429, 500, 502, 503, 504}
+MAX_FAILED_PER_RUN = 20          # more requests than this failing after their retries stops the run
+
+
 class Meter:
     """Every paid call passes here. Before: floor, run cap, time. After: x-requests-last and
-    x-requests-remaining must both be present, and the cost may not exceed the call's maximum."""
+    x-requests-remaining must both be present on a successful answer, and the cost may not exceed
+    the call's maximum.
+
+    Provider faults (HTTP 500/502/503/504, a timeout or a dropped connection) and 429 are retried at
+    most len(RETRY_WAITS) times with back-off. An attempt that came back WITHOUT the cost headers is
+    an exposure of at most its maximum cost; the next successful answer reconciles it: the drop in
+    x-requests-remaining beyond what that answer reports is booked to the failed request
+    (ledger status 'unreported_cost_reconciled'). A drop larger than one request's maximum possible
+    cost stops the run. A request still failing after its retries returns status 'failed' (the caller
+    leaves it NOT done); more than MAX_FAILED_PER_RUN of them stop the run. Other 4xx are never retried."""
 
     def __init__(self, key: str, floor: int, run_cap: int, max_seconds: float, session=None,
                  pause: float = 0.25, clock: Callable[[], float] = time.monotonic,
-                 sleep: Callable[[float], None] = time.sleep):
+                 sleep: Callable[[float], None] = time.sleep, on_reconciled: Callable | None = None):
         if floor < MIN_FLOOR:
             raise ValueError(f"floor {floor} is below the owner's minimum {MIN_FLOOR}")
         if run_cap <= 0:
@@ -764,6 +778,11 @@ class Meter:
         self.spent, self.calls, self.remaining = 0, 0, None
         self.remaining_start = None
         self.by_tier: Counter = Counter()
+        self.pending: list = []          # failed attempts with no cost reported: (unit_key, tier, max_cost)
+        self.failed_requests = 0
+        self.retries = 0
+        self.reconciled: list = []       # [{unit_key, tier, credits}]
+        self.on_reconciled = on_reconciled
 
     def _get(self, path: str, params: dict):
         try:
@@ -781,44 +800,83 @@ class Meter:
         self.remaining = self.remaining_start = int(float(rem))
         return self.remaining
 
+    def exposure(self) -> int:
+        """Credits failed attempts MAY have cost that no answer has reconciled yet."""
+        return sum(p[2] for p in self.pending)
+
     def check(self, max_cost: int):
         if self.remaining is None:
             raise Stop(EXIT_ERROR, "credits remaining unknown")
         if self.clock() - self.t0 >= self.max_seconds:
             raise Stop(EXIT_TIME, "time budget reached")
-        if self.remaining - max_cost < self.floor:
+        if self.remaining - self.exposure() - max_cost < self.floor:
             raise Stop(EXIT_FLOOR, "credit floor reached")
-        if self.spent + max_cost > self.run_cap:
+        if self.spent + self.exposure() + max_cost > self.run_cap:
             raise Stop(EXIT_RUN_CAP, "per-run credit cap reached")
 
-    def call(self, path: str, params: dict, max_cost: int, tier: str):
-        """(status, body | None, credits). Retries 429 / 5xx with back-off (each attempt metered)."""
-        waits = (2, 5, 15, 30, 60)
-        for attempt in range(len(waits) + 1):
+    def _reconcile(self, last: int, rem: int):
+        """A successful answer after unreported failures: the unexplained drop goes to them."""
+        if not self.pending:
+            return
+        drop = (self.remaining - last) - rem
+        pend, self.pending = self.pending, []
+        if drop <= 0:
+            return
+        if drop > max(p[2] for p in pend):
+            raise Stop(EXIT_ERROR, f"unexplained credit drop {drop} > one request's maximum "
+                                   f"{max(p[2] for p in pend)}")
+        k, tier, _ = pend[-1]
+        self.spent += drop
+        self.by_tier[tier] += drop
+        self.reconciled.append({"unit_key": k, "tier": tier, "credits": drop})
+        if self.on_reconciled:
+            self.on_reconciled(k, tier, drop)
+
+    def call(self, path: str, params: dict, max_cost: int, tier: str, key: str | None = None):
+        """(status, body | None, credits). status 'failed' = still a provider fault after the retries."""
+        for attempt in range(len(RETRY_WAITS) + 1):
             self.check(max_cost)
-            r = self._get(path, params)
+            try:
+                r = self._get(path, params)
+            except Stop:
+                r = None                                 # timeout / dropped connection: a provider fault
             self.calls += 1
-            last, rem = r.headers.get("x-requests-last"), r.headers.get("x-requests-remaining")
+            status = None if r is None else r.status_code
+            last = None if r is None else r.headers.get("x-requests-last")
+            rem = None if r is None else r.headers.get("x-requests-remaining")
+            if r is None or status in RETRYABLE_STATUS:
+                if last is not None and rem is not None:
+                    self._reconcile(int(float(last)), int(float(rem)))
+                    last, self.remaining = int(float(last)), int(float(rem))
+                    self.spent += last
+                    self.by_tier[tier] += last
+                else:
+                    self.pending.append((key or path, tier, max_cost))
+                if attempt < len(RETRY_WAITS):
+                    self.retries += 1
+                    self.sleep(RETRY_WAITS[attempt])
+                    continue
+                self.failed_requests += 1
+                if self.failed_requests > MAX_FAILED_PER_RUN:
+                    raise Stop(EXIT_ERROR, f"more than {MAX_FAILED_PER_RUN} requests failed after retries")
+                return "failed", None, None
             if last is None or rem is None:
-                raise Stop(EXIT_ERROR, f"cost not reported (status {r.status_code})")
-            last, self.remaining = int(float(last)), int(float(rem))
+                raise Stop(EXIT_ERROR, f"cost not reported (status {status})")
+            last, rem = int(float(last)), int(float(rem))
+            self._reconcile(last, rem)
+            self.remaining = rem
             self.spent += last
             self.by_tier[tier] += last
             if last > max_cost:
                 raise Stop(EXIT_ERROR, f"a call cost {last} > its planned maximum {max_cost}")
             if self.pause:
                 self.sleep(self.pause)
-            if r.status_code == 200:
+            if status == 200:
                 return 200, r.json(), last
-            if r.status_code in (401, 403):
-                raise Stop(EXIT_ERROR, f"auth refused (status {r.status_code})")
-            if r.status_code in (404, 422):
-                return r.status_code, None, last
-            if attempt < len(waits) and (r.status_code == 429 or r.status_code >= 500):
-                self.sleep(waits[attempt])
-                continue
-            return r.status_code, None, last
-        return None, None, 0
+            if status in (401, 403):
+                raise Stop(EXIT_ERROR, f"auth refused (status {status})")
+            return status, None, last                    # other 4xx: never retried
+        return "failed", None, None
 
 
 # ── the run ──────────────────────────────────────────────────────────────────────────────────────
@@ -857,6 +915,10 @@ class Collector:
         self._matched: dict = {}
         self.R = Resolver(self.spell)
         self.proof: dict = {}
+        if self.m.on_reconciled is None:
+            # an unreported cost found later is booked to the failed request (never done: retryable)
+            self.m.on_reconciled = lambda k, t, c: self.store.finish_unit(k, t, "unreported_cost_reconciled",
+                                                                          c, 0, None)
 
     def _st(self, tier, k, n=1):
         self.stats.setdefault(tier, Counter())[k] += n
@@ -870,8 +932,12 @@ class Collector:
         at = lookup_at(d)
         status, body, c = self.m.call(f"/historical/sports/{sk}/events",
                                       {"date": iso(at), "commenceTimeFrom": iso(lo), "commenceTimeTo": iso(hi)},
-                                      LOOKUP_MAX_COST, tier)
+                                      LOOKUP_MAX_COST, tier, key=k)
         self._st(tier, "lookup_calls")
+        if status == "failed":
+            self._st(tier, "lookups_failed_after_retries")          # not done: retried on resume
+            self.store.finish_unit(k, tier, "failed_after_retries", None, 0, None)
+            return
         self._st(tier, "credits", c)
         data = ((body or {}).get("data") or []) if status == 200 else []
         rows = [{"unit_key": k, "sport_key": sk, "league": league, "league_date": d, "lookup_at": iso(at),
@@ -940,8 +1006,12 @@ class Collector:
             return
         status, body, c = self.m.call(path, {"date": iso(snap), "regions": ",".join(u.regions),
                                              "markets": ",".join(u.markets), "oddsFormat": "decimal",
-                                             "dateFormat": "iso"}, u.max_cost, u.tier)
+                                             "dateFormat": "iso"}, u.max_cost, u.tier, key=k)
         self._st(u.tier, "odds_calls")
+        if status == "failed":
+            self._st(u.tier, "units_failed_after_retries")          # not done: retried on resume
+            self.store.finish_unit(k, u.tier, "failed_after_retries", None, 0, None)
+            return
         self._st(u.tier, "credits", c)
         if status != 200:
             self.store.finish_unit(k, u.tier, f"http_{status}", c, 0, None)
@@ -994,10 +1064,16 @@ class Collector:
                     "calls": self.m.calls, "credits_spent": self.m.spent,
                     "credits_by_tier": self.m.by_tier, "remaining_start": self.m.remaining_start,
                     "remaining_end": self.m.remaining, "floor": self.m.floor, "run_cap": self.m.run_cap,
+                    "retries": self.m.retries, "failed_requests": self.m.failed_requests,
+                    "unreported_cost_reconciled": self.m.reconciled,
+                    "unreconciled_exposure_max": self.m.exposure(),
                     "stats": self.stats, "finished_at": iso(datetime.now(timezone.utc))}
             self.store.write_run(info)
             say(f"stop: {reason}; calls {self.m.calls:,}; credits spent {self.m.spent:,}; "
-                f"remaining {self.m.remaining if self.m.remaining is not None else 'unknown'}")
+                f"remaining {self.m.remaining if self.m.remaining is not None else 'unknown'}; "
+                f"retries {self.m.retries:,}; failed after retries {self.m.failed_requests:,}; "
+                f"reconciled {sum(x['credits'] for x in self.m.reconciled):,}; "
+                f"unreconciled exposure <= {self.m.exposure():,}")
         return code, reason
 
     def _progress(self):

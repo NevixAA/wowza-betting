@@ -422,3 +422,110 @@ def test_run_proves_aliases_from_its_listings_then_buys_and_unmatched_units_stay
     _run(tmp_path / "two", api3, days=days, run_id="r2")
     assert len([c for c in api3.calls if c[0].endswith("/events")]) == 1      # only the NEW day's listing
     assert len([c for c in api3.calls if "/events/" in c[0]]) == 4            # 3 Portland retried + new Austin
+
+
+# ── provider faults: bounded retries, credit reconciliation ────────────────────────────────────────
+class Script:
+    """A session answering paid calls from a script: (status, last, remaining) or an exception."""
+
+    def __init__(self, steps, remaining=1_000_000):
+        self.steps, self.remaining, self.paid = list(steps), remaining, 0
+
+    def get(self, url, params=None, timeout=None):
+        if url.endswith("/sports"):
+            return Resp(200, [], 0, self.remaining)
+        self.paid += 1
+        st = self.steps.pop(0)
+        if isinstance(st, Exception):
+            raise st
+        status, last, rem = st
+        return Resp(status, {"timestamp": "t", "data": []} if status == 200 else None, last, rem)
+
+
+def _meter(steps, remaining=1000, **kw):
+    sleeps, booked = [], []
+    m = OH.Meter(KEY, floor=OH.MIN_FLOOR, run_cap=10_000, max_seconds=600, session=Script(steps, remaining),
+                 pause=0, sleep=sleeps.append, on_reconciled=lambda k, t, c: booked.append((k, t, c)), **kw)
+    m.remaining = m.remaining_start = OH.MIN_FLOOR + remaining
+    return m, sleeps, booked
+
+
+def test_a_502_then_success_is_retried_and_costs_only_what_is_reported():
+    F = OH.MIN_FLOOR
+    m, sleeps, booked = _meter([(502, None, None), (200, 20, F + 980)])
+    status, _, c = m.call("/x", {}, 20, "B1", key="u1")
+    assert status == 200 and c == 20 and m.spent == 20 and sleeps == [5] and booked == [] and m.pending == []
+
+
+def test_a_silently_billed_502_is_reconciled_and_booked_to_the_failed_request():
+    F = OH.MIN_FLOOR
+    m, _, booked = _meter([(502, None, None), (200, 20, F + 960)])
+    status, _, _ = m.call("/x", {}, 20, "B1", key="u1")
+    assert status == 200 and m.spent == 40 and booked == [("u1", "B1", 20)]
+    assert m.reconciled == [{"unit_key": "u1", "tier": "B1", "credits": 20}]
+
+
+def test_an_unexplained_drop_beyond_one_request_stops_the_run():
+    F = OH.MIN_FLOOR
+    m, _, _ = _meter([(502, None, None), (200, 20, F + 900)])
+    with pytest.raises(OH.Stop) as e:
+        m.call("/x", {}, 20, "B1", key="u1")
+    assert e.value.code == OH.EXIT_ERROR and "unexplained" in e.value.reason
+
+
+def test_three_retries_then_failed_and_the_unit_stays_not_done(tmp_path):
+    m, sleeps, _ = _meter([(502, None, None)] * 4)
+    status, body, c = m.call("/x", {}, 20, "B1", key="u1")
+    assert status == "failed" and body is None and sleeps == [5, 20, 60] and m.failed_requests == 1
+    assert m.exposure() == 80                         # four unreported attempts, none reconciled yet
+
+    class Flaky(FakeAPI):
+        def get(self, url, params=None, timeout=None):
+            if "/events/ev-aus/" in url:
+                self.calls.append((url, dict(params)))
+                return Resp(502, None, None, None)
+            return super().get(url, params, timeout)
+    api = Flaky()
+    code, _, store, meter = _run(tmp_path, api)
+    assert code == OH.EXIT_DONE                       # the run went on to the next unit
+    led = pd.concat([pd.read_csv(f) for f in (tmp_path / "store" / "ledger" / "units").glob("*.csv")])
+    assert "failed_after_retries" in set(led["status"])
+    assert not any("ev-aus" in k for k in store.done)  # NOT done: retried on resume
+    assert any("ev-por" in k for k in store.done)
+
+
+def test_more_than_twenty_failed_requests_stop_the_run():
+    m, _, _ = _meter([(503, None, None)] * 200, remaining=100_000)
+    m.run_cap = 10 ** 9
+    with pytest.raises(OH.Stop) as e:
+        for _ in range(30):
+            m.call("/x", {}, 1, "B1")
+    assert m.failed_requests == OH.MAX_FAILED_PER_RUN + 1 and "failed after retries" in e.value.reason
+
+
+def test_a_429_backs_off_and_retries():
+    F = OH.MIN_FLOOR
+    m, sleeps, _ = _meter([(429, 0, F + 1000), (200, 20, F + 980)])
+    status, _, c = m.call("/x", {}, 20, "B1")
+    assert status == 200 and sleeps == [5] and m.spent == 20
+
+
+def test_a_timeout_is_retried_like_a_provider_fault():
+    import requests
+    F = OH.MIN_FLOOR
+    m, sleeps, _ = _meter([requests.exceptions.Timeout("https://x?apiKey=SECRET"), (200, 20, F + 980)])
+    assert m.call("/x", {}, 20, "B1")[0] == 200 and sleeps == [5]
+
+
+def test_other_4xx_are_never_retried():
+    F = OH.MIN_FLOOR
+    m, sleeps, _ = _meter([(400, 0, F + 1000), (200, 20, F + 980)])
+    assert m.call("/x", {}, 20, "B1")[0] == 400 and sleeps == []
+    assert m.s.paid == 1
+
+
+def test_a_success_without_cost_headers_still_stops():
+    m, _, _ = _meter([(200, None, None)])
+    with pytest.raises(OH.Stop) as e:
+        m.call("/x", {}, 20, "B1")
+    assert "cost not reported" in e.value.reason
