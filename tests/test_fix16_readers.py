@@ -209,6 +209,7 @@ CORRECTED = {          # fd_history through serve_history (and af_history throug
     "src/strength/results.py", "src/research/edge_replay.py", "update_results.py",
     "pages/6_⚡_Live.py", "pages/10_🤖_Agent_Analysis.py",
     "scripts/integrity_price_provenance.py", "scripts/integrity_af_join_replay.py",
+    "src/oddsapi_history.py",   # OddsAPI history plan: our fixtures under both banks' corrections
 }
 RAW = {                # why the raw file is the right input
     "src/data_loader.py": "the loader itself: applies the lists in identity_before_one_match / local path",

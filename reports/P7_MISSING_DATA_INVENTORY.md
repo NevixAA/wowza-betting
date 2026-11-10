@@ -174,3 +174,39 @@ Fit (plan prices from the provider's page, which may be dated): the live burn is
 month. B1 + B2 (520,608) or all four need a month on the 5M plan; on 100K none fits. Recommended order, by
 value per credit: **B1** (the bars' largest evidence gap, 2 markets per call), then **B2** (cheap), then B3
 (3 leagues only), then B4 (largest cost for one filter). Nothing beyond the probe was bought.
+
+## Historical collector: dry-run plan (2026-11-10, 5M plan; NOTHING SPENT)
+
+Owner 2026-11-10: "use all the 5M credits this month". Code: `src/oddsapi_history.py`,
+`scripts/oddsapi_history_collect.py --dry-run` (plan: `output/collect/oddsapi_history_plan.json`, counts only).
+The bought data goes ONLY to the private repo `NevixAA/wowza-exec`, orphan branch `odds-history`
+(terms: storing and training allowed, redistribution prohibited); `src/oddsapi_history_adapter.py` attaches
+it to universe rows by fixture id, output local / private only.
+
+Universe: every fixture of our banks (af_history and fd_history under the owner's corrections, plus
+player_history for the props-only leagues), keyed leagues only, deduplicated across sources per league-day.
+A provider event is bought only when the provider's own listing of that league-day proves it is one of our
+fixtures (src.team_names.resolve, one league, one day, one-to-one), so every count is an exact upper bound.
+Credits are MAXIMA: billed only on markets returned, empty answers free, unmatched fixtures not bought. A
+later tier never re-buys a market an earlier tier requested for the same match / league-day, snapshot and
+region (C3 close asks h2h only where B2 bought totals; C4 asks uk only; C5 skips T-48h and close).
+
+| Tier | Kind | Markets | Regions | Snapshots | Window | League-days | Matches | Odds calls | Lookups | Max credits | Cumulative | Wall clock (0.5-1 s/call) |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| B1 | event | btts,alternate_totals | eu | close | 2023-05-03..2026-11-09 | 9,188 | 39,863 | 39,863 | 9,188 | **806,448** | 806,448 | 6.8-13.6 h |
+| B2 | featured | totals | eu | close | 2020-06-06..2023-05-02 | 4,033 | 0 | 4,033 | 4,033 | **44,363** | 850,811 | 1.1-2.2 h |
+| B4 | featured | h2h,totals | eu | T-72h/T-48h/T-24h/T-12h/T-6h/T-2h/T-1h/close | 2023-06-14..2026-06-13 | 7,850 | 0 | 62,800 | 0 | **1,256,000** | 2,106,811 | 8.7-17.4 h |
+| B3 | event | props | uk,eu,us,us2 | close | 2023-05-03..2026-11-09 | 1,141 | 4,564 | 4,564 | 741 | **557,261** | 2,664,072 | 0.7-1.5 h |
+| S | event | correct_score | uk,eu | close | 2023-05-03..2026-11-09 | 9,188 | 39,863 | 39,863 | 0 | **797,260** | 3,461,332 | 5.5-11.1 h |
+| C1 | event | btts,alternate_totals | eu | T-48h | 2023-05-03..2026-11-09 | 9,188 | 39,863 | 39,863 | 0 | **797,260** | 4,258,592 | 5.5-11.1 h |
+| C3 | featured | h2h,totals | eu | T-48h/close | 2020-06-06..2023-06-13 | 7,933 | 0 | 15,866 | 3,596 | **280,586** | 4,539,178 | 2.7-5.4 h |
+| C2 | event | props | uk,eu,us,us2 | T-48h | 2023-05-03..2026-11-09 | 1,141 | 4,564 | 4,564 | 0 | **556,520** | 5,095,698 | 0.6-1.3 h |
+| C4 | event | btts,alternate_totals | uk | close | 2023-05-03..2026-11-09 | 9,188 | 39,863 | 39,863 | 0 | **797,260** | 5,892,958 | 5.5-11.1 h |
+| C5 | featured | h2h,totals | eu | T-72h..close (6 new) | 2020-06-06..2023-06-13 | 7,933 | 0 | 47,598 | 0 | **951,960** | 6,844,918 | 6.6-13.2 h |
+
+Usable: 5,000,000 - floor 260,000 = 4,740,000. B1..C3 (4,539,178 max) fit; C2, C4, C5 run only on what the
+returned-markets billing leaves. Props markets per the probe: Premier League 4, Ligue 1 2, MLS 3. S is
+`correct_score` (listed in the provider's soccer markets; its HISTORY is unconfirmed): it runs only for leagues
+where `--probe-s` (one P7 probe event per league, at most 20 credits each, free when empty) sees it returned.
+Saudi Pro League is included only where the provider lists the event (the P7 probe found none); its share is
+at most 179,584 of the total.
