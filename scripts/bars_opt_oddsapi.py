@@ -81,7 +81,17 @@ def cmd_prepare(a) -> int:
 def cmd_study(a) -> int:
     from src.bars_opt import hist_study as H
     res = H.run(Path(a.store), Path(a.priced), Path(a.out), workers=a.workers)
+    fresh = res.pop("_fresh")                     # selection frames carry prices: never printed
     print(json.dumps(res, indent=1, default=str))
+    if a.month:
+        from src.bars_opt import cells as C
+        study_cells = json.loads(Path(a.study_cells).read_text(encoding="utf-8"))
+        fams = C.build(Path(a.serving_universe), a.month, workers=a.workers, verdict_path=Path(a.study_cells))
+        meta = {"fresh_verdicts_proposal": res["proposal_id"], "protocol_sha256": res["protocol_sha256"],
+                "choices_sha256": res["choices_sha256"], "fresh_holm_family": res["holm_family"],
+                "serving_universe": str(a.serving_universe), "study_cells": str(a.study_cells)}
+        out = H.combine(fresh, fams, study_cells, a.month, meta)
+        print(json.dumps(out, indent=1, default=str))
     return 0
 
 
@@ -124,6 +134,10 @@ def main(argv=None) -> int:
     s.add_argument("--priced", required=True)
     s.add_argument("--out", required=True)
     s.add_argument("--workers", type=int, default=4)
+    s.add_argument("--month", help="also write the owner proposal: serving cells of this month + fresh cells")
+    s.add_argument("--serving-universe", default=str(UNIVERSE_DIR), help="own-priced universes (serving cells)")
+    s.add_argument("--study-cells", default=str(UNIVERSE_DIR / "study" / "cells.json"),
+                   help="selection study FINAL cells (verdicts of the cells not tested on the fresh holdout)")
     h = sub.add_parser("holdout")
     h.add_argument("--priced", required=True)
     h.add_argument("--out", required=True, type=Path)

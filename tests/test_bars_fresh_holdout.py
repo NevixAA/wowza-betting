@@ -207,3 +207,44 @@ def test_selection_worker_refuses_a_holdout_row():
     f = _family([("2023-06-03", 10, 2, True)])
     with pytest.raises(AssertionError, match="holdout row"):
         H._select((f, {f["row_id"].iloc[0]}, "t", "m"))
+
+
+def _choice():
+    return {"track": "standard", "mside": "over15_over", "chosen": "RAW|EDGE|max-|min-", "off": None,
+            "bars": {"A": _bars()}}
+
+
+def test_fresh_serving_cell_carries_the_frozen_bars_and_the_fresh_verdict():
+    sel = _family([("2023-01-07", 20, 10, False)])
+    cell, why = H.fresh_serving_cell(_choice(), sel, "A", {"verdict": "PROMISING", "final": {"bets": 160},
+                                                           "p_holm": 0.4, "family_size": 7}, "2026-11")
+    assert why == "" and cell["verdict"] == "PROMISING" and cell["config_basis"] == H.FRESH_BASIS
+    assert (cell["valuable_th"], cell["marksman_th"], cell["sniper_th"]) == (0.02, 0.04, 0.06)
+    assert cell["fresh_holdout_family_size"] == 7 and cell["prod_market"] == "over15"
+
+
+def test_combine_replaces_tested_cells_and_lists_every_league_with_a_status(tmp_path, monkeypatch):
+    from src import threshold_proposals as TP
+    monkeypatch.setattr(TP, "PROPOSAL_DIR", tmp_path / "proposals")
+    monkeypatch.setattr(TP, "CANDIDATE_DIR", tmp_path / "proposals" / "candidates")
+    monkeypatch.setattr(H, "ROOT", tmp_path)
+    seen = {}
+    monkeypatch.setattr(TP, "build_proposal", lambda c, **k: seen.setdefault("c", c) and
+                        {"proposal_id": "TP-x", "proposal_hash": "h" * 64, "entries": [1], "status": "AWAITING_OWNER",
+                         "month": "2026-11"})
+    monkeypatch.setattr(TP, "write_proposal", lambda p, d: d / "2026-11_x.json")
+    fams = [{"track": "standard", "mside": "over15_over", "cells": [],
+             "off": [{"league": "A", "reason": "OFF_NO_VALUE"}, {"league": "B", "reason": "OFF_THIN"}]}]
+    sel = _family([("2023-01-07", 20, 10, False)])
+    fresh = {"choices": [_choice()], "selection": {("standard", "over15_over"): sel},
+             "cells": [{"track": "standard", "mside": "over15_over", "league": "A", "verdict": "UNPROVEN",
+                        "final": {"bets": 170}, "p_holm": 1.0, "family_size": 3}]}
+    study_cells = [{"track": "standard", "mside": "ht_over05_over", "league": "C", "verdict": "OFF", "reason": "x"}]
+    out = H.combine(fresh, fams, study_cells, "2026-11", {"protocol_sha256": "p"})
+    assert out["fresh_cells_replaced"] == [{"track": "standard", "mside": "over15_over", "league": "A",
+                                            "verdict": "UNPROVEN"}]
+    assert out["status_counts"] == {"UNPROVEN": 1, "OFF": 2}
+    ev = json.loads((tmp_path / "proposals" / H.NAMESPACE / "evidence_2026-11.json").read_text(encoding="utf-8"))
+    st = {(r["mside"], r["league"]): r["status"] for r in ev["league_market_status"]}
+    assert st == {("over15_over", "A"): "UNPROVEN", ("over15_over", "B"): "OFF", ("ht_over05_over", "C"): "OFF"}
+    assert seen["c"]["over15"]["A"]["bars_opt"]["yes"]["config_basis"] == H.FRESH_BASIS

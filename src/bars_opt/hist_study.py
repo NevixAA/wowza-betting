@@ -155,6 +155,112 @@ def run(store_root: Path, priced_dir: Path, out_dir: Path, workers: int = 4) -> 
     path = TP._safe_write(TP.PROPOSAL_DIR / NAMESPACE / f"fresh_{created[:10]}_{h[:8]}.json",
                           json.dumps(body, indent=1, default=str, ensure_ascii=False) + "\n")
     return {"proposal_id": body["proposal_id"], "proposal": str(path), "protocol_sha256": proto_sha,
-            "holm_family": m_pre,
+            "choices_sha256": choices_sha, "holm_family": m_pre,
             "verdicts": pd.Series([c["verdict"] for c in cells]).value_counts().to_dict() if cells else {},
-            "families_without_fresh_holdout": len(body["no_fresh_holdout"])}
+            "families_without_fresh_holdout": len(body["no_fresh_holdout"]),
+            "_fresh": {"choices": choices, "selection": {k: v[0] for k, v in parts.items()}, "cells": cells}}
+
+
+FRESH_BASIS = "FRESH_HOLDOUT_SELECTION"
+
+
+def fresh_serving_cell(choice: dict, sel, league: str, tested: dict, month: str) -> tuple[dict | None, str]:
+    """The serving cell of a cell tested on the fresh holdout: the FROZEN selection bars that were tested, the
+    fitted parameters of their probability source on the same selection rows (study.source_params - one
+    implementation for study and serving), and the fresh verdict. (cell, "") or (None, reason)."""
+    from src.bars_opt import cells as C
+    from src.bars_opt import serve as BS
+    from src.bars_opt import study as S
+    b = choice["bars"][league]
+    chosen = S.parse_cfg(choice["chosen"])
+    cfg = chosen if b["mode"] == S.MODE_MODEL else S.lw_of(chosen)
+    params = S.source_params(cfg[0], sel) if cfg[0] != S.LEAGUE_WIDE_SOURCE else {}
+    if cfg[0] == "SHRINK":
+        if league not in params.get("weights", {}):
+            return None, "no SHRINK weight for the league"
+        params = {"weights": {league: params["weights"][league]}}
+    prod_market, side = C.PROD_OF[choice["mside"]]
+    cell = {"mside": choice["mside"], "track": choice["track"], "league": league, "month": month,
+            "config": S.cfg_name(cfg), "config_basis": FRESH_BASIS, "source": cfg[0], "measure": cfg[1],
+            "odds_max": cfg[2], "odds_min": cfg[3], "mode": b["mode"], "valuable_th": b["valuable_th"],
+            "marksman_th": b["marksman_th"], "sniper_th": b["sniper_th"], "bar_basis": b.get("bar_basis"),
+            "shrink_weight_at_valuable": b.get("shrink_weight_at_valuable"), "wf_bets": b.get("wf_bets"),
+            "wf_roi": b.get("wf_roi"), "wf_roi_shrunk": b.get("wf_roi_shrunk"), "tier2": b.get("tier2"),
+            "tier2_bets": b.get("tier2_bets"), "tier2_roi": b.get("tier2_roi"), "source_params": params,
+            "verdict": tested["verdict"], "study_final": tested.get("final"), "study_verdict": tested["verdict"],
+            "study_reason": tested.get("reason"), "fresh_holdout_p_holm": tested.get("p_holm"),
+            "fresh_holdout_family_size": tested.get("family_size"), "prod_market": prod_market, "side": side}
+    why = BS.validate_cell(cell)
+    return (None, why) if why else (cell, "")
+
+
+def status_table(families: list[dict], study_cells: list[dict]) -> list[dict]:
+    """EVERY track x market-side x league with its own bar and status (never a global value): the serving
+    cells (PROVEN / PROMISING / UNPROVEN, own or learned-blend bars), every OFF league with its reason, and the
+    study-only families (no serving market, e.g. HT) from the selection study's cells."""
+    rows, served = [], set()
+    for fam in families:
+        served.add((fam["track"], fam["mside"]))
+        for c in fam["cells"]:
+            rows.append({"track": c["track"], "mside": c["mside"], "league": c["league"], "status": c["verdict"],
+                         "bars": [c["valuable_th"], c["marksman_th"], c["sniper_th"]], "config": c["config"],
+                         "basis": c.get("config_basis"), "bar_basis": c.get("bar_basis"), "mode": c["mode"]})
+        for o in fam["off"]:
+            rows.append({"track": fam["track"], "mside": fam["mside"], "league": o["league"], "status": "OFF",
+                         "bars": None, "reason": o["reason"], "detail": o.get("detail")})
+    for c in study_cells:
+        if (c["track"], c["mside"]) in served:
+            continue
+        has = c.get("valuable_th") is not None and c.get("verdict") != "OFF"
+        rows.append({"track": c["track"], "mside": c["mside"], "league": c["league"],
+                     "status": c["verdict"] if has else "OFF", "study_only": True,
+                     "bars": [c.get("valuable_th"), c.get("marksman_th"), c.get("sniper_th")] if has else None,
+                     "reason": c.get("reason"), "config": c.get("config")})
+    return sorted(rows, key=lambda r: (r["track"], r["mside"], r["league"]))
+
+
+def combine(fresh: dict, families: list[dict], study_cells: list[dict], month: str, meta: dict) -> dict:
+    """The owner proposal: the month's serving families (selection-based bars, verdicts as in
+    TP-2026-11-09-abfb5dc4) with every cell tested on the fresh holdout replaced by its fresh cell (frozen
+    bars + fresh verdict). Candidates -> src/threshold_proposals (id + hash); nothing is applied."""
+    from src import threshold_proposals as TP
+    from src.bars_opt import cells as C
+    ch = {(c["track"], c["mside"]): c for c in fresh["choices"]}
+    fams = [dict(f, cells=list(f["cells"]), off=list(f["off"])) for f in families]
+    by = {(f["track"], f["mside"]): f for f in fams}
+    replaced, refused = [], []
+    for t in fresh["cells"]:
+        if t.get("verdict") in (None, "OFF"):
+            continue
+        key = (t["track"], t["mside"])
+        if key not in by or t["mside"] not in C.PROD_OF:
+            continue
+        cell, why = fresh_serving_cell(ch[key], fresh["selection"][key], t["league"], t, month)
+        if cell is None:
+            refused.append({"track": key[0], "mside": key[1], "league": t["league"], "reason": why})
+            continue
+        f = by[key]
+        f["cells"] = [c for c in f["cells"] if c["league"] != t["league"]] + [cell]
+        f["off"] = [o for o in f["off"] if o["league"] != t["league"]]
+        replaced.append({"track": key[0], "mside": key[1], "league": t["league"], "verdict": cell["verdict"]})
+    cand_dir = TP.CANDIDATE_DIR / NAMESPACE / month
+    for m, data in C.production_candidates(fams).items():
+        TP.write_candidate("standard" if m == "ou25" else m, data, cand_dir)
+    table = status_table(fams, study_cells)
+    counts: dict = {}
+    for r in table:
+        counts[r["status"]] = counts.get(r["status"], 0) + 1
+    prop_dir = TP.PROPOSAL_DIR / NAMESPACE
+    TP._safe_write(prop_dir / f"evidence_{month}.json", json.dumps(
+        {"month": month, "meta": meta, "fresh_cells_replaced": replaced, "fresh_cells_refused": refused,
+         "status_counts": counts, "league_market_status": table, "families": fams}, indent=1, default=str))
+    rel = cand_dir.resolve().relative_to(ROOT.resolve()).as_posix()
+    p = TP.build_proposal(TP.load_candidates(cand_dir), month=month, resolve=True,
+                          source={"workflow": "bars fresh holdout + selection-based serving cells (src/bars_opt/hist_study)",
+                                  "candidates_dir": rel,
+                                  "evidence": f"output/threshold_proposals/{NAMESPACE}/evidence_{month}.json"} | meta)
+    path = TP.write_proposal(p, prop_dir)
+    return {"proposal_id": p["proposal_id"], "proposal_hash": p["proposal_hash"],
+            "proposal": Path(path).resolve().relative_to(ROOT.resolve()).as_posix(),
+            "entries": len(p["entries"]), "status": p["status"], "status_counts": counts,
+            "fresh_cells_replaced": replaced, "fresh_cells_refused": refused}
