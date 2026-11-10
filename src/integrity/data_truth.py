@@ -255,6 +255,7 @@ HT_FORM_INPUTS = ("home_ht_over05_rate", "away_ht_over05_rate", "home_ht_over15_
                   "away_ht_conceded_last5")
 REST_INPUTS = ("home_rest_days", "away_rest_days")
 MISSING_RED_PCT, MISSING_AMBER_PCT = 50.0, 20.0
+from src.imputer import MISSING_SUFFIX  # noqa: E402  the one definition of the indicator suffix
 
 
 def _payload_cols(payload: dict, model_type: str):
@@ -311,6 +312,10 @@ def track_gaps(p: pd.DataFrame, features: dict) -> dict:
         if sub.empty:
             out[key] = {"status": GREY, "fixtures": 0, "worst_pct": None, "missing": {}, "note": "no fixtures"}
             continue
+        # "<f>__missing" is the imputer's 0/1 indicator, built from <f> at scoring time (src/imputer.py),
+        # so no board ever carries it: its base column <f> is the input checked. An indicator whose base
+        # is not in the payload stays in `need` and counts as missing.
+        cols = [c for c in cols if not (c.endswith(MISSING_SUFFIX) and c[:-len(MISSING_SUFFIX)] in cols)]
         need = list(dict.fromkeys(list(cols) + list(HT_FORM_INPUTS) + list(REST_INPUTS)))
         if market.startswith("HT"):
             need = list(dict.fromkeys(list(cols) + list(HT_FORM_INPUTS)))
