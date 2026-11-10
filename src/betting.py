@@ -220,7 +220,8 @@ def _apply_ou25_cells(df: pd.DataFrame, p_over: pd.Series, ov_odds: pd.Series, u
         return df
     df = df.copy()
     for c in ("bar_mode_over", "bar_mode_under", "bar_config_over", "bar_config_under", "bar_verdict_over",
-              "bar_verdict_under", "bar_measure_over", "bar_measure_under", "ev_used_over", "ev_used_under"):
+              "bar_verdict_under", "bar_measure_over", "bar_measure_under", "ev_used_over", "ev_used_under",
+              "p_used_over", "p_used_under", "cell_p_used"):
         if c not in df.columns:
             df[c] = None
     fair_over = pd.Series([BS.fair_yes(a, b) for a, b in zip(ov_odds, un_odds)], index=df.index, dtype=float)
@@ -249,6 +250,7 @@ def _apply_ou25_cells(df: pd.DataFrame, p_over: pd.Series, ov_odds: pd.Series, u
             df.loc[idx, f"bar_measure_{side}"] = pd.to_numeric(res["measure"], errors="coerce").to_numpy()
             ev = [BS.ev_point(p, o) for p, o in zip(pd.to_numeric(res["p_used"], errors="coerce"), odds)]
             df.loc[idx, f"ev_used_{side}"] = ev
+            df.loc[idx, f"p_used_{side}"] = pd.to_numeric(res["p_used"], errors="coerce").to_numpy()
             stake = config.FLAT_STAKE if not config.USE_KELLY else None
             for i, h in zip(idx, hit):
                 if not h:
@@ -264,6 +266,10 @@ def _apply_ou25_cells(df: pd.DataFrame, p_over: pd.Series, ov_odds: pd.Series, u
         pick_under = u_ok & ~pick_over
         bet = np.where(pick_over, "OVER", np.where(pick_under, "UNDER", "AVOID"))
         df.loc[idx, "bet"] = bet
+        # the probability the tipped side's cell served (blank for AVOID): read by the ledger and wowza-exec
+        pu_o = pd.to_numeric(df.loc[idx, "p_used_over"], errors="coerce").to_numpy(float)
+        pu_u = pd.to_numeric(df.loc[idx, "p_used_under"], errors="coerce").to_numpy(float)
+        df.loc[idx, "cell_p_used"] = np.where(bet == "OVER", pu_o, np.where(bet == "UNDER", pu_u, np.nan))
         df.loc[idx, "bet_stake"] = np.where(bet == "OVER", df.loc[idx, "stake_over"],
                                             np.where(bet == "UNDER", df.loc[idx, "stake_under"], 0.0))
         eo = pd.to_numeric(df.loc[idx, "edge_over"], errors="coerce").to_numpy(float)

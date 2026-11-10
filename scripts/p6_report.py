@@ -165,10 +165,11 @@ def main(argv=None) -> int:
     G.build_cells(prop, staking, pol, held)
     if held:
         L.append("")
-        L.append("**Held on paper by an owner rule (decision for you):** " + ", ".join(f"`{h}`" for h in held) +
+        L.append("**Held on paper by an owner rule:** " + ", ".join(f"`{h}`" for h in held) +
                  ". The proposal makes it PROMISING, but its track is held PAPER by an explicit owner rule (tracks → "
-                 "paper_reason, e.g. owner 2026-11-02 \"new-format O/U Unders are paper-only until the clean retrain "
-                 "passes per-league validation\"). A cell never lifts an owner hold; it stakes only if you lift it.")
+                 "paper_reason: owner 2026-11-02 \"new-format O/U Unders are paper-only until the clean retrain "
+                 "passes per-league validation\"). **Owner decision 2026-11-10: \"Keep paper\" - the Nov 2 rule "
+                 "stands; no staking change.** A cell never lifts an owner hold.")
     blocked = [k for k in staking if "|OVER35|" in k]
     if blocked:
         L.append("")

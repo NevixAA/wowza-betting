@@ -210,6 +210,7 @@ def _generate_side_bets(preds: "pd.DataFrame", side_markets: dict) -> "pd.DataFr
         df["signal_tier"] = [tier_for(e, _bars[lg]) if lg not in _cell else "AVOID"
                              for e, lg in zip(df["edge"], df["league"])]
         df["bar_mode"] = ""
+        df["cell_p_used"] = np.nan                   # set below only where a cell scored the tip
         for lg, cell in _cell.items():
             if cell is None:
                 continue
@@ -218,6 +219,7 @@ def _generate_side_bets(preds: "pd.DataFrame", side_markets: dict) -> "pd.DataFr
                                           "fair": df.loc[m, "fair_prob"], "odds": df.loc[m, "market_odds"]}), cell)
             df.loc[m, "signal_tier"] = res["tier"].where(res["tier"].astype(str) != "", "AVOID").to_numpy()
             df.loc[m, "bar_mode"] = cell["mode"]
+            df.loc[m, "cell_p_used"] = pd.to_numeric(res["p_used"], errors="coerce").to_numpy()
             ev = [_BS.ev_point(p, o) for p, o in zip(pd.to_numeric(res["p_used"], errors="coerce"),
                                                      df.loc[m, "market_odds"])]
             df.loc[m, "ev"] = np.where(np.isfinite(ev), ev, df.loc[m, "ev"])
@@ -228,7 +230,8 @@ def _generate_side_bets(preds: "pd.DataFrame", side_markets: dict) -> "pd.DataFr
         # ONE SCHEMA, defined once in src/stake_plan.py and read by the stake plan. `market_odds`
         # is kept beside the canonical `odds` for the side_bets.csv / ledger / notify readers;
         # `threshold_source` beside both for the ledger / Telegram / dashboard (not a stake input).
-        frames.append(df[list(SIDE_SELECTION_COLUMNS) + ["market_odds", "threshold_source", "bar_mode"]])
+        frames.append(df[list(SIDE_SELECTION_COLUMNS) + ["market_odds", "threshold_source", "bar_mode",
+                                                         "cell_p_used"]])
 
     if not frames:
         return pd.DataFrame()

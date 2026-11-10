@@ -104,6 +104,11 @@ LEDGER_COLS = [
     # two id spaces never mix. Rows written before this are blank (unknown), never back-filled.
     "fixture_id",
     "oddsapi_event_id",
+    # THE CELL'S SERVED PROBABILITY, appended (2026-11-10): the probability the league x market x side
+    # bars_opt cell scored the tip with (its source: RAW / BLEND / SHRINK / LEARNED). wowza-exec re-checks the
+    # SAME cell measure at the Cloudbet price from it (owner 2026-11-10 'exec cells from approved bars').
+    # Blank when no cell scored the tip; rows written before it stay blank, never back-filled.
+    "cell_p_used",
 ]
 VERSION_FIELDS = ("model_version", "retrain_batch_id", "training_cutoff", "prediction_role")
 
@@ -423,6 +428,7 @@ def append_tips(bets_df: pd.DataFrame, source: str = "live") -> None:
             "notes":        "",
             **_version_fields(row, _ou_key(row.get("model_type", ""), row.get("serving_recipe"))),
             **_fixture_identity(row),
+            "cell_p_used":  _num(row.get("cell_p_used")),
         })
 
     if flips:
@@ -455,6 +461,11 @@ SIDE_LEDGER_COLS = [
     # in its row, so it is not written in afterwards (logged rows stand). Reconstructed 2026-11-04
     # from the params file in force at each generated_at: 525 of 664 live tips were GLOBAL-bar tiers.
     "threshold_source",
+    # THE CELL'S SERVED PROBABILITY, appended (2026-11-10): the probability the league x market x side
+    # bars_opt cell scored the tip with (its source: RAW / BLEND / SHRINK / LEARNED). wowza-exec re-checks the
+    # SAME cell measure at the Cloudbet price from it (owner 2026-11-10 'exec cells from approved bars').
+    # Blank when no cell scored the tip; rows written before it stay blank, never back-filled.
+    "cell_p_used",
 ]
 _SIDE_RANK = _TIER_RANK
 
@@ -552,6 +563,7 @@ def append_side_market_tips(side_df: pd.DataFrame, source: str = "live") -> None
             # recorded by the producer (pipeline._generate_side_bets); blank when it did not say
             "threshold_source": (str(row["threshold_source"])
                                  if pd.notna(row.get("threshold_source")) else ""),
+            "cell_p_used": _num(row.get("cell_p_used")),
         })
 
     _record_tiers_seen(tier_seen_rows, tier_seen_path)
