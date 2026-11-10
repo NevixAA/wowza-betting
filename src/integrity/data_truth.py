@@ -329,16 +329,191 @@ def track_gaps(p: pd.DataFrame, features: dict) -> dict:
     return out
 
 
-def missing(now: datetime | None = None, features: dict | None = None) -> dict:
+# ── 3 (2026-11-10) SERVED FEATURES CARRY DATA ────────────────────────────────────────────────────
+# A served model feature whose training rows hold ONE value (a placeholder written on every row, or
+# NaN on every row) is not data, whatever its name. Found 2026-11-10: the 2026-11-09 props payloads
+# list six league-quality columns that are NaN on every training row (league_quality.LEGACY_COLUMNS),
+# and player_history stores age 25 / 180 cm / 75 kg on 100% of rows (read as missing by the feature
+# code; this check proves no served model learned them). Evidence, from the payload itself:
+#   * training_profile_ (props harness since 2026-11-10): the most common value and its share over
+#     ALL training rows -> RED above SINGLE_VALUE_MAX_SHARE;
+#   * otherwise what the fitted estimators prove: a column the HGB usable-columns step dropped (at most
+#     one distinct real value on every fit row), a scaler variance of 0 (one value after the fill),
+#     a team imputer feature whose training min == max or that is missing on > SINGLE_VALUE_MAX_SHARE.
+SINGLE_VALUE_MAX_SHARE = 0.999
+#: a props market hidden from tips and the board: its payload is listed, never counted
+NOT_SERVED = "NOT_SERVED"
+#: values the old build_features wrote into every player_history row (and the arithmetic on them)
+KNOWN_PLACEHOLDERS = {"age": 25.0, "height_cm": 180.0, "weight_kg": 75.0, "age_peak_delta": 0.0,
+                      "opp_def_mean_height": 180.0, "height_diff_vs_opp_def": 0.0,
+                      "height_advantage_score": 0.0}
+
+
+def _num_or_none(v):
+    try:
+        f = float(v)
+    except (TypeError, ValueError):
+        return None
+    return None if f != f else f
+
+
+def _single_value(feature: str, value, share, how: str) -> dict:
+    v = _num_or_none(value)
+    ph = v is not None and KNOWN_PLACEHOLDERS.get(feature) == v
+    return {"value": "NaN" if v is None else v, "share": None if share is None else round(float(share), 6),
+            "how": how, "placeholder": bool(ph)}
+
+
+def _estimator_constants(cols: list[str], calibrated) -> dict:
+    """{feature: finding} the fitted pipeline proves constant over its fit rows."""
+    out = {}
+    pipe = getattr(calibrated, "_pipe", None)
+    for _, step in (getattr(pipe, "steps", None) or []):
+        keep = getattr(step, "keep_", None)
+        if keep is not None:
+            kept = set(keep)
+            for j, c in enumerate(cols):
+                if j not in kept:
+                    out[c] = _single_value(c, None, None, "dropped at fit: at most one distinct value on every fit row")
+        var = getattr(step, "var_", None)
+        if var is not None and len(var) == len(cols):
+            mean = getattr(step, "mean_", None)
+            for j, c in enumerate(cols):
+                if float(var[j]) == 0.0:
+                    out.setdefault(c, _single_value(c, None if mean is None else mean[j], 1.0,
+                                                    "scaler variance 0 on every fit row"))
+    return out
+
+
+def props_payload_spread(payload: dict) -> dict:
+    """{feature: finding} for the served features of one props payload that hold a single value."""
+    cols = list(payload.get("feature_cols") or [])
+    m = payload.get("model")
+    prof = getattr(m, "training_profile_", None)
+    if isinstance(prof, dict) and prof:
+        return {c: _single_value(c, prof[c].get("top_value"), prof[c].get("top_share"), "training_profile")
+                for c in cols if c in prof and prof[c].get("top_share") is not None
+                and prof[c]["top_share"] > SINGLE_VALUE_MAX_SHARE}
+    out = {}
+    fcols = list(getattr(m, "feature_cols_", None) or cols)
+    if getattr(m, "model_", None) is not None:                    # hgb_nan_native
+        out.update(_estimator_constants(fcols, m.model_))
+    for sub in (getattr(m, "models_", None) or {}).values():      # recipe_retrained
+        out.update({c: f for c, f in _estimator_constants(fcols, sub).items() if c not in out})
+    if m is None:                                                 # legacy payload: {"models": {...}}
+        for sub in (payload.get("models") or {}).values():
+            out.update({c: f for c, f in _estimator_constants(cols, sub).items() if c not in out})
+    return {c: f for c, f in out.items() if c in cols}
+
+
+def team_payload_spread(payload: dict) -> dict:
+    """{feature: finding} for a team payload, from its train-only imputer's per-feature record."""
+    out = {}
+    feats = ((payload.get("imputer") or {}).get("features") or {})
+    for c in payload.get("feature_cols") or []:
+        e = feats.get(c)
+        if not isinstance(e, dict):
+            continue
+        mr = _num_or_none(e.get("missing_rate"))
+        lo, hi = _num_or_none(e.get("min")), _num_or_none(e.get("max"))
+        if mr is not None and mr > SINGLE_VALUE_MAX_SHARE:
+            out[c] = _single_value(c, None, mr, "imputer: missing on the training rows")
+        elif lo is not None and lo == hi:
+            out[c] = _single_value(c, lo, None if mr is None else 1.0 - mr, "imputer: training min == max")
+    return out
+
+
+def _load_props_payload(path: Path) -> dict:
+    import pickle
+
+    class _U(pickle.Unpickler):                 # harness classes pickled under __main__
+        def find_class(self, module, name):
+            return super().find_class("player_model.props_harness" if module == "__main__" else module, name)
+    with open(path, "rb") as f:
+        return _U(f).load()
+
+
+def served_feature_spread() -> dict:
+    """{payload label: {"status", "single_value": {feature: finding}, "note"}} over every served
+    payload: the team payloads src/predict.py loads and the props payloads of the markets tips use
+    (config.HIDDEN_PENDING_CLEAN_RETRAIN markets are not served)."""
+    import config
+    from src.model import load_models
+    out = {}
+    recipe = str(getattr(config, "STANDARD_OU25_SERVING_RECIPE", "legacy_v9"))
+    attrs = ["MODEL_FILE_STANDARD" if recipe == "legacy_v9" else "MODEL_FILE_STANDARD_REPAIRED",
+             "MODEL_FILE_NEWFORMAT"] + [a for a, _ in MARKET_PAYLOADS.values()]
+    for attr in dict.fromkeys(attrs):
+        label = f"team:{Path(getattr(config, attr)).name}"
+        try:
+            pl = load_models(model_file=getattr(config, attr))
+        except Exception as e:                                         # noqa: BLE001
+            out[label] = {"status": RED, "single_value": {}, "note": f"unreadable: {type(e).__name__}"}
+            continue
+        parts = {label: pl}
+        for mt, sub in (pl.get("tracks") or {}).items():
+            if isinstance(sub, dict) and sub.get("feature_cols"):
+                parts[f"{label}[{mt}]"] = {**pl, **sub}
+        for lab, part in parts.items():
+            sv = team_payload_spread(part)
+            out[lab] = {"status": RED if sv else GREEN, "single_value": sv,
+                        "note": "" if (part.get("imputer") or {}).get("features") else "no imputer record"}
+    from player_model import config as pconfig
+    for market, path in pconfig.MODEL_FILES.items():
+        hidden = market in pconfig.HIDDEN_PENDING_CLEAN_RETRAIN
+        label = f"props:{Path(path).name}"
+        if not Path(path).exists():
+            out[label] = {"status": RED, "single_value": {}, "note": "served payload missing"}
+            continue
+        try:
+            sv = props_payload_spread(_load_props_payload(Path(path)))
+        except Exception as e:                                         # noqa: BLE001
+            out[label] = {"status": RED, "single_value": {}, "note": f"unreadable: {type(e).__name__}"}
+            continue
+        if hidden:                     # listed for the record; a hidden market tips nothing
+            out[label] = {"status": NOT_SERVED, "single_value": sv,
+                          "note": "hidden pending clean retrain (config.HIDDEN_PENDING_CLEAN_RETRAIN)"}
+        else:
+            out[label] = {"status": RED if sv else GREEN, "single_value": sv, "note": ""}
+    return out
+
+
+def _spread_issues(spread: dict) -> list[str]:
+    msgs = []
+    for lab, s in spread.items():
+        if s["status"] != RED:
+            continue
+        if not s["single_value"]:
+            msgs.append(f"{lab}: {s['note']}")
+            continue
+        fs = s["single_value"]
+        ph = [c for c, f in fs.items() if f["placeholder"]]
+        names = ", ".join(f"{c}={f['value']}" for c, f in list(fs.items())[:6])
+        msgs.append(f"{lab}: {len(fs)} served feature(s) hold one value on the training rows "
+                    f"({names}{', ...' if len(fs) > 6 else ''})"
+                    + (f"; PLACEHOLDER: {', '.join(ph)}" if ph else ""))
+    return msgs
+
+
+def missing(now: datetime | None = None, features: dict | None = None,
+            spread: dict | None = None) -> dict:
     rule = ("live board: every fixture priced (odds_over25); on EVERY served model track (standard and "
             "new_format x O/U 2.5, BTTS, Over 1.5, Over 3.5; HT O/U on standard) each input the scoring "
             "payload needs, plus the HT form and rest-day inputs, is present (RED if > 50% missing on a "
-            "track, AMBER if > 20%); history banks fresh (AMBER if the newest match is > 10 days old)")
+            "track, AMBER if > 20%); history banks fresh (AMBER if the newest match is > 10 days old); "
+            "every served model feature (team and props payloads) carries data on its training rows "
+            f"(RED if one value - a placeholder, a constant or NaN - covers > {SINGLE_VALUE_MAX_SHARE:.1%} "
+            "of them)")
     now = now or datetime.now(timezone.utc)
+    spread = served_feature_spread() if spread is None else spread
+    sp_issues = _spread_issues(spread)
     p = _read(OUT / "predictions.csv")
     if p.empty:
-        return _c("Data truth 3: no missing data", GREY, "no board", rule)
-    issues, worst = [], GREEN
+        out = _c("Data truth 3: no missing data", RED if sp_issues else GREY,
+                 "; ".join(["no board"] + sp_issues), rule)
+        out["served_feature_spread"] = spread
+        return out
+    issues, worst = list(sp_issues), RED if sp_issues else GREEN
     unpriced = int(p["odds_over25"].isna().sum()) if "odds_over25" in p.columns else len(p)
     if unpriced:
         issues.append(f"{unpriced} unpriced fixture(s)")
@@ -370,6 +545,7 @@ def missing(now: datetime | None = None, features: dict | None = None) -> dict:
     out = _c("Data truth 3: no missing data", worst,
              "; ".join(issues) or f"board priced, features present on {len(tracks)} served tracks", rule)
     out["tracks"] = tracks
+    out["served_feature_spread"] = spread
     return out
 
 

@@ -370,7 +370,7 @@ PLAYER_FEATURE_COLS = [f for f in PLAYER_FEATURE_COLS if f not in TYPED_FORMULA_
 _DATA_GAP_FEATURES = {"season_pass_accuracy"}
 PLAYER_FEATURE_COLS = [f for f in PLAYER_FEATURE_COLS if f not in _DATA_GAP_FEATURES]
 
-# WITHHELD UNTIL REAL DATA EXISTS (props_truth, 2026-11-02; round-2 finding V3). Measured on the
+# HISTORY - WITHHELD UNTIL REAL DATA EXISTS (props_truth, 2026-11-02; round-2 finding V3). Measured on the
 # committed player_history at data-truth-100 40d7dda9: age = 25.0, height_cm = 180, weight_kg = 75
 # and age_peak_delta = 0 on 876,130 of 876,130 rows - the old build_features placeholders, never a
 # collected value (enrich-profiles never populated them). Every feature below is that placeholder or
@@ -379,11 +379,43 @@ PLAYER_FEATURE_COLS = [f for f in PLAYER_FEATURE_COLS if f not in _DATA_GAP_FEAT
 # feature_cols and are untouched (no retrain - the drop takes effect at the next owner-approved
 # props retrain). Re-admit a feature only when player_history carries a REAL value for it
 # (collected profiles, output/collect/player_profiles.parquet) on a measured share of rows.
-PROFILE_FEATURES_WITHHELD = {
-    "age", "age_peak_delta", "height_cm", "height_aerial_interaction",
-    "opp_def_mean_height", "height_diff_vs_opp_def", "height_advantage_score",
-}
-PLAYER_FEATURE_COLS = [f for f in PLAYER_FEATURE_COLS if f not in PROFILE_FEATURES_WITHHELD]
+#
+# RE-ADMITTED ON REAL VALUES (fix/props-real-profiles, 2026-11-10). The stored player_history
+# columns still hold the placeholders (887,007 of 887,007 rows on 2026-11-10; rows synced from main
+# keep arriving with them until go-live, because main's build_features still writes them) and are
+# NEVER read as values: feature_engineering._profile reads 25 / 180 / 75 as missing, and
+# build_features (training) and build_upcoming_features (serving: the same code) take every value
+# from the collected profiles (output/collect/player_profiles.parquet) through ONE path:
+#   _attach_profiles   height_cm / weight_kg from the profile; age = (match date - birth_date), the
+#                      age ON THE MATCH DATE, never today's age
+#   _height_series     opp_def_mean_height = per opponent match, the mean real height of the
+#                      defenders it fielded whose height is known (a defender without one is left
+#                      out, never 180), rolled over the opponent's EARLIER matches (_TEAM_ROLL)
+#   profile_composites height_diff_vs_opp_def, height_advantage_score, height_aerial_interaction,
+#                      age_peak_delta from those real values; NaN wherever an input is missing
+# Measured coverage on the props clean-retrain training population (run 42640972400, 2026-11-09,
+# all_prior_verified rows): age 97.4%, age_peak_delta 97.4%, height_cm 91.4%,
+# height_aerial_interaction 90.6%, opp_def_mean_height 97.2%, height_diff_vs_opp_def 89.1%,
+# height_advantage_score 89.1%; the rest is NaN. Every props harness report records it again
+# (features.profile_coverage). The served props models of 2026-11-09 learned these real values
+# (age bins 18.1-38.7, height bins 156.5-208 cm, opp_def_mean_height bins 175.5-191.3 cm), not the
+# placeholders. weight_kg is attached the same way but is not a model feature.
+PROFILE_FEATURES = (
+    "age", "age_peak_delta", "height_advantage_score", "height_aerial_interaction",
+    "height_cm", "height_diff_vs_opp_def", "opp_def_mean_height",
+)
+PLAYER_FEATURE_COLS = [f for f in PLAYER_FEATURE_COLS if f not in PROFILE_FEATURES] + list(PROFILE_FEATURES)
+
+# NaN BY CONSTRUCTION, NOT FEATURES (2026-11-10). The legacy HAND-tier league quality columns
+# (league_quality.LEGACY_COLUMNS) are never measured: build_features writes them NaN on every row, so
+# a model listing them learns nothing from them (the 2026-11-09 HGB props models dropped all six as
+# constant at fit; the cards recipe dropped them as unfittable). The measured strength carries other
+# names (league_quality.MEASURED_COLUMNS; adopting them is an owner decision, not made here).
+LEGACY_QUALITY_FEATURES_REMOVED = frozenset({
+    "league_tier", "league_quality", "player_career_avg_quality",
+    "context_quality_discount", "quality_mismatch_goals", "quality_mismatch_sot",
+})
+PLAYER_FEATURE_COLS = [f for f in PLAYER_FEATURE_COLS if f not in LEGACY_QUALITY_FEATURES_REMOVED]
 
 # A player-match row cannot have more minutes than a match with extra time (120) plus stoppage.
 # Stored rows above this are provider errors (League One / League Two 2024-03-13/14: 142-174 min);

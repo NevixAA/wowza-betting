@@ -95,7 +95,8 @@ def test_missing_rolls_the_worst_track_up_and_names_it(tmp_path, monkeypatch):
     assert c["status"] == DT.RED and "new_format|O/U 2.5" in c["value"]
     assert set(c["tracks"]) == {f"{mt}|{m}" for mt in DT.MODEL_TYPES for m in ("O/U 2.5", "BTTS", "Over 1.5", "Over 3.5")}
     _board().to_csv(tmp_path / "predictions.csv", index=False)
-    assert DT.missing(NOW, features=_features())["status"] == DT.GREEN
+    # the served-feature spread is its own test (test_served_feature_spread.py); none here
+    assert DT.missing(NOW, features=_features(), spread={})["status"] == DT.GREEN
 
 
 def test_committed_payloads_cover_every_served_track():
