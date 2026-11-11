@@ -1,0 +1,58 @@
+{
+  "protocol": "COMBINED-MODELS-DEV-1",
+  "declared_on": "2026-11-11",
+  "status": "RESEARCH ONLY. Declared before any residual, coherence or contradiction number was computed. Nothing here is served.",
+  "question": "Owner 2026-11-11: combine the team, props and Pro models; in matches with a higher chance of many goals, is SoT (and SoT 2+ / anytime scorer) more likely than the props model alone says?",
+  "data": {
+    "development_months": "2025-01-01..2026-03-31 (calendar months). The team model's holdout (2026-04-01..2026-11-08) and the props holdout/spent window (2026-09-01..) are never scored.",
+    "team_model": "phase2-retrain-1.0 champion_recipe, stage walk_forward only, Standard run_20261110T203611Z + New-Format run_20261110T203319Z (frame 58f10476). p_over15, p_over25, p_over35, p_btts. A match scored by two folds keeps the earlier fold.",
+    "props_model": "the served recipe player_model.props_harness.HGBNaNNative (hgb_nan_native, promoted from run 42855107089), feature rule all_prior_verified, 128 features (config.PLAYER_FEATURE_COLS), refitted at the first day of every development month on all eligible rows dated before it (fit/calibration split by props_harness.fit_window). Out-of-sample for every scored month. This is the served RECIPE, not the served pickle: the served pickle was fitted through 2026-08-31 and is in-sample on development dates.",
+    "pro_model": "Pro wowzaV9-Pro data-truth-100 9cdfa207 src/specials/study.py SPC-1 unchanged: per league Dixon-Coles refitted monthly on earlier matches of v9's repaired history (exported from this v9 commit); lam_home, lam_away, p_ge6, cand_ge6 (0.9 quantile of the league's earlier-month predictions).",
+    "pro_1x2": "not used: the Pro 1X2 model's per-match walk-forward predictions are not stored; the Dixon-Coles lambdas carry the side strengths.",
+    "outcomes": "props labels from the harness frame (target_sot, target_sot2, target_goals, verified counts); team O2.5 label from the team frame.",
+    "join": "v9 team names -> API-Football names by a per-league crosswalk learned from exact normalised names and score-proven same-date fixtures (>= 3 votes, >= 90% share, one-to-one); fixtures joined on league + date (+-1 day when unique); a known score that disagrees drops the fixture.",
+    "prices": "props prices exist only from 2026-10-14, all inside spent windows or forward. No price is read for any test; price files are only COUNTED for the forward inventory."
+  },
+  "leak_rules": [
+    "every probability is out of sample for its date (fitted strictly before the month)",
+    "every cutoff (tercile, quintile, 6+ flag) is a quantile of the SAME league's earlier months only",
+    "starters (started == 1) are used for fixture-level props aggregates: the starting XI is public before kickoff; substitutes are used only in per-player Q1 rows, as the served props population (players who play) already is"
+  ],
+  "q1_conditioning": {
+    "unit": "player x fixture x market, markets sot, sot2, goals; residual = y - p_props",
+    "conditioners": {
+      "team_p_over25": "team model P(Over 2.5) of the fixture",
+      "dc_lam_total": "Pro Dixon-Coles lam_home + lam_away",
+      "dc_lam_side": "Pro Dixon-Coles expected goals of the player's own team"
+    },
+    "groups": "top tercile (>= league earlier-month 2/3 quantile of the fixture-level conditioner, min 200 earlier fixtures) vs bottom tercile (<= 1/3 quantile); middle excluded",
+    "effect": "mean residual top - mean residual bottom, per league x market x conditioner",
+    "ci": "95% fixture-cluster bootstrap, 2000 draws, seed 7",
+    "test": "two-sided (a negative effect is a finding too)",
+    "read_minimum": "30 fixtures in each group; thinner cells enter the Holm family with p = 1",
+    "context_only": ["pooled over leagues", "logistic slope logit(y) ~ offset(logit p_props) + b z(conditioner), fixture-clustered SE"]
+  },
+  "q2_coherence": {
+    "team_high": "p_over25 >= league earlier-month 2/3 quantile; team_low: <= 1/3 quantile",
+    "props_volume": "V = mean p_sot over the fixture's recorded starters (both sides), fixture needs >= 18 recorded starters",
+    "props_high": "V >= league earlier-month 2/3 quantile of V (min 100 earlier fixtures); props_low: <= 1/3 quantile",
+    "dc_flag": "Pro cand_ge6 == 1",
+    "props_tip": "a starter whose p_props >= the league earlier-month 0.8 quantile of starters' p_props for that market (min 200 earlier rows)",
+    "tests": {
+      "T2a_team_tips_props_agree": "fixtures with team_high: residual (y_over25 - p_over25), props_high minus props_low; one-sided effect > 0",
+      "T2b_props_tips_team_agree": "props tips (sot, sot2, goals): residual (y - p_props), team_high minus team_low; one-sided",
+      "T2c_team_tips_dc_flag": "fixtures with team_high: residual (y_over25 - p_over25), dc_flag 1 minus 0; one-sided",
+      "T2d_props_tips_dc_flag": "props tips (sot, sot2, goals): residual, dc_flag 1 minus 0; one-sided"
+    },
+    "ci": "95% fixture-cluster bootstrap, 2000 draws",
+    "read_minimum": "30 fixtures in each group"
+  },
+  "holm_family": "ONE family: every per-league Q1 and Q2 cell searched, readable or not (unreadable cells enter with p = 1). Pooled and logistic-slope rows are context and are not in the family.",
+  "signal_rule": "a per-league cell is a DEVELOPMENT SIGNAL only when readable and Holm-adjusted p < 0.05. No cell can be PROVEN on development data: PROVEN needs >= 150 priced bets with CI > 0 after Holm, and no development row has a price. A signal only earns a forward paper protocol.",
+  "q3_contradictions": {
+    "scores": "per league (descriptive, in-sample standardisation): z_team = z(implied Poisson total from team p_over15/25/35), z_dc = z(dc_lam_total), z_props = z(V)",
+    "strong": "|z_team - z_props| >= 2.5 or |z_team - z_dc| >= 2.5",
+    "diagnostics": "league, month, team, team history depth (DC n_train), recorded starters, props feature NaN share, which model the realised total goals sided with",
+    "use": "a bug-finder list, never a tip rule"
+  }
+}
