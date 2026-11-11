@@ -1,11 +1,12 @@
-"""TOP-3 PAPER TRACKS R1 and R2 - PAPER / RESEARCH ONLY (protocol config/top3_ranking_paper_protocol_v4.json).
+"""TOP-3 PAPER TRACK R2 - PAPER / RESEARCH ONLY (protocol config/top3_ranking_paper_protocol_v5.json).
 
     python -m src.research.top3_paper run       # predict.yml, after src.top3_league run: freeze due league-weeks
     python -m src.research.top3_paper settle    # update_results.yml: grade finished paper picks
     python -m src.research.top3_paper summary   # rewrite the dashboard summary
 
 Owner 2026-11-11: "Add the 3 tracks", then "Clean rebuild": the live TOP-3 is ranked by R3 (src/top3_league.py,
-the third arm of the protocol); R1 and R2 are recorded HERE, beside it, as paper tracks. Flat 1 unit, the
+the other arm of the protocol); R2 is recorded HERE, beside it, as the paper track (owner 2026-11-11 "Drop T1":
+R1 is no track). The tracks recorded are config/top3_paper_tracks.json -> tracks. Flat 1 unit, the
 production settlement, every row labelled PAPER/RESEARCH.
 
 NOTHING HERE REACHES MONEY OR THE PUBLIC. This module writes ONLY under output/research/top3_paper/. It never
@@ -23,7 +24,7 @@ owner-applied bar) restricted, per candidate, to:
                         cell of an approved proposal listed in config/top3_paper_tracks.json (hash-verified), and
                         the league x market must have been applied from that proposal (config/threshold_applied.json).
   * LEAGUE_WIDE_OWN_LIST - a LEAGUE_WIDE cell (source NONE) is the owner's own list, outside the TOP-3 slots
-                        (owner 2026-11-11 "Own list"; top3_ranking.in_pool): never in the pool of R1 or R2.
+                        (owner 2026-11-11 "Own list"; top3_ranking.in_pool): never in the pool of R2 (nor the live R3).
 OFF cells give no candidates (production already returns NO_LEAGUE_BAR for them).
 
 RANKING. src/research/top3_ranking.rank_order(rule) on the frozen per-cell statistics (scripts/top3_paper_freeze.py).

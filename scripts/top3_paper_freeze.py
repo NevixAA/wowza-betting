@@ -1,4 +1,4 @@
-"""FREEZE the per-cell ranking statistics of the TOP-3 protocol (config/top3_ranking_paper_protocol_v4.json) ONCE.
+"""FREEZE the per-cell ranking statistics of the TOP-3 protocol (config/top3_ranking_paper_protocol_v5.json) ONCE.
 
     python scripts/top3_paper_freeze.py                       # the one real freeze (runbook, 2026-11-20)
     python scripts/top3_paper_freeze.py --dry-run --out DIR   # rehearsal: writes to DIR only, ledger untouched
@@ -16,9 +16,10 @@ WHAT IS COMPUTED, per approved MODEL cell (a LEAGUE_WIDE cell is the owner's own
   * R2 / R3 calibration rows: every priced row of the cell's league x market-side in the own-price universe of
     the clean frame, dated before the as-of day, inside the cell's own odds range, scored by the cell's SERVED
     source (src.bars_opt.serve.score with the approved cell's source + source_params);
-  * R1 bets: the cell's served tips (serve.score tier) on those rows dated from bets_from (2026-09-01) to the
-    as-of day - out of every SELECT used for a served config; a FRESH_HOLDOUT_SELECTION cell only when its
-    family's fresh holdout ended before bets_from, else it gets no R1 statistic.
+  * fallback bets (CELL_EB, the shrunk cell ROI of the protocol's missing-statistic order): the cell's served
+    tips (serve.score tier) on those rows dated from bets_from (2026-09-01) to the as-of day - out of every
+    SELECT used for a served config; a FRESH_HOLDOUT_SELECTION cell only when its family's fresh holdout ended
+    before bets_from, else it gets no CELL_EB value. (R1's lcb is NOT recorded: owner 2026-11-11 "Drop T1".)
   -> src.research.top3_ranking.cell_stats. Statistics only (no price, no row) go into the record.
 The record's sha256 (LF) goes into the freeze ledger; commit both before the first paper pick.
 """
@@ -93,7 +94,7 @@ def compute(cfg: dict, root: Path) -> tuple[pd.DataFrame, dict]:
             end = ends.get((tr, ms))
             r1_ok = bool(end) and pd.Timestamp(end) < bets_from
             if not r1_ok:
-                notes.append(f"{tr}|{league}|{ms}: fresh-holdout selection reaches {end}: no R1 statistic")
+                notes.append(f"{tr}|{league}|{ms}: fresh-holdout selection reaches {end}: no CELL_EB value")
         tipped = (sc["tier"].astype(str) != "") & (f["date"] >= bets_from)
         if r1_ok and tipped.any():
             bets.append(pd.DataFrame({"track": tr, "league": league, "mside": ms, "date": f.loc[tipped, "date"],
@@ -155,7 +156,7 @@ def main(argv=None) -> int:
                           "before the first pick (protocol v2 live_statistics)"),
            "prices": "none in this record (own-price universes read locally; statistics only)",
            "written_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")} | meta | \
-          {"cells": [{k: _plain(v) for k, v in r.items()} for r in st.to_dict("records")]}
+          {"cells": [{k: (None if k == "lcb" else _plain(v)) for k, v in r.items()} for r in st.to_dict("records")]}
     text = json.dumps(rec, indent=1, sort_keys=True) + "\n"
     if a.dry_run:
         od = Path(a.out)
@@ -170,10 +171,10 @@ def main(argv=None) -> int:
            "protocol_sha256": cfg["protocol_sha256"], "ranking_code_sha256": rec["ranking_code_sha256"],
            "frame_hash": fh, "frozen_at": rec["written_at"]}
     lp.write_bytes((json.dumps(led, indent=1, sort_keys=True) + "\n").encode("utf-8"))
-    n_l = int(st["lcb"].notna().sum())
+    n_l = int(st["eb"].notna().sum())
     n_lam = int(st["lam"].notna().sum())
     print(json.dumps({"kind": rec["kind"], "record": str(rp), "sha256": sha, "frame_hash": fh, "cells": len(st),
-                      "cells_with_R1": n_l, "cells_with_R2_R3": n_lam, "notes": len(meta["notes"])}))
+                      "cells_with_cell_eb": n_l, "cells_with_R2_R3": n_lam, "notes": len(meta["notes"])}))
     return 0
 
 

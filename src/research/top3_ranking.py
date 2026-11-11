@@ -1,7 +1,8 @@
-"""TOP-3 ranking rules - the ONE implementation of R1, R2 and R3 (protocol config/top3_ranking_paper_protocol_v4.json).
+"""TOP-3 ranking rules - the ONE implementation of R2 and R3 (+ R1, research only) (protocol config/top3_ranking_paper_protocol_v5.json).
 
 Owner 2026-11-11 ("Clean rebuild"): the live TOP-3 is ranked by R3 (served from prep/bars-oddsapi-hist, which
-imports it from HERE); R1 and R2 run as PAPER tracks (src/research/top3_paper.py). The old EV ranking is
+imports it from HERE); R2 runs as the PAPER track (src/research/top3_paper.py). Owner 2026-11-11 "Drop T1":
+R1 is no track any more - it stays below as RESEARCH code only (RESEARCH_RULES). The old EV ranking is
 dropped as a track; it stays below only as a DIAGNOSTIC rule for the research scripts.
 
 PUBLIC API (pure functions, pandas in / pandas out):
@@ -24,7 +25,7 @@ Every statistic is learned per CELL = (track, league, market-side) from that cel
 the freeze, shrunk at most toward the SAME league's other markets. No number is pooled across leagues and no
 constant is invented: MIN_OWN_BETS (40) and Z95 are the study's declared ones (src.bars_opt.study).
 
-  R1_CELL_LCB    the cell's own walk-forward BET ROI, lower 95% bound (mean - Z95 * max-of-three SE)
+  R1_CELL_LCB    (research only, no track) the cell's own walk-forward BET ROI, lower 95% bound
   R2_CAL_EV      calibrated EV (fair + lam * (p_used - fair)) * odds - 1; lam = least squares of (won - fair)
                  on (p_used - fair) over the cell's own prior PRICED ROWS, shrunk toward the same league's
                  other markets (DerSimonian-Laird inside the league), clipped to [0, 1]
@@ -32,7 +33,7 @@ constant is invented: MIN_OWN_BETS (40) and Z95 are the study's declared ones (s
 
 POOL (owner 2026-11-11 "Own list"): a LEAGUE_WIDE cell (source NONE, mode LEAGUE_WIDE - no model probability)
 is shown on its own line outside the TOP-3 slots, so it is never in the TOP-3 / TIER2 pool of any track
-(R1, R2 or the live R3): in_pool(cell) is False for it.
+(R2 or the live R3): in_pool(cell) is False for it.
 
 MISSING STATISTIC (protocol v4; owner 2026-11-11 "don't use the old ranking"): ev_est is NEVER a ranking input.
 A tip whose cell has no statistic for the rule gets none (nothing filled in) and ranks AFTER every tip that has
@@ -52,9 +53,11 @@ import pandas as pd
 
 from src.bars_opt import study as S
 
-RULES = ("R1_CELL_LCB", "R2_CAL_EV", "R3_CAL_EV_LCB")
+RULES = ("R1_CELL_LCB", "R2_CAL_EV", "R3_CAL_EV_LCB")          # every rule rank_order knows
+TRACK_RULES = ("R2_CAL_EV", "R3_CAL_EV_LCB")                   # protocol v5: the Holm family of 2
+RESEARCH_RULES = ("R1_CELL_LCB",)                              # owner 2026-11-11 "Drop T1": no track
 LIVE_RULE = "R3_CAL_EV_LCB"
-PAPER_RULES = ("R1_CELL_LCB", "R2_CAL_EV")
+PAPER_RULES = ("R2_CAL_EV",)
 DIAGNOSTIC_RULES = ("EV_PRODUCTION", "DEV_CELL_EB")       # research scripts only; never a track
 MIN_OWN_BETS = S.MIN_OWN_BETS          # 40, declared in the study (own bets for a bar / switch / TIER2 band)
 Z95 = 1.96                             # the study's 95% interval (study.score: mean +- 1.96 * max-of-three SE)

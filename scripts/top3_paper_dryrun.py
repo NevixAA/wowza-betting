@@ -71,7 +71,7 @@ def one_pass(name, cands, ctx, guards, stats, cfg, sha, od: Path, now, v91: pd.D
             "pool_sizes": int(weeks["n_pool"].sum()) if len(weeks) else 0, "excluded_total": dict(ex),
             "settled": n, "no_stat_picks": int((picks["no_stat"] == 1).sum()) if len(picks) else 0,
             "summary_tracks": summ["tracks"],
-            "same_picks_R1_R2": (_set(picks, "R1_CELL_LCB") == _set(picks, "R2_CAL_EV")) if len(picks) else None}
+            "tracks_recorded": sorted(set(picks["track"])) if len(picks) else []}
 
 
 def main() -> int:

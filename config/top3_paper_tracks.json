@@ -1,8 +1,8 @@
 {
- "about": "TOP-3 paper tracks R1 / R2 (src/research/top3_paper.py) and the one-time statistics freeze (scripts/top3_paper_freeze.py). PAPER/RESEARCH: nothing here stakes, executes or publishes. Every value is pinned; a change is a new protocol version, before the first pick.",
- "protocol_file": "config/top3_ranking_paper_protocol_v4.json",
- "protocol_sha256": "4d6064c09cbfc0256962e470713abf8e7b95b53bfa9a00010b127a401b7a5868",
- "tracks": ["R1_CELL_LCB", "R2_CAL_EV"],
+ "about": "TOP-3 paper track R2 (owner 2026-11-11 \"Drop T1\") (src/research/top3_paper.py) and the one-time statistics freeze (scripts/top3_paper_freeze.py). PAPER/RESEARCH: nothing here stakes, executes or publishes. Every value is pinned; a change is a new protocol version, before the first pick.",
+ "protocol_file": "config/top3_ranking_paper_protocol_v5.json",
+ "protocol_sha256": "064de06b34e2093abfb23a266b7291576417287588d473fe1e04d61255c866a4",
+ "tracks": ["R2_CAL_EV"],
  "live_track": "R3_CAL_EV_LCB (the production TOP-3; not recorded here)",
  "start_utc": "2026-11-21T00:00:00Z",
  "stats_as_of_utc": "2026-11-20T23:59:59Z",

@@ -1,4 +1,4 @@
-"""TOP-3 paper tracks R1 / R2 (src/research/top3_paper.py) and the statistics freeze (scripts/top3_paper_freeze.py).
+"""TOP-3 paper track R2 (src/research/top3_paper.py; owner 2026-11-11 "Drop T1") and the statistics freeze (scripts/top3_paper_freeze.py).
 
 The owner's pool rule (clean retrained models + approved per-league cells only), the selection rules (cap 3,
 never padded, direction rule, started-before-issue), hash pinning, and the guarantee that nothing reaches
@@ -134,14 +134,12 @@ def test_cap_three_never_pad_direction_and_tracks_rank_differently():
          _cand("2", "BTTS", "YES", 0.60, 0.50, fam="BTTS", ver="btts_20261109T211852Z_d7cd2762"),
          _cand("4", "OU25", "OVER", 0.55, 0.50), _cand("5", "OU25", "OVER", 0.58, 0.50)]
     picks, weeks = _run(c)
-    assert set(picks["track"]) == set(R.PAPER_RULES) and len(weeks) == 2
+    assert set(picks["track"]) == {"R2_CAL_EV"} and len(weeks) == 1         # T1 dropped: no R1 ledger
     for t, g in picks.groupby("track"):
         assert len(g) <= 3 and list(g["rank"]) == list(range(1, len(g) + 1))
         f1 = g[g["fixture_id"] == "1"]
         assert f1["side"].nunique() <= 1                            # never Over and Under on one fixture
-    r1 = picks[picks["track"] == "R1_CELL_LCB"].sort_values("rank")
     r2 = picks[picks["track"] == "R2_CAL_EV"].sort_values("rank")
-    assert r1.iloc[0]["market"] == "BTTS"                           # BTTS cell has the higher LCB
     assert set(picks["rank_basis"]) <= set(R.FALLBACK_BASES)
     assert r2.iloc[0]["market"] == "OU25"                           # calibrated EV ranks the O/U gap first
     one, _ = _run([_cand("9", "OU25", "OVER", 0.60, 0.45)])
@@ -177,10 +175,10 @@ def test_settlement_grades_only_grading_columns_and_summary_has_no_prices():
     v91 = pd.DataFrame({"fixture_id": ["3"], "match_date": ["2026-11-21"], "home_team": ["H3"], "away_team": ["A3"],
                         "home_goals": [2], "away_goals": [1], "result_source": ["test"], "settle_status": ["SETTLED"]})
     out, n = P.settle_picks(picks.astype(str), v91, pd.Timestamp("2026-11-23T00:00:00Z"))
-    assert n == 2 and set(out["result"]) == {"WIN"}
+    assert n == 1 and set(out["result"]) == {"WIN"}
     assert np.isclose(pd.to_numeric(out["flat_pnl"]).iloc[0], 1.1)
     s = P.summary(out, NOW, CFG, "OK")
-    assert s["tracks"]["R1_CELL_LCB"]["settled"] == 1 and s["label"] == P.LABEL
+    assert list(s["tracks"]) == ["R2_CAL_EV"] and s["tracks"]["R2_CAL_EV"]["settled"] == 1 and s["label"] == P.LABEL
     assert "odds" not in json.dumps(s).replace("odds_", "")
 
 
@@ -246,8 +244,9 @@ def test_pinned_protocol_and_code_hashes_match():
     cfg = P.load_config()
     assert P.hash_problems(cfg) == []
     proto = json.loads((ROOT / cfg["protocol_file"]).read_text(encoding="utf-8"))
-    assert [t["id"] for t in proto["tracks"]] == ["T1_R1_CELL_LCB", "T2_R2_CAL_EV", "T3_R3_CAL_EV_LCB"]
-    assert R.LIVE_RULE == "R3_CAL_EV_LCB" and R.PAPER_RULES == ("R1_CELL_LCB", "R2_CAL_EV")
+    assert [t["id"] for t in proto["tracks"]] == ["T2_R2_CAL_EV", "T3_R3_CAL_EV_LCB"]
+    assert R.LIVE_RULE == "R3_CAL_EV_LCB" and R.PAPER_RULES == ("R2_CAL_EV",)
+    assert R.TRACK_RULES == ("R2_CAL_EV", "R3_CAL_EV_LCB") and cfg["tracks"] == ["R2_CAL_EV"]
 
 
 def test_a_changed_protocol_or_code_is_refused(tmp_path):
@@ -313,7 +312,7 @@ def test_league_wide_cell_never_enters_any_paper_track():
     c = [_cand("2", "BTTS", "YES", 0.60, 0.50, fam="BTTS", ver="btts_20261109T211852Z_d7cd2762"),
          _cand("3", "OU25", "OVER", 0.60, 0.45)]
     picks, weeks = P.freeze_due(pd.DataFrame(c), set(), _ctx(cells), NOW, 120.0, {}, _stats(), _guards(cells), CFG, "s")
-    assert len(picks) == 2 and set(picks["market"]) == {"OU25"}           # one O/U pick per track, no BTTS
+    assert len(picks) == 1 and set(picks["market"]) == {"OU25"}           # the O/U pick only, no BTTS
     for w in weeks["excluded"]:
         assert json.loads(w)[P.R_LEAGUE_WIDE] == 1
 
@@ -321,11 +320,22 @@ def test_league_wide_cell_never_enters_any_paper_track():
 def test_protocol_records_own_list_no_ev_fallback_and_history():
     cfg = P.load_config()
     proto = json.loads((ROOT / cfg["protocol_file"]).read_text(encoding="utf-8"))
-    assert proto["protocol"] == "top3-ranking-paper/4" and proto["written_before_any_live_pick"] is True
+    assert proto["protocol"] == "top3-ranking-paper/5" and proto["written_before_any_live_pick"] is True
     assert "never ev_est" in proto["rules_common"]["missing_statistic"]
-    assert "Drop T1" in proto["t1_coverage"]["recommendation_for_owner"]
-    assert [t["id"] for t in proto["tracks"]] == ["T1_R1_CELL_LCB", "T2_R2_CAL_EV", "T3_R3_CAL_EV_LCB"]
+    assert any("Drop T1" in w for w in proto["amendment"]["owner_words"])
+    assert [t["id"] for t in proto["tracks"]] == ["T2_R2_CAL_EV", "T3_R3_CAL_EV_LCB"]
+    assert "2 tracks" in proto["evaluation"]["family"] and "no_pick_exists" in proto
     assert "LEAGUE_WIDE_OWN_LIST" in proto["pool"]["refusal_reasons"]
     assert any("Own list" in w for w in proto["amendment"]["owner_words"])
     for h in proto["amends"]["history"]:
         assert P.sha256_lf(ROOT / h["file"]) == h["sha256_lf"]            # v1 and v2 kept byte-for-byte
+
+
+def test_r1_is_research_code_only():
+    assert "R1_CELL_LCB" in R.RESEARCH_RULES and "R1_CELL_LCB" not in R.TRACK_RULES + R.PAPER_RULES
+    o = R.rank_order(pd.DataFrame([_cand("1", "OU25", "OVER", .6, .45) | {"track": "standard", "mside": "over25_over",
+                                                                          "fair": .45, "p_used": .6},
+                                   _cand("2", "BTTS", "YES", .6, .5) | {"track": "standard", "mside": "btts_yes",
+                                                                        "fair": .5, "p_used": .6}]),
+                     _stats(), "R1_CELL_LCB", tiebreak=("kickoff_utc", "fixture_id"))
+    assert o.iloc[0]["mside"] == "btts_yes"                         # still computable for research

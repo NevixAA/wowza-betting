@@ -204,9 +204,9 @@ jobs:
           done
           [ "$pushed" = "1" ] || echo "::warning::TOP-3 settlement push failed after 5 retries"
 
-      # TOP-3 PAPER TRACKS R1 / R2 settlement (src/research/top3_paper.py, flag TOP3_PAPER_ENABLED, default off ->
+      # TOP-3 PAPER TRACK R2 settlement (src/research/top3_paper.py, flag TOP3_PAPER_ENABLED, default off ->
       # a no-op). PAPER/RESEARCH: grading columns only (frozen columns hashed, refused on change).
-      - name: Settle TOP-3 paper tracks (research only, flag default off)
+      - name: Settle TOP-3 paper track R2 (research only, flag default off)
         if: always()
         env:
           TOP3_PAPER_ENABLED: ${{ vars.TOP3_PAPER_ENABLED }}
