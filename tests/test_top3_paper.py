@@ -112,7 +112,10 @@ def test_off_or_legacy_bar_gives_no_candidate():
     ctx["applied"].add("ou25|L")
     picks, weeks = P.freeze_due(pd.DataFrame([_cand("3", "OU25", "OVER", 0.60, 0.45)]), set(), ctx, NOW, 120.0, {},
                                 _stats(), _guards(), CFG, "s")
-    assert picks.empty and json.loads(weeks.iloc[0]["excluded"]).get(P.R_CELL) == 1
+    # owner 2026-11-11 "Clean rebuild": production's league_bars already refuses a legacy (non-cell) entry
+    # (NO_LEAGUE_BAR), before the paper module's own cell guard would (CELL_NOT_APPROVED)
+    ex = json.loads(weeks.iloc[0]["excluded"])
+    assert picks.empty and (ex.get(P.R_CELL) == 1 or ex.get("NO_LEAGUE_BAR") == 1)
 
 
 def test_approved_proposal_file_must_verify(tmp_path):
@@ -216,7 +219,10 @@ def test_paper_module_imports_nothing_that_stakes_executes_or_publishes():
 def test_no_production_reader_touches_the_paper_files():
     allowed = {"src/research/top3_paper.py", "scripts/top3_paper_freeze.py", "scripts/top3_paper_dryrun.py",
                "tests/test_top3_paper.py",
-               "src/research/top3_ranking.py"}                      # names the paper module in its docstring only
+               "src/research/top3_ranking.py",                      # names the paper module in its docstring only
+               # the LIVE TOP-3 reads the ONE statistics freeze (top3_paper.load_freeze, hash-checked) - never a paper
+               # ledger; the dry run reuses the freeze computation (owner 2026-11-11: one freeze, no fork)
+               "src/top3_league.py", "scripts/top3_t3_dry_run.py"}
     hits = []
     for base in ("src", "telegram_bot", "scripts", "dashboard", "app.py", "streamlit_app.py"):
         p = ROOT / base
@@ -229,6 +235,29 @@ def test_no_production_reader_touches_the_paper_files():
             if "top3_paper" in t or "paper_ledger" in t:
                 hits.append(rel)
     assert hits == []
+
+
+LIVE_READERS = ("src/top3_league.py", "scripts/top3_t3_dry_run.py")
+#: the only paper-module names a live reader may use: the pinned config and the hash-checked statistics freeze
+LIVE_READER_ALLOWED = {"load_config", "load_freeze", "sha256_lf", "hash_problems"}
+
+
+def test_live_readers_use_only_the_hash_checked_freeze():
+    """The allow-list above is per file; this pins WHAT those files may use: the frozen statistics through
+    load_freeze (protocol, ranking code and record hashes all checked) - never a paper ledger, a paper store,
+    the paper run / settle, or the paper folder."""
+    import re
+    for rel in LIVE_READERS:
+        f = ROOT / rel
+        if not f.is_file():
+            continue
+        t = f.read_text(encoding="utf-8", errors="ignore")
+        for bad in ("paper_ledger", "paper_weeks", "top3_paper/", "research/top3_paper"):
+            assert bad not in t, (rel, bad)
+        alias = set(re.findall(r"from src\.research import top3_paper as (\w+)", t))
+        for a in alias:
+            used = set(re.findall(rf"{a}\.(\w+)", t))
+            assert used <= LIVE_READER_ALLOWED, (rel, used - LIVE_READER_ALLOWED)
 
 
 def test_workflows_only_run_and_commit_the_paper_folder():
