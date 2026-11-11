@@ -1,8 +1,9 @@
-"""BARS ON THE CALIBRATED EDGE - pre-registered study, NOT RUN (protocol config/bars_calibrated_edge_protocol.json).
+"""BARS ON THE CALIBRATED EDGE - pre-registered study, NOT RUN (protocol config/bars_calibrated_edge_protocol_v2.json).
 
 Owner 2026-11-11: "Bars on calibrated edge" at the DECEMBER re-optimization, "No cap". Each cell's bars are chosen
 on the CALIBRATED edge instead of the served edge, with the approved study's machinery (src/bars_opt/study.py:
-nested inner validation, per-league bars by src.league_bars.choose_bars on its GRID, MODEL vs LEAGUE_WIDE switch,
+nested inner validation, per-league bars by the src.league_bars.choose_bars rule on CAL_GRID (owner 2026-11-11
+"Start at 1 point": 0.01 then the study GRID's own steps 0.02 .. 0.30), MODEL vs LEAGUE_WIDE switch,
 TIER2, Holm over every configuration searched). The output is a PROPOSAL for the owner (src/threshold_proposals);
 nothing is served until the owner approves and src/threshold_apply applies it.
 
@@ -33,14 +34,18 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+from src import league_bars as LB
 from src.bars_opt import study as S
 
 ROOT = Path(__file__).resolve().parents[2]
-PROTOCOL_FILE = Path("config") / "bars_calibrated_edge_protocol.json"
+PROTOCOL_FILE = Path("config") / "bars_calibrated_edge_protocol_v2.json"
 FLAG_FILE = Path("config") / "bars_calibrated_edge.json"
 CAL_MEASURE = "CAL_EDGE"
 FIRST_MONTH = "2026-12"
 MIN_OWN_ROWS = S.MIN_OWN_BETS            # 40, the study's own-data minimum
+#: owner 2026-11-11 "Start at 1 point": the bar grid of the calibrated edge starts at 1 calibrated point, then the
+#: approved study's own grid steps above it (src.league_bars.GRID = 0.02 .. 0.30 by 0.01) -> 30 points
+CAL_GRID = np.round(np.concatenate([[0.01], np.asarray(LB.GRID, float)]), 3)
 
 
 def configs() -> list[tuple]:

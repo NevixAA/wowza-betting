@@ -72,3 +72,19 @@ def test_a_changed_protocol_is_refused(tmp_path):
     with open(tmp_path / C.PROTOCOL_FILE, "a", encoding="utf-8") as f:
         f.write(" ")
     assert any("not the pinned version" in w for w in C.gate("2026-12", tmp_path))
+
+
+def test_v2_grid_starts_at_one_point_then_the_study_steps():
+    from src import league_bars as LB
+    assert C.CAL_GRID[0] == 0.01 and len(C.CAL_GRID) == len(LB.GRID) + 1 == 30
+    assert np.allclose(C.CAL_GRID[1:], LB.GRID)
+
+
+def test_v2_records_the_owner_and_keeps_v1():
+    flag = json.loads((ROOT / C.FLAG_FILE).read_text(encoding="utf-8"))
+    proto = json.loads((ROOT / C.PROTOCOL_FILE).read_text(encoding="utf-8"))
+    assert proto["protocol"] == "bars-calibrated-edge/2" and "nothing_has_run" in proto
+    assert any("Start at 1 point" in w for w in proto["amendment"]["owner_words"])
+    assert "30 grid bars" in proto["multiple_testing"]["holm"]
+    for h in flag["protocol_history"] + [proto["amends"]]:
+        assert C.sha256_lf(ROOT / h["file"]) == h["sha256_lf"]
