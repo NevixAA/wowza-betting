@@ -194,9 +194,10 @@ else:
 
 # TOP-3 per league per gameweek (owner 2026-11-08; src/top3_league.py writes, this only reads)
 from dashboard_data import top3_league as T3  # noqa: E402
-ui.section_header("TOP-3 this gameweek", "This league's 3 best value tips of the week across O/U 2.5, BTTS, "
-                  "Over 1.5 and Over 3.5, on the league's OWN owner-approved bars - fewer when fewer clear "
-                  "the bar. The same picks Telegram sent.")
+ui.section_header("TOP-3 this gameweek", "This league's 3 best tips of the week across O/U 2.5, BTTS, Over 1.5 "
+                  "and Over 3.5 from its MODEL cells, each past its cell's own owner-approved bar, ranked by "
+                  "cautious calibrated value (T3) - fewer when fewer clear the bar. A paper track. League-wide "
+                  "cells are the league's own line, outside the 3. The same picks Telegram sent.")
 _t3 = T3.report()
 if not _t3:
     ui.empty_state("NO_DATA", "TOP-3 per league is not switched on yet (owner switch-on at go-live).")
@@ -210,6 +211,8 @@ else:
     else:
         st.caption(f"Gameweek {str(_v.get('latest_league_week_id', '')).split('|')[-1]}")
         ui.compact_table(_tf, {"Odds": ui.num_col("Odds", fmt="%.2f"), "Edge %": ui.num_col("Edge %", fmt="%.1f")})
+    if T3.league_rule_line(_v):
+        st.caption(T3.league_rule_line(_v))
     if _v.get("settled"):
         st.caption(f"Settled TOP-3 picks for {pick}: {_v['settled']} ({_v['won']} won), flat "
                    f"{ui.fmt_units(_v.get('flat_pnl_units'))}, ROI {ui.fmt_roi(_v.get('roi'))}.")

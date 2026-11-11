@@ -7,7 +7,7 @@ in output/, prints counts per league.
 The cells are the proposal's (ASSUMED owner-applied: the dry run reads them as if threshold_apply had run); the
 candidates are production's own builder (src.research.league_weekly.build_candidates over output/
 edge_engine_shadow.csv) restricted to the league-weeks locking in the window; the T3 statistics are built from
-the committed own-price universes with rows dated BEFORE --week-from (no later data). Every week is frozen at
+the research freeze computation (scripts/top3_paper_freeze.compute) with rows dated BEFORE --week-from. Every week is frozen at
 its own FREEZE (lock - lead), the moment production issues it. CAVEAT: the board's probabilities are whatever models produced output/ at the time.
 """
 from __future__ import annotations
@@ -47,8 +47,16 @@ def main(argv=None) -> int:
     ap.add_argument("--lead", type=float, required=True, help="freeze lead in minutes (production: TOP3_FREEZE_LEAD_MIN)")
     a = ap.parse_args(argv)
     ctx = ctx_from_proposal(json.loads(Path(a.proposal).read_text(encoding="utf-8")))
-    stats_doc = T.build_t3_stats(ROOT / "output" / "bars_opt", ctx, a.week_from)
-    stats = pd.DataFrame(stats_doc["cells"])
+    # the statistics: THE research freeze computation (scripts/top3_paper_freeze.compute), as of the day before
+    # the window (no later data); a dry run never writes the freeze record or its ledger
+    import importlib.util
+    from src.research import top3_paper as TP3
+    spec = importlib.util.spec_from_file_location("top3_paper_freeze", ROOT / "scripts" / "top3_paper_freeze.py")
+    FZ = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(FZ)
+    cfg = dict(TP3.load_config(ROOT), stats_as_of_utc=(pd.Timestamp(a.week_from, tz="UTC")
+                                                       - pd.Timedelta(seconds=1)).strftime("%Y-%m-%dT%H:%M:%SZ"))
+    stats, info = FZ.compute(cfg, ROOT)
     od = T.OUT
     shadow = LW._read(od / "edge_engine_shadow.csv")
     preds = LW._read(od / "predictions.csv")
@@ -74,8 +82,13 @@ def main(argv=None) -> int:
     picks = pd.concat(pk, ignore_index=True) if pk else pd.DataFrame(columns=T.PICK_COLS)
     wk = pd.concat(wks, ignore_index=True) if wks else pd.DataFrame(columns=T.WEEK_COLS)
     out = {"window": [a.week_from, a.week_to], "league_weeks": len(weeks), "candidates": int(len(cands)),
-           "t3_cells_with_stat": stats_doc["cells_with_stat"], "picks": int(len(picks)),
-           "per_league": picks.groupby("league").size().to_dict() if len(picks) else {},
+           "t3_cells_with_stat": int(stats["lam"].notna().sum()) if len(stats) else 0,
+           "stats_as_of_day_exclusive": info.get("as_of_day_exclusive"), "top3_picks": int((picks["selection_mode"] == T.SELECTION_MODE).sum()) if len(picks) else 0,
+           "league_rule_picks": int((picks["selection_mode"] == T.OWN_LIST_MODE).sum()) if len(picks) else 0,
+           "per_league_top3": (picks[picks["selection_mode"] == T.SELECTION_MODE].groupby("league").size().to_dict()
+                               if len(picks) else {}),
+           "per_league_rule": (picks[picks["selection_mode"] == T.OWN_LIST_MODE].groupby("league").size().to_dict()
+                               if len(picks) else {}),
            "slots": picks["slot"].value_counts().to_dict() if len(picks) else {},
            "cell_status": picks["cell_status"].value_counts().to_dict() if len(picks) else {},
            "picks_with_t3_stat": int(picks["t3_has_stat"].astype(bool).sum()) if len(picks) else 0,

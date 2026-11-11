@@ -291,3 +291,58 @@ def test_replay_refuses_to_run_without_real_bars(tmp_path):
     R = _replay()
     with pytest.raises(SystemExit, match="no bars proposals"):
         R.main(["--track", "standard", "--predictions", str(tmp_path / "p.parquet"), "--bars-dir", str(tmp_path)])
+
+
+# ── owner 2026-11-11 "Own list": league-wide cells outside the 3 slots ─────────────────────────────
+def _lw_ctx():
+    ctx = _ctx()
+    cell = ctx["side"]["btts"][LEAGUE]["bars_opt"]["yes"]
+    cell.update(source="NONE", measure="ALL", mode="LEAGUE_WIDE", config="NONE|ALL|max-|min-", valuable_th=-1.0,
+                marksman_th=-1.0, sniper_th=-1.0, wf_roi_shrunk=0.05)
+    return ctx
+
+
+def test_league_wide_cell_is_its_own_list_outside_the_three_slots():
+    rows = [_cand(i, "BTTS", "YES", pm=0.5, pf=0.5) for i in range(1, 6)]                 # 5 league-rule matches
+    rows += [_cand(10, "OU25", "OVER"), _cand(11, "OVER15", "OVER"), _cand(12, "OVER35", "OVER"),
+             _cand(13, "OU25", "OVER", pm=0.62)]
+    picks, weeks = _freeze(_frame(rows), _lw_ctx(), stats=_stats({"over25_over": 1.0, "over15_over": 0.5,
+                                                                   "over35_over": 0.8}))
+    top = picks[picks["selection_mode"] == T.SELECTION_MODE]
+    rule = picks[picks["selection_mode"] == T.OWN_LIST_MODE]
+    assert len(top) == 3 and not set(top["market"]) & {"BTTS"}          # league-wide never takes a slot
+    assert len(rule) == 5 and set(rule["slot"]) == {T.OWN_LIST_MODE}      # uncapped, never pushed out
+    assert weeks["n_picks"].iloc[0] == 3
+    msg = T.message(picks.assign(league_week_id=WEEK))
+    assert "League rule: BTTS Yes, every match" in msg and "outside the 3" in msg
+    assert not any(w in msg for w in ("SNIPER", "MARKSMAN", "VALUABLE"))
+
+
+def test_direction_rule_across_both_lists_league_rule_stands():
+    """A TOP-3 model tip opposite to a league-rule tip on the same fixture yields; the next model tip fills."""
+    rows = [_cand(1, "BTTS", "YES", pm=0.5, pf=0.5, home="X", away="Y"),
+            _cand(2, "OU25", "UNDER", pm=0.70, home="X", away="Y"),            # opposite of BTTS Yes on X v Y
+            _cand(3, "OVER15", "OVER")]
+    picks, weeks = _freeze(_frame(rows), _lw_ctx(), stats=_stats({"over25_under": 1.0, "over15_over": 0.2}))
+    top = picks[picks["selection_mode"] == T.SELECTION_MODE]
+    assert list(top["fixture_id"]) == ["fx3"]
+    assert list(picks[picks["selection_mode"] == T.OWN_LIST_MODE]["fixture_id"]) == ["fx1"]
+    assert json.loads(weeks["excluded"].iloc[0])["DIRECTION_CONFLICT"] == 1
+
+
+def test_committed_production_tip_stands_over_the_league_rule():
+    rows = [_cand(1, "BTTS", "YES", pm=0.5, pf=0.5, home="X", away="Y", ko="2026-11-21T15:00:00Z")]
+    committed = {("2026-11-21", "X", "Y"): {"direction": "UNDER"}}
+    picks, _ = _freeze(_frame(rows), _lw_ctx(), committed=committed, stats=_stats({}))
+    assert (picks["selection_mode"] == T.OWN_LIST_MODE).sum() == 0
+
+
+def test_dashboard_shows_slot_cell_and_the_league_rule_line_no_tier():
+    from dashboard_data import top3_league as D
+    view = {"latest_picks": [{"top3_rank": 1, "home_team": "H", "away_team": "A", "kickoff_utc": "2026-11-21T15:00:00Z",
+                              "market": "OU25", "side": "OVER", "odds": 2.0, "edge": 0.1, "slot": "TOP",
+                              "cell_status": "UNPROVEN", "result": None}],
+            "league_rule": {"picks": 4, "settled": 2, "flat_pnl_units": 0.9}}
+    f = D.latest_picks_frame(view)
+    assert "Tier" not in f.columns and list(f["Slot"]) == ["TOP"] and list(f["Cell"]) == ["UNPROVEN"]
+    assert "League rule (every match, outside the 3): 4 tip(s)" in D.league_rule_line(view)

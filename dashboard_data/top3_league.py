@@ -39,7 +39,18 @@ def latest_picks_frame(view: dict) -> pd.DataFrame:
         "Pick": d["market"].map(MARKET_LABEL).fillna(d["market"]) + " " + side,
         "Odds": pd.to_numeric(d["odds"], errors="coerce").round(2),
         "Edge %": (pd.to_numeric(d["edge"], errors="coerce") * 100).round(1),
-        "Tier": d["tier"], "League bar": d["bar_status"], "Result": d["result"].fillna("")})
+        # owner 2026-11-11: no tier - the slot (TOP / TIER2) and the cell's status
+        "Slot": d["slot"] if "slot" in d.columns else "", "Cell": d["cell_status"] if "cell_status" in d.columns else "",
+        "Result": d["result"].fillna("")})
+
+
+def league_rule_line(view: dict) -> str:
+    """The league's OWN line (owner 2026-11-11 "Own list": league-wide cells, outside the 3), or ""."""
+    r = view.get("league_rule") or {}
+    if not r.get("picks"):
+        return ""
+    return (f"League rule (every match, outside the 3): {r['picks']} tip(s), {r['settled']} settled, "
+            f"flat P/L {float(r['flat_pnl_units']):+.2f}u")
 
 
 def ledger() -> pd.DataFrame:

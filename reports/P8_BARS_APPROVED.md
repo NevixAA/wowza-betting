@@ -30,9 +30,15 @@ bar - the former VALUABLE gates, the same for every league - and is UNPROVEN:
 | Assist (assists) | EV >= 0.15 and the same odds-banded relative-edge floor |
 | Score 2+, SOT 2+ / 3+ / 4+, Carded, defenders' anytime scorer | never a tip: data-only PAPER rows, as before (capped money-losers) |
 
-**TOP-3** = tips from the retrained models that clear their cell's bar, ranked by T3 (cautious calibrated value per
-cell, protocol top3-ranking-paper/1, 363e7f41); the old EV ranking is dropped; TIER2 only fills empty slots; never
-padded. A paper track in the Clean Record.
+**TOP-3** = tips from the retrained MODEL cells that clear their cell's bar, ranked by T3 (cautious calibrated value
+per cell; `src.research.top3_ranking.LIVE_RULE` / `in_pool`, statistics = the one research freeze); the old EV
+ranking is dropped; TIER2 only fills empty slots; never padded. A paper track in the Clean Record.
+
+**League rule (owner 2026-11-11 "Own list"):** a LEAGUE-WIDE cell (source NONE, e.g. Argentina NF BTTS) is shown as
+the league's own line ("League rule: BTTS Yes, every match"), outside the 3 TOP-3 slots - it never takes and is never
+pushed out of a slot, and stakes per cell as approved (Argentina NF BTTS 1.25%), with no tier label. Direction rule
+across both lists: the fixture's first live production tip stands; then the league-rule tip stands over an opposite
+TOP-3 model tip, which yields to the next qualifier.
 
 ## How these bars were made
 
