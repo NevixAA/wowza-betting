@@ -504,6 +504,60 @@ def no_global_bars() -> dict:
               "; ".join(f"{h['file']}:{h['line']}: {h['code'][:70]}" for h in hits[:5]))
 
 
+# ── 7 NO RETIRED TIERS ON A FUTURE TIP ──────────────────────────────────────────────────────────
+#: owner 2026-11-11 ("Clean rebuild": "the old sniper/mm/valuable dont important anymore for the future tips ...
+#: do not use them"): from go-live (the Clean Record starts 2026-11-21) no tip row carries SNIPER / MARKSMAN /
+#: VALUABLE or a tier multiplier other than 1. Historical rows keep their old columns (study only).
+TIERS_RETIRED_FROM = "2026-11-21"
+#: (file, date column, tier column, multiplier column) of every tip / stake record a future tip lands in
+TIP_RECORDS = (("bets_ledger.csv", "match_date", "signal_tier", None),
+               ("side_bets_ledger.csv", "match_date", "signal_tier", None),
+               ("bets.csv", "date", "signal_tier", None), ("side_bets.csv", "date", "signal_tier", None),
+               ("ht_ledger.csv", "match_date", "signal_tier", None),
+               ("player_ledger.csv", "match_date", "tier", None),
+               ("stake_audit.csv", "date", "signal_tier", "tier_multiplier"),
+               ("top3_league_ledger.csv", "match_date", "tier", None))
+
+
+def retired_tier_rows(out_dir: Path | None = None, since: str = TIERS_RETIRED_FROM) -> list[dict]:
+    """Every record dated on/after `since` that carries a retired tier code or a tier multiplier != 1."""
+    from src.tier_labels import LEGACY_TIERS
+    od = Path(out_dir) if out_dir is not None else OUT
+    cut = pd.Timestamp(since)
+    hits = []
+    for name, dcol, tcol, mcol in TIP_RECORDS:
+        d = _read(od / name)
+        if d.empty or dcol not in d.columns:
+            continue
+        # a record WRITTEN on/after the cut (generated_at where the record has it) - a row written before go-live
+        # for a later match is history; without a write time the match date decides
+        wcol = "generated_at" if "generated_at" in d.columns else dcol
+        dt = pd.to_datetime(d[wcol].astype(str).str[:10], errors="coerce")
+        fut = d[dt >= cut]
+        if fut.empty:
+            continue
+        if tcol in fut.columns:
+            n = int(fut[tcol].astype(str).str.strip().str.upper().isin(LEGACY_TIERS).sum())
+            if n:
+                hits.append({"file": name, "kind": "retired tier label", "rows": n})
+        if mcol and mcol in fut.columns:
+            m = pd.to_numeric(fut[mcol], errors="coerce")
+            n = int((m.notna() & (m != 1.0)).sum())
+            if n:
+                hits.append({"file": name, "kind": "tier multiplier != 1", "rows": n})
+    return hits
+
+
+def no_retired_tiers() -> dict:
+    rule = (f"owner 2026-11-11: no tip / stake record dated on or after {TIERS_RETIRED_FROM} carries a retired tier "
+            "label (SNIPER / MARKSMAN / VALUABLE) or a tier multiplier other than 1; a tip qualifies only by its "
+            "cell's one approved bar; RED on any hit")
+    hits = retired_tier_rows()
+    return _c("Data truth 7: no retired tiers on future tips", RED if hits else GREEN,
+              f"{sum(h['rows'] for h in hits)} future row(s) with a retired tier / multiplier", rule,
+              "; ".join(f"{h['file']}: {h['rows']} {h['kind']}" for h in hits[:6]))
+
+
 def evaluate(now: datetime | None = None) -> list[dict]:
     """The rule checks. Never raises: a check that cannot run is itself RED."""
     out = []
@@ -514,7 +568,8 @@ def evaluate(now: datetime | None = None) -> list[dict]:
                       ("Data truth 3: no missing data", lambda: missing(now)),
                       ("Data truth 4: right league relations", leagues),
                       ("Data truth 5: one match, one row", lambda: one_match()),
-                      ("Data truth 6: no global bars in serving", no_global_bars)):
+                      ("Data truth 6: no global bars in serving", no_global_bars),
+                      ("Data truth 7: no retired tiers on future tips", no_retired_tiers)):
         try:
             out.append(fn())
         except Exception as e:                                         # noqa: BLE001
@@ -541,7 +596,7 @@ RATCHET = ROOT / "config" / "data_truth_ratchet.json"
 #: must not merge. It runs the loader's identity pipeline on the committed banks (~15 s; it was
 #: ~19-60 s before team_names memoised norm/identity_key and duplicate_pairs stopped slicing
 #: pandas groups).
-GATED = ("Data truth 1", "Data truth 2", "Data truth 4", "Data truth 5", "Data truth 6")
+GATED = ("Data truth 1", "Data truth 2", "Data truth 4", "Data truth 5", "Data truth 6", "Data truth 7")
 
 
 def _ratchet() -> dict:

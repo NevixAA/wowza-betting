@@ -229,7 +229,8 @@ def _load_ledger() -> pd.DataFrame:
     return pd.DataFrame(columns=LEDGER_COLS)
 
 
-_TIER_RANK = {"SNIPER": 3, "MARKSMAN": 2, "VALUABLE": 1, "": 0, "AVOID": 0, "nan": 0}
+#: dedupe rank; QUALIFIED (owner 2026-11-11: one bar per cell, no tiers) is the only value of a future tip
+_TIER_RANK = {"QUALIFIED": 1, "SNIPER": 3, "MARKSMAN": 2, "VALUABLE": 1, "": 0, "AVOID": 0, "nan": 0}
 
 # ── Later higher tiers: an append-only research log, never the ledger (2026-10-26) ─────────────
 TIER_SEEN_NAME = "ledger_tier_seen.csv"     # beside the ledger it describes (output/)
@@ -593,15 +594,11 @@ HT_LEDGER_COLS = [
 #: Informational only. HT is PAPER — these labels let HT be read on the same axis as the other
 #: ledgers; they do NOT authorise a stake, and nothing reads them to size one.
 def _ht_tier(edge: float | None) -> str:
+    """Owner 2026-11-11 ("Clean rebuild"): no SNIPER / MARKSMAN / VALUABLE on a future row. HT has no
+    owner-approved cell, so an HT row is never a tip: PAPER (priced, recorded for study) or NO_PRICE."""
     if edge is None or pd.isna(edge):
         return "NO_PRICE"
-    if edge >= 0.10:
-        return "SNIPER"
-    if edge >= 0.05:
-        return "MARKSMAN"
-    if edge >= 0.02:
-        return "VALUABLE"
-    return "AVOID"
+    return "PAPER"
 
 
 def _ht_price_lookup():
@@ -744,7 +741,7 @@ def print_ledger() -> None:
         if grp.empty:
             continue
         print(f"\n  [{src.upper()}]")
-        for tier in ["SNIPER", "MARKSMAN", "VALUABLE"]:
+        for tier in ["QUALIFIED", "SNIPER", "MARKSMAN", "VALUABLE"]:
             t = grp[grp["signal_tier"] == tier]
             if t.empty:
                 continue

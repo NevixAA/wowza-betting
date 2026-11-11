@@ -96,11 +96,13 @@ def test_served_tier_equals_the_study_tier_on_real_rows(track, mside, cfg):
         assert BS.validate_cell(cell) == ""
         rows = e[e["league"] == lg]
         res = BS.score(rows, cell)
+        # owner 2026-11-11: the served tip is QUALIFIED exactly on the rows the study kept (measure >= the
+        # cell's one approved bar, valuable_th); the retired tier split is never served
         st = study[study["league"] == lg].set_index("row_id")["tier"]
-        st = st.where(st != S.MODE_LW, BS.LEAGUE_WIDE_TIER)
         served = res["tier"].astype(str)
         got = dict(zip(rows.loc[served != "", "row_id"], served[served != ""]))
-        assert got == st.to_dict(), lg
+        assert set(got) == set(st.index), lg
+        assert set(got.values()) <= {"QUALIFIED"}
         served_n += len(got)
         checked += len(rows)
     assert checked > 0
@@ -112,13 +114,13 @@ def test_odds_range_is_the_cells_own():
                          "odds": [1.30, 1.90, 3.00]})
     res = BS.score(rows, _cell(odds_min=1.4, odds_max=2.5))
     assert list(res["reason"]) == [BS.R_RANGE, "", BS.R_RANGE]
-    assert list(res["tier"]) == ["", "SNIPER", ""]
+    assert list(res["tier"]) == ["", "QUALIFIED", ""]
 
 
-def test_league_wide_cell_tips_every_match_in_range_as_valuable():
+def test_league_wide_cell_tips_every_match_in_range_as_qualified():
     rows = pd.DataFrame({"league": "L1", "p_side": [0.10, 0.90], "fair": [0.50, 0.50], "odds": [1.9, 1.9]})
     res = BS.score(rows, _cell(source="NONE", measure="ALL", mode="LEAGUE_WIDE", config="NONE|ALL|max-|min-"))
-    assert list(res["tier"]) == ["VALUABLE", "VALUABLE"] and set(res["bar_mode"]) == {"LEAGUE_WIDE"}
+    assert list(res["tier"]) == ["QUALIFIED", "QUALIFIED"] and set(res["bar_mode"]) == {"LEAGUE_WIDE"}
 
 
 def test_no_fair_price_no_tier():
@@ -181,7 +183,7 @@ def test_ou25_over_and_under_are_served_by_their_own_cells(monkeypatch):
     _install_ou(monkeypatch, {"bars_opt": {"over": over, "under": under}})
     df = evaluate_value(_ou_rows(lg))
     a, b = df.iloc[0], df.iloc[1]
-    assert a["bet"] == "OVER" and a["signal_tier"] == "SNIPER"           # edge ~0.12 >= over sniper 0.11
+    assert a["bet"] == "OVER" and a["signal_tier"] == "QUALIFIED"        # edge ~0.12 >= over bar (one bar per cell)
     assert b["bet"] == "AVOID" and b["signal_tier"] == "AVOID"            # under edge ~0.12 < under valuable 0.20
     assert a["bar_config_over"] == "RAW|EDGE|max-|min-" and a["threshold_source"] == "LEAGUE"
     assert not bool(a["min_odds_blocked"]) and not bool(a["max_odds_blocked"])
@@ -226,7 +228,7 @@ def test_side_bets_use_the_cell(monkeypatch):
         rows.append(r)
     out = P._generate_side_bets(pd.DataFrame(rows), config.SIDE_MARKETS)
     assert list(out["home_team"]) == ["H0"]                              # 2.80 is outside the cell's range
-    assert out["signal_tier"].iloc[0] == "VALUABLE" and out["bar_mode"].iloc[0] == "LEAGUE_WIDE"
+    assert out["signal_tier"].iloc[0] == "QUALIFIED" and out["bar_mode"].iloc[0] == "LEAGUE_WIDE"
 
 
 def test_top3_qualifies_and_ranks_with_the_cell():
@@ -238,9 +240,11 @@ def test_top3_qualifies_and_ranks_with_the_cell():
     d = pd.DataFrame([{"league": lg, "market": "BTTS", "side": "YES", "p_model_raw": pm, "p_market_fair": 0.5,
                        "odds": 1.9, "price_quality_state": "TWO_SIDED_MULTI_BOOK"} for pm in (0.50, 0.60, 0.56)])
     q = T.qualify(d, ctx)
-    assert list(q["tier"]) == ["", "SNIPER", "MARKSMAN"]                # below the bar: no tier, a reason
+    assert list(q["tier"]) == ["", "QUALIFIED", "QUALIFIED"]            # below the bar: no tip, a reason
     assert list(q["reason"]) == ["BELOW_LEAGUE_BAR", "", ""]
-    assert q["ev_rank"].iloc[1] > q["ev_rank"].iloc[2]
+    # owner 2026-11-11: the cell's p_used and fair travel with the tip for the T3 ranking (no EV rank)
+    assert q["p_used"].iloc[1] > q["p_used"].iloc[2] and set(q["slot"].iloc[1:]) == {"TOP"}
+    assert q["mside"].iloc[1] == "btts_yes"
 
 
 # ── no global value anywhere in the serving adapter ───────────────────────────────────────────────

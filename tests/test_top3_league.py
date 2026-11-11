@@ -32,11 +32,21 @@ def _bars(v=0.02, m=0.04, s=0.06, approved=False):
             "evidence": "WALK_FORWARD_HOLDOUT"}
 
 
-def _ctx(markets=("ou25", "btts", "over15", "over35"), applied=True, league=LEAGUE, **kw):
-    std = {league: _bars(**kw)} if "ou25" in markets else {}
-    side = {m: {league: _bars(**kw)} for m in markets if m != "ou25"}
+def _ctx(markets=("ou25", "btts", "over15", "over35"), applied=True, league=LEAGUE, v=0.02, m=0.04, s=0.06):
+    """Owner 2026-11-11: TOP-3 qualifies only on the league x market x side CELL's one bar (bars_opt)."""
+    from tests.own_bars import cell_entry
+    std = {league: cell_entry("ou25", league, s, m, v)} if "ou25" in markets else {}
+    side = {mk: {league: cell_entry(mk, league, s, m, v)} for mk in markets if mk != "ou25"}
     return {"standard": std, "side": side,
-            "applied": {f"{m}|{league}" for m in markets} if applied else set()}
+            "applied": {f"{mk}|{league}" for mk in markets} if applied else set()}
+
+
+def _stats(lams: dict | None = None, league=LEAGUE, track="standard"):
+    """Frozen T3 statistics per market-side: {mside: lam} (lam_se 0, so lam_lo = lam)."""
+    lams = lams or {}
+    rows = [{"track": track, "league": league, "mside": ms, "n": 0, "roi": None, "se": None, "lcb": None, "eb": None,
+             "lam": lam, "lam_se": 0.0, "lam_rows": 100} for ms, lam in lams.items()]
+    return pd.DataFrame(rows)
 
 
 def _cand(i, market="OU25", side="OVER", pm=0.60, pf=0.50, ev_lb=0.05, home=None, away=None,
@@ -58,18 +68,23 @@ def _frame(rows):
     return pd.concat([first, pd.DataFrame([lock_row])], ignore_index=True).astype(object)
 
 
-def _freeze(cands, ctx, now=NOW, committed=None, done=None):
-    return T.freeze_due(cands, done or set(), ctx, now, LEAD, committed or {}, {}, None)
+def _freeze(cands, ctx, now=NOW, committed=None, done=None, stats=None):
+    return T.freeze_due(cands, done or set(), ctx, now, LEAD, committed or {}, {}, None, stats)
 
 
 # ── the rules ───────────────────────────────────────────────────────────────────────────────────
-def test_at_most_three_per_league_week_ranked_by_value_across_markets():
-    rows = [_cand(1, "OU25", "OVER", ev_lb=0.01), _cand(2, "BTTS", "YES", ev_lb=0.09),
-            _cand(3, "OVER15", "OVER", ev_lb=0.05), _cand(4, "OVER35", "OVER", ev_lb=0.07),
-            _cand(5, "OU25", "UNDER", pm=0.65, ev_lb=0.03)]
-    picks, weeks = _freeze(_frame(rows), _ctx())
+def test_at_most_three_per_league_week_ranked_by_t3_across_markets():
+    """Owner 2026-11-11: ranked by T3 (cautious calibrated value per cell), never by EV: the EV-style ranking
+    of these rows (ev_lower_bound: fx2 > fx4 > fx3 > fx5 > fx1) is NOT what decides."""
+    rows = [_cand(1, "OU25", "OVER", ev_lb=0.30), _cand(2, "BTTS", "YES", ev_lb=0.01),
+            _cand(3, "OVER15", "OVER", ev_lb=0.02), _cand(4, "OVER35", "OVER", ev_lb=0.01),
+            _cand(5, "OU25", "UNDER", pm=0.65, ev_lb=0.25)]
+    st = _stats({"btts_yes": 1.0, "over35_over": 0.8, "over15_over": 0.5, "over25_over": 0.2, "over25_under": 0.0})
+    picks, weeks = _freeze(_frame(rows), _ctx(), stats=st)
     assert len(picks) == 3 and len(weeks) == 1
-    assert list(picks["fixture_id"]) == ["fx2", "fx4", "fx3"]          # RS-1: ev_lower_bound first
+    assert list(picks["fixture_id"]) == ["fx2", "fx4", "fx3"]          # T3: lam_lo * (p_used - fair) order
+    assert set(picks["slot"]) == {"TOP"} and set(picks["cell_status"]) == {"UNPROVEN"}
+    assert "tier" not in picks.columns and "bar_sniper" not in picks.columns
     assert list(picks["top3_rank"]) == [1, 2, 3]
     assert set(picks["bar_source"]) == {"LEAGUE"} and set(picks["selection_mode"]) == {"TOP3_LEAGUE_GW"}
     assert json.loads(weeks["excluded"].iloc[0])["RANKED_BELOW_TOP3"] == 2
@@ -97,6 +112,22 @@ def test_no_global_bar_ever(monkeypatch):
         assert banned not in src.split('"""', 2)[2], banned
 
 
+def test_a_cell_without_a_t3_statistic_ranks_after_and_by_kickoff_never_by_ev():
+    rows = [_cand(1, "OU25", "OVER", ev_lb=0.30, ko="2026-11-22T15:00:00Z"),
+            _cand(2, "BTTS", "YES", ev_lb=0.01, ko="2026-11-21T20:00:00Z"),
+            _cand(3, "OVER15", "OVER", ev_lb=0.02, ko="2026-11-21T21:00:00Z")]
+    picks, _ = _freeze(_frame(rows), _ctx(), stats=_stats({"over15_over": 0.5}))
+    assert list(picks["fixture_id"]) == ["fx3", "fx2", "fx1"]          # stat first, then kickoff
+    assert list(picks["t3_has_stat"]) == [True, False, False]
+
+
+def test_run_fails_closed_without_frozen_t3_statistics(tmp_path):
+    env = {"TOP3_LEAGUE_ENABLED": "true", "TOP3_FREEZE_LEAD_MIN": "120"}
+    res = T.run(now=NOW, out_dir=tmp_path, env=env, committed={})
+    assert res.get("status") == "T3_STATS_MISSING" or "error" in res
+    assert not (tmp_path / T.PICKS_NAME).exists()
+
+
 def test_pre_repair_params_without_valuable_bar_are_not_the_league_bars():
     ctx = _ctx()
     ctx["standard"][LEAGUE] = {"sniper_th": 0.07, "marksman_th": 0.05, "approved": True}   # old shape
@@ -105,9 +136,9 @@ def test_pre_repair_params_without_valuable_bar_are_not_the_league_bars():
 
 
 def test_bars_must_be_applied_by_the_owner():
-    b, why = T.league_bars(_ctx(applied=False), LEAGUE, "BTTS")
+    b, why = T.league_bars(_ctx(applied=False), LEAGUE, "BTTS", "YES")
     assert b is None and why == T.R_NOT_APPLIED
-    b, why = T.league_bars(_ctx(v=0.05, m=0.04, s=0.06), LEAGUE, "BTTS")
+    b, why = T.league_bars(_ctx(v=0.05, m=0.04, s=0.06), LEAGUE, "BTTS", "YES")
     assert b is None and why == T.R_BAD_BAR
 
 
@@ -206,7 +237,8 @@ def test_store_settle_and_notify_round_trip(tmp_path):
     env = {T.FLAG_ENV: "1"}
     assert T.notify(out_dir=tmp_path, env=env, sender=lambda t: sent.append(t) or True)["sent"] == 1
     assert T.notify(out_dir=tmp_path, env=env, sender=lambda t: sent.append(t) or True)["sent"] == 0
-    assert "TOP-3 La Liga 2" in sent[0] and "own, owner-approved" in sent[0]
+    assert "TOP-3 La Liga 2" in sent[0] and "own owner-approved bar" in sent[0] and "Paper track" in sent[0]
+    assert not any(w in sent[0] for w in ("SNIPER", "MARKSMAN", "VALUABLE"))
 
 
 def test_workflows_gate_the_steps_on_the_repository_variable():

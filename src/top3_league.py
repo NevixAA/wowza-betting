@@ -1,5 +1,21 @@
 """TOP-3 PER LEAGUE PER GAMEWEEK - production tip selection (owner 2026-11-08). Behind a flag, default OFF.
 
+OWNER 2026-11-11 ("Clean rebuild"; TOP-3 "Paper track"). Supersedes the tier / EV text below where they differ:
+  * POOL: tips from the retrained models that clear their cell's ONE owner-approved bar (bars_opt cell,
+    valuable_th; src/bars_opt/serve.py). A league x market without its own applied CELL has no tip
+    (NO_LEAGUE_BAR) - the legacy three-tier entries are retired. No tier is computed, shown or stored.
+  * RANK: T3 = R3_CAL_EV_LCB of protocol top3-ranking-paper/1 (config/top3_ranking_paper_protocol.json,
+    sha256 363e7f41...), computed by THE research code (src/research/top3_ranking.rank_key, imported, not
+    forked): cautious calibrated value (fair + lam_lo * (p_used - fair)) * odds - 1, lam_lo from the cell's
+    own calibration (its FROZEN statistics, T3_STATS_NAME). The old EV ranking is DROPPED entirely - not a
+    key, not a tie-break, not a reference track. A cell without a T3 statistic ranks after every cell with
+    one, in kickoff order. Ties: kickoff, then fixture.
+  * SLOTS: TOP first; TIER2 (a tip in its cell's VALUABLE..MARKSMAN band where that cell's TIER2 is on,
+    study 12.2) only fills slots left empty. At most 3, never padded, the direction rule unchanged.
+  * Each pick carries its cell status (PROMISING / UNPROVEN) and its slot (TOP / TIER2).
+  * FAIL CLOSED: no frozen T3 statistics -> nothing is frozen or sent (status T3_STATS_MISSING).
+  * TOP-3 is a named PAPER track in the Clean Record; stakes follow the per-cell status only.
+
     python -m src.top3_league run       # predict.yml: sync candidates, freeze due league-weeks, report
     python -m src.top3_league notify    # predict.yml: send newly frozen picks to Telegram (once each)
     python -m src.top3_league settle    # update_results.yml: grade finished picks (grading columns only)
@@ -86,7 +102,10 @@ OUT = config.OUTPUT_DIR
 FLAG_ENV = "TOP3_LEAGUE_ENABLED"
 LEAD_ENV = "TOP3_FREEZE_LEAD_MIN"
 SELECTION_MODE = "TOP3_LEAGUE_GW"
-VERSION = "TOP3-1"
+VERSION = "TOP3-2"                         # owner 2026-11-11: cell bar + T3 ranking, no tiers
+T3_RULE = "R3_CAL_EV_LCB"                  # src/research/top3_ranking.RULES (track T3_R3_CAL_EV_LCB)
+T3_STATS_NAME = "top3_t3_stats.json"       # frozen per-cell T3 statistics (statistics only, no prices)
+SLOT_TOP, SLOT_TIER2 = "TOP", "TIER2"
 TOP_N = 3
 BAR_SOURCE = "LEAGUE"                      # the only source this module ever uses
 
@@ -121,7 +140,8 @@ PICK_FROZEN = [
     "pick_id", "selection_mode", "version", "league_week_id", "top3_rank", "week_lock_ts", "freeze_ts",
     "issued_at", "league", "model_type", "season", "fixture_id", "match_date", "home_team", "away_team",
     "kickoff_utc", "market", "side", "odds", "opposite_side_odds", "p_model_raw", "p_market_fair", "edge",
-    "tier", "bar_valuable", "bar_marksman", "bar_sniper", "bar_source", "bar_status", "bar_evidence",
+    "slot", "cell_status", "p_used", "t3_key", "t3_has_stat", "bar_valuable", "bar_source", "bar_status",
+    "bar_evidence",
     "ev_point", "ev_lower_bound", "p_lower_bound", "price_quality_state", "market_source", "n_books",
     "first_seen_at", "prediction_engine_version", "selection_engine_version", "policy_switch",
     "track_is_real", "stake_effect",
@@ -203,62 +223,123 @@ def league_bars(ctx: dict, league: str, market: str, side: str | None = None) ->
                 "sniper": float(cell["sniper_th"]), "status": str(cell["verdict"]),
                 "evidence": f"bars_opt {cell['config']} {cell['mode']} {cell.get('bar_basis') or ''}".strip(),
                 "cell": cell}, ""
-    val, mm, sn = _num(lp.get("valuable_th")), _num(lp.get("marksman_th")), _num(lp.get("sniper_th"))
-    if any(math.isnan(x) for x in (val, mm, sn)):
-        return None, R_NO_BAR
-    if not (val <= mm <= sn):
-        return None, R_BAD_BAR
-    if f"{key}|{league}" not in ctx["applied"]:
-        return None, R_NOT_APPLIED
-    status = "PROVEN" if lp.get("approved") is True else str(lp.get("status") or "UNPROVEN")
-    return {"valuable": val, "marksman": mm, "sniper": sn, "status": status,
-            "evidence": str(lp.get("evidence") or "")}, ""
-
-
-def tier_for(edge: float, b: dict) -> str:
-    from src.side_thresholds import tier_for as _tier
-    return _tier(edge, (b["sniper"], b["marksman"], b["valuable"]))
+    # owner 2026-11-11: a legacy three-tier entry (no cell) is no bar any more - one bar per cell
+    return None, R_NO_BAR
 
 
 # ── qualification and selection ─────────────────────────────────────────────────────────────────
+#: panel market x side -> the study market-side of its cell (src/bars_opt/study.MARKET_SIDES)
+_MSIDE = {("OU25", "OVER"): "over25_over", ("OU25", "UNDER"): "over25_under", ("BTTS", "YES"): "btts_yes",
+          ("OVER15", "OVER"): "over15_over", ("OVER35", "OVER"): "over35_over"}
+
+
 def qualify(cands: pd.DataFrame, ctx: dict) -> pd.DataFrame:
-    """Candidates + edge / tier / bars / reason ("" = qualifies). Pure."""
+    """Candidates + edge / tier (QUALIFIED or "") / slot / cell status / p_used / reason ("" = qualifies). Pure.
+    A candidate qualifies ONLY on its league x market x side cell's one owner-applied bar."""
     d = LW._plain(cands.copy()) if len(cands) else cands.copy()
     if d.empty:
         return d.assign(edge=pd.Series(dtype=float), tier="", reason="")
-    edge, tier, reason, bv, bm, bs, bst, bev, evr = [], [], [], [], [], [], [], [], []
+    from src.bars_opt import serve as BS
+    cols = {k: [] for k in ("edge", "tier", "reason", "bar_valuable", "bar_status", "bar_evidence", "slot",
+                            "cell_status", "p_used", "fair", "mside", "track")}
     for r in d.to_dict("records"):
         pm, pf = _num(r.get("p_model_raw")), _num(r.get("p_market_fair"))
         e = pm - pf if not (math.isnan(pm) or math.isnan(pf)) else float("nan")
         b, why = league_bars(ctx, str(r.get("league")), str(r.get("market")), str(r.get("side")))
-        t, ev_rank = "", float("nan")
+        t, slot, pu = "", "", float("nan")
         if str(r.get("price_quality_state")) not in LW.PRICED_STATES or math.isnan(e) or not (_num(r.get("odds")) > 1):
             why = R_NO_PRICE
-        elif b is not None and "cell" in b:
-            # the OPTIMIZED cell decides (src/bars_opt/serve.py): its probability source, measure, odds range
-            from src.bars_opt import serve as BS
+        elif b is not None:
+            # the cell decides (src/bars_opt/serve.py): its probability source, measure, odds range, ONE bar
             res = BS.score(pd.DataFrame([{"league": str(r.get("league")), "p_side": pm, "fair": pf,
                                           "odds": _num(r.get("odds"))}]), b["cell"])
             t = str(res["tier"].iloc[0] or "")
             if not t:
-                why, t = (R_BELOW if res["reason"].iloc[0] == BS.R_BELOW else str(res["reason"].iloc[0])), "AVOID"
+                why = R_BELOW if res["reason"].iloc[0] == BS.R_BELOW else str(res["reason"].iloc[0])
             else:
-                ev_rank = _num(res["ev_est"].iloc[0])
-        elif b is not None:
-            t = tier_for(e, b)
-            if t == "AVOID":
-                why = R_BELOW
-        edge.append(e)
-        tier.append(t if not why else "")
-        reason.append(why)
-        bv.append(b["valuable"] if b else float("nan"))
-        bm.append(b["marksman"] if b else float("nan"))
-        bs.append(b["sniper"] if b else float("nan"))
-        bst.append(b["status"] if b else "")
-        bev.append(b["evidence"] if b else "")
-        evr.append(ev_rank)
-    return d.assign(edge=edge, tier=tier, reason=reason, bar_valuable=bv, bar_marksman=bm, bar_sniper=bs,
-                    bar_status=bst, bar_evidence=bev, ev_rank=evr)
+                pu = _num(res["p_used"].iloc[0])
+                t2 = bool(res["tier2_ok"].iloc[0]) if pd.notna(res["tier2_ok"].iloc[0]) else False
+                slot = SLOT_TIER2 if (str(res["band"].iloc[0]) == "BAND_VM" and t2) else SLOT_TOP
+        cols["edge"].append(e)
+        cols["tier"].append(t if not why else "")
+        cols["reason"].append(why)
+        cols["bar_valuable"].append(b["valuable"] if b else float("nan"))
+        cols["bar_status"].append(b["status"] if b else "")
+        cols["bar_evidence"].append(b["evidence"] if b else "")
+        cols["slot"].append(slot if not why else "")
+        cols["cell_status"].append(b["status"] if b else "")
+        cols["p_used"].append(pu)
+        cols["fair"].append(pf)
+        cols["mside"].append(_MSIDE.get((str(r.get("market")), str(r.get("side")).upper()), ""))
+        cols["track"].append(str(r.get("model_type") or ""))
+    return d.assign(**cols)
+
+
+# ── T3 ranking (owner 2026-11-11; protocol top3-ranking-paper/1, the research code) ─────────────────────
+def t3_keys(q: pd.DataFrame, stats: pd.DataFrame) -> pd.DataFrame:
+    """q + t3_key / t3_has_stat from src.research.top3_ranking.rank_key (rule R3_CAL_EV_LCB). Pure."""
+    from src.research import top3_ranking as TR
+    if q is None or q.empty:
+        return q
+    b = q.assign(odds=pd.to_numeric(q["odds"], errors="coerce"), p_used=pd.to_numeric(q["p_used"], errors="coerce"),
+                 fair=pd.to_numeric(q["fair"], errors="coerce"))
+    k = TR.rank_key(b[TR.CELL + ["fair", "p_used", "odds"]].reset_index(drop=True),
+                    stats if stats is not None else pd.DataFrame(columns=TR.CELL + TR.STAT_COLS), T3_RULE)
+    out = q.copy()
+    out["t3_key"] = k["key"].to_numpy()
+    out["t3_has_stat"] = k["has_stat"].to_numpy()
+    return out
+
+
+def load_t3_stats(od: Path) -> pd.DataFrame | None:
+    """The FROZEN per-cell T3 statistics (lam, lam_se per track x league x market-side), or None."""
+    from src.research import top3_ranking as TR
+    p = Path(od) / T3_STATS_NAME
+    if not p.exists():
+        return None
+    doc = _read_json(p)
+    rows = doc.get("cells")
+    if not isinstance(rows, list):
+        return None
+    return pd.DataFrame(rows, columns=TR.CELL + TR.STAT_COLS) if rows else pd.DataFrame(columns=TR.CELL + TR.STAT_COLS)
+
+
+def build_t3_stats(universe_dir: Path, ctx: dict, before: str) -> dict:
+    """Per-cell T3 statistics from the committed OWN-PRICE study universes, rows dated < `before`, every priced
+    row of the cell's league x market-side scored by the cell's SERVED source within its odds range (protocol
+    live_statistics.calibration_rows_T2_T3; research cell_stats). Statistics only: no price is written."""
+    from src.bars_opt import serve as BS
+    from src.bars_opt import study as S
+    from src.research import top3_ranking as TR
+    cut = pd.Timestamp(before)
+    frames = []
+    for track in ("standard", "new_format"):
+        p = Path(universe_dir) / f"universe_{track}.parquet"
+        if not p.exists():
+            continue
+        u = pd.read_parquet(p)
+        for (mk, sd), mside in _MSIDE.items():
+            f = S.family_frame(u, mside)
+            f = f[f["date"] < cut]
+            for lg, g in f.groupby("league"):
+                b, why = league_bars(ctx, str(lg), mk, sd)
+                if b is None:
+                    continue
+                cell = b["cell"]
+                rng = S.in_odds_range(g, cell.get("odds_max"), cell.get("odds_min"))
+                g = g[rng]
+                if g.empty:
+                    continue
+                pu = S.source_fn(cell["source"], cell["source_params"])(g.assign(league=str(lg)))
+                frames.append(pd.DataFrame({"track": track, "league": str(lg), "mside": mside,
+                                            "p_used": np.asarray(pu, float), "fair": g["fair"].to_numpy(float),
+                                            "won": g["won"].to_numpy(float)}))
+    rows = pd.concat(frames, ignore_index=True) if frames else None
+    st = TR.cell_stats(None, rows)
+    recs = json.loads(st.to_json(orient="records")) if len(st) else []
+    return {"rule": T3_RULE, "protocol": "top3-ranking-paper/1", "before": str(cut.date()),
+            "universe_dir": str(universe_dir), "cells": recs,
+            "cells_with_stat": int(st["lam"].notna().sum()) if len(st) else 0}
 
 
 def _direction(market: str, side: str) -> str | None:
@@ -267,7 +348,7 @@ def _direction(market: str, side: str) -> str | None:
 
 
 def select_week(q: pd.DataFrame, freeze: pd.Timestamp, issue: pd.Timestamp,
-                committed: dict | None = None) -> tuple[pd.DataFrame, dict]:
+                committed: dict | None = None, stats: pd.DataFrame | None = None) -> tuple[pd.DataFrame, dict]:
     """TOP-3 of ONE league-week from qualified candidates `q` (qualify()). Returns (picks with
     top3_rank 1..k, k <= 3, never padded; {reason: count} for every candidate not picked). Pure."""
     committed = committed or {}
@@ -277,6 +358,7 @@ def select_week(q: pd.DataFrame, freeze: pd.Timestamp, issue: pd.Timestamp,
         excluded[k] += 1
     if q is None or q.empty:
         return q.iloc[0:0] if q is not None else pd.DataFrame(), dict(excluded)
+    q = t3_keys(q.reset_index(drop=True), stats)
     fs = LW._ts(q["first_seen_at"])
     ko = LW._ts(q["kickoff_utc"])
     pool = []
@@ -286,13 +368,16 @@ def select_week(q: pd.DataFrame, freeze: pd.Timestamp, issue: pd.Timestamp,
         elif r.get("reason"):
             bump(r["reason"])
         else:
-            # a cell-served candidate ranks by its cell's expected value first (the study's TOP-3 rule,
-            # src/bars_opt/study.top3: ev_est descending), then RS-1; a legacy-bar candidate by RS-1 alone
-            evk = _num(r.get("ev_rank"))
-            pool.append(((0, -evk) if not math.isnan(evk) else (1, 0.0), LW.rs1_key(r), i))
+            # owner 2026-11-11: TOP before TIER2 (TIER2 only fills empty slots); then T3 (cells with a
+            # statistic first, higher key first); then kickoff, then fixture. No EV anywhere.
+            key = _num(r.get("t3_key"))
+            has = bool(r.get("t3_has_stat")) and not math.isnan(key)
+            kick = ko.iloc[i].value if pd.notna(ko.iloc[i]) else float("inf")
+            pool.append(((0 if r.get("slot") != SLOT_TIER2 else 1), (0, -key) if has else (1, 0.0), kick,
+                         str(r.get("fixture_id")), i))
     pool.sort()
     taken, dirs = [], {}
-    for _ev, _key, i in pool:
+    for *_k, i in pool:
         r = q.iloc[i]
         if len(taken) >= TOP_N:
             bump(R_RANK)
@@ -329,7 +414,7 @@ def policy_switch(policy: dict, league: str) -> str:
 
 def freeze_due(cands: pd.DataFrame, weeks_done: set, ctx: dict, now: pd.Timestamp, lead_min: float,
                committed: dict | None = None, policy: dict | None = None,
-               real_checker=None) -> tuple[pd.DataFrame, pd.DataFrame]:
+               real_checker=None, stats: pd.DataFrame | None = None) -> tuple[pd.DataFrame, pd.DataFrame]:
     """(new pick rows, new week rows) for every league-week whose FREEZE has passed and that is not
     decided yet. A week with 0 picks is still recorded (decided once, with its reasons). Pure apart
     from the injected policy / checker."""
@@ -349,7 +434,7 @@ def freeze_due(cands: pd.DataFrame, weeks_done: set, ctx: dict, now: pd.Timestam
         if now < freeze:
             continue
         q = qualify(g, ctx)
-        picks, excl = select_week(q, freeze, now, committed)
+        picks, excl = select_week(q, freeze, now, committed, stats)
         league = str(g["league"].iloc[0])
         n_q = int((q["reason"] == "").sum()) if len(q) else 0
         weeks_out.append({"selection_mode": SELECTION_MODE, "version": VERSION, "league_week_id": week,
@@ -365,9 +450,9 @@ def freeze_due(cands: pd.DataFrame, weeks_done: set, ctx: dict, now: pd.Timestam
                 "pick_id": LW.research_id(VERSION, week, str(r["market"]), str(r["fixture_id"]), str(r["side"])),
                 "selection_mode": SELECTION_MODE, "version": VERSION, "league_week_id": week,
                 "top3_rank": int(r["top3_rank"]), "week_lock_ts": LW._stamp(lock), "freeze_ts": LW._stamp(freeze),
-                "issued_at": stamp, "edge": LW._r(r["edge"]), "tier": r["tier"],
-                "bar_valuable": LW._r(r["bar_valuable"]), "bar_marksman": LW._r(r["bar_marksman"]),
-                "bar_sniper": LW._r(r["bar_sniper"]), "bar_source": BAR_SOURCE,
+                "issued_at": stamp, "edge": LW._r(r["edge"]), "slot": r["slot"], "cell_status": r["cell_status"],
+                "p_used": LW._r(r["p_used"]), "t3_key": LW._r(r["t3_key"]), "t3_has_stat": bool(r["t3_has_stat"]),
+                "bar_valuable": LW._r(r["bar_valuable"]), "bar_source": BAR_SOURCE,
                 "bar_status": r["bar_status"], "bar_evidence": r["bar_evidence"],
                 "policy_switch": sw, "track_is_real": bool(real_checker(r.get("model_type"), mk, r.get("side"),
                                                                      r.get("league"))),
@@ -417,13 +502,18 @@ def run(now=None, out_dir: Path | None = None, root: Path | None = None, env: di
                 from src.direction_guard import committed as _committed
                 committed = _committed()
             from src.direction_guard import real_track_checker
-            ws = weeks_store(od)
-            done = set(ws.read()["league_week_id"]) if len(ws.read()) else set()
-            picks, weeks = freeze_due(cs.read(), done, bars_context(root), now, lead, committed, _policy(),
-                                      real_track_checker())
-            res["picks_appended"] = picks_store(od).append(picks)
-            res["weeks_decided"] = ws.append(weeks)
-            res["status"] = "OK"
+            stats = load_t3_stats(od)
+            if stats is None:
+                # fail closed (owner 2026-11-11): no frozen T3 statistics, no ranking, nothing frozen or sent
+                res["status"] = "T3_STATS_MISSING"
+            else:
+                ws = weeks_store(od)
+                done = set(ws.read()["league_week_id"]) if len(ws.read()) else set()
+                picks, weeks = freeze_due(cs.read(), done, bars_context(root), now, lead, committed, _policy(),
+                                          real_track_checker(), stats)
+                res["picks_appended"] = picks_store(od).append(picks)
+                res["weeks_decided"] = ws.append(weeks)
+                res["status"] = "OK"
         write_report(now, od, lead)
     except Exception as e:                                             # noqa: BLE001
         log.warning(f"[top3_league] run skipped ({type(e).__name__}: {e}) - other tips unaffected")
@@ -534,9 +624,10 @@ def message(picks: pd.DataFrame) -> str:
         side = "Yes" if str(r["side"]) == "YES" else str(r["side"]).title()
         mk = lab.get(str(r["market"]), str(r["market"]))
         lines.append(f"{r['top3_rank']}. {escape(str(r['home_team']))} v {escape(str(r['away_team']))} - "
-                     f"{mk} {side} @ {float(r['odds']):.2f} · {r['tier']} (edge {100 * float(r['edge']):.1f}%, "
-                     f"league bar {r['bar_status']})")
-    lines.append("<i>Bars: this league's own, owner-approved. Fewer than 3 = fewer cleared the bar.</i>")
+                     f"{mk} {side} @ {float(r['odds']):.2f} · {r['slot']} · {r['cell_status']} "
+                     f"(edge {100 * float(r['edge']):.1f}%)")
+    lines.append("<i>Paper track. Each tip cleared its league's own owner-approved bar; ranked by cautious "
+                 "calibrated value (T3). Fewer than 3 = fewer cleared the bar.</i>")
     return "\n".join(lines)
 
 
@@ -580,6 +671,19 @@ def _cli(argv: list[str]) -> int:
     if cmd == "report":
         rep = write_report(lead=freeze_lead_min())
         print(json.dumps({k: v for k, v in rep.items() if k != "leagues"}, default=str))
+        return 0
+    if cmd == "t3-stats":
+        # python -m src.top3_league t3-stats YYYY-MM-DD   (protocol: frozen 2026-11-20, before the first pick)
+        if len(argv) < 2:
+            print("usage: python -m src.top3_league t3-stats <before YYYY-MM-DD>")
+            return 2
+        out = OUT / T3_STATS_NAME
+        if out.exists():
+            print(f"{out} exists: the T3 statistics are FROZEN (protocol: never updated during the test)")
+            return 1
+        doc = build_t3_stats(ROOT / "output" / "bars_opt", bars_context(), argv[1])
+        out.write_text(json.dumps(doc, indent=1, default=str) + "\n", encoding="utf-8")
+        print(json.dumps({k: v for k, v in doc.items() if k != "cells"}, default=str))
         return 0
     print(__doc__)
     return 2

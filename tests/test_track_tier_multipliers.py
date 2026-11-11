@@ -28,22 +28,17 @@ def test_ou25_tiers_are_staked_equally_and_valuable_is_staked():
             assert req["VALUABLE"] > 0
 
 
-def test_btts_keeps_the_global_ladder():
+def test_no_tier_ladder_anywhere_owner_2026_11_11():
+    """Owner 2026-11-11 ("Clean rebuild"): tier multipliers are retired from staking - every tip, whatever
+    (historical) code it carries, stakes flat; the policy's ladders are never read."""
     pol = load_policy()
-    # BTTS side is YES: "OVER" is not a BTTS side, and the stake-contract guard (phase2/contracts)
-    # rightly refuses it as NO_REAL_STAKE_INVALID_SIDE before the tier ladder is reached
-    out = size_day(_sel("BTTS", ["SNIPER", "MARKSMAN", "VALUABLE"], side="YES"), pol, bankroll=100.0, peak=100.0)
-    mult = dict(zip(out["signal_tier"], out["tier_multiplier"]))
-    assert mult["SNIPER"] == pol["tier_multipliers"]["SNIPER"]
-    assert mult["MARKSMAN"] == pol["tier_multipliers"]["MARKSMAN"]
-    assert mult["VALUABLE"] == 0.0 and out.loc[out.signal_tier == "VALUABLE", "reason"].iloc[0] == "TIER_NOT_STAKED"
-
-
-def test_no_override_means_global_ladder():
-    pol = load_policy()
-    pol = {**pol, "track_tier_multipliers": {}}
-    out = size_day(_sel("OU25", ["SNIPER", "VALUABLE"]), pol, bankroll=100.0, peak=100.0)
-    assert dict(zip(out["signal_tier"], out["tier_multiplier"]))["VALUABLE"] == 0.0
+    out = size_day(_sel("BTTS", ["QUALIFIED", "SNIPER", "MARKSMAN", "VALUABLE"], side="YES"), pol,
+                   bankroll=100.0, peak=100.0)
+    assert set(out["tier_multiplier"]) == {1.0}
+    assert "TIER_NOT_STAKED" not in set(out["reason"])
+    pol2 = {**pol, "track_tier_multipliers": {}, "tier_multipliers": {"SNIPER": 9.0, "VALUABLE": 0.0}}
+    out2 = size_day(_sel("OU25", ["SNIPER", "VALUABLE"]), pol2, bankroll=100.0, peak=100.0)
+    assert set(out2["tier_multiplier"]) == {1.0}
 
 
 @pytest.fixture(autouse=True)

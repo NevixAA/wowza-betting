@@ -687,10 +687,9 @@ def mode_predict() -> None:
     if api_key:
         tips = _filter_by_lineup(tips)
 
-    sniper   = tips[tips["tier"] == "SNIPER"]
-    marksman = tips[tips["tier"] == "MARKSMAN"]
-    valuable = tips[tips["tier"] == "VALUABLE"]
-    print(f"[predict] SNIPER:{len(sniper)}  MARKSMAN:{len(marksman)}  VALUABLE:{len(valuable)}")
+    qualified = tips[tips["tier"] == "QUALIFIED"]          # owner 2026-11-11: one bar, no tiers
+    paper     = tips[tips["tier"] == "PAPER"]
+    print(f"[predict] TIPS (lowest props bar cleared, UNPROVEN):{len(qualified)}  PAPER:{len(paper)}")
 
     n_new = append_player_signals(tips)
     if n_new:

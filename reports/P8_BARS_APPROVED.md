@@ -6,6 +6,34 @@
 
 **Nothing is PROVEN.** Statuses below are per league x market; there is no global bar anywhere.
 
+## Clean rebuild (owner 2026-11-11): one bar per cell, no tiers
+
+"the old sniper/mm/valuable dont important anymore for the future tips, only as study and optimize maybe, do not
+use them". A future tip qualifies ONLY by its cell's one approved bar and carries its cell status (PROMISING /
+UNPROVEN) and, if picked, TOP-3 or TIER2. SNIPER / MARKSMAN / VALUABLE are never computed, shown or stored on a
+future tip; history keeps its old columns for study.
+
+**Which bar is the qualifying one, proved from the study.** Each cell holds valuable_th <= marksman_th <=
+sniper_th. The approved study measured every bet at **valuable_th**: `src.bars_opt.study.apply_bars` keeps every
+row with measure >= valuable_th (the marksman / sniper bars only label rows above it), and the FINAL scores, the
+fresh-holdout scores and every cell's `study_final.bets` in the proposal are computed on those rows. Check on
+`output/bars_opt/study_58f10476` (the study behind this proposal): in all 40 scored cells the FINAL bet count equals
+the number of rows with measure >= valuable_th, 0 mismatches; qualifying at marksman_th would drop bets in 14 of
+the 40. So the one bar is `valuable_th`, served as `qualifying_bar` on every tip.
+
+**Props (until per-league props bars exist):** a props tip qualifies at the props cell's current lowest qualifying
+bar - the former VALUABLE gates, the same for every league - and is UNPROVEN:
+
+| Props market | Qualifies when |
+|---|---|
+| Anytime scorer (goals), SOT 1+ (sot) | EV >= 0.15, relative edge >= 0.12 (odds < 4) / 0.20 (odds 4-6) / 0.30 (odds >= 6), and GES >= 0.35 |
+| Assist (assists) | EV >= 0.15 and the same odds-banded relative-edge floor |
+| Score 2+, SOT 2+ / 3+ / 4+, Carded, defenders' anytime scorer | never a tip: data-only PAPER rows, as before (capped money-losers) |
+
+**TOP-3** = tips from the retrained models that clear their cell's bar, ranked by T3 (cautious calibrated value per
+cell, protocol top3-ranking-paper/1, 363e7f41); the old EV ranking is dropped; TIER2 only fills empty slots; never
+padded. A paper track in the Clean Record.
+
 ## How these bars were made
 
 * Predictions rebuilt on the corrected history (owner "Rebuild first"): data-truth-100 `2e6e6e745`, frame `58f10476f4c82d7b` (was `8d973b3f2f1f04f7`); standard run_20261110T203611Z, new_format run_20261110T203319Z; champion_recipe unchanged on both tracks.
@@ -14,11 +42,14 @@
 
 ## Staking this season (owner 2026-11-11)
 
-| Staked cell | State | Base fraction | Max odds | Tier multipliers S / M / V |
-|---|---|---|---|---|
-| `new_format|BTTS|Argentina Primera Division` | ACTIVE | 0.0125 | 2.6 | 1.1 / 0.9 / 1.0 |
-| `standard|OU25_OVER|La Liga 2` | ACTIVE_LOW | 0.005 | HARD ceiling (no cell range) | 1.0 / 1.0 / 1.0 |
-| `standard|BTTS|La Liga 2` | ACTIVE_LOW | 0.005 | 2.5 | 1.0 / 1.0 / 1.0 |
+| Staked cell | State | Base fraction (flat, every tip) | Max odds |
+|---|---|---|---|
+| `new_format|BTTS|Argentina Primera Division` | ACTIVE | 0.0125 | 2.6 |
+| `standard|OU25_OVER|La Liga 2` | ACTIVE_LOW | 0.005 | HARD ceiling (no cell range) |
+| `standard|BTTS|La Liga 2` | ACTIVE_LOW | 0.005 | 2.5 |
+
+**Flat per cell (owner 2026-11-11 "Clean rebuild"):** no tier multiplier anywhere - Argentina's former 1.1 / 0.9 /
+1.0 is retired; every tip that clears the cell's one bar stakes the base fraction.
 
 Every other cell is PAPER. **Sweden Allsvenskan NF Under 2.5** is PROMISING but stays PAPER (owner rule 2026-11-02, track paper_reason). Brazil NF BTTS, Serie B BTTS and Serie B Over 2.5 dropped to PAPER (no longer PROMISING). Cloudbet stays PAPER_ONLY; wowza-exec cells are all PAPER (dry run 68 cells, 3 USA MLS held BLOCKED).
 

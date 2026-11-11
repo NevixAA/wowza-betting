@@ -44,8 +44,17 @@ def held_by_owner(policy: dict, track_key: str) -> str | None:
     return t.get("paper_reason") if t.get("state") == "PAPER" and t.get("paper_reason") else None
 
 
+def strip_tiers(entry: dict) -> dict:
+    """A cell entry without tier multipliers (owner 2026-11-11: flat per cell, tiers retired)."""
+    e = {k: v for k, v in entry.items() if k not in ("tier_multipliers", "tier_multipliers_note")}
+    e.setdefault("stake_note", "flat per cell (owner 2026-11-11 'Clean rebuild'): the base fraction on every tip "
+                               "that clears the cell's one approved bar; the old 1.1 / 0.9 / 1.0 tier "
+                               "multipliers are retired")
+    return e
+
+
 def build_cells(proposal: dict, current: dict, policy: dict | None = None, held: list | None = None) -> dict:
-    cells = {k: current[k] for k in PROTECTED if k in current}
+    cells = {k: strip_tiers(current[k]) for k in PROTECTED if k in current}
     for c in promising_cells(proposal):
         tkey = f"{c['track']}|{TRACK_MARKET[c['mside']]}"
         key = f"{tkey}|{c['league']}"
@@ -64,10 +73,7 @@ def build_cells(proposal: dict, current: dict, policy: dict | None = None, held:
             entry["max_odds_source"] = "the cell's own odds_max"
         else:
             entry["max_odds_source"] = "the cell has no odds range: the reader's HARD max_odds ceiling applies"
-        entry["tier_multipliers"] = {"SNIPER": 1.0, "MARKSMAN": 1.0, "VALUABLE": 1.0}
-        entry["tier_multipliers_note"] = ("flat at every tier: the cell's PROMISING evidence (study FINAL) is flat "
-                                          "stakes on every tip at or above its VALUABLE bar")
-        cells[key] = entry
+        cells[key] = strip_tiers(entry)
     return cells
 
 

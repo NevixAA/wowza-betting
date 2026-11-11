@@ -14,7 +14,7 @@
   },
   "bankroll_policy": {
    "path": "config/bankroll_policy.json",
-   "sha256_16": "d4e1a6bdf93aaa40"
+   "sha256_16": "9bbe8827b794925b"
   },
   "current_champions": {
    "path": "models/registry/current_champions.json",
@@ -109,12 +109,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0125,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9,
-     "VALUABLE": 1.0
-    },
-    "tier_multiplier_source": "cell_staking",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": 3.0
    },
    "evidence_status": "ADEQUATE",
@@ -179,12 +175,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.0,
-     "MARKSMAN": 1.0,
-     "VALUABLE": 1.0
-    },
-    "tier_multiplier_source": "track_tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "INSUFFICIENT",
@@ -249,12 +241,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.0,
-     "MARKSMAN": 1.0,
-     "VALUABLE": 1.0
-    },
-    "tier_multiplier_source": "track_tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "INSUFFICIENT",
@@ -317,11 +305,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "ADEQUATE",
@@ -384,11 +369,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "NONE",
@@ -451,11 +433,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "INSUFFICIENT",
@@ -520,12 +499,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.0,
-     "MARKSMAN": 1.0,
-     "VALUABLE": 1.0
-    },
-    "tier_multiplier_source": "track_tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "INSUFFICIENT",
@@ -590,12 +565,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.0,
-     "MARKSMAN": 1.0,
-     "VALUABLE": 1.0
-    },
-    "tier_multiplier_source": "track_tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "INSUFFICIENT",
@@ -658,11 +629,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "NONE",
@@ -725,11 +693,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "NONE",
@@ -792,11 +757,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "INSUFFICIENT",
@@ -861,12 +823,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.0,
-     "MARKSMAN": 1.0,
-     "VALUABLE": 1.0
-    },
-    "tier_multiplier_source": "track_tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "INSUFFICIENT",
@@ -931,12 +889,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.0,
-     "MARKSMAN": 1.0,
-     "VALUABLE": 1.0
-    },
-    "tier_multiplier_source": "track_tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "INSUFFICIENT",
@@ -999,11 +953,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "INSUFFICIENT",
@@ -1066,11 +1017,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "NONE",
@@ -1133,11 +1081,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "NONE",
@@ -1201,12 +1146,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.0,
-     "MARKSMAN": 1.0,
-     "VALUABLE": 1.0
-    },
-    "tier_multiplier_source": "track_tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "INSUFFICIENT",
@@ -1270,12 +1211,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.0,
-     "MARKSMAN": 1.0,
-     "VALUABLE": 1.0
-    },
-    "tier_multiplier_source": "track_tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "ADEQUATE",
@@ -1338,11 +1275,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "NONE",
@@ -1405,11 +1339,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "INSUFFICIENT",
@@ -1472,11 +1403,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "INSUFFICIENT",
@@ -1540,12 +1468,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.0,
-     "MARKSMAN": 1.0,
-     "VALUABLE": 1.0
-    },
-    "tier_multiplier_source": "track_tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "INSUFFICIENT",
@@ -1609,12 +1533,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.0,
-     "MARKSMAN": 1.0,
-     "VALUABLE": 1.0
-    },
-    "tier_multiplier_source": "track_tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "INSUFFICIENT",
@@ -1677,11 +1597,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "NONE",
@@ -1744,11 +1661,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "NONE",
@@ -1811,11 +1725,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "NONE",
@@ -1880,12 +1791,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.0,
-     "MARKSMAN": 1.0,
-     "VALUABLE": 1.0
-    },
-    "tier_multiplier_source": "track_tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "NONE",
@@ -1950,12 +1857,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.0,
-     "MARKSMAN": 1.0,
-     "VALUABLE": 1.0
-    },
-    "tier_multiplier_source": "track_tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "INSUFFICIENT",
@@ -2018,11 +1921,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "NONE",
@@ -2085,11 +1985,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "NONE",
@@ -2152,11 +2049,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "INSUFFICIENT",
@@ -2221,12 +2115,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.0,
-     "MARKSMAN": 1.0,
-     "VALUABLE": 1.0
-    },
-    "tier_multiplier_source": "track_tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "INSUFFICIENT",
@@ -2291,12 +2181,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.0,
-     "MARKSMAN": 1.0,
-     "VALUABLE": 1.0
-    },
-    "tier_multiplier_source": "track_tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "INSUFFICIENT",
@@ -2359,11 +2245,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "NONE",
@@ -2426,11 +2309,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "NONE",
@@ -2493,11 +2373,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "NONE",
@@ -2562,12 +2439,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.0,
-     "MARKSMAN": 1.0,
-     "VALUABLE": 1.0
-    },
-    "tier_multiplier_source": "track_tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "INSUFFICIENT",
@@ -2632,12 +2505,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.0,
-     "MARKSMAN": 1.0,
-     "VALUABLE": 1.0
-    },
-    "tier_multiplier_source": "track_tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "INSUFFICIENT",
@@ -2700,11 +2569,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "NONE",
@@ -2767,11 +2633,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "NONE",
@@ -2834,11 +2697,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "INSUFFICIENT",
@@ -2903,12 +2763,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.0,
-     "MARKSMAN": 1.0,
-     "VALUABLE": 1.0
-    },
-    "tier_multiplier_source": "track_tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "NONE",
@@ -2973,12 +2829,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.0,
-     "MARKSMAN": 1.0,
-     "VALUABLE": 1.0
-    },
-    "tier_multiplier_source": "track_tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "INSUFFICIENT",
@@ -3041,11 +2893,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "NONE",
@@ -3108,11 +2957,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "NONE",
@@ -3175,11 +3021,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "NONE",
@@ -3244,12 +3087,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.0,
-     "MARKSMAN": 1.0,
-     "VALUABLE": 1.0
-    },
-    "tier_multiplier_source": "track_tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "NONE",
@@ -3314,12 +3153,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.0,
-     "MARKSMAN": 1.0,
-     "VALUABLE": 1.0
-    },
-    "tier_multiplier_source": "track_tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "NONE",
@@ -3382,11 +3217,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "NONE",
@@ -3449,11 +3281,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "NONE",
@@ -3516,12 +3345,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.005,
-    "tier_multipliers": {
-     "SNIPER": 1.0,
-     "MARKSMAN": 1.0,
-     "VALUABLE": 1.0
-    },
-    "tier_multiplier_source": "cell_staking",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "INSUFFICIENT",
@@ -3585,12 +3410,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.005,
-    "tier_multipliers": {
-     "SNIPER": 1.0,
-     "MARKSMAN": 1.0,
-     "VALUABLE": 1.0
-    },
-    "tier_multiplier_source": "cell_staking",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "ADEQUATE",
@@ -3654,12 +3475,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.0,
-     "MARKSMAN": 1.0,
-     "VALUABLE": 1.0
-    },
-    "tier_multiplier_source": "track_tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "INSUFFICIENT",
@@ -3722,11 +3539,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "INSUFFICIENT",
@@ -3789,11 +3603,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "NONE",
@@ -3856,11 +3667,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "INSUFFICIENT",
@@ -3924,12 +3732,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.0,
-     "MARKSMAN": 1.0,
-     "VALUABLE": 1.0
-    },
-    "tier_multiplier_source": "track_tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "INSUFFICIENT",
@@ -3993,12 +3797,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.0,
-     "MARKSMAN": 1.0,
-     "VALUABLE": 1.0
-    },
-    "tier_multiplier_source": "track_tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "INSUFFICIENT",
@@ -4061,11 +3861,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "INSUFFICIENT",
@@ -4128,11 +3925,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "NONE",
@@ -4195,11 +3989,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "INSUFFICIENT",
@@ -4263,12 +4054,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.0,
-     "MARKSMAN": 1.0,
-     "VALUABLE": 1.0
-    },
-    "tier_multiplier_source": "track_tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "INSUFFICIENT",
@@ -4332,12 +4119,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.0,
-     "MARKSMAN": 1.0,
-     "VALUABLE": 1.0
-    },
-    "tier_multiplier_source": "track_tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "INSUFFICIENT",
@@ -4400,11 +4183,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "INSUFFICIENT",
@@ -4467,11 +4247,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "NONE",
@@ -4534,11 +4311,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "INSUFFICIENT",
@@ -4602,12 +4376,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.0,
-     "MARKSMAN": 1.0,
-     "VALUABLE": 1.0
-    },
-    "tier_multiplier_source": "track_tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "INSUFFICIENT",
@@ -4671,12 +4441,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.0,
-     "MARKSMAN": 1.0,
-     "VALUABLE": 1.0
-    },
-    "tier_multiplier_source": "track_tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "INSUFFICIENT",
@@ -4739,11 +4505,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "INSUFFICIENT",
@@ -4806,11 +4569,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "INSUFFICIENT",
@@ -4873,11 +4633,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "NONE",
@@ -4942,12 +4699,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.0,
-     "MARKSMAN": 1.0,
-     "VALUABLE": 1.0
-    },
-    "tier_multiplier_source": "track_tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "INSUFFICIENT",
@@ -5012,12 +4765,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.0,
-     "MARKSMAN": 1.0,
-     "VALUABLE": 1.0
-    },
-    "tier_multiplier_source": "track_tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "ADEQUATE",
@@ -5080,11 +4829,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "NONE",
@@ -5147,11 +4893,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "NONE",
@@ -5214,11 +4957,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "INSUFFICIENT",
@@ -5283,12 +5023,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.0,
-     "MARKSMAN": 1.0,
-     "VALUABLE": 1.0
-    },
-    "tier_multiplier_source": "track_tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "INSUFFICIENT",
@@ -5353,12 +5089,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.0,
-     "MARKSMAN": 1.0,
-     "VALUABLE": 1.0
-    },
-    "tier_multiplier_source": "track_tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "INSUFFICIENT",
@@ -5421,11 +5153,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "NONE",
@@ -5488,11 +5217,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "INSUFFICIENT",
@@ -5555,11 +5281,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "NONE",
@@ -5624,12 +5347,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.0,
-     "MARKSMAN": 1.0,
-     "VALUABLE": 1.0
-    },
-    "tier_multiplier_source": "track_tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "NONE",
@@ -5694,12 +5413,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.0,
-     "MARKSMAN": 1.0,
-     "VALUABLE": 1.0
-    },
-    "tier_multiplier_source": "track_tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "NONE",
@@ -5762,11 +5477,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "NONE",
@@ -5829,11 +5541,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "NONE",
@@ -5896,11 +5605,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "INSUFFICIENT",
@@ -5964,12 +5670,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.0,
-     "MARKSMAN": 1.0,
-     "VALUABLE": 1.0
-    },
-    "tier_multiplier_source": "track_tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "INSUFFICIENT",
@@ -6033,12 +5735,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.0,
-     "MARKSMAN": 1.0,
-     "VALUABLE": 1.0
-    },
-    "tier_multiplier_source": "track_tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "NONE",
@@ -6101,11 +5799,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "INSUFFICIENT",
@@ -6168,11 +5863,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "NONE",
@@ -6235,11 +5927,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "INSUFFICIENT",
@@ -6304,12 +5993,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.0,
-     "MARKSMAN": 1.0,
-     "VALUABLE": 1.0
-    },
-    "tier_multiplier_source": "track_tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "INSUFFICIENT",
@@ -6374,12 +6059,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.0,
-     "MARKSMAN": 1.0,
-     "VALUABLE": 1.0
-    },
-    "tier_multiplier_source": "track_tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "INSUFFICIENT",
@@ -6442,11 +6123,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "NONE",
@@ -6509,11 +6187,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "NONE",
@@ -6576,11 +6251,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "NONE",
@@ -6645,12 +6317,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.0,
-     "MARKSMAN": 1.0,
-     "VALUABLE": 1.0
-    },
-    "tier_multiplier_source": "track_tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "INSUFFICIENT",
@@ -6715,12 +6383,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.0,
-     "MARKSMAN": 1.0,
-     "VALUABLE": 1.0
-    },
-    "tier_multiplier_source": "track_tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "ADEQUATE",
@@ -6783,11 +6447,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "NONE",
@@ -6850,11 +6511,8 @@
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "base_fraction": 0.0,
-    "tier_multipliers": {
-     "SNIPER": 1.1,
-     "MARKSMAN": 0.9
-    },
-    "tier_multiplier_source": "tier_multipliers",
+    "tier_multipliers": null,
+    "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
    },
    "evidence_status": "NONE",

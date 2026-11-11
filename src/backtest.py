@@ -118,7 +118,7 @@ def run_backtest(
             log.warning(f"Window {window_count}: prediction failed — {e}")
             continue
 
-        test_df = evaluate_value(test_df)
+        test_df = evaluate_value(test_df, cells_only=False)   # historical study replay: legacy rows kept
         all_preds.append(test_df)
         window_count += 1
 

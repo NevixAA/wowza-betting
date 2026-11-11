@@ -288,7 +288,7 @@ def settled_tips(include_paper: bool = False) -> pd.DataFrame:
     d["result"] = d["result"].astype(str).str.upper().str.strip()
     from src.tip_day import add_tip_day                    # "yesterday" = the album that carried it
     d = add_tip_day(d, date_col="date")
-    return d[d["tier"].isin(("SNIPER", "MARKSMAN", "VALUABLE"))]
+    return d[d["tier"].isin(("QUALIFIED", "SNIPER", "MARKSMAN", "VALUABLE"))]   # QUALIFIED: tips from 2026-11-21
 
 
 def _res_cell(result: str, pnl) -> tuple[str, tuple]:
@@ -310,7 +310,7 @@ def results_image(day: str) -> list[bytes]:
     y = d[d["tip_day"] == day].copy()
     if y.empty:
         return []
-    y["_t"] = y["tier"].map({"SNIPER": 0, "MARKSMAN": 1, "VALUABLE": 2})
+    y["_t"] = y["tier"].map({"QUALIFIED": 0, "SNIPER": 0, "MARKSMAN": 1, "VALUABLE": 2})
     y = y.sort_values(["_t", "market", "match"])
     st = y[_staked(y) & y["pnl"].notna()]
     pp = y[~_staked(y) & y["pnl"].notna()]

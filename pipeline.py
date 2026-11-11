@@ -57,7 +57,7 @@ from src.model import (train_for_retrain as train_model, load_models,
                         predict_proba as model_predict_proba,
                         FEATURE_COLS as MODEL_FEATURE_COLS)
 from src.betting import generate_bets
-from src.tier_labels import TIER_LABEL_SHORT, tier_label   # display words only (owner 2026-10-26)
+from src.tier_labels import TIER_LABEL_SHORT   # display words only (owner 2026-10-26)
 from src.backtest import (run_backtest, run_side_market_backtest,
                            optimize_side_market_thresholds, optimize_standard_thresholds)
 from src.ledger import (append_tips, append_side_market_tips, append_ht_tips,
@@ -82,7 +82,7 @@ def _load_side_market_thresholds() -> dict:
 
 def _generate_side_bets(preds: "pd.DataFrame", side_markets: dict) -> "pd.DataFrame":
     """
-    Generate SNIPER/MARKSMAN/VALUABLE tips for BTTS / Over 1.5 / Over 3.5.
+    Generate QUALIFIED tips (owner 2026-11-11: one approved bar per cell, no tiers) for BTTS / Over 1.5 / Over 3.5.
     Tiers ONLY on each league's own owner-applied bars in best_params_side_markets.json (sniper,
     marksman AND valuable; src/side_thresholds.own_bars). A league x market without them gets no
     tier (NO_LEAGUE_BAR) - there is no global bar (owner 2026-11-09).
@@ -95,7 +95,7 @@ def _generate_side_bets(preds: "pd.DataFrame", side_markets: dict) -> "pd.DataFr
     import pandas as pd
     import numpy as np
     from src.stake_plan import SIDE_SELECTION_COLUMNS
-    from src.side_thresholds import NO_LEAGUE_BAR, side_bars, tier_for
+    from src.side_thresholds import NO_LEAGUE_BAR
     from src.bars_opt import serve as _BS
     frames = []
     league_params = _load_side_market_thresholds()  # {target: {league: {sniper_th, marksman_th, drop}}}
@@ -192,23 +192,25 @@ def _generate_side_bets(preds: "pd.DataFrame", side_markets: dict) -> "pd.DataFr
         # league is suppressed by policy: every league with its own bars still emits every tip.
         # An OPTIMIZED entry (bars_opt cells, src/bars_opt/serve.py) is decided by its own cell: probability
         # source, edge measure, odds range and bars. A legacy own-bars entry tiers on its bars as before.
+        # ONE BAR PER CELL (owner 2026-11-11, "Clean rebuild"): a tip qualifies ONLY by its league x market x
+        # side cell's owner-approved bar (bars_opt, src/bars_opt/serve.py). A legacy own-bars entry (three
+        # tier thresholds, no cell) no longer tips: NO_LEAGUE_BAR, like a league without bars.
         _bars, _cell = {}, {}
         for lg in df["league"].unique():
             lp = market_params.get(lg, {})
             if isinstance(lp, dict) and _BS.CELL_KEY in lp:
                 _cell[lg], _why = _BS.served_cell(lp, target, lg, "yes")
-                _bars[lg] = None if _cell[lg] is None else (float(_cell[lg]["sniper_th"]),
-                                                            float(_cell[lg]["marksman_th"]),
-                                                            float(_cell[lg]["valuable_th"]), config.THRESHOLD_SOURCE_LEAGUE)
+                _bars[lg] = None if _cell[lg] is None else config.THRESHOLD_SOURCE_LEAGUE
             else:
-                _bars[lg] = side_bars(lp, target, lg)
+                _bars[lg] = None
         _no_bar = sorted(lg for lg, b in _bars.items() if b is None)
         if _no_bar:
             log.info(f"side {target}: {int(df['league'].isin(_no_bar).sum())} fixture(s) in "
                      f"{len(_no_bar)} league(s) not tiered - {NO_LEAGUE_BAR} (no own owner-applied bars): "
                      f"{', '.join(_no_bar)}")
-        df["signal_tier"] = [tier_for(e, _bars[lg]) if lg not in _cell else "AVOID"
-                             for e, lg in zip(df["edge"], df["league"])]
+        df["signal_tier"] = "AVOID"
+        df["cell_status"] = ""
+        df["qualifying_bar"] = np.nan
         df["bar_mode"] = ""
         df["cell_p_used"] = np.nan                   # set below only where a cell scored the tip
         for lg, cell in _cell.items():
@@ -218,12 +220,14 @@ def _generate_side_bets(preds: "pd.DataFrame", side_markets: dict) -> "pd.DataFr
             res = _BS.score(pd.DataFrame({"league": lg, "p_side": df.loc[m, "model_prob"],
                                           "fair": df.loc[m, "fair_prob"], "odds": df.loc[m, "market_odds"]}), cell)
             df.loc[m, "signal_tier"] = res["tier"].where(res["tier"].astype(str) != "", "AVOID").to_numpy()
+            df.loc[m, "cell_status"] = str(cell.get("verdict") or "")
+            df.loc[m, "qualifying_bar"] = float(cell["valuable_th"])
             df.loc[m, "bar_mode"] = cell["mode"]
             df.loc[m, "cell_p_used"] = pd.to_numeric(res["p_used"], errors="coerce").to_numpy()
             ev = [_BS.ev_point(p, o) for p, o in zip(pd.to_numeric(res["p_used"], errors="coerce"),
                                                      df.loc[m, "market_odds"])]
             df.loc[m, "ev"] = np.where(np.isfinite(ev), ev, df.loc[m, "ev"])
-        df["threshold_source"] = [(_bars[lg][3] if _bars[lg] is not None else NO_LEAGUE_BAR)
+        df["threshold_source"] = [(_bars[lg] if _bars[lg] is not None else NO_LEAGUE_BAR)
                                   for lg in df["league"]]
         df = df[df["signal_tier"] != "AVOID"]
         df = df.sort_values("edge", ascending=False)
@@ -231,7 +235,7 @@ def _generate_side_bets(preds: "pd.DataFrame", side_markets: dict) -> "pd.DataFr
         # is kept beside the canonical `odds` for the side_bets.csv / ledger / notify readers;
         # `threshold_source` beside both for the ledger / Telegram / dashboard (not a stake input).
         frames.append(df[list(SIDE_SELECTION_COLUMNS) + ["market_odds", "threshold_source", "bar_mode",
-                                                         "cell_p_used"]])
+                                                         "cell_p_used", "cell_status", "qualifying_bar"]])
 
     if not frames:
         return pd.DataFrame()
@@ -993,25 +997,18 @@ def mode_predict(historical: "pd.DataFrame" = None) -> "pd.DataFrame":
         ]
         display = [c for c in display if c in bets.columns]
 
-        for tier, label, note in [
-            ("SNIPER",   f"{tier_label('SNIPER'):<11}(per-league threshold)", "full stake"),
-            ("MARKSMAN", f"{tier_label('MARKSMAN'):<11}(edge 8%-threshold)",   "3/4 stake"),
-            ("VALUABLE", f"{tier_label('VALUABLE'):<11}(edge 4-8%)",           "half stake / monitor"),
-        ]:
-            rows = bets[bets["signal_tier"] == tier]
-            print("\n" + "=" * 90)
-            print(f"  {label}  — {note}  [{len(rows)} tips]")
-            print("=" * 90)
-            if rows.empty:
-                print("  (none this week)")
-            else:
-                print(rows[display].to_string(index=False))
+        # one list: every tip cleared its cell's one approved bar (owner 2026-11-11: no tiers)
+        print()
+        print("=" * 90)
+        print(f"  TIPS (cell bar cleared)  [{len(bets)} tips]")
+        print("=" * 90)
+        print("  (none this week)" if bets.empty else bets[display].to_string(index=False))
 
         # Both-losing summary
         bl_count = int(preds.get("both_losing", pd.Series(False)).sum()) if "both_losing" in preds.columns else 0
 
-        print(f"\n  {tier_label('SNIPER'):<12}: {(bets['signal_tier'] == 'SNIPER').sum()}")
-        print(f"  VALUE       : {(bets['signal_tier'] == 'VALUE').sum()}")
+        print()
+        print(f"  TIPS        : {len(bets)}")
         print(f"  AVOID       : {len(preds) - len(bets)} fixtures below threshold")
         if bl_count:
             print(f"  BOTH-LOSING : {bl_count} fixtures suppressed (v7 guard active)")

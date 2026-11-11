@@ -21,6 +21,12 @@ from src.integrity import side_edge_devig as SE
 OWN = {"sniper_th": 0.12, "marksman_th": 0.09, "valuable_th": 0.05, "approved": False, "status": "UNPROVEN"}
 
 
+def _cell(league, valuable=0.05):
+    """Owner 2026-11-11: a league's O/U 2.5 tips come ONLY from its owner-applied bars_opt cell (one bar)."""
+    from tests.own_bars import cell_entry
+    return cell_entry("ou25", league, 0.12, 0.09, valuable)
+
+
 @pytest.fixture
 def bars_env(tmp_path, monkeypatch):
     models = tmp_path / "models"
@@ -72,36 +78,39 @@ def test_the_side_thresholds_module_has_no_global_bar():
 
 # ── O/U 2.5 serving (src/betting.evaluate_value) ──────────────────────────────────────────────
 def test_unapproved_league_is_avoid_with_no_league_bar_and_no_stake(bars_env):
-    bars_env(std={"Own League": OWN}, applied=["ou25|Own League"])
-    out = B.evaluate_value(_board(["Own League", "No Bar League"], 0.20))
-    own, nob = out.iloc[0], out.iloc[1]
-    assert own["signal_tier"] == "SNIPER" and own["threshold_source"] == config.THRESHOLD_SOURCE_LEAGUE
+    bars_env(std={"Own League": _cell("Own League"), "Legacy League": OWN},
+             applied=["ou25|Own League", "ou25|Legacy League"])
+    out = B.evaluate_value(_board(["Own League", "No Bar League", "Legacy League"], 0.20))
+    own, nob, leg = out.iloc[0], out.iloc[1], out.iloc[2]
+    assert own["signal_tier"] == "QUALIFIED" and own["threshold_source"] == config.THRESHOLD_SOURCE_LEAGUE
+    # a legacy three-tier entry (no cell) no longer tips (owner 2026-11-11: one bar per cell)
+    assert leg["signal_tier"] == "AVOID" and leg["tier_reason"] == ST.NO_LEAGUE_BAR and leg["bet_stake"] == 0
     assert nob["signal_tier"] == "AVOID" and nob["tier_reason"] == ST.NO_LEAGUE_BAR
     assert nob["bet"] == "AVOID" and nob["bet_stake"] == 0 and nob["stake_over"] == 0
     assert set(out["threshold_source"]) <= {config.THRESHOLD_SOURCE_LEAGUE, ST.NO_LEAGUE_BAR}
 
 
-def test_ou25_uses_the_leagues_own_three_bars(bars_env):
-    bars_env(std={"L": OWN}, applied=["ou25|L"])
+def test_ou25_tips_on_the_cells_one_bar(bars_env):
+    bars_env(std={"L": _cell("L")}, applied=["ou25|L"])
     tiers = [B.evaluate_value(_board(["L"], e)).iloc[0]["signal_tier"] for e in (0.13, 0.10, 0.06, 0.04)]
-    assert tiers == ["SNIPER", "MARKSMAN", "VALUABLE", "AVOID"]
+    assert tiers == ["QUALIFIED", "QUALIFIED", "QUALIFIED", "AVOID"]      # no tier split above the bar
 
 
 def test_league_valuable_bar_replaces_the_global_floor(bars_env):
     """A league whose own VALUABLE bar is below the old global 0.04 tips at its own bar."""
-    bars_env(std={"L": {**OWN, "valuable_th": 0.02}}, applied=["ou25|L"])
+    bars_env(std={"L": _cell("L", valuable=0.02)}, applied=["ou25|L"])
     r = B.evaluate_value(_board(["L"], 0.03)).iloc[0]
-    assert r["signal_tier"] == "VALUABLE" and r["bet"] == "OVER"
+    assert r["signal_tier"] == "QUALIFIED" and r["bet"] == "OVER" and r["qualifying_bar"] == 0.02
 
 
 def test_global_env_thresholds_no_longer_move_a_tier(bars_env, monkeypatch):
-    bars_env(std={"L": OWN}, applied=["ou25|L"])
+    bars_env(std={"L": _cell("L")}, applied=["ou25|L"])
     a = B.evaluate_value(_board(["L", "M"], 0.10))[["signal_tier", "tier_reason"]].values.tolist()
     for k, v in {"VALUABLE_THRESHOLD": 0.0, "VALUE_THRESHOLD": 0.0, "MARKSMAN_THRESHOLD": 0.0,
                  "SNIPER_THRESHOLD_OVER": 0.0, "SNIPER_THRESHOLD": 0.0}.items():
         monkeypatch.setattr(config, k, v)
     b = B.evaluate_value(_board(["L", "M"], 0.10))[["signal_tier", "tier_reason"]].values.tolist()
-    assert a == b == [["MARKSMAN", ""], ["AVOID", ST.NO_LEAGUE_BAR]]
+    assert a == b == [["QUALIFIED", ""], ["AVOID", ST.NO_LEAGUE_BAR]]
 
 
 def test_stake_evidence_follows_own_bars(bars_env):
@@ -142,3 +151,19 @@ def test_rule6_catches_a_global_bar_read(tmp_path, line):
 def test_rule6_red_blocks_the_gate():
     red = [DT._c("Data truth 6: no global bars in serving", DT.RED, "1", "x")]
     assert any(f.startswith("Data truth 6") for f in DT.gate(checks=red))
+
+
+# ── rule 7: no retired tier on a future tip (owner 2026-11-11) ──────────────────────────────────
+def test_rule7_red_on_a_future_tip_with_an_old_tier_or_a_multiplier(tmp_path):
+    pd.DataFrame({"match_date": ["2026-11-20", "2026-11-22", "2026-11-22"],
+                  "generated_at": ["2026-11-19T10:00:00Z", "2026-11-19T10:00:00Z", "2026-11-21T09:00:00Z"],
+                  "signal_tier": ["SNIPER", "MARKSMAN", "QUALIFIED"]}).to_csv(tmp_path / "bets_ledger.csv", index=False)
+    assert DT.retired_tier_rows(tmp_path) == []                 # written before go-live: history
+    pd.DataFrame({"date": ["2026-11-22"], "generated_at": ["2026-11-22T08:00:00Z"], "signal_tier": ["QUALIFIED"],
+                  "tier_multiplier": [1.1]}).to_csv(tmp_path / "stake_audit.csv", index=False)
+    pd.DataFrame({"match_date": ["2026-11-23"], "tier": ["VALUABLE"]}).to_csv(tmp_path / "player_ledger.csv",
+                                                                             index=False)
+    hits = DT.retired_tier_rows(tmp_path)
+    assert {(h["file"], h["kind"]) for h in hits} == {("stake_audit.csv", "tier multiplier != 1"),
+                                                      ("player_ledger.csv", "retired tier label")}
+    assert any(g.startswith("Data truth 7") for g in DT.GATED)

@@ -282,7 +282,8 @@ def _classify_tier(
     confidence: float, lazy_count: int, ges: float = float("nan"),
     market: str = "", position: str = ""
 ) -> str:
-    """Classify signal into SNIPER/MARKSMAN/VALUABLE/AVOID (WATCH removed).
+    """Classify a props signal: QUALIFIED (clears the lowest qualifying bar; owner 2026-11-11 - no tiers),
+    PAPER (a capped data-only combination) or AVOID.
 
     Applies a real-odds-backtest role×market gate: clear money-losing combos
     (defenders→goals, multi-SOT/goals2) are capped at VALUABLE (data-only) rather
@@ -328,15 +329,16 @@ def _classify_tier(
         return "AVOID"
 
     # ── Role × market gate (real-odds backtest Jun 2026) ──────────────────────
-    # Cap clear money-losers at VALUABLE (data-only): multi-SOT/goals2 markets,
-    # and defenders for anytime-goalscorer.
+    # Clear money-losers were capped at VALUABLE = data-only (tracked, never a tip): multi-SOT /
+    # goals2 / cards markets, and defenders for anytime-goalscorer.
     pos = (position or "").strip().upper()[:1]
-    if tier in ("SNIPER", "MARKSMAN") and (
-        market in getattr(config, "VALUABLE_ONLY_MARKETS", set())
-        or (pos, market) in getattr(config, "VALUABLE_ONLY_ROLE_MARKET", set())
-    ):
-        tier = "VALUABLE"
-    return tier
+    capped = (market in getattr(config, "VALUABLE_ONLY_MARKETS", set())
+              or (pos, market) in getattr(config, "VALUABLE_ONLY_ROLE_MARKET", set()))
+    # OWNER 2026-11-11 ("Clean rebuild"): no SNIPER / MARKSMAN / VALUABLE on a future props tip. Until props
+    # get per-league bars, a props tip qualifies at the props cell's LOWEST qualifying bar - the VALUABLE
+    # gates above (ev >= VALUABLE_EV, the odds-banded relative-edge floor, and for goals / SOT the GES floor)
+    # - and is QUALIFIED (UNPROVEN). A capped (data-only) combination stays a tracked PAPER row, never a tip.
+    return "PAPER" if capped else "QUALIFIED"
 
 
 # ── Lazy market factor detection ──────────────────────────────────────────────

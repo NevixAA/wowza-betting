@@ -548,8 +548,9 @@ def notify_new_snipers() -> int:
     # Send SNIPER + MARKSMAN + VALUABLE for ALL models (Nevo 2026-08-09: enable new-format
     # VALUABLE live too, now that the NF model is recalibrated). Dedup (notified.json) sends
     # each fixture+side once, so the higher NF volume won't re-flood.
+    from src.tier_labels import TIPPED              # QUALIFIED (owner 2026-11-11) + legacy codes of history rows
     tips = df[
-        df["signal_tier"].isin(["SNIPER", "MARKSMAN", "VALUABLE"]) &
+        df["signal_tier"].isin(TIPPED) &
         df["bet"].isin(["UNDER", "OVER"])
     ].copy()
 
@@ -622,8 +623,12 @@ def notify_new_snipers() -> int:
         model = "🏴󠁧󠁢󠁥󠁮󠁧󠁿 Standard" if _is_std else "🌍 New-Format"
         mtag  = "standard" if _is_std else "new-format"
 
-        # Display words from src/tier_labels.py: the tier is the size of the gap, not confidence.
-        if tier in ("SNIPER", "MARKSMAN"):
+        # Owner 2026-11-11 ("Clean rebuild"): no tier word on a future tip. The header names the tip and its
+        # CELL STATUS (PROMISING / UNPROVEN) - the status of the cell's one approved bar.
+        _status = str(row.get("cell_status") or "").strip().upper()
+        if tier == "QUALIFIED":
+            header = f"▸ <b>TIP</b> · {_status or 'UNPROVEN'} ({mtag}) {drift}"
+        elif tier in ("SNIPER", "MARKSMAN"):
             header = f"{TIER_ICON[tier]} <b>{tier_label(tier).upper()} TIP</b> {drift}"
         elif tier == "VALUABLE":
             header = f"{TIER_ICON[tier]} <b>{tier_label(tier).upper()} TIP</b> ({mtag}) {drift}"
@@ -1249,7 +1254,7 @@ def notify_weekly_summary() -> bool:
 
     # ── Build message — by market then tier ──────────────────────────────────
     TIER_SYM   = TIER_ICON
-    TIER_ORDER = ["SNIPER", "MARKSMAN", "VALUABLE"]
+    TIER_ORDER = ["QUALIFIED", "SNIPER", "MARKSMAN", "VALUABLE"]   # QUALIFIED = tips from 2026-11-21
     # BTTS alone does not say which side; this path only ever produces YES.
     SIDE_LABELS = {"btts": "BTTS — YES", "over15": "Over 1.5", "over35": "Over 3.5"}
 
@@ -1881,11 +1886,11 @@ def notify_props_daily_digest() -> bool:
         ("cards",   "Carded",         "🟨"),
     ]
     TIER_SYM   = TIER_ICON
-    TIER_ORDER = ["SNIPER", "MARKSMAN"]                            # what gets SENT as a tip
+    TIER_ORDER = ["QUALIFIED", "SNIPER", "MARKSMAN"]               # what gets SENT as a tip (QUALIFIED from 2026-11-21)
     # What gets COUNTED in results. Wider than TIER_ORDER because VALUABLE/PAPER picks are
     # real tracked positions even though they don't trigger an individual alert. AVOID/WATCH
     # are excluded upstream by _bet_tiers_only, so they can never appear here.
-    LEDGER_TIERS = ["SNIPER", "MARKSMAN", "VALUABLE", "PAPER"]
+    LEDGER_TIERS = ["QUALIFIED", "SNIPER", "MARKSMAN", "VALUABLE", "PAPER"]
 
     lines = [
         f"👤 <b>PLAYER PROPS BRIEFING</b> — {hdr_date}",
@@ -2257,7 +2262,7 @@ def notify_daily_digest() -> bool:
         return False
 
     TIER_SYM   = TIER_ICON
-    TIER_ORDER = ["SNIPER", "MARKSMAN", "VALUABLE"]
+    TIER_ORDER = ["QUALIFIED", "SNIPER", "MARKSMAN", "VALUABLE"]   # QUALIFIED = tips from 2026-11-21
     # BTTS alone does not say which side; this path only ever produces YES.
     SIDE_LABELS = {"btts": "BTTS — YES", "over15": "Over 1.5", "over35": "Over 3.5"}
     SIG_SYM     = {"STEAM_STRONG": "🔴", "STEAM_SHARP": "🟠", "STRONG": "🟡"}
@@ -2845,7 +2850,8 @@ def notify_side_bets() -> int:
     # Sending is not staking. These arrive labelled VALUABLE for a human to judge; real money
     # stays where the season-start plan put it. Volume is bounded by notified.json, which sends
     # each fixture+market once.
-    df = df[df["signal_tier"].isin(["SNIPER", "MARKSMAN", "VALUABLE"])].copy()
+    from src.tier_labels import TIPPED              # QUALIFIED (owner 2026-11-11) + legacy codes of history rows
+    df = df[df["signal_tier"].isin(TIPPED)].copy()
 
     today_str = _utc_today_str()   # UTC day: stored dates are UTC (src/utc_clock.py)
     df = df[df["date"].astype(str).str[:10] >= today_str]
@@ -2853,7 +2859,8 @@ def notify_side_bets() -> int:
     if df.empty:
         return 0
 
-    df = df.sort_values(["signal_tier", "ev"], ascending=[True, False])
+    # kickoff order (owner 2026-11-11: no tier and no EV ranking of tips)
+    df = df.sort_values(["date", "league", "home_team"])
 
     # NAME THE SIDE. "BTTS" alone is ambiguous — a reader cannot tell whether the tip is that
     # both teams DO score or that they do not. "Over 1.5" and "Over 3.5" already state their side
@@ -2890,7 +2897,11 @@ def notify_side_bets() -> int:
         # VALUABLE to the filter above would have silently relabelled every VALUABLE side-market
         # tip as MARKSMAN — a wrong tier on a live alert, which is precisely the number the
         # reader uses to size. Same shape as the tier symbols used everywhere else in this file.
-        tier_header = f"{tier_tag(tier)} — <b>{label}</b>"   # icon + display word (src/tier_labels)
+        if tier == "QUALIFIED":       # owner 2026-11-11: no tier word; the cell status of its one bar
+            _st = str(row.get("cell_status") or "").strip().upper() or "UNPROVEN"
+            tier_header = f"▸ TIP · {_st} — <b>{label}</b>"
+        else:
+            tier_header = f"{tier_tag(tier)} — <b>{label}</b>"   # icon + display word (src/tier_labels)
 
         msg = (
             f"{emoji} {tier_header}\n"

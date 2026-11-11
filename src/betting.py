@@ -206,9 +206,13 @@ _OU25_SIDE_COLS = {"over": ("OVER", "tier_over", "edge_over", "stake_over"),
                    "under": ("UNDER", "tier_under", "edge_under", "stake_under")}
 
 
-def _apply_ou25_cells(df: pd.DataFrame, p_over: pd.Series, ov_odds: pd.Series, un_odds: pd.Series) -> pd.DataFrame:
-    """O/U 2.5 rows of leagues with owner-applied bars_opt cells: tier, bet, stake and edge from the cells
-    (src/bars_opt/serve.py). Rows of other leagues are returned unchanged."""
+def _apply_ou25_cells(df: pd.DataFrame, p_over: pd.Series, ov_odds: pd.Series, un_odds: pd.Series,
+                      cells_only: bool = True) -> pd.DataFrame:
+    """O/U 2.5 rows of leagues with owner-applied bars_opt cells: the tip (QUALIFIED), bet, stake and edge from
+    the cells (src/bars_opt/serve.py). ONE BAR PER CELL (owner 2026-11-11, "Clean rebuild"): with cells_only
+    (production), a league without a bars_opt cell tips nothing (NO_LEAGUE_BAR) - the legacy three-tier
+    thresholds no longer qualify a tip. cells_only=False keeps the legacy rows unchanged (historical study
+    replays only, src/backtest.py)."""
     from src.bars_opt import serve as BS
     params = _load_standard_thresholds()
     cells = {}
@@ -216,9 +220,26 @@ def _apply_ou25_cells(df: pd.DataFrame, p_over: pd.Series, ov_odds: pd.Series, u
         lp = params.get(lg)
         if isinstance(lp, dict) and BS.CELL_KEY in lp:
             cells[lg] = {s: BS.served_cell(lp, "ou25", lg, s) for s in ("over", "under")}
+    df = df.copy()
+    if cells_only:
+        legacy = ~df["league"].astype(str).isin(list(cells))
+        if legacy.any():
+            df.loc[legacy, "signal_tier"] = "AVOID"
+            df.loc[legacy, "bet"] = "AVOID"
+            for c in ("tier_over", "tier_under"):
+                if c in df.columns:
+                    df.loc[legacy, c] = "AVOID"
+            for c in ("stake_over", "stake_under", "bet_stake"):
+                if c in df.columns:
+                    df.loc[legacy, c] = 0.0
+            df.loc[legacy, "threshold_source"] = NO_LEAGUE_BAR
+            df.loc[legacy, "tier_reason"] = NO_LEAGUE_BAR       # no owner-applied O/U 2.5 cell (one bar per cell)
+    if "cell_status" not in df.columns:
+        df["cell_status"] = ""
+    if "qualifying_bar" not in df.columns:
+        df["qualifying_bar"] = np.nan
     if not cells:
         return df
-    df = df.copy()
     for c in ("bar_mode_over", "bar_mode_under", "bar_config_over", "bar_config_under", "bar_verdict_over",
               "bar_verdict_under", "bar_measure_over", "bar_measure_under", "ev_used_over", "ev_used_under",
               "p_used_over", "p_used_under", "cell_p_used"):
@@ -280,6 +301,11 @@ def _apply_ou25_cells(df: pd.DataFrame, p_over: pd.Series, ov_odds: pd.Series, u
         df.loc[idx, "best_edge"] = np.where(side_over, eo, eu)
         df.loc[idx, "signal_tier"] = np.where(bet == "OVER", df.loc[idx, "tier_over"],
                                               np.where(bet == "UNDER", df.loc[idx, "tier_under"], "AVOID"))
+        _vo = {s: (c or {}).get("verdict", "") for s, (c, _w) in sides.items()}
+        _bo = {s: (float(c["valuable_th"]) if c else np.nan) for s, (c, _w) in sides.items()}
+        df.loc[idx, "cell_status"] = np.where(bet == "OVER", _vo["over"], np.where(bet == "UNDER", _vo["under"], ""))
+        df.loc[idx, "qualifying_bar"] = np.where(bet == "OVER", _bo["over"],
+                                                 np.where(bet == "UNDER", _bo["under"], np.nan))
         df.loc[idx, "min_odds_blocked"] = False
         df.loc[idx, "max_odds_blocked"] = False
         reasons = [w for (c, w) in sides.values() if c is None]
@@ -320,7 +346,7 @@ def _apply_drift_adjustment(tier: str, drift_signal: str, best_edge: float) -> s
 
 # ── Main ──────────────────────────────────────────────────────────────────────
 
-def evaluate_value(df: pd.DataFrame, p_col: str = "p_over25") -> pd.DataFrame:
+def evaluate_value(df: pd.DataFrame, p_col: str = "p_over25", cells_only: bool = True) -> pd.DataFrame:
     """
     Add value betting columns to df.
 
@@ -472,7 +498,7 @@ def evaluate_value(df: pd.DataFrame, p_col: str = "p_over25") -> pd.DataFrame:
     # two-sided pair. Every column the legacy path set is overwritten for those rows, so no global value
     # (min odds, new-format cap, global bar) touches a cell-served tip.
     if p_col == "p_over25" and "league" in df.columns:
-        df = _apply_ou25_cells(df, p_over, ov_odds, un_odds)
+        df = _apply_ou25_cells(df, p_over, ov_odds, un_odds, cells_only=cells_only)
 
     # ── Blind-fixture guard ───────────────────────────────────────────────────
     # A fixture with no rolling-form history does NOT produce a cautious prediction — it
@@ -589,7 +615,8 @@ def generate_bets(df: pd.DataFrame) -> pd.DataFrame:
     threshold are included — giving full visibility into all 3 tiers.
     """
     df = df.copy()
-    visible = df[df["signal_tier"].isin(["SNIPER", "MARKSMAN", "VALUABLE"])].copy()
+    from src.tier_labels import TIPPED
+    visible = df[df["signal_tier"].isin(TIPPED)].copy()
     visible = visible.sort_values("best_edge", ascending=False)
 
     output_cols = [
