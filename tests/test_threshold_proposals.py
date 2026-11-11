@@ -416,12 +416,12 @@ def test_a_withdrawal_must_match_the_entry_and_carry_a_reason(sandbox):
 
 
 def test_committed_withdrawal_of_the_november_proposal():
-    """The committed record: 37 history / unproven-capture entries withdrawn, Argentina NF BTTS and La Liga 2 O/U
-    2.5 stay approved (owner 2026-11-11)."""
+    """The committed record: 37 history / unproven-capture entries + La Liga 2 O/U 2.5 ("Paper until re-run")
+    withdrawn; Argentina NF BTTS stays approved (owner 2026-11-11)."""
     import json as _j
     ap = _j.loads((ROOT / "config" / "threshold_approvals.json").read_text(encoding="utf-8"))
     a = next(x for x in ap["approvals"] if x["proposal_id"] == "TP-2026-11-10-d999073a")
     w = {x["entry_id"] for x in a["withdrawals"]}
-    assert "btts|Argentina Primera Division" not in w and "ou25|La Liga 2" not in w
-    assert "btts|La Liga 2" in w and len(w) == 37
+    assert "btts|Argentina Primera Division" not in w
+    assert {"btts|La Liga 2", "ou25|La Liga 2"} <= w and len(w) == 38
     assert all("Bet-time snapshot + re-run" in x["owner_words"] for x in a["withdrawals"])

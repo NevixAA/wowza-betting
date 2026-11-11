@@ -142,7 +142,7 @@
     "approved": {
       "proposal_id": "TP-2026-11-10-d999073a",
       "proposal_hash": "d999073a5f1744c512011fe7a487a957ced743c6d8b467ec88dc6302d2e100d6",
-      "owner": "owner 2026-11-11 'Approve, paper + small'; then 'Bet-time snapshot + re-run' / 'Strict, keep Argentina': 37 entries withdrawn pending the re-run (config/threshold_approvals.json). Stakes from 2026-11-21: Argentina NF BTTS ACTIVE 1.25% (league-wide rule, basis recorded on the cell), La Liga 2 Over 2.5 ACTIVE_LOW 0.5% (football-data pre-match prices only); La Liga 2 BTTS PAPER; every withdrawn cell PAPER with no bar; every other cell paper; Cloudbet PAPER_ONLY; TOP-3 a paper track; flat per cell, no tier multipliers"
+      "owner": "owner 2026-11-11 'Approve, paper + small'; then 'Bet-time snapshot + re-run', 'Strict, keep Argentina' and 'Paper until re-run': 38 entries withdrawn pending the re-run (config/threshold_approvals.json). Stakes from 2026-11-21: ONLY Argentina NF BTTS ACTIVE 1.25% (league-wide rule, basis recorded on the cell); every other cell PAPER (La Liga 2 Over 2.5 and La Liga 2 BTTS included); Cloudbet PAPER_ONLY; TOP-3 a paper track; flat per cell"
     },
     "previous_state": "per-track staking (tracks{} below), unchanged and still read when enabled is false",
     "cells": {
@@ -154,13 +154,6 @@
         "source": "PROTECTED real-money track, kept exactly as the new_format|BTTS track stakes it today (owner 2026-11-09); its bars_opt cell is LEAGUE_WIDE up to odds 2.50, UNPROVEN, 350 selection bets +5.4%",
         "stake_note": "flat per cell (owner 2026-11-11 'Clean rebuild'): the base fraction on every tip that clears the cell's one approved bar; the old 1.1 / 0.9 / 1.0 tier multipliers are retired",
         "staking_basis": "owner 2026-11-11 \"Strict, keep Argentina\": a LEAGUE_WIDE rule (every match up to odds 2.50, no bar chosen from backfill); its PROMISING verdict rests on its own live-captured FINAL rows (86 bets, snapshot before kickoff); ACTIVE 1.25% flat"
-      },
-      "standard|OU25_OVER|La Liga 2": {
-        "state": "ACTIVE_LOW",
-        "base_fraction": 0.005,
-        "source": "PROMISING bars_opt cell (proposal TP-2026-11-10-d999073a, study FINAL 2026-09-01..11-08); owner 2026-11-09 'Paper + PROMISING small': the policy's ACTIVE_LOW level",
-        "max_odds_source": "the cell has no odds range: the reader's HARD max_odds ceiling applies",
-        "stake_note": "flat per cell (owner 2026-11-11 'Clean rebuild'): the base fraction on every tip that clears the cell's one approved bar; the old 1.1 / 0.9 / 1.0 tier multipliers are retired"
       }
     }
   }

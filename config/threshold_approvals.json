@@ -612,6 +612,14 @@
      "withdrawn_by": "owner (Nevo)",
      "owner_words": "owner 2026-11-11: \"Bet-time snapshot + re-run\"; \"Strict, keep Argentina\"",
      "reason": "pending the re-run on bet-time prices only: new_format over35_over: fresh-holdout cell priced by OddsAPI history (B1 close used as bet price); unproven-capture share 95% of 895 priced rows"
+    },
+    {
+     "entry_id": "ou25|La Liga 2",
+     "entry_hash": "b7ad28559bcbdd125dec3c3f0de54f283625d7acac6f969cb98a57de3053ffb1",
+     "withdrawn_at": "2026-11-11T12:24:12Z",
+     "withdrawn_by": "owner (Nevo)",
+     "owner_words": "owner 2026-11-11: \"Bet-time snapshot + re-run\"; \"Paper until re-run\"",
+     "reason": "pending the re-run: the loader's served odds_over25 / odds_under25 preferred football-data CLOSING columns (AvgC, MaxC, B365C, PC) on almost every row, so every evaluation reading served odds as a bet price is in question; the owner moves the Standard O/U 2.5 cell to paper until the re-run on certified pre-match prices (protocol v5)"
     }
    ],
    "withdrawal_rule": "owner 2026-11-11 \"Strict, keep Argentina\": withdrawn = every fresh-holdout (OddsAPI-history priced) cell and every cell whose evidence rests > 50% on prices whose capture time is not proven before kickoff (00:00-stamped backfill), counts in output/threshold_proposals/bars_oddsapi_hist/cell_price_provenance_2026-11.json. EXCEPTION, owner: btts|Argentina Primera Division (new_format) stays - a LEAGUE_WIDE rule (no bar was chosen from backfill), its PROMISING rests on its own live-captured FINAL rows (86 bets).",

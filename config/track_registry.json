@@ -10,11 +10,11 @@
  "sources": {
   "league_market_regimes": {
    "path": "config/league_market_regimes.json",
-   "sha256_16": "a3d82c8ef861756c"
+   "sha256_16": "496ccf536a1c8690"
   },
   "bankroll_policy": {
    "path": "config/bankroll_policy.json",
-   "sha256_16": "c5328b1b55c430f3"
+   "sha256_16": "b1ba3ac315348fdb"
   },
   "current_champions": {
    "path": "models/registry/current_champions.json",
@@ -54,9 +54,8 @@
  "n_entries": 100,
  "production_state_counts": {
   "ACTIVE": 1,
-  "ACTIVE_LOW": 1,
   "BLOCKED": 19,
-  "PAPER": 74,
+  "PAPER": 75,
   "PAPER_LEAGUE": 5
  },
  "entries": [
@@ -3368,14 +3367,14 @@
    "model_type": "standard",
    "research_regime": "LEARNING",
    "owner_locked": false,
-   "production_state": "ACTIVE_LOW",
+   "production_state": "PAPER",
    "track": "standard|OU25_OVER",
-   "track_state": "ACTIVE_LOW",
+   "track_state": "PAPER",
    "enabled": true,
    "paper_league": false,
    "provider_supported": true,
    "sent": true,
-   "real_money": true,
+   "real_money": false,
    "blocked_market": false,
    "odds_caps": {
     "hard_max_odds": 3.0,
@@ -3409,7 +3408,7 @@
    },
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
-    "base_fraction": 0.005,
+    "base_fraction": 0.0,
     "tier_multipliers": null,
     "tier_multiplier_source": "FLAT_PER_CELL",
     "evidence_score": null
