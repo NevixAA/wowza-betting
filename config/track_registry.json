@@ -10,11 +10,11 @@
  "sources": {
   "league_market_regimes": {
    "path": "config/league_market_regimes.json",
-   "sha256_16": "bf9d6d873b77e7ff"
+   "sha256_16": "d9c3c3b0fe4fb3ee"
   },
   "bankroll_policy": {
    "path": "config/bankroll_policy.json",
-   "sha256_16": "2c4e05a72f7349db"
+   "sha256_16": "d4e1a6bdf93aaa40"
   },
   "current_champions": {
    "path": "models/registry/current_champions.json",
@@ -54,9 +54,9 @@
  "n_entries": 100,
  "production_state_counts": {
   "ACTIVE": 1,
-  "ACTIVE_LOW": 4,
+  "ACTIVE_LOW": 2,
   "BLOCKED": 19,
-  "PAPER": 71,
+  "PAPER": 73,
   "PAPER_LEAGUE": 5
  },
  "entries": [
@@ -751,19 +751,19 @@
    "model_type": "new_format",
    "research_regime": "LEARNING",
    "owner_locked": false,
-   "production_state": "ACTIVE_LOW",
+   "production_state": "PAPER",
    "track": "new_format|BTTS",
-   "track_state": "ACTIVE_LOW",
+   "track_state": "PAPER",
    "enabled": true,
    "paper_league": false,
    "provider_supported": true,
    "sent": true,
-   "real_money": true,
+   "real_money": false,
    "blocked_market": false,
    "odds_caps": {
     "hard_max_odds": 3.0,
     "track_min_odds": null,
-    "track_max_odds": 2.5
+    "track_max_odds": null
    },
    "gates": {
     "approved_optimizer_applied": false,
@@ -791,13 +791,12 @@
    },
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
-    "base_fraction": 0.005,
+    "base_fraction": 0.0,
     "tier_multipliers": {
-     "SNIPER": 1.0,
-     "MARKSMAN": 1.0,
-     "VALUABLE": 1.0
+     "SNIPER": 1.1,
+     "MARKSMAN": 0.9
     },
-    "tier_multiplier_source": "cell_staking",
+    "tier_multiplier_source": "tier_multipliers",
     "evidence_score": null
    },
    "evidence_status": "INSUFFICIENT",
@@ -3488,7 +3487,7 @@
    "odds_caps": {
     "hard_max_odds": 3.0,
     "track_min_odds": null,
-    "track_max_odds": null
+    "track_max_odds": 2.5
    },
    "gates": {
     "approved_optimizer_applied": false,
@@ -3544,14 +3543,14 @@
    "model_type": "standard",
    "research_regime": "LEARNING",
    "owner_locked": false,
-   "production_state": "PAPER",
+   "production_state": "ACTIVE_LOW",
    "track": "standard|OU25_OVER",
-   "track_state": "PAPER",
+   "track_state": "ACTIVE_LOW",
    "enabled": true,
    "paper_league": false,
    "provider_supported": true,
    "sent": true,
-   "real_money": false,
+   "real_money": true,
    "blocked_market": false,
    "odds_caps": {
     "hard_max_odds": 3.0,
@@ -3585,13 +3584,13 @@
    },
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
-    "base_fraction": 0.0,
+    "base_fraction": 0.005,
     "tier_multipliers": {
      "SNIPER": 1.0,
      "MARKSMAN": 1.0,
      "VALUABLE": 1.0
     },
-    "tier_multiplier_source": "track_tier_multipliers",
+    "tier_multiplier_source": "cell_staking",
     "evidence_score": null
    },
    "evidence_status": "ADEQUATE",
@@ -5856,14 +5855,14 @@
    "model_type": "standard",
    "research_regime": "LEARNING",
    "owner_locked": false,
-   "production_state": "ACTIVE_LOW",
+   "production_state": "PAPER",
    "track": "standard|BTTS",
-   "track_state": "ACTIVE_LOW",
+   "track_state": "PAPER",
    "enabled": true,
    "paper_league": false,
    "provider_supported": true,
    "sent": true,
-   "real_money": true,
+   "real_money": false,
    "blocked_market": false,
    "odds_caps": {
     "hard_max_odds": 3.0,
@@ -5896,13 +5895,12 @@
    },
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
-    "base_fraction": 0.005,
+    "base_fraction": 0.0,
     "tier_multipliers": {
-     "SNIPER": 1.0,
-     "MARKSMAN": 1.0,
-     "VALUABLE": 1.0
+     "SNIPER": 1.1,
+     "MARKSMAN": 0.9
     },
-    "tier_multiplier_source": "cell_staking",
+    "tier_multiplier_source": "tier_multipliers",
     "evidence_score": null
    },
    "evidence_status": "INSUFFICIENT",
@@ -5924,19 +5922,19 @@
    "model_type": "standard",
    "research_regime": "LEARNING",
    "owner_locked": false,
-   "production_state": "ACTIVE_LOW",
+   "production_state": "PAPER",
    "track": "standard|OU25_OVER",
-   "track_state": "ACTIVE_LOW",
+   "track_state": "PAPER",
    "enabled": true,
    "paper_league": false,
    "provider_supported": true,
    "sent": true,
-   "real_money": true,
+   "real_money": false,
    "blocked_market": false,
    "odds_caps": {
     "hard_max_odds": 3.0,
     "track_min_odds": null,
-    "track_max_odds": 3.5,
+    "track_max_odds": null,
     "min_side_odds": 1.75
    },
    "gates": {
@@ -5965,13 +5963,13 @@
    },
    "stake_policy": {
     "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
-    "base_fraction": 0.005,
+    "base_fraction": 0.0,
     "tier_multipliers": {
      "SNIPER": 1.0,
      "MARKSMAN": 1.0,
      "VALUABLE": 1.0
     },
-    "tier_multiplier_source": "cell_staking",
+    "tier_multiplier_source": "track_tier_multipliers",
     "evidence_score": null
    },
    "evidence_status": "INSUFFICIENT",
