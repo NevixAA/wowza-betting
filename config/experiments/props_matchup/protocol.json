@@ -1,0 +1,103 @@
+{
+  "experiment_id": "PROPS-MATCHUP-1",
+  "registered_at": "2026-11-11",
+  "registered_by": "research/props-matchup (v9), owner idea 2026-11-04",
+  "evidence_class": "PRE_REGISTERED_FORWARD_PAPER",
+  "serving_change": "NONE. Research only; nothing is read by the props pipeline. Any use is an owner decision.",
+  "scope": {
+    "markets_primary": [
+      "sot",
+      "goals"
+    ],
+    "markets_inventory_only": [
+      "sot2"
+    ],
+    "markets_excluded": [
+      "goals2",
+      "goals3",
+      "sot3",
+      "sot4",
+      "assists",
+      "cards"
+    ],
+    "excluded_reason": "rare markets are research-only (owner 2026-11-09: max 3 per GW, exceptional bars); assists and cards are outside the owner's matchup idea",
+    "population": "outfield players (position D, M or F) scored by the served props model before kickoff",
+    "unit": "player-fixture-market"
+  },
+  "served_model": {
+    "development_read": "run 42855107089 holdout, candidate hgb_nan_native fitted through 2026-08-31 (byte-identical to the served sot/goals champions registered 2026-11-10)",
+    "forward_read": "the model serving at decision time, its version logged beside each row (output/props_r2_shadow.csv p_served, kickoff_utc, logged_at)"
+  },
+  "regulars": {
+    "lookback_fixtures": 10,
+    "min_obs_fixtures": 5,
+    "regular_share": 0.6,
+    "window_rule": "the defending team's last lookback_fixtures fixtures with a known lineup, dated strictly before the target fixture's date",
+    "regular_gk": "the pos G starter with the most starts in the window, if his starts / window >= regular_share",
+    "regular_def": "every pos D starter with starts / window >= regular_share",
+    "missing_rule": "window < min_obs_fixtures -> regulars UNKNOWN -> exposure NaN (never 0)",
+    "position_limit": "API-Football positions are G/D/M/F only; centre-backs and full-backs are both D"
+  },
+  "exposures": {
+    "gk_out": "the defending team's regular GK is listed type 'Missing Fixture' on the latest injury list observed before the final kickoff",
+    "def_out": ">= 1 of the defending team's regular defenders is listed 'Missing Fixture' on that list",
+    "questionable": "not counted as absent (no sensitivity variant, to keep the family fixed)",
+    "unobserved_list": "fixture with no list observed before kickoff -> NaN"
+  },
+  "clocks": {
+    "STRICT": "Pro output/studies/injury_snapshots.parquet rows with pre_kickoff and captured_at < final kickoff (v9 af_ht_scores, else Pro fixture_ts); from the day it is switched on also v9 output/prematch/injuries (slot injuries_120) and lineup_players (slot lineups_45) with minutes_before_kickoff > 0 re-checked against the final kickoff",
+    "RETRO_INJ": "v9 output/collect/injuries.parquet (fetched after the match) - context only, never a decision",
+    "RETRO_XI": "regular not in the starting XI, v9 lineups fetched after the match - context only, never a decision",
+    "decision_clocks": [
+      "STRICT"
+    ]
+  },
+  "statistics": {
+    "residual": "y - p_served",
+    "effect": "mean residual of exposed rows minus mean residual of unexposed rows, within league and market",
+    "ci": "percentile 95% from a bootstrap that resamples whole fixtures within each group",
+    "n_boot": 4000,
+    "seed": 20261111,
+    "test": "one-sided, H1: effect > 0",
+    "multiplicity": "Holm over every per-league (clock x market x exposure x league) test computed, all clocks in one family; pooled rows are context and never tested",
+    "alpha": 0.05,
+    "min_exposed_fixtures_to_read": 10,
+    "min_holdout_bets": 150
+  },
+  "inventory": {
+    "price_era_start": "2026-10-14",
+    "price_real": "a timestamped snapshot strictly before the final kickoff (or dated before the match day when the fixture has no provider kickoff) for the same match date, player name and market carries exactly the ledger's market_odds",
+    "absence_known": "the opponent (proven side via fixture_id and the home/away name) has an injury list observed before kickoff under the STRICT clock"
+  },
+  "accrual": {
+    "rate_window_days": 28,
+    "projection": "linear at the trailing rate; 'never at the current rate' when the rate is 0"
+  },
+  "forward_test": {
+    "confirmation_starts": "2026-11-12",
+    "development_period": "2026-10-19 to 2026-11-11 (everything looked at before registration; never part of confirmation)",
+    "hypotheses": {
+      "H-PM-1": "SOT 1+: with the opponent's regular GK out (STRICT), the realised rate exceeds the served probability (residual effect > 0), per league",
+      "H-PM-2": "SOT 1+: with >= 1 regular defender out (STRICT), residual effect > 0, per league",
+      "H-PM-3": "Anytime scorer: regular GK out, residual effect > 0, per league",
+      "H-PM-4": "Anytime scorer: >= 1 regular defender out, residual effect > 0, per league",
+      "H-PM-5": "Money at a takeable price: flat 1-unit paper back bets on exposed candidates whose served p x pre-kickoff price - 1 clears the cell's bar; ROI CI > 0 per league x market"
+    },
+    "takeable_price": "the API-Football (or OddsAPI) price with a snapshot time before kickoff and before the decision; from switch-on the prematch odds_75 / odds_15 slots with fixture id; the best-of-books close is never used",
+    "population_logged": "every served-model candidate with a pre-kickoff price, not only tips (tips are selection-biased)",
+    "proven_rule": ">= 150 settled holdout bets in the league x market x exposure cell AND Holm-adjusted 95% CI > 0, counting every registered cell (leagues with a STRICT clock x 2 markets x 2 exposures for H-PM-1..4, league x market for H-PM-5) plus any cell added later",
+    "promising_rule": ">= 50 settled bets and raw 95% CI > 0; label PROMISING, paper only",
+    "kill_rule": "after 150 settled bets a cell whose upper 95% bound of the residual effect is < 0 is closed",
+    "review_cadence": "monthly proposal to the owner (owner 2026-11-09: bars re-optimised monthly)",
+    "stake": "PAPER only. Player props are PAPER ONLY, PERMANENTLY unless the owner changes that invariant"
+  },
+  "player_bars": {
+    "hierarchy": "market -> league -> role (pos) -> player, empirical-Bayes normal-normal shrinkage of the out-of-sample (realised - predicted) edge per bet (Pro src/props_matchup/evaluation.nested_shrinkage)",
+    "fit_minimum": "no bar is fitted for a league x market until that parent cell holds >= 150 settled priced out-of-sample bets; below that every child inherits BLOCKED",
+    "player_min_n": 30,
+    "player_rule": "a player cell under player_min_n takes its role's value exactly; a player cell can never be PROVEN on its own before 150 bets",
+    "bar_rule": "bar = max(0, -posterior_mean + 1.645 * posterior_sd) on the walk-forward folds only; no bar -> no tip",
+    "multiplicity": "Benjamini-Yekutieli q < 0.05 across player cells as a screen, Holm for any PROVEN claim"
+  },
+  "protocol_sha256": "bae12cec60d191dab9ebb87904fd0881329aa16925fc79668607102b202266be"
+}
