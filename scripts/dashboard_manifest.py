@@ -46,7 +46,9 @@ MANIFEST = ROOT / "deploy" / "dashboard_manifest.json"
 ASSETS = [".streamlit/config.toml",
           # config.py derives every league table from it at import (R2-A); a missing file stops config
           # loading, so it ships WITH the code instead of arriving later through the data mirror.
-          "config/leagues.json"]
+          "config/leagues.json",
+          # config.py reads CLEAN_RECORD_START from it at import (owner 2026-11-11); same reason
+          "config/trustworthy_performance.json"]
 #: The deploy machinery itself (the mirror is imported by app.py; the builder ships for provenance).
 ALWAYS_CODE = ["app.py", "dashboard_data/remote_mirror.py"]
 #: Never mirrored, whatever reads them.

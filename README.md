@@ -2,9 +2,37 @@
 
 **Status:** Production — fully automated via GitHub Actions
 **Live since:** April 2026
-**Last doc update:** 2026-10-26
+**Last doc update:** 2026-11-11
 
-> **2026-10-26 — tier names people see.** Owner decision: the tiers measure the SIZE of the gap
+> **2026-11-11 — the repaired system and the Clean Record (go-live 2026-11-21).** Owner decisions
+> 2026-11-09..11. This block describes what serves from the go-live; the older blocks below are history.
+>
+> * **Models.** Team tips come from the clean retrained team models (`champion_recipe` per track x market,
+>   `config/phase2_retrain.json`; final refit runbook R6) and props from the clean props models (Phase 2 props
+>   clean retrain, run 42855107089). Both start serving at the go-live.
+> * **One bar per league x market cell, no global bar, no tiers.** A tip is a tip only when its measure
+>   clears its cell's ONE owner-approved bar (proposal `TP-2026-11-10-d999073a`, approved 2026-11-11, all 74
+>   entries; `reports/P8_BARS_APPROVED.md`). The approved study lists 194 league x market-side cells:
+>   **0 PROVEN**, 4 PROMISING, 67 UNPROVEN, 123 OFF (`output/threshold_proposals/bars_oddsapi_hist/
+>   evidence_2026-11.json`). The SNIPER / MARKSMAN / VALUABLE tiers (Big / Medium / Small gap) are **retired
+>   for future tips**: a future tip is stored as `QUALIFIED` with its cell status; old rows keep their tier
+>   for study only (`src/tier_labels.py`).
+> * **Stakes are per cell** (`config/bankroll_policy.json` `cell_staking`): Argentina new-format BTTS 1.25%,
+>   La Liga 2 BTTS 0.5%, La Liga 2 Over 2.5 0.5%; every other cell is PAPER (recorded, never staked);
+>   Cloudbet stays PAPER_ONLY.
+> * **TOP-3 per league** is ranked by T3 (calibrated value) with a TIER2 slot rule, and is a named PAPER
+>   track; a league-wide cell (every match in range) is the league's own line outside the 3. The edge a
+>   person is shown is the **calibrated** edge (the raw edge is stored for study only).
+> * **Research only:** specials (6+ goals, exact scores) are collected, never tipped; rare props markets
+>   are research.
+> * **The Clean Record counts from 0 on 2026-11-21** (`config.CLEAN_RECORD_START`, stored once in
+>   `config/trustworthy_performance.json`). Every results figure on the dashboard counts only tips
+>   generated AND played on or after that date; before it every Clean Record figure is 0 / "no settled
+>   tips yet". The pre-repair record (2026-08-10 to 2026-11-21, old models and tiers) stays visible in its
+>   own "Before the repairs" section, never mixed in. Results of the repaired system are therefore not
+>   quoted here: they are **from the Clean Record**, on the dashboard.
+
+> **2026-10-26 — tier names people see.** *(Retired for future tips on 2026-11-11, see above.)* Owner decision: the tiers measure the SIZE of the gap
 > between our probability and the bookmaker's price, not confidence. This season a bigger gap did
 > not mean better results on O/U 2.5 (new-format SNIPER −4.2% vs VALUABLE +2.2%; every standard
 > tier negative); only new-format BTTS showed it (SNIPER +25.7%) — figures as stated in the owner's
@@ -78,8 +106,8 @@ running automatically in the cloud (no server/PC needed).
 
 | Module | What it does | Money? |
 |---|---|---|
-| **Standard O/U 2.5** | Over/Under 2.5 for our second-division leagues — SNIPER/MARKSMAN/VALUABLE tiers (shown as Big / Medium / Small gap) | **Real-money candidate** — but the 2026-10-08 studies found no evidence the model adds to the market (see update above) |
-| **Side Markets** | BTTS, O/U 1.5, O/U 3.5 — per-league walk-forward thresholds | Real-money candidate |
+| **Standard O/U 2.5** | Over/Under 2.5 for our second-division leagues — one approved bar per league x side cell (tiers retired 2026-11-11) | Per cell: La Liga 2 Over 2.5 staked 0.5%, every other cell paper |
+| **Side Markets** | BTTS, O/U 1.5, O/U 3.5 — one approved bar per league x market cell | Per cell: Argentina new-format BTTS 1.25%, La Liga 2 BTTS 0.5%, the rest paper |
 | **HT Model** | Half-time O/U 0.5 and 1.5 | Paper — **no edge** (see below) |
 | **New-Format Model** | O/U for goals-only leagues — separate model, never mixed with standard | Paper |
 | **Sharp Money Tracker** | Odds-drift detection — STEAM / STRONG / SHARP | Info |
@@ -101,7 +129,19 @@ running automatically in the cloud (no server/PC needed).
 
 ---
 
-## Signal Tiers
+## Bars per league x market cell (current, from 2026-11-21)
+
+Every league x market-side is its own **cell** with its own owner-approved bar (`bars_opt` cells written into
+`models/best_params_*.json` by `src/threshold_apply` on go-live day, runbook U3b). The cell's **qualifying bar**
+(`valuable_th`) is the one bar a tip must clear; its measure is EV, EDGE or ALL (ALL = a league-wide cell: every
+match in its odds range). `marksman_th` survives only as the TOP-3 TIER2 slot boundary. A cell with no approved
+bar gives no tip (`NO_LEAGUE_BAR`); there is no global fallback. The dashboard's **Bars & Cells** page lists
+every cell with its bar, status (PROVEN / PROMISING / UNPROVEN / OFF) and stake, read from the approved proposal.
+
+## Signal Tiers (RETIRED 2026-11-11 — history and study only)
+
+Everything in this section describes how tips were tiered BEFORE the repairs. It decides no future tip; it is
+kept to read the pre-repair record.
 
 People see these as **Big gap** (SNIPER), **Medium gap** (MARKSMAN) and **Small gap** (VALUABLE) —
 the size of the model-vs-price gap, not confidence (`src/tier_labels.py`). The codes below are the
@@ -171,11 +211,33 @@ src/
 
 player_model/              ← 7 prop markets, 139 features, Fantasy projections
 telegram_bot/notifier.py   ← all Telegram sends
-pages/                     ← Streamlit dashboard (14 pages, incl. 🔭 League Scout)
+pages/                     ← Streamlit dashboard (see "Dashboard" below)
 tests/                     ← 306 tests
 ```
 
 ---
+
+## Dashboard (from the 2026-11-21 go-live)
+
+The Streamlit app (`app.py`, `pages/`, `dashboard_data/`) deploys as the GENERATED slim repo
+`NevixAA/wowza-dashboard` (`scripts/build_dashboard_repo.py`, synced from v9 main); its data is mirrored at
+runtime from v9 main's committed files.
+
+* **Clean Record first.** Home, Tips (settled tab and the daily lists' record), Leagues, Success Rates, Player
+  Props, Overview, Model Performance and the new **Clean Record** page show the Clean Record (tips generated
+  and played on or after `config.CLEAN_RECORD_START`, `dashboard_data/clean_record.py`): units (flat 1u), ROI,
+  hit rate, n and the matchday block-bootstrap 95% CI, with NOT_ENOUGH_DATA below 30 settled / 8 matchdays.
+  Before the start every one of them reads 0 / "no settled tips yet".
+* **Before the repairs** (pre-2026-11-21, old models and tiers) is a separate, labelled section or choice on
+  each page, for comparison only. The **Clean Record** page puts both side by side with the same metrics
+  (staked, all team tips, props, TOP-3).
+* **Bars & Cells** lists every league x market cell of the approved proposal with its qualifying bar, measure,
+  odds range, mode, status and stake, plus each cell's Clean Record.
+* **Paper vs staked.** "Staked" is one definition everywhere (`src/staked.py`: a recorded policy stake > 0);
+  every other tip is paper and never in a staked figure.
+* `scripts/dashboard_truth.py` re-derives every headline figure from the committed ledgers (pandas only) and
+  compares it with what the rendered page shows; `scripts/dashboard_manifest.py --check` keeps the slim
+  deployment complete.
 
 ## Research + promotion infrastructure (added Sept–Oct 2026)
 

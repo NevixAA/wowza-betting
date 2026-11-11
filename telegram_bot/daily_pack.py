@@ -267,7 +267,8 @@ def settled_tips(include_paper: bool = False) -> pd.DataFrame:
             "pick": "O/U 2.5 " + m["side"].astype(str).str.upper(),
             "odds": pd.to_numeric(m["odds"], errors="coerce"),
             "result": m["result"], "pnl": pd.to_numeric(m["pnl"], errors="coerce"),
-            "edge_pct": _col(m, "edge_pct"), "model_prob": float("nan")}))
+            "edge_pct": _col(m, "edge_pct"), "model_prob": float("nan"),
+            "generated_at": m["generated_at"] if "generated_at" in m.columns else None}))   # Clean Record split
     s = _read("side_bets_ledger.csv", include_paper, _TIP_COLS)
     if len(s):
         if "source" in s.columns:
@@ -281,7 +282,8 @@ def settled_tips(include_paper: bool = False) -> pd.DataFrame:
             "pick": mk.map(lambda k: "BTTS YES" if k == "btts" else f"{SIDE_LABEL.get(k, k)} OVER"),
             "odds": pd.to_numeric(s["odds"], errors="coerce"),
             "result": s["result"], "pnl": pd.to_numeric(s["pnl"], errors="coerce"),
-            "edge_pct": _col(s, "edge_pct"), "model_prob": _col(s, "model_prob")}))
+            "edge_pct": _col(s, "edge_pct"), "model_prob": _col(s, "model_prob"),
+            "generated_at": s["generated_at"] if "generated_at" in s.columns else None}))   # Clean Record split
     if not parts:
         return pd.DataFrame()
     d = pd.concat(parts, ignore_index=True)

@@ -171,9 +171,9 @@ with st.expander("Raw data — every upcoming prop"):
 
 # ═══ PERFORMANCE — settled record (rebuilt 2026-11-09, see dashboard_data/props_view.py) ═══════════════════
 ui.section_header("Results — settled player-prop tips",
-                  f"Every tip tier ({tier_label('VALUABLE')} included), flat 1u paper stakes, for the period you "
-                  "pick. ROI and "
-                  "profit use only tips with a real bookmaker price; a small sample is marked.")
+                  "Every prop tip, flat 1u paper stakes, for the period you pick: the Clean Record (clean props models) "
+                  "first, the pre-repair models' record below it. ROI and profit use only tips with a real bookmaker "
+                  "price; a small sample is marked. Rare prop markets are research only.")
 
 
 @st.cache_data(ttl=120)
@@ -187,49 +187,60 @@ led = load_results()
 if led.empty or "result" not in led.columns or "tier" not in led.columns:
     ui.empty_state("NO_DATA", "No prop results yet (`output/player_ledger.csv`).")
 else:
-    import config as _cfg  # noqa: E402
-    clean_from = getattr(_cfg, "PROPS_CLEAN_MODELS_LIVE_DATE", None)
+    from dashboard_data import clean_record as CR  # noqa: E402
     allr = V.prepare_ledger(led)
-    allr["era"] = V.model_era(allr, clean_from)
+    # THE Clean Record split (owner 2026-11-11; config.PROPS_CLEAN_MODELS_LIVE_DATE = config.CLEAN_RECORD_START):
+    # a prop tip counts in the clean-models record only when it was signalled AND played on or after the start
+    allr["era"] = CR.assign(allr, "signal_date", "match_date").map(
+        {CR.CLEAN: "clean models", CR.BEFORE: "pre-repair models", CR.UNPLACED: "unplaced"})
     period = st.radio("Period", list(V.PERIODS), index=V.PERIODS.index(V.DEFAULT_PERIOD), horizontal=True,
                       key="pp_results_period")
     today = pd.Timestamp.now(tz="UTC").tz_convert(None).normalize()
     d = V.in_period(allr, period, today)
     start = V.period_start(period, today)
     ui.caption(f"{period}: matches from {start:%d %b %Y} on" if start is not None else "All time")
-    if clean_from is None:
-        ui.caption("Every result here comes from the **pre-repair props models**. The clean retrained props "
-                   "models go live at go-live; their results start the Clean Record and will be shown apart.")
-    if V.tips(d).empty:
-        ui.empty_state("NO_DATA", f"No prop tips with a match date in this period ({period.lower()}).")
+
+    def _era(de, era):
+        tt = V.tier_table(de)
+        if tt.empty:
+            return
+        tot = tt[tt["Tier"] == "All tips"].iloc[0]
+        ui.metric_card("Flat ROI (1u, paper)", ui.fmt_roi(tot["ROI %"] / 100) if tot["Priced"] else "—",
+                       title=f"All tips · {era} · {period.lower()}",
+                       supporting=[("Settled", f"{int(tot['Settled'])}"),
+                                   ("Record", f"{int(tot['Wins'])}W – {int(tot['Settled'] - tot['Wins'])}L"),
+                                   ("Profit", ui.fmt_units(tot["Profit (u)"]) if tot["Priced"] else "—"),
+                                   ("Void / pending", f"{int(tot['Void'])} / {int(tot['Pending'])}")],
+                       status=ui.status_chip("PAPER", label="PAPER · NEVER STAKED")
+                       + (" " + ui.sample_marker(int(tot["Priced"])) if ui.small_sample(int(tot["Priced"])) else ""),
+                       n=int(tot["Priced"]))
+        # dashtruth 2026-11-05: rows a correction sidecar flags are IN this record; say how many
+        _st = V.tips(de)[V.tips(de)["R"].isin(V.SETTLED)]
+        _fl = {k: v for k, v in V.flagged(_st, BASE_DIR / "output" / "corrections").items() if v}
+        if _fl:
+            ui.caption("Includes rows flagged in output/corrections (kept, not removed): " + "; ".join(
+                f"{v} of {len(_st)} in {k} ({V.FLAG_FILES[k]})" for k, v in _fl.items()) + ".")
+        ui.eyebrow(f"{'Summary' if era == 'clean models' else 'By retired tier'} · {era}")
+        ui.compact_table(tt, V.TIER_CONFIG)
+        ui.eyebrow(f"By market · {era}")
+        ui.compact_table(V.market_table(de), V.TIER_CONFIG)
+        ui.eyebrow(f"Month by month · {era}")
+        ui.compact_table(V.month_table(de), V.TIER_CONFIG)
+
+    ui.eyebrow(CR.clean_label() + " · clean props models")
+    _clean = d[d["era"] == "clean models"]
+    if V.tips(_clean).empty:
+        ui.empty_state("NO_DATA", CR.empty_text("prop tips"))
     else:
-        for era in [e for e in ("clean models", "pre-repair models") if (d["era"] == e).any()]:
-            de = d[d["era"] == era]
-            tt = V.tier_table(de)
-            if tt.empty:
-                continue
-            tot = tt[tt["Tier"] == "All tips"].iloc[0]
-            ui.metric_card("Flat ROI (1u, paper)", ui.fmt_roi(tot["ROI %"] / 100) if tot["Priced"] else "—",
-                           title=f"All tips · {era} · {period.lower()}",
-                           supporting=[("Settled", f"{int(tot['Settled'])}"),
-                                       ("Record", f"{int(tot['Wins'])}W – {int(tot['Settled'] - tot['Wins'])}L"),
-                                       ("Profit", ui.fmt_units(tot["Profit (u)"]) if tot["Priced"] else "—"),
-                                       ("Void / pending", f"{int(tot['Void'])} / {int(tot['Pending'])}")],
-                           status=ui.status_chip("PAPER", label="PAPER · NEVER STAKED")
-                           + (" " + ui.sample_marker(int(tot["Priced"])) if ui.small_sample(int(tot["Priced"])) else ""),
-                           n=int(tot["Priced"]))
-            # dashtruth 2026-11-05: rows a correction sidecar flags are IN this record; say how many
-            _st = V.tips(de)[V.tips(de)["R"].isin(V.SETTLED)]
-            _fl = {k: v for k, v in V.flagged(_st, BASE_DIR / "output" / "corrections").items() if v}
-            if _fl:
-                ui.caption("Includes rows flagged in output/corrections (kept, not removed): " + "; ".join(
-                    f"{v} of {len(_st)} in {k} ({V.FLAG_FILES[k]})" for k, v in _fl.items()) + ".")
-            ui.eyebrow(f"By tier · {era}")
-            ui.compact_table(tt, V.TIER_CONFIG)
-            ui.eyebrow(f"By market · {era}")
-            ui.compact_table(V.market_table(de), V.TIER_CONFIG)
-            ui.eyebrow(f"Month by month · {era}")
-            ui.compact_table(V.month_table(de), V.TIER_CONFIG)
+        _era(_clean, "clean models")
+    with st.expander(f"{CR.before_label()} — pre-repair props models, for comparison only"):
+        st.caption(CR.BEFORE_NOTE)
+        _pre = d[d["era"] == "pre-repair models"]
+        if V.tips(_pre).empty:
+            ui.empty_state("NO_DATA", f"No pre-repair prop tips with a match date in this period ({period.lower()}).")
+        else:
+            _era(_pre, "pre-repair models")
+    if not V.tips(d).empty:
         n_avoid = V.avoid_count(d)
         if n_avoid:
             ui.caption(f"Logged, not tipped: {n_avoid:,} AVOID rows in this period are recorded for research and "

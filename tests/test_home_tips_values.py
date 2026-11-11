@@ -75,7 +75,12 @@ def _old_home_values():
             d = d.assign(_dt=pd.to_datetime(d.get("match_date"), errors="coerce"),
                          _pnl=pd.to_numeric(d.get("pnl"), errors="coerce"), _staked=S.is_staked(lab),
                          _mkt=d[mkc].astype(str) if mkc and mkc in d.columns else const)
-            parts.append(d[d["_pnl"].notna() & (d["_dt"] >= cut)][["signal_tier", "_mkt", "_pnl", "_staked"]])
+            # since 2026-11-11 these pre-redesign figures are Home's "Before the repairs" card: tips generated
+            # before config.CLEAN_RECORD_START (or, with no generation time, played before it)
+            _start = pd.Timestamp(config.CLEAN_RECORD_START)
+            _gen = pd.to_datetime(d.get("generated_at"), errors="coerce", utc=True, format="mixed").dt.tz_convert(None)
+            _pre = (_gen < _start) | (_gen.isna() & (d["_dt"] < _start))
+            parts.append(d[d["_pnl"].notna() & (d["_dt"] >= cut) & _pre][["signal_tier", "_mkt", "_pnl", "_staked"]])
         except Exception:                                   # noqa: BLE001
             continue
     settled = pd.concat(parts, ignore_index=True) if parts else pd.DataFrame(columns=["signal_tier", "_mkt", "_pnl"])
@@ -131,7 +136,9 @@ def test_home_new_values_come_from_canonical_functions(monkeypatch):
     assert stats["Paper / no stake"] == str(act["paper"])
     sh = json.loads((ROOT / "output" / "system_health.json").read_text(encoding="utf-8"))
     assert metrics["System health"] == str(sh.get("overall"))
-    perf = today_view.performance(today_view.load_settled(), today=pd.Timestamp.now(tz="UTC").tz_localize(None).normalize())
+    from dashboard_data import clean_record as CR
+    perf = today_view.performance(CR.team_split(today_view.load_settled())[CR.BEFORE],
+                                  today=pd.Timestamp.now(tz="UTC").tz_localize(None).normalize())
     if perf["n"]:
         assert stats["ROI"] == f"{perf['pnl'] / perf['n'] * 100:+.1f}%"
         assert stats["Drawdown from peak"] == U.fmt(perf['drawdown'])
@@ -220,7 +227,11 @@ def _old_tips_settled_metrics() -> dict:
             # OWNER 2026-11-04: staked = a recorded policy stake > 0 (src/staked.py), not the tier
             from src import staked as S
             lab = S.label_ledger(d, f, S.load_records(config.OUTPUT_DIR))
-            keep = S.is_staked(lab) & d["_pnl"].notna() & (d["_dt"] >= cut)
+            # the Tips page's "Before the repairs" block (2026-11-11): generated before CLEAN_RECORD_START
+            _start = pd.Timestamp(config.CLEAN_RECORD_START)
+            _gen = pd.to_datetime(d.get("generated_at"), errors="coerce", utc=True, format="mixed").dt.tz_convert(None)
+            _pre = (_gen < _start) | (_gen.isna() & (d["_dt"] < _start))
+            keep = S.is_staked(lab) & d["_pnl"].notna() & (d["_dt"] >= cut) & _pre
             if keep.any():
                 parts.append(d[keep][["_mkt", "_dt", "_pnl"]])
         except Exception:                                    # noqa: BLE001

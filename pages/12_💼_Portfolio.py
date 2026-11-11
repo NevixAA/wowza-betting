@@ -258,7 +258,8 @@ _parts = [d for d in (main, players, side) if d is not None and not d.empty]
 allbets = pd.concat(_parts, ignore_index=True) if _parts else pd.DataFrame()
 
 _SUB = ("Separate 1000U (default) notional bankroll per market, replayed week by week on the real ledgers. A testing tool for "
-        "staking rules — not a record of money.")
+        "staking rules — not a record of money. It replays the RETIRED tier-based sizing on the pre-repair record "
+        "(study only); live staking is flat per cell since 2026-11-11 (Bars & Cells page).")
 if allbets.empty:
     ui.page_header("Portfolio", _SUB, eyebrow_text="Performance · staking simulation")
     ui.empty_state("NO_DATA", "No ledger data found.")

@@ -19,6 +19,9 @@ WHAT IT REFUSES TO DO:
     betting edge, so its rates are research, not performance.
   * PERFORMANCE_CUTOFF_DATE is applied by default and named on screen. Pre-cutoff rows exist to
     contribute CLV, not P&L.
+  * CLEAN RECORD FIRST (owner 2026-11-11): the default record is the Clean Record (tips generated and played on
+    or after config.CLEAN_RECORD_START, dashboard_data/clean_record.py), grouped by the cell status the tip
+    carried (no tiers). "Before the repairs" is a separate choice, never pooled with it.
 """
 import sys
 from pathlib import Path
@@ -43,6 +46,7 @@ import config
 import dashboard_ui as ui  # noqa: E402
 from src.tier_labels import PAPER_TIER_LABEL, STAKED_LABEL, display_frame, relabel_text  # noqa: E402
 from dashboard_data import freshness as _fresh, success_view as V  # noqa: E402
+from dashboard_data import clean_record as CR  # noqa: E402
 from src import units as U  # noqa: E402
 import importlib  # noqa: E402
 V = importlib.reload(V)              # page + helper always the same version (see 15_League_Scout)
@@ -102,9 +106,13 @@ def _load() -> pd.DataFrame:
         d["_ledger"] = path
         d["_live"] = d["source"] if "source" in d.columns else "live"
         d["_league"] = d["league"] if "league" in d.columns else pd.NA
+        # Clean Record split inputs: generation time (props: signal_date) and the tip's cell status
+        d["_gen"] = d["generated_at"] if "generated_at" in d.columns else (
+            d["signal_date"] if "signal_date" in d.columns else pd.NA)
+        d["_cell"] = d["cell_status"] if "cell_status" in d.columns else pd.NA
         d["_stake_status"] = _S.label_ledger(d, path, _records)["stake_status"]
         out.append(d[["_source", "_model", "_market", "_tier", "_res", "_odds", "_date",
-                      "_ledger", "_live", "_league", "_stake_status"]])
+                      "_ledger", "_live", "_league", "_stake_status", "_gen", "_cell"]])
 
     # Main O/U carries no `market` column — it IS the OU25 line. Named explicitly so it never
     # lands in an "unknown" bucket next to a genuinely missing value.
@@ -150,6 +158,12 @@ ui.page_header("Success rates", _SUB, eyebrow_text=_EYEBROW,
 # pro = 7/14/30/60/90 days; admin also "all time". The window is applied to the settled match date.
 from dashboard_access import WINDOWS, current_tier  # noqa: E402
 _tier = current_tier()
+record = st.radio("Record", [CR.CLEAN, CR.BEFORE], horizontal=True, index=0, key="sr_record",
+                  format_func=lambda r: CR.clean_label() if r == CR.CLEAN else CR.before_label(),
+                  help="The Clean Record counts only tips generated and played on or after the start (owner "
+                       "2026-11-11). Before the repairs = the old models and the retired tiers, for comparison.")
+if record == CR.BEFORE:
+    st.caption(CR.BEFORE_NOTE)
 _wins = WINDOWS[_tier]
 c1, c2 = st.columns([1.4, 1])
 if len(_wins) > 1:
@@ -182,7 +196,11 @@ else:
                                     help="A rate on a handful of bets is noise. Hidden, not zeroed.")
 
 d = df.copy()
-if use_cut and cut:
+d = d[CR.assign(d, "_gen", "_date").to_numpy() == record]
+if record == CR.CLEAN:
+    # no tiers on Clean Record tips (retired 2026-11-11): grouped by the cell status the tip carried
+    d["_tier"] = d["_cell"].astype("string").replace("", pd.NA).fillna("—").astype(str)
+if use_cut and cut and record == CR.BEFORE:
     d = d[d["_date"].isna() | (d["_date"] >= pd.to_datetime(cut))]
 if window:
     _since = pd.Timestamp.now(tz="UTC").tz_localize(None).normalize() - pd.Timedelta(days=int(window))
@@ -198,8 +216,9 @@ if scope.startswith("STAKED"):
 st.caption(f"{len(d):,} settled observation(s) after filters · "
            f"sources: {d['_source'].value_counts().to_dict()}")
 if d.empty:
-    ui.empty_state("NO_DATA", "Nothing left after these filters.")
+    ui.empty_state("NO_DATA", CR.empty_text() if record == CR.CLEAN else "Nothing left after these filters.")
     st.stop()
+_TIERWORD = "cell status" if record == CR.CLEAN else "retired tier"
 
 
 def _table(g: pd.DataFrame) -> pd.DataFrame:
@@ -239,7 +258,7 @@ cc = st.columns(3)
 ui.metric_card("Settled observations", f"{len(d):,}", title="In this view",
                supporting=[(k, f"{v:,}") for k, v in d["_source"].value_counts().to_dict().items()],
                n=len(d), container=cc[0])
-ui.metric_card("Cells shown", f"{len(shown):,}", title="Model × market × tier",
+ui.metric_card("Cells shown", f"{len(shown):,}", title=f"Model × market × {_TIERWORD}",
                supporting=[("Hidden (n < " + str(min_n) + ")", f"{len(hidden):,}"),
                            ("Observations hidden", f"{int(hidden['n'].sum()):,}")], container=cc[1])
 ui.metric_card("Intervals clearing zero", f"{_n_dec} of {len(_ch)}", title="Read the CI, not the ROI",
@@ -248,7 +267,7 @@ ui.metric_card("Intervals clearing zero", f"{_n_dec} of {len(_ch)}", title="Read
                                      label="NOT YET DISTINGUISHABLE FROM BREAK-EVEN" if _n_dec == 0 else
                                      f"{_n_dec} CELL(S) DECISIVE"), container=cc[2])
 
-ui.section_header("Model × market × tier")
+ui.section_header(f"Model × market × {_TIERWORD}")
 ui.dataframe(shown.drop(columns=["roi_lo", "roi_hi"], errors="ignore"),
              width="stretch", hide_index=True,
              column_config={
@@ -362,11 +381,11 @@ with r1:
     ui.eyebrow("By market")
     _rollup(d, "_market")
 with r2:
-    ui.eyebrow("By tier")
+    ui.eyebrow(f"By {_TIERWORD}")
     _rollup(d, "_tier")
 
 st.caption(
     "Flat 1u stakes, matching v9's 'P/L in units' convention. Player props are labelled PAPER: "
     "invariant 2 makes them permanently unbet, so their rates are research rather than "
-    "performance. Missing odds default to 2.00 for the return calculation, which is stated here "
-    "because it flatters nothing but is still an assumption.")
+    "performance. A bet without a recorded price has no return: it counts in win % and is left out of "
+    "P/L and ROI (no stand-in price).")

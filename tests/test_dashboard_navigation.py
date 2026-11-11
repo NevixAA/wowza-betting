@@ -86,6 +86,12 @@ NEW_PAGES = [
     ("pages/22_🏭_Production.py", "System"),
     ("pages/23_🎲_Specials.py", "Research Lab"),     # owner 2026-11-09, Pro specials tracker (research)
 ]
+# Results pages the owner asked for on 2026-11-11 ("update the dashboard with all the new models and fixes"):
+# the Clean Record comparison and the per-cell bars registry. Wowza Pro (pro + admin), section Performance.
+OWNER_PRO_PAGES = [
+    ("pages/24_🧾_Clean_Record.py", "Performance"),
+    ("pages/25_📐_Bars_and_Cells.py", "Performance"),
+]
 
 
 def _access():
@@ -134,12 +140,23 @@ def test_navigation_sections_and_tiers_unchanged(monkeypatch, tier):
     for s, ps in nav.items():
         assert all(A.section_of(p.path) == s for p in ps)
     new = {p for p, _ in NEW_PAGES}
-    old_got = sorted(g for g in got if g[0] not in new)
+    pro_new = {p for p, _ in OWNER_PRO_PAGES}
+    assert {g[0] for g in got if g[0] in pro_new} == (pro_new if tier in ("pro", "admin") else set())
+    old_got = sorted(g for g in got if g[0] not in new | pro_new)
     before = sorted((p, RELABELLED[p][1] if p in RELABELLED else t, i, d) for p, t, i, d in BEFORE[tier])
     assert old_got == before, "tier visibility (or icon/default/unapproved label) of an existing page changed"
     new_got = {g[0] for g in got if g[0] in new}
     assert new_got == (new if tier == "admin" else set()), "new pages must be admin-only"
     assert sum(g[3] for g in got) == 1                              # exactly one default page
+
+
+def test_owner_pro_pages_are_pro_and_in_performance():
+    A = _access()
+    need = {p: n for p, _t, _i, n in A.PAGES}
+    for path, section in OWNER_PRO_PAGES:
+        assert need[path] == "pro", path
+        assert A.section_of(path) == section, path
+        assert 'require("pro")' in (ROOT / path).read_text(encoding="utf-8"), path
 
 
 def test_new_pages_are_admin_and_in_their_section():

@@ -38,6 +38,7 @@ from src.staked import DEFINITION as STAKED_DEF  # noqa: E402
 from dashboard_data import fantasy, pro, v9, v11  # noqa: E402
 from src import units as U  # noqa: E402
 from dashboard_data import overview_view as V  # noqa: E402
+from dashboard_data import clean_record as CR, today_view  # noqa: E402
 from dashboard_data.core import REPOS, repo_path  # noqa: E402
 
 st.set_page_config(page_title="Wowza | Overview", page_icon="🏠", layout="wide")
@@ -53,6 +54,7 @@ def _estate() -> dict:
     except Exception as e:                                          # noqa: BLE001 - health must never break the page
         out["checks"], out["checks_error"] = None, type(e).__name__
     out["perf"] = v9.performance()
+    out["clean"] = CR.team_summaries(today_view.load_settled())
     out["by_league"] = v9.by_league(days=None, staked_only=True)
     out["v9_health"] = v9.health()
     out["pro_available"] = pro.available()
@@ -90,68 +92,84 @@ else:
     V.health_cards(checks)
 
 # ═══ PRODUCTION ═══════════════════════════════════════════════════════════════════════════════════
-ui.section_header("Production — V9 live betting", f"Staked only: {STAKED_DEF}. Every other tip, whatever its "
-                  f"tier, is kept out of every P/L headline. {GAP_EXPLAINER}")
-perf = E["perf"]
-if not perf.get("available"):
-    ui.empty_state("NO_DATA", perf.get("why", "no settled bets"))
-else:
-    tracks = {k: val for k, val in perf["by_track"].items() if k != "unknown"}
-    total_n = sum(t["n"] for t in tracks.values())
-    # THE HEADLINE IS THE STAKED FIGURE, NOT THE ALL-TIPS FIGURE (see overview_view.staked_cards).
-    V.staked_cards(perf)
-    st.caption(
-        f"Every card above is staked bets only (a recorded policy stake > 0), flat 1u. "
-        f"All settled tips, every tier, staked or not: {total_n:,} tips worth "
-        f"{U.fmt(U.total(t['pnl'] for t in tracks.values()))}; a tip without a stake is not a result and "
-        f"is kept out of every P/L headline on this page.")
+ui.section_header("Production — V9 live betting", f"{CR.clean_label()} first; the pre-repair record below it, for "
+                  f"comparison. Staked = {STAKED_DEF}. Every other tip is paper and kept out of every staked "
+                  "headline.")
+# Clean Record first (owner 2026-11-11): tips generated and played on or after config.CLEAN_RECORD_START only.
+_rc = E["clean"][CR.CLEAN]
+cc1, cc2 = st.columns(2)
+for _col, (_name, _s) in zip((cc1, cc2), (("staked bets", _rc["staked"]), ("all tips, paper + staked", _rc["all"]))):
+    ui.metric_card(f"Clean Record P/L · {_name}", U.fmt(_s["units"]) if _s["n"] else U.fmt(0),
+                   title=CR.clean_label(),
+                   supporting=[("Clean Record settled", f"{_s['n']}"),
+                               ("Clean Record hit rate", f"{100 * _s['hit']:.1f}%" if _s["n"] else "—"),
+                               ("Clean Record ROI", ui.fmt_roi(_s["roi"]) if _s["n"] else "—"),
+                               ("Clean Record ROI 95% CI", CR.fmt_ci(_s["ci"]))], n=_s["n"] or None,
+                   container=_col)
+if not _rc["all"]["n"]:
+    st.caption(CR.empty_text())
 
-    # per-track, per-tier P/L. One chart, one scale, n in every tooltip.
-    rows = [{"track_tier": f"{tr} · {tier_label(ti)}", "pnl": v["pnl"], "n": v["n"], "roi": v["roi"]}
-            for tr, t in tracks.items() for ti, v in t["by_tier"].items()]
-    if rows:
-        d = pd.DataFrame(rows).sort_values("pnl")
-        left, right = st.columns([3, 2])
-        with left:
-            st.altair_chart(ui.pnl_bars(d, "track_tier", "pnl", "n",
-                                        title="P/L by track and tier (units, flat 1u)"), width="stretch")
-        with right:
-            ui.eyebrow("Does a bigger gap mean better outcomes?")
-            st.caption(
-                f"The tier is only the size of the gap between our probability and the price: "
-                f"{tier_label('SNIPER')} is the largest gap, {tier_label('VALUABLE')} the smallest. "
-                "Read the bars against the idea that a bigger gap wins more. Measured across the whole "
-                "ledger the ladder carries no information: the model is overconfident by +13.64pp "
-                "(claimed 0.5430, realised 0.4066, n=792), and the overconfidence is as large on "
-                f"never-staked {tier_label('VALUABLE')} tips (+10.78pp) as on staked bets (+16.80pp). "
-                "A tier that does not separate outcomes is a label, not a signal.")
-            ui.compact_table(d.rename(columns={"track_tier": "track · tier"}), V.tier_table_config())
-
-    # league detail, with small samples flagged rather than hidden
-    ui.section_header("Where the money went, by league")
-    # Staked tiers only — this section is titled "where the money went", and VALUABLE is paper.
-    bl = E["by_league"]
-    if bl.empty:
-        ui.empty_state("NO_DATA", "No settled bets grouped by league yet.")
+with st.expander(f"{CR.before_label()} — production record, for comparison only", expanded=False):
+    st.caption(CR.BEFORE_NOTE)
+    perf = E["perf"]
+    if not perf.get("available"):
+        ui.empty_state("NO_DATA", perf.get("why", "no settled bets"))
     else:
-        bl = bl.copy()
-        bl["label"] = bl["league"] + bl["reliable"].map({True: "", False: "  ⚠ thin"})
-        c1, c2 = st.columns(2)
-        with c1:
-            st.altair_chart(ui.pnl_bars(bl, "label", "pnl", "n", h=26 * len(bl) + 60,
-                                        title="P/L by league (units)"), width="stretch")
-        with c2:
-            # EXCESS OVER EACH LEAGUE'S OWN BREAK-EVEN, not a hit rate against an estate-wide mean.
-            # A 45% hit rate is excellent at 2.40 and a disaster at 1.70.
-            st.altair_chart(ui.pnl_bars(bl, "label", "excess_hit", "n", h=26 * len(bl) + 60,
-                                        title="Hit rate minus that league's own break-even"), width="stretch")
-        st.caption("Staked bets only (a recorded policy stake > 0), flat 1u. A tier alone is not a stake: "
-                   "tips on PAPER tracks or with a zero stake are never in this chart.")
-        thin = int((~bl["reliable"]).sum())
-        if thin:
-            st.markdown(ui.status_chip("SMALL_SAMPLE", label=f"{thin} THIN LEAGUE(S) · n < 30")
-                        + " :gray[shown rather than hidden, because a missing league reads as 'we don't bet "
-                          "there' when the truth is 'we have not measured it yet'. Do not act on a thin row.]")
+        tracks = {k: val for k, val in perf["by_track"].items() if k != "unknown"}
+        total_n = sum(t["n"] for t in tracks.values())
+        # THE HEADLINE IS THE STAKED FIGURE, NOT THE ALL-TIPS FIGURE (see overview_view.staked_cards).
+        V.staked_cards(perf)
+        st.caption(
+            f"Every card above is staked bets only (a recorded policy stake > 0), flat 1u. "
+            f"All settled tips, every tier, staked or not: {total_n:,} tips worth "
+            f"{U.fmt(U.total(t['pnl'] for t in tracks.values()))}; a tip without a stake is not a result and "
+            f"is kept out of every P/L headline on this page.")
+
+        # per-track, per-tier P/L. One chart, one scale, n in every tooltip.
+        rows = [{"track_tier": f"{tr} · {tier_label(ti)}", "pnl": v["pnl"], "n": v["n"], "roi": v["roi"]}
+                for tr, t in tracks.items() for ti, v in t["by_tier"].items()]
+        if rows:
+            d = pd.DataFrame(rows).sort_values("pnl")
+            left, right = st.columns([3, 2])
+            with left:
+                st.altair_chart(ui.pnl_bars(d, "track_tier", "pnl", "n",
+                                            title="P/L by track and tier (units, flat 1u)"), width="stretch")
+            with right:
+                ui.eyebrow("Did a bigger gap mean better outcomes? (retired tiers)")
+                st.caption(
+                    f"The tier is only the size of the gap between our probability and the price: "
+                    f"{tier_label('SNIPER')} is the largest gap, {tier_label('VALUABLE')} the smallest. "
+                    "Read the bars against the idea that a bigger gap wins more; the measured calibration of "
+                    "these models is on the Model Performance page. A tier that does not separate outcomes is a "
+                    "label, not a signal: the tiers were retired for future tips on 2026-11-11 (one approved bar "
+                    "per league x market cell, Bars & Cells page).")
+                ui.compact_table(d.rename(columns={"track_tier": "track · tier"}), V.tier_table_config())
+
+        # league detail, with small samples flagged rather than hidden
+        ui.section_header("Where the money went, by league")
+        # Staked tiers only — this section is titled "where the money went", and VALUABLE is paper.
+        bl = E["by_league"]
+        if bl.empty:
+            ui.empty_state("NO_DATA", "No settled bets grouped by league yet.")
+        else:
+            bl = bl.copy()
+            bl["label"] = bl["league"] + bl["reliable"].map({True: "", False: "  ⚠ thin"})
+            c1, c2 = st.columns(2)
+            with c1:
+                st.altair_chart(ui.pnl_bars(bl, "label", "pnl", "n", h=26 * len(bl) + 60,
+                                            title="P/L by league (units)"), width="stretch")
+            with c2:
+                # EXCESS OVER EACH LEAGUE'S OWN BREAK-EVEN, not a hit rate against an estate-wide mean.
+                # A 45% hit rate is excellent at 2.40 and a disaster at 1.70.
+                st.altair_chart(ui.pnl_bars(bl, "label", "excess_hit", "n", h=26 * len(bl) + 60,
+                                            title="Hit rate minus that league's own break-even"), width="stretch")
+            st.caption("Staked bets only (a recorded policy stake > 0), flat 1u. A tier alone is not a stake: "
+                       "tips on PAPER tracks or with a zero stake are never in this chart.")
+            thin = int((~bl["reliable"]).sum())
+            if thin:
+                st.markdown(ui.status_chip("SMALL_SAMPLE", label=f"{thin} THIN LEAGUE(S) · n < 30")
+                            + " :gray[shown rather than hidden, because a missing league reads as 'we don't bet "
+                              "there' when the truth is 'we have not measured it yet'. Do not act on a thin row.]")
 
 # ═══ RESEARCH ═════════════════════════════════════════════════════════════════════════════════════
 ui.section_header("Research", "Pro and V11 produce evidence, never bets. What is currently known to be invalid is "

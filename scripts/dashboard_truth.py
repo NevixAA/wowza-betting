@@ -21,6 +21,13 @@ WHAT IT DOES. For every headline figure the v9-local dashboard pages show, two v
 
 Clock-bound figures (stake-plan rows dated today or later, last 7 days, the Success Rates window) use the
 same clock in both halves: the child records `now` before it renders and the recompute uses that value.
+
+CLEAN RECORD (owner 2026-11-11). Every results figure is recomputed on ONE record of the split at
+config.CLEAN_RECORD_START (read from the target tree in the child): CLEAN = generated AND played on or after the
+start; BEFORE = generated before it (or, without a generation time, played before it). The split is re-implemented
+here with plain pandas (no dashboard import). The pages' "Clean Record ..." figures are compared with the CLEAN
+recompute (0 before the start), the pre-repair figures with the BEFORE recompute; a tip dated before the start
+can never reach a Clean Record figure.
 """
 from __future__ import annotations
 
@@ -42,6 +49,7 @@ ROOT = Path(__file__).resolve().parents[1]
 #: Fantasy, Model Lab, Bet Builder, League Research, Portfolio, Agent Analysis and Live read other repos,
 #: a live API or user input, and are covered in the report, not here.
 PAGES = {"home": "00_🎯_Home.py", "overview": "0_🏠_Overview.py", "tips": "1_📊_Dashboard.py",
+         "cleanrec": "24_🧾_Clean_Record.py", "cells": "25_📐_Bars_and_Cells.py",
          "success": "5_🎯_Success_Rates.py", "modelperf": "9_🎓_Model_Performance.py",
          "props": "11_👤_Player_Props.py", "leagues": "17_🏟️_Leagues.py", "health": "19_🩺_System_Health.py",
          "production": "22_🏭_Production.py", "intel": "21_📡_Market_Intelligence.py",
@@ -50,6 +58,9 @@ STAT = re.compile(r"<span class='wz-stat-l'>(.*?)</span><span class='wz-stat-v'>
 NUM = re.compile(r"[-+−]?\d[\d,]*(?:\.\d+)?")
 MATCH, MISMATCH, UNIDENTIFIABLE = "MATCH", "MISMATCH", "UNIDENTIFIABLE"
 TIERS = ("SNIPER", "MARKSMAN", "VALUABLE")
+#: the one stored value of a tip from the Clean Record start (owner 2026-11-11, tiers retired)
+TIPPED = TIERS + ("QUALIFIED",)
+CLEAN, BEFORE, UNPLACED = "CLEAN", "BEFORE", "UNPLACED"
 
 
 # ── child: render pages of a tree, record context ──────────────────────────────────────────────────
@@ -64,6 +75,7 @@ def _child(root: Path, pages: list[str]) -> dict:
     now = pd.Timestamp.now(tz="UTC")
     ctx = {"now_utc": now.isoformat(), "today_utc": pd.Timestamp.now(tz="UTC").strftime("%Y-%m-%d"),
            "cutoff": str(getattr(config, "PERFORMANCE_CUTOFF_DATE", "")),
+           "clean_start": str(getattr(config, "CLEAN_RECORD_START", "") or ""),
            "paper_leagues": sorted(getattr(config, "PAPER_LEAGUES", []) or []),
            "thresholds": {k: getattr(config, k, None) for k in
                           ("SNIPER_THRESHOLD", "SNIPER_THRESHOLD_OVER", "SNIPER_THRESHOLD_UNDER")}}
@@ -128,6 +140,21 @@ def _total(xs) -> float:
     return float(sum(Decimal(str(x)) for x in xs))
 
 
+def record_of(gen: pd.Series, dt: pd.Series, start: str) -> pd.Series:
+    """CLEAN / BEFORE / UNPLACED (plain pandas; the rule of dashboard_data/clean_record.assign). No start in
+    the target tree (an older tree) = every row BEFORE."""
+    if not start:
+        return pd.Series(BEFORE, index=gen.index, dtype=object)
+    s = pd.Timestamp(start[:10], tz="UTC")
+    g = pd.to_datetime(gen, errors="coerce", utc=True, format="mixed")
+    d = pd.to_datetime(dt, errors="coerce").dt.tz_localize("UTC")
+    out = pd.Series(UNPLACED, index=gen.index, dtype=object)
+    out[g.notna() & (g < s)] = BEFORE
+    out[g.isna() & d.notna() & (d < s)] = BEFORE
+    out[g.notna() & (g >= s) & d.notna() & (d >= s)] = CLEAN
+    return out
+
+
 def settled_rows(out: Path, ctx: dict) -> pd.DataFrame:
     """Every live settled row on the two team ledgers since the cutoff, paper leagues out, in ledger order
     (O/U 2.5 first, then side markets), with THE staked label."""
@@ -149,16 +176,18 @@ def settled_rows(out: Path, ctx: dict) -> pd.DataFrame:
                           "pnl": pd.to_numeric(d["pnl"], errors="coerce"),
                           "odds": pd.to_numeric(d["odds"], errors="coerce"),
                           "result": d.get("result"),
-                          "status": lab["stake_status"], "units": lab["stake_units"]}, index=d.index)
+                          "status": lab["stake_status"], "units": lab["stake_units"],
+                          "gen": d["generated_at"] if "generated_at" in d.columns else pd.NA}, index=d.index)
         keep = f["pnl"].notna() & ~f["league"].isin(paper)
         if cut is not None:
             keep &= f["dt"] >= cut
         parts.append(f[keep])
     if not parts:
         return pd.DataFrame(columns=["ledger", "league", "mkt", "model_type", "tier", "dt", "pnl", "odds",
-                                     "result", "status", "units"])
+                                     "result", "status", "units", "gen", "record", "staked"])
     r = pd.concat(parts, ignore_index=True)
     r["staked"] = r["status"].eq(S.STAKED)
+    r["record"] = record_of(r["gen"], r["dt"], ctx.get("clean_start", ""))
     return r
 
 
@@ -202,13 +231,23 @@ def book(s: pd.DataFrame, mask: pd.Series, now, ctx: dict) -> dict:
     v["not_staked_n"], v["not_staked_pnl"] = len(ns), _total(ns["pnl"])
     v["not_staked_pre_policy_n"] = int(ns["status"].eq("PRE_POLICY_NO_RECORD").sum())
     # Leagues: staked tips of a sent tier, paper leagues out (already out of `s`)
-    lg = st_[st_["tier"].isin(TIERS)]
+    lg = st_[st_["tier"].isin(TIPPED)]
     v["leagues_n"] = len(lg)
     if len(lg):
         v["leagues_pnl"], v["leagues_hit_pct"] = _total(lg["pnl"]), 100 * float((lg["pnl"] > 0).mean())
-    # Success Rates, default window (first entry of the admin tier's windows: 7 days), staked scope
+    return v
+
+
+def clean_book(s: pd.DataFrame, now) -> dict:
+    """The Clean Record figures the pages show (0 / n=0 before the start, never absent)."""
+    st_ = s[s["staked"].to_numpy()] if len(s) else s
+    v = {"clean_staked_n": len(st_), "clean_staked_pnl": _total(st_["pnl"]) if len(st_) else 0.0,
+         "clean_all_n": len(s), "clean_all_units": _total(s["pnl"]) if len(s) else 0.0}
+    lg = st_[st_["tier"].isin(TIPPED)] if len(st_) else st_
+    v["clean_leagues_n"], v["clean_leagues_pnl"] = len(lg), (_total(lg["pnl"]) if len(lg) else 0.0)
+    # Success Rates, default view: the Clean Record, staked scope, the admin tier's first window (7 days)
     since = pd.Timestamp(now).tz_convert(None).normalize() - pd.Timedelta(days=7)
-    v["success_obs"] = int((st_["dt"] >= since).sum())
+    v["success_obs"] = int((st_["dt"] >= since).sum()) if len(st_) else 0
     return v
 
 
@@ -217,7 +256,9 @@ def independent(out: Path, ctx: dict) -> dict:
     from src.staked import plan_staked
     v: dict = {}
     now = pd.Timestamp(ctx["now_utc"])
-    s = settled_rows(out, ctx)
+    s_all = settled_rows(out, ctx)
+    s = s_all[s_all["record"].eq(BEFORE).to_numpy()].reset_index(drop=True)      # "Before the repairs"
+    v.update(clean_book(s_all[s_all["record"].eq(CLEAN).to_numpy()].reset_index(drop=True), now))
     v.update(book(s, s["staked"], now, ctx))
     # the OLD basis (SNIPER + MARKSMAN tiers, any track): what origin/main's pages still call "Staked".
     # Recomputed so a main figure can be told apart as "reproduces, but on the tier basis".
@@ -256,6 +297,9 @@ def independent(out: Path, ctx: dict) -> dict:
             continue
         dd = pd.to_datetime(d["match_date"], errors="coerce")
         d = d[(dd.isna() | (dd >= pd.Timestamp(ctx["cutoff"][:10]))) & ~d["league"].isin(set(ctx["paper_leagues"]))]
+        # Model Performance section 1 = the pre-repair models (record BEFORE)
+        d = d[record_of(d["generated_at"] if "generated_at" in d.columns else pd.Series(pd.NA, index=d.index),
+                        d["match_date"], ctx.get("clean_start", "")).eq(BEFORE).to_numpy()]
         d = d[d["result"].isin(["WIN", "LOSS"])]
         odds, edge = pd.to_numeric(d["odds"], errors="coerce"), pd.to_numeric(d["edge_pct"], errors="coerce")
         claim = (edge / 100 + 1 / odds) if name == "bets_ledger.csv" else pd.to_numeric(d.get("model_prob"),
@@ -302,12 +346,30 @@ def independent(out: Path, ctx: dict) -> dict:
     for k, x in (ctx.get("thresholds") or {}).items():
         if x is not None:
             v[f"cfg_{k}"] = 100 * float(x)
+    # Bars & Cells: the approved proposal's evidence file (every cell) and the policy's staked cells
+    try:
+        lt_path = out / "threshold_proposals" / "bars_oddsapi_hist" / "latest.json"
+        lt = json.loads(lt_path.read_text(encoding="utf-8"))
+        pr = json.loads((out.parent / lt["path"]).read_text(encoding="utf-8"))
+        ev = json.loads((lt_path.parent / f"evidence_{pr['month']}.json").read_text(encoding="utf-8"))
+        cells = pd.DataFrame(ev["league_market_status"])
+        v["cells_n"] = len(cells)
+        v["cells_proven"] = int((cells["status"] == "PROVEN").sum())
+        pol = json.loads((out.parent / "config" / "bankroll_policy.json").read_text(encoding="utf-8"))
+        cs = (pol.get("cell_staking") or {}).get("cells") or {}
+        v["cells_staked"] = sum(1 for c in cs.values() if float(c.get("base_fraction") or 0) > 0)
+    except (OSError, KeyError, ValueError):
+        pass
     return v
 
 
 # ── the figure table: (id, page, label, how the page shows it) ────────────────────────────────────
 #: (figure id, page key, label on the page, kind, nth occurrence, number index in the string)
 FIGURES = [
+    ("clean_staked_pnl", "home", "Clean Record staked P/L (flat 1u)", "metrics", 0, 0),
+    ("clean_staked_n", "home", "Clean Record staked bets", "stats", 0, 0),
+    ("clean_all_units", "home", "Clean Record all tips, paper + staked (flat 1u)", "stats", 0, 0),
+    ("clean_all_n", "home", "Clean Record all tips, paper + staked (flat 1u)", "stats", 0, 1),
     ("staked_pnl", "home", "Staked P/L (flat 1u)|Staked P/L", "metrics", 0, 0),
     ("staked_n", "home", "Settled staked bets", "stats", 0, 0),
     ("staked_win_pct", "home", "Win rate — staked", "stats", 0, 0),
@@ -330,6 +392,8 @@ FIGURES = [
     ("truth_zeros_unverified", "home", "Player rows zeros_unverified", "stats", 0, 0),
     ("truth_cup_unproven", "home", "Unproven cup rows", "stats", 0, 0),
     ("truth_scores_refused", "home", "Refused scores", "stats", 0, 0),
+    ("clean_staked_pnl", "overview", "Clean Record P/L · staked bets", "metrics", 0, 0),
+    ("clean_all_units", "overview", "Clean Record P/L · all tips, paper + staked", "metrics", 0, 0),
     ("staked_pnl", "overview", "Staked P/L", "metrics", 0, 0),
     ("staked_n", "overview", "Staked bets", "stats", 0, 0),
     ("stake_pnl", "overview", "P/L at recorded stakes", "stats", 0, 0),
@@ -339,6 +403,8 @@ FIGURES = [
     ("track_new_format_hit_pct", "overview", "Hit (new-format card)", "stats:Hit", 0, 0),
     ("track_new_format_be_pct", "overview", "Break-even (new-format card)", "stats:Break-even", 0, 0),
     ("track_new_format_roi_pct", "overview", "ROI (new-format card)", "stats:ROI", 0, 0),
+    ("clean_staked_pnl", "tips", "Clean Record staked P/L (flat 1u)", "metrics", 0, 0),
+    ("clean_staked_n", "tips", "Clean Record staked bets", "metrics", 0, 0),
     ("staked_pnl", "tips", "P/L — all staked markets (flat 1u)|P/L — all staked markets", "metrics", 0, 0),
     ("staked_pnl_ex_ou25", "tips", "Excluding O/U 2.5", "metrics", 0, 0),
     ("staked_n", "tips", "Settled bets", "metrics", 0, 0),
@@ -351,6 +417,8 @@ FIGURES = [
     ("props_n", "props", "Settled", "stats", 0, 0),
     ("props_roi_pct", "props", "Flat ROI (1u, paper)", "stats", 0, 0),
     ("props_flagged_sentinel", "props", "Includes rows flagged (caption)", "caption:Includes rows flagged", 0, 0),
+    ("clean_leagues_pnl", "leagues", "Clean Record P/L", "metrics", 0, 0),
+    ("clean_leagues_n", "leagues", "Clean Record staked tips settled", "stats", 0, 0),
     ("leagues_pnl", "leagues", "P/L", "metrics", 0, 0),
     ("leagues_n", "leagues", "Staked tips settled", "stats", 0, 0),
     ("leagues_hit_pct", "leagues", "Hit", "stats", 0, 0),
@@ -364,9 +432,14 @@ FIGURES = [
     ("plan_active", "production", "With a stake", "metrics", 0, 0),
     ("plan_days", "production", "Days covered", "metrics", 0, 0),
     ("intel_suppressed", "intel", "Suppressed tips (all time)", "metrics", 0, 0),
-    ("cfg_SNIPER_THRESHOLD", "modelinfo", "Global Big gap", "metrics", 0, 0),
-    ("cfg_SNIPER_THRESHOLD_OVER", "modelinfo", "OVER threshold", "metrics", 0, 0),
-    ("cfg_SNIPER_THRESHOLD_UNDER", "modelinfo", "UNDER threshold", "metrics", 0, 0),
+    ("cfg_SNIPER_THRESHOLD", "modelinfo", "Global Big gap (retired)|Global Big gap", "metrics", 0, 0),
+    ("cfg_SNIPER_THRESHOLD_OVER", "modelinfo", "OVER threshold (retired)|OVER threshold", "metrics", 0, 0),
+    ("cfg_SNIPER_THRESHOLD_UNDER", "modelinfo", "UNDER threshold (retired)|UNDER threshold", "metrics", 0, 0),
+    ("clean_staked_pnl", "cleanrec", "Clean Record units · Staked bets", "metrics", 0, 0),
+    ("clean_all_units", "cleanrec", "Clean Record units · All team tips, paper + staked", "metrics", 0, 0),
+    ("cells_n", "cells", "Cells", "metrics", 0, 0),
+    ("cells_staked", "cells", "Staked cells", "metrics", 0, 0),
+    ("cells_proven", "cells", "PROVEN cells", "metrics", 0, 0),
 ]
 #: where each recomputation comes from (the report's "source" column)
 SOURCES = {
@@ -380,12 +453,17 @@ SOURCES = {
     "cfg": "config.py thresholds",
     "truth": "output/corrections/history_cup_unproven_rows.csv, history_score_refused.csv (rows); "
              "output/collect/player_history_refetch_audit.json (plan.rows_to_verify - stored_rows)",
+    "clean": "bets_ledger.csv + side_bets_ledger.csv, record CLEAN (generated_at AND match_date >= "
+             "config.CLEAN_RECORD_START) x src/staked.py labels",
+    "cells": "output/threshold_proposals/bars_oddsapi_hist/latest.json -> proposal -> evidence_<month>.json "
+             "league_market_status; config/bankroll_policy.json cell_staking (base_fraction > 0)",
 }
 
 
 def _source(fid: str) -> str:
     for k, s in (("plan_", "plan"), ("health_", "health"), ("cal_", "cal"), ("props_", "props"),
-                 ("intel_", "intel"), ("cfg_", "cfg"), ("truth_", "truth")):
+                 ("intel_", "intel"), ("cfg_", "cfg"), ("truth_", "truth"), ("clean_", "clean"),
+                 ("success_", "clean"), ("cells_", "cells")):
         if fid.startswith(k):
             return SOURCES[s]
     return SOURCES["staked"]

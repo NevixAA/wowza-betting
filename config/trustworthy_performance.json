@@ -1,8 +1,8 @@
 {
   "_doc": "src/trustworthy_performance.py (Phase 2 part 11, P1_TRUSTWORTHY_PERFORMANCE). The owner sets every value in this file. The minimums below are COPIED from rules already in the repo (each `source` names it); none is new. Until the owner confirms them (`owner_confirmed`), the framework labels its output with that fact.",
   "owner_confirmed": false,
-  "clean_record_start_utc": null,
-  "_clean_record_start_utc": "View C (Clean Record) starts at the go-live merge of data-truth-100 to main (GitHub milestone 'Clean Record (2 months on repaired data)'). null = not live yet: every live tip is view A and view C is empty. The owner sets the UTC timestamp at go-live; it is never inferred.",
+  "clean_record_start_utc": "2026-11-21T00:00:00Z",
+  "_clean_record_start_utc": "OWNER DECISION 2026-11-11 (\"adjust to count from 0 after all the fixing (to see the difference later)\"): the Clean Record starts 2026-11-21, the first round on the clean models (clean retrained team models, clean props models, the approved per-cell bars TP-2026-11-10-d999073a). THE one value: config.py CLEAN_RECORD_START and PROPS_CLEAN_MODELS_LIVE_DATE read it, every dashboard results figure splits on it (dashboard_data/clean_record.py). View C = live tips generated AND played on or after it; every earlier tip is view A ('Before the repairs'). Never inferred; only the owner changes it.",
   "performance_claims_enabled": false,
   "_performance_claims_enabled": "Owner rule: no new performance claims until the data is complete and he approves. While false the CLI only runs --dry-run (row counts per view); the full build needs this set to true by the owner.",
   "minimums": {

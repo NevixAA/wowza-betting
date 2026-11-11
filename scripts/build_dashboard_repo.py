@@ -42,6 +42,21 @@ a whole. Any hand edit here is overwritten by the next build: change the code in
 * Code/data skew: `deploy/BUILD_INFO.json` records this build; the app compares it with v9's manifest
   at the mirrored data SHA and warns (STALE_BUILD / INCOMPATIBLE / UNKNOWN) when they disagree.
 
+## What the dashboard shows (from the 2026-11-21 go-live)
+
+* **Clean Record first.** Every results figure (Home, Tips, Leagues, Success Rates, Player Props, Overview,
+  Model Performance, Clean Record page) counts only tips generated and played on or after the owner's Clean
+  Record start (v9 `config.CLEAN_RECORD_START`, 2026-11-21): units (flat 1u), ROI, hit rate, n and a matchday
+  block-bootstrap 95% CI. Before the start each reads 0 / "no settled tips yet".
+* **Before the repairs** (pre-2026-11-21, old models and the retired Big / Medium / Small gap tiers) is a
+  separate, labelled section, for comparison only, never in a Clean Record total. The Clean Record page shows
+  both side by side.
+* **Bars & Cells**: every league x market cell of the owner-approved bars proposal with its one qualifying
+  bar, status (PROVEN / PROMISING / UNPROVEN / OFF) and stake. Staked = a recorded policy stake > 0; every
+  other tip is paper.
+* Clean retrained team models and clean props models serve from the go-live; there is no global bar and no
+  tier on a future tip.
+
 Full instructions: `deploy/README_DASHBOARD_DEPLOY.md`.
 """
 

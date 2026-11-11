@@ -9,6 +9,23 @@ is downloaded at runtime from its public raw URLs.
 Nothing about production changes. v9 keeps committing its output exactly as before; the dashboard reads
 the same files, only fetched over HTTPS instead of cloned.
 
+## What the pages show (Clean Record, owner 2026-11-11)
+
+From the 2026-11-21 go-live the results pages count the **Clean Record** only: tips generated and played on or
+after `config.CLEAN_RECORD_START` (one owner value, stored in `config/trustworthy_performance.json`
+`clean_record_start_utc`; the split lives in `dashboard_data/clean_record.py`). Before that date every Clean
+Record figure is 0 / "no settled tips yet". The pre-repair record stays in a labelled "Before the repairs
+(pre-2026-11-21, old models and tiers)" section on each page and side by side on the **Clean Record** page. The
+**Bars & Cells** page reads the owner-approved proposal (`config/threshold_approvals.json` ->
+`output/threshold_proposals/bars_oddsapi_hist/latest.json` -> the proposal and its `evidence_<month>.json`) and
+`config/bankroll_policy.json` `cell_staking`. None of these files carries OddsAPI history prices.
+
+**Go-live sync.** The slim repo is generated from v9 **main**, so none of this reaches wowza-dashboard until the
+go-live merge lands on main. Before the merge: `python scripts/dashboard_manifest.py --check` and
+`python scripts/dashboard_truth.py` (0 MISMATCH) on the merge result. The push to main fires "Dashboard sync
+dispatch" (`.github/workflows/dashboard_sync_dispatch.yml`; without its token wowza-dashboard syncs on its hourly
+schedule), which rebuilds the slim tree from main.
+
 ## How it works
 
 | piece | file | what it does |

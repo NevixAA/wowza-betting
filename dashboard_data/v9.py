@@ -18,7 +18,7 @@ def predictions() -> pd.DataFrame:
 
 def ledger(include_side_markets: bool = True,
            since_cutoff: bool = True,
-           include_paper_leagues: bool = False) -> pd.DataFrame:
+           include_paper_leagues: bool = False, record: str | None = None) -> pd.DataFrame:
     """Settled + open bets. `model_type` separates the two tracks and must never be pooled.
 
     TWO DEFECTS FIXED HERE, 2026-10-06. Together they inverted the headline: the dashboard
@@ -61,6 +61,10 @@ def ledger(include_side_markets: bool = True,
         # Paper leagues are collected and settled but never counted (config.PAPER_LEAGUES).
         # Every dashboard KPI reads through here, so this is the one place it has to happen.
         d = config.drop_paper_leagues(d)
+    if record is not None:
+        # THE Clean Record split (dashboard_data/clean_record.py, owner 2026-11-11): 'CLEAN' / 'BEFORE' rows only
+        from dashboard_data import clean_record as CR
+        d = d[CR.assign(d, "generated_at", "match_date").to_numpy() == record]
     return d.reset_index(drop=True)
 
 
@@ -113,7 +117,7 @@ def _settled_stats(t: pd.DataFrame) -> dict:
             "hit": round(float((t.loc[ok, "result"] == "WIN").mean()), 4) if n else None}
 
 
-def performance(days: int | None = None) -> dict:
+def performance(days: int | None = None, record: str | None = None) -> dict:
     """P&L split by track and tier. NEVER one blended total across unrelated markets.
 
     VALUABLE is reported separately and excluded from the staked figure: it is a half-stake
@@ -121,7 +125,7 @@ def performance(days: int | None = None) -> dict:
     Sample size travels with every number, because a percentage without an n invites exactly
     the celebration of noise the brief warns about.
     """
-    d = ledger()
+    d = ledger(record=record)
     if d.empty or "result" not in d.columns:
         return {"available": False, "why": "no settled bets in bets_ledger.csv"}
     s = d[d["result"].isin(["WIN", "LOSS"])].copy()
@@ -172,7 +176,7 @@ def performance(days: int | None = None) -> dict:
 
 
 def by_league(days: int | None = 30, min_n: int = 5,
-              staked_only: bool = True) -> pd.DataFrame:
+              staked_only: bool = True, record: str | None = None) -> pd.DataFrame:
     """Per-league performance. Rows under `min_n` are KEPT but flagged, never hidden or greened.
 
     STAKED TIERS ONLY BY DEFAULT. This pooled VALUABLE with SNIPER and MARKSMAN, so a chart
@@ -180,7 +184,7 @@ def by_league(days: int | None = 30, min_n: int = 5,
     cosmetic: on 2026-10-06 the standard track read -65.11u across 553 tips while the staked
     loss was -9.17u across 133 — seven times larger. Pass staked_only=False to see every tip.
     """
-    d = ledger()
+    d = ledger(record=record)
     if d.empty or "result" not in d.columns:
         return pd.DataFrame()
     s = d[d["result"].isin(["WIN", "LOSS"])].copy()
@@ -261,7 +265,7 @@ def shadow_settlement_health() -> dict:
     return h
 
 
-def calibration(bins: int = 8, min_bin: int = 20) -> dict:
+def calibration(bins: int = 8, min_bin: int = 20, record: str | None = None) -> dict:
     """Claimed probability against what actually happened.
 
     HOW THE CLAIM IS RECOVERED. v9's edge is `model_prob − 1/odds`, so the model's probability is
@@ -286,7 +290,7 @@ def calibration(bins: int = 8, min_bin: int = 20) -> dict:
     without a recorded model_prob is left out (no reconstruction), and the count is returned.
     """
     import numpy as np
-    d = ledger()
+    d = ledger(record=record)
     if d.empty or "result" not in d.columns:
         return {"available": False, "why": "no settled bets"}
     s = d[d["result"].isin(["WIN", "LOSS"])].copy()
