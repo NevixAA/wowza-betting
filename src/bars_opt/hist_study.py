@@ -269,3 +269,34 @@ def combine(fresh: dict, families: list[dict], study_cells: list[dict], month: s
             "proposal": Path(path).resolve().relative_to(ROOT.resolve()).as_posix(),
             "entries": len(p["entries"]), "status": p["status"], "status_counts": counts,
             "fresh_cells_replaced": replaced, "fresh_cells_refused": refused}
+
+
+def status_diff(approved: list[dict], new: list[dict]) -> dict:
+    """R7 (go-live runbook): every track x market-side x league of the APPROVED status table against a rebuilt
+    one. A status change (PROVEN / PROMISING / UNPROVEN / OFF), a cell that appears or disappears, goes back to
+    the owner; a bar or configuration change under the same status is listed for information."""
+    key = (lambda r: (r["track"], r["mside"], r["league"]))
+    a, b = {key(r): r for r in approved}, {key(r): r for r in new}
+    status = [{"cell": "|".join(k), "approved": a[k]["status"] if k in a else None,
+               "rebuilt": b[k]["status"] if k in b else None}
+              for k in sorted(set(a) | set(b)) if (a.get(k) or {}).get("status") != (b.get(k) or {}).get("status")]
+    bars = [{"cell": "|".join(k), "approved": [a[k].get("bars"), a[k].get("config")],
+             "rebuilt": [b[k].get("bars"), b[k].get("config")]}
+            for k in sorted(set(a) & set(b)) if a[k]["status"] == b[k]["status"]
+            and (a[k].get("bars"), a[k].get("config")) != (b[k].get("bars"), b[k].get("config"))]
+    return {"cells_compared": len(set(a) | set(b)), "status_changes": status, "bar_changes_same_status": bars,
+            "back_to_owner": bool(status)}
+
+
+def recheck(approved_evidence: dict, families: list[dict], study_cells: list[dict]) -> dict:
+    """Rebuild the status table from new serving families + new selection-study cells, with the APPROVED fresh
+    cells carried unchanged (the fresh holdout is spent: those cells are never re-tested), and diff it."""
+    fresh = {(c["track"], c["mside"], c["league"]): c
+             for f in approved_evidence["families"] for c in f["cells"] if c.get("config_basis") == FRESH_BASIS}
+    fams = []
+    for f in families:
+        mine = {k: c for k, c in fresh.items() if k[:2] == (f["track"], f["mside"])}
+        lgs = {k[2] for k in mine}
+        fams.append(dict(f, cells=[c for c in f["cells"] if c["league"] not in lgs] + list(mine.values()),
+                         off=[o for o in f["off"] if o["league"] not in lgs]))
+    return status_diff(approved_evidence["league_market_status"], status_table(fams, study_cells))

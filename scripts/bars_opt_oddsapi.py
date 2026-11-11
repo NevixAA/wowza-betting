@@ -118,6 +118,18 @@ def cmd_holdout(a) -> int:
     return 0
 
 
+def cmd_recheck(a) -> int:
+    """Go-live R7: the approved status table against one rebuilt on new universes / a new selection study.
+    Exit 1 when any cell's status would change (it goes back to the owner). Writes nothing."""
+    from src.bars_opt import cells as C
+    from src.bars_opt import hist_study as H
+    approved = json.loads(Path(a.approved_evidence).read_text(encoding="utf-8"))
+    fams = C.build(Path(a.universe), a.month, workers=a.workers, verdict_path=Path(a.study_cells))
+    res = H.recheck(approved, fams, json.loads(Path(a.study_cells).read_text(encoding="utf-8")))
+    print(json.dumps(res, indent=1, default=str))
+    return 1 if res["back_to_owner"] else 0
+
+
 def cmd_gate(a) -> int:
     from src.bars_opt import hist_study as H
     ok, why = H.gate(Path(a.store))
@@ -144,10 +156,17 @@ def main(argv=None) -> int:
     h = sub.add_parser("holdout")
     h.add_argument("--priced", required=True)
     h.add_argument("--out", required=True, type=Path)
+    rc = sub.add_parser("recheck")
+    rc.add_argument("--approved-evidence", required=True, help="the approved proposal's evidence_<month>.json")
+    rc.add_argument("--universe", required=True, help="dir with the rebuilt universe_*.parquet (own prices)")
+    rc.add_argument("--study-cells", required=True, help="the selection study re-run on those universes")
+    rc.add_argument("--month", required=True)
+    rc.add_argument("--workers", type=int, default=4)
     g = sub.add_parser("gate")
     g.add_argument("--store", required=True)
     a = ap.parse_args(argv)
-    return {"prepare": cmd_prepare, "study": cmd_study, "holdout": cmd_holdout, "gate": cmd_gate}[a.cmd](a)
+    return {"prepare": cmd_prepare, "study": cmd_study, "holdout": cmd_holdout, "recheck": cmd_recheck,
+            "gate": cmd_gate}[a.cmd](a)
 
 
 if __name__ == "__main__":
