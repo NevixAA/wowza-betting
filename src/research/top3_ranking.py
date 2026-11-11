@@ -1,4 +1,4 @@
-"""TOP-3 ranking rules - the ONE implementation of R1, R2 and R3 (protocol config/top3_ranking_paper_protocol_v2.json).
+"""TOP-3 ranking rules - the ONE implementation of R1, R2 and R3 (protocol config/top3_ranking_paper_protocol_v3.json).
 
 Owner 2026-11-11 ("Clean rebuild"): the live TOP-3 is ranked by R3 (served from prep/bars-oddsapi-hist, which
 imports it from HERE); R1 and R2 run as PAPER tracks (src/research/top3_paper.py). The old EV ranking is
@@ -10,6 +10,7 @@ PUBLIC API (pure functions, pandas in / pandas out):
     rank_order(frame, stats, rule, tiebreak=())      the frame sorted best first, with key / has_stat / no_stat
     select(bets, stats, rule)                         research replay: TOP-3 per (track, league, ISO week)
     MSIDE_OF[(panel market, side)]                    -> study market-side ("over25_over", ...)
+    in_pool(cell) -> bool                            the cell may feed the TOP-3 pool (MODEL cells only)
 
 A frame to rank needs: track, league, mside (the CELL), fair, p_used, odds and ev_est (= p_used * odds - 1 from
 the cell's own served source; used only as the tie-break / no-statistic order).
@@ -27,6 +28,10 @@ constant is invented: MIN_OWN_BETS (40) and Z95 are the study's declared ones (s
                  on (p_used - fair) over the cell's own prior PRICED ROWS, shrunk toward the same league's
                  other markets (DerSimonian-Laird inside the league), clipped to [0, 1]
   R3_CAL_EV_LCB  as R2 with lam_lo = clip(lam - Z95 * se_own(lam), 0, 1)
+
+POOL (owner 2026-11-11 "Own list"): a LEAGUE_WIDE cell (source NONE, mode LEAGUE_WIDE - no model probability)
+is shown on its own line outside the TOP-3 slots, so it is never in the TOP-3 / TIER2 pool of any track
+(R1, R2 or the live R3): in_pool(cell) is False for it.
 
 A tip whose cell has no statistic for the rule gets none (nothing filled in): it ranks AFTER every tip that
 has one, among those by ev_est, and is flagged no_stat = 1.
@@ -51,6 +56,13 @@ STAT_COLS = ["n", "roi", "se", "lcb", "eb", "lam", "lam_se", "lam_rows"]
 #: panel market x side (src/top3_league.py candidates) -> study market-side
 MSIDE_OF = {("OU25", "OVER"): "over25_over", ("OU25", "UNDER"): "over25_under", ("BTTS", "YES"): "btts_yes",
             ("OVER15", "OVER"): "over15_over", ("OVER35", "OVER"): "over35_over"}
+
+
+def in_pool(cell: dict | None) -> bool:
+    """True only for a MODEL cell (its own probability source). A LEAGUE_WIDE cell (source NONE) is the owner's
+    own list, outside the TOP-3 slots (owner 2026-11-11 "Own list"); a missing cell is never in the pool."""
+    return (isinstance(cell, dict) and cell.get("mode") == S.MODE_MODEL
+            and cell.get("source") not in (None, S.LEAGUE_WIDE_SOURCE))
 
 
 def _dl_shrink(m: np.ndarray, v: np.ndarray) -> np.ndarray:

@@ -266,7 +266,7 @@ jobs:
           python -m src.top3_league notify || echo "::warning::TOP-3 per league notify failed"
 
       # TOP-3 PAPER TRACKS R1 / R2 (owner 2026-11-11 "Add the 3 tracks" / "Clean rebuild"; protocol
-      # config/top3_ranking_paper_protocol_v2.json). PAPER/RESEARCH ONLY: writes only output/research/top3_paper/,
+      # config/top3_ranking_paper_protocol_v3.json; model cells only). PAPER/RESEARCH ONLY: writes only output/research/top3_paper/,
       # never a tip, stake, order, production ledger or Telegram message. OFF until the owner sets the repository
       # variable TOP3_PAPER_ENABLED (runbook U3e); refuses to freeze anything until the statistics are frozen and
       # every pinned hash matches. Tolerant: a failure cannot stop the commit below.

@@ -1,4 +1,4 @@
-"""TOP-3 PAPER TRACKS R1 and R2 - PAPER / RESEARCH ONLY (protocol config/top3_ranking_paper_protocol_v2.json).
+"""TOP-3 PAPER TRACKS R1 and R2 - PAPER / RESEARCH ONLY (protocol config/top3_ranking_paper_protocol_v3.json).
 
     python -m src.research.top3_paper run       # predict.yml, after src.top3_league run: freeze due league-weeks
     python -m src.research.top3_paper settle    # update_results.yml: grade finished paper picks
@@ -22,6 +22,8 @@ owner-applied bar) restricted, per candidate, to:
   * CELL_NOT_APPROVED - its served bar must be a bars_opt cell (no legacy / global bar) that is IDENTICAL to the
                         cell of an approved proposal listed in config/top3_paper_tracks.json (hash-verified), and
                         the league x market must have been applied from that proposal (config/threshold_applied.json).
+  * LEAGUE_WIDE_OWN_LIST - a LEAGUE_WIDE cell (source NONE) is the owner's own list, outside the TOP-3 slots
+                        (owner 2026-11-11 "Own list"; top3_ranking.in_pool): never in the pool of R1 or R2.
 OFF cells give no candidates (production already returns NO_LEAGUE_BAR for them).
 
 RANKING. src/research/top3_ranking.rank_order(rule) on the frozen per-cell statistics (scripts/top3_paper_freeze.py).
@@ -59,6 +61,7 @@ TOP_N = 3
 R_NOT_CLEAN = "MODEL_NOT_CLEAN"
 R_CELL = "CELL_NOT_APPROVED"
 R_NOT_APPLIED_FROM = "NOT_APPLIED_FROM_APPROVED_PROPOSAL"
+R_LEAGUE_WIDE = "LEAGUE_WIDE_OWN_LIST"
 
 PICK_KEY = ["track", "league_week_id", "rank"]
 PICK_FROZEN = [
@@ -237,6 +240,7 @@ def pool(g: pd.DataFrame, ctx: dict, guards: dict) -> tuple[pd.DataFrame, Counte
     cell (track, mside), p_used and ev_est of the cell's served source. Pure apart from `guards` inputs."""
     from src import top3_league as TL
     from src.bars_opt import serve as BS
+    from src.research import top3_ranking as R
     excl: Counter = Counter()
     q = TL.qualify(g, ctx)
     rows = []
@@ -257,6 +261,9 @@ def pool(g: pd.DataFrame, ctx: dict, guards: dict) -> tuple[pd.DataFrame, Counte
             excl[why] += 1
             continue
         cell = b["cell"]
+        if not R.in_pool(cell):
+            excl[R_LEAGUE_WIDE] += 1
+            continue
         res = BS.score(pd.DataFrame([{"league": str(r["league"]), "p_side": TL._num(r.get("p_model_raw")),
                                       "fair": TL._num(r.get("p_market_fair")), "odds": TL._num(r.get("odds"))}]), cell)
         if str(res["tier"].iloc[0] or "") == "":

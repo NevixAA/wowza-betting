@@ -291,3 +291,37 @@ def test_frozen_statistics_roundtrip():
     back = R.stats_from_freeze(json.loads(json.dumps(rec)))
     pd.testing.assert_frame_equal(back[R.CELL + R.STAT_COLS].reset_index(drop=True),
                                   st[R.CELL + R.STAT_COLS].astype({"n": int}).reset_index(drop=True), check_dtype=False)
+
+
+# ── owner 2026-11-11 "Own list": league-wide cells are outside the TOP-3 pool ─────────────────
+def _lw_cell(mside, league="L"):
+    return _cell(mside, league) | {"config": "NONE|ALL|max-|min-", "source": "NONE", "measure": "ALL",
+                                   "mode": "LEAGUE_WIDE", "wf_roi_shrunk": 0.05}
+
+
+def test_in_pool_is_model_cells_only():
+    assert R.in_pool(_cell("btts_yes")) is True
+    assert R.in_pool(_lw_cell("btts_yes")) is False
+    assert R.in_pool(None) is False
+    assert R.in_pool(_cell("btts_yes") | {"source": "NONE"}) is False
+
+
+def test_league_wide_cell_never_enters_any_paper_track():
+    cells = dict(CELLS)
+    cells[("btts", "L", "yes")] = _lw_cell("btts_yes")
+    c = [_cand("2", "BTTS", "YES", 0.60, 0.50, fam="BTTS", ver="btts_20261109T211852Z_d7cd2762"),
+         _cand("3", "OU25", "OVER", 0.60, 0.45)]
+    picks, weeks = P.freeze_due(pd.DataFrame(c), set(), _ctx(cells), NOW, 120.0, {}, _stats(), _guards(cells), CFG, "s")
+    assert len(picks) == 2 and set(picks["market"]) == {"OU25"}           # one O/U pick per track, no BTTS
+    for w in weeks["excluded"]:
+        assert json.loads(w)[P.R_LEAGUE_WIDE] == 1
+
+
+def test_protocol_v3_records_the_own_list_rule_and_history():
+    cfg = P.load_config()
+    proto = json.loads((ROOT / cfg["protocol_file"]).read_text(encoding="utf-8"))
+    assert proto["protocol"] == "top3-ranking-paper/3" and proto["written_before_any_live_pick"] is True
+    assert "LEAGUE_WIDE_OWN_LIST" in proto["pool"]["refusal_reasons"]
+    assert any("Own list" in w for w in proto["amendment"]["owner_words"])
+    for h in proto["amends"]["history"]:
+        assert P.sha256_lf(ROOT / h["file"]) == h["sha256_lf"]            # v1 and v2 kept byte-for-byte
