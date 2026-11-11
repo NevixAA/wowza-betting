@@ -1,0 +1,50 @@
+{
+  "protocol": "COMBINED-MODELS-FWD-1",
+  "declared_on": "2026-11-11",
+  "status": "PAPER ONLY, PRE-REGISTERED. Nothing is served, staked or shown as a tip. The owner decides whether it runs.",
+  "origin": "COMBINED-MODELS-DEV-1 (config/experiments/combined_models/protocol.json): of 340 per-league cells one survived Holm on development data: Q1 dc_lam_side, anytime scorer, Serie B (+1.83 pp, 95% CI +0.91..+2.67, Holm p 0.019). Pooled context: the same side-expectation effect is positive in 50 of 57 readable league x market cells. Root-cause candidate (report): the props feature team_goals_pg_roll is keyed to the OPPONENT, so the props model carries no current-season own-team attack feature.",
+  "void_if": [
+    "the served props model changes (any new champion, including a fix of team_goals_pg_roll or of the goalkeeper goals_conceded input): the experiment stops and is re-registered",
+    "Pro's specials tracker (rule SPC-1) stops logging lam_home / lam_away before kickoff for Serie B"
+  ],
+  "start": "kickoffs on or after 2026-11-12T00:00:00Z",
+  "inputs": {
+    "p_served": "the served props champion's probability for the player and market. Preferred: logged BEFORE kickoff. As of 2026-11-11 no such log is running (output/props_r2_shadow.csv was written only on 2026-11-01/02), so the probability is recomputed after the match by the FROZEN served pickle (registry sha256 of run 42855107089) on features built only from rows dated before the match. Each row records which of the two it is.",
+    "side_lambda": "Pro SPC-1 lam_home / lam_away. Preferred: specials_log.csv row logged before kickoff. As of 2026-11-11 the log holds 2 rows on Pro data-truth-100 and none on main, so the lambdas are recomputed with SPC-1 unchanged (a Dixon-Coles fitted only on the league's matches dated before the fixture's calendar month), exactly as in development. Each row records which of the two it is.",
+    "price": "the latest stored pre-kickoff bookmaker price for the same match, player and market (output/player_prop_odds_history.csv / _archive; snapshot_ts before kickoff). No price -> not a bet (the row still counts for the residual cells).",
+    "outcome": "verified provider counts after the match; a player who does not play is VOID (not a bet, not a residual row)."
+  },
+  "frozen_cutoffs": {
+    "serie_b_side_lambda_top_tercile_min": 1.332,
+    "serie_b_side_lambda_bottom_tercile_max": 1.0445,
+    "source": "2/3 and 1/3 quantiles of the 1,974 Serie B side lambdas of the SPC-1 walk-forward, months 2023-07..2026-03 (development data only)",
+    "other_leagues": "replication cells use each league's own 1/3 and 2/3 quantiles of the same walk-forward months (written to reports/combined_models_data/forward_cutoffs.csv at registration)"
+  },
+  "family_A_serie_b": {
+    "evaluation_date": "2027-02-28 (single look; kickoffs 2026-11-12..2027-02-28)",
+    "cells": {
+      "A1_flat_all_priced_top": "Serie B anytime scorer, side lambda >= 1.332, priced: 1 unit flat on every row; ROI",
+      "A2_ev_filtered_top": "Serie B anytime scorer, side lambda >= 1.332, priced, p_served * price >= 1: 1 unit flat; ROI",
+      "A3_residual_replication": "Serie B anytime scorer: mean (y - p_served) top tercile minus bottom tercile (no price needed); one-sided > 0"
+    },
+    "holm": "Holm over A1..A3",
+    "proven_rule": "A1 or A2 is PROVEN only with >= 150 settled bets AND a 95% fixture-cluster bootstrap CI of ROI above 0 AND Holm-adjusted p < 0.05. A3 can only REPLICATE (Holm p < 0.05); it is never a betting proof.",
+    "volume_forecast": "Serie B anytime-scorer price rows: ~650 distinct per week in 2026-10-14..11-08 (counts only). Top-tercile sides are about one third -> A1 reaches 150 bets in about 1-2 match weeks. A2 depends on how often p_served * price >= 1; at the ledger's Serie B anytime rate (~9 priced tips/week, all sides) about 3-5/week fall in top-tercile sides -> 150 bets need roughly 30-50 match weeks, so A2 is expected to be INSUFFICIENT at 2027-02-28 and is then reported as such (never extended silently). A3 needs >= 30 fixtures in each tercile group: about 2 months of Serie B (~33 fixtures/month)."
+  },
+  "family_B_replication": {
+    "evaluation_date": "2027-06-30 (single look; kickoffs 2026-11-12..2027-06-30)",
+    "cells": "Q1 dc_lam_side residual replication, top minus bottom tercile, one-sided > 0, for every league x market (sot, sot2, goals) whose development cell was readable: 19 leagues x 3 markets = 57 cells; Serie B goals is in family A and not repeated here (56 cells)",
+    "holm": "Holm over the 56 cells; an unreadable cell (< 30 fixtures in a group) enters with p = 1",
+    "note": "Nordic leagues, Finland, Ireland, China, Japan, Brazil, Argentina and MLS are between seasons for much of the window: their cells may stay unreadable. That is reported, never padded."
+  },
+  "never": [
+    "no cutoff, threshold or market is changed after this file is committed",
+    "no interim look at outcomes before the evaluation date (data-volume counts only)",
+    "no pooled cell is a decision"
+  ],
+  "blockers_at_registration": [
+    "no pre-kickoff served-props log since 2026-11-02 (props_r2_shadow.csv)",
+    "Pro specials tracker: 2 logged rows, branch data-truth-100 only",
+    "player_history goalkeeper goals_conceded, as the props features read it (re-fetched counts applied), shows 0 while the real score shows goals in 14% (2026-09), 47% (2026-10) and 84% (2026-11, to the 9th) of mapped fixtures (at most 1.4% in 2025-10..2026-05). It feeds the served feature opp_gk_save_rate, so forward served probabilities carry it until it is fixed; a fix changes the champion -> void_if. Table: reports/combined_models_data/gk_goals_conceded_defect_by_month_after_refetch.csv"
+  ]
+}
