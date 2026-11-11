@@ -42,6 +42,7 @@ from src import league_registry as _LRG
 from src import units as U
 from src.utc_clock import utc_now as _utc_now, utc_today_str as _utc_today_str
 from src.tier_labels import GAP_EXPLAINER, TIER_ICON, tier_label, tier_tag
+from src.calibrated_edge import edge_text   # owner 2026-11-11: the only edge shown on a future tip
 from player_model.fair_basis import label as _fair_basis_label
 
 
@@ -642,7 +643,9 @@ def notify_new_snipers() -> int:
             f"🏆 {row.get('league','')}\n"
             f"⚽ {row['home_team']} vs {row['away_team']}\n"
             f"📌 <b>{side} 2.5</b>  @ {odds:.2f}\n"
-            f"📊 Edge: <b>{edge:.1f}%</b>  |  {model}\n"
+            + (f"📊 {edge_text(pd.to_numeric(row.get('edge_calibrated'), errors='coerce') * 100)}  |  {model}\n"
+               if tier == "QUALIFIED" else f"📊 Edge: <b>{edge:.1f}%</b>  |  {model}\n") +
+            f""
             # Drift is information only since 2026-10-26: it never changes the tier above.
             f"🔀 Drift: {_drift_sig} {drift} (info only)"
         )
@@ -2910,7 +2913,10 @@ def notify_side_bets() -> int:
             f"🏆 {row.get('league', '')}\n"
             f"⚽ {row['home_team']} vs {row['away_team']}\n"
             f"📌 <b>{label}</b>  @ {float(row['market_odds']):.2f}\n"
-            f"📊 Edge: <b>{edge:.1f}%</b>  |  EV: <b>{ev:+.1f}%</b>  |  Model P={float(row['model_prob'])*100:.0f}%\n"
+            + (f"📊 {edge_text(pd.to_numeric(row.get('edge_calibrated'), errors='coerce') * 100)}\n"
+               if tier == "QUALIFIED" else
+               f"📊 Edge: <b>{edge:.1f}%</b>  |  EV: <b>{ev:+.1f}%</b>  |  Model P={float(row['model_prob'])*100:.0f}%\n") +
+            f""
             + threshold_source_line(row.get("threshold_source")) +
             f"⚠️ Check your bookmaker's {label} market"
         )

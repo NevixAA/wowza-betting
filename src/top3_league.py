@@ -150,7 +150,8 @@ PICK_FROZEN = [
     "pick_id", "selection_mode", "version", "league_week_id", "top3_rank", "week_lock_ts", "freeze_ts",
     "issued_at", "league", "model_type", "season", "fixture_id", "match_date", "home_team", "away_team",
     "kickoff_utc", "market", "side", "odds", "opposite_side_odds", "p_model_raw", "p_market_fair", "edge",
-    "slot", "cell_status", "p_used", "t3_key", "t3_has_stat", "bar_valuable", "bar_source", "bar_status",
+    "slot", "cell_status", "p_used", "t3_key", "t3_has_stat", "edge_calibrated", "bar_valuable", "bar_source",
+    "bar_status",
     "bar_evidence",
     "ev_point", "ev_lower_bound", "p_lower_bound", "price_quality_state", "market_source", "n_books",
     "first_seen_at", "prediction_engine_version", "selection_engine_version", "policy_switch",
@@ -300,6 +301,10 @@ def t3_keys(q: pd.DataFrame, stats: pd.DataFrame) -> pd.DataFrame:
     out = q.copy()
     out["t3_key"] = k["key"].to_numpy()
     out["t3_has_stat"] = k["has_stat"].to_numpy()
+    # the CALIBRATED edge shown for the pick (owner 2026-11-11, src/calibrated_edge.py; same frozen statistics)
+    from src import calibrated_edge as CE
+    out["edge_calibrated"] = CE.calibrated(b.reset_index(drop=True), stats).to_numpy() \
+        if stats is not None else np.nan
     return out
 
 
@@ -459,6 +464,7 @@ def freeze_due(cands: pd.DataFrame, weeks_done: set, ctx: dict, now: pd.Timestam
                 "top3_rank": int(r["top3_rank"]), "week_lock_ts": LW._stamp(lock), "freeze_ts": LW._stamp(freeze),
                 "issued_at": stamp, "edge": LW._r(r["edge"]), "slot": r["slot"], "cell_status": r["cell_status"],
                 "p_used": LW._r(r["p_used"]), "t3_key": LW._r(r["t3_key"]), "t3_has_stat": bool(r["t3_has_stat"]),
+                "edge_calibrated": LW._r(r["edge_calibrated"]),
                 "bar_valuable": LW._r(r["bar_valuable"]), "bar_source": BAR_SOURCE,
                 "bar_status": r["bar_status"], "bar_evidence": r["bar_evidence"],
                 "policy_switch": sw, "track_is_real": bool(real_checker(r.get("model_type"), mk, r.get("side"),
@@ -606,7 +612,7 @@ def report(picks: pd.DataFrame, weeks: pd.DataFrame, now: pd.Timestamp, lead: fl
             "latest_league_week_id": latest,
             "latest_excluded": json.loads(w["excluded"].iloc[-1]) if len(w) and w["excluded"].iloc[-1] else {},
             "latest_picks": [{k: r.get(k) for k in ("top3_rank", "home_team", "away_team", "kickoff_utc", "market",
-                                                    "side", "odds", "edge", "slot", "cell_status", "result")}
+                                                    "side", "odds", "edge_calibrated", "slot", "cell_status", "result")}
                              for r in cur.to_dict("records")],
             "weeks_decided": int(len(w)), "picks": int(len(p)), "settled": int(len(st)),
             "won": int((st["won"].astype(str) == "1").sum()),
@@ -629,8 +635,9 @@ def write_report(now=None, out_dir: Path | None = None, lead: float | None = Non
 
 
 def message(picks: pd.DataFrame) -> str:
-    """Telegram text for one league-week's picks (HTML)."""
+    """Telegram text for one league-week's picks (HTML). The edge shown is the CALIBRATED one (owner 2026-11-11)."""
     from html import escape
+    from src.calibrated_edge import edge_text
     r0 = picks.iloc[0]
     lines = [f"🏆 <b>TOP-3 {escape(str(r0['league']))}</b> · {escape(str(r0['league_week_id']).split('|')[-1])}"]
     lab = {"OU25": "O/U 2.5", "BTTS": "BTTS", "OVER15": "Over 1.5", "OVER35": "Over 3.5"}
@@ -643,7 +650,7 @@ def message(picks: pd.DataFrame) -> str:
         mk = lab.get(str(r["market"]), str(r["market"]))
         lines.append(f"{r['top3_rank']}. {escape(str(r['home_team']))} v {escape(str(r['away_team']))} - "
                      f"{mk} {side} @ {float(r['odds']):.2f} · {r['slot']} · {r['cell_status']} "
-                     f"(edge {100 * float(r['edge']):.1f}%)")
+                     f"({edge_text(pd.to_numeric(r.get('edge_calibrated'), errors='coerce') * 100)})")
     for (mk, sd), g in rule.groupby(["market", "side"], sort=True):
         side = "Yes" if str(sd) == "YES" else str(sd).title()
         lines.append(f"📏 League rule: {lab.get(str(mk), str(mk))} {side}, every match "

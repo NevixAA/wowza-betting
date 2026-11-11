@@ -34,6 +34,11 @@ bar - the former VALUABLE gates, the same for every league - and is UNPROVEN:
 per cell; `src.research.top3_ranking.LIVE_RULE` / `in_pool`, statistics = the one research freeze); the old EV
 ranking is dropped; TIER2 only fills empty slots; never padded. A paper track in the Clean Record.
 
+**Calibrated edge (owner 2026-11-11 "Show calibrated edge"):** every future team tip shows its calibrated edge
+(cell's own frozen calibration, LIVE_RULE R3) - "edge: not calibrated" when the cell has no statistic; the raw model
+edge is stored for study only. Dry run 2026-11-03..09: all 13 TOP-3 picks calibrated; the 15 league-rule tips
+(league-wide cells, no calibration slope) show "not calibrated".
+
 **League rule (owner 2026-11-11 "Own list"):** a LEAGUE-WIDE cell (source NONE, e.g. Argentina NF BTTS) is shown as
 the league's own line ("League rule: BTTS Yes, every match"), outside the 3 TOP-3 slots - it never takes and is never
 pushed out of a slot, and stakes per cell as approved (Argentina NF BTTS 1.25%), with no tier label. Direction rule

@@ -304,6 +304,24 @@ def _apply_ou25_cells(df: pd.DataFrame, p_over: pd.Series, ov_odds: pd.Series, u
         _vo = {s: (c or {}).get("verdict", "") for s, (c, _w) in sides.items()}
         _bo = {s: (float(c["valuable_th"]) if c else np.nan) for s, (c, _w) in sides.items()}
         df.loc[idx, "cell_status"] = np.where(bet == "OVER", _vo["over"], np.where(bet == "UNDER", _vo["under"], ""))
+        # THE CALIBRATED EDGE of the tipped side (owner 2026-11-11 "Show calibrated edge"; src/calibrated_edge.py):
+        # the edge a person is shown. The raw edge columns stay for study. NaN = not calibrated.
+        from src import calibrated_edge as CE
+        if "edge_calibrated" not in df.columns:
+            df["edge_calibrated"] = np.nan
+        _mt = (df.loc[idx, "model_type"].astype(str) if "model_type" in df.columns
+               else df.loc[idx, "league"].map(config.model_type_for_league).astype(str))
+        for _s, _col in (("OVER", "p_used_over"), ("UNDER", "p_used_under")):
+            _m = bet == _s
+            if not _m.any():
+                continue
+            _ix = idx[_m]
+            _fair = fair_over[_ix] if _s == "OVER" else 1.0 - fair_over[_ix]
+            _odds = ov_odds[_ix] if _s == "OVER" else un_odds[_ix]
+            df.loc[_ix, "edge_calibrated"] = CE.calibrated(pd.DataFrame({
+                "track": _mt[_m].to_numpy(), "league": lg, "mside": CE.MSIDE[("ou25", _s)],
+                "p_used": pd.to_numeric(df.loc[_ix, _col], errors="coerce").to_numpy(),
+                "fair": _fair.to_numpy(), "odds": _odds.to_numpy()}, index=_ix), CE.load()).to_numpy()
         df.loc[idx, "qualifying_bar"] = np.where(bet == "OVER", _bo["over"],
                                                  np.where(bet == "UNDER", _bo["under"], np.nan))
         df.loc[idx, "min_odds_blocked"] = False

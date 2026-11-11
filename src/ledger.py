@@ -109,6 +109,10 @@ LEDGER_COLS = [
     # SAME cell measure at the Cloudbet price from it (owner 2026-11-10 'exec cells from approved bars').
     # Blank when no cell scored the tip; rows written before it stay blank, never back-filled.
     "cell_p_used",
+    # ONE BAR PER CELL + THE CALIBRATED EDGE, appended (owner 2026-11-11 "Clean rebuild" / "Show calibrated
+    # edge"): the tip's cell status, its qualifying bar and the edge a person is shown (percent; blank = not
+    # calibrated). The raw edge_pct stays for study. Rows written before stay blank, never back-filled.
+    "cell_status", "qualifying_bar", "edge_calibrated_pct",
 ]
 VERSION_FIELDS = ("model_version", "retrain_batch_id", "training_cutoff", "prediction_role")
 
@@ -227,6 +231,15 @@ def _load_ledger() -> pd.DataFrame:
             log.warning(f"bets_ledger.csv: {int(df['source'].isna().sum())} row(s) without a source - left blank")
         return df
     return pd.DataFrame(columns=LEDGER_COLS)
+
+
+def _cell_fields(row) -> dict:
+    """cell_status / qualifying_bar / edge_calibrated_pct of a tip row (blank when the producer did not say)."""
+    st = row.get("cell_status")
+    cal = _num(row.get("edge_calibrated"))
+    return {"cell_status": "" if st is None or (isinstance(st, float) and pd.isna(st)) else str(st),
+            "qualifying_bar": _num(row.get("qualifying_bar")),
+            "edge_calibrated_pct": "" if not isinstance(cal, float) or pd.isna(cal) else round(cal * 100, 2)}
 
 
 #: dedupe rank; QUALIFIED (owner 2026-11-11: one bar per cell, no tiers) is the only value of a future tip
@@ -430,6 +443,7 @@ def append_tips(bets_df: pd.DataFrame, source: str = "live") -> None:
             **_version_fields(row, _ou_key(row.get("model_type", ""), row.get("serving_recipe"))),
             **_fixture_identity(row),
             "cell_p_used":  _num(row.get("cell_p_used")),
+            **_cell_fields(row),
         })
 
     if flips:
@@ -467,6 +481,7 @@ SIDE_LEDGER_COLS = [
     # SAME cell measure at the Cloudbet price from it (owner 2026-11-10 'exec cells from approved bars').
     # Blank when no cell scored the tip; rows written before it stay blank, never back-filled.
     "cell_p_used",
+    "cell_status", "qualifying_bar", "edge_calibrated_pct",      # see LEDGER_COLS (owner 2026-11-11)
 ]
 _SIDE_RANK = _TIER_RANK
 
@@ -565,6 +580,7 @@ def append_side_market_tips(side_df: pd.DataFrame, source: str = "live") -> None
             "threshold_source": (str(row["threshold_source"])
                                  if pd.notna(row.get("threshold_source")) else ""),
             "cell_p_used": _num(row.get("cell_p_used")),
+            **_cell_fields(row),
         })
 
     _record_tiers_seen(tier_seen_rows, tier_seen_path)

@@ -92,6 +92,8 @@ def main(argv=None) -> int:
            "slots": picks["slot"].value_counts().to_dict() if len(picks) else {},
            "cell_status": picks["cell_status"].value_counts().to_dict() if len(picks) else {},
            "picks_with_t3_stat": int(picks["t3_has_stat"].astype(bool).sum()) if len(picks) else 0,
+           "picks_with_calibrated_edge": int(pd.to_numeric(picks["edge_calibrated"], errors="coerce").notna().sum())
+           if len(picks) else 0,
            "weeks_with_0_1_2_3": wk["n_picks"].astype(int).value_counts().sort_index().to_dict() if len(wk) else {},
            "excluded": {}}
     from collections import Counter

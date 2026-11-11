@@ -45,6 +45,12 @@ use them". From go-live:
   cell; a QUALIFIED v9 tip is a tip) merges with exec's go-live.
 * **Check.** `python -m src.integrity.data_truth --gate` rule **Data truth 7** turns RED if any tip / stake record
   written on or after 2026-11-21 carries a retired tier label or a tier multiplier other than 1.
+* **Calibrated edge (owner 2026-11-11 "Show calibrated edge").** Every future team tip shows ONLY its calibrated
+  edge - the cell's own frozen calibration (LIVE_RULE R3, the U3e freeze; `src/calibrated_edge.py`), in probability
+  points over the de-vigged fair price: Telegram tips and TOP-3, the tips image / dashboard board, the ledgers
+  (`edge_calibrated_pct`) and exec's audit (`v9_edge_calibrated_pct`). No statistic -> "edge: not calibrated". The
+  raw edge stays in the records for study and is never shown as the edge. Qualification is unchanged (the bar).
+  Until the U3e freeze exists every tip shows "edge: not calibrated".
 * Historical ledgers keep their old tier columns (study only).
 
 ## 0. Findings that change the plan

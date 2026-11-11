@@ -229,13 +229,26 @@ def _generate_side_bets(preds: "pd.DataFrame", side_markets: dict) -> "pd.DataFr
             df.loc[m, "ev"] = np.where(np.isfinite(ev), ev, df.loc[m, "ev"])
         df["threshold_source"] = [(_bars[lg] if _bars[lg] is not None else NO_LEAGUE_BAR)
                                   for lg in df["league"]]
+        # THE CALIBRATED EDGE (owner 2026-11-11 "Show calibrated edge"): the edge a person is shown; the raw
+        # `edge` stays for study. NaN = the cell has no calibration statistic ("edge: not calibrated").
+        from src import calibrated_edge as _CE
+        from src.tier_labels import QUALIFIED as _Q
+        df["edge_calibrated"] = np.nan
+        _tip = df["signal_tier"] == _Q
+        if _tip.any():
+            df.loc[_tip, "edge_calibrated"] = _CE.calibrated(pd.DataFrame({
+                "track": df.loc[_tip, "model_type"].astype(str), "league": df.loc[_tip, "league"].astype(str),
+                "mside": _CE.MSIDE.get((target, str(SIDE_OF_TARGET[target]).upper())),
+                "p_used": df.loc[_tip, "cell_p_used"], "fair": df.loc[_tip, "fair_prob"],
+                "odds": df.loc[_tip, "market_odds"]}, index=df.index[_tip]), _CE.load()).to_numpy()
         df = df[df["signal_tier"] != "AVOID"]
         df = df.sort_values("edge", ascending=False)
         # ONE SCHEMA, defined once in src/stake_plan.py and read by the stake plan. `market_odds`
         # is kept beside the canonical `odds` for the side_bets.csv / ledger / notify readers;
         # `threshold_source` beside both for the ledger / Telegram / dashboard (not a stake input).
         frames.append(df[list(SIDE_SELECTION_COLUMNS) + ["market_odds", "threshold_source", "bar_mode",
-                                                         "cell_p_used", "cell_status", "qualifying_bar"]])
+                                                         "cell_p_used", "cell_status", "qualifying_bar",
+                                                         "edge_calibrated"]])
 
     if not frames:
         return pd.DataFrame()

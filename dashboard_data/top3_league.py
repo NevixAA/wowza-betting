@@ -38,7 +38,9 @@ def latest_picks_frame(view: dict) -> pd.DataFrame:
         "Kickoff (UTC)": d["kickoff_utc"].astype(str).str[:16].str.replace("T", " "),
         "Pick": d["market"].map(MARKET_LABEL).fillna(d["market"]) + " " + side,
         "Odds": pd.to_numeric(d["odds"], errors="coerce").round(2),
-        "Edge %": (pd.to_numeric(d["edge"], errors="coerce") * 100).round(1),
+        # owner 2026-11-11 "Show calibrated edge": the calibrated edge only (NaN = not calibrated), never the raw
+        "Calibrated edge pp": ((pd.to_numeric(d["edge_calibrated"], errors="coerce") * 100).round(1)
+                               if "edge_calibrated" in d.columns else pd.Series(float("nan"), index=d.index)),
         # owner 2026-11-11: no tier - the slot (TOP / TIER2) and the cell's status
         "Slot": d["slot"] if "slot" in d.columns else "", "Cell": d["cell_status"] if "cell_status" in d.columns else "",
         "Result": d["result"].fillna("")})
