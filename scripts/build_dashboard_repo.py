@@ -52,7 +52,7 @@ a whole. Any hand edit here is overwritten by the next build: change the code in
   separate, labelled section, for comparison only, never in a Clean Record total. The Clean Record page shows
   both side by side.
 * **Bars & Cells**: every league x market cell of the owner-approved bars proposal with its one qualifying
-  bar, status (PROVEN / PROMISING / UNPROVEN / OFF) and stake. Staked = a recorded policy stake > 0; every
+  bar, status (PROVEN / PROMISING / UNPROVEN / WITHDRAWN / OFF) and stake. Staked = a recorded policy stake > 0; every
   other tip is paper.
 * Clean retrained team models and clean props models serve from the go-live; there is no global bar and no
   tier on a future tip.

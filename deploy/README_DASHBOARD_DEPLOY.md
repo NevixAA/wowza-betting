@@ -18,7 +18,8 @@ Record figure is 0 / "no settled tips yet". The pre-repair record stays in a lab
 (pre-2026-11-21, old models and tiers)" section on each page and side by side on the **Clean Record** page. The
 **Bars & Cells** page reads the owner-approved proposal (`config/threshold_approvals.json` ->
 `output/threshold_proposals/bars_oddsapi_hist/latest.json` -> the proposal and its `evidence_<month>.json`) and
-`config/bankroll_policy.json` `cell_staking`. None of these files carries OddsAPI history prices.
+`config/bankroll_policy.json` `cell_staking` (the stakes); an entry in the approval's `withdrawals` shows as
+WITHDRAWN – paper, no bar (re-run pending) with its reason. None of these files carries OddsAPI history prices.
 
 **Go-live sync.** The slim repo is generated from v9 **main**, so none of this reaches wowza-dashboard until the
 go-live merge lands on main. Before the merge: `python scripts/dashboard_manifest.py --check` and

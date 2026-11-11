@@ -14,6 +14,11 @@ SOURCES (read, never written):
                                                   range, mode (MODEL / LEAGUE_WIDE), verdict
   evidence_<month>.json league_market_status      every cell of the study, OFF ones included (reason)
   config/bankroll_policy.json cell_staking        the stake per cell; a cell without an entry is PAPER
+  the approval's `withdrawals` / `exemptions`     owner 2026-11-11 ("Bet-time snapshot + re-run", "Strict, keep
+                                                  Argentina"): a WITHDRAWN entry (market|league, every side of
+                                                  it) serves NO bar; its cells are listed as WITHDRAWN - paper,
+                                                  no bar (re-run pending) with the recorded reason. An exempted
+                                                  entry keeps its bar and says why.
 
 A served cell whose proposal verdict and evidence status disagree is listed in `problems` (never silently
 picked). Nothing here has a default: a missing file is a named problem and an empty table.
@@ -37,9 +42,11 @@ MSIDE_LABEL = {"over25_over": "O/U 2.5 Over", "over25_under": "O/U 2.5 Under", "
 #: study market-side -> the policy track's market part (src/bankroll_policy.track_key); HT cells have no track
 MSIDE_TRACK = {"over25_over": "OU25_OVER", "over25_under": "OU25_UNDER", "btts_yes": "BTTS",
                "over15_over": "OVER15", "over35_over": "OVER35"}
-STATUS_ORDER = {"PROVEN": 0, "PROMISING": 1, "UNPROVEN": 2, "OFF": 3}
+STATUS_ORDER = {"PROVEN": 0, "PROMISING": 1, "UNPROVEN": 2, "WITHDRAWN": 3, "OFF": 4}
+WITHDRAWN = "WITHDRAWN"
+WITHDRAWN_TEXT = "WITHDRAWN – paper, no bar (re-run pending)"
 COLUMNS = ["League", "Market", "Track", "Status", "Qualifying bar", "Measure", "Odds range", "Mode",
-           "TIER2 boundary", "Stake", "Stake %", "Basis / reason"]
+           "TIER2 boundary", "Stake", "Stake %", "Basis / reason", "Study status"]
 
 
 def _json(p: Path):
@@ -106,12 +113,22 @@ def _stake(policy: dict | None, track: str, mside: str, league: str) -> tuple[st
 
 
 def served_cells(proposal: dict) -> dict:
-    """{(track, mside, league): bars_opt cell} of every proposal entry."""
+    """{(track, mside, league): bars_opt cell} of every proposal entry (each carries its `_entry_id`)."""
     out = {}
     for e in proposal.get("entries") or []:
         for _side, c in (((e.get("proposed") or {}).get("bars_opt")) or {}).items():
-            out[(c.get("track"), c.get("mside"), c.get("league"))] = c
+            out[(c.get("track"), c.get("mside"), c.get("league"))] = {**c, "_entry_id": e.get("entry_id")}
     return out
+
+
+def withdrawals(approval: dict | None) -> tuple[dict, dict]:
+    """({entry_id: reason} withdrawn, {entry_id: basis} exempted) from the approval record."""
+    ap = approval or {}
+    w = {x["entry_id"]: str(x.get("reason") or "no reason recorded") for x in ap.get("withdrawals") or []
+         if x.get("entry_id")}
+    ex = {x["entry_id"]: str(x.get("basis") or x.get("owner_words") or "") for x in ap.get("exemptions") or []
+          if x.get("entry_id")}
+    return w, ex
 
 
 def cells_frame(data: dict) -> pd.DataFrame:
@@ -121,6 +138,7 @@ def cells_frame(data: dict) -> pd.DataFrame:
     if not pr or not ev:
         return pd.DataFrame(columns=COLUMNS)
     served = served_cells(pr)
+    wd, ex = withdrawals(data.get("approval"))
     rows, seen = [], set()
     for x in ev["league_market_status"]:
         k = (x.get("track"), x.get("mside"), x.get("league"))
@@ -135,15 +153,31 @@ def cells_frame(data: dict) -> pd.DataFrame:
             rows.append({"League": k[2], "Market": MSIDE_LABEL.get(k[1], k[1]), "Track": k[0], "Status": status,
                          "Qualifying bar": None, "Measure": "—", "Odds range": "—", "Mode": "—",
                          "TIER2 boundary": None, "Stake": "OFF (no tip)" if status == "OFF" else state,
-                         "Stake %": 0.0 if status == "OFF" else frac, "Basis / reason": reason})
+                         "Stake %": 0.0 if status == "OFF" else frac, "Basis / reason": reason,
+                         "Study status": status})
+            continue
+        eid = c.get("_entry_id")
+        if eid in wd:
+            if frac:
+                data["problems"].append(f"{k}: withdrawn ({eid}) but config/bankroll_policy.json still stakes it "
+                                        f"({state} {frac}%)")
+            rows.append({"League": k[2], "Market": MSIDE_LABEL.get(k[1], k[1]), "Track": k[0], "Status": WITHDRAWN,
+                         "Qualifying bar": None, "Measure": "—", "Odds range": "—", "Mode": "—",
+                         "TIER2 boundary": None, "Stake": state, "Stake %": frac,
+                         "Basis / reason": f"{WITHDRAWN_TEXT}: {wd[eid]}", "Study status": status})
             continue
         rows.append({"League": k[2], "Market": MSIDE_LABEL.get(k[1], k[1]), "Track": k[0], "Status": status,
+                     "Study status": status,
                      "Qualifying bar": float(c["valuable_th"]), "Measure": str(c.get("measure")),
                      "Odds range": _odds_range(c.get("odds_min"), c.get("odds_max")), "Mode": str(c.get("mode")),
                      "TIER2 boundary": float(c["marksman_th"]), "Stake": state, "Stake %": frac,
-                     "Basis / reason": f"{c.get('config_basis')} ({c.get('bar_basis')})"})
+                     "Basis / reason": f"{c.get('config_basis')} ({c.get('bar_basis')})"
+                     + (f"; owner exemption: {ex[eid]}" if eid in ex else "")})
     for k in set(served) - seen:
         data["problems"].append(f"{k}: in the proposal but not in the evidence status list")
+    known = {c.get("_entry_id") for c in served.values()}
+    for eid in set(wd) - known:
+        data["problems"].append(f"withdrawal {eid}: not an entry of the approved proposal")
     d = pd.DataFrame(rows, columns=COLUMNS)
     d["_o"] = d["Status"].map(STATUS_ORDER).fillna(9)
     return d.sort_values(["_o", "League", "Market"]).drop(columns="_o").reset_index(drop=True)

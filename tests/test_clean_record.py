@@ -153,8 +153,56 @@ def test_cells_registry_is_the_approved_proposal():
     assert got == want
     off = f[f["Status"] == "OFF"]
     assert off["Qualifying bar"].isna().all() and (off["Stake %"] == 0).all()
-    served = f[f["Status"] != "OFF"]
+    served = f[~f["Status"].isin(["OFF", CV.WITHDRAWN])]
     assert served["Qualifying bar"].notna().all()
+
+
+def test_withdrawn_entries_serve_no_bar_and_say_why():
+    """Owner 2026-11-11 ("Bet-time snapshot + re-run", "Strict, keep Argentina"): every side of a withdrawn
+    approval entry is WITHDRAWN - paper, no bar (re-run pending), with the recorded reason; an exemption keeps
+    its bar. Stakes come from config/bankroll_policy.json only."""
+    d = CV.load()
+    f = CV.cells_frame(d)
+    assert d["problems"] == []
+    wd, ex = CV.withdrawals(d["approval"])
+    served = CV.served_cells(d["proposal"])
+    want = {k for k, c in served.items() if c["_entry_id"] in wd}
+    got = {(r["Track"], [m for m, lab in CV.MSIDE_LABEL.items() if lab == r["Market"]][0], r["League"])
+           for _, r in f[f["Status"] == CV.WITHDRAWN].iterrows()}
+    assert got == want and len(want) >= len(wd)
+    w = f[f["Status"] == CV.WITHDRAWN]
+    assert w["Qualifying bar"].isna().all() and w["TIER2 boundary"].isna().all()
+    assert w["Basis / reason"].str.startswith(CV.WITHDRAWN_TEXT + ": ").all()
+    assert w["Study status"].isin(["PROVEN", "PROMISING", "UNPROVEN"]).all()
+    for eid in ex:                                                  # an exemption is never withdrawn
+        assert eid not in wd
+        ks = [k for k, c in served.items() if c["_entry_id"] == eid]
+        rows = f[[(r["Track"], [m for m, lab in CV.MSIDE_LABEL.items() if lab == r["Market"]][0], r["League"]) in ks
+                  for _, r in f.iterrows()]]
+        assert len(rows) and rows["Qualifying bar"].notna().all()
+        assert rows["Basis / reason"].str.contains("owner exemption").all()
+    assert CV.counts(f)[CV.WITHDRAWN] == len(w)
+
+
+def test_withdrawal_reading_on_a_synthetic_approval():
+    data = {"approval": {"withdrawals": [{"entry_id": "btts|X League", "reason": "close used as bet price"}],
+                         "exemptions": []},
+            "proposal": {"entries": [{"entry_id": "btts|X League", "proposed": {"bars_opt": {"yes": {
+                "track": "new_format", "mside": "btts_yes", "league": "X League", "verdict": "PROMISING",
+                "valuable_th": 0.02, "marksman_th": 0.03, "measure": "EV", "mode": "MODEL", "odds_min": None,
+                "odds_max": 2.5, "config_basis": "SELECTED", "bar_basis": "OWN_BETS"}}}}]},
+            "evidence": {"league_market_status": [{"track": "new_format", "mside": "btts_yes", "league": "X League",
+                                                   "status": "PROMISING"}]},
+            "policy": {"cell_staking": {"enabled": True, "cells": {}}}, "problems": []}
+    f = CV.cells_frame(data)
+    r = f.iloc[0]
+    assert r["Status"] == CV.WITHDRAWN and pd.isna(r["Qualifying bar"]) and r["Stake"] == "PAPER"
+    assert r["Basis / reason"] == f"{CV.WITHDRAWN_TEXT}: close used as bet price" and r["Study status"] == "PROMISING"
+    # a withdrawn cell the policy still stakes is a named problem, never hidden
+    data["policy"]["cell_staking"]["cells"]["new_format|BTTS|X League"] = {"state": "ACTIVE", "base_fraction": 0.01}
+    data["problems"] = []
+    CV.cells_frame(data)
+    assert any("still stakes" in p for p in data["problems"])
 
 
 def test_cell_key_of_ledger_tips():

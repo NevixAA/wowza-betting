@@ -58,10 +58,17 @@ ui.metric_card("Staked cells", f"{len(stk)}", title="Real money (everything else
                status=ui.status_chip("PAPER", label="CLOUDBET PAPER_ONLY"), container=c2)
 ui.metric_card("PROVEN cells", f"{cnt['PROVEN']}", title="Evidence",
                supporting=[("PROMISING", f"{cnt['PROMISING']}"), ("UNPROVEN", f"{cnt['UNPROVEN']}"),
+                           ("WITHDRAWN (paper, re-run pending)", f"{cnt['WITHDRAWN']}"),
                            ("OFF (no tip)", f"{cnt['OFF']}")],
-               status=ui.status_chip("NO_DATA", tone="NEUTRAL", label="NOTHING PROVEN YET"), container=c3)
+               status=ui.status_chip("NO_DATA", tone="NEUTRAL", label="NOTHING PROVEN YET") if not cnt["PROVEN"]
+               else ui.status_chip("LIVE", label=f"{cnt['PROVEN']} PROVEN"), container=c3)
+_wd, _ex = CV.withdrawals(ap)
+st.caption(f"Owner 2026-11-11 (\"Bet-time snapshot + re-run\", \"Strict, keep Argentina\"): {len(_wd)} approved "
+           f"entries are WITHDRAWN ({cnt['WITHDRAWN']} cells) until the re-run on bet-time prices only; they serve no "
+           "bar and are paper. Reason per cell in the table; exemptions: "
+           + ("; ".join(f"{k} ({v})" for k, v in _ex.items()) or "none") + ".")
 st.caption("Status per cell from the approved study: PROMISING = positive evidence, not proof; UNPROVEN = tips on "
-           "paper until the Clean Record decides; OFF = no tip in that cell. Qualifying bar = the one bar a tip's "
+           "paper until the Clean Record decides; WITHDRAWN = paper, no bar (re-run pending); OFF = no tip in that cell. The study's own verdict stays in Study status. Qualifying bar = the one bar a tip's "
            "measure must clear (EV or EDGE; ALL = every match in range, a league-wide cell, listed as the league's "
            "own line outside TOP-3). TIER2 boundary = only the TOP-3 TIER2 slot rule, never a tier.")
 
@@ -70,7 +77,7 @@ ui.section_header("Every league × market cell", "Filter by status or league. St
                   "of the bankroll per tip in that cell; 0 = paper.")
 f1, f2 = st.columns([1, 2])
 with f1:
-    stat = st.multiselect("Status", list(CV.STATUS_ORDER), default=["PROVEN", "PROMISING", "UNPROVEN"],
+    stat = st.multiselect("Status", list(CV.STATUS_ORDER), default=["PROVEN", "PROMISING", "UNPROVEN", "WITHDRAWN"],
                           key="cells_status")
 with f2:
     lg = st.multiselect("League", sorted(cells["League"].unique()), key="cells_league")

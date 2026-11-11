@@ -14,12 +14,18 @@
 >   clears its cell's ONE owner-approved bar (proposal `TP-2026-11-10-d999073a`, approved 2026-11-11, all 74
 >   entries; `reports/P8_BARS_APPROVED.md`). The approved study lists 194 league x market-side cells:
 >   **0 PROVEN**, 4 PROMISING, 67 UNPROVEN, 123 OFF (`output/threshold_proposals/bars_oddsapi_hist/
->   evidence_2026-11.json`). The SNIPER / MARKSMAN / VALUABLE tiers (Big / Medium / Small gap) are **retired
+>   evidence_2026-11.json`); after the withdrawals below, 46 of those cells are WITHDRAWN, leaving 2 PROMISING
+>   and 23 UNPROVEN cells with a served bar (Bars & Cells page). The SNIPER / MARKSMAN / VALUABLE tiers (Big / Medium / Small gap) are **retired
 >   for future tips**: a future tip is stored as `QUALIFIED` with its cell status; old rows keep their tier
 >   for study only (`src/tier_labels.py`).
-> * **Stakes are per cell** (`config/bankroll_policy.json` `cell_staking`): Argentina new-format BTTS 1.25%,
->   La Liga 2 BTTS 0.5%, La Liga 2 Over 2.5 0.5%; every other cell is PAPER (recorded, never staked);
->   Cloudbet stays PAPER_ONLY.
+> * **Withdrawals (owner 2026-11-11, "Bet-time snapshot + re-run", "Strict, keep Argentina").** 37 approved
+>   entries (46 cells) are WITHDRAWN in `config/threshold_approvals.json`: their evidence used closing prices as
+>   bet prices or rests on backfill whose capture time is not proven before kickoff. They serve no bar and are
+>   paper until the re-run on bet-time prices only; the reason per cell is on the Bars & Cells page.
+> * **Stakes are per cell** and live only in `config/bankroll_policy.json` `cell_staking` (the dashboard reads
+>   them from there). Owner decision for the go-live: only Argentina new-format BTTS is staked (ACTIVE 1.25%,
+>   an owner exemption: a league-wide rule on its own live-captured bets); every other cell is PAPER (recorded,
+>   never staked). Cloudbet stays PAPER_ONLY.
 > * **TOP-3 per league** is ranked by T3 (calibrated value) with a TIER2 slot rule, and is a named PAPER
 >   track; a league-wide cell (every match in range) is the league's own line outside the 3. The edge a
 >   person is shown is the **calibrated** edge (the raw edge is stored for study only).
@@ -106,8 +112,8 @@ running automatically in the cloud (no server/PC needed).
 
 | Module | What it does | Money? |
 |---|---|---|
-| **Standard O/U 2.5** | Over/Under 2.5 for our second-division leagues — one approved bar per league x side cell (tiers retired 2026-11-11) | Per cell: La Liga 2 Over 2.5 staked 0.5%, every other cell paper |
-| **Side Markets** | BTTS, O/U 1.5, O/U 3.5 — one approved bar per league x market cell | Per cell: Argentina new-format BTTS 1.25%, La Liga 2 BTTS 0.5%, the rest paper |
+| **Standard O/U 2.5** | Over/Under 2.5 for our second-division leagues — one approved bar per league x side cell (tiers retired 2026-11-11) | Paper (stakes per cell: `config/bankroll_policy.json`) |
+| **Side Markets** | BTTS, O/U 1.5, O/U 3.5 — one approved bar per league x market cell | Per cell: Argentina new-format BTTS 1.25%, the rest paper |
 | **HT Model** | Half-time O/U 0.5 and 1.5 | Paper — **no edge** (see below) |
 | **New-Format Model** | O/U for goals-only leagues — separate model, never mixed with standard | Paper |
 | **Sharp Money Tracker** | Odds-drift detection — STEAM / STRONG / SHARP | Info |
