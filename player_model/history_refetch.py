@@ -43,6 +43,8 @@ REFETCH_FILE = config.OUTPUT_DIR / "collect" / "player_history_refetch.parquet"
 #: the replaced columns: every per-player count player_history stores + rating (not a count; an
 #: unrated appearance was stored as 0 by the same bug)
 REPLACED = list(HISTORY_COUNT_COLS) + ["rating"]
+#: per row, the NULL_IS_MISSING columns the reader read as missing (provider null), comma-separated
+NULL_BLANKED_COL = "null_is_missing_cols"
 STATUS_COL = SOURCE_COL
 
 
@@ -82,11 +84,13 @@ def with_refetched(history: pd.DataFrame, refetch: pd.DataFrame | None = None) -
     if not hit.any():
         return _with_proven_side(out, rf, key)
     sel = rf.reindex(key[hit])
-    # A null the collector read as 0 in a NULL_IS_MISSING column (goals_conceded, fix 2026-11-11) is
+    # A null the collector read as 0 in a NULL_IS_MISSING column (goals_conceded, fix 2026-11-11;
+    # penalty_missed, owner 2026-11-11 "Fix penalties too, then promote") is
     # missing: the stored re-fetch row keeps its 0 and filled_cols beside (corrections beside the
     # originals); the reader takes the provider's null.
     filled = (sel["filled_cols"].fillna("").astype(str).str.split(",") if "filled_cols" in sel.columns
               else pd.Series([[]] * len(sel), index=sel.index))
+    blanked = pd.Series("", index=out.index, dtype=object)
     for c in REPLACED:
         if c not in rf.columns:
             continue
@@ -96,10 +100,15 @@ def with_refetched(history: pd.DataFrame, refetch: pd.DataFrame | None = None) -
         if c in NULL_IS_MISSING:
             null_read_as_0 = filled.map(lambda xs, c=c: c in xs).to_numpy(dtype=bool)
             new = new.where(~null_read_as_0)
+            hit_idx = out.index[hit][null_read_as_0]
+            blanked.loc[hit_idx] = blanked.loc[hit_idx] + c + ","
             print(f"[refetch] {c}: {int(null_read_as_0.sum()):,} stored null-read-as-0 value(s) read as "
                   "missing (the provider sent null)")
         col.loc[hit] = new.to_numpy()
         out[c] = col
+    # provenance: the NULL_IS_MISSING columns read as missing on this row because the provider sent null
+    # (props_feature_truth 6c checks that they stay missing)
+    out[NULL_BLANKED_COL] = blanked.str.rstrip(",")
     out.loc[hit, STATUS_COL] = REFETCHED
     print(f"[refetch] {int(hit.sum()):,} of {len(out):,} row(s) carry re-fetched counts; "
           f"{int((out[STATUS_COL] == PARSED_WITH_RULE).sum()):,} parsed with the rule; "

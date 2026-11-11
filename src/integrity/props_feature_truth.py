@@ -6,7 +6,9 @@ Two defects reached the SERVED props features before these checks existed
 (reports/R_COMBINED_MODELS_2026-11-11.md):
   * a goalkeeper's goals_conceded read 0 beside a real score (provider null read as 0 by the null
     rule; 14% / 47% / 84% of mapped fixtures in 2026-09 / 10 / 11) -> opp_gk_save_rate toward 1.0;
-  * team_goals_pg_roll (own team, by name and contract) was merged on the OPPONENT key.
+  * team_goals_pg_roll (own team, by name and contract) was merged on the OPPONENT key;
+  * penalty_missed: the same provider change as goals_conceded (null read as 0), inflating the served
+    penalty_conversion_rate (owner 2026-11-11, "Fix penalties too, then promote").
 
 CHECKS
   gk_conceded   On the counts the props features read (props_harness.source_frame: re-fetch applied,
@@ -21,6 +23,11 @@ CHECKS
                 three-club table where every club has its own constant per quantity,
                 feature_engineering.attach_team_rolls must give each player row its own club's value
                 for an 'own' feature and its opponent's value for an 'opp' feature. RED otherwise.
+  null_missing  Every NULL_IS_MISSING count (goals_conceded, penalty_missed) the reader marked as a
+                provider null (history_refetch.NULL_BLANKED_COL) is missing on the frame the features
+                read - never 0. RED otherwise, or when the frame carries no provenance. The value also
+                shows, per month, the provider nulls and the recorded penalty misses per 1,000 scored
+                penalties on rows with known attempts, so a provider regression stays visible.
 
 Nothing here changes data.
 """
@@ -34,7 +41,17 @@ import pandas as pd
 
 GREEN, AMBER, RED, GREY = "GREEN", "AMBER", "RED", "NO_DATA"
 GK_COLUMNS = ["fixture_id", "player_id", "date", "position", "minutes", "is_home", "team", "home_team",
-              "away_team", "opponent", "league", "goals_conceded", "saves"]
+              "away_team", "opponent", "league", "goals_conceded", "saves", "penalty_scored",
+              "penalty_missed"]
+_FRAME: dict = {}
+
+
+def _frame():
+    """props_harness.source_frame (the columns the checks read), built once per process."""
+    if "raw" not in _FRAME:
+        from player_model.props_harness import source_frame
+        _FRAME["raw"] = source_frame(columns=GK_COLUMNS)
+    return _FRAME["raw"]
 
 
 def _c(check, status, value, rule, detail=""):
@@ -48,8 +65,7 @@ def gk_conceded(raw: pd.DataFrame | None = None, fx: pd.DataFrame | None = None)
     rule = ("a keeper who was his side's only keeper for the full 90 minutes of a match finished in 90 "
             "minutes has goals_conceded = the opponent's 90-minute goals, or missing - never another value")
     if raw is None:
-        from player_model.props_harness import source_frame
-        raw = source_frame(columns=GK_COLUMNS)
+        raw = _frame()
     if raw is None or raw.empty or HR.GK_CHECK_COL not in raw.columns:
         return _c(label, RED, "the props source frame carries no keeper check", rule,
                   "props_harness.source_frame must apply history_refetch.with_gk_conceded_checked")
@@ -71,6 +87,40 @@ def gk_conceded(raw: pd.DataFrame | None = None, fx: pd.DataFrame | None = None)
              f"features; {int(pre_bad.sum()):,} provider value(s) contradicted the score and are missing")
     return {**_c(label, RED if bad.any() else GREEN, value, rule, detail),
             "by_month": {m: {k: int(v) for k, v in r.items()} for m, r in by_month.iterrows()}}
+
+
+def null_missing(raw: pd.DataFrame | None = None) -> dict:
+    """Provider-null counts of NULL_IS_MISSING columns stay missing on the frame the features read."""
+    from player_model import history_refetch as HR
+    from player_model.player_stat_nulls import NULL_IS_MISSING
+    label = "Data truth 6c: provider-null counts stay missing"
+    rule = ("a NULL_IS_MISSING count (" + ", ".join(sorted(NULL_IS_MISSING)) + ") the provider sent as "
+            "null is missing on the props frame - never 0; a real provider 0 stays 0")
+    raw = _frame() if raw is None else raw
+    if raw is None or raw.empty or HR.NULL_BLANKED_COL not in raw.columns:
+        return _c(label, RED, "the props source frame carries no provider-null provenance", rule,
+                  f"history_refetch.with_refetched must write {HR.NULL_BLANKED_COL}")
+    marks = raw[HR.NULL_BLANKED_COL].fillna("").astype(str).str.split(",")
+    bad, nulls = {}, {}
+    for c in sorted(NULL_IS_MISSING):
+        m = marks.map(lambda xs, c=c: c in xs).to_numpy(dtype=bool)
+        nulls[c] = int(m.sum())
+        if c in raw.columns:
+            bad[c] = int(pd.to_numeric(raw.loc[m, c], errors="coerce").notna().sum())
+        else:
+            bad[c] = 0
+    detail = ""
+    if {"penalty_scored", "penalty_missed", "date"} <= set(raw.columns):
+        ps = pd.to_numeric(raw["penalty_scored"], errors="coerce")
+        pm = pd.to_numeric(raw["penalty_missed"], errors="coerce")
+        known = ps.notna() & pm.notna()
+        mon = pd.to_datetime(raw["date"], errors="coerce").dt.strftime("%Y-%m")
+        t = (pd.DataFrame({"m": mon, "s": ps.where(known), "x": pm.where(known), "n": pm.isna() & ps.notna()})
+             .groupby("m").agg(s=("s", "sum"), x=("x", "sum"), n=("n", "sum")).tail(6))
+        detail = "; ".join(f"{m}: {int(r.x)} missed / {int(r.s)} scored on known rows, {int(r.n)} null miss "
+                           f"count(s)" for m, r in t.iterrows())
+    value = (", ".join(f"{c}: {nulls[c]:,} provider null(s), {bad[c]} read as a value" for c in sorted(nulls)))
+    return _c(label, RED if any(bad.values()) else GREEN, value, rule, detail)
 
 
 def _synthetic_team_table() -> tuple[pd.DataFrame, dict]:
@@ -134,7 +184,8 @@ def side_keys() -> dict:
 def evaluate(raw: pd.DataFrame | None = None) -> list[dict]:
     out = []
     for label, fn in (("Data truth 6a: keeper goals_conceded = match score", lambda: gk_conceded(raw)),
-                      ("Data truth 6b: team features keyed to their side", side_keys)):
+                      ("Data truth 6b: team features keyed to their side", side_keys),
+                      ("Data truth 6c: provider-null counts stay missing", lambda: null_missing(raw))):
         try:
             out.append(fn())
         except Exception as e:                                         # noqa: BLE001

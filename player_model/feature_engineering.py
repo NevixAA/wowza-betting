@@ -196,7 +196,7 @@ def _season_pen_totals(hist: pd.DataFrame) -> pd.DataFrame:
     cols = ["player_id", "_y", "pen_s", "pen_a"]
     parts = []
     if {"penalty_scored", "penalty_missed", "season", "player_id"} <= set(hist.columns):
-        ps, pm = _num(hist, "penalty_scored"), _num(hist, "penalty_missed")
+        ps, pm = _known_attempts(_num(hist, "penalty_scored"), _num(hist, "penalty_missed"))
         h = pd.DataFrame({"player_id": hist["player_id"], "_y": _season_year(hist["season"]).to_numpy(),
                           "pen_s": ps, "pen_a": ps + pm}).dropna(subset=["player_id", "_y"])
         h = h.groupby(["player_id", "_y"]).sum(min_count=1).reset_index()
@@ -218,6 +218,15 @@ def _season_pen_totals(hist: pd.DataFrame) -> pd.DataFrame:
     return t[cols]
 
 
+def _known_attempts(ps: pd.Series, pm: pd.Series) -> tuple[pd.Series, pd.Series]:
+    """(scored, missed) with a row's scored penalties counted only where its misses are known (owner
+    2026-11-11, "Fix penalties too, then promote"): a row whose penalty_missed is missing (provider
+    null, player_stat_nulls.NULL_IS_MISSING) has unknown attempts, so its goals would enter the
+    conversion numerator without their attempts (a rate above its truth, even above 1). A real
+    provider 0 is a known count and still counts."""
+    return ps.where(pm.notna()), pm.where(ps.notna())
+
+
 def _known_before(v: pd.Series, key) -> pd.Series:
     """Per group: the sum of the RECORDED values on earlier rows (an unrecorded value adds nothing;
     the row's own value is never read, so an upcoming row - no result yet - and a played row get the
@@ -235,7 +244,7 @@ def _penalty_asof(df: pd.DataFrame) -> pd.Series:
     below config.MIN_PEN_ATTEMPTS attempts."""
     if not {"penalty_scored", "penalty_missed", "player_id"} <= set(df.columns):
         return pd.Series(np.nan, index=df.index)
-    ps, pm = _num(df, "penalty_scored"), _num(df, "penalty_missed")
+    ps, pm = _known_attempts(_num(df, "penalty_scored"), _num(df, "penalty_missed"))
     att = ps + pm
     if "season" not in df.columns:                  # no season: the per-match record only
         cs = _known_before(ps, [df["player_id"]])
@@ -277,7 +286,7 @@ def _penalty_now(tot: pd.DataFrame, pid, phist_all: pd.DataFrame, season) -> flo
         s, a = (float(prior["pen_s"].sum()), float(prior["pen_a"].sum())) if len(prior) else (0.0, 0.0)
         if "season" in phist_all.columns:
             cur = phist_all[_season_year(phist_all["season"]).to_numpy() == y]
-            ps, pm = _num(cur, "penalty_scored"), _num(cur, "penalty_missed")
+            ps, pm = _known_attempts(_num(cur, "penalty_scored"), _num(cur, "penalty_missed"))
             s += float(ps.sum())
             a += float((ps + pm).sum())
     return s / a if a >= config.MIN_PEN_ATTEMPTS else NAN

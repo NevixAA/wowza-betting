@@ -140,3 +140,39 @@ def test_props_truth_is_a_gated_stoplight_rule():
     assert any(g == "Data truth 6" for g in DT.GATED)
     red = [PFT._c("Data truth 6a: keeper goals_conceded = match score", PFT.RED, "x", "")]
     assert any(f.startswith("Data truth 6") for f in DT.gate(checks=red))
+
+
+# ── 3. penalty_missed (owner 2026-11-11: "Fix penalties too, then promote") ──────────────────────
+
+def test_null_penalty_missed_is_missing_and_a_real_zero_stays_zero():
+    c = PSN.player_counts(_stats(penalty={"scored": 1, "missed": None}), answered=True)
+    assert c["penalty_missed"] is None and c["penalty_scored"] == 1
+    c0 = PSN.player_counts(_stats(penalty={"scored": 1, "missed": 0}), answered=True)
+    assert c0["penalty_missed"] == 0
+    assert "penalty_missed" in PSN.NULL_IS_MISSING
+
+
+def test_conversion_counts_scored_penalties_only_where_misses_are_known():
+    df = pd.DataFrame({"player_id": [1] * 6, "date": pd.date_range("2026-08-01", periods=6, freq="7D"),
+                       "penalty_scored": [1, 0, 1, 1, 1, 0], "penalty_missed": [1, 1, 0, np.nan, np.nan, 0]})
+    r = FE._penalty_asof(df)
+    # before the last row the known attempts are rows 0-2 (2 scored of 4); rows 3-4 (misses unknown) add
+    # nothing - read as 0 they would give 4 of 4, and counted on one side only 4 of 4 as well
+    assert r.iloc[-1] == 0.5
+    assert (r.dropna() <= 1).all()
+
+
+def test_reader_marks_provider_null_penalty_missed_and_check_6c_holds_it_missing():
+    hist = pd.DataFrame({"fixture_id": [1, 1], "player_id": [10, 11], "penalty_missed": [0, 0],
+                         "penalty_scored": [1, 0], "is_home": [1, 0], "date": ["2026-11-01"] * 2})
+    rf = pd.DataFrame({"fixture_id": [1, 1], "player_id": [10, 11], "penalty_missed": [0, 0],
+                       "penalty_scored": [1, 0], "filled_cols": ["penalty_missed", ""]})
+    out = HR.with_refetched(hist, rf).set_index("player_id")
+    assert np.isnan(out.loc[10, "penalty_missed"]) and out.loc[11, "penalty_missed"] == 0
+    assert out.loc[10, HR.NULL_BLANKED_COL] == "penalty_missed"
+    out = out.reset_index()
+    assert PFT.null_missing(out)["status"] == PFT.GREEN
+    broken = out.copy()
+    broken.loc[broken["player_id"] == 10, "penalty_missed"] = 0.0
+    assert PFT.null_missing(broken)["status"] == PFT.RED
+    assert PFT.null_missing(hist)["status"] == PFT.RED              # no provenance -> RED

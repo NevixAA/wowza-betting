@@ -49,6 +49,14 @@ provider's "none", so a null stays missing even when the player played:
                     2026-09, inflating gk_save_rate -> the served opp_gk_save_rate toward 1.0. The
                     readers (history_refetch.with_refetched) also blank the stored re-fetched rows
                     whose filled_cols show this null-read-as-0; the stored value stays beside.
+  penalty.missed    OWNER DECISION 2026-11-11 ("Fix penalties too, then promote"), replacing the fix
+                    round 9 reading for this field: a provider NULL is missing; a real provider 0
+                    (no penalty missed) is still 0. Measured: its null share per month is identical
+                    to goals.conceded (0% to 2026-02, 47% 2026-10, 90% 2026-11 - the provider used to
+                    send 0). Read as 0, the recorded misses fell to 30 per 1,000 scored penalties in
+                    2026-11 against 180-390 in every earlier month, inflating the served
+                    penalty_conversion_rate. A row whose misses are missing has unknown ATTEMPTS:
+                    feature_engineering counts its scored penalties only where its misses are known.
 NOT COUNTS (`NOT_COUNTS`) - never zero-filled, a null stays missing:
   games.rating      the provider's match rating; null = not rated (0 is not a rating)
   passes.accuracy   accurate passes (a % in the season endpoint); a ratio-like value, not "none"
@@ -91,7 +99,8 @@ COUNT_FIELDS: dict[str, tuple[str, str]] = {
 
 #: counts whose null is not "none" (measured, see the module docstring): a null stays missing even
 #: for a player who played
-NULL_IS_MISSING = frozenset({"goals_conceded"})
+#: owner 2026-11-11 ("Fix penalties too, then promote"): penalty_missed joins goals_conceded
+NULL_IS_MISSING = frozenset({"goals_conceded", "penalty_missed"})
 
 #: provider values that are NOT counts: a null stays missing, never 0
 NOT_COUNTS: dict[str, tuple[str, str]] = {
