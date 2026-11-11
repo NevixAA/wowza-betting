@@ -1,0 +1,728 @@
+{
+ "logistic_slope": {
+  "sot": {
+   "p_over25": {
+    "a": 0.005655370550123788,
+    "b": -0.01655691753138996,
+    "se": 0.005497439110916295,
+    "p_two": 0.0025974559642035016,
+    "n": 236716
+   },
+   "dc_lam_total": {
+    "a": 0.005084352285209564,
+    "b": -0.002100832741455247,
+    "se": 0.005531865238809349,
+    "p_two": 0.7041166526559719,
+    "n": 231235
+   },
+   "dc_lam_side": {
+    "a": 0.003210449542612969,
+    "b": 0.0386195230723301,
+    "se": 0.005677970155245866,
+    "p_two": 1.0343302309831138e-11,
+    "n": 231235
+   }
+  },
+  "sot2": {
+   "p_over25": {
+    "a": 0.02278280732591108,
+    "b": -0.014579274980832495,
+    "se": 0.010195955042333178,
+    "p_two": 0.15274350171268097,
+    "n": 236716
+   },
+   "dc_lam_total": {
+    "a": 0.023023368194834807,
+    "b": 0.003631378885013207,
+    "se": 0.01041947079649817,
+    "p_two": 0.7274507829018293,
+    "n": 231235
+   },
+   "dc_lam_side": {
+    "a": 0.013843192866162776,
+    "b": 0.06292404535069585,
+    "se": 0.010130584739799072,
+    "p_two": 5.254987888130858e-10,
+    "n": 231235
+   }
+  },
+  "goals": {
+   "p_over25": {
+    "a": 0.018938144567832032,
+    "b": -0.016312191175259016,
+    "se": 0.007807074971785673,
+    "p_two": 0.03667070903262975,
+    "n": 236716
+   },
+   "dc_lam_total": {
+    "a": 0.018991526483871708,
+    "b": -0.00855678789394379,
+    "se": 0.007799091474639637,
+    "p_two": 0.2725750032803753,
+    "n": 231235
+   },
+   "dc_lam_side": {
+    "a": 0.013277098227339648,
+    "b": 0.04904581891310573,
+    "se": 0.007768533793623118,
+    "p_two": 2.72980355016691e-10,
+    "n": 231235
+   }
+  }
+ },
+ "side_effect_by_venue": {
+  "sot": {
+   "home": {
+    "est": 0.010888399942075563,
+    "lo": 0.004189581147162333,
+    "hi": 0.017535117147789808,
+    "rows_top": 55108,
+    "rows_bottom": 21797
+   },
+   "away": {
+    "est": 0.018351806058604044,
+    "lo": 0.012101723822184838,
+    "hi": 0.02483181787257708,
+    "rows_top": 21935,
+    "rows_bottom": 53611
+   }
+  },
+  "sot2": {
+   "home": {
+    "est": 0.0033030833784417515,
+    "lo": -9.17022858889035e-05,
+    "hi": 0.006478612279729787,
+    "rows_top": 55108,
+    "rows_bottom": 21797
+   },
+   "away": {
+    "est": 0.012086061651886946,
+    "lo": 0.008646917934749365,
+    "hi": 0.015516450388553748,
+    "rows_top": 21935,
+    "rows_bottom": 53611
+   }
+  },
+  "goals": {
+   "home": {
+    "est": 0.005730130036182806,
+    "lo": 0.0015265709891774182,
+    "hi": 0.009843889441165902,
+    "rows_top": 55108,
+    "rows_bottom": 21797
+   },
+   "away": {
+    "est": 0.012183140741435866,
+    "lo": 0.008092275626969455,
+    "hi": 0.01612436718312371,
+    "rows_top": 21935,
+    "rows_bottom": 53611
+   }
+  }
+ },
+ "side_effect_by_position": {
+  "sot": {
+   "F": {
+    "est": 0.0032320745290365634,
+    "lo": -0.006401388487064686,
+    "hi": 0.012801437074570826
+   },
+   "M": {
+    "est": 0.012051966386672113,
+    "lo": 0.005099441665684923,
+    "hi": 0.019285045320806944
+   },
+   "D": {
+    "est": 0.022780044056561442,
+    "lo": 0.016852394252186098,
+    "hi": 0.028704619124470417
+   },
+   "G": {
+    "est": -0.0005780996911465691,
+    "lo": -0.0017303836056620468,
+    "hi": 0.00045403450466489497
+   }
+  },
+  "sot2": {
+   "F": {
+    "est": -0.003715886124112054,
+    "lo": -0.010869106270262902,
+    "hi": 0.002198356013118473
+   },
+   "M": {
+    "est": 0.013898017732618891,
+    "lo": 0.010450923539605264,
+    "hi": 0.01714838652415678
+   },
+   "D": {
+    "est": 0.007214351249062671,
+    "lo": 0.005204147304376134,
+    "hi": 0.009150894252547667
+   },
+   "G": {
+    "est": -4.7119004898017736e-05,
+    "lo": -6.765668561119495e-05,
+    "hi": -2.7682976798098204e-05
+   }
+  },
+  "goals": {
+   "F": {
+    "est": -0.003024288395325255,
+    "lo": -0.01034221843181103,
+    "hi": 0.004564571280098151
+   },
+   "M": {
+    "est": 0.017387348547492194,
+    "lo": 0.013046418657191083,
+    "hi": 0.021389771555580032
+   },
+   "D": {
+    "est": 0.00966911289121634,
+    "lo": 0.00637357387114794,
+    "hi": 0.013097889261143015
+   },
+   "G": {
+    "est": -0.0005026712074031395,
+    "lo": -0.0011112198400401614,
+    "hi": -9.89781801001682e-05
+   }
+  }
+ },
+ "residual_by_venue": {
+  "sot": {
+   "home": -0.0008296703435069549,
+   "away": -0.0008871690224464921
+  },
+  "sot2": {
+   "home": 0.00012417010851140822,
+   "away": 3.473191401314467e-05
+  },
+  "goals": {
+   "home": 0.000637532803758932,
+   "away": -0.000829109042057391
+  }
+ },
+ "spearman_dc_side_vs_props_features": {
+  "team_goals_pg_roll": -0.028812807276823976,
+  "opp_goals_conceded_pg": 0.32439774720470577,
+  "opp_sot_conceded_pg": 0.26239433014169466,
+  "opp_strength_index": 0.2780550584560496,
+  "opp_goals_conceded_vs_fwd_pg": 0.23700785851076278,
+  "opp_sot_conceded_vs_fwd_pg": 0.20624081337008823,
+  "opp_goals_conceded_vs_mid_pg": 0.19089180884128296,
+  "opp_sot_conceded_vs_mid_pg": 0.15920756574825237,
+  "prev_season_team_goals_pg": 0.425660432215041,
+  "prev_season_team_conceded_pg": 0.054737560209261696,
+  "prev_season_opp_goals_pg": 0.07037776391818736,
+  "prev_season_opp_conceded_pg": 0.3895212215405955,
+  "team_corners_pg": 0.11110809339861809,
+  "box_threat_vs_leaky_defense": 0.18302775089525355,
+  "efficiency_vs_leaky_keeper": 0.09067927304402486,
+  "team_momentum_forward_matchup": 0.00850157296087986,
+  "quality_adj_goals_pg": 0.08472833847317637,
+  "quality_adj_sot_pg": 0.10218038378616881
+ },
+ "calibration_by_league": {
+  "sot": {
+   "Africa Cup of Nations": {
+    "mean_p": 0.2532,
+    "mean_y": 0.2044,
+    "rows": 137
+   },
+   "Argentina Primera Division": {
+    "mean_p": 0.199,
+    "mean_y": 0.2044,
+    "rows": 14703
+   },
+   "Austrian Bundesliga": {
+    "mean_p": 0.2211,
+    "mean_y": 0.221,
+    "rows": 6778
+   },
+   "Brazil Serie A": {
+    "mean_p": 0.2203,
+    "mean_y": 0.2261,
+    "rows": 11219
+   },
+   "Bundesliga": {
+    "mean_p": 0.2439,
+    "mean_y": 0.2336,
+    "rows": 12107
+   },
+   "Bundesliga 2": {
+    "mean_p": 0.2347,
+    "mean_y": 0.2318,
+    "rows": 11323
+   },
+   "Champions League": {
+    "mean_p": 0.2474,
+    "mean_y": 0.252,
+    "rows": 8218
+   },
+   "Championship": {
+    "mean_p": 0.2179,
+    "mean_y": 0.2118,
+    "rows": 21444
+   },
+   "China Super League": {
+    "mean_p": 0.2383,
+    "mean_y": 0.2283,
+    "rows": 6925
+   },
+   "Conference League": {
+    "mean_p": 0.2192,
+    "mean_y": 0.2288,
+    "rows": 6425
+   },
+   "Denmark Superliga": {
+    "mean_p": 0.2266,
+    "mean_y": 0.2419,
+    "rows": 6754
+   },
+   "Europa League": {
+    "mean_p": 0.2272,
+    "mean_y": 0.2309,
+    "rows": 7143
+   },
+   "Finland Veikkausliiga": {
+    "mean_p": 0.2188,
+    "mean_y": 0.2502,
+    "rows": 1507
+   },
+   "Friendlies": {
+    "mean_p": 0.2614,
+    "mean_y": 0.1964,
+    "rows": 1171
+   },
+   "Ireland Premier Division": {
+    "mean_p": 0.2087,
+    "mean_y": 0.2198,
+    "rows": 5282
+   },
+   "Japan J-League": {
+    "mean_p": 0.2103,
+    "mean_y": 0.2053,
+    "rows": 11096
+   },
+   "La Liga": {
+    "mean_p": 0.2239,
+    "mean_y": 0.2198,
+    "rows": 14536
+   },
+   "La Liga 2": {
+    "mean_p": 0.2157,
+    "mean_y": 0.2167,
+    "rows": 17431
+   },
+   "League One": {
+    "mean_p": 0.2109,
+    "mean_y": 0.2083,
+    "rows": 21741
+   },
+   "League Two": {
+    "mean_p": 0.2128,
+    "mean_y": 0.2167,
+    "rows": 21568
+   },
+   "Ligue 1": {
+    "mean_p": 0.2309,
+    "mean_y": 0.2297,
+    "rows": 11813
+   },
+   "Ligue 2": {
+    "mean_p": 0.2115,
+    "mean_y": 0.2158,
+    "rows": 11426
+   },
+   "Mexico Liga MX": {
+    "mean_p": 0.2354,
+    "mean_y": 0.2278,
+    "rows": 12942
+   },
+   "Norway Eliteserien": {
+    "mean_p": 0.22,
+    "mean_y": 0.2412,
+    "rows": 6796
+   },
+   "Premier League": {
+    "mean_p": 0.2404,
+    "mean_y": 0.2279,
+    "rows": 14293
+   },
+   "Romanian Superliga": {
+    "mean_p": 0.2203,
+    "mean_y": 0.2222,
+    "rows": 11414
+   },
+   "Serie A": {
+    "mean_p": 0.2221,
+    "mean_y": 0.2113,
+    "rows": 14863
+   },
+   "Serie B": {
+    "mean_p": 0.214,
+    "mean_y": 0.2179,
+    "rows": 14799
+   },
+   "Sweden Allsvenskan": {
+    "mean_p": 0.2277,
+    "mean_y": 0.235,
+    "rows": 6703
+   },
+   "USA MLS": {
+    "mean_p": 0.2361,
+    "mean_y": 0.2278,
+    "rows": 15528
+   },
+   "World Cup - Qualification CONCACAF": {
+    "mean_p": 0.2505,
+    "mean_y": 0.3529,
+    "rows": 34
+   },
+   "World Cup - Qualification Europe": {
+    "mean_p": 0.263,
+    "mean_y": 0.2776,
+    "rows": 407
+   },
+   "World Cup - Qualification Intercontinental Play-offs": {
+    "mean_p": 0.2219,
+    "mean_y": 0.1579,
+    "rows": 19
+   }
+  },
+  "sot2": {
+   "Africa Cup of Nations": {
+    "mean_p": 0.0513,
+    "mean_y": 0.0146,
+    "rows": 137
+   },
+   "Argentina Primera Division": {
+    "mean_p": 0.0404,
+    "mean_y": 0.0377,
+    "rows": 14703
+   },
+   "Austrian Bundesliga": {
+    "mean_p": 0.0473,
+    "mean_y": 0.0496,
+    "rows": 6778
+   },
+   "Brazil Serie A": {
+    "mean_p": 0.0469,
+    "mean_y": 0.051,
+    "rows": 11219
+   },
+   "Bundesliga": {
+    "mean_p": 0.0617,
+    "mean_y": 0.0573,
+    "rows": 12107
+   },
+   "Bundesliga 2": {
+    "mean_p": 0.0556,
+    "mean_y": 0.0576,
+    "rows": 11323
+   },
+   "Champions League": {
+    "mean_p": 0.067,
+    "mean_y": 0.0667,
+    "rows": 8218
+   },
+   "Championship": {
+    "mean_p": 0.0454,
+    "mean_y": 0.046,
+    "rows": 21444
+   },
+   "China Super League": {
+    "mean_p": 0.071,
+    "mean_y": 0.0618,
+    "rows": 6925
+   },
+   "Conference League": {
+    "mean_p": 0.048,
+    "mean_y": 0.056,
+    "rows": 6425
+   },
+   "Denmark Superliga": {
+    "mean_p": 0.0546,
+    "mean_y": 0.057,
+    "rows": 6754
+   },
+   "Europa League": {
+    "mean_p": 0.0497,
+    "mean_y": 0.0557,
+    "rows": 7143
+   },
+   "Finland Veikkausliiga": {
+    "mean_p": 0.0482,
+    "mean_y": 0.0677,
+    "rows": 1507
+   },
+   "Friendlies": {
+    "mean_p": 0.0569,
+    "mean_y": 0.041,
+    "rows": 1171
+   },
+   "Ireland Premier Division": {
+    "mean_p": 0.0433,
+    "mean_y": 0.0528,
+    "rows": 5282
+   },
+   "Japan J-League": {
+    "mean_p": 0.0428,
+    "mean_y": 0.0401,
+    "rows": 11096
+   },
+   "La Liga": {
+    "mean_p": 0.0551,
+    "mean_y": 0.0488,
+    "rows": 14536
+   },
+   "La Liga 2": {
+    "mean_p": 0.0465,
+    "mean_y": 0.0449,
+    "rows": 17431
+   },
+   "League One": {
+    "mean_p": 0.0443,
+    "mean_y": 0.045,
+    "rows": 21741
+   },
+   "League Two": {
+    "mean_p": 0.0435,
+    "mean_y": 0.0451,
+    "rows": 21568
+   },
+   "Ligue 1": {
+    "mean_p": 0.0536,
+    "mean_y": 0.0566,
+    "rows": 11813
+   },
+   "Ligue 2": {
+    "mean_p": 0.0448,
+    "mean_y": 0.0488,
+    "rows": 11426
+   },
+   "Mexico Liga MX": {
+    "mean_p": 0.0574,
+    "mean_y": 0.0566,
+    "rows": 12942
+   },
+   "Norway Eliteserien": {
+    "mean_p": 0.0484,
+    "mean_y": 0.0561,
+    "rows": 6796
+   },
+   "Premier League": {
+    "mean_p": 0.0599,
+    "mean_y": 0.0507,
+    "rows": 14293
+   },
+   "Romanian Superliga": {
+    "mean_p": 0.0466,
+    "mean_y": 0.0504,
+    "rows": 11414
+   },
+   "Serie A": {
+    "mean_p": 0.0487,
+    "mean_y": 0.0458,
+    "rows": 14863
+   },
+   "Serie B": {
+    "mean_p": 0.0439,
+    "mean_y": 0.041,
+    "rows": 14799
+   },
+   "Sweden Allsvenskan": {
+    "mean_p": 0.0502,
+    "mean_y": 0.058,
+    "rows": 6703
+   },
+   "USA MLS": {
+    "mean_p": 0.0648,
+    "mean_y": 0.0654,
+    "rows": 15528
+   },
+   "World Cup - Qualification CONCACAF": {
+    "mean_p": 0.0504,
+    "mean_y": 0.0588,
+    "rows": 34
+   },
+   "World Cup - Qualification Europe": {
+    "mean_p": 0.0547,
+    "mean_y": 0.086,
+    "rows": 407
+   },
+   "World Cup - Qualification Intercontinental Play-offs": {
+    "mean_p": 0.0497,
+    "mean_y": 0.0526,
+    "rows": 19
+   }
+  },
+  "goals": {
+   "Africa Cup of Nations": {
+    "mean_p": 0.0948,
+    "mean_y": 0.0511,
+    "rows": 137
+   },
+   "Argentina Primera Division": {
+    "mean_p": 0.0664,
+    "mean_y": 0.0594,
+    "rows": 14703
+   },
+   "Austrian Bundesliga": {
+    "mean_p": 0.0784,
+    "mean_y": 0.0835,
+    "rows": 6778
+   },
+   "Brazil Serie A": {
+    "mean_p": 0.0761,
+    "mean_y": 0.0737,
+    "rows": 11219
+   },
+   "Bundesliga": {
+    "mean_p": 0.0961,
+    "mean_y": 0.0909,
+    "rows": 12107
+   },
+   "Bundesliga 2": {
+    "mean_p": 0.0873,
+    "mean_y": 0.0865,
+    "rows": 11323
+   },
+   "Champions League": {
+    "mean_p": 0.0967,
+    "mean_y": 0.0973,
+    "rows": 8218
+   },
+   "Championship": {
+    "mean_p": 0.0762,
+    "mean_y": 0.0764,
+    "rows": 21444
+   },
+   "China Super League": {
+    "mean_p": 0.0986,
+    "mean_y": 0.0927,
+    "rows": 6925
+   },
+   "Conference League": {
+    "mean_p": 0.0792,
+    "mean_y": 0.0847,
+    "rows": 6425
+   },
+   "Denmark Superliga": {
+    "mean_p": 0.0849,
+    "mean_y": 0.094,
+    "rows": 6754
+   },
+   "Europa League": {
+    "mean_p": 0.0817,
+    "mean_y": 0.0813,
+    "rows": 7143
+   },
+   "Finland Veikkausliiga": {
+    "mean_p": 0.0795,
+    "mean_y": 0.1095,
+    "rows": 1507
+   },
+   "Friendlies": {
+    "mean_p": 0.097,
+    "mean_y": 0.082,
+    "rows": 1171
+   },
+   "Ireland Premier Division": {
+    "mean_p": 0.0708,
+    "mean_y": 0.0759,
+    "rows": 5282
+   },
+   "Japan J-League": {
+    "mean_p": 0.0735,
+    "mean_y": 0.0718,
+    "rows": 11096
+   },
+   "La Liga": {
+    "mean_p": 0.0847,
+    "mean_y": 0.0782,
+    "rows": 14536
+   },
+   "La Liga 2": {
+    "mean_p": 0.0745,
+    "mean_y": 0.0772,
+    "rows": 17431
+   },
+   "League One": {
+    "mean_p": 0.0752,
+    "mean_y": 0.0799,
+    "rows": 21741
+   },
+   "League Two": {
+    "mean_p": 0.0752,
+    "mean_y": 0.0782,
+    "rows": 21568
+   },
+   "Ligue 1": {
+    "mean_p": 0.0852,
+    "mean_y": 0.0862,
+    "rows": 11813
+   },
+   "Ligue 2": {
+    "mean_p": 0.073,
+    "mean_y": 0.0797,
+    "rows": 11426
+   },
+   "Mexico Liga MX": {
+    "mean_p": 0.0867,
+    "mean_y": 0.0855,
+    "rows": 12942
+   },
+   "Norway Eliteserien": {
+    "mean_p": 0.0807,
+    "mean_y": 0.0936,
+    "rows": 6796
+   },
+   "Premier League": {
+    "mean_p": 0.0922,
+    "mean_y": 0.0841,
+    "rows": 14293
+   },
+   "Romanian Superliga": {
+    "mean_p": 0.0744,
+    "mean_y": 0.0742,
+    "rows": 11414
+   },
+   "Serie A": {
+    "mean_p": 0.0806,
+    "mean_y": 0.0737,
+    "rows": 14863
+   },
+   "Serie B": {
+    "mean_p": 0.0737,
+    "mean_y": 0.0777,
+    "rows": 14799
+   },
+   "Sweden Allsvenskan": {
+    "mean_p": 0.0815,
+    "mean_y": 0.085,
+    "rows": 6703
+   },
+   "USA MLS": {
+    "mean_p": 0.0947,
+    "mean_y": 0.0871,
+    "rows": 15528
+   },
+   "World Cup - Qualification CONCACAF": {
+    "mean_p": 0.0921,
+    "mean_y": 0.1176,
+    "rows": 34
+   },
+   "World Cup - Qualification Europe": {
+    "mean_p": 0.0979,
+    "mean_y": 0.1351,
+    "rows": 407
+   },
+   "World Cup - Qualification Intercontinental Play-offs": {
+    "mean_p": 0.0849,
+    "mean_y": 0.0526,
+    "rows": 19
+   }
+  }
+ }
+}
