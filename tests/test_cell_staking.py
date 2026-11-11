@@ -48,7 +48,10 @@ def test_committed_policy_stakes_exactly_the_owner_cells():
     assert cs["enabled"] is True
     latest = json.loads((ROOT / "output" / "threshold_proposals" / "latest.json").read_text(encoding="utf-8"))
     prop = json.loads((ROOT / latest["path"]).read_text(encoding="utf-8"))
-    assert G.build_cells(prop, cs["cells"], pol) == cs["cells"]
+    # owner 2026-11-11 "Strict, keep Argentina": withdrawn entries stake nothing
+    assert G.build_cells(prop, cs["cells"], pol, None, G.withdrawn_entries(prop)) == cs["cells"]
+    assert set(cs["cells"]) == {f"new_format|BTTS|{ARG}", "standard|OU25_OVER|La Liga 2"}
+    assert "LEAGUE_WIDE" in cs["cells"][f"new_format|BTTS|{ARG}"]["staking_basis"]
     for k, v in cs["cells"].items():
         if k != f"new_format|BTTS|{ARG}":
             assert v["state"] == "ACTIVE_LOW" and v["base_fraction"] == 0.005

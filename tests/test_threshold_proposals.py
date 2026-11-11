@@ -389,3 +389,39 @@ def test_dashboard_reads_the_proposal_state(tmp_path):
     led.write_text(json.dumps({"history": [{"proposal_id": "TP-x", "applied_at": "2026-11-02T09:00:00Z"}]}),
                    encoding="utf-8")
     assert V.threshold_proposal(latest=lt, approvals=none, applied=led)["state"] == "APPLIED"
+
+
+# ── withdrawals (owner 2026-11-11 "Bet-time snapshot + re-run" / "Strict, keep Argentina") ─────────────────
+def test_withdrawn_entries_are_never_applied(sandbox):
+    p, path = _proposal(sandbox, sandbox)
+    by = {e["entry_id"]: e for e in p["entries"]}
+    wd = [{"entry_id": "ou25|Serie B", "entry_hash": by["ou25|Serie B"]["entry_hash"],
+           "withdrawn_at": "2026-11-11T12:00:00Z", "reason": "test: evidence price not bet-time"}]
+    ap = _approve(sandbox, p, ["ou25|Serie B", "btts|Championship"], withdrawals=wd)
+    r = A.apply(path, approvals_path=ap, dry_run=True, lock=False)
+    assert "ou25|Serie B" not in r["applied"] and r["withdrawn"] == ["ou25|Serie B"]
+    assert "btts|Championship" in r["applied"]
+
+
+def test_a_withdrawal_must_match_the_entry_and_carry_a_reason(sandbox):
+    p, path = _proposal(sandbox, sandbox)
+    by = {e["entry_id"]: e for e in p["entries"]}
+    bad = [{"entry_id": "ou25|Serie B", "entry_hash": "0" * 64, "withdrawn_at": "x", "reason": "r"}]
+    with pytest.raises(A.ApplyRefused, match="does not match"):
+        A.apply(path, approvals_path=_approve(sandbox, p, ["ou25|Serie B"], withdrawals=bad), dry_run=True, lock=False)
+    noreason = [{"entry_id": "ou25|Serie B", "entry_hash": by["ou25|Serie B"]["entry_hash"], "withdrawn_at": "x"}]
+    with pytest.raises(A.ApplyRefused, match="reason"):
+        A.apply(path, approvals_path=_approve(sandbox, p, ["ou25|Serie B"], withdrawals=noreason), dry_run=True,
+                lock=False)
+
+
+def test_committed_withdrawal_of_the_november_proposal():
+    """The committed record: 37 history / unproven-capture entries withdrawn, Argentina NF BTTS and La Liga 2 O/U
+    2.5 stay approved (owner 2026-11-11)."""
+    import json as _j
+    ap = _j.loads((ROOT / "config" / "threshold_approvals.json").read_text(encoding="utf-8"))
+    a = next(x for x in ap["approvals"] if x["proposal_id"] == "TP-2026-11-10-d999073a")
+    w = {x["entry_id"] for x in a["withdrawals"]}
+    assert "btts|Argentina Primera Division" not in w and "ou25|La Liga 2" not in w
+    assert "btts|La Liga 2" in w and len(w) == 37
+    assert all("Bet-time snapshot + re-run" in x["owner_words"] for x in a["withdrawals"])

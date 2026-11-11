@@ -1,5 +1,5 @@
 {
- "protocol": "bars-fresh-holdout/3",
+ "protocol": "bars-fresh-holdout/4",
  "owner_decision": "owner 2026-11-10: \"Fresh holdout\" (relayed by the coordinator); P_RESOLUTION_HITS = 10 approved as part of it",
  "written_before_any_run": true,
  "runs_only_when": "tier B1 of the OddsAPI history is complete (store run ledger) AND config/bars_oddsapi_hist.json run_enabled true with owner_ok",
@@ -7,10 +7,14 @@
   "universe": "the bars study universes (output/bars_opt/universe_{standard,new_format}.parquet) priced by src/bars_opt/oddsapi_prices.py: own two-sided pair always wins; else the OddsAPI history pair under the study's own rules (earliest provable pre-kickoff same-snapshot pair from match day - 1; one book's pair, Bet365 else Pinnacle; exact line per side). Priced universes stay LOCAL.",
   "fresh_row": "price_source oddsapi_hist AND (row_id, market) never priced in any committed version of the study universes AND not priced by any own source today; proven from git history by src/bars_opt/fresh_holdout.earlier_runs (fail-closed)",
   "price_tiers": [
-   "B1",
-   "B2"
+   "BT"
   ],
-  "price_tiers_rule": "history prices come ONLY from the collector tiers listed in price_tiers (src.oddsapi_history.TIERS): B1 (btts + alternate totals at close, 2023-05..) and B2 (New-Format featured totals at close, 2020-06..2023-05). Both must be finished in the store's run ledger before the study runs. Later tiers (C3 h2h+totals open/close 2020-2023, C1 T-48h, ...) never price a row in this study, so the fresh holdout cannot move as the collector goes on."
+  "price_tiers_rule": "history BET prices come ONLY from the tiers in price_tiers (BT); close_tiers (B1) are read only for the closing pair (CLV); every listed tier must be finished in the store's run ledger before the study runs.",
+  "close_tiers": [
+   "B1"
+  ],
+  "exclude_own_backfill": true,
+  "price_evidence": "owner 2026-11-11 \"Bet-time snapshot + re-run\" / \"Strict, keep Argentina\": a bet price is ONLY (a) a football-data pre-match same-book pair (standard O/U 2.5), (b) our own live capture with snapshot_ts < kickoff, or (c) a tier-BT OddsAPI history snapshot (bet role) read through the shared adapter with snapshot < kickoff. EXCLUDED: every 00:00-stamped own BACKFILL pair (capture time unknown) and every CLOSE-role price (tier B1 'close', ~9 min before kickoff) except as the closing pair for CLV. The study universes for selection and serving are the own bet-time universes written by prepare (<out>/own_bettime)."
  },
  "holdout": {
   "unit": "family = track x market-side; cells = league inside the family",
@@ -53,6 +57,16 @@
    "amended_by": "the coordinator's clarification BEFORE any scoring: price sources pinned to tiers {B1, B2} exactly",
    "reason": "on the rebuilt universes the store already held part of B2 (still being collected), which priced 526 earlier New-Format O/U 2.5 rows and moved that family's holdout split; later tiers (C3: h2h + totals open/close 2020-2023) would keep shifting it. A pinned tier set freezes the holdout. Only the price-source tiers change.",
    "nothing_scored": "NO holdout row has been scored or looked at under versions 1, 2 or 3: only row counts and window dates were computed."
+  },
+  {
+   "version": "bars-fresh-holdout/3",
+   "sha256": "711c6a71df36a5be9dd7e228cd4a55b8e43530fa1cdfd94f8296c8417ea84f3e",
+   "replaced_on": "2026-11-11",
+   "owner_words": "owner 2026-11-11: \"Bet-time snapshot + re-run\", \"Strict, keep Argentina\"",
+   "reason": "cross-check 2026-11-11: the B1 history 'close' snapshots (median 9.4 min before kickoff) were taken as BET prices by the 'earliest pre-kickoff pair from match day - 1' rule, and own 00:00-stamped backfill has no proven capture time. Only the price evidence changes; every other term is unchanged.",
+   "nothing_scored": "v4 is registered BEFORE any v4 run; the v3 run's outcomes were seen (see outcomes_previously_seen)."
   }
- ]
+ ],
+ "verdict_label": "re-test after a price-data fix (outcomes previously seen)",
+ "outcomes_previously_seen": "The fresh-holdout rows of v3 (run 2026-11-10, TP-FH-2026-11-10-bc7459cc) were scored once with a CLOSING price used as the bet price; their OUTCOMES have therefore been seen. The v4 re-run's fresh-holdout verdicts are a re-test after a price-data fix and are never presented as untouched proof."
 }

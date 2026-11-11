@@ -99,9 +99,16 @@ def test_protocol_v2_skips_a_later_run_whose_holdout_gives_no_league_150_rows():
 
 def test_protocol_history_keeps_version_1_and_states_nothing_was_scored():
     proto, sha = FH.protocol()
-    assert proto["protocol"] == "bars-fresh-holdout/3"
-    assert proto["data"]["price_tiers"] == ["B1", "B2"] == FH.price_tiers()
-    assert [x["version"] for x in proto["history"]] == ["bars-fresh-holdout/1", "bars-fresh-holdout/2"]
+    assert proto["protocol"] == "bars-fresh-holdout/4"
+    # v4 (owner 2026-11-11 "Bet-time snapshot + re-run"): bet prices from tier BT only, B1 close for CLV only,
+    # own 00:00-stamped backfill excluded; verdicts labelled as a re-test (outcomes previously seen)
+    assert proto["data"]["price_tiers"] == ["BT"] == FH.price_tiers() and FH.close_tiers() == ["B1"]
+    assert FH.own_backfill_excluded() is True
+    assert FH.evidence_label() == "re-test after a price-data fix (outcomes previously seen)"
+    assert "outcomes" in proto["outcomes_previously_seen"].lower()
+    assert [x["version"] for x in proto["history"]] == ["bars-fresh-holdout/1", "bars-fresh-holdout/2",
+                                                         "bars-fresh-holdout/3"]
+    assert "Bet-time snapshot + re-run" in proto["history"][2]["owner_words"]
     assert proto["history"][1]["sha256"].startswith("6b112c6e")
     h = proto["history"][0]
     assert h["sha256"].startswith("de4d7547") and "Fix the rule" in h["owner_words"]
@@ -151,7 +158,7 @@ def rigged(tmp_path, monkeypatch):
     priced.mkdir()
     for t in ("standard", "new_format"):
         pd.DataFrame({"x": [1]}).to_parquet(priced / f"universe_{t}.parquet")
-    (priced / "price_tiers.json").write_text(json.dumps(FH.price_tiers()), encoding="utf-8")
+    (priced / "price_tiers.json").write_text(json.dumps(FH.price_stamp()), encoding="utf-8")
     log = {"select": [], "bet": []}
 
     def select_core(sel, seed=0, allow_blend=False):

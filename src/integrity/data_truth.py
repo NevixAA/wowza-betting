@@ -558,6 +558,56 @@ def no_retired_tiers() -> dict:
               "; ".join(f"{h['file']}: {h['rows']} {h['kind']}" for h in hits[:6]))
 
 
+# ── 8 BET-TIME EVIDENCE ONLY ──────────────────────────────────────────────────────────────────────
+#: owner 2026-11-11 ("Bet-time snapshot + re-run", "Strict, keep Argentina"): a bar or verdict may never rest on a
+#: price whose capture time is not proven before kickoff. For every APPROVED, NOT WITHDRAWN entry of
+#: config/threshold_approvals.json: its proposal's price-provenance record must exist and list each of the entry's
+#: cells with no OddsAPI-history-priced row and an unproven-capture share <= UNPROVEN_MAX - unless the owner
+#: recorded an explicit exemption with its basis on the approval.
+UNPROVEN_MAX = 0.5                      # owner 2026-11-11: "mainly" = more than 50% of the evidence rows
+APPROVALS = ROOT / "config" / "threshold_approvals.json"
+
+
+def unproven_evidence(approvals_path: Path | None = None, root: Path | None = None) -> list[dict]:
+    r = Path(root) if root is not None else ROOT
+    ap = json.loads(Path(approvals_path or APPROVALS).read_text(encoding="utf-8"))
+    hits = []
+    for a in ap.get("approvals") or []:
+        rel = a.get("price_provenance")
+        gone = {w["entry_id"] for w in a.get("withdrawals") or []}
+        exempt = {x["entry_id"] for x in a.get("exemptions") or [] if str(x.get("basis") or "").strip()}
+        live = [e["entry_id"] for e in a.get("entries") or [] if e["entry_id"] not in gone]
+        if not rel:
+            if live:
+                hits.append({"proposal": a.get("proposal_id"), "entry": "*", "why": "no price-provenance record"})
+            continue
+        prov = json.loads((r / rel).read_text(encoding="utf-8"))
+        by = {}
+        for c in prov.get("cells") or []:
+            by.setdefault(c["entry_id"], []).append(c)
+        for eid in live:
+            if eid in exempt:
+                continue
+            for c in by.get(eid, []):
+                share = c.get("unproven_share")
+                if c.get("oddsapi_hist"):
+                    hits.append({"proposal": a["proposal_id"], "entry": eid, "why": "OddsAPI-history-priced evidence"})
+                elif share is not None and share > UNPROVEN_MAX:
+                    hits.append({"proposal": a["proposal_id"], "entry": eid,
+                                 "why": f"{share:.0%} of evidence rows without a proven pre-kickoff capture time"})
+    return hits
+
+
+def bet_time_evidence() -> dict:
+    rule = ("owner 2026-11-11: no approved, non-withdrawn bar or verdict rests on a price whose capture time is not "
+            "proven before kickoff (no OddsAPI-history close price, unproven-capture share <= 50%), unless the owner "
+            "recorded an exemption with its basis; RED on any hit")
+    hits = unproven_evidence()
+    return _c("Data truth 8: bars rest on bet-time prices only", RED if hits else GREEN,
+              f"{len(hits)} approved entr(ies) on unproven capture times", rule,
+              "; ".join(f"{h['entry']}: {h['why']}" for h in hits[:6]))
+
+
 def evaluate(now: datetime | None = None) -> list[dict]:
     """The rule checks. Never raises: a check that cannot run is itself RED."""
     out = []
@@ -569,7 +619,8 @@ def evaluate(now: datetime | None = None) -> list[dict]:
                       ("Data truth 4: right league relations", leagues),
                       ("Data truth 5: one match, one row", lambda: one_match()),
                       ("Data truth 6: no global bars in serving", no_global_bars),
-                      ("Data truth 7: no retired tiers on future tips", no_retired_tiers)):
+                      ("Data truth 7: no retired tiers on future tips", no_retired_tiers),
+                      ("Data truth 8: bars rest on bet-time prices only", bet_time_evidence)):
         try:
             out.append(fn())
         except Exception as e:                                         # noqa: BLE001
@@ -596,7 +647,8 @@ RATCHET = ROOT / "config" / "data_truth_ratchet.json"
 #: must not merge. It runs the loader's identity pipeline on the committed banks (~15 s; it was
 #: ~19-60 s before team_names memoised norm/identity_key and duplicate_pairs stopped slicing
 #: pandas groups).
-GATED = ("Data truth 1", "Data truth 2", "Data truth 4", "Data truth 5", "Data truth 6", "Data truth 7")
+GATED = ("Data truth 1", "Data truth 2", "Data truth 4", "Data truth 5", "Data truth 6", "Data truth 7",
+         "Data truth 8")
 
 
 def _ratchet() -> dict:

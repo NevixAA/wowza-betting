@@ -167,3 +167,29 @@ def test_rule7_red_on_a_future_tip_with_an_old_tier_or_a_multiplier(tmp_path):
     assert {(h["file"], h["kind"]) for h in hits} == {("stake_audit.csv", "tier multiplier != 1"),
                                                       ("player_ledger.csv", "retired tier label")}
     assert any(g.startswith("Data truth 7") for g in DT.GATED)
+
+
+# ── rule 8: bars rest on bet-time prices only (owner 2026-11-11) ───────────────────────────────────
+def test_rule8_red_when_an_approved_bar_rests_on_unproven_capture_times(tmp_path):
+    prov = {"cells": [{"entry_id": "btts|A", "unproven_share": 0.9, "oddsapi_hist": 0},
+                      {"entry_id": "ou25|B", "unproven_share": 0.0, "oddsapi_hist": 0},
+                      {"entry_id": "over15|C", "unproven_share": 0.1, "oddsapi_hist": 300},
+                      {"entry_id": "btts|D", "unproven_share": 0.8, "oddsapi_hist": 0}]}
+    (tmp_path / "prov.json").write_text(json.dumps(prov), encoding="utf-8")
+
+    def approvals(withdraw=(), exempt=()):
+        a = {"proposal_id": "TP", "price_provenance": "prov.json",
+             "entries": [{"entry_id": e} for e in ("btts|A", "ou25|B", "over15|C", "btts|D")],
+             "withdrawals": [{"entry_id": e} for e in withdraw],
+             "exemptions": [{"entry_id": e, "basis": "owner basis"} for e in exempt]}
+        p = tmp_path / "ap.json"
+        p.write_text(json.dumps({"approvals": [a]}), encoding="utf-8")
+        return p
+    hits = DT.unproven_evidence(approvals(), tmp_path)
+    assert {h["entry"] for h in hits} == {"btts|A", "over15|C", "btts|D"}
+    assert DT.unproven_evidence(approvals(withdraw=("btts|A", "over15|C"), exempt=("btts|D",)), tmp_path) == []
+    assert any(g.startswith("Data truth 8") for g in DT.GATED)
+
+
+def test_rule8_is_green_on_the_committed_approvals():
+    assert DT.unproven_evidence() == []

@@ -29,9 +29,34 @@ PROTECTED = ("new_format|BTTS|Argentina Primera Division",)
 ACTIVE_LOW_BASE = 0.005           # the policy's existing ACTIVE_LOW level (owner 2026-11-09 "small")
 
 
-def promising_cells(proposal: dict) -> list[dict]:
+APPROVALS = ROOT / "config" / "threshold_approvals.json"
+#: owner 2026-11-11 "Strict, keep Argentina": why the PROTECTED entry keeps staking although its entry's
+#: selection evidence is mostly backfill - recorded on the cell
+ARGENTINA_BASIS = ("owner 2026-11-11 \"Strict, keep Argentina\": a LEAGUE_WIDE rule (every match up to odds 2.50, "
+                   "no bar chosen from backfill); its PROMISING verdict rests on its own live-captured FINAL rows "
+                   "(86 bets, snapshot before kickoff); ACTIVE 1.25% flat")
+
+
+def withdrawn_entries(proposal: dict, path=APPROVALS) -> set:
+    """Entry ids the owner withdrew from this proposal's approval (config/threshold_approvals.json)."""
+    try:
+        ap = json.loads(Path(path).read_text(encoding="utf-8"))
+    except FileNotFoundError:
+        return set()
+    out = set()
+    for a in ap.get("approvals") or []:
+        if a.get("proposal_id") == proposal.get("proposal_id"):
+            out |= {w["entry_id"] for w in a.get("withdrawals") or []}
+    return out
+
+
+def promising_cells(proposal: dict, withdrawn: set | None = None) -> list[dict]:
+    """PROMISING cells of the proposal, minus the entries the owner withdrew (they stake nothing, PAPER)."""
+    withdrawn = withdrawn or set()
     out = []
     for e in proposal["entries"]:
+        if e.get("entry_id") in withdrawn:
+            continue
         for cell in ((e.get("proposed") or {}).get("bars_opt") or {}).values():
             if cell.get("verdict") == "PROMISING":
                 out.append(cell)
@@ -53,9 +78,12 @@ def strip_tiers(entry: dict) -> dict:
     return e
 
 
-def build_cells(proposal: dict, current: dict, policy: dict | None = None, held: list | None = None) -> dict:
+def build_cells(proposal: dict, current: dict, policy: dict | None = None, held: list | None = None,
+                withdrawn: set | None = None) -> dict:
     cells = {k: strip_tiers(current[k]) for k in PROTECTED if k in current}
-    for c in promising_cells(proposal):
+    for k in cells:
+        cells[k]["staking_basis"] = ARGENTINA_BASIS
+    for c in promising_cells(proposal, withdrawn):
         tkey = f"{c['track']}|{TRACK_MARKET[c['mside']]}"
         key = f"{tkey}|{c['league']}"
         if key in cells:              # the protected entry is never overwritten
@@ -87,7 +115,7 @@ def main(argv=None) -> int:
     pol = json.loads(raw)
     cur = pol["cell_staking"]["cells"]
     held: list = []
-    new = build_cells(proposal, cur, pol, held)
+    new = build_cells(proposal, cur, pol, held, withdrawn_entries(proposal))
     added, removed = sorted(set(new) - set(cur)), sorted(set(cur) - set(new))
     print(json.dumps({"proposal": proposal["proposal_id"], "staked": sorted(new), "added": added,
                       "removed": removed, "held_paper_by_owner_rule": sorted(held)}, indent=1))

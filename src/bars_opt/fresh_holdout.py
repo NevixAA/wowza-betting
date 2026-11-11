@@ -201,11 +201,34 @@ def protocol() -> tuple[dict, str]:
 
 
 def price_tiers() -> list[str]:
-    """The collector tiers the protocol pins as price sources (v3: exactly B1 and B2)."""
+    """The collector tiers the protocol pins as BET-price sources (v4: exactly BT)."""
     t = protocol()[0]["data"].get("price_tiers")
     if not t:
         raise SystemExit("the fresh-holdout protocol pins no price_tiers")
     return list(t)
+
+
+def close_tiers() -> list[str]:
+    """The tiers read ONLY for the closing pair (CLV) - never a bet price (v4: B1). [] = none declared."""
+    return list(protocol()[0]["data"].get("close_tiers") or [])
+
+
+def own_backfill_excluded() -> bool:
+    """v4: own 00:00-stamped backfill pairs are excluded from every bar / verdict."""
+    return bool(protocol()[0]["data"].get("exclude_own_backfill"))
+
+
+def price_stamp():
+    """What prepare stamps into <priced>/price_tiers.json and the study requires: the bet tiers alone (v3) or, from
+    v4, {bet_tiers, close_tiers, own_backfill_excluded}."""
+    if close_tiers() or own_backfill_excluded():
+        return {"bet_tiers": price_tiers(), "close_tiers": close_tiers(), "own_backfill_excluded": own_backfill_excluded()}
+    return price_tiers()
+
+
+def evidence_label() -> str:
+    """The label every fresh-holdout verdict of this protocol version carries ("" = none)."""
+    return str(protocol()[0].get("verdict_label") or "")
 
 
 def protocol_committed() -> tuple[bool, str]:

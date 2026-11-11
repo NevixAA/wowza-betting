@@ -89,8 +89,9 @@ def run(store_root: Path, priced_dir: Path, out_dir: Path, workers: int = 4) -> 
         raise SystemExit(f"{out_dir}: a fresh-holdout test already ran here - each cell is tested ONCE")
     stamp = priced_dir / "price_tiers.json"
     got = json.loads(stamp.read_text(encoding="utf-8")) if stamp.exists() else None
-    if got != FH.price_tiers():
-        raise SystemExit(f"{priced_dir}: priced with tiers {got}, the protocol pins {FH.price_tiers()} - re-run prepare")
+    want = FH.price_stamp()
+    if got != want:
+        raise SystemExit(f"{priced_dir}: priced with {got}, the protocol pins {want} - re-run prepare")
     priced = {}
     for t in ("standard", "new_format"):
         f = priced_dir / f"universe_{t}.parquet"
@@ -138,6 +139,8 @@ def run(store_root: Path, priced_dir: Path, out_dir: Path, workers: int = 4) -> 
     S.verdicts(cells, prior_hypotheses=m_pre - len(finite))
     for c in cells:
         c["family_size"] = m_pre
+        if FH.evidence_label():
+            c["evidence_label"] = FH.evidence_label()       # v4: re-test after a price-data fix
     cov_f, cov_l = FH.coverage(fams)
     result = {"protocol": proto["protocol"], "protocol_sha256": proto_sha, "choices_sha256": choices_sha,
               "holm_family": m_pre, "p_redrawn": redrawn, "families": cov_f, "cells": cells,
@@ -148,6 +151,7 @@ def run(store_root: Path, priced_dir: Path, out_dir: Path, workers: int = 4) -> 
     body = {"schema": "bars-fresh-holdout-verdicts/1", "created_at": created, "status": "AWAITING_OWNER",
             "serving_change": False, "protocol_file": "config/bars_fresh_holdout_protocol.json",
             "protocol_sha256": proto_sha, "choices_sha256": choices_sha, "holm_family": m_pre,
+            "evidence_label": FH.evidence_label() or None,
             "families": cov_f, "family_leagues": cov_l,
             "cells": [{k: c.get(k) for k in ("track", "mside", "league", "config", "mode", "valuable_th",
                                              "marksman_th", "sniper_th", "verdict", "reason", "p_holm",

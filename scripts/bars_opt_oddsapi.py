@@ -41,12 +41,23 @@ def cmd_prepare(a) -> int:
     out = P.assert_outside_repo(a.out)
     (out / "priced").mkdir(parents=True, exist_ok=True)
     from src.bars_opt import fresh_holdout as FH
-    tiers = FH.price_tiers()
-    (out / "priced" / "price_tiers.json").write_text(json.dumps(tiers), encoding="utf-8")
-    cov, fams, agree, stats = [], [], [], {"price_tiers": tiers}
+    tiers, ctiers, strip = FH.price_tiers(), FH.close_tiers(), FH.own_backfill_excluded()
+    if strip and not a.aliases:
+        raise SystemExit("the protocol excludes own backfill: --aliases (the loader's identity map) is required")
+    stamp = {"bet_tiers": tiers, "close_tiers": ctiers, "own_backfill_excluded": strip}
+    (out / "priced" / "price_tiers.json").write_text(json.dumps(FH.price_stamp()), encoding="utf-8")
+    cov, fams, agree, stats = [], [], [], {"price_tiers": stamp}
+    aliases = json.loads(Path(a.aliases).read_text(encoding="utf-8")) if a.aliases else {}
     for t in TRACKS:
         u = pd.read_parquet(Path(a.universe) / f"universe_{t}.parquet")
-        r = P.price_track(u, Path(a.store), tiers)
+        if strip:
+            u, sc = P.strip_unproven_own(u, t, aliases)
+            stats[f"own_strip_{t}"] = sc
+            # the OWN bet-time universes (no OddsAPI price): the selection study and the serving cells of the
+            # re-run read these, never the backfill-carrying committed ones
+            (out / "own_bettime").mkdir(parents=True, exist_ok=True)
+            u.to_parquet(out / "own_bettime" / f"universe_{t}.parquet", index=False)
+        r = P.price_track(u, Path(a.store), tiers, ctiers)
         r["priced"].to_parquet(out / "priced" / f"universe_{t}.parquet", index=False)
         c, f = P.coverage(r["priced"])
         cov += c
@@ -144,6 +155,7 @@ def main(argv=None) -> int:
     p.add_argument("--store", required=True, help="checkout of wowza-exec branch odds-history (read-only)")
     p.add_argument("--universe", default=str(UNIVERSE_DIR), help="dir with the study's universe_*.parquet")
     p.add_argument("--out", required=True, type=Path, help="LOCAL dir outside this repo")
+    p.add_argument("--aliases", help="the loader's identity map (json) - required when the protocol excludes own backfill")
     s = sub.add_parser("study")
     s.add_argument("--store", required=True)
     s.add_argument("--priced", required=True)

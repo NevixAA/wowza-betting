@@ -230,15 +230,16 @@ def verify_join(priced: pd.DataFrame, fmap: dict, event_sport: dict) -> dict:
 
 # ── one track, from the store ────────────────────────────────────────────────────────────────────
 
-def price_track(universe: pd.DataFrame, store_root: Path, tiers=None) -> dict:
+def price_track(universe: pd.DataFrame, store_root: Path, tiers=None, close_tiers=None) -> dict:
     """The whole chain for one track's universe: adapter match + attach, pairs, pick, priced universe,
-    integrity check. `tiers`: the collector tiers whose prices may be used (the protocol pins them; None =
-    every stored tier). Returns {"priced", "overlap", "stats"}."""
+    integrity check. `tiers`: the collector tiers whose prices may be the BET price (the protocol pins them; None =
+    every stored tier). `close_tiers` (protocol v4): tiers read ONLY for the closing pair (CLV), never as a bet
+    price. Returns {"priced", "overlap", "stats"}."""
     from src import oddsapi_history_adapter as AD
-    odds = AD.load_store(store_root)
-    if tiers is not None:
-        odds = odds[odds["tier"].isin(list(tiers))]
-    return price_frames(universe, odds, AD.load_context(store_root, universe))
+    store = AD.load_store(store_root)
+    odds = store[store["tier"].isin(list(tiers))] if tiers is not None else store
+    close = store[store["tier"].isin(list(close_tiers))] if close_tiers else None
+    return price_frames(universe, odds, AD.load_context(store_root, universe), close)
 
 
 def clean_fixture_map(fmap: dict, odds: pd.DataFrame) -> tuple[dict, dict]:
@@ -269,8 +270,29 @@ def clean_fixture_map(fmap: dict, odds: pd.DataFrame) -> tuple[dict, dict]:
                    "map_fixtures_dropped_ambiguous": len(keep) - len(clean)}
 
 
-def price_frames(universe: pd.DataFrame, odds: pd.DataFrame, ctx: dict | None) -> dict:
-    """price_track on frames (ctx None = the events the odds rows carry, the adapter's own fallback)."""
+def close_pairs(universe: pd.DataFrame, odds: pd.DataFrame, ctx: dict | None) -> pd.DataFrame:
+    """The LATEST provable pre-kickoff same-book pair per fixture x market from CLOSE-role tiers (CLV only)."""
+    from src import oddsapi_history_adapter as AD
+    odds = odds[odds["league"].isin(set(universe["league"]))]
+    fmap, _ = AD.match_universe(universe, odds, ctx)
+    fmap, _ = clean_fixture_map(fmap, odds)
+    long, _s, _u = AD.attach(universe, odds, ctx)
+    long = long[long["fixture_id"].isin(set(fmap))] if len(long) else long
+    pairs, _st = history_pairs(long)
+    fx = universe.assign(fixture_id=universe["row_id"].astype(str)).drop_duplicates("fixture_id")
+    pk = pick_pairs(pairs, fx.set_index("fixture_id")["date"], {})
+    # the LATEST of the close-role snapshots is the closing pair (pick_pairs puts it in ts_c / yes_c / no_c,
+    # or, for a single snapshot, in ts / yes / no)
+    last_ts = pk["ts_c"].where(pk["ts_c"].notna(), pk["ts"])
+    return pd.DataFrame({"fixture_id": pk["fixture_id"], "market": pk["market"], "ts_close": last_ts,
+                         "yes_close": pk["yes_c"].where(pk["ts_c"].notna(), pk["yes"]),
+                         "no_close": pk["no_c"].where(pk["ts_c"].notna(), pk["no"])})
+
+
+def price_frames(universe: pd.DataFrame, odds: pd.DataFrame, ctx: dict | None,
+                 close_odds: pd.DataFrame | None = None) -> dict:
+    """price_track on frames (ctx None = the events the odds rows carry, the adapter's own fallback).
+    close_odds (protocol v4): close-role prices, read ONLY to fill the closing pair of history-priced rows."""
     from src import oddsapi_history_adapter as AD
     odds = odds[odds["league"].isin(set(universe["league"]))]
     fmap, unmatched = AD.match_universe(universe, odds, ctx)
@@ -281,6 +303,15 @@ def price_frames(universe: pd.DataFrame, odds: pd.DataFrame, ctx: dict | None) -
     pst.update(clean)
     fx = universe.assign(fixture_id=universe["row_id"].astype(str)).drop_duplicates("fixture_id")
     picked = pick_pairs(pairs, fx.set_index("fixture_id")["date"], pst)
+    if close_odds is not None and len(picked):
+        cp = close_pairs(universe, close_odds, ctx)
+        picked = picked.merge(cp, on=["fixture_id", "market"], how="left")
+        later = picked["ts_close"].notna() & (picked["ts_close"] > picked["ts"])
+        picked["ts_c"] = picked["ts_close"].where(later)
+        picked["yes_c"] = picked["yes_close"].where(later)
+        picked["no_c"] = picked["no_close"].where(later)
+        picked = picked.drop(columns=["ts_close", "yes_close", "no_close"])
+        pst["closing_pairs_from_close_tiers"] = int(later.sum())
     priced, overlap = build_priced(universe, picked)
     event_sport = odds.drop_duplicates("event_id").set_index("event_id")["sport_key"].to_dict()
     integ = verify_join(priced, fmap, event_sport)
@@ -381,10 +412,46 @@ def agreement(overlap: pd.DataFrame) -> list[dict]:
 
 # ── B1 completeness (the store's own run ledger) ────────────────────────────────────────────────
 
+def strip_unproven_own(universe: pd.DataFrame, track: str, aliases: dict) -> tuple[pd.DataFrame, dict]:
+    """Protocol v4 (owner 2026-11-11 "Strict, keep Argentina"): the universe with every OWN bet-time pair whose
+    capture time is not proven before kickoff removed - 00:00-stamped BACKFILL snapshot pairs and pairs whose
+    snapshot cannot be identified. football-data pre-match pairs (standard O/U 2.5) and our own live captures
+    stay. The closing pair (CLV only) goes with its bet pair. Returns (universe, counts)."""
+    from src import league_bars as LB
+    from src.bars_opt import universe as U
+    u = universe.copy()
+    counts = {"own_pairs": 0, "kept_live_capture": 0, "kept_football_data": 0, "removed_backfill": 0,
+              "removed_unidentified": 0}
+    for market in sorted(u["market"].unique()):
+        m = (u["market"] == market) & u["yes"].notna() & u["no"].notna()
+        counts["own_pairs"] += int(m.sum())
+        if track == "standard" and market == "over25":
+            counts["kept_football_data"] += int(m.sum())
+            continue
+        if not m.any():
+            continue
+        pr = U._snapshot(track, market, "first").reset_index(drop=True)
+        g = u[m]
+        att, _ = LB.attach_prices(g.drop(columns=["yes", "no"]),
+                                  pr.assign(yes=pr.index.astype(float) + 2.0, no=2.0)[
+                                      ["date", "league", "home", "away", "yes", "no"]], aliases)
+        idx = (att["yes"] - 2.0).round()
+        origin = [None if pd.isna(i) else pr.loc[int(i), "price_origin"] for i in idx]
+        live = np.array([o == "FORWARD_CAPTURE" for o in origin], dtype=bool)
+        drop = g.index[~live]
+        counts["kept_live_capture"] += int(live.sum())
+        counts["removed_backfill"] += int(sum(o == "BACKFILL_HISTORICAL" for o in origin))
+        counts["removed_unidentified"] += int(sum(o is None for o in origin))
+        u.loc[drop, ["yes", "no", "yes_c", "no_c"]] = np.nan
+    return u, counts
+
+
 def tier_complete(store_root: Path, tier: str) -> tuple[bool, str]:
     """True only when ONE collector run processed `tier` and then either finished every planned tier (exit
     code 0) or went on to a LATER tier in the same run (tiers run strictly in order, src.oddsapi_history.TIERS)."""
     from src import oddsapi_history as OH
+    if tier not in OH.TIER_ORDER:
+        return False, f"tier {tier} is not a tier of this collector (src.oddsapi_history.TIERS)"
     later = set(OH.TIER_ORDER[OH.TIER_ORDER.index(tier) + 1:])
     runs = sorted((Path(store_root) / "ledger" / "runs").glob("*.json"))
     for f in runs:

@@ -92,13 +92,33 @@ def find_approval(p: dict, approvals: dict) -> dict:
     return a
 
 
+def withdrawn_ids(p: dict, approval: dict) -> set:
+    """Entry ids the OWNER WITHDREW from this approval (approval["withdrawals"], owner 2026-11-11 "Strict, keep
+    Argentina"). Each names entry_id + entry_hash; a withdrawal that does not match the proposal entry is refused
+    (it cannot silently withdraw something else). Withdrawn entries are never applied."""
+    by_id = {e["entry_id"]: e for e in p.get("entries", [])}
+    out = set()
+    for w in approval.get("withdrawals") or []:
+        pe = by_id.get(w.get("entry_id"))
+        if pe is None or pe["entry_hash"] != w.get("entry_hash"):
+            raise ApplyRefused(f"withdrawal {w.get('entry_id')} does not match an entry of {p['proposal_id']}")
+        if not str(w.get("reason") or "").strip() or not str(w.get("withdrawn_at") or "").strip():
+            raise ApplyRefused(f"withdrawal {w.get('entry_id')} must carry withdrawn_at and reason")
+        out.add(w["entry_id"])
+    return out
+
+
 def plan(p: dict, approval: dict, root: Path) -> tuple[dict, dict, list, list]:
-    """New (standard, side) file contents, the entries to apply and the entries already applied."""
+    """New (standard, side) file contents, the entries to apply and the entries already applied. Withdrawn
+    entries are skipped."""
     std = _read(root / TP.PROD_STANDARD)
     side = _read(root / TP.PROD_SIDE)
     by_id = {e["entry_id"]: e for e in p["entries"]}
+    gone = withdrawn_ids(p, approval)
     todo, done = [], []
     for ae in approval["entries"]:
+        if ae["entry_id"] in gone:
+            continue
         e = by_id[ae["entry_id"]]
         tgt = std if e["market"] == "ou25" else side.setdefault(e["market"], {})
         now = tgt.get(e["league"])
@@ -126,7 +146,7 @@ def apply(proposal_path: Path, *, approvals_path: Path | None = None, dry_run: b
     approval = find_approval(p, _read(Path(approvals_path) if approvals_path else APPROVALS_PATH))
     std, side, todo, done = plan(p, approval, root)
     result = {"proposal_id": p["proposal_id"], "approved_by": approval["approved_by"], "applied": todo,
-              "already_applied": done, "dry_run": dry_run}
+              "already_applied": done, "withdrawn": sorted(withdrawn_ids(p, approval)), "dry_run": dry_run}
     if dry_run or not todo:
         return result
 
@@ -211,7 +231,8 @@ def main(argv=None) -> int:
         return 2
     verb = "would apply" if r["dry_run"] else "applied"
     print(f"{r['proposal_id']} (approved by {r['approved_by']}): {verb} {len(r['applied'])} entries "
-          f"{r['applied']}; already applied {r['already_applied']}")
+          f"{r['applied']}; already applied {r['already_applied']}; WITHDRAWN (skipped) {len(r['withdrawn'])}: "
+          f"{r['withdrawn']}")
     return 0
 
 

@@ -315,7 +315,314 @@
      "entry_id": "over35|Sweden Allsvenskan",
      "entry_hash": "7a8f5a55358cb60eee7b50c8d8d1a4b99826497a96d4ebce8781e18a583743b2"
     }
-   ]
+   ],
+   "withdrawals": [
+    {
+     "entry_id": "btts|Austrian Bundesliga",
+     "entry_hash": "82d041787dd00be3678dff58a6272b953e5f42b24a6549e6f79dad7848284bc5",
+     "withdrawn_at": "2026-11-11T10:48:33Z",
+     "withdrawn_by": "owner (Nevo)",
+     "owner_words": "owner 2026-11-11: \"Bet-time snapshot + re-run\"; \"Strict, keep Argentina\"",
+     "reason": "pending the re-run on bet-time prices only: new_format btts_yes: unproven-capture share 90% of 211 priced rows"
+    },
+    {
+     "entry_id": "btts|Brazil Serie A",
+     "entry_hash": "dfed77f232405a5a7f8b9c5f9d6e8c1534ad2d6fb10079fd55a87956ea261522",
+     "withdrawn_at": "2026-11-11T10:48:33Z",
+     "withdrawn_by": "owner (Nevo)",
+     "owner_words": "owner 2026-11-11: \"Bet-time snapshot + re-run\"; \"Strict, keep Argentina\"",
+     "reason": "pending the re-run on bet-time prices only: new_format btts_yes: fresh-holdout cell priced by OddsAPI history (B1 close used as bet price); unproven-capture share 91% of 908 priced rows"
+    },
+    {
+     "entry_id": "btts|Championship",
+     "entry_hash": "6271905d94d4e171b49728f1fe8e1063a7fe200d581f1c86e8ff1772e9699649",
+     "withdrawn_at": "2026-11-11T10:48:33Z",
+     "withdrawn_by": "owner (Nevo)",
+     "owner_words": "owner 2026-11-11: \"Bet-time snapshot + re-run\"; \"Strict, keep Argentina\"",
+     "reason": "pending the re-run on bet-time prices only: standard btts_yes: unproven-capture share 93% of 1083 priced rows"
+    },
+    {
+     "entry_id": "btts|China Super League",
+     "entry_hash": "c73ddc7ce54451748d43091126ca66cf4a51d05d8f2ce027019dc380bb4f208d",
+     "withdrawn_at": "2026-11-11T10:48:33Z",
+     "withdrawn_by": "owner (Nevo)",
+     "owner_words": "owner 2026-11-11: \"Bet-time snapshot + re-run\"; \"Strict, keep Argentina\"",
+     "reason": "pending the re-run on bet-time prices only: new_format btts_yes: unproven-capture share 90% of 264 priced rows"
+    },
+    {
+     "entry_id": "btts|Denmark Superliga",
+     "entry_hash": "68eb93f9bb923ccf3f17c10a5fbd7fd5fd44fc15542a3fefce756fc22d061df1",
+     "withdrawn_at": "2026-11-11T10:48:33Z",
+     "withdrawn_by": "owner (Nevo)",
+     "owner_words": "owner 2026-11-11: \"Bet-time snapshot + re-run\"; \"Strict, keep Argentina\"",
+     "reason": "pending the re-run on bet-time prices only: new_format btts_yes: unproven-capture share 87% of 219 priced rows"
+    },
+    {
+     "entry_id": "btts|Finland Veikkausliiga",
+     "entry_hash": "8e22ce1833c11cca45d50022a71e12b5630f4597bac32b15993877491dd52d90",
+     "withdrawn_at": "2026-11-11T10:48:33Z",
+     "withdrawn_by": "owner (Nevo)",
+     "owner_words": "owner 2026-11-11: \"Bet-time snapshot + re-run\"; \"Strict, keep Argentina\"",
+     "reason": "pending the re-run on bet-time prices only: new_format btts_yes: unproven-capture share 87% of 210 priced rows"
+    },
+    {
+     "entry_id": "btts|Ireland Premier Division",
+     "entry_hash": "1ff70426d521d8cca721cb1857d4881ece3ad8438cfa8ae6cbeafcc216932864",
+     "withdrawn_at": "2026-11-11T10:48:33Z",
+     "withdrawn_by": "owner (Nevo)",
+     "owner_words": "owner 2026-11-11: \"Bet-time snapshot + re-run\"; \"Strict, keep Argentina\"",
+     "reason": "pending the re-run on bet-time prices only: new_format btts_yes: unproven-capture share 84% of 219 priced rows"
+    },
+    {
+     "entry_id": "btts|La Liga 2",
+     "entry_hash": "123135ffe4074dbbc92f51c6f9df267d4b12f4e1dec64db5fb2e2618f627eaf1",
+     "withdrawn_at": "2026-11-11T10:48:33Z",
+     "withdrawn_by": "owner (Nevo)",
+     "owner_words": "owner 2026-11-11: \"Bet-time snapshot + re-run\"; \"Strict, keep Argentina\"",
+     "reason": "pending the re-run on bet-time prices only: standard btts_yes: unproven-capture share 92% of 968 priced rows"
+    },
+    {
+     "entry_id": "btts|League One",
+     "entry_hash": "f9a32638722c0e9d66cdeb0f6abfe376118428770b502e1de54fe5783900fefd",
+     "withdrawn_at": "2026-11-11T10:48:33Z",
+     "withdrawn_by": "owner (Nevo)",
+     "owner_words": "owner 2026-11-11: \"Bet-time snapshot + re-run\"; \"Strict, keep Argentina\"",
+     "reason": "pending the re-run on bet-time prices only: standard btts_yes: unproven-capture share 94% of 1168 priced rows"
+    },
+    {
+     "entry_id": "btts|League Two",
+     "entry_hash": "a9e6bb5dd601ced71cff6ae34c596a004b60d5b87682e7ca85f40671839fa1fb",
+     "withdrawn_at": "2026-11-11T10:48:33Z",
+     "withdrawn_by": "owner (Nevo)",
+     "owner_words": "owner 2026-11-11: \"Bet-time snapshot + re-run\"; \"Strict, keep Argentina\"",
+     "reason": "pending the re-run on bet-time prices only: standard btts_yes: unproven-capture share 93% of 1176 priced rows"
+    },
+    {
+     "entry_id": "btts|Ligue 2",
+     "entry_hash": "67c80c7bf8f21de0a1ada3568d941988dee49b4e55e2fb9a54c79670d6c5c211",
+     "withdrawn_at": "2026-11-11T10:48:33Z",
+     "withdrawn_by": "owner (Nevo)",
+     "owner_words": "owner 2026-11-11: \"Bet-time snapshot + re-run\"; \"Strict, keep Argentina\"",
+     "reason": "pending the re-run on bet-time prices only: standard btts_yes: unproven-capture share 97% of 619 priced rows"
+    },
+    {
+     "entry_id": "btts|Mexico Liga MX",
+     "entry_hash": "bbf82966450e99737c0748122eb3112e12f1059154dd2d7f0eaecce41368dfac",
+     "withdrawn_at": "2026-11-11T10:48:33Z",
+     "withdrawn_by": "owner (Nevo)",
+     "owner_words": "owner 2026-11-11: \"Bet-time snapshot + re-run\"; \"Strict, keep Argentina\"",
+     "reason": "pending the re-run on bet-time prices only: new_format btts_yes: unproven-capture share 76% of 246 priced rows"
+    },
+    {
+     "entry_id": "btts|Norway Eliteserien",
+     "entry_hash": "71a81542be6754e5f3eec38de766656647cc97d999861db490cd01de74c7fa45",
+     "withdrawn_at": "2026-11-11T10:48:33Z",
+     "withdrawn_by": "owner (Nevo)",
+     "owner_words": "owner 2026-11-11: \"Bet-time snapshot + re-run\"; \"Strict, keep Argentina\"",
+     "reason": "pending the re-run on bet-time prices only: new_format btts_yes: unproven-capture share 87% of 277 priced rows"
+    },
+    {
+     "entry_id": "btts|USA MLS",
+     "entry_hash": "2cee051bd3dd78566712f487279a720bb9973e20dca449fc7834da97e6b55fd3",
+     "withdrawn_at": "2026-11-11T10:48:33Z",
+     "withdrawn_by": "owner (Nevo)",
+     "owner_words": "owner 2026-11-11: \"Bet-time snapshot + re-run\"; \"Strict, keep Argentina\"",
+     "reason": "pending the re-run on bet-time prices only: new_format btts_yes: fresh-holdout cell priced by OddsAPI history (B1 close used as bet price); unproven-capture share 91% of 1467 priced rows"
+    },
+    {
+     "entry_id": "ou25|Argentina Primera Division",
+     "entry_hash": "7657218ecf3bb38a140c8122fafe0b6a7bd3995cc3713ecabb352b48b06a157d",
+     "withdrawn_at": "2026-11-11T10:48:33Z",
+     "withdrawn_by": "owner (Nevo)",
+     "owner_words": "owner 2026-11-11: \"Bet-time snapshot + re-run\"; \"Strict, keep Argentina\"",
+     "reason": "pending the re-run on bet-time prices only: new_format over25_over: fresh-holdout cell priced by OddsAPI history (B1 close used as bet price); unproven-capture share 93% of 1680 priced rows; new_format over25_under: fresh-holdout cell priced by OddsAPI history (B1 close used as bet price); unproven-capture share 93% of 1680 priced rows"
+    },
+    {
+     "entry_id": "ou25|Austrian Bundesliga",
+     "entry_hash": "d4c96cdc6183abf65083cb50094e7af1a4f707a45fdc7a6c2c3bec350f1dba8a",
+     "withdrawn_at": "2026-11-11T10:48:33Z",
+     "withdrawn_by": "owner (Nevo)",
+     "owner_words": "owner 2026-11-11: \"Bet-time snapshot + re-run\"; \"Strict, keep Argentina\"",
+     "reason": "pending the re-run on bet-time prices only: new_format over25_over: unproven-capture share 86% of 222 priced rows; new_format over25_under: fresh-holdout cell priced by OddsAPI history (B1 close used as bet price); unproven-capture share 95% of 681 priced rows"
+    },
+    {
+     "entry_id": "ou25|Brazil Serie A",
+     "entry_hash": "4880e8a103e359150f2c5801f651a3b8cea7f340cb385fd6ec731b23f6566e39",
+     "withdrawn_at": "2026-11-11T10:48:33Z",
+     "withdrawn_by": "owner (Nevo)",
+     "owner_words": "owner 2026-11-11: \"Bet-time snapshot + re-run\"; \"Strict, keep Argentina\"",
+     "reason": "pending the re-run on bet-time prices only: new_format over25_over: fresh-holdout cell priced by OddsAPI history (B1 close used as bet price); unproven-capture share 95% of 1493 priced rows; new_format over25_under: unproven-capture share 83% of 471 priced rows"
+    },
+    {
+     "entry_id": "ou25|China Super League",
+     "entry_hash": "f1a836d04891ddf80acff56c70b6fe334987ac2758b60effb4c0f1a1affcc3e9",
+     "withdrawn_at": "2026-11-11T10:48:33Z",
+     "withdrawn_by": "owner (Nevo)",
+     "owner_words": "owner 2026-11-11: \"Bet-time snapshot + re-run\"; \"Strict, keep Argentina\"",
+     "reason": "pending the re-run on bet-time prices only: new_format over25_over: fresh-holdout cell priced by OddsAPI history (B1 close used as bet price); unproven-capture share 96% of 914 priced rows; new_format over25_under: unproven-capture share 88% of 270 priced rows"
+    },
+    {
+     "entry_id": "ou25|Denmark Superliga",
+     "entry_hash": "c9684ae8018bf86cc4b6c7c371f85af8f35a42e9deafd054e122f988ae100223",
+     "withdrawn_at": "2026-11-11T10:48:33Z",
+     "withdrawn_by": "owner (Nevo)",
+     "owner_words": "owner 2026-11-11: \"Bet-time snapshot + re-run\"; \"Strict, keep Argentina\"",
+     "reason": "pending the re-run on bet-time prices only: new_format over25_over: unproven-capture share 87% of 220 priced rows; new_format over25_under: fresh-holdout cell priced by OddsAPI history (B1 close used as bet price); unproven-capture share 96% of 782 priced rows"
+    },
+    {
+     "entry_id": "ou25|Finland Veikkausliiga",
+     "entry_hash": "e7f08b5a7b7c729fac263988a1c6cf378712b0d1022c815829b78aef34e0c2d0",
+     "withdrawn_at": "2026-11-11T10:48:33Z",
+     "withdrawn_by": "owner (Nevo)",
+     "owner_words": "owner 2026-11-11: \"Bet-time snapshot + re-run\"; \"Strict, keep Argentina\"",
+     "reason": "pending the re-run on bet-time prices only: new_format over25_under: fresh-holdout cell priced by OddsAPI history (B1 close used as bet price); unproven-capture share 95% of 693 priced rows"
+    },
+    {
+     "entry_id": "ou25|Ireland Premier Division",
+     "entry_hash": "890b0c7bbb255170e5b941cb8a902ad36f2fb44cdbb909fd3cbb9fe004bbac91",
+     "withdrawn_at": "2026-11-11T10:48:33Z",
+     "withdrawn_by": "owner (Nevo)",
+     "owner_words": "owner 2026-11-11: \"Bet-time snapshot + re-run\"; \"Strict, keep Argentina\"",
+     "reason": "pending the re-run on bet-time prices only: new_format over25_over: unproven-capture share 83% of 222 priced rows"
+    },
+    {
+     "entry_id": "ou25|Japan J-League",
+     "entry_hash": "607f6f1de3546abbb716e50bda5febfdc7387770b03d38127b6ab079d1178a3a",
+     "withdrawn_at": "2026-11-11T10:48:33Z",
+     "withdrawn_by": "owner (Nevo)",
+     "owner_words": "owner 2026-11-11: \"Bet-time snapshot + re-run\"; \"Strict, keep Argentina\"",
+     "reason": "pending the re-run on bet-time prices only: new_format over25_over: unproven-capture share 94% of 148 priced rows"
+    },
+    {
+     "entry_id": "ou25|Mexico Liga MX",
+     "entry_hash": "ff37693acf63b02fb53d9ae2948b8f96f1c795068e403eca71a1e024d1f5e1a5",
+     "withdrawn_at": "2026-11-11T10:48:33Z",
+     "withdrawn_by": "owner (Nevo)",
+     "owner_words": "owner 2026-11-11: \"Bet-time snapshot + re-run\"; \"Strict, keep Argentina\"",
+     "reason": "pending the re-run on bet-time prices only: new_format over25_over: unproven-capture share 70% of 269 priced rows; new_format over25_under: unproven-capture share 70% of 269 priced rows"
+    },
+    {
+     "entry_id": "ou25|Norway Eliteserien",
+     "entry_hash": "1917fae060ef1be0afb1dca02941ba57a3832168ea4cbfec3791f1eb6696eaee",
+     "withdrawn_at": "2026-11-11T10:48:33Z",
+     "withdrawn_by": "owner (Nevo)",
+     "owner_words": "owner 2026-11-11: \"Bet-time snapshot + re-run\"; \"Strict, keep Argentina\"",
+     "reason": "pending the re-run on bet-time prices only: new_format over25_over: fresh-holdout cell priced by OddsAPI history (B1 close used as bet price); unproven-capture share 96% of 919 priced rows; new_format over25_under: unproven-capture share 86% of 282 priced rows"
+    },
+    {
+     "entry_id": "ou25|Sweden Allsvenskan",
+     "entry_hash": "b73bb78492b660009b4211dd98642ddcd0374d480bc4d28960084463521e2134",
+     "withdrawn_at": "2026-11-11T10:48:33Z",
+     "withdrawn_by": "owner (Nevo)",
+     "owner_words": "owner 2026-11-11: \"Bet-time snapshot + re-run\"; \"Strict, keep Argentina\"",
+     "reason": "pending the re-run on bet-time prices only: new_format over25_over: fresh-holdout cell priced by OddsAPI history (B1 close used as bet price); unproven-capture share 95% of 932 priced rows; new_format over25_under: unproven-capture share 82% of 269 priced rows"
+    },
+    {
+     "entry_id": "ou25|USA MLS",
+     "entry_hash": "f66951ef6de4fad086e5b82298f95b467669e1c344a5afb0d6c49ca135662868",
+     "withdrawn_at": "2026-11-11T10:48:33Z",
+     "withdrawn_by": "owner (Nevo)",
+     "owner_words": "owner 2026-11-11: \"Bet-time snapshot + re-run\"; \"Strict, keep Argentina\"",
+     "reason": "pending the re-run on bet-time prices only: new_format over25_over: unproven-capture share 65% of 412 priced rows; new_format over25_under: unproven-capture share 65% of 412 priced rows"
+    },
+    {
+     "entry_id": "over15|Argentina Primera Division",
+     "entry_hash": "6663176022e36a743d2bb117545e2245fa0e606003b8c73b688665229f829ad0",
+     "withdrawn_at": "2026-11-11T10:48:33Z",
+     "withdrawn_by": "owner (Nevo)",
+     "owner_words": "owner 2026-11-11: \"Bet-time snapshot + re-run\"; \"Strict, keep Argentina\"",
+     "reason": "pending the re-run on bet-time prices only: new_format over15_over: fresh-holdout cell priced by OddsAPI history (B1 close used as bet price); unproven-capture share 93% of 1527 priced rows"
+    },
+    {
+     "entry_id": "over15|Brazil Serie A",
+     "entry_hash": "38d8ae45105d735bee40bbb18886bdc3cbf3b4fd162213cef50746adc0318547",
+     "withdrawn_at": "2026-11-11T10:48:33Z",
+     "withdrawn_by": "owner (Nevo)",
+     "owner_words": "owner 2026-11-11: \"Bet-time snapshot + re-run\"; \"Strict, keep Argentina\"",
+     "reason": "pending the re-run on bet-time prices only: new_format over15_over: fresh-holdout cell priced by OddsAPI history (B1 close used as bet price); unproven-capture share 95% of 1443 priced rows"
+    },
+    {
+     "entry_id": "over15|Greek Super League",
+     "entry_hash": "8c54bb249cc73d9a33946d27498ee65b258064da52f986f11d454a4b4130563c",
+     "withdrawn_at": "2026-11-11T10:48:33Z",
+     "withdrawn_by": "owner (Nevo)",
+     "owner_words": "owner 2026-11-11: \"Bet-time snapshot + re-run\"; \"Strict, keep Argentina\"",
+     "reason": "pending the re-run on bet-time prices only: standard over15_over: fresh-holdout cell priced by OddsAPI history (B1 close used as bet price); unproven-capture share 94% of 713 priced rows"
+    },
+    {
+     "entry_id": "over15|Japan J-League",
+     "entry_hash": "b074a1dd8632782216633a404b60e117fa9386e90c80c7ff916b3aef88d7fb18",
+     "withdrawn_at": "2026-11-11T10:48:33Z",
+     "withdrawn_by": "owner (Nevo)",
+     "owner_words": "owner 2026-11-11: \"Bet-time snapshot + re-run\"; \"Strict, keep Argentina\"",
+     "reason": "pending the re-run on bet-time prices only: new_format over15_over: unproven-capture share 63% of 19 priced rows"
+    },
+    {
+     "entry_id": "over15|K-League 1",
+     "entry_hash": "b5ed82a7c38e6ae9a047088c08c451f4f10ea1ff35d5c43eda9ede25e311516f",
+     "withdrawn_at": "2026-11-11T10:48:33Z",
+     "withdrawn_by": "owner (Nevo)",
+     "owner_words": "owner 2026-11-11: \"Bet-time snapshot + re-run\"; \"Strict, keep Argentina\"",
+     "reason": "pending the re-run on bet-time prices only: new_format over15_over: fresh-holdout cell priced by OddsAPI history (B1 close used as bet price); unproven-capture share 98% of 724 priced rows"
+    },
+    {
+     "entry_id": "over15|Scottish Premiership",
+     "entry_hash": "e2379f23ddf2b8b4afcf091261fc364826af21119c2e8483557522457cf5aa8e",
+     "withdrawn_at": "2026-11-11T10:48:33Z",
+     "withdrawn_by": "owner (Nevo)",
+     "owner_words": "owner 2026-11-11: \"Bet-time snapshot + re-run\"; \"Strict, keep Argentina\"",
+     "reason": "pending the re-run on bet-time prices only: standard over15_over: fresh-holdout cell priced by OddsAPI history (B1 close used as bet price); unproven-capture share 97% of 759 priced rows"
+    },
+    {
+     "entry_id": "over15|Serie B",
+     "entry_hash": "d20bb49377769eec0937e7c5e798824a03da563d10d7cece8633069da518a544",
+     "withdrawn_at": "2026-11-11T10:48:33Z",
+     "withdrawn_by": "owner (Nevo)",
+     "owner_words": "owner 2026-11-11: \"Bet-time snapshot + re-run\"; \"Strict, keep Argentina\"",
+     "reason": "pending the re-run on bet-time prices only: standard over15_over: fresh-holdout cell priced by OddsAPI history (B1 close used as bet price); unproven-capture share 94% of 1268 priced rows"
+    },
+    {
+     "entry_id": "over35|China Super League",
+     "entry_hash": "36741b29dd760350ac3a77681749030d6267802ba0c1d97b94c48a0a40df2f8e",
+     "withdrawn_at": "2026-11-11T10:48:33Z",
+     "withdrawn_by": "owner (Nevo)",
+     "owner_words": "owner 2026-11-11: \"Bet-time snapshot + re-run\"; \"Strict, keep Argentina\"",
+     "reason": "pending the re-run on bet-time prices only: new_format over35_over: fresh-holdout cell priced by OddsAPI history (B1 close used as bet price); unproven-capture share 95% of 819 priced rows"
+    },
+    {
+     "entry_id": "over35|Dutch Eredivisie",
+     "entry_hash": "dc83235eac1b08847c242e574a432d45b8e1080d1f25abb8b2dedfa68f8c2e5e",
+     "withdrawn_at": "2026-11-11T10:48:33Z",
+     "withdrawn_by": "owner (Nevo)",
+     "owner_words": "owner 2026-11-11: \"Bet-time snapshot + re-run\"; \"Strict, keep Argentina\"",
+     "reason": "pending the re-run on bet-time prices only: standard over35_over: fresh-holdout cell priced by OddsAPI history (B1 close used as bet price); unproven-capture share 96% of 1027 priced rows"
+    },
+    {
+     "entry_id": "over35|Norway Eliteserien",
+     "entry_hash": "4d204a9fc085ad5b2088b57a2811b200975561417c9a13e7fb1e50e53d29febd",
+     "withdrawn_at": "2026-11-11T10:48:33Z",
+     "withdrawn_by": "owner (Nevo)",
+     "owner_words": "owner 2026-11-11: \"Bet-time snapshot + re-run\"; \"Strict, keep Argentina\"",
+     "reason": "pending the re-run on bet-time prices only: new_format over35_over: fresh-holdout cell priced by OddsAPI history (B1 close used as bet price); unproven-capture share 95% of 886 priced rows"
+    },
+    {
+     "entry_id": "over35|Sweden Allsvenskan",
+     "entry_hash": "7a8f5a55358cb60eee7b50c8d8d1a4b99826497a96d4ebce8781e18a583743b2",
+     "withdrawn_at": "2026-11-11T10:48:33Z",
+     "withdrawn_by": "owner (Nevo)",
+     "owner_words": "owner 2026-11-11: \"Bet-time snapshot + re-run\"; \"Strict, keep Argentina\"",
+     "reason": "pending the re-run on bet-time prices only: new_format over35_over: fresh-holdout cell priced by OddsAPI history (B1 close used as bet price); unproven-capture share 95% of 895 priced rows"
+    }
+   ],
+   "withdrawal_rule": "owner 2026-11-11 \"Strict, keep Argentina\": withdrawn = every fresh-holdout (OddsAPI-history priced) cell and every cell whose evidence rests > 50% on prices whose capture time is not proven before kickoff (00:00-stamped backfill), counts in output/threshold_proposals/bars_oddsapi_hist/cell_price_provenance_2026-11.json. EXCEPTION, owner: btts|Argentina Primera Division (new_format) stays - a LEAGUE_WIDE rule (no bar was chosen from backfill), its PROMISING rests on its own live-captured FINAL rows (86 bets).",
+   "exemptions": [
+    {
+     "entry_id": "btts|Argentina Primera Division",
+     "owner_words": "owner 2026-11-11: \"Strict, keep Argentina\"",
+     "basis": "LEAGUE_WIDE rule (every match up to odds 2.50): no bar was chosen from backfill; its PROMISING verdict rests on its own live-captured FINAL rows (86 bets, snapshot before kickoff). Its selection-window rows are 79% 00:00-stamped backfill (369 of 466)."
+    }
+   ],
+   "price_provenance": "output/threshold_proposals/bars_oddsapi_hist/cell_price_provenance_2026-11.json"
   }
  ]
 }

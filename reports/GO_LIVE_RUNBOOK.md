@@ -53,6 +53,31 @@ use them". From go-live:
   Until the U3e freeze exists every tip shows "edge: not calibrated".
 * Historical ledgers keep their old tier columns (study only).
 
+## 0b. Owner 2026-11-11 "Bet-time snapshot + re-run" / "Strict, keep Argentina"
+
+* **Withdrawn pending the re-run:** 37 entries (46 cells) of TP-2026-11-10-d999073a - the 21 fresh-holdout cells
+  (priced by the B1 "close" history used as the bet price) and every cell whose evidence rests > 50% on prices
+  without a proven pre-kickoff capture time (00:00-stamped own backfill). Recorded in
+  `config/threshold_approvals.json` (`withdrawals`, owner's words, date, reason per entry; counts in
+  `output/threshold_proposals/bars_oddsapi_hist/cell_price_provenance_2026-11.json`). `threshold_apply` skips them
+  (dry run: 37 applied, 37 withdrawn). A withdrawn cell is PAPER with no bar: no tip until the re-run proposal is
+  approved.
+* **Stakes from 2026-11-21:** Argentina NF BTTS ACTIVE 1.25% (owner exemption, recorded on the approval and the
+  cell: a LEAGUE_WIDE rule, no bar chosen from backfill, PROMISING on its own 86 live-captured FINAL bets); La Liga 2
+  Over 2.5 ACTIVE_LOW 0.5% (football-data pre-match prices only); everything else paper (La Liga 2 BTTS now PAPER).
+  Exec dry run: 25 cells, all PAPER.
+* **Check:** data truth rule 8 (gated) - RED if an approved, non-withdrawn bar or verdict rests on OddsAPI-history
+  close prices or > 50% unproven capture times, unless the owner recorded an exemption with its basis.
+* **Re-run (protocol `bars-fresh-holdout/4`, registered before any run):** bet prices = football-data pre-match +
+  our own live captures + tier **BT** history only (read through the shared adapter, snapshot < kickoff); own
+  backfill excluded; tier B1 close read only for CLV. Its fresh-holdout verdicts carry the label "re-test after a
+  price-data fix (outcomes previously seen)". Steps once BT is collected (about 1 day after B4): `prepare --aliases
+  <loader identity map>` (writes `<out>/priced` and `<out>/own_bettime`), `holdout`, then the selection study on
+  `<out>/own_bettime` (`scripts/bars_opt.py select` / `final`), then `study --month 2026-11 --serving-universe
+  <out>/own_bettime --study-cells <that study>/cells.json`. Target: the new proposal before the 2026-11-19/20 refit.
+* **Dashboard:** the Bars & Cells page belongs to branch `dashboard/clean-record`; it must read the withdrawals
+  (approval `withdrawals`) and show those cells as PAPER, no bar (note left for that branch).
+
 ## 0. Findings that change the plan
 
 These come from the checks and the dry run made today. Each one is either a precondition that is

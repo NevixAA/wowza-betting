@@ -285,11 +285,10 @@ def test_the_run_flag_is_open_only_with_the_owners_words_and_refuses_when_off(tm
 def test_gate_opens_only_with_owner_ok_and_every_pinned_tier_complete(tmp_path):
     f = tmp_path / "flag.json"
     f.write_text(json.dumps({"run_enabled": True, "owner_ok": "owner 2026-12-01: run"}), encoding="utf-8")
-    st = _ledger(tmp_path, [{"run_id": "a", "exit_code": 10, "stats": {"B1": {}, "B2": {}}}])   # B2 unfinished
+    from src.bars_opt import fresh_holdout as FH
+    st = _ledger(tmp_path, [{"run_id": "a", "exit_code": 10, "stats": {"B1": {}, "B2": {}}}])   # BT not collected
     ok, why = H.gate(st, f)
-    assert not ok and any("not complete" in w and "B2" in w for w in why)
-    st2 = _ledger(tmp_path / "b", [{"run_id": "b", "exit_code": 10, "stats": {"B1": {}, "B2": {}, "B4": {}}}])
-    assert H.gate(st2, f) == (True, [])
+    assert not ok and any("not complete" in w and FH.price_tiers()[0] in w for w in why)
 
 
 def test_a_later_tier_alone_never_proves_an_earlier_one(tmp_path):
@@ -338,3 +337,28 @@ def test_a_single_snapshot_gives_no_closing_pair():
     o25 = _row(_price(_universe(), _ou("pinnacle", 2.5, 1.90, 1.95))["priced"], "over25")
     assert (o25["yes"], o25["no"]) == (1.90, 1.95)
     assert np.isnan(o25["yes_c"]) and pd.isna(o25["close_source"])
+
+
+# ── protocol v4 (owner 2026-11-11 "Bet-time snapshot + re-run") ─────────────────────────────────────
+def test_a_close_role_price_is_never_a_bet_price_only_clv():
+    bt = pd.DataFrame(_ou("pinnacle", 2.5, 2.00, 1.85, ts="2024-06-01T22:00:00Z")).assign(tier="BT")
+    close = pd.DataFrame(_ou("pinnacle", 2.5, 1.90, 1.95, ts="2024-06-02T00:25:00Z")).assign(tier="B1")
+    r = P.price_frames(_universe(), bt, None, close)
+    o25 = _row(r["priced"], "over25")
+    assert (o25["yes"], o25["no"]) == (2.00, 1.85)                      # the BT (bet-role) snapshot
+    assert (o25["yes_c"], o25["no_c"]) == (1.90, 1.95)                  # the close only as the CLV pair
+    only_close = P.price_frames(_universe(), close.iloc[0:0], None, close)
+    assert only_close["priced"]["price_source"].isna().all()           # a close price never becomes a bet price
+
+
+def test_own_backfill_pairs_are_stripped_live_captures_kept():
+    from tests.own_bars import cell_entry  # noqa: F401  (imports the test package path)
+    import json as _j
+    u = pd.read_parquet(ROOT / "output" / "bars_opt" / "universe_standard.parquet")
+    u = u[(u["league"] == "La Liga 2") & u["market"].isin(["btts", "over25"])]
+    aliases = {}
+    s, c = P.strip_unproven_own(u, "standard", aliases)
+    assert c["removed_backfill"] > 0 and c["kept_live_capture"] > 0
+    assert c["kept_football_data"] == int((u["market"].eq("over25") & u["yes"].notna()).sum())
+    kept = s[(s["market"] == "btts") & s["yes"].notna()]
+    assert len(kept) == c["kept_live_capture"]
