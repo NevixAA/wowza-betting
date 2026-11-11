@@ -17,10 +17,13 @@ DATA (owner 2026-11-04 / 2026-11-06).
     'window_verified' also needs the player's previous config.ROLLING_N rows verified;
     'all_prior_verified' needs every earlier row of the player verified.
   * Features and labels are rebuilt from the raw counts (feature_engineering.build_features), never
-    read from the stored derived columns. The 7 profile features the frozen payloads learned from
-    placeholders (age 25 / 180 cm / 75 kg on every row) are RE-ADMITTED: build_features attaches the
-    collected profiles (output/collect/player_profiles.parquet) and leaves NaN where none is known,
-    so training and serving read the same real values (closes the P9 train/serve gap).
+    read from the stored derived columns. The 7 profile features (config.PROFILE_FEATURES) come from
+    the collected profiles (output/collect/player_profiles.parquet) through build_features, NaN where
+    none is known; the stored player_history placeholders (age 25 / 180 cm / 75 kg on every row) are
+    read as missing, never as values, so training and serving read the same real values.
+  * Every fitted holdout candidate carries training_profile_ (training_profile: per feature the most
+    common value and its share over the training rows); the report lists the features whose single
+    value covers more than SINGLE_VALUE_MAX_SHARE of them (holdout.single_value_features).
   * The owner's null rule is applied at parse (player_stat_nulls); a missing count is a missing label
     and the row is dropped for that market, never read as 0.
 
@@ -299,9 +302,38 @@ def calibration_cut(dates: pd.Series) -> pd.Timestamp:
 
 
 def harness_features(frame: pd.DataFrame) -> list[str]:
-    """config.PLAYER_FEATURE_COLS + the 7 re-admitted profile features (real profiles or NaN)."""
-    cols = list(config.PLAYER_FEATURE_COLS) + sorted(config.PROFILE_FEATURES_WITHHELD)
-    return [c for c in dict.fromkeys(cols) if c in frame.columns]
+    """config.PLAYER_FEATURE_COLS, the ONE props feature list (the 7 profile features are in it since
+    2026-11-10, built from the collected real profiles or NaN; see config.PROFILE_FEATURES)."""
+    return [c for c in dict.fromkeys(config.PLAYER_FEATURE_COLS) if c in frame.columns]
+
+
+#: a feature whose most common value (NaN counted as one value) covers more than this share of the
+#: training rows carries no information; src/integrity/data_truth (rule 3) turns RED on a served one
+SINGLE_VALUE_MAX_SHARE = 0.999
+
+
+def training_profile(train: pd.DataFrame, features: list[str]) -> dict:
+    """Per feature, over ALL the rows a model was trained on (fit + calibration block): rows, missing
+    share, distinct real values, the most common value (None = NaN) and its share. Persisted on the
+    fitted candidate (training_profile_), so the served payload carries what it learned from."""
+    n = int(len(train))
+    out = {}
+    for c in features:
+        s = pd.to_numeric(train[c], errors="coerce") if c in train.columns else pd.Series(np.nan, index=train.index)
+        miss = int(s.isna().sum())
+        vc = s.value_counts(dropna=True)
+        top_v, top_n = (float(vc.index[0]), int(vc.iloc[0])) if len(vc) else (None, 0)
+        if miss >= top_n:
+            top_v, top_n = None, miss
+        out[c] = {"rows": n, "missing_share": (miss / n) if n else None, "distinct": int(len(vc)),
+                  "top_value": top_v, "top_share": (top_n / n) if n else None}
+    return out
+
+
+def degenerate(profile: dict, max_share: float = SINGLE_VALUE_MAX_SHARE) -> dict:
+    """{feature: profile entry} for every feature whose single most common value (NaN included)
+    covers more than max_share of the training rows."""
+    return {c: e for c, e in profile.items() if e.get("top_share") is not None and e["top_share"] > max_share}
 
 
 # ── candidates ───────────────────────────────────────────────────────────────────────────────────
@@ -545,9 +577,15 @@ def evaluate_market(frame: pd.DataFrame, market: str, features: list[str], decis
     except ValueError as e:
         rep["holdout"]["status"] = f"SKIPPED: {e}"
         return rep, pd.DataFrame(), {}
+    prof = training_profile(tr, features)
+    for n, m in fitted.items():
+        if not n.startswith("_"):
+            m.training_profile_ = prof
     ps = score(fitted, te, features)
     rep["holdout"].update(status="OK", window=fitted["_window"],
-                          metrics={n: metrics(te[y_col], p) for n, p in ps.items()})
+                          metrics={n: metrics(te[y_col], p) for n, p in ps.items()},
+                          single_value_features={c: {k: e[k] for k in ("top_value", "top_share")}
+                                                 for c, e in degenerate(prof).items()})
     wk = pd.to_datetime(te["date"]).dt.strftime("%G-%V").to_numpy()
     y = te[y_col].to_numpy(dtype=float)
     if "player_base_rate" in ps:
@@ -622,9 +660,9 @@ def run(plan: dict | None = None, raw: pd.DataFrame | None = None, out_dir: Path
     elig = frame[ok]
     features = harness_features(elig)
     report["features"] = {"n": len(features), "sha256": hashlib.sha256(json.dumps(features).encode()).hexdigest(),
-                          "profile_readmitted": sorted(config.PROFILE_FEATURES_WITHHELD & set(features)),
+                          "profile_features": sorted(set(config.PROFILE_FEATURES) & set(features)),
                           "profile_coverage": {c: float(elig[c].notna().mean()) for c in
-                                               sorted(config.PROFILE_FEATURES_WITHHELD & set(features))}}
+                                               sorted(set(config.PROFILE_FEATURES) & set(features))}}
     wf = plan["walk_forward"]
     folds = walk_forward_folds(matchdays(frame["date"]), dec["holdout_start"],
                                int(wf["step_matchdays"]), int(wf["n_folds"]))

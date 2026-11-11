@@ -124,8 +124,15 @@ def test_the_headline_is_the_staked_book_on_the_corrected_basis():
     got = pd.to_numeric(staked(d)["pnl"], errors="coerce").sum()
 
     out = Path(config.OUTPUT_DIR)
-    raw = pd.concat([pd.read_csv(out / f, low_memory=False) for f in ("bets_ledger.csv", "side_bets_ledger.csv")
-                     if (out / f).exists()], ignore_index=True)
+    # owner 2026-11-11: post-kickoff tips and the later tip of an opposite O/U pair never count - the
+    # listed rows (output/corrections) are taken out of the main ledger here too
+    from src.ledger_corrections import drop_historical_excluded
+    parts = []
+    for f in ("bets_ledger.csv", "side_bets_ledger.csv"):
+        if (out / f).exists():
+            r = pd.read_csv(out / f, low_memory=False)
+            parts.append(drop_historical_excluded(r) if f == "bets_ledger.csv" else r)
+    raw = pd.concat(parts, ignore_index=True)
     md = pd.to_datetime(raw["match_date"], errors="coerce", utc=True)
     raw = raw[md >= pd.Timestamp(str(config.PERFORMANCE_CUTOFF_DATE), tz="UTC")]
     raw = raw[~raw["league"].isin(set(config.PAPER_LEAGUES))]     # settled, never counted as money

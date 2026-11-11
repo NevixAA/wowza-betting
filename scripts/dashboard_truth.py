@@ -234,7 +234,10 @@ def independent(out: Path, ctx: dict) -> dict:
         v["plan_shadow_bet"] = int((ds == "BET").sum())
         v["plan_shadow_n"] = int(ds.isin(["BET", "NO_BET", "PAPER"]).sum())
     else:
-        v.update(plan_tips=0, plan_active=0, plan_days=0)
+        # no upcoming plan rows (e.g. an international break): every plan count is a true 0 of an
+        # empty plan, the same as the Home page shows, not a missing input
+        v.update(plan_tips=0, plan_active=0, plan_paper=0, plan_days=0, plan_up_ou=0,
+                 plan_shadow_bet=0, plan_shadow_n=0)
     # system health: overall and the status counts recounted from the recorded checks
     p = out / "system_health.json"
     if p.exists():

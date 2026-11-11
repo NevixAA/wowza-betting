@@ -340,7 +340,8 @@ def test_main_pickled_artifacts_load_through_the_gate(monkeypatch):
 
 def test_committed_serving_models_are_the_clean_ones_where_promoted():
     """After the promotion commit: sot/sot2/goals/assists serve hgb_nan_native and cards serves
-    recipe_retrained, from run 42640972400 (2026-11-09 retrain, corrected home/away side); the four hidden markets keep their old files."""
+    recipe_retrained, from run 42855107089 (2026-11-10 retrain on real profiles, 128 features; it replaced run
+    42640972400 of 2026-11-09); the four hidden markets keep their old files."""
     ptr = json.loads((ROOT / "models" / "registry" / "props" / "props_champions.json").read_text(encoding="utf-8"))
     want = {"sot": "hgb_nan_native", "sot2": "hgb_nan_native", "goals": "hgb_nan_native",
             "assists": "hgb_nan_native", "cards": "recipe_retrained"}
@@ -348,6 +349,6 @@ def test_committed_serving_models_are_the_clean_ones_where_promoted():
         assert ptr[m]["promotion_source"] == PPG.CLEAN_RETRAIN_SOURCE, m
         payload = pickle.loads((ROOT / "models" / f"model_player_{m}.pkl").read_bytes())
         assert payload["recipe"] == PC.RECIPE_CLEAN_HARNESS and payload["candidate"] == cand
-        assert payload["provenance"]["run_id"] == "42640972400"
+        assert payload["provenance"]["run_id"] == "42855107089"
     for m in ("goals2", "sot3", "sot4"):
         assert ptr[m]["promotion_source"] != PPG.CLEAN_RETRAIN_SOURCE, m

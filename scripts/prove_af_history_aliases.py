@@ -46,6 +46,7 @@ OUT = ROOT / "config" / "af_history_proven_aliases.json"
 FIXTURES = ROOT / "output" / "strength" / "competition_fixtures.parquet"
 AF_HISTORY = ROOT / "output" / "af_history.parquet"
 FD_HISTORY = ROOT / "output" / "fd_history.parquet"
+AWARDED = ROOT / "output" / "corrections" / "history_awarded_results.csv"
 #: the identity_repair evidence rule (derive_same_day_aliases min_dates=3)
 MIN_DATES = 3
 RULE = "af-alias-proof/1.0"
@@ -67,8 +68,19 @@ def _history() -> pd.DataFrame:
                                                   "home_goals", "away_goals"])
         parts.append(fd.rename(columns={"home_goals": "hg", "away_goals": "ag"}).assign(src="fd_history"))
     h = pd.concat(parts, ignore_index=True)
-    h["canon"] = h["league"].map(lambda x: LR.canonical_name(x) if isinstance(x, str) else None)
     h["d"] = pd.to_datetime(h["date"], errors="coerce").dt.strftime("%Y-%m-%d")
+    # A result the owner ruled NOT PLAYED (output/corrections/history_awarded_results.csv: awarded,
+    # walkover, cancelled - e.g. China 2022-12-23, provider fixtures 927036 / 926930 CANC) is no match
+    # of either club: neither bank's copy of that key is evidence, nor a date the club "played"
+    # (fix/history-supplement, owner 2026-11-10). The rule itself is unchanged.
+    if AWARDED.exists():
+        aw = pd.read_csv(AWARDED)
+        if {"league", "date", "home_team", "away_team"} <= set(aw.columns) and len(aw):
+            gone = set(zip(aw["league"].astype(str), pd.to_datetime(aw["date"], errors="coerce").dt.strftime("%Y-%m-%d"),
+                           aw["home_team"].astype(str), aw["away_team"].astype(str)))
+            k = list(zip(h["league"].astype(str), h["d"], h["home_team"].astype(str), h["away_team"].astype(str)))
+            h = h[[x not in gone for x in k]]
+    h["canon"] = h["league"].map(lambda x: LR.canonical_name(x) if isinstance(x, str) else None)
     h = h[h["canon"].notna() & h["d"].notna() & h["home_team"].notna() & h["away_team"].notna()]
     # one row per (league, date, home, away); keep a known score
     h = h.sort_values("hg", na_position="first").drop_duplicates(

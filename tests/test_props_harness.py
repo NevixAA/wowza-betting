@@ -250,10 +250,35 @@ def test_split_of_uses_the_fixed_dates():
 
 
 def test_profile_features_are_readmitted():
-    cols = list(config.PLAYER_FEATURE_COLS) + sorted(config.PROFILE_FEATURES_WITHHELD)
-    feats = H.harness_features(pd.DataFrame(columns=cols))
-    assert config.PROFILE_FEATURES_WITHHELD <= set(feats)
+    # since 2026-11-10 the harness reads the ONE feature list (config.PLAYER_FEATURE_COLS), which
+    # holds the 7 profile features (real values or NaN) and no legacy NaN-by-construction column
+    feats = H.harness_features(pd.DataFrame(columns=list(config.PLAYER_FEATURE_COLS) + ["league_tier"]))
+    assert feats == list(config.PLAYER_FEATURE_COLS)
+    assert set(config.PROFILE_FEATURES) <= set(feats)
+    assert not set(config.LEGACY_QUALITY_FEATURES_REMOVED) & set(feats)
     assert len(feats) == len(set(feats))
+
+
+def test_training_profile_flags_a_single_value_feature():
+    n = 10_000
+    tr = pd.DataFrame({"real": np.arange(n, dtype=float), "ph": np.full(n, 25.0),
+                       "dead": np.full(n, np.nan), "near": np.r_[np.full(n - 5, 180.0), np.arange(5.0)]})
+    prof = H.training_profile(tr, ["real", "ph", "dead", "near", "absent"])
+    assert prof["ph"]["top_value"] == 25.0 and prof["ph"]["top_share"] == 1.0
+    assert prof["dead"]["top_value"] is None and prof["dead"]["missing_share"] == 1.0
+    assert prof["near"]["top_share"] == (n - 5) / n          # 99.95% one value
+    assert set(H.degenerate(prof)) == {"ph", "dead", "near", "absent"}
+
+
+def test_evaluate_market_persists_the_training_profile_on_every_candidate():
+    f = _frame(n_days=60)
+    days = H.matchdays(f["date"])
+    dec = {"holdout_start": str(days[-10].date()), "holdout_end": str(days[-1].date())}
+    rep, _, fitted = H.evaluate_market(f, "sot", ["f1", "f2"], dec, [])
+    for n, m in fitted.items():
+        if not n.startswith("_"):
+            assert set(m.training_profile_) == {"f1", "f2"}
+    assert "single_value_features" in rep["holdout"]
 
 
 # ── candidates ───────────────────────────────────────────────────────────────────────────────────

@@ -679,6 +679,17 @@ def _apply_history_corrections(df: pd.DataFrame, corrections: pd.DataFrame | Non
         return df
 
 
+def _add_history_supplement(df: pd.DataFrame) -> pd.DataFrame:
+    """src.history_supplement.add_supplement, never fatal: an unreadable supplement logs an error and
+    the history is served without it (data truth rule 5 reads the same file)."""
+    try:
+        from src.history_supplement import add_supplement
+        return add_supplement(df, tag="history-supplement")
+    except Exception as e:                                             # noqa: BLE001
+        log.error(f"[history-supplement] NOT applied ({type(e).__name__}: {e})")
+        return df
+
+
 def one_club_one_match(out: pd.DataFrame) -> pd.DataFrame:
     """THE identity pipeline of the merged history, in ONE place - load_all_matches (train and serve)
     and the data-truth check (src/integrity/data_truth.one_match) both call it: mojibake repaired,
@@ -2180,6 +2191,9 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
         if len(_arch):
             ci_frames.append(_arch.assign(row_source="backtest_archive"))
         out = pd.concat(ci_frames, ignore_index=True)
+        # Provider fixtures no bank holds (play-offs, extra-time / penalty games; owner 2026-11-10,
+        # src/history_supplement), BEFORE the identity pipeline like every other source.
+        out = _add_history_supplement(out)
         out = out[out["home_team"].notna() & out["away_team"].notna()]
         out = out.sort_values("date").reset_index(drop=True)
         out["total_goals"] = out["home_goals"] + out["away_goals"]
@@ -2392,6 +2406,7 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
     frames = [f.assign(row_source="football_data") for f in frames]
     frames.extend(f.assign(row_source="api_football") for f in _load_api_football_only_leagues())
     out = pd.concat(frames, ignore_index=True)
+    out = _add_history_supplement(out)                    # owner 2026-11-10, as the CI path
     out = out[out["home_team"].notna() & out["away_team"].notna()]
     out = _apply_history_corrections(out)                 # owner 2026-11-04, as one_club_one_match
     out = _apply_date_corrections(out)                    # owner 2026-11-07, as one_club_one_match

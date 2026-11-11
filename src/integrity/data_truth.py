@@ -23,12 +23,18 @@ turns system health RED instead of waiting for the next audit:
                  league-keyed.
     5 ONE MATCH  the banks, through the loader's identity pipeline, hold no match twice (same day
                  under two spellings, or 1-3 days apart) and no row whose form window holds its own
-                 match (2026-11-02).
+                 match (2026-11-02); and (2026-11-10) no PROVIDER fixture claimed by two served rows,
+                 nor by two served af_history provider rows (src.integrity.fixture_claims: a match
+                 filed under both clubs' old AND new names has no side in common by name).
     6 NO GLOBAL  (owner 2026-11-09: "no global vars") no serving module reads a global tier bar:
                  config.HISTORICAL_SIDE_GLOBAL_BARS / SIDE_GLOBAL_BARS, VALUABLE_THRESHOLD /
                  VALUE_THRESHOLD, MARKSMAN_THRESHOLD, SNIPER_THRESHOLD(_OVER/_UNDER), EDGE_CEILING,
                  LEAGUE_EDGE_CEILING, the hand-set LEAGUE_SNIPER/MARKSMAN tables, or writes the GLOBAL
                  threshold source. Tiers come only from each league's own owner-applied bars.
+    9 LEDGERS    (2026-11-11) from the Clean Record start the live ledgers hold no multi-tip / opposite-tip
+                 fixture, post-kickoff tip, close <= 1.0, |CLV| > 50 new-format row, duplicate player tip
+                 or twice-logged v91 fixture (src/ledger_corrections corrects the rows before it). Not
+                 gated (operational data, like rule 3): RED in system health.
 
 A check whose input is missing is NO_DATA (or RED where the input is a production bank), never GREEN.
 
@@ -258,6 +264,7 @@ HT_FORM_INPUTS = ("home_ht_over05_rate", "away_ht_over05_rate", "home_ht_over15_
                   "away_ht_conceded_last5")
 REST_INPUTS = ("home_rest_days", "away_rest_days")
 MISSING_RED_PCT, MISSING_AMBER_PCT = 50.0, 20.0
+from src.imputer import MISSING_SUFFIX  # noqa: E402  the one definition of the indicator suffix
 
 
 def _payload_cols(payload: dict, model_type: str):
@@ -314,6 +321,10 @@ def track_gaps(p: pd.DataFrame, features: dict) -> dict:
         if sub.empty:
             out[key] = {"status": GREY, "fixtures": 0, "worst_pct": None, "missing": {}, "note": "no fixtures"}
             continue
+        # "<f>__missing" is the imputer's 0/1 indicator, built from <f> at scoring time (src/imputer.py),
+        # so no board ever carries it: its base column <f> is the input checked. An indicator whose base
+        # is not in the payload stays in `need` and counts as missing.
+        cols = [c for c in cols if not (c.endswith(MISSING_SUFFIX) and c[:-len(MISSING_SUFFIX)] in cols)]
         need = list(dict.fromkeys(list(cols) + list(HT_FORM_INPUTS) + list(REST_INPUTS)))
         if market.startswith("HT"):
             need = list(dict.fromkeys(list(cols) + list(HT_FORM_INPUTS)))
@@ -327,16 +338,191 @@ def track_gaps(p: pd.DataFrame, features: dict) -> dict:
     return out
 
 
-def missing(now: datetime | None = None, features: dict | None = None) -> dict:
+# ── 3 (2026-11-10) SERVED FEATURES CARRY DATA ────────────────────────────────────────────────────
+# A served model feature whose training rows hold ONE value (a placeholder written on every row, or
+# NaN on every row) is not data, whatever its name. Found 2026-11-10: the 2026-11-09 props payloads
+# list six league-quality columns that are NaN on every training row (league_quality.LEGACY_COLUMNS),
+# and player_history stores age 25 / 180 cm / 75 kg on 100% of rows (read as missing by the feature
+# code; this check proves no served model learned them). Evidence, from the payload itself:
+#   * training_profile_ (props harness since 2026-11-10): the most common value and its share over
+#     ALL training rows -> RED above SINGLE_VALUE_MAX_SHARE;
+#   * otherwise what the fitted estimators prove: a column the HGB usable-columns step dropped (at most
+#     one distinct real value on every fit row), a scaler variance of 0 (one value after the fill),
+#     a team imputer feature whose training min == max or that is missing on > SINGLE_VALUE_MAX_SHARE.
+SINGLE_VALUE_MAX_SHARE = 0.999
+#: a props market hidden from tips and the board: its payload is listed, never counted
+NOT_SERVED = "NOT_SERVED"
+#: values the old build_features wrote into every player_history row (and the arithmetic on them)
+KNOWN_PLACEHOLDERS = {"age": 25.0, "height_cm": 180.0, "weight_kg": 75.0, "age_peak_delta": 0.0,
+                      "opp_def_mean_height": 180.0, "height_diff_vs_opp_def": 0.0,
+                      "height_advantage_score": 0.0}
+
+
+def _num_or_none(v):
+    try:
+        f = float(v)
+    except (TypeError, ValueError):
+        return None
+    return None if f != f else f
+
+
+def _single_value(feature: str, value, share, how: str) -> dict:
+    v = _num_or_none(value)
+    ph = v is not None and KNOWN_PLACEHOLDERS.get(feature) == v
+    return {"value": "NaN" if v is None else v, "share": None if share is None else round(float(share), 6),
+            "how": how, "placeholder": bool(ph)}
+
+
+def _estimator_constants(cols: list[str], calibrated) -> dict:
+    """{feature: finding} the fitted pipeline proves constant over its fit rows."""
+    out = {}
+    pipe = getattr(calibrated, "_pipe", None)
+    for _, step in (getattr(pipe, "steps", None) or []):
+        keep = getattr(step, "keep_", None)
+        if keep is not None:
+            kept = set(keep)
+            for j, c in enumerate(cols):
+                if j not in kept:
+                    out[c] = _single_value(c, None, None, "dropped at fit: at most one distinct value on every fit row")
+        var = getattr(step, "var_", None)
+        if var is not None and len(var) == len(cols):
+            mean = getattr(step, "mean_", None)
+            for j, c in enumerate(cols):
+                if float(var[j]) == 0.0:
+                    out.setdefault(c, _single_value(c, None if mean is None else mean[j], 1.0,
+                                                    "scaler variance 0 on every fit row"))
+    return out
+
+
+def props_payload_spread(payload: dict) -> dict:
+    """{feature: finding} for the served features of one props payload that hold a single value."""
+    cols = list(payload.get("feature_cols") or [])
+    m = payload.get("model")
+    prof = getattr(m, "training_profile_", None)
+    if isinstance(prof, dict) and prof:
+        return {c: _single_value(c, prof[c].get("top_value"), prof[c].get("top_share"), "training_profile")
+                for c in cols if c in prof and prof[c].get("top_share") is not None
+                and prof[c]["top_share"] > SINGLE_VALUE_MAX_SHARE}
+    out = {}
+    fcols = list(getattr(m, "feature_cols_", None) or cols)
+    if getattr(m, "model_", None) is not None:                    # hgb_nan_native
+        out.update(_estimator_constants(fcols, m.model_))
+    for sub in (getattr(m, "models_", None) or {}).values():      # recipe_retrained
+        out.update({c: f for c, f in _estimator_constants(fcols, sub).items() if c not in out})
+    if m is None:                                                 # legacy payload: {"models": {...}}
+        for sub in (payload.get("models") or {}).values():
+            out.update({c: f for c, f in _estimator_constants(cols, sub).items() if c not in out})
+    return {c: f for c, f in out.items() if c in cols}
+
+
+def team_payload_spread(payload: dict) -> dict:
+    """{feature: finding} for a team payload, from its train-only imputer's per-feature record."""
+    out = {}
+    feats = ((payload.get("imputer") or {}).get("features") or {})
+    for c in payload.get("feature_cols") or []:
+        e = feats.get(c)
+        if not isinstance(e, dict):
+            continue
+        mr = _num_or_none(e.get("missing_rate"))
+        lo, hi = _num_or_none(e.get("min")), _num_or_none(e.get("max"))
+        if mr is not None and mr > SINGLE_VALUE_MAX_SHARE:
+            out[c] = _single_value(c, None, mr, "imputer: missing on the training rows")
+        elif lo is not None and lo == hi:
+            out[c] = _single_value(c, lo, None if mr is None else 1.0 - mr, "imputer: training min == max")
+    return out
+
+
+def _load_props_payload(path: Path) -> dict:
+    import pickle
+
+    class _U(pickle.Unpickler):                 # harness classes pickled under __main__
+        def find_class(self, module, name):
+            return super().find_class("player_model.props_harness" if module == "__main__" else module, name)
+    with open(path, "rb") as f:
+        return _U(f).load()
+
+
+def served_feature_spread() -> dict:
+    """{payload label: {"status", "single_value": {feature: finding}, "note"}} over every served
+    payload: the team payloads src/predict.py loads and the props payloads of the markets tips use
+    (config.HIDDEN_PENDING_CLEAN_RETRAIN markets are not served)."""
+    import config
+    from src.model import load_models
+    out = {}
+    recipe = str(getattr(config, "STANDARD_OU25_SERVING_RECIPE", "legacy_v9"))
+    attrs = ["MODEL_FILE_STANDARD" if recipe == "legacy_v9" else "MODEL_FILE_STANDARD_REPAIRED",
+             "MODEL_FILE_NEWFORMAT"] + [a for a, _ in MARKET_PAYLOADS.values()]
+    for attr in dict.fromkeys(attrs):
+        label = f"team:{Path(getattr(config, attr)).name}"
+        try:
+            pl = load_models(model_file=getattr(config, attr))
+        except Exception as e:                                         # noqa: BLE001
+            out[label] = {"status": RED, "single_value": {}, "note": f"unreadable: {type(e).__name__}"}
+            continue
+        parts = {label: pl}
+        for mt, sub in (pl.get("tracks") or {}).items():
+            if isinstance(sub, dict) and sub.get("feature_cols"):
+                parts[f"{label}[{mt}]"] = {**pl, **sub}
+        for lab, part in parts.items():
+            sv = team_payload_spread(part)
+            out[lab] = {"status": RED if sv else GREEN, "single_value": sv,
+                        "note": "" if (part.get("imputer") or {}).get("features") else "no imputer record"}
+    from player_model import config as pconfig
+    for market, path in pconfig.MODEL_FILES.items():
+        hidden = market in pconfig.HIDDEN_PENDING_CLEAN_RETRAIN
+        label = f"props:{Path(path).name}"
+        if not Path(path).exists():
+            out[label] = {"status": RED, "single_value": {}, "note": "served payload missing"}
+            continue
+        try:
+            sv = props_payload_spread(_load_props_payload(Path(path)))
+        except Exception as e:                                         # noqa: BLE001
+            out[label] = {"status": RED, "single_value": {}, "note": f"unreadable: {type(e).__name__}"}
+            continue
+        if hidden:                     # listed for the record; a hidden market tips nothing
+            out[label] = {"status": NOT_SERVED, "single_value": sv,
+                          "note": "hidden pending clean retrain (config.HIDDEN_PENDING_CLEAN_RETRAIN)"}
+        else:
+            out[label] = {"status": RED if sv else GREEN, "single_value": sv, "note": ""}
+    return out
+
+
+def _spread_issues(spread: dict) -> list[str]:
+    msgs = []
+    for lab, s in spread.items():
+        if s["status"] != RED:
+            continue
+        if not s["single_value"]:
+            msgs.append(f"{lab}: {s['note']}")
+            continue
+        fs = s["single_value"]
+        ph = [c for c, f in fs.items() if f["placeholder"]]
+        names = ", ".join(f"{c}={f['value']}" for c, f in list(fs.items())[:6])
+        msgs.append(f"{lab}: {len(fs)} served feature(s) hold one value on the training rows "
+                    f"({names}{', ...' if len(fs) > 6 else ''})"
+                    + (f"; PLACEHOLDER: {', '.join(ph)}" if ph else ""))
+    return msgs
+
+
+def missing(now: datetime | None = None, features: dict | None = None,
+            spread: dict | None = None) -> dict:
     rule = ("live board: every fixture priced (odds_over25); on EVERY served model track (standard and "
             "new_format x O/U 2.5, BTTS, Over 1.5, Over 3.5; HT O/U on standard) each input the scoring "
             "payload needs, plus the HT form and rest-day inputs, is present (RED if > 50% missing on a "
-            "track, AMBER if > 20%); history banks fresh (AMBER if the newest match is > 10 days old)")
+            "track, AMBER if > 20%); history banks fresh (AMBER if the newest match is > 10 days old); "
+            "every served model feature (team and props payloads) carries data on its training rows "
+            f"(RED if one value - a placeholder, a constant or NaN - covers > {SINGLE_VALUE_MAX_SHARE:.1%} "
+            "of them)")
     now = now or datetime.now(timezone.utc)
+    spread = served_feature_spread() if spread is None else spread
+    sp_issues = _spread_issues(spread)
     p = _read(OUT / "predictions.csv")
     if p.empty:
-        return _c("Data truth 3: no missing data", GREY, "no board", rule)
-    issues, worst = [], GREEN
+        out = _c("Data truth 3: no missing data", RED if sp_issues else GREY,
+                 "; ".join(["no board"] + sp_issues), rule)
+        out["served_feature_spread"] = spread
+        return out
+    issues, worst = list(sp_issues), RED if sp_issues else GREEN
     unpriced = int(p["odds_over25"].isna().sum()) if "odds_over25" in p.columns else len(p)
     if unpriced:
         issues.append(f"{unpriced} unpriced fixture(s)")
@@ -368,6 +554,7 @@ def missing(now: datetime | None = None, features: dict | None = None) -> dict:
     out = _c("Data truth 3: no missing data", worst,
              "; ".join(issues) or f"board priced, features present on {len(tracks)} served tracks", rule)
     out["tracks"] = tracks
+    out["served_feature_spread"] = spread
     return out
 
 
@@ -417,19 +604,60 @@ def _bank_matches(f: str) -> pd.DataFrame:
     return d.dropna(subset=["date", "home_team", "away_team", "home_goals", "away_goals"])
 
 
-def one_match(banks: dict | None = None) -> dict:
+def _af_provider_rows() -> pd.DataFrame | None:
+    """af_history as every reader serves it: the owner's duplicate lists applied
+    (src.af_history_corrections), the rows the old loader wrote back dropped (never served,
+    src.af_history_provenance). None when af_history is unreadable."""
+    d = _read(OUT / "af_history.parquet")
+    if d.empty:
+        return None
+    from src.af_history_corrections import apply_af_history_corrections
+    from src.af_history_provenance import written_back_mask
+    d = apply_af_history_corrections(d, tag="data_truth")
+    return d[~written_back_mask(d).to_numpy()]
+
+
+def _fixture_dupes(frame: pd.DataFrame, pool: pd.DataFrame, home_goals: str, away_goals: str,
+                   fixture_col: str | None = None) -> pd.DataFrame:
+    """Claims (src.integrity.fixture_claims) of every provider fixture two or more rows claim."""
+    from src import league_registry as LR
+    from src.integrity.fixture_claims import claims, duplicate_claims
+    f = frame.copy()
+    f["league"] = f["league"].map(lambda x: LR.canonical_name(x) if isinstance(x, str) else None)
+    return duplicate_claims(claims(f, pool, home_goals=home_goals, away_goals=away_goals,
+                                   fixture_col=fixture_col))
+
+
+def one_match(banks: dict | None = None, pool: pd.DataFrame | None = None,
+              af: pd.DataFrame | None = None) -> dict:
     """The banks the training frame is built from, merged and put through the loader's own identity
     pipeline (src/data_loader.one_club_one_match - the same code train and serve run), must hold
-    no match twice. `banks` {name: frame} overrides the committed files (tests)."""
-    rule = ("one match, one row: fd_history + the backtest archive, through data_loader.one_club_one_match, "
+    no match twice. `banks` {name: frame} overrides the committed files (tests).
+
+    2026-11-10 (fix/history-dupes): also by the PROVIDER's fixture id. A match filed under BOTH
+    clubs' old and new names ('Tianjin Teda v Meizhou Kejia' / 'Tianjin Jinmen Tiger v Meizhou
+    Hakka') has no side in common by name, so duplicate_pairs cannot see it; both rows claim one
+    API-Football fixture (src.integrity.fixture_claims). RED when any provider fixture is claimed by
+    two served rows, or by two served af_history provider rows. `pool` (the provider fixture lists)
+    and `af` (af_history provider rows) override the committed files (tests); a missing provider
+    pool is RED (the check could not run). With `banks` given and `af` not, af_history is not read."""
+    rule = ("one match, one row: fd_history + the backtest archive + the provider supplement, through "
+            "data_loader.one_club_one_match, "
             "hold 0 duplicate-match pairs (same league, canonical clubs, same score, dates <= 3 d apart; or "
-            "same day, same score, one side the same club) and 0 rows whose last-5 window holds their own "
-            "match: RED on any; NO_DATA if fd_history is missing")
+            "same day, same score, one side the same club), 0 rows whose last-5 window holds their own "
+            "match, and 0 provider fixtures (API-Football fixture id) claimed by two served rows or by two "
+            "served af_history provider rows: RED on any, or when the provider fixture lists are missing; "
+            "NO_DATA if fd_history is missing")
     from src import data_loader as DL
     from src.integrity.duplicate_matches import duplicate_pairs, self_containing_rows
+    from src.integrity.fixture_claims import provider_pool
+    read_af = banks is None and af is None
     if banks is None:
+        from src.history_supplement import read_supplement
         banks = {"fd_cache": _bank_matches("fd_history.parquet"),
-                 "backtest_archive": _bank_matches("backtest_all_leagues.csv")}
+                 "backtest_archive": _bank_matches("backtest_all_leagues.csv"),
+                 # provider fixtures no bank holds, as the loader adds them (owner 2026-11-10)
+                 "provider_supplement": read_supplement().drop(columns=["provider_fixture_id"])}
     fd = banks.get("fd_cache", pd.DataFrame())
     if fd is None or fd.empty:
         return _c("Data truth 5: one match, one row", GREY, "no fd_history to check", rule)
@@ -445,11 +673,28 @@ def one_match(banks: dict | None = None) -> dict:
     pairs = duplicate_pairs(clean)
     sc = self_containing_rows(clean, pairs)
     removed = len(merged) - len(clean)
-    st = RED if (len(pairs) or int(sc.sum())) else GREEN
+    pool = provider_pool() if pool is None else pool
+    if read_af:
+        af = _af_provider_rows()
+    no_pool = pool is None or pool.empty
+    fx = (pd.DataFrame(columns=["fixture_id", "league", "date", "idx"]) if no_pool
+          else _fixture_dupes(clean, pool, "home_goals", "away_goals"))
+    afx = (pd.DataFrame(columns=["fixture_id", "league", "date", "idx"]) if no_pool or af is None or af.empty
+           else _fixture_dupes(af, pool, "FTHG", "FTAG", fixture_col="fixture_id"))
+    n_fx, n_afx = fx["fixture_id"].nunique(), afx["fixture_id"].nunique()
+    st = RED if (len(pairs) or int(sc.sum()) or n_fx or n_afx or no_pool) else GREEN
     ex = "; ".join(f"{p.league}: rows {p.i}/{p.j} {p.gap_days} d ({p.kind})" for p in pairs.head(3).itertuples())
+    for name, g in (("served", fx), ("af_history", afx)):
+        for fid, gg in list(g.groupby("fixture_id", sort=False))[:3]:
+            ex += (("; " if ex else "") + f"{name} {gg['league'].iloc[0]} {gg['date'].iloc[0]}: provider fixture "
+                   f"{int(fid)} claimed by rows {list(gg['idx'])}")
+    fx_txt = ("provider fixture check NOT RUN (no provider fixture lists)" if no_pool else
+              f"{n_fx} provider fixture(s) claimed by 2+ served rows"
+              + ("" if af is None else f", {n_afx} by 2+ af_history provider rows"))
     return _c("Data truth 5: one match, one row", st,
               f"{len(pairs)} duplicate pair(s), {int(sc.sum())} self-containing row(s) after the loader's "
-              f"identity pipeline ({len(merged):,} bank rows -> {len(clean):,}; {removed:,} copies removed)",
+              f"identity pipeline ({len(merged):,} bank rows -> {len(clean):,}; {removed:,} copies removed); "
+              f"{fx_txt}",
               rule, ex)
 
 
@@ -651,6 +896,78 @@ def bet_time_evidence() -> dict:
                         + [f"{h['where']}: {h['what']}" for h in closing[:4]]))
 
 
+# ── 9 CLEAN LEDGERS (2026-11-11 certification) ─────────────────────────────────────────────────
+def _clean_record_start():
+    try:
+        cfg = json.loads((ROOT / "config" / "trustworthy_performance.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    v = cfg.get("clean_record_start_utc")
+    t = pd.to_datetime(v, errors="coerce", utc=True) if v else pd.NaT
+    return None if pd.isna(t) else t
+
+
+def ledgers(start=None, bets: pd.DataFrame | None = None, players: pd.DataFrame | None = None,
+            v91: pd.DataFrame | None = None, pool: pd.DataFrame | None = None) -> dict:
+    """The live ledgers hold, from the Clean Record start on, no fixture with two live O/U tips (opposite
+    or not), no tip generated after the provider kick-off, no close <= 1.0, no |CLV| > 50 on a new-format
+    row, no second copy of a player tip and no provider fixture logged twice in v91_shadow - the
+    findings of the 2026-11-11 certification, corrected beside the ledgers (src/ledger_corrections).
+    Rows before the start are the corrected 'before the repairs' record. NO_DATA while the start is not
+    set (config/trustworthy_performance.json clean_record_start_utc, set by the owner at go-live)."""
+    rule = ("from the Clean Record start: 0 multi-tip / opposite-tip fixtures, 0 post-kickoff tips, 0 closes "
+            "<= 1.0, 0 |CLV| > 50 new-format rows, 0 duplicate player tips, 0 v91_shadow fixtures logged "
+            "twice: RED on any; NO_DATA before the start is set")
+    from src import ledger_corrections as LC
+    start = _clean_record_start() if start is None else pd.to_datetime(start, utc=True)
+    if start is None:
+        return _c("Data truth 9: clean ledgers", GREY, "Clean Record start not set (go-live sets it)", rule)
+    def since(d, col):
+        if d is None or d.empty or col not in d.columns:
+            return pd.DataFrame()
+        t = pd.to_datetime(d[col], errors="coerce", utc=True, format="mixed")
+        return d[(t >= start).to_numpy()]
+    bets = _read(OUT / "bets_ledger.csv") if bets is None else bets
+    players = _read(OUT / "player_ledger.csv") if players is None else players
+    v91 = _read(OUT / "v91_shadow.csv") if v91 is None else v91
+    b = since(bets, "generated_at")
+    if "source" in b.columns:
+        b = b[b["source"].astype(str) == "live"]
+    issues = []
+    if len(b):
+        m = LC.multi_tip_rows(b)
+        if len(m):
+            fx = m.drop_duplicates(["match_date", "league", "home_team", "away_team"])
+            issues.append(f"{len(fx)} fixture(s) with more than one live tip "
+                          f"({int(fx['opposite_tip_pair'].sum())} opposite)")
+        pk = LC.post_kickoff_rows(b, pool)
+        if len(pk):
+            issues.append(f"{len(pk)} tip(s) generated after kick-off")
+        bad = LC.invalid_close_rows(b)
+        if len(bad):
+            issues.append(f"{len(bad)} close(s) <= 1.0")
+        clv = pd.to_numeric(b.get("clv_pct"), errors="coerce")
+        nf = b.get("model_type", pd.Series("", index=b.index)).astype(str).eq("new_format")
+        n50 = int(((clv.abs() > 50) & nf).sum())
+        if n50:
+            issues.append(f"{n50} new-format row(s) with |CLV| > 50")
+    pl = since(players, "signal_date")
+    if len(pl):
+        pd_ = LC.player_duplicate_rows(pl, pool)
+        if len(pd_):
+            issues.append(f"{len(pd_)} duplicate player tip(s)")
+    v = since(v91, "logged_at")
+    if len(v):
+        vd = LC.v91_duplicate_rows(v)
+        if len(vd):
+            issues.append(f"{len(vd)} v91_shadow fixture(s) logged twice")
+    st = RED if issues else GREEN
+    return _c("Data truth 9: clean ledgers", st,
+              "; ".join(issues) if issues else
+              f"clean since {start:%Y-%m-%d} ({len(b)} live tip(s), {len(pl)} player row(s), {len(v)} v91 row(s))",
+              rule)
+
+
 def evaluate(now: datetime | None = None) -> list[dict]:
     """The rule checks. Never raises: a check that cannot run is itself RED."""
     out = []
@@ -663,7 +980,8 @@ def evaluate(now: datetime | None = None) -> list[dict]:
                       ("Data truth 5: one match, one row", lambda: one_match()),
                       ("Data truth 6: no global bars in serving", no_global_bars),
                       ("Data truth 7: no retired tiers on future tips", no_retired_tiers),
-                      ("Data truth 8: bars rest on bet-time prices only", bet_time_evidence)):
+                      ("Data truth 8: bars rest on bet-time prices only", bet_time_evidence),
+                      ("Data truth 9: clean ledgers", lambda: ledgers())):
         try:
             out.append(fn())
         except Exception as e:                                         # noqa: BLE001

@@ -96,6 +96,13 @@ fix15/dates owner decision (2026-11-07, "use the provider's date"), no call:
    date by the registry timezone. Refused rows: history_date_unproven.csv with the reason.
    src/history_corrections.apply_date_corrections applies it in the loader.
 
+fix/history-supplement owner decision (2026-11-10), 3 calls spent once by scripts/probe_china_2022_12_23.py:
+9. NOT PLAYED, NO SCORE (OWNER_NOT_PLAYED_UNSCORED) -> the awarded list: China Super League 2022-12-23
+   Zhejiang Professional 3-0 Tianjin Jinmen Tiger and Henan Songshan Longmen 3-0 Shenzhen are provider
+   fixtures 927036 / 926930, status CANC 'Match Cancelled', no score (awarded, not played). The stored
+   pool never holds a CANC fixture, so the proof is the provider's COMPLETE day list
+   (output/collect/china_2022_12_23_probe.json): owner_not_played_by_day.
+
 Audit: output/corrections/history_corrections_audit.json. BUDGET: every call goes through
 collect_common.AFClient (job cap, account floor); MAX_CALLS per run on top. A budget stop is a clean,
 resumable exit: what is stored is used, the rest stays unproven (and in).
@@ -416,6 +423,105 @@ OWNER_NOT_PLAYED = {
              "not a played match (owner 2026-11-04; the provider lists it FT, the history holds two "
              "copies: the awarded 0-3 and the 0-1 standing when play stopped)"),
 }
+#: Provider fixtures the OWNER ruled not played that the provider lists WITHOUT a score (CANC), so the
+#: stored pool (finished statuses) never holds them: proven by the complete provider day list instead
+#: (owner_not_played_by_day). Same layout and list (history_awarded_results.csv) as above.
+OWNER_NOT_PLAYED_UNSCORED = {
+    # fix/history-supplement (owner 2026-11-10): API-Football's own record, fetched by
+    # scripts/probe_china_2022_12_23.py (output/collect/china_2022_12_23_probe.json), lists both as
+    # status CANC 'Match Cancelled' with no score; the history's 3-0s are awarded, not played.
+    927036: ("Hangzhou Greentown (Zhejiang Professional) v Tianjin Teda (Tianjin Jinmen Tiger), China "
+             "Super League 2022-12-23: the provider lists fixture 927036 CANC 'Match Cancelled', no score - "
+             "the history's 3-0 is an awarded result, not a played match (owner 2026-11-10)"),
+    926930: ("Henan Jianye (Henan Songshan Longmen) v Shenzhen Ruby FC (Shenzhen), China Super League "
+             "2022-12-23: the provider lists fixture 926930 CANC 'Match Cancelled', no score - the "
+             "history's 3-0 is an awarded result, not a played match (owner 2026-11-10)"),
+}
+#: complete provider day lists (EVERY status) fetched for the not-played decisions above that the stored
+#: pool cannot hold (the collectors store FT / AET / PEN / AWD / WO / ABD fixtures only, never CANC)
+NOT_PLAYED_PROBES = [ROOT / "output" / "collect" / "china_2022_12_23_probe.json"]
+
+
+def probe_day_lists(paths=None) -> pd.DataFrame:
+    """The 'league_day' answers of the stored probes: one row per provider fixture, every status, in the
+    pool's layout (league = registry name by the API-Football league id)."""
+    import config
+    by_id = {int(v): k for k, v in getattr(config, "API_FOOTBALL_IDS", {}).items() if v is not None}
+    rows = []
+    for p in (NOT_PLAYED_PROBES if paths is None else paths):
+        try:
+            doc = json.loads(Path(p).read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            continue
+        for c in doc.get("calls", []):
+            if c.get("name") != "league_day" or not c.get("ok"):
+                continue
+            for f in c.get("fixtures") or []:
+                lg = by_id.get(int(f["league_id"])) if f.get("league_id") is not None else None
+                if lg is None:
+                    continue
+                ft = f.get("fulltime") or [None, None]
+                rows.append({"fixture_id": int(f["fixture_id"]), "league": lg, "date": f["date"],
+                             "home_name": f["home"], "away_name": f["away"], "home_id": f.get("home_id"),
+                             "away_id": f.get("away_id"), "ft_home": ft[0], "ft_away": ft[1],
+                             "status": f.get("status")})
+    return pd.DataFrame(rows)
+
+
+def owner_not_played_by_day(history: pd.DataFrame, days: pd.DataFrame,
+                            decisions: dict | None = None) -> tuple[pd.DataFrame, dict]:
+    """History rows proven to be a decided NOT-PLAYED fixture that has NO score (CANC), on a day whose
+    COMPLETE provider list (every status) is stored. A score cannot prove such a row, so the proof is the
+    day list itself: every history row of that league-day that claims a PLAYED fixture of the list (both
+    clubs resolved home->home / away->away, src.team_names + proven aliases) is placed; a remaining row
+    with one club resolved claims the only remaining decided fixture of that club on that side; then, while
+    exactly one row and one decided fixture remain, the row is that fixture (elimination). Anything else
+    is left in the history (counted)."""
+    decisions = OWNER_NOT_PLAYED_UNSCORED if decisions is None else decisions
+    cols = KEY + ["home_goals", "away_goals", "fixture_id", "provider_status", "reason"]
+    st = {"days": 0, "rows": 0, "by_rule": {}, "fixtures_not_claimed": []}
+    if days is None or days.empty:
+        return pd.DataFrame(columns=cols), st
+    h = _with_canon(history)
+    out = []
+    for (lg, day), g in days.groupby(["league", "date"]):
+        dec = g[g["fixture_id"].isin(list(decisions)) & g["ft_home"].isna()]
+        if dec.empty:
+            continue
+        st["days"] += 1
+        rows = h[(h["canon"] == lg) & (h["date"].dt.strftime("%Y-%m-%d") == day)]
+        played = g[~g["fixture_id"].isin(set(dec["fixture_id"]))]
+        names = [str(x) for x in pd.unique(pd.concat([g["home_name"], g["away_name"]]))]
+        left = []
+        for i, r in rows.iterrows():
+            hh = H._resolve(r["home_team"], names, lg, day)
+            aa = H._resolve(r["away_team"], names, lg, day)
+            if hh and aa and len(played[(played["home_name"] == hh) & (played["away_name"] == aa)]) == 1:
+                continue                                           # a played fixture of the day
+            left.append((i, hh, aa))
+        todo = {int(f): f2 for f, f2 in zip(dec["fixture_id"], dec.to_dict("records"))}
+        placed = []
+        for i, hh, aa in list(left):
+            m = [f for f, rec in todo.items() if (hh and rec["home_name"] == hh) or (aa and rec["away_name"] == aa)]
+            if len(m) == 1 and (hh or aa):
+                placed.append((i, m[0], "one_club_resolved"))
+                todo.pop(m[0])
+                left = [x for x in left if x[0] != i]
+        if len(left) == 1 and len(todo) == 1:
+            placed.append((left[0][0], next(iter(todo)), "day_elimination"))
+            todo = {}
+        st["fixtures_not_claimed"] += sorted(todo)
+        for i, fid, rule in placed:
+            r = rows.loc[i]
+            out.append({"league": r["league"], "date": day, "home_team": r["home_team"],
+                        "away_team": r["away_team"], "home_goals": r["home_goals"],
+                        "away_goals": r["away_goals"], "fixture_id": fid,
+                        "provider_status": g.loc[g["fixture_id"] == fid, "status"].iloc[0],
+                        "reason": decisions[fid]})
+            st["by_rule"].setdefault(rule, 0)
+            st["by_rule"][rule] += 1
+    st["rows"] = len(out)
+    return pd.DataFrame(out, columns=cols), st
 #: why the provider + an agreeing history copy proves a same-day duplicate with a wrong score
 AGREE_FOUND_BY = "same_day_copy_wrong_score_provider_agrees"
 
@@ -1012,6 +1118,10 @@ def follow_ups(history: pd.DataFrame, scores: pd.DataFrame, rem: pd.DataFrame, c
     # copies proven wrong by the provider plus an agreeing copy - before the final score lists, so a
     # removed copy is no longer listed as an UNIDENTIFIABLE score disagreement.
     onp, onp_st = owner_not_played(h2, pool)
+    onp2, onp2_st = owner_not_played_by_day(h2, probe_day_lists())
+    onp_st["unscored_by_day_list"] = onp2_st
+    if len(onp2):
+        onp = pd.concat([d for d in (onp, onp2) if len(d)], ignore_index=True)
     corr3 = pd.concat([corr2, _as_corrections(onp, "awarded_excluded")], ignore_index=True)
     h3 = apply_history_corrections(history, corr=corr3, scores=none)
     agree, agree_st = agreeing_copy_removals(h3, pool)

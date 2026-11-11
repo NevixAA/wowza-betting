@@ -568,7 +568,8 @@ def _fixture_dict(r: dict) -> dict:
     return {"fixture_id": int(r["fixture_id"]), "league_id": int(r["league_id"]), "league": r.get("league"),
             "season": r.get("season"), "kickoff": _parse_ts(r.get("kickoff_utc")),
             "status_short": r.get("status_short"), "home_id": AL.int_or_none(r.get("home_id")),
-            "away_id": AL.int_or_none(r.get("away_id"))}
+            "away_id": AL.int_or_none(r.get("away_id")),
+            "home_name": _na(r.get("home_name")), "away_name": _na(r.get("away_name"))}
 
 
 def _na(v):
@@ -579,7 +580,8 @@ def run_pass(client: AFClient | None = None, root: Path | None = None, now_fn=_u
              leagues: dict[int, str] | None = None, tag: str | None = None,
              is_enabled: bool | None = None) -> dict:
     """One capture pass. Returns its stats. Makes no call while the switch is off."""
-    stats = {"calls": 0, "slots_fetched": {}, "failed": 0, "not_due": {}, "fixtures_listed": 0}
+    stats = {"calls": 0, "slots_fetched": {}, "failed": 0, "not_due": {}, "fixtures_listed": 0,
+             "specials_rows": 0}
     if not (enabled() if is_enabled is None else is_enabled):
         print(f"[prematch] switched off ({ENABLE_VAR} != 'true'): no call made")
         stats["switched_off"] = True
@@ -697,6 +699,7 @@ def _capture(client: AFClient, store: Store, fx: dict, slot: Slot, now_fn, tag: 
                                  "n_bookmakers": len(v["books"]),
                                  "bookmaker_ids": ",".join(str(x) for x in sorted(b for b in v["books"] if b is not None)),
                                  "n_values": v["n_values"]} for k, v in sorted(cat.items(), key=lambda kv: str(kv[0]))])
+        _store_specials(store, fx, slot, bodies, cap, stats)
     for p, b in bodies:
         store.add("raw", [{"fixture_id": fx["fixture_id"], "endpoint": slot.endpoint, "slot": slot.name,
                            "page": p, "params_json": json.dumps({**params, **({"page": p} if p > 1 else {})}),
@@ -711,6 +714,25 @@ def _capture(client: AFClient, store: Store, fx: dict, slot: Slot, now_fn, tag: 
     if stop is not None:
         raise stop
     return True
+
+
+def _store_specials(store: Store, fx: dict, slot: Slot, bodies: list, cap: datetime, stats: dict) -> None:
+    """Correct score / high-low totals / a side scoring 4+ from the SAME odds answer (src/specials_quotes,
+    owner 2026-11-10): zero extra calls. Written beside output/prematch as output/specials_quotes
+    (producer 'prematch', capture prematch_75 / prematch_15). Never takes the slot down with it."""
+    try:
+        from src import specials_quotes as SQ
+        capture = "prematch_" + slot.name.split("_", 1)[1]
+        rows = []
+        for _p, b in bodies:
+            rows += SQ.parse_specials(b, capture=capture, af_fixture_id=fx["fixture_id"],
+                                      league=fx.get("league") or "", kickoff_utc=_iso(fx["kickoff"]) or "",
+                                      home=fx.get("home_name") or "", away=fx.get("away_name") or "",
+                                      captured_at=cap)
+        n = SQ.append_specials(rows, base=store.root.parent / "specials_quotes")
+        stats["specials_rows"] += n
+    except Exception as e:                                            # noqa: BLE001
+        print(f"  [specials_quotes] skipped fixture {fx.get('fixture_id')}: {e}")
 
 
 def _map_players(store: Store, root: Path, now: datetime, stats: dict) -> None:
