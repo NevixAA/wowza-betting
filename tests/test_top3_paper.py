@@ -142,6 +142,7 @@ def test_cap_three_never_pad_direction_and_tracks_rank_differently():
     r1 = picks[picks["track"] == "R1_CELL_LCB"].sort_values("rank")
     r2 = picks[picks["track"] == "R2_CAL_EV"].sort_values("rank")
     assert r1.iloc[0]["market"] == "BTTS"                           # BTTS cell has the higher LCB
+    assert set(picks["rank_basis"]) <= set(R.FALLBACK_BASES)
     assert r2.iloc[0]["market"] == "OU25"                           # calibrated EV ranks the O/U gap first
     one, _ = _run([_cand("9", "OU25", "OVER", 0.60, 0.45)])
     assert one.groupby("track").size().max() == 1                   # never padded
@@ -317,10 +318,13 @@ def test_league_wide_cell_never_enters_any_paper_track():
         assert json.loads(w)[P.R_LEAGUE_WIDE] == 1
 
 
-def test_protocol_v3_records_the_own_list_rule_and_history():
+def test_protocol_records_own_list_no_ev_fallback_and_history():
     cfg = P.load_config()
     proto = json.loads((ROOT / cfg["protocol_file"]).read_text(encoding="utf-8"))
-    assert proto["protocol"] == "top3-ranking-paper/3" and proto["written_before_any_live_pick"] is True
+    assert proto["protocol"] == "top3-ranking-paper/4" and proto["written_before_any_live_pick"] is True
+    assert "never ev_est" in proto["rules_common"]["missing_statistic"]
+    assert "Drop T1" in proto["t1_coverage"]["recommendation_for_owner"]
+    assert [t["id"] for t in proto["tracks"]] == ["T1_R1_CELL_LCB", "T2_R2_CAL_EV", "T3_R3_CAL_EV_LCB"]
     assert "LEAGUE_WIDE_OWN_LIST" in proto["pool"]["refusal_reasons"]
     assert any("Own list" in w for w in proto["amendment"]["owner_words"])
     for h in proto["amends"]["history"]:

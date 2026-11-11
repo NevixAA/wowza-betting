@@ -1,4 +1,4 @@
-"""TOP-3 ranking rules - the ONE implementation of R1, R2 and R3 (protocol config/top3_ranking_paper_protocol_v3.json).
+"""TOP-3 ranking rules - the ONE implementation of R1, R2 and R3 (protocol config/top3_ranking_paper_protocol_v4.json).
 
 Owner 2026-11-11 ("Clean rebuild"): the live TOP-3 is ranked by R3 (served from prep/bars-oddsapi-hist, which
 imports it from HERE); R1 and R2 run as PAPER tracks (src/research/top3_paper.py). The old EV ranking is
@@ -12,8 +12,9 @@ PUBLIC API (pure functions, pandas in / pandas out):
     MSIDE_OF[(panel market, side)]                    -> study market-side ("over25_over", ...)
     in_pool(cell) -> bool                            the cell may feed the TOP-3 pool (MODEL cells only)
 
-A frame to rank needs: track, league, mside (the CELL), fair, p_used, odds and ev_est (= p_used * odds - 1 from
-the cell's own served source; used only as the tie-break / no-statistic order).
+A frame to rank needs: track, league, mside (the CELL), fair, p_used and odds (p_used from the cell's own served
+source), plus the tiebreak columns passed to rank_order (live: kickoff, fixture id). ev_est is read ONLY by the
+EV_PRODUCTION research diagnostic.
 
 Why (output/research/top3_ranking/diagnosis.json): ev_est compares numbers on different scales across cells
 - a RAW-source cell carries a far larger EV than a calibrated BLEND / SHRINK cell for the same realised value -
@@ -33,8 +34,14 @@ POOL (owner 2026-11-11 "Own list"): a LEAGUE_WIDE cell (source NONE, mode LEAGUE
 is shown on its own line outside the TOP-3 slots, so it is never in the TOP-3 / TIER2 pool of any track
 (R1, R2 or the live R3): in_pool(cell) is False for it.
 
-A tip whose cell has no statistic for the rule gets none (nothing filled in): it ranks AFTER every tip that
-has one, among those by ev_est, and is flagged no_stat = 1.
+MISSING STATISTIC (protocol v4; owner 2026-11-11 "don't use the old ranking"): ev_est is NEVER a ranking input.
+A tip whose cell has no statistic for the rule gets none (nothing filled in) and ranks AFTER every tip that has
+one, in this fixed fallback order (rank_basis):
+  RULE      the rule's own key                                       (has_stat, no_stat = 0)
+  R3_KEY    the live rule R3's key, when the rule is not R3 and R3 has one
+  CELL_EB   the cell's frozen walk-forward ROI shrunk within the league (eb)
+  KICKOFF   none of the above: kickoff time, then fixture id (the tiebreak columns)
+Ties inside a group: the tiebreak columns (kickoff, fixture id). EV_PRODUCTION is a research DIAGNOSTIC only.
 """
 from __future__ import annotations
 
@@ -169,16 +176,28 @@ def rank_key(frame: pd.DataFrame, stats: pd.DataFrame, rule: str) -> pd.DataFram
     return b
 
 
+FALLBACK_BASES = ("RULE", "R3_KEY", "CELL_EB", "KICKOFF")
+
+
 def rank_order(frame: pd.DataFrame, stats: pd.DataFrame, rule: str, tiebreak: tuple = ()) -> pd.DataFrame:
-    """`frame` best first under `rule`: tips with a statistic by key (desc), then those without; ties by
-    ev_est (desc), then the `tiebreak` columns (asc, e.g. kickoff, fixture id). Stable."""
+    """`frame` best first under `rule`: tips with the rule's statistic by key (desc); then the fallback groups
+    R3_KEY, CELL_EB, KICKOFF (module docstring) - never ev_est (except the EV_PRODUCTION diagnostic, whose key
+    it is); ties and the last group by the `tiebreak` columns (asc, e.g. kickoff, fixture id). Stable.
+    Adds key, has_stat, no_stat and rank_basis."""
     if frame is None or frame.empty:
         cols = list(frame.columns) if frame is not None else []
-        return pd.DataFrame(columns=cols + ["key", "has_stat", "no_stat"])
+        return pd.DataFrame(columns=cols + ["key", "has_stat", "no_stat", "rank_basis"])
     b = rank_key(frame, stats, rule)
-    b["_ev"] = pd.to_numeric(b["ev_est"], errors="coerce")
-    cols, asc = ["no_stat", "key", "_ev", *tiebreak], [True, False, False, *([True] * len(tiebreak))]
-    return b.sort_values(cols, ascending=asc, na_position="last", kind="mergesort").drop(columns="_ev")
+    r3 = rank_key(frame, stats, LIVE_RULE)["key"].to_numpy(float) if rule != LIVE_RULE else np.full(len(b), np.nan)
+    eb = pd.to_numeric(b["eb"], errors="coerce").to_numpy(float)
+    k = pd.to_numeric(b["key"], errors="coerce").to_numpy(float)
+    grp = np.where(np.isfinite(k), 0, np.where(np.isfinite(r3), 1, np.where(np.isfinite(eb), 2, 3)))
+    b["_grp"] = grp
+    b["_val"] = np.choose(np.minimum(grp, 2), [np.nan_to_num(k), np.nan_to_num(r3), np.nan_to_num(eb)])
+    b.loc[grp == 3, "_val"] = 0.0
+    b["rank_basis"] = np.array(FALLBACK_BASES, dtype=object)[grp]
+    cols, asc = ["_grp", "_val", *tiebreak], [True, False, *([True] * len(tiebreak))]
+    return b.sort_values(cols, ascending=asc, kind="mergesort").drop(columns=["_grp", "_val"])
 
 
 def select(bets: pd.DataFrame, stats: pd.DataFrame, rule: str) -> pd.DataFrame:

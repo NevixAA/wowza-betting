@@ -1,4 +1,4 @@
-"""TOP-3 PAPER TRACKS R1 and R2 - PAPER / RESEARCH ONLY (protocol config/top3_ranking_paper_protocol_v3.json).
+"""TOP-3 PAPER TRACKS R1 and R2 - PAPER / RESEARCH ONLY (protocol config/top3_ranking_paper_protocol_v4.json).
 
     python -m src.research.top3_paper run       # predict.yml, after src.top3_league run: freeze due league-weeks
     python -m src.research.top3_paper settle    # update_results.yml: grade finished paper picks
@@ -68,7 +68,7 @@ PICK_FROZEN = [
     "pick_id", "label", "track", "protocol_sha256", "stats_sha256", "league_week_id", "rank", "week_lock_ts",
     "freeze_ts", "issued_at", "league", "model_type", "fixture_id", "match_date", "home_team", "away_team",
     "kickoff_utc", "market", "side", "odds", "p_model_raw", "p_market_fair", "p_used", "ev_est", "rank_key",
-    "no_stat", "cell_track", "cell_mside", "cell_config", "cell_proposal_id", "prediction_engine_version",
+    "no_stat", "rank_basis", "cell_track", "cell_mside", "cell_config", "cell_proposal_id", "prediction_engine_version",
     "model_artifact_sha256", "first_seen_at", "stake_effect",
 ]
 PICK_GRADING = ["home_goals", "away_goals", "result", "won", "flat_pnl", "settle_status", "settled_at"]
@@ -346,7 +346,7 @@ def freeze_due(cands: pd.DataFrame, done: set, ctx: dict, now: pd.Timestamp, lea
                     "league_week_id": week, "rank": k, "week_lock_ts": LW._stamp(lock), "freeze_ts": LW._stamp(freeze),
                     "issued_at": stamp, "p_market_fair": LW._r(r["fair"]), "p_used": LW._r(r["p_used"]),
                     "ev_est": LW._r(r["ev_est"]), "rank_key": LW._r(r["key"]) if pd.notna(r["key"]) else "",
-                    "no_stat": int(r["no_stat"]), "cell_track": r["track"], "cell_mside": r["mside"],
+                    "no_stat": int(r["no_stat"]), "rank_basis": r["rank_basis"], "cell_track": r["track"], "cell_mside": r["mside"],
                     "stake_effect": STAKE_EFFECT})
     return (pd.DataFrame(picks).reindex(columns=PICK_COLS) if picks else pd.DataFrame(columns=PICK_COLS),
             pd.DataFrame(weeks).reindex(columns=WEEK_COLS) if weeks else pd.DataFrame(columns=WEEK_COLS))
@@ -493,6 +493,7 @@ def track_summary(picks: pd.DataFrame) -> dict:
             "flat_pnl_units": round(float(pnl.sum()), 3) if len(ok) else 0.0,
             "roi": round(float(pnl.mean()), 4) if len(ok) else None, "ci95": sc.get("ci95"),
             "no_stat_picks": int((pd.to_numeric(picks.get("no_stat"), errors="coerce") == 1).sum()) if len(picks) and "no_stat" in picks else 0,
+            "rank_basis": picks["rank_basis"].value_counts().to_dict() if len(picks) and "rank_basis" in picks else {},
             "reached_min_picks": bool(len(ok) >= 150)}
 
 

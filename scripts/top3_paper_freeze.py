@@ -1,4 +1,4 @@
-"""FREEZE the per-cell ranking statistics of the TOP-3 protocol (config/top3_ranking_paper_protocol_v3.json) ONCE.
+"""FREEZE the per-cell ranking statistics of the TOP-3 protocol (config/top3_ranking_paper_protocol_v4.json) ONCE.
 
     python scripts/top3_paper_freeze.py                       # the one real freeze (runbook, 2026-11-20)
     python scripts/top3_paper_freeze.py --dry-run --out DIR   # rehearsal: writes to DIR only, ledger untouched
