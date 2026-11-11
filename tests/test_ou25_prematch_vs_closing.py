@@ -77,6 +77,7 @@ def test_banked_closing_preferred_value_moves_to_closing_and_prematch_comes_from
                        "close_over": [2.10], "close_under": [1.75], "close_source": ["B365C"], "file": ["E1_2425.csv"]})
     monkeypatch.setattr(F, "load_fd_raw", lambda d: fd)
     monkeypatch.setattr(F, "load_crosswalk", lambda *a, **k: {})
+    monkeypatch.setattr(DL, "_nf_real_odds", lambda: {})
     d = DL._ou25_provenance(_bank_rows())
     # row 0: joined -> pre-match Bet365; its old (closing-preferred) value sits in the closing columns
     assert (d.loc[0, "odds_over25"], d.loc[0, "odds_under25"], d.loc[0, "odds_ou25_source"]) == (1.95, 1.90, "FD_CERTIFIED_B365")
@@ -84,11 +85,13 @@ def test_banked_closing_preferred_value_moves_to_closing_and_prematch_comes_from
     # row 1: no football-data row -> NO pre-match price, never the closing one
     assert np.isnan(d.loc[1, "odds_over25"]) and d.loc[1, "odds_ou25_source"] == "LEGACY_NO_PREMATCH"
     assert d.loc[1, "odds_over25_close"] == 1.70
-    # row 2: new-format snapshot history keeps its pair, labelled
-    assert d.loc[2, "odds_over25"] == 1.88 and d.loc[2, "odds_ou25_source"] == "NF_SNAPSHOT_HISTORY"
+    # row 2: a new-format pair with no proven capture keeps its value, LABELLED unproven (never a bet price)
+    assert d.loc[2, "odds_over25"] == 1.88 and d.loc[2, "odds_ou25_source"] == "NF_BACKFILL_UNPROVEN"
+    assert not DL.ou25_bet_price_ok(d).loc[2] and DL.ou25_bet_price_ok(d).loc[0]
 
 
 def test_a_failed_join_never_falls_back_to_the_closing_price(monkeypatch):
+    monkeypatch.setattr(DL, "_nf_real_odds", lambda: {})
     def boom(d):
         raise OSError("fd_raw unreadable")
     monkeypatch.setattr(F, "load_fd_raw", boom)
@@ -162,7 +165,7 @@ def test_data_truth_8_is_red_when_a_closing_column_is_a_bet_price(monkeypatch):
     hits = DT.closing_as_bet_price()
     assert hits and hits[0]["where"] == "src/data_loader._OU25_PREMATCH"
     c = DT.bet_time_evidence()
-    assert c["status"] == DT.RED and "closing-as-bet" in c["value"]
+    assert c["status"] == DT.RED and "closing / unproven" in c["value"]
 
 
 def test_data_truth_8_flags_a_phase2_benchmark_on_closing_prices(tmp_path):
@@ -182,3 +185,80 @@ def test_protocol_v5_refuses_a_universe_not_built_through_the_certified_join(tmp
     (tmp_path / "universe_standard_source.json").write_text(json.dumps(F.universe_source(True)), encoding="utf-8")
     assert FH.check_universe_source(tmp_path) == (True, "")
     assert FH.price_stamp()["standard_ou25"]["over25"] == F.CERTIFIED
+
+
+# ── new-format: proven pre-kickoff captures vs unproven backfill (owner 2026-11-11) ───────────────
+
+def _nf_raw(rows):
+    return pd.DataFrame([{"snapshot_date": ts[:10], "snapshot_ts": ts, "match_date": "2026-09-20",
+                          "kickoff_utc": ko, "league": "USA MLS", "match": "Alpha FC vs Bravo SC",
+                          "market": m, "odds": o} for ts, ko, m, o in rows])
+
+
+def test_nf_proven_pair_is_the_earliest_forward_capture_before_kickoff_never_the_backfill():
+    ko = "2026-09-20T23:30:00Z"
+    o = _nf_raw([("2026-09-20T00:00:00Z", ko, "over25", 1.70), ("2026-09-20T00:00:00Z", ko, "under25", 2.20),  # backfill
+                 ("2026-09-20T10:15:00Z", ko, "over25", 1.80), ("2026-09-20T10:15:00Z", ko, "under25", 2.05),  # bet
+                 ("2026-09-20T23:20:00Z", ko, "over25", 1.75), ("2026-09-20T23:20:00Z", ko, "under25", 2.10),  # close
+                 ("2026-09-20T23:40:00Z", ko, "over25", 1.50), ("2026-09-20T23:40:00Z", ko, "under25", 2.60)])  # after KO
+    cache = {}
+    DL._nf_attach_proven_ou25(o, cache)
+    e = cache[("2026-09-20", "USA MLS", "Alpha FC vs Bravo SC")]
+    assert (e["ou25_pm_over"], e["ou25_pm_under"]) == (1.80, 2.05)
+    assert (e["ou25_cl_over"], e["ou25_cl_under"]) == (1.75, 2.10)
+
+
+def test_nf_backfill_only_or_no_kickoff_is_never_proven():
+    o = _nf_raw([("2026-09-20T00:00:00Z", "2026-09-20T23:30:00Z", "over25", 1.70),
+                 ("2026-09-20T00:00:00Z", "2026-09-20T23:30:00Z", "under25", 2.20),
+                 ("2026-09-20T10:15:00Z", None, "over25", 1.80), ("2026-09-20T10:15:00Z", None, "under25", 2.05)])
+    cache = {}
+    DL._nf_attach_proven_ou25(o, cache)
+    assert not any("ou25_pm_over" in v for v in cache.values())
+
+
+def test_banked_nf_rows_take_the_proven_pair_and_unproven_ones_are_labelled(monkeypatch):
+    key = ("2024-08-10", "Argentina Primera Division", "Club Uno vs Club Dos")
+    monkeypatch.setattr(DL, "_nf_real_odds", lambda: {key: {"over25": 1.88, "under25": 1.92, "ou25_pm_over": 1.95,
+                                                            "ou25_pm_under": 1.87, "ou25_cl_over": 1.90,
+                                                            "ou25_cl_under": 1.91}})
+    monkeypatch.setattr(F, "load_fd_raw", lambda d: pd.DataFrame(columns=["league"]))
+    d = DL._ou25_provenance(_bank_rows())
+    assert (d.loc[2, "odds_over25"], d.loc[2, "odds_ou25_source"]) == (1.95, "NF_SNAPSHOT_PROVEN")
+    assert (d.loc[2, "odds_over25_close"], d.loc[2, "odds_ou25_close_source"]) == (1.90, "NF_SNAPSHOT_LAST")
+
+
+def test_bet_price_consumers_see_only_bet_time_pairs():
+    d = pd.DataFrame({"odds_over25": [1.9, 1.9, 1.9, 1.9, 1.9, 1.9], "odds_under25": [1.95] * 6,
+                      "odds_ou25_source": ["FD_CERTIFIED_B365", "NF_SNAPSHOT_PROVEN", "NF_BACKFILL_UNPROVEN",
+                                           "AVG", "LEGACY_NO_PREMATCH", np.nan]})
+    m = DL.ou25_bet_prices(d)
+    assert m["odds_over25"].notna().tolist() == [True, True, False, False, False, False]
+    assert d["odds_over25"].notna().all()                       # the input frame is untouched
+    assert not set(DL.OU25_BET_SOURCES) & set(DL.OU25_NOT_BET_SOURCES)
+
+
+def test_phase2_market_only_drops_unproven_pairs_and_fails_closed_without_the_flag():
+    from src.retrain_harness.candidates import devig_yes
+    mk = {"price": {"yes": "odds_over25", "no": "odds_under25", "pair_valid_flag": "ou25_bet_price_ok"}}
+    d = pd.DataFrame({"odds_over25": [1.9, 1.9], "odds_under25": [1.95, 1.95],
+                      "odds_ou25_source": ["NF_SNAPSHOT_PROVEN", "NF_BACKFILL_UNPROVEN"]})
+    d["ou25_bet_price_ok"] = DL.ou25_bet_price_ok(d)
+    p = devig_yes(d, mk)
+    assert np.isfinite(p[0]) and np.isnan(p[1])
+    assert np.isnan(devig_yes(d.drop(columns="ou25_bet_price_ok"), mk)).all()
+
+
+def test_data_truth_8_is_red_when_a_backtest_reads_odds_without_the_bet_mask(tmp_path, monkeypatch):
+    import shutil
+    from src.integrity import data_truth as DTm
+    root = tmp_path
+    (root / "config").mkdir()
+    shutil.copy(DTm.ROOT / "config" / "phase2_retrain.json", root / "config" / "phase2_retrain.json")
+    (root / "src").mkdir()
+    (root / "src" / "backtest.py").write_text("df = df.dropna(subset=['odds_over25'])", encoding="utf-8")
+    hits = DT.unproven_price_as_bet(root)
+    assert [h["where"] for h in hits] == ["src/backtest.py"]
+    assert DT.unproven_price_as_bet() == []
+    monkeypatch.setattr(DL, "OU25_BET_SOURCES", DL.OU25_BET_SOURCES | {"NF_BACKFILL_UNPROVEN"})
+    assert DT.unproven_price_as_bet()[0]["where"] == "src/data_loader.OU25_BET_SOURCES"

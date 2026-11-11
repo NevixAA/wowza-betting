@@ -158,10 +158,70 @@ def _nf_real_odds() -> dict:
                     _nf_odds_cache.setdefault(
                         (str(_r.md_key), str(_r.league), str(_r.match)), {}
                     )[str(_r.market)] = float(_r.odds)          # later snapshot overwrites
+                _nf_attach_proven_ou25(_o, _nf_odds_cache)
             except Exception as e:                                     # noqa: BLE001
                 # Never silent: an empty price table looks exactly like "no captures".
                 log.error(f"[nf_odds] could not build the NF price table ({type(e).__name__}: {e})")
     return _nf_odds_cache
+
+def _nf_attach_proven_ou25(o: pd.DataFrame, cache: dict) -> None:
+    """Owner 2026-11-11: a new-format O/U 2.5 pair is a BET price only when its capture time is PROVEN before
+    kickoff - a FORWARD capture (not a 00:00-stamped backfill, src.integrity.price_provenance) with the
+    kickoff recorded and snapshot_ts < kickoff, both sides from the SAME snapshot. Per fixture the EARLIEST
+    such pair from match day - 1 on is the bet price (the study's rule, src.league_bars.snapshot_pairs) and the
+    LATEST is the closing pair (CLV only). Stored in the lookup under ou25_pm_* / ou25_cl_*."""
+    from src import league_bars as _LB
+    from src.integrity.price_provenance import label_market_mapping
+    if not {"snapshot_ts", "kickoff_utc", "match_date", "market", "odds"} <= set(o.columns):
+        return
+    d = o.drop(columns=[c for c in ("md_key", "ts_key") if c in o.columns])
+    lab = label_market_mapping(d[["snapshot_ts", "market", "odds"]], "newformat_odds_history")
+    ko = pd.to_datetime(d["kickoff_utc"], errors="coerce", utc=True, format="mixed")
+    ts = pd.to_datetime(d["snapshot_ts"], errors="coerce", utc=True, format="mixed")
+    fwd = d[(lab["price_origin"].to_numpy() == "FORWARD_CAPTURE") & ko.notna().to_numpy()
+            & (ts < ko).fillna(False).to_numpy()]
+    if fwd.empty:
+        return
+    first = _LB.snapshot_pairs(fwd, "newformat_odds_history", "over25", which="first")
+    last = _LB.snapshot_pairs(fwd, "newformat_odds_history", "over25", which="last")
+    for tag, w in (("pm", first), ("cl", last)):
+        for r in w.itertuples(index=False):
+            e = cache.setdefault((str(r.match_date)[:10], str(r.league), str(r.match)), {})
+            e[f"ou25_{tag}_over"], e[f"ou25_{tag}_under"] = float(r.yes), float(r.no)
+
+
+#: O/U 2.5 sources that ARE a bet-time price (owner 2026-11-11): one book's pre-match pair from football-data
+#: (Bet365 / Pinnacle, parsed or through the certified join) or a new-format forward capture proven before
+#: kickoff. Everything else - NF_BACKFILL_UNPROVEN (00:00 backfill or no proven capture time),
+#: LEGACY_NO_PREMATCH, AVG (a multi-book average, not one book's price) - is never a bet price.
+OU25_BET_SOURCES = frozenset({"B365", "P", "FD_CERTIFIED_B365", "FD_CERTIFIED_P", "NF_SNAPSHOT_PROVEN"})
+OU25_NOT_BET_SOURCES = frozenset({"NF_BACKFILL_UNPROVEN", "LEGACY_NO_PREMATCH", "AVG"})
+
+
+def ou25_bet_price_ok(df: pd.DataFrame) -> pd.Series:
+    """True where the row's O/U 2.5 pair may be used as a BET price: a bet-time source (OU25_BET_SOURCES),
+    both sides > 1, and not flagged as a negative-margin non-price. Missing provenance = False (fail-closed)."""
+    if df is None or not len(df) or "odds_ou25_source" not in df.columns:
+        return pd.Series(False, index=getattr(df, "index", None), dtype=bool)
+    o = pd.to_numeric(df.get("odds_over25"), errors="coerce")
+    u = pd.to_numeric(df.get("odds_under25"), errors="coerce")
+    ok = df["odds_ou25_source"].isin(OU25_BET_SOURCES) & (o > 1) & (u > 1)
+    if "ou25_pair_is_price" in df.columns:
+        ok &= df["ou25_pair_is_price"].astype("boolean").fillna(True).astype(bool)
+    return ok.astype(bool)
+
+
+def ou25_bet_prices(df: pd.DataFrame) -> pd.DataFrame:
+    """A copy whose odds_over25 / odds_under25 are MISSING wherever they are not a bet-time price
+    (ou25_bet_price_ok). Every consumer that uses the pair as a BET price (backtests, retrain evaluation)
+    reads the frame through this (Data truth 8)."""
+    d = df.copy()
+    ok = ou25_bet_price_ok(d)
+    for c in ("odds_over25", "odds_under25"):
+        if c in d.columns:
+            d.loc[~ok, c] = np.nan
+    return d
+
 
 _nf_by_day: dict | None = None
 
@@ -785,6 +845,8 @@ def _flag_ou25_pair(df: pd.DataFrame) -> pd.DataFrame:
     priced = (o > 0) & (u > 0)
     ok = overround_or_missing(o, u).notna()
     df["ou25_pair_is_price"] = ok.astype("boolean").where(priced)
+    # the BET-price flag (owner 2026-11-11): bet-time source + a real two-sided price (Phase 2 reads it)
+    df["ou25_bet_price_ok"] = ou25_bet_price_ok(df)
     n = int((priced & ~ok).sum())
     if n:
         log.warning(f"[odds] {n} O/U 2.5 pair(s) of {int(priced.sum()):,} have a negative margin - "
@@ -1073,8 +1135,21 @@ def _ci_download_all(have: set | None = None) -> list[pd.DataFrame]:
             _mkeys = df["home_team"].astype(str) + " vs " + df["away_team"].astype(str)
             _rws   = [_nf_odds_lookup(_nfo, d, league, h, a) for d, h, a in
                       zip(_days, df["home_team"].astype(str), df["away_team"].astype(str))]
-            df["odds_over25"]  = [r.get("over25",   np.nan) for r in _rws]
-            df["odds_under25"] = [r.get("under25",  np.nan) for r in _rws]
+            # O/U 2.5 (owner 2026-11-11): the PROVEN pair (forward capture < kickoff, same snapshot,
+            # earliest from match day - 1) is the pre-match price, its latest proven pair the closing one;
+            # a fixture with only backfill / unproven-time prices keeps them LABELLED NF_BACKFILL_UNPROVEN
+            # (never a bet price: ou25_bet_prices masks them)
+            _pv = [("ou25_pm_over" in r) for r in _rws]
+            df["odds_over25"]  = [r["ou25_pm_over"] if p else r.get("over25", np.nan) for r, p in zip(_rws, _pv)]
+            df["odds_under25"] = [r["ou25_pm_under"] if p else r.get("under25", np.nan) for r, p in zip(_rws, _pv)]
+            df["odds_over25_close"] = [r.get("ou25_cl_over", np.nan) for r in _rws]
+            df["odds_under25_close"] = [r.get("ou25_cl_under", np.nan) for r in _rws]
+            df["odds_ou25_close_source"] = pd.Series(
+                ["NF_SNAPSHOT_LAST" if "ou25_cl_over" in r else np.nan for r in _rws], index=df.index, dtype=object)
+            df["odds_ou25_source"] = pd.Series(
+                ["NF_SNAPSHOT_PROVEN" if p else ("NF_BACKFILL_UNPROVEN" if ("over25" in r or "under25" in r)
+                                                  else np.nan) for r, p in zip(_rws, _pv)],
+                index=df.index, dtype=object)
             df["odds_over15"]  = [r.get("over15",   np.nan) for r in _rws]
             df["odds_over35"]  = [r.get("over35",   np.nan) for r in _rws]
             df["odds_btts"]    = [r.get("btts_yes", np.nan) for r in _rws]
@@ -1294,7 +1369,27 @@ def _ou25_provenance(df: pd.DataFrame) -> pd.DataFrame:
     d.loc[move, "odds_ou25_close_source"] = "LEGACY_CLOSING_PREFERRED"
     d.loc[legacy, ["odds_over25", "odds_under25"]] = np.nan
     d.loc[legacy, "odds_ou25_source"] = "LEGACY_NO_PREMATCH"
-    d.loc[unset & nf, "odds_ou25_source"] = "NF_SNAPSHOT_HISTORY"
+    # NEW-FORMAT rows not labelled by the NF read (the local / banked path): the proven pair from our own
+    # captures (forward capture < kickoff, same snapshot - _nf_attach_proven_ou25) replaces the banked value;
+    # any other priced row has no proven capture time: NF_BACKFILL_UNPROVEN (never a bet price)
+    nfu = unset & nf
+    if nfu.any():
+        try:
+            nfo = _nf_real_odds()
+            days = pd.to_datetime(d.loc[nfu, "date"], errors="coerce").dt.strftime("%Y-%m-%d")
+            for ix, day, lg, h, a in zip(d.index[nfu], days, d.loc[nfu, "league"].astype(str),
+                                         d.loc[nfu, "home_team"].astype(str), d.loc[nfu, "away_team"].astype(str)):
+                r = _nf_odds_lookup(nfo, day, lg, h, a)
+                if "ou25_pm_over" in r:
+                    d.at[ix, "odds_over25"], d.at[ix, "odds_under25"] = r["ou25_pm_over"], r["ou25_pm_under"]
+                    d.at[ix, "odds_ou25_source"] = "NF_SNAPSHOT_PROVEN"
+                    if "ou25_cl_over" in r and pd.isna(d.at[ix, "odds_over25_close"]):
+                        d.at[ix, "odds_over25_close"], d.at[ix, "odds_under25_close"] = r["ou25_cl_over"], r["ou25_cl_under"]
+                        d.at[ix, "odds_ou25_close_source"] = "NF_SNAPSHOT_LAST"
+        except Exception as e:                                         # noqa: BLE001
+            log.error(f"[ou25] NF proven-capture lookup failed ({type(e).__name__}: {e}) - every new-format "
+                      f"pair stays NF_BACKFILL_UNPROVEN (never a bet price)")
+    d.loc[d["odds_ou25_source"].isna() & nf & d["odds_over25"].notna(), "odds_ou25_source"] = "NF_BACKFILL_UNPROVEN"
     # PRE-MATCH for banked rows: the CERTIFIED one-to-one football-data join (src/fd_prematch.py, committed
     # output/collect/fd_raw; Bet365 else Pinnacle, same book both sides; name-resolved, score-checked)
     fd_dir = Path(__file__).resolve().parents[1] / "output" / "collect" / "fd_raw"

@@ -882,6 +882,42 @@ def closing_as_bet_price(root: Path | None = None) -> list[dict]:
     return hits
 
 
+#: the consumers that use the loader's O/U 2.5 pair as a BET price: each must read it through
+#: src.data_loader.ou25_bet_prices (owner 2026-11-11)
+OU25_BET_CONSUMERS = ("src/backtest.py", "retrain.py")
+
+
+def unproven_price_as_bet(root: Path | None = None) -> list[dict]:
+    """Every way an UNPROVEN-capture O/U 2.5 price (NF 00:00 backfill / no proven capture time, legacy rows,
+    multi-book averages) could reach a bet-price consumer (owner 2026-11-11): the bet-source set itself, the
+    backtest / retrain readers, the Phase 2 market benchmark flag, the bars modules (their own bet-time
+    universes, never the loader's pair) and edge_replay (live board prices; history results only)."""
+    import inspect
+    r = Path(root) if root is not None else ROOT
+    hits = []
+    from src import data_loader as DL
+    bad = set(DL.OU25_BET_SOURCES) & (set(DL.OU25_NOT_BET_SOURCES) | {"NF_SNAPSHOT_HISTORY", "LEGACY_CLOSING_PREFERRED"})
+    if bad:
+        hits.append({"where": "src/data_loader.OU25_BET_SOURCES", "what": f"unproven source(s) {sorted(bad)}"})
+    for rel in OU25_BET_CONSUMERS:
+        f = r / rel
+        if f.exists() and "ou25_bet_prices(" not in f.read_text(encoding="utf-8-sig"):
+            hits.append({"where": rel, "what": "reads odds_over25 / odds_under25 without ou25_bet_prices"})
+    cfg = json.loads((r / "config" / "phase2_retrain.json").read_text(encoding="utf-8"))
+    pr = ((cfg.get("markets") or {}).get("over25") or {}).get("price") or {}
+    if pr and pr.get("pair_valid_flag") != "ou25_bet_price_ok":
+        hits.append({"where": "config/phase2_retrain.json markets.over25.price.pair_valid_flag",
+                     "what": f"{pr.get('pair_valid_flag')!r} (must be 'ou25_bet_price_ok')"})
+    for f in sorted((r / "src" / "bars_opt").glob("*.py")) + [r / "src" / "league_bars.py"]:
+        if f.exists() and re.search(r"odds_(over|under)25\b", f.read_text(encoding="utf-8-sig")):
+            hits.append({"where": f.relative_to(r).as_posix(), "what": "bars read the loader's O/U 2.5 pair"})
+    from src import history_corrections as HC
+    from src.research import edge_replay as ER
+    if any(str(c).startswith("odds") for c in HC.SERVE_COLS) or "load_all_matches" in inspect.getsource(ER):
+        hits.append({"where": "src/research/edge_replay.py", "what": "reads loader / history prices"})
+    return hits
+
+
 def bet_time_evidence() -> dict:
     rule = ("owner 2026-11-11: no approved, non-withdrawn bar or verdict rests on a price whose capture time is not "
             "proven before kickoff (no OddsAPI-history close price, unproven-capture share <= 50%), unless the owner "
@@ -889,9 +925,12 @@ def bet_time_evidence() -> dict:
     rule += ("; and no CLOSING price column / tier is ever read as a bet price (served pre-match pair, the "
              "study's football-data pair, Phase 2 market benchmarks, the history bet tiers) - closing is CLV only")
     hits = unproven_evidence()
-    closing = closing_as_bet_price()
+    rule += ("; and no UNPROVEN-capture price (NF 00:00 backfill, legacy rows, multi-book averages) reaches a "
+             "bet-price consumer (backtest, retrain, Phase 2 market benchmarks, bars, edge_replay)")
+    closing = closing_as_bet_price() + unproven_price_as_bet()
     return _c("Data truth 8: bars rest on bet-time prices only", RED if (hits or closing) else GREEN,
-              f"{len(hits)} approved entr(ies) on unproven capture times; {len(closing)} closing-as-bet read(s)", rule,
+              f"{len(hits)} approved entr(ies) on unproven capture times; {len(closing)} closing / unproven "
+              f"price(s) read as a bet price", rule,
               "; ".join([f"{h['entry']}: {h['why']}" for h in hits[:4]]
                         + [f"{h['where']}: {h['what']}" for h in closing[:4]]))
 

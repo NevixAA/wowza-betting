@@ -335,8 +335,9 @@ def price_coverage(rows: pd.DataFrame, mcfg: dict) -> dict:
         return {"two_sided": 0, "any": any_, "note": "one-sided price only: no de-vig possible"}
     ok = (yes > 1) & (no > 1)
     flag = pr.get("pair_valid_flag")
-    if flag and flag in rows.columns:
-        ok &= rows[flag].astype("boolean").fillna(False).astype(bool)
+    if flag:          # fail-closed: without the configured flag no pair counts
+        ok &= (rows[flag].astype("boolean").fillna(False).astype(bool) if flag in rows.columns
+               else pd.Series(False, index=rows.index))
     return {"two_sided": int(ok.sum()), "any": any_}
 
 

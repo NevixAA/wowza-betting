@@ -76,6 +76,9 @@ def run_backtest(
     walk_size = walk_size or config.BACKTEST_WALK_SIZE
     min_train = min_train or config.BACKTEST_MIN_TRAIN
 
+    # BET prices only (owner 2026-11-11): unproven-capture / closing / multi-book pairs are masked first
+    from src.data_loader import ou25_bet_prices
+    df = ou25_bet_prices(df)
     df = df.dropna(subset=[target, "odds_over25", "odds_under25"]).copy()
     df = df.sort_values("date").reset_index(drop=True)
 

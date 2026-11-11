@@ -71,9 +71,17 @@ use them". From go-live:
   `odds_over25` / `odds_under25`. Now the pre-match pair (B365, else Pinnacle, else Avg; one source per row, with
   `odds_ou25_source`) and the closing pair (`odds_over25_close` / `odds_under25_close`, `odds_ou25_close_source`,
   CLV only) are separate columns. Banked rows move their old value to the closing columns and get pre-match prices
-  only through the certified join (`src/fd_prematch.py`; 25,543 rows on today's bank, 13,465 older rows without
+  only through the certified join (`src/fd_prematch.py`; 25,594 rows on the merged bank, 13,923 older rows without
   football-data pre-match stay missing). Served models read no price feature, so no prediction changes; the frame
-  hash covers no odds. Own LAST-snapshot captures now fill the closing columns only.
+  hash covers no odds. Own LAST-snapshot captures now fill the closing columns only. New-format pairs (owner
+  2026-11-11): `NF_SNAPSHOT_PROVEN` = a forward capture with kickoff recorded and snapshot < kickoff, same
+  snapshot both sides, earliest from match day - 1 (its latest proven pair -> closing, `NF_SNAPSHOT_LAST`);
+  everything else is `NF_BACKFILL_UNPROVEN` (00:00 backfill or no proven time). Bet-price consumers read the pair
+  only through `src.data_loader.ou25_bet_prices` / the `ou25_bet_price_ok` flag (bet sources B365, P,
+  FD_CERTIFIED_B365/P, NF_SNAPSHOT_PROVEN; never AVG, LEGACY_NO_PREMATCH or NF_BACKFILL_UNPROVEN): backtest,
+  retrain, the Phase 2 market benchmarks (fail-closed without the flag). Offline load after the data-truth-100
+  merge: 71,585 rows; NF priced 2,976 = 708 proven + 2,268 unproven; bet-time pairs 26,302. Data truth 8 is RED
+  if an unproven price can reach a bet-price consumer.
 * **Check:** data truth rule 8 (gated) - RED if an approved, non-withdrawn bar or verdict rests on OddsAPI-history
   close prices or > 50% unproven capture times, unless the owner recorded an exemption with its basis; and RED if
   any CLOSING column / tier is read as a bet price (the loader's pre-match pair, the study's football-data pair, the

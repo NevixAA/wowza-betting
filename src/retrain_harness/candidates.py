@@ -303,8 +303,9 @@ def devig_yes(df: pd.DataFrame, market: dict) -> np.ndarray:
     no = pd.to_numeric(df[pr["no"]], errors="coerce").to_numpy(dtype=float)
     ok = (yes > 1) & (no > 1)
     flag = pr.get("pair_valid_flag")
-    if flag and flag in df.columns:
-        ok &= df[flag].astype("boolean").fillna(False).to_numpy(dtype=bool)
+    if flag:          # fail-closed: a frame without the configured flag has NO usable pair
+        ok &= (df[flag].astype("boolean").fillna(False).to_numpy(dtype=bool) if flag in df.columns
+               else np.zeros(len(df), dtype=bool))
     for n in np.flatnonzero(ok):
         p = power_devig([yes[n], no[n]])
         if len(p) == 2:

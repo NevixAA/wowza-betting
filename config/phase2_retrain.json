@@ -43,7 +43,7 @@
 
   "markets": {
     "over25":    {"target": "over25",    "kind": "total", "line": 2.5, "goals": ["home_goals", "away_goals"],
-                  "price": {"yes": "odds_over25", "no": "odds_under25", "pair_valid_flag": "ou25_pair_is_price"},
+                  "price": {"yes": "odds_over25", "no": "odds_under25", "pair_valid_flag": "ou25_bet_price_ok"},
                   "sides": ["over", "under"]},
     "btts":      {"target": "btts",      "kind": "btts", "goals": ["home_goals", "away_goals"],
                   "price": {"yes": "odds_btts", "no": null}, "sides": ["yes"]},
