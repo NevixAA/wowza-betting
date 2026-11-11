@@ -36,8 +36,8 @@ from __future__ import annotations
 import pandas as pd
 
 from . import config
-from .player_stat_nulls import (HISTORY_COUNT_COLS, PARSED_WITH_RULE, REFETCHED, SOURCE_COL,
-                                UNVERIFIED)
+from .player_stat_nulls import (HISTORY_COUNT_COLS, NULL_IS_MISSING, PARSED_WITH_RULE, REFETCHED,
+                                SOURCE_COL, UNVERIFIED)
 
 REFETCH_FILE = config.OUTPUT_DIR / "collect" / "player_history_refetch.parquet"
 #: the replaced columns: every per-player count player_history stores + rating (not a count; an
@@ -82,18 +82,106 @@ def with_refetched(history: pd.DataFrame, refetch: pd.DataFrame | None = None) -
     if not hit.any():
         return _with_proven_side(out, rf, key)
     sel = rf.reindex(key[hit])
+    # A null the collector read as 0 in a NULL_IS_MISSING column (goals_conceded, fix 2026-11-11) is
+    # missing: the stored re-fetch row keeps its 0 and filled_cols beside (corrections beside the
+    # originals); the reader takes the provider's null.
+    filled = (sel["filled_cols"].fillna("").astype(str).str.split(",") if "filled_cols" in sel.columns
+              else pd.Series([[]] * len(sel), index=sel.index))
     for c in REPLACED:
         if c not in rf.columns:
             continue
         col = pd.to_numeric(out[c], errors="coerce").astype(float) if c in out.columns \
             else pd.Series(float("nan"), index=out.index)
-        col.loc[hit] = pd.to_numeric(sel[c], errors="coerce").astype(float).to_numpy()
+        new = pd.to_numeric(sel[c], errors="coerce").astype(float)
+        if c in NULL_IS_MISSING:
+            null_read_as_0 = filled.map(lambda xs, c=c: c in xs).to_numpy(dtype=bool)
+            new = new.where(~null_read_as_0)
+            print(f"[refetch] {c}: {int(null_read_as_0.sum()):,} stored null-read-as-0 value(s) read as "
+                  "missing (the provider sent null)")
+        col.loc[hit] = new.to_numpy()
         out[c] = col
     out.loc[hit, STATUS_COL] = REFETCHED
     print(f"[refetch] {int(hit.sum()):,} of {len(out):,} row(s) carry re-fetched counts; "
           f"{int((out[STATUS_COL] == PARSED_WITH_RULE).sum()):,} parsed with the rule; "
           f"{int((out[STATUS_COL] == UNVERIFIED).sum()):,} marked {UNVERIFIED}")
     return _with_proven_side(out, rf, key)
+
+
+# ── goalkeeper goals_conceded against the match score (fix/props-feature-bugs 2026-11-11) ──────────
+#
+# WHY. API-Football's goals.conceded disagrees with the match score on a growing share of keeper rows
+# (re-fetched answers: provider null on 47% of 2026-10 and 90% of 2026-11 keeper rows, read as 0 by
+# the null rule until NULL_IS_MISSING; plus a sent 0 beside a real score on ~40 rows since 2026-09).
+# The score is the match fact: where a keeper was his side's ONLY keeper for the full 90 minutes of a
+# match finished in 90 minutes, his goals conceded ARE the opponent's 90-minute goals. A value that
+# says otherwise is wrong and is read as missing - never 0 and never replaced by the score (no
+# defaults: the rule removes a contradicted value, it does not invent one).
+
+#: gk_conceded_check values
+GK_AGREES = "agrees_with_score"
+GK_CONTRADICTS = "contradicts_score"   # value blanked; the provider's value kept beside
+GK_NOT_CHECKABLE = "not_checkable"     # not the side's only keeper for 90 minutes, no 90-minute
+                                       # score, a match decided after extra time, or no value
+GK_CHECK_COL = "gk_conceded_check"
+GK_ORIG_COL = "goals_conceded_provider"
+
+
+def gk_conceded_frame(raw: pd.DataFrame, fx: pd.DataFrame | None = None) -> pd.DataFrame:
+    """The keeper rows of `raw` (index kept) with gc (goals_conceded as read), conc (the opponent's
+    90-minute goals from team_identity.fixture_results, the provider's score.fulltime) and checkable:
+    the side's ONLY keeper with minutes > 0, >= 90 minutes, fixture status FT, score stored."""
+    from . import team_identity as TI
+    cols = ["fixture_id", "is_home", "minutes", "gc", "conc", "checkable"]
+    need = {"fixture_id", "position", "minutes", "is_home", "goals_conceded"}
+    if raw is None or raw.empty or not need <= set(raw.columns):
+        return pd.DataFrame(columns=cols)
+    fx = TI.fixture_results() if fx is None else fx
+    pos = raw["position"].astype(str).str.strip().str.upper().str[:1]
+    mins = pd.to_numeric(raw["minutes"], errors="coerce")
+    g = pd.DataFrame({"fixture_id": pd.to_numeric(raw["fixture_id"], errors="coerce"),
+                      "is_home": pd.to_numeric(raw["is_home"], errors="coerce"),
+                      "minutes": mins, "gc": pd.to_numeric(raw["goals_conceded"], errors="coerce")},
+                     index=raw.index)[((pos == "G") & (mins > 0)).to_numpy()]
+    g = g.dropna(subset=["fixture_id", "is_home"])
+    if g.empty or fx is None or fx.empty:
+        return g.assign(conc=float("nan"), checkable=False).reindex(columns=cols)
+    n_gk = g.groupby(["fixture_id", "is_home"])["minutes"].transform("size")
+    f = (fx[["fixture_id", "ft_home", "ft_away", "status"]]
+         .assign(fixture_id=lambda x: pd.to_numeric(x["fixture_id"], errors="coerce"))
+         .drop_duplicates("fixture_id").set_index("fixture_id").reindex(g["fixture_id"].to_numpy()))
+    home = g["is_home"].to_numpy() == 1
+    conc = pd.Series(pd.to_numeric(f["ft_away"], errors="coerce").where(home, pd.to_numeric(
+        f["ft_home"], errors="coerce")).to_numpy(dtype=float), index=g.index)
+    ft = pd.Series(f["status"].eq("FT").to_numpy(dtype=bool), index=g.index)
+    ok = n_gk.eq(1) & g["minutes"].ge(90) & ft & conc.notna()
+    return g.assign(conc=conc, checkable=ok.astype(bool))
+
+
+def with_gk_conceded_checked(raw: pd.DataFrame, fx: pd.DataFrame | None = None) -> pd.DataFrame:
+    """A keeper's goals_conceded that CONTRADICTS the match score (gk_conceded_frame: the side's only
+    keeper, full 90 minutes, match finished in 90 minutes) is missing. The value as read before the
+    check is kept beside in goals_conceded_provider; gk_conceded_check says agrees / contradicts /
+    not checkable per keeper row (None on other rows). props_harness.source_frame applies it, and
+    training and serving both read that frame."""
+    if raw is None or raw.empty or "goals_conceded" not in raw.columns:
+        return raw
+    g = gk_conceded_frame(raw, fx)
+    out = raw.copy()
+    out[GK_ORIG_COL] = pd.to_numeric(out["goals_conceded"], errors="coerce").astype(float)
+    out[GK_CHECK_COL] = None
+    if g.empty:
+        return out
+    chk = g["checkable"].astype(bool) & g["gc"].notna()
+    bad = chk & (g["gc"] != g["conc"])
+    out.loc[g.index, GK_CHECK_COL] = GK_NOT_CHECKABLE
+    out.loc[g.index[(chk & ~bad).to_numpy()], GK_CHECK_COL] = GK_AGREES
+    out.loc[g.index[bad.to_numpy()], GK_CHECK_COL] = GK_CONTRADICTS
+    gc = out[GK_ORIG_COL].copy()
+    gc.loc[g.index[bad.to_numpy()]] = float("nan")
+    out["goals_conceded"] = gc
+    print(f"[gk-check] {len(g):,} keeper row(s): {int(chk.sum()):,} checkable against the 90-minute "
+          f"score, {int(bad.sum()):,} contradicted it -> goals_conceded missing (value kept in {GK_ORIG_COL})")
+    return out
 
 
 #: is_home_source values

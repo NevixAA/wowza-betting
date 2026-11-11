@@ -39,6 +39,16 @@ the real answers (null-and-played / sent 0 / sent value), so this table is check
   penalty.scored, penalty.missed, penalty.saved, goals.saves .......... null when the player had none
   goals.conceded, cards.yellow, cards.red, passes.total .............. usually SENT as 0; a null is
                                                                          read by the same rule
+NULL IS MISSING (`NULL_IS_MISSING`, fix/props-feature-bugs 2026-11-11) - counts whose null is NOT the
+provider's "none", so a null stays missing even when the player played:
+  goals.conceded    MEASURED on the re-fetched answers (scripts/collect_player_refetch.py) against the
+                    fixture score: a goalkeeper's null goals.conceded had a scoring opponent in 75% of
+                    1,489 full-match keeper rows, and the provider's null share rose from 0% (to
+                    2026-02) to 47% (2026-10) and 90% (2026-11). Read as 0 by the rule above, it put
+                    0 beside a real score on 1,048 of the 1,086 contradicting keeper rows since
+                    2026-09, inflating gk_save_rate -> the served opp_gk_save_rate toward 1.0. The
+                    readers (history_refetch.with_refetched) also blank the stored re-fetched rows
+                    whose filled_cols show this null-read-as-0; the stored value stays beside.
 NOT COUNTS (`NOT_COUNTS`) - never zero-filled, a null stays missing:
   games.rating      the provider's match rating; null = not rated (0 is not a rating)
   passes.accuracy   accurate passes (a % in the season endpoint); a ratio-like value, not "none"
@@ -78,6 +88,10 @@ COUNT_FIELDS: dict[str, tuple[str, str]] = {
     "penalty_committed": ("penalty", "commited"),  # the provider's spelling
     "penalty_saved": ("penalty", "saved"),
 }
+
+#: counts whose null is not "none" (measured, see the module docstring): a null stays missing even
+#: for a player who played
+NULL_IS_MISSING = frozenset({"goals_conceded"})
 
 #: provider values that are NOT counts: a null stays missing, never 0
 NOT_COUNTS: dict[str, tuple[str, str]] = {
@@ -169,7 +183,9 @@ def player_counts(stats: dict, answered: Optional[bool]) -> dict:
         # fix round 8 passed a per-statistic set; a caller still doing so must be fixed, not guessed
         raise TypeError("player_counts: `answered` is fixture_answered()'s bool (owner rule 2026-11-04)")
     mins = minutes_of(stats)
-    return {col: read_count(raw_value(stats, col), mins, bool(answered)) for col in COUNT_FIELDS}
+    return {col: (as_count(raw_value(stats, col)) if col in NULL_IS_MISSING
+                  else read_count(raw_value(stats, col), mins, bool(answered)))
+            for col in COUNT_FIELDS}
 
 
 def rating_of(stats: dict) -> Optional[float]:

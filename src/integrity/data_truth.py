@@ -26,6 +26,9 @@ turns system health RED instead of waiting for the next audit:
                  match (2026-11-02); and (2026-11-10) no PROVIDER fixture claimed by two served rows,
                  nor by two served af_history provider rows (src.integrity.fixture_claims: a match
                  filed under both clubs' old AND new names has no side in common by name).
+    6 PROPS      (2026-11-11, src.integrity.props_feature_truth) a keeper's goals_conceded read by the
+                 props features agrees with the match score where he played the full 90 minutes; every
+                 rolling team feature reads the side its name says (own team vs opponent).
 
 A check whose input is missing is NO_DATA (or RED where the input is a production bank), never GREEN.
 
@@ -703,6 +706,10 @@ def evaluate(now: datetime | None = None) -> list[dict]:
             out.append(fn())
         except Exception as e:                                         # noqa: BLE001
             out.append(_c(label, RED, "check failed", "must run", f"{type(e).__name__}: {e}"[:200]))
+    # 6 PROPS FEATURES (fix/props-feature-bugs 2026-11-11): keeper goals_conceded agrees with the
+    # match score on the frame the props features read; team features keyed to their side.
+    from .props_feature_truth import evaluate as _props_truth
+    out.extend(_props_truth())
     return out
 
 
@@ -725,7 +732,7 @@ RATCHET = ROOT / "config" / "data_truth_ratchet.json"
 #: must not merge. It runs the loader's identity pipeline on the committed banks (~15 s; it was
 #: ~19-60 s before team_names memoised norm/identity_key and duplicate_pairs stopped slicing
 #: pandas groups).
-GATED = ("Data truth 1", "Data truth 2", "Data truth 4", "Data truth 5")
+GATED = ("Data truth 1", "Data truth 2", "Data truth 4", "Data truth 5", "Data truth 6")
 
 
 def _ratchet() -> dict:

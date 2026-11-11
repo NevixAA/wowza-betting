@@ -160,6 +160,9 @@ def test_every_history_count_column_is_read_by_the_shared_rule():
     r = DF._parse_fixture_player({"player": {"id": 5, "name": "Quiet"}, "statistics": [stats]}, META,
                                  "Premier League", ans)
     for col in N.HISTORY_COUNT_COLS:
+        if col in N.NULL_IS_MISSING:                                         # 2026-11-11: goals.conceded
+            assert r[col] is None, col                                       # null is not "none"
+            continue
         assert r[col] == 0, col                                              # played + answered -> 0
     assert r["rating"] is None and r["minutes"] == 90
     r9 = DF._parse_fixture_player(other, META, "Premier League", ans)

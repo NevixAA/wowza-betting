@@ -182,6 +182,9 @@ def source_frame(history: pd.DataFrame | None = None, cups: pd.DataFrame | None 
     raw = pd.concat(parts, ignore_index=True, sort=False)
     raw["date"] = pd.to_datetime(raw["date"], errors="coerce")
     raw = with_refetched(raw, refetch)
+    # a keeper's goals_conceded that contradicts the match score is missing (fix 2026-11-11)
+    from .history_refetch import with_gk_conceded_checked
+    raw = with_gk_conceded_checked(raw)
     # one provider id carrying two real players: every row excluded (identity_conflicts; the
     # decision and its evidence are output/corrections/player_id_conflicts.csv)
     from .identity_conflicts import apply as _drop_conflicted
