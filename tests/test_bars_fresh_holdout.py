@@ -258,3 +258,22 @@ def test_combine_replaces_tested_cells_and_lists_every_league_with_a_status(tmp_
     st = {(r["mside"], r["league"]): r["status"] for r in ev["league_market_status"]}
     assert st == {("over15_over", "A"): "UNPROVEN", ("over15_over", "B"): "OFF", ("ht_over05_over", "C"): "OFF"}
     assert seen["c"]["over15"]["A"]["bars_opt"]["yes"]["config_basis"] == H.FRESH_BASIS
+
+
+def test_r7_recheck_flags_status_changes_and_keeps_fresh_cells():
+    fresh_cell = {"track": "standard", "mside": "over15_over", "league": "A", "verdict": "UNPROVEN",
+                  "valuable_th": 0.02, "marksman_th": 0.04, "sniper_th": 0.06, "config": "RAW|EDGE|max-|min-",
+                  "config_basis": H.FRESH_BASIS, "mode": "MODEL"}
+    approved = {"families": [{"track": "standard", "mside": "over15_over", "cells": [fresh_cell], "off": []}],
+                "league_market_status": H.status_table(
+                    [{"track": "standard", "mside": "over15_over", "cells": [fresh_cell],
+                      "off": [{"league": "B", "reason": "OFF_THIN"}]}], [])}
+    same = [{"track": "standard", "mside": "over15_over", "cells": [],
+             "off": [{"league": "A", "reason": "OFF_NO_VALUE"}, {"league": "B", "reason": "OFF_THIN"}]}]
+    r = H.recheck(approved, same, [])
+    assert r["back_to_owner"] is False and r["cells_compared"] == 2        # the fresh cell is carried unchanged
+    b_on = dict(fresh_cell, league="B", verdict="PROMISING", config_basis="SELECTED")
+    moved = [{"track": "standard", "mside": "over15_over", "cells": [b_on], "off": []}]
+    r2 = H.recheck(approved, moved, [])
+    assert r2["back_to_owner"] is True
+    assert r2["status_changes"] == [{"cell": "standard|over15_over|B", "approved": "OFF", "rebuilt": "PROMISING"}]

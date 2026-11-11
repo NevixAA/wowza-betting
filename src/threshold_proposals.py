@@ -334,7 +334,7 @@ def to_markdown(p: dict) -> str:
         lines.append("")
     lines += ["## How to approve", "",
               "Add an object to `approvals` in `config/threshold_approvals.json` (ids and hashes copied from "
-              f"`output/threshold_proposals/{Path(p.get('_path', p['month'] + '.json')).name}`; never type a "
+              f"`{p.get('_path') or 'output/threshold_proposals/' + p['month'] + '.json'}`; never type a "
               "threshold):", "", "```json",
               json.dumps({"proposal_id": p["proposal_id"], "proposal_hash": p["proposal_hash"],
                           "approved_by": "<owner name>", "approved_at": "<UTC timestamp>",
