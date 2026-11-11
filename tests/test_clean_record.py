@@ -277,3 +277,10 @@ def test_success_rates_defaults_to_the_clean_record_post_golive(golive_out):
                                   "25_*Bars_and_Cells.py", "9_*Model_Performance.py"])
 def test_other_results_pages_render_post_golive(golive_out, page):
     _render(page)
+
+
+def test_props_page_shows_clean_record_post_golive_even_without_a_board(golive_out):
+    _, m, s = _render("11_*Player_Props.py")
+    assert s["Clean Record Settled"] == "1"                          # the clean prop tip only, never the old ones
+    assert m["Clean Record Flat ROI (1u, paper)"] == "+80.0%"
+    assert "Flat ROI (1u, paper)" in m                               # the pre-repair card, in its own section

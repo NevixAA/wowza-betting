@@ -311,16 +311,26 @@ def independent(out: Path, ctx: dict) -> dict:
         if len(c):
             v["cal_n"], v["cal_claimed"], v["cal_realised"] = len(c), float(c["claimed"].mean()), float(c["won"].mean())
             v["cal_gap_pp"] = 100 * (v["cal_claimed"] - v["cal_realised"])
-    # props (paper): SNIPER + MARKSMAN, WIN/LOSS
+    # props (paper), as the page shows them since 2026-11-11: default period "Last 60 days" (match date),
+    # every tip (tier set, not AVOID), WIN/LOSS; the Clean Record card first, the pre-repair card below it
     pl = _csv(out, "player_ledger.csv")
     if pl is not None and "tier" in pl.columns:
-        q = pl[pl["tier"].astype(str).str.upper().isin(["SNIPER", "MARKSMAN"])]
-        q = q[q["result"].astype(str).str.upper().isin(["WIN", "LOSS"])]
-        if len(q):
-            w_ = int((q["result"].astype(str).str.upper() == "WIN").sum())
-            v["props_n"], v["props_win_pct"] = len(q), 100 * w_ / len(q)
-            v["props_roi_pct"] = 100 * float(pd.to_numeric(q["pnl"], errors="coerce").mean())
-            v["props_wins"] = w_
+        md = pd.to_datetime(pl["match_date"], errors="coerce")
+        tier = pl["tier"].astype("string").str.strip().str.upper()
+        res = pl["result"].astype("string").str.strip().str.upper()
+        since = pd.Timestamp(ctx["today_utc"]) - pd.Timedelta(days=60)
+        rec = record_of(pl["signal_date"] if "signal_date" in pl.columns else pd.Series(pd.NA, index=pl.index),
+                        pl["match_date"], ctx.get("clean_start", ""))
+        base = pl[(md >= since).to_numpy() & tier.notna().to_numpy() & (tier != "AVOID").to_numpy()
+                  & (tier != "NAN").to_numpy() & res.isin(["WIN", "LOSS"]).fillna(False).to_numpy()]
+        for key, want in (("props_clean", CLEAN), ("props", BEFORE)):
+            q = base[rec.loc[base.index].eq(want).to_numpy()]
+            pn = pd.to_numeric(q["pnl"], errors="coerce").dropna()
+            w_ = int((q["result"].astype(str).str.strip().str.upper() == "WIN").sum())
+            v[f"{key}_n"], v[f"{key}_wins"] = len(q), w_
+            if len(pn):
+                v[f"{key}_roi_pct"] = 100 * float(pn.mean())
+        q = base[rec.loc[base.index].eq(BEFORE).to_numpy()]
         # rows of that record a correction sidecar flags (exclude=True, same ledger row and player)
         sc = _csv(out, "corrections/props_sentinel_prob.csv")
         if sc is not None and len(q):
@@ -413,9 +423,11 @@ FIGURES = [
     ("cal_claimed", "modelperf", "Model claimed", "metrics", 0, 0),
     ("cal_realised", "modelperf", "Actually happened", "metrics", 0, 0),
     ("cal_n", "modelperf", "Settled sample", "stats", 0, 0),
-    ("props_win_pct", "props", "Win rate", "metrics", 0, 0),
+    ("props_clean_n", "props", "Clean Record Settled", "stats", 0, 0),
+    ("props_clean_roi_pct", "props", "Clean Record Flat ROI (1u, paper)", "metrics", 0, 0),
     ("props_n", "props", "Settled", "stats", 0, 0),
-    ("props_roi_pct", "props", "Flat ROI (1u, paper)", "stats", 0, 0),
+    ("props_wins", "props", "Record", "stats", 0, 0),
+    ("props_roi_pct", "props", "Flat ROI (1u, paper)", "metrics", 0, 0),
     ("props_flagged_sentinel", "props", "Includes rows flagged (caption)", "caption:Includes rows flagged", 0, 0),
     ("clean_leagues_pnl", "leagues", "Clean Record P/L", "metrics", 0, 0),
     ("clean_leagues_n", "leagues", "Clean Record staked tips settled", "stats", 0, 0),
@@ -448,7 +460,8 @@ SOURCES = {
     "plan": "stake_plan.csv rows dated today (UTC) or later x src/staked.plan_staked",
     "health": "system_health.json checks[] recounted",
     "cal": "bets_ledger (edge_pct/100 + 1/odds) + side_bets_ledger (model_prob), WIN/LOSS, >= cutoff",
-    "props": "player_ledger.csv SNIPER + MARKSMAN, WIN/LOSS",
+    "props": "player_ledger.csv tips (tier set, not AVOID), WIN/LOSS, match date in the last 60 days, record BEFORE "
+             "(signal_date / match_date vs config.CLEAN_RECORD_START); ROI over rows with a P/L",
     "intel": "direction_conflicts.csv rows",
     "cfg": "config.py thresholds",
     "truth": "output/corrections/history_cup_unproven_rows.csv, history_score_refused.csv (rows); "

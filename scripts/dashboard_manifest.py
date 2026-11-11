@@ -264,6 +264,7 @@ def unmatched_literals(manifest: dict, root: Path = ROOT) -> list[str]:
     (as data or as a deliberate exclusion). Used by the fast static test."""
     code = [e["path"] for e in manifest["code"]]
     known = {e["path"] for e in manifest["data"]} | {e["path"] for e in manifest.get("excluded", [])}
+    known |= set(code)              # an ASSET shipped with the code (config/trustworthy_performance.json) is carried
     bad = []
     for lit in sorted(data_literals(root, code)):
         hits = resolve_literal(lit, root)
