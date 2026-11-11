@@ -237,7 +237,7 @@ def test_featured_snapshot_is_timed_off_the_first_matched_kickoff(tmp_path):
 def test_cli_refuses_a_store_inside_the_public_repo_and_missing_settings(monkeypatch):
     import oddsapi_history_collect as CLI
     monkeypatch.setattr(CLI.OH, "load_fixtures",
-                        lambda: (pd.DataFrame(columns=["league", "date", "home", "away", "source"]), {}))
+                        lambda include=(): (pd.DataFrame(columns=["league", "date", "home", "away", "source"]), {}))
     with pytest.raises(SystemExit, match="public"):
         CLI.main(["--store", str(ROOT / "output" / "x"), "--max-minutes", "1"])
     monkeypatch.delenv("ODDS_HIST_FLOOR", raising=False)
@@ -655,3 +655,100 @@ def test_a_quote_taken_after_the_kickoff_it_carried_is_dropped_even_if_the_match
          "price": 2.0, "commence_time": "2024-06-03T00:30:00Z"}])
     long, _, _ = AD.attach(_universe().iloc[[0]], odds)
     assert list(long["price"]) == [2.0] and long.attrs["dropped"]["post_kickoff"] == 1
+
+
+# ── probe-keys: the provider's own sports list for the keyless leagues, one historical event each ───
+PT = "Portuguese Primeira Liga"
+SPORTS = [
+    {"key": "soccer_portugal_primeira_liga", "group": "Soccer", "title": "Primeira Liga - Portugal",
+     "description": "Portuguese Soccer", "active": True, "has_outrights": False},
+    {"key": "soccer_portugal_cup_winner", "group": "Soccer", "title": "Taca de Portugal Winner",
+     "description": "Primeira Liga Winner", "active": True, "has_outrights": True},
+    {"key": "soccer_spl", "group": "Soccer", "title": "Premiership - Scotland", "description": "Scottish Soccer",
+     "active": True, "has_outrights": False},
+    {"key": "basketball_portugal", "group": "Basketball", "title": "Liga Portugal", "description": "Primeira",
+     "active": True, "has_outrights": False}]
+
+
+def test_candidate_keys_come_only_from_the_providers_soccer_list():
+    assert [s["key"] for s in OH.find_candidate_keys(SPORTS, PT)] == ["soccer_portugal_primeira_liga"]
+    assert OH.find_candidate_keys(SPORTS, "Scottish League Two") == []            # not listed: none, never guessed
+    two = SPORTS + [{**SPORTS[0], "key": "soccer_portugal_primeira_liga_b", "title": "Primeira Liga 2 - Portugal"}]
+    assert len(OH.find_candidate_keys(two, PT)) == 2                              # ambiguous: probe_keys picks none
+
+
+class KeysAPI(FakeAPI):
+    def __init__(self, sports=SPORTS, sports_cost=0, **kw):
+        super().__init__(**kw)
+        self.sports, self.sports_cost = sports, sports_cost
+
+    def get(self, url, params=None, timeout=None):
+        if url.endswith("/sports") and (params or {}).get("all") == "true":
+            self.calls.append((url, dict(params)))
+            return Resp(200, self.sports, self.sports_cost, self.remaining)
+        return super().get(url, params, timeout)
+
+
+def _pt_days():
+    d = "2024-06-01"
+    return {(PT, d): [("Austin", "Dallas"), ("Portland Timbers", "Seattle Sounders")]}, d
+
+
+def test_probe_keys_lists_free_then_probes_one_event_per_found_key(tmp_path, capsys):
+    days, d = _pt_days()
+    api = KeysAPI()
+    meter = OH.Meter(KEY, floor=OH.MIN_FLOOR, run_cap=1000, max_seconds=600, session=api, pause=0, sleep=lambda s: None)
+    store = OH.Store(tmp_path / "store", "pk")
+    res = OH.probe_keys(meter, store, days, OH.club_spellings({}, days),
+                        leagues=[PT, "Scottish League Two"], window=("2024-01-01", "2024-12-31"))
+    r = res["leagues"][PT]
+    assert r["selected_key"] == "soccer_portugal_primeira_liga" and r["probe_date"] == d
+    assert r["lookup"]["events_in_window"] == 3 and r["lookup"]["fixtures_matched"] == 2
+    assert r["event_odds"]["markets"]["btts"]["books"] == 2 and 4.5 in r["event_odds"]["markets"]["alternate_totals"]["points"]
+    assert r["event_odds"]["proven_fixture"] is True
+    assert res["leagues"]["Scottish League Two"]["selected_key"] is None
+    assert res["credits_spent"] == 1 + 20 and meter.spent == 21
+    paid = [c for c in api.calls if "/historical/" in c[0]]
+    assert len(paid) == 2 and paid[1][1]["markets"] == "btts,alternate_totals" and paid[1][1]["regions"] == "eu"
+    j = json.loads((tmp_path / "store" / "ledger" / "probe_keys.json").read_text())
+    assert "price" not in json.dumps(j)
+    # the listing and the odds are kept (reusable), and the log carries counts only
+    assert len(OH.Store(tmp_path / "store", "x").lookups) == 1
+    out = capsys.readouterr().out
+    assert KEY not in out and "Austin" not in out and "soccer_portugal" not in out
+
+
+def test_probe_keys_stops_if_the_sports_list_is_not_free(tmp_path):
+    days, _ = _pt_days()
+    api = KeysAPI(sports_cost=1)
+    meter = OH.Meter(KEY, floor=OH.MIN_FLOOR, run_cap=1000, max_seconds=600, session=api, pause=0, sleep=lambda s: None)
+    with pytest.raises(OH.Stop) as e:
+        OH.probe_keys(meter, OH.Store(tmp_path / "s", "pk"), days, {}, leagues=[PT], window=("2024-01-01", "2024-12-31"))
+    assert "not free" in e.value.reason
+    assert not [c for c in api.calls if "/historical/" in c[0]]
+
+
+def test_probe_keys_refuses_an_ambiguous_key(tmp_path):
+    days, _ = _pt_days()
+    api = KeysAPI(sports=SPORTS + [{**SPORTS[0], "key": "soccer_portugal_primeira_liga_b"}])
+    meter = OH.Meter(KEY, floor=OH.MIN_FLOOR, run_cap=1000, max_seconds=600, session=api, pause=0, sleep=lambda s: None)
+    res = OH.probe_keys(meter, OH.Store(tmp_path / "s", "pk"), days, {}, leagues=[PT], window=("2024-01-01", "2024-12-31"))
+    assert res["leagues"][PT]["selected_key"] is None and len(res["leagues"][PT]["candidates"]) == 2
+    assert meter.spent == 0
+
+
+def test_cli_probe_keys_loads_the_keyless_leagues_and_runs_only_the_probe(monkeypatch, tmp_path):
+    import oddsapi_history_collect as CLI
+    seen = {}
+
+    def fake_load(include=()):
+        seen["include"] = include
+        return pd.DataFrame([{"league": PT, "date": "2024-06-01", "home": "A", "away": "B", "source": "v9"}]), {}
+    monkeypatch.setattr(CLI.OH, "load_fixtures", fake_load)
+    monkeypatch.setattr(CLI.OH, "probe_keys", lambda meter, store, days, spell: seen.update(days=days) or {})
+    monkeypatch.setattr(CLI.OH, "Collector", lambda *a, **k: (_ for _ in ()).throw(AssertionError("no collect")))
+    monkeypatch.setenv("ODDS_API_KEY", KEY)
+    monkeypatch.setenv("ODDS_HIST_FLOOR", str(OH.MIN_FLOOR))
+    monkeypatch.setenv("ODDS_HIST_RUN_CREDIT_CAP", "200")
+    assert CLI.main(["--store", str(tmp_path / "store"), "--probe-keys", "--max-minutes", "5"]) == OH.EXIT_DONE
+    assert set(seen["include"]) == set(OH.KEYLESS_SEARCH) and (PT, "2024-06-01") in seen["days"]

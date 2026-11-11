@@ -227,11 +227,11 @@ def load_served_history() -> tuple[pd.DataFrame, dict]:
     return h.drop_duplicates().reset_index(drop=True), identity
 
 
-def load_fixtures(root: Path = ROOT, served: tuple | None = None) -> tuple[pd.DataFrame, dict]:
+def load_fixtures(root: Path = ROOT, served: tuple | None = None, include: tuple = ()) -> tuple[pd.DataFrame, dict]:
     """([league, date, home, away, source], identity aliases). Team leagues come from v9's served
     history (canonical clubs, one fixture each); keyed leagues the served history does not hold (the
     props-only top divisions: Premier League, Ligue 1, ...) come from player_history. Keyed leagues
-    only."""
+    only, plus `include` (the keyless leagues, for --probe-keys only: never planned)."""
     h, identity = served if served is not None else load_served_history()
     parts = [h.assign(source="v9")]
     ph = root / "player_history.parquet"
@@ -243,7 +243,7 @@ def load_fixtures(root: Path = ROOT, served: tuple | None = None) -> tuple[pd.Da
         p["date"] = pd.to_datetime(p["date"], errors="coerce").dt.strftime("%Y-%m-%d")
         parts.append(p.rename(columns={"home_team": "home", "away_team": "away"}).assign(source="ph"))
     f = pd.concat(parts, ignore_index=True).dropna(subset=["league", "date", "home", "away"])
-    keyed = {lg for lg in f["league"].unique() if sport_key(lg)}
+    keyed = {lg for lg in f["league"].unique() if sport_key(lg)} | set(include)
     f = f[f["league"].isin(keyed)]
     return (f.drop_duplicates(["league", "date", "home", "away", "source"])
              .reset_index(drop=True)[["league", "date", "home", "away", "source"]], identity)
@@ -855,6 +855,18 @@ class Meter:
         if self.spent + max_cost > self.run_cap:
             raise Stop(EXIT_RUN_CAP, "per-run credit cap reached")
 
+    def sports_list(self) -> list:
+        """GET /sports?all=true (in and out of season). Free per the v4 guide ("This endpoint does not
+        count against the usage quota"); a response that reports any cost, or none, stops the run."""
+        r = self._get("/sports", {"all": "true"})
+        last, rem = r.headers.get("x-requests-last"), r.headers.get("x-requests-remaining")
+        if r.status_code != 200 or rem is None or last is None:
+            raise Stop(EXIT_ERROR, f"sports list unreadable (status {r.status_code})")
+        if int(float(last)) != 0:
+            raise Stop(EXIT_ERROR, f"the sports list was not free (x-requests-last {last})")
+        self.remaining = int(float(rem))
+        return r.json()
+
     def sports_remaining(self) -> int:
         """x-requests-remaining from GET /sports, which the provider docs say "does not count against
         the usage quota" (v4 guide). A missing header stops the run: nothing is ever estimated."""
@@ -1176,6 +1188,144 @@ def probe_s(meter: Meter, store_root: Path, probe_file: Path = PROBE_FILE,
     f.write_text(json.dumps(res, indent=1, sort_keys=True) + "\n", encoding="utf-8")
     say(f"S probe: {sum(1 for v in res['leagues'].values() if v.get('correct_score_returned'))} of "
         f"{len(res['leagues'])} leagues returned correct_score; credits {meter.spent:,}")
+    return res
+
+
+# ── probe-keys: keyless leagues against the provider's own sports list (owner 2026-11-11) ──────────
+# How each league WITHOUT a registry key can be recognised in the provider's soccer list: a country
+# token AND a competition token in the key / title / description. These only select CANDIDATES from
+# the provider's own list; a league with no candidate or with two stays keyless (never guessed), and a
+# selected key must still return a real historical event before it may enter the registry.
+KEYLESS_SEARCH = {
+    "Portuguese Primeira Liga": (("portugal", "portuguese"), ("primeira",)),
+    "National League": (("england", "english"), ("national league",)),
+    "Scottish Championship": (("scotland", "scottish"), ("championship",)),
+    "Scottish League One": (("scotland", "scottish"), ("league one", "league 1")),
+    "Scottish League Two": (("scotland", "scottish"), ("league two", "league 2")),
+    "Romanian Superliga": (("romania", "romanian"), ("liga 1", "liga i", "superliga")),
+}
+PROBE_KEYS_NAME = "probe_keys.json"
+PROBE_KEYS_MARKETS = ("btts", "alternate_totals")
+PROBE_KEYS_WINDOW = ("2024-03-01", "2025-03-31")      # the P7 probe's window
+
+
+def find_candidate_keys(sports: list, league: str) -> list:
+    """The provider's soccer (non-outright) sports whose key / title / description carry the league's
+    country token and competition token (KEYLESS_SEARCH)."""
+    country, comp = KEYLESS_SEARCH[league]
+    out = []
+    for s in sports or []:
+        if str(s.get("group", "")).lower() != "soccer" or s.get("has_outrights"):
+            continue
+        text = " ".join([str(s.get("key", "")).replace("_", " "), str(s.get("title", "")),
+                         str(s.get("description", ""))]).lower()
+        if any(c in text for c in country) and any(c in text for c in comp):
+            out.append(s)
+    return out
+
+
+def _event_summary(data: dict) -> dict:
+    """Presence only (books, outcome counts, lines): no price leaves the store."""
+    out = {"books": len(data.get("bookmakers") or []), "markets": {}}
+    for b in data.get("bookmakers") or []:
+        for m in b.get("markets") or []:
+            s = out["markets"].setdefault(m.get("key"), {"books": 0, "outcomes": 0, "points": set()})
+            s["books"] += 1
+            s["outcomes"] += len(m.get("outcomes") or [])
+            s["points"] |= {o["point"] for o in m.get("outcomes") or [] if _real_point(o.get("point")) is not None}
+    for s in out["markets"].values():
+        s["points"] = sorted(s["points"])
+    return out
+
+
+def probe_keys(meter: Meter, store: Store, days: dict, spell: dict, leagues=tuple(KEYLESS_SEARCH),
+               window: tuple = PROBE_KEYS_WINDOW) -> dict:
+    """(1) GET /sports?all=true (free; stops if the provider bills it); (2) per keyless league with
+    exactly ONE candidate key: on our busiest match day in `window`, the provider's event listing
+    (<= 1 credit) and one btts + alternate_totals event-odds call at kickoff - 1 h (<= 20 credits,
+    free when empty) on the earliest event PROVEN to be one of our fixtures (else the earliest listed
+    event, flagged unproven). The listing and the odds are kept in the store (tier 'PK'); the summary
+    (presence, books, lines, match counts, credits; no price) goes to ledger/probe_keys.json."""
+    meter.read_remaining()
+    sports = meter.sports_list()
+    res = {"probed_at": iso(datetime.now(timezone.utc)), "window": list(window),
+           "soccer_keys_listed": sum(str(s.get("group", "")).lower() == "soccer" for s in sports),
+           "leagues": {}}
+    R = Resolver(spell)
+    try:
+        for lg in leagues:
+            cands = find_candidate_keys(sports, lg)
+            r = {"candidates": [{"key": s.get("key"), "title": s.get("title"), "active": s.get("active")}
+                                for s in cands], "selected_key": None}
+            res["leagues"][lg] = r
+            if len(cands) != 1:
+                r["reason"] = "no candidate key in the provider's list" if not cands else "more than one candidate"
+                continue
+            sk = cands[0]["key"]
+            r["selected_key"] = sk
+            ds = [(len(fx), d) for (l, d), fx in days.items() if l == lg and window[0] <= d <= window[1]]
+            if not ds:
+                r["reason"] = "no match day of ours in the window"
+                continue
+            d = max(ds)[1]
+            r["probe_date"] = d
+            lo, hi = day_window(d)
+            k = lookup_key(sk, d)
+            status, body, c = meter.call(f"/historical/sports/{sk}/events",
+                                         {"date": iso(lookup_at(d)), "commenceTimeFrom": iso(lo),
+                                          "commenceTimeTo": iso(hi)}, LOOKUP_MAX_COST, "PK", key=k)
+            data = ((body or {}).get("data") or []) if status == 200 else []
+            rows = [{"unit_key": k, "sport_key": sk, "league": lg, "league_date": d, "lookup_at": iso(lookup_at(d)),
+                     "snapshot_ts": (body or {}).get("timestamp"), "event_id": e.get("id"),
+                     "commence_time": e.get("commence_time"), "home_team": e.get("home_team"),
+                     "away_team": e.get("away_team")} for e in data if e.get("id")]
+            if status != "failed":
+                store.add("events", rows)
+                store.finish_unit(k, "PK", "ok" if rows else ("empty" if status == 200 else f"http_{status}"),
+                                  c, len(rows), (body or {}).get("timestamp"))
+                store.put_lookup(k, lg, d, rows)
+            matched, rep = match_day(lg, d, days[(lg, d)], store.events_by_day, R)
+            r["lookup"] = {"status": status, "credits": c, "events_in_window": rep["events_in_window"],
+                           "fixtures": len(days[(lg, d)]), "fixtures_matched": len(matched)}
+            listed = [e for e in store.events_by_day.get((lg, d), []) if _in_window(e, d)]
+            pick = sorted(matched.values(), key=lambda e: e["commence_time"]) or \
+                sorted(listed, key=lambda e: e["commence_time"])
+            if not pick:
+                r["event_odds"] = {"skipped": "the provider lists no event that day"}
+                continue
+            e = pick[0]
+            at = parse_iso(e["commence_time"]) - timedelta(hours=1)
+            ok = unit_key("event_odds", sk, e["id"], iso(at), PROBE_KEYS_MARKETS, ("eu",))
+            status, body, c = meter.call(f"/historical/sports/{sk}/events/{e['id']}/odds",
+                                         {"date": iso(at), "regions": "eu", "markets": ",".join(PROBE_KEYS_MARKETS),
+                                          "oddsFormat": "decimal", "dateFormat": "iso"},
+                                         CREDITS_PER_MARKET_REGION * len(PROBE_KEYS_MARKETS), "PK", key=ok)
+            proven = e["id"] in {x["id"] for x in matched.values()}
+            if status != 200:
+                r["event_odds"] = {"status": status, "credits": c, "proven_fixture": proven}
+                if status != "failed":
+                    store.finish_unit(ok, "PK", f"http_{status}", c, 0, None)
+                continue
+            ev = (body or {}).get("data") or {}
+            meta = {"tier": "PK", "unit_key": ok, "endpoint": "event_odds", "sport_key": sk, "league": lg,
+                    "league_date": d, "snapshot_label": "T-1h", "requested_at": iso(at),
+                    "snapshot_ts": (body or {}).get("timestamp")}
+            orows, _ = odds_rows([ev] if ev else [], meta)
+            store.add("odds", orows)
+            store.finish_unit(ok, "PK", "ok" if orows else "empty", c, len(orows), meta["snapshot_ts"])
+            r["event_odds"] = {"status": status, "credits": c, "proven_fixture": proven,
+                               "snapshot_ts": meta["snapshot_ts"], **_event_summary(ev)}
+    except Stop as s:
+        res["stopped"] = s.reason
+    store.flush()
+    res["credits_spent"], res["calls"] = meter.spent, meter.calls
+    f = store.root / "ledger" / PROBE_KEYS_NAME
+    f.parent.mkdir(parents=True, exist_ok=True)
+    f.write_text(json.dumps(res, indent=1, sort_keys=True, default=sorted) + "\n", encoding="utf-8")
+    found = sum(1 for v in res["leagues"].values() if v.get("selected_key"))
+    hist = sum(1 for v in res["leagues"].values() if (v.get("event_odds") or {}).get("books"))
+    say(f"probe-keys: {len(res['leagues'])} leagues, {found} with one key in the provider's list, "
+        f"{hist} with historical event odds; credits {meter.spent:,}")
     return res
 
 

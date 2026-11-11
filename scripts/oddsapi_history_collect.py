@@ -48,11 +48,13 @@ def main(argv=None) -> int:
     ap.add_argument("--plan-out", type=Path)
     ap.add_argument("--store", type=Path)
     ap.add_argument("--probe-s", action="store_true")
+    ap.add_argument("--probe-keys", action="store_true",
+                    help="the keyless leagues against the provider's sports list + one historical event each")
     ap.add_argument("--max-minutes", type=float)
     ap.add_argument("--tiers", help="comma list, a subset of the priority order (default: every tier)")
     a = ap.parse_args(argv)
 
-    fx, identity = OH.load_fixtures()
+    fx, identity = OH.load_fixtures(include=tuple(OH.KEYLESS_SEARCH) if a.probe_keys else ())
     days = OH.fixture_days(fx)
     spell = OH.club_spellings(identity, days)
     tiers = OH.TIERS if not a.tiers else tuple(t for t in OH.TIERS if t.name in set(a.tiers.split(",")))
@@ -85,6 +87,10 @@ def main(argv=None) -> int:
     meter = OH.Meter(_need_env("ODDS_API_KEY"), floor=floor, run_cap=cap, max_seconds=a.max_minutes * 60)
     if a.probe_s:
         res = OH.probe_s(meter, a.store)
+        return OH.EXIT_ERROR if res.get("stopped") else OH.EXIT_DONE
+    if a.probe_keys:
+        run_id = os.getenv("GITHUB_RUN_ID") or datetime.now(timezone.utc).strftime("local%Y%m%d%H%M%S")
+        res = OH.probe_keys(meter, OH.Store(a.store, f"{run_id}-probe-keys"), days, spell)
         return OH.EXIT_ERROR if res.get("stopped") else OH.EXIT_DONE
     plan = OH.build_plan(days, tiers, s_ok=OH.s_probe_leagues(a.store) or set())
     run_id = os.getenv("GITHUB_RUN_ID") or datetime.now(timezone.utc).strftime("local%Y%m%d%H%M%S")
