@@ -1,16 +1,16 @@
 {
  "calculation_version": "fantasy_v2-1.0.0",
- "generated_at": "2026-11-10T15:12:58Z",
+ "generated_at": "2026-11-11T14:44:41Z",
  "gameweek": 11,
  "deadline": "2026-11-21T11:00:00Z",
- "fpl_fetched_at": "2026-11-10T15:11:19Z",
+ "fpl_fetched_at": "2026-11-11T14:42:44Z",
  "fpl_age_hours_at_build": 0.0,
  "projection_health": {
   "players": 461,
   "with_fixture": 461,
   "blank_gw_players": 0,
   "double_gw_players": 0,
-  "minutes_disagreements": 8,
+  "minutes_disagreements": 9,
   "archived_gameweeks": [
    4,
    5,
@@ -130,7 +130,7 @@
    "p6": 0.4735,
    "p10": 0.3088,
    "p15": 0.1927,
-   "p_blank": 0.2899,
+   "p_blank": 0.2898,
    "p_start": 0.905,
    "exp_minutes": 77.1,
    "ceiling": 22.0,
@@ -184,7 +184,7 @@
     "p_blank": 0.29,
     "p_start": 0.905,
     "ceiling": 22.0,
-    "sd": 8.241,
+    "sd": 8.24,
     "next_fixture": "NFO(H)"
    },
    {
@@ -199,23 +199,8 @@
     "p_blank": 0.305,
     "p_start": 0.89,
     "ceiling": 22.0,
-    "sd": 8.206,
+    "sd": 8.205,
     "next_fixture": "SUN(H)"
-   },
-   {
-    "player_name": "Luka Vu\u0161kovi\u0107",
-    "web_name": "Vuskovic",
-    "team": "Brighton",
-    "position": "DEF",
-    "final_xpts": 7.5,
-    "p6": 0.435,
-    "p10": 0.255,
-    "p15": 0.139,
-    "p_blank": 0.284,
-    "p_start": 0.949,
-    "ceiling": 17.0,
-    "sd": 6.984,
-    "next_fixture": "HUL(A)"
    },
    {
     "player_name": "Jan Paul van Hecke",
@@ -231,6 +216,21 @@
     "ceiling": 17.0,
     "sd": 6.952,
     "next_fixture": "IPS(H)"
+   },
+   {
+    "player_name": "Luka Vu\u0161kovi\u0107",
+    "web_name": "Vuskovic",
+    "team": "Brighton",
+    "position": "DEF",
+    "final_xpts": 7.5,
+    "p6": 0.435,
+    "p10": 0.255,
+    "p15": 0.139,
+    "p_blank": 0.284,
+    "p_start": 0.95,
+    "ceiling": 17.0,
+    "sd": 6.983,
+    "next_fixture": "HUL(A)"
    },
    {
     "player_name": "Thierno Barry",
@@ -261,6 +261,21 @@
     "ceiling": 16.0,
     "sd": 6.61,
     "next_fixture": "NFO(H)"
+   },
+   {
+    "player_name": "Alexander Isak",
+    "web_name": "Isak",
+    "team": "Liverpool",
+    "position": "FWD",
+    "final_xpts": 7.0,
+    "p6": 0.406,
+    "p10": 0.233,
+    "p15": 0.125,
+    "p_blank": 0.32,
+    "p_start": 0.913,
+    "ceiling": 16.0,
+    "sd": 6.761,
+    "next_fixture": "MUN(H)"
    },
    {
     "player_name": "Yasin Ayari",
@@ -304,23 +319,8 @@
     "p_blank": 0.305,
     "p_start": 0.943,
     "ceiling": 16.0,
-    "sd": 6.441,
+    "sd": 6.439,
     "next_fixture": "NFO(H)"
-   },
-   {
-    "player_name": "David Raya Mart\u00edn",
-    "web_name": "Raya",
-    "team": "Arsenal",
-    "position": "GKP",
-    "final_xpts": 6.8,
-    "p6": 0.41,
-    "p10": 0.219,
-    "p15": 0.107,
-    "p_blank": 0.271,
-    "p_start": 0.993,
-    "ceiling": 15.0,
-    "sd": 6.096,
-    "next_fixture": "NEW(A)"
    }
   ]
  },
@@ -359,7 +359,7 @@
    "captain_ev": 8.74,
    "fpl_ep_next": 10.2,
    "wowza_residual": -5.832,
-   "p6": 0.2445,
+   "p6": 0.2444,
    "p10": 0.0904,
    "p15": 0.0284,
    "p_blank": 0.2502,
@@ -440,7 +440,7 @@
     "p_blank": 0.29,
     "p_start": 0.905,
     "ceiling": 11.0,
-    "sd": 8.241,
+    "sd": 8.24,
     "next_fixture": "NFO(H)"
    },
    {
@@ -530,7 +530,7 @@
     "p_blank": 0.305,
     "p_start": 0.89,
     "ceiling": 10.0,
-    "sd": 8.206,
+    "sd": 8.205,
     "next_fixture": "SUN(H)"
    },
    {
@@ -543,9 +543,9 @@
     "p10": 0.095,
     "p15": 0.03,
     "p_blank": 0.284,
-    "p_start": 0.949,
+    "p_start": 0.95,
     "ceiling": 9.0,
-    "sd": 6.984,
+    "sd": 6.983,
     "next_fixture": "HUL(A)"
    },
    {
@@ -560,7 +560,7 @@
     "p_blank": 0.305,
     "p_start": 0.943,
     "ceiling": 9.0,
-    "sd": 6.441,
+    "sd": 6.439,
     "next_fixture": "NFO(H)"
    },
    {
