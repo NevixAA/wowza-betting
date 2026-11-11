@@ -52,6 +52,9 @@ def load_main_ledger() -> pd.DataFrame:
     if not f.exists():
         return pd.DataFrame()
     d = _read_csv(f, low_memory=False)
+    # owner 2026-11-11: post-kickoff tips and the later tip of an opposite O/U pair never count
+    from src.ledger_corrections import drop_historical_excluded
+    d = drop_historical_excluded(d)
     d["match_date"] = pd.to_datetime(d["match_date"], errors="coerce")
     return d
 

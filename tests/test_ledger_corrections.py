@@ -90,7 +90,10 @@ def test_readers_apply_the_sidecars(tmp_path):
     LC.multi_tip_rows(BETS).to_csv(corr / LC.MULTI, index=False)
     BETS[BETS["home_team"] == "Malmo FF"][LC.BETS_KEY].to_csv(corr / LC.POST_KO, index=False)
     d, applied = LC.apply_bets(BETS, tmp_path)
-    assert d["_excluded"].sum() == 1 and d.loc[d["_excluded"], "home_team"].iloc[0] == "Malmo FF"
+    # owner 2026-11-11 "first tip only": the later tip of the opposite pair is excluded, never regraded
+    assert set(d.loc[d["_excluded"], "home_team"]) == {"Malmo FF", "Kalmar FF"}
+    later = d[(d["home_team"] == "Kalmar FF") & d["_excluded"]].iloc[0]
+    assert later["side"] == "OVER" and "first tip only" in later["_excluded_reason"]
     assert d["opposite_tip_pair"].sum() == 2 and d["multi_tip_first_sight"].sum() == 1
     assert (d["result"] == BETS["result"]).all()                 # never regraded
     v = pd.DataFrame({"fixture_id": ["5", "5"], "market": ["ou25"] * 2, "match_date": ["2026-11-07", "2026-11-08"],
@@ -132,3 +135,22 @@ def test_committed_multi_tip_sidecar_flags_38_opposite_fixtures_of_67():
     fx = m.drop_duplicates(["match_date", "league", "home_team", "away_team"])
     assert len(fx) == 67 and int(fx["opposite_tip_pair"].sum()) == 38
     assert int(m["first_sight"].sum()) == 67
+
+
+def test_first_tip_only_in_the_dashboard_and_telegram_readers(tmp_path):
+    corr = tmp_path / "corrections"
+    corr.mkdir()
+    LC.multi_tip_rows(BETS).to_csv(corr / LC.MULTI, index=False)
+    kept = LC.drop_historical_excluded(BETS, tmp_path)
+    k = kept[kept["home_team"] == "Kalmar FF"]
+    assert list(k["side"]) == ["UNDER"]                         # the first-sight tip only
+    assert len(kept) == len(BETS) - 1
+
+
+def test_first_tip_only_on_the_committed_record():
+    import pandas as pd
+    m = pd.read_csv(ROOT / "output" / "corrections" / LC.MULTI)
+    later = m[(m["opposite_tip_pair"].astype(str) == "True") & (m["first_sight"].astype(str) == "False")]
+    d, _ = LC.apply_bets(m.assign(source="live"))
+    assert int(d["_excluded"].sum()) >= len(later) > 0
+    assert d.loc[d["_excluded"] & d["opposite_tip_pair"], "multi_tip_first_sight"].eq(False).all()

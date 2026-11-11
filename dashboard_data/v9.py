@@ -40,6 +40,10 @@ def ledger(include_side_markets: bool = True,
     frames = []
     main = read_csv(OUT / "bets_ledger.csv")
     if not main.empty:
+        # owner 2026-11-11: post-kickoff tips and the later tip of an opposite O/U pair never count
+        # (output/corrections; src/ledger_corrections.historical_excluded)
+        from src.ledger_corrections import drop_historical_excluded
+        main = drop_historical_excluded(main)
         main = main.copy()
         main["market"] = "ou25"
         frames.append(main)

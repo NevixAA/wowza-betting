@@ -10,8 +10,10 @@ rule 6 (src/integrity/data_truth.ledgers) goes RED if any of them recurs from th
 
   M  MULTI-TIP FIXTURES  bets_ledger_multi_tip_fixtures.csv: every row of a fixture holding more than one
      live O/U 2.5 row (a later predict run logged another side). The first-sight row (earliest
-     generated_at) is marked; OVER + UNDER on one fixture is flagged `opposite_tip_pair`. FLAGGED, NOT
-     DELETED and NOT REGRADED: how such a pair counts in a record is an owner decision (open).
+     generated_at) is marked; OVER + UNDER on one fixture is flagged `opposite_tip_pair`. Never deleted,
+     never regraded. OWNER 2026-11-11 "first tip only": in the 'before the repairs' record only the
+     first-sight tip of an opposite pair counts; the later opposite tip stays shown but is EXCLUDED from
+     every historical total. Other multi-tip rows (AVOID then a tip) are flagged only.
   K  POST-KICKOFF        bets_ledger_post_kickoff.csv: live rows generated after the provider's kick-off
      (API-Football fixture claimed by src.integrity.fixture_claims, kick-off from the HT store). A tip
      issued in play is not a pre-match tip: EXCLUDED from every figure (the top-picks precedent).
@@ -230,9 +232,30 @@ def apply_bets(d: pd.DataFrame, out_dir=None) -> tuple[pd.DataFrame, list[dict]]
         fs = op = pd.Series(False, index=d.index)
     d["multi_tip_first_sight"] = m & fs
     d["opposite_tip_pair"] = op
+    later = op & ~fs
+    d.loc[later, "_excluded"] = True
+    d.loc[later, "_excluded_reason"] = "later tip of an opposite O/U pair (owner 2026-11-11: first tip only)"
     return d, [{"sidecar": POST_KO, "effect": "post-kickoff tips excluded", "rows_changed": int(post.sum())},
-               {"sidecar": MULTI, "effect": "multi-tip fixtures FLAGGED (owner decision open; not regraded)",
-                "rows_changed": 0, "rows_flagged": int(m.sum()), "opposite_tip_rows": int(op.sum())}]
+               {"sidecar": MULTI, "effect": "opposite-tip pairs: the later tip excluded (first tip only); "
+                "other multi-tip rows flagged, never regraded",
+                "rows_changed": int(later.sum()), "rows_flagged": int(m.sum()), "opposite_tip_rows": int(op.sum())}]
+
+
+def historical_excluded(d: pd.DataFrame, out_dir=None) -> pd.Series:
+    """bets_ledger rows kept out of every historical total: tips generated after the provider kick-off
+    and the later tip of an opposite O/U pair (owner 2026-11-11: first tip only). For the dashboard and
+    Telegram readers, which show the rows but must not count them."""
+    if d is None or d.empty:
+        return pd.Series(False, index=getattr(d, "index", None), dtype=bool)
+    e, _ = apply_bets(d, out_dir)
+    return e["_excluded"].astype(bool).reindex(d.index, fill_value=False)
+
+
+def drop_historical_excluded(d: pd.DataFrame, out_dir=None) -> pd.DataFrame:
+    """`d` (bets_ledger rows) without historical_excluded() rows."""
+    if d is None or d.empty:
+        return d
+    return d[~historical_excluded(d, out_dir).to_numpy()]
 
 
 def apply_players(d: pd.DataFrame, out_dir=None) -> tuple[pd.DataFrame, list[dict]]:

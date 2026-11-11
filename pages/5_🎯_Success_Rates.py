@@ -73,6 +73,10 @@ def _load() -> pd.DataFrame:
             return
         if tier_col not in d.columns or "result" not in d.columns:
             return
+        if path == "bets_ledger.csv":
+            # owner 2026-11-11: post-kickoff tips and the later tip of an opposite O/U pair never count
+            from src.ledger_corrections import drop_historical_excluded
+            d = drop_historical_excluded(d)
         res = d["result"].astype(str).str.upper()
         d = d[res.isin(_WIN + _LOSS)].copy()
         if d.empty:

@@ -18,9 +18,11 @@ A provider fixture is ADDED when all hold:
     there - extending it backwards is a different decision; counted as 'window_edge', not added);
   * no owner correction list names its fixture id (e.g. Queretaro v Atlas 816403: ruled not played);
   * its provider round label (output/collect/supplement_fixture_rounds.json, scripts/
-    probe_supplement_rounds.py) is a LEAGUE round - regular season or a round-robin phase (owner
-    2026-11-11: cup and knockout ties are not league matches; Argentina's cup rows were excluded on
-    2026-11-04); a fixture without a stored label is refused;
+    probe_supplement_rounds.py) is a league round or the league's OWN play-off tie (owner 2026-11-11
+    "keep league play-offs"); cups and cup-style title knockouts (Argentina's Copa de la Liga, the MLS
+    Cup play-offs, Mexico's Liguilla, China's 2020 knockout stage) and placement games are refused, and
+    a fixture without a stored label is refused. Every (league, label) met is listed with its decision
+    in history_provider_supplement_rounds.csv;
   * no served row of the league within +-1 day is UNCLAIMED (it could be this match under names the
     resolver cannot place - never risk a second copy), and no served row within +-1 day claims a fixture
     of either of its clubs (a club does not play twice in a day: the served row would be this match
@@ -99,10 +101,22 @@ def corrected_fixture_ids() -> set:
 
 #: the provider's round label of every fixture the supplement considered (scripts/probe_supplement_rounds.py)
 ROUNDS = ROOT / "output" / "collect" / "supplement_fixture_rounds.json"
-#: LEAGUE rounds (owner 2026-11-11): the regular season and the round-robin phases that follow it. Every
-#: other label is a cup or knockout tie (finals, semi-finals, play-off ties, play-ins, placement games,
-#: 'Relegation Round' / 'Relegation/Promotion' two-legged ties, the Argentine Copa de la Liga phases)
+#: one row per (league, round label) the supplement met, with its decision (written by run())
+ROUND_RULES = OUT_DIR / "history_provider_supplement_rounds.csv"
+#: LEAGUE rounds: the regular season and the round-robin phases that follow it
 LEAGUE_ROUND = re.compile(r"^(Regular Season|Championship Round|Relegation Group|Conference League Play-off Group)\b")
+#: OWNER 2026-11-11 "keep league play-offs": a league's OWN play-off ties (promotion / relegation /
+#: European-place play-offs: 'Final', 'Semi-finals', 'Promotion Play-offs - ...', 'Relegation Round', the
+#: Austrian 2025/26 Conference League play-off ...) are kept. EXCLUDED: cups and cup-style title
+#: competitions decided by knockout, by league - every non-league-round label of these leagues - and
+#: placement games anywhere.
+CUP_STYLE = {
+    "Argentina Primera Division": "Copa de la Liga Profesional (a separate cup-style competition)",
+    "USA MLS": "MLS Cup play-offs (cup-style title knockout, incl. the play-in)",
+    "Mexico Liga MX": "Liguilla (cup-style title knockout: play-in, reclasificacion, finals)",
+    "China Super League": "2020 championship / placement knockout stage (cup-style title format)",
+}
+PLACEMENT = re.compile(r"place", re.IGNORECASE)
 
 
 def read_rounds(path: Path = ROUNDS) -> dict:
@@ -114,13 +128,24 @@ def read_rounds(path: Path = ROUNDS) -> dict:
     return {int(k): v.get("round") for k, v in (doc.get("fixtures") or {}).items()}
 
 
-def round_reason(label) -> str | None:
-    """None for a league round; else why the fixture is not a league match."""
+def round_decision(league: str, label) -> tuple[str, str]:
+    """('keep' | 'exclude', why) for a provider round label of `league`."""
     if not isinstance(label, str) or not label.strip():
-        return "round label unknown (no provider answer): not proven a league match"
-    if LEAGUE_ROUND.match(label.strip()):
-        return None
-    return f"cup / knockout round '{label.strip()}' (owner 2026-11-11: league rounds only)"
+        return "exclude", "round label unknown (no provider answer): not proven a league match"
+    lab = label.strip()
+    if LEAGUE_ROUND.match(lab):
+        return "keep", "league round"
+    if PLACEMENT.search(lab):
+        return "exclude", f"placement game '{lab}' (owner 2026-11-11)"
+    if league in CUP_STYLE:
+        return "exclude", f"cup / cup-style round '{lab}': {CUP_STYLE[league]} (owner 2026-11-11)"
+    return "keep", "the league's own play-off tie (owner 2026-11-11: keep league play-offs)"
+
+
+def round_reason(label, league: str = "") -> str | None:
+    """None when the round is kept; else why the fixture is not added."""
+    dec, why = round_decision(league, label)
+    return None if dec == "keep" else why
 
 
 def build(served: pd.DataFrame, pool: pd.DataFrame, ht: pd.DataFrame, corrected: set,
@@ -235,7 +260,7 @@ def build(served: pd.DataFrame, pool: pd.DataFrame, ht: pd.DataFrame, corrected:
             refuse("provider record holds no half-time score (an awarded result filed FT)")
             continue
         if rounds is not None:
-            why = round_reason(rounds.get(fid))
+            why = round_reason(rounds.get(fid), lg)
             if why:
                 refuse(why)
                 continue
@@ -263,7 +288,16 @@ def run(dry_run: bool = False) -> dict:
     served = served_frame()
     pool = FC.provider_pool()
     ht = pd.read_parquet(FC.HT_SCORES, columns=["fixture_id", "ht_home", "ht_away"])
-    add, ref, per = build(served, pool, ht, corrected_fixture_ids(), read_rounds())
+    rounds = read_rounds()
+    add, ref, per = build(served, pool, ht, corrected_fixture_ids(), rounds)
+    # the round rule, one row per (league, label) the supplement met
+    seen = pd.concat([add[["league", "provider_fixture_id"]],
+                      ref[["league", "provider_fixture_id"]]], ignore_index=True)
+    seen = seen[seen["provider_fixture_id"].astype(int).isin(set(rounds))]
+    seen = seen.assign(round=seen["provider_fixture_id"].astype(int).map(rounds))
+    rr = seen.groupby(["league", "round"]).size().rename("fixtures").reset_index()
+    dec = [round_decision(lg, lab) for lg, lab in zip(rr["league"], rr["round"])]
+    rr["decision"], rr["reason"] = [d for d, _ in dec], [w for _, w in dec]
     audit = {"artifact": "history_provider_supplement_audit",
              "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
              "served_rows_without_supplement": int(len(served)), "added": int(len(add)),
@@ -275,6 +309,7 @@ def run(dry_run: bool = False) -> dict:
              "per_league": per}
     if not dry_run:
         add.to_csv(HS.SUPPLEMENT, index=False, lineterminator="\n")
+        rr.to_csv(ROUND_RULES, index=False, lineterminator="\n")
         ref.to_csv(REFUSED, index=False, lineterminator="\n")
         AUDIT.write_text(json.dumps(audit, indent=1, ensure_ascii=False) + "\n", encoding="utf-8", newline="\n")
     return audit

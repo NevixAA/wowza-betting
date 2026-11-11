@@ -172,7 +172,8 @@ def correct_live(d: pd.DataFrame, ledger: str, out_dir: Path) -> tuple[pd.DataFr
                         "effect": "first-half close (or an impossible close <= 1.0): CLV blanked (P/L kept)",
                         "rows_changed": int(d["clv_quarantined"].sum())})
     if ledger == "bets_ledger.csv":
-        # 2026-11-11 certification: post-kickoff tips excluded, multi-tip fixtures flagged (src/ledger_corrections)
+        # 2026-11-11 certification: post-kickoff tips excluded; owner "first tip only": the later tip of an
+        # opposite O/U pair excluded; other multi-tip rows flagged (src/ledger_corrections)
         from src import ledger_corrections as LC
         d, extra = LC.apply_bets(d, out_dir)
         applied += [{**e, "applied_to": ledger, "present": (Path(out_dir) / "corrections" / e["sidecar"]).exists()}
