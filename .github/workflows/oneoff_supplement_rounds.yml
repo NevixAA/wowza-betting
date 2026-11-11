@@ -1,0 +1,50 @@
+name: One-off - provider round labels of the history supplement (2026-11-11)
+
+# scripts/probe_supplement_rounds.py on data-truth-100: /fixtures?ids=<20 ids> for every fixture of
+# output/corrections/history_provider_supplement.csv (31 calls, hard cap 40). Manual only. Commits ONLY
+# output/collect/supplement_fixture_rounds.json to data-truth-100. Delete this file once it has run.
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: oneoff-supplement-rounds
+  cancel-in-progress: false
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: data-truth-100
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install requests pandas pyarrow
+      - name: Probe (31 calls)
+        env:
+          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
+          COLLECT_AF_FLOOR: '10000'
+        run: |
+          python scripts/probe_supplement_rounds.py | tee probe.txt
+          { echo '## Supplement rounds probe'; echo '```'; cat probe.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+      - name: Commit the answer to data-truth-100
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          cp output/collect/supplement_fixture_rounds.json "$RUNNER_TEMP/r.json"
+          for i in 1 2 3 4 5; do
+            git fetch -q origin data-truth-100 && git reset -q --hard origin/data-truth-100
+            cp "$RUNNER_TEMP/r.json" output/collect/supplement_fixture_rounds.json
+            git add -f output/collect/supplement_fixture_rounds.json
+            git diff --staged --quiet && { echo "nothing to commit"; exit 0; }
+            git commit -q -m "data(probe): provider round labels of the history supplement fixtures"
+            git push origin HEAD:data-truth-100 && exit 0
+            sleep $((i * 10))
+          done
+          echo "::error::could not push"; exit 1
