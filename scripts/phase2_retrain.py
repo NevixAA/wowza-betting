@@ -45,6 +45,12 @@ def print_plan(plan: dict, info: dict) -> None:
         print(f"new_format HT variant: ON (owner_decisions.new_format_ht_variant); HT block {hv['block']}")
         for b in hv["blockers"]:
             print(f"  BLOCKER (fitting refused): {b}")
+    lv = plan.get("league_variant") or {}
+    if lv.get("on"):
+        print(f"league-level variant: ON (owner_decisions.league_level_variant); block {lv['block']}; "
+              f"param runs {[r['candidate'] + r['suffix'] for r in lv['param_runs']]}")
+        for b in lv["blockers"]:
+            print(f"  BLOCKER (fitting refused): {b}")
     for track, t in plan["tracks"].items():
         print(f"\n== track {track}: {t['n_features']} features")
         print("   " + ", ".join(t["features"]))

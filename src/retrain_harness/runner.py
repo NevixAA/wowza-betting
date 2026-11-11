@@ -106,7 +106,7 @@ def _score(runs, cfg, track, market, fsets, frames, stage, fold, errors, models_
     ids = _row_ids(test).to_numpy()
     for name, base, suffix in runs:
         feats = fsets[suffix][0]
-        cand = C.build(base, cfg, track, market, feats)
+        cand = C.build(base, cfg, track, market, feats, overrides=P.run_params(cfg, name))
         cand.name = name
         try:
             cand.fit(frames)
@@ -153,6 +153,9 @@ def run(feat: pd.DataFrame, cfg: dict, out_dir, *, stages=STAGES, only=None, tra
         b = P.ht_variant_blockers(cfg, feat.columns)        # the frame check: never skip silently
         if b:
             raise PermissionError("fitting refused: " + "; ".join(b))
+    b = P.league_variant_blockers(cfg, feat.columns)
+    if b:
+        raise PermissionError("fitting refused: " + "; ".join(b))
     for s in stages:
         if s not in STAGES:
             raise ValueError(f"unknown stage {s!r}")

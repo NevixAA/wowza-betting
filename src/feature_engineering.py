@@ -255,6 +255,79 @@ def _league_expanding_avg(df: pd.DataFrame) -> pd.Series:
     return _league_prior_dates_mean(df, "total_goals")
 
 
+# ── As-of league LEVEL features (owner 2026-11-11, "fix before final refit") ──────────────────
+#
+# The Phase 2 champion predicted ~0.52-0.53 BTTS in every Standard league while the leagues ran
+# 0.48-0.59: no model input carried the league's own scoring level (league_avg_goals only divides
+# the attack/defence strengths, which removes the level). These are the league's OWN rates over
+# its matches on STRICTLY EARLIER DATES - one league never reads another, there is no pooled or
+# global fallback, and a league with no earlier match has NaN.
+#
+# COVID seasons (config.covid_season_mask) never feed the aggregates, in training AND serving:
+# the training frame drops them before build_features, while serving reads the full history; an
+# expanding mean over the full history would differ from the trained one in every league that has
+# 2019-21 rows (measured: up to 0.022 on the BTTS rate, 0.107 on goals per game).
+#: feature column -> the result column it averages
+LEAGUE_LEVEL_FEATURES = {
+    "league_asof_goals_pg": "total_goals",
+    "league_asof_btts_rate": "btts",
+    "league_asof_over15_rate": "over15",
+    "league_asof_over25_rate": "over25",
+    "league_asof_over35_rate": "over35",
+    "league_asof_ht_over05_rate": "ht_over05",
+    "league_asof_ht_over15_rate": "ht_over15",
+}
+
+
+def _league_level_values(df: pd.DataFrame, col: str) -> pd.Series:
+    """`col` as numbers, with COVID-season rows (when config.EXCLUDE_COVID_SEASONS) and absent
+    columns as NaN - the values the league-level aggregates are allowed to read."""
+    if col not in df.columns:
+        return pd.Series(np.nan, index=df.index)
+    v = pd.to_numeric(df[col], errors="coerce")
+    if getattr(config, "EXCLUDE_COVID_SEASONS", False) and len(df) and "league" in df.columns:
+        v = v.where(~config.covid_season_mask(df).to_numpy())
+    return v
+
+
+def add_league_level_features(df: pd.DataFrame) -> pd.DataFrame:
+    """TRAINING: every LEAGUE_LEVEL_FEATURES column, per row, from the row's league on strictly
+    earlier dates (NaN with no earlier value)."""
+    out = df.copy()
+    for feat, col in LEAGUE_LEVEL_FEATURES.items():
+        tmp = pd.DataFrame({"league": out["league"], "date": out["date"],
+                            "_v": _league_level_values(out, col)}, index=out.index)
+        out[feat] = _league_prior_dates_mean(tmp, "_v").to_numpy()
+    return out
+
+
+def league_level_asof(fixtures: pd.DataFrame, hist: pd.DataFrame) -> pd.DataFrame:
+    """SERVING: the same columns for each fixture from `hist` rows of the fixture's league dated
+    strictly before the fixture's date (the same rule as add_league_level_features)."""
+    out = pd.DataFrame(np.nan, index=fixtures.index, columns=list(LEAGUE_LEVEL_FEATURES))
+    if fixtures.empty or hist.empty or "league" not in fixtures.columns:
+        return out
+    h = hist[hist["league"].notna()]
+    hday = pd.to_datetime(h["date"]).dt.normalize()
+    fday = pd.to_datetime(fixtures["date"], errors="coerce").dt.normalize()
+    for feat, col in LEAGUE_LEVEL_FEATURES.items():
+        v = _league_level_values(h, col)
+        frame = pd.DataFrame({"league": h["league"].to_numpy(), "day": hday.to_numpy(),
+                              "s": v.fillna(0.0).to_numpy(), "c": v.notna().astype(float).to_numpy()})
+        daily = frame.groupby(["league", "day"], sort=True)[["s", "c"]].sum()
+        for lg, g in daily.groupby(level="league"):
+            m = (fixtures["league"] == lg).to_numpy() & fday.notna().to_numpy()
+            if not m.any():
+                continue
+            days = g.index.get_level_values("day").to_numpy()
+            cs, cc = g["s"].cumsum().to_numpy(), g["c"].cumsum().to_numpy()
+            k = np.searchsorted(days, fday[m].to_numpy(), side="left")   # dates strictly before
+            s = np.where(k > 0, cs[np.maximum(k - 1, 0)], 0.0)
+            c = np.where(k > 0, cc[np.maximum(k - 1, 0)], 0.0)
+            out.loc[m, feat] = np.where(c > 0, s / np.where(c > 0, c, 1.0), np.nan)
+    return out
+
+
 # ── Rest days ────────────────────────────────────────────────────────────────
 
 def _add_home_advantage(df: pd.DataFrame) -> pd.DataFrame:
@@ -514,6 +587,7 @@ def build_features(matches: pd.DataFrame, n: int = None, recipe: str = "legacy_v
     # Computed BEFORE the HT block: it ran after, so the HT strengths always divided by a typed
     # 0.65 for every league (Data Truth 2026-11-01). No league history yet -> NaN.
     df["league_avg_goals"] = _league_expanding_avg(df).values
+    df = add_league_level_features(df)
 
     # ── HT-derived features (when available) ──────────────────────────────
     if has_ht and "home_ht_scored_last5" in df.columns:
@@ -791,6 +865,10 @@ def build_upcoming_features(
     # League avg from history
     league_avgs = hist.groupby("league")["total_goals"].mean()
     df["league_avg_goals"] = df["league"].map(league_avgs)
+    # As-of league level (strictly before the fixture's date, own league only, COVID out).
+    _ll = league_level_asof(df, hist)
+    for _c in LEAGUE_LEVEL_FEATURES:
+        df[_c] = _ll[_c].to_numpy(dtype=float)
 
     half_avg = (df["league_avg_goals"] / 2).replace(0, np.nan)
     df["home_attack_str"]  = df["home_scored_last5"]   / half_avg

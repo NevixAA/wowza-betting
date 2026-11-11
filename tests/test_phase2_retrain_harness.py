@@ -70,7 +70,7 @@ def _frame(seed: int = 7, days: int = 150, teams: int = 8) -> pd.DataFrame:
     return f
 
 
-def _cfg(approved: bool = False, ht_variant: bool = False) -> dict:
+def _cfg(approved: bool = False, ht_variant: bool = False, league_variant: bool = False) -> dict:
     """A FIXTURE copy of the committed config on synthetic dates. approved=False empties
     approved_by/approved_at (the committed config is approved since 2026-11-07); the HT variant is
     off unless asked for. new_format excludes xG (stays out) and one HT column (the HT block)."""
@@ -81,6 +81,7 @@ def _cfg(approved: bool = False, ht_variant: bool = False) -> dict:
     else:
         cfg["holdout"].update(approved_by=None, approved_at=None)
     cfg["owner_decisions"]["new_format_ht_variant"] = ht_variant
+    cfg["owner_decisions"]["league_level_variant"] = league_variant
     cfg["walk_forward"].update(min_train_matchdays=50, block_matchdays=30, validation_matchdays=20)
     cfg["features"]["groups"] = {"form": {"include": True, "parity": "test",
                                           "columns": FEATS + ["bookmaker_overround", "home_ht_scored_last5",
@@ -722,3 +723,112 @@ def test_runner_records_not_fitted_and_fails_the_run_on_a_real_error(feat, tmp_p
     with pytest.raises(R.RunErrors, match="a bug"):
         R.run(feat, cfg, tmp_path, env=ENV_ON, run_id="boom")
     assert (tmp_path / "boom" / "manifest.json").exists()           # reports written first
+
+
+# ── the league-level variant (owner_decisions.league_level_variant, owner 2026-11-11, synthetic) ──
+
+LEAGUE_COLS = ["league_asof_goals_pg", "league_asof_btts_rate"]
+
+
+def _league_cfg(**k):
+    cfg = _cfg(league_variant=True, **k)
+    cfg["features"]["league_level"] = {
+        "columns": LEAGUE_COLS + ["league_asof_ht_over05_rate"],
+        "param_runs": [{"suffix": "+league+logitcal", "candidate": "champion_recipe", "league": True,
+                        "params": {"calibration_input": "logit"}}]}
+    cfg["features"]["track_exclude"]["new_format"].append("league_asof_ht_over05_rate")
+    return cfg
+
+
+@pytest.fixture(scope="module")
+def lfeat(feat):
+    from src.feature_engineering import _league_prior_dates_mean
+    f = feat.copy()
+    f["total_goals"] = f["home_goals"] + f["away_goals"]
+    f["league_asof_goals_pg"] = _league_prior_dates_mean(f, "total_goals").to_numpy()
+    f["league_asof_btts_rate"] = _league_prior_dates_mean(f, "btts").to_numpy()
+    f["league_asof_ht_over05_rate"] = _league_prior_dates_mean(f, "ht_over05").to_numpy()
+    return f
+
+
+def test_committed_config_runs_the_league_variant_and_never_changes_the_champion_list():
+    cfg = P.load_config()
+    assert P.league_variant_on(cfg) and P.league_variant_blockers(cfg) == []
+    cols = P.league_level_columns(cfg)
+    assert cols and all(c.startswith("league_asof_") for c in cols)
+    grouped = {c for g in cfg["features"]["groups"].values() for c in g["columns"]}
+    assert not set(cols) & grouped                                 # the champion list never reads them
+    assert [r["suffix"] for r in P.league_param_runs(cfg)] == ["+league+logitcal", "+logitcal"]
+    assert P.run_params(cfg, "champion_recipe+logitcal") == {"calibration_input": "logit"}
+    assert P.run_params(cfg, "champion_recipe") == {} and P.run_params(cfg, "hgb+league") == {}
+    # the HT block of the new_format variant never takes a league-level column
+    assert not [c for c in P.ht_block(cfg) if c.startswith("league_asof_")]
+
+
+def test_league_variant_feature_sets_add_the_block_only(lfeat):
+    cfg = _league_cfg()
+    for track in ("standard", "new_format"):
+        sets = P.feature_sets(cfg, track, lfeat.columns)
+        base, lg = sets[""][0], sets["+league"][0]
+        assert not [c for c in base if c.startswith("league_asof_")]
+        added = set(lg) - set(base)
+        assert added == (set(LEAGUE_COLS) | ({"league_asof_ht_over05_rate"} if track == "standard" else set()))
+        assert sets["+league+logitcal"][0] == lg
+    assert set(P.feature_sets(_cfg(), "standard", lfeat.columns)) == {""}
+
+
+def test_league_variant_candidate_runs_and_blockers(lfeat):
+    cfg = _league_cfg()
+    labels = [r[0] for r in P.candidate_runs(cfg, "standard", list(P.CANDIDATES))]
+    for n in P.FEATURE_CANDIDATES:
+        assert labels.count(n) == 1 and labels.count(n + "+league") == 1
+    assert "champion_recipe+league+logitcal" in labels and "market_only+league" not in labels
+    assert len(labels) == len(set(labels))
+    assert P.league_variant_blockers(cfg, lfeat.columns) == []
+    assert P.league_variant_blockers(cfg, [c for c in lfeat.columns if c != "league_asof_btts_rate"])
+    bad = _league_cfg()
+    bad["features"]["groups"]["form"]["columns"].append("league_asof_btts_rate")
+    assert P.league_variant_blockers(bad)
+
+
+def test_param_run_fits_the_champion_on_logit_calibration_and_serves_the_same_scale(lfeat):
+    from src.model import predict_proba
+    cfg = _league_cfg()
+    fr = _frames(lfeat, cfg)
+    feats = P.feature_sets(cfg, "standard", lfeat.columns)["+league"][0]
+    a = C.build("champion_recipe", cfg, "standard", "over25", feats).fit(fr)
+    b = C.build("champion_recipe", cfg, "standard", "over25", feats,
+                overrides=P.run_params(cfg, "champion_recipe+league+logitcal")).fit(fr)
+    assert "calibration_input" not in a.payload and b.payload["calibration_input"] == "logit"
+    assert b.meta()["calibration_input"] == "logit"
+    pb = b.predict(fr["test"])
+    assert np.isfinite(pb).all() and not np.allclose(pb, a.predict(fr["test"]))
+    # serving = the same payload through src.model.predict_proba, row by row = in a batch
+    one = np.array([float(predict_proba(fr["test"].iloc[[i]], payload=b.payload).iloc[0]) for i in range(5)])
+    assert np.allclose(one, pb[:5], atol=1e-12)
+
+
+def test_league_variant_that_cannot_run_refuses_fitting(feat, tmp_path):
+    cfg = _league_cfg(approved=True)
+    with pytest.raises(PermissionError, match="league-level"):
+        R.run(feat, cfg, tmp_path, env=ENV_ON, run_id="no_league_cols")
+
+
+def test_league_variant_end_to_end_scores_every_label_in_one_holm_family(lfeat, tmp_path):
+    cfg = _league_cfg(approved=True)
+    for k in [m for m in cfg["markets"] if m != "over25"]:
+        cfg["markets"].pop(k)
+    folder = R.run(lfeat, cfg, tmp_path, env=ENV_ON, run_id="synthetic_league")
+    man = json.loads((folder / "manifest.json").read_text(encoding="utf-8"))
+    assert not [e for e in man["errors"] if "error" in e], man["errors"]
+    want = (set(P.CANDIDATES) | {n + "+league" for n in P.FEATURE_CANDIDATES}
+            | {"champion_recipe+league+logitcal"})
+    assert set(man["candidates_by_track"]["standard"]) == want
+    pred = pd.read_parquet(folder / "predictions.parquet")
+    h = pred[(pred["stage"] == "holdout") & (pred["track"] == "standard")].pivot_table(
+        index="row_id", columns="candidate", values="p")
+    assert not np.allclose(h["hgb"], h["hgb+league"]), "the variant must train on the league block"
+    cmp_ = pd.read_csv(folder / "comparison.csv")
+    std = cmp_[(cmp_["track"] == "standard") & (cmp_["stage"] == "holdout")]
+    assert set(std["candidate"]) == want - {"champion_recipe"}
+    assert (cmp_["reference"] == "champion_recipe").all()

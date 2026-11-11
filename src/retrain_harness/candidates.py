@@ -128,7 +128,8 @@ class ChampionRecipe(Candidate):
                              feature_cols=feats, recipe=recipe,
                              holdout_start=pd.to_datetime(test["date"]).min(),
                              imputer_options={"all_missing": "drop"},
-                             provenance={"track": self.track, "harness": "phase2_retrain"})
+                             provenance={"track": self.track, "harness": "phase2_retrain"},
+                             calibration_input=self.params.get("calibration_input", "probability"))
         self.payload = build_payload(res, self.target)
         dropped = list(self.payload.get("dropped_all_missing_features") or [])
         if dropped:
@@ -145,6 +146,7 @@ class ChampionRecipe(Candidate):
         m = super().meta()
         if self.fitted:
             m.update(recipe=self.recipe, imputer_version=self.payload.get("imputer_version"),
+                     calibration_input=self.payload.get("calibration_input", "probability"),
                      n_features=len(self.payload.get("feature_cols") or []),
                      blocks=self.payload.get("blocks"))
         return m
@@ -385,8 +387,11 @@ class ModelMarket(Candidate):
         return super().meta() | {"price_class": self.price_class}
 
 
-def build(name: str, cfg: dict, track: str, market_name: str, features: list) -> Candidate:
-    c = cfg["candidates"][name]
+def build(name: str, cfg: dict, track: str, market_name: str, features: list,
+          overrides: dict | None = None) -> Candidate:
+    """`overrides`: a parameter run's changed parameters (protocol.run_params), on top of the
+    candidate's config block; empty for every ordinary candidate."""
+    c = {**cfg["candidates"][name], **(overrides or {})}
     market = cfg["markets"][market_name]
     price_class = (cfg.get("price_class") or {}).get("loader_served", "")
     if name == "champion_recipe":
