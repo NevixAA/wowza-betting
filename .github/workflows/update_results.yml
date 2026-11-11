@@ -204,6 +204,29 @@ jobs:
           done
           [ "$pushed" = "1" ] || echo "::warning::TOP-3 settlement push failed after 5 retries"
 
+      # TOP-3 PAPER TRACKS R1 / R2 settlement (src/research/top3_paper.py, flag TOP3_PAPER_ENABLED, default off ->
+      # a no-op). PAPER/RESEARCH: grading columns only (frozen columns hashed, refused on change).
+      - name: Settle TOP-3 paper tracks (research only, flag default off)
+        if: always()
+        env:
+          TOP3_PAPER_ENABLED: ${{ vars.TOP3_PAPER_ENABLED }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          pushed=0
+          for i in 1 2 3 4 5; do
+            git fetch -q origin main && git reset -q --hard origin/main || { sleep 3; continue; }
+            python -m src.research.top3_paper settle || { echo "::warning::TOP-3 paper settlement failed"; pushed=1; break; }
+            for f in output/research/top3_paper/paper_ledger.csv output/research/top3_paper/paper_ledger.csv.first_sight.json                      output/research/top3_paper/summary.json; do
+              git add -f "$f" 2>/dev/null || true
+            done
+            if git diff --staged --quiet; then pushed=1; echo "TOP-3 paper: nothing new"; break; fi
+            git commit -q -m "auto: TOP-3 paper settlement $(date -u '+%Y-%m-%d %H:%M UTC')"
+            git push && { pushed=1; break; }
+            echo "push race - retry $i"; sleep $((RANDOM % 5 + 3))
+          done
+          [ "$pushed" = "1" ] || echo "::warning::TOP-3 paper settlement push failed after 5 retries"
+
       # CORRECTIONS SIDECARS (ops6, 2026-11-02). The two round-5 sidecars need API-Football, so they
       # can only be built here, never on a laptop:
       #   output/corrections/player_ledger_restored_2026-11.csv   graded_* columns of the 111 restored

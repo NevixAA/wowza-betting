@@ -1,0 +1,34 @@
+{
+ "about": "TOP-3 paper tracks R1 / R2 (src/research/top3_paper.py) and the one-time statistics freeze (scripts/top3_paper_freeze.py). PAPER/RESEARCH: nothing here stakes, executes or publishes. Every value is pinned; a change is a new protocol version, before the first pick.",
+ "protocol_file": "config/top3_ranking_paper_protocol_v2.json",
+ "protocol_sha256": "296637c666166084c238ac351644ebd9cc03b8a271b2d602f00047d4098d5c08",
+ "tracks": ["R1_CELL_LCB", "R2_CAL_EV"],
+ "live_track": "R3_CAL_EV_LCB (the production TOP-3; not recorded here)",
+ "start_utc": "2026-11-21T00:00:00Z",
+ "stats_as_of_utc": "2026-11-20T23:59:59Z",
+ "freeze_window_from_utc": "2026-11-20T00:00:00Z",
+ "bets_from": "2026-09-01",
+ "freeze_record": "output/research/top3_ranking/live_stats_2026-11-20.json",
+ "freeze_ledger": "output/research/top3_ranking/live_stats_ledger.json",
+ "clean_override_id": "clean-data-switch-2026-11-09",
+ "approved_proposals": [
+  {"proposal_id": "TP-2026-11-10-d999073a",
+   "proposal_hash": "d999073a5f1744c512011fe7a487a957ced743c6d8b467ec88dc6302d2e100d6",
+   "file": "output/threshold_proposals/bars_oddsapi_hist/2026-11.json",
+   "approved": "owner 2026-11-11 \"Approve, paper + small\" (config/threshold_approvals.json)"}
+ ],
+ "clean_frames": {
+  "58f10476f4c82d7b": {
+   "recipe": "Phase 2 champion_recipe (clean retrain), walk-forward predictions, data-truth-100 2e6e6e745",
+   "standard_run": "run_20261110T203611Z (GitHub run 42895611758)",
+   "new_format_run": "run_20261110T203319Z (local, single-threaded)",
+   "universes_commit": "655ac1e8f (own prices only)",
+   "universe_sha256": {
+    "standard": "f8cb36f3a473240308f4146c82c6f9cb159c1f4d228331969553f72f06b14df4",
+    "new_format": "9ec3222c5a6b788c01a9005023716928b6f5fc26ef7b15deb66b89018a60cba8"
+   }
+  }
+ },
+ "fresh_holdout_record": "output/threshold_proposals/bars_oddsapi_hist/fresh_2026-11-10_bc7459cc.json",
+ "fresh_holdout_record_sha256": "254c8c2635e24e8c0f5e82594d3372979fab05480312ef1def275f569afbb4be"
+}

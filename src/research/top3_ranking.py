@@ -1,36 +1,35 @@
-"""RESEARCH ONLY - pre-registered alternative TOP-3 ranking rules (protocol config/top3_ranking_paper_protocol.json).
+"""TOP-3 ranking rules - the ONE implementation of R1, R2 and R3 (protocol config/top3_ranking_paper_protocol_v2.json).
 
-Nothing here is imported by production. The rules change ONLY the order in which a league-week's qualifying
-tips are taken; the eligible pool (every tip at or above its league's own VALUABLE bar for that market), the
-cap of 3 per league per gameweek, never padding, the direction rule and the TIER2 label are those of
-src.bars_opt.study.top3 (TOP_ONLY_V) / src.top3_league.
+Owner 2026-11-11 ("Clean rebuild"): the live TOP-3 is ranked by R3 (served from prep/bars-oddsapi-hist, which
+imports it from HERE); R1 and R2 run as PAPER tracks (src/research/top3_paper.py). The old EV ranking is
+dropped as a track; it stays below only as a DIAGNOSTIC rule for the research scripts.
 
-Why (reports/TOP3_RANKING_DIAGNOSIS.md): the production key ev_est = p_used * odds - 1 compares numbers on
-different scales across cells - a RAW-source cell (uncalibrated model probability) carries a far larger EV
-than a BLEND / SHRINK cell (calibrated) for the same realised value - and inside a cell EV carries no
-ranking signal. So the key keeps taking the most over-confident tips.
+PUBLIC API (pure functions, pandas in / pandas out):
+    cell_stats(prior_bets, prior_rows) -> stats      per-cell statistics (the freeze computes them once)
+    stats_from_freeze(record) -> stats               the frozen statistics of a freeze record (dict)
+    rank_order(frame, stats, rule, tiebreak=())      the frame sorted best first, with key / has_stat / no_stat
+    select(bets, stats, rule)                         research replay: TOP-3 per (track, league, ISO week)
+    MSIDE_OF[(panel market, side)]                    -> study market-side ("over25_over", ...)
+
+A frame to rank needs: track, league, mside (the CELL), fair, p_used, odds and ev_est (= p_used * odds - 1 from
+the cell's own served source; used only as the tie-break / no-statistic order).
+
+Why (output/research/top3_ranking/diagnosis.json): ev_est compares numbers on different scales across cells
+- a RAW-source cell carries a far larger EV than a calibrated BLEND / SHRINK cell for the same realised value -
+and inside a cell EV carries no ranking signal, so an EV ranking takes the most over-confident tips.
 
 Every statistic is learned per CELL = (track, league, market-side) from that cell's OWN history dated before
-the ranking date, shrunk at most toward the SAME league's other markets. No number is pooled across leagues
-and no constant is invented: the minimum own bets / rows (MIN_OWN_BETS = 40) and the 95% level (Z95) are the
-study's declared ones (src.bars_opt.study, src.league_bars).
+the freeze, shrunk at most toward the SAME league's other markets. No number is pooled across leagues and no
+constant is invented: MIN_OWN_BETS (40) and Z95 are the study's declared ones (src.bars_opt.study).
 
-  R1_CELL_LCB    cell's own walk-forward BET ROI, lower 95% bound (mean - Z95 * max-of-three SE)
-  R2_CAL_EV      per-tip EV with the cell's calibrated probability p_cal = fair + lam * (p_used - fair);
-                 lam = least squares of (won - fair) on (p_used - fair) over the cell's own prior PRICED ROWS
-                 (every priced match of that league x market-side, tipped or not, scored by the cell's own
-                 probability source), shrunk toward the same league's other markets (DerSimonian-Laird
-                 tau^2 learned inside the league) and clipped to [0, 1] (study.shrink_weights with the
-                 market-side as the group, inside ONE league)
-  R3_CAL_EV_LCB  as R2 with lam_lo = clip(lam - Z95 * se_own(lam), 0, 1): the EV the tip still has at the
-                 low end of its cell's calibration - a large model-vs-market gap counts only as far as the
-                 cell's own history supports it
-  DEV_CELL_EB    (development only, NOT a paper track: it ranked like R1 on the selection window) the cell's
-                 bet ROI shrunk toward the league's own all-market ROI
+  R1_CELL_LCB    the cell's own walk-forward BET ROI, lower 95% bound (mean - Z95 * max-of-three SE)
+  R2_CAL_EV      calibrated EV (fair + lam * (p_used - fair)) * odds - 1; lam = least squares of (won - fair)
+                 on (p_used - fair) over the cell's own prior PRICED ROWS, shrunk toward the same league's
+                 other markets (DerSimonian-Laird inside the league), clipped to [0, 1]
+  R3_CAL_EV_LCB  as R2 with lam_lo = clip(lam - Z95 * se_own(lam), 0, 1)
 
-A cell without the rule's statistic (too few own bets / rows) has none - nothing is filled in: its tips rank
-AFTER every tip that has one, among themselves by the production key (ev_est); they are counted per pick
-(no_stat). Ties are broken by the production key, then kickoff date.
+A tip whose cell has no statistic for the rule gets none (nothing filled in): it ranks AFTER every tip that
+has one, among those by ev_est, and is flagged no_stat = 1.
 """
 from __future__ import annotations
 
@@ -41,17 +40,21 @@ import pandas as pd
 
 from src.bars_opt import study as S
 
-RULES = ("EV_PRODUCTION", "R1_CELL_LCB", "R2_CAL_EV", "R3_CAL_EV_LCB")
-DEV_ONLY = ("DEV_CELL_EB",)
+RULES = ("R1_CELL_LCB", "R2_CAL_EV", "R3_CAL_EV_LCB")
+LIVE_RULE = "R3_CAL_EV_LCB"
+PAPER_RULES = ("R1_CELL_LCB", "R2_CAL_EV")
+DIAGNOSTIC_RULES = ("EV_PRODUCTION", "DEV_CELL_EB")       # research scripts only; never a track
 MIN_OWN_BETS = S.MIN_OWN_BETS          # 40, declared in the study (own bets for a bar / switch / TIER2 band)
 Z95 = 1.96                             # the study's 95% interval (study.score: mean +- 1.96 * max-of-three SE)
 CELL = ["track", "league", "mside"]
 STAT_COLS = ["n", "roi", "se", "lcb", "eb", "lam", "lam_se", "lam_rows"]
+#: panel market x side (src/top3_league.py candidates) -> study market-side
+MSIDE_OF = {("OU25", "OVER"): "over25_over", ("OU25", "UNDER"): "over25_under", ("BTTS", "YES"): "btts_yes",
+            ("OVER15", "OVER"): "over15_over", ("OVER35", "OVER"): "over35_over"}
 
 
 def _dl_shrink(m: np.ndarray, v: np.ndarray) -> np.ndarray:
-    """Inverse-variance mean + DerSimonian-Laird tau^2 over the cells of ONE league; posterior means.
-    One cell: its own value."""
+    """Inverse-variance mean + DerSimonian-Laird tau^2 over the cells of ONE league; posterior means."""
     v = np.maximum(v, 1e-12)
     if len(m) < 2:
         return m.copy()
@@ -64,7 +67,7 @@ def _dl_shrink(m: np.ndarray, v: np.ndarray) -> np.ndarray:
 
 
 def _own_slope_se(g: pd.DataFrame) -> float:
-    """SE of the cell's OWN least-squares slope (study.shrink_weights' per-league variance s2 / sxx)."""
+    """SE of the cell's OWN least-squares slope (study.shrink_weights' per-group variance s2 / sxx)."""
     dd = (g["p_used"] - g["fair"]).to_numpy(float)
     r = g["won"].to_numpy(float) - g["fair"].to_numpy(float)
     sxx = float((dd ** 2).sum())
@@ -75,7 +78,6 @@ def _own_slope_se(g: pd.DataFrame) -> float:
 
 
 def _lams(rows: pd.DataFrame | None) -> pd.DataFrame:
-    """R2 / R3 calibration per cell from prior priced rows (cells with >= MIN_OWN_BETS rows)."""
     cols = CELL + ["lam", "lam_se", "lam_rows"]
     if rows is None or rows.empty:
         return pd.DataFrame(columns=cols)
@@ -93,16 +95,17 @@ def _lams(rows: pd.DataFrame | None) -> pd.DataFrame:
     return pd.DataFrame(out, columns=cols)
 
 
-def cell_stats(prior: pd.DataFrame | None, rows: pd.DataFrame | None = None) -> pd.DataFrame:
-    """One row per cell: n, roi, se, lcb, eb from its prior BETS (R1, DEV_CELL_EB) and lam, lam_se from its
-    prior priced ROWS (R2, R3). NaN = no statistic for that rule; never filled."""
-    lam = _lams(rows)
-    if prior is None or prior.empty:
+def cell_stats(prior_bets: pd.DataFrame | None, prior_rows: pd.DataFrame | None = None) -> pd.DataFrame:
+    """One row per cell. From prior BETS (track, league, mside, date, pnl): n, roi, se, lcb (R1), eb.
+    From prior priced ROWS (track, league, mside, fair, p_used, won): lam, lam_se, lam_rows (R2, R3).
+    NaN = no statistic for that rule; never filled."""
+    lam = _lams(prior_rows)
+    if prior_bets is None or prior_bets.empty:
         return lam.assign(n=0, roi=np.nan, se=np.nan, lcb=np.nan, eb=np.nan)[CELL + STAT_COLS]
     recs = []
-    for key, g in prior.groupby(CELL):
+    for key, g in prior_bets.groupby(CELL):
         pnl = g["pnl"].to_numpy(float)
-        days = g["date"].dt.strftime("%Y-%m-%d").to_numpy()
+        days = pd.to_datetime(g["date"]).dt.strftime("%Y-%m-%d").to_numpy()
         se = S.max_se(pnl, days)
         ok = len(g) >= MIN_OWN_BETS and np.isfinite(se)
         recs.append(dict(zip(CELL, key)) | {"n": len(g), "roi": float(pnl.mean()), "se": se if ok else np.nan,
@@ -120,38 +123,60 @@ def cell_stats(prior: pd.DataFrame | None, rows: pd.DataFrame | None = None) -> 
     return st[CELL + STAT_COLS]
 
 
-def rank_key(bets: pd.DataFrame, stats: pd.DataFrame, rule: str) -> pd.DataFrame:
-    """bets + has_stat (bool) and key (higher = taken first) for `rule`."""
+def stats_from_freeze(record: dict) -> pd.DataFrame:
+    """The frozen per-cell statistics of a freeze record (scripts/top3_paper_freeze.py), as cell_stats returns
+    them. JSON null -> NaN (no statistic)."""
+    st = pd.DataFrame(record.get("cells") or [], columns=CELL + STAT_COLS)
+    for c in STAT_COLS:
+        st[c] = pd.to_numeric(st[c], errors="coerce")
+    st["n"] = st["n"].fillna(0).astype(int)
+    return st
+
+
+def rank_key(frame: pd.DataFrame, stats: pd.DataFrame, rule: str) -> pd.DataFrame:
+    """frame + the cell's statistics + key (higher = taken first), has_stat and no_stat for `rule`."""
+    if rule not in RULES + DIAGNOSTIC_RULES:
+        raise ValueError(f"unknown ranking rule {rule!r}")
+    b = frame.drop(columns=[c for c in STAT_COLS if c in frame.columns])
     if len(stats):
-        b = bets.merge(stats, on=CELL, how="left")
+        b = b.merge(stats[CELL + STAT_COLS], on=CELL, how="left")
     else:
-        b = bets.assign(**{c: np.nan for c in STAT_COLS})
+        b = b.assign(**{c: np.nan for c in STAT_COLS})
+    fair, p, odds = (pd.to_numeric(b[c], errors="coerce") for c in ("fair", "p_used", "odds"))
     if rule == "EV_PRODUCTION":
-        b["key"] = b["ev_est"]
+        b["key"] = pd.to_numeric(b["ev_est"], errors="coerce")
     elif rule == "R1_CELL_LCB":
         b["key"] = b["lcb"]
     elif rule == "DEV_CELL_EB":
         b["key"] = b["eb"]
-    elif rule in ("R2_CAL_EV", "R3_CAL_EV_LCB"):
-        lam = b["lam"] if rule == "R2_CAL_EV" else (b["lam"] - Z95 * b["lam_se"]).clip(0, 1)
-        b["key"] = (b["fair"] + lam * (b["p_used"] - b["fair"])) * b["odds"] - 1.0
     else:
-        raise ValueError(rule)
+        lam = b["lam"] if rule == "R2_CAL_EV" else (b["lam"] - Z95 * b["lam_se"]).clip(0, 1)
+        b["key"] = (fair + lam * (p - fair)) * odds - 1.0
     b["has_stat"] = b["key"].notna()
+    b["no_stat"] = (~b["has_stat"]).astype(int)
     return b
 
 
+def rank_order(frame: pd.DataFrame, stats: pd.DataFrame, rule: str, tiebreak: tuple = ()) -> pd.DataFrame:
+    """`frame` best first under `rule`: tips with a statistic by key (desc), then those without; ties by
+    ev_est (desc), then the `tiebreak` columns (asc, e.g. kickoff, fixture id). Stable."""
+    if frame is None or frame.empty:
+        cols = list(frame.columns) if frame is not None else []
+        return pd.DataFrame(columns=cols + ["key", "has_stat", "no_stat"])
+    b = rank_key(frame, stats, rule)
+    b["_ev"] = pd.to_numeric(b["ev_est"], errors="coerce")
+    cols, asc = ["no_stat", "key", "_ev", *tiebreak], [True, False, False, *([True] * len(tiebreak))]
+    return b.sort_values(cols, ascending=asc, na_position="last", kind="mergesort").drop(columns="_ev")
+
+
 def select(bets: pd.DataFrame, stats: pd.DataFrame, rule: str) -> pd.DataFrame:
-    """TOP-3 per (track, league, ISO week) under `rule`; direction rule and never-pad as study.top3.
-    EV_PRODUCTION reproduces study.top3(bets, "TOP_ONLY_V") pick for pick."""
+    """Research replay on study bet frames: TOP-3 per (track, league, ISO week); direction rule and never-pad
+    as src.bars_opt.study.top3. EV_PRODUCTION reproduces study.top3(bets, "TOP_ONLY_V") pick for pick."""
     if bets is None or bets.empty:
         return pd.DataFrame()
-    b = rank_key(bets, stats, rule)
+    b = bets.copy()
     b["gw"] = b["date"].dt.strftime("%G-W%V")
-    b["no_stat"] = (~b["has_stat"]).astype(int)
-    b["slot"] = np.where((b["band"] == "BAND_VM") & b["tier2_ok"].astype(bool), "TIER2", "TOP")
-    order = b.sort_values(["no_stat", "key", "ev_est", "date"], ascending=[True, False, False, True],
-                          na_position="last", kind="mergesort")
+    order = rank_order(b, stats, rule, tiebreak=("date",))
     picks = []
     for _, g in order.groupby(["track", "league", "gw"], sort=False):
         taken, dirs = [], {}
