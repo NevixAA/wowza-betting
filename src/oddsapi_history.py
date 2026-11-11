@@ -90,6 +90,25 @@ class Tier:
     end: str
     gate: str | None = None          # None | "props_probe" | "s_probe"
     purpose: str = ""
+    # per model track ((track, ((label, timedelta), ...)), ...): replaces `offsets` for a league of that
+    # track (the registry's model_type); a league of no listed track gets no unit
+    offsets_by_track: tuple | None = None
+
+    def offsets_for(self, league: str) -> tuple:
+        if self.offsets_by_track is None:
+            return self.offsets
+        return dict(self.offsets_by_track).get(league_model_type(league), ())
+
+
+# BT, the BET-TIME snapshot (owner 2026-11-11: "a closing price may never be a bet price"). The lead
+# time live tips are really made at, MEASURED on v9's live ledgers (data-truth-100 91cc1e805,
+# output/bets_ledger.csv + output/side_bets_ledger.csv, source == live, 2026-04-26..2026-11-09): first
+# sight = the earliest generated_at (UTC, src/ledger.py datetime.utcnow) per fixture x market, kickoff =
+# the provider's commence_time of that fixture (exact OddsAPI names, +-1 day; 96-98% joined).
+#   new_format: n 1,663, median 152.8 h (IQR 98.4-166.3)    standard: n 677, median 124.9 h (IQR 66.1-164.5)
+# The tracks differ by 28 h, so each gets its own median, rounded to the hour.
+BT_LEAD_HOURS = {"new_format": 153, "standard": 125}
+BT_LABEL = "bet"
 
 
 TIERS: tuple[Tier, ...] = (
@@ -99,6 +118,9 @@ TIERS: tuple[Tier, ...] = (
          purpose="New-Format O/U main line before the event-market history starts"),
     Tier("B4", "featured", ("h2h", "totals"), ("eu",), EIGHT, "team", "2023-06-14", "2026-06-13",
          purpose="sharp-money line movement, 8 snapshots per league-day"),
+    Tier("BT", "event", ("btts", "alternate_totals"), ("eu",), (), "team", "2023-05-03", HISTORY_END,
+         purpose="BET-TIME snapshot: B1's events and markets at the measured live-tip lead time per track",
+         offsets_by_track=tuple((tr, ((BT_LABEL, timedelta(hours=-h)),)) for tr, h in BT_LEAD_HOURS.items())),
     Tier("B3", "event", ("props",), ("uk", "eu", "us", "us2"), (CLOSE,), "props", "2023-05-03", HISTORY_END,
          gate="props_probe", purpose="player props at close (probe-confirmed markets only)"),
     Tier("S", "event", ("correct_score",), ("uk", "eu"), (CLOSE,), "team", "2023-05-03", HISTORY_END,
@@ -304,6 +326,26 @@ def _tier_leagues(t: Tier, days: dict, props: dict, s_ok: set | None, nf: set) -
     return team
 
 
+def league_model_type(league: str) -> str | None:
+    """The registry's model_type of the league ('standard' / 'new_format'), None for props-only."""
+    from src import league_registry as LR
+    return (LR.entry(league) or {}).get("model_type")
+
+
+def snapshot_role(tier: str, label: str) -> str:
+    """The role of a stored snapshot. BET: the bet-time snapshot (tier BT) - the ONLY price a bet may
+    be evaluated at. CLOSE: a closing snapshot (label 'close': B1, B2, B3, B4, C3, C4) - CLV only, never a
+    bet price. OPEN: the T-48h opening snapshots of C1, C2, C3. MOVEMENT: B4 / C5's intermediate line
+    snapshots (T-72h..T-1h)."""
+    if tier == "BT":
+        return "BET"
+    if label == "close":
+        return "CLOSE"
+    if tier in ("C1", "C2", "C3") and label == OPEN48[0]:
+        return "OPEN"
+    return "MOVEMENT"
+
+
 def _props_only(league: str) -> bool:
     """A props-only league (top divisions / cups) has no team model: no bars, no team tiers."""
     from src import league_registry as LR
@@ -331,7 +373,7 @@ def build_plan(days: dict, tiers: Iterable[Tier] = TIERS, props: dict | None = N
             anchors = [(None, None)] if t.kind == "featured" else list(fx)
             new = False
             for h, a in anchors:
-                for label, off in t.offsets:
+                for label, off in t.offsets_for(lg):
                     ident = (t.kind, lg, d, h, a, int(off.total_seconds()))
                     miss = {}
                     for r in t.regions:
@@ -377,7 +419,9 @@ def summarise_plan(plan: dict, days: dict, sec_per_call: tuple = (0.5, 1.0),
         t = tiers[name]
         out["tiers"][name] = {
             "kind": t.kind, "markets": list(t.markets), "regions": list(t.regions),
-            "snapshots": [lab for lab, _ in t.offsets], "window": [t.start, t.end], "gate": t.gate,
+            "snapshots": ([lab for lab, _ in t.offsets] if t.offsets_by_track is None else
+                          {tr: [f"{lab} {int(off.total_seconds() // 3600)}h" for lab, off in offs]
+                           for tr, offs in t.offsets_by_track}), "window": [t.start, t.end], "gate": t.gate,
             "purpose": t.purpose,
             "league_days": len({(u.league, u.date) for u in units}),
             "matches": len({(u.league, u.date, u.home, u.away) for u in units if u.kind == "event"}),

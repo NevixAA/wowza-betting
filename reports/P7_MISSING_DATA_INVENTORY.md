@@ -248,3 +248,24 @@ New dry run (served universe, S probe applied):
 | C5 | 7,933 | 0 | 47,598 | 0 | **951,960** | 5,362,373 | 6.6-13.2 h |
 
 B1..C4 (4,410,413 max) fit in the 4,740,000 usable; C5 runs on what the returned-markets billing leaves.
+
+### BT, the bet-time snapshot (owner 2026-11-11: "a closing price may never be a bet price")
+
+B1's snapshot is the CLOSE (median 9.4 min before kickoff) and may only serve CLV. BT buys the same events and
+markets (btts + every alternate_totals line, eu) at the lead time live tips are really made, measured on v9's live
+ledgers (data-truth-100 91cc1e805, bets_ledger + side_bets_ledger, source live, first sight = earliest
+generated_at UTC per fixture x market, kickoff = the provider's commence_time; 96-98% joined):
+
+| Track | First sights | Median lead | IQR | < 24 h | >= 120 h | BT offset |
+|---|---|---|---|---|---|---|
+| New-Format | 1,663 | 152.8 h | 98.4-166.3 h | 9% | 69% | **T-153h** |
+| Standard | 677 | 124.9 h | 66.1-164.5 h | 14% | 52% | **T-125h** |
+
+(Since 2026-10-01 the medians are 163.6 h NF / 147.6 h Standard: the board now looks further ahead.)
+Order: after B4, before B3. Dry run: 29,983 calls (0 listings: B1's are reused), at most **599,660** credits.
+
+Shared read path (src/oddsapi_history_adapter.py): quotes at or after the event's actual kickoff (the provider's
+latest statement, or the kickoff the snapshot itself carried) are dropped (2,380 B1 quotes in the store), prices
+<= 1.01 are dropped (7,884 B1 quotes, 0.43%), every quote carries its role (BET = BT, CLOSE = any 'close'
+snapshot, OPEN = C1/C2/C3 T-48h, MOVEMENT = B4/C5 intermediate), and prices_for / attach_to_universe refuse a
+bet price from any role but BET (CloseAsBetError).

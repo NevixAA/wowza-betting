@@ -274,7 +274,7 @@ def test_adapter_attaches_real_prices_by_fixture_id(tmp_path):
     long, summary, unmatched = AD.attach(_universe(), _odds(tmp_path))
     assert set(long["fixture_id"]) == {f"{D}|{LG}|Austin|Dallas", f"{D}|{LG}|Portland Timbers|Seattle Sounders"}
     assert {"over15", "over45", "btts"} <= set(long["market"])
-    u = AD.attach_to_universe(_universe(), summary)
+    u = AD.attach_to_universe(_universe(), summary, purpose="close")
     a = u[(u["home"] == "Austin")].set_index("market")
     assert a.loc["over15", "oh_close_yes_best"] == 1.25 and a.loc["over15", "oh_close_no_best"] == 3.9
     assert a.loc["btts", "oh_close_yes_n_books"] == 2 and a.loc["btts", "oh_close_yes_best"] == 1.85
@@ -545,3 +545,113 @@ def test_a_success_without_cost_headers_still_stops():
     with pytest.raises(OH.Stop) as e:
         m.call("/x", {}, 20, "B1")
     assert "cost not reported" in e.value.reason
+
+
+# ── BT: the bet-time snapshot (owner 2026-11-11) and the shared read-path rules ────────────────────
+def test_bt_is_ordered_after_b4_and_before_b3():
+    order = list(OH.TIER_ORDER)
+    assert order.index("B4") < order.index("BT") < order.index("B3")
+
+
+def test_bt_takes_one_snapshot_per_event_at_the_track_lead_time_and_reuses_b1_lookups():
+    days = {("USA MLS", D): [("Austin", "Dallas")],                 # new_format
+            ("Championship", D): [("Leeds", "Hull")]}               # standard
+    plan = OH.build_plan(days, _tiers("B1", "BT"), props={}, nf={"USA MLS"})
+    bt = {u.league: u for u in plan["units"]["BT"]}
+    assert set(bt) == {"USA MLS", "Championship"} and len(plan["units"]["BT"]) == 2
+    assert bt["USA MLS"].offset_s == -OH.BT_LEAD_HOURS["new_format"] * 3600
+    assert bt["Championship"].offset_s == -OH.BT_LEAD_HOURS["standard"] * 3600
+    assert {u.label for u in plan["units"]["BT"]} == {"bet"}
+    assert bt["USA MLS"].markets == ("btts", "alternate_totals") and bt["USA MLS"].regions == ("eu",)
+    assert plan["lookups"]["BT"] == []                               # B1's listings, never re-bought
+
+
+def test_bt_run_buys_at_kickoff_minus_the_lead_and_stores_role_inputs(tmp_path):
+    api = FakeAPI()
+    days = {(LG, D): DAYS[(LG, D)]}
+    store = OH.Store(tmp_path / "store", "r1")
+    meter = OH.Meter(KEY, floor=OH.MIN_FLOOR, run_cap=10_000, max_seconds=600, session=api, pause=0,
+                     sleep=lambda s: None)
+    plan = OH.build_plan(days, _tiers("B1", "BT"), props={}, nf={LG})
+    OH.Collector(store, meter, days, plan, ["BT"]).run()
+    snaps = sorted(c[1]["date"] for c in api.calls if "/events/" in c[0])
+    lead = OH.BT_LEAD_HOURS["new_format"]
+    assert snaps == sorted([(pd.Timestamp("2024-06-02T00:30:00Z") - pd.Timedelta(hours=lead)).strftime("%Y-%m-%dT%H:%M:%SZ"),
+                            (pd.Timestamp("2024-06-02T02:30:00Z") - pd.Timedelta(hours=lead)).strftime("%Y-%m-%dT%H:%M:%SZ")])
+    o = _odds(tmp_path)
+    assert set(o["tier"]) == {"BT"} and set(o["snapshot_label"]) == {"bet"}
+
+
+def test_snapshot_roles():
+    r = OH.snapshot_role
+    assert r("BT", "bet") == "BET"
+    assert r("B1", "close") == r("B4", "close") == r("B2", "close") == r("C4", "close") == "CLOSE"
+    assert r("C1", "T-48h") == r("C3", "T-48h") == "OPEN"
+    assert r("B4", "T-48h") == "MOVEMENT"
+
+
+def _long_odds(rows):
+    base = {"unit_key": "u", "endpoint": "event_odds", "sport_key": SK, "league": LG, "league_date": D,
+            "requested_at": "t", "event_id": "e", "home_team": "Austin FC", "away_team": "FC Dallas",
+            "bookmaker": "b", "market": "btts", "outcome_description": None, "point": None,
+            "commence_time": "2024-06-02T00:30:00Z"}
+    out = []
+    for i, r in enumerate(rows):
+        out.append({**base, "unit_key": f"u{i}", "bookmaker": f"b{i}", **r})
+    return pd.DataFrame(out)
+
+
+def test_quotes_at_or_after_the_actual_kickoff_are_dropped():
+    odds = _long_odds([
+        # a RESCHEDULED event: the listing said 00:30, the match was brought forward to 00:00; the close
+        # snapshots (requested off the stale 00:30) carry the new kickoff -> they are post-kickoff
+        {"tier": "B1", "snapshot_label": "close", "snapshot_ts": "2024-06-02T00:25:00Z", "outcome_name": "Yes",
+         "price": 1.9, "commence_time": "2024-06-02T00:00:00Z"},
+        {"tier": "B1", "snapshot_label": "close", "snapshot_ts": "2024-06-02T00:30:00Z", "outcome_name": "Yes",
+         "price": 1.7, "commence_time": "2024-06-02T00:00:00Z"},
+        {"tier": "C1", "snapshot_label": "T-48h", "snapshot_ts": "2024-05-31T00:30:00Z", "outcome_name": "Yes",
+         "price": 2.0},
+        {"tier": "BT", "snapshot_label": "bet", "snapshot_ts": None, "outcome_name": "Yes", "price": 2.1}])
+    long, _, _ = AD.attach(_universe().iloc[[0]], odds)
+    # actual kickoff = 00:00 (the latest snapshot's statement); no snapshot time -> pre-kickoff unprovable
+    assert sorted(long["price"]) == [2.0]
+    assert long.attrs["dropped"]["post_kickoff"] == 2 and long.attrs["dropped"]["no_snapshot_ts"] == 1
+
+
+def test_prices_at_or_below_1_01_are_dropped():
+    odds = _long_odds([
+        {"tier": "B1", "snapshot_label": "close", "snapshot_ts": "2024-06-02T00:25:00Z", "outcome_name": "Yes", "price": 1.01},
+        {"tier": "B1", "snapshot_label": "close", "snapshot_ts": "2024-06-02T00:25:00Z", "outcome_name": "No", "price": 1.02}])
+    long, _, _ = AD.attach(_universe().iloc[[0]], odds)
+    assert list(long["price"]) == [1.02] and long.attrs["dropped"]["price_le_1_01"] == 1
+
+
+def test_every_quote_carries_its_role_and_a_bet_price_never_comes_from_close():
+    odds = _long_odds([
+        {"tier": "BT", "snapshot_label": "bet", "snapshot_ts": "2024-05-26T00:00:00Z", "outcome_name": "Yes", "price": 2.2},
+        {"tier": "B1", "snapshot_label": "close", "snapshot_ts": "2024-06-02T00:25:00Z", "outcome_name": "Yes", "price": 1.9},
+        {"tier": "C1", "snapshot_label": "T-48h", "snapshot_ts": "2024-05-31T00:30:00Z", "outcome_name": "Yes", "price": 2.0}])
+    long, summary, _ = AD.attach(_universe().iloc[[0]], odds)
+    assert dict(zip(long["tier"], long["role"])) == {"BT": "BET", "B1": "CLOSE", "C1": "OPEN"}
+    assert list(AD.prices_for(long, "bet")["price"]) == [2.2]
+    assert list(AD.prices_for(long, "close")["price"]) == [1.9]
+    with pytest.raises(AD.CloseAsBetError):
+        AD.prices_for(long, "bet", role="CLOSE")
+    with pytest.raises(AD.CloseAsBetError):
+        AD.attach_to_universe(_universe().iloc[[0]], summary, purpose="bet", role="CLOSE")
+    u = AD.attach_to_universe(_universe(), summary, purpose="bet").set_index(["home", "market"])
+    assert u.loc[("Austin", "btts"), "oh_bet_yes_best"] == 2.2
+    c = AD.attach_to_universe(_universe(), summary, purpose="close").set_index(["home", "market"])
+    assert c.loc[("Austin", "btts"), "oh_close_yes_best"] == 1.9
+    assert "oh_bet_yes_best" not in c.columns
+
+
+def test_a_quote_taken_after_the_kickoff_it_carried_is_dropped_even_if_the_match_moved_later():
+    # at 00:25 the provider said kickoff 00:00 (in play); a later listing postponed it to the next day
+    odds = _long_odds([
+        {"tier": "B1", "snapshot_label": "close", "snapshot_ts": "2024-06-02T00:25:00Z", "outcome_name": "Yes",
+         "price": 1.9, "commence_time": "2024-06-02T00:00:00Z"},
+        {"tier": "C1", "snapshot_label": "T-48h", "snapshot_ts": "2024-06-02T06:00:00Z", "outcome_name": "Yes",
+         "price": 2.0, "commence_time": "2024-06-03T00:30:00Z"}])
+    long, _, _ = AD.attach(_universe().iloc[[0]], odds)
+    assert list(long["price"]) == [2.0] and long.attrs["dropped"]["post_kickoff"] == 1

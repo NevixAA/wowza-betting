@@ -198,6 +198,79 @@
     "2026": 198240
    }
   },
+  "BT": {
+   "kind": "event",
+   "markets": [
+    "btts",
+    "alternate_totals"
+   ],
+   "regions": [
+    "eu"
+   ],
+   "snapshots": {
+    "new_format": [
+     "bet -153h"
+    ],
+    "standard": [
+     "bet -125h"
+    ]
+   },
+   "window": [
+    "2023-05-03",
+    "2026-11-09"
+   ],
+   "gate": null,
+   "purpose": "BET-TIME snapshot: B1's events and markets at the measured live-tip lead time per track",
+   "league_days": 8943,
+   "matches": 29983,
+   "odds_calls": 29983,
+   "lookup_calls": 0,
+   "calls": 29983,
+   "max_credits": 599660,
+   "max_credits_odds": 599660,
+   "max_credits_lookups": 0,
+   "conditional_saudi_credits": 20060,
+   "cumulative_max_credits": 2481906,
+   "fits_in_usable": true,
+   "hours_at_sec_per_call": {
+    "0.5": 4.2,
+    "1.0": 8.3
+   },
+   "max_credits_by_league": {
+    "Argentina Primera Division": 31120,
+    "Austrian Bundesliga": 13620,
+    "Belgian First Division A": 20500,
+    "Brazil Serie A": 28960,
+    "Bundesliga 2": 20980,
+    "Championship": 37000,
+    "China Super League": 18400,
+    "Denmark Superliga": 13740,
+    "Dutch Eredivisie": 21060,
+    "Finland Veikkausliiga": 13380,
+    "Greek Super League": 15800,
+    "Ireland Premier Division": 13160,
+    "Japan J-League": 25100,
+    "K-League 1": 15780,
+    "La Liga 2": 31560,
+    "League One": 36820,
+    "League Two": 36920,
+    "Ligue 2": 22800,
+    "Mexico Liga MX": 23360,
+    "Norway Eliteserien": 17880,
+    "Saudi Pro League": 20060,
+    "Scottish Premiership": 15660,
+    "Serie B": 25960,
+    "Sweden Allsvenskan": 18040,
+    "Turkish Super Lig": 23200,
+    "USA MLS": 38800
+   },
+   "max_credits_by_year": {
+    "2023": 110240,
+    "2024": 170420,
+    "2025": 173820,
+    "2026": 145180
+   }
+  },
   "B3": {
    "kind": "event",
    "markets": [
@@ -227,7 +300,7 @@
    "max_credits_odds": 523760,
    "max_credits_lookups": 741,
    "conditional_saudi_credits": 0,
-   "cumulative_max_credits": 2406747,
+   "cumulative_max_credits": 3006407,
    "fits_in_usable": true,
    "hours_at_sec_per_call": {
     "0.5": 0.7,
@@ -272,7 +345,7 @@
    "max_credits_odds": 0,
    "max_credits_lookups": 0,
    "conditional_saudi_credits": 0,
-   "cumulative_max_credits": 2406747,
+   "cumulative_max_credits": 3006407,
    "fits_in_usable": true,
    "hours_at_sec_per_call": {
     "0.5": 0.0,
@@ -308,7 +381,7 @@
    "max_credits_odds": 599660,
    "max_credits_lookups": 0,
    "conditional_saudi_credits": 20060,
-   "cumulative_max_credits": 3006407,
+   "cumulative_max_credits": 3606067,
    "fits_in_usable": true,
    "hours_at_sec_per_call": {
     "0.5": 4.2,
@@ -377,7 +450,7 @@
    "max_credits_odds": 276990,
    "max_credits_lookups": 3596,
    "conditional_saudi_credits": 8530,
-   "cumulative_max_credits": 3286993,
+   "cumulative_max_credits": 3886653,
    "fits_in_usable": true,
    "hours_at_sec_per_call": {
     "0.5": 2.7,
@@ -447,7 +520,7 @@
    "max_credits_odds": 523760,
    "max_credits_lookups": 0,
    "conditional_saudi_credits": 0,
-   "cumulative_max_credits": 3810753,
+   "cumulative_max_credits": 4410413,
    "fits_in_usable": true,
    "hours_at_sec_per_call": {
     "0.5": 0.6,
@@ -492,8 +565,8 @@
    "max_credits_odds": 599660,
    "max_credits_lookups": 0,
    "conditional_saudi_credits": 20060,
-   "cumulative_max_credits": 4410413,
-   "fits_in_usable": true,
+   "cumulative_max_credits": 5010073,
+   "fits_in_usable": false,
    "hours_at_sec_per_call": {
     "0.5": 4.2,
     "1.0": 8.3
@@ -567,7 +640,7 @@
    "max_credits_odds": 951960,
    "max_credits_lookups": 0,
    "conditional_saudi_credits": 33600,
-   "cumulative_max_credits": 5362373,
+   "cumulative_max_credits": 5962033,
    "fits_in_usable": false,
    "hours_at_sec_per_call": {
     "0.5": 6.6,
@@ -613,6 +686,7 @@
   "B1",
   "B2",
   "B4",
+  "BT",
   "B3",
   "S",
   "C1",
@@ -625,10 +699,10 @@
  "plan_credits": 5000000,
  "floor": 260000,
  "history_end": "2026-11-09",
- "total_max_credits": 5362373,
- "total_calls": 244805,
- "planned_at": "2026-11-10T11:34:58Z",
- "plan_digest": "d9f4deffa98122e0",
+ "total_max_credits": 5962033,
+ "total_calls": 274788,
+ "planned_at": "2026-11-11T10:49:39Z",
+ "plan_digest": "2c0af939ed4c088d",
  "s_probe": "applied",
  "props_markets_from_probe": {
   "Ligue 1": [
