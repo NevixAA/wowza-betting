@@ -163,4 +163,13 @@ def test_project_date():
     t = pd.Timestamp("2026-11-11")
     assert R.project_date(150, 0, 150, t) == "reached"
     assert R.project_date(10, 0.0, 150, t) == "never at the current rate"
+    assert R.project_date(10, float("nan"), 150, t).startswith("unknown")
     assert R.project_date(50, 10.0, 150, t) == "2027-01-20"
+
+
+def test_one_exposed_fixture_is_too_thin_for_a_ci():
+    d = _resid_frame(0.3, n_fix=400)
+    one = d[(d["gk_out"] == 0.0) | (d["fixture_id"] == 0)]          # a single exposed fixture
+    r = R.residual_diff(one, "gk_out", 500, 1, min_clusters=10)
+    assert r["n_fix_exposed"] == 1 and not np.isnan(r["diff"])
+    assert np.isnan(r["ci_lo"]) and np.isnan(r["p_one_sided"])

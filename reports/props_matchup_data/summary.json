@@ -1,0 +1,30 @@
+{
+ "generated_at": "2026-11-11T07:17:38Z",
+ "protocol_sha256": "bae12cec60d191dab9ebb87904fd0881329aa16925fc79668607102b202266be",
+ "inputs": {
+  "scored": "props_harness_holdout_scored.csv.gz",
+  "ledger_rows_settled": 19089,
+  "strict_fixtures_observed": 125,
+  "retro_fixtures_observed": 27487
+ },
+ "inventory_totals": {
+  "settled": 12078,
+  "ledger_priced": 2654,
+  "a_price_real": 690,
+  "a_price_real_af": 506,
+  "b_absence_strict": 1064,
+  "b_absence_retro_context": 4156,
+  "c_both_strict": 129
+ },
+ "cells": {
+  "n_cells": 586,
+  "max_n": 4,
+  "n_ge_30": 0,
+  "n_ge_150": 0,
+  "max_player_rate_per_week": 1.0
+ },
+ "league_market_reached_150": 0,
+ "n_tests_in_family": 158,
+ "n_tests_readable": 126,
+ "any_holm_significant": false
+}

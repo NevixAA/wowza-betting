@@ -224,9 +224,12 @@ def exposures(targets: pd.DataFrame, regs: pd.DataFrame, absent: pd.DataFrame, o
 
 # ── residual test ───────────────────────────────────────────────────────────────────────────────
 
-def residual_diff(df: pd.DataFrame, exposure: str, n_boot: int, seed: int) -> dict:
+def residual_diff(df: pd.DataFrame, exposure: str, n_boot: int, seed: int, min_clusters: int = 1) -> dict:
     """Mean residual (y - p_served) of exposed rows minus unexposed rows; percentile CI and one-sided
-    p (H1: diff > 0) from a bootstrap that resamples whole fixtures within each group."""
+    p (H1: diff > 0) from a bootstrap that resamples whole fixtures within each group.
+    A group with fewer than `min_clusters` fixtures is TOO THIN: the point estimate is reported, the
+    CI and p stay missing (a bootstrap over one or two fixtures has no between-fixture variance and
+    would print a falsely narrow interval)."""
     d = df.dropna(subset=[exposure, "y", "p"])
     e, u = d[d[exposure] == 1.0], d[d[exposure] == 0.0]
     res = {"n_rows_exposed": int(len(e)), "n_rows_unexposed": int(len(u)),
@@ -236,6 +239,9 @@ def residual_diff(df: pd.DataFrame, exposure: str, n_boot: int, seed: int) -> di
                 "oe_exposed": np.nan, "oe_unexposed": np.nan}
     r_e = (e["y"] - e["p"]).to_numpy(); r_u = (u["y"] - u["p"]).to_numpy()
     diff = float(r_e.mean() - r_u.mean())
+    oe = {"oe_exposed": float(e["y"].sum() / e["p"].sum()), "oe_unexposed": float(u["y"].sum() / u["p"].sum())}
+    if min(res["n_fix_exposed"], res["n_fix_unexposed"]) < min_clusters:
+        return {**res, "diff": diff, "ci_lo": np.nan, "ci_hi": np.nan, "p_one_sided": np.nan, **oe}
     rng = np.random.default_rng(seed)
 
     def _cluster(g):
@@ -247,9 +253,7 @@ def residual_diff(df: pd.DataFrame, exposure: str, n_boot: int, seed: int) -> di
     boot = se[ie].sum(1) / ce[ie].sum(1) - su[iu].sum(1) / cu[iu].sum(1)
     p1 = float((1 + (boot <= 0).sum()) / (n_boot + 1))
     return {**res, "diff": diff, "ci_lo": float(np.quantile(boot, 0.025)),
-            "ci_hi": float(np.quantile(boot, 0.975)), "p_one_sided": p1,
-            "oe_exposed": float(e["y"].sum() / e["p"].sum()),
-            "oe_unexposed": float(u["y"].sum() / u["p"].sum())}
+            "ci_hi": float(np.quantile(boot, 0.975)), "p_one_sided": p1, **oe}
 
 
 def holm(pvals: pd.Series) -> pd.Series:
@@ -314,7 +318,9 @@ def opponent_team_id(L: pd.DataFrame, fixtures: pd.DataFrame) -> pd.Series:
 def project_date(n_now: int, weekly_rate: float, target: int, today: pd.Timestamp) -> str:
     if n_now >= target:
         return "reached"
-    if not weekly_rate or weekly_rate <= 0 or np.isnan(weekly_rate):
+    if weekly_rate is None or pd.isna(weekly_rate):
+        return "unknown (rate not measurable)"
+    if weekly_rate <= 0:
         return "never at the current rate"
     weeks = (target - n_now) / weekly_rate
     return (today + pd.Timedelta(weeks=weeks)).strftime("%Y-%m-%d")
@@ -350,10 +356,10 @@ def run(args) -> dict:
                               "p_hgb_nan_native"])
     sc = sc[sc["market"].isin(MARKETS)].rename(columns={"p_hgb_nan_native": "p"})
     sc["fixture_id"] = sc["fixture_id"].astype("int64")
-    import pyarrow.dataset as ds
-    ph = ds.dataset(str(ROOT / "player_history.parquet"), format="parquet").to_table(
-        columns=["fixture_id", "player_id", "position"],
-        filter=ds.field("date") >= "2026-08-01").to_pandas()
+    months = sorted({d.strftime("%Y-%m") for d in pd.to_datetime(sc["date"]).dt.to_period("M").dt.start_time})
+    ph = pd.concat([pd.read_parquet(ROOT / "player_history.parquet" / f"month_{m}.parquet",
+                                    columns=["fixture_id", "player_id", "position"]) for m in months],
+                   ignore_index=True)
     ph = ph.dropna(subset=["fixture_id", "player_id"]).astype({"fixture_id": "int64", "player_id": "int64"})
     ph = ph.drop_duplicates(["fixture_id", "player_id"])
     sc = sc.merge(ph, on=["fixture_id", "player_id"], how="left")
@@ -383,22 +389,27 @@ def run(args) -> dict:
                     if g[exp].notna().sum() == 0:
                         continue
                     seed = S["seed"] + len(rows)
-                    r = residual_diff(g, exp, S["n_boot"], seed)
+                    r = residual_diff(g, exp, S["n_boot"], seed, S["min_exposed_fixtures_to_read"])
                     rows.append({"clock": clock, "market": market, "exposure": exp, "league": lg, **r})
     res = pd.DataFrame(rows)
     per_league = res["league"] != "POOLED (context)"
+    # every per-league cell with an exposed row was searched, so it counts in the Holm family; a cell
+    # under the read minimum enters with p = 1 (counted, never read)
     tested = per_league & (res["n_fix_exposed"] >= 1)
+    res["thin"] = res["p_one_sided"].isna()
     res["holm_p"] = np.nan
-    res.loc[tested, "holm_p"] = holm(res.loc[tested, "p_one_sided"]).to_numpy()
+    res.loc[tested, "holm_p"] = holm(res.loc[tested, "p_one_sided"].fillna(1.0)).to_numpy()
+    res.loc[res["thin"], "holm_p"] = np.nan
     res["n_tests_in_family"] = int(tested.sum())
-    res["thin"] = res["n_fix_exposed"] < S["min_exposed_fixtures_to_read"]
     res.to_csv(out / "absence_effects.csv", index=False)
 
     # ── inventory on the live ledger (counts only) ──
     L = pd.read_csv(args.ledger, low_memory=False)
     L = L[L["result"].isin(["WIN", "LOSS"]) & L["market"].isin(INVENTORY_MARKETS + RARE_MARKETS)].copy()
+    L["ledger_priced"] = L["market_odds"].notna() & ~L["notes"].fillna("").str.startswith("unpriced")
     prices = load_prices(args.prices, args.price_archive)
     L = corroborated_price(L, prices, fixtures)
+    L["price_real"] = L["price_real"] & L["ledger_priced"]
     L["opp_team_id"] = opponent_team_id(L, fixtures)
     fid = pd.to_numeric(L["fixture_id"], errors="coerce")
     L["absence_strict"] = fid.isin(strict_obs) & L["opp_team_id"].notna()
@@ -406,43 +417,83 @@ def run(args) -> dict:
     L["both_strict"] = L["price_real"] & L["absence_strict"]
     L["match_date"] = pd.to_datetime(L["match_date"])
     since = L["match_date"] >= pd.Timestamp(proto["inventory"]["price_era_start"])
-    inv = (L[since].groupby(["league"]).agg(
-        settled=("result", "size"),
-        a_price_real=("price_real", "sum"),
-        a_price_af=("price_source", lambda s: int(s.isin(["api_football", "both"]).sum())),
-        b_absence_strict=("absence_strict", "sum"),
-        b_absence_retro_context=("absence_retro", "sum"),
-        c_both_strict=("both_strict", "sum")).reset_index())
-    inv_m = (L[since].groupby(["league", "market"]).agg(
-        settled=("result", "size"), a_price_real=("price_real", "sum"),
-        c_both_strict=("both_strict", "sum")).reset_index())
+    main_m = L["market"].isin(INVENTORY_MARKETS)
+
+    def _inv(df, keys):
+        return df.groupby(keys).agg(
+            settled=("result", "size"),
+            ledger_priced=("ledger_priced", "sum"),
+            a_price_real=("price_real", "sum"),
+            a_price_real_af=("price_source", lambda s: int(s.isin(["api_football", "both"]).sum())),
+            b_absence_strict=("absence_strict", "sum"),
+            b_absence_retro_context=("absence_retro", "sum"),
+            c_both_strict=("both_strict", "sum")).reset_index()
+    inv = _inv(L[since & main_m], ["league"])
+    inv_m = _inv(L[since], ["league", "market"])
     inv.to_csv(out / "inventory_by_league.csv", index=False)
     inv_m.to_csv(out / "inventory_by_league_market.csv", index=False)
 
-    # ── bars feasibility: player x league x market cells of settled priced tips ──
-    pr = L[since & L["price_real"]].copy()
+    # ── bars feasibility: player x league x market cells of settled, really priced tips ──
+    win = proto["accrual"]["rate_window_days"]
+    tgt = S["min_holdout_bets"]
+    pr = L[since & main_m & L["price_real"]].copy()
     pr["pid"] = pd.to_numeric(pr["player_id"], errors="coerce")
     cells = pr.dropna(subset=["pid"]).groupby(["league", "market", "pid"]).size().rename("n").reset_index()
-    win = proto["accrual"]["rate_window_days"]
     recent = pr[pr["match_date"] > today - pd.Timedelta(days=win)]
     lm = pr.groupby(["league", "market"]).size().rename("n_now").reset_index()
     rate = (recent.groupby(["league", "market"]).size() / (win / 7)).rename("per_week").reset_index()
     lm = lm.merge(rate, on=["league", "market"], how="left")
     lm["per_week"] = lm["per_week"].fillna(0.0)
-    tgt = S["min_holdout_bets"]
     lm["date_150"] = [project_date(n, w, tgt, today) for n, w in zip(lm["n_now"], lm["per_week"])]
     lm.to_csv(out / "accrual_league_market.csv", index=False)
     pc = recent.dropna(subset=["pid"]).groupby(["league", "market", "pid"]).size() / (win / 7)
+
+    # ── forward capacity: ALL priced candidates (not only tips) x exposure share x strict coverage ──
+    # Planning numbers only (sample-size forecasts); the exposure share comes from the RETRO_INJ list,
+    # which over-states absences (hindsight), so the dates are optimistic.
+    lo = today - pd.Timedelta(days=win)
+    ap = prices[prices["market"].isin(MARKETS)].copy()                # any source with a timestamp
+    ap["md"] = pd.to_datetime(ap["match_date"])
+    ap = ap[(ap["md"] > lo) & (ap["md"] <= today)]
+    cand = (ap.drop_duplicates(["league", "market", "match_date", "match", "pkey"])
+            .groupby(["league", "market"]).size() / (win / 7)).rename("cand_per_week").reset_index()
+    fw = fixtures[(fixtures["kickoff"].dt.tz_convert(None) > lo) & (fixtures["kickoff"].dt.tz_convert(None) <= today)]
+    cov = (fw.assign(strict=fw["fixture_id"].isin(strict_obs)).groupby("league")["strict"].mean()
+           .rename("strict_coverage").reset_index())
+    rx = ex[ex["clock"] == "RETRO_INJ"].merge(fixtures[["fixture_id", "league"]], on="fixture_id")
+    share = rx.groupby("league")[list(EXPOSURES)].mean().reset_index()
+    fc = cand.merge(cov, on="league", how="left").merge(share, on="league", how="left")
+    fc["strict_coverage"] = fc["strict_coverage"].fillna(0.0)
+    for e in EXPOSURES:
+        fc[f"{e}_share_retro"] = fc.pop(e)
+        for scen, mult in (("now", fc["strict_coverage"]), ("prematch_on", 1.0)):
+            w = fc["cand_per_week"] * mult * fc[f"{e}_share_retro"]
+            fc[f"{e}_exposed_per_week_{scen}"] = w
+            fc[f"{e}_date_150_{scen}"] = [project_date(0, x, tgt, today) for x in w]
+    fc.to_csv(out / "forward_capacity.csv", index=False)
+
+    # ── power: what the pooled context estimates imply for sample sizes (approximate) ──
+    z = 1.6449 + 0.8416                                   # one-sided 5%, 80% power
+    pw = res[res["league"].str.startswith("POOLED") & res["ci_lo"].notna()].copy()
+    pw["se"] = (pw["ci_hi"] - pw["ci_lo"]) / 3.92
+    pw["mde_at_150_exposed_rows"] = z * pw["se"] * np.sqrt(pw["n_rows_exposed"] / tgt)
+    for eff in (0.01, 0.02, 0.05):
+        pw[f"exposed_rows_needed_for_{eff}"] = np.ceil(pw["n_rows_exposed"] * (z * pw["se"] / eff) ** 2)
+    pw[["clock", "market", "exposure", "n_rows_exposed", "diff", "se", "mde_at_150_exposed_rows"]
+       + [c for c in pw.columns if c.startswith("exposed_rows_needed")]].to_csv(out / "power.csv", index=False)
+
     summary = {
         "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "protocol_sha256": proto["protocol_sha256"],
         "inputs": {"scored": os.path.basename(args.scored), "ledger_rows_settled": int(len(L)),
                    "strict_fixtures_observed": len(strict_obs), "retro_fixtures_observed": len(retro_obs)},
+        "inventory_totals": {k: int(v) for k, v in inv.drop(columns="league").sum().items()},
         "cells": {"n_cells": int(len(cells)), "max_n": int(cells["n"].max()) if len(cells) else 0,
                   "n_ge_30": int((cells["n"] >= 30).sum()), "n_ge_150": int((cells["n"] >= 150).sum()),
                   "max_player_rate_per_week": float(pc.max()) if len(pc) else 0.0},
         "league_market_reached_150": int((lm["n_now"] >= tgt).sum()),
         "n_tests_in_family": int(tested.sum()),
+        "n_tests_readable": int((tested & ~res["thin"]).sum()),
         "any_holm_significant": bool((res["holm_p"] < S["alpha"]).any()),
     }
     (out / "summary.json").write_text(json.dumps(summary, indent=1), encoding="utf-8")
