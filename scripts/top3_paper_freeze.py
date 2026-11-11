@@ -1,4 +1,4 @@
-"""FREEZE the per-cell ranking statistics of the TOP-3 protocol (config/top3_ranking_paper_protocol_v2.json) ONCE.
+"""FREEZE the per-cell ranking statistics of the TOP-3 protocol (config/top3_ranking_paper_protocol_v3.json) ONCE.
 
     python scripts/top3_paper_freeze.py                       # the one real freeze (runbook, 2026-11-20)
     python scripts/top3_paper_freeze.py --dry-run --out DIR   # rehearsal: writes to DIR only, ledger untouched
@@ -12,7 +12,7 @@ Refuses (exit 2, nothing written) when:
   * the freeze ledger already names a record (the freeze happens once, before the first pick) - real run only;
   * a real run outside its window [freeze_window_from_utc, start_utc) = 2026-11-20T00:00Z .. 2026-11-21T00:00Z.
 
-WHAT IS COMPUTED, per approved cell (league x market-side of TP-2026-11-10-d999073a, exactly as approved):
+WHAT IS COMPUTED, per approved MODEL cell (a LEAGUE_WIDE cell is the owner's own list, outside the pool) (league x market-side of TP-2026-11-10-d999073a, exactly as approved):
   * R2 / R3 calibration rows: every priced row of the cell's league x market-side in the own-price universe of
     the clean frame, dated before the as-of day, inside the cell's own odds range, scored by the cell's SERVED
     source (src.bars_opt.serve.score with the approved cell's source + source_params);
@@ -74,6 +74,9 @@ def compute(cfg: dict, root: Path) -> tuple[pd.DataFrame, dict]:
     rows, bets, notes = [], [], []
     for (_mk, league, _side), (cell, _pid) in sorted(cells.items(), key=lambda kv: str(kv[0])):
         tr, ms = cell["track"], cell["mside"]
+        if not R.in_pool(cell):
+            notes.append(f"{tr}|{league}|{ms}: LEAGUE_WIDE cell - own list, outside the TOP-3 pool: no statistic")
+            continue
         if (tr, ms) not in fams:
             fams[(tr, ms)] = S.family_frame(unis[tr], ms)
         f = fams[(tr, ms)]
@@ -98,7 +101,7 @@ def compute(cfg: dict, root: Path) -> tuple[pd.DataFrame, dict]:
     rows_df = pd.concat(rows, ignore_index=True) if rows else None
     bets_df = pd.concat(bets, ignore_index=True) if bets else None
     st = R.cell_stats(bets_df, rows_df)
-    keep = {(c["track"], c["league"], c["mside"]) for c, _ in cells.values()}
+    keep = {(c["track"], c["league"], c["mside"]) for c, _ in cells.values() if R.in_pool(c)}
     st = st[[k in keep for k in zip(st["track"], st["league"], st["mside"])]].reset_index(drop=True)
     return st, {"approved_cells": len(cells), "cells_with_rows": int(len(rows)), "notes": notes,
                 "as_of_day_exclusive": str(as_of_day.date()), "bets_from": str(bets_from.date())}
