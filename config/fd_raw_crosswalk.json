@@ -1,0 +1,125 @@
+{
+ "about": "football-data (fd_raw) club spelling -> served club, per league: every pair the CERTIFIED join (src/fd_prematch.py) used, each fd spelling to exactly ONE served club on >= 3 joined rows (name-resolved, same date or unique +-1 day, one-to-one, score checked where the bank has it). Built by scripts/fd_prematch_join.py --write; never typed.",
+ "evidence": {
+  "Bundesliga 2": {
+   "Hamburg": {
+    "joined_rows": 84,
+    "served": "Hamburger SV"
+   },
+   "Regensburg": {
+    "joined_rows": 51,
+    "served": "SSV Jahn Regensburg"
+   },
+   "Wehen": {
+    "joined_rows": 34,
+    "served": "SV Wehen"
+   }
+  },
+  "Championship": {
+   "Hull": {
+    "joined_rows": 163,
+    "served": "Hull City"
+   },
+   "Oxford": {
+    "joined_rows": 91,
+    "served": "Oxford United"
+   }
+  },
+  "Greek Super League": {
+   "Athens Kallithea": {
+    "joined_rows": 34,
+    "served": "Kallithea"
+   },
+   "Giannina": {
+    "joined_rows": 52,
+    "served": "PAS Giannina"
+   }
+  },
+  "La Liga 2": {
+   "Espanol": {
+    "joined_rows": 41,
+    "served": "Espanyol"
+   },
+   "Ferrol": {
+    "joined_rows": 83,
+    "served": "Racing Ferrol"
+   },
+   "Villarreal B": {
+    "joined_rows": 69,
+    "served": "Villarreal II"
+   }
+  },
+  "League One": {
+   "Exeter": {
+    "joined_rows": 166,
+    "served": "Exeter City"
+   },
+   "Oxford": {
+    "joined_rows": 87,
+    "served": "Oxford Utd"
+   }
+  },
+  "League Two": {
+   "Cambridge": {
+    "joined_rows": 45,
+    "served": "Cambridge United"
+   },
+   "Harrogate": {
+    "joined_rows": 165,
+    "served": "Harrogate Town"
+   },
+   "Mansfield": {
+    "joined_rows": 74,
+    "served": "Mansfield Town"
+   },
+   "Stockport": {
+    "joined_rows": 74,
+    "served": "Stockport County"
+   },
+   "Sutton": {
+    "joined_rows": 73,
+    "served": "Sutton Utd"
+   }
+  },
+  "Scottish League One": {
+   "FC Edinburgh": {
+    "joined_rows": 21,
+    "served": "Edinburgh City"
+   }
+  }
+ },
+ "map": {
+  "Bundesliga 2": {
+   "Hamburg": "Hamburger SV",
+   "Regensburg": "SSV Jahn Regensburg",
+   "Wehen": "SV Wehen"
+  },
+  "Championship": {
+   "Hull": "Hull City",
+   "Oxford": "Oxford United"
+  },
+  "Greek Super League": {
+   "Athens Kallithea": "Kallithea",
+   "Giannina": "PAS Giannina"
+  },
+  "La Liga 2": {
+   "Espanol": "Espanyol",
+   "Ferrol": "Racing Ferrol",
+   "Villarreal B": "Villarreal II"
+  },
+  "League One": {
+   "Exeter": "Exeter City",
+   "Oxford": "Oxford Utd"
+  },
+  "League Two": {
+   "Cambridge": "Cambridge United",
+   "Harrogate": "Harrogate Town",
+   "Mansfield": "Mansfield Town",
+   "Stockport": "Stockport County",
+   "Sutton": "Sutton Utd"
+  },
+  "Scottish League One": {
+   "FC Edinburgh": "Edinburgh City"
+  }
+ }
+}

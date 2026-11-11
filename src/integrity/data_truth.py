@@ -598,14 +598,57 @@ def unproven_evidence(approvals_path: Path | None = None, root: Path | None = No
     return hits
 
 
+#: a CLOSING price column / tier name (football-data "C" columns, our *_close columns, the OddsAPI close tiers)
+_CLOSING_RE = re.compile(r"(AvgC|MaxC|B365C|BbAvC|^PC[<>]|_close$|^close$)")
+
+
+def closing_as_bet_price(root: Path | None = None) -> list[dict]:
+    """Every place a CLOSING price would be read as a BET price (owner 2026-11-11: never - bars, backtests, Phase 2
+    market benchmarks). Closing prices are for CLV only."""
+    import inspect
+    r = Path(root) if root is not None else ROOT
+    hits = []
+    from src import data_loader as DL                          # the served pre-match pair
+    for name, oc, uc in DL._OU25_PREMATCH:
+        if _CLOSING_RE.search(oc) or _CLOSING_RE.search(uc):
+            hits.append({"where": "src/data_loader._OU25_PREMATCH", "what": f"{oc}/{uc}"})
+    from src import league_bars as LB                          # the study's football-data bet pair
+    src = inspect.getsource(LB.fd_ou25_pairs)
+    for m in re.findall(r'"([^"]*[<>]2\.5)"', src):
+        if _CLOSING_RE.search(m):
+            hits.append({"where": "src/league_bars.fd_ou25_pairs", "what": m})
+    from src import fd_prematch as F
+    for name, oc, uc in F.PREMATCH:
+        if _CLOSING_RE.search(oc) or _CLOSING_RE.search(uc):
+            hits.append({"where": "src/fd_prematch.PREMATCH", "what": f"{oc}/{uc}"})
+    cfg = json.loads((r / "config" / "phase2_retrain.json").read_text(encoding="utf-8"))   # Phase 2 benchmarks
+    for mk, m in (cfg.get("markets") or {}).items():
+        pr = (m or {}).get("price") or {}
+        for k in ("yes", "no"):
+            v = pr.get(k)
+            if v and _CLOSING_RE.search(str(v)):
+                hits.append({"where": f"config/phase2_retrain.json markets.{mk}.price.{k}", "what": v})
+    proto = r / "config" / "bars_fresh_holdout_protocol.json"     # history tiers: bet role never a close tier
+    if proto.exists():
+        d = json.loads(proto.read_text(encoding="utf-8")).get("data") or {}
+        both = set(d.get("price_tiers") or []) & set(d.get("close_tiers") or [])
+        if both:
+            hits.append({"where": "config/bars_fresh_holdout_protocol.json", "what": f"tier(s) {sorted(both)} both bet and close"})
+    return hits
+
+
 def bet_time_evidence() -> dict:
     rule = ("owner 2026-11-11: no approved, non-withdrawn bar or verdict rests on a price whose capture time is not "
             "proven before kickoff (no OddsAPI-history close price, unproven-capture share <= 50%), unless the owner "
             "recorded an exemption with its basis; RED on any hit")
+    rule += ("; and no CLOSING price column / tier is ever read as a bet price (served pre-match pair, the "
+             "study's football-data pair, Phase 2 market benchmarks, the history bet tiers) - closing is CLV only")
     hits = unproven_evidence()
-    return _c("Data truth 8: bars rest on bet-time prices only", RED if hits else GREEN,
-              f"{len(hits)} approved entr(ies) on unproven capture times", rule,
-              "; ".join(f"{h['entry']}: {h['why']}" for h in hits[:6]))
+    closing = closing_as_bet_price()
+    return _c("Data truth 8: bars rest on bet-time prices only", RED if (hits or closing) else GREEN,
+              f"{len(hits)} approved entr(ies) on unproven capture times; {len(closing)} closing-as-bet read(s)", rule,
+              "; ".join([f"{h['entry']}: {h['why']}" for h in hits[:4]]
+                        + [f"{h['where']}: {h['what']}" for h in closing[:4]]))
 
 
 def evaluate(now: datetime | None = None) -> list[dict]:

@@ -76,11 +76,22 @@ def _safe_joins() -> bool:
     return True
 
 
-# Preferred odds columns in order (first found with data wins)
-_OVER_COLS  = ["AvgC>2.5", "MaxC>2.5", "B365C>2.5", "PC>2.5",
-               "Avg>2.5",  "Max>2.5",  "B365>2.5",  "P>2.5"]
-_UNDER_COLS = ["AvgC<2.5", "MaxC<2.5", "B365C<2.5", "PC<2.5",
-               "Avg<2.5",  "Max<2.5",  "B365<2.5",  "P<2.5"]
+# O/U 2.5 PRICES (owner 2026-11-11: "a closing price may never silently be the bet price").
+# Until 2026-11-11 one column list preferred the CLOSING columns (AvgC, MaxC, B365C, PC) and fell back to the
+# pre-match ones, so odds_over25 / odds_under25 were closing prices on almost every football-data row (equal to
+# Bet365 pre-match on 4.9% of 19,809 dev rows). Now they are kept APART, per row, with provenance:
+#   odds_over25 / odds_under25              PRE-MATCH pair: the first source with BOTH sides on the row, in the
+#                                           study's single-book order Bet365, else Pinnacle, then the market average
+#   odds_ou25_source                        which pre-match source the row's pair is (B365 / P / AVG)
+#   odds_over25_close / odds_under25_close  CLOSING pair (B365C, PC, AvgC, MaxC) - CLV ONLY, never a bet price
+#   odds_ou25_close_source                  which closing source
+# The served models read no price feature (payload feature lists checked 2026-11-11; Phase 2 never_model_inputs),
+# so no prediction changes; live upcoming rows carry one bookmaker's pre-match price under the same names.
+_OU25_PREMATCH = (("B365", "B365>2.5", "B365<2.5"), ("P", "P>2.5", "P<2.5"), ("AVG", "Avg>2.5", "Avg<2.5"))
+_OU25_CLOSE = (("B365C", "B365C>2.5", "B365C<2.5"), ("PC", "PC>2.5", "PC<2.5"), ("AVGC", "AvgC>2.5", "AvgC<2.5"),
+               ("MAXC", "MaxC>2.5", "MaxC<2.5"))
+#: the old merged lists, kept ONLY so readers of history can see what odds_over25 used to mean
+_LEGACY_CLOSING_PREFERRED_OVER = ["AvgC>2.5", "MaxC>2.5", "B365C>2.5", "PC>2.5", "Avg>2.5", "Max>2.5", "B365>2.5", "P>2.5"]
 
 # Side-market odds (not available in all leagues/seasons — NaN where absent)
 _BTTS_COLS  = ["AvgBTSH", "MaxBTSH", "BbAvBTSH", "BBTSH"]
@@ -192,6 +203,29 @@ def _decode_csv(content) -> str:
     from src.integrity.duplicate_matches import decode_csv_bytes
     return decode_csv_bytes(content if isinstance(content, (bytes, bytearray)) else
                             str(content).encode("utf-8"))
+
+
+def _ou25_pairs(raw: pd.DataFrame, sources) -> tuple[pd.Series, pd.Series, pd.Series]:
+    """(over, under, source) per ROW: the first source of `sources` with BOTH sides > 1 on that row. A row
+    without one has NaN prices and a blank source - never a value from another source's other side."""
+    over = pd.Series(np.nan, index=raw.index, dtype=float)
+    under = pd.Series(np.nan, index=raw.index, dtype=float)
+    src = pd.Series("", index=raw.index, dtype=object)
+    for name, oc, uc in sources:
+        if oc not in raw.columns or uc not in raw.columns:
+            continue
+        o, u = pd.to_numeric(raw[oc], errors="coerce"), pd.to_numeric(raw[uc], errors="coerce")
+        take = over.isna() & (o > 1) & (u > 1)
+        over[take], under[take], src[take] = o[take], u[take], name
+    return over, under, src
+
+
+def ou25_prices(raw: pd.DataFrame) -> dict:
+    """The O/U 2.5 columns of a football-data frame: pre-match pair + provenance, closing pair + provenance."""
+    o, u, s = _ou25_pairs(raw, _OU25_PREMATCH)
+    oc, uc, sc = _ou25_pairs(raw, _OU25_CLOSE)
+    return {"odds_over25": o, "odds_under25": u, "odds_ou25_source": s,
+            "odds_over25_close": oc, "odds_under25_close": uc, "odds_ou25_close_source": sc}
 
 
 def _pick_odds(raw: pd.DataFrame, cols: list[str]) -> pd.Series:
@@ -976,8 +1010,8 @@ def _ci_download_all(have: set | None = None) -> list[pd.DataFrame]:
                     ("home_sot","HST"),("away_sot","AST"),
                 ]:
                     df[out_col] = pd.to_numeric(raw.get(src_col, np.nan), errors="coerce")
-                df["odds_over25"]  = _pick_odds(raw, _OVER_COLS)
-                df["odds_under25"] = _pick_odds(raw, _UNDER_COLS)
+                for _k, _v in ou25_prices(raw).items():      # pre-match pair + closing pair, apart (2026-11-11)
+                    df[_k] = _v
                 df["odds_btts"]    = _pick_odds(raw, _BTTS_COLS)
                 df["odds_over15"]  = _pick_odds(raw, _OVER15_COLS)
                 df["odds_over35"]  = _pick_odds(raw, _OVER35_COLS)
@@ -1223,8 +1257,61 @@ def _enrich_with_standard_sidemarket_odds(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
+def _ou25_provenance(df: pd.DataFrame) -> pd.DataFrame:
+    """Every row's O/U 2.5 pair carries its provenance, and odds_over25 / odds_under25 are never a closing price
+    (owner 2026-11-11). A football-data row parsed by ou25_prices() already says its source. A row from the BANK
+    (output/fd_history.parquet, written before 2026-11-11) holds the old closing-preferred value: it is moved to
+    the CLOSING columns (source LEGACY_CLOSING_PREFERRED, CLV only) and its pre-match pair is left MISSING
+    (LEGACY_NO_PREMATCH) - the study reads pre-match prices through the certified football-data join
+    (src/fd_prematch.py). A new-format row's pair is a captured snapshot of unknown time: NF_SNAPSHOT_HISTORY."""
+    import config as _cfg
+    d = df
+    for c in ("odds_ou25_source", "odds_ou25_close_source"):
+        d[c] = d[c].astype(object) if c in d.columns else pd.Series(np.nan, index=d.index, dtype=object)
+    for c in ("odds_over25_close", "odds_under25_close"):
+        if c not in d.columns:
+            d[c] = np.nan
+    if d.empty:
+        return d
+    nf = d["league"].map(lambda lg: _cfg.model_type_for_league(lg) == "new_format").astype(bool)
+    unset = d["odds_ou25_source"].isna()
+    legacy = unset & ~nf
+    has = legacy & d["odds_over25"].notna()
+    move = has & d["odds_over25_close"].isna()
+    d.loc[move, "odds_over25_close"] = d.loc[move, "odds_over25"]
+    d.loc[move, "odds_under25_close"] = d.loc[move, "odds_under25"]
+    d.loc[move, "odds_ou25_close_source"] = "LEGACY_CLOSING_PREFERRED"
+    d.loc[legacy, ["odds_over25", "odds_under25"]] = np.nan
+    d.loc[legacy, "odds_ou25_source"] = "LEGACY_NO_PREMATCH"
+    d.loc[unset & nf, "odds_ou25_source"] = "NF_SNAPSHOT_HISTORY"
+    # PRE-MATCH for banked rows: the CERTIFIED one-to-one football-data join (src/fd_prematch.py, committed
+    # output/collect/fd_raw; Bet365 else Pinnacle, same book both sides; name-resolved, score-checked)
+    fd_dir = Path(__file__).resolve().parents[1] / "output" / "collect" / "fd_raw"
+    if legacy.any() and fd_dir.exists():
+        try:
+            from src import fd_prematch as _F
+            sv = d.loc[legacy, ["league", "date", "home_team", "away_team", "home_goals", "away_goals"]]
+            j, _rep = _F.join(_F.load_fd_raw(fd_dir), sv.reset_index(), IDENTITY_ALIASES, _F.load_crosswalk())
+            j = j.set_index("index")
+            ok = j["pm_over"].notna() & j["pm_under"].notna()
+            ix = j.index[ok]
+            d.loc[ix, "odds_over25"] = j.loc[ix, "pm_over"].to_numpy()
+            d.loc[ix, "odds_under25"] = j.loc[ix, "pm_under"].to_numpy()
+            d.loc[ix, "odds_ou25_source"] = ("FD_CERTIFIED_" + j.loc[ix, "pm_source"].astype(str)).to_numpy()
+            log.info(f"[ou25] certified football-data join: pre-match pair on {int(ok.sum()):,} of "
+                     f"{int(legacy.sum()):,} banked row(s)")
+        except Exception as e:                                         # noqa: BLE001
+            log.error(f"[ou25] certified football-data join failed ({type(e).__name__}: {e}) - banked rows keep "
+                      f"NO pre-match price (never the closing one)")
+    if has.any():
+        log.info(f"[ou25] {int(has.sum()):,} banked football-data row(s): closing-preferred price moved to the "
+                 f"closing columns; pre-match left missing (certified join supplies it)")
+    return d
+
+
 def _enrich_ou25_from_captures(df: pd.DataFrame) -> pd.DataFrame:
-    """Fill odds_over25 / odds_under25 from OUR OWN forward odds captures, NaN-only.
+    """Fill the CLOSING pair (odds_over25_close / odds_under25_close) from OUR OWN forward odds captures' LAST
+    snapshot, NaN-only. Since 2026-11-11 this never touches the pre-match odds_over25 / odds_under25.
 
     WHY THIS EXISTS. odds_over25 was deliberately excluded from every other enrichment so the
     O/U money-market stayed 100% football-data and its backtest was provably unchanged. That was
@@ -1285,7 +1372,9 @@ def _enrich_ou25_from_captures(df: pd.DataFrame) -> pd.DataFrame:
         oh = _resolve_onto_history(oh, df, "_hraw", "_araw", "ou25_captures",
                                 aliases=IDENTITY_ALIASES)    # df is canonical (fix12)
         oh["_d"] = oh["match_date"].astype(str).str[:10]
-        oh["_col"] = oh["market"].map({"over25": "odds_over25", "under25": "odds_under25"})
+        # the LAST snapshot is a closing-side price: it fills the CLOSING columns only (CLV), never the
+        # pre-match odds_over25 / odds_under25 (owner 2026-11-11)
+        oh["_col"] = oh["market"].map({"over25": "odds_over25_close", "under25": "odds_under25_close"})
 
         df["_h"] = df["home_team"].astype(str)
         df["_a"] = df["away_team"].astype(str)
@@ -1295,15 +1384,20 @@ def _enrich_ou25_from_captures(df: pd.DataFrame) -> pd.DataFrame:
                                          name="ou25_captures.legacy")
         except Exception as _e:                                  # noqa: BLE001
             log.warning(f"[ou25_captures] join audit skipped: {_e}")
-        for col in ("odds_over25", "odds_under25"):
+        for col in ("odds_over25_close", "odds_under25_close"):
             if col not in df.columns:
                 df[col] = np.nan
+        _before = df["odds_over25_close"].isna()
         _w = (oh.drop_duplicates(["league", "_h", "_a", "_d", "_col"], keep="last")
                 .pivot(index=["league", "_h", "_a", "_d"], columns="_col", values="odds")
                 .reset_index())
-        _vc = [c for c in ("odds_over25", "odds_under25") if c in _w.columns]
+        _vc = [c for c in ("odds_over25_close", "odds_under25_close") if c in _w.columns]
         df, _rep = _IJ.safe_left_enrich(df, _w, keys=["league", "_h", "_a", "_d"],
                                         value_cols=_vc, name="ou25_captures")
+        df["odds_ou25_close_source"] = (df["odds_ou25_close_source"].astype(object)
+                                        if "odds_ou25_close_source" in df.columns else "")
+        _filled = _before.reindex(df.index, fill_value=False) & df["odds_over25_close"].notna()
+        df.loc[_filled, "odds_ou25_close_source"] = "OWN_CAPTURE_LAST"
         log.info(f"  [ou25_captures] SAFE join filled {_rep.filled_cells}")
 
         df = df.drop(columns=["_h", "_a", "_d"])
@@ -2122,7 +2216,8 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
         out = one_club_one_match(out)
         out = _enrich_with_api_shots(out)
         out = _enrich_with_standard_sidemarket_odds(out)   # real BTTS/O1.5/O3.5 for 2nd-divs
-        out = _enrich_ou25_from_captures(out)             # our own O/U 2.5, NaN-only
+        out = _ou25_provenance(out)                       # pre-match vs closing, apart (2026-11-11)
+        out = _enrich_ou25_from_captures(out)             # our own LAST snapshot -> closing columns, NaN-only
         out = _impossible_stats_to_missing(out)
         out = _flag_ou25_pair(out)
         _report_training_coverage(out)
@@ -2173,8 +2268,8 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
 
         df["ftr"]      = raw.get("FTR", np.nan)
         df["referee"]  = raw.get("Referee", np.nan)
-        df["odds_over25"]  = _pick_odds(raw, _OVER_COLS)
-        df["odds_under25"] = _pick_odds(raw, _UNDER_COLS)
+        for _k, _v in ou25_prices(raw).items():      # pre-match pair + closing pair, apart (2026-11-11)
+            df[_k] = _v
         df["odds_btts"]    = _pick_odds(raw, _BTTS_COLS)
         df["odds_over15"]  = _pick_odds(raw, _OVER15_COLS)
         df["odds_over35"]  = _pick_odds(raw, _OVER35_COLS)
@@ -2213,8 +2308,8 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
                         df[out_col] = pd.to_numeric(raw.get(src_col, np.nan), errors="coerce")
                     df["ftr"]           = raw.get("FTR", np.nan)
                     df["referee"]       = raw.get("Referee", np.nan)
-                    df["odds_over25"]   = _pick_odds(raw, _OVER_COLS)
-                    df["odds_under25"]  = _pick_odds(raw, _UNDER_COLS)
+                    for _k, _v in ou25_prices(raw).items():   # pre-match + closing, apart (2026-11-11)
+                        df[_k] = _v
                     df["odds_btts"]     = _pick_odds(raw, _BTTS_COLS)
                     df["odds_over15"]   = _pick_odds(raw, _OVER15_COLS)
                     df["odds_over35"]   = _pick_odds(raw, _OVER35_COLS)
@@ -2280,8 +2375,8 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
             ]:
                 df[out_col] = pd.to_numeric(raw.get(src_col, np.nan), errors="coerce")
             df["ftr"] = raw.get("FTR", np.nan)
-            df["odds_over25"]  = _pick_odds(raw, _OVER_COLS)
-            df["odds_under25"] = _pick_odds(raw, _UNDER_COLS)
+            for _k, _v in ou25_prices(raw).items():      # pre-match pair + closing pair, apart (2026-11-11)
+                df[_k] = _v
             df["odds_btts"]    = _pick_odds(raw, _BTTS_COLS)
             df["odds_over15"]  = _pick_odds(raw, _OVER15_COLS)
             df["odds_over35"]  = _pick_odds(raw, _OVER35_COLS)
@@ -2344,6 +2439,7 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
     # ── Misfiled rows: the registry-based check the CI path uses (was a hand list of German clubs
     # and typed Danish league names) ─────────────────────────────────────────────
     out = _drop_misfiled_league_rows(out, "local")
+    out = _ou25_provenance(out)                           # pre-match vs closing, apart (2026-11-11)
     out = _impossible_stats_to_missing(out)
     out = _flag_ou25_pair(out)
 

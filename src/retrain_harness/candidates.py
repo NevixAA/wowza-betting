@@ -318,7 +318,8 @@ class MarketOnly(Candidate):
     def __init__(self, *a, price_class: str = "", **k):
         super().__init__(*a, **k)
         self.price_class = price_class
-        self.deployable = "CLOSING" not in price_class
+        # never deployable on a closing price or a price of unproven capture time (owner 2026-11-11)
+        self.deployable = "CLOSING" not in price_class and "UNPROVEN" not in price_class
 
     def fit(self, frames: dict) -> "MarketOnly":
         pr = self.market.get("price")
@@ -345,7 +346,8 @@ class ModelMarket(Candidate):
         super().__init__(*a, **k)
         self.base_params = dict(base_params or {})
         self.price_class = price_class
-        self.deployable = "CLOSING" not in price_class
+        # never deployable on a closing price or a price of unproven capture time (owner 2026-11-11)
+        self.deployable = "CLOSING" not in price_class and "UNPROVEN" not in price_class
 
     def fit(self, frames: dict) -> "ModelMarket":
         from sklearn.linear_model import LogisticRegression

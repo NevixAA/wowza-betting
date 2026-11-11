@@ -51,26 +51,29 @@ TOP-3 model tip, which yields to the next qualifier.
 * Fresh holdout (owner "Fresh holdout", "Fix the rule"), protocol bars-fresh-holdout/3 sha256 `711c6a71df36a5be9dd7e228cd4a55b8e43530fa1cdfd94f8296c8417ea84f3e`: OddsAPI history prices from tiers ['B1', 'B2'] only, holdout = rows whose price no earlier run ever had; tested ONCE (2026-11-10T21:50:45Z), Holm family 21 counted before the test; verdict record TP-FH-2026-11-10-bc7459cc.
 * Cells without a fresh stretch keep selection-based bars and verdicts (study re-run on the rebuilt universes, output/bars_opt/study_58f10476), as in TP-2026-11-09-abfb5dc4; thin leagues on the learned blend.
 
-## Withdrawal (owner 2026-11-11 "Bet-time snapshot + re-run" / "Strict, keep Argentina")
+## Withdrawal (owner 2026-11-11 "Bet-time snapshot + re-run" / "Strict, keep Argentina" / "Paper until re-run")
 
 37 entries (46 cells) are WITHDRAWN pending the re-run on bet-time prices only: the 21 fresh-holdout cells (their
 history prices were B1 "close" snapshots, ~9 minutes before kickoff, used as bet prices) and every cell whose
 evidence rests > 50% on 00:00-stamped backfill (capture time unknown). Per-cell counts:
 `output/threshold_proposals/bars_oddsapi_hist/cell_price_provenance_2026-11.json`; the record and the reason per
-entry: `config/threshold_approvals.json`. They are PAPER with no bar until the re-run proposal is approved. 37
-entries stay approved (23 cells + 14 drop entries).
+entry: `config/threshold_approvals.json`. They are PAPER with no bar until the re-run proposal is approved.
+
+A 38th entry, `ou25|La Liga 2`, was withdrawn on 2026-11-11 ("Paper until re-run"): `src/data_loader` served
+closing-preferred O/U 2.5 prices as `odds_over25` / `odds_under25`. The loader now keeps pre-match and closing apart,
+and the re-run (protocol `bars-fresh-holdout/5`) prices Standard O/U 2.5 only through the certified one-to-one
+football-data join. 36 entries stay approved (threshold_apply dry run: 36 applied, 38 withdrawn).
 
 ## Staking this season (owner 2026-11-11)
 
 | Staked cell | State | Base fraction (flat, every tip) | Max odds |
 |---|---|---|---|
 | `new_format|BTTS|Argentina Primera Division` | ACTIVE | 0.0125 | 2.6 |
-| `standard|OU25_OVER|La Liga 2` | ACTIVE_LOW | 0.005 | HARD ceiling (no cell range) |
 
 **Flat per cell (owner 2026-11-11 "Clean rebuild"):** no tier multiplier anywhere - Argentina's former 1.1 / 0.9 /
 1.0 is retired; every tip that clears the cell's one bar stakes the base fraction.
 
-Every other cell is PAPER. **La Liga 2 BTTS** is PAPER (owner 2026-11-11 "Strict, keep Argentina": its evidence is 92% unproven backfill; withdrawn). **Sweden Allsvenskan NF Under 2.5** is withdrawn (PAPER, no bar). Brazil NF BTTS, Serie B BTTS and Serie B Over 2.5 are PAPER. Argentina NF BTTS keeps ACTIVE 1.25% by owner exemption (a LEAGUE_WIDE rule; PROMISING on its own 86 live-captured FINAL bets). Cloudbet stays PAPER_ONLY; wowza-exec cells are all PAPER (dry run 25 cells after the withdrawal).
+Every other cell is PAPER (owner 2026-11-11 "Paper until re-run": only Argentina NF BTTS is staked). **La Liga 2 Over 2.5** is PAPER (withdrawn until the protocol v5 re-run). **La Liga 2 BTTS** is PAPER (owner 2026-11-11 "Strict, keep Argentina": its evidence is 92% unproven backfill; withdrawn). **Sweden Allsvenskan NF Under 2.5** is withdrawn (PAPER, no bar). Brazil NF BTTS, Serie B BTTS and Serie B Over 2.5 are PAPER. Argentina NF BTTS keeps ACTIVE 1.25% by owner exemption (a LEAGUE_WIDE rule; PROMISING on its own 86 live-captured FINAL bets). Cloudbet stays PAPER_ONLY; wowza-exec cells are all PAPER (dry run 24 cells, 38 withdrawn entries excluded).
 
 **TOP-3** (owner "Paper track"): a named PAPER track in the Clean Record from 2026-11-21; stakes follow the per-cell status only, never the TOP-3 label.
 

@@ -66,12 +66,23 @@ def _snapshot(track: str, market: str, which: str) -> pd.DataFrame:
     return pr
 
 
-def build(pred: pd.DataFrame, track: str, aliases: dict, fd_raw: str | None) -> tuple[pd.DataFrame, dict]:
-    """pred: one track's champion_recipe deployable rows. Returns (priced rows, match stats)."""
+def build(pred: pd.DataFrame, track: str, aliases: dict, fd_raw: str | None,
+          certified_fd: bool = False) -> tuple[pd.DataFrame, dict]:
+    """pred: one track's champion_recipe deployable rows. Returns (priced rows, match stats).
+    certified_fd (protocol v5, owner 2026-11-11): Standard O/U 2.5 bet prices come ONLY through the certified
+    one-to-one football-data join (src/fd_prematch.py: pre-match Bet365 else Pinnacle; closing for CLV only)."""
     frames, stats = [], {}
     for market in PRICED_MARKETS:
         pm = pred[pred["market"] == market]
         if pm.empty:
+            continue
+        if market == "over25" and track == "standard" and certified_fd:
+            if not fd_raw:
+                raise ValueError("standard O/U 2.5 needs --fd-raw (football-data pre-match prices)")
+            from src import fd_prematch as F
+            pe, rep = F.certified_ou25(pm, aliases, fd_raw)
+            stats[market] = {lg: {"rows": int(r["served"]), "priced": int(r["joined"])} for lg, r in rep.items()}
+            frames.append(pe.drop(columns=["price_book"]))
             continue
         if market == "over25" and track == "standard":
             if not fd_raw:

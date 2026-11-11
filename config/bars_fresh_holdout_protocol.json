@@ -1,6 +1,6 @@
 {
- "protocol": "bars-fresh-holdout/4",
- "owner_decision": "owner 2026-11-10: \"Fresh holdout\" (relayed by the coordinator); P_RESOLUTION_HITS = 10 approved as part of it",
+ "protocol": "bars-fresh-holdout/5",
+ "owner_decision": "owner 2026-11-10: \"Fresh holdout\" (relayed by the coordinator); P_RESOLUTION_HITS = 10 approved as part of it; owner 2026-11-11 \"Paper until re-run\": Standard bet prices from football-data PRE-MATCH only through the certified one-to-one join, closing for CLV only",
  "written_before_any_run": true,
  "runs_only_when": "tier B1 of the OddsAPI history is complete (store run ledger) AND config/bars_oddsapi_hist.json run_enabled true with owner_ok",
  "data": {
@@ -14,7 +14,11 @@
    "B1"
   ],
   "exclude_own_backfill": true,
-  "price_evidence": "owner 2026-11-11 \"Bet-time snapshot + re-run\" / \"Strict, keep Argentina\": a bet price is ONLY (a) a football-data pre-match same-book pair (standard O/U 2.5), (b) our own live capture with snapshot_ts < kickoff, or (c) a tier-BT OddsAPI history snapshot (bet role) read through the shared adapter with snapshot < kickoff. EXCLUDED: every 00:00-stamped own BACKFILL pair (capture time unknown) and every CLOSE-role price (tier B1 'close', ~9 min before kickoff) except as the closing pair for CLV. The study universes for selection and serving are the own bet-time universes written by prepare (<out>/own_bettime)."
+  "price_evidence": "owner 2026-11-11 \"Bet-time snapshot + re-run\" / \"Strict, keep Argentina\": a bet price is ONLY (a) a football-data pre-match same-book pair (standard O/U 2.5) through the certified join (standard_ou25_rule), (b) our own live capture with snapshot_ts < kickoff, or (c) a tier-BT OddsAPI history snapshot (bet role) read through the shared adapter with snapshot < kickoff. EXCLUDED: every 00:00-stamped own BACKFILL pair (capture time unknown) and every CLOSE-role price (tier B1 'close', ~9 min before kickoff) except as the closing pair for CLV. The study universes for selection and serving are the own bet-time universes written by prepare (<out>/own_bettime).",
+  "standard_ou25_prices": "FD_CERTIFIED_JOIN",
+  "fd_crosswalk_sha256": "075889af7169f8ae0852cb835f43f08f51e20fcbbf5c6f145f175faac6d0d63e",
+  "standard_ou25_rule": "Standard O/U 2.5 BET prices come ONLY from football-data PRE-MATCH columns (B365>2.5/B365<2.5, else P>2.5/P<2.5; ONE book per pair, never mixed, never Avg/Max) in output/collect/fd_raw, attached through the CERTIFIED one-to-one join (src/fd_prematch.py): club names resolved by src.team_names.resolve_identity + the loader identity map + the proven crosswalk config/fd_raw_crosswalk.json (pinned here by its sha256; every pair proven on >= 3 joined rows, never typed); same date or a UNIQUE +-1 day; each fd row to at most one served row and back; the score is a CHECK only (a mismatch rejects the pair). NO league+date+score fallback. Closing columns (B365C, PC, AvgC, MaxC) are read ONLY as the closing pair for CLV. The universe is built with `scripts/bars_opt.py universe --track standard --certified-fd` and stamped universe_standard_source.json; prepare and the study refuse any other.",
+  "fd_join_report": "output/bars_opt/fd_prematch_join_report.json (counts only): 23,067 of 23,381 served Standard fixtures joined (0.9866); per-league join rate 0.963 (Dutch Eredivisie) to 1.000 (Turkish Super Lig); unjoined rows stay unpriced"
  },
  "holdout": {
   "unit": "family = track x market-side; cells = league inside the family",
@@ -65,8 +69,16 @@
    "owner_words": "owner 2026-11-11: \"Bet-time snapshot + re-run\", \"Strict, keep Argentina\"",
    "reason": "cross-check 2026-11-11: the B1 history 'close' snapshots (median 9.4 min before kickoff) were taken as BET prices by the 'earliest pre-kickoff pair from match day - 1' rule, and own 00:00-stamped backfill has no proven capture time. Only the price evidence changes; every other term is unchanged.",
    "nothing_scored": "v4 is registered BEFORE any v4 run; the v3 run's outcomes were seen (see outcomes_previously_seen)."
+  },
+  {
+   "version": "bars-fresh-holdout/4",
+   "sha256": "9aa5ce239df00affc19192d81ec498c733092b4cfde224d8bd3e3b75d6eb8690",
+   "replaced_on": "2026-11-11",
+   "owner_words": "owner 2026-11-11: \"Bet-time snapshot + re-run\", \"Paper until re-run\"",
+   "reason": "2026-11-11 finding: src/data_loader preferred CLOSING columns (AvgC, MaxC, B365C, PC) for the served odds_over25 / odds_under25. The loader now keeps pre-match and closing apart; v5 pins the Standard O/U 2.5 bet price to football-data pre-match through the certified one-to-one join (proven crosswalk, no score fallback) and closing columns to CLV only. Every other term is unchanged.",
+   "nothing_scored": "v5 is registered BEFORE any v5 run; v4 was never run."
   }
  ],
  "verdict_label": "re-test after a price-data fix (outcomes previously seen)",
- "outcomes_previously_seen": "The fresh-holdout rows of v3 (run 2026-11-10, TP-FH-2026-11-10-bc7459cc) were scored once with a CLOSING price used as the bet price; their OUTCOMES have therefore been seen. The v4 re-run's fresh-holdout verdicts are a re-test after a price-data fix and are never presented as untouched proof."
+ "outcomes_previously_seen": "The fresh-holdout rows of v3 (run 2026-11-10, TP-FH-2026-11-10-bc7459cc) were scored once with a CLOSING price used as the bet price; their OUTCOMES have therefore been seen. The v4 re-run's fresh-holdout verdicts are a re-test after a price-data fix and are never presented as untouched proof. The same holds for the v5 re-run (v4 was registered but never run)."
 }

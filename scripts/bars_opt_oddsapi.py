@@ -45,6 +45,9 @@ def cmd_prepare(a) -> int:
     if strip and not a.aliases:
         raise SystemExit("the protocol excludes own backfill: --aliases (the loader's identity map) is required")
     stamp = {"bet_tiers": tiers, "close_tiers": ctiers, "own_backfill_excluded": strip}
+    oku, whyu = FH.check_universe_source(a.universe)
+    if not oku:
+        raise SystemExit(f"protocol {FH.protocol()[0]['protocol']}: {whyu}")
     (out / "priced" / "price_tiers.json").write_text(json.dumps(FH.price_stamp()), encoding="utf-8")
     cov, fams, agree, stats = [], [], [], {"price_tiers": stamp}
     aliases = json.loads(Path(a.aliases).read_text(encoding="utf-8")) if a.aliases else {}

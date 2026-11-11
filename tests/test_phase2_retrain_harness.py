@@ -345,7 +345,7 @@ def test_market_only_devigs_two_sided_pairs_only():
     k = np.log(p[0]) / np.log(1 / 1.9)                      # power de-vig: p_i = (1/o_i)^k
     assert abs((1 / 1.95) ** k - q) < 1e-6
     assert np.isnan(_cand("market_only", cfg, market="btts").predict(df)).all()
-    assert _cand("market_only", cfg).deployable is False    # closing-preferred price class
+    assert _cand("market_only", cfg).deployable is False    # NF snapshot prices: capture time unproven
 
 
 def test_model_market_blend_is_fitted_on_validation_only(feat):

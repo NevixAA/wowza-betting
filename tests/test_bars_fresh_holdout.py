@@ -99,7 +99,11 @@ def test_protocol_v2_skips_a_later_run_whose_holdout_gives_no_league_150_rows():
 
 def test_protocol_history_keeps_version_1_and_states_nothing_was_scored():
     proto, sha = FH.protocol()
-    assert proto["protocol"] == "bars-fresh-holdout/4"
+    assert proto["protocol"] == "bars-fresh-holdout/5"
+    # v5 (owner 2026-11-11 "Paper until re-run"): Standard O/U 2.5 bet prices only through the certified
+    # football-data join with the registered crosswalk; closing columns for CLV only
+    assert proto["data"]["standard_ou25_prices"] == "FD_CERTIFIED_JOIN"
+    assert "NO league+date+score fallback" in proto["data"]["standard_ou25_rule"]
     # v4 (owner 2026-11-11 "Bet-time snapshot + re-run"): bet prices from tier BT only, B1 close for CLV only,
     # own 00:00-stamped backfill excluded; verdicts labelled as a re-test (outcomes previously seen)
     assert proto["data"]["price_tiers"] == ["BT"] == FH.price_tiers() and FH.close_tiers() == ["B1"]
@@ -107,8 +111,10 @@ def test_protocol_history_keeps_version_1_and_states_nothing_was_scored():
     assert FH.evidence_label() == "re-test after a price-data fix (outcomes previously seen)"
     assert "outcomes" in proto["outcomes_previously_seen"].lower()
     assert [x["version"] for x in proto["history"]] == ["bars-fresh-holdout/1", "bars-fresh-holdout/2",
-                                                         "bars-fresh-holdout/3"]
+                                                         "bars-fresh-holdout/3", "bars-fresh-holdout/4"]
     assert "Bet-time snapshot + re-run" in proto["history"][2]["owner_words"]
+    assert proto["history"][3]["sha256"].startswith("9aa5ce239df0")
+    assert "Paper until re-run" in proto["history"][3]["owner_words"] and "never run" in proto["history"][3]["nothing_scored"]
     assert proto["history"][1]["sha256"].startswith("6b112c6e")
     h = proto["history"][0]
     assert h["sha256"].startswith("de4d7547") and "Fix the rule" in h["owner_words"]

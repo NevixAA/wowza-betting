@@ -38,7 +38,7 @@ use them". From go-live:
   longer qualify. Every tip is stored as `QUALIFIED` with its `cell_status` (PROMISING / UNPROVEN) and
   `qualifying_bar`; no SNIPER / MARKSMAN / VALUABLE is computed, shown or stored on a future tip.
 * **Flat per cell.** No tier multiplier anywhere (src/bankroll_policy.size_day: tier_multiplier 1.0): Argentina NF
-  BTTS 1.25%, La Liga 2 BTTS and La Liga 2 Over 2.5 0.5%, everything else paper; Cloudbet PAPER_ONLY.
+  BTTS 1.25%, everything else paper (owner 2026-11-11 "Paper until re-run"); Cloudbet PAPER_ONLY.
 * **Props.** No tier labels; a props tip qualifies at the props cell's lowest qualifying bar (the former VALUABLE
   gates), UNPROVEN; the capped data-only combinations stay PAPER rows.
 * **TOP-3** = qualifying MODEL-cell tips ranked by T3; league-wide cells are the league's own line, outside the 3 (U3c). **wowza-exec**: branch `prep/exec-clean-rebuild` (one bar per exec
@@ -60,18 +60,34 @@ use them". From go-live:
   without a proven pre-kickoff capture time (00:00-stamped own backfill). Recorded in
   `config/threshold_approvals.json` (`withdrawals`, owner's words, date, reason per entry; counts in
   `output/threshold_proposals/bars_oddsapi_hist/cell_price_provenance_2026-11.json`). `threshold_apply` skips them
-  (dry run: 37 applied, 37 withdrawn). A withdrawn cell is PAPER with no bar: no tip until the re-run proposal is
+  (dry run: 36 applied, 38 withdrawn). A withdrawn cell is PAPER with no bar: no tip until the re-run proposal is
   approved.
-* **Stakes from 2026-11-21:** Argentina NF BTTS ACTIVE 1.25% (owner exemption, recorded on the approval and the
-  cell: a LEAGUE_WIDE rule, no bar chosen from backfill, PROMISING on its own 86 live-captured FINAL bets); La Liga 2
-  Over 2.5 ACTIVE_LOW 0.5% (football-data pre-match prices only); everything else paper (La Liga 2 BTTS now PAPER).
-  Exec dry run: 25 cells, all PAPER.
+* **Stakes from 2026-11-21 (owner 2026-11-11 "Paper until re-run"):** ONLY Argentina NF BTTS is ACTIVE, 1.25%
+  (owner exemption, recorded on the approval and the cell: a LEAGUE_WIDE rule, no bar chosen from backfill, PROMISING
+  on its own 86 live-captured FINAL bets). Everything else is PAPER - La Liga 2 Over 2.5 is withdrawn (38th
+  withdrawal) until the protocol v5 re-run, La Liga 2 BTTS stays PAPER. Exec dry run: 24 cells, all PAPER, 38
+  withdrawn entries excluded.
+* **Loader fix (2026-11-11):** `src/data_loader` preferred CLOSING columns (AvgC, MaxC, B365C, PC) for the served
+  `odds_over25` / `odds_under25`. Now the pre-match pair (B365, else Pinnacle, else Avg; one source per row, with
+  `odds_ou25_source`) and the closing pair (`odds_over25_close` / `odds_under25_close`, `odds_ou25_close_source`,
+  CLV only) are separate columns. Banked rows move their old value to the closing columns and get pre-match prices
+  only through the certified join (`src/fd_prematch.py`; 25,543 rows on today's bank, 13,465 older rows without
+  football-data pre-match stay missing). Served models read no price feature, so no prediction changes; the frame
+  hash covers no odds. Own LAST-snapshot captures now fill the closing columns only.
 * **Check:** data truth rule 8 (gated) - RED if an approved, non-withdrawn bar or verdict rests on OddsAPI-history
-  close prices or > 50% unproven capture times, unless the owner recorded an exemption with its basis.
-* **Re-run (protocol `bars-fresh-holdout/4`, registered before any run):** bet prices = football-data pre-match +
-  our own live captures + tier **BT** history only (read through the shared adapter, snapshot < kickoff); own
-  backfill excluded; tier B1 close read only for CLV. Its fresh-holdout verdicts carry the label "re-test after a
-  price-data fix (outcomes previously seen)". Steps once BT is collected (about 1 day after B4): `prepare --aliases
+  close prices or > 50% unproven capture times, unless the owner recorded an exemption with its basis; and RED if
+  any CLOSING column / tier is read as a bet price (the loader's pre-match pair, the study's football-data pair, the
+  certified join's books, the Phase 2 market benchmarks, the protocol's bet tiers). Closing is CLV only.
+* **Re-run (protocol `bars-fresh-holdout/5`, registered before any run; v4 was never run):** bet prices =
+  football-data PRE-MATCH (Bet365, else Pinnacle, one book per pair) through the CERTIFIED one-to-one join
+  (`src/fd_prematch.py`: names resolved by the identity map + the proven crosswalk `config/fd_raw_crosswalk.json`,
+  pinned by sha256; same date or a unique +-1 day; score as a check only; NO league+date+score fallback; join rate
+  98.7%, per league 96.3%-100%, `output/bars_opt/fd_prematch_join_report.json`) + our own live captures + tier **BT**
+  history only (read through the shared adapter, snapshot < kickoff); own backfill excluded; closing columns and
+  tier B1 read only for CLV. Its fresh-holdout verdicts carry the label "re-test after a price-data fix (outcomes
+  previously seen)". Steps once BT is collected (about 1 day after B4): rebuild the Standard universe with
+  `python scripts/bars_opt.py universe --track standard ... --fd-raw output/collect/fd_raw --certified-fd` (stamps
+  `universe_standard_source.json`; prepare refuses any other), `prepare --aliases
   <loader identity map>` (writes `<out>/priced` and `<out>/own_bettime`), `holdout`, then the selection study on
   `<out>/own_bettime` (`scripts/bars_opt.py select` / `final`), then `study --month 2026-11 --serving-universe
   <out>/own_bettime --study-cells <that study>/cells.json`. Target: the new proposal before the 2026-11-19/20 refit.
@@ -451,7 +467,7 @@ value. Before trusting it, sample 10 rows against API-Football with the owner's 
 | R3 | Promotion | Read each run's artifact (verdict, calibration, per league). The owner decides promotion through the promotion gate (team) or the props gate (props). Nothing promotes automatically. | owner |
 | R4 | Turn the gate off again | `gh variable delete PHASE2_RETRAIN_ENABLED --repo NevixAA/wowza-betting` | - |
 | R6 | **FINAL pre-go-live team refit, 2026-11-19/20** (owner 2026-11-09: "Approve 2nd + final refit"; `config/promotion_overrides.json` override `clean-data-switch-2026-11-09`, stage `final_refit`, install window 2026-11-19..2026-11-20) | AFTER the last data-truth collection run and the last results sync from main have landed on data-truth-100: (1) `PHASE2_RETRAIN_ENABLED=true python scripts/phase2_refit_serving.py --out <dir>` (same recipe, champion_recipe per track × market, all clean data through the holdout end); (2) **GATE:** `python scripts/team_train_serve_parity.py <out> <all 12 refit pkl, comma-separated> 6` must report **0 differing cells and every probability identical**: if not, stop (fix the live builder, never the model); (3) `python scripts/promote_clean_switch.py assemble --refit <dir> --out <asm>`; (4) write the 7 sha256s from `<asm>/assembly.json` into the `final_refit` stage's `artifacts` (the owner approval already covers this one refit; nothing beyond it); (5) `python scripts/promote_clean_switch.py install --assembled <asm> --override clean-data-switch-2026-11-09` (the gate refuses outside the window); (6) track registry, gate, lock, manifest, full suite; merge. Every later team promotion goes through PG-1.0's two periods (the 1,000-row shadow rule). | Last collection + results sync landed; owner approval of 2026-11-09 |
-| R7 | **Re-check the approved bars on the refitted predictions** (owner 2026-11-11) | AFTER R6 installed the final refit and BEFORE the Clean Record starts: (1) Phase 2 harness on the same data-truth-100 commit as R6, both tracks, same plan / candidates: `PHASE2_RETRAIN_ENABLED=true python scripts/phase2_retrain.py --out <dir> --stage all --tracks <track>` (Standard via `phase2_retrain.yml`, New-Format locally single-threaded); its frame hash must equal R6's; (2) universes exactly as 2026-11-10: `python scripts/bars_opt.py universe --track standard --predictions <std run>/predictions.parquet --fd-raw output/collect/fd_raw --aliases <loader identity map> --out <u>` and `--track new_format` without `--fd-raw` (identity map = `src.data_loader.IDENTITY_ALIASES` after `load_all_matches()` on that commit); (3) selection study on them: `python scripts/bars_opt.py select --universe <u> --out <s>` then `final`; (4) **THE CHECK**: `python scripts/bars_opt_oddsapi.py recheck --approved-evidence output/threshold_proposals/bars_oddsapi_hist/evidence_2026-11.json --universe <u> --study-cells <s>/cells.json --month 2026-11`. It rebuilds the status (PROVEN / PROMISING / UNPROVEN / OFF) of every track x market-side x league (194 today) with the 21 fresh-holdout cells carried unchanged (that holdout is spent; never re-tested) and compares it with the approved table. Exit 0 = no status changes: the approved bars stand. Exit 1 = at least one cell's status would change: STOP, it goes back to the owner with the `status_changes` list (bar or configuration moves under the same status are listed as `bar_changes_same_status`, for information). A changed PROMISING set also means `scripts/cell_staking_from_proposal.py` would change the staked cells - owner decision, never automatic. Self-check 2026-11-11 on the approved inputs: 194 cells compared, 0 changes | R6 done; owner approval 2026-11-11 |
+| R7 | **Re-check the approved bars on the refitted predictions** (owner 2026-11-11) | AFTER R6 installed the final refit and BEFORE the Clean Record starts: (1) Phase 2 harness on the same data-truth-100 commit as R6, both tracks, same plan / candidates: `PHASE2_RETRAIN_ENABLED=true python scripts/phase2_retrain.py --out <dir> --stage all --tracks <track>` (Standard via `phase2_retrain.yml`, New-Format locally single-threaded); its frame hash must equal R6's; (2) universes exactly as 2026-11-10, Standard O/U 2.5 through the certified join (protocol v5): `python scripts/bars_opt.py universe --track standard --predictions <std run>/predictions.parquet --fd-raw output/collect/fd_raw --certified-fd --aliases <loader identity map> --out <u>` and `--track new_format` without `--fd-raw` (identity map = `src.data_loader.IDENTITY_ALIASES` after `load_all_matches()` on that commit); (3) selection study on them: `python scripts/bars_opt.py select --universe <u> --out <s>` then `final`; (4) **THE CHECK**: `python scripts/bars_opt_oddsapi.py recheck --approved-evidence output/threshold_proposals/bars_oddsapi_hist/evidence_2026-11.json --universe <u> --study-cells <s>/cells.json --month 2026-11`. It rebuilds the status (PROVEN / PROMISING / UNPROVEN / OFF) of every track x market-side x league (194 today) with the 21 fresh-holdout cells carried unchanged (that holdout is spent; never re-tested) and compares it with the approved table. Exit 0 = no status changes: the approved bars stand. Exit 1 = at least one cell's status would change: STOP, it goes back to the owner with the `status_changes` list (bar or configuration moves under the same status are listed as `bar_changes_same_status`, for information). A changed PROMISING set also means `scripts/cell_staking_from_proposal.py` would change the staked cells - owner decision, never automatic. Self-check 2026-11-11 on the approved inputs: 194 cells compared, 0 changes | R6 done; owner approval 2026-11-11 |
 | R5 | Restart the weekly per-league research clock (owner 2026-11-08: "recounting after the retrain fixed and data fixed") | After R3 promotes the retrained models and go-live has merged the repaired data, the per-league weekly panel (`src/research/league_weekly*.py`, TOP-1/3/5 per league × market × gameweek) counts ONLY rows whose `prediction_engine_version` is a promoted clean-retrain model and whose `first_seen_at` is on or after the restart date. Rows from the pre-repair engines (dated 2026-10-05..10-28; 820 rows over W43-W45, TOP-3: 272 priced, ROI −7.8%, CI95 [−21.5%, +2.5%]) stay in the file untouched and are never compared. TOP-3 per league becomes a named PAPER track in the Clean Record; its verdict needs the panel's own bar (≥ 30 priced settled rows and ≥ 8 gameweeks per league × market). | R3, go-live merge, owner OK on the restart date |
 
 Both retrain workflows are `workflow_dispatch` only, `contents: read`, and commit nothing. Their

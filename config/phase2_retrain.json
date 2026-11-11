@@ -86,7 +86,7 @@
       }
     },
     "never_model_inputs": ["bookmaker_overround", "implied_prob_over", "implied_prob_under"],
-    "never_model_inputs_note": "Price-derived. In the history the O/U price is closing-preferred (AvgC first), which no model can know at bet time (P0 bug 5). Prices enter ONLY through the market-only and model+market candidates, labelled with their price class.",
+    "never_model_inputs_note": "Price-derived. Before 2026-11-11 the history O/U price was closing-preferred (AvgC first), which no model can know at bet time (P0 bug 5); since then odds_over25 / odds_under25 are pre-match (certified football-data join) and the closing pair is odds_over25_close / odds_under25_close (CLV only). Prices enter ONLY through the market-only and model+market candidates, labelled with their price class.",
     "track_exclude": {
       "standard": [],
       "new_format": ["home_xg_last5", "away_xg_last5", "home_insidebox_last5", "away_insidebox_last5",
@@ -131,8 +131,9 @@
     }
   },
   "price_class": {
-    "loader_served": "LOADER_SERVED_CLOSING_PREFERRED",
-    "note": "The committed frame holds one O/U 2.5 pair per match: football-data rows prefer the closing columns (AvgC, MaxC, B365C, PC) and fall back to pre-closing ones; new-format rows come from captured snapshots. So market_only is a CLOSING-MARKET BENCHMARK and model+market built on it is NOT deployable (a closing price is not known at bet time). An entry-class price (football-data non-C columns, src.standard_repair.load_fd_entry_prices) is attached only when --fd-raw is given; CLV needs both an entry and a closing price."
+    "loader_served": "LOADER_SERVED_PREMATCH_CERTIFIED_NF_SNAPSHOT_UNPROVEN",
+    "changed_2026_11_11": "Owner 2026-11-11: the loader keeps the pre-match pair (odds_over25 / odds_under25: football-data Bet365 else Pinnacle through the certified join, src/fd_prematch.py) and the closing pair (odds_over25_close / odds_under25_close) APART. Runs before 2026-11-11 (incl. 20261109T*, 20261110T*) read the old closing-preferred value: their market_only O/U 2.5 numbers are a closing-market benchmark.",
+    "note": "Before 2026-11-11 the committed frame held one O/U 2.5 pair per match that preferred the closing columns (AvgC, MaxC, B365C, PC), so market_only was a CLOSING-MARKET BENCHMARK. Since 2026-11-11 the frame's odds_over25 / odds_under25 are PRE-MATCH (Bet365 else Pinnacle through the certified join; missing where football-data has no pre-match row) and closing is a separate pair for CLV only; new-format rows come from captured snapshots of unknown time (NF_SNAPSHOT_HISTORY). An entry-class price (football-data non-C columns, src.standard_repair.load_fd_entry_prices) is attached only when --fd-raw is given; CLV needs both an entry and a closing price."
   },
 
   "comparison": {

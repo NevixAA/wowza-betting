@@ -1,0 +1,167 @@
+{
+ "rule": "Within ONE league: both clubs resolved by NAME onto the served club pool (src.team_names.resolve_identity\nwith the loader's identity map, plus the PROVEN crosswalk config/fd_raw_crosswalk.json), on the SAME date - or one\nday apart when that pair of clubs is unique within +-1 day (a provider / UK date difference). ONE-TO-ONE: a served\nrow claimed by two fd rows, or an fd row that fits two served rows, is dropped (counted). The score is a CHECK\nonly: a matched pair whose full-time scores disagree is rejected (counted) - a score never pairs anything (no\nleague + date + score fallback).",
+ "served_fixtures": 23381,
+ "joined": 23067,
+ "join_rate": 0.9866,
+ "score_checked": 19525,
+ "leagues": [
+  {
+   "league": "Belgian First Division A",
+   "served": 1212,
+   "fd_rows": 1340,
+   "fd_no_or_ambiguous_served_row": 165,
+   "joined": 1175,
+   "join_rate": 0.9695,
+   "fd_row_join_rate": 0.8769
+  },
+  {
+   "league": "Bundesliga 2",
+   "served": 1157,
+   "fd_rows": 1323,
+   "fd_no_or_ambiguous_served_row": 171,
+   "joined": 1152,
+   "join_rate": 0.9957,
+   "fd_row_join_rate": 0.8707
+  },
+  {
+   "league": "Championship",
+   "served": 2134,
+   "fd_rows": 2388,
+   "fd_no_or_ambiguous_served_row": 274,
+   "joined": 2114,
+   "join_rate": 0.9906,
+   "fd_row_join_rate": 0.8853
+  },
+  {
+   "league": "Dutch Eredivisie",
+   "served": 1242,
+   "fd_rows": 1332,
+   "fd_no_or_ambiguous_served_row": 136,
+   "joined": 1196,
+   "join_rate": 0.963,
+   "fd_row_join_rate": 0.8979
+  },
+  {
+   "league": "Greek Super League",
+   "served": 916,
+   "fd_rows": 1018,
+   "fd_no_or_ambiguous_served_row": 105,
+   "joined": 913,
+   "join_rate": 0.9967,
+   "fd_row_join_rate": 0.8969
+  },
+  {
+   "league": "La Liga 2",
+   "served": 1825,
+   "fd_rows": 1986,
+   "fd_no_or_ambiguous_served_row": 185,
+   "joined": 1801,
+   "join_rate": 0.9868,
+   "fd_row_join_rate": 0.9068
+  },
+  {
+   "league": "League One",
+   "served": 2157,
+   "fd_rows": 2366,
+   "fd_no_or_ambiguous_served_row": 229,
+   "joined": 2137,
+   "join_rate": 0.9907,
+   "fd_row_join_rate": 0.9032
+  },
+  {
+   "league": "League Two",
+   "served": 2165,
+   "fd_rows": 2372,
+   "fd_no_or_ambiguous_served_row": 227,
+   "joined": 2145,
+   "join_rate": 0.9908,
+   "fd_row_join_rate": 0.9043
+  },
+  {
+   "league": "Ligue 2",
+   "served": 1319,
+   "fd_rows": 1479,
+   "fd_no_or_ambiguous_served_row": 169,
+   "joined": 1310,
+   "join_rate": 0.9932,
+   "fd_row_join_rate": 0.8857
+  },
+  {
+   "league": "National League",
+   "served": 2176,
+   "fd_rows": 2397,
+   "fd_no_or_ambiguous_served_row": 240,
+   "joined": 2157,
+   "join_rate": 0.9913,
+   "fd_row_join_rate": 0.8999
+  },
+  {
+   "league": "Portuguese Primeira Liga",
+   "served": 1198,
+   "fd_rows": 1322,
+   "fd_no_or_ambiguous_served_row": 129,
+   "joined": 1193,
+   "join_rate": 0.9958,
+   "fd_row_join_rate": 0.9024
+  },
+  {
+   "league": "Scottish Championship",
+   "served": 726,
+   "fd_rows": 789,
+   "fd_no_or_ambiguous_served_row": 84,
+   "joined": 705,
+   "join_rate": 0.9711,
+   "fd_row_join_rate": 0.8935
+  },
+  {
+   "league": "Scottish League One",
+   "served": 725,
+   "fd_rows": 789,
+   "fd_no_or_ambiguous_served_row": 86,
+   "joined": 703,
+   "join_rate": 0.9697,
+   "fd_row_join_rate": 0.891
+  },
+  {
+   "league": "Scottish League Two",
+   "served": 713,
+   "fd_rows": 785,
+   "fd_no_or_ambiguous_served_row": 77,
+   "joined": 708,
+   "join_rate": 0.993,
+   "fd_row_join_rate": 0.9019
+  },
+  {
+   "league": "Scottish Premiership",
+   "served": 906,
+   "fd_rows": 987,
+   "fd_no_or_ambiguous_served_row": 100,
+   "joined": 887,
+   "join_rate": 0.979,
+   "fd_row_join_rate": 0.8987
+  },
+  {
+   "league": "Serie B",
+   "served": 1512,
+   "fd_rows": 1630,
+   "fd_no_or_ambiguous_served_row": 157,
+   "joined": 1473,
+   "join_rate": 0.9742,
+   "fd_row_join_rate": 0.9037
+  },
+  {
+   "league": "Turkish Super Lig",
+   "served": 1298,
+   "fd_rows": 1469,
+   "fd_no_or_ambiguous_served_row": 171,
+   "joined": 1298,
+   "join_rate": 1.0,
+   "fd_row_join_rate": 0.8836
+  }
+ ],
+ "pm_book": {
+  "B365": 23022,
+  "": 32,
+  "P": 13
+ }
+}
