@@ -284,6 +284,9 @@ def run_side_market_backtest(
     walk_size = walk_size or config.BACKTEST_WALK_SIZE
     min_train = min_train or config.BACKTEST_MIN_TRAIN
     odds_col  = f"odds_{target}"
+    # BET prices only (owner 2026-11-11): unproven-capture / multi-book side prices are never bets
+    from src.data_loader import side_bet_prices
+    df = side_bet_prices(df)
 
     # Only require the target outcome — unpriced rows still TRAIN (no odds needed) but are
     # never bets; their odds stay NaN

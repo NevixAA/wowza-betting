@@ -258,7 +258,79 @@ def test_data_truth_8_is_red_when_a_backtest_reads_odds_without_the_bet_mask(tmp
     (root / "src").mkdir()
     (root / "src" / "backtest.py").write_text("df = df.dropna(subset=['odds_over25'])", encoding="utf-8")
     hits = DT.unproven_price_as_bet(root)
-    assert [h["where"] for h in hits] == ["src/backtest.py"]
+    assert [h["where"] for h in hits] == ["src/backtest.py", "src/backtest.py"]      # O/U 2.5 and side markets
     assert DT.unproven_price_as_bet() == []
     monkeypatch.setattr(DL, "OU25_BET_SOURCES", DL.OU25_BET_SOURCES | {"NF_BACKFILL_UNPROVEN"})
     assert DT.unproven_price_as_bet()[0]["where"] == "src/data_loader.OU25_BET_SOURCES"
+
+
+# ── BTTS / O1.5 / O3.5: the same proven / unproven split (owner 2026-11-11) ──────────────────────
+
+def test_football_data_side_prices_say_which_column_they_came_from():
+    raw = pd.DataFrame({"Avg>1.5": [1.30, 1.28], "B365>3.5": [3.4, 3.6], "AvgBTSH": [1.8, 1.9]})
+    p = DL._side_fd_prices(raw)
+    assert p["odds_over15_source"].tolist() == ["FD_MULTIBOOK:Avg>1.5"] * 2
+    assert p["odds_over35_source"].tolist() == ["FD_B365"] * 2
+    assert p["odds_btts_source"].iloc[0].startswith("FD_MULTIBOOK")
+
+
+def test_side_proven_price_is_the_earliest_forward_capture_never_the_backfill():
+    ko = "2026-09-20T23:30:00Z"
+    o = _nf_raw([("2026-09-20T00:00:00Z", ko, "btts_yes", 1.70), ("2026-09-20T00:00:00Z", ko, "btts_no", 2.10),
+                 ("2026-09-20T10:15:00Z", ko, "btts_yes", 1.80), ("2026-09-20T10:15:00Z", ko, "btts_no", 2.00),
+                 ("2026-09-20T23:20:00Z", ko, "btts_yes", 1.75), ("2026-09-20T23:20:00Z", ko, "btts_no", 2.05),
+                 ("2026-09-20T10:15:00Z", None, "over15", 1.30), ("2026-09-20T10:15:00Z", None, "under15", 3.40)])
+    cache = {}
+    DL._attach_proven_side(o, cache, "newformat_odds_history")
+    e = cache[("2026-09-20", "USA MLS", "Alpha FC vs Bravo SC")]
+    assert (e["btts_pm_yes"], e["btts_cl_yes"]) == (1.80, 1.75)
+    assert "over15_pm_yes" not in e                                  # no kickoff recorded: never proven
+
+
+def _side_rows():
+    return pd.DataFrame({"league": ["USA MLS", "USA MLS", "Championship"],
+                         "date": pd.to_datetime(["2026-09-20", "2026-09-27", "2026-09-20"]),
+                         "home_team": ["Alpha FC", "Alpha FC", "Alpha United"],
+                         "away_team": ["Bravo SC", "Charlie SC", "Bravo City"],
+                         "odds_btts": [1.70, 1.85, 1.90], "odds_over15": [1.30, 1.25, 1.33],
+                         "odds_over15_source": [np.nan, np.nan, "FD_B365"]})
+
+
+def test_side_provenance_takes_proven_captures_and_labels_the_rest_unproven(monkeypatch):
+    monkeypatch.setattr(DL, "_nf_real_odds", lambda: {("2026-09-20", "USA MLS", "Alpha FC vs Bravo SC"):
+                                                      {"btts_pm_yes": 1.80, "btts_cl_yes": 1.75}})
+    monkeypatch.setattr(DL, "_std_side_proven", lambda: {("2026-09-20", "Championship", "Alpha United vs Bravo City"):
+                                                         {"over15_pm_yes": 1.40}})
+    d = DL._side_provenance(_side_rows())
+    assert (d.loc[0, "odds_btts"], d.loc[0, "odds_btts_source"]) == (1.80, "NF_SNAPSHOT_PROVEN")
+    assert (d.loc[0, "odds_btts_close"], d.loc[0, "odds_btts_close_source"]) == (1.75, "NF_SNAPSHOT_LAST")
+    assert (d.loc[1, "odds_btts"], d.loc[1, "odds_btts_source"]) == (1.85, "SIDE_UNPROVEN")
+    assert (d.loc[2, "odds_over15"], d.loc[2, "odds_over15_source"]) == (1.33, "FD_B365")   # Bet365 kept
+    assert d["btts_bet_price_ok"].tolist() == [True, False, False]
+    m = DL.side_bet_prices(d)
+    assert m["odds_btts"].notna().tolist() == [True, False, False]
+    assert m["odds_over15"].notna().tolist() == [False, False, True]
+
+
+def test_phase2_side_coverage_counts_bet_time_prices_only_and_fails_closed():
+    from src.retrain_harness.protocol import price_coverage
+    mk = {"price": {"yes": "odds_btts", "no": None, "pair_valid_flag": "btts_bet_price_ok"}}
+    d = pd.DataFrame({"odds_btts": [1.8, 1.9, 2.0], "btts_bet_price_ok": [True, False, True]})
+    assert price_coverage(d, mk)["any"] == 2
+    assert price_coverage(d.drop(columns="btts_bet_price_ok"), mk)["any"] == 0
+
+
+def test_data_truth_8_covers_the_side_markets(monkeypatch, tmp_path):
+    import shutil
+    assert DT.unproven_price_as_bet() == []
+    monkeypatch.setattr(DL, "SIDE_BET_SOURCES", DL.SIDE_BET_SOURCES | {"SIDE_UNPROVEN"})
+    assert any(h["where"] == "src/data_loader.SIDE_BET_SOURCES" for h in DT.unproven_price_as_bet())
+    monkeypatch.undo()
+    (tmp_path / "config").mkdir()
+    cfg = json.loads((DT.ROOT / "config" / "phase2_retrain.json").read_text(encoding="utf-8"))
+    cfg["markets"]["btts"]["price"].pop("pair_valid_flag")
+    (tmp_path / "config" / "phase2_retrain.json").write_text(json.dumps(cfg), encoding="utf-8")
+    (tmp_path / "src").mkdir()
+    shutil.copy(DT.ROOT / "src" / "backtest.py", tmp_path / "src" / "backtest.py")
+    assert [h["where"] for h in DT.unproven_price_as_bet(tmp_path)] == [
+        "config/phase2_retrain.json markets.btts.price.pair_valid_flag"]

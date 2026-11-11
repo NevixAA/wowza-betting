@@ -159,6 +159,7 @@ def _nf_real_odds() -> dict:
                         (str(_r.md_key), str(_r.league), str(_r.match)), {}
                     )[str(_r.market)] = float(_r.odds)          # later snapshot overwrites
                 _nf_attach_proven_ou25(_o, _nf_odds_cache)
+                _attach_proven_side(_o, _nf_odds_cache, "newformat_odds_history")
             except Exception as e:                                     # noqa: BLE001
                 # Never silent: an empty price table looks exactly like "no captures".
                 log.error(f"[nf_odds] could not build the NF price table ({type(e).__name__}: {e})")
@@ -188,6 +189,126 @@ def _nf_attach_proven_ou25(o: pd.DataFrame, cache: dict) -> None:
         for r in w.itertuples(index=False):
             e = cache.setdefault((str(r.match_date)[:10], str(r.league), str(r.match)), {})
             e[f"ou25_{tag}_over"], e[f"ou25_{tag}_under"] = float(r.yes), float(r.no)
+
+
+def _proven_forward(o: pd.DataFrame, source: str) -> pd.DataFrame:
+    """Capture rows whose time is PROVEN before kickoff: forward captures (not 00:00 backfill), kickoff
+    recorded, snapshot_ts < kickoff."""
+    from src.integrity.price_provenance import label_market_mapping
+    d = o.drop(columns=[c for c in ("md_key", "ts_key") if c in o.columns])
+    if not {"snapshot_ts", "kickoff_utc", "match_date", "market", "odds"} <= set(d.columns) or d.empty:
+        return d.iloc[0:0]
+    lab = label_market_mapping(d[["snapshot_ts", "market", "odds"]], source)
+    ko = pd.to_datetime(d["kickoff_utc"], errors="coerce", utc=True, format="mixed")
+    ts = pd.to_datetime(d["snapshot_ts"], errors="coerce", utc=True, format="mixed")
+    return d[(lab["price_origin"].to_numpy() == "FORWARD_CAPTURE") & ko.notna().to_numpy()
+             & (ts < ko).fillna(False).to_numpy()]
+
+
+def _attach_proven_side(o: pd.DataFrame, cache: dict, source: str) -> None:
+    """BTTS / O1.5 / O3.5 (owner 2026-11-11): per fixture the EARLIEST proven pre-kickoff same-snapshot pair from
+    match day - 1 is the bet price (<m>_pm_yes) and the LATEST the closing one (<m>_cl_yes) - the study's rule
+    (src.league_bars.snapshot_pairs) on forward captures only."""
+    from src import league_bars as _LB
+    fwd = _proven_forward(o, source)
+    if fwd.empty:
+        return
+    for m in ("btts", "over15", "over35"):
+        for tag, which in (("pm", "first"), ("cl", "last")):
+            for r in _LB.snapshot_pairs(fwd, source, m, which=which).itertuples(index=False):
+                cache.setdefault((str(r.match_date)[:10], str(r.league), str(r.match)), {})[f"{m}_{tag}_yes"] = float(r.yes)
+
+
+_STD_SIDE_FILE = _Path(__file__).resolve().parents[1] / "output" / "standard_sidemarket_odds_history.csv"
+_std_side_cache: dict | None = None
+
+
+def _std_side_proven() -> dict:
+    """{(match_date, league, 'Home vs Away'): {<m>_pm_yes, <m>_cl_yes}} - proven pre-kickoff BTTS / O1.5 / O3.5
+    pairs from the standard side-market captures (first-half BTTS > 3.20 and mis-mapped rows dropped)."""
+    global _std_side_cache
+    if _std_side_cache is None:
+        _std_side_cache = {}
+        if _STD_SIDE_FILE.exists():
+            try:
+                o = pd.read_csv(_STD_SIDE_FILE, low_memory=False)
+                o = o[~((o["market"].astype(str) == "btts_yes") & (pd.to_numeric(o["odds"], errors="coerce") > 3.20))]
+                o = _drop_mismapped(o, "standard_sidemarket_odds_history", "std_sidemarket")
+                _attach_proven_side(o, _std_side_cache, "standard_sidemarket_odds_history")
+            except Exception as e:                                     # noqa: BLE001
+                log.error(f"[std_sidemarket] proven-capture table failed ({type(e).__name__}: {e}) - every "
+                          f"standard side price stays UNPROVEN (never a bet price)")
+    return _std_side_cache
+
+
+#: BTTS / O1.5 / O3.5 sources that ARE a bet-time price: a Bet365 football-data column (one book, pre-match) or
+#: our own capture proven before kickoff. SIDE_UNPROVEN (00:00 backfill, API-Football history backfill, banked
+#: rows - no proven capture time) and FD_MULTIBOOK:* (averages / maxima) never are.
+SIDE_BET_SOURCES = frozenset({"FD_B365", "NF_SNAPSHOT_PROVEN", "STD_SNAPSHOT_PROVEN"})
+SIDE_NOT_BET_SOURCES = frozenset({"SIDE_UNPROVEN"})
+
+
+def side_bet_price_ok(df: pd.DataFrame, col: str) -> pd.Series:
+    """True where df[col] (odds_btts / odds_over15 / odds_over35) is a bet-time price. Fail-closed."""
+    src = f"{col}_source"
+    if df is None or not len(df) or src not in df.columns or col not in df.columns:
+        return pd.Series(False, index=getattr(df, "index", None), dtype=bool)
+    return (df[src].isin(SIDE_BET_SOURCES) & (pd.to_numeric(df[col], errors="coerce") > 1)).astype(bool)
+
+
+def side_bet_prices(df: pd.DataFrame) -> pd.DataFrame:
+    """A copy whose BTTS / O1.5 / O3.5 prices are MISSING wherever they are not a bet-time price."""
+    d = df.copy()
+    for col in SIDE_MARKETS:
+        if col in d.columns:
+            d.loc[~side_bet_price_ok(d, col), col] = np.nan
+    return d
+
+
+def _side_provenance(df: pd.DataFrame) -> pd.DataFrame:
+    """Every BTTS / O1.5 / O3.5 price carries its provenance (owner 2026-11-11). Where our own captures hold a
+    PROVEN pre-kickoff price (new-format: newformat_odds_history; standard: standard_sidemarket_odds_history)
+    it is the price (NF_SNAPSHOT_PROVEN / STD_SNAPSHOT_PROVEN; its latest proven price -> <col>_close), unless a
+    football-data Bet365 price is already there. Any other price has no proven capture time: SIDE_UNPROVEN.
+    <m>_bet_price_ok flags the bet-time ones (Phase 2 reads them)."""
+    import config as _cfg
+    d = df
+    cols = [c for c in SIDE_MARKETS if c in d.columns]
+    for c in cols:
+        for x in (f"{c}_source", f"{c}_close_source"):
+            d[x] = d[x].astype(object) if x in d.columns else pd.Series(np.nan, index=d.index, dtype=object)
+        if f"{c}_close" not in d.columns:
+            d[f"{c}_close"] = np.nan
+    if d.empty or not cols:
+        return d
+    nf = d["league"].map(lambda lg: _cfg.model_type_for_league(lg) == "new_format").astype(bool)
+    days = pd.to_datetime(d["date"], errors="coerce").dt.strftime("%Y-%m-%d")
+    for is_nf, table, label in ((True, None, "NF_SNAPSHOT_PROVEN"), (False, None, "STD_SNAPSHOT_PROVEN")):
+        try:
+            tbl = _nf_real_odds() if is_nf else _std_side_proven()
+        except Exception as e:                                         # noqa: BLE001
+            log.error(f"[side] proven-capture lookup failed ({type(e).__name__}: {e})")
+            continue
+        if not tbl:
+            continue
+        sel = d.index[nf == is_nf]
+        for ix, day, lg, h, a in zip(sel, days.loc[sel], d.loc[sel, "league"].astype(str),
+                                     d.loc[sel, "home_team"].astype(str), d.loc[sel, "away_team"].astype(str)):
+            r = _nf_odds_lookup(tbl, day, lg, h, a)
+            if not r:
+                continue
+            for c in cols:
+                m = SIDE_MARKETS[c][0]
+                if f"{m}_pm_yes" in r and d.at[ix, f"{c}_source"] != "FD_B365":
+                    d.at[ix, c], d.at[ix, f"{c}_source"] = r[f"{m}_pm_yes"], label
+                    if f"{m}_cl_yes" in r and pd.isna(d.at[ix, f"{c}_close"]):
+                        d.at[ix, f"{c}_close"] = r[f"{m}_cl_yes"]
+                        d.at[ix, f"{c}_close_source"] = label.replace("_PROVEN", "_LAST")
+    for c in cols:
+        un = d[c].notna() & d[f"{c}_source"].isna()
+        d.loc[un, f"{c}_source"] = "SIDE_UNPROVEN"
+        d[f"{SIDE_MARKETS[c][0]}_bet_price_ok"] = side_bet_price_ok(d, c)
+    return d
 
 
 #: O/U 2.5 sources that ARE a bet-time price (owner 2026-11-11): one book's pre-match pair from football-data
@@ -286,6 +407,29 @@ def ou25_prices(raw: pd.DataFrame) -> dict:
     oc, uc, sc = _ou25_pairs(raw, _OU25_CLOSE)
     return {"odds_over25": o, "odds_under25": u, "odds_ou25_source": s,
             "odds_over25_close": oc, "odds_under25_close": uc, "odds_ou25_close_source": sc}
+
+
+#: the one-sided side markets: frame column -> (capture market key, football-data columns)
+SIDE_MARKETS = {"odds_btts": ("btts", "btts_yes"), "odds_over15": ("over15", "over15"),
+                "odds_over35": ("over35", "over35")}
+
+
+def _side_fd_prices(raw: pd.DataFrame) -> dict:
+    """football-data BTTS / O1.5 / O3.5 prices + provenance (owner 2026-11-11): FD_B365 for a Bet365 column (one
+    book, pre-match); any other column is a multi-book average / maximum (FD_MULTIBOOK:<col>, never a bet price)."""
+    out = {}
+    for col, cols in (("odds_btts", _BTTS_COLS), ("odds_over15", _OVER15_COLS), ("odds_over35", _OVER35_COLS)):
+        s, src = pd.Series(np.nan, index=raw.index), None
+        for c in cols:
+            if c in raw.columns:
+                v = pd.to_numeric(raw[c], errors="coerce")
+                if v.notna().sum() > len(raw) * 0.1:
+                    s, src = v, c
+                    break
+        lab = None if src is None else ("FD_B365" if src.startswith("B365") else f"FD_MULTIBOOK:{src}")
+        out[col] = s
+        out[f"{col}_source"] = pd.Series(np.where(s.notna(), lab, None), index=raw.index, dtype=object)
+    return out
 
 
 def _pick_odds(raw: pd.DataFrame, cols: list[str]) -> pd.Series:
@@ -1085,9 +1229,8 @@ def _ci_download_all(have: set | None = None) -> list[pd.DataFrame]:
                     df[out_col] = pd.to_numeric(raw.get(src_col, np.nan), errors="coerce")
                 for _k, _v in ou25_prices(raw).items():      # pre-match pair + closing pair, apart (2026-11-11)
                     df[_k] = _v
-                df["odds_btts"]    = _pick_odds(raw, _BTTS_COLS)
-                df["odds_over15"]  = _pick_odds(raw, _OVER15_COLS)
-                df["odds_over35"]  = _pick_odds(raw, _OVER35_COLS)
+                for _k, _v in _side_fd_prices(raw).items():
+                    df[_k] = _v
                 df["ftr"] = raw.get("FTR", np.nan)
                 df = df[df["home_team"].notna() & df["away_team"].notna()]
                 frames.append(df)
@@ -2326,6 +2469,7 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
         out = _enrich_with_api_shots(out)
         out = _enrich_with_standard_sidemarket_odds(out)   # real BTTS/O1.5/O3.5 for 2nd-divs
         out = _ou25_provenance(out)                       # pre-match vs closing, apart (2026-11-11)
+        out = _side_provenance(out)                       # BTTS / O1.5 / O3.5: proven vs unproven
         out = _enrich_ou25_from_captures(out)             # our own LAST snapshot -> closing columns, NaN-only
         out = _impossible_stats_to_missing(out)
         out = _flag_ou25_pair(out)
@@ -2379,9 +2523,8 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
         df["referee"]  = raw.get("Referee", np.nan)
         for _k, _v in ou25_prices(raw).items():      # pre-match pair + closing pair, apart (2026-11-11)
             df[_k] = _v
-        df["odds_btts"]    = _pick_odds(raw, _BTTS_COLS)
-        df["odds_over15"]  = _pick_odds(raw, _OVER15_COLS)
-        df["odds_over35"]  = _pick_odds(raw, _OVER35_COLS)
+        for _k, _v in _side_fd_prices(raw).items():
+            df[_k] = _v
 
         frames.append(df)
 
@@ -2419,9 +2562,8 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
                     df["referee"]       = raw.get("Referee", np.nan)
                     for _k, _v in ou25_prices(raw).items():   # pre-match + closing, apart (2026-11-11)
                         df[_k] = _v
-                    df["odds_btts"]     = _pick_odds(raw, _BTTS_COLS)
-                    df["odds_over15"]   = _pick_odds(raw, _OVER15_COLS)
-                    df["odds_over35"]   = _pick_odds(raw, _OVER35_COLS)
+                    for _k, _v in _side_fd_prices(raw).items():
+                        df[_k] = _v
                     df = df[df["home_team"].notna() & df["away_team"].notna()]
                     # Replace the matching Excel frame with this clean CSV data
                     _lbls = set(df["season"].dropna())
@@ -2486,9 +2628,8 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
             df["ftr"] = raw.get("FTR", np.nan)
             for _k, _v in ou25_prices(raw).items():      # pre-match pair + closing pair, apart (2026-11-11)
                 df[_k] = _v
-            df["odds_btts"]    = _pick_odds(raw, _BTTS_COLS)
-            df["odds_over15"]  = _pick_odds(raw, _OVER15_COLS)
-            df["odds_over35"]  = _pick_odds(raw, _OVER35_COLS)
+            for _k, _v in _side_fd_prices(raw).items():
+                df[_k] = _v
             df = df[df["home_team"].notna() & df["away_team"].notna()]
             frames.append(df)
             log.debug(f"HT extra: {lg_name} {s_label} {len(df)} rows")
@@ -2550,6 +2691,7 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
     # and typed Danish league names) ─────────────────────────────────────────────
     out = _drop_misfiled_league_rows(out, "local")
     out = _ou25_provenance(out)                           # pre-match vs closing, apart (2026-11-11)
+    out = _side_provenance(out)                           # BTTS / O1.5 / O3.5: proven vs unproven
     out = _impossible_stats_to_missing(out)
     out = _flag_ou25_pair(out)
 

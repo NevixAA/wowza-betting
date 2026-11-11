@@ -82,6 +82,18 @@ use them". From go-live:
   retrain, the Phase 2 market benchmarks (fail-closed without the flag). Offline load after the data-truth-100
   merge: 71,585 rows; NF priced 2,976 = 708 proven + 2,268 unproven; bet-time pairs 26,302. Data truth 8 is RED
   if an unproven price can reach a bet-price consumer.
+* **Side markets (BTTS / O1.5 / O3.5, both tracks):** the same split - `odds_<m>_source` = `NF_SNAPSHOT_PROVEN` /
+  `STD_SNAPSHOT_PROVEN` (own forward capture proven before kickoff, earliest same-snapshot pair; latest ->
+  `odds_<m>_close`), `FD_B365` (one book, pre-match) or `SIDE_UNPROVEN` (00:00 backfill, API-Football history
+  backfill, banked rows) / `FD_MULTIBOOK:<col>` (averages / maxima). Bet-price readers: `side_bet_prices` (side
+  backtest) and the `<m>_bet_price_ok` flags (Phase 2). Offline load: BTTS proven 626 NF + 724 Std (unproven
+  2,293 + 6,594); O1.5 673 + 766 (599 + 578); O3.5 682 + 827 (832 + 534).
+* **Re-run inputs ready apart from BT** (`scripts/rerun_inputs_readiness.py`, counts in
+  `output/bars_opt/rerun_inputs_readiness.json`): bet-time-priced study rows today - Standard O/U 2.5 23,034 of
+  23,380 (certified join); every other family 521-873 rows per track from proven own captures. BT (btts +
+  alternate totals, team leagues with an OddsAPI key, from 2023-05-03; HT not requested) can reach about 13,800-14,800
+  unpriced rows per family; at the ~43% event coverage of its test that is roughly 5,900-6,400 rows per family
+  (Standard O/U 2.5: about 100). Leagues with no OddsAPI key get nothing from BT.
 * **Check:** data truth rule 8 (gated) - RED if an approved, non-withdrawn bar or verdict rests on OddsAPI-history
   close prices or > 50% unproven capture times, unless the owner recorded an exemption with its basis; and RED if
   any CLOSING column / tier is read as a bet price (the loader's pre-match pair, the study's football-data pair, the

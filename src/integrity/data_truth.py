@@ -899,6 +899,12 @@ def unproven_price_as_bet(root: Path | None = None) -> list[dict]:
     bad = set(DL.OU25_BET_SOURCES) & (set(DL.OU25_NOT_BET_SOURCES) | {"NF_SNAPSHOT_HISTORY", "LEGACY_CLOSING_PREFERRED"})
     if bad:
         hits.append({"where": "src/data_loader.OU25_BET_SOURCES", "what": f"unproven source(s) {sorted(bad)}"})
+    bad = {s for s in DL.SIDE_BET_SOURCES if s in DL.SIDE_NOT_BET_SOURCES or s.startswith("FD_MULTIBOOK")}
+    if bad:
+        hits.append({"where": "src/data_loader.SIDE_BET_SOURCES", "what": f"unproven source(s) {sorted(bad)}"})
+    bt = r / "src" / "backtest.py"
+    if bt.exists() and "side_bet_prices(" not in bt.read_text(encoding="utf-8-sig"):
+        hits.append({"where": "src/backtest.py", "what": "side-market backtest reads odds without side_bet_prices"})
     for rel in OU25_BET_CONSUMERS:
         f = r / rel
         if f.exists() and "ou25_bet_prices(" not in f.read_text(encoding="utf-8-sig"):
@@ -908,8 +914,13 @@ def unproven_price_as_bet(root: Path | None = None) -> list[dict]:
     if pr and pr.get("pair_valid_flag") != "ou25_bet_price_ok":
         hits.append({"where": "config/phase2_retrain.json markets.over25.price.pair_valid_flag",
                      "what": f"{pr.get('pair_valid_flag')!r} (must be 'ou25_bet_price_ok')"})
+    for mk in ("btts", "over15", "over35"):
+        p2 = ((cfg.get("markets") or {}).get(mk) or {}).get("price") or {}
+        if p2 and p2.get("pair_valid_flag") != f"{mk}_bet_price_ok":
+            hits.append({"where": f"config/phase2_retrain.json markets.{mk}.price.pair_valid_flag",
+                         "what": f"{p2.get('pair_valid_flag')!r} (must be '{mk}_bet_price_ok')"})
     for f in sorted((r / "src" / "bars_opt").glob("*.py")) + [r / "src" / "league_bars.py"]:
-        if f.exists() and re.search(r"odds_(over|under)25\b", f.read_text(encoding="utf-8-sig")):
+        if f.exists() and re.search(r"odds_((over|under)(15|25|35)|btts)\b", f.read_text(encoding="utf-8-sig")):
             hits.append({"where": f.relative_to(r).as_posix(), "what": "bars read the loader's O/U 2.5 pair"})
     from src import history_corrections as HC
     from src.research import edge_replay as ER

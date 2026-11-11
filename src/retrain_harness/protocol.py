@@ -330,11 +330,14 @@ def price_coverage(rows: pd.DataFrame, mcfg: dict) -> dict:
         return {"two_sided": 0, "any": 0, "note": "no price in the frame for this market"}
     yes = pd.to_numeric(rows[pr["yes"]], errors="coerce") if pr.get("yes") in rows.columns else None
     no = pd.to_numeric(rows[pr["no"]], errors="coerce") if pr.get("no") and pr["no"] in rows.columns else None
+    flag = pr.get("pair_valid_flag")
+    if yes is not None and flag:   # bet-time prices only, fail-closed (owner 2026-11-11)
+        yes = yes.where(rows[flag].astype("boolean").fillna(False).astype(bool) if flag in rows.columns
+                        else pd.Series(False, index=rows.index))
     any_ = int((yes > 1).sum()) if yes is not None else 0
     if yes is None or no is None:
         return {"two_sided": 0, "any": any_, "note": "one-sided price only: no de-vig possible"}
     ok = (yes > 1) & (no > 1)
-    flag = pr.get("pair_valid_flag")
     if flag:          # fail-closed: without the configured flag no pair counts
         ok &= (rows[flag].astype("boolean").fillna(False).astype(bool) if flag in rows.columns
                else pd.Series(False, index=rows.index))
