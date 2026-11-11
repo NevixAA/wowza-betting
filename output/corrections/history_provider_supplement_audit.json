@@ -1,128 +1,185 @@
 {
  "artifact": "history_provider_supplement_audit",
- "generated_at": "2026-11-10T18:23:49Z",
+ "generated_at": "2026-11-11T10:50:28Z",
  "served_rows_without_supplement": 71011,
- "added": 608,
- "refused": 429,
+ "added": 171,
+ "refused": 866,
  "added_by_status": {
-  "FT": 448,
-  "PEN": 107,
-  "AET": 53
+  "FT": 120,
+  "PEN": 51
  },
- "added_with_ht": 608,
+ "added_with_ht": 171,
  "refused_by_reason": {
+  "cup / knockout round": 437,
   "window_edge: before the first served fixture of this league-season": 398,
   "provider record holds no half-time score": 29,
   "named by an owner correction list": 2
  },
  "per_league": {
   "Argentina Primera Division": {
-   "added:after_last_served": 1,
-   "added:inside": 5
+   "cup / knockout round 'Championship - Final' (owner 2026-11-11: league rounds only)": 1,
+   "cup / knockout round '1st Phase - Quarter-finals' (owner 2026-11-11: league rounds only)": 4,
+   "cup / knockout round '1st Phase - Semi-finals' (owner 2026-11-11: league rounds only)": 1
   },
   "Austrian Bundesliga": {
-   "added:after_last_served": 3
+   "cup / knockout round 'Semi-finals' (owner 2026-11-11: league rounds only)": 1,
+   "cup / knockout round 'Final' (owner 2026-11-11: league rounds only)": 2
   },
   "Belgian First Division A": {
    "window_edge: before the first served fixture of this league-season": 62,
-   "added:inside": 16,
-   "added:after_last_served": 78
+   "added:inside": 4,
+   "added:after_last_served": 72,
+   "cup / knockout round 'Relegation Round' (owner 2026-11-11: league rounds only)": 8,
+   "cup / knockout round 'Conference League Play-offs - Final' (owner 2026-11-11: league rounds only)": 2,
+   "cup / knockout round 'Quarter-finals' (owner 2026-11-11: league rounds only)": 4,
+   "cup / knockout round 'Semi-finals' (owner 2026-11-11: league rounds only)": 2,
+   "cup / knockout round 'Final' (owner 2026-11-11: league rounds only)": 2
   },
   "Bundesliga 2": {
-   "added:after_last_served": 7,
+   "cup / knockout round 'Relegation Round' (owner 2026-11-11: league rounds only)": 7,
    "window_edge: before the first served fixture of this league-season": 2,
    "added:inside": 4
   },
   "Championship": {
-   "added:after_last_served": 15,
-   "added:inside": 6
+   "cup / knockout round 'Promotion Play-offs - Semi-finals' (owner 2026-11-11: league rounds only)": 13,
+   "cup / knockout round 'Promotion Play-offs - Final' (owner 2026-11-11: league rounds only)": 3,
+   "added:inside": 4,
+   "cup / knockout round 'Semi-finals' (owner 2026-11-11: league rounds only)": 1
   },
   "China Super League": {
-   "added:inside": 7
+   "cup / knockout round 'Quarter-finals' (owner 2026-11-11: league rounds only)": 1,
+   "cup / knockout round '5th-8th Place Play-offs' (owner 2026-11-11: league rounds only)": 2,
+   "cup / knockout round 'Semi-finals' (owner 2026-11-11: league rounds only)": 1,
+   "cup / knockout round '13th-16th Place Play-offs' (owner 2026-11-11: league rounds only)": 1,
+   "cup / knockout round '9th Place Final' (owner 2026-11-11: league rounds only)": 1,
+   "cup / knockout round '5th Place Final' (owner 2026-11-11: league rounds only)": 1
   },
   "Denmark Superliga": {
-   "added:after_last_served": 2
+   "cup / knockout round 'Conference League Play-offs - Final' (owner 2026-11-11: league rounds only)": 1,
+   "cup / knockout round 'Final' (owner 2026-11-11: league rounds only)": 1
   },
   "Dutch Eredivisie": {
    "window_edge: before the first served fixture of this league-season": 65,
-   "added:inside": 29,
-   "added:after_last_served": 51
+   "cup / knockout round '1st Round' (owner 2026-11-11: league rounds only)": 3,
+   "cup / knockout round 'Europa League Play-offs - Semi-finals' (owner 2026-11-11: league rounds only)": 6,
+   "cup / knockout round '2nd Round' (owner 2026-11-11: league rounds only)": 2,
+   "cup / knockout round 'Europa League Play-offs - Final' (owner 2026-11-11: league rounds only)": 3,
+   "cup / knockout round '3rd Round' (owner 2026-11-11: league rounds only)": 1,
+   "added:inside": 2,
+   "cup / knockout round 'Relegation Round' (owner 2026-11-11: league rounds only)": 48,
+   "cup / knockout round 'Conference League Play-offs - Semi-finals' (owner 2026-11-11: league rounds only)": 8,
+   "cup / knockout round 'Conference League Play-offs - Final' (owner 2026-11-11: league rounds only)": 4,
+   "cup / knockout round 'Semi-finals' (owner 2026-11-11: league rounds only)": 2,
+   "cup / knockout round 'Final' (owner 2026-11-11: league rounds only)": 1
   },
   "Finland Veikkausliiga": {
-   "added:inside": 3
+   "cup / knockout round 'Europa League Play-offs - 1st Round' (owner 2026-11-11: league rounds only)": 2,
+   "cup / knockout round 'Europa League Play-offs - 2nd Round' (owner 2026-11-11: league rounds only)": 1
   },
   "Greek Super League": {
    "window_edge: before the first served fixture of this league-season": 28,
-   "added:after_last_served": 6,
+   "cup / knockout round 'Relegation Round' (owner 2026-11-11: league rounds only)": 6,
    "added:inside": 1,
    "named by an owner correction list": 1
   },
   "Japan J-League": {
-   "added:inside": 52
+   "added:inside": 51,
+   "cup / knockout round '5th place' (owner 2026-11-11: league rounds only)": 1
   },
   "K-League 1": {
-   "added:inside": 3
+   "cup / knockout round 'Relegation Round' (owner 2026-11-11: league rounds only)": 3
   },
   "La Liga 2": {
-   "added:after_last_served": 19,
+   "cup / knockout round 'Promotion Play-offs - Semi-finals' (owner 2026-11-11: league rounds only)": 12,
+   "cup / knockout round 'Promotion Play-offs - Finals' (owner 2026-11-11: league rounds only)": 6,
    "added:inside": 3,
-   "window_edge: before the first served fixture of this league-season": 1
+   "window_edge: before the first served fixture of this league-season": 1,
+   "cup / knockout round 'Promotion Play-offs - final' (owner 2026-11-11: league rounds only)": 1
   },
   "League One": {
-   "added:after_last_served": 15,
-   "added:inside": 4
-  },
-  "League Two": {
-   "added:after_last_served": 15,
+   "cup / knockout round 'Promotion Play-offs - Semi-finals' (owner 2026-11-11: league rounds only)": 13,
+   "cup / knockout round 'Promotion Play-offs - Final' (owner 2026-11-11: league rounds only)": 3,
    "added:inside": 3
   },
+  "League Two": {
+   "cup / knockout round 'Promotion Play-offs - Semi-finals' (owner 2026-11-11: league rounds only)": 13,
+   "cup / knockout round 'Promotion Play-offs - Final' (owner 2026-11-11: league rounds only)": 3,
+   "added:inside": 1,
+   "cup / knockout round 'Semi-finals' (owner 2026-11-11: league rounds only)": 1
+  },
   "Ligue 2": {
-   "added:after_last_served": 18,
-   "added:inside": 6
+   "cup / knockout round 'Promotion Play-offs - 1st Round' (owner 2026-11-11: league rounds only)": 4,
+   "cup / knockout round 'Relegation Round' (owner 2026-11-11: league rounds only)": 6,
+   "cup / knockout round 'Promotion Play-offs - 2nd Round' (owner 2026-11-11: league rounds only)": 2,
+   "added:inside": 6,
+   "cup / knockout round 'Promotion Play-offs - Final' (owner 2026-11-11: league rounds only)": 2,
+   "cup / knockout round 'Promotion - Playoffs' (owner 2026-11-11: league rounds only)": 2,
+   "cup / knockout round 'Final' (owner 2026-11-11: league rounds only)": 2
   },
   "Mexico Liga MX": {
-   "added:inside": 4,
-   "named by an owner correction list": 1
+   "cup / knockout round 'Apertura - Finals' (owner 2026-11-11: league rounds only)": 1,
+   "cup / knockout round 'Apertura - Reclasificación' (owner 2026-11-11: league rounds only)": 1,
+   "cup / knockout round 'Clausura - Reclasificacion' (owner 2026-11-11: league rounds only)": 1,
+   "named by an owner correction list": 1,
+   "cup / knockout round 'Apertura - Play-In Final' (owner 2026-11-11: league rounds only)": 1
   },
   "National League": {
-   "added:after_last_served": 29,
-   "added:inside": 2
+   "cup / knockout round 'Promotion Play-offs - Qualifying Round' (owner 2026-11-11: league rounds only)": 9,
+   "cup / knockout round 'Promotion Play-offs - Semi-finals' (owner 2026-11-11: league rounds only)": 10,
+   "cup / knockout round 'Promotion Play-offs - Final' (owner 2026-11-11: league rounds only)": 5,
+   "added:inside": 2,
+   "cup / knockout round 'Quarter-finals' (owner 2026-11-11: league rounds only)": 2,
+   "cup / knockout round 'Semi-finals' (owner 2026-11-11: league rounds only)": 2,
+   "cup / knockout round 'Final' (owner 2026-11-11: league rounds only)": 1
   },
   "Norway Eliteserien": {
-   "added:after_last_served": 1
+   "cup / knockout round 'Final' (owner 2026-11-11: league rounds only)": 1
   },
   "Portuguese Primeira Liga": {
    "window_edge: before the first served fixture of this league-season": 55,
    "added:inside": 3,
-   "added:after_last_served": 12
+   "cup / knockout round 'Relegation Round' (owner 2026-11-11: league rounds only)": 10,
+   "cup / knockout round 'Final' (owner 2026-11-11: league rounds only)": 2
   },
   "Romanian Superliga": {
-   "added:after_last_served": 1
+   "cup / knockout round 'Relegation Round' (owner 2026-11-11: league rounds only)": 1
   },
   "Scottish Championship": {
    "window_edge: before the first served fixture of this league-season": 32,
    "added:inside": 3,
-   "added:after_last_served": 30
+   "cup / knockout round 'Relegation Round' (owner 2026-11-11: league rounds only)": 24,
+   "cup / knockout round 'Semi-finals' (owner 2026-11-11: league rounds only)": 4,
+   "cup / knockout round 'Final' (owner 2026-11-11: league rounds only)": 2
   },
   "Scottish League One": {
    "window_edge: before the first served fixture of this league-season": 35,
-   "added:after_last_served": 42,
-   "added:inside": 1
+   "cup / knockout round 'Relegation Round' (owner 2026-11-11: league rounds only)": 36,
+   "added:inside": 1,
+   "cup / knockout round 'Semi-finals' (owner 2026-11-11: league rounds only)": 4,
+   "cup / knockout round 'Final' (owner 2026-11-11: league rounds only)": 2
   },
   "Scottish League Two": {
    "window_edge: before the first served fixture of this league-season": 35,
-   "added:after_last_served": 16,
-   "added:inside": 1
+   "cup / knockout round 'Relegation Round' (owner 2026-11-11: league rounds only)": 14,
+   "added:inside": 1,
+   "cup / knockout round 'Final' (owner 2026-11-11: league rounds only)": 2
   },
   "Scottish Premiership": {
    "window_edge: before the first served fixture of this league-season": 36,
-   "added:inside": 24,
-   "added:after_last_served": 12
+   "cup / knockout round 'Relegation Round' (owner 2026-11-11: league rounds only)": 24,
+   "cup / knockout round 'Relegation/Promotion' (owner 2026-11-11: league rounds only)": 6,
+   "cup / knockout round 'Quarter-finals' (owner 2026-11-11: league rounds only)": 2,
+   "cup / knockout round 'Semi-finals' (owner 2026-11-11: league rounds only)": 2,
+   "cup / knockout round 'Final' (owner 2026-11-11: league rounds only)": 2
   },
   "Serie B": {
    "provider record holds no half-time score (an awarded result filed FT)": 1,
-   "added:after_last_served": 28,
-   "added:inside": 6
+   "cup / knockout round 'Promotion Play-offs - Qualifying Round' (owner 2026-11-11: league rounds only)": 7,
+   "cup / knockout round 'Promotion Play-offs - Semi-finals' (owner 2026-11-11: league rounds only)": 12,
+   "cup / knockout round 'Promotion Play-offs - Finals' (owner 2026-11-11: league rounds only)": 2,
+   "added:inside": 5,
+   "cup / knockout round 'Relegation Play-offs - Final' (owner 2026-11-11: league rounds only)": 4,
+   "cup / knockout round 'Promotion Play-offs - Final' (owner 2026-11-11: league rounds only)": 4
   },
   "Turkish Super Lig": {
    "window_edge: before the first served fixture of this league-season": 47,
@@ -130,8 +187,13 @@
    "provider record holds no half-time score (an awarded result filed FT)": 28
   },
   "USA MLS": {
-   "added:inside": 15,
-   "added:after_last_served": 1
+   "cup / knockout round 'Play-In Round' (owner 2026-11-11: league rounds only)": 3,
+   "cup / knockout round '8th Finals' (owner 2026-11-11: league rounds only)": 3,
+   "cup / knockout round 'Quarter-finals' (owner 2026-11-11: league rounds only)": 1,
+   "cup / knockout round 'MLS Cup - Conference Quarter-finals' (owner 2026-11-11: league rounds only)": 3,
+   "cup / knockout round 'MLS Cup - Conference Semi-finals' (owner 2026-11-11: league rounds only)": 3,
+   "cup / knockout round 'MLS Cup - Round 1' (owner 2026-11-11: league rounds only)": 2,
+   "cup / knockout round 'MLS Cup - Final' (owner 2026-11-11: league rounds only)": 1
   }
  }
 }

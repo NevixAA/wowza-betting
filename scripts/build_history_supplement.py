@@ -17,6 +17,10 @@ A provider fixture is ADDED when all hold:
   * it is not dated before the first served fixture of that league-season (the served WINDOW starts
     there - extending it backwards is a different decision; counted as 'window_edge', not added);
   * no owner correction list names its fixture id (e.g. Queretaro v Atlas 816403: ruled not played);
+  * its provider round label (output/collect/supplement_fixture_rounds.json, scripts/
+    probe_supplement_rounds.py) is a LEAGUE round - regular season or a round-robin phase (owner
+    2026-11-11: cup and knockout ties are not league matches; Argentina's cup rows were excluded on
+    2026-11-04); a fixture without a stored label is refused;
   * no served row of the league within +-1 day is UNCLAIMED (it could be this match under names the
     resolver cannot place - never risk a second copy), and no served row within +-1 day claims a fixture
     of either of its clubs (a club does not play twice in a day: the served row would be this match
@@ -44,6 +48,7 @@ import argparse
 import glob
 import json
 import logging
+import re
 import sys
 from collections import Counter, defaultdict
 from datetime import datetime, timezone
@@ -92,7 +97,35 @@ def corrected_fixture_ids() -> set:
     return ids
 
 
-def build(served: pd.DataFrame, pool: pd.DataFrame, ht: pd.DataFrame, corrected: set) -> tuple[pd.DataFrame, pd.DataFrame, dict]:
+#: the provider's round label of every fixture the supplement considered (scripts/probe_supplement_rounds.py)
+ROUNDS = ROOT / "output" / "collect" / "supplement_fixture_rounds.json"
+#: LEAGUE rounds (owner 2026-11-11): the regular season and the round-robin phases that follow it. Every
+#: other label is a cup or knockout tie (finals, semi-finals, play-off ties, play-ins, placement games,
+#: 'Relegation Round' / 'Relegation/Promotion' two-legged ties, the Argentine Copa de la Liga phases)
+LEAGUE_ROUND = re.compile(r"^(Regular Season|Championship Round|Relegation Group|Conference League Play-off Group)\b")
+
+
+def read_rounds(path: Path = ROUNDS) -> dict:
+    """{fixture id: provider round label} ({} when the probe answer is absent)."""
+    try:
+        doc = json.loads(Path(path).read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+    return {int(k): v.get("round") for k, v in (doc.get("fixtures") or {}).items()}
+
+
+def round_reason(label) -> str | None:
+    """None for a league round; else why the fixture is not a league match."""
+    if not isinstance(label, str) or not label.strip():
+        return "round label unknown (no provider answer): not proven a league match"
+    if LEAGUE_ROUND.match(label.strip()):
+        return None
+    return f"cup / knockout round '{label.strip()}' (owner 2026-11-11: league rounds only)"
+
+
+def build(served: pd.DataFrame, pool: pd.DataFrame, ht: pd.DataFrame, corrected: set,
+          rounds: dict | None = None) -> tuple[pd.DataFrame, pd.DataFrame, dict]:
+    """`rounds` {fixture id: provider round label}: None skips the round rule (tests of the other rules)."""
     from src import league_registry as LR
     s = served.copy()
     s["league"] = s["league"].map(lambda x: LR.canonical_name(x) if isinstance(x, str) else None)
@@ -201,6 +234,11 @@ def build(served: pd.DataFrame, pool: pd.DataFrame, ht: pd.DataFrame, corrected:
             # Salernitana v Reggiana 2020-10-31: all 3-0 / 0-3): not proven played - never added
             refuse("provider record holds no half-time score (an awarded result filed FT)")
             continue
+        if rounds is not None:
+            why = round_reason(rounds.get(fid))
+            if why:
+                refuse(why)
+                continue
         gap = "after_last_served" if f.d > c.loc[(c["league"] == lg) & (c["season"] == season), "d"].max() else "inside"
         added.append({"date": ev["provider_date"], "league": lg,
                       "season": season_label.get((lg, season), season),
@@ -225,14 +263,15 @@ def run(dry_run: bool = False) -> dict:
     served = served_frame()
     pool = FC.provider_pool()
     ht = pd.read_parquet(FC.HT_SCORES, columns=["fixture_id", "ht_home", "ht_away"])
-    add, ref, per = build(served, pool, ht, corrected_fixture_ids())
+    add, ref, per = build(served, pool, ht, corrected_fixture_ids(), read_rounds())
     audit = {"artifact": "history_provider_supplement_audit",
              "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
              "served_rows_without_supplement": int(len(served)), "added": int(len(add)),
              "refused": int(len(ref)),
              "added_by_status": {k: int(v) for k, v in add["provider_status"].value_counts().items()},
              "added_with_ht": int(add["ht_home_goals"].notna().sum()),
-             "refused_by_reason": {k: int(v) for k, v in ref["reason"].str.split(" \\(").str[0].value_counts().items()},
+             "refused_by_reason": {k: int(v) for k, v in
+                                   ref["reason"].str.split(r" \(| '", regex=True).str[0].value_counts().items()},
              "per_league": per}
     if not dry_run:
         add.to_csv(HS.SUPPLEMENT, index=False, lineterminator="\n")

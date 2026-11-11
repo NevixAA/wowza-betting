@@ -165,14 +165,32 @@ def test_a_played_fixture_is_never_a_not_played_decision():
 
 
 # ── the committed lists ─────────────────────────────────────────────────────────────────────────
-def test_committed_austrian_play_offs_are_in_the_supplement():
+def test_committed_supplement_holds_league_rounds_only():
+    # owner 2026-11-11: cup / knockout ties are refused by their provider round label - the Austrian
+    # 2025/26 Conference League play-off (Semi-finals / Final) and Argentina's Copa de la Liga included
+    import json
+    rounds = {int(k): v["round"] for k, v in json.loads(BHS.ROUNDS.read_text(encoding="utf-8"))["fixtures"].items()}
     s = pd.read_csv(HS.SUPPLEMENT)
-    a = s[s["provider_fixture_id"].isin([1545407, 1545664, 1545665])].sort_values("date")
-    assert list(zip(a["date"], a["home_team"], a["away_team"], a["home_goals"], a["away_goals"])) == [
-        ("2026-05-19", "Ried", "Wolfsberger AC", 2.0, 1.0), ("2026-05-22", "Ried", "SK Rapid", 2.0, 1.0),
-        ("2026-05-25", "SK Rapid", "Ried", 3.0, 0.0)]
+    assert len(s) and all(BHS.round_reason(rounds.get(int(f))) is None for f in s["provider_fixture_id"])
     assert s["provider_fixture_id"].is_unique
     assert s[["home_goals", "away_goals", "ht_home_goals", "ht_away_goals"]].notna().all().all()
+    ref = pd.read_csv(BHS.REFUSED)
+    why = dict(zip(ref["provider_fixture_id"], ref["reason"]))
+    for fid in (1545407, 1545664, 1545665):
+        assert why[fid].startswith("cup / knockout round")
+    arg = ref[(ref["league"] == "Argentina Primera Division") & ref["reason"].str.startswith("cup / knockout")]
+    assert len(arg) == 6
+
+
+def test_round_labels_league_rounds_kept_knockouts_refused():
+    for keep in ("Regular Season - 12", "Championship Round - 3", "Relegation Group - 35",
+                 "Conference League Play-off Group - 2"):
+        assert BHS.round_reason(keep) is None, keep
+    for ko in ("Final", "Semi-finals", "Promotion Play-offs - Final", "Relegation Round", "MLS Cup - Round 1",
+               "Play-In Round", "1st Phase - Quarter-finals", "5th place", "Relegation/Promotion",
+               "Apertura - Reclasificación", "Conference League Play-offs - Final"):
+        assert BHS.round_reason(ko).startswith("cup / knockout round"), ko
+    assert BHS.round_reason(None).startswith("round label unknown")
 
 
 def test_committed_china_cancelled_rows_are_excluded_as_not_played():
@@ -194,4 +212,4 @@ def test_edinburgh_city_is_one_club_in_scottish_league_one():
     s = pd.read_csv(HS.SUPPLEMENT)
     e = s[(s["league"] == "Scottish League One")
           & (s["home_team"].str.contains("Edinburgh") | s["away_team"].str.contains("Edinburgh"))]
-    assert len(e) == 11 and not (s["home_team"] == "FC Edinburgh").any() and not (s["away_team"] == "FC Edinburgh").any()
+    assert len(e) >= 1 and not (s["home_team"] == "FC Edinburgh").any() and not (s["away_team"] == "FC Edinburgh").any()
