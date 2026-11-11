@@ -1,0 +1,58 @@
+{
+ "protocol": "bars-calibrated-edge/1",
+ "written": "2026-11-11",
+ "written_before_any_run": true,
+ "owner_decision": "2026-11-11: \"Bars on calibrated edge\" at the DECEMBER re-optimization; \"No cap\" (relayed by the coordinator). Context: research/top3-ranking edge_realism - served edges above 10 pp keep little of their claimed advantage; the per-cell calibration brings 97.7% of them to <= 10 pp; no upper-edge cap.",
+ "status": "PRE-REGISTERED, NOT RUN. Output = a proposal for the owner; nothing serves until approved and applied.",
+ "question": "Do per-league bars chosen on the CALIBRATED edge (each cell's own p_cal) give real value on the live Clean Record?",
+ "machinery": {
+  "same_as": "the approved bars study (src/bars_opt/study.py, reports/P4_BARS_OPTIMIZATION.md, TP-2026-11-10-d999073a): nested inner validation (5 matchday blocks, blocks 2-5 scored, >= MIN_INNER_BETS), configuration chosen on inner ROI, White reality check, per-league bars by src.league_bars.choose_bars on its GRID (own bets; thin -> OFF, never a pooled stand-in), MODEL vs LEAGUE_WIDE switch, TIER2 (12.2), verdicts PROVEN / PROMISING / UNPROVEN / OFF",
+  "only_change": "the edge measure: CAL_EDGE replaces EDGE and EV for every MODEL configuration",
+  "configurations_per_family": "4 sources (RAW, BLEND, SHRINK, LEARNED) x CAL_EDGE x 6 odds ranges = 24 MODEL + 6 LEAGUE_WIDE (measure ALL) = 30 (src/bars_opt/calibrated_edge.configs)",
+  "no_cap": "no upper edge limit of any kind (owner \"No cap\")",
+  "grid": "src.league_bars.GRID unchanged (0.02 .. 0.30). Consequence stated up front: on the selection window the calibrated edge has median 1.5 pp and only 39% of today's tips reach 2 pp (research/top3-ranking output/research/top3_ranking/edge_realism.json), so VALUABLE >= 2 pp calibrated will tip far fewer, more conservative tips. A different grid would be a new protocol version before the run.",
+  "league_wide": "league-wide cells keep measure ALL and remain the owner's own list outside the TOP-3 (owner \"Own list\")"
+ },
+ "measure": {
+  "CAL_EDGE": "lam * (p_used - fair); p_used = the configuration's probability source; fair = power de-vig of the real two-sided pair; NaN inputs -> no edge, no bet (never filled)",
+  "stage_A_selection": "inside each inner fold, lam = the league's OWN least-squares slope of (won - fair) on (p_used - fair) over that family's training-block rows scored by the configuration's source fitted on the same block, clipped to [0, 1], >= MIN_OWN_BETS (40) rows; without it the league has no calibrated edge in that configuration (src/bars_opt/calibrated_edge.own_lambda)",
+  "stage_B_frozen_bars": "after each family's configuration is chosen, lam for every chosen MODEL cell is recomputed exactly as the TOP-3 R2/R3 statistic - own slope shrunk toward the SAME league's other market-sides (DerSimonian-Laird inside the league), clipped to [0, 1] - on every selection row of the chosen cells (src/bars_opt/calibrated_edge.league_lambdas = the lam of src/research/top3_ranking.cell_stats); the bars are refitted on that CAL_EDGE; each proposed cell carries cal_lam, cal_rows and cal_record_sha256",
+  "why_two_stages": "a family run sees one market-side, so cross-market shrinkage inside the league is only possible once every family's configuration is fixed"
+ },
+ "inputs": {
+  "selection_rows": "the committed own-price universes of the CLEAN frame in use at run time (58f10476f4c82d7b, or the Nov 19-20 final-refit frame listed in config/top3_paper_tracks.json clean_frames) + the live first-sight rows of the CLEAN engines (config/bars_opt.json clean_engine_versions = the installed final-refit engines) with match date < 2026-12-01T00:00:00Z, built by src/bars_opt/live.build_universe_dir. No OddsAPI history price.",
+  "cut_off": "2026-12-01T00:00:00Z (exclusive) for the first run; for a later month M, M-01T00:00:00Z",
+  "calibration_baseline": "the U3e record output/research/top3_ranking/live_stats_2026-11-20.json (frozen 2026-11-20, sha256 in live_stats_ledger.json; research/top3-ranking merged at go-live)",
+  "consistency_check": "before the December run, stage B restricted to the U3e inputs (rows dated < 2026-11-21, the U3e frame, the November approved cells and configurations) must reproduce every lam of the U3e record to 1e-12; any difference -> the run refuses (the procedure is not the frozen one)",
+  "monthly_refresh_rule": "on the 1st of each month M the stage-B lam is recomputed on every selection row dated < M-01 (expanding, never a moving window), written to output/bars_opt/calibrated/cal_stats_<M>.json with its sha256, and carried in that month's proposal cells. A served lam changes ONLY when the owner approves that month's proposal; the TOP-3 statistics of protocol top3-ranking-paper/5 stay frozen as that protocol says (separate record)."
+ },
+ "run": {
+  "date": "2026-12-01 05:00 UTC, the first monthly re-optimization (.github/workflows/bars_monthly.yml, cron 0 5 1 * *, month 2026-12), extended by a calibrated-edge step implemented to this protocol",
+  "gate": "src/bars_opt/calibrated_edge.gate: config/bars_calibrated_edge.json run_enabled true + owner_ok, this file unchanged (sha256 pinned there), month >= 2026-12, the U3e ledger present; plus the consistency check",
+  "implementation": "the skeleton's pure pieces (configs, own_lambda, league_lambdas, cal_edge) are fixed here; the run body is implemented to this specification, dry-run on the selection data before 2026-12-01 (monthly checklist M1), and its code sha256 is written into the run record",
+  "outputs": "output/bars_opt/calibrated/2026-12/choices.json (configs_searched per family), cells.json, cal_stats_2026-12.json; proposal via src/threshold_proposals into output/threshold_proposals/bars_calibrated/2026-12.json/.md with a new proposal id; nothing else is written"
+ },
+ "multiple_testing": {
+  "holm": "Holm (src.league_bars.holm) over every cell tested PLUS every configuration ever searched (src/bars_opt/search_ledger, counted from git history, with this study's choices.json added to its PATHS before the run: 30 configurations x families per run)",
+  "alpha": "0.025 one-sided (src.league_bars.HOLM_ALPHA_ONE_SIDED)"
+ },
+ "evaluation": {
+  "what": "the live Clean Record of the approved calibrated-edge cells",
+  "rows_that_count": "live first-sight candidates (output/league_weekly_candidates.csv) of the CLEAN engines (config/bars_opt.json clean_engine_versions), kickoff_utc at or after the moment the December calibrated-edge proposal is applied (config/threshold_applied.json history applied_at of that proposal id; never before 2026-12-01T00:00:00Z), whose CAL_EDGE (cell's served source and approved cal_lam) clears the cell's approved VALUABLE bar, two-sided priced at first sight, settled from output/v91_shadow.csv; flat 1 unit at the first-sight price; PAPER unless the owner's per-cell staking says otherwise",
+  "rows_that_do_not_count": "any row before that apply time (Nov 21 - Nov 30 live rows are SELECTION data of this study and Clean Record evidence of the November bars only); rows of a non-clean engine; league-wide cells (own list); rows without both prices, a result or a probability (counted, never filled)",
+  "clock_reset": "if a later approved proposal changes a cell's configuration, bars or cal_lam, that cell's evaluation restarts from the new apply time as a new hypothesis (counted in Holm)",
+  "test": "per cell, tested ONCE: at the first monthly run (1st of the month) at which it has >= 150 settled evaluation bets under unchanged bars, at the latest on 2027-06-01; PROVEN = n >= 150 AND Holm-adjusted p < 0.025 AND 95% CI lower bound > 0 (src.bars_opt.study.verdicts / score); PROMISING / UNPROVEN as the study defines",
+  "descriptive": "pooled ROI of all calibrated-edge cells vs the November bars' cells on the same live window (paired league-weeks), realised minus calibrated probability by band - descriptive only",
+  "consequence": "verdicts go into the monthly proposal; the owner decides; nothing switches automatically"
+ },
+ "rules": [
+  "100% real data, no defaults, no globals: every lam and bar is per cell / per league",
+  "own prices only in commits; OddsAPI history never in a commit or log",
+  "spent windows (FINAL 2026-09-01..11-08, the fresh holdouts) are never re-scored as evidence"
+ ],
+ "code": {
+  "file": "src/bars_opt/calibrated_edge.py",
+  "sha256_lf": "30d234c591653617dbda1852982a4d994cbe988b0249e1dae05f56a4edb60f0a"
+ },
+ "hash_rule": "sha256 of this file's bytes with LF line ends, pinned in config/bars_calibrated_edge.json; any edit = a new version before the run"
+}

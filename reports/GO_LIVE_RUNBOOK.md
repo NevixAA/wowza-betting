@@ -411,6 +411,17 @@ BLOCKED_FROM_REAL in the bankroll policy, so no money is at risk. Still, the pro
 and in Telegram are not trustworthy until R3. Decision D7: label them research-only, or hide them,
 until then.
 
+### 2.7a Monthly checklist: bars on the calibrated edge (owner 2026-11-11 "Bars on calibrated edge", "No cap")
+
+Pre-registered in `config/bars_calibrated_edge_protocol.json` (sha256 `ce752992a03b0b3c966c7be29f07b469b2f5baa67fdb12577b6adb5d9d4c910e`, pinned in `config/bars_calibrated_edge.json`; branch `research/bars-calibrated-edge`). NOT run. Needs `research/top3-ranking` merged and U3e done (the calibration baseline).
+
+| Step | When | What | Gate |
+|---|---|---|---|
+| M1 | 2026-11-21 .. 2026-11-30 | Implement `src/bars_opt/calibrated_edge.run` to the protocol (stage A own lam inside the nested selection; stage B lam = the TOP-3 R2/R3 statistic; bars on CAL_EDGE with the study's GRID; 30 configurations per family; no cap) and add its `choices.json` to `src/bars_opt/search_ledger.PATHS`; the skeleton's pure pieces must stay unchanged (`tests/test_bars_calibrated_edge.py`). Dry-run on the selection rows only (rows < 2026-12-01) to a scratch folder; run the U3e consistency check (stage B on the U3e inputs reproduces every lam of `live_stats_2026-11-20.json`). Wire a calibrated-edge step into `bars_monthly.yml` behind `config/bars_calibrated_edge.json`; full test suite green before any workflow change is deployed | protocol hash unchanged |
+| M2 | 2026-12-01 05:00 UTC | The owner sets `run_enabled: true` + `owner_ok` (quote + date) in `config/bars_calibrated_edge.json`; `bars_monthly.yml` (month 2026-12) runs the study once on rows before 2026-12-01; outputs `output/bars_opt/calibrated/2026-12/` + proposal `output/threshold_proposals/bars_calibrated/2026-12.json/.md` (new id) | gate() empty; consistency check passes |
+| M3 | after M2 | The owner approves entries (`config/threshold_approvals.json`), `python -m src.threshold_apply` applies them; the apply time starts the live evaluation clock of each applied cell (only rows with kickoff at/after it count) | owner approval |
+| M4 | 1st of every month after M3 | The monthly run recomputes the stage-B lam on rows < M-01 (`cal_stats_<M>.json` + sha256), tests each cell once when it has >= 150 settled evaluation bets under unchanged bars (at the latest 2027-06-01): Holm over every cell tested + every configuration searched, PROVEN = p_holm < 0.025 and CI > 0; a changed cell restarts its clock | protocol |
+
 ### 2.8 README update (after the 7-day check)
 
 One PR per repo that rewrites the README sections changed by the program: data sources, the Staked
