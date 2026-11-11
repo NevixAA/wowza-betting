@@ -6,6 +6,8 @@ import pandas as pd
 from src.bars_opt import study as S
 from src.research import top3_ranking as R
 
+ALL_RULES = R.DIAGNOSTIC_RULES[:1] + R.RULES + R.DIAGNOSTIC_RULES[1:]
+
 
 def _bets(rows):
     d = pd.DataFrame(rows)
@@ -34,7 +36,7 @@ def test_ev_production_reproduces_the_study_rule():
 
 def test_every_rule_caps_at_three_never_pads_and_keeps_direction():
     b = _rows()
-    for rule in R.RULES + R.DEV_ONLY:
+    for rule in ALL_RULES:
         t = R.select(b, pd.DataFrame(), rule)
         assert t.groupby(["league", "gw"]).size().max() == 3
         assert (t["league"] == "B").sum() == 1

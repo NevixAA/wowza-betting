@@ -24,6 +24,7 @@ from src.bars_opt import study as S  # noqa: E402
 from src.research import top3_ranking as R  # noqa: E402
 
 OUT = ROOT / "output" / "research" / "top3_ranking"
+ALL_RULES = R.DIAGNOSTIC_RULES[:1] + R.RULES + R.DIAGNOSTIC_RULES[1:]
 SEED = 20261111
 N_BOOT = 5000
 
@@ -57,17 +58,17 @@ def paired(t: pd.DataFrame, ref: pd.DataFrame, rng) -> dict:
 
 def run(folds: list[tuple], rng) -> dict:
     """folds: [(prior bets, prior rows, bets to rank)]. Returns per rule the pooled picks' summary + diffs."""
-    picks = {r: [] for r in R.RULES + R.DEV_ONLY}
+    picks = {r: [] for r in ALL_RULES}
     evald = []
     for prior, rows, e in folds:
         st = R.cell_stats(prior, rows)
         evald.append(e)
-        for r in R.RULES + R.DEV_ONLY:
+        for r in ALL_RULES:
             picks[r].append(R.select(e, st, r))
     allb = pd.concat(evald, ignore_index=True)
     out = {"all_bets": S.score(allb)}
     ev = pd.concat(picks["EV_PRODUCTION"], ignore_index=True)
-    for r in R.RULES + R.DEV_ONLY:
+    for r in ALL_RULES:
         t = pd.concat(picks[r], ignore_index=True)
         out[r] = summ(t, allb) | {"minus_all_bets": paired(t, allb, rng)}
         if r != "EV_PRODUCTION":

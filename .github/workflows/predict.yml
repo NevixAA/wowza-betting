@@ -265,6 +265,17 @@ jobs:
           python -m src.top3_league run || echo "::warning::TOP-3 per league failed (other tips unaffected)"
           python -m src.top3_league notify || echo "::warning::TOP-3 per league notify failed"
 
+      # TOP-3 PAPER TRACKS R1 / R2 (owner 2026-11-11 "Add the 3 tracks" / "Clean rebuild"; protocol
+      # config/top3_ranking_paper_protocol_v2.json). PAPER/RESEARCH ONLY: writes only output/research/top3_paper/,
+      # never a tip, stake, order, production ledger or Telegram message. OFF until the owner sets the repository
+      # variable TOP3_PAPER_ENABLED (runbook U3e); refuses to freeze anything until the statistics are frozen and
+      # every pinned hash matches. Tolerant: a failure cannot stop the commit below.
+      - name: TOP-3 paper tracks R1/R2 (research only, flag default off)
+        env:
+          TOP3_PAPER_ENABLED: ${{ vars.TOP3_PAPER_ENABLED }}
+          TOP3_FREEZE_LEAD_MIN: ${{ vars.TOP3_FREEZE_LEAD_MIN }}
+        run: python -m src.research.top3_paper run || echo "::warning::TOP-3 paper tracks failed (research only - tips unaffected)"
+
       # QUALITY-LAYER SHADOW (2026-10-26, docs/QUALITY_TIERS_STUDY_2026_10.md). RESEARCH ONLY: logs, at first sight,
       # the learned Best / Second / Third layer of every tip on the board to output/quality_tier_shadow.csv. Reads
       # the ledgers and predictions.csv; never writes a tip, tier, stake, threshold, ledger or Telegram file.
@@ -310,7 +321,7 @@ jobs:
                    output/league_market_health.json output/weekly_league_report.json \
                    output/top3_league_candidates.csv output/top3_league_ledger.csv \
                    output/top3_league_ledger.csv.first_sight.json output/top3_league_weeks.csv \
-                   output/top3_league_report.json output/top3_league_notified.json \
+                   output/top3_league_report.json output/top3_league_notified.json                    output/research/top3_paper/paper_ledger.csv output/research/top3_paper/paper_ledger.csv.first_sight.json                    output/research/top3_paper/paper_weeks.csv output/research/top3_paper/summary.json \
                    output/fd_history.parquet \
                    output/book_odds_snapshots.csv output/btts_fetch_clock.json \
                    output/v91_shadow.csv \
