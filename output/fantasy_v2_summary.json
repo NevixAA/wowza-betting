@@ -1,16 +1,16 @@
 {
  "calculation_version": "fantasy_v2-1.0.0",
- "generated_at": "2026-11-11T14:44:41Z",
+ "generated_at": "2026-11-12T15:35:40Z",
  "gameweek": 11,
  "deadline": "2026-11-21T11:00:00Z",
- "fpl_fetched_at": "2026-11-11T14:42:44Z",
+ "fpl_fetched_at": "2026-11-12T15:33:36Z",
  "fpl_age_hours_at_build": 0.0,
  "projection_health": {
   "players": 461,
   "with_fixture": 461,
   "blank_gw_players": 0,
   "double_gw_players": 0,
-  "minutes_disagreements": 9,
+  "minutes_disagreements": 7,
   "archived_gameweeks": [
    4,
    5,
@@ -82,7 +82,7 @@
    "p6": 0.5162,
    "p10": 0.3497,
    "p15": 0.2269,
-   "p_blank": 0.2502,
+   "p_blank": 0.2501,
    "p_start": 0.937,
    "exp_minutes": 79.6,
    "ceiling": 25.0,
@@ -127,7 +127,7 @@
    "captain_ev": 18.0,
    "fpl_ep_next": 9.0,
    "wowza_residual": -4.09,
-   "p6": 0.4735,
+   "p6": 0.4736,
    "p10": 0.3088,
    "p15": 0.1927,
    "p_blank": 0.2898,
@@ -154,7 +154,7 @@
     "p_blank": 0.25,
     "p_start": 0.937,
     "ceiling": 25.0,
-    "sd": 8.738,
+    "sd": 8.737,
     "next_fixture": "NEW(A)"
    },
    {
@@ -196,7 +196,7 @@
     "p6": 0.463,
     "p10": 0.301,
     "p15": 0.188,
-    "p_blank": 0.305,
+    "p_blank": 0.304,
     "p_start": 0.89,
     "ceiling": 22.0,
     "sd": 8.205,
@@ -244,7 +244,7 @@
     "p_blank": 0.319,
     "p_start": 0.907,
     "ceiling": 17.0,
-    "sd": 6.967,
+    "sd": 6.966,
     "next_fixture": "BRE(A)"
    },
    {
@@ -362,7 +362,7 @@
    "p6": 0.2444,
    "p10": 0.0904,
    "p15": 0.0284,
-   "p_blank": 0.2502,
+   "p_blank": 0.2501,
    "p_start": 0.937,
    "exp_minutes": 79.6,
    "ceiling": 9.0,
@@ -386,7 +386,7 @@
    "p6": 0.2923,
    "p10": 0.1285,
    "p15": 0.0503,
-   "p_blank": 0.3191,
+   "p_blank": 0.319,
    "p_start": 0.907,
    "exp_minutes": 77.2,
    "ceiling": 11.0,
@@ -425,7 +425,7 @@
     "p_blank": 0.319,
     "p_start": 0.907,
     "ceiling": 11.0,
-    "sd": 6.967,
+    "sd": 6.966,
     "next_fixture": "BRE(A)"
    },
    {
@@ -467,10 +467,10 @@
     "p6": 0.286,
     "p10": 0.123,
     "p15": 0.046,
-    "p_blank": 0.333,
-    "p_start": 0.909,
+    "p_blank": 0.332,
+    "p_start": 0.91,
     "ceiling": 11.0,
-    "sd": 6.32,
+    "sd": 6.317,
     "next_fixture": "AVL(A)"
    },
    {
@@ -527,7 +527,7 @@
     "p6": 0.266,
     "p10": 0.11,
     "p15": 0.04,
-    "p_blank": 0.305,
+    "p_blank": 0.304,
     "p_start": 0.89,
     "ceiling": 10.0,
     "sd": 8.205,
@@ -575,7 +575,7 @@
     "p_blank": 0.25,
     "p_start": 0.937,
     "ceiling": 9.0,
-    "sd": 8.738,
+    "sd": 8.737,
     "next_fixture": "NEW(A)"
    }
   ]
