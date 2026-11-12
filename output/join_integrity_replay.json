@@ -113,7 +113,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
       "left_rows": 83483,
-      "right_rows": 18122,
+      "right_rows": 18156,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -143,7 +143,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
       "left_rows": 83483,
-      "right_rows": 34261,
+      "right_rows": 34322,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -320,7 +320,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
       "left_rows": 83483,
-      "right_rows": 18122,
+      "right_rows": 18156,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -383,7 +383,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
       "left_rows": 83483,
-      "right_rows": 34261,
+      "right_rows": 34322,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -1166,118 +1166,118 @@
     ]
   },
   "serving_diff": {
-    "board_fixtures": 37,
+    "board_fixtures": 43,
     "recipe": "v9_repaired",
     "serving_features_changed": {
       "away_corners_pg_roll": {
-        "fixtures_changed": 2,
+        "fixtures_changed": 6,
         "by_model_type": {
-          "new_format": 2
+          "new_format": 6
         },
         "mean_abs_delta": null,
         "max_abs_delta": null
       },
       "away_fouls_pg_roll": {
-        "fixtures_changed": 2,
+        "fixtures_changed": 6,
         "by_model_type": {
-          "new_format": 2
+          "new_format": 6
         },
         "mean_abs_delta": null,
         "max_abs_delta": null
       },
       "away_insidebox_last5": {
-        "fixtures_changed": 36,
+        "fixtures_changed": 42,
         "by_model_type": {
           "standard": 33,
-          "new_format": 3
+          "new_format": 9
         },
-        "mean_abs_delta": 2.151851851851852,
+        "mean_abs_delta": 2.2718253968253967,
         "max_abs_delta": 9.0
       },
       "away_xg_last5": {
-        "fixtures_changed": 36,
+        "fixtures_changed": 42,
         "by_model_type": {
           "standard": 33,
-          "new_format": 3
+          "new_format": 9
         },
-        "mean_abs_delta": 0.5141142857142857,
+        "mean_abs_delta": 0.5449593495934959,
         "max_abs_delta": 1.4850000000000003
       },
       "combined_sot_ratio": {
-        "fixtures_changed": 3,
+        "fixtures_changed": 8,
         "by_model_type": {
-          "new_format": 3
+          "new_format": 8
         },
-        "mean_abs_delta": 0.09979321953927676,
+        "mean_abs_delta": 0.07822070150963593,
         "max_abs_delta": 0.15465784918461511
       },
       "home_corners_pg_roll": {
-        "fixtures_changed": 2,
+        "fixtures_changed": 7,
         "by_model_type": {
-          "new_format": 2
+          "new_format": 7
         },
         "mean_abs_delta": null,
         "max_abs_delta": null
       },
       "home_fouls_pg_roll": {
-        "fixtures_changed": 2,
+        "fixtures_changed": 7,
         "by_model_type": {
-          "new_format": 2
+          "new_format": 7
         },
         "mean_abs_delta": null,
         "max_abs_delta": null
       },
       "home_insidebox_last5": {
-        "fixtures_changed": 36,
+        "fixtures_changed": 41,
         "by_model_type": {
           "standard": 33,
-          "new_format": 3
+          "new_format": 8
         },
-        "mean_abs_delta": 2.219907407407407,
+        "mean_abs_delta": 2.16869918699187,
         "max_abs_delta": 6.0
       },
       "home_xg_last5": {
-        "fixtures_changed": 37,
+        "fixtures_changed": 43,
         "by_model_type": {
           "standard": 34,
-          "new_format": 3
+          "new_format": 9
         },
-        "mean_abs_delta": 0.5187837837837836,
+        "mean_abs_delta": 0.5277131782945736,
         "max_abs_delta": 1.642
       },
       "p_over25": {
-        "fixtures_changed": 3,
+        "fixtures_changed": 8,
         "by_model_type": {
-          "new_format": 3
+          "new_format": 8
         },
-        "mean_abs_delta": 0.02410692113664779,
-        "max_abs_delta": 0.03915951919378491
+        "mean_abs_delta": 0.026447407478779356,
+        "max_abs_delta": 0.0669207680204863
       },
       "p_btts": {
-        "fixtures_changed": 37,
+        "fixtures_changed": 43,
         "by_model_type": {
           "standard": 34,
-          "new_format": 3
+          "new_format": 9
         },
-        "mean_abs_delta": 0.012305830762384914,
-        "max_abs_delta": 0.03813018843247029
+        "mean_abs_delta": 0.014379416986510669,
+        "max_abs_delta": 0.0669460962373315
       },
       "p_over15": {
-        "fixtures_changed": 37,
+        "fixtures_changed": 43,
         "by_model_type": {
           "standard": 34,
-          "new_format": 3
+          "new_format": 9
         },
-        "mean_abs_delta": 0.012677221680162682,
-        "max_abs_delta": 0.04869937341195241
+        "mean_abs_delta": 0.015389359171790375,
+        "max_abs_delta": 0.07497506753043415
       },
       "p_over35": {
-        "fixtures_changed": 37,
+        "fixtures_changed": 43,
         "by_model_type": {
           "standard": 34,
-          "new_format": 3
+          "new_format": 9
         },
-        "mean_abs_delta": 0.008145764947935534,
+        "mean_abs_delta": 0.008070108882989018,
         "max_abs_delta": 0.02753558330455491
       },
       "p_ht_over05": {
@@ -1285,21 +1285,38 @@
         "by_model_type": {
           "standard": 34
         },
-        "mean_abs_delta": 0.0015915271344617728,
-        "max_abs_delta": 0.006525351834558157
+        "mean_abs_delta": 0.0016018698314779593,
+        "max_abs_delta": 0.006890980561751303
       },
       "p_ht_over15": {
         "fixtures_changed": 34,
         "by_model_type": {
           "standard": 34
         },
-        "mean_abs_delta": 0.005933853205121322,
+        "mean_abs_delta": 0.005960470993747948,
         "max_abs_delta": 0.023744343306375704
       }
     },
-    "tips_legacy": 6,
+    "tips_legacy": 4,
     "tips_safe": 6,
     "tips_only_legacy": [],
-    "tips_only_safe": []
+    "tips_only_safe": [
+      [
+        "Brazil Serie A",
+        "Chapecoense",
+        "Vasco da Gama",
+        "OU25",
+        "UNDER",
+        "VALUABLE"
+      ],
+      [
+        "Brazil Serie A",
+        "Mirassol",
+        "Atletico Mineiro",
+        "OU25",
+        "UNDER",
+        "VALUABLE"
+      ]
+    ]
   }
 }

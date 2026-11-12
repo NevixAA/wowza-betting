@@ -1,40 +1,40 @@
 {
   "artifact": "side_edge_devig_health",
   "shadow_version": "side_edge_devig_shadow-1.0",
-  "generated_at": "2026-11-11T16:22:36Z",
+  "generated_at": "2026-11-12T16:55:13Z",
   "production_rule": "two-sided de-vig since 2026-11-01 (config.SIDE_EDGE_FAIR_PRICE); edge_prod below = the old (1/odds)/1.08, kept for comparison",
   "shadow_rule": "edge = p_model - median_books(power_devig(same-book two-sided pair)), pre-kickoff, carried forward to the decision time; same thresholds",
   "quotes_from": "2026-08-19 09:23:27+00:00",
-  "quote_rows": 224261,
+  "quote_rows": 224650,
   "board": {
-    "generated_at": "2026-11-11T16:06:18Z",
-    "rows": 6,
+    "generated_at": "2026-11-12T16:48:12Z",
+    "rows": 8,
     "production_tips": 0,
     "classification": {},
     "by_market": {},
-    "devigged_rows": 6,
-    "median_pair_overround": 0.0853,
-    "median_edge_prod_minus_devig_pp": -0.57,
-    "mean_edge_prod_minus_devig_pp": -0.72,
-    "p90_edge_prod_minus_devig_pp": 0.38,
+    "devigged_rows": 8,
+    "median_pair_overround": 0.0875,
+    "median_edge_prod_minus_devig_pp": -0.56,
+    "mean_edge_prod_minus_devig_pp": -0.66,
+    "p90_edge_prod_minus_devig_pp": 0.65,
     "rows_prod_edge_inflated_ge_2pp": 0,
     "rows_pair_overround_below_6pct": 0
   },
   "ledger_retrospective": {
     "label": "RETROSPECTIVE",
-    "tips_since_quotes_exist": 693,
-    "rows": 693,
-    "production_tips": 693,
+    "tips_since_quotes_exist": 695,
+    "rows": 695,
+    "production_tips": 695,
     "classification": {
       "CONFIRMED_BY_DEVIG": 482,
-      "UNVERIFIABLE_ONE_SIDED": 114,
-      "ONLY_BECAUSE_OF_1_08": 97
+      "UNVERIFIABLE_ONE_SIDED": 115,
+      "ONLY_BECAUSE_OF_1_08": 98
     },
     "by_market": {
       "btts": {
         "CONFIRMED_BY_DEVIG": 360,
-        "UNVERIFIABLE_ONE_SIDED": 83,
-        "ONLY_BECAUSE_OF_1_08": 81
+        "UNVERIFIABLE_ONE_SIDED": 84,
+        "ONLY_BECAUSE_OF_1_08": 82
       },
       "over15": {
         "CONFIRMED_BY_DEVIG": 91,
@@ -47,7 +47,7 @@
         "ONLY_BECAUSE_OF_1_08": 8
       }
     },
-    "devigged_rows": 579,
+    "devigged_rows": 580,
     "median_pair_overround": 0.0798,
     "median_edge_prod_minus_devig_pp": 0.09,
     "mean_edge_prod_minus_devig_pp": 0.39,
@@ -56,17 +56,6 @@
     "rows_pair_overround_below_6pct": 16,
     "mean_inflation_pp_when_overround_below_6pct": 2.66,
     "examples_only_because_of_1_08": [
-      {
-        "fixture": "Arminia Bielefeld v Eintracht Braunschweig",
-        "league": "Bundesliga 2",
-        "market": "over35",
-        "tier_prod": "VALUABLE",
-        "edge_prod": 0.0533,
-        "edge_devig": -0.0054,
-        "odds": 2.81,
-        "p_fair_devig": 0.3882,
-        "books": "codere_it;marathonbet;onexbet;tipico_de"
-      },
       {
         "fixture": "Accrington Stanley v Northampton Town",
         "league": "League Two",
@@ -143,10 +132,39 @@
         "odds": 3.55,
         "p_fair_devig": 0.2495,
         "books": "codere_it;coolbet;coral;ladbrokes_uk;livescorebet;pinnacle;virginbet"
+      },
+      {
+        "fixture": "CD Eldense v Sabadell FC",
+        "league": "La Liga 2",
+        "market": "btts",
+        "tier_prod": "VALUABLE",
+        "edge_prod": 0.04,
+        "edge_devig": 0.0312,
+        "odds": 1.91,
+        "p_fair_devig": 0.4936,
+        "books": "betfred_uk;livescorebet;onexbet;virginbet;williamhill"
       }
     ]
   },
   "ledger_open_tips": {
-    "rows": 0
+    "rows": 2,
+    "production_tips": 2,
+    "classification": {
+      "ONLY_BECAUSE_OF_1_08": 1,
+      "UNVERIFIABLE_ONE_SIDED": 1
+    },
+    "by_market": {
+      "btts": {
+        "ONLY_BECAUSE_OF_1_08": 1,
+        "UNVERIFIABLE_ONE_SIDED": 1
+      }
+    },
+    "devigged_rows": 1,
+    "median_pair_overround": 0.0791,
+    "median_edge_prod_minus_devig_pp": 0.89,
+    "mean_edge_prod_minus_devig_pp": 0.89,
+    "p90_edge_prod_minus_devig_pp": 0.89,
+    "rows_prod_edge_inflated_ge_2pp": 0,
+    "rows_pair_overround_below_6pct": 0
   }
 }

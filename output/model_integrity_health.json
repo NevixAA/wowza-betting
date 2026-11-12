@@ -1,7 +1,7 @@
 {
   "artifact": "model_integrity_health",
   "version": "model-integrity-health-0.1",
-  "generated_at": "2026-11-11T16:23:38Z",
+  "generated_at": "2026-11-12T16:55:45Z",
   "status": "FAIL",
   "inputs_present": {
     "feature_parity_health": true,
@@ -23,7 +23,7 @@
       "model_recipe_version": "v9_repaired-1.0",
       "serving_version": "standard_repaired_20261028T123040Z_1f5805e6",
       "training_cutoff": "2026-10-28",
-      "code_sha": "a7782725ebdc",
+      "code_sha": "5a7e5cb94771",
       "data_hash": "3fd56c29e2c55ee8",
       "identity_version": "v9r-identity-1.0",
       "feature_recipe_version": "v9r-features-1.0",
@@ -116,7 +116,7 @@
       "model_recipe_version": "legacy_v9 (unversioned)",
       "serving_version": "newformat_20261018T080423Z_9eb6b4b4",
       "training_cutoff": "UNKNOWN_PRE_GATE",
-      "code_sha": "a7782725ebdc",
+      "code_sha": "5a7e5cb94771",
       "data_hash": "UNKNOWN",
       "identity_version": "UNKNOWN",
       "feature_recipe_version": "legacy_v9 (unversioned)",
@@ -129,16 +129,13 @@
         "note": "legacy recipe: no persisted block boundaries"
       },
       "parity": {
-        "status": "FAIL",
+        "status": "WARN",
         "counts": {
           "PASS": 0,
-          "WARN": 25,
-          "FAIL": 2
+          "WARN": 27,
+          "FAIL": 0
         },
-        "fail_features": [
-          "home_conceded_last5",
-          "home_defense_str"
-        ]
+        "fail_features": []
       },
       "batch_invariance": {
         "status": "FAIL",
@@ -180,7 +177,7 @@
       "model_recipe_version": "legacy_v9 (unversioned)",
       "serving_version": "btts_20261005T101905Z_238e3419",
       "training_cutoff": "2026-10-28",
-      "code_sha": "a7782725ebdc",
+      "code_sha": "5a7e5cb94771",
       "data_hash": "UNKNOWN",
       "identity_version": "UNKNOWN",
       "feature_recipe_version": "legacy_v9 (unversioned)",
@@ -221,8 +218,8 @@
         "production_edge_rule": "p - (1/odds)/1.08 (fixed 8% margin assumption)",
         "devig_shadow_ledger": {
           "CONFIRMED_BY_DEVIG": 360,
-          "UNVERIFIABLE_ONE_SIDED": 83,
-          "ONLY_BECAUSE_OF_1_08": 81
+          "UNVERIFIABLE_ONE_SIDED": 84,
+          "ONLY_BECAUSE_OF_1_08": 82
         },
         "status": "WARN",
         "note": "historical side prices mostly SYNTHETIC (diagnostic only, excluded from ROI); live edge uses a fixed 1.08 margin, not a two-sided de-vig (shadow logged)"
@@ -249,7 +246,7 @@
       "model_recipe_version": "legacy_v9 (unversioned)",
       "serving_version": "btts_20261005T101905Z_238e3419",
       "training_cutoff": "UNKNOWN_PRE_GATE",
-      "code_sha": "a7782725ebdc",
+      "code_sha": "5a7e5cb94771",
       "data_hash": "UNKNOWN",
       "identity_version": "UNKNOWN",
       "feature_recipe_version": "legacy_v9 (unversioned)",
@@ -262,19 +259,13 @@
         "note": "legacy recipe: no persisted block boundaries"
       },
       "parity": {
-        "status": "FAIL",
+        "status": "WARN",
         "counts": {
           "PASS": 0,
-          "WARN": 37,
-          "FAIL": 5
+          "WARN": 42,
+          "FAIL": 0
         },
-        "fail_features": [
-          "home_conceded_last5",
-          "home_defense_str",
-          "away_insidebox_last5",
-          "home_ht_conceded_last5",
-          "home_ht_attack_str"
-        ]
+        "fail_features": []
       },
       "batch_invariance": {
         "status": "FAIL",
@@ -296,8 +287,8 @@
         "production_edge_rule": "p - (1/odds)/1.08 (fixed 8% margin assumption)",
         "devig_shadow_ledger": {
           "CONFIRMED_BY_DEVIG": 360,
-          "UNVERIFIABLE_ONE_SIDED": 83,
-          "ONLY_BECAUSE_OF_1_08": 81
+          "UNVERIFIABLE_ONE_SIDED": 84,
+          "ONLY_BECAUSE_OF_1_08": 82
         },
         "status": "WARN",
         "note": "historical side prices mostly SYNTHETIC (diagnostic only, excluded from ROI); live edge uses a fixed 1.08 margin, not a two-sided de-vig (shadow logged)"
@@ -324,7 +315,7 @@
       "model_recipe_version": "legacy_v9 (unversioned)",
       "serving_version": "over15_20261018T080423Z_da4743a2",
       "training_cutoff": "2026-10-28",
-      "code_sha": "a7782725ebdc",
+      "code_sha": "5a7e5cb94771",
       "data_hash": "UNKNOWN",
       "identity_version": "UNKNOWN",
       "feature_recipe_version": "legacy_v9 (unversioned)",
@@ -393,7 +384,7 @@
       "model_recipe_version": "legacy_v9 (unversioned)",
       "serving_version": "over15_20261018T080423Z_da4743a2",
       "training_cutoff": "UNKNOWN_PRE_GATE",
-      "code_sha": "a7782725ebdc",
+      "code_sha": "5a7e5cb94771",
       "data_hash": "UNKNOWN",
       "identity_version": "UNKNOWN",
       "feature_recipe_version": "legacy_v9 (unversioned)",
@@ -406,19 +397,13 @@
         "note": "legacy recipe: no persisted block boundaries"
       },
       "parity": {
-        "status": "FAIL",
+        "status": "WARN",
         "counts": {
           "PASS": 0,
-          "WARN": 37,
-          "FAIL": 5
+          "WARN": 42,
+          "FAIL": 0
         },
-        "fail_features": [
-          "home_conceded_last5",
-          "home_defense_str",
-          "away_insidebox_last5",
-          "home_ht_conceded_last5",
-          "home_ht_attack_str"
-        ]
+        "fail_features": []
       },
       "batch_invariance": {
         "status": "FAIL",
@@ -468,7 +453,7 @@
       "model_recipe_version": "legacy_v9 (unversioned)",
       "serving_version": "over35_20261005T101905Z_f546ce72",
       "training_cutoff": "2026-10-28",
-      "code_sha": "a7782725ebdc",
+      "code_sha": "5a7e5cb94771",
       "data_hash": "UNKNOWN",
       "identity_version": "UNKNOWN",
       "feature_recipe_version": "legacy_v9 (unversioned)",
@@ -537,7 +522,7 @@
       "model_recipe_version": "legacy_v9 (unversioned)",
       "serving_version": "over35_20261005T101905Z_f546ce72",
       "training_cutoff": "UNKNOWN_PRE_GATE",
-      "code_sha": "a7782725ebdc",
+      "code_sha": "5a7e5cb94771",
       "data_hash": "UNKNOWN",
       "identity_version": "UNKNOWN",
       "feature_recipe_version": "legacy_v9 (unversioned)",
@@ -550,19 +535,13 @@
         "note": "legacy recipe: no persisted block boundaries"
       },
       "parity": {
-        "status": "FAIL",
+        "status": "WARN",
         "counts": {
           "PASS": 0,
-          "WARN": 37,
-          "FAIL": 5
+          "WARN": 42,
+          "FAIL": 0
         },
-        "fail_features": [
-          "home_conceded_last5",
-          "home_defense_str",
-          "away_insidebox_last5",
-          "home_ht_conceded_last5",
-          "home_ht_attack_str"
-        ]
+        "fail_features": []
       },
       "batch_invariance": {
         "status": "FAIL",
@@ -612,7 +591,7 @@
       "model_recipe_version": "legacy_v9 (unversioned)",
       "serving_version": "ht_over05_20261018T080423Z_359b491a",
       "training_cutoff": "2026-10-28",
-      "code_sha": "a7782725ebdc",
+      "code_sha": "5a7e5cb94771",
       "data_hash": "UNKNOWN",
       "identity_version": "UNKNOWN",
       "feature_recipe_version": "legacy_v9 (unversioned)",
@@ -674,7 +653,7 @@
       "model_recipe_version": "legacy_v9 (unversioned)",
       "serving_version": "ht_over15_20261004T093828Z_6f370f63",
       "training_cutoff": "2026-10-28",
-      "code_sha": "a7782725ebdc",
+      "code_sha": "5a7e5cb94771",
       "data_hash": "UNKNOWN",
       "identity_version": "UNKNOWN",
       "feature_recipe_version": "legacy_v9 (unversioned)",
