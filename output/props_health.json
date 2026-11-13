@@ -1,10 +1,10 @@
 {
-  "checked_at": "2026-11-13T03:46:43Z",
-  "run_id": "43359387708",
-  "run_number": "1629",
+  "checked_at": "2026-11-13T05:30:35Z",
+  "run_id": "43371229324",
+  "run_number": "1630",
   "event": "schedule",
   "schedule": "",
-  "sha": "64cb7dd11d44",
+  "sha": "f7b1f2929226",
   "history_freshness": {
     "newest_match": "2026-11-09",
     "age_days": "4",
@@ -18,12 +18,12 @@
   "output/player_tips.csv": {
     "rows": 610,
     "fixtures": 42,
-    "mtime": "2026-11-13T03:45:00Z"
+    "mtime": "2026-11-13T05:29:21Z"
   },
   "output/player_ledger.csv": {
     "rows": 38453,
     "fixtures": null,
-    "mtime": "2026-11-13T03:30:54Z"
+    "mtime": "2026-11-13T05:19:50Z"
   },
   "git_dirty_outputs": [
     "M output/player_prop_odds_history.csv",
@@ -60,6 +60,6 @@
     "[clv_tracker] CLV report: {'n': 4936, 'mean_clv_pct': 0.0026, 'mean_clv_prob': None, 'beat_close_rate': 0.296, 'verdict': 'POSITIVE CLV \u2014 genuine edge signal'}",
     "[lineup] 0 confirmed starters | 610 lineup TBC",
     "[predict] SNIPER:0  MARKSMAN:0  VALUABLE:2",
-    "[api_usage] workflow=Player Props af_calls=179 cache_hits=72 cache_hit_rate=29% errors=0  quota_remaining 74738->74416 (account-wide delta 322)"
+    "[api_usage] workflow=Player Props af_calls=179 cache_hits=72 cache_hit_rate=29% errors=0  quota_remaining 74370->74192 (account-wide delta 178)"
   ]
 }
