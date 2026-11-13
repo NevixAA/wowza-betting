@@ -113,7 +113,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
       "left_rows": 83483,
-      "right_rows": 18156,
+      "right_rows": 18196,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -143,7 +143,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
       "left_rows": 83483,
-      "right_rows": 34322,
+      "right_rows": 34407,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -320,7 +320,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
       "left_rows": 83483,
-      "right_rows": 18156,
+      "right_rows": 18196,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -383,7 +383,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
       "left_rows": 83483,
-      "right_rows": 34322,
+      "right_rows": 34407,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -414,7 +414,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "safe",
       "left_rows": 83483,
-      "right_rows": 6503,
+      "right_rows": 6506,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -1166,140 +1166,149 @@
     ]
   },
   "serving_diff": {
-    "board_fixtures": 43,
+    "board_fixtures": 51,
     "recipe": "v9_repaired",
     "serving_features_changed": {
       "away_corners_pg_roll": {
-        "fixtures_changed": 6,
+        "fixtures_changed": 12,
         "by_model_type": {
-          "new_format": 6
+          "new_format": 12
         },
         "mean_abs_delta": null,
         "max_abs_delta": null
       },
       "away_fouls_pg_roll": {
-        "fixtures_changed": 6,
+        "fixtures_changed": 12,
         "by_model_type": {
-          "new_format": 6
+          "new_format": 12
         },
         "mean_abs_delta": null,
         "max_abs_delta": null
       },
       "away_insidebox_last5": {
-        "fixtures_changed": 42,
+        "fixtures_changed": 50,
         "by_model_type": {
           "standard": 33,
-          "new_format": 9
+          "new_format": 17
         },
-        "mean_abs_delta": 2.2718253968253967,
+        "mean_abs_delta": 2.1599999999999997,
         "max_abs_delta": 9.0
       },
       "away_xg_last5": {
-        "fixtures_changed": 42,
+        "fixtures_changed": 50,
         "by_model_type": {
           "standard": 33,
-          "new_format": 9
+          "new_format": 17
         },
-        "mean_abs_delta": 0.5449593495934959,
+        "mean_abs_delta": 0.5324795918367347,
         "max_abs_delta": 1.4850000000000003
       },
       "combined_sot_ratio": {
-        "fixtures_changed": 8,
+        "fixtures_changed": 16,
         "by_model_type": {
-          "new_format": 8
+          "new_format": 16
         },
-        "mean_abs_delta": 0.07822070150963593,
+        "mean_abs_delta": 0.05821343665948505,
         "max_abs_delta": 0.15465784918461511
       },
       "home_corners_pg_roll": {
-        "fixtures_changed": 7,
+        "fixtures_changed": 13,
         "by_model_type": {
-          "new_format": 7
+          "new_format": 13
         },
         "mean_abs_delta": null,
         "max_abs_delta": null
       },
       "home_fouls_pg_roll": {
-        "fixtures_changed": 7,
+        "fixtures_changed": 13,
         "by_model_type": {
-          "new_format": 7
+          "new_format": 13
         },
         "mean_abs_delta": null,
         "max_abs_delta": null
       },
       "home_insidebox_last5": {
-        "fixtures_changed": 41,
+        "fixtures_changed": 49,
         "by_model_type": {
           "standard": 33,
-          "new_format": 8
+          "new_format": 16
         },
-        "mean_abs_delta": 2.16869918699187,
+        "mean_abs_delta": 2.1153061224489798,
         "max_abs_delta": 6.0
       },
       "home_xg_last5": {
-        "fixtures_changed": 43,
+        "fixtures_changed": 51,
         "by_model_type": {
           "standard": 34,
-          "new_format": 9
+          "new_format": 17
         },
-        "mean_abs_delta": 0.5277131782945736,
+        "mean_abs_delta": 0.5142516339869281,
         "max_abs_delta": 1.642
       },
       "p_over25": {
-        "fixtures_changed": 8,
+        "fixtures_changed": 16,
         "by_model_type": {
-          "new_format": 8
+          "new_format": 16
         },
-        "mean_abs_delta": 0.026447407478779356,
-        "max_abs_delta": 0.0669207680204863
+        "mean_abs_delta": 0.022831323092225932,
+        "max_abs_delta": 0.06057578792411622
       },
       "p_btts": {
-        "fixtures_changed": 43,
+        "fixtures_changed": 51,
         "by_model_type": {
           "standard": 34,
-          "new_format": 9
+          "new_format": 17
         },
-        "mean_abs_delta": 0.014379416986510669,
-        "max_abs_delta": 0.0669460962373315
+        "mean_abs_delta": 0.014278141456205722,
+        "max_abs_delta": 0.06630803772752591
       },
       "p_over15": {
-        "fixtures_changed": 43,
+        "fixtures_changed": 51,
         "by_model_type": {
           "standard": 34,
-          "new_format": 9
+          "new_format": 17
         },
-        "mean_abs_delta": 0.015389359171790375,
-        "max_abs_delta": 0.07497506753043415
+        "mean_abs_delta": 0.015217636630379566,
+        "max_abs_delta": 0.07638245549937961
       },
       "p_over35": {
-        "fixtures_changed": 43,
+        "fixtures_changed": 51,
         "by_model_type": {
           "standard": 34,
-          "new_format": 9
+          "new_format": 17
         },
-        "mean_abs_delta": 0.008070108882989018,
-        "max_abs_delta": 0.02753558330455491
+        "mean_abs_delta": 0.009903916841050757,
+        "max_abs_delta": 0.037882255798530495
       },
       "p_ht_over05": {
         "fixtures_changed": 34,
         "by_model_type": {
           "standard": 34
         },
-        "mean_abs_delta": 0.0016018698314779593,
-        "max_abs_delta": 0.006890980561751303
+        "mean_abs_delta": 0.0015575954370570767,
+        "max_abs_delta": 0.0062412082057760054
       },
       "p_ht_over15": {
         "fixtures_changed": 34,
         "by_model_type": {
           "standard": 34
         },
-        "mean_abs_delta": 0.005960470993747948,
-        "max_abs_delta": 0.023744343306375704
+        "mean_abs_delta": 0.005922858388615511,
+        "max_abs_delta": 0.022904717761884852
       }
     },
-    "tips_legacy": 4,
-    "tips_safe": 6,
-    "tips_only_legacy": [],
+    "tips_legacy": 7,
+    "tips_safe": 9,
+    "tips_only_legacy": [
+      [
+        "Brazil Serie A",
+        "Sao Paulo",
+        "Fluminense",
+        "OU25",
+        "OVER",
+        "VALUABLE"
+      ]
+    ],
     "tips_only_safe": [
       [
         "Brazil Serie A",
@@ -1315,6 +1324,14 @@
         "Atletico Mineiro",
         "OU25",
         "UNDER",
+        "VALUABLE"
+      ],
+      [
+        "La Liga 2",
+        "Legan\u00e9s",
+        "Burgos CF",
+        "over15",
+        "OVER",
         "VALUABLE"
       ]
     ]

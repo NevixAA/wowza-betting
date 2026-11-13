@@ -1,7 +1,7 @@
 {
   "artifact": "join_integrity_health",
   "helper_version": "safe_left_enrich-1.0",
-  "generated_at": "2026-11-12T16:54:41Z",
+  "generated_at": "2026-11-13T16:34:38Z",
   "status": "FAIL",
   "joins": {
     "af_history_shots.legacy": {
@@ -106,7 +106,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
       "left_rows": 83483,
-      "right_rows": 18156,
+      "right_rows": 18196,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -136,7 +136,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
       "left_rows": 83483,
-      "right_rows": 34322,
+      "right_rows": 34407,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -315,7 +315,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
       "left_rows": 83483,
-      "right_rows": 18156,
+      "right_rows": 18196,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -378,7 +378,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
       "left_rows": 83483,
-      "right_rows": 34322,
+      "right_rows": 34407,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -409,7 +409,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "safe",
       "left_rows": 83483,
-      "right_rows": 6503,
+      "right_rows": 6506,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -671,11 +671,20 @@
     }
   ],
   "serving_replay": {
-    "board_fixtures": 43,
+    "board_fixtures": 51,
     "recipe": "v9_repaired",
-    "tips_legacy": 4,
-    "tips_safe": 6,
-    "tips_only_legacy": [],
+    "tips_legacy": 7,
+    "tips_safe": 9,
+    "tips_only_legacy": [
+      [
+        "Brazil Serie A",
+        "Sao Paulo",
+        "Fluminense",
+        "OU25",
+        "OVER",
+        "VALUABLE"
+      ]
+    ],
     "tips_only_safe": [
       [
         "Brazil Serie A",
@@ -692,22 +701,30 @@
         "OU25",
         "UNDER",
         "VALUABLE"
+      ],
+      [
+        "La Liga 2",
+        "Legan\u00e9s",
+        "Burgos CF",
+        "over15",
+        "OVER",
+        "VALUABLE"
       ]
     ],
     "features_changed": {
-      "away_corners_pg_roll": 6,
-      "away_fouls_pg_roll": 6,
-      "away_insidebox_last5": 42,
-      "away_xg_last5": 42,
-      "combined_sot_ratio": 8,
-      "home_corners_pg_roll": 7,
-      "home_fouls_pg_roll": 7,
-      "home_insidebox_last5": 41,
-      "home_xg_last5": 43,
-      "p_over25": 8,
-      "p_btts": 43,
-      "p_over15": 43,
-      "p_over35": 43,
+      "away_corners_pg_roll": 12,
+      "away_fouls_pg_roll": 12,
+      "away_insidebox_last5": 50,
+      "away_xg_last5": 50,
+      "combined_sot_ratio": 16,
+      "home_corners_pg_roll": 13,
+      "home_fouls_pg_roll": 13,
+      "home_insidebox_last5": 49,
+      "home_xg_last5": 51,
+      "p_over25": 16,
+      "p_btts": 51,
+      "p_over15": 51,
+      "p_over35": 51,
       "p_ht_over05": 34,
       "p_ht_over15": 34
     }
