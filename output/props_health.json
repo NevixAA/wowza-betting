@@ -1,10 +1,10 @@
 {
-  "checked_at": "2026-11-13T12:57:50Z",
-  "run_id": "43427309896",
-  "run_number": "1631",
+  "checked_at": "2026-11-13T14:16:24Z",
+  "run_id": "43438481783",
+  "run_number": "1632",
   "event": "schedule",
   "schedule": "",
-  "sha": "957fe1e92f0c",
+  "sha": "f7638c2a5bda",
   "history_freshness": {
     "newest_match": "2026-11-09",
     "age_days": "4",
@@ -18,18 +18,16 @@
   "output/player_tips.csv": {
     "rows": 578,
     "fixtures": 39,
-    "mtime": "2026-11-13T12:56:01Z"
+    "mtime": "2026-11-13T14:14:14Z"
   },
   "output/player_ledger.csv": {
     "rows": 38453,
     "fixtures": null,
-    "mtime": "2026-11-13T12:42:18Z"
+    "mtime": "2026-11-13T14:00:02Z"
   },
   "git_dirty_outputs": [
-    "M output/player_prop_odds_history.csv",
-    " M output/player_tips.csv",
-    " M output/prop_odds_coverage.json",
-    " M output/prop_quotes/2026-11-13.csv"
+    "M output/player_tips.csv",
+    " M output/prop_odds_coverage.json"
   ],
   "predict_log_tail": [
     "[predict] API-Football key found \u2014 will fetch recent match stats for rolling features.",
@@ -60,6 +58,6 @@
     "[clv_tracker] CLV report: {'n': 4936, 'mean_clv_pct': 0.0026, 'mean_clv_prob': None, 'beat_close_rate': 0.296, 'verdict': 'POSITIVE CLV \u2014 genuine edge signal'}",
     "[lineup] 0 confirmed starters | 578 lineup TBC",
     "[predict] SNIPER:0  MARKSMAN:0  VALUABLE:2",
-    "[api_usage] workflow=Player Props af_calls=175 cache_hits=68 cache_hit_rate=28% errors=0  quota_remaining 69116->68938 (account-wide delta 178)"
+    "[api_usage] workflow=Player Props af_calls=175 cache_hits=68 cache_hit_rate=28% errors=0  quota_remaining 68786->68623 (account-wide delta 163)"
   ]
 }
