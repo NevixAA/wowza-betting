@@ -22,8 +22,8 @@
     "last_priced": "2026-11-14",
     "last_probe": "2026-11-14",
     "league": "Brazil Serie A",
-    "priced_events": 615,
-    "probes": 615,
+    "priced_events": 616,
+    "probes": 616,
     "source": "api_football"
   },
   "apifootball:Bundesliga 2": {
@@ -31,8 +31,8 @@
     "last_priced": "2026-11-14",
     "last_probe": "2026-11-14",
     "league": "Bundesliga 2",
-    "priced_events": 488,
-    "probes": 631,
+    "priced_events": 489,
+    "probes": 632,
     "source": "api_football"
   },
   "apifootball:Champions League": {
@@ -43,12 +43,12 @@
     "source": "api_football"
   },
   "apifootball:Championship": {
-    "empty_streak": 0,
+    "empty_streak": 1,
     "last_priced": "2026-11-07",
-    "last_probe": "2026-11-07",
+    "last_probe": "2026-11-14",
     "league": "Championship",
     "priced_events": 596,
-    "probes": 622,
+    "probes": 623,
     "source": "api_football"
   },
   "apifootball:China Super League": {
@@ -104,12 +104,12 @@
     "source": "api_football"
   },
   "apifootball:Japan J-League": {
-    "empty_streak": 5,
+    "empty_streak": 6,
     "last_priced": "2026-11-08",
     "last_probe": "2026-11-14",
     "league": "Japan J-League",
     "priced_events": 40,
-    "probes": 277,
+    "probes": 278,
     "source": "api_football"
   },
   "apifootball:La Liga 2": {
@@ -117,8 +117,8 @@
     "last_priced": "2026-11-14",
     "last_probe": "2026-11-14",
     "league": "La Liga 2",
-    "priced_events": 733,
-    "probes": 745,
+    "priced_events": 734,
+    "probes": 746,
     "source": "api_football"
   },
   "apifootball:League One": {
@@ -126,8 +126,8 @@
     "last_priced": "2026-11-14",
     "last_probe": "2026-11-14",
     "league": "League One",
-    "priced_events": 656,
-    "probes": 720,
+    "priced_events": 657,
+    "probes": 721,
     "source": "api_football"
   },
   "apifootball:League Two": {
@@ -135,8 +135,8 @@
     "last_priced": "2026-11-14",
     "last_probe": "2026-11-14",
     "league": "League Two",
-    "priced_events": 595,
-    "probes": 666,
+    "priced_events": 596,
+    "probes": 667,
     "source": "api_football"
   },
   "apifootball:Ligue 2": {
@@ -144,8 +144,8 @@
     "last_priced": "2026-11-14",
     "last_probe": "2026-11-14",
     "league": "Ligue 2",
-    "priced_events": 309,
-    "probes": 373,
+    "priced_events": 310,
+    "probes": 374,
     "source": "api_football"
   },
   "apifootball:Mexico Liga MX": {
@@ -153,17 +153,17 @@
     "last_priced": "2026-11-14",
     "last_probe": "2026-11-14",
     "league": "Mexico Liga MX",
-    "priced_events": 608,
-    "probes": 640,
+    "priced_events": 609,
+    "probes": 641,
     "source": "api_football"
   },
   "apifootball:Norway Eliteserien": {
     "empty_streak": 0,
-    "last_priced": "2026-11-09",
-    "last_probe": "2026-11-09",
+    "last_priced": "2026-11-14",
+    "last_probe": "2026-11-14",
     "league": "Norway Eliteserien",
-    "priced_events": 428,
-    "probes": 528,
+    "priced_events": 429,
+    "probes": 529,
     "source": "api_football"
   },
   "apifootball:Romanian Superliga": {
@@ -195,19 +195,15 @@
   },
   "soccer_efl_champ": {
     "empty_streak": 24,
-    "far_empty_probes": 101,
-    "last_probe": "2026-11-05",
+    "far_empty_probes": 102,
+    "last_probe": "2026-11-14",
     "league": "Championship",
-    "matched_events": 11,
-    "probes": 101,
+    "matched_events": 1,
+    "probes": 102,
     "streak_reset_on": "2026-08-27",
     "streak_reset_reason": "empty_streak accumulated before the park rule required a probe inside 24h of kickoff; count preserved in far_empty_probes",
-    "unmatched_sample": [
-      "Bristol City vs Norwich",
-      "Charlton vs Sheffield Utd",
-      "Preston vs Southampton"
-    ],
-    "wanted_fixtures": 14
+    "unmatched_sample": [],
+    "wanted_fixtures": 1
   },
   "soccer_england_league1": {
     "empty_streak": 30,
