@@ -1,31 +1,803 @@
 snapshot_ts,match_date,kickoff_utc,league,match,market,odds,writer
-2026-11-14T07:16:21Z,2026-11-14,2026-11-14T12:30:00Z,League Two,Exeter City vs Cheltenham,btts_no,1.91,std_capture
-2026-11-14T07:16:21Z,2026-11-14,2026-11-14T12:30:00Z,League Two,Exeter City vs Cheltenham,btts_yes,1.8,std_capture
-2026-11-14T07:16:21Z,2026-11-14,2026-11-14T12:30:00Z,League Two,Exeter City vs Cheltenham,h2h_away,4.0,std_capture
-2026-11-14T07:16:21Z,2026-11-14,2026-11-14T12:30:00Z,League Two,Exeter City vs Cheltenham,h2h_draw,3.5,std_capture
-2026-11-14T07:16:21Z,2026-11-14,2026-11-14T12:30:00Z,League Two,Exeter City vs Cheltenham,h2h_home,1.85,std_capture
-2026-11-14T07:16:21Z,2026-11-14,2026-11-14T12:30:00Z,League Two,Exeter City vs Cheltenham,ht_over05,1.4,std_capture
-2026-11-14T07:16:21Z,2026-11-14,2026-11-14T12:30:00Z,League Two,Exeter City vs Cheltenham,ht_over15,2.75,std_capture
-2026-11-14T07:16:21Z,2026-11-14,2026-11-14T12:30:00Z,League Two,Exeter City vs Cheltenham,ht_under05,2.75,std_capture
-2026-11-14T07:16:21Z,2026-11-14,2026-11-14T12:30:00Z,League Two,Exeter City vs Cheltenham,ht_under15,1.4,std_capture
-2026-11-14T07:16:21Z,2026-11-14,2026-11-14T12:30:00Z,League Two,Exeter City vs Cheltenham,over15,1.28,std_capture
-2026-11-14T07:16:21Z,2026-11-14,2026-11-14T12:30:00Z,League Two,Exeter City vs Cheltenham,over25,1.95,std_capture
-2026-11-14T07:16:21Z,2026-11-14,2026-11-14T12:30:00Z,League Two,Exeter City vs Cheltenham,over35,3.4,std_capture
-2026-11-14T07:16:21Z,2026-11-14,2026-11-14T12:30:00Z,League Two,Exeter City vs Cheltenham,under15,3.5,std_capture
-2026-11-14T07:16:21Z,2026-11-14,2026-11-14T12:30:00Z,League Two,Exeter City vs Cheltenham,under25,1.85,std_capture
-2026-11-14T07:16:21Z,2026-11-14,2026-11-14T12:30:00Z,League Two,Exeter City vs Cheltenham,under35,1.3,std_capture
-2026-11-14T07:16:21Z,2026-11-14,2026-11-14T13:00:00Z,La Liga 2,Valladolid vs Castellón,btts_no,2.25,std_capture
-2026-11-14T07:16:21Z,2026-11-14,2026-11-14T13:00:00Z,La Liga 2,Valladolid vs Castellón,btts_yes,1.57,std_capture
-2026-11-14T07:16:21Z,2026-11-14,2026-11-14T13:00:00Z,La Liga 2,Valladolid vs Castellón,h2h_away,2.3,std_capture
-2026-11-14T07:16:21Z,2026-11-14,2026-11-14T13:00:00Z,La Liga 2,Valladolid vs Castellón,h2h_draw,3.5,std_capture
-2026-11-14T07:16:21Z,2026-11-14,2026-11-14T13:00:00Z,La Liga 2,Valladolid vs Castellón,h2h_home,2.9,std_capture
-2026-11-14T07:16:21Z,2026-11-14,2026-11-14T13:00:00Z,La Liga 2,Valladolid vs Castellón,ht_over05,1.3,std_capture
-2026-11-14T07:16:21Z,2026-11-14,2026-11-14T13:00:00Z,La Liga 2,Valladolid vs Castellón,ht_over15,2.5,std_capture
-2026-11-14T07:16:21Z,2026-11-14,2026-11-14T13:00:00Z,La Liga 2,Valladolid vs Castellón,ht_under05,3.4,std_capture
-2026-11-14T07:16:21Z,2026-11-14,2026-11-14T13:00:00Z,La Liga 2,Valladolid vs Castellón,ht_under15,1.5,std_capture
-2026-11-14T07:16:21Z,2026-11-14,2026-11-14T13:00:00Z,La Liga 2,Valladolid vs Castellón,over15,1.2,std_capture
-2026-11-14T07:16:21Z,2026-11-14,2026-11-14T13:00:00Z,La Liga 2,Valladolid vs Castellón,over25,1.7,std_capture
-2026-11-14T07:16:21Z,2026-11-14,2026-11-14T13:00:00Z,La Liga 2,Valladolid vs Castellón,over35,2.62,std_capture
-2026-11-14T07:16:21Z,2026-11-14,2026-11-14T13:00:00Z,La Liga 2,Valladolid vs Castellón,under15,4.33,std_capture
-2026-11-14T07:16:21Z,2026-11-14,2026-11-14T13:00:00Z,La Liga 2,Valladolid vs Castellón,under25,2.1,std_capture
-2026-11-14T07:16:21Z,2026-11-14,2026-11-14T13:00:00Z,La Liga 2,Valladolid vs Castellón,under35,1.44,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,AFC Hornchurch vs Tamworth,btts_no,2.25,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,AFC Hornchurch vs Tamworth,btts_yes,1.57,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,AFC Hornchurch vs Tamworth,h2h_away,2.7,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,AFC Hornchurch vs Tamworth,h2h_draw,3.6,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,AFC Hornchurch vs Tamworth,h2h_home,2.25,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,AFC Hornchurch vs Tamworth,ht_over05,1.3,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,AFC Hornchurch vs Tamworth,ht_over15,2.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,AFC Hornchurch vs Tamworth,ht_under05,3.4,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,AFC Hornchurch vs Tamworth,ht_under15,1.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,AFC Hornchurch vs Tamworth,over15,1.2,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,AFC Hornchurch vs Tamworth,over25,1.67,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,AFC Hornchurch vs Tamworth,over35,2.62,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,AFC Hornchurch vs Tamworth,under15,4.33,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,AFC Hornchurch vs Tamworth,under25,2.15,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,AFC Hornchurch vs Tamworth,under35,1.44,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,AFC Wimbledon vs Blackpool,btts_no,2.1,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,AFC Wimbledon vs Blackpool,btts_yes,1.67,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,AFC Wimbledon vs Blackpool,h2h_away,2.55,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,AFC Wimbledon vs Blackpool,h2h_draw,3.4,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,AFC Wimbledon vs Blackpool,h2h_home,2.55,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,AFC Wimbledon vs Blackpool,ht_over05,1.33,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,AFC Wimbledon vs Blackpool,ht_over15,2.62,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,AFC Wimbledon vs Blackpool,ht_under05,3.25,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,AFC Wimbledon vs Blackpool,ht_under15,1.44,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,AFC Wimbledon vs Blackpool,over15,1.25,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,AFC Wimbledon vs Blackpool,over25,1.8,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,AFC Wimbledon vs Blackpool,over35,3.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,AFC Wimbledon vs Blackpool,under15,3.75,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,AFC Wimbledon vs Blackpool,under25,2.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,AFC Wimbledon vs Blackpool,under35,1.36,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,Airdrie United vs Queen of the South,btts_no,2.1,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,Airdrie United vs Queen of the South,btts_yes,1.67,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,Airdrie United vs Queen of the South,h2h_away,4.33,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,Airdrie United vs Queen of the South,h2h_draw,3.9,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,Airdrie United vs Queen of the South,h2h_home,1.6,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,Airdrie United vs Queen of the South,ht_over05,1.28,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,Airdrie United vs Queen of the South,ht_over15,2.25,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,Airdrie United vs Queen of the South,ht_under05,3.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,Airdrie United vs Queen of the South,ht_under15,1.57,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,Airdrie United vs Queen of the South,over15,1.17,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,Airdrie United vs Queen of the South,over25,1.6,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,Airdrie United vs Queen of the South,over35,2.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,Airdrie United vs Queen of the South,under15,4.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,Airdrie United vs Queen of the South,under25,2.3,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,Airdrie United vs Queen of the South,under35,1.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,La Liga 2,Almeria vs FC Andorra,btts_no,2.2,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,La Liga 2,Almeria vs FC Andorra,btts_yes,1.62,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,La Liga 2,Almeria vs FC Andorra,h2h_away,4.33,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,La Liga 2,Almeria vs FC Andorra,h2h_draw,3.8,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,La Liga 2,Almeria vs FC Andorra,h2h_home,1.75,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,La Liga 2,Almeria vs FC Andorra,ht_over05,1.3,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,La Liga 2,Almeria vs FC Andorra,ht_over15,2.38,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,La Liga 2,Almeria vs FC Andorra,ht_under05,3.4,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,La Liga 2,Almeria vs FC Andorra,ht_under15,1.53,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,La Liga 2,Almeria vs FC Andorra,over15,1.2,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,La Liga 2,Almeria vs FC Andorra,over25,1.67,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,La Liga 2,Almeria vs FC Andorra,over35,2.62,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,La Liga 2,Almeria vs FC Andorra,under15,4.33,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,La Liga 2,Almeria vs FC Andorra,under25,2.15,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,La Liga 2,Almeria vs FC Andorra,under35,1.44,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Ayr Utd vs Raith Rovers,btts_no,1.73,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Ayr Utd vs Raith Rovers,btts_yes,2.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Ayr Utd vs Raith Rovers,h2h_away,2.05,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Ayr Utd vs Raith Rovers,h2h_draw,3.2,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Ayr Utd vs Raith Rovers,h2h_home,3.3,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Ayr Utd vs Raith Rovers,ht_over05,1.44,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Ayr Utd vs Raith Rovers,ht_over15,3.25,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Ayr Utd vs Raith Rovers,ht_under05,2.62,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Ayr Utd vs Raith Rovers,ht_under15,1.33,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Ayr Utd vs Raith Rovers,over15,1.4,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Ayr Utd vs Raith Rovers,over25,2.25,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Ayr Utd vs Raith Rovers,over35,4.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Ayr Utd vs Raith Rovers,under15,2.75,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Ayr Utd vs Raith Rovers,under25,1.62,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Ayr Utd vs Raith Rovers,under35,1.22,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Bristol Rovers vs Chesterfield,btts_no,2.25,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Bristol Rovers vs Chesterfield,btts_yes,1.57,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Bristol Rovers vs Chesterfield,h2h_away,2.15,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Bristol Rovers vs Chesterfield,h2h_draw,3.4,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Bristol Rovers vs Chesterfield,h2h_home,3.1,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Bristol Rovers vs Chesterfield,ht_over05,1.33,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Bristol Rovers vs Chesterfield,ht_over15,2.62,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Bristol Rovers vs Chesterfield,ht_under05,3.25,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Bristol Rovers vs Chesterfield,ht_under15,1.44,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Bristol Rovers vs Chesterfield,over15,1.22,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Bristol Rovers vs Chesterfield,over25,1.73,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Bristol Rovers vs Chesterfield,over35,2.62,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Bristol Rovers vs Chesterfield,under15,4.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Bristol Rovers vs Chesterfield,under25,2.08,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Bristol Rovers vs Chesterfield,under35,1.44,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Bromley vs Notts County,btts_no,2.1,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Bromley vs Notts County,btts_yes,1.67,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Bromley vs Notts County,h2h_away,2.2,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Bromley vs Notts County,h2h_draw,3.3,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Bromley vs Notts County,h2h_home,3.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Bromley vs Notts County,ht_over05,1.33,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Bromley vs Notts County,ht_over15,2.62,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Bromley vs Notts County,ht_under05,3.25,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Bromley vs Notts County,ht_under15,1.44,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Bromley vs Notts County,over15,1.25,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Bromley vs Notts County,over25,1.8,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Bromley vs Notts County,over35,3.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Bromley vs Notts County,under15,3.75,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Bromley vs Notts County,under25,2.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Bromley vs Notts County,under35,1.36,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Carlisle vs Boston United,btts_no,2.38,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Carlisle vs Boston United,btts_yes,1.53,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Carlisle vs Boston United,h2h_away,5.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Carlisle vs Boston United,h2h_draw,4.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Carlisle vs Boston United,h2h_home,1.44,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Carlisle vs Boston United,ht_over05,1.2,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Carlisle vs Boston United,ht_over15,2.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Carlisle vs Boston United,ht_under05,4.33,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Carlisle vs Boston United,ht_under15,1.73,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Carlisle vs Boston United,over15,1.11,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Carlisle vs Boston United,over25,1.4,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Carlisle vs Boston United,over35,2.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Carlisle vs Boston United,under15,6.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Carlisle vs Boston United,under25,2.88,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Carlisle vs Boston United,under35,1.73,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Colchester vs Gillingham,btts_no,2.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Colchester vs Gillingham,btts_yes,1.73,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Colchester vs Gillingham,h2h_away,3.4,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Colchester vs Gillingham,h2h_draw,3.3,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Colchester vs Gillingham,h2h_home,2.1,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Colchester vs Gillingham,ht_over05,1.4,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Colchester vs Gillingham,ht_over15,2.75,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Colchester vs Gillingham,ht_under05,2.75,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Colchester vs Gillingham,ht_under15,1.4,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Colchester vs Gillingham,over15,1.28,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Colchester vs Gillingham,over25,1.95,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Colchester vs Gillingham,over35,3.25,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Colchester vs Gillingham,under15,3.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Colchester vs Gillingham,under25,1.85,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Colchester vs Gillingham,under35,1.33,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,Cove Rangers vs Montrose,btts_no,2.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,Cove Rangers vs Montrose,btts_yes,1.73,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,Cove Rangers vs Montrose,h2h_away,2.62,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,Cove Rangers vs Montrose,h2h_draw,3.4,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,Cove Rangers vs Montrose,h2h_home,2.3,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,Cove Rangers vs Montrose,ht_over05,1.36,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,Cove Rangers vs Montrose,ht_over15,2.62,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,Cove Rangers vs Montrose,ht_under05,3.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,Cove Rangers vs Montrose,ht_under15,1.44,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,Cove Rangers vs Montrose,over15,1.25,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,Cove Rangers vs Montrose,over25,1.85,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,Cove Rangers vs Montrose,over35,3.25,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,Cove Rangers vs Montrose,under15,3.75,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,Cove Rangers vs Montrose,under25,1.95,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,Cove Rangers vs Montrose,under35,1.33,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Crewe vs Newport County,btts_no,2.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Crewe vs Newport County,btts_yes,1.73,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Crewe vs Newport County,h2h_away,3.4,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Crewe vs Newport County,h2h_draw,3.4,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Crewe vs Newport County,h2h_home,2.05,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Crewe vs Newport County,ht_over05,1.36,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Crewe vs Newport County,ht_over15,2.75,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Crewe vs Newport County,ht_under05,3.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Crewe vs Newport County,ht_under15,1.4,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Crewe vs Newport County,over15,1.28,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Crewe vs Newport County,over25,1.95,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Crewe vs Newport County,over35,3.4,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Crewe vs Newport County,under15,3.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Crewe vs Newport County,under25,1.85,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Crewe vs Newport County,under35,1.3,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Doncaster vs Leyton Orient,btts_no,2.2,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Doncaster vs Leyton Orient,btts_yes,1.62,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Doncaster vs Leyton Orient,h2h_away,3.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Doncaster vs Leyton Orient,h2h_draw,3.4,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Doncaster vs Leyton Orient,h2h_home,2.25,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Doncaster vs Leyton Orient,ht_over05,1.33,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Doncaster vs Leyton Orient,ht_over15,2.62,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Doncaster vs Leyton Orient,ht_under05,3.25,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Doncaster vs Leyton Orient,ht_under15,1.44,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Doncaster vs Leyton Orient,over15,1.22,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Doncaster vs Leyton Orient,over25,1.8,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Doncaster vs Leyton Orient,over35,2.75,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Doncaster vs Leyton Orient,under15,4.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Doncaster vs Leyton Orient,under25,2.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Doncaster vs Leyton Orient,under35,1.4,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Dumbarton vs Annan Athletic,btts_no,2.2,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Dumbarton vs Annan Athletic,btts_yes,1.62,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Dumbarton vs Annan Athletic,h2h_away,3.6,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Dumbarton vs Annan Athletic,h2h_draw,3.7,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Dumbarton vs Annan Athletic,h2h_home,1.83,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Dumbarton vs Annan Athletic,ht_over05,1.28,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Dumbarton vs Annan Athletic,ht_over15,2.38,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Dumbarton vs Annan Athletic,ht_under05,3.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Dumbarton vs Annan Athletic,ht_under15,1.53,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Dumbarton vs Annan Athletic,over15,1.2,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Dumbarton vs Annan Athletic,over35,2.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Dumbarton vs Annan Athletic,under15,4.33,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Dumbarton vs Annan Athletic,under25,2.25,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Dumbarton vs Annan Athletic,under35,1.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,East Fife vs Peterhead,btts_no,2.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,East Fife vs Peterhead,btts_yes,1.73,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,East Fife vs Peterhead,h2h_away,2.45,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,East Fife vs Peterhead,h2h_draw,3.3,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,East Fife vs Peterhead,h2h_home,2.55,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,East Fife vs Peterhead,ht_over05,1.36,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,East Fife vs Peterhead,ht_over15,2.75,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,East Fife vs Peterhead,ht_under05,3.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,East Fife vs Peterhead,ht_under15,1.4,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,East Fife vs Peterhead,over15,1.28,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,East Fife vs Peterhead,over25,1.9,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,East Fife vs Peterhead,over35,3.25,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,East Fife vs Peterhead,under15,3.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,East Fife vs Peterhead,under25,1.9,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,East Fife vs Peterhead,under35,1.33,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,East Kilbride vs Alloa Athletic,btts_no,2.2,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,East Kilbride vs Alloa Athletic,btts_yes,1.62,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,East Kilbride vs Alloa Athletic,h2h_away,4.33,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,East Kilbride vs Alloa Athletic,h2h_draw,4.2,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,East Kilbride vs Alloa Athletic,h2h_home,1.53,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,East Kilbride vs Alloa Athletic,ht_over05,1.25,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,East Kilbride vs Alloa Athletic,ht_over15,2.2,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,East Kilbride vs Alloa Athletic,ht_under05,3.75,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,East Kilbride vs Alloa Athletic,ht_under15,1.62,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,East Kilbride vs Alloa Athletic,over15,1.14,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,East Kilbride vs Alloa Athletic,over25,1.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,East Kilbride vs Alloa Athletic,over35,2.25,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,East Kilbride vs Alloa Athletic,under15,5.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,East Kilbride vs Alloa Athletic,under25,2.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League One,East Kilbride vs Alloa Athletic,under35,1.57,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Eastleigh vs AFC Fylde,btts_no,2.62,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Eastleigh vs AFC Fylde,btts_yes,1.44,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Eastleigh vs AFC Fylde,h2h_away,1.8,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Eastleigh vs AFC Fylde,h2h_draw,4.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Eastleigh vs AFC Fylde,h2h_home,3.4,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Eastleigh vs AFC Fylde,ht_over05,1.22,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Eastleigh vs AFC Fylde,ht_over15,2.1,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Eastleigh vs AFC Fylde,ht_under05,4.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Eastleigh vs AFC Fylde,ht_under15,1.67,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Eastleigh vs AFC Fylde,over15,1.12,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Eastleigh vs AFC Fylde,over35,2.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Eastleigh vs AFC Fylde,under15,6.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Eastleigh vs AFC Fylde,under25,2.7,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Eastleigh vs AFC Fylde,under35,1.73,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Edinburgh City vs Clyde,btts_no,2.25,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Edinburgh City vs Clyde,btts_yes,1.57,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Edinburgh City vs Clyde,h2h_away,1.95,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Edinburgh City vs Clyde,h2h_draw,3.7,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Edinburgh City vs Clyde,h2h_home,3.1,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Edinburgh City vs Clyde,ht_over05,1.28,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Edinburgh City vs Clyde,ht_over15,2.38,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Edinburgh City vs Clyde,ht_under05,3.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Edinburgh City vs Clyde,ht_under15,1.53,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Edinburgh City vs Clyde,over15,1.2,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Edinburgh City vs Clyde,over25,1.67,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Edinburgh City vs Clyde,over35,2.62,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Edinburgh City vs Clyde,under15,4.33,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Edinburgh City vs Clyde,under25,2.15,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Edinburgh City vs Clyde,under35,1.44,std_capture
+2026-11-14T12:28:31Z,2026-11-14,2026-11-14T12:30:00Z,League Two,Exeter City vs Cheltenham,btts_no,1.91,std_capture
+2026-11-14T12:28:31Z,2026-11-14,2026-11-14T12:30:00Z,League Two,Exeter City vs Cheltenham,btts_yes,1.8,std_capture
+2026-11-14T12:28:31Z,2026-11-14,2026-11-14T12:30:00Z,League Two,Exeter City vs Cheltenham,h2h_away,4.0,std_capture
+2026-11-14T12:28:31Z,2026-11-14,2026-11-14T12:30:00Z,League Two,Exeter City vs Cheltenham,h2h_draw,3.5,std_capture
+2026-11-14T12:28:31Z,2026-11-14,2026-11-14T12:30:00Z,League Two,Exeter City vs Cheltenham,h2h_home,1.85,std_capture
+2026-11-14T12:28:31Z,2026-11-14,2026-11-14T12:30:00Z,League Two,Exeter City vs Cheltenham,ht_over05,1.4,std_capture
+2026-11-14T12:28:31Z,2026-11-14,2026-11-14T12:30:00Z,League Two,Exeter City vs Cheltenham,ht_over15,2.75,std_capture
+2026-11-14T12:28:31Z,2026-11-14,2026-11-14T12:30:00Z,League Two,Exeter City vs Cheltenham,ht_under05,2.75,std_capture
+2026-11-14T12:28:31Z,2026-11-14,2026-11-14T12:30:00Z,League Two,Exeter City vs Cheltenham,ht_under15,1.4,std_capture
+2026-11-14T12:28:31Z,2026-11-14,2026-11-14T12:30:00Z,League Two,Exeter City vs Cheltenham,over15,1.28,std_capture
+2026-11-14T12:28:31Z,2026-11-14,2026-11-14T12:30:00Z,League Two,Exeter City vs Cheltenham,over25,1.95,std_capture
+2026-11-14T12:28:31Z,2026-11-14,2026-11-14T12:30:00Z,League Two,Exeter City vs Cheltenham,over35,3.4,std_capture
+2026-11-14T12:28:31Z,2026-11-14,2026-11-14T12:30:00Z,League Two,Exeter City vs Cheltenham,under15,3.5,std_capture
+2026-11-14T12:28:31Z,2026-11-14,2026-11-14T12:30:00Z,League Two,Exeter City vs Cheltenham,under25,1.85,std_capture
+2026-11-14T12:28:31Z,2026-11-14,2026-11-14T12:30:00Z,League Two,Exeter City vs Cheltenham,under35,1.3,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,League Two,Fleetwood Town vs Tranmere,btts_no,2.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,League Two,Fleetwood Town vs Tranmere,btts_yes,1.73,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,League Two,Fleetwood Town vs Tranmere,h2h_away,4.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,League Two,Fleetwood Town vs Tranmere,h2h_draw,3.4,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,League Two,Fleetwood Town vs Tranmere,h2h_home,1.9,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,League Two,Fleetwood Town vs Tranmere,ht_over05,1.36,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,League Two,Fleetwood Town vs Tranmere,ht_over15,2.62,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,League Two,Fleetwood Town vs Tranmere,ht_under05,3.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,League Two,Fleetwood Town vs Tranmere,ht_under15,1.44,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,League Two,Fleetwood Town vs Tranmere,over15,1.25,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,League Two,Fleetwood Town vs Tranmere,over25,1.85,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,League Two,Fleetwood Town vs Tranmere,over35,3.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,League Two,Fleetwood Town vs Tranmere,under15,3.75,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,League Two,Fleetwood Town vs Tranmere,under25,1.95,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,League Two,Fleetwood Town vs Tranmere,under35,1.36,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Forfar Athletic vs Spartans,btts_no,2.1,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Forfar Athletic vs Spartans,btts_yes,1.67,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Forfar Athletic vs Spartans,h2h_away,1.9,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Forfar Athletic vs Spartans,h2h_draw,3.4,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Forfar Athletic vs Spartans,h2h_home,3.4,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Forfar Athletic vs Spartans,ht_over05,1.33,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Forfar Athletic vs Spartans,ht_over15,2.62,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Forfar Athletic vs Spartans,ht_under05,3.25,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Forfar Athletic vs Spartans,ht_under15,1.44,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Forfar Athletic vs Spartans,over15,1.22,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Forfar Athletic vs Spartans,over25,1.75,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Forfar Athletic vs Spartans,over35,2.75,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Forfar Athletic vs Spartans,under15,4.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Forfar Athletic vs Spartans,under25,2.05,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Forfar Athletic vs Spartans,under35,1.4,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Gateshead vs Barrow,btts_no,2.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Gateshead vs Barrow,btts_yes,1.75,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Gateshead vs Barrow,h2h_away,1.57,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Gateshead vs Barrow,h2h_draw,4.2,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Gateshead vs Barrow,h2h_home,4.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Gateshead vs Barrow,ht_over05,1.3,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Gateshead vs Barrow,ht_over15,2.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Gateshead vs Barrow,ht_under05,3.4,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Gateshead vs Barrow,ht_under15,1.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Gateshead vs Barrow,over15,1.2,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Gateshead vs Barrow,over25,1.67,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Gateshead vs Barrow,over35,2.62,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Gateshead vs Barrow,under15,4.33,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Gateshead vs Barrow,under25,2.15,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Gateshead vs Barrow,under35,1.44,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,Scottish League One,Hamilton Academical vs Ross County,btts_no,2.1,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,Scottish League One,Hamilton Academical vs Ross County,btts_yes,1.67,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,Scottish League One,Hamilton Academical vs Ross County,h2h_away,1.75,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,Scottish League One,Hamilton Academical vs Ross County,h2h_draw,3.6,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,Scottish League One,Hamilton Academical vs Ross County,h2h_home,3.7,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,Scottish League One,Hamilton Academical vs Ross County,ht_over05,1.3,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,Scottish League One,Hamilton Academical vs Ross County,ht_over15,2.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,Scottish League One,Hamilton Academical vs Ross County,ht_under05,3.4,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,Scottish League One,Hamilton Academical vs Ross County,ht_under15,1.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,Scottish League One,Hamilton Academical vs Ross County,over15,1.17,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,Scottish League One,Hamilton Academical vs Ross County,over25,1.62,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,Scottish League One,Hamilton Academical vs Ross County,over35,2.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,Scottish League One,Hamilton Academical vs Ross County,under15,4.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,Scottish League One,Hamilton Academical vs Ross County,under25,2.25,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,Scottish League One,Hamilton Academical vs Ross County,under35,1.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Harrogate Town vs Altrincham,btts_no,2.25,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Harrogate Town vs Altrincham,btts_yes,1.57,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Harrogate Town vs Altrincham,h2h_away,3.75,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Harrogate Town vs Altrincham,h2h_draw,3.9,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Harrogate Town vs Altrincham,h2h_home,1.75,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Harrogate Town vs Altrincham,ht_over05,1.28,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Harrogate Town vs Altrincham,ht_over15,2.25,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Harrogate Town vs Altrincham,ht_under05,3.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Harrogate Town vs Altrincham,ht_under15,1.57,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Harrogate Town vs Altrincham,over15,1.17,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Harrogate Town vs Altrincham,over35,2.38,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Harrogate Town vs Altrincham,under15,5.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Harrogate Town vs Altrincham,under25,2.35,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Harrogate Town vs Altrincham,under35,1.53,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Hartlepool vs Wealdstone,btts_no,2.25,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Hartlepool vs Wealdstone,btts_yes,1.57,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Hartlepool vs Wealdstone,h2h_away,3.1,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Hartlepool vs Wealdstone,h2h_draw,3.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Hartlepool vs Wealdstone,h2h_home,2.05,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Hartlepool vs Wealdstone,ht_over05,1.3,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Hartlepool vs Wealdstone,ht_over15,2.38,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Hartlepool vs Wealdstone,ht_under05,3.4,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Hartlepool vs Wealdstone,ht_under15,1.53,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Hartlepool vs Wealdstone,over15,1.2,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Hartlepool vs Wealdstone,over25,1.67,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Hartlepool vs Wealdstone,over35,2.62,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Hartlepool vs Wealdstone,under15,4.33,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Hartlepool vs Wealdstone,under25,2.15,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Hartlepool vs Wealdstone,under35,1.44,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Kelty Hearts vs Stranraer,btts_no,2.38,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Kelty Hearts vs Stranraer,btts_yes,1.53,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Kelty Hearts vs Stranraer,h2h_away,2.2,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Kelty Hearts vs Stranraer,h2h_draw,3.4,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Kelty Hearts vs Stranraer,h2h_home,2.62,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Kelty Hearts vs Stranraer,ht_over05,1.28,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Kelty Hearts vs Stranraer,ht_over15,2.38,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Kelty Hearts vs Stranraer,ht_under05,3.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Kelty Hearts vs Stranraer,ht_under15,1.53,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Kelty Hearts vs Stranraer,over15,1.17,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Kelty Hearts vs Stranraer,over25,1.62,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Kelty Hearts vs Stranraer,over35,2.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Kelty Hearts vs Stranraer,under15,4.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Kelty Hearts vs Stranraer,under25,2.25,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Kelty Hearts vs Stranraer,under35,1.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Kidderminster Harriers vs FC Halifax Town,btts_no,2.1,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Kidderminster Harriers vs FC Halifax Town,btts_yes,1.67,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Kidderminster Harriers vs FC Halifax Town,h2h_away,2.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Kidderminster Harriers vs FC Halifax Town,h2h_draw,3.4,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Kidderminster Harriers vs FC Halifax Town,h2h_home,2.55,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Kidderminster Harriers vs FC Halifax Town,ht_over05,1.36,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Kidderminster Harriers vs FC Halifax Town,ht_over15,2.62,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Kidderminster Harriers vs FC Halifax Town,ht_under05,3.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Kidderminster Harriers vs FC Halifax Town,ht_under15,1.44,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Kidderminster Harriers vs FC Halifax Town,over15,1.25,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Kidderminster Harriers vs FC Halifax Town,over25,1.85,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Kidderminster Harriers vs FC Halifax Town,over35,3.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Kidderminster Harriers vs FC Halifax Town,under15,3.75,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Kidderminster Harriers vs FC Halifax Town,under25,1.95,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Kidderminster Harriers vs FC Halifax Town,under35,1.36,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Leicester vs Bradford,btts_no,2.2,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Leicester vs Bradford,btts_yes,1.62,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Leicester vs Bradford,h2h_away,3.75,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Leicester vs Bradford,h2h_draw,3.6,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Leicester vs Bradford,h2h_home,1.8,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Leicester vs Bradford,ht_over05,1.3,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Leicester vs Bradford,ht_over15,2.38,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Leicester vs Bradford,ht_under05,3.4,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Leicester vs Bradford,ht_under15,1.53,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Leicester vs Bradford,over15,1.2,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Leicester vs Bradford,over25,1.65,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Leicester vs Bradford,over35,2.62,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Leicester vs Bradford,under15,4.33,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Leicester vs Bradford,under35,1.44,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Livingston vs Morton,btts_no,1.8,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Livingston vs Morton,btts_yes,1.91,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Livingston vs Morton,h2h_away,8.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Livingston vs Morton,h2h_draw,4.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Livingston vs Morton,h2h_home,1.3,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Livingston vs Morton,ht_over05,1.28,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Livingston vs Morton,ht_over15,2.25,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Livingston vs Morton,ht_under05,3.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Livingston vs Morton,ht_under15,1.57,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Livingston vs Morton,over15,1.17,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Livingston vs Morton,over25,1.57,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Livingston vs Morton,over35,2.38,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Livingston vs Morton,under15,4.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Livingston vs Morton,under25,2.35,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Livingston vs Morton,under35,1.53,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Luton vs Cambridge United,btts_no,2.2,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Luton vs Cambridge United,btts_yes,1.62,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Luton vs Cambridge United,h2h_away,4.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Luton vs Cambridge United,h2h_draw,3.9,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Luton vs Cambridge United,h2h_home,1.62,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Luton vs Cambridge United,ht_over05,1.28,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Luton vs Cambridge United,ht_over15,2.25,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Luton vs Cambridge United,ht_under05,3.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Luton vs Cambridge United,ht_under15,1.57,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Luton vs Cambridge United,over15,1.17,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Luton vs Cambridge United,over25,1.57,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Luton vs Cambridge United,over35,2.38,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Luton vs Cambridge United,under15,5.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Luton vs Cambridge United,under25,2.35,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Luton vs Cambridge United,under35,1.53,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,La Liga 2,Mallorca vs Cordoba,btts_no,2.38,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,La Liga 2,Mallorca vs Cordoba,btts_yes,1.53,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,La Liga 2,Mallorca vs Cordoba,h2h_away,4.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,La Liga 2,Mallorca vs Cordoba,h2h_draw,3.8,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,La Liga 2,Mallorca vs Cordoba,h2h_home,1.8,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,La Liga 2,Mallorca vs Cordoba,ht_over05,1.28,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,La Liga 2,Mallorca vs Cordoba,ht_over15,2.25,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,La Liga 2,Mallorca vs Cordoba,ht_under05,3.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,La Liga 2,Mallorca vs Cordoba,ht_under15,1.57,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,La Liga 2,Mallorca vs Cordoba,over15,1.17,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,La Liga 2,Mallorca vs Cordoba,over25,1.6,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,La Liga 2,Mallorca vs Cordoba,over35,2.38,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,La Liga 2,Mallorca vs Cordoba,under15,5.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,La Liga 2,Mallorca vs Cordoba,under25,2.3,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T17:30:00Z,La Liga 2,Mallorca vs Cordoba,under35,1.53,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Milton Keynes Dons vs Burton Albion,btts_no,2.1,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Milton Keynes Dons vs Burton Albion,btts_yes,1.67,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Milton Keynes Dons vs Burton Albion,h2h_away,5.25,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Milton Keynes Dons vs Burton Albion,h2h_draw,4.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Milton Keynes Dons vs Burton Albion,h2h_home,1.57,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Milton Keynes Dons vs Burton Albion,ht_over05,1.3,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Milton Keynes Dons vs Burton Albion,ht_over15,2.38,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Milton Keynes Dons vs Burton Albion,ht_under05,3.4,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Milton Keynes Dons vs Burton Albion,ht_under15,1.53,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Milton Keynes Dons vs Burton Albion,over15,1.18,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Milton Keynes Dons vs Burton Albion,over25,1.65,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Milton Keynes Dons vs Burton Albion,over35,2.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Milton Keynes Dons vs Burton Albion,under15,4.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Milton Keynes Dons vs Burton Albion,under25,2.2,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Milton Keynes Dons vs Burton Albion,under35,1.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Partick vs Inverness CT,btts_no,2.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Partick vs Inverness CT,btts_yes,1.73,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Partick vs Inverness CT,h2h_away,3.75,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Partick vs Inverness CT,h2h_draw,3.6,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Partick vs Inverness CT,h2h_home,1.75,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Partick vs Inverness CT,ht_over05,1.33,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Partick vs Inverness CT,ht_over15,2.62,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Partick vs Inverness CT,ht_under05,3.25,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Partick vs Inverness CT,ht_under15,1.44,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Partick vs Inverness CT,over15,1.25,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Partick vs Inverness CT,over25,1.8,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Partick vs Inverness CT,over35,3.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Partick vs Inverness CT,under15,3.75,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Partick vs Inverness CT,under35,1.36,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Peterborough vs Oxford United,btts_no,2.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Peterborough vs Oxford United,btts_yes,1.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Peterborough vs Oxford United,h2h_away,2.4,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Peterborough vs Oxford United,h2h_draw,3.6,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Peterborough vs Oxford United,h2h_home,2.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Peterborough vs Oxford United,ht_over05,1.28,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Peterborough vs Oxford United,ht_over15,2.25,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Peterborough vs Oxford United,ht_under05,3.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Peterborough vs Oxford United,ht_under15,1.57,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Peterborough vs Oxford United,over15,1.17,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Peterborough vs Oxford United,over25,1.57,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Peterborough vs Oxford United,over35,2.38,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Peterborough vs Oxford United,under15,5.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Peterborough vs Oxford United,under25,2.35,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Peterborough vs Oxford United,under35,1.53,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Port Vale vs Accrington ST,btts_no,1.83,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Port Vale vs Accrington ST,btts_yes,1.83,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Port Vale vs Accrington ST,h2h_away,3.6,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Port Vale vs Accrington ST,h2h_draw,3.25,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Port Vale vs Accrington ST,h2h_home,2.05,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Port Vale vs Accrington ST,ht_over05,1.4,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Port Vale vs Accrington ST,ht_over15,3.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Port Vale vs Accrington ST,ht_under05,2.75,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Port Vale vs Accrington ST,ht_under15,1.36,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Port Vale vs Accrington ST,over15,1.33,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Port Vale vs Accrington ST,over25,2.08,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Port Vale vs Accrington ST,over35,3.75,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Port Vale vs Accrington ST,under15,3.25,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Port Vale vs Accrington ST,under25,1.73,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Port Vale vs Accrington ST,under35,1.25,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:15:00Z,La Liga 2,Real Sociedad II vs Sporting Gijon,btts_no,2.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:15:00Z,La Liga 2,Real Sociedad II vs Sporting Gijon,btts_yes,1.73,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:15:00Z,La Liga 2,Real Sociedad II vs Sporting Gijon,h2h_away,3.4,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:15:00Z,La Liga 2,Real Sociedad II vs Sporting Gijon,h2h_draw,3.4,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:15:00Z,La Liga 2,Real Sociedad II vs Sporting Gijon,h2h_home,2.1,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:15:00Z,La Liga 2,Real Sociedad II vs Sporting Gijon,ht_over05,1.4,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:15:00Z,La Liga 2,Real Sociedad II vs Sporting Gijon,ht_over15,2.75,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:15:00Z,La Liga 2,Real Sociedad II vs Sporting Gijon,ht_under05,2.75,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:15:00Z,La Liga 2,Real Sociedad II vs Sporting Gijon,ht_under15,1.4,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:15:00Z,La Liga 2,Real Sociedad II vs Sporting Gijon,over15,1.25,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:15:00Z,La Liga 2,Real Sociedad II vs Sporting Gijon,over25,1.9,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:15:00Z,La Liga 2,Real Sociedad II vs Sporting Gijon,over35,3.25,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:15:00Z,La Liga 2,Real Sociedad II vs Sporting Gijon,under15,3.75,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:15:00Z,La Liga 2,Real Sociedad II vs Sporting Gijon,under25,1.9,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:15:00Z,La Liga 2,Real Sociedad II vs Sporting Gijon,under35,1.33,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Rochdale vs York,btts_no,2.25,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Rochdale vs York,btts_yes,1.57,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Rochdale vs York,h2h_away,1.75,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Rochdale vs York,h2h_draw,3.9,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Rochdale vs York,h2h_home,4.1,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Rochdale vs York,ht_over05,1.28,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Rochdale vs York,ht_over15,2.38,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Rochdale vs York,ht_under05,3.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Rochdale vs York,ht_under15,1.53,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Rochdale vs York,over15,1.18,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Rochdale vs York,over25,1.62,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Rochdale vs York,over35,2.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Rochdale vs York,under15,4.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Rochdale vs York,under35,1.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Rotherham vs Crawley Town,btts_no,2.25,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Rotherham vs Crawley Town,btts_yes,1.57,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Rotherham vs Crawley Town,h2h_away,3.25,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Rotherham vs Crawley Town,h2h_draw,3.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Rotherham vs Crawley Town,h2h_home,2.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Rotherham vs Crawley Town,ht_over05,1.3,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Rotherham vs Crawley Town,ht_over15,2.38,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Rotherham vs Crawley Town,ht_under05,3.4,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Rotherham vs Crawley Town,ht_under15,1.53,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Rotherham vs Crawley Town,over15,1.18,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Rotherham vs Crawley Town,over25,1.65,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Rotherham vs Crawley Town,over35,2.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Rotherham vs Crawley Town,under15,4.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Rotherham vs Crawley Town,under25,2.2,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Rotherham vs Crawley Town,under35,1.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Salford City vs Northampton,btts_no,1.8,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Salford City vs Northampton,btts_yes,1.91,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Salford City vs Northampton,h2h_away,6.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Salford City vs Northampton,h2h_draw,3.8,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Salford City vs Northampton,h2h_home,1.55,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Salford City vs Northampton,ht_over05,1.36,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Salford City vs Northampton,ht_over15,2.75,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Salford City vs Northampton,ht_under05,3.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Salford City vs Northampton,ht_under15,1.4,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Salford City vs Northampton,over15,1.28,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Salford City vs Northampton,over25,1.9,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Salford City vs Northampton,over35,3.25,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Salford City vs Northampton,under15,3.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Salford City vs Northampton,under25,1.9,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Salford City vs Northampton,under35,1.33,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Scunthorpe vs Worthing,btts_no,2.62,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Scunthorpe vs Worthing,btts_yes,1.44,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Scunthorpe vs Worthing,h2h_away,2.7,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Scunthorpe vs Worthing,h2h_draw,4.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Scunthorpe vs Worthing,h2h_home,2.15,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Scunthorpe vs Worthing,ht_over05,1.22,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Scunthorpe vs Worthing,ht_over15,2.1,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Scunthorpe vs Worthing,ht_under05,4.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Scunthorpe vs Worthing,ht_under15,1.67,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Scunthorpe vs Worthing,over15,1.12,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Scunthorpe vs Worthing,over35,2.1,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Scunthorpe vs Worthing,under15,6.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Scunthorpe vs Worthing,under25,2.7,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Scunthorpe vs Worthing,under35,1.67,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Sheffield Wednesday vs Plymouth,btts_no,2.2,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Sheffield Wednesday vs Plymouth,btts_yes,1.62,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Sheffield Wednesday vs Plymouth,h2h_away,3.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Sheffield Wednesday vs Plymouth,h2h_draw,3.2,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Sheffield Wednesday vs Plymouth,h2h_home,2.35,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Sheffield Wednesday vs Plymouth,ht_over05,1.3,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Sheffield Wednesday vs Plymouth,ht_over15,2.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Sheffield Wednesday vs Plymouth,ht_under05,3.4,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Sheffield Wednesday vs Plymouth,ht_under15,1.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Sheffield Wednesday vs Plymouth,over15,1.22,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Sheffield Wednesday vs Plymouth,over25,1.8,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Sheffield Wednesday vs Plymouth,over35,3.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Sheffield Wednesday vs Plymouth,under15,4.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Sheffield Wednesday vs Plymouth,under25,2.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Sheffield Wednesday vs Plymouth,under35,1.36,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Shrewsbury vs Oldham,btts_no,2.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Shrewsbury vs Oldham,btts_yes,1.73,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Shrewsbury vs Oldham,h2h_away,2.7,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Shrewsbury vs Oldham,h2h_draw,3.3,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Shrewsbury vs Oldham,h2h_home,2.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Shrewsbury vs Oldham,ht_over05,1.4,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Shrewsbury vs Oldham,ht_over15,2.75,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Shrewsbury vs Oldham,ht_under05,2.75,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Shrewsbury vs Oldham,ht_under15,1.4,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Shrewsbury vs Oldham,over15,1.28,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Shrewsbury vs Oldham,over25,1.95,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Shrewsbury vs Oldham,over35,3.4,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Shrewsbury vs Oldham,under15,3.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Shrewsbury vs Oldham,under25,1.85,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Shrewsbury vs Oldham,under35,1.3,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Southend vs Aldershot Town,btts_no,2.25,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Southend vs Aldershot Town,btts_yes,1.57,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Southend vs Aldershot Town,h2h_away,6.25,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Southend vs Aldershot Town,h2h_draw,4.75,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Southend vs Aldershot Town,h2h_home,1.38,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Southend vs Aldershot Town,ht_over05,1.2,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Southend vs Aldershot Town,ht_over15,2.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Southend vs Aldershot Town,ht_under05,4.33,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Southend vs Aldershot Town,ht_under15,1.73,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Southend vs Aldershot Town,over15,1.11,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Southend vs Aldershot Town,over25,1.4,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Southend vs Aldershot Town,over35,1.91,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Southend vs Aldershot Town,under15,6.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Southend vs Aldershot Town,under25,2.88,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Southend vs Aldershot Town,under35,1.8,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Stenhousemuir vs Queen's Park,btts_no,1.8,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Stenhousemuir vs Queen's Park,btts_yes,1.91,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Stenhousemuir vs Queen's Park,h2h_away,3.8,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Stenhousemuir vs Queen's Park,h2h_draw,3.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Stenhousemuir vs Queen's Park,h2h_home,1.75,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Stenhousemuir vs Queen's Park,ht_over05,1.4,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Stenhousemuir vs Queen's Park,ht_over15,3.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Stenhousemuir vs Queen's Park,ht_under05,2.75,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Stenhousemuir vs Queen's Park,ht_under15,1.36,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Stenhousemuir vs Queen's Park,over15,1.3,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Stenhousemuir vs Queen's Park,over25,2.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Stenhousemuir vs Queen's Park,over35,3.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Stenhousemuir vs Queen's Park,under15,3.4,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish Championship,Stenhousemuir vs Queen's Park,under35,1.28,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Stevenage vs Mansfield Town,btts_no,1.95,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Stevenage vs Mansfield Town,btts_yes,1.8,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Stevenage vs Mansfield Town,h2h_away,3.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Stevenage vs Mansfield Town,h2h_draw,3.3,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Stevenage vs Mansfield Town,h2h_home,2.3,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Stevenage vs Mansfield Town,ht_over05,1.4,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Stevenage vs Mansfield Town,ht_over15,3.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Stevenage vs Mansfield Town,ht_under05,2.75,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Stevenage vs Mansfield Town,ht_under15,1.36,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Stevenage vs Mansfield Town,over15,1.3,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Stevenage vs Mansfield Town,over25,2.05,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Stevenage vs Mansfield Town,over35,3.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Stevenage vs Mansfield Town,under15,3.4,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Stevenage vs Mansfield Town,under25,1.75,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Stevenage vs Mansfield Town,under35,1.28,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Stirling Albion vs Elgin City,btts_no,2.38,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Stirling Albion vs Elgin City,btts_yes,1.53,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Stirling Albion vs Elgin City,h2h_away,1.95,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Stirling Albion vs Elgin City,h2h_draw,3.6,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Stirling Albion vs Elgin City,h2h_home,3.1,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Stirling Albion vs Elgin City,ht_over05,1.28,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Stirling Albion vs Elgin City,ht_over15,2.25,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Stirling Albion vs Elgin City,ht_under05,3.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Stirling Albion vs Elgin City,ht_under15,1.57,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Stirling Albion vs Elgin City,over15,1.17,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Stirling Albion vs Elgin City,over25,1.6,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Stirling Albion vs Elgin City,over35,2.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Stirling Albion vs Elgin City,under15,4.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Stirling Albion vs Elgin City,under25,2.3,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,Scottish League Two,Stirling Albion vs Elgin City,under35,1.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Stockport County vs Reading,btts_no,2.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Stockport County vs Reading,btts_yes,1.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Stockport County vs Reading,h2h_away,4.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Stockport County vs Reading,h2h_draw,3.8,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Stockport County vs Reading,h2h_home,1.8,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Stockport County vs Reading,ht_over05,1.28,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Stockport County vs Reading,ht_over15,2.38,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Stockport County vs Reading,ht_under05,3.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Stockport County vs Reading,ht_under15,1.53,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Stockport County vs Reading,over15,1.14,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Stockport County vs Reading,over25,1.53,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Stockport County vs Reading,over35,2.2,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Stockport County vs Reading,under15,5.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Stockport County vs Reading,under25,2.4,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Stockport County vs Reading,under35,1.62,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Sutton Utd vs Solihull Moors,btts_no,2.2,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Sutton Utd vs Solihull Moors,btts_yes,1.62,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Sutton Utd vs Solihull Moors,h2h_away,3.6,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Sutton Utd vs Solihull Moors,h2h_draw,3.6,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Sutton Utd vs Solihull Moors,h2h_home,1.85,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Sutton Utd vs Solihull Moors,ht_over05,1.3,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Sutton Utd vs Solihull Moors,ht_over15,2.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Sutton Utd vs Solihull Moors,ht_under05,3.4,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Sutton Utd vs Solihull Moors,ht_under15,1.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Sutton Utd vs Solihull Moors,over15,1.2,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Sutton Utd vs Solihull Moors,over25,1.67,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Sutton Utd vs Solihull Moors,over35,2.62,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Sutton Utd vs Solihull Moors,under15,4.33,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Sutton Utd vs Solihull Moors,under25,2.15,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Sutton Utd vs Solihull Moors,under35,1.44,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Swindon Town vs Grimsby,btts_no,2.38,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Swindon Town vs Grimsby,btts_yes,1.53,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Swindon Town vs Grimsby,h2h_away,2.1,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Swindon Town vs Grimsby,h2h_draw,3.6,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Swindon Town vs Grimsby,h2h_home,3.2,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Swindon Town vs Grimsby,ht_over05,1.28,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Swindon Town vs Grimsby,ht_over15,2.38,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Swindon Town vs Grimsby,ht_under05,3.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Swindon Town vs Grimsby,ht_under15,1.53,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Swindon Town vs Grimsby,over15,1.18,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Swindon Town vs Grimsby,over25,1.62,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Swindon Town vs Grimsby,over35,2.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Swindon Town vs Grimsby,under15,4.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Swindon Town vs Grimsby,under25,2.25,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Swindon Town vs Grimsby,under35,1.5,std_capture
+2026-11-14T12:59:20Z,2026-11-14,2026-11-14T13:00:00Z,La Liga 2,Valladolid vs Castellón,btts_no,2.25,std_capture
+2026-11-14T12:59:20Z,2026-11-14,2026-11-14T13:00:00Z,La Liga 2,Valladolid vs Castellón,btts_yes,1.57,std_capture
+2026-11-14T12:59:20Z,2026-11-14,2026-11-14T13:00:00Z,La Liga 2,Valladolid vs Castellón,h2h_away,2.15,std_capture
+2026-11-14T12:59:20Z,2026-11-14,2026-11-14T13:00:00Z,La Liga 2,Valladolid vs Castellón,h2h_draw,3.6,std_capture
+2026-11-14T12:59:20Z,2026-11-14,2026-11-14T13:00:00Z,La Liga 2,Valladolid vs Castellón,h2h_home,3.1,std_capture
+2026-11-14T12:59:20Z,2026-11-14,2026-11-14T13:00:00Z,La Liga 2,Valladolid vs Castellón,ht_over05,1.3,std_capture
+2026-11-14T12:59:20Z,2026-11-14,2026-11-14T13:00:00Z,La Liga 2,Valladolid vs Castellón,ht_over15,2.38,std_capture
+2026-11-14T12:59:20Z,2026-11-14,2026-11-14T13:00:00Z,La Liga 2,Valladolid vs Castellón,ht_under05,3.4,std_capture
+2026-11-14T12:59:20Z,2026-11-14,2026-11-14T13:00:00Z,La Liga 2,Valladolid vs Castellón,ht_under15,1.53,std_capture
+2026-11-14T12:59:20Z,2026-11-14,2026-11-14T13:00:00Z,La Liga 2,Valladolid vs Castellón,over15,1.2,std_capture
+2026-11-14T12:59:20Z,2026-11-14,2026-11-14T13:00:00Z,La Liga 2,Valladolid vs Castellón,over25,1.67,std_capture
+2026-11-14T12:59:20Z,2026-11-14,2026-11-14T13:00:00Z,La Liga 2,Valladolid vs Castellón,over35,2.62,std_capture
+2026-11-14T12:59:20Z,2026-11-14,2026-11-14T13:00:00Z,La Liga 2,Valladolid vs Castellón,under15,4.33,std_capture
+2026-11-14T12:59:20Z,2026-11-14,2026-11-14T13:00:00Z,La Liga 2,Valladolid vs Castellón,under25,2.15,std_capture
+2026-11-14T12:59:20Z,2026-11-14,2026-11-14T13:00:00Z,La Liga 2,Valladolid vs Castellón,under35,1.44,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Walsall vs Barnet,btts_no,2.38,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Walsall vs Barnet,btts_yes,1.53,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Walsall vs Barnet,h2h_away,2.25,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Walsall vs Barnet,h2h_draw,3.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Walsall vs Barnet,h2h_home,2.9,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Walsall vs Barnet,ht_over05,1.3,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Walsall vs Barnet,ht_over15,2.38,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Walsall vs Barnet,ht_under05,3.4,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Walsall vs Barnet,ht_under15,1.53,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Walsall vs Barnet,over15,1.18,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Walsall vs Barnet,over25,1.65,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Walsall vs Barnet,over35,2.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Walsall vs Barnet,under15,4.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Walsall vs Barnet,under25,2.2,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League Two,Walsall vs Barnet,under35,1.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Wigan vs Barnsley,btts_no,2.75,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Wigan vs Barnsley,btts_yes,1.4,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Wigan vs Barnsley,h2h_away,2.75,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Wigan vs Barnsley,h2h_draw,3.6,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Wigan vs Barnsley,h2h_home,2.3,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Wigan vs Barnsley,ht_over05,1.28,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Wigan vs Barnsley,ht_over15,2.25,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Wigan vs Barnsley,ht_under05,3.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Wigan vs Barnsley,ht_under15,1.57,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Wigan vs Barnsley,over15,1.12,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Wigan vs Barnsley,over25,1.44,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Wigan vs Barnsley,over35,2.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Wigan vs Barnsley,under15,6.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Wigan vs Barnsley,under25,2.7,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Wigan vs Barnsley,under35,1.73,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Woking vs Forest Green,btts_no,2.38,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Woking vs Forest Green,btts_yes,1.53,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Woking vs Forest Green,h2h_away,2.35,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Woking vs Forest Green,h2h_draw,3.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Woking vs Forest Green,h2h_home,2.62,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Woking vs Forest Green,ht_over05,1.28,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Woking vs Forest Green,ht_over15,2.38,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Woking vs Forest Green,ht_under05,3.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Woking vs Forest Green,ht_under15,1.53,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Woking vs Forest Green,over15,1.18,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Woking vs Forest Green,over25,1.62,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Woking vs Forest Green,over35,2.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Woking vs Forest Green,under15,4.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Woking vs Forest Green,under25,2.25,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Woking vs Forest Green,under35,1.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Wycombe vs Huddersfield,btts_no,2.25,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Wycombe vs Huddersfield,btts_yes,1.57,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Wycombe vs Huddersfield,h2h_away,2.15,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Wycombe vs Huddersfield,h2h_draw,3.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Wycombe vs Huddersfield,h2h_home,3.1,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Wycombe vs Huddersfield,ht_over05,1.3,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Wycombe vs Huddersfield,ht_over15,2.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Wycombe vs Huddersfield,ht_under05,3.4,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Wycombe vs Huddersfield,ht_under15,1.5,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Wycombe vs Huddersfield,over15,1.2,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Wycombe vs Huddersfield,over25,1.7,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Wycombe vs Huddersfield,over35,2.62,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Wycombe vs Huddersfield,under15,4.33,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Wycombe vs Huddersfield,under25,2.1,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,League One,Wycombe vs Huddersfield,under35,1.44,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Yeovil Town vs Boreham Wood,btts_no,2.2,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Yeovil Town vs Boreham Wood,btts_yes,1.62,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Yeovil Town vs Boreham Wood,h2h_away,1.62,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Yeovil Town vs Boreham Wood,h2h_draw,4.2,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Yeovil Town vs Boreham Wood,h2h_home,4.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Yeovil Town vs Boreham Wood,ht_over05,1.25,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Yeovil Town vs Boreham Wood,ht_over15,2.2,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Yeovil Town vs Boreham Wood,ht_under05,3.75,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Yeovil Town vs Boreham Wood,ht_under15,1.62,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Yeovil Town vs Boreham Wood,over15,1.17,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Yeovil Town vs Boreham Wood,over25,1.57,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Yeovil Town vs Boreham Wood,over35,2.38,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Yeovil Town vs Boreham Wood,under15,5.0,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Yeovil Town vs Boreham Wood,under25,2.35,std_capture
+2026-11-14T12:53:02Z,2026-11-14,2026-11-14T15:00:00Z,National League,Yeovil Town vs Boreham Wood,under35,1.53,std_capture
