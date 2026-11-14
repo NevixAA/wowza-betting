@@ -1,9 +1,9 @@
 {
  "calculation_version": "fantasy_v2-1.0.0",
- "generated_at": "2026-11-13T14:53:08Z",
+ "generated_at": "2026-11-14T13:49:08Z",
  "gameweek": 11,
  "deadline": "2026-11-21T11:00:00Z",
- "fpl_fetched_at": "2026-11-13T14:50:59Z",
+ "fpl_fetched_at": "2026-11-14T13:47:30Z",
  "fpl_age_hours_at_build": 0.0,
  "projection_health": {
   "players": 461,
@@ -80,7 +80,7 @@
    "fpl_ep_next": 10.2,
    "wowza_residual": -5.832,
    "p6": 0.5162,
-   "p10": 0.3497,
+   "p10": 0.3498,
    "p15": 0.2269,
    "p_blank": 0.2501,
    "p_start": 0.937,
@@ -106,7 +106,7 @@
    "p6": 0.515,
    "p10": 0.3396,
    "p15": 0.2134,
-   "p_blank": 0.2342,
+   "p_blank": 0.2341,
    "p_start": 0.964,
    "exp_minutes": 81.9,
    "ceiling": 23.0,
@@ -126,11 +126,11 @@
    "final_xpts": 9.0,
    "captain_ev": 18.0,
    "fpl_ep_next": 9.0,
-   "wowza_residual": -4.09,
+   "wowza_residual": -4.105,
    "p6": 0.4736,
    "p10": 0.3088,
    "p15": 0.1927,
-   "p_blank": 0.2897,
+   "p_blank": 0.2896,
    "p_start": 0.905,
    "exp_minutes": 77.1,
    "ceiling": 22.0,
@@ -169,7 +169,7 @@
     "p_blank": 0.234,
     "p_start": 0.964,
     "ceiling": 23.0,
-    "sd": 8.373,
+    "sd": 8.372,
     "next_fixture": "NEW(A)"
    },
    {
@@ -184,7 +184,7 @@
     "p_blank": 0.29,
     "p_start": 0.905,
     "ceiling": 22.0,
-    "sd": 8.24,
+    "sd": 8.239,
     "next_fixture": "NFO(H)"
    },
    {
@@ -229,7 +229,7 @@
     "p_blank": 0.284,
     "p_start": 0.95,
     "ceiling": 17.0,
-    "sd": 6.983,
+    "sd": 6.982,
     "next_fixture": "HUL(A)"
    },
    {
@@ -244,7 +244,7 @@
     "p_blank": 0.319,
     "p_start": 0.907,
     "ceiling": 17.0,
-    "sd": 6.966,
+    "sd": 6.965,
     "next_fixture": "BRE(A)"
    },
    {
@@ -259,7 +259,7 @@
     "p_blank": 0.3,
     "p_start": 0.944,
     "ceiling": 16.0,
-    "sd": 6.61,
+    "sd": 6.609,
     "next_fixture": "NFO(H)"
    },
    {
@@ -338,7 +338,7 @@
    "p6": 0.2907,
    "p10": 0.1211,
    "p15": 0.0439,
-   "p_blank": 0.2342,
+   "p_blank": 0.2341,
    "p_start": 0.964,
    "exp_minutes": 81.9,
    "ceiling": 10.0,
@@ -386,9 +386,9 @@
    "p6": 0.2923,
    "p10": 0.1285,
    "p15": 0.0503,
-   "p_blank": 0.319,
+   "p_blank": 0.3189,
    "p_start": 0.907,
-   "exp_minutes": 77.2,
+   "exp_minutes": 77.3,
    "ceiling": 11.0,
    "next_fixture": "BRE(A)",
    "opponent_weakness": 1.08,
@@ -410,7 +410,7 @@
     "p_blank": 0.234,
     "p_start": 0.964,
     "ceiling": 10.0,
-    "sd": 8.373,
+    "sd": 8.372,
     "next_fixture": "NEW(A)"
    },
    {
@@ -425,23 +425,8 @@
     "p_blank": 0.319,
     "p_start": 0.907,
     "ceiling": 11.0,
-    "sd": 6.966,
+    "sd": 6.965,
     "next_fixture": "BRE(A)"
-   },
-   {
-    "player_name": "Francisco Evanilson de Lima Barbosa",
-    "web_name": "Evanilson",
-    "team": "Bournemouth",
-    "position": "FWD",
-    "final_xpts": 4.91,
-    "p6": 0.289,
-    "p10": 0.126,
-    "p15": 0.049,
-    "p_blank": 0.29,
-    "p_start": 0.905,
-    "ceiling": 11.0,
-    "sd": 8.24,
-    "next_fixture": "NFO(H)"
    },
    {
     "player_name": "Maxim De Cuyper",
@@ -459,13 +444,28 @@
     "next_fixture": "HUL(A)"
    },
    {
+    "player_name": "Francisco Evanilson de Lima Barbosa",
+    "web_name": "Evanilson",
+    "team": "Bournemouth",
+    "position": "FWD",
+    "final_xpts": 4.895,
+    "p6": 0.288,
+    "p10": 0.126,
+    "p15": 0.048,
+    "p_blank": 0.29,
+    "p_start": 0.905,
+    "ceiling": 11.0,
+    "sd": 8.239,
+    "next_fixture": "NFO(H)"
+   },
+   {
     "player_name": "Enzo Le F\u00e9e",
     "web_name": "E.Le F\u00e9e",
     "team": "Sunderland",
     "position": "MID",
-    "final_xpts": 4.857,
-    "p6": 0.286,
-    "p10": 0.123,
+    "final_xpts": 4.851,
+    "p6": 0.285,
+    "p10": 0.122,
     "p15": 0.046,
     "p_blank": 0.332,
     "p_start": 0.91,
@@ -523,9 +523,9 @@
     "web_name": "N.Jackson",
     "team": "Aston Villa",
     "position": "FWD",
-    "final_xpts": 4.602,
-    "p6": 0.266,
-    "p10": 0.11,
+    "final_xpts": 4.584,
+    "p6": 0.265,
+    "p10": 0.109,
     "p15": 0.04,
     "p_blank": 0.304,
     "p_start": 0.89,
@@ -545,7 +545,7 @@
     "p_blank": 0.284,
     "p_start": 0.95,
     "ceiling": 9.0,
-    "sd": 6.983,
+    "sd": 6.982,
     "next_fixture": "HUL(A)"
    },
    {
