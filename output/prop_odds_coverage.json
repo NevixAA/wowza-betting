@@ -19,20 +19,20 @@
   },
   "apifootball:Brazil Serie A": {
     "empty_streak": 0,
-    "last_priced": "2026-11-13",
-    "last_probe": "2026-11-13",
+    "last_priced": "2026-11-14",
+    "last_probe": "2026-11-14",
     "league": "Brazil Serie A",
-    "priced_events": 609,
-    "probes": 609,
+    "priced_events": 610,
+    "probes": 610,
     "source": "api_football"
   },
   "apifootball:Bundesliga 2": {
-    "empty_streak": 0,
+    "empty_streak": 1,
     "last_priced": "2026-11-08",
-    "last_probe": "2026-11-08",
+    "last_probe": "2026-11-14",
     "league": "Bundesliga 2",
     "priced_events": 486,
-    "probes": 627,
+    "probes": 628,
     "source": "api_football"
   },
   "apifootball:Champions League": {
@@ -104,57 +104,57 @@
     "source": "api_football"
   },
   "apifootball:Japan J-League": {
-    "empty_streak": 1,
+    "empty_streak": 2,
     "last_priced": "2026-11-08",
-    "last_probe": "2026-11-13",
+    "last_probe": "2026-11-14",
     "league": "Japan J-League",
     "priced_events": 40,
-    "probes": 273,
+    "probes": 274,
     "source": "api_football"
   },
   "apifootball:La Liga 2": {
     "empty_streak": 0,
-    "last_priced": "2026-11-13",
-    "last_probe": "2026-11-13",
+    "last_priced": "2026-11-14",
+    "last_probe": "2026-11-14",
     "league": "La Liga 2",
-    "priced_events": 727,
-    "probes": 739,
+    "priced_events": 728,
+    "probes": 740,
     "source": "api_football"
   },
   "apifootball:League One": {
     "empty_streak": 0,
-    "last_priced": "2026-11-13",
-    "last_probe": "2026-11-13",
+    "last_priced": "2026-11-14",
+    "last_probe": "2026-11-14",
     "league": "League One",
-    "priced_events": 650,
-    "probes": 714,
+    "priced_events": 651,
+    "probes": 715,
     "source": "api_football"
   },
   "apifootball:League Two": {
     "empty_streak": 0,
-    "last_priced": "2026-11-13",
-    "last_probe": "2026-11-13",
+    "last_priced": "2026-11-14",
+    "last_probe": "2026-11-14",
     "league": "League Two",
-    "priced_events": 589,
-    "probes": 660,
+    "priced_events": 590,
+    "probes": 661,
     "source": "api_football"
   },
   "apifootball:Ligue 2": {
-    "empty_streak": 0,
+    "empty_streak": 1,
     "last_priced": "2026-11-07",
-    "last_probe": "2026-11-07",
+    "last_probe": "2026-11-14",
     "league": "Ligue 2",
     "priced_events": 307,
-    "probes": 369,
+    "probes": 370,
     "source": "api_football"
   },
   "apifootball:Mexico Liga MX": {
     "empty_streak": 0,
-    "last_priced": "2026-11-13",
-    "last_probe": "2026-11-13",
+    "last_priced": "2026-11-14",
+    "last_probe": "2026-11-14",
     "league": "Mexico Liga MX",
-    "priced_events": 602,
-    "probes": 634,
+    "priced_events": 603,
+    "probes": 635,
     "source": "api_football"
   },
   "apifootball:Norway Eliteserien": {
@@ -210,17 +210,19 @@
     "wanted_fixtures": 14
   },
   "soccer_england_league1": {
-    "empty_streak": 25,
+    "empty_streak": 30,
     "far_empty_probes": 88,
-    "last_near_empty": "2026-10-15",
-    "last_probe": "2026-11-07",
+    "last_near_empty": "2026-11-14",
+    "last_probe": "2026-11-14",
     "league": "League One",
-    "matched_events": 2,
-    "probes": 91,
+    "matched_events": 5,
+    "probes": 96,
     "streak_reset_on": "2026-08-27",
     "streak_reset_reason": "empty_streak accumulated before the park rule required a probe inside 24h of kickoff; count preserved in far_empty_probes",
-    "unmatched_sample": [],
-    "wanted_fixtures": 2
+    "unmatched_sample": [
+      "Wigan vs Barnsley"
+    ],
+    "wanted_fixtures": 6
   },
   "soccer_epl": {
     "empty_streak": 0,
@@ -277,19 +279,16 @@
   },
   "soccer_germany_bundesliga2": {
     "empty_streak": 24,
-    "far_empty_probes": 104,
+    "far_empty_probes": 105,
     "last_all_unmatched": "2026-08-17",
-    "last_probe": "2026-11-05",
+    "last_probe": "2026-11-14",
     "league": "Bundesliga 2",
-    "matched_events": 9,
-    "probes": 104,
+    "matched_events": 1,
+    "probes": 105,
     "streak_reset_on": "2026-08-27",
     "streak_reset_reason": "empty_streak accumulated before the park rule required a probe inside 24h of kickoff; count preserved in far_empty_probes",
-    "unmatched_sample": [
-      "Eintracht Braunschweig vs Energie Cottbus",
-      "Hertha BSC vs VfL Wolfsburg"
-    ],
-    "wanted_fixtures": 11
+    "unmatched_sample": [],
+    "wanted_fixtures": 1
   },
   "soccer_italy_serie_a": {
     "empty_streak": 0,
