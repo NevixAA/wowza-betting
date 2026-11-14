@@ -1,100 +1,70 @@
 {
   "artifact": "side_edge_devig_health",
   "shadow_version": "side_edge_devig_shadow-1.0",
-  "generated_at": "2026-11-13T16:35:10Z",
+  "generated_at": "2026-11-14T15:14:15Z",
   "production_rule": "two-sided de-vig since 2026-11-01 (config.SIDE_EDGE_FAIR_PRICE); edge_prod below = the old (1/odds)/1.08, kept for comparison",
   "shadow_rule": "edge = p_model - median_books(power_devig(same-book two-sided pair)), pre-kickoff, carried forward to the decision time; same thresholds",
   "quotes_from": "2026-08-19 09:23:27+00:00",
-  "quote_rows": 225217,
+  "quote_rows": 228300,
   "board": {
-    "generated_at": "2026-11-13T16:10:10Z",
-    "rows": 12,
-    "production_tips": 1,
+    "generated_at": "2026-11-14T14:59:23Z",
+    "rows": 75,
+    "production_tips": 4,
     "classification": {
+      "CONFIRMED_BY_DEVIG": 3,
       "ONLY_BECAUSE_OF_1_08": 1
     },
     "by_market": {
       "over15": {
+        "CONFIRMED_BY_DEVIG": 3,
         "ONLY_BECAUSE_OF_1_08": 1
       }
     },
-    "devigged_rows": 12,
-    "median_pair_overround": 0.0803,
-    "median_edge_prod_minus_devig_pp": 0.38,
-    "mean_edge_prod_minus_devig_pp": -0.23,
-    "p90_edge_prod_minus_devig_pp": 2.24,
-    "rows_prod_edge_inflated_ge_2pp": 2,
-    "rows_pair_overround_below_6pct": 0
+    "devigged_rows": 75,
+    "median_pair_overround": 0.0805,
+    "median_edge_prod_minus_devig_pp": 0.82,
+    "mean_edge_prod_minus_devig_pp": 0.66,
+    "p90_edge_prod_minus_devig_pp": 3.59,
+    "rows_prod_edge_inflated_ge_2pp": 20,
+    "rows_pair_overround_below_6pct": 1,
+    "mean_inflation_pp_when_overround_below_6pct": 0.21
   },
   "ledger_retrospective": {
     "label": "RETROSPECTIVE",
-    "tips_since_quotes_exist": 696,
-    "rows": 696,
-    "production_tips": 696,
+    "tips_since_quotes_exist": 704,
+    "rows": 704,
+    "production_tips": 704,
     "classification": {
       "CONFIRMED_BY_DEVIG": 483,
-      "UNVERIFIABLE_ONE_SIDED": 115,
-      "ONLY_BECAUSE_OF_1_08": 98
+      "UNVERIFIABLE_ONE_SIDED": 120,
+      "ONLY_BECAUSE_OF_1_08": 101
     },
     "by_market": {
       "btts": {
         "CONFIRMED_BY_DEVIG": 360,
-        "UNVERIFIABLE_ONE_SIDED": 84,
+        "UNVERIFIABLE_ONE_SIDED": 88,
         "ONLY_BECAUSE_OF_1_08": 82
       },
       "over15": {
         "CONFIRMED_BY_DEVIG": 91,
-        "UNVERIFIABLE_ONE_SIDED": 23,
-        "ONLY_BECAUSE_OF_1_08": 8
+        "UNVERIFIABLE_ONE_SIDED": 24,
+        "ONLY_BECAUSE_OF_1_08": 10
       },
       "over35": {
         "CONFIRMED_BY_DEVIG": 32,
-        "UNVERIFIABLE_ONE_SIDED": 8,
-        "ONLY_BECAUSE_OF_1_08": 8
+        "ONLY_BECAUSE_OF_1_08": 9,
+        "UNVERIFIABLE_ONE_SIDED": 8
       }
     },
-    "devigged_rows": 581,
+    "devigged_rows": 584,
     "median_pair_overround": 0.0798,
     "median_edge_prod_minus_devig_pp": 0.09,
-    "mean_edge_prod_minus_devig_pp": 0.38,
-    "p90_edge_prod_minus_devig_pp": 2.5,
-    "rows_prod_edge_inflated_ge_2pp": 93,
+    "mean_edge_prod_minus_devig_pp": 0.4,
+    "p90_edge_prod_minus_devig_pp": 2.52,
+    "rows_prod_edge_inflated_ge_2pp": 95,
     "rows_pair_overround_below_6pct": 16,
     "mean_inflation_pp_when_overround_below_6pct": 2.66,
     "examples_only_because_of_1_08": [
-      {
-        "fixture": "Accrington Stanley v Northampton Town",
-        "league": "League Two",
-        "market": "btts",
-        "tier_prod": "VALUABLE",
-        "edge_prod": 0.0411,
-        "edge_devig": 0.0392,
-        "odds": 1.84,
-        "p_fair_devig": 0.5051,
-        "books": "betfred_uk;coral;ladbrokes_uk;leovegas;livescorebet;matchbook;onexbet;pinnacle;virginbet;williamhill"
-      },
-      {
-        "fixture": "Wrexham AFC v Wolverhampton Wanderers",
-        "league": "Championship",
-        "market": "btts",
-        "tier_prod": "VALUABLE",
-        "edge_prod": 0.0436,
-        "edge_devig": 0.0368,
-        "odds": 1.69,
-        "p_fair_devig": 0.5547,
-        "books": "betfred_uk;coral;ladbrokes_uk;leovegas;livescorebet;onexbet;virginbet;williamhill"
-      },
-      {
-        "fixture": "Blackburn Rovers v West Ham United",
-        "league": "Championship",
-        "market": "btts",
-        "tier_prod": "VALUABLE",
-        "edge_prod": 0.0424,
-        "edge_devig": 0.0331,
-        "odds": 1.62,
-        "p_fair_devig": 0.5809,
-        "books": "betfred_uk;coral;ladbrokes_uk;leovegas;livescorebet;onexbet;virginbet;williamhill"
-      },
       {
         "fixture": "JEF United Chiba v Mito HollyHock",
         "league": "Japan J-League",
@@ -149,32 +119,68 @@
         "odds": 1.91,
         "p_fair_devig": 0.4936,
         "books": "betfred_uk;livescorebet;onexbet;virginbet;williamhill"
+      },
+      {
+        "fixture": "Oviedo v Girona FC",
+        "league": "La Liga 2",
+        "market": "over35",
+        "tier_prod": "VALUABLE",
+        "edge_prod": 0.0275,
+        "edge_devig": 0.0316,
+        "odds": 3.7,
+        "p_fair_devig": 0.2462,
+        "books": "codere_it;coolbet;coral;ladbrokes_uk;livescorebet;pinnacle;virginbet"
+      },
+      {
+        "fixture": "Oviedo v Girona FC",
+        "league": "La Liga 2",
+        "market": "over15",
+        "tier_prod": "VALUABLE",
+        "edge_prod": 0.0732,
+        "edge_devig": 0.016,
+        "odds": 1.355,
+        "p_fair_devig": 0.7405,
+        "books": "codere_it;coolbet;coral;ladbrokes_uk;livescorebet;pinnacle;virginbet;williamhill"
+      },
+      {
+        "fixture": "Shrewsbury Town v Oldham Athletic",
+        "league": "League Two",
+        "market": "over15",
+        "tier_prod": "VALUABLE",
+        "edge_prod": 0.0705,
+        "edge_devig": 0.0187,
+        "odds": 1.34,
+        "p_fair_devig": 0.7428,
+        "books": "codere_it;coolbet;coral;ladbrokes_uk;leovegas;livescorebet;pinnacle;virginbet;williamhill"
       }
     ]
   },
   "ledger_open_tips": {
-    "rows": 3,
-    "production_tips": 3,
+    "rows": 10,
+    "production_tips": 10,
     "classification": {
-      "ONLY_BECAUSE_OF_1_08": 1,
-      "UNVERIFIABLE_ONE_SIDED": 1,
-      "CONFIRMED_BY_DEVIG": 1
+      "UNVERIFIABLE_ONE_SIDED": 6,
+      "ONLY_BECAUSE_OF_1_08": 4
     },
     "by_market": {
       "btts": {
-        "ONLY_BECAUSE_OF_1_08": 1,
+        "UNVERIFIABLE_ONE_SIDED": 5,
+        "ONLY_BECAUSE_OF_1_08": 1
+      },
+      "over15": {
+        "ONLY_BECAUSE_OF_1_08": 2,
         "UNVERIFIABLE_ONE_SIDED": 1
       },
       "over35": {
-        "CONFIRMED_BY_DEVIG": 1
+        "ONLY_BECAUSE_OF_1_08": 1
       }
     },
-    "devigged_rows": 2,
-    "median_pair_overround": 0.0844,
-    "median_edge_prod_minus_devig_pp": -1.43,
-    "mean_edge_prod_minus_devig_pp": -1.43,
-    "p90_edge_prod_minus_devig_pp": 0.42,
-    "rows_prod_edge_inflated_ge_2pp": 0,
+    "devigged_rows": 4,
+    "median_pair_overround": 0.0842,
+    "median_edge_prod_minus_devig_pp": 3.03,
+    "mean_edge_prod_minus_devig_pp": 2.85,
+    "p90_edge_prod_minus_devig_pp": 5.56,
+    "rows_prod_edge_inflated_ge_2pp": 2,
     "rows_pair_overround_below_6pct": 0
   }
 }
