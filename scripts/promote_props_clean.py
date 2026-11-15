@@ -9,6 +9,8 @@ WHICH CANDIDATE PER MARKET (a rule, computed here from the run's own holdout pre
 hgb_nan_native serves when it beats recipe_retrained on the holdout - the paired per-row log-loss
 difference (hgb - recipe), resampled by ISO week (BOOT resamples, fixed seed), has its 95% upper bound
 below 0. Otherwise recipe_retrained serves (the current design; no proven gain from the alternative).
+A market the owner fixed in plan.json candidate_by_market (2026-11-15: cards -> hgb_nan_native) serves
+that candidate only, never recipe_retrained.
 Both must beat player_base_rate (the report's own week-block interval upper bound < 0), or the market is
 not promoted at all.
 
@@ -61,9 +63,24 @@ def head_to_head(scored: pd.DataFrame, market: str) -> dict:
             "p_one_sided": float((np.sum(bs >= 0) + 1) / (len(bs) + 1)), "boot": BOOT, "seed": SEED}
 
 
-def choose(market_rep: dict, h2h: dict) -> tuple[str | None, str]:
+def candidate_by_market(plan: dict | None = None) -> dict:
+    """The owner's fixed candidate per market (plan.json candidate_by_market; owner 2026-11-15: cards ->
+    hgb_nan_native). A market not named there is chosen by the head-to-head rule."""
+    if plan is None:
+        from player_model import props_harness as PH
+        plan = PH.load_plan()
+    return dict(plan.get("candidate_by_market") or {})
+
+
+def choose(market_rep: dict, h2h: dict, fixed: str | None = None) -> tuple[str | None, str]:
     vs = market_rep["holdout"]["log_loss_minus_base_rate"]
     beats_base = {c: (vs.get(c) or {}).get("ci95", [None, None])[1] for c in ("hgb_nan_native", "recipe_retrained")}
+    if fixed is not None:
+        # the owner named the candidate: it serves only if it beats player_base_rate - never a fallback
+        hi = (vs.get(fixed) or {}).get("ci95", [None, None])[1]
+        if hi is not None and hi < 0:
+            return fixed, f"owner-fixed candidate (plan candidate_by_market) beats player_base_rate"
+        return None, f"owner-fixed candidate {fixed} does not beat player_base_rate - not promoted"
     if h2h["ci95_hi"] < 0 and beats_base["hgb_nan_native"] is not None and beats_base["hgb_nan_native"] < 0:
         return "hgb_nan_native", "beats recipe_retrained (CI95 upper < 0) and player_base_rate"
     if beats_base["recipe_retrained"] is not None and beats_base["recipe_retrained"] < 0:
@@ -86,10 +103,11 @@ def main(argv=None) -> int:
         raise SystemExit(f"run status is {rep.get('status')!r}, not OK - nothing promoted")
     scored = pd.read_csv(d / "output" / "props_harness" / "props_harness_holdout_scored.csv.gz")
     out = []
+    fixed = candidate_by_market()
     for m in [x.strip() for x in a.markets.split(",") if x.strip()]:
         mr = rep["markets"][m]
         h2h = head_to_head(scored, m)
-        cand, why = choose(mr, h2h)
+        cand, why = choose(mr, h2h, fixed.get(m))
         row = {"market": m, "candidate": cand, "why": why, "head_to_head": h2h}
         if cand is None:
             out.append(row)

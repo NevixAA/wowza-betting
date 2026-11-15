@@ -417,6 +417,37 @@ LEGACY_QUALITY_FEATURES_REMOVED = frozenset({
 })
 PLAYER_FEATURE_COLS = [f for f in PLAYER_FEATURE_COLS if f not in LEGACY_QUALITY_FEATURES_REMOVED]
 
+# WITHHELD FROM THE NEXT RETRAIN 2026-11-15 (owner, props feature audit fix 5): the profile composites
+# whose VALUE is shaped by typed constants, not by a measurement - age_peak_delta = |age - 27| (a
+# typed peak age, league- and position-agnostic), height_advantage_score = (height difference / 10)
+# clipped to +-2, height_aerial_interaction = ((height clipped to 160..200) - 160) / 40 x the duel
+# win rate. Their inputs stay features under their own names (age, height_cm, height_diff_vs_opp_def,
+# aerial_won_rate). Same rule as TYPED_FORMULA_FEATURES_WITHHELD: the serving payloads keep their own
+# feature_cols, so serving computes them (feature_engineering.profile_composites) until the next
+# owner-approved retrain, which trains without them. Applied AFTER the PROFILE_FEATURES re-admission.
+PROFILE_CONSTANT_FEATURES_WITHHELD = frozenset({
+    "age_peak_delta", "height_advantage_score", "height_aerial_interaction",
+})
+PLAYER_FEATURE_COLS = [f for f in PLAYER_FEATURE_COLS if f not in PROFILE_CONSTANT_FEATURES_WITHHELD]
+
+# SHOTS DEFINITION CHANGE 2026-11-15 (owner, props feature audit fix 6). API-Football's per-player
+# shots.total changed definition during 2026 (team shots per match 9.0 -> 10.5 Sep -> 11.8 Oct -> 12.9
+# Nov 2026 while shots on target and goals stayed flat: blocked shots now counted, most likely). Every
+# feature built on shots_total has a league-relative counterpart (*_lgrel: each match's shots divided
+# by its league's own team shots per team-match over the league's last SHOTS_LEVEL_TEAM_MATCHES
+# team-matches strictly before the match day; feature_engineering.league_shots_level), on which the
+# definition change cancels out. The raw features below are withheld from the next retrain and the
+# *_lgrel ones join it; serving keeps computing the raw ones for the payloads that list them.
+SHOTS_DEFINITION_WITHHELD = (
+    "shots_pg", "career_shots_pg", "shots_home_pg", "shots_away_pg", "season_shots_pg",
+    "prev_season_shots_pg", "sot_rate", "shot_accuracy_rate", "shot_accuracy_l10",
+    "prev_season_shot_accuracy", "box_actions_per90", "sot_quality_score", "opp_adjusted_shot_threat",
+    "clinical_vs_gk", "volume_shot_penetration", "box_dominance_vs_gk", "box_threat_vs_leaky_defense",
+)
+SHOTS_LEAGUE_RELATIVE = tuple(f"{f}_lgrel" for f in SHOTS_DEFINITION_WITHHELD)
+PLAYER_FEATURE_COLS = ([f for f in PLAYER_FEATURE_COLS if f not in SHOTS_DEFINITION_WITHHELD]
+                       + list(SHOTS_LEAGUE_RELATIVE))
+
 # A player-match row cannot have more minutes than a match with extra time (120) plus stoppage.
 # Stored rows above this are provider errors (League One / League Two 2024-03-13/14: 142-174 min);
 # the raw value is kept and the minutes-derived features treat it as missing. 121-123 min appear on
@@ -455,6 +486,9 @@ MIN_LEAGUE_MATCHES = 20   # a league's prior fixtures before its own average is 
 MIN_PREV_SEASON_MATCHES = 5   # a player's / team's previous-season matches before a prev_season_* mean counts
 SHOT_ACC_WINDOW = 10          # matches in shot_accuracy_l10 (the 5-match shot_accuracy_rate stays as is)
 MIN_SHOTS_FOR_ACCURACY = 10   # shots in the window (or previous season) below which an accuracy is NaN
+#: team-matches in a league's as-of shots level (feature_engineering.league_shots_level, 2026-11-15):
+#: the league-normaliser floor of _league_asof (MIN_LEAGUE_MATCHES fixtures, two team-rows each)
+SHOTS_LEVEL_TEAM_MATCHES = 2 * MIN_LEAGUE_MATCHES
 
 # ── Leagues with player prop markets ─────────────────────────────────────────
 # DERIVED FROM THE REGISTRY (Data Truth, LR-1.1): config/leagues.json `props: true` entries,

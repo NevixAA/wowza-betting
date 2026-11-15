@@ -56,15 +56,32 @@ _REQUIRED = {
     "pos_forward": "position encoding", "pos_midfielder": "position encoding",
     "pos_defender": "position encoding",
     "goals_pg": "core rate", "assists_pg": "core rate", "shots_pg": "core rate",
+    "shots_pg_lgrel": "core rate (shots relative to the league's own as-of level)",
     "sot_pg": "core rate", "cards_pg": "core rate",
 }
 _SEMANTIC_ZERO = {
     "red_cards_pg": "API-Football reports null for an event that did not happen",
-    "penalties_won_pg": "API-Football reports null for an event that did not happen",
     "offsides_pg": "API-Football reports null for an event that did not happen",
 }
+# penalties_won_pg left SEMANTIC_ZERO 2026-11-15 (owner, props feature audit fix 2): since 2026-08 a
+# null penalty.won in an explicit-zero answer means "not published" (player_stat_nulls), so a missing
+# value is no longer "none" - it is IMPUTABLE like every other own-history rate.
+#: what a feature's NAME does not say (owner 2026-11-15, audit AMBER naming): kept in the contract
+#: reason, the names stay (the serving payloads list them)
+_SEMANTIC_NOTES = {
+    "aerial_won_rate": "ALL duels, not aerial duels: duels.won / duels.total",
+    "opp_def_aerial_win_rate": "ALL duels, not aerial duels: the opponent defenders' duels.won / duels.total",
+    "aerial_matchup_score": "ALL duels, not aerial duels (aerial_won_rate x (1 - opp_def_aerial_win_rate))",
+    "height_aerial_interaction": "ALL duels, not aerial duels (height x aerial_won_rate)",
+    "dribbler_vs_defensive_line": "ALL duels on the opponent side (1 - opp_def_aerial_win_rate)",
+    "opp_def_player_quality": "one factor is ALL duels, not aerial duels (opp_def_aerial_win_rate)",
+    "box_actions_per90": "not box actions: ALL shots + ALL duels won per 90",
+    "box_actions_per90_lgrel": "not box actions: ALL shots (league-relative) + ALL duels won per 90",
+    "dribble_contact_rate": "dribbles_pg counts SUCCESSFUL dribbles, so this is not failed dribbles",
+}
 _DEGRADED_REASON = {
-    "injury": "injury feed (point-in-time since 2026-10-26; serving models trained on leaked values)",
+    "injury": ("collected fixture-level injury lists of EARLIER fixtures (2026-11-15); missing where the "
+               "league-season was not covered or was fetched before the match"),
     "referee": "referee assignment is often unknown until close to kickoff",
     "season": "API-Football /players/statistics season priors",
     "profile": "API-Football /players profile (age, height)",
@@ -78,7 +95,7 @@ _DEGRADED = {
     **{c: "season" for c in ("season_goals_pg", "season_assists_pg", "season_shots_pg", "season_sot_pg",
                              "season_cards_pg", "season_minutes_pg", "season_appearances",
                              "season_start_rate", "season_dribble_pg", "season_fouls_pg",
-                             "season_fouls_drawn_pg")},
+                             "season_fouls_drawn_pg", "season_shots_pg_lgrel")},
     **{c: "profile" for c in ("age", "age_peak_delta", "height_cm", "height_aerial_interaction",
                               "opp_def_mean_height", "height_diff_vs_opp_def", "height_advantage_score")},
     **{c: "quality" for c in ("league_tier", "league_quality", "player_career_avg_quality",
@@ -91,13 +108,21 @@ _DEGRADED = {
                                   "prev_season_start_rate", "prev_season_appearances",
                                   "prev_season_shot_accuracy", "prev_season_team_goals_pg",
                                   "prev_season_team_conceded_pg", "prev_season_opp_goals_pg",
-                                  "prev_season_opp_conceded_pg")},
+                                  "prev_season_opp_conceded_pg", "prev_season_shots_pg_lgrel",
+                                  "prev_season_shot_accuracy_lgrel")},
 }
 
 
 def classify(feature: str) -> tuple[str, str]:
     """(class, reason) for one feature. Unknown features default to IMPUTABLE (own-history
-    derived) - the contract file is the reviewed record, this is only its generator."""
+    derived) - the contract file is the reviewed record, this is only its generator. A feature
+    whose name says less than its formula carries the note in its reason (_SEMANTIC_NOTES)."""
+    cls, why = _classify(feature)
+    note = _SEMANTIC_NOTES.get(feature)
+    return cls, (f"{why}; NAME NOTE: {note}" if note else why)
+
+
+def _classify(feature: str) -> tuple[str, str]:
     if feature in _REQUIRED:
         return "REQUIRED_FAIL_ROW", _REQUIRED[feature]
     if feature in _SEMANTIC_ZERO:

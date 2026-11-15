@@ -182,6 +182,13 @@ def source_frame(history: pd.DataFrame | None = None, cups: pd.DataFrame | None 
     raw = pd.concat(parts, ignore_index=True, sort=False)
     raw["date"] = pd.to_datetime(raw["date"], errors="coerce")
     raw = with_refetched(raw, refetch)
+    # `started` from the collected lineups (owner 2026-11-15): the provider's flag drifted from
+    # 2026-08; it stays beside in started_provider, no lineup proof -> missing (lineup_started)
+    from .lineup_started import with_lineup_started
+    raw = with_lineup_started(raw)
+    # a placeholder answer (every player 0 passes, 0 shots, rating 0) holds no detailed count (2026-11-15)
+    from .history_refetch import with_placeholder_answers_blanked
+    raw = with_placeholder_answers_blanked(raw)
     # a keeper's goals_conceded that contradicts the match score is missing (fix 2026-11-11)
     from .history_refetch import with_gk_conceded_checked
     raw = with_gk_conceded_checked(raw)

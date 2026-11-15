@@ -71,6 +71,8 @@ _SEASON_SRC = {
     "season_fouls_pg":       "fouls_committed",
     "season_fouls_drawn_pg": "fouls_drawn",
     "season_start_rate":     "started",
+    # shots relative to the league's own as-of level (owner 2026-11-15; league_shots_level)
+    "season_shots_pg_lgrel": "_shots_rel",
 }
 
 # The values the pre-2026-11-01 build_features WROTE into a profile column that the collect did not
@@ -818,6 +820,7 @@ PREV_SEASON_PLAYER = {
     "prev_season_cards_pg":    "yellow_cards",
     "prev_season_minutes_pg":  "_minutes_ok",
     "prev_season_start_rate":  "started",
+    "prev_season_shots_pg_lgrel": "_shots_rel",     # league-relative shots (league_shots_level)
 }
 # prev_season_* team feature -> (side, team-table column): the player's own team ('own') or the
 # opponent ('opp'), mean per match over that team's previous-season fixtures (90-minute scores).
@@ -828,7 +831,7 @@ PREV_SEASON_TEAM = {
     "prev_season_opp_conceded_pg":   ("opp", "goals_conceded"),
 }
 PREV_SEASON_COLUMNS = (*PREV_SEASON_PLAYER, "prev_season_appearances", "prev_season_shot_accuracy",
-                       *PREV_SEASON_TEAM)
+                       "prev_season_shot_accuracy_lgrel", *PREV_SEASON_TEAM)
 
 
 def _prev_season_sums(src: pd.DataFrame, key: str, cols, q: pd.DataFrame) -> pd.DataFrame:
@@ -873,10 +876,13 @@ def _prev_season_player(src: pd.DataFrame, q: pd.DataFrame) -> pd.DataFrame:
     raws = sorted(set(PREV_SEASON_PLAYER.values()))
     sh, so = _num(src, "shots_total"), _num(src, "shots_on_target")
     both = sh.notna() & so.notna()
+    rel = _num(src, "_shots_rel")
+    both_rel = both & rel.notna()
     src = src.assign(_minutes_ok=minutes_ok(_num(src, "minutes")).to_numpy(),
                      **{r: _num(src, r) for r in raws if r != "_minutes_ok"},
-                     _acc_sh=sh.where(both), _acc_so=so.where(both))
-    s = _prev_season_sums(src, "player_id", [*raws, "_acc_sh", "_acc_so"], q)
+                     _acc_sh=sh.where(both), _acc_so=so.where(both),
+                     _accr_sh=sh.where(both_rel), _accr_so=so.where(both_rel), _accr_sr=rel.where(both_rel))
+    s = _prev_season_sums(src, "player_id", [*raws, "_acc_sh", "_acc_so", "_accr_sh", "_accr_so", "_accr_sr"], q)
     enough = s["_n"] >= config.MIN_PREV_SEASON_MATCHES
     out = pd.DataFrame(index=q.index)
     for feat, raw in PREV_SEASON_PLAYER.items():
@@ -884,6 +890,9 @@ def _prev_season_player(src: pd.DataFrame, q: pd.DataFrame) -> pd.DataFrame:
     out["prev_season_appearances"] = s["_n"]            # NaN = no row of that season held
     out["prev_season_shot_accuracy"] = _ratio(s["_acc_so"], s["_acc_sh"]).where(
         s["_acc_sh"] >= config.MIN_SHOTS_FOR_ACCURACY)
+    # league-relative: SOT per league-relative shot, the sample floor on the raw shots
+    out["prev_season_shot_accuracy_lgrel"] = _ratio(s["_accr_so"], s["_accr_sr"]).where(
+        s["_accr_sh"] >= config.MIN_SHOTS_FOR_ACCURACY)
     return out
 
 
@@ -908,22 +917,88 @@ def _prev_season_team(t: pd.DataFrame, q: pd.DataFrame, side: str) -> pd.DataFra
     return out
 
 
-def shot_accuracy_before(df: pd.DataFrame, n: int | None = None) -> pd.Series:
+def shot_accuracy_before(df: pd.DataFrame, n: int | None = None, shots_col: str = "shots_total") -> pd.Series:
     """shot_accuracy_l10: per row of `df` (sorted by player, date), BEFORE it: sum(shots on target) /
     sum(shots) over the player's previous n matches (config.SHOT_ACC_WINDOW; a match without both
     counts recorded adds nothing), NaN below config.MIN_SHOTS_FOR_ACCURACY shots. A separate
     feature from the 5-match shot_accuracy_rate (mean of per-match ratios). Serving calls it on the
-    player's history plus one empty row for the fixture: the same definition."""
+    player's history plus one empty row for the fixture: the same definition. `shots_col`
+    '_shots_rel' gives shot_accuracy_l10_lgrel: the denominator is the league-relative shots
+    (league_shots_level), the sample floor stays on the raw shots."""
     n = n or config.SHOT_ACC_WINDOW
     sh, so = _num(df, "shots_total"), _num(df, "shots_on_target")
-    both = sh.notna() & so.notna()
+    sc = sh if shots_col == "shots_total" else _num(df, shots_col)
+    both = sh.notna() & so.notna() & sc.notna()
     g = df["player_id"]
     sums = {}
-    for name, v in (("so", so.where(both)), ("sh", sh.where(both))):
+    for name, v in (("so", so.where(both)), ("sh", sh.where(both)), ("sc", sc.where(both))):
         prev = v.groupby(g).shift(1)
         sums[name] = (prev.groupby(g).rolling(n, min_periods=1).sum()
                       .reset_index(level=0, drop=True).reindex(df.index))
-    return _ratio(sums["so"], sums["sh"]).where(sums["sh"] >= config.MIN_SHOTS_FOR_ACCURACY)
+    return _ratio(sums["so"], sums["sc"]).where(sums["sh"] >= config.MIN_SHOTS_FOR_ACCURACY)
+
+
+# ── shots relative to the league's own as-of level (owner 2026-11-15, props feature audit fix 6) ──
+#
+# WHY. API-Football's per-player shots.total changed definition in 2026: team shots per match (sum of
+# the players' shots_total) went 9.0 (to 2026-08) -> 10.5 (2026-09) -> 11.8 (2026-10) -> 12.9
+# (2026-11) while shots on target and goals stayed flat (sot / shots 0.47 -> 0.35) - most likely
+# blocked shots now count. A shots feature trained on the old scale reads about +45% at serve time.
+# THE CURE. Every shots_total input is divided by its league's OWN team shots per team-match measured
+# on the league's last config.SHOTS_LEVEL_TEAM_MATCHES team-matches strictly before the match day
+# (no other league, no pooled value; NaN until the league has that many). A definition change moves
+# numerator and level together, so it cancels out. The raw features stay (the served payloads read
+# them) and are withheld from the next retrain (config.SHOTS_DEFINITION_WITHHELD); the *_lgrel
+# features are their league-relative counterparts.
+SHOTS_LEVEL_COL = "lg_shots_per_team_asof"     # provenance on every row (not a model feature)
+
+
+def league_shots_level(df: pd.DataFrame) -> pd.Series:
+    """Per row of `df`: the mean team shots (sum of the team's recorded player shots_total) per
+    team-match of the row's league over its last config.SHOTS_LEVEL_TEAM_MATCHES team-matches with a
+    recorded value, strictly before the row's day; NaN below that many. Upcoming rows (no result)
+    add nothing. Exact prefix sums, so serving (history strictly before the day) and training agree
+    bit for bit."""
+    out = pd.Series(np.nan, index=df.index, dtype=float)
+    need = {"fixture_id", "league", "date", "shots_total", "is_home"}
+    if df.empty or not need <= set(df.columns):
+        return out
+    n = int(config.SHOTS_LEVEL_TEAM_MATCHES)
+    base = df[~df[UPCOMING_COL].astype(bool)] if UPCOMING_COL in df.columns else df
+    tm = pd.DataFrame({"fixture_id": pd.to_numeric(base["fixture_id"], errors="coerce").to_numpy(dtype=float),
+                       "side": pd.to_numeric(base["is_home"], errors="coerce").to_numpy(dtype=float),
+                       "league": base["league"].to_numpy(),
+                       "_day": pd.to_datetime(base["date"], errors="coerce").dt.normalize().to_numpy(),
+                       "_sh": _num(base, "shots_total").to_numpy(dtype=float)})
+    tm = tm.dropna(subset=["fixture_id", "side", "_day"])
+    tm = tm[tm["league"].notna()]
+    if tm.empty:
+        return out
+    tm = (tm.groupby(["fixture_id", "side"], sort=False)
+            .agg(league=("league", "first"), _day=("_day", "first"), _sh=("_sh", "sum"), _n=("_sh", "count"))
+            .reset_index())
+    tm = tm[tm["_n"] > 0]                          # no recorded shots in the team-match: not a measurement
+    if tm.empty:
+        return out
+    tm = tm.sort_values(["league", "_day", "fixture_id", "side"], kind="mergesort").reset_index(drop=True)
+    g = tm.groupby("league", sort=False)
+    tm["_k"] = g.cumcount() + 1
+    tm["_cs"] = g["_sh"].cumsum()
+    lag = tm.groupby("league", sort=False)["_cs"].shift(n)
+    lag = lag.where(tm["_k"] != n, 0.0)
+    tm["_lvl"] = ((tm["_cs"] - lag) / n).where(tm["_k"] >= n)
+    t = tm[["league", "_day", "_lvl"]].sort_values("_day", kind="mergesort")
+    q = pd.DataFrame({"league": df["league"].to_numpy(),
+                      "_day": pd.to_datetime(df["date"], errors="coerce").dt.normalize().to_numpy(),
+                      "_i": np.arange(len(df))})
+    q = q[q["league"].notna() & q["_day"].notna()]
+    if q.empty:
+        return out
+    q["league"], t["league"] = q["league"].astype(str), t["league"].astype(str)
+    hit = pd.merge_asof(q.sort_values("_day", kind="mergesort"), t, on="_day", by="league",
+                        allow_exact_matches=False)
+    out.iloc[hit["_i"].to_numpy()] = hit["_lvl"].to_numpy(dtype=float)
+    return out
 
 
 # ── rest days on the COMPLETE match history (league + collected cup rows; ONE definition) ────────
@@ -981,6 +1056,10 @@ def _add_composites(df: pd.DataFrame) -> pd.DataFrame:
     f["card_exposure_index"] = f["cards_pg"] * (f["minutes_pg"] / 90.0) * (1 - pf)
     f["sot_quality_score"] = f["shot_accuracy_rate"] * f["sot_pg"]
     f["opp_adjusted_shot_threat"] = f["shots_pg"] * f["opp_sot_conceded_pg"]
+    # league-relative counterparts (league_shots_level; config.SHOTS_DEFINITION_WITHHELD)
+    f["sot_rate_lgrel"] = _ratio(f["sot_pg"], f["shots_pg_lgrel"])
+    f["sot_quality_score_lgrel"] = f["shot_accuracy_rate_lgrel"] * f["sot_pg"]
+    f["opp_adjusted_shot_threat_lgrel"] = f["shots_pg_lgrel"] * f["opp_sot_conceded_pg"]
     f["creative_playmaker_score"] = f["kp_per90"] * (pm + 0.5 * pf)
 
     corners_rel = _ratio(f["team_corners_pg"], f["lg_corners_per_team"])
@@ -1013,6 +1092,10 @@ def _add_composites(df: pd.DataFrame) -> pd.DataFrame:
     f["volume_shot_penetration"] = (f["shots_pg"] * f["shot_accuracy_rate"] * save_gap).clip(lower=0.0)
     f["finishing_threat_index"] = (f["sot_pg"] * f["shooting_efficiency_index"] * save_gap).clip(lower=0.0)
     f["box_dominance_vs_gk"] = ((f["box_actions_per90"] + f["dribbles_pg"]) * save_gap).clip(lower=0.0)
+    f["clinical_vs_gk_lgrel"] = (f["shot_accuracy_rate_lgrel"] * save_gap).clip(lower=0.0)
+    f["volume_shot_penetration_lgrel"] = (f["shots_pg_lgrel"] * f["shot_accuracy_rate_lgrel"]
+                                          * save_gap).clip(lower=0.0)
+    f["box_dominance_vs_gk_lgrel"] = ((f["box_actions_per90_lgrel"] + f["dribbles_pg"]) * save_gap).clip(lower=0.0)
     f["aggression_adjusted_threat"] = (f["sot_pg"] * save_gap / (1.0 + f["offsides_pg"] * 0.3)).clip(lower=0.0)
     f["defensive_vulnerability_index"] = (
         (f["dribbled_past_pg"] * 1.5 + (1.0 - f["dribble_success_rate"]) * 0.5
@@ -1029,6 +1112,8 @@ def _add_composites(df: pd.DataFrame) -> pd.DataFrame:
     f["forward_matchup_score"] = (f["sot_pg"] * f["opp_goals_conceded_vs_fwd_pg"] * pf).clip(lower=0.0)
     f["mid_threat_vs_defense"] = (f["kp_per90"] * f["opp_goals_conceded_vs_mid_pg"] * pm).clip(lower=0.0)
     f["box_threat_vs_leaky_defense"] = (f["box_actions_per90"] * f["opp_goals_conceded_pg"]).clip(lower=0.0)
+    f["box_threat_vs_leaky_defense_lgrel"] = (f["box_actions_per90_lgrel"]
+                                              * f["opp_goals_conceded_pg"]).clip(lower=0.0)
     f["efficiency_vs_leaky_keeper"] = (f["shooting_efficiency_index"] * f["opp_sot_conceded_pg"]).clip(lower=0.0)
     f["kp_vs_aggressive_defense"] = (f["kp_per90"] * f["opp_def_cards_pg"]).clip(lower=0.0)
     f["team_momentum_forward_matchup"] = (f["team_goals_pg_roll"] * f["opp_goals_conceded_pg"] * pf).clip(lower=0.0)
@@ -1080,6 +1165,7 @@ _COMPOSITE_INPUTS = (
     "dribbled_past_pg", "defensive_actions_per90", "penalties_won_pg", "red_cards_pg", "passes_pg",
     "tackles_per90", "offsides_pg", "height_cm", "age", "headed_goals_pg",
     "fk_goals_pg", "referee_yellows_pg",
+    "shots_pg_lgrel", "shot_accuracy_rate_lgrel", "box_actions_per90_lgrel",
     *(feat for feat, _, _ in _TEAM_ROLL.values()), *_LEAGUE_NORMS,
     "lg_yellows_per_match", "pos_forward", "pos_midfielder", "pos_defender",
     *_LQ.MEASURED_COLUMNS, *_SP.SETPIECE_COLUMNS,
@@ -1190,6 +1276,10 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
     # Every match each player played (this frame before the minutes filter + the collected cup rows):
     # rest_days is measured on the complete history, not on the training rows.
     _played = played_days(df)
+    # shots relative to the league's own as-of level (league_shots_level): measured on every played
+    # row of the frame, each row divided by the level of ITS league before ITS day
+    df[SHOTS_LEVEL_COL] = league_shots_level(df).to_numpy()
+    df["_shots_rel"] = _ratio(_num(df, "shots_total"), df[SHOTS_LEVEL_COL])
 
     # Drop bench/DNP rows (< 10 min)
     # (an UPCOMING row - serving, no result yet - has no minutes; it is kept: build_upcoming_features)
@@ -1202,7 +1292,8 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
     grp = df.groupby("player_id", group_keys=False)
     for feat, raw in (("goals_pg", "goals"), ("assists_pg", "assists"), ("shots_pg", "shots_total"),
                       ("sot_pg", "shots_on_target"), ("cards_pg", "yellow_cards"),
-                      ("minutes_pg", "_minutes_ok"), ("key_passes_pg", "key_passes")):
+                      ("minutes_pg", "_minutes_ok"), ("key_passes_pg", "key_passes"),
+                      ("shots_pg_lgrel", "_shots_rel")):
         df[feat] = _roll(grp, raw, n) if raw in df.columns else np.nan
 
     # API-Football rating 0 = not rated; no prior rated match -> NaN (was 7.0).
@@ -1221,9 +1312,10 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
     # No venue history -> NaN (was the overall rate pasted in, or 0.0).
     # Every row gets the player's state BEFORE it: the mean of his last n games at that venue
     # (serving computes exactly this for the upcoming fixture).
-    for _raw, _pref in (("goals", "goals"), ("shots_total", "shots"), ("shots_on_target", "sot")):
+    for _raw, _pref, _suf in (("goals", "goals", ""), ("shots_total", "shots", ""),
+                              ("shots_on_target", "sot", ""), ("_shots_rel", "shots", "_lgrel")):
         for _venue, _is_h in (("home", True), ("away", False)):
-            col = f"{_pref}_{_venue}_pg"
+            col = f"{_pref}_{_venue}_pg{_suf}"
             if "is_home" not in df.columns or _raw not in df.columns:
                 df[col] = np.nan
                 continue
@@ -1242,6 +1334,9 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
     df["_kp90"] = _ratio(_num(df, "key_passes"), mins) * 90
     df["_gi90"] = _ratio(_num(df, "goals") + _num(df, "assists"), mins) * 90
     df["_box90"] = _ratio(_num(df, "shots_total") + _num(df, "duels_won"), mins) * 90
+    # league-relative counterparts (league_shots_level): SOT per relative shot, relative shots + duels won
+    df["_shot_acc_lgrel"] = _ratio(_num(df, "shots_on_target"), _num(df, "_shots_rel"))
+    df["_box90_lgrel"] = _ratio(_num(df, "_shots_rel") + _num(df, "duels_won"), mins) * 90
     df["_aerial"] = _ratio(_num(df, "duels_won"), _num(df, "duels_total"))
     df["_duel90"] = _ratio(_num(df, "duels_total"), mins) * 90
     df["_fd90"] = _ratio(_num(df, "fouls_drawn"), mins) * 90
@@ -1257,7 +1352,8 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
                       ("aerial_won_rate", "_aerial"), ("duel_intensity_per90", "_duel90"),
                       ("fouls_drawn_per90", "_fd90"), ("fouls_per90", "_fp90"),
                       ("foul_committer_ratio", "_fcr"), ("tackles_per90", "_tack90"),
-                      ("defensive_actions_per90", "_def90"), ("dribble_success_rate", "_drib_acc")):
+                      ("defensive_actions_per90", "_def90"), ("dribble_success_rate", "_drib_acc"),
+                      ("shot_accuracy_rate_lgrel", "_shot_acc_lgrel"), ("box_actions_per90_lgrel", "_box90_lgrel")):
         df[feat] = _roll(grp, raw, n)
     for feat, raw in (("team_corners_pg", "team_corners"), ("tackles_pg", "tackles_total"),
                       ("interceptions_pg", "interceptions"), ("dribbles_pg", "dribbles_success"),
@@ -1269,7 +1365,8 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
 
     # Career-to-date averages — stable priors complementing the volatile last-5 rolling stats.
     for feat, raw in (("career_goals_pg", "goals"), ("career_sot_pg", "shots_on_target"),
-                      ("career_shots_pg", "shots_total"), ("career_assists_pg", "assists")):
+                      ("career_shots_pg", "shots_total"), ("career_assists_pg", "assists"),
+                      ("career_shots_pg_lgrel", "_shots_rel")):
         df[feat] = _expand(grp, raw)
 
     # Penalty conversion from the player's OWN penalty record, NaN below config.MIN_PEN_ATTEMPTS
@@ -1295,14 +1392,15 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
     # Season-level fields absent from the frame stay missing (were 0.7 / 0.75 / 0.3 / 1.0 / 0.8).
     _ensure(df, ("season_start_rate", "season_pass_accuracy", "season_dribble_pg",
                  "season_fouls_pg", "season_fouls_drawn_pg"))
-    # Injury features as of the match date from the collected /sidelined answer
-    # (history_integrity.injury_features_asof: only spells that STARTED before the match). Players
-    # never asked keep the injury refresh's stored values; absent -> NaN (were 0 / 365 / 0).
-    _ensure(df, ("chronic_injury_risk", "days_since_last_injury", "return_from_injury_flag"))
-    _sid = collected_sidelined()
-    if _sid:
-        from .history_integrity import apply_injury_pit
-        apply_injury_pit(df, _sid)
+    # Injury features from the collected fixture-level injury lists (owner 2026-11-15; injury_features:
+    # only absences listed for fixtures on EARLIER days, injuries only - never a suspension; missing
+    # where the league-season was not answered with coverage or was fetched before the match). Every
+    # row is recomputed: a stored value (the stale /sidelined refresh) is never kept.
+    from .injury_features import injury_features as _injury_features
+    _q = df[[c for c in ("player_id", "date", "fixture_id", "league", "season") if c in df.columns]]
+    _inj = _injury_features(_q, _played)
+    for _c in _inj.columns:
+        df[_c] = _inj[_c].to_numpy()
 
     # ── Referee strictness, measured (see _referee_asof) ────────────────────────
     df = df.copy()                     # de-fragment after the column-by-column build above
@@ -1367,6 +1465,7 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
                 df[c] = pt[c].to_numpy()
     _ensure(df, PREV_SEASON_COLUMNS)
     df["shot_accuracy_l10"] = shot_accuracy_before(df).to_numpy()
+    df["shot_accuracy_l10_lgrel"] = shot_accuracy_before(df, shots_col="_shots_rel").to_numpy()
 
     # ── Position encoding: PRE-MATCH evidence only (owner 2026-11-09) ─────────
     # The match-statistics position is published with the match (after kickoff), so it is not an
