@@ -1,7 +1,7 @@
 {
   "artifact": "join_integrity_health",
   "helper_version": "safe_left_enrich-1.0",
-  "generated_at": "2026-11-14T15:13:26Z",
+  "generated_at": "2026-11-15T15:45:31Z",
   "status": "FAIL",
   "joins": {
     "af_history_shots.legacy": {
@@ -14,7 +14,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
       "left_rows": 83483,
-      "right_rows": 91814,
+      "right_rows": 91817,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 5972,
       "right_duplicate_rows": 12139,
@@ -106,7 +106,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
       "left_rows": 83483,
-      "right_rows": 18322,
+      "right_rows": 18599,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -136,7 +136,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
       "left_rows": 83483,
-      "right_rows": 34683,
+      "right_rows": 35023,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -170,7 +170,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
       "left_rows": 83483,
-      "right_rows": 91814,
+      "right_rows": 91817,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 5972,
       "right_duplicate_rows": 12139,
@@ -201,7 +201,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "safe",
       "left_rows": 83483,
-      "right_rows": 91814,
+      "right_rows": 91817,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 5972,
       "right_duplicate_rows": 12139,
@@ -315,7 +315,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
       "left_rows": 83483,
-      "right_rows": 18322,
+      "right_rows": 18599,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -346,7 +346,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "safe",
       "left_rows": 83483,
-      "right_rows": 7695,
+      "right_rows": 7770,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -378,7 +378,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
       "left_rows": 83483,
-      "right_rows": 34683,
+      "right_rows": 35023,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -409,7 +409,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "safe",
       "left_rows": 83483,
-      "right_rows": 6567,
+      "right_rows": 6675,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -671,10 +671,10 @@
     }
   ],
   "serving_replay": {
-    "board_fixtures": 80,
+    "board_fixtures": 128,
     "recipe": "v9_repaired",
-    "tips_legacy": 22,
-    "tips_safe": 23,
+    "tips_legacy": 29,
+    "tips_safe": 32,
     "tips_only_legacy": [
       [
         "Brazil Serie A",
@@ -685,45 +685,61 @@
         "VALUABLE"
       ],
       [
-        "League Two",
-        "Shrewsbury Town",
-        "Oldham Athletic",
+        "La Liga 2",
+        "CD Eldense",
+        "Sabadell FC",
         "btts",
         "YES",
         "VALUABLE"
       ],
       [
-        "League Two",
-        "Shrewsbury Town",
-        "Oldham Athletic",
-        "over35",
-        "OVER",
-        "VALUABLE"
+        "Mexico Liga MX",
+        "Santos Laguna",
+        "Le\u00f3n",
+        "OU25",
+        "UNDER",
+        "SNIPER"
       ]
     ],
     "tips_only_safe": [
       [
-        "Brazil Serie A",
-        "Chapecoense",
-        "Vasco da Gama",
+        "Denmark Superliga",
+        "SonderjyskE",
+        "OB Odense BK",
         "OU25",
         "UNDER",
         "VALUABLE"
       ],
       [
-        "Brazil Serie A",
-        "Mirassol",
-        "Atletico Mineiro",
+        "Japan J-League",
+        "Vissel Kobe",
+        "Mito HollyHock",
         "OU25",
-        "UNDER",
+        "OVER",
         "VALUABLE"
       ],
       [
-        "League One",
-        "Milton Keynes Dons",
-        "Burton Albion",
+        "La Liga 2",
+        "CD Eldense",
+        "Sabadell FC",
         "btts",
         "YES",
+        "MARKSMAN"
+      ],
+      [
+        "Mexico Liga MX",
+        "Pachuca",
+        "Toluca",
+        "OU25",
+        "UNDER",
+        "VALUABLE"
+      ],
+      [
+        "Mexico Liga MX",
+        "Santos Laguna",
+        "Le\u00f3n",
+        "OU25",
+        "UNDER",
         "VALUABLE"
       ],
       [
@@ -736,21 +752,21 @@
       ]
     ],
     "features_changed": {
-      "away_corners_pg_roll": 23,
-      "away_fouls_pg_roll": 23,
-      "away_insidebox_last5": 76,
-      "away_xg_last5": 77,
-      "combined_sot_ratio": 30,
-      "home_corners_pg_roll": 23,
-      "home_fouls_pg_roll": 23,
-      "home_insidebox_last5": 77,
-      "home_xg_last5": 79,
-      "p_over25": 32,
-      "p_btts": 80,
-      "p_over15": 80,
-      "p_over35": 80,
-      "p_ht_over05": 47,
-      "p_ht_over15": 47
+      "away_corners_pg_roll": 40,
+      "away_fouls_pg_roll": 40,
+      "away_insidebox_last5": 122,
+      "away_xg_last5": 124,
+      "combined_sot_ratio": 52,
+      "home_corners_pg_roll": 41,
+      "home_fouls_pg_roll": 41,
+      "home_insidebox_last5": 122,
+      "home_xg_last5": 126,
+      "p_over25": 55,
+      "p_btts": 128,
+      "p_over15": 128,
+      "p_over35": 128,
+      "p_ht_over05": 72,
+      "p_ht_over15": 72
     }
   }
 }
