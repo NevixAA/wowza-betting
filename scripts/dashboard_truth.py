@@ -361,7 +361,10 @@ def independent(out: Path, ctx: dict) -> dict:
         lt_path = out / "threshold_proposals" / "bars_oddsapi_hist" / "latest.json"
         lt = json.loads(lt_path.read_text(encoding="utf-8"))
         pr = json.loads((out.parent / lt["path"]).read_text(encoding="utf-8"))
-        ev = json.loads((lt_path.parent / f"evidence_{pr['month']}.json").read_text(encoding="utf-8"))
+        # the evidence file the proposal names (a tagged re-run has its own; cells_view.evidence_path)
+        ev_rel = (pr.get("source") or {}).get("evidence") or \
+            f"output/threshold_proposals/bars_oddsapi_hist/evidence_{pr['month']}.json"
+        ev = json.loads((out.parent / ev_rel).read_text(encoding="utf-8"))
         cells = pd.DataFrame(ev["league_market_status"])
         v["cells_n"] = len(cells)
         v["cells_proven"] = int((cells["status"] == "PROVEN").sum())

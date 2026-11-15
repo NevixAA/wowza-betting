@@ -205,6 +205,19 @@ def test_withdrawal_reading_on_a_synthetic_approval():
     assert any("still stakes" in p for p in data["problems"])
 
 
+def test_evidence_is_the_file_the_proposal_names():
+    """Go-live rehearsal 2026-11-15: the v5 re-run (TP-2026-11-15-bade2c0b) wrote evidence_2026-11_v5.json beside
+    the older evidence_2026-11.json; the page must read the one the proposal names, never the month's old one."""
+    pr = {"month": "2026-11", "source": {"evidence": "output/threshold_proposals/bars_oddsapi_hist/evidence_2026-11_v5.json"}}
+    assert CV.evidence_path(pr).endswith("evidence_2026-11_v5.json")
+    assert CV.evidence_path({"month": "2026-11"}).endswith("bars_oddsapi_hist/evidence_2026-11.json")
+    d = CV.load()
+    if d["proposal"] is not None and d["evidence"] is not None:
+        named = (d["proposal"].get("source") or {}).get("evidence")
+        if named:
+            assert d["evidence"] == json.loads((ROOT / named).read_text(encoding="utf-8"))
+
+
 def test_cell_key_of_ledger_tips():
     assert CV.key_of("new_format", "BTTS", "YES", "X") == ("new_format", "btts_yes", "X")
     assert CV.key_of("standard", "O/U 2.5", "OVER", "X") == ("standard", "over25_over", "X")
