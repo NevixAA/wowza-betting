@@ -6,7 +6,7 @@
 
 ## 1. The protocol (registered before any pick)
 
-**Protocol file:** `config/sharp_paper/protocol.json`. Its sha256 is in `config/sharp_paper/protocol.sha256`, and `tests/test_sharp_paper.py` fails if the two differ.
+**Protocol file:** `config/sharp_paper/protocol.json`, as amended on 2026-11-15 before any pick (sha256 `601fbba2...`, previously `6e393fa2...`). The amendment changes only the capture slots, to fit short 2-hourly runs. Its sha256 is in `config/sharp_paper/protocol.sha256`, and `tests/test_sharp_paper.py` fails if the two differ.
 
 **Universe.** Every live model tip of an approved O/U MODEL cell of TP-2026-11-15-bade2c0b. That covers 42 cells across over25_over, over25_under, over15_over and over35_over.
 - **Start:** match date on or after 2026-11-21.
@@ -44,8 +44,13 @@
 | Slot | When it is due | Use |
 |---|---|---|
 | T72 | [60, 72] h before kickoff | open |
-| T6 | [4, 6] h | signal and bet price |
-| CLOSE | 2-15 min | CLV only |
+| T6 | [4, 7] h | signal and bet price |
+| CLOSE | (3 min, 2 h] | near-close, CLV only |
+
+**Cadence:** one short pass every 2 h (cron `23 */2 * * *`), with no in-run loop and a 6-minute timeout.
+- **Close is a near-close:** no job is kept alive for the true close. v9's public pre-kickoff capture holds no Pinnacle O/U lines and is not switched on, so it cannot supply the close.
+- **Cost:** about 1 billed minute a run, 12 runs a day, so about **12 minutes a day (about 365 a month)**.
+- **Minutes guard:** each run records its own minutes in `ledger/minutes.json`. A run refuses to work once this workflow's month reaches `vars.SHARP_PAPER_MINUTES_CAP`, default 900.
 
 **Cost:** 2 credits per snapshot, so at most 6 per tipped fixture.
 
