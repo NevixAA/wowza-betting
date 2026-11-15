@@ -768,6 +768,18 @@ TIP_RECORDS = (("bets_ledger.csv", "match_date", "signal_tier", None),
                ("top3_league_ledger.csv", "match_date", "tier", None))
 
 
+TIER_BOARD_FILES = ("bets.csv", "side_bets.csv")   # the current board (rule 7)
+
+
+def _board_run_time(od: Path):
+    """The predict run that wrote the current board: the newest predictions.csv generated_at (UTC, naive), or None."""
+    p = _read(od / "predictions.csv")
+    if p.empty or "generated_at" not in p.columns:
+        return None
+    t = pd.to_datetime(p["generated_at"], errors="coerce", utc=True).max()
+    return None if pd.isna(t) else t.tz_convert(None)
+
+
 def retired_tier_rows(out_dir: Path | None = None, since: str = TIERS_RETIRED_FROM) -> list[dict]:
     """Every record dated on/after `since` that carries a retired tier code or a tier multiplier != 1."""
     from src.tier_labels import LEGACY_TIERS
@@ -782,6 +794,13 @@ def retired_tier_rows(out_dir: Path | None = None, since: str = TIERS_RETIRED_FR
         # for a later match is history; without a write time the match date decides
         wcol = "generated_at" if "generated_at" in d.columns else dcol
         dt = pd.to_datetime(d[wcol].astype(str).str[:10], errors="coerce")
+        if wcol == dcol and name in TIER_BOARD_FILES:
+            # the board (bets.csv / side_bets.csv) is rewritten by each predict run and has no per-row write time;
+            # the same run stamps predictions.csv generated_at. A board written before go-live is the old code's
+            # last board, not a future tip (go-live rehearsal 2026-11-15: main's 11-21 fixtures read as RED).
+            run = _board_run_time(od)
+            if run is not None:
+                dt = pd.Series(run.normalize(), index=d.index)
         fut = d[dt >= cut]
         if fut.empty:
             continue
