@@ -14,7 +14,9 @@ markets come back). Every book's exact 1.5 / 2.5 / 3.5 pair is stored.
 
 BUDGET (never below the floor; counted against the month):
   * before every paid call: x-requests-remaining (from the previous answer; the free events call refreshes
-    it) minus the call's cost must stay >= --floor (260,000 by default, the 5M plan's floor);
+    it) minus the call's cost must stay >= --floor (CAPTURE_MIN_FLOOR = 100,000: owner 2026-11-15
+    "Capture stops at 100k"; a lower floor is refused). This floor is the CAPTURE's only: the OddsAPI
+    history collector keeps its own floor (290,000 on exec main, src.oddsapi_history.MIN_FLOOR 260,000);
   * --run-cap, --day-cap (UTC day) and --month-cap credits, journaled in <store>/ledger/usage.json;
   * one [oddsapi_usage] JSON line per pass (counts and credits; never the key, never a price).
 
@@ -42,6 +44,10 @@ from src import sharp_paper as SP  # noqa: E402
 
 API = "https://api.the-odds-api.com/v4"
 CALL_COST = 2                       # markets totals + alternate_totals, one region
+#: owner 2026-11-15 "Capture stops at 100k": the sharp paper capture makes no paid call that would take the
+#: account below 100,000 credits (was 260,000, the history collector's minimum, which would have blocked the
+#: capture once the history spend reached its floor). The history collector's own floor is NOT this one.
+CAPTURE_MIN_FLOOR = 100_000
 CAP_COLS = ["pick_key", "league", "slot", "captured_at", "ko", "lead_h", "event_id", "bookmaker", "line", "over",
             "under", "book_last_update"]
 JOURNAL_COLS = ["pick_key", "slot", "event_id", "captured_at", "lead_h", "status", "rows", "credits"]
@@ -244,7 +250,7 @@ def main(argv=None) -> int:
     ap.add_argument("--ledgers", required=True, type=Path)
     ap.add_argument("--aliases", type=Path, help="the private store's ledger/provider_aliases.json (proven names)")
     ap.add_argument("--mode", choices=["dry-run", "test", "capture", "evaluate"], required=True)
-    ap.add_argument("--floor", type=int, default=260_000)
+    ap.add_argument("--floor", type=int, default=CAPTURE_MIN_FLOOR)
     ap.add_argument("--run-cap", type=int, default=400)
     ap.add_argument("--day-cap", type=int, default=1_500)
     ap.add_argument("--month-cap", type=int, default=30_000)
@@ -252,8 +258,8 @@ def main(argv=None) -> int:
     ap.add_argument("--loop-minutes", type=float, default=0)
     ap.add_argument("--interval-minutes", type=float, default=10)
     a = ap.parse_args(argv)
-    if a.floor < 260_000:
-        raise SystemExit("--floor below 260,000 is refused (the 5M plan's floor)")
+    if a.floor < CAPTURE_MIN_FLOOR:
+        raise SystemExit(f"--floor below {CAPTURE_MIN_FLOOR:,} is refused (owner 2026-11-15: capture stops at 100k)")
     a.store = SP.assert_private(a.store)
     a.store.mkdir(parents=True, exist_ok=True)
     P = SP.load_protocol()
