@@ -154,17 +154,17 @@ with tab_sharp:
         #### Signal types
         | Signal | Meaning |
         |---|---|
-        | 🔥 STEAM_STRONG | Fast move (>3% in 1 window) + >10% total drift |
-        | ⚡ STEAM_SHARP | Fast move + 5-10% total drift |
-        | 🔴 STRONG | >10% drift from opening |
-        | 🟡 SHARP | 5-10% drift |
-        | ⬆️ FADING | Odds lengthening (public money, avoid) |
+        | 🔥 STEAM_STRONG | STRONG + the last window's move is in the league's top 10% |
+        | ⚡ STEAM_SHARP | SHARP + the last window's move is in the league's top 10% |
+        | 🔴 STRONG | Move toward the side in the league's top 10% |
+        | 🟡 SHARP | Move toward the side in the league's top 25% |
+        | ⬆️ FADING | Move against the side in the league's top 25% |
 
-        #### How drift is calculated
+        #### How a move is judged (per league, no global number)
         ```
-        drift % = (current_odds − opening_odds) / opening_odds
-        negative = odds shortened = sharp money IN
-        positive = odds lengthened = money moving away
+        move = fair probability now − fair probability ~72 h before kickoff
+        compared with the SAME league's moves of earlier fixtures
+        (same market and lead time); fewer than 100 earlier fixtures = no signal
         ```
         """)
     with col2:
@@ -176,7 +176,7 @@ with tab_sharp:
 
         #### Steam detection
         Compares last snapshot vs previous snapshot.
-        Move > 3% in a single 2h window = STEAM flag.
+        A single-window move in the league's top 10% (at least 4 books) = STEAM flag.
 
         #### Schedule
         - Runs every **2 hours** (08:00–22:00 UTC)
