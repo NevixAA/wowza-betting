@@ -6,7 +6,11 @@ API-Football 1-2). Two calls through collect_common.AFClient (budget guard):
   /fixtures/events?fixture=<id>   every goal event: minute, team, scorer, type (own goal / penalty)
 Writes output/collect/fixture_probe_<id>.json; prints counts, the status and the goal events only.
 
-    python scripts/probe_fixture_record.py 1648307
+    python scripts/probe_fixture_record.py 1648307 [more ids ...]      # 2 calls per id, at most 20
+
+2026-11-15 (go-live rehearsal): also the 7 history rows whose football-data score disagrees with
+API-Football (output/corrections/history_score_refused.csv, ft_status_scores_differ) - the goal
+events and the fixture's elapsed minutes say which score was played (or that the match was stopped).
 """
 from __future__ import annotations
 
@@ -22,11 +26,22 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from collect_common import AFClient, BudgetStop  # noqa: E402
 
 MAX_CALLS = 2
+MAX_TOTAL = 20
 
 
 def main(argv=None) -> int:
     argv = sys.argv[1:] if argv is None else argv
-    fid = int(argv[0])
+    ids = [int(a) for a in argv]
+    if 2 * len(ids) > MAX_TOTAL:
+        print(f"[probe] {2 * len(ids)} calls > cap {MAX_TOTAL}: refusing")
+        return 1
+    rc = 0
+    for fid in ids:
+        rc |= one(fid)
+    return rc
+
+
+def one(fid: int) -> int:
     budget = Path(os.getenv("RUNNER_TEMP", str(ROOT / "output" / "collect"))) / "fixture_probe_budget.json"
     client = AFClient(budget_file=budget)
     doc = {"artifact": "fixture_probe", "fixture_id": fid,
