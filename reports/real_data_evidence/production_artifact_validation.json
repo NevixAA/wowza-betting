@@ -1,0 +1,394 @@
+{
+ "artifact": "production_artifact_validation",
+ "generated_at": "2026-11-15T18:19:11Z",
+ "team": [
+  {
+   "model": "Standard O/U 2.5",
+   "config": "MODEL_FILE_STANDARD",
+   "path": "models/model_v9_standard.pkl",
+   "sha256": "4025384d6cb2a2f3201aec60f3ade16e59a152f4369352a48be9ce77ec3fc3b9",
+   "status": "active",
+   "version": "r2-repaired-1.0",
+   "recipe": "std_v9_repaired",
+   "target": "over25",
+   "training_start": "2021-07-30",
+   "training_end": "2026-11-01",
+   "training_cutoff": "2026-11-01",
+   "code_sha": "a29fdb1ef5f60ca096a3140a919d8124f598b399",
+   "frame_hash": "a37ab6291bf53259",
+   "n_features": 86,
+   "feature_schema_hash": "2d37b07b4f8fa149",
+   "tracks": {},
+   "imputer_version": "v9-train-only-imputer-1.1",
+   "imputer_fitted_on": [
+    "2021-07-30",
+    "2025-10-17"
+   ],
+   "missing_data_behaviour": "train-only medians (v9-train-only-imputer-1.1), `__missing` indicators, clip to the training range; 1.1 refuses a no-training-values feature; serving: a fixture missing its core form gets no probability",
+   "unsupported_features_referenced": [],
+   "serving_refusal": null,
+   "inference_probe": {
+    "standard": {
+     "verdict": "SAFE",
+     "probabilities": {
+      "complete": 0.517201,
+      "optional_gap": 0.504733,
+      "core_gap": null
+     },
+     "batch_invariant": true
+    }
+   },
+   "verdict": "SAFE"
+  },
+  {
+   "model": "Standard O/U 2.5 (repaired rollback)",
+   "config": "MODEL_FILE_STANDARD_REPAIRED",
+   "path": "models/model_v9_standard_repaired.pkl",
+   "sha256": "1f5805e63c9945cb3e1804ceb72a52dfdbd75360574183d33d76d35f8a9f1a74",
+   "status": "standby (rollback)",
+   "version": "v9_repaired-1.0",
+   "recipe": "v9_repaired",
+   "target": "over25",
+   "training_start": "2021-07-30",
+   "training_end": "2026-10-26",
+   "training_cutoff": "2026-10-28",
+   "code_sha": null,
+   "frame_hash": null,
+   "n_features": 41,
+   "feature_schema_hash": "4b5dfddba0ea13f6",
+   "tracks": {},
+   "imputer_version": "v9-train-only-imputer-1.0",
+   "imputer_fitted_on": [
+    "2021-07-30",
+    "2024-11-22"
+   ],
+   "missing_data_behaviour": "train-only medians (v9-train-only-imputer-1.0), `__missing` indicators, clip to the training range; 1.1 refuses a no-training-values feature; serving: a fixture missing its core form gets no probability",
+   "unsupported_features_referenced": [
+    "away_insidebox_last5",
+    "away_xg_last5",
+    "home_insidebox_last5",
+    "home_xg_last5"
+   ],
+   "serving_refusal": "1.0 imputer fills 4 feature(s) with no training values with the constant 0.0 (home_xg_last5, away_xg_last5, home_insidebox_last5, away_insidebox_last5)",
+   "inference_probe": {
+    "standard": {
+     "verdict": "BLOCKED",
+     "reason": "1.0 imputer fills 4 feature(s) with no training values with the constant 0.0 (home_xg_last5, away_xg_last5, home_insidebox_last5, away_insidebox_last5)"
+    }
+   },
+   "verdict": "BLOCKED"
+  },
+  {
+   "model": "New Format O/U 2.5",
+   "config": "MODEL_FILE_NEWFORMAT",
+   "path": "models/model_v9_newformat.pkl",
+   "sha256": "9198e5bd0003023d12bc0a6e58341a25bf64d9714941346bf612da5435faa7f6",
+   "status": "active",
+   "version": "r2-repaired-1.0",
+   "recipe": "nf_v9_repaired",
+   "target": "over25",
+   "training_start": "2019-02-22",
+   "training_end": "2026-11-01",
+   "training_cutoff": "2026-11-01",
+   "code_sha": "a29fdb1ef5f60ca096a3140a919d8124f598b399",
+   "frame_hash": "1547c2d8b40e4d88",
+   "n_features": 56,
+   "feature_schema_hash": "e16255c4dd9bca9f",
+   "tracks": {},
+   "imputer_version": "v9-train-only-imputer-1.1",
+   "imputer_fitted_on": [
+    "2019-02-22",
+    "2025-08-23"
+   ],
+   "missing_data_behaviour": "train-only medians (v9-train-only-imputer-1.1), `__missing` indicators, clip to the training range; 1.1 refuses a no-training-values feature; serving: a fixture missing its core form gets no probability",
+   "unsupported_features_referenced": [],
+   "serving_refusal": null,
+   "inference_probe": {
+    "new_format": {
+     "verdict": "SAFE",
+     "probabilities": {
+      "complete": 0.506101,
+      "optional_gap": 0.50717,
+      "core_gap": null
+     },
+     "batch_invariant": true
+    }
+   },
+   "verdict": "SAFE"
+  },
+  {
+   "model": "BTTS",
+   "config": "MODEL_FILE_BTTS",
+   "path": "models/model_v9_btts.pkl",
+   "sha256": "d7cd27622674f7670867148c01397dfbd3ce20386c24b8e8fe8466b601d7a7e1",
+   "status": "active",
+   "version": "r2-repaired-1.0",
+   "recipe": "side_v9_repaired",
+   "target": "btts",
+   "training_start": "2021-07-30",
+   "training_end": "2026-11-01",
+   "training_cutoff": "2026-11-01",
+   "code_sha": "a29fdb1ef5f60ca096a3140a919d8124f598b399",
+   "frame_hash": "c76557b401f3c733",
+   "n_features": 86,
+   "feature_schema_hash": "2d37b07b4f8fa149",
+   "tracks": {
+    "new_format": {
+     "n_features": 56,
+     "imputer_version": "v9-train-only-imputer-1.1"
+    }
+   },
+   "imputer_version": "v9-train-only-imputer-1.1",
+   "imputer_fitted_on": [
+    "2021-07-30",
+    "2025-10-17"
+   ],
+   "missing_data_behaviour": "train-only medians (v9-train-only-imputer-1.1), `__missing` indicators, clip to the training range; 1.1 refuses a no-training-values feature; serving: a fixture missing its core form gets no probability",
+   "unsupported_features_referenced": [],
+   "serving_refusal": null,
+   "inference_probe": {
+    "standard": {
+     "verdict": "SAFE",
+     "probabilities": {
+      "complete": 0.546674,
+      "optional_gap": 0.531793,
+      "core_gap": null
+     },
+     "batch_invariant": true
+    },
+    "new_format": {
+     "verdict": "SAFE",
+     "probabilities": {
+      "complete": 0.553201,
+      "optional_gap": 0.578213,
+      "core_gap": null
+     },
+     "batch_invariant": true
+    }
+   },
+   "verdict": "SAFE"
+  },
+  {
+   "model": "Over 1.5",
+   "config": "MODEL_FILE_OVER15",
+   "path": "models/model_v9_over15.pkl",
+   "sha256": "2af54e42b8af630d00236c234a05342a307da1c474721da7e2c00b767b0b9c82",
+   "status": "active",
+   "version": "r2-repaired-1.0",
+   "recipe": "side_v9_repaired",
+   "target": "over15",
+   "training_start": "2021-07-30",
+   "training_end": "2026-11-01",
+   "training_cutoff": "2026-11-01",
+   "code_sha": "a29fdb1ef5f60ca096a3140a919d8124f598b399",
+   "frame_hash": "66e2ff3170f38cc5",
+   "n_features": 86,
+   "feature_schema_hash": "2d37b07b4f8fa149",
+   "tracks": {
+    "new_format": {
+     "n_features": 56,
+     "imputer_version": "v9-train-only-imputer-1.1"
+    }
+   },
+   "imputer_version": "v9-train-only-imputer-1.1",
+   "imputer_fitted_on": [
+    "2021-07-30",
+    "2025-10-17"
+   ],
+   "missing_data_behaviour": "train-only medians (v9-train-only-imputer-1.1), `__missing` indicators, clip to the training range; 1.1 refuses a no-training-values feature; serving: a fixture missing its core form gets no probability",
+   "unsupported_features_referenced": [],
+   "serving_refusal": null,
+   "inference_probe": {
+    "standard": {
+     "verdict": "SAFE",
+     "probabilities": {
+      "complete": 0.767812,
+      "optional_gap": 0.758827,
+      "core_gap": null
+     },
+     "batch_invariant": true
+    },
+    "new_format": {
+     "verdict": "SAFE",
+     "probabilities": {
+      "complete": 0.770431,
+      "optional_gap": 0.794002,
+      "core_gap": null
+     },
+     "batch_invariant": true
+    }
+   },
+   "verdict": "SAFE"
+  },
+  {
+   "model": "Over 3.5",
+   "config": "MODEL_FILE_OVER35",
+   "path": "models/model_v9_over35.pkl",
+   "sha256": "ffeaa631f6e67b23854fc9235cd45068865ea919741cdbab968a156187650d62",
+   "status": "active",
+   "version": "r2-repaired-1.0",
+   "recipe": "side_v9_repaired",
+   "target": "over35",
+   "training_start": "2021-07-30",
+   "training_end": "2026-11-01",
+   "training_cutoff": "2026-11-01",
+   "code_sha": "a29fdb1ef5f60ca096a3140a919d8124f598b399",
+   "frame_hash": "5ec2758bf5fd70c5",
+   "n_features": 86,
+   "feature_schema_hash": "2d37b07b4f8fa149",
+   "tracks": {
+    "new_format": {
+     "n_features": 56,
+     "imputer_version": "v9-train-only-imputer-1.1"
+    }
+   },
+   "imputer_version": "v9-train-only-imputer-1.1",
+   "imputer_fitted_on": [
+    "2021-07-30",
+    "2025-10-17"
+   ],
+   "missing_data_behaviour": "train-only medians (v9-train-only-imputer-1.1), `__missing` indicators, clip to the training range; 1.1 refuses a no-training-values feature; serving: a fixture missing its core form gets no probability",
+   "unsupported_features_referenced": [],
+   "serving_refusal": null,
+   "inference_probe": {
+    "standard": {
+     "verdict": "SAFE",
+     "probabilities": {
+      "complete": 0.289806,
+      "optional_gap": 0.275116,
+      "core_gap": null
+     },
+     "batch_invariant": true
+    },
+    "new_format": {
+     "verdict": "SAFE",
+     "probabilities": {
+      "complete": 0.28972,
+      "optional_gap": 0.264945,
+      "core_gap": null
+     },
+     "batch_invariant": true
+    }
+   },
+   "verdict": "SAFE"
+  },
+  {
+   "model": "HT Over 0.5",
+   "config": "HT_MODEL_FILE_05",
+   "path": "models/model_ht_over05.pkl",
+   "sha256": "de69dff4c40f68065f6ad5a94b1e11518febddfc862ed7fa1858e2d429623bde",
+   "status": "active",
+   "version": "r2-repaired-1.0",
+   "recipe": "ht_v9_repaired",
+   "target": "ht_over05",
+   "training_start": "2023-07-28",
+   "training_end": "2026-11-01",
+   "training_cutoff": "2026-11-01",
+   "code_sha": "a29fdb1ef5f60ca096a3140a919d8124f598b399",
+   "frame_hash": "1afd91a4ea754568",
+   "n_features": 86,
+   "feature_schema_hash": "2d37b07b4f8fa149",
+   "tracks": {},
+   "imputer_version": "v9-train-only-imputer-1.1",
+   "imputer_fitted_on": [
+    "2023-07-28",
+    "2026-02-09"
+   ],
+   "missing_data_behaviour": "train-only medians (v9-train-only-imputer-1.1), `__missing` indicators, clip to the training range; 1.1 refuses a no-training-values feature; serving: a fixture missing its core form gets no probability",
+   "unsupported_features_referenced": [],
+   "serving_refusal": null,
+   "inference_probe": {
+    "standard": {
+     "verdict": "SAFE",
+     "probabilities": {
+      "complete": 0.740002,
+      "optional_gap": 0.720982,
+      "core_gap": null
+     },
+     "batch_invariant": true
+    }
+   },
+   "verdict": "SAFE"
+  },
+  {
+   "model": "HT Over 1.5",
+   "config": "HT_MODEL_FILE_15",
+   "path": "models/model_ht_over15.pkl",
+   "sha256": "68f5c41c597c223882c47c5ca6986f1f987e74ab994bc8b8376a4efe43ed7811",
+   "status": "active",
+   "version": "r2-repaired-1.0",
+   "recipe": "ht_v9_repaired",
+   "target": "ht_over15",
+   "training_start": "2023-07-28",
+   "training_end": "2026-11-01",
+   "training_cutoff": "2026-11-01",
+   "code_sha": "a29fdb1ef5f60ca096a3140a919d8124f598b399",
+   "frame_hash": "abb44389b02961d6",
+   "n_features": 86,
+   "feature_schema_hash": "2d37b07b4f8fa149",
+   "tracks": {},
+   "imputer_version": "v9-train-only-imputer-1.1",
+   "imputer_fitted_on": [
+    "2023-07-28",
+    "2026-02-09"
+   ],
+   "missing_data_behaviour": "train-only medians (v9-train-only-imputer-1.1), `__missing` indicators, clip to the training range; 1.1 refuses a no-training-values feature; serving: a fixture missing its core form gets no probability",
+   "unsupported_features_referenced": [],
+   "serving_refusal": null,
+   "inference_probe": {
+    "standard": {
+     "verdict": "SAFE",
+     "probabilities": {
+      "complete": 0.364164,
+      "optional_gap": 0.327598,
+      "core_gap": null
+     },
+     "batch_invariant": true
+    }
+   },
+   "verdict": "SAFE"
+  }
+ ],
+ "fantasy": [
+  {
+   "model": "Fantasy (V1 board + V2 projections)",
+   "status": "active",
+   "serialized_model": null,
+   "fitted_at_run_time": "V2 LinearResidual + MinutesModel on FINAL pre-deadline FPL snapshot gameweeks (player_model/fantasy_v2.project); V1 is formula-based on the props payloads",
+   "dependencies": [
+    {
+     "path": "models/model_player_goals.pkl",
+     "sha256": "5de94714b722dbc3fd1ecd294fa246725749cc8ea5dced294d7487f934110038",
+     "present": true
+    },
+    {
+     "path": "models/model_player_assists.pkl",
+     "sha256": "abf39bb5abbb2d6097d9d2d83082e3b7abefc22bf7fd91689b01ba8f810c499b",
+     "present": true
+    },
+    {
+     "path": "models/model_player_sot2.pkl",
+     "sha256": "5b5fad604a126baac702bef3ade27cbac662625b0e4936ba7fe48337b2621734",
+     "present": true
+    },
+    {
+     "path": "output/fpl_af_crosswalk.csv",
+     "sha256": "5caaf4f87597330bed1894dfb8dd12f4aeb0b2e33f85d000dc420eb152c893ac",
+     "present": true
+    },
+    {
+     "path": "output/fantasy_fpl_snapshots.csv",
+     "sha256": "764dffe2f96a1625d93420eae45642273e34d0cb6e97eef381ae00704f720cb3",
+     "present": true
+    },
+    {
+     "path": "output/fantasy_projection_log.csv",
+     "sha256": "623dada58f6d80d2e285d8509063e05e261768754e61abbcfee1d8da6b7562fd",
+     "present": true
+    }
+   ],
+   "props_dependency": "props payload provenance belongs to fix/props-data-audit: PENDING",
+   "verdict": "PENDING_PROPS"
+  }
+ ]
+}

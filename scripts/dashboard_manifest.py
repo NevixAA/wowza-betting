@@ -160,6 +160,11 @@ PIPELINE_ONLY = {
                                             "from the slim tree) through props_harness. Reached only lazily from "
                                             "src.integrity.data_truth.evaluate, which reports NO_DATA without it; "
                                             "the gate and evidence_refresh run it on the full repository",
+    "src/integrity/real_data_provenance.py": "real-data provenance (Data truth 8a-8c); loads the model payloads "
+                                             "(models/*.pkl, excluded from the slim tree). Reached only lazily "
+                                             "from src.integrity.data_truth.evaluate, which reports NO_DATA "
+                                             "without it; the gate and evidence_refresh run it on the full "
+                                             "repository",
     "telegram_bot/notifier.py": "Telegram sender; reached only from telegram_bot/daily_pack.send_weekly_pack and "
                                 "other send_* jobs, which the dashboard never calls",
 }
