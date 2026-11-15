@@ -4,6 +4,7 @@
     <out>/<run_id>/predictions.parquet   stage, fold, track, market, candidate, row_id, date, league, y, p
     <out>/<run_id>/metrics.json          per stage x track x market x candidate: scores, calibration, CLV
     <out>/<run_id>/per_league.csv        the same per league (leagues under min_league_n marked)
+    <out>/<run_id>/league_levels.csv     per candidate: league mean predicted vs observed (slope, gap)
     <out>/<run_id>/comparison.csv        the pre-registered comparison, Holm-corrected, with verdicts
     <out>/<run_id>/models/...            holdout-stage models (fitted on the walk-forward region only)
     <out>/<run_id>/holdout_opened.json   written BEFORE the holdout is scored; a second holdout stage
@@ -231,5 +232,6 @@ def write_reports(pred: pd.DataFrame, feat: pd.DataFrame, cfg: dict, folder: Pat
     (folder / "metrics.json").write_text(json.dumps(out, indent=2, default=str), encoding="utf-8")
     if len(pred):
         E.per_league(pred, cfg).to_csv(folder / "per_league.csv", index=False)
+        E.league_levels(pred, cfg).to_csv(folder / "league_levels.csv", index=False)
     cmp_ = E.compare(pred, cfg) if len(pred) else pd.DataFrame()
     cmp_.to_csv(folder / "comparison.csv", index=False)

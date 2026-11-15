@@ -203,3 +203,29 @@ def per_league(pred: pd.DataFrame, cfg: dict) -> pd.DataFrame:
         rows.append(dict(zip(["stage", "track", "market", "candidate", "league"], key))
                     | m | {"below_min_league_n": m["n"] < min_n})
     return pd.DataFrame(rows)
+
+
+def league_levels(pred: pd.DataFrame, cfg: dict) -> pd.DataFrame:
+    """Per (stage, track, market, candidate): does the model carry each league's OWN level?
+    Over the leagues (each with >= comparison.min_league_n rows that have a probability):
+    the n-weighted least-squares slope of the league's observed rate on its mean predicted
+    probability (1 = league levels carried, 0 = flattened to one pooled level), the weighted mean
+    absolute gap |mean p - observed| and the spread of the league means (predicted vs observed).
+    Rows without a probability are not counted (no stand-in)."""
+    min_n = int(cfg["comparison"]["min_league_n"])
+    out = []
+    for key, g in pred.groupby(["stage", "track", "market", "candidate"], sort=True):
+        g = g[np.isfinite(g["p"].astype(float)) & np.isfinite(g["y"].astype(float))]
+        lv = g.groupby("league").agg(n=("y", "size"), mean_p=("p", "mean"), observed=("y", "mean"))
+        lv = lv[lv["n"] >= min_n]
+        r = dict(zip(["stage", "track", "market", "candidate"], key)) | {"leagues": int(len(lv))}
+        if len(lv) >= 3:
+            w = lv["n"].to_numpy(float)
+            x, y = lv["mean_p"].to_numpy(float), lv["observed"].to_numpy(float)
+            xm, ym = np.average(x, weights=w), np.average(y, weights=w)
+            vx = np.average((x - xm) ** 2, weights=w)
+            r.update(level_slope=float(np.average((x - xm) * (y - ym), weights=w) / vx) if vx > 0 else float("nan"),
+                     mean_abs_gap=float(np.average(np.abs(x - y), weights=w)),
+                     spread_predicted=float(x.max() - x.min()), spread_observed=float(y.max() - y.min()))
+        out.append(r)
+    return pd.DataFrame(out)

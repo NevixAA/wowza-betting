@@ -205,8 +205,17 @@ def load_store(frame_names: pd.DataFrame | None = None, collect: Path = COLLECT)
 
     xg = pd.read_parquet(collect / "af_fixture_stats.parquet", columns=["fixture_id", "HXG", "AXG"])
     fill = pd.read_parquet(collect / "af_history_fullstats_fill.parquet", columns=["fixture_id", "home_xg", "away_xg"])
-    xg = pd.concat([xg.rename(columns={"HXG": "hxg", "AXG": "axg"}),
-                    fill.rename(columns={"home_xg": "hxg", "away_xg": "axg"})], ignore_index=True)
+    parts = [xg.rename(columns={"HXG": "hxg", "AXG": "axg"}),
+             fill.rename(columns={"home_xg": "hxg", "away_xg": "axg"})]
+    # the LIVE path: af_history_extend.yml (daily on main) writes provider rows with fixture_id and
+    # xG into output/af_history.parquet (2026-11-15: 1,486 fixtures, every one also in the tables
+    # above and equal there); rows without a fixture_id are not provider rows and are not read
+    afh = collect.parent / "af_history.parquet"
+    if afh.exists():
+        h = pd.read_parquet(afh, columns=["fixture_id", "HXG", "AXG"]).dropna(subset=["fixture_id"])
+        h["fixture_id"] = h["fixture_id"].astype("int64")
+        parts.append(h.rename(columns={"HXG": "hxg", "AXG": "axg"}))
+    xg = pd.concat(parts, ignore_index=True)
     xg = xg.dropna(subset=["hxg", "axg"]).drop_duplicates("fixture_id", keep="first")
 
     goals = pd.read_parquet(collect / "player_history_refetch.parquet",
@@ -425,3 +434,41 @@ def attach_info_features(feat: pd.DataFrame, store: InfoStore | None = None) -> 
     blk = info_features(feat, store)
     out = feat.drop(columns=[c for c in INFO_FEATURE_COLS if c in feat.columns]).join(blk)
     return out, dict(store.info)
+
+
+# ── serving hook (src/predict.py) ───────────────────────────────────────────────────────────
+
+def _feature_cols(obj) -> set:
+    """Every feature_cols list anywhere in a payload (track-split payloads nest them)."""
+    out = set()
+    if isinstance(obj, dict):
+        for k, v in obj.items():
+            if k == "feature_cols" and isinstance(v, (list, tuple)):
+                out |= set(v)
+            elif isinstance(v, dict):
+                out |= _feature_cols(v)
+    return out
+
+
+def payloads_read_info(payloads) -> bool:
+    cols = set()
+    for p in payloads:
+        cols |= _feature_cols(p)
+    return bool({c.removesuffix("__missing") for c in cols} & set(INFO_FEATURE_COLS))
+
+
+def attach_for_payloads(feat: pd.DataFrame, payloads, store: InfoStore | None = None) -> pd.DataFrame:
+    """predict.py: the block on the upcoming fixtures, ONLY when a loaded payload reads it (no
+    production payload does on 2026-11-15, so this is a no-op until the owner installs one). Same
+    function as training; the store is the live collection as committed. Kickoffs come from the
+    fixtures' kickoff_utc. A failure leaves the block missing (NaN), never a stand-in."""
+    if not payloads_read_info([p for p in payloads if p]):
+        return feat
+    out = feat.drop(columns=[c for c in INFO_FEATURE_COLS if c in feat.columns])
+    try:
+        blk = info_features(out, store or load_store(out))
+    except Exception as e:                                             # noqa: BLE001
+        import logging
+        logging.getLogger(__name__).error(f"team info block not built ({type(e).__name__}: {e}): missing")
+        blk = pd.DataFrame(np.nan, index=out.index, columns=INFO_FEATURE_COLS)
+    return out.join(blk)

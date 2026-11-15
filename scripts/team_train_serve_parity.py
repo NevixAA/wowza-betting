@@ -16,6 +16,12 @@ served number, not only in cells.
 
     python scripts/team_train_serve_parity.py <out_dir> <payload.pkl>[,<payload.pkl>...] [K]
 
+When a payload reads the team-information block (src/team_info_features.INFO_FEATURE_COLS), the
+training frame gets it from the FULL collected store (what the harness fits on) and the serving
+frame from the store TRUNCATED to what had kicked off before each match's tip time
+(InfoStore.truncated), i.e. what the live collection holds when predict runs; kickoffs come from the
+provider fixture list, as serving receives them.
+
 A payload file may be a serving payload (dict with feature_cols) or a Phase 2 harness candidate
 pickle ({'candidate': ChampionRecipe, ...}); the harness's payload is read from the candidate.
 """
@@ -59,6 +65,21 @@ def raw_columns(payload: dict) -> list[str]:
     return [c for c in payload["feature_cols"] if not c.endswith("__missing")]
 
 
+def _serving_info(sv: pd.DataFrame, up: pd.DataFrame, store, TI) -> pd.DataFrame:
+    """The info block as serving computes it: per tip time, from the store truncated there."""
+    kick = TI.kickoff_of(up, store)
+    T = kick - np.timedelta64(TI.EARLY_TIP_MAX_HOURS, "h")
+    blk = pd.DataFrame(index=up.index, columns=TI.INFO_FEATURE_COLS, dtype=float)
+    for t in np.unique(T):
+        m = T == t
+        part = TI.info_features(up[m], store.truncated(pd.Timestamp(t, tz="UTC")), kickoffs=kick[m])
+        blk.loc[up.index[m], TI.INFO_FEATURE_COLS] = part.to_numpy()
+    sv = sv.drop(columns=[c for c in TI.INFO_FEATURE_COLS if c in sv.columns])
+    for c in TI.INFO_FEATURE_COLS:
+        sv[c] = blk[c].to_numpy(dtype=float)
+    return sv
+
+
 def main(out_dir: str, payload_files: str, k: int = 6) -> dict:
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
@@ -72,6 +93,11 @@ def main(out_dir: str, payload_files: str, k: int = 6) -> dict:
     dates = sorted(hist["date"].dt.normalize().unique())[-k:]
     train = FE.build_features(hist[hist["date"] <= dates[-1]])
     train["date"] = pd.to_datetime(train["date"])
+    from src import team_info_features as TI
+    info_on = bool(set(cols) & set(TI.INFO_FEATURE_COLS))
+    if info_on:
+        store = TI.load_store(train)
+        train = train.join(TI.info_features(train, store))
 
     from src.ht_features import HT_FEATURE_COLS, attach_ht_features
     key = ["date", "league", "home_team", "away_team"]
@@ -92,6 +118,8 @@ def main(out_dir: str, payload_files: str, k: int = 6) -> dict:
             for c in HT_FEATURE_COLS:
                 if c in ht.columns:
                     sv[c] = ht[c].to_numpy()
+        if info_on:
+            sv = _serving_info(sv, up, store, TI)
         tr = up[key].merge(train, on=key, how="left", validate="one_to_one")
         n_bad = 0
         for c in cols:

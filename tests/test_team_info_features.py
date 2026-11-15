@@ -139,11 +139,23 @@ def test_info_config_validates_and_variant_lists():
         assert set(TI.INFO_FEATURE_COLS) <= set(sets["+info"][0])
         assert set(sets[""][0]) <= set(sets["+info"][0])
         labels = [lbl for lbl, _b, _s in P.candidate_runs(cfg, track, ["champion_recipe", "market_bet", "model_market_bet"])]
-        assert labels == ["champion_recipe", "champion_recipe+info", "market_bet", "model_market_bet",
-                          "model_market_bet+info"]
-    assert P.variant_blockers(cfg, cols) == []
-    assert P.variant_blockers(cfg, [c for c in cols if c != "home_info_xg_for5"])
-    assert P.feature_sets(base, "standard", cols).keys() == {""}       # the clean-retrain config is unchanged
+        assert labels == ["champion_recipe", "champion_recipe+league", "champion_recipe+logitcal",
+                          "champion_recipe+league+logitcal", "champion_recipe+info",
+                          "champion_recipe+info+league+logitcal", "market_bet", "model_market_bet",
+                          "model_market_bet+league+logitcal", "model_market_bet+info",
+                          "model_market_bet+info+league+logitcal"]
+        lv = P.feature_sets(cfg, track, cols + P.league_level_columns(cfg))
+        assert "league_asof_btts_rate" in lv["+league"][0] and "league_asof_btts_rate" not in lv[""][0]
+        assert set(TI.INFO_FEATURE_COLS) <= set(lv["+info+league+logitcal"][0])
+    assert P.run_params(cfg, "champion_recipe+logitcal") == {"calibration_input": "logit"}
+    assert P.run_params(cfg, "model_market_bet+info+league+logitcal") == {"calibration_input": "logit"}
+    assert P.run_params(cfg, "champion_recipe+info") == {} and P.run_params(cfg, "champion_recipe") == {}
+    b = C.build("model_market_bet", cfg, "standard", "over25", ["x"], overrides={"calibration_input": "logit"})
+    assert b.params["base_params"]["calibration_input"] == "logit"
+    assert P.variant_blockers(cfg, cols + P.league_level_columns(cfg)) == []
+    assert P.variant_blockers(cfg, [c for c in cols + P.league_level_columns(cfg) if c != "home_info_xg_for5"])
+    assert P.variant_blockers(cfg, cols)                              # league block missing: refused
+    assert "+info" not in P.feature_sets(base, "standard", cols)       # the clean-retrain config has no info variant
 
 
 def test_bet_prices_private_role_and_two_labels(tmp_path):
@@ -173,3 +185,27 @@ def test_model_market_bet_not_fitted_without_priced_validation():
                         "bet_over25_yes": [np.nan] * 3, "bet_over25_no": [np.nan] * 3})
     with pytest.raises(C.NotFitted):
         c.fit({"fit": val, "validation": val, "train": val, "test": val})
+
+
+def test_serving_hook_is_a_no_op_without_an_info_payload_and_builds_it_with_one():
+    s = _store(seed=11)
+    up = _rows(s).iloc[[12]].reset_index(drop=True)
+    plain = {"feature_cols": ["home_scored_last5", "home_scored_last5__missing"]}
+    assert TI.attach_for_payloads(up, [plain, None], store=s) is up
+    info = {"tracks": {"standard": {"feature_cols": ["home_info_xg_for5__missing"]}}}
+    out = TI.attach_for_payloads(up, [plain, info], store=s)
+    pd.testing.assert_frame_equal(out[TI.INFO_FEATURE_COLS], TI.info_features(up, s))
+
+
+def test_league_levels_slope_one_when_levels_carried_and_zero_when_flat():
+    from src.retrain_harness import evaluate as E
+    cfg = P.load_config(ROOT / "config" / "phase2_info.json")
+    rows = []
+    for lg, rate in (("A", 0.4), ("B", 0.5), ("C", 0.6)):
+        y = np.r_[np.ones(int(rate * 200)), np.zeros(200 - int(rate * 200))]
+        for cand, p in (("carried", rate), ("flat", 0.5)):
+            rows.append(pd.DataFrame({"stage": "holdout", "track": "standard", "market": "btts", "candidate": cand,
+                                      "league": lg, "y": y, "p": p}))
+    t = E.league_levels(pd.concat(rows), cfg).set_index("candidate")
+    assert abs(t.at["carried", "level_slope"] - 1) < 1e-9 and t.at["carried", "mean_abs_gap"] < 1e-9
+    assert np.isnan(t.at["flat", "level_slope"]) and t.at["flat", "spread_predicted"] == 0

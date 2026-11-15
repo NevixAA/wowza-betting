@@ -403,6 +403,10 @@ def predict_upcoming(
     from src import data_loader as _dl
     feat = build_upcoming_features(upcoming, historical,
                                    identity_aliases=getattr(_dl, "IDENTITY_ALIASES", None))
+    # the team-information block (src/team_info_features), built only when a loaded payload reads
+    # it: the same function the Phase 2 harness trains on, as of kickoff - 153 h
+    from src import team_info_features as _ti
+    feat = _ti.attach_for_payloads(feat, [payload, payload_newformat, *(side_payloads or {}).values()])
 
     # 5. Model prediction — route each fixture to the correct model
     log.info("Running ensemble model(s)...")
