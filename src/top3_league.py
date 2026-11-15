@@ -141,6 +141,7 @@ R_NOT_APPLIED = "BAR_NOT_OWNER_APPLIED"
 R_BAD_BAR = "LEAGUE_BAR_INVALID"
 R_BELOW = "BELOW_LEAGUE_BAR"
 R_LATE = "FIRST_SEEN_AFTER_FREEZE"
+R_PRE_START = "FIRST_SEEN_BEFORE_TOP3_START"   # go-live rehearsal 2026-11-15: TOP-3 starts at go-live
 R_STARTED = "STARTED_BEFORE_ISSUE"
 R_DIRECTION = "DIRECTION_CONFLICT"
 R_RANK = "RANKED_BELOW_TOP3"
@@ -181,6 +182,23 @@ def freeze_lead_min(env: dict | None = None) -> float | None:
     except ValueError:
         return None
     return x if math.isfinite(x) and x > 0 else None
+
+
+START_CONFIG = Path("config") / "top3_paper_tracks.json"
+
+
+def top3_start(root: Path | None = None) -> pd.Timestamp | None:
+    """TOP-3 starts at go-live (owner 2026-11-21): the start_utc of config/top3_paper_tracks.json, the one
+    start the TOP-3 protocol pins (the paper tracks gate on it too). None when unset or unreadable (no
+    default): run() then freezes nothing (status TOP3_START_NOT_SET)."""
+    v = _read_json((Path(root) if root else ROOT) / START_CONFIG).get("start_utc")
+    try:
+        ts = pd.Timestamp(v) if v else None
+    except (TypeError, ValueError):
+        return None
+    if ts is None or pd.isna(ts):
+        return None
+    return ts.tz_localize("UTC") if ts.tzinfo is None else ts.tz_convert("UTC")
 
 
 # ── the league's own bars ───────────────────────────────────────────────────────────────────────
@@ -331,9 +349,12 @@ def _direction(market: str, side: str) -> str | None:
 
 
 def select_week(q: pd.DataFrame, freeze: pd.Timestamp, issue: pd.Timestamp,
-                committed: dict | None = None, stats: pd.DataFrame | None = None) -> tuple[pd.DataFrame, dict]:
+                committed: dict | None = None, stats: pd.DataFrame | None = None,
+                start: pd.Timestamp | None = None) -> tuple[pd.DataFrame, dict]:
     """TOP-3 of ONE league-week from qualified candidates `q` (qualify()). Returns (picks with
-    top3_rank 1..k, k <= 3, never padded; {reason: count} for every candidate not picked). Pure."""
+    top3_rank 1..k, k <= 3, never padded; {reason: count} for every candidate not picked). Pure.
+    `start` (the TOP-3 start, top3_start()): a candidate first seen before it was frozen by the pre-go-live
+    models and is never a member (FIRST_SEEN_BEFORE_TOP3_START)."""
     committed = committed or {}
     excluded: Counter = Counter()
 
@@ -350,6 +371,8 @@ def select_week(q: pd.DataFrame, freeze: pd.Timestamp, issue: pd.Timestamp,
     for i, r in enumerate(q.to_dict("records")):
         if not (pd.notna(fs.iloc[i]) and fs.iloc[i] < freeze):
             bump(R_LATE)
+        elif start is not None and fs.iloc[i] < start:
+            bump(R_PRE_START)
         elif r.get("reason"):
             bump(r["reason"])
         elif bool(r.get("league_wide")):
@@ -425,10 +448,15 @@ def policy_switch(policy: dict, league: str) -> str:
 
 def freeze_due(cands: pd.DataFrame, weeks_done: set, ctx: dict, now: pd.Timestamp, lead_min: float,
                committed: dict | None = None, policy: dict | None = None,
-               real_checker=None, stats: pd.DataFrame | None = None) -> tuple[pd.DataFrame, pd.DataFrame]:
+               real_checker=None, stats: pd.DataFrame | None = None,
+               start: pd.Timestamp | None = None) -> tuple[pd.DataFrame, pd.DataFrame]:
     """(new pick rows, new week rows) for every league-week whose FREEZE has passed and that is not
     decided yet. A week with 0 picks is still recorded (decided once, with its reasons). Pure apart
-    from the injected policy / checker."""
+    from the injected policy / checker.
+    `start` = the TOP-3 start (top3_start(); run() always passes it, and freezes nothing without it): a
+    league-week whose FREEZE is before it is never decided - TOP-3 starts at go-live, so the first run
+    after the switch-on cannot back-fill past weeks with picks issued after their freeze - and a candidate
+    first seen before it is never a member (go-live rehearsal 2026-11-15, 44 past weeks back to W43)."""
     if cands is None or cands.empty:
         return pd.DataFrame(columns=PICK_COLS), pd.DataFrame(columns=WEEK_COLS)
     cands = LW._plain(cands)
@@ -442,10 +470,10 @@ def freeze_due(cands: pd.DataFrame, weeks_done: set, ctx: dict, now: pd.Timestam
         if not week or lock is None or week in weeks_done:
             continue
         freeze = lock - pd.Timedelta(minutes=float(lead_min))
-        if now < freeze:
+        if now < freeze or (start is not None and freeze < start):
             continue
         q = qualify(g, ctx)
-        picks, excl = select_week(q, freeze, now, committed, stats)
+        picks, excl = select_week(q, freeze, now, committed, stats, start)
         league = str(g["league"].iloc[0])
         n_q = int((q["reason"] == "").sum()) if len(q) else 0
         n_top = int((picks["list"] == SELECTION_MODE).sum()) if len(picks) else 0
@@ -516,14 +544,18 @@ def run(now=None, out_dir: Path | None = None, root: Path | None = None, env: di
                 committed = _committed()
             from src.direction_guard import real_track_checker
             stats = load_t3_stats(root)
-            if stats is None:
+            start = top3_start(root)
+            if start is None:
+                # fail closed: TOP-3 starts at go-live; without its pinned start nothing is frozen or sent
+                res["status"] = "TOP3_START_NOT_SET"
+            elif stats is None:
                 # fail closed (owner 2026-11-11): no frozen T3 statistics, no ranking, nothing frozen or sent
                 res["status"] = "T3_STATS_MISSING"
             else:
                 ws = weeks_store(od)
                 done = set(ws.read()["league_week_id"]) if len(ws.read()) else set()
                 picks, weeks = freeze_due(cs.read(), done, bars_context(root), now, lead, committed, _policy(),
-                                          real_track_checker(), stats)
+                                          real_track_checker(), stats, start)
                 res["picks_appended"] = picks_store(od).append(picks)
                 res["weeks_decided"] = ws.append(weeks)
                 res["status"] = "OK"
@@ -634,10 +666,25 @@ def write_report(now=None, out_dir: Path | None = None, lead: float | None = Non
     return rep
 
 
-def message(picks: pd.DataFrame) -> str:
-    """Telegram text for one league-week's picks (HTML). The edge shown is the CALIBRATED one (owner 2026-11-11)."""
+def _stake_label(real_checker, r: dict) -> str:
+    """'💰 Staked' when the pick's CELL stakes under the bankroll policy (src/bankroll_policy.stake_entry via
+    direction_guard.real_track_checker), else '📄 Paper' - per line, never a blanket label (go-live rehearsal
+    2026-11-15: the Argentina league rule is staked while the TOP-3 track is paper)."""
+    try:
+        real = bool(real_checker(r.get("model_type"), MARKETS[str(r["market"])][1], r.get("side"), r.get("league")))
+    except Exception:                                                  # noqa: BLE001 - a label can only under-claim
+        real = False
+    return "💰 Staked" if real else "📄 Paper"
+
+
+def message(picks: pd.DataFrame, real_checker=None) -> str:
+    """Telegram text for one league-week's picks (HTML). The edge shown is the CALIBRATED one (owner 2026-11-11).
+    Each line carries its own cell's stake (Staked / Paper); `real_checker` defaults to the live policy's."""
     from html import escape
     from src.calibrated_edge import edge_text
+    if real_checker is None:
+        from src.direction_guard import real_track_checker
+        real_checker = real_track_checker()
     r0 = picks.iloc[0]
     lines = [f"🏆 <b>TOP-3 {escape(str(r0['league']))}</b> · {escape(str(r0['league_week_id']).split('|')[-1])}"]
     lab = {"OU25": "O/U 2.5", "BTTS": "BTTS", "OVER15": "Over 1.5", "OVER35": "Over 3.5"}
@@ -650,15 +697,17 @@ def message(picks: pd.DataFrame) -> str:
         mk = lab.get(str(r["market"]), str(r["market"]))
         lines.append(f"{r['top3_rank']}. {escape(str(r['home_team']))} v {escape(str(r['away_team']))} - "
                      f"{mk} {side} @ {float(r['odds']):.2f} · {r['slot']} · {r['cell_status']} "
-                     f"({edge_text(pd.to_numeric(r.get('edge_calibrated'), errors='coerce') * 100)})")
+                     f"({edge_text(pd.to_numeric(r.get('edge_calibrated'), errors='coerce') * 100)})"
+                     f" · {_stake_label(real_checker, r)}")
     for (mk, sd), g in rule.groupby(["market", "side"], sort=True):
         side = "Yes" if str(sd) == "YES" else str(sd).title()
         lines.append(f"📏 League rule: {lab.get(str(mk), str(mk))} {side}, every match "
-                     f"({g['cell_status'].iloc[0]}, outside the 3)")
+                     f"({g['cell_status'].iloc[0]}, outside the 3) · {_stake_label(real_checker, g.iloc[0].to_dict())}")
         for r in g.sort_values("top3_rank", key=lambda s: s.astype(int)).to_dict("records"):
             lines.append(f"   • {escape(str(r['home_team']))} v {escape(str(r['away_team']))} @ {float(r['odds']):.2f}")
-    lines.append("<i>Paper track. Each tip cleared its league's own owner-approved bar; ranked by cautious "
-                 "calibrated value (T3). Fewer than 3 = fewer cleared the bar.</i>")
+    lines.append("<i>TOP-3 is a Paper track; each line's stake follows its own cell (Staked / Paper). Each tip "
+                 "cleared its league's own owner-approved bar; ranked by cautious calibrated value (T3). Fewer "
+                 "than 3 = fewer cleared the bar.</i>")
     return "\n".join(lines)
 
 
@@ -677,14 +726,20 @@ def notify(out_dir: Path | None = None, env: dict | None = None, sender=None) ->
 
         def sender(text):
             return _send(token, chat, text)
-    picks = picks_store(od).read()
+    # PAPER leagues (config.PAPER_LEAGUES, e.g. USA MLS) are never sent: ledgered and graded only, as on every
+    # other send path (go-live rehearsal 2026-11-15)
+    picks = config.drop_paper_leagues(picks_store(od).read())
     nf = od / NOTIFIED_NAME
     sent = set(_read_json(nf).get("weeks", []))
     n = 0
+    checker = None
     for week, g in (picks.groupby("league_week_id", sort=True) if len(picks) else []):
         if week in sent:
             continue
-        if sender(message(g)):
+        if checker is None:
+            from src.direction_guard import real_track_checker
+            checker = real_track_checker()
+        if sender(message(g, checker)):
             sent.add(week)
             n += 1
     if n:

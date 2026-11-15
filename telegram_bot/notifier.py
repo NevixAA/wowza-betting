@@ -495,19 +495,25 @@ def instant_tip_allowed(match_date, notified: set, now: "datetime | None" = None
     return f"DIGEST|{today}" in notified or now.hour >= 12
 
 
-def _paper_track_note(model_type: str, market: str, side: str) -> str:
-    """'' when the tip's bankroll-policy track is real money, else a PAPER line for the message.
+def _paper_track_note(model_type: str, market: str, side: str, league=None) -> str:
+    """'' when the tip's bankroll-policy entry is real money, else a PAPER line for the message.
 
     A tip on a PAPER track (new_format|OU25_UNDER since 2026-11-02, owner: "shown and recorded, never
     staked") is still sent, but must not read as a staked bet. Policy unreadable -> labelled paper
-    (a label can only under-claim, never invent a stake). Phase 2, 2026-11-03."""
+    (a label can only under-claim, never invent a stake). Phase 2, 2026-11-03.
+    The entry is src/bankroll_policy.stake_entry (go-live rehearsal 2026-11-15): with per-cell staking
+    on, ONLY the league's own cell entry stakes - an ACTIVE track no longer hides a PAPER cell."""
     try:
-        from src.bankroll_policy import REAL_STATES, load_policy, positive_fraction, track_key
+        from src.bankroll_policy import (REAL_STATES, cell_key, cell_staking_on, load_policy,
+                                         positive_fraction, stake_entry, track_key)
         tk = track_key(model_type, market, side)
-        t = (load_policy().get("tracks") or {}).get(tk) or {}
+        pol = load_policy()
+        on = cell_staking_on(pol)
+        t = (stake_entry(pol, tk, league) if on else (pol.get("tracks") or {}).get(tk)) or {}
         if t.get("state") in REAL_STATES and positive_fraction(t):
             return ""
-        return f"📄 <b>PAPER</b> — not staked (track {tk}: {t.get('state', 'not in policy')})"
+        where = f"cell {cell_key(tk, league)}" if on else f"track {tk}"
+        return f"📄 <b>PAPER</b> — not staked ({where}: {t.get('state', 'not in policy')})"
     except Exception as e:                                            # noqa: BLE001
         return f"📄 <b>PAPER</b> — not staked (stake policy unreadable: {type(e).__name__})"
 
@@ -649,7 +655,7 @@ def notify_new_snipers() -> int:
             # Drift is information only since 2026-10-26: it never changes the tier above.
             f"🔀 Drift: {_drift_sig} {drift} (info only)"
         )
-        _paper = _paper_track_note(_mt, "OU25", side)
+        _paper = _paper_track_note(_mt, "OU25", side, row.get("league"))
         if _paper:
             msg += f"\n{_paper}"
 
@@ -2920,6 +2926,14 @@ def notify_side_bets() -> int:
             + threshold_source_line(row.get("threshold_source")) +
             f"⚠️ Check your bookmaker's {label} market"
         )
+        # Same per-cell PAPER line as the O/U tips (go-live rehearsal 2026-11-15): a side tip whose cell
+        # has no staking entry must not read as a staked bet.
+        from src.stake_plan import SIDE_MARKET as _SIDE_TRACK_MARKET
+        _paper = _paper_track_note(str(row.get("model_type") or "").strip(),
+                                   _SIDE_TRACK_MARKET.get(str(mkt), str(mkt).upper()),
+                                   row.get("side"), row.get("league"))
+        if _paper:
+            msg += f"\n{_paper}"
 
         if _send(token, chat_id, msg):
             notified.add(key)
