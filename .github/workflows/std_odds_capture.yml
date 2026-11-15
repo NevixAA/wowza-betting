@@ -98,7 +98,11 @@ jobs:
     # which is the failure this capture exists to avoid.
     # 2026-10-22: CAP 170 (adaptive keep-alive) + checkout/pip/commit. A timeout below the cap
     # would kill the run mid-window and commit nothing.
-    timeout-minutes: 195
+    # 2026-11-16: CAP 170 -> 220 + BRIDGE (src/capture_schedule): a run now stays alive for a later
+    # kickoff whose T-25m it can still reach before the cap, instead of betting that GitHub delivers
+    # another firing in time (on 2026-11-14 it delivered none 12:59-15:52 and the 15:00 slot got 0%
+    # T-30m). Timeout keeps the same 25-minute margin over the cap.
+    timeout-minutes: 245
     permissions:
       contents: write
 
@@ -223,7 +227,7 @@ jobs:
           export LOOP_BASE_MIN="${{ github.event.inputs.loop_minutes }}"
           [ -n "$LOOP_BASE_MIN" ] || LOOP_BASE_MIN=40
           export LOOP_KEEPALIVE_MIN=90
-          export LOOP_CAP_MIN=170
+          export LOOP_CAP_MIN=220
           rm -f "$CAPTURE_STATE"
 
           # ── WIDE PASSES FROM INSIDE THE LOOP (owner-approved 2026-10-26) ─────────────────────

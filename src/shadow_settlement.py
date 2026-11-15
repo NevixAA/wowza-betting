@@ -72,8 +72,8 @@ STALE_CLOSE = "STALE_CLOSE_GT_30MIN"
 CLOSE_MAX_MIN = 30.0
 
 #: P1 2026-10-22: a row is settled only this long after kickoff. The NEAR capture loops now stay
-#: alive up to 170 minutes (src/capture_schedule.CAP_MIN) and commit once at the end, so a close
-#: observed at T-5m can reach main up to ~3h after kickoff. Settling at FINISH_GRACE_MIN (135)
+#: alive up to 220 minutes (src/capture_schedule.CAP_MIN; 170 before 2026-11-16) and commit
+#: once at the end, so a close observed at T-5m can reach main up to ~3h40m after kickoff. Settling at FINISH_GRACE_MIN (135)
 #: would freeze such a row as STALE before its close landed — settled rows are never re-graded.
 CLOSE_SETTLE_DELAY_MIN = 240
 
