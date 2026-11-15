@@ -469,7 +469,7 @@ def test_a_silently_billed_502_is_booked_to_the_failed_request():
     m, _, booked = _meter([(502, None, None), (200, 20, START - 40)], sports=[START - 20, START - 20])
     assert m.call("/x", {}, 20, "B1", key="u1")[0] == 200
     assert m.spent == 40 and booked == [("u1", "B1", 20)]
-    assert m.reconciled == [{"unit_key": "u1", "tier": "B1", "credits": 20}]
+    assert m.reconciled == [{"unit_key": "u1", "tier": "B1", "credits": 20, "upper_bound": False}]
 
 
 def test_a_live_burst_during_the_back_off_is_excluded_and_does_not_stop():
@@ -752,3 +752,98 @@ def test_cli_probe_keys_loads_the_keyless_leagues_and_runs_only_the_probe(monkey
     monkeypatch.setenv("ODDS_HIST_RUN_CREDIT_CAP", "200")
     assert CLI.main(["--store", str(tmp_path / "store"), "--probe-keys", "--max-minutes", "5"]) == OH.EXIT_DONE
     assert set(seen["include"]) == set(OH.KEYLESS_SEARCH) and (PT, "2024-06-01") in seen["days"]
+
+
+def test_a_bt_only_league_enters_bt_alone_and_bt_buys_its_listings():
+    # owner 2026-11-11: Portugal's key was added for BT only (no B1 / B4 / C-tiers unless asked)
+    assert OH.TIER_ONLY_LEAGUES[PT] == ("BT",)
+    days = {(PT, D): [("Benfica", "Porto")], (LG, D): [("Austin", "Dallas")]}
+    plan = OH.build_plan(days, OH.TIERS, props={}, s_ok=set(), nf={LG})
+    for t, units in plan["units"].items():
+        lgs = {u.league for u in units}
+        assert (PT in lgs) == (t == "BT"), t
+    assert (PT, D) in plan["lookups"]["BT"] and (PT, D) not in plan["lookups"]["B1"]
+    assert (LG, D) in plan["lookups"]["B1"]
+
+
+# ── the free /sports reading itself fails (run 43023059924 stopped on a /sports 502) ─────────────────
+class SportsScript(Script):
+    """/sports answers from `sports`: an int (remaining), ('status', code) or an exception."""
+
+    def get(self, url, params=None, timeout=None):
+        if url.endswith("/sports"):
+            self.sports_reads += 1
+            v = self.sports.pop(0) if len(self.sports) > 1 else self.sports[0]
+            if isinstance(v, Exception):
+                raise v
+            if isinstance(v, tuple):
+                return Resp(v[1], None, None, None)
+            return Resp(200, [], 0, v)
+        return super().get(url, params, timeout)
+
+
+def _smeter(steps, sports):
+    sleeps, booked = [], []
+    m = OH.Meter(KEY, floor=OH.MIN_FLOOR, run_cap=10 ** 9, max_seconds=600, session=SportsScript(steps, sports),
+                 pause=0, sleep=sleeps.append, on_reconciled=lambda k, t, c: booked.append((k, t, c)))
+    m.remaining = m.remaining_start = START
+    return m, sleeps, booked
+
+
+def test_a_sports_502_at_the_start_is_retried():
+    m, sleeps, _ = _smeter([], [("status", 502), START])
+    assert m.read_remaining() == START and sleeps == [5] and m.sports_retries == 1
+
+
+def test_a_sports_502_after_a_failed_call_is_retried_and_the_run_goes_on():
+    #                 502 on the paid call   /sports 502, then ok      after the back-off sleep
+    m, sleeps, booked = _smeter([(502, None, None), (200, 20, START - 20)], [("status", 502), START, START])
+    status, _, c = m.call("/x", {}, 20, "B1", key="u1")
+    assert status == 200 and c == 20 and m.spent == 20 and booked == []
+    assert sleeps == [5, 5]                 # the /sports retry, then the request's own back-off
+
+
+def test_a_delayed_settle_reading_books_at_most_the_requests_maximum_and_never_stops():
+    # /sports needed a retry after the failure, and live spent 300 meanwhile: only <= max_cost can be ours
+    m, _, booked = _smeter([(502, None, None), (200, 20, START - 340)],
+                           [("status", 503), START - 320, START - 320])
+    assert m.call("/x", {}, 20, "B1", key="u1")[0] == 200
+    assert booked == [("u1", "B1", 20)] and m.live_spend_during_backoff == 300
+    assert m.reconciled[0]["upper_bound"] is True
+
+
+def test_a_timeout_on_sports_is_retried():
+    import requests
+    m, sleeps, _ = _smeter([], [requests.exceptions.ConnectionError("https://x?apiKey=SECRET"), START])
+    assert m.read_remaining() == START and sleeps == [5]
+
+
+def test_sports_failing_on_every_retry_stops_cleanly_and_the_unit_stays_retryable(tmp_path):
+    m, sleeps, _ = _smeter([], [("status", 502)])
+    with pytest.raises(OH.Stop) as e:
+        m.read_remaining()
+    assert "remaining unknown" in e.value.reason and sleeps == [5, 20, 60]
+
+    class Down(FakeAPI):
+        """The paid call for ev-aus fails, then /sports is down for good."""
+        def __init__(self):
+            super().__init__()
+            self.down = False
+
+        def get(self, url, params=None, timeout=None):
+            if url.endswith("/sports") and self.down:
+                return Resp(502, None, None, None)
+            if "/events/ev-aus/" in url:
+                self.down = True
+                return Resp(502, None, None, None)
+            return super().get(url, params, timeout)
+    code, reason, store, _ = _run(tmp_path, Down())
+    assert code == OH.EXIT_ERROR and "remaining unknown" in reason
+    assert not any("ev-aus" in k for k in store.done)          # never marked done: retried on resume
+
+
+def test_a_4xx_on_sports_is_not_retried():
+    m, sleeps, _ = _smeter([], [("status", 401)])
+    with pytest.raises(OH.Stop):
+        m.read_remaining()
+    assert sleeps == []

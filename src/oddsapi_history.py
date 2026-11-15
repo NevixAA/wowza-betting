@@ -314,8 +314,13 @@ class Unit:
         return CREDITS_PER_MARKET_REGION * len(self.markets) * len(self.regions)
 
 
+# Leagues bought ONLY in the listed tiers (owner 2026-11-11: Portugal's OddsAPI key was added after the
+# probe-keys run 43035181427 for the BET-TIME tier only; no B1 close / B4 / C-tiers unless the owner asks).
+TIER_ONLY_LEAGUES = {"Portuguese Primeira Liga": ("BT",)}
+
+
 def _tier_leagues(t: Tier, days: dict, props: dict, s_ok: set | None, nf: set) -> set:
-    present = {lg for lg, _ in days}
+    present = {lg for lg, _ in days if t.name in TIER_ONLY_LEAGUES.get(lg, (t.name,))}
     if t.leagues == "props":
         return present & set(props)
     team = {lg for lg in present if not _props_only(lg)}
@@ -827,6 +832,7 @@ class Meter:
         self.retries = 0
         self.reconciled: list = []       # [{unit_key, tier, credits}] booked to failed requests
         self.live_spend_during_backoff = 0   # the shared key's spend while we slept: never ours
+        self.sports_retries = 0
         self.on_reconciled = on_reconciled
 
     def _get(self, path: str, params: dict):
@@ -835,15 +841,6 @@ class Meter:
         except Exception as e:                                      # noqa: BLE001
             # the exception text can hold the URL (and so the key): only its type is ever reported
             raise Stop(EXIT_ERROR, f"network error {type(e).__name__}") from None
-
-    def read_remaining(self):
-        """GET /sports is free: it reads the credits left before the first paid call."""
-        r = self._get("/sports", {})
-        rem = r.headers.get("x-requests-remaining")
-        if r.status_code != 200 or rem is None:
-            raise Stop(EXIT_ERROR, f"credits remaining unknown (status {r.status_code})")
-        self.remaining = self.remaining_start = int(float(rem))
-        return self.remaining
 
     def check(self, max_cost: int):
         if self.remaining is None:
@@ -867,31 +864,60 @@ class Meter:
         self.remaining = int(float(rem))
         return r.json()
 
+    def _sports_read(self) -> tuple[int, bool]:
+        """(x-requests-remaining, whether it needed retries) from GET /sports, which the provider docs
+        say "does not count against the usage quota" (v4 guide). A 5xx / 429 / timeout is retried with
+        the same bounded back-off as a paid call (run 43023059924 stopped on a single /sports 502);
+        any other status, a 200 without the header, or a failure on every retry stops the run.
+        Nothing is ever estimated."""
+        status = None
+        for attempt in range(len(RETRY_WAITS) + 1):
+            try:
+                r = self._get("/sports", {})
+            except Stop:
+                r = None                                 # timeout / dropped connection
+            status = None if r is None else r.status_code
+            rem = None if r is None else r.headers.get("x-requests-remaining")
+            if r is not None and status == 200 and rem is not None:
+                return int(float(rem)), attempt > 0
+            if r is not None and status not in RETRYABLE_STATUS:
+                raise Stop(EXIT_ERROR, f"credits remaining unknown from /sports (status {status})")
+            if attempt < len(RETRY_WAITS):
+                self.sports_retries += 1
+                self.sleep(RETRY_WAITS[attempt])
+        raise Stop(EXIT_ERROR, f"credits remaining unknown from /sports after {len(RETRY_WAITS)} retries "
+                               f"(status {status})")
+
+    def read_remaining(self):
+        """GET /sports is free: it reads the credits left before the first paid call."""
+        self.remaining = self.remaining_start = self._sports_read()[0]
+        return self.remaining
+
     def sports_remaining(self) -> int:
-        """x-requests-remaining from GET /sports, which the provider docs say "does not count against
-        the usage quota" (v4 guide). A missing header stops the run: nothing is ever estimated."""
-        r = self._get("/sports", {})
-        rem = r.headers.get("x-requests-remaining")
-        if r.status_code != 200 or rem is None:
-            raise Stop(EXIT_ERROR, f"credits remaining unknown from /sports (status {r.status_code})")
-        return int(float(rem))
+        return self._sports_read()[0]
 
     def _settle_fault(self, key, tier: str, max_cost: int, reported: bool):
         """Right after a failed attempt, with no other collector call in between: read /sports. If
         the attempt reported no cost, the drop from the last known remaining value to that reading is
-        its unexplained cost, booked to the request ('unreported_cost_reconciled'); more than the
-        request's maximum stops the run. Returns the reading."""
-        now = self.sports_remaining()
+        its unexplained cost, booked to the request ('unreported_cost_reconciled'). When the reading
+        came at once, a drop above the request's maximum stops the run. When /sports itself needed
+        retries (the shared key's live spend can land in that wait), the request is booked AT MOST its
+        maximum possible cost (an upper bound, flagged) and the rest is the shared key's live spend:
+        a request can never cost more than its maximum, so nothing of ours is hidden. Returns the reading."""
+        now, delayed = self._sports_read()
         if not reported:
             drop = self.remaining - now
-            if drop > max_cost:
+            if drop > max_cost and not delayed:
                 raise Stop(EXIT_ERROR, f"unexplained credit drop {drop} > one request's maximum {max_cost}")
-            if drop > 0:
-                self.spent += drop
-                self.by_tier[tier] += drop
-                self.reconciled.append({"unit_key": key, "tier": tier, "credits": drop})
+            ours = min(drop, max_cost)
+            if drop > ours:
+                self.live_spend_during_backoff += drop - ours
+            if ours > 0:
+                self.spent += ours
+                self.by_tier[tier] += ours
+                self.reconciled.append({"unit_key": key, "tier": tier, "credits": ours, "upper_bound": delayed})
                 if self.on_reconciled:
-                    self.on_reconciled(key, tier, drop)
+                    self.on_reconciled(key, tier, ours)
         self.remaining = now
         return now
 
@@ -1139,6 +1165,7 @@ class Collector:
                     "retries": self.m.retries, "failed_requests": self.m.failed_requests,
                     "unreported_cost_reconciled": self.m.reconciled,
                     "live_spend_during_backoff": self.m.live_spend_during_backoff,
+                    "sports_retries": self.m.sports_retries,
                     "stats": self.stats, "finished_at": iso(datetime.now(timezone.utc))}
             self.store.write_run(info)
             say(f"stop: {reason}; calls {self.m.calls:,}; credits spent {self.m.spent:,}; "
