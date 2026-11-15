@@ -3,18 +3,16 @@ Sharp Money Tracker v2
 ======================
 Tracks odds drift across all enabled leagues.
 
-Improvements over v1:
-  - Volume-weighted odds: median across ALL bookmakers (not just first)
-  - Steam detection: flags moves >3% in a single 2h window (fast money)
-  - Consensus score: % of books agreeing on direction (coordinated = sharper)
-  - Upgraded signal labels: STEAM_STRONG, STEAM_SHARP beat regular signals
-
-Signals (ranked by strength):
-  STEAM_STRONG — steam + >10% total drift  (highest confidence)
-  STEAM_SHARP  — steam + 5–10% total drift
-  STRONG       — >10% drift, no steam
-  SHARP        — 5–10% drift
-  FADING       — odds lengthening (square money, avoid)
+Signals (owner 2026-11-15: per-league thresholds, no global constant; definition from research
+sharp-filter/1). A side's MOVE is its fair-probability change from the snapshot closest to 72 h before
+kickoff ([60, 84] h) to the current one; it is judged against the same league's moves (same market,
+side for 1X2, lead-time bucket) of fixtures dated strictly earlier. Fewer than 100 such fixtures: no
+signal.
+  STRONG       — move toward the side above the league's 90th percentile
+  SHARP        — above the league's 75th percentile
+  FADING       — move against the side above the 75th percentile
+  STEAM_ prefix — the last window's move above the league's 90th percentile of single-window moves
+                  (at least 4 books)
 
 Output:
   output/sharp_history.json  — full snapshot history per match/market
@@ -42,9 +40,8 @@ log = logging.getLogger(__name__)
 SHARP_HISTORY_FILE = config.OUTPUT_DIR / "sharp_history.json"
 SHARP_TIPS_FILE    = config.OUTPUT_DIR / "sharp_tips.csv"
 
-DRIFT_SHARP_PCT  = 0.05   # 5%  = sharp signal
-DRIFT_STRONG_PCT = 0.10   # 10% = strong signal
-STEAM_PCT        = 0.03   # 3%  move in one 2h window = steam
+# The global DRIFT_SHARP_PCT / DRIFT_STRONG_PCT / STEAM_PCT constants are GONE (owner 2026-11-15): every
+# signal threshold is now learned per league from strictly earlier fixtures (see "Signals" below).
 DAYS_AHEAD       = 14
 
 # SNAPSHOT CADENCE (Data Truth round 5, owner: Pro 1X2 keeps its 12h max price age, so snapshot more often).
@@ -296,171 +293,278 @@ def _update_history(history: dict, events: list[dict]) -> dict:
     return history
 
 
-# ── Drift + steam calculation ─────────────────────────────────────────────────
+# ── Signals: per-league thresholds learned from strictly earlier fixtures ─────
+#
+# OWNER 2026-11-15 ("Paper track + capture", item 3). The old rule labelled a move with GLOBAL constants
+# (5% / 10% decimal drift since the first snapshot ever seen, 3% in one window = steam), the same number
+# for every league and market, on decimal odds (a 5% drift at 1.5 is not the move a 5% drift at 4.0 is).
+# Research sharp-filter/1 (research/sharp-filter, reports/SHARP_FILTER_RESEARCH.md) defined a move instead:
+#
+#   * the move of a side = its FAIR probability now minus at the OPEN snapshot, the open being the
+#     snapshot closest to 72 h before kickoff inside [60, 84] h (the tracker's median pair / triple,
+#     power de-vig for O/U 2.5, proportional for 1X2);
+#   * a move is judged against the SAME league's moves (same market, side for 1X2, and lead-time bucket,
+#     because a move keeps growing toward kickoff) of fixtures dated STRICTLY EARLIER and already
+#     kicked off - learned from this tracker's own history every run, never a typed number;
+#   * fewer than MIN_HISTORY such earlier fixtures -> NO signal for that row (missing, counted in the
+#     log), never a global fallback.
+#
+# Labels keep their names for every reader (sharp_tips.csv, sharp_ledger.csv, Telegram):
+#   SHARP  move toward the side above the league's SHARP_Q quantile of |move|
+#   STRONG move toward the side above the league's STRONG_Q quantile
+#   FADING move against the side above the SHARP_Q quantile
+#   STEAM_ prefix: the LAST window's move toward the side above the league's STEAM_Q quantile of
+#                  single-window moves (thin-market guard: at least 4 books), learned the same way.
+OPEN_LEAD_H = (60.0, 84.0)
+OPEN_TARGET_H = 72.0
+#: lead-time buckets (h, lower exclusive, upper inclusive); a fixture outside them has no signal
+LEAD_BUCKETS_H = ((36.0, 60.0), (18.0, 36.0), (10.0, 18.0), (4.0, 10.0), (0.0, 4.0))
+SHARP_Q = 0.75          # sharp-filter/1 protocol quantile
+STRONG_Q = 0.90
+STEAM_Q = 0.90
+MIN_HISTORY = 100       # sharp-filter/1 protocol min_history
+MIN_STEAM_BOOKS = 4
+SIDES = {"totals": (("OVER", "odds_over"), ("UNDER", "odds_under")),
+         "h2h": (("HOME", "odds_home"), ("AWAY", "odds_away"), ("DRAW", "odds_draw"))}
+
+
+def _ts(s) -> datetime | None:
+    try:
+        return datetime.strptime(str(s)[:16], "%Y-%m-%d %H:%M")
+    except (TypeError, ValueError):
+        return None
+
+
+def _lead_h(ko: datetime, at) -> float | None:
+    t = _ts(at)
+    return None if t is None else (ko - t).total_seconds() / 3600.0
+
+
+def _bucket(lead: float | None):
+    if lead is None:
+        return None
+    for lo, hi in LEAD_BUCKETS_H:
+        if lo < lead <= hi:
+            return (lo, hi)
+    return None
+
+
+def _fair(odds: dict, market: str) -> dict | None:
+    """{side: fair probability} from one snapshot's median prices; None when a side is missing."""
+    from src.market_edge import power_devig
+    try:
+        if market == "totals":
+            o, u = float(odds["odds_over"]), float(odds["odds_under"])
+            p = power_devig(o, u)
+            return None if p is None else {"OVER": float(p), "UNDER": 1.0 - float(p)}
+        h, d, a = float(odds["odds_home"]), float(odds["odds_draw"]), float(odds["odds_away"])
+        if min(h, d, a) <= 1.0:
+            return None
+        inv = {"HOME": 1 / h, "DRAW": 1 / d, "AWAY": 1 / a}
+        s = sum(inv.values())
+        return {k: v / s for k, v in inv.items()}
+    except (KeyError, TypeError, ValueError):
+        return None
+
+
+def _open_index(snaps: list, ko: datetime) -> int | None:
+    best = None
+    for i, s in enumerate(snaps):
+        ld = _lead_h(ko, s.get("at"))
+        if ld is None or not (OPEN_LEAD_H[0] <= ld <= OPEN_LEAD_H[1]):
+            continue
+        key = (abs(ld - OPEN_TARGET_H), -i)
+        if best is None or key < best[0]:
+            best = (key, i)
+    return None if best is None else best[1]
+
+
+def _thr_side(market: str, side: str) -> str:
+    """O/U is symmetric (|move over| = |move under|): one distribution; 1X2 per side."""
+    return "OU" if market == "totals" else side
+
+
+def fixture_moves(rec: dict, ko: datetime) -> dict:
+    """A KICKED-OFF fixture's moves for learning: {(side_key, bucket): |move| at the latest snapshot in
+    that bucket}, and {side_key: [|single-window move| toward either side, after the open]}."""
+    snaps = rec.get("snapshots") or []
+    oi = _open_index(snaps, ko)
+    out, steps = {}, {}
+    if oi is None:
+        return {"moves": out, "steps": steps}
+    f0 = _fair(snaps[oi]["odds"], rec["market"])
+    if f0 is None:
+        return {"moves": out, "steps": steps}
+    prev = f0
+    for s in snaps[oi + 1:]:
+        ld = _lead_h(ko, s.get("at"))
+        if ld is None or ld <= 0:
+            continue
+        f = _fair(s["odds"], rec["market"])
+        if f is None:
+            continue
+        b = _bucket(ld)
+        for side, _ in SIDES[rec["market"]]:
+            k = _thr_side(rec["market"], side)
+            if b is not None:
+                out[(k, b)] = abs(f[side] - f0[side])           # the latest snapshot in the bucket wins
+            if rec["market"] == "h2h" or side == "OVER":
+                steps.setdefault(k, []).append(abs(f[side] - prev[side]))
+        prev = f
+    return {"moves": out, "steps": steps}
+
+
+class LeagueThresholds:
+    """Per (league, market, side key, bucket): the quantiles of |move| over fixtures dated STRICTLY
+    before a given date that have kicked off by `now`. A query with fewer than MIN_HISTORY earlier
+    fixtures returns None (no signal)."""
+
+    def __init__(self, history: dict, now: datetime):
+        self.moves: dict = {}
+        self.steps: dict = {}
+        for rec in history.values():
+            ko = _ts(rec.get("date"))
+            if ko is None or ko >= now or rec.get("market") not in SIDES:
+                continue
+            m = fixture_moves(rec, ko)
+            day = ko.date()
+            for (k, b), v in m["moves"].items():
+                self.moves.setdefault((rec.get("league"), rec["market"], k, b), []).append((day, v))
+            for k, vs in m["steps"].items():
+                # one value per fixture (its largest single-window move) so a busy fixture counts once
+                self.steps.setdefault((rec.get("league"), rec["market"], k), []).append((day, max(vs)))
+
+    @staticmethod
+    def _q(pairs: list, before, qs: tuple) -> tuple | None:
+        vals = [v for d, v in pairs if d < before]
+        if len(vals) < MIN_HISTORY:
+            return None
+        s = pd.Series(vals, dtype=float)
+        return tuple(float(s.quantile(q)) for q in qs) + (len(vals),)
+
+    def move(self, league, market, side, bucket, before):
+        return self._q(self.moves.get((league, market, _thr_side(market, side), bucket), []), before,
+                       (SHARP_Q, STRONG_Q))
+
+    def steam(self, league, market, side, before):
+        return self._q(self.steps.get((league, market, _thr_side(market, side)), []), before, (STEAM_Q,))
+
+
+def _detect_steam(snapshots: list[dict], odds_key: str) -> bool:
+    """Kept for readers of the old helper: True only when the caller's league threshold says so; the
+    signal itself uses LeagueThresholds.steam (no global percentage)."""
+    return False
+
 
 def _drift_pct(opening: float, current: float) -> float:
+    """Informational decimal drift (reported, never a decision)."""
     if not opening or not current:
         return 0.0
     return (current - opening) / opening
 
 
-def _signal_label(total_drift: float, is_steam: bool) -> str:
-    if total_drift <= -DRIFT_STRONG_PCT:
-        return "STEAM_STRONG" if is_steam else "STRONG"
-    if total_drift <= -DRIFT_SHARP_PCT:
-        return "STEAM_SHARP" if is_steam else "SHARP"
-    if total_drift >= DRIFT_STRONG_PCT:
-        return "FADING"
-    return "NEUTRAL"
-
-
-def _detect_steam(snapshots: list[dict], odds_key: str) -> bool:
-    """True if odds moved >STEAM_PCT in the most recent single window."""
-    if len(snapshots) < 2:
-        return False
-    prev = snapshots[-2]["odds"].get(odds_key)
-    curr = snapshots[-1]["odds"].get(odds_key)
-    if not prev or not curr:
-        return False
-    return abs(_drift_pct(prev, curr)) >= STEAM_PCT
-
-
 def _consensus_pct(snapshots: list[dict], odds_key: str, direction: float) -> int:
-    """
-    % of snapshots (time-decay weighted) where odds moved in same direction.
-
-    Recent snapshots count more: weight = e^(α × hours_since_first_snapshot).
-    This ensures a strong late move outweighs several small early counter-moves.
-    """
+    """Informational: time-decay weighted share of snapshot-to-snapshot moves in the move's direction."""
     if len(snapshots) < 2:
         return 0
-
     import math as _math
-    _ALPHA = 0.5   # doubling weight every ~1.4 hours
-
-    try:
-        from datetime import datetime as _dt
-        t_first = _dt.fromisoformat(snapshots[0].get("at", "").replace("Z", "+00:00"))
-    except Exception:
-        t_first = None
-
-    total_w = 0.0
-    agree_w = 0.0
-
+    _ALPHA = 0.5
+    t_first = _ts(snapshots[0].get("at"))
+    total_w = agree_w = 0.0
     for i in range(1, len(snapshots)):
         prev = snapshots[i - 1]["odds"].get(odds_key)
         curr = snapshots[i]["odds"].get(odds_key)
         if not prev or not curr:
             continue
-        move = curr - prev
-
-        if t_first is not None:
-            try:
-                t_curr = _dt.fromisoformat(snapshots[i].get("at", "").replace("Z", "+00:00"))
-                hours  = max(0.0, (t_curr - t_first).total_seconds() / 3600)
-                w      = _math.exp(_ALPHA * hours)
-            except Exception:
-                w = float(i)
-        else:
-            w = float(i)
-
+        t_curr = _ts(snapshots[i].get("at"))
+        w = _math.exp(_ALPHA * max(0.0, (t_curr - t_first).total_seconds() / 3600)) if (t_first and t_curr) else float(i)
         total_w += w
-        if (move < 0) == (direction < 0):
+        if (curr - prev < 0) == (direction < 0):
             agree_w += w
-
-    if total_w <= 0:
-        return 0
-    return round(agree_w / total_w * 100)
+    return 0 if total_w <= 0 else round(agree_w / total_w * 100)
 
 
-def _build_tips(history: dict) -> pd.DataFrame:
+TIP_COLS = ["date", "league", "match", "market", "opening_odds", "current_odds", "drift_pct", "signal", "steam",
+            "consensus_pct", "n_books", "snapshots", "updated_at", "move_pp", "threshold_pp", "threshold_n",
+            "lead_h", "open_lead_h"]
+
+
+def _build_tips(history: dict, now: datetime | None = None, counts: dict | None = None) -> pd.DataFrame:
     rows = []
-    now  = datetime.utcnow()
-
+    now = now or datetime.utcnow()
+    from collections import Counter
+    counts = counts if counts is not None else Counter()
+    if not isinstance(counts, Counter):
+        raise TypeError("counts must be a collections.Counter (a tally that starts at zero)")
+    th = LeagueThresholds(history, now)
     for key, rec in history.items():
-        if not rec.get("snapshots") or len(rec["snapshots"]) < 2:
+        snaps = rec.get("snapshots") or []
+        ko = _ts(rec.get("date"))
+        if len(snaps) < 2 or ko is None or ko < now or rec.get("market") not in SIDES:
             continue
-        match_dt = pd.to_datetime(rec["date"], errors="coerce")
-        if pd.isna(match_dt) or match_dt < now:
+        oi = _open_index(snaps, ko)
+        cur = snaps[-1]
+        lead = _lead_h(ko, cur.get("at"))
+        b = _bucket(lead)
+        if oi is None or b is None or oi == len(snaps) - 1:
+            counts["no_window"] += 1
             continue
-
-        opening  = rec["opening"]
-        current  = rec["snapshots"][-1]["odds"]
-        n_snaps  = len(rec["snapshots"])
-        n_books  = rec["snapshots"][-1].get("n_books")
-        snaps    = rec["snapshots"]
-
-        if rec["market"] == "totals":
-            sides = [("UNDER", "odds_under"), ("OVER", "odds_over")]
-        else:
-            sides = [
-                ("HOME", "odds_home"),
-                ("AWAY", "odds_away"),
-                ("DRAW", "odds_draw"),
-            ]
-
-        for side, ok in sides:
-            op = opening.get(ok)
-            cu = current.get(ok)
+        f0, f1 = _fair(snaps[oi]["odds"], rec["market"]), _fair(cur["odds"], rec["market"])
+        if f0 is None or f1 is None:
+            counts["no_fair_price"] += 1
+            continue
+        f_prev = _fair(snaps[-2]["odds"], rec["market"])
+        n_books = cur.get("n_books")
+        for side, ok in SIDES[rec["market"]]:
+            op, cu = snaps[oi]["odds"].get(ok), cur["odds"].get(ok)
             if not op or not cu:
                 continue
-
-            # Sanity: reject cross-market contamination and impossible values
-            # Draw odds < 1.3 or > 20 are physically impossible
             if side == "DRAW" and not (1.3 <= op <= 20.0 and 1.3 <= cu <= 20.0):
                 continue
-            # Over/Under odds < 1.05 or > 15 are garbage data
             if side in ("OVER", "UNDER") and not (1.05 <= op <= 15.0 and 1.05 <= cu <= 15.0):
                 continue
-            # >70% single-step drift is almost always a market-mix bug
             if abs(op - cu) / op > 0.70:
                 continue
-
-            d       = _drift_pct(op, cu)
-            steam   = _detect_steam(snaps, ok)
-            sig     = _signal_label(d, steam)
-            if sig == "NEUTRAL":
+            q = th.move(rec.get("league"), rec["market"], side, b, ko.date())
+            if q is None:
+                counts["no_league_history"] += 1
                 continue
-
-            # Thin-market guard: STEAM requires ≥4 books to be credible (an unknown book count
-            # proves nothing, so it is treated as thin)
-            if (n_books is None or n_books < 4) and sig in ("STEAM_STRONG", "STEAM_SHARP"):
-                sig = {"STEAM_STRONG": "STRONG", "STEAM_SHARP": "SHARP"}[sig]
-
-            consensus = _consensus_pct(snaps, ok, d)
+            q_sharp, q_strong, n = q
+            mv = f1[side] - f0[side]
+            if mv > q_strong:
+                sig = "STRONG"
+            elif mv > q_sharp:
+                sig = "SHARP"
+            elif mv < -q_sharp:
+                sig = "FADING"
+            else:
+                continue
+            steam = False
+            if sig in ("STRONG", "SHARP") and f_prev is not None and n_books is not None and n_books >= MIN_STEAM_BOOKS:
+                qs = th.steam(rec.get("league"), rec["market"], side, ko.date())
+                steam = bool(qs is not None and (f1[side] - f_prev[side]) > qs[0])
+            if steam:
+                sig = "STEAM_" + sig
+            d = _drift_pct(op, cu)
             label = (f"O/U 2.5 {side}" if rec["market"] == "totals"
-                     else f"1X2 {side} ({rec['home'] if side=='HOME' else rec['away'] if side=='AWAY' else 'Draw'})")
-
+                     else f"1X2 {side} ({rec['home'] if side == 'HOME' else rec['away'] if side == 'AWAY' else 'Draw'})")
             rows.append({
-                "date":         rec["date"][:10],
-                "league":       rec.get("league", ""),
-                "match":        f"{rec['home']} vs {rec['away']}",
-                "market":       label,
-                "opening_odds": round(op, 3),
-                "current_odds": round(cu, 3),
-                "drift_pct":    round(d * 100, 1),
-                "signal":       sig,
-                "steam":        steam,
-                "consensus_pct": consensus,
-                "n_books":      n_books,
-                "snapshots":    n_snaps,
-                "updated_at":   rec["snapshots"][-1]["at"],
-            })
-
+                "date": rec["date"][:10], "league": rec.get("league", ""), "match": f"{rec['home']} vs {rec['away']}",
+                "market": label, "opening_odds": round(op, 3), "current_odds": round(cu, 3),
+                "drift_pct": round(d * 100, 1), "signal": sig, "steam": steam,
+                "consensus_pct": _consensus_pct(snaps[oi:], ok, mv * -1), "n_books": n_books,
+                "snapshots": len(snaps), "updated_at": cur["at"], "move_pp": round(mv * 100, 2),
+                "threshold_pp": round((q_strong if sig.endswith("STRONG") else q_sharp) * 100, 2),
+                "threshold_n": n, "lead_h": round(lead, 1),
+                "open_lead_h": round(_lead_h(ko, snaps[oi].get("at")), 1)})
     if not rows:
-        return pd.DataFrame(columns=[
-            "date", "league", "match", "market", "opening_odds", "current_odds",
-            "drift_pct", "signal", "steam", "consensus_pct", "n_books", "snapshots", "updated_at"
-        ])
-
-    df = pd.DataFrame(rows)
-    signal_order = {"STEAM_STRONG": 0, "STEAM_SHARP": 1, "STRONG": 2, "SHARP": 3, "FADING": 4}
-    df["_order"] = df["signal"].map(signal_order)
-    df = df.sort_values(["_order", "drift_pct"], ascending=[True, True])
+        return pd.DataFrame(columns=TIP_COLS)
+    df = pd.DataFrame(rows)[TIP_COLS]
+    order = {"STEAM_STRONG": 0, "STEAM_SHARP": 1, "STRONG": 2, "SHARP": 3, "FADING": 4}
+    df["_order"] = df["signal"].map(order)
+    df = df.sort_values(["_order", "move_pp"], ascending=[True, False])
     return df.drop("_order", axis=1).reset_index(drop=True)
 
-
-# ── Main ──────────────────────────────────────────────────────────────────────
 
 def last_snapshot_at(history: dict) -> datetime | None:
     """Newest snapshot time (UTC, naive) anywhere in the history; None when there is none."""
@@ -538,7 +642,11 @@ def run(now: datetime | None = None):
              f"{fresh['older_than_12h']} older than 12h")
 
     _save_history(history)
-    tips = _build_tips(history)
+    from collections import Counter
+    counts: Counter = Counter()
+    tips = _build_tips(history, now, counts)
+    log.info(f"[sharp] per-league thresholds: rows without a signal - {dict(counts) or 'none'} "
+             f"(no_league_history = fewer than {MIN_HISTORY} earlier fixtures: no signal, never a global value)")
     tips.to_csv(SHARP_TIPS_FILE, index=False)
     append_sharp_signals(tips)
 
@@ -564,8 +672,8 @@ def run(now: datetime | None = None):
             steam_tag = " 🔥STEAM" if r["steam"] else ""
             log.info(f"    [{r['signal']}]{steam_tag} {r['date']} | {r['league']} | "
                      f"{r['match']} | {r['market']} | "
-                     f"{r['opening_odds']} → {r['current_odds']} "
-                     f"({r['drift_pct']:+.1f}%) | {r['consensus_pct']}% consensus | {r['n_books']} books")
+                     f"move {r['move_pp']:+.2f} pp vs league threshold {r['threshold_pp']:.2f} pp "
+                     f"(n={r['threshold_n']}) | {r['n_books']} books")
 
     log.info(f"  Tips saved → {SHARP_TIPS_FILE}")
     return tips
