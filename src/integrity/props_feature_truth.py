@@ -1,4 +1,4 @@
-"""Props feature truth - Data truth 10 (Data truth 7 on data-truth-100; fix/props-feature-bugs, 2026-11-11).
+"""Props feature truth - Data truth 10 (renumbered from 7 at the go-live merge, 2026-11-15; fix/props-feature-bugs, 2026-11-11).
 
     python -m src.integrity.props_feature_truth            # both checks, printed + JSON on stdout
 
