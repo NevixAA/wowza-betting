@@ -50,9 +50,7 @@ def load_protocol(path: Path = PROTOCOL_FILE) -> dict:
 
 def protocol_sha(path: Path = PROTOCOL_FILE) -> str:
     """sha256 of the committed bytes (LF line ends; a Windows CRLF checkout hashes the same)."""
-    return hashlib.sha256(Path(path).read_bytes().replace(b"
-", b"
-")).hexdigest()
+    return hashlib.sha256(Path(path).read_bytes().replace(b"\r\n", b"\n")).hexdigest()
 
 
 def assert_private(path) -> Path:
