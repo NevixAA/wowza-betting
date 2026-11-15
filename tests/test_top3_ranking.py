@@ -89,7 +89,7 @@ def _st():
 def test_fallback_order_is_rule_then_r3_then_cell_eb_then_kickoff():
     o = R.rank_order(_frame(), _st(), "R1_CELL_LCB", tiebreak=("kickoff_utc", "fixture_id"))
     assert list(o["mside"]) == ["m_lcb", "m_lam", "m_eb", "m_none2", "m_none"]
-    assert list(o["rank_basis"]) == ["RULE", "R3_KEY", "CELL_EB", "KICKOFF", "KICKOFF"]
+    assert list(o["rank_basis"]) == ["RULE", "LIVE_KEY", "CELL_EB", "KICKOFF", "KICKOFF"]
     assert list(o["no_stat"]) == [0, 1, 1, 1, 1]
 
 

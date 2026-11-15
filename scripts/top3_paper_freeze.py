@@ -1,4 +1,4 @@
-"""FREEZE the per-cell ranking statistics of the TOP-3 protocol (config/top3_ranking_paper_protocol_v5.json) ONCE.
+"""FREEZE the per-cell ranking statistics of the TOP-3 protocol (config/top3_ranking_paper_protocol_v6.json) ONCE.
 
     python scripts/top3_paper_freeze.py                       # the one real freeze (runbook, 2026-11-20)
     python scripts/top3_paper_freeze.py --dry-run --out DIR   # rehearsal: writes to DIR only, ledger untouched
@@ -11,6 +11,15 @@ Refuses (exit 2, nothing written) when:
   * an approved proposal file does not verify against its pinned id and hash;
   * the freeze ledger already names a record (the freeze happens once, before the first pick) - real run only;
   * a real run outside its window [freeze_window_from_utc, start_utc) = 2026-11-20T00:00Z .. 2026-11-21T00:00Z.
+
+RE-MEASUREMENT (protocol v6, owner 2026-11-15 "re-measured with the all-data models"):
+    python scripts/top3_paper_freeze.py --remeasure
+After the all-data models are promoted, the statistics are frozen AGAIN, once, from those models' predictions,
+BEFORE the first pick under them. Refuses unless: a first freeze exists and was not re-measured yet;
+config/top3_paper_tracks.json -> all_data_models is PROMOTED with its frame_hash and engine_versions, that frame
+is a listed clean frame equal to the committed universes and differs from the frozen one; and NO pick of the
+live TOP-3 ledger or the paper ledger carries one of those engine versions. Rows dated before the re-measurement
+day. The new record replaces the ledger's record; the first freeze stays in the ledger's history.
 
 WHAT IS COMPUTED, per approved MODEL cell (a LEAGUE_WIDE cell is the owner's own list, outside the pool) (league x market-side of TP-2026-11-10-d999073a, exactly as approved):
   * R2 / R3 calibration rows: every priced row of the cell's league x market-side in the own-price universe of
@@ -118,11 +127,36 @@ def _plain(v):
     return v
 
 
+def remeasure_problems(cfg: dict, old_ledger: dict, frame_now: str | None, root: Path) -> list[str]:
+    """Why the one v6 re-measurement may NOT run ([] = it may)."""
+    why = []
+    ad = cfg.get("all_data_models") if isinstance(cfg.get("all_data_models"), dict) else {}
+    if not old_ledger.get("record"):
+        why.append("no first freeze to re-measure (run the U3e freeze first)")
+    if old_ledger.get("remeasured_from") or any(h.get("remeasured_from") for h in old_ledger.get("history") or []):
+        why.append("the statistics were already re-measured once")
+    if ad.get("status") != "PROMOTED" or not ad.get("frame_hash") or not ad.get("engine_versions"):
+        why.append("all_data_models is not PROMOTED with frame_hash and engine_versions")
+    elif frame_now != ad.get("frame_hash"):
+        why.append(f"the committed universes are not the all-data frame {ad.get('frame_hash')}")
+    elif old_ledger.get("frame_hash") == ad.get("frame_hash"):
+        why.append("the frozen statistics already come from the all-data frame")
+    engines = set(ad.get("engine_versions") or [])
+    for rel in ("output/top3_league_ledger.csv", "output/research/top3_paper/paper_ledger.csv"):
+        f = root / rel
+        if engines and f.is_file():
+            led = pd.read_csv(f, dtype=str)
+            if "prediction_engine_version" in led and led["prediction_engine_version"].isin(engines).any():
+                why.append(f"{rel} already holds a pick of the all-data models - too late to re-measure")
+    return why
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--out", help="dry run: folder for the record and a rehearsal ledger")
     ap.add_argument("--now", help=argparse.SUPPRESS)          # tests only: the clock for the window check
+    ap.add_argument("--remeasure", action="store_true", help="v6: re-freeze once from the all-data models")
     a = ap.parse_args(argv)
     cfg = TP3.load_config(ROOT)
     why = TP3.hash_problems(cfg, ROOT)
@@ -135,10 +169,17 @@ def main(argv=None) -> int:
     ledger_p = ROOT / cfg["freeze_ledger"]
     now = pd.Timestamp(a.now) if a.now else pd.Timestamp.now(tz="UTC")
     lo, hi = pd.Timestamp(cfg["freeze_window_from_utc"]), pd.Timestamp(cfg["start_utc"])
-    if not a.dry_run and not (lo <= now < hi):
-        why.append(f"the real freeze runs only in its window {lo} .. {hi} (now {now}); use --dry-run to rehearse")
-    if not a.dry_run and TP3._json(ledger_p).get("record"):
-        why.append(f"{cfg['freeze_ledger']} already names a frozen record - the freeze happens once")
+    old = TP3._json(ledger_p)
+    if a.remeasure:
+        why += remeasure_problems(cfg, old, fh, ROOT)
+        cfg = cfg | {"stats_as_of_utc": (now.normalize() - pd.Timedelta(seconds=1)).strftime("%Y-%m-%dT%H:%M:%SZ"),
+                     "freeze_record": cfg["remeasure_record"]}
+    else:
+        if not a.dry_run and not (lo <= now < hi):
+            why.append(f"the real freeze runs only in its window {lo} .. {hi} (now {now}); use --dry-run to rehearse")
+        if not a.dry_run and old.get("record"):
+            why.append(f"{cfg['freeze_ledger']} already names a frozen record - the freeze happens once "
+                       "(the one allowed re-measurement is --remeasure)")
     if a.dry_run and not a.out:
         why.append("--dry-run needs --out (a folder outside the frozen record's place)")
     if why:
@@ -146,14 +187,17 @@ def main(argv=None) -> int:
         return 2
     st, meta = compute(cfg, ROOT)
     proto = json.loads((ROOT / cfg["protocol_file"]).read_text(encoding="utf-8"))
-    rec = {"label": TP3.LABEL, "kind": "DRY_RUN" if a.dry_run else "FROZEN",
+    kind = "DRY_RUN" if a.dry_run else ("REMEASURED" if a.remeasure else "FROZEN")
+    rec = {"label": TP3.LABEL, "kind": kind,
            "protocol_file": cfg["protocol_file"], "protocol_sha256": cfg["protocol_sha256"],
            "ranking_code_sha256": proto["rules_common"]["code"]["sha256_lf"],
            "stats_as_of_utc": cfg["stats_as_of_utc"], "frame_hash": fh, "frame": fmeta,
            "frame_note": ("statistics from the walk-forward predictions of the CLEAN retrained recipe (never "
                           "v9_repaired / pre-repair); if the final refit changes the frame before the freeze the "
                           "statistics are computed on the final frame - allowed because the freeze happens once, "
-                          "before the first pick (protocol v2 live_statistics)"),
+                          "before the first pick (protocol v2 live_statistics)"
+                          + ("; RE-MEASUREMENT from the all-data models before the first pick under them "
+                             "(protocol v6, owner 2026-11-15)" if a.remeasure else "")),
            "prices": "none in this record (own-price universes read locally; statistics only)",
            "written_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")} | meta | \
           {"cells": [{k: (None if k == "lcb" else _plain(v)) for k, v in r.items()} for r in st.to_dict("records")]}
@@ -170,6 +214,9 @@ def main(argv=None) -> int:
     led = {"record": cfg["freeze_record"] if not a.dry_run else str(rp), "sha256": sha, "kind": rec["kind"],
            "protocol_sha256": cfg["protocol_sha256"], "ranking_code_sha256": rec["ranking_code_sha256"],
            "frame_hash": fh, "frozen_at": rec["written_at"]}
+    if a.remeasure and not a.dry_run:
+        led["remeasured_from"] = old.get("record")
+        led["history"] = (old.get("history") or []) + [{k: v for k, v in old.items() if k != "history"}]
     lp.write_bytes((json.dumps(led, indent=1, sort_keys=True) + "\n").encode("utf-8"))
     n_l = int(st["eb"].notna().sum())
     n_lam = int(st["lam"].notna().sum())

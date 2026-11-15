@@ -1,7 +1,9 @@
-"""TOP-3 ranking rules - the ONE implementation of R2 and R3 (+ R1, research only) (protocol config/top3_ranking_paper_protocol_v5.json).
+"""TOP-3 ranking rules - the ONE implementation of R2 and R3 (+ R1, research only) (protocol config/top3_ranking_paper_protocol_v6.json).
 
-Owner 2026-11-11 ("Clean rebuild"): the live TOP-3 is ranked by R3 (served from prep/bars-oddsapi-hist, which
-imports it from HERE); R2 runs as the PAPER track (src/research/top3_paper.py). Owner 2026-11-11 "Drop T1":
+Owner 2026-11-15 ("TOP-3 ranked by T2 from Nov 21, re-measured with the all-data models"): the live TOP-3 is
+ranked by R2 (LIVE_RULE, served from prep/bars-oddsapi-hist, which imports it from HERE) and every pick shows R2's
+calibrated edge; R3 runs as the PAPER comparison track (src/research/top3_paper.py) - the roles of v5 swapped,
+because R3's cautious slope bound was <= 0 on all 35 cells of the history-only models. Owner 2026-11-11 "Drop T1":
 R1 is no track any more - it stays below as RESEARCH code only (RESEARCH_RULES). The old EV ranking is
 dropped as a track; it stays below only as a DIAGNOSTIC rule for the research scripts.
 
@@ -33,13 +35,13 @@ constant is invented: MIN_OWN_BETS (40) and Z95 are the study's declared ones (s
 
 POOL (owner 2026-11-11 "Own list"): a LEAGUE_WIDE cell (source NONE, mode LEAGUE_WIDE - no model probability)
 is shown on its own line outside the TOP-3 slots, so it is never in the TOP-3 / TIER2 pool of any track
-(R2 or the live R3): in_pool(cell) is False for it.
+(the live R2 or the paper R3): in_pool(cell) is False for it.
 
 MISSING STATISTIC (protocol v4; owner 2026-11-11 "don't use the old ranking"): ev_est is NEVER a ranking input.
 A tip whose cell has no statistic for the rule gets none (nothing filled in) and ranks AFTER every tip that has
 one, in this fixed fallback order (rank_basis):
   RULE      the rule's own key                                       (has_stat, no_stat = 0)
-  R3_KEY    the live rule R3's key, when the rule is not R3 and R3 has one
+  LIVE_KEY  the live rule's key (LIVE_RULE, R2 since v6), when the rule is not the live rule and it has one
   CELL_EB   the cell's frozen walk-forward ROI shrunk within the league (eb)
   KICKOFF   none of the above: kickoff time, then fixture id (the tiebreak columns)
 Ties inside a group: the tiebreak columns (kickoff, fixture id). EV_PRODUCTION is a research DIAGNOSTIC only.
@@ -54,10 +56,10 @@ import pandas as pd
 from src.bars_opt import study as S
 
 RULES = ("R1_CELL_LCB", "R2_CAL_EV", "R3_CAL_EV_LCB")          # every rule rank_order knows
-TRACK_RULES = ("R2_CAL_EV", "R3_CAL_EV_LCB")                   # protocol v5: the Holm family of 2
+TRACK_RULES = ("R2_CAL_EV", "R3_CAL_EV_LCB")                   # the Holm family of 2 (v5, v6)
 RESEARCH_RULES = ("R1_CELL_LCB",)                              # owner 2026-11-11 "Drop T1": no track
-LIVE_RULE = "R3_CAL_EV_LCB"
-PAPER_RULES = ("R2_CAL_EV",)
+LIVE_RULE = "R2_CAL_EV"                                        # v6: the live TOP-3 ranks by R2
+PAPER_RULES = ("R3_CAL_EV_LCB",)                               # v6: R3 is the paper comparison track
 DIAGNOSTIC_RULES = ("EV_PRODUCTION", "DEV_CELL_EB")       # research scripts only; never a track
 MIN_OWN_BETS = S.MIN_OWN_BETS          # 40, declared in the study (own bets for a bar / switch / TIER2 band)
 Z95 = 1.96                             # the study's 95% interval (study.score: mean +- 1.96 * max-of-three SE)
@@ -179,12 +181,12 @@ def rank_key(frame: pd.DataFrame, stats: pd.DataFrame, rule: str) -> pd.DataFram
     return b
 
 
-FALLBACK_BASES = ("RULE", "R3_KEY", "CELL_EB", "KICKOFF")
+FALLBACK_BASES = ("RULE", "LIVE_KEY", "CELL_EB", "KICKOFF")
 
 
 def rank_order(frame: pd.DataFrame, stats: pd.DataFrame, rule: str, tiebreak: tuple = ()) -> pd.DataFrame:
     """`frame` best first under `rule`: tips with the rule's statistic by key (desc); then the fallback groups
-    R3_KEY, CELL_EB, KICKOFF (module docstring) - never ev_est (except the EV_PRODUCTION diagnostic, whose key
+    LIVE_KEY, CELL_EB, KICKOFF (module docstring) - never ev_est (except the EV_PRODUCTION diagnostic, whose key
     it is); ties and the last group by the `tiebreak` columns (asc, e.g. kickoff, fixture id). Stable.
     Adds key, has_stat, no_stat and rank_basis."""
     if frame is None or frame.empty:

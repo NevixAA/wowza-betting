@@ -26,8 +26,9 @@ def _row(p_used=0.62, fair=0.50, odds=1.9, mside="btts_yes", league=LG):
 
 def test_calibrated_edge_is_the_cells_own_cautious_calibration():
     e = CE.calibrated(_row(), _stats()).iloc[0]
-    lam_lo = min(max(0.6 - TR.Z95 * 0.1, 0.0), 1.0)                     # LIVE_RULE R3: lam - 1.96 se, clipped
-    assert e == pytest.approx(lam_lo * (0.62 - 0.50))
+    # protocol v6 (owner 2026-11-15): LIVE_RULE = R2, the calibrated point estimate lam (not R3's lam - 1.96 se)
+    assert TR.LIVE_RULE == "R2_CAL_EV"
+    assert e == pytest.approx(0.6 * (0.62 - 0.50))
     assert e != pytest.approx(0.62 - 0.50)                               # never the raw edge
 
 
