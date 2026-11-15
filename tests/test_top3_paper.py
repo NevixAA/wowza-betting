@@ -1,4 +1,4 @@
-"""TOP-3 paper tracks R1 / R2 (src/research/top3_paper.py) and the statistics freeze (scripts/top3_paper_freeze.py).
+"""TOP-3 paper track R2 (src/research/top3_paper.py; owner 2026-11-11 "Drop T1") and the statistics freeze (scripts/top3_paper_freeze.py).
 
 The owner's pool rule (clean retrained models + approved per-league cells only), the selection rules (cap 3,
 never padded, direction rule, started-before-issue), hash pinning, and the guarantee that nothing reaches
@@ -137,15 +137,14 @@ def test_cap_three_never_pad_direction_and_tracks_rank_differently():
          _cand("2", "BTTS", "YES", 0.60, 0.50, fam="BTTS", ver="btts_20261109T211852Z_d7cd2762"),
          _cand("4", "OU25", "OVER", 0.55, 0.50), _cand("5", "OU25", "OVER", 0.58, 0.50)]
     picks, weeks = _run(c)
-    assert set(picks["track"]) == set(R.PAPER_RULES) and len(weeks) == 2
+    assert set(picks["track"]) == {"R3_CAL_EV_LCB"} and len(weeks) == 1     # v6: the paper track is R3
     for t, g in picks.groupby("track"):
         assert len(g) <= 3 and list(g["rank"]) == list(range(1, len(g) + 1))
         f1 = g[g["fixture_id"] == "1"]
         assert f1["side"].nunique() <= 1                            # never Over and Under on one fixture
-    r1 = picks[picks["track"] == "R1_CELL_LCB"].sort_values("rank")
-    r2 = picks[picks["track"] == "R2_CAL_EV"].sort_values("rank")
-    assert r1.iloc[0]["market"] == "BTTS"                           # BTTS cell has the higher LCB
-    assert r2.iloc[0]["market"] == "OU25"                           # calibrated EV ranks the O/U gap first
+    r3 = picks[picks["track"] == "R3_CAL_EV_LCB"].sort_values("rank")
+    assert set(picks["rank_basis"]) <= set(R.FALLBACK_BASES)
+    assert r3.iloc[0]["market"] == "OU25"                           # cautious calibrated EV ranks the O/U gap first
     one, _ = _run([_cand("9", "OU25", "OVER", 0.60, 0.45)])
     assert one.groupby("track").size().max() == 1                   # never padded
 
@@ -179,10 +178,10 @@ def test_settlement_grades_only_grading_columns_and_summary_has_no_prices():
     v91 = pd.DataFrame({"fixture_id": ["3"], "match_date": ["2026-11-21"], "home_team": ["H3"], "away_team": ["A3"],
                         "home_goals": [2], "away_goals": [1], "result_source": ["test"], "settle_status": ["SETTLED"]})
     out, n = P.settle_picks(picks.astype(str), v91, pd.Timestamp("2026-11-23T00:00:00Z"))
-    assert n == 2 and set(out["result"]) == {"WIN"}
+    assert n == 1 and set(out["result"]) == {"WIN"}
     assert np.isclose(pd.to_numeric(out["flat_pnl"]).iloc[0], 1.1)
     s = P.summary(out, NOW, CFG, "OK")
-    assert s["tracks"]["R1_CELL_LCB"]["settled"] == 1 and s["label"] == P.LABEL
+    assert list(s["tracks"]) == ["R3_CAL_EV_LCB"] and s["tracks"]["R3_CAL_EV_LCB"]["settled"] == 1 and s["label"] == P.LABEL
     assert "odds" not in json.dumps(s).replace("odds_", "")
 
 
@@ -238,6 +237,29 @@ def test_no_production_reader_touches_the_paper_files():
     assert hits == []
 
 
+LIVE_READERS = ("src/top3_league.py", "scripts/top3_t3_dry_run.py")
+#: the only paper-module names a live reader may use: the pinned config and the hash-checked statistics freeze
+LIVE_READER_ALLOWED = {"load_config", "load_freeze", "sha256_lf", "hash_problems"}
+
+
+def test_live_readers_use_only_the_hash_checked_freeze():
+    """The allow-list above is per file; this pins WHAT those files may use: the frozen statistics through
+    load_freeze (protocol, ranking code and record hashes all checked) - never a paper ledger, a paper store,
+    the paper run / settle, or the paper folder."""
+    import re
+    for rel in LIVE_READERS:
+        f = ROOT / rel
+        if not f.is_file():
+            continue
+        t = f.read_text(encoding="utf-8", errors="ignore")
+        for bad in ("paper_ledger", "paper_weeks", "top3_paper/", "research/top3_paper"):
+            assert bad not in t, (rel, bad)
+        alias = set(re.findall(r"from src\.research import top3_paper as (\w+)", t))
+        for a in alias:
+            used = set(re.findall(rf"{a}\.(\w+)", t))
+            assert used <= LIVE_READER_ALLOWED, (rel, used - LIVE_READER_ALLOWED)
+
+
 def test_workflows_only_run_and_commit_the_paper_folder():
     for wf in (".github/workflows/predict.yml", ".github/workflows/update_results.yml"):
         t = (ROOT / wf).read_text(encoding="utf-8")
@@ -251,8 +273,9 @@ def test_pinned_protocol_and_code_hashes_match():
     cfg = P.load_config()
     assert P.hash_problems(cfg) == []
     proto = json.loads((ROOT / cfg["protocol_file"]).read_text(encoding="utf-8"))
-    assert [t["id"] for t in proto["tracks"]] == ["T1_R1_CELL_LCB", "T2_R2_CAL_EV", "T3_R3_CAL_EV_LCB"]
-    assert R.LIVE_RULE == "R3_CAL_EV_LCB" and R.PAPER_RULES == ("R1_CELL_LCB", "R2_CAL_EV")
+    assert [t["id"] for t in proto["tracks"]] == ["T2_R2_CAL_EV", "T3_R3_CAL_EV_LCB"]
+    assert R.LIVE_RULE == "R2_CAL_EV" and R.PAPER_RULES == ("R3_CAL_EV_LCB",)          # protocol v6: roles swapped
+    assert R.TRACK_RULES == ("R2_CAL_EV", "R3_CAL_EV_LCB") and cfg["tracks"] == ["R3_CAL_EV_LCB"]
 
 
 def test_a_changed_protocol_or_code_is_refused(tmp_path):
@@ -318,16 +341,79 @@ def test_league_wide_cell_never_enters_any_paper_track():
     c = [_cand("2", "BTTS", "YES", 0.60, 0.50, fam="BTTS", ver="btts_20261109T211852Z_d7cd2762"),
          _cand("3", "OU25", "OVER", 0.60, 0.45)]
     picks, weeks = P.freeze_due(pd.DataFrame(c), set(), _ctx(cells), NOW, 120.0, {}, _stats(), _guards(cells), CFG, "s")
-    assert len(picks) == 2 and set(picks["market"]) == {"OU25"}           # one O/U pick per track, no BTTS
+    assert len(picks) == 1 and set(picks["market"]) == {"OU25"}           # the O/U pick only, no BTTS
     for w in weeks["excluded"]:
         assert json.loads(w)[P.R_LEAGUE_WIDE] == 1
 
 
-def test_protocol_v3_records_the_own_list_rule_and_history():
+def test_protocol_records_own_list_no_ev_fallback_and_history():
     cfg = P.load_config()
     proto = json.loads((ROOT / cfg["protocol_file"]).read_text(encoding="utf-8"))
-    assert proto["protocol"] == "top3-ranking-paper/3" and proto["written_before_any_live_pick"] is True
+    assert proto["protocol"] == "top3-ranking-paper/6" and proto["written_before_any_live_pick"] is True
+    assert "never ev_est" in proto["rules_common"]["missing_statistic"] and "LIVE_KEY" in proto["rules_common"]["missing_statistic"]
+    assert any("Drop T1" in w for w in proto["amendment"]["owner_words"])
+    assert any("ranked by T2" in w for w in proto["amendment"]["owner_words"])
+    assert {t["id"]: t["kind"] for t in proto["tracks"]} == {"T2_R2_CAL_EV": "LIVE", "T3_R3_CAL_EV_LCB": "PAPER"}
+    assert "remeasurement" in proto["live_statistics"] and "STATS_NOT_REMEASURED" in proto["pool"]["refusal_reasons"]
+    assert [a["proposal_id"] for a in cfg["approved_proposals"]] == ["TP-2026-11-15-bade2c0b"]
+    assert [t["id"] for t in proto["tracks"]] == ["T2_R2_CAL_EV", "T3_R3_CAL_EV_LCB"]
+    assert "2 tracks" in proto["evaluation"]["family"] and "no_pick_exists" in proto
     assert "LEAGUE_WIDE_OWN_LIST" in proto["pool"]["refusal_reasons"]
     assert any("Own list" in w for w in proto["amendment"]["owner_words"])
     for h in proto["amends"]["history"]:
         assert P.sha256_lf(ROOT / h["file"]) == h["sha256_lf"]            # v1 and v2 kept byte-for-byte
+
+
+def test_r1_is_research_code_only():
+    assert "R1_CELL_LCB" in R.RESEARCH_RULES and "R1_CELL_LCB" not in R.TRACK_RULES + R.PAPER_RULES
+    o = R.rank_order(pd.DataFrame([_cand("1", "OU25", "OVER", .6, .45) | {"track": "standard", "mside": "over25_over",
+                                                                          "fair": .45, "p_used": .6},
+                                   _cand("2", "BTTS", "YES", .6, .5) | {"track": "standard", "mside": "btts_yes",
+                                                                        "fair": .5, "p_used": .6}]),
+                     _stats(), "R1_CELL_LCB", tiebreak=("kickoff_utc", "fixture_id"))
+    assert o.iloc[0]["mside"] == "btts_yes"                         # still computable for research
+
+
+# ── protocol v6: re-measurement with the all-data models (owner 2026-11-15) ───────────────────────
+AD = {"status": "PROMOTED", "frame_hash": "f" * 16, "engine_versions": ["standard_20261201T000000Z_4025384d"]}
+
+
+def test_all_data_candidates_need_remeasured_statistics():
+    assert P.stats_valid_for_engine("standard_20261109T211851Z_4025384d", AD, "58f10476f4c82d7b") is True
+    assert P.stats_valid_for_engine(AD["engine_versions"][0], AD, "58f10476f4c82d7b") is False
+    assert P.stats_valid_for_engine(AD["engine_versions"][0], AD, AD["frame_hash"]) is True
+    assert P.stats_valid_for_engine(AD["engine_versions"][0], None, None) is True       # not promoted: no list
+    g = _guards() | {"all_data": AD, "frozen_frame": "58f10476f4c82d7b"}
+    picks, weeks = _run([_cand("3", "OU25", "OVER", 0.60, 0.45, ver=AD["engine_versions"][0])], guards=g)
+    assert picks.empty and json.loads(weeks.iloc[0]["excluded"])[P.R_NOT_REMEASURED] == 1
+    g["frozen_frame"] = AD["frame_hash"]
+    picks, _ = _run([_cand("3", "OU25", "OVER", 0.60, 0.45, ver=AD["engine_versions"][0])], guards=g)
+    assert len(picks) == 1
+
+
+def test_clean_artifacts_from_every_listed_override():
+    ov = {"overrides": [{"id": "a", "stages": [{"artifacts": {"standard": {"sha256": "1" * 64}}}]},
+                        {"id": "b", "stages": [{"artifacts": {"standard": {"sha256": "2" * 64}}}]},
+                        {"id": "c", "stages": [{"artifacts": {"standard": {"sha256": "3" * 64}}}]}]}
+    assert P.clean_artifacts(ov, ["a", "b"]) == {"standard": {"1" * 64, "2" * 64}}
+    assert P.clean_artifacts(ov, "c") == {"standard": {"3" * 64}}
+
+
+def test_remeasure_refuses_without_a_first_freeze_or_after_a_pick(tmp_path):
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("fz", ROOT / "scripts" / "top3_paper_freeze.py")
+    fz = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(fz)
+    cfg = {"all_data_models": AD}
+    assert any("no first freeze" in w for w in fz.remeasure_problems(cfg, {}, AD["frame_hash"], tmp_path))
+    old = {"record": "r.json", "frame_hash": "58f10476f4c82d7b"}
+    assert fz.remeasure_problems(cfg, old, AD["frame_hash"], tmp_path) == []
+    assert any("not the all-data frame" in w for w in fz.remeasure_problems(cfg, old, "x", tmp_path))
+    assert any("already re-measured" in w for w in
+               fz.remeasure_problems(cfg, old | {"remeasured_from": "r0.json"}, AD["frame_hash"], tmp_path))
+    (tmp_path / "output").mkdir()
+    pd.DataFrame({"prediction_engine_version": AD["engine_versions"]}).to_csv(tmp_path / "output" / "top3_league_ledger.csv",
+                                                                              index=False)
+    assert any("too late" in w for w in fz.remeasure_problems(cfg, old, AD["frame_hash"], tmp_path))
+    assert any("not PROMOTED" in w for w in fz.remeasure_problems({"all_data_models": {"status": "NOT_PROMOTED"}},
+                                                                   old, AD["frame_hash"], tmp_path))

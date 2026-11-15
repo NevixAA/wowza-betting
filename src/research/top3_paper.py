@@ -1,11 +1,13 @@
-"""TOP-3 PAPER TRACKS R1 and R2 - PAPER / RESEARCH ONLY (protocol config/top3_ranking_paper_protocol_v3.json).
+"""TOP-3 PAPER TRACK R3 - PAPER / RESEARCH ONLY (protocol config/top3_ranking_paper_protocol_v6.json).
 
     python -m src.research.top3_paper run       # predict.yml, after src.top3_league run: freeze due league-weeks
     python -m src.research.top3_paper settle    # update_results.yml: grade finished paper picks
     python -m src.research.top3_paper summary   # rewrite the dashboard summary
 
-Owner 2026-11-11: "Add the 3 tracks", then "Clean rebuild": the live TOP-3 is ranked by R3 (src/top3_league.py,
-the third arm of the protocol); R1 and R2 are recorded HERE, beside it, as paper tracks. Flat 1 unit, the
+Owner 2026-11-11: "Add the 3 tracks", "Clean rebuild", "Drop T1"; owner 2026-11-15: "TOP-3 ranked by T2 from
+Nov 21, re-measured with the all-data models": the live TOP-3 is ranked by R2 (src/top3_league.py, LIVE_RULE, the
+other arm of the protocol); R3 is recorded HERE, beside it, as the paper comparison track. The tracks recorded are
+config/top3_paper_tracks.json -> tracks. Flat 1 unit, the
 production settlement, every row labelled PAPER/RESEARCH.
 
 NOTHING HERE REACHES MONEY OR THE PUBLIC. This module writes ONLY under output/research/top3_paper/. It never
@@ -17,13 +19,18 @@ bars per league"). A league-week's pool is the production TOP-3 pool (src.top3_l
 strictly before FREEZE = first kickoff - TOP3_FREEZE_LEAD_MIN, priced two-sided, at or above the league's OWN
 owner-applied bar) restricted, per candidate, to:
   * MODEL_NOT_CLEAN   - its prediction_engine_version must be a model whose artifact sha256 is listed in a stage
-                        of the owner's clean-data-switch override (config/promotion_overrides.json: first,
-                        second or final refit). Any other model (pre-repair, v9_repaired, later) is refused.
+                        of an owner override named in config/top3_paper_tracks.json -> clean_override_ids
+                        (config/promotion_overrides.json: the clean-data switch's first / second / final refit,
+                        and the override that promotes the all-data models once the owner adds it). Any other
+                        model (pre-repair, v9_repaired, unlisted) is refused.
+  * STATS_NOT_REMEASURED - a candidate of the all-data models (config/top3_paper_tracks.json -> all_data_models
+                        engine_versions) while the frozen statistics are not yet from their frame (v6: the
+                        statistics are re-frozen from those models' predictions BEFORE the first pick under them).
   * CELL_NOT_APPROVED - its served bar must be a bars_opt cell (no legacy / global bar) that is IDENTICAL to the
                         cell of an approved proposal listed in config/top3_paper_tracks.json (hash-verified), and
                         the league x market must have been applied from that proposal (config/threshold_applied.json).
   * LEAGUE_WIDE_OWN_LIST - a LEAGUE_WIDE cell (source NONE) is the owner's own list, outside the TOP-3 slots
-                        (owner 2026-11-11 "Own list"; top3_ranking.in_pool): never in the pool of R1 or R2.
+                        (owner 2026-11-11 "Own list"; top3_ranking.in_pool): never in the pool of the paper R3 (nor the live R2).
 OFF cells give no candidates (production already returns NO_LEAGUE_BAR for them).
 
 RANKING. src/research/top3_ranking.rank_order(rule) on the frozen per-cell statistics (scripts/top3_paper_freeze.py).
@@ -62,13 +69,14 @@ R_NOT_CLEAN = "MODEL_NOT_CLEAN"
 R_CELL = "CELL_NOT_APPROVED"
 R_NOT_APPLIED_FROM = "NOT_APPLIED_FROM_APPROVED_PROPOSAL"
 R_LEAGUE_WIDE = "LEAGUE_WIDE_OWN_LIST"
+R_NOT_REMEASURED = "STATS_NOT_REMEASURED"
 
 PICK_KEY = ["track", "league_week_id", "rank"]
 PICK_FROZEN = [
     "pick_id", "label", "track", "protocol_sha256", "stats_sha256", "league_week_id", "rank", "week_lock_ts",
     "freeze_ts", "issued_at", "league", "model_type", "fixture_id", "match_date", "home_team", "away_team",
     "kickoff_utc", "market", "side", "odds", "p_model_raw", "p_market_fair", "p_used", "ev_est", "rank_key",
-    "no_stat", "cell_track", "cell_mside", "cell_config", "cell_proposal_id", "prediction_engine_version",
+    "no_stat", "rank_basis", "cell_track", "cell_mside", "cell_config", "cell_proposal_id", "prediction_engine_version",
     "model_artifact_sha256", "first_seen_at", "stake_effect",
 ]
 PICK_GRADING = ["home_goals", "away_goals", "result", "won", "flat_pnl", "settle_status", "settled_at"]
@@ -154,11 +162,12 @@ def load_freeze(cfg: dict, root: Path | None = None):
 
 
 # ── the owner's pool guards ─────────────────────────────────────────────────────────────────────
-def clean_artifacts(overrides: dict, override_id: str) -> dict:
-    """{champion slot: {sha256}} of every stage of the owner's clean-data-switch override."""
+def clean_artifacts(overrides: dict, override_ids) -> dict:
+    """{champion slot: {sha256}} of every stage of the listed owner overrides (config/promotion_overrides.json)."""
+    ids = {override_ids} if isinstance(override_ids, str) else set(override_ids or [])
     out: dict = {}
     for o in overrides.get("overrides") or []:
-        if o.get("id") != override_id:
+        if o.get("id") not in ids:
             continue
         for st in o.get("stages") or []:
             for slot, art in (st.get("artifacts") or {}).items():
@@ -181,6 +190,15 @@ def model_guard(cand: dict, clean: dict, champions: dict) -> tuple[str, str]:
     if ch.get("model_version") == ver:                      # the full hash is known: it must be listed itself
         hits = [s for s in hits if s == ch.get("artifact_sha256")]
     return ("", hits[0]) if len(hits) == 1 else (R_NOT_CLEAN, "")
+
+
+def stats_valid_for_engine(engine_version: str, all_data: dict | None, frozen_frame: str | None) -> bool:
+    """v6 re-measurement rule (also for the live TOP-3): a candidate of the all-data models may be ranked only by
+    statistics frozen from the all-data frame. Any other clean engine: the frozen statistics stand."""
+    ad = all_data if isinstance(all_data, dict) else {}
+    if str(engine_version or "").strip() not in set(ad.get("engine_versions") or []):
+        return True
+    return bool(ad.get("frame_hash")) and frozen_frame == ad.get("frame_hash")
 
 
 def approved_cells(cfg: dict, root: Path | None = None) -> tuple[dict, list[str]]:
@@ -251,6 +269,10 @@ def pool(g: pd.DataFrame, ctx: dict, guards: dict) -> tuple[pd.DataFrame, Counte
         why, sha = model_guard(r, guards["clean"], guards["champions"])
         if why:
             excl[why] += 1
+            continue
+        if not stats_valid_for_engine(r.get("prediction_engine_version"), guards.get("all_data"),
+                                      guards.get("frozen_frame")):
+            excl[R_NOT_REMEASURED] += 1
             continue
         key = TL.MARKETS[str(r["market"])][0]
         cs = TL._CELL_SIDE.get((key, str(r["side"]).upper()))
@@ -346,7 +368,7 @@ def freeze_due(cands: pd.DataFrame, done: set, ctx: dict, now: pd.Timestamp, lea
                     "league_week_id": week, "rank": k, "week_lock_ts": LW._stamp(lock), "freeze_ts": LW._stamp(freeze),
                     "issued_at": stamp, "p_market_fair": LW._r(r["fair"]), "p_used": LW._r(r["p_used"]),
                     "ev_est": LW._r(r["ev_est"]), "rank_key": LW._r(r["key"]) if pd.notna(r["key"]) else "",
-                    "no_stat": int(r["no_stat"]), "cell_track": r["track"], "cell_mside": r["mside"],
+                    "no_stat": int(r["no_stat"]), "rank_basis": r["rank_basis"], "cell_track": r["track"], "cell_mside": r["mside"],
                     "stake_effect": STAKE_EFFECT})
     return (pd.DataFrame(picks).reindex(columns=PICK_COLS) if picks else pd.DataFrame(columns=PICK_COLS),
             pd.DataFrame(weeks).reindex(columns=WEEK_COLS) if weeks else pd.DataFrame(columns=WEEK_COLS))
@@ -367,9 +389,11 @@ def weeks_store(od: Path):
 def guards_from(cfg: dict, root: Path | None = None) -> tuple[dict, list[str]]:
     r = Path(root) if root else ROOT
     approved, why = approved_cells(cfg, r)
-    return {"clean": clean_artifacts(_json(r / "config" / "promotion_overrides.json"), cfg.get("clean_override_id", "")),
+    if not cfg.get("clean_override_ids"):
+        why.append("config/top3_paper_tracks.json lists no clean_override_ids")
+    return {"clean": clean_artifacts(_json(r / "config" / "promotion_overrides.json"), cfg.get("clean_override_ids")),
             "champions": _json(r / "models" / "registry" / "current_champions.json"),
-            "approved": approved, "applied": applied_from(r)}, why
+            "approved": approved, "applied": applied_from(r), "all_data": cfg.get("all_data_models")}, why
 
 
 # ── entrypoints ─────────────────────────────────────────────────────────────────────────────────
@@ -388,8 +412,9 @@ def run(now=None, out: Path | None = None, root: Path | None = None, env: dict |
     try:
         cfg = load_config(root)
         lead = TL.freeze_lead_min(env)
-        stats, _rec, sha, why = load_freeze(cfg, root)
+        stats, rec, sha, why = load_freeze(cfg, root)
         guards, gwhy = guards_from(cfg, root)
+        guards["frozen_frame"] = rec.get("frame_hash")
         why += gwhy
         if lead is None:
             why.append("TOP3_FREEZE_LEAD_MIN not set")
@@ -493,6 +518,7 @@ def track_summary(picks: pd.DataFrame) -> dict:
             "flat_pnl_units": round(float(pnl.sum()), 3) if len(ok) else 0.0,
             "roi": round(float(pnl.mean()), 4) if len(ok) else None, "ci95": sc.get("ci95"),
             "no_stat_picks": int((pd.to_numeric(picks.get("no_stat"), errors="coerce") == 1).sum()) if len(picks) and "no_stat" in picks else 0,
+            "rank_basis": picks["rank_basis"].value_counts().to_dict() if len(picks) and "rank_basis" in picks else {},
             "reached_min_picks": bool(len(ok) >= 150)}
 
 

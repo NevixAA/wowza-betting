@@ -1,19 +1,20 @@
 {
- "about": "TOP-3 paper tracks R1 / R2 (src/research/top3_paper.py) and the one-time statistics freeze (scripts/top3_paper_freeze.py). PAPER/RESEARCH: nothing here stakes, executes or publishes. Every value is pinned; a change is a new protocol version, before the first pick.",
- "protocol_file": "config/top3_ranking_paper_protocol_v3.json",
- "protocol_sha256": "7e521a6b1aa45e4daee026ecb49aac5cb63ca23dc69b23a709db7d0b67cafe10",
+ "about": "TOP-3 paper track R3 (protocol v6, owner 2026-11-15: live TOP-3 ranked by R2, R3 the paper comparison) (src/research/top3_paper.py) and the statistics freeze (scripts/top3_paper_freeze.py). PAPER/RESEARCH: nothing here stakes, executes or publishes. Every value is pinned; a change is a new protocol version, before the first pick.",
+ "protocol_file": "config/top3_ranking_paper_protocol_v6.json",
+ "protocol_sha256": "5b35327fdd2353e4ecdad4c56e713f1593f16df0ba5920e8aa9a457fcc639f73",
  "tracks": [
-  "R1_CELL_LCB",
-  "R2_CAL_EV"
+  "R3_CAL_EV_LCB"
  ],
- "live_track": "R3_CAL_EV_LCB (the production TOP-3; not recorded here)",
+ "live_track": "R2_CAL_EV (the production TOP-3; not recorded here)",
  "start_utc": "2026-11-21T00:00:00Z",
  "stats_as_of_utc": "2026-11-20T23:59:59Z",
  "freeze_window_from_utc": "2026-11-20T00:00:00Z",
  "bets_from": "2026-09-01",
  "freeze_record": "output/research/top3_ranking/live_stats_2026-11-20.json",
  "freeze_ledger": "output/research/top3_ranking/live_stats_ledger.json",
- "clean_override_id": "clean-data-switch-2026-11-09",
+ "clean_override_ids": [
+  "clean-data-switch-2026-11-09"
+ ],
  "approved_proposals": [
   {
    "proposal_id": "TP-2026-11-15-bade2c0b",
@@ -35,5 +36,12 @@
   }
  },
  "fresh_holdout_record": "output/threshold_proposals/bars_oddsapi_hist/fresh_2026-11-15_132a4795.json",
- "fresh_holdout_record_sha256": "16421cf4928d10a074ef7f067ff7fb05f81db4cbc0d67a0eedbfe3a540b050a3"
+ "fresh_holdout_record_sha256": "16421cf4928d10a074ef7f067ff7fb05f81db4cbc0d67a0eedbfe3a540b050a3",
+ "remeasure_record": "output/research/top3_ranking/live_stats_remeasure.json",
+ "all_data_models": {
+  "status": "NOT_PROMOTED",
+  "frame_hash": null,
+  "engine_versions": [],
+  "how": "when the all-data models (gate on feat/team-info-features) are promoted: set status PROMOTED, their frame_hash (also listed in clean_frames with universe sha256s) and the engine versions they serve, add their promotion override id to clean_override_ids, then run scripts/top3_paper_freeze.py --remeasure before their first pick"
+ }
 }

@@ -1,0 +1,128 @@
+{
+ "protocol": "top3-ranking-paper/5",
+ "amends": {
+  "protocol": "top3-ranking-paper/4",
+  "file": "config/top3_ranking_paper_protocol_v4.json",
+  "sha256_lf": "4d6064c09cbfc0256962e470713abf8e7b95b53bfa9a00010b127a401b7a5868",
+  "history": [
+   {
+    "protocol": "top3-ranking-paper/1",
+    "file": "config/top3_ranking_paper_protocol.json",
+    "sha256_lf": "363e7f416c798ffb05305bc360272c9479eee7b074d5d521aafdf267f396cfb3"
+   },
+   {
+    "protocol": "top3-ranking-paper/2",
+    "file": "config/top3_ranking_paper_protocol_v2.json",
+    "sha256_lf": "296637c666166084c238ac351644ebd9cc03b8a271b2d602f00047d4098d5c08"
+   },
+   {
+    "protocol": "top3-ranking-paper/3",
+    "file": "config/top3_ranking_paper_protocol_v3.json",
+    "sha256_lf": "7e521a6b1aa45e4daee026ecb49aac5cb63ca23dc69b23a709db7d0b67cafe10"
+   },
+   {
+    "protocol": "top3-ranking-paper/4",
+    "file": "config/top3_ranking_paper_protocol_v4.json",
+    "sha256_lf": "4d6064c09cbfc0256962e470713abf8e7b95b53bfa9a00010b127a401b7a5868"
+   }
+  ],
+  "kept_unchanged": "v1, v2, v3 and v4 stay in the repo byte-for-byte as history; this file replaces them for every decision"
+ },
+ "written": "2026-11-11",
+ "written_before_any_live_pick": true,
+ "no_pick_exists": "As of this amendment no TOP-3 pick exists under any version: the paper track is off (TOP3_PAPER_ENABLED unset), the statistics are not frozen (output/research/top3_ranking/live_stats_ledger.json does not exist), the live TOP-3 is not switched on, and the protocol start is 2026-11-21.",
+ "amendment": {
+  "owner_words": [
+   "2026-11-11: \"Add the 3 tracks\" (T1, T2, T3 as paper tracks beside T0)",
+   "2026-11-11: \"the top 3 should be based on our retrain fixed models with the correct optimized bars per league\"",
+   "2026-11-11: \"Clean rebuild\" - the live TOP-3 is ranked by T3; the old EV ranking (T0) is DROPPED entirely, including as a reference track; the old SNIPER / MARKSMAN / VALUABLE tiers are retired from future tips",
+   "2026-11-11: \"Own list\" - league-wide cells (source NONE / LEAGUE_WIDE) are shown as their own line outside the TOP-3 slots, so they are NOT in the TOP-3 / TIER2 pool for any track (T1, T2 or the live T3)",
+   "2026-11-11 (enforced here): \"don't use the old ranking\" - the EV ranking (ev_est = p_used * odds - 1) was dropped; until v3 it still ordered every tip whose cell had no statistic, which in the freeze rehearsal was most T1 tips (5 of 60 cells have the R1 statistic)",
+   "2026-11-11: \"Drop T1\""
+  ],
+  "changes": [
+   "T1 (R1_CELL_LCB) removed: the tracks are the live T3 (R3) and the paper T2 (R2); Holm family of 2",
+   "R1 stays in src/research/top3_ranking.py as RESEARCH code only (RESEARCH_RULES); no ledger, no R1 statistic (lcb) in the freeze record, not in the summary",
+   "everything else unchanged from v4: pool (clean models, approved model cells, no league-wide cells), the no-EV missing-statistic order (rule key, R3 key, CELL_EB, kickoff), statistics freeze, evaluation dates, 150-pick minimum, pass rule"
+  ],
+  "reason": "v4 showed T1 is mostly R3 in disguise (R1 statistic for 5 of 60 cells; 648 of 741 selection-window picks identical to R3); the owner accepted the recommendation to drop it and keep the Holm family small.",
+  "why_legitimate": "No pick exists (see no_pick_exists). The track was removed by the owner on coverage grounds known before any outcome; nothing was chosen from a result."
+ },
+ "status": "APPROVED by the owner 2026-11-11 (\"Add the 3 tracks\", \"Clean rebuild\", \"Own list\", \"Drop T1\"). T2 paper ledger: src/research/top3_paper.py; T3 = the live TOP-3 (src/top3_league.py on prep/bars-oddsapi-hist, ranked by src/research/top3_ranking.LIVE_RULE).",
+ "windows": {
+  "selection": "rows dated < 2026-09-01 (study_58f10476 SELECT). The rules were designed and compared ONLY here.",
+  "spent": "FINAL 2026-09-01..2026-11-08 and the fresh holdouts are SPENT: descriptive only, never evidence.",
+  "validation": "LIVE picks from 2026-11-21 (Clean Record), this protocol only."
+ },
+ "diagnosis": "unchanged from v1 (config/top3_ranking_paper_protocol.json -> diagnosis; output/research/top3_ranking/diagnosis.json). Predictions: the clean champion_recipe walk-forward re-run on frame 58f10476f4c82d7b (standard run_20261110T203611Z, new_format run_20261110T203319Z; own prices only).",
+ "pool": {
+  "rule": "Every track draws ONLY from tips that (a) the CLEAN retrained models produce - prediction_engine_version resolves to an artifact sha256 listed in a stage of the owner's override clean-data-switch-2026-11-09 (config/promotion_overrides.json: first_refit, second_refit, final_refit; from 2026-11-21 the Nov 19-20 final refit) - and (b) clear the OWNER-APPROVED bars of that league x market: a bars_opt cell IDENTICAL to the cell of TP-2026-11-10-d999073a (hash-verified; or a later owner-approved R7 re-check proposal added to config/top3_paper_tracks.json -> approved_proposals), applied from that proposal (config/threshold_applied.json). No global bar, no legacy bar, no pre-repair or v9_repaired model, no unapproved cell. OFF cells give no candidates. MODEL cells only (owner 2026-11-11 \"Own list\"): a LEAGUE_WIDE cell (source NONE) is shown on its own line outside the TOP-3 slots and never enters the TOP-3 / TIER2 pool of T1, T2 or the live T3.",
+  "refusal_reasons": [
+   "MODEL_NOT_CLEAN",
+   "CELL_NOT_APPROVED",
+   "NOT_APPLIED_FROM_APPROVED_PROPOSAL",
+   "LEAGUE_WIDE_OWN_LIST"
+  ],
+  "same_as_production": "candidates first seen strictly before FREEZE = the league-week's first kickoff - TOP3_FREEZE_LEAD_MIN (owner: 120 min), two-sided price, at or above the league's own bar; cap 3 per league per gameweek; fewer when fewer qualify (never padded); direction rule against the track's own picks of the week AND the fixture's live production tip; a candidate kicked off before issue is skipped"
+ },
+ "rules_common": {
+  "per_league": "Every statistic is per cell = (track, league, market-side), from that cell's own data, shrunk at most toward the SAME league's other markets. No cross-league pooling, no global constant.",
+  "constants": {
+   "MIN_OWN_BETS": "40 = src.bars_opt.study.MIN_OWN_BETS",
+   "Z95": "1.96 = the study's 95% interval (src.bars_opt.study.score)"
+  },
+  "missing_statistic": "missing-statistic fallback for EVERY rule, never ev_est: (1) the rule's own key; (2) R3_KEY - the live rule R3's key when the rule is not R3 and R3 has one; (3) CELL_EB - the cell's frozen walk-forward ROI shrunk within the league; (4) KICKOFF - kickoff time, then fixture id. A tip without the rule's statistic still ranks after every tip that has one. Ties inside a group: kickoff, then fixture id (ev_est no longer breaks ties either). Each pick records rank_basis.",
+  "ties": "kickoff, then fixture id",
+  "code": {
+   "file": "src/research/top3_ranking.py",
+   "sha256_lf": "839076a2897da1c232c0c7773b0bba5e5f71e7fd1ba640c7e558c26f0b4b643b"
+  }
+ },
+ "live_statistics": {
+  "frozen_at": "2026-11-20T23:59:59Z (scripts/top3_paper_freeze.py), after the R7 re-check / final refit and before the first 2026-11-21 kickoff; never updated during the test. ONE frozen record serves T2 and T3.",
+  "predictions": "the walk-forward predictions of the CLEAN retrained recipe: frame 58f10476f4c82d7b (standard run_20261110T203611Z, new_format run_20261110T203319Z), or the final-refit frame if it lands before the freeze - then the own-price universes are rebuilt on it, listed in config/top3_paper_tracks.json -> clean_frames, and the statistics are computed on the final frame BEFORE the freeze. Never from v9_repaired or pre-repair models. The frame hash is written into the record.",
+  "calibration_rows_T2_T3": "every priced row of the cell in the own-price universe of that frame, dated before 2026-11-21, inside the cell's odds range, scored by the cell's SERVED source (src.bars_opt.serve.score with the approved cell). No OddsAPI history price is read.",
+  "record": "output/research/top3_ranking/live_stats_2026-11-20.json (statistics only) + output/research/top3_ranking/live_stats_ledger.json (its sha256), committed BEFORE the first pick. Not frozen in time -> no track starts (no fallback).",
+  "cells": "the approved MODEL cells only; no statistic for a LEAGUE_WIDE cell",
+  "bets_cell_eb": "the cell's served tips on those rows dated 2026-09-01..2026-11-20 (a FRESH_HOLDOUT_SELECTION cell only if its family's fresh holdout ended before 2026-09-01), read ONLY for CELL_EB, the shrunk cell ROI of the missing-statistic order. R1's lcb is not recorded (v5)."
+ },
+ "paper_tracking": {
+  "start": "league-weeks whose FREEZE is on or after 2026-11-21T00:00:00Z",
+  "unit": "1 flat unit per pick at the price recorded at first sight; T1/T2 paper only, labelled PAPER/RESEARCH, never staked, executed or published",
+  "settlement": "the production TOP-3 settlement (src.top3_league.settle_picks rules: graded from the results feed after the settle delay; production void rules)",
+  "ledger": "one row per (track, league-week, rank), written once at FREEZE, frozen columns hash-checked on settlement"
+ },
+ "evaluation": {
+  "look_1": "2027-01-25 (Monday), settled picks with kickoff 2026-11-21..2027-01-24",
+  "look_2_final": "2027-03-29 (Monday), settled picks with kickoff 2026-11-21..2027-03-28",
+  "tested_once": "Each track is tested exactly once: at look 1 if it has >= 150 settled picks then, else at look 2. Below 150 at look 2 -> INCONCLUSIVE (its p counts as 1 in Holm). No other looks.",
+  "statistic": "ROI over the track's settled picks; one-sided p = src.league_bars.one_sided_p (bootstrap over match dates, N_BOOT, seed 0); 95% CI = src.bars_opt.study.score",
+  "family": "Holm (src.league_bars.holm) over the 2 tracks T2 and T3; at look 1 a track not yet tested counts as p = 1; at look 2 the final Holm uses each track's single test.",
+  "pass": "n >= 150 AND Holm-adjusted p < 0.025 one-sided AND 95% CI lower bound > 0",
+  "secondary_descriptive": "paired league-week differences between tracks, CLV when graded, realised minus p_used, mix, no_stat picks. Never a pass criterion.",
+  "consequence": "The owner decides. Nothing switches automatically."
+ },
+ "development_record": "six trials on the selection window (v1); re-run 2026-11-11 with the v4 order, development only, NOT a test (output/research/top3_ranking/develop_selection.json, 741 picks per rule): R1 +4.8% [-3.7, +13.4], R2 +4.0% [-4.2, +12.1], R3 +4.8% [-3.8, +13.5]; EV diagnostic +0.9%; all bets +5.9%. Spent window (descriptive only): R1 -5.2%, R2 -1.0%, R3 -7.0%, EV -8.3%, all +0.4% (output/research/top3_ranking/descriptive_final_spent.json).",
+ "t1_coverage": {
+  "freeze_rehearsal": "R1 statistic for 5 of 60 approved model cells (>= 40 own walk-forward bets 2026-09-01..2026-11-20); R2/R3 statistic for 54 of 60",
+  "selection_window": "741 R1 picks: 251 by R1's own key, 490 by the R3 fallback; 648 of 741 identical to R3's picks (R2: 626 of 741)",
+  "assessment": "T1 is mostly R3 in disguise: on the live start most league-weeks will order T1 by R3's key, so T1 tests little that T3 does not, while it widens the Holm family from 2 to 3.",
+  "recommendation_for_owner": "Drop T1 to keep the Holm family small (T2 + live T3, Holm over 2). NOT applied: T1 stays in this protocol unless the owner removes it, which must happen before the first pick (a v5).",
+  "decision": "owner 2026-11-11 \"Drop T1\" - applied in v5"
+ },
+ "hash_rule": "sha256 of this file's bytes with LF line ends; pinned in config/top3_paper_tracks.json, checked by every paper run and by the freeze. Any edit = a new version with a new hash, before the first pick.",
+ "tracks": [
+  {
+   "id": "T2_R2_CAL_EV",
+   "kind": "PAPER",
+   "ledger": "output/research/top3_paper/paper_ledger.csv (track R2_CAL_EV)",
+   "rule": "(fair + lam * (p_used - fair)) * odds - 1; lam = least squares slope of (won - fair) on (p_used - fair) over the cell's own priced rows (>= MIN_OWN_BETS), shrunk toward the same league's other markets (DerSimonian-Laird), clipped to [0, 1]"
+  },
+  {
+   "id": "T3_R3_CAL_EV_LCB",
+   "kind": "LIVE",
+   "ledger": "output/top3_league_ledger.csv (the production TOP-3, ranked by R3)",
+   "rule": "as T2 with lam_lo = clip(lam - Z95 * se_own(lam), 0, 1)"
+  }
+ ]
+}
