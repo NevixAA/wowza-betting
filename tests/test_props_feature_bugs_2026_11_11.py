@@ -176,3 +176,16 @@ def test_reader_marks_provider_null_penalty_missed_and_check_6c_holds_it_missing
     broken.loc[broken["player_id"] == 10, "penalty_missed"] = 0.0
     assert PFT.null_missing(broken)["status"] == PFT.RED
     assert PFT.null_missing(hist)["status"] == PFT.RED              # no provenance -> RED
+
+
+def test_slim_dashboard_tree_without_props_truth_gets_no_data_not_a_crash(monkeypatch):
+    """deploy/dashboard_manifest.json ships no props_feature_truth (PIPELINE_ONLY): evaluate() says NO_DATA."""
+    import scripts.dashboard_manifest as DM
+    assert "src/integrity/props_feature_truth.py" in DM.PIPELINE_ONLY
+    monkeypatch.setitem(sys.modules, "src.integrity.props_feature_truth", None)    # import -> ImportError
+    for name in ("naming", "defaults", "leagues", "one_match", "ledgers"):
+        if hasattr(DT, name):
+            monkeypatch.setattr(DT, name, lambda *a, **k: DT._c("x", DT.GREEN, "", ""))
+    monkeypatch.setattr(DT, "missing", lambda *a, **k: DT._c("x", DT.GREEN, "", ""))
+    lines = [c for c in DT.evaluate() if c["check"].startswith("Data truth 7")]
+    assert len(lines) == 1 and lines[0]["status"] == DT.GREY

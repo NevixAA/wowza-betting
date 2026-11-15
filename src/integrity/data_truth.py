@@ -786,7 +786,15 @@ def evaluate(now: datetime | None = None) -> list[dict]:
             out.append(_c(label, RED, "check failed", "must run", f"{type(e).__name__}: {e}"[:200]))
     # 7 PROPS FEATURES (fix/props-feature-bugs 2026-11-11): keeper goals_conceded agrees with the
     # match score on the frame the props features read; team features keyed to their side.
-    from .props_feature_truth import evaluate as _props_truth
+    # The slim dashboard tree does not carry it (deploy/dashboard_manifest.json PIPELINE_ONLY: it reads
+    # player_history through props_harness); there the line is NO_DATA, never a crash. The gate and
+    # evidence_refresh run on the full repository, where the import always succeeds.
+    try:
+        from .props_feature_truth import evaluate as _props_truth
+    except ImportError as e:
+        out.append(_c("Data truth 7: props features", GREY, "not run in this tree",
+                      "runs on the full repository (data_truth_gate / evidence_refresh)", f"{e}"[:200]))
+        return out
     out.extend(_props_truth())
     return out
 
