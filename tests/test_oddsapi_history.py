@@ -237,7 +237,7 @@ def test_featured_snapshot_is_timed_off_the_first_matched_kickoff(tmp_path):
 def test_cli_refuses_a_store_inside_the_public_repo_and_missing_settings(monkeypatch):
     import oddsapi_history_collect as CLI
     monkeypatch.setattr(CLI.OH, "load_fixtures",
-                        lambda: (pd.DataFrame(columns=["league", "date", "home", "away", "source"]), {}))
+                        lambda include=(): (pd.DataFrame(columns=["league", "date", "home", "away", "source"]), {}))
     with pytest.raises(SystemExit, match="public"):
         CLI.main(["--store", str(ROOT / "output" / "x"), "--max-minutes", "1"])
     monkeypatch.delenv("ODDS_HIST_FLOOR", raising=False)
@@ -274,7 +274,7 @@ def test_adapter_attaches_real_prices_by_fixture_id(tmp_path):
     long, summary, unmatched = AD.attach(_universe(), _odds(tmp_path))
     assert set(long["fixture_id"]) == {f"{D}|{LG}|Austin|Dallas", f"{D}|{LG}|Portland Timbers|Seattle Sounders"}
     assert {"over15", "over45", "btts"} <= set(long["market"])
-    u = AD.attach_to_universe(_universe(), summary)
+    u = AD.attach_to_universe(_universe(), summary, purpose="close")
     a = u[(u["home"] == "Austin")].set_index("market")
     assert a.loc["over15", "oh_close_yes_best"] == 1.25 and a.loc["over15", "oh_close_no_best"] == 3.9
     assert a.loc["btts", "oh_close_yes_n_books"] == 2 and a.loc["btts", "oh_close_yes_best"] == 1.85
@@ -422,3 +422,428 @@ def test_run_proves_aliases_from_its_listings_then_buys_and_unmatched_units_stay
     _run(tmp_path / "two", api3, days=days, run_id="r2")
     assert len([c for c in api3.calls if c[0].endswith("/events")]) == 1      # only the NEW day's listing
     assert len([c for c in api3.calls if "/events/" in c[0]]) == 4            # 3 Portland retried + new Austin
+
+
+# ── provider faults: bounded retries; failed cost from the free /sports, live spend excluded ───────
+F = OH.MIN_FLOOR
+START = F + 1000
+
+
+class Script:
+    """Paid calls answer from `steps` ((status, last, remaining) or an exception); GET /sports
+    answers from `sports` in order (the last value repeats)."""
+
+    def __init__(self, steps, sports=(START,)):
+        self.steps, self.sports, self.paid, self.sports_reads = list(steps), list(sports), 0, 0
+
+    def get(self, url, params=None, timeout=None):
+        if url.endswith("/sports"):
+            self.sports_reads += 1
+            v = self.sports.pop(0) if len(self.sports) > 1 else self.sports[0]
+            return Resp(200, [], 0, v) if v is not None else Resp(200, [], None, None)
+        self.paid += 1
+        st = self.steps.pop(0)
+        if isinstance(st, Exception):
+            raise st
+        status, last, rem = st
+        return Resp(status, {"timestamp": "t", "data": []} if status == 200 else None, last, rem)
+
+
+def _meter(steps, sports=(START,)):
+    sleeps, booked = [], []
+    m = OH.Meter(KEY, floor=OH.MIN_FLOOR, run_cap=10 ** 9, max_seconds=600, session=Script(steps, sports),
+                 pause=0, sleep=sleeps.append, on_reconciled=lambda k, t, c: booked.append((k, t, c)))
+    m.remaining = m.remaining_start = START
+    return m, sleeps, booked
+
+
+def test_a_502_then_success_costs_only_what_is_reported():
+    #            after the 502     after the sleep
+    m, sleeps, booked = _meter([(502, None, None), (200, 20, START - 20)], sports=[START, START])
+    status, _, c = m.call("/x", {}, 20, "B1", key="u1")
+    assert status == 200 and c == 20 and m.spent == 20 and sleeps == [5] and booked == []
+    assert m.live_spend_during_backoff == 0 and m.s.sports_reads == 2
+
+
+def test_a_silently_billed_502_is_booked_to_the_failed_request():
+    m, _, booked = _meter([(502, None, None), (200, 20, START - 40)], sports=[START - 20, START - 20])
+    assert m.call("/x", {}, 20, "B1", key="u1")[0] == 200
+    assert m.spent == 40 and booked == [("u1", "B1", 20)]
+    assert m.reconciled == [{"unit_key": "u1", "tier": "B1", "credits": 20, "upper_bound": False}]
+
+
+def test_a_live_burst_during_the_back_off_is_excluded_and_does_not_stop():
+    # the 502 cost nothing; while we slept the live predictions spent 300 credits on the shared key
+    m, _, booked = _meter([(502, None, None), (200, 20, START - 320)], sports=[START, START - 300])
+    status, _, _ = m.call("/x", {}, 20, "B1", key="u1")
+    assert status == 200 and m.spent == 20 and booked == []
+    assert m.live_spend_during_backoff == 300
+
+
+def test_an_unexplained_drop_beyond_one_request_stops_the_run():
+    m, _, _ = _meter([(502, None, None)], sports=[START - 100])
+    with pytest.raises(OH.Stop) as e:
+        m.call("/x", {}, 20, "B1", key="u1")
+    assert e.value.code == OH.EXIT_ERROR and "unexplained" in e.value.reason
+
+
+def test_sports_without_a_remaining_header_stops_the_run():
+    m, _, _ = _meter([(502, None, None)], sports=[None])
+    with pytest.raises(OH.Stop) as e:
+        m.call("/x", {}, 20, "B1")
+    assert "remaining unknown" in e.value.reason
+
+
+def test_three_retries_then_failed_and_the_unit_stays_not_done(tmp_path):
+    m, sleeps, _ = _meter([(502, None, None)] * 4)
+    status, body, c = m.call("/x", {}, 20, "B1", key="u1")
+    assert status == "failed" and body is None and sleeps == [5, 20, 60] and m.failed_requests == 1
+    assert m.s.paid == 4 and m.s.sports_reads == 4 + 3        # one after every failure, one after each sleep
+
+    class Flaky(FakeAPI):
+        def get(self, url, params=None, timeout=None):
+            if "/events/ev-aus/" in url:
+                self.calls.append((url, dict(params)))
+                return Resp(502, None, None, None)
+            return super().get(url, params, timeout)
+    api = Flaky()
+    code, _, store, meter = _run(tmp_path, api)
+    assert code == OH.EXIT_DONE                                 # the run went on to the next unit
+    led = pd.concat([pd.read_csv(f) for f in (tmp_path / "store" / "ledger" / "units").glob("*.csv")])
+    assert "failed_after_retries" in set(led["status"])
+    assert not any("ev-aus" in k for k in store.done)            # NOT done: retried on resume
+    assert any("ev-por" in k for k in store.done)
+
+
+def test_more_than_twenty_failed_requests_stop_the_run():
+    m, _, _ = _meter([(503, None, None)] * 200)
+    with pytest.raises(OH.Stop) as e:
+        for _ in range(30):
+            m.call("/x", {}, 1, "B1")
+    assert m.failed_requests == OH.MAX_FAILED_PER_RUN + 1 and "failed after retries" in e.value.reason
+
+
+def test_a_429_backs_off_and_retries():
+    m, sleeps, _ = _meter([(429, 0, START), (200, 20, START - 20)])
+    status, _, c = m.call("/x", {}, 20, "B1")
+    assert status == 200 and sleeps == [5] and m.spent == 20
+
+
+def test_a_timeout_is_retried_like_a_provider_fault():
+    import requests
+    m, sleeps, _ = _meter([requests.exceptions.Timeout("https://x?apiKey=SECRET"), (200, 20, START - 20)])
+    assert m.call("/x", {}, 20, "B1")[0] == 200 and sleeps == [5]
+
+
+def test_other_4xx_are_never_retried():
+    m, sleeps, _ = _meter([(400, 0, START), (200, 20, START - 20)])
+    assert m.call("/x", {}, 20, "B1")[0] == 400 and sleeps == [] and m.s.paid == 1
+
+
+def test_a_success_without_cost_headers_still_stops():
+    m, _, _ = _meter([(200, None, None)])
+    with pytest.raises(OH.Stop) as e:
+        m.call("/x", {}, 20, "B1")
+    assert "cost not reported" in e.value.reason
+
+
+# ── BT: the bet-time snapshot (owner 2026-11-11) and the shared read-path rules ────────────────────
+def test_bt_is_ordered_after_b4_and_before_b3():
+    order = list(OH.TIER_ORDER)
+    assert order.index("B4") < order.index("BT") < order.index("B3")
+
+
+def test_bt_takes_one_snapshot_per_event_at_the_track_lead_time_and_reuses_b1_lookups():
+    days = {("USA MLS", D): [("Austin", "Dallas")],                 # new_format
+            ("Championship", D): [("Leeds", "Hull")]}               # standard
+    plan = OH.build_plan(days, _tiers("B1", "BT"), props={}, nf={"USA MLS"})
+    bt = {u.league: u for u in plan["units"]["BT"]}
+    assert set(bt) == {"USA MLS", "Championship"} and len(plan["units"]["BT"]) == 2
+    assert bt["USA MLS"].offset_s == -OH.BT_LEAD_HOURS["new_format"] * 3600
+    assert bt["Championship"].offset_s == -OH.BT_LEAD_HOURS["standard"] * 3600
+    assert {u.label for u in plan["units"]["BT"]} == {"bet"}
+    assert bt["USA MLS"].markets == ("btts", "alternate_totals") and bt["USA MLS"].regions == ("eu",)
+    assert plan["lookups"]["BT"] == []                               # B1's listings, never re-bought
+
+
+def test_bt_run_buys_at_kickoff_minus_the_lead_and_stores_role_inputs(tmp_path):
+    api = FakeAPI()
+    days = {(LG, D): DAYS[(LG, D)]}
+    store = OH.Store(tmp_path / "store", "r1")
+    meter = OH.Meter(KEY, floor=OH.MIN_FLOOR, run_cap=10_000, max_seconds=600, session=api, pause=0,
+                     sleep=lambda s: None)
+    plan = OH.build_plan(days, _tiers("B1", "BT"), props={}, nf={LG})
+    OH.Collector(store, meter, days, plan, ["BT"]).run()
+    snaps = sorted(c[1]["date"] for c in api.calls if "/events/" in c[0])
+    lead = OH.BT_LEAD_HOURS["new_format"]
+    assert snaps == sorted([(pd.Timestamp("2024-06-02T00:30:00Z") - pd.Timedelta(hours=lead)).strftime("%Y-%m-%dT%H:%M:%SZ"),
+                            (pd.Timestamp("2024-06-02T02:30:00Z") - pd.Timedelta(hours=lead)).strftime("%Y-%m-%dT%H:%M:%SZ")])
+    o = _odds(tmp_path)
+    assert set(o["tier"]) == {"BT"} and set(o["snapshot_label"]) == {"bet"}
+
+
+def test_snapshot_roles():
+    r = OH.snapshot_role
+    assert r("BT", "bet") == "BET"
+    assert r("B1", "close") == r("B4", "close") == r("B2", "close") == r("C4", "close") == "CLOSE"
+    assert r("C1", "T-48h") == r("C3", "T-48h") == "OPEN"
+    assert r("B4", "T-48h") == "MOVEMENT"
+
+
+def _long_odds(rows):
+    base = {"unit_key": "u", "endpoint": "event_odds", "sport_key": SK, "league": LG, "league_date": D,
+            "requested_at": "t", "event_id": "e", "home_team": "Austin FC", "away_team": "FC Dallas",
+            "bookmaker": "b", "market": "btts", "outcome_description": None, "point": None,
+            "commence_time": "2024-06-02T00:30:00Z"}
+    out = []
+    for i, r in enumerate(rows):
+        out.append({**base, "unit_key": f"u{i}", "bookmaker": f"b{i}", **r})
+    return pd.DataFrame(out)
+
+
+def test_quotes_at_or_after_the_actual_kickoff_are_dropped():
+    odds = _long_odds([
+        # a RESCHEDULED event: the listing said 00:30, the match was brought forward to 00:00; the close
+        # snapshots (requested off the stale 00:30) carry the new kickoff -> they are post-kickoff
+        {"tier": "B1", "snapshot_label": "close", "snapshot_ts": "2024-06-02T00:25:00Z", "outcome_name": "Yes",
+         "price": 1.9, "commence_time": "2024-06-02T00:00:00Z"},
+        {"tier": "B1", "snapshot_label": "close", "snapshot_ts": "2024-06-02T00:30:00Z", "outcome_name": "Yes",
+         "price": 1.7, "commence_time": "2024-06-02T00:00:00Z"},
+        {"tier": "C1", "snapshot_label": "T-48h", "snapshot_ts": "2024-05-31T00:30:00Z", "outcome_name": "Yes",
+         "price": 2.0},
+        {"tier": "BT", "snapshot_label": "bet", "snapshot_ts": None, "outcome_name": "Yes", "price": 2.1}])
+    long, _, _ = AD.attach(_universe().iloc[[0]], odds)
+    # actual kickoff = 00:00 (the latest snapshot's statement); no snapshot time -> pre-kickoff unprovable
+    assert sorted(long["price"]) == [2.0]
+    assert long.attrs["dropped"]["post_kickoff"] == 2 and long.attrs["dropped"]["no_snapshot_ts"] == 1
+
+
+def test_prices_at_or_below_1_01_are_dropped():
+    odds = _long_odds([
+        {"tier": "B1", "snapshot_label": "close", "snapshot_ts": "2024-06-02T00:25:00Z", "outcome_name": "Yes", "price": 1.01},
+        {"tier": "B1", "snapshot_label": "close", "snapshot_ts": "2024-06-02T00:25:00Z", "outcome_name": "No", "price": 1.02}])
+    long, _, _ = AD.attach(_universe().iloc[[0]], odds)
+    assert list(long["price"]) == [1.02] and long.attrs["dropped"]["price_le_1_01"] == 1
+
+
+def test_every_quote_carries_its_role_and_a_bet_price_never_comes_from_close():
+    odds = _long_odds([
+        {"tier": "BT", "snapshot_label": "bet", "snapshot_ts": "2024-05-26T00:00:00Z", "outcome_name": "Yes", "price": 2.2},
+        {"tier": "B1", "snapshot_label": "close", "snapshot_ts": "2024-06-02T00:25:00Z", "outcome_name": "Yes", "price": 1.9},
+        {"tier": "C1", "snapshot_label": "T-48h", "snapshot_ts": "2024-05-31T00:30:00Z", "outcome_name": "Yes", "price": 2.0}])
+    long, summary, _ = AD.attach(_universe().iloc[[0]], odds)
+    assert dict(zip(long["tier"], long["role"])) == {"BT": "BET", "B1": "CLOSE", "C1": "OPEN"}
+    assert list(AD.prices_for(long, "bet")["price"]) == [2.2]
+    assert list(AD.prices_for(long, "close")["price"]) == [1.9]
+    with pytest.raises(AD.CloseAsBetError):
+        AD.prices_for(long, "bet", role="CLOSE")
+    with pytest.raises(AD.CloseAsBetError):
+        AD.attach_to_universe(_universe().iloc[[0]], summary, purpose="bet", role="CLOSE")
+    u = AD.attach_to_universe(_universe(), summary, purpose="bet").set_index(["home", "market"])
+    assert u.loc[("Austin", "btts"), "oh_bet_yes_best"] == 2.2
+    c = AD.attach_to_universe(_universe(), summary, purpose="close").set_index(["home", "market"])
+    assert c.loc[("Austin", "btts"), "oh_close_yes_best"] == 1.9
+    assert "oh_bet_yes_best" not in c.columns
+
+
+def test_a_quote_taken_after_the_kickoff_it_carried_is_dropped_even_if_the_match_moved_later():
+    # at 00:25 the provider said kickoff 00:00 (in play); a later listing postponed it to the next day
+    odds = _long_odds([
+        {"tier": "B1", "snapshot_label": "close", "snapshot_ts": "2024-06-02T00:25:00Z", "outcome_name": "Yes",
+         "price": 1.9, "commence_time": "2024-06-02T00:00:00Z"},
+        {"tier": "C1", "snapshot_label": "T-48h", "snapshot_ts": "2024-06-02T06:00:00Z", "outcome_name": "Yes",
+         "price": 2.0, "commence_time": "2024-06-03T00:30:00Z"}])
+    long, _, _ = AD.attach(_universe().iloc[[0]], odds)
+    assert list(long["price"]) == [2.0] and long.attrs["dropped"]["post_kickoff"] == 1
+
+
+# ── probe-keys: the provider's own sports list for the keyless leagues, one historical event each ───
+PT = "Portuguese Primeira Liga"
+SPORTS = [
+    {"key": "soccer_portugal_primeira_liga", "group": "Soccer", "title": "Primeira Liga - Portugal",
+     "description": "Portuguese Soccer", "active": True, "has_outrights": False},
+    {"key": "soccer_portugal_cup_winner", "group": "Soccer", "title": "Taca de Portugal Winner",
+     "description": "Primeira Liga Winner", "active": True, "has_outrights": True},
+    {"key": "soccer_spl", "group": "Soccer", "title": "Premiership - Scotland", "description": "Scottish Soccer",
+     "active": True, "has_outrights": False},
+    {"key": "basketball_portugal", "group": "Basketball", "title": "Liga Portugal", "description": "Primeira",
+     "active": True, "has_outrights": False}]
+
+
+def test_candidate_keys_come_only_from_the_providers_soccer_list():
+    assert [s["key"] for s in OH.find_candidate_keys(SPORTS, PT)] == ["soccer_portugal_primeira_liga"]
+    assert OH.find_candidate_keys(SPORTS, "Scottish League Two") == []            # not listed: none, never guessed
+    two = SPORTS + [{**SPORTS[0], "key": "soccer_portugal_primeira_liga_b", "title": "Primeira Liga 2 - Portugal"}]
+    assert len(OH.find_candidate_keys(two, PT)) == 2                              # ambiguous: probe_keys picks none
+
+
+class KeysAPI(FakeAPI):
+    def __init__(self, sports=SPORTS, sports_cost=0, **kw):
+        super().__init__(**kw)
+        self.sports, self.sports_cost = sports, sports_cost
+
+    def get(self, url, params=None, timeout=None):
+        if url.endswith("/sports") and (params or {}).get("all") == "true":
+            self.calls.append((url, dict(params)))
+            return Resp(200, self.sports, self.sports_cost, self.remaining)
+        return super().get(url, params, timeout)
+
+
+def _pt_days():
+    d = "2024-06-01"
+    return {(PT, d): [("Austin", "Dallas"), ("Portland Timbers", "Seattle Sounders")]}, d
+
+
+def test_probe_keys_lists_free_then_probes_one_event_per_found_key(tmp_path, capsys):
+    days, d = _pt_days()
+    api = KeysAPI()
+    meter = OH.Meter(KEY, floor=OH.MIN_FLOOR, run_cap=1000, max_seconds=600, session=api, pause=0, sleep=lambda s: None)
+    store = OH.Store(tmp_path / "store", "pk")
+    res = OH.probe_keys(meter, store, days, OH.club_spellings({}, days),
+                        leagues=[PT, "Scottish League Two"], window=("2024-01-01", "2024-12-31"))
+    r = res["leagues"][PT]
+    assert r["selected_key"] == "soccer_portugal_primeira_liga" and r["probe_date"] == d
+    assert r["lookup"]["events_in_window"] == 3 and r["lookup"]["fixtures_matched"] == 2
+    assert r["event_odds"]["markets"]["btts"]["books"] == 2 and 4.5 in r["event_odds"]["markets"]["alternate_totals"]["points"]
+    assert r["event_odds"]["proven_fixture"] is True
+    assert res["leagues"]["Scottish League Two"]["selected_key"] is None
+    assert res["credits_spent"] == 1 + 20 and meter.spent == 21
+    paid = [c for c in api.calls if "/historical/" in c[0]]
+    assert len(paid) == 2 and paid[1][1]["markets"] == "btts,alternate_totals" and paid[1][1]["regions"] == "eu"
+    j = json.loads((tmp_path / "store" / "ledger" / "probe_keys.json").read_text())
+    assert "price" not in json.dumps(j)
+    # the listing and the odds are kept (reusable), and the log carries counts only
+    assert len(OH.Store(tmp_path / "store", "x").lookups) == 1
+    out = capsys.readouterr().out
+    assert KEY not in out and "Austin" not in out and "soccer_portugal" not in out
+
+
+def test_probe_keys_stops_if_the_sports_list_is_not_free(tmp_path):
+    days, _ = _pt_days()
+    api = KeysAPI(sports_cost=1)
+    meter = OH.Meter(KEY, floor=OH.MIN_FLOOR, run_cap=1000, max_seconds=600, session=api, pause=0, sleep=lambda s: None)
+    with pytest.raises(OH.Stop) as e:
+        OH.probe_keys(meter, OH.Store(tmp_path / "s", "pk"), days, {}, leagues=[PT], window=("2024-01-01", "2024-12-31"))
+    assert "not free" in e.value.reason
+    assert not [c for c in api.calls if "/historical/" in c[0]]
+
+
+def test_probe_keys_refuses_an_ambiguous_key(tmp_path):
+    days, _ = _pt_days()
+    api = KeysAPI(sports=SPORTS + [{**SPORTS[0], "key": "soccer_portugal_primeira_liga_b"}])
+    meter = OH.Meter(KEY, floor=OH.MIN_FLOOR, run_cap=1000, max_seconds=600, session=api, pause=0, sleep=lambda s: None)
+    res = OH.probe_keys(meter, OH.Store(tmp_path / "s", "pk"), days, {}, leagues=[PT], window=("2024-01-01", "2024-12-31"))
+    assert res["leagues"][PT]["selected_key"] is None and len(res["leagues"][PT]["candidates"]) == 2
+    assert meter.spent == 0
+
+
+def test_cli_probe_keys_loads_the_keyless_leagues_and_runs_only_the_probe(monkeypatch, tmp_path):
+    import oddsapi_history_collect as CLI
+    seen = {}
+
+    def fake_load(include=()):
+        seen["include"] = include
+        return pd.DataFrame([{"league": PT, "date": "2024-06-01", "home": "A", "away": "B", "source": "v9"}]), {}
+    monkeypatch.setattr(CLI.OH, "load_fixtures", fake_load)
+    monkeypatch.setattr(CLI.OH, "probe_keys", lambda meter, store, days, spell: seen.update(days=days) or {})
+    monkeypatch.setattr(CLI.OH, "Collector", lambda *a, **k: (_ for _ in ()).throw(AssertionError("no collect")))
+    monkeypatch.setenv("ODDS_API_KEY", KEY)
+    monkeypatch.setenv("ODDS_HIST_FLOOR", str(OH.MIN_FLOOR))
+    monkeypatch.setenv("ODDS_HIST_RUN_CREDIT_CAP", "200")
+    assert CLI.main(["--store", str(tmp_path / "store"), "--probe-keys", "--max-minutes", "5"]) == OH.EXIT_DONE
+    assert set(seen["include"]) == set(OH.KEYLESS_SEARCH) and (PT, "2024-06-01") in seen["days"]
+
+
+def test_a_bt_only_league_enters_bt_alone_and_bt_buys_its_listings():
+    # owner 2026-11-11: Portugal's key was added for BT only (no B1 / B4 / C-tiers unless asked)
+    assert OH.TIER_ONLY_LEAGUES[PT] == ("BT",)
+    days = {(PT, D): [("Benfica", "Porto")], (LG, D): [("Austin", "Dallas")]}
+    plan = OH.build_plan(days, OH.TIERS, props={}, s_ok=set(), nf={LG})
+    for t, units in plan["units"].items():
+        lgs = {u.league for u in units}
+        assert (PT in lgs) == (t == "BT"), t
+    assert (PT, D) in plan["lookups"]["BT"] and (PT, D) not in plan["lookups"]["B1"]
+    assert (LG, D) in plan["lookups"]["B1"]
+
+
+# ── the free /sports reading itself fails (run 43023059924 stopped on a /sports 502) ─────────────────
+class SportsScript(Script):
+    """/sports answers from `sports`: an int (remaining), ('status', code) or an exception."""
+
+    def get(self, url, params=None, timeout=None):
+        if url.endswith("/sports"):
+            self.sports_reads += 1
+            v = self.sports.pop(0) if len(self.sports) > 1 else self.sports[0]
+            if isinstance(v, Exception):
+                raise v
+            if isinstance(v, tuple):
+                return Resp(v[1], None, None, None)
+            return Resp(200, [], 0, v)
+        return super().get(url, params, timeout)
+
+
+def _smeter(steps, sports):
+    sleeps, booked = [], []
+    m = OH.Meter(KEY, floor=OH.MIN_FLOOR, run_cap=10 ** 9, max_seconds=600, session=SportsScript(steps, sports),
+                 pause=0, sleep=sleeps.append, on_reconciled=lambda k, t, c: booked.append((k, t, c)))
+    m.remaining = m.remaining_start = START
+    return m, sleeps, booked
+
+
+def test_a_sports_502_at_the_start_is_retried():
+    m, sleeps, _ = _smeter([], [("status", 502), START])
+    assert m.read_remaining() == START and sleeps == [5] and m.sports_retries == 1
+
+
+def test_a_sports_502_after_a_failed_call_is_retried_and_the_run_goes_on():
+    #                 502 on the paid call   /sports 502, then ok      after the back-off sleep
+    m, sleeps, booked = _smeter([(502, None, None), (200, 20, START - 20)], [("status", 502), START, START])
+    status, _, c = m.call("/x", {}, 20, "B1", key="u1")
+    assert status == 200 and c == 20 and m.spent == 20 and booked == []
+    assert sleeps == [5, 5]                 # the /sports retry, then the request's own back-off
+
+
+def test_a_delayed_settle_reading_books_at_most_the_requests_maximum_and_never_stops():
+    # /sports needed a retry after the failure, and live spent 300 meanwhile: only <= max_cost can be ours
+    m, _, booked = _smeter([(502, None, None), (200, 20, START - 340)],
+                           [("status", 503), START - 320, START - 320])
+    assert m.call("/x", {}, 20, "B1", key="u1")[0] == 200
+    assert booked == [("u1", "B1", 20)] and m.live_spend_during_backoff == 300
+    assert m.reconciled[0]["upper_bound"] is True
+
+
+def test_a_timeout_on_sports_is_retried():
+    import requests
+    m, sleeps, _ = _smeter([], [requests.exceptions.ConnectionError("https://x?apiKey=SECRET"), START])
+    assert m.read_remaining() == START and sleeps == [5]
+
+
+def test_sports_failing_on_every_retry_stops_cleanly_and_the_unit_stays_retryable(tmp_path):
+    m, sleeps, _ = _smeter([], [("status", 502)])
+    with pytest.raises(OH.Stop) as e:
+        m.read_remaining()
+    assert "remaining unknown" in e.value.reason and sleeps == [5, 20, 60]
+
+    class Down(FakeAPI):
+        """The paid call for ev-aus fails, then /sports is down for good."""
+        def __init__(self):
+            super().__init__()
+            self.down = False
+
+        def get(self, url, params=None, timeout=None):
+            if url.endswith("/sports") and self.down:
+                return Resp(502, None, None, None)
+            if "/events/ev-aus/" in url:
+                self.down = True
+                return Resp(502, None, None, None)
+            return super().get(url, params, timeout)
+    code, reason, store, _ = _run(tmp_path, Down())
+    assert code == OH.EXIT_ERROR and "remaining unknown" in reason
+    assert not any("ev-aus" in k for k in store.done)          # never marked done: retried on resume
+
+
+def test_a_4xx_on_sports_is_not_retried():
+    m, sleeps, _ = _smeter([], [("status", 401)])
+    with pytest.raises(OH.Stop):
+        m.read_remaining()
+    assert sleeps == []

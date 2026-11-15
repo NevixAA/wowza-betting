@@ -153,28 +153,77 @@ def OH_league(sport_key: str) -> str | None:
     return LR.sport_key_to_league().get(sport_key)
 
 
+MIN_PRICE = 1.01            # owner 2026-11-11: a quote at or below 1.01 is not a usable price
+PURPOSE_ROLE = {"bet": "BET", "close": "CLOSE", "open": "OPEN"}
+
+
+class CloseAsBetError(ValueError):
+    """A bet price was requested from a snapshot whose role is not BET (owner rule: a closing price
+    may never be a bet price)."""
+
+
+def actual_kickoffs(odds: pd.DataFrame, ctx: dict | None = None) -> pd.Series:
+    """{event_id: kickoff} as the provider LAST stated it: the commence_time carried by the latest
+    snapshot (odds rows and stored listings) of each event. A rescheduled match moves with it."""
+    parts = [odds[["event_id", "snapshot_ts", "commence_time"]]]
+    if ctx:
+        rows = [(e.get("id"), e.get("snapshot_ts"), e.get("commence_time"))
+                for evs in ctx.get("events_by_day", {}).values() for e in evs]
+        if rows:
+            parts.append(pd.DataFrame(rows, columns=["event_id", "snapshot_ts", "commence_time"]))
+    k = pd.concat(parts, ignore_index=True)
+    k["ts"] = pd.to_datetime(k["snapshot_ts"], utc=True, errors="coerce")
+    k["ko"] = pd.to_datetime(k["commence_time"], utc=True, errors="coerce")
+    k = k.dropna(subset=["ko"]).sort_values("ts", na_position="first")
+    return k.drop_duplicates("event_id", keep="last").set_index("event_id")["ko"]
+
+
 def attach(universe: pd.DataFrame, odds: pd.DataFrame, ctx: dict | None = None
            ) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     """(long prices, summary, unmatched). long: one row per fixture x book x outcome x snapshot with
-    our market vocabulary; summary: per fixture x market x line x side x snapshot label, n_books /
-    best / median of the real prices."""
+    our market vocabulary and the snapshot's ROLE (BET / CLOSE / OPEN / MOVEMENT,
+    src.oddsapi_history.snapshot_role); summary: per fixture x market x line x side x role x snapshot
+    label, n_books / best / median of the real prices.
+
+    THE SHARED READ RULES (owner 2026-11-11), applied before anything is returned:
+      * a quote whose snapshot is at or after the event's ACTUAL kickoff (the provider's latest stated
+        commence_time; a rescheduled match moves) OR at or after the kickoff that snapshot itself
+        carried is dropped, and so is a quote with no snapshot time (pre-kickoff cannot be proven);
+      * a price at or below MIN_PRICE (1.01) is dropped.
+    Counts in long.attrs['dropped']."""
     fmap, unmatched = match_universe(universe, odds, ctx)
     if not fmap:
         return pd.DataFrame(), pd.DataFrame(), unmatched
     inv = pd.DataFrame({"fixture_id": list(fmap), "event_id": list(fmap.values())})
     o = odds.merge(inv, on="event_id", how="inner")
+    ko = o["event_id"].map(actual_kickoffs(odds, ctx))
+    ts = pd.to_datetime(o["snapshot_ts"], utc=True, errors="coerce")
+    own = pd.to_datetime(o["commence_time"], utc=True, errors="coerce")
+    no_ts = ts.isna() | ko.isna()
+    # post-kickoff by EITHER statement: the provider's latest kickoff, or the kickoff the snapshot itself
+    # carried (a quote taken when the provider said the match had started is never a pre-match price)
+    post = ~no_ts & ((ts >= ko) | (own.notna() & (ts >= own)))
+    low = ~no_ts & ~post & (pd.to_numeric(o["price"], errors="coerce") <= MIN_PRICE)
+    dropped = {"no_snapshot_ts": int(no_ts.sum()), "post_kickoff": int(post.sum()),
+               "price_le_1_01": int(low.sum())}
+    keep_rows = ~(no_ts | post | low)
+    o = o[keep_rows].copy()
+    o["actual_kickoff"] = ko[keep_rows].dt.strftime("%Y-%m-%dT%H:%M:%SZ")
+    o = o.reset_index(drop=True)
+    o["role"] = [OH.snapshot_role(t, lab) for t, lab in zip(o["tier"], o["snapshot_label"])]
     cls = [classify(m, n, ds, p, h, a) for m, n, ds, p, h, a in
            zip(o["market"], o["outcome_name"], o["outcome_description"], o["point"], o["home_team"], o["away_team"])]
     keep = [c is not None for c in cls]
     o = o[keep].reset_index(drop=True)
-    c = pd.DataFrame([x for x in cls if x is not None])
+    c = pd.DataFrame([x for x in cls if x is not None], columns=["market", "side", "line", "team", "player"])
     o = o.rename(columns={"market": "provider_market"})
     # a FEATURED snapshot is timed off the day's FIRST kickoff, not this match's: its labels say so
     # ('day-close', 'day-T-48h'), so 'close' always means this match's own kickoff - 5 minutes
     o["snapshot_label"] = np.where(o["endpoint"] == "event_odds", o["snapshot_label"], "day-" + o["snapshot_label"])
-    long = pd.concat([o[["fixture_id", "league", "event_id", "tier", "endpoint", "snapshot_label", "requested_at",
-                         "snapshot_ts", "commence_time", "bookmaker", "provider_market", "price"]], c], axis=1)
-    grp = ["fixture_id", "market", "line", "team", "player", "side", "snapshot_label"]
+    long = pd.concat([o[["fixture_id", "league", "event_id", "tier", "endpoint", "role", "snapshot_label",
+                         "requested_at", "snapshot_ts", "commence_time", "actual_kickoff", "bookmaker",
+                         "provider_market", "price"]], c], axis=1)
+    grp = ["fixture_id", "market", "line", "team", "player", "side", "role", "snapshot_label"]
     k = long.assign(team=long["team"].fillna(""), player=long["player"].fillna(""))
     # ONE quote per book: a book seen twice for the same outcome (main `totals` and `alternate_totals`,
     # or two tiers) counts once - its latest snapshot, then the provider market name, as stored.
@@ -183,22 +232,45 @@ def attach(universe: pd.DataFrame, odds: pd.DataFrame, ctx: dict | None = None
           .drop_duplicates(grp + ["bookmaker"], keep="last"))
     s = k.groupby(grp, sort=True, dropna=False)["price"].agg(n_books="count", best="max",
                                                              median="median").reset_index()
+    long.attrs["dropped"] = dropped
     return long, s, unmatched
 
 
-def attach_to_universe(universe: pd.DataFrame, summary: pd.DataFrame, label: str = "close") -> pd.DataFrame:
-    """The universe rows with oh_<label>_{yes,no}_{best,median,n_books} for their OWN market
-    (over15 / over25 / over35 / btts ...). A row the history does not price keeps NaN."""
+def prices_for(df: pd.DataFrame, purpose: str, role: str | None = None) -> pd.DataFrame:
+    """The rows of `df` (attach's long frame or summary) that may serve `purpose`: 'bet' -> role BET
+    only, 'close' -> CLOSE, 'open' -> OPEN. Asking for a bet price from any other role raises
+    CloseAsBetError; nothing ever falls back to another role."""
+    if purpose not in PURPOSE_ROLE:
+        raise ValueError(f"purpose must be one of {sorted(PURPOSE_ROLE)}")
+    want = PURPOSE_ROLE[purpose]
+    if role is not None and role != want:
+        if purpose == "bet":
+            raise CloseAsBetError(f"a bet price may only come from role BET, not {role}")
+        raise ValueError(f"purpose {purpose} reads role {want}, not {role}")
+    if "role" not in df.columns:
+        raise ValueError("the frame carries no snapshot role: build it with attach()")
+    return df[df["role"] == want]
+
+
+def attach_to_universe(universe: pd.DataFrame, summary: pd.DataFrame, *, purpose: str,
+                       role: str | None = None) -> pd.DataFrame:
+    """The universe rows with oh_<purpose>_{yes,no}_{best,median,n_books} for their OWN market
+    (over15 / over25 / over35 / btts ...), from the role that purpose may read (prices_for: a bet
+    price only from BET). One snapshot label per role and fixture is expected; should a role hold two
+    labels for one fixture, the row is left unpriced rather than picking one."""
     u = universe.copy()
     u["fixture_id"] = fixture_id(universe).values
+    cols = [f"oh_{purpose}_{side}_{k}" for side in ("yes", "no") for k in ("best", "median", "n_books")]
     if summary is None or summary.empty:
-        for side in ("yes", "no"):
-            for k in ("best", "median", "n_books"):
-                u[f"oh_{label}_{side}_{k}"] = np.nan
+        prices_for(pd.DataFrame(columns=["role"]), purpose, role)            # the same refusal
+        for col in cols:
+            u[col] = np.nan
         return u
-    s = summary[(summary["snapshot_label"] == label) & (summary["team"] == "") & (summary["player"] == "")]
+    s = prices_for(summary, purpose, role)
+    s = s[(s["team"] == "") & (s["player"] == "")]
     for side in ("yes", "no"):
-        part = s[s["side"] == side][["fixture_id", "market", "best", "median", "n_books"]].rename(
-            columns={k: f"oh_{label}_{side}_{k}" for k in ("best", "median", "n_books")})
+        part = s[s["side"] == side][["fixture_id", "market", "best", "median", "n_books"]]
+        part = part[~part.duplicated(["fixture_id", "market"], keep=False)]
+        part = part.rename(columns={k: f"oh_{purpose}_{side}_{k}" for k in ("best", "median", "n_books")})
         u = u.merge(part, on=["fixture_id", "market"], how="left")
     return u

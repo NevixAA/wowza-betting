@@ -90,6 +90,25 @@ class Tier:
     end: str
     gate: str | None = None          # None | "props_probe" | "s_probe"
     purpose: str = ""
+    # per model track ((track, ((label, timedelta), ...)), ...): replaces `offsets` for a league of that
+    # track (the registry's model_type); a league of no listed track gets no unit
+    offsets_by_track: tuple | None = None
+
+    def offsets_for(self, league: str) -> tuple:
+        if self.offsets_by_track is None:
+            return self.offsets
+        return dict(self.offsets_by_track).get(league_model_type(league), ())
+
+
+# BT, the BET-TIME snapshot (owner 2026-11-11: "a closing price may never be a bet price"). The lead
+# time live tips are really made at, MEASURED on v9's live ledgers (data-truth-100 91cc1e805,
+# output/bets_ledger.csv + output/side_bets_ledger.csv, source == live, 2026-04-26..2026-11-09): first
+# sight = the earliest generated_at (UTC, src/ledger.py datetime.utcnow) per fixture x market, kickoff =
+# the provider's commence_time of that fixture (exact OddsAPI names, +-1 day; 96-98% joined).
+#   new_format: n 1,663, median 152.8 h (IQR 98.4-166.3)    standard: n 677, median 124.9 h (IQR 66.1-164.5)
+# The tracks differ by 28 h, so each gets its own median, rounded to the hour.
+BT_LEAD_HOURS = {"new_format": 153, "standard": 125}
+BT_LABEL = "bet"
 
 
 TIERS: tuple[Tier, ...] = (
@@ -99,6 +118,9 @@ TIERS: tuple[Tier, ...] = (
          purpose="New-Format O/U main line before the event-market history starts"),
     Tier("B4", "featured", ("h2h", "totals"), ("eu",), EIGHT, "team", "2023-06-14", "2026-06-13",
          purpose="sharp-money line movement, 8 snapshots per league-day"),
+    Tier("BT", "event", ("btts", "alternate_totals"), ("eu",), (), "team", "2023-05-03", HISTORY_END,
+         purpose="BET-TIME snapshot: B1's events and markets at the measured live-tip lead time per track",
+         offsets_by_track=tuple((tr, ((BT_LABEL, timedelta(hours=-h)),)) for tr, h in BT_LEAD_HOURS.items())),
     Tier("B3", "event", ("props",), ("uk", "eu", "us", "us2"), (CLOSE,), "props", "2023-05-03", HISTORY_END,
          gate="props_probe", purpose="player props at close (probe-confirmed markets only)"),
     Tier("S", "event", ("correct_score",), ("uk", "eu"), (CLOSE,), "team", "2023-05-03", HISTORY_END,
@@ -205,11 +227,11 @@ def load_served_history() -> tuple[pd.DataFrame, dict]:
     return h.drop_duplicates().reset_index(drop=True), identity
 
 
-def load_fixtures(root: Path = ROOT, served: tuple | None = None) -> tuple[pd.DataFrame, dict]:
+def load_fixtures(root: Path = ROOT, served: tuple | None = None, include: tuple = ()) -> tuple[pd.DataFrame, dict]:
     """([league, date, home, away, source], identity aliases). Team leagues come from v9's served
     history (canonical clubs, one fixture each); keyed leagues the served history does not hold (the
     props-only top divisions: Premier League, Ligue 1, ...) come from player_history. Keyed leagues
-    only."""
+    only, plus `include` (the keyless leagues, for --probe-keys only: never planned)."""
     h, identity = served if served is not None else load_served_history()
     parts = [h.assign(source="v9")]
     ph = root / "player_history.parquet"
@@ -221,7 +243,7 @@ def load_fixtures(root: Path = ROOT, served: tuple | None = None) -> tuple[pd.Da
         p["date"] = pd.to_datetime(p["date"], errors="coerce").dt.strftime("%Y-%m-%d")
         parts.append(p.rename(columns={"home_team": "home", "away_team": "away"}).assign(source="ph"))
     f = pd.concat(parts, ignore_index=True).dropna(subset=["league", "date", "home", "away"])
-    keyed = {lg for lg in f["league"].unique() if sport_key(lg)}
+    keyed = {lg for lg in f["league"].unique() if sport_key(lg)} | set(include)
     f = f[f["league"].isin(keyed)]
     return (f.drop_duplicates(["league", "date", "home", "away", "source"])
              .reset_index(drop=True)[["league", "date", "home", "away", "source"]], identity)
@@ -292,8 +314,13 @@ class Unit:
         return CREDITS_PER_MARKET_REGION * len(self.markets) * len(self.regions)
 
 
+# Leagues bought ONLY in the listed tiers (owner 2026-11-11: Portugal's OddsAPI key was added after the
+# probe-keys run 43035181427 for the BET-TIME tier only; no B1 close / B4 / C-tiers unless the owner asks).
+TIER_ONLY_LEAGUES = {"Portuguese Primeira Liga": ("BT",)}
+
+
 def _tier_leagues(t: Tier, days: dict, props: dict, s_ok: set | None, nf: set) -> set:
-    present = {lg for lg, _ in days}
+    present = {lg for lg, _ in days if t.name in TIER_ONLY_LEAGUES.get(lg, (t.name,))}
     if t.leagues == "props":
         return present & set(props)
     team = {lg for lg in present if not _props_only(lg)}
@@ -302,6 +329,26 @@ def _tier_leagues(t: Tier, days: dict, props: dict, s_ok: set | None, nf: set) -
     if t.gate == "s_probe" and s_ok is not None:
         return team & s_ok
     return team
+
+
+def league_model_type(league: str) -> str | None:
+    """The registry's model_type of the league ('standard' / 'new_format'), None for props-only."""
+    from src import league_registry as LR
+    return (LR.entry(league) or {}).get("model_type")
+
+
+def snapshot_role(tier: str, label: str) -> str:
+    """The role of a stored snapshot. BET: the bet-time snapshot (tier BT) - the ONLY price a bet may
+    be evaluated at. CLOSE: a closing snapshot (label 'close': B1, B2, B3, B4, C3, C4) - CLV only, never a
+    bet price. OPEN: the T-48h opening snapshots of C1, C2, C3. MOVEMENT: B4 / C5's intermediate line
+    snapshots (T-72h..T-1h)."""
+    if tier == "BT":
+        return "BET"
+    if label == "close":
+        return "CLOSE"
+    if tier in ("C1", "C2", "C3") and label == OPEN48[0]:
+        return "OPEN"
+    return "MOVEMENT"
 
 
 def _props_only(league: str) -> bool:
@@ -331,7 +378,7 @@ def build_plan(days: dict, tiers: Iterable[Tier] = TIERS, props: dict | None = N
             anchors = [(None, None)] if t.kind == "featured" else list(fx)
             new = False
             for h, a in anchors:
-                for label, off in t.offsets:
+                for label, off in t.offsets_for(lg):
                     ident = (t.kind, lg, d, h, a, int(off.total_seconds()))
                     miss = {}
                     for r in t.regions:
@@ -377,7 +424,9 @@ def summarise_plan(plan: dict, days: dict, sec_per_call: tuple = (0.5, 1.0),
         t = tiers[name]
         out["tiers"][name] = {
             "kind": t.kind, "markets": list(t.markets), "regions": list(t.regions),
-            "snapshots": [lab for lab, _ in t.offsets], "window": [t.start, t.end], "gate": t.gate,
+            "snapshots": ([lab for lab, _ in t.offsets] if t.offsets_by_track is None else
+                          {tr: [f"{lab} {int(off.total_seconds() // 3600)}h" for lab, off in offs]
+                           for tr, offs in t.offsets_by_track}), "window": [t.start, t.end], "gate": t.gate,
             "purpose": t.purpose,
             "league_days": len({(u.league, u.date) for u in units}),
             "matches": len({(u.league, u.date, u.home, u.away) for u in units if u.kind == "event"}),
@@ -745,13 +794,28 @@ class Stop(Exception):
         self.code, self.reason = code, reason
 
 
+RETRY_WAITS = (5, 20, 60)        # owner 2026-11-10: at most 3 retries per request, exponential back-off
+RETRYABLE_STATUS = {429, 500, 502, 503, 504}
+MAX_FAILED_PER_RUN = 20          # more requests than this failing after their retries stops the run
+
+
 class Meter:
     """Every paid call passes here. Before: floor, run cap, time. After: x-requests-last and
-    x-requests-remaining must both be present, and the cost may not exceed the call's maximum."""
+    x-requests-remaining must both be present on a successful answer, and the cost may not exceed
+    the call's maximum.
+
+    Provider faults (HTTP 500/502/503/504, a timeout or a dropped connection) and 429 are retried at
+    most len(RETRY_WAITS) times with back-off. Right after each failed attempt the free GET /sports is
+    read (no other collector call in between): a cost the attempt did not report is the drop from the
+    last known remaining value to that reading, booked to the request ('unreported_cost_reconciled');
+    more than the request's maximum stops the run. After the back-off sleep /sports is read again:
+    the shared key's live spend meanwhile is excluded (live_spend_during_backoff). A request still
+    failing after its retries returns 'failed' (the caller leaves it NOT done); more than
+    MAX_FAILED_PER_RUN of them stop the run. Other 4xx are never retried."""
 
     def __init__(self, key: str, floor: int, run_cap: int, max_seconds: float, session=None,
                  pause: float = 0.25, clock: Callable[[], float] = time.monotonic,
-                 sleep: Callable[[float], None] = time.sleep):
+                 sleep: Callable[[float], None] = time.sleep, on_reconciled: Callable | None = None):
         if floor < MIN_FLOOR:
             raise ValueError(f"floor {floor} is below the owner's minimum {MIN_FLOOR}")
         if run_cap <= 0:
@@ -764,6 +828,12 @@ class Meter:
         self.spent, self.calls, self.remaining = 0, 0, None
         self.remaining_start = None
         self.by_tier: Counter = Counter()
+        self.failed_requests = 0
+        self.retries = 0
+        self.reconciled: list = []       # [{unit_key, tier, credits}] booked to failed requests
+        self.live_spend_during_backoff = 0   # the shared key's spend while we slept: never ours
+        self.sports_retries = 0
+        self.on_reconciled = on_reconciled
 
     def _get(self, path: str, params: dict):
         try:
@@ -771,15 +841,6 @@ class Meter:
         except Exception as e:                                      # noqa: BLE001
             # the exception text can hold the URL (and so the key): only its type is ever reported
             raise Stop(EXIT_ERROR, f"network error {type(e).__name__}") from None
-
-    def read_remaining(self):
-        """GET /sports is free: it reads the credits left before the first paid call."""
-        r = self._get("/sports", {})
-        rem = r.headers.get("x-requests-remaining")
-        if r.status_code != 200 or rem is None:
-            raise Stop(EXIT_ERROR, f"credits remaining unknown (status {r.status_code})")
-        self.remaining = self.remaining_start = int(float(rem))
-        return self.remaining
 
     def check(self, max_cost: int):
         if self.remaining is None:
@@ -791,34 +852,129 @@ class Meter:
         if self.spent + max_cost > self.run_cap:
             raise Stop(EXIT_RUN_CAP, "per-run credit cap reached")
 
-    def call(self, path: str, params: dict, max_cost: int, tier: str):
-        """(status, body | None, credits). Retries 429 / 5xx with back-off (each attempt metered)."""
-        waits = (2, 5, 15, 30, 60)
-        for attempt in range(len(waits) + 1):
+    def sports_list(self) -> list:
+        """GET /sports?all=true (in and out of season). Free per the v4 guide ("This endpoint does not
+        count against the usage quota"); a response that reports any cost, or none, stops the run."""
+        r = self._get("/sports", {"all": "true"})
+        last, rem = r.headers.get("x-requests-last"), r.headers.get("x-requests-remaining")
+        if r.status_code != 200 or rem is None or last is None:
+            raise Stop(EXIT_ERROR, f"sports list unreadable (status {r.status_code})")
+        if int(float(last)) != 0:
+            raise Stop(EXIT_ERROR, f"the sports list was not free (x-requests-last {last})")
+        self.remaining = int(float(rem))
+        return r.json()
+
+    def _sports_read(self) -> tuple[int, bool]:
+        """(x-requests-remaining, whether it needed retries) from GET /sports, which the provider docs
+        say "does not count against the usage quota" (v4 guide). A 5xx / 429 / timeout is retried with
+        the same bounded back-off as a paid call (run 43023059924 stopped on a single /sports 502);
+        any other status, a 200 without the header, or a failure on every retry stops the run.
+        Nothing is ever estimated."""
+        status = None
+        for attempt in range(len(RETRY_WAITS) + 1):
+            try:
+                r = self._get("/sports", {})
+            except Stop:
+                r = None                                 # timeout / dropped connection
+            status = None if r is None else r.status_code
+            rem = None if r is None else r.headers.get("x-requests-remaining")
+            if r is not None and status == 200 and rem is not None:
+                return int(float(rem)), attempt > 0
+            if r is not None and status not in RETRYABLE_STATUS:
+                raise Stop(EXIT_ERROR, f"credits remaining unknown from /sports (status {status})")
+            if attempt < len(RETRY_WAITS):
+                self.sports_retries += 1
+                self.sleep(RETRY_WAITS[attempt])
+        raise Stop(EXIT_ERROR, f"credits remaining unknown from /sports after {len(RETRY_WAITS)} retries "
+                               f"(status {status})")
+
+    def read_remaining(self):
+        """GET /sports is free: it reads the credits left before the first paid call."""
+        self.remaining = self.remaining_start = self._sports_read()[0]
+        return self.remaining
+
+    def sports_remaining(self) -> int:
+        return self._sports_read()[0]
+
+    def _settle_fault(self, key, tier: str, max_cost: int, reported: bool):
+        """Right after a failed attempt, with no other collector call in between: read /sports. If
+        the attempt reported no cost, the drop from the last known remaining value to that reading is
+        its unexplained cost, booked to the request ('unreported_cost_reconciled'). When the reading
+        came at once, a drop above the request's maximum stops the run. When /sports itself needed
+        retries (the shared key's live spend can land in that wait), the request is booked AT MOST its
+        maximum possible cost (an upper bound, flagged) and the rest is the shared key's live spend:
+        a request can never cost more than its maximum, so nothing of ours is hidden. Returns the reading."""
+        now, delayed = self._sports_read()
+        if not reported:
+            drop = self.remaining - now
+            if drop > max_cost and not delayed:
+                raise Stop(EXIT_ERROR, f"unexplained credit drop {drop} > one request's maximum {max_cost}")
+            ours = min(drop, max_cost)
+            if drop > ours:
+                self.live_spend_during_backoff += drop - ours
+            if ours > 0:
+                self.spent += ours
+                self.by_tier[tier] += ours
+                self.reconciled.append({"unit_key": key, "tier": tier, "credits": ours, "upper_bound": delayed})
+                if self.on_reconciled:
+                    self.on_reconciled(key, tier, ours)
+        self.remaining = now
+        return now
+
+    def _backoff(self, wait: float):
+        """Sleep, then read /sports again: what the shared key (live predictions) spent meanwhile is
+        NOT ours; it is recorded as live_spend_during_backoff and the baseline moves to the reading."""
+        before = self.remaining
+        self.sleep(wait)
+        after = self.sports_remaining()
+        if before - after > 0:
+            self.live_spend_during_backoff += before - after
+        self.remaining = after
+
+    def call(self, path: str, params: dict, max_cost: int, tier: str, key: str | None = None):
+        """(status, body | None, credits). status 'failed' = still a provider fault after the retries."""
+        for attempt in range(len(RETRY_WAITS) + 1):
             self.check(max_cost)
-            r = self._get(path, params)
+            try:
+                r = self._get(path, params)
+            except Stop:
+                r = None                                 # timeout / dropped connection: a provider fault
             self.calls += 1
-            last, rem = r.headers.get("x-requests-last"), r.headers.get("x-requests-remaining")
+            status = None if r is None else r.status_code
+            last = None if r is None else r.headers.get("x-requests-last")
+            rem = None if r is None else r.headers.get("x-requests-remaining")
+            if r is None or status in RETRYABLE_STATUS:
+                reported = last is not None and rem is not None
+                if reported:
+                    last = int(float(last))
+                    self.spent += last
+                    self.by_tier[tier] += last
+                    self.remaining = int(float(rem))
+                self._settle_fault(key or path, tier, max_cost, reported)
+                if attempt < len(RETRY_WAITS):
+                    self.retries += 1
+                    self._backoff(RETRY_WAITS[attempt])
+                    continue
+                self.failed_requests += 1
+                if self.failed_requests > MAX_FAILED_PER_RUN:
+                    raise Stop(EXIT_ERROR, f"more than {MAX_FAILED_PER_RUN} requests failed after retries")
+                return "failed", None, None
             if last is None or rem is None:
-                raise Stop(EXIT_ERROR, f"cost not reported (status {r.status_code})")
-            last, self.remaining = int(float(last)), int(float(rem))
+                raise Stop(EXIT_ERROR, f"cost not reported (status {status})")
+            last = int(float(last))
+            self.remaining = int(float(rem))
             self.spent += last
             self.by_tier[tier] += last
             if last > max_cost:
                 raise Stop(EXIT_ERROR, f"a call cost {last} > its planned maximum {max_cost}")
             if self.pause:
                 self.sleep(self.pause)
-            if r.status_code == 200:
+            if status == 200:
                 return 200, r.json(), last
-            if r.status_code in (401, 403):
-                raise Stop(EXIT_ERROR, f"auth refused (status {r.status_code})")
-            if r.status_code in (404, 422):
-                return r.status_code, None, last
-            if attempt < len(waits) and (r.status_code == 429 or r.status_code >= 500):
-                self.sleep(waits[attempt])
-                continue
-            return r.status_code, None, last
-        return None, None, 0
+            if status in (401, 403):
+                raise Stop(EXIT_ERROR, f"auth refused (status {status})")
+            return status, None, last                    # other 4xx: never retried
+        return "failed", None, None
 
 
 # ── the run ──────────────────────────────────────────────────────────────────────────────────────
@@ -857,6 +1013,10 @@ class Collector:
         self._matched: dict = {}
         self.R = Resolver(self.spell)
         self.proof: dict = {}
+        if self.m.on_reconciled is None:
+            # an unreported cost found later is booked to the failed request (never done: retryable)
+            self.m.on_reconciled = lambda k, t, c: self.store.finish_unit(k, t, "unreported_cost_reconciled",
+                                                                          c, 0, None)
 
     def _st(self, tier, k, n=1):
         self.stats.setdefault(tier, Counter())[k] += n
@@ -870,8 +1030,12 @@ class Collector:
         at = lookup_at(d)
         status, body, c = self.m.call(f"/historical/sports/{sk}/events",
                                       {"date": iso(at), "commenceTimeFrom": iso(lo), "commenceTimeTo": iso(hi)},
-                                      LOOKUP_MAX_COST, tier)
+                                      LOOKUP_MAX_COST, tier, key=k)
         self._st(tier, "lookup_calls")
+        if status == "failed":
+            self._st(tier, "lookups_failed_after_retries")          # not done: retried on resume
+            self.store.finish_unit(k, tier, "failed_after_retries", None, 0, None)
+            return
         self._st(tier, "credits", c)
         data = ((body or {}).get("data") or []) if status == 200 else []
         rows = [{"unit_key": k, "sport_key": sk, "league": league, "league_date": d, "lookup_at": iso(at),
@@ -940,8 +1104,12 @@ class Collector:
             return
         status, body, c = self.m.call(path, {"date": iso(snap), "regions": ",".join(u.regions),
                                              "markets": ",".join(u.markets), "oddsFormat": "decimal",
-                                             "dateFormat": "iso"}, u.max_cost, u.tier)
+                                             "dateFormat": "iso"}, u.max_cost, u.tier, key=k)
         self._st(u.tier, "odds_calls")
+        if status == "failed":
+            self._st(u.tier, "units_failed_after_retries")          # not done: retried on resume
+            self.store.finish_unit(k, u.tier, "failed_after_retries", None, 0, None)
+            return
         self._st(u.tier, "credits", c)
         if status != 200:
             self.store.finish_unit(k, u.tier, f"http_{status}", c, 0, None)
@@ -994,10 +1162,17 @@ class Collector:
                     "calls": self.m.calls, "credits_spent": self.m.spent,
                     "credits_by_tier": self.m.by_tier, "remaining_start": self.m.remaining_start,
                     "remaining_end": self.m.remaining, "floor": self.m.floor, "run_cap": self.m.run_cap,
+                    "retries": self.m.retries, "failed_requests": self.m.failed_requests,
+                    "unreported_cost_reconciled": self.m.reconciled,
+                    "live_spend_during_backoff": self.m.live_spend_during_backoff,
+                    "sports_retries": self.m.sports_retries,
                     "stats": self.stats, "finished_at": iso(datetime.now(timezone.utc))}
             self.store.write_run(info)
             say(f"stop: {reason}; calls {self.m.calls:,}; credits spent {self.m.spent:,}; "
-                f"remaining {self.m.remaining if self.m.remaining is not None else 'unknown'}")
+                f"remaining {self.m.remaining if self.m.remaining is not None else 'unknown'}; "
+                f"retries {self.m.retries:,}; failed after retries {self.m.failed_requests:,}; "
+                f"reconciled {sum(x['credits'] for x in self.m.reconciled):,}; "
+                f"live spend during back-off {self.m.live_spend_during_backoff:,}")
         return code, reason
 
     def _progress(self):
@@ -1040,6 +1215,144 @@ def probe_s(meter: Meter, store_root: Path, probe_file: Path = PROBE_FILE,
     f.write_text(json.dumps(res, indent=1, sort_keys=True) + "\n", encoding="utf-8")
     say(f"S probe: {sum(1 for v in res['leagues'].values() if v.get('correct_score_returned'))} of "
         f"{len(res['leagues'])} leagues returned correct_score; credits {meter.spent:,}")
+    return res
+
+
+# ── probe-keys: keyless leagues against the provider's own sports list (owner 2026-11-11) ──────────
+# How each league WITHOUT a registry key can be recognised in the provider's soccer list: a country
+# token AND a competition token in the key / title / description. These only select CANDIDATES from
+# the provider's own list; a league with no candidate or with two stays keyless (never guessed), and a
+# selected key must still return a real historical event before it may enter the registry.
+KEYLESS_SEARCH = {
+    "Portuguese Primeira Liga": (("portugal", "portuguese"), ("primeira",)),
+    "National League": (("england", "english"), ("national league",)),
+    "Scottish Championship": (("scotland", "scottish"), ("championship",)),
+    "Scottish League One": (("scotland", "scottish"), ("league one", "league 1")),
+    "Scottish League Two": (("scotland", "scottish"), ("league two", "league 2")),
+    "Romanian Superliga": (("romania", "romanian"), ("liga 1", "liga i", "superliga")),
+}
+PROBE_KEYS_NAME = "probe_keys.json"
+PROBE_KEYS_MARKETS = ("btts", "alternate_totals")
+PROBE_KEYS_WINDOW = ("2024-03-01", "2025-03-31")      # the P7 probe's window
+
+
+def find_candidate_keys(sports: list, league: str) -> list:
+    """The provider's soccer (non-outright) sports whose key / title / description carry the league's
+    country token and competition token (KEYLESS_SEARCH)."""
+    country, comp = KEYLESS_SEARCH[league]
+    out = []
+    for s in sports or []:
+        if str(s.get("group", "")).lower() != "soccer" or s.get("has_outrights"):
+            continue
+        text = " ".join([str(s.get("key", "")).replace("_", " "), str(s.get("title", "")),
+                         str(s.get("description", ""))]).lower()
+        if any(c in text for c in country) and any(c in text for c in comp):
+            out.append(s)
+    return out
+
+
+def _event_summary(data: dict) -> dict:
+    """Presence only (books, outcome counts, lines): no price leaves the store."""
+    out = {"books": len(data.get("bookmakers") or []), "markets": {}}
+    for b in data.get("bookmakers") or []:
+        for m in b.get("markets") or []:
+            s = out["markets"].setdefault(m.get("key"), {"books": 0, "outcomes": 0, "points": set()})
+            s["books"] += 1
+            s["outcomes"] += len(m.get("outcomes") or [])
+            s["points"] |= {o["point"] for o in m.get("outcomes") or [] if _real_point(o.get("point")) is not None}
+    for s in out["markets"].values():
+        s["points"] = sorted(s["points"])
+    return out
+
+
+def probe_keys(meter: Meter, store: Store, days: dict, spell: dict, leagues=tuple(KEYLESS_SEARCH),
+               window: tuple = PROBE_KEYS_WINDOW) -> dict:
+    """(1) GET /sports?all=true (free; stops if the provider bills it); (2) per keyless league with
+    exactly ONE candidate key: on our busiest match day in `window`, the provider's event listing
+    (<= 1 credit) and one btts + alternate_totals event-odds call at kickoff - 1 h (<= 20 credits,
+    free when empty) on the earliest event PROVEN to be one of our fixtures (else the earliest listed
+    event, flagged unproven). The listing and the odds are kept in the store (tier 'PK'); the summary
+    (presence, books, lines, match counts, credits; no price) goes to ledger/probe_keys.json."""
+    meter.read_remaining()
+    sports = meter.sports_list()
+    res = {"probed_at": iso(datetime.now(timezone.utc)), "window": list(window),
+           "soccer_keys_listed": sum(str(s.get("group", "")).lower() == "soccer" for s in sports),
+           "leagues": {}}
+    R = Resolver(spell)
+    try:
+        for lg in leagues:
+            cands = find_candidate_keys(sports, lg)
+            r = {"candidates": [{"key": s.get("key"), "title": s.get("title"), "active": s.get("active")}
+                                for s in cands], "selected_key": None}
+            res["leagues"][lg] = r
+            if len(cands) != 1:
+                r["reason"] = "no candidate key in the provider's list" if not cands else "more than one candidate"
+                continue
+            sk = cands[0]["key"]
+            r["selected_key"] = sk
+            ds = [(len(fx), d) for (l, d), fx in days.items() if l == lg and window[0] <= d <= window[1]]
+            if not ds:
+                r["reason"] = "no match day of ours in the window"
+                continue
+            d = max(ds)[1]
+            r["probe_date"] = d
+            lo, hi = day_window(d)
+            k = lookup_key(sk, d)
+            status, body, c = meter.call(f"/historical/sports/{sk}/events",
+                                         {"date": iso(lookup_at(d)), "commenceTimeFrom": iso(lo),
+                                          "commenceTimeTo": iso(hi)}, LOOKUP_MAX_COST, "PK", key=k)
+            data = ((body or {}).get("data") or []) if status == 200 else []
+            rows = [{"unit_key": k, "sport_key": sk, "league": lg, "league_date": d, "lookup_at": iso(lookup_at(d)),
+                     "snapshot_ts": (body or {}).get("timestamp"), "event_id": e.get("id"),
+                     "commence_time": e.get("commence_time"), "home_team": e.get("home_team"),
+                     "away_team": e.get("away_team")} for e in data if e.get("id")]
+            if status != "failed":
+                store.add("events", rows)
+                store.finish_unit(k, "PK", "ok" if rows else ("empty" if status == 200 else f"http_{status}"),
+                                  c, len(rows), (body or {}).get("timestamp"))
+                store.put_lookup(k, lg, d, rows)
+            matched, rep = match_day(lg, d, days[(lg, d)], store.events_by_day, R)
+            r["lookup"] = {"status": status, "credits": c, "events_in_window": rep["events_in_window"],
+                           "fixtures": len(days[(lg, d)]), "fixtures_matched": len(matched)}
+            listed = [e for e in store.events_by_day.get((lg, d), []) if _in_window(e, d)]
+            pick = sorted(matched.values(), key=lambda e: e["commence_time"]) or \
+                sorted(listed, key=lambda e: e["commence_time"])
+            if not pick:
+                r["event_odds"] = {"skipped": "the provider lists no event that day"}
+                continue
+            e = pick[0]
+            at = parse_iso(e["commence_time"]) - timedelta(hours=1)
+            ok = unit_key("event_odds", sk, e["id"], iso(at), PROBE_KEYS_MARKETS, ("eu",))
+            status, body, c = meter.call(f"/historical/sports/{sk}/events/{e['id']}/odds",
+                                         {"date": iso(at), "regions": "eu", "markets": ",".join(PROBE_KEYS_MARKETS),
+                                          "oddsFormat": "decimal", "dateFormat": "iso"},
+                                         CREDITS_PER_MARKET_REGION * len(PROBE_KEYS_MARKETS), "PK", key=ok)
+            proven = e["id"] in {x["id"] for x in matched.values()}
+            if status != 200:
+                r["event_odds"] = {"status": status, "credits": c, "proven_fixture": proven}
+                if status != "failed":
+                    store.finish_unit(ok, "PK", f"http_{status}", c, 0, None)
+                continue
+            ev = (body or {}).get("data") or {}
+            meta = {"tier": "PK", "unit_key": ok, "endpoint": "event_odds", "sport_key": sk, "league": lg,
+                    "league_date": d, "snapshot_label": "T-1h", "requested_at": iso(at),
+                    "snapshot_ts": (body or {}).get("timestamp")}
+            orows, _ = odds_rows([ev] if ev else [], meta)
+            store.add("odds", orows)
+            store.finish_unit(ok, "PK", "ok" if orows else "empty", c, len(orows), meta["snapshot_ts"])
+            r["event_odds"] = {"status": status, "credits": c, "proven_fixture": proven,
+                               "snapshot_ts": meta["snapshot_ts"], **_event_summary(ev)}
+    except Stop as s:
+        res["stopped"] = s.reason
+    store.flush()
+    res["credits_spent"], res["calls"] = meter.spent, meter.calls
+    f = store.root / "ledger" / PROBE_KEYS_NAME
+    f.parent.mkdir(parents=True, exist_ok=True)
+    f.write_text(json.dumps(res, indent=1, sort_keys=True, default=sorted) + "\n", encoding="utf-8")
+    found = sum(1 for v in res["leagues"].values() if v.get("selected_key"))
+    hist = sum(1 for v in res["leagues"].values() if (v.get("event_odds") or {}).get("books"))
+    say(f"probe-keys: {len(res['leagues'])} leagues, {found} with one key in the provider's list, "
+        f"{hist} with historical event odds; credits {meter.spent:,}")
     return res
 
 
