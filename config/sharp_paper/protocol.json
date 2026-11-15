@@ -342,7 +342,7 @@
    }
   },
   "fixtures": "only fixtures with a live tip of the universe; matched to a provider event within the league's own sport keys, kickoff inside [match_date - 12 h, match_date + 36 h), both clubs resolved (src.team_names.resolve, plus the store's proven provider aliases), one to one",
-  "budget": "every paid call checks x-requests-remaining first: no call when (remaining - its cost) < floor (260,000); per-run, per-UTC-day and per-month caps journaled in the private store; [oddsapi_usage] line per run (no key, no price)",
+  "budget": "every paid call checks x-requests-remaining first: no call when (remaining - its cost) < floor (100,000, owner 2026-11-15 \"Capture stops at 100k\"; the history collector keeps its own floor); per-run, per-UTC-day and per-month caps journaled in the private store; [oddsapi_usage] line per run (no key, no price)",
   "schedule": "short slot-driven runs every 2 h (one pass each, about 1 billed minute); no in-run loop"
  },
  "signal": {
@@ -669,6 +669,12 @@
    "before_any_pick": true,
    "previous_sha256": "6e393fa2ebbf8c7410c1f5ac69d7b8109c66f012b2d08d5ef049f4365db19ff2",
    "change": "capture slots for short 2-hourly runs (owner goal: private Actions minutes): T6 [4, 6] -> [4, 7] h; CLOSE 2-15 min -> (3 min, 2 h] (a near-close: no job is kept alive for the true close; v9's public pre-kickoff capture has no Pinnacle O/U and is not switched on). Nothing else changes."
+  },
+  {
+   "date": "2026-11-15",
+   "before_any_pick": true,
+   "previous_sha256": "601fbba2933ce2d3ed12cfbcb6b3c7cea50e518ba9d69f19de58e18d7b3ba6f2",
+   "change": "capture credit floor 260,000 -> 100,000 (owner 2026-11-15 \"Capture stops at 100k\"); budget text only, nothing analytic changes"
   }
  ]
 }

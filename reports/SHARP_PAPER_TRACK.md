@@ -6,7 +6,7 @@
 
 ## 1. The protocol (registered before any pick)
 
-**Protocol file:** `config/sharp_paper/protocol.json`, as amended on 2026-11-15 before any pick (sha256 `601fbba2...`, previously `6e393fa2...`). The amendment changes only the capture slots, to fit short 2-hourly runs. Its sha256 is in `config/sharp_paper/protocol.sha256`, and `tests/test_sharp_paper.py` fails if the two differ.
+**Protocol file:** `config/sharp_paper/protocol.json`, as amended twice on 2026-11-15 before any pick (now sha256 `8422b947...`; earlier `601fbba2...` and `6e393fa2...`). The amendments change only the capture slots, to fit short 2-hourly runs, and the capture's credit floor, set to 100,000. Its sha256 is in `config/sharp_paper/protocol.sha256`, and `tests/test_sharp_paper.py` fails if the two differ.
 
 **Universe.** Every live model tip of an approved O/U MODEL cell of TP-2026-11-15-bade2c0b. That covers 42 cells across over25_over, over25_under, over15_over and over35_over.
 - **Start:** match date on or after 2026-11-21.
@@ -55,7 +55,7 @@
 **Cost:** 2 credits per snapshot, so at most 6 per tipped fixture.
 
 **Credit rules:**
-- **Floor:** no paid call when x-requests-remaining minus its cost would fall below **260,000**. The script refuses any lower floor.
+- **Floor:** no paid call when x-requests-remaining minus its cost would fall below **100,000** (owner 2026-11-15, "Capture stops at 100k"; it was 260,000). The script refuses any lower floor. This floor is the capture's only: the history collector still stops at 290,000 on exec main, with its own code minimum of 260,000 unchanged.
 - **Caps:** per run (400 by default), per UTC day (1,500) and per month (30,000), journaled in `ledger/usage.json`.
 - **Logging:** each run prints one `[oddsapi_usage]` line for the quota monitor.
 
@@ -64,7 +64,7 @@
 - **Volume:** 597 distinct fixtures over 69 days, a mean of 8.7 tipped fixtures per day (p90 24, max 32).
 - **Credits:** about **52 per day on average** (p90 144, max 192), or about **1,600 per month**.
 
-**Floor conflict:** the history collector stops at the same 260,000 floor, and live production burns credits below it. Once the history spend has drained the account to about 260k, this capture can make no call until the plan resets on 2026-12-01. **Owner decision needed:** a separate, lower floor for this capture, or a reserved history budget.
+**Floor decision (resolved):** with the history collector stopping at 290,000 and the capture at 100,000, the capture keeps running after the history spend ends. About 190k credits stay between the two floors for live use and the capture (about 52 credits a day) until the 2026-12-01 reset.
 
 ## 3. Live sharp tracker fix (`src/sharp_tracker.py`)
 
