@@ -84,6 +84,7 @@ NEW_PAGES = [
     ("pages/20_🧪_Model_Lab.py", "Research Lab"),
     ("pages/21_📡_Market_Intelligence.py", "Research Lab"),
     ("pages/22_🏭_Production.py", "System"),
+    ("pages/24_📬_Daily_Progress.py", "System"),       # owner-only daily progress report, 2026-11-15
 ]
 
 
