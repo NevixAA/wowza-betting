@@ -755,13 +755,14 @@ def test_cli_probe_keys_loads_the_keyless_leagues_and_runs_only_the_probe(monkey
 
 
 def test_a_bt_only_league_enters_bt_alone_and_bt_buys_its_listings():
-    # owner 2026-11-11: Portugal's key was added for BT only (no B1 / B4 / C-tiers unless asked)
-    assert OH.TIER_ONLY_LEAGUES[PT] == ("BT",)
+    # owner 2026-11-11: Portugal's key was added for the BET tiers only (no B1 / B4 / C-tiers unless
+    # asked); owner 2026-11-15 "all" added BTU / HTB / OUU / TT to the BET tiers
+    assert OH.TIER_ONLY_LEAGUES[PT] == OH.BET_TIERS
     days = {(PT, D): [("Benfica", "Porto")], (LG, D): [("Austin", "Dallas")]}
     plan = OH.build_plan(days, OH.TIERS, props={}, s_ok=set(), nf={LG})
     for t, units in plan["units"].items():
         lgs = {u.league for u in units}
-        assert (PT in lgs) == (t == "BT"), t
+        assert (PT in lgs) == (t in OH.BET_TIERS), t
     assert (PT, D) in plan["lookups"]["BT"] and (PT, D) not in plan["lookups"]["B1"]
     assert (LG, D) in plan["lookups"]["B1"]
 
@@ -847,3 +848,122 @@ def test_a_4xx_on_sports_is_not_retried():
     with pytest.raises(OH.Stop):
         m.read_remaining()
     assert sleeps == []
+
+
+# ── owner 2026-11-15 "all": four more BET-role tiers at BT's lead time on BT's events ──────────────
+NEW_BET = ("BTU", "HTB", "OUU", "TT")
+
+
+def test_the_new_bet_tiers_follow_bt_and_precede_c1_and_c3():
+    o = list(OH.TIER_ORDER)
+    assert [o.index(t) for t in ("BT",) + NEW_BET] == sorted(o.index(t) for t in ("BT",) + NEW_BET)
+    assert o.index("BT") + 4 == o.index("TT") and o.index("TT") < o.index("C1") < o.index("C3")
+
+
+def test_new_bet_tiers_take_bts_events_lead_times_and_listings():
+    days = {(LG, D): [("Austin", "Dallas")], ("Championship", D): [("Leeds", "Hull")]}
+    plan = OH.build_plan(days, _tiers("BT", *NEW_BET), props={}, nf={LG},
+                         ht=(("totals_h1", "alternate_totals_h1"), ("eu",)))
+    want = {"BTU": (("btts",), ("uk",)), "HTB": (("totals_h1", "alternate_totals_h1"), ("eu",)),
+            "OUU": (("alternate_totals",), ("uk",)), "TT": (("alternate_team_totals",), ("eu", "uk"))}
+    for t, (mk, rg) in want.items():
+        us = {u.league: u for u in plan["units"][t]}
+        assert set(us) == {LG, "Championship"}, t
+        assert us[LG].offset_s == -OH.BT_LEAD_HOURS["new_format"] * 3600
+        assert us["Championship"].offset_s == -OH.BT_LEAD_HOURS["standard"] * 3600
+        assert (us[LG].markets, us[LG].regions, us[LG].label) == (mk, rg, "bet"), t
+        assert plan["lookups"][t] == []                                   # BT's listings, never re-bought
+    assert OH.snapshot_role("BTU", "bet") == OH.snapshot_role("TT", "bet") == "BET"
+
+
+def test_htb_runs_only_on_what_the_ht_probe_saw():
+    days = {(LG, D): [("Austin", "Dallas")]}
+    assert OH.build_plan(days, _tiers("HTB"), props={}, nf={LG}, ht=((), ()))["units"]["HTB"] == []
+    mx = OH.build_plan(days, _tiers("HTB"), props={}, nf={LG}, ht=None)["units"]["HTB"]      # dry-run maximum
+    assert [(u.markets, u.regions) for u in mx] == [(("totals_h1", "alternate_totals_h1"), ("eu", "uk"))]
+
+
+def test_ht_probe_result_reads_returned_markets_and_regions(tmp_path):
+    led = tmp_path / "ledger"
+    led.mkdir()
+    assert OH.ht_probe_result(tmp_path) is None
+    (led / OH.HT_PROBE_NAME).write_text(json.dumps({"leagues": {
+        "A": {"regions": {"eu": {"markets": {"alternate_totals_h1": {"books": 2}}}, "uk": {"markets": {}}}},
+        "B": {"regions": {"uk": {"markets": {"totals_h1": {"books": 1}}}}}}}))
+    assert OH.ht_probe_result(tmp_path) == (("alternate_totals_h1", "totals_h1"), ("eu", "uk"))
+
+
+def test_portugal_enters_every_bet_tier_and_nothing_else():
+    days = {(PT, D): [("Benfica", "Porto")]}
+    plan = OH.build_plan(days, OH.TIERS, props={}, s_ok=set(), nf={LG}, ht=(("totals_h1",), ("eu",)))
+    assert {t for t, us in plan["units"].items() if us} == {"BT", *NEW_BET}
+
+
+class HTAPI(FakeAPI):
+    """Event odds answer first-half totals for ev-aus in `ht_regions` only."""
+    def __init__(self, ht_regions=("uk",), **kw):
+        super().__init__(**kw)
+        self.ht_regions = ht_regions
+
+    def get(self, url, params=None, timeout=None):
+        if "/events/" in url and "totals_h1" in (params or {}).get("markets", ""):
+            self.calls.append((url, dict(params)))
+            reg = params["regions"]
+            ok = reg in self.ht_regions
+            data = {"id": "e", "commence_time": "2024-06-02T00:30:00Z", "home_team": "A", "away_team": "B",
+                    "bookmakers": [_book([{"key": "totals_h1", "outcomes": [
+                        {"name": "Over", "price": 1.9, "point": 0.5}, {"name": "Under", "price": 1.9, "point": 0.5}]}])]
+                    if ok else []}
+            cost = 10 if ok else 0
+            self.remaining -= cost
+            return Resp(200, {"timestamp": params["date"], "data": data}, cost, self.remaining)
+        return super().get(url, params, timeout)
+
+
+def _ht_probe_file(tmp_path, n):
+    p = tmp_path / "p7.json"
+    p.write_text(json.dumps({"leagues": {f"L{i}": {"sport_key": "soccer_x", "event": {
+        "id": f"ev{i}", "kickoff": "2024-06-02T00:30:00Z"}} for i in range(n)}}))
+    return p
+
+
+def test_ht_probe_tries_eu_then_uk_at_the_bt_lead_and_stops_after_three_confirmations(tmp_path, monkeypatch):
+    monkeypatch.setattr(OH, "league_model_type", lambda lg: "standard")
+    api = HTAPI(ht_regions=("uk",))
+    meter = OH.Meter(KEY, floor=OH.MIN_FLOOR, run_cap=100, max_seconds=600, session=api, pause=0, sleep=lambda s: None)
+    res = OH.probe_ht(meter, tmp_path / "store", probe_file=_ht_probe_file(tmp_path, 8))
+    calls = [c for c in api.calls if "/events/" in c[0]]
+    assert [c[1]["regions"] for c in calls] == ["eu", "uk"] * 3                      # 3 leagues, then stop
+    assert {c[1]["date"] for c in calls} == {"2024-05-27T19:30:00Z"}                  # kickoff - 125 h
+    assert res["confirmed_leagues"] == 3 and meter.spent == 30
+    assert OH.ht_probe_result(tmp_path / "store") == (("totals_h1",), ("uk",))
+    assert "price" not in json.dumps(res)
+
+
+def test_ht_probe_with_no_history_costs_nothing_and_gates_htb_off(tmp_path, monkeypatch):
+    monkeypatch.setattr(OH, "league_model_type", lambda lg: "new_format")
+    api = HTAPI(ht_regions=())
+    meter = OH.Meter(KEY, floor=OH.MIN_FLOOR, run_cap=100, max_seconds=600, session=api, pause=0, sleep=lambda s: None)
+    res = OH.probe_ht(meter, tmp_path / "store", probe_file=_ht_probe_file(tmp_path, 4))
+    assert meter.spent == 0 and res["confirmed_leagues"] == 0
+    assert OH.ht_probe_result(tmp_path / "store") == ((), ())
+
+
+def test_first_half_lines_are_classified_as_ht_markets():
+    assert AD.classify("alternate_totals_h1", "Over", None, 0.5, "H", "A")["market"] == "ht_over05"
+    assert AD.classify("totals_h1", "Under", None, 1.5, "H", "A") == {
+        "market": "ht_over15", "side": "no", "line": 1.5, "team": None, "player": None}
+
+
+def test_cli_probe_ht_runs_only_the_probe(monkeypatch, tmp_path):
+    import oddsapi_history_collect as CLI
+    seen = {}
+    monkeypatch.setattr(CLI.OH, "load_fixtures", lambda include=(): (pd.DataFrame(
+        columns=["league", "date", "home", "away", "source"]), {}))
+    monkeypatch.setattr(CLI.OH, "probe_ht", lambda meter, store: seen.update(store=store) or {"confirmed_leagues": 2})
+    monkeypatch.setattr(CLI.OH, "Collector", lambda *a, **k: (_ for _ in ()).throw(AssertionError("no collect")))
+    monkeypatch.setenv("ODDS_API_KEY", KEY)
+    monkeypatch.setenv("ODDS_HIST_FLOOR", str(OH.MIN_FLOOR))
+    monkeypatch.setenv("ODDS_HIST_RUN_CREDIT_CAP", "100")
+    assert CLI.main(["--store", str(tmp_path / "store"), "--probe-ht", "--max-minutes", "5"]) == OH.EXIT_DONE
+    assert seen["store"] == tmp_path / "store"

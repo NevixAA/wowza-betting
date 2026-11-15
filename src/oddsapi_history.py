@@ -109,6 +109,13 @@ class Tier:
 # The tracks differ by 28 h, so each gets its own median, rounded to the hour.
 BT_LEAD_HOURS = {"new_format": 153, "standard": 125}
 BT_LABEL = "bet"
+_BT_OFFSETS = tuple((tr, ((BT_LABEL, timedelta(hours=-h)),)) for tr, h in BT_LEAD_HOURS.items())
+# Every tier taken at BT's bet time on BT's events: the ONLY tiers whose prices may be bet prices.
+BET_TIERS = ("BT", "BTU", "HTB", "OUU", "TT")
+# First-half over/under (provider v4 "game period markets": totals_h1, alternate_totals_h1; additional
+# markets, so event-endpoint history from 2023-05-03). HTB buys them only as the HT probe saw them.
+HT_MARKETS = ("totals_h1", "alternate_totals_h1")
+HT_PROBE_NAME = "probe_ht.json"
 
 
 TIERS: tuple[Tier, ...] = (
@@ -120,7 +127,20 @@ TIERS: tuple[Tier, ...] = (
          purpose="sharp-money line movement, 8 snapshots per league-day"),
     Tier("BT", "event", ("btts", "alternate_totals"), ("eu",), (), "team", "2023-05-03", HISTORY_END,
          purpose="BET-TIME snapshot: B1's events and markets at the measured live-tip lead time per track",
-         offsets_by_track=tuple((tr, ((BT_LABEL, timedelta(hours=-h)),)) for tr, h in BT_LEAD_HOURS.items())),
+         offsets_by_track=_BT_OFFSETS),
+    # owner 2026-11-15 "all": the spare credits on four more BET-role tiers, BT's events and lead times
+    Tier("BTU", "event", ("btts",), ("uk",), (), "team", "2023-05-03", HISTORY_END,
+         purpose="BET-TIME btts from the uk books (BT's eu region priced no BTTS in some leagues)",
+         offsets_by_track=_BT_OFFSETS),
+    Tier("HTB", "event", HT_MARKETS, ("eu", "uk"), (), "team", "2023-05-03", HISTORY_END, gate="ht_probe",
+         purpose="BET-TIME first-half over/under; only the markets and regions the HT probe saw returned",
+         offsets_by_track=_BT_OFFSETS),
+    Tier("OUU", "event", ("alternate_totals",), ("uk",), (), "team", "2023-05-03", HISTORY_END,
+         purpose="BET-TIME every total line from the uk books (more books: consensus, best price)",
+         offsets_by_track=_BT_OFFSETS),
+    Tier("TT", "event", ("alternate_team_totals",), ("eu", "uk"), (), "team", "2023-05-03", HISTORY_END,
+         purpose="BET-TIME team totals (specials research)",
+         offsets_by_track=_BT_OFFSETS),
     Tier("B3", "event", ("props",), ("uk", "eu", "us", "us2"), (CLOSE,), "props", "2023-05-03", HISTORY_END,
          gate="props_probe", purpose="player props at close (probe-confirmed markets only)"),
     Tier("S", "event", ("correct_score",), ("uk", "eu"), (CLOSE,), "team", "2023-05-03", HISTORY_END,
@@ -187,6 +207,25 @@ def s_probe_leagues(store_root: Path | None) -> set | None:
         return None
     p = json.loads(f.read_text(encoding="utf-8"))
     return {lg for lg, r in (p.get("leagues") or {}).items() if r.get("correct_score_returned")}
+
+
+def ht_probe_result(store_root: Path | None) -> tuple | None:
+    """(markets, regions) the HT probe saw RETURNED (ledger/probe_ht.json in the private store), or
+    None when the probe has not run. ((), ()) = it ran and found no first-half history."""
+    if store_root is None:
+        return None
+    f = Path(store_root) / "ledger" / HT_PROBE_NAME
+    if not f.exists():
+        return None
+    p = json.loads(f.read_text(encoding="utf-8"))
+    mk, rg = set(), set()
+    for r in (p.get("leagues") or {}).values():
+        for reg, x in (r.get("regions") or {}).items():
+            got = {m for m, v in ((x or {}).get("markets") or {}).items() if v}
+            if got:
+                mk |= got
+                rg.add(reg)
+    return tuple(sorted(mk)), tuple(sorted(rg))
 
 
 # ── our fixture universe ─────────────────────────────────────────────────────────────────────────
@@ -316,7 +355,7 @@ class Unit:
 
 # Leagues bought ONLY in the listed tiers (owner 2026-11-11: Portugal's OddsAPI key was added after the
 # probe-keys run 43035181427 for the BET-TIME tier only; no B1 close / B4 / C-tiers unless the owner asks).
-TIER_ONLY_LEAGUES = {"Portuguese Primeira Liga": ("BT",)}
+TIER_ONLY_LEAGUES = {"Portuguese Primeira Liga": BET_TIERS}
 
 
 def _tier_leagues(t: Tier, days: dict, props: dict, s_ok: set | None, nf: set) -> set:
@@ -342,7 +381,7 @@ def snapshot_role(tier: str, label: str) -> str:
     be evaluated at. CLOSE: a closing snapshot (label 'close': B1, B2, B3, B4, C3, C4) - CLV only, never a
     bet price. OPEN: the T-48h opening snapshots of C1, C2, C3. MOVEMENT: B4 / C5's intermediate line
     snapshots (T-72h..T-1h)."""
-    if tier == "BT":
+    if tier in BET_TIERS:
         return "BET"
     if label == "close":
         return "CLOSE"
@@ -359,16 +398,24 @@ def _props_only(league: str) -> bool:
 
 
 def build_plan(days: dict, tiers: Iterable[Tier] = TIERS, props: dict | None = None,
-               s_ok: set | None = None, nf: set | None = None) -> dict:
+               s_ok: set | None = None, nf: set | None = None, ht: tuple | None = None) -> dict:
     """{tier: [Unit...]} plus the league-days each tier needs a lookup for (first tier that needs it).
     Coverage rule: (kind, league, date, home, away, offset, region) -> markets already requested;
-    a later tier asks only for what is missing and drops a unit with nothing missing."""
+    a later tier asks only for what is missing and drops a unit with nothing missing.
+    `ht` = (markets, regions) the HT probe saw returned (ht_probe_result); None = the dry-run maximum
+    (every HT market, every region); empty markets = HTB is not run."""
     props = probe_props_markets() if props is None else props
     nf = new_format_leagues() if nf is None else nf
     cov: dict = {}
     looked: set = set()
     plan = {"units": {}, "lookups": {}}
     for t in tiers:
+        if t.gate == "ht_probe" and ht is not None:
+            if not ht[0]:
+                plan["units"][t.name], plan["lookups"][t.name] = [], []
+                continue
+            t = Tier(t.name, t.kind, tuple(ht[0]), tuple(ht[1]), t.offsets, t.leagues, t.start, t.end,
+                     t.gate, t.purpose, t.offsets_by_track)
         lgs = _tier_leagues(t, days, props, s_ok, nf)
         units, lookups = [], []
         for (lg, d), fx in days.items():
@@ -1353,6 +1400,47 @@ def probe_keys(meter: Meter, store: Store, days: dict, spell: dict, leagues=tupl
     hist = sum(1 for v in res["leagues"].values() if (v.get("event_odds") or {}).get("books"))
     say(f"probe-keys: {len(res['leagues'])} leagues, {found} with one key in the provider's list, "
         f"{hist} with historical event odds; credits {meter.spent:,}")
+    return res
+
+
+def probe_ht(meter: Meter, store_root: Path, probe_file: Path = PROBE_FILE, min_confirm: int = 3) -> dict:
+    """First-half over/under history at the BET time (owner 2026-11-15: probe first, buy only if it
+    exists). The P7 probe's own event per league (no listing bought), snapshot at kickoff minus the
+    league track's BT lead (where HTB would buy), HT_MARKETS on region eu, then uk: at most 10 x
+    markets returned per call, free when empty. Stops after `min_confirm` leagues returned history or
+    at the run cap. Writes ledger/probe_ht.json (presence, books, lines per region; no price)."""
+    p = json.loads(Path(probe_file).read_text(encoding="utf-8"))
+    meter.read_remaining()
+    res = {"probed_at": iso(datetime.now(timezone.utc)), "markets": list(HT_MARKETS), "leagues": {},
+           "confirmed_leagues": 0}
+    try:
+        for lg, r in sorted((p.get("leagues") or {}).items()):
+            if res["confirmed_leagues"] >= min_confirm:
+                break
+            ev = r.get("event")
+            track = league_model_type(lg)
+            if not isinstance(ev, dict) or not ev.get("id") or track not in BT_LEAD_HOURS:
+                continue
+            at = parse_iso(ev["kickoff"]) - timedelta(hours=BT_LEAD_HOURS[track])
+            out = {"track": track, "snapshot": iso(at), "regions": {}}
+            res["leagues"][lg] = out
+            for region in ("eu", "uk"):
+                status, body, c = meter.call(f"/historical/sports/{r['sport_key']}/events/{ev['id']}/odds",
+                                             {"date": iso(at), "regions": region, "markets": ",".join(HT_MARKETS),
+                                              "oddsFormat": "decimal", "dateFormat": "iso"},
+                                             CREDITS_PER_MARKET_REGION * len(HT_MARKETS), "PH")
+                d = ((body or {}).get("data") or {}) if status == 200 else {}
+                out["regions"][region] = {"status": status, "credits": c, **_event_summary(d)}
+            if any(x.get("markets") for x in out["regions"].values()):
+                res["confirmed_leagues"] += 1
+    except Stop as s:
+        res["stopped"] = s.reason
+    res["credits_spent"], res["calls"] = meter.spent, meter.calls
+    f = Path(store_root) / "ledger" / HT_PROBE_NAME
+    f.parent.mkdir(parents=True, exist_ok=True)
+    f.write_text(json.dumps(res, indent=1, sort_keys=True, default=sorted) + "\n", encoding="utf-8")
+    say(f"HT probe: {len(res['leagues'])} leagues probed, {res['confirmed_leagues']} with first-half "
+        f"history at the bet time; credits {meter.spent:,}")
     return res
 
 
