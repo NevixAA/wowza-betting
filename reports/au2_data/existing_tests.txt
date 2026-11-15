@@ -1,0 +1,15 @@
+tests/test_props_promotion_gate.py::test_props_retrain_job_completes_and_changes_no_serving_file
+  C:\Users\nevo.APOLLO\dev\wowza\v9_audit_au2\player_model\pipeline.py:408: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    _age = (pd.Timestamp.utcnow().tz_localize(None).normalize() - _newest.normalize()).days
+
+tests/test_props_promotion_gate.py: 16 warnings
+  C:\Users\nevo.APOLLO\dev\wowza\v9_audit_au2\src\promotion_gate.py:196: RuntimeWarning: overflow encountered in exp
+    mu = 1 / (1 + np.exp(-eta))
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/test_dashboard_staked_basis.py::test_the_two_defects_together_flipped_the_sign
+FAILED tests/test_fantasy_v2.py::test_archive_actuals_match_the_settled_ledger
+FAILED tests/test_promotion_gate.py::test_passing_all_criteria_promotes - Ass...
+FAILED tests/test_shadow_settlement.py::test_health_artifact_is_written - ass...
+4 failed, 1509 passed, 27 skipped, 4 xfailed, 19 warnings in 269.82s (0:04:29)

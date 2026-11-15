@@ -1,0 +1,222 @@
+{
+ "trace_coverage": {
+  "rows": 1694,
+  "pred_found": 1649,
+  "bets_found": 1590
+ },
+ "c3_ledger_odds_eq_pred_side_odds": 1649,
+ "c3_ledger_odds_eq_pred_OTHER_side_odds_only": 0,
+ "c3_ledger_odds_neither": 0,
+ "c1_pred_edge_equals_p_side_minus_1_over_odds": {
+  "n": 1649,
+  "match_within_0.001": 1649
+ },
+ "c1_ledger_edge_equals_recomputed": {
+  "n": 1649,
+  "match_within_0.0006": 1647
+ },
+ "c3_side_is_larger_edge_side": {
+  "n": 1649,
+  "agree": 1649
+ },
+ "c3_ledger_side_eq_pred_bet": {
+  "n": 1649,
+  "agree": 1647
+ },
+ "c4_c6_settlement_mismatch_vs_independent": 0,
+ "c4_independently_settled": 1475,
+ "c5_wrong_line_check": "UNDER wins iff total<=2 in independent settlement; ledger agrees row by row (see c4)",
+ "overround_at_first_sight": {
+  "n": 1649,
+  "median": 1.0761,
+  "p05": 1.0434,
+  "p95": 1.1014,
+  "share_below_1": 0.0
+ },
+ "overround_OVER": {
+  "median": 1.0799,
+  "share_below_1": 0.0
+ },
+ "overround_UNDER": {
+  "median": 1.0748,
+  "share_below_1": 0.0
+ },
+ "headline": [
+  {
+   "window": "all_live",
+   "side": "OVER",
+   "n": 450,
+   "pnl": -18.76,
+   "roi_pct": -4.17,
+   "ci_day": [
+    -13.4,
+    5.7
+   ],
+   "hit": 0.4422,
+   "mean_p_model": 0.5381,
+   "mean_p_mkt_fair": 0.4338,
+   "breakeven_hit": 0.4684
+  },
+  {
+   "window": "all_live",
+   "side": "UNDER",
+   "n": 1025,
+   "pnl": -77.51,
+   "roi_pct": -7.56,
+   "ci_day": [
+    -15.3,
+    -0.4
+   ],
+   "hit": 0.4059,
+   "mean_p_model": 0.5194,
+   "mean_p_mkt_fair": 0.4054,
+   "breakeven_hit": 0.4351
+  },
+  {
+   "window": "since_2026-09-01",
+   "side": "OVER",
+   "n": 258,
+   "pnl": -11.78,
+   "roi_pct": -4.57,
+   "ci_day": [
+    -16.9,
+    8.7
+   ],
+   "hit": 0.4496,
+   "mean_p_model": 0.5341,
+   "mean_p_mkt_fair": 0.4404,
+   "breakeven_hit": 0.4756
+  },
+  {
+   "window": "since_2026-09-01",
+   "side": "UNDER",
+   "n": 587,
+   "pnl": -29.37,
+   "roi_pct": -5.0,
+   "ci_day": [
+    -16.1,
+    3.7
+   ],
+   "hit": 0.414,
+   "mean_p_model": 0.5039,
+   "mean_p_mkt_fair": 0.402,
+   "breakeven_hit": 0.4337
+  },
+  {
+   "window": "pre_2026-09-01",
+   "side": "OVER",
+   "n": 192,
+   "pnl": -6.98,
+   "roi_pct": -3.64,
+   "ci_day": [
+    -17.1,
+    12.8
+   ],
+   "hit": 0.4323,
+   "mean_p_model": 0.5439,
+   "mean_p_mkt_fair": 0.4246,
+   "breakeven_hit": 0.4587
+  },
+  {
+   "window": "pre_2026-09-01",
+   "side": "UNDER",
+   "n": 438,
+   "pnl": -48.14,
+   "roi_pct": -10.99,
+   "ci_day": [
+    -22.3,
+    -0.2
+   ],
+   "hit": 0.395,
+   "mean_p_model": 0.5415,
+   "mean_p_mkt_fair": 0.4102,
+   "breakeven_hit": 0.4371
+  }
+ ],
+ "calibration_on_bets": [
+  {
+   "window": "since_0901",
+   "side": "OVER",
+   "n": 258,
+   "claimed_p_model": 0.5341,
+   "market_fair_p": 0.4404,
+   "realised": 0.4496,
+   "overconfidence_pp": 8.45,
+   "z_model_vs_realised": 2.72,
+   "brier_model": 0.2567,
+   "brier_market_devig": 0.2473
+  },
+  {
+   "window": "since_0901",
+   "side": "UNDER",
+   "n": 587,
+   "claimed_p_model": 0.5039,
+   "market_fair_p": 0.402,
+   "realised": 0.414,
+   "overconfidence_pp": 9.0,
+   "z_model_vs_realised": 4.42,
+   "brier_model": 0.2509,
+   "brier_market_devig": 0.2367
+  },
+  {
+   "window": "all_live",
+   "side": "OVER",
+   "n": 441,
+   "claimed_p_model": 0.5381,
+   "market_fair_p": 0.4338,
+   "realised": 0.4376,
+   "overconfidence_pp": 10.05,
+   "z_model_vs_realised": 4.25,
+   "brier_model": 0.2569,
+   "brier_market_devig": 0.2446
+  },
+  {
+   "window": "all_live",
+   "side": "UNDER",
+   "n": 997,
+   "claimed_p_model": 0.5194,
+   "market_fair_p": 0.4054,
+   "realised": 0.4072,
+   "overconfidence_pp": 11.22,
+   "z_model_vs_realised": 7.21,
+   "brier_model": 0.2525,
+   "brier_market_devig": 0.2348
+  }
+ ],
+ "c12_edge_vs_pnl_since_0901": [
+  {
+   "side": "OVER",
+   "n": 258,
+   "spearman_edge_vs_pnl": -0.036
+  },
+  {
+   "side": "UNDER",
+   "n": 587,
+   "spearman_edge_vs_pnl": -0.07
+  }
+ ],
+ "c10_serving_recipe_recorded": [
+  {
+   "serving": "new_format_legacy",
+   "serving_recorded": "NA",
+   "n": 869
+  },
+  {
+   "serving": "new_format_legacy",
+   "serving_recorded": "legacy_v9",
+   "n": 35
+  },
+  {
+   "serving": "std_legacy",
+   "serving_recorded": "NA",
+   "n": 446
+  },
+  {
+   "serving": "std_v9_repaired",
+   "serving_recorded": "v9_repaired",
+   "n": 23
+  }
+ ],
+ "tier_upgraded_rows": 403,
+ "fixtures_with_both_sides": 39
+}

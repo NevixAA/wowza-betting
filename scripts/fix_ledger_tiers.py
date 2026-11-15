@@ -55,6 +55,7 @@ def main(apply: bool = False) -> None:
     sent = load_sent_ou_keys()
 
     changes = []
+    no_edge = 0
     for i, r in df.iterrows():
         if str(r.get("source", "")) != "live":
             continue
@@ -64,11 +65,12 @@ def main(apply: bool = False) -> None:
         cur = str(r.get("signal_tier", ""))
         if cur in SHARP:
             continue  # already correct
-        try:
-            edge = float(r.get("edge_pct", 0) or 0) / 100.0
-        except (TypeError, ValueError):
-            edge = 0.0
-        rederived = _base_tier(edge, str(r.get("side", "")), str(r.get("league", "")))
+        # No recorded edge -> no tier can be re-derived: skip the row (counted), never edge 0.
+        edge = pd.to_numeric(r.get("edge_pct"), errors="coerce") / 100.0
+        if pd.isna(edge):
+            no_edge += 1
+            continue
+        rederived = _base_tier(float(edge), str(r.get("side", "")), str(r.get("league", "")))
         new_tier  = "SNIPER" if rederived == "SNIPER" else "MARKSMAN"
         changes.append((i, cur, new_tier))
         if apply:
@@ -77,6 +79,8 @@ def main(apply: bool = False) -> None:
     live_n = int((df["source"] == "live").sum()) if "source" in df.columns else 0
     print(f"sent O/U keys: {len(sent)} | live ledger rows: {live_n} | corrections: {len(changes)}")
     print("  from -> to:", dict(Counter((c[1] or "(blank)", c[2]) for c in changes)))
+    if no_edge:
+        print(f"  skipped {no_edge} sent row(s) without a recorded edge_pct (tier not re-derivable)")
     if apply and changes:
         df.to_csv(LEDGER, index=False)
         print(f"  WROTE {LEDGER}")

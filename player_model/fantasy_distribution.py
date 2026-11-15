@@ -31,8 +31,12 @@ worse than no band at all.
 """
 from __future__ import annotations
 
+import logging
+
 import numpy as np
 import pandas as pd
+
+log = logging.getLogger(__name__)
 
 GOAL_PTS = {"FWD": 4.0, "MID": 5.0, "DEF": 6.0, "GKP": 10.0}   # GKP 10: FPL game_config (was 6)
 ASSIST_PTS = 3.0
@@ -44,31 +48,60 @@ DC_PTS = 2.0
 
 def _rate_from_prob(p: np.ndarray) -> np.ndarray:
     """Poisson rate implied by P(at least one) = 1 - exp(-lambda)."""
-    p = np.clip(np.nan_to_num(p, nan=0.0), 0.0, 0.95)
+    p = np.clip(p, 0.0, 0.95)
     return -np.log1p(-p)
 
 
+#: Every input one simulated gameweek needs. A player missing any of them is not simulated.
+_REQUIRED = ("position", "p_start", "minutes_pg", "p_goal", "p_assist", "cs_pts", "dc_pts",
+             "bonus_pts")
+_OUT_COLS = ("sim_mean", "sim_p25", "sim_median", "sim_p75", "sim_ceiling", "p_blank",
+             "p_5plus", "p_8plus", "p_10plus", "upside_ratio")
+
+
 def simulate(proj: pd.DataFrame, n_sims: int = 20000, seed: int = 11) -> pd.DataFrame:
-    """Return `proj` with distribution columns attached. Never raises on odd input."""
+    """Return `proj` with distribution columns attached. Never raises on odd input.
+
+    A player missing any required input (unknown position, P(start), minutes, event probability
+    or points component) gets NaN distribution columns and is logged - he used to be simulated as
+    a 'MID' with 0 for whatever was missing, which is a distribution of an invented player.
+    """
     d = proj.copy().reset_index(drop=True)
     n = len(d)
     if n == 0:
         return d
+    for c in _OUT_COLS:
+        d[c] = np.nan
+    missing = [c for c in _REQUIRED if c not in d.columns]
+    if missing:
+        log.warning("simulate: projections lack %s - no distributions", ", ".join(missing))
+        return d
+    known_pos = d["position"].isin(list(GOAL_PTS))
+    nums = d[list(_REQUIRED[1:])].apply(pd.to_numeric, errors="coerce")
+    ok = known_pos & nums.notna().all(axis=1)
+    if not ok.all():
+        log.info("simulate: %d player(s) not simulated - a required input is unknown",
+                 int((~ok).sum()))
+    if not ok.any():
+        return d
     rng = np.random.default_rng(seed)
+    full, d = d, d[ok].reset_index(drop=True)
+    nums = nums[ok].reset_index(drop=True)
+    n = len(d)
 
-    pos = d.get("position", pd.Series("MID", index=d.index)).astype(str).to_numpy()
-    num = lambda c, dflt=0.0: pd.to_numeric(d.get(c, dflt), errors="coerce").fillna(dflt).to_numpy(float)
+    pos = d["position"].astype(str).to_numpy()
+    num = lambda c: nums[c].to_numpy(float)
 
-    p_start = np.clip(num("p_start", 0.0), 0, 1)
-    mins = np.clip(num("minutes_pg", 0.0), 0, 90)
+    p_start = np.clip(num("p_start"), 0, 1)
+    mins = np.clip(num("minutes_pg"), 0, 90)
     g_rate = _rate_from_prob(num("p_goal"))
     a_rate = _rate_from_prob(num("p_assist"))
-    goal_v = np.array([GOAL_PTS.get(p, 5.0) for p in pos])
-    cs_v = np.array([CS_PTS.get(p, 1.0) for p in pos])
+    goal_v = np.array([GOAL_PTS[p] for p in pos])
+    cs_v = np.array([CS_PTS[p] for p in pos])
     # cs_pts is the EXPECTED clean-sheet points, so the probability is that over its face value.
     with np.errstate(divide="ignore", invalid="ignore"):
         p_cs = np.where(cs_v > 0, num("cs_pts") / np.where(cs_v > 0, cs_v, 1), 0.0)
-    p_cs = np.clip(np.nan_to_num(p_cs), 0, 1)
+    p_cs = np.clip(p_cs, 0, 1)
     dc = num("dc_pts")
     bonus_mu = np.clip(num("bonus_pts"), 0, MAX_BONUS)
     # P(60+ minutes) taken from the player's own average; a 90-minute man is nailed for the
@@ -111,7 +144,8 @@ def simulate(proj: pd.DataFrame, n_sims: int = 20000, seed: int = 11) -> pd.Data
     # Upside per expected point: separates the safe five from the explosive five.
     d["upside_ratio"] = np.where(d["sim_mean"] > 0.1,
                                  (d["sim_ceiling"] / d["sim_mean"]).round(2), np.nan)
-    return d
+    full.loc[ok.to_numpy(), list(_OUT_COLS)] = d[list(_OUT_COLS)].to_numpy()
+    return full
 
 
 def captain_profile(d: pd.DataFrame, top: int = 5) -> pd.DataFrame:

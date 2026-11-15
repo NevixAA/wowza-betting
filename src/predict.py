@@ -212,10 +212,11 @@ def _fetch_odds_api(days_ahead: int = 7) -> pd.DataFrame:
                             pr = outcome.get("price")
                             if outcome.get("point") != 2.5 or not pr:
                                 continue
+                            # best seen price; None until a book quotes one (no typed 0.0 start)
                             if outcome.get("name") == "Over":
-                                best_ov25 = max(best_ov25 or 0.0, float(pr))
+                                best_ov25 = float(pr) if best_ov25 is None else max(best_ov25, float(pr))
                             elif outcome.get("name") == "Under":
-                                best_un25 = max(best_un25 or 0.0, float(pr))
+                                best_un25 = float(pr) if best_un25 is None else max(best_un25, float(pr))
 
                 if ov25 and un25:
                     rows.append({
@@ -397,7 +398,11 @@ def predict_upcoming(
 
     # 4. Build features
     log.info(f"Building features for {len(upcoming)} upcoming fixtures...")
-    feat = build_upcoming_features(upcoming, historical)
+    # board names meet the CANONICAL history through the identity map the loader applied to it
+    # (fix12: 'Stockport County FC' -> 'Stockport'); proven identity only, see team_names
+    from src import data_loader as _dl
+    feat = build_upcoming_features(upcoming, historical,
+                                   identity_aliases=getattr(_dl, "IDENTITY_ALIASES", None))
 
     # 5. Model prediction — route each fixture to the correct model
     log.info("Running ensemble model(s)...")
@@ -476,8 +481,12 @@ def predict_upcoming(
     except Exception as e:
         log.debug(f"feature health skipped: {e}")
 
-    # Side-market predictions (BTTS / O1.5 / O3.5) — all known leagues
-    # New-format leagues have odds_btts/over15/over35 after af_odds_history backfill.
+    # Side-market predictions (BTTS / O1.5 / O3.5) — all known leagues.
+    # TRACK ROUTING lives in src.model.predict_proba: a payload trained by a scheduled retrain since
+    # 2026-11-02 is track-split (src.model.train_by_track) and scores every fixture with ITS OWN
+    # track's model only (a track without a model -> NaN, no tip). A payload trained before that has
+    # no `tracks` key: it is the pooled Standard+New Format model and keeps serving both, unchanged,
+    # until the next retrain replaces it through the promotion gate.
     if side_payloads:
         side_mask = std_mask | nf_mask
         for target, sp in side_payloads.items():
@@ -515,7 +524,10 @@ def predict_upcoming(
             _ht_ok = False          # score HT only on features attached to the right fixtures
             try:
                 from src.ht_features import attach_ht_features, HT_FEATURE_COLS
-                _ht = attach_ht_features(historical, feat)
+                # board names meet the canonical history through the applied identity map
+                # (fix13; same proven-identity rule as the form features above)
+                _ht = attach_ht_features(historical, feat,
+                                         identity_aliases=getattr(_dl, "IDENTITY_ALIASES", None))
                 # Same fixture on every row, or nothing: a positional copy with a mere length
                 # check is how every HT feature landed on the wrong fixture until 2026-11-01.
                 _aligned = len(_ht) == len(feat) and all(
@@ -561,4 +573,72 @@ def predict_upcoming(
     # 8. Re-run evaluate_value now that drift columns exist (single pass)
     feat = evaluate_value(feat)
 
+    # 9. Fixture identity (issue #1, 2026-11-02): API-Football fixture_id where it resolves, and
+    #    the OddsAPI event id in its own column. Identity only - no model input reads either.
+    feat = attach_fixture_ids(feat)
+
     return feat, postponed
+
+
+def _event_id(v) -> str | None:
+    """The OddsAPI event id as sent, or None for a missing / blank one."""
+    if v is None or (isinstance(v, float) and v != v):
+        return None
+    s = str(v).strip()
+    return s if s and s not in ("nan", "None") else None
+
+
+def attach_fixture_ids(df: pd.DataFrame, fixtures_for=None) -> pd.DataFrame:
+    """Add `fixture_id` (API-Football fixture id, nullable Int64) and `oddsapi_event_id` (the
+    OddsAPI event id, string) to a board of upcoming fixtures. Never raises.
+
+    `fixture_id` is looked up per (league, UTC date): the league's API-Football id from the
+    registry (src/league_registry), its season from src/season_resolver, that date's fixtures
+    from API-Football, and both clubs resolved by src.team_names.resolve within that pool
+    (player_model.api_football.match_fixture: ambiguity refused, the pair must be one fixture).
+    A league without an id, an unknown season, no API data or an unresolved pair leaves
+    fixture_id EMPTY (counted and logged); the OddsAPI id is never written into fixture_id.
+
+    `fixtures_for(league_id, season, date_str) -> list[dict]` is injectable for tests; the
+    default is player_model.api_football.fixtures_on_date_raw (cached 6 h)."""
+    out = df.copy()
+    out["oddsapi_event_id"] = (out["_oa_event_id"].map(_event_id) if "_oa_event_id" in out.columns
+                               else pd.Series([None] * len(out), index=out.index, dtype=object))
+    ids = pd.Series([pd.NA] * len(out), index=out.index, dtype="Int64")
+    if out.empty or not {"league", "date", "home_team", "away_team"} <= set(out.columns):
+        out["fixture_id"] = ids
+        return out
+    try:
+        from src import league_registry as LR
+        from src.season_resolver import is_known, resolve_api_season
+        from player_model.api_football import fixtures_on_date_raw, match_fixture
+        if fixtures_for is None:
+            def fixtures_for(lid, season, day):
+                return fixtures_on_date_raw(lid, season, day, cache_hours=6)
+        why: dict[str, int] = {}
+        days = pd.to_datetime(out["date"], errors="coerce").dt.strftime("%Y-%m-%d")
+        for (lg, day), g in out.groupby([out["league"].astype(str), days], sort=False):
+            lid = (LR.entry(lg) or {}).get("api_football_id")
+            if not lid:
+                why["league has no API-Football id"] = why.get("league has no API-Football id", 0) + len(g)
+                continue
+            season = resolve_api_season(lg, day)
+            if not is_known(season):
+                why["season unknown"] = why.get("season unknown", 0) + len(g)
+                continue
+            fixtures = fixtures_for(int(lid), str(season), day)
+            for i, r in g.iterrows():
+                fx = match_fixture(fixtures, r["home_team"], r["away_team"])
+                fid = ((fx or {}).get("fixture") or {}).get("id")
+                if fid:
+                    ids.at[i] = int(fid)
+                else:
+                    why["clubs not resolved to one API-Football fixture"] = \
+                        why.get("clubs not resolved to one API-Football fixture", 0) + 1
+        if why:
+            log.info(f"[fixture_id] {int(ids.notna().sum())} of {len(out)} fixture(s) carry an "
+                     f"API-Football fixture_id; without one: {why}")
+    except Exception as e:                                            # noqa: BLE001
+        log.warning(f"[fixture_id] API-Football fixture ids not attached ({type(e).__name__}: {e})")
+    out["fixture_id"] = ids
+    return out

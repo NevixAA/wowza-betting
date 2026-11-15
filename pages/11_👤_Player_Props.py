@@ -51,7 +51,7 @@ def load_tips() -> pd.DataFrame:
         return pd.DataFrame()
     df = pd.read_csv(TIPS_FILE, low_memory=False)
     df["date"] = pd.to_datetime(df["date"], errors="coerce")
-    df = df[df["date"] >= pd.Timestamp.now().normalize()].copy()
+    df = df[df["date"] >= pd.Timestamp.now(tz="UTC").tz_localize(None).normalize()].copy()
     for c in ("model_prob", "fair_odds", "market_odds", "ev", "edge_abs", "confidence"):
         if c in df.columns:
             df[c] = pd.to_numeric(df[c], errors="coerce")
@@ -66,6 +66,7 @@ def load_tips() -> pd.DataFrame:
                 .assign(_d=df["date"].dt.date)
                 .drop_duplicates(["_d", *key], keep="first")
                 .drop(columns=["_d", "_has_ko"]))
+    df, _ = V.board_rows(df)              # owner serving rules 2026-11-08 (hidden markets, GK)
     return df
 
 
@@ -102,6 +103,7 @@ st.caption(
     "Why so many are unpriced: bookmakers price **anytime scorer** deeply but rarely offer "
     "**1+ shot on target**, which is where most of the model's strongest signals sit. Markets "
     "deepen toward kickoff, so prices appear over the last 1–3 days.")
+st.caption(V.hidden_markets_note())
 
 # ═══ Filters — market visible, the rest under Advanced filters ═══════════════════════════════════
 _mk = [m for m in MARKET_LABEL if m in set(df["market"])] + \
@@ -147,7 +149,10 @@ with tab_p:
         V.render_board(p, True, limit=60)
         st.caption("**Edge** = model probability minus the bookmaker's implied probability, in "
                    "percentage points; positive means the model rates the player higher than the price "
-                   "does. Bookmaker prices include their margin. Kickoff in Israel time. Paper only.")
+                   "does. Bookmaker prices include their margin. **Fair price** says where the fair "
+                   "probability behind EV and tier came from: *two-sided price* (both sides of one "
+                   "bookmaker's bet, de-vigged) or *margin assumed* (one side quoted, margin assumed). "
+                   "Model = the model's own probability. Kickoff in Israel time. Paper only.")
 with tab_u:
     u = _filt(unpriced)
     if u.empty:
@@ -159,8 +164,8 @@ with tab_u:
 
 with st.expander("Raw data — every upcoming prop"):
     show_cols = ["date", "kickoff_utc", "league", "match", "player_name", "position", "team",
-                 "market", "model_prob", "fair_odds", "market_odds", "ev", "tier", "confidence",
-                 "n_games"]
+                 "market", "model_prob", "fair_odds", "market_odds", "fair_basis", "ev", "tier",
+                 "confidence", "n_games", "model_prob_hand_adjusted", "prob_adjustment"]
     ui.compact_table(df.sort_values("model_prob", ascending=False)[[c for c in show_cols if c in df.columns]],
                      V.RAW_CONFIG)
 
@@ -213,6 +218,12 @@ else:
                            status=ui.status_chip("PAPER", label="PAPER · NEVER STAKED")
                            + (" " + ui.sample_marker(int(tot["Priced"])) if ui.small_sample(int(tot["Priced"])) else ""),
                            n=int(tot["Priced"]))
+            # dashtruth 2026-11-05: rows a correction sidecar flags are IN this record; say how many
+            _st = V.tips(de)[V.tips(de)["R"].isin(V.SETTLED)]
+            _fl = {k: v for k, v in V.flagged(_st, BASE_DIR / "output" / "corrections").items() if v}
+            if _fl:
+                ui.caption("Includes rows flagged in output/corrections (kept, not removed): " + "; ".join(
+                    f"{v} of {len(_st)} in {k} ({V.FLAG_FILES[k]})" for k, v in _fl.items()) + ".")
             ui.eyebrow(f"By tier · {era}")
             ui.compact_table(tt, V.TIER_CONFIG)
             ui.eyebrow(f"By market · {era}")

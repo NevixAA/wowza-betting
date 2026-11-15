@@ -1,0 +1,377 @@
+ledger_row,signal_date,match_date,league,home_team,away_team,player_name,team,player_id,fixture_id,market,tier,model_prob,market_odds,result,pnl,notes,sentinel_value,reason,in_round2_brief_168,exclude
+178,2026-06-23,2026-06-24,World Cup,Morocco,Haiti,Ruben Providence,Haiti,,,sot,VALUABLE,0.5,3.5,LOSS,-1.0,,0.5,model_prob exactly 0.5 on a non-goals market (goals cap value; may be genuine),True,True
+297,2026-06-23,2026-06-25,World Cup,Curaçao,Ivory Coast,Bazoumana Touré,Ivory Coast,,,sot,VALUABLE,0.8,1.44,VOID,0.0,DNP,0.8,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+300,2026-06-23,2026-06-23,World Cup,Panama,Croatia,Marco Pašalić,Croatia,,,goals,VALUABLE,0.5,5.4,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+301,2026-06-23,2026-06-25,World Cup,Tunisia,Netherlands,Donyell Malen,Netherlands,,,goals,VALUABLE,0.5,2.32,VOID,0.0,DNP,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+304,2026-06-23,2026-06-26,World Cup,Senegal,Iraq,Assane Diao,Senegal,,,sot,VALUABLE,0.8,1.45,LOSS,-1.0,,0.8,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+308,2026-06-23,2026-06-27,World Cup,Uruguay,Spain,Yéremy Pino,Spain,,,goals,VALUABLE,0.5,3.6,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+313,2026-06-23,2026-06-27,World Cup,Egypt,Iran,Mohamed Salah,Egypt,,,goals,VALUABLE,0.5,3.2,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+314,2026-06-23,2026-06-27,World Cup,Egypt,Iran,Omar Marmoush,Egypt,,,goals,VALUABLE,0.5,3.75,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+315,2026-06-23,2026-06-27,World Cup,Egypt,Iran,Emam Ashour,Egypt,,,goals,VALUABLE,0.5,8.2,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+316,2026-06-23,2026-06-27,World Cup,Egypt,Iran,Ibrahim Adel,Egypt,,,goals,VALUABLE,0.5,4.8,VOID,0.0,DNP (0 min),0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+317,2026-06-23,2026-06-27,World Cup,Egypt,Iran,Haissem Hassan,Egypt,,,goals,VALUABLE,0.5,8.5,VOID,0.0,DNP (0 min),0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+333,2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Hans Vanaken,Belgium,,,sot,VALUABLE,0.8,1.45,LOSS,-1.0,,0.8,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+338,2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Hans Vanaken,Belgium,,,goals,VALUABLE,0.5,3.7,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+339,2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Alexis Saelemaekers,Belgium,,,goals,VALUABLE,0.5,4.9,WIN,3.9,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+340,2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Leandro Trossard,Belgium,,,goals,VALUABLE,0.5,2.8,WIN,1.8,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+341,2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Kevin De Bruyne,Belgium,,,goals,VALUABLE,0.5,2.7,WIN,1.7,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+342,2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Charles De Ketelaere,Belgium,,,goals,VALUABLE,0.5,2.5,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+343,2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Amadou Onana,Belgium,,,goals,VALUABLE,0.5,7.5,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+344,2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Youri Tielemans,Belgium,,,goals,VALUABLE,0.5,4.5,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+345,2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Nicolas Raskin,Belgium,,,goals,VALUABLE,0.5,7.0,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+346,2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Dodi Lukebakio,Belgium,,,goals,VALUABLE,0.5,3.0,VOID,0.0,DNP (0 min),0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+347,2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Diego Moreira,Belgium,,,goals,VALUABLE,0.5,3.6,VOID,0.0,DNP (0 min),0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+355,2026-06-23,2026-06-24,World Cup,Switzerland,Canada,Ruben Vargas,Switzerland,,,goals,MARKSMAN,0.5,4.3,WIN,3.3,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+357,2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Jérémy Doku,Belgium,,,goals,VALUABLE,0.5,2.9,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+365,2026-06-24,2026-06-27,World Cup,Panama,England,Anthony Gordon,England,,,goals,VALUABLE,0.5,2.75,VOID,0.0,DNP (0 min),0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+366,2026-06-24,2026-06-27,World Cup,Panama,England,Jude Bellingham,England,,,goals,VALUABLE,0.5,2.75,WIN,1.75,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+367,2026-06-24,2026-06-27,World Cup,Panama,England,Declan Rice,England,,,goals,VALUABLE,0.5,4.6,VOID,0.0,DNP (0 min),0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+368,2026-06-24,2026-06-27,World Cup,Panama,England,Marcus Rashford,England,,,goals,VALUABLE,0.5,2.45,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+369,2026-06-24,2026-06-27,World Cup,Panama,England,Bukayo Saka,England,,,goals,VALUABLE,0.5,2.5,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+370,2026-06-24,2026-06-27,World Cup,Panama,England,Eberechi Eze,England,,,goals,VALUABLE,0.5,2.9,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+377,2026-06-24,2026-06-27,World Cup,Panama,England,Morgan Rogers,England,,,goals,VALUABLE,0.5,2.75,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+378,2026-06-24,2026-06-27,World Cup,Croatia,Ghana,Luka Modrić,Croatia,,,goals,VALUABLE,0.5,4.8,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+379,2026-06-24,2026-06-27,World Cup,Croatia,Ghana,Nikola Vlašić,Croatia,,,goals,VALUABLE,0.5,3.8,WIN,2.8,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+380,2026-06-24,2026-06-27,World Cup,Croatia,Ghana,Mario Pašalić,Croatia,,,goals,VALUABLE,0.5,6.0,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+381,2026-06-24,2026-06-27,World Cup,Croatia,Ghana,Martin Baturina,Croatia,,,goals,VALUABLE,0.5,3.7,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+382,2026-06-24,2026-06-27,World Cup,Croatia,Ghana,Toni Fruk,Croatia,,,goals,VALUABLE,0.5,3.25,VOID,0.0,DNP (0 min),0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+383,2026-06-24,2026-06-27,World Cup,Croatia,Ghana,Marco Pašalić,Croatia,,,goals,VALUABLE,0.5,3.75,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+384,2026-06-24,2026-06-27,World Cup,Croatia,Ghana,Luka Vušković,Croatia,,,goals,VALUABLE,0.5,8.5,VOID,0.0,DNP (0 min),0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+385,2026-06-24,2026-06-27,World Cup,Croatia,Ghana,Petar Musa,Croatia,,,goals,VALUABLE,0.5,2.62,VOID,0.0,DNP (0 min),0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+386,2026-06-24,2026-06-27,World Cup,Croatia,Ghana,Kristijan Jakić,Croatia,,,goals,VALUABLE,0.5,8.5,VOID,0.0,DNP (0 min),0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+387,2026-06-24,2026-06-27,World Cup,Croatia,Ghana,Ante Budimir,Croatia,,,goals,VALUABLE,0.5,2.45,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+388,2026-06-24,2026-06-27,World Cup,Croatia,Ghana,Igor Matanović,Croatia,,,goals,VALUABLE,0.5,2.75,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+394,2026-06-24,2026-06-24,World Cup,Bosnia & Herzegovina,Qatar,Ermedin Demirović,Bosnia & Herzegovina,,,sot,VALUABLE,0.8,1.57,WIN,0.57,,0.8,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+397,2026-06-24,2026-06-27,World Cup,Croatia,Ghana,Andrej Kramarić,Croatia,,,goals,VALUABLE,0.5,2.9,VOID,0.0,DNP (0 min),0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+405,2026-06-24,2026-06-24,World Cup,Scotland,Brazil,Vinicius Júnior,Brazil,,,goals,VALUABLE,0.5,2.33,WIN,1.33,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+415,2026-06-24,2026-06-27,World Cup,Colombia,Portugal,Bruno Fernandes,Portugal,,,goals,VALUABLE,0.5,3.8,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+416,2026-06-24,2026-06-27,World Cup,Colombia,Portugal,Gonçalo Guedes,Portugal,,,goals,VALUABLE,0.5,3.2,VOID,0.0,DNP (0 min),0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+417,2026-06-24,2026-06-27,World Cup,Colombia,Portugal,Pedro Neto,Portugal,,,goals,VALUABLE,0.5,4.9,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+418,2026-06-24,2026-06-27,World Cup,Colombia,Portugal,Francisco Conceição,Portugal,,,goals,VALUABLE,0.5,4.4,VOID,0.0,DNP (0 min),0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+419,2026-06-24,2026-06-27,World Cup,Colombia,Portugal,Francisco Trincão,Portugal,,,goals,VALUABLE,0.5,4.0,VOID,0.0,DNP (0 min),0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+420,2026-06-24,2026-06-27,World Cup,Colombia,Portugal,Rafael Leão,Portugal,,,goals,VALUABLE,0.5,3.6,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+421,2026-06-24,2026-06-27,World Cup,Colombia,Portugal,Nuno Mendes,Portugal,,,goals,VALUABLE,0.5,11.0,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+432,2026-06-24,2026-06-28,World Cup,Jordan,Argentina,Leandro Paredes,Argentina,,,sot,VALUABLE,0.8,2.05,LOSS,-1.0,,0.8,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+436,2026-06-24,2026-06-28,World Cup,Jordan,Argentina,Thiago Almada,Argentina,,,goals,VALUABLE,0.5,3.0,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+437,2026-06-24,2026-06-28,World Cup,Jordan,Argentina,Leandro Paredes,Argentina,,,goals,VALUABLE,0.5,4.8,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+438,2026-06-24,2026-06-28,World Cup,Jordan,Argentina,Valentín Barco,Argentina,,,goals,VALUABLE,0.5,4.0,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+439,2026-06-24,2026-06-28,World Cup,Jordan,Argentina,Giuliano Simeone,Argentina,,,goals,VALUABLE,0.5,2.8,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+456,2026-06-25,2026-06-28,World Cup,South Africa,Canada,Jonathan David,Canada,,,goals,VALUABLE,0.5,2.45,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+457,2026-06-25,2026-06-28,World Cup,South Africa,Canada,Tani Oluwaseyi,Canada,,,goals,VALUABLE,0.5,3.1,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+458,2026-06-25,2026-06-28,World Cup,South Africa,Canada,Evidence Makgopa,South Africa,,,goals,VALUABLE,0.5,5.5,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+459,2026-06-25,2026-06-28,World Cup,South Africa,Canada,Oswin Appollis,South Africa,,,goals,MARKSMAN,0.5,6.1,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+460,2026-06-25,2026-06-28,World Cup,South Africa,Canada,Lyle Foster,South Africa,,,goals,VALUABLE,0.5,4.2,VOID,0.0,DNP (0 min),0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+461,2026-06-25,2026-06-28,World Cup,South Africa,Canada,Tshepang Moremi,South Africa,,,goals,VALUABLE,0.5,7.5,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+462,2026-06-25,2026-06-28,World Cup,South Africa,Canada,Cyle Larin,Canada,,,goals,VALUABLE,0.5,2.75,VOID,0.0,DNP (0 min),0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+463,2026-06-25,2026-06-28,World Cup,South Africa,Canada,Teboho Mokoena,South Africa,,,goals,VALUABLE,0.5,6.5,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+464,2026-06-25,2026-06-28,World Cup,South Africa,Canada,Relebohile Mofokeng,South Africa,,,goals,VALUABLE,0.5,8.0,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+465,2026-06-25,2026-06-27,World Cup,Croatia,Ghana,Ivan Perišić,Croatia,,,goals,VALUABLE,0.5,4.5,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+467,2026-06-25,2026-06-27,World Cup,New Zealand,Belgium,Kevin De Bruyne,Belgium,,,sot,VALUABLE,0.8,1.44,WIN,0.44,,0.8,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+468,2026-06-25,2026-06-26,World Cup,Senegal,Iraq,Ismaïla Sarr,Senegal,,,sot,VALUABLE,0.8,1.44,WIN,0.44,,0.8,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+469,2026-06-25,2026-06-26,World Cup,Senegal,Iraq,Sadio Mané,Senegal,,,sot,VALUABLE,0.8,1.44,WIN,0.44,,0.8,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+470,2026-06-25,2026-06-27,World Cup,New Zealand,Belgium,Alexis Saelemaekers,Belgium,,,sot,VALUABLE,0.8,1.61,WIN,0.61,,0.8,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+471,2026-06-25,2026-06-27,World Cup,New Zealand,Belgium,Leandro Trossard,Belgium,,,sot,VALUABLE,0.8,1.44,WIN,0.44,,0.8,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+478,2026-06-26,2026-06-29,World Cup,Brazil,Japan,Daichi Kamada,Japan,,,goals,VALUABLE,0.5,8.5,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+479,2026-06-26,2026-06-29,World Cup,Brazil,Japan,Junya Ito,Japan,,,goals,VALUABLE,0.5,5.5,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+480,2026-06-26,2026-06-29,World Cup,Brazil,Japan,Lucas Paquetá,Brazil,,,goals,VALUABLE,0.5,4.5,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+481,2026-06-26,2026-06-29,World Cup,Brazil,Japan,Ayase Ueda,Japan,,,goals,VALUABLE,0.5,3.9,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+482,2026-06-26,2026-06-29,World Cup,Brazil,Japan,Shuto Machino,Japan,,,goals,VALUABLE,0.5,4.8,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+483,2026-06-26,2026-06-29,World Cup,Brazil,Japan,Bruno Guimarães,Brazil,,,goals,VALUABLE,0.5,7.5,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+484,2026-06-26,2026-06-29,World Cup,Brazil,Japan,Keito Nakamura,Japan,,,goals,VALUABLE,0.5,7.0,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+485,2026-06-26,2026-06-29,World Cup,Brazil,Japan,Koki Ogawa,Japan,,,goals,VALUABLE,0.5,4.4,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+486,2026-06-26,2026-06-29,World Cup,Brazil,Japan,Takefusa Kubo,Japan,,,goals,VALUABLE,0.5,6.0,VOID,0.0,DNP (0 min),0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+487,2026-06-26,2026-07-02,World Cup,USA,Bosnia & Herzegovina,Christian Pulišić,USA,,,goals,VALUABLE,0.5,2.38,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+488,2026-06-26,2026-07-02,World Cup,USA,Bosnia & Herzegovina,Sergiño Dest,USA,,,goals,VALUABLE,0.5,5.0,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+489,2026-06-26,2026-07-02,World Cup,USA,Bosnia & Herzegovina,Antonee Robinson,USA,,,goals,VALUABLE,0.5,7.0,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+490,2026-06-26,2026-07-02,World Cup,USA,Bosnia & Herzegovina,Haji Wright,USA,,,goals,VALUABLE,0.5,2.45,VOID,0.0,DNP (0 min),0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+491,2026-06-26,2026-06-27,World Cup,Uruguay,Spain,Borja Iglesias,Spain,,,goals,VALUABLE,0.5,2.3,VOID,0.0,DNP (0 min),0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+492,2026-06-26,2026-06-30,World Cup,Netherlands,Morocco,Achraf Hakimi,Morocco,,,goals,VALUABLE,0.5,8.0,,,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+493,2026-06-26,2026-06-30,World Cup,Netherlands,Morocco,Brahim Díaz,Morocco,,,goals,VALUABLE,0.5,4.5,,,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+494,2026-06-26,2026-06-30,World Cup,Netherlands,Morocco,Soufiane Rahimi,Morocco,,,goals,VALUABLE,0.5,4.2,,,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+495,2026-06-26,2026-06-30,World Cup,Netherlands,Morocco,Ismael Saibari,Morocco,,,goals,VALUABLE,0.5,3.6,,,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+496,2026-06-26,2026-06-30,World Cup,Netherlands,Morocco,Neil El Aynaoui,Morocco,,,goals,VALUABLE,0.5,8.0,,,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+497,2026-06-26,2026-07-02,World Cup,USA,Bosnia & Herzegovina,Giovanni Reyna,USA,,,goals,VALUABLE,0.5,2.9,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+498,2026-06-26,2026-06-30,World Cup,Netherlands,Morocco,Cody Gakpo,Netherlands,,,goals,VALUABLE,0.5,3.0,,,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+499,2026-06-26,2026-06-30,World Cup,Netherlands,Morocco,Virgil van Dijk,Netherlands,,,goals,VALUABLE,0.5,8.0,,,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+500,2026-06-26,2026-06-30,World Cup,Netherlands,Morocco,Crysencio Summerville,Netherlands,,,goals,VALUABLE,0.5,4.4,,,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+501,2026-06-26,2026-06-30,World Cup,Netherlands,Morocco,Jan Paul van Hecke,Netherlands,,,goals,VALUABLE,0.5,11.0,,,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+502,2026-06-26,2026-06-30,World Cup,Netherlands,Morocco,Brian Brobbey,Netherlands,,,goals,VALUABLE,0.5,3.25,,,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+503,2026-06-26,2026-06-30,World Cup,Netherlands,Morocco,Justin Kluivert,Netherlands,,,goals,VALUABLE,0.5,4.75,,,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+511,2026-06-26,2026-07-02,World Cup,USA,Bosnia & Herzegovina,Folarin Balogun,USA,,,goals,VALUABLE,0.5,2.42,WIN,1.42,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+512,2026-06-26,2026-06-27,World Cup,Panama,England,Harry Kane,England,,,goals,VALUABLE,0.5,2.37,WIN,1.37,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+513,2026-06-26,2026-06-30,World Cup,Netherlands,Morocco,Donyell Malen,Netherlands,,,goals,VALUABLE,0.5,3.8,,,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+514,2026-06-26,2026-06-27,World Cup,Colombia,Portugal,Cristiano Ronaldo,Portugal,,,goals,VALUABLE,0.5,2.31,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+516,2026-06-26,2026-07-02,World Cup,USA,Bosnia & Herzegovina,Malik Tillman,USA,,,goals,VALUABLE,0.5,4.4,WIN,3.4,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+518,2026-06-27,2026-07-02,World Cup,USA,Bosnia & Herzegovina,Sebastian Berhalter,USA,,,goals,VALUABLE,0.5,5.0,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+520,2026-06-27,2026-06-30,World Cup,Ivory Coast,Norway,Antonio Nusa,Norway,,,goals,VALUABLE,0.5,4.8,WIN,3.8,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+531,2026-06-27,2026-06-29,World Cup,Germany,Paraguay,Florian Wirtz,Germany,,,goals,VALUABLE,0.5,2.75,,,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+532,2026-06-27,2026-06-29,World Cup,Germany,Paraguay,Felix Nmecha,Germany,,,goals,VALUABLE,0.5,6.5,,,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+533,2026-06-27,2026-06-29,World Cup,Germany,Paraguay,Leroy Sané,Germany,,,goals,VALUABLE,0.5,3.2,,,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+534,2026-06-27,2026-06-29,World Cup,Germany,Paraguay,Damián Bobadilla,Paraguay,,,goals,VALUABLE,0.5,10.0,,,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+535,2026-06-27,2026-06-29,World Cup,Germany,Paraguay,Jamal Musiala,Germany,,,goals,VALUABLE,0.5,2.8,,,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+536,2026-06-27,2026-06-29,World Cup,Germany,Paraguay,Jamie Leweling,Germany,,,goals,VALUABLE,0.5,3.75,,,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+537,2026-06-27,2026-06-29,World Cup,Germany,Paraguay,Deniz Undav,Germany,,,goals,VALUABLE,0.5,2.3,,,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+538,2026-06-27,2026-06-29,World Cup,Germany,Paraguay,Antonio Sanabria,Paraguay,,,goals,VALUABLE,0.5,4.75,,,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+539,2026-06-27,2026-06-29,World Cup,Germany,Paraguay,Kai Havertz,Germany,,,goals,VALUABLE,0.5,2.3,,,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+540,2026-06-27,2026-06-29,World Cup,Germany,Paraguay,Nadiem Amiri,Germany,,,goals,VALUABLE,0.5,4.75,,,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+541,2026-06-27,2026-06-29,World Cup,Germany,Paraguay,Nick Woltemade,Germany,,,goals,MARKSMAN,0.5,2.5,,,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+542,2026-06-27,2026-07-03,World Cup,Australia,Egypt,Nestory Irankunda,Australia,,,goals,VALUABLE,0.5,3.9,,,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+543,2026-06-27,2026-07-03,World Cup,Australia,Egypt,Mohamed Touré,Australia,,,goals,VALUABLE,0.5,3.9,,,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+544,2026-06-27,2026-07-03,World Cup,Australia,Egypt,Omar Marmoush,Egypt,,,goals,VALUABLE,0.5,3.8,,,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+545,2026-06-27,2026-07-03,World Cup,Australia,Egypt,Emam Ashour,Egypt,,,goals,VALUABLE,0.5,8.0,,,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+546,2026-06-27,2026-07-03,World Cup,Australia,Egypt,Mohamed Salah,Egypt,,,goals,VALUABLE,0.5,3.1,,,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+547,2026-06-27,2026-07-03,World Cup,Argentina,Cape Verde Islands,Thiago Almada,Argentina,,,goals,VALUABLE,0.5,3.5,,,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+548,2026-06-27,2026-07-03,World Cup,Argentina,Cape Verde Islands,Giuliano Simeone,Argentina,,,goals,VALUABLE,0.5,3.0,,,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+549,2026-06-27,2026-07-03,World Cup,Argentina,Cape Verde Islands,Valentín Barco,Argentina,,,goals,VALUABLE,0.5,7.5,,,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+550,2026-06-27,2026-07-03,World Cup,Argentina,Cape Verde Islands,Leandro Paredes,Argentina,,,goals,VALUABLE,0.5,8.0,,,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+554,2026-06-27,2026-06-30,World Cup,France,Sweden,Désiré Doué,France,,,goals,MARKSMAN,0.5,2.7,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+555,2026-06-27,2026-06-30,World Cup,France,Sweden,Yasin Ayari,Sweden,,,goals,VALUABLE,0.5,10.0,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+556,2026-06-27,2026-06-30,World Cup,France,Sweden,Bradley Barcola,France,,,goals,VALUABLE,0.5,2.9,WIN,1.9,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+557,2026-06-27,2026-06-30,World Cup,France,Sweden,Anthony Elanga,Sweden,,,goals,VALUABLE,0.5,8.0,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+558,2026-06-27,2026-06-30,World Cup,France,Sweden,Mattias Svanberg,Sweden,,,goals,VALUABLE,0.5,8.0,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+559,2026-06-27,2026-06-30,World Cup,France,Sweden,Michael Olise,France,,,goals,VALUABLE,0.5,2.75,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+560,2026-06-27,2026-06-30,World Cup,France,Sweden,Viktor Gyökeres,Sweden,,,goals,VALUABLE,0.5,4.0,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+561,2026-06-27,2026-06-30,World Cup,France,Sweden,Alexander Isak,Sweden,,,goals,VALUABLE,0.5,4.6,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+562,2026-06-27,2026-06-30,World Cup,France,Sweden,Rayan Cherki,France,,,goals,VALUABLE,0.5,2.75,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+563,2026-06-27,2026-06-30,World Cup,France,Sweden,Ousmane Dembélé,France,,,goals,VALUABLE,0.5,2.42,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+564,2026-06-27,2026-06-30,World Cup,France,Sweden,Maghnes Akliouche,France,,,goals,VALUABLE,0.5,3.4,VOID,0.0,DNP (0 min),0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+565,2026-06-27,2026-06-30,World Cup,France,Sweden,Marcus Thuram,France,,,goals,VALUABLE,0.5,2.38,VOID,0.0,DNP (0 min),0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+567,2026-06-27,2026-06-30,World Cup,Ivory Coast,Norway,Oscar Bobb,Norway,,,goals,MARKSMAN,0.5,4.4,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+575,2026-06-28,2026-07-01,World Cup,Belgium,Senegal,Nicolas Jackson,Senegal,,,goals,VALUABLE,0.5,4.0,,,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+576,2026-06-28,2026-07-01,World Cup,Belgium,Senegal,Charles De Ketelaere,Belgium,,,goals,VALUABLE,0.5,4.0,,,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+577,2026-06-28,2026-07-01,World Cup,Belgium,Senegal,Dodi Lukebakio,Belgium,,,goals,VALUABLE,0.5,4.8,,,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+578,2026-06-28,2026-07-01,World Cup,Belgium,Senegal,Youri Tielemans,Belgium,,,goals,VALUABLE,0.5,6.0,,,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+579,2026-06-28,2026-07-01,World Cup,Belgium,Senegal,Ismaïla Sarr,Senegal,,,goals,VALUABLE,0.5,4.5,,,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+580,2026-06-28,2026-07-01,World Cup,Belgium,Senegal,Leandro Trossard,Belgium,,,goals,VALUABLE,0.5,4.33,,,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+581,2026-06-28,2026-07-01,World Cup,Belgium,Senegal,Alexis Saelemaekers,Belgium,,,goals,VALUABLE,0.5,7.0,,,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+582,2026-06-28,2026-07-01,World Cup,Belgium,Senegal,Habib Diarra,Senegal,,,goals,VALUABLE,0.5,5.8,,,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+583,2026-06-28,2026-07-01,World Cup,Belgium,Senegal,Kevin De Bruyne,Belgium,,,goals,VALUABLE,0.5,4.33,,,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+584,2026-06-28,2026-07-01,World Cup,Belgium,Senegal,Sadio Mané,Senegal,,,goals,VALUABLE,0.5,4.5,,,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+585,2026-06-28,2026-07-01,World Cup,Belgium,Senegal,Ibrahim Mbaye,Senegal,,,goals,VALUABLE,0.5,5.5,,,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+586,2026-06-28,2026-07-01,World Cup,Belgium,Senegal,Diego Moreira,Belgium,,,goals,VALUABLE,0.5,6.0,,,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+587,2026-06-28,2026-07-01,World Cup,Mexico,Ecuador,Álvaro Fidalgo,Mexico,,,goals,VALUABLE,0.5,6.5,VOID,0.0,DNP (0 min),0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+588,2026-06-28,2026-07-01,World Cup,Mexico,Ecuador,Brian Gutiérrez,Mexico,,,goals,VALUABLE,0.5,5.0,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+589,2026-06-28,2026-07-01,World Cup,Mexico,Ecuador,Santiago Giménez,Mexico,,,goals,VALUABLE,0.5,3.4,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+590,2026-06-28,2026-07-01,World Cup,Mexico,Ecuador,Julián Quiñones,Mexico,,,goals,VALUABLE,0.5,3.75,WIN,2.75,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+591,2026-06-28,2026-07-01,World Cup,Mexico,Ecuador,Raúl Jiménez,Mexico,,,goals,VALUABLE,0.5,3.0,WIN,2.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+592,2026-06-28,2026-07-01,World Cup,Mexico,Ecuador,Roberto Alvarado,Mexico,,,goals,VALUABLE,0.5,5.5,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+593,2026-06-28,2026-07-03,World Cup,Switzerland,Algeria,Farès Chaïbi,Algeria,,,goals,VALUABLE,0.5,6.5,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+594,2026-06-28,2026-07-03,World Cup,Switzerland,Algeria,Dan Ndoye,Switzerland,,,goals,VALUABLE,0.5,3.5,WIN,2.5,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+595,2026-06-28,2026-07-03,World Cup,Switzerland,Algeria,Rubén Vargas,Switzerland,,,goals,VALUABLE,0.5,3.8,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+596,2026-06-28,2026-07-03,World Cup,Switzerland,Algeria,Granit Xhaka,Switzerland,,,goals,VALUABLE,0.5,4.8,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+597,2026-06-28,2026-07-03,World Cup,Switzerland,Algeria,Breel Embolo,Switzerland,,,goals,VALUABLE,0.5,2.5,WIN,1.5,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+598,2026-06-28,2026-07-03,World Cup,Switzerland,Algeria,Amine Gouiri,Algeria,,,goals,VALUABLE,0.5,3.6,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+599,2026-06-28,2026-07-03,World Cup,Switzerland,Algeria,Riyad Mahrez,Algeria,,,goals,VALUABLE,0.5,3.75,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+600,2026-06-28,2026-07-03,World Cup,Switzerland,Algeria,Johan Manzambi,Switzerland,,,goals,VALUABLE,0.5,3.6,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+601,2026-06-28,2026-07-03,World Cup,Switzerland,Algeria,Anis Hadj Moussa,Algeria,,,goals,VALUABLE,0.5,5.5,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+602,2026-06-28,2026-07-02,World Cup,Spain,Austria,Nico Williams,Spain,,,goals,VALUABLE,0.5,3.25,VOID,0.0,DNP (0 min),0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+603,2026-06-28,2026-07-02,World Cup,Spain,Austria,Lamine Yamal,Spain,,,goals,VALUABLE,0.5,2.4,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+604,2026-06-28,2026-07-02,World Cup,Spain,Austria,Marcel Sabitzer,Austria,,,goals,VALUABLE,0.5,5.5,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+605,2026-06-28,2026-07-02,World Cup,Spain,Austria,Michael Gregoritsch,Austria,,,goals,VALUABLE,0.5,4.8,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+606,2026-06-28,2026-07-02,World Cup,Spain,Austria,Marko Arnautović,Austria,,,goals,VALUABLE,0.5,4.6,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+607,2026-06-28,2026-07-02,World Cup,Spain,Austria,Romano Schmid,Austria,,,goals,VALUABLE,0.5,7.5,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+608,2026-06-28,2026-07-02,World Cup,Spain,Austria,Alejandro Baena,Spain,,,goals,VALUABLE,0.5,3.75,VOID,0.0,DNP (0 min),0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+619,2026-06-28,2026-07-02,World Cup,Portugal,Croatia,Luka Modrić,Croatia,,,goals,VALUABLE,0.5,7.3,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+620,2026-06-28,2026-07-02,World Cup,Portugal,Croatia,Petar Sučić,Croatia,,,goals,VALUABLE,0.5,19.0,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+621,2026-06-28,2026-07-02,World Cup,Portugal,Croatia,Pedro Neto,Portugal,,,goals,VALUABLE,0.5,4.9,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+622,2026-06-28,2026-07-02,World Cup,Portugal,Croatia,Bruno Fernandes,Portugal,,,goals,VALUABLE,0.5,3.7,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+623,2026-06-28,2026-07-02,World Cup,Portugal,Croatia,Nuno Mendes,Portugal,,,goals,VALUABLE,0.5,11.5,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+624,2026-06-28,2026-07-02,World Cup,Portugal,Croatia,Martin Baturina,Croatia,,,goals,VALUABLE,0.5,8.8,LOSS,-1.0,,0.5,"model_prob == that run's market cap (min(p, cap) wrote the cap)",True,True
+631,2026-06-28,2026-06-30,World Cup,Netherlands,Morocco,Azzedine Ounahi,Morocco,,,cards,VALUABLE,0.4,4.5,,,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+632,2026-06-28,2026-06-30,World Cup,Netherlands,Morocco,Ismael Saibari,Morocco,,,cards,VALUABLE,0.4,5.8,,,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+633,2026-06-28,2026-06-30,World Cup,Netherlands,Morocco,Zakaria El Ouahdi,Morocco,,,cards,VALUABLE,0.4,4.0,,,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+634,2026-06-28,2026-06-30,World Cup,Netherlands,Morocco,Anass Salah-Eddine,Morocco,,,cards,VALUABLE,0.4,4.3,,,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+635,2026-06-28,2026-06-30,World Cup,Netherlands,Morocco,Tijjani Reijnders,Netherlands,,,cards,VALUABLE,0.4,6.0,,,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+636,2026-06-28,2026-06-30,World Cup,Netherlands,Morocco,Crysencio Summerville,Netherlands,,,cards,VALUABLE,0.4,4.5,,,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+637,2026-06-28,2026-06-30,World Cup,Netherlands,Morocco,Soufiane Rahimi,Morocco,,,cards,VALUABLE,0.4,5.0,,,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+638,2026-06-28,2026-06-30,World Cup,Netherlands,Morocco,Issa Diop,Morocco,,,cards,VALUABLE,0.4,3.6,,,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+639,2026-06-28,2026-06-30,World Cup,Netherlands,Morocco,Achraf Hakimi,Morocco,,,cards,VALUABLE,0.4,4.0,,,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+640,2026-06-28,2026-06-30,World Cup,Netherlands,Morocco,Brahim Díaz,Morocco,,,cards,VALUABLE,0.4,5.3,,,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+641,2026-06-28,2026-06-30,World Cup,Netherlands,Morocco,Sofyan Amrabat,Morocco,,,cards,VALUABLE,0.4,3.1,,,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+642,2026-06-28,2026-06-30,World Cup,Netherlands,Morocco,Ayoub El Kaabi,Morocco,,,cards,VALUABLE,0.4,6.0,,,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+643,2026-06-28,2026-06-28,World Cup,South Africa,Canada,Jonathan David,Canada,,,cards,VALUABLE,0.4,8.0,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+644,2026-06-28,2026-06-28,World Cup,South Africa,Canada,Tajon Buchanan,Canada,,,cards,VALUABLE,0.4,4.7,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+645,2026-06-28,2026-06-29,World Cup,Brazil,Japan,Junya Ito,Japan,,,cards,VALUABLE,0.4,7.0,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+646,2026-06-28,2026-06-29,World Cup,Brazil,Japan,Lucas Paquetá,Brazil,,,cards,VALUABLE,0.4,4.0,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+647,2026-06-28,2026-06-29,World Cup,Brazil,Japan,Ritsu Doan,Japan,,,cards,VALUABLE,0.4,5.5,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+648,2026-06-28,2026-06-29,World Cup,Brazil,Japan,Daichi Kamada,Japan,,,cards,VALUABLE,0.4,5.5,WIN,4.5,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+649,2026-06-28,2026-06-29,World Cup,Brazil,Japan,Kaishu Sano,Japan,,,cards,VALUABLE,0.4,5.3,WIN,4.3,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+650,2026-06-28,2026-06-29,World Cup,Brazil,Japan,Ko Itakura,Japan,,,cards,VALUABLE,0.4,4.1,VOID,0.0,DNP (0 min),0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+651,2026-06-28,2026-06-29,World Cup,Brazil,Japan,Ayase Ueda,Japan,,,cards,MARKSMAN,0.4,4.6,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+652,2026-06-28,2026-06-29,World Cup,Brazil,Japan,Vinícius Júnior,Brazil,,,cards,VALUABLE,0.4,5.0,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+653,2026-06-28,2026-06-29,World Cup,Brazil,Japan,Tsuyoshi Watanabe,Japan,,,cards,MARKSMAN,0.4,6.0,VOID,0.0,DNP (0 min),0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+654,2026-06-28,2026-06-29,World Cup,Brazil,Japan,Ayumu Seko,Japan,,,cards,VALUABLE,0.4,4.6,VOID,0.0,DNP (0 min),0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+655,2026-06-28,2026-06-29,World Cup,Brazil,Japan,Daizen Maeda,Japan,,,cards,VALUABLE,0.4,5.1,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+656,2026-06-28,2026-06-29,World Cup,Brazil,Japan,Hiroki Itō,Japan,,,cards,VALUABLE,0.4,5.5,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+657,2026-06-28,2026-06-28,World Cup,South Africa,Canada,Richie Laryea,Canada,,,cards,MARKSMAN,0.4,4.6,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+658,2026-06-28,2026-06-28,World Cup,South Africa,Canada,Lyle Foster,South Africa,,,cards,VALUABLE,0.4,5.0,VOID,0.0,DNP (0 min),0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+659,2026-06-28,2026-06-28,World Cup,South Africa,Canada,Liam Millar,Canada,,,cards,VALUABLE,0.4,4.3,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+660,2026-06-28,2026-06-28,World Cup,South Africa,Canada,Thalente Mbatha,South Africa,,,cards,VALUABLE,0.4,4.0,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+661,2026-06-28,2026-06-28,World Cup,South Africa,Canada,Teboho Mokoena,South Africa,,,cards,VALUABLE,0.4,3.5,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+662,2026-06-28,2026-06-28,World Cup,South Africa,Canada,Ali Ahmed,Canada,,,cards,VALUABLE,0.4,5.0,VOID,0.0,DNP (0 min),0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+663,2026-06-28,2026-06-28,World Cup,South Africa,Canada,Moise Bombito,Canada,,,cards,VALUABLE,0.4,5.0,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+664,2026-06-28,2026-06-28,World Cup,South Africa,Canada,Mbekezeli Mbokazi,South Africa,,,cards,VALUABLE,0.4,4.3,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+665,2026-06-28,2026-06-28,World Cup,South Africa,Canada,Cyle Larin,Canada,,,cards,VALUABLE,0.4,5.5,VOID,0.0,DNP (0 min),0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+666,2026-06-28,2026-06-28,World Cup,South Africa,Canada,Luc De Fougerolles,Canada,,,cards,VALUABLE,0.4,5.25,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+667,2026-06-28,2026-06-28,World Cup,South Africa,Canada,Relebohile Mofokeng,South Africa,,,cards,VALUABLE,0.4,6.5,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+668,2026-06-28,2026-06-29,World Cup,Germany,Paraguay,Aleksandar Pavlović,Germany,,,cards,VALUABLE,0.4,4.4,,,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+669,2026-06-28,2026-06-29,World Cup,Germany,Paraguay,Florian Wirtz,Germany,,,cards,VALUABLE,0.4,7.5,,,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+670,2026-06-28,2026-06-30,World Cup,Netherlands,Morocco,Frenkie de Jong,Netherlands,,,cards,VALUABLE,0.4,5.0,,,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+671,2026-06-28,2026-06-30,World Cup,Netherlands,Morocco,Cody Gakpo,Netherlands,,,cards,VALUABLE,0.4,6.0,,,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+672,2026-06-28,2026-06-30,World Cup,Netherlands,Morocco,Donyell Malen,Netherlands,,,cards,VALUABLE,0.4,6.0,,,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+673,2026-06-28,2026-06-29,World Cup,Germany,Paraguay,Damián Bobadilla,Paraguay,,,cards,VALUABLE,0.4,4.0,,,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+674,2026-06-28,2026-06-29,World Cup,Germany,Paraguay,Jamal Musiala,Germany,,,cards,VALUABLE,0.4,7.0,,,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+675,2026-06-28,2026-06-29,World Cup,Germany,Paraguay,Omar Alderete,Paraguay,,,cards,VALUABLE,0.4,4.2,,,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+676,2026-06-28,2026-06-29,World Cup,Germany,Paraguay,David Raum,Germany,,,cards,VALUABLE,0.4,5.5,,,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+677,2026-06-28,2026-06-29,World Cup,Germany,Paraguay,Kai Havertz,Germany,,,cards,VALUABLE,0.4,4.3,,,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+678,2026-06-28,2026-06-29,World Cup,Germany,Paraguay,Junior Alonso,Paraguay,,,cards,VALUABLE,0.4,3.9,,,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+718,2026-06-29,2026-06-29,World Cup,Germany,Paraguay,Nathaniel Brown,Germany,,,cards,VALUABLE,0.4,6.5,,,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+719,2026-06-29,2026-06-29,World Cup,Germany,Paraguay,Felix Nmecha,Germany,,,cards,VALUABLE,0.4,7.5,,,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+720,2026-06-29,2026-06-29,World Cup,Germany,Paraguay,Leroy Sané,Germany,,,cards,VALUABLE,0.4,5.5,,,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+721,2026-06-29,2026-06-29,World Cup,Germany,Paraguay,Angelo Stiller,Germany,,,cards,VALUABLE,0.4,5.2,,,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+722,2026-06-29,2026-06-29,World Cup,Brazil,Japan,Yukinari Sugawara,Japan,,,cards,VALUABLE,0.4,5.0,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+723,2026-06-29,2026-06-29,World Cup,Brazil,Japan,Shogo Taniguchi,Japan,,,cards,MARKSMAN,0.4,5.0,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+724,2026-06-29,2026-06-30,World Cup,Netherlands,Morocco,Denzel Dumfries,Netherlands,,,cards,VALUABLE,0.4,4.0,,,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+725,2026-06-29,2026-06-30,World Cup,Netherlands,Morocco,Brian Brobbey,Netherlands,,,cards,VALUABLE,0.4,4.0,,,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+726,2026-06-29,2026-06-30,World Cup,Netherlands,Morocco,Ryan Gravenberch,Netherlands,,,cards,VALUABLE,0.4,4.0,,,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+732,2026-06-29,2026-06-30,World Cup,France,Sweden,Daniel Svensson,Sweden,,,cards,SNIPER,0.4,6.5,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+733,2026-06-29,2026-06-30,World Cup,France,Sweden,Taha Abdi Ali,Sweden,,,cards,MARKSMAN,0.4,5.25,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+734,2026-06-29,2026-06-30,World Cup,France,Sweden,Malo Gusto,France,,,cards,MARKSMAN,0.4,5.25,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+735,2026-06-29,2026-06-30,World Cup,France,Sweden,Gabriel Gudmundsson,Sweden,,,cards,MARKSMAN,0.4,5.0,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+736,2026-06-29,2026-06-30,World Cup,France,Sweden,Carl Starfelt,Sweden,,,cards,MARKSMAN,0.4,4.2,VOID,0.0,DNP (0 min),0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+737,2026-06-29,2026-06-30,World Cup,France,Sweden,Benjamin Nygren,Sweden,,,cards,SNIPER,0.4,4.75,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+738,2026-06-29,2026-06-30,World Cup,France,Sweden,Jacob Widell Zetterström,Sweden,,,cards,MARKSMAN,0.4,8.0,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+739,2026-06-29,2026-06-30,World Cup,France,Sweden,Jesper Karlström,Sweden,,,cards,MARKSMAN,0.4,3.25,VOID,0.0,DNP (0 min),0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+740,2026-06-29,2026-06-30,World Cup,France,Sweden,Gustaf Lagerbielke,Sweden,,,cards,MARKSMAN,0.4,3.9,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+741,2026-06-29,2026-06-30,World Cup,France,Sweden,Alexander Bernhardsson,Sweden,,,cards,MARKSMAN,0.4,4.33,VOID,0.0,DNP (0 min),0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+742,2026-06-29,2026-06-30,World Cup,France,Sweden,Hjalmar Ekdal,Sweden,,,cards,MARKSMAN,0.4,4.8,VOID,0.0,DNP (0 min),0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+743,2026-06-29,2026-06-30,World Cup,France,Sweden,Rayan Cherki,France,,,cards,MARKSMAN,0.4,7.0,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+744,2026-06-29,2026-06-30,World Cup,France,Sweden,Viktor Johansson,Sweden,,,cards,MARKSMAN,0.4,8.0,VOID,0.0,DNP (0 min),0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+745,2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Pedro Vite,Ecuador,,,cards,MARKSMAN,0.4,5.5,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+746,2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Gonzalo Plata,Ecuador,,,cards,MARKSMAN,0.4,4.8,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+747,2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Hernán Galíndez,Ecuador,,,cards,MARKSMAN,0.4,7.5,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+748,2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,John Yeboah,Ecuador,,,cards,MARKSMAN,0.4,4.8,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+749,2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Julián Quiñones,Mexico,,,cards,MARKSMAN,0.4,5.0,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+750,2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Enner Valencia,Ecuador,,,cards,MARKSMAN,0.4,4.8,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+751,2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Johan Vásquez,Mexico,,,cards,MARKSMAN,0.4,4.7,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+752,2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Pervis Estupiñán,Ecuador,,,cards,MARKSMAN,0.4,3.9,VOID,0.0,DNP (0 min),0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+753,2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Santiago Giménez,Mexico,,,cards,MARKSMAN,0.4,4.2,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+754,2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Piero Hincapié,Ecuador,,,cards,MARKSMAN,0.4,3.5,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+755,2026-06-29,2026-06-30,World Cup,France,Sweden,Désiré Doué,France,,,cards,MARKSMAN,0.4,6.0,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+756,2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Ángelo Preciado,Ecuador,,,cards,MARKSMAN,0.4,3.4,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+757,2026-06-29,2026-06-30,World Cup,France,Sweden,Michael Olise,France,,,cards,MARKSMAN,0.4,7.0,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+758,2026-06-29,2026-06-30,World Cup,France,Sweden,Maxence Lacroix,France,,,cards,MARKSMAN,0.4,5.5,VOID,0.0,DNP (0 min),0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+759,2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Edson Álvarez,Mexico,,,cards,MARKSMAN,0.4,3.7,VOID,0.0,DNP (0 min),0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+760,2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Jesús Gallardo,Mexico,,,cards,SNIPER,0.4,4.5,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+761,2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Raúl Jiménez,Mexico,,,cards,SNIPER,0.4,5.8,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+762,2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,César Montes,Mexico,,,cards,MARKSMAN,0.4,7.0,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+763,2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Brian Gutiérrez,Mexico,,,cards,MARKSMAN,0.4,5.8,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+764,2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Erik Lira,Mexico,,,cards,SNIPER,0.4,4.8,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+765,2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Álvaro Fidalgo,Mexico,,,cards,MARKSMAN,0.4,7.0,VOID,0.0,DNP (0 min),0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+766,2026-06-29,2026-06-30,World Cup,France,Sweden,Maghnes Akliouche,France,,,cards,MARKSMAN,0.4,5.25,VOID,0.0,DNP (0 min),0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+767,2026-06-29,2026-06-30,World Cup,France,Sweden,Warren Zaïre-Emery,France,,,cards,SNIPER,0.4,7.0,VOID,0.0,DNP (0 min),0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+768,2026-06-29,2026-06-30,World Cup,France,Sweden,Lucas Bergvall,Sweden,,,cards,SNIPER,0.4,4.3,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+769,2026-06-29,2026-06-30,World Cup,France,Sweden,Yasin Ayari,Sweden,,,cards,MARKSMAN,0.4,3.9,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+770,2026-06-29,2026-06-30,World Cup,France,Sweden,Dayot Upamecano,France,,,cards,MARKSMAN,0.4,4.75,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+771,2026-06-29,2026-06-30,World Cup,France,Sweden,Jules Koundé,France,,,cards,MARKSMAN,0.4,7.0,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+772,2026-06-29,2026-06-30,World Cup,France,Sweden,Aurélien Tchouaméni,France,,,cards,MARKSMAN,0.4,4.8,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+773,2026-06-29,2026-06-30,World Cup,France,Sweden,Manu Koné,France,,,cards,SNIPER,0.4,4.75,VOID,0.0,DNP (0 min),0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+774,2026-06-29,2026-06-30,World Cup,France,Sweden,Mike Maignan,France,,,cards,MARKSMAN,0.4,10.0,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+775,2026-06-29,2026-06-30,World Cup,France,Sweden,Theo Hernández,France,,,cards,MARKSMAN,0.4,4.75,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+776,2026-06-29,2026-06-30,World Cup,France,Sweden,Besfort Zeneli,Sweden,,,cards,MARKSMAN,0.4,5.25,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+777,2026-06-29,2026-06-30,World Cup,France,Sweden,Ousmane Dembélé,France,,,cards,MARKSMAN,0.4,6.5,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+778,2026-06-29,2026-06-30,World Cup,France,Sweden,Kylian Mbappé,France,,,cards,MARKSMAN,0.4,7.0,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+779,2026-06-29,2026-06-30,World Cup,Ivory Coast,Norway,Marcus Pedersen,Norway,,,cards,MARKSMAN,0.4,4.8,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+780,2026-06-29,2026-06-30,World Cup,Ivory Coast,Norway,Oscar Bobb,Norway,,,cards,SNIPER,0.4,5.8,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+781,2026-06-29,2026-06-30,World Cup,Ivory Coast,Norway,Andreas Schjelderup,Norway,,,cards,SNIPER,0.4,7.0,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+782,2026-06-29,2026-06-30,World Cup,Ivory Coast,Norway,Patrick Berg,Norway,,,cards,MARKSMAN,0.4,4.6,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+783,2026-06-29,2026-06-30,World Cup,Ivory Coast,Norway,Antonio Nusa,Norway,,,cards,MARKSMAN,0.4,7.0,WIN,6.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+784,2026-06-29,2026-06-30,World Cup,France,Sweden,Alexander Isak,Sweden,,,cards,MARKSMAN,0.4,7.5,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+785,2026-06-29,2026-06-30,World Cup,France,Sweden,Viktor Gyökeres,Sweden,,,cards,MARKSMAN,0.4,5.0,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+786,2026-06-29,2026-06-30,World Cup,France,Sweden,William Saliba,France,,,cards,MARKSMAN,0.4,7.5,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+787,2026-06-29,2026-06-30,World Cup,France,Sweden,Adrien Rabiot,France,,,cards,MARKSMAN,0.4,5.5,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+788,2026-06-29,2026-06-30,World Cup,France,Sweden,Victor Lindelöf,Sweden,,,cards,MARKSMAN,0.4,5.3,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+789,2026-06-29,2026-06-30,World Cup,France,Sweden,Kristoffer Nordfeldt,Sweden,,,cards,MARKSMAN,0.4,8.0,VOID,0.0,DNP (0 min),0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+790,2026-06-29,2026-06-30,World Cup,Ivory Coast,Norway,David Möller Wolfe,Norway,,,cards,MARKSMAN,0.4,4.5,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+791,2026-06-29,2026-06-30,World Cup,Ivory Coast,Norway,Ange-Yoan Bonny,Ivory Coast,,,cards,MARKSMAN,0.4,5.0,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+792,2026-06-29,2026-06-30,World Cup,Ivory Coast,Norway,Yan Diomande,Ivory Coast,,,cards,MARKSMAN,0.4,4.3,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+793,2026-06-29,2026-06-30,World Cup,Ivory Coast,Norway,Kristoffer Ajer,Norway,,,cards,MARKSMAN,0.4,4.5,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+794,2026-06-29,2026-06-30,World Cup,Ivory Coast,Norway,Sander Berge,Norway,,,cards,MARKSMAN,0.4,4.7,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+795,2026-06-29,2026-06-30,World Cup,Ivory Coast,Norway,Ousmane Diomande,Ivory Coast,,,cards,MARKSMAN,0.4,3.9,VOID,0.0,DNP (0 min),0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+796,2026-06-29,2026-06-30,World Cup,France,Sweden,Ken Sema,Sweden,,,cards,MARKSMAN,0.4,4.4,VOID,0.0,DNP (0 min),0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+797,2026-06-29,2026-06-30,World Cup,France,Sweden,Lucas Digne,France,,,cards,MARKSMAN,0.4,5.5,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+798,2026-06-29,2026-06-30,World Cup,France,Sweden,Eric Smith,Sweden,,,cards,MARKSMAN,0.4,3.9,VOID,0.0,DNP (0 min),0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+799,2026-06-29,2026-06-30,World Cup,France,Sweden,Jean-Philippe Mateta,France,,,cards,SNIPER,0.4,7.5,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+800,2026-06-29,2026-06-30,World Cup,France,Sweden,Mattias Svanberg,Sweden,,,cards,MARKSMAN,0.4,3.9,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+801,2026-06-29,2026-06-30,World Cup,France,Sweden,Marcus Thuram,France,,,cards,MARKSMAN,0.4,6.5,VOID,0.0,DNP (0 min),0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+802,2026-06-29,2026-06-30,World Cup,France,Sweden,Brice Samba,France,,,cards,MARKSMAN,0.4,8.0,VOID,0.0,DNP (0 min),0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+803,2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Jordy Alcivar,Ecuador,,,cards,MARKSMAN,0.4,3.4,VOID,0.0,DNP (0 min),0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+804,2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Orbelín Pineda,Mexico,,,cards,MARKSMAN,0.4,5.8,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+805,2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Denil Castillo,Ecuador,,,cards,MARKSMAN,0.4,3.4,VOID,0.0,DNP (0 min),0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+806,2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Joel Ordóñez,Ecuador,,,cards,MARKSMAN,0.4,5.0,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+807,2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Jeremy Arevalo,Ecuador,,,cards,MARKSMAN,0.4,5.8,VOID,0.0,DNP (0 min),0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+808,2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Kendry Páez,Ecuador,,,cards,MARKSMAN,0.4,4.4,WIN,3.4,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+809,2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Obed Vargas,Mexico,,,cards,MARKSMAN,0.4,5.8,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+810,2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Yaimar Medina,Ecuador,,,cards,MARKSMAN,0.4,3.4,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+811,2026-06-29,2026-06-29,World Cup,Germany,Paraguay,Orlando Gill,Paraguay,,,cards,VALUABLE,0.4,8.0,,,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+812,2026-06-29,2026-06-29,World Cup,Germany,Paraguay,Jamie Leweling,Germany,,,cards,VALUABLE,0.4,4.75,,,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+813,2026-06-29,2026-06-29,World Cup,Germany,Paraguay,Antonio Sanabria,Paraguay,,,cards,VALUABLE,0.4,5.8,,,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+814,2026-06-29,2026-06-29,World Cup,Germany,Paraguay,Alexander Nübel,Germany,,,cards,VALUABLE,0.4,9.5,,,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+815,2026-06-29,2026-06-29,World Cup,Brazil,Japan,Kento Shiogai,Japan,,,cards,VALUABLE,0.4,4.2,VOID,0.0,DNP (0 min),0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+816,2026-06-29,2026-06-29,World Cup,Brazil,Japan,Gabriel Martinelli,Brazil,,,cards,VALUABLE,0.4,9.5,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+817,2026-06-29,2026-06-29,World Cup,Brazil,Japan,Junnosuke Suzuki,Japan,,,cards,MARKSMAN,0.4,3.8,WIN,2.8,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+818,2026-06-29,2026-06-29,World Cup,Germany,Paraguay,Manuel Neuer,Germany,,,cards,VALUABLE,0.4,9.5,,,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+819,2026-06-29,2026-06-29,World Cup,Germany,Paraguay,Nadiem Amiri,Germany,,,cards,VALUABLE,0.4,4.2,,,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+820,2026-06-29,2026-06-29,World Cup,Germany,Paraguay,Nick Woltemade,Germany,,,cards,MARKSMAN,0.4,6.5,,,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+821,2026-06-29,2026-06-29,World Cup,Germany,Paraguay,Maximilian Beier,Germany,,,cards,VALUABLE,0.4,6.0,,,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+822,2026-06-29,2026-06-29,World Cup,Germany,Paraguay,Gustavo Caballero,Paraguay,,,cards,VALUABLE,0.4,4.6,,,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+823,2026-06-29,2026-06-29,World Cup,Germany,Paraguay,Oliver Baumann,Germany,,,cards,VALUABLE,0.4,9.5,,,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+824,2026-06-29,2026-06-29,World Cup,Brazil,Japan,Takefusa Kubo,Japan,,,cards,VALUABLE,0.4,3.9,VOID,0.0,DNP (0 min),0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+825,2026-06-29,2026-06-29,World Cup,Brazil,Japan,Zion Suzuki,Japan,,,cards,VALUABLE,0.4,9.5,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+826,2026-06-29,2026-06-29,World Cup,Brazil,Japan,Shuto Machino,Japan,,,cards,VALUABLE,0.4,4.8,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+827,2026-06-29,2026-06-29,World Cup,Brazil,Japan,Yuito Suzuki,Japan,,,cards,VALUABLE,0.4,5.25,VOID,0.0,DNP (0 min),0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+828,2026-06-29,2026-06-30,World Cup,Ivory Coast,Norway,Franck Kessié,Ivory Coast,,,cards,MARKSMAN,0.4,4.2,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+829,2026-06-29,2026-06-30,World Cup,Ivory Coast,Norway,Nicolas Pépé,Ivory Coast,,,cards,MARKSMAN,0.4,6.0,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+830,2026-06-29,2026-06-30,World Cup,Ivory Coast,Norway,Ibrahim Sangaré,Ivory Coast,,,cards,MARKSMAN,0.4,3.5,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+831,2026-06-29,2026-06-30,World Cup,Ivory Coast,Norway,Seko Fofana,Ivory Coast,,,cards,SNIPER,0.4,4.6,VOID,0.0,DNP (0 min),0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+832,2026-06-29,2026-06-30,World Cup,Ivory Coast,Norway,Odilon Kossounou,Ivory Coast,,,cards,MARKSMAN,0.4,4.2,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+833,2026-06-29,2026-06-30,World Cup,Ivory Coast,Norway,Emmanuel Agbadou,Ivory Coast,,,cards,MARKSMAN,0.4,4.5,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+834,2026-06-29,2026-06-30,World Cup,Ivory Coast,Norway,Amad Diallo,Ivory Coast,,,cards,MARKSMAN,0.4,5.2,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+835,2026-06-29,2026-06-30,World Cup,Ivory Coast,Norway,Guéla Doué,Ivory Coast,,,cards,MARKSMAN,0.4,3.9,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+836,2026-06-29,2026-06-30,World Cup,Netherlands,Morocco,Chemsdine Talbi,Morocco,,,cards,MARKSMAN,0.4,6.5,,,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+837,2026-06-29,2026-06-30,World Cup,Netherlands,Morocco,Yassine Bounou,Morocco,,,cards,VALUABLE,0.4,5.8,,,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+838,2026-06-29,2026-06-30,World Cup,Netherlands,Morocco,Gessime Yassine,Morocco,,,cards,VALUABLE,0.4,4.4,,,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+839,2026-06-29,2026-06-30,World Cup,Ivory Coast,Norway,Christopher Operi,Ivory Coast,,,cards,MARKSMAN,0.4,4.5,VOID,0.0,DNP (0 min),0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+840,2026-06-29,2026-06-30,World Cup,Netherlands,Morocco,Teun Koopmeiners,Netherlands,,,cards,VALUABLE,0.4,4.5,,,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+841,2026-06-29,2026-06-30,World Cup,Netherlands,Morocco,Bart Verbruggen,Netherlands,,,cards,VALUABLE,0.4,5.8,,,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+842,2026-06-29,2026-06-30,World Cup,Netherlands,Morocco,Quinten Timber,Netherlands,,,cards,VALUABLE,0.4,4.75,,,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+843,2026-06-29,2026-06-30,World Cup,Netherlands,Morocco,Guus Til,Netherlands,,,cards,VALUABLE,0.4,6.0,,,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+844,2026-06-29,2026-06-30,World Cup,Netherlands,Morocco,Lutsharel Geertruida,Netherlands,,,cards,VALUABLE,0.4,5.8,,,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+845,2026-06-29,2026-06-30,World Cup,Netherlands,Morocco,Mats Wieffer,Netherlands,,,cards,VALUABLE,0.4,3.6,,,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+846,2026-06-29,2026-06-30,World Cup,Netherlands,Morocco,Justin Kluivert,Netherlands,,,cards,MARKSMAN,0.4,4.75,,,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+847,2026-06-29,2026-06-30,World Cup,Netherlands,Morocco,Wout Weghorst,Netherlands,,,cards,VALUABLE,0.4,4.6,,,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+848,2026-06-29,2026-06-30,World Cup,Netherlands,Morocco,Mark Flekken,Netherlands,,,cards,VALUABLE,0.4,9.5,,,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+849,2026-06-29,2026-06-30,World Cup,Netherlands,Morocco,Marten de Roon,Netherlands,,,cards,VALUABLE,0.4,3.3,,,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+858,2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Brian Gutierrez,Mexico,,,cards,MARKSMAN,0.4,5.8,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+859,2026-06-30,2026-07-02,World Cup,USA,Bosnia & Herzegovina,Ermedin Demirović,Bosnia & Herzegovina,,,cards,VALUABLE,0.4,3.3,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+860,2026-06-30,2026-07-01,World Cup,Belgium,Senegal,Kalidou Koulibaly,Senegal,,,cards,VALUABLE,0.4,4.0,,,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+861,2026-06-30,2026-07-01,World Cup,Belgium,Senegal,Nathan Ngoy,Belgium,,,cards,VALUABLE,0.4,3.5,,,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+862,2026-06-30,2026-07-02,World Cup,USA,Bosnia & Herzegovina,Antonee Robinson,USA,,,cards,VALUABLE,0.4,4.2,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+863,2026-06-30,2026-07-02,World Cup,USA,Bosnia & Herzegovina,Chris Richards,USA,,,cards,VALUABLE,0.4,3.4,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+864,2026-06-30,2026-07-02,World Cup,USA,Bosnia & Herzegovina,Nikola Katić,Bosnia & Herzegovina,,,cards,VALUABLE,0.4,3.7,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+865,2026-06-30,2026-07-02,World Cup,USA,Bosnia & Herzegovina,Tarik Muharemović,Bosnia & Herzegovina,,,cards,VALUABLE,0.4,3.5,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+866,2026-06-30,2026-07-03,World Cup,Switzerland,Algeria,Granit Xhaka,Switzerland,,,cards,VALUABLE,0.4,4.4,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+867,2026-06-30,2026-07-02,World Cup,USA,Bosnia & Herzegovina,Haris Tabaković,Bosnia & Herzegovina,,,cards,VALUABLE,0.4,4.6,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+868,2026-06-30,2026-07-02,World Cup,USA,Bosnia & Herzegovina,Dennis Hadžikadunić,Bosnia & Herzegovina,,,cards,VALUABLE,0.4,3.75,VOID,0.0,DNP (0 min),0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+869,2026-06-30,2026-07-02,World Cup,Spain,Austria,Pedro Porro,Spain,,,cards,VALUABLE,0.4,5.25,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+870,2026-06-30,2026-07-02,World Cup,Spain,Austria,Marcel Sabitzer,Austria,,,cards,VALUABLE,0.4,4.8,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+871,2026-06-30,2026-07-02,World Cup,Spain,Austria,Konrad Laimer,Austria,,,cards,VALUABLE,0.4,3.75,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+872,2026-06-30,2026-07-02,World Cup,Spain,Austria,Marcos Llorente,Spain,,,cards,VALUABLE,0.4,5.8,VOID,0.0,DNP (0 min),0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+873,2026-06-30,2026-07-02,World Cup,USA,Bosnia & Herzegovina,Stjepan Radeljić,Bosnia & Herzegovina,,,cards,VALUABLE,0.4,4.2,WIN,3.2,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+874,2026-07-02,2026-07-04,World Cup,Colombia,Ghana,Kojo Peprah Oppong,Ghana,,,cards,VALUABLE,0.4,5.5,VOID,0.0,DNP (0 min),0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+875,2026-07-02,2026-07-03,World Cup,Australia,Egypt,Mathew Ryan,Australia,,,cards,VALUABLE,0.4,9.5,,,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+876,2026-07-03,2026-07-06,World Cup,Mexico,England,Declan Rice,England,,,cards,MARKSMAN,0.4,4.8,WIN,3.8,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+877,2026-07-03,2026-07-07,World Cup,USA,Belgium,Nathan Ngoy,Belgium,,,cards,MARKSMAN,0.4,3.6,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+878,2026-07-03,2026-07-04,World Cup,Paraguay,France,Adrien Rabiot,France,,,cards,MARKSMAN,0.4,5.3,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+879,2026-07-03,2026-07-04,World Cup,Canada,Morocco,Issa Diop,Morocco,,,cards,MARKSMAN,0.4,4.0,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True
+880,2026-07-03,2026-07-07,World Cup,USA,Belgium,Antonee Robinson,USA,,,cards,MARKSMAN,0.4,4.8,LOSS,-1.0,,0.4,"model_prob == that run's market cap (min(p, cap) wrote the cap)",False,True

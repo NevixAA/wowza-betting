@@ -35,7 +35,7 @@ from typing import Callable, Iterable
 import numpy as np
 import pandas as pd
 
-from src import team_names
+from src import league_registry, team_names
 from src.book_quotes import ladder_band
 from src.shadow_compare import FROZEN, GRADING_ONLY, IDENTITY
 
@@ -79,6 +79,23 @@ CLOSE_SETTLE_DELAY_MIN = 240
 
 
 # ── small helpers ─────────────────────────────────────────────────────────────────────────────
+def resolve_api_season(league, match_date) -> str:
+    """The match's season (src.season_resolver); a cache key only, so an unknown season is fine."""
+    from src.season_resolver import resolve_api_season as _r
+    return _r(league, match_date)
+
+
+def _takes_date(fn) -> bool:
+    """True when a results provider accepts (league, match_date)."""
+    import inspect
+    try:
+        ps = [p for p in inspect.signature(fn).parameters.values()
+              if p.kind in (p.POSITIONAL_ONLY, p.POSITIONAL_OR_KEYWORD, p.VAR_POSITIONAL)]
+    except (TypeError, ValueError):
+        return False
+    return len(ps) >= 2 or any(p.kind == p.VAR_POSITIONAL for p in ps)
+
+
 def _blank(v) -> bool:
     if v is None:
         return True
@@ -101,7 +118,9 @@ def _ts(v) -> pd.Timestamp | None:
 
 
 def norm_market(v) -> str:
-    return "ou25" if _blank(v) else str(v).strip().lower()
+    """Lower-cased market key; '' when blank. A blank market was assumed to be ou25 and graded
+    as one - an unknown market is now UNSUPPORTED_MARKET and stays ungraded."""
+    return "" if _blank(v) else str(v).strip().lower()
 
 
 def norm_side(v) -> str | None:
@@ -280,13 +299,22 @@ def closing_price(indexed: list[tuple[str, dict]], home, away, match_date, kicko
     status = NO_CLOSE
     first = None
     d = str(match_date)[:10]
+    # League-scoped through the registry on BOTH sides, and never widened: when no archive row
+    # carries the fixture's league the search used to fall back to every league on that date, so a
+    # same-named fixture elsewhere could supply the close. An archive without a league column, or
+    # a call without a league, is not league-checked (the caller's own scope applies).
+    lk = league_registry.canonical_name(league) if league else None
+    if league and lk is None:
+        return {**none, "status": NO_CLOSE}
     for name, groups in indexed:
         g = groups.get((d, archive_market))
         if g is None or g.empty:
             continue
-        if league and "league" in g.columns:
-            gl = g[g["league"].astype(str) == str(league)]
-            g = gl if len(gl) else g
+        if lk and "league" in g.columns:
+            canon = {v: league_registry.canonical_name(v) for v in g["league"].dropna().unique()}
+            g = g[g["league"].map(canon) == lk]
+            if g.empty:
+                continue
         rh = team_names.resolve_result(str(home), sorted(set(g["_home"])))
         ra = team_names.resolve_result(str(away), sorted(set(g["_away"])))
         m = g[(g["_home"] == rh) & (g["_away"] == ra)] if (rh and ra) else g.iloc[0:0]
@@ -320,8 +348,14 @@ def settle_frame(df: pd.DataFrame, *,
                  identity: dict[str, tuple[str, str]] | None = None,
                  now: datetime | None = None,
                  fallback_matcher: Callable[[str, str], bool] | None = None,
+                 extra_time_guard: Callable | None = None,
                  ) -> tuple[list[dict], dict]:
     """Work out what to write. Returns (updates, pending_reasons). Does NOT modify `df`.
+
+    `extra_time_guard(league, home, away, match_date, event) -> (event | None, why)` is the
+    knockout guard (settlement is on 90 minutes): it gets every event a source other than
+    'api-football' matched and returns the event to settle on - API-Football's 90-minute score for
+    an AET / PEN fixture - or (None, why) to leave the row pending (KNOCKOUT_GUARD_UNAVAILABLE).
 
     `df` is the shadow file read with dtype=str. `providers` is the results hierarchy in priority
     order, each `(name, fn)` or `(name, fn, max_age_days)` with `fn(league) -> [event dicts]`
@@ -336,11 +370,21 @@ def settle_frame(df: pd.DataFrame, *,
     identity = identity or {}
     cache: dict[tuple[str, str], list[dict]] = {}
 
-    def events(src_name, fn, league):
-        k = (src_name, league)
+    def events(src_name, fn, league, match_date):
+        # THE MATCH'S SEASON, not today's (round 2 P1-8): this called fn(league), so a season-keyed
+        # provider (API-Football) looked every row up in TODAY's season - from 1 January a December
+        # MLS / Brazil / Argentina fixture could never settle. A provider that takes the match date
+        # gets it, and its events are cached per (league, season of that date).
+        if _takes_date(fn):
+            season = resolve_api_season(league, str(match_date)[:10])
+            k = (src_name, league, season)
+            call = lambda: fn(league, str(match_date)[:10])            # noqa: E731
+        else:
+            k = (src_name, league)
+            call = lambda: fn(league)                                   # noqa: E731
         if k not in cache:
             try:
-                cache[k] = list(fn(league) or [])
+                cache[k] = list(call() or [])
             except Exception as e:                                    # noqa: BLE001
                 log.warning(f"shadow settle: {src_name} {league} failed ({e})")
                 cache[k] = []
@@ -384,7 +428,7 @@ def settle_frame(df: pd.DataFrame, *,
             if max_age is not None and now_ts - kickoff > pd.Timedelta(days=max_age):
                 continue
             ev = match_event(home, away, row.get("match_date"), kickoff,
-                             events(src_name, fn, league), event_id=fid,
+                             events(src_name, fn, league, row.get("match_date")), event_id=fid,
                              fallback_matcher=fallback_matcher)
             if ev is not None:
                 src = src_name
@@ -395,6 +439,12 @@ def settle_frame(df: pd.DataFrame, *,
         if _blank(home) or _blank(away):                              # identified by event id
             home, away = ev["home_team"], ev["away_team"]
             fill_identity = {"home_team": home, "away_team": away}
+        if extra_time_guard is not None and src != "api-football":
+            g_ev, why = extra_time_guard(league, home, away, str(row.get("match_date", ""))[:10], ev)
+            if g_ev is None:
+                skip("KNOCKOUT_GUARD_UNAVAILABLE"); continue
+            if g_ev is not ev:
+                ev, src = g_ev, "api-football (90 min)"
 
         hg, ag = int(ev["home_score"]), int(ev["away_score"])
         side = norm_side(row.get("v9_side"))
@@ -517,8 +567,9 @@ def health(df: pd.DataFrame, now: datetime | None = None, pending: dict | None =
     sa = df.get("settled_at", pd.Series([""] * n)).fillna("").astype(str)
     sa = sa[sa.str.len() > 0]
     by_market = {}
-    for mk, g in df.assign(_m=df.get("market", pd.Series(["ou25"] * n)).fillna("ou25")
-                           ).groupby("_m"):
+    # A row with no market is counted under "" (unknown), not as ou25.
+    mkt = df["market"] if "market" in df.columns else pd.Series([None] * n, index=df.index)
+    for mk, g in df.assign(_m=mkt.map(norm_market)).groupby("_m"):
         gm = g.get("result", pd.Series(dtype=str)).fillna("").astype(str).str.upper()
         by_market[str(mk)] = {"rows": int(len(g)), "settled": int(gm.isin(["WIN", "LOSS"]).sum())}
     return {

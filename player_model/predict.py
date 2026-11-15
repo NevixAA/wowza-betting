@@ -14,16 +14,57 @@ from pathlib import Path
 import pandas as pd
 
 from . import config
+from . import fair_basis as _fair_basis
 
 _APIFOOTBALL_KEY = os.getenv("APIFOOTBALL_KEY", "")
-from .api_football import _norm_name as _norm_player_name
-# Strict club matchers live in api_football so predict and the Telegram reporting
-# share one definition (see the note above _same_club there).
-from .api_football import _same_club, _club_name_subset
-from .feature_engineering import build_upcoming_features, compute_ges, _build_history_index
+# Club identity: src.team_names.resolve (via config._v9_src), player identity: player_id. The
+# api_football name matchers (_same_club / _club_name_subset / _norm_name) are no longer used here.
+from .feature_engineering import build_upcoming_features, compute_ges
 from .model import load_model, predict_proba
+from .club_rule import club_conflict
 
 import numpy as np
+
+
+from .serving_rules import position_status, serving_skip_reason  # noqa: E402  (owner rules 2026-11-08)
+
+
+def capped_prob(p: float, cap: float) -> float | None:
+    """The model probability when it lies within the market's realistic cap (and the 0.95 absolute
+    ceiling); None above it. The cap is a bound, never a value to write in the probability's place:
+    min(p, cap) produced the model_prob = 0.5 sentinel on 168 World Cup tips (props_truth)."""
+    return None if p > min(float(cap), 0.95) else p
+
+
+def _af_id(v) -> int | None:
+    """A positive integer API-Football id from a CSV cell ('1379012', '1379012.0'), else None."""
+    try:
+        f = float(v)
+    except (TypeError, ValueError):
+        return None
+    return int(f) if f == f and f > 0 else None
+
+
+def _lookup_fixture_id(league, date_str: str, home, away) -> int | None:
+    """API-Football fixture id of an upcoming match that came from bets.csv without one: the
+    league's fixtures on that date (registry API-Football id, season_resolver season), clubs
+    resolved within that pool. None when the league has no id, the season is unknown, there is
+    no API key, or the clubs do not resolve to exactly one fixture."""
+    if not _APIFOOTBALL_KEY:
+        return None
+    e = config.league_registry().entry(league) if league else None
+    lid = (e or {}).get("api_football_id")
+    if not lid:
+        return None
+    season = config.prop_season(league)
+    if not config._v9_src("season_resolver").is_known(season):
+        return None
+    try:
+        from player_model.prop_odds_af import find_upcoming_fixture_id
+        return _af_id(find_upcoming_fixture_id(int(lid), str(season), date_str, str(home), str(away)))
+    except Exception as ex:                                            # noqa: BLE001
+        print(f"[predict] fixture id lookup failed for {league} {home} v {away}: {type(ex).__name__}: {ex}")
+        return None
 
 
 def _compute_market_caps(history_path: Path) -> dict[str, float]:
@@ -42,12 +83,14 @@ def _compute_market_caps(history_path: Path) -> dict[str, float]:
         "cards":   ("yellow_cards",    1),
     }
     caps: dict[str, float] = {}
+    # Data Truth (2026-11-01): no history -> no caps -> the run FAILS (raise), and a market whose
+    # column is absent gets NO cap -> that market emits no tip (logged by the caller). Both used
+    # to fall back to a typed 0.95.
     if not history_path.exists():
-        return {mkt: 0.95 for mkt in _COL_THRESHOLD}
+        raise FileNotFoundError(f"market caps need {history_path}; refusing to tip without them")
     hist = pd.read_parquet(history_path)
     for mkt, (col, thr) in _COL_THRESHOLD.items():
         if col not in hist.columns:
-            caps[mkt] = 0.95
             continue
         # Rate among STARTS, and the BEST player's rate — not the 99th percentile of all
         # appearances. The old version was wrong twice over, against its own docstring:
@@ -82,12 +125,12 @@ def _compute_market_caps(history_path: Path) -> dict[str, float]:
             starts = hist[pd.to_numeric(hist["minutes"], errors="coerce").fillna(0) >= 60.0]
         if starts.empty:
             starts = hist
-        rates = (starts.groupby("player_name")
+        # Per player_id (two players sharing a name used to pool into one "player").
+        rates = (starts.groupby("player_id")
                        .filter(lambda g: len(g) >= MIN_STARTS_FOR_CAP)
-                       .groupby("player_name")[col]
+                       .groupby("player_id")[col]
                        .apply(lambda x: (x >= thr).mean()))
         if rates.empty:
-            caps[mkt] = 0.95
             continue
         caps[mkt] = round(min(float(rates.max()), 0.95), 4)
     return caps
@@ -98,10 +141,10 @@ def _compute_market_caps(history_path: Path) -> dict[str, float]:
 def _devig_fair_prob(market_odds: float) -> float:
     """
     Compute fair (de-vigged) implied probability.
-    Uses assumed overround based on odds level.
+    Uses assumed overround based on odds level. No usable price -> NaN (was 0.5).
     """
     if not market_odds or market_odds <= 1.0:
-        return 0.5
+        return float("nan")
     raw = 1.0 / market_odds
     # Find assumed overround
     overround = config.OVERROUND_BY_ODDS[99.0]  # default high
@@ -171,19 +214,61 @@ def _team_strength_mult(team_win_prob: float, market: str) -> float:
     return 1.0  # 40–60%: balanced game, no adjustment
 
 
+#: fair_basis values of a priced tip (player_model/fair_basis.py). TWO_SIDED_DEVIG: the fair
+#: probability is the de-vigged real two-sided price (same book, same answer). ASSUMED_OVERROUND: only
+#: the tip's side is quoted, so it rests on an overround ASSUMED from config.OVERROUND_BY_ODDS.
+FAIR_BASIS_ASSUMED_OVERROUND = _fair_basis.ASSUMED_OVERROUND
+FAIR_BASIS_TWO_SIDED_DEVIG = _fair_basis.TWO_SIDED_DEVIG
+
+#: Markets the quality-mismatch discount applies to.
+_QUALITY_CAP_MARKETS = ("goals", "goals2", "sot", "sot2", "sot3")
+
+
+def hand_adjusted_prob(p_model: float, win_prob: float, market: str,
+                       career_q: float, opp_q: float) -> tuple[float, float, bool]:
+    """The tip probability after the two HAND adjustments, and what they did.
+
+    Returns (p, factor, quality_measured). p is p_model times the team-strength multiplier (only
+    when the fixture has a measured win probability) and then times the quality-mismatch discount
+    (only when BOTH qualities are measured and the market is a goals/SOT market); factor is the
+    product of the two. Both are typed formulas, not model output (propsdef 2026-11-05).
+
+    INFORMATION ONLY (owner decision 2026-11-05): a tip's probability, tier, EV, edge and Kelly are
+    decided on the model's own probability (model_prob = model_prob_raw). This value is logged beside
+    it as model_prob_hand_adjusted, with the factor as prob_adjustment; it never decides a tier.
+    The arithmetic and its order are unchanged.
+    """
+    factor = 1.0
+    if win_prob == win_prob:
+        m = _team_strength_mult(win_prob, market)
+        p_model, factor = p_model * m, factor * m
+    quality_measured = career_q == career_q and opp_q == opp_q
+    if quality_measured:
+        ctx_disc = float(career_q) / max(float(opp_q), 0.1)
+        if ctx_disc < 0.60 and market in _QUALITY_CAP_MARKETS:
+            # Discount scales: ctx_disc=0.50 -> x0.50, ctx_disc=0.30 -> x0.30
+            p_model, factor = p_model * ctx_disc, factor * ctx_disc
+    return p_model, factor, quality_measured
+
+
 # ── Confidence scoring ────────────────────────────────────────────────────────
 
 def _confidence_score(row: dict, lazy_factor_count: int = 0) -> float:
     """5-component confidence score (0.0-1.0)."""
-    n_games = row.get("n_games", 0)
+    # An unknown game count is left OUT like an unknown p_start (it was a typed 0 = "no games",
+    # which scored the volume part 0). fix9/defaults 2026-11-04.
+    _ng = pd.to_numeric(row.get("n_games"), errors="coerce")
+    n_games = None if pd.isna(_ng) else float(_ng)
 
     # MEASURED COMPONENTS ONLY (Data Truth audit finding 52, owner decision 2026-11-01). The score
     # used to add a literal recency 0.8 and model agreement 1.0 (+0.40 on every row) and a
     # p_start of 0.8 when absent - 45% of it was constant. Weights of the measured parts are kept
     # and renormalised; p_start counts only when it was actually computed.
-    vol_score = min(1.0, n_games / 20.0) * 0.70 + (min(n_games, 5) / 5.0) * 0.30
     lazy_score = min(lazy_factor_count / 2.0, 1.0)
-    parts = [(0.30, vol_score), (0.15, lazy_score)]
+    parts = [(0.15, lazy_score)]
+    if n_games is not None:
+        vol_score = min(1.0, n_games / 20.0) * 0.70 + (min(n_games, 5) / 5.0) * 0.30
+        parts.insert(0, (0.30, vol_score))
     p_start = row.get("p_start")
     if p_start is not None and p_start == p_start:
         parts.append((0.10, float(p_start)))
@@ -194,7 +279,7 @@ def _confidence_score(row: dict, lazy_factor_count: int = 0) -> float:
 
 def _classify_tier(
     ev: float, market_odds: float, rel_edge: float,
-    confidence: float, lazy_count: int, ges: float = 0.5,
+    confidence: float, lazy_count: int, ges: float = float("nan"),
     market: str = "", position: str = ""
 ) -> str:
     """Classify signal into SNIPER/MARKSMAN/VALUABLE/AVOID (WATCH removed).
@@ -205,8 +290,11 @@ def _classify_tier(
     """
     is_goals_sot = market in ("goals", "sot")
 
-    # GES gate for goals/SOT — below the floor = no signal
-    if is_goals_sot and ges < config.GES_SUPPRESS:
+    # GES gate for goals/SOT — below the floor = no signal. A GES that could not be computed (NaN)
+    # is no signal either: NaN compares False, so without the explicit test it would pass every gate.
+    if is_goals_sot and not (ges == ges and ges >= config.GES_SUPPRESS):
+        return "AVOID"
+    if not (ev == ev and rel_edge == rel_edge):
         return "AVOID"
 
     # Use relative edge gates instead of hard market_odds floors.
@@ -257,21 +345,23 @@ def _detect_lazy_factors(row: dict, feat_row: dict, market: str) -> list[str]:
     """Identify which lazy market factors are active for this player/match."""
     factors = []
 
-    if market == "sot":
-        sp_score = feat_row.get("set_piece_threat_score", 0.0)
-        # Threshold: aerial 45% × corners at league avg (6) × 0.30 sp rate = 0.135
-        if sp_score > 0.135 and (feat_row.get("pos_defender", 0) or feat_row.get("pos_midfielder", 0)):
-            factors.append("SET_PIECE")
+    def _v(d, k):          # measured value or NaN; a missing input never activates a factor
+        try:
+            return float(d.get(k))
+        except (TypeError, ValueError):
+            return float("nan")
+
+    # (No SET_PIECE factor: it read the set-piece "threat score", a typed proxy - aerial rate x corners/6
+    #  x a typed 0.30 "sp rate" - purged 2026-11-02. It had been NaN, so it never fired since R2.)
 
     if market == "cards":
-        ref_strict = feat_row.get("referee_strictness", 0)
-        if ref_strict > 0.5:
+        if _v(feat_row, "referee_strictness") > 0.5:
             factors.append("REFEREE")
 
-    if market == "sot" and feat_row.get("opp_sot_conceded_pg", 4.5) > 5.5:
+    if market == "sot" and _v(feat_row, "opp_sot_conceded_pg") > 5.5:
         factors.append("KEEPER_WEAK")
 
-    if feat_row.get("minutes_pg", 75) < 65 and row.get("minutes_est", 75) > 75:
+    if _v(feat_row, "minutes_pg") < 65 and _v(row, "minutes_est") > 75:
         factors.append("MINUTES")
 
     return factors
@@ -282,7 +372,7 @@ def _detect_lazy_factors(row: dict, feat_row: dict, market: str) -> list[str]:
 def run_player_predictions(
     bets_csv: Path,
     history_df: pd.DataFrame,
-    referee_profiles: dict | None = None,
+    fixture_referees: dict | None = None,
     match_contexts: dict | None = None,
 ) -> pd.DataFrame:
     """
@@ -292,7 +382,8 @@ def run_player_predictions(
 
     bets_csv:         output/bets.csv (used to add context for our standard leagues)
     history_df:       player season stats from FBref training data
-    referee_profiles: {match_key: {strictness_score, yellows_per_game}}
+    fixture_referees: {fixture_id: referee name} (API-Football); the referee features are computed by
+                      build_features from the held history, as in training
     match_contexts:   {match_key: {team_corners_per90, opp_sot_conceded_pg, ...}}
     """
     if history_df.empty:
@@ -300,8 +391,15 @@ def run_player_predictions(
 
     # Compute caps once per run from the actual history distribution
     _history_path = config.BASE_DIR / "player_history.parquet"
-    _MARKET_CAPS = _compute_market_caps(_history_path)
+    try:
+        _MARKET_CAPS = _compute_market_caps(_history_path)
+    except FileNotFoundError as _e:
+        print(f"[player_model] FAIL: {_e}")
+        return pd.DataFrame()
     print(f"[player_model] market caps (top-1% real player): { {k: v for k,v in _MARKET_CAPS.items()} }")
+    _uncapped = [m for m in config.MARKETS if m not in _MARKET_CAPS]
+    if _uncapped:
+        print(f"[player_model] market(s) with no measurable cap emit no tip this run: {_uncapped}")
 
     # STRUCTURALLY DEAD MARKET GUARD.
     #
@@ -322,7 +420,7 @@ def run_player_predictions(
               f"{ {m: round(c, 4) for m, c in _dead.items()} }. "
               f"Either the floor is wrong for them or they should be retired.")
 
-    today = pd.Timestamp.now().normalize()
+    today = pd.Timestamp.now(tz="UTC").tz_localize(None).normalize()   # UTC day (fixture dates are UTC)
     # Only the near-term slate. next_n pulls the next N fixtures per league even if weeks away
     # (off-season leagues), which balloons the per-match lineup/feature work — the main reason
     # a club-season run crawled to ~60 min while WC (one league, few games) ran in ~2 min.
@@ -330,6 +428,7 @@ def run_player_predictions(
 
     # Primary: ALL upcoming fixtures in PROP_LEAGUES (decoupled from team model)
     prop_matches = []
+    _n_undated = 0
     if _APIFOOTBALL_KEY:
         try:
             from player_model.api_football import get_fixtures_between
@@ -345,15 +444,18 @@ def run_player_predictions(
                     teams    = fix.get("teams", {})
                     dt_full  = fix.get("fixture", {}).get("date", "")
                     dt       = dt_full[:10]
-                    if dt:
-                        _fd = pd.Timestamp(dt)
-                        if _fd < today or _fd > _horizon:
-                            continue   # skip weeks-away fixtures — only the near-term slate
+                    if not dt:
+                        # No kickoff date -> not a schedulable fixture (was dated "today").
+                        _n_undated += 1
+                        continue
+                    _fd = pd.Timestamp(dt)
+                    if _fd < today or _fd > _horizon:
+                        continue   # skip weeks-away fixtures — only the near-term slate
                     prop_matches.append({
                         "home_team":    teams.get("home", {}).get("name", ""),
                         "away_team":    teams.get("away", {}).get("name", ""),
                         "league":       league,
-                        "date":         pd.Timestamp(dt) if dt else today,
+                        "date":         _fd,
                         "kickoff_utc":  dt_full,
                         "signal_tier":  "PROP_LEAGUE",
                         "fixture_id":   fix.get("fixture", {}).get("id"),
@@ -372,10 +474,12 @@ def run_player_predictions(
             prop_matches.append({
                 "home_team":   r["home_team"],
                 "away_team":   r["away_team"],
-                "league":      r.get("league", ""),
+                "league":      r.get("league"),
                 "date":        r["date"],
-                "signal_tier": r.get("signal_tier", ""),
-                "fixture_id":  None,
+                "signal_tier": r.get("signal_tier"),
+                # bets.csv carries the API-Football fixture id where src/predict found one
+                # (2026-11-02); a row without it is resolved below or skipped.
+                "fixture_id":  _af_id(r.get("fixture_id")),
             })
 
     # Where the fixture slate came from. Until now an EMPTY API response was completely
@@ -384,7 +488,8 @@ def run_player_predictions(
     # SUCCESS on every hourly run from 2026-08-15 to 08-17 while writing nothing, and this is
     # the line that would have identified it on day one.
     print(f"[predict] fixture slate: {_n_from_api} from PROP_LEAGUES via API-Football, "
-          f"{len(prop_matches) - _n_from_api} from bets.csv supplement")
+          f"{len(prop_matches) - _n_from_api} from bets.csv supplement"
+          + (f"; {_n_undated} API fixture(s) without a kickoff date skipped" if _n_undated else ""))
 
     if not prop_matches:
         print("[predict] NO FIXTURES AT ALL — API-Football returned nothing for every prop "
@@ -392,25 +497,71 @@ def run_player_predictions(
               "failure here, not a model decision.")
         return pd.DataFrame()
 
-    # Deduplicate
-    seen = set()
+    # Deduplicate. An API-Football fixture is identified by its fixture_id. A bets.csv row (no id)
+    # duplicates an API fixture when BOTH clubs resolve (src.team_names.resolve) onto that
+    # fixture's clubs in the same canonical league on the same date; it is otherwise kept once.
+    # (Was a raw "home|away|date" string key, so a spelling variant produced a second fixture.)
+    _reg = config.league_registry()
+    _resolve = config._v9_src("team_names").resolve
+    seen_ids, seen_rows = set(), set()
+    api_by_day: dict = {}
     bets_list = []
     for m in prop_matches:
-        key = f"{m['home_team']}|{m['away_team']}|{str(m['date'])[:10]}"
-        if key not in seen:
-            seen.add(key)
+        m["league"] = _reg.canonical_name(m["league"]) or m["league"]
+        day = str(m["date"])[:10]
+        fid = m.get("fixture_id")
+        if fid is not None and not pd.isna(fid):
+            if fid in seen_ids:
+                continue
+            seen_ids.add(fid)
+            api_by_day.setdefault((m["league"], day), []).append((m["home_team"], m["away_team"]))
             bets_list.append(m)
+            continue
+        api = api_by_day.get((m["league"], day), [])
+        rh = _resolve(m["home_team"], [h for h, _ in api]) if api else None
+        ra = _resolve(m["away_team"], [a for _, a in api]) if api else None
+        if rh and ra and (rh, ra) in api:
+            continue
+        key = (m["league"], m["home_team"], m["away_team"], day)
+        if key not in seen_rows:
+            seen_rows.add(key)
+            bets_list.append(m)
+
+    # EVERY PROPS TIP CARRIES player_id AND fixture_id (issue #1 step 1, 2026-11-02). A bets.csv
+    # fixture without an API-Football id is looked up in that league's fixtures for its date (clubs
+    # resolved within the league-date pool, prop_odds_af.find_upcoming_fixture_id); one that still
+    # has no id is skipped and counted - a tip that cannot name its fixture cannot be settled.
+    _n_no_fid = 0
+    _kept, _kept_ids = [], set()
+    for m in bets_list:                                # API slate first, then bets.csv rows
+        if m.get("fixture_id") is None:
+            m["fixture_id"] = _lookup_fixture_id(m["league"], str(m["date"])[:10],
+                                                 m["home_team"], m["away_team"])
+        if m.get("fixture_id") is None:
+            _n_no_fid += 1
+            continue
+        if m["fixture_id"] in _kept_ids:
+            continue                                   # the slate already holds this fixture
+        _kept_ids.add(m["fixture_id"])
+        _kept.append(m)
+    bets_list = _kept
+    if _n_no_fid:
+        print(f"[predict] {_n_no_fid} fixture(s) skipped: no API-Football fixture_id "
+              f"(a props tip must carry one)")
 
     import pandas as _pd
     bets = _pd.DataFrame(bets_list)
+    if bets.empty:
+        print("[predict] no fixture with an API-Football fixture_id - no props tips this run")
+        return _pd.DataFrame()
 
     # ── Pre-fetch injury lists once per league (4 h cache) ────────────────────
     injured_cache: dict[str, set] = {}
     if _APIFOOTBALL_KEY:
         try:
             from player_model.api_football import get_injured_players as _gip
-            from datetime import date as _date
-            _today_str = _date.today().isoformat()
+            from datetime import datetime as _dtm, timezone as _tz
+            _today_str = _dtm.now(_tz.utc).date().isoformat()   # UTC day
             # Only leagues that actually have upcoming matches this run — skip the off-season
             # ones so we don't burn API calls (and time) on leagues with zero fixtures.
             _bet_leagues = set(bets["league"].astype(str).unique()) if not bets.empty else set()
@@ -454,7 +605,7 @@ def run_player_predictions(
     # Perf: index the history ONCE and lowercase the team column ONCE. Previously every match
     # re-scanned the full 230k-row history per player (O(matches x players x rows)) which pushed
     # the CI predict past its 60-min timeout → cancelled → zero tips. Behaviour is unchanged.
-    _hist_index = _build_history_index(history_df)
+    _pending: list[dict] = []           # fixture contexts; features are built once for all of them
 
     # A player belongs to the club he plays for NOW — not to every club he has ever
     # played for. Selecting on ANY historical row put Tyrhys Dolan in both
@@ -475,10 +626,12 @@ def run_player_predictions(
     # Neves to "Portugal" and then dropped them from their clubs. (Same root cause as
     # the "Australia"/"Austria" teams that surfaced in player_tips.csv.) Players with
     # no club row at all fall back to their latest row of any kind.
-    _intl = history_df["league"].astype(str).str.contains(
-        r"world cup|friendl|africa cup|nations|qualification|euro 20", case=False, na=False
-    )
-    _club_hist = history_df[~_intl]
+    # A club row is a row of a registry CLUB competition (competition_type club_league / club_cup,
+    # config/leagues.json). Was a name regex ("world cup|friendl|...|euro 20"). A competition the
+    # registry does not know is not proven to be a club competition and is not used here.
+    _ctype = {lg: _reg.competition_type(lg) for lg in history_df["league"].astype(str).unique()}
+    _is_club_row = history_df["league"].astype(str).map(_ctype).isin(["club_league", "club_cup"])
+    _club_hist = history_df[_is_club_row]
     _latest_team = (_club_hist.sort_values("date")
                     .drop_duplicates("player_id", keep="last")
                     .set_index("player_id")["team"].astype(str))
@@ -486,6 +639,11 @@ def run_player_predictions(
                    .drop_duplicates("player_id", keep="last")
                    .set_index("player_id")["team"].astype(str))
     _latest_team = _latest_team.reindex(_latest_any.index).fillna(_latest_any)
+    # The player's latest CLUB appearance (club, date) - the evidence the current-club conflict
+    # guard below checks the tip's club against (club_conflict, invariant 12).
+    _latest_club_row = (_club_hist.assign(_d=pd.to_datetime(_club_hist["date"], errors="coerce"))
+                        .sort_values("_d").drop_duplicates("player_id", keep="last")
+                        .set_index("player_id")[["team", "_d"]])
 
     # ── LIVE SQUAD OVERLAY — authoritative for CURRENT club ──────────────────────────────
     # This is the "/players/squads overlay" the note above asks for. A historical appearance
@@ -515,19 +673,26 @@ def run_player_predictions(
     # fills ids the wide file does not have, so the overlay degrades to the old PL-only behaviour
     # if the wide file is missing rather than disappearing. Order matters — the wide file is the
     # more current of the two for a player who moved between leagues.
+    from player_model.feature_engineering import team_scope as _team_scope
     _live_squad = {}
+    _squad_scopes: dict = {}      # club -> identity scope(s) of the league its squad list is for
     for _name in ("squads_official.csv", "pl_squads_official.csv"):
         try:
             _sqf = config.OUTPUT_DIR / _name
             if not _sqf.exists():
                 continue
-            _sq = pd.read_csv(_sqf, usecols=["player_id", "team"])
+            _sq = pd.read_csv(_sqf)
             _sq = _sq.dropna(subset=["player_id", "team"])
             # Guarded here too, not only in the writer: this file arrives from CI and a zero id
             # would silently give every id-less history row the same club.
-            _sq = _sq[pd.to_numeric(_sq["player_id"], errors="coerce").fillna(0) > 0]
+            _sq = _sq[pd.to_numeric(_sq["player_id"], errors="coerce") > 0]
             for _pid, _tm in zip(_sq["player_id"].astype("int64"), _sq["team"].astype(str)):
                 _live_squad.setdefault(_pid, _tm)          # first file wins
+            if "league" in _sq.columns:
+                for _tm, _lg in zip(_sq["team"].astype(str), _sq["league"]):
+                    _s = _team_scope(_lg)
+                    if _s:
+                        _squad_scopes.setdefault(_tm, set()).add(_s)
         except Exception as _e:
             print(f"[squad_overlay] {_name} skipped ({_e})")
     if not _live_squad:
@@ -543,14 +708,13 @@ def run_player_predictions(
         print(f"[squad_overlay] {len(_live_squad)} live squad entries; current club taken "
               f"from the live squad for {_n_players} player(s); {_corrected} history row(s) "
               f"corrected where the latest appearance was a former club")
-    _team_lc    = _club.str.lower()
-    # Unique club names once, so the identity-matched fallback below costs O(teams) per
-    # fixture instead of O(rows) — history_df is ~230k rows but only a few hundred clubs.
+    # Unique club names once, so club resolution below costs O(teams) per fixture instead of
+    # O(rows) — history_df is ~800k rows but only a few hundred clubs.
     _uniq_teams = _club.unique()
-    # team -> competitions we actually hold history for. This is what disambiguates a strict
-    # name subset: "Plymouth" has League One history so it IS Plymouth Argyle in a League One
-    # fixture, while Inter Milan has no Conference League history and so is NOT the
-    # "Inter Club d'Escaldes" playing Flora Tallinn.
+    # team -> competitions we actually hold history for. This SCOPES club resolution: a fixture's
+    # clubs are resolved only among clubs that played in the same identity scope (the league's
+    # country for a club league, feature_engineering.team_scope), so "Inter" in a Conference
+    # League tie cannot become Inter Milan and Lillestrom cannot become Lille.
     #
     # KEYED ON THE ROW'S OWN TEAM, NOT ON THE PLAYER'S CURRENT CLUB (fixed 2026-10-08). Keyed on
     # `_club`, a club inherited every competition its CURRENT players had ever played in for
@@ -560,6 +724,25 @@ def run_player_predictions(
     # A club's competitions are the ones IT played in.
     _team_leagues = (history_df.assign(_t=history_df["team"].astype(str))
                      .groupby("_t")["league"].agg(set).to_dict())
+    _team_scopes = {t: ({_team_scope(lg) for lg in lgs} | _squad_scopes.get(t, set())) - {None}
+                    for t, lgs in _team_leagues.items()}
+    for _t, _s in _squad_scopes.items():
+        _team_scopes.setdefault(_t, set()).update(_s)
+    _cands_by_scope: dict = {}
+
+    def _candidates(lg) -> list:
+        """Current clubs in the fixture league's identity scope. A club cup (UCL/UEL/UECL) draws
+        from every club-league scope; resolve() still refuses an ambiguous name."""
+        sc = _team_scope(lg)
+        if sc not in _cands_by_scope:
+            if sc == "club_cup":
+                ok = lambda ss: any(str(s).startswith("club_league:") for s in ss)
+            else:
+                ok = lambda ss: sc is not None and sc in ss
+            _cands_by_scope[sc] = [t for t in _uniq_teams if ok(_team_scopes.get(t, ()))]
+        return _cands_by_scope[sc]
+    _n_unresolved = 0
+    _n_quality_cap_skipped = 0
 
     # ── STALE-CLUB GUARD (2026-10-08) ─────────────────────────────────────────────────────────
     # The latest-club rule can only see clubs we collect. A player who left for a league we do
@@ -573,7 +756,7 @@ def run_player_predictions(
     _squad_clubs = set(_live_squad.values())
     _last_seen = (history_df.assign(_d=pd.to_datetime(history_df["date"], errors="coerce"))
                   .groupby("player_id")["_d"].max())
-    _cutoff = pd.Timestamp.now() - pd.Timedelta(days=config.STALE_DAYS)
+    _cutoff = pd.Timestamp.now(tz="UTC").tz_localize(None) - pd.Timedelta(days=config.STALE_DAYS)   # naive UTC vs UTC dates
 
     def _eligible(pid, club) -> bool:
         try:
@@ -586,6 +769,15 @@ def run_player_predictions(
         seen = _last_seen.get(pid)
         return seen is not None and pd.notna(seen) and seen >= _cutoff
     _stale_dropped = set()
+    _club_conflict_dropped = set()
+    _n_cap_bound = 0
+    # Owner serving rules 2026-11-08 (config.GK_BLOCKED_MARKETS / HIDDEN_PENDING_CLEAN_RETRAIN):
+    # every skipped player-market is counted under its reason code and printed at the end.
+    from collections import Counter as _Counter
+    _skip_reasons: _Counter = _Counter()
+    # rare markets (hidden from normal tips) -> research candidates for player_model.rare_props
+    _rare_cands: list[dict] = []
+    _n_position_unknown = 0
 
     for _, match_row in bets.iterrows():
         home      = match_row["home_team"]
@@ -594,16 +786,26 @@ def run_player_predictions(
         date_str  = str(match_row["date"])[:10]
         match_key = f"{home}|{away}|{date_str}"
 
-        ref = (referee_profiles or {}).get(match_key, {})
+        # Referee NAME by API-Football fixture id (a fixture without one has no referee features).
+        _fid = match_row.get("fixture_id")
+        _ref_name = ((fixture_referees or {}).get(int(_fid))
+                     if _fid is not None and not pd.isna(_fid) else None)
         ctx = (match_contexts or {}).get(match_key, {})
 
-        # Team win probabilities for opponent-weakness multiplier
-        home_win_prob = float(ctx.get("home_win_prob", 0.5))
-        away_win_prob = float(ctx.get("away_win_prob", 0.5))
+        # Team win probabilities for opponent-weakness multiplier. Absent -> NaN and the
+        # multiplier is skipped for this fixture (was a typed 0.5 / 0.5).
+        def _p(k):
+            try:
+                return float(ctx.get(k))
+            except (TypeError, ValueError):
+                return float("nan")
+        home_win_prob, away_win_prob = _p("home_win_prob"), _p("away_win_prob")
 
-        # ── Lineup check: build confirmed starter set for this fixture ─────────
-        lineup_starters: set[str] = set()
+        # ── Lineup check: confirmed starter IDS for this fixture ──────────────
+        lineup_starters: set[int] = set()
         lineup_available = False
+        # announced position per player id (real provider lineup only; train/serve parity 2026-11-09)
+        lineup_pos: dict[int, str] = {}
         fid = match_row.get("fixture_id")
         if _APIFOOTBALL_KEY and fid and not pd.isna(fid):
             try:
@@ -612,8 +814,10 @@ def run_player_predictions(
                 if _lineup:
                     for _team_players in _lineup.values():
                         for _p in _team_players:
-                            if _p.get("started"):
-                                lineup_starters.add(_norm_player_name(_p.get("player_name", "")))
+                            if _p.get("started") and _p.get("player_id") is not None:
+                                lineup_starters.add(int(_p["player_id"]))
+                            if _p.get("player_id") is not None and _p.get("position"):
+                                lineup_pos[int(_p["player_id"])] = str(_p["position"])
                     # Only treat lineup as confirmed when both teams have starters posted
                     # (empty startXI = lineup not yet submitted → don't drop any player)
                     if len(lineup_starters) >= 18:
@@ -621,36 +825,21 @@ def run_player_predictions(
             except Exception as _e:
                 print(f"[predict] Lineup fetch failed (fixture {fid}): {_e}")
 
-        # Find players from both teams
-        team_players = history_df[
-            _team_lc.isin([home.lower(), away.lower()])
-        ].copy()
-        if team_players.empty:
-            # Fallback for spelling variants ("Girona" vs "Girona FC"). This used to be a
-            # 5-CHARACTER SUBSTRING test, which silently attached players to fixtures they
-            # had nothing to do with, because a 5-char prefix collides constantly:
-            #   "Lillestrom"[:5]     == "lille" -> pulled in Lille
-            #   "Real Salt Lake"[:5] == "real " -> pulled in Real Madrid
-            #   "Atletico Mineiro"   -> "atlet" -> pulled in Atletico Madrid
-            #   "Chengdu Rongcheng"  -> "cheng" -> pulled in Monchengladbach
-            #   "Wolfsberger AC"     -> "wolfs" -> pulled in VfL Wolfsburg
-            # 287 of 1983 player_ledger rows (14%) named a player from neither team, e.g.
-            # Messi tipped in Sarmiento vs Argentinos Juniors (audit 2026-08-15).
-            # _team_match is the identity-token matcher that keeps "Real Madrid" and
-            # "Real Sociedad" apart while still accepting "Man City"=="Manchester City".
-            # When nothing matches we now correctly produce NO tips for that fixture, which
-            # is right: leagues outside PROP_LEAGUES have no player history to tip from.
-            def _belongs(t: str, name: str) -> bool:
-                if _same_club(t, name):
-                    return True
-                # Ambiguous subset -> only if we hold history for this club in THIS competition.
-                return (_club_name_subset(t, name)
-                        and league in _team_leagues.get(t, ()))
-
-            _ok = {t for t in _uniq_teams if _belongs(t, home) or _belongs(t, away)}
-            if not _ok:
-                continue
-            team_players = history_df[_club.isin(_ok)].copy()
+        # Find players from both teams. Each fixture club is RESOLVED (src.team_names.resolve,
+        # ambiguity refused) among the current clubs of the fixture league's identity scope. The
+        # old matching (lower-cased equality, then api_football._same_club / _club_name_subset
+        # over every club ever collected) is gone; history lessons it encoded still hold:
+        # a 5-char prefix put Lille in Lillestrom fixtures and Messi in Sarmiento v Argentinos.
+        _cands = _candidates(league)
+        hit_home = _resolve(str(home), _cands) if _cands else None
+        hit_away = _resolve(str(away), _cands) if _cands else None
+        if hit_home and hit_home == hit_away:
+            hit_home = hit_away = None                      # both sides on one club: refuse
+        _sides = {c for c in (hit_home, hit_away) if c}
+        if not _sides:
+            _n_unresolved += 1
+            continue
+        team_players = history_df[_club.isin(_sides)].copy()
         if team_players.empty:
             continue
 
@@ -666,28 +855,54 @@ def run_player_predictions(
         _keep = [_eligible(p, c) for p, c in zip(team_players["player_id"], team_players["team"])]
         _stale_dropped.update(team_players.loc[[not k for k in _keep], "player_id"].tolist())
         team_players = team_players[_keep]
+        # Current-club rule (invariant 12): a later appearance for ANOTHER club contradicts the
+        # club we would tip him for -> no tip (ghost tips: Casemiro for Man United while at Inter
+        # Miami, De Paul for Atletico while at Inter Miami).
+        # Club competitions only: in a national-team fixture the side is a country, not a club.
+        _fx_day = pd.Timestamp(date_str)
+        _club_fixture = _reg.competition_type(league) in ("club_league", "club_cup")
+        _conf = [_club_fixture and club_conflict(
+                     c, *(_latest_club_row.loc[p].tolist() if p in _latest_club_row.index
+                          else (None, None)), _fx_day)
+                 for p, c in zip(team_players["player_id"], team_players["team"])]
+        _club_conflict_dropped.update(team_players.loc[_conf, "player_id"].tolist())
+        team_players = team_players[[not c for c in _conf]]
         if team_players.empty:
             continue
 
-        # Add match context — same strict rule, so a player can never be labelled home (or
-        # handed the wrong opponent) on the strength of a shared name fragment.
-        def _is_home_team(t: str) -> bool:
-            if _same_club(t, home):
-                return True
-            if _same_club(t, away):
-                return False
-            return _club_name_subset(t, home) and league in _team_leagues.get(t, ())
+        # Match context: home side = the club resolved for the fixture's HOME name (same resolver,
+        # so a player can never be labelled home on the strength of a shared name fragment).
+        team_players["is_home"] = (team_players["team"].astype(str) == str(hit_home)).astype(float) \
+            if hit_home else 0.0
+        # (opponent, season, age and every other input are computed by build_features from the
+        # serving row, exactly as in training; the age is the provider profile's at the fixture date)
 
-        team_players["is_home"] = team_players["team"].astype(str).apply(
-            lambda t: 1.0 if _is_home_team(t) else 0.0
-        )
-        team_players["opponent"] = team_players["team"].astype(str).apply(
-            lambda t: away if _is_home_team(t) else home
-        )
+        # The serving rows: identity of THIS fixture (never the player's last match), the announced
+        # lineup position when posted, the fixture's referee name; every result is missing.
+        upcoming_list = [{"player_id": _r["player_id"], "player_name": _r.get("player_name", ""),
+                          "fixture_id": _fid, "date": date_str, "league": league,
+                          "team": _r["team"], "home_team": hit_home or home, "away_team": hit_away or away,
+                          "is_home": _r["is_home"], "referee": _ref_name,
+                          "lineup_position": lineup_pos.get(int(_r["player_id"]))}
+                         for _r in team_players.to_dict("records")]
+        _pending.append({"match_row": match_row, "home": home, "away": away, "league": league,
+                         "date_str": date_str, "home_win_prob": home_win_prob,
+                         "away_win_prob": away_win_prob, "lineup_available": lineup_available,
+                         "lineup_starters": lineup_starters, "fixture_id": _fid,
+                         "upcoming_list": upcoming_list})
 
-        upcoming_list = team_players.to_dict("records")
-        feat_df = build_upcoming_features(upcoming_list, history_df, ref, ctx, history_index=_hist_index)
+    # ONE feature build for every upcoming player-fixture of this run: build_features itself on the
+    # history plus the upcoming rows (train/serve identical, owner 2026-11-09).
+    _all_rows = [r for _P in _pending for r in _P["upcoming_list"]]
+    _feats = build_upcoming_features(_all_rows, history_df) if _all_rows else pd.DataFrame()
+    print(f"[predict] serving features: {len(_feats)} player-fixture row(s) for {len(_pending)} fixture(s)")
 
+    for _P in _pending:
+        match_row, home, away, league = _P["match_row"], _P["home"], _P["away"], _P["league"]
+        date_str, home_win_prob, away_win_prob = _P["date_str"], _P["home_win_prob"], _P["away_win_prob"]
+        lineup_available, lineup_starters = _P["lineup_available"], _P["lineup_starters"]
+        feat_df = (_feats[pd.to_numeric(_feats["fixture_id"], errors="coerce") == float(_P["fixture_id"])]
+                   .reset_index(drop=True) if len(_feats) else _feats)
         if feat_df.empty:
             continue
 
@@ -707,11 +922,15 @@ def run_player_predictions(
                                kickoff_utc=_ko if isinstance(_ko, str) else "",
                                fixture_id=match_row.get("fixture_id"))
 
+        _is_nat = _reg.competition_type(league) == "national_teams"
         for i, feat_row in feat_df.iterrows():
-            player_norm = _norm_player_name(str(feat_row.get("player_name", "")))
+            try:
+                _pid = int(feat_row.get("player_id"))
+            except (TypeError, ValueError):
+                _pid = None
 
-            # Skip players not in confirmed starting XI when lineup is confirmed
-            if lineup_available and player_norm not in lineup_starters:
+            # Skip players not in confirmed starting XI when lineup is confirmed (by player id)
+            if lineup_available and _pid not in lineup_starters:
                 continue
 
             # Starter proxy: without a confirmed lineup, only tip players who average real
@@ -721,14 +940,30 @@ def run_player_predictions(
                 if _mpg is not None and not pd.isna(_mpg) and float(_mpg) < config.MIN_STARTER_MINUTES:
                     continue
 
-            # Skip injured / suspended players
-            if player_norm in injured_cache.get(league, set()):
+            # Skip injured / suspended players (API-Football ids, api_football.get_injured_players)
+            if _pid is not None and _pid in injured_cache.get(league, set()):
                 continue
 
-            _is_gk = str(feat_row.get("position", "")).strip().upper().startswith("G")
-            _is_wc = "world cup" in str(league).lower()
+            _pos_status = position_status(feat_row.get("position"))
+            # National-team competition by the registry (was: "world cup" in the league name).
+            _is_wc = _is_nat
 
             for market in config.MARKETS:
+                _skip = serving_skip_reason(market, _pos_status)
+                if _skip:
+                    _skip_reasons[_skip] += 1
+                    if _skip == config.SKIP_HIDDEN_MARKET and _pos_status != "G":   # GK: attacking rule
+                        _pr = pd.to_numeric(feat_row.get(f"p_{market}"), errors="coerce")
+                        if _pr == _pr:                 # the model's own probability; none -> no candidate
+                            _rare_cands.append({"date": date_str, "kickoff_utc": match_row.get("kickoff_utc", ""),
+                                                "league": league, "match": f"{home} vs {away}",
+                                                "fixture_id": match_row.get("fixture_id"),
+                                                "player_id": feat_row.get("player_id"),
+                                                "player_name": feat_row.get("player_name", ""),
+                                                "team": feat_row.get("team", ""),
+                                                "position": feat_row.get("position", ""),
+                                                "market": market, "model_prob": float(_pr)})
+                    continue
                 if market == "cards":
                     # The cards model is well-calibrated for CLUB leagues (mean ~0.13 vs the
                     # 12.8% base rate, AUC 0.69). World Cup features get imputed to league
@@ -737,57 +972,70 @@ def run_player_predictions(
                     # higher bar: gate on the player's REAL booking history (their true rate ≈
                     # the prediction) and drop the rest. Club cards pass through (model is fine).
                     if _is_wc:
-                        _real_card_rate = max(float(feat_row.get("cards_pg", 0) or 0),
-                                              float(feat_row.get("season_cards_pg", 0) or 0))
-                        if _real_card_rate < config.WC_CARD_MIN_RATE:
+                        _rates = pd.to_numeric(pd.Series([feat_row.get("cards_pg"),
+                                                          feat_row.get("season_cards_pg")]),
+                                               errors="coerce").dropna()
+                        if _rates.empty or float(_rates.max()) < config.WC_CARD_MIN_RATE:
                             continue
                     # GKs allowed for cards — a bunker/time-wasting GK with real booking history
                     # is a legitimate card tip; the history gate already filters the rest.
-                else:
-                    # Goalkeepers don't score / shoot / assist — skip them for those markets.
-                    if _is_gk:
-                        continue
-                p_model = float(feat_row.get(f"p_{market}", 0))
-                # Team-strength multiplier: boost for heavy favourites, penalty for underdogs
-                _is_home = float(feat_row.get("is_home", 0.5)) > 0.5
+                if market not in _MARKET_CAPS:
+                    continue                                   # no measurable cap -> no tip (logged)
+                p_model = pd.to_numeric(feat_row.get(f"p_{market}"), errors="coerce")
+                if not (p_model == p_model):
+                    continue                                   # model gave no probability
+                p_model = float(p_model)
+                # THE MODEL'S OWN PROBABILITY DECIDES (owner decision 2026-11-05): the cap test, the
+                # signal floor, fair odds, and later EV / edge / tier / Kelly all read p_model as the
+                # model gave it. Measured on the committed board: 263 tips carried a lowered
+                # hand-adjusted probability, and 9 change tier (reports/P2_PROPS_DEFAULTS_AND_FANTASY.md
+                # section 7).
+                _p_raw = p_model
+                # INFORMATION ONLY, logged beside the tip: the team-strength multiplier (boost for
+                # heavy favourites, penalty for underdogs; skipped when the fixture has no measured
+                # win probability) and the quality-mismatch discount (player career tier << opponent
+                # tier, both qualities measured, goals/SOT markets). Never decides a tier.
+                _is_home = float(feat_row.get("is_home")) > 0.5
                 _win_prob = home_win_prob if _is_home else away_win_prob
-                p_model = p_model * _team_strength_mult(_win_prob, market)
+                _career_q = pd.to_numeric(feat_row.get("player_career_avg_quality"), errors="coerce")
+                _opp_q = pd.to_numeric(feat_row.get("opp_def_player_quality"), errors="coerce")
+                _p_hand, _adj, _q_ok = hand_adjusted_prob(p_model, _win_prob, market, _career_q, _opp_q)
+                if not _q_ok:
+                    _n_quality_cap_skipped += 1
 
-                # Hard quality-mismatch cap: player career tier << opponent tier
-                # e.g. Panama striker (career_quality=0.30) vs England CBs (opp_quality=1.0)
-                # context_quality_discount = 0.30 → apply extra cap so model can't output
-                # inflated probabilities for weak-league players vs elite opposition
-                _career_q  = float(feat_row.get("player_career_avg_quality", 0.65))
-                _opp_q     = float(feat_row.get("opp_def_player_quality", 1.0))
-                _ctx_disc  = _career_q / max(_opp_q, 0.1)
-                if _ctx_disc < 0.60 and market in ("goals", "goals2", "sot", "sot2", "sot3"):
-                    # Discount scales: ctx_disc=0.50 → ×0.50, ctx_disc=0.30 → ×0.30
-                    p_model = p_model * _ctx_disc
-
-                # Cap at realistic maximum then absolute ceiling of 0.95
-                p_model = min(p_model, _MARKET_CAPS.get(market, 0.90), 0.95)
+                # A probability ABOVE the realistic maximum is not tipped at the cap. Writing the cap
+                # in its place made model_prob a sentinel the model never produced: 168 World Cup
+                # VALUABLE/MARKSMAN tips (2026-06-23..28) carry exactly 0.5 = that run's goals cap,
+                # priced and staked as if measured (output/corrections/props_sentinel_prob.csv).
+                p_model = capped_prob(p_model, _MARKET_CAPS[market])
+                if p_model is None:
+                    _n_cap_bound += 1
+                    continue
 
                 if p_model < config.MIN_SIGNAL_PROB:
                     continue
 
-                n_games = int(feat_row.get("n_games", 0))
-                if n_games < config.MIN_GAMES_SIGNAL:
+                # unknown game count -> no signal (it was a typed 0, the same skip, now said)
+                _ng = pd.to_numeric(feat_row.get("n_games"), errors="coerce")
+                if pd.isna(_ng) or int(_ng) < config.MIN_GAMES_SIGNAL:
                     continue
+                n_games = int(_ng)
 
                 # Fair odds (we don't have market odds yet — placeholder)
-                fair_o = round(1 / max(p_model, 0.01), 2)
+                fair_o = round(1 / p_model, 2)
 
-                # GES for goals/SOT
+                # GES for goals/SOT only (undefined elsewhere -> None). NaN when an input is
+                # missing; _classify_tier then gives the tip AVOID.
                 ges = compute_ges(
                     feat_row.to_dict(),
-                    opp_weakness=feat_row.get("opp_goals_conceded_pg", 1.0),
-                ) if market in ("goals", "sot") else 0.5
+                    opp_weakness=feat_row.get("opp_goals_conceded_pg"),
+                ) if market in ("goals", "sot") else None
 
                 lazy_factors = _detect_lazy_factors(
                     feat_row.to_dict(), feat_row.to_dict(), market
                 )
                 # Confirmed starter adds a lazy factor (confidence boost)
-                if lineup_available and player_norm in lineup_starters and "STARTER" not in lazy_factors:
+                if lineup_available and _pid in lineup_starters and "STARTER" not in lazy_factors:
                     lazy_factors = ["STARTER"] + lazy_factors
                 confidence = _confidence_score(feat_row.to_dict(), len(lazy_factors))
                 # World Cup non-card props use imputed national-team features (live ROI ~ -33%)
@@ -813,6 +1061,10 @@ def run_player_predictions(
                     "player_name":   feat_row.get("player_name", ""),
                     "team":          feat_row.get("team", ""),
                     "position":      feat_row.get("position", ""),
+                    # owner 2026-11-08: an unknown position is never guessed - the tip is kept
+                    # and labelled UNKNOWN (KNOWN otherwise)
+                    "position_status": ("UNKNOWN" if _pos_status == config.POSITION_UNKNOWN
+                                        else "KNOWN"),
                     "market":        market,
                     "model_prob":    round(p_model, 3),
                     "fair_odds":     fair_o,
@@ -828,11 +1080,43 @@ def run_player_predictions(
                     "data_source":   feat_row.get("data_source", ""),
                     "tier":          "AVOID",   # updated when market odds available
                     "kelly_stake":   None,
+                    # model_prob IS the model's own probability (owner decision 2026-11-05);
+                    # model_prob_raw repeats it at 4 dp. The typed hand adjustment is INFORMATION
+                    # ONLY: its factor (1.0 = none) and the probability it would have given.
+                    "model_prob_raw":  round(_p_raw, 4),
+                    "prob_adjustment": round(_adj, 4),
+                    "fair_basis":      None,    # set when a price arrives (enrich_with_odds)
+                    "model_prob_hand_adjusted": round(_p_hand, 4),
                 })
 
     if _stale_dropped:
         print(f"[stale_club] {len(_stale_dropped)} player(s) dropped: not in their club's current "
               f"squad list, or unseen for {config.STALE_DAYS}+ days where no list exists")
+    if _n_unresolved:
+        print(f"[predict] {_n_unresolved} fixture(s) skipped: neither club resolved among the "
+              f"clubs we hold for that league's scope")
+    if _club_conflict_dropped:
+        print(f"[current_club] {len(_club_conflict_dropped)} player(s) not tipped: a club appearance "
+              f"for another club within {config.CURRENT_CLUB_CONFLICT_DAYS} days contradicts the "
+              f"club the tip would name")
+    try:
+        from player_model import rare_props as _RP
+        print(f"[predict] rare-market research candidates: {_RP.write_candidates(_rare_cands)}")
+    except Exception as _e:                                            # noqa: BLE001
+        print(f"[predict] rare-market candidates not written: {type(_e).__name__}: {_e}")
+    for _reason, _n in sorted(_skip_reasons.items()):
+        print(f"[predict] {_n} player-market(s) not tipped: {_reason}")
+    if all_tips:
+        _n_position_unknown = sum(1 for t in all_tips if t.get("position_status") == "UNKNOWN")
+        if _n_position_unknown:
+            print(f"[predict] {_n_position_unknown} tip(s) with an UNKNOWN player position: kept, "
+                  f"labelled position_status=UNKNOWN (not guessed)")
+    if _n_cap_bound:
+        print(f"[predict] {_n_cap_bound} player-market(s) not tipped: probability above the market's "
+              f"realistic cap (the cap is not written as a probability)")
+    if _n_quality_cap_skipped:
+        print(f"[predict] quality-mismatch discount (information only) not computed on "
+              f"{_n_quality_cap_skipped} player-market(s): league/opponent quality not measured")
     if _first_sight is not None:
         _first_sight.flush()
     if _r2_shadow is not None:
@@ -843,11 +1127,10 @@ def run_player_predictions(
 
     tips_df = pd.DataFrame(all_tips)
     tips_df = tips_df.sort_values("model_prob", ascending=False)
-    # Dedup on normalized name so accent/hyphen variants (e.g. "Vinícius Júnior" vs
-    # "Vinicius Junior") don't produce duplicate Telegram signals for the same player.
-    tips_df["_name_norm"] = tips_df["player_name"].apply(_norm_player_name)
-    tips_df = tips_df.drop_duplicates(subset=["match", "_name_norm", "market"])
-    tips_df = tips_df.drop(columns=["_name_norm"])
+    # One tip per (player_id, fixture_id, market) on IDS (was the normalised player NAME, which
+    # merged two different players sharing a short name). Every fixture reaching this point has
+    # an API-Football fixture_id (fixtures without one were skipped above, issue #1 step 1).
+    tips_df = tips_df.drop_duplicates(subset=["player_id", "fixture_id", "market"])
 
     output = config.OUTPUT_DIR / "player_tips.csv"
     tips_df.to_csv(output, index=False)
@@ -855,33 +1138,50 @@ def run_player_predictions(
     return tips_df
 
 
-def enrich_with_odds(tips_df: pd.DataFrame, odds_data: dict) -> pd.DataFrame:
+def enrich_with_odds(tips_df: pd.DataFrame, odds_data: dict,
+                     fair_data: dict | None = None) -> pd.DataFrame:
     """
     Enrich player tips with market odds, compute EV, edge, tier.
-    odds_data: {"{player_name}|{market}": market_odds}
+    odds_data: {tip_price_key: market_odds}
+    fair_data: {tip_price_key: fair probability de-vigged from a REAL two-sided price}
+               (odds_fetcher.match_fair_to_tips). Where a tip has one, it is the fair probability
+               (fair_basis "two_sided_devig"); otherwise the assumed overround applies
+               (fair_basis "assumed_overround"). Owner decision 2026-11-05.
     Called separately when odds are available.
     """
     if tips_df.empty:
         return tips_df
 
-    # Fixture-scoped key first (odds_fetcher.tip_price_key, 2026-10-25): two tips sharing a name
-    # in different fixtures must not share a price. The plain key is kept for older callers only.
+    # Fixture-scoped key ONLY (odds_fetcher.tip_price_key): two tips sharing a name in different
+    # fixtures must not share a price. The plain "player|market" fallback is gone (Data Truth).
     _date_col = "date" if "date" in tips_df.columns else "match_date"
+    tips_df["fair_basis"] = (tips_df["fair_basis"] if "fair_basis" in tips_df.columns
+                             else pd.Series(None, index=tips_df.index)).astype(object)
     for idx, row in tips_df.iterrows():
         key        = f"{row['player_name']}|{row['market']}"
         scoped     = f"{key}|{str(row.get(_date_col, '') or '')[:10]}|{row.get('match', '')}"
-        mkt_odds   = odds_data.get(scoped) or odds_data.get(key)
+        mkt_odds   = odds_data.get(scoped)
         if not mkt_odds:
             continue
 
-        p_model    = float(row["model_prob"])
-        fair_prob  = _devig_fair_prob(mkt_odds)
+        p_model    = float(row["model_prob"])      # the model's own probability (2026-11-05)
+        # A real two-sided price wins; the assumed overround is used ONLY when there is none.
+        try:
+            _pair_fair = float((fair_data or {}).get(scoped))
+        except (TypeError, ValueError):
+            _pair_fair = float("nan")                  # no two-sided price for this tip
+        if 0.0 < _pair_fair < 1.0:
+            fair_prob, basis = float(_pair_fair), FAIR_BASIS_TWO_SIDED_DEVIG
+        else:
+            fair_prob, basis = _devig_fair_prob(mkt_odds), FAIR_BASIS_ASSUMED_OVERROUND
         ev_val     = _ev(p_model, mkt_odds)
         rel_edge   = _relative_edge(p_model, fair_prob)
         confidence = float(row["confidence"])
         lazy_count = len([f for f in str(row.get("lazy_factors", "")).split("|")
                           if f and f != "WC_LOW_CONF"])   # WC_LOW_CONF is a PENALTY, not a positive factor
-        ges        = float(row["ges"]) if row.get("ges") is not None else 0.5
+        # GES exists only for goals/SOT; elsewhere it is not read. Missing -> NaN -> AVOID there.
+        ges        = pd.to_numeric(row.get("ges"), errors="coerce")
+        ges        = float(ges) if ges is not None else float("nan")
         market     = row["market"]
 
         tier = _classify_tier(ev_val, mkt_odds, rel_edge, confidence, lazy_count, ges, market, row.get("position", ""))
@@ -893,6 +1193,9 @@ def enrich_with_odds(tips_df: pd.DataFrame, odds_data: dict) -> pd.DataFrame:
         tips_df.at[idx, "ev"]           = ev_val
         tips_df.at[idx, "tier"]         = tier
         tips_df.at[idx, "kelly_stake"]  = _kelly_stake(ev_val, mkt_odds) if tier != "AVOID" else 0.0
+        # Where the fair probability came from: a de-vigged real two-sided price, or 1/odds over an
+        # overround assumed from config.OVERROUND_BY_ODDS. Said on the row (2026-11-05).
+        tips_df.at[idx, "fair_basis"]   = basis
 
     return tips_df
 
@@ -923,23 +1226,22 @@ def tag_paper_feed(tips_df: pd.DataFrame, top_n: int | None = None) -> pd.DataFr
     return tips_df
 
 
-# Markets without a bookmaker quote on the live feeds today.
+# Markets with no live Odds API coverage.
 _NO_ODDS_MARKETS = {"assists"}
 
 
 def enrich_no_odds_markets(tips_df: pd.DataFrame) -> pd.DataFrame:
-    """Leave an unpriced tip unpriced (hotfix on main, owner 2026-11-04: "repair what u can").
+    """
+    Markets with no live Odds API coverage (assists).
 
-    DATA TRUTH: this used to INVENT a bookmaker price from the calibration base rate
+    DATA TRUTH (2026-11-01): this used to INVENT a bookmaker price from the calibration base rate
     (1 / (base_rate x 1.10), "assumes 10% overround") and tier the tip on it, so an assists tip
-    could reach VALUABLE/MARKSMAN/SNIPER against a price no book ever offered (main's ledger,
-    2026-08-13..2026-11-04: 1,138 assists rows, 3 VALUABLE + 1 PAPER). Now a tip without a real
-    quote keeps market_odds / ev / edge unset and tier AVOID - the same code data-truth-100 has
-    run since 2026-11-01. A real quote still reaches the tip through enrich_with_odds.
+    could reach VALUABLE/MARKSMAN/SNIPER against a price no book ever offered. Now a tip without a
+    real quote keeps market_odds / ev / edge unset and tier AVOID. Real assist quotes reach tips
+    through odds_fetcher (OddsAPI player_assists) and player_model/prop_odds_af (API-Football).
+    The count of unpriced rows is logged.
     """
     if tips_df.empty or "market" not in tips_df.columns:
-        return tips_df
-    if "market_odds" not in tips_df.columns:
         return tips_df
     unpriced = tips_df["market"].isin(_NO_ODDS_MARKETS) & tips_df["market_odds"].isna()
     if unpriced.any():

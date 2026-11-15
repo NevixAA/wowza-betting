@@ -37,7 +37,12 @@ PLAYER_KICKOFF_FILE   = BASE_DIR / "player_kickoff_cache.json"
 
 sys.path.insert(0, str(BASE_DIR.parent))
 import config as app_config
+from src import clv_corrections as _CC
+from src import league_registry as _LRG
+from src import units as U
+from src.utc_clock import utc_now as _utc_now, utc_today_str as _utc_today_str
 from src.tier_labels import GAP_EXPLAINER, TIER_ICON, tier_label, tier_tag
+from player_model.fair_basis import label as _fair_basis_label
 
 
 def _read_csv(*args, **kwargs):
@@ -62,8 +67,9 @@ def _fmt_kickoff(row) -> str:
     OddsAPI `commence_time` is UTC, so a match's local calendar day can differ from
     its UTC day (Japan, Argentina, Brazil, …). We convert `kickoff_utc` to the league's
     local tz for what the user reads. The stored `date` stays UTC (join/dedup key) and
-    is NOT touched. Falls back to the UTC date string when `kickoff_utc` is missing,
-    unparseable, or the league tz is unknown — so it can never regress the old behaviour.
+    is NOT touched. Falls back to the UTC date string when `kickoff_utc` is missing or
+    unparseable. When the registry holds no zone for the league (multi-country cups, unknown
+    names) the time is shown in UTC and LABELLED 'UTC' - never passed off as local time.
     """
     fallback = str(row.get("date", ""))[:10]
     ko = row.get("kickoff_utc", None)
@@ -73,13 +79,55 @@ def _fmt_kickoff(row) -> str:
         ts = pd.to_datetime(ko, utc=True, errors="coerce")
         if pd.isna(ts):
             return fallback
-        tz = app_config.LEAGUE_TIMEZONES.get(str(row.get("league", "")), "UTC")
+        tz = _LRG.timezone(row.get("league"))
+        if tz is None:
+            return f"{ts.strftime('%Y-%m-%d %H:%M')} UTC"
         local = ts.tz_convert(tz)
         abbr = local.strftime("%Z")
-        suffix = "" if (tz == "UTC" or not abbr) else f" {abbr}"
+        suffix = f" {abbr}" if abbr else f" ({tz})"
         return f"{local.strftime('%Y-%m-%d %H:%M')}{suffix}"
-    except Exception:
+    except Exception as e:
+        print(f"[kickoff] could not localise {ko!r} for {row.get('league')!r}: {e} - showing UTC date")
         return fallback
+
+
+def _fixture_bucket(league, date) -> tuple:
+    """Index key for per-fixture lookups: (canonical league, YYYY-MM-DD). An unregistered
+    league keeps its raw name, so it can still only meet rows spelled the same way."""
+    return (_LRG.canonical_name(league) or str(league), str(date)[:10])
+
+
+def _fixture_lookup(index: dict, league, date, home, away):
+    """Value stored for one fixture in `index` {(league, date): {(home, away): value}}.
+
+    Clubs are matched by src/team_names.resolve inside ONE league and ONE date - never by a
+    lower-cased/punctuation-stripped string - so differently spelled sources still meet and an
+    ambiguous name finds nothing (None) instead of a neighbour's fixture."""
+    from src.team_names import resolve as _resolve_club
+    pairs = index.get(_fixture_bucket(league, date))
+    if not pairs:
+        return None
+    h = _resolve_club(str(home), sorted({p[0] for p in pairs}))
+    if h is None:
+        return None
+    a = _resolve_club(str(away), sorted({p[1] for p in pairs if p[0] == h}))
+    return None if a is None else pairs.get((h, a))
+
+
+def _model_type_of(league) -> str:
+    """config.model_type_for_league on the CANONICAL league name, so a row written under a
+    registered alias is not reported as 'unknown'."""
+    return app_config.model_type_for_league(_LRG.canonical_name(league) or league)
+
+
+def _is_prop_league(leagues: "pd.Series") -> "pd.Series":
+    """Boolean mask: the row's league (canonical or alias) is flagged `props` in the registry.
+    Rows of other / unregistered leagues are dropped and counted."""
+    props = set(_LRG.prop_leagues())
+    mask = leagues.map(lambda lg: _LRG.canonical_name(lg) in props).astype(bool)
+    if (~mask).any():
+        print(f"[props] {int((~mask).sum())} row(s) outside registry prop leagues dropped")
+    return mask
 
 
 def _load_config() -> dict:
@@ -123,6 +171,39 @@ NON_BET_TIERS = {"AVOID", "WATCH"}
 # with staked P/L and show VALUABLE separately, labelled as collection.
 STAKED_TIERS = ["SNIPER", "MARKSMAN"]
 COLLECT_TIERS = ["VALUABLE"]
+#: tiers in display order, for a breakdown of STAKED rows (an O/U 2.5 VALUABLE tip can be staked)
+ALL_TIERS = STAKED_TIERS + COLLECT_TIERS
+
+
+def _staked_rows(df, ledger: str):
+    """THE staked rows of a ledger frame (src/staked.py, owner 2026-11-04): the bankroll policy
+    recorded a stake > 0 on a real-money track. Until then every digest headline here kept the
+    SNIPER + MARKSMAN tiers, PAPER tracks included. A frame without the label columns, or with no
+    stake record, proves no stake (empty), never a tier guess."""
+    if df is None or len(df) == 0:
+        return df
+    from src import staked as _S
+    lab = _S.label_ledger(df, ledger, _S.load_records(app_config.OUTPUT_DIR))
+    return df[_S.is_staked(lab).to_numpy()]
+
+
+def _unstaked_rows(df, staked):
+    """Every row of `df` that is not in `staked` (same index): tracked, never money."""
+    if df is None or len(df) == 0:
+        return df
+    return df.drop(index=staked.index, errors="ignore")
+
+
+def _since_cutoff(df):
+    """Rows whose MATCH DATE is on/after PERFORMANCE_CUTOFF_DATE - the cutoff clause of THE staked
+    definition (dashboard_data.today_view). Until 2026-11-02 the digests cut on generated_at, which
+    counted 764 staked rows (-3.06u) where Home/Tips/Leagues/Overview count 805 (-8.45u). A row
+    without a readable match date is not counted (it cannot be placed after the cutoff)."""
+    if df is None or len(df) == 0 or "match_date" not in df.columns:
+        return df
+    day = df["match_date"].astype(str).str[:10]
+    ok = day.str.fullmatch(r"\d{4}-\d{2}-\d{2}") & (day >= str(app_config.PERFORMANCE_CUTOFF_DATE)[:10])
+    return df[ok.to_numpy()]
 
 
 def _bet_tiers_only(df):
@@ -172,24 +253,35 @@ def _valid_fixture_rows(df):
         return df
     if not {"team", "home_team", "away_team"}.issubset(df.columns):
         return df
-    from player_model.api_football import _same_club, _club_name_subset
+    # Club identity goes through the ONE resolver (src/team_names), not the player model's own
+    # fuzzy helpers. The ledger has no team id, so names are all there is.
+    from src.team_names import resolve as _resolve_club, _tokens as _club_tokens
     tl = _team_league_map()
 
     def _ok(team, home, away, league) -> bool:
         team, home, away = str(team), str(home), str(away)
-        if _same_club(team, home) or _same_club(team, away):
+        hit = _resolve_club(team, [home, away])
+        if hit is None:
+            return False
+        if _club_tokens(team) == _club_tokens(hit):
             return True
-        # Ambiguous subset ("Plymouth" vs "Plymouth Argyle" = same club, "Inter" vs
+        # Subset/alias match ("Plymouth" vs "Plymouth Argyle" = same club, "Inter" vs
         # "Inter Club d'Escaldes" = not): trust it only where we hold history for that
-        # club in THIS competition. Same rule predict.py now applies.
-        if _club_name_subset(team, home) or _club_name_subset(team, away):
-            return str(league) in tl.get(team, ())
-        return False
+        # club in THIS competition. Same rule predict.py applies.
+        lg = _LRG.canonical_name(league) or str(league)
+        return lg in tl.get(team, ()) or str(league) in tl.get(team, ())
 
-    leagues = df["league"] if "league" in df.columns else pd.Series([""] * len(df), index=df.index)
-    keep = [_ok(t, h, a, lg) for t, h, a, lg in
-            zip(df["team"], df["home_team"], df["away_team"], leagues)]
-    return df[pd.Series(keep, index=df.index)].copy()
+    if "league" not in df.columns:
+        # Without the competition the subset rule cannot be corroborated; those rows are dropped.
+        print("[props] ledger frame has no league column - subset club matches cannot be corroborated")
+        leagues = pd.Series([None] * len(df), index=df.index)
+    else:
+        leagues = df["league"]
+    keep = pd.Series([_ok(t, h, a, lg) for t, h, a, lg in
+                      zip(df["team"], df["home_team"], df["away_team"], leagues)], index=df.index)
+    if (~keep).any():
+        print(f"[props] {int((~keep).sum())} prop row(s) dropped: player's club is neither side of the fixture")
+    return df[keep].copy()
 
 
 def _countable_props(df):
@@ -201,29 +293,40 @@ def _countable_props(df):
 def send_fantasy_tips(max_per_pos: int = 3) -> int:
     """FANTASY (FPL) family — captaincy + top picks per position. PREDICTIONS, not bets;
     kept visibly separate from the SNIPER/MARKSMAN betting tips.
-    GUARDED: fires only when there ARE upcoming Premier League fixtures — stays silent
+    GUARDED: fires only when there ARE upcoming fixtures in the registry's FPL league — stays silent
     off-season so it never posts empty projections. Returns 1 if sent, else 0."""
     from pathlib import Path as _P
     import pandas as _pd
     # in-season guard: no upcoming PL GW -> stay silent
+    # The FPL competition and its API-Football id come from the registry (fpl flag), not a literal.
+    fpl_lg = _LRG.fpl_league()
+    fpl_id = _LRG.prop_leagues().get(fpl_lg) if fpl_lg else None
+    if fpl_lg is None or fpl_id is None:
+        print(f"[fantasy] registry has no FPL league with an API-Football id ({fpl_lg!r}) — skipping")
+        return 0
     try:
         from player_model.api_football import get_upcoming_fixtures
-        from player_model import config as _pc
-        fx = get_upcoming_fixtures(
-            _pc.PROP_LEAGUES["Premier League"],
-            _pc.prop_season("Premier League"), next_n=1)
+        from src.season_resolver import resolve_api_season, is_known
+        season = resolve_api_season(fpl_lg)
+        if not is_known(season):
+            print(f"[fantasy] season unknown for {fpl_lg} — skipping")
+            return 0
+        fx = get_upcoming_fixtures(fpl_id, season, next_n=1)
         if not fx:
-            print("[fantasy] no upcoming PL fixtures — skipping (off-season)")
+            print(f"[fantasy] no upcoming {fpl_lg} fixtures — skipping (off-season)")
             return 0
     except Exception as e:
         print(f"[fantasy] fixture guard failed ({e}) — skipping")
         return 0
     f = _P(__file__).resolve().parents[1] / "output" / "fantasy_tips.csv"
     if not f.exists():
+        print(f"[fantasy] {f.name} missing — skipping")
         return 0
     try:
-        df = __read_csv(f)
-    except Exception:
+        # was `__read_csv` (NameError swallowed below), so this family never sent.
+        df = _read_csv(f)
+    except Exception as e:
+        print(f"[fantasy] could not read {f.name} ({e}) — skipping")
         return 0
     if df.empty:
         return 0
@@ -342,6 +445,25 @@ def _drift_emoji(signal: str) -> str:
     return {"Confirmed": "✅", "Conflicted": "⚠️", "Neutral": "➡️", "New": "🆕"}.get(str(signal), "")
 
 
+def _fmt_num(v, spec: str, scale: float = 1.0) -> str:
+    """`v` formatted with `spec`, or '–' when it is missing/unparseable. A missing price or edge
+    is shown as missing, never as 0.00 / +0%."""
+    x = pd.to_numeric(v, errors="coerce")
+    return "–" if pd.isna(x) else format(float(x) * scale, spec)
+
+
+_NO_DRIFT = "no drift data"
+
+
+def _drift_text(signal) -> str:
+    """The recorded drift signal, or 'no drift data' when none was recorded. A blank is not
+    'New' - 'New' is a real signal (first snapshot) and must not be invented."""
+    if signal is None or (isinstance(signal, float) and pd.isna(signal)):
+        return _NO_DRIFT
+    s = str(signal).strip()
+    return s if s and s.lower() not in ("nan", "none") else _NO_DRIFT
+
+
 def instant_tip_allowed(match_date, notified: set, now: "datetime | None" = None, row=None) -> bool:
     """Should a NEW tip go out as its own message right now? (owner 2026-10-18: "too spammy").
 
@@ -379,10 +501,10 @@ def _paper_track_note(model_type: str, market: str, side: str) -> str:
     staked") is still sent, but must not read as a staked bet. Policy unreadable -> labelled paper
     (a label can only under-claim, never invent a stake). Phase 2, 2026-11-03."""
     try:
-        from src.bankroll_policy import REAL_STATES, load_policy, track_key
+        from src.bankroll_policy import REAL_STATES, load_policy, positive_fraction, track_key
         tk = track_key(model_type, market, side)
         t = (load_policy().get("tracks") or {}).get(tk) or {}
-        if t.get("state") in REAL_STATES and float(t.get("base_fraction") or 0.0) > 0.0:
+        if t.get("state") in REAL_STATES and positive_fraction(t):
             return ""
         return f"📄 <b>PAPER</b> — not staked (track {tk}: {t.get('state', 'not in policy')})"
     except Exception as e:                                            # noqa: BLE001
@@ -421,7 +543,8 @@ def notify_new_snipers() -> int:
     if "model_type" not in df.columns:
         df["model_type"] = ""
     _blk = df["model_type"].isna() | (df["model_type"].astype(str).str.strip().isin(["", "nan"]))
-    df.loc[_blk, "model_type"] = df.loc[_blk, "league"].map(app_config.model_type_for_league)
+    df["model_type"] = df["model_type"].astype(object)   # an all-blank column reads as float
+    df.loc[_blk, "model_type"] = df.loc[_blk, "league"].map(_model_type_of)
     # Send SNIPER + MARKSMAN + VALUABLE for ALL models (Nevo 2026-08-09: enable new-format
     # VALUABLE live too, now that the NF model is recalibrated). Dedup (notified.json) sends
     # each fixture+side once, so the higher NF volume won't re-flood.
@@ -437,7 +560,7 @@ def notify_new_snipers() -> int:
     # (_approved_leagues stays available above for labelling if needed.)
 
     # Only upcoming games — never send finished matches
-    today_str = datetime.now().strftime("%Y-%m-%d")
+    today_str = _utc_today_str()   # UTC day: stored dates are UTC (src/utc_clock.py)
     tips = tips[tips["date"].astype(str).str[:10] >= today_str]
 
     if tips.empty:
@@ -484,9 +607,18 @@ def notify_new_snipers() -> int:
         tier  = row["signal_tier"]
         side  = row.get("best_side") or row.get("bet", "")
         odds  = row["odds_under25"] if side == "UNDER" else row["odds_over25"]
-        edge  = float(row.get("best_edge", 0)) * 100
-        drift = _drift_emoji(row.get("drift_signal", "New"))
-        _is_std = row.get("model_type") == "standard"
+        # A tip goes out only with its recorded edge, price and model; a missing one is a
+        # skipped send (logged), never a 0% edge or a guessed model label.
+        edge  = pd.to_numeric(row.get("best_edge"), errors="coerce") * 100
+        odds  = pd.to_numeric(odds, errors="coerce")
+        _mt   = str(row.get("model_type") or "").strip()
+        if pd.isna(edge) or pd.isna(odds) or _mt not in ("standard", "new_format"):
+            print(f"  SKIP unsendable tip: {row['home_team']} vs {row['away_team']} [{row.get('league')}] — "
+                  f"edge={row.get('best_edge')!r} odds={odds!r} model_type={_mt!r}")
+            continue
+        _drift_sig = _drift_text(row.get("drift_signal"))
+        drift = _drift_emoji(_drift_sig) if _drift_sig != _NO_DRIFT else ""
+        _is_std = _mt == "standard"
         model = "🏴󠁧󠁢󠁥󠁮󠁧󠁿 Standard" if _is_std else "🌍 New-Format"
         mtag  = "standard" if _is_std else "new-format"
 
@@ -507,9 +639,9 @@ def notify_new_snipers() -> int:
             f"📌 <b>{side} 2.5</b>  @ {odds:.2f}\n"
             f"📊 Edge: <b>{edge:.1f}%</b>  |  {model}\n"
             # Drift is information only since 2026-10-26: it never changes the tier above.
-            f"🔀 Drift: {row.get('drift_signal','New')} {drift} (info only)"
+            f"🔀 Drift: {_drift_sig} {drift} (info only)"
         )
-        _paper = _paper_track_note(str(row.get("model_type") or "").strip(), "OU25", side)
+        _paper = _paper_track_note(_mt, "OU25", side)
         if _paper:
             msg += f"\n{_paper}"
 
@@ -742,7 +874,7 @@ def notify_ht_tips() -> int:
     if "p_ht_over05" not in df.columns:
         return 0
 
-    today_str = datetime.now().strftime("%Y-%m-%d")
+    today_str = _utc_today_str()   # UTC day: stored dates are UTC (src/utc_clock.py)
     df = df[df["date"].astype(str).str[:10] >= today_str]
     df = df[df["p_ht_over05"].notna()]
 
@@ -828,12 +960,19 @@ def notify_ht_tips() -> int:
     return sent
 
 
+class _SharpUnderRestatement(Exception):
+    """The restated sharp record (output/corrections/sharp_ledger_restated.csv) is absent."""
+
+
 def _sharp_split_lines(ts, out_lines, indent="      ") -> None:
     """Under a model×tier, split settled bets by SHARP MOVEMENT and append confirm/disagree
     lines. clv_pct > 0 = our side's odds SHORTENED (sharp confirmed the tip); < 0 = drifted
     (sharp disagreed). Reporting only — skips silently until CLV is populated."""
     if ts is None or ts.empty or "clv_pct" not in ts.columns:
         return
+    # A first-half price stored as the close (2026-07/08, corrections sidecar) is no CLV at all:
+    # the row is left out of both splits rather than counted as a "sharp confirm".
+    ts = _CC.exclude_contaminated_clv(ts)
     clv = pd.to_numeric(ts["clv_pct"], errors="coerce")
     pnl = pd.to_numeric(ts["pnl"], errors="coerce")
     for tag, sym, mask in (("confirm", "✅", clv > 0), ("disagree", "⚠️", clv < 0)):
@@ -841,7 +980,7 @@ def _sharp_split_lines(ts, out_lines, indent="      ") -> None:
         if seg.empty:
             continue
         n = len(seg); w = int((seg > 0).sum())
-        out_lines.append(f"{indent}{sym} sharp {tag}: {w}W/{n-w}L | P/L {seg.sum():+.2f}u")
+        out_lines.append(f"{indent}{sym} sharp {tag}: {w}W/{n-w}L | P/L {U.fmt(U.total(seg))}")
 
 
 _SHARP_MOVE_FILE = app_config.OUTPUT_DIR / "sharp_move_notified.json"
@@ -888,9 +1027,8 @@ def notify_sharp_movement(move_thresh: float = 0.03) -> int:
     bl = _read_csv(led)
     if "source" not in bl.columns:
         return 0
-    _norm = lambda s: re.sub(r"[^a-z0-9]", "", str(s).lower())
     live = bl[bl["source"] == "live"].copy()
-    today = datetime.now().strftime("%Y-%m-%d")
+    today = _utc_today_str()   # UTC day: stored dates are UTC (src/utc_clock.py)
     live = live[live["match_date"].astype(str).str[:10] >= today]
     # A sharp-move alert is only actionable BEFORE kickoff — never alert on a match that has
     # already started. The ledger stores only the date, so: (1) drop already-settled rows, and
@@ -907,16 +1045,15 @@ def notify_sharp_movement(move_thresh: float = 0.03) -> int:
             _b = _read_csv(_p)
         except Exception:
             continue
-        if "kickoff_utc" not in _b.columns:
+        if not {"kickoff_utc", "league"}.issubset(_b.columns):
             continue
         for _r in _b.itertuples(index=False):
-            _k = (_norm(getattr(_r, "home_team", "")), _norm(getattr(_r, "away_team", "")),
-                  str(getattr(_r, "date", ""))[:10])
-            _ko.setdefault(_k, str(getattr(_r, "kickoff_utc", "")))
+            _ko.setdefault(_fixture_bucket(_r.league, getattr(_r, "date", "")), {}).setdefault(
+                (str(_r.home_team), str(_r.away_team)), str(_r.kickoff_utc))
     _now_ts = pd.Timestamp.utcnow()
 
     def _upcoming(row) -> bool:
-        kt = _ko.get((_norm(row["home_team"]), _norm(row["away_team"]), str(row["match_date"])[:10]))
+        kt = _fixture_lookup(_ko, row["league"], row["match_date"], row["home_team"], row["away_team"])
         if kt:
             t = pd.to_datetime(kt, utc=True, errors="coerce")
             if pd.notna(t):
@@ -946,7 +1083,11 @@ def notify_sharp_movement(move_thresh: float = 0.03) -> int:
             continue
         try:
             oh = _read_csv(p).sort_values("snapshot_ts")
-        except Exception:
+        except Exception as e:
+            print(f"[sharp-move] could not read {f}: {e}")
+            continue
+        if "league" not in oh.columns:
+            print(f"[sharp-move] {f} has no league column — skipped")
             continue
         for r in oh.itertuples(index=False):
             m = str(getattr(r, "match", ""))
@@ -957,12 +1098,14 @@ def notify_sharp_movement(move_thresh: float = 0.03) -> int:
                 od = float(r.odds)
             except (TypeError, ValueError):
                 continue
-            key = (_norm(h), _norm(a), str(r.match_date)[:10], str(r.market), f)
+            # {(source, market): {(league, date): {(home, away): [first, latest]}}}
+            pairs = snaps.setdefault((f, str(r.market)), {}).setdefault(
+                _fixture_bucket(r.league, r.match_date), {})
             # store (first-seen, latest) from the SAME source -> a valid open->close move.
-            if key not in snaps:
-                snaps[key] = [od, od]
+            if (h, a) not in pairs:
+                pairs[(h, a)] = [od, od]
             else:
-                snaps[key][1] = od
+                pairs[(h, a)][1] = od
 
     notified = _load_sharp_move_notified()
     sent = 0
@@ -973,8 +1116,8 @@ def notify_sharp_movement(move_thresh: float = 0.03) -> int:
         mkt = "under25" if side == "UNDER" else "over25"
         pair = None
         for f in _SRC_PRIORITY:                       # first source with a same-source curve wins
-            cand = snaps.get((_norm(r.home_team), _norm(r.away_team),
-                              str(r.match_date)[:10], mkt, f))
+            cand = _fixture_lookup(snaps.get((f, mkt), {}), r.league, r.match_date,
+                                   r.home_team, r.away_team)
             if cand:
                 pair = cand
                 break
@@ -1024,15 +1167,15 @@ def notify_weekly_summary() -> bool:
     if not token or token == "YOUR_BOT_TOKEN":
         return False
 
-    week_ago = datetime.now() - _dt.timedelta(days=7)
+    week_ago = _utc_now() - _dt.timedelta(days=7)   # naive UTC, like the stored dates
     week_start = week_ago.strftime("%b %d")
-    week_end   = datetime.now().strftime("%b %d, %Y")
+    week_end   = _utc_now().strftime("%b %d, %Y")
 
     def _stats(data: "pd.DataFrame") -> dict | None:
         d = _settled_only(data)
         if d is None or d.empty:
             return None
-        n = len(d); w = (d["pnl"] > 0).sum(); pnl = d["pnl"].sum()
+        n = len(d); w = (d["pnl"] > 0).sum(); pnl = U.total(d["pnl"])
         return {"n": n, "win": float(w) / n, "roi": pnl / n * 100, "pnl": pnl}
 
     def _fmt(label: str, emoji: str, stats: dict | None, pending_n: int = 0) -> str:
@@ -1040,7 +1183,7 @@ def notify_weekly_summary() -> bool:
             pnl_s = "+" if stats["pnl"] >= 0 else ""
             return (f"  {emoji} <b>{label}</b>: {stats['n']} bets | "
                     f"{stats['win']:.0%} win | "
-                    f"P/L <b>{pnl_s}{stats['pnl']:.2f}u</b>")
+                    f"P/L <b>{U.fmt(stats['pnl'])}</b>")
         if pending_n:
             return f"  {emoji} <b>{label}</b>: {pending_n} signals sent | ⏳ awaiting results"
         return f"  {emoji} <b>{label}</b>: no settled bets this week"
@@ -1059,23 +1202,29 @@ def notify_weekly_summary() -> bool:
         if "model_type" not in live.columns:
             live["model_type"] = ""
         _blk = live["model_type"].isna() | (live["model_type"].astype(str).str.strip().isin(["", "nan"]))
-        live.loc[_blk, "model_type"] = live.loc[_blk, "league"].map(app_config.model_type_for_league)
-        if "generated_at" in live.columns:   # count only tips generated on/after the cutoff
-            live = live[live["generated_at"].astype(str).str[:10] >= app_config.PERFORMANCE_CUTOFF_DATE]
+        live["model_type"] = live["model_type"].astype(object)   # an all-blank column reads as float
+        live.loc[_blk, "model_type"] = live.loc[_blk, "league"].map(_model_type_of)
+        live = _since_cutoff(live)   # THE staked basis: match date on/after the cutoff
         lw = live[live["match_date"] >= week_ago]
 
     # ── 2. Sharp tracker (sharp_ledger.csv) ─────────────────────────────────
+    # The booked P/L is priced at opening_odds, a price already gone when the signal fired; only the
+    # RESTATED record (output/corrections/sharp_ledger_restated.csv) is ever shown. Without it the
+    # record reads UNDER RESTATEMENT - never the booked figure (src/clv_corrections.sharp_record).
     sharp_week: dict | None = None; sharp_week_pending = 0
     sharp_all:  dict | None = None
+    sharp_state = {"state": _CC.UNDER_RESTATEMENT, "unrestated": 0}
     sharp_file = app_config.OUTPUT_DIR / "sharp_ledger.csv"
     if sharp_file.exists():
-        sl = _read_csv(sharp_file)
-        sl["pnl"]        = pd.to_numeric(sl["pnl"], errors="coerce")
-        sl["signal_date"] = pd.to_datetime(sl["signal_date"], errors="coerce")
-        sw = sl[sl["signal_date"] >= week_ago]
-        sharp_week         = _stats(sw)
-        sharp_week_pending = int((sw["pnl"].isna()).sum()) if not sw.empty else 0
-        sharp_all          = _stats(sl)
+        sl, sharp_state = _CC.sharp_record(_read_csv(sharp_file))
+        if sl is not None:
+            sl["pnl"]        = pd.to_numeric(sl["pnl"], errors="coerce")
+            sl["signal_date"] = pd.to_datetime(sl["signal_date"], errors="coerce")
+            sw = sl[sl["signal_date"] >= week_ago]
+            sharp_week         = _stats(sw)
+            sharp_week_pending = int((sw["pnl"].isna() & sw["restatement"].ne("UNRESTATED")).sum()) \
+                if not sw.empty else 0
+            sharp_all          = _stats(sl)
 
     # ── 3. Player props (player_ledger.csv) ──────────────────────────────────
     props_week: dict | None = None; props_week_pending = 0
@@ -1125,31 +1274,30 @@ def notify_weekly_summary() -> bool:
             if sub_all is None or sub_all.empty:
                 continue
             any_shown = True
-            # Headline = STAKED tiers only. VALUABLE is a data-collection flash with no money
-            # on it, so including it in P/L misrepresents the week.
-            sub = sub_all[sub_all["signal_tier"].isin(STAKED_TIERS)] \
-                  if "signal_tier" in sub_all.columns else sub_all
+            # Headline = STAKED rows only (THE definition, src/staked.py: a recorded policy stake).
+            sub = _staked_rows(sub_all, "bets_ledger.csv")
             if not sub.empty:
-                n = len(sub); w = int((sub["pnl"] > 0).sum()); pnl = sub["pnl"].sum()
+                n = len(sub); w = int((sub["pnl"] > 0).sum()); pnl = U.total(sub["pnl"])
                 lines.append(f"{emoji} <b>{label}</b> — 💰 {n} {settled_word} | {w/n:.0%} win | "
-                             f"P/L {pnl:+.2f}u")
+                             f"P/L {U.fmt(pnl)}")
             else:
                 lines.append(f"{emoji} <b>{label}</b> — no staked bets settled")
-            for tier in STAKED_TIERS:
+            for tier in ALL_TIERS:
                 ts = sub[sub["signal_tier"] == tier] if "signal_tier" in sub.columns else pd.DataFrame()
                 if ts.empty:
                     continue
                 tn = len(ts); tw = int((ts["pnl"] > 0).sum())
                 lines.append(f"  {TIER_SYM[tier]} {tier_label(tier)}: {tn} bets | {tw/tn:.0%} win | "
-                             f"P/L <b>{ts['pnl'].sum():+.2f}u</b>")
+                             f"P/L <b>{U.fmt(U.total(ts['pnl']))}</b>")
                 _sharp_split_lines(ts, lines, "      ")
-            for tier in COLLECT_TIERS:
-                cs = sub_all[sub_all["signal_tier"] == tier] if "signal_tier" in sub_all.columns else pd.DataFrame()
+            _ns = _unstaked_rows(sub_all, sub)
+            for tier in ALL_TIERS:
+                cs = _ns[_ns["signal_tier"] == tier] if "signal_tier" in _ns.columns else pd.DataFrame()
                 if cs.empty:
                     continue
                 cn = len(cs); cw = int((cs["pnl"] > 0).sum())
                 lines.append(f"  {TIER_SYM.get(tier, '▰▱▱')} {tier_label(tier)}: {cn} signals | {cw/cn:.0%} win | "
-                             f"({cs['pnl'].sum():+.2f}u) — 📊 data only, not staked")
+                             f"({U.fmt(U.total(cs['pnl']))}) — 📊 data only, not staked")
         if not any_shown:
             lines.append("⚽ <b>Over 2.5</b>: no settled bets")
 
@@ -1162,21 +1310,32 @@ def notify_weekly_summary() -> bool:
         try:
             sl = _read_csv(side_led)
             sl["pnl"]         = pd.to_numeric(sl["pnl"], errors="coerce")
-            sl["signal_date"] = pd.to_datetime(sl.get("signal_date", sl.get("match_date", "")), errors="coerce")
-            sl_week = sl[sl["signal_date"] >= week_ago] if "signal_date" in sl.columns else sl
+            # The week is the SIGNAL week; a row without a signal_date is not placed in it by
+            # borrowing match_date - it is left out and counted.
+            if "signal_date" not in sl.columns:
+                print("[weekly] side_bets_ledger.csv has no signal_date column — side markets skipped")
+                sl = sl.iloc[0:0].assign(signal_date=pd.NaT)
+            sl["signal_date"] = pd.to_datetime(sl["signal_date"], errors="coerce")
+            if sl["signal_date"].isna().any():
+                print(f"[weekly] {int(sl['signal_date'].isna().sum())} side-market row(s) without signal_date excluded")
+            if "source" in sl.columns:
+                sl = sl[sl["source"].astype(str) == "live"]
+            sl_week = _since_cutoff(sl[sl["signal_date"] >= week_ago])
             for mkt, mkt_label in SIDE_LABELS.items():
                 ms = sl_week[sl_week["market"] == mkt] if "market" in sl_week.columns else pd.DataFrame()
                 ms = _settled_only(ms)
                 if ms.empty:
                     continue
-                n = len(ms); mw2 = int((ms["pnl"] > 0).sum()); pnl = ms["pnl"].sum()
-                lines.append(f"📌 <b>{mkt_label}</b> — {mw2}W/{n-mw2}L | P/L {pnl:+.2f}u")
+                # Headline = STAKED rows only (THE staked definition, src/staked.py).
+                stk = _staked_rows(ms, "side_bets_ledger.csv")
+                n = len(stk); mw2 = int((stk["pnl"] > 0).sum()); pnl = U.total(stk["pnl"])
+                lines.append(f"📌 <b>{mkt_label}</b> — 💰 staked {mw2}W/{n-mw2}L | P/L {U.fmt(pnl)}")
                 for tier in TIER_ORDER:
                     ts = ms[ms["signal_tier"] == tier] if "signal_tier" in ms.columns else pd.DataFrame()
                     if ts.empty:
                         continue
                     tn = len(ts); w = int((ts["pnl"] > 0).sum())
-                    lines.append(f"  {TIER_SYM[tier]} {tier_label(tier)}: {w}W/{tn-w}L | P/L {ts['pnl'].sum():+.2f}u")
+                    lines.append(f"  {TIER_SYM[tier]} {tier_label(tier)}: {w}W/{tn-w}L | P/L {U.fmt(U.total(ts['pnl']))}")
                 lines.append("")
         except Exception:
             pass
@@ -1209,17 +1368,15 @@ def notify_weekly_summary() -> bool:
                     # from the captured history. Either is a real market price, so either counts
                     # — otherwise every row logged before `odds` existed reads as unpriced when
                     # we do in fact know what it went off at.
-                    _px = pd.to_numeric(hw["odds"], errors="coerce") if "odds" in hw.columns \
-                        else pd.Series(index=hw.index, dtype=float)
-                    if "entry_odds" in hw.columns:
-                        _px = _px.fillna(pd.to_numeric(hw["entry_odds"], errors="coerce"))
-                    real = hw[_px.notna()]
+                    # THE rule (src/clv_corrections.ht_priced_mask) also drops the rows listed in
+                    # output/corrections/ht_ledger_unpriced.csv.
+                    real = hw[_CC.ht_priced_mask(hw)]
                     n = len(hw); w = int((hw["pnl"] > 0).sum())
                     lines.append(f"  {w}W/{n-w}L across {hw['market'].nunique()} line(s)"
                                  + (f" | ⏳ {pend} pending" if pend else ""))
                     if not real.empty:
                         lines.append(f"  💵 priced only: {len(real)} bet(s) | "
-                                     f"P/L {real['pnl'].sum():+.2f}u")
+                                     f"P/L {U.fmt(U.total(real['pnl']))}")
                     unp = n - len(real)
                     if unp:
                         lines.append(f"  ⚠️ {unp} settled with no market price — excluded from P/L")
@@ -1231,7 +1388,10 @@ def notify_weekly_summary() -> bool:
         except Exception:
             pass
 
-    lines.append(_fmt("Sharp Tracker", "💰", sharp_week, sharp_week_pending))
+    if sharp_state["state"] == _CC.UNDER_RESTATEMENT:
+        lines.append(f"  💰 <b>Sharp Tracker</b>: ⚠️ {_CC.UNDER_RESTATEMENT} — no P/L shown")
+    else:
+        lines.append(_fmt("Sharp Tracker", "💰", sharp_week, sharp_week_pending))
 
     if wc_pending:
         lines.append(f"  🌍 <b>WC Drift</b>: {wc_pending} signals active | ⏳ no P/L tracking yet")
@@ -1254,26 +1414,32 @@ def notify_weekly_summary() -> bool:
         try:
             sl = _read_csv(side_led)
             sl["pnl"] = pd.to_numeric(sl["pnl"], errors="coerce")
-            sl_all = _settled_only(sl)
+            if "source" in sl.columns:
+                sl = sl[sl["source"].astype(str) == "live"]
+            sl_all = _settled_only(_since_cutoff(sl))
             for mkt, mkt_label in SIDE_LABELS.items():
                 ms = sl_all[sl_all["market"] == mkt] if "market" in sl_all.columns else pd.DataFrame()
                 if ms.empty:
                     continue
-                n = len(ms); mw3 = int((ms["pnl"] > 0).sum()); pnl = ms["pnl"].sum()
-                lines.append(f"📌 <b>{mkt_label}</b> — {mw3}W/{n-mw3}L | P/L {pnl:+.2f}u")
+                stk = _staked_rows(ms, "side_bets_ledger.csv")       # THE staked definition
+                n = len(stk); mw3 = int((stk["pnl"] > 0).sum()); pnl = U.total(stk["pnl"])
+                lines.append(f"📌 <b>{mkt_label}</b> — 💰 staked {mw3}W/{n-mw3}L | P/L {U.fmt(pnl)}")
                 for tier in TIER_ORDER:
                     ts = ms[ms["signal_tier"] == tier] if "signal_tier" in ms.columns else pd.DataFrame()
                     if ts.empty:
                         continue
                     tn = len(ts); w = int((ts["pnl"] > 0).sum())
-                    lines.append(f"  {TIER_SYM[tier]} {tier_label(tier)}: {w}W/{tn-w}L | P/L {ts['pnl'].sum():+.2f}u")
+                    lines.append(f"  {TIER_SYM[tier]} {tier_label(tier)}: {w}W/{tn-w}L | P/L {U.fmt(U.total(ts['pnl']))}")
                 lines.append("")
         except Exception:
             pass
 
-    if sharp_all and sharp_all["n"] > 0:
-        pnl_s = "+" if sharp_all["pnl"] >= 0 else ""
-        lines.append(f"  💰 <b>Sharp Tracker</b>: {sharp_all['n']} settled | {sharp_all['win']:.0%} win | P/L {pnl_s}{sharp_all['pnl']:.2f}u")
+    if sharp_all_total and sharp_state["state"] == _CC.UNDER_RESTATEMENT:
+        lines.append(f"  💰 <b>Sharp Tracker</b>: {sharp_all_total} signals total | ⚠️ {_CC.UNDER_RESTATEMENT} — no P/L shown")
+    elif sharp_all and sharp_all["n"] > 0:
+        _unr = sharp_state.get("unrestated", 0)
+        lines.append(f"  💰 <b>Sharp Tracker</b>: {sharp_all['n']} settled | {sharp_all['win']:.0%} win | P/L {U.fmt(sharp_all['pnl'])}"
+                     + (f" | {_unr} not yet restated — excluded" if _unr else ""))
     elif sharp_all_total:
         lines.append(f"  💰 <b>Sharp Tracker</b>: {sharp_all_total} signals total | ⏳ awaiting results")
     else:
@@ -1316,7 +1482,7 @@ def notify_agent_analysis() -> int:
         (df["bet"].isin(["OVER", "UNDER"]))
     ].copy()
 
-    today_str = datetime.now().strftime("%Y-%m-%d")
+    today_str = _utc_today_str()   # UTC day: stored dates are UTC (src/utc_clock.py)
     snipers = snipers[snipers["date"].astype(str).str[:10] >= today_str]
 
     if snipers.empty:
@@ -1359,14 +1525,15 @@ def notify_agent_analysis() -> int:
         strongest = _escape_html((m.group(1).strip() if m else analysis)[:1200])
 
         side = row.get("best_side") or row.get("bet", "")
-        edge = float(row.get("best_edge", 0)) * 100
+        edge = pd.to_numeric(row.get("best_edge"), errors="coerce") * 100
+        edge_str = "edge not recorded" if pd.isna(edge) else f"Edge: <b>{edge:.1f}%</b>"
 
         msg = (
             f"🤖 <b>AGENT ANALYSIS</b>\n"
             f"━━━━━━━━━━━━━━━━\n"
             f"⚽ {row['home_team']} vs {row['away_team']}\n"
             f"🏆 {row.get('league', '')}  |  📅 {_fmt_kickoff(row)}\n"
-            f"🎯 ML Signal: <b>{side} 2.5</b>  Edge: <b>{edge:.1f}%</b>\n"
+            f"🎯 ML Signal: <b>{side} 2.5</b>  {edge_str}\n"
             f"━━━━━━━━━━━━━━━━\n"
             f"<b>Strongest Signals:</b>\n"
             f"{strongest}\n"
@@ -1406,7 +1573,7 @@ def notify_player_props() -> int:
     if df.empty:
         return 0
 
-    today_str = datetime.now().strftime("%Y-%m-%d")
+    today_str = _utc_today_str()   # UTC day: stored dates are UTC (src/utc_clock.py)
     df = df[df["date"].astype(str).str[:10] >= today_str]
 
     # Pre-populate kickoff cache from ALL current tips (solves cold-start for cashout gate)
@@ -1422,9 +1589,8 @@ def notify_player_props() -> int:
         except Exception:
             pass
 
-    # Only leagues with actual bookmaker player prop markets
-    from player_model.config import PROP_LEAGUES as _PROP_LEAGUES
-    df = df[df["league"].isin(_PROP_LEAGUES.keys())].copy()
+    # Only leagues with actual bookmaker player prop markets (registry `props` flag)
+    df = df[_is_prop_league(df["league"])].copy()
 
     # ── WEEKEND "MEAT" FEED (props are a calibrated-but-unproven TEST model) ─────────
     # Props have no proven market edge, so this is NOT an edge-gated send: we surface a fixed
@@ -1490,7 +1656,11 @@ def notify_player_props() -> int:
             "cards": "Yellow Card",
         }.get(row["market"], row["market"])
 
-        odds_line = f"📈 Odds: <b>{mkt_odds:.2f}</b>  |  Fair: <b>{fair:.2f}</b>  |  EV: <b>{ev_val:+.1%}</b>" \
+        # Where the market's fair probability came from (2026-11-05): "two-sided price" or
+        # "margin assumed". Absent on a row without a basis (unpriced, or written before the label).
+        _basis = _fair_basis_label(row.get("fair_basis"))
+        odds_line = (f"📈 Odds: <b>{mkt_odds:.2f}</b>  |  Fair: <b>{fair:.2f}</b>  |  EV: <b>{ev_val:+.1%}</b>"
+                     + (f"  |  <i>{_basis}</i>" if _basis else "")) \
                     if mkt_odds and not (isinstance(mkt_odds, float) and mkt_odds != mkt_odds) \
                        and ev_val and not (isinstance(ev_val, float) and ev_val != ev_val) \
                     else f"📊 Model P: <b>{p*100:.0f}%</b>  |  Fair Odds: <b>{fair:.2f}</b>"
@@ -1554,7 +1724,7 @@ def notify_lineup_cashout() -> int:
     if not tips_file.exists():
         return 0
 
-    today_str = datetime.now().strftime("%Y-%m-%d")
+    today_str = _utc_today_str()   # UTC day: stored dates are UTC (src/utc_clock.py)
 
     # Build the set of keys that are CURRENTLY active in player_tips.csv.
     #
@@ -1643,15 +1813,21 @@ def notify_lineup_cashout() -> int:
 
         mkt_label = MARKET_LABEL.get(market, market)
         row = tip_lookup.get(key, {})
-        match_str = row.get("match", "")
-        team_str  = row.get("team", "")
+        match_str = str(row.get("match") or "").strip()
+        team_str  = str(row.get("team") or "").strip()
+        # A cash-out call without the fixture is unactionable (which bet?) - skip it, logged.
+        if not match_str or match_str.lower() == "nan":
+            print(f"  SKIP cashout: {player_name} — {mkt_label}: fixture not found in today's tips")
+            continue
+        if team_str.lower() == "nan":
+            team_str = "—"
 
         msg = (
             f"🚨 <b>LINEUP ALERT — CASHOUT RECOMMENDED</b>\n"
             f"━━━━━━━━━━━━━━━━\n"
             f"👤 <b>{player_name}</b> is NOT in the confirmed starting XI\n"
             f"📌 Market: <b>{mkt_label}</b>\n"
-            f"⚽ {match_str or 'Unknown match'}  |  {team_str}\n"
+            f"⚽ {match_str}  |  {team_str or '—'}\n"
             f"📅 {date_str}\n"
             f"━━━━━━━━━━━━━━━━\n"
             f"⚠️ If you placed this bet, consider cashing out now."
@@ -1721,8 +1897,8 @@ def notify_props_daily_digest() -> bool:
     player_file = app_config.OUTPUT_DIR / "player_tips.csv"
     if player_file.exists():
         try:
-            from player_model.config import PROP_LEAGUES as _PROP_LEAGUES
             all_props = _read_csv(player_file)
+            _in_props = _is_prop_league(all_props["league"])
             _dates = all_props["date"].astype(str).str[:10]
             # Count the footer with the SAME two filters this briefing applies below — prop
             # leagues, and only tiers that would actually be sent. An unfiltered count is
@@ -1731,11 +1907,10 @@ def notify_props_daily_digest() -> bool:
             # that does not exist: 787 rows against 3 real ones when this was written.
             props_upcoming = int((
                 (_dates > today_str)
-                & all_props["league"].isin(_PROP_LEAGUES.keys())
+                & _in_props
                 & all_props["tier"].isin(TIER_ORDER)
             ).sum())
-            all_props = all_props[_dates == today_str].copy()
-            all_props = all_props[all_props["league"].isin(_PROP_LEAGUES.keys())].copy()
+            all_props = all_props[(_dates == today_str) & _in_props].copy()
             tips_data = all_props
         except Exception as e:
             lines.append(f"  error loading player_tips.csv: {e}")
@@ -1763,11 +1938,13 @@ def notify_props_daily_digest() -> bool:
                 for _, r in tb.iterrows():
                     ev = r.get("ev"); odds = r.get("market_odds")
                     ev_str = f" EV {float(ev):+.0%}" if pd.notna(ev) else ""
+                    _mp = pd.to_numeric(r.get("model_prob"), errors="coerce")
                     od_str = (f" @ {float(odds):.2f}" if pd.notna(odds)
-                              else f" {float(r.get('model_prob', 0))*100:.0f}%")
+                              else (f" {_mp*100:.0f}%" if pd.notna(_mp) else " –"))
+                    _basis = _fair_basis_label(r.get("fair_basis")) if pd.notna(odds) else None
                     lines.append(
                         f"  {sym} <b>{r['player_name']}</b> ({r.get('team','')})"
-                        f"{od_str}{ev_str}  [{r.get('league','')}]"
+                        f"{od_str}{ev_str}{f' ({_basis})' if _basis else ''}  [{r.get('league','')}]"
                     )
             lines.append("")
 
@@ -1809,8 +1986,8 @@ def notify_props_daily_digest() -> bool:
                 wins   = int((yest["pnl"] > 0).sum())
                 losses = int((yest["pnl"] < 0).sum())
                 voids  = int(yest["result"].str.upper().eq("VOID").sum()) if "result" in yest.columns else 0
-                pnl    = yest["pnl"].sum()
-                lines2.append(f"  {wins}W / {losses}L / {voids} VOID  |  P/L <b>{pnl:+.2f}u</b>")
+                pnl    = U.total(yest["pnl"])
+                lines2.append(f"  {wins}W / {losses}L / {voids} VOID  |  P/L <b>{U.fmt(pnl)}</b>")
                 # Results by market
                 for mkt_key, mkt_label, _ in PLAYER_MARKETS:
                     ms = yest[yest["market"] == mkt_key] if "market" in yest.columns else pd.DataFrame()
@@ -1825,7 +2002,7 @@ def notify_props_daily_digest() -> bool:
                         tier_s = f"[{tier_label(r['tier'])}] " if "tier" in r and pd.notna(r.get("tier")) else ""
                         note   = f" ({r['notes']})" if pd.notna(r.get("notes")) and str(r.get("notes")).strip() else ""
                         lines2.append(
-                            f"  {emoji} {tier_s}{r['player_name']} — {mkt_label}{note}  <b>{pnl_r:+.2f}u</b>"
+                            f"  {emoji} {tier_s}{r['player_name']} — {mkt_label}{note}  <b>{U.fmt(pnl_r)}</b>"
                         )
         except Exception as e:
             lines2.append(f"  error: {e}")
@@ -1840,22 +2017,22 @@ def notify_props_daily_digest() -> bool:
             pled["pnl"] = pd.to_numeric(pled["pnl"], errors="coerce")
             all_p = _settled_only(pled)
             if not all_p.empty:
-                n = len(all_p); w_all = int((all_p["pnl"] > 0).sum()); pnl = all_p["pnl"].sum()
-                lines2.append(f"  Total: {w_all}W/{n-w_all}L | P/L <b>{pnl:+.2f}u</b>")
+                n = len(all_p); w_all = int((all_p["pnl"] > 0).sum()); pnl = U.total(all_p["pnl"])
+                lines2.append(f"  Total: {w_all}W/{n-w_all}L | P/L <b>{U.fmt(pnl)}</b>")
                 lines2.append("")
                 for mkt_key, mkt_label, _ in PLAYER_MARKETS:
                     ms = all_p[all_p["market"] == mkt_key] if "market" in all_p.columns else pd.DataFrame()
                     if ms.empty:
                         continue
-                    mn = len(ms); mw = int((ms["pnl"] > 0).sum()); mp = ms["pnl"].sum()
-                    lines2.append(f"  📌 <b>{mkt_label}</b>  {mw}W/{mn-mw}L | P/L {mp:+.2f}u")
+                    mn = len(ms); mw = int((ms["pnl"] > 0).sum()); mp = U.total(ms["pnl"])
+                    lines2.append(f"  📌 <b>{mkt_label}</b>  {mw}W/{mn-mw}L | P/L {U.fmt(mp)}")
                     if "tier" in ms.columns:
                         for tier in LEDGER_TIERS:
                             ts = ms[ms["tier"] == tier]
                             if ts.empty:
                                 continue
                             tn = len(ts); w = int((ts["pnl"] > 0).sum())
-                            lines2.append(f"    {TIER_SYM[tier]} {tier_label(tier)}: {w}W/{tn-w}L | P/L {ts['pnl'].sum():+.2f}u")
+                            lines2.append(f"    {TIER_SYM[tier]} {tier_label(tier)}: {w}W/{tn-w}L | P/L {U.fmt(U.total(ts['pnl']))}")
         except Exception:
             pass
 
@@ -1881,9 +2058,9 @@ def notify_props_weekly_summary() -> bool:
     if not token or token == "YOUR_BOT_TOKEN":
         return False
 
-    week_ago   = datetime.now() - _dt.timedelta(days=7)
+    week_ago   = _utc_now() - _dt.timedelta(days=7)   # naive UTC, like the stored dates
     week_start = week_ago.strftime("%b %d")
-    week_end   = datetime.now().strftime("%b %d, %Y")
+    week_end   = _utc_now().strftime("%b %d, %Y")
 
     player_led = app_config.OUTPUT_DIR / "player_ledger.csv"
     if not player_led.exists():
@@ -1891,7 +2068,13 @@ def notify_props_weekly_summary() -> bool:
 
     pled = _countable_props(_read_csv(player_led))  # AVOID/WATCH + wrong-fixture: never counted
     pled["pnl"]         = pd.to_numeric(pled["pnl"], errors="coerce")
-    pled["signal_date"] = pd.to_datetime(pled.get("signal_date", pled.get("match_date")), errors="coerce")
+    # Windowed on signal_date only; rows without one are excluded (logged), not re-dated.
+    if "signal_date" not in pled.columns:
+        print("[props weekly] player_ledger.csv has no signal_date column — no weekly window")
+        pled = pled.assign(signal_date=pd.NaT)
+    pled["signal_date"] = pd.to_datetime(pled["signal_date"], errors="coerce")
+    if pled["signal_date"].isna().any():
+        print(f"[props weekly] {int(pled['signal_date'].isna().sum())} prop row(s) without signal_date excluded from the week")
 
     settled_all  = _settled_only(pled)
     settled_week = settled_all[settled_all["signal_date"] >= week_ago].copy()
@@ -1920,7 +2103,7 @@ def notify_props_weekly_summary() -> bool:
             return None
         n   = len(d)
         w   = int((d["pnl"] > 0).sum())
-        pnl = d["pnl"].sum()
+        pnl = U.total(d["pnl"])
         return n, w, pnl
 
     lines = [
@@ -1934,7 +2117,7 @@ def notify_props_weekly_summary() -> bool:
     r = _row(settled_week)
     if r:
         n, w, pnl = r
-        lines.append(f"<b>This week — {n} settled | {w}W/{n-w}L | P/L {pnl:+.2f}u</b>")
+        lines.append(f"<b>This week — {n} settled | {w}W/{n-w}L | P/L {U.fmt(pnl)}</b>")
         lines.append("")
         # By market
         for mkt in MARKETS:
@@ -1946,7 +2129,7 @@ def notify_props_weekly_summary() -> bool:
             pnl_s = "+" if mp >= 0 else ""
             lines.append(
                 f"  {MKT_EMOJI.get(mkt, '📌')} <b>{MKT_LABEL.get(mkt, mkt)}</b>: "
-                f"{mn} bets | {mw}W/{mn-mw}L | P/L <b>{pnl_s}{mp:.2f}u</b>"
+                f"{mn} bets | {mw}W/{mn-mw}L | P/L <b>{U.fmt(mp)}</b>"
             )
         lines.append("")
         # By tier
@@ -1958,7 +2141,7 @@ def notify_props_weekly_summary() -> bool:
                 continue
             tn, tw, tp = tr
             lines.append(
-                f"  {TIER_SYM.get(tier, '📌')} {tier_label(tier)}: {tw}W/{tn-tw}L | P/L {tp:+.2f}u"
+                f"  {TIER_SYM.get(tier, '📌')} {tier_label(tier)}: {tw}W/{tn-tw}L | P/L {U.fmt(tp)}"
             )
     else:
         pending = int(settled_week["pnl"].isna().sum()) if not settled_week.empty else 0
@@ -1973,7 +2156,7 @@ def notify_props_weekly_summary() -> bool:
     r_all = _row(settled_all)
     if r_all:
         n, w, pnl = r_all
-        lines.append(f"  Total: {n} bets | {w}W/{n-w}L | P/L {pnl:+.2f}u")
+        lines.append(f"  Total: {n} bets | {w}W/{n-w}L | P/L {U.fmt(pnl)}")
         lines.append("")
         for mkt in MARKETS:
             sub = settled_all[settled_all["market"] == mkt] if "market" in settled_all.columns else pd.DataFrame()
@@ -1983,7 +2166,7 @@ def notify_props_weekly_summary() -> bool:
             mn, mw, mp = mr
             lines.append(
                 f"  {MKT_EMOJI.get(mkt, '📌')} {MKT_LABEL.get(mkt, mkt)}: "
-                f"{mw}W/{mn-mw}L | P/L {mp:+.2f}u"
+                f"{mw}W/{mn-mw}L | P/L {U.fmt(mp)}"
             )
     else:
         total_all = len(pled)
@@ -2108,7 +2291,8 @@ def notify_daily_digest() -> bool:
             if "model_type" not in bl.columns:
                 bl["model_type"] = ""
             _blk = bl["model_type"].isna() | (bl["model_type"].astype(str).str.strip().isin(["", "nan"]))
-            bl.loc[_blk, "model_type"] = bl.loc[_blk, "league"].map(app_config.model_type_for_league)
+            bl["model_type"] = bl["model_type"].astype(object)   # an all-blank column reads as float
+            bl.loc[_blk, "model_type"] = bl.loc[_blk, "league"].map(_model_type_of)
             # Market is O/U 2.5 (tips can be OVER or UNDER) — NOT "Over 2.5". Group by model
             # then tier; the per-tip line shows the actual side.
             lines.append(f"⚽ <b>O/U 2.5</b>  ({ou_total} tip{'s' if ou_total != 1 else ''})")
@@ -2128,19 +2312,19 @@ def notify_daily_digest() -> bool:
                         lines.append(f"    {TIER_SYM[tier]} <b>{tier_label(tier)}</b> ({len(tb)})")
                         for _, r in tb.iterrows():
                             side = str(r.get("side", ""))
-                            try:
-                                odds = float(r.get("odds", 0) or 0)
-                            except (TypeError, ValueError):
-                                odds = 0.0
-                            try:
-                                edge = float(r.get("edge_pct", 0) or 0)
-                            except (TypeError, ValueError):
-                                edge = 0.0
+                            # unpriced / no recorded edge -> '–', never @ 0.00 (+0%)
+                            odds = _fmt_num(r.get("odds"), ".2f")
+                            edge = _fmt_num(r.get("edge_pct"), "+.0f")
                             lines.append(
                                 f"      {r['home_team']} vs {r['away_team']} — "
-                                f"<b>{side} 2.5</b> @ {odds:.2f} (+{edge:.0f}%)"
+                                f"<b>{side} 2.5</b> @ {odds} ({edge}%)"
                                 f"  [{r.get('league','')}]"
                             )
+                _unk = bl[~bl["model_type"].isin(["standard", "new_format"])]
+                if not _unk.empty:
+                    lines.append(f"  ❔ {len(_unk)} tip(s) with no registered model — not listed")
+                    print(f"[digest] {len(_unk)} O/U tip(s) without model_type: "
+                          f"{sorted(_unk['league'].astype(str).unique())}")
         except Exception as e:
             lines.append(f"  error: {e}")
     else:
@@ -2167,17 +2351,12 @@ def notify_daily_digest() -> bool:
                         continue
                     lines.append(f"  {TIER_SYM[tier]} <b>{tier_label(tier)}</b> ({len(tb)})")
                     for _, r in tb.iterrows():
-                        try:
-                            ev_str = f" EV {float(r.get('ev_pct', 0) or 0):+.0f}%"
-                        except (TypeError, ValueError):
-                            ev_str = ""
-                        try:
-                            odds = float(r.get("odds", 0) or 0)
-                        except (TypeError, ValueError):
-                            odds = 0.0
+                        _ev = _fmt_num(r.get("ev_pct"), "+.0f")
+                        ev_str = f" EV {_ev}%" if _ev != "–" else " EV –"
+                        odds = _fmt_num(r.get("odds"), ".2f")
                         lines.append(
                             f"    {r['home_team']} vs {r['away_team']} — "
-                            f"@ {odds:.2f}{ev_str}"
+                            f"@ {odds}{ev_str}"
                             f"  [{r.get('league','')}]"
                         )
                 lines.append("")
@@ -2299,7 +2478,7 @@ def notify_daily_digest() -> bool:
         sub = _settled_only(df[mask]) if not df.empty else pd.DataFrame()
         if sub is None or sub.empty:
             return None
-        n = len(sub); w = int((sub["pnl"] > 0).sum()); p = sub["pnl"].sum()
+        n = len(sub); w = int((sub["pnl"] > 0).sum()); p = U.total(sub["pnl"])
         return n, w, p
 
     # Over 2.5 yesterday by tier
@@ -2309,54 +2488,56 @@ def notify_daily_digest() -> bool:
             led["pnl"] = pd.to_numeric(led["pnl"], errors="coerce")
             yest_led = led[led["match_date"].astype(str).str[:10] == yesterday_str].copy()
             live_y = yest_led[yest_led["source"] == "live"] if "source" in yest_led.columns else yest_led
-            if "generated_at" in live_y.columns:   # count only tips generated on/after the cutoff
-                live_y = live_y[live_y["generated_at"].astype(str).str[:10] >= app_config.PERFORMANCE_CUTOFF_DATE]
+            live_y = _since_cutoff(live_y)   # THE staked basis: match date on/after the cutoff
             if "model_type" not in live_y.columns:
                 live_y["model_type"] = ""
             _blk = live_y["model_type"].isna() | (live_y["model_type"].astype(str).str.strip().isin(["", "nan"]))
-            live_y.loc[_blk, "model_type"] = live_y.loc[_blk, "league"].map(app_config.model_type_for_league)
+            live_y["model_type"] = live_y["model_type"].astype(object)   # an all-blank column reads as float
+            live_y.loc[_blk, "model_type"] = live_y.loc[_blk, "league"].map(_model_type_of)
             # STAKED only in every headline. VALUABLE is shown, but never counted as money.
-            _stk = live_y[live_y["signal_tier"].isin(STAKED_TIERS)] if "signal_tier" in live_y.columns else live_y
+            _stk = _staked_rows(live_y, "bets_ledger.csv")       # THE staked definition (src/staked.py)
             r_all = _stats_sub(_stk, pd.Series([True] * len(_stk), index=_stk.index))
             if r_all:
                 n, w, pnl = r_all
-                lines2.append(f"⚽ <b>O/U 2.5</b>  💰 staked {w}W/{n-w}L  P/L {pnl:+.2f}u")
+                lines2.append(f"⚽ <b>O/U 2.5</b>  💰 staked {w}W/{n-w}L  P/L {U.fmt(pnl)}")
                 for fmt, femoji, flabel in [("standard", "⚽", "Standard"),
                                             ("new_format", "🌍", "New-Format")]:
                     fb_all = live_y[live_y["model_type"] == fmt]
-                    fb = fb_all[fb_all["signal_tier"].isin(STAKED_TIERS)] if "signal_tier" in fb_all.columns else fb_all
+                    fb = _staked_rows(fb_all, "bets_ledger.csv")
                     if fb_all.empty:
                         continue
                     rf = _stats_sub(fb, pd.Series([True] * len(fb), index=fb.index))
                     if rf:
                         fn, fw, fp = rf
-                        lines2.append(f"  {femoji} <b>{flabel}</b>: {fw}W/{fn-fw}L  P/L {fp:+.2f}u")
+                        lines2.append(f"  {femoji} <b>{flabel}</b>: {fw}W/{fn-fw}L  P/L {U.fmt(fp)}")
                         if "side" in fb.columns:
                             for sd, ssym in (("OVER", "▲"), ("UNDER", "▼")):
                                 r = _stats_sub(fb, fb["side"].astype(str).str.upper() == sd)
                                 if r:
                                     sn, sw, sp = r
-                                    lines2.append(f"    {ssym} {sd}: {sw}W/{sn-sw}L  P/L {sp:+.2f}u")
-                        for tier in STAKED_TIERS:
+                                    lines2.append(f"    {ssym} {sd}: {sw}W/{sn-sw}L  P/L {U.fmt(sp)}")
+                        for tier in ALL_TIERS:
                             r = _stats_sub(fb, fb["signal_tier"] == tier)
                             if r:
                                 tn, tw, tp = r
-                                lines2.append(f"    {TIER_SYM[tier]} {tier_label(tier)}: {tw}W/{tn-tw}L  P/L {tp:+.2f}u")
+                                lines2.append(f"    {TIER_SYM[tier]} {tier_label(tier)}: {tw}W/{tn-tw}L  P/L {U.fmt(tp)}")
                     # Collection tiers: visible, but explicitly not money.
-                    for tier in COLLECT_TIERS:
-                        r = _stats_sub(fb_all, fb_all["signal_tier"] == tier)
+                    _fns = _unstaked_rows(fb_all, fb)
+                    for tier in ALL_TIERS:
+                        r = _stats_sub(_fns, _fns["signal_tier"] == tier) if len(_fns) else None
                         if r:
                             tn, tw, tp = r
                             lines2.append(f"    {TIER_SYM.get(tier, '▰▱▱')} {tier_label(tier)}: {tw}W/{tn-tw}L "
-                                          f"({tp:+.2f}u) — 📊 data only, not staked")
+                                          f"({U.fmt(tp)}) — 📊 data only, not staked")
             else:
                 lines2.append("  ⚽ O/U 2.5: no settled staked bets")
-                for tier in COLLECT_TIERS:
-                    r = _stats_sub(live_y, live_y["signal_tier"] == tier) if "signal_tier" in live_y.columns else None
+                _lns = _unstaked_rows(live_y, _stk)
+                for tier in ALL_TIERS:
+                    r = _stats_sub(_lns, _lns["signal_tier"] == tier) if len(_lns) and "signal_tier" in _lns.columns else None
                     if r:
                         tn, tw, tp = r
                         lines2.append(f"    {TIER_SYM.get(tier, '▰▱▱')} {tier_label(tier)}: {tw}W/{tn-tw}L "
-                                      f"({tp:+.2f}u) — 📊 data only, not staked")
+                                      f"({U.fmt(tp)}) — 📊 data only, not staked")
         except Exception:
             pass
 
@@ -2372,37 +2553,40 @@ def notify_daily_digest() -> bool:
             sy = sy[sy["match_date"].astype(str).str[:10] == yesterday_str]
             if "source" in sy.columns:
                 sy = sy[sy["source"].astype(str) == "live"]
-            if "generated_at" in sy.columns:
-                sy = sy[sy["generated_at"].astype(str).str[:10] >= app_config.PERFORMANCE_CUTOFF_DATE]
+            sy = _since_cutoff(sy)
             for mkt, mkt_label in SIDE_LABELS.items():
                 ms = sy[sy["market"] == mkt] if "market" in sy.columns else pd.DataFrame()
                 if ms.empty:
                     continue
-                stk = ms[ms["signal_tier"].isin(STAKED_TIERS)]
+                stk = _staked_rows(ms, "side_bets_ledger.csv")       # THE staked definition
                 r = _stats_sub(stk, pd.Series([True] * len(stk), index=stk.index)) if not stk.empty else None
                 if r:
                     n, w, pnl = r
-                    lines2.append(f"📌 <b>{mkt_label}</b>  💰 staked {w}W/{n-w}L  P/L {pnl:+.2f}u")
-                    for tier in STAKED_TIERS:
+                    lines2.append(f"📌 <b>{mkt_label}</b>  💰 staked {w}W/{n-w}L  P/L {U.fmt(pnl)}")
+                    for tier in ALL_TIERS:
                         rt = _stats_sub(stk, stk["signal_tier"] == tier)
                         if rt:
                             tn, tw, tp = rt
-                            lines2.append(f"    {TIER_SYM[tier]} {tier_label(tier)}: {tw}W/{tn-tw}L  P/L {tp:+.2f}u")
+                            lines2.append(f"    {TIER_SYM[tier]} {tier_label(tier)}: {tw}W/{tn-tw}L  P/L {U.fmt(tp)}")
                 else:
                     lines2.append(f"📌 <b>{mkt_label}</b>: no settled staked bets")
-                for tier in COLLECT_TIERS:
-                    rt = _stats_sub(ms, ms["signal_tier"] == tier)
+                _mns = _unstaked_rows(ms, stk)
+                for tier in ALL_TIERS:
+                    rt = _stats_sub(_mns, _mns["signal_tier"] == tier) if len(_mns) else None
                     if rt:
                         tn, tw, tp = rt
                         lines2.append(f"    {TIER_SYM.get(tier, '▰▱▱')} {tier_label(tier)}: {tw}W/{tn-tw}L "
-                                      f"({tp:+.2f}u) — 📊 data only, not staked")
+                                      f"({U.fmt(tp)}) — 📊 data only, not staked")
         except Exception as e:
             lines2.append(f"  Side markets error: {e}")
 
-    # Sharp/WC yesterday
+    # Sharp/WC yesterday — RESTATED record only (src/clv_corrections.sharp_record); the booked P/L is
+    # priced at opening_odds and is never shown.
     if sharp_led.exists():
         try:
-            sled = _read_csv(sharp_led)
+            sled, _sst = _CC.sharp_record(_read_csv(sharp_led))
+            if sled is None:
+                raise _SharpUnderRestatement
             sled["pnl"] = pd.to_numeric(sled["pnl"], errors="coerce")
             yest_s = sled[
                 (sled["match_date"].astype(str).str[:10] == yesterday_str) &
@@ -2413,12 +2597,14 @@ def notify_daily_digest() -> bool:
                 n = len(yest_s)
                 affected   = int((yest_s["pnl"] > 0).sum())
                 inaffected = n - affected
-                pnl = yest_s["pnl"].sum()
+                pnl = U.total(yest_s["pnl"])
                 lines2.append(
-                    f"  💰 Sharp/WC: {n} settled | {affected} affected / {inaffected} inaffected | P/L <b>{pnl:+.2f}u</b>"
+                    f"  💰 Sharp/WC: {n} settled | {affected} affected / {inaffected} inaffected | P/L <b>{U.fmt(pnl)}</b>"
                 )
             else:
                 lines2.append("  💰 Sharp/WC: no settled results")
+        except _SharpUnderRestatement:
+            lines2.append(f"  💰 Sharp/WC: ⚠️ {_CC.UNDER_RESTATEMENT} — no P/L shown")
         except Exception:
             pass
 
@@ -2432,15 +2618,15 @@ def notify_daily_digest() -> bool:
             led["pnl"] = pd.to_numeric(led["pnl"], errors="coerce")
             live = led[(led["source"] == "live") & led["pnl"].notna()] \
                    if "source" in led.columns else led[led["pnl"].notna()]
-            if "generated_at" in live.columns:
-                live = live[live["generated_at"].astype(str).str[:10] >= app_config.PERFORMANCE_CUTOFF_DATE]
+            live = _since_cutoff(live)
             # Never treat a blank tag as 'standard' — derive it from the league so new-format
             # bets can't leak into the standard column (canonical map in app_config).
             live = live.copy()
             if "model_type" not in live.columns:
                 live["model_type"] = ""
             _blank = live["model_type"].isna() | (live["model_type"].astype(str).str.strip().isin(["", "nan"]))
-            live.loc[_blank, "model_type"] = live.loc[_blank, "league"].map(app_config.model_type_for_league)
+            live["model_type"] = live["model_type"].astype(object)   # an all-blank column reads as float
+            live.loc[_blank, "model_type"] = live.loc[_blank, "league"].map(_model_type_of)
             for fmt, emoji, label in [
                 ("standard",   "⚽", "O/U 2.5 — Standard"),
                 ("new_format", "🌍", "O/U 2.5 — New-Format"),
@@ -2448,35 +2634,35 @@ def notify_daily_digest() -> bool:
                 sub_all = live[live["model_type"] == fmt]
                 if sub_all.empty:
                     continue
-                # Headline + side splits use STAKED tiers only (VALUABLE carries no money).
-                sub = sub_all[sub_all["signal_tier"].isin(STAKED_TIERS)] \
-                      if "signal_tier" in sub_all.columns else sub_all
+                # Headline + side splits use STAKED rows only (THE definition, src/staked.py).
+                sub = _staked_rows(sub_all, "bets_ledger.csv")
                 if not sub.empty:
-                    n = len(sub); w_s = int((sub["pnl"] > 0).sum()); pnl = sub["pnl"].sum()
-                    lines2.append(f"  {emoji} <b>{label}</b>  💰 {w_s}W/{n-w_s}L | P/L {pnl:+.2f}u")
+                    n = len(sub); w_s = int((sub["pnl"] > 0).sum()); pnl = U.total(sub["pnl"])
+                    lines2.append(f"  {emoji} <b>{label}</b>  💰 {w_s}W/{n-w_s}L | P/L {U.fmt(pnl)}")
                     if "side" in sub.columns:
                         for sd, ssym in (("OVER", "▲"), ("UNDER", "▼")):
                             ss = sub[sub["side"].astype(str).str.upper() == sd]
                             if ss.empty:
                                 continue
-                            sn = len(ss); sw = int((ss["pnl"] > 0).sum()); sp = ss["pnl"].sum()
-                            lines2.append(f"    {ssym} {sd}: {sw}W/{sn-sw}L | P/L {sp:+.2f}u")
+                            sn = len(ss); sw = int((ss["pnl"] > 0).sum()); sp = U.total(ss["pnl"])
+                            lines2.append(f"    {ssym} {sd}: {sw}W/{sn-sw}L | P/L {U.fmt(sp)}")
                 else:
                     lines2.append(f"  {emoji} <b>{label}</b>  no staked bets settled")
                 # Collection tiers listed after, clearly not money.
-                for tier in COLLECT_TIERS:
-                    cs = sub_all[sub_all["signal_tier"] == tier] if "signal_tier" in sub_all.columns else pd.DataFrame()
+                _sns = _unstaked_rows(sub_all, sub)
+                for tier in ALL_TIERS:
+                    cs = _sns[_sns["signal_tier"] == tier] if "signal_tier" in _sns.columns else pd.DataFrame()
                     if cs.empty:
                         continue
                     cn = len(cs); cw = int((cs["pnl"] > 0).sum())
                     lines2.append(f"    {TIER_SYM.get(tier, '▰▱▱')} {tier_label(tier)}: {cw}W/{cn-cw}L "
-                                  f"({cs['pnl'].sum():+.2f}u) — 📊 data only, not staked")
-                for tier in STAKED_TIERS:
+                                  f"({U.fmt(U.total(cs['pnl']))}) — 📊 data only, not staked")
+                for tier in ALL_TIERS:
                     ts = sub[sub["signal_tier"] == tier] if "signal_tier" in sub.columns else pd.DataFrame()
                     if ts.empty:
                         continue
                     tn = len(ts); w = int((ts["pnl"] > 0).sum())
-                    lines2.append(f"    {TIER_SYM[tier]} {tier_label(tier)}: {w}W/{tn-w}L | P/L {ts['pnl'].sum():+.2f}u")
+                    lines2.append(f"    {TIER_SYM[tier]} {tier_label(tier)}: {w}W/{tn-w}L | P/L {U.fmt(U.total(ts['pnl']))}")
                     _sharp_split_lines(ts, lines2, "        ")
         except Exception:
             pass
@@ -2490,8 +2676,7 @@ def notify_daily_digest() -> bool:
             # Same basis as the O/U 2.5 ledger lines above: live tips generated on/after the cutoff.
             if "source" in sl.columns:
                 sl = sl[sl["source"].astype(str) == "live"]
-            if "generated_at" in sl.columns:
-                sl = sl[sl["generated_at"].astype(str).str[:10] >= app_config.PERFORMANCE_CUTOFF_DATE]
+            sl = _since_cutoff(sl)
             sl_s = _settled_only(sl)
             if not sl_s.empty:
                 lines2.append("")
@@ -2499,11 +2684,11 @@ def notify_daily_digest() -> bool:
                     ms = sl_s[sl_s["market"] == mkt] if "market" in sl_s.columns else pd.DataFrame()
                     if ms.empty:
                         continue
-                    # Headline = STAKED tiers only; VALUABLE was counted here as if it were money.
-                    mstk = ms[ms["signal_tier"].isin(STAKED_TIERS)]
+                    # Headline = STAKED rows only (THE definition, src/staked.py).
+                    mstk = _staked_rows(ms, "side_bets_ledger.csv")
                     if not mstk.empty:
-                        mn = len(mstk); mw = int((mstk["pnl"] > 0).sum()); mp = mstk["pnl"].sum()
-                        lines2.append(f"  📌 <b>{mkt_label}</b>  💰 {mw}W/{mn-mw}L | P/L {mp:+.2f}u")
+                        mn = len(mstk); mw = int((mstk["pnl"] > 0).sum()); mp = U.total(mstk["pnl"])
+                        lines2.append(f"  📌 <b>{mkt_label}</b>  💰 {mw}W/{mn-mw}L | P/L {U.fmt(mp)}")
                     else:
                         lines2.append(f"  📌 <b>{mkt_label}</b>  no staked bets settled")
                     for tier in TIER_ORDER:
@@ -2511,20 +2696,26 @@ def notify_daily_digest() -> bool:
                         if ts.empty:
                             continue
                         tn = len(ts); w = int((ts["pnl"] > 0).sum())
-                        tail = " — 📊 data only" if tier in COLLECT_TIERS else ""
-                        lines2.append(f"    {TIER_SYM[tier]} {tier_label(tier)}: {w}W/{tn-w}L | P/L {ts['pnl'].sum():+.2f}u{tail}")
+                        tail = ""                                   # all tips of the tier, staked or not
+                        lines2.append(f"    {TIER_SYM[tier]} {tier_label(tier)}: {w}W/{tn-w}L | P/L {U.fmt(U.total(ts['pnl']))}{tail}")
         except Exception:
             pass
 
-    # Sharp all-time
+    # Sharp all-time — RESTATED record only
     if sharp_led.exists():
         try:
-            sled = _read_csv(sharp_led)
+            sled, _sst = _CC.sharp_record(_read_csv(sharp_led))
+            if sled is None:
+                raise _SharpUnderRestatement
             sled["pnl"] = pd.to_numeric(sled["pnl"], errors="coerce")
             all_s = sled[sled["pnl"].notna() & (sled["result"] != "VOID")]
             if not all_s.empty:
-                n = len(all_s); pnl = all_s["pnl"].sum()
-                lines2.append(f"  💰 <b>Sharp/WC</b>  ({n} signals | P/L {pnl:+.2f}u)")
+                n = len(all_s); pnl = U.total(all_s["pnl"])
+                _unr = _sst.get("unrestated", 0)
+                lines2.append(f"  💰 <b>Sharp/WC</b>  ({n} signals | P/L {U.fmt(pnl)})"
+                              + (f" | {_unr} not yet restated — excluded" if _unr else ""))
+        except _SharpUnderRestatement:
+            lines2.append(f"  💰 <b>Sharp/WC</b>  ⚠️ {_CC.UNDER_RESTATEMENT} — no P/L shown")
         except Exception:
             pass
 
@@ -2622,6 +2813,16 @@ def notify_retrain_result() -> bool:
     return True
 
 
+def threshold_source_line(src) -> str:
+    """The alert line that says a side tip was tiered on the GLOBAL bar (fix9/defaults 2026-11-04).
+    A tier on the declared global policy bar (config.SIDE_GLOBAL_BARS) must never read like a
+    per-league tier; a LEAGUE tier, or a row that does not record its bar, adds no line."""
+    s = str(src).strip().upper() if src is not None and not (isinstance(src, float) and src != src) else ""
+    if s == app_config.THRESHOLD_SOURCE_GLOBAL:
+        return "📏 Tier on the GLOBAL bar - no approved per-league threshold\n"
+    return ""
+
+
 def notify_side_bets() -> int:
     """Send Telegram alerts for SNIPER/MARKSMAN BTTS / Over 1.5 / Over 3.5 tips. Returns count sent."""
     cfg = _load_config()
@@ -2646,7 +2847,7 @@ def notify_side_bets() -> int:
     # each fixture+market once.
     df = df[df["signal_tier"].isin(["SNIPER", "MARKSMAN", "VALUABLE"])].copy()
 
-    today_str = datetime.now().strftime("%Y-%m-%d")
+    today_str = _utc_today_str()   # UTC day: stored dates are UTC (src/utc_clock.py)
     df = df[df["date"].astype(str).str[:10] >= today_str]
 
     if df.empty:
@@ -2699,6 +2900,7 @@ def notify_side_bets() -> int:
             f"⚽ {row['home_team']} vs {row['away_team']}\n"
             f"📌 <b>{label}</b>  @ {float(row['market_odds']):.2f}\n"
             f"📊 Edge: <b>{edge:.1f}%</b>  |  EV: <b>{ev:+.1f}%</b>  |  Model P={float(row['model_prob'])*100:.0f}%\n"
+            + threshold_source_line(row.get("threshold_source")) +
             f"⚠️ Check your bookmaker's {label} market"
         )
 

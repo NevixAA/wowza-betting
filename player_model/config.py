@@ -60,6 +60,21 @@ MARKETS    = ["goals", "goals2", "assists", "sot", "sot2", "sot3", "sot4", "card
 # at -41% to -57%.
 MIN_SIGNAL_PROB = 0.15
 
+# ── Owner serving rules for props tips (2026-11-08) ──────────────────────────
+# "No GK attacking tips": a goalkeeper (position 'G') is never tipped on shots on target, goals or
+# assists. Cards stay allowed. Evidence: on the props clean-retrain holdout (2026-09-01..10-31) the
+# 2,992 goalkeeper rows had a real SOT and goal rate of 0%, while the model gave 6.5% / 3.2%.
+GK_BLOCKED_MARKETS = frozenset({"sot", "sot2", "sot3", "sot4", "goals", "goals2", "goals3", "assists"})
+#: "Retrain them too": these markets still serve models trained on the placeholder history
+#: (age 25 / 180 cm / 75 kg). Until the props clean retrain covers them they make NO tip and are
+#: not on the board. The model files stay where they are.
+HIDDEN_PENDING_CLEAN_RETRAIN = frozenset({"goals2", "goals3", "sot3", "sot4"})
+#: reason codes, counted and printed by predict.generate_tips (a skipped tip is never silent)
+SKIP_GK_ATTACKING = "GK_NO_ATTACKING_TIP"
+SKIP_HIDDEN_MARKET = "MARKET_HIDDEN_PENDING_CLEAN_RETRAIN"
+#: a tip whose player position is unknown is NOT guessed: it is kept and labelled
+POSITION_UNKNOWN = "UNKNOWN"
+
 # World Cup cards: features are imputed → predictions inflate to ~0.40 for everyone.
 # Only emit WC card tips for players whose REAL booking rate (max of cards_pg /
 # season_cards_pg) is at least this — for them, ~0.40 is roughly their true rate.
@@ -179,7 +194,6 @@ PLAYER_FEATURE_COLS = [
     "opp_adjusted_shot_threat",  # shots_pg * opp_sot_conceded_pg — r=0.237
     "creative_playmaker_score",  # kp_per90 * position weight — r=0.311
     "team_corners_pg",           # rolling corners earned per match
-    "set_piece_threat_score",    # aerial_won_rate × (corners/6) × 0.30 sp rate × position
     # Match context
     "is_home",
     "opp_goals_conceded_pg", "opp_sot_conceded_pg",
@@ -251,7 +265,6 @@ PLAYER_FEATURE_COLS = [
     "efficiency_vs_leaky_keeper",     # shooting_efficiency_index × opp_sot_conceded_pg
     "kp_vs_aggressive_defense",       # kp_per90 × opp_def_cards_pg
     "team_momentum_forward_matchup",  # team_goals_pg_roll × opp_goals_conceded_pg × pos_forward
-    "set_piece_corner_matchup",       # set_piece_threat_score × (team_corners_pg/6)
     "creative_pressure_matchup",      # creative_playmaker_score × opp_def_fouls_pg
     "dribbler_vs_defensive_line",     # dribble_creativity_score × (1 - opp_def_aerial_win_rate)
     "carrier_vs_press",               # progressive_carrier_score × opp_def_aggression
@@ -262,32 +275,16 @@ PLAYER_FEATURE_COLS = [
     "tackle_dribble_clash",          # dribble_contact_rate × opp_mid_fouls_pg
     "card_clash_index",              # (fouls_per90 + dribble_contact_rate) × opp_mid_cards_pg × referee_strictness
     "opp_mid_discipline",            # opp_mid_fouls_pg×0.6 + opp_mid_cards_pg×2.0
-    # ── Set piece event features (from /fixtures/events — header/FK goals) ──────
-    "sp_goals_pg",               # rolling SP goals per game (headers + FKs)
+    # ── Goal-type features (from /fixtures/events goal detail — header / free kick) ──
     "headed_goals_pg",           # rolling header goals per game
     "fk_goals_pg",               # rolling direct free kick goals per game
-    "sp_assist_pg",              # rolling SP assists per game (taker signal)
-    "career_sp_goals_rate",      # career SP goal rate (expanding window)
-    "career_sp_assist_rate",     # career SP assist rate (taker signal, expanding)
-    "sp_goals_share",            # sp_goals_pg / goals_pg capped [0,1]
-    "headed_goals_share",        # headed_goals_pg / goals_pg capped [0,1]
-    # ── Set piece role ────────────────────────────────────────────────────────
-    "sp_taker_score",            # 0-1 probability this player DELIVERS set pieces
-    "sp_receiver_score",         # aerial threat when NOT the taker (defender/CM)
+    "headed_goals_share",        # headed_goals_pg / goals_pg
+    # (Set-piece features: the ONLY real ones are the Understat us_sp_* columns; every typed
+    #  set-piece proxy was purged 2026-11-02, see SETPIECE_PROXIES_REMOVED below.)
     # ── Height matchup vs opponent defenders ──────────────────────────────────
     "opp_def_mean_height",       # mean height of opponent starting defenders (cm)
     "height_diff_vs_opp_def",    # player height minus opp mean CB height
     "height_advantage_score",    # normalized: +1 = 10cm taller, clipped [-2,+2]
-    # ── Opponent set piece vulnerability ──────────────────────────────────────
-    "opp_sp_goals_conceded_pg",  # rolling SP goals conceded per game by opponent
-    # ── Set piece composites ──────────────────────────────────────────────────
-    "defender_sp_edge",              # aerial_won * height_adj * opp_sp_weakness * (1-taker)
-    "defender_sot_edge",             # SP aerial SOT threat — core defender-market edge (goals×5 proxy)
-    "defender_sot_role_index",       # how central this defender is to team's aerial SP attack
-    "sp_threat_vs_weak_sp_defense",  # sp_goals_pg * opp_sp_goals_conceded_pg / 0.12
-    "aerial_height_sp_composite",    # aerial_won * height_adj * opp_sp_pg * pos_weight
-    "sp_goal_probability_composite", # career + rolling + aerial + opp weighted sum
-    "sp_taker_assist_edge",          # taker prob * sp_assist rate * corner volume
     # ── Opposition quality adjustment (fixes weak-league inflation) ───────────
     "opp_strength_index",      # rolling: opp goals conceded relative to league avg
     "quality_adj_goals_pg",    # goals_pg * (1 / opp_strength_index), league-scaled
@@ -304,6 +301,17 @@ PLAYER_FEATURE_COLS = [
     "context_quality_discount",  # player career quality / opp def quality
     "quality_mismatch_goals",    # goals_pg * context_quality_discount
     "quality_mismatch_sot",      # sot_pg * context_quality_discount
+    # ── Previous season + longer-window shot accuracy (owner-approved 2026-11-02, fix6/props6) ──
+    # Real values over the player's / team's PREVIOUS season (own names; never fill a season_*
+    # value), NaN below MIN_PREV_SEASON_MATCHES; shot_accuracy_l10 = sum SOT / sum shots over the
+    # last SHOT_ACC_WINDOW matches, NaN below MIN_SHOTS_FOR_ACCURACY shots. Absent from the stored
+    # player_history until it is rebuilt; the props imputer drops an all-missing column at fit.
+    "prev_season_goals_pg", "prev_season_assists_pg", "prev_season_shots_pg", "prev_season_sot_pg",
+    "prev_season_cards_pg", "prev_season_minutes_pg", "prev_season_start_rate",
+    "prev_season_appearances", "prev_season_shot_accuracy",
+    "prev_season_team_goals_pg", "prev_season_team_conceded_pg",
+    "prev_season_opp_goals_pg", "prev_season_opp_conceded_pg",
+    "shot_accuracy_l10",
 ]
 
 # Pruned 2026-06-30 (local): set-piece / goal-type features that can't be reliably populated —
@@ -311,14 +319,48 @@ PLAYER_FEATURE_COLS = [
 # (API-Football goal events = "Normal Goal" only; Opta/StatsBomb-commercial = enterprise;
 # StatsBomb-open = historical seasons only; FBref = no clean headed-goals). All were 0-0.5%
 # nonzero (dead weight/noise). Removed so models train on RELIABLE features only.
-_DEAD_GOAL_TYPE_FEATURES = {
-    "sp_goals_pg", "headed_goals_pg", "fk_goals_pg", "sp_assist_pg",
-    "career_sp_goals_rate", "career_sp_assist_rate", "sp_goals_share", "headed_goals_share",
-    "sp_threat_vs_weak_sp_defense", "sp_taker_assist_edge", "opp_sp_goals_conceded_pg",
-    "sp_goal_probability_composite", "defender_sp_edge", "defender_sot_edge",
-    "aerial_height_sp_composite",
-}
+_DEAD_GOAL_TYPE_FEATURES = {"headed_goals_pg", "fk_goals_pg", "headed_goals_share"}
 PLAYER_FEATURE_COLS = [f for f in PLAYER_FEATURE_COLS if f not in _DEAD_GOAL_TYPE_FEATURES]
+
+# PURGED 2026-11-02 (owner rule "no fake data, no proxies"; fix6/props6). These were named as
+# set-piece data but built from aerial-duel / corner / height numbers with typed rates (x 0.30 "sp
+# rate", x 5.0 "SOT proxy") and clip bounds, or from `sp_goal` (= ANY header or free-kick goal).
+# They are no longer built for training or serving (feature_engineering.REMOVED_SETPIECE_FEATURES)
+# and can never re-enter this list. The legacy serving payloads that list five of them read them as
+# absent -> NaN, which is what they already read (all-NaN columns since 2026-11-01).
+SETPIECE_PROXIES_REMOVED = frozenset({
+    "sp_taker_score", "sp_receiver_score", "set_piece_threat_score", "set_piece_corner_matchup",
+    "defender_sot_role_index", "defender_sp_edge", "defender_sot_edge",
+    "sp_threat_vs_weak_sp_defense", "sp_taker_assist_edge", "aerial_height_sp_composite",
+    "sp_goal_probability_composite", "opp_sp_goals_conceded_pg", "sp_goals_pg", "sp_assist_pg",
+    "career_sp_goals_rate", "career_sp_assist_rate", "sp_goals_share",
+})
+PLAYER_FEATURE_COLS = [f for f in PLAYER_FEATURE_COLS if f not in SETPIECE_PROXIES_REMOVED]
+
+# WITHHELD FROM TRAINING 2026-11-02 (fix6/props6): hand formulas whose VALUE is shaped by typed
+# weights / normalisers / smoothing constants, not by a measurement (e.g. penalty_threat_score =
+# penalties_won_pg * 3.0 + fouls_drawn_per90 * 0.08, capped at 1.0; midfield_engine_score =
+# passes/50 * 0.4 + kp/3 * 0.4 + tackles/5 * 0.2). Their inputs are real and stay features under
+# their own names. The serving payloads persist their own feature_cols, so serving keeps computing
+# these (feature_engineering._add_composites, unchanged) until the next owner-approved retrain,
+# which then trains without them. A feature whose only constant is a unit conversion (/90) or a
+# position mask, or a product / ratio of measured rates, is NOT here.
+TYPED_FORMULA_FEATURES_WITHHELD = frozenset({
+    "creative_playmaker_score",       # kp_per90 * (pm + 0.5 * pf)
+    "defensive_solidity",             # def_actions * (1 - dp / (dp + 1.0))
+    "penalty_threat_score",           # pens_won * 3.0 + fouls_drawn * 0.08, clip 1.0
+    "card_risk_index",                # cards * 2.0 + reds * 3.0 + ratio * 0.5, clip 1.0
+    "midfield_engine_score",          # /50, /3, /5 normalisers, 0.4/0.4/0.2 weights, 0.3 * pd
+    "aggression_adjusted_threat",     # / (1 + offsides * 0.3)
+    "defensive_vulnerability_index",  # 1.5 / 0.5 / 0.5 weights, clip 2.0, 1.0/0.7/0.3 positions
+    "progressive_carrier_score",      # /3, /60 normalisers, 0.45/0.35/0.20 weights, clips
+    "disciplinary_pressure_index",    # 0.20/0.25/1.5/0.10 weights, clip 2.0
+    "foul_magnet_score",              # 0.30/0.40/0.30 weights over two typed scores, clip 1.0
+    "creative_pressure_matchup",      # creative_playmaker_score (typed 0.5) * opp_def_fouls_pg
+    "carrier_vs_press",               # progressive_carrier_score (typed) * opp_def_aggression
+    "opp_mid_discipline",             # opp_mid_fouls * 0.6 + opp_mid_cards * 2.0
+})
+PLAYER_FEATURE_COLS = [f for f in PLAYER_FEATURE_COLS if f not in TYPED_FORMULA_FEATURES_WITHHELD]
 
 # 2026-07-08 (full A-Z audit): the referee/quality/height/rest features had BUGS (leak,
 # train≠serve scale, call-order, wrong-opponent, unit/inversion). Those computations are now
@@ -328,6 +370,66 @@ PLAYER_FEATURE_COLS = [f for f in PLAYER_FEATURE_COLS if f not in _DEAD_GOAL_TYP
 _DATA_GAP_FEATURES = {"season_pass_accuracy"}
 PLAYER_FEATURE_COLS = [f for f in PLAYER_FEATURE_COLS if f not in _DATA_GAP_FEATURES]
 
+# HISTORY - WITHHELD UNTIL REAL DATA EXISTS (props_truth, 2026-11-02; round-2 finding V3). Measured on the
+# committed player_history at data-truth-100 40d7dda9: age = 25.0, height_cm = 180, weight_kg = 75
+# and age_peak_delta = 0 on 876,130 of 876,130 rows - the old build_features placeholders, never a
+# collected value (enrich-profiles never populated them). Every feature below is that placeholder or
+# arithmetic on it, so it carries no information about the player. They leave the props TRAINING
+# feature set (config.PLAYER_FEATURE_COLS); the serving payloads keep their own persisted
+# feature_cols and are untouched (no retrain - the drop takes effect at the next owner-approved
+# props retrain). Re-admit a feature only when player_history carries a REAL value for it
+# (collected profiles, output/collect/player_profiles.parquet) on a measured share of rows.
+#
+# RE-ADMITTED ON REAL VALUES (fix/props-real-profiles, 2026-11-10). The stored player_history
+# columns still hold the placeholders (887,007 of 887,007 rows on 2026-11-10; rows synced from main
+# keep arriving with them until go-live, because main's build_features still writes them) and are
+# NEVER read as values: feature_engineering._profile reads 25 / 180 / 75 as missing, and
+# build_features (training) and build_upcoming_features (serving: the same code) take every value
+# from the collected profiles (output/collect/player_profiles.parquet) through ONE path:
+#   _attach_profiles   height_cm / weight_kg from the profile; age = (match date - birth_date), the
+#                      age ON THE MATCH DATE, never today's age
+#   _height_series     opp_def_mean_height = per opponent match, the mean real height of the
+#                      defenders it fielded whose height is known (a defender without one is left
+#                      out, never 180), rolled over the opponent's EARLIER matches (_TEAM_ROLL)
+#   profile_composites height_diff_vs_opp_def, height_advantage_score, height_aerial_interaction,
+#                      age_peak_delta from those real values; NaN wherever an input is missing
+# Measured coverage on the props clean-retrain training population (run 42640972400, 2026-11-09,
+# all_prior_verified rows): age 97.4%, age_peak_delta 97.4%, height_cm 91.4%,
+# height_aerial_interaction 90.6%, opp_def_mean_height 97.2%, height_diff_vs_opp_def 89.1%,
+# height_advantage_score 89.1%; the rest is NaN. Every props harness report records it again
+# (features.profile_coverage). The served props models of 2026-11-09 learned these real values
+# (age bins 18.1-38.7, height bins 156.5-208 cm, opp_def_mean_height bins 175.5-191.3 cm), not the
+# placeholders. weight_kg is attached the same way but is not a model feature.
+PROFILE_FEATURES = (
+    "age", "age_peak_delta", "height_advantage_score", "height_aerial_interaction",
+    "height_cm", "height_diff_vs_opp_def", "opp_def_mean_height",
+)
+PLAYER_FEATURE_COLS = [f for f in PLAYER_FEATURE_COLS if f not in PROFILE_FEATURES] + list(PROFILE_FEATURES)
+
+# NaN BY CONSTRUCTION, NOT FEATURES (2026-11-10). The legacy HAND-tier league quality columns
+# (league_quality.LEGACY_COLUMNS) are never measured: build_features writes them NaN on every row, so
+# a model listing them learns nothing from them (the 2026-11-09 HGB props models dropped all six as
+# constant at fit; the cards recipe dropped them as unfittable). The measured strength carries other
+# names (league_quality.MEASURED_COLUMNS; adopting them is an owner decision, not made here).
+LEGACY_QUALITY_FEATURES_REMOVED = frozenset({
+    "league_tier", "league_quality", "player_career_avg_quality",
+    "context_quality_discount", "quality_mismatch_goals", "quality_mismatch_sot",
+})
+PLAYER_FEATURE_COLS = [f for f in PLAYER_FEATURE_COLS if f not in LEGACY_QUALITY_FEATURES_REMOVED]
+
+# A player-match row cannot have more minutes than a match with extra time (120) plus stoppage.
+# Stored rows above this are provider errors (League One / League Two 2024-03-13/14: 142-174 min);
+# the raw value is kept and the minutes-derived features treat it as missing. 121-123 min appear on
+# extra-time matches (World Cup 2026-07-03, Argentina 2025-12-02) and are plausible.
+MAX_MATCH_MINUTES = 130
+
+# CURRENT-CLUB RULE at tip time (invariant 12): a player whose latest CLUB appearance in
+# player_history is for a different club than the one we would tip him for, within this many days
+# of the fixture, is not tipped (conflicting evidence, logged). Ghost tips measured 2026-11-02: 337
+# graded player_ledger rows where the same player_id played another fixture that day (Anthony Gordon
+# for Newcastle on 2026-08-23 while at Barcelona; Casemiro for Manchester United while at Inter Miami).
+CURRENT_CLUB_CONFLICT_DAYS = 21
+
 # Understat shot-level features (xG, headed/SP/FK goals, goals-xG) were scraped + integrated
 # (3 seasons, 133k shots, 84% top-5 coverage) and tested 2026-06-30: NO measurable AUC gain
 # (deltas +/-0.002, noise) even on top-5-only rows. Reason: redundant with existing goals_pg/
@@ -335,7 +437,6 @@ PLAYER_FEATURE_COLS = [f for f in PLAYER_FEATURE_COLS if f not in _DATA_GAP_FEAT
 # _UNDERSTAT_FEATURES = ["u_xg_pg","u_xg_recent","u_goals_minus_xg","u_headed_goals_pg","u_sp_goals_pg","u_fk_goals_pg"]
 
 # Phase 2 (future — needs /fixtures/events API data):
-#   "set_piece_threat_score"   (aerial_won_rate * team_corners_per90_opp * opp_sp_concession_rate)
 #   "referee_strictness"       (/fixtures/events fouls + /standings high-stakes flag)
 # Phase 3 (future — needs /players/statistics API data):
 #   "xg_per90", "xa_per90"    (shot location weighting — top goals feature once available)
@@ -343,109 +444,26 @@ MIN_APPEARANCES  = 3   # season-stats fallback path
 MIN_GAMES_SIGNAL = 5   # minimum match history to generate a signal
 MIN_GAMES_SNIPER = 8
 
+# ── Minimum samples for MEASURED context features (Data Truth, owner rule 2026-11-01) ──────────
+# Opponent / keeper / penalty / referee / league context is computed from the matches we hold.
+# Below these sample sizes the value is NaN (explicitly missing), never a typed prior.
+MIN_OPP_MATCHES    = 3    # an opponent team's prior matches before its concede/discipline rates count
+MIN_GK_MATCHES     = 3    # a keeper's prior matches before his save rate / saves count
+MIN_PEN_ATTEMPTS   = 3    # a player's prior penalty attempts before his conversion rate counts
+MIN_REF_MATCHES    = 3    # a referee's prior matches before his yellows/match counts
+MIN_LEAGUE_MATCHES = 20   # a league's prior fixtures before its own average is used as a normaliser
+MIN_PREV_SEASON_MATCHES = 5   # a player's / team's previous-season matches before a prev_season_* mean counts
+SHOT_ACC_WINDOW = 10          # matches in shot_accuracy_l10 (the 5-match shot_accuracy_rate stays as is)
+MIN_SHOTS_FOR_ACCURACY = 10   # shots in the window (or previous season) below which an accuracy is NaN
+
 # ── Leagues with player prop markets ─────────────────────────────────────────
-# IMPORTANT: Only popular leagues have SOT/Goals/Cards prop markets at bookmakers.
-# Lower leagues (League Two, Ligue 2, La Liga 2) rarely have these markets.
-PROP_LEAGUES = {
-    # ── Top tier — biggest player prop markets ────────────────────────────────
-    "Premier League":  39,    # ⭐⭐⭐⭐⭐ Most liquid props globally
-    "Bundesliga":      78,    # ⭐⭐⭐⭐  Very active German market
-    "La Liga":         140,   # ⭐⭐⭐⭐  Active Spanish market
-    "Serie A":         135,   # ⭐⭐⭐   Good Italian coverage
-    "Ligue 1":         61,    # ⭐⭐⭐   French market
-    # ── Our standard model leagues — moderate prop coverage ───────────────────
-    "Championship":    40,
-    "League One":      41,
-    # League Two ADDED 2026-08-27. It was in neither PROP_LEAGUES nor PROP_SPORT_KEYS, so its
-    # players were AVOID by construction — the "no sport key, never asked" case. OddsAPI does not
-    # sell props for it, but API-Football does (13 books, 11 prop markets, 127 quotes on one
-    # probe fixture), and the second source can only reach leagues listed here.
-    "League Two":      42,
-    "Bundesliga 2":    79,
-    # ── European club competitions ────────────────────────────────────────────
-    "Champions League":    2,    # ⭐⭐⭐⭐⭐ Biggest club prop market
-    "Europa League":       3,    # ⭐⭐⭐⭐  Active prop market
-    "Conference League":   848,  # ⭐⭐⭐   Growing prop market
-    # ── World Cup 2026 — biggest event globally ───────────────────────────────
-    "World Cup":       1,
-    # ── Bet leagues, ADDED 2026-08-27 after probing API-Football per league ───
-    #
-    # Every one of these is a league we BET on that had no prop coverage at all: not in
-    # PROP_LEAGUES, so the second source could not reach it, and its players were AVOID by
-    # construction. 13 of the 16 uncovered bet leagues returned real player-prop markets on a
-    # one-fixture probe each, with the markets found listed below.
-    #
-    # USA MLS matters most: it is our largest single league by settled bets, and OddsAPI
-    # OFFICIALLY supports MLS props (their docs list it, and a probe returned 133 quotes), so it
-    # gets an OddsAPI sport key too and will draw on both sources.
-    "USA MLS":                    253,  # goals, sot, assists  (+ OddsAPI: 133 quotes)
-    "Mexico Liga MX":             262,  # goals, sot, assists, cards
-    "Denmark Superliga":          119,  # goals, sot, assists, cards
-    "Romanian Superliga":         283,  # goals, sot, assists, cards
-    "Brazil Serie A":              71,  # goals, sot, assists
-    "Argentina Primera Division": 128,  # goals, sot, assists
-    "La Liga 2":                  141,  # goals, sot, assists — we already send tips here
-    "Serie B":                    136,  # goals, sot, assists — we already send tips here
-    "Sweden Allsvenskan":         113,  # goals, assists
-    "Norway Eliteserien":         103,  # goals, assists
-    "Austrian Bundesliga":        218,  # goals, assists
-    "China Super League":         169,  # goals, assists
-    "Ireland Premier Division":   357,  # goals, assists — we already send tips here
-    # Bet leagues with NO fixtures scheduled at probe time, so availability is UNKNOWN rather
-    # than absent. Listed so they are covered the moment fixtures appear; the coverage ledger
-    # will record what they actually return.
-    "Japan J-League":              98,  # no upcoming fixtures at probe time
-    # WAS 65, WHICH IS NOT LIGUE 2. Id 65 is `Coupe de la Ligue`, a French league cup whose
-    # last season was 2019 — so every fixture list came back empty and the league looked like
-    # it simply had no matches. That is why the 2026-08-27 probe recorded "no upcoming
-    # fixtures at probe time" rather than a wrong id. Verified 2026-09-24 against
-    # /leagues?country=France&type=League: Ligue 1 is 61, Ligue 2 is 62, Ligue 3 is 63.
-    # All 29 ids in this dict were re-validated against the API in the same pass; this was
-    # the only wrong one.
-    "Ligue 2":                     62,
-    # Probed and returned ZERO player-prop markets. Kept so the ledger records that from
-    # evidence rather than the league silently never being asked.
-    "Finland Veikkausliiga":      244,  # 11 books, 0 player-prop markets
-}
-# Season year for each league (API-Football uses start year of season)
-def _prop_season_now() -> str:
-    """API-Football season (its start year) for the campaign in progress.
-
-    DERIVED, NOT TYPED. The old PROP_SEASONS was a hand-maintained dict listing each league
-    explicitly, which broke twice in the same way:
-      * frozen at "2025" while PROP_SEASONS said "2026" — six weeks uncollected (2026-08-16), and
-      * a league added to PROP_LEAGUES with no matching PROP_SEASONS entry gets season None and
-        is silently skipped, which is what happened to League Two on 2026-08-27.
-    A parallel list of the same leagues is a bug waiting for the next edit, so the season is now
-    computed and every league in PROP_LEAGUES gets one automatically.
-
-    European seasons start in July, so months 7-12 belong to the year that has just begun and
-    months 1-6 to the campaign that started the previous year.
-
-    SUPERSEDED for PROP_SEASONS (Data Truth audit findings 38, 41): this European rule was applied
-    to EVERY league, so J1 was '2026' while its live season is 2027, and calendar-year leagues (MLS,
-    Brazil, Argentina, Nordics, China, Ireland) would be a year behind every January-June. Kept only
-    for callers outside player_model that import it.
-    """
-    from datetime import date
-    t = date.today()
-    return str(t.year if t.month >= 7 else t.year - 1)
-
-
-def prop_season(league: str, on_date=None) -> str:
-    """API-Football season for `league` on `on_date` (default today), from the canonical
-    registry's season rules (src.season_resolver). An unknown league gives 'SEASON_UNKNOWN',
-    which API-Football answers with nothing - a visible miss, never a guessed year."""
-    return _season_resolver().resolve_api_season(league, on_date)
-
-
-_SR_FOREIGN = None      # v9's resolver, privately loaded under a foreign `src` (see below)
-
-
-def _season_resolver():
-    """v9's src.season_resolver, even when the importer has its OWN `src` package (wowzaV9-Pro
-    imports player_model from _v9/, and there `src` is Pro's - a plain import crashed Pro Live Odds
-    on 2026-11-01). A foreign `src` and sys.path are restored afterwards."""
+# DERIVED FROM THE REGISTRY (Data Truth, LR-1.1): config/leagues.json `props: true` entries,
+# {canonical name: API-Football id}. The hand-typed table that lived here (29 leagues, with the
+# probe notes) was copied into the registry verbatim and is no longer typed in code.
+def _v9_src(module: str):
+    """v9's src.<module>, even when the importer has its OWN `src` package (wowzaV9-Pro imports
+    player_model from _v9/, and there `src` is Pro's - a plain import crashed Pro Live Odds on
+    2026-11-01). A foreign `src` and sys.path are restored afterwards."""
     import importlib
     import sys
     from pathlib import Path
@@ -456,15 +474,15 @@ def _season_resolver():
     if not foreign:
         if str(root) not in sys.path:
             sys.path.append(str(root))
-        return importlib.import_module("src.season_resolver")
+        return importlib.import_module(f"src.{module}")
+    if module in _SRC_FOREIGN:
+        return _SRC_FOREIGN[module]
     saved_path = list(sys.path)
     saved = {k: sys.modules.pop(k) for k in list(sys.modules) if k == "src" or k.startswith("src.")}
     sys.path.insert(0, str(root))
     try:
-        global _SR_FOREIGN
-        if _SR_FOREIGN is None:
-            _SR_FOREIGN = importlib.import_module("src.season_resolver")
-        return _SR_FOREIGN
+        _SRC_FOREIGN[module] = importlib.import_module(f"src.{module}")
+        return _SRC_FOREIGN[module]
     finally:
         sys.path[:] = saved_path
         for k in [k for k in sys.modules if k == "src" or k.startswith("src.")]:
@@ -472,15 +490,32 @@ def _season_resolver():
         sys.modules.update(saved)
 
 
+_SRC_FOREIGN: dict = {}     # v9 modules privately loaded under a foreign `src`
+
+
+def league_registry():
+    """v9's src.league_registry (foreign-`src` safe)."""
+    return _v9_src("league_registry")
+
+
+PROP_LEAGUES = league_registry().prop_leagues()
+
+
+def prop_season(league: str, on_date=None) -> str:
+    """API-Football season for `league` on `on_date` (default today), from the canonical
+    registry's season rules (src.season_resolver). An unknown league gives 'SEASON_UNKNOWN',
+    which API-Football answers with nothing - a visible miss, never a guessed year.
+    (The month>=7 `_prop_season_now` rule that used to sit here was deleted: it gave every league
+    the European calendar, Data Truth audit findings 38, 41.)"""
+    return _v9_src("season_resolver").resolve_api_season(league, on_date)
+
+
 # One entry per league in PROP_LEAGUES, always. Never edit this by hand — add the league to
 # PROP_LEAGUES and its season appears here. League-aware since 2026-11-01.
 PROP_SEASONS = {league: prop_season(league) for league in PROP_LEAGUES}
-FBREF_LEAGUES = {
-    "Championship": (10, "Championship"), "League One": (15, "League-One"),
-    "League Two": (16, "League-Two"),     "Bundesliga 2": (33, "2-Bundesliga"),
-    "Ligue 2": (60, "Ligue-2"),           "La Liga 2": (17, "Segunda-Division"),
-    "Serie B": (18, "Serie-B"),
-}
-
+# {league: (fbref id, fbref slug)} from the registry's provider_names.fbref (LR-1.1), no longer typed.
+FBREF_LEAGUES = {e["name"]: (e["provider_names"]["fbref"]["id"], e["provider_names"]["fbref"]["slug"])
+                 for e in league_registry().leagues()
+                 if (e.get("provider_names") or {}).get("fbref")}
 CACHE_DAYS    = 7
 REQUEST_DELAY = 4.0

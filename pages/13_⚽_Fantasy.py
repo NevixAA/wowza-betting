@@ -79,8 +79,9 @@ def _num(x, fmt="{:.2f}", none="—"):
 age_now = fdata.v2_fpl_age_hours()
 fresh = ("UNKNOWN" if age_now is None else "CURRENT" if age_now <= 30 else
          "AGING" if age_now <= 54 else "STALE")
+from src.league_registry import fpl_league as _fpl_league  # noqa: E402 - the FPL league from the registry
 ui.page_header(
-    "Fantasy", "Premier League Fantasy projections anchored on FPL's own expected points, with Wowza's "
+    "Fantasy", f"{_fpl_league() or 'FPL'} Fantasy projections anchored on FPL's own expected points, with Wowza's "
     "minutes, role, fixture and uncertainty layer. Scored in **FPL points** — not betting tips.",
     eyebrow_text="FPL · Fantasy V2",
     freshness=ui.freshness_badge(fresh, f"FPL data {age_now:.0f}h old" if age_now is not None
@@ -106,7 +107,7 @@ ui.metric_grid([
      "help": "The gameweek these projections are FOR (FPL's next deadline)."},
     dl_item,
     {"label": "Projection health", "value": ph.get("state", "—"),
-     "delta": f"{ph.get('players', 0)} players · {ph.get('minutes_disagreements', 0)} minutes flags",
+     "delta": f"{ph.get('players', '—')} players · {ph.get('minutes_disagreements', '—')} minutes flags",
      "delta_color": "off",
      "help": "FPL data age comes from the RECORDED fetch time in fpl_cache_meta.json, never from file "
              "mtime. The daily job runs once a day, so up to ~30h is normal."},
@@ -118,9 +119,9 @@ if bs.get("residual_applied"):
                 "acceptance gate and is applied.")
 else:
     st.markdown(ui.status_chip("SHADOW") +
-                f" **Mean forecast: {bs.get('mean_forecast', 'FPL ep_next')}.** FPL baseline + Wowza "
+                f" **Mean forecast: {bs.get('mean_forecast') or '—'}.** FPL baseline + Wowza "
                 f"residual is a *shadow* adjustment — acceptance gate **{dec or '—'}** (mode "
-                f"`{bs.get('residual_mode', 'shadow')}`); not added to the headline number until it beats "
+                f"`{bs.get('residual_mode') or '—'}`); not added to the headline number until it beats "
                 "FPL over enough completed gameweeks.")
 if fresh in ("STALE", "UNKNOWN"):
     ui.empty_state("STALE", "FPL snapshot is stale or undatable — injuries, prices and the squad list "
@@ -141,6 +142,9 @@ if not all(hasattr(tools, f) for f in ("board", "differentials", "prop_leaderboa
 
 v1 = tools.board()
 
+# Owner decision 2026-11-05: convention-based figures stay visible and are labelled as such.
+st.caption(fv.FIGURES_NOTE)
+
 t_over, t_play, t_tr, t_cap, t_fix, t_sq, t_lab = st.tabs(
     ["Overview", "Players", "Transfers", "Captaincy", "Fixtures", "Squad", "Model lab"])
 
@@ -160,7 +164,7 @@ with t_over:
         fv.captain_card(c, fv.lookup(proj, c), title, container=col)
 
     ui.section_header("Top transfers", "Best precomputed moves among the most-owned players, ranked "
-                      "by 5-gameweek gain. Plan your own in the Transfers tab.")
+                      f"by 5-gameweek gain ({fv.CONVENTION_LABEL}). Plan your own in the Transfers tab.")
     if trans.empty:
         ui.empty_state("NO_DATA", "No precomputed transfers in the artifact.")
     else:
@@ -168,11 +172,12 @@ with t_over:
             fv.precomputed_move_card(t, container=col)
 
     ui.section_header("Best value", "Startable players (P(start) ≥ 60 %, not doubtful) with the most "
-                      "5-gameweek expected points per £m.")
+                      "5-gameweek expected points per £m. The 5-GW points and pts/£m are "
+                      f"{fv.CONVENTION_LABEL}.")
     bv = fv.best_value(proj, 3)
     for col, (_, r) in zip(st.columns(3), bv.iterrows()):
         fv.player_card(r, eyebrow_text=f"BEST VALUE · {r['value_5gw_per_m']:.2f} pts/£m (5 GW)",
-                       container=col)
+                       extra_caption=f"pts/£m (5 GW): {fv.CONVENTION_LABEL}", container=col)
 
     ui.section_header("Fixture swing", "Easiest and hardest runs over the next gameweeks by mean "
                       "official FDR. Full matrix in the Fixtures tab.")
@@ -203,7 +208,9 @@ with t_play:
             elif k == "best_captain":
                 fv.captain_card(r, fv.lookup(proj, r), title, container=col)
             else:
-                fv.player_card(r, eyebrow_text=title, container=col)
+                fv.player_card(r, eyebrow_text=title, container=col,
+                               extra_caption=(f"Ranked on 5-GW pts/£m: {fv.CONVENTION_LABEL}"
+                                              if k == "best_value" else ""))
 
     ui.section_header("Top projected", "Highest final xPts among players not ruled out.")
     pos_pick = st.radio("Position", ["All"] + POS_ORDER, horizontal=True, key="card_pos")
@@ -251,14 +258,17 @@ with t_play:
         "cs_prob": st.column_config.NumberColumn("P(CS)", format="percent"),
         "median": st.column_config.NumberColumn("Median", format="%.0f"),
         "p90": st.column_config.NumberColumn("P90", format="%.0f"),
-        "xpts_3gw": st.column_config.NumberColumn("3-GW", format="%.1f"),
-        "xpts_5gw": st.column_config.NumberColumn("5-GW", format="%.1f"),
-        "value_5gw_per_m": st.column_config.NumberColumn("5-GW/£m", format="%.2f"),
+        "xpts_3gw": st.column_config.NumberColumn("3-GW (convention)", format="%.1f",
+                                                  help=fv.CONVENTION_LABEL),
+        "xpts_5gw": st.column_config.NumberColumn("5-GW (convention)", format="%.1f",
+                                                  help=fv.CONVENTION_LABEL),
+        "value_5gw_per_m": st.column_config.NumberColumn("5-GW/£m (convention)", format="%.2f",
+                                                         help=fv.CONVENTION_LABEL),
         "ownership": st.column_config.NumberColumn("Own %", format="%.1f"),
         "next_fixture": "Next", "risk": "Risk", "confidence": "Confidence"})
-    st.caption(f"{len(v)} of {len(proj)} players.")
+    st.caption(f"{len(v)} of {len(proj)} players. 3-GW, 5-GW and 5-GW/£m are {fv.CONVENTION_LABEL}.")
 
-    ui.section_header("More player tools", "On the V1 projection board.")
+    ui.section_header("More player tools", f"On the V1 projection board. {fv.V1_NOTE}")
     p_diff, p_lead, p_sp = st.tabs(["Differentials", "Prop leaderboards", "Set-pieces & pens"])
     with p_diff:
         tools.differentials(v1)
@@ -290,10 +300,12 @@ with t_tr:
                 fv.transfer_card(o, c, horizon=horizon, gain=float(c["gain"]), container=col)
     st.caption("Expected gain = IN minus OUT on the chosen horizon (the ranking number). Price change, "
                "next/3/5-GW gains and fixture swing (mean FDR of the next five, IN minus OUT; negative = "
-               "easier) are the same subtraction on the other published columns.")
+               "easier) are the same subtraction on the other published columns. The 3- and 5-GW "
+               f"projections and gains are {fv.CONVENTION_LABEL}; the next-GW one is FPL's own.")
 
     if not trans.empty:
-        ui.section_header("Best moves among the most-owned", "Precomputed by the daily job, 5-GW horizon.")
+        ui.section_header("Best moves among the most-owned", "Precomputed by the daily job, 5-GW horizon "
+                          f"({fv.CONVENTION_LABEL}).")
         for col, (_, t) in zip(st.columns(3), trans.iloc[3:6].iterrows()):
             fv.precomputed_move_card(t, container=col)
         with st.expander("All precomputed moves (table)"):
@@ -310,7 +322,7 @@ with t_tr:
                              "net_gain_5gw_with_hit": ui.num_col("5-GW after hit", fmt="%+.2f"),
                              "in_p_start": ui.pct_col("IN P(start)"), "in_risk": "IN risk"})
 
-    ui.section_header("More transfer tools", "On the V1 projection board.")
+    ui.section_header("More transfer tools", f"On the V1 projection board. {fv.V1_NOTE}")
     tr_help, tr_alert = st.tabs(["Transfer helper (your team ID)", "Alerts / watchlist"])
     with tr_help:
         tools.transfer_helper(v1)
@@ -363,7 +375,7 @@ with t_fix:
                    "point-in-time team model (player xG + goals, shrunk toward the league mean, "
                    "home edge); FDR is FPL's official rating. An opponent can be easy to score "
                    "against and dangerous at the same time — that is why there are two.")
-    ui.section_header("Chip advisor")
+    ui.section_header("Chip advisor", f"On the V1 projection board. {fv.V1_NOTE}")
     tools.chip_advisor(v1)
 
 # ══ SQUAD ══════════════════════════════════════════════════════════════════════════════════════
@@ -373,20 +385,27 @@ with t_sq:
     with s_best:
         st.caption("A legal 15 (£100m, max 3 per club, exactly 2/5/5/3), solved by integer "
                    "programming on the chosen horizon. Computed on demand from the small projection "
-                   "table — no model is loaded.")
+                   "table — no model is loaded. The 3-GW and 5-GW horizons are "
+                   f"{fv.CONVENTION_LABEL}; final_xpts is FPL's own.")
         hz = st.radio("Optimise", ["final_xpts", "xpts_3gw", "xpts_5gw"], horizontal=True, key="opt_h")
         if st.button("Solve squad"):
             from player_model.fantasy_optimizer import optimal_squad
-            df_o = proj.assign(availability=proj["risk"].map(
-                {"Unavailable": "unavailable"}).fillna("available"))
+            # The projection's own risk label is passed through (the optimiser drops 'unavailable');
+            # a player with NO risk label is left out and counted, not assumed available.
+            _norisk = proj["risk"].isna()
+            if _norisk.any():
+                st.caption(f"{int(_norisk.sum())} player(s) without an availability label left out of the solve.")
+            df_o = proj[~_norisk].assign(availability=proj.loc[~_norisk, "risk"].astype(str).str.lower())
             sq = optimal_squad(df_o, points_col=hz)
             if not sq or not sq.get("feasible"):
                 st.warning(f"No feasible squad ({(sq or {}).get('reason', 'no data')}).")
             else:
                 capn = sq.get("captain")
                 cap_name = capn.get("web_name") if capn is not None else "—"
-                st.success(f"Formation {sq.get('formation')} · cost £{sq.get('total_cost', 0):.1f}m · "
-                           f"XI points {sq.get('xi_points', 0):.1f} · captain {cap_name}")
+                _c, _x = sq.get("total_cost"), sq.get("xi_points")
+                st.success(f"Formation {sq.get('formation')} · cost "
+                           f"{'—' if _c is None else f'£{_c:.1f}m'} · "
+                           f"XI points {'—' if _x is None else f'{_x:.1f}'} · captain {cap_name}")
                 for lab in ("xi", "bench"):
                     part = sq.get(lab)
                     if isinstance(part, pd.DataFrame) and not part.empty:
@@ -397,8 +416,10 @@ with t_sq:
                                          "web_name": "Player", "price": ui.money_col("£m"),
                                          hz: ui.num_col(hz, fmt="%.2f"), "p_start": ui.pct_col("P(start)")})
     with s_line:
+        st.caption(fv.V1_NOTE)
         tools.lineup(v1)
     with s_league:
+        st.caption(fv.V1_NOTE)
         tools.mini_league(v1)
     with s_club:
         tools.club_squads()

@@ -41,7 +41,11 @@ def test_first_team_never_resolves_to_its_reserve_side():
     assert resolve_result("Real Sociedad B", ["Real Sociedad II", "Real Sociedad"]) == "Real Sociedad II"
 
 
-def test_predict_time_resolve_is_not_changed_by_result_aliases():
-    # history holds both spellings; predict-time resolve() must keep its token-rule answer
-    assert resolve("Rapid Wien", ["SK Rapid", "Rapid Vienna"]) == "SK Rapid"
-    assert resolve("Zhejiang", ["Zhejiang Professional", "Hangzhou Greentown"]) == "Zhejiang Professional"
+def test_a_pool_holding_two_spellings_of_one_club_is_refused():
+    # The old token-subset tier picked 'SK Rapid' / 'Zhejiang Professional' here - half of a
+    # duplicate identity. Both spellings are in the alias store now, so the pool is ambiguous.
+    assert resolve("Rapid Wien", ["SK Rapid", "Rapid Vienna"]) is None
+    assert resolve("Zhejiang", ["Zhejiang Professional", "Hangzhou Greentown"]) is None
+    # one spelling present -> that one
+    assert resolve("Rapid Wien", ["SK Rapid", "Austria Vienna"]) == "SK Rapid"
+    assert resolve("Zhejiang", ["Zhejiang Professional", "Shanghai Port"]) == "Zhejiang Professional"

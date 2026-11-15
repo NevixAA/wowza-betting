@@ -55,8 +55,10 @@ def test_p_win_uses_only_earlier_days(env):
 
 def test_freeze_once_and_grade(env):
     days = _ledgers(env)
-    a = TP.freeze_day(days[-1])
-    b = TP.freeze_day(days[-1])                                  # second call must not rewrite
+    # frozen in the morning of the day (the fixtures have no kickoff time: match date = the day), as the
+    # album does; freezing a past day now would list nothing (the freeze-after-kickoff guard)
+    a = TP.freeze_day(days[-1], now=f"{days[-1]}T00:00:00Z")
+    b = TP.freeze_day(days[-1], now=f"{days[-1]}T00:00:00Z")    # second call must not rewrite
     assert len(a) == len(b) and len(pd.read_csv(TP.LOG)) == len(a)
     sb = TP.scoreboard()
     assert set(sb["list"]) <= {"BEST_BETS", "SAFEST", "VALUE"} and (sb["picks"] > 0).all()

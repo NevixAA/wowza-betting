@@ -874,8 +874,11 @@ def _cli(argv: list[str]) -> int:
         return 0
     if cmd == "settle":
         sys.path.insert(0, str(ROOT))
-        import update_results as U                       # the ledgers' archives + name matcher
-        r = settle(archives=U._archives_with_heartbeats(), fallback_matcher=U._names_match)
+        import update_results as U                       # the ledgers' archives
+        # No fallback_matcher: clubs are resolved only by team_names inside the league+date pool.
+        # The pairwise _names_match fallback paired any token-subset ('Inter' / 'Inter Miami')
+        # once the pool resolver had refused, and has been deleted. An unresolved row stays pending.
+        r = settle(archives=U._archives_with_heartbeats())
         print(json.dumps(r))
         return 0
     if cmd == "report":

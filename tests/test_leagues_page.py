@@ -59,6 +59,17 @@ def env(tmp_path, monkeypatch):
     ]
     pd.DataFrame(main).to_csv(tmp_path / "bets_ledger.csv", index=False)
     pd.DataFrame(side).to_csv(tmp_path / "side_bets_ledger.csv", index=False)
+    # THE staked definition (src/staked.py, owner 2026-11-04): only a recorded policy stake > 0 makes a
+    # tip staked. The SNIPER / MARKSMAN rows carry one; the VALUABLE row is recorded with a zero stake.
+    def _rec(date, home, market, side, amount, state="ACTIVE_LOW"):
+        return {"date": date, "fixture": f"{date}|{home}|A", "league": "x", "model_type": "new_format",
+                "market": market, "side": side, "deployment_state": state, "base_fraction": 0.005,
+                "stake_amount": amount, "final_fraction": amount / 100, "reason": "OK" if amount else "TIER_NOT_STAKED",
+                "policy_version": "t", "generated_at": "2026-09-01 06:00:00"}
+    pd.DataFrame([_rec("2026-10-01", "B1", "OU25", "OVER", 0.5), _rec("2026-10-02", "B2", "OU25", "UNDER", 0.4),
+                  _rec(RECENT, "B3", "OU25", "OVER", 0.0), _rec(RECENT, "L1", "OU25", "OVER", 0.5),
+                  _rec("2026-10-05", "M1", "OU25", "UNDER", 0.5), _rec("2026-10-01", "B1", "BTTS", "YES", 1.0),
+                  _rec(RECENT, "B4", "OVER15", "OVER", 0.5)]).to_csv(tmp_path / "stake_audit.csv", index=False)
     return tmp_path
 
 
@@ -96,10 +107,11 @@ def test_by_market_and_tier(env):
     paper = L.by_market(br, ("VALUABLE",)).set_index("market")
     assert list(paper.index) == ["O/U 2.5 Over"] and paper.loc["O/U 2.5 Over", "pl"] == pytest.approx(1.2)
     bt = L.by_tier(br).set_index("tier")
-    assert list(bt.index) == ["SNIPER", "MARKSMAN", "VALUABLE (paper)"]
+    assert list(bt.index) == ["SNIPER", "MARKSMAN", "VALUABLE"]      # a tier is a tier, not a stake
     assert bt.loc["SNIPER", "tips"] == 2 and bt.loc["SNIPER", "pl"] == pytest.approx(2.0)
     assert bt.loc["MARKSMAN", "pl"] == pytest.approx(-2.0)
-    assert bt.loc["VALUABLE (paper)", "roi"] == pytest.approx(1.2)
+    assert bt.loc["VALUABLE", "roi"] == pytest.approx(1.2) and bt.loc["VALUABLE", "staked_tips"] == 0
+    assert bt.loc["SNIPER", "staked_tips"] == 2
 
 
 def test_paper_league_shown_not_totalled(env):
@@ -114,7 +126,7 @@ def test_paper_league_shown_not_totalled(env):
     # identical to the record picture's basis (daily_pack.settled_tips with paper leagues dropped)
     from telegram_bot.daily_pack import settled_tips
     r = settled_tips()
-    r = r[(r["date"] >= str(config.PERFORMANCE_CUTOFF_DATE)[:10]) & r["pnl"].notna() & r["tier"].isin(L.STAKED)]
+    r = r[(r["date"] >= str(config.PERFORMANCE_CUTOFF_DATE)[:10]) & r["pnl"].notna() & r["staked"]]
     assert len(r) == t["tips"] and r["pnl"].sum() == pytest.approx(t["pl"])
     tab = L.overview_table(ov).set_index("League")
     assert "USA MLS (paper)" in tab.index

@@ -5,14 +5,14 @@ changing what any writer dedupes or any reader sees. These tests pin exactly tha
 """
 from __future__ import annotations
 
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta, timezone
 
 import pandas as pd
 import pytest
 
 import src.rolling_store as rs
 
-TODAY = date.today()
+TODAY = datetime.now(timezone.utc).date()   # the store's days are UTC days (fix13)
 
 
 def _d(offset: int) -> str:
@@ -208,9 +208,13 @@ def test_clv_close_out_finds_a_close_that_was_archived(tmp_path, monkeypatch):
     rs.roll(live)
     assert pd.read_csv(live).empty
     monkeypatch.setattr(clv_capture, "_load",
-                        lambda: [{"bet_id": f"PLAYER|{md}|Harry Kane|goals", "odds_close": ""}])
+                        lambda: [{"bet_id": f"PLAYER|{md}|Harry Kane|goals", "odds_close": "",
+                                  "match": "X vs Y", "odds_bet": "3.0", "ts_bet": f"{md}T10:30:00+00:00",
+                                  "kickoff_utc": f"{md}T20:00:00Z"}])
     closed = []
-    monkeypatch.setattr(clv_capture, "capture_close", lambda b, o, u: closed.append((b, o)))
+    monkeypatch.setattr(clv_capture, "capture_close", lambda b, o, u, *a: closed.append((b, o)))
+    monkeypatch.setattr(clv_capture, "mark_status", lambda *a: None)
+    monkeypatch.setattr(clv_tracker, "_player_ids", lambda: {})
     assert clv_tracker.close_out(odds_history_path=live) == 1
     assert closed == [(f"PLAYER|{md}|Harry Kane|goals", 2.6)]
 

@@ -79,8 +79,10 @@ def track_cards(rows: pd.DataFrame, per_row: int = 3) -> None:
 
 def plan_rows(sp: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
     """(staked rows table, total stake % per day) — the same arithmetic as before the redesign. The table
-    shows each row's side (Over/Under/Yes): O/U 2.5 is staked per side since 2026-10-26."""
-    staked = sp[sp["final_fraction"] > 0]
+    shows each row's side (Over/Under/Yes): O/U 2.5 is staked per side since 2026-10-26. Staked rows are
+    THE definition (src.staked.plan_staked: real-money state, base > 0, stake > 0; owner 2026-11-04)."""
+    from src.staked import plan_staked
+    staked = sp[plan_staked(sp)]
     if "side" not in staked.columns:
         staked = staked.assign(side=pd.NA)
     by_day = (staked.groupby("date")["final_fraction"].sum() * 100).round(2).rename("% of bankroll").reset_index()

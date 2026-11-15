@@ -103,7 +103,7 @@ def _upcoming():
                          for lg, h, a in fx])
 
 
-def _fake_legacy_features(upcoming, historical):
+def _fake_legacy_features(upcoming, historical, **_kw):    # predict passes identity_aliases (fix12)
     """Stand-in for feature_engineering.build_upcoming_features: deterministic per fixture."""
     f = upcoming.copy().reset_index(drop=True)
     for i, c in enumerate(FEATS):
@@ -474,7 +474,8 @@ def test_row_attribution_mapping():
 def test_system_health_serving_check(tmp_path, monkeypatch):
     from src import system_health as S
     monkeypatch.setattr(S, "OUT", tmp_path)
-    assert S.standard_serving_health()["status"] == S.GREEN                    # no board
+    # no board -> no evidence: a missing input is never GREEN (CLAUDE_PROMPT_2, 2026-11-02)
+    assert S.standard_serving_health()["status"] == S.GREY
     pd.DataFrame({"model_type": ["standard"], "model_version": ["standard_x"]}).to_csv(
         tmp_path / "predictions.csv", index=False)
     assert S.standard_serving_health()["status"] == S.GREEN                    # switch off
@@ -495,10 +496,11 @@ def test_system_health_serving_check(tmp_path, monkeypatch):
     assert S.standard_serving_health()["status"] == S.RED
 
 
-def test_frozen_alias_map_is_committed_and_identity_1_0():
+def test_frozen_alias_map_is_committed_and_identity_1_1():
+    # identity/1.1 (2026-11-02): + Ireland Bray Wanderers -> Bray (owner-accepted evidence merge)
     p = ROOT / "config" / "standard_ou25_identity_aliases.json"
     d = json.loads(p.read_text(encoding="utf-8"))
-    assert d["version"] == "identity/1.0" and isinstance(d["map"], dict) and d["map"]
+    assert d["version"] == "identity/1.1" and isinstance(d["map"], dict) and d["map"]
 
 
 # ── CI scripts on synthetic data (the real runs happen only in GitHub Actions) ────────────────

@@ -36,7 +36,7 @@ from player_model.league_quality import enrich_league_quality
 from player_model.feature_engineering import build_features
 from player_model.model import train, load_model
 from player_model.predict import run_player_predictions, enrich_with_odds, enrich_no_odds_markets, tag_paper_feed
-from player_model.odds_fetcher import fetch_prop_odds, match_odds_to_tips
+from player_model.odds_fetcher import fetch_prop_odds, match_odds_to_tips, match_fair_to_tips
 from player_model.ledger import append_player_signals
 from player_model import history_integrity as HI
 
@@ -368,127 +368,97 @@ def mode_collect_wc(last_n: int = 10) -> None:
             print(f"  {market}: {rate:.1%} positive rate (WC data)")
 
 
+# ── UEFA cup rows into player_history (owner question 2026-11-02) ─────────────
+
+# Raw (collected) columns a cup row carries; the derived features are rebuilt from them.
+_SP_RAW = ("sp_goal", "headed_goal", "fk_goal", "sp_assist", "fk_assist")
+
+
+def merge_cup_rows(existing: "pd.DataFrame", cups: "pd.DataFrame") -> tuple:
+    """(combined history, stats). Appends the collected UEFA cup rows the history does not hold,
+    with their features built in the FULL history context (one build_features pass over the raw
+    columns of history + every cup row), so a cup row's form / rest days / opponent features see
+    the player's league AND cup matches. Only the new cup rows are taken from that pass: every
+    stored row stays exactly as it is (history_integrity.merge_history adds, never rewrites a
+    frozen row). Extra-time cup fixtures are context, not training rows (cup_history)."""
+    from player_model import cup_history as CH
+    new = CH.training_rows(CH.new_cup_rows(existing, cups))
+    stats = {"cup_rows": int(len(cups)), "to_append": int(len(new)), "appended": 0,
+             "extra_time_context_only": int(len(CH.new_cup_rows(existing, cups)) - len(new))}
+    if new.empty:
+        return existing, stats
+    raw = [c for c in cups.columns if c != "fixture_status"]
+    raw += [c for c in (*_SP_RAW, "height_cm", "weight_kg", "age") if c in existing.columns and c not in raw]
+    ctx = pd.concat([existing.reindex(columns=raw), cups.reindex(columns=raw)], ignore_index=True)
+    ctx = ctx.drop_duplicates(["fixture_id", "player_id"], keep="first")
+    built = build_features(ctx)
+    keys = pd.MultiIndex.from_frame(new[["fixture_id", "player_id"]].apply(pd.to_numeric, errors="coerce"))
+    bk = pd.MultiIndex.from_frame(built[["fixture_id", "player_id"]].apply(pd.to_numeric, errors="coerce"))
+    out = built[bk.isin(keys)].copy()
+    for _c in HI.INJURY_COLUMNS:            # not observed by a collect -> NaN, see mode_collect
+        if _c in out.columns:
+            out[_c] = float("nan")
+    # Only the STORED history's columns are written (fix6/props6): a feature this build adds that
+    # the stored rows do not carry (prev_season_*, shot_accuracy_l10, ...) would otherwise exist on
+    # the cup rows alone - its presence would mark a row as a cup row. Such columns arrive for every
+    # row together, through a rebuild of player_history.
+    # count_source is PROVENANCE, not a feature (owner 2026-11-04, fix round 9): it always travels
+    # with the counts it describes, or a verified cup row would read back as zeros_unverified.
+    from player_model.player_stat_nulls import SOURCE_COL
+    extra = sorted(c for c in out.columns if c not in existing.columns and c != SOURCE_COL)
+    out = out[[c for c in out.columns if c in existing.columns or c == SOURCE_COL]]
+    stats["columns_not_written"] = extra
+    combined, _st = HI.merge_history(existing, out)
+    stats["appended"] = int(len(combined) - len(existing))
+    stats["first_appearance_dropped"] = int(len(new) - len(out))
+    return combined, stats
+
+
+def mode_merge_cups(dry_run: bool = False) -> None:
+    from player_model.cup_history import cup_rows
+    if not HISTORY_CACHE.exists():
+        print("[merge-cups] No player_history.parquet.")
+        return
+    cups = cup_rows()
+    if cups.empty:
+        print("[merge-cups] no collected cup rows (run scripts/collect_cup_player_stats.py)")
+        return
+    existing = pd.read_parquet(HISTORY_CACHE)
+    if dry_run:
+        from player_model import cup_history as CH
+        new = CH.new_cup_rows(existing, cups)
+        print(f"[merge-cups] dry run: {len(cups):,} collected, {len(new):,} not in history, "
+              f"{len(CH.training_rows(new)):,} would be appended (90-minute fixtures)")
+        return
+    combined, st = merge_cup_rows(existing, cups)
+    print(f"[merge-cups] {st}")
+    if st["appended"] <= 0:
+        return
+    if len(combined) < len(existing):
+        print("[merge-cups] ABORT: fewer rows than stored. Refusing to write.")
+        return
+    _save_history(combined)
+
+
 # ── Phase 3: Train ────────────────────────────────────────────────────────────
 
 
+#: printed by the retired legacy props retrain (owner 2026-11-09)
+LEGACY_PROPS_RETRAIN_RETIRED = "LEGACY_PROPS_RETRAIN_RETIRED"
+
+
 def mode_train() -> None:
-    """Weekly props retrain. Retraining keeps running and keeps producing candidates; ONLY the
-    canonical promotion gate (player_model.props_gate, PG-PROPS) may change a serving props model.
+    """RETIRED weekly props retrain (owner 2026-11-09: "only the clean harness trains props").
 
-    History. Until 2026-10-25 this function called save_model() whenever the candidate's mean
-    log loss had not risen by more than PROPS_MAX_LOGLOSS_RISE (0.030) over the incumbent's — and
-    the two numbers were each model's OWN holdout, different rows. Every market was replaced at
-    every retrain (39 serving-file replacements in five retrains, 2026-10-12..10-25), most of them
-    by candidates whose own-holdout log loss was worse. Owner decision 2026-10-25: props promote
-    only through the canonical gate, like the team models. See props_gate's docstring.
+    It trained the legacy recipe on every history row, verified or not, and parked candidates for
+    the promotion gate. It now trains, scores, parks and reviews nothing. Props models are trained
+    only by the owner-gated props clean retrain (player_model.props_harness,
+    .github/workflows/props_clean_retrain.yml) and promoted only by the owner
+    (props_gate.promote_clean_retrain). The removed body is in git history (before 2026-11-09)."""
+    print(f"[train] {LEGACY_PROPS_RETRAIN_RETIRED}: only the owner-gated props clean retrain "
+          f"(player_model.props_harness) trains props models - nothing trained, scored or parked")
+    return
 
-    Per market, in order:
-      1. review_parked  — period 2 for the challenger parked by an earlier retrain (first-sight
-                          rows logged by props predict). The ONLY path to PROMOTE.
-      2. train          — candidate + the untouched chronological holdout train() scored it on.
-      3. submit_candidate — period 1: champion and candidate on the SAME holdout rows. Never
-                          PROMOTE; a qualified candidate is parked for period 2.
-    """
-    if not HISTORY_CACHE.exists():
-        print("[train] No history. Run --mode collect first.")
-        return
-
-    from player_model import props_gate as PPG
-
-    df = pd.read_parquet(HISTORY_CACHE)
-    print(f"[train] Training on {len(df)} rows, {df['player_id'].nunique()} players.")
-
-    # HOW MUCH OF THIS IS NEW? A retrain that consumes zero new observations is not learning,
-    # it is churn — and props had exactly that: player_history.parquet's newest match was
-    # 2026-08-17 while the Sunday retrain kept firing and kept overwriting the models. Printed
-    # first so the answer is at the top of the log rather than inferred from it.
-    try:
-        _d = pd.to_datetime(df["date"], errors="coerce")
-        _newest = _d.max()
-        _age = (pd.Timestamp.utcnow().tz_localize(None).normalize() - _newest.normalize()).days
-        print(f"[train] newest match in training data: {str(_newest)[:10]} ({_age}d old)"
-              f"{'   <-- STALE, this retrain cannot learn anything new' if _age > 10 else ''}")
-    except Exception:
-        pass
-
-    log_path = config.OUTPUT_DIR / "props_retrain_log.json"
-    decisions: dict = {}
-    now = PPG.utcnow()
-    batch = PPG.batch_id(now)
-    print(f"[train] promotion gate {PPG.GATE_VERSION} (canonical {PPG.CANONICAL_VERSION}), "
-          f"batch {batch}")
-
-    for market in config.MARKETS:
-        print(f"\n  Training market: {market}")
-        review = None
-        try:
-            review = PPG.review_parked(market, now=now, batch=batch, outcomes=PPG.load_outcomes(market, df))
-            if review:
-                print(f"  [{market}] parked challenger: {review.get('verdict')} - "
-                      f"{str(review.get('reason'))[:200]}")
-            results, holdout, cutoff = train(df, market, return_holdout=True)
-            gate = PPG.submit_candidate(market, results, holdout, training_cutoff=cutoff,
-                                        training_rows=int(len(df)), batch=batch, now=now)
-            del holdout
-            ev = gate.get("holdout") or {}
-            promoted = bool(gate.get("promoted")) or bool(review and review.get("promoted"))
-            print(f"  [{market}] candidate {gate.get('candidate_version')}: {gate['verdict']} - "
-                  f"{gate['reason'][:300]}")
-            decisions[market] = {
-                "promoted": promoted,
-                "verdict": gate["verdict"],
-                "why": gate["reason"][:400],
-                "gate_version": PPG.GATE_VERSION,
-                "candidate_version": gate.get("candidate_version"),
-                "champion_version": gate.get("champion_version"),
-                "parked": bool(gate.get("parked")),
-                "rows": int(len(df)),
-                # SAME-HOLDOUT numbers (champion and candidate on identical rows). The pre-gate
-                # log compared each model's own holdout, which are different rows.
-                "holdout_n": ev.get("n"), "holdout_events": ev.get("events"),
-                "logloss_old": (ev.get("champion") or {}).get("log_loss"),
-                "logloss_new": (ev.get("candidate") or {}).get("log_loss"),
-                "ll_delta": ev.get("ll_delta"), "ll_ci": ev.get("ci"),
-                "review": None if not review else {
-                    "verdict": review.get("verdict"), "promoted": bool(review.get("promoted")),
-                    "candidate_version": review.get("candidate_version"),
-                    "reason": str(review.get("reason"))[:300]},
-            }
-        except ValueError as e:
-            print(f"  [SKIP] {market}: {e}")
-            decisions[market] = {"promoted": bool(review and review.get("promoted")),
-                                 "why": f"skipped: {e}", "gate_version": PPG.GATE_VERSION}
-        except Exception as e:
-            print(f"  [ERROR] {market}: {e}")
-            decisions[market] = {"promoted": bool(review and review.get("promoted")),
-                                 "why": f"error: {type(e).__name__}: {e}",
-                                 "gate_version": PPG.GATE_VERSION}
-
-    try:
-        import json as _json
-        blob = _json.loads(log_path.read_text(encoding="utf-8")) if log_path.exists() else {}
-        run = datetime.utcnow().strftime("%Y-%m-%d")
-        runs = blob.setdefault("runs", {})
-        # Two retrains on one day used to overwrite each other (2026-10-13 ran twice; only the
-        # second survives). A later same-day run now gets its own key.
-        key, i = run, 2
-        while key in runs:
-            key, i = f"{run}#{i}", i + 1
-        runs[key] = decisions
-        blob["latest_run"] = run
-        log_path.parent.mkdir(parents=True, exist_ok=True)
-        log_path.write_text(_json.dumps(blob, indent=2), encoding="utf-8")
-        print(f"\n[train] decisions -> {log_path.name}")
-    except Exception as e:
-        print(f"[train] could not write the decision log: {e}")
-
-    n_prom = sum(1 for v in decisions.values() if v.get("promoted"))
-    n_park = sum(1 for v in decisions.values() if v.get("parked"))
-    print(f"\n[train] Done. {n_prom}/{len(decisions)} market(s) promoted, {n_park} candidate(s) "
-          f"parked for the prospective period.")
-
-
-# ── Match contexts (team win probs for opponent-weakness multiplier) ──────────
 
 def _build_match_contexts() -> dict:
     """
@@ -498,6 +468,7 @@ def _build_match_contexts() -> dict:
     """
     import json
     contexts: dict = {}
+    skipped = 0
     wc_hist_file = config.OUTPUT_DIR / "worldcup_history.json"
     if not wc_hist_file.exists():
         return contexts
@@ -514,16 +485,20 @@ def _build_match_contexts() -> dict:
             odds  = snaps[-1]["odds"] if snaps else rec.get("opening", {})
             oh = odds.get("odds_home")
             oa = odds.get("odds_away")
-            od = odds.get("odds_draw", 3.0) or 3.0
-            if not oh or not oa:
+            od = odds.get("odds_draw")
+            # All three prices are needed to de-vig; a missing draw price skips the context (was
+            # a typed 3.0). predict then skips the team-strength multiplier for that fixture.
+            if not oh or not oa or not od:
+                skipped += 1
                 continue
             total = 1 / oh + 1 / oa + 1 / od
             contexts[match_key] = {
                 "home_win_prob": round((1 / oh) / total, 3),
                 "away_win_prob": round((1 / oa) / total, 3),
             }
-        if contexts:
-            print(f"[pipeline] Win probs loaded for {len(contexts)} WC matches")
+        if contexts or skipped:
+            print(f"[pipeline] Win probs loaded for {len(contexts)} WC matches; {skipped} skipped "
+                  f"(incomplete 1X2 prices)")
     except Exception as e:
         print(f"[pipeline] Match context build failed: {e}")
     return contexts
@@ -531,46 +506,33 @@ def _build_match_contexts() -> dict:
 
 # ── Referee profiles ─────────────────────────────────────────────────────────
 
-def _build_referee_profiles() -> dict:
-    """
-    Fetch referee names for all upcoming prop-league fixtures and build strictness profiles.
-    Returns {match_key: {yellows_per_game, strictness_score, n_games}}.
-    All underlying API calls are cached in api_football._get() — safe to call every run.
-    """
-    from player_model.api_football import (
-        get_fixtures_between, get_fixture_referee, build_referee_profile,
-    )
-    import pandas as pd
-    profiles: dict = {}
+def _build_fixture_referees() -> dict:
+    """{API-Football fixture id: referee name} for the upcoming prop-league fixtures (same 4-day
+    window as predict). The referee FEATURES are computed by build_features from the held history,
+    exactly as in training (owner 2026-11-09); only the name comes from API-Football (cached in
+    api_football._get()). A fixture the provider names no referee for has none (no feature value)."""
+    from player_model.api_football import get_fixtures_between, get_fixture_referee
+    names: dict = {}
     try:
-        # Same 4-day window as predict, so every tipped fixture can carry its referee.
-        _today = pd.Timestamp.now().normalize()
+        _today = pd.Timestamp.now(tz="UTC").tz_localize(None).normalize()   # UTC day (fixture dates are UTC)
         _from, _to = _today.strftime("%Y-%m-%d"), (_today + pd.Timedelta(days=4)).strftime("%Y-%m-%d")
         for league, lg_id in config.PROP_LEAGUES.items():
-            season = config.prop_season(league)
-            fixtures = get_fixtures_between(lg_id, season, _from, _to)
-            for fix in fixtures:
-                teams    = fix.get("teams", {})
-                home     = teams.get("home", {}).get("name", "")
-                away     = teams.get("away", {}).get("name", "")
-                dt       = fix.get("fixture", {}).get("date", "")[:10]
-                fid      = fix.get("fixture", {}).get("id")
+            for fix in get_fixtures_between(lg_id, config.prop_season(league), _from, _to):
+                fid = fix.get("fixture", {}).get("id")
                 if not fid:
                     continue
-                match_key = f"{home}|{away}|{dt}"
-                referee   = get_fixture_referee(fid)
+                referee = get_fixture_referee(fid)
                 if referee:
-                    profiles[match_key] = build_referee_profile(referee, lg_id, season)
+                    names[int(fid)] = referee
     except Exception as e:
-        print(f"[pipeline] Referee profile build failed: {e}")
-    return profiles
+        print(f"[pipeline] Referee names not fetched: {e}")
+    return names
 
 
-# ── Match-day gating (active only AFTER the World Cup) ──────────────────────────
-# WC2026 final ~Jul 26. During/before WC there are matches almost daily, so the
-# gate is dormant. After WC, predict + injury-refresh only run when there are
-# prop-league fixtures in the next 72h — no wasted API calls on quiet days.
-_WC_END = "20260726"
+# ── Match-day gating ─────────────────────────────────────────────────────────────
+# predict + injury-refresh only run when there are prop-league fixtures in the next 72h — no wasted
+# API calls on quiet days. (The typed `_WC_END = "20260726"` dormancy for the 2026 World Cup was
+# removed: the tournament is over, so the gate is simply always on.)
 
 
 def _match_day_gate_skips() -> bool:
@@ -578,9 +540,6 @@ def _match_day_gate_skips() -> bool:
     Fail-open: any error returns False so we never lose tips to a check bug."""
     import datetime as _dt
     try:
-        today = _dt.datetime.now(_dt.timezone.utc).strftime("%Y%m%d")
-        if today <= _WC_END:
-            return False  # dormant during/before WC
         from player_model.api_football import get_upcoming_fixtures
         now     = _dt.datetime.now(_dt.timezone.utc)
         horizon = now + _dt.timedelta(hours=72)
@@ -633,23 +592,37 @@ def mode_predict() -> None:
         print("[predict] Post-WC match-day gating: no prop fixtures in next 72h — skipping.")
         return
 
-    history = pd.read_parquet(HISTORY_CACHE)
+    # The collected UEFA cup rows (output/collect/cup_player_rows.parquet) join the serving history:
+    # a player's form / minutes / rest days and the opponent tables include his cup matches.
+    # THE history the props clean retrain trains on (props_harness.source_frame): player_history +
+    # the collected cup rows it does not hold + the re-fetched counts - the conflicted player ids
+    # (identity_conflicts). One function, so serving and training read the same rows (2026-11-09).
+    from player_model.props_harness import source_frame
+    history = source_frame()
 
-    # Try to enrich with API-Football recent form if key available
+    # (The old _enrich_with_recent_form overwrote a player's last stored goals_pg / sot_pg /
+    # cards_pg with ONE match's raw counts, `stat.get(..., 0)`; recent matches belong in history
+    # through collect, and build_upcoming_features recomputes every rolling value from raw rows.)
     import os
     api_key = os.getenv("APIFOOTBALL_KEY", "")
-    if api_key:
-        print("[predict] API-Football key found — will fetch recent match stats for rolling features.")
-        _enrich_with_recent_form(history)
-    else:
-        print("[predict] No APIFOOTBALL_KEY — using season stats only (less precise rolling features).")
 
-    tips = run_player_predictions(
-        bets_csv=config.OUTPUT_DIR / "bets.csv",
-        history_df=history,
-        referee_profiles=_build_referee_profiles() if api_key else None,
-        match_contexts=_build_match_contexts(),
-    )
+    # Median-fill telemetry (owner 2026-11-04, fix round 10): count, per market and feature, the
+    # cells the serving imputer fills in THIS run and append them to output/props_median_fill.csv
+    # (committed by player_props.yml). Read-only: the scored matrix and the tips are unchanged.
+    from player_model import model as _M
+    _M.median_fill_reset()
+    try:
+        tips = run_player_predictions(
+            bets_csv=config.OUTPUT_DIR / "bets.csv",
+            history_df=history,
+            fixture_referees=_build_fixture_referees() if api_key else None,
+            match_contexts=_build_match_contexts(),
+        )
+    finally:
+        try:
+            print(f"[predict] median-fill telemetry: {_M.write_median_fill()} row(s) -> {_M.MEDIAN_FILL_FILE}")
+        except Exception as _e:              # never fatal: telemetry is beside the run
+            print(f"[predict] median-fill telemetry not written: {type(_e).__name__}: {_e}")
 
     if tips.empty:
         print("[predict] No player tips generated.")
@@ -664,7 +637,21 @@ def mode_predict() -> None:
             odds_raw = fetch_prop_odds(tips)
             if odds_raw:
                 odds_mapped = match_odds_to_tips(tips, odds_raw)
-                tips = enrich_with_odds(tips, odds_mapped)
+                # Fair probability from a REAL two-sided price where one exists (same book, same
+                # answer, de-vigged); the assumed overround only where none does (2026-11-05).
+                fair_mapped = match_fair_to_tips(tips)
+                tips = enrich_with_odds(tips, odds_mapped, fair_mapped)
+                # Rare markets (goals2/goals3/sot3/sot4): RESEARCH picks only, priced from the SAME
+                # answer, at most 3 per gameweek, each market only with its own study bar (owner 2026-11-09)
+                try:
+                    from player_model import rare_props as _RP
+                    _rc = _RP.read_candidates()
+                    _RP.run(_RP.attach_prices(_rc, match_odds_to_tips(_rc, odds_raw),
+                                              match_fair_to_tips(_rc)) if len(_rc) else _rc)
+                except Exception as _e:                                # noqa: BLE001
+                    print(f"[rare_props] skipped: {type(_e).__name__}: {_e}")
+                print(f"[predict] fair probability: {len(fair_mapped)} priced tip(s) on a real "
+                      f"two-sided price, {len(odds_mapped) - len(fair_mapped)} on the assumed margin")
                 # Re-save enriched CSV
                 tips.to_csv(config.OUTPUT_DIR / "player_tips.csv", index=False)
                 print(f"[predict] Odds enriched for {len(odds_mapped)} player/market pairs")
@@ -675,7 +662,8 @@ def mode_predict() -> None:
     else:
         print("[predict] No ODDS_API_KEY — skipping odds enrichment (tier will stay AVOID)")
 
-    # Tier markets with no live Odds API coverage (assists) via calibration base rates
+    # Markets with no live Odds API coverage (assists): an unpriced tip stays AVOID and is counted
+    # (no synthetic price since 2026-11-01; the old comment said "via calibration base rates")
     tips = enrich_no_odds_markets(tips)
     # PAPER feed: promote the top-N strongest AVOID picks (with odds) to tier='PAPER'
     # so the strongest props signals are tracked live (no edge — tracking only, never real money)
@@ -693,7 +681,7 @@ def mode_predict() -> None:
         print(f"[clv_tracker] skipped: {_e}")
     assists_tiered = tips[(tips["market"] == "assists") & (tips["tier"] != "AVOID")]
     if not assists_tiered.empty:
-        print(f"[predict] calibration-implied: {len(assists_tiered)} assists tip(s) tiered (AVOID excluded)")
+        print(f"[predict] {len(assists_tiered)} assists tip(s) tiered on a real bookmaker quote (AVOID excluded)")
 
     # Lineup availability filter — drops confirmed bench players, flags TBC
     if api_key:
@@ -758,47 +746,6 @@ def _filter_by_lineup(tips: pd.DataFrame) -> pd.DataFrame:
     tbc       = (tips["lineup_status"] == "tbc").sum()
     print(f"[lineup] {confirmed} confirmed starters | {tbc} lineup TBC")
     return tips
-
-
-def _enrich_with_recent_form(history: pd.DataFrame) -> None:
-    """Use API-Football to update rolling stats for players in upcoming matches."""
-    try:
-        from player_model.api_football import get_recent_fixtures, get_fixture_player_stats
-        from player_model.feature_engineering import build_rolling_features
-
-        bets_csv = config.OUTPUT_DIR / "bets.csv"
-        if not bets_csv.exists():
-            return
-
-        bets = pd.read_csv(bets_csv)
-        leagues_needed = bets["league"].unique().tolist()
-
-        for league, lg_id in config.PROP_LEAGUES.items():
-            if not any(league.lower() in l.lower() for l in leagues_needed):
-                continue
-            season = config.prop_season(league)
-            fixtures = get_recent_fixtures(lg_id, season, last_n=5)
-            print(f"  [{league}] {len(fixtures)} recent fixtures fetched")
-
-            for fix in fixtures[:3]:  # limit to 3 most recent to save API calls
-                fix_id = fix.get("fixture", {}).get("id")
-                if not fix_id:
-                    continue
-                player_stats = get_fixture_player_stats(fix_id)
-                # Update rolling stats in history for matched players
-                for stat in player_stats:
-                    pid = stat.get("player_id")
-                    if pid and len(history[history["player_id"] == pid]) > 0:
-                        idx = history[history["player_id"] == pid].index[-1]
-                        # Update with most recent match data
-                        mins = int(stat.get("minutes_played") or 0)
-                        if mins > 0:
-                            history.at[idx, "goals_pg"]  = stat.get("goals", 0)
-                            history.at[idx, "sot_pg"]    = stat.get("shots_on_target", 0)
-                            history.at[idx, "cards_pg"]  = stat.get("yellow_card", 0)
-
-    except Exception as e:
-        print(f"  [enrich] Error enriching with API-Football: {e}")
 
 
 # ── Season stats enrichment ───────────────────────────────────────────────────
@@ -969,17 +916,20 @@ def mode_enrich_sidelined_live() -> None:
     else:
         active_pids = df["player_id"].dropna().unique().tolist()
 
-    # Limit to PROP_LEAGUES players only
+    # Limit to PROP_LEAGUES players only (registry identity: history's "World Cup" is the
+    # registry's "World Cup 2026")
     prop_league_names = set(config.PROP_LEAGUES.keys())
     if "league" in df.columns and prop_league_names:
-        league_mask = df["league"].isin(prop_league_names)
+        _reg = config.league_registry()
+        _canon = {lg: _reg.canonical_name(lg) for lg in df["league"].astype(str).unique()}
+        league_mask = df["league"].astype(str).map(_canon).isin(prop_league_names)
         prop_pids = set(df.loc[league_mask, "player_id"].dropna().unique())
         active_pids = [p for p in active_pids if p in prop_pids]
 
     total = len(active_pids)
     print(f"[enrich-sidelined-live] Refreshing {total} active players (last 60 days in prop leagues)...")
 
-    today = dt.date.today()
+    today = dt.datetime.now(dt.timezone.utc).date()   # UTC day
     active_df = df[df["player_id"].isin(set(active_pids))]
     # Safety rail, not a limiter. /sidelined is per-player with no bulk endpoint, so an
     # unbounded crawl is precisely what took out the old 7,500/day quota (~6,545 calls before
@@ -1041,21 +991,17 @@ def mode_squad_sync() -> None:
                 if pid and pid not in current_teams:
                     current_teams[pid] = t["team_name"]
 
-    updates = 0
-    for pid, current_team in current_teams.items():
-        mask = df["player_id"] == pid
-        if not mask.any():
-            continue
-        last_team = df.loc[mask, "team"].iloc[-1]
-        if last_team != current_team:
-            # Update last 30 rows only (current season games)
-            idx = df[mask].tail(30).index
-            df.loc[idx, "team"] = current_team
-            updates += 1
-            print(f"  [squad-sync] player {pid}: {last_team} → {current_team}")
-
-    _save_history(df)
-    print(f"[squad-sync] Done. {updates} players updated | {len(current_teams)} players tracked.")
+    # REPORT ONLY (Data Truth, 2026-11-01). This used to overwrite `team` on the player's last 30
+    # history rows with his CURRENT club, so matches he played for his former club were recorded
+    # as played for the new one (and every opponent/team feature of those rows moved with them).
+    # A history row keeps the club the player actually played for; the current club comes from
+    # the live squad overlay in predict (output/squads_official.csv, keyed by player_id).
+    last_team = (df.sort_values("date").drop_duplicates("player_id", keep="last")
+                 .set_index("player_id")["team"])
+    moved = sum(1 for pid, cur in current_teams.items()
+                if pid in last_team.index and last_team[pid] != cur)
+    print(f"[squad-sync] {moved} player(s) whose current club differs from their last history row "
+          f"| {len(current_teams)} players tracked. History not modified.")
 
 
 # ── Entry point ───────────────────────────────────────────────────────────────
@@ -1064,7 +1010,10 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Player Model Pipeline")
     parser.add_argument("--mode", choices=["collect", "collect-wc", "train", "predict", "all",
                                            "enrich-season", "enrich-profiles", "enrich-sidelined",
-                                           "enrich-sidelined-live", "squad-sync"], required=True)
+                                           "enrich-sidelined-live", "squad-sync", "merge-cups"],
+                        required=True)
+    parser.add_argument("--dry-run", action="store_true",
+                        help="merge-cups: report what would be appended, write nothing")
     parser.add_argument("--extended", action="store_true",
                         help="Also collect Champions League / Europa League / Conference League")
     parser.add_argument("--last-n", type=int, default=99,
@@ -1085,6 +1034,8 @@ def main() -> None:
         mode_enrich_sidelined_live()
     if args.mode == "squad-sync":
         mode_squad_sync()
+    if args.mode == "merge-cups":
+        mode_merge_cups(dry_run=args.dry_run)
     if args.mode == "train" or args.mode == "all":
         mode_train()
     if args.mode == "predict" or args.mode == "all":

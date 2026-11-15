@@ -1,0 +1,25 @@
+{
+ "n": 58,
+ "matchdays": 3,
+ "p_V9_REPAIRED_minus_p_CURRENT_V9_SERVED": {
+  "mean_dLL": 0.01665,
+  "ci95_matchday_boot": [
+   -0.0014,
+   0.0565
+  ]
+ },
+ "p_V9_REPAIRED_minus_p_MARKET": {
+  "mean_dLL": 0.01077,
+  "ci95_matchday_boot": [
+   -0.0118,
+   0.0144
+  ]
+ },
+ "p_CURRENT_V9_SERVED_minus_p_MARKET": {
+  "mean_dLL": -0.00589,
+  "ci95_matchday_boot": [
+   -0.0683,
+   0.0011
+  ]
+ }
+}

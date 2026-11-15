@@ -250,26 +250,22 @@ def test_guard_cli_exit_code(lab, monkeypatch):
 REAL = Path(__file__).resolve().parents[1]
 
 
-def test_registered_h_model_01_artifacts_verify_and_score_real_predictions():
-    """The committed challengers load, match their registered sha256, read the champion's own
-    feature columns, and produce probabilities on the committed predictions snapshot."""
+def test_registered_h_model_01_is_retired_by_the_clean_data_switch_and_still_verifies():
+    """H-MODEL-01 (trained 2026-09-28 on the pre-repair data, compared against the champion serving
+    at registration) was RETIRED by the 2026-11-09 clean-data switch (owner decision A): the
+    champions it was registered against no longer serve, so its comparison basis is gone. Its
+    artifacts stay, verify against the registered sha256 (audit), and predict no longer scores it."""
+    import json
     reg_file = REAL / "models/registry/experiments.json"
     if not reg_file.exists():
         pytest.skip("no experiment registry")
-    exps = SE.load_registry(reg_file)
-    assert {e["experiment_id"] for e in exps} >= {"H-MODEL-01__standard",
-                                                  "H-MODEL-01__newformat"}
-    preds_f = REAL / "output/predictions.csv"
-    for e in exps:
-        assert e["hypothesis_id"] == "H-MODEL-01" and e["training_cutoff"] == "2026-09-28"
-        SE._payload_cache.pop(e["experiment_id"], None)
-        payload = SE.load_challenger(e)
-        assert payload is not None, f"{e['experiment_id']} sha mismatch"
-        champ = __import__("pickle").loads(reg.MODEL_FILES[e["model_type"]].read_bytes())
-        assert payload["feature_cols"] == champ["feature_cols"]
-    if preds_f.exists():
-        preds = pd.read_csv(preds_f)
-        rows = SE.score(preds, now=datetime(2000, 1, 1, tzinfo=timezone.utc))
-        if not rows.empty:
-            assert rows["p_challenger"].between(0.01, 0.99).all()
-            assert rows["p_champion_raw"].notna().all()
+    all_exps = json.loads(reg_file.read_text(encoding="utf-8"))["experiments"]
+    h = {e["experiment_id"]: e for e in all_exps if e["hypothesis_id"] == "H-MODEL-01"}
+    assert set(h) >= {"H-MODEL-01__standard", "H-MODEL-01__newformat"}
+    champs = json.loads((REAL / "models/registry/current_champions.json").read_text(encoding="utf-8"))
+    for eid, e in h.items():
+        assert e["status"] == "RETIRED" and "clean-data switch" in e["retired_reason"]
+        assert champs[e["model_type"]]["model_version"] != e["champion_at_registration"]
+        SE._payload_cache.pop(eid, None)
+        assert SE.load_challenger(e) is not None, f"{eid} sha mismatch"
+    assert not {e["experiment_id"] for e in SE.load_registry(reg_file)} & set(h)

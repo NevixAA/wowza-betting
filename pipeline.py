@@ -52,7 +52,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import config
 from src.data_loader import load_all_matches
 from src.feature_engineering import build_features
-from src.model import (train as train_model, load_models,
+from src.model import (train_for_retrain as train_model, load_models,
                         get_feature_importances, chronological_split, score_payload,
                         predict_proba as model_predict_proba,
                         FEATURE_COLS as MODEL_FEATURE_COLS)
@@ -65,6 +65,10 @@ from src.ledger import (append_tips, append_side_market_tips, append_ht_tips,
 
 
 # ── Side-market bet generation ────────────────────────────────────────────────
+
+#: The one side each side-market path produces (it reads p_{target} / odds_{target}).
+SIDE_OF_TARGET = {"btts": "YES", "over15": "OVER", "over35": "OVER"}
+
 
 def _load_side_market_thresholds() -> dict:
     """Load per-league thresholds from best_params_side_markets.json if it exists."""
@@ -90,6 +94,7 @@ def _generate_side_bets(preds: "pd.DataFrame", side_markets: dict) -> "pd.DataFr
     import pandas as pd
     import numpy as np
     from src.stake_plan import SIDE_SELECTION_COLUMNS
+    from src.side_thresholds import side_bars, tier_for
     frames = []
     OVERROUND    = 1.08          # legacy_1_08 only (config.SIDE_EDGE_FAIR_PRICE rollback)
     league_params = _load_side_market_thresholds()  # {target: {league: {sniper_th, marksman_th, drop}}}
@@ -109,6 +114,10 @@ def _generate_side_bets(preds: "pd.DataFrame", side_markets: dict) -> "pd.DataFr
             _quotes = None
 
     for target in side_markets:
+        if target not in SIDE_OF_TARGET:
+            # No side is defined for this target: never tip it with an empty side.
+            log.warning(f"side market {target!r} has no defined side - skipped, no tips")
+            continue
         prob_col = f"p_{target}"
         odds_col = f"odds_{target}"
         if prob_col not in preds.columns or odds_col not in preds.columns:
@@ -176,7 +185,7 @@ def _generate_side_bets(preds: "pd.DataFrame", side_markets: dict) -> "pd.DataFr
         # the MARKET is closer to truth than the model. The 2.82pp model-market gap manufactures a
         # NO edge on every fixture before any fixture-specific information exists. Enabling NO
         # would systematically bet a calibration error 61 times. Recalibrate p_btts first.
-        df["side"]        = {"btts": "YES", "over15": "OVER", "over35": "OVER"}.get(target, "")
+        df["side"]        = SIDE_OF_TARGET[target]
 
         def _tier(row):
             lg = row["league"]
@@ -199,26 +208,23 @@ def _generate_side_bets(preds: "pd.DataFrame", side_markets: dict) -> "pd.DataFr
             #
             # `approved` missing (an older best_params file) falls back to the previous rule, so
             # this can never regress an environment that has not rerun the optimizer yet.
-            _approved = lp.get("approved")
-            _use_own = (lp.get("approved", not lp.get("drop", False))
-                        if _approved is not None else not lp.get("drop", False))
-            if _use_own:
-                sniper_th   = lp.get("sniper_th",   0.10)
-                marksman_th = lp.get("marksman_th",  0.08)
-            else:
-                sniper_th, marksman_th = 0.10, 0.08
-            edge = row["edge"]
-            if edge >= sniper_th:   return "SNIPER"
-            if edge >= marksman_th: return "MARKSMAN"
-            if edge >= 0.04:        return "VALUABLE"
-            return "AVOID"
+            #
+            # THE GLOBAL BAR IS A DECLARED POLICY (fix9/defaults 2026-11-04): config.SIDE_GLOBAL_BARS,
+            # read through src/side_thresholds.side_bars - it was a typed lp.get("sniper_th", 0.10)
+            # here and in two research copies. Same values, same rule; the tip now also records
+            # WHICH bar tiered it (threshold_source LEAGUE / GLOBAL), so a global-bar tier is never
+            # shown as a per-league one.
+            bars = side_bars(lp)
+            return tier_for(row["edge"], bars), bars[3]
 
-        df["signal_tier"] = df.apply(_tier, axis=1)
+        _tiers = df.apply(_tier, axis=1, result_type="expand")
+        df["signal_tier"], df["threshold_source"] = _tiers[0], _tiers[1]
         df = df[df["signal_tier"] != "AVOID"]
         df = df.sort_values("edge", ascending=False)
         # ONE SCHEMA, defined once in src/stake_plan.py and read by the stake plan. `market_odds`
-        # is kept beside the canonical `odds` for the side_bets.csv / ledger / notify readers.
-        frames.append(df[list(SIDE_SELECTION_COLUMNS) + ["market_odds"]])
+        # is kept beside the canonical `odds` for the side_bets.csv / ledger / notify readers;
+        # `threshold_source` beside both for the ledger / Telegram / dashboard (not a stake input).
+        frames.append(df[list(SIDE_SELECTION_COLUMNS) + ["market_odds", "threshold_source"]])
 
     if not frames:
         return pd.DataFrame()
@@ -511,12 +517,10 @@ def _behaviour_canary(label: str, old_payload, results: dict, test_df, target: s
         return out
     try:
         import numpy as np
-        payload_new = {
-            "target": target,
-            "models": {k: v["model"] for k, v in results.items()},
-            "feature_cols": results[next(iter(results))]["feature_cols"],
-            "metrics": {k: v["metrics"] for k, v in results.items()},
-        }
+        from src.model import build_payload
+        # The payload exactly as it would serve (persisted imputer, track routing) - a hand-built
+        # four-key dict dropped both and scored the candidate with batch medians.
+        payload_new = build_payload(results, target)
         p_old = np.asarray(model_predict_proba(test_df, payload=old_payload), dtype=float)
         p_new = np.asarray(model_predict_proba(test_df, payload=payload_new), dtype=float)
         m = np.isfinite(p_old) & np.isfinite(p_new)
@@ -619,7 +623,15 @@ def _train_one(valid: "pd.DataFrame", label: str, model_file,
         log.warning(f"  [{label}] could not load/score the incumbent on today's holdout ({e}); "
                     f"the gate will fail closed")
 
-    results = train_model(valid, target=target, sample_weight=weights, feature_cols=feature_cols)
+    # REPAIRED RECIPE, NOT LEGACY (2026-11-02, estate scan training findings a-d): the candidate
+    # carries a persisted train-fitted imputer (no batch medians at serving), its meta-logistic is
+    # fitted on its own META block, weights travel with their rows, and side labels train one model
+    # per league track. The holdout starts at the first date of the gate's holdout (`_test_df`),
+    # so no row the gate scores below was used to fit any stage of the candidate.
+    _hs = (pd.to_datetime(_test_df["date"]).min()
+           if _test_df is not None and len(_test_df) and "date" in _test_df.columns else None)
+    results = train_model(valid, label=label, target=target, sample_weight=weights,
+                          feature_cols=feature_cols, holdout_start=_hs)
     canary = _behaviour_canary(label, _old_payload, results, _test_df, target)
 
     # 2. period 1 for the new candidate
@@ -685,10 +697,12 @@ def mode_train() -> tuple:
 
     # ── Exclude COVID seasons ────────────────────────────────────────────────
     if config.EXCLUDE_COVID_SEASONS:
+        # Per league from its own season rule (config.covid_season_mask): the old label set
+        # {"2019/20", "2020/21"} never matched a calendar-year league's "2020".
         before = len(raw)
-        raw = raw[~raw["season"].isin(config.COVID_SEASONS)]
-        log.info(f"  Excluded COVID seasons {config.COVID_SEASONS}: "
-                 f"{before - len(raw):,} rows removed → {len(raw):,} remaining")
+        raw = raw[~config.covid_season_mask(raw)]
+        log.info(f"  Excluded COVID seasons (league seasons in play {config.COVID_PERIOD[0]}.."
+                 f"{config.COVID_PERIOD[1]}): {before - len(raw):,} rows removed → {len(raw):,} remaining")
 
     log.info("Engineering features...")
     feat  = build_features(raw)
@@ -779,10 +793,14 @@ def mode_train() -> tuple:
     else:
         log.warning(f"  Not enough HT data ({len(ht_valid)} rows) — skipping HT models")
 
-    # ── Side-market models (BTTS / O1.5 / O3.5) — all leagues with odds data ──
-    # nf_valid rows now have odds_btts/over15/over35 when af_odds_history.parquet
-    # has been backfilled; rows without odds simply drop out via dropna().
-    log.info("\nTraining side-market models (BTTS / Over 1.5 / Over 3.5)...")
+    # ── Side-market models (BTTS / O1.5 / O3.5) — one model PER LEAGUE TRACK ──
+    # Until 2026-11-02 one model per market was fitted on Standard + New Format rows POOLED and
+    # served to both tracks, against the model-isolation rule. The frame below still holds both
+    # tracks (one serving file per market), but src.model.train_for_retrain splits it with
+    # src.model.track_of and fits a separate Standard and New Format model; serving routes each
+    # fixture to its own track's model with the same function. A track with too little data gets
+    # no model, and its fixtures no side probability (never the other track's).
+    log.info("\nTraining side-market models (BTTS / Over 1.5 / Over 3.5), per league track...")
     _sm_all = pd.concat([std_valid, nf_valid], ignore_index=True)
     for target, model_file in config.SIDE_MARKETS.items():
         sm_valid = _sm_all.dropna(subset=[target])

@@ -1,7 +1,23 @@
 """Stake plan (wired 2026-10-14): policy applied per match DAY, output only, first-sight audit."""
 import pandas as pd
+import pytest
 
 from src import stake_plan as sp
+
+
+@pytest.fixture(autouse=True)
+def _rated_and_evidenced(monkeypatch):
+    """These tests are about per-day sizing and the audit: every league is rated (no network) and
+    has its own threshold. The no-rating / no-evidence rules are tested below and in
+    tests/test_league_rating_sizing.py."""
+    import src.betting as betting
+    monkeypatch.setattr(sp, "load_league_ratings", lambda *a, **k: _AllRated())
+    monkeypatch.setattr(betting, "league_threshold_evidence", lambda league, market="ou25": True)
+
+
+class _AllRated(dict):
+    def get(self, k, d=None):
+        return 10
 
 
 def _bets():
@@ -49,3 +65,26 @@ def test_audit_first_sight(tmp_path, monkeypatch):
 
 def test_never_raises():
     assert sp.write(pd.DataFrame({"nonsense": [1]}), None).empty
+
+
+def test_ou25_frame_without_model_type_is_a_contract_error():
+    """No getattr defaults: a bets frame without model_type used to stake on `unknown|OU25`."""
+    with pytest.raises(sp.SelectionSchemaError):
+        sp.selections(_bets().drop(columns=["model_type"]), None)
+
+
+def test_unknown_side_gets_no_odds():
+    """A tip without OVER/UNDER used to be priced at the UNDER odds."""
+    b = _bets().head(1).assign(best_side="")
+    assert sp.selections(b, None)["odds"].isna().all()
+
+
+def test_threshold_evidence_comes_from_the_real_gates(monkeypatch):
+    """Championship O/U 2.5 has a calibrated per-league SNIPER threshold; Brazil Serie A O/U 2.5 is
+    tiered on the global bar and so is planned with NO stake."""
+    monkeypatch.undo()                                   # the real league_threshold_evidence
+    b =pd.DataFrame([{**_bets().iloc[0].to_dict(), "league": lg, "home_team": lg}
+                      for lg in ("Championship", "Brazil Serie A")])
+    s = sp.selections(b, None).set_index("league")
+    assert bool(s.loc["Championship", "league_threshold_evidence"]) is True
+    assert bool(s.loc["Brazil Serie A", "league_threshold_evidence"]) is False

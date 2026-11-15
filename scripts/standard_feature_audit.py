@@ -254,7 +254,7 @@ def main(argv=None) -> int:
     else:
         from src.data_loader import load_all_matches
         raw = load_all_matches()
-    train_raw = raw[~raw["season"].isin(config.COVID_SEASONS)] if config.EXCLUDE_COVID_SEASONS else raw
+    train_raw = raw[~config.covid_season_mask(raw)] if config.EXCLUDE_COVID_SEASONS else raw
     rep_cols = set(feature_cols_for(a.price_mode, serving))
 
     rp = replay(raw, train_raw, leagues, a.days, a.max_dates, a.price_mode)

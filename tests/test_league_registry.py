@@ -28,6 +28,26 @@ SNAP = json.loads((ROOT / "tests" / "fixtures" / "config_league_tables_pre_regis
 ALIAS_KEYS_REMOVED = {"FOOTBALL_DATA_LEAGUES": {"Austria Bundesliga"}, "LEAGUE_TIMEZONES": {"Austria Bundesliga"},
                       "API_FOOTBALL_SEASONS": {"Danish Superliga"}, "ODDS_API_SPORT_KEYS": {"World Cup"}}
 REG = json.loads(LR.REGISTRY_FILE.read_text(encoding="utf-8"))
+#: leagues that GAINED a value in LR-1.1 (prop-only OddsAPI keys; single-zone-country timezones)
+LR_1_1_ADDS = {
+    "ODDS_API_SPORT_KEYS": {"Premier League", "La Liga", "Serie A", "Bundesliga", "Ligue 1",
+                            "Champions League", "Europa League", "Conference League"},
+    "LEAGUE_TIMEZONES": {"Premier League", "La Liga", "Serie A", "Bundesliga", "Ligue 1", "Swiss Super League",
+                         "Czech Liga", "Croatia HNL", "Serbia Super Liga", "Ukraine Premier League"},
+    # LR-1.2 (2026-11-02): football-data codes for no-model leagues (big-5 from data_loader._HT_EXTRA,
+    # SWZ/POL from the deleted Pro backfill dict)
+    "FOOTBALL_DATA_LEAGUES": {"Premier League", "Bundesliga", "La Liga", "Serie A", "Ligue 1",
+                              "Swiss Super League", "Poland Ekstraklasa"},
+}
+
+# Owner-approved ADDS after LR-1.1, each with its evidence (a value is added, none is changed):
+#   2026-11-11 ODDS_API_SPORT_KEYS: Portuguese Primeira Liga -> soccer_portugal_primeira_liga. Owner decision
+#   "probe, then add": the provider's own /sports?all=true list holds exactly one candidate and the historical
+#   probe (wowza-exec run 43035181427, private ledger/probe_keys.json) returned btts + alternate_totals for a
+#   fixture proven to be ours. Training-only (enabled=false), so predict / live never fetch it.
+LATER_ADDS = {
+    "ODDS_API_SPORT_KEYS": {"Portuguese Primeira Liga"},
+}
 
 
 def _cfg_table(name):
@@ -50,7 +70,12 @@ def test_league_sets_equal_pre_registry(name):
                                   "PROVIDER_UNSUPPORTED"])
 def test_league_maps_equal_pre_registry_minus_aliases(name):
     old = {k: v for k, v in SNAP[name] if k not in ALIAS_KEYS_REMOVED.get(name, set())}
-    assert _cfg_table(name) == old
+    have = _cfg_table(name)
+    # LR-1.1 only ADDS values copied from where the code already held them (see
+    # test_league_registry_facts.py for their provenance); every pre-registry value is unchanged.
+    added = {k: have[k] for k in set(have) - set(old)}
+    assert set(added) == LR_1_1_ADDS.get(name, set()) | LATER_ADDS.get(name, set())
+    assert {k: v for k, v in have.items() if k not in added} == old
 
 
 def test_api_football_seasons_equal_pre_registry_on_2026_11_01():
@@ -107,7 +132,9 @@ def test_shipped_registry_is_valid_and_consistent_with_config():
 
 def test_every_model_league_has_api_id_and_season_rule():
     for e in REG["leagues"]:
-        assert e["season_rule"], e["name"]
+        # LR-1.2: null only for a no-model, no-API-id collection entry (national-team rows)
+        assert e["season_rule"] or (e["model_type"] is None and e["api_football_id"] is None
+                                    and not e["enabled"]), e["name"]
         if e["model_type"]:
             assert e["api_football_id"], e["name"]
         if e["enabled"] and not e.get("provider_unsupported"):

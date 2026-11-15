@@ -36,6 +36,9 @@ EXPECTATION_FILE = Path(config.BASE_DIR) / "config" / "clv_collection_expectatio
 CLV_MARKETS = ("over25", "under25", "over15", "under15", "over35", "under35",
                "btts_yes", "btts_no")
 T10 = 10.0
+#: Every floor check() reads from config/clv_collection_expectation.json.
+_EXPECTATION_KEYS = ("min_shadow_sample", "min_certified_t30_pct", "min_collection_sample",
+                     "min_collection_t30_pct", "collection_window_days")
 
 
 def _now(now) -> pd.Timestamp:
@@ -91,8 +94,9 @@ def shadow_section(df: pd.DataFrame, since: pd.Timestamp | None = None) -> dict:
     out = _shadow_counts(d)
     if len(d):
         out["by_league"] = {str(k): _shadow_counts(g) for k, g in d.groupby("league")}
+        # A row with no market is counted under "" (unknown), not relabelled ou25.
         out["by_market"] = {str(k): _shadow_counts(g) for k, g in
-                            d.assign(market=d["market"].replace("", "ou25")).groupby("market")}
+                            d.assign(market=d["market"].fillna("").astype(str)).groupby("market")}
     return out
 
 
@@ -166,8 +170,9 @@ def build(shadow_df: pd.DataFrame, archives: list, now=None,
         "shadow_since_measure_from": (shadow_section(shadow_df, since)
                                       if since is not None else None),
         "measure_from": exp.get("measure_from"),
-        "collection": collection_section(archives, now_ts,
-                                         float(exp.get("collection_window_days", 7)), since),
+        # No window configured -> the collection view is not measured (it defaulted to 7 days).
+        "collection": (collection_section(archives, now_ts, float(exp["collection_window_days"]), since)
+                       if exp.get("collection_window_days") is not None else None),
     }
     h["check"] = check(h, exp)
     return h
@@ -179,19 +184,31 @@ def check(h: dict, exp: dict) -> dict:
     res = {"status": "PASS", "reasons": []}
     if not exp:
         return {"status": "NO_EXPECTATION", "reasons": ["expectation file missing"]}
-    sh = h.get("shadow_since_measure_from") or {}
-    n_sh = int(sh.get("eligible") or 0)
-    if n_sh < int(exp.get("min_shadow_sample", 40)):
-        res["reasons"].append(f"shadow sample {n_sh} < {exp.get('min_shadow_sample', 40)}")
-    elif (sh.get("certified_t30_pct") or 0.0) < float(exp["min_certified_t30_pct"]):
+    # The floors come from the expectation file only; a missing key is reported, never replaced by
+    # a number typed here (these defaulted to 40 / 200 in code).
+    missing = [k for k in _EXPECTATION_KEYS if k not in exp]
+    if missing:
+        return {"status": "NO_EXPECTATION", "reasons": [f"expectation file lacks {missing}"]}
+    sh = h.get("shadow_since_measure_from")
+    co = h.get("collection")
+    if sh is None or co is None:
+        return {"status": "INSUFFICIENT_SAMPLE",
+                "reasons": [("shadow" if sh is None else "collection") + " section not measured"]}
+    n_sh = int(sh["eligible"])
+    if n_sh < int(exp["min_shadow_sample"]):
+        res["reasons"].append(f"shadow sample {n_sh} < {exp['min_shadow_sample']}")
+    elif sh.get("certified_t30_pct") is None:
+        res["reasons"].append("certified T-30m close not measured")
+    elif sh["certified_t30_pct"] < float(exp["min_certified_t30_pct"]):
         res["status"] = "FAIL"
         res["reasons"].append(f"certified T-30m close {sh.get('certified_t30_pct')}% < "
                               f"{exp['min_certified_t30_pct']}% on {n_sh} settled shadow rows")
-    co = h.get("collection") or {}
-    n_co = int(co.get("fixture_markets") or 0)
-    if n_co < int(exp.get("min_collection_sample", 200)):
-        res["reasons"].append(f"collection sample {n_co} < {exp.get('min_collection_sample', 200)}")
-    elif (co.get("t30_pct") or 0.0) < float(exp["min_collection_t30_pct"]):
+    n_co = int(co["fixture_markets"])
+    if n_co < int(exp["min_collection_sample"]):
+        res["reasons"].append(f"collection sample {n_co} < {exp['min_collection_sample']}")
+    elif co.get("t30_pct") is None:
+        res["reasons"].append("collection T-30m not measured")
+    elif co["t30_pct"] < float(exp["min_collection_t30_pct"]):
         res["status"] = "FAIL"
         res["reasons"].append(f"collection T-30m {co.get('t30_pct')}% < "
                               f"{exp['min_collection_t30_pct']}% on {n_co} fixture-markets")

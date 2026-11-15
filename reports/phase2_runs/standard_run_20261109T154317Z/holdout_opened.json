@@ -1,0 +1,11 @@
+{
+  "opened_at": "2026-11-09T16:18:20+00:00",
+  "holdout": {
+    "start": "2026-04-01",
+    "end": "2026-11-08",
+    "approved_by": "Nevo (owner)",
+    "approved_at": "2026-11-07T07:03:25Z",
+    "approval_note": "Owner 2026-11-07: holdout from 2026-04-01 (the recommended middle option: Standard 6/17 and new-format 10/15 leagues reach the per-league minimum of 150 holdout matches). Proposed earlier: 2026-07-01. Pass rules: the PG-1.0 values in 'comparison' reused as declared. New-format HT block: included as a CANDIDATE (owner_decisions.new_format_ht_variant), never forced in.",
+    "note": "UNTOUCHED final holdout. Rows dated start..end (inclusive) are never in any walk-forward fold, never used to fit, calibrate, blend or choose anything, and are scored exactly once by the holdout stage. The owner confirmed the dates (approved_by/approved_at, 2026-11-07); fitting refuses whenever approved_by or approved_at is empty, and the dates must not change for this harness_version."
+  }
+}

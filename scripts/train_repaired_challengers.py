@@ -29,7 +29,7 @@ ONE ARCHITECTURE (src.model.train_repaired, recipes nf_ / side_ / ht_v9_repaired
             (PRIMARY season_age fixed before evaluation).
 
 CHAMPION = the legacy recipe as it trains today (pipeline.mode_train: legacy feature builder, the
-serving payload's feature list, the season-label weight map, legacy src.model.train), trained on
+serving payload's feature list, the date-derived recency weights, legacy src.model.train), trained on
 the same pre-holdout rows. Its meta-logistic is fitted ON the holdout (bug 6), so its holdout
 number is optimistic: CHAMPION_BASEMEAN (mean of its calibrated base models, no meta) is reported
 alongside as the uncontaminated legacy reference. Rows are matched on canonical
@@ -106,7 +106,7 @@ def load_frames(cutoff: pd.Timestamp, need_modern: bool) -> dict:
             else:
                 os.environ["WOWZA_USE_BACKTEST_ARCHIVE"] = old
         if config.EXCLUDE_COVID_SEASONS:
-            mod = mod[~mod["season"].isin(config.COVID_SEASONS)]
+            mod = mod[~config.covid_season_mask(mod)]
         mod = mod[pd.to_datetime(mod["date"], errors="coerce").dt.normalize() < cutoff]
         mod, _ = canonicalise_and_dedupe(mod, frozen, derive=False)
         keys = set(_keys(mod))
@@ -218,7 +218,8 @@ def train_champion(rows: pd.DataFrame, spec: dict, hs: pd.Timestamp) -> dict:
     d = rows.dropna(subset=[spec["target"]])
     n_pre = int((pd.to_datetime(d["date"]) < hs).sum())
     ratio = (n_pre + 0.5) / len(d)
-    w = None if spec["kind"] == "ht" else SR.legacy_weights(d).to_numpy()
+    # mode_train's weights: derived from the match date (the season-label map was deleted).
+    w = None if spec["kind"] == "ht" else SR.derived_weights(d).to_numpy()
     res = M.train(d, target=spec["target"], train_ratio=ratio, sample_weight=w,
                   feature_cols=_serving_cols(spec["serving"]))
     return M.build_payload(res, spec["target"])

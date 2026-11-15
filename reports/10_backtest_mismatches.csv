@@ -1,0 +1,942 @@
+bet_id,fixture_id,market,side,production_result,independent_result,production_pnl,independent_pnl,mismatch_reason
+P|2026-04-26|Viborg FF|FC Nordsjaelland|ou25|UNDER,2026-04-26|Viborg FF|FC Nordsjaelland,ou25,UNDER,WIN,WIN,1.75,1.75,ledger_tier_overwritten_after_first_log;NOT_IDENTIFIABLE_logged_before_first_committed_board
+P|2026-05-01|Andorra CF|Albacete|ou25|AVOID,2026-05-01|Andorra CF|Albacete,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;NOT_IDENTIFIABLE_logged_before_first_committed_board
+P|2026-05-01|Brondby IF|FC Nordsjaelland|ou25|UNDER,2026-05-01|Brondby IF|FC Nordsjaelland,ou25,UNDER,WIN,WIN,1.62,1.62,ledger_tier_overwritten_after_first_log;NOT_IDENTIFIABLE_logged_before_first_committed_board
+P|2026-05-01|Cercle Brugge KSV|SV Zulte-Waregem|ou25|UNDER,2026-05-01|Cercle Brugge KSV|SV Zulte-Waregem,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,NOT_IDENTIFIABLE_logged_before_first_committed_board
+P|2026-05-01|Çaykur Rizespor|Torku Konyaspor|ou25|UNDER,2026-05-01|Çaykur Rizespor|Torku Konyaspor,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,NOT_IDENTIFIABLE_logged_before_first_committed_board
+P|2026-05-02|Bolton Wanderers|Luton|ou25|UNDER,2026-05-02|Bolton Wanderers|Luton,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log;NOT_IDENTIFIABLE_logged_before_first_committed_board
+P|2026-05-02|Degerfors IF|BK Hacken|ou25|UNDER,2026-05-02|Degerfors IF|BK Hacken,ou25,UNDER,WIN,WIN,0.78,0.78,ledger_tier_overwritten_after_first_log;NOT_IDENTIFIABLE_logged_before_first_committed_board
+P|2026-05-02|Dynamo Dresden|1. FC Kaiserslautern|ou25|UNDER,2026-05-02|Dynamo Dresden|1. FC Kaiserslautern,ou25,UNDER,WIN,WIN,1.25,1.25,ledger_tier_overwritten_after_first_log;NOT_IDENTIFIABLE_logged_before_first_committed_board
+P|2026-05-02|Grazer AK|WSG Tirol|ou25|AVOID,2026-05-02|Grazer AK|WSG Tirol,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;ledger_tier_overwritten_after_first_log;NOT_IDENTIFIABLE_logged_before_first_committed_board
+P|2026-05-02|Groningen|Excelsior|ou25|UNDER,2026-05-02|Groningen|Excelsior,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log;NOT_IDENTIFIABLE_logged_before_first_committed_board
+P|2026-05-02|Holstein Kiel|Eintracht Braunschweig|ou25|AVOID,2026-05-02|Holstein Kiel|Eintracht Braunschweig,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;ledger_tier_overwritten_after_first_log;NOT_IDENTIFIABLE_logged_before_first_committed_board
+P|2026-05-02|IK Sirius|Kalmar FF|ou25|UNDER,2026-05-02|IK Sirius|Kalmar FF,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log;NOT_IDENTIFIABLE_logged_before_first_committed_board
+P|2026-05-02|Leyton Orient|Burton Albion|ou25|OVER,2026-05-02|Leyton Orient|Burton Albion,ou25,OVER,WIN,WIN,0.93,0.93,ledger_tier_overwritten_after_first_log;NOT_IDENTIFIABLE_logged_before_first_committed_board
+P|2026-05-02|NEC Nijmegen|SC Telstar|ou25|UNDER,2026-05-02|NEC Nijmegen|SC Telstar,ou25,UNDER,WIN,WIN,1.9,1.9,ledger_tier_overwritten_after_first_log;NOT_IDENTIFIABLE_logged_before_first_committed_board
+P|2026-05-02|Samsunspor|Galatasaray|ou25|UNDER,2026-05-02|Samsunspor|Galatasaray,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log;NOT_IDENTIFIABLE_logged_before_first_committed_board
+P|2026-05-02|Stevenage|Wigan Athletic|ou25|OVER,2026-05-02|Stevenage|Wigan Athletic,ou25,OVER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log;NOT_IDENTIFIABLE_logged_before_first_committed_board
+P|2026-05-02|Wycombe Wanderers|Rotherham United|ou25|UNDER,2026-05-02|Wycombe Wanderers|Rotherham United,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log;NOT_IDENTIFIABLE_logged_before_first_committed_board
+P|2026-05-03|1. FC Magdeburg|Hertha Berlin|ou25|UNDER,2026-05-03|1. FC Magdeburg|Hertha Berlin,ou25,UNDER,WIN,WIN,1.75,1.75,ledger_tier_overwritten_after_first_log;NOT_IDENTIFIABLE_logged_before_first_committed_board
+P|2026-05-03|AGF Aarhus|SonderjyskE|ou25|UNDER,2026-05-03|AGF Aarhus|SonderjyskE,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log;NOT_IDENTIFIABLE_logged_before_first_committed_board
+P|2026-05-03|Austria Wien|Hartberg|ou25|UNDER,2026-05-03|Austria Wien|Hartberg,ou25,UNDER,WIN,,0.85,,NOT_IDENTIFIABLE_logged_before_first_committed_board;independent_result_unavailable_NOT_FOUND
+P|2026-05-03|Dender|RAAL La Louvière|ou25|AVOID,2026-05-03|Dender|RAAL La Louvière,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;ledger_tier_overwritten_after_first_log;NOT_IDENTIFIABLE_logged_before_first_committed_board
+P|2026-05-03|Elversberg|SC Paderborn|ou25|UNDER,2026-05-03|Elversberg|SC Paderborn,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log;NOT_IDENTIFIABLE_logged_before_first_committed_board
+P|2026-05-03|FC Fredericia|FC Copenhagen|ou25|UNDER,2026-05-03|FC Fredericia|FC Copenhagen,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log;NOT_IDENTIFIABLE_logged_before_first_committed_board
+P|2026-05-03|GAIS|Örgryte IS|ou25|UNDER,2026-05-03|GAIS|Örgryte IS,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log;NOT_IDENTIFIABLE_logged_before_first_committed_board
+P|2026-05-03|GKS Katowice|Nieciecza|ou25|UNDER,2026-05-03|GKS Katowice|Nieciecza,ou25,UNDER,LOSS,,-1.0,,ledger_tier_overwritten_after_first_log;NOT_IDENTIFIABLE_logged_before_first_committed_board;independent_result_unavailable_NOT_FOUND
+P|2026-05-03|Hammarby IF|Västerås SK|ou25|UNDER,2026-05-03|Hammarby IF|Västerås SK,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log;NOT_IDENTIFIABLE_logged_before_first_committed_board
+P|2026-05-03|Hannover 96|SC Preußen Münster|ou25|UNDER,2026-05-03|Hannover 96|SC Preußen Münster,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log;NOT_IDENTIFIABLE_logged_before_first_committed_board
+P|2026-05-03|Karlsruher SC|SV Darmstadt 98|ou25|UNDER,2026-05-03|Karlsruher SC|SV Darmstadt 98,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log;NOT_IDENTIFIABLE_logged_before_first_committed_board
+P|2026-05-03|Kayserispor|Eyüpspor|ou25|UNDER,2026-05-03|Kayserispor|Eyüpspor,ou25,UNDER,WIN,WIN,0.88,0.88,ledger_tier_overwritten_after_first_log;NOT_IDENTIFIABLE_logged_before_first_committed_board
+P|2026-05-03|Las Palmas|Real Valladolid CF|ou25|AVOID,2026-05-03|Las Palmas|Real Valladolid CF,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;ledger_tier_overwritten_after_first_log;NOT_IDENTIFIABLE_logged_before_first_committed_board
+P|2026-05-03|OB Odense BK|Silkeborg IF|ou25|UNDER,2026-05-03|OB Odense BK|Silkeborg IF,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log;NOT_IDENTIFIABLE_logged_before_first_committed_board
+P|2026-05-03|Pogoń Szczecin|Wisła Płock|ou25|UNDER,2026-05-03|Pogoń Szczecin|Wisła Płock,ou25,UNDER,LOSS,,-1.0,,ledger_tier_overwritten_after_first_log;NOT_IDENTIFIABLE_logged_before_first_committed_board;independent_result_unavailable_NOT_FOUND
+P|2026-05-03|RB Salzburg|Sturm Graz|ou25|UNDER,2026-05-03|RB Salzburg|Sturm Graz,ou25,UNDER,WIN,WIN,1.23,1.23,NOT_IDENTIFIABLE_logged_before_first_committed_board
+P|2026-05-03|Real Sociedad B|Burgos CF|ou25|AVOID,2026-05-03|Real Sociedad B|Burgos CF,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;ledger_tier_overwritten_after_first_log;NOT_IDENTIFIABLE_logged_before_first_committed_board
+P|2026-05-04|Radomiak Radom|Lechia Gdańsk|ou25|UNDER,2026-05-04|Radomiak Radom|Lechia Gdańsk,ou25,UNDER,LOSS,,-1.0,,ledger_tier_overwritten_after_first_log;NOT_IDENTIFIABLE_logged_before_first_committed_board;independent_result_unavailable_NOT_FOUND
+P|2026-05-10|Fortuna Düsseldorf|Elversberg|ou25|UNDER,2026-05-10|Fortuna Düsseldorf|Elversberg,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log;NOT_IDENTIFIABLE_logged_before_first_committed_board
+P|2026-05-17|1. FC Magdeburg|1. FC Kaiserslautern|ou25|UNDER,2026-05-17|1. FC Magdeburg|1. FC Kaiserslautern,ou25,UNDER,WIN,WIN,1.75,1.75,ledger_tier_overwritten_after_first_log;NOT_IDENTIFIABLE_logged_before_first_committed_board
+P|2026-05-17|Elversberg|SC Preußen Münster|ou25|UNDER,2026-05-17|Elversberg|SC Preußen Münster,ou25,UNDER,,LOSS,,-1.0,NOT_IDENTIFIABLE_logged_before_first_committed_board;production_unsettled_but_result_known
+P|2026-05-17|Karlsruher SC|VfL Bochum|ou25|UNDER,2026-05-17|Karlsruher SC|VfL Bochum,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log;NOT_IDENTIFIABLE_logged_before_first_committed_board
+P|2026-05-17|RB Salzburg|Hartberg|ou25|UNDER,2026-05-17|RB Salzburg|Hartberg,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log;NOT_IDENTIFIABLE_logged_before_first_committed_board
+P|2026-05-17|SV Darmstadt 98|SC Paderborn|ou25|UNDER,2026-05-17|SV Darmstadt 98|SC Paderborn,ou25,UNDER,WIN,WIN,1.85,1.85,ledger_tier_overwritten_after_first_log;NOT_IDENTIFIABLE_logged_before_first_committed_board
+P|2026-05-21|Brondby IF|FC Copenhagen|ou25|OVER,2026-05-21|Brondby IF|FC Copenhagen,ou25,OVER,,,,,ledger_tier_overwritten_after_first_log;NOT_IDENTIFIABLE_logged_before_first_committed_board;production_logged_from_uncommitted_board
+P|2026-05-21|IF Elfsborg|Mjällby AIF|ou25|UNDER,2026-05-21|IF Elfsborg|Mjällby AIF,ou25,UNDER,WIN,WIN,0.77,0.77,ledger_tier_overwritten_after_first_log;NOT_IDENTIFIABLE_logged_before_first_committed_board;production_logged_from_uncommitted_board
+P|2026-05-22|Galway United|Bohemians|ou25|UNDER,2026-05-22|Galway United|Bohemians,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log;NOT_IDENTIFIABLE_logged_before_first_committed_board;production_logged_from_uncommitted_board
+P|2026-05-22|Ried|Rapid Wien|ou25|UNDER,2026-05-22|Ried|Rapid Wien,ou25,UNDER,,,,,NOT_IDENTIFIABLE_logged_before_first_committed_board;production_logged_from_uncommitted_board
+P|2026-05-22|Shamrock Rovers|Sligo Rovers|ou25|UNDER,2026-05-22|Shamrock Rovers|Sligo Rovers,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,NOT_IDENTIFIABLE_logged_before_first_committed_board;production_logged_from_uncommitted_board
+P|2026-05-23|Grêmio|Santos|ou25|AVOID,2026-05-23|Grêmio|Santos,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;ledger_tier_overwritten_after_first_log;NOT_IDENTIFIABLE_logged_before_first_committed_board
+P|2026-05-23|Hiroshima Sanfrecce FC|Nagoya Grampus|ou25|UNDER,2026-05-23|Hiroshima Sanfrecce FC|Nagoya Grampus,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log;NOT_IDENTIFIABLE_logged_before_first_committed_board;production_logged_from_uncommitted_board
+P|2026-05-23|Kashima Antlers|FC Tokyo|ou25|AVOID,2026-05-23|Kashima Antlers|FC Tokyo,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;ledger_tier_overwritten_after_first_log;NOT_IDENTIFIABLE_logged_before_first_committed_board
+P|2026-05-23|Kyoto Purple Sanga|V-Varen Nagasaki|ou25|UNDER,2026-05-23|Kyoto Purple Sanga|V-Varen Nagasaki,ou25,UNDER,WIN,WIN,0.89,0.89,ledger_tier_overwritten_after_first_log;NOT_IDENTIFIABLE_logged_before_first_committed_board;production_logged_from_uncommitted_board
+P|2026-05-23|Mirassol|Fluminense|ou25|AVOID,2026-05-23|Mirassol|Fluminense,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;ledger_tier_overwritten_after_first_log;NOT_IDENTIFIABLE_logged_before_first_committed_board
+P|2026-05-23|Sao Paulo|Botafogo|ou25|UNDER,2026-05-23|Sao Paulo|Botafogo,ou25,UNDER,WIN,WIN,0.95,0.95,NOT_IDENTIFIABLE_logged_before_first_committed_board;production_logged_from_uncommitted_board
+P|2026-05-23|Vitoria|Internacional|ou25|AVOID,2026-05-23|Vitoria|Internacional,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;ledger_tier_overwritten_after_first_log;NOT_IDENTIFIABLE_logged_before_first_committed_board
+P|2026-05-24|Andorra CF|AD Ceuta FC|ou25|UNDER,2026-05-24|Andorra CF|AD Ceuta FC,ou25,UNDER,WIN,WIN,1.33,1.33,ledger_tier_overwritten_after_first_log;NOT_IDENTIFIABLE_logged_before_first_committed_board
+P|2026-05-24|Columbus Crew SC|Atlanta United FC|ou25|UNDER,2026-05-24|Columbus Crew SC|Atlanta United FC,ou25,UNDER,WIN,WIN,1.45,1.45,ledger_tier_overwritten_after_first_log;NOT_IDENTIFIABLE_logged_before_first_committed_board;production_logged_from_uncommitted_board
+P|2026-05-24|Corinthians|Atletico Mineiro|ou25|AVOID,2026-05-24|Corinthians|Atletico Mineiro,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;ledger_tier_overwritten_after_first_log;NOT_IDENTIFIABLE_logged_before_first_committed_board
+P|2026-05-24|Cruzeiro|Chapecoense|ou25|UNDER,2026-05-24|Cruzeiro|Chapecoense,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,NOT_IDENTIFIABLE_logged_before_first_committed_board;production_logged_from_uncommitted_board
+P|2026-05-24|Flamengo|Palmeiras|ou25|UNDER,2026-05-24|Flamengo|Palmeiras,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log;NOT_IDENTIFIABLE_logged_before_first_committed_board;production_logged_from_uncommitted_board
+P|2026-05-24|Mito HollyHock|Kawasaki Frontale|ou25|UNDER,2026-05-24|Mito HollyHock|Kawasaki Frontale,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,NOT_IDENTIFIABLE_logged_before_first_committed_board;production_logged_from_uncommitted_board
+P|2026-05-24|Portland Timbers|San Jose Earthquakes|ou25|UNDER,2026-05-24|Portland Timbers|San Jose Earthquakes,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log;NOT_IDENTIFIABLE_logged_before_first_committed_board;production_logged_from_uncommitted_board
+P|2026-05-24|Qingdao Hainiu FC|Chongqing Tonglianglong FC|ou25|AVOID,2026-05-24|Qingdao Hainiu FC|Chongqing Tonglianglong FC,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;ledger_tier_overwritten_after_first_log;NOT_IDENTIFIABLE_logged_before_first_committed_board
+P|2026-05-24|Remo|Atletico Paranaense|ou25|UNDER,2026-05-24|Remo|Atletico Paranaense,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,NOT_IDENTIFIABLE_logged_before_first_committed_board;production_logged_from_uncommitted_board
+P|2026-05-24|Shanghai Shenhua FC|Shenzhen Peng City FC|ou25|UNDER,2026-05-24|Shanghai Shenhua FC|Shenzhen Peng City FC,ou25,UNDER,LOSS,,-1.0,,ledger_tier_overwritten_after_first_log;NOT_IDENTIFIABLE_logged_before_first_committed_board;production_logged_from_uncommitted_board;independent_result_unavailable_NOT_FOUND
+P|2026-05-24|Shimizu S Pulse|Gamba Osaka|ou25|UNDER,2026-05-24|Shimizu S Pulse|Gamba Osaka,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,NOT_IDENTIFIABLE_logged_before_first_committed_board;production_logged_from_uncommitted_board
+P|2026-05-24|Sporting Gijón|Almería|ou25|UNDER,2026-05-24|Sporting Gijón|Almería,ou25,UNDER,,LOSS,,-1.0,ledger_tier_overwritten_after_first_log;NOT_IDENTIFIABLE_logged_before_first_committed_board;production_unsettled_but_result_known
+P|2026-05-24|Vasco da Gama|Bragantino-SP|ou25|UNDER,2026-05-24|Vasco da Gama|Bragantino-SP,ou25,UNDER,,LOSS,,-1.0,ledger_tier_overwritten_after_first_log;NOT_IDENTIFIABLE_logged_before_first_committed_board;production_logged_from_uncommitted_board;production_unsettled_but_result_known
+P|2026-05-24|Zhejiang|Liaoning Tieren FC|ou25|UNDER,2026-05-24|Zhejiang|Liaoning Tieren FC,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log;NOT_IDENTIFIABLE_logged_before_first_committed_board;production_logged_from_uncommitted_board
+P|2026-05-25|Bohemians|Shamrock Rovers|ou25|AVOID,2026-05-25|Bohemians|Shamrock Rovers,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;ledger_tier_overwritten_after_first_log;independent_rejects_price_bound_blocked
+P|2026-05-25|Coritiba|Bahia|ou25|UNDER,2026-05-25|Coritiba|Bahia,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,NOT_IDENTIFIABLE_logged_before_first_committed_board;production_logged_from_uncommitted_board
+P|2026-05-25|Derry City|Shelbourne Dublin|ou25|AVOID,2026-05-25|Derry City|Shelbourne Dublin,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;ledger_tier_overwritten_after_first_log;independent_rejects_price_bound_blocked
+P|2026-05-29|Dundalk|Derry City|ou25|UNDER,2026-05-29|Dundalk|Derry City,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log;tier_differs_VALUE_vs_VALUABLE_pre_2026-10-26_drift_tier_era (legacy VALUE label)
+P|2026-05-29|Sligo Rovers|Bohemians|ou25|AVOID,2026-05-29|Sligo Rovers|Bohemians,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;ledger_tier_overwritten_after_first_log;independent_rejects_price_bound_blocked
+P|2026-05-30|Bahia|Botafogo|ou25|UNDER,2026-05-30|Bahia|Botafogo,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log;tier_differs_VALUE_vs_VALUABLE_pre_2026-10-26_drift_tier_era (legacy VALUE label)
+P|2026-05-30|Chongqing Tonglianglong FC|Beijing FC|ou25|UNDER,2026-05-30|Chongqing Tonglianglong FC|Beijing FC,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log;tier_differs_VALUE_vs_VALUABLE_pre_2026-10-26_drift_tier_era (legacy VALUE label)
+P|2026-05-30|Flamengo|Coritiba|ou25|UNDER,2026-05-30|Flamengo|Coritiba,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log;tier_differs_VALUE_vs_VALUABLE_pre_2026-10-26_drift_tier_era (legacy VALUE label)
+P|2026-05-30|Grêmio|Corinthians|ou25|AVOID,2026-05-30|Grêmio|Corinthians,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;ledger_tier_overwritten_after_first_log;independent_rejects_price_bound_blocked
+P|2026-05-31|Santos|Vitoria|ou25|AVOID,2026-05-31|Santos|Vitoria,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;ledger_tier_overwritten_after_first_log;independent_rejects_price_bound_blocked
+P|2026-06-06|FC Machida Zelvia|Nagoya Grampus|ou25|AVOID,2026-06-06|FC Machida Zelvia|Nagoya Grampus,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;ledger_tier_overwritten_after_first_log;independent_rejects_price_bound_blocked
+P|2026-06-06|FC Machida Zelvia|Nagoya Grampus|ou25|OVER,2026-06-06|FC Machida Zelvia|Nagoya Grampus,ou25,OVER,WIN,,1.15,,ledger_tier_overwritten_after_first_log;tier_differs_VALUE_vs_VALUABLE_pre_2026-10-26_drift_tier_era (legacy VALUE label);independent_result_unavailable_NOT_FOUND
+P|2026-06-06|FC Tokyo|Cerezo Osaka|ou25|UNDER,2026-06-06|FC Tokyo|Cerezo Osaka,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log;tier_differs_VALUE_vs_VALUABLE_pre_2026-10-26_drift_tier_era (legacy VALUE label)
+P|2026-06-06|JEF United Chiba|Avispa Fukuoka|ou25|AVOID,2026-06-06|JEF United Chiba|Avispa Fukuoka,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;ledger_tier_overwritten_after_first_log;independent_rejects_price_bound_blocked
+P|2026-06-06|Kashima Antlers|Vissel Kobe|ou25|AVOID,2026-06-06|Kashima Antlers|Vissel Kobe,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;ledger_tier_overwritten_after_first_log;independent_rejects_price_bound_blocked
+P|2026-06-06|Kashima Antlers|Vissel Kobe|ou25|OVER,2026-06-06|Kashima Antlers|Vissel Kobe,ou25,OVER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log;tier_differs_VALUE_vs_SNIPER_pre_2026-10-26_drift_tier_era (legacy VALUE label)
+P|2026-06-06|Kawasaki Frontale|Hiroshima Sanfrecce FC|ou25|UNDER,2026-06-06|Kawasaki Frontale|Hiroshima Sanfrecce FC,ou25,UNDER,WIN,WIN,1.12,1.12,ledger_tier_overwritten_after_first_log;tier_differs_VALUE_vs_VALUABLE_pre_2026-10-26_drift_tier_era (legacy VALUE label)
+P|2026-06-06|Kawasaki Frontale|Hiroshima Sanfrecce FC|ou25|AVOID,2026-06-06|Kawasaki Frontale|Hiroshima Sanfrecce FC,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-06-06|Mito HollyHock|V-Varen Nagasaki|ou25|AVOID,2026-06-06|Mito HollyHock|V-Varen Nagasaki,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;ledger_tier_overwritten_after_first_log;independent_rejects_price_bound_blocked
+P|2026-06-06|Mito HollyHock|V-Varen Nagasaki|ou25|OVER,2026-06-06|Mito HollyHock|V-Varen Nagasaki,ou25,OVER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log;tier_differs_VALUE_vs_VALUABLE_pre_2026-10-26_drift_tier_era (legacy VALUE label)
+P|2026-06-06|Tokyo Verdy|Gamba Osaka|ou25|OVER,2026-06-06|Tokyo Verdy|Gamba Osaka,ou25,OVER,WIN,WIN,1.38,1.38,ledger_tier_overwritten_after_first_log;tier_differs_VALUE_vs_VALUABLE_pre_2026-10-26_drift_tier_era (legacy VALUE label)
+P|2026-06-06|Urawa Red Diamonds|Fagiano Okayama|ou25|AVOID,2026-06-06|Urawa Red Diamonds|Fagiano Okayama,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;ledger_tier_overwritten_after_first_log;independent_rejects_price_bound_blocked
+P|2026-06-06|Urawa Red Diamonds|Fagiano Okayama|ou25|OVER,2026-06-06|Urawa Red Diamonds|Fagiano Okayama,ou25,OVER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log;tier_differs_VALUE_vs_VALUABLE_pre_2026-10-26_drift_tier_era (legacy VALUE label)
+P|2026-06-06|Yokohama F Marinos|Shimizu S Pulse|ou25|AVOID,2026-06-06|Yokohama F Marinos|Shimizu S Pulse,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;ledger_tier_overwritten_after_first_log;independent_rejects_price_bound_blocked
+P|2026-06-06|Yokohama F Marinos|Shimizu S Pulse|ou25|OVER,2026-06-06|Yokohama F Marinos|Shimizu S Pulse,ou25,OVER,WIN,WIN,1.08,1.08,ledger_tier_overwritten_after_first_log;tier_differs_VALUE_vs_VALUABLE_pre_2026-10-26_drift_tier_era (legacy VALUE label)
+P|2026-06-09|Almería|CD Castellón|ou25|AVOID,2026-06-09|Almería|CD Castellón,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;ledger_tier_overwritten_after_first_log;independent_rejects_price_bound_blocked
+P|2026-06-09|Almería|CD Castellón|ou25|OVER,2026-06-09|Almería|CD Castellón,ou25,OVER,WIN,WIN,0.62,1.02,production_logged_from_uncommitted_board
+P|2026-06-12|Derry City|Bohemians|ou25|OVER,2026-06-12|Derry City|Bohemians,ou25,OVER,WIN,WIN,1.12,1.12,ledger_tier_overwritten_after_first_log;production_logged_from_uncommitted_board
+P|2026-06-12|Galway United|Dundalk|ou25|AVOID,2026-06-12|Galway United|Dundalk,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-06-12|Shelbourne Dublin|Shamrock Rovers|ou25|OVER,2026-06-12|Shelbourne Dublin|Shamrock Rovers,ou25,OVER,WIN,WIN,1.05,1.05,ledger_tier_overwritten_after_first_log;production_logged_from_uncommitted_board
+P|2026-06-12|St Patricks Athletic|Drogheda United|ou25|OVER,2026-06-12|St Patricks Athletic|Drogheda United,ou25,OVER,LOSS,LOSS,-1.0,-1.0,production_logged_from_uncommitted_board
+P|2026-06-12|Waterford FC|Sligo Rovers|ou25|OVER,2026-06-12|Waterford FC|Sligo Rovers,ou25,OVER,WIN,WIN,0.8,0.8,production_logged_from_uncommitted_board
+P|2026-06-13|FC Inter Turku|AC Oulu|ou25|OVER,2026-06-13|FC Inter Turku|AC Oulu,ou25,OVER,LOSS,LOSS,-1.0,-1.0,production_logged_from_uncommitted_board
+P|2026-06-13|FC Lahti|SJK Seinäjoki|ou25|OVER,2026-06-13|FC Lahti|SJK Seinäjoki,ou25,OVER,WIN,,0.92,,production_logged_from_uncommitted_board;independent_result_unavailable_NOT_FOUND
+P|2026-06-13|IFK Mariehamn|IF Gnistan|ou25|OVER,2026-06-13|IFK Mariehamn|IF Gnistan,ou25,OVER,WIN,WIN,1.0,1.0,production_logged_from_uncommitted_board
+P|2026-06-13|Ilves Tampere|TPS Turku|ou25|AVOID,2026-06-13|Ilves Tampere|TPS Turku,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-06-13|Jaro|HJK Helsinki|ou25|AVOID,2026-06-13|Jaro|HJK Helsinki,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-06-13|VPS Vaasa|KuPS Kuopio|ou25|OVER,2026-06-13|VPS Vaasa|KuPS Kuopio,ou25,OVER,LOSS,,-1.0,,production_logged_from_uncommitted_board;independent_result_unavailable_NOT_FOUND
+P|2026-06-17|HJK Helsinki|FC Inter Turku|ou25|AVOID,2026-06-17|HJK Helsinki|FC Inter Turku,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-06-17|Ilves Tampere|Jaro|ou25|AVOID,2026-06-17|Ilves Tampere|Jaro,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-06-17|SJK Seinäjoki|VPS Vaasa|ou25|OVER,2026-06-17|SJK Seinäjoki|VPS Vaasa,ou25,OVER,WIN,,0.75,,independent_result_unavailable_NOT_FOUND
+P|2026-06-17|TPS Turku|KuPS Kuopio|ou25|AVOID,2026-06-17|TPS Turku|KuPS Kuopio,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-06-18|AC Oulu|IFK Mariehamn|ou25|AVOID,2026-06-18|AC Oulu|IFK Mariehamn,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-06-18|AC Oulu|IFK Mariehamn|ou25|OVER,2026-06-18|AC Oulu|IFK Mariehamn,ou25,OVER,,WIN,,7.0,row_removed_from_current_ledger;production_unsettled_but_result_known
+P|2026-06-19|Bohemians|Dundalk|ou25|AVOID,2026-06-19|Bohemians|Dundalk,ou25,AVOID,,,,,row_removed_from_current_ledger;invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-06-19|St Patricks Athletic|Sligo Rovers|ou25|AVOID,2026-06-19|St Patricks Athletic|Sligo Rovers,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-06-19|St Patricks Athletic|Sligo Rovers|ou25|UNDER,2026-06-19|St Patricks Athletic|Sligo Rovers,ou25,UNDER,,WIN,,1.0,production_unsettled_but_result_known
+P|2026-06-19|Waterford FC|Shamrock Rovers|ou25|AVOID,2026-06-19|Waterford FC|Shamrock Rovers,ou25,AVOID,,,,,row_removed_from_current_ledger;invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-06-20|Almería|Málaga|ou25|UNDER,2026-06-20|Almería|Málaga,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,independent_rejects_below_threshold
+P|2026-06-23|FC Inter Turku|SJK Seinäjoki|ou25|AVOID,2026-06-23|FC Inter Turku|SJK Seinäjoki,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-06-23|FC Lahti|TPS Turku|ou25|OVER,2026-06-23|FC Lahti|TPS Turku,ou25,OVER,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-06-23|IFK Mariehamn|HJK Helsinki|ou25|AVOID,2026-06-23|IFK Mariehamn|HJK Helsinki,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-06-23|Jaro|IF Gnistan|ou25|AVOID,2026-06-23|Jaro|IF Gnistan,ou25,AVOID,,,,,row_removed_from_current_ledger;invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-06-23|KuPS Kuopio|Ilves Tampere|ou25|AVOID,2026-06-23|KuPS Kuopio|Ilves Tampere,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-06-23|VPS Vaasa|AC Oulu|ou25|OVER,2026-06-23|VPS Vaasa|AC Oulu,ou25,OVER,WIN,,0.77,,independent_result_unavailable_NOT_FOUND
+P|2026-06-26|Bohemians|St Patricks Athletic|ou25|OVER,2026-06-26|Bohemians|St Patricks Athletic,ou25,OVER,,LOSS,,-1.0,row_removed_from_current_ledger;production_unsettled_but_result_known
+P|2026-06-26|Derry City|Drogheda United|ou25|OVER,2026-06-26|Derry City|Drogheda United,ou25,OVER,,LOSS,,-1.0,row_removed_from_current_ledger;production_unsettled_but_result_known
+P|2026-06-26|Dundalk|Waterford FC|ou25|AVOID,2026-06-26|Dundalk|Waterford FC,ou25,AVOID,,,,,row_removed_from_current_ledger;invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-06-26|Qingdao Hainiu FC|Yunnan Yukun|ou25|AVOID,2026-06-26|Qingdao Hainiu FC|Yunnan Yukun,ou25,AVOID,,,,,row_removed_from_current_ledger;invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-06-26|Shamrock Rovers|Galway United|ou25|OVER,2026-06-26|Shamrock Rovers|Galway United,ou25,OVER,,WIN,,0.83,row_removed_from_current_ledger;production_unsettled_but_result_known
+P|2026-06-27|AC Oulu|FC Lahti|ou25|OVER,2026-06-27|AC Oulu|FC Lahti,ou25,OVER,,LOSS,,-1.0,row_removed_from_current_ledger;production_unsettled_but_result_known
+P|2026-06-27|Beijing FC|Wuhan Three Towns|ou25|AVOID,2026-06-27|Beijing FC|Wuhan Three Towns,ou25,AVOID,,,,,row_removed_from_current_ledger;invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-06-27|Chongqing Tonglianglong FC|Tianjin Jinmen Tiger FC|ou25|OVER,2026-06-27|Chongqing Tonglianglong FC|Tianjin Jinmen Tiger FC,ou25,OVER,,LOSS,,-1.0,row_removed_from_current_ledger;production_unsettled_but_result_known
+P|2026-06-27|HJK Helsinki|KuPS Kuopio|ou25|AVOID,2026-06-27|HJK Helsinki|KuPS Kuopio,ou25,AVOID,,,,,row_removed_from_current_ledger;invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-06-27|Henan FC|Shanghai SIPG FC|ou25|OVER,2026-06-27|Henan FC|Shanghai SIPG FC,ou25,OVER,,WIN,,0.85,row_removed_from_current_ledger;production_unsettled_but_result_known
+P|2026-06-27|IF Gnistan|VPS Vaasa|ou25|OVER,2026-06-27|IF Gnistan|VPS Vaasa,ou25,OVER,,,,,row_removed_from_current_ledger
+P|2026-06-27|IFK Mariehamn|FC Inter Turku|ou25|AVOID,2026-06-27|IFK Mariehamn|FC Inter Turku,ou25,AVOID,,,,,row_removed_from_current_ledger;invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-06-27|Ilves Tampere|SJK Seinäjoki|ou25|AVOID,2026-06-27|Ilves Tampere|SJK Seinäjoki,ou25,AVOID,,,,,row_removed_from_current_ledger;invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-06-27|Liaoning Tieren FC|Shandong Luneng Taishan FC|ou25|AVOID,2026-06-27|Liaoning Tieren FC|Shandong Luneng Taishan FC,ou25,AVOID,,,,,row_removed_from_current_ledger;invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-06-27|Shenzhen Peng City FC|Chengdu Rongcheng FC|ou25|AVOID,2026-06-27|Shenzhen Peng City FC|Chengdu Rongcheng FC,ou25,AVOID,,,,,row_removed_from_current_ledger;invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-06-27|Sligo Rovers|Shelbourne Dublin|ou25|OVER,2026-06-27|Sligo Rovers|Shelbourne Dublin,ou25,OVER,,WIN,,0.92,row_removed_from_current_ledger;production_unsettled_but_result_known
+P|2026-06-27|TPS Turku|Jaro|ou25|OVER,2026-06-27|TPS Turku|Jaro,ou25,OVER,,,,,row_removed_from_current_ledger
+P|2026-06-28|Dalian Yingbo|Shanghai Shenhua FC|ou25|AVOID,2026-06-28|Dalian Yingbo|Shanghai Shenhua FC,ou25,AVOID,,,,,row_removed_from_current_ledger;invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-06-28|Qingdao West Coast FC|Zhejiang|ou25|AVOID,2026-06-28|Qingdao West Coast FC|Zhejiang,ou25,AVOID,,,,,row_removed_from_current_ledger;invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-07-05|Kalmar FF|Örgryte IS|ou25|AVOID,2026-07-05|Kalmar FF|Örgryte IS,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-07-06|IF Brommapojkarna|GAIS|ou25|UNDER,2026-07-06|IF Brommapojkarna|GAIS,ou25,UNDER,WIN,WIN,0.92,0.92,ledger_tier_overwritten_after_first_log
+P|2026-07-10|Galway United|Sligo Rovers|ou25|UNDER,2026-07-10|Galway United|Sligo Rovers,ou25,UNDER,,LOSS,,-1.0,production_unsettled_but_result_known
+P|2026-07-10|VPS Vaasa|SJK Seinäjoki|ou25|AVOID,2026-07-10|VPS Vaasa|SJK Seinäjoki,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-07-10|Waterford FC|St Patricks Athletic|ou25|AVOID,2026-07-10|Waterford FC|St Patricks Athletic,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-07-11|Mjällby AIF|AIK|ou25|UNDER,2026-07-11|Mjällby AIF|AIK,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-07-11|Shenzhen Peng City FC|Qingdao West Coast FC|ou25|UNDER,2026-07-11|Shenzhen Peng City FC|Qingdao West Coast FC,ou25,UNDER,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-07-11|TPS Turku|AC Oulu|ou25|OVER,2026-07-11|TPS Turku|AC Oulu,ou25,OVER,WIN,,0.78,,independent_result_unavailable_NOT_FOUND
+P|2026-07-11|Wuhan Three Towns|Henan FC|ou25|UNDER,2026-07-11|Wuhan Three Towns|Henan FC,ou25,UNDER,,,,,ledger_tier_overwritten_after_first_log
+P|2026-07-12|Sandefjord|HamKam|ou25|UNDER,2026-07-12|Sandefjord|HamKam,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-07-12|Västerås SK|Degerfors IF|ou25|AVOID,2026-07-12|Västerås SK|Degerfors IF,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-07-13|Djurgardens IF|Halmstads BK|ou25|UNDER,2026-07-13|Djurgardens IF|Halmstads BK,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-07-17|Bahia|Chapecoense|ou25|UNDER,2026-07-17|Bahia|Chapecoense,ou25,UNDER,WIN,WIN,1.32,1.32,ledger_tier_overwritten_after_first_log
+P|2026-07-17|Mirassol|Grêmio|ou25|AVOID,2026-07-17|Mirassol|Grêmio,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-07-17|Mjällby AIF|Västerås SK|ou25|AVOID,2026-07-17|Mjällby AIF|Västerås SK,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-07-17|Seattle Sounders FC|Portland Timbers|ou25|UNDER,2026-07-17|Seattle Sounders FC|Portland Timbers,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-07-18|AC Oulu|IF Gnistan|ou25|AVOID,2026-07-18|AC Oulu|IF Gnistan,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-07-18|Atlético San Luis|Cruz Azul|ou25|AVOID,2026-07-18|Atlético San Luis|Cruz Azul,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-07-18|HJK Helsinki|VPS Vaasa|ou25|UNDER,2026-07-18|HJK Helsinki|VPS Vaasa,ou25,UNDER,LOSS,,-1.0,,ledger_tier_overwritten_after_first_log;independent_result_unavailable_NOT_FOUND
+P|2026-07-18|HamKam|Tromso|ou25|OVER,2026-07-18|HamKam|Tromso,ou25,OVER,WIN,WIN,0.95,0.95,ledger_tier_overwritten_after_first_log
+P|2026-07-18|LA Galaxy|Los Angeles FC|ou25|UNDER,2026-07-18|LA Galaxy|Los Angeles FC,ou25,UNDER,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-07-18|Molde|SK Brann|ou25|UNDER,2026-07-18|Molde|SK Brann,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-07-18|Pumas|Pachuca|ou25|UNDER,2026-07-18|Pumas|Pachuca,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-07-18|Qingdao West Coast FC|Chengdu Rongcheng FC|ou25|UNDER,2026-07-18|Qingdao West Coast FC|Chengdu Rongcheng FC,ou25,UNDER,,WIN,,1.12,production_unsettled_but_result_known
+P|2026-07-18|SJK Seinäjoki|KuPS Kuopio|ou25|UNDER,2026-07-18|SJK Seinäjoki|KuPS Kuopio,ou25,UNDER,WIN,,1.28,,independent_result_unavailable_NOT_FOUND
+P|2026-07-20|IFK Mariehamn|FC Lahti|ou25|UNDER,2026-07-20|IFK Mariehamn|FC Lahti,ou25,UNDER,WIN,WIN,1.14,1.14,ledger_tier_overwritten_after_first_log
+P|2026-07-20|Kalmar FF|Malmo FF|ou25|UNDER,2026-07-20|Kalmar FF|Malmo FF,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-07-20|Örgryte IS|Djurgardens IF|ou25|UNDER,2026-07-20|Örgryte IS|Djurgardens IF,ou25,UNDER,WIN,WIN,1.38,1.38,ledger_tier_overwritten_after_first_log
+P|2026-07-21|Atletico Mineiro|Bahia|ou25|UNDER,2026-07-21|Atletico Mineiro|Bahia,ou25,UNDER,WIN,,0.92,,independent_result_unavailable_NOT_FOUND
+P|2026-07-21|Atletico Mineiro|Bahia|ou25|OVER,2026-07-21|Atletico Mineiro|Bahia,ou25,OVER,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-07-22|Columbus Crew SC|New York City FC|ou25|UNDER,2026-07-22|Columbus Crew SC|New York City FC,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-07-22|Coritiba|Palmeiras|ou25|AVOID,2026-07-22|Coritiba|Palmeiras,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-07-22|New England Revolution|Toronto FC|ou25|UNDER,2026-07-22|New England Revolution|Toronto FC,ou25,UNDER,WIN,WIN,1.08,1.08,ledger_tier_overwritten_after_first_log
+P|2026-07-22|Toluca|Pumas|ou25|UNDER,2026-07-22|Toluca|Pumas,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-07-23|Belgrano de Cordoba|Rosario Central|ou25|AVOID,2026-07-23|Belgrano de Cordoba|Rosario Central,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-07-23|LA Galaxy|St. Louis City SC|ou25|UNDER,2026-07-23|LA Galaxy|St. Louis City SC,ou25,UNDER,LOSS,,-1.0,,ledger_tier_overwritten_after_first_log;independent_result_unavailable_NOT_FOUND
+P|2026-07-23|Los Angeles FC|Real Salt Lake|ou25|UNDER,2026-07-23|Los Angeles FC|Real Salt Lake,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-07-23|Sao Paulo|Atletico Paranaense|ou25|AVOID,2026-07-23|Sao Paulo|Atletico Paranaense,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-07-23|Sarmiento de Junin|Argentinos Juniors|ou25|AVOID,2026-07-23|Sarmiento de Junin|Argentinos Juniors,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-07-24|Defensa y Justicia|Aldosivi Mar del Plata|ou25|AVOID,2026-07-24|Defensa y Justicia|Aldosivi Mar del Plata,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-07-24|Galway United|Waterford FC|ou25|UNDER,2026-07-24|Galway United|Waterford FC,ou25,UNDER,,WIN,,1.5,production_unsettled_but_result_known
+P|2026-07-24|Gimnasia Mendoza|Central Córdoba|ou25|AVOID,2026-07-24|Gimnasia Mendoza|Central Córdoba,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-07-24|Racing Club|Gimnasia La Plata|ou25|AVOID,2026-07-24|Racing Club|Gimnasia La Plata,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-07-24|St Patricks Athletic|Dundalk|ou25|AVOID,2026-07-24|St Patricks Athletic|Dundalk,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-07-24|Velez Sarsfield BA|Instituto de Córdoba|ou25|AVOID,2026-07-24|Velez Sarsfield BA|Instituto de Córdoba,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-07-24|Viborg FF|OB Odense BK|ou25|UNDER,2026-07-24|Viborg FF|OB Odense BK,ou25,UNDER,WIN,WIN,1.11,1.11,ledger_tier_overwritten_after_first_log
+P|2026-07-25|Atletico Paranaense|Internacional|ou25|OVER,2026-07-25|Atletico Paranaense|Internacional,ou25,OVER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-07-25|D.C. United|Toronto FC|ou25|UNDER,2026-07-25|D.C. United|Toronto FC,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-07-25|Kristiansund BK|IK Start|ou25|AVOID,2026-07-25|Kristiansund BK|IK Start,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-07-25|KuPS Kuopio|VPS Vaasa|ou25|OVER,2026-07-25|KuPS Kuopio|VPS Vaasa,ou25,OVER,WIN,,0.77,,independent_result_unavailable_NOT_FOUND
+P|2026-07-25|Liaoning Tieren FC|Qingdao West Coast FC|ou25|AVOID,2026-07-25|Liaoning Tieren FC|Qingdao West Coast FC,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-07-25|Newells Old Boys|Talleres|ou25|AVOID,2026-07-25|Newells Old Boys|Talleres,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-07-25|Orlando City SC|Nashville SC|ou25|UNDER,2026-07-25|Orlando City SC|Nashville SC,ou25,UNDER,WIN,WIN,1.48,1.48,ledger_tier_overwritten_after_first_log
+P|2026-07-25|Philadelphia Union|Seattle Sounders FC|ou25|UNDER,2026-07-25|Philadelphia Union|Seattle Sounders FC,ou25,UNDER,WIN,WIN,1.18,1.18,ledger_tier_overwritten_after_first_log
+P|2026-07-25|Platense|Union Santa Fe|ou25|AVOID,2026-07-25|Platense|Union Santa Fe,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-07-25|River Plate|Barracas Central|ou25|AVOID,2026-07-25|River Plate|Barracas Central,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-07-26|Atlético Tucuman|Independiente Rivadavia|ou25|AVOID,2026-07-26|Atlético Tucuman|Independiente Rivadavia,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-07-26|FC Inter Turku|IF Gnistan|ou25|AVOID,2026-07-26|FC Inter Turku|IF Gnistan,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-07-26|GAIS|Halmstads BK|ou25|UNDER,2026-07-26|GAIS|Halmstads BK,ou25,UNDER,WIN,WIN,1.22,1.22,ledger_tier_overwritten_after_first_log
+P|2026-07-26|HJK Helsinki|TPS Turku|ou25|UNDER,2026-07-26|HJK Helsinki|TPS Turku,ou25,UNDER,WIN,,1.48,,ledger_tier_overwritten_after_first_log;independent_result_unavailable_NOT_FOUND
+P|2026-07-26|Houston Dynamo|Austin FC|ou25|AVOID,2026-07-26|Houston Dynamo|Austin FC,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-07-26|Ilves Tampere|FC Lahti|ou25|AVOID,2026-07-26|Ilves Tampere|FC Lahti,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-07-26|Tigres|Atlético San Luis|ou25|AVOID,2026-07-26|Tigres|Atlético San Luis,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-07-26|Yunnan Yukun|Shenzhen Peng City FC|ou25|UNDER,2026-07-26|Yunnan Yukun|Shenzhen Peng City FC,ou25,UNDER,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-07-27|Pachuca|Querétaro|ou25|UNDER,2026-07-27|Pachuca|Querétaro,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-07-28|Banfield|Sarmiento de Junin|ou25|AVOID,2026-07-28|Banfield|Sarmiento de Junin,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;ledger_tier_overwritten_after_first_log;independent_rejects_price_bound_blocked
+P|2026-07-28|San Lorenzo|Gimnasia Mendoza|ou25|AVOID,2026-07-28|San Lorenzo|Gimnasia Mendoza,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-07-29|Argentinos Juniors|Estudiantes de Río Cuarto|ou25|AVOID,2026-07-29|Argentinos Juniors|Estudiantes de Río Cuarto,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-07-29|Atletico Mineiro|Bragantino-SP|ou25|AVOID,2026-07-29|Atletico Mineiro|Bragantino-SP,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-07-29|Botafogo|Grêmio|ou25|AVOID,2026-07-29|Botafogo|Grêmio,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-07-29|Chapecoense|Vasco da Gama|ou25|AVOID,2026-07-29|Chapecoense|Vasco da Gama,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-07-29|Gimnasia La Plata|River Plate|ou25|AVOID,2026-07-29|Gimnasia La Plata|River Plate,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;ledger_tier_overwritten_after_first_log;independent_rejects_price_bound_blocked
+P|2026-07-29|Internacional|Flamengo|ou25|UNDER,2026-07-29|Internacional|Flamengo,ou25,UNDER,WIN,WIN,0.82,0.82,ledger_tier_overwritten_after_first_log
+P|2026-07-29|Rosario Central|Racing Club|ou25|AVOID,2026-07-29|Rosario Central|Racing Club,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;ledger_tier_overwritten_after_first_log;independent_rejects_price_bound_blocked
+P|2026-07-30|Fluminense|Bahia|ou25|AVOID,2026-07-30|Fluminense|Bahia,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-07-30|Instituto de Córdoba|Platense|ou25|AVOID,2026-07-30|Instituto de Córdoba|Platense,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-07-30|Talleres|Velez Sarsfield BA|ou25|AVOID,2026-07-30|Talleres|Velez Sarsfield BA,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-07-30|Vitoria|Palmeiras|ou25|AVOID,2026-07-30|Vitoria|Palmeiras,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;ledger_tier_overwritten_after_first_log;independent_rejects_price_bound_blocked
+P|2026-07-31|Central Córdoba|Atlético Tucuman|ou25|AVOID,2026-07-31|Central Córdoba|Atlético Tucuman,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-07-31|Coritiba|Cruzeiro|ou25|AVOID,2026-07-31|Coritiba|Cruzeiro,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;ledger_tier_overwritten_after_first_log;independent_rejects_price_bound_blocked
+P|2026-07-31|Independiente|Newells Old Boys|ou25|AVOID,2026-07-31|Independiente|Newells Old Boys,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;ledger_tier_overwritten_after_first_log;independent_rejects_price_bound_blocked
+P|2026-07-31|LASK|Grazer AK|ou25|UNDER,2026-07-31|LASK|Grazer AK,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-07-31|New York City FC|Toronto FC|ou25|UNDER,2026-07-31|New York City FC|Toronto FC,ou25,UNDER,WIN,WIN,1.02,1.02,ledger_tier_overwritten_after_first_log
+P|2026-07-31|Vålerenga|HamKam|ou25|UNDER,2026-07-31|Vålerenga|HamKam,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-07-31|Waterford FC|Shelbourne Dublin|ou25|AVOID,2026-07-31|Waterford FC|Shelbourne Dublin,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-08-01|Belgrano de Cordoba|Argentinos Juniors|ou25|AVOID,2026-08-01|Belgrano de Cordoba|Argentinos Juniors,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-08-01|CF Montreal|New England Revolution|ou25|UNDER,2026-08-01|CF Montreal|New England Revolution,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-01|Estudiantes|Defensa y Justicia|ou25|AVOID,2026-08-01|Estudiantes|Defensa y Justicia,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-08-01|Estudiantes de Río Cuarto|Banfield|ou25|AVOID,2026-08-01|Estudiantes de Río Cuarto|Banfield,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-08-01|FC Cincinnati|San Jose Earthquakes|ou25|UNDER,2026-08-01|FC Cincinnati|San Jose Earthquakes,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-01|FC Lahti|Jaro|ou25|AVOID,2026-08-01|FC Lahti|Jaro,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-08-01|Fredrikstad FK|Sandefjord|ou25|AVOID,2026-08-01|Fredrikstad FK|Sandefjord,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-08-01|Gimnasia Mendoza|Union Santa Fe|ou25|AVOID,2026-08-01|Gimnasia Mendoza|Union Santa Fe,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-08-01|IF Gnistan|KuPS Kuopio|ou25|AVOID,2026-08-01|IF Gnistan|KuPS Kuopio,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-08-01|Lyngby|AGF Aarhus|ou25|UNDER,2026-08-01|Lyngby|AGF Aarhus,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-01|RB Salzburg|Hartberg|ou25|UNDER,2026-08-01|RB Salzburg|Hartberg,ou25,UNDER,WIN,WIN,1.42,1.42,ledger_tier_overwritten_after_first_log
+P|2026-08-01|Racing Club|CA Tigre BA|ou25|AVOID,2026-08-01|Racing Club|CA Tigre BA,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-08-02|AC Oulu|Ilves Tampere|ou25|AVOID,2026-08-02|AC Oulu|Ilves Tampere,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-08-02|Aalesund|Tromso|ou25|AVOID,2026-08-02|Aalesund|Tromso,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-08-02|Aldosivi Mar del Plata|Gimnasia La Plata|ou25|AVOID,2026-08-02|Aldosivi Mar del Plata|Gimnasia La Plata,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-08-02|Brondby IF|Viborg FF|ou25|AVOID,2026-08-02|Brondby IF|Viborg FF,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-08-02|Cruz Azul|Atlante FC|ou25|UNDER,2026-08-02|Cruz Azul|Atlante FC,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-02|Deportivo Riestra|Barracas Central|ou25|OVER,2026-08-02|Deportivo Riestra|Barracas Central,ou25,OVER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-02|IFK Goteborg|Degerfors IF|ou25|AVOID,2026-08-02|IFK Goteborg|Degerfors IF,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-08-02|KFUM|Kristiansund BK|ou25|AVOID,2026-08-02|KFUM|Kristiansund BK,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-08-02|LA Galaxy|FC Dallas|ou25|UNDER,2026-08-02|LA Galaxy|FC Dallas,ou25,UNDER,WIN,,1.48,,ledger_tier_overwritten_after_first_log;independent_result_unavailable_NOT_FOUND
+P|2026-08-02|León|Pachuca|ou25|AVOID,2026-08-02|León|Pachuca,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-08-02|Molde|Sarpsborg FK|ou25|UNDER,2026-08-02|Molde|Sarpsborg FK,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-02|Newells Old Boys|Boca Juniors|ou25|AVOID,2026-08-02|Newells Old Boys|Boca Juniors,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-08-02|Portland Timbers|Seattle Sounders FC|ou25|UNDER,2026-08-02|Portland Timbers|Seattle Sounders FC,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-02|River Plate|Rosario Central|ou25|AVOID,2026-08-02|River Plate|Rosario Central,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-08-02|Shenzhen Peng City FC|Chongqing Tonglianglong FC|ou25|OVER,2026-08-02|Shenzhen Peng City FC|Chongqing Tonglianglong FC,ou25,OVER,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-08-02|Silkeborg IF|FC Copenhagen|ou25|AVOID,2026-08-02|Silkeborg IF|FC Copenhagen,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-08-02|Sporting Kansas City|Houston Dynamo|ou25|UNDER,2026-08-02|Sporting Kansas City|Houston Dynamo,ou25,UNDER,WIN,WIN,1.38,1.38,ledger_tier_overwritten_after_first_log
+P|2026-08-02|VPS Vaasa|FC Inter Turku|ou25|OVER,2026-08-02|VPS Vaasa|FC Inter Turku,ou25,OVER,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-08-02|Wolfsberger AC|Austria Wien|ou25|UNDER,2026-08-02|Wolfsberger AC|Austria Wien,ou25,UNDER,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-08-03|Lanus|Instituto de Córdoba|ou25|AVOID,2026-08-03|Lanus|Instituto de Córdoba,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-08-03|OB Odense BK|SonderjyskE|ou25|UNDER,2026-08-03|OB Odense BK|SonderjyskE,ou25,UNDER,WIN,WIN,1.23,1.23,ledger_tier_overwritten_after_first_log
+P|2026-08-03|SJK Seinäjoki|HJK Helsinki|ou25|UNDER,2026-08-03|SJK Seinäjoki|HJK Helsinki,ou25,UNDER,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-08-03|Sarmiento de Junin|Independiente Rivadavia|ou25|AVOID,2026-08-03|Sarmiento de Junin|Independiente Rivadavia,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;ledger_tier_overwritten_after_first_log;independent_rejects_price_bound_blocked
+P|2026-08-03|Velez Sarsfield BA|Independiente|ou25|AVOID,2026-08-03|Velez Sarsfield BA|Independiente,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;ledger_tier_overwritten_after_first_log;independent_rejects_price_bound_blocked
+P|2026-08-05|Boca Juniors|Estudiantes|ou25|AVOID,2026-08-05|Boca Juniors|Estudiantes,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-08-06|CA Tigre BA|Belgrano de Cordoba|ou25|OVER,2026-08-06|CA Tigre BA|Belgrano de Cordoba,ou25,OVER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-06|Union Santa Fe|Lanus|ou25|AVOID,2026-08-06|Union Santa Fe|Lanus,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-08-07|Beijing FC|Shenzhen Peng City FC|ou25|UNDER,2026-08-07|Beijing FC|Shenzhen Peng City FC,ou25,UNDER,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-08-07|Derry City|Sligo Rovers|ou25|AVOID,2026-08-07|Derry City|Sligo Rovers,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-08-07|SJK Seinäjoki|IF Gnistan|ou25|UNDER,2026-08-07|SJK Seinäjoki|IF Gnistan,ou25,UNDER,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-08-07|Shamrock Rovers|Dundalk|ou25|AVOID,2026-08-07|Shamrock Rovers|Dundalk,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-08-08|Cerezo Osaka|Fagiano Okayama|ou25|UNDER,2026-08-08|Cerezo Osaka|Fagiano Okayama,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-08|FC Inter Turku|FC Lahti|ou25|UNDER,2026-08-08|FC Inter Turku|FC Lahti,ou25,UNDER,,WIN,,0.98,production_unsettled_but_result_known
+P|2026-08-08|FC Tokyo|FC Machida Zelvia|ou25|AVOID,2026-08-08|FC Tokyo|FC Machida Zelvia,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-08-08|IK Start|Fredrikstad FK|ou25|AVOID,2026-08-08|IK Start|Fredrikstad FK,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-08-08|Ilves Tampere|IFK Mariehamn|ou25|UNDER,2026-08-08|Ilves Tampere|IFK Mariehamn,ou25,UNDER,,WIN,,1.8,production_unsettled_but_result_known
+P|2026-08-08|Remo|Atletico Mineiro|ou25|OVER,2026-08-08|Remo|Atletico Mineiro,ou25,OVER,WIN,,1.1,,independent_result_unavailable_NOT_FOUND
+P|2026-08-08|VfL Wolfsburg|1. FC Kaiserslautern|ou25|UNDER,2026-08-08|VfL Wolfsburg|1. FC Kaiserslautern,ou25,UNDER,WIN,WIN,1.58,1.58,independent_rejects_below_threshold
+P|2026-08-09|Argentinos Juniors|Racing Club|over15|OVER,2026-08-09|Argentinos Juniors|Racing Club,over15,OVER,WIN,WIN,0.54,0.61,ledger_tier_overwritten_after_first_log;independent_first_sight_earlier_than_production_log
+P|2026-08-09|Austria Wien|LASK|ou25|UNDER,2026-08-09|Austria Wien|LASK,ou25,UNDER,WIN,,0.99,,independent_result_unavailable_NOT_FOUND
+P|2026-08-09|Austria Wien|LASK|ou25|OVER,2026-08-09|Austria Wien|LASK,ou25,OVER,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-08-09|Bragantino-SP|Corinthians|ou25|AVOID,2026-08-09|Bragantino-SP|Corinthians,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-08-09|Flamengo|Vitoria|ou25|UNDER,2026-08-09|Flamengo|Vitoria,ou25,UNDER,WIN,WIN,1.25,1.25,ledger_tier_overwritten_after_first_log
+P|2026-08-09|Gimnasia La Plata|Barracas Central|over15|OVER,2026-08-09|Gimnasia La Plata|Barracas Central,over15,OVER,WIN,WIN,0.57,0.49,ledger_tier_overwritten_after_first_log;independent_first_sight_earlier_than_production_log
+P|2026-08-09|HamKam|Aalesund|ou25|AVOID,2026-08-09|HamKam|Aalesund,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-08-09|KuPS Kuopio|TPS Turku|ou25|UNDER,2026-08-09|KuPS Kuopio|TPS Turku,ou25,UNDER,WIN,,1.1,,independent_result_unavailable_NOT_FOUND
+P|2026-08-09|San Lorenzo|Atlético Huracán|over15|OVER,2026-08-09|San Lorenzo|Atlético Huracán,over15,OVER,WIN,WIN,0.84,0.9,independent_first_sight_earlier_than_production_log
+P|2026-08-09|Santos|Atletico Paranaense|ou25|AVOID,2026-08-09|Santos|Atletico Paranaense,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-08-09|Shandong Luneng Taishan FC|Tianjin Jinmen Tiger FC|ou25|UNDER,2026-08-09|Shandong Luneng Taishan FC|Tianjin Jinmen Tiger FC,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-09|Shelbourne Dublin|St Patricks Athletic|ou25|AVOID,2026-08-09|Shelbourne Dublin|St Patricks Athletic,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-08-09|Wolfsberger AC|RB Salzburg|ou25|UNDER,2026-08-09|Wolfsberger AC|RB Salzburg,ou25,UNDER,WIN,WIN,1.1,1.1,ledger_tier_overwritten_after_first_log
+P|2026-08-10|Banfield|Belgrano de Cordoba|over15|OVER,2026-08-10|Banfield|Belgrano de Cordoba,over15,OVER,WIN,WIN,0.56,0.6,independent_first_sight_earlier_than_production_log
+P|2026-08-10|Västerås SK|Djurgardens IF|ou25|UNDER,2026-08-10|Västerås SK|Djurgardens IF,ou25,UNDER,WIN,WIN,1.3,1.3,ledger_tier_overwritten_after_first_log
+P|2026-08-11|Union Santa Fe|Central Córdoba|ou25|AVOID,2026-08-11|Union Santa Fe|Central Córdoba,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-08-12|Talleres|Lanus|over15|OVER,2026-08-12|Talleres|Lanus,over15,OVER,WIN,WIN,0.66,0.64,independent_first_sight_earlier_than_production_log
+P|2026-08-14|VPS Vaasa|TPS Turku|ou25|UNDER,2026-08-14|VPS Vaasa|TPS Turku,ou25,UNDER,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-08-15|1. FC Kaiserslautern|Karlsruher SC|ou25|UNDER,2026-08-15|1. FC Kaiserslautern|Karlsruher SC,ou25,UNDER,WIN,WIN,1.35,1.35,tier_differs_MARKSMAN_vs_VALUABLE_pre_2026-10-26_drift_tier_era
+P|2026-08-15|Atletico Paranaense|Bragantino-SP|ou25|AVOID,2026-08-15|Atletico Paranaense|Bragantino-SP,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-08-15|Belgrano de Cordoba|Independiente Rivadavia|over15|OVER,2026-08-15|Belgrano de Cordoba|Independiente Rivadavia,over15,OVER,WIN,WIN,0.5,0.5,ledger_tier_overwritten_after_first_log
+P|2026-08-15|Charlotte FC|Columbus Crew SC|ou25|AVOID,2026-08-15|Charlotte FC|Columbus Crew SC,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-08-15|Estudiantes|Gimnasia La Plata|ou25|OVER,2026-08-15|Estudiantes|Gimnasia La Plata,ou25,OVER,WIN,WIN,1.82,1.82,ledger_tier_overwritten_after_first_log
+P|2026-08-15|Estudiantes|Gimnasia La Plata|over15|OVER,2026-08-15|Estudiantes|Gimnasia La Plata,over15,OVER,WIN,WIN,0.61,0.61,ledger_tier_overwritten_after_first_log
+P|2026-08-15|Fagiano Okayama|V-Varen Nagasaki|ou25|AVOID,2026-08-15|Fagiano Okayama|V-Varen Nagasaki,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-08-15|Fluminense|Palmeiras|ou25|AVOID,2026-08-15|Fluminense|Palmeiras,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-08-15|Fluminense|Palmeiras|ou25|OVER,2026-08-15|Fluminense|Palmeiras,ou25,OVER,WIN,WIN,1.25,1.25,ledger_tier_overwritten_after_first_log
+P|2026-08-15|IFK Mariehamn|SJK Seinäjoki|ou25|UNDER,2026-08-15|IFK Mariehamn|SJK Seinäjoki,ou25,UNDER,WIN,,1.28,,independent_result_unavailable_NOT_FOUND
+P|2026-08-15|JEF United Chiba|FC Machida Zelvia|ou25|AVOID,2026-08-15|JEF United Chiba|FC Machida Zelvia,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-08-15|Liaoning Tieren FC|Shenzhen Peng City FC|ou25|UNDER,2026-08-15|Liaoning Tieren FC|Shenzhen Peng City FC,ou25,UNDER,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-08-15|Newells Old Boys|Deportivo Riestra|over15|OVER,2026-08-15|Newells Old Boys|Deportivo Riestra,over15,OVER,WIN,WIN,0.59,0.59,ledger_tier_overwritten_after_first_log
+P|2026-08-15|Vissel Kobe|FC Tokyo|ou25|AVOID,2026-08-15|Vissel Kobe|FC Tokyo,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-08-16|Aalesund|Vålerenga|ou25|UNDER,2026-08-16|Aalesund|Vålerenga,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-16|América|Atlético San Luis|ou25|UNDER,2026-08-16|América|Atlético San Luis,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-16|Atlas|Tigres|ou25|AVOID,2026-08-16|Atlas|Tigres,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-08-16|Chicago Fire|Portland Timbers|ou25|UNDER,2026-08-16|Chicago Fire|Portland Timbers,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-16|Corinthians|Cruzeiro|over15|OVER,2026-08-16|Corinthians|Cruzeiro,over15,OVER,WIN,WIN,0.49,0.47,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-08-16|Hartberg|Austria Wien|ou25|OVER,2026-08-16|Hartberg|Austria Wien,ou25,OVER,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-08-16|Houston Dynamo|LA Galaxy|ou25|UNDER,2026-08-16|Houston Dynamo|LA Galaxy,ou25,UNDER,WIN,,1.2,,independent_result_unavailable_NOT_FOUND
+P|2026-08-16|Molde|Tromso|ou25|AVOID,2026-08-16|Molde|Tromso,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;ledger_tier_overwritten_after_first_log;independent_rejects_price_bound_blocked
+P|2026-08-16|New York City FC|Philadelphia Union|ou25|AVOID,2026-08-16|New York City FC|Philadelphia Union,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-08-16|Platense|Boca Juniors|over15|OVER,2026-08-16|Platense|Boca Juniors,over15,OVER,WIN,WIN,0.54,0.54,ledger_tier_overwritten_after_first_log
+P|2026-08-16|SK Brann|HamKam|ou25|UNDER,2026-08-16|SK Brann|HamKam,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-16|WSG Tirol|RB Salzburg|ou25|UNDER,2026-08-16|WSG Tirol|RB Salzburg,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-17|Almería|CD Eldense|ou25|UNDER,2026-08-17|Almería|CD Eldense,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-17|Lanus|Independiente|ou25|OVER,2026-08-17|Lanus|Independiente,ou25,OVER,WIN,WIN,1.85,1.85,ledger_tier_overwritten_after_first_log
+P|2026-08-17|Santos Laguna|Guadalajara|ou25|UNDER,2026-08-17|Santos Laguna|Guadalajara,ou25,UNDER,WIN,WIN,1.38,1.38,ledger_tier_overwritten_after_first_log
+P|2026-08-18|Gimnasia Mendoza|Talleres|ou25|OVER,2026-08-18|Gimnasia Mendoza|Talleres,ou25,OVER,WIN,WIN,1.92,1.92,ledger_tier_overwritten_after_first_log
+P|2026-08-18|Shanghai Shenhua FC|Beijing FC|ou25|UNDER,2026-08-18|Shanghai Shenhua FC|Beijing FC,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-19|Philadelphia Union|Inter Miami CF|ou25|UNDER,2026-08-19|Philadelphia Union|Inter Miami CF,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-19|Toronto FC|Charlotte FC|ou25|UNDER,2026-08-19|Toronto FC|Charlotte FC,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,tier_differs_MARKSMAN_vs_VALUABLE_pre_2026-10-26_drift_tier_era
+P|2026-08-20|Minnesota United FC|Atlanta United FC|ou25|AVOID,2026-08-20|Minnesota United FC|Atlanta United FC,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-08-20|Portland Timbers|San Diego FC|ou25|UNDER,2026-08-20|Portland Timbers|San Diego FC,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-20|Sporting Kansas City|St. Louis City SC|ou25|UNDER,2026-08-20|Sporting Kansas City|St. Louis City SC,ou25,UNDER,WIN,WIN,1.5,1.5,ledger_tier_overwritten_after_first_log
+P|2026-08-21|Aldosivi Mar del Plata|Union Santa Fe|over15|OVER,2026-08-21|Aldosivi Mar del Plata|Union Santa Fe,over15,OVER,WIN,WIN,0.52,0.48,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-08-21|Dundalk|Galway United|ou25|UNDER,2026-08-21|Dundalk|Galway United,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-21|Estudiantes de Río Cuarto|San Lorenzo|ou25|OVER,2026-08-21|Estudiantes de Río Cuarto|San Lorenzo,ou25,OVER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-21|IK Sirius|BK Hacken|ou25|UNDER,2026-08-21|IK Sirius|BK Hacken,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-21|SJK Seinäjoki|FC Lahti|ou25|UNDER,2026-08-21|SJK Seinäjoki|FC Lahti,ou25,UNDER,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-08-21|Sligo Rovers|Waterford FC|ou25|UNDER,2026-08-21|Sligo Rovers|Waterford FC,ou25,UNDER,WIN,WIN,1.15,1.15,ledger_tier_overwritten_after_first_log
+P|2026-08-22|Beijing FC|Yunnan Yukun|ou25|UNDER,2026-08-22|Beijing FC|Yunnan Yukun,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-22|Bromley FC|Cambridge United|ou25|OVER,2026-08-22|Bromley FC|Cambridge United,ou25,OVER,LOSS,LOSS,-1.0,-1.0,tier_differs_MARKSMAN_vs_VALUABLE_pre_2026-10-26_drift_tier_era
+P|2026-08-22|CF Montreal|LA Galaxy|ou25|UNDER,2026-08-22|CF Montreal|LA Galaxy,ou25,UNDER,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-08-22|FC Cincinnati|Seattle Sounders FC|ou25|UNDER,2026-08-22|FC Cincinnati|Seattle Sounders FC,ou25,UNDER,WIN,WIN,1.8,1.8,ledger_tier_overwritten_after_first_log
+P|2026-08-22|Fagiano Okayama|Tokyo Verdy|ou25|OVER,2026-08-22|Fagiano Okayama|Tokyo Verdy,ou25,OVER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-22|Fluminense|Remo|btts|YES,2026-08-22|Fluminense|Remo,btts,YES,WIN,WIN,1.14,1.02,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-08-22|Gimnasia La Plata|Gimnasia Mendoza|btts|YES,2026-08-22|Gimnasia La Plata|Gimnasia Mendoza,btts,YES,WIN,WIN,1.185,1.155,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-08-22|Guadalajara|Tijuana|ou25|UNDER,2026-08-22|Guadalajara|Tijuana,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-22|Hiroshima Sanfrecce FC|Kawasaki Frontale|ou25|UNDER,2026-08-22|Hiroshima Sanfrecce FC|Kawasaki Frontale,ou25,UNDER,WIN,WIN,1.15,1.15,ledger_tier_overwritten_after_first_log
+P|2026-08-22|Inter Miami CF|Toronto FC|ou25|UNDER,2026-08-22|Inter Miami CF|Toronto FC,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-22|Internacional|Atletico Mineiro|ou25|UNDER,2026-08-22|Internacional|Atletico Mineiro,ou25,UNDER,WIN,,0.83,,independent_result_unavailable_NOT_FOUND
+P|2026-08-22|Leicester City|Burton Albion|ou25|UNDER,2026-08-22|Leicester City|Burton Albion,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,tier_differs_MARKSMAN_vs_VALUABLE_pre_2026-10-26_drift_tier_era
+P|2026-08-22|León|Monterrey|ou25|UNDER,2026-08-22|León|Monterrey,ou25,UNDER,WIN,WIN,1.32,1.32,ledger_tier_overwritten_after_first_log
+P|2026-08-22|Saint Etienne|Grenoble|btts|YES,2026-08-22|Saint Etienne|Grenoble,btts,YES,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-08-22|Shenzhen Peng City FC|Zhejiang|ou25|UNDER,2026-08-22|Shenzhen Peng City FC|Zhejiang,ou25,UNDER,WIN,,1.4,,ledger_tier_overwritten_after_first_log;independent_result_unavailable_NOT_FOUND
+P|2026-08-22|Sturm Graz|Austria Lustenau|ou25|UNDER,2026-08-22|Sturm Graz|Austria Lustenau,ou25,UNDER,WIN,WIN,1.45,1.45,tier_differs_MARKSMAN_vs_SNIPER_pre_2026-10-26_drift_tier_era
+P|2026-08-22|Vicenza|US Catanzaro 1929|ou25|OVER,2026-08-22|Vicenza|US Catanzaro 1929,ou25,OVER,,WIN,,1.07,production_unsettled_but_result_known
+P|2026-08-23|AC Horsens|Lyngby|ou25|OVER,2026-08-23|AC Horsens|Lyngby,ou25,OVER,WIN,WIN,0.82,0.82,ledger_tier_overwritten_after_first_log
+P|2026-08-23|AGF Aarhus|OB Odense BK|ou25|UNDER,2026-08-23|AGF Aarhus|OB Odense BK,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-23|Atlanta United FC|Sporting Kansas City|ou25|UNDER,2026-08-23|Atlanta United FC|Sporting Kansas City,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-23|Atlético Huracán|Deportivo Riestra|ou25|OVER,2026-08-23|Atlético Huracán|Deportivo Riestra,ou25,OVER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-23|Belgrano de Cordoba|Defensa y Justicia|btts|YES,2026-08-23|Belgrano de Cordoba|Defensa y Justicia,btts,YES,WIN,WIN,1.2,1.25,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-08-23|Coritiba|Corinthians|btts|YES,2026-08-23|Coritiba|Corinthians,btts,YES,WIN,WIN,1.15,1.08,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-08-23|Coritiba|Corinthians|ou25|OVER,2026-08-23|Coritiba|Corinthians,ou25,OVER,WIN,WIN,1.33,1.33,ledger_tier_overwritten_after_first_log
+P|2026-08-23|FC Midtjylland|Randers FC|ou25|UNDER,2026-08-23|FC Midtjylland|Randers FC,ou25,UNDER,WIN,WIN,1.28,1.28,ledger_tier_overwritten_after_first_log
+P|2026-08-23|HJK Helsinki|IF Gnistan|ou25|UNDER,2026-08-23|HJK Helsinki|IF Gnistan,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-23|Hammarby IF|GAIS|ou25|UNDER,2026-08-23|Hammarby IF|GAIS,ou25,UNDER,WIN,WIN,1.28,1.28,ledger_tier_overwritten_after_first_log
+P|2026-08-23|León|Monterrey|ou25|UNDER,2026-08-23|León|Monterrey,ou25,UNDER,,WIN,,1.32,ledger_tier_overwritten_after_first_log;production_unsettled_but_result_known
+P|2026-08-23|Los Angeles FC|Portland Timbers|ou25|UNDER,2026-08-23|Los Angeles FC|Portland Timbers,ou25,UNDER,WIN,WIN,1.8,1.8,ledger_tier_overwritten_after_first_log
+P|2026-08-23|Nashville SC|Columbus Crew SC|ou25|AVOID,2026-08-23|Nashville SC|Columbus Crew SC,ou25,AVOID,VOID,,0.0,,invalid_side_AVOID;independent_rejects_price_bound_blocked
+P|2026-08-23|River Plate|Velez Sarsfield BA|btts|YES,2026-08-23|River Plate|Velez Sarsfield BA,btts,YES,WIN,WIN,1.33,1.25,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-08-23|SD Eibar|Real Valladolid CF|ou25|OVER,2026-08-23|SD Eibar|Real Valladolid CF,ou25,OVER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-23|San Diego FC|Colorado Rapids|ou25|UNDER,2026-08-23|San Diego FC|Colorado Rapids,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-23|Shanghai SIPG FC|Qingdao Hainiu FC|ou25|UNDER,2026-08-23|Shanghai SIPG FC|Qingdao Hainiu FC,ou25,UNDER,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-08-23|SonderjyskE|FC Nordsjaelland|ou25|UNDER,2026-08-23|SonderjyskE|FC Nordsjaelland,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-23|TPS Turku|FC Inter Turku|ou25|UNDER,2026-08-23|TPS Turku|FC Inter Turku,ou25,UNDER,WIN,,0.85,,independent_result_unavailable_NOT_FOUND
+P|2026-08-23|Vancouver Whitecaps FC|FC Dallas|ou25|UNDER,2026-08-23|Vancouver Whitecaps FC|FC Dallas,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-23|Viborg FF|FC Copenhagen|ou25|UNDER,2026-08-23|Viborg FF|FC Copenhagen,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-24|Celta Fortuna|Andorra CF|ou25|UNDER,2026-08-24|Celta Fortuna|Andorra CF,ou25,UNDER,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-08-28|Cremonese|Modena|ou25|OVER,2026-08-28|Cremonese|Modena,ou25,OVER,WIN,WIN,1.42,1.42,ledger_tier_overwritten_after_first_log
+P|2026-08-28|Dalian Yingbo|Beijing FC|ou25|UNDER,2026-08-28|Dalian Yingbo|Beijing FC,ou25,UNDER,WIN,WIN,1.62,1.62,ledger_tier_overwritten_after_first_log
+P|2026-08-28|Rodez AF|Pau FC|ou25|UNDER,2026-08-28|Rodez AF|Pau FC,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-28|Shenzhen Peng City FC|Shanghai SIPG FC|ou25|UNDER,2026-08-28|Shenzhen Peng City FC|Shanghai SIPG FC,ou25,UNDER,WIN,,1.35,,independent_result_unavailable_NOT_FOUND
+P|2026-08-28|St Patricks Athletic|Waterford FC|ou25|UNDER,2026-08-28|St Patricks Athletic|Waterford FC,ou25,UNDER,WIN,WIN,1.28,1.28,ledger_tier_overwritten_after_first_log
+P|2026-08-29|1. FC Nürnberg|Arminia Bielefeld|ou25|UNDER,2026-08-29|1. FC Nürnberg|Arminia Bielefeld,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-29|Albacete|Oviedo|ou25|OVER,2026-08-29|Albacete|Oviedo,ou25,OVER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-29|Ascoli|Carrarese|ou25|OVER,2026-08-29|Ascoli|Carrarese,ou25,OVER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-29|Atlanta United FC|Charlotte FC|ou25|UNDER,2026-08-29|Atlanta United FC|Charlotte FC,ou25,UNDER,WIN,WIN,1.38,1.38,ledger_tier_overwritten_after_first_log
+P|2026-08-29|Atletico Mineiro|Vitoria|btts|YES,2026-08-29|Atletico Mineiro|Vitoria,btts,YES,WIN,,0.995,,independent_result_unavailable_NOT_FOUND
+P|2026-08-29|Atletico Mineiro|Vitoria|ou25|OVER,2026-08-29|Atletico Mineiro|Vitoria,ou25,OVER,WIN,,1.03,,independent_result_unavailable_NOT_FOUND
+P|2026-08-29|Atlético Huracán|Estudiantes de Río Cuarto|over15|OVER,2026-08-29|Atlético Huracán|Estudiantes de Río Cuarto,over15,OVER,WIN,WIN,0.67,0.57,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-08-29|BK Hacken|Västerås SK|ou25|UNDER,2026-08-29|BK Hacken|Västerås SK,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-29|Blackpool|Peterborough United|ou25|UNDER,2026-08-29|Blackpool|Peterborough United,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-29|Boca Juniors|Lanus|btts|YES,2026-08-29|Boca Juniors|Lanus,btts,YES,LOSS,LOSS,-1.0,-1.0,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-08-29|Charlton Athletic|Preston North End|ou25|OVER,2026-08-29|Charlton Athletic|Preston North End,ou25,OVER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-29|Chengdu Rongcheng FC|Liaoning Tieren FC|ou25|UNDER,2026-08-29|Chengdu Rongcheng FC|Liaoning Tieren FC,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-29|D.C. United|Los Angeles FC|ou25|UNDER,2026-08-29|D.C. United|Los Angeles FC,ou25,UNDER,WIN,WIN,1.18,1.18,ledger_tier_overwritten_after_first_log
+P|2026-08-29|FC Energie Cottbus|Greuther Fürth|ou25|UNDER,2026-08-29|FC Energie Cottbus|Greuther Fürth,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-29|Gamba Osaka|Hiroshima Sanfrecce FC|ou25|UNDER,2026-08-29|Gamba Osaka|Hiroshima Sanfrecce FC,ou25,UNDER,WIN,WIN,1.25,1.25,ledger_tier_overwritten_after_first_log
+P|2026-08-29|Karlsruher SC|VfL Wolfsburg|ou25|UNDER,2026-08-29|Karlsruher SC|VfL Wolfsburg,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-29|Kyoto Purple Sanga|Avispa Fukuoka|ou25|OVER,2026-08-29|Kyoto Purple Sanga|Avispa Fukuoka,ou25,OVER,WIN,WIN,1.42,1.42,ledger_tier_overwritten_after_first_log
+P|2026-08-29|Mito HollyHock|FC Machida Zelvia|ou25|OVER,2026-08-29|Mito HollyHock|FC Machida Zelvia,ou25,OVER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-29|Padova|Hellas Verona|ou25|OVER,2026-08-29|Padova|Hellas Verona,ou25,OVER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-29|Rosario Central|Gimnasia La Plata|btts|YES,2026-08-29|Rosario Central|Gimnasia La Plata,btts,YES,WIN,WIN,1.14,1.1,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-08-29|Sampdoria|Juve Stabia|ou25|OVER,2026-08-29|Sampdoria|Juve Stabia,ou25,OVER,WIN,WIN,1.33,1.33,ledger_tier_overwritten_after_first_log
+P|2026-08-29|Tokyo Verdy|Kashima Antlers|btts|YES,2026-08-29|Tokyo Verdy|Kashima Antlers,btts,YES,LOSS,LOSS,-1.0,-1.0,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-08-29|Tokyo Verdy|Kashima Antlers|ou25|OVER,2026-08-29|Tokyo Verdy|Kashima Antlers,ou25,OVER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-29|Union Santa Fe|Sarmiento de Junin|btts|YES,2026-08-29|Union Santa Fe|Sarmiento de Junin,btts,YES,,WIN,,0.995,production_unsettled_but_result_known
+P|2026-08-29|Viking FK|Aalesund|ou25|UNDER,2026-08-29|Viking FK|Aalesund,ou25,UNDER,,LOSS,,-1.0,production_unsettled_but_result_known
+P|2026-08-29|Vålerenga|Molde|ou25|UNDER,2026-08-29|Vålerenga|Molde,ou25,UNDER,,LOSS,,-1.0,ledger_tier_overwritten_after_first_log;production_unsettled_but_result_known
+P|2026-08-29|Zhejiang|Yunnan Yukun|ou25|UNDER,2026-08-29|Zhejiang|Yunnan Yukun,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-30|AIK|Hammarby IF|ou25|UNDER,2026-08-30|AIK|Hammarby IF,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-30|Arezzo|Palermo|ou25|OVER,2026-08-30|Arezzo|Palermo,ou25,OVER,WIN,WIN,1.3,1.3,ledger_tier_overwritten_after_first_log
+P|2026-08-30|Atletico Paranaense|Fluminense|ou25|OVER,2026-08-30|Atletico Paranaense|Fluminense,ou25,OVER,WIN,WIN,1.42,1.42,ledger_tier_overwritten_after_first_log
+P|2026-08-30|Atlético Tucuman|Belgrano de Cordoba|btts|YES,2026-08-30|Atlético Tucuman|Belgrano de Cordoba,btts,YES,LOSS,LOSS,-1.0,-1.0,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-08-30|Atlético Tucuman|Belgrano de Cordoba|over15|OVER,2026-08-30|Atlético Tucuman|Belgrano de Cordoba,over15,OVER,LOSS,LOSS,-1.0,-1.0,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-08-30|Banfield|River Plate|btts|YES,2026-08-30|Banfield|River Plate,btts,YES,WIN,WIN,1.2,1.05,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-08-30|Bodø/Glimt|Rosenborg|ou25|UNDER,2026-08-30|Bodø/Glimt|Rosenborg,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-30|Cádiz CF|Real Valladolid CF|ou25|OVER,2026-08-30|Cádiz CF|Real Valladolid CF,ou25,OVER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-30|Córdoba|Granada CF|ou25|UNDER,2026-08-30|Córdoba|Granada CF,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-30|Houston Dynamo|San Jose Earthquakes|ou25|UNDER,2026-08-30|Houston Dynamo|San Jose Earthquakes,ou25,UNDER,WIN,WIN,1.58,1.58,ledger_tier_overwritten_after_first_log
+P|2026-08-30|IFK Goteborg|Örgryte IS|ou25|UNDER,2026-08-30|IFK Goteborg|Örgryte IS,ou25,UNDER,WIN,WIN,1.48,1.48,ledger_tier_overwritten_after_first_log
+P|2026-08-30|Independiente|Gimnasia Mendoza|btts|YES,2026-08-30|Independiente|Gimnasia Mendoza,btts,YES,LOSS,LOSS,-1.0,-1.0,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-08-30|Mansfield Town|Luton|ou25|UNDER,2026-08-30|Mansfield Town|Luton,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-30|RB Salzburg|Austria Wien|ou25|UNDER,2026-08-30|RB Salzburg|Austria Wien,ou25,UNDER,LOSS,,-1.0,,ledger_tier_overwritten_after_first_log;independent_result_unavailable_NOT_FOUND
+P|2026-08-30|Randers FC|AGF Aarhus|ou25|UNDER,2026-08-30|Randers FC|AGF Aarhus,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-30|Rapid Wien|Sturm Graz|ou25|UNDER,2026-08-30|Rapid Wien|Sturm Graz,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-30|San Diego FC|LA Galaxy|ou25|UNDER,2026-08-30|San Diego FC|LA Galaxy,ou25,UNDER,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-08-30|Santos Laguna|Tigres|ou25|UNDER,2026-08-30|Santos Laguna|Tigres,ou25,UNDER,WIN,WIN,1.18,1.18,ledger_tier_overwritten_after_first_log
+P|2026-08-30|Silkeborg IF|FC Midtjylland|ou25|UNDER,2026-08-30|Silkeborg IF|FC Midtjylland,ou25,UNDER,WIN,WIN,1.48,1.48,ledger_tier_overwritten_after_first_log
+P|2026-08-30|Viking FK|Aalesund|ou25|UNDER,2026-08-30|Viking FK|Aalesund,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-31|AC Oulu|SJK Seinäjoki|ou25|UNDER,2026-08-31|AC Oulu|SJK Seinäjoki,ou25,UNDER,WIN,,1.18,,independent_result_unavailable_NOT_FOUND
+P|2026-08-31|Celta Fortuna|CD Castellón|ou25|UNDER,2026-08-31|Celta Fortuna|CD Castellón,ou25,UNDER,LOSS,,-1.0,,ledger_tier_overwritten_after_first_log;independent_result_unavailable_NOT_FOUND
+P|2026-08-31|Defensa y Justicia|Platense|btts|YES,2026-08-31|Defensa y Justicia|Platense,btts,YES,LOSS,LOSS,-1.0,-1.0,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-08-31|Estudiantes|Newells Old Boys|btts|YES,2026-08-31|Estudiantes|Newells Old Boys,btts,YES,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-31|FC Inter Turku|KuPS Kuopio|ou25|OVER,2026-08-31|FC Inter Turku|KuPS Kuopio,ou25,OVER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-31|IF Gnistan|TPS Turku|ou25|UNDER,2026-08-31|IF Gnistan|TPS Turku,ou25,UNDER,WIN,,1.18,,ledger_tier_overwritten_after_first_log;independent_result_unavailable_NOT_FOUND
+P|2026-08-31|Toluca|FC Juárez|ou25|UNDER,2026-08-31|Toluca|FC Juárez,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-08-31|VPS Vaasa|FC Lahti|ou25|UNDER,2026-08-31|VPS Vaasa|FC Lahti,ou25,UNDER,WIN,,1.04,,tier_differs_MARKSMAN_vs_VALUABLE_pre_2026-10-26_drift_tier_era;independent_result_unavailable_NOT_FOUND
+P|2026-09-01|Instituto de Córdoba|San Lorenzo|over15|OVER,2026-09-01|Instituto de Córdoba|San Lorenzo,over15,OVER,LOSS,LOSS,-1.0,-1.0,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-09-01|Wolfsberger AC|LASK|ou25|UNDER,2026-09-01|Wolfsberger AC|LASK,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-02|Burnley|Middlesbrough|ou25|UNDER,2026-09-02|Burnley|Middlesbrough,ou25,UNDER,WIN,WIN,1.05,1.05,ledger_tier_overwritten_after_first_log
+P|2026-09-02|Flamengo|Mirassol|btts|YES,2026-09-02|Flamengo|Mirassol,btts,YES,LOSS,LOSS,-1.0,-1.0,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-09-02|Flamengo|Mirassol|ou25|UNDER,2026-09-02|Flamengo|Mirassol,ou25,UNDER,WIN,WIN,1.3,1.3,ledger_tier_overwritten_after_first_log
+P|2026-09-02|Hiroshima Sanfrecce FC|Nagoya Grampus|ou25|UNDER,2026-09-02|Hiroshima Sanfrecce FC|Nagoya Grampus,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-02|Luton|Stockport County FC|ou25|UNDER,2026-09-02|Luton|Stockport County FC,ou25,UNDER,WIN,WIN,1.14,1.14,ledger_tier_overwritten_after_first_log
+P|2026-09-02|Queens Park Rangers|Cardiff City|ou25|UNDER,2026-09-02|Queens Park Rangers|Cardiff City,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-02|Tokyo Verdy|Vissel Kobe|btts|YES,2026-09-02|Tokyo Verdy|Vissel Kobe,btts,YES,LOSS,LOSS,-1.0,-1.0,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-09-02|Tokyo Verdy|Vissel Kobe|over15|OVER,2026-09-02|Tokyo Verdy|Vissel Kobe,over15,OVER,WIN,WIN,0.47,0.47,ledger_tier_overwritten_after_first_log
+P|2026-09-04|Belgrano de Cordoba|Atlético Huracán|ou25|OVER,2026-09-04|Belgrano de Cordoba|Atlético Huracán,ou25,OVER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-04|Hannover 96|Karlsruher SC|ou25|UNDER,2026-09-04|Hannover 96|Karlsruher SC,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-04|Platense|Deportivo Riestra|ou25|OVER,2026-09-04|Platense|Deportivo Riestra,ou25,OVER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-05|1. FC Kaiserslautern|SV Darmstadt 98|ou25|UNDER,2026-09-05|1. FC Kaiserslautern|SV Darmstadt 98,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-05|Aldosivi Mar del Plata|Banfield|btts|YES,2026-09-05|Aldosivi Mar del Plata|Banfield,btts,YES,WIN,WIN,1.175,1.165,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-09-05|Dynamo Dresden|VfL Bochum|ou25|UNDER,2026-09-05|Dynamo Dresden|VfL Bochum,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-05|FC Cincinnati|D.C. United|ou25|UNDER,2026-09-05|FC Cincinnati|D.C. United,ou25,UNDER,,,,,ledger_tier_overwritten_after_first_log
+P|2026-09-05|FC Juárez|Pachuca|ou25|UNDER,2026-09-05|FC Juárez|Pachuca,ou25,UNDER,WIN,WIN,1.25,1.25,ledger_tier_overwritten_after_first_log
+P|2026-09-05|GAIS|BK Hacken|ou25|UNDER,2026-09-05|GAIS|BK Hacken,ou25,UNDER,WIN,WIN,1.35,1.35,ledger_tier_overwritten_after_first_log
+P|2026-09-05|Gimnasia La Plata|CA Tigre BA|btts|YES,2026-09-05|Gimnasia La Plata|CA Tigre BA,btts,YES,WIN,WIN,1.2,1.1,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-09-05|Gimnasia La Plata|CA Tigre BA|ou25|OVER,2026-09-05|Gimnasia La Plata|CA Tigre BA,ou25,OVER,WIN,WIN,1.68,1.68,ledger_tier_overwritten_after_first_log
+P|2026-09-05|Gimnasia La Plata|CA Tigre BA|over15|OVER,2026-09-05|Gimnasia La Plata|CA Tigre BA,over15,OVER,WIN,WIN,0.5,0.5,ledger_tier_overwritten_after_first_log
+P|2026-09-05|Gimnasia Mendoza|Boca Juniors|over15|OVER,2026-09-05|Gimnasia Mendoza|Boca Juniors,over15,OVER,WIN,WIN,0.45,0.5,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-09-05|Peterborough United|Sheffield Wednesday|ou25|UNDER,2026-09-05|Peterborough United|Sheffield Wednesday,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-05|Portsmouth|Cardiff City|ou25|UNDER,2026-09-05|Portsmouth|Cardiff City,ou25,UNDER,WIN,WIN,0.98,0.98,ledger_tier_overwritten_after_first_log
+P|2026-09-05|San Lorenzo|Talleres|ou25|OVER,2026-09-05|San Lorenzo|Talleres,ou25,OVER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-05|San Lorenzo|Talleres|over15|OVER,2026-09-05|San Lorenzo|Talleres,over15,OVER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-05|Sao Paulo|Atletico Mineiro|btts|YES,2026-09-05|Sao Paulo|Atletico Mineiro,btts,YES,LOSS,,-1.0,,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log;independent_result_unavailable_NOT_FOUND
+P|2026-09-05|Shandong Luneng Taishan FC|Shenzhen Peng City FC|ou25|UNDER,2026-09-05|Shandong Luneng Taishan FC|Shenzhen Peng City FC,ou25,UNDER,WIN,,1.75,,ledger_tier_overwritten_after_first_log;independent_result_unavailable_NOT_FOUND
+P|2026-09-05|Shanghai SIPG FC|Beijing FC|ou25|UNDER,2026-09-05|Shanghai SIPG FC|Beijing FC,ou25,UNDER,WIN,WIN,1.68,1.68,ledger_tier_overwritten_after_first_log
+P|2026-09-05|Västerås SK|IK Sirius|ou25|UNDER,2026-09-05|Västerås SK|IK Sirius,ou25,UNDER,WIN,WIN,1.28,1.28,tier_differs_MARKSMAN_vs_VALUABLE_pre_2026-10-26_drift_tier_era
+P|2026-09-05|West Ham United|Derby County|ou25|UNDER,2026-09-05|West Ham United|Derby County,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-06|Central Córdoba|Independiente|over15|OVER,2026-09-06|Central Córdoba|Independiente,over15,OVER,LOSS,LOSS,-1.0,-1.0,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-09-06|Corinthians|Chapecoense|btts|YES,2026-09-06|Corinthians|Chapecoense,btts,YES,WIN,WIN,1.16,1.1,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-09-06|Coritiba|Mirassol|ou25|OVER,2026-09-06|Coritiba|Mirassol,ou25,OVER,WIN,WIN,1.25,1.25,ledger_tier_overwritten_after_first_log
+P|2026-09-06|Greuther Fürth|1. FC Heidenheim|ou25|UNDER,2026-09-06|Greuther Fürth|1. FC Heidenheim,ou25,UNDER,WIN,WIN,1.42,1.42,ledger_tier_overwritten_after_first_log
+P|2026-09-06|Juve Stabia|Pisa|ou25|OVER,2026-09-06|Juve Stabia|Pisa,ou25,OVER,WIN,WIN,1.05,1.05,tier_differs_MARKSMAN_vs_VALUABLE_pre_2026-10-26_drift_tier_era
+P|2026-09-06|Kashima Antlers|Urawa Red Diamonds|ou25|OVER,2026-09-06|Kashima Antlers|Urawa Red Diamonds,ou25,OVER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-06|LA Galaxy|New England Revolution|ou25|UNDER,2026-09-06|LA Galaxy|New England Revolution,ou25,UNDER,LOSS,,-1.0,,ledger_tier_overwritten_after_first_log;independent_result_unavailable_NOT_FOUND
+P|2026-09-06|Modena|Avellino|btts|YES,2026-09-06|Modena|Avellino,btts,YES,LOSS,LOSS,-1.0,-1.0,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-09-06|Oviedo|Burgos CF|btts|YES,2026-09-06|Oviedo|Burgos CF,btts,YES,LOSS,LOSS,-1.0,-1.0,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-09-06|Oviedo|Burgos CF|ou25|OVER,2026-09-06|Oviedo|Burgos CF,ou25,OVER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-06|River Plate|Independiente Rivadavia|btts|YES,2026-09-06|River Plate|Independiente Rivadavia,btts,YES,WIN,WIN,1.14,1.13,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-09-06|Tianjin Jinmen Tiger FC|Zhejiang|ou25|UNDER,2026-09-06|Tianjin Jinmen Tiger FC|Zhejiang,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-06|Velez Sarsfield BA|Estudiantes|btts|YES,2026-09-06|Velez Sarsfield BA|Estudiantes,btts,YES,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-06|Velez Sarsfield BA|Estudiantes|ou25|OVER,2026-09-06|Velez Sarsfield BA|Estudiantes,ou25,OVER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-06|Virtus Entella|Vicenza|btts|YES,2026-09-06|Virtus Entella|Vicenza,btts,YES,WIN,WIN,0.97,0.95,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-09-06|Virtus Entella|Vicenza|ou25|OVER,2026-09-06|Virtus Entella|Vicenza,ou25,OVER,WIN,WIN,1.24,1.24,ledger_tier_overwritten_after_first_log
+P|2026-09-06|Yunnan Yukun|Liaoning Tieren FC|ou25|UNDER,2026-09-06|Yunnan Yukun|Liaoning Tieren FC,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-07|Barracas Central|Argentinos Juniors|btts|YES,2026-09-07|Barracas Central|Argentinos Juniors,btts,YES,LOSS,LOSS,-1.0,-1.0,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-09-07|Barracas Central|Argentinos Juniors|over15|OVER,2026-09-07|Barracas Central|Argentinos Juniors,over15,OVER,LOSS,LOSS,-1.0,-1.0,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-09-07|Cruz Azul|Santos Laguna|ou25|UNDER,2026-09-07|Cruz Azul|Santos Laguna,ou25,UNDER,,WIN,,1.72,production_unsettled_but_result_known
+P|2026-09-07|Kalmar FF|Djurgardens IF|ou25|UNDER,2026-09-07|Kalmar FF|Djurgardens IF,ou25,UNDER,WIN,WIN,1.17,1.17,ledger_tier_overwritten_after_first_log
+P|2026-09-07|Racing Club|Atlético Tucuman|btts|YES,2026-09-07|Racing Club|Atlético Tucuman,btts,YES,WIN,WIN,1.15,1.15,ledger_tier_overwritten_after_first_log
+P|2026-09-07|Sabadell FC|Córdoba|ou25|OVER,2026-09-07|Sabadell FC|Córdoba,ou25,OVER,WIN,WIN,1.08,1.08,ledger_tier_overwritten_after_first_log
+P|2026-09-08|TPS Turku|SJK Seinäjoki|ou25|UNDER,2026-09-08|TPS Turku|SJK Seinäjoki,ou25,UNDER,WIN,,1.07,,independent_result_unavailable_NOT_FOUND
+P|2026-09-08|Union Santa Fe|Instituto de Córdoba|over15|OVER,2026-09-08|Union Santa Fe|Instituto de Córdoba,over15,OVER,WIN,WIN,0.54,0.54,ledger_tier_overwritten_after_first_log
+P|2026-09-08|VPS Vaasa|AC Oulu|btts|YES,2026-09-08|VPS Vaasa|AC Oulu,btts,YES,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-09-08|VPS Vaasa|AC Oulu|ou25|OVER,2026-09-08|VPS Vaasa|AC Oulu,ou25,OVER,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-09-10|Houston Dynamo|Real Salt Lake|ou25|UNDER,2026-09-10|Houston Dynamo|Real Salt Lake,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-10|Los Angeles FC|New York Red Bulls|ou25|UNDER,2026-09-10|Los Angeles FC|New York Red Bulls,ou25,UNDER,WIN,WIN,1.75,1.75,ledger_tier_overwritten_after_first_log
+P|2026-09-10|San Diego FC|San Jose Earthquakes|ou25|UNDER,2026-09-10|San Diego FC|San Jose Earthquakes,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-10|Vancouver Whitecaps FC|LA Galaxy|ou25|UNDER,2026-09-10|Vancouver Whitecaps FC|LA Galaxy,ou25,UNDER,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-09-11|Benevento|Hellas Verona|ou25|OVER,2026-09-11|Benevento|Hellas Verona,ou25,OVER,WIN,WIN,1.06,1.06,ledger_tier_overwritten_after_first_log
+P|2026-09-11|Burgos CF|AD Ceuta FC|ou25|OVER,2026-09-11|Burgos CF|AD Ceuta FC,ou25,OVER,WIN,WIN,1.17,1.17,ledger_tier_overwritten_after_first_log
+P|2026-09-11|Clermont|Boulogne|btts|YES,2026-09-11|Clermont|Boulogne,btts,YES,LOSS,LOSS,-1.0,-1.0,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-09-11|Clermont|Boulogne|ou25|OVER,2026-09-11|Clermont|Boulogne,ou25,OVER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-11|Defensa y Justicia|Gimnasia Mendoza|btts|YES,2026-09-11|Defensa y Justicia|Gimnasia Mendoza,btts,YES,LOSS,LOSS,-1.0,-1.0,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-09-11|Newells Old Boys|Velez Sarsfield BA|btts|YES,2026-09-11|Newells Old Boys|Velez Sarsfield BA,btts,YES,WIN,WIN,1.05,0.98,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-09-11|Ried|RB Salzburg|ou25|UNDER,2026-09-11|Ried|RB Salzburg,ou25,UNDER,WIN,WIN,1.5,1.5,ledger_tier_overwritten_after_first_log
+P|2026-09-11|St Patricks Athletic|Shamrock Rovers|btts|YES,2026-09-11|St Patricks Athletic|Shamrock Rovers,btts,YES,,LOSS,,-1.0,production_unsettled_but_result_known
+P|2026-09-11|West Ham United|Wrexham AFC|ou25|UNDER,2026-09-11|West Ham United|Wrexham AFC,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-12|Atlante FC|Pachuca|ou25|UNDER,2026-09-12|Atlante FC|Pachuca,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-12|Atletico Mineiro|Fluminense|btts|YES,2026-09-12|Atletico Mineiro|Fluminense,btts,YES,WIN,,0.91,,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log;independent_result_unavailable_NOT_FOUND
+P|2026-09-12|Atletico Mineiro|Fluminense|ou25|OVER,2026-09-12|Atletico Mineiro|Fluminense,ou25,OVER,WIN,,1.14,,independent_result_unavailable_NOT_FOUND
+P|2026-09-12|Bolton Wanderers|Cardiff City|ou25|UNDER,2026-09-12|Bolton Wanderers|Cardiff City,ou25,UNDER,WIN,WIN,1.29,1.29,ledger_tier_overwritten_after_first_log
+P|2026-09-12|Columbus Crew SC|New York Red Bulls|ou25|UNDER,2026-09-12|Columbus Crew SC|New York Red Bulls,ou25,UNDER,WIN,WIN,1.92,1.92,ledger_tier_overwritten_after_first_log
+P|2026-09-12|Granada CF|Albacete|ou25|OVER,2026-09-12|Granada CF|Albacete,ou25,OVER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-12|Grêmio|Vasco da Gama|ou25|OVER,2026-09-12|Grêmio|Vasco da Gama,ou25,OVER,WIN,WIN,1.1,1.1,ledger_tier_overwritten_after_first_log
+P|2026-09-12|Hiroshima Sanfrecce FC|Cerezo Osaka|ou25|UNDER,2026-09-12|Hiroshima Sanfrecce FC|Cerezo Osaka,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-12|IFK Mariehamn|TPS Turku|ou25|UNDER,2026-09-12|IFK Mariehamn|TPS Turku,ou25,UNDER,WIN,,1.02,,independent_result_unavailable_NOT_FOUND
+P|2026-09-12|Independiente Rivadavia|Aldosivi Mar del Plata|ou25|OVER,2026-09-12|Independiente Rivadavia|Aldosivi Mar del Plata,ou25,OVER,WIN,WIN,1.2,1.2,ledger_tier_overwritten_after_first_log
+P|2026-09-12|Jaro|SJK Seinäjoki|ou25|UNDER,2026-09-12|Jaro|SJK Seinäjoki,ou25,UNDER,WIN,,1.05,,tier_differs_MARKSMAN_vs_VALUABLE_pre_2026-10-26_drift_tier_era;independent_result_unavailable_NOT_FOUND
+P|2026-09-12|Middlesbrough|Norwich City|ou25|UNDER,2026-09-12|Middlesbrough|Norwich City,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,tier_differs_MARKSMAN_vs_SNIPER_pre_2026-10-26_drift_tier_era
+P|2026-09-12|Orlando City SC|Toronto FC|ou25|UNDER,2026-09-12|Orlando City SC|Toronto FC,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-12|Padova|Ascoli|ou25|OVER,2026-09-12|Padova|Ascoli,ou25,OVER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-12|Palmeiras|Sao Paulo|btts|YES,2026-09-12|Palmeiras|Sao Paulo,btts,YES,LOSS,LOSS,-1.0,-1.0,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-09-12|Plymouth Argyle|Barnsley|ou25|UNDER,2026-09-12|Plymouth Argyle|Barnsley,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-12|Rheindorf Altach|Grazer AK|ou25|OVER,2026-09-12|Rheindorf Altach|Grazer AK,ou25,OVER,WIN,WIN,0.77,0.77,ledger_tier_overwritten_after_first_log
+P|2026-09-12|Shimizu S Pulse|Avispa Fukuoka|btts|YES,2026-09-12|Shimizu S Pulse|Avispa Fukuoka,btts,YES,LOSS,LOSS,-1.0,-1.0,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-09-12|Shimizu S Pulse|Avispa Fukuoka|ou25|OVER,2026-09-12|Shimizu S Pulse|Avispa Fukuoka,ou25,OVER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-12|Shrewsbury Town|Northampton Town|btts|YES,2026-09-12|Shrewsbury Town|Northampton Town,btts,YES,LOSS,LOSS,-1.0,-1.0,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-09-12|VfL Bochum|Greuther Fürth|ou25|UNDER,2026-09-12|VfL Bochum|Greuther Fürth,ou25,UNDER,WIN,WIN,1.35,1.35,ledger_tier_overwritten_after_first_log
+P|2026-09-12|Vicenza|Juve Stabia|btts|YES,2026-09-12|Vicenza|Juve Stabia,btts,YES,WIN,WIN,1.0,1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-12|Wolfsberger AC|Rapid Wien|ou25|UNDER,2026-09-12|Wolfsberger AC|Rapid Wien,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-13|Austria Wien|Austria Lustenau|ou25|UNDER,2026-09-13|Austria Wien|Austria Lustenau,ou25,UNDER,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-09-13|CA Tigre BA|Rosario Central|btts|YES,2026-09-13|CA Tigre BA|Rosario Central,btts,YES,LOSS,LOSS,-1.0,-1.0,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-09-13|CA Tigre BA|Rosario Central|ou25|OVER,2026-09-13|CA Tigre BA|Rosario Central,ou25,OVER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-13|Chicago Fire|New England Revolution|ou25|UNDER,2026-09-13|Chicago Fire|New England Revolution,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-13|FC Dallas|Portland Timbers|ou25|UNDER,2026-09-13|FC Dallas|Portland Timbers,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-13|FC Nordsjaelland|AGF Aarhus|ou25|UNDER,2026-09-13|FC Nordsjaelland|AGF Aarhus,ou25,UNDER,WIN,WIN,1.68,1.68,ledger_tier_overwritten_after_first_log
+P|2026-09-13|Hammarby IF|IF Brommapojkarna|btts|YES,2026-09-13|Hammarby IF|IF Brommapojkarna,btts,YES,WIN,WIN,0.78,0.77,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-09-13|Hammarby IF|IF Brommapojkarna|ou25|UNDER,2026-09-13|Hammarby IF|IF Brommapojkarna,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-13|IK Start|SK Brann|over35|OVER,2026-09-13|IK Start|SK Brann,over35,OVER,LOSS,LOSS,-1.0,-1.0,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-09-13|Independiente|San Lorenzo|ou25|OVER,2026-09-13|Independiente|San Lorenzo,ou25,OVER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-13|Karlsruher SC|FC Energie Cottbus|ou25|UNDER,2026-09-13|Karlsruher SC|FC Energie Cottbus,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-13|LA Galaxy|Seattle Sounders FC|ou25|UNDER,2026-09-13|LA Galaxy|Seattle Sounders FC,ou25,UNDER,WIN,,1.25,,ledger_tier_overwritten_after_first_log;independent_result_unavailable_NOT_FOUND
+P|2026-09-13|Malmo FF|Örgryte IS|ou25|UNDER,2026-09-13|Malmo FF|Örgryte IS,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-13|Real Valladolid CF|Oviedo|btts|YES,2026-09-13|Real Valladolid CF|Oviedo,btts,YES,LOSS,LOSS,-1.0,-1.0,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-09-13|Sporting Gijón|CD Eldense|btts|YES,2026-09-13|Sporting Gijón|CD Eldense,btts,YES,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-09-13|Sporting Gijón|CD Eldense|ou25|OVER,2026-09-13|Sporting Gijón|CD Eldense,ou25,OVER,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-09-13|Sporting Kansas City|Los Angeles FC|ou25|UNDER,2026-09-13|Sporting Kansas City|Los Angeles FC,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-13|Tenerife|Leganés|ou25|OVER,2026-09-13|Tenerife|Leganés,ou25,OVER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-13|Tokyo Verdy|JEF United Chiba|ou25|OVER,2026-09-13|Tokyo Verdy|JEF United Chiba,ou25,OVER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-13|Viking FK|Kristiansund BK|ou25|UNDER,2026-09-13|Viking FK|Kristiansund BK,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-14|Atlético Huracán|Racing Club|ou25|OVER,2026-09-14|Atlético Huracán|Racing Club,ou25,OVER,WIN,WIN,1.95,1.95,ledger_tier_overwritten_after_first_log
+P|2026-09-14|Bahia|Remo|ou25|UNDER,2026-09-14|Bahia|Remo,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-14|Bodø/Glimt|Sandefjord|ou25|UNDER,2026-09-14|Bodø/Glimt|Sandefjord,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-14|Celta Fortuna|SD Eibar|btts|YES,2026-09-14|Celta Fortuna|SD Eibar,btts,YES,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-09-14|Celta Fortuna|SD Eibar|ou25|OVER,2026-09-14|Celta Fortuna|SD Eibar,ou25,OVER,WIN,,1.08,,ledger_tier_overwritten_after_first_log;independent_result_unavailable_NOT_FOUND
+P|2026-09-14|Deportivo Riestra|Lanus|ou25|OVER,2026-09-14|Deportivo Riestra|Lanus,ou25,OVER,WIN,WIN,2.05,2.05,ledger_tier_overwritten_after_first_log
+P|2026-09-14|Dundalk|St Patricks Athletic|ou25|UNDER,2026-09-14|Dundalk|St Patricks Athletic,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-14|FC Inter Turku|VPS Vaasa|btts|YES,2026-09-14|FC Inter Turku|VPS Vaasa,btts,YES,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-09-14|Guadalajara|Pumas|ou25|UNDER,2026-09-14|Guadalajara|Pumas,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-14|Red Star|Metz|btts|YES,2026-09-14|Red Star|Metz,btts,YES,LOSS,LOSS,-1.0,-1.0,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-09-18|AC Oulu|FC Inter Turku|ou25|OVER,2026-09-18|AC Oulu|FC Inter Turku,ou25,OVER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-18|Bristol City|Watford|ou25|OVER,2026-09-18|Bristol City|Watford,ou25,OVER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-18|Central Córdoba|Defensa y Justicia|btts|YES,2026-09-18|Central Córdoba|Defensa y Justicia,btts,YES,WIN,WIN,1.01,1.02,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-09-18|Central Córdoba|Defensa y Justicia|ou25|OVER,2026-09-18|Central Córdoba|Defensa y Justicia,ou25,OVER,WIN,WIN,1.45,1.45,tier_differs_MARKSMAN_vs_VALUABLE_pre_2026-10-26_drift_tier_era
+P|2026-09-18|Dundalk|Shelbourne Dublin|ou25|UNDER,2026-09-18|Dundalk|Shelbourne Dublin,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-18|Zhejiang|Wuhan Three Towns|ou25|UNDER,2026-09-18|Zhejiang|Wuhan Three Towns,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-19|Ascoli|Avellino|ou25|OVER,2026-09-19|Ascoli|Avellino,ou25,OVER,WIN,WIN,0.88,0.88,tier_differs_MARKSMAN_vs_VALUABLE_pre_2026-10-26_drift_tier_era
+P|2026-09-19|Atletico Mineiro|Chapecoense|btts|YES,2026-09-19|Atletico Mineiro|Chapecoense,btts,YES,WIN,,1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-09-19|Atletico Mineiro|Chapecoense|ou25|UNDER,2026-09-19|Atletico Mineiro|Chapecoense,ou25,UNDER,WIN,,0.95,,independent_result_unavailable_NOT_FOUND
+P|2026-09-19|Avispa Fukuoka|Hiroshima Sanfrecce FC|btts|YES,2026-09-19|Avispa Fukuoka|Hiroshima Sanfrecce FC,btts,YES,,LOSS,,-1.0,production_unsettled_but_result_known
+P|2026-09-19|Barnsley|Leicester City|ou25|UNDER,2026-09-19|Barnsley|Leicester City,ou25,UNDER,WIN,WIN,1.23,1.23,ledger_tier_overwritten_after_first_log
+P|2026-09-19|Cremonese|Virtus Entella|btts|YES,2026-09-19|Cremonese|Virtus Entella,btts,YES,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-19|Cremonese|Virtus Entella|ou25|OVER,2026-09-19|Cremonese|Virtus Entella,ou25,OVER,LOSS,LOSS,-1.0,-1.0,tier_differs_MARKSMAN_vs_VALUABLE_pre_2026-10-26_drift_tier_era
+P|2026-09-19|D.C. United|Charlotte FC|ou25|UNDER,2026-09-19|D.C. United|Charlotte FC,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-19|Grazer AK|Austria Wien|btts|YES,2026-09-19|Grazer AK|Austria Wien,btts,YES,WIN,,0.75,,independent_result_unavailable_NOT_FOUND
+P|2026-09-19|Kawasaki Frontale|Kashima Antlers|ou25|UNDER,2026-09-19|Kawasaki Frontale|Kashima Antlers,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,tier_differs_MARKSMAN_vs_VALUABLE_pre_2026-10-26_drift_tier_era
+P|2026-09-19|Leyton Orient|Stevenage|btts|YES,2026-09-19|Leyton Orient|Stevenage,btts,YES,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-19|Molde|Aalesund|ou25|UNDER,2026-09-19|Molde|Aalesund,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-19|Reading|Notts County|ou25|OVER,2026-09-19|Reading|Notts County,ou25,OVER,LOSS,LOSS,-1.0,-1.0,tier_differs_MARKSMAN_vs_VALUABLE_pre_2026-10-26_drift_tier_era
+P|2026-09-19|Sampdoria|US Catanzaro 1929|ou25|OVER,2026-09-19|Sampdoria|US Catanzaro 1929,ou25,OVER,WIN,WIN,1.16,1.16,ledger_tier_overwritten_after_first_log
+P|2026-09-19|San Jose Earthquakes|Los Angeles FC|ou25|UNDER,2026-09-19|San Jose Earthquakes|Los Angeles FC,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-19|Sligo Rovers|St Patricks Athletic|btts|YES,2026-09-19|Sligo Rovers|St Patricks Athletic,btts,YES,,LOSS,,-1.0,production_unsettled_but_result_known
+P|2026-09-19|Sligo Rovers|St Patricks Athletic|ou25|UNDER,2026-09-19|Sligo Rovers|St Patricks Athletic,ou25,UNDER,WIN,WIN,0.88,0.88,ledger_tier_overwritten_after_first_log
+P|2026-09-19|Union Santa Fe|Independiente|btts|YES,2026-09-19|Union Santa Fe|Independiente,btts,YES,WIN,WIN,1.0,0.99,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-09-19|Vasco da Gama|Coritiba|btts|YES,2026-09-19|Vasco da Gama|Coritiba,btts,YES,LOSS,LOSS,-1.0,-1.0,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-09-19|Västerås SK|Malmo FF|ou25|UNDER,2026-09-19|Västerås SK|Malmo FF,ou25,UNDER,WIN,WIN,1.2,1.2,ledger_tier_overwritten_after_first_log
+P|2026-09-19|Örgryte IS|IK Sirius|ou25|UNDER,2026-09-19|Örgryte IS|IK Sirius,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-20|AD Ceuta FC|Real Valladolid CF|ou25|OVER,2026-09-20|AD Ceuta FC|Real Valladolid CF,ou25,OVER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-20|Almería|Celta Fortuna|btts|YES,2026-09-20|Almería|Celta Fortuna,btts,YES,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-09-20|Arezzo|Südtirol|btts|YES,2026-09-20|Arezzo|Südtirol,btts,YES,WIN,WIN,0.93,0.89,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-09-20|Arezzo|Südtirol|ou25|OVER,2026-09-20|Arezzo|Südtirol,ou25,OVER,WIN,WIN,1.1,1.1,ledger_tier_overwritten_after_first_log
+P|2026-09-20|Corinthians|Fluminense|btts|YES,2026-09-20|Corinthians|Fluminense,btts,YES,WIN,WIN,1.05,1.0,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-09-20|Corinthians|Fluminense|ou25|OVER,2026-09-20|Corinthians|Fluminense,ou25,OVER,WIN,WIN,1.45,1.45,ledger_tier_overwritten_after_first_log
+P|2026-09-20|Flamengo|Bragantino-SP|ou25|UNDER,2026-09-20|Flamengo|Bragantino-SP,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-20|Hartberg|LASK|ou25|UNDER,2026-09-20|Hartberg|LASK,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-20|Houston Dynamo|FC Cincinnati|ou25|UNDER,2026-09-20|Houston Dynamo|FC Cincinnati,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-20|Leganés|Granada CF|btts|YES,2026-09-20|Leganés|Granada CF,btts,YES,WIN,WIN,1.05,0.88,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-09-20|Leganés|Granada CF|ou25|OVER,2026-09-20|Leganés|Granada CF,ou25,OVER,WIN,WIN,1.14,1.14,ledger_tier_overwritten_after_first_log
+P|2026-09-20|Minnesota United FC|LA Galaxy|ou25|UNDER,2026-09-20|Minnesota United FC|LA Galaxy,ou25,UNDER,LOSS,,-1.0,,ledger_tier_overwritten_after_first_log;independent_result_unavailable_NOT_FOUND
+P|2026-09-20|Sabadell FC|Oviedo|ou25|OVER,2026-09-20|Sabadell FC|Oviedo,ou25,OVER,WIN,WIN,1.48,1.48,ledger_tier_overwritten_after_first_log
+P|2026-09-20|Sao Paulo|Internacional|btts|YES,2026-09-20|Sao Paulo|Internacional,btts,YES,LOSS,LOSS,-1.0,-1.0,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-09-20|Sporting Kansas City|Philadelphia Union|ou25|UNDER,2026-09-20|Sporting Kansas City|Philadelphia Union,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-20|St. Louis City SC|Toronto FC|ou25|UNDER,2026-09-20|St. Louis City SC|Toronto FC,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-20|Viborg FF|FC Nordsjaelland|ou25|UNDER,2026-09-20|Viborg FF|FC Nordsjaelland,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-20|Viking FK|Lillestrom|ou25|UNDER,2026-09-20|Viking FK|Lillestrom,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-20|Wolverhampton Wanderers|West Bromwich Albion|ou25|OVER,2026-09-20|Wolverhampton Wanderers|West Bromwich Albion,ou25,OVER,LOSS,LOSS,-1.0,-1.0,tier_differs_MARKSMAN_vs_SNIPER_pre_2026-10-26_drift_tier_era
+P|2026-09-21|Barracas Central|Independiente Rivadavia|btts|YES,2026-09-21|Barracas Central|Independiente Rivadavia,btts,YES,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-21|Toluca|Santos Laguna|ou25|UNDER,2026-09-21|Toluca|Santos Laguna,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-21|Velez Sarsfield BA|CA Tigre BA|btts|YES,2026-09-21|Velez Sarsfield BA|CA Tigre BA,btts,YES,WIN,WIN,1.11,1.08,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-09-21|Velez Sarsfield BA|CA Tigre BA|ou25|OVER,2026-09-21|Velez Sarsfield BA|CA Tigre BA,ou25,OVER,WIN,WIN,1.75,1.75,ledger_tier_overwritten_after_first_log
+P|2026-09-24|Seattle Sounders FC|Real Salt Lake|ou25|UNDER,2026-09-24|Seattle Sounders FC|Real Salt Lake,ou25,UNDER,WIN,WIN,1.38,1.38,ledger_tier_overwritten_after_first_log
+P|2026-09-25|Girona FC|Albacete|btts|YES,2026-09-25|Girona FC|Albacete,btts,YES,LOSS,LOSS,-1.0,-1.0,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-09-26|AD Ceuta FC|Real Sociedad B|btts|YES,2026-09-26|AD Ceuta FC|Real Sociedad B,btts,YES,WIN,WIN,0.61,0.61,ledger_tier_overwritten_after_first_log
+P|2026-09-26|Atlante FC|Monterrey|ou25|UNDER,2026-09-26|Atlante FC|Monterrey,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-26|Bristol Rovers|Exeter City|btts|YES,2026-09-26|Bristol Rovers|Exeter City,btts,YES,LOSS,LOSS,-1.0,-1.0,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-09-26|Bristol Rovers|Exeter City|ou25|OVER,2026-09-26|Bristol Rovers|Exeter City,ou25,OVER,LOSS,LOSS,-1.0,-1.0,tier_differs_MARKSMAN_vs_SNIPER_pre_2026-10-26_drift_tier_era
+P|2026-09-26|Cambridge United|Wimbledon|btts|YES,2026-09-26|Cambridge United|Wimbledon,btts,YES,WIN,WIN,0.775,0.76,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-09-26|Celta Fortuna|Sabadell FC|btts|YES,2026-09-26|Celta Fortuna|Sabadell FC,btts,YES,WIN,,0.84,,independent_result_unavailable_NOT_FOUND
+P|2026-09-26|Charlotte FC|Chicago Fire|btts|YES,2026-09-26|Charlotte FC|Chicago Fire,btts,YES,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-26|Cheltenham Town|Chesterfield FC|ou25|UNDER,2026-09-26|Cheltenham Town|Chesterfield FC,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-26|Crawley Town|Barnet|btts|YES,2026-09-26|Crawley Town|Barnet,btts,YES,,,,,ledger_tier_overwritten_after_first_log
+P|2026-09-26|Crawley Town|Barnet|ou25|UNDER,2026-09-26|Crawley Town|Barnet,ou25,UNDER,,,,,ledger_tier_overwritten_after_first_log
+P|2026-09-26|Fleetwood Town|Rochdale|btts|YES,2026-09-26|Fleetwood Town|Rochdale,btts,YES,WIN,WIN,0.75,0.75,ledger_tier_overwritten_after_first_log
+P|2026-09-26|Fleetwood Town|Rochdale|ou25|OVER,2026-09-26|Fleetwood Town|Rochdale,ou25,OVER,WIN,WIN,0.82,0.82,tier_differs_MARKSMAN_vs_SNIPER_pre_2026-10-26_drift_tier_era
+P|2026-09-26|Granada CF|Andorra CF|btts|YES,2026-09-26|Granada CF|Andorra CF,btts,YES,,WIN,,0.775,production_unsettled_but_result_known
+P|2026-09-26|Guadalajara|Querétaro|ou25|UNDER,2026-09-26|Guadalajara|Querétaro,ou25,UNDER,WIN,WIN,1.42,1.42,ledger_tier_overwritten_after_first_log
+P|2026-09-26|Milton Keynes Dons|Bromley FC|btts|YES,2026-09-26|Milton Keynes Dons|Bromley FC,btts,YES,,,,,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-09-26|New York Red Bulls|St. Louis City SC|ou25|UNDER,2026-09-26|New York Red Bulls|St. Louis City SC,ou25,UNDER,,,,,ledger_tier_overwritten_after_first_log
+P|2026-09-26|Notts County|Blackpool|ou25|UNDER,2026-09-26|Notts County|Blackpool,ou25,UNDER,,,,,ledger_tier_overwritten_after_first_log
+P|2026-09-26|Philadelphia Union|Orlando City SC|btts|YES,2026-09-26|Philadelphia Union|Orlando City SC,btts,YES,WIN,WIN,0.42,0.42,ledger_tier_overwritten_after_first_log
+P|2026-09-26|Rotherham United|Crewe Alexandra|ou25|UNDER,2026-09-26|Rotherham United|Crewe Alexandra,ou25,UNDER,WIN,WIN,1.08,1.08,ledger_tier_overwritten_after_first_log
+P|2026-09-26|Shrewsbury Town|Colchester United|ou25|OVER,2026-09-26|Shrewsbury Town|Colchester United,ou25,OVER,WIN,WIN,1.0,1.0,tier_differs_MARKSMAN_vs_VALUABLE_pre_2026-10-26_drift_tier_era
+P|2026-09-26|Stockport County FC|Peterborough United|ou25|UNDER,2026-09-26|Stockport County FC|Peterborough United,ou25,UNDER,WIN,WIN,1.9,1.9,ledger_tier_overwritten_after_first_log
+P|2026-09-26|Swindon Town|Accrington Stanley|ou25|UNDER,2026-09-26|Swindon Town|Accrington Stanley,ou25,UNDER,WIN,WIN,0.97,0.97,tier_differs_MARKSMAN_vs_VALUABLE_pre_2026-10-26_drift_tier_era
+P|2026-09-26|Swindon Town|Accrington Stanley|ou25|OVER,2026-09-26|Swindon Town|Accrington Stanley,ou25,OVER,LOSS,LOSS,-1.0,-1.0,tier_differs_MARKSMAN_vs_SNIPER_pre_2026-10-26_drift_tier_era
+P|2026-09-26|Tenerife|Cádiz CF|btts|YES,2026-09-26|Tenerife|Cádiz CF,btts,YES,WIN,WIN,1.05,0.93,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-09-26|Tranmere Rovers|Walsall|ou25|UNDER,2026-09-26|Tranmere Rovers|Walsall,ou25,UNDER,WIN,WIN,0.85,0.85,ledger_tier_overwritten_after_first_log;tier_differs_MARKSMAN_vs_VALUABLE_pre_2026-10-26_drift_tier_era
+P|2026-09-26|Wycombe Wanderers|Reading|btts|YES,2026-09-26|Wycombe Wanderers|Reading,btts,YES,WIN,WIN,0.55,0.55,ledger_tier_overwritten_after_first_log
+P|2026-09-26|York City|Gillingham|btts|YES,2026-09-26|York City|Gillingham,btts,YES,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-26|York City|Gillingham|ou25|UNDER,2026-09-26|York City|Gillingham,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-27|Austin FC|San Diego FC|ou25|UNDER,2026-09-27|Austin FC|San Diego FC,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-27|Columbus Crew SC|Inter Miami CF|ou25|UNDER,2026-09-27|Columbus Crew SC|Inter Miami CF,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-27|FC Dallas|Los Angeles FC|ou25|UNDER,2026-09-27|FC Dallas|Los Angeles FC,ou25,UNDER,WIN,WIN,1.38,1.38,ledger_tier_overwritten_after_first_log
+P|2026-09-27|FC Dallas|Los Angeles FC|over35|OVER,2026-09-27|FC Dallas|Los Angeles FC,over35,OVER,LOSS,LOSS,-1.0,-1.0,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-09-27|Houston Dynamo|Sporting Kansas City|ou25|UNDER,2026-09-27|Houston Dynamo|Sporting Kansas City,ou25,UNDER,WIN,WIN,1.42,1.42,ledger_tier_overwritten_after_first_log
+P|2026-09-27|Nashville SC|Toronto FC|ou25|UNDER,2026-09-27|Nashville SC|Toronto FC,ou25,UNDER,WIN,WIN,1.5,1.5,tier_differs_MARKSMAN_vs_VALUABLE_pre_2026-10-26_drift_tier_era
+P|2026-09-27|Oviedo|Sporting Gijón|btts|YES,2026-09-27|Oviedo|Sporting Gijón,btts,YES,LOSS,,-1.0,,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log;independent_result_unavailable_NOT_FOUND
+P|2026-09-27|Oviedo|Sporting Gijón|ou25|OVER,2026-09-27|Oviedo|Sporting Gijón,ou25,OVER,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-09-27|Pumas|Atlético San Luis|btts|YES,2026-09-27|Pumas|Atlético San Luis,btts,YES,WIN,WIN,0.58,0.57,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-09-27|Real Salt Lake|New England Revolution|btts|YES,2026-09-27|Real Salt Lake|New England Revolution,btts,YES,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-27|Real Valladolid CF|Córdoba|ou25|UNDER,2026-09-27|Real Valladolid CF|Córdoba,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-27|San Jose Earthquakes|Portland Timbers|ou25|UNDER,2026-09-27|San Jose Earthquakes|Portland Timbers,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-09-27|Santos Laguna|Pachuca|ou25|UNDER,2026-09-27|Santos Laguna|Pachuca,ou25,UNDER,WIN,WIN,1.17,1.17,ledger_tier_overwritten_after_first_log
+P|2026-09-27|Tigres|Puebla|ou25|UNDER,2026-09-27|Tigres|Puebla,ou25,UNDER,WIN,WIN,1.25,1.25,ledger_tier_overwritten_after_first_log
+P|2026-09-27|Vancouver Whitecaps FC|D.C. United|btts|YES,2026-09-27|Vancouver Whitecaps FC|D.C. United,btts,YES,,WIN,,0.75,production_unsettled_but_result_known
+P|2026-09-28|Necaxa|América|btts|YES,2026-09-28|Necaxa|América,btts,YES,WIN,WIN,0.565,0.565,ledger_tier_overwritten_after_first_log
+P|2026-09-30|New York Red Bulls|St. Louis City SC|ou25|UNDER,2026-09-30|New York Red Bulls|St. Louis City SC,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-02|Dundalk|Bohemians|ou25|UNDER,2026-10-02|Dundalk|Bohemians,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-02|Sao Paulo|Santos|btts|YES,2026-10-02|Sao Paulo|Santos,btts,YES,WIN,WIN,0.87,0.83,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-10-03|Argentinos Juniors|CA Tigre BA|btts|YES,2026-10-03|Argentinos Juniors|CA Tigre BA,btts,YES,,WIN,,1.22,production_unsettled_but_result_known
+P|2026-10-03|Argentinos Juniors|CA Tigre BA|over15|OVER,2026-10-03|Argentinos Juniors|CA Tigre BA,over15,OVER,,WIN,,0.52,production_unsettled_but_result_known
+P|2026-10-03|Atlético Tucuman|Barracas Central|btts|YES,2026-10-03|Atlético Tucuman|Barracas Central,btts,YES,WIN,WIN,1.37,1.335,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-10-03|Atlético Tucuman|Barracas Central|ou25|OVER,2026-10-03|Atlético Tucuman|Barracas Central,ou25,OVER,WIN,WIN,1.75,1.75,tier_differs_MARKSMAN_vs_VALUABLE_pre_2026-10-26_drift_tier_era
+P|2026-10-03|Atlético Tucuman|Barracas Central|over15|OVER,2026-10-03|Atlético Tucuman|Barracas Central,over15,OVER,WIN,WIN,0.61,0.61,ledger_tier_overwritten_after_first_log
+P|2026-10-03|Boca Juniors|Union Santa Fe|btts|YES,2026-10-03|Boca Juniors|Union Santa Fe,btts,YES,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-03|Defensa y Justicia|San Lorenzo|over15|OVER,2026-10-03|Defensa y Justicia|San Lorenzo,over15,OVER,WIN,WIN,0.57,0.55,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-10-03|Newells Old Boys|Lanus|btts|YES,2026-10-03|Newells Old Boys|Lanus,btts,YES,LOSS,LOSS,-1.0,-1.0,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-10-03|Newells Old Boys|Lanus|ou25|OVER,2026-10-03|Newells Old Boys|Lanus,ou25,OVER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-04|Atlético Huracán|Aldosivi Mar del Plata|ou25|OVER,2026-10-04|Atlético Huracán|Aldosivi Mar del Plata,ou25,OVER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-04|CD Castellón|AD Ceuta FC|ou25|UNDER,2026-10-04|CD Castellón|AD Ceuta FC,ou25,UNDER,WIN,WIN,1.68,1.68,ledger_tier_overwritten_after_first_log
+P|2026-10-04|Real Sociedad B|Granada CF|ou25|OVER,2026-10-04|Real Sociedad B|Granada CF,ou25,OVER,WIN,WIN,0.97,0.97,ledger_tier_overwritten_after_first_log
+P|2026-10-04|Sporting Gijón|Celta Fortuna|btts|YES,2026-10-04|Sporting Gijón|Celta Fortuna,btts,YES,WIN,,0.76,,independent_result_unavailable_NOT_FOUND
+P|2026-10-05|Estudiantes|Gimnasia Mendoza|btts|YES,2026-10-05|Estudiantes|Gimnasia Mendoza,btts,YES,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-05|Estudiantes de Río Cuarto|Racing Club|ou25|OVER,2026-10-05|Estudiantes de Río Cuarto|Racing Club,ou25,OVER,WIN,WIN,1.68,1.68,ledger_tier_overwritten_after_first_log
+P|2026-10-05|Velez Sarsfield BA|Platense|ou25|OVER,2026-10-05|Velez Sarsfield BA|Platense,ou25,OVER,WIN,WIN,2.05,2.05,ledger_tier_overwritten_after_first_log
+P|2026-10-07|Bragantino-SP|Mirassol|ou25|UNDER,2026-10-07|Bragantino-SP|Mirassol,ou25,UNDER,WIN,WIN,0.96,0.96,ledger_tier_overwritten_after_first_log
+P|2026-10-07|Chicago Fire|Vancouver Whitecaps FC|ou25|UNDER,2026-10-07|Chicago Fire|Vancouver Whitecaps FC,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-07|Internacional|Corinthians|btts|YES,2026-10-07|Internacional|Corinthians,btts,YES,WIN,WIN,1.15,0.85,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-10-07|Remo|Grêmio|ou25|UNDER,2026-10-07|Remo|Grêmio,ou25,UNDER,WIN,WIN,0.85,0.85,tier_differs_MARKSMAN_vs_VALUABLE_pre_2026-10-26_drift_tier_era
+P|2026-10-07|Vitoria|Chapecoense|ou25|UNDER,2026-10-07|Vitoria|Chapecoense,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-08|HJK Helsinki|VPS Vaasa|btts|YES,2026-10-08|HJK Helsinki|VPS Vaasa,btts,YES,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-10-08|HJK Helsinki|VPS Vaasa|ou25|UNDER,2026-10-08|HJK Helsinki|VPS Vaasa,ou25,UNDER,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-10-08|KuPS Kuopio|AC Oulu|ou25|UNDER,2026-10-08|KuPS Kuopio|AC Oulu,ou25,UNDER,WIN,WIN,0.95,0.95,ledger_tier_overwritten_after_first_log
+P|2026-10-08|Shamrock Rovers|Drogheda United|ou25|UNDER,2026-10-08|Shamrock Rovers|Drogheda United,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-09|Avellino|Sampdoria|ou25|OVER,2026-10-09|Avellino|Sampdoria,ou25,OVER,WIN,WIN,0.98,0.98,tier_differs_MARKSMAN_vs_VALUABLE_pre_2026-10-26_drift_tier_era
+P|2026-10-09|Fluminense|Coritiba|btts|YES,2026-10-09|Fluminense|Coritiba,btts,YES,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-09|Kashima Antlers|Gamba Osaka|ou25|UNDER,2026-10-09|Kashima Antlers|Gamba Osaka,ou25,UNDER,WIN,WIN,1.28,1.28,ledger_tier_overwritten_after_first_log
+P|2026-10-09|Montpellier|Grenoble|ou25|OVER,2026-10-09|Montpellier|Grenoble,ou25,OVER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-09|SJK Seinäjoki|FC Lahti|ou25|UNDER,2026-10-09|SJK Seinäjoki|FC Lahti,ou25,UNDER,WIN,,1.09,,independent_result_unavailable_NOT_FOUND
+P|2026-10-09|SK Brann|Viking FK|ou25|UNDER,2026-10-09|SK Brann|Viking FK,ou25,UNDER,WIN,WIN,1.7,1.7,ledger_tier_overwritten_after_first_log
+P|2026-10-09|Shelbourne Dublin|Sligo Rovers|ou25|UNDER,2026-10-09|Shelbourne Dublin|Sligo Rovers,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-09|Zhejiang|Shanghai SIPG FC|ou25|UNDER,2026-10-09|Zhejiang|Shanghai SIPG FC,ou25,UNDER,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-10-10|1. FC Magdeburg|Hannover 96|ou25|UNDER,2026-10-10|1. FC Magdeburg|Hannover 96,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-10|AIK|IF Brommapojkarna|ou25|UNDER,2026-10-10|AIK|IF Brommapojkarna,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-10|Avispa Fukuoka|Fagiano Okayama|ou25|OVER,2026-10-10|Avispa Fukuoka|Fagiano Okayama,ou25,OVER,WIN,WIN,1.25,1.25,ledger_tier_overwritten_after_first_log
+P|2026-10-10|Barracas Central|Atlético Huracán|btts|YES,2026-10-10|Barracas Central|Atlético Huracán,btts,YES,LOSS,LOSS,-1.0,-1.0,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-10-10|Barracas Central|Atlético Huracán|ou25|OVER,2026-10-10|Barracas Central|Atlético Huracán,ou25,OVER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-10|Barracas Central|Atlético Huracán|over15|OVER,2026-10-10|Barracas Central|Atlético Huracán,over15,OVER,WIN,WIN,0.66,0.65,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-10-10|Bodø/Glimt|Kristiansund BK|btts|YES,2026-10-10|Bodø/Glimt|Kristiansund BK,btts,YES,WIN,WIN,0.785,0.785,ledger_tier_overwritten_after_first_log
+P|2026-10-10|Central Córdoba|Estudiantes|btts|YES,2026-10-10|Central Córdoba|Estudiantes,btts,YES,WIN,WIN,1.1,1.15,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-10-10|Central Córdoba|Estudiantes|over15|OVER,2026-10-10|Central Córdoba|Estudiantes,over15,OVER,WIN,WIN,0.49,0.5,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-10-10|Charlton Athletic|Bristol City|ou25|OVER,2026-10-10|Charlton Athletic|Bristol City,ou25,OVER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-10|Clermont|Red Star|ou25|OVER,2026-10-10|Clermont|Red Star,ou25,OVER,WIN,WIN,1.05,1.05,ledger_tier_overwritten_after_first_log
+P|2026-10-10|FC Juárez|Tijuana|ou25|UNDER,2026-10-10|FC Juárez|Tijuana,ou25,UNDER,WIN,WIN,0.91,0.91,ledger_tier_overwritten_after_first_log
+P|2026-10-10|GAIS|IK Sirius|ou25|UNDER,2026-10-10|GAIS|IK Sirius,ou25,UNDER,WIN,WIN,1.05,1.05,ledger_tier_overwritten_after_first_log
+P|2026-10-10|Leicester City|Peterborough United|ou25|UNDER,2026-10-10|Leicester City|Peterborough United,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-10|New York Red Bulls|San Diego FC|ou25|UNDER,2026-10-10|New York Red Bulls|San Diego FC,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-10|Oldham Athletic|Accrington Stanley|ou25|UNDER,2026-10-10|Oldham Athletic|Accrington Stanley,ou25,UNDER,WIN,WIN,1.06,1.06,ledger_tier_overwritten_after_first_log
+P|2026-10-10|Philadelphia Union|Real Salt Lake|ou25|UNDER,2026-10-10|Philadelphia Union|Real Salt Lake,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-10|Plymouth Argyle|Wimbledon|ou25|UNDER,2026-10-10|Plymouth Argyle|Wimbledon,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,tier_differs_MARKSMAN_vs_VALUABLE_pre_2026-10-26_drift_tier_era
+P|2026-10-10|Querétaro|Atlante FC|ou25|UNDER,2026-10-10|Querétaro|Atlante FC,ou25,UNDER,WIN,WIN,0.91,0.91,ledger_tier_overwritten_after_first_log
+P|2026-10-10|Stockport County FC|Barnsley|ou25|UNDER,2026-10-10|Stockport County FC|Barnsley,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-10|TPS Turku|Jaro|ou25|UNDER,2026-10-10|TPS Turku|Jaro,ou25,UNDER,WIN,,0.98,,independent_result_unavailable_NOT_FOUND
+P|2026-10-10|Vasco da Gama|Remo|ou25|UNDER,2026-10-10|Vasco da Gama|Remo,ou25,UNDER,WIN,WIN,1.28,1.28,ledger_tier_overwritten_after_first_log
+P|2026-10-11|Atlas|Guadalajara|ou25|UNDER,2026-10-11|Atlas|Guadalajara,ou25,UNDER,WIN,WIN,1.05,1.05,ledger_tier_overwritten_after_first_log
+P|2026-10-11|Atletico Mineiro|Santos|btts|YES,2026-10-11|Atletico Mineiro|Santos,btts,YES,WIN,,0.755,,independent_result_unavailable_NOT_FOUND
+P|2026-10-11|Austin FC|Nashville SC|ou25|UNDER,2026-10-11|Austin FC|Nashville SC,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-11|Bahia|Mirassol|ou25|UNDER,2026-10-11|Bahia|Mirassol,ou25,UNDER,WIN,WIN,1.07,1.07,ledger_tier_overwritten_after_first_log
+P|2026-10-11|Colorado Rapids|San Jose Earthquakes|ou25|UNDER,2026-10-11|Colorado Rapids|San Jose Earthquakes,ou25,UNDER,WIN,WIN,1.38,1.38,ledger_tier_overwritten_after_first_log
+P|2026-10-11|Cádiz CF|Sporting Gijón|btts|YES,2026-10-11|Cádiz CF|Sporting Gijón,btts,YES,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-10-11|Cádiz CF|Sporting Gijón|ou25|OVER,2026-10-11|Cádiz CF|Sporting Gijón,ou25,OVER,LOSS,,-1.0,,ledger_tier_overwritten_after_first_log;independent_result_unavailable_NOT_FOUND
+P|2026-10-11|FC Midtjylland|FC Copenhagen|ou25|UNDER,2026-10-11|FC Midtjylland|FC Copenhagen,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-11|Flamengo|Fluminense|btts|YES,2026-10-11|Flamengo|Fluminense,btts,YES,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-11|Flamengo|Fluminense|ou25|UNDER,2026-10-11|Flamengo|Fluminense,ou25,UNDER,WIN,WIN,1.25,1.25,ledger_tier_overwritten_after_first_log
+P|2026-10-11|Grêmio|Internacional|ou25|UNDER,2026-10-11|Grêmio|Internacional,ou25,UNDER,WIN,WIN,0.83,0.83,ledger_tier_overwritten_after_first_log
+P|2026-10-11|LASK|Rapid Wien|ou25|UNDER,2026-10-11|LASK|Rapid Wien,ou25,UNDER,WIN,WIN,1.62,1.62,ledger_tier_overwritten_after_first_log
+P|2026-10-11|Liaoning Tieren FC|Wuhan Three Towns|ou25|UNDER,2026-10-11|Liaoning Tieren FC|Wuhan Three Towns,ou25,UNDER,WIN,WIN,1.42,1.42,ledger_tier_overwritten_after_first_log
+P|2026-10-11|Los Angeles FC|Vancouver Whitecaps FC|ou25|UNDER,2026-10-11|Los Angeles FC|Vancouver Whitecaps FC,ou25,UNDER,WIN,WIN,1.31,1.31,ledger_tier_overwritten_after_first_log
+P|2026-10-11|Mito HollyHock|Shimizu S Pulse|ou25|UNDER,2026-10-11|Mito HollyHock|Shimizu S Pulse,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-11|Palmeiras|Corinthians|btts|YES,2026-10-11|Palmeiras|Corinthians,btts,YES,WIN,WIN,1.08,1.075,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-10-11|Platense|Argentinos Juniors|btts|YES,2026-10-11|Platense|Argentinos Juniors,btts,YES,WIN,WIN,1.16,1.1,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-10-11|Platense|Argentinos Juniors|over15|OVER,2026-10-11|Platense|Argentinos Juniors,over15,OVER,WIN,WIN,0.55,0.52,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-10-11|Randers FC|Viborg FF|ou25|UNDER,2026-10-11|Randers FC|Viborg FF,ou25,UNDER,WIN,WIN,1.2,1.2,ledger_tier_overwritten_after_first_log
+P|2026-10-11|Rheindorf Altach|Wolfsberger AC|ou25|UNDER,2026-10-11|Rheindorf Altach|Wolfsberger AC,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-11|San Lorenzo|Deportivo Riestra|btts|YES,2026-10-11|San Lorenzo|Deportivo Riestra,btts,YES,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-11|San Lorenzo|Deportivo Riestra|ou25|OVER,2026-10-11|San Lorenzo|Deportivo Riestra,ou25,OVER,LOSS,LOSS,-1.0,-1.0,tier_differs_MARKSMAN_vs_VALUABLE_pre_2026-10-26_drift_tier_era
+P|2026-10-11|Tokyo Verdy|Hiroshima Sanfrecce FC|btts|YES,2026-10-11|Tokyo Verdy|Hiroshima Sanfrecce FC,btts,YES,,LOSS,,-1.0,production_unsettled_but_result_known
+P|2026-10-12|Coritiba|Botafogo|ou25|UNDER,2026-10-12|Coritiba|Botafogo,ou25,UNDER,WIN,WIN,0.97,0.97,ledger_tier_overwritten_after_first_log
+P|2026-10-12|Gimnasia Mendoza|Newells Old Boys|over15|OVER,2026-10-12|Gimnasia Mendoza|Newells Old Boys,over15,OVER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-12|Lanus|Velez Sarsfield BA|btts|YES,2026-10-12|Lanus|Velez Sarsfield BA,btts,YES,LOSS,LOSS,-1.0,-1.0,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-10-12|Tenerife|Girona FC|ou25|OVER,2026-10-12|Tenerife|Girona FC,ou25,OVER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-12|VPS Vaasa|IF Gnistan|ou25|UNDER,2026-10-12|VPS Vaasa|IF Gnistan,ou25,UNDER,WIN,,1.15,,independent_result_unavailable_NOT_FOUND
+P|2026-10-13|Bragantino-SP|Cruzeiro|ou25|UNDER,2026-10-13|Bragantino-SP|Cruzeiro,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-13|Stoke City|Middlesbrough|ou25|UNDER,2026-10-13|Stoke City|Middlesbrough,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-14|CF Montreal|Atlanta United FC|ou25|UNDER,2026-10-14|CF Montreal|Atlanta United FC,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,tier_differs_MARKSMAN_vs_VALUABLE_pre_2026-10-26_drift_tier_era
+P|2026-10-14|Columbus Crew SC|Charlotte FC|ou25|UNDER,2026-10-14|Columbus Crew SC|Charlotte FC,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,tier_differs_MARKSMAN_vs_VALUABLE_pre_2026-10-26_drift_tier_era
+P|2026-10-14|FC Cincinnati|New England Revolution|ou25|UNDER,2026-10-14|FC Cincinnati|New England Revolution,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-14|Lincoln City|West Ham United|ou25|UNDER,2026-10-14|Lincoln City|West Ham United,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-14|Norwich City|Southampton|ou25|UNDER,2026-10-14|Norwich City|Southampton,ou25,UNDER,WIN,WIN,1.6,1.6,ledger_tier_overwritten_after_first_log
+P|2026-10-15|Los Angeles FC|Austin FC|ou25|UNDER,2026-10-15|Los Angeles FC|Austin FC,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-15|Mansfield Town|Oxford United|ou25|OVER,2026-10-15|Mansfield Town|Oxford United,ou25,OVER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-15|Nashville SC|Sporting Kansas City|btts|YES,2026-10-15|Nashville SC|Sporting Kansas City,btts,YES,LOSS,LOSS,-1.0,-1.0,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-10-15|Nashville SC|Sporting Kansas City|ou25|UNDER,2026-10-15|Nashville SC|Sporting Kansas City,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-15|Real Salt Lake|San Jose Earthquakes|ou25|UNDER,2026-10-15|Real Salt Lake|San Jose Earthquakes,ou25,UNDER,WIN,WIN,1.62,1.62,ledger_tier_overwritten_after_first_log
+P|2026-10-15|San Diego FC|Houston Dynamo|ou25|UNDER,2026-10-15|San Diego FC|Houston Dynamo,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-16|Galway United|Shamrock Rovers|ou25|UNDER,2026-10-16|Galway United|Shamrock Rovers,ou25,UNDER,WIN,WIN,0.95,0.95,ledger_tier_overwritten_after_first_log
+P|2026-10-16|IF Brommapojkarna|Djurgardens IF|ou25|UNDER,2026-10-16|IF Brommapojkarna|Djurgardens IF,ou25,UNDER,WIN,WIN,1.48,1.48,ledger_tier_overwritten_after_first_log
+P|2026-10-17|AIK|IFK Goteborg|ou25|UNDER,2026-10-17|AIK|IFK Goteborg,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-17|Ascoli|Empoli|ou25|OVER,2026-10-17|Ascoli|Empoli,ou25,OVER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-17|Atletico Mineiro|Coritiba|btts|YES,2026-10-17|Atletico Mineiro|Coritiba,btts,YES,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-10-17|Atlético Tucuman|Rosario Central|over15|OVER,2026-10-17|Atlético Tucuman|Rosario Central,over15,OVER,WIN,WIN,0.48,0.47,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-10-17|Austria Lustenau|LASK|ou25|UNDER,2026-10-17|Austria Lustenau|LASK,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-17|Botafogo|Chapecoense|ou25|UNDER,2026-10-17|Botafogo|Chapecoense,ou25,UNDER,WIN,WIN,1.3,1.3,ledger_tier_overwritten_after_first_log
+P|2026-10-17|Crewe Alexandra|Rochdale|ou25|UNDER,2026-10-17|Crewe Alexandra|Rochdale,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-17|FC Inter Turku|AC Oulu|btts|YES,2026-10-17|FC Inter Turku|AC Oulu,btts,YES,WIN,WIN,1.18,1.0,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-10-17|FC Inter Turku|AC Oulu|ou25|UNDER,2026-10-17|FC Inter Turku|AC Oulu,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-17|FC Lahti|TPS Turku|ou25|UNDER,2026-10-17|FC Lahti|TPS Turku,ou25,UNDER,LOSS,,-1.0,,ledger_tier_overwritten_after_first_log;independent_result_unavailable_NOT_FOUND
+P|2026-10-17|HJK Helsinki|IF Gnistan|ou25|UNDER,2026-10-17|HJK Helsinki|IF Gnistan,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-17|Hannover 96|FC St. Pauli|ou25|UNDER,2026-10-17|Hannover 96|FC St. Pauli,ou25,UNDER,WIN,WIN,1.58,1.58,ledger_tier_overwritten_after_first_log
+P|2026-10-17|Ilves Tampere|SJK Seinäjoki|ou25|UNDER,2026-10-17|Ilves Tampere|SJK Seinäjoki,ou25,UNDER,WIN,,1.25,,ledger_tier_overwritten_after_first_log;independent_result_unavailable_NOT_FOUND
+P|2026-10-17|JEF United Chiba|Yokohama F Marinos|ou25|UNDER,2026-10-17|JEF United Chiba|Yokohama F Marinos,ou25,UNDER,WIN,WIN,1.0,1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-17|Leicester City|Doncaster Rovers|ou25|UNDER,2026-10-17|Leicester City|Doncaster Rovers,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-17|New York City FC|Los Angeles FC|ou25|UNDER,2026-10-17|New York City FC|Los Angeles FC,ou25,UNDER,WIN,WIN,1.06,1.06,ledger_tier_overwritten_after_first_log
+P|2026-10-17|Oldham Athletic|Cheltenham Town|ou25|UNDER,2026-10-17|Oldham Athletic|Cheltenham Town,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-17|Philadelphia Union|Charlotte FC|ou25|UNDER,2026-10-17|Philadelphia Union|Charlotte FC,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-17|Pisa|Cremonese|ou25|OVER,2026-10-17|Pisa|Cremonese,ou25,OVER,WIN,WIN,1.02,1.02,ledger_tier_overwritten_after_first_log
+P|2026-10-17|Platense|Lanus|ou25|OVER,2026-10-17|Platense|Lanus,ou25,OVER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-17|Qingdao Hainiu FC|Liaoning Tieren FC|ou25|UNDER,2026-10-17|Qingdao Hainiu FC|Liaoning Tieren FC,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-17|Santos Laguna|Querétaro|ou25|UNDER,2026-10-17|Santos Laguna|Querétaro,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-17|Sligo Rovers|Dundalk|ou25|UNDER,2026-10-17|Sligo Rovers|Dundalk,ou25,UNDER,WIN,WIN,1.2,1.2,ledger_tier_overwritten_after_first_log
+P|2026-10-17|Sporting Gijón|Albacete|ou25|OVER,2026-10-17|Sporting Gijón|Albacete,ou25,OVER,WIN,,0.83,,independent_result_unavailable_NOT_FOUND
+P|2026-10-17|Stockport County FC|Bromley FC|ou25|UNDER,2026-10-17|Stockport County FC|Bromley FC,ou25,UNDER,WIN,WIN,1.7,1.7,ledger_tier_overwritten_after_first_log
+P|2026-10-17|Tijuana|Puebla|ou25|UNDER,2026-10-17|Tijuana|Puebla,ou25,UNDER,WIN,WIN,0.95,0.95,ledger_tier_overwritten_after_first_log
+P|2026-10-17|VfL Wolfsburg|1. FC Heidenheim|ou25|UNDER,2026-10-17|VfL Wolfsburg|1. FC Heidenheim,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-17|Viking FK|Fredrikstad FK|ou25|UNDER,2026-10-17|Viking FK|Fredrikstad FK,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-18|Bahia|Flamengo|ou25|UNDER,2026-10-18|Bahia|Flamengo,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-18|Belgrano de Cordoba|River Plate|btts|YES,2026-10-18|Belgrano de Cordoba|River Plate,btts,YES,LOSS,LOSS,-1.0,-1.0,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-10-18|Burgos CF|Sabadell FC|btts|YES,2026-10-18|Burgos CF|Sabadell FC,btts,YES,LOSS,LOSS,-1.0,-1.0,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-10-18|Burgos CF|Sabadell FC|over15|OVER,2026-10-18|Burgos CF|Sabadell FC,over15,OVER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-18|Estudiantes|San Lorenzo|over15|OVER,2026-10-18|Estudiantes|San Lorenzo,over15,OVER,WIN,WIN,0.55,0.56,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-10-18|Estudiantes de Río Cuarto|Aldosivi Mar del Plata|ou25|OVER,2026-10-18|Estudiantes de Río Cuarto|Aldosivi Mar del Plata,ou25,OVER,WIN,WIN,1.82,1.82,ledger_tier_overwritten_after_first_log
+P|2026-10-18|FC Cincinnati|Columbus Crew SC|ou25|UNDER,2026-10-18|FC Cincinnati|Columbus Crew SC,ou25,UNDER,WIN,WIN,1.88,1.88,ledger_tier_overwritten_after_first_log
+P|2026-10-18|Granada CF|Cádiz CF|btts|YES,2026-10-18|Granada CF|Cádiz CF,btts,YES,LOSS,LOSS,-1.0,-1.0,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-10-18|Grêmio|Cruzeiro|ou25|UNDER,2026-10-18|Grêmio|Cruzeiro,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-18|Karlsruher SC|SV Darmstadt 98|ou25|UNDER,2026-10-18|Karlsruher SC|SV Darmstadt 98,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-18|KuPS Kuopio|VPS Vaasa|btts|YES,2026-10-18|KuPS Kuopio|VPS Vaasa,btts,YES,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-10-18|KuPS Kuopio|VPS Vaasa|ou25|UNDER,2026-10-18|KuPS Kuopio|VPS Vaasa,ou25,UNDER,WIN,,0.92,,ledger_tier_overwritten_after_first_log;independent_result_unavailable_NOT_FOUND
+P|2026-10-18|Lyngby|FC Nordsjaelland|ou25|UNDER,2026-10-18|Lyngby|FC Nordsjaelland,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-18|Malmo FF|BK Hacken|ou25|UNDER,2026-10-18|Malmo FF|BK Hacken,ou25,UNDER,WIN,WIN,1.2,1.2,ledger_tier_overwritten_after_first_log
+P|2026-10-18|OB Odense BK|Brondby IF|ou25|UNDER,2026-10-18|OB Odense BK|Brondby IF,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-18|Remo|Bragantino-SP|ou25|UNDER,2026-10-18|Remo|Bragantino-SP,ou25,UNDER,WIN,WIN,1.12,1.12,ledger_tier_overwritten_after_first_log
+P|2026-10-18|Sandefjord|Lillestrom|ou25|UNDER,2026-10-18|Sandefjord|Lillestrom,ou25,UNDER,WIN,WIN,1.24,1.24,tier_differs_MARKSMAN_vs_VALUABLE_pre_2026-10-26_drift_tier_era
+P|2026-10-18|Sarpsborg FK|Rosenborg|ou25|UNDER,2026-10-18|Sarpsborg FK|Rosenborg,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-18|Seattle Sounders FC|CF Montreal|ou25|UNDER,2026-10-18|Seattle Sounders FC|CF Montreal,ou25,UNDER,WIN,WIN,1.6,1.6,ledger_tier_overwritten_after_first_log
+P|2026-10-18|Shanghai SIPG FC|Chengdu Rongcheng FC|ou25|UNDER,2026-10-18|Shanghai SIPG FC|Chengdu Rongcheng FC,ou25,UNDER,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-10-18|Sporting Kansas City|Real Salt Lake|ou25|UNDER,2026-10-18|Sporting Kansas City|Real Salt Lake,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-18|Tromso|KFUM|btts|YES,2026-10-18|Tromso|KFUM,btts,YES,WIN,WIN,0.75,0.75,ledger_tier_overwritten_after_first_log
+P|2026-10-18|Wolfsberger AC|WSG Tirol|ou25|UNDER,2026-10-18|Wolfsberger AC|WSG Tirol,ou25,UNDER,WIN,WIN,1.3,1.3,ledger_tier_overwritten_after_first_log
+P|2026-10-18|Örgryte IS|GAIS|ou25|UNDER,2026-10-18|Örgryte IS|GAIS,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-19|Corinthians|Vitoria|btts|YES,2026-10-19|Corinthians|Vitoria,btts,YES,WIN,WIN,1.2,1.0,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-10-19|Sarmiento de Junin|Barracas Central|over15|OVER,2026-10-19|Sarmiento de Junin|Barracas Central,over15,OVER,WIN,WIN,0.58,0.58,ledger_tier_overwritten_after_first_log
+P|2026-10-20|Deportivo Riestra|Union Santa Fe|btts|YES,2026-10-20|Deportivo Riestra|Union Santa Fe,btts,YES,WIN,WIN,1.24,1.22,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-10-20|Huddersfield Town|Peterborough United|ou25|UNDER,2026-10-20|Huddersfield Town|Peterborough United,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-21|FC Juárez|Atlante FC|ou25|UNDER,2026-10-21|FC Juárez|Atlante FC,ou25,UNDER,WIN,WIN,1.04,1.04,ledger_tier_overwritten_after_first_log
+P|2026-10-21|FC Tokyo|Kashiwa Reysol|ou25|UNDER,2026-10-21|FC Tokyo|Kashiwa Reysol,ou25,UNDER,WIN,WIN,1.05,1.05,ledger_tier_overwritten_after_first_log
+P|2026-10-21|Fagiano Okayama|Mito HollyHock|btts|YES,2026-10-21|Fagiano Okayama|Mito HollyHock,btts,YES,LOSS,LOSS,-1.0,-1.0,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-10-22|Atlas|América|ou25|UNDER,2026-10-22|Atlas|América,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-22|Toluca|Tijuana|ou25|UNDER,2026-10-22|Toluca|Tijuana,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-23|Bolton Wanderers|Middlesbrough|ou25|UNDER,2026-10-23|Bolton Wanderers|Middlesbrough,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-23|Cruzeiro|Remo|ou25|UNDER,2026-10-23|Cruzeiro|Remo,ou25,UNDER,WIN,WIN,1.4,1.4,ledger_tier_overwritten_after_first_log
+P|2026-10-23|Derry City|Dundalk|ou25|UNDER,2026-10-23|Derry City|Dundalk,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-23|Gimnasia Mendoza|Platense|over15|OVER,2026-10-23|Gimnasia Mendoza|Platense,over15,OVER,WIN,WIN,0.56,0.52,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-10-23|IF Elfsborg|Malmo FF|ou25|UNDER,2026-10-23|IF Elfsborg|Malmo FF,ou25,UNDER,WIN,WIN,1.02,1.02,ledger_tier_overwritten_after_first_log
+P|2026-10-23|Shamrock Rovers|Sligo Rovers|btts|YES,2026-10-23|Shamrock Rovers|Sligo Rovers,btts,YES,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-23|Shamrock Rovers|Sligo Rovers|ou25|UNDER,2026-10-23|Shamrock Rovers|Sligo Rovers,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-24|1. FC Magdeburg|Karlsruher SC|ou25|UNDER,2026-10-24|1. FC Magdeburg|Karlsruher SC,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-24|Atlanta United FC|Chicago Fire|ou25|UNDER,2026-10-24|Atlanta United FC|Chicago Fire,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-24|BK Hacken|Degerfors IF|ou25|UNDER,2026-10-24|BK Hacken|Degerfors IF,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-24|CA Tigre BA|Atlético Tucuman|btts|YES,2026-10-24|CA Tigre BA|Atlético Tucuman,btts,YES,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-24|CF Montreal|Nashville SC|ou25|UNDER,2026-10-24|CF Montreal|Nashville SC,ou25,UNDER,WIN,WIN,1.38,1.38,ledger_tier_overwritten_after_first_log
+P|2026-10-24|Chongqing Tonglianglong FC|Qingdao Hainiu FC|btts|YES,2026-10-24|Chongqing Tonglianglong FC|Qingdao Hainiu FC,btts,YES,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-24|Chongqing Tonglianglong FC|Qingdao Hainiu FC|ou25|UNDER,2026-10-24|Chongqing Tonglianglong FC|Qingdao Hainiu FC,ou25,UNDER,WIN,WIN,1.12,1.12,ledger_tier_overwritten_after_first_log
+P|2026-10-24|Exeter City|Fleetwood Town|ou25|OVER,2026-10-24|Exeter City|Fleetwood Town,ou25,OVER,WIN,WIN,1.11,1.11,ledger_tier_overwritten_after_first_log
+P|2026-10-24|HamKam|Rosenborg|ou25|UNDER,2026-10-24|HamKam|Rosenborg,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,tier_differs_MARKSMAN_vs_VALUABLE_pre_2026-10-26_drift_tier_era
+P|2026-10-24|Hiroshima Sanfrecce FC|Shimizu S Pulse|ou25|UNDER,2026-10-24|Hiroshima Sanfrecce FC|Shimizu S Pulse,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-24|IF Gnistan|AC Oulu|ou25|UNDER,2026-10-24|IF Gnistan|AC Oulu,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-24|León|Toluca|ou25|UNDER,2026-10-24|León|Toluca,ou25,UNDER,WIN,WIN,1.28,1.28,ledger_tier_overwritten_after_first_log
+P|2026-10-24|Necaxa|FC Juárez|ou25|UNDER,2026-10-24|Necaxa|FC Juárez,ou25,UNDER,WIN,WIN,1.23,1.23,ledger_tier_overwritten_after_first_log
+P|2026-10-24|Orlando City SC|New York City FC|ou25|UNDER,2026-10-24|Orlando City SC|New York City FC,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-24|Palmeiras|Bragantino-SP|ou25|UNDER,2026-10-24|Palmeiras|Bragantino-SP,ou25,UNDER,WIN,WIN,0.9,0.9,ledger_tier_overwritten_after_first_log
+P|2026-10-24|Philadelphia Union|New England Revolution|ou25|UNDER,2026-10-24|Philadelphia Union|New England Revolution,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-24|Qingdao West Coast FC|Yunnan Yukun|ou25|UNDER,2026-10-24|Qingdao West Coast FC|Yunnan Yukun,ou25,UNDER,WIN,WIN,1.52,1.52,ledger_tier_overwritten_after_first_log
+P|2026-10-24|San Lorenzo|Newells Old Boys|btts|YES,2026-10-24|San Lorenzo|Newells Old Boys,btts,YES,LOSS,LOSS,-1.0,-1.0,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-10-24|San Lorenzo|Newells Old Boys|over15|OVER,2026-10-24|San Lorenzo|Newells Old Boys,over15,OVER,LOSS,LOSS,-1.0,-1.0,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-10-24|Shenzhen Peng City FC|Shanghai Shenhua FC|ou25|UNDER,2026-10-24|Shenzhen Peng City FC|Shanghai Shenhua FC,ou25,UNDER,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-10-24|Tianjin Jinmen Tiger FC|Shanghai SIPG FC|ou25|UNDER,2026-10-24|Tianjin Jinmen Tiger FC|Shanghai SIPG FC,ou25,UNDER,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-10-24|VPS Vaasa|FC Inter Turku|btts|YES,2026-10-24|VPS Vaasa|FC Inter Turku,btts,YES,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-10-24|VPS Vaasa|FC Inter Turku|ou25|UNDER,2026-10-24|VPS Vaasa|FC Inter Turku,ou25,UNDER,WIN,,0.8,,ledger_tier_overwritten_after_first_log;independent_result_unavailable_NOT_FOUND
+P|2026-10-24|Vissel Kobe|FC Machida Zelvia|btts|YES,2026-10-24|Vissel Kobe|FC Machida Zelvia,btts,YES,LOSS,LOSS,-1.0,-1.0,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-10-24|WSG Tirol|Grazer AK|ou25|OVER,2026-10-24|WSG Tirol|Grazer AK,ou25,OVER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-25|CD Castellón|Sporting Gijón|btts|YES,2026-10-25|CD Castellón|Sporting Gijón,btts,YES,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-10-25|Colorado Rapids|Vancouver Whitecaps FC|ou25|UNDER,2026-10-25|Colorado Rapids|Vancouver Whitecaps FC,ou25,UNDER,WIN,WIN,1.28,1.28,ledger_tier_overwritten_after_first_log
+P|2026-10-25|Eintracht Braunschweig|Hannover 96|ou25|UNDER,2026-10-25|Eintracht Braunschweig|Hannover 96,ou25,UNDER,WIN,WIN,1.38,1.38,ledger_tier_overwritten_after_first_log
+P|2026-10-25|FC Midtjylland|Lyngby|ou25|UNDER,2026-10-25|FC Midtjylland|Lyngby,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-25|HJK Helsinki|KuPS Kuopio|ou25|UNDER,2026-10-25|HJK Helsinki|KuPS Kuopio,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-25|Independiente|Boca Juniors|btts|YES,2026-10-25|Independiente|Boca Juniors,btts,YES,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-25|Jaro|PK-35|btts|YES,2026-10-25|Jaro|PK-35,btts,YES,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-25|LASK|RB Salzburg|ou25|UNDER,2026-10-25|LASK|RB Salzburg,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-25|Molde|Fredrikstad FK|over35|OVER,2026-10-25|Molde|Fredrikstad FK,over35,OVER,WIN,WIN,0.95,0.95,ledger_tier_overwritten_after_first_log
+P|2026-10-25|Monterrey|Guadalajara|ou25|UNDER,2026-10-25|Monterrey|Guadalajara,ou25,UNDER,WIN,WIN,1.02,1.02,ledger_tier_overwritten_after_first_log
+P|2026-10-25|Palermo|Carrarese|ou25|UNDER,2026-10-25|Palermo|Carrarese,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-25|Portland Timbers|Charlotte FC|ou25|UNDER,2026-10-25|Portland Timbers|Charlotte FC,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-25|Real Salt Lake|St. Louis City SC|ou25|UNDER,2026-10-25|Real Salt Lake|St. Louis City SC,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-25|Rosario Central|Atlético Huracán|btts|YES,2026-10-25|Rosario Central|Atlético Huracán,btts,YES,LOSS,LOSS,-1.0,-1.0,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-10-25|Rosario Central|Atlético Huracán|over15|OVER,2026-10-25|Rosario Central|Atlético Huracán,over15,OVER,WIN,WIN,0.52,0.47,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-10-25|Sabadell FC|Tenerife|btts|YES,2026-10-25|Sabadell FC|Tenerife,btts,YES,WIN,WIN,1.1,1.05,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-10-25|Sporting Kansas City|Austin FC|ou25|UNDER,2026-10-25|Sporting Kansas City|Austin FC,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-25|Sturm Graz|Ried|ou25|UNDER,2026-10-25|Sturm Graz|Ried,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-26|FC Copenhagen|OB Odense BK|ou25|UNDER,2026-10-26|FC Copenhagen|OB Odense BK,ou25,UNDER,WIN,WIN,1.48,1.48,ledger_tier_overwritten_after_first_log
+P|2026-10-26|Flamengo|Atletico Mineiro|btts|YES,2026-10-26|Flamengo|Atletico Mineiro,btts,YES,WIN,,1.0,,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log;independent_result_unavailable_NOT_FOUND
+P|2026-10-26|Tijuana|Santos Laguna|ou25|UNDER,2026-10-26|Tijuana|Santos Laguna,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-27|Instituto de Córdoba|Deportivo Riestra|over15|OVER,2026-10-27|Instituto de Córdoba|Deportivo Riestra,over15,OVER,LOSS,LOSS,-1.0,-1.0,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-10-28|AC Oulu|VPS Vaasa|ou25|UNDER,2026-10-28|AC Oulu|VPS Vaasa,ou25,UNDER,WIN,,0.83,,independent_result_unavailable_NOT_FOUND
+P|2026-10-28|Halmstads BK|Malmo FF|ou25|UNDER,2026-10-28|Halmstads BK|Malmo FF,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-28|IF Brommapojkarna|BK Hacken|ou25|UNDER,2026-10-28|IF Brommapojkarna|BK Hacken,ou25,UNDER,WIN,WIN,1.48,1.48,ledger_tier_overwritten_after_first_log
+P|2026-10-29|América|Tijuana|over35|OVER,2026-10-29|América|Tijuana,over35,OVER,LOSS,LOSS,-1.0,-1.0,ledger_odds_overwritten_after_first_log;ledger_tier_overwritten_after_first_log
+P|2026-10-29|Austin FC|Real Salt Lake|ou25|UNDER,2026-10-29|Austin FC|Real Salt Lake,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-29|Minnesota United FC|Sporting Kansas City|ou25|UNDER,2026-10-29|Minnesota United FC|Sporting Kansas City,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-29|Örgryte IS|Mjällby AIF|ou25|UNDER,2026-10-29|Örgryte IS|Mjällby AIF,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-30|Arminia Bielefeld|Eintracht Braunschweig|btts|YES,2026-10-30|Arminia Bielefeld|Eintracht Braunschweig,btts,YES,WIN,,0.65,,independent_result_unavailable_NOT_FOUND
+P|2026-10-30|Arminia Bielefeld|Eintracht Braunschweig|over35|OVER,2026-10-30|Arminia Bielefeld|Eintracht Braunschweig,over35,OVER,WIN,,1.81,,independent_result_unavailable_NOT_FOUND
+P|2026-10-30|Atlético Huracán|CA Tigre BA|ou25|OVER,2026-10-30|Atlético Huracán|CA Tigre BA,ou25,OVER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-30|FC Energie Cottbus|VfL Bochum|ou25|UNDER,2026-10-30|FC Energie Cottbus|VfL Bochum,ou25,UNDER,LOSS,,-1.0,,ledger_tier_overwritten_after_first_log;independent_result_unavailable_NOT_FOUND
+P|2026-10-30|Nantes|Clermont|btts|YES,2026-10-30|Nantes|Clermont,btts,YES,WIN,,0.91,,independent_result_unavailable_NOT_FOUND
+P|2026-10-30|Rodez AF|USL Dunkerque|ou25|UNDER,2026-10-30|Rodez AF|USL Dunkerque,ou25,UNDER,WIN,,1.38,,independent_result_unavailable_NOT_FOUND
+P|2026-10-31|1. FC Kaiserslautern|Hertha Berlin|ou25|UNDER,2026-10-31|1. FC Kaiserslautern|Hertha Berlin,ou25,UNDER,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-10-31|Aalesund|Sandefjord|ou25|UNDER,2026-10-31|Aalesund|Sandefjord,ou25,UNDER,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-10-31|Accrington Stanley|Northampton Town|btts|YES,2026-10-31|Accrington Stanley|Northampton Town,btts,YES,WIN,,0.84,,independent_result_unavailable_NOT_FOUND
+P|2026-10-31|Accrington Stanley|Northampton Town|ou25|OVER,2026-10-31|Accrington Stanley|Northampton Town,ou25,OVER,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-10-31|Barnsley|Oxford United|ou25|UNDER,2026-10-31|Barnsley|Oxford United,ou25,UNDER,WIN,,1.35,,independent_result_unavailable_NOT_FOUND
+P|2026-10-31|Burnley|Portsmouth|btts|YES,2026-10-31|Burnley|Portsmouth,btts,YES,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-10-31|Coritiba|Vitoria|ou25|UNDER,2026-10-31|Coritiba|Vitoria,ou25,UNDER,WIN,,0.75,,independent_result_unavailable_NOT_FOUND
+P|2026-10-31|Crewe Alexandra|Barnet|ou25|UNDER,2026-10-31|Crewe Alexandra|Barnet,ou25,UNDER,WIN,,1.16,,independent_result_unavailable_NOT_FOUND
+P|2026-10-31|Deportivo Riestra|Talleres|btts|YES,2026-10-31|Deportivo Riestra|Talleres,btts,YES,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-10-31|Deportivo Riestra|Talleres|ou25|OVER,2026-10-31|Deportivo Riestra|Talleres,ou25,OVER,WIN,,1.82,,independent_result_unavailable_NOT_FOUND
+P|2026-10-31|Deportivo Riestra|Talleres|over15|OVER,2026-10-31|Deportivo Riestra|Talleres,over15,OVER,WIN,,0.6,,independent_result_unavailable_NOT_FOUND
+P|2026-10-31|FC Juárez|Querétaro|ou25|UNDER,2026-10-31|FC Juárez|Querétaro,ou25,UNDER,LOSS,LOSS,-1.0,-1.0,ledger_tier_overwritten_after_first_log
+P|2026-10-31|Fredrikstad FK|Rosenborg|ou25|UNDER,2026-10-31|Fredrikstad FK|Rosenborg,ou25,UNDER,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-10-31|Grimsby Town|York City|ou25|UNDER,2026-10-31|Grimsby Town|York City,ou25,UNDER,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-10-31|Karlsruher SC|1. FC Heidenheim|ou25|UNDER,2026-10-31|Karlsruher SC|1. FC Heidenheim,ou25,UNDER,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-10-31|LASK|WSG Tirol|ou25|UNDER,2026-10-31|LASK|WSG Tirol,ou25,UNDER,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-10-31|Middlesbrough|Charlton Athletic|btts|YES,2026-10-31|Middlesbrough|Charlton Athletic,btts,YES,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-10-31|Middlesbrough|Charlton Athletic|ou25|UNDER,2026-10-31|Middlesbrough|Charlton Athletic,ou25,UNDER,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-10-31|Millwall|Derby County|btts|YES,2026-10-31|Millwall|Derby County,btts,YES,WIN,,0.75,,independent_result_unavailable_NOT_FOUND
+P|2026-10-31|Mito HollyHock|Hiroshima Sanfrecce FC|btts|YES,2026-10-31|Mito HollyHock|Hiroshima Sanfrecce FC,btts,YES,,LOSS,,-1.0,production_unsettled_but_result_known
+P|2026-10-31|New York City FC|CF Montreal|btts|YES,2026-10-31|New York City FC|CF Montreal,btts,YES,WIN,,0.65,,independent_result_unavailable_NOT_FOUND
+P|2026-10-31|New York City FC|CF Montreal|ou25|UNDER,2026-10-31|New York City FC|CF Montreal,ou25,UNDER,WIN,,1.35,,independent_result_unavailable_NOT_FOUND
+P|2026-10-31|Norwich City|Watford|ou25|UNDER,2026-10-31|Norwich City|Watford,ou25,UNDER,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-10-31|Oldham Athletic|Crawley Town|ou25|UNDER,2026-10-31|Oldham Athletic|Crawley Town,ou25,UNDER,WIN,,1.3,,ledger_tier_overwritten_after_first_log;independent_result_unavailable_NOT_FOUND
+P|2026-10-31|Pachuca|Tigres|ou25|UNDER,2026-10-31|Pachuca|Tigres,ou25,UNDER,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-10-31|Peterborough United|Luton|ou25|UNDER,2026-10-31|Peterborough United|Luton,ou25,UNDER,WIN,,1.8,,independent_result_unavailable_NOT_FOUND
+P|2026-10-31|Rheindorf Altach|Ried|ou25|UNDER,2026-10-31|Rheindorf Altach|Ried,ou25,UNDER,WIN,,1.1,,independent_result_unavailable_NOT_FOUND
+P|2026-10-31|Sampdoria|Virtus Entella|btts|YES,2026-10-31|Sampdoria|Virtus Entella,btts,YES,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-10-31|Sampdoria|Virtus Entella|ou25|OVER,2026-10-31|Sampdoria|Virtus Entella,ou25,OVER,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-10-31|San Jose Earthquakes|Real Salt Lake|ou25|UNDER,2026-10-31|San Jose Earthquakes|Real Salt Lake,ou25,UNDER,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-10-31|Shrewsbury Town|Gillingham|btts|YES,2026-10-31|Shrewsbury Town|Gillingham,btts,YES,WIN,,0.81,,independent_result_unavailable_NOT_FOUND
+P|2026-10-31|Shrewsbury Town|Gillingham|ou25|OVER,2026-10-31|Shrewsbury Town|Gillingham,ou25,OVER,WIN,,0.99,,ledger_tier_overwritten_after_first_log;independent_result_unavailable_NOT_FOUND
+P|2026-10-31|Southampton|Queens Park Rangers|ou25|UNDER,2026-10-31|Southampton|Queens Park Rangers,ou25,UNDER,LOSS,,-1.0,,ledger_tier_overwritten_after_first_log;independent_result_unavailable_NOT_FOUND
+P|2026-10-31|Sporting Kansas City|FC Dallas|ou25|UNDER,2026-10-31|Sporting Kansas City|FC Dallas,ou25,UNDER,WIN,,1.75,,independent_result_unavailable_NOT_FOUND
+P|2026-10-31|Stockport County FC|Wimbledon|ou25|UNDER,2026-10-31|Stockport County FC|Wimbledon,ou25,UNDER,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-10-31|Stoke City|Preston North End|btts|YES,2026-10-31|Stoke City|Preston North End,btts,YES,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-10-31|Swansea City|Blackburn Rovers|btts|YES,2026-10-31|Swansea City|Blackburn Rovers,btts,YES,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-10-31|Tranmere Rovers|Cheltenham Town|ou25|UNDER,2026-10-31|Tranmere Rovers|Cheltenham Town,ou25,UNDER,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-10-31|Velez Sarsfield BA|San Lorenzo|btts|YES,2026-10-31|Velez Sarsfield BA|San Lorenzo,btts,YES,WIN,,1.2,,independent_result_unavailable_NOT_FOUND
+P|2026-10-31|Velez Sarsfield BA|San Lorenzo|over15|OVER,2026-10-31|Velez Sarsfield BA|San Lorenzo,over15,OVER,WIN,,0.57,,independent_result_unavailable_NOT_FOUND
+P|2026-10-31|VfL Wolfsburg|VfL Osnabrück|ou25|UNDER,2026-10-31|VfL Wolfsburg|VfL Osnabrück,ou25,UNDER,WIN,,1.85,,independent_result_unavailable_NOT_FOUND
+P|2026-10-31|Wigan Athletic|Bromley FC|ou25|UNDER,2026-10-31|Wigan Athletic|Bromley FC,ou25,UNDER,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-10-31|Wolverhampton Wanderers|Cardiff City|ou25|UNDER,2026-10-31|Wolverhampton Wanderers|Cardiff City,ou25,UNDER,LOSS,,-1.0,,independent_result_unavailable_NOT_FOUND
+P|2026-11-01|Hannover 96|Dynamo Dresden|ou25|UNDER,2026-11-01|Hannover 96|Dynamo Dresden,ou25,UNDER,,,,,ledger_tier_overwritten_after_first_log
+P|2026-11-01|IK Start|Lillestrom|ou25|UNDER,2026-11-01|IK Start|Lillestrom,ou25,UNDER,,,,,ledger_tier_overwritten_after_first_log
+I|2026-05-24|Bodø/Glimt|SK Brann|ou25|UNDER,2026-05-24|Bodø/Glimt|SK Brann,ou25,UNDER,,LOSS,,-1.0,independent_only;production_board_decision_AVOID_AVOID;NOT_IDENTIFIABLE_both_losing_guard_v7_params_uncommitted
+I|2026-05-25|Sarpsborg FK|Molde|ou25|UNDER,2026-05-25|Sarpsborg FK|Molde,ou25,UNDER,,LOSS,,-1.0,independent_only;production_board_decision_AVOID_AVOID;NOT_IDENTIFIABLE_both_losing_guard_v7_params_uncommitted
+I|2026-05-29|Rosenborg|Bodø/Glimt|ou25|UNDER,2026-05-29|Rosenborg|Bodø/Glimt,ou25,UNDER,,LOSS,,-1.0,independent_only;production_board_decision_AVOID_AVOID;NOT_IDENTIFIABLE_both_losing_guard_v7_params_uncommitted
+I|2026-05-29|Vålerenga|Kristiansund BK|ou25|UNDER,2026-05-29|Vålerenga|Kristiansund BK,ou25,UNDER,,LOSS,,-1.0,independent_only;production_board_decision_AVOID_AVOID;NOT_IDENTIFIABLE_both_losing_guard_v7_params_uncommitted
+I|2026-05-30|Lillestrom|Viking FK|ou25|UNDER,2026-05-30|Lillestrom|Viking FK,ou25,UNDER,,,,,independent_only;production_board_decision_AVOID_AVOID;NOT_IDENTIFIABLE_both_losing_guard_v7_params_uncommitted
+I|2026-05-30|Molde|Sandefjord|ou25|UNDER,2026-05-30|Molde|Sandefjord,ou25,UNDER,,LOSS,,-1.0,independent_only;production_board_decision_AVOID_AVOID;NOT_IDENTIFIABLE_both_losing_guard_v7_params_uncommitted
+I|2026-10-16|Stade Lavallois|Clermont|ou25|UNDER,2026-10-16|Stade Lavallois|Clermont,ou25,UNDER,,LOSS,,-1.0,independent_only;production_has_opposite_side_first(flip_guard/one_side_policy);production_board_decision_UNDER_VALUABLE;independent_policy_drop_flip_opposite_ou25
+I|2026-11-01|Vålerenga|Tromso|over35|OVER,2026-11-01|Vålerenga|Tromso,over35,OVER,,,,,independent_only;independent_policy_drop_opposite_goal_direction
+I|2026-10-31|Aalesund|Sandefjord|over35|OVER,2026-10-31|Aalesund|Sandefjord,over35,OVER,,,,,independent_only;independent_policy_drop_opposite_goal_direction
+I|2026-10-31|Sarmiento de Junin|Rosario Central|ou25|UNDER,2026-10-31|Sarmiento de Junin|Rosario Central,ou25,UNDER,,LOSS,,-1.0,independent_only;production_has_opposite_side_first(flip_guard/one_side_policy);production_board_decision_UNDER_VALUABLE;independent_policy_drop_flip_opposite_ou25
+I|2026-11-01|Sheffield Wednesday|Blackpool|over35|OVER,2026-11-01|Sheffield Wednesday|Blackpool,over35,OVER,,,,,independent_only;independent_policy_drop_opposite_goal_direction

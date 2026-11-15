@@ -1,249 +1,226 @@
 """
-league_quality.py — Opposition quality and league tier enrichment
-=================================================================
-Adds per-row columns that allow the model to distinguish a player scoring
-0.3 goals/game in Panama liga vs the same rate in the Premier League,
-and to discount that form when facing elite opposition (England, France, etc.).
+league_quality.py — measured club / league strength for the player features
+==========================================================================
+OWNER DECISION A (2026-11-02): "measure our own strength". The strength comes from src/strength: a
+time-ordered Elo fitted ONLY on real results we hold (football-data / API-Football history plus the
+collected league and cross-league cup fixtures), K and home advantage FITTED on held-out log loss.
+A club with too few rated matches, and a league whose country is not linked to the reference
+component by real cross-league matches, is NaN. No hand tiers, no priors.
 
-Call enrich_league_quality(history) BEFORE build_features().
+MEASURED COLUMNS (as of the row's match date; only matches on EARLIER days are seen):
+  team_club_elo                 the player's club rating                        (log-odds scale)
+  opp_club_elo                  the opponent club's rating
+  league_elo                    league strength = mean rating of its rated clubs (linked leagues)
+  league_elo_rank               1 = strongest linked league on that day
+  player_career_avg_league_elo  mean league_elo over the player's earlier rows  (>= MIN_CAREER_ROWS)
+  player_career_avg_opp_elo     mean opp_club_elo over the player's earlier rows (>= MIN_CAREER_ROWS)
+and, in feature_engineering._add_composites,
+  context_elo_odds              exp(player_career_avg_opp_elo - opp_club_elo): the Elo odds ratio
+                                between the opposition his record was earned against and this one
+                                (> 1: this opponent is weaker than his usual opposition)
+  elo_mismatch_goals / _sot     goals_pg / sot_pg x context_elo_odds
+
+RENAMED, NOT REDEFINED. The legacy columns league_tier, league_quality, player_career_avg_quality,
+context_quality_discount, quality_mismatch_goals and quality_mismatch_sot meant HAND tiers (1-4,
+0.3-1.0); the serving payloads were trained on them. Their meaning cannot be measured, so they stay
+NaN (LEGACY_COLUMNS) and the measured replacements above carry new names. The props model can adopt
+the new names at its next retrain (config.PLAYER_FEATURE_COLS is not owned here).
 """
 from __future__ import annotations
 
-import math
-from pathlib import Path
-
+import numpy as np
 import pandas as pd
 
-# ── League tier table ──────────────────────────────────────────────────────────
-# Tier 1 = elite (PL, UCL, La Liga, Serie A)
-# Tier 2 = strong second tier (Championship, Bundesliga 2, Eredivisie...)
-# Tier 3 = mid (Brazil, Argentina, Saudi, K-League, MLS, Scandinavian...)
-# Tier 4 = lower (Ireland, Finland, China, Romania...)
-# Tier 5 = very weak / untracked
-LEAGUE_TIERS: dict[str, int] = {
-    # Tier 1 — elite European
-    "Premier League":          1,
-    "La Liga":                 1,
-    "Bundesliga 1":            1,
-    "Serie A":                 1,
-    "Ligue 1":                 1,
-    "Bundesliga":              1,
-    "Champions League":        1,
-    "UEFA Champions League":   1,
-    "Europa League":           1,
-    # Tier 2 — strong second-tier European
-    "Championship":            2,
-    "Bundesliga 2":            2,
-    "La Liga 2":               2,
-    "Serie B":                 2,
-    "Ligue 2":                 2,
-    "Dutch Eredivisie":        2,
-    "Portuguese Primeira Liga": 2,
-    "Scottish Premiership":    2,
-    "Belgian First Division A": 2,
-    "Turkish Super Lig":       2,
-    "Austrian Bundesliga":     2,
-    "Greek Super League":      2,
-    "Polish Ekstraklasa":      2,
-    "Denmark Superliga":       2,
-    "Norway Eliteserien":      2,
-    "Sweden Allsvenskan":      2,
-    # Tier 3 — major non-European / lower European
-    "League One":              3,
-    "League Two":              3,
-    "National League":         3,
-    "Saudi Pro League":        3,
-    "K-League 1":              3,
-    "Brazil Serie A":          3,
-    "Argentina Primera Division": 3,
-    "Mexico Liga MX":          3,
-    "Japan J-League":          3,
-    "USA MLS":                 3,
-    "MLS":                     3,
-    "Scotland Championship":   3,
-    "Scotland League One":     3,
-    "Scotland League Two":     3,
-    "Scottish Championship":   3,
-    "Scottish League One":     3,
-    "Scottish League Two":     3,
-    "Romania Superliga":       3,
-    "Romanian Superliga":      3,
-    "Finland Veikkausliiga":   3,
-    # Tier 4 — lower leagues
-    "Ireland Premier Division": 4,
-    "China Super League":      4,
-    # World Cup & international tournaments (treated as tier 1 context)
-    "World Cup":               1,
-    "WC 2026":                 1,
-    "UEFA Euro":               1,
-    "Copa America":            2,
-    "CONCACAF Gold Cup":       3,
-    "CONCACAF Nations League": 3,
-    "Africa Cup of Nations":   3,
-}
+LEGACY_COLUMNS = ("league_tier", "league_quality", "player_career_avg_quality",
+                  "context_quality_discount", "quality_mismatch_goals", "quality_mismatch_sot")
+QUALITY_COLUMNS = LEGACY_COLUMNS[:3]          # kept for callers of enrich_league_quality
+MEASURED_COLUMNS = ("team_club_elo", "opp_club_elo", "league_elo", "league_elo_rank",
+                    "player_career_avg_league_elo", "player_career_avg_opp_elo")
 
-# National team FIFA tier (rough, based on ranking bands)
-NATIONAL_TEAM_TIERS: dict[str, int] = {
-    # Tier 1 elite
-    "France": 1, "England": 1, "Spain": 1, "Germany": 1, "Brazil": 1,
-    "Argentina": 1, "Portugal": 1, "Netherlands": 1, "Belgium": 1,
-    "Italy": 1, "Croatia": 1, "Uruguay": 1,
-    # Tier 2 strong
-    "USA": 2, "Mexico": 2, "Colombia": 2, "Senegal": 2, "Morocco": 2,
-    "Japan": 2, "South Korea": 2, "Australia": 2, "Switzerland": 2,
-    "Denmark": 2, "Austria": 2, "Turkey": 2, "Poland": 2, "Serbia": 2,
-    "Ecuador": 2, "Canada": 2, "Chile": 2, "Peru": 2,
-    # Tier 3 mid
-    "Saudi Arabia": 3, "Iran": 3, "South Africa": 3, "Nigeria": 3,
-    "Ghana": 3, "Costa Rica": 3, "Honduras": 3, "Jamaica": 3,
-    "Venezuela": 3, "Bolivia": 3, "Paraguay": 3,
-    # Tier 4 weaker
-    "Panama": 4, "El Salvador": 4, "Cuba": 4, "Haiti": 4,
-    "New Zealand": 4, "Indonesia": 4, "Vietnam": 4,
-}
+MIN_CAREER_ROWS = 5           # earlier rows with a measured value behind a career average
 
-# Convert tier to quality score: tier 1 = 1.0, tier 2 = 0.75, tier 3 = 0.5, tier 4 = 0.30
-def _tier_to_quality(tier: int) -> float:
-    return {1: 1.0, 2: 0.75, 3: 0.50, 4: 0.30}.get(tier, 0.25)
+
+def league_tier(league) -> float:
+    """The legacy HAND tier of `league`: never measured -> NaN for every league. The measured
+    strength is league_strength(league, date)."""
+    return float("nan")
+
+
+def league_strength(league, date) -> float:
+    """Measured strength (mean club Elo) of `league` as of `date`, or NaN."""
+    from src.strength import lookup
+    return float(lookup.load().league_asof([league], [date])["league_elo"].iloc[0])
 
 
 def enrich_league_quality(history: list[dict]) -> list[dict]:
-    """
-    Add league quality and player vs player strength features to history rows.
-
-    New columns added per row:
-      league_tier              — tier 1-4 of the league this match was played in
-      league_quality           — 1.0/0.75/0.5/0.3 based on tier
-      player_career_avg_quality— expanding-window career average league quality
-      opp_def_player_rating_pg — rolling mean rating of opponent defenders
-      opp_top_def_rating       — rolling mean of TOP defender rating (max per fixture)
-      opp_def_player_quality   — composite: aerial × rating of opponent CB group
-      quality_mismatch_goals   — goals_pg × (career_quality / opp_defence_quality)
-      context_quality_discount — how hard today's opponent is vs player's career average
-
-    All zero-safe; missing values gracefully default.
-    """
+    """Legacy entry point (pipeline calls it before build_features): writes the LEGACY quality
+    columns as NaN. The measured columns are attached by build_features (attach_strength), with
+    ONE definition for training and serving."""
     if not history:
         return history
-
     df = pd.DataFrame(history)
     df["date"] = pd.to_datetime(df["date"], errors="coerce")
     df = df.sort_values(["player_id", "date"]).reset_index(drop=True)
-
-    n = 5  # rolling window — keep consistent with feature_engineering ROLLING_N
-
-    # ── League tier per row ───────────────────────────────────────────────────
-    df["league_tier"] = df["league"].apply(league_tier) if "league" in df.columns else 3
-    df["league_quality"] = df["league_tier"].apply(_tier_to_quality)
-    return _enrich_rest(df, n)
-
-
-_TIERS_LC = {k.lower(): v for k, v in LEAGUE_TIERS.items()}
-
-
-def league_tier(league) -> int:
-    """EXACT league first (registry-canonical), then the LONGEST table key the name starts with
-    ('World Cup - Qualification Europe' -> 'World Cup'). The old two-way substring scan in dict
-    order gave 'La Liga 2' the top-flight 'La Liga' tier 1 (own entry 2), likewise Bundesliga 2,
-    Brazil Serie A ('Serie A') and Austrian Bundesliga: ~129k history rows on the wrong tier
-    (Data Truth audit finding 40). Unknown league -> 3 (mid-tier), as before."""
-    if not isinstance(league, str):
-        return 3
-    try:
-        from src.league_registry import canonical_name
-        canon = canonical_name(league) or league
-    except Exception:                                                  # noqa: BLE001
-        canon = league
-    for name in (canon, league):
-        if name.lower() in _TIERS_LC:
-            return _TIERS_LC[name.lower()]
-    pref = [k for k in _TIERS_LC if league.lower().startswith(k)]
-    return _TIERS_LC[max(pref, key=len)] if pref else 3
-
-
-def _enrich_rest(df: pd.DataFrame, n: int) -> list[dict]:
-    """The rest of enrich_league_quality, after league_tier/league_quality are set."""
-
-    # ── Career average league quality (expanding, shift=1) ────────────────────
-    grp = df.groupby("player_id", group_keys=False)
-    df["player_career_avg_quality"] = grp["league_quality"].transform(
-        lambda x: x.expanding().mean().shift(1).fillna(0.65))
-
-    # ── Opponent defensive player individual quality ──────────────────────────
-    # Aggregate rating of defensive players per fixture/team
-    # (rating is the API match rating 0-10, already in history rows)
-    _pos = df["position"].str.upper().fillna("") if "position" in df.columns         else pd.Series([""] * len(df), index=df.index)
-    _def_mask = _pos.str.startswith("D")
-
-    if _def_mask.any() and "rating" in df.columns:
-        _defs = df[_def_mask].copy()
-        _defs["_rating_clean"] = pd.to_numeric(_defs["rating"], errors="coerce").fillna(6.8)
-
-        _def_agg = (
-            _defs.groupby(["fixture_id", "team"])
-            .agg(
-                _date=("date", "first"),
-                _avg_rating=("_rating_clean", "mean"),
-                _top_rating=("_rating_clean", "max"),
-                _n=("player_id", "count"),
-            )
-            .reset_index()
-        )
-
-        _def_agg = _def_agg.sort_values(["team", "_date"])
-        _dgrp = _def_agg.groupby("team", group_keys=False)
-        _def_agg["opp_def_player_rating_pg"] = _dgrp["_avg_rating"].transform(
-            lambda x: x.shift(1).rolling(n, min_periods=1).mean())
-        _def_agg["opp_top_def_rating"] = _dgrp["_top_rating"].transform(
-            lambda x: x.shift(1).rolling(n, min_periods=1).mean())
-
-        if "opponent" not in df.columns:
-            df["opponent"] = df.apply(
-                lambda r: r["away_team"] if r.get("is_home") else r.get("home_team", ""), axis=1)
-
-        _def_feats = _def_agg[["fixture_id","team",
-                                "opp_def_player_rating_pg",
-                                "opp_top_def_rating"]].rename(columns={"team":"opponent"})
-        df = df.merge(_def_feats, on=["fixture_id","opponent"], how="left")
-    else:
-        df["opp_def_player_rating_pg"] = 6.8
-        df["opp_top_def_rating"]       = 7.0
-
-    df["opp_def_player_rating_pg"] = df["opp_def_player_rating_pg"].fillna(6.8)
-    df["opp_top_def_rating"]       = df["opp_top_def_rating"].fillna(7.0)
-
-    # ── Opponent defensive quality composite (aerial × rating) ───────────────
-    # Normalized so 6.8 rating × 0.50 aerial win = 1.0 baseline
-    _aerial = df.get("opp_def_aerial_win_rate", pd.Series(0.50, index=df.index))
-    df["opp_def_player_quality"] = (
-        (df["opp_def_player_rating_pg"] / 6.8)   # normalized rating (1.0 = league avg)
-        * (df["opp_top_def_rating"]     / 7.0)   # best CB quality
-        * (_aerial.fillna(0.50)         / 0.50)  # aerial dominance
-    ).clip(0.2, 4.0)
-
-    # ── Quality mismatch — player career quality vs today opponent quality ─────
-    # If player scored in tier-3 leagues but faces tier-1 defence → heavy discount
-    # context_quality_discount: 1.0 = same quality, <1.0 = facing harder opposition
-    df["context_quality_discount"] = (
-        df["player_career_avg_quality"] / df["opp_def_player_quality"].replace(0, 0.5)
-    ).clip(0.1, 3.0)
-
-    # Quality-adjusted goals per game
-    if "goals_pg" in df.columns:
-        df["quality_mismatch_goals"] = (
-            df.get("goals_pg", 0.0) * df["context_quality_discount"]
-        ).clip(0.0, 5.0)
-    else:
-        df["quality_mismatch_goals"] = 0.0
-
-    if "sot_pg" in df.columns:
-        df["quality_mismatch_sot"] = (
-            df.get("sot_pg", 0.0) * df["context_quality_discount"]
-        ).clip(0.0, 10.0)
-    else:
-        df["quality_mismatch_sot"] = 0.0
-
-    # Drop helper cols
-    df.drop(columns=[c for c in df.columns if c.startswith("_")], inplace=True, errors="ignore")
-
+    for c in QUALITY_COLUMNS:
+        df[c] = np.nan
     return df.to_dict("records")
+
+
+def _keys(S, names: pd.Series, leagues: pd.Series) -> pd.Series:
+    """Club key of each (name, league) through the strength name index (team_names.resolve in the
+    league's identity scope, ambiguity refused); None when unresolved."""
+    pairs = pd.Series(list(zip(names, leagues)), index=names.index)
+    cache = {p: S.club_key(p[0], p[1]) for p in pd.unique(pairs)}
+    return pairs.map(cache)
+
+
+def _is_cup(league) -> bool:
+    from src.strength import results
+    return isinstance(league, str) and results.competition_type(league) == "club_cup"
+
+
+def cup_strength(S, leagues, dates) -> pd.Series:
+    """Measured strength of a CLUB CUP fixture (UEFA Champions / Europa / Conference League) as of
+    its date, NaN for every non-cup row. src/strength rates leagues only (a cup has no country
+    scope), so the cup gets the SAME definition as a league strength (src/strength/build.py
+    league_strength_table): the mean Elo rating, BEFORE that day, of the clubs that played in the
+    competition in the previous elo.LEAGUE_WINDOW_DAYS, each with >= elo.MIN_CLUB_MATCHES rated
+    matches, NaN below elo.MIN_LEAGUE_CLUBS rated clubs. Membership is read from the measured
+    club_ratings table (one row per club and match, with its competition). Never a hand tier."""
+    from src.strength import elo, results
+    leagues = pd.Series(list(leagues))
+    dates = pd.to_datetime(pd.Series(list(dates)), errors="coerce").dt.normalize()
+    out = pd.Series(np.nan, index=leagues.index, dtype=float)
+    r = getattr(S, "ratings", None)
+    if r is None or r.empty or "competition" not in r.columns:
+        return out
+    cups = {lg: (results._canon(lg) or lg) for lg in pd.unique(leagues) if _is_cup(lg)}
+    if not cups:
+        return out
+    win = pd.Timedelta(days=elo.LEAGUE_WINDOW_DAYS)
+    for lg, name in cups.items():
+        m = (leagues == lg) & dates.notna()
+        if not m.any():
+            continue
+        mem = r.loc[r["competition"] == name, ["club_key", "date"]]
+        if mem.empty:
+            continue
+        md = pd.to_datetime(mem["date"]).to_numpy()
+        mk = mem["club_key"].to_numpy()
+        days = sorted(pd.unique(dates[m]))
+        q_k, q_d = [], []
+        for d in days:
+            d = pd.Timestamp(d)
+            sel = (md < np.datetime64(d)) & (md >= np.datetime64(d - win))
+            for k in pd.unique(mk[sel]):
+                q_k.append(k)
+                q_d.append(d)
+        if not q_k:
+            continue
+        e = S.club_elo_asof(q_k, q_d)["club_elo"].to_numpy()
+        snap = pd.DataFrame({"date": q_d, "elo": e})
+        g = snap.groupby("date")["elo"]
+        st = g.mean().where(g.count() >= elo.MIN_LEAGUE_CLUBS)
+        out.loc[m] = dates[m].map(st).to_numpy(dtype=float)
+    return out
+
+
+def _id_keys(df: pd.DataFrame) -> tuple[pd.Series, pd.Series]:
+    """'af:<API-Football id>' own / opponent keys where the row's fixture proves them, else None
+    (player_model.team_identity: one club identity across all competitions)."""
+    from . import team_identity as TI
+    tid, oid = TI.row_team_ids(df)
+    return tid.map(TI.key), oid.map(TI.key)
+
+
+def attach_strength(df: pd.DataFrame, strength=None) -> pd.DataFrame:
+    """Add MEASURED_COLUMNS to a player-match frame (player_id, date, league, team, opponent).
+    Career averages use only the player's EARLIER rows (shift 1). Returns a new frame.
+    Clubs are keyed by their API-Football id where the row's fixture proves it (a cup row then
+    reads the club's rating directly instead of resolving its name across every country); a cup
+    fixture's league_elo is cup_strength."""
+    from src.strength import lookup
+    S = strength if strength is not None else lookup.load()
+    out = df.copy()
+    for c in MEASURED_COLUMNS:
+        out[c] = np.nan
+    out["_scope"] = None
+    if out.empty or S.empty or not {"date", "league", "team"} <= set(out.columns):
+        return out
+    opp = out["opponent"] if "opponent" in out.columns else \
+        out["away_team"].where(out["is_home"].astype(bool), out["home_team"])
+    dates = pd.to_datetime(out["date"], errors="coerce")
+    own_id, opp_id = _id_keys(out)
+    own_k = own_id.where(own_id.notna(), _keys(S, out["team"], out["league"]))
+    opp_k = opp_id.where(opp_id.notna(), _keys(S, opp, out["league"]))
+    out["team_club_elo"] = S.club_elo_asof(own_k, dates)["club_elo"].to_numpy()
+    out["opp_club_elo"] = S.club_elo_asof(opp_k, dates)["club_elo"].to_numpy()
+    lg = S.league_asof(out["league"], dates)
+    cup = cup_strength(S, out["league"], dates).to_numpy()
+    out["league_elo"] = np.where(np.isnan(cup), lg["league_elo"].to_numpy(dtype=float), cup)
+    out["league_elo_rank"] = lg["league_elo_rank"].to_numpy()
+    out["_scope"] = _scopes(out["league"])
+    if "player_id" in out.columns:
+        order = np.lexsort((np.arange(len(out)), dates.to_numpy(), out["player_id"].to_numpy()))
+        o = out.iloc[order]
+        # league_elo is on the linked cross-league scale: averaged over the whole career. Club
+        # ratings share a scale only inside one identity scope (a country's divisions; a cup), so
+        # the opponent average uses the player's earlier rows in the SAME scope as the row.
+        for src, feat, keys in (("league_elo", "player_career_avg_league_elo", [o["player_id"]]),
+                                ("opp_club_elo", "player_career_avg_opp_elo",
+                                 [o["player_id"], o["_scope"].fillna("")])):
+            v = o[src]
+            # prefix sum up to the previous row: exact (cumsum - own is not, in floating point)
+            prev_sum = v.fillna(0.0).groupby(keys).cumsum().groupby(keys).shift(1)
+            prev_n = v.notna().astype(int).groupby(keys).cumsum() - v.notna().astype(int)
+            avg = (prev_sum / prev_n.where(prev_n > 0)).where(prev_n >= MIN_CAREER_ROWS)
+            out.loc[o.index, feat] = avg.to_numpy()
+    return out
+
+
+def _scopes(leagues: pd.Series) -> pd.Series:
+    """Identity scope per row: the club league's country, the cup itself, else None."""
+    from src.strength import results
+    cache = {}
+    for lg in pd.unique(leagues):
+        s = results.scope_of(lg)
+        if s is None and results.competition_type(lg) == "club_cup":
+            s = f"club_cup:{results._canon(lg) or lg}"
+        cache[lg] = s
+    return leagues.map(cache)
+
+
+def career_now(rows: pd.DataFrame, league=None) -> dict:
+    """Serving: the career averages over a player's stored rows (all before the fixture); the
+    opponent average over the rows in the fixture league's identity scope (training definition)."""
+    res = {}
+    scope = _scopes(pd.Series([league]))[0] if league is not None else None
+    for src, feat in (("league_elo", "player_career_avg_league_elo"),
+                      ("opp_club_elo", "player_career_avg_opp_elo")):
+        sub = rows
+        if src == "opp_club_elo":
+            sub = rows[rows["_scope"] == scope] if (scope is not None and "_scope" in rows.columns) \
+                else rows.iloc[0:0]
+        v = pd.to_numeric(sub[src], errors="coerce") if src in sub.columns else pd.Series(dtype=float)
+        res[feat] = float(v.mean()) if v.notna().sum() >= MIN_CAREER_ROWS else float("nan")
+    return res
+
+
+def fixture_strength(team, opponent, league, date, strength=None) -> dict:
+    """Serving: team_club_elo / opp_club_elo / league_elo / league_elo_rank for one fixture."""
+    from src.strength import lookup
+    S = strength if strength is not None else lookup.load()
+    d = pd.to_datetime(date, errors="coerce")
+    res = {c: float("nan") for c in ("team_club_elo", "opp_club_elo", "league_elo", "league_elo_rank")}
+    if S.empty or d != d:
+        return res
+    from . import team_identity as TI
+    ks = [TI.club_key(team, league, strength=S), TI.club_key(opponent, league, strength=S)]
+    e = S.club_elo_asof(ks, [d, d])["club_elo"]
+    res["team_club_elo"], res["opp_club_elo"] = float(e.iloc[0]), float(e.iloc[1])
+    lg = S.league_asof([league], [d])
+    res["league_elo"], res["league_elo_rank"] = float(lg["league_elo"].iloc[0]), float(lg["league_elo_rank"].iloc[0])
+    cup = float(cup_strength(S, [league], [d]).iloc[0])
+    if cup == cup:
+        res["league_elo"] = cup                  # a cup is not ranked among leagues: rank stays NaN
+    return res

@@ -25,6 +25,7 @@ def test_lost_model_type_or_odds_turns_mapping_red():
 
 
 def test_registered_challenger_with_no_probabilities_is_red(monkeypatch):
+    monkeypatch.setattr(S, "_active_experiments", lambda: [{"experiment_id": "x"}])
     monkeypatch.setattr(S, "_experiment_start", lambda: None)
     now = datetime(2026, 10, 22, tzinfo=timezone.utc)
     sh = pd.DataFrame({"logged_at": ["2026-10-21T10:00:00Z"] * 3, "p_pro_hgb": [None, None, None]})
@@ -65,7 +66,11 @@ def test_workflow_health_counts_only_latest_failing_runs_on_main():
 def test_weekly_research_panel_is_red_when_protected_tracks_move():
     reg = {"tracked_leagues": ["A", "B"], "regime_counts": {"PROTECTED": 1, "REPAIR": 0, "LEARNING": 9}}
     ok = {"protected_tracks_modified": False, "changes": [], "unapproved_new_protected_tracks": []}
-    assert S.weekly_research_panel(reg, ok)["status"] == "GREEN"
+    fresh = {"generated_at": datetime.now(timezone.utc).isoformat(), "missing_leagues": [],
+             "missing_leagues_previous_week": []}
+    assert S.weekly_research_panel(reg, ok, fresh)["status"] == "GREEN"
+    # the rule says AMBER when the panel health is missing; it read GREEN until 2026-11-02 (team_frame)
+    assert S.weekly_research_panel(reg, ok)["status"] == "AMBER"
     moved = dict(ok, protected_tracks_modified=True, changes=["deployed_env.MARKSMAN_THRESHOLD: 0.08 -> 0.09"])
     c = S.weekly_research_panel(reg, moved)
     assert c["status"] == "RED" and "MARKSMAN_THRESHOLD" in c["detail"]
@@ -80,6 +85,7 @@ def test_every_check_states_its_rule():
 
 
 def test_challenger_rows_before_the_experiment_do_not_count(monkeypatch):
+    monkeypatch.setattr(S, "_active_experiments", lambda: [{"experiment_id": "x"}])
     monkeypatch.setattr(S, "_experiment_start", lambda: pd.Timestamp("2026-10-22 11:00", tz="UTC"))
     now = datetime(2026, 10, 25, tzinfo=timezone.utc)
     sh = pd.DataFrame({"logged_at": ["2026-10-21T10:00:00Z"] * 5 + ["2026-10-23T10:00:00Z"] * 5,
@@ -105,3 +111,13 @@ def test_new_contract_violation_beyond_the_baseline_is_amber(monkeypatch):
     assert S.contracts_check()[0]["status"] == "GREEN"         # acknowledged historical rows
     known["output/stake_audit.csv"]["violations"] = [{"kind": "null", "column": "odds", "n_rows": 111}]
     assert S.contracts_check()[0]["status"] == "AMBER"         # one more row than acknowledged
+
+
+def test_no_active_challenger_is_grey_not_red(monkeypatch):
+    """The 2026-11-09 clean-data switch retired H-MODEL-01: no row can carry a challenger, which is
+    not a coverage failure."""
+    monkeypatch.setattr(S, "_active_experiments", lambda: [])
+    now = datetime(2026, 11, 10, tzinfo=timezone.utc)
+    sh = pd.DataFrame({"logged_at": ["2026-11-09T10:00:00Z"] * 3, "p_pro_hgb": [None, None, None]})
+    c = S.challenger_coverage(sh, now)
+    assert c["status"] == S.GREY and "no active challenger" in c["value"]

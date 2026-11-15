@@ -58,9 +58,12 @@ def free_tip_pick(plan, policy: dict, today, n: int = FREE_TIPS_PER_DAY):
         return d, None, 0
     day = d["date"].min()
     d = d[d["date"] == day]
-    ev = {k: float(v.get("evidence_score", 0)) for k, v in (policy or {}).get("tracks", {}).items()}
-    d["_ev"] = d["track"].map(ev).fillna(0.0)
-    d = d.sort_values(["_ev", "final_fraction", "odds"], ascending=[False, False, True], kind="mergesort")
+    # A track without an evidence_score stays NaN and ranks LAST - it is not scored 0.
+    ev = {k: pd.to_numeric(v.get("evidence_score"), errors="coerce")
+          for k, v in (policy or {}).get("tracks", {}).items()}
+    d["_ev"] = pd.to_numeric(d["track"].map(ev), errors="coerce")
+    d = d.sort_values(["_ev", "final_fraction", "odds"], ascending=[False, False, True], kind="mergesort",
+                      na_position="last")
     return d.head(n), day, int(len(d))
 
 
@@ -147,6 +150,7 @@ PAGES = [
     ("pages/20_🧪_Model_Lab.py",         "Model Lab",         "🧪", "admin"),   # new 2026-10-25
     ("pages/21_📡_Market_Intelligence.py", "Market Intelligence", "📡", "admin"),   # new 2026-10-25
     ("pages/22_🏭_Production.py",        "Production",        "🏭", "admin"),   # new 2026-10-25
+    ("pages/23_🎲_Specials.py",          "Specials",          "🎲", "admin"),   # new 2026-11-09, research only
     ("pages/24_📬_Daily_Progress.py",    "Daily Progress",    "📬", "admin"),   # owner-only report, 2026-11-15
     ("pages/account.py",                "Account",           "👤", "free"),
 ]
@@ -162,7 +166,8 @@ NAV = {
     "Performance":  ["pages/17_🏟️_Leagues.py", "pages/12_💼_Portfolio.py", "pages/16_💰_Bankroll.py",
                      "pages/5_🎯_Success_Rates.py"],
     "Tools":        ["pages/13_⚽_Fantasy.py", "pages/11_👤_Player_Props.py", "pages/14_🧩_Bet_Builder.py"],
-    "Research Lab": ["pages/18_🔧_League_Research.py", "pages/20_🧪_Model_Lab.py", "pages/9_🎓_Model_Performance.py",
+    "Research Lab": ["pages/18_🔧_League_Research.py", "pages/23_🎲_Specials.py", "pages/20_🧪_Model_Lab.py",
+                     "pages/9_🎓_Model_Performance.py",
                      "pages/21_📡_Market_Intelligence.py", "pages/7_🔬_Pro.py",
                      "pages/8_🛰️_V11_Market.py", "pages/15_🔭_League_Scout.py", "pages/10_🤖_Agent_Analysis.py"],
     "System":       ["pages/19_🩺_System_Health.py", "pages/24_📬_Daily_Progress.py", "pages/22_🏭_Production.py", "pages/0_🏠_Overview.py", "pages/4_ℹ️_Model_Info.py",

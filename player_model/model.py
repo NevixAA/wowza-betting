@@ -7,6 +7,7 @@ IsotonicRegression — better calibration on small samples per the Senior ML aud
 from __future__ import annotations
 
 import pickle
+import warnings
 from pathlib import Path
 from typing import Optional
 
@@ -26,18 +27,129 @@ TARGETS = config.MARKET_TARGETS
 
 
 def _prep(df: pd.DataFrame, feat_cols: list[str] | None = None) -> tuple[pd.DataFrame, list[str]]:
+    """Legacy (batch-median) preprocessing. Data Truth (2026-11-01): a feature column that is
+    absent, or has no value anywhere in the batch, stays NaN (it used to become 0.0 for every
+    row). Only the NaN-native estimator can score such rows; see _ensemble_proba."""
     cols = feat_cols or [c for c in config.PLAYER_FEATURE_COLS if c in df.columns]
-    # Fill missing columns with 0 rather than crashing — graceful degradation at predict time
     missing = [c for c in cols if c not in df.columns]
     if missing:
         import logging
-        logging.getLogger(__name__).warning(f"[predict] {len(missing)} feature cols missing from feat_df, filling 0: {missing[:8]}")
+        logging.getLogger(__name__).warning(
+            f"[predict] {len(missing)} feature cols absent from feat_df, left NaN: {missing[:8]}")
         df = df.copy()
         for c in missing:
-            df[c] = 0.0
+            df[c] = np.nan
     X = df[cols].copy().apply(pd.to_numeric, errors="coerce")
-    X = X.fillna(X.median().fillna(0.0))
+    X = X.fillna(X.median())
     return X, cols
+
+
+def _nan_native(model) -> bool:
+    """True when the calibrated model's estimator accepts NaN (HistGradientBoosting)."""
+    pipe = getattr(model, "_pipe", model)
+    final = pipe.steps[-1][1] if hasattr(pipe, "steps") else pipe
+    return isinstance(final, HistGradientBoostingClassifier)
+
+
+_ENSEMBLE_LOG: dict = {"rows_nan_native_only": 0, "rows_unscorable": 0}
+
+
+# ── MEDIAN-FILL TELEMETRY (owner decision 2026-11-04, fix round 10) ───────────────────────────────
+# The serving props models fill a missing feature with a MEDIAN: the legacy payloads (every serving
+# model until the Phase 2 retrain) with the median of the scoring batch (_prep), a repaired payload
+# with the FIT-block median of its persisted PropsImputer (its SEMANTIC_ZERO features are filled with
+# 0, not a median, and are not counted). How many cells each run fills was never measured. This
+# counts them per (market, feature) while predict_proba runs, READ-ONLY - it never touches the
+# matrix the model scores, so serving is unchanged (owner rule: no serving change until the Phase 2
+# retrain). pipeline --mode predict resets it before the run and appends one block per run to
+# output/props_median_fill.csv (write_median_fill).
+_MEDIAN_FILL: dict = {}          # (market, imputer) -> {"rows": int, "cells": {feature: int}}
+MEDIAN_FILL_FILE = config.OUTPUT_DIR / "props_median_fill.csv"
+MEDIAN_FILL_COLS = ["run_at", "run_id", "market", "imputer", "rows_scored", "feature", "cells_filled"]
+
+
+def median_fill_reset() -> None:
+    _MEDIAN_FILL.clear()
+
+
+def _record_median_fill(market, imputer: str, df: pd.DataFrame, X: pd.DataFrame,
+                        skip: frozenset = frozenset()) -> None:
+    """Count the cells of X that were missing in the raw input and hold a value after the median
+    fill (a column with no value anywhere stays NaN in the legacy path and is not a fill)."""
+    try:
+        from collections import Counter
+        slot = _MEDIAN_FILL.setdefault((str(market), imputer), {"rows": 0, "cells": Counter()})
+        slot["rows"] += int(len(X))
+        for c in X.columns:
+            if c in skip:
+                continue
+            raw = (pd.to_numeric(df[c], errors="coerce") if c in df.columns
+                   else pd.Series(np.nan, index=df.index))
+            n = int((raw.isna().to_numpy() & X[c].notna().to_numpy()).sum())
+            if n:
+                slot["cells"].update({c: n})          # a tally (Counter), not a default value
+    except Exception as e:                      # telemetry must never break scoring
+        import logging
+        logging.getLogger(__name__).warning(f"[props_model] median-fill telemetry skipped: {e}")
+
+
+def median_fill_rows(run_at: str, run_id: str = "") -> list[dict]:
+    """This run's counts as rows: one per (market, imputer, feature) with a fill; a market scored
+    with no fill at all gets one row with an empty feature and 0, so every scored market is seen."""
+    rows = []
+    for (market, imputer), slot in sorted(_MEDIAN_FILL.items()):
+        cells = slot["cells"]
+        if not cells:
+            rows.append({"run_at": run_at, "run_id": run_id, "market": market, "imputer": imputer,
+                         "rows_scored": slot["rows"], "feature": "", "cells_filled": 0})
+        for f in sorted(cells):
+            rows.append({"run_at": run_at, "run_id": run_id, "market": market, "imputer": imputer,
+                         "rows_scored": slot["rows"], "feature": f, "cells_filled": cells[f]})
+    return rows
+
+
+def write_median_fill(dst=None, run_at: str | None = None, run_id: str | None = None) -> int:
+    """Append this run's median-fill counts to output/props_median_fill.csv. Returns rows written."""
+    import os
+    from datetime import datetime, timezone
+    from pathlib import Path
+    dst = Path(dst or MEDIAN_FILL_FILE)
+    run_at = run_at or datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    run_id = os.getenv("GITHUB_RUN_ID", "") if run_id is None else run_id
+    rows = median_fill_rows(run_at, run_id)
+    if not rows:
+        return 0
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    pd.DataFrame(rows, columns=MEDIAN_FILL_COLS).to_csv(
+        dst, mode="a", header=not dst.exists(), index=False, lineterminator="\n")
+    return len(rows)
+
+
+def _ensemble_proba(models: dict, X: pd.DataFrame) -> np.ndarray:
+    """Mean probability over the payload's models. A row that still has a missing input after the
+    legacy batch-median step is scored ONLY by the NaN-native estimator(s) (no invented value is
+    fed to the logistic model); a row no estimator can score gets NaN (no tip). Counts are logged
+    by predict_proba."""
+    complete = X.notna().all(axis=1).to_numpy()
+    out = np.full(len(X), np.nan)
+    probs_all, probs_nan = [], []
+    for m in models.values():
+        if _nan_native(m):
+            probs_nan.append(m.predict_proba(X)[:, 1])
+        elif complete.any():
+            p = np.full(len(X), np.nan)
+            p[complete] = m.predict_proba(X[complete])[:, 1]
+            probs_all.append(p)
+    if probs_all or probs_nan:
+        stack = np.vstack(probs_all + probs_nan)
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", RuntimeWarning)       # all-NaN column -> NaN, intended
+            out = np.nanmean(stack, axis=0)
+    if not probs_nan:
+        out[~complete] = np.nan
+    _ENSEMBLE_LOG["rows_nan_native_only"] += int((~complete).sum()) if probs_nan else 0
+    _ENSEMBLE_LOG["rows_unscorable"] += int(np.isnan(out).sum())
+    return out
 
 
 class _UsableColumns(BaseEstimator, TransformerMixin):
@@ -67,6 +179,31 @@ class _PlattCalibratedModel:
         cal = self._platt.predict_proba(raw)[:, 1]
         cal = np.clip(cal, 0.001, 0.999)
         return np.column_stack([1 - cal, cal])
+
+
+def recipe_estimators() -> dict:
+    """The props recipe's two unfitted estimators (one definition: train() and the Phase 2 props
+    harness, player_model.props_harness, build them here, so a harness candidate is the recipe)."""
+    return {
+        "logistic": Pipeline([
+            ("scaler", StandardScaler()),
+            ("clf", LogisticRegression(max_iter=2000, C=0.5, solver="lbfgs")),
+        ]),
+        # HistGradientBoosting since 2026-10-13 (was classic GradientBoostingClassifier: single-
+        # threaded, linear in rows; at 855k rows the weekly retrain took 3h50m and had silently
+        # timed out every Sunday from 09-27). Same trees (300 x depth 3, lr 0.05, min leaf 20);
+        # the key stays "gradient_boost" so predict and stored payloads are unchanged.
+        # Validated in Pro first (src/studies/props_learner.py, output/studies/PROPS_LEARNER.md):
+        # all 8 markets non-inferior under a rule fixed before the results, 6 of 8 significantly
+        # better, ~70x faster. Owner-approved 2026-10-12.
+        "gradient_boost": Pipeline([
+            ("usable", _UsableColumns()),
+            ("clf", HistGradientBoostingClassifier(
+                max_iter=300, max_depth=3, learning_rate=0.05,
+                min_samples_leaf=20, early_stopping=False, random_state=42,
+            )),
+        ]),
+    }
 
 
 def split_bounds(n: int) -> tuple[int, int]:
@@ -116,6 +253,13 @@ def train(df: pd.DataFrame, market: str, return_holdout: bool = False, recipe: s
     n = len(df)
     if recipe == "legacy":
         X, feat_cols = _prep(df)
+        # A feature with no value in the whole training frame carries nothing to learn and has no
+        # median: dropped from this candidate (logged), never filled with a typed 0.0.
+        _dead = [c for c in feat_cols if X[c].isna().all()]
+        if _dead:
+            print(f"  [{market}] {len(_dead)} feature(s) with no value in training dropped: {_dead[:12]}")
+            feat_cols = [c for c in feat_cols if c not in _dead]
+            X = X[feat_cols]
     elif recipe == PC.RECIPE_REPAIRED:
         if n < 200:
             raise ValueError(f"Not enough samples for {market}: {n}")
@@ -162,26 +306,7 @@ def train(df: pd.DataFrame, market: str, return_holdout: bool = False, recipe: s
             "training_rows": int(n),
         }
 
-    estimators = {
-        "logistic": Pipeline([
-            ("scaler", StandardScaler()),
-            ("clf", LogisticRegression(max_iter=2000, C=0.5, solver="lbfgs")),
-        ]),
-        # HistGradientBoosting since 2026-10-13 (was classic GradientBoostingClassifier: single-
-        # threaded, linear in rows; at 855k rows the weekly retrain took 3h50m and had silently
-        # timed out every Sunday from 09-27). Same trees (300 x depth 3, lr 0.05, min leaf 20);
-        # the key stays "gradient_boost" so predict and stored payloads are unchanged.
-        # Validated in Pro first (src/studies/props_learner.py, output/studies/PROPS_LEARNER.md):
-        # all 8 markets non-inferior under a rule fixed before the results, 6 of 8 significantly
-        # better, ~70x faster. Owner-approved 2026-10-12.
-        "gradient_boost": Pipeline([
-            ("usable", _UsableColumns()),
-            ("clf", HistGradientBoostingClassifier(
-                max_iter=300, max_depth=3, learning_rate=0.05,
-                min_samples_leaf=20, early_stopping=False, random_state=42,
-            )),
-        ]),
-    }
+    estimators = recipe_estimators()
 
     results = {}
     for name, est in estimators.items():
@@ -193,7 +318,8 @@ def train(df: pd.DataFrame, market: str, return_holdout: bool = False, recipe: s
 
         calibrated = _PlattCalibratedModel(est, platt)
         p_test = calibrated.predict_proba(X_test)[:, 1]
-        auc = roc_auc_score(y_test, p_test) if y_test.nunique() > 1 else 0.5
+        # A single-class holdout has no AUC (was reported as 0.5, i.e. "no skill").
+        auc = roc_auc_score(y_test, p_test) if y_test.nunique() > 1 else float("nan")
         # labels=[0,1] so a single-class test slice (common for rare longshot markets like
         # sot3/goals2) does NOT raise -> otherwise train() aborts to [SKIP] and silently keeps
         # the STALE previous model for that market.
@@ -267,18 +393,39 @@ def payload_recipe(payload: dict) -> str:
     return payload.get("recipe") or PC.RECIPE_LEGACY
 
 
-def predict_with_diagnostics(df: pd.DataFrame, payload: dict) -> pd.DataFrame:
+def predict_with_diagnostics(df: pd.DataFrame, payload: dict, _fill_telemetry: bool = False) -> pd.DataFrame:
     """Per-row probability plus the R2 integrity record. Columns: p, n_missing, n_degraded,
     n_required_missing, required_fail, imputer_version, contract_version, recipe.
 
+    Clean-harness payload (props clean retrain, promoted by the owner): the harness model's OWN
+    predict() - NaN-native (hgb_nan_native) or its persisted fit-block medians (recipe_retrained);
+    an absent column reaches the model as NaN, never as a typed value.
     Repaired payload: persisted train-fitted imputer, batch-invariant, REQUIRED_FAIL_ROW -> p NaN.
     Legacy payload: EXACTLY the pre-R2 computation (batch medians, absent column -> 0.0); the
     diagnostics then describe the raw input and imputer_version says BATCH_MEDIAN_LEGACY."""
+    if payload_recipe(payload) == PC.RECIPE_CLEAN_HARNESS:
+        feat_cols = list(payload["feature_cols"])
+        raw = pd.DataFrame({c: (pd.to_numeric(df[c], errors="coerce") if c in df.columns
+                                else pd.Series(np.nan, index=df.index)) for c in feat_cols},
+                           index=df.index)
+        out = pd.DataFrame({"p": np.asarray(payload["model"].predict(raw), dtype=float)}, index=df.index)
+        out["n_missing"] = raw.isna().sum(axis=1).astype(int)
+        out["n_degraded"] = -1
+        out["n_required_missing"] = -1
+        out["required_fail"] = False
+        out["imputer_version"] = payload.get("imputer_version", "")
+        out["contract_version"] = payload.get("contract_version", "")
+        out["recipe"] = PC.RECIPE_CLEAN_HARNESS
+        return out
     if payload_recipe(payload) == PC.RECIPE_REPAIRED:
         imp = PC.PropsImputer.from_state(payload["imputer"])
         X, diag = imp.transform(df)
         if list(X.columns) != list(payload["feature_cols"]):
             raise ValueError("payload feature_cols differ from its persisted imputer")
+        if _fill_telemetry:                      # serving calls only (predict_proba), not shadows
+            zero = frozenset(f for f, c in (payload["imputer"].get("contract_classes") or {}).items()
+                             if c == "SEMANTIC_ZERO")
+            _record_median_fill(payload.get("market"), "fit_median", df, X, skip=zero)
         probas = [m.predict_proba(X)[:, 1] for m in payload["models"].values()]
         p = pd.Series(np.mean(probas, axis=0), index=df.index)
         p[diag["required_fail"].to_numpy()] = np.nan
@@ -288,8 +435,7 @@ def predict_with_diagnostics(df: pd.DataFrame, payload: dict) -> pd.DataFrame:
         return out
     feat_cols = payload["feature_cols"]
     X, _ = _prep(df, feat_cols)
-    probas = [m.predict_proba(X)[:, 1] for m in payload["models"].values()]
-    out = pd.DataFrame({"p": np.mean(probas, axis=0)}, index=df.index)
+    out = pd.DataFrame({"p": _ensemble_proba(payload["models"], X)}, index=df.index)
     raw = pd.DataFrame({c: (pd.to_numeric(df[c], errors="coerce") if c in df.columns
                             else pd.Series(np.nan, index=df.index)) for c in feat_cols},
                        index=df.index)
@@ -310,9 +456,16 @@ def predict_proba(df: pd.DataFrame, payload: dict) -> pd.Series:
     original code path unchanged - batch-median `_prep` - so serving probabilities are
     bit-identical to pre-R2 until an owner-approved retrain. Repaired payloads use the persisted
     train-fitted imputer and return NaN on rows that fail the feature contract."""
-    if payload_recipe(payload) == PC.RECIPE_REPAIRED:
-        return predict_with_diagnostics(df, payload)["p"]
+    if payload_recipe(payload) in (PC.RECIPE_REPAIRED, PC.RECIPE_CLEAN_HARNESS):
+        return predict_with_diagnostics(df, payload, _fill_telemetry=True)["p"]
     feat_cols = payload["feature_cols"]
     X, _ = _prep(df, feat_cols)
-    probas = [m.predict_proba(X)[:, 1] for m in payload["models"].values()]
-    return pd.Series(np.mean(probas, axis=0), index=df.index)
+    _record_median_fill(payload.get("market"), "batch_median_legacy", df, X)
+    before = dict(_ENSEMBLE_LOG)
+    p = pd.Series(_ensemble_proba(payload["models"], X), index=df.index)
+    n_nn = _ENSEMBLE_LOG["rows_nan_native_only"] - before["rows_nan_native_only"]
+    n_un = _ENSEMBLE_LOG["rows_unscorable"] - before["rows_unscorable"]
+    if n_nn or n_un:
+        print(f"[props_model] {payload.get('market')}: {n_nn}/{len(df)} row(s) with a missing input "
+              f"scored by the NaN-native estimator only; {n_un} unscorable (no probability)")
+    return p

@@ -28,8 +28,16 @@ needs_artifacts = pytest.mark.skipif(
 @pytest.fixture(scope="module")
 def at():
     from streamlit.testing.v1 import AppTest
+    from player_model import fpl_api
     mp = pytest.MonkeyPatch()
     mp.setenv("WOWZA_TIER_OVERRIDE", "admin")
+
+    # Offline: the page reads the committed FPL cache. Without this the render refreshed a cache
+    # older than its TTL from fantasy.premierleague.com and rewrote output/fpl_bootstrap.json,
+    # fpl_fixtures.json and fpl_cache_meta.json on every full run (Phase 2 KEY=ci, 2026-11-05).
+    def offline(url, timeout=20):
+        raise OSError(f"tests run offline ({url})")
+    mp.setattr(fpl_api, "_get_json", offline)
     try:
         a = AppTest.from_file(str(PAGE.resolve()), default_timeout=180).run()
     finally:

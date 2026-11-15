@@ -1,0 +1,5259 @@
+{
+  "harness_version": "phase2-retrain-1.0",
+  "run_id": "run_20261109T112024Z",
+  "started_at": "2026-11-09T11:20:24+00:00",
+  "config_sha256": "3a4fd24a89345fe195bd4934fd7a4227f8c27988fc187e1545c451c908e24e92",
+  "config": {
+    "harness_version": "phase2-retrain-1.0",
+    "declared_on": "2026-11-06",
+    "status": "HOLDOUT APPROVED by the owner 2026-11-07. Nothing here has been run on real data. Fitting refuses until holdout.approved_by is set by the owner AND the workflow variable PHASE2_RETRAIN_ENABLED is 'true'.",
+    "plan_report": "reports/P0_NEW_FORMAT_CLEAN_RETRAIN_PLAN.md",
+    "data": {
+      "source": "committed",
+      "source_note": "committed = src.data_loader.load_all_matches on the committed banks/sidecars with the football-data download switched off and the network blocked, so the frame is exactly the committed, corrected data and its hash is reproducible. Every loader correction (identity, one-match, history corrections, written-back cells not served, impossible stats missing, negative-margin O/U pairs flagged) applies because the loader applies it.",
+      "exclude_covid_seasons": true,
+      "require_present": [
+        "home_scored_last5",
+        "away_scored_last5"
+      ],
+      "require_present_note": "pipeline.mode_train's training filter (home_scored_last5) on both sides: a fixture with no rolling form is a blind fixture, which serving never tips, so it is neither trained on nor scored."
+    },
+    "holdout": {
+      "start": "2026-04-01",
+      "end": "2026-11-08",
+      "approved_by": "Nevo (owner)",
+      "approved_at": "2026-11-07T07:03:25Z",
+      "approval_note": "Owner 2026-11-07: holdout from 2026-04-01 (the recommended middle option: Standard 6/17 and new-format 10/15 leagues reach the per-league minimum of 150 holdout matches). Proposed earlier: 2026-07-01. Pass rules: the PG-1.0 values in 'comparison' reused as declared. New-format HT block: included as a CANDIDATE (owner_decisions.new_format_ht_variant), never forced in.",
+      "note": "UNTOUCHED final holdout. Rows dated start..end (inclusive) are never in any walk-forward fold, never used to fit, calibrate, blend or choose anything, and are scored exactly once by the holdout stage. The owner confirmed the dates (approved_by/approved_at, 2026-11-07); fitting refuses whenever approved_by or approved_at is empty, and the dates must not change for this harness_version."
+    },
+    "walk_forward": {
+      "unit": "matchday",
+      "unit_note": "A matchday is one calendar date on which the track has at least one eligible row. Every cut is on whole dates, so no date is split between a training window and a test block.",
+      "min_train_matchdays": 365,
+      "block_matchdays": 90,
+      "validation_matchdays": 60,
+      "window": "expanding",
+      "validation_note": "The last validation_matchdays of each training window are the VALIDATION block: the model+market blend weights are fitted there and nowhere else. Base models of model+market are fitted on the training window minus that block."
+    },
+    "tracks": [
+      "standard",
+      "new_format"
+    ],
+    "owner_decisions": {
+      "decided_on": "2026-11-07",
+      "holdout_start": "2026-04-01",
+      "comparison_rules": "PG-1.0 reused (comparison block below, unchanged)",
+      "new_format_ht_variant": true,
+      "new_format_ht_variant_note": "Train new_format candidates twice: with the champion exclusion list, and with the HT block (home/away_ht_* form, ht strength, combined_ht_goals_avg, has_ht_history) restored. Each variant is a separate candidate in the Holm family ('<name>' and '<name>+ht'; market_only and dixon_coles read no features and run once). Implemented in src/retrain_harness (protocol.feature_sets / candidate_runs); if the variant cannot run (no HT column in the exclusion list, an HT column outside the feature groups or missing from the frame), fitting is refused, never skipped."
+    },
+    "markets": {
+      "over25": {
+        "target": "over25",
+        "kind": "total",
+        "line": 2.5,
+        "goals": [
+          "home_goals",
+          "away_goals"
+        ],
+        "price": {
+          "yes": "odds_over25",
+          "no": "odds_under25",
+          "pair_valid_flag": "ou25_pair_is_price"
+        },
+        "sides": [
+          "over",
+          "under"
+        ]
+      },
+      "btts": {
+        "target": "btts",
+        "kind": "btts",
+        "goals": [
+          "home_goals",
+          "away_goals"
+        ],
+        "price": {
+          "yes": "odds_btts",
+          "no": null
+        },
+        "sides": [
+          "yes"
+        ]
+      },
+      "over15": {
+        "target": "over15",
+        "kind": "total",
+        "line": 1.5,
+        "goals": [
+          "home_goals",
+          "away_goals"
+        ],
+        "price": {
+          "yes": "odds_over15",
+          "no": null
+        },
+        "sides": [
+          "over"
+        ]
+      },
+      "over35": {
+        "target": "over35",
+        "kind": "total",
+        "line": 3.5,
+        "goals": [
+          "home_goals",
+          "away_goals"
+        ],
+        "price": {
+          "yes": "odds_over35",
+          "no": null
+        },
+        "sides": [
+          "over"
+        ]
+      },
+      "ht_over05": {
+        "target": "ht_over05",
+        "kind": "total",
+        "line": 0.5,
+        "goals": [
+          "ht_home_goals",
+          "ht_away_goals"
+        ],
+        "price": null,
+        "sides": [
+          "over"
+        ]
+      },
+      "ht_over15": {
+        "target": "ht_over15",
+        "kind": "total",
+        "line": 1.5,
+        "goals": [
+          "ht_home_goals",
+          "ht_away_goals"
+        ],
+        "price": null,
+        "sides": [
+          "over"
+        ]
+      }
+    },
+    "markets_note": "O/U 2.5 is one probability (P over); its Under side is 1 - P, so log loss, Brier and calibration are the same number for both sides and are reported once, while CLV is reported per side. A market whose price has only one side in the frame (BTTS yes, Over 1.5, Over 3.5) cannot be de-vigged without inventing a margin, so it gets no market-only or model+market probability. HT markets have no price in the frame.",
+    "features": {
+      "groups": {
+        "form": {
+          "include": true,
+          "parity": "ROW_LEVEL_VALIDATED (reports/P0_TRAIN_SERVE_PARITY_VALIDATION.md: 30 adversarial cases, 164 real fixtures, 0 mismatches)",
+          "columns": [
+            "home_scored_last5",
+            "away_scored_last5",
+            "home_conceded_last5",
+            "away_conceded_last5",
+            "home_over25_last5",
+            "away_over25_last5",
+            "home_corners_pg_roll",
+            "away_corners_pg_roll",
+            "home_fouls_pg_roll",
+            "away_fouls_pg_roll",
+            "home_xg_last5",
+            "away_xg_last5",
+            "home_insidebox_last5",
+            "away_insidebox_last5",
+            "home_ht_scored_last5",
+            "away_ht_scored_last5",
+            "home_ht_conceded_last5",
+            "away_ht_conceded_last5",
+            "home_ht_over05_rate",
+            "away_ht_over05_rate",
+            "home_ht_over15_rate",
+            "away_ht_over15_rate",
+            "home_has_ht_history",
+            "away_has_ht_history"
+          ]
+        },
+        "form_derived": {
+          "include": true,
+          "parity": "DERIVED: arithmetic of validated form columns and the as-of league goal average; not separately row-validated",
+          "columns": [
+            "home_attack_str",
+            "away_attack_str",
+            "home_defense_str",
+            "away_defense_str",
+            "combined_sot_ratio",
+            "home_ht_attack_str",
+            "away_ht_attack_str",
+            "combined_ht_goals_avg",
+            "p_over25_poisson_dc"
+          ]
+        },
+        "context": {
+          "include": true,
+          "parity": "DISTRIBUTION_MONITORED only (scripts/integrity_feature_parity.py); not row-level validated",
+          "columns": [
+            "home_advantage",
+            "away_home_adv_factor",
+            "home_rest_days",
+            "away_rest_days",
+            "home_season_goals_h",
+            "away_season_goals_a",
+            "home_season_conceded_h",
+            "away_season_conceded_a",
+            "home_cs_rate_h",
+            "away_cs_rate_a"
+          ]
+        }
+      },
+      "never_model_inputs": [
+        "bookmaker_overround",
+        "implied_prob_over",
+        "implied_prob_under"
+      ],
+      "never_model_inputs_note": "Price-derived. In the history the O/U price is closing-preferred (AvgC first), which no model can know at bet time (P0 bug 5). Prices enter ONLY through the market-only and model+market candidates, labelled with their price class.",
+      "track_exclude": {
+        "standard": [],
+        "new_format": [
+          "home_xg_last5",
+          "away_xg_last5",
+          "home_insidebox_last5",
+          "away_insidebox_last5",
+          "home_ht_scored_last5",
+          "away_ht_scored_last5",
+          "home_ht_conceded_last5",
+          "away_ht_conceded_last5",
+          "home_ht_attack_str",
+          "away_ht_attack_str",
+          "combined_ht_goals_avg",
+          "home_ht_over05_rate",
+          "away_ht_over05_rate",
+          "home_ht_over15_rate",
+          "away_ht_over15_rate"
+        ]
+      },
+      "track_exclude_note": "new_format keeps the serving champion's exclusion list (pipeline.mode_train _NF_DROP) so the retrained champion recipe is the same recipe. Owner 2026-11-07: the HT block comes back for new_format as an ADDITIONAL candidate variant (see owner_decisions.new_format_ht_variant); the holdout decides, nothing is forced in."
+    },
+    "candidates": {
+      "champion_recipe": {
+        "enabled": true,
+        "what": "src.model.train_repaired (the scheduled-retrain recipe: LR + GB (+ LightGBM if installed), Platt on its CALIBRATION block, meta-logistic on its META block), retrained on the repaired frame. Imputation: missing-indicator columns plus the 1.1 train-only imputer persisted in the payload; a feature with no training value is dropped, never filled.",
+        "weights": "derived"
+      },
+      "logistic": {
+        "enabled": true,
+        "what": "LogisticRegression on standardised features, missing-indicator columns, a median imputer fitted on the training window only and pickled with the model (scikit-learn Pipeline). Columns with no training value are dropped.",
+        "C": 0.5,
+        "max_iter": 2000,
+        "weights": "derived"
+      },
+      "hgb": {
+        "enabled": true,
+        "what": "HistGradientBoostingClassifier, NaN-native: nothing is filled at train or serve time; a missing value follows its own learned branch.",
+        "max_iter": 300,
+        "learning_rate": 0.05,
+        "max_leaf_nodes": 31,
+        "min_samples_leaf": 40,
+        "l2_regularization": 1.0,
+        "random_state": 42,
+        "weights": "derived"
+      },
+      "dixon_coles": {
+        "enabled": true,
+        "what": "Per-league Dixon-Coles score distribution (src.goal_distribution matrix and tau), strengths from the training window only, rho fitted by maximum likelihood on the training window, every market from one matrix. A club or league with no training match gets NO probability (the research class's 1.0 strength / 1.4-1.1 goal fallbacks are not used).",
+        "fit_window_days": 730,
+        "shrink_prior_matches": 25.0,
+        "rho_bounds": [
+          -0.25,
+          0.25
+        ],
+        "max_goals": 10
+      },
+      "market_only": {
+        "enabled": true,
+        "what": "The de-vigged price (power method, src.market_anchor.power_devig) of a TWO-SIDED pair. One-sided or flagged pairs give no probability.",
+        "devig": "power"
+      },
+      "model_market": {
+        "enabled": true,
+        "what": "Logistic stack on [logit p_base, logit p_market]; base = the 'hgb' candidate fitted on the training window minus the validation block; stack weights fitted on the VALIDATION block only. A row without a two-sided price gets no probability.",
+        "base": "hgb"
+      }
+    },
+    "price_class": {
+      "loader_served": "LOADER_SERVED_CLOSING_PREFERRED",
+      "note": "The committed frame holds one O/U 2.5 pair per match: football-data rows prefer the closing columns (AvgC, MaxC, B365C, PC) and fall back to pre-closing ones; new-format rows come from captured snapshots. So market_only is a CLOSING-MARKET BENCHMARK and model+market built on it is NOT deployable (a closing price is not known at bet time). An entry-class price (football-data non-C columns, src.standard_repair.load_fd_entry_prices) is attached only when --fd-raw is given; CLV needs both an entry and a closing price."
+    },
+    "comparison": {
+      "reference": "champion_recipe",
+      "primary_metric": "log_loss",
+      "secondary_metrics": [
+        "brier",
+        "ece",
+        "calibration_slope"
+      ],
+      "rows": "COMMON rows only: every compared probability must exist on the row",
+      "test": "one-sided paired bootstrap over MATCH DATES of the mean per-row log-loss difference (candidate - reference); p = (k + 1) / (B + 1) where k counts bootstrap means >= 0",
+      "correction": "holm",
+      "family": "every (stage, track, market, candidate) comparison in one run",
+      "family_alpha": 0.05,
+      "better_means": "Holm-adjusted p < family_alpha AND mean log-loss improvement >= min_effect_logloss AND n >= min_n_rows AND Brier not worse by more than max_brier_worsening AND matchdays >= min_matchdays",
+      "min_effect_logloss": 0.001,
+      "min_n_rows": 1000,
+      "max_brier_worsening": 0.0001,
+      "min_matchdays": 20,
+      "min_league_n": 150,
+      "n_boot": 2000,
+      "seed": 20261025,
+      "ece_bins": 10,
+      "thresholds_source": "config/promotion_gate.json PG-1.0 holdout block (declared 2026-10-25, before any candidate was scored): material_ll_improvement, min_n_per_track, max_brier_worsening, min_bootstrap_blocks, min_league_n, n_boot, bootstrap_seed, ece_bins. Reused, not re-chosen. family_alpha = 1 - ci_level.",
+      "verdict_words": "BETTER_THAN_REFERENCE | NOT_SHOWN_BETTER | INSUFFICIENT_N | NOT_COMPARABLE. These are forecasting-quality statements only. No verdict promotes anything: promotion is the owner's decision."
+    },
+    "clv": {
+      "requires": "a real entry price AND a real closing price for the side (columns odds_<market>_<side>_entry / odds_<market>_<side>_close, attached only with --fd-raw, today O/U 2.5 Standard only)",
+      "selection": "a side is counted when p_side x entry_odds > 1 (the model's fair price beats the entry price); no other filter",
+      "value": "entry_odds / closing_odds - 1, per counted side"
+    },
+    "outputs": {
+      "run_folder": "every artifact goes to --out/<run_id>/; the folder must be outside models/ and output/, and no serving model file is ever written",
+      "promotion": "never automatic; nothing in the harness calls src.promotion_gate or writes models/registry"
+    }
+  },
+  "code_sha": "4a4bd06cf58ba6012c6393568e2ec5c4d1b662f6",
+  "data": {
+    "loaded_rows": 70744,
+    "af_written_back_not_served": {
+      "home_shots": {
+        "blanked": 11689,
+        "provider_replaced": 6611,
+        "missing": 5078
+      },
+      "away_shots": {
+        "blanked": 11691,
+        "provider_replaced": 6611,
+        "missing": 5080
+      },
+      "home_sot": {
+        "blanked": 11704,
+        "provider_replaced": 6621,
+        "missing": 5083
+      },
+      "away_sot": {
+        "blanked": 11705,
+        "provider_replaced": 6621,
+        "missing": 5084
+      },
+      "home_xg": {
+        "blanked": 10237,
+        "provider_replaced": 7665,
+        "missing": 2572
+      },
+      "away_xg": {
+        "blanked": 10240,
+        "provider_replaced": 7667,
+        "missing": 2573
+      },
+      "home_insidebox": {
+        "blanked": 12131,
+        "provider_replaced": 10815,
+        "missing": 1316
+      },
+      "away_insidebox": {
+        "blanked": 12131,
+        "provider_replaced": 10814,
+        "missing": 1317
+      }
+    },
+    "ou25_pairs_flagged_not_a_price": 434,
+    "covid_rows_excluded": 12271,
+    "feature_rows": 58473,
+    "frame_hash": "4638ab5ee15f3a7f"
+  },
+  "stages": [
+    "walk_forward",
+    "holdout"
+  ],
+  "tracks": [
+    "new_format"
+  ],
+  "candidates": [
+    "champion_recipe",
+    "logistic",
+    "hgb",
+    "dixon_coles",
+    "market_only",
+    "model_market"
+  ],
+  "promotion": "none - the owner decides; this run wrote no serving file",
+  "features": {
+    "new_format": {
+      "features": [
+        "home_scored_last5",
+        "away_scored_last5",
+        "home_conceded_last5",
+        "away_conceded_last5",
+        "home_over25_last5",
+        "away_over25_last5",
+        "home_corners_pg_roll",
+        "away_corners_pg_roll",
+        "home_fouls_pg_roll",
+        "away_fouls_pg_roll",
+        "home_has_ht_history",
+        "away_has_ht_history",
+        "home_attack_str",
+        "away_attack_str",
+        "home_defense_str",
+        "away_defense_str",
+        "combined_sot_ratio",
+        "p_over25_poisson_dc",
+        "home_advantage",
+        "away_home_adv_factor",
+        "home_rest_days",
+        "away_rest_days",
+        "home_season_goals_h",
+        "away_season_goals_a",
+        "home_season_conceded_h",
+        "away_season_conceded_a",
+        "home_cs_rate_h",
+        "away_cs_rate_a"
+      ],
+      "excluded": {
+        "home_xg_last5": "excluded for track new_format",
+        "away_xg_last5": "excluded for track new_format",
+        "home_insidebox_last5": "excluded for track new_format",
+        "away_insidebox_last5": "excluded for track new_format",
+        "home_ht_scored_last5": "excluded for track new_format",
+        "away_ht_scored_last5": "excluded for track new_format",
+        "home_ht_conceded_last5": "excluded for track new_format",
+        "away_ht_conceded_last5": "excluded for track new_format",
+        "home_ht_over05_rate": "excluded for track new_format",
+        "away_ht_over05_rate": "excluded for track new_format",
+        "home_ht_over15_rate": "excluded for track new_format",
+        "away_ht_over15_rate": "excluded for track new_format",
+        "home_ht_attack_str": "excluded for track new_format",
+        "away_ht_attack_str": "excluded for track new_format",
+        "combined_ht_goals_avg": "excluded for track new_format"
+      },
+      "variants": {
+        "+ht": {
+          "features": [
+            "home_scored_last5",
+            "away_scored_last5",
+            "home_conceded_last5",
+            "away_conceded_last5",
+            "home_over25_last5",
+            "away_over25_last5",
+            "home_corners_pg_roll",
+            "away_corners_pg_roll",
+            "home_fouls_pg_roll",
+            "away_fouls_pg_roll",
+            "home_ht_scored_last5",
+            "away_ht_scored_last5",
+            "home_ht_conceded_last5",
+            "away_ht_conceded_last5",
+            "home_ht_over05_rate",
+            "away_ht_over05_rate",
+            "home_ht_over15_rate",
+            "away_ht_over15_rate",
+            "home_has_ht_history",
+            "away_has_ht_history",
+            "home_attack_str",
+            "away_attack_str",
+            "home_defense_str",
+            "away_defense_str",
+            "combined_sot_ratio",
+            "home_ht_attack_str",
+            "away_ht_attack_str",
+            "combined_ht_goals_avg",
+            "p_over25_poisson_dc",
+            "home_advantage",
+            "away_home_adv_factor",
+            "home_rest_days",
+            "away_rest_days",
+            "home_season_goals_h",
+            "away_season_goals_a",
+            "home_season_conceded_h",
+            "away_season_conceded_a",
+            "home_cs_rate_h",
+            "away_cs_rate_a"
+          ],
+          "excluded": {
+            "home_xg_last5": "excluded for track new_format",
+            "away_xg_last5": "excluded for track new_format",
+            "home_insidebox_last5": "excluded for track new_format",
+            "away_insidebox_last5": "excluded for track new_format"
+          }
+        }
+      }
+    }
+  },
+  "errors": [
+    {
+      "stage": "walk_forward",
+      "fold": 0,
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0545 on 2223 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 0,
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 0,
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 1,
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0655 on 3026 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 1,
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 1,
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 2,
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0547 on 3638 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 2,
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 2,
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 3,
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0385 on 4953 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 3,
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 3,
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 4,
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0375 on 6340 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 4,
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 4,
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 5,
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0398 on 7780 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 5,
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 5,
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 6,
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0378 on 8338 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 6,
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 6,
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 7,
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0399 on 9043 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 7,
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 7,
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 8,
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0420 on 8820 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 8,
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 8,
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 9,
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0447 on 8560 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 9,
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 9,
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 10,
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0543 on 8644 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 10,
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 10,
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 11,
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0434 on 8332 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 11,
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 11,
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 12,
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0451 on 8528 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 12,
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 12,
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 13,
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0466 on 8738 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 13,
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 13,
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 14,
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0337 on 8495 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 14,
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "model_market",
+      "note": "stack fitted on 215 validation rows; coef=[-0.2182, 0.8588]"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 14,
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "model_market+ht",
+      "note": "stack fitted on 215 validation rows; coef=[-0.1902, 0.8513]"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 15,
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0361 on 8655 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 15,
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "model_market",
+      "note": "stack fitted on 626 validation rows; coef=[0.0183, 1.0966]"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 15,
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "model_market+ht",
+      "note": "stack fitted on 626 validation rows; coef=[0.4077, 0.8785]"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 16,
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0292 on 8916 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 16,
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "model_market",
+      "note": "stack fitted on 123 validation rows; coef=[-0.1433, 1.176]"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 16,
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "model_market+ht",
+      "note": "stack fitted on 123 validation rows; coef=[0.255, 1.0549]"
+    },
+    {
+      "stage": "holdout",
+      "fold": -1,
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0270 on 9029 rows (window 730 days)"
+    },
+    {
+      "stage": "holdout",
+      "fold": -1,
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "model_market",
+      "note": "stack fitted on 345 validation rows; coef=[0.4487, 0.5885]"
+    },
+    {
+      "stage": "holdout",
+      "fold": -1,
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "model_market+ht",
+      "note": "stack fitted on 345 validation rows; coef=[0.4217, 0.5915]"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 0,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0545 on 2223 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 0,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 0,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 0,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 1,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0655 on 3026 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 1,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 1,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 1,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 2,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0547 on 3638 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 2,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 2,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 2,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 3,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0385 on 4953 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 3,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 3,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 3,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 4,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0375 on 6340 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 4,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 4,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 4,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 5,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0398 on 7780 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 5,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 5,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 5,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 6,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0378 on 8338 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 6,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 6,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 6,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 7,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0399 on 9043 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 7,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 7,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 7,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 8,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0420 on 8820 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 8,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 8,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 8,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 9,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0447 on 8560 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 9,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 9,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 9,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 10,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0543 on 8644 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 10,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 10,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 10,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 11,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0434 on 8332 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 11,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 11,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 11,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 12,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0451 on 8528 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 12,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 12,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 12,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 13,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0466 on 8738 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 13,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 13,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 13,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 14,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0337 on 8495 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 14,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 14,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 14,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 15,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0361 on 8655 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 15,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 15,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 15,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 16,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0292 on 8916 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 16,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 16,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 16,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "holdout",
+      "fold": -1,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0270 on 9029 rows (window 730 days)"
+    },
+    {
+      "stage": "holdout",
+      "fold": -1,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "holdout",
+      "fold": -1,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "holdout",
+      "fold": -1,
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 0,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0545 on 2223 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 0,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 0,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 0,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 1,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0655 on 3026 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 1,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 1,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 1,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 2,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0547 on 3638 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 2,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 2,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 2,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 3,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0385 on 4953 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 3,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 3,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 3,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 4,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0375 on 6340 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 4,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 4,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 4,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 5,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0398 on 7780 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 5,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 5,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 5,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 6,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0378 on 8338 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 6,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 6,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 6,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 7,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0399 on 9043 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 7,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 7,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 7,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 8,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0420 on 8820 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 8,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 8,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 8,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 9,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0447 on 8560 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 9,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 9,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 9,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 10,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0543 on 8644 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 10,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 10,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 10,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 11,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0434 on 8332 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 11,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 11,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 11,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 12,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0451 on 8528 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 12,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 12,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 12,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 13,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0466 on 8738 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 13,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 13,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 13,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 14,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0337 on 8495 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 14,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 14,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 14,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 15,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0361 on 8655 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 15,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 15,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 15,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 16,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0292 on 8916 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 16,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 16,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 16,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "holdout",
+      "fold": -1,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0270 on 9029 rows (window 730 days)"
+    },
+    {
+      "stage": "holdout",
+      "fold": -1,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "holdout",
+      "fold": -1,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "holdout",
+      "fold": -1,
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 0,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0545 on 2223 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 0,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 0,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 0,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 1,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0655 on 3026 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 1,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 1,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 1,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 2,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0547 on 3638 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 2,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 2,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 2,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 3,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0385 on 4953 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 3,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 3,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 3,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 4,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0375 on 6340 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 4,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 4,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 4,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 5,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0398 on 7780 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 5,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 5,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 5,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 6,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0378 on 8338 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 6,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 6,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 6,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 7,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0399 on 9043 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 7,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 7,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 7,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 8,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0420 on 8820 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 8,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 8,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 8,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 9,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0447 on 8560 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 9,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 9,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 9,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 10,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0543 on 8644 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 10,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 10,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 10,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 11,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0434 on 8332 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 11,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 11,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 11,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 12,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0451 on 8528 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 12,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 12,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 12,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 13,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0466 on 8738 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 13,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 13,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 13,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 14,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0337 on 8495 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 14,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 14,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 14,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 15,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0361 on 8655 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 15,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 15,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 15,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 16,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0292 on 8916 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 16,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 16,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 16,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "holdout",
+      "fold": -1,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0270 on 9029 rows (window 730 days)"
+    },
+    {
+      "stage": "holdout",
+      "fold": -1,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "holdout",
+      "fold": -1,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "holdout",
+      "fold": -1,
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 0,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.1301 on 2218 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 0,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 0,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 0,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 1,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0877 on 3025 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 1,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 1,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 1,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 2,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0865 on 3637 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 2,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 2,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 2,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 3,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0734 on 4952 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 3,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 3,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 3,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 4,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0505 on 6336 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 4,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 4,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 4,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 5,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0480 on 7770 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 5,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 5,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 5,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 6,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0338 on 8320 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 6,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 6,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 6,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 7,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0265 on 9026 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 7,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 7,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 7,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 8,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0234 on 8807 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 8,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 8,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 8,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 9,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0175 on 8546 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 9,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 9,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 9,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 10,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0245 on 8661 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 10,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 10,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 10,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 11,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0376 on 8216 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 11,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 11,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 11,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 12,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0384 on 8514 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 12,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 12,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 12,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 13,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0488 on 8671 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 13,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 13,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 13,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 14,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0391 on 8378 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 14,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 14,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 14,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 15,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0402 on 8487 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 15,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 15,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 15,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 16,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0396 on 8740 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 16,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 16,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 16,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "holdout",
+      "fold": -1,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0398 on 8857 rows (window 730 days)"
+    },
+    {
+      "stage": "holdout",
+      "fold": -1,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "holdout",
+      "fold": -1,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "holdout",
+      "fold": -1,
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 0,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.1301 on 2218 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 0,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 0,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 0,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 1,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0877 on 3025 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 1,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 1,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 1,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 2,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0865 on 3637 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 2,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 2,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 2,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 3,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0734 on 4952 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 3,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 3,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 3,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 4,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0505 on 6336 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 4,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 4,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 4,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 5,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0480 on 7770 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 5,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 5,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 5,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 6,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0338 on 8320 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 6,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 6,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 6,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 7,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0265 on 9026 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 7,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 7,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 7,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 8,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0234 on 8807 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 8,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 8,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 8,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 9,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0175 on 8546 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 9,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 9,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 9,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 10,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0245 on 8661 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 10,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 10,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 10,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 11,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0376 on 8216 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 11,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 11,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 11,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 12,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0384 on 8514 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 12,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 12,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 12,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 13,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0488 on 8671 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 13,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 13,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 13,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 14,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0391 on 8378 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 14,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 14,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 14,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 15,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0402 on 8487 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 15,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 15,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 15,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 16,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0396 on 8740 rows (window 730 days)"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 16,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 16,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "walk_forward",
+      "fold": 16,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "holdout",
+      "fold": -1,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "dixon_coles",
+      "note": "rho=-0.0398 on 8857 rows (window 730 days)"
+    },
+    {
+      "stage": "holdout",
+      "fold": -1,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "market_only",
+      "note": "no two-sided price for this market: no probability"
+    },
+    {
+      "stage": "holdout",
+      "fold": -1,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "model_market",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    },
+    {
+      "stage": "holdout",
+      "fold": -1,
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "model_market+ht",
+      "note": "NOT_FITTED: validation block has no two-sided price with both outcomes"
+    }
+  ],
+  "candidates_by_track": {
+    "new_format": [
+      "champion_recipe",
+      "champion_recipe+ht",
+      "logistic",
+      "logistic+ht",
+      "hgb",
+      "hgb+ht",
+      "dixon_coles",
+      "market_only",
+      "model_market",
+      "model_market+ht"
+    ]
+  },
+  "coverage": [
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "champion_recipe",
+      "folds_scored": 1,
+      "rows_scored": 2889,
+      "rows_with_probability": 2889,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "champion_recipe+ht",
+      "folds_scored": 1,
+      "rows_scored": 2889,
+      "rows_with_probability": 2889,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "dixon_coles",
+      "folds_scored": 1,
+      "rows_scored": 2889,
+      "rows_with_probability": 2819,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "hgb",
+      "folds_scored": 1,
+      "rows_scored": 2889,
+      "rows_with_probability": 2889,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "hgb+ht",
+      "folds_scored": 1,
+      "rows_scored": 2889,
+      "rows_with_probability": 2889,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "logistic",
+      "folds_scored": 1,
+      "rows_scored": 2889,
+      "rows_with_probability": 2889,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "logistic+ht",
+      "folds_scored": 1,
+      "rows_scored": 2889,
+      "rows_with_probability": 2889,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "market_only",
+      "folds_scored": 1,
+      "rows_scored": 2889,
+      "rows_with_probability": 0,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "model_market",
+      "folds_scored": 1,
+      "rows_scored": 2889,
+      "rows_with_probability": 0,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "model_market+ht",
+      "folds_scored": 1,
+      "rows_scored": 2889,
+      "rows_with_probability": 0,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "champion_recipe",
+      "folds_scored": 1,
+      "rows_scored": 2806,
+      "rows_with_probability": 2806,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "champion_recipe+ht",
+      "folds_scored": 1,
+      "rows_scored": 2806,
+      "rows_with_probability": 2806,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "dixon_coles",
+      "folds_scored": 1,
+      "rows_scored": 2806,
+      "rows_with_probability": 2764,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "hgb",
+      "folds_scored": 1,
+      "rows_scored": 2806,
+      "rows_with_probability": 2806,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "hgb+ht",
+      "folds_scored": 1,
+      "rows_scored": 2806,
+      "rows_with_probability": 2806,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "logistic",
+      "folds_scored": 1,
+      "rows_scored": 2806,
+      "rows_with_probability": 2806,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "logistic+ht",
+      "folds_scored": 1,
+      "rows_scored": 2806,
+      "rows_with_probability": 2806,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "market_only",
+      "folds_scored": 1,
+      "rows_scored": 2806,
+      "rows_with_probability": 0,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "model_market",
+      "folds_scored": 1,
+      "rows_scored": 2806,
+      "rows_with_probability": 0,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "model_market+ht",
+      "folds_scored": 1,
+      "rows_scored": 2806,
+      "rows_with_probability": 0,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "champion_recipe",
+      "folds_scored": 1,
+      "rows_scored": 2806,
+      "rows_with_probability": 2806,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "champion_recipe+ht",
+      "folds_scored": 1,
+      "rows_scored": 2806,
+      "rows_with_probability": 2806,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "dixon_coles",
+      "folds_scored": 1,
+      "rows_scored": 2806,
+      "rows_with_probability": 2764,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "hgb",
+      "folds_scored": 1,
+      "rows_scored": 2806,
+      "rows_with_probability": 2806,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "hgb+ht",
+      "folds_scored": 1,
+      "rows_scored": 2806,
+      "rows_with_probability": 2806,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "logistic",
+      "folds_scored": 1,
+      "rows_scored": 2806,
+      "rows_with_probability": 2806,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "logistic+ht",
+      "folds_scored": 1,
+      "rows_scored": 2806,
+      "rows_with_probability": 2806,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "market_only",
+      "folds_scored": 1,
+      "rows_scored": 2806,
+      "rows_with_probability": 0,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "model_market",
+      "folds_scored": 1,
+      "rows_scored": 2806,
+      "rows_with_probability": 0,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "model_market+ht",
+      "folds_scored": 1,
+      "rows_scored": 2806,
+      "rows_with_probability": 0,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "champion_recipe",
+      "folds_scored": 1,
+      "rows_scored": 2889,
+      "rows_with_probability": 2889,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "champion_recipe+ht",
+      "folds_scored": 1,
+      "rows_scored": 2889,
+      "rows_with_probability": 2889,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "dixon_coles",
+      "folds_scored": 1,
+      "rows_scored": 2889,
+      "rows_with_probability": 2819,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "hgb",
+      "folds_scored": 1,
+      "rows_scored": 2889,
+      "rows_with_probability": 2889,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "hgb+ht",
+      "folds_scored": 1,
+      "rows_scored": 2889,
+      "rows_with_probability": 2889,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "logistic",
+      "folds_scored": 1,
+      "rows_scored": 2889,
+      "rows_with_probability": 2889,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "logistic+ht",
+      "folds_scored": 1,
+      "rows_scored": 2889,
+      "rows_with_probability": 2889,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "market_only",
+      "folds_scored": 1,
+      "rows_scored": 2889,
+      "rows_with_probability": 0,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "model_market",
+      "folds_scored": 1,
+      "rows_scored": 2889,
+      "rows_with_probability": 0,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "model_market+ht",
+      "folds_scored": 1,
+      "rows_scored": 2889,
+      "rows_with_probability": 0,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "champion_recipe",
+      "folds_scored": 1,
+      "rows_scored": 2889,
+      "rows_with_probability": 2889,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "champion_recipe+ht",
+      "folds_scored": 1,
+      "rows_scored": 2889,
+      "rows_with_probability": 2889,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "dixon_coles",
+      "folds_scored": 1,
+      "rows_scored": 2889,
+      "rows_with_probability": 2819,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "hgb",
+      "folds_scored": 1,
+      "rows_scored": 2889,
+      "rows_with_probability": 2889,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "hgb+ht",
+      "folds_scored": 1,
+      "rows_scored": 2889,
+      "rows_with_probability": 2889,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "logistic",
+      "folds_scored": 1,
+      "rows_scored": 2889,
+      "rows_with_probability": 2889,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "logistic+ht",
+      "folds_scored": 1,
+      "rows_scored": 2889,
+      "rows_with_probability": 2889,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "market_only",
+      "folds_scored": 1,
+      "rows_scored": 2889,
+      "rows_with_probability": 1761,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "model_market",
+      "folds_scored": 1,
+      "rows_scored": 2889,
+      "rows_with_probability": 1761,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "model_market+ht",
+      "folds_scored": 1,
+      "rows_scored": 2889,
+      "rows_with_probability": 1761,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "champion_recipe",
+      "folds_scored": 1,
+      "rows_scored": 2889,
+      "rows_with_probability": 2889,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "champion_recipe+ht",
+      "folds_scored": 1,
+      "rows_scored": 2889,
+      "rows_with_probability": 2889,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "dixon_coles",
+      "folds_scored": 1,
+      "rows_scored": 2889,
+      "rows_with_probability": 2819,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "hgb",
+      "folds_scored": 1,
+      "rows_scored": 2889,
+      "rows_with_probability": 2889,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "hgb+ht",
+      "folds_scored": 1,
+      "rows_scored": 2889,
+      "rows_with_probability": 2889,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "logistic",
+      "folds_scored": 1,
+      "rows_scored": 2889,
+      "rows_with_probability": 2889,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "logistic+ht",
+      "folds_scored": 1,
+      "rows_scored": 2889,
+      "rows_with_probability": 2889,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "market_only",
+      "folds_scored": 1,
+      "rows_scored": 2889,
+      "rows_with_probability": 0,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "model_market",
+      "folds_scored": 1,
+      "rows_scored": 2889,
+      "rows_with_probability": 0,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "holdout",
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "model_market+ht",
+      "folds_scored": 1,
+      "rows_scored": 2889,
+      "rows_with_probability": 0,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "champion_recipe",
+      "folds_scored": 17,
+      "rows_scored": 20494,
+      "rows_with_probability": 20494,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "champion_recipe+ht",
+      "folds_scored": 17,
+      "rows_scored": 20494,
+      "rows_with_probability": 20494,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "dixon_coles",
+      "folds_scored": 17,
+      "rows_scored": 20494,
+      "rows_with_probability": 19416,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "hgb",
+      "folds_scored": 17,
+      "rows_scored": 20494,
+      "rows_with_probability": 20494,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "hgb+ht",
+      "folds_scored": 17,
+      "rows_scored": 20494,
+      "rows_with_probability": 20494,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "logistic",
+      "folds_scored": 17,
+      "rows_scored": 20494,
+      "rows_with_probability": 20494,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "logistic+ht",
+      "folds_scored": 17,
+      "rows_scored": 20494,
+      "rows_with_probability": 20494,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "market_only",
+      "folds_scored": 17,
+      "rows_scored": 20494,
+      "rows_with_probability": 0,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "model_market",
+      "folds_scored": 17,
+      "rows_scored": 20494,
+      "rows_with_probability": 0,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "btts",
+      "candidate": "model_market+ht",
+      "folds_scored": 17,
+      "rows_scored": 20494,
+      "rows_with_probability": 0,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "champion_recipe",
+      "folds_scored": 17,
+      "rows_scored": 20304,
+      "rows_with_probability": 20304,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "champion_recipe+ht",
+      "folds_scored": 17,
+      "rows_scored": 20304,
+      "rows_with_probability": 20304,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "dixon_coles",
+      "folds_scored": 17,
+      "rows_scored": 20304,
+      "rows_with_probability": 19209,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "hgb",
+      "folds_scored": 17,
+      "rows_scored": 20304,
+      "rows_with_probability": 20304,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "hgb+ht",
+      "folds_scored": 17,
+      "rows_scored": 20304,
+      "rows_with_probability": 20304,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "logistic",
+      "folds_scored": 17,
+      "rows_scored": 20304,
+      "rows_with_probability": 20304,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "logistic+ht",
+      "folds_scored": 17,
+      "rows_scored": 20304,
+      "rows_with_probability": 20304,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "market_only",
+      "folds_scored": 17,
+      "rows_scored": 20304,
+      "rows_with_probability": 0,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "model_market",
+      "folds_scored": 17,
+      "rows_scored": 20304,
+      "rows_with_probability": 0,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "ht_over05",
+      "candidate": "model_market+ht",
+      "folds_scored": 17,
+      "rows_scored": 20304,
+      "rows_with_probability": 0,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "champion_recipe",
+      "folds_scored": 17,
+      "rows_scored": 20304,
+      "rows_with_probability": 20304,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "champion_recipe+ht",
+      "folds_scored": 17,
+      "rows_scored": 20304,
+      "rows_with_probability": 20304,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "dixon_coles",
+      "folds_scored": 17,
+      "rows_scored": 20304,
+      "rows_with_probability": 19209,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "hgb",
+      "folds_scored": 17,
+      "rows_scored": 20304,
+      "rows_with_probability": 20304,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "hgb+ht",
+      "folds_scored": 17,
+      "rows_scored": 20304,
+      "rows_with_probability": 20304,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "logistic",
+      "folds_scored": 17,
+      "rows_scored": 20304,
+      "rows_with_probability": 20304,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "logistic+ht",
+      "folds_scored": 17,
+      "rows_scored": 20304,
+      "rows_with_probability": 20304,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "market_only",
+      "folds_scored": 17,
+      "rows_scored": 20304,
+      "rows_with_probability": 0,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "model_market",
+      "folds_scored": 17,
+      "rows_scored": 20304,
+      "rows_with_probability": 0,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "ht_over15",
+      "candidate": "model_market+ht",
+      "folds_scored": 17,
+      "rows_scored": 20304,
+      "rows_with_probability": 0,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "champion_recipe",
+      "folds_scored": 17,
+      "rows_scored": 20494,
+      "rows_with_probability": 20494,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "champion_recipe+ht",
+      "folds_scored": 17,
+      "rows_scored": 20494,
+      "rows_with_probability": 20494,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "dixon_coles",
+      "folds_scored": 17,
+      "rows_scored": 20494,
+      "rows_with_probability": 19416,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "hgb",
+      "folds_scored": 17,
+      "rows_scored": 20494,
+      "rows_with_probability": 20494,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "hgb+ht",
+      "folds_scored": 17,
+      "rows_scored": 20494,
+      "rows_with_probability": 20494,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "logistic",
+      "folds_scored": 17,
+      "rows_scored": 20494,
+      "rows_with_probability": 20494,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "logistic+ht",
+      "folds_scored": 17,
+      "rows_scored": 20494,
+      "rows_with_probability": 20494,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "market_only",
+      "folds_scored": 17,
+      "rows_scored": 20494,
+      "rows_with_probability": 0,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "model_market",
+      "folds_scored": 17,
+      "rows_scored": 20494,
+      "rows_with_probability": 0,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "over15",
+      "candidate": "model_market+ht",
+      "folds_scored": 17,
+      "rows_scored": 20494,
+      "rows_with_probability": 0,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "champion_recipe",
+      "folds_scored": 17,
+      "rows_scored": 20494,
+      "rows_with_probability": 20494,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "champion_recipe+ht",
+      "folds_scored": 17,
+      "rows_scored": 20494,
+      "rows_with_probability": 20494,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "dixon_coles",
+      "folds_scored": 17,
+      "rows_scored": 20494,
+      "rows_with_probability": 19416,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "hgb",
+      "folds_scored": 17,
+      "rows_scored": 20494,
+      "rows_with_probability": 20494,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "hgb+ht",
+      "folds_scored": 17,
+      "rows_scored": 20494,
+      "rows_with_probability": 20494,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "logistic",
+      "folds_scored": 17,
+      "rows_scored": 20494,
+      "rows_with_probability": 20494,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "logistic+ht",
+      "folds_scored": 17,
+      "rows_scored": 20494,
+      "rows_with_probability": 20494,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "market_only",
+      "folds_scored": 17,
+      "rows_scored": 20494,
+      "rows_with_probability": 1701,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "model_market",
+      "folds_scored": 17,
+      "rows_scored": 20494,
+      "rows_with_probability": 1486,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "over25",
+      "candidate": "model_market+ht",
+      "folds_scored": 17,
+      "rows_scored": 20494,
+      "rows_with_probability": 1486,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "champion_recipe",
+      "folds_scored": 17,
+      "rows_scored": 20494,
+      "rows_with_probability": 20494,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "champion_recipe+ht",
+      "folds_scored": 17,
+      "rows_scored": 20494,
+      "rows_with_probability": 20494,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "dixon_coles",
+      "folds_scored": 17,
+      "rows_scored": 20494,
+      "rows_with_probability": 19416,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "hgb",
+      "folds_scored": 17,
+      "rows_scored": 20494,
+      "rows_with_probability": 20494,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "hgb+ht",
+      "folds_scored": 17,
+      "rows_scored": 20494,
+      "rows_with_probability": 20494,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "logistic",
+      "folds_scored": 17,
+      "rows_scored": 20494,
+      "rows_with_probability": 20494,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "logistic+ht",
+      "folds_scored": 17,
+      "rows_scored": 20494,
+      "rows_with_probability": 20494,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "market_only",
+      "folds_scored": 17,
+      "rows_scored": 20494,
+      "rows_with_probability": 0,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "model_market",
+      "folds_scored": 17,
+      "rows_scored": 20494,
+      "rows_with_probability": 0,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    },
+    {
+      "stage": "walk_forward",
+      "track": "new_format",
+      "market": "over35",
+      "candidate": "model_market+ht",
+      "folds_scored": 17,
+      "rows_scored": 20494,
+      "rows_with_probability": 0,
+      "folds_not_fitted": 0,
+      "folds_error": 0,
+      "not_fitted_reasons": []
+    }
+  ],
+  "finished_at": "2026-11-09T12:24:40+00:00"
+}

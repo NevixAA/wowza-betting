@@ -1,0 +1,69 @@
+wowza-betting    active               Extend AF History (current season)            success    2026-11-02T14:44:08Z
+wowza-betting    active               API-Football Usage Monitor                    success    2026-11-02T22:28:33Z
+wowza-betting    active               Auto-onboard leagues from League Scout        success    2026-11-02T19:33:15Z
+wowza-betting    active               Backtest                                      failure    2026-07-13T11:22:37Z  <--
+wowza-betting    disabled_manually    Backtest (per-model, parallel)                success    2026-11-01T17:47:19Z
+wowza-betting    active               Daily Summary                                 success    2026-11-02T19:20:55Z
+wowza-betting    active               Data Truth Collect (real data)                None       None  <--
+wowza-betting    active               Data Truth stoplight                          success    2026-11-02T08:34:33Z
+wowza-betting    active               Diagnostic - API-Football set-piece events    None       None  <--
+wowza-betting    active               Evidence refresh + artifact freshness         success    2026-11-02T16:35:54Z
+wowza-betting    active               Exchange Odds Capture                         success    2026-11-02T20:29:17Z
+wowza-betting    active               Fantasy Refresh                               success    2026-11-02T16:23:43Z
+wowza-betting    active               Injury Refresh                                success    2026-11-02T11:56:48Z
+wowza-betting    active               Model integrity health (R2)                   success    2026-11-02T18:31:54Z
+wowza-betting    active               Live Scanner                                  success    2026-11-02T21:38:07Z
+wowza-betting    active               New-Format Odds Capture                       success    2026-11-03T00:04:40Z
+wowza-betting    disabled_manually    One-off - recheck props DNP voids (2026-11-01 success    2026-11-02T10:15:14Z
+wowza-betting    active               Player History Extend                         success    2026-11-02T11:40:17Z
+wowza-betting    active               Player Props                                  success    2026-11-03T03:58:19Z
+wowza-betting    disabled_manually    Player Props Train (weekly)                   success    2026-11-01T10:56:40Z
+wowza-betting    active               Predict                                       success    2026-11-03T01:11:02Z
+wowza-betting    disabled_manually    Pre-season Retrain                            cancelled  2026-08-01T05:21:16Z  <--
+wowza-betting    active               Prop Odds Snapshot                            success    2026-11-03T02:26:04Z
+wowza-betting    active               Props R2 challengers (retrospective, no promo None       None  <--
+wowza-betting    disabled_manually    Retrain (daily to 2026-10-05, weekly after)   success    2026-11-01T17:06:11Z
+wowza-betting    active               Sharp Movement Alert                          success    2026-11-03T01:25:53Z
+wowza-betting    active               Sharp Money Tracker                           success    2026-11-03T00:17:27Z
+wowza-betting    active               Standard Side-Market Odds Capture             success    2026-11-03T01:50:58Z
+wowza-betting    active               Standard OU25 repaired model (train + preview success    2026-10-28T12:36:33Z
+wowza-betting    active               Understat reachability probe                  None       None  <--
+wowza-betting    active               Update Results                                success    2026-11-02T23:57:22Z
+wowza-betting    active               Warm NF Shot Cache                            success    2026-11-02T10:20:12Z
+wowza-betting    active               Weekly Summary                                success    2026-11-02T19:17:08Z
+wowza-betting    active               World Cup Tracker                             success    2026-07-13T11:29:43Z
+wowzaV9-Pro      active               Deep Analytics (weekly)                       success    2026-11-02T13:48:28Z
+wowzaV9-Pro      active               Monthly Bankroll Policy Review                success    2026-11-02T17:20:29Z
+wowzaV9-Pro      active               Pro Backfill Results                          success    2026-11-02T21:48:22Z
+wowzaV9-Pro      active               Pro Bet Builder                               success    2026-11-02T23:06:38Z
+wowzaV9-Pro      active               Pro Collect                                   success    2026-11-03T02:36:32Z
+wowzaV9-Pro      active               Pro fetch football-data raw files (one-off)   success    2026-10-19T08:05:40Z
+wowzaV9-Pro      active               Pro injury list capture (leak check)          success    2026-11-02T21:47:27Z
+wowzaV9-Pro      active               Pro League-Level + Market-Anchor BENCHMARK (r None       None  <--
+wowzaV9-Pro      active               Pro learned per-league tiers (challenger)     success    2026-11-02T20:29:16Z
+wowzaV9-Pro      active               Pro Live Odds                                 success    2026-11-03T02:51:52Z
+wowzaV9-Pro      active               Pro Logit Calibration BENCHMARK (research, br None       None  <--
+wowzaV9-Pro      active               Pro Paper 1X2                                 success    2026-11-02T17:25:38Z
+wowzaV9-Pro      active               Pro Player V3 Forward Test                    success    2026-11-02T17:25:37Z
+wowzaV9-Pro      active               Pure Prediction Research Lab                  success    2026-11-02T09:55:47Z
+wowzaV9-Pro      active               Pro Price Trader (paper)                      success    2026-11-02T17:27:17Z
+wowzaV9-Pro      active               Pro Props Learner Study                       success    2026-10-22T10:43:32Z
+wowzaV9-Pro      active               Pro R2-B Repaired Challengers (research, bran None       None  <--
+wowzaV9-Pro      disabled_manually    Pro Research (cross-model, calibration, thres success    2026-11-01T11:59:41Z
+wowzaV9-Pro      active               Pro Research Index                            success    2026-11-02T19:39:50Z
+wowzaV9-Pro      active               Pro League Scout                              success    2026-11-03T02:40:20Z
+wowzaV9-Pro      active               Pro League Scout — closing prices             success    2026-11-02T21:39:26Z
+wowzaV9-Pro      active               Pro Standard Repair (forensic rebuild + weekl success    2026-11-02T17:24:52Z
+wowzaV9-Pro      active               Pro Standard Repair BENCHMARK (forensic phase success    2026-10-28T11:45:07Z
+wowzaV9-Pro      disabled_manually    Pro Standard Repair FORWARD SHADOW (STD-V9R-S success    2026-11-01T16:26:45Z
+wowzaV9-Pro      active               Pro Studies (daily)                           success    2026-11-02T16:07:39Z
+wowzaV9-Pro      active               Pro Team News                                 success    2026-11-02T21:42:08Z
+wowzaV9-Pro      active               Pro Team Stats                                success    2026-11-02T23:39:47Z
+wowzaV9-Pro      active               Pro Tip Scoreboard                            success    2026-11-02T13:42:34Z
+wowzaV9-Pro      active               Pro VALUABLE low-edge shadow                  success    2026-11-02T19:49:46Z
+wowzaV9-Pro      active               Pro weather forecast-vs-actual fetch (resumab success    2026-11-02T21:42:39Z
+wowzaV9-Pro      active               Pro Weekly Data Audit                         success    2026-11-02T15:44:30Z
+wowzaV9-Pro      active               Weekly League Promotion Review                success    2026-11-02T12:38:44Z
+wowza_v11        active               V11 Collect                                   success    2026-11-03T01:39:34Z
+wowza-dashboard  active               Sync from v9                                  success    2026-11-02T23:33:41Z
+wowza-exec       active               Cloudbet Shadow (DRY)                         success    2026-11-03T02:56:42Z

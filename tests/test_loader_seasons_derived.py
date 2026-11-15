@@ -16,12 +16,25 @@ SRC = "\n".join(ln.split("#", 1)[0] for ln in _RAW.splitlines()
                 if not ln.strip().startswith(("#", '"', "'")) and "This was" not in ln)
 
 
-def test_every_registry_league_with_a_football_data_code_is_downloaded():
+def test_every_model_league_with_a_football_data_code_is_downloaded():
     std, new = DL._fd_download_tables()
-    want = {e["name"]: e["football_data_code"] for e in LR.leagues() if e.get("football_data_code")}
+    want = {e["name"]: e["football_data_code"] for e in LR.leagues()
+            if e.get("football_data_code") and e.get("model_type")}
     assert {**std, **new} == want
     assert "Romanian Superliga" in new                      # enabled, was missing from the hand table
     assert all(e.get("model_type") == "standard" for e in LR.leagues() if e["name"] in std)
+    assert all(e.get("model_type") == "new_format" for e in LR.leagues() if e["name"] in new)
+
+
+def test_a_league_with_no_model_is_never_filed_in_the_new_bucket():
+    # LR-1.2: the big-5 hold mmz4281 codes but no model_type; before the skip they would have
+    # been downloaded from /new/{code}.csv by elimination.
+    std, new = DL._fd_download_tables()
+    for lg in ("Premier League", "Bundesliga", "La Liga", "Serie A", "Ligue 1",
+               "Swiss Super League", "Poland Ekstraklasa"):
+        assert LR.entry(lg)["football_data_code"] and lg not in std and lg not in new
+        assert LR.football_data_format(lg) == ("new" if lg in ("Swiss Super League", "Poland Ekstraklasa")
+                                               else "mmz4281")
 
 
 def test_no_literal_season_year_lists_or_pinned_folders():

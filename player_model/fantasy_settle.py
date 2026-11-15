@@ -56,11 +56,30 @@ def _gw_end(gw: int):
     """Last kickoff of gameweek `gw` + 2 h (UTC), from the cached FPL fixtures; None if unknown."""
     try:
         fx = json.loads((OUT / "fpl_fixtures.json").read_text(encoding="utf-8"))
-    except Exception:                                                   # noqa: BLE001
+    except Exception as e:                                              # noqa: BLE001
+        print(f"[settle] no FPL fixture times ({type(e).__name__}: {e})")
         return None
     fx = fx if isinstance(fx, list) else fx.get("data", fx.get("fixtures", []))
     ko = [f.get("kickoff_time") for f in fx if f.get("event") == gw and f.get("kickoff_time")]
     return pd.to_datetime(max(ko), utc=True) + pd.Timedelta(hours=2) if ko else None
+
+
+def _player_key(lg: pd.DataFrame) -> pd.Series:
+    """Settlement join key: the FPL element id, else the logged name.
+
+    fantasy_log writes fpl_id from 2026-11-01. A legacy row (no id) takes the id its OWN name
+    carries elsewhere in the log when that name maps to exactly one id - so a pre-deadline legacy
+    row and a post-deadline row with an id still pair up; a name carried by two ids (namesakes)
+    is never guessed between them and stays a name key.
+    """
+    fid = (pd.to_numeric(lg["fpl_id"], errors="coerce") if "fpl_id" in lg.columns
+           else pd.Series(np.nan, index=lg.index))
+    ids = pd.DataFrame({"n": lg["player_name"], "f": fid}).dropna()
+    per_name = ids.groupby("n")["f"].nunique()
+    one = ids[ids["n"].isin(per_name[per_name == 1].index)].drop_duplicates("n").set_index("n")["f"]
+    fid = fid.where(fid.notna(), lg["player_name"].map(one))
+    return ("id:" + fid.astype("Int64").astype(str)).where(fid.notna(),
+                                                           "name:" + lg["player_name"].astype(str))
 
 
 def build_ledger() -> tuple[pd.DataFrame, dict]:
@@ -73,6 +92,7 @@ def build_ledger() -> tuple[pd.DataFrame, dict]:
         return pd.DataFrame(), {**meta, "error": "projection log empty"}
     lg["snapshot_ts"] = pd.to_datetime(lg["snapshot_ts"], errors="coerce", utc=True)
     lg = lg.dropna(subset=["snapshot_ts", "player_name"])
+    lg["_pk"] = _player_key(lg)
 
     ev = _events()
     if ev.empty:
@@ -96,7 +116,7 @@ def build_ledger() -> tuple[pd.DataFrame, dict]:
         prev_end = _gw_end(gw - 1)
         if prev_end is not None:
             fresh = before[before["snapshot_ts"] >= prev_end]
-            stale = before["player_name"].nunique() - fresh["player_name"].nunique()
+            stale = before["_pk"].nunique() - fresh["_pk"].nunique()
             if stale:
                 meta["notes"].append(f"GW{gw}: dropped {stale} players with no snapshot between the "
                                      f"previous gameweek's end and this deadline (stale total)")
@@ -104,7 +124,7 @@ def build_ledger() -> tuple[pd.DataFrame, dict]:
             if before.empty:
                 meta["unsettleable"].append({"gw": gw, "why": "no snapshot after the previous gameweek"})
                 continue
-        pre = (before.sort_values("snapshot_ts").groupby("player_name", as_index=False).last())
+        pre = (before.sort_values("snapshot_ts").groupby("_pk", as_index=False).last())
 
         # Post-settlement: the LAST snapshot before the NEXT deadline.
         #
@@ -142,10 +162,10 @@ def build_ledger() -> tuple[pd.DataFrame, dict]:
             window = scored
         else:
             meta["notes"].append(f"GW{gw}: no fixture times - post rows not checked against the last match")
-        post = window.sort_values("snapshot_ts").groupby("player_name", as_index=False).last()
+        post = window.sort_values("snapshot_ts").groupby("_pk", as_index=False).last()
 
-        j = pre.merge(post[["player_name", "fpl_total_points"]], on="player_name",
-                      suffixes=("_pre", "_post"))
+        # Joined on the FPL element id where the log carries one (see _player_key).
+        j = pre.merge(post[["_pk", "fpl_total_points"]], on="_pk", suffixes=("_pre", "_post"))
         no_post = len(pre) - len(j)
         if no_post:
             meta["notes"].append(f"GW{gw}: dropped {no_post} players with no snapshot after the "
@@ -195,7 +215,7 @@ def build_ledger() -> tuple[pd.DataFrame, dict]:
     if not rows:
         return pd.DataFrame(), meta
     led = pd.concat(rows, ignore_index=True)
-    keep = ["gw", "deadline", "settled_at", "snapshot_ts", "player_name", "team", "position",
+    keep = ["gw", "deadline", "settled_at", "snapshot_ts", "fpl_id", "player_name", "team", "position",
             "price", "proj_pts_per_game", "proj_fixture_adj", "p_start", "fpl_ep_next",
             "fpl_ppg", "fpl_form", "availability", "actual_points"]
     led = led[[c for c in keep if c in led.columns]]
@@ -248,7 +268,9 @@ def performance(led: pd.DataFrame) -> dict:
         out["by_gameweek"].append({
             "gw": int(gw), "n": int(len(both)),
             "wowza": w, "fpl_ep_next": f,
-            "wowza_better_mae": bool(w.get("mae", 9e9) < f.get("mae", 9e9)),
+            # None when either side has too few rows for an MAE (no sentinel 9e9 comparison).
+            "wowza_better_mae": (bool(w["mae"] < f["mae"]) if "mae" in w and "mae" in f
+                                 else None),
             "top10_overlap_wowza": len(set(both.nlargest(k, wcol)["player_name"]) & top_actual),
             "top10_overlap_fpl": len(set(both.nlargest(k, "fpl_ep_next")["player_name"]) & top_actual),
             "top10_of": k,
@@ -299,7 +321,7 @@ def main() -> int:
                   f"{wc['bias']:>8.3f}{wc['n']:>7}")
         print(f"   {'FPL ep_next':<14}{f['mae']:>8.3f}{f['rmse']:>8.3f}{f['spearman']:>10.3f}"
               f"{f['bias']:>8.3f}{f['n']:>7}")
-        print(f"   ({perf.get('actual_zero_share',0):.0%} of actual scores are zero — players who did not play)")
+        print(f"   ({perf['actual_zero_share']:.0%} of actual scores are zero — players who did not play)")
         print(f"\n   {perf.get('verdict')} (gap {perf.get('mae_gap'):+.3f})")
     print(f"\n[settle] wrote {LEDGER.name} and {PERF.name}")
     return 0

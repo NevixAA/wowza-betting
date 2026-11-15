@@ -25,20 +25,39 @@ import pandas as pd  # noqa: E402
 from player_model.model import load_model, predict_proba  # noqa: E402
 
 PARQUET  = Path(__file__).resolve().parents[1] / "player_history.parquet"
-LEAGUE   = "Premier League"
 POS_MAP  = {"F": "FWD", "M": "MID", "D": "DEF", "G": "GKP",
             "FWD": "FWD", "MID": "MID", "DEF": "DEF", "GKP": "GKP", "GK": "GKP"}
 GOAL_PTS = {"FWD": 4, "MID": 5, "DEF": 6, "GKP": 6}
 CS_PTS   = {"DEF": 4, "GKP": 4, "MID": 1, "FWD": 0}
 
 
+#: Every raw stat the reconstruction reads. A player-game missing any of them (or with a position
+#: POS_MAP does not know) is DROPPED and counted - a missing stat is not a 0 and an unknown position
+#: is not a midfielder.
+STAT_COLS = ["minutes", "goals", "assists", "saves", "yellow_cards", "red_cards", "penalty_saved",
+             "penalty_missed", "goals_conceded", "shots_on_target", "key_passes", "tackles_total",
+             "interceptions", "fouls_committed"]
+
+
 def _num(s):
-    return pd.to_numeric(s, errors="coerce").fillna(0.0)
+    return pd.to_numeric(s, errors="coerce")
+
+
+def complete_rows(pl: pd.DataFrame) -> pd.DataFrame:
+    """Rows with a known position and every STAT_COLS value present; the rest dropped, logged."""
+    pos = pl["position"].map(lambda p: POS_MAP.get(str(p)))
+    absent = [c for c in STAT_COLS if c not in pl.columns]
+    if absent:
+        raise SystemExit(f"player_history.parquet lacks {absent} - cannot reconstruct FPL points")
+    ok = pos.notna() & pl[STAT_COLS].apply(pd.to_numeric, errors="coerce").notna().all(axis=1)
+    if (~ok).any():
+        print(f"  dropped {int((~ok).sum()):,} player-game(s): unknown position "
+              f"({int(pos.isna().sum()):,}) or a missing stat")
+    return pl[ok].assign(pos=pos[ok])
 
 
 def build_actuals(pl: pd.DataFrame) -> pd.DataFrame:
-    pl = pl.copy()
-    pl["pos"] = pl["position"].map(lambda p: POS_MAP.get(str(p), "MID"))
+    pl = complete_rows(pl)
     # team goals conceded per fixture = the GK's value (max over the team's players that match)
     tc = pl.groupby(["fixture_id", "team"])["goals_conceded"].max().rename("team_conceded").reset_index()
     pl = pl.merge(tc, on=["fixture_id", "team"], how="left")
@@ -95,10 +114,15 @@ def build_actuals(pl: pd.DataFrame) -> pd.DataFrame:
 
 
 def main():
+    # FPL scores ONE league: the registry's fpl-flagged entry, matched by canonical name.
+    from src.league_registry import fpl_league, canonical_name
+    league = fpl_league()
+    if league is None:
+        raise SystemExit("config/leagues.json flags no FPL league - nothing to backtest")
     d = pd.read_parquet(PARQUET)
-    pl = d[d["league"] == LEAGUE].copy()
+    pl = d[d["league"].map(lambda x: canonical_name(x) == league)].copy()
     pl = pl[_num(pl["minutes"]) > 0].copy()   # played games only
-    print(f"PL played player-games: {len(pl):,}")
+    print(f"{league} played player-games: {len(pl):,}")
 
     pl = build_actuals(pl)
 
@@ -123,12 +147,14 @@ def main():
     # ── 2. PROJECTION ACCURACY: model expected pts vs actual ──────────────────
     print("\n=== 2. PROJECTION ACCURACY (in-sample caveat) ===")
     payg, paya, pays = load_model("goals"), load_model("assists"), load_model("sot2")
-    if payg is None:
-        print("  goals model missing — skipping projection accuracy.")
+    _missing = [n for n, m in (("goals", payg), ("assists", paya), ("sot2", pays)) if m is None]
+    if _missing:
+        # a missing model is a skipped metric, never a 0 probability
+        print(f"  model(s) missing: {_missing} — skipping projection accuracy.")
     else:
         pl["p_goal"]   = predict_proba(pl, payg).values
-        pl["p_assist"] = predict_proba(pl, paya).values if paya is not None else 0.0
-        pl["p_sot2"]   = predict_proba(pl, pays).values if pays is not None else 0.0
+        pl["p_assist"] = predict_proba(pl, paya).values
+        pl["p_sot2"]   = predict_proba(pl, pays).values
         gp = pl["pos"].map(GOAL_PTS).astype(float)
         # ex-ante expected attacking points (the comparable, model-driven part)
         pl["exp_attack"] = pl["p_goal"] * gp + pl["p_assist"] * 3.0 + pl["p_sot2"] * 1.0
@@ -145,7 +171,11 @@ def main():
         # ── bonus scale calibration: our formula mean vs actual mean ──────────
         try:
             from player_model.fantasy import _expected_bonus
-            defpg = _num(pl.get("tackles_pg", 0)) + _num(pl.get("interceptions_pg", 0))
+            if not {"tackles_pg", "interceptions_pg"}.issubset(pl.columns):
+                raise KeyError("tackles_pg / interceptions_pg not in player_history")
+            defpg = _num(pl["tackles_pg"]) + _num(pl["interceptions_pg"])
+            if defpg.isna().any():
+                raise ValueError(f"{int(defpg.isna().sum())} row(s) without defensive per-game stats")
             pl["our_bonus"] = [_expected_bonus(g, a, s, float(dd), 0.0) for g, a, s, dd in
                                zip(pl["p_goal"], pl["p_assist"], pl["p_sot2"], defpg)]
             om, am = float(pl["our_bonus"].mean()), float(pl["actual_bonus"].mean())

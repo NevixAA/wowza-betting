@@ -68,24 +68,13 @@ def _drop_mismapped(o: pd.DataFrame, source: str, tag: str) -> pd.DataFrame:
 
 
 def _safe_joins() -> bool:
-    """WOWZA_SAFE_ENRICH_JOINS=1 serves the league-keyed, collapse-then-merge enrichment joins.
-    Default ON since 2026-11-01 (owner decision, Data Truth program): the legacy (home, away, date)
+    """Enrichment joins are ALWAYS league-keyed, collapse-then-merge. The legacy (home, away, date)
     merge without league put 85,454 shot/xG/inside-box values on the wrong fixtures
-    (join_integrity_health.json). Changes serving AND training features, so the models are
-    retrained on the corrected frame. Rollback: set it to 0. The legacy joins stay AUDITED."""
-    return os.getenv("WOWZA_SAFE_ENRICH_JOINS", "1").strip() == "1"
+    (join_integrity_health.json); its positional copy-back and the WOWZA_SAFE_ENRICH_JOINS=0
+    rollback were removed 2026-11-01 (Data Truth). A source without a league column is skipped
+    with an error log, never joined without one. Kept as a function for src/integrity readers."""
+    return True
 
-
-_SEASON_MAP = {
-    # European winter seasons (YYMM code → readable label)
-    "2526": "2025/26", "2425": "2024/25", "2324": "2023/24",
-    "2223": "2022/23", "2122": "2021/22", "2021": "2020/21",
-    "2020": "2019/20",
-    # Calendar-year seasons for summer leagues (Brazil, Norway, Finland, etc.)
-    # Files saved as CODE_y2025.csv to avoid conflict with winter "2021"→"2020/21"
-    "y2026": "2026", "y2025": "2025", "y2024": "2024",
-    "y2023": "2023", "y2022": "2022", "y2021": "2021", "y2020": "2020",
-}
 
 # Preferred odds columns in order (first found with data wins)
 _OVER_COLS  = ["AvgC>2.5", "MaxC>2.5", "B365C>2.5", "PC>2.5",
@@ -196,6 +185,15 @@ def _nf_odds_lookup(nfo: dict, day: str, league: str, home: str, away: str) -> d
 _CACHE: Optional[pd.DataFrame] = None
 
 
+def _decode_csv(content) -> str:
+    """Downloaded CSV bytes -> text: UTF-8 (BOM stripped) when valid, else Latin-1. `r.text` let
+    requests guess ISO-8859-1 for UTF-8 files with no charset header, which banked
+    'PreuÃ\\x9fen MÃ¼nster' beside 'Preußen Münster' (same club, two teams, every match twice)."""
+    from src.integrity.duplicate_matches import decode_csv_bytes
+    return decode_csv_bytes(content if isinstance(content, (bytes, bytearray)) else
+                            str(content).encode("utf-8"))
+
+
 def _pick_odds(raw: pd.DataFrame, cols: list[str]) -> pd.Series:
     for col in cols:
         if col in raw.columns:
@@ -211,8 +209,12 @@ _AFFIX_RE = re.compile(
 
 
 def _norm_club(s: str) -> str:
-    """Accent-, punctuation- and affix-insensitive club key. Used ONLY to spot the same club
-    written two ways within one league -- never to match across different clubs."""
+    """Accent-, punctuation- and affix-insensitive club key.
+
+    NO LONGER USED IN THIS MODULE (2026-11-02): _canonicalise_clubs keys clubs by
+    src.team_names.identity_key. Kept ONLY because src/standard_repair.attach_entry_prices
+    (serve-owned) still imports it as a join key; delete it when that file moves to
+    team_names.resolve."""
     import unicodedata
     t = unicodedata.normalize("NFKD", str(s)).encode("ascii", "ignore").decode().lower().strip()
     t = re.sub(r"[^a-z0-9 ]+", " ", t)
@@ -222,6 +224,64 @@ def _norm_club(s: str) -> str:
         prev = t
         t = _AFFIX_RE.sub("", t).strip()
     return re.sub(r"\s+", " ", t).strip()
+
+
+def _resolve_onto_history(right: pd.DataFrame, df: pd.DataFrame, home_col: str, away_col: str,
+                          name: str, aliases: dict | None = None) -> pd.DataFrame:
+    """`right` restricted to the rows whose two clubs are PROVABLY clubs of `df`, with `_h`/`_a`
+    holding df's own spelling of each (2026-11-02, owner rule).
+
+    Every enrichment join below used to key both sides on api_football_ou._norm_name, a
+    suffix-stripping key with its own alias dict -- an identity guess. Now each source name is
+    resolved by src.team_names.resolve among df's clubs of the row's league (the canonical,
+    league-scoped resolver); a name no rule proves is skipped, counted and logged, never guessed.
+    df's side of the join is then simply its own home_team / away_team.
+
+    `aliases` ({league: {spelling: canonical}}, Phase 2 HT repair 2026-11-03): the identity map
+    one_club_one_match APPLIED to df (IDENTITY_ALIASES). A source keyed on the history's OWN
+    pre-identity spelling (the HT sidecar) names a club the pipeline renamed by same-day evidence -
+    'Atletico Paranaense' -> 'Athletico-PR' - which resolve() cannot spell-match. Only when resolve()
+    finds nothing: the spelling (or one resolve() proves equal to it) must be an alias of exactly ONE
+    canonical club that is in THIS league's pool; otherwise the row stays unplaced."""
+    from src.team_names import identity_alias_hit, resolve
+    if right.empty or "league" not in right.columns or "league" not in df.columns:
+        return right.iloc[0:0].assign(_h=pd.Series(dtype=object), _a=pd.Series(dtype=object))
+    from src.integrity.duplicate_matches import fix_mojibake
+    pools = {str(lg): sorted(set(g["home_team"].dropna().astype(str))
+                             | set(g["away_team"].dropna().astype(str)))
+             for lg, g in df.groupby("league")}
+    r = right[right["league"].astype(str).isin(pools)].copy()
+    memo: dict = {}
+    pool_sets = {lg: set(p) for lg, p in pools.items()}
+
+    def _by_identity_alias(lg, txt):
+        # the one shared rule, also used where board names meet the served history
+        return identity_alias_hit(txt, pool_sets[lg], (aliases or {}).get(lg))
+
+    def _one(lg, nm):
+        if nm is None or (isinstance(nm, float) and np.isnan(nm)) or not str(nm).strip():
+            return None
+        k = (lg, str(nm))
+        if k not in memo:
+            # a source name banked as mojibake ('PreuÃ\x9fen MÃ¼nster') resolves by its real text
+            txt = fix_mojibake(str(nm))
+            memo[k] = resolve(txt, pools[lg])
+            if memo[k] is None and aliases:
+                memo[k] = _by_identity_alias(lg, txt)
+        return memo[k]
+
+    lgs = r["league"].astype(str).tolist()
+    r["_h"] = [_one(lg, n) for lg, n in zip(lgs, r[home_col].tolist())]
+    r["_a"] = [_one(lg, n) for lg, n in zip(lgs, r[away_col].tolist())]
+    bad = r["_h"].isna() | r["_a"].isna()
+    if bad.any():
+        miss = sorted({(lg, str(n)) for lg, n, ok in
+                       zip(lgs, r[home_col].tolist(), r["_h"].notna()) if not ok}
+                      | {(lg, str(n)) for lg, n, ok in
+                         zip(lgs, r[away_col].tolist(), r["_a"].notna()) if not ok})
+        log.info(f"  [{name}] {int(bad.sum())} source row(s) skipped: {len(miss)} club name(s) not "
+                 f"provably a club of the league (team_names.resolve), e.g. {miss[:5]}")
+    return r[~bad]
 
 
 def _canonicalise_clubs(df: pd.DataFrame) -> pd.DataFrame:
@@ -247,8 +307,9 @@ def _canonicalise_clubs(df: pd.DataFrame) -> pd.DataFrame:
     rows, including Kaiserslautern, Koln, Magdeburg, Nurnberg and Schalke in Bundesliga 2 and
     Granada, Cartagena and Castellon in La Liga 2.
 
-    THE MERGE IS EVIDENCE-BASED, NOT FUZZY. Two spellings are merged only when they normalise to
-    the same key WITHIN THE SAME LEAGUE. The winner is the spelling seen most recently, because
+    THE MERGE IS EVIDENCE-BASED, NOT FUZZY. Two spellings are merged only when they have the same
+    src.team_names.identity_key (same identity tokens once club-form words are removed; reserve
+    sides apart) WITHIN THE SAME LEAGUE. The winner is the spelling seen most recently, because
     that is what future downloads will keep producing, so the vocabulary converges rather than
     oscillating. Ambiguity is impossible here by construction: the merge is within one league and
     one normalised key, and the duplicated fixtures it resolves agree on every score.
@@ -260,7 +321,15 @@ def _canonicalise_clubs(df: pd.DataFrame) -> pd.DataFrame:
         d[c] = d[c].astype(str).str.strip()
     long = pd.concat([d[["league", "home_team", "date"]].rename(columns={"home_team": "t"}),
                       d[["league", "away_team", "date"]].rename(columns={"away_team": "t"})])
-    long["k"] = long["t"].map(_norm_club)
+    # Club identity through the canonical resolver's token rule (src.team_names.identity_key); a
+    # name with no identity token keys on itself, so it is never merged with anything.
+    from src.team_names import identity_key as _ikey
+
+    def _key(t):
+        k = _ikey(t)
+        return k if k is not None else f"raw|{t}"
+
+    long["k"] = long["t"].map(_key)
     long["date"] = pd.to_datetime(long["date"], errors="coerce")
     # Most recently seen spelling wins; frequency breaks a tie.
     agg = (long.groupby(["league", "k", "t"])
@@ -271,7 +340,7 @@ def _canonicalise_clubs(df: pd.DataFrame) -> pd.DataFrame:
     n_multi = int((agg.groupby(["league", "k"])["t"].transform("size") > 1).sum())
 
     for c in ("home_team", "away_team"):
-        keys = list(zip(d["league"].astype(str), d[c].map(_norm_club)))
+        keys = list(zip(d["league"].astype(str), d[c].map(_key)))
         d[c] = [mapping.get(kk, orig) for kk, orig in zip(keys, d[c])]
 
     # CONFLICTING SCORES ARE DROPPED, NOT GUESSED.
@@ -340,13 +409,13 @@ def _canonical_season_labels(d: pd.DataFrame) -> pd.Series:
 
 
 # One club, two spellings, from sources that never overlap in time (2026-11-01 audit of the merged
-# history): no same-day evidence can exist, so the pairs are named.
-_SAME_CLUB_NO_OVERLAP = {
-    "Mexico Liga MX": [("U.N.A.M. - Pumas", "UNAM Pumas")],
-    "La Liga 2": [("Celta B", "Celta de Vigo II")],
-    "Championship": [("Sheffield United", "Sheffield Utd")],
-    "League One": [("Sheffield United", "Sheffield Utd")],
-}
+# history): no same-day evidence can exist, so the pairs are named - in config/leagues.json
+# (same_club_spellings, read through src.league_registry), never in code.
+
+
+#: one-side same-day aliases accepted on EVIDENCE alone (no team_names proof), logged each run so the
+#: owner can move them into the alias store (2026-11-02, team_frame finding 1)
+_EVIDENCE_ONLY_ALIASES: dict = {}
 
 
 def _one_side_aliases(df: pd.DataFrame, min_dates: int = 3) -> dict:
@@ -354,17 +423,28 @@ def _one_side_aliases(df: pd.DataFrame, min_dates: int = 3) -> dict:
     identical and the other differs - 'Stoke City v Hull' next to 'Stoke v Hull'. A club cannot
     play twice on one day, so the differing names are one club. identity_repair (frozen
     v9r-identity-1.0, used by the repaired Standard recipe) only counts pairs where BOTH names
-    differ, so these duplicates survived. Same safeguards: >= min_dates distinct dates, same club
-    by src.team_names, the two names never met, one-to-one; newest spelling is canonical."""
+    differ, so these duplicates survived. Safeguards: >= min_dates distinct dates, the two names
+    never met, one-to-one; newest spelling is canonical.
+
+    PROOF IS THE EVIDENCE, NOT THE SPELLING (2026-11-02). The pair used to need src.team_names to
+    prove it as well, so every club the resolver cannot spell-match kept both names and its matches
+    twice: 1,907+ same-day pairs at data-truth-100 HEAD ('A. Klagenfurt'/'Austria Klagenfurt' 122
+    dates, 'U. Cluj'/'Universitatea Cluj' 93, 'Athletico-PR'/'Atletico Paranaense' 120, ...). With
+    one side the SAME club on the SAME day at the SAME score, the other side cannot be a different
+    club - a club does not play twice in a day - so >= min_dates such dates are proof. Pairs the
+    resolver does NOT also prove are recorded in _EVIDENCE_ONLY_ALIASES and logged."""
     from collections import Counter, defaultdict
     from src.identity_repair import _same_club
+    _EVIDENCE_ONLY_ALIASES.clear()
     d = df[df["home_goals"].notna() & df["away_goals"].notna()].copy()
     d["_d"] = pd.to_datetime(d["date"]).dt.normalize()
     ev: dict = defaultdict(Counter)
-    for (lg, dt, _hg, _ag), g in d.groupby(["league", "_d", "home_goals", "away_goals"], sort=False):
-        if len(g) < 2:
-            continue
-        rows = list(zip(g["home_team"].astype(str), g["away_team"].astype(str)))
+    _gk = ["league", "_d", "home_goals", "away_goals"]
+    # only groups of >= 2 rows can hold evidence; iterating the ~100k singletons cost ~15 s
+    multi = d[d.groupby(_gk, sort=False)["home_team"].transform("size") >= 2]
+    multi = multi.assign(home_team=multi["home_team"].astype(str), away_team=multi["away_team"].astype(str))
+    for (lg, dt, _hg, _ag), g in multi.groupby(_gk, sort=False):
+        rows = list(zip(g["home_team"], g["away_team"]))
         for i in range(len(rows)):
             for j in range(i + 1, len(rows)):
                 (h1, a1), (h2, a2) = rows[i], rows[j]
@@ -380,8 +460,7 @@ def _one_side_aliases(df: pd.DataFrame, min_dates: int = 3) -> dict:
     out: dict = {}
     for lg, cnt in ev.items():
         dates = Counter(k for (k, _dt) in cnt)            # distinct dates per name pair
-        strong = [(k, n) for k, n in dates.items() if n >= min_dates and k not in met[lg]
-                  and _same_club(*k)]
+        strong = [(k, n) for k, n in dates.items() if n >= min_dates and k not in met[lg]]
         partners: dict = defaultdict(list)
         for (x, y), n in strong:
             partners[x].append((n, y))
@@ -393,15 +472,58 @@ def _one_side_aliases(df: pd.DataFrame, min_dates: int = 3) -> dict:
             canon, alias = sorted((x, y), key=lambda t: (last.get((lg, t), pd.Timestamp(0)), t),
                                   reverse=True)
             m[alias] = canon
+            if not _same_club(x, y):
+                _EVIDENCE_ONLY_ALIASES.setdefault(lg, {})[alias] = (canon, n)
         if m:
             out[lg] = m
     return out
 
 
-#: the full club identity map {league: {spelling: canonical}} the last identity step applied
+#: last run's alias-store merges {league: {alias: canonical}} (logged; read by tests)
+ALIAS_STORE_MERGES: dict = {}
+
+#: the full club identity map {league: {spelling: canonical}} the last one_club_one_match applied
 #: (src.identity_repair.canonicalise_and_dedupe report 'aliases'). The HT step uses it to place
 #: sidecar rows keyed on the history's own pre-identity spelling (see _resolve_onto_history).
 IDENTITY_ALIASES: dict = {}
+
+
+def _alias_store_merges(out: pd.DataFrame, amap: dict, last: dict) -> dict:
+    """Add to `amap` ({league: {alias: canonical}}, edited in place) every club the ALIAS STORE
+    (src.team_names, fixture-level evidence per entry) names as one club but the league's history
+    still holds under two spellings - the splits same-day evidence cannot see (< 3 shared dates:
+    'Verona'/'Hellas Verona' in Serie B) or that one-to-one refused (Romanian Superliga 'CS
+    Universitatea Craiova'/'Univ. Craiova', 2026-11-02). A group whose spellings ever meet in one
+    row is contradicted by the data and skipped (logged). Newest spelling is canonical; every entry
+    maps straight to it (canonicalise_and_dedupe applies one step, no chains)."""
+    from src.team_names import alias_groups_in
+    ALIAS_STORE_MERGES.clear()
+    for lg, g in out.groupby(out["league"].astype(str), sort=True):
+        h, a = g["home_team"].astype(str), g["away_team"].astype(str)
+        m = dict(amap.get(lg, {}))
+        added = {}
+        for grp in alias_groups_in(set(h) | set(a)):
+            if (h.isin(grp) & a.isin(grp)).any():
+                log.warning(f"[identity] {lg}: alias-store spellings {sorted(grp)} meet in one row - "
+                            f"not merged")
+                continue
+            names = set(grp) | {m.get(n, n) for n in grp}
+            canon = max(names, key=lambda t: (last.get((lg, t), pd.Timestamp(0)), t))
+            if m.get(canon) in names:
+                del m[canon]
+            for n in grp:
+                if n != canon and m.get(n) != canon:
+                    m[n] = added[n] = canon
+            for k, v in list(m.items()):                       # nothing may point at a non-canonical
+                if v in grp and v != canon:
+                    m[k] = canon
+        if added:
+            amap[lg] = m
+            ALIAS_STORE_MERGES[lg] = added
+    if ALIAS_STORE_MERGES:
+        log.info("[identity] alias-store merges: " + "; ".join(
+            f"{lg}: {a} -> {c}" for lg, mm in ALIAS_STORE_MERGES.items() for a, c in mm.items()))
+    return ALIAS_STORE_MERGES
 
 
 def _canonical_identity_and_seasons(out: pd.DataFrame) -> pd.DataFrame:
@@ -432,11 +554,13 @@ def _canonical_identity_and_seasons(out: pd.DataFrame) -> pd.DataFrame:
         _last = pd.concat([out[["league", "home_team", "date"]].rename(columns={"home_team": "t"}),
                            out[["league", "away_team", "date"]].rename(columns={"away_team": "t"})]
                           ).groupby(["league", "t"])["date"].max().to_dict()
-        for lg, pairs in _SAME_CLUB_NO_OVERLAP.items():
-            for x, y in pairs:
+        from src import league_registry as _LR
+        for lg in sorted(set(out["league"].astype(str))):
+            for x, y in _LR.same_club_spellings(lg):
                 if (lg, x) in _last and (lg, y) in _last:
                     canon, alias = sorted((x, y), key=lambda t: _last[(lg, t)], reverse=True)
                     one_side.setdefault(lg, {})[alias] = canon
+        _alias_store_merges(out, one_side, _last)
         out, rep = canonicalise_and_dedupe(out, alias_map=one_side)
         # the map actually applied (explicit + derived), for sources keyed on the pre-identity
         # spelling (the HT sidecar) - Phase 2 HT repair, 2026-11-03
@@ -444,6 +568,12 @@ def _canonical_identity_and_seasons(out: pd.DataFrame) -> pd.DataFrame:
         IDENTITY_ALIASES.update({lg: dict(m) for lg, m in rep.get("aliases", {}).items() if m})
         log.info(f"[identity] one-side same-day aliases: "
                  f"{sum(len(m) for m in one_side.values())} in {len(one_side)} league(s)")
+        _ev = [(lg, a, c, n) for lg, m in sorted(_EVIDENCE_ONLY_ALIASES.items())
+               for a, (c, n) in sorted(m.items())]
+        if _ev:
+            log.warning(f"[identity] {len(_ev)} alias(es) proven by same-day evidence only "
+                        f"(team_names cannot spell-match them; add to the alias store): "
+                        + "; ".join(f"{lg}: {a} -> {c} ({n} dates)" for lg, a, c, n in _ev[:12]))
         log.info(f"[identity] {rep['n_aliases']} club aliases, {rep['team_cells_renamed']:,} names "
                  f"unified, {rep['duplicate_rows_removed']:,} duplicate fixtures removed, "
                  f"{rep['quarantined_fixtures']} score-conflict fixture(s) quarantined "
@@ -455,16 +585,194 @@ def _canonical_identity_and_seasons(out: pd.DataFrame) -> pd.DataFrame:
         return out
 
 
+def _repair_club_text(df: pd.DataFrame) -> pd.DataFrame:
+    """Club names whose UTF-8 bytes were decoded as Latin-1 ('PreuÃ\\x9fen MÃ¼nster'), repaired to
+    the real text ('Preußen Münster') - in this READ only; the banks keep what they hold. The download
+    now decodes the bytes itself (src.integrity.duplicate_matches.decode_csv_bytes), so this only
+    cleans rows banked before that fix (68 fd_history + 78 af_history rows at data-truth-100 HEAD)."""
+    from src.integrity.duplicate_matches import fix_mojibake
+    if df is None or df.empty:
+        return df
+    df = df.copy()
+    n = 0
+    for c in ("home_team", "away_team"):
+        if c in df.columns:
+            new = df[c].map(fix_mojibake)
+            n += int((new.astype(str) != df[c].astype(str)).sum())
+            df[c] = new
+    if n:
+        log.warning(f"[clubs] {n} club name(s) were mojibake (UTF-8 read as Latin-1) - repaired")
+    return df
+
+
+def _one_match_one_row(df: pd.DataFrame) -> pd.DataFrame:
+    """The last de-duplication: one row per match across sources and dates (see
+    src.integrity.duplicate_matches). The two steps above key on the EXACT date, so the same MLS /
+    Argentina / Brazil / Mexico fixture filed under its local date by one source and the UTC date by
+    another (1-3 days apart) stayed twice, and the earlier copy sat inside the later copy's own
+    last-5 form window. Survivor by the stated source rule (SOURCE_PRIORITY, then completeness, then
+    earliest); counts logged."""
+    from src.integrity.duplicate_matches import dedupe_matches
+    if df is None or df.empty or not {"home_goals", "away_goals"}.issubset(df.columns):
+        return df
+    try:
+        out, rep = dedupe_matches(df, source_col="row_source")
+    except Exception as e:                                             # noqa: BLE001
+        log.error(f"[one-match] de-duplication FAILED ({type(e).__name__}: {e}) - frame left as is")
+        return df
+    if rep["rows_removed"]:
+        log.warning(f"[one-match] removed {rep['rows_removed']:,} duplicate match row(s): "
+                    f"{rep['same_day_pairs']} same-day (of which {rep['one_side_same_day_pairs']} "
+                    f"with one side spelled differently) + {rep['near_date_pairs']} 1-3 day "
+                    f"pair(s); {rep['cells_filled_from_copy']} empty cell(s) filled from the "
+                    f"dropped copy; e.g. {rep['examples'][:3]}")
+    out = out.sort_values("date", kind="mergesort").reset_index(drop=True)
+    out.attrs["one_match_report"] = {k: v for k, v in rep.items() if k != "examples"}
+    return out
+
+
+def _apply_history_corrections(df: pd.DataFrame, corrections: pd.DataFrame | None = None,
+                               scores: pd.DataFrame | None = None) -> pd.DataFrame:
+    """src.history_corrections.apply_history_corrections, never fatal: an unreadable list logs an
+    error and the history is served uncorrected (the data-truth checks still see the duplicates).
+    `corrections` / `scores` override the committed lists (scripts/build_history_corrections.py
+    measures the loader's merge under the lists it is building)."""
+    try:
+        from src.history_corrections import apply_history_corrections
+        return apply_history_corrections(df, corr=corrections, scores=scores, tag="history-corrections")
+    except Exception as e:                                             # noqa: BLE001
+        log.error(f"[history-corrections] NOT applied ({type(e).__name__}: {e})")
+        return df
+
+
+def _add_history_supplement(df: pd.DataFrame) -> pd.DataFrame:
+    """src.history_supplement.add_supplement, never fatal: an unreadable supplement logs an error and
+    the history is served without it (data truth rule 5 reads the same file)."""
+    try:
+        from src.history_supplement import add_supplement
+        return add_supplement(df, tag="history-supplement")
+    except Exception as e:                                             # noqa: BLE001
+        log.error(f"[history-supplement] NOT applied ({type(e).__name__}: {e})")
+        return df
+
+
+def one_club_one_match(out: pd.DataFrame) -> pd.DataFrame:
+    """THE identity pipeline of the merged history, in ONE place - load_all_matches (train and serve)
+    and the data-truth check (src/integrity/data_truth.one_match) both call it: mojibake repaired,
+    one spelling per club (_canonicalise_clubs, _canonical_identity_and_seasons), one row per match
+    (_one_match_one_row: +-3 days, canonical clubs, same score).
+
+    FIRST the owner's history corrections (2026-11-04, src/history_corrections.py): proven domestic-cup
+    rows filed under a league are excluded ("cups are not in Wowza tips"), and the proven second copy
+    of a match filed one day apart is removed (the provider's fixture date decides which copy stays).
+    They run on the history's OWN key and spelling, so before any club is renamed."""
+    return _one_match_one_row(identity_before_one_match(out))
+
+
+def _apply_date_corrections(df: pd.DataFrame, dates: pd.DataFrame | None = None) -> pd.DataFrame:
+    """src.history_corrections.apply_date_corrections (fix15/dates, owner 2026-11-07: "use the
+    provider's date"), never fatal: an unreadable list logs an error and the history keeps its own
+    dates. On the history's OWN key and spelling, so after the removal lists and before any club is
+    renamed, any enrichment joins (the HT fill sidecar is re-keyed onto the corrected date) and any
+    feature - rest days and the rolling-window order use the provider's date."""
+    try:
+        from src.history_corrections import apply_date_corrections
+        return apply_date_corrections(df, dates=dates, tag="history-dates")
+    except Exception as e:                                             # noqa: BLE001
+        log.error(f"[history-dates] NOT applied ({type(e).__name__}: {e})")
+        return df
+
+
+def identity_before_one_match(out: pd.DataFrame, corrections: pd.DataFrame | None = None,
+                              scores: pd.DataFrame | None = None,
+                              dates: pd.DataFrame | None = None) -> pd.DataFrame:
+    """one_club_one_match up to (not including) the last one-match de-duplication: the frame whose
+    duplicate pairs (src.integrity.duplicate_matches.duplicate_pairs) are exactly what the loader
+    merges. scripts/build_history_corrections.py proves the provider date of those pairs
+    (fix8/history2, 2026-11-04); `corrections` / `scores` / `dates` override the committed lists
+    (the builder passes an empty `dates`: the date list is built after the pairs)."""
+    out = _apply_history_corrections(out, corrections, scores)
+    out = _apply_date_corrections(out, dates)
+    out = _repair_club_text(out)
+    out = _canonicalise_clubs(out)
+    return _canonical_identity_and_seasons(out)
+
+
+def _impossible_stats_to_missing(df: pd.DataFrame) -> pd.DataFrame:
+    """Shot counts that cannot be true, set MISSING (never corrected, never a default), counted and
+    logged (CLAUDE_PROMPT_2 P2 'v9 training stats'):
+      * shots < shots on target (that side's shots and SOT -> missing),
+      * shots < goals           (that side's shots and SOT -> missing; an own goal needs no shot,
+                                 but then the SOT count is still unproven, so both go),
+      * both sides 0 shots and 0 SOT on a row that is otherwise a played match (a placeholder, not a
+        count) -> all four missing.
+    Shot ratios are recomputed from what remains."""
+    need = {"home_shots", "away_shots", "home_sot", "away_sot", "home_goals", "away_goals"}
+    if df is None or df.empty or not need.issubset(df.columns):
+        return df
+    counts = {}
+    zero = ((pd.to_numeric(df["home_shots"], errors="coerce") == 0)
+            & (pd.to_numeric(df["away_shots"], errors="coerce") == 0)
+            & ~(pd.to_numeric(df["home_sot"], errors="coerce") > 0)
+            & ~(pd.to_numeric(df["away_sot"], errors="coerce") > 0))
+    for side in ("home", "away"):
+        sh = pd.to_numeric(df[f"{side}_shots"], errors="coerce")
+        so = pd.to_numeric(df[f"{side}_sot"], errors="coerce")
+        g = pd.to_numeric(df[f"{side}_goals"], errors="coerce")
+        lt_sot = (sh < so) & ~zero
+        lt_goals = (sh < g) & ~lt_sot & ~zero
+        counts[f"{side}_shots_lt_sot"] = int(lt_sot.sum())
+        counts[f"{side}_shots_lt_goals"] = int(lt_goals.sum())
+        df.loc[lt_sot | lt_goals, [f"{side}_shots", f"{side}_sot"]] = np.nan
+    counts["all_zero_shot_rows"] = int(zero.sum())
+    df.loc[zero, ["home_shots", "away_shots", "home_sot", "away_sot"]] = np.nan
+    with np.errstate(divide="ignore", invalid="ignore"):
+        for side in ("home", "away"):
+            sh, so = df[f"{side}_shots"], df[f"{side}_sot"]
+            df[f"{side}_sot_ratio"] = np.where(sh > 0, so / sh, np.nan)
+    if any(counts.values()):
+        log.warning(f"[stats] impossible shot counts set MISSING: {counts}")
+    df.attrs["impossible_stats"] = counts
+    return df
+
+
+def _flag_ou25_pair(df: pd.DataFrame) -> pd.DataFrame:
+    """`ou25_pair_is_price`: False where the O/U 2.5 pair has a NEGATIVE margin (1/over + 1/under < 1).
+    No single book quotes that - it is two best prices from different books (427 of the 432 such
+    pairs are new-format, built per side from newformat_odds_history). The prices themselves stay
+    (each is a real quote); the pair is NOT a price for the overround feature, which must read it as
+    missing, never clip it to an invented 0 (src.integrity.price_provenance.overround_or_missing).
+    NaN where either side is unpriced."""
+    if df is None or df.empty or not {"odds_over25", "odds_under25"}.issubset(df.columns):
+        return df
+    from src.integrity.price_provenance import overround_or_missing
+    o = pd.to_numeric(df["odds_over25"], errors="coerce")
+    u = pd.to_numeric(df["odds_under25"], errors="coerce")
+    priced = (o > 0) & (u > 0)
+    ok = overround_or_missing(o, u).notna()
+    df["ou25_pair_is_price"] = ok.astype("boolean").where(priced)
+    n = int((priced & ~ok).sum())
+    if n:
+        log.warning(f"[odds] {n} O/U 2.5 pair(s) of {int(priced.sum()):,} have a negative margin - "
+                    f"flagged ou25_pair_is_price=False (missing for the overround feature)")
+    return df
+
+
 def _fd_download_tables() -> tuple[dict, dict]:
     """({league: code} for per-season mmz4281 files, {league: code} for /new/ files), from the
-    registry: every league with a football_data_code, standard -> mmz4281, new_format -> /new/."""
+    registry: every MODEL league with a football_data_code, standard -> mmz4281, new_format -> /new/.
+    A league with model_type null is skipped here (it is not a model league and was being filed in
+    the /new/ bucket by elimination); the HT-extra download reads those by football_data_format."""
     from src import league_registry as _LR
     std, new = {}, {}
     for e in _LR.leagues():
         code = e.get("football_data_code")
         if not code:
             continue
-        (std if e.get("model_type") == "standard" else new)[e["name"]] = code
+        if e.get("model_type") == "standard":
+            std[e["name"]] = code
+        elif e.get("model_type") == "new_format":
+            new[e["name"]] = code
     return std, new
 
 
@@ -575,7 +883,9 @@ def _report_training_coverage(out: pd.DataFrame) -> None:
                              "last": str(pd.to_datetime(g["date"]).max())[:10],
                              **{c: round(float(g[c].notna().mean()), 4) for c in cols}}
         thin = sorted(lg for lg, r in rows.items()
-                      if r.get("home_corners", 1.0) < 0.5 or r.get("ht_home_goals", 1.0) < 0.5)
+                      # a column the frame lacks has UNKNOWN coverage (it was a typed 1.0 = full): not
+                      # listed as thin, same as before, but no number is invented for it
+                      if any(r.get(c) is not None and r[c] < 0.5 for c in ("home_corners", "ht_home_goals")))
         payload = {"generated_at": pd.Timestamp.now(tz="UTC").isoformat(),
                    "total_rows": int(len(out)), "leagues": rows,
                    "thin_on_corners_or_halftime": thin}
@@ -625,7 +935,7 @@ def _ci_download_all(have: set | None = None) -> list[pd.DataFrame]:
     # Same failure shape as COLLECT_SEASONS freezing at "2025" while PROP_SEASONS rolled to
     # "2026" (root CLAUDE.md): a season-keyed constant that someone must remember to bump, and
     # nobody does. Derive it and the July roll happens by itself.
-    _now = __import__("datetime").datetime.now()
+    _now = __import__("src.utc_clock", fromlist=["utc_now"]).utc_now()   # UTC: season rolls on the UTC day
     _start = _now.year if _now.month >= 7 else _now.year - 1
     SEASONS = [f"{str(y)[2:]}{str(y + 1)[2:]}" for y in range(_start, _start - 4, -1)]
 
@@ -656,7 +966,8 @@ def _ci_download_all(have: set | None = None) -> list[pd.DataFrame]:
                     # training and serving history with no trace (Data Truth audit finding 43).
                     log.warning(f"[data] {league} {season_label}: HTTP {r.status_code} — not in history this run")
                     continue
-                raw = pd.read_csv(StringIO(r.text), encoding="utf-8-sig",
+                # The BYTES, decoded here: r.text guessed Latin-1 for UTF-8 files (mojibake names)
+                raw = pd.read_csv(StringIO(_decode_csv(r.content)),
                                   on_bad_lines="skip", low_memory=False)
                 df = pd.DataFrame()
                 df["date"] = pd.to_datetime(raw.get("Date"), dayfirst=True, errors="coerce")
@@ -698,7 +1009,7 @@ def _ci_download_all(have: set | None = None) -> list[pd.DataFrame]:
             if r.status_code != 200:
                 log.warning(f"[data] {league}: HTTP {r.status_code} — not in history this run")
                 continue
-            raw = pd.read_csv(StringIO(r.text), encoding="utf-8-sig",
+            raw = pd.read_csv(StringIO(_decode_csv(r.content)),
                               on_bad_lines="skip", low_memory=False)
             df = pd.DataFrame()
             df["date"] = pd.to_datetime(raw.get("Date"), dayfirst=True, errors="coerce")
@@ -816,38 +1127,26 @@ def _enrich_with_af_odds(df: pd.DataFrame) -> pd.DataFrame:
         return df
 
     try:
-        from src.api_football_ou import _norm_name
-    except ImportError:
-        _norm_name = lambda x: str(x).lower().strip()
-
-    try:
         odds_hist = pd.read_parquet(af_odds_path)
+        # League-keyed or nothing: the old (home, away, date) lookup had no league and reindexed
+        # positionally (Data Truth 2026-11-01).
+        if "league" not in odds_hist.columns or "league" not in df.columns:
+            log.error("[af_odds] af_odds_history has no league column — enrichment SKIPPED "
+                      "(a join without league can put prices on another league's fixture)")
+            return df
         odds_hist["date"] = pd.to_datetime(odds_hist["date"], errors="coerce")
-        odds_hist["_h"] = odds_hist["home_team"].apply(_norm_name)
-        odds_hist["_a"] = odds_hist["away_team"].apply(_norm_name)
+        odds_hist = _resolve_onto_history(odds_hist, df, "home_team", "away_team", "af_odds")
         odds_hist["_d"] = odds_hist["date"].dt.strftime("%Y-%m-%d")
 
-        df["_h"] = df["home_team"].apply(_norm_name)
-        df["_a"] = df["away_team"].apply(_norm_name)
+        df["_h"] = df["home_team"].astype(str)
+        df["_a"] = df["away_team"].astype(str)
         df["_d"] = pd.to_datetime(df["date"], errors="coerce").dt.strftime("%Y-%m-%d")
 
-        lookup = odds_hist.set_index(["_h", "_a", "_d"])[
-            ["odds_btts", "odds_over15", "odds_over35"]
-        ]
-
-        try:   # R2-C: league-free key — audited (output/join_integrity_health.json)
-            _IJ.audit_legacy_merge(df, odds_hist, ["_h", "_a", "_d"], name="af_odds_history.legacy")
-        except Exception as _e:                                  # noqa: BLE001
-            log.warning(f"[af_odds] join audit skipped: {_e}")
-        idx = pd.MultiIndex.from_arrays([df["_h"], df["_a"], df["_d"]])
-        matched = lookup.reindex(idx).reset_index(drop=True)
-
-        for col in ["odds_btts", "odds_over15", "odds_over35"]:
-            mask = df[col].isna() & matched[col].notna()
-            df.loc[mask, col] = matched.loc[mask, col].values
-            if mask.any():
-                log.info(f"  [af_odds] {col}: filled {mask.sum()} rows from af_odds_history")
-
+        _vc = [c for c in ("odds_btts", "odds_over15", "odds_over35")
+               if c in odds_hist.columns and c in df.columns]
+        df, _rep = _IJ.safe_left_enrich(df, odds_hist, keys=["league", "_h", "_a", "_d"],
+                                        value_cols=_vc, name="af_odds_history")
+        log.info(f"  [af_odds] SAFE join filled {_rep.filled_cells}")
         df = df.drop(columns=["_h", "_a", "_d"])
     except Exception as e:
         log.warning(f"[af_odds] Could not merge odds history: {e}")
@@ -865,10 +1164,6 @@ def _enrich_with_standard_sidemarket_odds(df: pd.DataFrame) -> pd.DataFrame:
     path = Path(__file__).resolve().parents[1] / "output" / "standard_sidemarket_odds_history.csv"
     if not path.exists():
         return df
-    try:
-        from src.api_football_ou import _norm_name
-    except ImportError:
-        _norm_name = lambda x: str(x).lower().strip()
     try:
         _MKT = {"btts_yes": "odds_btts", "over15": "odds_over15", "over35": "odds_over35"}
         oh = pd.read_csv(path)
@@ -905,39 +1200,34 @@ def _enrich_with_standard_sidemarket_odds(df: pd.DataFrame) -> pd.DataFrame:
             oh = oh[~_bad].copy()
         if oh.empty:
             return df
+        if "league" not in oh.columns:
+            log.error("[std_sidemarket] capture file has no league column — enrichment SKIPPED")
+            return df
         parts = oh["match"].astype(str).str.split(" vs ", n=1, expand=True)
-        oh["_h"] = parts[0].apply(_norm_name)
-        oh["_a"] = (parts[1] if parts.shape[1] > 1 else "").apply(_norm_name)
+        oh["_hraw"] = parts[0]
+        oh["_araw"] = parts[1] if parts.shape[1] > 1 else None
+        oh = _resolve_onto_history(oh, df, "_hraw", "_araw", "std_sidemarket",
+                                aliases=IDENTITY_ALIASES)    # df is canonical (fix12)
         oh["_d"] = oh["match_date"].astype(str).str[:10]
         oh["_col"] = oh["market"].map(_MKT)
-        piv = oh.pivot_table(index=["_h", "_a", "_d"], columns="_col", values="odds", aggfunc="last")
 
-        df["_h"] = df["home_team"].apply(_norm_name)
-        df["_a"] = df["away_team"].apply(_norm_name)
+        df["_h"] = df["home_team"].astype(str)
+        df["_a"] = df["away_team"].astype(str)
         df["_d"] = pd.to_datetime(df["date"], errors="coerce").dt.strftime("%Y-%m-%d")
         try:   # R2-C: league-free key — audited (output/join_integrity_health.json)
             _IJ.audit_league_free_lookup(df, oh, ["_h", "_a", "_d"],
                                          name="std_sidemarket_odds.legacy")
         except Exception as _e:                                  # noqa: BLE001
             log.warning(f"[std_sidemarket] join audit skipped: {_e}")
-        if _safe_joins():
-            _w = oh.sort_values("snapshot_ts") if "snapshot_ts" in oh.columns else oh
-            _w = (_w.drop_duplicates(["league", "_h", "_a", "_d", "_col"], keep="last")
-                    .pivot(index=["league", "_h", "_a", "_d"], columns="_col", values="odds")
-                    .reset_index())
-            _vc = [c for c in ("odds_btts", "odds_over15", "odds_over35")
-                   if c in _w.columns and c in df.columns]
-            df, _ = _IJ.safe_left_enrich(df, _w, keys=["league", "_h", "_a", "_d"],
-                                         value_cols=_vc, name="std_sidemarket_odds")
-            return df.drop(columns=["_h", "_a", "_d"])
-        idx = pd.MultiIndex.from_arrays([df["_h"], df["_a"], df["_d"]])
-        matched = piv.reindex(idx).reset_index(drop=True)
-        for col in ("odds_btts", "odds_over15", "odds_over35"):   # NOTE: over25 deliberately excluded
-            if col in matched.columns and col in df.columns:
-                mask = df[col].isna() & matched[col].notna()
-                if mask.any():
-                    df.loc[mask, col] = matched.loc[mask, col].values
-                    log.info(f"  [std_sidemarket] {col}: filled {int(mask.sum())} rows from real backfill")
+        # NOTE: over25 deliberately excluded (the standard O/U money-market stays football-data)
+        _w = oh.sort_values("snapshot_ts") if "snapshot_ts" in oh.columns else oh
+        _w = (_w.drop_duplicates(["league", "_h", "_a", "_d", "_col"], keep="last")
+                .pivot(index=["league", "_h", "_a", "_d"], columns="_col", values="odds")
+                .reset_index())
+        _vc = [c for c in ("odds_btts", "odds_over15", "odds_over35")
+               if c in _w.columns and c in df.columns]
+        df, _ = _IJ.safe_left_enrich(df, _w, keys=["league", "_h", "_a", "_d"],
+                                     value_cols=_vc, name="std_sidemarket_odds")
         df = df.drop(columns=["_h", "_a", "_d"])
     except Exception as e:
         log.warning(f"[std_sidemarket] merge failed: {e}")
@@ -989,117 +1279,43 @@ def _enrich_ou25_from_captures(df: pd.DataFrame) -> pd.DataFrame:
     if not frames:
         return df
     try:
-        from src.api_football_ou import _norm_name
-    except ImportError:
-        _norm_name = lambda x: str(x).lower().strip()
-    try:
         oh = pd.concat(frames, ignore_index=True)
-        # Sort so aggfunc="last" really means the latest snapshot we hold for that fixture.
+        if "league" not in oh.columns:
+            log.error("[ou25_captures] captures have no league column — enrichment SKIPPED")
+            return df
+        # Sort so keep="last" really means the latest snapshot we hold for that fixture.
         if "snapshot_ts" in oh.columns:
             oh = oh.sort_values("snapshot_ts")
+        # OddsAPI-vs-history is exactly the boundary team_names.resolve exists for: each capture
+        # club is resolved among the history clubs of the capture's own league ("Colchester
+        # United" -> "Colchester"); a club no rule proves is skipped and logged. This replaces
+        # the old _norm_name exact key plus a resolver second pass (2026-11-02).
         parts = oh["match"].astype(str).str.split(" vs ", n=1, expand=True)
-        oh["_hraw"] = parts[0].astype(str)
-        oh["_araw"] = (parts[1] if parts.shape[1] > 1 else "").astype(str)
-        oh["_h"] = oh["_hraw"].apply(_norm_name)
-        oh["_a"] = oh["_araw"].apply(_norm_name)
+        oh["_hraw"] = parts[0]
+        oh["_araw"] = parts[1] if parts.shape[1] > 1 else None
+        oh = _resolve_onto_history(oh, df, "_hraw", "_araw", "ou25_captures",
+                                aliases=IDENTITY_ALIASES)    # df is canonical (fix12)
         oh["_d"] = oh["match_date"].astype(str).str[:10]
         oh["_col"] = oh["market"].map({"over25": "odds_over25", "under25": "odds_under25"})
-        piv = oh.pivot_table(index=["_h", "_a", "_d"], columns="_col",
-                             values="odds", aggfunc="last")
 
-        df["_h"] = df["home_team"].apply(_norm_name)
-        df["_a"] = df["away_team"].apply(_norm_name)
+        df["_h"] = df["home_team"].astype(str)
+        df["_a"] = df["away_team"].astype(str)
         df["_d"] = pd.to_datetime(df["date"], errors="coerce").dt.strftime("%Y-%m-%d")
         try:   # R2-C: league-free key — audited (output/join_integrity_health.json)
             _IJ.audit_league_free_lookup(df, oh, ["_h", "_a", "_d"],
                                          name="ou25_captures.legacy")
         except Exception as _e:                                  # noqa: BLE001
             log.warning(f"[ou25_captures] join audit skipped: {_e}")
-        if _safe_joins() and "league" in oh.columns:
-            for col in ("odds_over25", "odds_under25"):
-                if col not in df.columns:
-                    df[col] = np.nan
-            _w = (oh.drop_duplicates(["league", "_h", "_a", "_d", "_col"], keep="last")
-                    .pivot(index=["league", "_h", "_a", "_d"], columns="_col", values="odds")
-                    .reset_index())
-            _vc = [c for c in ("odds_over25", "odds_under25") if c in _w.columns]
-            df, _rep = _IJ.safe_left_enrich(df, _w, keys=["league", "_h", "_a", "_d"],
-                                            value_cols=_vc, name="ou25_captures")
-            log.info(f"  [ou25_captures] SAFE join filled {_rep.filled_cells}")
-        else:
-            matched = piv.reindex(pd.MultiIndex.from_arrays(
-                [df["_h"], df["_a"], df["_d"]])).reset_index(drop=True)
-            for col in ("odds_over25", "odds_under25"):
-                if col not in df.columns:
-                    df[col] = np.nan
-                if col in matched.columns:
-                    mask = df[col].isna() & matched[col].notna()
-                    if mask.any():
-                        df.loc[mask, col] = matched.loc[mask, col].values
-                        log.info(f"  [ou25_captures] {col}: filled {int(mask.sum())} row(s) from "
-                                 f"our own forward captures")
-
-        # SECOND PASS, league-scoped, through the canonical resolver (invariant 11). `_norm_name`
-        # lower-cases and strips punctuation but knows nothing about club naming: it cannot see
-        # that OddsAPI's "Colchester United" and football-data's "Colchester" are one club, and
-        # this join is exactly the OddsAPI-vs-history boundary team_names.resolve exists for.
-        #
-        # Measured on the standard + enabled leagues: 521 playable capture fixtures, of which the
-        # exact key above finds 232 and this pass lifts it to 388. The standard track needs 460
-        # priced rows to backtest, so this does not unblock it TODAY — but it is the difference
-        # between a track that gets there as the captures grow and one that never does.
-        #
-        # `resolve` is league-scoped and REFUSES an ambiguous match, returning None, so a club it
-        # cannot pin down is skipped rather than guessed at. It runs on the CAPTURES (a few
-        # thousand) rather than the history rows (40k), and only fills values still NaN, so it
-        # can add a price and never change one.
-        try:
-            from src.team_names import resolve as _resolve
-            cap = piv.dropna(how="all").reset_index()
-            # The captures carry their own `league`, so resolve within THAT league only. Scanning
-            # every league instead would be ~46x the work and would also let a club name match
-            # the wrong competition — the failure mode team_names.resolve is built to refuse.
-            raw_by_key = {(h, a, d): (hr, ar, lg) for h, a, d, hr, ar, lg in zip(
-                oh["_h"], oh["_a"], oh["_d"], oh["_hraw"], oh["_araw"],
-                oh["league"] if "league" in oh.columns else [""] * len(oh))}
-            by_league = {l: sorted(set(g["home_team"].dropna().astype(str))
-                                   | set(g["away_team"].dropna().astype(str)))
-                         for l, g in df.groupby("league")} if "league" in df.columns else {}
-            # (league, raw name) -> history name. The same clubs recur constantly and resolve()
-            # is a tiered scan over every candidate in the league, so memoise it.
-            memo: dict = {}
-
-            def _r(league, nm):
-                k = (league, nm)
-                if k not in memo:
-                    memo[k] = _resolve(nm, by_league.get(league, []))
-                return memo[k]
-
-            # Where a history row still has no price, index it so a resolved capture can find it.
-            miss = df[df["odds_over25"].isna() | df["odds_under25"].isna()]
-            slot = {(str(l), str(h), str(a), str(d)): i for i, l, h, a, d in zip(
-                miss.index, miss.get("league", ""), miss["home_team"],
-                miss["away_team"], miss["_d"])}
-            added = 0
-            for _, c in cap.iterrows():
-                hr, ar, lg = raw_by_key.get((c["_h"], c["_a"], c["_d"]), (None, None, None))
-                if hr is None or not lg:
-                    continue
-                rh, ra = _r(lg, hr), _r(lg, ar)
-                if not rh or not ra:
-                    continue
-                i = slot.get((str(lg), str(rh), str(ra), str(c["_d"])))
-                if i is None:
-                    continue
-                for col in ("odds_over25", "odds_under25"):
-                    if col in cap.columns and pd.notna(c.get(col)) and pd.isna(df.at[i, col]):
-                        df.at[i, col] = float(c[col])
-                        added += 1
-            if added:
-                log.info(f"  [ou25_captures] team_names.resolve added {added} price(s) the exact "
-                         f"name key missed")
-        except Exception as _e:                                  # noqa: BLE001
-            log.warning(f"[ou25_captures] resolver pass skipped: {type(_e).__name__}: {_e}")
+        for col in ("odds_over25", "odds_under25"):
+            if col not in df.columns:
+                df[col] = np.nan
+        _w = (oh.drop_duplicates(["league", "_h", "_a", "_d", "_col"], keep="last")
+                .pivot(index=["league", "_h", "_a", "_d"], columns="_col", values="odds")
+                .reset_index())
+        _vc = [c for c in ("odds_over25", "odds_under25") if c in _w.columns]
+        df, _rep = _IJ.safe_left_enrich(df, _w, keys=["league", "_h", "_a", "_d"],
+                                        value_cols=_vc, name="ou25_captures")
+        log.info(f"  [ou25_captures] SAFE join filled {_rep.filled_cells}")
 
         df = df.drop(columns=["_h", "_a", "_d"])
     except Exception as e:                                       # noqa: BLE001
@@ -1107,64 +1323,10 @@ def _enrich_ou25_from_captures(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def _resolve_onto_history(right: pd.DataFrame, df: pd.DataFrame, home_col: str, away_col: str,
-                          name: str, aliases: dict | None = None) -> pd.DataFrame:
-    """`right` restricted to the rows whose two clubs are PROVABLY clubs of `df`, with `_h`/`_a`
-    holding df's own spelling of each (owner rule: proven identity only, never guessed).
-
-    Each source name is resolved by src.team_names.resolve among df's clubs of the row's league;
-    a name no rule proves is skipped, counted and logged. `aliases` ({league: {spelling:
-    canonical}}): the identity map the loader APPLIED to df (IDENTITY_ALIASES). A source keyed on
-    the history's OWN pre-identity spelling (the HT sidecar) names a club the identity step renamed
-    by same-day evidence - 'Atletico Paranaense' -> 'Athletico-PR' - which resolve() cannot
-    spell-match. Only when resolve() finds nothing: the spelling (or one resolve() proves equal to
-    it) must be an alias of exactly ONE canonical club in THIS league's pool; otherwise the row
-    stays unplaced. Ported from data-truth-100 for the HT hotfix (2026-11-03)."""
-    from src.team_names import resolve
-    if right.empty or "league" not in right.columns or "league" not in df.columns:
-        return right.iloc[0:0].assign(_h=pd.Series(dtype=object), _a=pd.Series(dtype=object))
-    pools = {str(lg): sorted(set(g["home_team"].dropna().astype(str))
-                             | set(g["away_team"].dropna().astype(str)))
-             for lg, g in df.groupby("league")}
-    r = right[right["league"].astype(str).isin(pools)].copy()
-    memo: dict = {}
-    pool_sets = {lg: set(p) for lg, p in pools.items()}
-
-    def _by_identity_alias(lg, txt):
-        amap = (aliases or {}).get(lg) or {}
-        hits = {c for a, c in amap.items()
-                if c in pool_sets[lg] and (a == txt or resolve(txt, [a]) == a)}
-        return hits.pop() if len(hits) == 1 else None
-
-    def _one(lg, nm):
-        if nm is None or (isinstance(nm, float) and np.isnan(nm)) or not str(nm).strip():
-            return None
-        k = (lg, str(nm))
-        if k not in memo:
-            txt = str(nm)
-            memo[k] = resolve(txt, pools[lg])
-            if memo[k] is None and aliases:
-                memo[k] = _by_identity_alias(lg, txt)
-        return memo[k]
-
-    lgs = r["league"].astype(str).tolist()
-    r["_h"] = [_one(lg, n) for lg, n in zip(lgs, r[home_col].tolist())]
-    r["_a"] = [_one(lg, n) for lg, n in zip(lgs, r[away_col].tolist())]
-    bad = r["_h"].isna() | r["_a"].isna()
-    if bad.any():
-        miss = sorted({(lg, str(n)) for lg, n, ok in
-                       zip(lgs, r[home_col].tolist(), r["_h"].notna()) if not ok}
-                      | {(lg, str(n)) for lg, n, ok in
-                         zip(lgs, r[away_col].tolist(), r["_a"].notna()) if not ok})
-        log.info(f"  [{name}] {int(bad.sum())} source row(s) skipped: {len(miss)} club name(s) not "
-                 f"provably a club of the league (team_names.resolve), e.g. {miss[:5]}")
-    return r[~bad]
-
-
 #: HT score sources, in fill order. Same key (league, date, home_team, away_team) and HTHG/HTAG
 #: layout. fd_history_ht_fill.parquet is written beside the history by scripts/collect_ht_scores.py
-#: on data-truth-100 (API-Football score.halftime by fixture id, a null HT stored as missing, never
-#: 0) - fd_history itself is never rewritten. Either may be absent.
+#: (data_truth_collect.yml step 'htscores'; API-Football score.halftime by fixture id, a null HT
+#: stored as missing, never 0) - fd_history itself is never rewritten. Either may be absent.
 HT_SOURCES = (("af_ht_history", Path("output") / "af_ht_history.parquet"),
               ("fd_history_ht_fill", Path("output") / "collect" / "fd_history_ht_fill.parquet"))
 
@@ -1204,10 +1366,9 @@ def _ht_labels(df: pd.DataFrame) -> pd.DataFrame:
 def _enrich_ht_scores(df: pd.DataFrame, root: Path | None = None) -> pd.DataFrame:
     """Fill MISSING ht_home_goals / ht_away_goals from HT_SOURCES (nan_only: a stored HT score is
     never overwritten), league-keyed, clubs resolved onto the history's own spellings
-    (team_names.resolve + the applied identity map; an unprovable name is skipped and logged).
-    Then the HT labels are recomputed - they were built before this step, so a filled score never
-    reached ht_over05. Coverage per new-format league before/after is logged and kept in
-    df.attrs['ht_coverage']."""
+    (team_names.resolve; an unprovable name is skipped and logged). Then the HT labels are
+    recomputed - they were built before this step, so a filled score never reached ht_over05.
+    HT coverage per new-format league before/after is logged and kept in df.attrs['ht_coverage']."""
     root = root or Path(__file__).resolve().parents[1]
     before = ht_coverage(df)
     filled = {}
@@ -1224,6 +1385,13 @@ def _enrich_ht_scores(df: pd.DataFrame, root: Path | None = None) -> pd.DataFram
                 continue
             ht = ht[ht["HTHG"].notna() & ht["HTAG"].notna()].copy()      # a null HT is missing
             ht["date"] = pd.to_datetime(ht["date"], errors="coerce")
+            if name == "fd_history_ht_fill":
+                # keyed on fd_history's OWN key: a row of a history match the loader re-dated onto the
+                # provider's date (fix15/dates, apply_date_corrections) moves with it
+                from src.history_corrections import rekey_dated_sidecar
+                ht = rekey_dated_sidecar(ht, tag=name)
+            # keyed on the history's own spelling: let the identity map the loader applied to df
+            # place a club it renamed (Phase 2 HT repair: 2,303 of 33,259 sidecar rows were lost)
             ht = _resolve_onto_history(ht, df, "home_team", "away_team", name,
                                        aliases=IDENTITY_ALIASES)
             ht["_date_str"] = ht["date"].dt.strftime("%Y-%m-%d")
@@ -1252,6 +1420,186 @@ def _enrich_ht_scores(df: pd.DataFrame, root: Path | None = None) -> pd.DataFram
     return df
 
 
+#: Fixture statistics collected BESIDE af_history.parquet (Data Truth round 6) by
+#: scripts/collect_af_history_gap.py --insidebox: API-Football 'Shots insidebox' (HIB/AIB) and
+#: expected_goals (HXG/AXG) for af_history matches that lack them, keyed by af_history's own
+#: (league, date, home_team, away_team). af_history.parquet itself is never rewritten.
+AF_STATS_FILL = Path("output") / "collect" / "af_history_stats_fill.parquet"
+_AF_STATS_FILL_COLS = {"HIB": "home_insidebox", "AIB": "away_insidebox",
+                       "HXG": "home_xg", "AXG": "away_xg"}
+
+
+def _enrich_af_stats_fill(df: pd.DataFrame, root: Path | None = None) -> pd.DataFrame:
+    """Fill MISSING home/away_insidebox and home/away_xg from AF_STATS_FILL (nan_only, a stored value
+    is never overwritten), league-keyed, clubs resolved onto df's spellings (team_names.resolve,
+    then - since fix round 9, owner 2026-11-04 - the identity map one_club_one_match applied,
+    IDENTITY_ALIASES, exactly as the HT and fullstats fills: the sidecar is keyed on af_history's
+    pre-identity spelling, so a club the pipeline renamed by same-day evidence - 'Atletico
+    Paranaense' -> 'Athletico-PR' - was dropped here while the fullstats fill placed it),
+    ambiguous cells refused by safe_left_enrich. Part of _enrich_with_api_shots, so training and
+    serving read the same history. Absent sidecar -> df unchanged."""
+    p = (root or Path(__file__).resolve().parents[1]) / AF_STATS_FILL
+    if not p.exists():
+        log.info(f"[af_stats_fill] {AF_STATS_FILL.as_posix()} not present - skipped")
+        return df
+    try:
+        fill = pd.read_parquet(p)
+        # a row keyed on a removed af_history duplicate moves onto the kept copy's key (same
+        # provider fixture id only; src/af_history_corrections, owner 2026-11-04)
+        from src.af_history_corrections import add_join_aliases, follow_redated_fixtures, rekey_sidecar
+        fill = add_join_aliases(rekey_sidecar(fill, tag="af_stats_fill"), tag="af_stats_fill")
+        # a row of a fixture whose football-data row is re-dated onto the provider date (fix15)
+        fill = follow_redated_fixtures(fill, tag="af_stats_fill")
+        vals = [c for c in _AF_STATS_FILL_COLS if c in fill.columns]
+        if "league" not in fill.columns or not vals:
+            log.error("[af_stats_fill] no league / stat column - fill SKIPPED")
+            return df
+        fill = fill[fill[vals].notna().any(axis=1)].copy()
+        fill["date"] = pd.to_datetime(fill["date"], errors="coerce")
+        fill = _resolve_onto_history(fill, df, "home_team", "away_team", "af_stats_fill",
+                                     aliases=IDENTITY_ALIASES)
+        fill["_date_str"] = fill["date"].dt.strftime("%Y-%m-%d")
+        df["_h"] = df["home_team"].astype(str)
+        df["_a"] = df["away_team"].astype(str)
+        df["_date_str"] = pd.to_datetime(df["date"], errors="coerce").dt.strftime("%Y-%m-%d")
+        df, rep = _IJ.safe_left_enrich(
+            df, fill, keys=["league", "_h", "_a", "_date_str"], value_cols=vals,
+            target_cols={c: _AF_STATS_FILL_COLS[c] for c in vals}, name="af_stats_fill")
+        log.info(f"[af_stats_fill] filled {rep.filled_cells}; ambiguous key groups "
+                 f"{rep.ambiguous_key_groups}")
+    except Exception as e:                                       # noqa: BLE001
+        log.warning(f"[af_stats_fill] failed to merge {AF_STATS_FILL.as_posix()}: {e}")
+    finally:
+        df = df.drop(columns=["_h", "_a", "_date_str"], errors="ignore")
+    return df
+
+
+#: Every cached API-Football /fixtures/statistics answer for af_history matches, collected BESIDE
+#: af_history.parquet by scripts/collect_af_history_gap.py --fullstats (data_truth_collect.yml step
+#: 'fullstats', owner 2026-11-04; 0 API calls). Keyed by af_history's own (league, date, home_team,
+#: away_team); a statistic the provider does not give is missing there, never 0.
+AF_FULLSTATS_FILL = Path("output") / "collect" / "af_history_fullstats_fill.parquet"
+#: sidecar column -> history column. ONLY the statistics that already feed a model feature through
+#: the form window (corners/fouls_pg_roll, shots/sot_last5). Owner 2026-11-04: the other fullstats
+#: columns (possession, passes, saves, ...) become features only in the Phase 2 retrain, and xG /
+#: inside-box already come from AF_STATS_FILL (same provider answer).
+_AF_FULLSTATS_COLS = {"home_corners": "home_corners", "away_corners": "away_corners",
+                      "home_fouls": "home_fouls", "away_fouls": "away_fouls",
+                      "home_shots": "home_shots", "away_shots": "away_shots",
+                      "home_sot": "home_sot", "away_sot": "away_sot"}
+#: the per-league coverage logged before/after the fill (new-format leagues, played rows)
+_FULLSTATS_COVERAGE_COLS = ("home_corners", "home_fouls", "home_shots", "home_sot")
+
+
+def stat_coverage(df: pd.DataFrame, cols=_FULLSTATS_COVERAGE_COLS, leagues=None) -> dict:
+    """{league: {column: share of PLAYED rows carrying it}} for the registry's new-format leagues
+    (or `leagues`). Same 'played' rule as ht_coverage."""
+    if df is None or df.empty or "league" not in df.columns:
+        return {}
+    if leagues is None:
+        leagues = [lg for lg in sorted(set(df["league"].astype(str)))
+                   if config.model_type_for_league(lg) == "new_format"]
+    played = df["home_goals"].notna() & df["away_goals"].notna() if "home_goals" in df.columns \
+        else pd.Series(True, index=df.index)
+    out = {}
+    for lg in leagues:
+        m = played & (df["league"].astype(str) == lg)
+        if m.any():
+            out[lg] = {c: (round(float(df.loc[m, c].notna().mean()), 4) if c in df.columns else 0.0)
+                       for c in cols}
+    return out
+
+
+def _enrich_af_fullstats_fill(df: pd.DataFrame, root: Path | None = None) -> pd.DataFrame:
+    """Fill MISSING corners, fouls, shots and shots on target from AF_FULLSTATS_FILL (nan_only: a
+    stored value is never overwritten), league-keyed, clubs resolved onto df's spellings
+    (team_names.resolve, then the identity map one_club_one_match applied - the sidecar is keyed
+    on af_history's spelling, as the HT sidecar is on fd_history's), ambiguous cells refused by
+    safe_left_enrich.
+
+    WHY (fix round 8, owner 2026-11-04). Data truth check 3 put the live board AMBER on all four
+    new-format tracks: home/away corners_pg_roll and fouls_pg_roll 32-33% missing while shots_last5
+    was ~2% missing. The cause is in af_history.parquet itself: 90,876 of its 93,381 rows were
+    banked by this module's write-back (_enrich_with_api_shots, 'BANK THE ENRICHMENT'), whose column
+    map carries shots, SoT, xG and inside-box but NOT corners or fouls - the same /fixtures/statistics
+    answer was fetched, and its Corner Kicks and Fouls thrown away. Those rows have no fixture_id,
+    so only the --fullstats sidecar (which re-reads the cached answer by a proven fixture id) can
+    give the values back without a new call. Part of _enrich_with_api_shots on both exits, so
+    training and serving read the same history. Absent sidecar -> df unchanged.
+
+    Fix round 9 (owner 2026-11-04): the written-back rows' own shots / SoT are no longer served
+    (src/af_history_provenance), so this fill is where a provider value REPLACES them - nan_only
+    still holds, the cells it fills are the ones the provenance rule left empty.
+
+    Rows whose shots or SoT this fill supplies get their row-level sot ratio from the filled
+    values (same formula as the loader's); no other row's ratio is touched. Per-league coverage
+    before/after is logged and kept in df.attrs['af_fullstats_fill']."""
+    p = (root or Path(__file__).resolve().parents[1]) / AF_FULLSTATS_FILL
+    if not p.exists():
+        log.info(f"[af_fullstats_fill] {AF_FULLSTATS_FILL.as_posix()} not present - skipped")
+        return df
+    try:
+        fill = pd.read_parquet(p)
+        from src.af_history_corrections import (add_join_aliases, follow_redated_fixtures,  # as the stats fill
+                                                rekey_sidecar)
+        fill = add_join_aliases(rekey_sidecar(fill, tag="af_fullstats_fill"), tag="af_fullstats_fill")
+        fill = follow_redated_fixtures(fill, tag="af_fullstats_fill")
+        vals = [c for c in _AF_FULLSTATS_COLS if c in fill.columns]
+        if "league" not in fill.columns or not vals:
+            log.error("[af_fullstats_fill] no league / stat column - fill SKIPPED")
+            return df
+        before = stat_coverage(df)
+        df = df.copy()                       # the key helpers below never leak into the caller's frame
+        fill = fill[fill[vals].notna().any(axis=1)].copy()
+        for c in vals:                                     # a non-numeric cell is missing, never 0
+            fill[c] = pd.to_numeric(fill[c], errors="coerce")
+        fill["date"] = pd.to_datetime(fill["date"], errors="coerce")
+        fill = _resolve_onto_history(fill, df, "home_team", "away_team", "af_fullstats_fill",
+                                     aliases=IDENTITY_ALIASES)
+        fill["_date_str"] = fill["date"].dt.strftime("%Y-%m-%d")
+        df["_h"] = df["home_team"].astype(str)
+        df["_a"] = df["away_team"].astype(str)
+        df["_date_str"] = pd.to_datetime(df["date"], errors="coerce").dt.strftime("%Y-%m-%d")
+        shot_cols = [c for c in ("home_shots", "away_shots", "home_sot", "away_sot") if c in df.columns]
+        had_shots = df[shot_cols].notna() if shot_cols else None
+        df, rep = _IJ.safe_left_enrich(
+            df, fill, keys=["league", "_h", "_a", "_date_str"], value_cols=vals,
+            target_cols={c: _AF_FULLSTATS_COLS[c] for c in vals}, name="af_fullstats_fill")
+        if had_shots is not None:
+            for side in ("home", "away"):
+                sh, so = f"{side}_shots", f"{side}_sot"
+                if sh not in df.columns or so not in df.columns:
+                    continue
+                newly = (df[sh].notna() & ~had_shots.get(sh, pd.Series(True, index=df.index))) | \
+                        (df[so].notna() & ~had_shots.get(so, pd.Series(True, index=df.index)))
+                if newly.any():
+                    with np.errstate(divide="ignore", invalid="ignore"):
+                        r = np.where(df[sh] > 0, df[so] / df[sh], np.nan)
+                    if f"{side}_sot_ratio" not in df.columns:
+                        df[f"{side}_sot_ratio"] = np.nan
+                    df.loc[newly, f"{side}_sot_ratio"] = r[newly.to_numpy()]
+        after = stat_coverage(df)
+        df.attrs["af_fullstats_fill"] = {"before": before, "after": after,
+                                         "filled_cells": dict(rep.filled_cells),
+                                         "ambiguous_key_groups": rep.ambiguous_key_groups}
+        moved = {lg: (before.get(lg, {}).get("home_corners", 0.0), v["home_corners"])
+                 for lg, v in after.items()
+                 if v["home_corners"] != before.get(lg, {}).get("home_corners", 0.0)}
+        log.info(f"[af_fullstats_fill] filled {rep.filled_cells}; ambiguous key groups "
+                 f"{rep.ambiguous_key_groups}; new-format corners coverage before -> after: "
+                 + ("; ".join(f"{lg} {a:.1%} -> {b:.1%}" for lg, (a, b) in moved.items())
+                    or "unchanged"))
+    except Exception as e:                                       # noqa: BLE001
+        log.warning(f"[af_fullstats_fill] failed to merge {AF_FULLSTATS_FILL.as_posix()}: {e}")
+    finally:
+        df = df.drop(columns=["_h", "_a", "_date_str"], errors="ignore")
+    return df
+
+
+#: the committed provider bank this module READS (never writes, owner 2026-11-04)
+AF_HISTORY_PATH = Path(__file__).resolve().parents[1] / "output" / "af_history.parquet"
+
+
 def _enrich_with_api_shots(df: pd.DataFrame) -> pd.DataFrame:
     """
     For new-format leagues that have no shot data from football-data.co.uk,
@@ -1261,25 +1609,49 @@ def _enrich_with_api_shots(df: pd.DataFrame) -> pd.DataFrame:
     import os as _os
     api_key = _os.getenv("APIFOOTBALL_KEY", "") or config.API_KEY
 
-    try:
-        from src.api_football_ou import _norm_name
-    except ImportError:
-        _norm_name = lambda x: str(x).lower().strip()
-
     # Pre-initialize xG/insidebox so merge suffixes work correctly for new columns
     for _col in ["home_xg", "away_xg", "home_insidebox", "away_insidebox"]:
         if _col not in df.columns:
             df[_col] = np.nan
 
     # ── Step 1: merge from af_history.parquet (historical backfill, one-time run) ──
-    af_history_path = Path(__file__).resolve().parents[1] / "output" / "af_history.parquet"
+    # PROVENANCE RULE (owner 2026-11-04, fix round 9, src/af_history_provenance): only PROVIDER rows
+    # are served. A row this module wrote back (no fixture_id AND no FT score - 90,897 of 93,381 on
+    # the committed file) serves NONE of its statistics: where round 8 could compare them with a
+    # fixture-proven provider answer, their total shots agreed in only 14.3% of 1,583 pairs. Such a
+    # cell stays missing unless a provider source proven to the same match fills it below (the
+    # --insidebox and --fullstats sidecars, a live provider fetch). The rows stay in the file.
+    # What they WOULD have filled is measured (a probe join, never applied) so the per-league
+    # blanked / provider-replaced counts land in df.attrs['af_written_back'].
+    wb_blank = None
+    af_history_path = AF_HISTORY_PATH
     if af_history_path.exists():
         try:
+            from src.af_history_provenance import written_back_mask
             hist = pd.read_parquet(af_history_path)
             hist = _drop_misfiled_league_rows(hist, "af_history")
+            # owner 2026-11-04 duplicate rule (fix14/afdupes, src/af_history_corrections): the copy of
+            # a provider fixture filed one day off the provider's date is removed; its provider
+            # values fill the kept copy's empty cells, conflicting provider cells become missing.
+            # BEFORE the provenance mask, so a kept written-back row filled from a provider copy
+            # serves the provider values only.
+            # The served row of such a match is the football-data row, dated like the REMOVED copy
+            # (UK day), so the kept copy is also joinable under that key (add_join_aliases).
+            # fix15/dates: the football-data row of 352 such matches is now re-dated onto the provider
+            # date (history_date_corrections.csv), so their alias is no longer added; a row of a
+            # re-dated fixture filed one day off is offered on the provider date (same fixture id).
+            from src.af_history_corrections import (add_join_aliases, apply_af_history_corrections,
+                                                    follow_redated_fixtures)
+            hist = add_join_aliases(apply_af_history_corrections(hist, tag="af_history"), tag="af_history")
+            hist = follow_redated_fixtures(hist, tag="af_history")
             hist["date"] = pd.to_datetime(hist["date"], errors="coerce")
-            hist["_home_norm"] = hist["home_team"].apply(_norm_name)
-            hist["_away_norm"] = hist["away_team"].apply(_norm_name)
+            _wb = written_back_mask(hist)
+            log.info(f"[af_history] provenance: {int(_wb.sum()):,} of {len(hist):,} rows written back "
+                     f"by the old loader bank (no fixture_id, no FT score) - their statistics are "
+                     f"not served; {int((~_wb).sum()):,} provider rows served")
+            hist = hist.assign(_written_back=_wb.to_numpy())
+            hist = _resolve_onto_history(hist, df, "home_team", "away_team", "af_history",
+                                         aliases=IDENTITY_ALIASES)    # df is canonical (fix12)
             hist["_date_str"]  = hist["date"].dt.strftime("%Y-%m-%d")
 
             # Map af_history column names → internal names
@@ -1300,50 +1672,39 @@ def _enrich_with_api_shots(df: pd.DataFrame) -> pd.DataFrame:
             hist = hist.rename(columns=col_map)
             hist_cols = [c for c in col_map.values() if c in hist.columns]
 
-            df["_home_norm"] = df["home_team"].apply(_norm_name)
-            df["_away_norm"] = df["away_team"].apply(_norm_name)
+            df["_h"] = df["home_team"].astype(str)
+            df["_a"] = df["away_team"].astype(str)
             df["_date_str"]  = df["date"].dt.strftime("%Y-%m-%d")
 
-            # R2-C finding 12. The legacy join below keys on (home, away, date) WITHOUT league and
-            # copies back POSITIONALLY. af_history holds duplicate keys (two spellings of one club
-            # that normalise alike, and whole leagues filed twice under another league's name), so
-            # the merge returns more rows than df and the zip shifts every later value onto the
-            # wrong fixture. The audit always runs (output/join_integrity_health.json); the
-            # league-keyed safe join serves only with WOWZA_SAFE_ENRICH_JOINS=1 until the owner
-            # reviews the serving-feature diff (docs/r2/R2C_joins_parity_provenance.md).
-            _k3 = ["_home_norm", "_away_norm", "_date_str"]
+            # R2-C finding 12. The legacy join keyed on (home, away, date) WITHOUT league and
+            # copied back POSITIONALLY; af_history holds duplicate keys, so the zip shifted values
+            # onto the wrong fixture. Only the league-keyed safe join exists now (legacy path
+            # removed 2026-11-01); the legacy shape is still AUDITED.
+            _k3 = ["_h", "_a", "_date_str"]
+            _wbr = hist["_written_back"].astype(bool)
+            wb_hist, hist = hist[_wbr], hist[~_wbr]
             try:
                 _IJ.audit_legacy_merge(df, hist, _k3, name="af_history_shots.legacy")
             except Exception as _e:                              # noqa: BLE001
                 log.warning(f"[af_history] join audit skipped: {_e}")
-            if _safe_joins():
-                df, _rep = _IJ.safe_left_enrich(
-                    df, hist, keys=["league"] + _k3, value_cols=hist_cols,
-                    name="af_history_shots")
-                log.info(f"[af_history] SAFE join: matched {_rep.matched_left_rows:,}/"
-                         f"{_rep.left_rows:,}; ambiguous key groups {_rep.ambiguous_key_groups}; "
-                         f"right duplicate rows {_rep.right_duplicate_rows}")
-            else:
-                merged = df.merge(
-                    hist[["_home_norm", "_away_norm", "_date_str", "league"] + hist_cols]
-                        .rename(columns={c: f"{c}_h" for c in hist_cols}),
-                    on=["_home_norm", "_away_norm", "_date_str"],
-                    how="left",
-                    suffixes=("", "_h"),
-                )
+            df, _rep = _IJ.safe_left_enrich(
+                df, hist, keys=["league"] + _k3, value_cols=hist_cols,
+                name="af_history_shots")
+            # the probe: cells the written-back rows would have filled had they been served
+            if len(wb_hist):
+                _probe, _ = _IJ.safe_left_enrich(
+                    df[["league"] + _k3 + [c for c in hist_cols if c in df.columns]],
+                    wb_hist, keys=["league"] + _k3, value_cols=hist_cols,
+                    name="af_history_written_back.probe", register=False)
+                wb_blank = pd.DataFrame(
+                    {c: (_probe[c].notna() & (df[c].isna() if c in df.columns else True)).to_numpy()
+                     for c in hist_cols if c in _probe.columns}, index=df.index)
+                wb_blank = wb_blank.loc[:, wb_blank.any(axis=0)]
+            log.info(f"[af_history] SAFE join: matched {_rep.matched_left_rows:,}/"
+                     f"{_rep.left_rows:,}; ambiguous key groups {_rep.ambiguous_key_groups}; "
+                     f"right duplicate rows {_rep.right_duplicate_rows}")
 
-                for col in hist_cols:
-                    hcol = f"{col}_h"
-                    if hcol not in merged.columns:
-                        continue
-                    if col not in df.columns:
-                        df[col] = np.nan
-                    orig = df[col].values
-                    hist_vals = merged[hcol].values
-                    df[col] = [float(h) if pd.isna(o) and pd.notna(h) else o
-                               for o, h in zip(orig, hist_vals)]
-
-            df.drop(columns=["_home_norm", "_away_norm", "_date_str"], errors="ignore", inplace=True)
+            df.drop(columns=["_h", "_a", "_date_str"], errors="ignore", inplace=True)
             n_with_shots = int(df["home_shots"].notna().sum()) if "home_shots" in df.columns else 0
             log.info(f"[af_history] merged backfill: {n_with_shots} rows now have shot data")
         except Exception as e:
@@ -1353,12 +1714,9 @@ def _enrich_with_api_shots(df: pd.DataFrame) -> pd.DataFrame:
     df = _enrich_ht_scores(df)
 
     if not api_key:
-        return df
+        return _finish_af_enrichment(df, wb_blank, recompute_sot_ratio=False)
 
-    try:
-        from src.api_football_ou import fetch_shots_for_league, _norm_name
-    except ImportError:
-        return df
+    from src.api_football_ou import fetch_shots_for_league   # import failure must surface
 
     # ALL LEAGUES PRESENT, NOT ONLY NEW-FORMAT. This loop was `for league in
     # config.NEW_FORMAT_LEAGUES`, which is why home_xg_last5 / away_xg_last5 /
@@ -1436,18 +1794,22 @@ def _enrich_with_api_shots(df: pd.DataFrame) -> pd.DataFrame:
             continue
         shots_df = (
             pd.concat(all_shots, ignore_index=True)
-            .drop_duplicates(subset=["_home_norm", "_away_norm", "_date_str"])
+            .drop_duplicates(subset=["home_team", "away_team", "_date_str"])
             if len(all_shots) > 1 else all_shots[0]
         )
 
         if shots_df.empty:
             continue
 
-        # Build normalised keys for the main df rows belonging to this league
+        # API-Football's clubs resolved onto this league's history spellings (team_names.resolve)
         league_rows = df[mask].copy()
-        league_rows["_home_norm"] = league_rows["home_team"].apply(_norm_name)
-        league_rows["_away_norm"] = league_rows["away_team"].apply(_norm_name)
+        league_rows["_h"] = league_rows["home_team"].astype(str)
+        league_rows["_a"] = league_rows["away_team"].astype(str)
         league_rows["_date_str"]  = league_rows["date"].dt.strftime("%Y-%m-%d")
+        shots_df = _resolve_onto_history(shots_df.assign(league=league), league_rows,
+                                         "home_team", "away_team",
+                                         f"api_football_live_shots[{league}]",
+                                         aliases=IDENTITY_ALIASES)    # df is canonical (fix12)
 
         api_cols = ["home_shots", "away_shots", "home_sot", "away_sot",
                     "home_corners", "away_corners", "home_fouls", "away_fouls",
@@ -1456,101 +1818,92 @@ def _enrich_with_api_shots(df: pd.DataFrame) -> pd.DataFrame:
         # League-scoped already (one league id per fetch), but shots_df is de-duplicated only when
         # two seasons were fetched, so a duplicate key could still expand the merge and shift the
         # positional copy-back. Audited always; safe join with WOWZA_SAFE_ENRICH_JOINS=1.
-        _k3 = ["_home_norm", "_away_norm", "_date_str"]
+        _k3 = ["_h", "_a", "_date_str"]
         try:
             _IJ.audit_legacy_merge(league_rows, shots_df, _k3,
                                    name=f"api_football_live_shots.legacy[{league}]")
         except Exception as _e:                                  # noqa: BLE001
             log.warning(f"[api_football_ou] join audit skipped: {_e}")
-        if _safe_joins():
-            _sd = shots_df.copy()
-            _sd["league"] = league
-            _lr, _ = _IJ.safe_left_enrich(league_rows, _sd, keys=["league"] + _k3,
-                                          value_cols=avail_cols,
-                                          name=f"api_football_live_shots[{league}]")
-            for col in avail_cols:
-                df.loc[_lr.index, col] = _lr[col].to_numpy()
-        else:
-            merged = league_rows.merge(
-                shots_df[["_home_norm", "_away_norm", "_date_str"] + avail_cols],
-                on=["_home_norm", "_away_norm", "_date_str"],
-                how="left",
-                suffixes=("", "_api"),
-            )
-
-            idx = df.index[mask]
-            for col in avail_cols:
-                api_col = f"{col}_api"
-                if api_col not in merged.columns:
-                    continue
-                orig = df.loc[idx, col].values
-                api  = merged[api_col].values
-                filled = [float(a) if pd.isna(o) and pd.notna(a) else o
-                          for o, a in zip(orig, api)]
-                df.loc[idx, col] = filled
+        # One league id per fetch, so the league key is that league; safe join only
+        _sd = shots_df.copy()
+        _sd["league"] = league
+        _lr, _ = _IJ.safe_left_enrich(league_rows, _sd, keys=["league"] + _k3,
+                                      value_cols=avail_cols,
+                                      name=f"api_football_live_shots[{league}]")
+        for col in avail_cols:
+            df.loc[_lr.index, col] = _lr[col].to_numpy()
 
         n_filled = int(df.loc[mask, "home_shots"].notna().sum())
         log.info(f"[api_football_ou] {league}: {n_filled}/{int(mask.sum())} rows now have shot data")
 
-    # ── BANK THE ENRICHMENT, or pay for it again tomorrow ───────────────────────────────
-    # Everything above this line fetched shot and xG data for FINISHED matches — a game played
-    # in March 2024 has a final shot count that will never change. Until 2026-09-22 that result
-    # was used for training and then THROWN AWAY: nothing wrote it back to af_history.parquet,
-    # which is the committed bank the merge at the top of this function reads from. So every
-    # retrain re-derived the same immutable numbers from scratch, and on 2026-09-22 that cost
-    # TWO HOURS of a single run — 30 leagues at ~4 minutes each.
-    #
-    # apifootball_ou_cache/ (44,453 files) was the only thing standing between this and a full
-    # API re-fetch, and retrain.yml had no actions/cache step until the same day, so even that
-    # started empty on every run.
-    #
-    # Writing the result back means the next run's merge already has these rows and the
-    # skip-if-populated guard above (xG > 50% for a league) short-circuits the whole fetch. The
-    # cost goes from "every run, forever" to "once per genuinely new match".
-    #
-    # ONLY rows that actually gained data are written, and only the columns af_history owns, so
-    # this cannot widen the schema or overwrite a real value with a null.
-    try:
-        _hist_p = Path(__file__).resolve().parents[1] / "output" / "af_history.parquet"
-        _COLMAP = {"home_shots": "HS", "away_shots": "AS", "home_sot": "HST", "away_sot": "AST",
-                   "home_xg": "HXG", "away_xg": "AXG",
-                   "home_insidebox": "HIB", "away_insidebox": "AIB"}
-        _have = [c for c in _COLMAP if c in df.columns]
-        if _have:
-            _new = df[df[_have].notna().any(axis=1)][
-                ["league", "season", "date", "home_team", "away_team"] + _have].copy()
-            _new = _new.rename(columns={k: v for k, v in _COLMAP.items() if k in _have})
-            _prev = pd.read_parquet(_hist_p) if _hist_p.exists() else None
-            _merged = pd.concat([_prev, _new], ignore_index=True) if _prev is not None else _new
-            # Never bank a misfiled row: this write-back is how the archive's Dutch-as-Norway and
-            # Bundesliga-2-as-'Denmark 1st Div' copies got into af_history in the first place.
-            _merged = _drop_misfiled_league_rows(_merged, "af_history write-back")
-            # Newest row wins: a later fetch may fill a column an earlier one left null.
-            _merged = _merged.drop_duplicates(
-                subset=[c for c in ("date", "league", "home_team", "away_team")
-                        if c in _merged.columns], keep="last")
-            for _c in ("league", "season", "home_team", "away_team"):
-                if _c in _merged.columns:
-                    _merged[_c] = _merged[_c].astype(str)
-            _hist_p.parent.mkdir(exist_ok=True)
-            _merged.to_parquet(_hist_p, index=False)
-            log.info(f"[af_history] BANKED enrichment: {len(_merged):,} rows "
-                     f"({len(_merged) - (len(_prev) if _prev is not None else 0):+,} this run). "
-                     f"Next run merges these instead of re-fetching them.")
-    except Exception as e:                                       # noqa: BLE001
-        # Never fail a training run over the cache. Losing the bank costs time, not correctness.
-        log.warning(f"[af_history] could not bank the enrichment: {e}")
+    # ── NO WRITE-BACK (owner 2026-11-04, fix round 9, KEY=bank) ─────────────────────────────
+    # Until 2026-11-04 this point held 'BANK THE ENRICHMENT': every merged-history row carrying
+    # shots / SoT / xG / inside-box was appended to output/af_history.parquet (2026-09-22, to spare
+    # retrain a two-hour re-fetch). It wrote whatever the merged frame held - football-data values,
+    # live API values joined by club name, and values the bank itself had put there on an earlier
+    # run - into the ORIGINAL provider file, newest row winning, without fixture_id or score, and
+    # without corners or fouls. 90,897 of the file's 93,381 rows are such write-backs.
+    # af_history.parquet is an original: only scripts/backfill_af_history.py (provider rows with a
+    # fixture id) writes it. The enrichment is NOT banked anywhere else either, because nothing needs
+    # it: every live value above is re-read from apifootball_ou_cache/ (statistics cached a year,
+    # restored by actions/cache in predict / retrain / backtest), and the collected provider
+    # statistics live beside the history in output/collect/ (read just below).
+    return _finish_af_enrichment(df, wb_blank, recompute_sot_ratio=True)
 
-    # Recompute SOT ratios after enrichment
-    with np.errstate(divide="ignore", invalid="ignore"):
-        df["home_sot_ratio"] = np.where(
-            df["home_shots"] > 0, df["home_sot"] / df["home_shots"], np.nan
-        )
-        df["away_sot_ratio"] = np.where(
-            df["away_shots"] > 0, df["away_sot"] / df["away_shots"], np.nan
-        )
 
+#: the last run's written-back audit (df.attrs['af_written_back'] does not survive every later step)
+AF_WRITTEN_BACK_AUDIT: dict = {}
+
+
+def _finish_af_enrichment(df: pd.DataFrame, wb_blank: pd.DataFrame | None,
+                          recompute_sot_ratio: bool) -> pd.DataFrame:
+    """Both exits of _enrich_with_api_shots: the collected fixture statistics beside af_history
+    (AF_STATS_FILL, AF_FULLSTATS_FILL; never written into it), the row SoT ratios on the API exit
+    (as before; the no-key exit never recomputed them), and the written-back audit (fix round 9):
+    per league and column, the cells the written-back rows WOULD have filled (`blanked`), how many
+    of them a provider source filled instead (`provider_replaced`) and how many stay missing -
+    df.attrs['af_written_back']."""
+    df = _enrich_af_stats_fill(df)
+    df = _enrich_af_fullstats_fill(df)
+
+    if recompute_sot_ratio:
+        with np.errstate(divide="ignore", invalid="ignore"):
+            df["home_sot_ratio"] = np.where(
+                df["home_shots"] > 0, df["home_sot"] / df["home_shots"], np.nan
+            )
+            df["away_sot_ratio"] = np.where(
+                df["away_shots"] > 0, df["away_sot"] / df["away_shots"], np.nan
+            )
+    df.attrs["af_written_back"] = written_back_audit(df, wb_blank)
+    AF_WRITTEN_BACK_AUDIT.clear()
+    AF_WRITTEN_BACK_AUDIT.update(df.attrs["af_written_back"])
+    tot = df.attrs["af_written_back"].get("total", {})
+    if tot:
+        log.info("[af_history] written-back cells not served -> provider replaced: " + "; ".join(
+            f"{c} {v['blanked']:,} -> {v['provider_replaced']:,}" for c, v in tot.items()))
     return df
+
+
+def written_back_audit(df: pd.DataFrame, wb_blank: pd.DataFrame | None) -> dict:
+    """{'per_league': {league: {column: {blanked, provider_replaced, missing}}}, 'total': {...}}.
+    `wb_blank` is the probe mask (df.index x column) of cells only a written-back row would have
+    filled; a cell is provider_replaced when it holds a value after every provider fill."""
+    if wb_blank is None or wb_blank.empty:
+        return {"per_league": {}, "total": {}}
+    blank = wb_blank.reindex(df.index).fillna(False).astype(bool)
+    lg = df["league"].astype(str)
+    per, tot = {}, {}
+    for c in blank.columns:
+        filled = blank[c] & (df[c].notna() if c in df.columns else False)
+        b_by = blank[c].groupby(lg).sum()
+        r_by = filled.groupby(lg).sum()
+        for league, nb in b_by.items():
+            if nb:
+                per.setdefault(league, {})[c] = {"blanked": int(nb), "provider_replaced": int(r_by[league]),
+                                                 "missing": int(nb - r_by[league])}
+        tot[c] = {"blanked": int(blank[c].sum()), "provider_replaced": int(filled.sum()),
+                  "missing": int(blank[c].sum() - filled.sum())}
+    return {"per_league": per, "total": tot}
 
 
 def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> pd.DataFrame:
@@ -1663,11 +2016,13 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
         # cache, or the refresh would merge the cache into itself and report rows it never
         # fetched.
         _downloaded = _ci_download_all(_have)
-        ci_frames = list(_downloaded)
+        # Every row carries its source (`row_source`) so the one-match de-duplication can apply its
+        # stated source rule. Tagged on COPIES: the cache refresh below writes `_downloaded` itself.
+        ci_frames = [f.assign(row_source="football_data") for f in _downloaded]
         # The cached rows ARE part of the answer, not just a fallback — they are the seasons the
         # download deliberately skipped.
         if _cached is not None and len(_cached):
-            ci_frames.append(_cached)
+            ci_frames.append(_cached.assign(row_source="fd_cache"))
 
         # ── FALL BACK TO THE COMMITTED CACHE ──────────────────────────────────────────
         # On 2026-09-05 football-data.co.uk returned HTTP 503 on every URL including its own
@@ -1727,27 +2082,33 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
                             f"{len(cached):,} cached rows instead. Historical data does not "
                             f"change, so this is complete except for fixtures played since the "
                             f"last successful download.")
-                        ci_frames = [cached]
+                        ci_frames = [cached.assign(row_source="fd_cache")]
                 except Exception as e:                               # noqa: BLE001
                     log.warning(f"[fd_cache] cache unreadable: {e}")
         if not ci_frames:
             raise RuntimeError(
                 "CI download failed and no cached history is available "
                 f"({cache_p.name} missing or empty) — no data loaded")
-        ci_frames.extend(_load_api_football_only_leagues())
+        ci_frames.extend(f.assign(row_source="api_football")
+                         for f in _load_api_football_only_leagues())
         # The archive goes in BEFORE club canonicalisation, which is the whole reason it can go
         # in at all: the unifier resolves its club vocabulary against football-data's.
         _arch = _load_backtest_archive()
         if len(_arch):
-            ci_frames.append(_arch)
+            ci_frames.append(_arch.assign(row_source="backtest_archive"))
         out = pd.concat(ci_frames, ignore_index=True)
+        # Provider fixtures no bank holds (play-offs, extra-time / penalty games; owner 2026-11-10,
+        # src/history_supplement), BEFORE the identity pipeline like every other source.
+        out = _add_history_supplement(out)
         out = out[out["home_team"].notna() & out["away_team"].notna()]
         out = out.sort_values("date").reset_index(drop=True)
         out["total_goals"] = out["home_goals"] + out["away_goals"]
-        out["over25"] = (out["total_goals"] > 2.5).astype(float)
-        out["over15"] = (out["total_goals"] > 1.5).astype(float)
-        out["over35"] = (out["total_goals"] > 3.5).astype(float)
-        out["btts"] = ((out["home_goals"] > 0) & (out["away_goals"] > 0)).astype(float)
+        # No score -> label NaN, never 0 (NaN > 2.5 is False, which read as an Under / no BTTS)
+        _ftn = out["total_goals"].notna()
+        out["over25"] = (out["total_goals"] > 2.5).astype(float).where(_ftn)
+        out["over15"] = (out["total_goals"] > 1.5).astype(float).where(_ftn)
+        out["over35"] = (out["total_goals"] > 3.5).astype(float).where(_ftn)
+        out["btts"] = ((out["home_goals"] > 0) & (out["away_goals"] > 0)).astype(float).where(_ftn)
         if "ht_home_goals" in out.columns and out["ht_home_goals"].notna().any():
             out["ht_total_goals"] = out["ht_home_goals"] + out["ht_away_goals"]
             # MASK THE MISSING ONES. `(NaN >= 1).astype(float)` is 0.0, not NaN, so every
@@ -1772,11 +2133,12 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
                 out.get("away_sot", pd.Series(dtype=float)) / out.get("away_shots", pd.Series(dtype=float)), np.nan)
         # Club identity BEFORE any enrichment or feature work: a club split across two
         # spellings is two teams to everything downstream.
-        out = _canonicalise_clubs(out)
-        out = _canonical_identity_and_seasons(out)
+        out = one_club_one_match(out)
         out = _enrich_with_api_shots(out)
         out = _enrich_with_standard_sidemarket_odds(out)   # real BTTS/O1.5/O3.5 for 2nd-divs
         out = _enrich_ou25_from_captures(out)             # our own O/U 2.5, NaN-only
+        out = _impossible_stats_to_missing(out)
+        out = _flag_ou25_pair(out)
         _report_training_coverage(out)
         _CACHE = out
         return out
@@ -1788,13 +2150,12 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
         m = re.match(r"^(.+)_(\d{4})$", sheet)
         if not m:
             continue
-        league, season_code = m.group(1), m.group(2)
-        if season_code not in _SEASON_MAP:
-            continue
+        league = m.group(1)
 
         try:
             raw = xl.parse(sheet)
-        except Exception:
+        except Exception as e:
+            log.warning(f"[local] sheet {sheet} unreadable, skipped: {e}")
             continue
 
         df = pd.DataFrame()
@@ -1802,7 +2163,9 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
         df = df[df["date"].notna()].copy()
 
         df["league"]    = league
-        df["season"]    = _SEASON_MAP[season_code]
+        # Season DERIVED from the match dates by the registry's rules, not a hand-typed code map
+        # (which stopped at 2025/26 and silently skipped newer sheets)
+        df["season"]    = _canonical_season_labels(df.assign(season=None))
         df["home_team"] = raw.get("HomeTeam", np.nan)
         df["away_team"] = raw.get("AwayTeam", np.nan)
 
@@ -1835,56 +2198,22 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
     # ── CSV overrides: prefer downloaded CSVs over Excel sheets ─────────────────
     csv_dir = path.parent / "data" / "football_data"
     if csv_dir.exists():
-        for league_name, fd_code in {
-            # Standard mmz4281 format — downloaded by retrain.py
-            "League One":              "E2",
-            "League Two":              "E3",
-            "Bundesliga 2":            "D2",
-            "Ligue 2":                 "F2",
-            "La Liga 2":               "SP2",
-            "Championship":            "E1",
-            "Serie B":                 "I2",
-            "Greek Super League":      "G1",
-            "National League":         "EC",
-            "Portuguese Primeira Liga": "P1",
-            "Scottish Championship":   "SC1",
-            "Scottish League One":     "SC2",
-            "Scottish League Two":     "SC3",
-            "Scottish Premiership":    "SC0",
-            "Belgian First Division A": "B1",
-            "Dutch Eredivisie":        "N1",
-            "Turkish Super Lig":       "T1",
-            # New format — downloaded by retrain.py
-            "Denmark Superliga":            "DNK",
-            "Austrian Bundesliga":          "AUT",
-            "Romanian Superliga":           "ROM",
-            "Sweden Allsvenskan":           "SWE",
-            "Norway Eliteserien":           "NOR",
-            "Finland Veikkausliiga":        "FIN",
-            "Ireland Premier Division":     "IRL",
-            "Argentina Primera Division":   "ARG",
-            "Brazil Serie A":               "BRA",
-            "Japan J-League":               "JPN",
-            "Mexico Liga MX":               "MEX",
-            "China Super League":           "CHN",
-            "USA MLS":                      "USA",
-            "Swiss Super League":           "CHE",
-            "Poland Ekstraklasa":           "PL1",
-        }.items():
+        # League -> football-data code from the REGISTRY (football_data_code), the same table the
+        # CI download path uses - not a hand copy. A league without a registry code is not read.
+        _std_codes, _new_codes = _fd_download_tables()
+        for league_name, fd_code in {**_std_codes, **_new_codes}.items():
             code_dir = csv_dir / fd_code
             if not code_dir.exists():
                 continue
             for csv_path in sorted(code_dir.glob(f"{fd_code}_*.csv")):
-                season_code = csv_path.stem.split("_")[-1]
-                if season_code not in _SEASON_MAP:
-                    continue
                 try:
                     raw = pd.read_csv(csv_path, low_memory=False)
                     df = pd.DataFrame()
                     df["date"] = pd.to_datetime(raw.get("Date"), dayfirst=True, errors="coerce")
                     df = df[df["date"].notna()].copy()
                     df["league"]    = league_name
-                    df["season"]    = _SEASON_MAP[season_code]
+                    # season derived from the file's match dates (registry rules)
+                    df["season"]    = _canonical_season_labels(df.assign(season=None))
                     df["home_team"] = raw.get("HomeTeam", np.nan)
                     df["away_team"] = raw.get("AwayTeam", np.nan)
                     for out_col, src_col in [
@@ -1905,36 +2234,37 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
                     df["odds_over35"]   = _pick_odds(raw, _OVER35_COLS)
                     df = df[df["home_team"].notna() & df["away_team"].notna()]
                     # Replace the matching Excel frame with this clean CSV data
+                    _lbls = set(df["season"].dropna())
                     frames = [f for f in frames if not (
-                        (f["league"] == league_name).all() and
-                        (f["season"] == _SEASON_MAP[season_code]).all()
+                        (f["league"] == league_name).all() and _lbls and
+                        f["season"].isin(_lbls).all()
                     )]
                     frames.append(df)
-                    log.debug(f"CSV override: {league_name} {_SEASON_MAP[season_code]} ({len(df)} rows)")
+                    log.debug(f"CSV override: {league_name} {sorted(_lbls)} ({len(df)} rows)")
                 except Exception as e:
                     log.warning(f"Failed to load CSV override {csv_path}: {e}")
 
-    # ── Direct HT download: big-5 leagues not in local files ─────────────────
-    # These leagues aren't used for prediction but add ~1,700 rows of HT data
-    _HT_EXTRA = {
-        "Premier League":    "E0",
-        "Bundesliga 1":      "D1",
-        "La Liga":           "SP1",
-        "Serie A":           "I1",
-        "Ligue 1":           "F1",
-    }
+    # ── Direct HT download: registry standard leagues not in local files ─────
+    # Was a hand table of big-5 names/codes ('Bundesliga 1' is not even a registry name). Now every
+    # registry league whose football-data file family is the per-season mmz4281 one
+    # (football_data_format, LR-1.2): the standard model leagues plus the big-5, which have no model
+    # but whose codes (E0/D1/SP1/I1/F1) the registry now holds. Skipped when a local file supplied it.
+    from src import league_registry as _LRx
+    _HT_EXTRA = {e["name"]: e["football_data_code"] for e in _LRx.leagues()
+                 if e.get("football_data_format") == "mmz4281" and e.get("football_data_code")}
     # The CURRENT and PREVIOUS campaigns, derived from the date and labelled to match. This was the
     # literal 2526 folder labelled '2025/26', so HT history never got the season being played
     # (Data Truth audit finding 44).
     _STD_URL = "https://www.football-data.co.uk/mmz4281/{season}/{code}.csv"
-    _n = __import__("datetime").datetime.now()
+    _n = __import__("src.utc_clock", fromlist=["utc_now"]).utc_now()   # UTC: season rolls on the UTC day
     _y0 = _n.year if _n.month >= 7 else _n.year - 1
     _ht_seasons = [(f"{y % 100:02d}{(y + 1) % 100:02d}", f"{y}/{(y + 1) % 100:02d}") for y in (_y0, _y0 - 1)]
     # Leagues already loaded via local CSV, decided ONCE - checked inside the loop, the current
     # season's own download would make the previous season look "already loaded".
-    _local = {str(f["league"].iloc[0]) for f in frames if not f.empty}
+    from src.league_registry import canonical_name as _canon
+    _local = {_canon(str(f["league"].iloc[0])) for f in frames if not f.empty}
     for (lg_name, code), (s_code, s_label) in [(lc, s) for lc in _HT_EXTRA.items() for s in _ht_seasons]:
-        if any(lg_name in lg for lg in _local):
+        if lg_name in _local:                 # exact registry identity, never a substring
             continue
         try:
             import requests as _req
@@ -1944,7 +2274,7 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
             if r.status_code != 200:
                 log.warning(f"[data] HT extra {lg_name} {s_label}: HTTP {r.status_code}")
                 continue
-            raw = pd.read_csv(_SIO(r.text), encoding="utf-8-sig", on_bad_lines="skip", low_memory=False)
+            raw = pd.read_csv(_SIO(_decode_csv(r.content)), on_bad_lines="skip", low_memory=False)
             if "FTHG" not in raw.columns:
                 continue
             df = pd.DataFrame()
@@ -1978,19 +2308,26 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
     if not frames:
         raise RuntimeError(f"No match sheets found in {path}")
 
-    frames.extend(_load_api_football_only_leagues())
+    frames = [f.assign(row_source="football_data") for f in frames]
+    frames.extend(f.assign(row_source="api_football") for f in _load_api_football_only_leagues())
     out = pd.concat(frames, ignore_index=True)
+    out = _add_history_supplement(out)                    # owner 2026-11-10, as the CI path
     out = out[out["home_team"].notna() & out["away_team"].notna()]
+    out = _apply_history_corrections(out)                 # owner 2026-11-04, as one_club_one_match
+    out = _apply_date_corrections(out)                    # owner 2026-11-07, as one_club_one_match
+    out = _repair_club_text(out)
+    out = _one_match_one_row(out)                         # same rule as the CI path
     out = out.sort_values("date").reset_index(drop=True)
 
-    # Derived columns
+    # Derived columns. No score -> label NaN, never 0 (NaN > 2.5 is False = an invented Under).
     out["total_goals"] = out["home_goals"] + out["away_goals"]
-    out["over25"]      = (out["total_goals"] > 2.5).astype(float)
-    out["over15"]      = (out["total_goals"] > 1.5).astype(float)
-    out["over35"]      = (out["total_goals"] > 3.5).astype(float)
+    _ftn = out["total_goals"].notna()
+    out["over25"]      = (out["total_goals"] > 2.5).astype(float).where(_ftn)
+    out["over15"]      = (out["total_goals"] > 1.5).astype(float).where(_ftn)
+    out["over35"]      = (out["total_goals"] > 3.5).astype(float).where(_ftn)
     out["btts"]        = (
         (out["home_goals"] > 0) & (out["away_goals"] > 0)
-    ).astype(float)
+    ).astype(float).where(_ftn)
 
     # HT targets (only populated when HTHG/HTAG available)
     if "ht_home_goals" in out.columns and out["ht_home_goals"].notna().any():
@@ -2019,30 +2356,11 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
     out = _enrich_with_standard_sidemarket_odds(out)
     out = _enrich_ou25_from_captures(out)
 
-    # ── Sanity check: flag German teams appearing in Danish league slots ─────────
-    _GERMAN_TEAMS = {
-        "Bayern Munich", "Dortmund", "Leverkusen", "RB Leipzig", "Ein Frankfurt",
-        "Wolfsburg", "Freiburg", "Hoffenheim", "Stuttgart", "Union Berlin",
-        "Augsburg", "Mainz", "Hertha", "St Pauli", "FC Koln", "Heidenheim",
-        "Werder Bremen", "M'gladbach",
-    }
-    for dk_league in ("Denmark Superliga", "Denmark 1st Div"):
-        dk = out[out["league"] == dk_league]
-        if dk.empty:
-            continue
-        all_teams = set(dk["home_team"].dropna()) | set(dk["away_team"].dropna())
-        contaminated = all_teams & _GERMAN_TEAMS
-        if contaminated:
-            import warnings
-            warnings.warn(
-                f"DATA CONTAMINATION: {dk_league} contains German teams: {contaminated}. "
-                f"Rows auto-removed.",
-                stacklevel=2,
-            )
-            out = out[~(
-                (out["league"] == dk_league) &
-                (out["home_team"].isin(contaminated) | out["away_team"].isin(contaminated))
-            )]
+    # ── Misfiled rows: the registry-based check the CI path uses (was a hand list of German clubs
+    # and typed Danish league names) ─────────────────────────────────────────────
+    out = _drop_misfiled_league_rows(out, "local")
+    out = _impossible_stats_to_missing(out)
+    out = _flag_ou25_pair(out)
 
     _CACHE = out
     return out

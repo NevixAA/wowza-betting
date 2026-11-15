@@ -118,7 +118,9 @@ def _build_match_prompt(r: dict) -> str:
     league= r.get("league", "")
     date  = str(r.get("date", ""))[:10]
     side  = r.get("best_side") or r.get("bet", "")
-    edge  = float(r.get("best_edge", 0)) * 100
+    # no recorded edge -> said so in the prompt (it was a typed 0 %, fix9/defaults 2026-11-04)
+    _be = pd.to_numeric(r.get("best_edge"), errors="coerce")
+    edge  = None if pd.isna(_be) else float(_be) * 100
     odds_o= r.get("odds_over25", "N/A")
     odds_u= r.get("odds_under25", "N/A")
     drift = r.get("drift_signal", "New")
@@ -126,7 +128,7 @@ def _build_match_prompt(r: dict) -> str:
     model = r.get("model_type", "standard")
 
     return f"""Match: {home} vs {away} | {league} | {date}
-ML Signal: {r.get('signal_tier','')} — {side} 2.5 | Edge: {edge:.1f}% | Model: {model}
+ML Signal: {r.get('signal_tier','')} — {side} 2.5 | Edge: {'not recorded' if edge is None else f'{edge:.1f}%'} | Model: {model}
 P(Over 2.5): {p_over} | Drift: {drift}
 Odds: Over {odds_o} | Under {odds_u}
 

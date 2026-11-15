@@ -175,6 +175,26 @@ def _is_under(raw: str) -> bool:
     return bool(_UNDER_WORD_RE.search(str(raw or "")))
 
 
+_YES_NO = {"yes", "no"}
+
+
+def side_word(raw) -> str | None:
+    """The side a value string names, or None when it names none (or is ambiguous).
+
+    over / under: the WHOLE word, exactly once (as _is_under). yes / no: the whole value, or its last
+    " - " segment, is exactly Yes / No ("Joel Piroe - No"). A bare player name names no side: the
+    provider's yes/no player props list the Yes side as the name alone. Owner decision 2026-11-05:
+    every side the provider offers is kept and labelled, so a real two-sided pair can be read."""
+    s = str(raw or "").strip()
+    words = _SIDE_WORD_RE.findall(s)
+    if len(words) == 1:
+        return words[0].lower()
+    if words:
+        return None
+    tail = s.rsplit(" - ", 1)[-1].strip().lower()
+    return tail if tail in _YES_NO else None
+
+
 def _is_number(tok: str) -> bool:
     try:
         float(tok)
@@ -209,17 +229,12 @@ def find_upcoming_fixture_id(league_id: int, season: str, date_str: str,
     how the first version of this looked like it worked. Left alone rather than parameterised,
     since grading relies on that filter and on a 7-day cache that would be wrong here.
     """
-    from player_model.api_football import _get, _team_match
+    from player_model.api_football import fixtures_on_date_raw, match_fixture
 
-    data = _get("/fixtures", {"league": league_id, "season": season, "date": date_str},
-                cache_hours=6) or {}
-    for fix in data.get("response", []):
-        t = fix.get("teams", {})
-        fh = (t.get("home") or {}).get("name", "")
-        fa = (t.get("away") or {}).get("name", "")
-        if _team_match(home, fh) and _team_match(away, fa):
-            return (fix.get("fixture") or {}).get("id")
-    return None
+    # Both clubs resolved (src.team_names.resolve, ambiguity refused) among THIS league-date's
+    # fixture clubs, and the resolved pair must be one fixture (api_football.match_fixture).
+    fix = match_fixture(fixtures_on_date_raw(league_id, season, date_str, cache_hours=6), home, away)
+    return (fix.get("fixture") or {}).get("id") if fix else None
 
 
 def fetch(fixtures: list[dict], *, verbose: bool = True) -> tuple[dict[str, float], list[dict]]:
@@ -230,7 +245,7 @@ def fetch(fixtures: list[dict], *, verbose: bool = True) -> tuple[dict[str, floa
 
     Returns ({"Player|market": best_decimal_odds}, [history record dicts]).
     """
-    from player_model.api_football import _get
+    from player_model.api_football import fixture_odds_raw
 
     best: dict[str, float] = {}
     records: list[dict] = []
@@ -244,7 +259,7 @@ def fetch(fixtures: list[dict], *, verbose: bool = True) -> tuple[dict[str, floa
         match_date = str(fx.get("match_date") or "")[:10]
         if not fid:
             continue
-        resp = (_get("/odds", {"fixture": int(fid)}, cache_hours=1) or {}).get("response") or []
+        resp = fixture_odds_raw(int(fid), cache_hours=1)
         n_before = len(records)
         for block in resp:
             for bm in (block.get("bookmakers") or []):
@@ -261,6 +276,8 @@ def fetch(fixtures: list[dict], *, verbose: bool = True) -> tuple[dict[str, floa
                         # Since 2026-10-14 it is KEPT, but only in the separate per-book quote
                         # log (QUOTES -> output/prop_quotes/), never in `best` or `records`.
                         under = _is_under(raw)
+                        # A "No" side is the other side of a yes/no bet: the same rule as Under.
+                        no_side = side_word(raw) == "no"
                         odd = _to_float(val.get("odd"))
                         if odd is None or not (_MIN_ODDS <= odd <= _MAX_ODDS):
                             continue
@@ -280,18 +297,19 @@ def fetch(fixtures: list[dict], *, verbose: bool = True) -> tuple[dict[str, floa
                             if line is not None and abs(line - spec) > 1e-9:
                                 continue
                         player = _clean_player(raw)
-                        if not player:
-                            continue
+                        if not player or player.lower() in _YES_NO:
+                            continue                  # a bare "Yes" / "No" names no player
                         QUOTES.append({"match_date": match_date, "league": league, "match": match,
                                        "player": player, "market": mkt,
-                                       "side": "under" if under else ("over" if spec is not None else "yes"),
+                                       "side": ("under" if under else "no" if no_side
+                                                else ("over" if spec is not None else "yes")),
                                        "point": line if spec is not None else None, "odds": odd,
                                        "bookmaker": book, "source": "api_football"})
-                        if under:
+                        if under or no_side:
                             continue                  # quote log only - never a tip price
                         k = f"{_key_name(player)}|{mkt}"
                         # Best available price across books, matching odds_fetcher's contract.
-                        if odd > best.get(k, 0.0):
+                        if odd > 0 and (k not in best or odd > best[k]):   # best seen (no typed 0 floor)
                             best[k] = odd
                         records.append({"match_date": match_date, "league": league,
                                         "match": match, "player": player, "market": mkt,

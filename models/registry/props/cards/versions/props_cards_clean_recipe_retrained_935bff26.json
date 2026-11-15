@@ -1,0 +1,57 @@
+{
+  "market": "cards",
+  "model_version": "props_cards_clean_recipe_retrained_935bff26",
+  "artifact_sha256": "935bff267bf2f9a1be1a25e063163cfef35c9887bd9850878ea23e9ceac00831",
+  "registered_at": "2026-11-09T13:11:25Z",
+  "training_cutoff": "2026-08-31",
+  "training_rows": {
+    "fit": 707080,
+    "calibration": 124948
+  },
+  "candidate": "recipe_retrained",
+  "harness_version": "PROPS-HARNESS-1.0",
+  "clean_retrain": {
+    "run_id": "42601871514",
+    "code_sha": "6d78075929feae6a748e323c997a3fd301c88178",
+    "artifact_sha256": "44b757842a36fbf252601e0d6ed858b885785b84f9279aa732871b2d419bafff",
+    "candidate": "recipe_retrained",
+    "holdout": {
+      "n": 47104,
+      "events": 6113,
+      "log_loss": 0.3737009364543751,
+      "brier": 0.11019939266072706,
+      "ece10": 0.01148887118242379,
+      "calib_slope": 1.0810230915998909,
+      "ll_minus_player_base_rate": {
+        "mean": -0.004232281287989681,
+        "ci95": [
+          -0.005735895184430916,
+          -0.003045680389981168
+        ],
+        "week_blocks": 9
+      },
+      "ll_delta_vs_recipe": 0.0,
+      "ci95_lo": -0.0003441803659746141,
+      "ci95_hi": 0.00011605444922281967,
+      "head_to_head": {
+        "n": 47104,
+        "weeks": 9,
+        "ll_delta_hgb_minus_recipe": -0.00011451522218795271,
+        "ci95_lo": -0.0003441803659746141,
+        "ci95_hi": 0.00011605444922281967,
+        "p_one_sided": 0.18370407398150462,
+        "boot": 4000,
+        "seed": 1
+      },
+      "holdout_dates": [
+        "2026-09-01",
+        "2026-10-31"
+      ],
+      "rule": "hgb_nan_native not shown better than the recipe; recipe beats player_base_rate"
+    },
+    "approval": "owner approved all of it (2026-11-09): position fix, bit-identical serving, id collision fix, then retrain and re-promote by the same rule",
+    "approved_on": "2026-11-09",
+    "prior_champion": "props_cards_clean_recipe_retrained_7b21d7f0"
+  },
+  "model_role": "CHAMPION"
+}

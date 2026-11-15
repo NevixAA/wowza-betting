@@ -147,8 +147,11 @@ def test_bankroll_plan_rows_equal_the_old_arithmetic():
     sp = pd.DataFrame({"date": ["2026-10-25", "2026-10-25", "2026-10-26", "2026-10-26"],
                        "fixture": list("abcd"), "league": ["L"] * 4, "track": ["t"] * 4,
                        "signal_tier": ["SNIPER"] * 4, "odds": [1.9, 2.0, 2.1, 1.8],
+                       "deployment_state": ["ACTIVE"] * 4,      # THE staked definition needs the real state
                        "final_fraction": [0.0125, 0.005, 0.0, 0.0075]})
     show, by_day = V.plan_rows(sp)
+    # a stake on a non-real state (PAPER) is never a staked row (src/staked.plan_staked, owner 2026-11-04)
+    assert V.plan_rows(sp.assign(deployment_state="PAPER"))[0].empty
     staked = sp[sp["final_fraction"] > 0]
     old_by_day = (staked.groupby("date")["final_fraction"].sum() * 100).round(2).rename("% of bankroll").reset_index()
     pd.testing.assert_frame_equal(by_day[["date", "% of bankroll"]], old_by_day)
@@ -255,7 +258,12 @@ def test_builder_settled_summary_equals_the_old_arithmetic():
     s = V.settled_summary(settled)
     r = settled["combo_result"]
     odds = pd.to_numeric(settled.get("fair_combo_odds", settled.get("fair_odds")), errors="coerce")
-    pnl = float(((odds - 1.0).where(r == "WON", -1.0).where(r != "VOID", 0.0).where(r != "UNKNOWN", 0.0)).sum())
+    # The old arithmetic summed float returns (odds - 1.0 = 1.5000000000000002 ...); since issue #19 the
+    # P/L is the exact decimal sum (src.units.profit / src.units.total) - same rows, same signs.
+    from src import units as U
+    pnl = U.total(U.profit(odds).where(r == "WON", -1.0).where(r != "VOID", 0.0).where(r != "UNKNOWN", 0.0))
+    assert abs(pnl - float(((odds - 1.0).where(r == "WON", -1.0).where(r != "VOID", 0.0)
+                            .where(r != "UNKNOWN", 0.0)).sum())) < 1e-9
     exp = pd.to_numeric(settled.loc[r.isin(["WON", "LOST"]), "joint_probability"], errors="coerce").mean()
     assert (s["won"], s["lost"], s["decided"], s["void"], s["unknown"]) == (2, 2, 4, 1, 1)
     assert s["pnl"] == pnl and s["exp"] == exp
@@ -330,7 +338,9 @@ def test_research_load_all_returns_the_same_call_values(monkeypatch):
     fake = SimpleNamespace(**{n: (lambda n=n: vals[n]) for n in V.CALLS})
     fake.studies = _boom
     got = V.load_all(fake)
-    assert set(got) == set(V.CALLS)
+    # Phase 2 Part 10: the failing read is recorded beside the values, never swallowed silently
+    assert set(got) == set(V.CALLS) | {"_errors"}
+    assert set(got["_errors"]) == {"studies"} and "unreadable" in got["_errors"]["studies"]
     for n in V.CALLS:
         assert got[n] == ({} if n == "studies" else vals[n])
 

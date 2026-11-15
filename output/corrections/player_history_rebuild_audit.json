@@ -1,0 +1,69 @@
+{
+  "source_commit": "fa3c758d7e6fe3fe54d48daf24364071293af505",
+  "mode": "dry_run",
+  "rule": "derived columns recomputed from stored rows; raw collected stats untouched",
+  "counts": {
+    "rows": 876130,
+    "age_placeholder_to_nan": 876130,
+    "height_cm_placeholder_to_nan": 876130,
+    "weight_kg_placeholder_to_nan": 876130,
+    "opp_def_mean_height_to_nan": 876130,
+    "height_diff_vs_opp_def_changed": 876130,
+    "height_advantage_score_changed": 876130,
+    "height_aerial_interaction_changed": 876130,
+    "age_peak_delta_changed": 876130,
+    "league_tier_to_nan": 876130,
+    "league_quality_to_nan": 876130,
+    "player_career_avg_quality_to_nan": 876130,
+    "context_quality_discount_to_nan": 876130,
+    "quality_mismatch_goals_to_nan": 876130,
+    "quality_mismatch_sot_to_nan": 876130,
+    "league_tier_1_on_second_tier_or_non_top5_before": 129434,
+    "is_home_corrected": 2478,
+    "is_home_corrected_home_was_away": 2478,
+    "team_proves_neither_side_left_as_stored": 2322,
+    "own_club_as_opponent_before": 2478,
+    "own_club_as_opponent_after": 0,
+    "player_id_not_positive_rows": 256,
+    "player_id_0_distinct_names": 153,
+    "n_prev_games_changed": 84248,
+    "n_prev_games_increased": 83818,
+    "n_prev_games_decreased": 174,
+    "n_prev_games_to_nan_no_player_id": 256,
+    "minutes_above_120": 25,
+    "minutes_above_MAX_MATCH_MINUTES": 6
+  },
+  "per_row_changes_file": "player_history_rebuild_changes.csv.gz",
+  "per_row_columns": [
+    "is_home",
+    "n_prev_games",
+    "opponent"
+  ],
+  "whole_column_changes_not_listed_per_row": {
+    "to_nan": [
+      "age",
+      "height_cm",
+      "weight_kg",
+      "opp_def_mean_height",
+      "league_tier",
+      "league_quality",
+      "player_career_avg_quality",
+      "context_quality_discount",
+      "quality_mismatch_goals",
+      "quality_mismatch_sot"
+    ],
+    "recomputed": [
+      "height_diff_vs_opp_def",
+      "height_advantage_score",
+      "height_aerial_interaction",
+      "age_peak_delta"
+    ],
+    "original_values": "placeholder constants (age 25.0, height 180, weight 75) and hand tiers; recoverable from git at source_commit"
+  },
+  "not_recomputed": [
+    "venue splits (goals/shots/sot _home/_away_pg) on is_home-corrected rows",
+    "opponent / measured-strength features on is_home-corrected rows",
+    "rolling and career features on batch-truncated rows (full build_features pass)",
+    "minutes_pg / per-90 features of rows after a minutes > MAX_MATCH_MINUTES row"
+  ]
+}

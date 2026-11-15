@@ -86,3 +86,26 @@ def test_no_history_is_missing_not_zero():
     hist = _history()
     sv = _serving_row(hist, _match("2026-07-25", "NEWCLUB", "B", 0, 0))
     assert pd.isna(sv["home_scored_last5"]) and pd.isna(sv["home_ht_over05_rate"])
+
+
+# ── BIT-IDENTICAL, not "close" (owner 2026-11-09: parity at 0 beyond float tolerance) ─────────────
+
+def test_form_is_bit_identical_to_training_with_decimal_xg_values():
+    """Serving used the plain mean of the last 5 values, training pandas' rolling (running) sum.
+    Equal in exact arithmetic, not always in floating point: away_xg_last5 came out 1.104 vs
+    1.1040000000000003 for a real fixture (2026-10-25 Palermo v Carrarese) and a tree split flipped.
+    This xG sequence gives 1.211 under training's rolling sum and 1.2109999999999999 under the old
+    plain mean (found by search); serving must reproduce training EXACTLY."""
+    xg = [1.805, 1.112, 1.257, 2.604, 0.813, 1.883, 0.427, 2.448, 2.325, 0.846, 2.567, 0.358, 1.108,
+          0.606, 1.416]
+    rows, d0 = [], pd.Timestamp("2026-03-01")
+    for i, v in enumerate(xg):
+        m = _match(d0 + pd.Timedelta(days=7 * i), "A", f"O{i}", 1, 1)
+        m["home_xg"], m["away_xg"] = v, 1.0
+        rows.append(m)
+    hist = pd.DataFrame(rows)
+    nxt = _match(d0 + pd.Timedelta(days=7 * len(xg)), "A", "B", 1, 1)
+    nxt["home_xg"], nxt["away_xg"] = 1.0, 1.0
+    tr, sv = _training_row(hist, nxt), _serving_row(hist, nxt)
+    assert repr(float(tr["home_xg_last5"])) == "1.211"
+    assert float(sv["home_xg_last5"]) == float(tr["home_xg_last5"]), repr(float(sv["home_xg_last5"]))

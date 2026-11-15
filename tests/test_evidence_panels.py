@@ -104,7 +104,10 @@ def test_mirrored_rules_equal_production():
     assert EP.SIDE_SPLIT_MARKETS == bankroll_policy.SIDE_SPLIT_MARKETS
     assert EP.PERFORMANCE_CUTOFF == config.PERFORMANCE_CUTOFF_DATE
     assert EP._paper_leagues() == set(config.PAPER_LEAGUES)
-    assert EP.O15_FILL_PRICE == backtest._DEFAULT_ODDS["over15"] == market_edge.SYNTHETIC_DEFAULT_ODDS["OU15"]
+    # backtest no longer fills a missing price (2026-11-01); the detector constants still name the
+    # historical fill so legacy rows that carry it are recognised and dropped
+    assert not hasattr(backtest, "_DEFAULT_ODDS")
+    assert EP.O15_FILL_PRICE == market_edge.SYNTHETIC_DEFAULT_ODDS["OU15"]
 
 
 def test_since_review_numbers_equal_independent_computation():

@@ -128,9 +128,15 @@ def main(argv=None) -> int:
         key = f"{track}|{fam}"
         cells[key] = R.compare_cell(g) if len(g) else {"status": "INSUFFICIENT", "reason": "no first-sight rows"}
         dis[key] = R.disagreement_cell(g, a.boot) if len(g) else {"status": "INSUFFICIENT", "n": 0}
-        prop[key] = (R.fit_params_cell(g, float(params["residual_logit_clip"]),
-                                       float(params["residual_weight"].get(key, 0.10)))
-                     if len(g) else {"status": "INSUFFICIENT", "n": 0})
+        # A cell with no configured residual_weight is INSUFFICIENT, not fitted at a 0.10 stand-in.
+        _rw = params["residual_weight"].get(key)
+        if not len(g):
+            prop[key] = {"status": "INSUFFICIENT", "n": 0}
+        elif _rw is None:
+            print(f"  {key}: no residual_weight configured - cell marked INSUFFICIENT")
+            prop[key] = {"status": "INSUFFICIENT", "n": int(len(g)), "reason": "no residual_weight configured"}
+        else:
+            prop[key] = R.fit_params_cell(g, float(params["residual_logit_clip"]), float(_rw))
     # BH-FDR across every (cell x metric) moderate-vs-extreme test
     flat = [(k, m, t["p_one_sided"]) for k, v in dis.items() if v.get("status") == "OK"
             for m, t in v["tests"].items() if t.get("p_one_sided") is not None]

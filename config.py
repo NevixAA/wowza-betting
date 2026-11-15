@@ -42,6 +42,22 @@ from src import season_resolver as _season_resolver      # noqa: E402
 _LR = _league_registry.derive()
 LEAGUE_REGISTRY_VERSION = _LR.version
 
+
+def _registry_keyed(table, table_name: str):
+    """A per-league table typed in this file, with every key checked against the registry.
+
+    A key that is not a canonical league name or a registered alias raises RegistryError at import
+    (a renamed league must not silently drop to the global threshold); aliases are stored under their
+    canonical name, and dict lookups accept either (LeagueMap)."""
+    out = {}
+    for k in table:
+        c = _league_registry.canonical_name(k)
+        if c is None:
+            raise _league_registry.RegistryError(
+                f"config.{table_name}: {k!r} is not a league in config/leagues.json")
+        out[c] = table[k] if isinstance(table, dict) else True
+    return _league_registry.LeagueMap(out, _LR.aliases) if isinstance(table, dict) else set(out)
+
 MODELS_DIR = BASE_DIR / "models"
 OUTPUT_DIR = BASE_DIR / "output"
 for d in (MODELS_DIR, OUTPUT_DIR):
@@ -83,6 +99,21 @@ if SIDE_EDGE_FAIR_PRICE not in SIDE_EDGE_FAIR_PRICES:     # a typo falls to the 
     _logging.getLogger(__name__).error(
         f"SIDE_EDGE_FAIR_PRICE={SIDE_EDGE_FAIR_PRICE!r} not in {SIDE_EDGE_FAIR_PRICES}; using devig_two_sided")
     SIDE_EDGE_FAIR_PRICE = "devig_two_sided"
+# ── SIDE-MARKET GLOBAL BAR: an owner-visible POLICY value, declared ONCE (fix9/defaults 2026-11-04) ──
+# BTTS / Over 1.5 / Over 3.5 tips are tiered on a league's OWN sniper_th / marksman_th
+# (models/best_params_side_markets.json) only when that league's threshold is approved out of sample;
+# every other league - and every league the file does not list at all - is tiered on this one global
+# bar. Until 2026-11-04 the bar was a literal typed in three places (pipeline._generate_side_bets,
+# src/integrity/side_edge_devig.thresholds, src/research/edge_replay.legacy_side_tier) and a tip tiered
+# on it looked exactly like a per-league tier. The VALUES ARE UNCHANGED (owner rule: no threshold
+# changes); they are now one declared policy, read by src/side_thresholds.side_bars everywhere, and
+# every tip tiered on it carries threshold_source = "GLOBAL" through the ledger, Telegram and the
+# dashboard. VALUABLE has no per-league value anywhere: its 0.04 floor is global for every league.
+# A plain constant on purpose (no os.getenv): changing it is a threshold change and needs the owner.
+SIDE_GLOBAL_BARS = {"sniper": 0.10, "marksman": 0.08, "valuable": 0.04}
+#: threshold_source values: the league's own approved bars / the global bar above
+THRESHOLD_SOURCE_LEAGUE = "LEAGUE"
+THRESHOLD_SOURCE_GLOBAL = "GLOBAL"
 # Human-readable labels for Telegram / dashboard
 SIDE_MARKET_LABELS = {
     # "BTTS" alone does not say whether the tip is that both teams DO score or that they do not.
@@ -143,19 +174,31 @@ STANDARD_FORMAT_LEAGUES = set(_LR.standard)
 # (notes formerly inside the NEW_FORMAT_LEAGUES literal; values now live in config/leagues.json)
 NEW_FORMAT_LEAGUES = set(_LR.new_format)
 
-def model_type_for_league(league) -> str:
-    """Canonical model tag for a league: 'standard' | 'new_format' | 'unknown'.
+def model_type_for_league(league) -> str | None:
+    """Canonical model tag for a league: 'standard' | 'new_format', or None when the league is not
+    registered (config/leagues.json) or has no model.
 
     Single source of truth so the ledger, digest, and dashboard never disagree on which
     model a bet belongs to. Reporting was previously treating an untagged (blank) row as
     'standard', which let new-format bets leak into the standard column.
+
+    The name is resolved through src.league_registry.canonical_name, so a REGISTERED alias
+    ('Austria Bundesliga') routes like its canonical league, while an unregistered near-name
+    ('championship') resolves to nothing. This used to be exact string matching that returned the
+    placeholder category 'unknown' (Data Truth round 2); a missing model is now None, explicitly.
     """
-    lg = str(league).strip()
+    if league is None or (isinstance(league, float) and league != league):
+        return None
+    lg = _league_registry.canonical_name(str(league).strip())
+    if lg is None:
+        # Auto-onboarded leagues (config/auto_leagues.json) are merged below without a registry
+        # entry; they are matched by their exact configured name only.
+        lg = str(league).strip()
     if lg in STANDARD_FORMAT_LEAGUES:
         return "standard"
     if lg in NEW_FORMAT_LEAGUES:
         return "new_format"
-    return "unknown"
+    return None
 
 
 # Leagues loaded entirely from API-Football (no football-data.co.uk coverage)
@@ -281,9 +324,70 @@ if STANDARD_OU25_SERVING_RECIPE not in STANDARD_OU25_SERVING_RECIPES:
 # ── Training data filters ─────────────────────────────────────────────────────
 # Exclude COVID seasons — empty stadiums created anomalous patterns not present today
 EXCLUDE_COVID_SEASONS = True
-COVID_SEASONS = {"2019/20", "2020/21"}   # seasons to drop from training
+# THE COVID PERIOD IS A DATE RANGE, NOT SEASON LABELS (Data Truth audit 2026-11-01). The excluded
+# seasons of a league are the ones it was PLAYING during this window, resolved per league by
+# src/season_resolver from config/leagues.json: start-year leagues -> 2019/20 and 2020/21 (exactly the
+# old label set), calendar-year leagues -> 2020, which the label set never matched ("2020" is not
+# "2019/20"), so their pandemic season stayed in training. Use covid_season_mask(df).
+COVID_PERIOD = ("2020-03-01", "2020-12-31")
+# DEPRECATED DISPLAY-ONLY label set. No training, backtest or script path reads it any more (all use
+# covid_season_mask). Its last reader is the Model Info page (pages/4_*_Model_Info.py, another owner's
+# file); delete it together with that page's reference. Correct for start-year leagues only.
+COVID_SEASONS = {"2019/20", "2020/21"}
 
-# Time-decay weights — recent seasons are more representative of current market
+
+def covid_seasons_of(league) -> set:
+    """API seasons `league` was playing during COVID_PERIOD (empty set when the league's season
+    cannot be resolved - its rows are then NOT treated as COVID, and covid_season_mask logs them)."""
+    import pandas as _pd
+    out = set()
+    for d in _pd.date_range(COVID_PERIOD[0], COVID_PERIOD[1], freq="MS").append(
+            _pd.DatetimeIndex([COVID_PERIOD[1]])):
+        s = _season_resolver.resolve_api_season(league, d.date())
+        if _season_resolver.is_known(s):
+            out.add(s)
+    # A season that also resolves far outside the window is not a pandemic season but a fixed one
+    # (a tournament's single season id, e.g. World Cup 2026): never exclude it.
+    lo, hi = _pd.Timestamp(COVID_PERIOD[0]), _pd.Timestamp(COVID_PERIOD[1])
+    for far in (lo - _pd.DateOffset(years=3), hi + _pd.DateOffset(years=3)):
+        out.discard(_season_resolver.resolve_api_season(league, far.date()))
+    return out
+
+
+def covid_season_mask(df, league_col: str = "league", date_col: str = "date"):
+    """Boolean Series: True for rows of a league-season that was played during COVID_PERIOD.
+
+    A row whose league or date cannot be resolved to a season is NOT excluded (there is no evidence
+    it was a COVID season) and is counted in a log line, never dropped silently."""
+    import logging as _logging
+    import pandas as _pd
+    import numpy as _np
+    out = _np.zeros(len(df), dtype=bool)
+    if df.empty:
+        return _pd.Series(out, index=df.index)
+    dates = _pd.to_datetime(df[date_col], errors="coerce").reset_index(drop=True)
+    leagues = df[league_col].astype(str).reset_index(drop=True)
+    unresolved = 0
+    for lg in leagues.unique():
+        pos = _np.flatnonzero((leagues == lg).to_numpy())
+        covid = covid_seasons_of(lg)
+        if not covid:
+            unresolved += len(pos)
+            continue
+        dd = dates.iloc[pos]
+        season = {d: _season_resolver.resolve_api_season(lg, d.date()) for d in dd.dropna().unique()}
+        out[pos] = dd.map(season).isin(covid).to_numpy()
+        unresolved += int(dd.isna().sum())
+    if unresolved:
+        _logging.getLogger(__name__).info(
+            f"covid_season_mask: {unresolved} row(s) whose league/date has no resolvable season - kept")
+    return _pd.Series(out, index=df.index)
+
+# DEPRECATED DISPLAY-ONLY. Training weights are DERIVED from the match date
+# (src.standard_repair.derived_weights = the frozen src.recency season_age function); no training or
+# research path reads this map or DEFAULT_DECAY_WEIGHT any more. The last reader is the Model Info
+# page (pages/4_*_Model_Info.py, another owner's file), where it is shown as if it still applied;
+# delete both names together with that page's reference.
 TRAINING_DECAY_WEIGHTS = {
     "2024/25": 4.0,
     "2023/24": 3.0,
@@ -337,7 +441,7 @@ DRIFT_UPGRADE_EDGE      = 0.10    # the removed rule's MARKSMAN->SNIPER edge bar
 
 # Per-league edge ceilings — override global EDGE_CEILING for new-format leagues
 # where thinner data / noisier bookmaker prices cause the model to overfit at high edges.
-LEAGUE_EDGE_CEILING: dict = {
+LEAGUE_EDGE_CEILING: dict = _registry_keyed({
     "Brazil Serie A":            0.17,
     "Japan J-League":            0.17,
     "China Super League":        0.15,
@@ -351,7 +455,7 @@ LEAGUE_EDGE_CEILING: dict = {
     "Romanian Superliga":        0.15,
     "Argentina Primera Division": 0.18,
     "USA MLS":                   0.17,
-}
+}, "LEAGUE_EDGE_CEILING")
 
 # Backward-compat alias
 VALUE_THRESHOLD = VALUABLE_THRESHOLD
@@ -364,7 +468,7 @@ VALUE_THRESHOLD = VALUABLE_THRESHOLD
 # documented reference — the ROI beside each one is why it is what it is. A cap is reversible by
 # deleting one env line; overwriting them would lose the calibration.
 _SNIPER_CAP = float(os.getenv("LEAGUE_SNIPER_CAP", "1.0"))
-_LEAGUE_SNIPER_CALIBRATED: dict = {
+_LEAGUE_SNIPER_CALIBRATED: dict = _registry_keyed({
     # Standard format — live prediction leagues (thresholds from backtest optimisation)
     "League Two":     0.14,   # most data, reliable at 14%  → ROI +22.6%
     "Bundesliga 2":   0.20,   # needs higher bar             → ROI +22.4%
@@ -374,36 +478,37 @@ _LEAGUE_SNIPER_CALIBRATED: dict = {
     "Championship":   0.15,   # limited edge, conservative
     "Serie B":        0.15,   # limited edge, conservative
     "Greek Super League": 0.25,  # historically weak — high bar
-}
-LEAGUE_SNIPER_THRESHOLDS: dict = {k: min(v, _SNIPER_CAP)
-                                  for k, v in _LEAGUE_SNIPER_CALIBRATED.items()}
+}, "_LEAGUE_SNIPER_CALIBRATED")
+LEAGUE_SNIPER_THRESHOLDS: dict = _league_registry.LeagueMap(
+    {k: min(v, _SNIPER_CAP) for k, v in _LEAGUE_SNIPER_CALIBRATED.items()}, _LR.aliases)
 
 # ── Per-league MARKSMAN thresholds (override global MARKSMAN_THRESHOLD) ────────
 # Set equal to the league's SNIPER threshold to disable MARKSMAN for that league.
 # Bundesliga 2: MARKSMAN 8-20% backtest was -10.8% ROI — no MARKSMAN bets here.
-_LEAGUE_MARKSMAN_CALIBRATED: dict = {
+_LEAGUE_MARKSMAN_CALIBRATED: dict = _registry_keyed({
     "Bundesliga 2": 0.20,   # match SNIPER — no MARKSMAN; 8-20% = -10.8% ROI
     "League Two":   0.14,   # match SNIPER — 8-14% range had low +4.3% ROI
-}
+}, "_LEAGUE_MARKSMAN_CALIBRATED")
 # Capped by the same env knob. Without this a lowered SNIPER cap would leave a per-league MARKSMAN
 # floor ABOVE its own SNIPER threshold, so MARKSMAN could never fire in that league — the tier
 # would vanish silently rather than widen.
-LEAGUE_MARKSMAN_THRESHOLDS: dict = {k: min(v, _SNIPER_CAP)
-                                    for k, v in _LEAGUE_MARKSMAN_CALIBRATED.items()}
+LEAGUE_MARKSMAN_THRESHOLDS: dict = _league_registry.LeagueMap(
+    {k: min(v, _SNIPER_CAP) for k, v in _LEAGUE_MARKSMAN_CALIBRATED.items()}, _LR.aliases)
 
 # Leagues where significant portion of matches are played on artificial turf.
 # Artificial pitches are associated with lower goal counts (faster ball, tired legs).
-ARTIFICIAL_PITCH_LEAGUES: set = {
+ARTIFICIAL_PITCH_LEAGUES: set = _registry_keyed({
     "Finland Veikkausliiga",
     "Sweden Allsvenskan",
     "Norway Eliteserien",
-}
+}, "ARTIFICIAL_PITCH_LEAGUES")
 
 # ── Per-league display timezones (IANA) ───────────────────────────────────────
 # Used ONLY for DISPLAY in the Telegram bot: OddsAPI commence_time is UTC, so a
 # match's local calendar day can differ from its UTC day (e.g. Japan/Argentina).
 # The stored `date` stays UTC (join key); the notifier converts kickoff_utc to the
-# league's local tz for what the user reads. Unknown leagues fall back to UTC.
+# league's local tz for what the user reads. A league with no registered timezone has no entry
+# (no UTC stand-in); an auto-onboarded league without one is skipped and logged (_merge_auto_leagues).
 # (notes formerly inside the LEAGUE_TIMEZONES literal; values now live in config/leagues.json)
 #   USA MLS: MLS spans zones; ET as display proxy
 LEAGUE_TIMEZONES: dict = _LR.timezones
@@ -583,23 +688,33 @@ SOFASCORE_TOURNAMENT_IDS = _LR.sofascore_ids
 # into config/auto_leagues.json by .github/workflows/auto_onboard_leagues.yml (scripts/auto_onboard.py).
 # It is merged here into every registry a new-format, API-Football-only league needs. ADDITIVE ONLY: a
 # name already configured above is never overwritten, and any error leaves the config exactly as
-# written above. Stakes stay protected by the league rating, which fails closed to the minimum scale
-# for a league with no rating yet.
+# written above. Stakes stay protected by the league rating: a league with no rating yet gets no stake
+# (NO_LEAGUE_RATING, config/bankroll_policy.json league_rating_sizing).
 AUTO_LEAGUES_FILE = BASE_DIR / "config" / "auto_leagues.json"
 
 
 def _merge_auto_leagues() -> list[str]:
     import json as _json
+    import logging as _logging
+    _log = _logging.getLogger(__name__)
     added = []
     try:
         data = _json.loads(AUTO_LEAGUES_FILE.read_text(encoding="utf-8")) if AUTO_LEAGUES_FILE.exists() else {}
-    except Exception:                                                 # noqa: BLE001
+    except Exception as _e:                                           # noqa: BLE001
+        _log.error(f"{AUTO_LEAGUES_FILE.name} unreadable ({_e}) - no auto-onboarded league is merged")
         return added
     for e in data.get("leagues", []):
-        name = str(e.get("name", "")).strip()
+        name = str(e.get("name") or "").strip()
         try:
             lid, season, sport_key = int(e["api_football_id"]), str(e["current_season"]), str(e["odds_api_sport_key"])
-        except Exception:                                             # noqa: BLE001 - incomplete entry: skip
+        except Exception as _e:                                       # noqa: BLE001 - incomplete entry: skip
+            _log.warning(f"auto league {name!r} skipped: incomplete entry ({type(_e).__name__}: {_e})")
+            continue
+        # A timezone is REQUIRED (it decides the local match day shown to the user). It used to
+        # become "UTC" when absent, i.e. a wrong calendar day for every evening kickoff abroad.
+        tz = str(e.get("timezone") or "").strip()
+        if not tz:
+            _log.warning(f"auto league {name!r} skipped: no timezone in {AUTO_LEAGUES_FILE.name}")
             continue
         if not name or name in STANDARD_FORMAT_LEAGUES or name in NEW_FORMAT_LEAGUES or name in API_FOOTBALL_IDS:
             continue
@@ -610,7 +725,7 @@ def _merge_auto_leagues() -> list[str]:
         API_FOOTBALL_IDS[name] = lid
         API_FOOTBALL_SEASONS[name] = season
         ODDS_API_SPORT_KEYS[name] = sport_key
-        LEAGUE_TIMEZONES[name] = str(e.get("timezone") or "UTC")
+        LEAGUE_TIMEZONES[name] = tz
         added.append(name)
     return added
 

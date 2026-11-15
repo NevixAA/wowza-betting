@@ -14,7 +14,7 @@ Usage:
     python scripts/backfill_af_odds.py               # full parallel run
     python scripts/backfill_af_odds.py --dry-run     # count uncached, then exit
     python scripts/backfill_af_odds.py --workers 30  # tune parallelism
-    python scripts/backfill_af_odds.py --league "Brazil Serie A"
+    python scripts/backfill_af_odds.py --league "<registry league name>"
 """
 from __future__ import annotations
 
@@ -75,20 +75,11 @@ _lock         = threading.Lock()
 _done_count   = 0
 _quota_hit    = False
 
-LEAGUES = [
-    ("Brazil Serie A",              71,  ["2019","2020","2021","2022","2023","2024"]),
-    ("Japan J-League",              98,  ["2019","2020","2021","2022","2023","2024"]),
-    ("Mexico Liga MX",             262,  ["2019","2020","2021","2022","2023","2024"]),
-    ("China Super League",         169,  ["2019","2020","2021","2022","2023","2024"]),
-    ("USA MLS",                    253,  ["2019","2020","2021","2022","2023","2024"]),
-    ("Argentina Primera Division", 128,  ["2019","2020","2021","2022","2023","2024"]),
-    ("Ireland Premier Division",   357,  ["2019","2020","2021","2022","2023","2024","2025"]),
-    ("Finland Veikkausliiga",      244,  ["2019","2020","2021","2022","2023","2024","2025"]),
-    ("Sweden Allsvenskan",         113,  ["2019","2020","2021","2022","2023","2024","2025"]),
-    ("Norway Eliteserien",         103,  ["2019","2020","2021","2022","2023","2024","2025"]),
-    ("Denmark Superliga",          119,  ["2019","2020","2021","2022","2023","2024"]),
-    ("Austrian Bundesliga",        218,  ["2019","2020","2021","2022","2023","2024"]),
-]
+# Leagues, API-Football ids and seasons: the SAME registry-derived plan backfill_af_history.py
+# uses (every new-format league in config/leagues.json, seasons from its own history span),
+# so the odds backfill can never cover a different league/season set than the fixture cache.
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from backfill_af_history import league_plan  # noqa: E402
 
 
 def _parse_odds(data: dict) -> dict:
@@ -141,10 +132,19 @@ def _fetch_one(task: dict) -> dict | None:
                                  headers=_HEADERS,
                                  params={"fixture": fix_id, "bookmaker": BET365},
                                  timeout=20)
-                remaining = int(r.headers.get("x-ratelimit-requests-remaining", 9999))
                 if r.status_code == 429:
                     time.sleep(15)
                     continue
+                # An unknown quota is not a large one: without the header we cannot tell how
+                # close we are to the cap, so stop (fail closed) instead of assuming 9999.
+                _rem = r.headers.get("x-ratelimit-requests-remaining")
+                try:
+                    remaining = int(_rem)
+                except (TypeError, ValueError):
+                    with _lock:
+                        _quota_hit = True
+                    print(f"\n  [!] Quota unknown (x-ratelimit-requests-remaining={_rem!r}) — stopping")
+                    return None
                 if remaining < 100:
                     with _lock:
                         _quota_hit = True
@@ -182,8 +182,13 @@ def _fetch_one(task: dict) -> dict | None:
 
 def _build_task_list(target_league: str | None) -> list[dict]:
     tasks = []
-    leagues_to_run = [(n, i, s) for n, i, s in LEAGUES
-                      if target_league is None or n == target_league]
+    from src.league_registry import canonical_name
+    _target = None if target_league is None else canonical_name(target_league)
+    if target_league is not None and _target is None:
+        print(f"  [error] --league {target_league!r} is not a registered league name or alias")
+        return tasks
+    leagues_to_run = [(n, i, s) for n, i, s in league_plan()
+                      if _target is None or n == _target]
     for league_name, league_id, seasons in leagues_to_run:
         for season in seasons:
             fix_cache = HISTORY_CACHE_DIR / f"fixtures_{league_id}_{season}.json"

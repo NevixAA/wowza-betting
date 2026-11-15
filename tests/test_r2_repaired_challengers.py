@@ -283,7 +283,14 @@ def test_legacy_and_v9_repaired_training_match_main_golden():
     rr = f.dropna(subset=["over25", "home_scored_last5"])
     rep = M.train_repaired(rr, "over25", feature_cols=FEATS,
                            sample_weight=pd.Series(np.linspace(1, 3, len(rr)), index=rr.index))
-    leg = M.train(rr, "over25", feature_cols=FEATS, sample_weight=np.linspace(1, 3, len(rr)))
+    # Legacy bug 8 was fixed 2026-11-02 (weights now travel with their rows). The golden was
+    # recorded with the OLD positional read: sorted row i got linspace[i]. Feed the fixed trainer
+    # the weights that put linspace[i] on sorted row i (same sort call -> same order), so the
+    # golden still proves nothing else in the legacy trainer changed.
+    _pos = rr.reset_index(drop=True).sort_values("date").index.to_numpy()
+    _w_old = np.empty(len(rr))
+    _w_old[_pos] = np.linspace(1, 3, len(rr))
+    leg = M.train(rr, "over25", feature_cols=FEATS, sample_weight=_w_old)
     ev = rr.tail(60).copy()
     ev.iloc[3, ev.columns.get_loc("home_corners_pg_roll")] = np.nan
     # The golden was recorded on Windows from main 4e9c933. Probabilities are compared EXACTLY there
@@ -336,36 +343,48 @@ def test_serving_payload_scores_identically_to_main(name):
     with open(path, "rb") as f:
         pay = pickle.load(f)
     rng = np.random.default_rng(7)
-    cols = list(pay["feature_cols"])
+    if pay.get("tracks") is None:
+        cols = list(pay["feature_cols"])
+        df = pd.DataFrame(rng.normal(1.0, 0.6, (64, len(cols))), columns=cols)
+        df = df.mask(rng.random(df.shape) < 0.15)                        # NaNs to impute
+        new = M.predict_proba(df, payload=pay).to_numpy()
+        ref = _reference_predict(df, pay)
+        assert np.array_equal(new, ref), f"{path.name}: serving probability changed"
+        return
+    # A track-split payload (train_by_track format; the 2026-11-09 clean-data switch): every row is
+    # scored by ITS OWN track's payload, exactly as main's flat code scores that payload.
+    subs = {M.PRIMARY_TRACK: pay, **pay["tracks"]}
+    lg = {"standard": sorted(config.STANDARD_FORMAT_LEAGUES)[0],
+          "new_format": sorted(config.NEW_FORMAT_LEAGUES)[0]}
+    cols = sorted({c for s in subs.values() for c in s["feature_cols"]})
     df = pd.DataFrame(rng.normal(1.0, 0.6, (64, len(cols))), columns=cols)
-    df = df.mask(rng.random(df.shape) < 0.15)                            # NaNs to impute
+    df = df.mask(rng.random(df.shape) < 0.15)
+    df["league"] = [lg["standard"] if i % 2 == 0 else lg["new_format"] for i in range(len(df))]
     new = M.predict_proba(df, payload=pay).to_numpy()
-    ref = _reference_predict(df, pay)
-    assert np.array_equal(new, ref), f"{path.name}: serving probability changed"
+    for track, sub in subs.items():
+        m = (df["league"] == lg[track]).to_numpy()
+        ref = _reference_predict(df[m].reset_index(drop=True), sub)
+        assert np.array_equal(new[m], ref), f"{path.name}/{track}: serving probability changed"
 
 
 # ── finding 16: cold-start option leaves the default untouched ──────────────────────────────
 
-def test_cold_start_nan_only_changes_the_cold_start_columns():
+def test_cold_start_is_nan_only_and_typed_priors_are_gone():
+    """Data Truth 2026-11-01: "nan" is the only cold-start mode (and the default). The typed
+    "current" priors (1.10 / 0.55 / 0.45 / 0.35 / 0.33 / HT 0) were removed."""
     raw = _nf_frame()
     a = build_features_repaired(raw)
     b = build_features_repaired(raw, cold_start="nan")
-    cold = {"home_advantage", "away_home_adv_factor", "combined_sot_ratio", "combined_ht_goals_avg"}
-    same = [c for c in a.columns if c not in cold]
-    pd.testing.assert_frame_equal(a[same], b[same])
-    for c in cold:
-        assert b[c].isna().any()                                       # NaN where no history
-    for c in ("combined_sot_ratio", "combined_ht_goals_avg"):
-        known = b[c].notna()
-        assert np.allclose(a.loc[known, c], b.loc[known, c])          # identical where history
-    # home flags: "nan" never uses the typed 1.10 league-away prior, so only windows that reach
-    # back to a league's very first matchday can differ; later rows are identical
-    late = pd.to_datetime(a["date"]) >= pd.to_datetime(a["date"]).min() + pd.Timedelta(days=400)
-    for c in ("home_advantage", "away_home_adv_factor"):
-        k = late & b[c].notna()
-        assert k.sum() > 50 and np.allclose(a.loc[k, c], b.loc[k, c])
-    with pytest.raises(ValueError):
-        build_features_repaired(raw, cold_start="zero")
+    pd.testing.assert_frame_equal(a, b)                                 # default IS "nan"
+    for c in ("home_advantage", "away_home_adv_factor", "combined_sot_ratio", "combined_ht_goals_avg"):
+        assert a[c].isna().any() and a[c].notna().any(), c            # NaN only where no history
+    # a typed prior would show up as the constant on every first-history row
+    first = a.groupby(["league", "home_team"]).head(1)
+    assert not first["home_advantage"].isin([0.55]).any()
+    assert not first["away_home_adv_factor"].isin([0.45]).any()
+    for bad in ("current", "zero"):
+        with pytest.raises(ValueError):
+            build_features_repaired(raw, cold_start=bad)
 
 
 # ── finding 19: track purity of side challengers ────────────────────────────────────────────

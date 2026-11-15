@@ -1,0 +1,39 @@
+name: Understat reachability probe
+
+# Tiny diagnostic (Data Truth round 5). Run 41440689838 could not resolve understat.com from a GitHub
+# runner (60 of 60 URLs: "Temporary failure in name resolution"). This checks, from a runner, DNS on
+# the runner's resolver and on public resolvers, and a plain HTTPS request. No secrets, no data written,
+# no commit. It runs once when this file is pushed on a fix5/* branch, and on demand.
+
+on:
+  push:
+    branches: ['fix5/**']
+    paths: ['.github/workflows/understat_probe.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: DNS and HTTPS checks
+        run: |
+          set +e
+          sudo apt-get install -y -qq dnsutils >/dev/null 2>&1
+          echo "== runner resolver (getent)"; getent hosts understat.com || echo "getent: no answer"
+          for ns in 8.8.8.8 1.1.1.1 9.9.9.9 ns1.beget.com; do
+            echo "== dig @$ns"; dig +time=5 +tries=1 +short understat.com A @"$ns" || echo "dig @$ns failed"
+          done
+          echo "== HTTPS by name"
+          curl -sS -o /dev/null -m 20 -w 'http %{http_code} ip %{remote_ip} t=%{time_total}s\n' https://understat.com/ || echo "curl by name failed"
+          IP=$(dig +short understat.com A @8.8.8.8 | head -1)
+          if [ -n "$IP" ]; then
+            echo "== HTTPS to $IP with the name pinned"
+            curl -sS -o /dev/null -m 20 --resolve "understat.com:443:$IP" -w 'http %{http_code} t=%{time_total}s\n' https://understat.com/ || echo "curl pinned failed"
+          fi
+          echo "== control: https://fbref.com/"
+          curl -sS -o /dev/null -m 20 -w 'http %{http_code}\n' https://fbref.com/ || echo "control failed"
+          exit 0

@@ -23,7 +23,7 @@ import logging
 import os
 import sys
 import time
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from io import StringIO
 from pathlib import Path
 
@@ -98,7 +98,7 @@ _YEAR_MAP = {
 
 
 def _auto_season() -> str:
-    today = date.today()
+    today = datetime.now(timezone.utc).date()   # UTC day: seasons roll on the UTC date
     if today.month >= 7:
         y1, y2 = today.year % 100, (today.year + 1) % 100
     else:

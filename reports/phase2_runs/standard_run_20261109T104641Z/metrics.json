@@ -1,0 +1,3222 @@
+{
+  "holdout": {
+    "standard": {
+      "btts": {
+        "champion_recipe": {
+          "n": 2649,
+          "log_loss": 0.6870001248265504,
+          "brier": 0.2469321749510776,
+          "ece": 0.013326792833689538,
+          "calibration_intercept": -0.25172222605248434,
+          "calibration_slope": 2.7680349448824133,
+          "mean_p": 0.5431095982572882,
+          "observed_rate": 0.5564363910909778,
+          "calibration_table": [
+            {
+              "bin": "0.5-0.6",
+              "n": 2649,
+              "mean_p": 0.5431095982572882,
+              "observed": 0.5564363910909778
+            }
+          ],
+          "deployable": true,
+          "clv": {
+            "yes": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_btts_yes_entry, odds_btts_yes_close)"
+            }
+          }
+        },
+        "dixon_coles": {
+          "n": 2199,
+          "log_loss": 0.6920468346519254,
+          "brier": 0.24939458505915738,
+          "ece": 0.051047246012812506,
+          "calibration_intercept": 0.19650731390571843,
+          "calibration_slope": 0.29442606921429154,
+          "mean_p": 0.5245322512104453,
+          "observed_rate": 0.5561618917689859,
+          "calibration_table": [
+            {
+              "bin": "0.2-0.3",
+              "n": 1,
+              "mean_p": 0.28940809974388376,
+              "observed": 1.0
+            },
+            {
+              "bin": "0.3-0.4",
+              "n": 42,
+              "mean_p": 0.37853812456323593,
+              "observed": 0.5476190476190477
+            },
+            {
+              "bin": "0.4-0.5",
+              "n": 726,
+              "mean_p": 0.4639125683471385,
+              "observed": 0.5179063360881543
+            },
+            {
+              "bin": "0.5-0.6",
+              "n": 1175,
+              "mean_p": 0.5444148842176164,
+              "observed": 0.5812765957446808
+            },
+            {
+              "bin": "0.6-0.7",
+              "n": 253,
+              "mean_p": 0.6298405422805213,
+              "observed": 0.5454545454545454
+            },
+            {
+              "bin": "0.7-0.8",
+              "n": 2,
+              "mean_p": 0.710370153837774,
+              "observed": 1.0
+            }
+          ],
+          "deployable": true,
+          "clv": {
+            "yes": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_btts_yes_entry, odds_btts_yes_close)"
+            }
+          }
+        },
+        "hgb": {
+          "n": 2649,
+          "log_loss": 0.7027678443842156,
+          "brier": 0.2542908098931025,
+          "ece": 0.05815149568160461,
+          "calibration_intercept": 0.2128641486495692,
+          "calibration_slope": 0.09982113495396741,
+          "mean_p": 0.5336424238025542,
+          "observed_rate": 0.5564363910909778,
+          "calibration_table": [
+            {
+              "bin": "0.1-0.2",
+              "n": 3,
+              "mean_p": 0.1876389893533785,
+              "observed": 1.0
+            },
+            {
+              "bin": "0.2-0.3",
+              "n": 22,
+              "mean_p": 0.2709197850001053,
+              "observed": 0.5
+            },
+            {
+              "bin": "0.3-0.4",
+              "n": 181,
+              "mean_p": 0.3651358211017181,
+              "observed": 0.5303867403314917
+            },
+            {
+              "bin": "0.4-0.5",
+              "n": 736,
+              "mean_p": 0.4594769000526144,
+              "observed": 0.5543478260869565
+            },
+            {
+              "bin": "0.5-0.6",
+              "n": 1091,
+              "mean_p": 0.5492320586777737,
+              "observed": 0.5481209899175069
+            },
+            {
+              "bin": "0.6-0.7",
+              "n": 517,
+              "mean_p": 0.6393573184394981,
+              "observed": 0.5841392649903289
+            },
+            {
+              "bin": "0.7-0.8",
+              "n": 95,
+              "mean_p": 0.735177488936921,
+              "observed": 0.5578947368421052
+            },
+            {
+              "bin": "0.8-0.9",
+              "n": 4,
+              "mean_p": 0.8073188142722953,
+              "observed": 0.75
+            }
+          ],
+          "deployable": true,
+          "clv": {
+            "yes": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_btts_yes_entry, odds_btts_yes_close)"
+            }
+          }
+        },
+        "logistic": {
+          "n": 2649,
+          "log_loss": 0.6880108332346678,
+          "brier": 0.2474469705002861,
+          "ece": 0.02673715156695223,
+          "calibration_intercept": 0.16333158699432485,
+          "calibration_slope": 0.4934991676173697,
+          "mean_p": 0.5319764798741432,
+          "observed_rate": 0.5564363910909778,
+          "calibration_table": [
+            {
+              "bin": "0.3-0.4",
+              "n": 1,
+              "mean_p": 0.3620232157300007,
+              "observed": 0.0
+            },
+            {
+              "bin": "0.4-0.5",
+              "n": 594,
+              "mean_p": 0.4807895525787398,
+              "observed": 0.5303030303030303
+            },
+            {
+              "bin": "0.5-0.6",
+              "n": 1873,
+              "mean_p": 0.5390285617250951,
+              "observed": 0.5595301655098772
+            },
+            {
+              "bin": "0.6-0.7",
+              "n": 174,
+              "mean_p": 0.6243414567883008,
+              "observed": 0.6149425287356322
+            },
+            {
+              "bin": "0.7-0.8",
+              "n": 7,
+              "mean_p": 0.7169668781195095,
+              "observed": 0.5714285714285714
+            }
+          ],
+          "deployable": true,
+          "clv": {
+            "yes": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_btts_yes_entry, odds_btts_yes_close)"
+            }
+          }
+        },
+        "market_only": {
+          "n": 0,
+          "calibration_table": [],
+          "deployable": false,
+          "clv": {
+            "yes": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_btts_yes_entry, odds_btts_yes_close)"
+            }
+          }
+        },
+        "model_market": {
+          "n": 0,
+          "calibration_table": [],
+          "deployable": false,
+          "clv": {
+            "yes": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_btts_yes_entry, odds_btts_yes_close)"
+            }
+          }
+        }
+      },
+      "ht_over05": {
+        "champion_recipe": {
+          "n": 2619,
+          "log_loss": 0.5896964296348237,
+          "brier": 0.20016139883244938,
+          "ece": 0.012935118535681307,
+          "calibration_intercept": -0.44406227585035835,
+          "calibration_slope": 1.571644181716388,
+          "mean_p": 0.7090961911244943,
+          "observed_rate": 0.7220313096601756,
+          "calibration_table": [
+            {
+              "bin": "0.6-0.7",
+              "n": 723,
+              "mean_p": 0.6858223457292664,
+              "observed": 0.6998616874135546
+            },
+            {
+              "bin": "0.7-0.8",
+              "n": 1896,
+              "mean_p": 0.717971185966662,
+              "observed": 0.7304852320675106
+            }
+          ],
+          "deployable": true,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_ht_over05_over_entry, odds_ht_over05_over_close)"
+            }
+          }
+        },
+        "dixon_coles": {
+          "n": 2170,
+          "log_loss": 0.5888316955332543,
+          "brier": 0.19978481799589584,
+          "ece": 0.02736227513652562,
+          "calibration_intercept": 0.28778538631230954,
+          "calibration_slope": 0.8073169849415897,
+          "mean_p": 0.6966258615781765,
+          "observed_rate": 0.7230414746543778,
+          "calibration_table": [
+            {
+              "bin": "0.5-0.6",
+              "n": 24,
+              "mean_p": 0.5844636806438236,
+              "observed": 0.5416666666666666
+            },
+            {
+              "bin": "0.6-0.7",
+              "n": 1163,
+              "mean_p": 0.6651410338305372,
+              "observed": 0.70335339638865
+            },
+            {
+              "bin": "0.7-0.8",
+              "n": 957,
+              "mean_p": 0.7343151230555087,
+              "observed": 0.7471264367816092
+            },
+            {
+              "bin": "0.8-0.9",
+              "n": 26,
+              "mean_p": 0.8212460069290183,
+              "observed": 0.8846153846153846
+            }
+          ],
+          "deployable": true,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_ht_over05_over_entry, odds_ht_over05_over_close)"
+            }
+          }
+        },
+        "hgb": {
+          "n": 2619,
+          "log_loss": 0.614593948535163,
+          "brier": 0.21012002727800033,
+          "ece": 0.06975308659428275,
+          "calibration_intercept": 0.9628984413602149,
+          "calibration_slope": -0.008583559467035179,
+          "mean_p": 0.7154642928633029,
+          "observed_rate": 0.7220313096601756,
+          "calibration_table": [
+            {
+              "bin": "0.2-0.3",
+              "n": 1,
+              "mean_p": 0.2998964053763662,
+              "observed": 1.0
+            },
+            {
+              "bin": "0.3-0.4",
+              "n": 8,
+              "mean_p": 0.34502389883756357,
+              "observed": 1.0
+            },
+            {
+              "bin": "0.4-0.5",
+              "n": 57,
+              "mean_p": 0.46536774724677465,
+              "observed": 0.7192982456140351
+            },
+            {
+              "bin": "0.5-0.6",
+              "n": 218,
+              "mean_p": 0.56305195258686,
+              "observed": 0.7339449541284404
+            },
+            {
+              "bin": "0.6-0.7",
+              "n": 776,
+              "mean_p": 0.6594425898920148,
+              "observed": 0.7139175257731959
+            },
+            {
+              "bin": "0.7-0.8",
+              "n": 1068,
+              "mean_p": 0.7456328133879498,
+              "observed": 0.7228464419475655
+            },
+            {
+              "bin": "0.8-0.9",
+              "n": 462,
+              "mean_p": 0.8375038069700088,
+              "observed": 0.7186147186147186
+            },
+            {
+              "bin": "0.9-1.0",
+              "n": 29,
+              "mean_p": 0.9130880993528949,
+              "observed": 0.7931034482758621
+            }
+          ],
+          "deployable": true,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_ht_over05_over_entry, odds_ht_over05_over_close)"
+            }
+          }
+        },
+        "logistic": {
+          "n": 2619,
+          "log_loss": 0.5892419870006806,
+          "brier": 0.2001056615020439,
+          "ece": 0.014455940153544856,
+          "calibration_intercept": 0.34807398419955854,
+          "calibration_slope": 0.6825878877448845,
+          "mean_p": 0.7078868313189595,
+          "observed_rate": 0.7220313096601756,
+          "calibration_table": [
+            {
+              "bin": "0.3-0.4",
+              "n": 2,
+              "mean_p": 0.3398182836509023,
+              "observed": 1.0
+            },
+            {
+              "bin": "0.4-0.5",
+              "n": 3,
+              "mean_p": 0.46928641441479185,
+              "observed": 0.3333333333333333
+            },
+            {
+              "bin": "0.5-0.6",
+              "n": 35,
+              "mean_p": 0.5670724864601825,
+              "observed": 0.6857142857142857
+            },
+            {
+              "bin": "0.6-0.7",
+              "n": 1127,
+              "mean_p": 0.6686994441673924,
+              "observed": 0.6947648624667259
+            },
+            {
+              "bin": "0.7-0.8",
+              "n": 1366,
+              "mean_p": 0.7376793586533017,
+              "observed": 0.739385065885798
+            },
+            {
+              "bin": "0.8-0.9",
+              "n": 86,
+              "mean_p": 0.8223988475655932,
+              "observed": 0.8255813953488372
+            }
+          ],
+          "deployable": true,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_ht_over05_over_entry, odds_ht_over05_over_close)"
+            }
+          }
+        },
+        "market_only": {
+          "n": 0,
+          "calibration_table": [],
+          "deployable": false,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_ht_over05_over_entry, odds_ht_over05_over_close)"
+            }
+          }
+        },
+        "model_market": {
+          "n": 0,
+          "calibration_table": [],
+          "deployable": false,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_ht_over05_over_entry, odds_ht_over05_over_close)"
+            }
+          }
+        }
+      },
+      "ht_over15": {
+        "champion_recipe": {
+          "n": 2619,
+          "log_loss": 0.6522592641461697,
+          "brier": 0.22986538141031393,
+          "ece": 0.0038416852224398414,
+          "calibration_intercept": 1.0342661957790942,
+          "calibration_slope": 2.7218005874680986,
+          "mean_p": 0.3562194067974151,
+          "observed_rate": 0.3600610920198549,
+          "calibration_table": [
+            {
+              "bin": "0.3-0.4",
+              "n": 2610,
+              "mean_p": 0.356034029226025,
+              "observed": 0.35977011494252875
+            },
+            {
+              "bin": "0.4-0.5",
+              "n": 9,
+              "mean_p": 0.40997890250053676,
+              "observed": 0.4444444444444444
+            }
+          ],
+          "deployable": true,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_ht_over15_over_entry, odds_ht_over15_over_close)"
+            }
+          }
+        },
+        "dixon_coles": {
+          "n": 2170,
+          "log_loss": 0.6515994817521344,
+          "brier": 0.2295667003126886,
+          "ece": 0.030348869221364084,
+          "calibration_intercept": -0.13495882249812088,
+          "calibration_slope": 0.6569163494716376,
+          "mean_p": 0.3378056334338599,
+          "observed_rate": 0.35898617511520736,
+          "calibration_table": [
+            {
+              "bin": "0.1-0.2",
+              "n": 3,
+              "mean_p": 0.19258667479660915,
+              "observed": 0.0
+            },
+            {
+              "bin": "0.2-0.3",
+              "n": 561,
+              "mean_p": 0.274257891349393,
+              "observed": 0.3065953654188948
+            },
+            {
+              "bin": "0.3-0.4",
+              "n": 1294,
+              "mean_p": 0.34252852559779634,
+              "observed": 0.37171561051004637
+            },
+            {
+              "bin": "0.4-0.5",
+              "n": 299,
+              "mean_p": 0.4291807955947584,
+              "observed": 0.4013377926421405
+            },
+            {
+              "bin": "0.5-0.6",
+              "n": 12,
+              "mean_p": 0.5362864544665791,
+              "observed": 0.5
+            },
+            {
+              "bin": "0.6-0.7",
+              "n": 1,
+              "mean_p": 0.6093800200964574,
+              "observed": 0.0
+            }
+          ],
+          "deployable": true,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_ht_over15_over_entry, odds_ht_over15_over_close)"
+            }
+          }
+        },
+        "hgb": {
+          "n": 2619,
+          "log_loss": 0.6715504599561737,
+          "brier": 0.2373801324751107,
+          "ece": 0.06114381100211844,
+          "calibration_intercept": -0.5075616490081928,
+          "calibration_slope": 0.09610774810324857,
+          "mean_p": 0.33700712941647865,
+          "observed_rate": 0.3600610920198549,
+          "calibration_table": [
+            {
+              "bin": "0.0-0.1",
+              "n": 4,
+              "mean_p": 0.0915360093094797,
+              "observed": 0.25
+            },
+            {
+              "bin": "0.1-0.2",
+              "n": 140,
+              "mean_p": 0.16984897338055138,
+              "observed": 0.4
+            },
+            {
+              "bin": "0.2-0.3",
+              "n": 799,
+              "mean_p": 0.25982229681237745,
+              "observed": 0.3566958698372966
+            },
+            {
+              "bin": "0.3-0.4",
+              "n": 1083,
+              "mean_p": 0.3458549617966797,
+              "observed": 0.34349030470914127
+            },
+            {
+              "bin": "0.4-0.5",
+              "n": 472,
+              "mean_p": 0.4409181093052418,
+              "observed": 0.3813559322033898
+            },
+            {
+              "bin": "0.5-0.6",
+              "n": 95,
+              "mean_p": 0.5386691790691461,
+              "observed": 0.37894736842105264
+            },
+            {
+              "bin": "0.6-0.7",
+              "n": 23,
+              "mean_p": 0.6459279921939259,
+              "observed": 0.5217391304347826
+            },
+            {
+              "bin": "0.7-0.8",
+              "n": 3,
+              "mean_p": 0.7248231427484995,
+              "observed": 0.3333333333333333
+            }
+          ],
+          "deployable": true,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_ht_over15_over_entry, odds_ht_over15_over_close)"
+            }
+          }
+        },
+        "logistic": {
+          "n": 2619,
+          "log_loss": 0.6524780343675443,
+          "brier": 0.2298263372255848,
+          "ece": 0.0200807573557252,
+          "calibration_intercept": -0.18102997928961898,
+          "calibration_slope": 0.6062425241285312,
+          "mean_p": 0.3439119820244264,
+          "observed_rate": 0.3600610920198549,
+          "calibration_table": [
+            {
+              "bin": "0.0-0.1",
+              "n": 1,
+              "mean_p": 0.09548570160251625,
+              "observed": 0.0
+            },
+            {
+              "bin": "0.1-0.2",
+              "n": 17,
+              "mean_p": 0.1652168779930926,
+              "observed": 0.4117647058823529
+            },
+            {
+              "bin": "0.2-0.3",
+              "n": 480,
+              "mean_p": 0.2779967272029365,
+              "observed": 0.3145833333333333
+            },
+            {
+              "bin": "0.3-0.4",
+              "n": 1760,
+              "mean_p": 0.3440703656260496,
+              "observed": 0.35795454545454547
+            },
+            {
+              "bin": "0.4-0.5",
+              "n": 339,
+              "mean_p": 0.4318417983842363,
+              "observed": 0.4247787610619469
+            },
+            {
+              "bin": "0.5-0.6",
+              "n": 18,
+              "mean_p": 0.5414460676958234,
+              "observed": 0.6111111111111112
+            },
+            {
+              "bin": "0.6-0.7",
+              "n": 3,
+              "mean_p": 0.6360893122734204,
+              "observed": 0.0
+            },
+            {
+              "bin": "0.7-0.8",
+              "n": 1,
+              "mean_p": 0.7503689276295955,
+              "observed": 0.0
+            }
+          ],
+          "deployable": true,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_ht_over15_over_entry, odds_ht_over15_over_close)"
+            }
+          }
+        },
+        "market_only": {
+          "n": 0,
+          "calibration_table": [],
+          "deployable": false,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_ht_over15_over_entry, odds_ht_over15_over_close)"
+            }
+          }
+        },
+        "model_market": {
+          "n": 0,
+          "calibration_table": [],
+          "deployable": false,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_ht_over15_over_entry, odds_ht_over15_over_close)"
+            }
+          }
+        }
+      },
+      "over15": {
+        "champion_recipe": {
+          "n": 2649,
+          "log_loss": 0.5263815179511179,
+          "brier": 0.17146697158029806,
+          "ece": 0.02384776442202706,
+          "calibration_intercept": -0.6227430924760278,
+          "calibration_slope": 1.6644184162410032,
+          "mean_p": 0.7568614838569113,
+          "observed_rate": 0.7795394488486221,
+          "calibration_table": [
+            {
+              "bin": "0.6-0.7",
+              "n": 24,
+              "mean_p": 0.6895583060605793,
+              "observed": 0.625
+            },
+            {
+              "bin": "0.7-0.8",
+              "n": 2605,
+              "mean_p": 0.7571321758200011,
+              "observed": 0.7804222648752399
+            },
+            {
+              "bin": "0.8-0.9",
+              "n": 20,
+              "mean_p": 0.8023676690200613,
+              "observed": 0.85
+            }
+          ],
+          "deployable": true,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_over15_over_entry, odds_over15_over_close)"
+            }
+          }
+        },
+        "dixon_coles": {
+          "n": 2199,
+          "log_loss": 0.5279637664009554,
+          "brier": 0.1723572555161135,
+          "ece": 0.03604926309082966,
+          "calibration_intercept": 0.5831213046625096,
+          "calibration_slope": 0.6340268718269693,
+          "mean_p": 0.7442318722662332,
+          "observed_rate": 0.779899954524784,
+          "calibration_table": [
+            {
+              "bin": "0.5-0.6",
+              "n": 24,
+              "mean_p": 0.576904525744216,
+              "observed": 0.7916666666666666
+            },
+            {
+              "bin": "0.6-0.7",
+              "n": 508,
+              "mean_p": 0.6673875698035906,
+              "observed": 0.7362204724409449
+            },
+            {
+              "bin": "0.7-0.8",
+              "n": 1233,
+              "mean_p": 0.7488495588884868,
+              "observed": 0.7769667477696675
+            },
+            {
+              "bin": "0.8-0.9",
+              "n": 427,
+              "mean_p": 0.8288915189713506,
+              "observed": 0.8384074941451991
+            },
+            {
+              "bin": "0.9-1.0",
+              "n": 7,
+              "mean_p": 0.9170154750129412,
+              "observed": 0.8571428571428571
+            }
+          ],
+          "deployable": true,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_over15_over_entry, odds_over15_over_close)"
+            }
+          }
+        },
+        "hgb": {
+          "n": 2649,
+          "log_loss": 0.5372665515021172,
+          "brier": 0.17527566255910323,
+          "ece": 0.05103089578889279,
+          "calibration_intercept": 0.9360599060088429,
+          "calibration_slope": 0.27420773052309233,
+          "mean_p": 0.7595245349890752,
+          "observed_rate": 0.7795394488486221,
+          "calibration_table": [
+            {
+              "bin": "0.3-0.4",
+              "n": 1,
+              "mean_p": 0.3890524967870869,
+              "observed": 0.0
+            },
+            {
+              "bin": "0.4-0.5",
+              "n": 11,
+              "mean_p": 0.47775946248441675,
+              "observed": 0.6363636363636364
+            },
+            {
+              "bin": "0.5-0.6",
+              "n": 109,
+              "mean_p": 0.5638452868186464,
+              "observed": 0.6880733944954128
+            },
+            {
+              "bin": "0.6-0.7",
+              "n": 449,
+              "mean_p": 0.6606392893713212,
+              "observed": 0.7639198218262806
+            },
+            {
+              "bin": "0.7-0.8",
+              "n": 1226,
+              "mean_p": 0.7541258514211725,
+              "observed": 0.7805872756933115
+            },
+            {
+              "bin": "0.8-0.9",
+              "n": 765,
+              "mean_p": 0.8399843386450898,
+              "observed": 0.7934640522875817
+            },
+            {
+              "bin": "0.9-1.0",
+              "n": 88,
+              "mean_p": 0.9216317784674772,
+              "observed": 0.8636363636363636
+            }
+          ],
+          "deployable": true,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_over15_over_entry, odds_over15_over_close)"
+            }
+          }
+        },
+        "logistic": {
+          "n": 2649,
+          "log_loss": 0.5284015323881985,
+          "brier": 0.17234861297688894,
+          "ece": 0.030961515817359897,
+          "calibration_intercept": 0.6365306229810198,
+          "calibration_slope": 0.5556104701421022,
+          "mean_p": 0.7536309982784725,
+          "observed_rate": 0.7795394488486221,
+          "calibration_table": [
+            {
+              "bin": "0.5-0.6",
+              "n": 10,
+              "mean_p": 0.5836242779572688,
+              "observed": 0.8
+            },
+            {
+              "bin": "0.6-0.7",
+              "n": 403,
+              "mean_p": 0.6742536805318765,
+              "observed": 0.7344913151364765
+            },
+            {
+              "bin": "0.7-0.8",
+              "n": 1712,
+              "mean_p": 0.7494832088118135,
+              "observed": 0.7780373831775701
+            },
+            {
+              "bin": "0.8-0.9",
+              "n": 507,
+              "mean_p": 0.8288305486701635,
+              "observed": 0.8205128205128205
+            },
+            {
+              "bin": "0.9-1.0",
+              "n": 17,
+              "mean_p": 0.9103351025974771,
+              "observed": 0.7647058823529411
+            }
+          ],
+          "deployable": true,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_over15_over_entry, odds_over15_over_close)"
+            }
+          }
+        },
+        "market_only": {
+          "n": 0,
+          "calibration_table": [],
+          "deployable": false,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_over15_over_entry, odds_over15_over_close)"
+            }
+          }
+        },
+        "model_market": {
+          "n": 0,
+          "calibration_table": [],
+          "deployable": false,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_over15_over_entry, odds_over15_over_close)"
+            }
+          }
+        }
+      },
+      "over25": {
+        "champion_recipe": {
+          "n": 2649,
+          "log_loss": 0.6851384615711505,
+          "brier": 0.24601174097152892,
+          "ece": 0.02704651871539149,
+          "calibration_intercept": -0.03128106285960879,
+          "calibration_slope": 1.9634620455760459,
+          "mean_p": 0.5268338596198724,
+          "observed_rate": 0.5443563608909022,
+          "calibration_table": [
+            {
+              "bin": "0.4-0.5",
+              "n": 449,
+              "mean_p": 0.4868921182740689,
+              "observed": 0.45879732739420936
+            },
+            {
+              "bin": "0.5-0.6",
+              "n": 2167,
+              "mean_p": 0.5338414279638706,
+              "observed": 0.5606829718504845
+            },
+            {
+              "bin": "0.6-0.7",
+              "n": 33,
+              "mean_p": 0.6101199584932532,
+              "observed": 0.6363636363636364
+            }
+          ],
+          "deployable": true,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_over25_over_entry, odds_over25_over_close)"
+            },
+            "under": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_over25_under_entry, odds_over25_under_close)"
+            }
+          }
+        },
+        "dixon_coles": {
+          "n": 2199,
+          "log_loss": 0.6900546569567049,
+          "brier": 0.24837164287486252,
+          "ece": 0.05074207257319737,
+          "calibration_intercept": 0.17908095546507077,
+          "calibration_slope": 0.6322863487531304,
+          "mean_p": 0.4966142013303825,
+          "observed_rate": 0.5420645748067303,
+          "calibration_table": [
+            {
+              "bin": "0.2-0.3",
+              "n": 10,
+              "mean_p": 0.28956494326510096,
+              "observed": 0.4
+            },
+            {
+              "bin": "0.3-0.4",
+              "n": 249,
+              "mean_p": 0.36921865785288543,
+              "observed": 0.46987951807228917
+            },
+            {
+              "bin": "0.4-0.5",
+              "n": 920,
+              "mean_p": 0.4536713954665795,
+              "observed": 0.5097826086956522
+            },
+            {
+              "bin": "0.5-0.6",
+              "n": 760,
+              "mean_p": 0.5436391053802625,
+              "observed": 0.5789473684210527
+            },
+            {
+              "bin": "0.6-0.7",
+              "n": 246,
+              "mean_p": 0.6348939599170418,
+              "observed": 0.6138211382113821
+            },
+            {
+              "bin": "0.7-0.8",
+              "n": 12,
+              "mean_p": 0.7384922010210793,
+              "observed": 0.8333333333333334
+            },
+            {
+              "bin": "0.8-0.9",
+              "n": 2,
+              "mean_p": 0.8171545086968817,
+              "observed": 0.5
+            }
+          ],
+          "deployable": true,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_over25_over_entry, odds_over25_over_close)"
+            },
+            "under": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_over25_under_entry, odds_over25_under_close)"
+            }
+          }
+        },
+        "hgb": {
+          "n": 2649,
+          "log_loss": 0.6989262151388612,
+          "brier": 0.25242742855030786,
+          "ece": 0.06556580554455382,
+          "calibration_intercept": 0.16004295623144685,
+          "calibration_slope": 0.31382343797774864,
+          "mean_p": 0.5141495539439725,
+          "observed_rate": 0.5443563608909022,
+          "calibration_table": [
+            {
+              "bin": "0.1-0.2",
+              "n": 4,
+              "mean_p": 0.1769219175451518,
+              "observed": 0.5
+            },
+            {
+              "bin": "0.2-0.3",
+              "n": 51,
+              "mean_p": 0.2654975247991805,
+              "observed": 0.39215686274509803
+            },
+            {
+              "bin": "0.3-0.4",
+              "n": 257,
+              "mean_p": 0.3609448474386978,
+              "observed": 0.48638132295719844
+            },
+            {
+              "bin": "0.4-0.5",
+              "n": 857,
+              "mean_p": 0.45652859561973885,
+              "observed": 0.5274212368728122
+            },
+            {
+              "bin": "0.5-0.6",
+              "n": 999,
+              "mean_p": 0.5464397208030328,
+              "observed": 0.5725725725725725
+            },
+            {
+              "bin": "0.6-0.7",
+              "n": 375,
+              "mean_p": 0.6373399518257633,
+              "observed": 0.5546666666666666
+            },
+            {
+              "bin": "0.7-0.8",
+              "n": 96,
+              "mean_p": 0.7351388721543132,
+              "observed": 0.59375
+            },
+            {
+              "bin": "0.8-0.9",
+              "n": 10,
+              "mean_p": 0.8257179981077906,
+              "observed": 0.6
+            }
+          ],
+          "deployable": true,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_over25_over_entry, odds_over25_over_close)"
+            },
+            "under": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_over25_under_entry, odds_over25_under_close)"
+            }
+          }
+        },
+        "logistic": {
+          "n": 2649,
+          "log_loss": 0.6848837618313962,
+          "brier": 0.24565123481520273,
+          "ece": 0.033395957583561384,
+          "calibration_intercept": 0.12620407242828954,
+          "calibration_slope": 0.841342881569985,
+          "mean_p": 0.5157190975100818,
+          "observed_rate": 0.5443563608909022,
+          "calibration_table": [
+            {
+              "bin": "0.0-0.1",
+              "n": 1,
+              "mean_p": 0.09325854331925053,
+              "observed": 1.0
+            },
+            {
+              "bin": "0.1-0.2",
+              "n": 1,
+              "mean_p": 0.13376655219464792,
+              "observed": 0.0
+            },
+            {
+              "bin": "0.2-0.3",
+              "n": 5,
+              "mean_p": 0.2351132102863523,
+              "observed": 0.4
+            },
+            {
+              "bin": "0.3-0.4",
+              "n": 48,
+              "mean_p": 0.3758991005420909,
+              "observed": 0.3958333333333333
+            },
+            {
+              "bin": "0.4-0.5",
+              "n": 1067,
+              "mean_p": 0.46314895151210383,
+              "observed": 0.49109653233364575
+            },
+            {
+              "bin": "0.5-0.6",
+              "n": 1291,
+              "mean_p": 0.5432572317184277,
+              "observed": 0.5817195972114639
+            },
+            {
+              "bin": "0.6-0.7",
+              "n": 215,
+              "mean_p": 0.6309043969737632,
+              "observed": 0.6232558139534884
+            },
+            {
+              "bin": "0.7-0.8",
+              "n": 19,
+              "mean_p": 0.7257834138034396,
+              "observed": 0.5789473684210527
+            },
+            {
+              "bin": "0.8-0.9",
+              "n": 2,
+              "mean_p": 0.8673968538556671,
+              "observed": 0.0
+            }
+          ],
+          "deployable": true,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_over25_over_entry, odds_over25_over_close)"
+            },
+            "under": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_over25_under_entry, odds_over25_under_close)"
+            }
+          }
+        },
+        "market_only": {
+          "n": 2619,
+          "log_loss": 0.6701175980906816,
+          "brier": 0.23869801488487039,
+          "ece": 0.019631088183520776,
+          "calibration_intercept": -0.006075733260009857,
+          "calibration_slope": 1.1238010570293449,
+          "mean_p": 0.543693340425697,
+          "observed_rate": 0.5471554028255059,
+          "calibration_table": [
+            {
+              "bin": "0.3-0.4",
+              "n": 91,
+              "mean_p": 0.37631806844684135,
+              "observed": 0.3516483516483517
+            },
+            {
+              "bin": "0.4-0.5",
+              "n": 776,
+              "mean_p": 0.4607720982169517,
+              "observed": 0.4381443298969072
+            },
+            {
+              "bin": "0.5-0.6",
+              "n": 1096,
+              "mean_p": 0.548309014861134,
+              "observed": 0.5711678832116789
+            },
+            {
+              "bin": "0.6-0.7",
+              "n": 529,
+              "mean_p": 0.6385875973975934,
+              "observed": 0.6483931947069943
+            },
+            {
+              "bin": "0.7-0.8",
+              "n": 122,
+              "mean_p": 0.7317841465509889,
+              "observed": 0.7213114754098361
+            },
+            {
+              "bin": "0.8-0.9",
+              "n": 5,
+              "mean_p": 0.8183161879065921,
+              "observed": 0.8
+            }
+          ],
+          "deployable": false,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_over25_over_entry, odds_over25_over_close)"
+            },
+            "under": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_over25_under_entry, odds_over25_under_close)"
+            }
+          }
+        },
+        "model_market": {
+          "n": 2619,
+          "log_loss": 0.6721698714703963,
+          "brier": 0.23963013974389055,
+          "ece": 0.028661153482052566,
+          "calibration_intercept": -0.11719247601729228,
+          "calibration_slope": 0.9879241777977081,
+          "mean_p": 0.5758165563075585,
+          "observed_rate": 0.5471554028255059,
+          "calibration_table": [
+            {
+              "bin": "0.3-0.4",
+              "n": 58,
+              "mean_p": 0.3801010127092558,
+              "observed": 0.3448275862068966
+            },
+            {
+              "bin": "0.4-0.5",
+              "n": 495,
+              "mean_p": 0.46082014941289484,
+              "observed": 0.41818181818181815
+            },
+            {
+              "bin": "0.5-0.6",
+              "n": 1033,
+              "mean_p": 0.5484016302419049,
+              "observed": 0.5256534365924492
+            },
+            {
+              "bin": "0.6-0.7",
+              "n": 771,
+              "mean_p": 0.6429403197109953,
+              "observed": 0.6212710765239948
+            },
+            {
+              "bin": "0.7-0.8",
+              "n": 234,
+              "mean_p": 0.7378135805150583,
+              "observed": 0.6923076923076923
+            },
+            {
+              "bin": "0.8-0.9",
+              "n": 28,
+              "mean_p": 0.8234814248352551,
+              "observed": 0.7857142857142857
+            }
+          ],
+          "deployable": false,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_over25_over_entry, odds_over25_over_close)"
+            },
+            "under": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_over25_under_entry, odds_over25_under_close)"
+            }
+          }
+        }
+      },
+      "over35": {
+        "champion_recipe": {
+          "n": 2649,
+          "log_loss": 0.6236592268595936,
+          "brier": 0.2161588129853272,
+          "ece": 0.03261929168891345,
+          "calibration_intercept": 0.7046638312956507,
+          "calibration_slope": 1.6044737454268203,
+          "mean_p": 0.28636900578183017,
+          "observed_rate": 0.3189882974707437,
+          "calibration_table": [
+            {
+              "bin": "0.2-0.3",
+              "n": 1995,
+              "mean_p": 0.2729194391821963,
+              "observed": 0.293734335839599
+            },
+            {
+              "bin": "0.3-0.4",
+              "n": 644,
+              "mean_p": 0.3258626894706892,
+              "observed": 0.38975155279503104
+            },
+            {
+              "bin": "0.4-0.5",
+              "n": 10,
+              "mean_p": 0.42616431284628353,
+              "observed": 0.8
+            }
+          ],
+          "deployable": true,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_over35_over_entry, odds_over35_over_close)"
+            }
+          }
+        },
+        "dixon_coles": {
+          "n": 2199,
+          "log_loss": 0.6224274901949705,
+          "brier": 0.21502126572949048,
+          "ece": 0.03603953152067666,
+          "calibration_intercept": -0.2098017907129924,
+          "calibration_slope": 0.5988028646480836,
+          "mean_p": 0.2818918583280812,
+          "observed_rate": 0.31468849477035016,
+          "calibration_table": [
+            {
+              "bin": "0.1-0.2",
+              "n": 277,
+              "mean_p": 0.1747028443505541,
+              "observed": 0.24187725631768953
+            },
+            {
+              "bin": "0.2-0.3",
+              "n": 1115,
+              "mean_p": 0.25086245878890007,
+              "observed": 0.29417040358744395
+            },
+            {
+              "bin": "0.3-0.4",
+              "n": 640,
+              "mean_p": 0.34104734268549974,
+              "observed": 0.3515625
+            },
+            {
+              "bin": "0.4-0.5",
+              "n": 154,
+              "mean_p": 0.4303745184022611,
+              "observed": 0.4090909090909091
+            },
+            {
+              "bin": "0.5-0.6",
+              "n": 11,
+              "mean_p": 0.5400004155722239,
+              "observed": 0.7272727272727273
+            },
+            {
+              "bin": "0.6-0.7",
+              "n": 2,
+              "mean_p": 0.6439436523805635,
+              "observed": 0.5
+            }
+          ],
+          "deployable": true,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_over35_over_entry, odds_over35_over_close)"
+            }
+          }
+        },
+        "hgb": {
+          "n": 2649,
+          "log_loss": 0.6404443434164134,
+          "brier": 0.22212498011590442,
+          "ece": 0.058796343576811634,
+          "calibration_intercept": -0.5069498355911775,
+          "calibration_slope": 0.26044075433213293,
+          "mean_p": 0.28272846065708923,
+          "observed_rate": 0.3189882974707437,
+          "calibration_table": [
+            {
+              "bin": "0.0-0.1",
+              "n": 13,
+              "mean_p": 0.0788445533846896,
+              "observed": 0.6153846153846154
+            },
+            {
+              "bin": "0.1-0.2",
+              "n": 462,
+              "mean_p": 0.16732953359081992,
+              "observed": 0.2683982683982684
+            },
+            {
+              "bin": "0.2-0.3",
+              "n": 1195,
+              "mean_p": 0.25085093335553793,
+              "observed": 0.3112970711297071
+            },
+            {
+              "bin": "0.3-0.4",
+              "n": 681,
+              "mean_p": 0.34108942154454236,
+              "observed": 0.3392070484581498
+            },
+            {
+              "bin": "0.4-0.5",
+              "n": 229,
+              "mean_p": 0.4390116337457084,
+              "observed": 0.39737991266375544
+            },
+            {
+              "bin": "0.5-0.6",
+              "n": 58,
+              "mean_p": 0.5334900378938287,
+              "observed": 0.25862068965517243
+            },
+            {
+              "bin": "0.6-0.7",
+              "n": 11,
+              "mean_p": 0.6446928009417263,
+              "observed": 0.36363636363636365
+            }
+          ],
+          "deployable": true,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_over35_over_entry, odds_over35_over_close)"
+            }
+          }
+        },
+        "logistic": {
+          "n": 2649,
+          "log_loss": 0.6224983432837864,
+          "brier": 0.21540160286387558,
+          "ece": 0.03214542921261294,
+          "calibration_intercept": -0.05336773340653309,
+          "calibration_slope": 0.7796452053277371,
+          "mean_p": 0.28940194449184503,
+          "observed_rate": 0.3189882974707437,
+          "calibration_table": [
+            {
+              "bin": "0.0-0.1",
+              "n": 2,
+              "mean_p": 0.06083684925520852,
+              "observed": 0.5
+            },
+            {
+              "bin": "0.1-0.2",
+              "n": 87,
+              "mean_p": 0.17692075000677507,
+              "observed": 0.22988505747126436
+            },
+            {
+              "bin": "0.2-0.3",
+              "n": 1565,
+              "mean_p": 0.25558791636727757,
+              "observed": 0.28626198083067095
+            },
+            {
+              "bin": "0.3-0.4",
+              "n": 857,
+              "mean_p": 0.3369047682887441,
+              "observed": 0.36989498249708286
+            },
+            {
+              "bin": "0.4-0.5",
+              "n": 112,
+              "mean_p": 0.42966184515715167,
+              "observed": 0.42857142857142855
+            },
+            {
+              "bin": "0.5-0.6",
+              "n": 23,
+              "mean_p": 0.5345166410346377,
+              "observed": 0.43478260869565216
+            },
+            {
+              "bin": "0.6-0.7",
+              "n": 3,
+              "mean_p": 0.6578290233856371,
+              "observed": 0.3333333333333333
+            }
+          ],
+          "deployable": true,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_over35_over_entry, odds_over35_over_close)"
+            }
+          }
+        },
+        "market_only": {
+          "n": 0,
+          "calibration_table": [],
+          "deployable": false,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_over35_over_entry, odds_over35_over_close)"
+            }
+          }
+        },
+        "model_market": {
+          "n": 0,
+          "calibration_table": [],
+          "deployable": false,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_over35_over_entry, odds_over35_over_close)"
+            }
+          }
+        }
+      }
+    }
+  },
+  "walk_forward": {
+    "standard": {
+      "btts": {
+        "champion_recipe": {
+          "n": 20160,
+          "log_loss": 0.6916035852574585,
+          "brier": 0.24922939418331702,
+          "ece": 0.004795993908544783,
+          "calibration_intercept": 0.05006235809793732,
+          "calibration_slope": 0.5861158414109233,
+          "mean_p": 0.5241124297374345,
+          "observed_rate": 0.5266369047619047,
+          "calibration_table": [
+            {
+              "bin": "0.4-0.5",
+              "n": 2437,
+              "mean_p": 0.4801845191445259,
+              "observed": 0.5104636848584325
+            },
+            {
+              "bin": "0.5-0.6",
+              "n": 17723,
+              "mean_p": 0.5301527343198935,
+              "observed": 0.5288608023472324
+            }
+          ],
+          "deployable": true,
+          "clv": {
+            "yes": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_btts_yes_entry, odds_btts_yes_close)"
+            }
+          }
+        },
+        "dixon_coles": {
+          "n": 19734,
+          "log_loss": 0.6902431268457727,
+          "brier": 0.24853423199521235,
+          "ece": 0.020818887073166183,
+          "calibration_intercept": 0.0651469361177046,
+          "calibration_slope": 0.5863637724896561,
+          "mean_p": 0.5187899119047379,
+          "observed_rate": 0.5273132664437012,
+          "calibration_table": [
+            {
+              "bin": "0.2-0.3",
+              "n": 5,
+              "mean_p": 0.2834581380943385,
+              "observed": 0.8
+            },
+            {
+              "bin": "0.3-0.4",
+              "n": 672,
+              "mean_p": 0.374246262554165,
+              "observed": 0.4181547619047619
+            },
+            {
+              "bin": "0.4-0.5",
+              "n": 7071,
+              "mean_p": 0.46210851688392673,
+              "observed": 0.4985150615188799
+            },
+            {
+              "bin": "0.5-0.6",
+              "n": 9783,
+              "mean_p": 0.5445103753523399,
+              "observed": 0.5359296739241541
+            },
+            {
+              "bin": "0.6-0.7",
+              "n": 2166,
+              "mean_p": 0.6297382058031245,
+              "observed": 0.6131117266851339
+            },
+            {
+              "bin": "0.7-0.8",
+              "n": 37,
+              "mean_p": 0.7124882073910496,
+              "observed": 0.6756756756756757
+            }
+          ],
+          "deployable": true,
+          "clv": {
+            "yes": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_btts_yes_entry, odds_btts_yes_close)"
+            }
+          }
+        },
+        "hgb": {
+          "n": 20160,
+          "log_loss": 0.7092093689381039,
+          "brier": 0.25715318720622143,
+          "ece": 0.07068919485092952,
+          "calibration_intercept": 0.08989253245116453,
+          "calibration_slope": 0.16087440534259223,
+          "mean_p": 0.5249210895642322,
+          "observed_rate": 0.5266369047619047,
+          "calibration_table": [
+            {
+              "bin": "0.1-0.2",
+              "n": 45,
+              "mean_p": 0.17610467942327482,
+              "observed": 0.4
+            },
+            {
+              "bin": "0.2-0.3",
+              "n": 426,
+              "mean_p": 0.2657433302219875,
+              "observed": 0.5211267605633803
+            },
+            {
+              "bin": "0.3-0.4",
+              "n": 2004,
+              "mean_p": 0.36028582183238805,
+              "observed": 0.49600798403193613
+            },
+            {
+              "bin": "0.4-0.5",
+              "n": 5634,
+              "mean_p": 0.4563388964340384,
+              "observed": 0.516506922257721
+            },
+            {
+              "bin": "0.5-0.6",
+              "n": 7318,
+              "mean_p": 0.5481429782778516,
+              "observed": 0.5245968843946434
+            },
+            {
+              "bin": "0.6-0.7",
+              "n": 3619,
+              "mean_p": 0.6419056626844756,
+              "observed": 0.555954683614258
+            },
+            {
+              "bin": "0.7-0.8",
+              "n": 981,
+              "mean_p": 0.7379763032158406,
+              "observed": 0.5586136595310908
+            },
+            {
+              "bin": "0.8-0.9",
+              "n": 133,
+              "mean_p": 0.8265413921628291,
+              "observed": 0.556390977443609
+            }
+          ],
+          "deployable": true,
+          "clv": {
+            "yes": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_btts_yes_entry, odds_btts_yes_close)"
+            }
+          }
+        },
+        "logistic": {
+          "n": 20160,
+          "log_loss": 0.6933158551857648,
+          "brier": 0.249854049540836,
+          "ece": 0.017394442334808684,
+          "calibration_intercept": 0.0654672143297691,
+          "calibration_slope": 0.3653770756119657,
+          "mean_p": 0.5278147067334756,
+          "observed_rate": 0.5266369047619047,
+          "calibration_table": [
+            {
+              "bin": "0.0-0.1",
+              "n": 7,
+              "mean_p": 0.04443334579644191,
+              "observed": 0.7142857142857143
+            },
+            {
+              "bin": "0.2-0.3",
+              "n": 11,
+              "mean_p": 0.250978711953558,
+              "observed": 0.36363636363636365
+            },
+            {
+              "bin": "0.3-0.4",
+              "n": 202,
+              "mean_p": 0.37713381303097115,
+              "observed": 0.4603960396039604
+            },
+            {
+              "bin": "0.4-0.5",
+              "n": 5174,
+              "mean_p": 0.47516293502873813,
+              "observed": 0.5023192887514496
+            },
+            {
+              "bin": "0.5-0.6",
+              "n": 13419,
+              "mean_p": 0.5385253244736723,
+              "observed": 0.5326775467620538
+            },
+            {
+              "bin": "0.6-0.7",
+              "n": 1130,
+              "mean_p": 0.6304719202850757,
+              "observed": 0.5743362831858407
+            },
+            {
+              "bin": "0.7-0.8",
+              "n": 179,
+              "mean_p": 0.7384065297239166,
+              "observed": 0.5139664804469274
+            },
+            {
+              "bin": "0.8-0.9",
+              "n": 35,
+              "mean_p": 0.8322529929537478,
+              "observed": 0.6857142857142857
+            },
+            {
+              "bin": "0.9-1.0",
+              "n": 3,
+              "mean_p": 0.9301366051839811,
+              "observed": 1.0
+            }
+          ],
+          "deployable": true,
+          "clv": {
+            "yes": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_btts_yes_entry, odds_btts_yes_close)"
+            }
+          }
+        },
+        "market_only": {
+          "n": 0,
+          "calibration_table": [],
+          "deployable": false,
+          "clv": {
+            "yes": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_btts_yes_entry, odds_btts_yes_close)"
+            }
+          }
+        },
+        "model_market": {
+          "n": 0,
+          "calibration_table": [],
+          "deployable": false,
+          "clv": {
+            "yes": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_btts_yes_entry, odds_btts_yes_close)"
+            }
+          }
+        }
+      },
+      "ht_over05": {
+        "champion_recipe": {
+          "n": 8278,
+          "log_loss": 0.6071776076610909,
+          "brier": 0.2082605932190043,
+          "ece": 0.009297390069264468,
+          "calibration_intercept": 0.5252417120913775,
+          "calibration_slope": 0.39945385147121487,
+          "mean_p": 0.7025154428751844,
+          "observed_rate": 0.7045179995167915,
+          "calibration_table": [
+            {
+              "bin": "0.6-0.7",
+              "n": 4104,
+              "mean_p": 0.6852411112484657,
+              "observed": 0.6966374269005848
+            },
+            {
+              "bin": "0.7-0.8",
+              "n": 4174,
+              "mean_p": 0.7195000756006407,
+              "observed": 0.7122664111164351
+            }
+          ],
+          "deployable": true,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_ht_over05_over_entry, odds_ht_over05_over_close)"
+            }
+          }
+        },
+        "dixon_coles": {
+          "n": 8094,
+          "log_loss": 0.6056885493888237,
+          "brier": 0.20761760827709416,
+          "ece": 0.025358031252586264,
+          "calibration_intercept": 0.43639685302028747,
+          "calibration_slope": 0.5312618928121368,
+          "mean_p": 0.6948387990512347,
+          "observed_rate": 0.7059550284161107,
+          "calibration_table": [
+            {
+              "bin": "0.5-0.6",
+              "n": 147,
+              "mean_p": 0.5828253243469831,
+              "observed": 0.6326530612244898
+            },
+            {
+              "bin": "0.6-0.7",
+              "n": 4301,
+              "mean_p": 0.663964972007004,
+              "observed": 0.6965821901883283
+            },
+            {
+              "bin": "0.7-0.8",
+              "n": 3556,
+              "mean_p": 0.7337434276418223,
+              "observed": 0.718503937007874
+            },
+            {
+              "bin": "0.8-0.9",
+              "n": 90,
+              "mean_p": 0.8160549282804813,
+              "observed": 0.7777777777777778
+            }
+          ],
+          "deployable": true,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_ht_over05_over_entry, odds_ht_over05_over_close)"
+            }
+          }
+        },
+        "hgb": {
+          "n": 8278,
+          "log_loss": 0.6207887473885176,
+          "brier": 0.21343355455070606,
+          "ece": 0.05647847677899723,
+          "calibration_intercept": 0.668930747303492,
+          "calibration_slope": 0.21960946772769954,
+          "mean_p": 0.7051223588390191,
+          "observed_rate": 0.7045179995167915,
+          "calibration_table": [
+            {
+              "bin": "0.2-0.3",
+              "n": 1,
+              "mean_p": 0.28741445155121487,
+              "observed": 1.0
+            },
+            {
+              "bin": "0.3-0.4",
+              "n": 32,
+              "mean_p": 0.36393013270082786,
+              "observed": 0.625
+            },
+            {
+              "bin": "0.4-0.5",
+              "n": 203,
+              "mean_p": 0.4630586157493948,
+              "observed": 0.6748768472906403
+            },
+            {
+              "bin": "0.5-0.6",
+              "n": 945,
+              "mean_p": 0.5589674818506988,
+              "observed": 0.6825396825396826
+            },
+            {
+              "bin": "0.6-0.7",
+              "n": 2508,
+              "mean_p": 0.6565305740838976,
+              "observed": 0.6814194577352473
+            },
+            {
+              "bin": "0.7-0.8",
+              "n": 3246,
+              "mean_p": 0.7471354548777953,
+              "observed": 0.718422674060382
+            },
+            {
+              "bin": "0.8-0.9",
+              "n": 1226,
+              "mean_p": 0.8346936294231306,
+              "observed": 0.733278955954323
+            },
+            {
+              "bin": "0.9-1.0",
+              "n": 117,
+              "mean_p": 0.9207673710845075,
+              "observed": 0.7606837606837606
+            }
+          ],
+          "deployable": true,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_ht_over05_over_entry, odds_ht_over05_over_close)"
+            }
+          }
+        },
+        "logistic": {
+          "n": 8278,
+          "log_loss": 0.6061914590901019,
+          "brier": 0.20788271790649038,
+          "ece": 0.016383713851280467,
+          "calibration_intercept": 0.3775069139229962,
+          "calibration_slope": 0.5745096682262048,
+          "mean_p": 0.7008100952051289,
+          "observed_rate": 0.7045179995167915,
+          "calibration_table": [
+            {
+              "bin": "0.2-0.3",
+              "n": 1,
+              "mean_p": 0.299567718721079,
+              "observed": 1.0
+            },
+            {
+              "bin": "0.3-0.4",
+              "n": 4,
+              "mean_p": 0.3411975443831056,
+              "observed": 0.5
+            },
+            {
+              "bin": "0.4-0.5",
+              "n": 9,
+              "mean_p": 0.46849356775327394,
+              "observed": 0.4444444444444444
+            },
+            {
+              "bin": "0.5-0.6",
+              "n": 159,
+              "mean_p": 0.5739007524176042,
+              "observed": 0.660377358490566
+            },
+            {
+              "bin": "0.6-0.7",
+              "n": 3740,
+              "mean_p": 0.667155065595771,
+              "observed": 0.6847593582887701
+            },
+            {
+              "bin": "0.7-0.8",
+              "n": 4211,
+              "mean_p": 0.7321892029386604,
+              "observed": 0.7197815245784849
+            },
+            {
+              "bin": "0.8-0.9",
+              "n": 154,
+              "mean_p": 0.8166640880827473,
+              "observed": 0.8311688311688312
+            }
+          ],
+          "deployable": true,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_ht_over05_over_entry, odds_ht_over05_over_close)"
+            }
+          }
+        },
+        "market_only": {
+          "n": 0,
+          "calibration_table": [],
+          "deployable": false,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_ht_over05_over_entry, odds_ht_over05_over_close)"
+            }
+          }
+        },
+        "model_market": {
+          "n": 0,
+          "calibration_table": [],
+          "deployable": false,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_ht_over05_over_entry, odds_ht_over05_over_close)"
+            }
+          }
+        }
+      },
+      "ht_over15": {
+        "champion_recipe": {
+          "n": 8278,
+          "log_loss": 0.6405596969275638,
+          "brier": 0.2241222458151035,
+          "ece": 0.0025055001135061753,
+          "calibration_intercept": -0.7094058043820864,
+          "calibration_slope": -0.05266414301878759,
+          "mean_p": 0.3352572445107992,
+          "observed_rate": 0.3377627446243054,
+          "calibration_table": [
+            {
+              "bin": "0.2-0.3",
+              "n": 798,
+              "mean_p": 0.2975146257204545,
+              "observed": 0.3157894736842105
+            },
+            {
+              "bin": "0.3-0.4",
+              "n": 7480,
+              "mean_p": 0.33928379662238944,
+              "observed": 0.34010695187165774
+            }
+          ],
+          "deployable": true,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_ht_over15_over_entry, odds_ht_over15_over_close)"
+            }
+          }
+        },
+        "dixon_coles": {
+          "n": 8094,
+          "log_loss": 0.6391553743684729,
+          "brier": 0.22345306170906878,
+          "ece": 0.019701951315751906,
+          "calibration_intercept": -0.3037517263689701,
+          "calibration_slope": 0.5343773438097008,
+          "mean_p": 0.3350040760342275,
+          "observed_rate": 0.3379046207066963,
+          "calibration_table": [
+            {
+              "bin": "0.1-0.2",
+              "n": 16,
+              "mean_p": 0.19316295180357534,
+              "observed": 0.25
+            },
+            {
+              "bin": "0.2-0.3",
+              "n": 2277,
+              "mean_p": 0.2726760322877412,
+              "observed": 0.31049626701800614
+            },
+            {
+              "bin": "0.3-0.4",
+              "n": 4758,
+              "mean_p": 0.34371708797447575,
+              "observed": 0.3394283312316099
+            },
+            {
+              "bin": "0.4-0.5",
+              "n": 1006,
+              "mean_p": 0.43000933211015,
+              "observed": 0.3827037773359841
+            },
+            {
+              "bin": "0.5-0.6",
+              "n": 37,
+              "mean_p": 0.5284801618277494,
+              "observed": 0.6486486486486487
+            }
+          ],
+          "deployable": true,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_ht_over15_over_entry, odds_ht_over15_over_close)"
+            }
+          }
+        },
+        "hgb": {
+          "n": 8278,
+          "log_loss": 0.655757657022888,
+          "brier": 0.23043070275281954,
+          "ece": 0.05878416938966274,
+          "calibration_intercept": -0.56661061476657,
+          "calibration_slope": 0.143262879090693,
+          "mean_p": 0.3280673116932009,
+          "observed_rate": 0.3377627446243054,
+          "calibration_table": [
+            {
+              "bin": "0.0-0.1",
+              "n": 9,
+              "mean_p": 0.08672093811251344,
+              "observed": 0.4444444444444444
+            },
+            {
+              "bin": "0.1-0.2",
+              "n": 589,
+              "mean_p": 0.1721402700216157,
+              "observed": 0.2920203735144312
+            },
+            {
+              "bin": "0.2-0.3",
+              "n": 2836,
+              "mean_p": 0.25594492948265096,
+              "observed": 0.328984485190409
+            },
+            {
+              "bin": "0.3-0.4",
+              "n": 3160,
+              "mean_p": 0.34573797420753233,
+              "observed": 0.34651898734177217
+            },
+            {
+              "bin": "0.4-0.5",
+              "n": 1246,
+              "mean_p": 0.4402961509086454,
+              "observed": 0.3579454253611557
+            },
+            {
+              "bin": "0.5-0.6",
+              "n": 349,
+              "mean_p": 0.5398093218857798,
+              "observed": 0.3151862464183381
+            },
+            {
+              "bin": "0.6-0.7",
+              "n": 74,
+              "mean_p": 0.6359866066091017,
+              "observed": 0.3918918918918919
+            },
+            {
+              "bin": "0.7-0.8",
+              "n": 15,
+              "mean_p": 0.740854262839325,
+              "observed": 0.4666666666666667
+            }
+          ],
+          "deployable": true,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_ht_over15_over_entry, odds_ht_over15_over_close)"
+            }
+          }
+        },
+        "logistic": {
+          "n": 8278,
+          "log_loss": 0.6388636210322733,
+          "brier": 0.22337840865598227,
+          "ece": 0.014309064148652337,
+          "calibration_intercept": -0.2810791721652112,
+          "calibration_slope": 0.5696202899514066,
+          "mean_p": 0.3350431228732623,
+          "observed_rate": 0.3377627446243054,
+          "calibration_table": [
+            {
+              "bin": "0.0-0.1",
+              "n": 1,
+              "mean_p": 0.07981291877648394,
+              "observed": 0.0
+            },
+            {
+              "bin": "0.1-0.2",
+              "n": 16,
+              "mean_p": 0.15716933389731177,
+              "observed": 0.1875
+            },
+            {
+              "bin": "0.2-0.3",
+              "n": 1724,
+              "mean_p": 0.2768902398123493,
+              "observed": 0.3167053364269142
+            },
+            {
+              "bin": "0.3-0.4",
+              "n": 5907,
+              "mean_p": 0.34226442509279437,
+              "observed": 0.340612832232944
+            },
+            {
+              "bin": "0.4-0.5",
+              "n": 604,
+              "mean_p": 0.4273724008970065,
+              "observed": 0.36423841059602646
+            },
+            {
+              "bin": "0.5-0.6",
+              "n": 24,
+              "mean_p": 0.5168973848186623,
+              "observed": 0.5416666666666666
+            },
+            {
+              "bin": "0.6-0.7",
+              "n": 2,
+              "mean_p": 0.6196245233328239,
+              "observed": 1.0
+            }
+          ],
+          "deployable": true,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_ht_over15_over_entry, odds_ht_over15_over_close)"
+            }
+          }
+        },
+        "market_only": {
+          "n": 0,
+          "calibration_table": [],
+          "deployable": false,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_ht_over15_over_entry, odds_ht_over15_over_close)"
+            }
+          }
+        },
+        "model_market": {
+          "n": 0,
+          "calibration_table": [],
+          "deployable": false,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_ht_over15_over_entry, odds_ht_over15_over_close)"
+            }
+          }
+        }
+      },
+      "over15": {
+        "champion_recipe": {
+          "n": 20160,
+          "log_loss": 0.562690040041609,
+          "brier": 0.18783531129732547,
+          "ece": 0.0056469804071333516,
+          "calibration_intercept": -0.08988187720130511,
+          "calibration_slope": 1.110475045829609,
+          "mean_p": 0.7426790278870481,
+          "observed_rate": 0.747718253968254,
+          "calibration_table": [
+            {
+              "bin": "0.5-0.6",
+              "n": 5,
+              "mean_p": 0.586342583452806,
+              "observed": 0.8
+            },
+            {
+              "bin": "0.6-0.7",
+              "n": 1076,
+              "mean_p": 0.6859908583692834,
+              "observed": 0.6802973977695167
+            },
+            {
+              "bin": "0.7-0.8",
+              "n": 19065,
+              "mean_p": 0.7458756422290048,
+              "observed": 0.7513244164699712
+            },
+            {
+              "bin": "0.8-0.9",
+              "n": 14,
+              "mean_p": 0.8023004703071448,
+              "observed": 1.0
+            }
+          ],
+          "deployable": true,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_over15_over_entry, odds_over15_over_close)"
+            }
+          }
+        },
+        "dixon_coles": {
+          "n": 19734,
+          "log_loss": 0.5589073791872118,
+          "brier": 0.1865852840410621,
+          "ece": 0.014180522689682132,
+          "calibration_intercept": 0.35128131299100873,
+          "calibration_slope": 0.7049538992802582,
+          "mean_p": 0.7393198620761952,
+          "observed_rate": 0.7487584878889226,
+          "calibration_table": [
+            {
+              "bin": "0.4-0.5",
+              "n": 7,
+              "mean_p": 0.4834379039648402,
+              "observed": 0.8571428571428571
+            },
+            {
+              "bin": "0.5-0.6",
+              "n": 492,
+              "mean_p": 0.5713625475522203,
+              "observed": 0.6747967479674797
+            },
+            {
+              "bin": "0.6-0.7",
+              "n": 4973,
+              "mean_p": 0.6640582712939759,
+              "observed": 0.6997788055499699
+            },
+            {
+              "bin": "0.7-0.8",
+              "n": 10454,
+              "mean_p": 0.7493182996587829,
+              "observed": 0.7463171991582169
+            },
+            {
+              "bin": "0.8-0.9",
+              "n": 3738,
+              "mean_p": 0.8307690721915448,
+              "observed": 0.826645264847512
+            },
+            {
+              "bin": "0.9-1.0",
+              "n": 70,
+              "mean_p": 0.9156234265476637,
+              "observed": 0.9428571428571428
+            }
+          ],
+          "deployable": true,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_over15_over_entry, odds_over15_over_close)"
+            }
+          }
+        },
+        "hgb": {
+          "n": 20160,
+          "log_loss": 0.5777896610101975,
+          "brier": 0.1926518458717527,
+          "ece": 0.054063355135439674,
+          "calibration_intercept": 0.7537842467377601,
+          "calibration_slope": 0.2744783875108041,
+          "mean_p": 0.7599889682857908,
+          "observed_rate": 0.747718253968254,
+          "calibration_table": [
+            {
+              "bin": "0.2-0.3",
+              "n": 2,
+              "mean_p": 0.2674727263320813,
+              "observed": 1.0
+            },
+            {
+              "bin": "0.3-0.4",
+              "n": 25,
+              "mean_p": 0.3673148471557758,
+              "observed": 0.76
+            },
+            {
+              "bin": "0.4-0.5",
+              "n": 197,
+              "mean_p": 0.4645545566539704,
+              "observed": 0.6852791878172588
+            },
+            {
+              "bin": "0.5-0.6",
+              "n": 949,
+              "mean_p": 0.5615826491513605,
+              "observed": 0.6891464699683878
+            },
+            {
+              "bin": "0.6-0.7",
+              "n": 3850,
+              "mean_p": 0.6588449823944174,
+              "observed": 0.7225974025974026
+            },
+            {
+              "bin": "0.7-0.8",
+              "n": 7753,
+              "mean_p": 0.7521699627562746,
+              "observed": 0.7391977299110022
+            },
+            {
+              "bin": "0.8-0.9",
+              "n": 6227,
+              "mean_p": 0.8430734287018393,
+              "observed": 0.7722819977517263
+            },
+            {
+              "bin": "0.9-1.0",
+              "n": 1157,
+              "mean_p": 0.9241620210114541,
+              "observed": 0.8141745894554884
+            }
+          ],
+          "deployable": true,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_over15_over_entry, odds_over15_over_close)"
+            }
+          }
+        },
+        "logistic": {
+          "n": 20160,
+          "log_loss": 0.5616879491499677,
+          "brier": 0.18746208705722947,
+          "ece": 0.011150750099817619,
+          "calibration_intercept": 0.34552640859137096,
+          "calibration_slope": 0.6660898941583007,
+          "mean_p": 0.7510794879091369,
+          "observed_rate": 0.747718253968254,
+          "calibration_table": [
+            {
+              "bin": "0.0-0.1",
+              "n": 1,
+              "mean_p": 0.08099919908465644,
+              "observed": 1.0
+            },
+            {
+              "bin": "0.1-0.2",
+              "n": 6,
+              "mean_p": 0.13412422729709295,
+              "observed": 1.0
+            },
+            {
+              "bin": "0.3-0.4",
+              "n": 10,
+              "mean_p": 0.37025512716533177,
+              "observed": 0.7
+            },
+            {
+              "bin": "0.4-0.5",
+              "n": 17,
+              "mean_p": 0.4543552589794541,
+              "observed": 0.7647058823529411
+            },
+            {
+              "bin": "0.5-0.6",
+              "n": 94,
+              "mean_p": 0.5752511793080164,
+              "observed": 0.723404255319149
+            },
+            {
+              "bin": "0.6-0.7",
+              "n": 3314,
+              "mean_p": 0.6720264728502763,
+              "observed": 0.6870850935425468
+            },
+            {
+              "bin": "0.7-0.8",
+              "n": 13137,
+              "mean_p": 0.7518378994454857,
+              "observed": 0.745451777422547
+            },
+            {
+              "bin": "0.8-0.9",
+              "n": 3503,
+              "mean_p": 0.827406136606742,
+              "observed": 0.8110191264630316
+            },
+            {
+              "bin": "0.9-1.0",
+              "n": 78,
+              "mean_p": 0.9356745843782025,
+              "observed": 0.8717948717948718
+            }
+          ],
+          "deployable": true,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_over15_over_entry, odds_over15_over_close)"
+            }
+          }
+        },
+        "market_only": {
+          "n": 0,
+          "calibration_table": [],
+          "deployable": false,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_over15_over_entry, odds_over15_over_close)"
+            }
+          }
+        },
+        "model_market": {
+          "n": 0,
+          "calibration_table": [],
+          "deployable": false,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_over15_over_entry, odds_over15_over_close)"
+            }
+          }
+        }
+      },
+      "over25": {
+        "champion_recipe": {
+          "n": 20160,
+          "log_loss": 0.68928674796939,
+          "brier": 0.24807789295395466,
+          "ece": 0.010042129642802418,
+          "calibration_intercept": 0.040701788639110864,
+          "calibration_slope": 1.060599292668267,
+          "mean_p": 0.49796509328162264,
+          "observed_rate": 0.5079365079365079,
+          "calibration_table": [
+            {
+              "bin": "0.2-0.3",
+              "n": 4,
+              "mean_p": 0.28229529459909325,
+              "observed": 0.5
+            },
+            {
+              "bin": "0.3-0.4",
+              "n": 47,
+              "mean_p": 0.38145395548255057,
+              "observed": 0.425531914893617
+            },
+            {
+              "bin": "0.4-0.5",
+              "n": 10275,
+              "mean_p": 0.4653657969138413,
+              "observed": 0.47795620437956204
+            },
+            {
+              "bin": "0.5-0.6",
+              "n": 9641,
+              "mean_p": 0.5309814490138411,
+              "observed": 0.537081215641531
+            },
+            {
+              "bin": "0.6-0.7",
+              "n": 192,
+              "mean_p": 0.6165637664639027,
+              "observed": 0.671875
+            },
+            {
+              "bin": "0.7-0.8",
+              "n": 1,
+              "mean_p": 0.712807078203569,
+              "observed": 0.0
+            }
+          ],
+          "deployable": true,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_over25_over_entry, odds_over25_over_close)"
+            },
+            "under": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_over25_under_entry, odds_over25_under_close)"
+            }
+          }
+        },
+        "dixon_coles": {
+          "n": 19734,
+          "log_loss": 0.6875579323943618,
+          "brier": 0.2471677328784104,
+          "ece": 0.025281749554895056,
+          "calibration_intercept": 0.060081219574232125,
+          "calibration_slope": 0.6797883035169198,
+          "mean_p": 0.4908358222268952,
+          "observed_rate": 0.5085132259045303,
+          "calibration_table": [
+            {
+              "bin": "0.1-0.2",
+              "n": 1,
+              "mean_p": 0.17546207810551973,
+              "observed": 1.0
+            },
+            {
+              "bin": "0.2-0.3",
+              "n": 227,
+              "mean_p": 0.2759433686540729,
+              "observed": 0.3876651982378855
+            },
+            {
+              "bin": "0.3-0.4",
+              "n": 2886,
+              "mean_p": 0.3654579931195735,
+              "observed": 0.4376299376299376
+            },
+            {
+              "bin": "0.4-0.5",
+              "n": 7821,
+              "mean_p": 0.45301639209945505,
+              "observed": 0.47717683160721136
+            },
+            {
+              "bin": "0.5-0.6",
+              "n": 6493,
+              "mean_p": 0.5445451894028124,
+              "observed": 0.5354997689819806
+            },
+            {
+              "bin": "0.6-0.7",
+              "n": 2070,
+              "mean_p": 0.6361282180779319,
+              "observed": 0.6314009661835749
+            },
+            {
+              "bin": "0.7-0.8",
+              "n": 222,
+              "mean_p": 0.7275439394465988,
+              "observed": 0.6981981981981982
+            },
+            {
+              "bin": "0.8-0.9",
+              "n": 14,
+              "mean_p": 0.8253183956513203,
+              "observed": 0.8571428571428571
+            }
+          ],
+          "deployable": true,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_over25_over_entry, odds_over25_over_close)"
+            },
+            "under": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_over25_under_entry, odds_over25_under_close)"
+            }
+          }
+        },
+        "hgb": {
+          "n": 20160,
+          "log_loss": 0.7029970014721226,
+          "brier": 0.25420665576499524,
+          "ece": 0.062166588028436005,
+          "calibration_intercept": 0.027004078005192996,
+          "calibration_slope": 0.33297071465136097,
+          "mean_p": 0.5029857000193634,
+          "observed_rate": 0.5079365079365079,
+          "calibration_table": [
+            {
+              "bin": "0.1-0.2",
+              "n": 67,
+              "mean_p": 0.17209200641318442,
+              "observed": 0.29850746268656714
+            },
+            {
+              "bin": "0.2-0.3",
+              "n": 728,
+              "mean_p": 0.26569059400668144,
+              "observed": 0.4766483516483517
+            },
+            {
+              "bin": "0.3-0.4",
+              "n": 3115,
+              "mean_p": 0.359030197792419,
+              "observed": 0.4439807383627608
+            },
+            {
+              "bin": "0.4-0.5",
+              "n": 6240,
+              "mean_p": 0.4531041775526298,
+              "observed": 0.4931089743589744
+            },
+            {
+              "bin": "0.5-0.6",
+              "n": 5945,
+              "mean_p": 0.5469473834401865,
+              "observed": 0.5211101766190076
+            },
+            {
+              "bin": "0.6-0.7",
+              "n": 2928,
+              "mean_p": 0.6413916149032473,
+              "observed": 0.5471311475409836
+            },
+            {
+              "bin": "0.7-0.8",
+              "n": 937,
+              "mean_p": 0.737909945466881,
+              "observed": 0.6221985058697972
+            },
+            {
+              "bin": "0.8-0.9",
+              "n": 184,
+              "mean_p": 0.8354163132105138,
+              "observed": 0.625
+            },
+            {
+              "bin": "0.9-1.0",
+              "n": 16,
+              "mean_p": 0.9221623718878595,
+              "observed": 0.9375
+            }
+          ],
+          "deployable": true,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_over25_over_entry, odds_over25_over_close)"
+            },
+            "under": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_over25_under_entry, odds_over25_under_close)"
+            }
+          }
+        },
+        "logistic": {
+          "n": 20160,
+          "log_loss": 0.688702334312872,
+          "brier": 0.24752655348189154,
+          "ece": 0.010096894574127973,
+          "calibration_intercept": 0.01000887535546386,
+          "calibration_slope": 0.7108908736348437,
+          "mean_p": 0.5074913917614612,
+          "observed_rate": 0.5079365079365079,
+          "calibration_table": [
+            {
+              "bin": "0.0-0.1",
+              "n": 1,
+              "mean_p": 0.03911034919661288,
+              "observed": 0.0
+            },
+            {
+              "bin": "0.1-0.2",
+              "n": 11,
+              "mean_p": 0.17403125910962577,
+              "observed": 0.36363636363636365
+            },
+            {
+              "bin": "0.2-0.3",
+              "n": 31,
+              "mean_p": 0.26265771213258077,
+              "observed": 0.4838709677419355
+            },
+            {
+              "bin": "0.3-0.4",
+              "n": 863,
+              "mean_p": 0.37822034137621924,
+              "observed": 0.42294322132097334
+            },
+            {
+              "bin": "0.4-0.5",
+              "n": 8568,
+              "mean_p": 0.4594159248499446,
+              "observed": 0.4662698412698413
+            },
+            {
+              "bin": "0.5-0.6",
+              "n": 8941,
+              "mean_p": 0.5405869870545698,
+              "observed": 0.5352868806621184
+            },
+            {
+              "bin": "0.6-0.7",
+              "n": 1581,
+              "mean_p": 0.6335928096282386,
+              "observed": 0.614168247944339
+            },
+            {
+              "bin": "0.7-0.8",
+              "n": 142,
+              "mean_p": 0.7313958274951022,
+              "observed": 0.6338028169014085
+            },
+            {
+              "bin": "0.8-0.9",
+              "n": 16,
+              "mean_p": 0.8355534451425761,
+              "observed": 0.75
+            },
+            {
+              "bin": "0.9-1.0",
+              "n": 6,
+              "mean_p": 0.9875450016337997,
+              "observed": 0.3333333333333333
+            }
+          ],
+          "deployable": true,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_over25_over_entry, odds_over25_over_close)"
+            },
+            "under": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_over25_under_entry, odds_over25_under_close)"
+            }
+          }
+        },
+        "market_only": {
+          "n": 20088,
+          "log_loss": 0.6764768051346491,
+          "brier": 0.2418411796553662,
+          "ece": 0.008365937520275741,
+          "calibration_intercept": 0.034456118685020735,
+          "calibration_slope": 0.996248322811694,
+          "mean_p": 0.49982950654909275,
+          "observed_rate": 0.5081640780565512,
+          "calibration_table": [
+            {
+              "bin": "0.1-0.2",
+              "n": 1,
+              "mean_p": 0.1956850552903715,
+              "observed": 0.0
+            },
+            {
+              "bin": "0.2-0.3",
+              "n": 131,
+              "mean_p": 0.27717266143608504,
+              "observed": 0.3053435114503817
+            },
+            {
+              "bin": "0.3-0.4",
+              "n": 2453,
+              "mean_p": 0.36637453727262276,
+              "observed": 0.38279657562168773
+            },
+            {
+              "bin": "0.4-0.5",
+              "n": 7926,
+              "mean_p": 0.4536253097044102,
+              "observed": 0.45836487509462526
+            },
+            {
+              "bin": "0.5-0.6",
+              "n": 6839,
+              "mean_p": 0.5437031408297395,
+              "observed": 0.5503728615294634
+            },
+            {
+              "bin": "0.6-0.7",
+              "n": 2292,
+              "mean_p": 0.6372055686011969,
+              "observed": 0.6479057591623036
+            },
+            {
+              "bin": "0.7-0.8",
+              "n": 404,
+              "mean_p": 0.7325212392620817,
+              "observed": 0.7722772277227723
+            },
+            {
+              "bin": "0.8-0.9",
+              "n": 42,
+              "mean_p": 0.8361751232725512,
+              "observed": 0.8333333333333334
+            }
+          ],
+          "deployable": false,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_over25_over_entry, odds_over25_over_close)"
+            },
+            "under": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_over25_under_entry, odds_over25_under_close)"
+            }
+          }
+        },
+        "model_market": {
+          "n": 20088,
+          "log_loss": 0.6773696864983738,
+          "brier": 0.2422538762426912,
+          "ece": 0.01087404967873816,
+          "calibration_intercept": 0.04250290819828528,
+          "calibration_slope": 0.9084343132115376,
+          "mean_p": 0.4976049134497177,
+          "observed_rate": 0.5081640780565512,
+          "calibration_table": [
+            {
+              "bin": "0.1-0.2",
+              "n": 3,
+              "mean_p": 0.18221024571604771,
+              "observed": 0.0
+            },
+            {
+              "bin": "0.2-0.3",
+              "n": 269,
+              "mean_p": 0.2731185737473948,
+              "observed": 0.3680297397769517
+            },
+            {
+              "bin": "0.3-0.4",
+              "n": 2830,
+              "mean_p": 0.36434724035357996,
+              "observed": 0.3918727915194346
+            },
+            {
+              "bin": "0.4-0.5",
+              "n": 7665,
+              "mean_p": 0.45395971128047086,
+              "observed": 0.4634050880626223
+            },
+            {
+              "bin": "0.5-0.6",
+              "n": 6385,
+              "mean_p": 0.5451267434588655,
+              "observed": 0.5512920908379013
+            },
+            {
+              "bin": "0.6-0.7",
+              "n": 2409,
+              "mean_p": 0.6381418665698558,
+              "observed": 0.6376089663760897
+            },
+            {
+              "bin": "0.7-0.8",
+              "n": 470,
+              "mean_p": 0.7357967245781479,
+              "observed": 0.7340425531914894
+            },
+            {
+              "bin": "0.8-0.9",
+              "n": 56,
+              "mean_p": 0.8304974608312639,
+              "observed": 0.8214285714285714
+            },
+            {
+              "bin": "0.9-1.0",
+              "n": 1,
+              "mean_p": 0.9177652273732826,
+              "observed": 1.0
+            }
+          ],
+          "deployable": false,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_over25_over_entry, odds_over25_over_close)"
+            },
+            "under": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_over25_under_entry, odds_over25_under_close)"
+            }
+          }
+        }
+      },
+      "over35": {
+        "champion_recipe": {
+          "n": 20160,
+          "log_loss": 0.5925506963548351,
+          "brier": 0.20155320051395512,
+          "ece": 0.003487515519308468,
+          "calibration_intercept": 0.14229794165425877,
+          "calibration_slope": 1.1389855071271004,
+          "mean_p": 0.28036770049796417,
+          "observed_rate": 0.2827876984126984,
+          "calibration_table": [
+            {
+              "bin": "0.2-0.3",
+              "n": 15609,
+              "mean_p": 0.2674585545168882,
+              "observed": 0.2667691716317509
+            },
+            {
+              "bin": "0.3-0.4",
+              "n": 4493,
+              "mean_p": 0.3234254165632224,
+              "observed": 0.3358557756510127
+            },
+            {
+              "bin": "0.4-0.5",
+              "n": 57,
+              "mean_p": 0.41722075703764316,
+              "observed": 0.47368421052631576
+            },
+            {
+              "bin": "0.5-0.6",
+              "n": 1,
+              "mean_p": 0.5202848151459243,
+              "observed": 1.0
+            }
+          ],
+          "deployable": true,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_over35_over_entry, odds_over35_over_close)"
+            }
+          }
+        },
+        "dixon_coles": {
+          "n": 19734,
+          "log_loss": 0.5914176519779404,
+          "brier": 0.20093510570300938,
+          "ece": 0.02317864680289712,
+          "calibration_intercept": -0.29101127334169596,
+          "calibration_slope": 0.6544374808057228,
+          "mean_p": 0.2775596997663736,
+          "observed_rate": 0.28387554474510995,
+          "calibration_table": [
+            {
+              "bin": "0.0-0.1",
+              "n": 40,
+              "mean_p": 0.0928106303562618,
+              "observed": 0.1
+            },
+            {
+              "bin": "0.1-0.2",
+              "n": 3248,
+              "mean_p": 0.17067001462569836,
+              "observed": 0.2250615763546798
+            },
+            {
+              "bin": "0.2-0.3",
+              "n": 9359,
+              "mean_p": 0.2501381084536234,
+              "observed": 0.2623143498236991
+            },
+            {
+              "bin": "0.3-0.4",
+              "n": 5543,
+              "mean_p": 0.34066896462011587,
+              "observed": 0.31986289013169766
+            },
+            {
+              "bin": "0.4-0.5",
+              "n": 1373,
+              "mean_p": 0.43472373559475713,
+              "observed": 0.4013109978150036
+            },
+            {
+              "bin": "0.5-0.6",
+              "n": 153,
+              "mean_p": 0.5321968961209412,
+              "observed": 0.5032679738562091
+            },
+            {
+              "bin": "0.6-0.7",
+              "n": 17,
+              "mean_p": 0.6403917561554443,
+              "observed": 0.6470588235294118
+            },
+            {
+              "bin": "0.7-0.8",
+              "n": 1,
+              "mean_p": 0.7553806315866903,
+              "observed": 0.0
+            }
+          ],
+          "deployable": true,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_over35_over_entry, odds_over35_over_close)"
+            }
+          }
+        },
+        "hgb": {
+          "n": 20160,
+          "log_loss": 0.6118618161936575,
+          "brier": 0.2082491277260114,
+          "ece": 0.059794946978891816,
+          "calibration_intercept": -0.6808296978613244,
+          "calibration_slope": 0.2422638434024794,
+          "mean_p": 0.2728681711992201,
+          "observed_rate": 0.2827876984126984,
+          "calibration_table": [
+            {
+              "bin": "0.0-0.1",
+              "n": 531,
+              "mean_p": 0.07964880669808008,
+              "observed": 0.2335216572504708
+            },
+            {
+              "bin": "0.1-0.2",
+              "n": 4719,
+              "mean_p": 0.16092915178914058,
+              "observed": 0.25916507734689553
+            },
+            {
+              "bin": "0.2-0.3",
+              "n": 7936,
+              "mean_p": 0.24956652173529148,
+              "observed": 0.2694052419354839
+            },
+            {
+              "bin": "0.3-0.4",
+              "n": 4604,
+              "mean_p": 0.34265757011553055,
+              "observed": 0.3073414422241529
+            },
+            {
+              "bin": "0.4-0.5",
+              "n": 1660,
+              "mean_p": 0.44161845119680504,
+              "observed": 0.3156626506024096
+            },
+            {
+              "bin": "0.5-0.6",
+              "n": 511,
+              "mean_p": 0.5417372559837708,
+              "observed": 0.3776908023483366
+            },
+            {
+              "bin": "0.6-0.7",
+              "n": 160,
+              "mean_p": 0.6390719419765274,
+              "observed": 0.39375
+            },
+            {
+              "bin": "0.7-0.8",
+              "n": 35,
+              "mean_p": 0.7332138487272015,
+              "observed": 0.5142857142857142
+            },
+            {
+              "bin": "0.8-0.9",
+              "n": 4,
+              "mean_p": 0.8301040518411433,
+              "observed": 0.75
+            }
+          ],
+          "deployable": true,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_over35_over_entry, odds_over35_over_close)"
+            }
+          }
+        },
+        "logistic": {
+          "n": 20160,
+          "log_loss": 0.5916649968989132,
+          "brier": 0.20107769464594685,
+          "ece": 0.011237881920607037,
+          "calibration_intercept": -0.2947244534816856,
+          "calibration_slope": 0.6821428622722148,
+          "mean_p": 0.28362806642253346,
+          "observed_rate": 0.2827876984126984,
+          "calibration_table": [
+            {
+              "bin": "0.0-0.1",
+              "n": 16,
+              "mean_p": 0.07227743136321148,
+              "observed": 0.125
+            },
+            {
+              "bin": "0.1-0.2",
+              "n": 1311,
+              "mean_p": 0.18026087340921126,
+              "observed": 0.2295957284515637
+            },
+            {
+              "bin": "0.2-0.3",
+              "n": 11613,
+              "mean_p": 0.2543455279288841,
+              "observed": 0.2577284078188237
+            },
+            {
+              "bin": "0.3-0.4",
+              "n": 6320,
+              "mean_p": 0.3352666772889138,
+              "observed": 0.32199367088607594
+            },
+            {
+              "bin": "0.4-0.5",
+              "n": 786,
+              "mean_p": 0.4329399062096761,
+              "observed": 0.40966921119592875
+            },
+            {
+              "bin": "0.5-0.6",
+              "n": 84,
+              "mean_p": 0.532896650842093,
+              "observed": 0.40476190476190477
+            },
+            {
+              "bin": "0.6-0.7",
+              "n": 10,
+              "mean_p": 0.6325740157231983,
+              "observed": 0.4
+            },
+            {
+              "bin": "0.7-0.8",
+              "n": 9,
+              "mean_p": 0.7363485027796073,
+              "observed": 0.5555555555555556
+            },
+            {
+              "bin": "0.8-0.9",
+              "n": 5,
+              "mean_p": 0.8282916420929467,
+              "observed": 0.6
+            },
+            {
+              "bin": "0.9-1.0",
+              "n": 6,
+              "mean_p": 0.9524898314444444,
+              "observed": 0.3333333333333333
+            }
+          ],
+          "deployable": true,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_over35_over_entry, odds_over35_over_close)"
+            }
+          }
+        },
+        "market_only": {
+          "n": 0,
+          "calibration_table": [],
+          "deployable": false,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_over35_over_entry, odds_over35_over_close)"
+            }
+          }
+        },
+        "model_market": {
+          "n": 0,
+          "calibration_table": [],
+          "deployable": false,
+          "clv": {
+            "over": {
+              "n": 0,
+              "reason": "no real entry and closing price columns (odds_over35_over_entry, odds_over35_over_close)"
+            }
+          }
+        }
+      }
+    }
+  }
+}

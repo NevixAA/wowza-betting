@@ -51,18 +51,25 @@ def _load():
 d = _load()
 g = d["gate"]
 
+
+def _g(k):
+    """A promotion-gate value as configured, or '—' when the gate config does not carry it (the page
+    used to print 1000 / 0.001 / 180 of its own, which could disagree with the real gate)."""
+    v = g.get(k)
+    return "—" if v is None else v
+
 with st.container(border=True):
     st.markdown("**Retraining is frequent. Promotion is rare.**")
     st.markdown(
-        f"A retrain produces a *challenger*, never a champion. Only the canonical gate — **{g['team'] or 'PG-1.0'}** "
-        f"for team models, **{g['props'] or 'PG-PROPS-1.0'}** for player props — may change what serves, and only "
+        f"A retrain produces a *challenger*, never a champion. Only the canonical gate — **{g['team'] or '—'}** "
+        f"for team models, **{g['props'] or '—'}** for player props — may change what serves, and only "
         f"after **two independent periods**, both against the champion actually serving, per track:\n"
-        f"1. **Holdout** — untouched chronological holdout, n ≥ {g['holdout_min_n'] or 1000} per track, log-loss "
-        f"improvement ≥ {g['material_ll'] or 0.001} with a CI excluding zero, Brier/calibration/canary/league checks. "
+        f"1. **Holdout** — untouched chronological holdout, n ≥ {_g('holdout_min_n')} per track, log-loss "
+        f"improvement ≥ {_g('material_ll')} with a CI excluding zero, Brier/calibration/canary/league checks. "
         f"Passing makes it QUALIFIED and parks it in the challenger slot (SHADOW_MORE) — not promoted.\n"
-        f"2. **Prospective** — n ≥ {g['prospective_min_n'] or 1000} settled first-sight rows per track logged after "
+        f"2. **Prospective** — n ≥ {_g('prospective_min_n')} settled first-sight rows per track logged after "
         f"the freeze, log-loss delta < 0, Brier non-inferior. Only then PROMOTE "
-        f"(slot expires after {g['max_age_days'] or 180} days).")
+        f"(slot expires after {_g('max_age_days')} days).")
     st.caption("Prospective volume is ~100–200 settled rows per track per week, so a promotion takes months. "
                "That is the intended rate.")
 
@@ -89,7 +96,7 @@ ui.section_header("Promotion decisions")
 c1, c2 = st.columns(2)
 with c1:
     with st.container(border=True):
-        st.markdown(f"**Team models — {g['team'] or 'PG-1.0'}**")
+        st.markdown(f"**Team models — {g['team'] or '—'}**")
         if d["dec"].empty:
             st.warning("output/model_lineage/promotion_decisions.csv missing or empty — no gate decision recorded.")
         else:
@@ -99,7 +106,7 @@ with c1:
                        + ", ".join(f"{k} {v}" for k, v in d["dec"]["verdict"].value_counts().items()))
 with c2:
     with st.container(border=True):
-        st.markdown(f"**Player props — {g['props'] or 'PG-PROPS-1.0'}**")
+        st.markdown(f"**Player props — {g['props'] or '—'}**")
         if d["props_dec"].empty:
             st.info("No props gate decision recorded yet (output/model_lineage/props_promotion_decisions.csv "
                     "is written by the first props retrain under PG-PROPS-1.0). Props stay paper-only regardless.")

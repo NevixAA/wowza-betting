@@ -1,0 +1,627 @@
+{
+ "root": "origin/main f9127e10 (git archive)",
+ "ctx": {
+  "now_utc": "2026-11-05T14:18:16.533381+00:00",
+  "today_local": "2026-11-05",
+  "cutoff": "2026-08-10",
+  "paper_leagues": [
+   "USA MLS"
+  ],
+  "thresholds": {
+   "SNIPER_THRESHOLD": 0.12,
+   "SNIPER_THRESHOLD_OVER": 0.12,
+   "SNIPER_THRESHOLD_UNDER": 0.12
+  }
+ },
+ "counts": {
+  "MATCH": 22,
+  "MISMATCH": 27,
+  "UNIDENTIFIABLE": 9
+ },
+ "figures": [
+  {
+   "page": "00_🎯_Home.py",
+   "label": "Staked P/L",
+   "figure": "staked_pnl",
+   "shown": "-10.46u",
+   "independent": -16.885,
+   "source": "bets_ledger.csv + side_bets_ledger.csv (live, settled, >= cutoff, paper leagues out) x src/staked.py labels from stake_audit.csv + stake_plan.csv",
+   "status": "MISMATCH",
+   "why": "shown -10.46 vs -16.885; REPRODUCES on the old tier basis (SNIPER + MARKSMAN, any track)",
+   "tier_basis": -10.465
+  },
+  {
+   "page": "00_🎯_Home.py",
+   "label": "Settled staked bets",
+   "figure": "staked_n",
+   "shown": "815",
+   "independent": 107.0,
+   "source": "bets_ledger.csv + side_bets_ledger.csv (live, settled, >= cutoff, paper leagues out) x src/staked.py labels from stake_audit.csv + stake_plan.csv",
+   "status": "MISMATCH",
+   "why": "shown 815.0 vs 107; REPRODUCES on the old tier basis (SNIPER + MARKSMAN, any track)",
+   "tier_basis": 815.0
+  },
+  {
+   "page": "00_🎯_Home.py",
+   "label": "Win rate — staked",
+   "figure": "staked_win_pct",
+   "shown": "47.2%",
+   "independent": 40.186916,
+   "source": "bets_ledger.csv + side_bets_ledger.csv (live, settled, >= cutoff, paper leagues out) x src/staked.py labels from stake_audit.csv + stake_plan.csv",
+   "status": "MISMATCH",
+   "why": "shown 47.2 vs 40.1869; REPRODUCES on the old tier basis (SNIPER + MARKSMAN, any track)",
+   "tier_basis": 47.239264
+  },
+  {
+   "page": "00_🎯_Home.py",
+   "label": "ROI",
+   "figure": "staked_roi_pct",
+   "shown": "-1.3%",
+   "independent": -15.780374,
+   "source": "bets_ledger.csv + side_bets_ledger.csv (live, settled, >= cutoff, paper leagues out) x src/staked.py labels from stake_audit.csv + stake_plan.csv",
+   "status": "MISMATCH",
+   "why": "shown -1.3 vs -15.7804; REPRODUCES on the old tier basis (SNIPER + MARKSMAN, any track)",
+   "tier_basis": -1.284049
+  },
+  {
+   "page": "00_🎯_Home.py",
+   "label": "P/L at recorded stakes",
+   "figure": "stake_pnl",
+   "shown": null,
+   "independent": -8.6061,
+   "source": "bets_ledger.csv + side_bets_ledger.csv (live, settled, >= cutoff, paper leagues out) x src/staked.py labels from stake_audit.csv + stake_plan.csv",
+   "status": "UNIDENTIFIABLE",
+   "why": "NOT_SHOWN: the page shows no figure under this label"
+  },
+  {
+   "page": "00_🎯_Home.py",
+   "label": "P/L at recorded stakes",
+   "figure": "stake_units",
+   "shown": null,
+   "independent": 46.62,
+   "source": "bets_ledger.csv + side_bets_ledger.csv (live, settled, >= cutoff, paper leagues out) x src/staked.py labels from stake_audit.csv + stake_plan.csv",
+   "status": "UNIDENTIFIABLE",
+   "why": "NOT_SHOWN: the page shows no figure under this label"
+  },
+  {
+   "page": "00_🎯_Home.py",
+   "label": "Drawdown from peak",
+   "figure": "drawdown",
+   "shown": "-45.47u",
+   "independent": -22.725,
+   "source": "bets_ledger.csv + side_bets_ledger.csv (live, settled, >= cutoff, paper leagues out) x src/staked.py labels from stake_audit.csv + stake_plan.csv",
+   "status": "MISMATCH",
+   "why": "shown -45.47 vs -22.725; REPRODUCES on the old tier basis (SNIPER + MARKSMAN, any track)",
+   "tier_basis": -45.47
+  },
+  {
+   "page": "00_🎯_Home.py",
+   "label": "Last 7 days",
+   "figure": "last7_pnl",
+   "shown": "-11.57u · n=47",
+   "independent": -3.27,
+   "source": "bets_ledger.csv + side_bets_ledger.csv (live, settled, >= cutoff, paper leagues out) x src/staked.py labels from stake_audit.csv + stake_plan.csv",
+   "status": "MISMATCH",
+   "why": "shown -11.57 vs -3.27; REPRODUCES on the old tier basis (SNIPER + MARKSMAN, any track)",
+   "tier_basis": -11.57
+  },
+  {
+   "page": "00_🎯_Home.py",
+   "label": "Last 7 days",
+   "figure": "last7_n",
+   "shown": "-11.57u · n=47",
+   "independent": 42.0,
+   "source": "bets_ledger.csv + side_bets_ledger.csv (live, settled, >= cutoff, paper leagues out) x src/staked.py labels from stake_audit.csv + stake_plan.csv",
+   "status": "MISMATCH",
+   "why": "shown 47.0 vs 42; REPRODUCES on the old tier basis (SNIPER + MARKSMAN, any track)",
+   "tier_basis": 47.0
+  },
+  {
+   "page": "00_🎯_Home.py",
+   "label": "Active tips",
+   "figure": "plan_active",
+   "shown": "11",
+   "independent": 11.0,
+   "source": "stake_plan.csv rows dated today (UTC) or later x src/staked.plan_staked",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "00_🎯_Home.py",
+   "label": "Upcoming staked tips (O/U 2.5)",
+   "figure": "plan_up_ou",
+   "shown": "13",
+   "independent": 4.0,
+   "source": "stake_plan.csv rows dated today (UTC) or later x src/staked.plan_staked",
+   "status": "MISMATCH",
+   "why": "shown 13.0 vs 4"
+  },
+  {
+   "page": "00_🎯_Home.py",
+   "label": "Paper / no stake",
+   "figure": "plan_paper",
+   "shown": "53",
+   "independent": 53.0,
+   "source": "stake_plan.csv rows dated today (UTC) or later x src/staked.plan_staked",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "00_🎯_Home.py",
+   "label": "Shadow engine BET",
+   "figure": "plan_shadow_bet",
+   "shown": "0 of 64",
+   "independent": 0.0,
+   "source": "stake_plan.csv rows dated today (UTC) or later x src/staked.plan_staked",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "00_🎯_Home.py",
+   "label": "Shadow engine BET",
+   "figure": "plan_shadow_n",
+   "shown": "0 of 64",
+   "independent": 64.0,
+   "source": "stake_plan.csv rows dated today (UTC) or later x src/staked.plan_staked",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "00_🎯_Home.py",
+   "label": "System health",
+   "figure": "health_overall",
+   "shown": "WARN",
+   "independent": "WARN",
+   "source": "system_health.json checks[] recounted",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "00_🎯_Home.py",
+   "label": "Paper Small gap P/L",
+   "figure": "not_staked_pnl",
+   "shown": "Paper Small gap P/L: **-10.14u** · 876 tips, not bets — tracked, never staked, never in the P/L.",
+   "independent": -3.72,
+   "source": "bets_ledger.csv + side_bets_ledger.csv (live, settled, >= cutoff, paper leagues out) x src/staked.py labels from stake_audit.csv + stake_plan.csv",
+   "status": "MISMATCH",
+   "why": "shown -10.14 vs -3.72; REPRODUCES on the old tier basis (SNIPER + MARKSMAN, any track)",
+   "tier_basis": -10.14
+  },
+  {
+   "page": "00_🎯_Home.py",
+   "label": "Paper Small gap P/L",
+   "figure": "not_staked_n",
+   "shown": "Paper Small gap P/L: **-10.14u** · 876 tips, not bets — tracked, never staked, never in the P/L.",
+   "independent": 1584.0,
+   "source": "bets_ledger.csv + side_bets_ledger.csv (live, settled, >= cutoff, paper leagues out) x src/staked.py labels from stake_audit.csv + stake_plan.csv",
+   "status": "MISMATCH",
+   "why": "shown 876.0 vs 1584; REPRODUCES on the old tier basis (SNIPER + MARKSMAN, any track)",
+   "tier_basis": 876.0
+  },
+  {
+   "page": "00_🎯_Home.py",
+   "label": "Not staked tips before the first policy record (caption)",
+   "figure": "not_staked_pre_policy_n",
+   "shown": null,
+   "independent": 1204,
+   "source": "bets_ledger.csv + side_bets_ledger.csv (live, settled, >= cutoff, paper leagues out) x src/staked.py labels from stake_audit.csv + stake_plan.csv",
+   "status": "UNIDENTIFIABLE",
+   "why": "NOT_SHOWN: the page shows no figure under this label"
+  },
+  {
+   "page": "00_🎯_Home.py",
+   "label": "Player rows zeros_unverified",
+   "figure": "truth_zeros_unverified",
+   "shown": null,
+   "independent": null,
+   "source": "output/corrections/history_cup_unproven_rows.csv, history_score_refused.csv (rows); output/collect/player_history_refetch_audit.json (plan.rows_to_verify - stored_rows)",
+   "status": "UNIDENTIFIABLE",
+   "why": "NOT_SHOWN: the page shows no figure under this label"
+  },
+  {
+   "page": "00_🎯_Home.py",
+   "label": "Unproven cup rows",
+   "figure": "truth_cup_unproven",
+   "shown": null,
+   "independent": null,
+   "source": "output/corrections/history_cup_unproven_rows.csv, history_score_refused.csv (rows); output/collect/player_history_refetch_audit.json (plan.rows_to_verify - stored_rows)",
+   "status": "UNIDENTIFIABLE",
+   "why": "NOT_SHOWN: the page shows no figure under this label"
+  },
+  {
+   "page": "00_🎯_Home.py",
+   "label": "Refused scores",
+   "figure": "truth_scores_refused",
+   "shown": null,
+   "independent": null,
+   "source": "output/corrections/history_cup_unproven_rows.csv, history_score_refused.csv (rows); output/collect/player_history_refetch_audit.json (plan.rows_to_verify - stored_rows)",
+   "status": "UNIDENTIFIABLE",
+   "why": "NOT_SHOWN: the page shows no figure under this label"
+  },
+  {
+   "page": "0_🏠_Overview.py",
+   "label": "Staked P/L",
+   "figure": "staked_pnl",
+   "shown": "-10.46u",
+   "independent": -16.885,
+   "source": "bets_ledger.csv + side_bets_ledger.csv (live, settled, >= cutoff, paper leagues out) x src/staked.py labels from stake_audit.csv + stake_plan.csv",
+   "status": "MISMATCH",
+   "why": "shown -10.46 vs -16.885; REPRODUCES on the old tier basis (SNIPER + MARKSMAN, any track)",
+   "tier_basis": -10.465
+  },
+  {
+   "page": "0_🏠_Overview.py",
+   "label": "Staked bets",
+   "figure": "staked_n",
+   "shown": "814",
+   "independent": 107.0,
+   "source": "bets_ledger.csv + side_bets_ledger.csv (live, settled, >= cutoff, paper leagues out) x src/staked.py labels from stake_audit.csv + stake_plan.csv",
+   "status": "MISMATCH",
+   "why": "shown 814.0 vs 107; does not reproduce on the tier basis either",
+   "tier_basis": 815.0
+  },
+  {
+   "page": "0_🏠_Overview.py",
+   "label": "P/L at recorded stakes",
+   "figure": "stake_pnl",
+   "shown": null,
+   "independent": -8.6061,
+   "source": "bets_ledger.csv + side_bets_ledger.csv (live, settled, >= cutoff, paper leagues out) x src/staked.py labels from stake_audit.csv + stake_plan.csv",
+   "status": "UNIDENTIFIABLE",
+   "why": "NOT_SHOWN: the page shows no figure under this label"
+  },
+  {
+   "page": "0_🏠_Overview.py",
+   "label": "new-format",
+   "figure": "track_new_format_pnl",
+   "shown": "+23.11u",
+   "independent": -16.885,
+   "source": "bets_ledger.csv + side_bets_ledger.csv (live, settled, >= cutoff, paper leagues out) x src/staked.py labels from stake_audit.csv + stake_plan.csv",
+   "status": "MISMATCH",
+   "why": "shown 23.11 vs -16.885; REPRODUCES on the old tier basis (SNIPER + MARKSMAN, any track)",
+   "tier_basis": 23.105
+  },
+  {
+   "page": "0_🏠_Overview.py",
+   "label": "standard",
+   "figure": "track_standard_pnl",
+   "shown": "-33.57u",
+   "independent": 0.0,
+   "source": "bets_ledger.csv + side_bets_ledger.csv (live, settled, >= cutoff, paper leagues out) x src/staked.py labels from stake_audit.csv + stake_plan.csv",
+   "status": "MISMATCH",
+   "why": "shown -33.57 vs 0; REPRODUCES on the old tier basis (SNIPER + MARKSMAN, any track)",
+   "tier_basis": -33.57
+  },
+  {
+   "page": "0_🏠_Overview.py",
+   "label": "Staked",
+   "figure": "track_new_format_n",
+   "shown": "607",
+   "independent": 107.0,
+   "source": "bets_ledger.csv + side_bets_ledger.csv (live, settled, >= cutoff, paper leagues out) x src/staked.py labels from stake_audit.csv + stake_plan.csv",
+   "status": "MISMATCH",
+   "why": "shown 607.0 vs 107; does not reproduce on the tier basis either",
+   "tier_basis": 608.0
+  },
+  {
+   "page": "0_🏠_Overview.py",
+   "label": "Hit",
+   "figure": "track_new_format_hit_pct",
+   "shown": "49.8%",
+   "independent": 40.186916,
+   "source": "bets_ledger.csv + side_bets_ledger.csv (live, settled, >= cutoff, paper leagues out) x src/staked.py labels from stake_audit.csv + stake_plan.csv",
+   "status": "MISMATCH",
+   "why": "shown 49.8 vs 40.1869; does not reproduce on the tier basis either",
+   "tier_basis": 49.671053
+  },
+  {
+   "page": "0_🏠_Overview.py",
+   "label": "Break-even",
+   "figure": "track_new_format_be_pct",
+   "shown": "47.5%",
+   "independent": 47.372377,
+   "source": "bets_ledger.csv + side_bets_ledger.csv (live, settled, >= cutoff, paper leagues out) x src/staked.py labels from stake_audit.csv + stake_plan.csv",
+   "status": "MISMATCH",
+   "why": "shown 47.5 vs 47.3724; REPRODUCES on the old tier basis (SNIPER + MARKSMAN, any track)",
+   "tier_basis": 47.505366
+  },
+  {
+   "page": "0_🏠_Overview.py",
+   "label": "ROI",
+   "figure": "track_new_format_roi_pct",
+   "shown": "3.8%",
+   "independent": -15.780374,
+   "source": "bets_ledger.csv + side_bets_ledger.csv (live, settled, >= cutoff, paper leagues out) x src/staked.py labels from stake_audit.csv + stake_plan.csv",
+   "status": "MISMATCH",
+   "why": "shown 3.8 vs -15.7804; REPRODUCES on the old tier basis (SNIPER + MARKSMAN, any track)",
+   "tier_basis": 3.800164
+  },
+  {
+   "page": "1_📊_Dashboard.py",
+   "label": "P/L — all staked markets",
+   "figure": "staked_pnl",
+   "shown": "-10.47u",
+   "independent": -16.885,
+   "source": "bets_ledger.csv + side_bets_ledger.csv (live, settled, >= cutoff, paper leagues out) x src/staked.py labels from stake_audit.csv + stake_plan.csv",
+   "status": "MISMATCH",
+   "why": "shown -10.47 vs -16.885; REPRODUCES on the old tier basis (SNIPER + MARKSMAN, any track)",
+   "tier_basis": -10.465
+  },
+  {
+   "page": "1_📊_Dashboard.py",
+   "label": "Excluding O/U 2.5",
+   "figure": "staked_pnl_ex_ou25",
+   "shown": "+31.53u",
+   "independent": -2.695,
+   "source": "bets_ledger.csv + side_bets_ledger.csv (live, settled, >= cutoff, paper leagues out) x src/staked.py labels from stake_audit.csv + stake_plan.csv",
+   "status": "MISMATCH",
+   "why": "shown 31.53 vs -2.695; REPRODUCES on the old tier basis (SNIPER + MARKSMAN, any track)",
+   "tier_basis": 31.525
+  },
+  {
+   "page": "1_📊_Dashboard.py",
+   "label": "Settled bets",
+   "figure": "staked_n",
+   "shown": "815",
+   "independent": 107.0,
+   "source": "bets_ledger.csv + side_bets_ledger.csv (live, settled, >= cutoff, paper leagues out) x src/staked.py labels from stake_audit.csv + stake_plan.csv",
+   "status": "MISMATCH",
+   "why": "shown 815.0 vs 107; REPRODUCES on the old tier basis (SNIPER + MARKSMAN, any track)",
+   "tier_basis": 815.0
+  },
+  {
+   "page": "5_🎯_Success_Rates.py",
+   "label": "Settled observations",
+   "figure": "success_obs",
+   "shown": "53",
+   "independent": 49.0,
+   "source": "bets_ledger.csv + side_bets_ledger.csv (live, settled, >= cutoff, paper leagues out) x src/staked.py labels from stake_audit.csv + stake_plan.csv",
+   "status": "MISMATCH",
+   "why": "shown 53.0 vs 49; REPRODUCES on the old tier basis (SNIPER + MARKSMAN, any track)",
+   "tier_basis": 53.0
+  },
+  {
+   "page": "9_🎓_Model_Performance.py",
+   "label": "Overconfident by",
+   "figure": "cal_gap_pp",
+   "shown": "+7.99pp",
+   "independent": 6.343314,
+   "source": "bets_ledger (edge_pct/100 + 1/odds) + side_bets_ledger (model_prob), WIN/LOSS, >= cutoff",
+   "status": "MISMATCH",
+   "why": "shown 7.99 vs 6.34331"
+  },
+  {
+   "page": "9_🎓_Model_Performance.py",
+   "label": "Model claimed",
+   "figure": "cal_claimed",
+   "shown": "0.5600",
+   "independent": 0.543528,
+   "source": "bets_ledger (edge_pct/100 + 1/odds) + side_bets_ledger (model_prob), WIN/LOSS, >= cutoff",
+   "status": "MISMATCH",
+   "why": "shown 0.56 vs 0.543528"
+  },
+  {
+   "page": "9_🎓_Model_Performance.py",
+   "label": "Actually happened",
+   "figure": "cal_realised",
+   "shown": "0.4801",
+   "independent": 0.480095,
+   "source": "bets_ledger (edge_pct/100 + 1/odds) + side_bets_ledger (model_prob), WIN/LOSS, >= cutoff",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "9_🎓_Model_Performance.py",
+   "label": "Settled sample",
+   "figure": "cal_n",
+   "shown": "1,683",
+   "independent": 1683.0,
+   "source": "bets_ledger (edge_pct/100 + 1/odds) + side_bets_ledger (model_prob), WIN/LOSS, >= cutoff",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "11_👤_Player_Props.py",
+   "label": "Win rate",
+   "figure": "props_win_pct",
+   "shown": "9%",
+   "independent": 8.62069,
+   "source": "player_ledger.csv SNIPER + MARKSMAN, WIN/LOSS",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "11_👤_Player_Props.py",
+   "label": "Settled",
+   "figure": "props_n",
+   "shown": "116",
+   "independent": 116.0,
+   "source": "player_ledger.csv SNIPER + MARKSMAN, WIN/LOSS",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "11_👤_Player_Props.py",
+   "label": "Flat ROI (1u, paper)",
+   "figure": "props_roi_pct",
+   "shown": "-57.8%",
+   "independent": -57.758621,
+   "source": "player_ledger.csv SNIPER + MARKSMAN, WIN/LOSS",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "11_👤_Player_Props.py",
+   "label": "Includes rows flagged (caption)",
+   "figure": "props_flagged_sentinel",
+   "shown": null,
+   "independent": null,
+   "source": "player_ledger.csv SNIPER + MARKSMAN, WIN/LOSS",
+   "status": "UNIDENTIFIABLE",
+   "why": "NOT_SHOWN: the page shows no figure under this label"
+  },
+  {
+   "page": "17_🏟️_Leagues.py",
+   "label": "P/L",
+   "figure": "leagues_pnl",
+   "shown": "-10.46u",
+   "independent": -16.885,
+   "source": "bets_ledger.csv + side_bets_ledger.csv (live, settled, >= cutoff, paper leagues out) x src/staked.py labels from stake_audit.csv + stake_plan.csv",
+   "status": "MISMATCH",
+   "why": "shown -10.46 vs -16.885; REPRODUCES on the old tier basis (SNIPER + MARKSMAN, any track)",
+   "tier_basis": -10.465
+  },
+  {
+   "page": "17_🏟️_Leagues.py",
+   "label": "Staked tips settled",
+   "figure": "leagues_n",
+   "shown": "815",
+   "independent": 107.0,
+   "source": "bets_ledger.csv + side_bets_ledger.csv (live, settled, >= cutoff, paper leagues out) x src/staked.py labels from stake_audit.csv + stake_plan.csv",
+   "status": "MISMATCH",
+   "why": "shown 815.0 vs 107; REPRODUCES on the old tier basis (SNIPER + MARKSMAN, any track)",
+   "tier_basis": 815.0
+  },
+  {
+   "page": "17_🏟️_Leagues.py",
+   "label": "Hit",
+   "figure": "leagues_hit_pct",
+   "shown": "47.2%",
+   "independent": 40.186916,
+   "source": "bets_ledger.csv + side_bets_ledger.csv (live, settled, >= cutoff, paper leagues out) x src/staked.py labels from stake_audit.csv + stake_plan.csv",
+   "status": "MISMATCH",
+   "why": "shown 47.2 vs 40.1869; REPRODUCES on the old tier basis (SNIPER + MARKSMAN, any track)",
+   "tier_basis": 47.239264
+  },
+  {
+   "page": "19_🩺_System_Health.py",
+   "label": "GREEN",
+   "figure": "health_GREEN",
+   "shown": "20",
+   "independent": 20.0,
+   "source": "system_health.json checks[] recounted",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "19_🩺_System_Health.py",
+   "label": "AMBER",
+   "figure": "health_AMBER",
+   "shown": "1",
+   "independent": 1.0,
+   "source": "system_health.json checks[] recounted",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "19_🩺_System_Health.py",
+   "label": "RED",
+   "figure": "health_RED",
+   "shown": "0",
+   "independent": 0.0,
+   "source": "system_health.json checks[] recounted",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "19_🩺_System_Health.py",
+   "label": "NO_DATA",
+   "figure": "health_NO_DATA",
+   "shown": "0",
+   "independent": 0.0,
+   "source": "system_health.json checks[] recounted",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "19_🩺_System_Health.py",
+   "label": "Contract violations",
+   "figure": "health_contract_new",
+   "shown": "2",
+   "independent": 2.0,
+   "source": "system_health.json checks[] recounted",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "19_🩺_System_Health.py",
+   "label": "Known (baseline)",
+   "figure": "health_contract_known",
+   "shown": null,
+   "independent": 6,
+   "source": "system_health.json checks[] recounted",
+   "status": "UNIDENTIFIABLE",
+   "why": "NOT_SHOWN: the page shows no figure under this label"
+  },
+  {
+   "page": "22_🏭_Production.py",
+   "label": "Tips sized",
+   "figure": "plan_tips",
+   "shown": "64",
+   "independent": 64.0,
+   "source": "stake_plan.csv rows dated today (UTC) or later x src/staked.plan_staked",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "22_🏭_Production.py",
+   "label": "With a stake",
+   "figure": "plan_active",
+   "shown": "11",
+   "independent": 11.0,
+   "source": "stake_plan.csv rows dated today (UTC) or later x src/staked.plan_staked",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "22_🏭_Production.py",
+   "label": "Days covered",
+   "figure": "plan_days",
+   "shown": "4",
+   "independent": 4.0,
+   "source": "stake_plan.csv rows dated today (UTC) or later x src/staked.plan_staked",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "21_📡_Market_Intelligence.py",
+   "label": "Suppressed tips (all time)",
+   "figure": "intel_suppressed",
+   "shown": "6",
+   "independent": 6.0,
+   "source": "direction_conflicts.csv rows",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "4_ℹ️_Model_Info.py",
+   "label": "Global Big gap",
+   "figure": "cfg_SNIPER_THRESHOLD",
+   "shown": "12%",
+   "independent": 12.0,
+   "source": "config.py thresholds",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "4_ℹ️_Model_Info.py",
+   "label": "OVER threshold",
+   "figure": "cfg_SNIPER_THRESHOLD_OVER",
+   "shown": "12%",
+   "independent": 12.0,
+   "source": "config.py thresholds",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "4_ℹ️_Model_Info.py",
+   "label": "UNDER threshold",
+   "figure": "cfg_SNIPER_THRESHOLD_UNDER",
+   "shown": "12%",
+   "independent": 12.0,
+   "source": "config.py thresholds",
+   "status": "MATCH",
+   "why": ""
+  }
+ ]
+}

@@ -114,11 +114,13 @@ def validate_payload(payload: dict) -> None:
     if missing:
         raise ValueError(f"payload missing {missing}")
     rs = payload.get("research") or {}
+    # Every fact must be STATED by the payload. A missing target / price_mode / team_scope used to
+    # pass as if it held the servable value.
     checks = {"recipe": payload.get("recipe") == REPAIRED,
-              "target": payload.get("target", "over25") == "over25" and rs.get("target", "over25") == "over25",
+              "target": payload.get("target") == "over25" and rs.get("target") == "over25",
               "track": rs.get("track") == "standard",
-              "price_mode": rs.get("price_mode", "none") == "none",
-              "team_scope": rs.get("team_scope", "league") == "league"}
+              "price_mode": rs.get("price_mode") == "none",
+              "team_scope": rs.get("team_scope") == "league"}
     bad = [k for k, ok in checks.items() if not ok]
     if bad:
         raise ValueError(f"not a servable repaired Standard OU25 payload ({bad})")
@@ -140,8 +142,8 @@ def serving_history(historical: pd.DataFrame, payload: dict) -> pd.DataFrame:
     first is exact, not an approximation."""
     from src.identity_repair import canonicalise_and_dedupe
     h = historical[historical["league"].astype(str).isin(config.STANDARD_FORMAT_LEAGUES)]
-    if getattr(config, "EXCLUDE_COVID_SEASONS", False) and "season" in h.columns:
-        h = h[~h["season"].isin(config.COVID_SEASONS)]
+    if config.EXCLUDE_COVID_SEASONS:
+        h = h[~config.covid_season_mask(h)]          # same per-league rule as pipeline.mode_train
     d, _rep = canonicalise_and_dedupe(h, payload["identity_alias_map"], derive=False)
     return d
 
@@ -159,7 +161,10 @@ def score_fixtures(fixtures: pd.DataFrame, history: pd.DataFrame, payload: dict)
     if bad:
         raise ValueError(f"non-Standard leagues passed to the Standard repaired scorer: {sorted(bad)}")
     ident = fixtures[["date", "league", "home_team", "away_team"]].reset_index(drop=True)
-    feats = build_upcoming_features_repaired(ident, history, price_mode="none", team_scope="league")
+    # the FROZEN map that canonicalised `history` (serving_history) also places the board's
+    # spelling of a renamed club ('Stockport County FC' -> 'Stockport'): the same evidence as train
+    feats = build_upcoming_features_repaired(ident, history, price_mode="none", team_scope="league",
+                                             identity_aliases=payload.get("identity_alias_map"))
     if len(feats) != len(ident) or not (
             feats["home_team"].astype(str).to_numpy() == ident["home_team"].astype(str).to_numpy()).all():
         raise ValueError("repaired feature rows do not line up with the fixtures")

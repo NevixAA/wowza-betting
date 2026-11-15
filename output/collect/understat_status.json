@@ -1,0 +1,19 @@
+{
+ "source": "understat",
+ "host": "https://understat.com",
+ "status": "SOURCE_UNREACHABLE",
+ "checked_at": "2026-11-02T16:57:53+00:00",
+ "run_id": "41475495031",
+ "new_league_matches": 0,
+ "match_payloads_fetched": 0,
+ "requests": 1,
+ "ok": 0,
+ "unreachable": 0,
+ "timeout": 1,
+ "http_error": 0,
+ "other_error": 0,
+ "http_codes": {},
+ "pages_without_matches": 0,
+ "sample_error": "ConnectTimeout: HTTPSConnectionPool(host='understat.com', port=443): Max retries exceeded with url: / (Caused by ConnectTimeoutError(<HTTPSConnection(host='understat.com', port=443) at 0x73a6dcd09050>, 'Connection to understat.com timed out. (connect timeout=30)'))",
+ "note": "preflight https://understat.com/ failed (timeout); no page was requested and nothing was stored. The stored Understat data is unchanged."
+}

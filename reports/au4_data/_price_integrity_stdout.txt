@@ -1,0 +1,890 @@
+{
+ "book_quotes": {
+  "rows": 754014,
+  "span": [
+   "2026-10-04 12:01:50+00:00",
+   "2026-11-01 10:03:46+00:00"
+  ],
+  "schema": {
+   "fixture_id": "fixture_id",
+   "league": "league",
+   "teams": "home_team",
+   "date": null,
+   "kickoff_utc": "kickoff_utc",
+   "book": "bookmaker",
+   "market": "market",
+   "side": "side",
+   "line": "line",
+   "odds": "odds",
+   "snapshot_ts": "snapshot_ts"
+  },
+  "odds": {
+   "n": 754014,
+   "nan": 0,
+   "le_1.00": 0,
+   "le_1.05": 967,
+   "gt_50": 0,
+   "median": 1.88
+  },
+  "post_ko": {
+   "kickoff_known": 754014,
+   "post_kickoff_rows": 0,
+   "post_kickoff_share": 0.0
+  },
+  "minutes_to_kickoff_le_0": 0,
+  "ladder_band": {
+   "FAR": 538447,
+   "T-1h": 56295,
+   "T-30m": 51083,
+   "T-10m": 46869,
+   "T-6h": 40857,
+   "T-3h": 20463
+  },
+  "exact_dups": 0,
+  "conflicting_same_key_ts": 0,
+  "pairs_samebook_ou": {
+   "pairs": 207064,
+   "rows_in_scope": 417455,
+   "pair_rate_rows": 0.9920302787126756,
+   "overround": {
+    "n": 207064,
+    "mean": 1.070833806263469,
+    "median": 1.0690045248868778,
+    "trim5": 1.070727362833492,
+    "wins5": 1.0709291659952211,
+    "pct_pos": 1.0,
+    "pct_zero": 0.0,
+    "pct_neg": 0.0,
+    "p01": 1.0342529654804744,
+    "p99": 1.107910906298003,
+    "min": 1.0269643985675163,
+    "max": 1.1297338528459808
+   },
+   "lt_1.00": 0,
+   "gt_1.15": 0
+  },
+  "pairs_bestcross_ou": {
+   "pairs": 45768,
+   "overround": {
+    "n": 45768,
+    "mean": 1.0425706858086876,
+    "median": 1.0403670888752616,
+    "trim5": 1.0418375915732014,
+    "wins5": 1.0422863063663763,
+    "pct_pos": 1.0,
+    "pct_zero": 0.0,
+    "pct_neg": 0.0,
+    "p01": 1.0085470085470085,
+    "p99": 1.0907951697425382,
+    "min": 0.9651027615099472,
+    "max": 1.1178766588602653
+   },
+   "lt_1.00": 172,
+   "share_lt_1.00": 0.0037580842510050692
+  },
+  "pairs_samebook_btts": {
+   "pairs": 69556,
+   "rows_in_scope": 139641,
+   "pair_rate_rows": 0.9962117143245894,
+   "overround": {
+    "n": 69556,
+    "mean": 1.0783231420763804,
+    "median": 1.0798356651121475,
+    "trim5": 1.0787052791415024,
+    "wins5": 1.078368872755353,
+    "pct_pos": 1.0,
+    "pct_zero": 0.0,
+    "pct_neg": 0.0,
+    "p01": 1.054225158271401,
+    "p99": 1.0944444444444446,
+    "min": 1.0416666666666665,
+    "max": 1.1142857142857143
+   },
+   "lt_1.00": 0,
+   "gt_1.15": 0
+  },
+  "pairs_bestcross_btts": {
+   "pairs": 14737,
+   "overround": {
+    "n": 14737,
+    "mean": 1.0565576180477663,
+    "median": 1.0571107423861263,
+    "trim5": 1.0568029732220352,
+    "wins5": 1.0568250027601898,
+    "pct_pos": 1.0,
+    "pct_zero": 0.0,
+    "pct_neg": 0.0,
+    "p01": 1.017170812041365,
+    "p99": 1.0883773799374823,
+    "min": 0.9444444444444444,
+    "max": 1.0967072854550168
+   },
+   "lt_1.00": 27,
+   "share_lt_1.00": 0.0018321232272511367
+  },
+  "pairs_samebook_ht_ou": {
+   "pairs": 97318,
+   "rows_in_scope": 196918,
+   "pair_rate_rows": 0.9884114199819214,
+   "overround": {
+    "n": 97318,
+    "mean": 1.077106432970493,
+    "median": 1.0782241014799154,
+    "trim5": 1.0773160553625032,
+    "wins5": 1.077110347610111,
+    "pct_pos": 1.0,
+    "pct_zero": 0.0,
+    "pct_neg": 0.0,
+    "p01": 1.0466911055373336,
+    "p99": 1.1034940291906237,
+    "min": 1.0322717960997152,
+    "max": 1.1312217194570136
+   },
+   "lt_1.00": 0,
+   "gt_1.15": 0
+  },
+  "pairs_bestcross_ht_ou": {
+   "pairs": 21235,
+   "overround": {
+    "n": 21235,
+    "mean": 1.0468198643298854,
+    "median": 1.0465724751439036,
+    "trim5": 1.0463285327648963,
+    "wins5": 1.0468870836016217,
+    "pct_pos": 1.0,
+    "pct_zero": 0.0,
+    "pct_neg": 0.0,
+    "p01": 1.0073451285680584,
+    "p99": 1.0916239100312104,
+    "min": 0.9696969696969697,
+    "max": 1.1228910168718649
+   },
+   "lt_1.00": 22,
+   "share_lt_1.00": 0.001036025429715093
+  },
+  "monotone_over": {
+   "groups_compared": 67186,
+   "violations": 0,
+   "violation_rate": 0.0
+  },
+  "monotone_under": {
+   "groups_compared": 67456,
+   "violations": 0,
+   "violation_rate": 0.0
+  },
+  "btts_yes_gt_3.20": 6,
+  "btts_yes_n": 69751
+ },
+ "book_odds_snapshots": {
+  "rows": 380330,
+  "span": [
+   "2026-08-19 09:23:27+00:00",
+   "2026-11-01 10:59:12+00:00"
+  ],
+  "schema": {
+   "fixture_id": null,
+   "league": "league",
+   "teams": "match",
+   "date": "match_date",
+   "kickoff_utc": "kickoff_utc",
+   "book": "bookmaker",
+   "market": "market",
+   "side": "side",
+   "line": null,
+   "odds": "odds",
+   "snapshot_ts": "snapshot_ts"
+  },
+  "odds": {
+   "n": 380330,
+   "nan": 0,
+   "le_1.00": 0,
+   "le_1.05": 77,
+   "gt_50": 0,
+   "median": 1.88
+  },
+  "post_ko": {
+   "kickoff_known": 380330,
+   "post_kickoff_rows": 0,
+   "post_kickoff_share": 0.0
+  },
+  "books": 25,
+  "markets": {
+   "OU25": 182380,
+   "BTTS": 145326,
+   "OU35": 48871,
+   "OU15": 3753
+  },
+  "sides": {
+   "BTTS|NO": 73725,
+   "BTTS|YES": 71601,
+   "OU15|OVER": 1819,
+   "OU15|UNDER": 1934,
+   "OU25|OVER": 91041,
+   "OU25|UNDER": 91339,
+   "OU35|OVER": 24734,
+   "OU35|UNDER": 24137
+  },
+  "pairs_samebook_same_ts": {
+   "pairs": 106266,
+   "rows_in_scope": 235004,
+   "pair_rate_rows": 0.9043760957260302,
+   "overround": {
+    "n": 106266,
+    "mean": 1.0710323085348672,
+    "median": 1.0702838827838828,
+    "trim5": 1.0704610941850004,
+    "wins5": 1.0712043367630197,
+    "pct_pos": 1.0,
+    "pct_zero": 0.0,
+    "pct_neg": 0.0,
+    "p01": 1.0070316423907584,
+    "p99": 1.1392527274482669,
+    "min": 1.0001000100010002,
+    "max": 1.8991899189918993
+   },
+   "lt_1.00": 0,
+   "gt_1.15": 36
+  },
+  "pairs_samebook_same_ts_btts": {
+   "pairs": 63546,
+   "rows_in_scope": 145326,
+   "pair_rate_rows": 0.8745303662111391,
+   "overround": {
+    "n": 63546,
+    "mean": 1.0753803861578768,
+    "median": 1.0795454545454546,
+    "trim5": 1.075717239881805,
+    "wins5": 1.07443228932507,
+    "pct_pos": 1.0,
+    "pct_zero": 0.0,
+    "pct_neg": 0.0,
+    "p01": 1.005253586583148,
+    "p99": 1.1335617534983509,
+    "min": 0.9952465834818776,
+    "max": 1.9801980198019802
+   },
+   "lt_1.00": 230,
+   "gt_1.15": 369
+  },
+  "pairs_bestcross_same_ts": {
+   "pairs": 40388,
+   "overround": {
+    "n": 40388,
+    "mean": 1.0525411256626964,
+    "median": 1.0544085183742373,
+    "trim5": 1.0521600302778893,
+    "wins5": 1.051958555225451,
+    "pct_pos": 1.0,
+    "pct_zero": 0.0,
+    "pct_neg": 0.0,
+    "p01": 1.0035035035035034,
+    "p99": 1.1066935349003961,
+    "min": 0.9691528545119705,
+    "max": 1.8991899189918993
+   },
+   "lt_1.00": 178,
+   "share_lt_1.00": 0.004407249678122215
+  },
+  "monotone_over": {
+   "groups_compared": 0,
+   "violations": 0,
+   "violation_rate": 0.0
+  }
+ },
+ "standard_odds_history.csv": {
+  "rows": 10656,
+  "span": [
+   "2026-08-09T10:55:35",
+   "2026-11-01T10:59:14"
+  ],
+  "schema": {
+   "fixture_id": null,
+   "league": "league",
+   "teams": "match",
+   "date": "match_date",
+   "kickoff_utc": null,
+   "book": null,
+   "market": "market",
+   "side": null,
+   "line": null,
+   "odds": "odds",
+   "snapshot_ts": "snapshot_ts"
+  },
+  "odds": {
+   "n": 10656,
+   "nan": 0,
+   "le_1.00": 0,
+   "le_1.05": 1,
+   "gt_50": 0,
+   "median": 1.89
+  },
+  "markets": {
+   "under25": 4938,
+   "over25": 4905,
+   "over35": 775,
+   "over15": 38
+  },
+  "book_identity": "NOT RECORDED - first OddsAPI book listing each price (src/predict.py `not ov25` guards)",
+  "pairs_ou25_same_ts": {
+   "pairs": 4647,
+   "rows_in_scope": 9843,
+   "pair_rate_rows": 0.9442243218530936,
+   "overround": {
+    "n": 4647,
+    "mean": 1.076664656674182,
+    "median": 1.0772520716385994,
+    "trim5": 1.0758260278052232,
+    "wins5": 1.0754797217037708,
+    "pct_pos": 1.0,
+    "pct_zero": 0.0,
+    "pct_neg": 0.0,
+    "p01": 1.0309552278464196,
+    "p99": 1.1388566266615048,
+    "min": 1.0272173182009245,
+    "max": 1.1445568883572053
+   },
+   "lt_1.00": 0,
+   "gt_1.15": 0
+  },
+  "post_ko_via_book_odds_snapshots": {
+   "kickoff_known": 9686,
+   "post_kickoff_rows": 17,
+   "post_kickoff_share": 0.001755110468717737
+  },
+  "post_ko_minutes_after": {
+   "n": 17,
+   "mean": 106.76960784313725,
+   "median": 89.81666666666666,
+   "trim5": 106.76960784313727,
+   "wins5": 106.76960784313725,
+   "pct_pos": 1.0,
+   "pct_zero": 0.0,
+   "pct_neg": 0.0,
+   "p01": 3.5833333333333335,
+   "p99": 234.61666666666667,
+   "min": 3.5833333333333335,
+   "max": 234.61666666666667
+  }
+ },
+ "newformat_odds_dense.csv": {
+  "rows": 16136,
+  "span": [
+   "2026-08-15T16:51:02",
+   "2026-11-01T10:59:14"
+  ],
+  "schema": {
+   "fixture_id": null,
+   "league": "league",
+   "teams": "match",
+   "date": "match_date",
+   "kickoff_utc": null,
+   "book": null,
+   "market": "market",
+   "side": null,
+   "line": null,
+   "odds": "odds",
+   "snapshot_ts": "snapshot_ts"
+  },
+  "odds": {
+   "n": 16136,
+   "nan": 0,
+   "le_1.00": 0,
+   "le_1.05": 0,
+   "gt_50": 0,
+   "median": 1.94
+  },
+  "markets": {
+   "under25": 6383,
+   "over25": 6203,
+   "over35": 2868,
+   "over15": 682
+  },
+  "book_identity": "NOT RECORDED - first OddsAPI book listing each price (src/predict.py `not ov25` guards)",
+  "pairs_ou25_same_ts": {
+   "pairs": 5837,
+   "rows_in_scope": 12586,
+   "pair_rate_rows": 0.9275385348800255,
+   "overround": {
+    "n": 5837,
+    "mean": 1.070381173772304,
+    "median": 1.0666742519057912,
+    "trim5": 1.069071533129975,
+    "wins5": 1.0692576865282142,
+    "pct_pos": 1.0,
+    "pct_zero": 0.0,
+    "pct_neg": 0.0,
+    "p01": 1.029825842110752,
+    "p99": 1.1388888888888888,
+    "min": 1.0273701957271937,
+    "max": 1.1471467567918887
+   },
+   "lt_1.00": 0,
+   "gt_1.15": 0
+  },
+  "post_ko_via_book_odds_snapshots": {
+   "kickoff_known": 15516,
+   "post_kickoff_rows": 27,
+   "post_kickoff_share": 0.0017401392111368909
+  },
+  "post_ko_minutes_after": {
+   "n": 27,
+   "mean": 6.4833333333333325,
+   "median": 7.833333333333333,
+   "trim5": 6.445999999999999,
+   "wins5": 6.414074074074073,
+   "pct_pos": 1.0,
+   "pct_zero": 0.0,
+   "pct_neg": 0.0,
+   "p01": 0.16666666666666666,
+   "p99": 13.21333333333333,
+   "min": 0.16666666666666666,
+   "max": 13.733333333333333
+  }
+ },
+ "standard_sidemarket_odds_history.csv": {
+  "rows": 66158,
+  "schema": {
+   "fixture_id": null,
+   "league": "league",
+   "teams": "match",
+   "date": "match_date",
+   "kickoff_utc": "kickoff_utc",
+   "book": null,
+   "market": "market",
+   "side": null,
+   "line": null,
+   "odds": "odds",
+   "snapshot_ts": "snapshot_ts"
+  },
+  "odds": {
+   "n": 66158,
+   "nan": 0,
+   "le_1.00": 0,
+   "le_1.05": 12,
+   "gt_50": 0,
+   "median": 2.0
+  },
+  "backfill_rows_T00": 12272,
+  "forward_rows": 53886,
+  "markets": {
+   "btts_no": 9602,
+   "btts_yes": 9602,
+   "h2h_away": 5337,
+   "h2h_home": 5302,
+   "under25": 4107,
+   "over25": 4087,
+   "h2h_draw": 3975,
+   "over35": 3872,
+   "under35": 3872,
+   "over15": 3543,
+   "under15": 3543,
+   "ht_over15": 2369,
+   "ht_under15": 2369,
+   "ht_over05": 2289,
+   "ht_under05": 2289
+  },
+  "book_identity": "Bet365 only (API-Football bookmaker=8) for forward rows; backfill = OddsAPI historical main line",
+  "post_ko": {
+   "kickoff_known": 51391,
+   "post_kickoff_rows": 0,
+   "post_kickoff_share": 0.0
+  },
+  "kickoff_blank_forward": 2495,
+  "forward_ou_rows_before_2026-08-10T08Z": 396,
+  "btts_yes_gt_3.20": 271,
+  "pairs_ou15_same_ts": {
+   "pairs": 3542,
+   "rows_in_scope": 7084,
+   "pair_rate_rows": 1.0,
+   "overround": {
+    "n": 3542,
+    "mean": 1.062315448594752,
+    "median": 1.0642802155504234,
+    "trim5": 1.0624194772261346,
+    "wins5": 1.062057559777033,
+    "pct_pos": 1.0,
+    "pct_zero": 0.0,
+    "pct_neg": 0.0,
+    "p01": 1.0456905503634475,
+    "p99": 1.077922077922078,
+    "min": 1.0375404530744337,
+    "max": 1.0813871196036802
+   },
+   "lt_1.00": 0,
+   "gt_1.15": 0
+  },
+  "pairs_ou25_same_ts": {
+   "pairs": 3791,
+   "rows_in_scope": 8134,
+   "pair_rate_rows": 0.9321367101057291,
+   "overround": {
+    "n": 3791,
+    "mean": 1.0588036729939778,
+    "median": 1.0592334494773519,
+    "trim5": 1.0587781165479324,
+    "wins5": 1.0588367954334577,
+    "pct_pos": 1.0,
+    "pct_zero": 0.0,
+    "pct_neg": 0.0,
+    "p01": 1.0471204188481675,
+    "p99": 1.0702614379084967,
+    "min": 1.0459973463069439,
+    "max": 1.077922077922078
+   },
+   "lt_1.00": 0,
+   "gt_1.15": 0
+  },
+  "pairs_ou35_same_ts": {
+   "pairs": 3854,
+   "rows_in_scope": 7708,
+   "pair_rate_rows": 1.0,
+   "overround": {
+    "n": 3854,
+    "mean": 1.0675693046730763,
+    "median": 1.0669642857142856,
+    "trim5": 1.06773928995199,
+    "wins5": 1.0674255666023733,
+    "pct_pos": 1.0,
+    "pct_zero": 0.0,
+    "pct_neg": 0.0,
+    "p01": 1.0459973463069439,
+    "p99": 1.0928961748633879,
+    "min": 1.0459973463069439,
+    "max": 1.0928961748633879
+   },
+   "lt_1.00": 0,
+   "gt_1.15": 0
+  },
+  "pairs_btts_same_ts": {
+   "pairs": 3515,
+   "rows_in_scope": 7030,
+   "pair_rate_rows": 1.0,
+   "overround": {
+    "n": 3515,
+    "mean": 1.0737214167411553,
+    "median": 1.074992871400057,
+    "trim5": 1.0740026741879258,
+    "wins5": 1.0734109676113146,
+    "pct_pos": 1.0,
+    "pct_zero": 0.0,
+    "pct_neg": 0.0,
+    "p01": 1.0471204188481675,
+    "p99": 1.0928961748633879,
+    "min": 1.0471204188481675,
+    "max": 1.0928961748633879
+   },
+   "lt_1.00": 0,
+   "gt_1.15": 0
+  },
+  "pairs_ou25_same_ts_post_fix": {
+   "pairs": 3728,
+   "rows_in_scope": 8008,
+   "pair_rate_rows": 0.9310689310689311,
+   "overround": {
+    "n": 3728,
+    "mean": 1.058814904318118,
+    "median": 1.0592334494773519,
+    "trim5": 1.0587888860413877,
+    "wins5": 1.058846534760489,
+    "pct_pos": 1.0,
+    "pct_zero": 0.0,
+    "pct_neg": 0.0,
+    "p01": 1.0471204188481675,
+    "p99": 1.0702614379084967,
+    "min": 1.0459973463069439,
+    "max": 1.077922077922078
+   },
+   "lt_1.00": 0,
+   "gt_1.15": 0
+  },
+  "pairs_ou25_same_ts_pre_fix": {
+   "pairs": 63,
+   "rows_in_scope": 126,
+   "pair_rate_rows": 1.0,
+   "overround": {
+    "n": 63,
+    "mean": 1.05813906384484,
+    "median": 1.0555555555555556,
+    "trim5": 1.058144039003452,
+    "wins5": 1.0582731524046898,
+    "pct_pos": 1.0,
+    "pct_zero": 0.0,
+    "pct_neg": 0.0,
+    "p01": 1.0471204188481675,
+    "p99": 1.0702614379084967,
+    "min": 1.0471204188481675,
+    "max": 1.0702614379084967
+   },
+   "lt_1.00": 0,
+   "gt_1.15": 0
+  },
+  "monotone_over": {
+   "groups_compared": 3290,
+   "violations": 16,
+   "violation_rate": 0.004863221884498481
+  },
+  "monotone_over_post_fix": {
+   "groups_compared": 3230,
+   "violations": 0,
+   "violation_rate": 0.0
+  }
+ },
+ "newformat_odds_history.csv": {
+  "rows": 64353,
+  "schema": {
+   "fixture_id": null,
+   "league": "league",
+   "teams": "match",
+   "date": "match_date",
+   "kickoff_utc": "kickoff_utc",
+   "book": null,
+   "market": "market",
+   "side": null,
+   "line": null,
+   "odds": "odds",
+   "snapshot_ts": "snapshot_ts"
+  },
+  "odds": {
+   "n": 64353,
+   "nan": 0,
+   "le_1.00": 0,
+   "le_1.05": 136,
+   "gt_50": 0,
+   "median": 2.08
+  },
+  "backfill_rows_T00": 13452,
+  "forward_rows": 50901,
+  "markets": {
+   "under25": 7586,
+   "over25": 7501,
+   "btts_no": 6872,
+   "btts_yes": 6872,
+   "h2h_away": 5863,
+   "h2h_home": 5810,
+   "over35": 5197,
+   "under35": 5195,
+   "over15": 4550,
+   "under15": 4550,
+   "h2h_draw": 4357
+  },
+  "book_identity": "Bet365 only (API-Football bookmaker=8) for forward rows; backfill = OddsAPI historical main line",
+  "post_ko": {
+   "kickoff_known": 40102,
+   "post_kickoff_rows": 0,
+   "post_kickoff_share": 0.0
+  },
+  "kickoff_blank_forward": 10799,
+  "forward_ou_rows_before_2026-08-10T08Z": 4074,
+  "btts_yes_gt_3.20": 933,
+  "pairs_ou15_same_ts": {
+   "pairs": 4157,
+   "rows_in_scope": 8314,
+   "pair_rate_rows": 1.0,
+   "overround": {
+    "n": 4157,
+    "mean": 1.064521693792339,
+    "median": 1.0642802155504234,
+    "trim5": 1.0642934924452672,
+    "wins5": 1.0643291859467396,
+    "pct_pos": 1.0,
+    "pct_zero": 0.0,
+    "pct_neg": 0.0,
+    "p01": 1.0456905503634475,
+    "p99": 1.0928961748633879,
+    "min": 1.0375404530744337,
+    "max": 1.0928961748633879
+   },
+   "lt_1.00": 0,
+   "gt_1.15": 0
+  },
+  "pairs_ou25_same_ts": {
+   "pairs": 4490,
+   "rows_in_scope": 9527,
+   "pair_rate_rows": 0.9425842342815157,
+   "overround": {
+    "n": 4490,
+    "mean": 1.0612936565112008,
+    "median": 1.0615079365079365,
+    "trim5": 1.0613032175663544,
+    "wins5": 1.0613539072266334,
+    "pct_pos": 1.0,
+    "pct_zero": 0.0,
+    "pct_neg": 0.0,
+    "p01": 1.0459973463069439,
+    "p99": 1.0761238337574215,
+    "min": 1.0384615384615383,
+    "max": 1.0928961748633879
+   },
+   "lt_1.00": 0,
+   "gt_1.15": 0
+  },
+  "pairs_ou35_same_ts": {
+   "pairs": 4449,
+   "rows_in_scope": 8900,
+   "pair_rate_rows": 0.9997752808988764,
+   "overround": {
+    "n": 4449,
+    "mean": 1.0680836861768013,
+    "median": 1.0718294051627384,
+    "trim5": 1.0683609049414426,
+    "wins5": 1.067879673414965,
+    "pct_pos": 1.0,
+    "pct_zero": 0.0,
+    "pct_neg": 0.0,
+    "p01": 1.0384615384615383,
+    "p99": 1.0928961748633879,
+    "min": 1.0285605483625286,
+    "max": 1.0928961748633879
+   },
+   "lt_1.00": 0,
+   "gt_1.15": 0
+  },
+  "pairs_btts_same_ts": {
+   "pairs": 4065,
+   "rows_in_scope": 8130,
+   "pair_rate_rows": 1.0,
+   "overround": {
+    "n": 4065,
+    "mean": 1.0711851090834708,
+    "median": 1.0718294051627384,
+    "trim5": 1.071520254549893,
+    "wins5": 1.0711730553952963,
+    "pct_pos": 1.0,
+    "pct_zero": 0.0,
+    "pct_neg": 0.0,
+    "p01": 1.0471204188481675,
+    "p99": 1.0928961748633879,
+    "min": 1.0433962264150942,
+    "max": 1.0928961748633879
+   },
+   "lt_1.00": 0,
+   "gt_1.15": 0
+  },
+  "pairs_ou25_same_ts_post_fix": {
+   "pairs": 3828,
+   "rows_in_scope": 8203,
+   "pair_rate_rows": 0.933317079117396,
+   "overround": {
+    "n": 3828,
+    "mean": 1.060658483076369,
+    "median": 1.0606060606060606,
+    "trim5": 1.060728044622065,
+    "wins5": 1.0608361383490386,
+    "pct_pos": 1.0,
+    "pct_zero": 0.0,
+    "pct_neg": 0.0,
+    "p01": 1.0459973463069439,
+    "p99": 1.0702614379084967,
+    "min": 1.0459973463069439,
+    "max": 1.0702614379084967
+   },
+   "lt_1.00": 0,
+   "gt_1.15": 0
+  },
+  "pairs_ou25_same_ts_pre_fix": {
+   "pairs": 662,
+   "rows_in_scope": 1324,
+   "pair_rate_rows": 1.0,
+   "overround": {
+    "n": 662,
+    "mean": 1.0649665325059687,
+    "median": 1.0666666666666667,
+    "trim5": 1.0649665823083436,
+    "wins5": 1.0650338767192087,
+    "pct_pos": 1.0,
+    "pct_zero": 0.0,
+    "pct_neg": 0.0,
+    "p01": 1.0458776958889802,
+    "p99": 1.0800015932830154,
+    "min": 1.0384615384615383,
+    "max": 1.0928961748633879
+   },
+   "lt_1.00": 0,
+   "gt_1.15": 0
+  },
+  "monotone_over": {
+   "groups_compared": 3854,
+   "violations": 111,
+   "violation_rate": 0.028801245459263103
+  },
+  "monotone_over_post_fix": {
+   "groups_compared": 3249,
+   "violations": 0,
+   "violation_rate": 0.0
+  }
+ },
+ "exchange_quotes": {
+  "rows": 6810,
+  "schema": {
+   "fixture_id": "event_id",
+   "league": "league",
+   "teams": "home_team",
+   "date": null,
+   "kickoff_utc": "commence_time",
+   "book": "bookmaker_title",
+   "market": "market",
+   "side": "outcome",
+   "line": "point",
+   "odds": "price",
+   "snapshot_ts": "captured_at"
+  },
+  "odds": {
+   "n": 6810,
+   "nan": 0,
+   "le_1.00": 0,
+   "le_1.05": 50,
+   "gt_50": 21,
+   "median": 3.35
+  },
+  "post_ko": {
+   "kickoff_known": 6810,
+   "post_kickoff_rows": 0,
+   "post_kickoff_share": 0.0
+  },
+  "markets": {
+   "h2h": 3006,
+   "h2h_lay": 3006,
+   "btts": 446,
+   "alternate_totals_lay": 170,
+   "alternate_totals": 162,
+   "btts_lay": 20
+  },
+  "books": {
+   "betfair_ex_uk": 1950,
+   "matchbook": 1836,
+   "betfair_ex_eu": 1578,
+   "smarkets": 1446
+  },
+  "last_update_after_commence": 0
+ },
+ "prop_quotes": {
+  "rows": 271645,
+  "schema": {
+   "fixture_id": null,
+   "league": "league",
+   "teams": "match",
+   "date": "match_date",
+   "kickoff_utc": null,
+   "book": "bookmaker",
+   "market": "market",
+   "side": "side",
+   "line": "point",
+   "odds": "odds",
+   "snapshot_ts": "snapshot_ts"
+  },
+  "odds": {
+   "n": 271645,
+   "nan": 0,
+   "le_1.00": 0,
+   "le_1.05": 8054,
+   "gt_50": 563,
+   "median": 4.8
+  },
+  "by_market_side": {
+   "assists|over": 2397,
+   "cards|yes": 22890,
+   "goal_or_assist|yes": 37278,
+   "goals|no": 146,
+   "goals|under": 16,
+   "goals|yes": 145034,
+   "sot|ove

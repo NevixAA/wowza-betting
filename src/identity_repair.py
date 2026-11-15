@@ -30,7 +30,9 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-IDENTITY_VERSION = "v9r-identity-1.0"
+# 1.1 (2026-11-02): config/standard_ou25_identity_aliases.json identity/1.1 adds the owner-accepted
+# Ireland Premier Division pair Bray Wanderers -> Bray (one same-fixture evidence date, 2024-11-16).
+IDENTITY_VERSION = "v9r-identity-1.1"
 
 
 def load_alias_map(path) -> dict:

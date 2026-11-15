@@ -179,8 +179,8 @@ def test_05_home_advantage_not_constant_live(raw, feat):
 
 
 def test_05b_legacy_home_advantage_matches_training_rule(raw, monkeypatch):
-    """NF_FEATURE_PARITY (2026-11-01): the legacy serving path computes home_advantage as
-    training's _add_home_advantage does; NF_FEATURE_PARITY=0 restores the old constant 1.0."""
+    """The legacy serving path computes home_advantage as training's _add_home_advantage does.
+    NF_FEATURE_PARITY=0 no longer restores the typed constant 1.0 (Data Truth 2026-11-01)."""
     from src.feature_engineering import build_upcoming_features
     nxt = raw["date"].max() + pd.Timedelta(days=7)
     teams = sorted(raw.loc[raw.league == STD_A, "home_team"].unique())
@@ -195,7 +195,8 @@ def test_05b_legacy_home_advantage_matches_training_rule(raw, monkeypatch):
     assert f.loc[f.home_team == t0, "home_advantage"].iloc[0] == pytest.approx(
         (last["home_goals"] > lg_avg_away).mean())
     monkeypatch.setenv("NF_FEATURE_PARITY", "0")
-    assert set(build_upcoming_features(up, raw)["home_advantage"]) == {1.0}
+    rb = build_upcoming_features(up, raw)["home_advantage"]
+    assert 1.0 not in set(rb) and rb.tolist() == f["home_advantage"].tolist()
 
 
 def test_05c_newformat_overround_uses_best_price_only_for_new_format(raw, monkeypatch):
@@ -245,7 +246,8 @@ def test_07_weights_stay_with_fixture_after_sort(feat):
         M._rows_with_weights(rows, "over25", np.ones(len(rows) - 1))   # no silent fallback
 
 
-def test_07b_documents_legacy_weight_misalignment(feat, monkeypatch):
+def test_07b_legacy_weights_now_aligned(feat, monkeypatch):
+    """Was `test_07b_documents_legacy_weight_misalignment`: legacy bug 8 is fixed (2026-11-02)."""
     rows = feat.dropna(subset=["over25", "home_scored_last5"]).sample(frac=1.0, random_state=4)
     rows = rows.assign(rid=np.arange(len(rows), dtype=float))
     seen = []
@@ -259,7 +261,7 @@ def test_07b_documents_legacy_weight_misalignment(feat, monkeypatch):
     monkeypatch.setattr(Pipeline, "fit", spy)
     M.train(rows, "over25", sample_weight=rows["rid"].to_numpy() + 1.0, feature_cols=["rid"] + FEATS[:4])
     rid, w = seen[0]
-    assert not np.allclose(w, rid + 1.0), "legacy reorders rows but not their weights"
+    assert np.allclose(w, rid + 1.0), "legacy must keep each row's weight with the row"
     seen.clear()
     M.train_repaired(rows, "over25", sample_weight=rows["rid"] + 1.0, feature_cols=["rid"] + FEATS[:4])
     rid, w = seen[0]
@@ -415,15 +417,21 @@ def test_rolling_window_never_contains_a_later_match():
 
 
 def test_weights_are_derived_from_match_date():
-    from src.standard_repair import derived_weights, legacy_weights
+    from pathlib import Path
+    import src.standard_repair as SRP
     df = pd.DataFrame({"date": pd.to_datetime(["2026-10-01", "2025-11-01", "2024-11-01",
-                                               "2023-11-01", "2020-11-01"]),
+                                               "2023-11-01", "2020-11-01", "2017-11-01"]),
                        "league": STD_A,
-                       "season": ["2026/27", "2025", "2024/25", "2023/2024", "2020/21"]})
-    w = derived_weights(df)
-    assert list(w) == [4.0, 3.0, 2.0, 1.5, 0.0]
-    lw = legacy_weights(df)
-    assert lw.iloc[0] == 1.0 and lw.iloc[2] == 4.0       # legacy: newest season under-weighted
+                       "season": ["2026/27", "2025", "2024/25", "2023/2024", "2020/21", "2017/18"]})
+    w = SRP.derived_weights(df)
+    assert list(w) == [4.0, 3.0, 2.0, 1.5, 0.0, 1.0]     # older seasons: the frozen recency rule
+    # The season-label map, its 1.0 default and the label COVID set left the training path
+    # (Data Truth round 2): standard_repair has only the date-derived weights.
+    assert not hasattr(SRP, "legacy_weights")
+    src = Path(SRP.__file__).read_text(encoding="utf-8")
+    for name in ("config.TRAINING_DECAY_WEIGHTS", "config.DEFAULT_DECAY_WEIGHT", "config.COVID_SEASONS",
+                 "_norm_club"):
+        assert name not in src, name
 
 
 # ── safety: the legacy defaults are untouched ───────────────────────────────────────────────

@@ -1,0 +1,2066 @@
+{
+ "artifact": "china_2022_12_23_probe",
+ "generated_at": "2026-11-10T16:07:46Z",
+ "calls": [
+  {
+   "name": "league_day",
+   "params": {
+    "league": 169,
+    "season": 2022,
+    "date": "2022-12-23"
+   },
+   "ok": true,
+   "results": 9,
+   "fixtures": [
+    {
+     "fixture_id": 927038,
+     "date": "2022-12-23",
+     "kickoff": "2022-12-23T07:00:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 32",
+     "home_id": 832,
+     "home": "Guangzhou Evergrande FC",
+     "away_id": 830,
+     "away": "Beijing Guoan",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      1,
+      3
+     ],
+     "fulltime": [
+      1,
+      3
+     ],
+     "halftime": [
+      1,
+      3
+     ]
+    },
+    {
+     "fixture_id": 927039,
+     "date": "2022-12-23",
+     "kickoff": "2022-12-23T07:00:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 32",
+     "home_id": 838,
+     "home": "Guangzhou R&F",
+     "away_id": 839,
+     "away": "Hebei Zhongji",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      4,
+      1
+     ],
+     "fulltime": [
+      4,
+      1
+     ],
+     "halftime": [
+      2,
+      0
+     ]
+    },
+    {
+     "fixture_id": 926930,
+     "date": "2022-12-23",
+     "kickoff": "2022-12-23T07:00:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 32",
+     "home_id": 840,
+     "home": "Henan Jianye",
+     "away_id": 1433,
+     "away": "Shenzhen Ruby FC",
+     "status": "CANC",
+     "status_long": "Match Cancelled",
+     "goals": [
+      null,
+      null
+     ],
+     "fulltime": [
+      null,
+      null
+     ],
+     "halftime": [
+      null,
+      null
+     ]
+    },
+    {
+     "fixture_id": 927036,
+     "date": "2022-12-23",
+     "kickoff": "2022-12-23T07:00:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 32",
+     "home_id": 848,
+     "home": "Hangzhou Greentown",
+     "away_id": 837,
+     "away": "Tianjin Teda",
+     "status": "CANC",
+     "status_long": "Match Cancelled",
+     "goals": [
+      null,
+      null
+     ],
+     "fulltime": [
+      null,
+      null
+     ],
+     "halftime": [
+      null,
+      null
+     ]
+    },
+    {
+     "fixture_id": 927041,
+     "date": "2022-12-23",
+     "kickoff": "2022-12-23T07:00:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 32",
+     "home_id": 1434,
+     "home": "Wuhan Zall",
+     "away_id": 831,
+     "away": "Dalian Aerbin",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      3,
+      0
+     ],
+     "fulltime": [
+      3,
+      0
+     ],
+     "halftime": [
+      2,
+      0
+     ]
+    },
+    {
+     "fixture_id": 927033,
+     "date": "2022-12-23",
+     "kickoff": "2022-12-23T07:00:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 32",
+     "home_id": 1439,
+     "home": "Meizhou Kejia",
+     "away_id": 834,
+     "away": "Changchun Yatai",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      1,
+      0
+     ],
+     "fulltime": [
+      1,
+      0
+     ],
+     "halftime": [
+      1,
+      0
+     ]
+    },
+    {
+     "fixture_id": 927037,
+     "date": "2022-12-23",
+     "kickoff": "2022-12-23T12:00:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 32",
+     "home_id": 836,
+     "home": "SHANGHAI SIPG",
+     "away_id": 844,
+     "away": "Shandong Luneng",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      2,
+      0
+     ],
+     "fulltime": [
+      2,
+      0
+     ],
+     "halftime": [
+      1,
+      0
+     ]
+    },
+    {
+     "fixture_id": 926933,
+     "date": "2022-12-23",
+     "kickoff": "2022-12-23T12:00:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 32",
+     "home_id": 849,
+     "home": "Shijiazhuang Y. J.",
+     "away_id": 833,
+     "away": "Shanghai Shenhua",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      0,
+      3
+     ],
+     "fulltime": [
+      0,
+      3
+     ],
+     "halftime": [
+      0,
+      1
+     ]
+    },
+    {
+     "fixture_id": 927034,
+     "date": "2022-12-23",
+     "kickoff": "2022-12-23T12:00:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 32",
+     "home_id": 5648,
+     "home": "Chengdu Better City",
+     "away_id": 5695,
+     "away": "Wuhan Three Towns",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      1,
+      0
+     ],
+     "fulltime": [
+      1,
+      0
+     ],
+     "halftime": [
+      0,
+      0
+     ]
+    }
+   ]
+  },
+  {
+   "name": "team_837_tianjin_teda",
+   "params": {
+    "team": 837,
+    "season": 2022
+   },
+   "ok": true,
+   "results": 36,
+   "fixtures": [
+    {
+     "fixture_id": 863812,
+     "date": "2022-06-04",
+     "kickoff": "2022-06-04T11:00:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 1",
+     "home_id": 1439,
+     "home": "Meizhou Kejia",
+     "away_id": 837,
+     "away": "Tianjin Teda",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      1,
+      1
+     ],
+     "fulltime": [
+      1,
+      1
+     ],
+     "halftime": [
+      1,
+      1
+     ]
+    },
+    {
+     "fixture_id": 863823,
+     "date": "2022-06-09",
+     "kickoff": "2022-06-09T11:30:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 2",
+     "home_id": 837,
+     "home": "Tianjin Teda",
+     "away_id": 1433,
+     "away": "Shenzhen Ruby FC",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      1,
+      2
+     ],
+     "fulltime": [
+      1,
+      2
+     ],
+     "halftime": [
+      0,
+      0
+     ]
+    },
+    {
+     "fixture_id": 863831,
+     "date": "2022-06-13",
+     "kickoff": "2022-06-13T08:30:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 3",
+     "home_id": 830,
+     "home": "Beijing Guoan",
+     "away_id": 837,
+     "away": "Tianjin Teda",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      1,
+      0
+     ],
+     "fulltime": [
+      1,
+      0
+     ],
+     "halftime": [
+      0,
+      0
+     ]
+    },
+    {
+     "fixture_id": 863837,
+     "date": "2022-06-16",
+     "kickoff": "2022-06-16T08:30:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 4",
+     "home_id": 837,
+     "home": "Tianjin Teda",
+     "away_id": 5648,
+     "away": "Chengdu Better City",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      1,
+      1
+     ],
+     "fulltime": [
+      1,
+      1
+     ],
+     "halftime": [
+      0,
+      1
+     ]
+    },
+    {
+     "fixture_id": 863849,
+     "date": "2022-06-21",
+     "kickoff": "2022-06-21T09:30:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 5",
+     "home_id": 849,
+     "home": "Shijiazhuang Y. J.",
+     "away_id": 837,
+     "away": "Tianjin Teda",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      0,
+      2
+     ],
+     "fulltime": [
+      0,
+      2
+     ],
+     "halftime": [
+      0,
+      2
+     ]
+    },
+    {
+     "fixture_id": 863854,
+     "date": "2022-06-25",
+     "kickoff": "2022-06-25T11:30:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 6",
+     "home_id": 837,
+     "home": "Tianjin Teda",
+     "away_id": 1439,
+     "away": "Meizhou Kejia",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      1,
+      0
+     ],
+     "fulltime": [
+      1,
+      0
+     ],
+     "halftime": [
+      1,
+      0
+     ]
+    },
+    {
+     "fixture_id": 863864,
+     "date": "2022-06-29",
+     "kickoff": "2022-06-29T09:30:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 7",
+     "home_id": 1433,
+     "home": "Shenzhen Ruby FC",
+     "away_id": 837,
+     "away": "Tianjin Teda",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      2,
+      3
+     ],
+     "fulltime": [
+      2,
+      3
+     ],
+     "halftime": [
+      2,
+      1
+     ]
+    },
+    {
+     "fixture_id": 863872,
+     "date": "2022-07-03",
+     "kickoff": "2022-07-03T09:30:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 8",
+     "home_id": 837,
+     "home": "Tianjin Teda",
+     "away_id": 830,
+     "away": "Beijing Guoan",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      1,
+      2
+     ],
+     "fulltime": [
+      1,
+      2
+     ],
+     "halftime": [
+      0,
+      0
+     ]
+    },
+    {
+     "fixture_id": 863884,
+     "date": "2022-07-08",
+     "kickoff": "2022-07-08T08:30:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 9",
+     "home_id": 5648,
+     "home": "Chengdu Better City",
+     "away_id": 837,
+     "away": "Tianjin Teda",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      2,
+      1
+     ],
+     "fulltime": [
+      2,
+      1
+     ],
+     "halftime": [
+      1,
+      0
+     ]
+    },
+    {
+     "fixture_id": 863894,
+     "date": "2022-07-12",
+     "kickoff": "2022-07-12T11:30:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 10",
+     "home_id": 837,
+     "home": "Tianjin Teda",
+     "away_id": 849,
+     "away": "Shijiazhuang Y. J.",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      3,
+      0
+     ],
+     "fulltime": [
+      3,
+      0
+     ],
+     "halftime": [
+      1,
+      0
+     ]
+    },
+    {
+     "fixture_id": 926849,
+     "date": "2022-08-06",
+     "kickoff": "2022-08-06T12:00:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 11",
+     "home_id": 837,
+     "home": "Tianjin Teda",
+     "away_id": 844,
+     "away": "Shandong Luneng",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      0,
+      1
+     ],
+     "fulltime": [
+      0,
+      1
+     ],
+     "halftime": [
+      0,
+      0
+     ]
+    },
+    {
+     "fixture_id": 926861,
+     "date": "2022-08-11",
+     "kickoff": "2022-08-11T12:00:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 12",
+     "home_id": 839,
+     "home": "Hebei Zhongji",
+     "away_id": 837,
+     "away": "Tianjin Teda",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      3,
+      4
+     ],
+     "fulltime": [
+      3,
+      4
+     ],
+     "halftime": [
+      1,
+      1
+     ]
+    },
+    {
+     "fixture_id": 926870,
+     "date": "2022-08-15",
+     "kickoff": "2022-08-15T12:00:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 13",
+     "home_id": 837,
+     "home": "Tianjin Teda",
+     "away_id": 834,
+     "away": "Changchun Yatai",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      2,
+      2
+     ],
+     "fulltime": [
+      2,
+      2
+     ],
+     "halftime": [
+      0,
+      0
+     ]
+    },
+    {
+     "fixture_id": 926877,
+     "date": "2022-11-21",
+     "kickoff": "2022-11-21T11:00:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 26",
+     "home_id": 837,
+     "home": "Tianjin Teda",
+     "away_id": 833,
+     "away": "Shanghai Shenhua",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      2,
+      1
+     ],
+     "fulltime": [
+      2,
+      1
+     ],
+     "halftime": [
+      1,
+      1
+     ]
+    },
+    {
+     "fixture_id": 926884,
+     "date": "2022-08-27",
+     "kickoff": "2022-08-27T09:30:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 15",
+     "home_id": 836,
+     "home": "SHANGHAI SIPG",
+     "away_id": 837,
+     "away": "Tianjin Teda",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      1,
+      0
+     ],
+     "fulltime": [
+      1,
+      0
+     ],
+     "halftime": [
+      0,
+      0
+     ]
+    },
+    {
+     "fixture_id": 926890,
+     "date": "2022-11-30",
+     "kickoff": "2022-11-30T11:00:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 28",
+     "home_id": 837,
+     "home": "Tianjin Teda",
+     "away_id": 838,
+     "away": "Guangzhou R&F",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      1,
+      0
+     ],
+     "fulltime": [
+      1,
+      0
+     ],
+     "halftime": [
+      0,
+      0
+     ]
+    },
+    {
+     "fixture_id": 926902,
+     "date": "2022-09-09",
+     "kickoff": "2022-09-09T11:30:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 17",
+     "home_id": 832,
+     "home": "Guangzhou Evergrande FC",
+     "away_id": 837,
+     "away": "Tianjin Teda",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      0,
+      0
+     ],
+     "fulltime": [
+      0,
+      0
+     ],
+     "halftime": [
+      0,
+      0
+     ]
+    },
+    {
+     "fixture_id": 926915,
+     "date": "2022-12-10",
+     "kickoff": "2022-12-10T12:00:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 30",
+     "home_id": 837,
+     "home": "Tianjin Teda",
+     "away_id": 840,
+     "away": "Henan Jianye",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      1,
+      1
+     ],
+     "fulltime": [
+      1,
+      1
+     ],
+     "halftime": [
+      0,
+      1
+     ]
+    },
+    {
+     "fixture_id": 926920,
+     "date": "2022-10-24",
+     "kickoff": "2022-10-24T12:00:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 19",
+     "home_id": 837,
+     "home": "Tianjin Teda",
+     "away_id": 1434,
+     "away": "Wuhan Zall",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      3,
+      1
+     ],
+     "fulltime": [
+      3,
+      1
+     ],
+     "halftime": [
+      1,
+      0
+     ]
+    },
+    {
+     "fixture_id": 926929,
+     "date": "2022-10-29",
+     "kickoff": "2022-10-29T12:00:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 20",
+     "home_id": 837,
+     "home": "Tianjin Teda",
+     "away_id": 848,
+     "away": "Hangzhou Greentown",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      1,
+      2
+     ],
+     "fulltime": [
+      1,
+      2
+     ],
+     "halftime": [
+      1,
+      0
+     ]
+    },
+    {
+     "fixture_id": 926934,
+     "date": "2022-10-04",
+     "kickoff": "2022-10-04T11:30:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 21",
+     "home_id": 831,
+     "home": "Dalian Aerbin",
+     "away_id": 837,
+     "away": "Tianjin Teda",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      0,
+      2
+     ],
+     "fulltime": [
+      0,
+      2
+     ],
+     "halftime": [
+      0,
+      1
+     ]
+    },
+    {
+     "fixture_id": 926944,
+     "date": "2022-10-08",
+     "kickoff": "2022-10-08T12:00:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 22",
+     "home_id": 837,
+     "home": "Tianjin Teda",
+     "away_id": 5695,
+     "away": "Wuhan Three Towns",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      0,
+      1
+     ],
+     "fulltime": [
+      0,
+      1
+     ],
+     "halftime": [
+      0,
+      0
+     ]
+    },
+    {
+     "fixture_id": 926959,
+     "date": "2022-11-03",
+     "kickoff": "2022-11-03T09:30:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 23",
+     "home_id": 844,
+     "home": "Shandong Luneng",
+     "away_id": 837,
+     "away": "Tianjin Teda",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      4,
+      1
+     ],
+     "fulltime": [
+      4,
+      1
+     ],
+     "halftime": [
+      3,
+      0
+     ]
+    },
+    {
+     "fixture_id": 926969,
+     "date": "2022-11-07",
+     "kickoff": "2022-11-07T11:00:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 24",
+     "home_id": 837,
+     "home": "Tianjin Teda",
+     "away_id": 839,
+     "away": "Hebei Zhongji",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      5,
+      0
+     ],
+     "fulltime": [
+      5,
+      0
+     ],
+     "halftime": [
+      3,
+      0
+     ]
+    },
+    {
+     "fixture_id": 926971,
+     "date": "2022-11-12",
+     "kickoff": "2022-11-12T11:00:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 25",
+     "home_id": 834,
+     "home": "Changchun Yatai",
+     "away_id": 837,
+     "away": "Tianjin Teda",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      2,
+      3
+     ],
+     "fulltime": [
+      2,
+      3
+     ],
+     "halftime": [
+      2,
+      1
+     ]
+    },
+    {
+     "fixture_id": 926981,
+     "date": "2022-08-21",
+     "kickoff": "2022-08-21T11:30:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 14",
+     "home_id": 833,
+     "home": "Shanghai Shenhua",
+     "away_id": 837,
+     "away": "Tianjin Teda",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      1,
+      1
+     ],
+     "fulltime": [
+      1,
+      1
+     ],
+     "halftime": [
+      1,
+      0
+     ]
+    },
+    {
+     "fixture_id": 926991,
+     "date": "2022-11-26",
+     "kickoff": "2022-11-26T12:00:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 27",
+     "home_id": 837,
+     "home": "Tianjin Teda",
+     "away_id": 836,
+     "away": "SHANGHAI SIPG",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      1,
+      0
+     ],
+     "fulltime": [
+      1,
+      0
+     ],
+     "halftime": [
+      0,
+      0
+     ]
+    },
+    {
+     "fixture_id": 927002,
+     "date": "2022-09-03",
+     "kickoff": "2022-09-03T11:30:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 16",
+     "home_id": 838,
+     "home": "Guangzhou R&F",
+     "away_id": 837,
+     "away": "Tianjin Teda",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      2,
+      0
+     ],
+     "fulltime": [
+      2,
+      0
+     ],
+     "halftime": [
+      2,
+      0
+     ]
+    },
+    {
+     "fixture_id": 927011,
+     "date": "2022-12-05",
+     "kickoff": "2022-12-05T11:00:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 29",
+     "home_id": 837,
+     "home": "Tianjin Teda",
+     "away_id": 832,
+     "away": "Guangzhou Evergrande FC",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      0,
+      0
+     ],
+     "fulltime": [
+      0,
+      0
+     ],
+     "halftime": [
+      0,
+      0
+     ]
+    },
+    {
+     "fixture_id": 927017,
+     "date": "2022-09-14",
+     "kickoff": "2022-09-14T11:30:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 18",
+     "home_id": 840,
+     "home": "Henan Jianye",
+     "away_id": 837,
+     "away": "Tianjin Teda",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      0,
+      1
+     ],
+     "fulltime": [
+      0,
+      1
+     ],
+     "halftime": [
+      0,
+      1
+     ]
+    },
+    {
+     "fixture_id": 927026,
+     "date": "2022-12-14",
+     "kickoff": "2022-12-14T09:00:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 31",
+     "home_id": 1434,
+     "home": "Wuhan Zall",
+     "away_id": 837,
+     "away": "Tianjin Teda",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      0,
+      3
+     ],
+     "fulltime": [
+      0,
+      3
+     ],
+     "halftime": [
+      0,
+      2
+     ]
+    },
+    {
+     "fixture_id": 927036,
+     "date": "2022-12-23",
+     "kickoff": "2022-12-23T07:00:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 32",
+     "home_id": 848,
+     "home": "Hangzhou Greentown",
+     "away_id": 837,
+     "away": "Tianjin Teda",
+     "status": "CANC",
+     "status_long": "Match Cancelled",
+     "goals": [
+      null,
+      null
+     ],
+     "fulltime": [
+      null,
+      null
+     ],
+     "halftime": [
+      null,
+      null
+     ]
+    },
+    {
+     "fixture_id": 927045,
+     "date": "2022-12-27",
+     "kickoff": "2022-12-27T12:00:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 33",
+     "home_id": 837,
+     "home": "Tianjin Teda",
+     "away_id": 831,
+     "away": "Dalian Aerbin",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      0,
+      3
+     ],
+     "fulltime": [
+      0,
+      3
+     ],
+     "halftime": [
+      null,
+      null
+     ]
+    },
+    {
+     "fixture_id": 927059,
+     "date": "2022-12-31",
+     "kickoff": "2022-12-31T07:00:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 34",
+     "home_id": 5695,
+     "home": "Wuhan Three Towns",
+     "away_id": 837,
+     "away": "Tianjin Teda",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      3,
+      0
+     ],
+     "fulltime": [
+      3,
+      0
+     ],
+     "halftime": [
+      null,
+      null
+     ]
+    },
+    {
+     "fixture_id": 958507,
+     "date": "2022-11-17",
+     "kickoff": "2022-11-17T06:00:00+00:00",
+     "league_id": 171,
+     "round": "2nd Round",
+     "home_id": 5670,
+     "home": "Kunshan",
+     "away_id": 837,
+     "away": "Tianjin Teda",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      0,
+      4
+     ],
+     "fulltime": [
+      0,
+      4
+     ],
+     "halftime": [
+      0,
+      1
+     ]
+    },
+    {
+     "fixture_id": 976627,
+     "date": "2022-12-18",
+     "kickoff": "2022-12-18T07:30:00+00:00",
+     "league_id": 171,
+     "round": "3rd Round",
+     "home_id": 5695,
+     "home": "Wuhan Three Towns",
+     "away_id": 837,
+     "away": "Tianjin Teda",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      3,
+      0
+     ],
+     "fulltime": [
+      3,
+      0
+     ],
+     "halftime": [
+      null,
+      null
+     ]
+    }
+   ]
+  },
+  {
+   "name": "team_840_henan_jianye",
+   "params": {
+    "team": 840,
+    "season": 2022
+   },
+   "ok": true,
+   "results": 36,
+   "fixtures": [
+    {
+     "fixture_id": 863813,
+     "date": "2022-06-04",
+     "kickoff": "2022-06-04T11:30:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 1",
+     "home_id": 840,
+     "home": "Henan Jianye",
+     "away_id": 831,
+     "away": "Dalian Aerbin",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      2,
+      2
+     ],
+     "fulltime": [
+      2,
+      2
+     ],
+     "halftime": [
+      1,
+      1
+     ]
+    },
+    {
+     "fixture_id": 863818,
+     "date": "2022-06-08",
+     "kickoff": "2022-06-08T09:30:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 2",
+     "home_id": 840,
+     "home": "Henan Jianye",
+     "away_id": 844,
+     "away": "Shandong Luneng",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      4,
+      1
+     ],
+     "fulltime": [
+      4,
+      1
+     ],
+     "halftime": [
+      3,
+      1
+     ]
+    },
+    {
+     "fixture_id": 863825,
+     "date": "2022-06-11",
+     "kickoff": "2022-06-11T11:30:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 3",
+     "home_id": 840,
+     "home": "Henan Jianye",
+     "away_id": 848,
+     "away": "Hangzhou Greentown",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      3,
+      1
+     ],
+     "fulltime": [
+      3,
+      1
+     ],
+     "halftime": [
+      1,
+      0
+     ]
+    },
+    {
+     "fixture_id": 863834,
+     "date": "2022-06-15",
+     "kickoff": "2022-06-15T11:30:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 4",
+     "home_id": 838,
+     "home": "Guangzhou R&F",
+     "away_id": 840,
+     "away": "Henan Jianye",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      0,
+      3
+     ],
+     "fulltime": [
+      0,
+      3
+     ],
+     "halftime": [
+      0,
+      1
+     ]
+    },
+    {
+     "fixture_id": 863845,
+     "date": "2022-06-20",
+     "kickoff": "2022-06-20T09:30:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 5",
+     "home_id": 834,
+     "home": "Changchun Yatai",
+     "away_id": 840,
+     "away": "Henan Jianye",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      0,
+      0
+     ],
+     "fulltime": [
+      0,
+      0
+     ],
+     "halftime": [
+      0,
+      0
+     ]
+    },
+    {
+     "fixture_id": 863852,
+     "date": "2022-06-24",
+     "kickoff": "2022-06-24T11:30:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 6",
+     "home_id": 831,
+     "home": "Dalian Aerbin",
+     "away_id": 840,
+     "away": "Henan Jianye",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      0,
+      2
+     ],
+     "fulltime": [
+      0,
+      2
+     ],
+     "halftime": [
+      0,
+      1
+     ]
+    },
+    {
+     "fixture_id": 863860,
+     "date": "2022-06-28",
+     "kickoff": "2022-06-28T10:30:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 7",
+     "home_id": 844,
+     "home": "Shandong Luneng",
+     "away_id": 840,
+     "away": "Henan Jianye",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      2,
+      0
+     ],
+     "fulltime": [
+      2,
+      0
+     ],
+     "halftime": [
+      2,
+      0
+     ]
+    },
+    {
+     "fixture_id": 863873,
+     "date": "2022-07-03",
+     "kickoff": "2022-07-03T12:00:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 8",
+     "home_id": 848,
+     "home": "Hangzhou Greentown",
+     "away_id": 840,
+     "away": "Henan Jianye",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      0,
+      1
+     ],
+     "fulltime": [
+      0,
+      1
+     ],
+     "halftime": [
+      0,
+      0
+     ]
+    },
+    {
+     "fixture_id": 863883,
+     "date": "2022-07-07",
+     "kickoff": "2022-07-07T11:30:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 9",
+     "home_id": 840,
+     "home": "Henan Jianye",
+     "away_id": 838,
+     "away": "Guangzhou R&F",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      2,
+      1
+     ],
+     "fulltime": [
+      2,
+      1
+     ],
+     "halftime": [
+      0,
+      1
+     ]
+    },
+    {
+     "fixture_id": 863891,
+     "date": "2022-07-11",
+     "kickoff": "2022-07-11T11:30:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 10",
+     "home_id": 840,
+     "home": "Henan Jianye",
+     "away_id": 834,
+     "away": "Changchun Yatai",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      6,
+      2
+     ],
+     "fulltime": [
+      6,
+      2
+     ],
+     "halftime": [
+      3,
+      1
+     ]
+    },
+    {
+     "fixture_id": 926851,
+     "date": "2022-08-07",
+     "kickoff": "2022-08-07T11:30:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 11",
+     "home_id": 840,
+     "home": "Henan Jianye",
+     "away_id": 830,
+     "away": "Beijing Guoan",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      3,
+      0
+     ],
+     "fulltime": [
+      3,
+      0
+     ],
+     "halftime": [
+      2,
+      0
+     ]
+    },
+    {
+     "fixture_id": 926859,
+     "date": "2022-08-13",
+     "kickoff": "2022-08-13T11:00:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 12",
+     "home_id": 840,
+     "home": "Henan Jianye",
+     "away_id": 1439,
+     "away": "Meizhou Kejia",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      0,
+      1
+     ],
+     "fulltime": [
+      0,
+      1
+     ],
+     "halftime": [
+      0,
+      1
+     ]
+    },
+    {
+     "fixture_id": 926862,
+     "date": "2022-08-17",
+     "kickoff": "2022-08-17T11:30:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 13",
+     "home_id": 840,
+     "home": "Henan Jianye",
+     "away_id": 5695,
+     "away": "Wuhan Three Towns",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      0,
+      3
+     ],
+     "fulltime": [
+      0,
+      3
+     ],
+     "halftime": [
+      0,
+      1
+     ]
+    },
+    {
+     "fixture_id": 926872,
+     "date": "2022-08-21",
+     "kickoff": "2022-08-21T11:00:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 14",
+     "home_id": 1434,
+     "home": "Wuhan Zall",
+     "away_id": 840,
+     "away": "Henan Jianye",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      2,
+      2
+     ],
+     "fulltime": [
+      2,
+      2
+     ],
+     "halftime": [
+      2,
+      1
+     ]
+    },
+    {
+     "fixture_id": 926886,
+     "date": "2022-08-28",
+     "kickoff": "2022-08-28T11:00:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 15",
+     "home_id": 840,
+     "home": "Henan Jianye",
+     "away_id": 832,
+     "away": "Guangzhou Evergrande FC",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      2,
+      1
+     ],
+     "fulltime": [
+      2,
+      1
+     ],
+     "halftime": [
+      1,
+      0
+     ]
+    },
+    {
+     "fixture_id": 926892,
+     "date": "2022-09-20",
+     "kickoff": "2022-09-20T11:30:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 16",
+     "home_id": 840,
+     "home": "Henan Jianye",
+     "away_id": 836,
+     "away": "SHANGHAI SIPG",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      1,
+      2
+     ],
+     "fulltime": [
+      1,
+      2
+     ],
+     "halftime": [
+      0,
+      2
+     ]
+    },
+    {
+     "fixture_id": 926900,
+     "date": "2022-09-25",
+     "kickoff": "2022-09-25T12:00:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 17",
+     "home_id": 5648,
+     "home": "Chengdu Better City",
+     "away_id": 840,
+     "away": "Henan Jianye",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      0,
+      0
+     ],
+     "fulltime": [
+      0,
+      0
+     ],
+     "halftime": [
+      0,
+      0
+     ]
+    },
+    {
+     "fixture_id": 926915,
+     "date": "2022-12-10",
+     "kickoff": "2022-12-10T12:00:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 30",
+     "home_id": 837,
+     "home": "Tianjin Teda",
+     "away_id": 840,
+     "away": "Henan Jianye",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      1,
+      1
+     ],
+     "fulltime": [
+      1,
+      1
+     ],
+     "halftime": [
+      0,
+      1
+     ]
+    },
+    {
+     "fixture_id": 926919,
+     "date": "2022-10-24",
+     "kickoff": "2022-10-24T07:00:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 19",
+     "home_id": 840,
+     "home": "Henan Jianye",
+     "away_id": 849,
+     "away": "Shijiazhuang Y. J.",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      3,
+      0
+     ],
+     "fulltime": [
+      3,
+      0
+     ],
+     "halftime": [
+      2,
+      0
+     ]
+    },
+    {
+     "fixture_id": 926930,
+     "date": "2022-12-23",
+     "kickoff": "2022-12-23T07:00:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 32",
+     "home_id": 840,
+     "home": "Henan Jianye",
+     "away_id": 1433,
+     "away": "Shenzhen Ruby FC",
+     "status": "CANC",
+     "status_long": "Match Cancelled",
+     "goals": [
+      null,
+      null
+     ],
+     "fulltime": [
+      null,
+      null
+     ],
+     "halftime": [
+      null,
+      null
+     ]
+    },
+    {
+     "fixture_id": 926937,
+     "date": "2022-10-04",
+     "kickoff": "2022-10-04T11:30:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 21",
+     "home_id": 833,
+     "home": "Shanghai Shenhua",
+     "away_id": 840,
+     "away": "Henan Jianye",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      1,
+      0
+     ],
+     "fulltime": [
+      1,
+      0
+     ],
+     "halftime": [
+      0,
+      0
+     ]
+    },
+    {
+     "fixture_id": 926943,
+     "date": "2022-10-08",
+     "kickoff": "2022-10-08T11:30:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 22",
+     "home_id": 840,
+     "home": "Henan Jianye",
+     "away_id": 839,
+     "away": "Hebei Zhongji",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      1,
+      0
+     ],
+     "fulltime": [
+      1,
+      0
+     ],
+     "halftime": [
+      1,
+      0
+     ]
+    },
+    {
+     "fixture_id": 926957,
+     "date": "2022-11-04",
+     "kickoff": "2022-11-04T11:30:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 23",
+     "home_id": 830,
+     "home": "Beijing Guoan",
+     "away_id": 840,
+     "away": "Henan Jianye",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      2,
+      1
+     ],
+     "fulltime": [
+      2,
+      1
+     ],
+     "halftime": [
+      1,
+      0
+     ]
+    },
+    {
+     "fixture_id": 926964,
+     "date": "2022-11-08",
+     "kickoff": "2022-11-08T11:30:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 24",
+     "home_id": 1439,
+     "home": "Meizhou Kejia",
+     "away_id": 840,
+     "away": "Henan Jianye",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      3,
+      2
+     ],
+     "fulltime": [
+      3,
+      2
+     ],
+     "halftime": [
+      0,
+      0
+     ]
+    },
+    {
+     "fixture_id": 926975,
+     "date": "2022-11-13",
+     "kickoff": "2022-11-13T11:30:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 25",
+     "home_id": 5695,
+     "home": "Wuhan Three Towns",
+     "away_id": 840,
+     "away": "Henan Jianye",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      1,
+      3
+     ],
+     "fulltime": [
+      1,
+      3
+     ],
+     "halftime": [
+      1,
+      0
+     ]
+    },
+    {
+     "fixture_id": 926985,
+     "date": "2022-11-22",
+     "kickoff": "2022-11-22T11:30:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 26",
+     "home_id": 840,
+     "home": "Henan Jianye",
+     "away_id": 1434,
+     "away": "Wuhan Zall",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      3,
+      0
+     ],
+     "fulltime": [
+      3,
+      0
+     ],
+     "halftime": [
+      1,
+      0
+     ]
+    },
+    {
+     "fixture_id": 926989,
+     "date": "2022-11-26",
+     "kickoff": "2022-11-26T11:30:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 27",
+     "home_id": 832,
+     "home": "Guangzhou Evergrande FC",
+     "away_id": 840,
+     "away": "Henan Jianye",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      1,
+      1
+     ],
+     "fulltime": [
+      1,
+      1
+     ],
+     "halftime": [
+      0,
+      0
+     ]
+    },
+    {
+     "fixture_id": 926997,
+     "date": "2022-11-30",
+     "kickoff": "2022-11-30T11:30:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 28",
+     "home_id": 836,
+     "home": "SHANGHAI SIPG",
+     "away_id": 840,
+     "away": "Henan Jianye",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      1,
+      3
+     ],
+     "fulltime": [
+      1,
+      3
+     ],
+     "halftime": [
+      1,
+      1
+     ]
+    },
+    {
+     "fixture_id": 927006,
+     "date": "2022-12-05",
+     "kickoff": "2022-12-05T11:30:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 29",
+     "home_id": 840,
+     "home": "Henan Jianye",
+     "away_id": 5648,
+     "away": "Chengdu Better City",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      0,
+      1
+     ],
+     "fulltime": [
+      0,
+      1
+     ],
+     "halftime": [
+      0,
+      0
+     ]
+    },
+    {
+     "fixture_id": 927017,
+     "date": "2022-09-14",
+     "kickoff": "2022-09-14T11:30:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 18",
+     "home_id": 840,
+     "home": "Henan Jianye",
+     "away_id": 837,
+     "away": "Tianjin Teda",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      0,
+      1
+     ],
+     "fulltime": [
+      0,
+      1
+     ],
+     "halftime": [
+      0,
+      1
+     ]
+    },
+    {
+     "fixture_id": 927028,
+     "date": "2022-12-15",
+     "kickoff": "2022-12-15T11:00:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 31",
+     "home_id": 849,
+     "home": "Shijiazhuang Y. J.",
+     "away_id": 840,
+     "away": "Henan Jianye",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      1,
+      1
+     ],
+     "fulltime": [
+      1,
+      1
+     ],
+     "halftime": [
+      0,
+      0
+     ]
+    },
+    {
+     "fixture_id": 927035,
+     "date": "2022-10-29",
+     "kickoff": "2022-10-29T11:00:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 20",
+     "home_id": 1433,
+     "home": "Shenzhen Ruby FC",
+     "away_id": 840,
+     "away": "Henan Jianye",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      0,
+      2
+     ],
+     "fulltime": [
+      0,
+      2
+     ],
+     "halftime": [
+      0,
+      1
+     ]
+    },
+    {
+     "fixture_id": 927048,
+     "date": "2022-12-27",
+     "kickoff": "2022-12-27T07:00:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 33",
+     "home_id": 840,
+     "home": "Henan Jianye",
+     "away_id": 833,
+     "away": "Shanghai Shenhua",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      1,
+      1
+     ],
+     "fulltime": [
+      1,
+      1
+     ],
+     "halftime": [
+      0,
+      0
+     ]
+    },
+    {
+     "fixture_id": 927057,
+     "date": "2022-12-30",
+     "kickoff": "2022-12-30T07:00:00+00:00",
+     "league_id": 169,
+     "round": "Regular Season - 34",
+     "home_id": 839,
+     "home": "Hebei Zhongji",
+     "away_id": 840,
+     "away": "Henan Jianye",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      0,
+      4
+     ],
+     "fulltime": [
+      0,
+      4
+     ],
+     "halftime": [
+      0,
+      0
+     ]
+    },
+    {
+     "fixture_id": 958510,
+     "date": "2022-11-17",
+     "kickoff": "2022-11-17T06:00:00+00:00",
+     "league_id": 171,
+     "round": "2nd Round",
+     "home_id": 5657,
+     "home": "Guangxi Baoyun",
+     "away_id": 840,
+     "away": "Henan Jianye",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      1,
+      4
+     ],
+     "fulltime": [
+      1,
+      4
+     ],
+     "halftime": [
+      0,
+      1
+     ]
+    },
+    {
+     "fixture_id": 976629,
+     "date": "2022-12-19",
+     "kickoff": "2022-12-19T10:00:00+00:00",
+     "league_id": 171,
+     "round": "3rd Round",
+     "home_id": 840,
+     "home": "Henan Jianye",
+     "away_id": 833,
+     "away": "Shanghai Shenhua",
+     "status": "FT",
+     "status_long": "Match Finished",
+     "goals": [
+      0,
+      3
+     ],
+     "fulltime": [
+      0,
+      3
+     ],
+     "halftime": [
+      null,
+      null
+     ]
+    }
+   ]
+  }
+ ],
+ "calls_spent": 3
+}

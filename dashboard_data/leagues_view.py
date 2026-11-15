@@ -14,6 +14,7 @@ import pandas as pd
 import streamlit as st
 
 import dashboard_ui as ui
+from src import units as U
 from dashboard_data import core, leagues
 
 #: overview_table columns -> display format (numbers stay numbers; sorting works)
@@ -79,7 +80,7 @@ def trends(d: pd.DataFrame, names) -> dict:
     out = {}
     for lg in names:
         cu = leagues.cumulative(d[d["league"] == lg])
-        out[lg] = cu["cum_pl"].round(2).tolist() if len(cu) > 1 else None
+        out[lg] = cu["cum_pl"].map(U.rnd).tolist() if len(cu) > 1 else None
     return out
 
 
@@ -91,10 +92,10 @@ def league_cards(ov: pd.DataFrame, tr: dict, per_row: int = 3) -> None:
     for i in range(0, len(rows), per_row):
         for col, r in zip(st.columns(per_row), rows[i:i + per_row]):
             ui.metric_card(
-                "P/L (staked)", ui.units(r["pl"]), title=r["league"], container=col,
+                "P/L (staked)", U.fmt(r["pl"]), title=r["league"], container=col,
                 supporting=[("ROI", fmt_roi(r["roi"])), ("Hit", fmt_pct(r["hit"], 1)),
                             ("Tips", f"{r['tips']} · {leagues.wl(r['won'], r['lost'], r['void'])}"),
-                            ("Rating", rating(r["rating"])), ("Last 7d", f"{r['pl_7d']:+.2f}u")],
+                            ("Rating", rating(r["rating"])), ("Last 7d", U.fmt(r['pl_7d']))],
                 status=" ".join(x for x in (state_chip(r["state"]), regime_chip(r["regime"]),
                                             track_chip(r["track"])) if x),
                 n=r["tips"], chart_data=tr.get(r["league"]))
@@ -122,8 +123,8 @@ def stats_config(x: pd.DataFrame) -> dict:
 def profile(row: dict) -> None:
     """Three cards, one main number each: record, context, prices."""
     a, b, c = st.columns(3)
-    ui.metric_card("P/L", ui.units(row["pl"]), title="Record · staked tiers", container=a,
-                   delta=f"{row['pl_7d']:+.2f}u last 7 days", delta_color="normal",
+    ui.metric_card("P/L", U.fmt(row["pl"]), title="Record · staked tiers", container=a,
+                   delta=f"{U.fmt(row['pl_7d'])} last 7 days", delta_color="normal",
                    supporting=[("Hit", fmt_pct(row["hit"], 1)), ("ROI", fmt_roi(row["roi"])),
                                ("Staked tips", f"{row['tips']}"),
                                ("W-L", wl_help(row["won"], row["lost"], row["void"]))],

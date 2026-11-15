@@ -35,10 +35,21 @@ import numpy as np
 import pandas as pd
 
 import config
+from src import units as U
 from src.tier_labels import GAP_EXPLAINER, PAPER_TIER_LABEL, STAKED_LABEL, tier_label
 from telegram_bot.tips_table import _fit, _font, render_pngs, todays_rows
 
+#: TIER words only. "Staked" is THE definition in src/staked.py (owner 2026-11-04): a recorded policy
+#: stake > 0 on a real-money track - settled_tips() carries it as `staked`; _staked() reads it.
 STAKED = ("SNIPER", "MARKSMAN")
+STAKED_TEXT = "policy stake > 0"
+
+
+def _staked(df: pd.DataFrame) -> pd.Series:
+    """THE staked mask on a settled_tips() frame; a frame without the label proves no stake (False)."""
+    if "staked" not in df.columns:
+        return pd.Series(False, index=df.index)
+    return df["staked"].fillna(False).astype(bool)
 TIER_COLOUR = {"SNIPER": (196, 43, 43), "MARKSMAN": (217, 119, 6), "VALUABLE": (37, 99, 235),
                "PAPER": (107, 114, 128), "AVOID": (156, 163, 175)}
 GREEN, RED, INK, MUTED = (21, 128, 61), (185, 28, 28), (17, 24, 39), (107, 114, 128)
@@ -47,6 +58,45 @@ PROP_LABEL = {"goals": "Anytime scorer", "goals2": "2+ goals", "assists": "Assis
               "sot": "1+ shot on target", "sot2": "2+ SOT", "sot3": "3+ SOT", "sot4": "4+ SOT",
               "cards": "Booked"}
 ROWS_PER_IMAGE = 22
+
+
+# ── Late album (owner rule, Data Truth round 5) ───────────────────────────────
+# The album for tip day T is ON TIME until T's rollover (src/tip_day: 10:00 Israel wall clock, DST-safe
+# - 07:00 UTC in summer, 08:00 UTC in winter). A send at or after that rollover is LATE: it is labelled
+# 'late' in the caption and in the tips title, and every section that lists matches to bet keeps only
+# matches whose kickoff is KNOWN and strictly after the send time. A match whose kickoff cannot be
+# found is left out of a late album (it cannot be shown not to have started). On time nothing changes.
+
+def rollover_utc(today: str) -> pd.Timestamp:
+    """UTC instant of tip day `today`'s rollover (ROLLOVER_HOUR wall clock in the tip-day zone)."""
+    from src.tip_day import ROLLOVER_HOUR, TZ
+    return pd.Timestamp(f"{today} {ROLLOVER_HOUR:02d}:00").tz_localize(TZ).tz_convert("UTC")
+
+
+def album_is_late(now, today: str | None = None) -> bool:
+    """True when an album for `today` (default: now's UTC date) sent at `now` is after the rollover."""
+    now = pd.Timestamp(now)
+    now = now.tz_localize("UTC") if now.tzinfo is None else now.tz_convert("UTC")
+    return now >= rollover_utc(today or now.strftime("%Y-%m-%d"))
+
+
+def not_started(kickoff, cutoff) -> pd.Series:
+    """True where the kickoff is known and strictly after `cutoff` (UTC). Unknown kickoff -> False."""
+    ko = pd.to_datetime(pd.Series(kickoff), utc=True, errors="coerce")
+    c = pd.Timestamp(cutoff)
+    c = c.tz_localize("UTC") if c.tzinfo is None else c.tz_convert("UTC")
+    return (ko.notna() & (ko > c)).to_numpy()
+
+
+def _late_filter(df: pd.DataFrame, kickoff, cutoff, what: str) -> pd.DataFrame:
+    """Rows of `df` not started at `cutoff`; logs how many were left out. cutoff None -> df unchanged."""
+    if cutoff is None or df is None or df.empty:
+        return df
+    keep = not_started(kickoff, cutoff)
+    if (~keep).any():
+        print(f"[daily_pack] late album: {int((~keep).sum())} {what} left out "
+              f"(kicked off, or kickoff unknown, at {pd.Timestamp(cutoff):%Y-%m-%d %H:%M} UTC)")
+    return df[keep]
 
 
 # ── Rendering ─────────────────────────────────────────────────────────────────
@@ -164,7 +214,7 @@ def _read(name: str, include_paper: bool = False, usecols=None) -> pd.DataFrame:
 #: The only ledger columns settled_tips() uses - column-projected so the dashboard (a viewer on
 #: ~1 GB) never loads the CLV / provenance columns it does not draw.
 _TIP_COLS = {"source", "match_date", "league", "home_team", "away_team", "signal_tier", "side", "market",
-             "odds", "result", "pnl", "edge_pct", "model_prob"}
+             "odds", "result", "pnl", "edge_pct", "model_prob", "model_type", "generated_at"}
 
 
 def _col(df: pd.DataFrame, name: str) -> pd.Series:
@@ -172,6 +222,15 @@ def _col(df: pd.DataFrame, name: str) -> pd.Series:
     if name in df.columns:
         return pd.to_numeric(df[name], errors="coerce")
     return pd.Series(float("nan"), index=df.index)
+
+
+def _live_only(df: pd.DataFrame, name: str) -> pd.DataFrame:
+    """Rows whose recorded source is 'live'. A row with NO recorded source is not assumed live -
+    it is excluded and counted, so an unlabelled backtest row can never enter the record."""
+    src = df["source"]
+    if src.isna().any():
+        print(f"[daily_pack] {name}: {int(src.isna().sum())} row(s) without a recorded source excluded")
+    return df[src.astype(str) == "live"]
 
 
 def settled_tips(include_paper: bool = False) -> pd.DataFrame:
@@ -184,13 +243,26 @@ def settled_tips(include_paper: bool = False) -> pd.DataFrame:
     picture can SHOW them, labelled as paper; every staked total still excludes them
     (dashboard_data/leagues.py). Default False = the behaviour every other image relies on.
     Also carries edge_pct (as recorded) and model_prob (side markets record it; on O/U 2.5 it is
-    NaN here - see dashboard_data/leagues.py for the derivation)."""
+    NaN here - see dashboard_data/leagues.py for the derivation).
+
+    Every row also carries `stake_status` / `stake_units` / `staked` from src/staked.py — THE staked
+    definition (owner 2026-11-04: a recorded policy stake > 0 on a real-money track, never a tier)."""
+    from src import staked as S
+    records = S.load_records(config.OUTPUT_DIR)
     parts = []
+
+    def _stake(df: pd.DataFrame, name: str) -> dict:
+        lab = S.label_ledger(df, name, records)
+        return {"stake_status": lab["stake_status"], "stake_units": lab["stake_units"],
+                "staked": S.is_staked(lab)}
     m = _read("bets_ledger.csv", include_paper, _TIP_COLS)
     if len(m):
         if "source" in m.columns:
-            m = m[m["source"].fillna("live").astype(str) == "live"]
-        parts.append(pd.DataFrame({
+            m = _live_only(m, "bets_ledger.csv")
+        # owner 2026-11-11: post-kickoff tips and the later tip of an opposite O/U pair never count
+        from src.ledger_corrections import drop_historical_excluded
+        m = drop_historical_excluded(m)
+        parts.append(pd.DataFrame({**_stake(m, "bets_ledger.csv"),
             "date": m["match_date"].astype(str).str[:10], "league": m["league"],
             "match": m["home_team"].astype(str) + " v " + m["away_team"].astype(str),
             "home_team": m["home_team"], "away_team": m["away_team"],
@@ -202,9 +274,9 @@ def settled_tips(include_paper: bool = False) -> pd.DataFrame:
     s = _read("side_bets_ledger.csv", include_paper, _TIP_COLS)
     if len(s):
         if "source" in s.columns:
-            s = s[s["source"].fillna("live").astype(str) == "live"]
+            s = _live_only(s, "side_bets_ledger.csv")
         mk = s["market"].astype(str)
-        parts.append(pd.DataFrame({
+        parts.append(pd.DataFrame({**_stake(s, "side_bets_ledger.csv"),
             "date": s["match_date"].astype(str).str[:10], "league": s["league"],
             "match": s["home_team"].astype(str) + " v " + s["away_team"].astype(str),
             "home_team": s["home_team"], "away_team": s["away_team"],
@@ -229,6 +301,8 @@ def _res_cell(result: str, pnl) -> tuple[str, tuple]:
         return "LOST", RED
     if result in ("VOID", "PUSH"):
         return result.title(), MUTED
+    if result == "EXCLUDED":
+        return "excluded", MUTED
     return "pending", MUTED
 
 
@@ -241,35 +315,36 @@ def results_image(day: str) -> list[bytes]:
         return []
     y["_t"] = y["tier"].map({"SNIPER": 0, "MARKSMAN": 1, "VALUABLE": 2})
     y = y.sort_values(["_t", "market", "match"])
-    st = y[y["tier"].isin(STAKED) & y["pnl"].notna()]
-    pp = y[(y["tier"] == "VALUABLE") & y["pnl"].notna()]
+    st = y[_staked(y) & y["pnl"].notna()]
+    pp = y[~_staked(y) & y["pnl"].notna()]
     wins = int((st["result"] == "WIN").sum())
-    by_mkt = " · ".join(f"{k} {g['pnl'].sum():+.2f}u" for k, g in st.groupby("market"))
-    subtitle = (f"Staked ({STAKED_LABEL}): {wins}W-{len(st) - wins}L, {st['pnl'].sum():+.2f}u"
+    by_mkt = " · ".join(f"{k} {U.fmt(U.total(g['pnl']))}" for k, g in st.groupby("market"))
+    subtitle = (f"Staked ({STAKED_TEXT}): {wins}W-{len(st) - wins}L, {U.fmt(U.total(st['pnl']))}"
                 + (f"  ({by_mkt})" if by_mkt else "")
-                + (f"   ·   paper {PAPER_TIER_LABEL} {pp['pnl'].sum():+.2f}u on {len(pp)}" if len(pp) else "")
+                + (f"   ·   not staked {U.fmt(U.total(pp['pnl']))} on {len(pp)}" if len(pp) else "")
                 + f".  {GAP_EXPLAINER}")
     cols = [("League", 200), ("Match", 320), ("Gap", 170), ("Pick", 150), ("Odds", 64),
             ("Result", 90), ("P/L", 76)]
     rows = []
+    y["_staked"] = _staked(y)
     for _, r in y.iterrows():
         res, rc = _res_cell(r["result"], r["pnl"])
-        pnl = "" if pd.isna(r["pnl"]) else f"{r['pnl']:+.2f}"
-        rows.append({"cells": [r["league"], r["match"], tier_label(r["tier"]) + ("" if r["tier"] in STAKED else " (paper)"),
+        pnl = "" if pd.isna(r["pnl"]) else U.fmt(r["pnl"], suffix="")
+        rows.append({"cells": [r["league"], r["match"], tier_label(r["tier"]) + ("" if r["_staked"] else " (not staked)"),
                                r["pick"], "" if pd.isna(r["odds"]) else f"{r['odds']:.2f}", res, pnl],
                      "stripe": TIER_COLOUR.get(r["tier"]), "bold": {"Result", "P/L"},
                      "colours": {"Gap": TIER_COLOUR.get(r["tier"], INK), "Result": rc,
                                  "P/L": GREEN if (r["pnl"] or 0) > 0 else RED if (r["pnl"] or 0) < 0 else MUTED}})
     label = pd.Timestamp(day).strftime("%a %d %b")
     return render_table(f"Yesterday's results — {label}", cols, rows, subtitle=subtitle,
-                        footer=f"Flat 1u stakes · {PAPER_TIER_LABEL} is paper (never staked) · paper leagues excluded")
+                        footer=f"Flat 1u stakes · staked = {STAKED_TEXT} · paper leagues excluded")
 
 
 def record_image(today: str) -> list[bytes]:
     d = settled_tips()
     if d.empty:
         return []
-    cut = str(getattr(config, "PERFORMANCE_CUTOFF_DATE", "1970-01-01"))[:10]
+    cut = str(config.PERFORMANCE_CUTOFF_DATE)[:10]   # configured cutoff; absent = AttributeError, not 1970
     d = d[(d["date"] >= cut) & d["pnl"].notna()]
     week = (pd.Timestamp(today) - pd.Timedelta(days=7)).strftime("%Y-%m-%d")
     cols = [("Market", 170), ("Bets", 70), ("Won-Lost", 110), ("Hit", 70), ("Break-even", 110),
@@ -282,23 +357,23 @@ def record_image(today: str) -> list[bytes]:
         g7 = g[g["date"] >= week]
         hit = 100 * w / len(g)
         return {"cells": [name, len(g), f"{w}-{len(g) - w}", f"{hit:.0f}%",
-                          "" if be is None else f"{be:.0f}%", f"{g['pnl'].sum():+.2f}u",
-                          f"{g7['pnl'].sum():+.2f}u ({len(g7)})"],
+                          "" if be is None else f"{be:.0f}%", U.fmt(U.total(g['pnl'])),
+                          f"{U.fmt(U.total(g7['pnl']))} ({len(g7)})"],
                 "stripe": stripe, "bold": {"P/L all"},
-                "colours": {"P/L all": GREEN if g["pnl"].sum() > 0 else RED,
-                            "P/L 7 days": GREEN if g7["pnl"].sum() > 0 else RED if len(g7) else MUTED,
+                "colours": {"P/L all": GREEN if U.total(g["pnl"]) > 0 else RED,
+                            "P/L 7 days": GREEN if U.total(g7["pnl"]) > 0 else RED if len(g7) else MUTED,
                             "Hit": GREEN if be is not None and hit > be else RED if be is not None else INK,
                             "Market": MUTED if paper else INK}}
 
-    st = d[d["tier"].isin(STAKED)]
-    rows.append({"band": f"Staked — {STAKED_LABEL}"})
+    st = d[_staked(d)]
+    rows.append({"band": f"Staked — {STAKED_TEXT}"})
     for mk, g in sorted(st.groupby("market"), key=lambda kv: -len(kv[1])):
         rows.append(_row(mk, g, TIER_COLOUR["SNIPER"]))
     if len(st):
         rows.append(_row("All staked", st, (31, 41, 55)))
-    pp = d[d["tier"] == "VALUABLE"]
+    pp = d[~_staked(d)]
     if len(pp):
-        rows.append({"band": f"Paper — {PAPER_TIER_LABEL} (tracked, never staked)"})
+        rows.append({"band": "Not staked — every other tip (tracked)"})
         for mk, g in sorted(pp.groupby("market"), key=lambda kv: -len(kv[1])):
             rows.append(_row(mk, g, TIER_COLOUR["VALUABLE"], paper=True))
     return render_table("Record by market", cols, rows,
@@ -345,7 +420,7 @@ def _freeze_props_shown(today: str, pr: pd.DataFrame, un: pd.DataFrame) -> None:
         print(f"[daily_pack] could not log shown props: {e}")
 
 
-def props_image(today: str, freeze: bool = False) -> list[bytes]:
+def props_image(today: str, freeze: bool = False, cutoff=None) -> list[bytes]:
     t = _read("player_tips.csv")
     if t.empty:
         return []
@@ -353,6 +428,7 @@ def props_image(today: str, freeze: bool = False) -> list[bytes]:
     t["_tip_day"] = [tip_day_of(k, d) for k, d in zip(t.get("kickoff_utc", pd.Series(None, index=t.index)),
                                                       t["date"].astype(str))]
     t = t[t["_tip_day"] == today].copy()
+    t = _late_filter(t, t.get("kickoff_utc", pd.Series(None, index=t.index)), cutoff, "prop(s)")
     if t.empty:
         return []
     for c in ("model_prob", "market_odds", "ev"):
@@ -369,8 +445,11 @@ def props_image(today: str, freeze: bool = False) -> list[bytes]:
     if freeze:
         _freeze_props_shown(today, pr, un)
     cols = [("Time", 62), ("Player", 190), ("Match", 300), ("Market", 160), ("Model", 70),
-            ("Odds", 70), ("Edge", 86)]
+            ("Odds", 70), ("Edge", 86), ("Fair price", 140)]
     rows = []
+    # Where the fair probability came from (owner decision 2026-11-05): "two-sided price" (both sides
+    # of one book, de-vigged) or "margin assumed" (one side only). "–" when the row carries no basis.
+    from player_model.fair_basis import label as _basis_label
 
     def _time(v):
         return v.strftime("%H:%M") if pd.notna(v) else "–"
@@ -381,18 +460,21 @@ def props_image(today: str, freeze: bool = False) -> list[bytes]:
             e = r["_edge"]
             rows.append({"cells": [_time(r["_ko"]), r["player_name"], r["match"],
                                    PROP_LABEL.get(r["market"], r["market"]), f"{r['model_prob'] * 100:.0f}%",
-                                   f"{r['market_odds']:.2f}", f"{e:+.1f} pts"],
+                                   f"{r['market_odds']:.2f}", f"{e:+.1f} pts",
+                                   _basis_label(r.get("fair_basis")) or "–"],
                          "stripe": GREEN if e > 0 else RED, "bold": {"Edge"},
-                         "colours": {"Edge": GREEN if e > 0 else RED}})
+                         "colours": {"Edge": GREEN if e > 0 else RED, "Fair price": MUTED}})
     if len(un):
         rows.append({"band": f"Model only — no bookmaker price ({int((~t['_priced']).sum())} today, top {len(un)})"})
         for _, r in un.iterrows():
             rows.append({"cells": [_time(r["_ko"]), r["player_name"], r["match"],
                                    PROP_LABEL.get(r["market"], r["market"]), f"{r['model_prob'] * 100:.0f}%",
-                                   "–", "–"], "colours": {"Odds": MUTED, "Edge": MUTED}})
+                                   "–", "–", "–"], "colours": {"Odds": MUTED, "Edge": MUTED, "Fair price": MUTED}})
     label = pd.Timestamp(today).strftime("%a %d %b")
     return render_table(f"Player props — {label}", cols, rows,
                         subtitle="Edge = model probability minus the bookmaker's implied probability. "
+                                 "Fair price: two-sided price = both sides of one book, de-vigged; "
+                                 "margin assumed = one side quoted, margin assumed. "
                                  "Props are paper research — never staked.",
                         footer="Times UTC · paper leagues excluded · not betting advice")
 
@@ -492,8 +574,8 @@ def _shown_results(day: str, ledger_day: pd.DataFrame) -> list[bytes] | None:
         won = int((played["result"] == "WIN").sum())
         band = f"{label} — shown yesterday: {won}-{len(played) - won}"
         if section == "priced" and len(played):
-            pl = float((played["market_odds"] - 1).where(played["result"] == "WIN", -1.0).sum())
-            band += f" · paper {pl:+.2f}u at the odds shown"
+            pl = U.total(U.profit(played["market_odds"]).where(played["result"] == "WIN", -1.0))
+            band += f" · paper {U.fmt(pl)} at the odds shown"
         n_pend = int((~g["result"].isin(["WIN", "LOSS", "VOID"])).sum())
         rows.append({"band": band + (f" · {n_pend} pending" if n_pend else "")})
         for _, r in g.iterrows():
@@ -552,9 +634,9 @@ def props_results_image(day: str) -> list[bytes]:
         need = 100 * (1 / pr["market_odds"]).mean()
         hit = 100 * won / len(pr)
         # flat 1u at the recorded price (the ledger's pnl column is not filled for every row)
-        pl = float((pr["market_odds"] - 1).where(pr["result"] == "WIN", -1.0).sum())
+        pl = U.total(U.profit(pr["market_odds"]).where(pr["result"] == "WIN", -1.0))
         rows.append({"band": f"Priced — {won}-{len(pr) - won} · hit {hit:.0f}% vs {need:.0f}% needed · "
-                             f"paper {pl:+.2f}u at 1u"})
+                             f"paper {U.fmt(pl)} at 1u"})
         pr = pr.assign(_edge=pr["model_prob"] - 1 / pr["market_odds"]).sort_values("_edge", ascending=False)
         for _, r in pr.head(12).iterrows():
             w = r["result"] == "WIN"
@@ -654,8 +736,10 @@ def sharp_jumps(history: dict | None = None, min_pct: float | None = None,
         t = pd.to_datetime(b.get("at"), utc=True, errors="coerce")
         if pd.isna(t) or (now - t).total_seconds() > max_age_hours * 3600:
             continue
-        na, nb = a.get("n_books") or 0, b.get("n_books") or 0
-        if na < 5 or nb < 5 or not (0.8 <= nb / na <= 1.25):
+        # unknown book counts fail the >= 5 test (they were typed 0s, the same skip, now said)
+        na = pd.to_numeric(a.get("n_books"), errors="coerce")
+        nb = pd.to_numeric(b.get("n_books"), errors="coerce")
+        if not (na >= 5 and nb >= 5) or not (0.8 <= nb / na <= 1.25):
             continue
         totals = rec.get("market") == "totals"
         keys = ("odds_over", "odds_under") if totals else ("odds_home", "odds_away", "odds_draw")
@@ -685,11 +769,29 @@ def sharp_jumps(history: dict | None = None, min_pct: float | None = None,
     return config.drop_paper_leagues(d) if len(d) else d
 
 
-def sharp_image(today: str) -> list[bytes]:
+def sharp_kickoffs(history: dict | None = None) -> dict:
+    """(league, 'home vs away', 'YYYY-MM-DD') -> kickoff (UTC 'YYYY-MM-DD HH:MM') from the sharp history
+    the tips were built from. sharp_tips.csv carries the date only."""
+    if history is None:
+        from src.sharp_tracker import _load_history
+        history = _load_history()
+    out = {}
+    for rec in (history or {}).values():
+        d = str(rec.get("date") or "")
+        if len(d) >= 16:
+            out[(str(rec.get("league", "")), f"{rec.get('home')} vs {rec.get('away')}", d[:10])] = d[:16]
+    return out
+
+
+def sharp_image(today: str, cutoff=None, history: dict | None = None) -> list[bytes]:
     s = _sharp_frame()
     if s.empty:
         return []
     s = s[s["date"].astype(str).str[:10] == today].copy()
+    if cutoff is not None and not s.empty:
+        ko = sharp_kickoffs(history)
+        s = _late_filter(s, [ko.get((str(r.league), str(r.match), str(r.date)[:10]))
+                             for r in s.itertuples(index=False)], cutoff, "sharp move(s)")
     if s.empty:
         return []
     s["_bad"] = sharp_artifacts(s)
@@ -737,11 +839,12 @@ def _pro_scoreboard() -> dict:
         return {}
 
 
-def top_picks_image(today: str, freeze: bool = False) -> list[bytes]:
+def top_picks_image(today: str, freeze: bool = False, now=None) -> list[bytes]:
     """The 3 lists of 5 (src/top_picks.py) - first in the album, because people take a few tips, not 68.
-    freeze=True (the real send) logs them once to output/top_picks_log.csv so they are graded later."""
+    freeze=True (the real send) logs them once to output/top_picks_log.csv so they are graded later.
+    `now` is the send time: src/top_picks leaves out every tip whose match kicked off by then."""
     from src import top_picks as TP
-    d = TP.freeze_day(today) if freeze else TP.todays_lists(today)
+    d = TP.freeze_day(today, now=now) if freeze else TP.todays_lists(today, now=now)
     if d is None or d.empty:
         return []
     sb = TP.scoreboard(30)
@@ -794,16 +897,18 @@ def top_picks_results_image(day: str) -> list[bytes]:
         x = y[y["list"] == name].sort_values("rank")
         if x.empty:
             continue
-        pnl = np.where(x["result"] == "WIN", x["odds"] - 1.0, np.where(x["result"] == "LOSS", -1.0, np.nan))
+        pnl = np.where(x["result"] == "WIN", U.profit(x["odds"]), np.where(x["result"] == "LOSS", -1.0, np.nan))
         st = x["result"].isin(["WIN", "LOSS"])
-        wins, n_set, n_pend = int((x["result"] == "WIN").sum()), int(st.sum()), int((~st).sum())
-        head = f"{TP.LIST_LABEL[name]} — {wins}/{n_set} won, {np.nansum(pnl):+.2f}u"
-        rows.append({"band": head + (f" · {n_pend} still to play" if n_pend else "")})
+        excl = x["result"].eq("EXCLUDED")       # frozen after kickoff: not graded (corrections sidecar)
+        wins, n_set, n_pend = int((x["result"] == "WIN").sum()), int(st.sum()), int((~st & ~excl).sum())
+        head = f"{TP.LIST_LABEL[name]} — {wins}/{n_set} won, {U.fmt(U.total(pnl))}"
+        rows.append({"band": head + (f" · {n_pend} still to play" if n_pend else "")
+                     + (f" · {int(excl.sum())} excluded (frozen after kickoff)" if excl.any() else "")})
         for r, p in zip(x.itertuples(index=False), pnl):
-            res = r.result if r.result in ("WIN", "LOSS") else "PENDING"
+            res = r.result if r.result in ("WIN", "LOSS", "EXCLUDED") else "PENDING"
             txt, rc = _res_cell(res, None if np.isnan(p) else p)
             rows.append({"cells": [str(r.rank), f"{r.home_team} v {r.away_team}", r.pick, f"{float(r.odds):.2f}",
-                                   txt, "" if np.isnan(p) else f"{p:+.2f}"],
+                                   txt, "" if np.isnan(p) else U.fmt(p, suffix="")],
                          "bold": {"Result", "P/L"},
                          "colours": {"Result": rc,
                                      "P/L": GREEN if (p or 0) > 0 else RED if (p or 0) < 0 else MUTED}})
@@ -837,7 +942,18 @@ def _pro_bet_builder() -> pd.DataFrame:
         return pd.DataFrame()
 
 
-def bet_builder_image(today: str) -> list[bytes]:
+def _combo_kickoffs(d: pd.DataFrame, ko: pd.DataFrame | None = None) -> list:
+    """Kickoff per Bet Builder row: Pro's file has no kickoff, so it is looked up in v9's own fixture
+    kickoffs (src/tip_day.kickoffs) by league, match date and 'home vs away'. Not found -> None."""
+    from src.tip_day import kickoffs
+    k = kickoffs() if ko is None else ko
+    look = {(str(r.league), str(r.match_date)[:10], f"{r.home_team} vs {r.away_team}"): r.kickoff_utc
+            for r in k.itertuples(index=False)} if len(k) else {}
+    return [look.get((str(r.get("league")), str(r.get("match_date"))[:10], str(r.get("match"))))
+            for _, r in d.iterrows()]
+
+
+def bet_builder_image(today: str, cutoff=None, ko: pd.DataFrame | None = None) -> list[bytes]:
     """Today's Bet Builder combos (owner 2026-10-18: moved here from Pro's separate Telegram
     messages, which were "spammy"). Pro chooses them with its own tip rules; this only draws them:
     one band per combo (match, joint probability, fair odds), one row per leg."""
@@ -845,14 +961,17 @@ def bet_builder_image(today: str) -> list[bytes]:
     if d.empty or "match_date" not in d.columns:
         return []
     d = d[d["match_date"].astype(str).str[:10] == today]
+    if cutoff is not None and not d.empty:
+        d = _late_filter(d, _combo_kickoffs(d, ko), cutoff, "Bet Builder combo(s)")
     if d.empty:
         return []
     cols = [("", 34), ("Leg", 640), ("Leg chance", 120)]
     blocks = []                                   # one block = a combo's band + its legs
     for _, r in d.iterrows():
         fair = pd.to_numeric(pd.Series([r.get("fair_odds")]), errors="coerce").iloc[0]
-        p = float(r.get("joint_probability") or 0)
-        b = [{"band": f"{r.get('match')} · {r.get('league')} · all legs {p:.1%}"
+        p = pd.to_numeric(pd.Series([r.get("joint_probability")]), errors="coerce").iloc[0]
+        b = [{"band": f"{r.get('match')} · {r.get('league')} · all legs "
+                      + ("–" if pd.isna(p) else f"{p:.1%}")
                       + (f" · fair odds {fair:.2f}" if pd.notna(fair) else "")}]
         for i, leg in enumerate(str(r.get("legs") or "").split(" · "), start=1):
             label, _, pct = leg.rpartition(" (")
@@ -895,7 +1014,7 @@ def scoreboard_images() -> list[bytes]:
         hit, need = b.get("hit_rate"), b.get("break_even")
         u = b.get("units")
         return {"cells": [label, b["settled"], b.get("won", ""), _pct(hit), _pct(need),
-                          _pct(b.get("model_claimed")), "" if u is None else f"{u:+.2f}u"],
+                          _pct(b.get("model_claimed")), "" if u is None else U.fmt(u)],
                 "stripe": stripe, "bold": {"Hit", "P/L"},
                 "colours": {"Hit": (GREEN if need is not None and hit is not None and hit > need
                                     else RED if need is not None else INK),
@@ -904,21 +1023,23 @@ def scoreboard_images() -> list[bytes]:
     rows = []
     x = sb.get("one_x_two", {})
     if x:
-        rows.append({"band": f"1X2 tips — {x.get('sent_excl_paper', x.get('sent', 0))} sent, "
-                             f"{x.get('pending', 0)} pending"})
+        _sent = x.get("sent_excl_paper", x.get("sent"))     # missing counts print '—', not 0
+        rows.append({"band": f"1X2 tips — {'—' if _sent is None else _sent} sent, "
+                             f"{x.get('pending', '—')} pending"})
         rows.append(_row("All 1X2 tips", x.get("headline"), (31, 41, 55)))
         for pick, b in (x.get("by_pick") or {}).items():
             rows.append(_row(f"   {pick.title()} picks", b, (156, 163, 175)))
     bb = sb.get("bet_builder", {})
     if bb:
         h = bb.get("headline") or {}
-        rows.append({"band": f"Bet Builder — {bb.get('sent', 0)} sent, {bb.get('ungraded', 0)} not gradable yet"})
+        rows.append({"band": f"Bet Builder — {bb.get('sent', '—')} sent, {bb.get('ungraded', '—')} not gradable yet"})
         if h.get("settled"):
             hit, claim = h.get("hit_rate"), h.get("model_claimed")
             rows.append({"cells": ["All legs played", h["settled"], h.get("won", ""), _pct(hit), "",
                                    _pct(claim), f"exp {h.get('expected_wins', '')} wins"],
                          "stripe": (31, 41, 55), "bold": {"Hit"},
-                         "colours": {"Hit": GREEN if (hit or 0) >= (claim or 0) else RED}})
+                         "colours": {"Hit": INK if hit is None or claim is None
+                                     else GREEN if hit >= claim else RED}})
         v = bb.get("with_voided_legs") or {}
         if v.get("settled"):
             rows.append({"cells": ["A leg was voided (not comparable)", v["settled"], v.get("won", ""),
@@ -944,9 +1065,10 @@ def scoreboard_images() -> list[bytes]:
 
 def _market_rows(d: pd.DataFrame) -> list[dict]:
     rows = []
-    for band, tiers, stripe, paper in ((f"Staked — {STAKED_LABEL}", STAKED, TIER_COLOUR["SNIPER"], False),
-                                       (f"Paper — {PAPER_TIER_LABEL}", ("VALUABLE",), TIER_COLOUR["VALUABLE"], True)):
-        g0 = d[d["tier"].isin(tiers)]
+    sm = _staked(d)
+    for band, keep, stripe, paper in ((f"Staked — {STAKED_TEXT}", sm, TIER_COLOUR["SNIPER"], False),
+                                      ("Not staked — every other tip", ~sm, TIER_COLOUR["VALUABLE"], True)):
+        g0 = d[keep]
         if g0.empty:
             continue
         rows.append({"band": band})
@@ -955,9 +1077,9 @@ def _market_rows(d: pd.DataFrame) -> list[dict]:
             w = int((g["pnl"] > 0).sum())
             be = 100 / g["odds"].mean() if g["odds"].notna().sum() >= 0.8 * len(g) else None
             hit = 100 * w / len(g)
-            pl = g["pnl"].sum()
+            pl = U.total(g["pnl"])
             rows.append({"cells": [mk, len(g), f"{w}-{len(g) - w}", f"{hit:.0f}%",
-                                   "" if be is None else f"{be:.0f}%", f"{pl:+.2f}u", f"{pl / len(g):+.3f}"],
+                                   "" if be is None else f"{be:.0f}%", U.fmt(pl), U.fmt(pl / len(g), 3, suffix="")],
                          "stripe": (31, 41, 55) if mk == "All" else stripe, "bold": {"P/L"},
                          "colours": {"P/L": GREEN if pl > 0 else RED,
                                      "Market": MUTED if paper else INK,
@@ -981,17 +1103,17 @@ def week_images(today: str) -> list[bytes]:
                        subtitle="Every settled tip of the last 7 days, flat 1u. Hit is green when above "
                                 "the break-even rate implied by the average price.",
                        footer="Same basis as the dashboard · paper leagues excluded")
-    st = w[w["tier"].isin(STAKED)]
+    st = w[_staked(w)]
     if len(st):
-        lg = (st.groupby("league")["pnl"].agg(Bets="size", PL="sum",
+        lg = (st.groupby("league")["pnl"].agg(Bets="size", PL=U.total,
                                               W=lambda x: int((x > 0).sum()))
               .reset_index().sort_values("PL", ascending=False))
-        rows = [{"cells": [r["league"], r["Bets"], f"{r['W']}-{r['Bets'] - r['W']}", f"{r['PL']:+.2f}u"],
+        rows = [{"cells": [r["league"], r["Bets"], f"{r['W']}-{r['Bets'] - r['W']}", U.fmt(r['PL'])],
                  "stripe": GREEN if r["PL"] > 0 else RED, "bold": {"P/L"},
                  "colours": {"P/L": GREEN if r["PL"] > 0 else RED}} for _, r in lg.iterrows()]
         out += render_table("Week by league — staked tips", [("League", 300), ("Bets", 70),
                                                              ("Won-Lost", 110), ("P/L", 100)], rows,
-                            subtitle=f"{STAKED_LABEL}, all markets, best to worst. Small samples — "
+                            subtitle=f"Staked = {STAKED_TEXT}, all markets, best to worst. Small samples — "
                                      "one week is noise, not a verdict on a league.")
     return out
 
@@ -1013,9 +1135,9 @@ def props_week_image(today: str) -> list[bytes]:
         n, won = len(g), int((g["result"] == "WIN").sum())
         need = 100 * (1 / g["market_odds"]).mean()
         hit = 100 * won / n
-        pl = g["pnl"].sum()
+        pl = U.total(g["pnl"])
         rows.append({"cells": [PROP_LABEL.get(mk, mk), n, f"{won}-{n - won}", f"{hit:.0f}%",
-                               f"{need:.0f}%", f"{pl:+.2f}u"],
+                               f"{need:.0f}%", U.fmt(pl)],
                      "bold": {"P/L at 1u"}, "colours": {"Hit": GREEN if hit > need else RED,
                                                        "P/L at 1u": GREEN if pl > 0 else RED}})
     return render_table("Player props — week in review (paper)",
@@ -1167,7 +1289,7 @@ def league_rows(tab: pd.DataFrame) -> list[dict]:
         paper = r["League"].endswith(" (paper)")
         rows.append({"cells": [r["League"], r["Rating"], str(r["Tips"]), r["W-L"], _na(r["Hit %"], "{:.0f}%"),
                                _na(r["Avg odds"], "{:.2f}"), _na(r["Avg edge %"], "{:.1f}%"),
-                               _na(r["ROI %"], "{:+.0f}%"), f"{r['P/L (u)']:+.2f}u", f"{r['P/L 7d (u)']:+.2f}u",
+                               _na(r["ROI %"], "{:+.0f}%"), U.fmt(r['P/L (u)']), U.fmt(r['P/L 7d (u)']),
                                r["Best market"], r["Worst market"], "Paper league" if paper else r["State"]],
                      "stripe": MUTED if paper else _signed(r["P/L (u)"]), "bold": {"P/L"},
                      "colours": {"League": MUTED if paper else INK, "ROI": _signed(r["ROI %"] or 0),
@@ -1190,9 +1312,9 @@ def leagues_image(today: str | None = None) -> list[bytes]:
     if ov.empty:
         return []
     t = L.totals(d)
-    sub = (f"Staked tips ({STAKED_LABEL}), settled since {str(config.PERFORMANCE_CUTOFF_DATE)[:10]}, flat 1u. "
+    sub = (f"Staked tips ({STAKED_TEXT}), settled since {str(config.PERFORMANCE_CUTOFF_DATE)[:10]}, flat 1u. "
            f"All leagues: {t['tips']} tips, {L.wl(t['won'], t['lost'], t['void'])}, ROI {t['roi']:+.0%}, "
-           f"{t['pl']:+.2f}u (paper leagues not counted). Rating = Pro league rating 1-10.")
+           f"{U.fmt(t['pl'])} (paper leagues not counted). Rating = Pro league rating 1-10.")
     return render_table("Leagues — season to date", LEAGUE_COLUMNS, league_rows(L.overview_table(ov)),
                         subtitle=sub,
                         footer="Same numbers as the app's Leagues page · best/worst market needs 5+ tips · "
@@ -1211,8 +1333,8 @@ def last_week_leagues_image(today: str | None = None) -> list[bytes]:
         paper = r["paper"]
         rows.append({"cells": [r["league"] + (" (paper)" if paper else ""), str(r["tips"]),
                                L.wl(r["won"], r["lost"], r["void"]) if r["tips"] else "–",
-                               f"{r['pl']:+.2f}u" if r["tips"] else "–",
-                               str(r["valuable_tips"]), f"{r['valuable_pl']:+.2f}u" if r["valuable_tips"] else "–"],
+                               U.fmt(r['pl']) if r["tips"] else "–",
+                               str(r["valuable_tips"]), U.fmt(r['valuable_pl']) if r["valuable_tips"] else "–"],
                      "stripe": MUTED if paper else _signed(r["pl"]), "bold": {"P/L"},
                      "colours": {"P/L": _signed(r["pl"]), "League": MUTED if paper else INK,
                                  f"{PAPER_TIER_LABEL} P/L": _signed(r["valuable_pl"])}})
@@ -1221,7 +1343,7 @@ def last_week_leagues_image(today: str | None = None) -> list[bytes]:
     return render_table(f"Last week by league — {span}",
                         [("League", 300), ("Staked", 80), ("W-L", 96), ("P/L", 96), (PAPER_TIER_LABEL, 100),
                          (f"{PAPER_TIER_LABEL} P/L", 130)], rows,
-                        subtitle=f"Settled tips by match date. Staked = {STAKED_LABEL}; {PAPER_TIER_LABEL} is paper. "
+                        subtitle=f"Settled tips by match date. Staked = {STAKED_TEXT}; {PAPER_TIER_LABEL} is the tier view. "
                                  "One week is noise, not a verdict on a league.",
                         footer="Flat 1u · same basis as the app's Leagues page")
 
@@ -1265,24 +1387,42 @@ def send_weekly_pack() -> bool:
 
 # ── The pack ──────────────────────────────────────────────────────────────────
 
+def album_tips(today: str, cutoff=None) -> pd.DataFrame:
+    """Today's tips as the album shows them: all of them on time; only not-yet-started ones when late."""
+    rows = todays_rows(today)
+    if cutoff is None or rows is None or rows.empty:
+        return rows
+    ko = rows["kickoff_utc"] if "kickoff_utc" in rows.columns else pd.Series(None, index=rows.index)
+    return _late_filter(rows, ko, cutoff, "tip(s)").reset_index(drop=True)
+
+
 def build_pack(now: _dt.datetime | None = None, freeze: bool = False) -> tuple[list[bytes], str]:
     now = now or _dt.datetime.now(_dt.timezone.utc)
+    if now.tzinfo is None:
+        now = now.replace(tzinfo=_dt.timezone.utc)
     today = now.strftime("%Y-%m-%d")
     yday = (now - _dt.timedelta(days=1)).strftime("%Y-%m-%d")
     header = now.strftime("%a %d %b")
+    late =album_is_late(now, today)
+    cutoff = now if late else None                 # late: list only matches not started at the send time
+    tag = " (late)" if late else ""
     pngs: list[bytes] = []
     notes = []
-    steps = [("top_picks", lambda: top_picks_image(today, freeze=freeze)),
-             ("tips", lambda: render_pngs(todays_rows(today), f"Today's tips — {header}")
-              if len(todays_rows(today)) else []),
+    try:
+        tips = album_tips(today, cutoff)
+    except Exception as e:                                              # noqa: BLE001
+        print(f"[daily_pack] tips skipped: {type(e).__name__}: {e}")
+        tips = pd.DataFrame()
+    steps =[("top_picks", lambda: top_picks_image(today, freeze=freeze, now=now if late else None)),
+             ("tips", lambda: render_pngs(tips, f"Today's tips — {header}{tag}") if len(tips) else []),
              ("top_picks_results", lambda: top_picks_results_image(yday)),
              ("results", lambda: results_image(yday)),
              ("props_results", lambda: props_results_image(yday)),
              ("record", lambda: record_image(today)),
-             ("props", lambda: props_image(today, freeze=freeze)),
+             ("props", lambda: props_image(today, freeze=freeze, cutoff=cutoff)),
              ("one_x_two", lambda: one_x_two_image(now)),
-             ("bet_builder", lambda: bet_builder_image(today)),
-             ("sharp", lambda: sharp_image(today)),
+             ("bet_builder", lambda: bet_builder_image(today, cutoff=cutoff)),
+             ("sharp", lambda: sharp_image(today, cutoff=cutoff)),
              ("scoreboard", scoreboard_images)]
     for name, fn in steps:
         try:
@@ -1292,13 +1432,19 @@ def build_pack(now: _dt.datetime | None = None, freeze: bool = False) -> tuple[l
         except Exception as e:                                          # noqa: BLE001
             print(f"[daily_pack] {name} skipped: {type(e).__name__}: {e}")
             notes.append(f"{name} FAILED")
-    n_tips = len(todays_rows(today))
+    n_tips = len(tips)
     try:
         from src.top_picks import day_line
         yline = day_line(yday)
     except Exception:                                                   # noqa: BLE001
         yline = ""
-    caption = (f"☀️ <b>Wowza daily — {header}</b>\n"
+    late_line = ""
+    if late:
+        from src.tip_day import TZ
+        late_line = (f"\n<b>LATE</b> - sent {pd.Timestamp(now).tz_convert(TZ):%H:%M} Israel, after the "
+                     f"{rollover_utc(today).tz_convert(TZ):%H:%M} cut-off. Matches that already kicked off "
+                     f"are left out.")
+    caption = (f"☀️ <b>Wowza daily — {header}{tag}</b>{late_line}\n"
                f"Top picks · today's tips ({n_tips}) · yesterday's results (team + props) · record · player props · 1X2 · "
                f"Bet Builder · sharp moves · Pro scoreboard"
                + (f"\nYesterday's top picks: {yline}" if yline else ""))

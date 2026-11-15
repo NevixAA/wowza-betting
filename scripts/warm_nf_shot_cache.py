@@ -27,15 +27,20 @@ _MAX_RUN_SECONDS = 1500  # ~25 min: chunk the cold-cache warm so we never hit th
                          # few days without any single run running long.
 
 
-def _quota_remaining() -> int:
-    """Free /status check (does not consume quota)."""
+def _quota_remaining() -> int | None:
+    """Free /status check (does not consume quota). None when the headroom is UNKNOWN: the status
+    call failed or did not send both counts. It was 9999 on a failed call ("plenty left") and a typed
+    0 for a missing count (fix9/defaults 2026-11-04); an unknown headroom now stops the warm-up
+    (fail closed - the cache warms on the next run)."""
     try:
         H = {"x-apisports-key": os.getenv("APIFOOTBALL_KEY", "")}
         s = requests.get(f"{_BASE}/status", headers=H, timeout=15).json().get("response", {})
-        req = s.get("requests", {})
-        return int(req.get("limit_day", 0)) - int(req.get("current", 0))
+        req = s.get("requests") or {}
+        if req.get("limit_day") is None or req.get("current") is None:
+            return None
+        return int(req["limit_day"]) - int(req["current"])
     except Exception:
-        return 9999
+        return None
 
 
 def run() -> None:
@@ -50,7 +55,7 @@ def run() -> None:
             print(f"[warm_nf] hit {_MAX_RUN_SECONDS//60}min run budget — stopping; resumes next run "
                   f"(cache persists, warmed leagues are instant)"); break
         head = _quota_remaining()
-        if head < _MIN_HEADROOM:
+        if head is None or head < _MIN_HEADROOM:
             print(f"[warm_nf] quota headroom {head} < {_MIN_HEADROOM} — stopping early"); break
         lid = config.API_FOOTBALL_IDS[league]
         # League-aware season (R2 finding 6): was API_FOOTBALL_SEASONS.get(league, str(now_year)).

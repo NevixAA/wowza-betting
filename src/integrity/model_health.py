@@ -33,6 +33,18 @@ TRACKS = {
     "standard|HT_O05": ("standard", "HT_O05", "model_ht_over05.pkl", "model_version_ht_over05", "p_ht_over05"),
     "standard|HT_O15": ("standard", "HT_O15", "model_ht_over15.pkl", "model_version_ht_over15", "p_ht_over15"),
 }
+def serving_file(key: str, default: str) -> str:
+    """The payload file that SERVES this track. Standard O/U 2.5 follows the serving switch
+    (config.STANDARD_OU25_SERVING_RECIPE): legacy_v9 -> model_v9_standard.pkl (since the 2026-11-09
+    clean-data switch: the clean-retrain recipe), v9_repaired -> the frozen repaired file."""
+    if key != "standard|OU25":
+        return default
+    import config
+    recipe = str(getattr(config, "STANDARD_OU25_SERVING_RECIPE", "legacy_v9"))
+    return "model_v9_standard_repaired.pkl" if recipe == "v9_repaired" else "model_v9_standard.pkl"
+
+
+
 PARITY_KEY = {"standard|OU25": "standard|OU25", "new_format|OU25": "new_format|OU25",
               "standard|BTTS": "standard|btts", "new_format|BTTS": "new_format|btts",
               "standard|OU15": "standard|over15", "new_format|OU15": "new_format|over15",
@@ -102,20 +114,27 @@ def build(root: Path) -> dict:
         board = pd.read_csv(out_dir / "predictions.csv", low_memory=False)
     except Exception:                                              # noqa: BLE001
         board = pd.DataFrame()
+    from src.model import REPAIRED_RECIPES as REPAIRED   # one definition: src/model.py
     tracks = {}
     for key, (mt, mk, pfile, vcol, pcol) in TRACKS.items():
+        pfile = serving_file(key, pfile)
         pay, feats = None, None
         try:
             import joblib
             pay = joblib.load(models / pfile)
-            feats = pay.get("feature_cols")
+            # a track-split payload (BTTS / O1.5 / O3.5) serves New-Format rows from tracks[new_format]
+            if isinstance(pay, dict) and mt == "new_format" and isinstance(pay.get("tracks"), dict):
+                pay = pay["tracks"].get("new_format")
+            feats = pay.get("feature_cols") if pay else None
         except Exception:                                          # noqa: BLE001
             pass
         rows = board[board.get("model_type", pd.Series(dtype=str)) == mt] if len(board) else board
         ver = (rows[vcol].dropna().astype(str).value_counts().index[0]
                if len(rows) and vcol in rows and rows[vcol].notna().any() else UNKNOWN)
-        repaired = bool(pay and pay.get("recipe") == "v9_repaired")
-        research = (pay or {}).get("research", {}) if pay else {}
+        repaired = bool(pay and pay.get("recipe") in REPAIRED)
+        # the research recipe keeps its provenance under `research`; the clean-retrain recipes
+        # (std_/nf_/side_/ht_v9_repaired) carry the same facts at the payload's top level
+        research = ((pay.get("research") or pay) if pay else {}) if repaired else {}
         par = (parity.get("models") or {}).get(PARITY_KEY[key], {})
         rec = {
             "model_type": mt, "market": mk, "payload": pfile, "payload_sha256_16": _sha(models / pfile),
