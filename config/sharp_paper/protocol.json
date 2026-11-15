@@ -1,0 +1,674 @@
+{
+ "schema": "wowza.sharp_paper_protocol/1",
+ "protocol_id": "SF-PAPER-1",
+ "approved_by_owner": "2026-11-15 (\"Paper track + capture\")",
+ "basis": "research sharp-filter/1 (branch research/sharp-filter, protocol sha256 aeb0ab955b42bc8f1e282f7c969dd241e2c264c41b4936eae721026791badee6, reports/SHARP_FILTER_RESEARCH.md section 5)",
+ "track": "PAPER",
+ "stake_units": 1,
+ "paper_only": "A paper pick is never a stake, never an exec order, never a public tip: src/sharp_paper.py writes only to the PRIVATE store (wowza-exec branch sharp-paper); no production module imports it (tests/test_sharp_paper.py).",
+ "start_match_date": "2026-11-21",
+ "universe": {
+  "rule": "Every LIVE model tip of an approved O/U MODEL cell below: a row of v9 output/bets_ledger.csv (O/U 2.5, side OVER/UNDER) or output/side_bets_ledger.csv (over15/over35, side Over) with source == live, signal_tier in tip_tiers, match_date >= start_match_date, its league x market-side a cell below. One pick per fixture x market-side (the earliest generated_at). BTTS is out (no O/U sharp signal); LEAGUE_WIDE cells are out (no model signal).",
+  "tip_tiers": [
+   "QUALIFIED"
+  ],
+  "proposal_id": "TP-2026-11-15-bade2c0b",
+  "proposal_hash": "bade2c0baf41858f5b65f05bbf62fb5b6832873d8c743efb30da2fe3e193e74e",
+  "cells": [
+   {
+    "track": "new_format",
+    "mside": "over15_over",
+    "league": "Argentina Primera Division",
+    "entry_id": "over15|Argentina Primera Division",
+    "entry_hash": "96f0598a8df84e3367d869ca6e9f3da23ba9938b296de7dfbdf27fd108bfe65b"
+   },
+   {
+    "track": "standard",
+    "mside": "over15_over",
+    "league": "Belgian First Division A",
+    "entry_id": "over15|Belgian First Division A",
+    "entry_hash": "d8d9786d1aa311ce0307b88a3c67ef81c04af5c2fdd89ba6b69a6d07c9ece761"
+   },
+   {
+    "track": "new_format",
+    "mside": "over15_over",
+    "league": "Brazil Serie A",
+    "entry_id": "over15|Brazil Serie A",
+    "entry_hash": "4daf303e4463e9c2655a05310fc8b9479fb454e778b2830c519c91b24c2d82e0"
+   },
+   {
+    "track": "standard",
+    "mside": "over15_over",
+    "league": "Championship",
+    "entry_id": "over15|Championship",
+    "entry_hash": "ba5554650e8a41d49fad8a3b8d85d0a49ab77ee5da38d37ec48bc3e634a5e44a"
+   },
+   {
+    "track": "new_format",
+    "mside": "over15_over",
+    "league": "Finland Veikkausliiga",
+    "entry_id": "over15|Finland Veikkausliiga",
+    "entry_hash": "c0eada857b323f3280ae2475a87b674e999384d329fc15f98d0b624f0d775063"
+   },
+   {
+    "track": "new_format",
+    "mside": "over15_over",
+    "league": "K-League 1",
+    "entry_id": "over15|K-League 1",
+    "entry_hash": "87473e7bf3576386bf529b6aa03de59fec340a494c0eef9d128168c064abe8d3"
+   },
+   {
+    "track": "standard",
+    "mside": "over15_over",
+    "league": "Ligue 2",
+    "entry_id": "over15|Ligue 2",
+    "entry_hash": "6dcf8f2d4f3067a5c99ddbd458d0c1f1d865df57f9e05192c972a3bbe44b5f09"
+   },
+   {
+    "track": "new_format",
+    "mside": "over15_over",
+    "league": "Mexico Liga MX",
+    "entry_id": "over15|Mexico Liga MX",
+    "entry_hash": "03cccaf7b822b7b092a50287ce8528ce786df57a081b983d37fe6f1f5dfb21ca"
+   },
+   {
+    "track": "new_format",
+    "mside": "over15_over",
+    "league": "Romanian Superliga",
+    "entry_id": "over15|Romanian Superliga",
+    "entry_hash": "9eb6182dceea1365178a82d8b57b0c203bdf5e55b65704db8b3e51f46d0b030a"
+   },
+   {
+    "track": "new_format",
+    "mside": "over15_over",
+    "league": "Saudi Pro League",
+    "entry_id": "over15|Saudi Pro League",
+    "entry_hash": "a4bca75af22087266f29b7385eda2e383b5a4c679024dc566d80b0bd98621d1c"
+   },
+   {
+    "track": "standard",
+    "mside": "over15_over",
+    "league": "Serie B",
+    "entry_id": "over15|Serie B",
+    "entry_hash": "b14bdae66198f899a4baf7a820a678c9804e1c9ca9cf72b3b72425caaa43de2e"
+   },
+   {
+    "track": "new_format",
+    "mside": "over15_over",
+    "league": "Sweden Allsvenskan",
+    "entry_id": "over15|Sweden Allsvenskan",
+    "entry_hash": "11c3b28213e97b96149030cc6b9cb9a1f732e70754614e069f974cc6bb683f6a"
+   },
+   {
+    "track": "new_format",
+    "mside": "over25_over",
+    "league": "Denmark Superliga",
+    "entry_id": "ou25|Denmark Superliga",
+    "entry_hash": "ae1552418979f4dca1cb0409c727ce16ca5cbf24cc43427715283035cae95d8f"
+   },
+   {
+    "track": "new_format",
+    "mside": "over25_over",
+    "league": "Finland Veikkausliiga",
+    "entry_id": "ou25|Finland Veikkausliiga",
+    "entry_hash": "0c4f262f830601118f3c5d8927ddb4e72074045c43e3ddc147d8ca8938433311"
+   },
+   {
+    "track": "standard",
+    "mside": "over25_over",
+    "league": "Greek Super League",
+    "entry_id": "ou25|Greek Super League",
+    "entry_hash": "3d8509652f4c26e335c2d98c2dd8ed8730e0458371cb950ecfa5176d4f3b36a2"
+   },
+   {
+    "track": "standard",
+    "mside": "over25_over",
+    "league": "La Liga 2",
+    "entry_id": "ou25|La Liga 2",
+    "entry_hash": "b7ad28559bcbdd125dec3c3f0de54f283625d7acac6f969cb98a57de3053ffb1"
+   },
+   {
+    "track": "standard",
+    "mside": "over25_over",
+    "league": "League One",
+    "entry_id": "ou25|League One",
+    "entry_hash": "7f69e587879e2335daff25b5a7dd21ef1ad357af1c17fa543fe62bb642a2475d"
+   },
+   {
+    "track": "standard",
+    "mside": "over25_over",
+    "league": "Ligue 2",
+    "entry_id": "ou25|Ligue 2",
+    "entry_hash": "33c2354dfa87cd274a2f15db3b8985000e74ec56eacbae51ad77885034f3f4be"
+   },
+   {
+    "track": "new_format",
+    "mside": "over25_over",
+    "league": "Mexico Liga MX",
+    "entry_id": "ou25|Mexico Liga MX",
+    "entry_hash": "126f3983df6c46da94a4bcb5275024004510ec56f7b3621e1150d0b7a77e346c"
+   },
+   {
+    "track": "standard",
+    "mside": "over25_over",
+    "league": "Serie B",
+    "entry_id": "ou25|Serie B",
+    "entry_hash": "cd5b8bfd2b28f7d5e843a3868b2ca702f1d75ed9ffdaef9315ba8f8f4a02902a"
+   },
+   {
+    "track": "new_format",
+    "mside": "over25_over",
+    "league": "Sweden Allsvenskan",
+    "entry_id": "ou25|Sweden Allsvenskan",
+    "entry_hash": "48325b9025db100fda02569cc85ae61513bee58993b806686a6630ab85c1d683"
+   },
+   {
+    "track": "new_format",
+    "mside": "over25_over",
+    "league": "USA MLS",
+    "entry_id": "ou25|USA MLS",
+    "entry_hash": "860acc3653b11f25190151184f9f4e833c3f8ac6bf438852f44b43bbd07f945c"
+   },
+   {
+    "track": "new_format",
+    "mside": "over25_under",
+    "league": "Austrian Bundesliga",
+    "entry_id": "ou25|Austrian Bundesliga",
+    "entry_hash": "0f2d9983b3110a9c1026fa91d33c2307da655c02540bbd9517d524348a2f76f8"
+   },
+   {
+    "track": "standard",
+    "mside": "over25_under",
+    "league": "Belgian First Division A",
+    "entry_id": "ou25|Belgian First Division A",
+    "entry_hash": "582f7d45a43d257dce474caa41a32011cd47c775d2dbfc90ab60d0fc1624481f"
+   },
+   {
+    "track": "new_format",
+    "mside": "over25_under",
+    "league": "Brazil Serie A",
+    "entry_id": "ou25|Brazil Serie A",
+    "entry_hash": "dcf6a148477f488ec56fbaa6dc313b4dabd311a24a9d264521463eb275694652"
+   },
+   {
+    "track": "new_format",
+    "mside": "over25_under",
+    "league": "Finland Veikkausliiga",
+    "entry_id": "ou25|Finland Veikkausliiga",
+    "entry_hash": "0c4f262f830601118f3c5d8927ddb4e72074045c43e3ddc147d8ca8938433311"
+   },
+   {
+    "track": "new_format",
+    "mside": "over25_under",
+    "league": "Japan J-League",
+    "entry_id": "ou25|Japan J-League",
+    "entry_hash": "bee8a2ecccc31c5e3f79047df2b508bf81f139c1742012e01df3bf8ee5c00ae1"
+   },
+   {
+    "track": "new_format",
+    "mside": "over25_under",
+    "league": "Norway Eliteserien",
+    "entry_id": "ou25|Norway Eliteserien",
+    "entry_hash": "1d44f23f9325765b6af4a84487073ac5f3b3f8d714cf360cac737bd310cd1a6c"
+   },
+   {
+    "track": "new_format",
+    "mside": "over25_under",
+    "league": "Romanian Superliga",
+    "entry_id": "ou25|Romanian Superliga",
+    "entry_hash": "71a7c8319147c5144c302e6011c8a598e3425d94b91c50552c737484cdb96036"
+   },
+   {
+    "track": "new_format",
+    "mside": "over25_under",
+    "league": "Saudi Pro League",
+    "entry_id": "ou25|Saudi Pro League",
+    "entry_hash": "f6fa77ec68048efd3785dfa42deb1456fa1fee82fdfa4222f68e516bf2ff2d8a"
+   },
+   {
+    "track": "new_format",
+    "mside": "over25_under",
+    "league": "Sweden Allsvenskan",
+    "entry_id": "ou25|Sweden Allsvenskan",
+    "entry_hash": "48325b9025db100fda02569cc85ae61513bee58993b806686a6630ab85c1d683"
+   },
+   {
+    "track": "new_format",
+    "mside": "over25_under",
+    "league": "USA MLS",
+    "entry_id": "ou25|USA MLS",
+    "entry_hash": "860acc3653b11f25190151184f9f4e833c3f8ac6bf438852f44b43bbd07f945c"
+   },
+   {
+    "track": "standard",
+    "mside": "over35_over",
+    "league": "Championship",
+    "entry_id": "over35|Championship",
+    "entry_hash": "e7845fac3e8bb7f2cbab3464e611ed34163d5d690b4d890fbbd0f2b2112aebb5"
+   },
+   {
+    "track": "new_format",
+    "mside": "over35_over",
+    "league": "Denmark Superliga",
+    "entry_id": "over35|Denmark Superliga",
+    "entry_hash": "4515c11b1790a51f0cc40c308709b102c3bff3d2113a720b88f79103e298e114"
+   },
+   {
+    "track": "standard",
+    "mside": "over35_over",
+    "league": "Dutch Eredivisie",
+    "entry_id": "over35|Dutch Eredivisie",
+    "entry_hash": "4de65e1ab6d649a5cafe93766551d3f69f9f99d45720442ab3ff7e4072bb8b7a"
+   },
+   {
+    "track": "new_format",
+    "mside": "over35_over",
+    "league": "Finland Veikkausliiga",
+    "entry_id": "over35|Finland Veikkausliiga",
+    "entry_hash": "c61b1ec1fb47bd61bd06bd966bf2406704a283ef99c48070d343831d1754346b"
+   },
+   {
+    "track": "standard",
+    "mside": "over35_over",
+    "league": "La Liga 2",
+    "entry_id": "over35|La Liga 2",
+    "entry_hash": "a7b47bca061a085110a3f196c2c55989d1ddce503a22340a6558e70862c4d81d"
+   },
+   {
+    "track": "standard",
+    "mside": "over35_over",
+    "league": "Ligue 2",
+    "entry_id": "over35|Ligue 2",
+    "entry_hash": "c589101d795718ac4d79f4e759aad74854c8c8a12ffafe5bd7ebb75acc9a00ec"
+   },
+   {
+    "track": "new_format",
+    "mside": "over35_over",
+    "league": "Norway Eliteserien",
+    "entry_id": "over35|Norway Eliteserien",
+    "entry_hash": "d06e118ea17a34f4d14cbe88101215251119ea6208f5a631e30437e4df931ee0"
+   },
+   {
+    "track": "standard",
+    "mside": "over35_over",
+    "league": "Portuguese Primeira Liga",
+    "entry_id": "over35|Portuguese Primeira Liga",
+    "entry_hash": "5e721fd04a82a07b607447e559fdea001328b200feaf3b1629a511f4b431640c"
+   },
+   {
+    "track": "standard",
+    "mside": "over35_over",
+    "league": "Serie B",
+    "entry_id": "over35|Serie B",
+    "entry_hash": "2f303c4b9e4f752db586b8b35ce583404eab9e2334ea0c4fa26737093d5fc6af"
+   },
+   {
+    "track": "new_format",
+    "mside": "over35_over",
+    "league": "Sweden Allsvenskan",
+    "entry_id": "over35|Sweden Allsvenskan",
+    "entry_hash": "51eb2a4aba6e8fb66f9f04458df8cc663855c2f72fc37e27df7d029acbfd7b53"
+   }
+  ]
+ },
+ "capture": {
+  "provider": "The Odds API, event endpoint /v4/sports/{sport}/events/{id}/odds, markets totals,alternate_totals, region eu (every book of the region), decimal",
+  "lines": [
+   1.5,
+   2.5,
+   3.5
+  ],
+  "slots": {
+   "T72": {
+    "lead_h": [
+     60,
+     72
+    ],
+    "note": "first run inside [60, 72] h before the provider's kickoff (study open window [60, 84] h, target 72); runs every 2 h, so each fixture is seen up to 6 times in the window and captured once"
+   },
+   "T6": {
+    "lead_h": [
+     4,
+     7
+    ],
+    "note": "first run inside [4, 7] h (study signal window [4, 10] h, target 6); 3 h wide so a 2-hourly run delayed by up to 1 h still lands"
+   },
+   "CLOSE": {
+    "lead_h": [
+     0.05,
+     2.0
+    ],
+    "note": "first run inside (3 min, 2 h] before kickoff: the latest pre-kickoff snapshot a 2-hourly run can take - the CLV reference (a near-close, median about 1 h, NOT the kickoff - 5 min close), never a bet price"
+   }
+  },
+  "fixtures": "only fixtures with a live tip of the universe; matched to a provider event within the league's own sport keys, kickoff inside [match_date - 12 h, match_date + 36 h), both clubs resolved (src.team_names.resolve, plus the store's proven provider aliases), one to one",
+  "budget": "every paid call checks x-requests-remaining first: no call when (remaining - its cost) < floor (260,000); per-run, per-UTC-day and per-month caps journaled in the private store; [oddsapi_usage] line per run (no key, no price)",
+  "schedule": "short slot-driven runs every 2 h (one pass each, about 1 billed minute); no in-run loop"
+ },
+ "signal": {
+  "definition": "sharp-filter/1 W72_6: move = fair Over probability at T6 minus at T72 (power de-vig of one book's exact-line pair)",
+  "PIN": "Pinnacle's exact 2.5 pair at both T72 and T6",
+  "CONS": "median over every other book quoting the exact 2.5 pair at both T72 and T6, at least 3 books",
+  "BOTH": "PIN and CONS same class, else MIXED",
+  "primary": "CONS",
+  "secondary": [
+   "PIN",
+   "BOTH"
+  ],
+  "classes": "for a pick on Over: AGREE move > +threshold, DISAGREE move < -threshold, NONE within; Under mirrored; NO_DATA when a pair, the books or the league threshold is missing (never a stand-in). The O/U 2.5 move is the signal for Over 1.5 / 3.5 picks too (direction of goals).",
+  "thresholds": "per league: the 75th percentile of |move| over EVERY fixture of the league in the licensed B4 history (2023-06-15..2026-06-13, all strictly earlier than 2026-11-21), PIN on Pinnacle's common line (kind SAME), CONS on the exact 2.5 line; a league with fewer than 100 measured fixtures has none (NO_DATA). Frozen at registration; numbers are statistics, not prices.",
+  "threshold_quantile": 0.75,
+  "min_history": 100,
+  "league_thresholds": {
+   "Argentina Primera Division": {
+    "pin": {
+     "n": 659,
+     "q75": 0.026523
+    },
+    "cons": {
+     "n": 193,
+     "q75": 0.028909
+    },
+    "last_fixture_date": "2026-05-24"
+   },
+   "Austrian Bundesliga": {
+    "pin": {
+     "n": 349,
+     "q75": 0.019515
+    },
+    "cons": {
+     "n": 447,
+     "q75": 0.021404
+    },
+    "last_fixture_date": "2026-05-17"
+   },
+   "Belgian First Division A": {
+    "pin": {
+     "n": 565,
+     "q75": 0.023131
+    },
+    "cons": {
+     "n": 734,
+     "q75": 0.026834
+    },
+    "last_fixture_date": "2026-05-23"
+   },
+   "Brazil Serie A": {
+    "pin": {
+     "n": 444,
+     "q75": 0.024736
+    },
+    "cons": {
+     "n": 647,
+     "q75": 0.026637
+    },
+    "last_fixture_date": "2026-05-31"
+   },
+   "Bundesliga 2": {
+    "pin": {
+     "n": 632,
+     "q75": 0.017881
+    },
+    "cons": {
+     "n": 643,
+     "q75": 0.018511
+    },
+    "last_fixture_date": "2026-05-17"
+   },
+   "Championship": {
+    "pin": {
+     "n": 963,
+     "q75": 0.020152
+    },
+    "cons": {
+     "n": 1412,
+     "q75": 0.023463
+    },
+    "last_fixture_date": "2026-05-23"
+   },
+   "China Super League": {
+    "pin": {
+     "n": 337,
+     "q75": 0.022001
+    },
+    "cons": {
+     "n": 309,
+     "q75": 0.025372
+    },
+    "last_fixture_date": "2026-05-31"
+   },
+   "Denmark Superliga": {
+    "pin": {
+     "n": 355,
+     "q75": 0.019462
+    },
+    "cons": {
+     "n": 460,
+     "q75": 0.02275
+    },
+    "last_fixture_date": "2026-05-17"
+   },
+   "Dutch Eredivisie": {
+    "pin": {
+     "n": 552,
+     "q75": 0.021835
+    },
+    "cons": {
+     "n": 544,
+     "q75": 0.024821
+    },
+    "last_fixture_date": "2026-05-17"
+   },
+   "Finland Veikkausliiga": {
+    "pin": {
+     "n": 289,
+     "q75": 0.020646
+    },
+    "cons": {
+     "n": 367,
+     "q75": 0.023104
+    },
+    "last_fixture_date": "2026-06-13"
+   },
+   "Greek Super League": {
+    "pin": {
+     "n": 360,
+     "q75": 0.022559
+    },
+    "cons": {
+     "n": 483,
+     "q75": 0.025975
+    },
+    "last_fixture_date": "2026-05-21"
+   },
+   "Ireland Premier Division": {
+    "pin": {
+     "n": 248,
+     "q75": 0.024349
+    },
+    "cons": {
+     "n": 361,
+     "q75": 0.028279
+    },
+    "last_fixture_date": "2026-06-12"
+   },
+   "Japan J-League": {
+    "pin": {
+     "n": 763,
+     "q75": 0.015565
+    },
+    "cons": {
+     "n": 813,
+     "q75": 0.014505
+    },
+    "last_fixture_date": "2026-06-06"
+   },
+   "K-League 1": {
+    "pin": {
+     "n": 436,
+     "q75": 0.013191
+    },
+    "cons": {
+     "n": 517,
+     "q75": 0.012887
+    },
+    "last_fixture_date": "2026-05-17"
+   },
+   "La Liga 2": {
+    "pin": {
+     "n": 770,
+     "q75": 0.023081
+    },
+    "cons": {
+     "n": 853,
+     "q75": 0.024685
+    },
+    "last_fixture_date": "2026-06-06"
+   },
+   "League One": {
+    "pin": {
+     "n": 1133,
+     "q75": 0.017984
+    },
+    "cons": {
+     "n": 1471,
+     "q75": 0.019818
+    },
+    "last_fixture_date": "2026-05-24"
+   },
+   "League Two": {
+    "pin": {
+     "n": 1157,
+     "q75": 0.017467
+    },
+    "cons": {
+     "n": 1473,
+     "q75": 0.019679
+    },
+    "last_fixture_date": "2026-05-25"
+   },
+   "Ligue 2": {
+    "pin": {
+     "n": 665,
+     "q75": 0.019645
+    },
+    "cons": {
+     "n": 862,
+     "q75": 0.024075
+    },
+    "last_fixture_date": "2026-05-09"
+   },
+   "Mexico Liga MX": {
+    "pin": {
+     "n": 474,
+     "q75": 0.021539
+    },
+    "cons": {
+     "n": 574,
+     "q75": 0.029569
+    },
+    "last_fixture_date": "2026-05-22"
+   },
+   "Norway Eliteserien": {
+    "pin": {
+     "n": 418,
+     "q75": 0.02152
+    },
+    "cons": {
+     "n": 405,
+     "q75": 0.025298
+    },
+    "last_fixture_date": "2026-05-30"
+   },
+   "Saudi Pro League": {
+    "pin": {
+     "n": 25,
+     "q75": null
+    },
+    "cons": {
+     "n": 28,
+     "q75": null
+    },
+    "last_fixture_date": "2026-05-20"
+   },
+   "Scottish Premiership": {
+    "pin": {
+     "n": 391,
+     "q75": 0.020426
+    },
+    "cons": {
+     "n": 505,
+     "q75": 0.029044
+    },
+    "last_fixture_date": "2026-05-17"
+   },
+   "Serie B": {
+    "pin": {
+     "n": 661,
+     "q75": 0.020065
+    },
+    "cons": {
+     "n": 773,
+     "q75": 0.020826
+    },
+    "last_fixture_date": "2026-05-29"
+   },
+   "Sweden Allsvenskan": {
+    "pin": {
+     "n": 420,
+     "q75": 0.018381
+    },
+    "cons": {
+     "n": 499,
+     "q75": 0.02114
+    },
+    "last_fixture_date": "2026-05-31"
+   },
+   "Turkish Super Lig": {
+    "pin": {
+     "n": 480,
+     "q75": 0.018952
+    },
+    "cons": {
+     "n": 541,
+     "q75": 0.020905
+    },
+    "last_fixture_date": "2026-05-16"
+   },
+   "USA MLS": {
+    "pin": {
+     "n": 768,
+     "q75": 0.022833
+    },
+    "cons": {
+     "n": 923,
+     "q75": 0.026527
+    },
+    "last_fixture_date": "2026-05-25"
+   }
+  }
+ },
+ "bet": {
+  "price": "the pick's own line and side: Pinnacle's exact-line pair in the T6 snapshot (a real pre-kickoff price, at the signal snapshot); no Pinnacle pair -> NO_PRICE (recorded, not a bet; no other book stands in). Never the CLOSE snapshot.",
+  "stake": "flat 1 unit, paper",
+  "settlement": "the v9 ledger's own settled result of the same tip (result WIN/LOSS; void/push rows excluded and counted)",
+  "clv": "bet price / Pinnacle's same-line same-side price in the CLOSE slot snapshot - 1 (the CLOSE slot is a near-close up to 2 h before kickoff; missing when no CLOSE snapshot was captured)"
+ },
+ "review": {
+  "when": "per cell, at 150 AGREE (CONS) paper bets, or at the Clean Record milestone (2 months from go-live, 2027-01-21), whichever comes first",
+  "test": "AGREE ROI > 0 (one-sided block bootstrap by match date) and AGREE - NONE > 0, Holm over every cell x class reviewed; PROVEN = >= 150 bets, Holm p < 0.025, CI > 0",
+  "decision": "the owner's; nothing is staked from this protocol"
+ },
+ "outputs": {
+  "private": "wowza-exec branch sharp-paper: data/capture/*.parquet (prices), ledger/journal.csv, ledger/usage.json, paper/paper_ledger.parquet",
+  "public": "counts and statistics only (never a price, an event id or a per-row price-derived value)"
+ },
+ "amendments": [
+  {
+   "date": "2026-11-15",
+   "before_any_pick": true,
+   "previous_sha256": "6e393fa2ebbf8c7410c1f5ac69d7b8109c66f012b2d08d5ef049f4365db19ff2",
+   "change": "capture slots for short 2-hourly runs (owner goal: private Actions minutes): T6 [4, 6] -> [4, 7] h; CLOSE 2-15 min -> (3 min, 2 h] (a near-close: no job is kept alive for the true close; v9's public pre-kickoff capture has no Pinnacle O/U and is not switched on). Nothing else changes."
+  }
+ ]
+}

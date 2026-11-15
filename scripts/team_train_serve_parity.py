@@ -3,7 +3,8 @@
 For each of the last K match dates in the committed history (network blocked, download skipped), every
 match whose two clubs play only once that day is built twice:
 
-    training = src.feature_engineering.build_features(history up to and including that date)
+    training = src.feature_engineering.build_features(history up to and including that date, with the
+               COVID seasons dropped first exactly as the trainers drop them - training_rows)
                (the frame the Phase 2 harness fits on: retrain_harness.protocol.load_committed_frame)
     serving  = build_upcoming_features(the match as a fixture, history strictly before that date)
                + src.ht_features.attach_ht_features (the HT block predict.py attaches), the
@@ -61,6 +62,21 @@ def _payload(path: str) -> dict:
     return o
 
 
+def training_rows(hist: pd.DataFrame) -> pd.DataFrame:
+    """The rows the trainers build features from: pipeline.mode_train and the Phase 2 harness
+    (retrain_harness.protocol.load_committed_frame) both drop the COVID seasons BEFORE
+    build_features. The training side must use that frame, or a serving aggregate over the full
+    history looks identical to training here while the served model was trained without those
+    seasons (the league_avg_goals skew this check missed until 2026-11-15)."""
+    import config
+    from src.retrain_harness.protocol import load_config
+    if bool(load_config()["data"].get("exclude_covid_seasons")) != bool(config.EXCLUDE_COVID_SEASONS):
+        raise ValueError("config.EXCLUDE_COVID_SEASONS and the Phase 2 harness disagree on COVID seasons")
+    if not config.EXCLUDE_COVID_SEASONS:
+        return hist
+    return hist[~config.covid_season_mask(hist).to_numpy()]
+
+
 def raw_columns(payload: dict) -> list[str]:
     return [c for c in payload["feature_cols"] if not c.endswith("__missing")]
 
@@ -91,7 +107,7 @@ def main(out_dir: str, payload_files: str, k: int = 6) -> dict:
     hist["date"] = pd.to_datetime(hist["date"])
     hist = hist[hist["home_goals"].notna() & hist["away_goals"].notna()]
     dates = sorted(hist["date"].dt.normalize().unique())[-k:]
-    train = FE.build_features(hist[hist["date"] <= dates[-1]])
+    train = FE.build_features(training_rows(hist[hist["date"] <= dates[-1]]))
     train["date"] = pd.to_datetime(train["date"])
     from src import team_info_features as TI
     info_on = bool(set(cols) & set(TI.INFO_FEATURE_COLS))

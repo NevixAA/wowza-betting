@@ -1,0 +1,2942 @@
+{
+ "artifact": "fixture_probe",
+ "fixture_id": 1648307,
+ "generated_at": "2026-11-15T13:45:23Z",
+ "calls": [
+  {
+   "name": "fixture",
+   "endpoint": "fixtures",
+   "params": {
+    "id": 1648307
+   },
+   "ok": true,
+   "response": [
+    {
+     "fixture": {
+      "id": 1648307,
+      "referee": null,
+      "timezone": "UTC",
+      "date": "2026-11-07T17:30:00+00:00",
+      "timestamp": 1794072600,
+      "periods": {
+       "first": null,
+       "second": null
+      },
+      "venue": {
+       "id": 21869,
+       "name": "United Park",
+       "city": "Drogheda"
+      },
+      "status": {
+       "long": "Match Finished",
+       "short": "FT",
+       "elapsed": 90,
+       "extra": null
+      }
+     },
+     "league": {
+      "id": 357,
+      "name": "Premier Division",
+      "country": "Ireland",
+      "logo": "https://media.api-sports.io/football/leagues/357.png",
+      "flag": "https://media.api-sports.io/flags/ie.svg",
+      "season": 2026,
+      "round": "Final",
+      "standings": true
+     },
+     "teams": {
+      "home": {
+       "id": 3844,
+       "name": "UCD",
+       "logo": "https://media.api-sports.io/football/teams/3844.png",
+       "winner": false
+      },
+      "away": {
+       "id": 3850,
+       "name": "Drogheda United",
+       "logo": "https://media.api-sports.io/football/teams/3850.png",
+       "winner": true
+      }
+     },
+     "goals": {
+      "home": 1,
+      "away": 2
+     },
+     "score": {
+      "halftime": {
+       "home": 1,
+       "away": 1
+      },
+      "fulltime": {
+       "home": 1,
+       "away": 2
+      },
+      "extratime": {
+       "home": null,
+       "away": null
+      },
+      "penalty": {
+       "home": null,
+       "away": null
+      }
+     },
+     "events": [
+      {
+       "time": {
+        "elapsed": 13,
+        "extra": null
+       },
+       "team": {
+        "id": 3844,
+        "name": "UCD",
+        "logo": "https://media.api-sports.io/football/teams/3844.png"
+       },
+       "player": {
+        "id": 90031,
+        "name": "Conor Keeley"
+       },
+       "assist": {
+        "id": null,
+        "name": null
+       },
+       "type": "Card",
+       "detail": "Yellow Card",
+       "comments": null
+      },
+      {
+       "time": {
+        "elapsed": 19,
+        "extra": null
+       },
+       "team": {
+        "id": 3844,
+        "name": "UCD",
+        "logo": "https://media.api-sports.io/football/teams/3844.png"
+       },
+       "player": {
+        "id": 69552,
+        "name": "Mark Doyle"
+       },
+       "assist": {
+        "id": 20434,
+        "name": "Alfie Bates"
+       },
+       "type": "Goal",
+       "detail": "Normal Goal",
+       "comments": null
+      },
+      {
+       "time": {
+        "elapsed": 33,
+        "extra": null
+       },
+       "team": {
+        "id": 3850,
+        "name": "Drogheda United",
+        "logo": "https://media.api-sports.io/football/teams/3850.png"
+       },
+       "player": {
+        "id": 141003,
+        "name": "Ciaran Behan"
+       },
+       "assist": {
+        "id": null,
+        "name": null
+       },
+       "type": "Goal",
+       "detail": "Normal Goal",
+       "comments": null
+      },
+      {
+       "time": {
+        "elapsed": 66,
+        "extra": null
+       },
+       "team": {
+        "id": 3850,
+        "name": "Drogheda United",
+        "logo": "https://media.api-sports.io/football/teams/3850.png"
+       },
+       "player": {
+        "id": 559324,
+        "name": "Louis Dignam"
+       },
+       "assist": {
+        "id": 460292,
+        "name": "Hugh Smith"
+       },
+       "type": "Goal",
+       "detail": "Normal Goal",
+       "comments": null
+      },
+      {
+       "time": {
+        "elapsed": 68,
+        "extra": null
+       },
+       "team": {
+        "id": 3844,
+        "name": "UCD",
+        "logo": "https://media.api-sports.io/football/teams/3844.png"
+       },
+       "player": {
+        "id": 460863,
+        "name": "ethan brien o"
+       },
+       "assist": {
+        "id": 69526,
+        "name": "Shane Farrell"
+       },
+       "type": "subst",
+       "detail": "Substitution 1",
+       "comments": null
+      },
+      {
+       "time": {
+        "elapsed": 74,
+        "extra": null
+       },
+       "team": {
+        "id": 3844,
+        "name": "UCD",
+        "logo": "https://media.api-sports.io/football/teams/3844.png"
+       },
+       "player": {
+        "id": 281973,
+        "name": "Andrew Quinn"
+       },
+       "assist": {
+        "id": 531316,
+        "name": "keegan ancelin"
+       },
+       "type": "subst",
+       "detail": "Substitution 2",
+       "comments": null
+      },
+      {
+       "time": {
+        "elapsed": 74,
+        "extra": null
+       },
+       "team": {
+        "id": 3850,
+        "name": "Drogheda United",
+        "logo": "https://media.api-sports.io/football/teams/3850.png"
+       },
+       "player": {
+        "id": 373664,
+        "name": "Sam Norval"
+       },
+       "assist": {
+        "id": 559233,
+        "name": "Stephen Mohan"
+       },
+       "type": "subst",
+       "detail": "Substitution 1",
+       "comments": null
+      },
+      {
+       "time": {
+        "elapsed": 80,
+        "extra": null
+       },
+       "team": {
+        "id": 3844,
+        "name": "UCD",
+        "logo": "https://media.api-sports.io/football/teams/3844.png"
+       },
+       "player": {
+        "id": 20434,
+        "name": "Alfie Bates"
+       },
+       "assist": {
+        "id": 627176,
+        "name": "Jago Godden"
+       },
+       "type": "subst",
+       "detail": "Substitution 3",
+       "comments": null
+      },
+      {
+       "time": {
+        "elapsed": 80,
+        "extra": null
+       },
+       "team": {
+        "id": 3844,
+        "name": "UCD",
+        "logo": "https://media.api-sports.io/football/teams/3844.png"
+       },
+       "player": {
+        "id": 69273,
+        "name": "Thomas Oluwa"
+       },
+       "assist": {
+        "id": 69516,
+        "name": "Ryan Brennan"
+       },
+       "type": "subst",
+       "detail": "Substitution 4",
+       "comments": null
+      },
+      {
+       "time": {
+        "elapsed": 85,
+        "extra": null
+       },
+       "team": {
+        "id": 3850,
+        "name": "Drogheda United",
+        "logo": "https://media.api-sports.io/football/teams/3850.png"
+       },
+       "player": {
+        "id": 201375,
+        "name": "Carl Lennox"
+       },
+       "assist": {
+        "id": null,
+        "name": null
+       },
+       "type": "Card",
+       "detail": "Yellow Card",
+       "comments": null
+      },
+      {
+       "time": {
+        "elapsed": 90,
+        "extra": 1
+       },
+       "team": {
+        "id": 3850,
+        "name": "Drogheda United",
+        "logo": "https://media.api-sports.io/football/teams/3850.png"
+       },
+       "player": {
+        "id": 444502,
+        "name": "Luca cailloce"
+       },
+       "assist": {
+        "id": null,
+        "name": null
+       },
+       "type": "Card",
+       "detail": "Yellow Card",
+       "comments": null
+      }
+     ],
+     "lineups": [
+      {
+       "team": {
+        "id": 3844,
+        "name": "UCD",
+        "logo": "https://media.api-sports.io/football/teams/3844.png",
+        "colors": null
+       },
+       "formation": "3-4-3",
+       "coach": {
+        "id": 16728,
+        "name": "K. Doherty",
+        "photo": "https://media.api-sports.io/football/coachs/16728.png"
+       },
+       "startXI": [
+        {
+         "player": {
+          "id": 278090,
+          "name": "Fynn Michael Cordell Talley",
+          "number": 44,
+          "pos": "G",
+          "grid": "1:1"
+         }
+        },
+        {
+         "player": {
+          "id": 103059,
+          "name": "Leo Burney",
+          "number": 5,
+          "pos": "D",
+          "grid": "2:3"
+         }
+        },
+        {
+         "player": {
+          "id": 90031,
+          "name": "C. Keeley",
+          "number": 22,
+          "pos": "D",
+          "grid": "2:2"
+         }
+        },
+        {
+         "player": {
+          "id": 281973,
+          "name": "A. Quinn",
+          "number": 4,
+          "pos": "D",
+          "grid": "2:1"
+         }
+        },
+        {
+         "player": {
+          "id": 199714,
+          "name": "E. Agbaje",
+          "number": 2,
+          "pos": "F",
+          "grid": "3:4"
+         }
+        },
+        {
+         "player": {
+          "id": 20434,
+          "name": "A. Bates",
+          "number": 15,
+          "pos": "M",
+          "grid": "3:3"
+         }
+        },
+        {
+         "player": {
+          "id": 460863,
+          "name": "Ethan O'Brien",
+          "number": 8,
+          "pos": "M",
+          "grid": "3:2"
+         }
+        },
+        {
+         "player": {
+          "id": 69537,
+          "name": "C. Kane",
+          "number": 3,
+          "pos": "D",
+          "grid": "3:1"
+         }
+        },
+        {
+         "player": {
+          "id": 69267,
+          "name": "B. Kavanagh",
+          "number": 10,
+          "pos": "M",
+          "grid": "4:3"
+         }
+        },
+        {
+         "player": {
+          "id": 69552,
+          "name": "M. Doyle",
+          "number": 14,
+          "pos": "F",
+          "grid": "4:2"
+         }
+        },
+        {
+         "player": {
+          "id": 69273,
+          "name": "T. Oluwa",
+          "number": 11,
+          "pos": "F",
+          "grid": "4:1"
+         }
+        }
+       ],
+       "substitutes": [
+        {
+         "player": {
+          "id": 475665,
+          "name": "J. Bolger",
+          "number": 18,
+          "pos": "D",
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 69516,
+          "name": "R. Brennan",
+          "number": 19,
+          "pos": "M",
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 69526,
+          "name": "S. Farrell",
+          "number": 17,
+          "pos": "M",
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 627176,
+          "name": "J. Godden",
+          "number": 6,
+          "pos": "M",
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": null,
+          "name": "theo hennessy",
+          "number": 36,
+          "pos": "G",
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 567935,
+          "name": "D. Mare",
+          "number": 32,
+          "pos": "M",
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 667281,
+          "name": "R. Markey",
+          "number": 25,
+          "pos": "F",
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 531316,
+          "name": "K. Ancelin",
+          "number": 9,
+          "pos": "F",
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 344949,
+          "name": "K. Cruise",
+          "number": 31,
+          "pos": "D",
+          "grid": null
+         }
+        }
+       ]
+      },
+      {
+       "team": {
+        "id": 3850,
+        "name": "Drogheda United",
+        "logo": "https://media.api-sports.io/football/teams/3850.png",
+        "colors": null
+       },
+       "formation": "4-2-3-1",
+       "coach": {
+        "id": 22705,
+        "name": "W. O'Connor",
+        "photo": "https://media.api-sports.io/football/coachs/22705.png"
+       },
+       "startXI": [
+        {
+         "player": {
+          "id": 379030,
+          "name": "D. Kavanagh",
+          "number": 1,
+          "pos": "G",
+          "grid": "1:1"
+         }
+        },
+        {
+         "player": {
+          "id": 201375,
+          "name": "C. Lennox",
+          "number": 5,
+          "pos": "D",
+          "grid": "2:4"
+         }
+        },
+        {
+         "player": {
+          "id": 406647,
+          "name": "H. Curtis",
+          "number": 14,
+          "pos": "D",
+          "grid": "2:3"
+         }
+        },
+        {
+         "player": {
+          "id": 642508,
+          "name": "S. Murphy",
+          "number": 2,
+          "pos": "D",
+          "grid": "2:2"
+         }
+        },
+        {
+         "player": {
+          "id": 199855,
+          "name": "A. Wells",
+          "number": 6,
+          "pos": "D",
+          "grid": "2:1"
+         }
+        },
+        {
+         "player": {
+          "id": 559324,
+          "name": "L. Dignam",
+          "number": 8,
+          "pos": "M",
+          "grid": "3:2"
+         }
+        },
+        {
+         "player": {
+          "id": 395307,
+          "name": "M. McCullagh",
+          "number": 7,
+          "pos": "M",
+          "grid": "3:1"
+         }
+        },
+        {
+         "player": {
+          "id": 141003,
+          "name": "C. Behan",
+          "number": 10,
+          "pos": "M",
+          "grid": "4:3"
+         }
+        },
+        {
+         "player": {
+          "id": 373664,
+          "name": "S. Norval",
+          "number": 24,
+          "pos": "F",
+          "grid": "4:2"
+         }
+        },
+        {
+         "player": {
+          "id": 460292,
+          "name": "H.Smith",
+          "number": 11,
+          "pos": "M",
+          "grid": "4:1"
+         }
+        }
+       ],
+       "substitutes": [
+        {
+         "player": {
+          "id": 415826,
+          "name": "C. Bolton",
+          "number": 19,
+          "pos": "M",
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 460299,
+          "name": "N. Douglas",
+          "number": 16,
+          "pos": "G",
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 586267,
+          "name": "Charles Akinrintayo",
+          "number": 15,
+          "pos": "F",
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 559233,
+          "name": "S. Mohan",
+          "number": 31,
+          "pos": "M",
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 647101,
+          "name": "J. Goad",
+          "number": 13,
+          "pos": null,
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 419738,
+          "name": "M. Alonge",
+          "number": 12,
+          "pos": "M",
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 644320,
+          "name": "Thomas Morley",
+          "number": 22,
+          "pos": "D",
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 497679,
+          "name": "Goodness Ogbanna",
+          "number": 21,
+          "pos": "M",
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 519906,
+          "name": "A. Sheerin",
+          "number": 27,
+          "pos": "D",
+          "grid": null
+         }
+        }
+       ]
+      }
+     ],
+     "statistics": [
+      {
+       "team": {
+        "id": 3844,
+        "name": "UCD",
+        "logo": "https://media.api-sports.io/football/teams/3844.png"
+       },
+       "statistics": [
+        {
+         "type": "expected_goals",
+         "value": "0"
+        },
+        {
+         "type": "Passes accurate",
+         "value": 421
+        },
+        {
+         "type": "Shots insidebox",
+         "value": 13
+        },
+        {
+         "type": "Shots outsidebox",
+         "value": 9
+        },
+        {
+         "type": "Blocked Shots",
+         "value": 11
+        },
+        {
+         "type": "Free Kicks",
+         "value": 3
+        },
+        {
+         "type": "Shots on Goal",
+         "value": 6
+        },
+        {
+         "type": "Goalkeeper Saves",
+         "value": 4
+        },
+        {
+         "type": "Shots off Goal",
+         "value": 5
+        },
+        {
+         "type": "Offsides",
+         "value": 2
+        },
+        {
+         "type": "Total passes",
+         "value": 492
+        },
+        {
+         "type": "Total Shots",
+         "value": 22
+        },
+        {
+         "type": "Yellow Cards",
+         "value": 1
+        },
+        {
+         "type": "Corner Kicks",
+         "value": 6
+        },
+        {
+         "type": "Fouls",
+         "value": 4
+        },
+        {
+         "type": "Red Cards",
+         "value": 0
+        },
+        {
+         "type": "Ball Possession",
+         "value": "6%"
+        }
+       ]
+      },
+      {
+       "team": {
+        "id": 3850,
+        "name": "Drogheda United",
+        "logo": "https://media.api-sports.io/football/teams/3850.png"
+       },
+       "statistics": [
+        {
+         "type": "expected_goals",
+         "value": "0"
+        },
+        {
+         "type": "Passes accurate",
+         "value": 358
+        },
+        {
+         "type": "Shots insidebox",
+         "value": 3
+        },
+        {
+         "type": "Shots outsidebox",
+         "value": 9
+        },
+        {
+         "type": "Blocked Shots",
+         "value": 4
+        },
+        {
+         "type": "Free Kicks",
+         "value": 11
+        },
+        {
+         "type": "Shots on Goal",
+         "value": 6
+        },
+        {
+         "type": "Goalkeeper Saves",
+         "value": 5
+        },
+        {
+         "type": "Shots off Goal",
+         "value": 2
+        },
+        {
+         "type": "Offsides",
+         "value": 1
+        },
+        {
+         "type": "Total passes",
+         "value": 443
+        },
+        {
+         "type": "Total Shots",
+         "value": 12
+        },
+        {
+         "type": "Yellow Cards",
+         "value": 2
+        },
+        {
+         "type": "Corner Kicks",
+         "value": 4
+        },
+        {
+         "type": "Fouls",
+         "value": 11
+        },
+        {
+         "type": "Red Cards",
+         "value": 0
+        },
+        {
+         "type": "Ball Possession",
+         "value": "94%"
+        }
+       ]
+      }
+     ],
+     "players": [
+      {
+       "team": {
+        "id": 3844,
+        "name": "UCD",
+        "logo": "https://media.api-sports.io/football/teams/3844.png",
+        "update": "1970-01-01T00:00:00+00:00"
+       },
+       "players": [
+        {
+         "player": {
+          "id": 379030,
+          "name": "D. Kavanagh",
+          "photo": "https://media.api-sports.io/football/players/379030.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 90,
+            "number": 1,
+            "position": "G",
+            "rating": "0",
+            "captain": false,
+            "substitute": false
+           },
+           "offsides": 0,
+           "shots": {
+            "total": 0,
+            "on": 0
+           },
+           "goals": {
+            "total": 0,
+            "conceded": null,
+            "assists": 0,
+            "saves": 5
+           },
+           "passes": {
+            "total": 23,
+            "key": 0,
+            "accuracy": "14"
+           },
+           "tackles": {
+            "total": 0,
+            "blocks": 0,
+            "interceptions": 0
+           },
+           "duels": {
+            "total": 1,
+            "won": 1
+           },
+           "dribbles": {
+            "attempts": 0,
+            "success": 0,
+            "past": null
+           },
+           "fouls": {
+            "drawn": 1,
+            "committed": 0
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": null,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 519906,
+          "name": "A. Sheerin",
+          "photo": "https://media.api-sports.io/football/players/519906.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 0,
+            "number": 27,
+            "position": "D",
+            "rating": "0",
+            "captain": false,
+            "substitute": false
+           },
+           "offsides": 0,
+           "shots": {
+            "total": 0,
+            "on": 0
+           },
+           "goals": {
+            "total": 0,
+            "conceded": null,
+            "assists": 0,
+            "saves": 0
+           },
+           "passes": {
+            "total": 0,
+            "key": 0,
+            "accuracy": "0"
+           },
+           "tackles": {
+            "total": 0,
+            "blocks": 0,
+            "interceptions": 0
+           },
+           "duels": {
+            "total": 0,
+            "won": 0
+           },
+           "dribbles": {
+            "attempts": 0,
+            "success": 0,
+            "past": null
+           },
+           "fouls": {
+            "drawn": 0,
+            "committed": 0
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": null,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 497679,
+          "name": "Goodness Ogbanna",
+          "photo": "https://media.api-sports.io/football/players/497679.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 0,
+            "number": 21,
+            "position": "M",
+            "rating": "0",
+            "captain": false,
+            "substitute": false
+           },
+           "offsides": 0,
+           "shots": {
+            "total": 0,
+            "on": 0
+           },
+           "goals": {
+            "total": 0,
+            "conceded": null,
+            "assists": 0,
+            "saves": 0
+           },
+           "passes": {
+            "total": 0,
+            "key": 0,
+            "accuracy": "0"
+           },
+           "tackles": {
+            "total": 0,
+            "blocks": 0,
+            "interceptions": 0
+           },
+           "duels": {
+            "total": 0,
+            "won": 0
+           },
+           "dribbles": {
+            "attempts": 0,
+            "success": 0,
+            "past": null
+           },
+           "fouls": {
+            "drawn": 0,
+            "committed": 0
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": null,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 460299,
+          "name": "N. Douglas",
+          "photo": "https://media.api-sports.io/football/players/460299.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 0,
+            "number": 16,
+            "position": "G",
+            "rating": "0",
+            "captain": false,
+            "substitute": false
+           },
+           "offsides": 0,
+           "shots": {
+            "total": 0,
+            "on": 0
+           },
+           "goals": {
+            "total": 0,
+            "conceded": null,
+            "assists": 0,
+            "saves": 0
+           },
+           "passes": {
+            "total": 0,
+            "key": 0,
+            "accuracy": "0"
+           },
+           "tackles": {
+            "total": 0,
+            "blocks": 0,
+            "interceptions": 0
+           },
+           "duels": {
+            "total": 0,
+            "won": 0
+           },
+           "dribbles": {
+            "attempts": 0,
+            "success": 0,
+            "past": null
+           },
+           "fouls": {
+            "drawn": 0,
+            "committed": 0
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": null,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 415826,
+          "name": "C. Bolton",
+          "photo": "https://media.api-sports.io/football/players/415826.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 0,
+            "number": 19,
+            "position": "M",
+            "rating": "0",
+            "captain": false,
+            "substitute": false
+           },
+           "offsides": 0,
+           "shots": {
+            "total": 0,
+            "on": 0
+           },
+           "goals": {
+            "total": 0,
+            "conceded": null,
+            "assists": 0,
+            "saves": 0
+           },
+           "passes": {
+            "total": 0,
+            "key": 0,
+            "accuracy": "0"
+           },
+           "tackles": {
+            "total": 0,
+            "blocks": 0,
+            "interceptions": 0
+           },
+           "duels": {
+            "total": 0,
+            "won": 0
+           },
+           "dribbles": {
+            "attempts": 0,
+            "success": 0,
+            "past": null
+           },
+           "fouls": {
+            "drawn": 0,
+            "committed": 0
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": null,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 201375,
+          "name": "C. Lennox",
+          "photo": "https://media.api-sports.io/football/players/201375.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 90,
+            "number": 5,
+            "position": "D",
+            "rating": "0",
+            "captain": false,
+            "substitute": false
+           },
+           "offsides": 0,
+           "shots": {
+            "total": 0,
+            "on": 0
+           },
+           "goals": {
+            "total": 0,
+            "conceded": null,
+            "assists": 0,
+            "saves": 0
+           },
+           "passes": {
+            "total": 47,
+            "key": 0,
+            "accuracy": "41"
+           },
+           "tackles": {
+            "total": 0,
+            "blocks": 0,
+            "interceptions": 0
+           },
+           "duels": {
+            "total": 6,
+            "won": 2
+           },
+           "dribbles": {
+            "attempts": 1,
+            "success": 1,
+            "past": null
+           },
+           "fouls": {
+            "drawn": 1,
+            "committed": 1
+           },
+           "cards": {
+            "yellow": 1,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": null,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 141003,
+          "name": "C. Behan",
+          "photo": "https://media.api-sports.io/football/players/141003.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 90,
+            "number": 10,
+            "position": "M",
+            "rating": "0",
+            "captain": false,
+            "substitute": false
+           },
+           "offsides": 1,
+           "shots": {
+            "total": 1,
+            "on": 1
+           },
+           "goals": {
+            "total": 1,
+            "conceded": null,
+            "assists": 0,
+            "saves": 0
+           },
+           "passes": {
+            "total": 26,
+            "key": 2,
+            "accuracy": "21"
+           },
+           "tackles": {
+            "total": 0,
+            "blocks": 0,
+            "interceptions": 1
+           },
+           "duels": {
+            "total": 7,
+            "won": 2
+           },
+           "dribbles": {
+            "attempts": 2,
+            "success": 0,
+            "past": null
+           },
+           "fouls": {
+            "drawn": 2,
+            "committed": 1
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": null,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 460292,
+          "name": "H.Smith",
+          "photo": "https://media.api-sports.io/football/players/460292.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 90,
+            "number": 11,
+            "position": "M",
+            "rating": "0",
+            "captain": false,
+            "substitute": false
+           },
+           "offsides": 0,
+           "shots": {
+            "total": 1,
+            "on": 0
+           },
+           "goals": {
+            "total": 0,
+            "conceded": null,
+            "assists": 1,
+            "saves": 0
+           },
+           "passes": {
+            "total": 18,
+            "key": 2,
+            "accuracy": "14"
+           },
+           "tackles": {
+            "total": 0,
+            "blocks": 0,
+            "interceptions": 0
+           },
+           "duels": {
+            "total": 11,
+            "won": 3
+           },
+           "dribbles": {
+            "attempts": 1,
+            "success": 0,
+            "past": null
+           },
+           "fouls": {
+            "drawn": 2,
+            "committed": 0
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": null,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 559324,
+          "name": "L. Dignam",
+          "photo": "https://media.api-sports.io/football/players/559324.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 90,
+            "number": 8,
+            "position": "M",
+            "rating": "0",
+            "captain": false,
+            "substitute": false
+           },
+           "offsides": 0,
+           "shots": {
+            "total": 3,
+            "on": 3
+           },
+           "goals": {
+            "total": 1,
+            "conceded": null,
+            "assists": 0,
+            "saves": 0
+           },
+           "passes": {
+            "total": 56,
+            "key": 3,
+            "accuracy": "50"
+           },
+           "tackles": {
+            "total": 2,
+            "blocks": 0,
+            "interceptions": 0
+           },
+           "duels": {
+            "total": 9,
+            "won": 6
+           },
+           "dribbles": {
+            "attempts": 3,
+            "success": 2,
+            "past": null
+           },
+           "fouls": {
+            "drawn": 1,
+            "committed": 0
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": null,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 395307,
+          "name": "M. McCullagh",
+          "photo": "https://media.api-sports.io/football/players/395307.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 90,
+            "number": 7,
+            "position": "M",
+            "rating": "0",
+            "captain": false,
+            "substitute": false
+           },
+           "offsides": 0,
+           "shots": {
+            "total": 3,
+            "on": 2
+           },
+           "goals": {
+            "total": 0,
+            "conceded": null,
+            "assists": 0,
+            "saves": 0
+           },
+           "passes": {
+            "total": 26,
+            "key": 1,
+            "accuracy": "19"
+           },
+           "tackles": {
+            "total": 2,
+            "blocks": 1,
+            "interceptions": 0
+           },
+           "duels": {
+            "total": 6,
+            "won": 4
+           },
+           "dribbles": {
+            "attempts": 1,
+            "success": 0,
+            "past": null
+           },
+           "fouls": {
+            "drawn": 1,
+            "committed": 0
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": null,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 373664,
+          "name": "S. Norval",
+          "photo": "https://media.api-sports.io/football/players/373664.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 74,
+            "number": 24,
+            "position": "F",
+            "rating": "0",
+            "captain": false,
+            "substitute": false
+           },
+           "offsides": 0,
+           "shots": {
+            "total": 0,
+            "on": 0
+           },
+           "goals": {
+            "total": 0,
+            "conceded": null,
+            "assists": 0,
+            "saves": 0
+           },
+           "passes": {
+            "total": 22,
+            "key": 0,
+            "accuracy": "18"
+           },
+           "tackles": {
+            "total": 2,
+            "blocks": 0,
+            "interceptions": 0
+           },
+           "duels": {
+            "total": 7,
+            "won": 5
+           },
+           "dribbles": {
+            "attempts": 1,
+            "success": 0,
+            "past": null
+           },
+           "fouls": {
+            "drawn": 1,
+            "committed": 0
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": null,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 199855,
+          "name": "A. Wells",
+          "photo": "https://media.api-sports.io/football/players/199855.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 90,
+            "number": 6,
+            "position": "D",
+            "rating": "0",
+            "captain": false,
+            "substitute": false
+           },
+           "offsides": 0,
+           "shots": {
+            "total": 2,
+            "on": 0
+           },
+           "goals": {
+            "total": 0,
+            "conceded": null,
+            "assists": 0,
+            "saves": 0
+           },
+           "passes": {
+            "total": 43,
+            "key": 2,
+            "accuracy": "37"
+           },
+           "tackles": {
+            "total": 0,
+            "blocks": 2,
+            "interceptions": 1
+           },
+           "duels": {
+            "total": 5,
+            "won": 3
+           },
+           "dribbles": {
+            "attempts": 1,
+            "success": 1,
+            "past": null
+           },
+           "fouls": {
+            "drawn": 1,
+            "committed": 0
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": null,
+            "saved": null
+           }
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "team": {
+        "id": 3850,
+        "name": "Drogheda United",
+        "logo": "https://media.api-sports.io/football/teams/3850.png",
+        "update": "1970-01-01T00:00:00+00:00"
+       },
+       "players": [
+        {
+         "player": {
+          "id": 69273,
+          "name": "T. Oluwa",
+          "photo": "https://media.api-sports.io/football/players/69273.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 81,
+            "number": 11,
+            "position": "F",
+            "rating": "0",
+            "captain": false,
+            "substitute": false
+           },
+           "offsides": 1,
+           "shots": {
+            "total": 1,
+            "on": 0
+           },
+           "goals": {
+            "total": 0,
+            "conceded": null,
+            "assists": 0,
+            "saves": 0
+           },
+           "passes": {
+            "total": 16,
+            "key": 3,
+            "accuracy": "13"
+           },
+           "tackles": {
+            "total": 1,
+            "blocks": 1,
+            "interceptions": 0
+           },
+           "duels": {
+            "total": 15,
+            "won": 7
+           },
+           "dribbles": {
+            "attempts": 1,
+            "success": 1,
+            "past": null
+           },
+           "fouls": {
+            "drawn": 0,
+            "committed": 1
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": null,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 475665,
+          "name": "J. Bolger",
+          "photo": "https://media.api-sports.io/football/players/475665.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 0,
+            "number": 18,
+            "position": "D",
+            "rating": "0",
+            "captain": false,
+            "substitute": false
+           },
+           "offsides": 0,
+           "shots": {
+            "total": 0,
+            "on": 0
+           },
+           "goals": {
+            "total": 0,
+            "conceded": null,
+            "assists": 0,
+            "saves": 0
+           },
+           "passes": {
+            "total": 0,
+            "key": 0,
+            "accuracy": "0"
+           },
+           "tackles": {
+            "total": 0,
+            "blocks": 0,
+            "interceptions": 0
+           },
+           "duels": {
+            "total": 0,
+            "won": 0
+           },
+           "dribbles": {
+            "attempts": 0,
+            "success": 0,
+            "past": null
+           },
+           "fouls": {
+            "drawn": 0,
+            "committed": 0
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": null,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 69516,
+          "name": "R. Brennan",
+          "photo": "https://media.api-sports.io/football/players/69516.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 9,
+            "number": 19,
+            "position": "M",
+            "rating": "0",
+            "captain": false,
+            "substitute": false
+           },
+           "offsides": 0,
+           "shots": {
+            "total": 0,
+            "on": 0
+           },
+           "goals": {
+            "total": 0,
+            "conceded": null,
+            "assists": 0,
+            "saves": 0
+           },
+           "passes": {
+            "total": 2,
+            "key": 0,
+            "accuracy": "0"
+           },
+           "tackles": {
+            "total": 0,
+            "blocks": 0,
+            "interceptions": 0
+           },
+           "duels": {
+            "total": 0,
+            "won": 0
+           },
+           "dribbles": {
+            "attempts": 0,
+            "success": 0,
+            "past": null
+           },
+           "fouls": {
+            "drawn": 0,
+            "committed": 0
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": null,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 344949,
+          "name": "K. Cruise",
+          "photo": "https://media.api-sports.io/football/players/344949.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 0,
+            "number": 31,
+            "position": "D",
+            "rating": "0",
+            "captain": false,
+            "substitute": false
+           },
+           "offsides": 0,
+           "shots": {
+            "total": 0,
+            "on": 0
+           },
+           "goals": {
+            "total": 0,
+            "conceded": null,
+            "assists": 0,
+            "saves": 0
+           },
+           "passes": {
+            "total": 0,
+            "key": 0,
+            "accuracy": "0"
+           },
+           "tackles": {
+            "total": 0,
+            "blocks": 0,
+            "interceptions": 0
+           },
+           "duels": {
+            "total": 0,
+            "won": 0
+           },
+           "dribbles": {
+            "attempts": 0,
+            "success": 0,
+            "past": null
+           },
+           "fouls": {
+            "drawn": 0,
+            "committed": 0
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": null,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 69526,
+          "name": "S. Farrell",
+          "photo": "https://media.api-sports.io/football/players/69526.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 22,
+            "number": 17,
+            "position": "M",
+            "rating": "0",
+            "captain": false,
+            "substitute": false
+           },
+           "offsides": 0,
+           "shots": {
+            "total": 1,
+            "on": 0
+           },
+           "goals": {
+            "total": 0,
+            "conceded": null,
+            "assists": 0,
+            "saves": 0
+           },
+           "passes": {
+            "total": 21,
+            "key": 0,
+            "accuracy": "19"
+           },
+           "tackles": {
+            "total": 2,
+            "blocks": 1,
+            "interceptions": 1
+           },
+           "duels": {
+            "total": 3,
+            "won": 3
+           },
+           "dribbles": {
+            "attempts": 0,
+            "success": 0,
+            "past": null
+           },
+           "fouls": {
+            "drawn": 1,
+            "committed": 0
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": null,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 0,
+          "name": "theo hennessy",
+          "photo": null
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 0,
+            "number": null,
+            "position": null,
+            "rating": "0",
+            "captain": false,
+            "substitute": false
+           },
+           "offsides": 0,
+           "shots": {
+            "total": 0,
+            "on": 0
+           },
+           "goals": {
+            "total": 0,
+            "conceded": null,
+            "assists": 0,
+            "saves": 0
+           },
+           "passes": {
+            "total": 0,
+            "key": 0,
+            "accuracy": "0"
+           },
+           "tackles": {
+            "total": 0,
+            "blocks": 0,
+            "interceptions": 0
+           },
+           "duels": {
+            "total": 0,
+            "won": 0
+           },
+           "dribbles": {
+            "attempts": 0,
+            "success": 0,
+            "past": null
+           },
+           "fouls": {
+            "drawn": 0,
+            "committed": 0
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": null,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 69552,
+          "name": "M. Doyle",
+          "photo": "https://media.api-sports.io/football/players/69552.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 90,
+            "number": 14,
+            "position": "F",
+            "rating": "0",
+            "captain": false,
+            "substitute": false
+           },
+           "offsides": 1,
+           "shots": {
+            "total": 2,
+            "on": 1
+           },
+           "goals": {
+            "total": 1,
+            "conceded": null,
+            "assists": 0,
+            "saves": 0
+           },
+           "passes": {
+            "total": 26,
+            "key": 1,
+            "accuracy": "23"
+           },
+           "tackles": {
+            "total": 3,
+            "blocks": 1,
+            "interceptions": 1
+           },
+           "duels": {
+            "total": 11,
+            "won": 6
+           },
+           "dribbles": {
+            "attempts": 1,
+            "success": 1,
+            "past": null
+           },
+           "fouls": {
+            "drawn": 1,
+            "committed": 0
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": null,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 69267,
+          "name": "B. Kavanagh",
+          "photo": "https://media.api-sports.io/football/players/69267.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 90,
+            "number": 10,
+            "position": "M",
+            "rating": "0",
+            "captain": false,
+            "substitute": false
+           },
+           "offsides": 0,
+           "shots": {
+            "total": 4,
+            "on": 2
+           },
+           "goals": {
+            "total": 0,
+            "conceded": null,
+            "assists": 0,
+            "saves": 0
+           },
+           "passes": {
+            "total": 49,
+            "key": 6,
+            "accuracy": "41"
+           },
+           "tackles": {
+            "total": 1,
+            "blocks": 2,
+            "interceptions": 0
+           },
+           "duels": {
+            "total": 4,
+            "won": 1
+           },
+           "dribbles": {
+            "attempts": 1,
+            "success": 0,
+            "past": null
+           },
+           "fouls": {
+            "drawn": 0,
+            "committed": 0
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": null,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 69537,
+          "name": "C. Kane",
+          "photo": "https://media.api-sports.io/football/players/69537.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 90,
+            "number": 3,
+            "position": "D",
+            "rating": "0",
+            "captain": false,
+            "substitute": false
+           },
+           "offsides": 0,
+           "shots": {
+            "total": 0,
+            "on": 0
+           },
+           "goals": {
+            "total": 0,
+            "conceded": null,
+            "assists": 0,
+            "saves": 0
+           },
+           "passes": {
+            "total": 56,
+            "key": 2,
+            "accuracy": "53"
+           },
+           "tackles": {
+            "total": 0,
+            "blocks": 0,
+            "interceptions": 0
+           },
+           "duels": {
+            "total": 5,
+            "won": 0
+           },
+           "dribbles": {
+            "attempts": 2,
+            "success": 0,
+            "past": null
+           },
+           "fouls": {
+            "drawn": 0,
+            "committed": 2
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": null,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 460863,
+          "name": "Ethan O'Brien",
+          "photo": "https://media.api-sports.io/football/players/460863.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 68,
+            "number": 8,
+            "position": "M",
+            "rating": "0",
+            "captain": false,
+            "substitute": false
+           },
+           "offsides": 0,
+           "shots": {
+            "total": 1,
+            "on": 0
+           },
+           "goals": {
+            "total": 0,
+            "conceded": null,
+            "assists": 0,
+            "saves": 0
+           },
+           "passes": {
+            "total": 47,
+            "key": 1,
+            "accuracy": "43"
+           },
+           "tackles": {
+            "total": 1,
+            "blocks": 0,
+            "interceptions": 0
+           },
+           "duels": {
+            "total": 6,
+            "won": 3
+           },
+           "dribbles": {
+            "attempts": 1,
+            "success": 1,
+            "past": null
+           },
+           "fouls": {
+            "drawn": 0,
+            "committed": 1
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": null,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 20434,
+          "name": "A. Bates",
+          "photo": "https://media.api-sports.io/football/players/20434.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 81,
+            "number": 15,
+            "position": "M",
+            "rating": "0",
+            "captain": false,
+            "substitute": false
+           },
+           "offsides": 0,
+           "shots": {
+            "total": 2,
+            "on": 1
+           },
+           "goals": {
+            "total": 0,
+            "conceded": null,
+            "assists": 1,
+            "saves": 0
+           },
+           "passes": {
+            "total": 47,
+            "key": 3,
+            "accuracy": "40"
+           },
+           "tackles": {
+            "total": 1,
+            "blocks": 1,
+            "interceptions": 0
+           },
+           "duels": {
+            "total": 4,
+            "won": 2
+           },
+           "dribbles": {
+            "attempts": 0,
+            "success": 0,
+            "past": null
+           },
+           "fouls": {
+            "drawn": 0,
+            "committed": 2
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": null,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 199714,
+          "name": "E. Agbaje",
+          "photo": "https://media.api-sports.io/football/players/199714.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 90,
+            "number": 2,
+            "position": "F",
+            "rating": "0",
+            "captain": false,
+            "substitute": false
+           },
+           "offsides": 0,
+           "shots": {
+            "total": 2,
+            "on": 0
+           },
+           "goals": {
+            "total": 0,
+            "conceded": null,
+            "assists": 0,
+            "saves": 0
+           },
+           "passes": {
+            "total": 32,
+            "key": 1,
+            "accuracy": "27"
+           },
+           "tackles": {
+            "total": 4,
+            "blocks": 2,
+            "interceptions": 0
+           },
+           "duels": {
+            "total": 12,
+            "won": 7
+           },
+           "dribbles": {
+            "attempts": 2,
+            "success": 1,
+            "past": null
+           },
+           "fouls": {
+            "drawn": 1,
+            "committed": 2
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": null,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 281973,
+          "name": "A. Quinn",
+          "photo": "https://media.api-sports.io/football/players/281973.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 74,
+            "number": 4,
+            "position": "D",
+            "rating": "0",
+            "captain": false,
+            "substitute": false
+           },
+           "offsides": 0,
+           "shots": {
+            "total": 1,
+            "on": 0
+           },
+           "goals": {
+            "total": 0,
+            "conceded": null,
+            "assists": 0,
+            "saves": 0
+           },
+           "passes": {
+            "total": 36,
+            "key": 0,
+            "accuracy": "28"
+           },
+           "tackles": {
+            "total": 0,
+            "blocks": 0,
+            "interceptions": 1
+           },
+           "duels": {
+            "total": 2,
+            "won": 1
+           },
+           "dribbles": {
+            "attempts": 0,
+            "success": 0,
+            "past": null
+           },
+           "fouls": {
+            "drawn": 0,
+            "committed": 0
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": null,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 90031,
+          "name": "C. Keeley",
+          "photo": "https://media.api-sports.io/football/players/90031.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 90,
+            "number": 22,
+            "position": "D",
+            "rating": "0",
+            "captain": false,
+            "substitute": false
+           },
+           "offsides": 0,
+           "shots": {
+            "total": 6,
+            "on": 1
+           },
+           "goals": {
+            "total": 0,
+            "conceded": null,
+            "assists": 0,
+            "saves": 0
+           },
+           "passes": {
+            "total": 50,
+            "key": 0,
+            "accuracy": "37"
+           },
+           "tackles": {
+            "total": 0,
+            "blocks": 2,
+            "interceptions": 1
+           },
+           "duels": {
+            "total": 12,
+            "won": 8
+           },
+           "dribbles": {
+            "attempts": 0,
+            "success": 0,
+            "past": null
+           },
+           "fouls": {
+            "drawn": 0,
+            "committed": 2
+           },
+           "cards": {
+            "yellow": 1,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": null,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 103059,
+          "name": "Leo Burney",
+          "photo": "https://media.api-sports.io/football/players/103059.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 90,
+            "number": 5,
+            "position": "D",
+            "rating": "0",
+            "captain": false,
+            "substitute": false
+           },
+           "offsides": 0,
+           "shots": {
+            "total": 0,
+            "on": 0
+           },
+           "goals": {
+            "total": 0,
+            "conceded": null,
+            "assists": 0,
+            "saves": 0
+           },
+           "passes": {
+            "total": 76,
+            "key": 0,
+            "accuracy": "74"
+           },
+           "tackles": {
+            "total": 0,
+            "blocks": 0,
+            "interceptions": 0
+           },
+           "duels": {
+            "total": 6,
+            "won": 2
+           },
+           "dribbles": {
+            "attempts": 0,
+            "success": 0,
+            "past": null
+           },
+           "fouls": {
+            "drawn": 0,
+            "committed": 1
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": null,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 278090,
+          "name": "Fynn Michael Cordell Talley",
+          "photo": "https://media.api-sports.io/football/players/278090.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 90,
+            "number": 44,
+            "position": "G",
+            "rating": "0",
+            "captain": false,
+            "substitute": false
+           },
+           "offsides": 0,
+           "shots": {
+            "total": 0,
+            "on": 0
+           },
+           "goals": {
+            "total": 0,
+            "conceded": null,
+            "assists": 0,
+            "saves": 4
+           },
+           "passes": {
+            "total": 24,
+            "key": 0,
+            "accuracy": "13"
+           },
+           "tackles": {
+            "total": 0,
+            "blocks": 0,
+            "interceptions": 0
+           },
+           "duels": {
+            "total": 0,
+            "won": 0
+           },
+           "dribbles": {
+            "attempts": 0,
+            "success": 0,
+            "past": null
+           },
+           "fouls": {
+            "drawn": 0,
+            "committed": 0
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": null,
+            "saved": null
+           }
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "events",
+   "endpoint": "fixtures/events",
+   "params": {
+    "fixture": 1648307
+   },
+   "ok": true,
+   "response": [
+    {
+     "time": {
+      "elapsed": 13,
+      "extra": null
+     },
+     "team": {
+      "id": 3844,
+      "name": "UCD",
+      "logo": "https://media.api-sports.io/football/teams/3844.png"
+     },
+     "player": {
+      "id": 90031,
+      "name": "Conor Keeley"
+     },
+     "assist": {
+      "id": null,
+      "name": null
+     },
+     "type": "Card",
+     "detail": "Yellow Card",
+     "comments": null
+    },
+    {
+     "time": {
+      "elapsed": 19,
+      "extra": null
+     },
+     "team": {
+      "id": 3844,
+      "name": "UCD",
+      "logo": "https://media.api-sports.io/football/teams/3844.png"
+     },
+     "player": {
+      "id": 69552,
+      "name": "Mark Doyle"
+     },
+     "assist": {
+      "id": 20434,
+      "name": "Alfie Bates"
+     },
+     "type": "Goal",
+     "detail": "Normal Goal",
+     "comments": null
+    },
+    {
+     "time": {
+      "elapsed": 33,
+      "extra": null
+     },
+     "team": {
+      "id": 3850,
+      "name": "Drogheda United",
+      "logo": "https://media.api-sports.io/football/teams/3850.png"
+     },
+     "player": {
+      "id": 141003,
+      "name": "Ciaran Behan"
+     },
+     "assist": {
+      "id": null,
+      "name": null
+     },
+     "type": "Goal",
+     "detail": "Normal Goal",
+     "comments": null
+    },
+    {
+     "time": {
+      "elapsed": 66,
+      "extra": null
+     },
+     "team": {
+      "id": 3850,
+      "name": "Drogheda United",
+      "logo": "https://media.api-sports.io/football/teams/3850.png"
+     },
+     "player": {
+      "id": 559324,
+      "name": "Louis Dignam"
+     },
+     "assist": {
+      "id": 460292,
+      "name": "Hugh Smith"
+     },
+     "type": "Goal",
+     "detail": "Normal Goal",
+     "comments": null
+    },
+    {
+     "time": {
+      "elapsed": 68,
+      "extra": null
+     },
+     "team": {
+      "id": 3844,
+      "name": "UCD",
+      "logo": "https://media.api-sports.io/football/teams/3844.png"
+     },
+     "player": {
+      "id": 460863,
+      "name": "ethan brien o"
+     },
+     "assist": {
+      "id": 69526,
+      "name": "Shane Farrell"
+     },
+     "type": "subst",
+     "detail": "Substitution 1",
+     "comments": null
+    },
+    {
+     "time": {
+      "elapsed": 74,
+      "extra": null
+     },
+     "team": {
+      "id": 3844,
+      "name": "UCD",
+      "logo": "https://media.api-sports.io/football/teams/3844.png"
+     },
+     "player": {
+      "id": 281973,
+      "name": "Andrew Quinn"
+     },
+     "assist": {
+      "id": 531316,
+      "name": "keegan ancelin"
+     },
+     "type": "subst",
+     "detail": "Substitution 2",
+     "comments": null
+    },
+    {
+     "time": {
+      "elapsed": 74,
+      "extra": null
+     },
+     "team": {
+      "id": 3850,
+      "name": "Drogheda United",
+      "logo": "https://media.api-sports.io/football/teams/3850.png"
+     },
+     "player": {
+      "id": 373664,
+      "name": "Sam Norval"
+     },
+     "assist": {
+      "id": 559233,
+      "name": "Stephen Mohan"
+     },
+     "type": "subst",
+     "detail": "Substitution 1",
+     "comments": null
+    },
+    {
+     "time": {
+      "elapsed": 80,
+      "extra": null
+     },
+     "team": {
+      "id": 3844,
+      "name": "UCD",
+      "logo": "https://media.api-sports.io/football/teams/3844.png"
+     },
+     "player": {
+      "id": 20434,
+      "name": "Alfie Bates"
+     },
+     "assist": {
+      "id": 627176,
+      "name": "Jago Godden"
+     },
+     "type": "subst",
+     "detail": "Substitution 3",
+     "comments": null
+    },
+    {
+     "time": {
+      "elapsed": 80,
+      "extra": null
+     },
+     "team": {
+      "id": 3844,
+      "name": "UCD",
+      "logo": "https://media.api-sports.io/football/teams/3844.png"
+     },
+     "player": {
+      "id": 69273,
+      "name": "Thomas Oluwa"
+     },
+     "assist": {
+      "id": 69516,
+      "name": "Ryan Brennan"
+     },
+     "type": "subst",
+     "detail": "Substitution 4",
+     "comments": null
+    },
+    {
+     "time": {
+      "elapsed": 85,
+      "extra": null
+     },
+     "team": {
+      "id": 3850,
+      "name": "Drogheda United",
+      "logo": "https://media.api-sports.io/football/teams/3850.png"
+     },
+     "player": {
+      "id": 201375,
+      "name": "Carl Lennox"
+     },
+     "assist": {
+      "id": null,
+      "name": null
+     },
+     "type": "Card",
+     "detail": "Yellow Card",
+     "comments": null
+    },
+    {
+     "time": {
+      "elapsed": 90,
+      "extra": 1
+     },
+     "team": {
+      "id": 3850,
+      "name": "Drogheda United",
+      "logo": "https://media.api-sports.io/football/teams/3850.png"
+     },
+     "player": {
+      "id": 444502,
+      "name": "Luca cailloce"
+     },
+     "assist": {
+      "id": null,
+      "name": null
+     },
+     "type": "Card",
+     "detail": "Yellow Card",
+     "comments": null
+    }
+   ]
+  }
+ ]
+}

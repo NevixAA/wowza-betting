@@ -250,6 +250,15 @@ def _league_prior_dates_mean(df: pd.DataFrame, col: str) -> pd.Series:
     return out
 
 
+def league_aggregate_history(hist: pd.DataFrame) -> pd.DataFrame:
+    """The history rows a SERVING league aggregate may read: the rows training kept. Training drops
+    the COVID seasons (config.covid_season_mask) before build_features whenever
+    config.EXCLUDE_COVID_SEASONS is on, so serving drops the same seasons from its league averages."""
+    if not getattr(config, "EXCLUDE_COVID_SEASONS", False) or hist.empty or "league" not in hist.columns:
+        return hist
+    return hist[~config.covid_season_mask(hist).to_numpy()]
+
+
 def _league_expanding_avg(df: pd.DataFrame) -> pd.Series:
     """League-wide goal average over the league's matches on strictly earlier dates."""
     return _league_prior_dates_mean(df, "total_goals")
@@ -697,6 +706,12 @@ def build_upcoming_features(
     upcoming = upcoming.copy()
 
     hist = historical.sort_values("date").copy()
+    # LEAGUE AGGREGATES read the same rows training read (2026-11-15). Every trainer drops the
+    # COVID seasons before build_features (pipeline.mode_train, the Phase 2 harness), so the
+    # trained league_avg_goals (attack/defence strengths) and league away-goal average (home
+    # advantage) never saw them; this averaged the FULL history - up to 0.107 goals per game
+    # apart. Team-level lookups keep the full history (they never reach those seasons today).
+    hist_league = league_aggregate_history(hist)
 
     _league_clubs: dict = {}
     _resolved: dict = {}
@@ -833,7 +848,7 @@ def build_upcoming_features(
 
         # The fixture's OWN league only (no league -> no reference -> NaN, as in training; the
         # all-league mean it used to fall back to was a global stand-in).
-        lg_avg_away = hist[hist["league"] == lg]["away_goals"].mean() if lg else np.nan
+        lg_avg_away = hist_league[hist_league["league"] == lg]["away_goals"].mean() if lg else np.nan
         # No league history -> no reference average -> home-advantage features stay NaN below
         # (was an invented 1.1; Data Truth audit finding 12).
         _no_ref = not (pd.notna(lg_avg_away) and lg_avg_away > 0)
@@ -863,7 +878,7 @@ def build_upcoming_features(
     df = pd.DataFrame(feat_records)
 
     # League avg from history
-    league_avgs = hist.groupby("league")["total_goals"].mean()
+    league_avgs = hist_league.groupby("league")["total_goals"].mean()
     df["league_avg_goals"] = df["league"].map(league_avgs)
     # As-of league level (strictly before the fixture's date, own league only, COVID out).
     _ll = league_level_asof(df, hist)
