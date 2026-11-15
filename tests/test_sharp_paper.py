@@ -234,15 +234,15 @@ def test_slots_are_due_only_inside_their_windows_and_once():
 
 def test_budget_never_spends_below_the_floor_or_over_the_caps(tmp_path):
     m = _capture_mod()
-    b = m.Budget(tmp_path, floor=260_000, run_cap=10, day_cap=100, month_cap=1000)
+    b = m.Budget(tmp_path, floor=100_000, run_cap=10, day_cap=100, month_cap=1000)
     assert not b.can_spend(2)                                   # remaining unknown: no paid call
-    b.remaining = 260_001
+    b.remaining = 100_001
     assert not b.can_spend(2) and "floor" in b.stopped
     b.remaining = 300_000
     assert b.can_spend(2)
     b.book(10)
     assert not b.can_spend(2) and "run cap" in b.stopped
-    b2 = m.Budget(tmp_path, floor=260_000, run_cap=10_000, day_cap=4, month_cap=1000)
+    b2 = m.Budget(tmp_path, floor=100_000, run_cap=10_000, day_cap=4, month_cap=1000)
     b2.remaining = 300_000
     b2.book(4)
     assert not b2.can_spend(2) and "day cap" in b2.stopped
@@ -256,3 +256,36 @@ def test_match_events_is_one_to_one_inside_the_day_window():
     assert list(m.values())[0]["id"] == "e1" and st["matched"] == 1
     m, st = SP.match_events(fx, ev + [{**ev[0], "id": "e3"}])
     assert m == {} and st["ambiguous"] == 1
+
+
+# ── owner 2026-11-15 "Capture stops at 100k" ─────────────────────────────────────────────────
+
+def test_capture_floor_is_100k_refuses_below_and_accepts_at_or_above(tmp_path):
+    m = _capture_mod()
+    assert m.CAPTURE_MIN_FLOOR == 100_000
+    with pytest.raises(SystemExit):
+        m.main(["--store", str(tmp_path / "s"), "--ledgers", str(tmp_path), "--mode", "evaluate", "--floor", "99999"])
+    for f in ("100000", "290000"):
+        assert m.main(["--store", str(tmp_path / f), "--ledgers", str(tmp_path), "--mode", "evaluate",
+                       "--floor", f]) == 0
+    b = m.Budget(tmp_path, floor=m.CAPTURE_MIN_FLOOR, run_cap=100, day_cap=100, month_cap=100)
+    b.remaining = 150_000
+    assert b.can_spend(2)                                     # between 100k and the history's 290k: allowed
+    b.remaining = 100_001
+    assert not b.can_spend(2) and "floor" in b.stopped
+
+
+def test_the_history_collectors_floor_is_not_the_captures():
+    """The capture's floor is its own constant; the OddsAPI history collector keeps MIN_FLOOR 260,000 and
+    refuses a lower floor (checked here when the collector is on this tree; its own suite
+    tests/test_oddsapi_history.py proves the refusal on prep/oddsapi-history)."""
+    m = _capture_mod()
+    src = (ROOT / "scripts" / "sharp_paper_capture.py").read_text(encoding="utf-8")
+    assert not re.search(r"^\s*(from|import)\s+[\w. ]*oddsapi_history", src, re.M)   # never imports its floor
+    oh = ROOT / "src" / "oddsapi_history.py"
+    if not oh.exists():
+        pytest.skip("src/oddsapi_history.py is not on this branch (prep/oddsapi-history carries it)")
+    from src import oddsapi_history as OH
+    assert OH.MIN_FLOOR == 260_000 and m.CAPTURE_MIN_FLOOR < OH.MIN_FLOOR
+    with pytest.raises(ValueError):
+        OH.Meter("k", floor=OH.MIN_FLOOR - 1, run_cap=10, max_seconds=60)
