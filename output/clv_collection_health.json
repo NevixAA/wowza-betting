@@ -1,16 +1,16 @@
 {
-  "generated_at": "2026-11-15T20:30:46Z",
+  "generated_at": "2026-11-15T22:55:53Z",
   "close_rule": "strictly pre-kickoff, observed within 30 minutes",
   "shadow_all_time": {
-    "eligible": 1054,
-    "with_t30_close": 437,
-    "with_t10_close": 369,
+    "eligible": 1056,
+    "with_t30_close": 439,
+    "with_t10_close": 371,
     "stale_close": 617,
     "no_close": 0,
-    "certified_t30_pct": 41.5,
-    "certified_t10_pct": 35.0,
+    "certified_t30_pct": 41.6,
+    "certified_t10_pct": 35.1,
     "median_close_minutes_certified": 1.2,
-    "median_last_pre_kickoff_minutes": 105.3,
+    "median_last_pre_kickoff_minutes": 104.9,
     "by_league": {
       "Argentina Primera Division": {
         "eligible": 91,
@@ -123,15 +123,15 @@
         "median_last_pre_kickoff_minutes": 74.7
       },
       "La Liga 2": {
-        "eligible": 68,
-        "with_t30_close": 32,
-        "with_t10_close": 23,
+        "eligible": 70,
+        "with_t30_close": 34,
+        "with_t10_close": 25,
         "stale_close": 36,
         "no_close": 0,
-        "certified_t30_pct": 47.1,
-        "certified_t10_pct": 33.8,
-        "median_close_minutes_certified": 1.6,
-        "median_last_pre_kickoff_minutes": 48.5
+        "certified_t30_pct": 48.6,
+        "certified_t10_pct": 35.7,
+        "median_close_minutes_certified": 1.8,
+        "median_last_pre_kickoff_minutes": 46.8
       },
       "League One": {
         "eligible": 73,
@@ -224,26 +224,26 @@
     },
     "by_market": {
       "ou25": {
-        "eligible": 1054,
-        "with_t30_close": 437,
-        "with_t10_close": 369,
+        "eligible": 1056,
+        "with_t30_close": 439,
+        "with_t10_close": 371,
         "stale_close": 617,
         "no_close": 0,
-        "certified_t30_pct": 41.5,
-        "certified_t10_pct": 35.0,
+        "certified_t30_pct": 41.6,
+        "certified_t10_pct": 35.1,
         "median_close_minutes_certified": 1.2,
-        "median_last_pre_kickoff_minutes": 105.3
+        "median_last_pre_kickoff_minutes": 104.9
       }
     }
   },
   "shadow_since_measure_from": {
-    "eligible": 590,
-    "with_t30_close": 401,
-    "with_t10_close": 361,
+    "eligible": 592,
+    "with_t30_close": 403,
+    "with_t10_close": 363,
     "stale_close": 189,
     "no_close": 0,
-    "certified_t30_pct": 68.0,
-    "certified_t10_pct": 61.2,
+    "certified_t30_pct": 68.1,
+    "certified_t10_pct": 61.3,
     "median_close_minutes_certified": 1.1,
     "median_last_pre_kickoff_minutes": 1.7,
     "by_league": {
@@ -358,15 +358,15 @@
         "median_last_pre_kickoff_minutes": 7.4
       },
       "La Liga 2": {
-        "eligible": 40,
-        "with_t30_close": 30,
-        "with_t10_close": 23,
+        "eligible": 42,
+        "with_t30_close": 32,
+        "with_t10_close": 25,
         "stale_close": 10,
         "no_close": 0,
-        "certified_t30_pct": 75.0,
-        "certified_t10_pct": 57.5,
-        "median_close_minutes_certified": 1.3,
-        "median_last_pre_kickoff_minutes": 3.5
+        "certified_t30_pct": 76.2,
+        "certified_t10_pct": 59.5,
+        "median_close_minutes_certified": 1.6,
+        "median_last_pre_kickoff_minutes": 2.0
       },
       "League One": {
         "eligible": 37,
@@ -459,13 +459,13 @@
     },
     "by_market": {
       "ou25": {
-        "eligible": 590,
-        "with_t30_close": 401,
-        "with_t10_close": 361,
+        "eligible": 592,
+        "with_t30_close": 403,
+        "with_t10_close": 363,
         "stale_close": 189,
         "no_close": 0,
-        "certified_t30_pct": 68.0,
-        "certified_t10_pct": 61.2,
+        "certified_t30_pct": 68.1,
+        "certified_t10_pct": 61.3,
         "median_close_minutes_certified": 1.1,
         "median_last_pre_kickoff_minutes": 1.7
       }
@@ -474,21 +474,21 @@
   "measure_from": "2026-10-23T00:00:00Z",
   "collection": {
     "window_days": 7.0,
-    "from": "2026-11-08 20:30:46.678171+00:00",
-    "fixture_markets": 630,
-    "fixtures": 79,
-    "t30_pct": 18.7,
-    "t10_pct": 18.7,
-    "t60_pct": 18.7,
+    "from": "2026-11-08 22:55:53.015020+00:00",
+    "fixture_markets": 550,
+    "fixtures": 69,
+    "t30_pct": 21.5,
+    "t10_pct": 21.5,
+    "t60_pct": 21.5,
     "median_last_obs_minutes": 127.0,
     "by_track": {
       "new_format": {
-        "fixture_markets": 135,
-        "fixtures": 17,
-        "t30_pct": 23.0,
-        "t10_pct": 23.0,
-        "t60_pct": 23.0,
-        "median_last_obs_minutes": 6542.7
+        "fixture_markets": 55,
+        "fixtures": 7,
+        "t30_pct": 56.4,
+        "t10_pct": 56.4,
+        "t60_pct": 56.4,
+        "median_last_obs_minutes": 1.5
       },
       "standard": {
         "fixture_markets": 495,
@@ -501,79 +501,71 @@
     },
     "by_market": {
       "btts_no": {
-        "fixture_markets": 79,
-        "fixtures": 79,
-        "t30_pct": 19.0,
-        "t10_pct": 19.0,
-        "t60_pct": 19.0,
+        "fixture_markets": 69,
+        "fixtures": 69,
+        "t30_pct": 21.7,
+        "t10_pct": 21.7,
+        "t60_pct": 21.7,
         "median_last_obs_minutes": 127.0
       },
       "btts_yes": {
-        "fixture_markets": 79,
-        "fixtures": 79,
-        "t30_pct": 19.0,
-        "t10_pct": 19.0,
-        "t60_pct": 19.0,
+        "fixture_markets": 69,
+        "fixtures": 69,
+        "t30_pct": 21.7,
+        "t10_pct": 21.7,
+        "t60_pct": 21.7,
         "median_last_obs_minutes": 127.0
       },
       "over15": {
-        "fixture_markets": 79,
-        "fixtures": 79,
-        "t30_pct": 19.0,
-        "t10_pct": 19.0,
-        "t60_pct": 19.0,
+        "fixture_markets": 69,
+        "fixtures": 69,
+        "t30_pct": 21.7,
+        "t10_pct": 21.7,
+        "t60_pct": 21.7,
         "median_last_obs_minutes": 127.0
       },
       "over25": {
-        "fixture_markets": 78,
-        "fixtures": 78,
-        "t30_pct": 17.9,
-        "t10_pct": 17.9,
-        "t60_pct": 17.9,
+        "fixture_markets": 68,
+        "fixtures": 68,
+        "t30_pct": 20.6,
+        "t10_pct": 20.6,
+        "t60_pct": 20.6,
         "median_last_obs_minutes": 127.0
       },
       "over35": {
-        "fixture_markets": 79,
-        "fixtures": 79,
-        "t30_pct": 19.0,
-        "t10_pct": 19.0,
-        "t60_pct": 19.0,
+        "fixture_markets": 69,
+        "fixtures": 69,
+        "t30_pct": 21.7,
+        "t10_pct": 21.7,
+        "t60_pct": 21.7,
         "median_last_obs_minutes": 127.0
       },
       "under15": {
-        "fixture_markets": 79,
-        "fixtures": 79,
-        "t30_pct": 19.0,
-        "t10_pct": 19.0,
-        "t60_pct": 19.0,
+        "fixture_markets": 69,
+        "fixtures": 69,
+        "t30_pct": 21.7,
+        "t10_pct": 21.7,
+        "t60_pct": 21.7,
         "median_last_obs_minutes": 127.0
       },
       "under25": {
-        "fixture_markets": 78,
-        "fixtures": 78,
-        "t30_pct": 17.9,
-        "t10_pct": 17.9,
-        "t60_pct": 17.9,
+        "fixture_markets": 68,
+        "fixtures": 68,
+        "t30_pct": 20.6,
+        "t10_pct": 20.6,
+        "t60_pct": 20.6,
         "median_last_obs_minutes": 127.0
       },
       "under35": {
-        "fixture_markets": 79,
-        "fixtures": 79,
-        "t30_pct": 19.0,
-        "t10_pct": 19.0,
-        "t60_pct": 19.0,
+        "fixture_markets": 69,
+        "fixtures": 69,
+        "t30_pct": 21.7,
+        "t10_pct": 21.7,
+        "t60_pct": 21.7,
         "median_last_obs_minutes": 127.0
       }
     },
     "by_league": {
-      "Argentina Primera Division": {
-        "fixture_markets": 80,
-        "fixtures": 10,
-        "t30_pct": 0.0,
-        "t10_pct": 0.0,
-        "t60_pct": 0.0,
-        "median_last_obs_minutes": 8445.2
-      },
       "Brazil Serie A": {
         "fixture_markets": 16,
         "fixtures": 2,
@@ -667,7 +659,7 @@
   "check": {
     "status": "FAIL",
     "reasons": [
-      "collection T-30m 18.7% < 40.0% on 630 fixture-markets"
+      "collection T-30m 21.5% < 40.0% on 550 fixture-markets"
     ]
   }
 }
