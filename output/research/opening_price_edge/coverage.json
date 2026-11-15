@@ -1,0 +1,2355 @@
+{
+ "universe_rows": 178876,
+ "fixtures": 44719,
+ "main_dropped": {
+  "no_snapshot_ts": 0,
+  "post_kickoff": 1853,
+  "price_le_1_01": 16547
+ },
+ "main_unmatched": {
+  "event_without_fixture": 6846,
+  "league_without_sport_key": 5725,
+  "fixture_without_event": 4899
+ },
+ "b4_dropped": {
+  "no_snapshot_ts": 0,
+  "post_kickoff": 38259,
+  "price_le_1_01": 64
+ },
+ "fd_join": {
+  "Belgian First Division A": {
+   "served": 1155,
+   "joined": 1118,
+   "join_rate": 0.968
+  },
+  "Bundesliga 2": {
+   "served": 1094,
+   "joined": 1089,
+   "join_rate": 0.9954
+  },
+  "Championship": {
+   "served": 2002,
+   "joined": 1982,
+   "join_rate": 0.99
+  },
+  "Dutch Eredivisie": {
+   "served": 1176,
+   "joined": 1130,
+   "join_rate": 0.9609
+  },
+  "Greek Super League": {
+   "served": 867,
+   "joined": 864,
+   "join_rate": 0.9965
+  },
+  "La Liga 2": {
+   "served": 1727,
+   "joined": 1703,
+   "join_rate": 0.9861
+  },
+  "League One": {
+   "served": 2034,
+   "joined": 2014,
+   "join_rate": 0.9902
+  },
+  "League Two": {
+   "served": 2037,
+   "joined": 2017,
+   "join_rate": 0.9902
+  },
+  "Ligue 2": {
+   "served": 1255,
+   "joined": 1246,
+   "join_rate": 0.9928
+  },
+  "National League": {
+   "served": 2046,
+   "joined": 2027,
+   "join_rate": 0.9907
+  },
+  "Portuguese Primeira Liga": {
+   "served": 1141,
+   "joined": 1136,
+   "join_rate": 0.9956
+  },
+  "Scottish Championship": {
+   "served": 682,
+   "joined": 661,
+   "join_rate": 0.9692
+  },
+  "Scottish League One": {
+   "served": 685,
+   "joined": 663,
+   "join_rate": 0.9679
+  },
+  "Scottish League Two": {
+   "served": 678,
+   "joined": 673,
+   "join_rate": 0.9926
+  },
+  "Scottish Premiership": {
+   "served": 856,
+   "joined": 837,
+   "join_rate": 0.9778
+  },
+  "Serie B": {
+   "served": 1432,
+   "joined": 1393,
+   "join_rate": 0.9728
+  },
+  "Turkish Super Lig": {
+   "served": 1235,
+   "joined": 1235,
+   "join_rate": 1.0
+  }
+ },
+ "priced_rows": [
+  {
+   "track": "new_format",
+   "league": "Argentina Primera Division",
+   "market": "btts",
+   "role": "bet",
+   "rows": 922
+  },
+  {
+   "track": "new_format",
+   "league": "Argentina Primera Division",
+   "market": "over15",
+   "role": "bet",
+   "rows": 623
+  },
+  {
+   "track": "new_format",
+   "league": "Argentina Primera Division",
+   "market": "over25",
+   "role": "bet",
+   "rows": 620
+  },
+  {
+   "track": "new_format",
+   "league": "Argentina Primera Division",
+   "market": "over35",
+   "role": "bet",
+   "rows": 593
+  },
+  {
+   "track": "new_format",
+   "league": "Austrian Bundesliga",
+   "market": "btts",
+   "role": "bet",
+   "rows": 532
+  },
+  {
+   "track": "new_format",
+   "league": "Austrian Bundesliga",
+   "market": "over15",
+   "role": "bet",
+   "rows": 505
+  },
+  {
+   "track": "new_format",
+   "league": "Austrian Bundesliga",
+   "market": "over25",
+   "role": "bet",
+   "rows": 522
+  },
+  {
+   "track": "new_format",
+   "league": "Austrian Bundesliga",
+   "market": "over35",
+   "role": "bet",
+   "rows": 505
+  },
+  {
+   "track": "new_format",
+   "league": "Brazil Serie A",
+   "market": "btts",
+   "role": "bet",
+   "rows": 984
+  },
+  {
+   "track": "new_format",
+   "league": "Brazil Serie A",
+   "market": "over15",
+   "role": "bet",
+   "rows": 873
+  },
+  {
+   "track": "new_format",
+   "league": "Brazil Serie A",
+   "market": "over25",
+   "role": "bet",
+   "rows": 871
+  },
+  {
+   "track": "new_format",
+   "league": "Brazil Serie A",
+   "market": "over35",
+   "role": "bet",
+   "rows": 768
+  },
+  {
+   "track": "new_format",
+   "league": "China Super League",
+   "market": "btts",
+   "role": "bet",
+   "rows": 306
+  },
+  {
+   "track": "new_format",
+   "league": "China Super League",
+   "market": "over15",
+   "role": "bet",
+   "rows": 300
+  },
+  {
+   "track": "new_format",
+   "league": "China Super League",
+   "market": "over25",
+   "role": "bet",
+   "rows": 306
+  },
+  {
+   "track": "new_format",
+   "league": "China Super League",
+   "market": "over35",
+   "role": "bet",
+   "rows": 309
+  },
+  {
+   "track": "new_format",
+   "league": "Denmark Superliga",
+   "market": "btts",
+   "role": "bet",
+   "rows": 493
+  },
+  {
+   "track": "new_format",
+   "league": "Denmark Superliga",
+   "market": "over15",
+   "role": "bet",
+   "rows": 448
+  },
+  {
+   "track": "new_format",
+   "league": "Denmark Superliga",
+   "market": "over25",
+   "role": "bet",
+   "rows": 457
+  },
+  {
+   "track": "new_format",
+   "league": "Denmark Superliga",
+   "market": "over35",
+   "role": "bet",
+   "rows": 442
+  },
+  {
+   "track": "new_format",
+   "league": "Finland Veikkausliiga",
+   "market": "btts",
+   "role": "bet",
+   "rows": 330
+  },
+  {
+   "track": "new_format",
+   "league": "Finland Veikkausliiga",
+   "market": "over15",
+   "role": "bet",
+   "rows": 304
+  },
+  {
+   "track": "new_format",
+   "league": "Finland Veikkausliiga",
+   "market": "over25",
+   "role": "bet",
+   "rows": 305
+  },
+  {
+   "track": "new_format",
+   "league": "Finland Veikkausliiga",
+   "market": "over35",
+   "role": "bet",
+   "rows": 268
+  },
+  {
+   "track": "new_format",
+   "league": "Ireland Premier Division",
+   "market": "btts",
+   "role": "bet",
+   "rows": 260
+  },
+  {
+   "track": "new_format",
+   "league": "Ireland Premier Division",
+   "market": "over15",
+   "role": "bet",
+   "rows": 259
+  },
+  {
+   "track": "new_format",
+   "league": "Ireland Premier Division",
+   "market": "over25",
+   "role": "bet",
+   "rows": 259
+  },
+  {
+   "track": "new_format",
+   "league": "Ireland Premier Division",
+   "market": "over35",
+   "role": "bet",
+   "rows": 257
+  },
+  {
+   "track": "new_format",
+   "league": "Japan J-League",
+   "market": "btts",
+   "role": "bet",
+   "rows": 591
+  },
+  {
+   "track": "new_format",
+   "league": "Japan J-League",
+   "market": "over15",
+   "role": "bet",
+   "rows": 585
+  },
+  {
+   "track": "new_format",
+   "league": "Japan J-League",
+   "market": "over25",
+   "role": "bet",
+   "rows": 585
+  },
+  {
+   "track": "new_format",
+   "league": "Japan J-League",
+   "market": "over35",
+   "role": "bet",
+   "rows": 547
+  },
+  {
+   "track": "new_format",
+   "league": "K-League 1",
+   "market": "btts",
+   "role": "bet",
+   "rows": 375
+  },
+  {
+   "track": "new_format",
+   "league": "K-League 1",
+   "market": "over15",
+   "role": "bet",
+   "rows": 362
+  },
+  {
+   "track": "new_format",
+   "league": "K-League 1",
+   "market": "over25",
+   "role": "bet",
+   "rows": 362
+  },
+  {
+   "track": "new_format",
+   "league": "K-League 1",
+   "market": "over35",
+   "role": "bet",
+   "rows": 335
+  },
+  {
+   "track": "new_format",
+   "league": "Mexico Liga MX",
+   "market": "btts",
+   "role": "bet",
+   "rows": 581
+  },
+  {
+   "track": "new_format",
+   "league": "Mexico Liga MX",
+   "market": "over15",
+   "role": "bet",
+   "rows": 653
+  },
+  {
+   "track": "new_format",
+   "league": "Mexico Liga MX",
+   "market": "over25",
+   "role": "bet",
+   "rows": 653
+  },
+  {
+   "track": "new_format",
+   "league": "Mexico Liga MX",
+   "market": "over35",
+   "role": "bet",
+   "rows": 607
+  },
+  {
+   "track": "new_format",
+   "league": "Norway Eliteserien",
+   "market": "btts",
+   "role": "bet",
+   "rows": 554
+  },
+  {
+   "track": "new_format",
+   "league": "Norway Eliteserien",
+   "market": "over15",
+   "role": "bet",
+   "rows": 520
+  },
+  {
+   "track": "new_format",
+   "league": "Norway Eliteserien",
+   "market": "over25",
+   "role": "bet",
+   "rows": 521
+  },
+  {
+   "track": "new_format",
+   "league": "Norway Eliteserien",
+   "market": "over35",
+   "role": "bet",
+   "rows": 487
+  },
+  {
+   "track": "new_format",
+   "league": "Saudi Pro League",
+   "market": "btts",
+   "role": "bet",
+   "rows": 27
+  },
+  {
+   "track": "new_format",
+   "league": "Saudi Pro League",
+   "market": "over15",
+   "role": "bet",
+   "rows": 24
+  },
+  {
+   "track": "new_format",
+   "league": "Saudi Pro League",
+   "market": "over25",
+   "role": "bet",
+   "rows": 26
+  },
+  {
+   "track": "new_format",
+   "league": "Saudi Pro League",
+   "market": "over35",
+   "role": "bet",
+   "rows": 26
+  },
+  {
+   "track": "new_format",
+   "league": "Sweden Allsvenskan",
+   "market": "btts",
+   "role": "bet",
+   "rows": 562
+  },
+  {
+   "track": "new_format",
+   "league": "Sweden Allsvenskan",
+   "market": "over15",
+   "role": "bet",
+   "rows": 463
+  },
+  {
+   "track": "new_format",
+   "league": "Sweden Allsvenskan",
+   "market": "over25",
+   "role": "bet",
+   "rows": 472
+  },
+  {
+   "track": "new_format",
+   "league": "Sweden Allsvenskan",
+   "market": "over35",
+   "role": "bet",
+   "rows": 396
+  },
+  {
+   "track": "new_format",
+   "league": "USA MLS",
+   "market": "btts",
+   "role": "bet",
+   "rows": 1405
+  },
+  {
+   "track": "new_format",
+   "league": "USA MLS",
+   "market": "over15",
+   "role": "bet",
+   "rows": 1213
+  },
+  {
+   "track": "new_format",
+   "league": "USA MLS",
+   "market": "over25",
+   "role": "bet",
+   "rows": 1219
+  },
+  {
+   "track": "new_format",
+   "league": "USA MLS",
+   "market": "over35",
+   "role": "bet",
+   "rows": 1122
+  },
+  {
+   "track": "standard",
+   "league": "Belgian First Division A",
+   "market": "btts",
+   "role": "bet",
+   "rows": 821
+  },
+  {
+   "track": "standard",
+   "league": "Belgian First Division A",
+   "market": "over15",
+   "role": "bet",
+   "rows": 819
+  },
+  {
+   "track": "standard",
+   "league": "Belgian First Division A",
+   "market": "over25",
+   "role": "bet",
+   "rows": 820
+  },
+  {
+   "track": "standard",
+   "league": "Belgian First Division A",
+   "market": "over35",
+   "role": "bet",
+   "rows": 815
+  },
+  {
+   "track": "standard",
+   "league": "Bundesliga 2",
+   "market": "btts",
+   "role": "bet",
+   "rows": 886
+  },
+  {
+   "track": "standard",
+   "league": "Bundesliga 2",
+   "market": "over15",
+   "role": "bet",
+   "rows": 886
+  },
+  {
+   "track": "standard",
+   "league": "Bundesliga 2",
+   "market": "over25",
+   "role": "bet",
+   "rows": 886
+  },
+  {
+   "track": "standard",
+   "league": "Bundesliga 2",
+   "market": "over35",
+   "role": "bet",
+   "rows": 880
+  },
+  {
+   "track": "standard",
+   "league": "Championship",
+   "market": "btts",
+   "role": "bet",
+   "rows": 1471
+  },
+  {
+   "track": "standard",
+   "league": "Championship",
+   "market": "over15",
+   "role": "bet",
+   "rows": 1429
+  },
+  {
+   "track": "standard",
+   "league": "Championship",
+   "market": "over25",
+   "role": "bet",
+   "rows": 1433
+  },
+  {
+   "track": "standard",
+   "league": "Championship",
+   "market": "over35",
+   "role": "bet",
+   "rows": 1348
+  },
+  {
+   "track": "standard",
+   "league": "Dutch Eredivisie",
+   "market": "btts",
+   "role": "bet",
+   "rows": 941
+  },
+  {
+   "track": "standard",
+   "league": "Dutch Eredivisie",
+   "market": "over15",
+   "role": "bet",
+   "rows": 936
+  },
+  {
+   "track": "standard",
+   "league": "Dutch Eredivisie",
+   "market": "over25",
+   "role": "bet",
+   "rows": 941
+  },
+  {
+   "track": "standard",
+   "league": "Dutch Eredivisie",
+   "market": "over35",
+   "role": "bet",
+   "rows": 930
+  },
+  {
+   "track": "standard",
+   "league": "Greek Super League",
+   "market": "btts",
+   "role": "bet",
+   "rows": 557
+  },
+  {
+   "track": "standard",
+   "league": "Greek Super League",
+   "market": "over15",
+   "role": "bet",
+   "rows": 557
+  },
+  {
+   "track": "standard",
+   "league": "Greek Super League",
+   "market": "over25",
+   "role": "bet",
+   "rows": 561
+  },
+  {
+   "track": "standard",
+   "league": "Greek Super League",
+   "market": "over35",
+   "role": "bet",
+   "rows": 550
+  },
+  {
+   "track": "standard",
+   "league": "La Liga 2",
+   "market": "btts",
+   "role": "bet",
+   "rows": 1255
+  },
+  {
+   "track": "standard",
+   "league": "La Liga 2",
+   "market": "over15",
+   "role": "bet",
+   "rows": 1236
+  },
+  {
+   "track": "standard",
+   "league": "La Liga 2",
+   "market": "over25",
+   "role": "bet",
+   "rows": 1236
+  },
+  {
+   "track": "standard",
+   "league": "La Liga 2",
+   "market": "over35",
+   "role": "bet",
+   "rows": 1168
+  },
+  {
+   "track": "standard",
+   "league": "League One",
+   "market": "btts",
+   "role": "bet",
+   "rows": 1295
+  },
+  {
+   "track": "standard",
+   "league": "League One",
+   "market": "over15",
+   "role": "bet",
+   "rows": 1252
+  },
+  {
+   "track": "standard",
+   "league": "League One",
+   "market": "over25",
+   "role": "bet",
+   "rows": 1278
+  },
+  {
+   "track": "standard",
+   "league": "League One",
+   "market": "over35",
+   "role": "bet",
+   "rows": 1183
+  },
+  {
+   "track": "standard",
+   "league": "League Two",
+   "market": "btts",
+   "role": "bet",
+   "rows": 1404
+  },
+  {
+   "track": "standard",
+   "league": "League Two",
+   "market": "over15",
+   "role": "bet",
+   "rows": 1330
+  },
+  {
+   "track": "standard",
+   "league": "League Two",
+   "market": "over25",
+   "role": "bet",
+   "rows": 1344
+  },
+  {
+   "track": "standard",
+   "league": "League Two",
+   "market": "over35",
+   "role": "bet",
+   "rows": 1231
+  },
+  {
+   "track": "standard",
+   "league": "Ligue 2",
+   "market": "btts",
+   "role": "bet",
+   "rows": 771
+  },
+  {
+   "track": "standard",
+   "league": "Ligue 2",
+   "market": "over15",
+   "role": "bet",
+   "rows": 810
+  },
+  {
+   "track": "standard",
+   "league": "Ligue 2",
+   "market": "over25",
+   "role": "bet",
+   "rows": 812
+  },
+  {
+   "track": "standard",
+   "league": "Ligue 2",
+   "market": "over35",
+   "role": "bet",
+   "rows": 778
+  },
+  {
+   "track": "standard",
+   "league": "Portuguese Primeira Liga",
+   "market": "btts",
+   "role": "bet",
+   "rows": 773
+  },
+  {
+   "track": "standard",
+   "league": "Portuguese Primeira Liga",
+   "market": "over15",
+   "role": "bet",
+   "rows": 773
+  },
+  {
+   "track": "standard",
+   "league": "Portuguese Primeira Liga",
+   "market": "over25",
+   "role": "bet",
+   "rows": 776
+  },
+  {
+   "track": "standard",
+   "league": "Portuguese Primeira Liga",
+   "market": "over35",
+   "role": "bet",
+   "rows": 751
+  },
+  {
+   "track": "standard",
+   "league": "Scottish Premiership",
+   "market": "btts",
+   "role": "bet",
+   "rows": 644
+  },
+  {
+   "track": "standard",
+   "league": "Scottish Premiership",
+   "market": "over15",
+   "role": "bet",
+   "rows": 636
+  },
+  {
+   "track": "standard",
+   "league": "Scottish Premiership",
+   "market": "over25",
+   "role": "bet",
+   "rows": 638
+  },
+  {
+   "track": "standard",
+   "league": "Scottish Premiership",
+   "market": "over35",
+   "role": "bet",
+   "rows": 619
+  },
+  {
+   "track": "standard",
+   "league": "Serie B",
+   "market": "btts",
+   "role": "bet",
+   "rows": 921
+  },
+  {
+   "track": "standard",
+   "league": "Serie B",
+   "market": "over15",
+   "role": "bet",
+   "rows": 910
+  },
+  {
+   "track": "standard",
+   "league": "Serie B",
+   "market": "over25",
+   "role": "bet",
+   "rows": 910
+  },
+  {
+   "track": "standard",
+   "league": "Serie B",
+   "market": "over35",
+   "role": "bet",
+   "rows": 866
+  },
+  {
+   "track": "standard",
+   "league": "Turkish Super Lig",
+   "market": "btts",
+   "role": "bet",
+   "rows": 873
+  },
+  {
+   "track": "standard",
+   "league": "Turkish Super Lig",
+   "market": "over15",
+   "role": "bet",
+   "rows": 822
+  },
+  {
+   "track": "standard",
+   "league": "Turkish Super Lig",
+   "market": "over25",
+   "role": "bet",
+   "rows": 831
+  },
+  {
+   "track": "standard",
+   "league": "Turkish Super Lig",
+   "market": "over35",
+   "role": "bet",
+   "rows": 831
+  },
+  {
+   "track": "new_format",
+   "league": "Argentina Primera Division",
+   "market": "btts",
+   "role": "open",
+   "rows": 1333
+  },
+  {
+   "track": "new_format",
+   "league": "Argentina Primera Division",
+   "market": "over15",
+   "role": "open",
+   "rows": 1408
+  },
+  {
+   "track": "new_format",
+   "league": "Argentina Primera Division",
+   "market": "over25",
+   "role": "open",
+   "rows": 1400
+  },
+  {
+   "track": "new_format",
+   "league": "Argentina Primera Division",
+   "market": "over35",
+   "role": "open",
+   "rows": 1332
+  },
+  {
+   "track": "new_format",
+   "league": "Austrian Bundesliga",
+   "market": "btts",
+   "role": "open",
+   "rows": 635
+  },
+  {
+   "track": "new_format",
+   "league": "Austrian Bundesliga",
+   "market": "over15",
+   "role": "open",
+   "rows": 634
+  },
+  {
+   "track": "new_format",
+   "league": "Austrian Bundesliga",
+   "market": "over25",
+   "role": "open",
+   "rows": 633
+  },
+  {
+   "track": "new_format",
+   "league": "Austrian Bundesliga",
+   "market": "over35",
+   "role": "open",
+   "rows": 634
+  },
+  {
+   "track": "new_format",
+   "league": "Brazil Serie A",
+   "market": "btts",
+   "role": "open",
+   "rows": 1348
+  },
+  {
+   "track": "new_format",
+   "league": "Brazil Serie A",
+   "market": "over15",
+   "role": "open",
+   "rows": 1351
+  },
+  {
+   "track": "new_format",
+   "league": "Brazil Serie A",
+   "market": "over25",
+   "role": "open",
+   "rows": 1351
+  },
+  {
+   "track": "new_format",
+   "league": "Brazil Serie A",
+   "market": "over35",
+   "role": "open",
+   "rows": 1351
+  },
+  {
+   "track": "new_format",
+   "league": "China Super League",
+   "market": "btts",
+   "role": "open",
+   "rows": 739
+  },
+  {
+   "track": "new_format",
+   "league": "China Super League",
+   "market": "over15",
+   "role": "open",
+   "rows": 770
+  },
+  {
+   "track": "new_format",
+   "league": "China Super League",
+   "market": "over25",
+   "role": "open",
+   "rows": 735
+  },
+  {
+   "track": "new_format",
+   "league": "China Super League",
+   "market": "over35",
+   "role": "open",
+   "rows": 772
+  },
+  {
+   "track": "new_format",
+   "league": "Denmark Superliga",
+   "market": "btts",
+   "role": "open",
+   "rows": 640
+  },
+  {
+   "track": "new_format",
+   "league": "Denmark Superliga",
+   "market": "over15",
+   "role": "open",
+   "rows": 640
+  },
+  {
+   "track": "new_format",
+   "league": "Denmark Superliga",
+   "market": "over25",
+   "role": "open",
+   "rows": 640
+  },
+  {
+   "track": "new_format",
+   "league": "Denmark Superliga",
+   "market": "over35",
+   "role": "open",
+   "rows": 640
+  },
+  {
+   "track": "new_format",
+   "league": "Finland Veikkausliiga",
+   "market": "btts",
+   "role": "open",
+   "rows": 618
+  },
+  {
+   "track": "new_format",
+   "league": "Finland Veikkausliiga",
+   "market": "over15",
+   "role": "open",
+   "rows": 617
+  },
+  {
+   "track": "new_format",
+   "league": "Finland Veikkausliiga",
+   "market": "over25",
+   "role": "open",
+   "rows": 617
+  },
+  {
+   "track": "new_format",
+   "league": "Finland Veikkausliiga",
+   "market": "over35",
+   "role": "open",
+   "rows": 617
+  },
+  {
+   "track": "new_format",
+   "league": "Ireland Premier Division",
+   "market": "btts",
+   "role": "open",
+   "rows": 552
+  },
+  {
+   "track": "new_format",
+   "league": "Ireland Premier Division",
+   "market": "over15",
+   "role": "open",
+   "rows": 552
+  },
+  {
+   "track": "new_format",
+   "league": "Ireland Premier Division",
+   "market": "over25",
+   "role": "open",
+   "rows": 552
+  },
+  {
+   "track": "new_format",
+   "league": "Ireland Premier Division",
+   "market": "over35",
+   "role": "open",
+   "rows": 552
+  },
+  {
+   "track": "new_format",
+   "league": "Japan J-League",
+   "market": "btts",
+   "role": "open",
+   "rows": 1114
+  },
+  {
+   "track": "new_format",
+   "league": "Japan J-League",
+   "market": "over15",
+   "role": "open",
+   "rows": 1118
+  },
+  {
+   "track": "new_format",
+   "league": "Japan J-League",
+   "market": "over25",
+   "role": "open",
+   "rows": 1118
+  },
+  {
+   "track": "new_format",
+   "league": "Japan J-League",
+   "market": "over35",
+   "role": "open",
+   "rows": 1108
+  },
+  {
+   "track": "new_format",
+   "league": "K-League 1",
+   "market": "btts",
+   "role": "open",
+   "rows": 714
+  },
+  {
+   "track": "new_format",
+   "league": "K-League 1",
+   "market": "over15",
+   "role": "open",
+   "rows": 714
+  },
+  {
+   "track": "new_format",
+   "league": "K-League 1",
+   "market": "over25",
+   "role": "open",
+   "rows": 714
+  },
+  {
+   "track": "new_format",
+   "league": "K-League 1",
+   "market": "over35",
+   "role": "open",
+   "rows": 713
+  },
+  {
+   "track": "new_format",
+   "league": "Mexico Liga MX",
+   "market": "btts",
+   "role": "open",
+   "rows": 1068
+  },
+  {
+   "track": "new_format",
+   "league": "Mexico Liga MX",
+   "market": "over15",
+   "role": "open",
+   "rows": 1074
+  },
+  {
+   "track": "new_format",
+   "league": "Mexico Liga MX",
+   "market": "over25",
+   "role": "open",
+   "rows": 1074
+  },
+  {
+   "track": "new_format",
+   "league": "Mexico Liga MX",
+   "market": "over35",
+   "role": "open",
+   "rows": 1073
+  },
+  {
+   "track": "new_format",
+   "league": "Norway Eliteserien",
+   "market": "btts",
+   "role": "open",
+   "rows": 821
+  },
+  {
+   "track": "new_format",
+   "league": "Norway Eliteserien",
+   "market": "over15",
+   "role": "open",
+   "rows": 826
+  },
+  {
+   "track": "new_format",
+   "league": "Norway Eliteserien",
+   "market": "over25",
+   "role": "open",
+   "rows": 826
+  },
+  {
+   "track": "new_format",
+   "league": "Norway Eliteserien",
+   "market": "over35",
+   "role": "open",
+   "rows": 824
+  },
+  {
+   "track": "new_format",
+   "league": "Saudi Pro League",
+   "market": "btts",
+   "role": "open",
+   "rows": 136
+  },
+  {
+   "track": "new_format",
+   "league": "Saudi Pro League",
+   "market": "over15",
+   "role": "open",
+   "rows": 109
+  },
+  {
+   "track": "new_format",
+   "league": "Saudi Pro League",
+   "market": "over25",
+   "role": "open",
+   "rows": 126
+  },
+  {
+   "track": "new_format",
+   "league": "Saudi Pro League",
+   "market": "over35",
+   "role": "open",
+   "rows": 126
+  },
+  {
+   "track": "standard",
+   "league": "Belgian First Division A",
+   "market": "btts",
+   "role": "open",
+   "rows": 963
+  },
+  {
+   "track": "standard",
+   "league": "Belgian First Division A",
+   "market": "over15",
+   "role": "open",
+   "rows": 962
+  },
+  {
+   "track": "standard",
+   "league": "Belgian First Division A",
+   "market": "over25",
+   "role": "open",
+   "rows": 963
+  },
+  {
+   "track": "standard",
+   "league": "Belgian First Division A",
+   "market": "over35",
+   "role": "open",
+   "rows": 963
+  },
+  {
+   "track": "standard",
+   "league": "Bundesliga 2",
+   "market": "btts",
+   "role": "open",
+   "rows": 971
+  },
+  {
+   "track": "standard",
+   "league": "Bundesliga 2",
+   "market": "over15",
+   "role": "open",
+   "rows": 974
+  },
+  {
+   "track": "standard",
+   "league": "Bundesliga 2",
+   "market": "over25",
+   "role": "open",
+   "rows": 974
+  },
+  {
+   "track": "standard",
+   "league": "Bundesliga 2",
+   "market": "over35",
+   "role": "open",
+   "rows": 974
+  },
+  {
+   "track": "standard",
+   "league": "Championship",
+   "market": "btts",
+   "role": "open",
+   "rows": 1703
+  },
+  {
+   "track": "standard",
+   "league": "Championship",
+   "market": "over15",
+   "role": "open",
+   "rows": 1703
+  },
+  {
+   "track": "standard",
+   "league": "Championship",
+   "market": "over25",
+   "role": "open",
+   "rows": 1703
+  },
+  {
+   "track": "standard",
+   "league": "Championship",
+   "market": "over35",
+   "role": "open",
+   "rows": 1703
+  },
+  {
+   "track": "standard",
+   "league": "Dutch Eredivisie",
+   "market": "btts",
+   "role": "open",
+   "rows": 979
+  },
+  {
+   "track": "standard",
+   "league": "Dutch Eredivisie",
+   "market": "over15",
+   "role": "open",
+   "rows": 979
+  },
+  {
+   "track": "standard",
+   "league": "Dutch Eredivisie",
+   "market": "over25",
+   "role": "open",
+   "rows": 979
+  },
+  {
+   "track": "standard",
+   "league": "Dutch Eredivisie",
+   "market": "over35",
+   "role": "open",
+   "rows": 979
+  },
+  {
+   "track": "standard",
+   "league": "Greek Super League",
+   "market": "btts",
+   "role": "open",
+   "rows": 693
+  },
+  {
+   "track": "standard",
+   "league": "Greek Super League",
+   "market": "over15",
+   "role": "open",
+   "rows": 693
+  },
+  {
+   "track": "standard",
+   "league": "Greek Super League",
+   "market": "over25",
+   "role": "open",
+   "rows": 693
+  },
+  {
+   "track": "standard",
+   "league": "Greek Super League",
+   "market": "over35",
+   "role": "open",
+   "rows": 686
+  },
+  {
+   "track": "standard",
+   "league": "La Liga 2",
+   "market": "btts",
+   "role": "open",
+   "rows": 1466
+  },
+  {
+   "track": "standard",
+   "league": "La Liga 2",
+   "market": "over15",
+   "role": "open",
+   "rows": 1468
+  },
+  {
+   "track": "standard",
+   "league": "La Liga 2",
+   "market": "over25",
+   "role": "open",
+   "rows": 1468
+  },
+  {
+   "track": "standard",
+   "league": "La Liga 2",
+   "market": "over35",
+   "role": "open",
+   "rows": 1464
+  },
+  {
+   "track": "standard",
+   "league": "League One",
+   "market": "btts",
+   "role": "open",
+   "rows": 1701
+  },
+  {
+   "track": "standard",
+   "league": "League One",
+   "market": "over15",
+   "role": "open",
+   "rows": 1701
+  },
+  {
+   "track": "standard",
+   "league": "League One",
+   "market": "over25",
+   "role": "open",
+   "rows": 1701
+  },
+  {
+   "track": "standard",
+   "league": "League One",
+   "market": "over35",
+   "role": "open",
+   "rows": 1701
+  },
+  {
+   "track": "standard",
+   "league": "League Two",
+   "market": "btts",
+   "role": "open",
+   "rows": 1703
+  },
+  {
+   "track": "standard",
+   "league": "League Two",
+   "market": "over15",
+   "role": "open",
+   "rows": 1703
+  },
+  {
+   "track": "standard",
+   "league": "League Two",
+   "market": "over25",
+   "role": "open",
+   "rows": 1703
+  },
+  {
+   "track": "standard",
+   "league": "League Two",
+   "market": "over35",
+   "role": "open",
+   "rows": 1703
+  },
+  {
+   "track": "standard",
+   "league": "Ligue 2",
+   "market": "btts",
+   "role": "open",
+   "rows": 1052
+  },
+  {
+   "track": "standard",
+   "league": "Ligue 2",
+   "market": "over15",
+   "role": "open",
+   "rows": 1054
+  },
+  {
+   "track": "standard",
+   "league": "Ligue 2",
+   "market": "over25",
+   "role": "open",
+   "rows": 1054
+  },
+  {
+   "track": "standard",
+   "league": "Ligue 2",
+   "market": "over35",
+   "role": "open",
+   "rows": 1045
+  },
+  {
+   "track": "standard",
+   "league": "Scottish Premiership",
+   "market": "btts",
+   "role": "open",
+   "rows": 731
+  },
+  {
+   "track": "standard",
+   "league": "Scottish Premiership",
+   "market": "over15",
+   "role": "open",
+   "rows": 731
+  },
+  {
+   "track": "standard",
+   "league": "Scottish Premiership",
+   "market": "over25",
+   "role": "open",
+   "rows": 731
+  },
+  {
+   "track": "standard",
+   "league": "Scottish Premiership",
+   "market": "over35",
+   "role": "open",
+   "rows": 731
+  },
+  {
+   "track": "standard",
+   "league": "Serie B",
+   "market": "btts",
+   "role": "open",
+   "rows": 514
+  },
+  {
+   "track": "standard",
+   "league": "Serie B",
+   "market": "over15",
+   "role": "open",
+   "rows": 514
+  },
+  {
+   "track": "standard",
+   "league": "Serie B",
+   "market": "over25",
+   "role": "open",
+   "rows": 514
+  },
+  {
+   "track": "standard",
+   "league": "Serie B",
+   "market": "over35",
+   "role": "open",
+   "rows": 509
+  },
+  {
+   "track": "new_format",
+   "league": "Argentina Primera Division",
+   "market": "btts",
+   "role": "close",
+   "rows": 1330
+  },
+  {
+   "track": "new_format",
+   "league": "Argentina Primera Division",
+   "market": "over15",
+   "role": "close",
+   "rows": 1408
+  },
+  {
+   "track": "new_format",
+   "league": "Argentina Primera Division",
+   "market": "over25",
+   "role": "close",
+   "rows": 1404
+  },
+  {
+   "track": "new_format",
+   "league": "Argentina Primera Division",
+   "market": "over35",
+   "role": "close",
+   "rows": 1329
+  },
+  {
+   "track": "new_format",
+   "league": "Austrian Bundesliga",
+   "market": "btts",
+   "role": "close",
+   "rows": 640
+  },
+  {
+   "track": "new_format",
+   "league": "Austrian Bundesliga",
+   "market": "over15",
+   "role": "close",
+   "rows": 640
+  },
+  {
+   "track": "new_format",
+   "league": "Austrian Bundesliga",
+   "market": "over25",
+   "role": "close",
+   "rows": 640
+  },
+  {
+   "track": "new_format",
+   "league": "Austrian Bundesliga",
+   "market": "over35",
+   "role": "close",
+   "rows": 640
+  },
+  {
+   "track": "new_format",
+   "league": "Brazil Serie A",
+   "market": "btts",
+   "role": "close",
+   "rows": 1351
+  },
+  {
+   "track": "new_format",
+   "league": "Brazil Serie A",
+   "market": "over15",
+   "role": "close",
+   "rows": 1351
+  },
+  {
+   "track": "new_format",
+   "league": "Brazil Serie A",
+   "market": "over25",
+   "role": "close",
+   "rows": 1351
+  },
+  {
+   "track": "new_format",
+   "league": "Brazil Serie A",
+   "market": "over35",
+   "role": "close",
+   "rows": 1351
+  },
+  {
+   "track": "new_format",
+   "league": "China Super League",
+   "market": "btts",
+   "role": "close",
+   "rows": 760
+  },
+  {
+   "track": "new_format",
+   "league": "China Super League",
+   "market": "over15",
+   "role": "close",
+   "rows": 786
+  },
+  {
+   "track": "new_format",
+   "league": "China Super League",
+   "market": "over25",
+   "role": "close",
+   "rows": 772
+  },
+  {
+   "track": "new_format",
+   "league": "China Super League",
+   "market": "over35",
+   "role": "close",
+   "rows": 783
+  },
+  {
+   "track": "new_format",
+   "league": "Denmark Superliga",
+   "market": "btts",
+   "role": "close",
+   "rows": 640
+  },
+  {
+   "track": "new_format",
+   "league": "Denmark Superliga",
+   "market": "over15",
+   "role": "close",
+   "rows": 640
+  },
+  {
+   "track": "new_format",
+   "league": "Denmark Superliga",
+   "market": "over25",
+   "role": "close",
+   "rows": 640
+  },
+  {
+   "track": "new_format",
+   "league": "Denmark Superliga",
+   "market": "over35",
+   "role": "close",
+   "rows": 640
+  },
+  {
+   "track": "new_format",
+   "league": "Finland Veikkausliiga",
+   "market": "btts",
+   "role": "close",
+   "rows": 620
+  },
+  {
+   "track": "new_format",
+   "league": "Finland Veikkausliiga",
+   "market": "over15",
+   "role": "close",
+   "rows": 620
+  },
+  {
+   "track": "new_format",
+   "league": "Finland Veikkausliiga",
+   "market": "over25",
+   "role": "close",
+   "rows": 620
+  },
+  {
+   "track": "new_format",
+   "league": "Finland Veikkausliiga",
+   "market": "over35",
+   "role": "close",
+   "rows": 620
+  },
+  {
+   "track": "new_format",
+   "league": "Ireland Premier Division",
+   "market": "btts",
+   "role": "close",
+   "rows": 571
+  },
+  {
+   "track": "new_format",
+   "league": "Ireland Premier Division",
+   "market": "over15",
+   "role": "close",
+   "rows": 571
+  },
+  {
+   "track": "new_format",
+   "league": "Ireland Premier Division",
+   "market": "over25",
+   "role": "close",
+   "rows": 571
+  },
+  {
+   "track": "new_format",
+   "league": "Ireland Premier Division",
+   "market": "over35",
+   "role": "close",
+   "rows": 571
+  },
+  {
+   "track": "new_format",
+   "league": "Japan J-League",
+   "market": "btts",
+   "role": "close",
+   "rows": 1124
+  },
+  {
+   "track": "new_format",
+   "league": "Japan J-League",
+   "market": "over15",
+   "role": "close",
+   "rows": 1127
+  },
+  {
+   "track": "new_format",
+   "league": "Japan J-League",
+   "market": "over25",
+   "role": "close",
+   "rows": 1127
+  },
+  {
+   "track": "new_format",
+   "league": "Japan J-League",
+   "market": "over35",
+   "role": "close",
+   "rows": 1117
+  },
+  {
+   "track": "new_format",
+   "league": "K-League 1",
+   "market": "btts",
+   "role": "close",
+   "rows": 729
+  },
+  {
+   "track": "new_format",
+   "league": "K-League 1",
+   "market": "over15",
+   "role": "close",
+   "rows": 729
+  },
+  {
+   "track": "new_format",
+   "league": "K-League 1",
+   "market": "over25",
+   "role": "close",
+   "rows": 729
+  },
+  {
+   "track": "new_format",
+   "league": "K-League 1",
+   "market": "over35",
+   "role": "close",
+   "rows": 729
+  },
+  {
+   "track": "new_format",
+   "league": "Mexico Liga MX",
+   "market": "btts",
+   "role": "close",
+   "rows": 1068
+  },
+  {
+   "track": "new_format",
+   "league": "Mexico Liga MX",
+   "market": "over15",
+   "role": "close",
+   "rows": 1071
+  },
+  {
+   "track": "new_format",
+   "league": "Mexico Liga MX",
+   "market": "over25",
+   "role": "close",
+   "rows": 1071
+  },
+  {
+   "track": "new_format",
+   "league": "Mexico Liga MX",
+   "market": "over35",
+   "role": "close",
+   "rows": 1071
+  },
+  {
+   "track": "new_format",
+   "league": "Norway Eliteserien",
+   "market": "btts",
+   "role": "close",
+   "rows": 824
+  },
+  {
+   "track": "new_format",
+   "league": "Norway Eliteserien",
+   "market": "over15",
+   "role": "close",
+   "rows": 829
+  },
+  {
+   "track": "new_format",
+   "league": "Norway Eliteserien",
+   "market": "over25",
+   "role": "close",
+   "rows": 829
+  },
+  {
+   "track": "new_format",
+   "league": "Norway Eliteserien",
+   "market": "over35",
+   "role": "close",
+   "rows": 828
+  },
+  {
+   "track": "new_format",
+   "league": "Saudi Pro League",
+   "market": "btts",
+   "role": "close",
+   "rows": 143
+  },
+  {
+   "track": "new_format",
+   "league": "Saudi Pro League",
+   "market": "over15",
+   "role": "close",
+   "rows": 121
+  },
+  {
+   "track": "new_format",
+   "league": "Saudi Pro League",
+   "market": "over25",
+   "role": "close",
+   "rows": 137
+  },
+  {
+   "track": "new_format",
+   "league": "Saudi Pro League",
+   "market": "over35",
+   "role": "close",
+   "rows": 137
+  },
+  {
+   "track": "new_format",
+   "league": "Sweden Allsvenskan",
+   "market": "btts",
+   "role": "close",
+   "rows": 829
+  },
+  {
+   "track": "new_format",
+   "league": "Sweden Allsvenskan",
+   "market": "over15",
+   "role": "close",
+   "rows": 829
+  },
+  {
+   "track": "new_format",
+   "league": "Sweden Allsvenskan",
+   "market": "over25",
+   "role": "close",
+   "rows": 829
+  },
+  {
+   "track": "new_format",
+   "league": "Sweden Allsvenskan",
+   "market": "over35",
+   "role": "close",
+   "rows": 829
+  },
+  {
+   "track": "new_format",
+   "league": "USA MLS",
+   "market": "btts",
+   "role": "close",
+   "rows": 1755
+  },
+  {
+   "track": "new_format",
+   "league": "USA MLS",
+   "market": "over15",
+   "role": "close",
+   "rows": 1761
+  },
+  {
+   "track": "new_format",
+   "league": "USA MLS",
+   "market": "over25",
+   "role": "close",
+   "rows": 1760
+  },
+  {
+   "track": "new_format",
+   "league": "USA MLS",
+   "market": "over35",
+   "role": "close",
+   "rows": 1761
+  },
+  {
+   "track": "standard",
+   "league": "Belgian First Division A",
+   "market": "btts",
+   "role": "close",
+   "rows": 963
+  },
+  {
+   "track": "standard",
+   "league": "Belgian First Division A",
+   "market": "over15",
+   "role": "close",
+   "rows": 963
+  },
+  {
+   "track": "standard",
+   "league": "Belgian First Division A",
+   "market": "over25",
+   "role": "close",
+   "rows": 963
+  },
+  {
+   "track": "standard",
+   "league": "Belgian First Division A",
+   "market": "over35",
+   "role": "close",
+   "rows": 963
+  },
+  {
+   "track": "standard",
+   "league": "Bundesliga 2",
+   "market": "btts",
+   "role": "close",
+   "rows": 974
+  },
+  {
+   "track": "standard",
+   "league": "Bundesliga 2",
+   "market": "over15",
+   "role": "close",
+   "rows": 974
+  },
+  {
+   "track": "standard",
+   "league": "Bundesliga 2",
+   "market": "over25",
+   "role": "close",
+   "rows": 974
+  },
+  {
+   "track": "standard",
+   "league": "Bundesliga 2",
+   "market": "over35",
+   "role": "close",
+   "rows": 972
+  },
+  {
+   "track": "standard",
+   "league": "Championship",
+   "market": "btts",
+   "role": "close",
+   "rows": 1704
+  },
+  {
+   "track": "standard",
+   "league": "Championship",
+   "market": "over15",
+   "role": "close",
+   "rows": 1704
+  },
+  {
+   "track": "standard",
+   "league": "Championship",
+   "market": "over25",
+   "role": "close",
+   "rows": 1704
+  },
+  {
+   "track": "standard",
+   "league": "Championship",
+   "market": "over35",
+   "role": "close",
+   "rows": 1704
+  },
+  {
+   "track": "standard",
+   "league": "Dutch Eredivisie",
+   "market": "btts",
+   "role": "close",
+   "rows": 979
+  },
+  {
+   "track": "standard",
+   "league": "Dutch Eredivisie",
+   "market": "over15",
+   "role": "close",
+   "rows": 980
+  },
+  {
+   "track": "standard",
+   "league": "Dutch Eredivisie",
+   "market": "over25",
+   "role": "close",
+   "rows": 980
+  },
+  {
+   "track": "standard",
+   "league": "Dutch Eredivisie",
+   "market": "over35",
+   "role": "close",
+   "rows": 980
+  },
+  {
+   "track": "standard",
+   "league": "Greek Super League",
+   "market": "btts",
+   "role": "close",
+   "rows": 704
+  },
+  {
+   "track": "standard",
+   "league": "Greek Super League",
+   "market": "over15",
+   "role": "close",
+   "rows": 704
+  },
+  {
+   "track": "standard",
+   "league": "Greek Super League",
+   "market": "over25",
+   "role": "close",
+   "rows": 704
+  },
+  {
+   "track": "standard",
+   "league": "Greek Super League",
+   "market": "over35",
+   "role": "close",
+   "rows": 703
+  },
+  {
+   "track": "standard",
+   "league": "La Liga 2",
+   "market": "btts",
+   "role": "close",
+   "rows": 1466
+  },
+  {
+   "track": "standard",
+   "league": "La Liga 2",
+   "market": "over15",
+   "role": "close",
+   "rows": 1467
+  },
+  {
+   "track": "standard",
+   "league": "La Liga 2",
+   "market": "over25",
+   "role": "close",
+   "rows": 1467
+  },
+  {
+   "track": "standard",
+   "league": "La Liga 2",
+   "market": "over35",
+   "role": "close",
+   "rows": 1467
+  },
+  {
+   "track": "standard",
+   "league": "League One",
+   "market": "btts",
+   "role": "close",
+   "rows": 1702
+  },
+  {
+   "track": "standard",
+   "league": "League One",
+   "market": "over15",
+   "role": "close",
+   "rows": 1702
+  },
+  {
+   "track": "standard",
+   "league": "League One",
+   "market": "over25",
+   "role": "close",
+   "rows": 1702
+  },
+  {
+   "track": "standard",
+   "league": "League One",
+   "market": "over35",
+   "role": "close",
+   "rows": 1702
+  },
+  {
+   "track": "standard",
+   "league": "League Two",
+   "market": "btts",
+   "role": "close",
+   "rows": 1703
+  },
+  {
+   "track": "standard",
+   "league": "League Two",
+   "market": "over15",
+   "role": "close",
+   "rows": 1703
+  },
+  {
+   "track": "standard",
+   "league": "League Two",
+   "market": "over25",
+   "role": "close",
+   "rows": 1703
+  },
+  {
+   "track": "standard",
+   "league": "League Two",
+   "market": "over35",
+   "role": "close",
+   "rows": 1703
+  },
+  {
+   "track": "standard",
+   "league": "Ligue 2",
+   "market": "btts",
+   "role": "close",
+   "rows": 1060
+  },
+  {
+   "track": "standard",
+   "league": "Ligue 2",
+   "market": "over15",
+   "role": "close",
+   "rows": 1060
+  },
+  {
+   "track": "standard",
+   "league": "Ligue 2",
+   "market": "over25",
+   "role": "close",
+   "rows": 1060
+  },
+  {
+   "track": "standard",
+   "league": "Ligue 2",
+   "market": "over35",
+   "role": "close",
+   "rows": 1060
+  },
+  {
+   "track": "standard",
+   "league": "Scottish Premiership",
+   "market": "btts",
+   "role": "close",
+   "rows": 732
+  },
+  {
+   "track": "standard",
+   "league": "Scottish Premiership",
+   "market": "over15",
+   "role": "close",
+   "rows": 732
+  },
+  {
+   "track": "standard",
+   "league": "Scottish Premiership",
+   "market": "over25",
+   "role": "close",
+   "rows": 732
+  },
+  {
+   "track": "standard",
+   "league": "Scottish Premiership",
+   "market": "over35",
+   "role": "close",
+   "rows": 731
+  },
+  {
+   "track": "standard",
+   "league": "Serie B",
+   "market": "btts",
+   "role": "close",
+   "rows": 1199
+  },
+  {
+   "track": "standard",
+   "league": "Serie B",
+   "market": "over15",
+   "role": "close",
+   "rows": 1200
+  },
+  {
+   "track": "standard",
+   "league": "Serie B",
+   "market": "over25",
+   "role": "close",
+   "rows": 1200
+  },
+  {
+   "track": "standard",
+   "league": "Serie B",
+   "market": "over35",
+   "role": "close",
+   "rows": 1200
+  },
+  {
+   "track": "standard",
+   "league": "Turkish Super Lig",
+   "market": "btts",
+   "role": "close",
+   "rows": 1064
+  },
+  {
+   "track": "standard",
+   "league": "Turkish Super Lig",
+   "market": "over15",
+   "role": "close",
+   "rows": 1074
+  },
+  {
+   "track": "standard",
+   "league": "Turkish Super Lig",
+   "market": "over25",
+   "role": "close",
+   "rows": 1081
+  },
+  {
+   "track": "standard",
+   "league": "Turkish Super Lig",
+   "market": "over35",
+   "role": "close",
+   "rows": 1085
+  },
+  {
+   "track": "standard",
+   "league": "Belgian First Division A",
+   "market": "over25",
+   "role": "fd_pre",
+   "rows": 1114
+  },
+  {
+   "track": "standard",
+   "league": "Bundesliga 2",
+   "market": "over25",
+   "role": "fd_pre",
+   "rows": 1089
+  },
+  {
+   "track": "standard",
+   "league": "Championship",
+   "market": "over25",
+   "role": "fd_pre",
+   "rows": 1982
+  },
+  {
+   "track": "standard",
+   "league": "Dutch Eredivisie",
+   "market": "over25",
+   "role": "fd_pre",
+   "rows": 1130
+  },
+  {
+   "track": "standard",
+   "league": "Greek Super League",
+   "market": "over25",
+   "role": "fd_pre",
+   "rows": 856
+  },
+  {
+   "track": "standard",
+   "league": "La Liga 2",
+   "market": "over25",
+   "role": "fd_pre",
+   "rows": 1702
+  },
+  {
+   "track": "standard",
+   "league": "League One",
+   "market": "over25",
+   "role": "fd_pre",
+   "rows": 2014
+  },
+  {
+   "track": "standard",
+   "league": "League Two",
+   "market": "over25",
+   "role": "fd_pre",
+   "rows": 2017
+  },
+  {
+   "track": "standard",
+   "league": "Ligue 2",
+   "market": "over25",
+   "role": "fd_pre",
+   "rows": 1243
+  },
+  {
+   "track": "standard",
+   "league": "National League",
+   "market": "over25",
+   "role": "fd_pre",
+   "rows": 2014
+  },
+  {
+   "track": "standard",
+   "league": "Portuguese Primeira Liga",
+   "market": "over25",
+   "role": "fd_pre",
+   "rows": 1136
+  },
+  {
+   "track": "standard",
+   "league": "Scottish Championship",
+   "market": "over25",
+   "role": "fd_pre",
+   "rows": 661
+  },
+  {
+   "track": "standard",
+   "league": "Scottish League One",
+   "market": "over25",
+   "role": "fd_pre",
+   "rows": 661
+  },
+  {
+   "track": "standard",
+   "league": "Scottish League Two",
+   "market": "over25",
+   "role": "fd_pre",
+   "rows": 673
+  },
+  {
+   "track": "standard",
+   "league": "Scottish Premiership",
+   "market": "over25",
+   "role": "fd_pre",
+   "rows": 837
+  },
+  {
+   "track": "standard",
+   "league": "Serie B",
+   "market": "over25",
+   "role": "fd_pre",
+   "rows": 1393
+  },
+  {
+   "track": "standard",
+   "league": "Turkish Super Lig",
+   "market": "over25",
+   "role": "fd_pre",
+   "rows": 1235
+  }
+ ]
+}

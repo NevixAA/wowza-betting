@@ -1,0 +1,85 @@
+{
+ "protocol": "opening-price-edge/1",
+ "owner_decision": "owner 2026-11-15 \"yes\" (relayed by the coordinator): research whether the CLEAN model beats the OPEN (T-48h) price where it does not beat later prices, per league x market x side; development rows before 2026-09-01 only; any signal becomes a pre-registered forward paper protocol from 2026-11-21; nothing in production changes.",
+ "written_before_any_effect": true,
+ "registered_before_run": "this file's sha256 (LF line ends) is written to config/opening_price_edge_protocol_ledger.json and committed BEFORE `scripts/opening_price_edge.py run` computes any ROI, CLV or p-value; `run` refuses any other hash. `prepare` (prices and coverage counts only, no outcome read) may run before registration.",
+ "data": {
+  "candidate": "champion_recipe",
+  "predictions": {
+   "standard": {"path": "C:/Users/nevo/dev/p2-rebuild-1110/gh_standard/run_20261110T203611Z/predictions.parquet",
+                "sha256": "fbce9442f3f6275e4ffd7dab727285910bfcc6e5da93e3333d2ce7cf5e21e88f"},
+   "new_format": {"path": "C:/Users/nevo/dev/p2-rebuild-1110/out_new_format/run_20261110T203319Z/predictions.parquet",
+                  "sha256": "2f1727b39efb2c5b9f2b3e5521857c4185edefe26c3764d8860d597c2ee49d42"}
+  },
+  "rows": "stage walk_forward AND the Phase-2 model holdout stage (2026-04-01..), markets over15 / over25 / over35 / btts, dated before dev_end_exclusive. Both stages are out-of-sample for the model. No row is filled or dropped for any other reason; a row without a price pair for a role is simply not priced for that role.",
+  "dev_end_exclusive": "2026-09-01",
+  "spent_windows_labelled": "rows inside the bars fresh-holdout windows of TP-FH-2026-11-15-132a4795 (Standard over15_over 2025-03-01..2026-08-03, over35_over 2025-03-01..2026-05-09; New-Format over25 2024-09-01..2025-06-22, over15_over ..2025-06-27, over35_over ..2025-06-22) had their outcomes seen at BT / football-data prices; they stay in (this is development, no historical holdout is claimed) and every verdict is DEVELOPMENT evidence only.",
+  "oddsapi_store": {"path": "C:/Users/nevo/dev/wt-store-check", "repo": "NevixAA/wowza-exec", "branch": "odds-history",
+                    "commit": "7bbda7d17e1d70b477e0d6943d9e26de104c3742",
+                    "note": "tier C1 is still being collected at this commit (no C1 for Sweden Allsvenskan, Turkish Super Lig, USA MLS, Portuguese Primeira Liga; Serie B partial): those cells have fewer or no OPEN rows and stay in the Holm family."},
+  "adapter": {"file": "src/oddsapi_history_adapter.py", "git_blob": "dd4278ddc24d449a5a1df2fae25fd9988df7725d",
+              "rule": "prices ONLY through attach / prices_for / attach_to_universe with an explicit purpose; the adapter drops every post-kickoff quote, every quote without a snapshot time and every price <= 1.01; fixtures joined by the adapter's own proven mapping (match_universe: one league, match day +-1 with both clubs proven, one-to-one) using the store's ledger aliases (load_context)."},
+  "fd_prematch": {"file": "src/fd_prematch.py", "git_blob": "c72ec6a1a3389e573a0117d1f77652cfad7a2bf1",
+                  "crosswalk_git_blob": "163846fccf4236f2e1f3ee0d2b3df3ff8de8b8a6",
+                  "aliases": "C:/Users/nevo/dev/bars-oddsapi-local/v5-inputs/identity_aliases.json",
+                  "aliases_sha256": "f174ca0b0f6abfe1090c16458e1ff6369f3db78fe860f4afc81190f08b695676",
+                  "fd_raw": "output/collect/fd_raw",
+                  "rule": "Standard O/U 2.5 only: the certified one-to-one join (certified_ou25); bet price = the PRE-MATCH same-book pair (Bet365, else Pinnacle); its CLOSING pair (B365C, else PC) is read for CLV only."},
+  "calibration_code": {"file": "src/research/top3_ranking.py", "branch": "research/top3-ranking",
+                       "git_blob": "b7fec7c2653c3224d89c158c74ff75a9bb0b512e", "function": "_lams (R2_CAL_EV slope)"}
+ },
+ "roles": {
+  "OPEN": "tier C1, snapshot 'T-48h' (event odds, btts + alternate_totals), adapter purpose 'open'. A BET-ABLE early price.",
+  "BET": "tier BT, snapshot 'bet' (T-125h Standard / T-153h New-Format; event odds, btts + alternate_totals), adapter purpose 'bet'. NOTE: in time BT is EARLIER than OPEN.",
+  "FD_PRE": "football-data pre-match O/U 2.5 pair (Standard only; the provider captures it roughly 1-3 days before kickoff).",
+  "CLOSE": "tier B1, snapshot 'close' (~9 minutes before kickoff), adapter purpose 'close'. CLV ONLY - never a bet price, never an ROI.",
+  "MOVEMENT": "tier B4, featured 'totals' (main line, h2h ignored), labels timed off the DAY's first kickoff; each snapshot is placed by its median hours before the fixture's OWN actual kickoff. Edge-decay description only (Q3) - never a bet price, never an ROI, never a test."
+ },
+ "prices": {
+  "bet_price": "per side the MEDIAN across books of the role's snapshot (adapter summary 'median'; one quote per book). FD_PRE: the single-book pair.",
+  "fair": "power de-vig (src.market_edge.power_devig) of the role's two-sided (median yes, median no) pair; a row needs both sides, else it is not priced for that role.",
+  "best_price": "per side the best book price: reported as ROI context only, no CI, no test, no verdict."
+ },
+ "model_probability": {
+  "p_side": "the champion_recipe p for the yes side (over / btts yes), 1 - p for the no side.",
+  "calibrated": "R2 calibration of research/top3-ranking: p_cal = fair + lam * (p_side - fair), lam from top3_ranking._lams (least squares of (won - fair) on (p_side - fair) over the cell's own prior priced rows, shrunk toward the same league's other market-sides by DerSimonian-Laird, clipped to [0, 1]; a market-side needs MIN_OWN_BETS = 40 own rows). Fitted WALK-FORWARD per (track, role): for every calendar month M, on that role's priced rows (that role's own fair) dated before the first day of M; the cell key is (track, league, market-side).",
+  "raw_flag": "a bet whose cell has no lam yet (fewer than 40 prior priced rows of that market-side, or no spread) uses p_cal = p_side and is flagged RAW; each cell reports its RAW share."
+ },
+ "bet_rule": {
+  "one_configuration": "bet side s of a priced row in role r when p_cal(s, r) * odds(s, r) - 1 > 0; flat 1 unit; pnl = odds - 1 if the side won else -1. No odds range, no edge bar, no other configuration is searched.",
+  "two_sides": "both sides of one market cannot both clear the rule (p_cal_yes + p_cal_no = 1 < the booked sum)."
+ },
+ "statistics": {
+  "roi": "mean pnl of the cell's bets.",
+  "clv": "per bet odds_bet * fair_close - 1, fair_close = power de-vig of the CLOSE (B1) median pair; FD_PRE uses the football-data closing pair. Bets without a closing pair have no CLV (counted).",
+  "se": "src.bars_opt.study.max_se: the LARGEST of the iid, match-day-block and ISO-week-block standard errors of the mean.",
+  "ci": "95% = mean +- 1.96 * se",
+  "p": "one-sided p = 1 - Phi(mean / se) for H1 mean > 0; a cell with fewer than 2 bets or se 0 / NaN gets p = 1."
+ },
+ "holm_family": {
+  "members": "every (track, league, market, side, role) with role in {OPEN, BET} for every universe league that has an OddsAPI sport key, plus role FD_PRE for (Standard, league, over25, yes/no) for every Standard league with fd_raw files - each tested on TWO statistics (ROI and CLV). The family is enumerated from the universe BEFORE any effect is computed; a member with no bet or no p-value still counts (p = 1).",
+  "alpha_one_sided": 0.025,
+  "method": "Holm step-down over the whole family (ROI and CLV tests together)."
+ },
+ "verdicts": {
+  "PROVEN": "ROI statistic: n >= 150 bets AND Holm-adjusted p < 0.025 AND 95% CI lower bound > 0.",
+  "PROMISING": "not PROVEN, n >= 150, ROI > 0, and (the unadjusted 95% ROI lower bound > 0 OR the unadjusted 95% CLV lower bound > 0). Forward-paper candidate only; never a bet.",
+  "UNPROVEN": "n >= 150 and neither of the above.",
+  "INSUFFICIENT": "n < 150.",
+  "EARLY_ONLY": "OPEN verdict in {PROVEN, PROMISING} while the same league x market x side at BET is not (answers 'beats OPEN where it does not beat BT').",
+  "label": "every verdict is DEVELOPMENT evidence on rows before 2026-09-01 (some outcomes already seen in earlier studies); it becomes actionable only through the forward paper protocol."
+ },
+ "descriptive_only": {
+  "pooled": "per track x market x side pooled over leagues (context, no verdict, not in the family).",
+  "best_price_roi": "per cell, no test.",
+  "movement_q3": "for the OPEN-selected and the BET-selected bets of each cell: mean (odds_selected * fair_t - 1) for t in BET, OPEN, MOVEMENT buckets by hours before the own kickoff [>36h, 18-36h, 8-18h, 3-8h, 0.5-3h] and CLOSE, beside the mean calibrated EV at selection; MOVEMENT for over25 only (featured main line) and before 2026-06-14.",
+  "clv_drift": "per cell: mean (fair_close - fair_role) of the selected side for selected vs not-selected rows (does the price move toward the model's side when it likes it?)."
+ },
+ "q4_timing": {
+  "ledgers": "origin/main output/bets_ledger.csv (O/U 2.5) and output/side_bets_ledger.csv (over15 / over35 / btts ...), source 'live'; one row per first sight (the ledger deduplicates and the first logged row stands).",
+  "kickoff": "the fixture's actual kickoff from the OddsAPI store listings through the adapter's match_universe + actual_kickoffs (UTC); generated_at is UTC (src/ledger.py utcnow).",
+  "measure": "hours = kickoff - generated_at; shares >= 48h (an OPEN price could be taken), >= 125h / >= 153h (a BT-time price), per track and market; unmatched fixtures counted, never guessed."
+ },
+ "public_outputs": "output/research/opening_price_edge/{coverage,results,timing}.json and reports/OPENING_PRICE_EDGE.md: counts, ROI, CLV, CI, p-values only. No OddsAPI price, no priced row, no per-fixture line ever enters the repo or a log; priced intermediates stay in --local outside the repo.",
+ "forward": "cells with an OPEN verdict PROVEN or PROMISING go into a separate forward paper protocol (config/opening_price_edge_forward_protocol.json, hash-registered) starting 2026-11-21; the owner decides."
+}
