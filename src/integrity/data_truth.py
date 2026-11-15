@@ -35,6 +35,10 @@ turns system health RED instead of waiting for the next audit:
                  fixture, post-kickoff tip, close <= 1.0, |CLV| > 50 new-format row, duplicate player tip
                  or twice-logged v91 fixture (src/ledger_corrections corrects the rows before it). Not
                  gated (operational data, like rule 3): RED in system health.
+   10 PROPS      (2026-11-11, src.integrity.props_feature_truth) a keeper's goals_conceded read by the
+                 props features agrees with the match score where he played the full 90 minutes; every
+                 rolling team feature reads the side its name says (own team vs opponent); a provider null
+                 in a NULL_IS_MISSING count (goals_conceded, penalty_missed) stays missing. Gated.
 
 A check whose input is missing is NO_DATA (or RED where the input is a production bank), never GREEN.
 
@@ -1036,6 +1040,18 @@ def evaluate(now: datetime | None = None) -> list[dict]:
             out.append(fn())
         except Exception as e:                                         # noqa: BLE001
             out.append(_c(label, RED, "check failed", "must run", f"{type(e).__name__}: {e}"[:200]))
+    # 10 PROPS FEATURES (fix/props-feature-bugs 2026-11-11; Data truth 7 on data-truth-100, where 6-8 were not yet taken): keeper goals_conceded agrees with the
+    # match score on the frame the props features read; team features keyed to their side.
+    # The slim dashboard tree does not carry it (deploy/dashboard_manifest.json PIPELINE_ONLY: it reads
+    # player_history through props_harness); there the line is NO_DATA, never a crash. The gate and
+    # evidence_refresh run on the full repository, where the import always succeeds.
+    try:
+        from .props_feature_truth import evaluate as _props_truth
+    except ImportError as e:
+        out.append(_c("Data truth 10: props features", GREY, "not run in this tree",
+                      "runs on the full repository (data_truth_gate / evidence_refresh)", f"{e}"[:200]))
+        return out
+    out.extend(_props_truth())
     return out
 
 
@@ -1059,7 +1075,7 @@ RATCHET = ROOT / "config" / "data_truth_ratchet.json"
 #: ~19-60 s before team_names memoised norm/identity_key and duplicate_pairs stopped slicing
 #: pandas groups).
 GATED = ("Data truth 1", "Data truth 2", "Data truth 4", "Data truth 5", "Data truth 6", "Data truth 7",
-         "Data truth 8")
+         "Data truth 8", "Data truth 10")
 
 
 def _ratchet() -> dict:
