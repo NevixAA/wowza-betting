@@ -31,6 +31,12 @@ on:
         default: 'standard'
         type: choice
         options: [standard, new_format, both]
+      config:
+        description: 'the pre-registered config: config/phase2_retrain.json (the clean retrain) | config/phase2_info.json (the team-information experiment, owner 2026-11-15)'
+        required: true
+        default: 'config/phase2_retrain.json'
+        type: choice
+        options: [config/phase2_retrain.json, config/phase2_info.json]
 
 env:
   PYTHONIOENCODING: utf-8
@@ -60,15 +66,18 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
       - name: Plan (dry run, committed data, no fitting)
-        run: python scripts/phase2_retrain.py --dry-run --json-out _phase2/plan_${{ matrix.track }}.json
+        env:
+          CONFIG: ${{ inputs.config }}
+        run: python scripts/phase2_retrain.py --config "$CONFIG" --dry-run --json-out _phase2/plan_${{ matrix.track }}.json
       - name: Fit and score (refused unless the holdout is owner-approved in the config)
         env:
           PHASE2_RETRAIN_ENABLED: ${{ vars.PHASE2_RETRAIN_ENABLED }}
           STAGE: ${{ inputs.stage }}
           ONLY: ${{ inputs.only }}
+          CONFIG: ${{ inputs.config }}
         run: |
           set -euo pipefail
-          args=(--out _phase2 --stage "$STAGE" --tracks "${{ matrix.track }}")
+          args=(--config "$CONFIG" --out _phase2 --stage "$STAGE" --tracks "${{ matrix.track }}")
           [ -n "$ONLY" ] && args+=(--only "$ONLY")
           python scripts/phase2_retrain.py "${args[@]}"
       - name: Nothing in the repository changed

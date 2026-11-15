@@ -385,6 +385,80 @@ class ModelMarket(Candidate):
         return super().meta() | {"price_class": self.price_class}
 
 
+# ── bet-time market (a REAL price at tip time; never a closing price) ─────────────────────────
+
+BET_PRICE_CLASS = "BET_TIME"
+
+
+def _bet_market(market: dict) -> dict:
+    """The market with its BET-TIME price pair (config markets.<m>.bet_price) in the price slot, so
+    devig_yes reads it. A market without one has no bet-time probability."""
+    return dict(market, price=market.get("bet_price"))
+
+
+class MarketBet(MarketOnly):
+    """The de-vigged two-sided BET-TIME price (power method). Benchmark for 'the gap to the market'
+    on prices a tip could really have been made at. NaN where the pair is missing."""
+    name = "market_bet"
+
+    def __init__(self, params, market, *a, **k):
+        super().__init__(params, _bet_market(market), *a, price_class=BET_PRICE_CLASS, **k)
+
+
+class ModelMarketBet(Candidate):
+    """Logistic stack on [logit p_base, logit p_bet]: base = the champion recipe (with this run's
+    feature list) fitted on 'fit' (training window minus validation, the validation block as the
+    recipe's own holdout); the stack's two weights and intercept fitted on VALIDATION rows that carry
+    a two-sided bet-time price. A row without a bet-time price gets no probability."""
+    name = "model_market_bet"
+    deployable = True
+
+    def __init__(self, params, market, *a, **k):
+        super().__init__(params, _bet_market(market), *a, **k)
+        self.price_class = BET_PRICE_CLASS
+
+    def fit(self, frames: dict) -> "ModelMarketBet":
+        from sklearn.linear_model import LogisticRegression
+        self.stack = None
+        val = frames["validation"]
+        pm = devig_yes(val, self.market)
+        ok = np.isfinite(pm)
+        y = _y(val, self.target)
+        n_min = int(self.params["min_validation_priced"])           # declared in the config
+        if ok.sum() < n_min or len(set(y[ok])) < 2:
+            raise NotFitted(f"validation block has {int(ok.sum())} rows with a two-sided bet-time price "
+                            f"(need {n_min} with both outcomes)")
+        self.base = ChampionRecipe(self.params.get("base_params") or {}, self.market, self.features,
+                                   self.track, self.market_name)
+        self.base.fit({"train": frames["fit"], "test": val})
+        self.notes += [f"base: {n}" for n in self.base.notes]
+        pb = self.base.predict(val)
+        okb = ok & np.isfinite(pb)
+        Z = np.column_stack([_logit(pb[okb]), _logit(pm[okb])])
+        self.stack = LogisticRegression(C=1e6, max_iter=1000).fit(Z, y[okb])
+        self.n_validation = int(okb.sum())
+        self.notes.append(f"stack fitted on {self.n_validation} validation rows; "
+                          f"coef={np.round(self.stack.coef_[0], 4).tolist()}")
+        self.fitted = True
+        return self
+
+    def predict(self, df: pd.DataFrame) -> np.ndarray:
+        out = np.full(len(df), np.nan)
+        if self.stack is None:
+            return out
+        pm = devig_yes(df, self.market)
+        ok = np.isfinite(pm)
+        if ok.any():
+            pb = self.base.predict(df[ok])
+            good = np.isfinite(pb)
+            idx = np.flatnonzero(ok)[good]
+            out[idx] = self.stack.predict_proba(np.column_stack([_logit(pb[good]), _logit(pm[ok][good])]))[:, 1]
+        return out
+
+    def meta(self) -> dict:
+        return super().meta() | {"price_class": self.price_class}
+
+
 def build(name: str, cfg: dict, track: str, market_name: str, features: list) -> Candidate:
     c = cfg["candidates"][name]
     market = cfg["markets"][market_name]
@@ -399,6 +473,11 @@ def build(name: str, cfg: dict, track: str, market_name: str, features: list) ->
         return DixonColesCandidate(c, market, features, track, market_name)
     if name == "market_only":
         return MarketOnly(c, market, features, track, market_name, price_class=price_class)
+    if name == "market_bet":
+        return MarketBet(c, market, features, track, market_name)
+    if name == "model_market_bet":
+        base = dict(cfg["candidates"].get(c.get("base", "champion_recipe")) or {})
+        return ModelMarketBet(dict(c, base_params=base), market, features, track, market_name)
     if name == "model_market":
         return ModelMarket(c, market, features, track, market_name,
                            base_params=cfg["candidates"][c["base"]], price_class=price_class)

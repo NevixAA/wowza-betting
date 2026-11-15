@@ -36,10 +36,16 @@ CONFIG_PATH = ROOT / "config" / "phase2_retrain.json"
 ENABLE_VAR = "PHASE2_RETRAIN_ENABLED"
 TRACKS = ("standard", "new_format")
 CANDIDATES = ("champion_recipe", "logistic", "hgb", "dixon_coles", "market_only", "model_market")
+#: Experiment-only candidates (config/phase2_info.json, owner 2026-11-15): the BET-TIME market and the
+#: champion recipe stacked on it. Not part of the clean-retrain set above.
+EXPERIMENT_CANDIDATES = ("market_bet", "model_market_bet")
+ALL_CANDIDATES = CANDIDATES + EXPERIMENT_CANDIDATES
 #: Folders a run may never write into (serving models, registry, committed outputs).
 FORBIDDEN_RUN_ROOTS = ("models", "output", "config", "src", "registry")
 #: Candidates that read the feature list (dixon_coles reads goals, market_only reads prices).
 FEATURE_CANDIDATES = ("champion_recipe", "logistic", "hgb", "model_market")
+#: candidates a feature variant ('variants') may run
+VARIANT_CANDIDATES = FEATURE_CANDIDATES + ("model_market_bet",)
 #: owner_decisions.new_format_ht_variant (owner 2026-11-07): the track that gets the HT variant,
 #: the suffix of the variant's candidate names, and the HT history indicators of the HT block.
 HT_VARIANT_TRACK = "new_format"
@@ -73,7 +79,7 @@ def validate_config(cfg: dict) -> None:
     unknown = set(cfg["tracks"]) - set(TRACKS)
     if unknown:
         raise ValueError(f"unknown tracks {sorted(unknown)}")
-    unknown = set(cfg["candidates"]) - set(CANDIDATES)
+    unknown = set(cfg["candidates"]) - set(ALL_CANDIDATES)
     if unknown:
         raise ValueError(f"unknown candidates {sorted(unknown)}")
     wf = cfg["walk_forward"]
@@ -91,6 +97,16 @@ def validate_config(cfg: dict) -> None:
         raise ValueError("comparison.reference must be one of the candidates")
     if cmp_.get("correction") != "holm":
         raise ValueError("comparison.correction must be 'holm' (pre-registered)")
+    groups = cfg["features"]["groups"]
+    for suf, v in variants(cfg).items():
+        if not suf.startswith("+") or suf == HT_VARIANT_SUFFIX:
+            raise ValueError(f"variant {suf!r}: a variant suffix starts with '+' and is not {HT_VARIANT_SUFFIX!r}")
+        bad = [g for g in v.get("restore_groups") or () if g not in groups]
+        if bad or not v.get("restore_groups"):
+            raise ValueError(f"variant {suf!r}: restore_groups must name feature groups (unknown: {bad})")
+        bad = [c for c in v.get("candidates") or () if c not in VARIANT_CANDIDATES]
+        if bad or not v.get("candidates"):
+            raise ValueError(f"variant {suf!r}: candidates must be feature-reading candidates (bad: {bad})")
     od = cfg.get("owner_decisions") or {}
     if "new_format_ht_variant" in od and not isinstance(od["new_format_ht_variant"], bool):
         raise ValueError("owner_decisions.new_format_ht_variant must be true or false")
@@ -141,12 +157,13 @@ def assert_run_folder(path: Path | str, root: Path | None = None) -> Path:
 
 # ── features ────────────────────────────────────────────────────────────────────────────────
 
-def feature_list(cfg: dict, track: str, columns, restore=()) -> tuple[list[str], dict]:
+def feature_list(cfg: dict, track: str, columns, restore=(), extra_groups=()) -> tuple[list[str], dict]:
     """(features, excluded{column: reason}) for a track, given the frame's columns.
 
     A configured column that the frame does not have is EXCLUDED and listed - never created.
     `restore` lifts those columns out of the track's exclusion list (the HT variant); it never
-    adds a column that is not in an included group or that is price-derived."""
+    adds a column that is not in an included group or that is price-derived. `extra_groups` (a
+    feature variant, config 'variants') includes groups whose own include flag is false."""
     fcfg = cfg["features"]
     cols = set(columns)
     never = set(fcfg.get("never_model_inputs") or ())
@@ -154,7 +171,7 @@ def feature_list(cfg: dict, track: str, columns, restore=()) -> tuple[list[str],
     feats, excluded = [], {}
     for gname, g in fcfg["groups"].items():
         for c in g["columns"]:
-            if not g.get("include"):
+            if not g.get("include") and gname not in extra_groups:
                 excluded[c] = f"group {gname} not included"
             elif c in never:
                 excluded[c] = "price-derived (never a model input)"
@@ -209,12 +226,42 @@ def ht_variant_blockers(cfg: dict, columns=None) -> list[str]:
     return [f"new_format HT variant (owner_decisions.new_format_ht_variant) cannot run: {w}" for w in why]
 
 
+# ── feature variants (config 'variants', e.g. '+info': the team-information block) ─────────────
+
+def variants(cfg: dict) -> dict:
+    """{suffix: {restore_groups, candidates, tracks?}}: each listed candidate also runs as
+    '<name><suffix>' with the groups added (groups whose own include flag is false)."""
+    return cfg.get("variants") or {}
+
+
+def _variant_on_track(v: dict, cfg: dict, track: str) -> bool:
+    return track in (v.get("tracks") or cfg["tracks"])
+
+
+def variant_blockers(cfg: dict, columns, tracks=None) -> list[str]:
+    """A variant whose group column is not in the frame cannot run: refused, never skipped."""
+    cols = set(columns)
+    why = []
+    for suf, v in variants(cfg).items():
+        if tracks is not None and not any(_variant_on_track(v, cfg, t) for t in tracks):
+            continue
+        for g in v["restore_groups"]:
+            miss = [c for c in cfg["features"]["groups"][g]["columns"] if c not in cols]
+            if miss:
+                why.append(f"variant {suf}: group {g} column(s) not in the feature frame: {miss[:6]}"
+                           f"{' ...' if len(miss) > 6 else ''}")
+    return why
+
+
 def feature_sets(cfg: dict, track: str, columns) -> dict:
     """{suffix: (features, excluded)} for a track: '' is the champion exclusion list; '+ht' (new_format,
-    flag on) is the same list with the HT block restored."""
+    flag on) is the same list with the HT block restored; every configured variant adds its groups."""
     out = {"": feature_list(cfg, track, columns)}
     if ht_variant_on(cfg) and track == HT_VARIANT_TRACK:
         out[HT_VARIANT_SUFFIX] = feature_list(cfg, track, columns, restore=ht_block(cfg))
+    for suf, v in variants(cfg).items():
+        if _variant_on_track(v, cfg, track):
+            out[suf] = feature_list(cfg, track, columns, extra_groups=tuple(v["restore_groups"]))
     return out
 
 
@@ -227,6 +274,9 @@ def candidate_runs(cfg: dict, track: str, names) -> list[tuple[str, str, str]]:
         out.append((n, n, ""))
         if ht_variant_on(cfg) and track == HT_VARIANT_TRACK and n in FEATURE_CANDIDATES:
             out.append((n + HT_VARIANT_SUFFIX, n, HT_VARIANT_SUFFIX))
+        for suf, v in variants(cfg).items():
+            if n in v["candidates"] and _variant_on_track(v, cfg, track):
+                out.append((n + suf, n, suf))
     return out
 
 
@@ -359,7 +409,7 @@ def build_plan(feat: pd.DataFrame, cfg: dict) -> dict:
                            "blockers": ht_variant_blockers(cfg, feat.columns)},
             "tracks": {}}
     min_league = cfg["comparison"].get("min_league_n")
-    enabled = [n for n in CANDIDATES if (cfg["candidates"].get(n) or {}).get("enabled")]
+    enabled = [n for n in ALL_CANDIDATES if (cfg["candidates"].get(n) or {}).get("enabled")]
     for track in cfg["tracks"]:
         sets = feature_sets(cfg, track, feat.columns)
         feats, excluded = sets[""]
@@ -449,6 +499,11 @@ def load_committed_frame(cfg: dict) -> tuple[pd.DataFrame, dict]:
     feat = build_features(raw)
     feat["date"] = pd.to_datetime(feat["date"])
     info["feature_rows"] = int(len(feat))
+    if cfg["data"].get("team_info"):
+        # the team-information block (src.team_info_features): the SAME function serving calls,
+        # on the committed collected tables, every value as of the early tip (kickoff - 153 h)
+        from src.team_info_features import attach_info_features
+        feat, info["team_info"] = attach_info_features(feat)
     from src.standard_repair import frame_hash
     info["frame_hash"] = frame_hash(feat)
     return feat, info

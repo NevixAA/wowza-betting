@@ -94,6 +94,9 @@ def main(argv=None) -> int:
                                                      "variant runs with its base)")
     ap.add_argument("--tracks", default=None, help="comma-separated subset of the configured tracks")
     ap.add_argument("--fd-raw", default=None, help="folder of raw football-data CSVs (entry + closing O/U 2.5)")
+    ap.add_argument("--bet-prices", default=None,
+                    help="PRIVATE parquet of BET-role prices (row id, market, median_yes, median_no, n_labels), "
+                         "kept outside the public repo; feeds market_bet / model_market_bet")
     a = ap.parse_args(argv)
     logging.basicConfig(level=logging.WARNING, format="%(levelname)s %(message)s")
     cfg = P.load_config(a.config)
@@ -109,6 +112,10 @@ def main(argv=None) -> int:
         from src.standard_repair import attach_entry_prices, load_fd_entry_prices
         feat = attach_entry_prices(feat, load_fd_entry_prices(a.fd_raw)).rename(columns=FD_RAW_CLV)
         info["fd_raw"] = str(a.fd_raw)
+
+    if a.bet_prices:
+        from src.retrain_harness.bet_prices import attach_bet_prices, load_bet_prices
+        feat, info["bet_prices"] = attach_bet_prices(feat, load_bet_prices(a.bet_prices), cfg)
 
     if a.dry_run:
         plan = P.build_plan(feat, cfg)

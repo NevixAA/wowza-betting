@@ -54,7 +54,7 @@ def _row_ids(df: pd.DataFrame) -> pd.Series:
 
 
 def enabled_candidates(cfg: dict, only=None) -> list[str]:
-    names = [n for n in P.CANDIDATES if n in cfg["candidates"] and cfg["candidates"][n].get("enabled")]
+    names = [n for n in P.ALL_CANDIDATES if n in cfg["candidates"] and cfg["candidates"][n].get("enabled")]
     if only:
         names = [n for n in names if n in set(only)]
     ref = cfg["comparison"]["reference"]
@@ -153,6 +153,9 @@ def run(feat: pd.DataFrame, cfg: dict, out_dir, *, stages=STAGES, only=None, tra
         b = P.ht_variant_blockers(cfg, feat.columns)        # the frame check: never skip silently
         if b:
             raise PermissionError("fitting refused: " + "; ".join(b))
+    b = P.variant_blockers(cfg, feat.columns, tracks)       # a variant never runs on a partial block
+    if b:
+        raise PermissionError("fitting refused: " + "; ".join(b))
     for s in stages:
         if s not in STAGES:
             raise ValueError(f"unknown stage {s!r}")
