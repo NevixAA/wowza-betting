@@ -18,10 +18,19 @@ with API-Football fixture/team ids and the 90-minute score (score.fulltime; extr
 penalties are not part of a 90-minute result). Journal: output/collect/competition_seasons.parquet
 records each fetched competition-season; a season that has ENDED is never fetched again, the
 current one is re-fetched every run (one call).
+
+UPCOMING (2026-11-15, owner "Schedule daily" for injuries / lineups): the same /fixtures answer also
+lists the season's NOT-YET-PLAYED fixtures; they were dropped. They are now kept, at no extra call, in
+output/collect/upcoming_fixtures.parquet: fixture_id, league_id, season, kickoff (the provider's
+fixture.date, ISO with offset), kickoff_ts (fixture.timestamp, UTC seconds), status (NS / TBD),
+home_id, away_id, fetched_at. Each fetched league-season REPLACES its own rows (a fixture that was
+played, postponed or moved leaves or changes with the provider's answer). Read by
+scripts/collect_daily_injuries_lineups.py for the pre-kickoff /injuries?fixture calls.
 """
 from __future__ import annotations
 
 import argparse
+import os
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -38,6 +47,11 @@ from collect_common import COLLECT_DIR, AFClient, BudgetStop, append_parquet, hi
 OUT = ROOT / "output" / "strength" / "competition_fixtures.parquet"
 JOURNAL = COLLECT_DIR / "competition_seasons.parquet"
 FINISHED = {"FT", "AET", "PEN"}
+UPCOMING = COLLECT_DIR / "upcoming_fixtures.parquet"
+#: the provider's not-yet-played statuses (NS = not started, TBD = kickoff time to be defined)
+NOT_STARTED = {"NS", "TBD"}
+UPCOMING_COLS = ["fixture_id", "league_id", "season", "kickoff", "kickoff_ts", "status", "home_id",
+                 "away_id", "fetched_at"]
 FIX_COLS = ["fixture_id", "league_id", "league", "league_name", "competition_type", "season", "date",
             "home_id", "home_name", "away_id", "away_name", "ft_home", "ft_away", "status"]
 JOURNAL_COLS = ["league_id", "season", "season_start", "season_end", "n_fixtures", "n_finished",
@@ -115,6 +129,39 @@ def parse(body: dict, comp: dict, season: str) -> list[dict]:
     return rows
 
 
+def parse_upcoming(body: dict, league_id: int, season: str, fetched_at: str) -> list[dict]:
+    """The answer's not-yet-played fixtures (NS / TBD); a field the provider does not give stays None."""
+    rows = []
+    for f in (body or {}).get("response") or []:
+        fx, tm = f.get("fixture") or {}, f.get("teams") or {}
+        status = (fx.get("status") or {}).get("short")
+        if status not in NOT_STARTED or fx.get("id") is None:
+            continue
+        ts = fx.get("timestamp")
+        rows.append({"fixture_id": int(fx["id"]), "league_id": int(league_id), "season": str(season),
+                     "kickoff": fx.get("date"), "kickoff_ts": int(ts) if isinstance(ts, (int, float)) else None,
+                     "status": status, "home_id": (tm.get("home") or {}).get("id"),
+                     "away_id": (tm.get("away") or {}).get("id"), "fetched_at": fetched_at})
+    return rows
+
+
+def replace_upcoming(rows: list[dict], league_id: int, season: str, path: Path | None = None) -> int:
+    """Replace the stored upcoming rows of (league_id, season) with this answer's. Returns the rows kept."""
+    path = Path(path or UPCOMING)
+    old = read_parquet(path)
+    if not old.empty:
+        same = (pd.to_numeric(old["league_id"], errors="coerce") == int(league_id)) &                (old["season"].astype(str) == str(season))
+        old = old[~same]
+    new = pd.DataFrame(rows, columns=UPCOMING_COLS)
+    out = pd.concat([old.reindex(columns=UPCOMING_COLS), new], ignore_index=True) if not old.empty else new
+    out = out.drop_duplicates("fixture_id", keep="last").reset_index(drop=True)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_suffix(".tmp.parquet")
+    out.to_parquet(tmp, index=False)
+    os.replace(tmp, path)
+    return len(out)
+
+
 def plan_seasons(seasons: list[dict], journal: pd.DataFrame, league_id: int, start, today) -> list[dict]:
     """Seasons overlapping [start, today], minus ENDED seasons already journaled."""
     done = set()
@@ -153,11 +200,14 @@ def run(dry_run: bool = False, client: AFClient | None = None) -> dict:
                 if rows:
                     append_parquet(OUT, rows, ["fixture_id"], FIX_COLS)
                 n_all = len(body.get("response") or [])
+                fetched_at = datetime.now(timezone.utc).isoformat()
+                replace_upcoming(parse_upcoming(body, comp["league_id"], s["season"], fetched_at),
+                                 comp["league_id"], s["season"])
                 append_parquet(JOURNAL, [{"league_id": comp["league_id"], "season": s["season"],
                                           "season_start": s["start"].date().isoformat(),
                                           "season_end": s["end"].date().isoformat(),
                                           "n_fixtures": n_all, "n_finished": len(rows),
-                                          "fetched_at": datetime.now(timezone.utc).isoformat()}],
+                                          "fetched_at": fetched_at}],
                                ["league_id", "season"], JOURNAL_COLS)
                 stats["fetched"] += 1
                 stats["rows"] += len(rows)
