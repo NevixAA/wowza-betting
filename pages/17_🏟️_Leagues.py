@@ -33,6 +33,7 @@ from src.staked import DEFINITION as STAKED_DEF  # noqa: E402
 from dashboard_data import core, leagues  # noqa: E402
 from src import units as U  # noqa: E402
 from dashboard_data import leagues_view as V  # noqa: E402
+from dashboard_data import clean_record as CR  # noqa: E402
 
 # STREAMLIT CLOUD KEEPS IMPORTED MODULES ACROSS A REDEPLOY (see 15_League_Scout): reload the helper
 # so the page and its data module are always the same version.
@@ -44,8 +45,8 @@ st.set_page_config(page_title="Wowza | Leagues", page_icon="🏟️", layout="wi
 
 
 @st.cache_data(ttl=300, show_spinner=False)
-def _load(today: str):
-    d = leagues.settled()
+def _load(today: str, record: str):
+    d = leagues.settled(record)          # ONE record of the Clean Record split (owner 2026-11-11)
     up = leagues.upcoming(today, 7)
     rat = leagues.ratings()
     pol, reg = leagues.policy(), leagues.regimes()
@@ -62,10 +63,12 @@ def _pro_weekly():
 from src.tip_day import today as _tip_today  # noqa: E402
 TODAY = _tip_today()
 _SUB = (f"Every league's record, tips, rating and averages. Results are staked tips (policy stake > 0), settled, "
-        f"flat 1u, from the performance cutoff; {PAPER_TIER_LABEL} is paper and shown on its own line. Paper leagues "
-        f"are shown and labelled, never counted in totals. {GAP_EXPLAINER} Not betting advice.")
+        f"flat 1u; the {CR.clean_label()} by default, the pre-repair record on request. Paper tips are shown on "
+        "their own line. Paper leagues are shown and labelled, never counted in totals. Not betting advice.")
+RECORD = st.radio("Record", [CR.CLEAN, CR.BEFORE], horizontal=True, index=0, key="lg_record",
+                  format_func=lambda r: CR.clean_label() if r == CR.CLEAN else CR.before_label())
 try:
-    d, up, rat, pol, reg, ov, tr = _load(TODAY)
+    d, up, rat, pol, reg, ov, tr = _load(TODAY, RECORD)
 except Exception as e:                                                  # noqa: BLE001 - a viewer never dies
     ui.page_header("Leagues", _SUB, eyebrow_text="Results by league")
     ui.empty_state("ERROR", f"League data unavailable ({type(e).__name__}: {e})")
@@ -79,9 +82,21 @@ if ov.empty:
     ui.empty_state("NO_DATA", "No league data yet.")
     st.stop()
 
-# ── headline ──────────────────────────────────────────────────────────────────────────────────
-tot = leagues.totals(d)
-ui.metric_card("P/L", U.fmt(tot["pl"]), title="All leagues · staked", help=f"Flat 1u per staked bet. {STAKED_DEF}",
+# ── headline: the Clean Record always; the pre-repair record in its own section (owner 2026-11-11) ──────
+_tc = leagues.totals(leagues.settled(CR.CLEAN))
+ui.metric_card("Clean Record P/L", U.fmt(_tc["pl"]) if _tc["tips"] else U.fmt(0), title=f"All leagues · staked · "
+               f"{CR.clean_label()}", help=f"Flat 1u per staked bet. {STAKED_DEF}",
+               supporting=[("Clean Record staked tips settled", f"{_tc['tips']:,}"),
+                           ("Clean Record hit", V.fmt_pct(_tc["hit"], 1) if _tc["tips"] else "—"),
+                           ("Clean Record ROI", V.fmt_roi(_tc["roi"]) if _tc["tips"] else "—")],
+               status=ui.status_chip("LIVE", label="STAKED · POLICY STAKE > 0"))
+if not _tc["tips"]:
+    st.caption(CR.empty_text("staked tips"))
+_bx = st.expander(f"{CR.before_label()} — all leagues, for comparison only")
+_bx.caption(CR.BEFORE_NOTE)
+tot = leagues.totals(leagues.settled(CR.BEFORE))
+ui.metric_card("P/L", U.fmt(tot["pl"]), title="All leagues · staked · before the repairs",
+               help=f"Flat 1u per staked bet. {STAKED_DEF}", container=_bx,
                supporting=[("Staked tips settled", f"{tot['tips']:,}"), ("Hit", V.fmt_pct(tot["hit"], 1)),
                            ("ROI", V.fmt_roi(tot["roi"])), ("W-L", V.wl_help(tot["won"], tot["lost"], tot["void"])),
                            ("Leagues", f"{int((ov['tips'] > 0).sum())} with staked tips · {len(ov)} listed")],
@@ -140,25 +155,31 @@ ui.section_header("Market breakdown", "Sides never pooled: O/U 2.5 Over and Unde
 left, right = st.columns(2)
 with left:
     ui.eyebrow("By market")
-    basis = st.radio("Tiers", ["Staked (policy stake > 0)", f"{PAPER_TIER_LABEL} (tier view)"], horizontal=True,
+    _alt = "All tips (paper + staked)" if RECORD == CR.CLEAN else f"{PAPER_TIER_LABEL} (retired tier view)"
+    basis = st.radio("Tiers", ["Staked (policy stake > 0)", _alt], horizontal=True,
                      key="lg_mkt_basis", label_visibility="collapsed")
-    bm = leagues.by_market(g, None if basis.startswith("Staked") else ("VALUABLE",), reg=reg, league=pick)
+    bm = leagues.by_market(g, None if basis.startswith("Staked") else
+                           (leagues.TIERS if RECORD == CR.CLEAN else ("VALUABLE",)), reg=reg, league=pick)
     if bm.empty:
         ui.empty_state("NO_DATA", "No settled tips on this basis.")
     else:
         _bm = _stats_table(bm, "market")
         ui.compact_table(_bm, V.stats_config(_bm))
 with right:
-    ui.eyebrow("By tier · all markets")
-    bt = leagues.by_tier(g)
-    if bt.empty:
+    ui.eyebrow("By tier · all markets (retired tiers, pre-repair rows only)")
+    bt = leagues.by_tier(g) if RECORD == CR.BEFORE else pd.DataFrame()
+    if RECORD == CR.CLEAN:
+        st.caption("No tiers in the Clean Record (retired 2026-11-11): one approved bar per league x market cell. "
+                   "Per-cell results are on the Bars & Cells page.")
+    elif bt.empty:
         ui.empty_state("NO_DATA", "No settled tips.")
     else:
         _bt = _stats_table(bt, "tier")
         ui.compact_table(_bt, V.stats_config(_bt))
 
 # recent results + cumulative chart
-ui.section_header("Recent trend", "Cumulative staked P/L by match date, and the last 30 settled tips (all tiers).")
+ui.section_header("Recent trend", "Cumulative staked P/L by match date, and the last 30 settled tips (paper and "
+                  "staked) of the record chosen above.")
 left, right = st.columns([2, 3])
 with left:
     cu = leagues.cumulative(g)

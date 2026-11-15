@@ -75,161 +75,177 @@ _state_chip = ui.status_chip("PAPER", label="PAPER · RESEARCH")
 if df.empty:
     ui.page_header("Player Props", _SUB, eyebrow_text=_EYEBROW, freshness=_state_chip)
     ui.empty_state("NO_DATA", "⏳ No upcoming player-prop signals yet.")
-    st.stop()
+    # no st.stop(): the settled record below (Clean Record / Before the repairs) shows without a board
 
-ui.page_header("Player Props", _SUB, eyebrow_text=_EYEBROW,
-               freshness=_state_chip + " " + ui.status_chip(
-                   "NO_DATA", tone="NEUTRAL",
-                   label=f"{df['match'].nunique()} fixtures · {df['player_name'].nunique()} players upcoming"))
-
-priced = df[df["_priced"]]
-unpriced = df[~df["_priced"]]
-
-# ═══ STATUS — the headline counts ═══════════════════════════════════════════════════════════════
-_beats = priced[priced["model_prob"] > 1 / priced["market_odds"]]
-ui.metric_grid([
-    {"label": "Upcoming props", "value": f"{len(df):,}",
-     "help": f"{df['match'].nunique()} fixtures, {df['player_name'].nunique()} players."},
-    {"label": "Priced by a bookmaker", "value": f"{len(priced):,}",
-     "delta": f"{100 * len(priced) / len(df):.0f}% of props", "delta_color": "off",
-     "help": "Only these can be compared with the market."},
-    {"label": "Model above the price", "value": f"{len(_beats):,}",
-     "help": "Priced props where the model's probability exceeds the bookmaker's implied one. "
-             "Paper only — props have no proven betting edge (tested 8 ways)."},
-    {"label": "Model only (no price)", "value": f"{len(unpriced):,}",
-     "help": "No bookmaker offers this prop yet. Not a model rejection."},
-], per_row=2)
-st.caption(
-    "Why so many are unpriced: bookmakers price **anytime scorer** deeply but rarely offer "
-    "**1+ shot on target**, which is where most of the model's strongest signals sit. Markets "
-    "deepen toward kickoff, so prices appear over the last 1–3 days.")
-st.caption(V.hidden_markets_note())
-
-# ═══ Filters — market visible, the rest under Advanced filters ═══════════════════════════════════
-_mk = [m for m in MARKET_LABEL if m in set(df["market"])] + \
-      sorted(set(df["market"]) - set(MARKET_LABEL))
-mkt_filter = st.multiselect("Market", _mk, default=_mk,
-                            format_func=lambda m: MARKET_LABEL.get(m, m), key="pp_mkt")
-with st.expander("Advanced filters"):
-    f2, f3 = st.columns([2, 1])
-    with f2:
-        _lg = sorted(df["league"].dropna().unique())
-        league_filter = st.multiselect("League", _lg, default=[], placeholder="All leagues",
-                                       key="pp_lg")
-    with f3:
-        min_p = st.slider("Min model %", 0, 95, 0, 5, key="pp_minp")
-
-
-def _filt(d: pd.DataFrame) -> pd.DataFrame:
-    d = d[d["market"].isin(mkt_filter) & (d["model_prob"] * 100 >= min_p)]
-    if league_filter:
-        d = d[d["league"].isin(league_filter)]
-    return d
-
-
-# ═══ RESEARCH — where the model sits furthest above the price ════════════════════════════════════
-p = _filt(priced)
-ui.section_header("Model furthest above the price", "Priced props only, after the filters. Paper research: a "
-                  "gap to the price is not an edge — props have been tested eight ways and none held.")
-top = V.top_priced(p)
-if top.empty:
-    ui.empty_state("NO_DATA", "No priced props match the filters. Prices usually appear 1–3 days before kickoff.")
 else:
-    for col, (_, r) in zip(st.columns(3), top.iterrows()):
-        V.prop_card(r, container=col)
+    ui.page_header("Player Props", _SUB, eyebrow_text=_EYEBROW,
+                   freshness=_state_chip + " " + ui.status_chip(
+                       "NO_DATA", tone="NEUTRAL",
+                       label=f"{df['match'].nunique()} fixtures · {df['player_name'].nunique()} players upcoming"))
 
-# ═══ DETAIL — the day boards ═════════════════════════════════════════════════════════════════════
-ui.section_header("All upcoming props")
-tab_p, tab_u = st.tabs([f"Priced by bookmakers ({len(priced)})",
-                        f"Model only — no price yet ({len(unpriced)})"])
-with tab_p:
-    if p.empty:
+    priced = df[df["_priced"]]
+    unpriced = df[~df["_priced"]]
+
+    # ═══ STATUS — the headline counts ═══════════════════════════════════════════════════════════════
+    _beats = priced[priced["model_prob"] > 1 / priced["market_odds"]]
+    ui.metric_grid([
+        {"label": "Upcoming props", "value": f"{len(df):,}",
+         "help": f"{df['match'].nunique()} fixtures, {df['player_name'].nunique()} players."},
+        {"label": "Priced by a bookmaker", "value": f"{len(priced):,}",
+         "delta": f"{100 * len(priced) / len(df):.0f}% of props", "delta_color": "off",
+         "help": "Only these can be compared with the market."},
+        {"label": "Model above the price", "value": f"{len(_beats):,}",
+         "help": "Priced props where the model's probability exceeds the bookmaker's implied one. "
+                 "Paper only — props have no proven betting edge (tested 8 ways)."},
+        {"label": "Model only (no price)", "value": f"{len(unpriced):,}",
+         "help": "No bookmaker offers this prop yet. Not a model rejection."},
+    ], per_row=2)
+    st.caption(
+        "Why so many are unpriced: bookmakers price **anytime scorer** deeply but rarely offer "
+        "**1+ shot on target**, which is where most of the model's strongest signals sit. Markets "
+        "deepen toward kickoff, so prices appear over the last 1–3 days.")
+    st.caption(V.hidden_markets_note())
+
+    # ═══ Filters — market visible, the rest under Advanced filters ═══════════════════════════════════
+    _mk = [m for m in MARKET_LABEL if m in set(df["market"])] + \
+          sorted(set(df["market"]) - set(MARKET_LABEL))
+    mkt_filter = st.multiselect("Market", _mk, default=_mk,
+                                format_func=lambda m: MARKET_LABEL.get(m, m), key="pp_mkt")
+    with st.expander("Advanced filters"):
+        f2, f3 = st.columns([2, 1])
+        with f2:
+            _lg = sorted(df["league"].dropna().unique())
+            league_filter = st.multiselect("League", _lg, default=[], placeholder="All leagues",
+                                           key="pp_lg")
+        with f3:
+            min_p = st.slider("Min model %", 0, 95, 0, 5, key="pp_minp")
+
+
+    def _filt(d: pd.DataFrame) -> pd.DataFrame:
+        d = d[d["market"].isin(mkt_filter) & (d["model_prob"] * 100 >= min_p)]
+        if league_filter:
+            d = d[d["league"].isin(league_filter)]
+        return d
+
+
+    # ═══ RESEARCH — where the model sits furthest above the price ════════════════════════════════════
+    p = _filt(priced)
+    ui.section_header("Model furthest above the price", "Priced props only, after the filters. Paper research: a "
+                      "gap to the price is not an edge — props have been tested eight ways and none held.")
+    top = V.top_priced(p)
+    if top.empty:
         ui.empty_state("NO_DATA", "No priced props match the filters. Prices usually appear 1–3 days before kickoff.")
     else:
-        V.render_board(p, True, limit=60)
-        st.caption("**Edge** = model probability minus the bookmaker's implied probability, in "
-                   "percentage points; positive means the model rates the player higher than the price "
-                   "does. Bookmaker prices include their margin. **Fair price** says where the fair "
-                   "probability behind EV and tier came from: *two-sided price* (both sides of one "
-                   "bookmaker's bet, de-vigged) or *margin assumed* (one side quoted, margin assumed). "
-                   "Model = the model's own probability. Kickoff in Israel time. Paper only.")
-with tab_u:
-    u = _filt(unpriced)
-    if u.empty:
-        ui.empty_state("NO_DATA", "Nothing unpriced matches the filters.")
-    else:
-        V.render_board(u, False, limit=25)
-        st.caption("Strongest model signals per day (top 25). **Fair odds** = 1 / model probability "
-                   "— compare with your own bookmaker. No bookmaker price yet. Kickoff in Israel time. Paper only.")
+        for col, (_, r) in zip(st.columns(3), top.iterrows()):
+            V.prop_card(r, container=col)
 
-with st.expander("Raw data — every upcoming prop"):
-    show_cols = ["date", "kickoff_utc", "league", "match", "player_name", "position", "team",
-                 "market", "model_prob", "fair_odds", "market_odds", "fair_basis", "ev", "tier",
-                 "confidence", "n_games", "model_prob_hand_adjusted", "prob_adjustment"]
-    ui.compact_table(df.sort_values("model_prob", ascending=False)[[c for c in show_cols if c in df.columns]],
-                     V.RAW_CONFIG)
+    # ═══ DETAIL — the day boards ═════════════════════════════════════════════════════════════════════
+    ui.section_header("All upcoming props")
+    tab_p, tab_u = st.tabs([f"Priced by bookmakers ({len(priced)})",
+                            f"Model only — no price yet ({len(unpriced)})"])
+    with tab_p:
+        if p.empty:
+            ui.empty_state("NO_DATA", "No priced props match the filters. Prices usually appear 1–3 days before kickoff.")
+        else:
+            V.render_board(p, True, limit=60)
+            st.caption("**Edge** = model probability minus the bookmaker's implied probability, in "
+                       "percentage points; positive means the model rates the player higher than the price "
+                       "does. Bookmaker prices include their margin. **Fair price** says where the fair "
+                       "probability behind EV and tier came from: *two-sided price* (both sides of one "
+                       "bookmaker's bet, de-vigged) or *margin assumed* (one side quoted, margin assumed). "
+                       "Model = the model's own probability. Kickoff in Israel time. Paper only.")
+    with tab_u:
+        u = _filt(unpriced)
+        if u.empty:
+            ui.empty_state("NO_DATA", "Nothing unpriced matches the filters.")
+        else:
+            V.render_board(u, False, limit=25)
+            st.caption("Strongest model signals per day (top 25). **Fair odds** = 1 / model probability "
+                       "— compare with your own bookmaker. No bookmaker price yet. Kickoff in Israel time. Paper only.")
+
+    with st.expander("Raw data — every upcoming prop"):
+        show_cols = ["date", "kickoff_utc", "league", "match", "player_name", "position", "team",
+                     "market", "model_prob", "fair_odds", "market_odds", "fair_basis", "ev", "tier",
+                     "confidence", "n_games", "model_prob_hand_adjusted", "prob_adjustment"]
+        ui.compact_table(df.sort_values("model_prob", ascending=False)[[c for c in show_cols if c in df.columns]],
+                         V.RAW_CONFIG)
 
 # ═══ PERFORMANCE — settled record (rebuilt 2026-11-09, see dashboard_data/props_view.py) ═══════════════════
 ui.section_header("Results — settled player-prop tips",
-                  f"Every tip tier ({tier_label('VALUABLE')} included), flat 1u paper stakes, for the period you "
-                  "pick. ROI and "
-                  "profit use only tips with a real bookmaker price; a small sample is marked.")
+                  "Every prop tip, flat 1u paper stakes, for the period you pick: the Clean Record (clean props models) "
+                  "first, the pre-repair models' record below it. ROI and profit use only tips with a real bookmaker "
+                  "price; a small sample is marked. Rare prop markets are research only.")
 
 
 @st.cache_data(ttl=120)
 def load_results():
-    if not LEDGER_FILE.exists():
+    import config as _cfg                     # config.OUTPUT_DIR = the same output/ (tests point it elsewhere)
+    f = _cfg.OUTPUT_DIR / LEDGER_FILE.name
+    if not f.exists():
         return pd.DataFrame()
-    return pd.read_csv(LEDGER_FILE, low_memory=False)
+    return pd.read_csv(f, low_memory=False)
 
 
 led = load_results()
 if led.empty or "result" not in led.columns or "tier" not in led.columns:
     ui.empty_state("NO_DATA", "No prop results yet (`output/player_ledger.csv`).")
 else:
-    import config as _cfg  # noqa: E402
-    clean_from = getattr(_cfg, "PROPS_CLEAN_MODELS_LIVE_DATE", None)
+    from dashboard_data import clean_record as CR  # noqa: E402
     allr = V.prepare_ledger(led)
-    allr["era"] = V.model_era(allr, clean_from)
+    # THE Clean Record split (owner 2026-11-11; config.PROPS_CLEAN_MODELS_LIVE_DATE = config.CLEAN_RECORD_START):
+    # a prop tip counts in the clean-models record only when it was signalled AND played on or after the start
+    allr["era"] = CR.assign(allr, "signal_date", "match_date").map(
+        {CR.CLEAN: "clean models", CR.BEFORE: "pre-repair models", CR.UNPLACED: "unplaced"})
     period = st.radio("Period", list(V.PERIODS), index=V.PERIODS.index(V.DEFAULT_PERIOD), horizontal=True,
                       key="pp_results_period")
     today = pd.Timestamp.now(tz="UTC").tz_convert(None).normalize()
     d = V.in_period(allr, period, today)
     start = V.period_start(period, today)
     ui.caption(f"{period}: matches from {start:%d %b %Y} on" if start is not None else "All time")
-    if clean_from is None:
-        ui.caption("Every result here comes from the **pre-repair props models**. The clean retrained props "
-                   "models go live at go-live; their results start the Clean Record and will be shown apart.")
-    if V.tips(d).empty:
-        ui.empty_state("NO_DATA", f"No prop tips with a match date in this period ({period.lower()}).")
+
+    def _era(de, era):
+        tt = V.tier_table(de)
+        if tt.empty:
+            return
+        tot = tt[tt["Tier"] == "All tips"].iloc[0]
+        _pre = "Clean Record " if era == "clean models" else ""          # distinct labels per record
+        ui.metric_card(f"{_pre}Flat ROI (1u, paper)", ui.fmt_roi(tot["ROI %"] / 100) if tot["Priced"] else "—",
+                       title=f"All tips · {era} · {period.lower()}",
+                       supporting=[(f"{_pre}Settled", f"{int(tot['Settled'])}"),
+                                   (f"{_pre}Record", f"{int(tot['Wins'])}W – {int(tot['Settled'] - tot['Wins'])}L"),
+                                   ("Profit", ui.fmt_units(tot["Profit (u)"]) if tot["Priced"] else "—"),
+                                   ("Void / pending", f"{int(tot['Void'])} / {int(tot['Pending'])}")],
+                       status=ui.status_chip("PAPER", label="PAPER · NEVER STAKED")
+                       + (" " + ui.sample_marker(int(tot["Priced"])) if ui.small_sample(int(tot["Priced"])) else ""),
+                       n=int(tot["Priced"]))
+        # dashtruth 2026-11-05: rows a correction sidecar flags are IN this record; say how many
+        _st = V.tips(de)[V.tips(de)["R"].isin(V.SETTLED)]
+        import config as _cfg
+        _fl = {k: v for k, v in V.flagged(_st, _cfg.OUTPUT_DIR / "corrections").items() if v}
+        if _fl:
+            ui.caption("Includes rows flagged in output/corrections (kept, not removed): " + "; ".join(
+                f"{v} of {len(_st)} in {k} ({V.FLAG_FILES[k]})" for k, v in _fl.items()) + ".")
+        ui.eyebrow(f"{'Summary' if era == 'clean models' else 'By retired tier'} · {era}")
+        ui.compact_table(tt, V.TIER_CONFIG)
+        ui.eyebrow(f"By market · {era}")
+        ui.compact_table(V.market_table(de), V.TIER_CONFIG)
+        ui.eyebrow(f"Month by month · {era}")
+        ui.compact_table(V.month_table(de), V.TIER_CONFIG)
+
+    ui.eyebrow(CR.clean_label() + " · clean props models")
+    _clean = d[d["era"] == "clean models"]
+    if V.tips(_clean).empty:
+        ui.empty_state("NO_DATA", CR.empty_text("prop tips"))
     else:
-        for era in [e for e in ("clean models", "pre-repair models") if (d["era"] == e).any()]:
-            de = d[d["era"] == era]
-            tt = V.tier_table(de)
-            if tt.empty:
-                continue
-            tot = tt[tt["Tier"] == "All tips"].iloc[0]
-            ui.metric_card("Flat ROI (1u, paper)", ui.fmt_roi(tot["ROI %"] / 100) if tot["Priced"] else "—",
-                           title=f"All tips · {era} · {period.lower()}",
-                           supporting=[("Settled", f"{int(tot['Settled'])}"),
-                                       ("Record", f"{int(tot['Wins'])}W – {int(tot['Settled'] - tot['Wins'])}L"),
-                                       ("Profit", ui.fmt_units(tot["Profit (u)"]) if tot["Priced"] else "—"),
-                                       ("Void / pending", f"{int(tot['Void'])} / {int(tot['Pending'])}")],
-                           status=ui.status_chip("PAPER", label="PAPER · NEVER STAKED")
-                           + (" " + ui.sample_marker(int(tot["Priced"])) if ui.small_sample(int(tot["Priced"])) else ""),
-                           n=int(tot["Priced"]))
-            # dashtruth 2026-11-05: rows a correction sidecar flags are IN this record; say how many
-            _st = V.tips(de)[V.tips(de)["R"].isin(V.SETTLED)]
-            _fl = {k: v for k, v in V.flagged(_st, BASE_DIR / "output" / "corrections").items() if v}
-            if _fl:
-                ui.caption("Includes rows flagged in output/corrections (kept, not removed): " + "; ".join(
-                    f"{v} of {len(_st)} in {k} ({V.FLAG_FILES[k]})" for k, v in _fl.items()) + ".")
-            ui.eyebrow(f"By tier · {era}")
-            ui.compact_table(tt, V.TIER_CONFIG)
-            ui.eyebrow(f"By market · {era}")
-            ui.compact_table(V.market_table(de), V.TIER_CONFIG)
-            ui.eyebrow(f"Month by month · {era}")
-            ui.compact_table(V.month_table(de), V.TIER_CONFIG)
+        _era(_clean, "clean models")
+    with st.expander(f"{CR.before_label()} — pre-repair props models, for comparison only"):
+        st.caption(CR.BEFORE_NOTE)
+        _pre = d[d["era"] == "pre-repair models"]
+        if V.tips(_pre).empty:
+            ui.empty_state("NO_DATA", f"No pre-repair prop tips with a match date in this period ({period.lower()}).")
+        else:
+            _era(_pre, "pre-repair models")
+    if not V.tips(d).empty:
         n_avoid = V.avoid_count(d)
         if n_avoid:
             ui.caption(f"Logged, not tipped: {n_avoid:,} AVOID rows in this period are recorded for research and "

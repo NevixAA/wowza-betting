@@ -53,16 +53,22 @@ today = pd.Timestamp.now(tz="UTC").tz_localize(None).normalize()
 day_s = today.strftime("%Y-%m-%d")
 bb, n_day = _best_bets(day_s)
 
+def _note(r) -> str:
+    """The tip's cell status when it carries one (no tier label on a tip since 2026-11-11)."""
+    cs = getattr(r, "cell_status", None)
+    return f"{cs} cell" if isinstance(cs, str) and cs else ""
+
+
 if len(bb):
     ui.section_header("Today")
     for i, r in enumerate(bb.itertuples(index=False)):
         if i % 2 == 0:
             cols = st.columns(2)
         ui.selection_card(league=str(r.league), kickoff="", home=r.home_team, away=r.away_team, pick=str(r.pick),
-                          odds=f"{float(r.odds):.2f}", tier=str(r.signal_tier), show_plan=False,
+                          odds=f"{float(r.odds):.2f}", tier="", show_plan=False,   # no tiers (owner 2026-11-11)
                           supporting=[("Odds", f"{float(r.odds):.2f}"),
                                       ("Chance", "–" if pd.isna(r.p_win) else f"{float(r.p_win):.0%}")],
-                          note=f"{tier_label(r.signal_tier)} signal", container=cols[i % 2])
+                          note=_note(r), container=cols[i % 2])
     if current_tier() == "free" and n_day > len(bb):
         st.info(f"Wowza Pro has **{n_day} tips** today, three top-picks lists and bankroll sizing — see Account.")
 else:
@@ -81,9 +87,9 @@ else:
             if i % 2 == 0:
                 cols = st.columns(2)
             ui.selection_card(league=str(r.league), kickoff="", home=home, away=away, pick=pick_txt,
-                              odds=f"{float(r.odds):.2f}", tier=str(r.signal_tier), show_plan=False,
+                              odds=f"{float(r.odds):.2f}", tier="", show_plan=False,   # no tiers (2026-11-11)
                               supporting=[("Odds", f"{float(r.odds):.2f}")],
-                              note=f"{tier_label(r.signal_tier)} signal", container=cols[i % 2])
+                              note=_note(r), container=cols[i % 2])
 
 st.caption("Odds are the best price seen when the tip was made and can move. Chance = our honest win "
            "estimate. Tips are information, not advice; bet only what you can afford to lose.")

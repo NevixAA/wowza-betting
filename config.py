@@ -559,11 +559,32 @@ DRIFT_CONFLICT_THRESHOLD = 0.03
 # two in sync. Rows are NOT deleted: they stay in the ledgers so CLV keeps every data point.
 PERFORMANCE_CUTOFF_DATE = "2026-08-10"
 
-# The date the CLEAN retrained props models (Phase 2 props harness, promoted on data-truth-100) start serving.
-# None = they are not live yet, so every props result on the dashboard comes from the pre-repair models and
-# is labelled so (pages/11 Player Props). Set at go-live (reports/GO_LIVE_RUNBOOK.md); results from that date
-# start the Clean Record and are shown apart from the pre-repair record, never in one headline.
-PROPS_CLEAN_MODELS_LIVE_DATE = None
+# ── Clean Record start (OWNER DECISION 2026-11-11) ────────────────────────────────────────────────
+# "we need to update the dashboard with all the new models and fixes ... adjust to count from 0 after all
+# the fixing (to see the difference later)". The Clean Record counts from 2026-11-21: the first round on the
+# clean models (clean retrained team models, clean props models, the approved per-cell bars
+# TP-2026-11-10-d999073a). ONE value, stored once in config/trustworthy_performance.json
+# (clean_record_start_utc, the key the Clean Record framework src/trustworthy_performance.py already reads)
+# and read here; never a default: a missing or empty value stops config loading.
+# PERFORMANCE_CUTOFF_DATE above is NOT moved: it now opens the "Before the repairs" comparison window
+# [PERFORMANCE_CUTOFF_DATE, CLEAN_RECORD_START), shown apart from the Clean Record, never in one total.
+def _clean_record_start() -> str:
+    import json as _json
+    _v = _json.loads((BASE_DIR / "config" / "trustworthy_performance.json").read_text(encoding="utf-8"))
+    _v = _v.get("clean_record_start_utc")
+    if not _v:
+        raise RuntimeError("config/trustworthy_performance.json clean_record_start_utc is not set "
+                           "(owner decision 2026-11-11: 2026-11-21)")
+    return str(_v)[:10]
+
+
+CLEAN_RECORD_START = _clean_record_start()
+
+# The date the CLEAN retrained props models (Phase 2 props harness, run 42855107089, promoted on
+# data-truth-100) start serving = the Clean Record start (aligned 2026-11-11: one date for team and props, so
+# the props Clean Record and the team Clean Record start together). pages/11 Player Props shows the results
+# from it apart from the pre-repair props record, never in one headline.
+PROPS_CLEAN_MODELS_LIVE_DATE = CLEAN_RECORD_START
 
 # ── Backtesting ───────────────────────────────────────────────────────────────
 BACKTEST_WALK_SIZE = 60

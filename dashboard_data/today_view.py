@@ -75,7 +75,8 @@ def load_bets(out_dir=None) -> pd.DataFrame:
 
 
 SETTLED_COLS = ["signal_tier", "_mkt", "_pnl", "_dt", "league", "_odds", "_ledger",
-                 "_stake_status", "_stake_units", "_staked"]
+                 "_stake_status", "_stake_units", "_staked",
+                 "_gen", "_side", "_model"]   # generated_at (Clean Record split), side, model_type (per-cell join)
 
 
 def is_staked(labels, source=None, dt=None, league=None, ledger=None, pnl=None) -> pd.Series:
@@ -134,7 +135,9 @@ def load_settled(out_dir=None) -> pd.DataFrame:
             d = d.assign(_dt=pd.to_datetime(d.get("match_date"), errors="coerce"),
                          _pnl=pd.to_numeric(d.get("pnl"), errors="coerce"),
                          _odds=pd.to_numeric(d[oc], errors="coerce") if oc in d.columns else float("nan"),
-                         _ledger=f,
+                         _ledger=f, _gen=d["generated_at"] if "generated_at" in d.columns else pd.NA,
+                         _side=d["side"] if "side" in d.columns else pd.NA,
+                         _model=d["model_type"] if "model_type" in d.columns else pd.NA,
                          league=d["league"] if "league" in d.columns else pd.NA,
                          _mkt=d[mkc].astype(str) if mkc and mkc in d.columns else const,
                          _stake_status=lab["stake_status"], _stake_units=lab["stake_units"],

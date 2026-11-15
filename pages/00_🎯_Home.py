@@ -27,6 +27,7 @@ require("pro")
 import dashboard_ui as ui  # noqa: E402
 from src.tier_labels import GAP_EXPLAINER, PAPER_TIER_LABEL, STAKED_LABEL  # noqa: E402
 from dashboard_data import production_view, today_view, truth_view  # noqa: E402
+from dashboard_data import clean_record as CR  # noqa: E402
 from src.staked import DEFINITION as STAKED_DEF, load_records, plan_staked, policy_start  # noqa: E402
 from src import units as U  # noqa: E402
 
@@ -60,7 +61,11 @@ def _home(today: str, local_day: str) -> dict:
              if len(active) and len(ko) else pd.Series(dtype="datetime64[ns, UTC]"))
     sh, man = today_view.health_files()
     bb, bb_frozen = _best_bets(today)
-    return {"perf": today_view.performance(today_view.load_settled(), today=local_day),
+    settled = today_view.load_settled()
+    sp = CR.team_split(settled)                  # THE Clean Record split (owner 2026-11-11)
+    return {"perf": today_view.performance(sp[CR.BEFORE], today=local_day),
+            "perf_clean": today_view.performance(sp[CR.CLEAN], today=local_day),
+            "rec": CR.team_summaries(settled),
             "upcoming_ou": today_view.upcoming_staked_ou(plan),
             "act": today_view.action(plan), "ko_times": times,
             "gen": plan["generated_at"].dropna().astype(str).max() if len(plan) else None,
@@ -107,13 +112,43 @@ with a:
         st.caption(f"Best bets #1: **{r['home_team']} v {r['away_team']}** · {r['pick']} @ {ui.fmt_odds(r['odds'])}"
                    f" · chance {ui.fmt_prob(r['p_win'])}")
     st.caption(f"Upcoming staked tips = O/U 2.5 tips in the current stake plan with a policy stake > 0. "
-               f"Not staked by state: {_paper_bits}. Kickoff in Israel time. {GAP_EXPLAINER}")
+               f"Not staked by state: {_paper_bits}. Kickoff in Israel time.")
 
 with b:
+    # B = the CLEAN RECORD only (owner 2026-11-11 "count from 0 after all the fixing"): tips generated and played
+    # on or after config.CLEAN_RECORD_START. Before it: 0 / no settled tips yet, never an old number.
+    _pc, _rc = H["perf_clean"], H["rec"][CR.CLEAN]
+    _st, _al = _rc["staked"], _rc["all"]
+    ui.metric_card(
+        "Clean Record staked P/L (flat 1u)", U.fmt(_pc["pnl"]) if _pc["n"] else U.fmt(0),
+        title=f"B · {CR.clean_label()}",
+        help=f"{STAKED_DEF}. Only tips generated and played on or after {CR.start_date()} (the first round on "
+             "the clean models). Flat 1u per staked bet, settled only.",
+        supporting=[("Clean Record staked bets", f"{_st['n']}"),
+                    ("Clean Record hit rate", f"{100 * _st['hit']:.1f}%" if _st["n"] else "—"),
+                    ("Clean Record ROI", ui.fmt_roi(_st["roi"]) if _st["n"] else "—"),
+                    ("Clean Record ROI 95% CI", CR.fmt_ci(_st["ci"])),
+                    ("Clean Record all tips, paper + staked (flat 1u)",
+                     f"{U.fmt(_al['units']) if _al['n'] else U.fmt(0)} · n={_al['n']}")],
+        status=ui.status_chip("LIVE" if CR.started() else "NO_DATA",
+                              label="CLEAN RECORD" if CR.started() else f"STARTS {CR.start_date()}"),
+        n=_st["n"] or None,
+        chart_data=_pc["curve"]["cum"].map(U.rnd).tolist() if len(_pc["curve"]) > 1 else None)
+    if not _al["n"]:
+        st.caption(CR.empty_text())
+
+_before = st.expander(f"{CR.before_label()} — for comparison only", expanded=False)
+with _before:
+    st.caption(CR.BEFORE_NOTE)
+    ui.compact_table(CR.comparison(H["rec"][CR.CLEAN]["staked"], H["rec"][CR.BEFORE]["staked"]),
+                     CR.table_config(ui))
+    st.caption("Staked bets (a recorded policy stake > 0), flat 1u, same metrics for both records. The Clean "
+               "Record vs Before the repairs page has every scope side by side.")
     if perf["n"]:
         _dd = perf["drawdown"]
         ui.metric_card(
-            "Staked P/L (flat 1u)", U.fmt(perf['pnl']), title="B · Current performance",
+            "Staked P/L (flat 1u)", U.fmt(perf['pnl']), title=f"Before the repairs · settled {_cut} to "
+                                                              f"{CR.start_date()}",
             help=f"{STAKED_DEF}. Flat 1u per staked bet, every policy market (O/U 2.5, side markets), settled "
                  "only. Same number as the Tips page.",
             supporting=[("P/L at recorded stakes", f"{U.fmt(perf['stake_pnl'])} on {perf['stake_units']:.2f}u staked"),
@@ -126,7 +161,7 @@ with b:
             chart_data=perf["curve"]["cum"].map(U.rnd).tolist() if len(perf["curve"]) > 1 else None)
     else:
         with st.container(border=True):
-            ui.eyebrow("B · Current performance")
+            ui.eyebrow("Before the repairs")
             st.metric("Staked P/L (flat 1u)", "—")
             ui.stat_line([("Win rate — staked", "—"), ("Settled staked bets", "0")])
     st.caption("Not staked (every other settled tip, any tier) P/L: "
@@ -161,7 +196,8 @@ with c:
                     + f" :gray[{_cnt.get('GREEN', 0)} green · {_cnt.get('AMBER', 0)} amber · {_cnt.get('RED', 0)} red]")
 
 _ps = H["policy_start"]
-st.caption(f"Settled since {_cut} (by match date), flat 1u stakes. A staked bet needs a recorded policy stake, and the "
+_before.caption(f"Before the repairs = settled {_cut} (by match date) to {CR.start_date()}, flat 1u stakes. A staked bet "
+           "needs a recorded policy stake, and the "
            f"first recorded policy decision is "
            + (f"{pd.Timestamp(_ps):%Y-%m-%d %H:%M} UTC" if pd.notna(_ps) else "not recorded (no stake record found)")
            + ": no earlier tip can count as staked; it is in the not-staked line. Per-market breakdown on the "
@@ -174,7 +210,7 @@ truth_view.render(H["truth"], compact=True)
 ui.section_header("Best opportunities today",
                   ("Frozen this morning and scored." if bb_frozen else "Preview — frozen when the morning album goes out.")
                   + " Best bets = most expected profit among tips with at least a 45% chance (learned from past "
-                    "results). The tier is shown as metadata only.")
+                    "results). No tier (retired 2026-11-11): each tip shows its league x market cell's status.")
 if bb.empty:
     ui.empty_state("NO_DATA", "No Best-bets list for today yet.")
 else:
@@ -183,8 +219,10 @@ else:
         with _cols[i % 3]:
             ui.selection_card(league=f"#{int(r['rank'])} · {r['league']}", kickoff="", home=r["home_team"],
                               away=r["away_team"], pick=str(r["pick"]), odds=r["odds"],
-                              production_state="", decision_state="", tier=r["signal_tier"], show_plan=False,
-                              supporting=[("Chance", ui.fmt_prob(r["p_win"])),
+                              production_state="", decision_state="", tier="", show_plan=False,
+                              supporting=[("Cell status", str(r["cell_status"]) if "cell_status" in r.index
+                                           and pd.notna(r["cell_status"]) and str(r["cell_status"]) else "—"),
+                                          ("Chance", ui.fmt_prob(r["p_win"])),
                                           ("Expected profit", ui.fmt_roi(r["ev"]))])
     if len(bb) > 3:
         st.caption("Also on the list: " + " · ".join(
@@ -192,21 +230,22 @@ else:
             for _, r in bb.iloc[3:].iterrows()) + ". All three lists are on the Tips page.")
 
 # ── recent performance ───────────────────────────────────────────────────────────────────────
-ui.section_header("Recent performance", "Staked P/L per market, flat 1u, policy stake > 0, settled since the "
-                  "cutoff. The line on the P/L card above is the cumulative total by match date. A sample, "
+ui.section_header("Recent performance", f"{CR.clean_label()}: staked P/L per market, flat 1u, policy stake > 0, "
+                  "settled. The line on the P/L card above is the cumulative total by match date. A sample, "
                   "not a track record.")
-if perf["n"]:
-    ui.compact_table(perf["by_market"], {"Bets": ui.num_col("Bets", fmt="%d"),
+_pc = H["perf_clean"]
+if _pc["n"]:
+    ui.compact_table(_pc["by_market"], {"Bets": ui.num_col("Bets", fmt="%d"),
                                          "P/L": ui.num_col("P/L", fmt="%+.2f"),
                                          "Run": ui.spark_col("Run", help="Running total in units, one point "
                                                              "per settled bet; each row on its own scale — "
                                                              "compare the shape, read P/L for the level.")})
-    _thin = perf["by_market"][perf["by_market"]["Bets"] < ui.SMALL_SAMPLE_FLOOR]
+    _thin = _pc["by_market"][_pc["by_market"]["Bets"] < ui.SMALL_SAMPLE_FLOOR]
     if len(_thin):
         st.markdown(" ".join(ui.sample_marker(int(r["Bets"])) + f" :gray[{r['Market']}]"
                              for _, r in _thin.iterrows()))
 else:
-    ui.empty_state("NO_DATA", "No settled staked bets since the cutoff yet.")
+    ui.empty_state("NO_DATA", CR.empty_text("staked bets"))
 
 # ── needs attention ──────────────────────────────────────────────────────────────────────────
 ui.section_header("Needs attention", "Only what is not healthy, worst first — from system_health.json, the "

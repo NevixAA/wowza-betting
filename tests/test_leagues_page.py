@@ -75,7 +75,7 @@ def env(tmp_path, monkeypatch):
 
 def _ov():
     from dashboard_data import leagues as L
-    d = L.settled()
+    d = L.settled("BEFORE")      # these fixtures are pre-repair rows; the page's default is the Clean Record
     return d, L.overview(d, TODAY, up=L.upcoming(TODAY, 7), rat=L.ratings(), pol=L.policy(), reg=L.regimes())
 
 
@@ -180,6 +180,8 @@ def test_page_renders_same_table(env):
     at = testing.AppTest.from_file(str(PAGE), default_timeout=120)
     at.run()
     assert not at.exception, [e.value for e in at.exception]
+    at.radio(key="lg_record").set_value("BEFORE").run()             # the pre-repair record (owner 2026-11-11)
+    assert not at.exception, [e.value for e in at.exception]
     shown = at.dataframe[0].value
     _, ov = _ov()
     want = L.overview_table(ov)
@@ -210,10 +212,14 @@ def test_page_cards_and_profile_carry_module_values(env):
     st.cache_data.clear()
     at = testing.AppTest.from_file(str(PAGE), default_timeout=120).run()
     assert not at.exception, [e.value for e in at.exception]
+    metrics = [(m.label, m.value) for m in at.metric]
+    assert metrics[0] == ("Clean Record P/L", ui.units(0))                # Clean Record headline: nothing yet
+    at.radio(key="lg_record").set_value("BEFORE").run()
+    assert not at.exception, [e.value for e in at.exception]
     d, ov = _ov()
     tot = L.totals(d)
     metrics = [(m.label, m.value) for m in at.metric]
-    assert ("P/L", ui.units(tot["pl"])) == metrics[0]                    # the headline card
+    assert ("P/L", ui.units(tot["pl"])) == metrics[1]                    # the pre-repair headline card
     cards = {r["league"]: r for r in ov.to_dict("records") if r["tips"] > 0 and not r["paper"]}
     staked = [v for lab, v in metrics if lab == "P/L (staked)"]
     assert staked == [ui.units(cards[k]["pl"]) for k in cards]           # one card per league, overview order
