@@ -42,7 +42,10 @@ def test_the_two_spellings_collapse_to_one_fixture():
 @pytest.mark.skipif(not (ROOT / "output" / "fd_history.parquet").exists()
                     or not (ROOT / "output" / "af_history.parquet").exists(), reason="no history bank")
 def test_no_two_different_fixtures_collide_on_the_committed_history():
-    fd = pd.read_parquet(ROOT / "output" / "fd_history.parquet")
+    from src.history_corrections import apply_history_corrections
+    # as served: the owner's history corrections beside the bank (e.g. 2026-11-07 UC Dublin v Drogheda,
+    # football-data 2-1, served at API-Football's 1-2 - its goal events, history_score_conflicts_resolved)
+    fd = apply_history_corrections(pd.read_parquet(ROOT / "output" / "fd_history.parquet"), tag="test")
     af = pd.read_parquet(ROOT / "output" / "af_history.parquet").rename(
         columns={"FTHG": "home_goals", "FTAG": "away_goals"})
     cols = ["date", "league", "home_team", "away_team", "home_goals", "away_goals"]

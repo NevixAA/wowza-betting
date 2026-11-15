@@ -627,6 +627,27 @@ def _fixture_dupes(frame: pd.DataFrame, pool: pd.DataFrame, home_goals: str, awa
                                    fixture_col=fixture_col))
 
 
+def _score_conflicts(clean: pd.DataFrame, pool: pd.DataFrame) -> pd.DataFrame:
+    """Served rows whose score differs from the claimed provider fixture's score.fulltime (the 90-minute
+    score) and whose fixture the settled-conflict list (output/corrections/history_score_conflicts_
+    resolved.csv, scripts/build_score_conflicts.py) does not decide (2026-11-15, go-live rehearsal R3)."""
+    from src import league_registry as LR
+    from src.history_corrections import CONFLICT_DECISIONS, read_score_conflicts
+    from src.integrity.fixture_claims import claims
+    f = clean.copy()
+    f["league"] = f["league"].map(lambda x: LR.canonical_name(x) if isinstance(x, str) else None)
+    c = claims(f, pool)
+    if c.empty:
+        return c.assign(ft_home=[], ft_away=[], home_goals=[], away_goals=[])
+    c = c.join(pool.drop_duplicates("fixture_id").set_index("fixture_id")[["ft_home", "ft_away"]], on="fixture_id")
+    c = c.join(clean[["home_goals", "away_goals"]], on="idx")
+    bad = c["ft_home"].notna() & ((c["home_goals"] != c["ft_home"]) | (c["away_goals"] != c["ft_away"]))
+    settled = read_score_conflicts()
+    ok = set(pd.to_numeric(settled.loc[settled["decision"].isin(CONFLICT_DECISIONS), "fixture_id"],
+                           errors="coerce").dropna().astype(int))
+    return c[bad & ~c["fixture_id"].astype(int).isin(ok)]
+
+
 def one_match(banks: dict | None = None, pool: pd.DataFrame | None = None,
               af: pd.DataFrame | None = None) -> dict:
     """The banks the training frame is built from, merged and put through the loader's own identity
@@ -644,8 +665,9 @@ def one_match(banks: dict | None = None, pool: pd.DataFrame | None = None,
             "data_loader.one_club_one_match, "
             "hold 0 duplicate-match pairs (same league, canonical clubs, same score, dates <= 3 d apart; or "
             "same day, same score, one side the same club), 0 rows whose last-5 window holds their own "
-            "match, and 0 provider fixtures (API-Football fixture id) claimed by two served rows or by two "
-            "served af_history provider rows: RED on any, or when the provider fixture lists are missing; "
+            "match, 0 provider fixtures (API-Football fixture id) claimed by two served rows or by two "
+            "served af_history provider rows, and 0 served rows whose score differs from the provider's "
+            "90-minute score without a settled decision: RED on any, or when the provider fixture lists are missing; "
             "NO_DATA if fd_history is missing")
     from src import data_loader as DL
     from src.integrity.duplicate_matches import duplicate_pairs, self_containing_rows
@@ -681,15 +703,21 @@ def one_match(banks: dict | None = None, pool: pd.DataFrame | None = None,
     afx = (pd.DataFrame(columns=["fixture_id", "league", "date", "idx"]) if no_pool or af is None or af.empty
            else _fixture_dupes(af, pool, "FTHG", "FTAG", fixture_col="fixture_id"))
     n_fx, n_afx = fx["fixture_id"].nunique(), afx["fixture_id"].nunique()
-    st = RED if (len(pairs) or int(sc.sum()) or n_fx or n_afx or no_pool) else GREEN
+    sconf = pd.DataFrame(columns=["fixture_id", "league", "date"]) if no_pool else _score_conflicts(clean, pool)
+    n_sc = int(len(sconf))
+    st = RED if (len(pairs) or int(sc.sum()) or n_fx or n_afx or n_sc or no_pool) else GREEN
     ex = "; ".join(f"{p.league}: rows {p.i}/{p.j} {p.gap_days} d ({p.kind})" for p in pairs.head(3).itertuples())
     for name, g in (("served", fx), ("af_history", afx)):
         for fid, gg in list(g.groupby("fixture_id", sort=False))[:3]:
             ex += (("; " if ex else "") + f"{name} {gg['league'].iloc[0]} {gg['date'].iloc[0]}: provider fixture "
                    f"{int(fid)} claimed by rows {list(gg['idx'])}")
+    for r in sconf.head(3).itertuples(index=False):
+        ex += (("; " if ex else "") + f"score conflict {r.league} {r.date}: provider fixture {int(r.fixture_id)} "
+               f"{r.ft_home:.0f}-{r.ft_away:.0f}, served {r.home_goals:.0f}-{r.away_goals:.0f}")
     fx_txt = ("provider fixture check NOT RUN (no provider fixture lists)" if no_pool else
               f"{n_fx} provider fixture(s) claimed by 2+ served rows"
-              + ("" if af is None else f", {n_afx} by 2+ af_history provider rows"))
+              + ("" if af is None else f", {n_afx} by 2+ af_history provider rows")
+              + f", {n_sc} unsettled provider score conflict(s)")
     return _c("Data truth 5: one match, one row", st,
               f"{len(pairs)} duplicate pair(s), {int(sc.sum())} self-containing row(s) after the loader's "
               f"identity pipeline ({len(merged):,} bank rows -> {len(clean):,}; {removed:,} copies removed); "

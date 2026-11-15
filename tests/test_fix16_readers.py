@@ -233,6 +233,8 @@ RAW = {                # why the raw file is the right input
     "scripts/build_history_supplement.py": ("fix/history-supplement: reads the banks through data_loader."
                                             "one_club_one_match (which applies the lists) to find the provider "
                                             "fixtures the served history lacks"),
+    "scripts/build_score_conflicts.py": ("go-live R3: builds the score-conflict list FROM the raw rows (the other "
+                                         "history lists applied, this one not)"),
     "scripts/probe_oddsapi_history.py": ("P7: reads league / date only to pick one probe match day per "
                                          "league for the OddsAPI history probe (no result is served)"),
 }

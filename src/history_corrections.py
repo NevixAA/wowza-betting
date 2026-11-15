@@ -96,6 +96,11 @@ DUP_REMOVED = CORRECTIONS_DIR / "history_removed_duplicates.csv"
 AWARDED_EXCLUDED = CORRECTIONS_DIR / "history_awarded_results.csv"
 SCORE_90 = CORRECTIONS_DIR / "history_score_90min.csv"
 DATE_CORR = CORRECTIONS_DIR / "history_date_corrections.csv"
+#: football-data / API-Football score conflicts settled by API-Football's goal events
+#: (scripts/build_score_conflicts.py, owner 2026-11-15): serve the provider's 90-minute score, keep the
+#: history's pitch score, or exclude an awarded result - for ANY source (the archive included)
+SCORE_CONFLICTS = CORRECTIONS_DIR / "history_score_conflicts_resolved.csv"
+CONFLICT_DECISIONS = ("serve_provider_90min", "keep_history", "exclude_awarded")
 #: the columns apply_date_corrections needs (the list carries the evidence beside them)
 DATE_COLS = ["league", "history_date", "home_team", "away_team", "home_goals", "away_goals",
              "provider_date", "fixture_id"]
@@ -244,9 +249,71 @@ def apply_score_corrections(df: pd.DataFrame, scores: pd.DataFrame | None = None
     return df, rep
 
 
+def read_score_conflicts(path: Path | None = None) -> pd.DataFrame:
+    """history_score_conflicts_resolved.csv (empty when absent / unreadable, logged)."""
+    p = Path(path or SCORE_CONFLICTS)
+    need = KEY + ["history_ft_home", "history_ft_away", "decision", "served_ft_home", "served_ft_away", "fixture_id"]
+    if not p.exists():
+        return pd.DataFrame(columns=need)
+    try:
+        d = pd.read_csv(p)
+    except (OSError, ValueError, pd.errors.EmptyDataError) as e:
+        log.error(f"[history-corrections] {p.name} unreadable ({e}) - NOT applied")
+        return pd.DataFrame(columns=need)
+    if not set(need) <= set(d.columns):
+        log.error(f"[history-corrections] {p.name} lacks {sorted(set(need) - set(d.columns))} - NOT applied")
+        return pd.DataFrame(columns=need)
+    return d
+
+
+def apply_score_conflicts(df: pd.DataFrame, conflicts: pd.DataFrame | None = None,
+                          tag: str = "history") -> tuple[pd.DataFrame, dict]:
+    """(df with the settled conflicts applied, counts). A listed row is touched only when the frame
+    holds its key AT the recorded history score (a row changed since the listing is counted, left
+    alone): serve_provider_90min -> the provider's 90-minute score (labels recomputed);
+    exclude_awarded -> row removed; keep_history -> unchanged. Any row source."""
+    conflicts = read_score_conflicts() if conflicts is None else conflicts
+    rep = {"conflict_rows_served_provider_score": 0, "conflict_rows_excluded_awarded": 0,
+           "conflict_listed_rows_changed_since_listing": 0}
+    if df is None or df.empty or conflicts is None or conflicts.empty or not set(KEY) <= set(df.columns)             or not {"home_goals", "away_goals"} <= set(df.columns):
+        return df, rep                         # no recorded score: a listed row is never recognised (no guess)
+    rec = {}
+    for r, k in zip(conflicts.itertuples(index=False), _keys(conflicts)):
+        if r.decision in ("serve_provider_90min", "exclude_awarded"):
+            rec[k] = (r.decision, _ft(r.history_ft_home, r.history_ft_away), _ft(r.served_ft_home, r.served_ft_away))
+    if not rec:
+        return df, rep
+    hg, ag = df["home_goals"].tolist(), df["away_goals"].tolist()
+    serve, drop = [], []
+    for p, k in enumerate(_keys(df)):
+        if k not in rec:
+            continue
+        dec, orig, new = rec[k]
+        if _ft(hg[p], ag[p]) != orig:
+            rep["conflict_listed_rows_changed_since_listing"] += 1
+            continue
+        (serve if dec == "serve_provider_90min" else drop).append((p, new))
+    if not serve and not drop:
+        return df, rep
+    df = df.copy()
+    if serve:
+        hc, ac = df.columns.get_loc("home_goals"), df.columns.get_loc("away_goals")
+        for p, (h, a) in serve:
+            df.iat[p, hc], df.iat[p, ac] = float(h), float(a)
+        _relabel(df, [p for p, _ in serve])
+    if drop:
+        df = df.drop(index=df.index[[p for p, _ in drop]])
+    rep["conflict_rows_served_provider_score"] = len(serve)
+    rep["conflict_rows_excluded_awarded"] = len(drop)
+    log.info(f"[{tag}] provider score conflicts settled by goal events: {len(serve)} row(s) served at the "
+             f"provider's 90-minute score, {len(drop)} awarded result(s) excluded ({SCORE_CONFLICTS.name})")
+    return df, rep
+
+
 def apply_history_corrections(df: pd.DataFrame, corr: pd.DataFrame | None = None,
                               source_col: str = "row_source", tag: str = "history",
-                              scores: pd.DataFrame | None = None) -> pd.DataFrame:
+                              scores: pd.DataFrame | None = None,
+                              conflicts: pd.DataFrame | None = None) -> pd.DataFrame:
     """`df` without the listed rows (see the module docstring); the kept copy of a removed duplicate
     takes the removed copy's values in its EMPTY cells; then the 90-minute score list. Counts in
     df.attrs['history_corrections']."""
@@ -256,10 +323,11 @@ def apply_history_corrections(df: pd.DataFrame, corr: pd.DataFrame | None = None
     attrs = dict(getattr(df, "attrs", {}) or {})
     out, rep = _apply_removals(df, corr, source_col, tag) if not corr.empty else (df, {})
     out, srep = apply_score_corrections(out, scores, source_col, tag)
-    if not rep and not any(srep.values()):
+    out, crep = apply_score_conflicts(out, conflicts, tag)
+    if not rep and not any(srep.values()) and not any(crep.values()):
         return out
     out.attrs = attrs
-    out.attrs["history_corrections"] = {**rep, **srep}
+    out.attrs["history_corrections"] = {**rep, **srep, **crep}
     return out
 
 
