@@ -118,9 +118,15 @@ def world():
     feat = build_features_repaired(hist)
     rows = feat.dropna(subset=["over25", "home_scored_last5"])
     std_rows = rows[rows["league"].isin(config.STANDARD_FORMAT_LEAGUES)]
-    legacy = M.build_payload(M.train(rows, "over25", feature_cols=FEATS), "over25")
-    btts = M.build_payload(M.train(rows, "btts", feature_cols=FEATS), "over25")
-    res = M.train_repaired(std_rows, "over25", feature_cols=FEATS)
+    # Real-data serving guard (fix/real-data-provenance 2026-11-15): live scoring refuses a payload
+    # without a persisted train-only imputer and a 1.0 imputer that fills a feature with no training
+    # values (xG / inside-box are absent from this synthetic history), so the served stand-ins carry
+    # an imputer and only the features the synthetic history holds. The refusal itself is tested in
+    # tests/test_real_data_pipeline_trace.py.
+    feats = [c for c in FEATS if pd.to_numeric(std_rows[c], errors="coerce").notna().any()]
+    legacy = M.build_payload(M.train_repaired(rows, "over25", feature_cols=feats), "over25")
+    btts = M.build_payload(M.train_repaired(rows, "btts", feature_cols=feats), "over25")
+    res = M.train_repaired(std_rows, "over25", feature_cols=feats)
     extra = {"research": {"recipe": "v9_repaired", "track": "standard", "target": "over25",
                           "price_mode": "none", "team_scope": "league", "training_cutoff": "2025-02-01"},
              "identity_alias_map": {}}
@@ -259,7 +265,8 @@ def test_repaired_serving_is_batch_invariant(world):
     board = SS.score_fixtures(up, hist, world["repaired"])["p_over25_repaired"]
     for i in up.index:
         alone = SS.score_fixtures(up.loc[[i]], hist, world["repaired"])["p_over25_repaired"]
-        assert alone.loc[i] == board.loc[i]
+        # a no-form fixture has NO probability (serving guard), alone or on the board
+        assert alone.loc[i] == board.loc[i] or (np.isnan(alone.loc[i]) and np.isnan(board.loc[i]))
     rev = SS.score_fixtures(up.iloc[::-1], hist, world["repaired"])["p_over25_repaired"]
     pd.testing.assert_series_equal(rev.loc[up.index], board)
 

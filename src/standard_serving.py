@@ -168,10 +168,13 @@ def score_fixtures(fixtures: pd.DataFrame, history: pd.DataFrame, payload: dict)
     if len(feats) != len(ident) or not (
             feats["home_team"].astype(str).to_numpy() == ident["home_team"].astype(str).to_numpy()).all():
         raise ValueError("repaired feature rows do not line up with the fixtures")
-    p = np.asarray(predict_proba(feats, payload=payload), dtype=float)
-    if not np.isfinite(p).all():
-        raise ValueError("repaired payload produced a non-finite probability")
+    # serving=True (real-data guard, 2026-11-15): a payload that fills a feature with no training
+    # values refuses to score (raises -> fail closed below), and a fixture without its core form
+    # gets NaN, which is exactly the serving_no_form rows.
+    p = np.asarray(predict_proba(feats, payload=payload, serving=True), dtype=float)
     no_form = feats[list(CORE_FORM)].isna().any(axis=1).to_numpy()
+    if not np.isfinite(p[~no_form]).all():
+        raise ValueError("repaired payload produced a non-finite probability")
     return pd.DataFrame({"p_over25_repaired": p, "serving_no_form": no_form}, index=fixtures.index)
 
 
