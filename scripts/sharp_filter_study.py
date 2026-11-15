@@ -94,7 +94,7 @@ def load_results(fixtures: pd.DataFrame, P: dict) -> tuple[pd.DataFrame, dict]:
     """Full-time goals for the 1X2 market-only arm: v9 output/fd_history.parquet joined EXACTLY on
     (date, league, home, away). A joined row whose goals contradict the model universe's own over25 outcome
     is a data conflict: excluded and counted. No result -> no 1X2 settlement (counted)."""
-    f = pd.read_parquet(ROOT / P["data"]["results"])
+    f = pd.read_parquet(ROOT / P["data"]["results"].split(" ")[0])     # the path the protocol names first
     f["date"] = pd.to_datetime(f["date"])
     f = f.rename(columns={"home_team": "home", "away_team": "away"})
     f = f[f["home_goals"].notna() & f["away_goals"].notna()]
@@ -429,7 +429,6 @@ def cell_stats(b: pd.DataFrame, seed: int) -> dict:
     if len(b):
         r["win_rate"] = round(float(b["won"].mean()), 4)
         r["win_minus_implied"] = round(float(b["won"].mean() - (1 / b["odds"]).mean()), 4)
-        r["avg_odds"] = round(float(b["odds"].mean()), 3)
     return r
 
 
@@ -510,7 +509,7 @@ def evaluate(work: Path, seed: int = 0) -> dict:
         xm = x12_moves(x12, t, P)
         xm["league"], xm["date"] = xm["fixture_id"].map(flg), xm["fixture_id"].map(fdate)
         for m, grp in ((om, []), (xm, ["side"])):
-            m.dropna(subset=["league"], inplace=True)
+            m.drop(index=m.index[m["league"].isna()], inplace=True)
             for col in ("pin", "cons"):
                 m[col + "_thr"] = thresholds(m, col, grp, P)
                 m[col + "_dir"] = direction(m[col], m[col + "_thr"])
@@ -725,7 +724,7 @@ def live_tip_rate(ou: pd.DataFrame, u: pd.DataFrame, cells: list[dict], P: dict,
     Prices only; no outcome."""
     from src.bars_opt import study as S
     book = P["signal"]["sharp_book"]
-    out, tot_bt, tot_pass = [], 0.0, 0.0
+    out, tot_bt, tot_pass, tot_agree = [], 0.0, 0.0, 0.0
     for mk, line in LINE_OF.items():
         q = ou[(ou["tier"] == "BT") & (ou["role"] == "BET") & (ou["bookmaker"] == book) & (ou["line"] == line)]
         bt = q.sort_values("ts").drop_duplicates("fixture_id")[["fixture_id", "yes", "no", "fair_over", "lead_h"]]
@@ -742,16 +741,24 @@ def live_tip_rate(ou: pd.DataFrame, u: pd.DataFrame, cells: list[dict], P: dict,
             still = a[a["fixture_id"].isin(b["fixture_id"])]
             sgn = 1 if S.MARKET_SIDES[cell["mside"]][1] == "yes" else -1
             agree = still[(still["fixture_id"].map(odir["pin_dir"]) * sgn) == 1]
+            sig = a["fixture_id"].map(odir["pin_dir"]) * sgn
+            with_late = a[a["fixture_id"].isin(late["fixture_id"])]
             out.append({"track": cell["track"], "mside": cell["mside"], "league": cell["league"], "active_weeks": int(weeks),
                         "bt_priced_fixtures": int(r["row_id"].isin(bt["fixture_id"]).sum()),
                         "tips_at_bt": int(len(a)), "still_tip_at_bet_snapshot": int(len(still)),
                         "still_tip_and_pin_agree": int(len(agree)),
+                        "bt_tips_with_signal": int(sig.notna().sum()), "bt_tips_pin_agree": int((sig == 1).sum()),
+                        "bt_tips_pin_disagree": int((sig == -1).sum()), "bt_tips_pin_none": int((sig == 0).sum()),
+                        "bt_tips_with_bet_snapshot_price": int(len(with_late)),
+                        "pin_agree_per_active_week": round(int((sig == 1).sum()) / weeks, 3),
                         "tips_per_active_week_at_bt": round(len(a) / weeks, 3),
                         "passing_per_active_week": round(len(agree) / weeks, 3)})
             tot_bt += len(a) / weeks
             tot_pass += len(agree) / weeks
+            tot_agree += int((sig == 1).sum()) / weeks
     return {"cells": out, "sum_tips_per_active_week_at_bt": round(tot_bt, 2),
             "sum_passing_per_active_week": round(tot_pass, 2),
+            "sum_pin_agree_per_active_week": round(tot_agree, 2),
             "note": "sums add per-cell rates over each league's own active weeks (an upper bound for a calendar week "
                     "in which every league plays); BT is priced by Pinnacle only, so a cell's BT tips are the ones "
                     "Pinnacle quoted on the exact line at T-125/153 h"}
