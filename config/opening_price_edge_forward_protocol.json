@@ -1,0 +1,13 @@
+{
+ "protocol": "opening-price-edge-forward/1",
+ "parent": "opening-price-edge/1 (config/opening_price_edge_protocol.json, sha256 683b4e534385eff80a1da823c2e63843ef5918590f3efe0eb10b94b81892b288)",
+ "written_after": "the development run of the parent protocol (output/research/opening_price_edge/results.json)",
+ "status": "NO_ELIGIBLE_CELLS",
+ "eligible_rule": "parent verdicts: an OPEN cell is eligible only when its verdict is PROVEN or PROMISING.",
+ "eligible_cells": [],
+ "result_of_parent": "0 PROVEN, 0 PROMISING among 466 registered cells (932 Holm tests); 446 INSUFFICIENT (< 150 bets), 20 UNPROVEN. No OPEN cell qualifies, so this protocol opens NO forward paper track and logs no paper tip.",
+ "start_utc": "2026-11-21T00:00:00Z",
+ "what_would_reopen_it": "only a NEW registered research protocol (new hash) on data not used here - for example the forward rows from 2026-11-21 once a live T-48h capture exists - may name cells; nothing is added to this file after registration.",
+ "monitoring_without_cells": "descriptive only, no verdict, no tip: from 2026-11-21 the live first-sight tips' hours-before-kickoff (generated_at vs the provider kickoff) and, where a T-48h and a closing price are both captured, their CLV, may be reported as counts / means for the owner. This needs no new collector and changes nothing in production.",
+ "owner_decides": "the owner decides whether any forward capture (a live T-48h snapshot) is worth its credits; this protocol requests none."
+}

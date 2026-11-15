@@ -1,0 +1,131 @@
+{
+ "ledger_commit": "ab48dec9999240493f739368f462c3629cb11803",
+ "first_sight_rows": 2657,
+ "with_kickoff": 2427,
+ "negative_hours_rows": 7,
+ "groups": [
+  {
+   "track": "new_format",
+   "market": "btts",
+   "first_sights": 332,
+   "with_kickoff": 306,
+   "median_hours": 155.8083,
+   "share_ge_48h": 0.8595,
+   "share_ge_125h": 0.6307,
+   "share_ge_153h": 0.5131,
+   "share_lt_24h": 0.0752
+  },
+  {
+   "track": "new_format",
+   "market": "over15",
+   "first_sights": 136,
+   "with_kickoff": 134,
+   "median_hours": 164.0083,
+   "share_ge_48h": 0.8284,
+   "share_ge_125h": 0.6791,
+   "share_ge_153h": 0.597,
+   "share_lt_24h": 0.1343
+  },
+  {
+   "track": "new_format",
+   "market": "over25",
+   "first_sights": 1369,
+   "with_kickoff": 1261,
+   "median_hours": 148.8333,
+   "share_ge_48h": 0.8485,
+   "share_ge_125h": 0.6447,
+   "share_ge_153h": 0.4623,
+   "share_lt_24h": 0.0967
+  },
+  {
+   "track": "new_format",
+   "market": "over35",
+   "first_sights": 29,
+   "with_kickoff": 28,
+   "median_hours": 81.4417,
+   "share_ge_48h": 0.6429,
+   "share_ge_125h": 0.2143,
+   "share_ge_153h": 0.1429,
+   "share_lt_24h": 0.2857
+  },
+  {
+   "track": "standard",
+   "market": "btts",
+   "first_sights": 206,
+   "with_kickoff": 185,
+   "median_hours": 119.45,
+   "share_ge_48h": 0.7892,
+   "share_ge_125h": 0.4649,
+   "share_ge_153h": 0.2541,
+   "share_lt_24h": 0.1568
+  },
+  {
+   "track": "standard",
+   "market": "over15",
+   "first_sights": 23,
+   "with_kickoff": 17,
+   "median_hours": 70.7333,
+   "share_ge_48h": 0.6471,
+   "share_ge_125h": 0.3529,
+   "share_ge_153h": 0.0588,
+   "share_lt_24h": 0.3529
+  },
+  {
+   "track": "standard",
+   "market": "over25",
+   "first_sights": 538,
+   "with_kickoff": 478,
+   "median_hours": 126.2583,
+   "share_ge_48h": 0.8222,
+   "share_ge_125h": 0.5105,
+   "share_ge_153h": 0.3494,
+   "share_lt_24h": 0.1318
+  },
+  {
+   "track": "standard",
+   "market": "over35",
+   "first_sights": 21,
+   "with_kickoff": 11,
+   "median_hours": 49.55,
+   "share_ge_48h": 0.5455,
+   "share_ge_125h": 0.0909,
+   "share_ge_153h": 0.0909,
+   "share_lt_24h": 0.4545
+  },
+  {
+   "track": "unknown",
+   "market": "over25",
+   "first_sights": 3,
+   "with_kickoff": 0,
+   "median_hours": null,
+   "share_ge_48h": null,
+   "share_ge_125h": null,
+   "share_ge_153h": null,
+   "share_lt_24h": null
+  }
+ ],
+ "all": {
+  "n": 2420,
+  "median_hours": 144.5833,
+  "share_ge_48h": 0.8339,
+  "share_ge_125h": 0.595,
+  "share_ge_153h": 0.4298,
+  "quantiles_hours": {
+   "0.1": 18.5333,
+   "0.25": 78.375,
+   "0.5": 144.5833,
+   "0.75": 166.0,
+   "0.9": 167.3667
+  }
+ },
+ "generated_month_counts": {
+  "2026-04": 34,
+  "2026-05": 44,
+  "2026-06": 57,
+  "2026-07": 286,
+  "2026-08": 603,
+  "2026-09": 631,
+  "2026-10": 763,
+  "2026-11": 238
+ }
+}
