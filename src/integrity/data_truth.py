@@ -34,6 +34,10 @@ turns system health RED instead of waiting for the next audit:
                  props features agrees with the match score where he played the full 90 minutes; every
                  rolling team feature reads the side its name says (own team vs opponent); a provider null
                  in a NULL_IS_MISSING count (goals_conceded, penalty_missed) stays missing. Gated.
+                 (2026-11-15, props feature audit) 7d `started` is the lineup role and its league-month
+                 share does not drift; 7e no count the provider left unpublished for a whole fixture is
+                 read as 0; 7f the injury lists and lineups keep up with the matches (<= 14 days behind);
+                 7g a shots definition change cancels out of the league-relative shots features.
 
 A check whose input is missing is NO_DATA (or RED where the input is a production bank), never GREEN.
 

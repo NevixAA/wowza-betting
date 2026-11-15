@@ -243,7 +243,10 @@ def test_prev_season_and_l10_serving_use_the_training_definition(iso):
     hist = [(2, 1)] * 8 + [(4, 4)] * 6
     last = hist[-C.SHOT_ACC_WINDOW:]
     assert r["shot_accuracy_l10"] == pytest.approx(sum(y for _, y in last) / sum(x for x, _ in last))
-    assert set(FE.PREV_SEASON_COLUMNS) | {"shot_accuracy_l10"} <= set(C.PLAYER_FEATURE_COLS)
+    # 2026-11-15: the raw shots features train as their league-relative counterparts (*_lgrel)
+    trained = {c if c not in C.SHOTS_DEFINITION_WITHHELD else f"{c}_lgrel"
+               for c in set(FE.PREV_SEASON_COLUMNS) | {"shot_accuracy_l10"}}
+    assert trained <= set(C.PLAYER_FEATURE_COLS)
 
 
 # â”€â”€ 3. rest days on the complete match history â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
