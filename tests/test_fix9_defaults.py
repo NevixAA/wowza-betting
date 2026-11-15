@@ -307,7 +307,18 @@ def test_loader_corrections_remove_them_from_the_real_history():
                  if ok and k in listed and HC._ft(a, b) in listed[k])
     rep = out.attrs["history_corrections"]
     assert rep["rows_removed"] == expect > 0
-    assert len(out) == len(h) - expect
+    # 2026-11-15: an awarded result settled by goal events (history_score_conflicts_resolved.csv,
+    # exclude_awarded) is removed too, for any source - counted the same independent way
+    conf = HC.read_score_conflicts()
+    conf = conf[conf["decision"] == "exclude_awarded"]
+    awarded = {k: HC._ft(r.history_ft_home, r.history_ft_away)
+               for r, k in zip(conf.itertuples(index=False), HC._keys(conf))}
+    kept = h[[not (ok and k in listed and HC._ft(a, b) in listed[k])
+              for k, ok, a, b in zip(keys, eligible, h["home_goals"], h["away_goals"])]]
+    n_awd = sum(1 for k, a, b in zip(HC._keys(kept), kept["home_goals"], kept["away_goals"])
+                if k in awarded and awarded[k] == HC._ft(a, b))
+    assert rep.get("conflict_rows_excluded_awarded", 0) == n_awd
+    assert len(out) == len(h) - expect - n_awd
     ko = HC._keys(out)
     assert len(ko) == len(set(ko))
 
