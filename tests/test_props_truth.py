@@ -22,7 +22,7 @@ def test_profile_features_readmitted_only_on_real_values():
     prof = {"age", "age_peak_delta", "height_cm", "height_aerial_interaction",
             "height_diff_vs_opp_def", "height_advantage_score", "opp_def_mean_height"}
     assert set(config.PROFILE_FEATURES) == prof
-    assert prof <= set(config.PLAYER_FEATURE_COLS)
+    assert prof - config.PROFILE_CONSTANT_FEATURES_WITHHELD <= set(config.PLAYER_FEATURE_COLS)   # 2026-11-15
     assert "weight_kg" not in config.PLAYER_FEATURE_COLS
 
 

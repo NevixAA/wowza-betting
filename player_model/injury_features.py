@@ -146,21 +146,22 @@ def coverage_table(seasons: pd.DataFrame | None = None) -> pd.DataFrame:
 
 def row_league_ids(df: pd.DataFrame, fx: pd.DataFrame | None = None) -> pd.Series:
     """API-Football league_id per row: the fixture's own (team_identity.fixture_results), else the
-    league_id that the row's competition (registry canonical name) has in every collected fixture."""
+    registry's api_football_id of the row's competition (config/leagues.json; NaN when unknown)."""
     from . import team_identity as TI
     fx = TI.fixture_results() if fx is None else fx
     out = pd.Series(np.nan, index=df.index, dtype=float)
-    if fx is None or fx.empty:
-        return out
-    by_fx = fx.drop_duplicates("fixture_id").set_index("fixture_id")["league_id"]
-    if "fixture_id" in df.columns:
+    if fx is not None and not fx.empty and "fixture_id" in df.columns:
+        by_fx = fx.drop_duplicates("fixture_id").set_index("fixture_id")["league_id"]
         out = pd.to_numeric(df["fixture_id"], errors="coerce").map(by_fx).astype(float)
-    comp = fx.dropna(subset=["league_id", "competition"]).groupby("competition")["league_id"].agg(
-        lambda s: s.iloc[0] if s.nunique() == 1 else np.nan)
     if "league" in df.columns and out.isna().any():
-        names = {lg: (TI._canon(lg) or lg) for lg in pd.unique(df["league"].dropna()) if isinstance(lg, str)}
-        canon = df["league"].map(names)                    # one registry lookup per league, not per row
-        out = out.where(out.notna(), canon.map(comp).astype(float))
+        reg = config.league_registry()
+        ids = {}
+        for lg in pd.unique(df["league"].dropna()):           # one registry lookup per league, not per row
+            if not isinstance(lg, str):
+                continue
+            e = reg.entry(TI._canon(lg) or lg) if hasattr(reg, "entry") else None
+            ids[lg] = float(e["api_football_id"]) if e and e.get("api_football_id") is not None else np.nan
+        out = out.where(out.notna(), df["league"].map(ids).astype(float))
     return out
 
 

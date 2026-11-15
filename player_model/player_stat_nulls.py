@@ -203,7 +203,8 @@ def fixture_sends_zeros(response: Iterable[dict] | None) -> bool:
     for block in response or []:
         for pe in (block or {}).get("players") or []:
             st = _stats0(pe)
-            if not st or not (minutes_of(st) or 0) > 0:
+            mins = minutes_of(st) if st else None
+            if mins is None or mins <= 0:              # did not play: no evidence
                 continue
             for col in EXPLICIT_ZERO_EVIDENCE:
                 raw = raw_value(st, col)
@@ -223,7 +224,8 @@ def fixture_group_unpublished(response: Iterable[dict] | None) -> bool:
     for block in response or []:
         for pe in (block or {}).get("players") or []:
             st = _stats0(pe)
-            if not st or not (minutes_of(st) or 0) > 0:
+            mins = minutes_of(st) if st else None
+            if mins is None or mins <= 0:              # did not play: no evidence
                 continue
             if any(as_count(raw_value(st, col)) is not None for col in NULL_IS_NONE_WITHOUT_EXPLICIT_ZEROS):
                 return False

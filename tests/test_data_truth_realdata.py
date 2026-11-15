@@ -373,6 +373,19 @@ def _rows(n=8):
     return rows
 
 
+def _injury_lists(d, entries):
+    """output/collect/injuries.parquet + injuries_seasons.parquet: Premier League (id 39) 2024 and 2025
+    answered with coverage, fetched after every test match."""
+    pd.DataFrame([{"league_id": 39, "season": "2025", "fixture_id": 9000 + i, "team_id": 42,
+                   "player_name": "x", "type": "Missing Fixture", "source": "league_season",
+                   "fetched_at": "2026-11-05T07:00:00+00:00", **e} for i, e in enumerate(entries)],
+                 columns=["league_id", "season", "fixture_id", "date", "team_id", "player_id", "player_name",
+                          "type", "reason", "source", "fetched_at"]).to_parquet(d / "injuries.parquet", index=False)
+    pd.DataFrame([{"league_id": 39, "season": y, "status": "ok", "coverage_injuries": True,
+                   "fetched_at": "2026-11-05T07:00:00+00:00"} for y in ("2024", "2025")]
+                 ).to_parquet(d / "injuries_seasons.parquet", index=False)
+
+
 @pytest.fixture()
 def collect_dir(tmp_path, monkeypatch):
     monkeypatch.setattr(FE, "COLLECT_DIR", tmp_path)
@@ -399,10 +412,9 @@ def test_corner_matchup_profiles_penalties_injuries(collect_dir, monkeypatch):
                   {"player_id": 3, "season": "2025", "status": "ok", "height_cm": 180.0, "weight_kg": 75.0,
                    "birth_date": None, "penalty_scored": np.nan, "penalty_missed": np.nan, "pen_entries": 0}]
                  ).to_parquet(collect_dir / "player_profiles.parquet", index=False)
-    pd.DataFrame([{"player_id": 3, "n_spells": 1, "fetched_at": "x"}, {"player_id": 4, "n_spells": 0, "fetched_at": "x"}]
-                 ).to_parquet(collect_dir / "sidelined_players.parquet", index=False)
-    pd.DataFrame([{"player_id": 3, "type": "Knee", "start": "2025-08-10", "end": "2025-08-20"}]
-                 ).to_parquet(collect_dir / "sidelined_spells.parquet", index=False)
+    # injuries from the collected fixture-level lists (2026-11-15): player 3 listed absent (knee) for
+    # an earlier fixture on 2025-08-20; the league-season and the one before are answered with coverage
+    _injury_lists(collect_dir, [{"player_id": 3, "date": "2025-08-20", "reason": "Knee Injury"}])
     b = FE.build_features(_rows())
     p1 = b[b["player_id"] == 1].sort_values("date").reset_index(drop=True)
     assert (p1["height_cm"] == 191.0).all() and p1["age"].iloc[0] == pytest.approx(
@@ -436,10 +448,7 @@ def test_serving_reads_the_collected_data(collect_dir):
     pd.DataFrame([{"player_id": 1, "season": "2024", "status": "ok", "height_cm": 191.0, "weight_kg": 84.0,
                    "birth_date": "2000-08-01", "penalty_scored": 3.0, "penalty_missed": 1.0, "pen_entries": 2}]
                  ).to_parquet(collect_dir / "player_profiles.parquet", index=False)
-    pd.DataFrame([{"player_id": 1, "n_spells": 0, "fetched_at": "x"}]).to_parquet(
-        collect_dir / "sidelined_players.parquet", index=False)
-    pd.DataFrame(columns=["player_id", "type", "start", "end"]).to_parquet(
-        collect_dir / "sidelined_spells.parquet", index=False)
+    _injury_lists(collect_dir, [])                    # covered league-season, player 1 never listed
     FE._LINEUP_CACHE.clear()
     hist = pd.DataFrame(_rows())                       # the raw history serving reads
     up = [{"player_id": 1, "fixture_id": 999001, "team": "Arsenal", "home_team": "Arsenal",
