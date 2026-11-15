@@ -301,3 +301,15 @@ label = s.fillna("(none)")
     fn = ast.parse(bad)
     assert {c.func.attr for c in ast.walk(fn) if isinstance(c, ast.Call) and isinstance(c.func, ast.Attribute)} \
         >= {"median", "fillna"}                                          # the batch-median line is seen
+
+
+def test_candidate_ablation_drops_only_the_named_group(monkeypatch):
+    from player_model import props_harness as H
+    frame = pd.DataFrame(columns=list(C.PLAYER_FEATURE_COLS))
+    full = H.harness_features(frame)
+    monkeypatch.setenv(H.ABLATION_ENV, "injury")
+    abl = H.harness_features(frame)
+    assert set(full) - set(abl) == set(H.ABLATION_GROUPS["injury"])
+    monkeypatch.setenv(H.ABLATION_ENV, "nonsense")
+    with pytest.raises(ValueError):
+        H.harness_features(frame)

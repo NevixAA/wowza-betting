@@ -311,10 +311,31 @@ def calibration_cut(dates: pd.Series) -> pd.Timestamp:
     return counts.index[pos]
 
 
+#: feature-group ablations (owner 2026-11-15, P0 part D): env PROPS_ABLATION=<group> drops the group
+#: from a CANDIDATE run (never from serving); the report records it
+ABLATION_ENV = "PROPS_ABLATION"
+ABLATION_GROUPS = {
+    "injury": ("chronic_injury_risk", "return_from_injury_flag", "days_since_last_injury"),
+    "started": ("starter_rate", "season_start_rate", "prev_season_start_rate"),
+    "shots_lgrel": tuple(config.SHOTS_LEAGUE_RELATIVE),
+    "profile": tuple(config.PROFILE_FEATURES),
+    "referee": ("referee_yellows_pg", "referee_strictness", "card_clash_index"),
+}
+
+
+def ablation() -> str | None:
+    g = os.environ.get(ABLATION_ENV, "").strip()
+    if g and g not in ABLATION_GROUPS:
+        raise ValueError(f"{ABLATION_ENV}={g!r} is not one of {sorted(ABLATION_GROUPS)}")
+    return g or None
+
+
 def harness_features(frame: pd.DataFrame) -> list[str]:
     """config.PLAYER_FEATURE_COLS, the ONE props feature list (the 7 profile features are in it since
-    2026-11-10, built from the collected real profiles or NaN; see config.PROFILE_FEATURES)."""
-    return [c for c in dict.fromkeys(config.PLAYER_FEATURE_COLS) if c in frame.columns]
+    2026-11-10, built from the collected real profiles or NaN; see config.PROFILE_FEATURES), minus the
+    ablated group of a candidate run (PROPS_ABLATION)."""
+    drop = set(ABLATION_GROUPS.get(ablation() or "", ()))
+    return [c for c in dict.fromkeys(config.PLAYER_FEATURE_COLS) if c in frame.columns and c not in drop]
 
 
 #: a feature whose most common value (NaN counted as one value) covers more than this share of the
@@ -669,7 +690,9 @@ def run(plan: dict | None = None, raw: pd.DataFrame | None = None, out_dir: Path
         return report
     elig = frame[ok]
     features = harness_features(elig)
+    report["ablation"] = {"group": ablation(), "dropped": sorted(ABLATION_GROUPS.get(ablation() or "", ()))}
     report["features"] = {"n": len(features), "sha256": hashlib.sha256(json.dumps(features).encode()).hexdigest(),
+                          "list": features,
                           "profile_features": sorted(set(config.PROFILE_FEATURES) & set(features)),
                           "profile_coverage": {c: float(elig[c].notna().mean()) for c in
                                                sorted(set(config.PROFILE_FEATURES) & set(features))}}
