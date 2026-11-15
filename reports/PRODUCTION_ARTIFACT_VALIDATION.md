@@ -29,7 +29,7 @@ agent (`fix/props-data-audit`); they appear here only as fantasy dependencies.
 | Model | Status | Path | sha256 | Version / recipe | Training window (cutoff) | Features (schema) | Imputer (fit window) | Unsupported referenced | Probe | Verdict |
 |---|---|---|---|---|---|---|---|---|---|---|
 | Standard O/U 2.5 | active (`STANDARD_OU25_SERVING_RECIPE=legacy_v9` serves this file) | models/model_v9_standard.pkl | 4025384d...3fc3b9 | r2-repaired-1.0 / std_v9_repaired | 2021-07-30 .. 2026-11-01 (2026-11-01) | 86 = 43 + 43 indicators (2d37b07b4f8fa149) | 1.1 (2021-07-30 .. 2025-10-17) | none | 0.517 / 0.505 / NaN, batch-invariant | **SAFE** |
-| Standard O/U 2.5 repaired rollback | standby (rollback) | models/model_v9_standard_repaired.pkl | 1f5805e6...8a9f1a74 | v9_repaired-1.0 / v9_repaired | 2021-07-30 .. 2026-10-26 (2026-10-28) | 41 (4b5dfddba0ea13f6) | **1.0** (2021-07-30 .. 2024-11-22) | home/away_xg_last5, home/away_insidebox_last5 (FABRICATED_VALUE: 0% training coverage, filled 0.0) | refused | **BLOCKED** |
+| Standard O/U 2.5 retired v9_repaired | **RETIRED 2026-11-15** (kept for audit) | models/model_v9_standard_repaired.pkl | 1f5805e6...8a9f1a74 | v9_repaired-1.0 / v9_repaired | 2021-07-30 .. 2026-10-26 (2026-10-28) | 41 (4b5dfddba0ea13f6) | **1.0** (2021-07-30 .. 2024-11-22) | home/away_xg_last5, home/away_insidebox_last5 (FABRICATED_VALUE: 0% training coverage, filled 0.0) | refused | **BLOCKED** |
 | New Format O/U 2.5 | active | models/model_v9_newformat.pkl | 9198e5bd...35faa7f6 | r2-repaired-1.0 / nf_v9_repaired | 2019-02-22 .. 2026-11-01 (2026-11-01) | 56 = 28 + 28 (e16255c4dd9bca9f) | 1.1 (2019-02-22 .. 2025-08-23) | none | 0.506 / 0.507 / NaN | **SAFE** |
 | BTTS | active, track-split | models/model_v9_btts.pkl | d7cd2762...01d7a7e1 | r2-repaired-1.0 / side_v9_repaired | 2021-07-30 .. 2026-11-01 | 86 standard + 56 new_format | 1.1 both tracks | none | std 0.547 / 0.532 / NaN; NF 0.553 / 0.578 / NaN | **SAFE** |
 | Over 1.5 | active, track-split | models/model_v9_over15.pkl | 2af54e42...0b9c82 | r2-repaired-1.0 / side_v9_repaired | 2021-07-30 .. 2026-11-01 | 86 + 56 | 1.1 | none | std 0.768 / 0.759 / NaN; NF 0.770 / 0.794 / NaN | **SAFE** |
@@ -54,7 +54,7 @@ calibration, meta-logistic on meta. The holdout has only 27 rows (2026-11-02 .. 
 holdout metrics stored in the payloads are not evidence of quality. The quality evidence is the
 Phase 2 harness run (`reports/phase2_runs`).
 
-### Rollback payload: blocked, needs a clean retrain or retirement
+### v9_repaired payload: RETIRED by the owner (2026-11-15)
 
 `models/model_v9_standard_repaired.pkl` was the owner's 2026-10-28 Standard switch and is the
 documented rollback (`STANDARD_OU25_SERVING_RECIPE=v9_repaired`):
@@ -67,8 +67,12 @@ documented rollback (`STANDARD_OU25_SERVING_RECIPE=v9_repaired`):
 The serving guard now refuses it, so the rollback fails closed (no Standard probability, system
 health RED via `standard_serving_health`) instead of serving fabricated inputs.
 
-Owner decision needed: retire the rollback, or retrain it without those features. The active
-Standard payload is already that clean retrain.
+**Owner, 2026-11-15: "fix what you need" - RETIRED.** `STANDARD_OU25_SERVING_RECIPE` accepts only
+`legacy_v9`; `v9_repaired` is refused like a typo. `owner_install` refuses the type and
+`train_standard_repaired.yml` stops at its first step. The registry pointer carries `status: RETIRED`
+with the date and the owner's words, and the decision log has a `RETIRE` row. The file is kept for
+audit (`docs/STANDARD_REPAIRED_FAILCLOSED_ROLLBACK.md`). The active Standard payload is already
+the clean retrain.
 
 ## Fantasy
 

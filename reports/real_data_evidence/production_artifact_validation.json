@@ -1,6 +1,6 @@
 {
  "artifact": "production_artifact_validation",
- "generated_at": "2026-11-15T18:19:11Z",
+ "generated_at": "2026-11-15T19:26:05Z",
  "team": [
   {
    "model": "Standard O/U 2.5",
@@ -41,11 +41,11 @@
    "verdict": "SAFE"
   },
   {
-   "model": "Standard O/U 2.5 (repaired rollback)",
+   "model": "Standard O/U 2.5 (retired v9_repaired)",
    "config": "MODEL_FILE_STANDARD_REPAIRED",
    "path": "models/model_v9_standard_repaired.pkl",
    "sha256": "1f5805e63c9945cb3e1804ceb72a52dfdbd75360574183d33d76d35f8a9f1a74",
-   "status": "standby (rollback)",
+   "status": "retired (kept for audit)",
    "version": "v9_repaired-1.0",
    "recipe": "v9_repaired",
    "target": "over25",

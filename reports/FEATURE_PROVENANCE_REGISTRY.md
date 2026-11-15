@@ -104,7 +104,7 @@ Point-in-time: every definition above is verified by `tests/test_real_data_pipel
 | `home_cs_rate_h` | DERIVED_VERIFIED | 95.4% | 100.0% | 100.0% | train-only median 0.3125 + `__missing` indicator, clipped to the training range. | yes |
 | `away_cs_rate_a` | DERIVED_VERIFIED | 95.4% | 98.6% | 98.6% | train-only median 0.222222 + `__missing` indicator, clipped to the training range. | yes |
 
-## Standard O/U 2.5 (repaired rollback) [standard] - standby (rollback)
+## Standard O/U 2.5 (retired v9_repaired) [standard] - retired (kept for audit)
 
 `models/model_v9_standard_repaired.pkl`: 41 features (41 base + 0 `__missing` indicators, DERIVED_VERIFIED). **Serving guard: 1.0 imputer fills 4 feature(s) with no training values with the constant 0.0 (home_xg_last5, away_xg_last5, home_insidebox_last5, away_insidebox_last5)**
 

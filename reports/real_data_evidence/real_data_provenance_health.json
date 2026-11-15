@@ -1,15 +1,15 @@
 {
  "artifact": "real_data_provenance",
  "version": "REAL-DATA-PROVENANCE-1",
- "generated_at": "2026-11-15T18:19:20Z",
+ "generated_at": "2026-11-15T19:26:12Z",
  "A_registered_historical_exceptions": {
   "count": 7,
   "documented": [
    {
     "id": "standard-repaired-xg-zero",
-    "artifact": "Standard O/U 2.5 (repaired rollback)",
+    "artifact": "Standard O/U 2.5 (retired v9_repaired)",
     "what": "the 2026-10-28 repaired Standard payload's 1.0 imputer filled xG and inside-box shots (0% training coverage) with 0.0 on every training row",
-    "status": "the serving guard (src.model.serving_refusal) refuses this payload: the rollback fails closed (no Standard probability) until a clean retrain replaces it"
+    "status": "RETIRED by the owner 2026-11-15 (\"fix what you need\"): v9_repaired is no longer a serving recipe, owner_install refuses the type, the registry pointer says RETIRED; the file stays for audit and the serving guard (src.model.serving_refusal) refuses it too"
    },
    {
     "id": "legacy-batch-median",
@@ -25,10 +25,10 @@
    }
   ],
   "inactive_artifact_violations": [
-   "Standard O/U 2.5 (repaired rollback)|standard|home_xg_last5|FABRICATED_VALUE",
-   "Standard O/U 2.5 (repaired rollback)|standard|away_xg_last5|FABRICATED_VALUE",
-   "Standard O/U 2.5 (repaired rollback)|standard|home_insidebox_last5|FABRICATED_VALUE",
-   "Standard O/U 2.5 (repaired rollback)|standard|away_insidebox_last5|FABRICATED_VALUE"
+   "Standard O/U 2.5 (retired v9_repaired)|standard|home_xg_last5|FABRICATED_VALUE",
+   "Standard O/U 2.5 (retired v9_repaired)|standard|away_xg_last5|FABRICATED_VALUE",
+   "Standard O/U 2.5 (retired v9_repaired)|standard|home_insidebox_last5|FABRICATED_VALUE",
+   "Standard O/U 2.5 (retired v9_repaired)|standard|away_insidebox_last5|FABRICATED_VALUE"
   ]
  },
  "B_active_production_violations": {

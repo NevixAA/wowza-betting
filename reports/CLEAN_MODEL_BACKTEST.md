@@ -29,11 +29,11 @@ Retraining would not change what the payloads learned. The owner's point that a 
 enough holds the other way round here: the serialized models already learned the right derivation,
 and it was serving that drifted from it.
 
-The one fabricated feature set is in the **standby** rollback payload
+The one fabricated feature set is in the **retired** v9_repaired payload
 (`models/model_v9_standard_repaired.pkl`: xG and inside-box shots filled with 0.0 on every training
 row). Its clean replacement is the active Standard champion (`std_v9_repaired`, Phase 2 harness,
-trained 2026-11-09 with real xG where the provider has it). This branch blocks the rollback at
-serving. A further retrain of the rollback is not proposed; retiring it is an owner decision.
+trained 2026-11-09 with real xG where the provider has it). The owner RETIRED it on
+2026-11-15 ("fix what you need"); no retrain of it is proposed.
 
 ## Two VALID_MODEL_ESTIMATE features (eligible, but candidates for an ablation)
 
