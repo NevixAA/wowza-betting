@@ -12,10 +12,11 @@
 |---|---|---|---|
 | `standard|OU25_OVER|La Liga 2` | ACTIVE_LOW | 0.005 | PROMISING (selection, certified football-data prices) |
 | `new_format|OU25_OVER|Finland Veikkausliiga` | ACTIVE_LOW | 0.005 | PROMISING (fresh holdout, re-test label) |
-| `new_format|OVER35|Finland Veikkausliiga` | ACTIVE_LOW | 0.005 | PROMISING (fresh holdout, re-test label); its TRACK is BLOCKED, the approved cell stakes |
 | `new_format|BTTS|Argentina Primera Division` | ACTIVE_LOW | 0.005 (max odds 2.6) | owner "Reduce to 0.5%": UNPROVEN on real prices (97 own bet-time bets), kept small as a league rule |
 
-Japan J-League and Austrian Bundesliga NF O/U 2.5 Unders are PROMISING but PAPER (owner NF-Under rule). Everything else is PAPER; Cloudbet PAPER_ONLY; flat per cell; TOP-3 a named paper track.
+**Held PAPER, owner decision pending:** `new_format|OVER35|Finland Veikkausliiga` (owner-named for 0.5%, PROMISING on the
+fresh holdout): the `new_format|OVER35` TRACK is BLOCKED (global protection) and a cell never lifts a block; it stakes
+only after the owner lifts that block explicitly. Japan J-League and Austrian Bundesliga NF O/U 2.5 Unders are PROMISING but PAPER (owner NF-Under rule). Everything else is PAPER; Cloudbet PAPER_ONLY; flat per cell; TOP-3 a named paper track.
 
 ## Fresh-holdout results (tested once, Holm family 17)
 

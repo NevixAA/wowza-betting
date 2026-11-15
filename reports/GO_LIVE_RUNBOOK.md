@@ -67,12 +67,14 @@ use them". From go-live:
   as history, marked `superseded_by`). Evidence `evidence_2026-11_v5.json`; price provenance
   `cell_price_provenance_2026-11_v5.json` (every approved cell on proven bet-time prices: football-data pre-match,
   own live captures, tier BT). `threshold_apply --dry-run`: would apply 63, withdrawn 0.
-* **Stakes from 2026-11-21 (owner 2026-11-15):** ACTIVE_LOW 0.5% flat on Standard O/U 2.5 Over La Liga 2, NF O/U 2.5
-  Over Finland Veikkausliiga and NF Over 3.5 Finland Veikkausliiga; Argentina NF BTTS REDUCED to 0.5% ACTIVE_LOW
-  ("Reduce to 0.5%": UNPROVEN on real prices, kept small as a league rule); Japan J-League and Austrian Bundesliga NF
-  Unders PAPER (owner NF-Under rule); everything else PAPER; Cloudbet PAPER_ONLY. NOTE: the NF Over 3.5 TRACK is
-  BLOCKED in `tracks{}`; the owner-approved CELL entry is what stakes (per-cell staking reads the cell first).
-  Registries: track_registry ACTIVE_LOW 4, PAPER 73, PAPER_LEAGUE 5, BLOCKED 18. Exec dry run on the proposal: 48
+* **Stakes from 2026-11-21 (owner 2026-11-15):** ACTIVE_LOW 0.5% flat on Standard O/U 2.5 Over La Liga 2 and NF O/U
+  2.5 Over Finland Veikkausliiga; Argentina NF BTTS REDUCED to 0.5% ACTIVE_LOW ("Reduce to 0.5%": UNPROVEN on real
+  prices, kept small as a league rule); Japan J-League and Austrian Bundesliga NF Unders PAPER (owner NF-Under rule);
+  everything else PAPER; Cloudbet PAPER_ONLY. **OWNER DECISION PENDING:** NF Over 3.5 Finland (owner-named for 0.5%)
+  is HELD PAPER - the `new_format|OVER35` TRACK is BLOCKED (global protection since the 2026-10-13 policy; the
+  registry / regime tests enforce it) and a cell never lifts a block (`scripts/cell_staking_from_proposal.py`
+  held_by_owner). It stakes only after the owner lifts that block explicitly. Registries: track_registry ACTIVE_LOW 3,
+  PAPER 73, PAPER_LEAGUE 5, BLOCKED 19. Exec dry run on the proposal: 48
   cells (43 UNPROVEN, 5 PROMISING bars), 2 USA MLS cells held by the manual BLOCKED cell, 17 skipped; exec stays
   PAPER.
 * **Loader fix (2026-11-11):** `src/data_loader` preferred CLOSING columns (AvgC, MaxC, B365C, PC) for the served
@@ -123,7 +125,7 @@ use them". From go-live:
   (2026-11-15): read the approval whose `proposal_id` is `output/threshold_proposals/latest.json` and that has no
   `superseded_by` (today TP-2026-11-15-bade2c0b, no withdrawals); show the fresh-holdout verdicts with their
   `evidence_label` "re-test after a price-data fix (outcomes previously seen)"; stakes from
-  `config/bankroll_policy.json` cell_staking (4 cells at 0.5%); a superseded approval's withdrawals are history only.
+  `config/bankroll_policy.json` cell_staking (3 cells at 0.5%; NF Over 3.5 Finland held PAPER by the BLOCKED track); a superseded approval's withdrawals are history only.
 
 ## 0. Findings that change the plan
 

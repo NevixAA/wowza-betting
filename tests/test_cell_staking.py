@@ -52,8 +52,10 @@ def test_committed_policy_stakes_exactly_the_owner_cells():
     assert G.build_cells(prop, cs["cells"], pol, None, G.withdrawn_entries(prop)) == cs["cells"]
     # owner 2026-11-15 "Approve, PROMISING small" (TP-2026-11-15-bade2c0b): the three PROMISING cells at 0.5% and
     # Argentina NF BTTS reduced to 0.5% ("Reduce to 0.5%"); the NF Unders stay PAPER (owner rule)
+    # NF Over 3.5 Finland is PROMISING and owner-named, but its TRACK is BLOCKED (global protection): held PAPER
+    # until the owner lifts the block explicitly
     assert set(cs["cells"]) == {f"new_format|BTTS|{ARG}", "standard|OU25_OVER|La Liga 2",
-                                "new_format|OU25_OVER|Finland Veikkausliiga", "new_format|OVER35|Finland Veikkausliiga"}
+                                "new_format|OU25_OVER|Finland Veikkausliiga"}
     assert cs["approved"]["proposal_id"] == "TP-2026-11-15-bade2c0b"
     assert "Reduce to 0.5%" in cs["cells"][f"new_format|BTTS|{ARG}"]["staking_basis"]
     for k, v in cs["cells"].items():

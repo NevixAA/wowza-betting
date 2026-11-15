@@ -62,8 +62,11 @@ def promising_cells(proposal: dict, withdrawn: set | None = None) -> list[dict]:
 
 
 def held_by_owner(policy: dict, track_key: str) -> str | None:
-    """The owner's paper hold on a track (state PAPER with a paper_reason), else None."""
+    """The owner's hold on a track: state PAPER with a paper_reason, or a BLOCKED track (a block never creates a
+    stake - the module doc's rule, now enforced: before 2026-11-15 only the PAPER hold was checked), else None."""
     t = (policy.get("tracks") or {}).get(track_key) or {}
+    if t.get("state") in ("BLOCKED", "BLOCKED_FROM_REAL"):
+        return f"track {track_key} is {t['state']} (global protection)"
     return t.get("paper_reason") if t.get("state") == "PAPER" and t.get("paper_reason") else None
 
 

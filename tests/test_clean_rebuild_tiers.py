@@ -27,6 +27,6 @@ def test_stakes_are_flat_per_cell_no_tier_multiplier():
                         for i, t in enumerate((QUALIFIED, "SNIPER", "MARKSMAN", "VALUABLE"))])
     out = size_day(sel, load_policy(), bankroll=100.0, peak=100.0)
     assert set(out["tier_multiplier"]) == {1.0}
-    assert set(out["requested_fraction"]) == {0.0125}          # Argentina NF BTTS 1.25% flat (owner 2026-11-11)
+    assert set(out["requested_fraction"]) == {0.005}           # Argentina NF BTTS 0.5% flat (owner 2026-11-15)
     cells = load_policy()["cell_staking"]["cells"]
     assert not any("tier_multipliers" in v for v in cells.values())
