@@ -313,3 +313,45 @@ def test_candidate_ablation_drops_only_the_named_group(monkeypatch):
     monkeypatch.setenv(H.ABLATION_ENV, "nonsense")
     with pytest.raises(ValueError):
         H.harness_features(frame)
+
+
+# ── harness memory (2026-11-15: two GitHub runs died of OOM) - same values, less memory ────────
+
+def test_left_join_columns_equals_the_merge_it_replaces():
+    df = pd.DataFrame({"fixture_id": [1, 2, 2, 3, 4], "k": ["a", "b", "c", None, "a"], "v": [1.0, 2, 3, 4, 5]},
+                      index=[10, 11, 12, 13, 14])
+    right = pd.DataFrame({"fixture_id": [1, 2, 3], "k": ["a", "b", None], "x": [7, 8, 9], "y": ["p", "q", "r"]})
+    want = df.merge(right, on=["fixture_id", "k"], how="left")
+    got = FE._left_join_columns(df, right, ["fixture_id", "k"], ["fixture_id", "k"], ["x", "y"])
+    pd.testing.assert_frame_equal(got, want)
+    dup = pd.concat([right, right.head(1)])                       # non-unique keys: the merge itself
+    pd.testing.assert_frame_equal(FE._left_join_columns(df, dup, ["fixture_id", "k"], ["fixture_id", "k"], ["x"]),
+                                  df.merge(dup[["fixture_id", "k", "x"]], on=["fixture_id", "k"], how="left"))
+
+
+def test_build_features_never_writes_into_the_callers_frame():
+    rows = pd.DataFrame([{"fixture_id": 100 + k, "player_id": 1, "date": f"2026-01-{k + 1:02d}", "league": "Premier League",
+                          "home_team": "A", "away_team": "B", "team": "A", "is_home": 1, "season": "2025",
+                          "position": "F", "minutes": 90, "started": 1.0, "goals": k % 2, "assists": 0,
+                          "shots_total": 2, "shots_on_target": 1, "yellow_cards": 0, "key_passes": 1, "rating": 7.0,
+                          "duels_total": 5, "duels_won": 2, "fouls_committed": 1, "fouls_drawn": 1, "passes_total": 20}
+                         for k in range(6)])
+    before = rows.copy(deep=True)
+    FE.build_features(rows)
+    pd.testing.assert_frame_equal(rows, before)
+
+
+def test_harness_reads_raw_columns_only_and_slims_to_what_the_run_reads():
+    from player_model import props_harness as H
+    cols = H.harness_raw_columns()
+    if cols is None:
+        pytest.skip("no player_history")
+    assert {"is_home", "minutes", "goals", "shots_total", "team_id", "opponent_id", "fixture_status"} <= set(cols)
+    assert not (set(cols) & (set(C.PLAYER_FEATURE_COLS) - H.RAW_INPUTS_NAMED_AS_FEATURES))
+    assert not [c for c in cols if c.startswith("target_")]
+    frame = pd.DataFrame(columns=[*C.PLAYER_FEATURE_COLS, "target_sot", "player_id", "date", "junk", "_x",
+                                  "label_verified"])
+    slim = H.slim_frame(frame)
+    assert "junk" not in slim.columns and "_x" not in slim.columns
+    assert {"target_sot", "player_id", "date", "label_verified"} <= set(slim.columns)
+    assert set(C.PLAYER_FEATURE_COLS) <= set(slim.columns)

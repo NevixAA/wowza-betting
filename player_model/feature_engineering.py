@@ -34,6 +34,12 @@ from .setpiece import features as _SP
 
 NAN = float("nan")
 
+# Copy-on-Write (always on from pandas 3): the builders below take SHALLOW copies of the caller's frame
+# (copy(deep=False)) and never write into it - a column assignment only rebinds the column in the copy.
+# The props harness peak memory depends on it (2026-11-15: two GitHub runs died of OOM).
+if int(pd.__version__.split(".")[0]) < 3:
+    pd.set_option("mode.copy_on_write", True)
+
 
 def _label(df: pd.DataFrame, col: str, k: int) -> pd.Series:
     """1.0 when the recorded count >= k, 0.0 when it is below, NaN when no count was recorded (or the
@@ -648,15 +654,30 @@ def roll_features(side: str) -> list[str]:
     return [feat for feat, _, sd in _TEAM_ROLL.values() if sd == side]
 
 
+def _left_join_columns(df: pd.DataFrame, right: pd.DataFrame, left_on: list[str], right_on: list[str],
+                       cols: list[str]) -> pd.DataFrame:
+    """df.merge(right[right_on + cols], left_on=left_on, right_on=right_on, how="left") written as
+    column assignment (no copy of the wide frame; memory, 2026-11-15). Same rows, same order, same
+    values; a key without a match reads NaN. A right side whose keys are NOT unique (a merge would
+    duplicate rows) falls back to the merge itself."""
+    r = right[[*right_on, *cols]]
+    if r.duplicated(right_on).any():
+        return df.merge(r.rename(columns=dict(zip(right_on, left_on))), on=left_on, how="left")
+    r = r.set_index(right_on)
+    key = (pd.MultiIndex.from_frame(df[left_on]) if len(left_on) > 1 else pd.Index(df[left_on[0]]))
+    out = df.copy(deep=False)
+    for c in cols:
+        out[c] = r[c].reindex(key).to_numpy()       # merge's own upcasting: int -> float on a miss
+    return out.reset_index(drop=True)               # a merge returns a fresh RangeIndex
+
+
 def attach_team_rolls(df: pd.DataFrame, roll: pd.DataFrame) -> pd.DataFrame:
     """Player rows (`_tkey` own key, `_okey` opponent key) + the per-(fixture, team) rolling values
     of _team_rolling, each feature read from the side _TEAM_ROLL declares: 'opp' features on the
     opponent key, 'own' features on the row's own key."""
     roll = roll.drop(columns=[c for c in ("_opp_team_corners_pg",) if c in roll.columns])
-    df = df.merge(roll[["fixture_id", "_tkey", *roll_features("opp")]].rename(columns={"_tkey": "_okey"}),
-                  on=["fixture_id", "_okey"], how="left")
-    return df.merge(roll[["fixture_id", "_tkey", *roll_features("own")]], on=["fixture_id", "_tkey"],
-                    how="left")
+    df = _left_join_columns(df, roll, ["fixture_id", "_okey"], ["fixture_id", "_tkey"], roll_features("opp"))
+    return _left_join_columns(df, roll, ["fixture_id", "_tkey"], ["fixture_id", "_tkey"], roll_features("own"))
 
 
 def _team_rolling(t: pd.DataFrame, n: int) -> pd.DataFrame:
@@ -1048,7 +1069,7 @@ def _add_composites(df: pd.DataFrame) -> pd.DataFrame:
     """Every derived feature, from base columns that are already present on `df` (training frame
     or the serving frame). League normalisers (lg_*) are the league's measured averages.
     NaN in -> NaN out; nothing is filled."""
-    f = df.copy()                      # de-fragmented working frame (many columns are added)
+    f = df.copy(deep=False)            # Copy-on-Write: no full copy of the input (memory, 2026-11-15)
     pf, pm, pd_ = f["pos_forward"], f["pos_midfielder"], f["pos_defender"]
 
     f["sot_rate"] = _ratio(f["sot_pg"], f["shots_pg"])
@@ -1258,7 +1279,8 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
 
     # A list of row dicts, or a DataFrame (pipeline.merge_cup_rows passes the history frame: a
     # 900k-row list of dicts would cost several GB).
-    df = match_rows.copy() if isinstance(match_rows, pd.DataFrame) else pd.DataFrame(match_rows)
+    # shallow: Copy-on-Write keeps the caller's frame untouched without a full copy (memory, 2026-11-15)
+    df = match_rows.copy(deep=False) if isinstance(match_rows, pd.DataFrame) else pd.DataFrame(match_rows)
     df["date"] = pd.to_datetime(df["date"])
     # A row without a real player id has no player to build a history for: player_id 0 pooled
     # 153 different players into ONE rolling history (props_truth 2026-11-02). Dropped, logged.
@@ -1412,7 +1434,9 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
                                       *(feat for feat, _, _ in _TEAM_ROLL.values()), *_LEAGUE_NORMS)
                           if c in df.columns])
     if "referee" in df.columns and "fixture_id" in df.columns and "yellow_cards" in df.columns:
-        df = df.merge(_referee_asof(df), on="fixture_id", how="left")
+        _ref = _referee_asof(df)
+        df = _left_join_columns(df, _ref, ["fixture_id"], ["fixture_id"],
+                                [c for c in _ref.columns if c != "fixture_id"])
     else:
         df["referee_yellows_pg"] = np.nan
         df["referee_strictness"] = np.nan
@@ -1450,7 +1474,9 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
     if not t.empty:
         df = attach_team_rolls(df, _team_rolling(t, n))
         df["_day"] = pd.to_datetime(df["date"], errors="coerce").dt.normalize()
-        df = df.merge(_league_asof(t), on=["league", "_day"], how="left")
+        _lg = _league_asof(t)
+        df = _left_join_columns(df, _lg, ["league", "_day"], ["league", "_day"],
+                                [c for c in _lg.columns if c not in ("league", "_day")])
     _ensure(df, [feat for feat, _, _ in _TEAM_ROLL.values()] + list(_LEAGUE_NORMS))
 
     # ── Previous season (player and both teams) and the longer-window shot accuracy: real values
@@ -1497,18 +1523,19 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
     df["target_sot3"]    = _label(df, "shots_on_target", 3)
     df["target_sot4"]    = _label(df, "shots_on_target", 4)
 
+    # Intermediate (_*) columns go BEFORE the row filter, so the filter copies the narrower frame
+    # (memory, 2026-11-15; the same rows and columns as before)
+    df = df.drop(columns=[c for c in df.columns if c.startswith("_")], errors="ignore")
     # Drop rows with no prior history (rolling features would all be NaN)
     _n0 = len(df)
-    df = df[df["n_prev_games"] >= 1].copy()
+    df = df[(df["n_prev_games"] >= 1).to_numpy()]
     if _n0 - len(df):
         print(f"[features] {(_n0 - len(df)):,} first-appearance row(s) dropped (no prior match)")
 
     # Feature columns numeric; a missing value STAYS missing (was fillna(0.0) over every column).
     for col in config.PLAYER_FEATURE_COLS:
-        if col in df.columns:
+        if col in df.columns and not pd.api.types.is_numeric_dtype(df[col]):
             df[col] = pd.to_numeric(df[col], errors="coerce")
-
-    df.drop(columns=[c for c in df.columns if c.startswith("_")], inplace=True, errors="ignore")
     return df.reset_index(drop=True)
 
 

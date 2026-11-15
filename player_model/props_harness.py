@@ -64,6 +64,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import gc
 import hashlib
 import json
 import os
@@ -478,7 +479,9 @@ def fit_window(train: pd.DataFrame, features: list[str], y_col: str, names=CANDI
         raise ValueError(f"training window has {len(train)} rows (< {MIN_TRAIN_ROWS})")
     cut = calibration_cut(train["date"])
     d = pd.to_datetime(train["date"]).dt.normalize()
-    fit, cal = train[d < cut], train[d >= cut]
+    # only the columns the candidates read (no full-width copies of the window; values untouched)
+    train = train[list(dict.fromkeys([*features, y_col, "player_id"]))]
+    fit, cal = train[(d < cut).to_numpy()], train[(d >= cut).to_numpy()]
     y_fit, y_cal = fit[y_col].astype(int), cal[y_col].astype(int)
     if y_fit.nunique() < 2 or y_cal.nunique() < 2:
         raise ValueError("a single class in the fit or calibration block")
@@ -633,14 +636,65 @@ def evaluate_market(frame: pd.DataFrame, market: str, features: list[str], decis
     return rep, scored, fitted
 
 
+def derived_columns() -> frozenset:
+    """Stored player_history columns that build_features COMPUTES (every feature name, current or
+    withheld or removed, and every label): the stored copies are stale outputs of older builds, never
+    inputs. The harness run does not read them (harness_raw_columns)."""
+    from . import feature_engineering as FE
+    names = set(config.PLAYER_FEATURE_COLS) | set(FE.REMOVED_SETPIECE_FEATURES)
+    for attr in ("SETPIECE_PROXIES_REMOVED", "LEGACY_QUALITY_FEATURES_REMOVED", "TYPED_FORMULA_FEATURES_WITHHELD",
+                 "PROFILE_CONSTANT_FEATURES_WITHHELD", "SHOTS_DEFINITION_WITHHELD", "_DEAD_GOAL_TYPE_FEATURES",
+                 "_DATA_GAP_FEATURES", "PROFILE_FEATURES"):
+        names |= set(getattr(config, attr, ()))
+    return frozenset(names)
+
+
+def harness_raw_columns() -> list[str] | None:
+    """The stored player_history columns the harness reads: every column except the derived ones
+    (derived_columns, target_*). None when the history is absent (source_frame reads everything)."""
+    if not HISTORY_PATH.exists():
+        return None
+    import pyarrow.dataset as ds
+    from .cup_history import CUP_ROWS_FILE
+    have = list(ds.dataset(str(HISTORY_PATH), format="parquet").schema.names)
+    # the collected cup rows carry inputs the history does not store (team_id, opponent_id: the
+    # provider's club ids, fixture_status); source_frame applies the same column list to them
+    if Path(CUP_ROWS_FILE).exists():
+        have += [c for c in ds.dataset(str(CUP_ROWS_FILE), format="parquet").schema.names if c not in have]
+    drop = derived_columns() - RAW_INPUTS_NAMED_AS_FEATURES
+    return [c for c in have if c not in drop and not c.startswith("target_")]
+
+
+#: feature-list names that are RAW inputs of build_features, not its outputs: the venue, and the
+#: stored profile values (_profile reads them; the old placeholders count as missing)
+RAW_INPUTS_NAMED_AS_FEATURES = frozenset({"is_home", "height_cm", "age", "weight_kg"})
+
+
+#: identity / output columns the run reads besides the features, the labels and the verification
+RUN_META_COLUMNS = ("date", "player_id", "player_name", "fixture_id", "league", "home_team", "away_team",
+                    "is_home", "harness_source", SOURCE_COL)
+VERIFICATION_COLUMNS = ("label_verified", "window_verified", "all_prior_verified")
+
+
+def slim_frame(frame: pd.DataFrame) -> pd.DataFrame:
+    """The built frame restricted to what run() reads: identity / output columns, the verification
+    columns, every label (TARGETS) and every candidate feature (config.PLAYER_FEATURE_COLS) - in
+    the frame's own column order, values untouched. Everything else (stored legacy columns, provenance
+    beside the corrections, intermediate columns) is dropped to cut the run's peak memory."""
+    want = (set(RUN_META_COLUMNS) | set(VERIFICATION_COLUMNS) | set(TARGETS.values())
+            | set(config.PLAYER_FEATURE_COLS) | set(harness_features(frame)))
+    return frame[[c for c in frame.columns if c in want]]
+
+
 def build_frame(raw: pd.DataFrame) -> pd.DataFrame:
     """Features and labels rebuilt from the raw counts over the full context (every row, verified or
     not), with the population's verification columns joined back on (fixture_id, player_id)."""
     from .feature_engineering import build_features
-    pop = population(raw)
-    built = build_features(raw)
     key = ["fixture_id", "player_id"]
-    ver = pop[key + ["label_verified", "window_verified", "all_prior_verified"]].drop_duplicates(key)
+    # only the verification columns of the population live on while the features are built (memory)
+    ver = population(raw)[key + ["label_verified", "window_verified", "all_prior_verified"]].drop_duplicates(key)
+    gc.collect()
+    built = build_features(raw)
     for c in key:
         built[c] = pd.to_numeric(built[c], errors="coerce")
         ver[c] = pd.to_numeric(ver[c], errors="coerce")
@@ -660,8 +714,14 @@ def run(plan: dict | None = None, raw: pd.DataFrame | None = None, out_dir: Path
     dec = owner_decisions(plan)
     out_dir = OUT_DIR if out_dir is None else Path(out_dir)
     model_dir = MODEL_DIR if model_dir is None else Path(model_dir)
-    raw = source_frame() if raw is None else raw
+    raw = source_frame(columns=harness_raw_columns()) if raw is None else raw
     frame = build_frame(raw)
+    # MEMORY (2026-11-15: two GitHub runs died of OOM on the 16 GB runner). The raw rows are not read
+    # after the build, and the run reads only the features, labels, identity and verification columns
+    # of the built frame: everything else is released. Values are untouched (slim_frame selects).
+    del raw
+    frame = slim_frame(frame)
+    gc.collect()
     split = split_of(frame["date"], dec["holdout_start"], dec["holdout_end"])
     in_scope = split.isin(["pre_holdout", "holdout"]).to_numpy()
     ok = eligible(frame, dec["feature_rule"]).to_numpy()
@@ -690,6 +750,8 @@ def run(plan: dict | None = None, raw: pd.DataFrame | None = None, out_dir: Path
         return report
     elig = frame[ok]
     features = harness_features(elig)
+    frame = frame[["date", *[t for t in TARGETS.values() if t in frame.columns]]]   # what is read below
+    gc.collect()
     report["ablation"] = {"group": ablation(), "dropped": sorted(ABLATION_GROUPS.get(ablation() or "", ()))}
     report["features"] = {"n": len(features), "sha256": hashlib.sha256(json.dumps(features).encode()).hexdigest(),
                           "list": features,

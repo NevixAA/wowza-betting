@@ -141,7 +141,7 @@ def attach_strength(df: pd.DataFrame, strength=None) -> pd.DataFrame:
     fixture's league_elo is cup_strength."""
     from src.strength import lookup
     S = strength if strength is not None else lookup.load()
-    out = df.copy()
+    out = df.copy(deep=False)          # Copy-on-Write: no full copy of the wide frame (memory, 2026-11-15)
     for c in MEASURED_COLUMNS:
         out[c] = np.nan
     out["_scope"] = None
