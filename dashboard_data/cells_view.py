@@ -80,12 +80,24 @@ def load() -> dict:
         out["problems"].append(f"{lt['path']}: id / sha256 differ from the approval of {ap['proposal_id']}")
         return out
     out["proposal"] = pr
-    ev = _json(PROPOSAL_DIR / f"evidence_{pr.get('month')}.json")
+    ev_rel = evidence_path(pr)
+    ev = _json(ROOT / ev_rel)
     if not ev or not isinstance(ev.get("league_market_status"), list):
-        out["problems"].append(f"evidence_{pr.get('month')}.json (every league x market status) is missing")
+        out["problems"].append(f"{ev_rel} (every league x market status) is missing")
     else:
         out["evidence"] = ev
     return out
+
+
+def evidence_path(proposal: dict) -> str:
+    """The evidence file the proposal itself names (`source.evidence`). A tagged re-run writes its own
+    evidence (bars v5 2026-11-15: evidence_2026-11_v5.json beside the approved month's evidence_2026-11.json),
+    so the month alone would show the OLD proposal's statuses beside the new proposal's bars. A proposal
+    that names none (written before the tag existed) falls back to evidence_<month>.json."""
+    named = ((proposal or {}).get("source") or {}).get("evidence")
+    if named:
+        return str(named)
+    return f"output/threshold_proposals/bars_oddsapi_hist/evidence_{(proposal or {}).get('month')}.json"
 
 
 def _odds_range(lo, hi) -> str:
@@ -179,8 +191,9 @@ def cells_frame(data: dict) -> pd.DataFrame:
     for eid in set(wd) - known:
         data["problems"].append(f"withdrawal {eid}: not an entry of the approved proposal")
     d = pd.DataFrame(rows, columns=COLUMNS)
-    d["_o"] = d["Status"].map(STATUS_ORDER).fillna(9)
-    return d.sort_values(["_o", "League", "Market"]).drop(columns="_o").reset_index(drop=True)
+    d["_o"] = d["Status"].map(STATUS_ORDER)          # a status outside the order sorts last (no stand-in rank)
+    return (d.sort_values(["_o", "League", "Market"], na_position="last").drop(columns="_o")
+            .reset_index(drop=True))
 
 
 def counts(d: pd.DataFrame) -> dict:

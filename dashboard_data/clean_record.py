@@ -52,12 +52,21 @@ def start_date() -> str:
 
 
 def start_ts() -> pd.Timestamp:
-    """The start as a UTC timestamp (00:00 UTC of the start day)."""
-    return pd.Timestamp(start_date()).tz_localize("UTC")
+    """The start as a UTC timestamp: the FULL clean_record_start_utc of config/trustworthy_performance.json (the
+    go-live merge time, so a tip generated on the start day before it is not Clean Record - go-live rehearsal
+    2026-11-15); a date alone = 00:00 UTC of that day. Falls back to config.CLEAN_RECORD_START (same value)."""
+    try:
+        v = json.loads(TP_CONFIG.read_text(encoding="utf-8")).get("clean_record_start_utc")
+    except (OSError, ValueError):
+        v = None
+    if not v:
+        v = start_date()
+    ts = pd.Timestamp(str(v))
+    return ts.tz_localize("UTC") if ts.tzinfo is None else ts.tz_convert("UTC")
 
 
 def started(now=None) -> bool:
-    """True once the start day has begun (UTC)."""
+    """True once the start time has passed (UTC)."""
     now = pd.Timestamp.now(tz="UTC") if now is None else pd.Timestamp(now)
     now = now.tz_localize("UTC") if now.tzinfo is None else now.tz_convert("UTC")
     return now >= start_ts()
@@ -93,9 +102,18 @@ def assign(d: pd.DataFrame, gen_col: str | None, date_col: str) -> pd.Series:
     else:
         gen = pd.Series(pd.NaT, index=d.index, dtype="datetime64[ns, UTC]")
     out = pd.Series(UNPLACED, index=d.index, dtype=object)
+    # generation time against the full start; the match DATE against the start day (a match dated the start
+    # day is played on it, whatever the start's time of day)
+    s_day = s.normalize()
     out[gen.notna() & (gen < s)] = BEFORE
-    out[gen.isna() & day.notna() & (day < s)] = BEFORE
-    out[gen.notna() & (gen >= s) & day.notna() & (day >= s)] = CLEAN
+    out[gen.isna() & day.notna() & (day < s_day)] = BEFORE
+    out[gen.notna() & (gen >= s) & day.notna() & (day >= s_day)] = CLEAN
+    if s != s_day and gen_col and gen_col in d.columns:
+        # a generation DATE without a time (player_ledger signal_date) on the start day cannot say whether the
+        # tip came before or after the start time: neither record
+        raw = d[gen_col].astype("string").str.strip()
+        out[(raw.str.len() <= 10).fillna(False).to_numpy() & (gen.dt.normalize() == s_day).fillna(False).to_numpy()] \
+            = UNPLACED
     return out
 
 

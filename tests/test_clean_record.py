@@ -34,7 +34,10 @@ def test_one_owner_set_start_date():
     assert config.PROPS_CLEAN_MODELS_LIVE_DATE == config.CLEAN_RECORD_START
     # the pre-repair comparison window opens at the old cutoff and ends at the start
     assert config.PERFORMANCE_CUTOFF_DATE < config.CLEAN_RECORD_START
-    assert CR.start_date() == "2026-11-21" and CR.start_ts() == pd.Timestamp("2026-11-21", tz="UTC")
+    # U6 sets clean_record_start_utc to the go-live (P0) time: the split follows the configured instant
+    want = pd.Timestamp(j["clean_record_start_utc"])
+    want = want.tz_localize("UTC") if want.tzinfo is None else want.tz_convert("UTC")
+    assert CR.start_date() == "2026-11-21" and CR.start_ts() == want
 
 
 # ── the split ─────────────────────────────────────────────────────────────────────────────────────
@@ -203,6 +206,19 @@ def test_withdrawal_reading_on_a_synthetic_approval():
     data["problems"] = []
     CV.cells_frame(data)
     assert any("still stakes" in p for p in data["problems"])
+
+
+def test_evidence_is_the_file_the_proposal_names():
+    """Go-live rehearsal 2026-11-15: the v5 re-run (TP-2026-11-15-bade2c0b) wrote evidence_2026-11_v5.json beside
+    the older evidence_2026-11.json; the page must read the one the proposal names, never the month's old one."""
+    pr = {"month": "2026-11", "source": {"evidence": "output/threshold_proposals/bars_oddsapi_hist/evidence_2026-11_v5.json"}}
+    assert CV.evidence_path(pr).endswith("evidence_2026-11_v5.json")
+    assert CV.evidence_path({"month": "2026-11"}).endswith("bars_oddsapi_hist/evidence_2026-11.json")
+    d = CV.load()
+    if d["proposal"] is not None and d["evidence"] is not None:
+        named = (d["proposal"].get("source") or {}).get("evidence")
+        if named:
+            assert d["evidence"] == json.loads((ROOT / named).read_text(encoding="utf-8"))
 
 
 def test_cell_key_of_ledger_tips():

@@ -36,6 +36,7 @@ import streamlit as st
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from dashboard_access import require as _require_tier, login_configured  # noqa: E402
+import dashboard_ui as ui  # noqa: E402
 _require_tier("admin")  # tier guard (dashboard_access.PAGES) - owner only, never a public tier
 
 st.set_page_config(page_title="Wowza | Daily Progress", page_icon="📬", layout="wide")
@@ -48,10 +49,10 @@ STALE_HOURS = 26                          # one daily run plus slack; older = ye
 TZ = ZoneInfo("Asia/Jerusalem")
 API = "https://api.github.com"
 
-st.title("📬 Daily Progress")
-st.caption("The owner's daily progress report until 2026-11-21, built each morning (06:20 and 07:20 Israel) "
-           "from committed repo data and the GitHub Actions API. Shown exactly as written; nothing is "
-           "re-derived. 'unknown' = could not be read. OddsAPI: credits and counts only, never a price.")
+ui.page_header("📬 Daily Progress",
+               "The owner's daily progress report until 2026-11-21, built each morning (06:20 and 07:20 Israel) "
+               "from committed repo data and the GitHub Actions API. Shown exactly as written; nothing is "
+               "re-derived. 'unknown' = could not be read. OddsAPI: credits and counts only, never a price.")
 
 # ── fail closed when the tiers are dormant (no login configured -> everyone would be 'admin') ──────
 if not login_configured() and os.getenv("WOWZA_TIER_OVERRIDE", "").strip().lower() != "admin":
