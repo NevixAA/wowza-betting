@@ -676,7 +676,8 @@ def _fetch_fixture_player_stats(fixture_id: int) -> list[dict]:
 
 
 def _parse_fixture_player(player_entry: dict, meta: dict, league: str,
-                          answered: Optional[bool] = None) -> Optional[dict]:
+                          answered: Optional[bool] = None,
+                          group_unpublished: Optional[bool] = None) -> Optional[dict]:
     """Parse one player from a /fixtures/players response entry.
 
     `answered` = player_stat_nulls.fixture_answered(<the whole answer of this fixture>). Every
@@ -685,7 +686,10 @@ def _parse_fixture_player(player_entry: dict, meta: dict, league: str,
     the fixture, even if nobody in the match has that statistic; without `answered` (a caller that
     does not hold the whole answer) every null stays missing, the fix-round-7 reading.
     The row says so in `count_source` (provenance, owner 2026-11-04 fix round 9): a row parsed here
-    with the fixture proof is verified and is never sent to the player re-fetch."""
+    with the fixture proof is verified and is never sent to the player re-fetch.
+    `group_unpublished` = player_stat_nulls.fixture_group_unpublished(<the same answer>): in an answer that sends
+    explicit 0s a null dribbles_past / penalty_won / penalty_saved is missing (owner 2026-11-15); the
+    row lists the counts read missing from a provider null in `null_is_missing_cols`."""
     p = player_entry.get("player", {})
     name = repair_text(p.get("name", "")).strip()
     if not name:
@@ -705,7 +709,7 @@ def _parse_fixture_player(player_entry: dict, meta: dict, league: str,
     # It was `int(x or 0)`, which wrote "API-Football sent no value" as a real 0 even for a fixture
     # the provider never covered; fix round 7 then made every null None, which lost the ordinary
     # "played, did not score" 0. player_stat_nulls holds the rule and the per-field table.
-    c = _PSN.player_counts(stats, answered)
+    c = _PSN.player_counts(stats, answered, group_unpublished)
 
     substitute = games.get("substitute")
     # Unknown substitute flag -> started unknown (was guessed from minutes > 45). The real source
@@ -740,6 +744,8 @@ def _parse_fixture_player(player_entry: dict, meta: dict, league: str,
         **{col: c[col] for col in _PSN.HISTORY_COUNT_COLS},
         # where these counts came from (player_stat_nulls.SOURCE_COL)
         _PSN.SOURCE_COL:   _PSN.parsed_source(answered),
+        # the NULL_IS_MISSING counts read missing because the provider sent null (provenance)
+        _PSN.NULL_MISSING_COL: ",".join(_PSN.null_missing_cols(stats, group_unpublished)),
     }
 
 
@@ -792,6 +798,7 @@ def _collect_one_season(
         fix_stats = _fetch_fixture_statistics(fixture_id)
         _raw = fix.get("_raw", fix)
         answered = _PSN.fixture_answered(team_data_list)      # the owner's null rule needs the whole answer
+        group_unpublished = _PSN.fixture_group_unpublished(team_data_list)
 
         for team_data in team_data_list:
             team_name = team_data.get("team", {}).get("name", "")
@@ -813,7 +820,7 @@ def _collect_one_season(
                 "season":      season,
             }
             for player_entry in team_data.get("players", []):
-                parsed = _parse_fixture_player(player_entry, meta, league_name, answered)
+                parsed = _parse_fixture_player(player_entry, meta, league_name, answered, group_unpublished)
                 if parsed:
                     rows.append(parsed)
 
@@ -1045,6 +1052,7 @@ def collect_national_team_history(last_n: int = 10) -> list[dict]:
 
             fix_stats = _fetch_fixture_statistics(fixture_id)
             answered = _PSN.fixture_answered(team_data_list)
+            group_unpublished = _PSN.fixture_group_unpublished(team_data_list)
             # The provider's own league.season of this fixture (owner 2026-11-04, fix round 10);
             # None when the answer carries none - recorded, never a resolved or typed year.
             season = provider_fixture_season(fix)
@@ -1074,7 +1082,7 @@ def collect_national_team_history(last_n: int = 10) -> list[dict]:
                     "season":       season,                     # provider's own; None, never ""
                 }
                 for player_entry in team_data.get("players", []):
-                    parsed = _parse_fixture_player(player_entry, meta, league_name, answered)
+                    parsed = _parse_fixture_player(player_entry, meta, league_name, answered, group_unpublished)
                     if parsed:
                         all_rows.append(parsed)
                         team_rows += 1

@@ -36,15 +36,16 @@ from __future__ import annotations
 import pandas as pd
 
 from . import config
-from .player_stat_nulls import (HISTORY_COUNT_COLS, NULL_IS_MISSING, PARSED_WITH_RULE, REFETCHED,
-                                SOURCE_COL, UNVERIFIED)
+from .player_stat_nulls import (EXPLICIT_ZERO_EVIDENCE, HISTORY_COUNT_COLS, NULL_IS_MISSING,
+                                NULL_IS_NONE_WITHOUT_EXPLICIT_ZEROS, NULL_MISSING_COL, PARSED_WITH_RULE,
+                                REFETCHED, SOURCE_COL, UNVERIFIED)
 
 REFETCH_FILE = config.OUTPUT_DIR / "collect" / "player_history_refetch.parquet"
 #: the replaced columns: every per-player count player_history stores + rating (not a count; an
 #: unrated appearance was stored as 0 by the same bug)
 REPLACED = list(HISTORY_COUNT_COLS) + ["rating"]
 #: per row, the NULL_IS_MISSING columns the reader read as missing (provider null), comma-separated
-NULL_BLANKED_COL = "null_is_missing_cols"
+NULL_BLANKED_COL = NULL_MISSING_COL
 STATUS_COL = SOURCE_COL
 
 
@@ -76,29 +77,59 @@ def with_refetched(history: pd.DataFrame, refetch: pd.DataFrame | None = None) -
     rf = rf.assign(fixture_id=pd.to_numeric(rf["fixture_id"], errors="coerce"),
                    player_id=pd.to_numeric(rf["player_id"], errors="coerce"))
     rf = rf.dropna(subset=["fixture_id", "player_id"]).drop_duplicates(["fixture_id", "player_id"], keep="last")
+    sends_zeros = explicit_zero_fixtures(rf)
+    group_unpub = group_unpublished_fixtures(rf, sends_zeros)
     rf = rf.set_index(["fixture_id", "player_id"])
     key = pd.MultiIndex.from_arrays([pd.to_numeric(out["fixture_id"], errors="coerce"),
                                      pd.to_numeric(out["player_id"], errors="coerce")])
     # a row parsed with the rule is the newer reading of the same answer: a re-fetch never overrides it
     hit = key.isin(rf.index) & ~ruled.to_numpy()
+    # provenance written by the parser since 2026-11-15 (player_stat_nulls.NULL_MISSING_COL); a row
+    # parsed before carries none
+    stored_marks = (out[NULL_BLANKED_COL] if NULL_BLANKED_COL in out.columns
+                    else pd.Series(None, index=out.index, dtype=object))
+    blanked = stored_marks.where(ruled & stored_marks.notna(), "").fillna("").astype(str)
+    blanked = blanked.where(blanked.eq("") | blanked.str.endswith(","), blanked + ",")
+    out = _blank_unproven_ruled_zeros(out, ruled & stored_marks.isna(), blanked)
     if not hit.any():
+        out[NULL_BLANKED_COL] = blanked.str.rstrip(",")
         return _with_proven_side(out, rf, key)
     sel = rf.reindex(key[hit])
     # A null the collector read as 0 in a NULL_IS_MISSING column (goals_conceded, fix 2026-11-11;
-    # penalty_missed, owner 2026-11-11 "Fix penalties too, then promote") is
-    # missing: the stored re-fetch row keeps its 0 and filled_cols beside (corrections beside the
-    # originals); the reader takes the provider's null.
+    # penalty_missed, owner 2026-11-11 "Fix penalties too, then promote"; dribbles_past, penalty_won,
+    # penalty_saved, owner 2026-11-15, in an answer that sends explicit 0s only) is missing: the
+    # stored re-fetch row keeps its 0 and filled_cols beside (corrections beside the originals); the
+    # reader takes the provider's null.
     filled = (sel["filled_cols"].fillna("").astype(str).str.split(",") if "filled_cols" in sel.columns
               else pd.Series([[]] * len(sel), index=sel.index))
-    blanked = pd.Series("", index=out.index, dtype=object)
+    fx_zero = pd.Series(key[hit].get_level_values(0)).map(sends_zeros).fillna(False).to_numpy(dtype=bool)
+    fx_unpublished = unpublished_fixture_counts(rf.reset_index())
+    fx_group = pd.Series(key[hit].get_level_values(0)).map(group_unpub).fillna(False).to_numpy(dtype=bool)
     for c in REPLACED:
         if c not in rf.columns:
             continue
-        col = pd.to_numeric(out[c], errors="coerce").astype(float) if c in out.columns \
-            else pd.Series(float("nan"), index=out.index)
+        col = (pd.to_numeric(out[c], errors="coerce").astype(float) if c in out.columns
+               else pd.Series(float("nan"), index=out.index))
         new = pd.to_numeric(sel[c], errors="coerce").astype(float)
+        isnull = filled.map(lambda xs, c=c: c in xs).to_numpy(dtype=bool)
+        if c not in NULL_IS_MISSING:
+            # any other count: in an explicit-zero answer, a null for EVERY played player of the fixture is
+            # "not published" (the answer would carry 0s), never 0 (Data truth 7e, 2026-11-15)
+            unpub = (pd.Series(key[hit].get_level_values(0)).map(fx_unpublished.get(c, {})).eq(True)
+                     .to_numpy(dtype=bool))
+            null_read_as_0 = isnull & fx_zero & unpub
+            if null_read_as_0.any():
+                new = new.where(~null_read_as_0)
+                hit_idx = out.index[hit][null_read_as_0]
+                blanked.loc[hit_idx] = blanked.loc[hit_idx] + c + ","
+                print(f"[refetch] {c}: {int(null_read_as_0.sum()):,} null-read-as-0 value(s) of fixtures that did "
+                      "not publish it read as missing")
         if c in NULL_IS_MISSING:
-            null_read_as_0 = filled.map(lambda xs, c=c: c in xs).to_numpy(dtype=bool)
+            null_read_as_0 = isnull
+            if c in NULL_IS_NONE_WITHOUT_EXPLICIT_ZEROS:
+                # missing only where the explicit-zero answer published none of the group; elsewhere the
+                # null is the provider's none (player_stat_nulls.fixture_group_unpublished)
+                null_read_as_0 = null_read_as_0 & fx_group
             new = new.where(~null_read_as_0)
             hit_idx = out.index[hit][null_read_as_0]
             blanked.loc[hit_idx] = blanked.loc[hit_idx] + c + ","
@@ -114,6 +145,138 @@ def with_refetched(history: pd.DataFrame, refetch: pd.DataFrame | None = None) -
           f"{int((out[STATUS_COL] == PARSED_WITH_RULE).sum()):,} parsed with the rule; "
           f"{int((out[STATUS_COL] == UNVERIFIED).sum()):,} marked {UNVERIFIED}")
     return _with_proven_side(out, rf, key)
+
+
+def explicit_zero_fixtures(rf: pd.DataFrame) -> pd.Series:
+    """fixture_id -> True when the re-fetched answer of the fixture sends EXPLICIT zeros
+    (player_stat_nulls.fixture_sends_zeros on the stored answer): a played row carries a 0 in an
+    EXPLICIT_ZERO_EVIDENCE count that its filled_cols does not list (a sent 0, not a null read as 0)."""
+    if rf is None or rf.empty or "fixture_id" not in rf.columns:
+        return pd.Series(dtype=bool)
+    filled = (rf["filled_cols"].fillna("").astype(str).str.split(",") if "filled_cols" in rf.columns
+              else pd.Series([[]] * len(rf), index=rf.index))
+    played = ((pd.to_numeric(rf["minutes_refetch"], errors="coerce") > 0) if "minutes_refetch" in rf.columns
+              else pd.Series(True, index=rf.index))
+    sent0 = pd.Series(False, index=rf.index)
+    for c in EXPLICIT_ZERO_EVIDENCE:
+        if c in rf.columns:
+            sent0 |= (pd.to_numeric(rf[c], errors="coerce") == 0) & ~filled.map(lambda xs, c=c: c in xs)
+    fid = pd.to_numeric(rf["fixture_id"], errors="coerce")
+    return (sent0 & played).groupby(fid).any()
+
+
+def group_unpublished_fixtures(rf: pd.DataFrame, sends_zeros: pd.Series | None = None) -> pd.Series:
+    """fixture_id -> True when the re-fetched answer sends explicit zeros (explicit_zero_fixtures) and
+    left every NULL_IS_NONE_WITHOUT_EXPLICIT_ZEROS field null (filled_cols) for every played player -
+    player_stat_nulls.fixture_group_unpublished on the stored answer."""
+    if rf is None or rf.empty or "fixture_id" not in rf.columns:
+        return pd.Series(dtype=bool)
+    sz = explicit_zero_fixtures(rf) if sends_zeros is None else sends_zeros
+    filled = (rf["filled_cols"].fillna("").astype(str).str.split(",") if "filled_cols" in rf.columns
+              else pd.Series([[]] * len(rf), index=rf.index))
+    played = ((pd.to_numeric(rf["minutes_refetch"], errors="coerce") > 0) if "minutes_refetch" in rf.columns
+              else pd.Series(True, index=rf.index))
+    sent = pd.Series(False, index=rf.index)
+    for c in NULL_IS_NONE_WITHOUT_EXPLICIT_ZEROS:
+        if c in rf.columns:
+            sent |= pd.to_numeric(rf[c], errors="coerce").notna() & ~filled.map(lambda xs, c=c: c in xs)
+    fid = pd.to_numeric(rf["fixture_id"], errors="coerce")
+    published = (sent & played).groupby(fid).any()
+    return sz.reindex(published.index).fillna(False).astype(bool) & ~published
+
+
+def unpublished_fixture_counts(rf: pd.DataFrame) -> dict:
+    """{count column: {fixture_id: True}} for the counts the re-fetched answer left null (filled_cols) for
+    EVERY played player of the fixture."""
+    if rf is None or rf.empty or "filled_cols" not in rf.columns:
+        return {}
+    played = ((pd.to_numeric(rf["minutes_refetch"], errors="coerce") > 0) if "minutes_refetch" in rf.columns
+              else pd.Series(True, index=rf.index))
+    r = rf[played]
+    filled = r["filled_cols"].fillna("").astype(str).str.split(",")
+    fid = pd.to_numeric(r["fixture_id"], errors="coerce")
+    out = {}
+    for c in REPLACED:
+        if c in NULL_IS_MISSING or c not in rf.columns:
+            continue
+        a = filled.map(lambda xs, c=c: c in xs).groupby(fid).all()
+        a = a[a]
+        if len(a):
+            out[c] = a.to_dict()
+    return out
+
+
+def _blank_unproven_ruled_zeros(out: pd.DataFrame, rows: pd.Series, blanked: pd.Series) -> pd.DataFrame:
+    """Rows the collect parsed with the rule BEFORE 2026-11-15 carry no provenance of a null: a stored 0
+    in a NULL_IS_NONE_WITHOUT_EXPLICIT_ZEROS count may be the provider's null of an explicit-zero answer
+    (the field unpublished) read as 0. The provider publishes these fields for EVERY player of a match
+    or for none (measured: an explicit-zero fixture with one value has them all), so such a 0 is proven
+    only when a row of the same fixture carries a positive value of one of them; otherwise it is missing, the stored
+    value kept beside in <col>_stored. Marks the blanked counts in `blanked` (in place)."""
+    rows = pd.Series(rows, index=out.index).fillna(False).astype(bool)
+    if not rows.any() or "fixture_id" not in out.columns:
+        return out
+    fid = pd.to_numeric(out["fixture_id"], errors="coerce")
+    pos = pd.Series(False, index=out.index)
+    for c in NULL_IS_NONE_WITHOUT_EXPLICIT_ZEROS:
+        if c in out.columns:
+            pos |= pd.to_numeric(out[c], errors="coerce") > 0
+    published = pos.groupby(fid).transform("any").fillna(False).astype(bool)   # the group, as the parser reads it
+    for c in sorted(NULL_IS_NONE_WITHOUT_EXPLICIT_ZEROS):
+        if c not in out.columns:
+            continue
+        v = pd.to_numeric(out[c], errors="coerce").astype(float)
+        bad = rows & (v == 0) & ~published
+        if not bad.any():
+            continue
+        out[f"{c}_stored"] = v
+        out[c] = v.where(~bad)
+        blanked.loc[bad] = blanked.loc[bad] + c + ","
+        print(f"[refetch] {c}: {int(bad.sum()):,} unproven 0(s) on rows parsed before 2026-11-15 read as "
+              f"missing (value kept in {c}_stored)")
+    return out
+
+
+# ── placeholder answers (props feature audit 2026-11-15, found by Data truth 7g / 7e) ─────────────
+#
+# API-Football answered some fixtures (28 in the re-fetch, e.g. Champions League qualifiers 2026-07) with
+# a statistics block whose every detailed count is 0 - and rating 0 - for every player, the goals and
+# cards from the events beside: shots, passes, duels, tackles all 0 for all 22+ players of a played match.
+# No played match has zero passes by every player, so these zeros are placeholders, not measurements.
+#: the counts such an answer leaves unmeasured; goals / assists / cards / penalties scored or missed /
+#: goals conceded come from the match events and are kept
+PLACEHOLDER_DETAIL_COLS = ("shots_total", "shots_on_target", "key_passes", "passes_total", "fouls_committed",
+                           "fouls_drawn", "duels_total", "duels_won", "offsides", "tackles_total",
+                           "tackles_blocks", "interceptions", "dribbles_attempted", "dribbles_success",
+                           "dribbles_past", "saves", "penalty_won", "penalty_committed", "penalty_saved")
+PLACEHOLDER_COL = "placeholder_answer"
+#: a full starting XI recorded before "every player had 0 passes" is judged
+PLACEHOLDER_MIN_ROWS = 11
+
+
+def with_placeholder_answers_blanked(raw: pd.DataFrame) -> pd.DataFrame:
+    """In a fixture where every played row (minutes > 0, at least PLACEHOLDER_MIN_ROWS of them) holds
+    passes_total 0, every PLACEHOLDER_DETAIL_COLS count is missing; placeholder_answer marks the rows.
+    The provider's zeros stay in the re-fetch sidecar and player_history (nothing is written)."""
+    if raw is None or raw.empty or not {"fixture_id", "passes_total", "minutes"} <= set(raw.columns):
+        return raw
+    out = raw.copy()
+    fid = pd.to_numeric(out["fixture_id"], errors="coerce")
+    played = pd.to_numeric(out["minutes"], errors="coerce") > 0
+    zero = pd.to_numeric(out["passes_total"], errors="coerce").eq(0)
+    g = pd.DataFrame({"f": fid[played], "z": zero[played]}).groupby("f")["z"].agg(["all", "size"])
+    ph = g.index[g["all"] & (g["size"] >= PLACEHOLDER_MIN_ROWS)]
+    m = fid.isin(ph).to_numpy()
+    out[PLACEHOLDER_COL] = m
+    if m.any():
+        for c in PLACEHOLDER_DETAIL_COLS:
+            if c in out.columns:
+                out[c] = pd.to_numeric(out[c], errors="coerce").astype(float).where(~m)
+        if "rating" in out.columns:
+            out["rating"] = pd.to_numeric(out["rating"], errors="coerce").astype(float).where(~m)
+        print(f"[placeholder] {len(ph):,} fixture(s) answered with 0 passes for every player: "
+              f"{int(m.sum()):,} row(s) read with no detailed count (goals / cards kept)")
+    return out
 
 
 # ── goalkeeper goals_conceded against the match score (fix/props-feature-bugs 2026-11-11) ──────────
@@ -258,6 +421,10 @@ def refetch_proof(before: pd.DataFrame, refetch: pd.DataFrame, journal: pd.DataF
         is 'provider_rule' or 'zeros_unverified';
       * every row of a journaled fixture that the answer refused stays 'zeros_unverified', unchanged."""
     after = with_refetched(before, refetch)
+    # a NULL_IS_MISSING cell the reader read as missing (provider null) is EXPECTED to differ from the
+    # sidecar's null-read-as-0 / the stored unproven 0: it is listed in NULL_BLANKED_COL
+    marks = (after[NULL_BLANKED_COL].fillna("").astype(str).str.split(",") if NULL_BLANKED_COL in after.columns
+             else pd.Series([[]] * len(after), index=after.index))
     st = after[STATUS_COL]
     hit = st.eq(REFETCHED).to_numpy()
     rf = refetch.assign(fixture_id=pd.to_numeric(refetch["fixture_id"], errors="coerce"),
@@ -280,8 +447,10 @@ def refetch_proof(before: pd.DataFrame, refetch: pd.DataFrame, journal: pd.DataF
         orig = (pd.Series(_num(sel[f"orig_{c}"]).to_numpy(), index=new.index)
                 if f"orig_{c}" in sel.columns else None)
         z = old == 0
+        mk = marks[hit].map(lambda xs, c=c: c in xs).to_numpy(dtype=bool)
         f = {"rows": int(hit.sum()),
-             "applied_exactly": int(_same(new, side).sum()),
+             "applied_exactly": int((_same(new, side) | (mk & new.isna())).sum()),
+             "read_missing_provider_null": int(mk.sum()),
              "orig_kept_equal_to_stored": None if orig is None else int(_same(orig, old).sum()),
              "old0_now_value": int((z & (new > 0)).sum()),
              "old0_now_0_confirmed": int((z & (new == 0)).sum()),
@@ -307,7 +476,8 @@ def refetch_proof(before: pd.DataFrame, refetch: pd.DataFrame, journal: pd.DataF
                              "label_now_missing": int(ln.isna().sum()),
                              "positives_before": int((lo == 1).sum()), "positives_after": int((ln == 1).sum())}
     rest = ~hit
-    unchanged = {c: int((~_same(_num(after[c])[rest], _num(before[c])[rest])).sum())
+    unchanged = {c: int((~_same(_num(after[c])[rest], _num(before[c])[rest])
+                         & ~marks[rest].map(lambda xs, c=c: c in xs).to_numpy(dtype=bool)).sum())
                  for c in REPLACED if c in before.columns}
     out["not_refetched_rows"] = {"rows": int(rest.sum()), "values_changed": unchanged,
                                  "count_source": st[rest].value_counts().to_dict()}

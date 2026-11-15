@@ -57,6 +57,22 @@ provider's "none", so a null stays missing even when the player played:
                     2026-11 against 180-390 in every earlier month, inflating the served
                     penalty_conversion_rate. A row whose misses are missing has unknown ATTEMPTS:
                     feature_engineering counts its scored penalties only where its misses are known.
+  dribbles.past     OWNER DECISION 2026-11-15 (props feature audit, fix 2). MEASURED on the re-fetched
+  penalty.won       answers: until 2026-07 the provider never sent an explicit 0 for these counts (a
+  penalty.saved     null was its "none": dribbles_past null on 64-68% of played rows, positive on the
+                    rest, every month 2022-08..2026-07). Since 2026-08 the answers send explicit 0s
+                    (the "explicit-zero" answers: 62% of 2026-10 fixtures, 99.7% of 2026-11), and in
+                    74% (2026-10) / 88% (2026-11) of those fixtures these three fields are null for
+                    EVERY player - the provider did not publish them for the match. Read as 0, the
+                    raw dribbles_past mean fell 0.45 -> 0.26 (2026-10) -> 0.09 (2026-11) and
+                    penalty_won 0.007 -> 0.001. penalty.saved shows the identical fixture-wide
+                    pattern (found by props_feature_truth's null-as-0 check; it feeds no feature).
+                    THE READING: in an answer that sends explicit 0s AND publishes none of these
+                    three fields for any player (fixture_group_unpublished) a null of them is
+                    missing; otherwise (an answer that never sends a 0 - the provider's convention
+                    to 2026-07 - or one that publishes the group) a null is still the provider's
+                    "none" (read_count). A caller without the answer-level proof
+                    (group_unpublished None) reads them missing.
 NOT COUNTS (`NOT_COUNTS`) - never zero-filled, a null stays missing:
   games.rating      the provider's match rating; null = not rated (0 is not a rating)
   passes.accuracy   accurate passes (a % in the season endpoint); a ratio-like value, not "none"
@@ -100,7 +116,18 @@ COUNT_FIELDS: dict[str, tuple[str, str]] = {
 #: counts whose null is not "none" (measured, see the module docstring): a null stays missing even
 #: for a player who played
 #: owner 2026-11-11 ("Fix penalties too, then promote"): penalty_missed joins goals_conceded
-NULL_IS_MISSING = frozenset({"goals_conceded", "penalty_missed"})
+#: owner 2026-11-15 (props feature audit, fix 2): dribbles_past and penalty_won join; penalty_saved
+#: shows the same provider change (props_feature_truth null-as-0 check)
+NULL_IS_MISSING = frozenset({"goals_conceded", "penalty_missed", "dribbles_past", "penalty_won",
+                             "penalty_saved"})
+#: the NULL_IS_MISSING counts whose null IS the provider's "none" in an answer that sends no explicit
+#: 0 at all (the convention to 2026-07, measured): missing only in an explicit-zero answer
+NULL_IS_NONE_WITHOUT_EXPLICIT_ZEROS = frozenset({"dribbles_past", "penalty_won", "penalty_saved"})
+#: the counts that prove an answer sends explicit 0s: measured, the provider sent 0 for none of them
+#: in any played row of 2022-2024 (a null was its "none"); one sent 0 among them in a fixture's
+#: answer marks the whole answer as explicit-zero (fixture_sends_zeros)
+EXPLICIT_ZERO_EVIDENCE = ("shots_total", "key_passes", "fouls_committed", "fouls_drawn", "duels_total",
+                          "tackles_total", "interceptions", "dribbles_attempted")
 
 #: provider values that are NOT counts: a null stays missing, never 0
 NOT_COUNTS: dict[str, tuple[str, str]] = {
@@ -110,6 +137,10 @@ NOT_COUNTS: dict[str, tuple[str, str]] = {
 
 #: the columns player_history stores (tackles_blocks / penalty_committed are re-fetch extras)
 HISTORY_COUNT_COLS = tuple(c for c in COUNT_FIELDS if c not in ("tackles_blocks", "penalty_committed"))
+
+#: per row, the NULL_IS_MISSING columns read as missing because the provider sent null (comma-separated;
+#: written by the parsers since 2026-11-15 and by history_refetch.with_refetched)
+NULL_MISSING_COL = "null_is_missing_cols"
 
 #: `count_source` - where a row's per-player counts came from (owner 2026-11-04, fix round 9)
 SOURCE_COL = "count_source"
@@ -164,6 +195,55 @@ def fixture_answered(response: Iterable[dict] | None) -> bool:
     return False
 
 
+def fixture_sends_zeros(response: Iterable[dict] | None) -> bool:
+    """Does this /fixtures/players answer send EXPLICIT zeros? True when a player who played
+    (minutes > 0) carries a sent 0 in one of EXPLICIT_ZERO_EVIDENCE - counts the provider never sent
+    as 0 until 2026-08 (null was its "none"). In such an answer a null of a
+    NULL_IS_NONE_WITHOUT_EXPLICIT_ZEROS field is "not published", not "none"."""
+    for block in response or []:
+        for pe in (block or {}).get("players") or []:
+            st = _stats0(pe)
+            if not st or not (minutes_of(st) or 0) > 0:
+                continue
+            for col in EXPLICIT_ZERO_EVIDENCE:
+                raw = raw_value(st, col)
+                if raw is not None and as_count(raw) == 0:
+                    return True
+    return False
+
+
+def fixture_group_unpublished(response: Iterable[dict] | None) -> bool:
+    """Is NULL_IS_NONE_WITHOUT_EXPLICIT_ZEROS UNPUBLISHED in this answer? True when the answer sends
+    explicit zeros (fixture_sends_zeros) and no played player carries a sent value - 0 or more - of any
+    of those fields. Measured: an explicit-zero answer either publishes the group for every player
+    (2025: dribbles_past sent for all, penalty_won null = none) or for none (74-88% of 2026-08..11
+    answers: all of dribbles_past / penalty_won / penalty_saved / goals_conceded / penalty_missed null)."""
+    if not fixture_sends_zeros(response):
+        return False
+    for block in response or []:
+        for pe in (block or {}).get("players") or []:
+            st = _stats0(pe)
+            if not st or not (minutes_of(st) or 0) > 0:
+                continue
+            if any(as_count(raw_value(st, col)) is not None for col in NULL_IS_NONE_WITHOUT_EXPLICIT_ZEROS):
+                return False
+    return True
+
+
+def null_missing_cols(stats: dict, group_unpublished: Optional[bool]) -> list[str]:
+    """The NULL_IS_MISSING columns of one player's statistics that player_counts reads as MISSING
+    because the provider sent null (provenance: history_refetch.NULL_BLANKED_COL)."""
+    out = []
+    for col in sorted(NULL_IS_MISSING):
+        raw = raw_value(stats, col)
+        if raw is not None and not (isinstance(raw, float) and raw != raw):
+            continue
+        if col in NULL_IS_NONE_WITHOUT_EXPLICIT_ZEROS and group_unpublished is False:
+            continue                                   # read by the rule (none -> 0)
+        out.append(col)
+    return out
+
+
 def parsed_source(answered: Optional[bool]) -> str:
     """count_source of a row parsed from a raw answer: PARSED_WITH_RULE when the parser held the
     fixture-level proof, PARSED_NO_PROOF when it did not (its nulls stayed missing)."""
@@ -184,17 +264,24 @@ def read_count(raw, minutes: Optional[int], answered: bool) -> Optional[int]:
     return None
 
 
-def player_counts(stats: dict, answered: Optional[bool]) -> dict:
+def player_counts(stats: dict, answered: Optional[bool], group_unpublished: Optional[bool] = None) -> dict:
     """Every COUNT_FIELDS column of one player's statistics dict under the rule. `answered` is
     fixture_answered() of the SAME fixture's answer; None means the fixture-level proof is not
-    available to the caller, so every null stays missing (fix round 7 behaviour)."""
+    available to the caller, so every null stays missing (fix round 7 behaviour). `group_unpublished` is
+    fixture_group_unpublished() of the same answer: a NULL_IS_NONE_WITHOUT_EXPLICIT_ZEROS field is read
+    by the rule only when it is False (the answer sends no explicit 0, or publishes the group); True or
+    None (unknown) -> a null of it is missing (owner 2026-11-15)."""
     if answered is not None and not isinstance(answered, bool):
         # fix round 8 passed a per-statistic set; a caller still doing so must be fixed, not guessed
         raise TypeError("player_counts: `answered` is fixture_answered()'s bool (owner rule 2026-11-04)")
     mins = minutes_of(stats)
-    return {col: (as_count(raw_value(stats, col)) if col in NULL_IS_MISSING
-                  else read_count(raw_value(stats, col), mins, bool(answered)))
-            for col in COUNT_FIELDS}
+
+    def _one(col):
+        raw = raw_value(stats, col)
+        if col in NULL_IS_MISSING and not (col in NULL_IS_NONE_WITHOUT_EXPLICIT_ZEROS and group_unpublished is False):
+            return as_count(raw)
+        return read_count(raw, mins, bool(answered))
+    return {col: _one(col) for col in COUNT_FIELDS}
 
 
 def rating_of(stats: dict) -> Optional[float]:

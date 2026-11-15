@@ -451,17 +451,18 @@ def get_fixture_player_stats(fixture_id: int) -> list[dict]:
     (player_model.player_stat_nulls, the one shared reading). An unused substitute, or a fixture
     the provider did not answer, stays None.
     """
-    from .player_stat_nulls import fixture_answered, player_counts
+    from .player_stat_nulls import fixture_answered, fixture_group_unpublished, player_counts
     players = []
     raw = fixture_players_raw(fixture_id, cache_hours=168)   # 7 days
     answered = fixture_answered(raw)
+    group_unpublished = fixture_group_unpublished(raw)
     for team_data in raw:
         team_name = (team_data.get("team") or {}).get("name")
         for player_entry in team_data.get("players") or []:
             p   = player_entry.get("player") or {}
             s   = (player_entry.get("statistics") or [{}])[0] or {}
             games = s.get("games") or {}
-            c = player_counts(s, answered)
+            c = player_counts(s, answered, group_unpublished)
             minutes = _int_or_none(games.get("minutes"))
             sub = games.get("substitute")
             if sub is not None:
