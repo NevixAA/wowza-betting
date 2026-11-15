@@ -420,3 +420,43 @@ def test_dry_run_counts_real_fixtures_and_makes_no_call(monkeypatch):
     lc = CP.list_calls_per_day()
     assert est["calls_per_day_max"] == 3 * 4 + lc and lc == est["list_calls_per_day"]
     assert 24 <= lc <= 30
+
+
+# -- special-market quotes from the same odds answers (owner 2026-11-10) ------------------------------
+
+def test_odds_slots_also_store_specials_with_no_extra_call(tmp_path, monkeypatch):
+    orig = _odds_body
+    base = orig()
+
+    def body_with_specials():
+        b = orig()
+        b["response"][0]["bookmakers"][0]["bets"] += [
+            {"id": 10, "name": "Exact Score", "values": [{"value": "1:0", "odd": "7.00"},
+                                                        {"value": "0:0", "odd": "11.00"}]},
+            {"id": 62, "name": "Exact Score - First Half", "values": [{"value": "1:0", "odd": "3.60"}]},
+            {"id": 5, "name": "Goals Over/Under", "values": [{"value": "Over 4.5", "odd": "6.50"},
+                                                             {"value": "Over 2.5", "odd": "1.90"}]},
+            {"id": 17, "name": "Total - Away", "values": [{"value": "Over 3.5", "odd": "34.00"}]}]
+        return b
+
+    monkeypatch.setattr(sys.modules[__name__], "_odds_body", body_with_specials)
+    sess = _timeline(tmp_path)
+    odds_calls = [c for c in sess.calls if c[0] == "odds"]
+    assert len(odds_calls) == 2                         # odds_75 + odds_15, nothing extra
+    files = list((tmp_path / "specials_quotes").rglob("*_prematch.csv"))
+    assert len(files) == 1
+    d = pd.read_csv(files[0])
+    assert sorted(d["capture"].unique()) == ["prematch_15", "prematch_75"]
+    assert set(d["af_fixture_id"]) == {FID} and set(d["league"]) == {"Championship"}
+    assert set(d["home_team"]) == {"Leeds"} and set(d["away_team"]) == {"Derby"}
+    for cap in ("prematch_75", "prematch_15"):
+        got = set(map(tuple, d[d["capture"] == cap][["bet", "selection", "odds"]].values.tolist()))
+        assert got == {("Exact Score", "1:0", 7.0), ("Exact Score", "0:0", 11.0),
+                       ("Goals Over/Under", "Over 4.5", 6.5), ("Total - Away", "Over 3.5", 34.0)}
+    assert (pd.to_datetime(d["captured_at"], utc=True) < pd.to_datetime(d["kickoff_utc"], utc=True)).all()
+    assert base["response"][0]["bookmakers"][0]["bets"][0]["name"] == "Match Winner"
+
+
+def test_prematch_workflow_stages_the_specials_sidecar():
+    assert "git add -f output/specials_quotes" in (
+        ROOT / ".github" / "workflows" / "prematch_capture.yml").read_text(encoding="utf-8")

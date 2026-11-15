@@ -396,6 +396,11 @@ def main():
     from src.backtest import run_backtest
 
     raw  = load_all_matches(force=True)
+    # BET prices only (owner 2026-11-11): the O/U 2.5 pair stays only where it is a bet-time price
+    # (football-data single-book pre-match or a new-format capture proven before kickoff); every count and
+    # backtest below reads this frame (src.data_loader.ou25_bet_prices)
+    from src.data_loader import ou25_bet_prices
+    raw = ou25_bet_prices(raw)
     log.info(f"Loaded {len(raw):,} matches | {raw['league'].nunique()} leagues | "
              f"{raw['date'].min().date()} → {raw['date'].max().date()}")
 

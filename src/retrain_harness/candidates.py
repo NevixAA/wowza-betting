@@ -303,8 +303,9 @@ def devig_yes(df: pd.DataFrame, market: dict) -> np.ndarray:
     no = pd.to_numeric(df[pr["no"]], errors="coerce").to_numpy(dtype=float)
     ok = (yes > 1) & (no > 1)
     flag = pr.get("pair_valid_flag")
-    if flag and flag in df.columns:
-        ok &= df[flag].astype("boolean").fillna(False).to_numpy(dtype=bool)
+    if flag:          # fail-closed: a frame without the configured flag has NO usable pair
+        ok &= (df[flag].astype("boolean").fillna(False).to_numpy(dtype=bool) if flag in df.columns
+               else np.zeros(len(df), dtype=bool))
     for n in np.flatnonzero(ok):
         p = power_devig([yes[n], no[n]])
         if len(p) == 2:
@@ -318,7 +319,8 @@ class MarketOnly(Candidate):
     def __init__(self, *a, price_class: str = "", **k):
         super().__init__(*a, **k)
         self.price_class = price_class
-        self.deployable = "CLOSING" not in price_class
+        # never deployable on a closing price or a price of unproven capture time (owner 2026-11-11)
+        self.deployable = "CLOSING" not in price_class and "UNPROVEN" not in price_class
 
     def fit(self, frames: dict) -> "MarketOnly":
         pr = self.market.get("price")
@@ -345,7 +347,8 @@ class ModelMarket(Candidate):
         super().__init__(*a, **k)
         self.base_params = dict(base_params or {})
         self.price_class = price_class
-        self.deployable = "CLOSING" not in price_class
+        # never deployable on a closing price or a price of unproven capture time (owner 2026-11-11)
+        self.deployable = "CLOSING" not in price_class and "UNPROVEN" not in price_class
 
     def fit(self, frames: dict) -> "ModelMarket":
         from sklearn.linear_model import LogisticRegression

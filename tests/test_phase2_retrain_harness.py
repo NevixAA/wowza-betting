@@ -58,7 +58,7 @@ def _frame(seed: int = 7, days: int = 150, teams: int = 8) -> pd.DataFrame:
                     "home_rest_days": float(rng.integers(2, 8)),
                     "bookmaker_overround": 1.05,
                     "odds_over25": 1 / (p_over * 1.03), "odds_under25": 1 / ((1 - p_over) * 1.03),
-                    "ou25_pair_is_price": True, "odds_btts": 1.9})
+                    "ou25_pair_is_price": True, "ou25_bet_price_ok": True, "odds_btts": 1.9})
     f = pd.DataFrame(rows)
     tg = f["home_goals"] + f["away_goals"]
     f["over25"], f["over15"], f["over35"] = (tg > 2.5) * 1.0, (tg > 1.5) * 1.0, (tg > 3.5) * 1.0
@@ -338,14 +338,14 @@ def test_dixon_coles_ht_market_reads_half_time_goals(feat):
 def test_market_only_devigs_two_sided_pairs_only():
     cfg = _cfg()
     df = pd.DataFrame({"odds_over25": [1.9, 2.1, 1.8, np.nan], "odds_under25": [1.95, 1.75, 2.0, 1.9],
-                       "ou25_pair_is_price": [True, True, False, True], "odds_btts": [1.8, 1.9, 2.0, 2.1]})
+                       "ou25_pair_is_price": [True, True, False, True], "ou25_bet_price_ok": [True, True, False, True], "odds_btts": [1.8, 1.9, 2.0, 2.1]})
     p = _cand("market_only", cfg).predict(df)
     assert np.isfinite(p[:2]).all() and np.isnan(p[2:]).all()
     q = 1 - p[0]
     k = np.log(p[0]) / np.log(1 / 1.9)                      # power de-vig: p_i = (1/o_i)^k
     assert abs((1 / 1.95) ** k - q) < 1e-6
     assert np.isnan(_cand("market_only", cfg, market="btts").predict(df)).all()
-    assert _cand("market_only", cfg).deployable is False    # closing-preferred price class
+    assert _cand("market_only", cfg).deployable is False    # NF snapshot prices: capture time unproven
 
 
 def test_model_market_blend_is_fitted_on_validation_only(feat):

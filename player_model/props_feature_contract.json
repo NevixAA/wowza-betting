@@ -1,9 +1,9 @@
 {
-  "contract_sha256": "894431750557bcb0c581a59f4d2fb816bf977bbfa1b79fbee9a0ccabacbb2f31",
+  "contract_sha256": "3d11e2ef579e20475dac05f5fcb1ef4260cc078270ae59b1091b5f2bb3ef1617",
   "contract_version": "PFC-1.0",
   "counts": {
     "IMPUTABLE": 68,
-    "OPTIONAL_DEGRADED": 44,
+    "OPTIONAL_DEGRADED": 45,
     "REQUIRED_FAIL_ROW": 12,
     "SEMANTIC_ZERO": 3
   },
@@ -15,6 +15,14 @@
     "aerial_won_rate": {
       "class": "IMPUTABLE",
       "reason": "derived from the player's own match history"
+    },
+    "age": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "API-Football /players profile (age, height)"
+    },
+    "age_peak_delta": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "API-Football /players profile (age, height)"
     },
     "assists_pg": {
       "class": "REQUIRED_FAIL_ROW",
@@ -71,10 +79,6 @@
     "clinical_vs_gk": {
       "class": "IMPUTABLE",
       "reason": "derived from the player's own match history"
-    },
-    "context_quality_discount": {
-      "class": "OPTIONAL_DEGRADED",
-      "reason": "league / opponent-quality enrichment"
     },
     "days_since_last_injury": {
       "class": "OPTIONAL_DEGRADED",
@@ -156,6 +160,22 @@
       "class": "REQUIRED_FAIL_ROW",
       "reason": "core rate"
     },
+    "height_advantage_score": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "API-Football /players profile (age, height)"
+    },
+    "height_aerial_interaction": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "API-Football /players profile (age, height)"
+    },
+    "height_cm": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "API-Football /players profile (age, height)"
+    },
+    "height_diff_vs_opp_def": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "API-Football /players profile (age, height)"
+    },
     "interceptions_pg": {
       "class": "IMPUTABLE",
       "reason": "derived from the player's own match history"
@@ -175,14 +195,6 @@
     "kp_vs_aggressive_defense": {
       "class": "IMPUTABLE",
       "reason": "derived from the player's own match history"
-    },
-    "league_quality": {
-      "class": "OPTIONAL_DEGRADED",
-      "reason": "league / opponent-quality enrichment"
-    },
-    "league_tier": {
-      "class": "OPTIONAL_DEGRADED",
-      "reason": "league / opponent-quality enrichment"
     },
     "mid_threat_vs_defense": {
       "class": "IMPUTABLE",
@@ -223,6 +235,10 @@
     "opp_def_fouls_pg": {
       "class": "IMPUTABLE",
       "reason": "derived from the player's own match history"
+    },
+    "opp_def_mean_height": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "API-Football /players profile (age, height)"
     },
     "opp_def_player_quality": {
       "class": "OPTIONAL_DEGRADED",
@@ -291,10 +307,6 @@
     "penalty_conversion_rate": {
       "class": "IMPUTABLE",
       "reason": "derived from the player's own match history"
-    },
-    "player_career_avg_quality": {
-      "class": "OPTIONAL_DEGRADED",
-      "reason": "league / opponent-quality enrichment"
     },
     "pos_defender": {
       "class": "REQUIRED_FAIL_ROW",
@@ -365,14 +377,6 @@
       "reason": "league / opponent-quality enrichment"
     },
     "quality_adj_sot_pg": {
-      "class": "OPTIONAL_DEGRADED",
-      "reason": "league / opponent-quality enrichment"
-    },
-    "quality_mismatch_goals": {
-      "class": "OPTIONAL_DEGRADED",
-      "reason": "league / opponent-quality enrichment"
-    },
-    "quality_mismatch_sot": {
       "class": "OPTIONAL_DEGRADED",
       "reason": "league / opponent-quality enrichment"
     },

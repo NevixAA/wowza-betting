@@ -201,11 +201,65 @@ def protocol() -> tuple[dict, str]:
 
 
 def price_tiers() -> list[str]:
-    """The collector tiers the protocol pins as price sources (v3: exactly B1 and B2)."""
+    """The collector tiers the protocol pins as BET-price sources (v4: exactly BT)."""
     t = protocol()[0]["data"].get("price_tiers")
     if not t:
         raise SystemExit("the fresh-holdout protocol pins no price_tiers")
     return list(t)
+
+
+def close_tiers() -> list[str]:
+    """The tiers read ONLY for the closing pair (CLV) - never a bet price (v4: B1). [] = none declared."""
+    return list(protocol()[0]["data"].get("close_tiers") or [])
+
+
+def own_backfill_excluded() -> bool:
+    """v4: own 00:00-stamped backfill pairs are excluded from every bar / verdict."""
+    return bool(protocol()[0]["data"].get("exclude_own_backfill"))
+
+
+def standard_ou25_source() -> dict | None:
+    """v5 (owner 2026-11-11 "Paper until re-run"): the Standard O/U 2.5 bet-price source the universe must carry -
+    {"over25": "FD_CERTIFIED_JOIN", "crosswalk_sha256": ...}; None before v5."""
+    d = protocol()[0]["data"]
+    if not d.get("standard_ou25_prices"):
+        return None
+    return {"over25": d["standard_ou25_prices"], "crosswalk_sha256": d["fd_crosswalk_sha256"]}
+
+
+def check_universe_source(universe_dir) -> tuple[bool, str]:
+    """True when the Standard universe in `universe_dir` was built the way the protocol pins (v5: certified join,
+    the registered crosswalk). Fail-closed: a missing stamp is a refusal."""
+    want = standard_ou25_source()
+    if want is None:
+        return True, ""
+    f = Path(universe_dir) / "universe_standard_source.json"
+    if not f.exists():
+        return False, f"{f} missing - rebuild with `bars_opt.py universe --track standard --certified-fd`"
+    got = json.loads(f.read_text(encoding="utf-8"))
+    for k, v in want.items():
+        if got.get(k) != v:
+            return False, f"{f}: {k} = {got.get(k)!r}, the protocol pins {v!r}"
+    from src import fd_prematch as F
+    if F.crosswalk_sha256() != want["crosswalk_sha256"]:
+        return False, "config/fd_raw_crosswalk.json differs from the crosswalk the protocol registered"
+    return True, ""
+
+
+def price_stamp():
+    """What prepare stamps into <priced>/price_tiers.json and the study requires: the bet tiers alone (v3), from
+    v4 {bet_tiers, close_tiers, own_backfill_excluded}, from v5 also standard_ou25 (the certified join)."""
+    if close_tiers() or own_backfill_excluded():
+        st = {"bet_tiers": price_tiers(), "close_tiers": close_tiers(), "own_backfill_excluded": own_backfill_excluded()}
+        if standard_ou25_source() is not None:
+            st["standard_ou25"] = standard_ou25_source()
+        return st
+    return price_tiers()
+
+
+def evidence_label() -> str:
+    """The label every fresh-holdout verdict of this protocol version carries ("" = none)."""
+    return str(protocol()[0].get("verdict_label") or "")
 
 
 def protocol_committed() -> tuple[bool, str]:

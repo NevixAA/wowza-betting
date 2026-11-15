@@ -26,10 +26,12 @@ TZ_NAME = "Asia/Jerusalem"
 
 from src.tier_labels import TIER_ICON, tier_label  # noqa: E402 - display words (owner 2026-10-26)
 
-TIER_ORDER = ("SNIPER", "MARKSMAN", "VALUABLE")
+#: QUALIFIED = a tip from 2026-11-21 (owner 2026-11-11: one bar per cell, no tiers); the rest = history rows
+TIER_ORDER = ("QUALIFIED", "SNIPER", "MARKSMAN", "VALUABLE")
 # Tier-multiplier notes, NOT "staked": whether a tip is staked is the stake plan's recorded stake
 # (src/staked.py, owner 2026-11-04), shown in the "Stake %" column.
-STAKE = {"SNIPER": "tier multiplier · full", "MARKSMAN": "tier multiplier · ¾", "VALUABLE": "paper"}
+STAKE = {"QUALIFIED": "flat per cell", "SNIPER": "tier multiplier · full", "MARKSMAN": "tier multiplier · ¾",
+         "VALUABLE": "paper"}
 # SIGNAL TIER != EVIDENCE RANK (P1-6, 2026-10-22): on O/U 2.5 the edge size does not rank outcomes, so the
 # bankroll policy stakes every O/U tier the same and the page must not imply SNIPER is the stronger bet.
 STAKE_OU = "equal stake · tier ≠ confidence"

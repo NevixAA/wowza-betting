@@ -1,5 +1,31 @@
 """TOP-3 PER LEAGUE PER GAMEWEEK - production tip selection (owner 2026-11-08). Behind a flag, default OFF.
 
+OWNER 2026-11-11 ("Clean rebuild"; TOP-3 "Paper track"). Supersedes the tier / EV text below where they differ:
+  * POOL: tips from the retrained models that clear their cell's ONE owner-approved bar (bars_opt cell,
+    valuable_th; src/bars_opt/serve.py). A league x market without its own applied CELL has no tip
+    (NO_LEAGUE_BAR) - the legacy three-tier entries are retired. No tier is computed, shown or stored.
+  * RANK: T3 = R3_CAL_EV_LCB of protocol top3-ranking-paper/1 (config/top3_ranking_paper_protocol.json,
+    sha256 363e7f41...), computed by THE research code (src/research/top3_ranking.rank_key, imported, not
+    forked): cautious calibrated value (fair + lam_lo * (p_used - fair)) * odds - 1, lam_lo from the cell's
+    own calibration (its FROZEN statistics: the research freeze record, scripts/top3_paper_freeze.py).
+    The old EV ranking is DROPPED entirely - not a
+    key, not a tie-break, not a reference track. A cell without a T3 statistic ranks after every cell with
+    one, in kickoff order. Ties: kickoff, then fixture.
+  * SLOTS: TOP first; TIER2 (a tip in its cell's VALUABLE..MARKSMAN band where that cell's TIER2 is on,
+    study 12.2) only fills slots left empty. At most 3, never padded, the direction rule unchanged.
+  * Each pick carries its cell status (PROMISING / UNPROVEN) and its slot (TOP / TIER2).
+  * FAIL CLOSED: no frozen T3 statistics -> nothing is frozen or sent (status T3_STATS_MISSING).
+  * TOP-3 is a named PAPER track in the Clean Record; stakes follow the per-cell status only.
+  * OWN LIST (owner 2026-11-11 "Own list"): a LEAGUE-WIDE cell (source NONE / bar_mode LEAGUE_WIDE, e.g.
+    Argentina NF BTTS) is NOT in the TOP-3 pool. Its qualifying tips form the league's own line ("League rule:
+    BTTS Yes, every match"), selection_mode LEAGUE_RULE, in kickoff order, uncapped: it never takes, and is
+    never pushed out of, a TOP-3 / TIER2 slot. The TOP-3 / TIER2 pool = MODEL cells only.
+  * DIRECTION across both lists (production rule, src/direction_guard.py): (1) the fixture's first LIVE
+    production tip (committed) stands - an own-list or TOP-3 tip opposite to it is dropped; (2) an own-list tip
+    stands over a TOP-3 model tip of the opposite direction on the same fixture (the league rule is decided
+    first and is the staked line - "real money wins"); the model tip yields (DIRECTION_CONFLICT) and the next
+    model qualifier takes the slot (no padding).
+
     python -m src.top3_league run       # predict.yml: sync candidates, freeze due league-weeks, report
     python -m src.top3_league notify    # predict.yml: send newly frozen picks to Telegram (once each)
     python -m src.top3_league settle    # update_results.yml: grade finished picks (grading columns only)
@@ -86,7 +112,10 @@ OUT = config.OUTPUT_DIR
 FLAG_ENV = "TOP3_LEAGUE_ENABLED"
 LEAD_ENV = "TOP3_FREEZE_LEAD_MIN"
 SELECTION_MODE = "TOP3_LEAGUE_GW"
-VERSION = "TOP3-1"
+OWN_LIST_MODE = "LEAGUE_RULE"              # owner 2026-11-11 "Own list": league-wide cells, outside the 3 slots
+VERSION = "TOP3-2"                         # owner 2026-11-11: cell bar + T3 ranking, no tiers
+from src.research.top3_ranking import LIVE_RULE as T3_RULE, in_pool  # noqa: E402  the research rule, not forked
+SLOT_TOP, SLOT_TIER2 = "TOP", "TIER2"
 TOP_N = 3
 BAR_SOURCE = "LEAGUE"                      # the only source this module ever uses
 
@@ -112,6 +141,7 @@ R_NOT_APPLIED = "BAR_NOT_OWNER_APPLIED"
 R_BAD_BAR = "LEAGUE_BAR_INVALID"
 R_BELOW = "BELOW_LEAGUE_BAR"
 R_LATE = "FIRST_SEEN_AFTER_FREEZE"
+R_PRE_START = "FIRST_SEEN_BEFORE_TOP3_START"   # go-live rehearsal 2026-11-15: TOP-3 starts at go-live
 R_STARTED = "STARTED_BEFORE_ISSUE"
 R_DIRECTION = "DIRECTION_CONFLICT"
 R_RANK = "RANKED_BELOW_TOP3"
@@ -121,7 +151,9 @@ PICK_FROZEN = [
     "pick_id", "selection_mode", "version", "league_week_id", "top3_rank", "week_lock_ts", "freeze_ts",
     "issued_at", "league", "model_type", "season", "fixture_id", "match_date", "home_team", "away_team",
     "kickoff_utc", "market", "side", "odds", "opposite_side_odds", "p_model_raw", "p_market_fair", "edge",
-    "tier", "bar_valuable", "bar_marksman", "bar_sniper", "bar_source", "bar_status", "bar_evidence",
+    "slot", "cell_status", "p_used", "t3_key", "t3_has_stat", "edge_calibrated", "bar_valuable", "bar_source",
+    "bar_status",
+    "bar_evidence",
     "ev_point", "ev_lower_bound", "p_lower_bound", "price_quality_state", "market_source", "n_books",
     "first_seen_at", "prediction_engine_version", "selection_engine_version", "policy_switch",
     "track_is_real", "stake_effect",
@@ -150,6 +182,23 @@ def freeze_lead_min(env: dict | None = None) -> float | None:
     except ValueError:
         return None
     return x if math.isfinite(x) and x > 0 else None
+
+
+START_CONFIG = Path("config") / "top3_paper_tracks.json"
+
+
+def top3_start(root: Path | None = None) -> pd.Timestamp | None:
+    """TOP-3 starts at go-live (owner 2026-11-21): the start_utc of config/top3_paper_tracks.json, the one
+    start the TOP-3 protocol pins (the paper tracks gate on it too). None when unset or unreadable (no
+    default): run() then freezes nothing (status TOP3_START_NOT_SET)."""
+    v = _read_json((Path(root) if root else ROOT) / START_CONFIG).get("start_utc")
+    try:
+        ts = pd.Timestamp(v) if v else None
+    except (TypeError, ValueError):
+        return None
+    if ts is None or pd.isna(ts):
+        return None
+    return ts.tz_localize("UTC") if ts.tzinfo is None else ts.tz_convert("UTC")
 
 
 # ── the league's own bars ───────────────────────────────────────────────────────────────────────
@@ -203,62 +252,95 @@ def league_bars(ctx: dict, league: str, market: str, side: str | None = None) ->
                 "sniper": float(cell["sniper_th"]), "status": str(cell["verdict"]),
                 "evidence": f"bars_opt {cell['config']} {cell['mode']} {cell.get('bar_basis') or ''}".strip(),
                 "cell": cell}, ""
-    val, mm, sn = _num(lp.get("valuable_th")), _num(lp.get("marksman_th")), _num(lp.get("sniper_th"))
-    if any(math.isnan(x) for x in (val, mm, sn)):
-        return None, R_NO_BAR
-    if not (val <= mm <= sn):
-        return None, R_BAD_BAR
-    if f"{key}|{league}" not in ctx["applied"]:
-        return None, R_NOT_APPLIED
-    status = "PROVEN" if lp.get("approved") is True else str(lp.get("status") or "UNPROVEN")
-    return {"valuable": val, "marksman": mm, "sniper": sn, "status": status,
-            "evidence": str(lp.get("evidence") or "")}, ""
-
-
-def tier_for(edge: float, b: dict) -> str:
-    from src.side_thresholds import tier_for as _tier
-    return _tier(edge, (b["sniper"], b["marksman"], b["valuable"]))
+    # owner 2026-11-11: a legacy three-tier entry (no cell) is no bar any more - one bar per cell
+    return None, R_NO_BAR
 
 
 # ── qualification and selection ─────────────────────────────────────────────────────────────────
+#: panel market x side -> the study market-side of its cell (src/bars_opt/study.MARKET_SIDES)
+_MSIDE = {("OU25", "OVER"): "over25_over", ("OU25", "UNDER"): "over25_under", ("BTTS", "YES"): "btts_yes",
+          ("OVER15", "OVER"): "over15_over", ("OVER35", "OVER"): "over35_over"}
+
+
 def qualify(cands: pd.DataFrame, ctx: dict) -> pd.DataFrame:
-    """Candidates + edge / tier / bars / reason ("" = qualifies). Pure."""
+    """Candidates + edge / tier (QUALIFIED or "") / slot / cell status / p_used / reason ("" = qualifies). Pure.
+    A candidate qualifies ONLY on its league x market x side cell's one owner-applied bar."""
     d = LW._plain(cands.copy()) if len(cands) else cands.copy()
     if d.empty:
         return d.assign(edge=pd.Series(dtype=float), tier="", reason="")
-    edge, tier, reason, bv, bm, bs, bst, bev, evr = [], [], [], [], [], [], [], [], []
+    from src.bars_opt import serve as BS
+    cols = {k: [] for k in ("edge", "tier", "reason", "bar_valuable", "bar_status", "bar_evidence", "slot",
+                            "cell_status", "p_used", "fair", "mside", "track", "league_wide")}
     for r in d.to_dict("records"):
         pm, pf = _num(r.get("p_model_raw")), _num(r.get("p_market_fair"))
         e = pm - pf if not (math.isnan(pm) or math.isnan(pf)) else float("nan")
         b, why = league_bars(ctx, str(r.get("league")), str(r.get("market")), str(r.get("side")))
-        t, ev_rank = "", float("nan")
+        t, slot, pu = "", "", float("nan")
         if str(r.get("price_quality_state")) not in LW.PRICED_STATES or math.isnan(e) or not (_num(r.get("odds")) > 1):
             why = R_NO_PRICE
-        elif b is not None and "cell" in b:
-            # the OPTIMIZED cell decides (src/bars_opt/serve.py): its probability source, measure, odds range
-            from src.bars_opt import serve as BS
+        elif b is not None:
+            # the cell decides (src/bars_opt/serve.py): its probability source, measure, odds range, ONE bar
             res = BS.score(pd.DataFrame([{"league": str(r.get("league")), "p_side": pm, "fair": pf,
                                           "odds": _num(r.get("odds"))}]), b["cell"])
             t = str(res["tier"].iloc[0] or "")
             if not t:
-                why, t = (R_BELOW if res["reason"].iloc[0] == BS.R_BELOW else str(res["reason"].iloc[0])), "AVOID"
+                why = R_BELOW if res["reason"].iloc[0] == BS.R_BELOW else str(res["reason"].iloc[0])
             else:
-                ev_rank = _num(res["ev_est"].iloc[0])
-        elif b is not None:
-            t = tier_for(e, b)
-            if t == "AVOID":
-                why = R_BELOW
-        edge.append(e)
-        tier.append(t if not why else "")
-        reason.append(why)
-        bv.append(b["valuable"] if b else float("nan"))
-        bm.append(b["marksman"] if b else float("nan"))
-        bs.append(b["sniper"] if b else float("nan"))
-        bst.append(b["status"] if b else "")
-        bev.append(b["evidence"] if b else "")
-        evr.append(ev_rank)
-    return d.assign(edge=edge, tier=tier, reason=reason, bar_valuable=bv, bar_marksman=bm, bar_sniper=bs,
-                    bar_status=bst, bar_evidence=bev, ev_rank=evr)
+                pu = _num(res["p_used"].iloc[0])
+                t2 = bool(res["tier2_ok"].iloc[0]) if pd.notna(res["tier2_ok"].iloc[0]) else False
+                slot = SLOT_TIER2 if (str(res["band"].iloc[0]) == "BAND_VM" and t2) else SLOT_TOP
+        cols["edge"].append(e)
+        cols["tier"].append(t if not why else "")
+        cols["reason"].append(why)
+        cols["bar_valuable"].append(b["valuable"] if b else float("nan"))
+        cols["bar_status"].append(b["status"] if b else "")
+        cols["bar_evidence"].append(b["evidence"] if b else "")
+        cols["slot"].append(slot if not why else "")
+        cols["cell_status"].append(b["status"] if b else "")
+        cols["p_used"].append(pu)
+        cols["fair"].append(pf)
+        cols["mside"].append(_MSIDE.get((str(r.get("market")), str(r.get("side")).upper()), ""))
+        cols["track"].append(str(r.get("model_type") or ""))
+        # the TOP-3 pool = MODEL cells only (src.research.top3_ranking.in_pool, owner "Own list")
+        cols["league_wide"].append(bool(b is not None and not in_pool(b["cell"])))
+    return d.assign(**cols)
+
+
+# ── T3 ranking (owner 2026-11-11; protocol top3-ranking-paper/1, the research code) ─────────────────────
+def t3_keys(q: pd.DataFrame, stats: pd.DataFrame) -> pd.DataFrame:
+    """q + t3_key / t3_has_stat from src.research.top3_ranking.rank_key (rule R3_CAL_EV_LCB). Pure."""
+    from src.research import top3_ranking as TR
+    if q is None or q.empty:
+        return q
+    b = q.assign(odds=pd.to_numeric(q["odds"], errors="coerce"), p_used=pd.to_numeric(q["p_used"], errors="coerce"),
+                 fair=pd.to_numeric(q["fair"], errors="coerce"))
+    k = TR.rank_key(b[TR.CELL + ["fair", "p_used", "odds"]].reset_index(drop=True),
+                    stats if stats is not None else pd.DataFrame(columns=TR.CELL + TR.STAT_COLS), T3_RULE)
+    out = q.copy()
+    out["t3_key"] = k["key"].to_numpy()
+    out["t3_has_stat"] = k["has_stat"].to_numpy()
+    # the CALIBRATED edge shown for the pick (owner 2026-11-11, src/calibrated_edge.py; same frozen statistics)
+    from src import calibrated_edge as CE
+    out["edge_calibrated"] = CE.calibrated(b.reset_index(drop=True), stats).to_numpy() \
+        if stats is not None else np.nan
+    return out
+
+
+def load_t3_stats(root: Path | None = None) -> pd.DataFrame | None:
+    """The FROZEN per-cell T3 statistics: THE research freeze record (scripts/top3_paper_freeze.py, named by
+    config/top3_paper_tracks.json -> freeze_ledger, hash-checked by src.research.top3_paper.load_freeze) - one
+    freeze for the live TOP-3 and its paper tracks, never a second builder. None when not frozen / not valid."""
+    from src.research import top3_paper as TP3
+    try:
+        cfg = TP3.load_config(root)
+        stats, _rec, _sha, why = TP3.load_freeze(cfg, root)
+    except Exception as e:                                             # noqa: BLE001
+        log.warning(f"[top3_league] T3 statistics unreadable ({type(e).__name__}: {e})")
+        return None
+    if why:
+        log.warning(f"[top3_league] T3 statistics not usable: {'; '.join(why)[:300]}")
+        return None
+    return stats
 
 
 def _direction(market: str, side: str) -> str | None:
@@ -267,9 +349,12 @@ def _direction(market: str, side: str) -> str | None:
 
 
 def select_week(q: pd.DataFrame, freeze: pd.Timestamp, issue: pd.Timestamp,
-                committed: dict | None = None) -> tuple[pd.DataFrame, dict]:
+                committed: dict | None = None, stats: pd.DataFrame | None = None,
+                start: pd.Timestamp | None = None) -> tuple[pd.DataFrame, dict]:
     """TOP-3 of ONE league-week from qualified candidates `q` (qualify()). Returns (picks with
-    top3_rank 1..k, k <= 3, never padded; {reason: count} for every candidate not picked). Pure."""
+    top3_rank 1..k, k <= 3, never padded; {reason: count} for every candidate not picked). Pure.
+    `start` (the TOP-3 start, top3_start()): a candidate first seen before it was frozen by the pre-go-live
+    models and is never a member (FIRST_SEEN_BEFORE_TOP3_START)."""
     committed = committed or {}
     excluded: Counter = Counter()
 
@@ -277,22 +362,51 @@ def select_week(q: pd.DataFrame, freeze: pd.Timestamp, issue: pd.Timestamp,
         excluded[k] += 1
     if q is None or q.empty:
         return q.iloc[0:0] if q is not None else pd.DataFrame(), dict(excluded)
+    q = t3_keys(q.reset_index(drop=True), stats)
     fs = LW._ts(q["first_seen_at"])
     ko = LW._ts(q["kickoff_utc"])
-    pool = []
+    if "league_wide" not in q.columns:
+        q["league_wide"] = False
+    pool, own, dirs = [], [], {}
     for i, r in enumerate(q.to_dict("records")):
         if not (pd.notna(fs.iloc[i]) and fs.iloc[i] < freeze):
             bump(R_LATE)
+        elif start is not None and fs.iloc[i] < start:
+            bump(R_PRE_START)
         elif r.get("reason"):
             bump(r["reason"])
+        elif bool(r.get("league_wide")):
+            own.append(i)                       # the league's OWN line, outside the TOP-3 slots
         else:
-            # a cell-served candidate ranks by its cell's expected value first (the study's TOP-3 rule,
-            # src/bars_opt/study.top3: ev_est descending), then RS-1; a legacy-bar candidate by RS-1 alone
-            evk = _num(r.get("ev_rank"))
-            pool.append(((0, -evk) if not math.isnan(evk) else (1, 0.0), LW.rs1_key(r), i))
+            # owner 2026-11-11: TOP before TIER2 (TIER2 only fills empty slots); then T3 (cells with a
+            # statistic first, higher key first); then kickoff, then fixture. No EV anywhere.
+            key = _num(r.get("t3_key"))
+            has = bool(r.get("t3_has_stat")) and not math.isnan(key)
+            kick = ko.iloc[i].value if pd.notna(ko.iloc[i]) else float("inf")
+            pool.append(((0 if r.get("slot") != SLOT_TIER2 else 1), (0, -key) if has else (1, 0.0), kick,
+                         str(r.get("fixture_id")), i))
     pool.sort()
-    taken, dirs = [], {}
-    for _ev, _key, i in pool:
+    # 1) the own list first (league rule, every qualifying match, kickoff order): only the fixture's committed
+    #    live production tip can stop one
+    own_taken = []
+    for i in sorted(own, key=lambda j: (ko.iloc[j].value if pd.notna(ko.iloc[j]) else float("inf"),
+                                        str(q.iloc[j]["fixture_id"]))):
+        r = q.iloc[i]
+        if not (pd.notna(ko.iloc[i]) and ko.iloc[i] > issue):
+            bump(R_STARTED)
+            continue
+        fx = (str(r["match_date"])[:10], str(r["home_team"]), str(r["away_team"]))
+        dr = _direction(r["market"], r["side"])
+        stood = dirs.get(fx) or (committed.get(fx) or {}).get("direction")
+        if dr and stood and dr != stood:
+            bump(R_DIRECTION)
+            continue
+        if dr:
+            dirs[fx] = dr
+        own_taken.append(i)
+    # 2) TOP-3 / TIER2 from MODEL cells only; a model tip opposite to an own-list tip yields
+    taken = []
+    for *_k, i in pool:
         r = q.iloc[i]
         if len(taken) >= TOP_N:
             bump(R_RANK)
@@ -311,7 +425,12 @@ def select_week(q: pd.DataFrame, freeze: pd.Timestamp, issue: pd.Timestamp,
         taken.append(i)
     picks = q.iloc[taken].copy()
     picks["top3_rank"] = range(1, len(picks) + 1)
-    return picks, dict(excluded)
+    picks["list"] = SELECTION_MODE
+    ol = q.iloc[own_taken].copy()
+    ol["top3_rank"] = range(1, len(ol) + 1)
+    ol["slot"] = OWN_LIST_MODE
+    ol["list"] = OWN_LIST_MODE
+    return pd.concat([picks, ol], ignore_index=True), dict(excluded)
 
 
 def _policy() -> dict:
@@ -329,10 +448,15 @@ def policy_switch(policy: dict, league: str) -> str:
 
 def freeze_due(cands: pd.DataFrame, weeks_done: set, ctx: dict, now: pd.Timestamp, lead_min: float,
                committed: dict | None = None, policy: dict | None = None,
-               real_checker=None) -> tuple[pd.DataFrame, pd.DataFrame]:
+               real_checker=None, stats: pd.DataFrame | None = None,
+               start: pd.Timestamp | None = None) -> tuple[pd.DataFrame, pd.DataFrame]:
     """(new pick rows, new week rows) for every league-week whose FREEZE has passed and that is not
     decided yet. A week with 0 picks is still recorded (decided once, with its reasons). Pure apart
-    from the injected policy / checker."""
+    from the injected policy / checker.
+    `start` = the TOP-3 start (top3_start(); run() always passes it, and freezes nothing without it): a
+    league-week whose FREEZE is before it is never decided - TOP-3 starts at go-live, so the first run
+    after the switch-on cannot back-fill past weeks with picks issued after their freeze - and a candidate
+    first seen before it is never a member (go-live rehearsal 2026-11-15, 44 past weeks back to W43)."""
     if cands is None or cands.empty:
         return pd.DataFrame(columns=PICK_COLS), pd.DataFrame(columns=WEEK_COLS)
     cands = LW._plain(cands)
@@ -346,16 +470,17 @@ def freeze_due(cands: pd.DataFrame, weeks_done: set, ctx: dict, now: pd.Timestam
         if not week or lock is None or week in weeks_done:
             continue
         freeze = lock - pd.Timedelta(minutes=float(lead_min))
-        if now < freeze:
+        if now < freeze or (start is not None and freeze < start):
             continue
         q = qualify(g, ctx)
-        picks, excl = select_week(q, freeze, now, committed)
+        picks, excl = select_week(q, freeze, now, committed, stats, start)
         league = str(g["league"].iloc[0])
         n_q = int((q["reason"] == "").sum()) if len(q) else 0
+        n_top = int((picks["list"] == SELECTION_MODE).sum()) if len(picks) else 0
         weeks_out.append({"selection_mode": SELECTION_MODE, "version": VERSION, "league_week_id": week,
                           "league": league, "week_lock_ts": LW._stamp(lock), "freeze_ts": LW._stamp(freeze),
                           "issued_at": stamp, "kickoff_utc": LW._stamp(lock), "n_candidates": int(len(g)),
-                          "n_qualifying": n_q, "n_picks": int(len(picks)),
+                          "n_qualifying": n_q, "n_picks": n_top,
                           "excluded": json.dumps(excl, sort_keys=True), "frozen_at": stamp})
         sw = policy_switch(policy, league)
         for r in picks.to_dict("records"):
@@ -363,11 +488,12 @@ def freeze_due(cands: pd.DataFrame, weeks_done: set, ctx: dict, now: pd.Timestam
             picks_out.append({
                 **{k: r.get(k, "") for k in PICK_FROZEN if k in r},
                 "pick_id": LW.research_id(VERSION, week, str(r["market"]), str(r["fixture_id"]), str(r["side"])),
-                "selection_mode": SELECTION_MODE, "version": VERSION, "league_week_id": week,
+                "selection_mode": r["list"], "version": VERSION, "league_week_id": week,
                 "top3_rank": int(r["top3_rank"]), "week_lock_ts": LW._stamp(lock), "freeze_ts": LW._stamp(freeze),
-                "issued_at": stamp, "edge": LW._r(r["edge"]), "tier": r["tier"],
-                "bar_valuable": LW._r(r["bar_valuable"]), "bar_marksman": LW._r(r["bar_marksman"]),
-                "bar_sniper": LW._r(r["bar_sniper"]), "bar_source": BAR_SOURCE,
+                "issued_at": stamp, "edge": LW._r(r["edge"]), "slot": r["slot"], "cell_status": r["cell_status"],
+                "p_used": LW._r(r["p_used"]), "t3_key": LW._r(r["t3_key"]), "t3_has_stat": bool(r["t3_has_stat"]),
+                "edge_calibrated": LW._r(r["edge_calibrated"]),
+                "bar_valuable": LW._r(r["bar_valuable"]), "bar_source": BAR_SOURCE,
                 "bar_status": r["bar_status"], "bar_evidence": r["bar_evidence"],
                 "policy_switch": sw, "track_is_real": bool(real_checker(r.get("model_type"), mk, r.get("side"),
                                                                      r.get("league"))),
@@ -417,13 +543,22 @@ def run(now=None, out_dir: Path | None = None, root: Path | None = None, env: di
                 from src.direction_guard import committed as _committed
                 committed = _committed()
             from src.direction_guard import real_track_checker
-            ws = weeks_store(od)
-            done = set(ws.read()["league_week_id"]) if len(ws.read()) else set()
-            picks, weeks = freeze_due(cs.read(), done, bars_context(root), now, lead, committed, _policy(),
-                                      real_track_checker())
-            res["picks_appended"] = picks_store(od).append(picks)
-            res["weeks_decided"] = ws.append(weeks)
-            res["status"] = "OK"
+            stats = load_t3_stats(root)
+            start = top3_start(root)
+            if start is None:
+                # fail closed: TOP-3 starts at go-live; without its pinned start nothing is frozen or sent
+                res["status"] = "TOP3_START_NOT_SET"
+            elif stats is None:
+                # fail closed (owner 2026-11-11): no frozen T3 statistics, no ranking, nothing frozen or sent
+                res["status"] = "T3_STATS_MISSING"
+            else:
+                ws = weeks_store(od)
+                done = set(ws.read()["league_week_id"]) if len(ws.read()) else set()
+                picks, weeks = freeze_due(cs.read(), done, bars_context(root), now, lead, committed, _policy(),
+                                          real_track_checker(), stats, start)
+                res["picks_appended"] = picks_store(od).append(picks)
+                res["weeks_decided"] = ws.append(weeks)
+                res["status"] = "OK"
         write_report(now, od, lead)
     except Exception as e:                                             # noqa: BLE001
         log.warning(f"[top3_league] run skipped ({type(e).__name__}: {e}) - other tips unaffected")
@@ -494,16 +629,22 @@ def report(picks: pd.DataFrame, weeks: pd.DataFrame, now: pd.Timestamp, lead: fl
     leagues = {}
     for lg in sorted(set(weeks["league"]) | set(picks["league"])):
         w = weeks[weeks["league"] == lg].sort_values("league_week_id")
-        p = picks[picks["league"] == lg]
+        p_all = picks[picks["league"] == lg]
+        own = p_all[p_all["selection_mode"].astype(str) == OWN_LIST_MODE]
+        p = p_all[p_all["selection_mode"].astype(str) != OWN_LIST_MODE]       # the TOP-3 track itself
         latest = w["league_week_id"].iloc[-1] if len(w) else None
         cur = p[p["league_week_id"] == latest].sort_values("top3_rank", key=lambda s: s.astype(int))
         st = p[p["settle_status"].astype(str) == "SETTLED"]
         pnl = pd.to_numeric(st["flat_pnl"], errors="coerce")
+        ost = own[own["settle_status"].astype(str) == "SETTLED"]
+        opnl = pd.to_numeric(ost["flat_pnl"], errors="coerce")
         leagues[lg] = {
+            "league_rule": {"picks": int(len(own)), "settled": int(len(ost)),
+                            "flat_pnl_units": round(float(opnl.sum()), 3) if len(ost) else 0.0},
             "latest_league_week_id": latest,
             "latest_excluded": json.loads(w["excluded"].iloc[-1]) if len(w) and w["excluded"].iloc[-1] else {},
             "latest_picks": [{k: r.get(k) for k in ("top3_rank", "home_team", "away_team", "kickoff_utc", "market",
-                                                    "side", "odds", "edge", "tier", "bar_status", "result")}
+                                                    "side", "odds", "edge_calibrated", "slot", "cell_status", "result")}
                              for r in cur.to_dict("records")],
             "weeks_decided": int(len(w)), "picks": int(len(p)), "settled": int(len(st)),
             "won": int((st["won"].astype(str) == "1").sum()),
@@ -511,9 +652,10 @@ def report(picks: pd.DataFrame, weeks: pd.DataFrame, now: pd.Timestamp, lead: fl
             "roi": round(float(pnl.mean()), 4) if pnl.notna().any() else None}
     return {"generated_at": LW._stamp(now), "selection_mode": SELECTION_MODE, "version": VERSION,
             "freeze_lead_min": lead, "status": "OK" if lead is not None else "FREEZE_LEAD_NOT_SET",
-            "note": ("Each league's 3 best value tips of the gameweek across O/U 2.5, BTTS, Over 1.5, Over 3.5, "
-                     "on the league's OWN owner-applied bars only (never a global bar); fewer than 3 when fewer "
-                     "clear the bar. Flat 1u; TOP-3 never sizes a stake."),
+            "note": ("Each league's 3 best tips of the gameweek across O/U 2.5, BTTS, Over 1.5, Over 3.5 from its "
+                     "MODEL cells, each cleared its cell's one owner-approved bar, ranked by T3; fewer than 3 when "
+                     "fewer clear the bar. League-wide cells are the league's own line (league_rule), outside the 3. "
+                     "Flat 1u; a PAPER track - TOP-3 never sizes a stake."),
             "leagues": leagues}
 
 
@@ -524,19 +666,48 @@ def write_report(now=None, out_dir: Path | None = None, lead: float | None = Non
     return rep
 
 
-def message(picks: pd.DataFrame) -> str:
-    """Telegram text for one league-week's picks (HTML)."""
+def _stake_label(real_checker, r: dict) -> str:
+    """'💰 Staked' when the pick's CELL stakes under the bankroll policy (src/bankroll_policy.stake_entry via
+    direction_guard.real_track_checker), else '📄 Paper' - per line, never a blanket label (go-live rehearsal
+    2026-11-15: the Argentina league rule is staked while the TOP-3 track is paper)."""
+    try:
+        real = bool(real_checker(r.get("model_type"), MARKETS[str(r["market"])][1], r.get("side"), r.get("league")))
+    except Exception:                                                  # noqa: BLE001 - a label can only under-claim
+        real = False
+    return "💰 Staked" if real else "📄 Paper"
+
+
+def message(picks: pd.DataFrame, real_checker=None) -> str:
+    """Telegram text for one league-week's picks (HTML). The edge shown is the CALIBRATED one (owner 2026-11-11).
+    Each line carries its own cell's stake (Staked / Paper); `real_checker` defaults to the live policy's."""
     from html import escape
+    from src.calibrated_edge import edge_text
+    if real_checker is None:
+        from src.direction_guard import real_track_checker
+        real_checker = real_track_checker()
     r0 = picks.iloc[0]
     lines = [f"🏆 <b>TOP-3 {escape(str(r0['league']))}</b> · {escape(str(r0['league_week_id']).split('|')[-1])}"]
     lab = {"OU25": "O/U 2.5", "BTTS": "BTTS", "OVER15": "Over 1.5", "OVER35": "Over 3.5"}
+    mode = picks["selection_mode"].astype(str) if "selection_mode" in picks.columns else pd.Series(SELECTION_MODE,
+                                                                                                   index=picks.index)
+    rule = picks[mode == OWN_LIST_MODE]
+    picks = picks[mode != OWN_LIST_MODE]
     for r in picks.sort_values("top3_rank", key=lambda s: s.astype(int)).to_dict("records"):
         side = "Yes" if str(r["side"]) == "YES" else str(r["side"]).title()
         mk = lab.get(str(r["market"]), str(r["market"]))
         lines.append(f"{r['top3_rank']}. {escape(str(r['home_team']))} v {escape(str(r['away_team']))} - "
-                     f"{mk} {side} @ {float(r['odds']):.2f} · {r['tier']} (edge {100 * float(r['edge']):.1f}%, "
-                     f"league bar {r['bar_status']})")
-    lines.append("<i>Bars: this league's own, owner-approved. Fewer than 3 = fewer cleared the bar.</i>")
+                     f"{mk} {side} @ {float(r['odds']):.2f} · {r['slot']} · {r['cell_status']} "
+                     f"({edge_text(pd.to_numeric(r.get('edge_calibrated'), errors='coerce') * 100)})"
+                     f" · {_stake_label(real_checker, r)}")
+    for (mk, sd), g in rule.groupby(["market", "side"], sort=True):
+        side = "Yes" if str(sd) == "YES" else str(sd).title()
+        lines.append(f"📏 League rule: {lab.get(str(mk), str(mk))} {side}, every match "
+                     f"({g['cell_status'].iloc[0]}, outside the 3) · {_stake_label(real_checker, g.iloc[0].to_dict())}")
+        for r in g.sort_values("top3_rank", key=lambda s: s.astype(int)).to_dict("records"):
+            lines.append(f"   • {escape(str(r['home_team']))} v {escape(str(r['away_team']))} @ {float(r['odds']):.2f}")
+    lines.append("<i>TOP-3 is a Paper track; each line's stake follows its own cell (Staked / Paper). Each tip "
+                 "cleared its league's own owner-approved bar; ranked by cautious calibrated value (T3). Fewer "
+                 "than 3 = fewer cleared the bar.</i>")
     return "\n".join(lines)
 
 
@@ -555,14 +726,20 @@ def notify(out_dir: Path | None = None, env: dict | None = None, sender=None) ->
 
         def sender(text):
             return _send(token, chat, text)
-    picks = picks_store(od).read()
+    # PAPER leagues (config.PAPER_LEAGUES, e.g. USA MLS) are never sent: ledgered and graded only, as on every
+    # other send path (go-live rehearsal 2026-11-15)
+    picks = config.drop_paper_leagues(picks_store(od).read())
     nf = od / NOTIFIED_NAME
     sent = set(_read_json(nf).get("weeks", []))
     n = 0
+    checker = None
     for week, g in (picks.groupby("league_week_id", sort=True) if len(picks) else []):
         if week in sent:
             continue
-        if sender(message(g)):
+        if checker is None:
+            from src.direction_guard import real_track_checker
+            checker = real_track_checker()
+        if sender(message(g, checker)):
             sent.add(week)
             n += 1
     if n:

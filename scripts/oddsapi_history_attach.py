@@ -39,10 +39,13 @@ def main(argv=None) -> int:
     a.out.mkdir(parents=True, exist_ok=True)
     long.to_parquet(a.out / "prices_long.parquet", index=False)
     summary.to_parquet(a.out / "prices_summary.parquet", index=False)
-    AD.attach_to_universe(u, summary).to_parquet(a.out / "universe_with_history.parquet", index=False)
+    # BET prices (tier BT) and CLOSE prices (CLV only) side by side; a bet price never comes from CLOSE
+    ub = AD.attach_to_universe(u, summary, purpose="bet")
+    AD.attach_to_universe(ub, summary, purpose="close").drop(columns=["fixture_id"]).to_parquet(
+        a.out / "universe_with_history.parquet", index=False)
     unmatched.to_csv(a.out / "unmatched.csv", index=False)
     kinds = unmatched["kind"].value_counts().to_dict() if not unmatched.empty else {}
-    print(f"[oddsapi-history-attach] fixtures priced {long['fixture_id'].nunique() if not long.empty else 0:,}; "
+    print(f"[oddsapi-history-attach] dropped {long.attrs.get('dropped', {})}; fixtures priced {long['fixture_id'].nunique() if not long.empty else 0:,}; "
           f"price rows {len(long):,}; unmatched {kinds}")
     return 0
 

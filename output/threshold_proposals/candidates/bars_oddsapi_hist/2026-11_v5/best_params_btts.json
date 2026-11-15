@@ -1,0 +1,210 @@
+{
+  "Argentina Primera Division": {
+    "bars_opt": {
+      "yes": {
+        "mside": "btts_yes",
+        "track": "new_format",
+        "league": "Argentina Primera Division",
+        "month": "2026-11",
+        "config": "NONE|ALL|max-|min-",
+        "config_basis": "SELECTED",
+        "source": "NONE",
+        "measure": "ALL",
+        "odds_max": null,
+        "odds_min": null,
+        "mode": "LEAGUE_WIDE",
+        "valuable_th": 0.02,
+        "marksman_th": 0.02,
+        "sniper_th": 0.3,
+        "bar_basis": "OWN_BETS",
+        "shrink_weight_at_valuable": 0.5655,
+        "wf_bets": 97,
+        "wf_roi": 0.1741,
+        "wf_roi_shrunk": 0.0917,
+        "tier2": false,
+        "tier2_bets": 0,
+        "tier2_roi": null,
+        "source_params": {},
+        "verdict": "UNPROVEN",
+        "study_final": {
+          "bets": 0,
+          "roi": null,
+          "ci95": [
+            null,
+            null
+          ],
+          "p_one_sided": null,
+          "clv": null,
+          "clv_n": 0
+        },
+        "study_verdict": "OFF",
+        "study_reason": "INSUFFICIENT_SELECTION_EVIDENCE",
+        "prod_market": "btts",
+        "side": "yes"
+      }
+    },
+    "drop": false,
+    "source": "bars_opt",
+    "month": "2026-11",
+    "status": "UNPROVEN",
+    "approved": false,
+    "bets": 97,
+    "roi": 0.1741
+  },
+  "Brazil Serie A": {
+    "bars_opt": {
+      "yes": {
+        "mside": "btts_yes",
+        "track": "new_format",
+        "league": "Brazil Serie A",
+        "month": "2026-11",
+        "config": "NONE|ALL|max-|min-",
+        "config_basis": "SELECTED",
+        "source": "NONE",
+        "measure": "ALL",
+        "odds_max": null,
+        "odds_min": null,
+        "mode": "LEAGUE_WIDE",
+        "valuable_th": 0.02,
+        "marksman_th": 0.02,
+        "sniper_th": 0.3,
+        "bar_basis": "OWN_BETS",
+        "shrink_weight_at_valuable": 0.6123,
+        "wf_bets": 78,
+        "wf_roi": 0.0937,
+        "wf_roi_shrunk": 0.0513,
+        "tier2": false,
+        "tier2_bets": 0,
+        "tier2_roi": null,
+        "source_params": {},
+        "verdict": "UNPROVEN",
+        "study_final": {
+          "bets": 0,
+          "roi": null,
+          "ci95": [
+            null,
+            null
+          ],
+          "p_one_sided": null,
+          "clv": null,
+          "clv_n": 0
+        },
+        "study_verdict": "OFF",
+        "study_reason": "INSUFFICIENT_SELECTION_EVIDENCE",
+        "prod_market": "btts",
+        "side": "yes"
+      }
+    },
+    "drop": false,
+    "source": "bars_opt",
+    "month": "2026-11",
+    "status": "UNPROVEN",
+    "approved": false,
+    "bets": 78,
+    "roi": 0.0937
+  },
+  "Mexico Liga MX": {
+    "bars_opt": {
+      "yes": {
+        "mside": "btts_yes",
+        "track": "new_format",
+        "league": "Mexico Liga MX",
+        "month": "2026-11",
+        "config": "NONE|ALL|max-|min-",
+        "config_basis": "SELECTED",
+        "source": "NONE",
+        "measure": "ALL",
+        "odds_max": null,
+        "odds_min": null,
+        "mode": "LEAGUE_WIDE",
+        "valuable_th": 0.02,
+        "marksman_th": 0.02,
+        "sniper_th": 0.3,
+        "bar_basis": "OWN_BETS",
+        "shrink_weight_at_valuable": 0.6015,
+        "wf_bets": 59,
+        "wf_roi": 0.0315,
+        "wf_roi_shrunk": 0.0128,
+        "tier2": false,
+        "tier2_bets": 0,
+        "tier2_roi": null,
+        "source_params": {},
+        "verdict": "UNPROVEN",
+        "study_final": {
+          "bets": 0,
+          "roi": null,
+          "ci95": [
+            null,
+            null
+          ],
+          "p_one_sided": null,
+          "clv": null,
+          "clv_n": 0
+        },
+        "study_verdict": "OFF",
+        "study_reason": "INSUFFICIENT_SELECTION_EVIDENCE",
+        "prod_market": "btts",
+        "side": "yes"
+      }
+    },
+    "drop": false,
+    "source": "bars_opt",
+    "month": "2026-11",
+    "status": "UNPROVEN",
+    "approved": false,
+    "bets": 59,
+    "roi": 0.0315
+  },
+  "Norway Eliteserien": {
+    "bars_opt": {
+      "yes": {
+        "mside": "btts_yes",
+        "track": "new_format",
+        "league": "Norway Eliteserien",
+        "month": "2026-11",
+        "config": "NONE|ALL|max-|min-",
+        "config_basis": "SELECTED",
+        "source": "NONE",
+        "measure": "ALL",
+        "odds_max": null,
+        "odds_min": null,
+        "mode": "LEAGUE_WIDE",
+        "valuable_th": 0.02,
+        "marksman_th": 0.02,
+        "sniper_th": 0.3,
+        "bar_basis": "LEARNED_BLEND",
+        "shrink_weight_at_valuable": 0.5193,
+        "wf_bets": 35,
+        "wf_roi": 0.1251,
+        "wf_roi_shrunk": 0.0575,
+        "tier2": false,
+        "tier2_bets": 0,
+        "tier2_roi": null,
+        "source_params": {},
+        "verdict": "UNPROVEN",
+        "study_final": {
+          "bets": 0,
+          "roi": null,
+          "ci95": [
+            null,
+            null
+          ],
+          "p_one_sided": null,
+          "clv": null,
+          "clv_n": 0
+        },
+        "study_verdict": "OFF",
+        "study_reason": "INSUFFICIENT_SELECTION_EVIDENCE",
+        "prod_market": "btts",
+        "side": "yes"
+      }
+    },
+    "drop": false,
+    "source": "bars_opt",
+    "month": "2026-11",
+    "status": "UNPROVEN",
+    "approved": false,
+    "bets": 35,
+    "roi": 0.1251
+  }
+}

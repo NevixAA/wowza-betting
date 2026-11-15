@@ -96,7 +96,8 @@ def production_view(league: str, market: str, side: str, model_type: str, policy
         caps["min_side_odds"] = elig.get("MIN_OVER_ODDS") if side == "OVER" else elig.get("MIN_UNDER_ODDS")
         if model_type == "new_format":
             caps["nf_max_ou_odds"] = elig.get("NF_MAX_OU_ODDS")
-    tt = t.get("tier_multipliers") if isinstance(t.get("tier_multipliers"), dict) else         (policy.get("track_tier_multipliers") or {}).get(track)          # a cell's own first, as size_day
+    flat = bool((policy.get("cell_staking") or {}).get("enabled"))      # owner 2026-11-11: flat per cell, as size_day
+    tt = None if flat else (policy.get("track_tier_multipliers") or {}).get(track)
     return {
         "track": track, "track_state": track_state, "production_state": state,
         "enabled": enabled, "paper_league": paper,
@@ -106,8 +107,8 @@ def production_view(league: str, market: str, side: str, model_type: str, policy
         "blocked_market": track_state in BLOCKED_STATES,
         "odds_caps": caps,
         "stake_policy": {"policy_version": policy.get("policy_version"), "base_fraction": base,
-                         "tier_multipliers": tt if tt is not None else policy.get("tier_multipliers"),
-                         "tier_multiplier_source": ("cell_staking" if isinstance(t.get("tier_multipliers"), dict)
+                         "tier_multipliers": None if flat else (tt if tt is not None else policy.get("tier_multipliers")),
+                         "tier_multiplier_source": ("FLAT_PER_CELL" if flat
                                                     else "track_tier_multipliers" if tt is not None else "tier_multipliers"),
                          "evidence_score": t.get("evidence_score")},
     }

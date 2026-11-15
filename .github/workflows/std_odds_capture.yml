@@ -302,6 +302,7 @@ jobs:
           # because the commit never included it. A directory of monthly parts, so only the
           # current month's file is ever modified.
           git add -f output/book_quotes 2>/dev/null || true
+          git add -f output/specials_quotes 2>/dev/null || true
           # Last-seen heartbeat (src/odds_heartbeat.py): this writer's own directory only.
           git add -f output/odds_heartbeat/std_capture 2>/dev/null || true
           # Recorded WIDE-pass timestamp + per-day counters (src/capture_schedule.wide_due).

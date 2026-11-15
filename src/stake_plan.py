@@ -48,7 +48,7 @@ BASIS = "notional bankroll, drawdown throttle not applied (no real-bankroll ledg
 #   model_type  the originating prediction's tag: standard | new_format | unknown (genuine only)
 SIDE_SELECTION_COLUMNS = ("date", "league", "home_team", "away_team", "model_type", "market", "side",
                           "signal_tier", "odds", "model_prob", "fair_prob", "edge", "ev")
-TIPPED = ("SNIPER", "MARKSMAN", "VALUABLE")
+from src.tier_labels import TIPPED  # noqa: E402  QUALIFIED (from go-live) + legacy codes of history rows
 #: The O/U 2.5 tips frame (betting.generate_bets -> bets.csv) as this reader needs it.
 BET_SELECTION_COLUMNS = ("date", "league", "home_team", "away_team", "model_type", "best_side",
                          "odds_over25", "odds_under25", "signal_tier")
@@ -177,7 +177,7 @@ def selections(bets: pd.DataFrame | None, side_bets: pd.DataFrame | None) -> pd.
         missing = [c for c in BET_SELECTION_COLUMNS if c not in bets.columns]
         if missing:
             raise SelectionSchemaError(f"O/U selections missing column(s) {missing}")
-        b = bets[bets["signal_tier"].isin(("SNIPER", "MARKSMAN", "VALUABLE"))]
+        b = bets[bets["signal_tier"].isin(TIPPED)]
         for r in b.itertuples(index=False):
             side = str(r.best_side).upper()
             odds = (r.odds_over25 if side == "OVER" else r.odds_under25 if side == "UNDER" else None)

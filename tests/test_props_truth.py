@@ -16,10 +16,14 @@ from player_model import config  # noqa: E402
 
 
 # ── V3: placeholder profile features leave the props training feature set ─────────────────────────
-def test_profile_placeholder_features_withheld_from_props_training():
-    fake = {"age", "age_peak_delta", "height_cm", "height_aerial_interaction",
+def test_profile_features_readmitted_only_on_real_values():
+    # 2026-11-10: re-admitted because build_features takes them from the collected profiles; the
+    # stored placeholders never reach a feature (tests/test_props_real_profiles.py proves the path)
+    prof = {"age", "age_peak_delta", "height_cm", "height_aerial_interaction",
             "height_diff_vs_opp_def", "height_advantage_score", "opp_def_mean_height"}
-    assert not fake & set(config.PLAYER_FEATURE_COLS)
+    assert set(config.PROFILE_FEATURES) == prof
+    assert prof <= set(config.PLAYER_FEATURE_COLS)
+    assert "weight_kg" not in config.PLAYER_FEATURE_COLS
 
 
 def test_props_contract_covers_feature_list():

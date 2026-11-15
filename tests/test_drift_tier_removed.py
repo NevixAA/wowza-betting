@@ -43,9 +43,9 @@ def _row(p_over, home="A", away="B", **kw):
     return r
 
 
-# base tiers under predict.yml's deployed bars (VALUABLE 0.03, MARKSMAN 0.08; global SNIPER 0.12):
-# edge 0.05 VALUABLE, 0.16 SNIPER, 0.11 MARKSMAN
-BOARD = [(0.55, "VALUABLE"), (0.66, "SNIPER"), (0.61, "MARKSMAN")]
+# owner 2026-11-11 ("Clean rebuild"): every tip that clears its cell's one bar is QUALIFIED - there is no tier
+# left for the removed drift rule to move (edges 0.05 / 0.16 / 0.11 all clear the cell bar)
+BOARD = [(0.55, "QUALIFIED"), (0.66, "QUALIFIED"), (0.61, "QUALIFIED")]
 
 
 @pytest.fixture(autouse=True)
@@ -78,9 +78,8 @@ def test_tier_is_identical_to_base_for_every_drift_signal(signal):
 
 
 def test_shadow_tier_is_what_the_removed_rule_would_have_produced():
-    exp = {"Confirmed": ["MARKSMAN", "SNIPER", "SNIPER"],     # VALUABLE->MARKSMAN, MARKSMAN->SNIPER (edge>=0.10)
-           "Conflicted": ["VALUABLE", "MARKSMAN", "MARKSMAN"],  # SNIPER->MARKSMAN
-           "Neutral": ["VALUABLE", "SNIPER", "MARKSMAN"], "New": ["VALUABLE", "SNIPER", "MARKSMAN"]}
+    # the removed rule moved SNIPER / MARKSMAN / VALUABLE; a QUALIFIED tip has no tier to move
+    exp = {s: ["QUALIFIED"] * 3 for s in ("Confirmed", "Conflicted", "Neutral", "New")}
     for sig, want in exp.items():
         df = evaluate_value(pd.DataFrame([_row(p, home=f"H{i}", drift_signal=sig)
                                           for i, (p, _) in enumerate(BOARD)]))
@@ -97,7 +96,7 @@ def test_only_a_code_change_restores_the_old_rule(monkeypatch):
     monkeypatch.setattr(config, "DRIFT_TIER_ADJUSTMENT", True)
     df = evaluate_value(pd.DataFrame([_row(p, home=f"H{i}", drift_signal="Confirmed")
                                       for i, (p, _) in enumerate(BOARD)]))
-    assert list(df["signal_tier"]) == ["MARKSMAN", "SNIPER", "SNIPER"]
+    assert list(df["signal_tier"]) == ["QUALIFIED"] * 3                     # nothing left to upgrade
 
 
 @pytest.mark.parametrize("val", ["1", "true", "True", "yes"])
@@ -105,7 +104,7 @@ def test_env_var_cannot_flip_it(monkeypatch, caplog, val):
     monkeypatch.setenv("DRIFT_TIER_ADJUSTMENT", val)
     with caplog.at_level(logging.WARNING, logger="src.betting"):
         df = evaluate_value(pd.DataFrame([_row(0.55, drift_signal="Confirmed")]))
-    assert df.iloc[0]["signal_tier"] == "VALUABLE"
+    assert df.iloc[0]["signal_tier"] == "QUALIFIED"
     assert any("IGNORED" in r.getMessage() for r in caplog.records)
 
 
@@ -135,7 +134,7 @@ def test_shadow_is_logged_on_first_sight_and_never_revised(tmp_path):
     r = got.iloc[0]
     assert (r["signal_tier"], r["drift_shadow_tier"], r["drift_signal"], r["drift_would_change"],
             r["side"], r["drift_tier_adjustment_enabled"]) == \
-           ("VALUABLE", "MARKSMAN", "Confirmed", "True", "OVER", "False")
+           ("QUALIFIED", "QUALIFIED", "Confirmed", "False", "OVER", "False")
     before = p.read_bytes()
     later = evaluate_value(pd.DataFrame([_row(0.55, drift_signal="Conflicted")]))
     assert D.log_shadow(later, p) == 0 and p.read_bytes() == before        # earliest row wins
@@ -178,7 +177,7 @@ def test_mode_predict_writes_the_shadow_log(tmp_path, monkeypatch):
     led = pd.read_csv(tmp_path / "bets_ledger.csv")
     assert sorted(led["signal_tier"]) == sorted(t for _, t in BOARD)
     sh = pd.read_csv(tmp_path / "drift_shadow.csv")
-    assert len(sh) == 3 and int(sh["drift_would_change"].sum()) == 2
+    assert len(sh) == 3 and int(sh["drift_would_change"].sum()) == 0
 
 
 # ── Telegram ─────────────────────────────────────────────────────────────────────────────────────
@@ -196,8 +195,8 @@ def test_tip_message_shows_drift_as_information_not_as_an_upgrade(tmp_path, monk
     monkeypatch.setattr(N, "_send", lambda token, chat, text: sent.append(text) or True)
     assert N.notify_new_snipers() == 1
     msg = sent[0]
-    from src.tier_labels import tier_label                                  # display words, 2026-10-26
-    assert f"{tier_label('VALUABLE').upper()} TIP" in msg                  # not upgraded by Confirmed
-    assert tier_label("MARKSMAN").upper() not in msg.upper()
+    # owner 2026-11-11: no tier word on a future tip - the message names the cell status instead
+    assert "TIP" in msg and "UNPROVEN" in msg
+    assert not any(w in msg.upper() for w in ("SNIPER", "MARKSMAN", "VALUABLE", "BIG GAP", "MEDIUM GAP", "SMALL GAP"))
     assert "Drift: Confirmed" in msg and "(info only)" in msg
     assert "upgrad" not in msg.lower()

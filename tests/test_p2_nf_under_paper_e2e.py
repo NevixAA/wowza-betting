@@ -63,7 +63,7 @@ def _board(day: str = DAY) -> pd.DataFrame:
     ])
     bets = betting.generate_bets(betting.evaluate_value(raw))
     assert set(bets["best_side"]) == {"OVER", "UNDER"}, bets
-    assert set(bets["signal_tier"]) <= {"SNIPER", "MARKSMAN"}, "board must hold STAKED-tier tips"
+    assert set(bets["signal_tier"]) <= {"QUALIFIED"}, "board must hold tips (owner 2026-11-11: one bar per cell)"
     return bets
 
 
@@ -252,7 +252,7 @@ def test_ledger_still_records_nf_under_tips(tmp_path, monkeypatch):
     L.append_tips(_board())
     d = pd.read_csv(tmp_path / "bets_ledger.csv")
     u = d[(d["side"] == "UNDER") & (d["model_type"] == "new_format")]
-    assert len(u) == 1 and u["signal_tier"].iloc[0] in ("SNIPER", "MARKSMAN")
+    assert len(u) == 1 and u["signal_tier"].iloc[0] in ("QUALIFIED",)
     assert float(u["odds"].iloc[0]) == 2.20 and pd.notna(u["edge_pct"].iloc[0])
 
 

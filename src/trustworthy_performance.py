@@ -169,8 +169,15 @@ def correct_live(d: pd.DataFrame, ledger: str, out_dir: Path) -> tuple[pd.DataFr
             else "clv_first_half_contaminated.csv"
         d = CC.exclude_contaminated_clv(d, out_dir)
         applied.append({"sidecar": side, "applied_to": ledger, "present": (Path(out_dir) / "corrections" / side).exists(),
-                        "effect": "first-half close: CLV blanked (P/L kept)",
+                        "effect": "first-half close (or an impossible close <= 1.0): CLV blanked (P/L kept)",
                         "rows_changed": int(d["clv_quarantined"].sum())})
+    if ledger == "bets_ledger.csv":
+        # 2026-11-11 certification: post-kickoff tips excluded; owner "first tip only": the later tip of an
+        # opposite O/U pair excluded; other multi-tip rows flagged (src/ledger_corrections)
+        from src import ledger_corrections as LC
+        d, extra = LC.apply_bets(d, out_dir)
+        applied += [{**e, "applied_to": ledger, "present": (Path(out_dir) / "corrections" / e["sidecar"]).exists()}
+                    for e in extra]
     if ledger == "ht_ledger.csv":
         priced = CC.ht_priced_mask(d, out_dir)
         d.loc[~priced, "_excluded"] = True
@@ -311,6 +318,10 @@ def frames(out_dir, cfg: dict) -> tuple[dict, list[dict]]:
             else:
                 d = restated.assign(_excluded=False)
         if name == "player_ledger.csv":
+            from src import ledger_corrections as LC              # 2026-11-11: later copies, first sight wins
+            d, extra = LC.apply_players(d, out_dir)
+            corrections += [{**e, "applied_to": name,
+                             "present": (out_dir / "corrections" / e["sidecar"]).exists()} for e in extra]
             for f, why in PROPS_FLAG_FILES.items():
                 s = _read(out_dir / "corrections", f)
                 n_hit = 0

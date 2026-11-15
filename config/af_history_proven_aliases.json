@@ -86,11 +86,11 @@
       "Cottbus": [
         {
           "by_kind": {
-            "forced_opponent+score": 9
+            "forced_opponent+score": 10
           },
-          "dates": 9,
+          "dates": 10,
           "first": "2026-08-09",
-          "last": "2026-10-24",
+          "last": "2026-10-30",
           "provider": "Energie Cottbus",
           "valid_from": null,
           "valid_to": null
@@ -140,10 +140,10 @@
       "Cangzhou": [
         {
           "by_kind": {
-            "forced_opponent+score": 78
+            "forced_opponent+score": 95
           },
-          "dates": 78,
-          "first": "2022-06-05",
+          "dates": 95,
+          "first": "2022-01-03",
           "last": "2024-11-02",
           "provider": "Shijiazhuang Y. J.",
           "valid_from": null,
@@ -153,9 +153,9 @@
       "Chengdu Rongcheng": [
         {
           "by_kind": {
-            "forced_opponent+score": 131
+            "forced_opponent+score": 155
           },
-          "dates": 131,
+          "dates": 155,
           "first": "2022-01-08",
           "last": "2026-10-24",
           "provider": "Chengdu Better City",
@@ -166,9 +166,9 @@
       "Dalian Pro": [
         {
           "by_kind": {
-            "forced_opponent+score": 55
+            "forced_opponent+score": 67
           },
-          "dates": 55,
+          "dates": 67,
           "first": "2022-01-03",
           "last": "2023-11-04",
           "provider": "Dalian Aerbin",
@@ -179,9 +179,9 @@
       "Guangzhou City": [
         {
           "by_kind": {
-            "forced_opponent+score": 30
+            "forced_opponent+score": 36
           },
-          "dates": 30,
+          "dates": 36,
           "first": "2022-01-01",
           "last": "2022-12-31",
           "provider": "Guangzhou R&F",
@@ -193,7 +193,7 @@
         {
           "by_kind": {
             "forced_opponent": 96,
-            "forced_opponent+score": 30
+            "forced_opponent+score": 36
           },
           "dates": 105,
           "first": "2019-03-01",
@@ -206,12 +206,25 @@
       "Hebei": [
         {
           "by_kind": {
-            "forced_opponent+score": 29
+            "forced_opponent+score": 36
           },
-          "dates": 29,
-          "first": "2022-01-04",
-          "last": "2022-12-27",
+          "dates": 36,
+          "first": "2022-01-01",
+          "last": "2022-12-30",
           "provider": "Hebei Zhongji",
+          "valid_from": null,
+          "valid_to": null
+        }
+      ],
+      "Henan Songshan Longmen": [
+        {
+          "by_kind": {
+            "forced_opponent+score": 153
+          },
+          "dates": 153,
+          "first": "2022-01-03",
+          "last": "2026-10-24",
+          "provider": "Henan Jianye",
           "valid_from": null,
           "valid_to": null
         }
@@ -219,9 +232,9 @@
       "Liaoning Tieren": [
         {
           "by_kind": {
-            "forced_opponent+score": 25
+            "forced_opponent+score": 29
           },
-          "dates": 25,
+          "dates": 29,
           "first": "2026-03-07",
           "last": "2026-10-24",
           "provider": "Shenyang Urban",
@@ -232,10 +245,10 @@
       "Meizhou Hakka": [
         {
           "by_kind": {
-            "forced_opponent+score": 104
+            "forced_opponent+score": 124
           },
-          "dates": 104,
-          "first": "2022-06-09",
+          "dates": 124,
+          "first": "2022-06-04",
           "last": "2025-11-22",
           "provider": "Meizhou Kejia",
           "valid_from": null,
@@ -258,10 +271,10 @@
       "Qingdao Hainiu": [
         {
           "by_kind": {
-            "forced_opponent+score": 101
+            "forced_opponent+score": 119
           },
-          "dates": 101,
-          "first": "2023-04-25",
+          "dates": 119,
+          "first": "2023-04-16",
           "last": "2026-10-24",
           "provider": "Qingdao Jonoon",
           "valid_from": null,
@@ -271,10 +284,10 @@
       "Qingdao West Coast": [
         {
           "by_kind": {
-            "forced_opponent+score": 77
+            "forced_opponent+score": 89
           },
-          "dates": 77,
-          "first": "2024-03-08",
+          "dates": 89,
+          "first": "2024-03-01",
           "last": "2026-10-24",
           "provider": "Qingdao Youth Island",
           "valid_from": null,
@@ -284,9 +297,9 @@
       "Shandong Taishan": [
         {
           "by_kind": {
-            "forced_opponent+score": 131
+            "forced_opponent+score": 155
           },
-          "dates": 131,
+          "dates": 155,
           "first": "2022-01-01",
           "last": "2026-10-24",
           "provider": "Shandong Luneng",
@@ -294,12 +307,38 @@
           "valid_to": null
         }
       ],
+      "Shenzhen": [
+        {
+          "by_kind": {
+            "forced_opponent+score": 65
+          },
+          "dates": 65,
+          "first": "2022-01-01",
+          "last": "2023-11-04",
+          "provider": "Shenzhen Ruby FC",
+          "valid_from": null,
+          "valid_to": null
+        }
+      ],
+      "Tianjin Jinmen Tiger": [
+        {
+          "by_kind": {
+            "forced_opponent+score": 153
+          },
+          "dates": 153,
+          "first": "2022-01-03",
+          "last": "2026-10-24",
+          "provider": "Tianjin Teda",
+          "valid_from": null,
+          "valid_to": null
+        }
+      ],
       "Wuhan FC": [
         {
           "by_kind": {
-            "forced_opponent+score": 28
+            "forced_opponent+score": 34
           },
-          "dates": 28,
+          "dates": 34,
           "first": "2022-06-04",
           "last": "2022-12-31",
           "provider": "Wuhan Zall",
@@ -354,11 +393,11 @@
         {
           "by_kind": {
             "forced_opponent": 141,
-            "forced_opponent+score": 105
+            "forced_opponent+score": 106
           },
-          "dates": 239,
+          "dates": 240,
           "first": "2019-09-29",
-          "last": "2026-10-24",
+          "last": "2026-11-01",
           "provider": "AEK Athens FC",
           "valid_from": null,
           "valid_to": null
@@ -381,11 +420,11 @@
         {
           "by_kind": {
             "forced_opponent": 142,
-            "forced_opponent+score": 106
+            "forced_opponent+score": 107
           },
-          "dates": 240,
+          "dates": 241,
           "first": "2019-09-28",
-          "last": "2026-10-25",
+          "last": "2026-11-01",
           "provider": "Aris Thessalonikis",
           "valid_from": null,
           "valid_to": null
@@ -408,11 +447,11 @@
         {
           "by_kind": {
             "forced_opponent": 34,
-            "forced_opponent+score": 75
+            "forced_opponent+score": 76
           },
-          "dates": 105,
+          "dates": 106,
           "first": "2022-08-21",
-          "last": "2026-10-24",
+          "last": "2026-11-01",
           "provider": "Levadiakos",
           "valid_from": null,
           "valid_to": null
@@ -422,11 +461,11 @@
         {
           "by_kind": {
             "forced_opponent": 134,
-            "forced_opponent+score": 102
+            "forced_opponent+score": 103
           },
-          "dates": 228,
+          "dates": 229,
           "first": "2019-09-29",
-          "last": "2026-10-25",
+          "last": "2026-11-01",
           "provider": "OFI",
           "valid_from": null,
           "valid_to": null
@@ -436,11 +475,11 @@
         {
           "by_kind": {
             "forced_opponent": 140,
-            "forced_opponent+score": 105
+            "forced_opponent+score": 106
           },
-          "dates": 239,
+          "dates": 240,
           "first": "2019-09-28",
-          "last": "2026-10-25",
+          "last": "2026-10-31",
           "provider": "Olympiakos Piraeus",
           "valid_from": null,
           "valid_to": null
@@ -451,11 +490,11 @@
       "Chiba": [
         {
           "by_kind": {
-            "forced_opponent+score": 12
+            "forced_opponent+score": 13
           },
-          "dates": 12,
+          "dates": 13,
           "first": "2026-08-08",
-          "last": "2026-10-25",
+          "last": "2026-11-01",
           "provider": "JEF United Chiba",
           "valid_from": null,
           "valid_to": null
@@ -491,11 +530,11 @@
       "Mito": [
         {
           "by_kind": {
-            "forced_opponent+score": 12
+            "forced_opponent+score": 13
           },
-          "dates": 12,
+          "dates": 13,
           "first": "2026-08-08",
-          "last": "2026-10-25",
+          "last": "2026-10-31",
           "provider": "Mito Hollyhock",
           "valid_from": null,
           "valid_to": null
@@ -506,11 +545,11 @@
       "Celta B": [
         {
           "by_kind": {
-            "forced_opponent+score": 11
+            "forced_opponent+score": 12
           },
-          "dates": 11,
+          "dates": 12,
           "first": "2026-08-15",
-          "last": "2026-10-24",
+          "last": "2026-10-31",
           "provider": "Celta de Vigo II",
           "valid_from": null,
           "valid_to": null
@@ -534,11 +573,11 @@
         {
           "by_kind": {
             "forced_opponent": 41,
-            "forced_opponent+score": 53
+            "forced_opponent+score": 54
           },
-          "dates": 94,
+          "dates": 95,
           "first": "2021-08-21",
-          "last": "2026-10-24",
+          "last": "2026-10-31",
           "provider": "Real Sociedad II",
           "valid_from": null,
           "valid_to": null
@@ -758,11 +797,11 @@
         {
           "by_kind": {
             "forced_opponent": 1,
-            "forced_opponent+score": 13
+            "forced_opponent+score": 14
           },
-          "dates": 13,
+          "dates": 14,
           "first": "2026-07-20",
-          "last": "2026-10-23",
+          "last": "2026-10-31",
           "provider": "Corvinul Hunedoara",
           "valid_from": null,
           "valid_to": null
@@ -772,11 +811,11 @@
         {
           "by_kind": {
             "forced_opponent": 7,
-            "forced_opponent+score": 54
+            "forced_opponent+score": 55
           },
-          "dates": 54,
+          "dates": 55,
           "first": "2024-05-20",
-          "last": "2026-10-24",
+          "last": "2026-10-30",
           "provider": "Csikszereda",
           "valid_from": null,
           "valid_to": null
@@ -799,11 +838,11 @@
         {
           "by_kind": {
             "forced_opponent": 75,
-            "forced_opponent+score": 113
+            "forced_opponent+score": 114
           },
-          "dates": 167,
+          "dates": 168,
           "first": "2020-08-21",
-          "last": "2026-10-24",
+          "last": "2026-10-31",
           "provider": "Arges Pitesti",
           "valid_from": null,
           "valid_to": null
@@ -813,11 +852,11 @@
         {
           "by_kind": {
             "forced_opponent": 72,
-            "forced_opponent+score": 191
+            "forced_opponent+score": 192
           },
-          "dates": 212,
+          "dates": 213,
           "first": "2021-07-18",
-          "last": "2026-10-24",
+          "last": "2026-10-30",
           "provider": "Rapid",
           "valid_from": null,
           "valid_to": null
@@ -868,11 +907,11 @@
         {
           "by_kind": {
             "forced_opponent": 43,
-            "forced_opponent+score": 169
+            "forced_opponent+score": 170
           },
-          "dates": 169,
+          "dates": 170,
           "first": "2022-07-18",
-          "last": "2026-10-23",
+          "last": "2026-10-31",
           "provider": "Petrolul Ploiesti",
           "valid_from": null,
           "valid_to": null
@@ -894,11 +933,11 @@
       "Sepsi Sf. Gheorghe": [
         {
           "by_kind": {
-            "forced_opponent+score": 150
+            "forced_opponent+score": 151
           },
-          "dates": 150,
+          "dates": 151,
           "first": "2022-01-24",
-          "last": "2026-10-26",
+          "last": "2026-11-01",
           "provider": "Sepsi OSK Sfantu Gheorghe",
           "valid_from": null,
           "valid_to": null
@@ -907,11 +946,11 @@
       "U. Cluj": [
         {
           "by_kind": {
-            "forced_opponent+score": 172
+            "forced_opponent+score": 173
           },
-          "dates": 172,
+          "dates": 173,
           "first": "2022-07-17",
-          "last": "2026-10-23",
+          "last": "2026-11-02",
           "provider": "Universitatea Cluj",
           "valid_from": null,
           "valid_to": null
@@ -1035,7 +1074,7 @@
       ]
     }
   },
-  "generated_at": "2026-11-09T12:45:19Z",
+  "generated_at": "2026-11-10T16:31:52Z",
   "map": {
     "Austrian Bundesliga": {
       "A. Klagenfurt": "Austria Klagenfurt",
@@ -1070,12 +1109,15 @@
       "Guangzhou City": "Guangzhou R&F",
       "Guangzhou FC": "Guangzhou Evergrande FC",
       "Hebei": "Hebei Zhongji",
+      "Henan Songshan Longmen": "Henan Jianye",
       "Liaoning Tieren": "Shenyang Urban",
       "Meizhou Hakka": "Meizhou Kejia",
       "Qingdao FC": "Qingdao Huanghai",
       "Qingdao Hainiu": "Qingdao Jonoon",
       "Qingdao West Coast": "Qingdao Youth Island",
       "Shandong Taishan": "Shandong Luneng",
+      "Shenzhen": "Shenzhen Ruby FC",
+      "Tianjin Jinmen Tiger": "Tianjin Teda",
       "Wuhan FC": "Wuhan Zall"
     },
     "Finland Veikkausliiga": {
@@ -1158,7 +1200,7 @@
     }
   },
   "refused": {
-    "contradicted_by_a_date": 6,
+    "contradicted_by_a_date": 3,
     "dates_with_score_conflict": 3,
     "fewer_than_min_dates": 4
   },

@@ -32,11 +32,21 @@ def _bars(v=0.02, m=0.04, s=0.06, approved=False):
             "evidence": "WALK_FORWARD_HOLDOUT"}
 
 
-def _ctx(markets=("ou25", "btts", "over15", "over35"), applied=True, league=LEAGUE, **kw):
-    std = {league: _bars(**kw)} if "ou25" in markets else {}
-    side = {m: {league: _bars(**kw)} for m in markets if m != "ou25"}
+def _ctx(markets=("ou25", "btts", "over15", "over35"), applied=True, league=LEAGUE, v=0.02, m=0.04, s=0.06):
+    """Owner 2026-11-11: TOP-3 qualifies only on the league x market x side CELL's one bar (bars_opt)."""
+    from tests.own_bars import cell_entry
+    std = {league: cell_entry("ou25", league, s, m, v)} if "ou25" in markets else {}
+    side = {mk: {league: cell_entry(mk, league, s, m, v)} for mk in markets if mk != "ou25"}
     return {"standard": std, "side": side,
-            "applied": {f"{m}|{league}" for m in markets} if applied else set()}
+            "applied": {f"{mk}|{league}" for mk in markets} if applied else set()}
+
+
+def _stats(lams: dict | None = None, league=LEAGUE, track="standard"):
+    """Frozen T3 statistics per market-side: {mside: lam} (lam_se 0, so lam_lo = lam)."""
+    lams = lams or {}
+    rows = [{"track": track, "league": league, "mside": ms, "n": 0, "roi": None, "se": None, "lcb": None, "eb": None,
+             "lam": lam, "lam_se": 0.0, "lam_rows": 100} for ms, lam in lams.items()]
+    return pd.DataFrame(rows)
 
 
 def _cand(i, market="OU25", side="OVER", pm=0.60, pf=0.50, ev_lb=0.05, home=None, away=None,
@@ -58,18 +68,23 @@ def _frame(rows):
     return pd.concat([first, pd.DataFrame([lock_row])], ignore_index=True).astype(object)
 
 
-def _freeze(cands, ctx, now=NOW, committed=None, done=None):
-    return T.freeze_due(cands, done or set(), ctx, now, LEAD, committed or {}, {}, None)
+def _freeze(cands, ctx, now=NOW, committed=None, done=None, stats=None):
+    return T.freeze_due(cands, done or set(), ctx, now, LEAD, committed or {}, {}, None, stats)
 
 
 # ── the rules ───────────────────────────────────────────────────────────────────────────────────
-def test_at_most_three_per_league_week_ranked_by_value_across_markets():
-    rows = [_cand(1, "OU25", "OVER", ev_lb=0.01), _cand(2, "BTTS", "YES", ev_lb=0.09),
-            _cand(3, "OVER15", "OVER", ev_lb=0.05), _cand(4, "OVER35", "OVER", ev_lb=0.07),
-            _cand(5, "OU25", "UNDER", pm=0.65, ev_lb=0.03)]
-    picks, weeks = _freeze(_frame(rows), _ctx())
+def test_at_most_three_per_league_week_ranked_by_t3_across_markets():
+    """Owner 2026-11-11: ranked by T3 (cautious calibrated value per cell), never by EV: the EV-style ranking
+    of these rows (ev_lower_bound: fx2 > fx4 > fx3 > fx5 > fx1) is NOT what decides."""
+    rows = [_cand(1, "OU25", "OVER", ev_lb=0.30), _cand(2, "BTTS", "YES", ev_lb=0.01),
+            _cand(3, "OVER15", "OVER", ev_lb=0.02), _cand(4, "OVER35", "OVER", ev_lb=0.01),
+            _cand(5, "OU25", "UNDER", pm=0.65, ev_lb=0.25)]
+    st = _stats({"btts_yes": 1.0, "over35_over": 0.8, "over15_over": 0.5, "over25_over": 0.2, "over25_under": 0.0})
+    picks, weeks = _freeze(_frame(rows), _ctx(), stats=st)
     assert len(picks) == 3 and len(weeks) == 1
-    assert list(picks["fixture_id"]) == ["fx2", "fx4", "fx3"]          # RS-1: ev_lower_bound first
+    assert list(picks["fixture_id"]) == ["fx2", "fx4", "fx3"]          # T3: lam_lo * (p_used - fair) order
+    assert set(picks["slot"]) == {"TOP"} and set(picks["cell_status"]) == {"UNPROVEN"}
+    assert "tier" not in picks.columns and "bar_sniper" not in picks.columns
     assert list(picks["top3_rank"]) == [1, 2, 3]
     assert set(picks["bar_source"]) == {"LEAGUE"} and set(picks["selection_mode"]) == {"TOP3_LEAGUE_GW"}
     assert json.loads(weeks["excluded"].iloc[0])["RANKED_BELOW_TOP3"] == 2
@@ -97,6 +112,22 @@ def test_no_global_bar_ever(monkeypatch):
         assert banned not in src.split('"""', 2)[2], banned
 
 
+def test_a_cell_without_a_t3_statistic_ranks_after_and_by_kickoff_never_by_ev():
+    rows = [_cand(1, "OU25", "OVER", ev_lb=0.30, ko="2026-11-22T15:00:00Z"),
+            _cand(2, "BTTS", "YES", ev_lb=0.01, ko="2026-11-21T20:00:00Z"),
+            _cand(3, "OVER15", "OVER", ev_lb=0.02, ko="2026-11-21T21:00:00Z")]
+    picks, _ = _freeze(_frame(rows), _ctx(), stats=_stats({"over15_over": 0.5}))
+    assert list(picks["fixture_id"]) == ["fx3", "fx2", "fx1"]          # stat first, then kickoff
+    assert list(picks["t3_has_stat"]) == [True, False, False]
+
+
+def test_run_fails_closed_without_frozen_t3_statistics(tmp_path):
+    env = {"TOP3_LEAGUE_ENABLED": "true", "TOP3_FREEZE_LEAD_MIN": "120"}
+    res = T.run(now=NOW, out_dir=tmp_path, env=env, committed={})
+    assert res.get("status") == "T3_STATS_MISSING" or "error" in res
+    assert not (tmp_path / T.PICKS_NAME).exists()
+
+
 def test_pre_repair_params_without_valuable_bar_are_not_the_league_bars():
     ctx = _ctx()
     ctx["standard"][LEAGUE] = {"sniper_th": 0.07, "marksman_th": 0.05, "approved": True}   # old shape
@@ -105,9 +136,9 @@ def test_pre_repair_params_without_valuable_bar_are_not_the_league_bars():
 
 
 def test_bars_must_be_applied_by_the_owner():
-    b, why = T.league_bars(_ctx(applied=False), LEAGUE, "BTTS")
+    b, why = T.league_bars(_ctx(applied=False), LEAGUE, "BTTS", "YES")
     assert b is None and why == T.R_NOT_APPLIED
-    b, why = T.league_bars(_ctx(v=0.05, m=0.04, s=0.06), LEAGUE, "BTTS")
+    b, why = T.league_bars(_ctx(v=0.05, m=0.04, s=0.06), LEAGUE, "BTTS", "YES")
     assert b is None and why == T.R_BAD_BAR
 
 
@@ -206,7 +237,8 @@ def test_store_settle_and_notify_round_trip(tmp_path):
     env = {T.FLAG_ENV: "1"}
     assert T.notify(out_dir=tmp_path, env=env, sender=lambda t: sent.append(t) or True)["sent"] == 1
     assert T.notify(out_dir=tmp_path, env=env, sender=lambda t: sent.append(t) or True)["sent"] == 0
-    assert "TOP-3 La Liga 2" in sent[0] and "own, owner-approved" in sent[0]
+    assert "TOP-3 La Liga 2" in sent[0] and "own owner-approved bar" in sent[0] and "Paper track" in sent[0]
+    assert not any(w in sent[0] for w in ("SNIPER", "MARKSMAN", "VALUABLE"))
 
 
 def test_workflows_gate_the_steps_on_the_repository_variable():
@@ -259,3 +291,58 @@ def test_replay_refuses_to_run_without_real_bars(tmp_path):
     R = _replay()
     with pytest.raises(SystemExit, match="no bars proposals"):
         R.main(["--track", "standard", "--predictions", str(tmp_path / "p.parquet"), "--bars-dir", str(tmp_path)])
+
+
+# ── owner 2026-11-11 "Own list": league-wide cells outside the 3 slots ─────────────────────────────
+def _lw_ctx():
+    ctx = _ctx()
+    cell = ctx["side"]["btts"][LEAGUE]["bars_opt"]["yes"]
+    cell.update(source="NONE", measure="ALL", mode="LEAGUE_WIDE", config="NONE|ALL|max-|min-", valuable_th=-1.0,
+                marksman_th=-1.0, sniper_th=-1.0, wf_roi_shrunk=0.05)
+    return ctx
+
+
+def test_league_wide_cell_is_its_own_list_outside_the_three_slots():
+    rows = [_cand(i, "BTTS", "YES", pm=0.5, pf=0.5) for i in range(1, 6)]                 # 5 league-rule matches
+    rows += [_cand(10, "OU25", "OVER"), _cand(11, "OVER15", "OVER"), _cand(12, "OVER35", "OVER"),
+             _cand(13, "OU25", "OVER", pm=0.62)]
+    picks, weeks = _freeze(_frame(rows), _lw_ctx(), stats=_stats({"over25_over": 1.0, "over15_over": 0.5,
+                                                                   "over35_over": 0.8}))
+    top = picks[picks["selection_mode"] == T.SELECTION_MODE]
+    rule = picks[picks["selection_mode"] == T.OWN_LIST_MODE]
+    assert len(top) == 3 and not set(top["market"]) & {"BTTS"}          # league-wide never takes a slot
+    assert len(rule) == 5 and set(rule["slot"]) == {T.OWN_LIST_MODE}      # uncapped, never pushed out
+    assert weeks["n_picks"].iloc[0] == 3
+    msg = T.message(picks.assign(league_week_id=WEEK))
+    assert "League rule: BTTS Yes, every match" in msg and "outside the 3" in msg
+    assert not any(w in msg for w in ("SNIPER", "MARKSMAN", "VALUABLE"))
+
+
+def test_direction_rule_across_both_lists_league_rule_stands():
+    """A TOP-3 model tip opposite to a league-rule tip on the same fixture yields; the next model tip fills."""
+    rows = [_cand(1, "BTTS", "YES", pm=0.5, pf=0.5, home="X", away="Y"),
+            _cand(2, "OU25", "UNDER", pm=0.70, home="X", away="Y"),            # opposite of BTTS Yes on X v Y
+            _cand(3, "OVER15", "OVER")]
+    picks, weeks = _freeze(_frame(rows), _lw_ctx(), stats=_stats({"over25_under": 1.0, "over15_over": 0.2}))
+    top = picks[picks["selection_mode"] == T.SELECTION_MODE]
+    assert list(top["fixture_id"]) == ["fx3"]
+    assert list(picks[picks["selection_mode"] == T.OWN_LIST_MODE]["fixture_id"]) == ["fx1"]
+    assert json.loads(weeks["excluded"].iloc[0])["DIRECTION_CONFLICT"] == 1
+
+
+def test_committed_production_tip_stands_over_the_league_rule():
+    rows = [_cand(1, "BTTS", "YES", pm=0.5, pf=0.5, home="X", away="Y", ko="2026-11-21T15:00:00Z")]
+    committed = {("2026-11-21", "X", "Y"): {"direction": "UNDER"}}
+    picks, _ = _freeze(_frame(rows), _lw_ctx(), committed=committed, stats=_stats({}))
+    assert (picks["selection_mode"] == T.OWN_LIST_MODE).sum() == 0
+
+
+def test_dashboard_shows_slot_cell_and_the_league_rule_line_no_tier():
+    from dashboard_data import top3_league as D
+    view = {"latest_picks": [{"top3_rank": 1, "home_team": "H", "away_team": "A", "kickoff_utc": "2026-11-21T15:00:00Z",
+                              "market": "OU25", "side": "OVER", "odds": 2.0, "edge": 0.1, "slot": "TOP",
+                              "cell_status": "UNPROVEN", "result": None}],
+            "league_rule": {"picks": 4, "settled": 2, "flat_pnl_units": 0.9}}
+    f = D.latest_picks_frame(view)
+    assert "Tier" not in f.columns and list(f["Slot"]) == ["TOP"] and list(f["Cell"]) == ["UNPROVEN"]
+    assert "League rule (every match, outside the 3): 4 tip(s)" in D.league_rule_line(view)

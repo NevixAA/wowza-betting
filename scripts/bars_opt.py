@@ -30,11 +30,15 @@ def cmd_universe(a) -> int:
     pred = pd.read_parquet(a.predictions)
     pred = pred[(pred["track"] == a.track) & (pred["candidate"] == a.candidate) & pred["deployable"]]
     aliases = json.loads(Path(a.aliases).read_text(encoding="utf-8")) if a.aliases else {}
-    rows, stats = U.build(pred, a.track, aliases, a.fd_raw)
+    rows, stats = U.build(pred, a.track, aliases, a.fd_raw, certified_fd=a.certified_fd)
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
     rows.to_parquet(out / f"universe_{a.track}.parquet", index=False)
     (out / f"universe_{a.track}_match.json").write_text(json.dumps(stats, indent=1), encoding="utf-8")
+    if a.track == "standard":
+        from src import fd_prematch as F
+        (out / "universe_standard_source.json").write_text(
+            json.dumps(F.universe_source(a.certified_fd), indent=1) + "\n", encoding="utf-8")
     pr = rows["yes"].notna()
     print(a.track, "rows", len(rows), "priced", int(pr.sum()),
           "closing pair", int((pr & rows["yes_c"].notna()).sum()))
@@ -95,6 +99,8 @@ def main(argv=None) -> int:
     u.add_argument("--candidate", default="champion_recipe")
     u.add_argument("--fd-raw")
     u.add_argument("--aliases")
+    u.add_argument("--certified-fd", action="store_true",
+                   help="protocol v5: Standard O/U 2.5 prices through the certified one-to-one football-data join")
     u.add_argument("--out", required=True)
     for name in ("select", "final"):
         s = sub.add_parser(name)

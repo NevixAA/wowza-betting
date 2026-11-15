@@ -1,11 +1,11 @@
 {
   "goals": {
-    "model_version": "props_goals_clean_hgb_nan_native_013bad63",
-    "champion_since": "2026-11-09T17:25:34Z",
-    "artifact_sha256": "013bad63545eda2474c11077c183b77db83202e87061eb5916c03105a758c80c",
+    "model_version": "props_goals_clean_hgb_nan_native_5de94714",
+    "champion_since": "2026-11-15T08:25:55Z",
+    "artifact_sha256": "5de94714b722dbc3fd1ecd294fa246725749cc8ea5dced294d7487f934110038",
     "training_cutoff": "2026-08-31",
     "promotion_source": "OWNER_APPROVED_CLEAN_RETRAIN",
-    "promotion_reason": "OWNER_APPROVED_CLEAN_RETRAIN: Yes, retrain (owner 2026-11-09): props training and serving read the provider-proven home/away side",
+    "promotion_reason": "OWNER_APPROVED_CLEAN_RETRAIN: Fix penalties too, then promote",
     "gate_version": "PG-PROPS-1.0"
   },
   "goals2": {
@@ -18,30 +18,30 @@
     "gate_version": "PG-PROPS-1.0"
   },
   "assists": {
-    "model_version": "props_assists_clean_hgb_nan_native_acabc37c",
-    "champion_since": "2026-11-09T17:25:35Z",
-    "artifact_sha256": "acabc37c17897f5e40baf362d257b4a1ec53247b75b52e4771d245b8615fbb95",
+    "model_version": "props_assists_clean_hgb_nan_native_abf39bb5",
+    "champion_since": "2026-11-15T08:25:56Z",
+    "artifact_sha256": "abf39bb5abbb2d6097d9d2d83082e3b7abefc22bf7fd91689b01ba8f810c499b",
     "training_cutoff": "2026-08-31",
     "promotion_source": "OWNER_APPROVED_CLEAN_RETRAIN",
-    "promotion_reason": "OWNER_APPROVED_CLEAN_RETRAIN: Yes, retrain (owner 2026-11-09): props training and serving read the provider-proven home/away side",
+    "promotion_reason": "OWNER_APPROVED_CLEAN_RETRAIN: Fix penalties too, then promote",
     "gate_version": "PG-PROPS-1.0"
   },
   "sot": {
-    "model_version": "props_sot_clean_hgb_nan_native_a1d72892",
-    "champion_since": "2026-11-09T17:25:33Z",
-    "artifact_sha256": "a1d7289239ed5e98a5b632baeaf990ad12df12636acf77930783a1ca05d5e3c4",
+    "model_version": "props_sot_clean_hgb_nan_native_571b102c",
+    "champion_since": "2026-11-15T08:25:53Z",
+    "artifact_sha256": "571b102c4214f619b2d2d9c4f390c214481c74f68c3db88ef6812befa843025c",
     "training_cutoff": "2026-08-31",
     "promotion_source": "OWNER_APPROVED_CLEAN_RETRAIN",
-    "promotion_reason": "OWNER_APPROVED_CLEAN_RETRAIN: Yes, retrain (owner 2026-11-09): props training and serving read the provider-proven home/away side",
+    "promotion_reason": "OWNER_APPROVED_CLEAN_RETRAIN: Fix penalties too, then promote",
     "gate_version": "PG-PROPS-1.0"
   },
   "sot2": {
-    "model_version": "props_sot2_clean_hgb_nan_native_654df317",
-    "champion_since": "2026-11-09T17:25:34Z",
-    "artifact_sha256": "654df317d7d83d15c58c5bccca645cff15fa25fa93b27587a32073def2465b03",
+    "model_version": "props_sot2_clean_hgb_nan_native_5b5fad60",
+    "champion_since": "2026-11-15T08:25:55Z",
+    "artifact_sha256": "5b5fad604a126baac702bef3ade27cbac662625b0e4936ba7fe48337b2621734",
     "training_cutoff": "2026-08-31",
     "promotion_source": "OWNER_APPROVED_CLEAN_RETRAIN",
-    "promotion_reason": "OWNER_APPROVED_CLEAN_RETRAIN: Yes, retrain (owner 2026-11-09): props training and serving read the provider-proven home/away side",
+    "promotion_reason": "OWNER_APPROVED_CLEAN_RETRAIN: Fix penalties too, then promote",
     "gate_version": "PG-PROPS-1.0"
   },
   "sot3": {
@@ -63,12 +63,12 @@
     "gate_version": "PG-PROPS-1.0"
   },
   "cards": {
-    "model_version": "props_cards_clean_recipe_retrained_5b512cce",
-    "champion_since": "2026-11-09T17:25:35Z",
-    "artifact_sha256": "5b512cce69a1ab548e28ac833a3d284e8cb6e3a9358e0e6181b38806f983f035",
+    "model_version": "props_cards_clean_recipe_retrained_bfd5e1cc",
+    "champion_since": "2026-11-15T08:25:56Z",
+    "artifact_sha256": "bfd5e1cc51835a63f9abfcfe5e8fa7a7873ed079e07102f8af8764f68a6d9279",
     "training_cutoff": "2026-08-31",
     "promotion_source": "OWNER_APPROVED_CLEAN_RETRAIN",
-    "promotion_reason": "OWNER_APPROVED_CLEAN_RETRAIN: Yes, retrain (owner 2026-11-09): props training and serving read the provider-proven home/away side",
+    "promotion_reason": "OWNER_APPROVED_CLEAN_RETRAIN: Fix penalties too, then promote",
     "gate_version": "PG-PROPS-1.0"
   }
 }

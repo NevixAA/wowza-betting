@@ -6,21 +6,74 @@
 
 **Nothing is PROVEN.** Statuses below are per league x market; there is no global bar anywhere.
 
+## Clean rebuild (owner 2026-11-11): one bar per cell, no tiers
+
+"the old sniper/mm/valuable dont important anymore for the future tips, only as study and optimize maybe, do not
+use them". A future tip qualifies ONLY by its cell's one approved bar and carries its cell status (PROMISING /
+UNPROVEN) and, if picked, TOP-3 or TIER2. SNIPER / MARKSMAN / VALUABLE are never computed, shown or stored on a
+future tip; history keeps its old columns for study.
+
+**Which bar is the qualifying one, proved from the study.** Each cell holds valuable_th <= marksman_th <=
+sniper_th. The approved study measured every bet at **valuable_th**: `src.bars_opt.study.apply_bars` keeps every
+row with measure >= valuable_th (the marksman / sniper bars only label rows above it), and the FINAL scores, the
+fresh-holdout scores and every cell's `study_final.bets` in the proposal are computed on those rows. Check on
+`output/bars_opt/study_58f10476` (the study behind this proposal): in all 40 scored cells the FINAL bet count equals
+the number of rows with measure >= valuable_th, 0 mismatches; qualifying at marksman_th would drop bets in 14 of
+the 40. So the one bar is `valuable_th`, served as `qualifying_bar` on every tip.
+
+**Props (until per-league props bars exist):** a props tip qualifies at the props cell's current lowest qualifying
+bar - the former VALUABLE gates, the same for every league - and is UNPROVEN:
+
+| Props market | Qualifies when |
+|---|---|
+| Anytime scorer (goals), SOT 1+ (sot) | EV >= 0.15, relative edge >= 0.12 (odds < 4) / 0.20 (odds 4-6) / 0.30 (odds >= 6), and GES >= 0.35 |
+| Assist (assists) | EV >= 0.15 and the same odds-banded relative-edge floor |
+| Score 2+, SOT 2+ / 3+ / 4+, Carded, defenders' anytime scorer | never a tip: data-only PAPER rows, as before (capped money-losers) |
+
+**TOP-3** = tips from the retrained MODEL cells that clear their cell's bar, ranked by T3 (cautious calibrated value
+per cell; `src.research.top3_ranking.LIVE_RULE` / `in_pool`, statistics = the one research freeze); the old EV
+ranking is dropped; TIER2 only fills empty slots; never padded. A paper track in the Clean Record.
+
+**Calibrated edge (owner 2026-11-11 "Show calibrated edge"):** every future team tip shows its calibrated edge
+(cell's own frozen calibration, LIVE_RULE R3) - "edge: not calibrated" when the cell has no statistic; the raw model
+edge is stored for study only. Dry run 2026-11-03..09: all 13 TOP-3 picks calibrated; the 15 league-rule tips
+(league-wide cells, no calibration slope) show "not calibrated".
+
+**League rule (owner 2026-11-11 "Own list"):** a LEAGUE-WIDE cell (source NONE, e.g. Argentina NF BTTS) is shown as
+the league's own line ("League rule: BTTS Yes, every match"), outside the 3 TOP-3 slots - it never takes and is never
+pushed out of a slot, and stakes per cell as approved (Argentina NF BTTS 1.25%), with no tier label. Direction rule
+across both lists: the fixture's first live production tip stands; then the league-rule tip stands over an opposite
+TOP-3 model tip, which yields to the next qualifier.
+
 ## How these bars were made
 
 * Predictions rebuilt on the corrected history (owner "Rebuild first"): data-truth-100 `2e6e6e745`, frame `58f10476f4c82d7b` (was `8d973b3f2f1f04f7`); standard run_20261110T203611Z, new_format run_20261110T203319Z; champion_recipe unchanged on both tracks.
 * Fresh holdout (owner "Fresh holdout", "Fix the rule"), protocol bars-fresh-holdout/3 sha256 `711c6a71df36a5be9dd7e228cd4a55b8e43530fa1cdfd94f8296c8417ea84f3e`: OddsAPI history prices from tiers ['B1', 'B2'] only, holdout = rows whose price no earlier run ever had; tested ONCE (2026-11-10T21:50:45Z), Holm family 21 counted before the test; verdict record TP-FH-2026-11-10-bc7459cc.
 * Cells without a fresh stretch keep selection-based bars and verdicts (study re-run on the rebuilt universes, output/bars_opt/study_58f10476), as in TP-2026-11-09-abfb5dc4; thin leagues on the learned blend.
 
+## Withdrawal (owner 2026-11-11 "Bet-time snapshot + re-run" / "Strict, keep Argentina" / "Paper until re-run")
+
+37 entries (46 cells) are WITHDRAWN pending the re-run on bet-time prices only: the 21 fresh-holdout cells (their
+history prices were B1 "close" snapshots, ~9 minutes before kickoff, used as bet prices) and every cell whose
+evidence rests > 50% on 00:00-stamped backfill (capture time unknown). Per-cell counts:
+`output/threshold_proposals/bars_oddsapi_hist/cell_price_provenance_2026-11.json`; the record and the reason per
+entry: `config/threshold_approvals.json`. They are PAPER with no bar until the re-run proposal is approved.
+
+A 38th entry, `ou25|La Liga 2`, was withdrawn on 2026-11-11 ("Paper until re-run"): `src/data_loader` served
+closing-preferred O/U 2.5 prices as `odds_over25` / `odds_under25`. The loader now keeps pre-match and closing apart,
+and the re-run (protocol `bars-fresh-holdout/5`) prices Standard O/U 2.5 only through the certified one-to-one
+football-data join. 36 entries stay approved (threshold_apply dry run: 36 applied, 38 withdrawn).
+
 ## Staking this season (owner 2026-11-11)
 
-| Staked cell | State | Base fraction | Max odds | Tier multipliers S / M / V |
-|---|---|---|---|---|
-| `new_format|BTTS|Argentina Primera Division` | ACTIVE | 0.0125 | 2.6 | 1.1 / 0.9 / 1.0 |
-| `standard|OU25_OVER|La Liga 2` | ACTIVE_LOW | 0.005 | HARD ceiling (no cell range) | 1.0 / 1.0 / 1.0 |
-| `standard|BTTS|La Liga 2` | ACTIVE_LOW | 0.005 | 2.5 | 1.0 / 1.0 / 1.0 |
+| Staked cell | State | Base fraction (flat, every tip) | Max odds |
+|---|---|---|---|
+| `new_format|BTTS|Argentina Primera Division` | ACTIVE | 0.0125 | 2.6 |
 
-Every other cell is PAPER. **Sweden Allsvenskan NF Under 2.5** is PROMISING but stays PAPER (owner rule 2026-11-02, track paper_reason). Brazil NF BTTS, Serie B BTTS and Serie B Over 2.5 dropped to PAPER (no longer PROMISING). Cloudbet stays PAPER_ONLY; wowza-exec cells are all PAPER (dry run 68 cells, 3 USA MLS held BLOCKED).
+**Flat per cell (owner 2026-11-11 "Clean rebuild"):** no tier multiplier anywhere - Argentina's former 1.1 / 0.9 /
+1.0 is retired; every tip that clears the cell's one bar stakes the base fraction.
+
+Every other cell is PAPER (owner 2026-11-11 "Paper until re-run": only Argentina NF BTTS is staked). **La Liga 2 Over 2.5** is PAPER (withdrawn until the protocol v5 re-run). **La Liga 2 BTTS** is PAPER (owner 2026-11-11 "Strict, keep Argentina": its evidence is 92% unproven backfill; withdrawn). **Sweden Allsvenskan NF Under 2.5** is withdrawn (PAPER, no bar). Brazil NF BTTS, Serie B BTTS and Serie B Over 2.5 are PAPER. Argentina NF BTTS keeps ACTIVE 1.25% by owner exemption (a LEAGUE_WIDE rule; PROMISING on its own 86 live-captured FINAL bets). Cloudbet stays PAPER_ONLY; wowza-exec cells are all PAPER (dry run 24 cells, 38 withdrawn entries excluded).
 
 **TOP-3** (owner "Paper track"): a named PAPER track in the Clean Record from 2026-11-21; stakes follow the per-cell status only, never the TOP-3 label.
 

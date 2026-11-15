@@ -1,10 +1,5 @@
 {
  "cups": {
-  "fetch": {
-   "calls": 0,
-   "planned_country_calls": 0,
-   "planned_fixture_calls": 0
-  },
   "proven_by_league_cup": {
    "Argentina Primera Division / Copa de la Liga Profesional": 404
   },
@@ -30,7 +25,7 @@
    "Mexico Liga MX": 112,
    "USA MLS": 706
   },
-  "claims": 37386,
+  "claims": 37738,
   "conflict_fixtures": 0,
   "conflict_rows": 0,
   "conflicts_by_reason": {},
@@ -74,7 +69,15 @@
  "owner_not_played": {
   "decided_fixtures": 1,
   "fixtures_not_claimed": [],
-  "rows": 2
+  "rows": 2,
+  "unscored_by_day_list": {
+   "by_rule": {
+    "one_club_resolved": 2
+   },
+   "days": 1,
+   "fixtures_not_claimed": [],
+   "rows": 2
+  }
  },
  "provider_date": {
   "claims_off_by_offset": {
@@ -84,8 +87,8 @@
   "claims_off_provider_date": 352,
   "history_date_is_local_kickoff_date": 0,
   "history_date_not_local_kickoff_date": 352,
-  "history_rows": 64815,
-  "history_rows_claimed": 64373,
+  "history_rows": 64813,
+  "history_rows_claimed": 64727,
   "local_date_unknown": 0,
   "refused_by_league": {},
   "refused_by_reason": {},
@@ -123,7 +126,7 @@
    "USA MLS": 1
   },
   "corrected_to_90min": 6,
-  "history_rows_claimed": 64373,
+  "history_rows_claimed": 64727,
   "pool_fixtures_by_status": {
    "ABD": 5,
    "AET": 264,
@@ -136,5 +139,5 @@
    "ft_status_scores_differ": 7
   }
  },
- "written_at": "2026-11-09T15:55:42.427053+00:00"
+ "written_at": "2026-11-10T17:39:42.118610+00:00"
 }

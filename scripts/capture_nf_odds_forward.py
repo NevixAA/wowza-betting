@@ -289,6 +289,8 @@ def run() -> int:
     leagues = sorted(config.NEW_FORMAT_LEAGUES & set(config.API_FOOTBALL_IDS))
     rows, stop = [], False
     book_rows: list[dict] = []   # per-book quotes, only populated when CAPTURE_BOOK_QUOTES
+    # Special-market quotes (src/specials_quotes) kept from the SAME answers: zero extra calls.
+    spec_rows: list[dict] = []
     # NEAREST KICKOFF ACROSS EVERYTHING THIS PASS SEES, for the NEAR loop in nf_odds_capture.yml.
     # Costs nothing: the hours-to-kickoff value is computed per fixture anyway. Without it the
     # loop cannot know whether a match is imminent, so it can only run a fixed length and stop —
@@ -354,6 +356,16 @@ def run() -> int:
                 except Exception as _e:                               # noqa: BLE001
                     # Per-book capture must never take the main archive down with it.
                     print(f"  [book_quotes] skipped fixture {fid}: {_e}")
+                # Correct score / high-low totals / a side scoring 4+ from the same answer
+                # (owner 2026-11-10). Additive: never changes book_quotes or the consensus rows.
+                try:
+                    from src.specials_quotes import parse_specials, now_iso
+                    spec_rows.extend(parse_specials(
+                        raw_payload, capture="nf", af_fixture_id=fid, league=league,
+                        kickoff_utc=_iso_kickoff(raw_ko), home=home, away=away,
+                        captured_at=now_iso()))
+                except Exception as _e:                               # noqa: BLE001
+                    print(f"  [specials_quotes] skipped fixture {fid}: {_e}")
             for market, odd in odds.items():
                 rows.append({"snapshot_date": snap_date, "snapshot_ts": snap_ts,
                              "match_date": mdate,
@@ -372,6 +384,16 @@ def run() -> int:
                   f"{n_books} bookmakers -> {QUOTES_DIR.name}/")
         except Exception as _e:                                       # noqa: BLE001
             print(f"[book_quotes] write failed: {_e}")
+    if spec_rows:
+        try:
+            from src.specials_quotes import append_specials, SPECIALS_DIR
+            n_s = append_specials(spec_rows)
+            print(f"[specials_quotes] +{n_s} rows from {len(spec_rows)} parsed; "
+                  f"{len({r['af_fixture_id'] for r in spec_rows})} fixtures, "
+                  f"{len({r['af_fixture_id'] for r in spec_rows if r['bet'] == 'Exact Score'})} with Exact Score, "
+                  f"{len({r['bookmaker_id'] for r in spec_rows})} bookmakers -> {SPECIALS_DIR.name}/")
+        except Exception as _e:                                       # noqa: BLE001
+            print(f"[specials_quotes] write failed: {_e}")
 
     # DELIBERATELY AFTER THE BOOK-QUOTE WRITE. `rows` holds Bet365 only, and Bet365's coverage
     # of new-format side markets is thin, so a fixture priced by eight other books yields ZERO

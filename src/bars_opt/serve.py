@@ -4,6 +4,13 @@
     cell, why  = served_cell(lp, market, league, side)    # the owner-applied cell or (None, reason)
     res        = score(frame, cell)                       # p_used / measure / in_range / tier / ev_est / reason
 
+ONE BAR PER CELL (owner 2026-11-11, "Clean rebuild"). A row is a tip when its measure clears the cell's
+QUALIFYING bar = valuable_th: the bar every bet of the approved study was measured at (src.bars_opt.study.
+apply_bars keeps every row with measure >= valuable_th; the study's FINAL bets, the fresh-holdout bets and the
+proposal's evidence are exactly those rows). A tip's `tier` is the single value QUALIFIED (src.tier_labels);
+the retired SNIPER / MARKSMAN / VALUABLE split is never computed for a future tip. `band` / `tier2_ok` (the
+study's MARKSMAN boundary) are kept only for the TOP-3 TIER2 slot rule, never shown or stored as a tier.
+
 WHAT A CELL IS. One league x market x side, chosen by the pre-registered bars study (src/bars_opt/study.py,
 reports/P4_BARS_OPTIMIZATION.md) and written by the monthly job (src/bars_opt/cells.py) as a proposal. The owner
 approves it and src/threshold_apply writes it into the production params entry under "bars_opt":
@@ -43,9 +50,8 @@ R_RANGE = "OUTSIDE_ODDS_RANGE"
 R_NO_VALUE = "NO_SOURCE_VALUE"
 R_BELOW = "BELOW_LEAGUE_BAR"
 R_NO_FAIR = "NO_TWO_SIDED_PRICE"
-#: tier label of a LEAGUE_WIDE bet: the contract knows SNIPER / MARKSMAN / VALUABLE only, so a league-wide bet
-#: is served as the LOWEST tier and carries bar_mode = LEAGUE_WIDE beside it (listed for the owner)
-LEAGUE_WIDE_TIER = "VALUABLE"
+#: the one value of a served tip (owner 2026-11-11): every tip, MODEL or LEAGUE_WIDE, is QUALIFIED
+from src.tier_labels import QUALIFIED as TIP_VALUE  # noqa: E402
 REQUIRED = ("mside", "league", "config", "source", "measure", "mode", "valuable_th", "marksman_th", "sniper_th",
             "source_params", "verdict")
 
@@ -139,7 +145,8 @@ def score(frame: pd.DataFrame, cell: dict) -> pd.DataFrame:
     (the de-vigged fair probability of that side from a real two-sided pair) and odds (the bet-time price of
     that side). Returns a frame on the same index: p_used, measure, in_range, tier ("" = no tip), ev_est,
     bar_mode, reason ("" = tipped). The decision is the study's (apply_bars), not a re-implementation."""
-    cols = ["p_used", "measure", "in_range", "tier", "ev_est", "bar_mode", "reason"]
+    cols = ["p_used", "measure", "in_range", "tier", "ev_est", "bar_mode", "reason", "band", "tier2_ok",
+            "qualifying_bar", "cell_status"]
     out = pd.DataFrame(index=frame.index, columns=cols)
     if frame.empty:
         return out
@@ -149,6 +156,8 @@ def score(frame: pd.DataFrame, cell: dict) -> pd.DataFrame:
                       "odds": pd.to_numeric(frame["odds"], errors="coerce").to_numpy(float)}, index=frame.index)
     out["bar_mode"] = cell["mode"]
     out["tier"] = ""
+    out["qualifying_bar"] = float(cell["valuable_th"])
+    out["cell_status"] = str(cell.get("verdict") or "")
     out["in_range"] = False
     priced = np.isfinite(e["fair"].to_numpy()) & np.isfinite(e["odds"].to_numpy()) & (e["odds"].to_numpy() > 1) \
         & np.isfinite(e["p_side"].to_numpy())
@@ -173,8 +182,9 @@ def score(frame: pd.DataFrame, cell: dict) -> pd.DataFrame:
     kept = S.apply_bars(ee, {cell["league"]: bars_of(cell)}, cell["mode"])
     out.loc[ee.index, "reason"] = R_BELOW
     if len(kept):
-        tiers = kept["tier"].where(kept["tier"] != S.MODE_LW, LEAGUE_WIDE_TIER)
-        out.loc[kept.index, "tier"] = tiers.to_numpy()
+        out.loc[kept.index, "tier"] = TIP_VALUE
+        out.loc[kept.index, "band"] = kept["band"].to_numpy()
+        out.loc[kept.index, "tier2_ok"] = kept["tier2_ok"].to_numpy()
         out.loc[kept.index, "ev_est"] = kept["ev_est"].to_numpy()
         out.loc[kept.index, "reason"] = ""
     return out

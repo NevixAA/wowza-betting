@@ -1080,7 +1080,7 @@
    "football_data_code": "P1",
    "football_data_format": "mmz4281",
    "api_football_id": 94,
-   "odds_api_sport_key": null,
+   "odds_api_sport_key": "soccer_portugal_primeira_liga",
    "sofascore_tournament_id": null,
    "api_football_only": false,
    "api_football_extra_seasons": [],
@@ -1091,7 +1091,7 @@
     "type": "start_year",
     "start_month": 7
    },
-   "note": "training only (no OddsAPI live key)"
+   "note": "training only (enabled=false: never fetched live). OddsAPI key soccer_portugal_primeira_liga added 2026-11-11 (owner: probe, then add) on evidence: the provider's own /sports?all=true list holds exactly one candidate (title Primeira Liga - Portugal, active); the historical probe (wowza-exec run 43035181427, private ledger/probe_keys.json) listed 9 events on 2024-05-18, 4 proven to our fixtures, and returned btts (3 books) + alternate_totals (5 books, 23 lines) for a proven fixture; 21 credits. Used by the OddsAPI history collector (BT only)"
   },
   {
    "id": "belgian_first_division_a",
@@ -1452,6 +1452,12 @@
    "sofascore_tournament_id": null,
    "api_football_only": false,
    "api_football_extra_seasons": [],
+   "same_club_spellings": [
+    [
+     "Edinburgh City",
+     "FC Edinburgh"
+    ]
+   ],
    "provider_names": {},
    "season_rule": {
     "type": "start_year",
