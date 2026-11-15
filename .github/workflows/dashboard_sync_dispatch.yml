@@ -17,6 +17,7 @@ on:
       - '**.py'
       - 'deploy/dashboard_manifest.json'
       - 'config/leagues.json'
+      - 'config/trustworthy_performance.json'
       - '.streamlit/config.toml'
       - 'requirements*.txt'
   workflow_dispatch:

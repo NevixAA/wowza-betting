@@ -191,8 +191,9 @@ def cells_frame(data: dict) -> pd.DataFrame:
     for eid in set(wd) - known:
         data["problems"].append(f"withdrawal {eid}: not an entry of the approved proposal")
     d = pd.DataFrame(rows, columns=COLUMNS)
-    d["_o"] = d["Status"].map(STATUS_ORDER).fillna(9)
-    return d.sort_values(["_o", "League", "Market"]).drop(columns="_o").reset_index(drop=True)
+    d["_o"] = d["Status"].map(STATUS_ORDER)          # a status outside the order sorts last (no stand-in rank)
+    return (d.sort_values(["_o", "League", "Market"], na_position="last").drop(columns="_o")
+            .reset_index(drop=True))
 
 
 def counts(d: pd.DataFrame) -> dict:

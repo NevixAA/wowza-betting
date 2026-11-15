@@ -370,7 +370,9 @@ def independent(out: Path, ctx: dict) -> dict:
         v["cells_proven"] = int((cells["status"] == "PROVEN").sum())
         pol = json.loads((out.parent / "config" / "bankroll_policy.json").read_text(encoding="utf-8"))
         cs = (pol.get("cell_staking") or {}).get("cells") or {}
-        v["cells_staked"] = sum(1 for c in cs.values() if float(c.get("base_fraction") or 0) > 0)
+        # a cell without a base_fraction stakes nothing: it is simply not counted (no stand-in value)
+        v["cells_staked"] = sum(1 for c in cs.values()
+                                if c.get("base_fraction") is not None and float(c["base_fraction"]) > 0)
     except (OSError, KeyError, ValueError):
         pass
     return v
