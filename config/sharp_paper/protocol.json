@@ -324,25 +324,26 @@
      60,
      72
     ],
-    "note": "first pass inside [60, 72] h before the provider's kickoff (the study's open window is [60, 84] h, target 72)"
+    "note": "first run inside [60, 72] h before the provider's kickoff (study open window [60, 84] h, target 72); runs every 2 h, so each fixture is seen up to 6 times in the window and captured once"
    },
    "T6": {
     "lead_h": [
      4,
-     6
+     7
     ],
-    "note": "first pass inside [4, 6] h (study signal window [4, 10] h, target 6)"
+    "note": "first run inside [4, 7] h (study signal window [4, 10] h, target 6); 3 h wide so a 2-hourly run delayed by up to 1 h still lands"
    },
    "CLOSE": {
     "lead_h": [
-     0.03,
-     0.25
+     0.05,
+     2.0
     ],
-    "note": "first pass 2-15 min before kickoff: the CLV close, never a bet price"
+    "note": "first run inside (3 min, 2 h] before kickoff: the latest pre-kickoff snapshot a 2-hourly run can take - the CLV reference (a near-close, median about 1 h, NOT the kickoff - 5 min close), never a bet price"
    }
   },
   "fixtures": "only fixtures with a live tip of the universe; matched to a provider event within the league's own sport keys, kickoff inside [match_date - 12 h, match_date + 36 h), both clubs resolved (src.team_names.resolve, plus the store's proven provider aliases), one to one",
-  "budget": "every paid call checks x-requests-remaining first: no call when (remaining - its cost) < floor (260,000); per-run, per-UTC-day and per-month caps journaled in the private store; [oddsapi_usage] line per run (no key, no price)"
+  "budget": "every paid call checks x-requests-remaining first: no call when (remaining - its cost) < floor (260,000); per-run, per-UTC-day and per-month caps journaled in the private store; [oddsapi_usage] line per run (no key, no price)",
+  "schedule": "short slot-driven runs every 2 h (one pass each, about 1 billed minute); no in-run loop"
  },
  "signal": {
   "definition": "sharp-filter/1 W72_6: move = fair Over probability at T6 minus at T72 (power de-vig of one book's exact-line pair)",
@@ -651,7 +652,7 @@
   "price": "the pick's own line and side: Pinnacle's exact-line pair in the T6 snapshot (a real pre-kickoff price, at the signal snapshot); no Pinnacle pair -> NO_PRICE (recorded, not a bet; no other book stands in). Never the CLOSE snapshot.",
   "stake": "flat 1 unit, paper",
   "settlement": "the v9 ledger's own settled result of the same tip (result WIN/LOSS; void/push rows excluded and counted)",
-  "clv": "bet price / Pinnacle's same-line same-side price in the CLOSE snapshot - 1 (missing when no close was captured)"
+  "clv": "bet price / Pinnacle's same-line same-side price in the CLOSE slot snapshot - 1 (the CLOSE slot is a near-close up to 2 h before kickoff; missing when no CLOSE snapshot was captured)"
  },
  "review": {
   "when": "per cell, at 150 AGREE (CONS) paper bets, or at the Clean Record milestone (2 months from go-live, 2027-01-21), whichever comes first",
@@ -661,5 +662,13 @@
  "outputs": {
   "private": "wowza-exec branch sharp-paper: data/capture/*.parquet (prices), ledger/journal.csv, ledger/usage.json, paper/paper_ledger.parquet",
   "public": "counts and statistics only (never a price, an event id or a per-row price-derived value)"
- }
+ },
+ "amendments": [
+  {
+   "date": "2026-11-15",
+   "before_any_pick": true,
+   "previous_sha256": "6e393fa2ebbf8c7410c1f5ac69d7b8109c66f012b2d08d5ef049f4365db19ff2",
+   "change": "capture slots for short 2-hourly runs (owner goal: private Actions minutes): T6 [4, 6] -> [4, 7] h; CLOSE 2-15 min -> (3 min, 2 h] (a near-close: no job is kept alive for the true close; v9's public pre-kickoff capture has no Pinnacle O/U and is not switched on). Nothing else changes."
+  }
+ ]
 }

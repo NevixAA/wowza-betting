@@ -30,6 +30,7 @@ def test_protocol_matches_its_registered_hash():
 def test_protocol_is_paper_flat_one_unit():
     assert P["track"] == "PAPER" and P["stake_units"] == 1 and SP.STAKE_UNITS == 1 and SP.TRACK == "PAPER"
     assert P["signal"]["primary"] == "CONS" and P["start_match_date"] == "2026-11-21"
+    assert all(a["before_any_pick"] for a in P.get("amendments", []))
 
 
 def test_every_threshold_is_per_league_and_none_below_min_history():
@@ -222,6 +223,12 @@ def test_slots_are_due_only_inside_their_windows_and_once():
     assert SP.due_slots(ko, ko - pd.Timedelta(hours=5), set(), P) == ["T6"]
     assert SP.due_slots(ko, ko - pd.Timedelta(minutes=10), set(), P) == ["CLOSE"]
     assert SP.due_slots(ko, ko - pd.Timedelta(hours=30), set(), P) == []
+    # short 2-hourly runs (amendment 2026-11-15): T6 is 3 h wide, CLOSE is the run inside the last 2 h
+    assert SP.due_slots(ko, ko - pd.Timedelta(hours=6.5), set(), P) == ["T6"]
+    assert SP.due_slots(ko, ko - pd.Timedelta(hours=1.5), set(), P) == ["CLOSE"]
+    assert SP.due_slots(ko, ko - pd.Timedelta(minutes=2), set(), P) == []
+    lo = min(w["lead_h"][1] - w["lead_h"][0] for w in P["capture"]["slots"].values())
+    assert lo >= 1.95                                   # every window at least one 2-hourly cadence wide
     assert SP.due_slots(ko, ko + pd.Timedelta(minutes=1), set(), P) == []
 
 
