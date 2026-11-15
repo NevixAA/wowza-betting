@@ -1,0 +1,157 @@
+{
+ "schema": "wowza.sharp_filter_protocol/1",
+ "protocol_id": "sharp-filter/1",
+ "approved_by_owner": "2026-11-15 (\"yes\" to the sharp-agreement research brief)",
+ "label": "DEVELOPMENT evidence: every row is dated before 2026-09-01; the approved bars were also chosen on rows before 2026-09-01, so the tip set is in-sample for its bar. A PROVEN here only opens a forward paper protocol from 2026-11-21; nothing changes production.",
+ "question": "Do the clean model's O/U tips (approved cell bar) perform better when the sharp market moved the same way before the bet, and is that more than following the sharp move alone?",
+ "data": {
+  "predictions": {
+   "standard": "C:/Users/nevo/dev/p2-rebuild-1110/gh_standard/run_20261110T203611Z/predictions.parquet",
+   "new_format": "C:/Users/nevo/dev/p2-rebuild-1110/out_new_format/run_20261110T203319Z/predictions.parquet"
+  },
+  "candidate": "champion_recipe",
+  "model_markets": [
+   "over15",
+   "over25",
+   "over35"
+  ],
+  "dev_end_exclusive": "2026-09-01",
+  "store_root": "C:/Users/nevo/dev/wt-store-check",
+  "store": "NevixAA/wowza-exec branch odds-history (PRIVATE), read only through src/oddsapi_history_adapter.py attach()",
+  "tiers": {
+   "B4": [
+    "h2h",
+    "totals"
+   ],
+   "B1": [
+    "alternate_totals"
+   ],
+   "BT": [
+    "alternate_totals"
+   ]
+  },
+  "roles": "B4 intermediate snapshots = MOVEMENT (signal inputs and bet prices); B4 last snapshot and B1 = CLOSE (CLV only, never a signal input or bet price); BT = BET (question 4 only: the live-tip lead time)",
+  "results": "output/fd_history.parquet (full-time goals, exact join on date, league, home, away; a row contradicting the universe's own over25 outcome is excluded and counted) - used ONLY to settle the 1X2 market-only arm",
+  "no_1x2_model": "The clean Phase-2 predictions carry no 1X2 market (over15/25/35, btts, ht_over05/15 only). The 1X2 model arm is NOT_TESTABLE; 1X2 enters only the market-only arm. Nothing is substituted."
+ },
+ "tips": {
+  "proposal_id": "TP-2026-11-15-bade2c0b",
+  "proposal_file": "output/threshold_proposals/bars_oddsapi_hist/2026-11_bade2c0b.json",
+  "msides": [
+   "over25_over",
+   "over25_under",
+   "over15_over",
+   "over35_over"
+  ],
+  "rule": "A model tip = src.bars_opt.serve.score with the cell's own approved source, fitted source_params, measure, odds range and VALUABLE bar, evaluated at the BET price (below) and the power de-vig fair price of that same pair. Only MODEL-mode cells; LEAGUE_WIDE cells (bet every match, no model signal) are listed and not tested in the model arm. OFF cells have no bar and no tips."
+ },
+ "prices": {
+  "bet_book": "pinnacle",
+  "bet_price": "Pinnacle's own two-sided pair on the market's exact line (1.5 / 2.5 / 3.5) for O/U, Pinnacle's own home/draw/away triple for 1X2, read from the BET SNAPSHOT of the window (role MOVEMENT). One book's real pre-kickoff price; never best-of-books, never a consensus, never a CLOSE snapshot. No pair in that snapshot -> no bet (no other snapshot or book stands in).",
+  "clv": "odds / closing odds - 1 with the closing price from Pinnacle's LATEST CLOSE-role snapshot of the same line: tier B1 (the match's own close, kickoff - 5 min) first, else B4's last snapshot; only when that close is later than the bet snapshot. 1X2: B4 CLOSE only."
+ },
+ "windows": {
+  "W72_6": {
+   "open_lead_h": [
+    60,
+    84
+   ],
+   "open_target_h": 72,
+   "signal_lead_h": [
+    4,
+    10
+   ],
+   "signal_target_h": 6,
+   "bet": "signal_snapshot",
+   "note": "primary: T-72h -> T-6h, bet at the price in the snapshot the signal was read from (the bet is placed after that snapshot is seen; the signal uses only that snapshot and earlier)"
+  },
+  "W72_6_next": {
+   "open_lead_h": [
+    60,
+    84
+   ],
+   "open_target_h": 72,
+   "signal_lead_h": [
+    4,
+    10
+   ],
+   "signal_target_h": 6,
+   "bet": "next_snapshot",
+   "note": "strict execution: the bet price is the first MOVEMENT snapshot STRICTLY after the signal snapshot"
+  },
+  "W72_24": {
+   "open_lead_h": [
+    60,
+    84
+   ],
+   "open_target_h": 72,
+   "signal_lead_h": [
+    18,
+    30
+   ],
+   "signal_target_h": 24,
+   "bet": "signal_snapshot",
+   "note": "earlier timing (question 4): T-72h -> T-24h"
+  }
+ },
+ "snapshot_choice": "B4 featured snapshots are timed off the league-day's FIRST kickoff and an event can sit in two league-day units, so labels are not a match's lead time. Each fixture's snapshots are chosen by their ACTUAL lead (provider's latest kickoff - snapshot_ts): the MOVEMENT snapshot inside the window's lead range closest to the target (tie: the later). Measured before registration (no outcome read): 24,722 matched fixtures, median 9 distinct snapshots each; Pinnacle present in [60,84] h for 20,841, [4,10] h for 23,967, [18,30] h for 23,604; Pinnacle quotes exactly one totals line per snapshot.",
+ "signal": {
+  "sharp_book": "pinnacle",
+  "devig_ou": "src.market_edge.power_devig of the book's own pair",
+  "devig_1x2": "proportional normalisation of the book's own home/draw/away triple",
+  "ou_reference_line": 2.5,
+  "PIN": "O/U: change of Pinnacle's fair Over probability open -> signal on the line Pinnacle quotes at both snapshots (nearest 2.5 if several; kind SAME). If Pinnacle quotes at both snapshots but on different lines, its main line moved: direction = sign(line change) (up = toward Over), counted as beyond any threshold (kind LINE). 1X2: change of Pinnacle's fair probability of each side.",
+  "CONS": "the MEDIAN over the other books (every bookmaker except Pinnacle) quoting the exact 2.5 pair (1X2: the full triple) at BOTH snapshots of the per-book fair-probability change; requires at least consensus_min_books such books.",
+  "BOTH": "AGREE / DISAGREE / NONE only when PIN and CONS give the same class; otherwise MIXED (reported, not tested).",
+  "consensus_min_books": 3,
+  "threshold": "per league x market (x side for 1X2) x signal x window: the `quantile` of |change| over the SAME league's fixtures dated STRICTLY earlier (prices only, never an outcome); WARMUP (no class, excluded and counted) while fewer than `min_history` earlier measured fixtures exist. Learned from earlier data only; no global number.",
+  "quantile": 0.75,
+  "min_history": 100,
+  "classes": "For a bet on side s: AGREE = the move toward s beyond the threshold; DISAGREE = against s beyond it; NONE = measured and within it; NO_DATA = not measurable (no pair at a snapshot, too few books, WARMUP)."
+ },
+ "signals": [
+  "PIN",
+  "CONS",
+  "BOTH"
+ ],
+ "tested_classes": [
+  "AGREE",
+  "DISAGREE",
+  "NONE"
+ ],
+ "arms": {
+  "model": "per window x signal x track x market-side x league x class (AGREE / DISAGREE / NONE) plus ALL (every tip of the cell at the window's bet price, signal-independent)",
+  "market": "market-only baseline, no model: per window x signal x league x side, bet the side the sharp signal moved TOWARD (class AGREE for that side) at the same Pinnacle bet price. O/U 2.5 Over / Under and 1X2 home / draw / away, every fixture of the clean universe in a B4 league (both tracks)."
+ },
+ "stats": {
+  "roi_ci_and_p": "src.bars_opt.study.score: block bootstrap by match date (2,000), CI = widest of block CI and max-of-three SE; one-sided p = (k+1)/(B+1), k = resampled means <= 0. A p at the 2,000-draw floor is re-drawn with ceil(10 * family / 0.025) resamples (study.fast_one_sided_p), as in the bars study.",
+  "win_minus_implied": "mean(won) - mean(1 / odds) at the bet price",
+  "diff_boot": 4000,
+  "diff_test": "ROI(A) - ROI(B), match dates resampled jointly over the union of both sets' dates; one-sided p for A > B"
+ },
+ "families": {
+  "F1_decision": "every tested cell with at least one bet: model AGREE / DISAGREE / NONE / ALL and market FOLLOW, all windows, signals, tracks, market-sides, leagues. Holm over the whole family.",
+  "F2_contrasts": "per model cell (window x signal x track x market-side x league): AGREE - NONE, AGREE - DISAGREE, AGREE - MARKET_FOLLOW (same window, signal, league, side). Holm over F2. Reported for questions 2-3; not a staking decision."
+ },
+ "proven": {
+  "min_bets": 150,
+  "holm_alpha_one_sided": 0.025,
+  "rule": "PROVEN = at least 150 bets AND Holm-adjusted one-sided p < 0.025 AND the ROI 95% CI lower bound > 0 (the owner's strict rule). PROMISING = ROI > 0 and CLV > 0 or unmeasured (the bars study's rule). Else UNPROVEN."
+ },
+ "timing": {
+  "primary_window": "W72_6",
+  "lead_buckets_h": [
+   84,
+   60,
+   36,
+   18,
+   10,
+   4,
+   0
+  ],
+  "question_4": "(a) actual lead of the chosen open / signal / bet snapshots; (b) Pinnacle's fair-Over path from the open snapshot (same line): mean |change| and share with the sign of the final movement per lead bucket; (c) per MODEL cell: tips at the BT (live lead time) Pinnacle price, how many are still a tip at the W72_6 bet price, and how many of those get PIN AGREE, per active league-week."
+ },
+ "forward": "Any PROVEN or PROMISING model-AGREE cell becomes a forward PAPER protocol from 2026-11-21 (fixed definitions above, thresholds from all history before each fixture, Pinnacle prices captured live at T-72 h and T-6 h); nothing is staked without a new owner decision.",
+ "licence": "The repo is public: results.json and the report hold counts, ROI, CI, p and lead statistics only; every per-row frame (prices) stays in --work outside the repo.",
+ "pre_registration_coverage": "Counts measured BEFORE registration with no outcome read (scripts/sharp_filter_study.py coverage): 27,666 universe fixtures matched to a provider event; W72_6 window readable on 20,294 fixtures; Pinnacle O/U move kind SAME 13,493 / LINE 5,443 / none 1,358; Pinnacle quotes the exact 2.5 pair in the W72_6 bet snapshot on only 5,368 fixtures (its single featured line is often 2.25/2.75), so the model arm counts about 1,190 tips over all MODEL cells and every class; no model cell can reach 150 bets in one class. Other books quoting 2.5 at both snapshots: median 5 per fixture; consensus_min_books set to 3 (was drafted at 5, which left 53% of fixtures without a consensus). 1X2: Pinnacle triples at both snapshots on 20,155 fixtures."
+}
