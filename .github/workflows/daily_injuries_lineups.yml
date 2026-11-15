@@ -1,0 +1,167 @@
+name: Daily Injuries + Lineups Collect
+
+# Owner decision 2026-11-15, "Schedule daily": injuries and lineups were collected only on the run-days
+# of data_truth_collect.yml (steps 11 / 14, last run 2026-11-08), so every newer match read injuries and
+# `started` (lineups) as missing. This job collects them INCREMENTALLY once a day - only what is not
+# stored yet or is due a refresh: the open seasons' fixture lists, one /injuries per open registry
+# league-season, one /injuries?fixture per covered fixture kicking off in the next 26 h, one
+# /fixtures/lineups per newly finished registry fixture. Every row carries its fetch time
+# (injuries: fetched_at + first_seen_at; lineups: fetched_at). Script and rules:
+# scripts/collect_daily_injuries_lineups.py.
+#
+# CALLS PER DAY (estimate 2026-11-15 from the stored lists of 2026-10-01 .. 11-09): fixture lists
+# 52 + ~45, injuries ~42 league-seasons + ~25-60 pre-kickoff fixtures, lineups ~55 (mean) .. ~185
+# (busiest day) newly finished fixtures: ~220 on an average day, ~400 on the busiest. Own budget:
+# at most 1,500 calls per UTC day (output/collect/af_budget_daily.json) and the shared account floor
+# collect_common.FLOOR (stop below 25,000 remaining of the 75,000/day plan), checked before every call.
+#
+# FAIL LOUD: the run exits red (after committing what it stored) when work was due and 0 rows came
+# back (a covered league-season, pre-kickoff fixtures, finished fixtures with lineups, or a budget
+# stop / API failure before the first row).
+#
+# BRANCH (decision 2026-11-15). The collected data and the collectors live on data-truth-100, the
+# go-live branch; main has neither yet. So the job writes to data-truth-100 until the go-live merge
+# and to main after it, chosen at run time: main once main holds
+# scripts/collect_daily_injuries_lineups.py (i.e. the merge happened), else data-truth-100. The
+# rows committed to data-truth-100 reach main WITH the merge, so they exist on main at go-live;
+# writing them to main now would put a second, diverging copy of the same parquet files on both
+# branches and make the merge conflict on binary files. This file is identical on main (where the
+# schedule must live to fire) and on data-truth-100 (so the merge carries it unchanged).
+#
+# SWITCH. A scheduled firing runs only when the repository variable DAILY_COLLECT_ENABLED is 'true'
+# (set after the capped test run, 2026-11-15). A manual run is always allowed:
+#   mode=dry-run  planned calls, no API call, no commit
+#   mode=collect  the real run; limit_* cap it (the capped test run)
+#   Switch OFF: gh variable delete DAILY_COLLECT_ENABLED --repo NevixAA/wowza-betting
+#
+# 05:17 UTC: off the contended :00 / :30; after the late South American matches end (~04:00 UTC) and
+# after the provider's daily quota reset (00:00 UTC). Shares the concurrency group of
+# data_truth_collect.yml, so the two writers of output/collect/ never run at once (a queued run checks
+# out the branch after the other one pushed).
+
+on:
+  schedule:
+    - cron: '17 5 * * *'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'dry-run = planned calls, no API call, no commit; collect = the real run'
+        required: false
+        default: 'dry-run'
+        type: choice
+        options: ['dry-run', 'collect']
+      limit_seasons:
+        description: 'collect: at most N injury league-season calls (empty = all due)'
+        required: false
+        default: ''
+      limit_prematch:
+        description: 'collect: at most N pre-kickoff injury calls (empty = all due)'
+        required: false
+        default: ''
+      limit_lineups:
+        description: 'collect: at most N lineup calls (empty = all due)'
+        required: false
+        default: ''
+      skip_fixtures:
+        description: 'collect: do not refresh the fixture lists'
+        required: false
+        default: false
+        type: boolean
+
+concurrency:
+  group: data-truth-collect
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    if: vars.DAILY_COLLECT_ENABLED == 'true' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    permissions:
+      contents: write
+    env:
+      MODE: ${{ github.event_name == 'schedule' && 'collect' || inputs.mode }}
+      LIMIT_SEASONS: ${{ inputs.limit_seasons }}
+      LIMIT_PREMATCH: ${{ inputs.limit_prematch }}
+      LIMIT_LINEUPS: ${{ inputs.limit_lineups }}
+      SKIP_FIXTURES: ${{ inputs.skip_fixtures }}
+
+    steps:
+      - name: Target branch (data-truth-100 until the go-live merge, then main)
+        id: target
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh api "repos/${{ github.repository }}/contents/scripts/collect_daily_injuries_lineups.py?ref=main" --silent 2>/dev/null; then
+            echo "branch=main" >> "$GITHUB_OUTPUT"; echo "target: main (merged)"
+          else
+            echo "branch=data-truth-100" >> "$GITHUB_OUTPUT"; echo "target: data-truth-100 (go-live merge not done yet)"
+          fi
+
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ steps.target.outputs.branch }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Plan (no API call)
+        run: python scripts/collect_daily_injuries_lineups.py --dry-run
+
+      - name: Collect
+        id: collect
+        if: env.MODE == 'collect'
+        env:
+          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
+        run: |
+          ARGS=()
+          for pair in "limit-seasons:$LIMIT_SEASONS" "limit-prematch:$LIMIT_PREMATCH" "limit-lineups:$LIMIT_LINEUPS"; do
+            name="${pair%%:*}"; val="${pair#*:}"
+            if [ -n "$val" ]; then
+              if ! [[ "$val" =~ ^[0-9]+$ ]]; then echo "::error::--$name must be a whole number, got '$val'"; exit 2; fi
+              ARGS+=("--$name" "$val")
+            fi
+          done
+          if [ "$SKIP_FIXTURES" = "true" ]; then ARGS+=("--skip-fixtures"); fi
+          set +e
+          python scripts/collect_daily_injuries_lineups.py "${ARGS[@]}"
+          rc=$?
+          set -e
+          echo "rc=$rc" >> "$GITHUB_OUTPUT"
+          echo "collector exit code: $rc"
+
+      - name: Commit the collected rows
+        if: always() && steps.collect.outcome != 'skipped'
+        env:
+          BRANCH: ${{ steps.target.outputs.branch }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          # explicit paths only (never git add -A): what this job writes
+          for p in output/collect/injuries.parquet output/collect/injuries_seasons.parquet \
+                   output/collect/injuries_fixtures.parquet output/collect/injuries_prematch.parquet \
+                   output/collect/lineups_fixtures.parquet output/collect/lineups \
+                   output/collect/upcoming_fixtures.parquet output/collect/competition_seasons.parquet \
+                   output/collect/af_league_coverage.parquet output/collect/af_budget_daily.json \
+                   output/collect/daily_collect_runs.jsonl output/strength/competition_fixtures.parquet; do
+            if [ -e "$p" ]; then git add -f "$p"; fi
+          done
+          if git diff --staged --quiet; then echo "nothing new to commit"; exit 0; fi
+          git commit -q -m "auto: daily injuries + lineups collect $(date -u '+%Y-%m-%d %H:%M UTC')"
+          for i in 1 2 3 4 5; do
+            # In a rebase `-X theirs` keeps THIS run's commit (the collected data).
+            git pull --rebase --autostash -X theirs origin "$BRANCH" && git push origin "HEAD:$BRANCH" && exit 0
+            echo "push race - retry $i"; sleep $((RANDOM % 5 + 3))
+          done
+          echo "::error::push failed after 5 retries"; exit 1
+
+      - name: Fail loud (due work returned 0 rows)
+        if: always() && steps.collect.outputs.rc != '' && steps.collect.outputs.rc != '0'
+        run: |
+          echo "::error title=Daily injuries/lineups collect::collector exit ${{ steps.collect.outputs.rc }} - see the Collect step (rows stored so far are committed)"
+          exit 1
