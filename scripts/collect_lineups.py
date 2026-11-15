@@ -14,7 +14,11 @@ season whose flag is unknown (coverage call failed / season absent) is skipped t
 
 OUTPUT (output/collect/ only)
   lineups_fixtures.parquet  the journal: fixture_id, league_id, season, n_teams (0 = the provider's
-        real empty answer, never asked again), fetched_at.
+        real empty answer), fetched_at. ONE row per fixture: the LATEST answer (a re-ask replaces it).
+  lineups/audit/attempts.parquet  the audit log, append-only (2026-11-16): one row per /fixtures/lineups answer
+        stored from that date on - fixture_id, league_id, season, n_teams, fetched_at, ask ('first' |
+        'retry' | 'journal' = the answer stored before this log existed, copied from the journal when its
+        fixture is first re-asked), kickoff_date. Key (fixture_id, fetched_at): nothing is overwritten.
   lineups/teams_<league_id>_<season>.parquet    one row per (fixture_id, team_id): formation,
         coach_id, coach_name, n_start, n_subs. A formation / coach the provider does not give stays None.
   lineups/players_<league_id>_<season>.parquet  one row per (fixture_id, team_id, role, slot):
@@ -31,6 +35,19 @@ league-seasons it touched. The journal keeps its single file (5 small columns pe
 semantics: written LAST, it alone decides what is asked again. read_lineups() is the reader: it
 reads every partition, plus a round-7 single file if one exists (a partition row wins on the same
 key); nothing is deleted or moved.
+EMPTY ANSWERS ARE RE-ASKED WHILE RECENT (2026-11-16). The daily collector asks a fixture right after it
+finishes, and lower leagues often get their lineups filled by the provider hours or days later (run
+43773536934: 11 league-43 fixtures of 2026-11-14 came back empty). An empty answer (n_teams 0) is
+asked again when its LAST ask was made before kickoff + RETRY_WINDOW_D days and at least
+RETRY_SPACING_H hours ago. An empty whose last ask was made after that window is FINAL (the
+2018-2022 empties were asked years after the match: final). KICKOFF is the provider's kickoff date
+of the fixture list (competition_fixtures.parquet `date` = fixture.date[:10]; the list keeps no
+time), read as 00:00 UTC of that date, so the window can only end EARLIER than kickoff + 7 days,
+never later. A fixture without a known kickoff date has its empty treated as final and is logged
+(stats 'retry_final_unknown_kickoff', empties asked in the last RETRY_WINDOW_D days only). Retries
+come AFTER the never-asked fixtures (a budget stop leaves retries, not new fixtures, for the next
+run) and pass through the same client budget (daily cap + account floor). A retry's answer replaces
+the journal row (filled or still empty); every answer is kept in lineups/audit/attempts.parquet.
 Collection only: no model feature reads these yet (they come with the Phase 2 retrain).
 """
 from __future__ import annotations
@@ -39,6 +56,7 @@ import argparse
 import json
 import os
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 import pandas as pd
@@ -62,6 +80,18 @@ P_COLS = ["fixture_id", "team_id", "role", "slot", "player_id", "player_name", "
           "fetched_at"]
 COLS = {"teams": T_COLS, "players": P_COLS}
 KEYS = {"teams": ["fixture_id", "team_id"], "players": ["fixture_id", "team_id", "role", "slot"]}
+A_COLS = ["fixture_id", "league_id", "season", "n_teams", "fetched_at", "ask", "kickoff_date"]
+A_KEY = ["fixture_id", "fetched_at"]
+#: an empty answer is re-asked while its last ask was made before kickoff + RETRY_WINDOW_D days ...
+RETRY_WINDOW_D = 7
+#: ... and at least RETRY_SPACING_H hours after that last ask (the daily run is 24 h apart)
+RETRY_SPACING_H = 20
+
+
+def attempts_path(root: Path | None = None) -> Path:
+    """lineups/audit/attempts.parquet: every stored answer, append-only. A sub-folder, so no reader or
+    check that globs the teams_/players_ partitions (lineups/*.parquet) ever sees it."""
+    return (root or LINEUPS_DIR) / "audit" / "attempts.parquet"
 
 
 def _safe(season) -> str:
@@ -148,54 +178,105 @@ def backfill_fetched_at(root: Path | None = None, journal: Path | None = None) -
     return out
 
 
-def plan(fx: pd.DataFrame | None = None) -> dict:
+def retry_plan(journal: pd.DataFrame, rf: pd.DataFrame, now: datetime) -> tuple[pd.DataFrame, list[int]]:
+    """Empty journal answers due a re-ask at `now` (see the module doc), newest kickoff first, and the
+    ids of recent empties whose kickoff date is unknown (final, logged). Columns of the plan:
+    fixture_id, league_id, season, date (the provider's kickoff date), prev_fetched_at."""
+    cols = ["fixture_id", "league_id", "season", "date", "prev_fetched_at"]
+    if journal.empty or "n_teams" not in journal.columns:
+        return pd.DataFrame(columns=cols), []
+    now = pd.Timestamp(now)
+    now = now.tz_localize("UTC") if now.tzinfo is None else now.tz_convert("UTC")
+    e = journal[pd.to_numeric(journal["n_teams"], errors="coerce") == 0].copy()
+    if e.empty:
+        return pd.DataFrame(columns=cols), []
+    e["fixture_id"] = pd.to_numeric(e["fixture_id"]).astype("int64")
+    last = pd.to_datetime(e["fetched_at"], errors="coerce", utc=True, format="ISO8601")
+    dates = {}
+    if len(rf):
+        dates = dict(zip(pd.to_numeric(rf["fixture_id"]).astype("int64"), rf["date"]))
+    e["date"] = e["fixture_id"].map(dates)
+    ko = pd.to_datetime(e["date"], errors="coerce", format="%Y-%m-%d", utc=True)
+    unknown = ko.isna() & last.notna() & (last >= now - pd.Timedelta(days=RETRY_WINDOW_D))
+    due = ko.notna() & last.notna() & (last < ko + pd.Timedelta(days=RETRY_WINDOW_D)) & \
+        (last <= now - pd.Timedelta(hours=RETRY_SPACING_H))
+    r = e[due].copy()
+    r["prev_fetched_at"] = r["fetched_at"]
+    r["season"] = r["season"].astype(str)
+    r["league_id"] = pd.to_numeric(r["league_id"]).astype("int64")
+    r = r.sort_values(["date", "fixture_id"], ascending=[False, False], kind="mergesort")
+    return r[cols].reset_index(drop=True), sorted(int(x) for x in e.loc[unknown, "fixture_id"])
+
+
+def plan(fx: pd.DataFrame | None = None, now: datetime | None = None) -> dict:
+    """never-asked finished fixtures ('todo', newest first) + empty answers due a re-ask ('retry')."""
+    now = now or datetime.now(timezone.utc)
     rf = AL.registry_fixtures(fx)
+    j = read_parquet(JOURNAL)
     done = AL.done_keys(JOURNAL, ["fixture_id"])
     todo = rf[~rf["fixture_id"].astype(str).map(lambda x: (x,) in done)] if len(rf) else rf
     todo = todo.sort_values(["date", "fixture_id"], ascending=[False, False], kind="mergesort")
+    retry, unknown = retry_plan(j, rf, now)
     seasons = {(int(a), str(b)) for a, b in zip(rf["league_id"], rf["season"])}
-    return {"registry_fixtures": int(len(rf)), "todo": todo.reset_index(drop=True),
-            "coverage": AL.coverage_todo(seasons)}
+    return {"registry_fixtures": int(len(rf)), "todo": todo.reset_index(drop=True), "retry": retry,
+            "retry_final_unknown_kickoff": unknown, "coverage": AL.coverage_todo(seasons)}
 
 
-def _flush(tb, pb, jb):
-    """tb / pb: {(league_id, season): rows}. Partitions first, the journal LAST: it decides what is
-    asked again, so a crash between the two re-asks a fixture rather than losing it."""
+def _flush(tb, pb, jb, ab=None):
+    """tb / pb: {(league_id, season): rows}. Partitions first, then the attempts log, the journal LAST:
+    it decides what is asked again, so a crash between them re-asks a fixture rather than losing it."""
     for kind, buf in (("players", pb), ("teams", tb)):
         for (lid, season), rows in sorted(buf.items()):
             if rows:
                 append_parquet(partition_path(kind, lid, season), rows, KEYS[kind], COLS[kind])
+    if ab:
+        append_parquet(attempts_path(), ab, A_KEY, A_COLS, keep="first")
     if jb:
         append_parquet(JOURNAL, jb, ["fixture_id"], J_COLS)
 
 
 def run(limit: int | None = None, dry_run: bool = False, client: AFClient | None = None,
-        fx: pd.DataFrame | None = None) -> dict:
-    p = plan(fx)
+        fx: pd.DataFrame | None = None, now: datetime | None = None) -> dict:
+    """Ask the never-asked fixtures (newest first), then the empty answers due a re-ask; `limit` caps
+    both together. 'player_rows' / 'fetched' / per_league 'fixtures' count FIRST asks only; the
+    re-asks have their own 'retry_*' counters (the daily fail-loud rule reads first asks only)."""
+    p = plan(fx, now)
     cov_known = AL.coverage_map("lineups")
-    todo = p["todo"]
+    todo, retry = p["todo"], p["retry"]
     no_cov = sum(1 for a, b in zip(todo["league_id"], todo["season"])
                  if cov_known.get((int(a), str(b))) is False)
+    r_no_cov = sum(1 for a, b in zip(retry["league_id"], retry["season"])
+                   if cov_known.get((int(a), str(b))) is False)
     stats = {"registry_finished_fixtures": p["registry_fixtures"],
              "planned_coverage_calls": len(p["coverage"]),
              "planned_fixture_calls_upper_bound": int(len(todo)) - no_cov,
+             "planned_retry_calls_upper_bound": int(len(retry)) - r_no_cov,
              "skipped_no_provider_lineups_known": no_cov, "calls": 0, "fetched": 0,
-             "skipped": {}, "player_rows": 0, "per_league": {}}
+             "skipped": {}, "player_rows": 0, "per_league": {},
+             "retry_calls": 0, "retry_filled": 0, "retry_still_empty": 0, "retry_player_rows": 0,
+             "retry_filled_ids": [], "retry_final_unknown_kickoff": p["retry_final_unknown_kickoff"]}
     stats["planned_calls_total_upper_bound"] = (stats["planned_coverage_calls"]
-                                                 + stats["planned_fixture_calls_upper_bound"])
+                                                 + stats["planned_fixture_calls_upper_bound"]
+                                                 + stats["planned_retry_calls_upper_bound"])
     print(f"[lineups] {json.dumps({k: v for k, v in stats.items() if k not in ('skipped', 'per_league')})}")
+    if p["retry_final_unknown_kickoff"]:
+        print(f"[lineups] {len(p['retry_final_unknown_kickoff'])} recent empty answer(s) without a known "
+              f"kickoff date in the fixture list: final, not re-asked: {p['retry_final_unknown_kickoff'][:50]}")
     if dry_run:
         return stats
     client = client or AFClient()
-    tb, pb, jb = {}, {}, []
+    tb, pb, jb, ab = {}, {}, [], []
+    work = [(f, False) for f in todo.itertuples(index=False)] + \
+           [(f, True) for f in retry.itertuples(index=False)]
     try:
         stats["calls"] += AL.ensure_coverage(client, p["coverage"])
         cov = AL.coverage_map("lineups")
         n = 0
-        for f in todo.itertuples(index=False):
+        for f, is_retry in work:
             flag = cov.get((int(f.league_id), str(f.season)))
             if flag is not True:
                 tag = "no_provider_lineups" if flag is False else "coverage_unknown"
+                tag = f"retry_{tag}" if is_retry else tag
                 stats["skipped"][tag] = stats["skipped"].get(tag, 0) + 1
                 continue
             if limit is not None and n >= limit:
@@ -210,24 +291,44 @@ def run(limit: int | None = None, dry_run: bool = False, client: AFClient | None
             part = (int(f.league_id), str(f.season))
             tb.setdefault(part, []).extend(teams)
             pb.setdefault(part, []).extend(players)
-            jb.append({"fixture_id": int(f.fixture_id), "league_id": int(f.league_id),
-                       "season": str(f.season), "n_teams": len(teams), "fetched_at": ts})
-            stats["player_rows"] += len(players)
-            lg = stats["per_league"].setdefault(str(int(f.league_id)), {"fixtures": 0, "player_rows": 0})
-            lg["fixtures"] += 1
-            lg["player_rows"] += len(players)
-            stats["fetched"] += 1
+            key = {"fixture_id": int(f.fixture_id), "league_id": int(f.league_id), "season": str(f.season)}
+            jb.append({**key, "n_teams": len(teams), "fetched_at": ts})
+            kd = f.date if isinstance(f.date, str) and f.date else None
+            if is_retry:
+                # the answer this re-ask replaces in the journal, kept in the log (idempotent on the key)
+                ab.append({**key, "n_teams": 0, "fetched_at": f.prev_fetched_at, "ask": "journal",
+                           "kickoff_date": kd})
+            ab.append({**key, "n_teams": len(teams), "fetched_at": ts, "ask": "retry" if is_retry else "first",
+                       "kickoff_date": kd})
+            lg = stats["per_league"].setdefault(str(int(f.league_id)), {"fixtures": 0, "player_rows": 0,
+                                                                         "retry_calls": 0, "retry_player_rows": 0})
+            if is_retry:
+                stats["retry_calls"] += 1
+                stats["retry_player_rows"] += len(players)
+                if teams:
+                    stats["retry_filled"] += 1
+                    stats["retry_filled_ids"].append(int(f.fixture_id))
+                else:
+                    stats["retry_still_empty"] += 1
+                lg["retry_calls"] += 1
+                lg["retry_player_rows"] += len(players)
+            else:
+                stats["player_rows"] += len(players)
+                lg["fixtures"] += 1
+                lg["player_rows"] += len(players)
+                stats["fetched"] += 1
             if len(jb) >= FLUSH_EVERY:
-                _flush(tb, pb, jb)
-                tb, pb, jb = {}, {}, []
+                _flush(tb, pb, jb, ab)
+                tb, pb, jb, ab = {}, {}, [], []
     except BudgetStop as e:
         print(f"[lineups] budget stop: {e} (resumable)")
         stats["budget_stop"] = str(e)
     finally:
-        _flush(tb, pb, jb)
+        _flush(tb, pb, jb, ab)
         client.flush()
-    print(f"[lineups] calls {stats['calls']:,}; fixtures stored {stats['fetched']:,}; "
-          f"skipped {stats['skipped']}")
+    print(f"[lineups] calls {stats['calls']:,}; fixtures stored {stats['fetched']:,}; re-asked empties "
+          f"{stats['retry_calls']:,} (filled {stats['retry_filled']:,}, still empty "
+          f"{stats['retry_still_empty']:,}); skipped {stats['skipped']}")
     return stats
 
 

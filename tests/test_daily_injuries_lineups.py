@@ -194,6 +194,123 @@ def test_prematch_window_and_coverage(env):
     assert D.plan_prematch(NOW).empty                                 # no provider injuries coverage
 
 
+# ── lineups: empty answers re-asked while recent (2026-11-16) ──────────────────────────────────
+
+def _journal(rows):
+    pd.DataFrame([{"league_id": REG, "season": "2026", **r} for r in rows],
+                 columns=LU.J_COLS).to_parquet(LU.JOURNAL)
+
+
+def _clock(monkeypatch, when: datetime):
+    monkeypatch.setattr(AL, "now_iso", lambda: when.isoformat())
+
+
+def test_recent_empty_is_re_asked_and_a_filled_answer_replaces_it(env, monkeypatch):
+    # fixture 1 (kickoff date 2026-11-14) came back empty 21 h ago: due a re-ask
+    first = NOW - timedelta(hours=21)
+    _journal([{"fixture_id": 1, "n_teams": 0, "fetched_at": first.isoformat()}])
+    p = LU.plan(now=NOW)
+    assert p["todo"].empty and list(p["retry"]["fixture_id"]) == [1]
+    _clock(monkeypatch, NOW)
+    c, s = _client(env, _bodies())
+    st = D.run(skip_fixtures=True, client=c, now=NOW)
+    assert ("fixtures/lineups", {"fixture": 1}) in s.calls and st["failures"] == []
+    lu = st["lineups"]
+    assert (lu["due"], lu["retry_due"], lu["retry_calls"], lu["retry_filled"], lu["retry_still_empty"]) == (0, 1, 1, 1, 0)
+    assert lu["retry_player_rows"] == 22 and lu["retry_filled_ids"] == [1]
+    j = pd.read_parquet(LU.JOURNAL)
+    assert len(j) == 1 and j.loc[0, "n_teams"] == 2 and j.loc[0, "fetched_at"] == NOW.isoformat()
+    assert len(LU.read_lineups("players")) == 22 and len(LU.read_lineups("teams")) == 2
+    a = pd.read_parquet(LU.attempts_path()).sort_values("fetched_at")
+    assert list(a["ask"]) == ["journal", "retry"] and list(a["n_teams"]) == [0, 2]
+    assert list(a["fetched_at"]) == [first.isoformat(), NOW.isoformat()] and set(a["kickoff_date"]) == {"2026-11-14"}
+    # filled: never asked again
+    assert LU.plan(now=NOW + timedelta(days=2))["retry"].empty
+    # the run record carries the retry counters
+    rec = D.RUN_LOG.read_text(encoding="utf-8").splitlines()[-1]
+    assert '"retry_calls": 1' in rec and '"retry_filled": 1' in rec
+
+
+def test_retry_that_stays_empty_does_not_fail_loud_and_is_spaced(env, monkeypatch):
+    _journal([{"fixture_id": 1, "n_teams": 0, "fetched_at": (NOW - timedelta(hours=24)).isoformat()}])
+    _clock(monkeypatch, NOW)
+    c, s = _client(env, _bodies(lineups=False))
+    st = D.run(skip_fixtures=True, client=c, now=NOW)
+    assert st["failures"] == []                                     # a still-empty re-ask is not a failure
+    assert (st["lineups"]["retry_calls"], st["lineups"]["retry_still_empty"]) == (1, 1)
+    j = pd.read_parquet(LU.JOURNAL)
+    assert len(j) == 1 and j.loc[0, "n_teams"] == 0 and j.loc[0, "fetched_at"] == NOW.isoformat()
+    assert len(pd.read_parquet(LU.attempts_path())) == 2 and LU.read_lineups("players").empty
+    # spacing: not again within RETRY_SPACING_H of the last ask, again after it
+    assert LU.plan(now=NOW + timedelta(hours=LU.RETRY_SPACING_H - 1))["retry"].empty
+    assert list(LU.plan(now=NOW + timedelta(hours=LU.RETRY_SPACING_H))["retry"]["fixture_id"]) == [1]
+
+
+def test_retry_spacing_after_a_fresh_empty(env):
+    _journal([{"fixture_id": 1, "n_teams": 0, "fetched_at": (NOW - timedelta(hours=6)).isoformat()}])
+    assert LU.plan(now=NOW)["retry"].empty                          # asked 6 h ago
+    assert len(LU.plan(now=NOW + timedelta(hours=14))["retry"]) == 1   # 20 h after the ask
+
+
+def test_old_empty_is_final(env):
+    # last asked after kickoff date + 7 days (2026-11-21 00:00 UTC): final, whatever the spacing
+    _journal([{"fixture_id": 1, "n_teams": 0, "fetched_at": "2026-11-21T00:00:00+00:00"}])
+    assert LU.plan(now=datetime(2026, 11, 25, tzinfo=timezone.utc))["retry"].empty
+    # the historic case: asked years after the match
+    _journal([{"fixture_id": 1, "n_teams": 0, "fetched_at": "2026-11-09T00:00:00+00:00"}])
+    old = pd.read_parquet(CF.OUT).assign(date="2018-09-01")
+    old.to_parquet(CF.OUT)
+    assert LU.plan(now=NOW)["retry"].empty
+    # one last ask before the window closes still counts: asked 2026-11-20 23:00 -> re-asked once more
+    _journal([{"fixture_id": 1, "n_teams": 0, "fetched_at": "2026-11-20T23:00:00+00:00"}])
+    pd.read_parquet(CF.OUT).assign(date="2026-11-14").to_parquet(CF.OUT)
+    assert len(LU.plan(now=datetime(2026, 11, 21, 19, tzinfo=timezone.utc))["retry"]) == 1
+
+
+def test_empty_without_known_kickoff_is_final_and_logged(env, monkeypatch):
+    _journal([{"fixture_id": 99, "n_teams": 0, "fetched_at": (NOW - timedelta(days=1)).isoformat()},
+              {"fixture_id": 98, "n_teams": 0, "fetched_at": "2019-01-01T00:00:00+00:00"}])
+    p = LU.plan(now=NOW)
+    assert p["retry"].empty and p["retry_final_unknown_kickoff"] == [99]    # only the recent one is logged
+    _clock(monkeypatch, NOW)
+    pd.DataFrame([{"fixture_id": 1, "league_id": REG, "season": "2026", "n_teams": 2,
+                   "fetched_at": NOW.isoformat()}, *pd.read_parquet(LU.JOURNAL).to_dict("records")]) \
+        .to_parquet(LU.JOURNAL)
+    c, s = _client(env, _bodies())
+    st = D.run(skip_fixtures=True, client=c, now=NOW)
+    assert not any(e == "fixtures/lineups" for e, _ in s.calls)
+    assert st["lineups"]["retry_final_unknown_kickoff"] == [99] and st["failures"] == []
+
+
+def test_retries_come_after_new_fixtures_and_respect_the_budget(env, monkeypatch):
+    # fixture 1 never asked; fixture 3 (same date) came back empty a day ago
+    fx = pd.read_parquet(CF.OUT)
+    pd.concat([fx, fx.assign(fixture_id=3)], ignore_index=True).to_parquet(CF.OUT)
+    _journal([{"fixture_id": 3, "n_teams": 0, "fetched_at": (NOW - timedelta(days=1)).isoformat()}])
+    _clock(monkeypatch, NOW)
+    c, s = _client(env, _bodies())
+    c.daily_cap = 1                                                  # one call left today
+    st = LU.run(client=c, now=NOW)
+    assert s.calls == [("fixtures/lineups", {"fixture": 1})]         # the new fixture first
+    assert st["budget_stop"] and st["retry_calls"] == 0 and st["planned_retry_calls_upper_bound"] == 1
+    j = pd.read_parquet(LU.JOURNAL).set_index("fixture_id")
+    assert j.loc[3, "n_teams"] == 0 and j.loc[1, "n_teams"] == 2
+    # the retry is still due on the next run
+    assert list(LU.plan(now=NOW + timedelta(hours=1))["retry"]["fixture_id"]) == [3]
+    # --limit caps first asks and re-asks together
+    c2, s2 = _client(env, _bodies())
+    c2.daily_cap = 100
+    _journal([{"fixture_id": 3, "n_teams": 0, "fetched_at": (NOW - timedelta(days=1)).isoformat()}])
+    st2 = LU.run(limit=1, client=c2, now=NOW)
+    assert len(s2.calls) == 1 and st2["retry_calls"] == 0
+
+
+def test_dry_run_counts_the_retries(env):
+    _journal([{"fixture_id": 1, "n_teams": 0, "fetched_at": (NOW - timedelta(days=1)).isoformat()}])
+    out = D.dry_run(NOW)
+    assert out["lineup_calls_before_list_refresh"] == 0 and out["lineup_retry_calls"] == 1
+
+
 # ── Data truth 11 ───────────────────────────────────────────────────────────────────────────────
 
 def _truth_inputs(root: Path, lineup_journaled: bool, inj_read: datetime, list_read: datetime):
