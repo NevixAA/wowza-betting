@@ -171,7 +171,7 @@ KNOWN_MISMATCHES: dict = {}
 #: the served team artifacts: (label, config attribute, track(s) it scores). Status from config.
 TEAM_ARTIFACTS = (
     ("Standard O/U 2.5", "MODEL_FILE_STANDARD", ("standard",)),
-    ("Standard O/U 2.5 (repaired rollback)", "MODEL_FILE_STANDARD_REPAIRED", ("standard",)),
+    ("Standard O/U 2.5 (retired v9_repaired)", "MODEL_FILE_STANDARD_REPAIRED", ("standard",)),
     ("New Format O/U 2.5", "MODEL_FILE_NEWFORMAT", ("new_format",)),
     ("BTTS", "MODEL_FILE_BTTS", ("standard", "new_format")),
     ("Over 1.5", "MODEL_FILE_OVER15", ("standard", "new_format")),
@@ -217,11 +217,12 @@ FANTASY_FEATURES = {
 
 #: registered, documented historical exceptions (A). Each is NOT reaching a served model today.
 HISTORICAL_EXCEPTIONS = (
-    {"id": "standard-repaired-xg-zero", "artifact": "Standard O/U 2.5 (repaired rollback)",
+    {"id": "standard-repaired-xg-zero", "artifact": "Standard O/U 2.5 (retired v9_repaired)",
      "what": "the 2026-10-28 repaired Standard payload's 1.0 imputer filled xG and inside-box shots "
              "(0% training coverage) with 0.0 on every training row",
-     "status": "the serving guard (src.model.serving_refusal) refuses this payload: the rollback "
-               "fails closed (no Standard probability) until a clean retrain replaces it"},
+     "status": "RETIRED by the owner 2026-11-15 (\"fix what you need\"): v9_repaired is no longer a "
+               "serving recipe, owner_install refuses the type, the registry pointer says RETIRED; the "
+               "file stays for audit and the serving guard (src.model.serving_refusal) refuses it too"},
     {"id": "legacy-batch-median", "artifact": "any payload without a persisted imputer",
      "what": "legacy src.model._prep fills from the scoring batch's medians (all-missing column -> 0.0)",
      "status": "no served payload uses it; predict_proba(serving=True) refuses such a payload"},
@@ -268,7 +269,8 @@ def artifact_status(attr: str) -> str:
     if attr == "MODEL_FILE_STANDARD":
         return "active" if recipe == "legacy_v9" else "standby"
     if attr == "MODEL_FILE_STANDARD_REPAIRED":
-        return "active" if recipe == "v9_repaired" else "standby (rollback)"
+        # RETIRED by the owner 2026-11-15 ("fix what you need"): no serving recipe selects it
+        return "retired (kept for audit)"
     return "active"
 
 

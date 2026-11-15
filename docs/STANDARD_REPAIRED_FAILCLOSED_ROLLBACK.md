@@ -1,3 +1,26 @@
+# RETIRED 2026-11-15 - read this first
+
+**Owner (Nevo), 2026-11-15: "fix what you need".** The `v9_repaired` Standard O/U 2.5 recipe and its
+payload `models/model_v9_standard_repaired.pkl` are **RETIRED**. Its 1.0 train-only imputer filled xG
+and inside-box shots, which had 0% training coverage, with 0.0 on every training row, so the model
+learned an invented "xG = 0" (`reports/REAL_DATA_FINAL_AUDIT.md` T5).
+
+| What | Now |
+|---|---|
+| `STANDARD_OU25_SERVING_RECIPE` | accepts **only** `legacy_v9` (= serve `models/model_v9_standard.pkl`, the clean-retrain champion of 2026-11-09). `v9_repaired` is refused like any unknown value: `ServingConfigError` names the retirement, and predict stops before calling OddsAPI. |
+| `src/standard_serving.apply` | no repaired branch; Standard probabilities come from the champion only |
+| `src.promotion_gate.owner_install("standard_repaired", ...)` | refused (`PermissionError`, RETIRED) |
+| `.github/workflows/train_standard_repaired.yml` | both jobs stop at their first step |
+| Registry | `models/registry/current_champions.json` entry `standard_repaired`: `status: RETIRED`, date, owner words, reason; `output/model_lineage/promotion_decisions.csv` row `RETIRE` / `RETIRED` (`src.promotion_gate.retire_model_type`) |
+| The file | kept on disk and in `models/registry/standard_repaired/` for audit; the serving guard (`src.model.serving_refusal`) also refuses it |
+
+**There is no alternative Standard recipe to roll back to any more.** A Standard model problem is
+handled through the registry: `src.promotion_gate.rollback("standard", <earlier champion version>)`,
+owner-initiated and logged. Everything below is the 2026-11-01 history of the retired recipe, kept
+for the record.
+
+---
+
 # Standard O/U 2.5 serving: fail CLOSED instead of falling back to legacy (R2 finding 17)
 
 Owner-facing note, written BEFORE the code change (R2 working rule). Branch

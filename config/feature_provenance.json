@@ -2384,9 +2384,9 @@
    "active_model_eligible": true
   },
   {
-   "artifact": "Standard O/U 2.5 (repaired rollback)",
+   "artifact": "Standard O/U 2.5 (retired v9_repaired)",
    "path": "models/model_v9_standard_repaired.pkl",
-   "status": "standby (rollback)",
+   "status": "retired (kept for audit)",
    "track": "standard",
    "feature": "home_scored_last5",
    "transformation_at": "src/feature_engineering.py:140",
@@ -2398,9 +2398,9 @@
    "active_model_eligible": false
   },
   {
-   "artifact": "Standard O/U 2.5 (repaired rollback)",
+   "artifact": "Standard O/U 2.5 (retired v9_repaired)",
    "path": "models/model_v9_standard_repaired.pkl",
-   "status": "standby (rollback)",
+   "status": "retired (kept for audit)",
    "track": "standard",
    "feature": "away_scored_last5",
    "transformation_at": "src/feature_engineering.py:140",
@@ -2412,9 +2412,9 @@
    "active_model_eligible": false
   },
   {
-   "artifact": "Standard O/U 2.5 (repaired rollback)",
+   "artifact": "Standard O/U 2.5 (retired v9_repaired)",
    "path": "models/model_v9_standard_repaired.pkl",
-   "status": "standby (rollback)",
+   "status": "retired (kept for audit)",
    "track": "standard",
    "feature": "home_conceded_last5",
    "transformation_at": "src/feature_engineering.py:141",
@@ -2426,9 +2426,9 @@
    "active_model_eligible": false
   },
   {
-   "artifact": "Standard O/U 2.5 (repaired rollback)",
+   "artifact": "Standard O/U 2.5 (retired v9_repaired)",
    "path": "models/model_v9_standard_repaired.pkl",
-   "status": "standby (rollback)",
+   "status": "retired (kept for audit)",
    "track": "standard",
    "feature": "away_conceded_last5",
    "transformation_at": "src/feature_engineering.py:141",
@@ -2440,9 +2440,9 @@
    "active_model_eligible": false
   },
   {
-   "artifact": "Standard O/U 2.5 (repaired rollback)",
+   "artifact": "Standard O/U 2.5 (retired v9_repaired)",
    "path": "models/model_v9_standard_repaired.pkl",
-   "status": "standby (rollback)",
+   "status": "retired (kept for audit)",
    "track": "standard",
    "feature": "home_over25_last5",
    "transformation_at": "src/feature_engineering.py:142",
@@ -2454,9 +2454,9 @@
    "active_model_eligible": false
   },
   {
-   "artifact": "Standard O/U 2.5 (repaired rollback)",
+   "artifact": "Standard O/U 2.5 (retired v9_repaired)",
    "path": "models/model_v9_standard_repaired.pkl",
-   "status": "standby (rollback)",
+   "status": "retired (kept for audit)",
    "track": "standard",
    "feature": "away_over25_last5",
    "transformation_at": "src/feature_engineering.py:142",
@@ -2468,9 +2468,9 @@
    "active_model_eligible": false
   },
   {
-   "artifact": "Standard O/U 2.5 (repaired rollback)",
+   "artifact": "Standard O/U 2.5 (retired v9_repaired)",
    "path": "models/model_v9_standard_repaired.pkl",
-   "status": "standby (rollback)",
+   "status": "retired (kept for audit)",
    "track": "standard",
    "feature": "home_attack_str",
    "transformation_at": "src/feature_engineering.py:560",
@@ -2482,9 +2482,9 @@
    "active_model_eligible": false
   },
   {
-   "artifact": "Standard O/U 2.5 (repaired rollback)",
+   "artifact": "Standard O/U 2.5 (retired v9_repaired)",
    "path": "models/model_v9_standard_repaired.pkl",
-   "status": "standby (rollback)",
+   "status": "retired (kept for audit)",
    "track": "standard",
    "feature": "away_attack_str",
    "transformation_at": "src/feature_engineering.py:561",
@@ -2496,9 +2496,9 @@
    "active_model_eligible": false
   },
   {
-   "artifact": "Standard O/U 2.5 (repaired rollback)",
+   "artifact": "Standard O/U 2.5 (retired v9_repaired)",
    "path": "models/model_v9_standard_repaired.pkl",
-   "status": "standby (rollback)",
+   "status": "retired (kept for audit)",
    "track": "standard",
    "feature": "home_defense_str",
    "transformation_at": "src/feature_engineering.py:562",
@@ -2510,9 +2510,9 @@
    "active_model_eligible": false
   },
   {
-   "artifact": "Standard O/U 2.5 (repaired rollback)",
+   "artifact": "Standard O/U 2.5 (retired v9_repaired)",
    "path": "models/model_v9_standard_repaired.pkl",
-   "status": "standby (rollback)",
+   "status": "retired (kept for audit)",
    "track": "standard",
    "feature": "away_defense_str",
    "transformation_at": "src/feature_engineering.py:563",
@@ -2524,9 +2524,9 @@
    "active_model_eligible": false
   },
   {
-   "artifact": "Standard O/U 2.5 (repaired rollback)",
+   "artifact": "Standard O/U 2.5 (retired v9_repaired)",
    "path": "models/model_v9_standard_repaired.pkl",
-   "status": "standby (rollback)",
+   "status": "retired (kept for audit)",
    "track": "standard",
    "feature": "home_advantage",
    "transformation_at": "src/feature_engineering.py:319",
@@ -2538,9 +2538,9 @@
    "active_model_eligible": false
   },
   {
-   "artifact": "Standard O/U 2.5 (repaired rollback)",
+   "artifact": "Standard O/U 2.5 (retired v9_repaired)",
    "path": "models/model_v9_standard_repaired.pkl",
-   "status": "standby (rollback)",
+   "status": "retired (kept for audit)",
    "track": "standard",
    "feature": "away_home_adv_factor",
    "transformation_at": "src/feature_engineering.py:319",
@@ -2552,9 +2552,9 @@
    "active_model_eligible": false
   },
   {
-   "artifact": "Standard O/U 2.5 (repaired rollback)",
+   "artifact": "Standard O/U 2.5 (retired v9_repaired)",
    "path": "models/model_v9_standard_repaired.pkl",
-   "status": "standby (rollback)",
+   "status": "retired (kept for audit)",
    "track": "standard",
    "feature": "home_rest_days",
    "transformation_at": "src/feature_engineering.py:338",
@@ -2566,9 +2566,9 @@
    "active_model_eligible": false
   },
   {
-   "artifact": "Standard O/U 2.5 (repaired rollback)",
+   "artifact": "Standard O/U 2.5 (retired v9_repaired)",
    "path": "models/model_v9_standard_repaired.pkl",
-   "status": "standby (rollback)",
+   "status": "retired (kept for audit)",
    "track": "standard",
    "feature": "away_rest_days",
    "transformation_at": "src/feature_engineering.py:338",
@@ -2580,9 +2580,9 @@
    "active_model_eligible": false
   },
   {
-   "artifact": "Standard O/U 2.5 (repaired rollback)",
+   "artifact": "Standard O/U 2.5 (retired v9_repaired)",
    "path": "models/model_v9_standard_repaired.pkl",
-   "status": "standby (rollback)",
+   "status": "retired (kept for audit)",
    "track": "standard",
    "feature": "home_corners_pg_roll",
    "transformation_at": "src/feature_engineering.py:145",
@@ -2594,9 +2594,9 @@
    "active_model_eligible": false
   },
   {
-   "artifact": "Standard O/U 2.5 (repaired rollback)",
+   "artifact": "Standard O/U 2.5 (retired v9_repaired)",
    "path": "models/model_v9_standard_repaired.pkl",
-   "status": "standby (rollback)",
+   "status": "retired (kept for audit)",
    "track": "standard",
    "feature": "away_corners_pg_roll",
    "transformation_at": "src/feature_engineering.py:145",
@@ -2608,9 +2608,9 @@
    "active_model_eligible": false
   },
   {
-   "artifact": "Standard O/U 2.5 (repaired rollback)",
+   "artifact": "Standard O/U 2.5 (retired v9_repaired)",
    "path": "models/model_v9_standard_repaired.pkl",
-   "status": "standby (rollback)",
+   "status": "retired (kept for audit)",
    "track": "standard",
    "feature": "home_fouls_pg_roll",
    "transformation_at": "src/feature_engineering.py:146",
@@ -2622,9 +2622,9 @@
    "active_model_eligible": false
   },
   {
-   "artifact": "Standard O/U 2.5 (repaired rollback)",
+   "artifact": "Standard O/U 2.5 (retired v9_repaired)",
    "path": "models/model_v9_standard_repaired.pkl",
-   "status": "standby (rollback)",
+   "status": "retired (kept for audit)",
    "track": "standard",
    "feature": "away_fouls_pg_roll",
    "transformation_at": "src/feature_engineering.py:146",
@@ -2636,9 +2636,9 @@
    "active_model_eligible": false
   },
   {
-   "artifact": "Standard O/U 2.5 (repaired rollback)",
+   "artifact": "Standard O/U 2.5 (retired v9_repaired)",
    "path": "models/model_v9_standard_repaired.pkl",
-   "status": "standby (rollback)",
+   "status": "retired (kept for audit)",
    "track": "standard",
    "feature": "combined_sot_ratio",
    "transformation_at": "src/feature_engineering.py:584",
@@ -2650,9 +2650,9 @@
    "active_model_eligible": false
   },
   {
-   "artifact": "Standard O/U 2.5 (repaired rollback)",
+   "artifact": "Standard O/U 2.5 (retired v9_repaired)",
    "path": "models/model_v9_standard_repaired.pkl",
-   "status": "standby (rollback)",
+   "status": "retired (kept for audit)",
    "track": "standard",
    "feature": "home_xg_last5",
    "transformation_at": "src/feature_engineering.py:147",
@@ -2664,9 +2664,9 @@
    "active_model_eligible": false
   },
   {
-   "artifact": "Standard O/U 2.5 (repaired rollback)",
+   "artifact": "Standard O/U 2.5 (retired v9_repaired)",
    "path": "models/model_v9_standard_repaired.pkl",
-   "status": "standby (rollback)",
+   "status": "retired (kept for audit)",
    "track": "standard",
    "feature": "away_xg_last5",
    "transformation_at": "src/feature_engineering.py:147",
@@ -2678,9 +2678,9 @@
    "active_model_eligible": false
   },
   {
-   "artifact": "Standard O/U 2.5 (repaired rollback)",
+   "artifact": "Standard O/U 2.5 (retired v9_repaired)",
    "path": "models/model_v9_standard_repaired.pkl",
-   "status": "standby (rollback)",
+   "status": "retired (kept for audit)",
    "track": "standard",
    "feature": "home_insidebox_last5",
    "transformation_at": "src/feature_engineering.py:148",
@@ -2692,9 +2692,9 @@
    "active_model_eligible": false
   },
   {
-   "artifact": "Standard O/U 2.5 (repaired rollback)",
+   "artifact": "Standard O/U 2.5 (retired v9_repaired)",
    "path": "models/model_v9_standard_repaired.pkl",
-   "status": "standby (rollback)",
+   "status": "retired (kept for audit)",
    "track": "standard",
    "feature": "away_insidebox_last5",
    "transformation_at": "src/feature_engineering.py:148",
@@ -2706,9 +2706,9 @@
    "active_model_eligible": false
   },
   {
-   "artifact": "Standard O/U 2.5 (repaired rollback)",
+   "artifact": "Standard O/U 2.5 (retired v9_repaired)",
    "path": "models/model_v9_standard_repaired.pkl",
-   "status": "standby (rollback)",
+   "status": "retired (kept for audit)",
    "track": "standard",
    "feature": "home_season_goals_h",
    "transformation_at": "src/feature_engineering.py:383",
@@ -2720,9 +2720,9 @@
    "active_model_eligible": false
   },
   {
-   "artifact": "Standard O/U 2.5 (repaired rollback)",
+   "artifact": "Standard O/U 2.5 (retired v9_repaired)",
    "path": "models/model_v9_standard_repaired.pkl",
-   "status": "standby (rollback)",
+   "status": "retired (kept for audit)",
    "track": "standard",
    "feature": "away_season_goals_a",
    "transformation_at": "src/feature_engineering.py:389",
@@ -2734,9 +2734,9 @@
    "active_model_eligible": false
   },
   {
-   "artifact": "Standard O/U 2.5 (repaired rollback)",
+   "artifact": "Standard O/U 2.5 (retired v9_repaired)",
    "path": "models/model_v9_standard_repaired.pkl",
-   "status": "standby (rollback)",
+   "status": "retired (kept for audit)",
    "track": "standard",
    "feature": "home_season_conceded_h",
    "transformation_at": "src/feature_engineering.py:384",
@@ -2748,9 +2748,9 @@
    "active_model_eligible": false
   },
   {
-   "artifact": "Standard O/U 2.5 (repaired rollback)",
+   "artifact": "Standard O/U 2.5 (retired v9_repaired)",
    "path": "models/model_v9_standard_repaired.pkl",
-   "status": "standby (rollback)",
+   "status": "retired (kept for audit)",
    "track": "standard",
    "feature": "away_season_conceded_a",
    "transformation_at": "src/feature_engineering.py:390",
@@ -2762,9 +2762,9 @@
    "active_model_eligible": false
   },
   {
-   "artifact": "Standard O/U 2.5 (repaired rollback)",
+   "artifact": "Standard O/U 2.5 (retired v9_repaired)",
    "path": "models/model_v9_standard_repaired.pkl",
-   "status": "standby (rollback)",
+   "status": "retired (kept for audit)",
    "track": "standard",
    "feature": "home_cs_rate_h",
    "transformation_at": "src/feature_engineering.py:385",
@@ -2776,9 +2776,9 @@
    "active_model_eligible": false
   },
   {
-   "artifact": "Standard O/U 2.5 (repaired rollback)",
+   "artifact": "Standard O/U 2.5 (retired v9_repaired)",
    "path": "models/model_v9_standard_repaired.pkl",
-   "status": "standby (rollback)",
+   "status": "retired (kept for audit)",
    "track": "standard",
    "feature": "away_cs_rate_a",
    "transformation_at": "src/feature_engineering.py:391",
@@ -2790,9 +2790,9 @@
    "active_model_eligible": false
   },
   {
-   "artifact": "Standard O/U 2.5 (repaired rollback)",
+   "artifact": "Standard O/U 2.5 (retired v9_repaired)",
    "path": "models/model_v9_standard_repaired.pkl",
-   "status": "standby (rollback)",
+   "status": "retired (kept for audit)",
    "track": "standard",
    "feature": "home_ht_scored_last5",
    "transformation_at": "src/feature_engineering.py:149",
@@ -2804,9 +2804,9 @@
    "active_model_eligible": false
   },
   {
-   "artifact": "Standard O/U 2.5 (repaired rollback)",
+   "artifact": "Standard O/U 2.5 (retired v9_repaired)",
    "path": "models/model_v9_standard_repaired.pkl",
-   "status": "standby (rollback)",
+   "status": "retired (kept for audit)",
    "track": "standard",
    "feature": "away_ht_scored_last5",
    "transformation_at": "src/feature_engineering.py:149",
@@ -2818,9 +2818,9 @@
    "active_model_eligible": false
   },
   {
-   "artifact": "Standard O/U 2.5 (repaired rollback)",
+   "artifact": "Standard O/U 2.5 (retired v9_repaired)",
    "path": "models/model_v9_standard_repaired.pkl",
-   "status": "standby (rollback)",
+   "status": "retired (kept for audit)",
    "track": "standard",
    "feature": "home_ht_conceded_last5",
    "transformation_at": "src/feature_engineering.py:150",
@@ -2832,9 +2832,9 @@
    "active_model_eligible": false
   },
   {
-   "artifact": "Standard O/U 2.5 (repaired rollback)",
+   "artifact": "Standard O/U 2.5 (retired v9_repaired)",
    "path": "models/model_v9_standard_repaired.pkl",
-   "status": "standby (rollback)",
+   "status": "retired (kept for audit)",
    "track": "standard",
    "feature": "away_ht_conceded_last5",
    "transformation_at": "src/feature_engineering.py:150",
@@ -2846,9 +2846,9 @@
    "active_model_eligible": false
   },
   {
-   "artifact": "Standard O/U 2.5 (repaired rollback)",
+   "artifact": "Standard O/U 2.5 (retired v9_repaired)",
    "path": "models/model_v9_standard_repaired.pkl",
-   "status": "standby (rollback)",
+   "status": "retired (kept for audit)",
    "track": "standard",
    "feature": "home_ht_attack_str",
    "transformation_at": "src/feature_engineering.py:553",
@@ -2860,9 +2860,9 @@
    "active_model_eligible": false
   },
   {
-   "artifact": "Standard O/U 2.5 (repaired rollback)",
+   "artifact": "Standard O/U 2.5 (retired v9_repaired)",
    "path": "models/model_v9_standard_repaired.pkl",
-   "status": "standby (rollback)",
+   "status": "retired (kept for audit)",
    "track": "standard",
    "feature": "away_ht_attack_str",
    "transformation_at": "src/feature_engineering.py:554",
@@ -2874,9 +2874,9 @@
    "active_model_eligible": false
   },
   {
-   "artifact": "Standard O/U 2.5 (repaired rollback)",
+   "artifact": "Standard O/U 2.5 (retired v9_repaired)",
    "path": "models/model_v9_standard_repaired.pkl",
-   "status": "standby (rollback)",
+   "status": "retired (kept for audit)",
    "track": "standard",
    "feature": "combined_ht_goals_avg",
    "transformation_at": "src/feature_engineering.py:551",
@@ -2888,9 +2888,9 @@
    "active_model_eligible": false
   },
   {
-   "artifact": "Standard O/U 2.5 (repaired rollback)",
+   "artifact": "Standard O/U 2.5 (retired v9_repaired)",
    "path": "models/model_v9_standard_repaired.pkl",
-   "status": "standby (rollback)",
+   "status": "retired (kept for audit)",
    "track": "standard",
    "feature": "home_ht_over05_rate",
    "transformation_at": "src/feature_engineering.py:151",
@@ -2902,9 +2902,9 @@
    "active_model_eligible": false
   },
   {
-   "artifact": "Standard O/U 2.5 (repaired rollback)",
+   "artifact": "Standard O/U 2.5 (retired v9_repaired)",
    "path": "models/model_v9_standard_repaired.pkl",
-   "status": "standby (rollback)",
+   "status": "retired (kept for audit)",
    "track": "standard",
    "feature": "away_ht_over05_rate",
    "transformation_at": "src/feature_engineering.py:151",
@@ -2916,9 +2916,9 @@
    "active_model_eligible": false
   },
   {
-   "artifact": "Standard O/U 2.5 (repaired rollback)",
+   "artifact": "Standard O/U 2.5 (retired v9_repaired)",
    "path": "models/model_v9_standard_repaired.pkl",
-   "status": "standby (rollback)",
+   "status": "retired (kept for audit)",
    "track": "standard",
    "feature": "home_ht_over15_rate",
    "transformation_at": "src/feature_engineering.py:152",
@@ -2930,9 +2930,9 @@
    "active_model_eligible": false
   },
   {
-   "artifact": "Standard O/U 2.5 (repaired rollback)",
+   "artifact": "Standard O/U 2.5 (retired v9_repaired)",
    "path": "models/model_v9_standard_repaired.pkl",
-   "status": "standby (rollback)",
+   "status": "retired (kept for audit)",
    "track": "standard",
    "feature": "away_ht_over15_rate",
    "transformation_at": "src/feature_engineering.py:152",
@@ -2944,9 +2944,9 @@
    "active_model_eligible": false
   },
   {
-   "artifact": "Standard O/U 2.5 (repaired rollback)",
+   "artifact": "Standard O/U 2.5 (retired v9_repaired)",
    "path": "models/model_v9_standard_repaired.pkl",
-   "status": "standby (rollback)",
+   "status": "retired (kept for audit)",
    "track": "standard",
    "feature": "p_over25_poisson_dc",
    "transformation_at": "src/feature_engineering.py:608",

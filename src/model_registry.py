@@ -78,6 +78,19 @@ TARGET = {"standard": "over25", "newformat": "over25", "btts": "btts", "over15":
 #: repaired Standard model changes only by an explicit owner_install (owner decision 2026-10-28:
 #: frozen until the owner decides how it is retrained).
 FROZEN_MODEL_TYPES = frozenset({"standard_repaired"})
+#: Model types the owner RETIRED: never served, never installed again; the serving file, the stored
+#: champion bytes and every lineage row stay for audit. promotion_gate.retire_model_type writes the
+#: retirement into the pointer (status RETIRED) and the decision log (stage RETIRE).
+RETIRED_MODEL_TYPES = {
+    "standard_repaired": {
+        "retired_on": "2026-11-15", "approved_by": "Nevo (owner)", "owner_words": "fix what you need",
+        "reason": "the 2026-10-28 v9_repaired Standard O/U 2.5 payload "
+                  "(models/model_v9_standard_repaired.pkl): its 1.0 imputer filled xG and inside-box "
+                  "shots - 0% training coverage - with 0.0 on every training row (FABRICATED_VALUE, "
+                  "reports/REAL_DATA_FINAL_AUDIT.md T5). Retired as a serving recipe "
+                  "(STANDARD_OU25_SERVING_RECIPE accepts only legacy_v9); file kept for audit.",
+    },
+}
 
 REGISTRY_DIR = config.MODELS_DIR / "registry"
 LINEAGE_DIR = config.OUTPUT_DIR / "model_lineage"

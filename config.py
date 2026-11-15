@@ -296,21 +296,33 @@ MARKET_FEATURE_MODE = os.getenv("WOWZA_MARKET_FEATURE_MODE", "none").strip() or 
 if MARKET_FEATURE_MODE not in MARKET_FEATURE_MODES:
     MARKET_FEATURE_MODE = "none"
 
-# ── Standard O/U 2.5 SERVING recipe (owner 2026-10-28: "switch Standard now") ──
-# The ONE production switch. Scope: the over25 probability of STANDARD-format fixtures only.
-#   "legacy_v9"   (DEFAULT, and the rollback) models/model_v9_standard.pkl on legacy features.
-#   "v9_repaired" models/model_v9_standard_repaired.pkl on repaired as-of features
-#                 (src/standard_serving.py: frozen identity alias map, train-only imputer).
-# New Format, BTTS / O1.5 / O3.5 side models and HT models are NOT affected by either value.
+# ── Standard O/U 2.5 SERVING recipe ──
+# ONE servable value since 2026-11-15:
+#   "legacy_v9"   models/model_v9_standard.pkl - the clean-retrain Standard champion (std_v9_repaired,
+#                 owner clean-data switch 2026-11-09), scored on build_upcoming_features. The name is
+#                 historical ("serve models/model_v9_standard.pkl").
+# RETIRED (owner 2026-11-15, "fix what you need"): "v9_repaired" served
+#   models/model_v9_standard_repaired.pkl (owner switch 2026-10-28). Its train-only 1.0 imputer filled
+#   xG and inside-box shots - 0% training coverage - with 0.0 on every training row, so the model
+#   learned an invented "xG = 0" (reports/REAL_DATA_FINAL_AUDIT.md T5). The file stays for audit; the
+#   value is NOT selectable: it is an unknown value like any typo and predict refuses to start.
 # Deployed value = predict.yml env (CLAUDE.md trap 1).
 # INVALID VALUES ARE A CONFIGURATION ERROR (R2 finding 17, 2026-11-01). They used to fall back to
 # legacy_v9 silently, so a typo in predict.yml quietly reverted Standard to the legacy model. The
 # raw value is kept in STANDARD_OU25_SERVING_RECIPE_RAW and src.standard_serving.check_config()
 # raises ServingConfigError on it before predict fetches odds. Importing config never raises (the
 # dashboard, notifier and results jobs must keep working); only predict refuses to start.
-# ROLLBACK: set STANDARD_OU25_SERVING_RECIPE: "legacy_v9" in predict.yml (or delete the line).
-# Owner doc: docs/STANDARD_REPAIRED_FAILCLOSED_ROLLBACK.md
-STANDARD_OU25_SERVING_RECIPES = ("legacy_v9", "v9_repaired")
+# There is no alternative Standard recipe to roll back to; docs/STANDARD_REPAIRED_FAILCLOSED_ROLLBACK.md
+# records the retirement.
+STANDARD_OU25_SERVING_RECIPES = ("legacy_v9",)
+#: recipe -> retirement record. A retired value is refused exactly like an unknown one.
+RETIRED_STANDARD_OU25_SERVING_RECIPES = {
+    "v9_repaired": {"retired_on": "2026-11-15", "approved_by": "Nevo (owner)",
+                    "owner_words": "fix what you need",
+                    "artifact": "models/model_v9_standard_repaired.pkl (kept for audit)",
+                    "why": "1.0 imputer filled xG / inside-box shots (0% training coverage) with 0.0 on "
+                           "every training row (FABRICATED_VALUE, reports/REAL_DATA_FINAL_AUDIT.md T5)"},
+}
 STANDARD_OU25_SERVING_RECIPE_EXPLICIT = bool(os.getenv("STANDARD_OU25_SERVING_RECIPE", "").strip())
 STANDARD_OU25_SERVING_RECIPE_RAW = os.getenv("STANDARD_OU25_SERVING_RECIPE", "legacy_v9").strip() or "legacy_v9"
 STANDARD_OU25_SERVING_RECIPE = STANDARD_OU25_SERVING_RECIPE_RAW
@@ -318,7 +330,9 @@ if STANDARD_OU25_SERVING_RECIPE not in STANDARD_OU25_SERVING_RECIPES:
     import logging as _logging
     _logging.getLogger(__name__).error(
         f"STANDARD_OU25_SERVING_RECIPE={STANDARD_OU25_SERVING_RECIPE_RAW!r} is INVALID "
-        f"(expected {STANDARD_OU25_SERVING_RECIPES}); predict will refuse to start")
+        f"(expected {STANDARD_OU25_SERVING_RECIPES}"
+        + ("; RETIRED by the owner 2026-11-15" if STANDARD_OU25_SERVING_RECIPE_RAW
+           in RETIRED_STANDARD_OU25_SERVING_RECIPES else "") + "); predict will refuse to start")
     STANDARD_OU25_SERVING_RECIPE = "INVALID"
 
 # ── Training data filters ─────────────────────────────────────────────────────
