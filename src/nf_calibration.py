@@ -78,6 +78,8 @@ def fit(log_path: Path = LOG, since: str = SINCE, champions: Path = CHAMPIONS) -
         s = pd.read_csv(log_path, low_memory=False)
     except Exception as e:                                             # noqa: BLE001
         return {**out, "reason": f"no log ({type(e).__name__})"}
+    from src.ledger_corrections import drop_v91_duplicates     # one fixture logged on two dates: once
+    s = drop_v91_duplicates(s)
     s = s[(s["model_type"].astype(str) == "new_format") & (s["market"].astype(str) == "ou25")]
     s = s[pd.to_datetime(s["logged_at"], errors="coerce", utc=True) >= pd.Timestamp(since)]
     hg, ag = pd.to_numeric(s["home_goals"], errors="coerce"), pd.to_numeric(s["away_goals"], errors="coerce")
