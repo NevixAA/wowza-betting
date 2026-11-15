@@ -938,13 +938,17 @@ def mode_predict(historical: "pd.DataFrame" = None) -> "pd.DataFrame":
     bets, side_bets, _dir_conflicts = _DG.apply(bets, side_bets)
     _DG.record(_dir_conflicts)
 
+    # The side tips the stake plan may size = the rows the side ledger holds as THESE tips (go-live rehearsal
+    # 2026-11-15: 7 Argentina BTTS staked, 3 ledgered - 4 were deduplicated against pre-go-live rows, so the
+    # stake audit and the Clean Record disagreed). append_side_market_tips returns them.
+    _side_ledgered = side_bets
     if _had_side:   # pre-guard: a run whose only side tips were suppressed still rewrites side_bets.csv
         side_bets_file = config.OUTPUT_DIR / "side_bets.csv"
         # LEDGER GETS EVERYTHING, THE SEND SOURCE DOES NOT. side_bets.csv is what
         # notify_side_bets reads, so a paper league is stripped from it; the ledger keeps the
         # row so the tip is still settled, graded and CLV-tracked (config.PAPER_LEAGUES).
         config.drop_paper_leagues(side_bets).to_csv(side_bets_file, index=False)
-        append_side_market_tips(side_bets)   # persist to side_bets_ledger.csv (all tiers)
+        _side_ledgered = append_side_market_tips(side_bets)   # persist to side_bets_ledger.csv (all tiers)
         log.info(f"Side-market tips → {side_bets_file}  ({len(side_bets)} tips)")
         for mkt, label in config.SIDE_MARKET_LABELS.items():
             n = (side_bets["market"] == mkt).sum()
@@ -970,7 +974,7 @@ def mode_predict(historical: "pd.DataFrame" = None) -> "pd.DataFrame":
         from src.ledger import drop_flipped as _drop_flipped
         # drop_flipped: an O/U 2.5 tip on the opposite side of an earlier O/U 2.5 tip is never sent or
         # ledgered (existing flip guard), so it is not staked either (direction rule 2026-10-25).
-        _write_stake_plan(_drop_flipped(bets), side_bets, shadow=_edge_shadow)
+        _write_stake_plan(_drop_flipped(bets), _side_ledgered, shadow=_edge_shadow)
     except Exception as e:                                           # noqa: BLE001
         log.warning(f"stake plan skipped: {e}")
 

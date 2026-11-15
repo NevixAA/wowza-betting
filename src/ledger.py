@@ -499,7 +499,7 @@ def _load_side_ledger() -> pd.DataFrame:
 _SIDE_OF_MARKET = {"btts": "YES", "over15": "OVER", "over35": "OVER"}
 
 
-def append_side_market_tips(side_df: pd.DataFrame, source: str = "live") -> None:
+def append_side_market_tips(side_df: pd.DataFrame, source: str = "live") -> pd.DataFrame:
     """Append BTTS / Over 1.5 / Over 3.5 tips to their OWN ledger (side_bets_ledger.csv),
     one row per (fixture, market), ALL tiers. Same rule as append_tips: the FIRST logged tier stands,
     a later higher tier goes to the research log (ledger_tier_seen.csv), never into the row.
@@ -508,9 +508,14 @@ def append_side_market_tips(side_df: pd.DataFrame, source: str = "live") -> None
     markets are now tracked for the season-long live test. result/pnl/closing_odds/clv fill
     in when a settling pass runs; until then rows are 'pending' and readers skip them
     (`_settled_only`), so an unsettled ledger never breaks a summary.
+
+    RETURNS the rows of `side_df` the ledger holds AS THESE TIPS (go-live rehearsal 2026-11-15): a row
+    logged now, or one already logged by the SAME model version (an earlier run of this model). A row
+    deduplicated against an older tip of another model (e.g. a pre-go-live SNIPER row) or a repeat
+    within the batch is not returned. The stake plan sizes only these, so every stake has its ledger row.
     """
     if side_df is None or side_df.empty:
-        return
+        return side_df if side_df is not None else pd.DataFrame()
     existing = _load_side_ledger()
     now   = datetime.utcnow().strftime("%Y-%m-%d %H:%M")
     today = now[:10]
@@ -524,8 +529,16 @@ def append_side_market_tips(side_df: pd.DataFrame, source: str = "live") -> None
              str(r["market"]), str(r["source"]))
         key_to_idx[k] = i
 
-    new_rows, batch = [], set()
-    for _, row in side_df.iterrows():
+    new_rows, batch, accepted = [], set(), []
+    _cur_version: dict = {}
+
+    def _same_model(i, market) -> bool:
+        if market not in _cur_version:
+            _cur_version[market] = str(_version_fields({}, market).get("model_version", "") or "")
+        v = existing.at[i, "model_version"] if "model_version" in existing.columns else None
+        return bool(_cur_version[market]) and pd.notna(v) and str(v) == _cur_version[market]
+
+    for idx, (_, row) in enumerate(side_df.iterrows()):      # idx = position (the index may repeat)
         market     = str(row.get("market", ""))
         match_date = str(row["date"])[:10]
         home       = str(row["home_team"])
@@ -543,6 +556,9 @@ def append_side_market_tips(side_df: pd.DataFrame, source: str = "live") -> None
             # Already logged. The logged tier, odds, edge and ev STAND (2026-10-26): the row is settled
             # and CLV-graded at the price it was logged at. A higher tier is research info only.
             i   = key_to_idx[key]
+            if key not in batch and _same_model(i, market):
+                accepted.append(idx)            # this model's tip, logged by an earlier run
+                batch.add(key)
             cur = str(existing.at[i, "signal_tier"])
             rank = _SIDE_RANK.get(tier, 0)
             seen_key = (source, match_date, home, away, market)
@@ -559,6 +575,7 @@ def append_side_market_tips(side_df: pd.DataFrame, source: str = "live") -> None
         if key in batch:
             continue
         batch.add(key)
+        accepted.append(idx)
 
         new_rows.append({
             "source": source, "generated_at": now, "signal_date": today,
@@ -584,12 +601,17 @@ def append_side_market_tips(side_df: pd.DataFrame, source: str = "live") -> None
         })
 
     _record_tiers_seen(tier_seen_rows, tier_seen_path)
+    out = side_df.iloc[accepted]
+    if len(out) < len(side_df):
+        log.info(f"Side ledger: {len(side_df) - len(out)} tip(s) already logged as an older tip (another model "
+                 f"version) or repeated - not this run's ledger tips, so not staked")
     if not new_rows:
         log.info("Side ledger: no new tips (all already logged).")
-        return
+        return out
     updated = pd.concat([existing, pd.DataFrame(new_rows, columns=SIDE_LEDGER_COLS)], ignore_index=True)
     updated.to_csv(SIDE_LEDGER_FILE, index=False)
     log.info(f"Side ledger: {len(new_rows)} new tip(s); logged rows unchanged → {SIDE_LEDGER_FILE}")
+    return out
 
 
 # ── HT (half-time O/U) ledger ───────────────────────────────────────────────────
