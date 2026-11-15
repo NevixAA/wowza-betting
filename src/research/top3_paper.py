@@ -1,11 +1,12 @@
-"""TOP-3 PAPER TRACKS R1 and R2 - PAPER / RESEARCH ONLY (protocol config/top3_ranking_paper_protocol_v3.json).
+"""TOP-3 PAPER TRACK R2 - PAPER / RESEARCH ONLY (protocol config/top3_ranking_paper_protocol_v5.json).
 
     python -m src.research.top3_paper run       # predict.yml, after src.top3_league run: freeze due league-weeks
     python -m src.research.top3_paper settle    # update_results.yml: grade finished paper picks
     python -m src.research.top3_paper summary   # rewrite the dashboard summary
 
 Owner 2026-11-11: "Add the 3 tracks", then "Clean rebuild": the live TOP-3 is ranked by R3 (src/top3_league.py,
-the third arm of the protocol); R1 and R2 are recorded HERE, beside it, as paper tracks. Flat 1 unit, the
+the other arm of the protocol); R2 is recorded HERE, beside it, as the paper track (owner 2026-11-11 "Drop T1":
+R1 is no track). The tracks recorded are config/top3_paper_tracks.json -> tracks. Flat 1 unit, the
 production settlement, every row labelled PAPER/RESEARCH.
 
 NOTHING HERE REACHES MONEY OR THE PUBLIC. This module writes ONLY under output/research/top3_paper/. It never
@@ -23,7 +24,7 @@ owner-applied bar) restricted, per candidate, to:
                         cell of an approved proposal listed in config/top3_paper_tracks.json (hash-verified), and
                         the league x market must have been applied from that proposal (config/threshold_applied.json).
   * LEAGUE_WIDE_OWN_LIST - a LEAGUE_WIDE cell (source NONE) is the owner's own list, outside the TOP-3 slots
-                        (owner 2026-11-11 "Own list"; top3_ranking.in_pool): never in the pool of R1 or R2.
+                        (owner 2026-11-11 "Own list"; top3_ranking.in_pool): never in the pool of R2 (nor the live R3).
 OFF cells give no candidates (production already returns NO_LEAGUE_BAR for them).
 
 RANKING. src/research/top3_ranking.rank_order(rule) on the frozen per-cell statistics (scripts/top3_paper_freeze.py).
@@ -68,7 +69,7 @@ PICK_FROZEN = [
     "pick_id", "label", "track", "protocol_sha256", "stats_sha256", "league_week_id", "rank", "week_lock_ts",
     "freeze_ts", "issued_at", "league", "model_type", "fixture_id", "match_date", "home_team", "away_team",
     "kickoff_utc", "market", "side", "odds", "p_model_raw", "p_market_fair", "p_used", "ev_est", "rank_key",
-    "no_stat", "cell_track", "cell_mside", "cell_config", "cell_proposal_id", "prediction_engine_version",
+    "no_stat", "rank_basis", "cell_track", "cell_mside", "cell_config", "cell_proposal_id", "prediction_engine_version",
     "model_artifact_sha256", "first_seen_at", "stake_effect",
 ]
 PICK_GRADING = ["home_goals", "away_goals", "result", "won", "flat_pnl", "settle_status", "settled_at"]
@@ -346,7 +347,7 @@ def freeze_due(cands: pd.DataFrame, done: set, ctx: dict, now: pd.Timestamp, lea
                     "league_week_id": week, "rank": k, "week_lock_ts": LW._stamp(lock), "freeze_ts": LW._stamp(freeze),
                     "issued_at": stamp, "p_market_fair": LW._r(r["fair"]), "p_used": LW._r(r["p_used"]),
                     "ev_est": LW._r(r["ev_est"]), "rank_key": LW._r(r["key"]) if pd.notna(r["key"]) else "",
-                    "no_stat": int(r["no_stat"]), "cell_track": r["track"], "cell_mside": r["mside"],
+                    "no_stat": int(r["no_stat"]), "rank_basis": r["rank_basis"], "cell_track": r["track"], "cell_mside": r["mside"],
                     "stake_effect": STAKE_EFFECT})
     return (pd.DataFrame(picks).reindex(columns=PICK_COLS) if picks else pd.DataFrame(columns=PICK_COLS),
             pd.DataFrame(weeks).reindex(columns=WEEK_COLS) if weeks else pd.DataFrame(columns=WEEK_COLS))
@@ -493,6 +494,7 @@ def track_summary(picks: pd.DataFrame) -> dict:
             "flat_pnl_units": round(float(pnl.sum()), 3) if len(ok) else 0.0,
             "roi": round(float(pnl.mean()), 4) if len(ok) else None, "ci95": sc.get("ci95"),
             "no_stat_picks": int((pd.to_numeric(picks.get("no_stat"), errors="coerce") == 1).sum()) if len(picks) and "no_stat" in picks else 0,
+            "rank_basis": picks["rank_basis"].value_counts().to_dict() if len(picks) and "rank_basis" in picks else {},
             "reached_min_picks": bool(len(ok) >= 150)}
 
 

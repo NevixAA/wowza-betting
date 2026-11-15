@@ -64,3 +64,41 @@ def test_statistics_never_cross_leagues():
                          "won": np.r_[np.ones(60, bool), np.zeros(60, bool)]})
     lam = R.cell_stats(None, rows).set_index("league")["lam"]
     assert lam["A"] == 1.0 and lam["B"] == 0.0            # each league its own slope, clipped to [0, 1]
+
+
+# ── protocol v4: the missing-statistic fallback never uses ev_est (owner "don't use the old ranking") ──
+def _frame():
+    return pd.DataFrame({"track": "t", "league": "A", "mside": ["m_lcb", "m_lam", "m_eb", "m_none", "m_none2"],
+                         "fair": 0.5, "p_used": 0.6, "odds": 2.0, "ev_est": [0.01, 0.02, 0.03, 0.9, 0.8],
+                         "kickoff_utc": ["2026-11-21T15:00Z", "2026-11-21T15:00Z", "2026-11-21T15:00Z",
+                                         "2026-11-21T17:00Z", "2026-11-21T14:00Z"],
+                         "fixture_id": ["1", "2", "3", "4", "5"]})
+
+
+def _st():
+    nan = np.nan
+    return pd.DataFrame([
+        {"track": "t", "league": "A", "mside": "m_lcb", "n": 50, "roi": .1, "se": .05, "lcb": .002, "eb": .1,
+         "lam": nan, "lam_se": nan, "lam_rows": nan},
+        {"track": "t", "league": "A", "mside": "m_lam", "n": 0, "roi": nan, "se": nan, "lcb": nan, "eb": nan,
+         "lam": .5, "lam_se": .1, "lam_rows": 200},
+        {"track": "t", "league": "A", "mside": "m_eb", "n": 50, "roi": .1, "se": .05, "lcb": nan, "eb": .07,
+         "lam": nan, "lam_se": nan, "lam_rows": nan}])
+
+
+def test_fallback_order_is_rule_then_r3_then_cell_eb_then_kickoff():
+    o = R.rank_order(_frame(), _st(), "R1_CELL_LCB", tiebreak=("kickoff_utc", "fixture_id"))
+    assert list(o["mside"]) == ["m_lcb", "m_lam", "m_eb", "m_none2", "m_none"]
+    assert list(o["rank_basis"]) == ["RULE", "R3_KEY", "CELL_EB", "KICKOFF", "KICKOFF"]
+    assert list(o["no_stat"]) == [0, 1, 1, 1, 1]
+
+
+def test_ev_est_never_changes_a_rule_ranking():
+    f = _frame()
+    for rule in R.RULES:
+        a = R.rank_order(f, _st(), rule, tiebreak=("kickoff_utc", "fixture_id"))["fixture_id"].tolist()
+        for perm in ([5, -1, 3, 0, 2], [0, 0, 0, 0, 0]):
+            g = f.assign(ev_est=perm)
+            assert R.rank_order(g, _st(), rule, tiebreak=("kickoff_utc", "fixture_id"))["fixture_id"].tolist() == a
+        g = f.drop(columns="ev_est")
+        assert R.rank_order(g, _st(), rule, tiebreak=("kickoff_utc", "fixture_id"))["fixture_id"].tolist() == a
