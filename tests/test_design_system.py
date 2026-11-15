@@ -126,7 +126,8 @@ STAGE3_PAGES = ("pages/12_💼_Portfolio.py", "pages/16_💰_Bankroll.py", "page
                 "pages/4_ℹ️_Model_Info.py", "pages/7_🔬_Pro.py", "pages/8_🛰️_V11_Market.py",
                 "pages/15_🔭_League_Scout.py", "pages/10_🤖_Agent_Analysis.py", "pages/account.py",
                 "pages/free_tips.py", "pages/19_🩺_System_Health.py", "pages/20_🧪_Model_Lab.py",
-                "pages/21_📡_Market_Intelligence.py", "pages/22_🏭_Production.py")
+                "pages/21_📡_Market_Intelligence.py", "pages/22_🏭_Production.py",
+                "pages/24_📬_Daily_Progress.py")
 STAGE3_VIEWS = ("dashboard_data/portfolio_view.py", "dashboard_data/bankroll_view.py", "dashboard_data/props_view.py",
                 "dashboard_data/builder_view.py", "dashboard_data/success_view.py",
                 "dashboard_data/model_info_view.py", "dashboard_data/research_view.py",

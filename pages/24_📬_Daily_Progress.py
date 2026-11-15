@@ -48,10 +48,13 @@ STALE_HOURS = 26                          # one daily run plus slack; older = ye
 TZ = ZoneInfo("Asia/Jerusalem")
 API = "https://api.github.com"
 
-st.title("📬 Daily Progress")
-st.caption("The owner's daily progress report until 2026-11-21, built each morning (06:20 and 07:20 Israel) "
-           "from committed repo data and the GitHub Actions API. Shown exactly as written; nothing is "
-           "re-derived. 'unknown' = could not be read. OddsAPI: credits and counts only, never a price.")
+import dashboard_ui as ui  # noqa: E402  (after set_page_config, like every design-system page)
+
+ui.page_header("Daily Progress",
+               "The owner's daily progress report until 2026-11-21, built each morning (06:20 and 07:20 Israel) "
+               "from committed repo data and the GitHub Actions API. Shown exactly as written; nothing is "
+               "re-derived. 'unknown' = could not be read. OddsAPI: credits and counts only, never a price.",
+               eyebrow_text="System · owner report")
 
 # ── fail closed when the tiers are dormant (no login configured -> everyone would be 'admin') ──────
 if not login_configured() and os.getenv("WOWZA_TIER_OVERRIDE", "").strip().lower() != "admin":
