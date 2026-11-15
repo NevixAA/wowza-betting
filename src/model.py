@@ -35,17 +35,33 @@ log = logging.getLogger(__name__)
 
 # ── Calibrated model wrapper (module-level so pickle works) ───────────────────
 
+#: Calibrator / meta-logistic input scales (train_repaired calibration_input).
+CALIBRATION_INPUTS = ("probability", "logit")
+_LOGIT_EPS = 1e-6
+
+
+def _logit(p):
+    p = np.clip(np.asarray(p, dtype=float), _LOGIT_EPS, 1 - _LOGIT_EPS)
+    return np.log(p / (1 - p))
+
+
 class _CalibratedModel:
     """Wraps a sklearn Pipeline + Platt scaling (sigmoid) calibrator.
     Platt scaling uses LogisticRegression on raw probabilities — regularized,
     no overfit risk on small calibration sets (unlike IsotonicRegression).
     """
-    def __init__(self, pipe, calibrator):
+    def __init__(self, pipe, calibrator, calibration_input: str = "probability"):
         self._pipe       = pipe
         self._calibrator = calibrator
+        # "probability" (every payload before 2026-11-11): Platt reads the raw probability.
+        # "logit": Platt reads logit(raw probability), so the identity map is a coefficient of 1
+        # and the L2 penalty no longer pulls every row toward the block's base rate.
+        self._input      = calibration_input
 
     def predict_proba(self, X):
         raw = self._pipe.predict_proba(X)[:, 1].reshape(-1, 1)
+        if getattr(self, "_input", "probability") == "logit":   # pickles from before: attribute absent
+            raw = _logit(raw)
         cal = self._calibrator.predict_proba(raw)[:, 1]
         cal = np.clip(cal, 0.001, 0.999)
         return np.column_stack([1 - cal, cal])
@@ -474,7 +490,8 @@ def _base_models():
 def train_repaired(df: pd.DataFrame, target: str = "over25", sample_weight=None,
                    feature_cols: "list[str] | None" = None, recipe: str = "v9_repaired",
                    holdout_start=None, imputer_options: "dict | None" = None,
-                   provenance: "dict | None" = None) -> TrainResults:
+                   provenance: "dict | None" = None,
+                   calibration_input: str = "probability") -> TrainResults:
     """Same model family as legacy (LR + GB + LightGBM, Platt, meta-logistic), with every P0
     training defect removed:
 
@@ -488,10 +505,20 @@ def train_repaired(df: pd.DataFrame, target: str = "over25", sample_weight=None,
     features DROPPED and recorded, never silently constant), an externally fixed holdout
     boundary, asserted block disjointness, holdout-label independence evidence, and the full
     payload metadata (versions, cutoff, frame hash, feature list, blocks, weights, provenance).
+
+    calibration_input "probability" (default) is the recipe as served since 2026-10-28: the Platt
+    calibrators and the meta-logistic read PROBABILITIES under an L2 penalty (C=1). On that scale the
+    identity map needs a coefficient near 4, so the penalty shrinks every probability toward the
+    block's base rate - the Phase 2 champion's BTTS spread was 0.02 and its league means all fell
+    in 0.52-0.53 (2026-11-11). "logit" fits both on log-odds instead (identity = coefficient 1);
+    the payload records it (`calibration_input`) and predict_proba applies the same transform.
     """
     from src.imputer import fit_imputer, IMPUTER_VERSION
     if recipe not in REPAIRED_RECIPES:
         raise ValueError(f"unknown repaired recipe {recipe!r}")
+    if calibration_input not in CALIBRATION_INPUTS:
+        raise ValueError(f"calibration_input must be one of {CALIBRATION_INPUTS}, not {calibration_input!r}")
+    _cin = _logit if calibration_input == "logit" else (lambda p: np.asarray(p, dtype=float))
     r2 = recipe in R2_RECIPES or holdout_start is not None or imputer_options is not None
     feat_cols = list(feature_cols or FEATURE_COLS)
     blocks = four_block_split(df, target, sample_weight, holdout_start=holdout_start)
@@ -536,8 +563,8 @@ def train_repaired(df: pd.DataFrame, target: str = "over25", sample_weight=None,
         pipe = Pipeline([("scaler", StandardScaler()), ("clf", base_clf)])
         pipe.fit(X_base, y_base, clf__sample_weight=w_base)
         platt = LogisticRegression(C=1.0, max_iter=1000)
-        platt.fit(pipe.predict_proba(X_cal)[:, 1].reshape(-1, 1), y_cal, sample_weight=w_cal)
-        calibrated = _CalibratedModel(pipe, platt)
+        platt.fit(_cin(pipe.predict_proba(X_cal)[:, 1]).reshape(-1, 1), y_cal, sample_weight=w_cal)
+        calibrated = _CalibratedModel(pipe, platt, calibration_input=calibration_input)
         metrics = _m(y_hold, calibrated.predict_proba(X_hold)[:, 1])
         metrics.update(n_train=int(len(base)), n_cal=int(len(cal)), n_meta=int(len(meta_b)),
                        n_test=int(len(hold)), evaluated_on="holdout")
@@ -545,10 +572,10 @@ def train_repaired(df: pd.DataFrame, target: str = "over25", sample_weight=None,
 
     served_hold = None
     if len(results) >= 2:
-        meta_X = np.column_stack([results[k]["model"].predict_proba(X_meta)[:, 1] for k in results])
+        meta_X = _cin(np.column_stack([results[k]["model"].predict_proba(X_meta)[:, 1] for k in results]))
         meta_clf = LogisticRegression(C=1.0, max_iter=500, solver="lbfgs")
         meta_clf.fit(meta_X, y_meta)
-        hold_X = np.column_stack([results[k]["model"].predict_proba(X_hold)[:, 1] for k in results])
+        hold_X = _cin(np.column_stack([results[k]["model"].predict_proba(X_hold)[:, 1] for k in results]))
         served_hold = meta_clf.predict_proba(hold_X)[:, 1]
         mm = _m(y_hold, served_hold)
         mm.update(n_meta=int(len(meta_b)), n_test=int(len(hold)), evaluated_on="holdout")
@@ -563,6 +590,9 @@ def train_repaired(df: pd.DataFrame, target: str = "over25", sample_weight=None,
         "served_holdout_metrics": _m(y_hold, served_hold),
         "target": target,
     }
+    if calibration_input != "probability":
+        # only a non-default scale is written, so every payload trained before stays byte-identical
+        results.meta["calibration_input"] = calibration_input
     if r2:
         results.meta.update(_r2_meta(recipe, blocks, feat_cols, dropped, imputer, target,
                                      holdout_start, provenance))
@@ -900,6 +930,8 @@ def _predict_flat(df: pd.DataFrame, payload: dict) -> pd.Series:
     if meta_model is not None and len(probas) >= 2:
         try:
             meta_X   = np.column_stack(probas)
+            if payload.get("calibration_input", "probability") == "logit":
+                meta_X = _logit(meta_X)              # the scale the meta-logistic was fitted on
             ensemble = meta_model.predict_proba(meta_X)[:, 1]
         except Exception:
             ensemble = np.mean(probas, axis=0)

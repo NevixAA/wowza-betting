@@ -38,7 +38,10 @@
     "holdout_start": "2026-04-01",
     "comparison_rules": "PG-1.0 reused (comparison block below, unchanged)",
     "new_format_ht_variant": true,
-    "new_format_ht_variant_note": "Train new_format candidates twice: with the champion exclusion list, and with the HT block (home/away_ht_* form, ht strength, combined_ht_goals_avg, has_ht_history) restored. Each variant is a separate candidate in the Holm family ('<name>' and '<name>+ht'; market_only and dixon_coles read no features and run once). Implemented in src/retrain_harness (protocol.feature_sets / candidate_runs); if the variant cannot run (no HT column in the exclusion list, an HT column outside the feature groups or missing from the frame), fitting is refused, never skipped."
+    "new_format_ht_variant_note": "Train new_format candidates twice: with the champion exclusion list, and with the HT block (home/away_ht_* form, ht strength, combined_ht_goals_avg, has_ht_history) restored. Each variant is a separate candidate in the Holm family ('<name>' and '<name>+ht'; market_only and dixon_coles read no features and run once). Implemented in src/retrain_harness (protocol.feature_sets / candidate_runs); if the variant cannot run (no HT column in the exclusion list, an HT column outside the feature groups or missing from the frame), fitting is refused, never skipped.",
+    "league_level_variant": true,
+    "league_level_variant_decided_on": "2026-11-11",
+    "league_level_variant_note": "Owner 2026-11-11 'Fix before final refit': the clean champion predicted a near-identical BTTS level in every league (Standard walk-forward league means 0.523-0.529 against actual 0.478-0.592). Every feature candidate also runs as '<name>+league' with features.league_level added, on both tracks, plus the parameter runs in features.league_level.param_runs. All are CANDIDATES in the same Holm family; the champion list ('<name>') is unchanged and stays the reference. Nothing is promoted by a run."
   },
 
   "markets": {
@@ -85,6 +88,19 @@
                     "home_cs_rate_h", "away_cs_rate_a"]
       }
     },
+    "league_level": {
+      "columns": ["league_asof_goals_pg", "league_asof_btts_rate", "league_asof_over15_rate", "league_asof_over25_rate",
+                  "league_asof_over35_rate", "league_asof_ht_over05_rate", "league_asof_ht_over15_rate"],
+      "parity": "ROW_LEVEL: src.feature_engineering.add_league_level_features (training) and league_level_asof (serving) - the league's own matches on strictly earlier dates, COVID seasons out of both; tests/test_league_level_features.py and scripts/team_train_serve_parity.py",
+      "note": "The league's OWN as-of level (goals per game and the BTTS / O1.5 / O2.5 / O3.5 / HT O0.5 / HT O1.5 rates) over its matches on strictly earlier dates. No pooled or global fallback: a league with no earlier match is NaN (the candidate's own missing-data rule applies, as for every feature). Only the '+league' variant and the param runs read these columns; the champion list never does.",
+      "param_runs": [
+        {"suffix": "+league+logitcal", "candidate": "champion_recipe", "league": true,
+         "params": {"calibration_input": "logit"}},
+        {"suffix": "+logitcal", "candidate": "champion_recipe", "league": false,
+         "params": {"calibration_input": "logit"}}
+      ],
+      "param_runs_note": "Diagnosis 2026-11-11: the champion recipe's Platt calibrators and meta-logistic read PROBABILITIES under an L2 penalty (C=1); on that scale the identity map needs a coefficient near 4, so the penalty shrinks every row toward the calibration block's pooled base rate (Standard BTTS champion row spread 0.021 vs logistic 0.047 and hgb 0.104 on the same features). calibration_input 'logit' fits both on log-odds (identity = coefficient 1), same blocks, same C. '+league+logitcal' = league block + logit calibration; '+logitcal' = the champion list + logit calibration (isolates the calibration effect)."
+    },
     "never_model_inputs": ["bookmaker_overround", "implied_prob_over", "implied_prob_under"],
     "never_model_inputs_note": "Price-derived. In the history the O/U price is closing-preferred (AvgC first), which no model can know at bet time (P0 bug 5). Prices enter ONLY through the market-only and model+market candidates, labelled with their price class.",
     "track_exclude": {
@@ -92,7 +108,8 @@
       "new_format": ["home_xg_last5", "away_xg_last5", "home_insidebox_last5", "away_insidebox_last5",
                      "home_ht_scored_last5", "away_ht_scored_last5", "home_ht_conceded_last5", "away_ht_conceded_last5",
                      "home_ht_attack_str", "away_ht_attack_str", "combined_ht_goals_avg",
-                     "home_ht_over05_rate", "away_ht_over05_rate", "home_ht_over15_rate", "away_ht_over15_rate"]
+                     "home_ht_over05_rate", "away_ht_over05_rate", "home_ht_over15_rate", "away_ht_over15_rate",
+                     "league_asof_ht_over05_rate", "league_asof_ht_over15_rate"]
     },
     "track_exclude_note": "new_format keeps the serving champion's exclusion list (pipeline.mode_train _NF_DROP) so the retrained champion recipe is the same recipe. Owner 2026-11-07: the HT block comes back for new_format as an ADDITIONAL candidate variant (see owner_decisions.new_format_ht_variant); the holdout decides, nothing is forced in."
   },

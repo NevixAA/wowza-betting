@@ -46,11 +46,16 @@ FORBIDDEN_RUN_ROOTS = ("models", "output", "config", "src", "registry")
 FEATURE_CANDIDATES = ("champion_recipe", "logistic", "hgb", "model_market")
 #: candidates a feature variant ('variants') may run
 VARIANT_CANDIDATES = FEATURE_CANDIDATES + ("model_market_bet",)
+#: the candidate parameters a variant may change (src.model.train_repaired calibration_input)
+VARIANT_PARAMS = ("calibration_input",)
 #: owner_decisions.new_format_ht_variant (owner 2026-11-07): the track that gets the HT variant,
 #: the suffix of the variant's candidate names, and the HT history indicators of the HT block.
 HT_VARIANT_TRACK = "new_format"
 HT_VARIANT_SUFFIX = "+ht"
 HT_HISTORY_COLS = ("home_has_ht_history", "away_has_ht_history")
+#: owner_decisions.league_level_variant (owner 2026-11-11): the as-of league-level block
+#: (features.league_level) added to every feature candidate as '<name>+league', both tracks.
+LEAGUE_VARIANT_SUFFIX = "+league"
 
 
 # ── config ──────────────────────────────────────────────────────────────────────────────────
@@ -102,8 +107,15 @@ def validate_config(cfg: dict) -> None:
         if not suf.startswith("+") or suf == HT_VARIANT_SUFFIX:
             raise ValueError(f"variant {suf!r}: a variant suffix starts with '+' and is not {HT_VARIANT_SUFFIX!r}")
         bad = [g for g in v.get("restore_groups") or () if g not in groups]
-        if bad or not v.get("restore_groups"):
+        if bad:
             raise ValueError(f"variant {suf!r}: restore_groups must name feature groups (unknown: {bad})")
+        if not (v.get("restore_groups") or v.get("league") or v.get("params")):
+            raise ValueError(f"variant {suf!r} changes nothing (no restore_groups, league or params)")
+        if v.get("league") and not ((cfg["features"].get("league_level") or {}).get("columns")):
+            raise ValueError(f"variant {suf!r}: league=true but features.league_level.columns is empty")
+        badp = set(v.get("params") or {}) - set(VARIANT_PARAMS)
+        if badp:
+            raise ValueError(f"variant {suf!r}: unknown params {sorted(badp)} (allowed {VARIANT_PARAMS})")
         bad = [c for c in v.get("candidates") or () if c not in VARIANT_CANDIDATES]
         if bad or not v.get("candidates"):
             raise ValueError(f"variant {suf!r}: candidates must be feature-reading candidates (bad: {bad})")
@@ -133,6 +145,7 @@ def fit_blockers(cfg: dict, env=None) -> list[str]:
     if str(env.get(ENABLE_VAR, "")).strip().lower() != "true":
         out.append(f"{ENABLE_VAR} is not 'true' (repository variable; set only after owner approval)")
     out += ht_variant_blockers(cfg)
+    out += league_variant_blockers(cfg)
     return out
 
 
@@ -157,13 +170,17 @@ def assert_run_folder(path: Path | str, root: Path | None = None) -> Path:
 
 # ── features ────────────────────────────────────────────────────────────────────────────────
 
-def feature_list(cfg: dict, track: str, columns, restore=(), extra_groups=()) -> tuple[list[str], dict]:
+def feature_list(cfg: dict, track: str, columns, restore=(), extra_groups=(),
+                 league: bool = False) -> tuple[list[str], dict]:
     """(features, excluded{column: reason}) for a track, given the frame's columns.
 
     A configured column that the frame does not have is EXCLUDED and listed - never created.
     `restore` lifts those columns out of the track's exclusion list (the HT variant); it never
     adds a column that is not in an included group or that is price-derived. `extra_groups` (a
-    feature variant, config 'variants') includes groups whose own include flag is false."""
+    feature variant, config 'variants') includes groups whose own include flag is false.
+    `league` appends the
+    league-level block (features.league_level, the '+league' variant); without it those columns
+    are listed as excluded, so the champion list never changes."""
     fcfg = cfg["features"]
     cols = set(columns)
     never = set(fcfg.get("never_model_inputs") or ())
@@ -181,7 +198,53 @@ def feature_list(cfg: dict, track: str, columns, restore=(), extra_groups=()) ->
                 excluded[c] = "not in the feature frame"
             elif c not in feats:
                 feats.append(c)
+    for c in league_level_columns(cfg):
+        if c in feats:
+            continue
+        if not league:
+            excluded[c] = f"league-level block: the {LEAGUE_VARIANT_SUFFIX} variant only"
+        elif c in never:
+            excluded[c] = "price-derived (never a model input)"
+        elif c in track_ex:
+            excluded[c] = f"excluded for track {track}"
+        elif c not in cols:
+            excluded[c] = "not in the feature frame"
+        else:
+            feats.append(c)
     return feats, excluded
+
+
+# ── the league-level variant (owner_decisions.league_level_variant, owner 2026-11-11) ──────────
+
+def league_level_columns(cfg: dict) -> list[str]:
+    return list(((cfg["features"].get("league_level") or {}).get("columns")) or ())
+
+
+def league_variant_on(cfg: dict) -> bool:
+    return (cfg.get("owner_decisions") or {}).get("league_level_variant") is True
+
+
+def league_variant_blockers(cfg: dict, columns=None) -> list[str]:
+    """Every reason the league-level variant cannot run while the owner flag is on (never skipped)."""
+    if not league_variant_on(cfg):
+        return []
+    why = []
+    block = league_level_columns(cfg)
+    if not block:
+        why.append("features.league_level.columns is empty")
+    never = set(cfg["features"].get("never_model_inputs") or ())
+    if [c for c in block if c in never]:
+        why.append("a league-level column is price-derived")
+    grouped = {c for g in cfg["features"]["groups"].values() for c in g["columns"]}
+    if [c for c in block if c in grouped]:
+        why.append("a league-level column is also in a feature group, so the champion list would hold it")
+    if not [n for n in FEATURE_CANDIDATES if (cfg["candidates"].get(n) or {}).get("enabled")]:
+        why.append("no enabled candidate uses features")
+    if columns is not None:
+        missing = [c for c in block if c not in set(columns)]
+        if missing:
+            why.append(f"league-level column(s) not in the feature frame: {missing}")
+    return [f"league-level variant (owner_decisions.league_level_variant) cannot run: {w}" for w in why]
 
 
 # ── the new_format HT variant (owner_decisions.new_format_ht_variant) ───────────────────────────
@@ -194,7 +257,8 @@ def ht_block(cfg: dict) -> list[str]:
     """The HT block: the HT columns of the new_format exclusion list (every name with '_ht_'; xG and
     inside-box are not HT and stay excluded) plus the HT history indicators."""
     ex = (cfg["features"].get("track_exclude") or {}).get(HT_VARIANT_TRACK) or ()
-    out = [c for c in ex if "_ht_" in c]
+    league = set(league_level_columns(cfg))            # the '+league' variant's, never the HT block's
+    out = [c for c in ex if "_ht_" in c and c not in league]
     return out + [c for c in HT_HISTORY_COLS if c not in out]
 
 
@@ -245,7 +309,11 @@ def variant_blockers(cfg: dict, columns, tracks=None) -> list[str]:
     for suf, v in variants(cfg).items():
         if tracks is not None and not any(_variant_on_track(v, cfg, t) for t in tracks):
             continue
-        for g in v["restore_groups"]:
+        if v.get("league"):
+            miss = [c for c in league_level_columns(cfg) if c not in cols]
+            if miss:
+                why.append(f"variant {suf}: league-level column(s) not in the feature frame: {miss}")
+        for g in v.get("restore_groups") or ():
             miss = [c for c in cfg["features"]["groups"][g]["columns"] if c not in cols]
             if miss:
                 why.append(f"variant {suf}: group {g} column(s) not in the feature frame: {miss[:6]}"
@@ -259,21 +327,61 @@ def feature_sets(cfg: dict, track: str, columns) -> dict:
     out = {"": feature_list(cfg, track, columns)}
     if ht_variant_on(cfg) and track == HT_VARIANT_TRACK:
         out[HT_VARIANT_SUFFIX] = feature_list(cfg, track, columns, restore=ht_block(cfg))
+    if league_variant_on(cfg):
+        out[LEAGUE_VARIANT_SUFFIX] = feature_list(cfg, track, columns, league=True)
+        for r in league_param_runs(cfg):
+            out[r["suffix"]] = feature_list(cfg, track, columns, league=bool(r["league"]))
     for suf, v in variants(cfg).items():
         if _variant_on_track(v, cfg, track):
-            out[suf] = feature_list(cfg, track, columns, extra_groups=tuple(v["restore_groups"]))
+            out[suf] = feature_list(cfg, track, columns, extra_groups=tuple(v.get("restore_groups") or ()),
+                                    league=bool(v.get("league")))
     return out
+
+
+def league_param_runs(cfg: dict) -> list[dict]:
+    """owner_decisions.league_level_variant's PARAMETER runs (features.league_level.param_runs):
+    one candidate refitted with changed parameters, on the league list ('league': true) or on the
+    champion list. Each is its own label '<candidate><suffix>' in the Holm family."""
+    if not league_variant_on(cfg):
+        return []
+    runs = list(((cfg["features"].get("league_level") or {}).get("param_runs")) or ())
+    for r in runs:
+        for k in ("suffix", "candidate", "league", "params"):
+            if k not in r:
+                raise ValueError(f"features.league_level.param_runs entry has no {k!r}: {r}")
+        if r["candidate"] not in FEATURE_CANDIDATES:
+            raise ValueError(f"param run candidate {r['candidate']!r} reads no features")
+        if r["suffix"] in ("", HT_VARIANT_SUFFIX, LEAGUE_VARIANT_SUFFIX) or not r["suffix"].startswith("+"):
+            raise ValueError(f"param run suffix {r['suffix']!r} must be new and start with '+'")
+    return runs
+
+
+def run_params(cfg: dict, label: str) -> dict:
+    """The parameter overrides of a candidate label (empty for every label but a param run)."""
+    for r in league_param_runs(cfg):
+        if label == r["candidate"] + r["suffix"]:
+            return dict(r["params"])
+    for suf, v in variants(cfg).items():
+        if label.endswith(suf) and label[: -len(suf)] in (v.get("candidates") or ()):
+            return dict(v.get("params") or {})
+    return {}
 
 
 def candidate_runs(cfg: dict, track: str, names) -> list[tuple[str, str, str]]:
     """(label, base candidate, feature-set suffix) for every candidate a track trains and scores.
     With the HT variant on, every new_format candidate that uses features appears twice
-    ('hgb' and 'hgb+ht'); market_only and dixon_coles read no features and appear once."""
+    ('hgb' and 'hgb+ht'); market_only and dixon_coles read no features and appear once. With the
+    league-level variant on, every feature candidate also runs as '<name>+league' on both tracks,
+    plus the variant's parameter runs (league_param_runs)."""
     out = []
+    params = league_param_runs(cfg)
     for n in names:
         out.append((n, n, ""))
         if ht_variant_on(cfg) and track == HT_VARIANT_TRACK and n in FEATURE_CANDIDATES:
             out.append((n + HT_VARIANT_SUFFIX, n, HT_VARIANT_SUFFIX))
+        if league_variant_on(cfg) and n in FEATURE_CANDIDATES:
+            out.append((n + LEAGUE_VARIANT_SUFFIX, n, LEAGUE_VARIANT_SUFFIX))
+            out += [(n + r["suffix"], n, r["suffix"]) for r in params if r["candidate"] == n]
         for suf, v in variants(cfg).items():
             if n in v["candidates"] and _variant_on_track(v, cfg, track):
                 out.append((n + suf, n, suf))
@@ -407,6 +515,10 @@ def build_plan(feat: pd.DataFrame, cfg: dict) -> dict:
                       "date_max": str(pd.to_datetime(feat["date"]).max().date()) if len(feat) else None},
             "ht_variant": {"on": ht_variant_on(cfg), "block": ht_block(cfg) if ht_variant_on(cfg) else [],
                            "blockers": ht_variant_blockers(cfg, feat.columns)},
+            "league_variant": {"on": league_variant_on(cfg),
+                               "block": league_level_columns(cfg) if league_variant_on(cfg) else [],
+                               "param_runs": league_param_runs(cfg),
+                               "blockers": league_variant_blockers(cfg, feat.columns)},
             "tracks": {}}
     min_league = cfg["comparison"].get("min_league_n")
     enabled = [n for n in ALL_CANDIDATES if (cfg["candidates"].get(n) or {}).get("enabled")]
