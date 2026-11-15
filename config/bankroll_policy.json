@@ -140,20 +140,41 @@
     "rule": "Owner 2026-11-09 'Paper + PROMISING small': staking is per CELL (league x market x side, key '<track>|<league>', src/bankroll_policy.cell_key). Only a cell listed here stakes; every other cell is PAPER (shown and recorded, stake 0, reason NO_REAL_STAKE_PAPER_NO_CELL_ENTRY) - never inherited from its track. Portfolio caps, drawdown throttle, paper_leagues and the direction rule are unchanged. Cloudbet stays PAPER_ONLY: the stake plan sizes and records, no bet is placed. TOP-3 picks follow their cell's state (no extra stake). FLAT PER CELL (owner 2026-11-11 'Clean rebuild'): no tier multiplier - every tip that clears its cell's one approved bar stakes the cell's base fraction.",
     "decided": "2026-11-09",
     "approved": {
-      "proposal_id": "TP-2026-11-10-d999073a",
-      "proposal_hash": "d999073a5f1744c512011fe7a487a957ced743c6d8b467ec88dc6302d2e100d6",
-      "owner": "owner 2026-11-11 'Approve, paper + small'; then 'Bet-time snapshot + re-run', 'Strict, keep Argentina' and 'Paper until re-run': 38 entries withdrawn pending the re-run (config/threshold_approvals.json). Stakes from 2026-11-21: ONLY Argentina NF BTTS ACTIVE 1.25% (league-wide rule, basis recorded on the cell); every other cell PAPER (La Liga 2 Over 2.5 and La Liga 2 BTTS included); Cloudbet PAPER_ONLY; TOP-3 a paper track; flat per cell"
+      "proposal_id": "TP-2026-11-15-bade2c0b",
+      "proposal_hash": "bade2c0baf41858f5b65f05bbf62fb5b6832873d8c743efb30da2fe3e193e74e",
+      "owner": "owner 2026-11-15 'Approve, PROMISING small' (protocol v5 re-run; supersedes TP-2026-11-10-d999073a). Stakes from 2026-11-21: ACTIVE_LOW 0.5% on Standard O/U 2.5 Over La Liga 2, NF O/U 2.5 Over Finland and NF Over 3.5 Finland; Argentina NF BTTS REDUCED to 0.5% ('Reduce to 0.5%': UNPROVEN on real prices, kept small as a league rule); Japan and Austria NF Unders PAPER (owner NF-Under rule); everything else PAPER; Cloudbet PAPER_ONLY; TOP-3 a paper track; flat per cell"
     },
     "previous_state": "per-track staking (tracks{} below), unchanged and still read when enabled is false",
     "cells": {
       "new_format|BTTS|Argentina Primera Division": {
-        "state": "ACTIVE",
-        "base_fraction": 0.0125,
+        "state": "ACTIVE_LOW",
+        "base_fraction": 0.005,
         "max_odds": 2.6,
         "evidence_score": 3.0,
-        "source": "PROTECTED real-money track, kept exactly as the new_format|BTTS track stakes it today (owner 2026-11-09); its bars_opt cell is LEAGUE_WIDE up to odds 2.50, UNPROVEN, 350 selection bets +5.4%",
+        "source": "PROTECTED real-money track (owner 2026-11-09); v5 cell (TP-2026-11-15-bade2c0b): LEAGUE_WIDE up to odds 2.50, UNPROVEN on 97 own bet-time bets",
         "stake_note": "flat per cell (owner 2026-11-11 'Clean rebuild'): the base fraction on every tip that clears the cell's one approved bar; the old 1.1 / 0.9 / 1.0 tier multipliers are retired",
-        "staking_basis": "owner 2026-11-11 \"Strict, keep Argentina\": a LEAGUE_WIDE rule (every match up to odds 2.50, no bar chosen from backfill); its PROMISING verdict rests on its own live-captured FINAL rows (86 bets, snapshot before kickoff); ACTIVE 1.25% flat"
+        "staking_basis": "owner 2026-11-15 \"Reduce to 0.5%\": UNPROVEN on real (bet-time) prices, kept small as a league rule; ACTIVE_LOW 0.5% flat (was ACTIVE 1.25% under the 2026-11-11 exemption)"
+      },
+      "new_format|OU25_OVER|Finland Veikkausliiga": {
+        "state": "ACTIVE_LOW",
+        "base_fraction": 0.005,
+        "source": "PROMISING bars_opt cell (proposal TP-2026-11-15-bade2c0b, study FINAL 2026-09-01..11-08); owner 2026-11-09 'Paper + PROMISING small': the policy's ACTIVE_LOW level",
+        "max_odds_source": "the cell has no odds range: the reader's HARD max_odds ceiling applies",
+        "stake_note": "flat per cell (owner 2026-11-11 'Clean rebuild'): the base fraction on every tip that clears the cell's one approved bar; the old 1.1 / 0.9 / 1.0 tier multipliers are retired"
+      },
+      "standard|OU25_OVER|La Liga 2": {
+        "state": "ACTIVE_LOW",
+        "base_fraction": 0.005,
+        "source": "PROMISING bars_opt cell (proposal TP-2026-11-15-bade2c0b, study FINAL 2026-09-01..11-08); owner 2026-11-09 'Paper + PROMISING small': the policy's ACTIVE_LOW level",
+        "max_odds_source": "the cell has no odds range: the reader's HARD max_odds ceiling applies",
+        "stake_note": "flat per cell (owner 2026-11-11 'Clean rebuild'): the base fraction on every tip that clears the cell's one approved bar; the old 1.1 / 0.9 / 1.0 tier multipliers are retired"
+      },
+      "new_format|OVER35|Finland Veikkausliiga": {
+        "state": "ACTIVE_LOW",
+        "base_fraction": 0.005,
+        "source": "PROMISING bars_opt cell (proposal TP-2026-11-15-bade2c0b, study FINAL 2026-09-01..11-08); owner 2026-11-09 'Paper + PROMISING small': the policy's ACTIVE_LOW level",
+        "max_odds_source": "the cell has no odds range: the reader's HARD max_odds ceiling applies",
+        "stake_note": "flat per cell (owner 2026-11-11 'Clean rebuild'): the base fraction on every tip that clears the cell's one approved bar; the old 1.1 / 0.9 / 1.0 tier multipliers are retired"
       }
     }
   }

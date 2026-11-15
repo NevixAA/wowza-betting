@@ -1,4 +1,272 @@
-# P8 - Per-league bars, APPROVED state (2026-11)
+# P8 - Per-league bars, APPROVED state (2026-11, protocol v5 re-run)
+
+**Approved** by owner (Nevo) at 2026-11-15T09:52:58Z (owner 2026-11-15: "Approve, PROMISING small", ALL entries): proposal **TP-2026-11-15-bade2c0b**, proposal_hash `bade2c0baf41858f5b65f05bbf62fb5b6832873d8c743efb30da2fe3e193e74e`, file `output/threshold_proposals/bars_oddsapi_hist/2026-11_bade2c0b.json`, 63 of 63 entries by id + hash in `config/threshold_approvals.json`. **Supersedes TP-2026-11-10-d999073a** (its record and 38 withdrawals stay as history, below). Protocol `bars-fresh-holdout/5` (sha256 `4e5708fd...`), fresh holdout `TP-FH-2026-11-15-132a4795`; evidence `evidence_2026-11_v5.json`; price provenance `cell_price_provenance_2026-11_v5.json` (every approved cell on proven bet-time prices: football-data pre-match through the certified join, own live captures, tier BT snapshots before kickoff).
+
+**Not yet applied.** `python -m src.threshold_apply --proposal output/threshold_proposals/bars_oddsapi_hist/2026-11_bade2c0b.json` runs on go-live day after the research-lock re-approval (runbook U3a, U3b). Dry run 2026-11-15: would apply 63, already applied 0, withdrawn 0.
+
+**Nothing is PROVEN.** Every fresh-holdout verdict carries the label "re-test after a price-data fix (outcomes previously seen)".
+
+## Staking from 2026-11-21 (owner 2026-11-15)
+
+| Staked cell | State | Base fraction (flat, every tip) | Basis |
+|---|---|---|---|
+| `standard|OU25_OVER|La Liga 2` | ACTIVE_LOW | 0.005 | PROMISING (selection, certified football-data prices) |
+| `new_format|OU25_OVER|Finland Veikkausliiga` | ACTIVE_LOW | 0.005 | PROMISING (fresh holdout, re-test label) |
+| `new_format|OVER35|Finland Veikkausliiga` | ACTIVE_LOW | 0.005 | PROMISING (fresh holdout, re-test label); its TRACK is BLOCKED, the approved cell stakes |
+| `new_format|BTTS|Argentina Primera Division` | ACTIVE_LOW | 0.005 (max odds 2.6) | owner "Reduce to 0.5%": UNPROVEN on real prices (97 own bet-time bets), kept small as a league rule |
+
+Japan J-League and Austrian Bundesliga NF O/U 2.5 Unders are PROMISING but PAPER (owner NF-Under rule). Everything else is PAPER; Cloudbet PAPER_ONLY; flat per cell; TOP-3 a named paper track.
+
+## Fresh-holdout results (tested once, Holm family 17)
+
+| Track | Market-side | League | Holdout bets | ROI | ROI 95% CI | Holm p | Verdict |
+|---|---|---|---|---|---|---|---|
+| standard | over35_over | La Liga 2 | 102 | -12.4% | [-50.4%, +25.6%] | 1.0 | UNPROVEN |
+| standard | over35_over | Ligue 2 | 14 | -6.9% | [-106.3%, +106.5%] | 1.0 | UNPROVEN |
+| standard | over35_over | Serie B | 140 | -1.4% | [-35.1%, +32.2%] | 1.0 | UNPROVEN |
+| new_format | over25_over | Denmark Superliga | 82 | +2.1% | [-16.3%, +20.5%] | 1.0 | UNPROVEN |
+| new_format | over25_over | Finland Veikkausliiga | 46 | +12.5% | [-18.3%, +40.1%] | 1.0 | PROMISING |
+| new_format | over25_over | Mexico Liga MX | 42 | +2.1% | [-30.4%, +36.1%] | 1.0 | UNPROVEN |
+| new_format | over25_over | Sweden Allsvenskan | 58 | -15.5% | [-41.5%, +10.7%] | 1.0 | UNPROVEN |
+| new_format | over25_over | USA MLS | 52 | -2.8% | [-28.6%, +22.5%] | 1.0 | UNPROVEN |
+| new_format | over25_under | Austrian Bundesliga | 43 | +0.4% | [-34.3%, +35.2%] | 1.0 | PROMISING |
+| new_format | over25_under | Japan J-League | 42 | +33.8% | [+0.1%, +67.5%] | 0.306 | PROMISING |
+| new_format | over25_under | USA MLS | 84 | -17.8% | [-41.8%, +6.3%] | 1.0 | UNPROVEN |
+| new_format | over15_over | Finland Veikkausliiga | 21 | -15.7% | [-49.4%, +18.1%] | 1.0 | UNPROVEN |
+| new_format | over15_over | Sweden Allsvenskan | 11 | -11.7% | [-59.6%, +36.2%] | 1.0 | UNPROVEN |
+| new_format | over35_over | Denmark Superliga | 82 | +8.7% | [-22.0%, +39.7%] | 1.0 | UNPROVEN |
+| new_format | over35_over | Finland Veikkausliiga | 46 | +8.1% | [-30.0%, +46.1%] | 1.0 | PROMISING |
+| new_format | over35_over | Norway Eliteserien | 29 | -20.4% | [-58.5%, +17.7%] | 1.0 | UNPROVEN |
+| new_format | over35_over | Sweden Allsvenskan | 18 | -50.4% | [-109.5%, +16.4%] | 1.0 | UNPROVEN |
+
+Families without a fresh holdout (selection-based bars; no historical PROVEN test): standard O/U 2.5 Over / Under (certified football-data prices are own bet-time prices: only 38 fresh rows), standard and NF BTTS (tier BT holds no Pinnacle BTTS pair; Bet365 is outside BT's eu region), all HT families (not requested by BT). Standard Over 1.5 had a holdout but its selection switched no league on. Portugal's BT was not collected yet: its cells have no history rows.
+
+## Status counts
+
+| Track | Market-side | PROVEN | PROMISING | UNPROVEN | OFF |
+|---|---|---|---|---|---|
+| new_format | btts_yes | 0 | 0 | 4 | 11 |
+| new_format | over15_over | 0 | 0 | 8 | 7 |
+| new_format | over25_over | 0 | 1 | 8 | 6 |
+| new_format | over25_under | 0 | 2 | 7 | 6 |
+| new_format | over35_over | 0 | 1 | 3 | 11 |
+| standard | btts_yes | 0 | 0 | 0 | 17 |
+| standard | ht_over05_over | 0 | 0 | 0 | 17 |
+| standard | ht_over15_over | 0 | 0 | 0 | 17 |
+| standard | over15_over | 0 | 0 | 4 | 13 |
+| standard | over25_over | 0 | 1 | 4 | 12 |
+| standard | over25_under | 0 | 0 | 1 | 16 |
+| standard | over35_over | 0 | 0 | 6 | 11 |
+
+Total: 194 league x market cells: OFF 144, PROMISING 5, UNPROVEN 45.
+
+## Every league x market
+
+| Track | Market-side | League | Status | Bars V / M / S | Configuration | Basis / reason |
+|---|---|---|---|---|---|---|
+| new_format | btts_yes | Argentina Primera Division | UNPROVEN | 0.02 / 0.02 / 0.3 | NONE|ALL|max-|min- | SELECTED (OWN_BETS) |
+| new_format | btts_yes | Austrian Bundesliga | OFF | - | - | OFF_NO_VALUE |
+| new_format | btts_yes | Brazil Serie A | UNPROVEN | 0.02 / 0.02 / 0.3 | NONE|ALL|max-|min- | SELECTED (OWN_BETS) |
+| new_format | btts_yes | China Super League | OFF | - | - | OFF_NO_VALUE |
+| new_format | btts_yes | Denmark Superliga | OFF | - | - | OFF_NO_VALUE |
+| new_format | btts_yes | Finland Veikkausliiga | OFF | - | - | OFF_NO_VALUE |
+| new_format | btts_yes | Ireland Premier Division | OFF | - | - | OFF_NO_VALUE |
+| new_format | btts_yes | Japan J-League | OFF | - | - | OFF_NO_VALUE |
+| new_format | btts_yes | K-League 1 | OFF | - | - | OFF_NO_VALUE |
+| new_format | btts_yes | Mexico Liga MX | UNPROVEN | 0.02 / 0.02 / 0.3 | NONE|ALL|max-|min- | SELECTED (OWN_BETS) |
+| new_format | btts_yes | Norway Eliteserien | UNPROVEN | 0.02 / 0.02 / 0.3 | NONE|ALL|max-|min- | SELECTED (LEARNED_BLEND) |
+| new_format | btts_yes | Romanian Superliga | OFF | - | - | OFF_NO_VALUE |
+| new_format | btts_yes | Saudi Pro League | OFF | - | - | OFF_NO_VALUE |
+| new_format | btts_yes | Sweden Allsvenskan | OFF | - | - | OFF_NO_VALUE |
+| new_format | btts_yes | USA MLS | OFF | - | - | OFF_NO_VALUE |
+| new_format | over15_over | Argentina Primera Division | UNPROVEN | 0.02 / 0.04 / 0.05 | RAW|EDGE|max-|min- | NO_SELECTION_EVIDENCE (OWN_BETS) |
+| new_format | over15_over | Austrian Bundesliga | OFF | - | - | OFF_NO_OWN_ESTIMATE |
+| new_format | over15_over | Brazil Serie A | UNPROVEN | 0.02 / 0.02 / 0.02 | RAW|EDGE|max-|min- | NO_SELECTION_EVIDENCE (LEARNED_BLEND) |
+| new_format | over15_over | China Super League | OFF | - | - | OFF_NO_OWN_ESTIMATE |
+| new_format | over15_over | Denmark Superliga | OFF | - | - | OFF_NO_OWN_ESTIMATE |
+| new_format | over15_over | Finland Veikkausliiga | UNPROVEN | 0.02 / 0.03 / 0.04 | LEARNED|EV|max-|min- | FRESH_HOLDOUT_SELECTION (OWN_BETS) |
+| new_format | over15_over | Ireland Premier Division | OFF | - | - | OFF_NO_OWN_ESTIMATE |
+| new_format | over15_over | Japan J-League | OFF | - | - | OFF_NO_OWN_ESTIMATE |
+| new_format | over15_over | K-League 1 | UNPROVEN | 0.02 / 0.02 / 0.03 | RAW|EDGE|max-|min- | NO_SELECTION_EVIDENCE (LEARNED_BLEND) |
+| new_format | over15_over | Mexico Liga MX | UNPROVEN | 0.02 / 0.03 / 0.03 | RAW|EDGE|max-|min- | NO_SELECTION_EVIDENCE (LEARNED_BLEND) |
+| new_format | over15_over | Norway Eliteserien | OFF | - | - | OFF_NO_OWN_ESTIMATE |
+| new_format | over15_over | Romanian Superliga | UNPROVEN | 0.03 / 0.05 / 0.05 | RAW|EDGE|max-|min- | NO_SELECTION_EVIDENCE (LEARNED_BLEND) |
+| new_format | over15_over | Saudi Pro League | UNPROVEN | 0.02 / 0.02 / 0.04 | RAW|EDGE|max-|min- | NO_SELECTION_EVIDENCE (LEARNED_BLEND) |
+| new_format | over15_over | Sweden Allsvenskan | UNPROVEN | 0.02 / 0.02 / 0.02 | LEARNED|EV|max-|min- | FRESH_HOLDOUT_SELECTION (OWN_BETS) |
+| new_format | over15_over | USA MLS | OFF | - | - | OFF_NO_OWN_ESTIMATE |
+| new_format | over25_over | Argentina Primera Division | UNPROVEN | 0.02 / 0.02 / 0.3 | NONE|ALL|max-|min- | SELECTED (OWN_BETS) |
+| new_format | over25_over | Austrian Bundesliga | UNPROVEN | 0.02 / 0.02 / 0.3 | NONE|ALL|max-|min- | SELECTED (LEARNED_BLEND) |
+| new_format | over25_over | Brazil Serie A | OFF | - | - | OFF_NO_VALUE |
+| new_format | over25_over | China Super League | OFF | - | - | OFF_NO_VALUE |
+| new_format | over25_over | Denmark Superliga | UNPROVEN | 0.02 / 0.03 / 0.12 | LEARNED|EV|max-|min- | FRESH_HOLDOUT_SELECTION (OWN_BETS) |
+| new_format | over25_over | Finland Veikkausliiga | PROMISING | 0.02 / 0.05 / 0.05 | LEARNED|EV|max-|min- | FRESH_HOLDOUT_SELECTION (OWN_BETS) |
+| new_format | over25_over | Ireland Premier Division | UNPROVEN | 0.02 / 0.02 / 0.3 | NONE|ALL|max-|min- | SELECTED (LEARNED_BLEND) |
+| new_format | over25_over | Japan J-League | OFF | - | - | OFF_NO_VALUE |
+| new_format | over25_over | K-League 1 | UNPROVEN | 0.02 / 0.02 / 0.3 | NONE|ALL|max-|min- | SELECTED (LEARNED_BLEND) |
+| new_format | over25_over | Mexico Liga MX | UNPROVEN | 0.02 / 0.02 / 0.03 | LEARNED|EV|max-|min- | FRESH_HOLDOUT_SELECTION (OWN_BETS) |
+| new_format | over25_over | Norway Eliteserien | OFF | - | - | OFF_NO_VALUE |
+| new_format | over25_over | Romanian Superliga | OFF | - | - | OFF_NO_VALUE |
+| new_format | over25_over | Saudi Pro League | OFF | - | - | OFF_NO_VALUE |
+| new_format | over25_over | Sweden Allsvenskan | UNPROVEN | 0.02 / 0.03 / 0.03 | LEARNED|EV|max-|min- | FRESH_HOLDOUT_SELECTION (OWN_BETS) |
+| new_format | over25_over | USA MLS | UNPROVEN | 0.02 / 0.02 / 0.03 | LEARNED|EV|max-|min- | FRESH_HOLDOUT_SELECTION (OWN_BETS) |
+| new_format | over25_under | Argentina Primera Division | OFF | - | - | OFF_NO_VALUE |
+| new_format | over25_under | Austrian Bundesliga | PROMISING | 0.02 / 0.03 / 0.06 | RAW|EDGE|max-|min- | FRESH_HOLDOUT_SELECTION (OWN_BETS) |
+| new_format | over25_under | Brazil Serie A | UNPROVEN | 0.03 / 0.03 / 0.03 | RAW|EDGE|max-|min- | NO_SELECTION_EVIDENCE (OWN_BETS) |
+| new_format | over25_under | China Super League | OFF | - | - | OFF_NO_VALUE |
+| new_format | over25_under | Denmark Superliga | OFF | - | - | OFF_NO_VALUE |
+| new_format | over25_under | Finland Veikkausliiga | UNPROVEN | 0.02 / 0.02 / 0.02 | RAW|EDGE|max-|min- | NO_SELECTION_EVIDENCE (LEARNED_BLEND) |
+| new_format | over25_under | Ireland Premier Division | OFF | - | - | OFF_NO_VALUE |
+| new_format | over25_under | Japan J-League | PROMISING | 0.02 / 0.02 / 0.02 | RAW|EDGE|max-|min- | FRESH_HOLDOUT_SELECTION (OWN_BETS) |
+| new_format | over25_under | K-League 1 | OFF | - | - | OFF_NO_VALUE |
+| new_format | over25_under | Mexico Liga MX | OFF | - | - | OFF_NO_VALUE |
+| new_format | over25_under | Norway Eliteserien | UNPROVEN | 0.12 / 0.12 / 0.12 | RAW|EDGE|max-|min- | NO_SELECTION_EVIDENCE (LEARNED_BLEND) |
+| new_format | over25_under | Romanian Superliga | UNPROVEN | 0.1 / 0.12 / 0.13 | RAW|EDGE|max-|min- | NO_SELECTION_EVIDENCE (LEARNED_BLEND) |
+| new_format | over25_under | Saudi Pro League | UNPROVEN | 0.1 / 0.1 / 0.1 | RAW|EDGE|max-|min- | NO_SELECTION_EVIDENCE (LEARNED_BLEND) |
+| new_format | over25_under | Sweden Allsvenskan | UNPROVEN | 0.02 / 0.1 / 0.1 | RAW|EDGE|max-|min- | NO_SELECTION_EVIDENCE (LEARNED_BLEND) |
+| new_format | over25_under | USA MLS | UNPROVEN | 0.07 / 0.07 / 0.07 | RAW|EDGE|max-|min- | FRESH_HOLDOUT_SELECTION (OWN_BETS) |
+| new_format | over35_over | Argentina Primera Division | OFF | - | - | OFF_NO_VALUE |
+| new_format | over35_over | Austrian Bundesliga | OFF | - | - | OFF_NO_VALUE |
+| new_format | over35_over | Brazil Serie A | OFF | - | - | OFF_NO_VALUE |
+| new_format | over35_over | China Super League | OFF | - | - | OFF_NO_VALUE |
+| new_format | over35_over | Denmark Superliga | UNPROVEN | 0.02 / 0.02 / 0.05 | LEARNED|EDGE|max-|min- | FRESH_HOLDOUT_SELECTION (OWN_BETS) |
+| new_format | over35_over | Finland Veikkausliiga | PROMISING | 0.02 / 0.02 / 0.02 | LEARNED|EDGE|max-|min- | FRESH_HOLDOUT_SELECTION (OWN_BETS) |
+| new_format | over35_over | Ireland Premier Division | OFF | - | - | OFF_NO_VALUE |
+| new_format | over35_over | Japan J-League | OFF | - | - | OFF_NO_VALUE |
+| new_format | over35_over | K-League 1 | OFF | - | - | OFF_NO_VALUE |
+| new_format | over35_over | Mexico Liga MX | OFF | - | - | OFF_NO_VALUE |
+| new_format | over35_over | Norway Eliteserien | UNPROVEN | 0.02 / 0.02 / 0.02 | LEARNED|EDGE|max-|min- | FRESH_HOLDOUT_SELECTION (OWN_BETS) |
+| new_format | over35_over | Romanian Superliga | OFF | - | - | OFF_NO_VALUE |
+| new_format | over35_over | Saudi Pro League | OFF | - | - | OFF_NO_VALUE |
+| new_format | over35_over | Sweden Allsvenskan | UNPROVEN | 0.02 / 0.02 / 0.02 | LEARNED|EDGE|max-|min- | FRESH_HOLDOUT_SELECTION (OWN_BETS) |
+| new_format | over35_over | USA MLS | OFF | - | - | OFF_NO_VALUE |
+| standard | btts_yes | Belgian First Division A | OFF | - | - | OFF_NO_VALUE |
+| standard | btts_yes | Bundesliga 2 | OFF | - | - | OFF_NO_VALUE |
+| standard | btts_yes | Championship | OFF | - | - | OFF_NO_VALUE |
+| standard | btts_yes | Dutch Eredivisie | OFF | - | - | OFF_NO_VALUE |
+| standard | btts_yes | Greek Super League | OFF | - | - | OFF_NO_VALUE |
+| standard | btts_yes | La Liga 2 | OFF | - | - | OFF_NO_VALUE |
+| standard | btts_yes | League One | OFF | - | - | OFF_NO_VALUE |
+| standard | btts_yes | League Two | OFF | - | - | OFF_NO_VALUE |
+| standard | btts_yes | Ligue 2 | OFF | - | - | OFF_NO_VALUE |
+| standard | btts_yes | National League | OFF | - | - | OFF_NO_VALUE |
+| standard | btts_yes | Portuguese Primeira Liga | OFF | - | - | OFF_NO_VALUE |
+| standard | btts_yes | Scottish Championship | OFF | - | - | OFF_NO_VALUE |
+| standard | btts_yes | Scottish League One | OFF | - | - | OFF_NO_VALUE |
+| standard | btts_yes | Scottish League Two | OFF | - | - | OFF_NO_VALUE |
+| standard | btts_yes | Scottish Premiership | OFF | - | - | OFF_NO_VALUE |
+| standard | btts_yes | Serie B | OFF | - | - | OFF_NO_VALUE |
+| standard | btts_yes | Turkish Super Lig | OFF | - | - | OFF_NO_VALUE |
+| standard | ht_over05_over | Belgian First Division A | OFF | - | - | INSUFFICIENT_SELECTION_EVIDENCE |
+| standard | ht_over05_over | Bundesliga 2 | OFF | - | - | INSUFFICIENT_SELECTION_EVIDENCE |
+| standard | ht_over05_over | Championship | OFF | - | - | INSUFFICIENT_SELECTION_EVIDENCE |
+| standard | ht_over05_over | Dutch Eredivisie | OFF | - | - | INSUFFICIENT_SELECTION_EVIDENCE |
+| standard | ht_over05_over | Greek Super League | OFF | - | - | INSUFFICIENT_SELECTION_EVIDENCE |
+| standard | ht_over05_over | La Liga 2 | OFF | - | - | INSUFFICIENT_SELECTION_EVIDENCE |
+| standard | ht_over05_over | League One | OFF | - | - | INSUFFICIENT_SELECTION_EVIDENCE |
+| standard | ht_over05_over | League Two | OFF | - | - | INSUFFICIENT_SELECTION_EVIDENCE |
+| standard | ht_over05_over | Ligue 2 | OFF | - | - | INSUFFICIENT_SELECTION_EVIDENCE |
+| standard | ht_over05_over | National League | OFF | - | - | INSUFFICIENT_SELECTION_EVIDENCE |
+| standard | ht_over05_over | Portuguese Primeira Liga | OFF | - | - | INSUFFICIENT_SELECTION_EVIDENCE |
+| standard | ht_over05_over | Scottish Championship | OFF | - | - | INSUFFICIENT_SELECTION_EVIDENCE |
+| standard | ht_over05_over | Scottish League One | OFF | - | - | INSUFFICIENT_SELECTION_EVIDENCE |
+| standard | ht_over05_over | Scottish League Two | OFF | - | - | INSUFFICIENT_SELECTION_EVIDENCE |
+| standard | ht_over05_over | Scottish Premiership | OFF | - | - | INSUFFICIENT_SELECTION_EVIDENCE |
+| standard | ht_over05_over | Serie B | OFF | - | - | INSUFFICIENT_SELECTION_EVIDENCE |
+| standard | ht_over05_over | Turkish Super Lig | OFF | - | - | INSUFFICIENT_SELECTION_EVIDENCE |
+| standard | ht_over15_over | Belgian First Division A | OFF | - | - | INSUFFICIENT_SELECTION_EVIDENCE |
+| standard | ht_over15_over | Bundesliga 2 | OFF | - | - | INSUFFICIENT_SELECTION_EVIDENCE |
+| standard | ht_over15_over | Championship | OFF | - | - | INSUFFICIENT_SELECTION_EVIDENCE |
+| standard | ht_over15_over | Dutch Eredivisie | OFF | - | - | INSUFFICIENT_SELECTION_EVIDENCE |
+| standard | ht_over15_over | Greek Super League | OFF | - | - | INSUFFICIENT_SELECTION_EVIDENCE |
+| standard | ht_over15_over | La Liga 2 | OFF | - | - | INSUFFICIENT_SELECTION_EVIDENCE |
+| standard | ht_over15_over | League One | OFF | - | - | INSUFFICIENT_SELECTION_EVIDENCE |
+| standard | ht_over15_over | League Two | OFF | - | - | INSUFFICIENT_SELECTION_EVIDENCE |
+| standard | ht_over15_over | Ligue 2 | OFF | - | - | INSUFFICIENT_SELECTION_EVIDENCE |
+| standard | ht_over15_over | National League | OFF | - | - | INSUFFICIENT_SELECTION_EVIDENCE |
+| standard | ht_over15_over | Portuguese Primeira Liga | OFF | - | - | INSUFFICIENT_SELECTION_EVIDENCE |
+| standard | ht_over15_over | Scottish Championship | OFF | - | - | INSUFFICIENT_SELECTION_EVIDENCE |
+| standard | ht_over15_over | Scottish League One | OFF | - | - | INSUFFICIENT_SELECTION_EVIDENCE |
+| standard | ht_over15_over | Scottish League Two | OFF | - | - | INSUFFICIENT_SELECTION_EVIDENCE |
+| standard | ht_over15_over | Scottish Premiership | OFF | - | - | INSUFFICIENT_SELECTION_EVIDENCE |
+| standard | ht_over15_over | Serie B | OFF | - | - | INSUFFICIENT_SELECTION_EVIDENCE |
+| standard | ht_over15_over | Turkish Super Lig | OFF | - | - | INSUFFICIENT_SELECTION_EVIDENCE |
+| standard | over15_over | Belgian First Division A | UNPROVEN | 0.02 / 0.02 / 0.02 | RAW|EDGE|max-|min- | NO_SELECTION_EVIDENCE (LEARNED_BLEND) |
+| standard | over15_over | Bundesliga 2 | OFF | - | - | OFF_NO_VALUE |
+| standard | over15_over | Championship | UNPROVEN | 0.03 / 0.03 / 0.03 | RAW|EDGE|max-|min- | NO_SELECTION_EVIDENCE (LEARNED_BLEND) |
+| standard | over15_over | Dutch Eredivisie | OFF | - | - | OFF_NO_VALUE |
+| standard | over15_over | Greek Super League | OFF | - | - | OFF_NO_VALUE |
+| standard | over15_over | La Liga 2 | OFF | - | - | OFF_NO_VALUE |
+| standard | over15_over | League One | OFF | - | - | OFF_NO_VALUE |
+| standard | over15_over | League Two | OFF | - | - | OFF_NO_VALUE |
+| standard | over15_over | Ligue 2 | UNPROVEN | 0.02 / 0.04 / 0.04 | RAW|EDGE|max-|min- | NO_SELECTION_EVIDENCE (LEARNED_BLEND) |
+| standard | over15_over | National League | OFF | - | - | OFF_NO_VALUE |
+| standard | over15_over | Portuguese Primeira Liga | OFF | - | - | OFF_NO_VALUE |
+| standard | over15_over | Scottish Championship | OFF | - | - | OFF_NO_VALUE |
+| standard | over15_over | Scottish League One | OFF | - | - | OFF_NO_VALUE |
+| standard | over15_over | Scottish League Two | OFF | - | - | OFF_NO_VALUE |
+| standard | over15_over | Scottish Premiership | OFF | - | - | OFF_NO_VALUE |
+| standard | over15_over | Serie B | UNPROVEN | 0.04 / 0.04 / 0.04 | RAW|EDGE|max-|min- | NO_SELECTION_EVIDENCE (LEARNED_BLEND) |
+| standard | over15_over | Turkish Super Lig | OFF | - | - | OFF_NO_VALUE |
+| standard | over25_over | Belgian First Division A | OFF | - | - | OFF_NO_VALUE |
+| standard | over25_over | Bundesliga 2 | OFF | - | - | OFF_NO_VALUE |
+| standard | over25_over | Championship | OFF | - | - | OFF_NO_VALUE |
+| standard | over25_over | Dutch Eredivisie | OFF | - | - | OFF_NO_VALUE |
+| standard | over25_over | Greek Super League | UNPROVEN | 0.11 / 0.13 / 0.13 | RAW|EDGE|max-|min- | SELECTED (OWN_BETS) |
+| standard | over25_over | La Liga 2 | PROMISING | 0.13 / 0.17 / 0.19 | RAW|EDGE|max-|min- | SELECTED (OWN_BETS) |
+| standard | over25_over | League One | UNPROVEN | 0.12 / 0.13 / 0.13 | RAW|EDGE|max-|min- | SELECTED (OWN_BETS) |
+| standard | over25_over | League Two | OFF | - | - | OFF_NO_VALUE |
+| standard | over25_over | Ligue 2 | UNPROVEN | 0.14 / 0.14 / 0.14 | RAW|EDGE|max-|min- | SELECTED (OWN_BETS) |
+| standard | over25_over | National League | OFF | - | - | OFF_NO_VALUE |
+| standard | over25_over | Portuguese Primeira Liga | OFF | - | - | OFF_NO_VALUE |
+| standard | over25_over | Scottish Championship | OFF | - | - | OFF_NO_VALUE |
+| standard | over25_over | Scottish League One | OFF | - | - | OFF_NO_VALUE |
+| standard | over25_over | Scottish League Two | OFF | - | - | OFF_NO_VALUE |
+| standard | over25_over | Scottish Premiership | OFF | - | - | OFF_NO_VALUE |
+| standard | over25_over | Serie B | UNPROVEN | 0.09 / 0.09 / 0.16 | RAW|EDGE|max-|min- | SELECTED (OWN_BETS) |
+| standard | over25_over | Turkish Super Lig | OFF | - | - | OFF_NO_VALUE |
+| standard | over25_under | Belgian First Division A | UNPROVEN | 0.02 / 0.02 / 0.02 | LEARNED|EV|max2.5|min- | SELECTED (OWN_BETS) |
+| standard | over25_under | Bundesliga 2 | OFF | - | - | OFF_NO_OWN_ESTIMATE |
+| standard | over25_under | Championship | OFF | - | - | OFF_NO_OWN_ESTIMATE |
+| standard | over25_under | Dutch Eredivisie | OFF | - | - | OFF_NO_OWN_ESTIMATE |
+| standard | over25_under | Greek Super League | OFF | - | - | OFF_NO_OWN_ESTIMATE |
+| standard | over25_under | La Liga 2 | OFF | - | - | OFF_NO_OWN_ESTIMATE |
+| standard | over25_under | League One | OFF | - | - | OFF_NO_OWN_ESTIMATE |
+| standard | over25_under | League Two | OFF | - | - | OFF_NO_OWN_ESTIMATE |
+| standard | over25_under | Ligue 2 | OFF | - | - | OFF_NO_OWN_ESTIMATE |
+| standard | over25_under | National League | OFF | - | - | OFF_NO_OWN_ESTIMATE |
+| standard | over25_under | Portuguese Primeira Liga | OFF | - | - | OFF_NO_OWN_ESTIMATE |
+| standard | over25_under | Scottish Championship | OFF | - | - | OFF_NO_OWN_ESTIMATE |
+| standard | over25_under | Scottish League One | OFF | - | - | OFF_NO_OWN_ESTIMATE |
+| standard | over25_under | Scottish League Two | OFF | - | - | OFF_NO_OWN_ESTIMATE |
+| standard | over25_under | Scottish Premiership | OFF | - | - | OFF_NO_OWN_ESTIMATE |
+| standard | over25_under | Serie B | OFF | - | - | OFF_NO_OWN_ESTIMATE |
+| standard | over25_under | Turkish Super Lig | OFF | - | - | OFF_NO_OWN_ESTIMATE |
+| standard | over35_over | Belgian First Division A | OFF | - | - | OFF_NO_OWN_ESTIMATE |
+| standard | over35_over | Bundesliga 2 | OFF | - | - | OFF_NO_OWN_ESTIMATE |
+| standard | over35_over | Championship | UNPROVEN | 0.02 / 0.02 / 0.07 | LEARNED|EDGE|max-|min- | SELECTED (OWN_BETS) |
+| standard | over35_over | Dutch Eredivisie | UNPROVEN | 0.02 / 0.02 / 0.08 | LEARNED|EDGE|max-|min- | SELECTED (LEARNED_BLEND) |
+| standard | over35_over | Greek Super League | OFF | - | - | OFF_NO_OWN_ESTIMATE |
+| standard | over35_over | La Liga 2 | UNPROVEN | 0.02 / 0.03 / 0.03 | SHRINK|EDGE|max-|min- | FRESH_HOLDOUT_SELECTION (OWN_BETS) |
+| standard | over35_over | League One | OFF | - | - | OFF_NO_OWN_ESTIMATE |
+| standard | over35_over | League Two | OFF | - | - | OFF_NO_OWN_ESTIMATE |
+| standard | over35_over | Ligue 2 | UNPROVEN | 0.02 / 0.02 / 0.02 | SHRINK|EDGE|max-|min- | FRESH_HOLDOUT_SELECTION (OWN_BETS) |
+| standard | over35_over | National League | OFF | - | - | OFF_NO_OWN_ESTIMATE |
+| standard | over35_over | Portuguese Primeira Liga | UNPROVEN | 0.02 / 0.08 / 0.08 | LEARNED|EDGE|max-|min- | SELECTED (LEARNED_BLEND) |
+| standard | over35_over | Scottish Championship | OFF | - | - | OFF_NO_OWN_ESTIMATE |
+| standard | over35_over | Scottish League One | OFF | - | - | OFF_NO_OWN_ESTIMATE |
+| standard | over35_over | Scottish League Two | OFF | - | - | OFF_NO_OWN_ESTIMATE |
+| standard | over35_over | Scottish Premiership | OFF | - | - | OFF_NO_OWN_ESTIMATE |
+| standard | over35_over | Serie B | UNPROVEN | 0.02 / 0.03 / 0.05 | SHRINK|EDGE|max-|min- | FRESH_HOLDOUT_SELECTION (OWN_BETS) |
+| standard | over35_over | Turkish Super Lig | OFF | - | - | OFF_NO_OWN_ESTIMATE |
+
+## After the final refit (runbook R7)
+
+After the 2026-11-19/20 refit, `python scripts/bars_opt_oddsapi.py recheck --approved-evidence output/threshold_proposals/bars_oddsapi_hist/evidence_2026-11_v5.json ...` rebuilds this table on the refitted predictions (own bet-time universes); any status change goes back to the owner before the Clean Record starts. Self-check 2026-11-15 on the approved inputs: 194 cells, 0 status changes, 0 bar changes.
+
+---
+
+# HISTORY: TP-2026-11-10-d999073a (approved 2026-11-11, SUPERSEDED 2026-11-15, never applied)
+
 
 **Approved** by owner (Nevo) at 2026-11-11T07:01:22Z (owner 2026-11-11: "Approve, paper + small", ALL entries): proposal **TP-2026-11-10-d999073a**, proposal_hash `d999073a5f1744c512011fe7a487a957ced743c6d8b467ec88dc6302d2e100d6`, file `output/threshold_proposals/bars_oddsapi_hist/2026-11.json`, 74 of 74 entries by id + hash in `config/threshold_approvals.json`. Supersedes TP-2026-11-09-abfb5dc4 (reports/P6_BARS_FOR_APPROVAL.md).
 
@@ -6,7 +274,7 @@
 
 **Nothing is PROVEN.** Statuses below are per league x market; there is no global bar anywhere.
 
-## Clean rebuild (owner 2026-11-11): one bar per cell, no tiers
+### Clean rebuild (owner 2026-11-11): one bar per cell, no tiers
 
 "the old sniper/mm/valuable dont important anymore for the future tips, only as study and optimize maybe, do not
 use them". A future tip qualifies ONLY by its cell's one approved bar and carries its cell status (PROMISING /
@@ -45,13 +313,13 @@ pushed out of a slot, and stakes per cell as approved (Argentina NF BTTS 1.25%),
 across both lists: the fixture's first live production tip stands; then the league-rule tip stands over an opposite
 TOP-3 model tip, which yields to the next qualifier.
 
-## How these bars were made
+### How these bars were made
 
 * Predictions rebuilt on the corrected history (owner "Rebuild first"): data-truth-100 `2e6e6e745`, frame `58f10476f4c82d7b` (was `8d973b3f2f1f04f7`); standard run_20261110T203611Z, new_format run_20261110T203319Z; champion_recipe unchanged on both tracks.
 * Fresh holdout (owner "Fresh holdout", "Fix the rule"), protocol bars-fresh-holdout/3 sha256 `711c6a71df36a5be9dd7e228cd4a55b8e43530fa1cdfd94f8296c8417ea84f3e`: OddsAPI history prices from tiers ['B1', 'B2'] only, holdout = rows whose price no earlier run ever had; tested ONCE (2026-11-10T21:50:45Z), Holm family 21 counted before the test; verdict record TP-FH-2026-11-10-bc7459cc.
 * Cells without a fresh stretch keep selection-based bars and verdicts (study re-run on the rebuilt universes, output/bars_opt/study_58f10476), as in TP-2026-11-09-abfb5dc4; thin leagues on the learned blend.
 
-## Withdrawal (owner 2026-11-11 "Bet-time snapshot + re-run" / "Strict, keep Argentina" / "Paper until re-run")
+### Withdrawal (owner 2026-11-11 "Bet-time snapshot + re-run" / "Strict, keep Argentina" / "Paper until re-run")
 
 37 entries (46 cells) are WITHDRAWN pending the re-run on bet-time prices only: the 21 fresh-holdout cells (their
 history prices were B1 "close" snapshots, ~9 minutes before kickoff, used as bet prices) and every cell whose
@@ -64,7 +332,7 @@ closing-preferred O/U 2.5 prices as `odds_over25` / `odds_under25`. The loader n
 and the re-run (protocol `bars-fresh-holdout/5`) prices Standard O/U 2.5 only through the certified one-to-one
 football-data join. 36 entries stay approved (threshold_apply dry run: 36 applied, 38 withdrawn).
 
-## Staking this season (owner 2026-11-11)
+### Staking this season (owner 2026-11-11)
 
 | Staked cell | State | Base fraction (flat, every tip) | Max odds |
 |---|---|---|---|
@@ -77,7 +345,7 @@ Every other cell is PAPER (owner 2026-11-11 "Paper until re-run": only Argentina
 
 **TOP-3** (owner "Paper track"): a named PAPER track in the Clean Record from 2026-11-21; stakes follow the per-cell status only, never the TOP-3 label.
 
-## Fresh-holdout results (tested once)
+### Fresh-holdout results (tested once)
 
 | Track | Market-side | League | Holdout bets | ROI | ROI 95% CI | Holm p | Verdict |
 |---|---|---|---|---|---|---|---|
@@ -107,7 +375,7 @@ Known defect of that run (fixed afterwards, not re-run): the single history snap
 
 Families without a fresh stretch (no historical PROVEN test; they wait for the live Clean Record): standard over25_over, standard over25_under, standard btts_yes, standard ht_over05_over, standard ht_over15_over, new_format ht_over05_over, new_format ht_over15_over.
 
-## Status counts
+### Status counts
 
 | Track | Market-side | PROVEN | PROMISING | UNPROVEN | OFF |
 |---|---|---|---|---|---|
@@ -126,7 +394,7 @@ Families without a fresh stretch (no historical PROVEN test; they wait for the l
 
 Total: 194 league x market cells: OFF 123, PROMISING 4, UNPROVEN 67.
 
-## Every league x market
+### Every league x market
 
 | Track | Market-side | League | Status | Bars V / M / S | Configuration | Basis / reason |
 |---|---|---|---|---|---|---|
@@ -325,6 +593,6 @@ Total: 194 league x market cells: OFF 123, PROMISING 4, UNPROVEN 67.
 | standard | over35_over | Serie B | OFF | - | - | OFF_NO_OWN_ESTIMATE |
 | standard | over35_over | Turkish Super Lig | OFF | - | - | OFF_NO_OWN_ESTIMATE |
 
-## After the final refit (runbook R7)
+### After the final refit (runbook R7)
 
 After the 2026-11-19/20 refit, `python scripts/bars_opt_oddsapi.py recheck` rebuilds this table on the refitted predictions; any status change goes back to the owner before the Clean Record starts.

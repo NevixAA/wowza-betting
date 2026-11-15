@@ -425,3 +425,23 @@ def test_committed_withdrawal_of_the_november_proposal():
     assert "btts|Argentina Primera Division" not in w
     assert {"btts|La Liga 2", "ou25|La Liga 2"} <= w and len(w) == 38
     assert all("Bet-time snapshot + re-run" in x["owner_words"] for x in a["withdrawals"])
+
+
+def test_committed_approval_of_the_v5_rerun_supersedes_the_november_one():
+    """Owner 2026-11-15 "Approve, PROMISING small": every entry of TP-2026-11-15-bade2c0b by id + hash; the
+    2026-11-10 record and its withdrawals stay as history, marked superseded; Data truth 8 finds every approved
+    cell on proven bet-time prices (tier BT counts as proven)."""
+    import json as _j
+    from src import threshold_apply as A
+    from src.integrity import data_truth as DT
+    ap = _j.loads((ROOT / "config" / "threshold_approvals.json").read_text(encoding="utf-8"))
+    p = _j.loads((ROOT / "output" / "threshold_proposals" / "bars_oddsapi_hist" / "2026-11_bade2c0b.json")
+                 .read_text(encoding="utf-8"))
+    new = A.find_approval(p, ap)
+    assert new["approved_by"] == "owner (Nevo)" and new["supersedes"] == "TP-2026-11-10-d999073a"
+    assert {(e["entry_id"], e["entry_hash"]) for e in new["entries"]} == \
+        {(e["entry_id"], e["entry_hash"]) for e in p["entries"]}
+    assert not new.get("withdrawals")
+    old = next(x for x in ap["approvals"] if x["proposal_id"] == "TP-2026-11-10-d999073a")
+    assert old["superseded_by"] == p["proposal_id"] and len(old["withdrawals"]) == 38
+    assert DT.unproven_evidence() == []

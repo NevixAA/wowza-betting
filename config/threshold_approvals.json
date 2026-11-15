@@ -630,7 +630,275 @@
      "basis": "LEAGUE_WIDE rule (every match up to odds 2.50): no bar was chosen from backfill; its PROMISING verdict rests on its own live-captured FINAL rows (86 bets, snapshot before kickoff). Its selection-window rows are 79% 00:00-stamped backfill (369 of 466)."
     }
    ],
-   "price_provenance": "output/threshold_proposals/bars_oddsapi_hist/cell_price_provenance_2026-11.json"
+   "price_provenance": "output/threshold_proposals/bars_oddsapi_hist/cell_price_provenance_2026-11.json",
+   "superseded_by": "TP-2026-11-15-bade2c0b",
+   "superseded_at": "2026-11-15T09:52:58Z",
+   "superseded_note": "owner 2026-11-15 \"Approve, PROMISING small\" for the protocol v5 re-run: this record and its withdrawals stay as history; go-live (U3b) applies TP-2026-11-15-bade2c0b, never this one"
+  },
+  {
+   "proposal_id": "TP-2026-11-15-bade2c0b",
+   "proposal_hash": "bade2c0baf41858f5b65f05bbf62fb5b6832873d8c743efb30da2fe3e193e74e",
+   "approved_by": "owner (Nevo)",
+   "approved_at": "2026-11-15T09:52:58Z",
+   "owner_words": "owner 2026-11-15: \"Approve, PROMISING small\" (ALL entries); Argentina NF BTTS \"Reduce to 0.5%\"; Japan / Austria NF Unders PAPER (NF-Under rule); everything else PAPER; Cloudbet PAPER_ONLY (relayed by the coordinator 2026-11-15)",
+   "supersedes": "TP-2026-11-10-d999073a",
+   "protocol": "bars-fresh-holdout/5 (sha256 4e5708fdda0b434ad37f002668fdc386b0fca9533d81b1d005b58229fd4bc643); fresh holdout TP-FH-2026-11-15-132a4795; BT lead-time reading confirmed by the coordinator 2026-11-15",
+   "evidence_label": "re-test after a price-data fix (outcomes previously seen)",
+   "price_provenance": "output/threshold_proposals/bars_oddsapi_hist/cell_price_provenance_2026-11_v5.json",
+   "entries": [
+    {
+     "entry_id": "ou25|Argentina Primera Division",
+     "entry_hash": "32a62d8e9d486882c70d01ce556035df32c950e16bde6dd7147a8f921a86be1a"
+    },
+    {
+     "entry_id": "ou25|Austrian Bundesliga",
+     "entry_hash": "0f2d9983b3110a9c1026fa91d33c2307da655c02540bbd9517d524348a2f76f8"
+    },
+    {
+     "entry_id": "ou25|Belgian First Division A",
+     "entry_hash": "582f7d45a43d257dce474caa41a32011cd47c775d2dbfc90ab60d0fc1624481f"
+    },
+    {
+     "entry_id": "ou25|Brazil Serie A",
+     "entry_hash": "dcf6a148477f488ec56fbaa6dc313b4dabd311a24a9d264521463eb275694652"
+    },
+    {
+     "entry_id": "ou25|Bundesliga 2",
+     "entry_hash": "03f0b0110995eed8e8727f3ca00ac0adc2a06c56fac0b7712ff68d88075d63d5"
+    },
+    {
+     "entry_id": "ou25|Championship",
+     "entry_hash": "7e7f0e1f570db9b7a0d507893454a9bc741e6e09d5292ce9d5db11d8245a2f19"
+    },
+    {
+     "entry_id": "ou25|Denmark Superliga",
+     "entry_hash": "ae1552418979f4dca1cb0409c727ce16ca5cbf24cc43427715283035cae95d8f"
+    },
+    {
+     "entry_id": "ou25|Finland Veikkausliiga",
+     "entry_hash": "0c4f262f830601118f3c5d8927ddb4e72074045c43e3ddc147d8ca8938433311"
+    },
+    {
+     "entry_id": "ou25|Greek Super League",
+     "entry_hash": "3d8509652f4c26e335c2d98c2dd8ed8730e0458371cb950ecfa5176d4f3b36a2"
+    },
+    {
+     "entry_id": "ou25|Ireland Premier Division",
+     "entry_hash": "1ba9ed0fc2ca8a2e6c35d2207f0920b1fdcd844947be05c70854ceecea46f6ca"
+    },
+    {
+     "entry_id": "ou25|Japan J-League",
+     "entry_hash": "bee8a2ecccc31c5e3f79047df2b508bf81f139c1742012e01df3bf8ee5c00ae1"
+    },
+    {
+     "entry_id": "ou25|K-League 1",
+     "entry_hash": "7819dc425cb9b81a6bf7dacb247819cf70783d37c425ab368cb48664a3a4c76d"
+    },
+    {
+     "entry_id": "ou25|La Liga 2",
+     "entry_hash": "b7ad28559bcbdd125dec3c3f0de54f283625d7acac6f969cb98a57de3053ffb1"
+    },
+    {
+     "entry_id": "ou25|League One",
+     "entry_hash": "7f69e587879e2335daff25b5a7dd21ef1ad357af1c17fa543fe62bb642a2475d"
+    },
+    {
+     "entry_id": "ou25|League Two",
+     "entry_hash": "5855b4defc28a0743ef9ee220fa4822d31e801739480abe0e078a982924ed6cd"
+    },
+    {
+     "entry_id": "ou25|Ligue 2",
+     "entry_hash": "33c2354dfa87cd274a2f15db3b8985000e74ec56eacbae51ad77885034f3f4be"
+    },
+    {
+     "entry_id": "ou25|Mexico Liga MX",
+     "entry_hash": "126f3983df6c46da94a4bcb5275024004510ec56f7b3621e1150d0b7a77e346c"
+    },
+    {
+     "entry_id": "ou25|Norway Eliteserien",
+     "entry_hash": "1d44f23f9325765b6af4a84487073ac5f3b3f8d714cf360cac737bd310cd1a6c"
+    },
+    {
+     "entry_id": "ou25|Romanian Superliga",
+     "entry_hash": "71a7c8319147c5144c302e6011c8a598e3425d94b91c50552c737484cdb96036"
+    },
+    {
+     "entry_id": "ou25|Saudi Pro League",
+     "entry_hash": "f6fa77ec68048efd3785dfa42deb1456fa1fee82fdfa4222f68e516bf2ff2d8a"
+    },
+    {
+     "entry_id": "ou25|Serie B",
+     "entry_hash": "cd5b8bfd2b28f7d5e843a3868b2ca702f1d75ed9ffdaef9315ba8f8f4a02902a"
+    },
+    {
+     "entry_id": "ou25|Sweden Allsvenskan",
+     "entry_hash": "48325b9025db100fda02569cc85ae61513bee58993b806686a6630ab85c1d683"
+    },
+    {
+     "entry_id": "ou25|USA MLS",
+     "entry_hash": "860acc3653b11f25190151184f9f4e833c3f8ac6bf438852f44b43bbd07f945c"
+    },
+    {
+     "entry_id": "btts|Argentina Primera Division",
+     "entry_hash": "c4680b1c8740bba3235152315d44da86bbdaeba3c8eb92037a7835c84eb4643b"
+    },
+    {
+     "entry_id": "btts|Brazil Serie A",
+     "entry_hash": "c610f901d6e2571ad9a4645558a78b6fe3e275ec2d0ee2d22aed180361f74af7"
+    },
+    {
+     "entry_id": "btts|Bundesliga 2",
+     "entry_hash": "1761fdbef24affe693d58fe50e1da53e2eefe63232cc679798dc5c16f98eff79"
+    },
+    {
+     "entry_id": "btts|Championship",
+     "entry_hash": "35b2b3b12fa4cd703426d79ff4d4701276bd767b19b4b9abe2dee1c6802f9db5"
+    },
+    {
+     "entry_id": "btts|La Liga 2",
+     "entry_hash": "2f6f6634a93a9e9b5f2bccdd0928ade7185c3dc29d08051ce961b9809d15a843"
+    },
+    {
+     "entry_id": "btts|League One",
+     "entry_hash": "9eb83b86cdc2055607dec5686e1e8fe0f40135729334f246c7140537b63d2078"
+    },
+    {
+     "entry_id": "btts|League Two",
+     "entry_hash": "cf401e6505d4f5c9ef12a918a9ad1440253493c2bd8ce1e49d57679692d99b6b"
+    },
+    {
+     "entry_id": "btts|Ligue 2",
+     "entry_hash": "e87df1eba44073c6f40f112dc28915160669c059d519e53636c2001d7167dc01"
+    },
+    {
+     "entry_id": "btts|Mexico Liga MX",
+     "entry_hash": "abf87c7fb6353559a2e056d7d45e3de91fcd0bbd1a0560120b9d63c6a9716309"
+    },
+    {
+     "entry_id": "btts|Norway Eliteserien",
+     "entry_hash": "02e39c0c963414c181c70d9973153ff2fa9d5fc41da2c3382e59bbe74e1410a8"
+    },
+    {
+     "entry_id": "btts|Serie B",
+     "entry_hash": "190d362f1dd828e3148d65683ac42d80e51c4d5f437dc9c632183c1de0ab5443"
+    },
+    {
+     "entry_id": "over15|Argentina Primera Division",
+     "entry_hash": "96f0598a8df84e3367d869ca6e9f3da23ba9938b296de7dfbdf27fd108bfe65b"
+    },
+    {
+     "entry_id": "over15|Belgian First Division A",
+     "entry_hash": "d8d9786d1aa311ce0307b88a3c67ef81c04af5c2fdd89ba6b69a6d07c9ece761"
+    },
+    {
+     "entry_id": "over15|Brazil Serie A",
+     "entry_hash": "4daf303e4463e9c2655a05310fc8b9479fb454e778b2830c519c91b24c2d82e0"
+    },
+    {
+     "entry_id": "over15|Bundesliga 2",
+     "entry_hash": "861417f9e6b81a6c64e116f0c13b493f05979ea00a2fa29077d5c621e2eb835a"
+    },
+    {
+     "entry_id": "over15|Championship",
+     "entry_hash": "ba5554650e8a41d49fad8a3b8d85d0a49ab77ee5da38d37ec48bc3e634a5e44a"
+    },
+    {
+     "entry_id": "over15|Finland Veikkausliiga",
+     "entry_hash": "c0eada857b323f3280ae2475a87b674e999384d329fc15f98d0b624f0d775063"
+    },
+    {
+     "entry_id": "over15|K-League 1",
+     "entry_hash": "87473e7bf3576386bf529b6aa03de59fec340a494c0eef9d128168c064abe8d3"
+    },
+    {
+     "entry_id": "over15|La Liga 2",
+     "entry_hash": "8270bf75e59b872974aafd2eb2e536ee79787e042941454b7a114789b0b0fd82"
+    },
+    {
+     "entry_id": "over15|League One",
+     "entry_hash": "ba87008ae90c83540f9531ed0ddd7d1e0dc68565c30efc2d00e309614bdbf410"
+    },
+    {
+     "entry_id": "over15|League Two",
+     "entry_hash": "523f87545e413dd35e7eae225074948e726ea85bcec84191cdb399c889c0b677"
+    },
+    {
+     "entry_id": "over15|Ligue 2",
+     "entry_hash": "6dcf8f2d4f3067a5c99ddbd458d0c1f1d865df57f9e05192c972a3bbe44b5f09"
+    },
+    {
+     "entry_id": "over15|Mexico Liga MX",
+     "entry_hash": "03cccaf7b822b7b092a50287ce8528ce786df57a081b983d37fe6f1f5dfb21ca"
+    },
+    {
+     "entry_id": "over15|Romanian Superliga",
+     "entry_hash": "9eb6182dceea1365178a82d8b57b0c203bdf5e55b65704db8b3e51f46d0b030a"
+    },
+    {
+     "entry_id": "over15|Saudi Pro League",
+     "entry_hash": "a4bca75af22087266f29b7385eda2e383b5a4c679024dc566d80b0bd98621d1c"
+    },
+    {
+     "entry_id": "over15|Serie B",
+     "entry_hash": "b14bdae66198f899a4baf7a820a678c9804e1c9ca9cf72b3b72425caaa43de2e"
+    },
+    {
+     "entry_id": "over15|Sweden Allsvenskan",
+     "entry_hash": "11c3b28213e97b96149030cc6b9cb9a1f732e70754614e069f974cc6bb683f6a"
+    },
+    {
+     "entry_id": "over35|Bundesliga 2",
+     "entry_hash": "550f51bbff5429c44bf2f65d9517598207376c124296fa7599c950859567f7a8"
+    },
+    {
+     "entry_id": "over35|Championship",
+     "entry_hash": "e7845fac3e8bb7f2cbab3464e611ed34163d5d690b4d890fbbd0f2b2112aebb5"
+    },
+    {
+     "entry_id": "over35|Denmark Superliga",
+     "entry_hash": "4515c11b1790a51f0cc40c308709b102c3bff3d2113a720b88f79103e298e114"
+    },
+    {
+     "entry_id": "over35|Dutch Eredivisie",
+     "entry_hash": "4de65e1ab6d649a5cafe93766551d3f69f9f99d45720442ab3ff7e4072bb8b7a"
+    },
+    {
+     "entry_id": "over35|Finland Veikkausliiga",
+     "entry_hash": "c61b1ec1fb47bd61bd06bd966bf2406704a283ef99c48070d343831d1754346b"
+    },
+    {
+     "entry_id": "over35|La Liga 2",
+     "entry_hash": "a7b47bca061a085110a3f196c2c55989d1ddce503a22340a6558e70862c4d81d"
+    },
+    {
+     "entry_id": "over35|League One",
+     "entry_hash": "8efec840d8e7890decd915c03b1b08f9a69fcf4c4f6aca7215d9aba2421baff3"
+    },
+    {
+     "entry_id": "over35|League Two",
+     "entry_hash": "b57db4b0cebbf9be66f7598be7211e260902d95cb045cbd866b497cfd4e628a1"
+    },
+    {
+     "entry_id": "over35|Ligue 2",
+     "entry_hash": "c589101d795718ac4d79f4e759aad74854c8c8a12ffafe5bd7ebb75acc9a00ec"
+    },
+    {
+     "entry_id": "over35|Norway Eliteserien",
+     "entry_hash": "d06e118ea17a34f4d14cbe88101215251119ea6208f5a631e30437e4df931ee0"
+    },
+    {
+     "entry_id": "over35|Portuguese Primeira Liga",
+     "entry_hash": "5e721fd04a82a07b607447e559fdea001328b200feaf3b1629a511f4b431640c"
+    },
+    {
+     "entry_id": "over35|Serie B",
+     "entry_hash": "2f303c4b9e4f752db586b8b35ce583404eab9e2334ea0c4fa26737093d5fc6af"
+    },
+    {
+     "entry_id": "over35|Sweden Allsvenskan",
+     "entry_hash": "51eb2a4aba6e8fb66f9f04458df8cc663855c2f72fc37e27df7d029acbfd7b53"
+    }
+   ]
   }
  ]
 }

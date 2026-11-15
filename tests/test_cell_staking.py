@@ -50,16 +50,20 @@ def test_committed_policy_stakes_exactly_the_owner_cells():
     prop = json.loads((ROOT / latest["path"]).read_text(encoding="utf-8"))
     # owner 2026-11-11 "Strict, keep Argentina": withdrawn entries stake nothing
     assert G.build_cells(prop, cs["cells"], pol, None, G.withdrawn_entries(prop)) == cs["cells"]
-    # owner 2026-11-11 "Paper until re-run": ONLY Argentina NF BTTS stakes from 2026-11-21
-    assert set(cs["cells"]) == {f"new_format|BTTS|{ARG}"}
-    assert "LEAGUE_WIDE" in cs["cells"][f"new_format|BTTS|{ARG}"]["staking_basis"]
+    # owner 2026-11-15 "Approve, PROMISING small" (TP-2026-11-15-bade2c0b): the three PROMISING cells at 0.5% and
+    # Argentina NF BTTS reduced to 0.5% ("Reduce to 0.5%"); the NF Unders stay PAPER (owner rule)
+    assert set(cs["cells"]) == {f"new_format|BTTS|{ARG}", "standard|OU25_OVER|La Liga 2",
+                                "new_format|OU25_OVER|Finland Veikkausliiga", "new_format|OVER35|Finland Veikkausliiga"}
+    assert cs["approved"]["proposal_id"] == "TP-2026-11-15-bade2c0b"
+    assert "Reduce to 0.5%" in cs["cells"][f"new_format|BTTS|{ARG}"]["staking_basis"]
     for k, v in cs["cells"].items():
         if k != f"new_format|BTTS|{ARG}":
             assert v["state"] == "ACTIVE_LOW" and v["base_fraction"] == 0.005
             assert not G.held_by_owner(pol, k.rsplit("|", 1)[0])          # an owner paper hold is never lifted
     a = cs["cells"][f"new_format|BTTS|{ARG}"]
     t = pol["tracks"]["new_format|BTTS"]
-    assert (a["state"], a["base_fraction"], a["max_odds"]) == ("ACTIVE", 0.0125, 2.6) == (t["state"], t["base_fraction"], t["max_odds"])
+    assert (a["state"], a["base_fraction"], a["max_odds"]) == ("ACTIVE_LOW", 0.005, 2.6)
+    assert t["state"] == "ACTIVE"          # the per-track fallback (cell staking off) is unchanged
 
 
 def test_owner_paper_hold_is_never_lifted_by_a_promising_cell():
@@ -79,7 +83,7 @@ def test_cell_without_entry_is_paper_never_inherited_from_its_track():
     pol = BP.load_policy()
     out = _size([_sel(ARG, fx="F1"), _sel("Japan J-League", fx="F2")], pol)
     arg, jpn = out.iloc[0], out.iloc[1]
-    assert arg["reason"] == "OK" and arg["final_fraction"] > 0 and arg["deployment_state"] == "ACTIVE"
+    assert arg["reason"] == "OK" and arg["final_fraction"] > 0 and arg["deployment_state"] == "ACTIVE_LOW"   # 0.5% since 2026-11-15
     assert jpn["reason"] == BP.NO_CELL_ENTRY_REASON and jpn["final_fraction"] == 0
     assert pol["tracks"]["new_format|BTTS"]["state"] == "ACTIVE"          # the track would have staked it
 
@@ -119,4 +123,4 @@ def test_cell_tier_multipliers_keep_the_protected_league_wide_track_staked():
     pol = _with_cells(BP.load_policy(), ["new_format|BTTS|Test League"])
     out = _size([_sel(ARG, tier="VALUABLE", fx="F1"), _sel("Test League", tier="VALUABLE", fx="F2")], pol)
     assert (out["reason"] == "OK").all()
-    assert out.iloc[0]["requested_fraction"] == 0.0125 and out.iloc[1]["requested_fraction"] == 0.005
+    assert out.iloc[0]["requested_fraction"] == 0.005 and out.iloc[1]["requested_fraction"] == 0.005

@@ -32,9 +32,7 @@ ACTIVE_LOW_BASE = 0.005           # the policy's existing ACTIVE_LOW level (owne
 APPROVALS = ROOT / "config" / "threshold_approvals.json"
 #: owner 2026-11-11 "Strict, keep Argentina": why the PROTECTED entry keeps staking although its entry's
 #: selection evidence is mostly backfill - recorded on the cell
-ARGENTINA_BASIS = ("owner 2026-11-11 \"Strict, keep Argentina\": a LEAGUE_WIDE rule (every match up to odds 2.50, "
-                   "no bar chosen from backfill); its PROMISING verdict rests on its own live-captured FINAL rows "
-                   "(86 bets, snapshot before kickoff); ACTIVE 1.25% flat")
+ARGENTINA_BASIS = "owner 2026-11-15 \"Reduce to 0.5%\": UNPROVEN on real (bet-time) prices, kept small as a league rule; ACTIVE_LOW 0.5% flat (was ACTIVE 1.25% under the 2026-11-11 exemption)"
 
 
 def withdrawn_entries(proposal: dict, path=APPROVALS) -> set:
