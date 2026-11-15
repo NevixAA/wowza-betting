@@ -104,6 +104,15 @@ LEDGER_COLS = [
     # two id spaces never mix. Rows written before this are blank (unknown), never back-filled.
     "fixture_id",
     "oddsapi_event_id",
+    # THE CELL'S SERVED PROBABILITY, appended (2026-11-10): the probability the league x market x side
+    # bars_opt cell scored the tip with (its source: RAW / BLEND / SHRINK / LEARNED). wowza-exec re-checks the
+    # SAME cell measure at the Cloudbet price from it (owner 2026-11-10 'exec cells from approved bars').
+    # Blank when no cell scored the tip; rows written before it stay blank, never back-filled.
+    "cell_p_used",
+    # ONE BAR PER CELL + THE CALIBRATED EDGE, appended (owner 2026-11-11 "Clean rebuild" / "Show calibrated
+    # edge"): the tip's cell status, its qualifying bar and the edge a person is shown (percent; blank = not
+    # calibrated). The raw edge_pct stays for study. Rows written before stay blank, never back-filled.
+    "cell_status", "qualifying_bar", "edge_calibrated_pct",
 ]
 VERSION_FIELDS = ("model_version", "retrain_batch_id", "training_cutoff", "prediction_role")
 
@@ -224,7 +233,17 @@ def _load_ledger() -> pd.DataFrame:
     return pd.DataFrame(columns=LEDGER_COLS)
 
 
-_TIER_RANK = {"SNIPER": 3, "MARKSMAN": 2, "VALUABLE": 1, "": 0, "AVOID": 0, "nan": 0}
+def _cell_fields(row) -> dict:
+    """cell_status / qualifying_bar / edge_calibrated_pct of a tip row (blank when the producer did not say)."""
+    st = row.get("cell_status")
+    cal = _num(row.get("edge_calibrated"))
+    return {"cell_status": "" if st is None or (isinstance(st, float) and pd.isna(st)) else str(st),
+            "qualifying_bar": _num(row.get("qualifying_bar")),
+            "edge_calibrated_pct": "" if not isinstance(cal, float) or pd.isna(cal) else round(cal * 100, 2)}
+
+
+#: dedupe rank; QUALIFIED (owner 2026-11-11: one bar per cell, no tiers) is the only value of a future tip
+_TIER_RANK = {"QUALIFIED": 1, "SNIPER": 3, "MARKSMAN": 2, "VALUABLE": 1, "": 0, "AVOID": 0, "nan": 0}
 
 # ── Later higher tiers: an append-only research log, never the ledger (2026-10-26) ─────────────
 TIER_SEEN_NAME = "ledger_tier_seen.csv"     # beside the ledger it describes (output/)
@@ -423,6 +442,8 @@ def append_tips(bets_df: pd.DataFrame, source: str = "live") -> None:
             "notes":        "",
             **_version_fields(row, _ou_key(row.get("model_type", ""), row.get("serving_recipe"))),
             **_fixture_identity(row),
+            "cell_p_used":  _num(row.get("cell_p_used")),
+            **_cell_fields(row),
         })
 
     if flips:
@@ -450,11 +471,17 @@ SIDE_LEDGER_COLS = [
     # model attribution, appended (2026-10-18) — see LEDGER_COLS
     *VERSION_FIELDS,
     # WHICH BAR TIERED THE TIP, appended (fix9/defaults 2026-11-04): "LEAGUE" = the league's own
-    # approved sniper/marksman bars, "GLOBAL" = the declared global policy bar (config.SIDE_GLOBAL_BARS;
+    # approved sniper/marksman bars, "GLOBAL" = the global bar that served until 2026-11-09 (config.HISTORICAL_SIDE_GLOBAL_BARS;
     # src/side_thresholds). Rows logged before it are blank: the bar of a past tip was not recorded
     # in its row, so it is not written in afterwards (logged rows stand). Reconstructed 2026-11-04
     # from the params file in force at each generated_at: 525 of 664 live tips were GLOBAL-bar tiers.
     "threshold_source",
+    # THE CELL'S SERVED PROBABILITY, appended (2026-11-10): the probability the league x market x side
+    # bars_opt cell scored the tip with (its source: RAW / BLEND / SHRINK / LEARNED). wowza-exec re-checks the
+    # SAME cell measure at the Cloudbet price from it (owner 2026-11-10 'exec cells from approved bars').
+    # Blank when no cell scored the tip; rows written before it stay blank, never back-filled.
+    "cell_p_used",
+    "cell_status", "qualifying_bar", "edge_calibrated_pct",      # see LEDGER_COLS (owner 2026-11-11)
 ]
 _SIDE_RANK = _TIER_RANK
 
@@ -552,6 +579,8 @@ def append_side_market_tips(side_df: pd.DataFrame, source: str = "live") -> None
             # recorded by the producer (pipeline._generate_side_bets); blank when it did not say
             "threshold_source": (str(row["threshold_source"])
                                  if pd.notna(row.get("threshold_source")) else ""),
+            "cell_p_used": _num(row.get("cell_p_used")),
+            **_cell_fields(row),
         })
 
     _record_tiers_seen(tier_seen_rows, tier_seen_path)
@@ -581,15 +610,11 @@ HT_LEDGER_COLS = [
 #: Informational only. HT is PAPER — these labels let HT be read on the same axis as the other
 #: ledgers; they do NOT authorise a stake, and nothing reads them to size one.
 def _ht_tier(edge: float | None) -> str:
+    """Owner 2026-11-11 ("Clean rebuild"): no SNIPER / MARKSMAN / VALUABLE on a future row. HT has no
+    owner-approved cell, so an HT row is never a tip: PAPER (priced, recorded for study) or NO_PRICE."""
     if edge is None or pd.isna(edge):
         return "NO_PRICE"
-    if edge >= 0.10:
-        return "SNIPER"
-    if edge >= 0.05:
-        return "MARKSMAN"
-    if edge >= 0.02:
-        return "VALUABLE"
-    return "AVOID"
+    return "PAPER"
 
 
 def _ht_price_lookup():
@@ -732,7 +757,7 @@ def print_ledger() -> None:
         if grp.empty:
             continue
         print(f"\n  [{src.upper()}]")
-        for tier in ["SNIPER", "MARKSMAN", "VALUABLE"]:
+        for tier in ["QUALIFIED", "SNIPER", "MARKSMAN", "VALUABLE"]:
             t = grp[grp["signal_tier"] == tier]
             if t.empty:
                 continue

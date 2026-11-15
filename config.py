@@ -89,29 +89,30 @@ SIDE_MARKETS = {
 }
 # Side-market fair price (owner decision 2026-11-01, R2-C finding 4). "devig_two_sided": the median
 # over books of the power-de-vigged same-book pair (src/integrity/side_edge_devig); a fixture with no
-# two-sided pair gets NO tip. "legacy_1_08": the old (1/odds)/1.08, which inflated edges in the tails
+# two-sided pair gets NO tip. The old "legacy_1_08" ((1/odds)/1.08) inflated edges in the tails
 # (+2.67pp on sharp books) and produced 92 of 617 logged tips on its own.
-# ROLLBACK: set SIDE_EDGE_FAIR_PRICE: "legacy_1_08" in predict.yml (or here).
-SIDE_EDGE_FAIR_PRICES = ("devig_two_sided", "legacy_1_08")
+# legacy_1_08 (an ASSUMED 8% margin = a fake price) was removed 2026-11-09 (owner: no fakes, no global vars);
+# the only fair price is the two-sided de-vig, and pipeline._generate_side_bets no longer reads this switch.
+SIDE_EDGE_FAIR_PRICES = ("devig_two_sided",)
 SIDE_EDGE_FAIR_PRICE = os.getenv("SIDE_EDGE_FAIR_PRICE", "devig_two_sided").strip() or "devig_two_sided"
 if SIDE_EDGE_FAIR_PRICE not in SIDE_EDGE_FAIR_PRICES:     # a typo falls to the STRICTER rule
     import logging as _logging
     _logging.getLogger(__name__).error(
         f"SIDE_EDGE_FAIR_PRICE={SIDE_EDGE_FAIR_PRICE!r} not in {SIDE_EDGE_FAIR_PRICES}; using devig_two_sided")
     SIDE_EDGE_FAIR_PRICE = "devig_two_sided"
-# ── SIDE-MARKET GLOBAL BAR: an owner-visible POLICY value, declared ONCE (fix9/defaults 2026-11-04) ──
-# BTTS / Over 1.5 / Over 3.5 tips are tiered on a league's OWN sniper_th / marksman_th
-# (models/best_params_side_markets.json) only when that league's threshold is approved out of sample;
-# every other league - and every league the file does not list at all - is tiered on this one global
-# bar. Until 2026-11-04 the bar was a literal typed in three places (pipeline._generate_side_bets,
-# src/integrity/side_edge_devig.thresholds, src/research/edge_replay.legacy_side_tier) and a tip tiered
-# on it looked exactly like a per-league tier. The VALUES ARE UNCHANGED (owner rule: no threshold
-# changes); they are now one declared policy, read by src/side_thresholds.side_bars everywhere, and
-# every tip tiered on it carries threshold_source = "GLOBAL" through the ledger, Telegram and the
-# dashboard. VALUABLE has no per-league value anywhere: its 0.04 floor is global for every league.
-# A plain constant on purpose (no os.getenv): changing it is a threshold change and needs the owner.
-SIDE_GLOBAL_BARS = {"sniper": 0.10, "marksman": 0.08, "valuable": 0.04}
-#: threshold_source values: the league's own approved bars / the global bar above
+# ── HISTORICAL SIDE-MARKET GLOBAL BAR (served 2026-11-04 .. 2026-11-09; NOT READ BY SERVING) ───────
+# Until 2026-11-09 a BTTS / Over 1.5 / Over 3.5 league without approved bars of its own was tiered on
+# this one global bar (and VALUABLE was 0.04 for every league). Owner 2026-11-09: "100% real data, no
+# fakes, no bugs, no defaults, no global vars" - serving now tiers ONLY on each league's own
+# owner-applied bars (src/side_thresholds.own_bars; no own bars = NO_LEAGUE_BAR, no tier). The values
+# are kept, renamed, ONLY so the research replays of past tips (src/research/edge_replay.legacy_side_tier)
+# and the research-lock fingerprint can say what served before; data truth rule 6 fails any serving
+# module that reads them. The same holds for the O/U 2.5 globals further down (VALUABLE_THRESHOLD,
+# MARKSMAN_THRESHOLD, SNIPER_THRESHOLD*, EDGE_CEILING, LEAGUE_EDGE_CEILING and the hand-set
+# LEAGUE_SNIPER/MARKSMAN tables): historical, never served since 2026-11-09.
+HISTORICAL_SIDE_GLOBAL_BARS = {"sniper": 0.10, "marksman": 0.08, "valuable": 0.04}
+#: threshold_source values. Serving writes LEAGUE only (or NO_LEAGUE_BAR on a refusal); GLOBAL is the
+#: label of tips logged before 2026-11-09 and is still read to display those historical ledger rows.
 THRESHOLD_SOURCE_LEAGUE = "LEAGUE"
 THRESHOLD_SOURCE_GLOBAL = "GLOBAL"
 # Human-readable labels for Telegram / dashboard
@@ -402,7 +403,14 @@ TRAINING_DECAY_WEIGHTS = {
 }
 DEFAULT_DECAY_WEIGHT = 1.0
 
-# ── Three-tier signal system ──────────────────────────────────────────────────
+# ── Three-tier signal system: HISTORICAL GLOBAL VALUES (not served since 2026-11-09) ────────
+# Owner 2026-11-09 ("no global vars"): every tier is now on the league's OWN owner-applied bars
+# (src/side_thresholds.own_bars, read by src/betting._base_tier / evaluate_value); a league without
+# them gets NO_LEAGUE_BAR (no tier). The global values below (and LEAGUE_EDGE_CEILING, VALUE_THRESHOLD,
+# the hand-set LEAGUE_SNIPER/MARKSMAN tables) record what served BEFORE that date; only the research
+# replays, audits and the research-lock fingerprint read them. Data truth rule 6 fails a serving
+# module that does.
+#
 #
 #  SNIPER    — meets per-league threshold (12–25%)  → full stake (real tip)
 #  MARKSMAN  — edge 14% to league threshold         → 3/4 stake (real tip)
@@ -517,6 +525,10 @@ KELLY_FRACTION = float(os.getenv("KELLY_FRACTION", "0.25"))
 FLAT_STAKE     = float(os.getenv("FLAT_STAKE",     "1.0"))
 USE_KELLY      = os.getenv("USE_KELLY", "0") == "1"
 
+# HISTORICAL (served until 2026-11-09; NOT READ BY SERVING). The global minimum O/U 2.5 odds. Since the
+# owner rule "no global vars" a served tip uses its league's OWN odds range: the bars_opt cell's odds_min /
+# odds_max (src/bars_opt/serve.py), or a legacy entry's own min_over_odds / min_under_odds. Kept for the
+# research replays and the research-lock history.
 MIN_OVER_ODDS  = float(os.getenv("MIN_OVER_ODDS",  "1.75"))
 MIN_UNDER_ODDS = float(os.getenv("MIN_UNDER_ODDS", "1.75"))
 
@@ -526,6 +538,7 @@ MIN_UNDER_ODDS = float(os.getenv("MIN_UNDER_ODDS", "1.75"))
 # (Pro docs/WOWZA_EDGE_REASSESSMENT_2026_10.md). NEW-FORMAT TRACK ONLY - standard is untouched
 # (invariant 1). The fixture is still scored, written to predictions.csv and both shadow logs, so
 # collection continues; it just never becomes a tip. Set to 0 to disable.
+# HISTORICAL since 2026-11-09 (NOT READ BY SERVING): a served tip uses its league's own odds range (bars_opt).
 NF_MAX_OU_ODDS = float(os.getenv("NF_MAX_OU_ODDS", "3.00"))
 
 # ── Drift settings ────────────────────────────────────────────────────────────

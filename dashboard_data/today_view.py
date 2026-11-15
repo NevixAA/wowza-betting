@@ -34,7 +34,7 @@ OUT = ROOT / "output"
 # are never staked. Every page that says "Staked" reads staked_settled() / is_staked(); P/L stays
 # flat 1u per bet (labelled so), with the P/L at the recorded stake beside it.
 #: TIER words only (the old basis) — kept for tier displays, never to decide "Staked"
-STAKED = ("SNIPER", "MARKSMAN")
+STAKED = ("QUALIFIED", "SNIPER", "MARKSMAN")   # QUALIFIED = tips from 2026-11-21 (owner 2026-11-11)
 SOURCES = [("bets_ledger.csv", None, "O/U 2.5"), ("side_bets_ledger.csv", "market", None),
            ("ht_ledger.csv", None, "HT O/U")]
 #: ledgers that can never hold a staked bet (props are paper-only)

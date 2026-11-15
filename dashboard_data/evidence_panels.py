@@ -162,7 +162,7 @@ def load_bets(bets: pd.DataFrame | None = None, side_bets: pd.DataFrame | None =
     d = pd.concat(parts, ignore_index=True)
     d = d[d["source"].fillna("live").astype(str).eq("live")]
     d = d[~d["league"].isin(_paper_leagues())]
-    d = d[d["signal_tier"].isin(["SNIPER", "MARKSMAN", "VALUABLE"]) & d["market"].notna()]
+    d = d[d["signal_tier"].isin(["QUALIFIED", "SNIPER", "MARKSMAN", "VALUABLE"]) & d["market"].notna()]
     d["date"] = pd.to_datetime(d["date"].astype(str).str[:10], errors="coerce")
     d = d[d["date"] >= pd.Timestamp(from_date)]
     d["odds"] = pd.to_numeric(d["odds"], errors="coerce")

@@ -1,0 +1,950 @@
+{
+ "families": 14,
+ "configs_total": 756,
+ "prior_hypotheses": 0,
+ "p_redrawn": [],
+ "verdict_counts": [
+  {
+   "track": "new_format",
+   "mside": "btts_yes",
+   "verdict": "OFF",
+   "n": 3
+  },
+  {
+   "track": "new_format",
+   "mside": "btts_yes",
+   "verdict": "PROMISING",
+   "n": 5
+  },
+  {
+   "track": "new_format",
+   "mside": "btts_yes",
+   "verdict": "UNPROVEN",
+   "n": 7
+  },
+  {
+   "track": "new_format",
+   "mside": "over15_over",
+   "verdict": "OFF",
+   "n": 13
+  },
+  {
+   "track": "new_format",
+   "mside": "over15_over",
+   "verdict": "PROMISING",
+   "n": 2
+  },
+  {
+   "track": "new_format",
+   "mside": "over25_over",
+   "verdict": "OFF",
+   "n": 5
+  },
+  {
+   "track": "new_format",
+   "mside": "over25_over",
+   "verdict": "PROMISING",
+   "n": 1
+  },
+  {
+   "track": "new_format",
+   "mside": "over25_over",
+   "verdict": "UNPROVEN",
+   "n": 9
+  },
+  {
+   "track": "new_format",
+   "mside": "over25_under",
+   "verdict": "OFF",
+   "n": 5
+  },
+  {
+   "track": "new_format",
+   "mside": "over25_under",
+   "verdict": "PROMISING",
+   "n": 2
+  },
+  {
+   "track": "new_format",
+   "mside": "over25_under",
+   "verdict": "UNPROVEN",
+   "n": 8
+  },
+  {
+   "track": "new_format",
+   "mside": "over35_over",
+   "verdict": "OFF",
+   "n": 10
+  },
+  {
+   "track": "new_format",
+   "mside": "over35_over",
+   "verdict": "UNPROVEN",
+   "n": 5
+  },
+  {
+   "track": "standard",
+   "mside": "btts_yes",
+   "verdict": "OFF",
+   "n": 15
+  },
+  {
+   "track": "standard",
+   "mside": "btts_yes",
+   "verdict": "PROMISING",
+   "n": 2
+  },
+  {
+   "track": "standard",
+   "mside": "ht_over05_over",
+   "verdict": "OFF",
+   "n": 17
+  },
+  {
+   "track": "standard",
+   "mside": "ht_over15_over",
+   "verdict": "OFF",
+   "n": 17
+  },
+  {
+   "track": "standard",
+   "mside": "over15_over",
+   "verdict": "OFF",
+   "n": 17
+  },
+  {
+   "track": "standard",
+   "mside": "over25_over",
+   "verdict": "OFF",
+   "n": 12
+  },
+  {
+   "track": "standard",
+   "mside": "over25_over",
+   "verdict": "PROMISING",
+   "n": 1
+  },
+  {
+   "track": "standard",
+   "mside": "over25_over",
+   "verdict": "UNPROVEN",
+   "n": 4
+  },
+  {
+   "track": "standard",
+   "mside": "over25_under",
+   "verdict": "OFF",
+   "n": 17
+  },
+  {
+   "track": "standard",
+   "mside": "over35_over",
+   "verdict": "OFF",
+   "n": 17
+  }
+ ],
+ "all_final_bets": {
+  "optimized": {
+   "bets": 569,
+   "roi": 0.0043,
+   "matchdays": 56,
+   "ci95": [
+    -0.0769,
+    0.0855
+   ],
+   "clv": 0.002,
+   "clv_n": 569,
+   "league_weeks": 102,
+   "by_market": {
+    "btts_yes": {
+     "picks": 272,
+     "roi": 0.046
+    },
+    "over15_over": {
+     "picks": 48,
+     "roi": 0.0715
+    },
+    "over25_over": {
+     "picks": 45,
+     "roi": 0.0667
+    },
+    "over25_under": {
+     "picks": 186,
+     "roi": -0.0879
+    },
+    "over35_over": {
+     "picks": 18,
+     "roi": -0.0083
+    }
+   },
+   "by_league": {
+    "new_format|Argentina Primera Division": {
+     "picks": 125,
+     "roi": 0.1114
+    },
+    "new_format|Austrian Bundesliga": {
+     "picks": 12,
+     "roi": 0.185
+    },
+    "new_format|Brazil Serie A": {
+     "picks": 114,
+     "roi": 0.1026
+    },
+    "new_format|China Super League": {
+     "picks": 13,
+     "roi": 0.0862
+    },
+    "new_format|Denmark Superliga": {
+     "picks": 11,
+     "roi": -0.4755
+    },
+    "new_format|Finland Veikkausliiga": {
+     "picks": 33,
+     "roi": 0.1127
+    },
+    "new_format|Ireland Premier Division": {
+     "picks": 42,
+     "roi": -0.3283
+    },
+    "new_format|Japan J-League": {
+     "picks": 9,
+     "roi": -0.4011
+    },
+    "new_format|Mexico Liga MX": {
+     "picks": 67,
+     "roi": -0.0551
+    },
+    "new_format|Norway Eliteserien": {
+     "picks": 27,
+     "roi": 0.147
+    },
+    "new_format|Sweden Allsvenskan": {
+     "picks": 42,
+     "roi": -0.0752
+    },
+    "new_format|USA MLS": {
+     "picks": 47,
+     "roi": -0.1985
+    },
+    "standard|Greek Super League": {
+     "picks": 4,
+     "roi": -0.4375
+    },
+    "standard|La Liga 2": {
+     "picks": 9,
+     "roi": 0.6278
+    },
+    "standard|Serie B": {
+     "picks": 14,
+     "roi": 0.05
+    }
+   }
+  },
+  "baseline": {
+   "bets": 1334,
+   "roi": -0.0507,
+   "matchdays": 59,
+   "ci95": [
+    -0.1295,
+    0.0286
+   ],
+   "clv": 0.0023,
+   "clv_n": 1334,
+   "league_weeks": 219,
+   "by_market": {
+    "btts_yes": {
+     "picks": 251,
+     "roi": 0.0483
+    },
+    "ht_over15_over": {
+     "picks": 123,
+     "roi": -0.0829
+    },
+    "over15_over": {
+     "picks": 70,
+     "roi": 0.0757
+    },
+    "over25_over": {
+     "picks": 184,
+     "roi": -0.0316
+    },
+    "over25_under": {
+     "picks": 590,
+     "roi": -0.1111
+    },
+    "over35_over": {
+     "picks": 116,
+     "roi": -0.03
+    }
+   },
+   "by_league": {
+    "new_format|Argentina Primera Division": {
+     "picks": 247,
+     "roi": 0.0842
+    },
+    "new_format|Austrian Bundesliga": {
+     "picks": 21,
+     "roi": -0.0367
+    },
+    "new_format|Brazil Serie A": {
+     "picks": 79,
+     "roi": 0.0644
+    },
+    "new_format|China Super League": {
+     "picks": 19,
+     "roi": -0.2316
+    },
+    "new_format|Denmark Superliga": {
+     "picks": 13,
+     "roi": -0.3708
+    },
+    "new_format|Finland Veikkausliiga": {
+     "picks": 27,
+     "roi": 0.0026
+    },
+    "new_format|Ireland Premier Division": {
+     "picks": 38,
+     "roi": -0.3079
+    },
+    "new_format|Japan J-League": {
+     "picks": 10,
+     "roi": -0.585
+    },
+    "new_format|Mexico Liga MX": {
+     "picks": 50,
+     "roi": -0.1338
+    },
+    "new_format|Norway Eliteserien": {
+     "picks": 28,
+     "roi": 0.29
+    },
+    "new_format|Romanian Superliga": {
+     "picks": 53,
+     "roi": -0.0423
+    },
+    "new_format|Saudi Pro League": {
+     "picks": 9,
+     "roi": 0.3144
+    },
+    "new_format|Sweden Allsvenskan": {
+     "picks": 35,
+     "roi": 0.052
+    },
+    "new_format|USA MLS": {
+     "picks": 77,
+     "roi": -0.1682
+    },
+    "standard|Belgian First Division A": {
+     "picks": 40,
+     "roi": -0.253
+    },
+    "standard|Bundesliga 2": {
+     "picks": 34,
+     "roi": 0.1385
+    },
+    "standard|Championship": {
+     "picks": 76,
+     "roi": -0.1412
+    },
+    "standard|Dutch Eredivisie": {
+     "picks": 5,
+     "roi": 0.41
+    },
+    "standard|Greek Super League": {
+     "picks": 38,
+     "roi": -0.0126
+    },
+    "standard|La Liga 2": {
+     "picks": 63,
+     "roi": 0.2394
+    },
+    "standard|League One": {
+     "picks": 70,
+     "roi": 0.0187
+    },
+    "standard|League Two": {
+     "picks": 59,
+     "roi": -0.1692
+    },
+    "standard|Ligue 2": {
+     "picks": 5,
+     "roi": 0.84
+    },
+    "standard|National League": {
+     "picks": 75,
+     "roi": -0.2689
+    },
+    "standard|Portuguese Primeira Liga": {
+     "picks": 10,
+     "roi": 0.008
+    },
+    "standard|Scottish Championship": {
+     "picks": 31,
+     "roi": -0.0642
+    },
+    "standard|Scottish League One": {
+     "picks": 8,
+     "roi": -0.4587
+    },
+    "standard|Scottish League Two": {
+     "picks": 24,
+     "roi": -0.1388
+    },
+    "standard|Scottish Premiership": {
+     "picks": 11,
+     "roi": 0.0
+    },
+    "standard|Serie B": {
+     "picks": 69,
+     "roi": -0.3533
+    },
+    "standard|Turkish Super Lig": {
+     "picks": 10,
+     "roi": 0.051
+    }
+   }
+  },
+  "tier2_band": {
+   "bets": 14,
+   "roi": -0.4486,
+   "matchdays": 12,
+   "ci95": [
+    -0.9226,
+    0.0254
+   ],
+   "clv": 0.0167,
+   "clv_n": 14,
+   "league_weeks": 10,
+   "by_market": {
+    "btts_yes": {
+     "picks": 14,
+     "roi": -0.4486
+    }
+   },
+   "by_league": {
+    "new_format|Brazil Serie A": {
+     "picks": 11,
+     "roi": -0.4755
+    },
+    "new_format|Ireland Premier Division": {
+     "picks": 3,
+     "roi": -0.35
+    }
+   }
+  }
+ },
+ "top3_final": {
+  "TOP_ONLY_V": {
+   "bets": 241,
+   "roi": -0.0829,
+   "matchdays": 48,
+   "ci95": [
+    -0.2114,
+    0.0456
+   ],
+   "clv": 0.003,
+   "clv_n": 241,
+   "league_weeks": 102,
+   "by_market": {
+    "btts_yes": {
+     "picks": 49,
+     "roi": -0.1724
+    },
+    "over15_over": {
+     "picks": 25,
+     "roi": 0.0568
+    },
+    "over25_over": {
+     "picks": 31,
+     "roi": 0.101
+    },
+    "over25_under": {
+     "picks": 119,
+     "roi": -0.1287
+    },
+    "over35_over": {
+     "picks": 17,
+     "roi": -0.0453
+    }
+   },
+   "by_league": {
+    "new_format|Argentina Primera Division": {
+     "picks": 28,
+     "roi": -0.0764
+    },
+    "new_format|Austrian Bundesliga": {
+     "picks": 10,
+     "roi": 0.255
+    },
+    "new_format|Brazil Serie A": {
+     "picks": 25,
+     "roi": 0.2124
+    },
+    "new_format|China Super League": {
+     "picks": 12,
+     "roi": 0.0375
+    },
+    "new_format|Denmark Superliga": {
+     "picks": 9,
+     "roi": -0.5444
+    },
+    "new_format|Finland Veikkausliiga": {
+     "picks": 18,
+     "roi": -0.0639
+    },
+    "new_format|Ireland Premier Division": {
+     "picks": 20,
+     "roi": -0.58
+    },
+    "new_format|Japan J-League": {
+     "picks": 5,
+     "roi": -0.59
+    },
+    "new_format|Mexico Liga MX": {
+     "picks": 26,
+     "roi": -0.1315
+    },
+    "new_format|Norway Eliteserien": {
+     "picks": 20,
+     "roi": 0.179
+    },
+    "new_format|Sweden Allsvenskan": {
+     "picks": 21,
+     "roi": 0.0838
+    },
+    "new_format|USA MLS": {
+     "picks": 24,
+     "roi": -0.42
+    },
+    "standard|Greek Super League": {
+     "picks": 4,
+     "roi": -0.4375
+    },
+    "standard|La Liga 2": {
+     "picks": 9,
+     "roi": 0.6278
+    },
+    "standard|Serie B": {
+     "picks": 10,
+     "roi": -0.13
+    }
+   },
+   "by_slot": {
+    "TOP": {
+     "bets": 241,
+     "roi": -0.0829,
+     "matchdays": 48,
+     "ci95": [
+      -0.2114,
+      0.0456
+     ],
+     "p_one_sided": null,
+     "clv": 0.003,
+     "clv_n": 241
+    }
+   }
+  },
+  "TOP_ONLY_M": {
+   "bets": 218,
+   "roi": -0.0843,
+   "matchdays": 46,
+   "ci95": [
+    -0.2183,
+    0.0497
+   ],
+   "clv": 0.0022,
+   "clv_n": 218,
+   "league_weeks": 92,
+   "by_market": {
+    "btts_yes": {
+     "picks": 58,
+     "roi": -0.1298
+    },
+    "over15_over": {
+     "picks": 19,
+     "roi": 0.1553
+    },
+    "over25_over": {
+     "picks": 19,
+     "roi": 0.1963
+    },
+    "over25_under": {
+     "picks": 105,
+     "roi": -0.1595
+    },
+    "over35_over": {
+     "picks": 17,
+     "roi": -0.0453
+    }
+   },
+   "by_league": {
+    "new_format|Argentina Primera Division": {
+     "picks": 28,
+     "roi": -0.0021
+    },
+    "new_format|Austrian Bundesliga": {
+     "picks": 8,
+     "roi": 0.2963
+    },
+    "new_format|Brazil Serie A": {
+     "picks": 24,
+     "roi": 0.1775
+    },
+    "new_format|China Super League": {
+     "picks": 12,
+     "roi": 0.0375
+    },
+    "new_format|Denmark Superliga": {
+     "picks": 9,
+     "roi": -0.5444
+    },
+    "new_format|Finland Veikkausliiga": {
+     "picks": 18,
+     "roi": -0.0639
+    },
+    "new_format|Ireland Premier Division": {
+     "picks": 16,
+     "roi": -0.475
+    },
+    "new_format|Japan J-League": {
+     "picks": 5,
+     "roi": -0.59
+    },
+    "new_format|Mexico Liga MX": {
+     "picks": 20,
+     "roi": 0.0075
+    },
+    "new_format|Norway Eliteserien": {
+     "picks": 20,
+     "roi": 0.179
+    },
+    "new_format|Sweden Allsvenskan": {
+     "picks": 19,
+     "roi": -0.2889
+    },
+    "new_format|USA MLS": {
+     "picks": 24,
+     "roi": -0.42
+    },
+    "standard|La Liga 2": {
+     "picks": 5,
+     "roi": 0.87
+    },
+    "standard|Serie B": {
+     "picks": 10,
+     "roi": -0.13
+    }
+   },
+   "by_slot": {
+    "TOP": {
+     "bets": 218,
+     "roi": -0.0843,
+     "matchdays": 46,
+     "ci95": [
+      -0.2183,
+      0.0497
+     ],
+     "p_one_sided": null,
+     "clv": 0.0022,
+     "clv_n": 218
+    }
+   }
+  },
+  "TOP_M_PLUS_TIER2": {
+   "bets": 219,
+   "roi": -0.0884,
+   "matchdays": 46,
+   "ci95": [
+    -0.2221,
+    0.0452
+   ],
+   "clv": 0.0022,
+   "clv_n": 219,
+   "league_weeks": 92,
+   "by_market": {
+    "btts_yes": {
+     "picks": 59,
+     "roi": -0.1446
+    },
+    "over15_over": {
+     "picks": 19,
+     "roi": 0.1553
+    },
+    "over25_over": {
+     "picks": 19,
+     "roi": 0.1963
+    },
+    "over25_under": {
+     "picks": 105,
+     "roi": -0.1595
+    },
+    "over35_over": {
+     "picks": 17,
+     "roi": -0.0453
+    }
+   },
+   "by_league": {
+    "new_format|Argentina Primera Division": {
+     "picks": 28,
+     "roi": -0.0021
+    },
+    "new_format|Austrian Bundesliga": {
+     "picks": 8,
+     "roi": 0.2963
+    },
+    "new_format|Brazil Serie A": {
+     "picks": 24,
+     "roi": 0.1775
+    },
+    "new_format|China Super League": {
+     "picks": 12,
+     "roi": 0.0375
+    },
+    "new_format|Denmark Superliga": {
+     "picks": 9,
+     "roi": -0.5444
+    },
+    "new_format|Finland Veikkausliiga": {
+     "picks": 18,
+     "roi": -0.0639
+    },
+    "new_format|Ireland Premier Division": {
+     "picks": 17,
+     "roi": -0.5059
+    },
+    "new_format|Japan J-League": {
+     "picks": 5,
+     "roi": -0.59
+    },
+    "new_format|Mexico Liga MX": {
+     "picks": 20,
+     "roi": 0.0075
+    },
+    "new_format|Norway Eliteserien": {
+     "picks": 20,
+     "roi": 0.179
+    },
+    "new_format|Sweden Allsvenskan": {
+     "picks": 19,
+     "roi": -0.2889
+    },
+    "new_format|USA MLS": {
+     "picks": 24,
+     "roi": -0.42
+    },
+    "standard|La Liga 2": {
+     "picks": 5,
+     "roi": 0.87
+    },
+    "standard|Serie B": {
+     "picks": 10,
+     "roi": -0.13
+    }
+   },
+   "by_slot": {
+    "TIER2": {
+     "bets": 1,
+     "roi": -1.0,
+     "matchdays": 1,
+     "ci95": [
+      null,
+      null
+     ],
+     "p_one_sided": null,
+     "clv": 0.0,
+     "clv_n": 1
+    },
+    "TOP": {
+     "bets": 218,
+     "roi": -0.0843,
+     "matchdays": 46,
+     "ci95": [
+      -0.2183,
+      0.0497
+     ],
+     "p_one_sided": null,
+     "clv": 0.0022,
+     "clv_n": 218
+    }
+   }
+  },
+  "baseline": {
+   "bets": 548,
+   "roi": -0.0705,
+   "matchdays": 57,
+   "ci95": [
+    -0.1889,
+    0.0603
+   ],
+   "clv": -0.0002,
+   "clv_n": 548,
+   "league_weeks": 219,
+   "by_market": {
+    "btts_yes": {
+     "picks": 60,
+     "roi": -0.0077
+    },
+    "ht_over15_over": {
+     "picks": 41,
+     "roi": -0.05
+    },
+    "over15_over": {
+     "picks": 1,
+     "roi": 0.36
+    },
+    "over25_over": {
+     "picks": 75,
+     "roi": 0.0331
+    },
+    "over25_under": {
+     "picks": 339,
+     "roi": -0.0876
+    },
+    "over35_over": {
+     "picks": 32,
+     "roi": -0.2891
+    }
+   },
+   "by_league": {
+    "new_format|Argentina Primera Division": {
+     "picks": 30,
+     "roi": 0.2207
+    },
+    "new_format|Austrian Bundesliga": {
+     "picks": 14,
+     "roi": -0.1964
+    },
+    "new_format|Brazil Serie A": {
+     "picks": 24,
+     "roi": 0.2567
+    },
+    "new_format|China Super League": {
+     "picks": 13,
+     "roi": -0.2731
+    },
+    "new_format|Denmark Superliga": {
+     "picks": 11,
+     "roi": -0.2564
+    },
+    "new_format|Finland Veikkausliiga": {
+     "picks": 17,
+     "roi": -0.0088
+    },
+    "new_format|Ireland Premier Division": {
+     "picks": 19,
+     "roi": -0.3632
+    },
+    "new_format|Japan J-League": {
+     "picks": 6,
+     "roi": -0.3083
+    },
+    "new_format|Mexico Liga MX": {
+     "picks": 23,
+     "roi": -0.2913
+    },
+    "new_format|Norway Eliteserien": {
+     "picks": 18,
+     "roi": 0.3289
+    },
+    "new_format|Romanian Superliga": {
+     "picks": 22,
+     "roi": -0.475
+    },
+    "new_format|Saudi Pro League": {
+     "picks": 3,
+     "roi": 1.75
+    },
+    "new_format|Sweden Allsvenskan": {
+     "picks": 19,
+     "roi": 0.0263
+    },
+    "new_format|USA MLS": {
+     "picks": 28,
+     "roi": -0.1071
+    },
+    "standard|Belgian First Division A": {
+     "picks": 19,
+     "roi": -0.35
+    },
+    "standard|Bundesliga 2": {
+     "picks": 21,
+     "roi": 0.26
+    },
+    "standard|Championship": {
+     "picks": 24,
+     "roi": -0.4104
+    },
+    "standard|Dutch Eredivisie": {
+     "picks": 5,
+     "roi": 0.41
+    },
+    "standard|Greek Super League": {
+     "picks": 20,
+     "roi": -0.405
+    },
+    "standard|La Liga 2": {
+     "picks": 28,
+     "roi": 0.2357
+    },
+    "standard|League One": {
+     "picks": 26,
+     "roi": 0.2281
+    },
+    "standard|League Two": {
+     "picks": 25,
+     "roi": -0.3328
+    },
+    "standard|Ligue 2": {
+     "picks": 5,
+     "roi": 0.84
+    },
+    "standard|National League": {
+     "picks": 24,
+     "roi": -0.3479
+    },
+    "standard|Portuguese Primeira Liga": {
+     "picks": 10,
+     "roi": 0.008
+    },
+    "standard|Scottish Championship": {
+     "picks": 24,
+     "roi": -0.1267
+    },
+    "standard|Scottish League One": {
+     "picks": 8,
+     "roi": -0.4587
+    },
+    "standard|Scottish League Two": {
+     "picks": 20,
+     "roi": -0.0855
+    },
+    "standard|Scottish Premiership": {
+     "picks": 11,
+     "roi": 0.0
+    },
+    "standard|Serie B": {
+     "picks": 21,
+     "roi": -0.0024
+    },
+    "standard|Turkish Super Lig": {
+     "picks": 10,
+     "roi": 0.051
+    }
+   },
+   "by_slot": {
+    "TOP": {
+     "bets": 548,
+     "roi": -0.0705,
+     "matchdays": 57,
+     "ci95": [
+      -0.1889,
+      0.0603
+     ],
+     "p_one_sided": null,
+     "clv": -0.0002,
+     "clv_n": 548
+    }
+   }
+  }
+ }
+}

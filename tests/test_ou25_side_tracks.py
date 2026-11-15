@@ -144,3 +144,12 @@ def test_stake_plan_contract_accepts_side_tracks_and_rejects_a_wrong_side():
                       "track": ["new_format|OU25_OVER", "new_format|OU25_OVER", "standard|OU25", "new_format|BTTS"]})
     # row 1 carries the OVER track on an UNDER tip; row 2 is a pre-split audit row (parent key, accepted)
     assert _track_ok(d).tolist() == [True, False, True, True]
+
+
+@pytest.fixture(autouse=True)
+def _per_track_policy(monkeypatch):
+    """These tests pin the TRACK mechanics: per-track staking (tests/policy_helpers). The live per-cell
+    staking (owner 2026-11-09) is pinned in tests/test_cell_staking.py."""
+    import sys
+    from tests.policy_helpers import install_per_track
+    install_per_track(monkeypatch, sys.modules[__name__])

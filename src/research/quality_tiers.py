@@ -426,7 +426,8 @@ def build_record(snapshots: pd.DataFrame, tips: pd.DataFrame | None = None) -> p
 
 
 def _side_tier(d: pd.DataFrame) -> np.ndarray:
-    """Production's side-market rule (pipeline._generate_side_bets) with today's approved per-league gates."""
+    """Production's side-market rule (pipeline._generate_side_bets) with today's gates: the league's own
+    owner-applied bars, else AVOID (NO_LEAGUE_BAR) - no global bar since 2026-11-09 (owner)."""
     try:
         from src.gate_resolver import resolve_effective_tier_gates
     except Exception:                                                  # noqa: BLE001
@@ -436,14 +437,17 @@ def _side_tier(d: pd.DataFrame) -> np.ndarray:
         if m == "OU25":
             out.append("")
             continue
-        sn, mk = 0.10, 0.08
+        g = None
         if resolve_effective_tier_gates is not None:
             try:
                 g = resolve_effective_tier_gates(lg, m.lower(), t)
-                sn, mk = g.sniper, g.marksman
-            except Exception:                                          # noqa: BLE001
-                pass
-        out.append("SNIPER" if e >= sn else "MARKSMAN" if e >= mk else "VALUABLE" if e >= 0.04 else "AVOID")
+            except Exception:                                          # noqa: BLE001 - no gate = no tier
+                g = None
+        if g is None or not g.own_bars:
+            out.append("AVOID")
+            continue
+        sn, mk, val = g.sniper, g.marksman, g.valuable
+        out.append("SNIPER" if e >= sn else "MARKSMAN" if e >= mk else "VALUABLE" if e >= val else "AVOID")
     return np.array(out, dtype=object)
 
 

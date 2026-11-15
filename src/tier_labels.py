@@ -1,5 +1,11 @@
 """What a PERSON sees for a signal tier. The one place tier names are spelled for display.
 
+RETIRED FOR FUTURE TIPS (owner 2026-11-11, "Clean rebuild": "the old sniper/mm/valuable dont important anymore
+for the future tips, only as study and optimize maybe, do not use them"). From go-live a tip is QUALIFIED by its
+cell's one owner-approved bar, or it is no tip; no SNIPER / MARKSMAN / VALUABLE label is computed, shown or
+stored on a future tip. A tip carries its cell status (PROMISING / UNPROVEN) and, when picked, TOP-3 or TIER2.
+The three old codes remain only to READ historical ledger rows (study); LEGACY_TIERS names them.
+
 Owner decision 2026-10-26: the tiers measure the SIZE of the gap between our probability and the
 bookmaker's price, not confidence. Measured this season a bigger gap does not mean better results on
 O/U 2.5 (SNIPER -4.2% vs VALUABLE +2.2% new-format; every standard tier negative); only new-format
@@ -23,8 +29,12 @@ from __future__ import annotations
 
 import re
 
+#: the one stored value of a future tip (owner 2026-11-11): it cleared its cell's approved bar
+QUALIFIED = "QUALIFIED"
+
 #: Internal code -> what a person reads.
 TIER_LABEL: dict[str, str] = {
+    QUALIFIED: "Tip",
     "SNIPER": "Big gap",
     "MARKSMAN": "Medium gap",
     "VALUABLE": "Small gap",
@@ -33,6 +43,7 @@ TIER_LABEL: dict[str, str] = {
 
 #: For narrow table columns.
 TIER_LABEL_SHORT: dict[str, str] = {
+    QUALIFIED: "Tip",
     "SNIPER": "Big",
     "MARKSMAN": "Medium",
     "VALUABLE": "Small",
@@ -42,6 +53,7 @@ TIER_LABEL_SHORT: dict[str, str] = {
 #: Telegram icon per tier: bars that show the gap SIZE (the old target / gun / gem icons implied
 #: accuracy). PAPER is the props paper tier.
 TIER_ICON: dict[str, str] = {
+    QUALIFIED: "▸",
     "SNIPER": "▰▰▰",
     "MARKSMAN": "▰▰▱",
     "VALUABLE": "▰▱▱",
@@ -58,6 +70,10 @@ PAPER_TIER_LABEL = TIER_LABEL["VALUABLE"]
 
 #: The old names, for tests and for the glossary line. Never use these in display strings.
 INTERNAL_CODES = ("SNIPER", "MARKSMAN", "VALUABLE")
+#: retired tier codes: only historical rows carry them (study); a future tip never does
+LEGACY_TIERS = INTERNAL_CODES
+#: every value that marks a row as a tip: QUALIFIED (from go-live) + the legacy codes of historical rows
+TIPPED = (QUALIFIED,) + LEGACY_TIERS
 
 #: For readers of older documents: the internal code behind each label.
 GLOSSARY = ("Internal codes (unchanged in stored data): Big gap = SNIPER, Medium gap = MARKSMAN, "

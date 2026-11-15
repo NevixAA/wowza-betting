@@ -156,7 +156,7 @@ PIPELINE_ONLY = {
     "src/predict.py": "prediction pipeline; reached only from src/edge_engine_shadow.run (the predict job), "
                       "the dashboard reads output/predictions.csv instead",
     "src/feature_engineering.py": "feature building for predict/train; reached only through src/predict.py",
-    "src/integrity/props_feature_truth.py": "props feature truth (Data truth 7); reads player_history (excluded "
+    "src/integrity/props_feature_truth.py": "props feature truth (Data truth 10); reads player_history (excluded "
                                             "from the slim tree) through props_harness. Reached only lazily from "
                                             "src.integrity.data_truth.evaluate, which reports NO_DATA without it; "
                                             "the gate and evidence_refresh run it on the full repository",

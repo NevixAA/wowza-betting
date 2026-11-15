@@ -21,6 +21,15 @@ from src import ledger as L
 from src.bankroll_policy import goal_direction as bp_direction
 from src.bankroll_policy import size_day
 
+@pytest.fixture(autouse=True)
+def _own_bars(monkeypatch):
+    """Owner 2026-11-09: no global bars. These tests predate the cutover and assert the tiers the
+    removed global path served, so every league gets exactly those values as its OWN owner-applied
+    bars (tests/own_bars.install_historical)."""
+    from tests.own_bars import install_historical
+    install_historical(monkeypatch)
+
+
 DAY = (datetime.now(timezone.utc) + timedelta(days=2)).strftime("%Y-%m-%d")
 HOME, AWAY, LG = "Viking FK", "Tromso", "Testland League"
 
@@ -46,7 +55,7 @@ def _tracks(monkeypatch):
     """Pin the guard's real-money view (the live policy changes); each test sets REAL itself."""
     REAL.clear()
     monkeypatch.setattr(DG, "real_track_checker",
-                        lambda: (lambda mt, m, s: (str(m).lower(), str(s).upper()) in REAL))
+                        lambda: (lambda mt, m, s, lg=None: (str(m).lower(), str(s).upper()) in REAL))
 
 
 @pytest.fixture
@@ -185,13 +194,17 @@ def test_paper_tip_never_blocks_real_one_regardless_of_order_in_the_run(out):
 
 
 def test_policy_view_of_the_live_policy():
-    """The real checker reads config/bankroll_policy.json: new-format BTTS is real, Under paper."""
+    """The real checker reads config/bankroll_policy.json. Per-cell staking (owner 2026-11-09): the PROTECTED
+    Argentina BTTS YES cell is real; another New-Format BTTS league with no cell entry is paper (never
+    inherited from the track), and so is a tip without a league."""
     from importlib import reload
     import src.direction_guard as fresh
     chk = reload(fresh).real_track_checker()
-    assert chk("new_format", "btts", "YES") is True
-    assert chk("new_format", "ou25", "UNDER") is False
-    assert chk("", "btts", "YES") is False
+    assert chk("new_format", "btts", "YES", "Argentina Primera Division") is True
+    assert chk("new_format", "btts", "YES", "Japan J-League") is False
+    assert chk("new_format", "btts", "YES") is False
+    assert chk("new_format", "ou25", "UNDER", "Argentina Primera Division") is False
+    assert chk("", "btts", "YES", "Argentina Primera Division") is False
 
 
 def test_other_fixtures_are_untouched(out):
@@ -370,10 +383,13 @@ def test_one_position_per_fixture_rule_unchanged():
 
 @pytest.fixture(autouse=True)
 def _legacy_side_fair_price(monkeypatch):
-    """Synthetic rows here carry no book quotes, and these tests pin other behaviour. The two-sided
-    de-vig fair price (production since 2026-11-01) has its own tests: test_side_devig_production.py."""
-    import config as _cfg
-    monkeypatch.setattr(_cfg, "SIDE_EDGE_FAIR_PRICE", "legacy_1_08")
+    """Synthetic rows here carry no book quotes, and these tests pin other behaviour. TEST-ONLY fair price:
+    the synthetic rows' fair probability is supplied directly (production reads a real two-sided de-vig,
+    tested in test_side_devig_production.py; the legacy_1_08 switch these tests used was removed 2026-11-09)."""
+    from src.integrity import side_edge_devig as _SE
+    monkeypatch.setattr(_SE, "load_quotes", lambda *a, **k: __import__("pandas").DataFrame())
+    monkeypatch.setattr(_SE, "production_fair_probs",
+                        lambda df, target, quotes, asof: (1.0 / df["market_odds"]) / 1.08)
 
 # ── contract rule (owner 2026-11-04: several same-direction positions are fine) ──────────────────
 def test_contract_flags_only_opposite_staked_positions():

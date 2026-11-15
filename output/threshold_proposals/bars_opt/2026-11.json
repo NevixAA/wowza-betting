@@ -1,0 +1,2269 @@
+{
+ "month": "2026-11",
+ "data": {
+  "engines": [],
+  "live": {
+   "candidates": 1672,
+   "clean_engine": 0,
+   "no_two_sided_price_or_p": 0,
+   "no_result": 0
+  },
+  "live_rows_used": 0,
+  "standard": {
+   "base_rows": 91236,
+   "live_rows": 0
+  },
+  "new_format": {
+   "base_rows": 93532,
+   "live_rows": 0
+  }
+ },
+ "entries": [
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "over25_over",
+   "league": "Belgian First Division A",
+   "config": "SHRINK|EDGE|max-|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "over25_over",
+   "league": "Bundesliga 2",
+   "config": "SHRINK|EDGE|max-|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "over25_over",
+   "league": "Championship",
+   "config": "SHRINK|EDGE|max-|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "over25_over",
+   "league": "Dutch Eredivisie",
+   "config": "SHRINK|EDGE|max-|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "over25_over",
+   "league": "Greek Super League",
+   "config": "SHRINK|EDGE|max-|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "over25_over",
+   "league": "La Liga 2",
+   "config": "SHRINK|EDGE|max-|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "over25_over",
+   "league": "League One",
+   "config": "SHRINK|EDGE|max-|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "over25_over",
+   "league": "League Two",
+   "config": "SHRINK|EDGE|max-|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "over25_over",
+   "league": "Ligue 2",
+   "config": "SHRINK|EDGE|max-|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "over25_over",
+   "league": "National League",
+   "config": "SHRINK|EDGE|max-|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "over25_over",
+   "league": "Portuguese Primeira Liga",
+   "config": "SHRINK|EDGE|max-|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "over25_over",
+   "league": "Scottish Championship",
+   "config": "SHRINK|EDGE|max-|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "over25_over",
+   "league": "Scottish League One",
+   "config": "SHRINK|EDGE|max-|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "over25_over",
+   "league": "Scottish League Two",
+   "config": "SHRINK|EDGE|max-|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "over25_over",
+   "league": "Scottish Premiership",
+   "config": "SHRINK|EDGE|max-|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "over25_over",
+   "league": "Serie B",
+   "config": "SHRINK|EDGE|max-|min-",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.02,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 157,
+   "wf_roi": 0.0564,
+   "wf_roi_shrunk": 0.0564,
+   "tier2": false,
+   "tier2_bets": 0,
+   "tier2_roi": null,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "over25_over",
+   "league": "Turkish Super Lig",
+   "config": "SHRINK|EDGE|max-|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "over25_under",
+   "league": "Belgian First Division A",
+   "config": "RAW|EV|max2.5|min-",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.02,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.5666,
+   "wf_bets": 422,
+   "wf_roi": 0.0877,
+   "wf_roi_shrunk": 0.012,
+   "tier2": false,
+   "tier2_bets": 0,
+   "tier2_roi": null,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "over25_under",
+   "league": "Bundesliga 2",
+   "config": "RAW|EV|max2.5|min-",
+   "off": "NO_POSITIVE_BAR",
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "over25_under",
+   "league": "Championship",
+   "config": "RAW|EV|max2.5|min-",
+   "off": "NO_POSITIVE_BAR",
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "over25_under",
+   "league": "Dutch Eredivisie",
+   "config": "RAW|EV|max2.5|min-",
+   "off": "NO_POSITIVE_BAR",
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "over25_under",
+   "league": "Greek Super League",
+   "config": "RAW|EV|max2.5|min-",
+   "off": "NO_POSITIVE_BAR",
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "over25_under",
+   "league": "La Liga 2",
+   "config": "RAW|EV|max2.5|min-",
+   "off": "NO_POSITIVE_BAR",
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "over25_under",
+   "league": "League One",
+   "config": "RAW|EV|max2.5|min-",
+   "off": "NO_POSITIVE_BAR",
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "over25_under",
+   "league": "League Two",
+   "config": "RAW|EV|max2.5|min-",
+   "off": "NO_POSITIVE_BAR",
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "over25_under",
+   "league": "Ligue 2",
+   "config": "RAW|EV|max2.5|min-",
+   "off": "NO_POSITIVE_BAR",
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "over25_under",
+   "league": "National League",
+   "config": "RAW|EV|max2.5|min-",
+   "off": "NO_POSITIVE_BAR",
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "over25_under",
+   "league": "Portuguese Primeira Liga",
+   "config": "RAW|EV|max2.5|min-",
+   "off": "NO_POSITIVE_BAR",
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "over25_under",
+   "league": "Scottish Championship",
+   "config": "RAW|EV|max2.5|min-",
+   "off": "NO_POSITIVE_BAR",
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "over25_under",
+   "league": "Scottish League One",
+   "config": "RAW|EV|max2.5|min-",
+   "off": "NO_POSITIVE_BAR",
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "over25_under",
+   "league": "Scottish League Two",
+   "config": "RAW|EV|max2.5|min-",
+   "valuable_th": 0.03,
+   "marksman_th": 0.03,
+   "sniper_th": 0.03,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.4405,
+   "wf_bets": 205,
+   "wf_roi": 0.1167,
+   "wf_roi_shrunk": 0.0016,
+   "tier2": false,
+   "tier2_bets": 0,
+   "tier2_roi": null,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "over25_under",
+   "league": "Scottish Premiership",
+   "config": "RAW|EV|max2.5|min-",
+   "off": "NO_POSITIVE_BAR",
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "over25_under",
+   "league": "Serie B",
+   "config": "RAW|EV|max2.5|min-",
+   "off": "NO_POSITIVE_BAR",
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "over25_under",
+   "league": "Turkish Super Lig",
+   "config": "RAW|EV|max2.5|min-",
+   "off": "NO_POSITIVE_BAR",
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "btts_yes",
+   "league": "Belgian First Division A",
+   "config": "RAW|EV|max2.5|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "btts_yes",
+   "league": "Bundesliga 2",
+   "config": "RAW|EV|max2.5|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "btts_yes",
+   "league": "Championship",
+   "config": "RAW|EV|max2.5|min-",
+   "valuable_th": 0.08,
+   "marksman_th": 0.1,
+   "sniper_th": 0.14,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.4274,
+   "wf_bets": 163,
+   "wf_roi": 0.0475,
+   "wf_roi_shrunk": 0.0144,
+   "tier2": false,
+   "tier2_bets": 40,
+   "tier2_roi": -0.1688,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "btts_yes",
+   "league": "Dutch Eredivisie",
+   "config": "RAW|EV|max2.5|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "btts_yes",
+   "league": "Greek Super League",
+   "config": "RAW|EV|max2.5|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0205,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "btts_yes",
+   "league": "La Liga 2",
+   "config": "RAW|EV|max2.5|min-",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.3,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.5956,
+   "wf_bets": 932,
+   "wf_roi": 0.0529,
+   "wf_roi_shrunk": 0.0227,
+   "tier2": false,
+   "tier2_bets": 0,
+   "tier2_roi": null,
+   "mode": "LEAGUE_WIDE"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "btts_yes",
+   "league": "League One",
+   "config": "RAW|EV|max2.5|min-",
+   "valuable_th": 0.11,
+   "marksman_th": 0.13,
+   "sniper_th": 0.13,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 87,
+   "wf_roi": -0.1585,
+   "wf_roi_shrunk": 0.0126,
+   "tier2": false,
+   "tier2_bets": 20,
+   "tier2_roi": -0.3555,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "btts_yes",
+   "league": "League Two",
+   "config": "RAW|EV|max2.5|min-",
+   "valuable_th": 0.08,
+   "marksman_th": 0.1,
+   "sniper_th": 0.13,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.3497,
+   "wf_bets": 115,
+   "wf_roi": 0.0584,
+   "wf_roi_shrunk": 0.0137,
+   "tier2": false,
+   "tier2_bets": 33,
+   "tier2_roi": -0.0767,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "btts_yes",
+   "league": "Ligue 2",
+   "config": "RAW|EV|max2.5|min-",
+   "valuable_th": 0.11,
+   "marksman_th": 0.13,
+   "sniper_th": 0.13,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 65,
+   "wf_roi": -0.2177,
+   "wf_roi_shrunk": 0.0126,
+   "tier2": false,
+   "tier2_bets": 23,
+   "tier2_roi": -0.1787,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "btts_yes",
+   "league": "National League",
+   "config": "RAW|EV|max2.5|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "btts_yes",
+   "league": "Portuguese Primeira Liga",
+   "config": "RAW|EV|max2.5|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0141,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "btts_yes",
+   "league": "Scottish Championship",
+   "config": "RAW|EV|max2.5|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0069,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "btts_yes",
+   "league": "Scottish League One",
+   "config": "RAW|EV|max2.5|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "btts_yes",
+   "league": "Scottish League Two",
+   "config": "RAW|EV|max2.5|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "btts_yes",
+   "league": "Scottish Premiership",
+   "config": "RAW|EV|max2.5|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "btts_yes",
+   "league": "Serie B",
+   "config": "RAW|EV|max2.5|min-",
+   "valuable_th": 0.02,
+   "marksman_th": 0.05,
+   "sniper_th": 0.05,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.2761,
+   "wf_bets": 393,
+   "wf_roi": 0.0608,
+   "wf_roi_shrunk": 0.0004,
+   "tier2": false,
+   "tier2_bets": 130,
+   "tier2_roi": -0.1242,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "btts_yes",
+   "league": "Turkish Super Lig",
+   "config": "RAW|EV|max2.5|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0052,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "over15_over",
+   "league": null,
+   "off": "INSUFFICIENT_SELECTION_EVIDENCE"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "over35_over",
+   "league": "Belgian First Division A",
+   "config": "LEARNED|EDGE|max-|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "over35_over",
+   "league": "Bundesliga 2",
+   "config": "LEARNED|EDGE|max-|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "over35_over",
+   "league": "Championship",
+   "config": "LEARNED|EDGE|max-|min-",
+   "valuable_th": 0.02,
+   "marksman_th": 0.04,
+   "sniper_th": 0.05,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 86,
+   "wf_roi": 0.0777,
+   "wf_roi_shrunk": 0.0875,
+   "tier2": false,
+   "tier2_bets": 2,
+   "tier2_roi": 0.6,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "over35_over",
+   "league": "Dutch Eredivisie",
+   "config": "LEARNED|EDGE|max-|min-",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.02,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 40,
+   "wf_roi": 0.078,
+   "wf_roi_shrunk": 0.0875,
+   "tier2": false,
+   "tier2_bets": 0,
+   "tier2_roi": null,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "over35_over",
+   "league": "Greek Super League",
+   "config": "LEARNED|EDGE|max-|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "over35_over",
+   "league": "La Liga 2",
+   "config": "LEARNED|EDGE|max-|min-",
+   "valuable_th": 0.02,
+   "marksman_th": 0.05,
+   "sniper_th": 0.06,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 92,
+   "wf_roi": 0.1353,
+   "wf_roi_shrunk": 0.0875,
+   "tier2": false,
+   "tier2_bets": 8,
+   "tier2_roi": -0.625,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "over35_over",
+   "league": "League One",
+   "config": "LEARNED|EDGE|max-|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "over35_over",
+   "league": "League Two",
+   "config": "LEARNED|EDGE|max-|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "over35_over",
+   "league": "Ligue 2",
+   "config": "LEARNED|EDGE|max-|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "over35_over",
+   "league": "National League",
+   "config": "LEARNED|EDGE|max-|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "over35_over",
+   "league": "Portuguese Primeira Liga",
+   "config": "LEARNED|EDGE|max-|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "over35_over",
+   "league": "Scottish Championship",
+   "config": "LEARNED|EDGE|max-|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "over35_over",
+   "league": "Scottish League One",
+   "config": "LEARNED|EDGE|max-|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "over35_over",
+   "league": "Scottish League Two",
+   "config": "LEARNED|EDGE|max-|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "over35_over",
+   "league": "Scottish Premiership",
+   "config": "LEARNED|EDGE|max-|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "over35_over",
+   "league": "Serie B",
+   "config": "LEARNED|EDGE|max-|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "standard",
+   "mside": "over35_over",
+   "league": "Turkish Super Lig",
+   "config": "LEARNED|EDGE|max-|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over25_over",
+   "league": "Argentina Primera Division",
+   "config": "RAW|EV|max2.5|min-",
+   "valuable_th": 0.03,
+   "marksman_th": 0.03,
+   "sniper_th": 0.03,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 40,
+   "wf_roi": -0.025,
+   "wf_roi_shrunk": 0.0836,
+   "tier2": false,
+   "tier2_bets": 0,
+   "tier2_roi": null,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over25_over",
+   "league": "Austrian Bundesliga",
+   "config": "RAW|EV|max2.5|min-",
+   "valuable_th": 0.02,
+   "marksman_th": 0.14,
+   "sniper_th": 0.15,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.9817,
+   "wf_bets": 124,
+   "wf_roi": -0.0007,
+   "wf_roi_shrunk": 0.0009,
+   "tier2": false,
+   "tier2_bets": 66,
+   "tier2_roi": -0.2398,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over25_over",
+   "league": "Brazil Serie A",
+   "config": "RAW|EV|max2.5|min-",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.02,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.9848,
+   "wf_bets": 162,
+   "wf_roi": 0.203,
+   "wf_roi_shrunk": 0.2012,
+   "tier2": false,
+   "tier2_bets": 0,
+   "tier2_roi": null,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over25_over",
+   "league": "China Super League",
+   "config": "RAW|EV|max2.5|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.9498,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over25_over",
+   "league": "Denmark Superliga",
+   "config": "RAW|EV|max2.5|min-",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.02,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.9718,
+   "wf_bets": 54,
+   "wf_roi": 0.1009,
+   "wf_roi_shrunk": 0.1005,
+   "tier2": false,
+   "tier2_bets": 0,
+   "tier2_roi": null,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over25_over",
+   "league": "Finland Veikkausliiga",
+   "config": "RAW|EV|max2.5|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over25_over",
+   "league": "Ireland Premier Division",
+   "config": "RAW|EV|max2.5|min-",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.02,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.9638,
+   "wf_bets": 65,
+   "wf_roi": 0.1103,
+   "wf_roi_shrunk": 0.1094,
+   "tier2": false,
+   "tier2_bets": 0,
+   "tier2_roi": null,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over25_over",
+   "league": "Japan J-League",
+   "config": "RAW|EV|max2.5|min-",
+   "valuable_th": 0.02,
+   "marksman_th": 0.03,
+   "sniper_th": 0.03,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.9526,
+   "wf_bets": 49,
+   "wf_roi": 0.0306,
+   "wf_roi_shrunk": 0.0332,
+   "tier2": false,
+   "tier2_bets": 4,
+   "tier2_roi": 0.5575,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over25_over",
+   "league": "K-League 1",
+   "config": "RAW|EV|max2.5|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.6113,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over25_over",
+   "league": "Mexico Liga MX",
+   "config": "RAW|EV|max2.5|min-",
+   "valuable_th": 0.02,
+   "marksman_th": 0.06,
+   "sniper_th": 0.07,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.9712,
+   "wf_bets": 67,
+   "wf_roi": 0.1676,
+   "wf_roi_shrunk": 0.1653,
+   "tier2": false,
+   "tier2_bets": 22,
+   "tier2_roi": -0.1186,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over25_over",
+   "league": "Norway Eliteserien",
+   "config": "RAW|EV|max2.5|min-",
+   "valuable_th": 0.02,
+   "marksman_th": 0.03,
+   "sniper_th": 0.03,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.9754,
+   "wf_bets": 72,
+   "wf_roi": 0.0215,
+   "wf_roi_shrunk": 0.0231,
+   "tier2": false,
+   "tier2_bets": 10,
+   "tier2_roi": 0.014,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over25_over",
+   "league": "Romanian Superliga",
+   "config": "RAW|EV|max2.5|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over25_over",
+   "league": "Saudi Pro League",
+   "config": "RAW|EV|max2.5|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.9999,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over25_over",
+   "league": "Sweden Allsvenskan",
+   "config": "RAW|EV|max2.5|min-",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.02,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.9727,
+   "wf_bets": 69,
+   "wf_roi": 0.2457,
+   "wf_roi_shrunk": 0.2413,
+   "tier2": false,
+   "tier2_bets": 0,
+   "tier2_roi": null,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over25_over",
+   "league": "USA MLS",
+   "config": "RAW|EV|max2.5|min-",
+   "valuable_th": 0.02,
+   "marksman_th": 0.03,
+   "sniper_th": 0.03,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.9738,
+   "wf_bets": 66,
+   "wf_roi": 0.0217,
+   "wf_roi_shrunk": 0.0234,
+   "tier2": false,
+   "tier2_bets": 5,
+   "tier2_roi": 0.784,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over25_under",
+   "league": "Argentina Primera Division",
+   "config": "RAW|EDGE|max3.5|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over25_under",
+   "league": "Austrian Bundesliga",
+   "config": "RAW|EDGE|max3.5|min-",
+   "off": "NO_POSITIVE_BAR",
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over25_under",
+   "league": "Brazil Serie A",
+   "config": "RAW|EDGE|max3.5|min-",
+   "off": "NO_POSITIVE_BAR",
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over25_under",
+   "league": "China Super League",
+   "config": "RAW|EDGE|max3.5|min-",
+   "off": "NO_POSITIVE_BAR",
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over25_under",
+   "league": "Denmark Superliga",
+   "config": "RAW|EDGE|max3.5|min-",
+   "off": "NO_POSITIVE_BAR",
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over25_under",
+   "league": "Finland Veikkausliiga",
+   "config": "RAW|EDGE|max3.5|min-",
+   "off": "NO_POSITIVE_BAR",
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over25_under",
+   "league": "Ireland Premier Division",
+   "config": "RAW|EDGE|max3.5|min-",
+   "off": "NO_POSITIVE_BAR",
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over25_under",
+   "league": "Japan J-League",
+   "config": "RAW|EDGE|max3.5|min-",
+   "off": "NO_POSITIVE_BAR",
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over25_under",
+   "league": "K-League 1",
+   "config": "RAW|EDGE|max3.5|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over25_under",
+   "league": "Mexico Liga MX",
+   "config": "RAW|EDGE|max3.5|min-",
+   "off": "NO_POSITIVE_BAR",
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over25_under",
+   "league": "Norway Eliteserien",
+   "config": "RAW|EDGE|max3.5|min-",
+   "off": "NO_POSITIVE_BAR",
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over25_under",
+   "league": "Romanian Superliga",
+   "config": "RAW|EDGE|max3.5|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over25_under",
+   "league": "Saudi Pro League",
+   "config": "RAW|EDGE|max3.5|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over25_under",
+   "league": "Sweden Allsvenskan",
+   "config": "RAW|EDGE|max3.5|min-",
+   "off": "NO_POSITIVE_BAR",
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over25_under",
+   "league": "USA MLS",
+   "config": "RAW|EDGE|max3.5|min-",
+   "off": "NO_POSITIVE_BAR",
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "btts_yes",
+   "league": "Argentina Primera Division",
+   "config": "RAW|EDGE|max2.5|min-",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.3,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 350,
+   "wf_roi": 0.0537,
+   "wf_roi_shrunk": 0.0028,
+   "tier2": false,
+   "tier2_bets": 0,
+   "tier2_roi": null,
+   "mode": "LEAGUE_WIDE"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "btts_yes",
+   "league": "Austrian Bundesliga",
+   "config": "RAW|EDGE|max2.5|min-",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.02,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 104,
+   "wf_roi": 0.0994,
+   "wf_roi_shrunk": 0.0653,
+   "tier2": false,
+   "tier2_bets": 0,
+   "tier2_roi": null,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "btts_yes",
+   "league": "Brazil Serie A",
+   "config": "RAW|EDGE|max2.5|min-",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.06,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 246,
+   "wf_roi": 0.1427,
+   "wf_roi_shrunk": 0.0653,
+   "tier2": false,
+   "tier2_bets": 0,
+   "tier2_roi": null,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "btts_yes",
+   "league": "China Super League",
+   "config": "RAW|EDGE|max2.5|min-",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.02,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 76,
+   "wf_roi": -0.0887,
+   "wf_roi_shrunk": 0.0653,
+   "tier2": false,
+   "tier2_bets": 0,
+   "tier2_roi": null,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "btts_yes",
+   "league": "Denmark Superliga",
+   "config": "RAW|EDGE|max2.5|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "btts_yes",
+   "league": "Finland Veikkausliiga",
+   "config": "RAW|EDGE|max2.5|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "btts_yes",
+   "league": "Ireland Premier Division",
+   "config": "RAW|EDGE|max2.5|min-",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.02,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 113,
+   "wf_roi": 0.1085,
+   "wf_roi_shrunk": 0.0653,
+   "tier2": false,
+   "tier2_bets": 0,
+   "tier2_roi": null,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "btts_yes",
+   "league": "Japan J-League",
+   "config": "RAW|EDGE|max2.5|min-",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.02,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 41,
+   "wf_roi": -0.3407,
+   "wf_roi_shrunk": 0.0653,
+   "tier2": false,
+   "tier2_bets": 0,
+   "tier2_roi": null,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "btts_yes",
+   "league": "K-League 1",
+   "config": "RAW|EDGE|max2.5|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "btts_yes",
+   "league": "Mexico Liga MX",
+   "config": "RAW|EDGE|max2.5|min-",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.02,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 48,
+   "wf_roi": 0.1567,
+   "wf_roi_shrunk": 0.0653,
+   "tier2": false,
+   "tier2_bets": 0,
+   "tier2_roi": null,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "btts_yes",
+   "league": "Norway Eliteserien",
+   "config": "RAW|EDGE|max2.5|min-",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.02,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 63,
+   "wf_roi": 0.0922,
+   "wf_roi_shrunk": 0.0653,
+   "tier2": false,
+   "tier2_bets": 0,
+   "tier2_roi": null,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "btts_yes",
+   "league": "Romanian Superliga",
+   "config": "RAW|EDGE|max2.5|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "btts_yes",
+   "league": "Saudi Pro League",
+   "config": "RAW|EDGE|max2.5|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "btts_yes",
+   "league": "Sweden Allsvenskan",
+   "config": "RAW|EDGE|max2.5|min-",
+   "valuable_th": 0.02,
+   "marksman_th": 0.02,
+   "sniper_th": 0.02,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.0,
+   "wf_bets": 47,
+   "wf_roi": -0.0243,
+   "wf_roi_shrunk": 0.0653,
+   "tier2": false,
+   "tier2_bets": 0,
+   "tier2_roi": null,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "btts_yes",
+   "league": "USA MLS",
+   "config": "RAW|EDGE|max2.5|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over15_over",
+   "league": "Argentina Primera Division",
+   "config": "BLEND|EV|max-|min-",
+   "valuable_th": 0.02,
+   "marksman_th": 0.04,
+   "sniper_th": 0.04,
+   "bar_basis": "OWN_BETS",
+   "shrink_weight_at_valuable": 0.978,
+   "wf_bets": 193,
+   "wf_roi": 0.0642,
+   "wf_roi_shrunk": 0.0642,
+   "tier2": false,
+   "tier2_bets": 60,
+   "tier2_roi": -0.038,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over15_over",
+   "league": "Austrian Bundesliga",
+   "config": "BLEND|EV|max-|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over15_over",
+   "league": "Brazil Serie A",
+   "config": "BLEND|EV|max-|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.878,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over15_over",
+   "league": "China Super League",
+   "config": "BLEND|EV|max-|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over15_over",
+   "league": "Denmark Superliga",
+   "config": "BLEND|EV|max-|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over15_over",
+   "league": "Finland Veikkausliiga",
+   "config": "BLEND|EV|max-|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over15_over",
+   "league": "Ireland Premier Division",
+   "config": "BLEND|EV|max-|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.9987,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over15_over",
+   "league": "Japan J-League",
+   "config": "BLEND|EV|max-|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0075,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over15_over",
+   "league": "K-League 1",
+   "config": "BLEND|EV|max-|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over15_over",
+   "league": "Mexico Liga MX",
+   "config": "BLEND|EV|max-|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over15_over",
+   "league": "Norway Eliteserien",
+   "config": "BLEND|EV|max-|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over15_over",
+   "league": "Romanian Superliga",
+   "config": "BLEND|EV|max-|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over15_over",
+   "league": "Saudi Pro League",
+   "config": "BLEND|EV|max-|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over15_over",
+   "league": "Sweden Allsvenskan",
+   "config": "BLEND|EV|max-|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over15_over",
+   "league": "USA MLS",
+   "config": "BLEND|EV|max-|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "MODEL"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over35_over",
+   "league": "Argentina Primera Division",
+   "config": "NONE|ALL|max-|min-",
+   "off": "NO_POSITIVE_BAR",
+   "mode": "LEAGUE_WIDE"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over35_over",
+   "league": "Austrian Bundesliga",
+   "config": "NONE|ALL|max-|min-",
+   "off": "NO_POSITIVE_BAR",
+   "mode": "LEAGUE_WIDE"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over35_over",
+   "league": "Brazil Serie A",
+   "config": "NONE|ALL|max-|min-",
+   "off": "NO_POSITIVE_BAR",
+   "mode": "LEAGUE_WIDE"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over35_over",
+   "league": "China Super League",
+   "config": "NONE|ALL|max-|min-",
+   "off": "NO_POSITIVE_BAR",
+   "mode": "LEAGUE_WIDE"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over35_over",
+   "league": "Denmark Superliga",
+   "config": "NONE|ALL|max-|min-",
+   "off": "NO_POSITIVE_BAR",
+   "mode": "LEAGUE_WIDE"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over35_over",
+   "league": "Finland Veikkausliiga",
+   "config": "NONE|ALL|max-|min-",
+   "off": "NO_POSITIVE_BAR",
+   "mode": "LEAGUE_WIDE"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over35_over",
+   "league": "Ireland Premier Division",
+   "config": "NONE|ALL|max-|min-",
+   "off": "NO_POSITIVE_BAR",
+   "mode": "LEAGUE_WIDE"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over35_over",
+   "league": "Japan J-League",
+   "config": "NONE|ALL|max-|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "LEAGUE_WIDE"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over35_over",
+   "league": "K-League 1",
+   "config": "NONE|ALL|max-|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "LEAGUE_WIDE"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over35_over",
+   "league": "Mexico Liga MX",
+   "config": "NONE|ALL|max-|min-",
+   "off": "NO_POSITIVE_BAR",
+   "mode": "LEAGUE_WIDE"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over35_over",
+   "league": "Norway Eliteserien",
+   "config": "NONE|ALL|max-|min-",
+   "off": "NO_POSITIVE_BAR",
+   "mode": "LEAGUE_WIDE"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over35_over",
+   "league": "Romanian Superliga",
+   "config": "NONE|ALL|max-|min-",
+   "off": "NO_POSITIVE_BAR",
+   "mode": "LEAGUE_WIDE"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over35_over",
+   "league": "Saudi Pro League",
+   "config": "NONE|ALL|max-|min-",
+   "off": "OWN_DATA_TOO_THIN",
+   "own_weight": 0.0,
+   "mode": "LEAGUE_WIDE"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over35_over",
+   "league": "Sweden Allsvenskan",
+   "config": "NONE|ALL|max-|min-",
+   "off": "NO_POSITIVE_BAR",
+   "mode": "LEAGUE_WIDE"
+  },
+  {
+   "month": "2026-11",
+   "track": "new_format",
+   "mside": "over35_over",
+   "league": "USA MLS",
+   "config": "NONE|ALL|max-|min-",
+   "off": "NO_POSITIVE_BAR",
+   "mode": "LEAGUE_WIDE"
+  }
+ ],
+ "off_leagues_need_serving_change": [
+  {
+   "market": "btts",
+   "league": "Belgian First Division A",
+   "reason": "OWN_DATA_TOO_THIN",
+   "config": "RAW|EV|max2.5|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "btts",
+   "league": "Bundesliga 2",
+   "reason": "OWN_DATA_TOO_THIN",
+   "config": "RAW|EV|max2.5|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "btts",
+   "league": "Championship",
+   "reason": "NEEDS_BARS_OPT_SERVING",
+   "config": "RAW|EV|max2.5|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "btts",
+   "league": "Dutch Eredivisie",
+   "reason": "OWN_DATA_TOO_THIN",
+   "config": "RAW|EV|max2.5|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "btts",
+   "league": "Greek Super League",
+   "reason": "OWN_DATA_TOO_THIN",
+   "config": "RAW|EV|max2.5|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "btts",
+   "league": "La Liga 2",
+   "reason": "NEEDS_BARS_OPT_SERVING",
+   "config": "RAW|EV|max2.5|min-",
+   "mode": "LEAGUE_WIDE"
+  },
+  {
+   "market": "btts",
+   "league": "League One",
+   "reason": "NEEDS_BARS_OPT_SERVING",
+   "config": "RAW|EV|max2.5|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "btts",
+   "league": "League Two",
+   "reason": "NEEDS_BARS_OPT_SERVING",
+   "config": "RAW|EV|max2.5|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "btts",
+   "league": "Ligue 2",
+   "reason": "NEEDS_BARS_OPT_SERVING",
+   "config": "RAW|EV|max2.5|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "btts",
+   "league": "National League",
+   "reason": "OWN_DATA_TOO_THIN",
+   "config": "RAW|EV|max2.5|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "btts",
+   "league": "Portuguese Primeira Liga",
+   "reason": "OWN_DATA_TOO_THIN",
+   "config": "RAW|EV|max2.5|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "btts",
+   "league": "Scottish Championship",
+   "reason": "OWN_DATA_TOO_THIN",
+   "config": "RAW|EV|max2.5|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "btts",
+   "league": "Scottish League One",
+   "reason": "OWN_DATA_TOO_THIN",
+   "config": "RAW|EV|max2.5|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "btts",
+   "league": "Scottish League Two",
+   "reason": "OWN_DATA_TOO_THIN",
+   "config": "RAW|EV|max2.5|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "btts",
+   "league": "Scottish Premiership",
+   "reason": "OWN_DATA_TOO_THIN",
+   "config": "RAW|EV|max2.5|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "btts",
+   "league": "Serie B",
+   "reason": "NEEDS_BARS_OPT_SERVING",
+   "config": "RAW|EV|max2.5|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "btts",
+   "league": "Turkish Super Lig",
+   "reason": "OWN_DATA_TOO_THIN",
+   "config": "RAW|EV|max2.5|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "over35",
+   "league": "Belgian First Division A",
+   "reason": "OWN_DATA_TOO_THIN",
+   "config": "LEARNED|EDGE|max-|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "over35",
+   "league": "Bundesliga 2",
+   "reason": "OWN_DATA_TOO_THIN",
+   "config": "LEARNED|EDGE|max-|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "over35",
+   "league": "Championship",
+   "reason": "NEEDS_BARS_OPT_SERVING",
+   "config": "LEARNED|EDGE|max-|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "over35",
+   "league": "Dutch Eredivisie",
+   "reason": "NEEDS_BARS_OPT_SERVING",
+   "config": "LEARNED|EDGE|max-|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "over35",
+   "league": "Greek Super League",
+   "reason": "OWN_DATA_TOO_THIN",
+   "config": "LEARNED|EDGE|max-|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "over35",
+   "league": "La Liga 2",
+   "reason": "NEEDS_BARS_OPT_SERVING",
+   "config": "LEARNED|EDGE|max-|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "over35",
+   "league": "League One",
+   "reason": "OWN_DATA_TOO_THIN",
+   "config": "LEARNED|EDGE|max-|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "over35",
+   "league": "League Two",
+   "reason": "OWN_DATA_TOO_THIN",
+   "config": "LEARNED|EDGE|max-|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "over35",
+   "league": "Ligue 2",
+   "reason": "OWN_DATA_TOO_THIN",
+   "config": "LEARNED|EDGE|max-|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "over35",
+   "league": "National League",
+   "reason": "OWN_DATA_TOO_THIN",
+   "config": "LEARNED|EDGE|max-|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "over35",
+   "league": "Portuguese Primeira Liga",
+   "reason": "OWN_DATA_TOO_THIN",
+   "config": "LEARNED|EDGE|max-|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "over35",
+   "league": "Scottish Championship",
+   "reason": "OWN_DATA_TOO_THIN",
+   "config": "LEARNED|EDGE|max-|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "over35",
+   "league": "Scottish League One",
+   "reason": "OWN_DATA_TOO_THIN",
+   "config": "LEARNED|EDGE|max-|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "over35",
+   "league": "Scottish League Two",
+   "reason": "OWN_DATA_TOO_THIN",
+   "config": "LEARNED|EDGE|max-|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "over35",
+   "league": "Scottish Premiership",
+   "reason": "OWN_DATA_TOO_THIN",
+   "config": "LEARNED|EDGE|max-|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "over35",
+   "league": "Serie B",
+   "reason": "OWN_DATA_TOO_THIN",
+   "config": "LEARNED|EDGE|max-|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "over35",
+   "league": "Turkish Super Lig",
+   "reason": "OWN_DATA_TOO_THIN",
+   "config": "LEARNED|EDGE|max-|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "btts",
+   "league": "Argentina Primera Division",
+   "reason": "NEEDS_BARS_OPT_SERVING",
+   "config": "RAW|EDGE|max2.5|min-",
+   "mode": "LEAGUE_WIDE"
+  },
+  {
+   "market": "btts",
+   "league": "Austrian Bundesliga",
+   "reason": "NEEDS_BARS_OPT_SERVING",
+   "config": "RAW|EDGE|max2.5|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "btts",
+   "league": "Brazil Serie A",
+   "reason": "NEEDS_BARS_OPT_SERVING",
+   "config": "RAW|EDGE|max2.5|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "btts",
+   "league": "China Super League",
+   "reason": "NEEDS_BARS_OPT_SERVING",
+   "config": "RAW|EDGE|max2.5|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "btts",
+   "league": "Denmark Superliga",
+   "reason": "OWN_DATA_TOO_THIN",
+   "config": "RAW|EDGE|max2.5|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "btts",
+   "league": "Finland Veikkausliiga",
+   "reason": "OWN_DATA_TOO_THIN",
+   "config": "RAW|EDGE|max2.5|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "btts",
+   "league": "Ireland Premier Division",
+   "reason": "NEEDS_BARS_OPT_SERVING",
+   "config": "RAW|EDGE|max2.5|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "btts",
+   "league": "Japan J-League",
+   "reason": "NEEDS_BARS_OPT_SERVING",
+   "config": "RAW|EDGE|max2.5|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "btts",
+   "league": "K-League 1",
+   "reason": "OWN_DATA_TOO_THIN",
+   "config": "RAW|EDGE|max2.5|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "btts",
+   "league": "Mexico Liga MX",
+   "reason": "NEEDS_BARS_OPT_SERVING",
+   "config": "RAW|EDGE|max2.5|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "btts",
+   "league": "Norway Eliteserien",
+   "reason": "NEEDS_BARS_OPT_SERVING",
+   "config": "RAW|EDGE|max2.5|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "btts",
+   "league": "Romanian Superliga",
+   "reason": "OWN_DATA_TOO_THIN",
+   "config": "RAW|EDGE|max2.5|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "btts",
+   "league": "Saudi Pro League",
+   "reason": "OWN_DATA_TOO_THIN",
+   "config": "RAW|EDGE|max2.5|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "btts",
+   "league": "Sweden Allsvenskan",
+   "reason": "NEEDS_BARS_OPT_SERVING",
+   "config": "RAW|EDGE|max2.5|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "btts",
+   "league": "USA MLS",
+   "reason": "OWN_DATA_TOO_THIN",
+   "config": "RAW|EDGE|max2.5|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "over15",
+   "league": "Argentina Primera Division",
+   "reason": "NEEDS_BARS_OPT_SERVING",
+   "config": "BLEND|EV|max-|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "over15",
+   "league": "Austrian Bundesliga",
+   "reason": "OWN_DATA_TOO_THIN",
+   "config": "BLEND|EV|max-|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "over15",
+   "league": "Brazil Serie A",
+   "reason": "OWN_DATA_TOO_THIN",
+   "config": "BLEND|EV|max-|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "over15",
+   "league": "China Super League",
+   "reason": "OWN_DATA_TOO_THIN",
+   "config": "BLEND|EV|max-|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "over15",
+   "league": "Denmark Superliga",
+   "reason": "OWN_DATA_TOO_THIN",
+   "config": "BLEND|EV|max-|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "over15",
+   "league": "Finland Veikkausliiga",
+   "reason": "OWN_DATA_TOO_THIN",
+   "config": "BLEND|EV|max-|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "over15",
+   "league": "Ireland Premier Division",
+   "reason": "OWN_DATA_TOO_THIN",
+   "config": "BLEND|EV|max-|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "over15",
+   "league": "Japan J-League",
+   "reason": "OWN_DATA_TOO_THIN",
+   "config": "BLEND|EV|max-|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "over15",
+   "league": "K-League 1",
+   "reason": "OWN_DATA_TOO_THIN",
+   "config": "BLEND|EV|max-|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "over15",
+   "league": "Mexico Liga MX",
+   "reason": "OWN_DATA_TOO_THIN",
+   "config": "BLEND|EV|max-|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "over15",
+   "league": "Norway Eliteserien",
+   "reason": "OWN_DATA_TOO_THIN",
+   "config": "BLEND|EV|max-|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "over15",
+   "league": "Romanian Superliga",
+   "reason": "OWN_DATA_TOO_THIN",
+   "config": "BLEND|EV|max-|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "over15",
+   "league": "Saudi Pro League",
+   "reason": "OWN_DATA_TOO_THIN",
+   "config": "BLEND|EV|max-|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "over15",
+   "league": "Sweden Allsvenskan",
+   "reason": "OWN_DATA_TOO_THIN",
+   "config": "BLEND|EV|max-|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "over15",
+   "league": "USA MLS",
+   "reason": "OWN_DATA_TOO_THIN",
+   "config": "BLEND|EV|max-|min-",
+   "mode": "MODEL"
+  },
+  {
+   "market": "over35",
+   "league": "Argentina Primera Division",
+   "reason": "NO_POSITIVE_BAR",
+   "config": "NONE|ALL|max-|min-",
+   "mode": "LEAGUE_WIDE"
+  },
+  {
+   "market": "over35",
+   "league": "Austrian Bundesliga",
+   "reason": "NO_POSITIVE_BAR",
+   "config": "NONE|ALL|max-|min-",
+   "mode": "LEAGUE_WIDE"
+  },
+  {
+   "market": "over35",
+   "league": "Brazil Serie A",
+   "reason": "NO_POSITIVE_BAR",
+   "config": "NONE|ALL|max-|min-",
+   "mode": "LEAGUE_WIDE"
+  },
+  {
+   "market": "over35",
+   "league": "China Super League",
+   "reason": "NO_POSITIVE_BAR",
+   "config": "NONE|ALL|max-|min-",
+   "mode": "LEAGUE_WIDE"
+  },
+  {
+   "market": "over35",
+   "league": "Denmark Superliga",
+   "reason": "NO_POSITIVE_BAR",
+   "config": "NONE|ALL|max-|min-",
+   "mode": "LEAGUE_WIDE"
+  },
+  {
+   "market": "over35",
+   "league": "Finland Veikkausliiga",
+   "reason": "NO_POSITIVE_BAR",
+   "config": "NONE|ALL|max-|min-",
+   "mode": "LEAGUE_WIDE"
+  },
+  {
+   "market": "over35",
+   "league": "Ireland Premier Division",
+   "reason": "NO_POSITIVE_BAR",
+   "config": "NONE|ALL|max-|min-",
+   "mode": "LEAGUE_WIDE"
+  },
+  {
+   "market": "over35",
+   "league": "Japan J-League",
+   "reason": "OWN_DATA_TOO_THIN",
+   "config": "NONE|ALL|max-|min-",
+   "mode": "LEAGUE_WIDE"
+  },
+  {
+   "market": "over35",
+   "league": "K-League 1",
+   "reason": "OWN_DATA_TOO_THIN",
+   "config": "NONE|ALL|max-|min-",
+   "mode": "LEAGUE_WIDE"
+  },
+  {
+   "market": "over35",
+   "league": "Mexico Liga MX",
+   "reason": "NO_POSITIVE_BAR",
+   "config": "NONE|ALL|max-|min-",
+   "mode": "LEAGUE_WIDE"
+  },
+  {
+   "market": "over35",
+   "league": "Norway Eliteserien",
+   "reason": "NO_POSITIVE_BAR",
+   "config": "NONE|ALL|max-|min-",
+   "mode": "LEAGUE_WIDE"
+  },
+  {
+   "market": "over35",
+   "league": "Romanian Superliga",
+   "reason": "NO_POSITIVE_BAR",
+   "config": "NONE|ALL|max-|min-",
+   "mode": "LEAGUE_WIDE"
+  },
+  {
+   "market": "over35",
+   "league": "Saudi Pro League",
+   "reason": "OWN_DATA_TOO_THIN",
+   "config": "NONE|ALL|max-|min-",
+   "mode": "LEAGUE_WIDE"
+  },
+  {
+   "market": "over35",
+   "league": "Sweden Allsvenskan",
+   "reason": "NO_POSITIVE_BAR",
+   "config": "NONE|ALL|max-|min-",
+   "mode": "LEAGUE_WIDE"
+  },
+  {
+   "market": "over35",
+   "league": "USA MLS",
+   "reason": "NO_POSITIVE_BAR",
+   "config": "NONE|ALL|max-|min-",
+   "mode": "LEAGUE_WIDE"
+  }
+ ],
+ "needs_owner_decision": [
+  "O/U 2.5: separate Over and Under bars per league; production serves one set per league",
+  "OFF = no tip: serving today falls back to the global bar for any league without approved own bars"
+ ]
+}

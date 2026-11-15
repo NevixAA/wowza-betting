@@ -19,6 +19,15 @@ import pipeline
 from src import stake_plan as sp
 from src.bankroll_policy import load_policy, size_day
 
+@pytest.fixture(autouse=True)
+def _own_bars(monkeypatch):
+    """Owner 2026-11-09: no global bars. These tests predate the cutover and assert the tiers the
+    removed global path served, so every league gets exactly those values as its OWN owner-applied
+    bars (tests/own_bars.install_historical)."""
+    from tests.own_bars import install_historical
+    install_historical(monkeypatch)
+
+
 NF = "Argentina Primera Division"
 NF2 = "Brazil Serie A"
 STD = "Championship"
@@ -82,9 +91,15 @@ def _row(plan, home, market):
 def test_producer_emits_the_contract():
     side = pipeline._generate_side_bets(pd.DataFrame([_pred("A", NF, btts=(0.62, 2.10))]),
                                         config.SIDE_MARKETS)
-    # threshold_source (fix9/defaults 2026-11-04): which bar tiered the tip, for ledger / Telegram / dashboard
-    assert list(side.columns) == list(sp.SIDE_SELECTION_COLUMNS) + ["market_odds", "threshold_source"]
-    assert (side["threshold_source"] == "GLOBAL").all()             # no per-league file -> global bar
+    # threshold_source (fix9/defaults 2026-11-04): which bar tiered the tip, for ledger / Telegram / dashboard;
+    # bar_mode (2026-11-09): MODEL / LEAGUE_WIDE of a bars_opt cell ("" for a legacy own-bars entry)
+    # cell_status / qualifying_bar (owner 2026-11-11): the tip's cell status and its one approved bar
+    assert list(side.columns) == list(sp.SIDE_SELECTION_COLUMNS) + ["market_odds", "threshold_source", "bar_mode",
+                                                                     "cell_p_used", "cell_status", "qualifying_bar",
+                                                                     "edge_calibrated"]
+    assert set(side["signal_tier"]) == {"QUALIFIED"}
+    # owner 2026-11-09: a tip exists only on the league's OWN owner-applied bars, so the source is LEAGUE
+    assert (side["threshold_source"] == "LEAGUE").all()
     sp.check_side_selections(side)                                  # does not raise
 
 
@@ -234,7 +249,19 @@ def test_health_check_flags_active_market_all_unsupported():
 
 @pytest.fixture(autouse=True)
 def _legacy_side_fair_price(monkeypatch):
-    """Synthetic rows here carry no book quotes, and these tests pin other behaviour. The two-sided
-    de-vig fair price (production since 2026-11-01) has its own tests: test_side_devig_production.py."""
-    import config as _cfg
-    monkeypatch.setattr(_cfg, "SIDE_EDGE_FAIR_PRICE", "legacy_1_08")
+    """Synthetic rows here carry no book quotes, and these tests pin other behaviour. TEST-ONLY fair price:
+    the synthetic rows' fair probability is supplied directly (production reads a real two-sided de-vig,
+    tested in test_side_devig_production.py; the legacy_1_08 switch these tests used was removed 2026-11-09)."""
+    from src.integrity import side_edge_devig as _SE
+    monkeypatch.setattr(_SE, "load_quotes", lambda *a, **k: __import__("pandas").DataFrame())
+    monkeypatch.setattr(_SE, "production_fair_probs",
+                        lambda df, target, quotes, asof: (1.0 / df["market_odds"]) / 1.08)
+
+
+@pytest.fixture(autouse=True)
+def _per_track_policy(monkeypatch):
+    """These tests pin the TRACK mechanics: per-track staking (tests/policy_helpers). The live per-cell
+    staking (owner 2026-11-09) is pinned in tests/test_cell_staking.py."""
+    import sys
+    from tests.policy_helpers import install_per_track
+    install_per_track(monkeypatch, sys.modules[__name__])

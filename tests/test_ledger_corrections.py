@@ -1,5 +1,5 @@
 """2026-11-11 certification: live-ledger hygiene corrected BESIDE the ledgers (src/ledger_corrections.py)
-and data truth rule 6 (no recurrence from the Clean Record start)."""
+and data truth rule 9 (no recurrence from the Clean Record start)."""
 from __future__ import annotations
 
 from pathlib import Path
@@ -102,7 +102,7 @@ def test_readers_apply_the_sidecars(tmp_path):
     assert list(LC.drop_v91_duplicates(v, tmp_path)["match_date"]) == ["2026-11-08"]
 
 
-# ── data truth rule 6 ───────────────────────────────────────────────────────────────────────────
+# ── data truth rule 9 ───────────────────────────────────────────────────────────────────────────
 EMPTY_POOL = pd.DataFrame(columns=FC.POOL_COLS + ["_d"])
 
 
@@ -121,7 +121,7 @@ def test_rule6_ignores_rows_before_the_start_and_waits_for_go_live(monkeypatch):
 
 
 def test_rule6_is_reported_but_not_gated():
-    assert not "Data truth 6".startswith(DT.GATED)
+    assert not "Data truth 9".startswith(DT.GATED)
 
 
 # ── the committed sidecars (built from main's live ledgers, 2026-11-11) ──────────────────────────

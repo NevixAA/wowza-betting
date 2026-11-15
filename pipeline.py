@@ -57,7 +57,7 @@ from src.model import (train_for_retrain as train_model, load_models,
                         predict_proba as model_predict_proba,
                         FEATURE_COLS as MODEL_FEATURE_COLS)
 from src.betting import generate_bets
-from src.tier_labels import TIER_LABEL_SHORT, tier_label   # display words only (owner 2026-10-26)
+from src.tier_labels import TIER_LABEL_SHORT   # display words only (owner 2026-10-26)
 from src.backtest import (run_backtest, run_side_market_backtest,
                            optimize_side_market_thresholds, optimize_standard_thresholds)
 from src.ledger import (append_tips, append_side_market_tips, append_ht_tips,
@@ -82,9 +82,10 @@ def _load_side_market_thresholds() -> dict:
 
 def _generate_side_bets(preds: "pd.DataFrame", side_markets: dict) -> "pd.DataFrame":
     """
-    Generate SNIPER/MARKSMAN/VALUABLE tips for BTTS / Over 1.5 / Over 3.5.
-    Uses per-league optimized thresholds from best_params_side_markets.json when that league's
-    threshold has been APPROVED out of sample, falling back to the fixed global bar otherwise.
+    Generate QUALIFIED tips (owner 2026-11-11: one approved bar per cell, no tiers) for BTTS / Over 1.5 / Over 3.5.
+    Tiers ONLY on each league's own owner-applied bars in best_params_side_markets.json (sniper,
+    marksman AND valuable; src/side_thresholds.own_bars). A league x market without them gets no
+    tier (NO_LEAGUE_BAR) - there is no global bar (owner 2026-11-09).
 
     NO LEAGUE IS EVER SUPPRESSED. This docstring used to say "leagues marked 'drop=True' are
     suppressed entirely", which has not been true since the 2026/27 live-test policy — the code
@@ -94,24 +95,23 @@ def _generate_side_bets(preds: "pd.DataFrame", side_markets: dict) -> "pd.DataFr
     import pandas as pd
     import numpy as np
     from src.stake_plan import SIDE_SELECTION_COLUMNS
-    from src.side_thresholds import side_bars, tier_for
+    from src.side_thresholds import NO_LEAGUE_BAR
+    from src.bars_opt import serve as _BS
     frames = []
-    OVERROUND    = 1.08          # legacy_1_08 only (config.SIDE_EDGE_FAIR_PRICE rollback)
     league_params = _load_side_market_thresholds()  # {target: {league: {sniper_th, marksman_th, drop}}}
 
-    # FAIR PRICE = TWO-SIDED DE-VIG (owner cutover 2026-11-01, R2-C finding 4). The shadow that ran
-    # beside production proved the same thresholds; only the fair-price definition changes. A
-    # fixture/market with no same-book two-sided pair gets NO tip (fail closed, owner choice).
-    _devig = getattr(config, "SIDE_EDGE_FAIR_PRICE", "devig_two_sided") == "devig_two_sided"
+    # FAIR PRICE = TWO-SIDED DE-VIG (owner cutover 2026-11-01, R2-C finding 4). A fixture/market with no
+    # same-book two-sided pair gets NO tip (fail closed, owner choice). The old rollback switch
+    # (config.SIDE_EDGE_FAIR_PRICE = legacy_1_08) divided one price by an ASSUMED 8% margin - a fake price -
+    # and was removed 2026-11-09 (owner: "100% real data, no fakes ... no global vars").
     _quotes, _asof = None, pd.Timestamp.now(tz="UTC")
-    if _devig:
-        try:
-            from src.integrity import side_edge_devig as _SE
-            _quotes = _SE.load_quotes(config.OUTPUT_DIR, since=_asof - pd.Timedelta(days=14))
-            log.info(f"side markets: fair price = two-sided de-vig ({len(_quotes)} recent book quotes)")
-        except Exception as e:                                         # noqa: BLE001
-            log.error(f"side markets: book quotes unavailable ({e}) — NO side tips this run (fail closed)")
-            _quotes = None
+    try:
+        from src.integrity import side_edge_devig as _SE
+        _quotes = _SE.load_quotes(config.OUTPUT_DIR, since=_asof - pd.Timedelta(days=14))
+        log.info(f"side markets: fair price = two-sided de-vig ({len(_quotes)} recent book quotes)")
+    except Exception as e:                                             # noqa: BLE001
+        log.error(f"side markets: book quotes unavailable ({e}) — NO side tips this run (fail closed)")
+        _quotes = None
 
     for target in side_markets:
         if target not in SIDE_OF_TARGET:
@@ -159,17 +159,14 @@ def _generate_side_bets(preds: "pd.DataFrame", side_markets: dict) -> "pd.DataFr
         df["model_prob"]  = df[prob_col]
         df["market_odds"] = df[odds_col]
         df["odds"]        = df["market_odds"]   # canonical name (src/stake_plan.SIDE_SELECTION_COLUMNS)
-        if _devig:
-            df["fair_prob"] = (_SE.production_fair_probs(df, target, _quotes, _asof)
-                               if _quotes is not None else np.nan)
-            _n0 = len(df)
-            df = df.dropna(subset=["fair_prob"])
-            if _n0 - len(df):
-                log.info(f"side {target}: {_n0 - len(df)} of {_n0} fixture(s) skipped — no two-sided price")
-            if df.empty:
-                continue
-        else:
-            df["fair_prob"] = (1.0 / df["market_odds"]) / OVERROUND
+        df["fair_prob"] = (_SE.production_fair_probs(df, target, _quotes, _asof)
+                           if _quotes is not None else np.nan)
+        _n0 = len(df)
+        df = df.dropna(subset=["fair_prob"])
+        if _n0 - len(df):
+            log.info(f"side {target}: {_n0 - len(df)} of {_n0} fixture(s) skipped — no two-sided price")
+        if df.empty:
+            continue
         df["edge"]        = df["model_prob"] - df["fair_prob"]
         df["ev"]          = df["model_prob"] * df["market_odds"] - 1.0
         df["market"]      = target
@@ -187,44 +184,71 @@ def _generate_side_bets(preds: "pd.DataFrame", side_markets: dict) -> "pd.DataFr
         # would systematically bet a calibration error 61 times. Recalibrate p_btts first.
         df["side"]        = SIDE_OF_TARGET[target]
 
-        def _tier(row):
-            lg = row["league"]
+        # THE LEAGUE'S OWN BARS OR NO TIER (owner 2026-11-09: "no global vars"). Until then a league
+        # whose own threshold was not approved was tiered on the global bar config.SIDE_GLOBAL_BARS
+        # (0.10 / 0.08 / 0.04; 525 of 664 live side tips by 2026-11-04). Now a league x market tiers
+        # only on its own owner-applied sniper / marksman / valuable bars (src/side_thresholds.own_bars);
+        # without them it gets AVOID with reason NO_LEAGUE_BAR - no tip, no stake, no message. No
+        # league is suppressed by policy: every league with its own bars still emits every tip.
+        # An OPTIMIZED entry (bars_opt cells, src/bars_opt/serve.py) is decided by its own cell: probability
+        # source, edge measure, odds range and bars. A legacy own-bars entry tiers on its bars as before.
+        # ONE BAR PER CELL (owner 2026-11-11, "Clean rebuild"): a tip qualifies ONLY by its league x market x
+        # side cell's owner-approved bar (bars_opt, src/bars_opt/serve.py). A legacy own-bars entry (three
+        # tier thresholds, no cell) no longer tips: NO_LEAGUE_BAR, like a league without bars.
+        _bars, _cell = {}, {}
+        for lg in df["league"].unique():
             lp = market_params.get(lg, {})
-            # Live-test policy (2026/27): NEVER SUPPRESS A LEAGUE. Every league emits signals
-            # all season so it builds a CLV/ROI record — a league you stopped tipping is a
-            # league you can never learn about. Real-money gating is a separate downstream
-            # decision, not a notification filter.
-            #
-            # What the gate decides is narrower: whether to trust THIS league's own learned
-            # threshold, or fall back to the global bar. A league's threshold is used only once
-            # `approved` — meaning a walk-forward pass tuned it on earlier seasons, bet the next
-            # one blind, and came out positive (src/backtest.optimize_side_market_thresholds).
-            #
-            # Before 2026-09-22 that optimizer had no out-of-sample pass at all: it grid-searched
-            # ~17 thresholds on all the data and shipped the winner. Pro's threshold study then
-            # showed what that costs — of the four cells with enough data to check, THREE were
-            # worse out of sample (Norway -29.7pp, China -40.9pp, Finland -61.6pp). An
-            # in-sample-optimal bar is not just unproven, it lost money on fresh fixtures.
-            #
-            # `approved` missing (an older best_params file) falls back to the previous rule, so
-            # this can never regress an environment that has not rerun the optimizer yet.
-            #
-            # THE GLOBAL BAR IS A DECLARED POLICY (fix9/defaults 2026-11-04): config.SIDE_GLOBAL_BARS,
-            # read through src/side_thresholds.side_bars - it was a typed lp.get("sniper_th", 0.10)
-            # here and in two research copies. Same values, same rule; the tip now also records
-            # WHICH bar tiered it (threshold_source LEAGUE / GLOBAL), so a global-bar tier is never
-            # shown as a per-league one.
-            bars = side_bars(lp)
-            return tier_for(row["edge"], bars), bars[3]
-
-        _tiers = df.apply(_tier, axis=1, result_type="expand")
-        df["signal_tier"], df["threshold_source"] = _tiers[0], _tiers[1]
+            if isinstance(lp, dict) and _BS.CELL_KEY in lp:
+                _cell[lg], _why = _BS.served_cell(lp, target, lg, "yes")
+                _bars[lg] = None if _cell[lg] is None else config.THRESHOLD_SOURCE_LEAGUE
+            else:
+                _bars[lg] = None
+        _no_bar = sorted(lg for lg, b in _bars.items() if b is None)
+        if _no_bar:
+            log.info(f"side {target}: {int(df['league'].isin(_no_bar).sum())} fixture(s) in "
+                     f"{len(_no_bar)} league(s) not tiered - {NO_LEAGUE_BAR} (no own owner-applied bars): "
+                     f"{', '.join(_no_bar)}")
+        df["signal_tier"] = "AVOID"
+        df["cell_status"] = ""
+        df["qualifying_bar"] = np.nan
+        df["bar_mode"] = ""
+        df["cell_p_used"] = np.nan                   # set below only where a cell scored the tip
+        for lg, cell in _cell.items():
+            if cell is None:
+                continue
+            m = df["league"] == lg
+            res = _BS.score(pd.DataFrame({"league": lg, "p_side": df.loc[m, "model_prob"],
+                                          "fair": df.loc[m, "fair_prob"], "odds": df.loc[m, "market_odds"]}), cell)
+            df.loc[m, "signal_tier"] = res["tier"].where(res["tier"].astype(str) != "", "AVOID").to_numpy()
+            df.loc[m, "cell_status"] = str(cell.get("verdict") or "")
+            df.loc[m, "qualifying_bar"] = float(cell["valuable_th"])
+            df.loc[m, "bar_mode"] = cell["mode"]
+            df.loc[m, "cell_p_used"] = pd.to_numeric(res["p_used"], errors="coerce").to_numpy()
+            ev = [_BS.ev_point(p, o) for p, o in zip(pd.to_numeric(res["p_used"], errors="coerce"),
+                                                     df.loc[m, "market_odds"])]
+            df.loc[m, "ev"] = np.where(np.isfinite(ev), ev, df.loc[m, "ev"])
+        df["threshold_source"] = [(_bars[lg] if _bars[lg] is not None else NO_LEAGUE_BAR)
+                                  for lg in df["league"]]
+        # THE CALIBRATED EDGE (owner 2026-11-11 "Show calibrated edge"): the edge a person is shown; the raw
+        # `edge` stays for study. NaN = the cell has no calibration statistic ("edge: not calibrated").
+        from src import calibrated_edge as _CE
+        from src.tier_labels import QUALIFIED as _Q
+        df["edge_calibrated"] = np.nan
+        _tip = df["signal_tier"] == _Q
+        if _tip.any():
+            df.loc[_tip, "edge_calibrated"] = _CE.calibrated(pd.DataFrame({
+                "track": df.loc[_tip, "model_type"].astype(str), "league": df.loc[_tip, "league"].astype(str),
+                "mside": _CE.MSIDE.get((target, str(SIDE_OF_TARGET[target]).upper())),
+                "p_used": df.loc[_tip, "cell_p_used"], "fair": df.loc[_tip, "fair_prob"],
+                "odds": df.loc[_tip, "market_odds"]}, index=df.index[_tip]), _CE.load()).to_numpy()
         df = df[df["signal_tier"] != "AVOID"]
         df = df.sort_values("edge", ascending=False)
         # ONE SCHEMA, defined once in src/stake_plan.py and read by the stake plan. `market_odds`
         # is kept beside the canonical `odds` for the side_bets.csv / ledger / notify readers;
         # `threshold_source` beside both for the ledger / Telegram / dashboard (not a stake input).
-        frames.append(df[list(SIDE_SELECTION_COLUMNS) + ["market_odds", "threshold_source"]])
+        frames.append(df[list(SIDE_SELECTION_COLUMNS) + ["market_odds", "threshold_source", "bar_mode",
+                                                         "cell_p_used", "cell_status", "qualifying_bar",
+                                                         "edge_calibrated"]])
 
     if not frames:
         return pd.DataFrame()
@@ -986,25 +1010,18 @@ def mode_predict(historical: "pd.DataFrame" = None) -> "pd.DataFrame":
         ]
         display = [c for c in display if c in bets.columns]
 
-        for tier, label, note in [
-            ("SNIPER",   f"{tier_label('SNIPER'):<11}(per-league threshold)", "full stake"),
-            ("MARKSMAN", f"{tier_label('MARKSMAN'):<11}(edge 8%-threshold)",   "3/4 stake"),
-            ("VALUABLE", f"{tier_label('VALUABLE'):<11}(edge 4-8%)",           "half stake / monitor"),
-        ]:
-            rows = bets[bets["signal_tier"] == tier]
-            print("\n" + "=" * 90)
-            print(f"  {label}  — {note}  [{len(rows)} tips]")
-            print("=" * 90)
-            if rows.empty:
-                print("  (none this week)")
-            else:
-                print(rows[display].to_string(index=False))
+        # one list: every tip cleared its cell's one approved bar (owner 2026-11-11: no tiers)
+        print()
+        print("=" * 90)
+        print(f"  TIPS (cell bar cleared)  [{len(bets)} tips]")
+        print("=" * 90)
+        print("  (none this week)" if bets.empty else bets[display].to_string(index=False))
 
         # Both-losing summary
         bl_count = int(preds.get("both_losing", pd.Series(False)).sum()) if "both_losing" in preds.columns else 0
 
-        print(f"\n  {tier_label('SNIPER'):<12}: {(bets['signal_tier'] == 'SNIPER').sum()}")
-        print(f"  VALUE       : {(bets['signal_tier'] == 'VALUE').sum()}")
+        print()
+        print(f"  TIPS        : {len(bets)}")
         print(f"  AVOID       : {len(preds) - len(bets)} fixtures below threshold")
         if bl_count:
             print(f"  BOTH-LOSING : {bl_count} fixtures suppressed (v7 guard active)")

@@ -26,11 +26,16 @@ turns system health RED instead of waiting for the next audit:
                  match (2026-11-02); and (2026-11-10) no PROVIDER fixture claimed by two served rows,
                  nor by two served af_history provider rows (src.integrity.fixture_claims: a match
                  filed under both clubs' old AND new names has no side in common by name).
-    6 LEDGERS    (2026-11-11) from the Clean Record start the live ledgers hold no multi-tip / opposite-tip
+    6 NO GLOBAL  (owner 2026-11-09: "no global vars") no serving module reads a global tier bar:
+                 config.HISTORICAL_SIDE_GLOBAL_BARS / SIDE_GLOBAL_BARS, VALUABLE_THRESHOLD /
+                 VALUE_THRESHOLD, MARKSMAN_THRESHOLD, SNIPER_THRESHOLD(_OVER/_UNDER), EDGE_CEILING,
+                 LEAGUE_EDGE_CEILING, the hand-set LEAGUE_SNIPER/MARKSMAN tables, or writes the GLOBAL
+                 threshold source. Tiers come only from each league's own owner-applied bars.
+    9 LEDGERS    (2026-11-11) from the Clean Record start the live ledgers hold no multi-tip / opposite-tip
                  fixture, post-kickoff tip, close <= 1.0, |CLV| > 50 new-format row, duplicate player tip
                  or twice-logged v91 fixture (src/ledger_corrections corrects the rows before it). Not
                  gated (operational data, like rule 3): RED in system health.
-    7 PROPS      (2026-11-11, src.integrity.props_feature_truth) a keeper's goals_conceded read by the
+   10 PROPS      (2026-11-11, src.integrity.props_feature_truth; numbered 7 before the go-live merge) a keeper's goals_conceded read by the
                  props features agrees with the match score where he played the full 90 minutes; every
                  rolling team feature reads the side its name says (own team vs opponent); a provider null
                  in a NULL_IS_MISSING count (goals_conceded, penalty_missed) stays missing. Gated.
@@ -697,7 +702,255 @@ def one_match(banks: dict | None = None, pool: pd.DataFrame | None = None,
               rule, ex)
 
 
-# ── 6 CLEAN LEDGERS (2026-11-11 certification) ─────────────────────────────────────────────────
+# ── 6 NO GLOBAL BAR IN SERVING ───────────────────────────────────────────────────────────────────
+#: the modules that tier, gate or stake a tip (and the gate mirror they share). A file listed here that
+#: does not exist on this branch is skipped (the TOP-3 selection lives on its own branch until merged).
+SERVING_FILES = ("pipeline.py", "src/betting.py", "src/side_thresholds.py", "src/gate_resolver.py",
+                 "src/integrity/side_edge_devig.py", "src/stake_plan.py", "src/bankroll_policy.py",
+                 "src/cloudbet/bot.py", "src/top3_league.py", "src/bars_opt/serve.py", "src/bars_opt/cells.py")
+#: global / pooled / hand-set bars that served before 2026-11-09 (now historical values in config.py)
+GLOBAL_BAR_NAMES = ("HISTORICAL_SIDE_GLOBAL_BARS", "SIDE_GLOBAL_BARS", "VALUABLE_THRESHOLD", "VALUE_THRESHOLD",
+                    "MARKSMAN_THRESHOLD", "SNIPER_THRESHOLD", "SNIPER_THRESHOLD_OVER", "SNIPER_THRESHOLD_UNDER",
+                    "EDGE_CEILING", "LEAGUE_EDGE_CEILING", "LEAGUE_SNIPER_THRESHOLDS",
+                    "LEAGUE_MARKSMAN_THRESHOLDS", "_LEAGUE_SNIPER_CALIBRATED", "_LEAGUE_MARKSMAN_CALIBRATED",
+                    "THRESHOLD_SOURCE_GLOBAL",
+                    # 2026-11-09 (bars_opt serving): the global odds limits and the assumed-margin fair-price
+                    # switch - a served tip uses its league's own cell odds range and a real two-sided de-vig
+                    "MIN_OVER_ODDS", "MIN_UNDER_ODDS", "NF_MAX_OU_ODDS", "SIDE_EDGE_FAIR_PRICE")
+_GLOBAL_BAR_RE = re.compile(
+    r"\b(?:app_)?config\s*\.\s*(" + "|".join(GLOBAL_BAR_NAMES) + r")\b"
+    r"|getattr\(\s*(?:app_)?config\s*,\s*[\"'](" + "|".join(GLOBAL_BAR_NAMES) + r")[\"']"
+    r"|\bglobal_bars\s*\(")
+
+
+def scan_global_bars(files=None, root: Path | None = None) -> list[dict]:
+    """Every code line (not a comment or docstring) of a serving module that reads a global bar."""
+    r = Path(root) if root is not None else ROOT
+    hits = []
+    for rel in (SERVING_FILES if files is None else files):
+        p = r / rel
+        if not p.exists():
+            continue
+        text = p.read_text(encoding="utf-8", errors="replace")
+        skip = _docstring_lines(text)
+        for i, ln in enumerate(text.splitlines(), start=1):
+            code = ln.split("#", 1)[0]
+            if i in skip or not code.strip():
+                continue
+            if _GLOBAL_BAR_RE.search(code):
+                hits.append({"file": rel, "line": i, "code": code.strip()})
+    return hits
+
+
+def no_global_bars() -> dict:
+    rule = ("no serving module (tiering, gates, staking) reads a global / pooled / hand-set tier bar or "
+            "writes the GLOBAL threshold source: every tier is the league's own owner-applied bars "
+            "(src/side_thresholds.own_bars) or none (NO_LEAGUE_BAR); RED on any hit")
+    hits = scan_global_bars()
+    scanned = sum((ROOT / f).exists() for f in SERVING_FILES)
+    return _c("Data truth 6: no global bars in serving", RED if hits else GREEN,
+              f"{len(hits)} global-bar read(s) in {scanned} serving module(s)", rule,
+              "; ".join(f"{h['file']}:{h['line']}: {h['code'][:70]}" for h in hits[:5]))
+
+
+# ── 7 NO RETIRED TIERS ON A FUTURE TIP ──────────────────────────────────────────────────────────
+#: owner 2026-11-11 ("Clean rebuild": "the old sniper/mm/valuable dont important anymore for the future tips ...
+#: do not use them"): from go-live (the Clean Record starts 2026-11-21) no tip row carries SNIPER / MARKSMAN /
+#: VALUABLE or a tier multiplier other than 1. Historical rows keep their old columns (study only).
+TIERS_RETIRED_FROM = "2026-11-21"
+#: (file, date column, tier column, multiplier column) of every tip / stake record a future tip lands in
+TIP_RECORDS = (("bets_ledger.csv", "match_date", "signal_tier", None),
+               ("side_bets_ledger.csv", "match_date", "signal_tier", None),
+               ("bets.csv", "date", "signal_tier", None), ("side_bets.csv", "date", "signal_tier", None),
+               ("ht_ledger.csv", "match_date", "signal_tier", None),
+               ("player_ledger.csv", "match_date", "tier", None),
+               ("stake_audit.csv", "date", "signal_tier", "tier_multiplier"),
+               ("top3_league_ledger.csv", "match_date", "tier", None))
+
+
+def retired_tier_rows(out_dir: Path | None = None, since: str = TIERS_RETIRED_FROM) -> list[dict]:
+    """Every record dated on/after `since` that carries a retired tier code or a tier multiplier != 1."""
+    from src.tier_labels import LEGACY_TIERS
+    od = Path(out_dir) if out_dir is not None else OUT
+    cut = pd.Timestamp(since)
+    hits = []
+    for name, dcol, tcol, mcol in TIP_RECORDS:
+        d = _read(od / name)
+        if d.empty or dcol not in d.columns:
+            continue
+        # a record WRITTEN on/after the cut (generated_at where the record has it) - a row written before go-live
+        # for a later match is history; without a write time the match date decides
+        wcol = "generated_at" if "generated_at" in d.columns else dcol
+        dt = pd.to_datetime(d[wcol].astype(str).str[:10], errors="coerce")
+        fut = d[dt >= cut]
+        if fut.empty:
+            continue
+        if tcol in fut.columns:
+            n = int(fut[tcol].astype(str).str.strip().str.upper().isin(LEGACY_TIERS).sum())
+            if n:
+                hits.append({"file": name, "kind": "retired tier label", "rows": n})
+        if mcol and mcol in fut.columns:
+            m = pd.to_numeric(fut[mcol], errors="coerce")
+            n = int((m.notna() & (m != 1.0)).sum())
+            if n:
+                hits.append({"file": name, "kind": "tier multiplier != 1", "rows": n})
+    return hits
+
+
+def no_retired_tiers() -> dict:
+    rule = (f"owner 2026-11-11: no tip / stake record dated on or after {TIERS_RETIRED_FROM} carries a retired tier "
+            "label (SNIPER / MARKSMAN / VALUABLE) or a tier multiplier other than 1; a tip qualifies only by its "
+            "cell's one approved bar; RED on any hit")
+    hits = retired_tier_rows()
+    return _c("Data truth 7: no retired tiers on future tips", RED if hits else GREEN,
+              f"{sum(h['rows'] for h in hits)} future row(s) with a retired tier / multiplier", rule,
+              "; ".join(f"{h['file']}: {h['rows']} {h['kind']}" for h in hits[:6]))
+
+
+# ── 8 BET-TIME EVIDENCE ONLY ──────────────────────────────────────────────────────────────────────
+#: owner 2026-11-11 ("Bet-time snapshot + re-run", "Strict, keep Argentina"): a bar or verdict may never rest on a
+#: price whose capture time is not proven before kickoff. For every APPROVED, NOT WITHDRAWN entry of
+#: config/threshold_approvals.json: its proposal's price-provenance record must exist and list each of the entry's
+#: cells with no OddsAPI-history-priced row and an unproven-capture share <= UNPROVEN_MAX - unless the owner
+#: recorded an explicit exemption with its basis on the approval.
+UNPROVEN_MAX = 0.5                      # owner 2026-11-11: "mainly" = more than 50% of the evidence rows
+APPROVALS = ROOT / "config" / "threshold_approvals.json"
+
+
+def unproven_evidence(approvals_path: Path | None = None, root: Path | None = None) -> list[dict]:
+    r = Path(root) if root is not None else ROOT
+    ap = json.loads(Path(approvals_path or APPROVALS).read_text(encoding="utf-8"))
+    hits = []
+    for a in ap.get("approvals") or []:
+        rel = a.get("price_provenance")
+        gone = {w["entry_id"] for w in a.get("withdrawals") or []}
+        exempt = {x["entry_id"] for x in a.get("exemptions") or [] if str(x.get("basis") or "").strip()}
+        live = [e["entry_id"] for e in a.get("entries") or [] if e["entry_id"] not in gone]
+        if not rel:
+            if live:
+                hits.append({"proposal": a.get("proposal_id"), "entry": "*", "why": "no price-provenance record"})
+            continue
+        prov = json.loads((r / rel).read_text(encoding="utf-8"))
+        by = {}
+        for c in prov.get("cells") or []:
+            by.setdefault(c["entry_id"], []).append(c)
+        for eid in live:
+            if eid in exempt:
+                continue
+            for c in by.get(eid, []):
+                share = c.get("unproven_share")
+                if c.get("oddsapi_hist"):
+                    hits.append({"proposal": a["proposal_id"], "entry": eid, "why": "OddsAPI-history-priced evidence"})
+                elif share is not None and share > UNPROVEN_MAX:
+                    hits.append({"proposal": a["proposal_id"], "entry": eid,
+                                 "why": f"{share:.0%} of evidence rows without a proven pre-kickoff capture time"})
+    return hits
+
+
+#: a CLOSING price column / tier name (football-data "C" columns, our *_close columns, the OddsAPI close tiers)
+_CLOSING_RE = re.compile(r"(AvgC|MaxC|B365C|BbAvC|^PC[<>]|_close$|^close$)")
+
+
+def closing_as_bet_price(root: Path | None = None) -> list[dict]:
+    """Every place a CLOSING price would be read as a BET price (owner 2026-11-11: never - bars, backtests, Phase 2
+    market benchmarks). Closing prices are for CLV only."""
+    import inspect
+    r = Path(root) if root is not None else ROOT
+    hits = []
+    from src import data_loader as DL                          # the served pre-match pair
+    for name, oc, uc in DL._OU25_PREMATCH:
+        if _CLOSING_RE.search(oc) or _CLOSING_RE.search(uc):
+            hits.append({"where": "src/data_loader._OU25_PREMATCH", "what": f"{oc}/{uc}"})
+    from src import league_bars as LB                          # the study's football-data bet pair
+    src = inspect.getsource(LB.fd_ou25_pairs)
+    for m in re.findall(r'"([^"]*[<>]2\.5)"', src):
+        if _CLOSING_RE.search(m):
+            hits.append({"where": "src/league_bars.fd_ou25_pairs", "what": m})
+    from src import fd_prematch as F
+    for name, oc, uc in F.PREMATCH:
+        if _CLOSING_RE.search(oc) or _CLOSING_RE.search(uc):
+            hits.append({"where": "src/fd_prematch.PREMATCH", "what": f"{oc}/{uc}"})
+    cfg = json.loads((r / "config" / "phase2_retrain.json").read_text(encoding="utf-8"))   # Phase 2 benchmarks
+    for mk, m in (cfg.get("markets") or {}).items():
+        pr = (m or {}).get("price") or {}
+        for k in ("yes", "no"):
+            v = pr.get(k)
+            if v and _CLOSING_RE.search(str(v)):
+                hits.append({"where": f"config/phase2_retrain.json markets.{mk}.price.{k}", "what": v})
+    proto = r / "config" / "bars_fresh_holdout_protocol.json"     # history tiers: bet role never a close tier
+    if proto.exists():
+        d = json.loads(proto.read_text(encoding="utf-8")).get("data") or {}
+        both = set(d.get("price_tiers") or []) & set(d.get("close_tiers") or [])
+        if both:
+            hits.append({"where": "config/bars_fresh_holdout_protocol.json", "what": f"tier(s) {sorted(both)} both bet and close"})
+    return hits
+
+
+#: the consumers that use the loader's O/U 2.5 pair as a BET price: each must read it through
+#: src.data_loader.ou25_bet_prices (owner 2026-11-11)
+OU25_BET_CONSUMERS = ("src/backtest.py", "retrain.py")
+
+
+def unproven_price_as_bet(root: Path | None = None) -> list[dict]:
+    """Every way an UNPROVEN-capture O/U 2.5 price (NF 00:00 backfill / no proven capture time, legacy rows,
+    multi-book averages) could reach a bet-price consumer (owner 2026-11-11): the bet-source set itself, the
+    backtest / retrain readers, the Phase 2 market benchmark flag, the bars modules (their own bet-time
+    universes, never the loader's pair) and edge_replay (live board prices; history results only)."""
+    import inspect
+    r = Path(root) if root is not None else ROOT
+    hits = []
+    from src import data_loader as DL
+    bad = set(DL.OU25_BET_SOURCES) & (set(DL.OU25_NOT_BET_SOURCES) | {"NF_SNAPSHOT_HISTORY", "LEGACY_CLOSING_PREFERRED"})
+    if bad:
+        hits.append({"where": "src/data_loader.OU25_BET_SOURCES", "what": f"unproven source(s) {sorted(bad)}"})
+    bad = {s for s in DL.SIDE_BET_SOURCES if s in DL.SIDE_NOT_BET_SOURCES or s.startswith("FD_MULTIBOOK")}
+    if bad:
+        hits.append({"where": "src/data_loader.SIDE_BET_SOURCES", "what": f"unproven source(s) {sorted(bad)}"})
+    bt = r / "src" / "backtest.py"
+    if bt.exists() and "side_bet_prices(" not in bt.read_text(encoding="utf-8-sig"):
+        hits.append({"where": "src/backtest.py", "what": "side-market backtest reads odds without side_bet_prices"})
+    for rel in OU25_BET_CONSUMERS:
+        f = r / rel
+        if f.exists() and "ou25_bet_prices(" not in f.read_text(encoding="utf-8-sig"):
+            hits.append({"where": rel, "what": "reads odds_over25 / odds_under25 without ou25_bet_prices"})
+    cfg = json.loads((r / "config" / "phase2_retrain.json").read_text(encoding="utf-8"))
+    pr = ((cfg.get("markets") or {}).get("over25") or {}).get("price") or {}
+    if pr and pr.get("pair_valid_flag") != "ou25_bet_price_ok":
+        hits.append({"where": "config/phase2_retrain.json markets.over25.price.pair_valid_flag",
+                     "what": f"{pr.get('pair_valid_flag')!r} (must be 'ou25_bet_price_ok')"})
+    for mk in ("btts", "over15", "over35"):
+        p2 = ((cfg.get("markets") or {}).get(mk) or {}).get("price") or {}
+        if p2 and p2.get("pair_valid_flag") != f"{mk}_bet_price_ok":
+            hits.append({"where": f"config/phase2_retrain.json markets.{mk}.price.pair_valid_flag",
+                         "what": f"{p2.get('pair_valid_flag')!r} (must be '{mk}_bet_price_ok')"})
+    for f in sorted((r / "src" / "bars_opt").glob("*.py")) + [r / "src" / "league_bars.py"]:
+        if f.exists() and re.search(r"odds_((over|under)(15|25|35)|btts)\b", f.read_text(encoding="utf-8-sig")):
+            hits.append({"where": f.relative_to(r).as_posix(), "what": "bars read the loader's O/U 2.5 pair"})
+    from src import history_corrections as HC
+    from src.research import edge_replay as ER
+    if any(str(c).startswith("odds") for c in HC.SERVE_COLS) or "load_all_matches" in inspect.getsource(ER):
+        hits.append({"where": "src/research/edge_replay.py", "what": "reads loader / history prices"})
+    return hits
+
+
+def bet_time_evidence() -> dict:
+    rule = ("owner 2026-11-11: no approved, non-withdrawn bar or verdict rests on a price whose capture time is not "
+            "proven before kickoff (no OddsAPI-history close price, unproven-capture share <= 50%), unless the owner "
+            "recorded an exemption with its basis; RED on any hit")
+    rule += ("; and no CLOSING price column / tier is ever read as a bet price (served pre-match pair, the "
+             "study's football-data pair, Phase 2 market benchmarks, the history bet tiers) - closing is CLV only")
+    hits = unproven_evidence()
+    rule += ("; and no UNPROVEN-capture price (NF 00:00 backfill, legacy rows, multi-book averages) reaches a "
+             "bet-price consumer (backtest, retrain, Phase 2 market benchmarks, bars, edge_replay)")
+    closing = closing_as_bet_price() + unproven_price_as_bet()
+    return _c("Data truth 8: bars rest on bet-time prices only", RED if (hits or closing) else GREEN,
+              f"{len(hits)} approved entr(ies) on unproven capture times; {len(closing)} closing / unproven "
+              f"price(s) read as a bet price", rule,
+              "; ".join([f"{h['entry']}: {h['why']}" for h in hits[:4]]
+                        + [f"{h['where']}: {h['what']}" for h in closing[:4]]))
+
+
+# ── 9 CLEAN LEDGERS (2026-11-11 certification) ─────────────────────────────────────────────────
 def _clean_record_start():
     try:
         cfg = json.loads((ROOT / "config" / "trustworthy_performance.json").read_text(encoding="utf-8"))
@@ -722,7 +975,7 @@ def ledgers(start=None, bets: pd.DataFrame | None = None, players: pd.DataFrame 
     from src import ledger_corrections as LC
     start = _clean_record_start() if start is None else pd.to_datetime(start, utc=True)
     if start is None:
-        return _c("Data truth 6: clean ledgers", GREY, "Clean Record start not set (go-live sets it)", rule)
+        return _c("Data truth 9: clean ledgers", GREY, "Clean Record start not set (go-live sets it)", rule)
     def since(d, col):
         if d is None or d.empty or col not in d.columns:
             return pd.DataFrame()
@@ -763,7 +1016,7 @@ def ledgers(start=None, bets: pd.DataFrame | None = None, players: pd.DataFrame 
         if len(vd):
             issues.append(f"{len(vd)} v91_shadow fixture(s) logged twice")
     st = RED if issues else GREEN
-    return _c("Data truth 6: clean ledgers", st,
+    return _c("Data truth 9: clean ledgers", st,
               "; ".join(issues) if issues else
               f"clean since {start:%Y-%m-%d} ({len(b)} live tip(s), {len(pl)} player row(s), {len(v)} v91 row(s))",
               rule)
@@ -779,12 +1032,15 @@ def evaluate(now: datetime | None = None) -> list[dict]:
                       ("Data truth 3: no missing data", lambda: missing(now)),
                       ("Data truth 4: right league relations", leagues),
                       ("Data truth 5: one match, one row", lambda: one_match()),
-                      ("Data truth 6: clean ledgers", lambda: ledgers())):
+                      ("Data truth 6: no global bars in serving", no_global_bars),
+                      ("Data truth 7: no retired tiers on future tips", no_retired_tiers),
+                      ("Data truth 8: bars rest on bet-time prices only", bet_time_evidence),
+                      ("Data truth 9: clean ledgers", lambda: ledgers())):
         try:
             out.append(fn())
         except Exception as e:                                         # noqa: BLE001
             out.append(_c(label, RED, "check failed", "must run", f"{type(e).__name__}: {e}"[:200]))
-    # 7 PROPS FEATURES (fix/props-feature-bugs 2026-11-11): keeper goals_conceded agrees with the
+    # 10 PROPS FEATURES (fix/props-feature-bugs 2026-11-11; 7 on that branch): keeper goals_conceded agrees with the
     # match score on the frame the props features read; team features keyed to their side.
     # The slim dashboard tree does not carry it (deploy/dashboard_manifest.json PIPELINE_ONLY: it reads
     # player_history through props_harness); there the line is NO_DATA, never a crash. The gate and
@@ -792,7 +1048,7 @@ def evaluate(now: datetime | None = None) -> list[dict]:
     try:
         from .props_feature_truth import evaluate as _props_truth
     except ImportError as e:
-        out.append(_c("Data truth 7: props features", GREY, "not run in this tree",
+        out.append(_c("Data truth 10: props features", GREY, "not run in this tree",
                       "runs on the full repository (data_truth_gate / evidence_refresh)", f"{e}"[:200]))
         return out
     out.extend(_props_truth())
@@ -818,7 +1074,8 @@ RATCHET = ROOT / "config" / "data_truth_ratchet.json"
 #: must not merge. It runs the loader's identity pipeline on the committed banks (~15 s; it was
 #: ~19-60 s before team_names memoised norm/identity_key and duplicate_pairs stopped slicing
 #: pandas groups).
-GATED = ("Data truth 1", "Data truth 2", "Data truth 4", "Data truth 5", "Data truth 7")
+GATED = ("Data truth 1", "Data truth 2", "Data truth 4", "Data truth 5", "Data truth 6", "Data truth 7",
+         "Data truth 8", "Data truth 10")
 
 
 def _ratchet() -> dict:

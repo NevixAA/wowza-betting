@@ -1,5 +1,5 @@
 {
-  "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04",
+  "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
   "name": "WOWZA BALANCED",
   "status": "WIRED_PAPER",
   "note": "Read by src/bankroll_policy.py. WIRED since 2026-10-14: pipeline.py sizes every tip through src/stake_plan.py into output/stake_plan.csv. PAPER: no bet is placed (Cloudbet PAPER_ONLY). Staking is downstream of prediction: this file never decides whether a tip exists. Updated only by a reviewed PR from the monthly Pro bankroll review.",
@@ -134,5 +134,27 @@
     }
   },
   "track_tier_multipliers_note": "Owner decision 2026-10-22: on OU25 the edge does not rank outcomes (since Aug 26, flat 1u: SNIPER -9.9% n125, MARKSMAN -5.8% n294, VALUABLE -0.8% n366; Spearman edge vs P/L ~0 on both tracks, Pro WOWZA_EDGE_REASSESSMENT_2026_10), so every OU25 tier is staked the same and VALUABLE is staked. Other tracks keep tier_multipliers. Pro's monthly review derives this per track from evidence.",
-  "track_side_split_note": "Owner decision 2026-10-26: O/U 2.5 is staked and reviewed per SIDE. The tracks new_format|OU25 and standard|OU25 were replaced by new_format|OU25_OVER, new_format|OU25_UNDER, standard|OU25_OVER and standard|OU25_UNDER, each starting with EXACTLY its parent's settings (state, base_fraction, odds caps, evidence_score, track_tier_multipliers), so every stake on the day of the split is identical. Key = src/bankroll_policy.track_key(model_type, market, side); an O/U 2.5 tip with no valid side gets no stake. From the 2026-11-01 review Pro evaluates each side as its own track under the unchanged rules (reductions-only until the allocator is walk-forward validated). Evidence at the split (settled live from 2026-08-10, flat 1u): NF OVER n147 ROI +4.0% [-15.6,+25.1]; NF UNDER n402 -0.4% [-13.5,+11.9]; STD OVER n197 -12.4%; STD UNDER n197 -14.8% - not significant, so no stake change."
+  "track_side_split_note": "Owner decision 2026-10-26: O/U 2.5 is staked and reviewed per SIDE. The tracks new_format|OU25 and standard|OU25 were replaced by new_format|OU25_OVER, new_format|OU25_UNDER, standard|OU25_OVER and standard|OU25_UNDER, each starting with EXACTLY its parent's settings (state, base_fraction, odds caps, evidence_score, track_tier_multipliers), so every stake on the day of the split is identical. Key = src/bankroll_policy.track_key(model_type, market, side); an O/U 2.5 tip with no valid side gets no stake. From the 2026-11-01 review Pro evaluates each side as its own track under the unchanged rules (reductions-only until the allocator is walk-forward validated). Evidence at the split (settled live from 2026-08-10, flat 1u): NF OVER n147 ROI +4.0% [-15.6,+25.1]; NF UNDER n402 -0.4% [-13.5,+11.9]; STD OVER n197 -12.4%; STD UNDER n197 -14.8% - not significant, so no stake change.",
+  "cell_staking": {
+    "enabled": true,
+    "rule": "Owner 2026-11-09 'Paper + PROMISING small': staking is per CELL (league x market x side, key '<track>|<league>', src/bankroll_policy.cell_key). Only a cell listed here stakes; every other cell is PAPER (shown and recorded, stake 0, reason NO_REAL_STAKE_PAPER_NO_CELL_ENTRY) - never inherited from its track. Portfolio caps, drawdown throttle, paper_leagues and the direction rule are unchanged. Cloudbet stays PAPER_ONLY: the stake plan sizes and records, no bet is placed. TOP-3 picks follow their cell's state (no extra stake). FLAT PER CELL (owner 2026-11-11 'Clean rebuild'): no tier multiplier - every tip that clears its cell's one approved bar stakes the cell's base fraction.",
+    "decided": "2026-11-09",
+    "approved": {
+      "proposal_id": "TP-2026-11-10-d999073a",
+      "proposal_hash": "d999073a5f1744c512011fe7a487a957ced743c6d8b467ec88dc6302d2e100d6",
+      "owner": "owner 2026-11-11 'Approve, paper + small'; then 'Bet-time snapshot + re-run', 'Strict, keep Argentina' and 'Paper until re-run': 38 entries withdrawn pending the re-run (config/threshold_approvals.json). Stakes from 2026-11-21: ONLY Argentina NF BTTS ACTIVE 1.25% (league-wide rule, basis recorded on the cell); every other cell PAPER (La Liga 2 Over 2.5 and La Liga 2 BTTS included); Cloudbet PAPER_ONLY; TOP-3 a paper track; flat per cell"
+    },
+    "previous_state": "per-track staking (tracks{} below), unchanged and still read when enabled is false",
+    "cells": {
+      "new_format|BTTS|Argentina Primera Division": {
+        "state": "ACTIVE",
+        "base_fraction": 0.0125,
+        "max_odds": 2.6,
+        "evidence_score": 3.0,
+        "source": "PROTECTED real-money track, kept exactly as the new_format|BTTS track stakes it today (owner 2026-11-09); its bars_opt cell is LEAGUE_WIDE up to odds 2.50, UNPROVEN, 350 selection bets +5.4%",
+        "stake_note": "flat per cell (owner 2026-11-11 'Clean rebuild'): the base fraction on every tip that clears the cell's one approved bar; the old 1.1 / 0.9 / 1.0 tier multipliers are retired",
+        "staking_basis": "owner 2026-11-11 \"Strict, keep Argentina\": a LEAGUE_WIDE rule (every match up to odds 2.50, no bar chosen from backfill); its PROMISING verdict rests on its own live-captured FINAL rows (86 bets, snapshot before kickoff); ACTIVE 1.25% flat"
+      }
+    }
+  }
 }

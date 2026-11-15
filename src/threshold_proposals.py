@@ -42,7 +42,7 @@ SIDE_MARKETS = ("btts", "over15", "over35")
 MARKETS = ("ou25",) + SIDE_MARKETS
 SCHEMA = "wowza.threshold_proposal/1"
 #: the fields that decide what production serves (src/betting.py::_base_tier, pipeline._generate_side_bets)
-SERVING_FIELDS = ("approved", "drop", "sniper_th", "marksman_th")
+SERVING_FIELDS = ("approved", "drop", "sniper_th", "marksman_th", "valuable_th", "bars_opt")
 EVIDENCE_FIELDS = ("bets_oos", "roi_oos", "oos_matchdays", "oos_roi_ci95", "bets_insample", "roi_insample",
                    "bets", "roi")
 APPROVAL_RULE = ("optimizer rule (src/backtest.py): approved = walk-forward OOS ROI > 0 on >= 20 OOS bets; "
@@ -145,14 +145,20 @@ import config
 from src import gate_resolver as G
 spec = json.loads(sys.stdin.read())
 out = {}
+from src import side_thresholds as ST
+_applied_now = ST.applied_entries()
 for tag in ("current", "proposed"):
     overlay = spec[tag]
     G._standard_params = lambda o=overlay: o["standard"]
     G._side_params = lambda o=overlay: o["side"]
+    # "proposed" = as if the owner approved and src/threshold_apply applied these cells
+    _ids = _applied_now | ({f"{mk}|{lg}" for lg, mk in spec["cells"]} if tag == "proposed" else set())
+    ST.applied_entries = lambda path=None, i=frozenset(_ids): i
     for lg, mk in spec["cells"]:
         g = G.resolve_effective_tier_gates(lg, mk)
         out[f"{tag}|{lg}|{mk}"] = {"sniper": g.sniper, "marksman": g.marksman, "valuable": g.valuable,
-                                    "sniper_source": g.sniper_source, "marksman_source": g.marksman_source}
+                                    "sniper_source": g.sniper_source, "marksman_source": g.marksman_source,
+                                    "own_bars": g.own_bars}
 print("@@JSON@@" + json.dumps(out, default=str))
 """
 
@@ -266,7 +272,7 @@ def build_proposal(candidates: dict, *, month: str | None = None, created_at: st
             c = served[f"current|{e['league']}|{e['market']}"]
             p = served[f"proposed|{e['league']}|{e['market']}"]
             e["served_now"], e["served_if_approved"] = c, p
-            e["serves_change"] = (c["sniper"], c["marksman"]) != (p["sniper"], p["marksman"])
+            e["serves_change"] = (c["sniper"], c["marksman"], c.get("valuable")) != (p["sniper"], p["marksman"], p.get("valuable"))
 
     p = {"schema": SCHEMA, "month": month, "created_at": created_at,
          "status": "AWAITING_OWNER" if any(e.get("serves_change") for e in entries) else "NO_SERVING_CHANGE",
@@ -328,7 +334,7 @@ def to_markdown(p: dict) -> str:
         lines.append("")
     lines += ["## How to approve", "",
               "Add an object to `approvals` in `config/threshold_approvals.json` (ids and hashes copied from "
-              f"`output/threshold_proposals/{Path(p.get('_path', p['month'] + '.json')).name}`; never type a "
+              f"`{p.get('_path') or 'output/threshold_proposals/' + p['month'] + '.json'}`; never type a "
               "threshold):", "", "```json",
               json.dumps({"proposal_id": p["proposal_id"], "proposal_hash": p["proposal_hash"],
                           "approved_by": "<owner name>", "approved_at": "<UTC timestamp>",

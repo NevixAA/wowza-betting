@@ -182,7 +182,8 @@ def load_fd_entry_prices(fd_raw_dir) -> pd.DataFrame:
 
 def attach_entry_prices(frame: pd.DataFrame, prices: pd.DataFrame) -> pd.DataFrame:
     """Add odds_over25_entry / odds_under25_entry (+ class/source) to a training frame, matched
-    on (date, league, home, away). Never touches odds_over25 (closing).
+    on (date, league, home, away). Never touches odds_over25 (the loader's PRE-MATCH pair since 2026-11-11;
+    before that it was a closing-preferred price).
 
     Clubs are matched by src.team_names.resolve inside the pool of football-data clubs of the SAME
     league on the SAME date (home against that day's home names, away against away names), so the

@@ -137,9 +137,9 @@ def test_side_check_catches_a_merge_that_ignores_the_declared_side(monkeypatch):
 
 
 def test_props_truth_is_a_gated_stoplight_rule():
-    assert any(g == "Data truth 7" for g in DT.GATED)
-    red = [PFT._c("Data truth 7a: keeper goals_conceded = match score", PFT.RED, "x", "")]
-    assert any(f.startswith("Data truth 7") for f in DT.gate(checks=red))
+    assert any(g == "Data truth 10" for g in DT.GATED)
+    red = [PFT._c("Data truth 10a: keeper goals_conceded = match score", PFT.RED, "x", "")]
+    assert any(f.startswith("Data truth 10") for f in DT.gate(checks=red))
 
 
 # ── 3. penalty_missed (owner 2026-11-11: "Fix penalties too, then promote") ──────────────────────
@@ -187,5 +187,5 @@ def test_slim_dashboard_tree_without_props_truth_gets_no_data_not_a_crash(monkey
         if hasattr(DT, name):
             monkeypatch.setattr(DT, name, lambda *a, **k: DT._c("x", DT.GREEN, "", ""))
     monkeypatch.setattr(DT, "missing", lambda *a, **k: DT._c("x", DT.GREEN, "", ""))
-    lines = [c for c in DT.evaluate() if c["check"].startswith("Data truth 7")]
+    lines = [c for c in DT.evaluate() if c["check"].startswith("Data truth 10")]
     assert len(lines) == 1 and lines[0]["status"] == DT.GREY

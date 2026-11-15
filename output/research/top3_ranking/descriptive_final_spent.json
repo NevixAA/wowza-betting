@@ -1,0 +1,794 @@
+{
+ "window": "FINAL 2026-09-01..2026-11-08 - SPENT: DESCRIPTIVE ONLY, NOT EVIDENCE",
+ "statistics_learned_on": "every SELECTION fold (walk-forward bets of the frozen choices)",
+ "cell_stats": [
+  {
+   "track": "new_format",
+   "league": "Argentina Primera Division",
+   "mside": "btts_yes",
+   "n": 103,
+   "roi": 0.0941,
+   "se": 0.1159,
+   "lcb": -0.1331,
+   "eb": 0.0582,
+   "lam": 0.8794,
+   "lam_se": 0.9399,
+   "lam_rows": 278
+  },
+  {
+   "track": "new_format",
+   "league": "Argentina Primera Division",
+   "mside": "over15_over",
+   "n": 201,
+   "roi": 0.0493,
+   "se": 0.0577,
+   "lcb": -0.0638,
+   "eb": 0.0582,
+   "lam": 0.1469,
+   "lam_se": 0.2399,
+   "lam_rows": 342
+  },
+  {
+   "track": "new_format",
+   "league": "Austrian Bundesliga",
+   "mside": "btts_yes",
+   "n": 38,
+   "roi": 0.1592,
+   "se": NaN,
+   "lcb": NaN,
+   "eb": NaN,
+   "lam": 0.6608,
+   "lam_se": 1.8477,
+   "lam_rows": 194
+  },
+  {
+   "track": "new_format",
+   "league": "Austrian Bundesliga",
+   "mside": "over25_over",
+   "n": 73,
+   "roi": 0.0767,
+   "se": 0.1828,
+   "lcb": -0.2815,
+   "eb": 0.0767,
+   "lam": 0.6608,
+   "lam_se": 0.4994,
+   "lam_rows": 189
+  },
+  {
+   "track": "new_format",
+   "league": "Brazil Serie A",
+   "mside": "btts_yes",
+   "n": 90,
+   "roi": -0.0339,
+   "se": 0.1029,
+   "lcb": -0.2356,
+   "eb": 0.0251,
+   "lam": 0.6353,
+   "lam_se": 0.919,
+   "lam_rows": 393
+  },
+  {
+   "track": "new_format",
+   "league": "Brazil Serie A",
+   "mside": "over15_over",
+   "n": 4,
+   "roi": 0.425,
+   "se": NaN,
+   "lcb": NaN,
+   "eb": NaN,
+   "lam": 0.6353,
+   "lam_se": 0.8318,
+   "lam_rows": 60
+  },
+  {
+   "track": "new_format",
+   "league": "Brazil Serie A",
+   "mside": "over25_over",
+   "n": 81,
+   "roi": 0.1417,
+   "se": 0.1357,
+   "lcb": -0.1243,
+   "eb": 0.0355,
+   "lam": 0.6353,
+   "lam_se": 0.5104,
+   "lam_rows": 329
+  },
+  {
+   "track": "new_format",
+   "league": "Brazil Serie A",
+   "mside": "over25_under",
+   "n": 12,
+   "roi": 0.1517,
+   "se": NaN,
+   "lcb": NaN,
+   "eb": NaN,
+   "lam": 0.6353,
+   "lam_se": 0.426,
+   "lam_rows": 400
+  },
+  {
+   "track": "new_format",
+   "league": "China Super League",
+   "mside": "btts_yes",
+   "n": 0,
+   "roi": NaN,
+   "se": NaN,
+   "lcb": NaN,
+   "eb": NaN,
+   "lam": 0.0666,
+   "lam_se": 1.8066,
+   "lam_rows": 245
+  },
+  {
+   "track": "new_format",
+   "league": "China Super League",
+   "mside": "over25_over",
+   "n": 0,
+   "roi": NaN,
+   "se": NaN,
+   "lcb": NaN,
+   "eb": NaN,
+   "lam": 0.0,
+   "lam_se": 0.2887,
+   "lam_rows": 245
+  },
+  {
+   "track": "new_format",
+   "league": "China Super League",
+   "mside": "over25_under",
+   "n": 0,
+   "roi": NaN,
+   "se": NaN,
+   "lcb": NaN,
+   "eb": NaN,
+   "lam": 0.0,
+   "lam_se": 0.5079,
+   "lam_rows": 152
+  },
+  {
+   "track": "new_format",
+   "league": "China Super League",
+   "mside": "over35_over",
+   "n": 44,
+   "roi": -0.32,
+   "se": 0.1533,
+   "lcb": -0.6204,
+   "eb": -0.32,
+   "lam": 0.0,
+   "lam_se": 1.3466,
+   "lam_rows": 157
+  },
+  {
+   "track": "new_format",
+   "league": "Denmark Superliga",
+   "mside": "btts_yes",
+   "n": 0,
+   "roi": NaN,
+   "se": NaN,
+   "lcb": NaN,
+   "eb": NaN,
+   "lam": 0.0,
+   "lam_se": 2.2808,
+   "lam_rows": 199
+  },
+  {
+   "track": "new_format",
+   "league": "Denmark Superliga",
+   "mside": "over25_over",
+   "n": 16,
+   "roi": -0.1219,
+   "se": NaN,
+   "lcb": NaN,
+   "eb": NaN,
+   "lam": 0.0,
+   "lam_se": 0.5149,
+   "lam_rows": 200
+  },
+  {
+   "track": "new_format",
+   "league": "Denmark Superliga",
+   "mside": "over25_under",
+   "n": 9,
+   "roi": -0.7333,
+   "se": NaN,
+   "lcb": NaN,
+   "eb": NaN,
+   "lam": 0.0,
+   "lam_se": 0.6925,
+   "lam_rows": 148
+  },
+  {
+   "track": "new_format",
+   "league": "Denmark Superliga",
+   "mside": "over35_over",
+   "n": 0,
+   "roi": NaN,
+   "se": NaN,
+   "lcb": NaN,
+   "eb": NaN,
+   "lam": 0.0,
+   "lam_se": 2.4392,
+   "lam_rows": 93
+  },
+  {
+   "track": "new_format",
+   "league": "Finland Veikkausliiga",
+   "mside": "btts_yes",
+   "n": 0,
+   "roi": NaN,
+   "se": NaN,
+   "lcb": NaN,
+   "eb": NaN,
+   "lam": 0.111,
+   "lam_se": 1.8956,
+   "lam_rows": 188
+  },
+  {
+   "track": "new_format",
+   "league": "Finland Veikkausliiga",
+   "mside": "over25_under",
+   "n": 0,
+   "roi": NaN,
+   "se": NaN,
+   "lcb": NaN,
+   "eb": NaN,
+   "lam": 0.0,
+   "lam_se": 0.6258,
+   "lam_rows": 149
+  },
+  {
+   "track": "new_format",
+   "league": "Finland Veikkausliiga",
+   "mside": "over35_over",
+   "n": 10,
+   "roi": -0.218,
+   "se": NaN,
+   "lcb": NaN,
+   "eb": NaN,
+   "lam": 0.0,
+   "lam_se": 1.782,
+   "lam_rows": 92
+  },
+  {
+   "track": "new_format",
+   "league": "Ireland Premier Division",
+   "mside": "btts_yes",
+   "n": 51,
+   "roi": 0.119,
+   "se": 0.1505,
+   "lcb": -0.1759,
+   "eb": 0.119,
+   "lam": 0.933,
+   "lam_se": 1.4433,
+   "lam_rows": 188
+  },
+  {
+   "track": "new_format",
+   "league": "Ireland Premier Division",
+   "mside": "over25_over",
+   "n": 17,
+   "roi": 0.4918,
+   "se": NaN,
+   "lcb": NaN,
+   "eb": NaN,
+   "lam": 0.933,
+   "lam_se": 0.6109,
+   "lam_rows": 180
+  },
+  {
+   "track": "new_format",
+   "league": "Ireland Premier Division",
+   "mside": "over25_under",
+   "n": 37,
+   "roi": 0.2554,
+   "se": NaN,
+   "lcb": NaN,
+   "eb": NaN,
+   "lam": 0.933,
+   "lam_se": 0.5748,
+   "lam_rows": 191
+  },
+  {
+   "track": "new_format",
+   "league": "Japan J-League",
+   "mside": "btts_yes",
+   "n": 0,
+   "roi": NaN,
+   "se": NaN,
+   "lcb": NaN,
+   "eb": NaN,
+   "lam": 0.0,
+   "lam_se": 1.6185,
+   "lam_rows": 136
+  },
+  {
+   "track": "new_format",
+   "league": "Japan J-League",
+   "mside": "over25_over",
+   "n": 0,
+   "roi": NaN,
+   "se": NaN,
+   "lcb": NaN,
+   "eb": NaN,
+   "lam": 0.0,
+   "lam_se": 0.7497,
+   "lam_rows": 119
+  },
+  {
+   "track": "new_format",
+   "league": "Japan J-League",
+   "mside": "over25_under",
+   "n": 0,
+   "roi": NaN,
+   "se": NaN,
+   "lcb": NaN,
+   "eb": NaN,
+   "lam": 0.0,
+   "lam_se": 0.6649,
+   "lam_rows": 134
+  },
+  {
+   "track": "new_format",
+   "league": "Mexico Liga MX",
+   "mside": "btts_yes",
+   "n": 0,
+   "roi": NaN,
+   "se": NaN,
+   "lcb": NaN,
+   "eb": NaN,
+   "lam": 0.8575,
+   "lam_se": 1.6874,
+   "lam_rows": 193
+  },
+  {
+   "track": "new_format",
+   "league": "Mexico Liga MX",
+   "mside": "over25_over",
+   "n": 8,
+   "roi": 0.275,
+   "se": NaN,
+   "lcb": NaN,
+   "eb": NaN,
+   "lam": 0.5942,
+   "lam_se": 0.4157,
+   "lam_rows": 206
+  },
+  {
+   "track": "new_format",
+   "league": "Mexico Liga MX",
+   "mside": "over25_under",
+   "n": 27,
+   "roi": 0.0911,
+   "se": NaN,
+   "lcb": NaN,
+   "eb": NaN,
+   "lam": 0.8067,
+   "lam_se": 0.5887,
+   "lam_rows": 175
+  },
+  {
+   "track": "new_format",
+   "league": "Norway Eliteserien",
+   "mside": "btts_yes",
+   "n": 7,
+   "roi": 0.0,
+   "se": NaN,
+   "lcb": NaN,
+   "eb": NaN,
+   "lam": 0.3519,
+   "lam_se": 1.9514,
+   "lam_rows": 247
+  },
+  {
+   "track": "new_format",
+   "league": "Norway Eliteserien",
+   "mside": "over25_over",
+   "n": 32,
+   "roi": 0.0341,
+   "se": NaN,
+   "lcb": NaN,
+   "eb": NaN,
+   "lam": 0.3519,
+   "lam_se": 0.387,
+   "lam_rows": 247
+  },
+  {
+   "track": "new_format",
+   "league": "Norway Eliteserien",
+   "mside": "over25_under",
+   "n": 0,
+   "roi": NaN,
+   "se": NaN,
+   "lcb": NaN,
+   "eb": NaN,
+   "lam": 0.3519,
+   "lam_se": 0.5833,
+   "lam_rows": 155
+  },
+  {
+   "track": "new_format",
+   "league": "Norway Eliteserien",
+   "mside": "over35_over",
+   "n": 44,
+   "roi": 0.0441,
+   "se": 0.1987,
+   "lcb": -0.3454,
+   "eb": 0.0441,
+   "lam": 0.3519,
+   "lam_se": 1.3247,
+   "lam_rows": 141
+  },
+  {
+   "track": "new_format",
+   "league": "Sweden Allsvenskan",
+   "mside": "btts_yes",
+   "n": 0,
+   "roi": NaN,
+   "se": NaN,
+   "lcb": NaN,
+   "eb": NaN,
+   "lam": 0.4625,
+   "lam_se": 1.5391,
+   "lam_rows": 231
+  },
+  {
+   "track": "new_format",
+   "league": "Sweden Allsvenskan",
+   "mside": "over25_over",
+   "n": 25,
+   "roi": 0.012,
+   "se": NaN,
+   "lcb": NaN,
+   "eb": NaN,
+   "lam": 0.4625,
+   "lam_se": 0.4542,
+   "lam_rows": 231
+  },
+  {
+   "track": "new_format",
+   "league": "Sweden Allsvenskan",
+   "mside": "over25_under",
+   "n": 26,
+   "roi": -0.0512,
+   "se": NaN,
+   "lcb": NaN,
+   "eb": NaN,
+   "lam": 0.4625,
+   "lam_se": 0.5146,
+   "lam_rows": 204
+  },
+  {
+   "track": "new_format",
+   "league": "USA MLS",
+   "mside": "btts_yes",
+   "n": 0,
+   "roi": NaN,
+   "se": NaN,
+   "lcb": NaN,
+   "eb": NaN,
+   "lam": 0.0971,
+   "lam_se": 1.8108,
+   "lam_rows": 279
+  },
+  {
+   "track": "new_format",
+   "league": "USA MLS",
+   "mside": "over25_over",
+   "n": 13,
+   "roi": -0.4846,
+   "se": NaN,
+   "lcb": NaN,
+   "eb": NaN,
+   "lam": 0.0971,
+   "lam_se": 0.3252,
+   "lam_rows": 308
+  },
+  {
+   "track": "new_format",
+   "league": "USA MLS",
+   "mside": "over25_under",
+   "n": 0,
+   "roi": NaN,
+   "se": NaN,
+   "lcb": NaN,
+   "eb": NaN,
+   "lam": 0.0971,
+   "lam_se": 0.5788,
+   "lam_rows": 197
+  },
+  {
+   "track": "new_format",
+   "league": "USA MLS",
+   "mside": "over35_over",
+   "n": 43,
+   "roi": 0.3093,
+   "se": 0.1728,
+   "lcb": -0.0293,
+   "eb": 0.3093,
+   "lam": 0.0971,
+   "lam_se": 1.6414,
+   "lam_rows": 191
+  },
+  {
+   "track": "standard",
+   "league": "Greek Super League",
+   "mside": "over25_over",
+   "n": 51,
+   "roi": -0.0873,
+   "se": 0.1685,
+   "lcb": -0.4175,
+   "eb": -0.0873,
+   "lam": 0.1257,
+   "lam_se": 0.2156,
+   "lam_rows": 856
+  },
+  {
+   "track": "standard",
+   "league": "La Liga 2",
+   "mside": "btts_yes",
+   "n": 38,
+   "roi": 0.3071,
+   "se": NaN,
+   "lcb": NaN,
+   "eb": NaN,
+   "lam": 0.0608,
+   "lam_se": 1.1369,
+   "lam_rows": 872
+  },
+  {
+   "track": "standard",
+   "league": "La Liga 2",
+   "mside": "over25_over",
+   "n": 72,
+   "roi": 0.0176,
+   "se": 0.1572,
+   "lcb": -0.2905,
+   "eb": 0.0176,
+   "lam": 0.0608,
+   "lam_se": 0.1127,
+   "lam_rows": 1699
+  },
+  {
+   "track": "standard",
+   "league": "League One",
+   "mside": "over25_over",
+   "n": 0,
+   "roi": NaN,
+   "se": NaN,
+   "lcb": NaN,
+   "eb": NaN,
+   "lam": 0.0,
+   "lam_se": 0.1844,
+   "lam_rows": 2014
+  },
+  {
+   "track": "standard",
+   "league": "Ligue 2",
+   "mside": "over25_over",
+   "n": 13,
+   "roi": 0.2354,
+   "se": NaN,
+   "lcb": NaN,
+   "eb": NaN,
+   "lam": 0.0587,
+   "lam_se": 0.1818,
+   "lam_rows": 1243
+  },
+  {
+   "track": "standard",
+   "league": "Serie B",
+   "mside": "btts_yes",
+   "n": 150,
+   "roi": 0.0769,
+   "se": 0.0905,
+   "lcb": -0.1005,
+   "eb": 0.0671,
+   "lam": 1.0,
+   "lam_se": 0.765,
+   "lam_rows": 762
+  },
+  {
+   "track": "standard",
+   "league": "Serie B",
+   "mside": "over25_over",
+   "n": 142,
+   "roi": 0.0556,
+   "se": 0.0985,
+   "lcb": -0.1375,
+   "eb": 0.0671,
+   "lam": 0.3231,
+   "lam_se": 0.1671,
+   "lam_rows": 1393
+  }
+ ],
+ "all_bets": {
+  "bets": 569,
+  "roi": 0.0043,
+  "matchdays": 56,
+  "ci95": [
+   -0.0769,
+   0.0855
+  ],
+  "p_one_sided": 0.4578,
+  "clv": 0.002,
+  "clv_n": 569
+ },
+ "EV_PRODUCTION": {
+  "bets": 241,
+  "roi": -0.0829,
+  "matchdays": 48,
+  "ci95": [
+   -0.2114,
+   0.0456
+  ],
+  "p_one_sided": 0.944,
+  "clv": 0.003,
+  "clv_n": 241,
+  "mean_odds": 2.045,
+  "realised_minus_p_used": -0.0785,
+  "no_cell_history_picks": 0,
+  "market_share": {
+   "btts_yes": 0.203,
+   "over15_over": 0.104,
+   "over25_over": 0.129,
+   "over25_under": 0.494,
+   "over35_over": 0.071
+  },
+  "all_bets_roi_same_rows": 0.0043,
+  "minus_all_bets": {
+   "diff": -0.0872,
+   "ci95": [
+    -0.1755,
+    0.0055
+   ]
+  }
+ },
+ "R1_CELL_LCB": {
+  "bets": 241,
+  "roi": -0.0396,
+  "matchdays": 49,
+  "ci95": [
+   -0.1674,
+   0.0882
+  ],
+  "p_one_sided": 0.7606,
+  "clv": 0.0035,
+  "clv_n": 241,
+  "mean_odds": 2.019,
+  "realised_minus_p_used": -0.0521,
+  "no_cell_history_picks": 135,
+  "market_share": {
+   "btts_yes": 0.32,
+   "over15_over": 0.095,
+   "over25_over": 0.141,
+   "over25_under": 0.369,
+   "over35_over": 0.075
+  },
+  "all_bets_roi_same_rows": 0.0043,
+  "minus_all_bets": {
+   "diff": -0.0439,
+   "ci95": [
+    -0.1309,
+    0.0463
+   ]
+  },
+  "minus_ev_rule": {
+   "diff": 0.0434,
+   "ci95": [
+    -0.0297,
+    0.1195
+   ]
+  }
+ },
+ "R2_CAL_EV": {
+  "bets": 241,
+  "roi": -0.0011,
+  "matchdays": 51,
+  "ci95": [
+   -0.1319,
+   0.1297
+  ],
+  "p_one_sided": 0.5007,
+  "clv": 0.0018,
+  "clv_n": 241,
+  "mean_odds": 2.068,
+  "realised_minus_p_used": -0.0298,
+  "no_cell_history_picks": 0,
+  "market_share": {
+   "btts_yes": 0.369,
+   "over15_over": 0.012,
+   "over25_over": 0.133,
+   "over25_under": 0.427,
+   "over35_over": 0.058
+  },
+  "all_bets_roi_same_rows": 0.0043,
+  "minus_all_bets": {
+   "diff": -0.0054,
+   "ci95": [
+    -0.0994,
+    0.0965
+   ]
+  },
+  "minus_ev_rule": {
+   "diff": 0.0819,
+   "ci95": [
+    0.0019,
+    0.1678
+   ]
+  }
+ },
+ "R3_CAL_EV_LCB": {
+  "bets": 241,
+  "roi": -0.0662,
+  "matchdays": 50,
+  "ci95": [
+   -0.1847,
+   0.0523
+  ],
+  "p_one_sided": 0.8796,
+  "clv": 0.0039,
+  "clv_n": 241,
+  "mean_odds": 1.883,
+  "realised_minus_p_used": -0.0527,
+  "no_cell_history_picks": 0,
+  "market_share": {
+   "btts_yes": 0.415,
+   "over15_over": 0.12,
+   "over25_over": 0.141,
+   "over25_under": 0.274,
+   "over35_over": 0.05
+  },
+  "all_bets_roi_same_rows": 0.0043,
+  "minus_all_bets": {
+   "diff": -0.0705,
+   "ci95": [
+    -0.17,
+    0.0283
+   ]
+  },
+  "minus_ev_rule": {
+   "diff": 0.0167,
+   "ci95": [
+    -0.0839,
+    0.1127
+   ]
+  }
+ },
+ "DEV_CELL_EB": {
+  "bets": 241,
+  "roi": -0.0551,
+  "matchdays": 49,
+  "ci95": [
+   -0.183,
+   0.0727
+  ],
+  "p_one_sided": 0.8366,
+  "clv": 0.0047,
+  "clv_n": 241,
+  "mean_odds": 2.022,
+  "realised_minus_p_used": -0.0608,
+  "no_cell_history_picks": 135,
+  "market_share": {
+   "btts_yes": 0.307,
+   "over15_over": 0.095,
+   "over25_over": 0.154,
+   "over25_under": 0.369,
+   "over35_over": 0.075
+  },
+  "all_bets_roi_same_rows": 0.0043,
+  "minus_all_bets": {
+   "diff": -0.0594,
+   "ci95": [
+    -0.1462,
+    0.0292
+   ]
+  },
+  "minus_ev_rule": {
+   "diff": 0.0278,
+   "ci95": [
+    -0.0396,
+    0.0962
+   ]
+  }
+ }
+}

@@ -17,10 +17,10 @@ v8 core + additions from v7:
    drift_signal is still computed as information and the old rule's answer is kept as
    drift_shadow_tier (never served, tiered, staked or sent). See docs/DEPRECATION_REGISTER.md.
 
-Fixed 3-tier labels (league-independent):
-  SNIPER  — edge >= 0.10   → bet full stake
-  VALUE   — edge >= 0.04   → bet half stake / monitor
-  AVOID   — edge <  0.04   → skip
+3. Tiers on each league's OWN bars only (owner 2026-11-09: "no global vars")
+   SNIPER / MARKSMAN / VALUABLE use the league's own owner-applied sniper_th / marksman_th /
+   valuable_th (src/side_thresholds.own_bars). A league without them gets AVOID with
+   tier_reason NO_LEAGUE_BAR. There is no league-independent bar anywhere in serving.
 """
 from __future__ import annotations
 
@@ -37,6 +37,9 @@ import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import config
+from src.side_thresholds import NO_LEAGUE_BAR
+
+THRESHOLD_SOURCE_LEAGUE = config.THRESHOLD_SOURCE_LEAGUE
 
 log = logging.getLogger(__name__)
 
@@ -72,9 +75,11 @@ def _load_league_params() -> dict:
                 if "both_losing" not in params[league]:
                     params[league]["both_losing"] = lp.get("both_losing", False)
                 if "min_over_odds" not in params[league]:
-                    params[league]["min_over_odds"] = lp.get("min_over_odds", config.MIN_OVER_ODDS)
+                    if lp.get("min_over_odds") is not None:
+                        params[league]["min_over_odds"] = lp["min_over_odds"]
                 if "min_under_odds" not in params[league]:
-                    params[league]["min_under_odds"] = lp.get("min_under_odds", config.MIN_UNDER_ODDS)
+                    if lp.get("min_under_odds") is not None:
+                        params[league]["min_under_odds"] = lp["min_under_odds"]
         except Exception as e:
             log.debug(f"Could not load v7 best_params: {e}")
 
@@ -100,10 +105,12 @@ def _is_both_losing(league: str) -> bool:
 
 
 def _get_min_odds(league: str) -> tuple[float, float]:
+    """The league's OWN minimum odds (its params entry), or no minimum (NaN) when the entry has none.
+    Until 2026-11-09 an entry without one used the global config.MIN_OVER_ODDS / MIN_UNDER_ODDS
+    (owner rule: no global vars). A cell-served league uses its cell's own odds range instead."""
     lp = _get_league_cfg(league)
-    mo = float(lp.get("min_over_odds",  config.MIN_OVER_ODDS))
-    mu = float(lp.get("min_under_odds", config.MIN_UNDER_ODDS))
-    return mo, mu
+    mo, mu = lp.get("min_over_odds"), lp.get("min_under_odds")
+    return (float(mo) if mo is not None else float("nan"), float(mu) if mu is not None else float("nan"))
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
@@ -126,7 +133,9 @@ def _stake(edge: float, p: float, odds: float, threshold: float) -> float:
     USE_KELLY is off). A side never bet still gets bet_stake 0.0 in evaluate_value."""
     if edge is None or odds is None or not (np.isfinite(edge) and np.isfinite(odds)):
         return float("nan")
-    if edge < threshold:
+    # `threshold` is the league's OWN valuable bar; missing (NaN / None) = the league has no own bars
+    # (NO_LEAGUE_BAR), so nothing is staked - never a global floor in its place (owner 2026-11-09)
+    if threshold is None or not np.isfinite(threshold) or edge < threshold:
         return 0.0
     if config.USE_KELLY:
         return round(_kelly(p, odds) * config.KELLY_FRACTION * config.FLAT_STAKE, 4)
@@ -137,10 +146,9 @@ _STANDARD_TH_CACHE = None
 
 
 def _load_standard_thresholds() -> dict:
-    """Auto-optimized per-league standard O/U thresholds (best_params_standard.json),
-    written by optimize_standard_thresholds each backtest. Empty dict when the file is
-    absent → _base_tier falls back to the hand-set config.LEAGUE_SNIPER_THRESHOLDS
-    (i.e. identical to the old behaviour), so this can never regress an env without it."""
+    """The per-league O/U 2.5 bars (models/best_params_standard.json), written only by
+    src/threshold_apply. Empty dict when the file is absent or unreadable -> every league is
+    NO_LEAGUE_BAR (no tier); there is no global fallback (owner 2026-11-09)."""
     global _STANDARD_TH_CACHE
     if _STANDARD_TH_CACHE is None:
         import json
@@ -152,103 +160,185 @@ def _load_standard_thresholds() -> dict:
     return _STANDARD_TH_CACHE
 
 
-def league_threshold_evidence(league: str, market: str = "ou25") -> bool:
-    """True when `league` x `market` is tiered on a threshold of ITS OWN: an approved optimiser value
-    (best_params_standard / best_params_side_markets) or, for O/U 2.5, a calibrated
-    config.LEAGUE_SNIPER_THRESHOLDS entry. False when the tier came from a GLOBAL bar.
+def ou25_bars(league: str) -> tuple[tuple[float, float, float] | None, str]:
+    """The league's OWN owner-applied O/U 2.5 bars ((sniper, marksman, valuable), "") or (None, reason).
+    One rule for every market: src/side_thresholds.own_bars (owner 2026-11-09: no global vars)."""
+    from src.side_thresholds import own_bars
+    lg = str(league or "")
+    return own_bars(_load_standard_thresholds().get(lg) if lg else None, "ou25", lg)
 
-    Staking reads this (owner 2026-11-01: "every league should be special thresholds"): a tip tiered
-    on a global bar may still be shown, but it is never staked. Resolved through src/gate_resolver,
-    the one mirror of the production gates, so this cannot drift from what tiered the tip."""
+
+def league_threshold_evidence(league: str, market: str = "ou25") -> bool:
+    """True when `league` x `market` has its OWN owner-applied bars (src/side_thresholds.own_bars).
+
+    Staking reads this (owner 2026-11-01: "every league should be special thresholds"). Since
+    2026-11-09 a league without its own bars gets no tier at all (NO_LEAGUE_BAR), so no tip reaches
+    the stake plan without them; this stays as the stake plan's explicit check. Resolved through
+    src/gate_resolver, the one mirror of the production gates, so it cannot drift from the tiering."""
     from src.gate_resolver import resolve_effective_tier_gates
     try:
         g = resolve_effective_tier_gates(str(league), str(market).lower())
     except Exception as e:                                            # noqa: BLE001 - no evidence
         log.warning(f"threshold evidence unavailable for {league} {market} ({type(e).__name__}) - no stake")
         return False
-    if str(market).lower() == "ou25":
-        # edge_ceiling_active is exactly "no per-league value was found" in _base_tier
-        return bool(g.approved_optimizer_applied or not g.edge_ceiling_active)
-    return bool(g.approved_optimizer_applied)
-
-
-def sniper_edge_ceiling_enforced() -> bool:
-    """True only when the owner has switched the documented SNIPER edge ceiling on."""
-    v = getattr(config, "SNIPER_EDGE_CEILING_ENFORCED", None)
-    if v is None:
-        import os
-        v = os.getenv("WOWZA_SNIPER_EDGE_CEILING", "0").strip() == "1"
-    return bool(v)
+    return bool(g.own_bars)
 
 
 def _base_tier(edge: float, side: str = "", league: str = "") -> str:
-    """
-    Three-tier signal system:
-      SNIPER   — meets per-league threshold (highest confidence, full stake)
-      MARKSMAN — edge >= MARKSMAN_THRESHOLD (medium-high, 3/4 stake)
-      VALUABLE — edge >= VALUABLE_THRESHOLD (moderate, half stake / monitor)
-      AVOID    — below threshold
-    """
-    # Prefer the AUTO-OPTIMIZED per-league threshold (best_params_standard.json) when
-    # present, else the hand-set config.LEAGUE_SNIPER_THRESHOLDS, else side-specific global.
-    # Use the auto-optimized threshold ONLY for real-money-APPROVED leagues (OOS-positive).
-    # A not-approved league's "best" threshold is merely least-bad (often very low → signal
-    # spam), so those fall back to the hand-set config value — they still send tips (paper),
-    # just at a sane volume. This is what lets every league notify without flooding the channel.
-    _opt = _load_standard_thresholds().get(str(league)) if league else None
-    if _opt and _opt.get("approved") and _opt.get("sniper_th") is not None:
-        has_per_league = True
-        sniper_thresh  = float(_opt["sniper_th"])
-    elif league and league in config.LEAGUE_SNIPER_THRESHOLDS:
-        has_per_league = True
-        sniper_thresh  = config.LEAGUE_SNIPER_THRESHOLDS[league]
-    elif side == "OVER":
-        has_per_league = False
-        sniper_thresh  = config.SNIPER_THRESHOLD_OVER
-    elif side == "UNDER":
-        has_per_league = False
-        sniper_thresh  = config.SNIPER_THRESHOLD_UNDER
-    else:
-        has_per_league = False
-        sniper_thresh  = config.SNIPER_THRESHOLD
+    """O/U 2.5 tier on the league's OWN owner-applied bars (owner 2026-11-09: no global vars):
+      SNIPER   edge >= the league's sniper_th
+      MARKSMAN edge >= the league's marksman_th
+      VALUABLE edge >= the league's valuable_th
+      AVOID    below its valuable bar, no edge, or NO OWN BARS (reason NO_LEAGUE_BAR, evaluate_value).
 
-    # Ceiling only applies to leagues using the global threshold (no per-league calibration).
-    # Per-league thresholds are backtest-optimised — no ceiling needed there.
-    # Per-league ceilings override global for new-format leagues with thinner data.
-    #
-    # ORDER (estate scan 2026-11-02, finding e). The ceiling is documented (config.EDGE_CEILING:
-    # "Bets above the ceiling are downgraded to MARKSMAN") but was checked AFTER the SNIPER return,
-    # and every ceiling (0.15-0.19) is above the global SNIPER bar (0.12), so an over-ceiling edge
-    # always returned SNIPER and the ceiling never fired. Checking it first is what the doc says,
-    # but it changes which tips are SNIPER, so it is an OWNER decision: off unless
-    # SNIPER_EDGE_CEILING_ENFORCED (config attribute or env WOWZA_SNIPER_EDGE_CEILING=1) is set.
-    # No threshold or ceiling value changes either way.
-    ceiling = None
-    if not has_per_league:
-        ceiling = config.LEAGUE_EDGE_CEILING.get(league, config.EDGE_CEILING) \
-                  if hasattr(config, "LEAGUE_EDGE_CEILING") else config.EDGE_CEILING
-        if sniper_edge_ceiling_enforced() and edge > ceiling:
-            return "MARKSMAN"
+    Until 2026-11-09 a league without approved optimiser bars fell back to the hand-set
+    config.LEAGUE_SNIPER_THRESHOLDS table, then to the global SNIPER_THRESHOLD_OVER/_UNDER,
+    MARKSMAN_THRESHOLD and VALUABLE_THRESHOLD (plus the EDGE_CEILING demotion that only applied to
+    those global tiers). Those constants stay in config.py as HISTORICAL values for the research
+    replays; serving no longer reads them (data truth rule 6). `side` is kept in the signature for
+    the callers; both sides use the league's O/U 2.5 bars."""
+    from src.side_thresholds import tier_for
+    bars, _ = ou25_bars(league)
+    return tier_for(edge, bars)
 
-    if edge >= sniper_thresh:
-        return "SNIPER"
 
-    if ceiling is not None and edge > ceiling:
-        return "MARKSMAN"
+_OU25_SIDE_COLS = {"over": ("OVER", "tier_over", "edge_over", "stake_over"),
+                   "under": ("UNDER", "tier_under", "edge_under", "stake_under")}
 
-    # MARKSMAN floor: optimized marksman_th only for APPROVED leagues, else per-league
-    # override, else global (mirrors the SNIPER logic above).
-    if _opt and _opt.get("approved") and _opt.get("marksman_th") is not None:
-        mm_thresh = float(_opt["marksman_th"])
-    else:
-        league_mm_thresh = getattr(config, "LEAGUE_MARKSMAN_THRESHOLDS", {}).get(league)
-        mm_thresh = league_mm_thresh if league_mm_thresh is not None else config.MARKSMAN_THRESHOLD
 
-    if edge >= mm_thresh:
-        return "MARKSMAN"
-    if edge >= config.VALUABLE_THRESHOLD:
-        return "VALUABLE"
-    return "AVOID"
+def _apply_ou25_cells(df: pd.DataFrame, p_over: pd.Series, ov_odds: pd.Series, un_odds: pd.Series,
+                      cells_only: bool = True) -> pd.DataFrame:
+    """O/U 2.5 rows of leagues with owner-applied bars_opt cells: the tip (QUALIFIED), bet, stake and edge from
+    the cells (src/bars_opt/serve.py). ONE BAR PER CELL (owner 2026-11-11, "Clean rebuild"): with cells_only
+    (production), a league without a bars_opt cell tips nothing (NO_LEAGUE_BAR) - the legacy three-tier
+    thresholds no longer qualify a tip. cells_only=False keeps the legacy rows unchanged (historical study
+    replays only, src/backtest.py)."""
+    from src.bars_opt import serve as BS
+    params = _load_standard_thresholds()
+    cells = {}
+    for lg in pd.unique(df["league"].astype(str)):
+        lp = params.get(lg)
+        if isinstance(lp, dict) and BS.CELL_KEY in lp:
+            cells[lg] = {s: BS.served_cell(lp, "ou25", lg, s) for s in ("over", "under")}
+    df = df.copy()
+    if cells_only:
+        legacy = ~df["league"].astype(str).isin(list(cells))
+        if legacy.any():
+            df.loc[legacy, "signal_tier"] = "AVOID"
+            df.loc[legacy, "bet"] = "AVOID"
+            for c in ("tier_over", "tier_under"):
+                if c in df.columns:
+                    df.loc[legacy, c] = "AVOID"
+            for c in ("stake_over", "stake_under", "bet_stake"):
+                if c in df.columns:
+                    df.loc[legacy, c] = 0.0
+            df.loc[legacy, "threshold_source"] = NO_LEAGUE_BAR
+            df.loc[legacy, "tier_reason"] = NO_LEAGUE_BAR       # no owner-applied O/U 2.5 cell (one bar per cell)
+    if "cell_status" not in df.columns:
+        df["cell_status"] = ""
+    if "qualifying_bar" not in df.columns:
+        df["qualifying_bar"] = np.nan
+    if not cells:
+        return df
+    for c in ("bar_mode_over", "bar_mode_under", "bar_config_over", "bar_config_under", "bar_verdict_over",
+              "bar_verdict_under", "bar_measure_over", "bar_measure_under", "ev_used_over", "ev_used_under",
+              "p_used_over", "p_used_under", "cell_p_used"):
+        if c not in df.columns:
+            df[c] = None
+    fair_over = pd.Series([BS.fair_yes(a, b) for a, b in zip(ov_odds, un_odds)], index=df.index, dtype=float)
+    for lg, sides in cells.items():
+        m = (df["league"].astype(str) == lg).to_numpy()
+        idx = df.index[m]
+        ok = {}
+        for side, (cell, why) in sides.items():
+            name, tcol, ecol, scol = _OU25_SIDE_COLS[side]
+            p_side = p_over[idx] if side == "over" else 1.0 - p_over[idx]
+            fair = fair_over[idx] if side == "over" else 1.0 - fair_over[idx]
+            odds = ov_odds[idx] if side == "over" else un_odds[idx]
+            df.loc[idx, ecol] = (p_side - fair).to_numpy()            # the real de-vigged edge, for display
+            df.loc[idx, tcol] = "AVOID"
+            df.loc[idx, scol] = 0.0
+            if cell is None:
+                ok[side] = pd.Series(False, index=idx)
+                continue
+            res = BS.score(pd.DataFrame({"league": lg, "p_side": p_side, "fair": fair, "odds": odds}, index=idx), cell)
+            hit = res["tier"].astype(str) != ""
+            ok[side] = hit
+            df.loc[idx[hit.to_numpy()], tcol] = res.loc[hit, "tier"].to_numpy()
+            df.loc[idx, f"bar_mode_{side}"] = cell["mode"]
+            df.loc[idx, f"bar_config_{side}"] = cell["config"]
+            df.loc[idx, f"bar_verdict_{side}"] = cell["verdict"]
+            df.loc[idx, f"bar_measure_{side}"] = pd.to_numeric(res["measure"], errors="coerce").to_numpy()
+            ev = [BS.ev_point(p, o) for p, o in zip(pd.to_numeric(res["p_used"], errors="coerce"), odds)]
+            df.loc[idx, f"ev_used_{side}"] = ev
+            df.loc[idx, f"p_used_{side}"] = pd.to_numeric(res["p_used"], errors="coerce").to_numpy()
+            stake = config.FLAT_STAKE if not config.USE_KELLY else None
+            for i, h in zip(idx, hit):
+                if not h:
+                    continue
+                if config.USE_KELLY:
+                    pu = _num_or_nan(res.at[i, "p_used"]) if cell["mode"] == "MODEL" else float(p_side[i])
+                    stake = round(_kelly(pu, float(odds[i])) * config.KELLY_FRACTION * config.FLAT_STAKE, 4)
+                df.at[i, scol] = stake
+        o_ok, u_ok = ok["over"].to_numpy(), ok["under"].to_numpy()
+        ev_o = pd.to_numeric(df.loc[idx, "ev_used_over"], errors="coerce").to_numpy(float)
+        ev_u = pd.to_numeric(df.loc[idx, "ev_used_under"], errors="coerce").to_numpy(float)
+        pick_over = o_ok & (~u_ok | (np.nan_to_num(ev_o, nan=-np.inf) >= np.nan_to_num(ev_u, nan=-np.inf)))
+        pick_under = u_ok & ~pick_over
+        bet = np.where(pick_over, "OVER", np.where(pick_under, "UNDER", "AVOID"))
+        df.loc[idx, "bet"] = bet
+        # the probability the tipped side's cell served (blank for AVOID): read by the ledger and wowza-exec
+        pu_o = pd.to_numeric(df.loc[idx, "p_used_over"], errors="coerce").to_numpy(float)
+        pu_u = pd.to_numeric(df.loc[idx, "p_used_under"], errors="coerce").to_numpy(float)
+        df.loc[idx, "cell_p_used"] = np.where(bet == "OVER", pu_o, np.where(bet == "UNDER", pu_u, np.nan))
+        df.loc[idx, "bet_stake"] = np.where(bet == "OVER", df.loc[idx, "stake_over"],
+                                            np.where(bet == "UNDER", df.loc[idx, "stake_under"], 0.0))
+        eo = pd.to_numeric(df.loc[idx, "edge_over"], errors="coerce").to_numpy(float)
+        eu = pd.to_numeric(df.loc[idx, "edge_under"], errors="coerce").to_numpy(float)
+        side_over = np.where(bet == "OVER", True, np.where(bet == "UNDER", False,
+                                                           np.nan_to_num(eo, nan=-np.inf) >= np.nan_to_num(eu, nan=-np.inf)))
+        df.loc[idx, "best_side"] = np.where(side_over, "OVER", "UNDER")
+        df.loc[idx, "best_edge"] = np.where(side_over, eo, eu)
+        df.loc[idx, "signal_tier"] = np.where(bet == "OVER", df.loc[idx, "tier_over"],
+                                              np.where(bet == "UNDER", df.loc[idx, "tier_under"], "AVOID"))
+        _vo = {s: (c or {}).get("verdict", "") for s, (c, _w) in sides.items()}
+        _bo = {s: (float(c["valuable_th"]) if c else np.nan) for s, (c, _w) in sides.items()}
+        df.loc[idx, "cell_status"] = np.where(bet == "OVER", _vo["over"], np.where(bet == "UNDER", _vo["under"], ""))
+        # THE CALIBRATED EDGE of the tipped side (owner 2026-11-11 "Show calibrated edge"; src/calibrated_edge.py):
+        # the edge a person is shown. The raw edge columns stay for study. NaN = not calibrated.
+        from src import calibrated_edge as CE
+        if "edge_calibrated" not in df.columns:
+            df["edge_calibrated"] = np.nan
+        _mt = (df.loc[idx, "model_type"].astype(str) if "model_type" in df.columns
+               else df.loc[idx, "league"].map(config.model_type_for_league).astype(str))
+        for _s, _col in (("OVER", "p_used_over"), ("UNDER", "p_used_under")):
+            _m = bet == _s
+            if not _m.any():
+                continue
+            _ix = idx[_m]
+            _fair = fair_over[_ix] if _s == "OVER" else 1.0 - fair_over[_ix]
+            _odds = ov_odds[_ix] if _s == "OVER" else un_odds[_ix]
+            df.loc[_ix, "edge_calibrated"] = CE.calibrated(pd.DataFrame({
+                "track": _mt[_m].to_numpy(), "league": lg, "mside": CE.MSIDE[("ou25", _s)],
+                "p_used": pd.to_numeric(df.loc[_ix, _col], errors="coerce").to_numpy(),
+                "fair": _fair.to_numpy(), "odds": _odds.to_numpy()}, index=_ix), CE.load()).to_numpy()
+        df.loc[idx, "qualifying_bar"] = np.where(bet == "OVER", _bo["over"],
+                                                 np.where(bet == "UNDER", _bo["under"], np.nan))
+        df.loc[idx, "min_odds_blocked"] = False
+        df.loc[idx, "max_odds_blocked"] = False
+        reasons = [w for (c, w) in sides.values() if c is None]
+        df.loc[idx, "threshold_source"] = THRESHOLD_SOURCE_LEAGUE if any(c is not None for c, _ in sides.values()) \
+            else NO_LEAGUE_BAR
+        df.loc[idx, "tier_reason"] = "" if any(c is not None for c, _ in sides.values()) else "; ".join(reasons)
+    return df
+
+
+def _num_or_nan(v) -> float:
+    try:
+        x = float(v)
+    except (TypeError, ValueError):
+        return float("nan")
+    return x
 
 
 def _apply_drift_adjustment(tier: str, drift_signal: str, best_edge: float) -> str:
@@ -274,7 +364,7 @@ def _apply_drift_adjustment(tier: str, drift_signal: str, best_edge: float) -> s
 
 # ── Main ──────────────────────────────────────────────────────────────────────
 
-def evaluate_value(df: pd.DataFrame, p_col: str = "p_over25") -> pd.DataFrame:
+def evaluate_value(df: pd.DataFrame, p_col: str = "p_over25", cells_only: bool = True) -> pd.DataFrame:
     """
     Add value betting columns to df.
 
@@ -317,8 +407,8 @@ def evaluate_value(df: pd.DataFrame, p_col: str = "p_over25") -> pd.DataFrame:
 
     # Per-league min-odds
     n = len(df)
-    mo_arr = np.full(n, config.MIN_OVER_ODDS)
-    mu_arr = np.full(n, config.MIN_UNDER_ODDS)
+    mo_arr = np.full(n, np.nan)                     # no minimum unless the league's own entry sets one
+    mu_arr = np.full(n, np.nan)
     if "league" in df.columns:
         for lg in df["league"].unique():
             mask = (df["league"] == lg).values
@@ -335,47 +425,51 @@ def evaluate_value(df: pd.DataFrame, p_col: str = "p_over25") -> pd.DataFrame:
     else:
         df["both_losing"] = False
 
-    # Stake (uses VALUE_THRESHOLD as minimum to award stake)
-    df["stake_over"]  = [_stake(e, p, o, config.VALUE_THRESHOLD) for e, p, o in
-                         zip(df["edge_over"],  p_over,  ov_odds)]
-    df["stake_under"] = [_stake(e, p, o, config.VALUE_THRESHOLD) for e, p, o in
-                         zip(df["edge_under"], p_under, un_odds)]
-
-    # Base tier — per-league threshold if available, else side-specific global
+    # THE LEAGUE'S OWN VALUABLE BAR replaces the global VALUE_THRESHOLD floor everywhere below (owner
+    # 2026-11-09: no global vars). A league without its own owner-applied bars has none (NaN): it is
+    # never bettable, never staked, and its rows carry tier_reason NO_LEAGUE_BAR.
     leagues = df.get("league", pd.Series([""] * len(df), index=df.index))
+    _own = {lg: ou25_bars(lg) for lg in pd.unique(leagues.astype(str))}
+    val_bar = pd.Series([(_own[str(lg)][0][2] if _own[str(lg)][0] is not None else np.nan)
+                         for lg in leagues], index=df.index, dtype=float)
+    df["tier_reason"] = ["" if _own[str(lg)][0] is not None else NO_LEAGUE_BAR for lg in leagues]
+    df["threshold_source"] = [THRESHOLD_SOURCE_LEAGUE if _own[str(lg)][0] is not None else NO_LEAGUE_BAR
+                              for lg in leagues]
+    _nb = sorted({str(lg) for lg in leagues if _own[str(lg)][0] is None})
+    if _nb:
+        log.info(f"O/U 2.5: {int(df['tier_reason'].eq(NO_LEAGUE_BAR).sum())} fixture(s) in {len(_nb)} "
+                 f"league(s) not tiered - {NO_LEAGUE_BAR} (no own owner-applied bars): {', '.join(_nb)}")
+
+    # Stake: the league's own valuable bar is the minimum edge to award a stake
+    df["stake_over"]  = [_stake(e, p, o, v) for e, p, o, v in
+                         zip(df["edge_over"],  p_over,  ov_odds, val_bar)]
+    df["stake_under"] = [_stake(e, p, o, v) for e, p, o, v in
+                         zip(df["edge_under"], p_under, un_odds, val_bar)]
+
+    # Base tier - the league's own bars only (no own bars = AVOID)
     df["tier_over"]  = [_base_tier(e, "OVER",  lg) for e, lg in zip(df["edge_over"],  leagues)]
     df["tier_under"] = [_base_tier(e, "UNDER", lg) for e, lg in zip(df["edge_under"], leagues)]
 
-    # Min-odds filter
-    over_odds_ok  = ov_odds >= mo_s
-    under_odds_ok = un_odds >= mu_s
+    # Min-odds filter: the league's OWN minimum only (NaN = none). A real price is required either way.
+    over_odds_ok  = ov_odds.notna() & ((ov_odds >= mo_s) | mo_s.isna())
+    under_odds_ok = un_odds.notna() & ((un_odds >= mu_s) | mu_s.isna())
 
-    # New-format price cap (config.NF_MAX_OU_ODDS, owner 2026-10-22): a new-format side priced above
-    # the cap is not bettable. Still scored and logged - only the tip is withheld.
-    # an unset cap means "no cap" (a config switch, not a price); read without a typed 0 stand-in
-    _cap = getattr(config, "NF_MAX_OU_ODDS", None)
-    cap = float(_cap) if _cap else None
-    if cap is not None and cap > 0 and "league" in df.columns:
-        nf = df["league"].map(lambda lg: config.model_type_for_league(str(lg)) == "new_format").astype(bool)
-        over_cap, under_cap = nf & (ov_odds > cap), nf & (un_odds > cap)
-        df["max_odds_blocked"] = (((df["edge_over"] >= config.VALUE_THRESHOLD) & over_cap) |
-                                  ((df["edge_under"] >= config.VALUE_THRESHOLD) & under_cap))
-        over_odds_ok = over_odds_ok & ~over_cap
-        under_odds_ok = under_odds_ok & ~under_cap
-    else:
-        df["max_odds_blocked"] = False
+    # The global new-format price cap (config.NF_MAX_OU_ODDS, 2026-10-22) no longer applies to a served tip
+    # (owner 2026-11-09: no global vars): a cell-served league uses its cell's own odds range
+    # (src/bars_opt/serve.py), and the cap is listed as HISTORICAL in config.py.
+    df["max_odds_blocked"] = False
 
     df["min_odds_blocked"] = (
-        ((df["edge_over"]  >= config.VALUE_THRESHOLD) & ~over_odds_ok.fillna(False)) |
-        ((df["edge_under"] >= config.VALUE_THRESHOLD) & ~under_odds_ok.fillna(False))
+        ((df["edge_over"]  >= val_bar) & ~over_odds_ok.fillna(False)) |
+        ((df["edge_under"] >= val_bar) & ~under_odds_ok.fillna(False))
     )
 
-    # Bet direction (requires edge >= VALUE_THRESHOLD + min-odds)
+    # Bet direction (requires edge >= the league's own valuable bar + min-odds)
     # NOTE: both_losing guard removed — it was a stale v7 artifact that hard-muted
     # whole leagues (e.g. Championship, Serie B). The flag is still computed below
     # for visibility but no longer suppresses any bet.
-    over_q  = (df["edge_over"]  >= config.VALUE_THRESHOLD) & over_odds_ok.fillna(False)
-    under_q = (df["edge_under"] >= config.VALUE_THRESHOLD) & under_odds_ok.fillna(False)
+    over_q  = (df["edge_over"]  >= val_bar) & over_odds_ok.fillna(False)
+    under_q = (df["edge_under"] >= val_bar) & under_odds_ok.fillna(False)
 
     df["bet"] = "AVOID"
     df.loc[over_q,  "bet"] = "OVER"
@@ -399,8 +493,8 @@ def evaluate_value(df: pd.DataFrame, p_col: str = "p_over25") -> pd.DataFrame:
     raw_tier = np.where(best_is_over, df["tier_over"], df["tier_under"])
     df["signal_tier"] = raw_tier
 
-    # Force AVOID when below VALUE_THRESHOLD
-    df.loc[df["best_edge"] < config.VALUE_THRESHOLD, "signal_tier"] = "AVOID"
+    # Force AVOID below the league's own valuable bar, and wherever the league has no own bars
+    df.loc[~(df["best_edge"] >= val_bar), "signal_tier"] = "AVOID"
 
     # A tier with no bettable side is a contradiction — force AVOID (fixed 2026-08-16).
     # `bet` additionally requires the side to clear MIN_OVER_ODDS / MIN_UNDER_ODDS, whereas
@@ -414,6 +508,15 @@ def evaluate_value(df: pd.DataFrame, p_col: str = "p_over25") -> pd.DataFrame:
     # settle, and quietly distort win-rate denominators.
     # Example: Molde v Tromso @1.71 with MIN_OVER_ODDS=1.75 — tagged MARKSMAN, unbettable.
     df.loc[~df["bet"].isin(["OVER", "UNDER"]), "signal_tier"] = "AVOID"
+
+    # ── OPTIMIZED CELLS (owner 2026-11-09: "Yes, build the adapter") ───────────────────────────────
+    # A league whose O/U 2.5 entry carries owner-applied bars_opt cells is decided ENTIRELY by its cells:
+    # per side, the cell's probability source, edge measure, odds range and the league's own bars
+    # (src/bars_opt/serve.py, the study's own functions). The fair price is the power de-vig of the row's
+    # two-sided pair. Every column the legacy path set is overwritten for those rows, so no global value
+    # (min odds, new-format cap, global bar) touches a cell-served tip.
+    if p_col == "p_over25" and "league" in df.columns:
+        df = _apply_ou25_cells(df, p_over, ov_odds, un_odds, cells_only=cells_only)
 
     # ── Blind-fixture guard ───────────────────────────────────────────────────
     # A fixture with no rolling-form history does NOT produce a cautious prediction — it
@@ -530,7 +633,8 @@ def generate_bets(df: pd.DataFrame) -> pd.DataFrame:
     threshold are included — giving full visibility into all 3 tiers.
     """
     df = df.copy()
-    visible = df[df["signal_tier"].isin(["SNIPER", "MARKSMAN", "VALUABLE"])].copy()
+    from src.tier_labels import TIPPED
+    visible = df[df["signal_tier"].isin(TIPPED)].copy()
     visible = visible.sort_values("best_edge", ascending=False)
 
     output_cols = [

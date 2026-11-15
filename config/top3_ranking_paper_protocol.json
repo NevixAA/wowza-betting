@@ -1,0 +1,71 @@
+{
+ "protocol": "top3-ranking-paper/1",
+ "written": "2026-11-11",
+ "written_before_any_live_pick": true,
+ "status": "PROPOSED - nothing serves, nothing is wired. The owner decides whether these paper tracks run from 2026-11-21.",
+ "scope": "RESEARCH. Three alternative RANKING rules for TOP-3 per league per gameweek (owner rule 2026-11-08), tracked as parallel PAPER tracks beside the production rule. Production (src/top3_league.py, TOP3-1) is unchanged.",
+ "question": "Why does TOP-3 per league (ranked by ev_est) replay at -8.3% over 241 picks while all optimized bets give +0.4% over 569 (study output/bars_opt/study_58f10476, proposal TP-2026-11-10-d999073a)?",
+ "windows": {
+  "selection": "rows dated < 2026-09-01 (study_58f10476 SELECT). Every rule below was designed and compared ONLY here.",
+  "spent": "FINAL 2026-09-01..2026-11-08 and the fresh holdouts are SPENT. Numbers on them are descriptive diagnosis, never evidence, and no rule was chosen or tuned on them (the descriptive replay of the rules on FINAL is computed only after this file is committed).",
+  "validation": "LIVE paper picks from 2026-11-21 (Clean Record), this protocol only."
+ },
+ "diagnosis": {
+  "inputs": "output/research/top3_ranking/diagnosis.json (scripts/top3_ranking_diagnose.py); selection-window bets = walk-forward bets of the frozen study_58f10476 choices inside SELECT (scripts/top3_ranking_build.py)",
+  "same_gap_on_selection": "SELECTION: all bets +5.9% (1,477), TOP-3 +0.9% (741), not picked +10.9% (736). FINAL (spent, descriptive): all +0.4% (569), TOP-3 -8.3% (241), not picked +6.8% (328). The gap was already in the selection window.",
+  "overconfidence": "TOP-3 picks win 7.4 pp less often than p_used says (SELECTION; FINAL -7.9 pp); the tips left out win 3.1 pp MORE often (FINAL +2.7 pp). The top ev_est decile is the most over-confident decile in both windows (-13.9 pp / -13.4 pp).",
+  "no_signal_inside_cells": "Inside a cell (track x league x market-side) EV terciles have the same ROI (SELECTION +6.8% / +4.4% / +6.4%); mean within-league-week Spearman(ev_est, P/L) = +0.06 (SELECTION), +0.01 (FINAL).",
+  "scale_mismatch": "ev_est is p_used * odds - 1 with p_used from different probability sources per family: RAW (uncalibrated model) cells carry mean EV +0.13..+0.23 (SELECTION), BLEND / SHRINK (calibrated) BTTS cells ~0.00. So the rule ranks RAW Over 2.5 / Over 1.5 tips above BTTS tips: BTTS share 32% of bets -> 9% of TOP-3 picks (SELECTION) while BTTS is the best-realising family (+6.5% / +12.3%).",
+  "market_mix": "Re-weighting ALL bets to the TOP-3 market mix explains 1.0 of the 5.0 pp gap (SELECTION) and 2.3 of 8.7 pp (FINAL).",
+  "league_mix": "Re-weighting to the TOP-3 league mix explains 1.1 of 5.0 pp (SELECTION) and 1.5 of 8.7 pp (FINAL).",
+  "direction_rule": "Changes 0 picks (SELECTION) and 5 picks (FINAL; without it TOP-3 would read -6.9%). Not the cause.",
+  "odds": "TOP-3 takes longer odds (mean 2.21 vs 2.01 left out, SELECTION; 2.05 vs 1.92 FINAL).",
+  "variance": "Paired league-week bootstrap TOP-3 minus all bets: SELECTION -5.0 pp [-10.4, +0.5]; FINAL -8.7 pp [-17.4, +0.3]. A RANDOM choice of the same number of tips per league-week (direction rule kept) beats the EV rule in 98.2% of draws on SELECTION and 90.8% on FINAL: variance alone explains part of FINAL, but the EV ranking is systematically worse than random, not just unlucky."
+ },
+ "rules_common": {
+  "pool": "Exactly the production TOP-3 pool: every tip at or above its league's OWN VALUABLE bar for that market (owner-applied bars), first seen strictly before the league-week's FREEZE (src/top3_league.py GW-1 / WL-1 / FREEZE). A rule changes only the ORDER.",
+  "cap_and_padding": "At most 3 per league per gameweek; fewer qualifying -> fewer picks; never padded.",
+  "direction_rule": "src/direction_guard.py, against the track's own picks of the week AND the fixture's live production tip (as production).",
+  "tier2": "Unchanged: a tip in its league's VALUABLE..MARKSMAN band carries the TIER2 label only where that league x market's TIER2 is on (study 12.2); no rule makes a non-qualifying tip eligible.",
+  "per_league": "Every statistic is per cell = (track, league, market-side), learned from that cell's own data and shrunk at most toward the SAME league's other markets. No cross-league pooling, no global constant.",
+  "constants": {"MIN_OWN_BETS": "40 = src.bars_opt.study.MIN_OWN_BETS (study pre-registration: own bets for a bar / switch / TIER2)", "Z95": "1.96 = the study's 95% interval (src.bars_opt.study.score)"},
+  "missing_statistic": "A cell without the rule's statistic has none (nothing filled in): its tips rank after every tip that has one, among themselves by the production key ev_est; every such pick is counted (no_stat).",
+  "ties": "production key ev_est, then kickoff",
+  "code": {"file": "src/research/top3_ranking.py", "sha256_lf": "59b1dc6960b1f78fe6a2ab48a45510b58bc0a6e7c05c078e7d610f329630a82b"}
+ },
+ "tracks": [
+  {"id": "T0_EV_PRODUCTION", "role": "reference = the production rule (src/top3_league.py: ev_est descending, then RS-1). Its own go-live verdict belongs to the Clean Record; it is in this family only so the comparisons are counted."},
+  {"id": "T1_R1_CELL_LCB", "rule": "rank by the cell's own walk-forward bet ROI lower 95% bound: mean - Z95 * max-of-three SE (src.bars_opt.study.max_se) over >= MIN_OWN_BETS own bets"},
+  {"id": "T2_R2_CAL_EV", "rule": "rank by calibrated EV (fair + lam * (p_used - fair)) * odds - 1; lam = least squares slope of (won - fair) on (p_used - fair) over the cell's own priced rows (>= MIN_OWN_BETS), shrunk toward the same league's other markets (DerSimonian-Laird, src.bars_opt.study.shrink_weights with market-side as the group inside one league), clipped to [0, 1]"},
+  {"id": "T3_R3_CAL_EV_LCB", "rule": "as T2 with lam_lo = clip(lam - Z95 * se_own(lam), 0, 1), se_own = the cell's own slope SE (s2 / sxx)"}
+ ],
+ "live_statistics": {
+  "frozen_at": "2026-11-20T23:59:59Z, after the R7 re-check / final refit and before the first 2026-11-21 kickoff. Never updated during the test.",
+  "calibration_rows_T2_T3": "every row of the cell in the committed OWN-PRICE study universes (output/bars_opt/universe_{standard,new_format}.parquet at the freeze commit) with match date < 2026-11-21, scored by the cell's SERVED source (src.bars_opt.serve.score with the owner-applied cell: source + source_params + odds range). No OddsAPI history price is read.",
+  "bets_T1": "the cell's served tips (serve.score tier != '') on those rows dated 2026-09-01..2026-11-20: after the study SELECT window, so out-of-sample for a SELECTED cell; a FRESH_HOLDOUT_SELECTION cell is used only if its selection rows end before 2026-09-01 (else no T1 statistic).",
+  "record": "output/research/top3_ranking/live_stats_2026-11-20.json (statistics only, no prices) committed with its sha256 written into output/research/top3_ranking/live_stats_ledger.json BEFORE the first paper pick. Not frozen in time -> the paper tracks do not start (no fallback, no default)."
+ },
+ "paper_tracking": {
+  "start": "league-weeks whose FREEZE is on or after 2026-11-21T00:00:00Z",
+  "unit": "1 flat unit per pick, at the price recorded at first sight (production's candidate store); paper only, never staked",
+  "settlement": "production settlement (90-minute result; fixture rescheduled > 48 h = void and excluded; corrections kept beside originals)",
+  "ledger": "one row per (track, league-week, rank) - written once at FREEZE, never rewritten"
+ },
+ "evaluation": {
+  "look_1": "2027-01-25 (Monday), settled picks with kickoff 2026-11-21..2027-01-24",
+  "look_2_final": "2027-03-29 (Monday), settled picks with kickoff 2026-11-21..2027-03-28",
+  "tested_once": "Each track is tested exactly once: at look 1 if it has >= 150 settled picks then, else at look 2. Below 150 at look 2 -> INCONCLUSIVE (its p counts as 1 in Holm). No other looks, no early stop for success.",
+  "statistic": "ROI over the track's settled picks; one-sided p = src.league_bars.one_sided_p (bootstrap over match dates, N_BOOT, seed 0); 95% CI = src.bars_opt.study.score (wider of block CI and max-of-three SE)",
+  "family": "Holm (src.league_bars.holm) over the 4 tracks T0..T3; at look 1 tracks not yet tested count as p = 1 (extra hypotheses); at look 2 the final Holm uses every track's single test.",
+  "pass": "n >= 150 (src.league_bars.MIN_HOLDOUT_BETS) AND Holm-adjusted p < 0.025 one-sided (src.league_bars.HOLM_ALPHA_ONE_SIDED) AND 95% CI lower bound > 0",
+  "secondary_descriptive": "per track vs T0 on the same league-weeks: paired cluster-bootstrap ROI difference, mean CLV (once closing prices are graded), realised minus p_used, market and league mix, no_stat picks. Never a pass criterion.",
+  "consequence": "A passing alternative track becomes a PROPOSAL to change the production ranking; the owner decides. Nothing switches automatically."
+ },
+ "development_record": {
+  "trials_on_selection": 6,
+  "trials": ["R1_CELL_LCB", "R2_CAL_EV with lam from prior BETS (replaced: too few bets for any statistic)", "R2_CAL_EV with lam from prior priced ROWS", "R3_CAL_EV_LCB", "DEV_CELL_EB (dropped: ranks like R1)", "EV_PRODUCTION (reference)"],
+  "selection_results": "output/research/top3_ranking/develop_selection.json - every week ranked with statistics learned only from data dated before that week. 741 picks per rule. EV_PRODUCTION +0.9% [-8.0, +9.9]; R1 +1.7% [-7.7, +11.1] (490 picks had no cell statistic); R2 +4.0% [-4.2, +12.1], vs EV +3.0 pp [+0.05, +6.2]; R3 +5.4% [-3.2, +14.0], vs EV +4.5 pp [+0.02, +9.0]; all bets +5.9%. Development evidence only, six trials, NOT a test.",
+  "caution": "On the selection window even the best rule only matches ALL bets (+5.4% vs +5.9%): no rule has shown that ranking ADDS value over taking every qualifying tip; the rules are expected to remove the EV key's damage, not to create edge."
+ },
+ "hash_rule": "sha256 of this file's bytes with LF line ends (as config/bars_fresh_holdout_protocol.json); recorded in the commit message and the research report. Any edit = a new protocol version with a new hash, before the first paper pick."
+}

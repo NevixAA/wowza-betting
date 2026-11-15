@@ -1,0 +1,197 @@
+{
+ "window": "SELECTION (rows < 2026-09-01): every week ranked with statistics learned from the walk-forward bets dated before that week (expanding)",
+ "weeks": 64,
+ "weeks_with_any_cell_statistic": 42,
+ "max_cells_with_bet_statistic": 13,
+ "weeks_with_any_lam": 64,
+ "all_bets": {
+  "bets": 1477,
+  "roi": 0.0588,
+  "matchdays": 245,
+  "ci95": [
+   0.0,
+   0.1177
+  ],
+  "p_one_sided": 0.022,
+  "clv": 0.003,
+  "clv_n": 1477
+ },
+ "EV_PRODUCTION": {
+  "bets": 741,
+  "roi": 0.0093,
+  "matchdays": 228,
+  "ci95": [
+   -0.0802,
+   0.0988
+  ],
+  "p_one_sided": 0.3913,
+  "clv": 0.0039,
+  "clv_n": 741,
+  "mean_odds": 2.209,
+  "realised_minus_p_used": -0.0737,
+  "no_cell_history_picks": 0,
+  "market_share": {
+   "btts_yes": 0.092,
+   "over15_over": 0.113,
+   "over25_over": 0.545,
+   "over25_under": 0.119,
+   "over35_over": 0.131
+  },
+  "all_bets_roi_same_rows": 0.0588,
+  "minus_all_bets": {
+   "diff": -0.0496,
+   "ci95": [
+    -0.1035,
+    0.0047
+   ]
+  }
+ },
+ "R1_CELL_LCB": {
+  "bets": 741,
+  "roi": 0.0166,
+  "matchdays": 228,
+  "ci95": [
+   -0.0774,
+   0.1106
+  ],
+  "p_one_sided": 0.3428,
+  "clv": 0.0031,
+  "clv_n": 741,
+  "mean_odds": 2.196,
+  "realised_minus_p_used": -0.0671,
+  "no_cell_history_picks": 490,
+  "market_share": {
+   "btts_yes": 0.142,
+   "over15_over": 0.112,
+   "over25_over": 0.505,
+   "over25_under": 0.111,
+   "over35_over": 0.131
+  },
+  "all_bets_roi_same_rows": 0.0588,
+  "minus_all_bets": {
+   "diff": -0.0423,
+   "ci95": [
+    -0.0947,
+    0.0129
+   ]
+  },
+  "minus_ev_rule": {
+   "diff": 0.0073,
+   "ci95": [
+    -0.0163,
+    0.0302
+   ]
+  }
+ },
+ "R2_CAL_EV": {
+  "bets": 741,
+  "roi": 0.0397,
+  "matchdays": 227,
+  "ci95": [
+   -0.0415,
+   0.121
+  ],
+  "p_one_sided": 0.1519,
+  "clv": 0.0043,
+  "clv_n": 741,
+  "mean_odds": 2.19,
+  "realised_minus_p_used": -0.0535,
+  "no_cell_history_picks": 0,
+  "market_share": {
+   "btts_yes": 0.148,
+   "over15_over": 0.113,
+   "over25_over": 0.493,
+   "over25_under": 0.117,
+   "over35_over": 0.128
+  },
+  "all_bets_roi_same_rows": 0.0588,
+  "minus_all_bets": {
+   "diff": -0.0191,
+   "ci95": [
+    -0.0768,
+    0.0364
+   ]
+  },
+  "minus_ev_rule": {
+   "diff": 0.0304,
+   "ci95": [
+    0.0005,
+    0.0615
+   ]
+  }
+ },
+ "R3_CAL_EV_LCB": {
+  "bets": 741,
+  "roi": 0.0538,
+  "matchdays": 225,
+  "ci95": [
+   -0.0322,
+   0.1398
+  ],
+  "p_one_sided": 0.078,
+  "clv": 0.002,
+  "clv_n": 741,
+  "mean_odds": 2.158,
+  "realised_minus_p_used": -0.0385,
+  "no_cell_history_picks": 0,
+  "market_share": {
+   "btts_yes": 0.186,
+   "over15_over": 0.113,
+   "over25_over": 0.464,
+   "over25_under": 0.111,
+   "over35_over": 0.126
+  },
+  "all_bets_roi_same_rows": 0.0588,
+  "minus_all_bets": {
+   "diff": -0.0051,
+   "ci95": [
+    -0.0566,
+    0.0464
+   ]
+  },
+  "minus_ev_rule": {
+   "diff": 0.0445,
+   "ci95": [
+    0.0002,
+    0.0903
+   ]
+  }
+ },
+ "DEV_CELL_EB": {
+  "bets": 741,
+  "roi": 0.0069,
+  "matchdays": 228,
+  "ci95": [
+   -0.0845,
+   0.0983
+  ],
+  "p_one_sided": 0.4173,
+  "clv": 0.0038,
+  "clv_n": 741,
+  "mean_odds": 2.208,
+  "realised_minus_p_used": -0.0745,
+  "no_cell_history_picks": 490,
+  "market_share": {
+   "btts_yes": 0.09,
+   "over15_over": 0.112,
+   "over25_over": 0.556,
+   "over25_under": 0.111,
+   "over35_over": 0.131
+  },
+  "all_bets_roi_same_rows": 0.0588,
+  "minus_all_bets": {
+   "diff": -0.052,
+   "ci95": [
+    -0.1051,
+    0.0028
+   ]
+  },
+  "minus_ev_rule": {
+   "diff": -0.0024,
+   "ci95": [
+    -0.0172,
+    0.0109
+   ]
+  }
+ }
+}

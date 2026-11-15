@@ -14,6 +14,15 @@ import numpy as np
 import pandas as pd
 import pytest
 
+@pytest.fixture(autouse=True)
+def _own_bars(monkeypatch):
+    """Owner 2026-11-09: no global bars. These tests predate the cutover and assert the tiers the
+    removed global path served, so every league gets exactly those values as its OWN owner-applied
+    bars (tests/own_bars.install_historical)."""
+    from tests.own_bars import install_historical
+    install_historical(monkeypatch)
+
+
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from src.integrity import price_provenance as PP  # noqa: E402
@@ -98,6 +107,10 @@ def test_loader_mapping_filter_on_by_default_with_rollback(monkeypatch):
 
 
 # ── de-vig / entry / closing ────────────────────────────────────────────────────────────────────
+#: League Two's own owner-applied BTTS bars, equal to what the removed global path served (2026-11-09)
+HIST = {"btts": {"League Two": {"sniper_th": 0.10, "marksman_th": 0.08, "valuable_th": 0.04}}}
+
+
 def _quotes(rows):
     return pd.DataFrame(rows, columns=["snapshot_ts", "match", "bookmaker", "market", "side", "odds"])
 
@@ -112,7 +125,7 @@ def _row(**kw):
 
 def test_one_sided_price_is_never_called_devigged():
     q = _quotes([["2026-11-01T10:00:00Z", "H vs A", "b1", "BTTS", "YES", 1.90]])
-    ev = SE.evaluate_rows(_row(), q, {})
+    ev = SE.evaluate_rows(_row(), q, HIST)
     assert ev.loc[0, "devig_state"] == "ONE_SIDED_NOT_DEVIGGED"
     assert np.isnan(ev.loc[0, "p_fair_devig"]) and not PP.is_devigged(ev.loc[0, "devig_state"])
     assert ev.loc[0, "classification"] == "UNVERIFIABLE_ONE_SIDED"
@@ -121,7 +134,7 @@ def test_one_sided_price_is_never_called_devigged():
 def test_post_kickoff_quote_is_never_an_entry_price():
     q = _quotes([["2026-11-01T15:00:00Z", "H vs A", "b1", "BTTS", "YES", 1.90],
                  ["2026-11-01T15:05:00Z", "H vs A", "b1", "BTTS", "NO", 1.98]])
-    ev = SE.evaluate_rows(_row(asof="2026-11-01T16:00:00Z"), q, {})
+    ev = SE.evaluate_rows(_row(asof="2026-11-01T16:00:00Z"), q, HIST)
     assert ev.loc[0, "devig_state"] == "ONE_SIDED_NOT_DEVIGGED"
     assert not PP.entry_price_valid("2026-11-01T15:00:00Z", "2026-11-01T15:00:00Z")
     assert PP.entry_price_valid("2026-11-01T14:59:00Z", "2026-11-01T15:00:00Z")

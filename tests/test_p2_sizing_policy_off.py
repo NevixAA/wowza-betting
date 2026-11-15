@@ -30,6 +30,21 @@ def _bets():
                          for i, lg in enumerate(("Championship", "League One", "Brazil Serie A"))])
 
 
+_LEAGUES = ("Championship", "League One", "Brazil Serie A")
+
+
+def _staked(pol: dict) -> dict:
+    """TEST ONLY: give the three test leagues a staked new_format O/U 2.5 Over cell, so the ratings mechanics are
+    exercised whatever the month's PROMISING cells are (per-cell staking, owner 2026-11-09)."""
+    import copy
+    pol = copy.deepcopy(pol)
+    for lg in _LEAGUES:
+        pol["cell_staking"]["cells"][f"new_format|OU25_OVER|{lg}"] = {
+            "state": "ACTIVE_LOW", "base_fraction": 0.005, "max_odds": 2.5,
+            "tier_multipliers": {"SNIPER": 1.0, "MARKSMAN": 1.0, "VALUABLE": 1.0}}
+    return pol
+
+
 @pytest.fixture
 def isolated(tmp_path, monkeypatch):
     import src.betting as betting
@@ -37,6 +52,9 @@ def isolated(tmp_path, monkeypatch):
     monkeypatch.setattr(sp, "AUDIT", tmp_path / "audit.csv")
     # raising=False: origin/main predates league_threshold_evidence, and this file is also run there
     monkeypatch.setattr(betting, "league_threshold_evidence", lambda league, market="ou25": True, raising=False)
+    import src.bankroll_policy as BPm
+    real = BPm.load_policy
+    monkeypatch.setattr(BPm, "load_policy", lambda *a, **k: _staked(real(*a, **k)))
     return monkeypatch
 
 
@@ -65,7 +83,7 @@ def test_stake_plan_never_reads_pooled_ratings_while_off(isolated):
 
 def test_power_stake_plan_check_catches_scaling_when_flag_is_on(isolated):
     """The same assertion fails when pooled sizing is (wrongly) on: proof the check above has teeth."""
-    pol = load_policy()
+    pol = _staked(load_policy())
     on = {**pol, "league_rating_sizing": {**pol["league_rating_sizing"], "enabled": True}}
     isolated.setattr("src.bankroll_policy.load_policy", lambda *a, **k: on)
     isolated.setattr(sp, "load_league_ratings", lambda *a, **k: {lg: 1 for lg in
@@ -79,7 +97,7 @@ def test_size_day_needs_flag_and_explicit_ratings():
     """Pro's simulator (wowzaV9-Pro src/bankroll/simulate.py day_plans) calls size_day WITHOUT
     league_ratings, so even a policy with the flag on is unscaled there; the live stake plan only
     passes ratings while the flag is on. Both gates must hold."""
-    pol = load_policy()
+    pol = _staked(load_policy())
     sel = sp.selections(_bets(), None).assign(league_threshold_evidence=True)
     on = {**pol, "league_rating_sizing": {**pol["league_rating_sizing"], "enabled": True}}
     ratings = {lg: 1 for lg in sel["league"]}

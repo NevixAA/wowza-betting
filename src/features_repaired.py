@@ -290,7 +290,17 @@ def build_features_repaired(matches: pd.DataFrame, n: int | None = None,
 
     # ── prices ───────────────────────────────────────────────────────────────────────
     if price_mode == "closing":
-        df["bookmaker_overround"] = _price_overround(df.get("odds_over25"), df.get("odds_under25"))
+        # the closing pair lives in its own columns since 2026-11-11 (data_loader.ou25_prices); odds_over25 is
+        # the pre-match pair now, so "closing" reads the *_close columns for history. A LIVE row (_upc_id set)
+        # has no closing price: it keeps the legacy behaviour (its live price), as before.
+        _nan = pd.Series(np.nan, index=df.index)
+        over = pd.to_numeric(df["odds_over25_close"], errors="coerce") if "odds_over25_close" in df else _nan
+        under = pd.to_numeric(df["odds_under25_close"], errors="coerce") if "odds_under25_close" in df else _nan
+        if "_upc_id" in df.columns and "odds_over25" in df.columns and "odds_under25" in df.columns:
+            live = df["_upc_id"].notna()
+            over = over.where(~live, pd.to_numeric(df["odds_over25"], errors="coerce"))
+            under = under.where(~live, pd.to_numeric(df["odds_under25"], errors="coerce"))
+        df["bookmaker_overround"] = _price_overround(over, under)
         df["_price_class"] = "LEGACY_CLOSING_OR_LIVE"
     elif price_mode == "asof":
         if "odds_over25_entry" in df.columns and "odds_under25_entry" in df.columns:

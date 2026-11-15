@@ -6,7 +6,7 @@
 The committed ledgers are never rewritten. Each finding is a sidecar in output/corrections/ with the
 original key and the evidence; the readers apply it (src/trustworthy_performance.correct_live, the CLV
 consumers through src/clv_corrections, the v91 shadow readers through read_v91_shadow), and data truth
-rule 6 (src/integrity/data_truth.ledgers) goes RED if any of them recurs from the Clean Record start.
+rule 9 (src/integrity/data_truth.ledgers) goes RED if any of them recurs from the Clean Record start.
 
   M  MULTI-TIP FIXTURES  bets_ledger_multi_tip_fixtures.csv: every row of a fixture holding more than one
      live O/U 2.5 row (a later predict run logged another side). The first-sight row (earliest
