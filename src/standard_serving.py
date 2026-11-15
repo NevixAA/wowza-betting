@@ -1,49 +1,27 @@
 """
-Standard O/U 2.5 SERVING on the repaired recipe (owner 2026-10-28: "switch Standard now").
-==========================================================================================
+Standard O/U 2.5 serving switch - ONE recipe since 2026-11-15.
+===============================================================
 
-    config.STANDARD_OU25_SERVING_RECIPE   "legacy_v9" (default, rollback) | "v9_repaired"
+    config.STANDARD_OU25_SERVING_RECIPE   "legacy_v9" (the only servable value)
 
-SCOPE — deliberately the narrowest possible serving change:
-  * ONLY the `p_over25` of STANDARD-format fixtures. New Format (legacy NF model), the BTTS /
-    O1.5 / O3.5 side models and the HT models keep scoring the legacy feature frame exactly as
-    before: this module never touches the frame they read.
-  * Everything downstream (edge, tiers, predict.yml thresholds + best_params, direction guard,
-    ledgers, Telegram, stake plan) is unchanged in logic; it simply reads a different number.
+"legacy_v9" serves models/model_v9_standard.pkl, the clean-retrain Standard champion (std_v9_repaired,
+owner clean-data switch 2026-11-09), scored by src/predict.py on build_upcoming_features exactly like
+New Format, the side markets and HT. apply() leaves those probabilities untouched.
 
-HOW A STANDARD FIXTURE IS SCORED WHEN THE SWITCH IS "v9_repaired"
-  1. history  = v9's own loaded history (the frame predict already has), Standard leagues only,
-                COVID seasons excluded exactly as training excluded them;
-  2. identity = src/identity_repair.canonicalise_and_dedupe with the FROZEN alias map persisted in
-                the payload at training time (`identity_alias_map`), derive=False — serving never
-                derives a new alias, so train and serve canonicalise identically;
-  3. features = src/features_repaired.build_upcoming_features_repaired (the SAME function training
-                ran; board fixtures appended as unplayed rows, league-scoped, as-of) — a fixture's
-                features depend only on history, never on the other fixtures on the board;
-  4. score    = src/model.predict_proba with the payload's persisted train-only imputer (no batch
-                medians), i.e. the served meta-blend probability.
-  Invariant 8 (no rolling form -> no bet) is evaluated on the REPAIRED form features: a fixture
-  whose repaired form is missing is flagged `serving_no_form` and betting.evaluate_value forces it
-  to AVOID, exactly as the legacy guard does for legacy features.
+RETIRED (owner 2026-11-15, "fix what you need"): "v9_repaired", the 2026-10-28 switch to
+models/model_v9_standard_repaired.pkl. Its train-only 1.0 imputer filled xG and inside-box shots -
+features with NO training values - with 0.0 on every training row, so the model learned an invented
+"xG = 0" (reports/REAL_DATA_FINAL_AUDIT.md T5). The serving branch is gone, the value is refused
+like any unknown one (check_config -> ServingConfigError before predict fetches odds), the artifact
+stays on disk for audit and the registry pointer records the retirement
+(src.promotion_gate.retire_model_type). docs/STANDARD_REPAIRED_FAILCLOSED_ROLLBACK.md.
 
-FAILURE POLICY - FAIL CLOSED (R2 finding 17, 2026-11-01; owner doc
-docs/STANDARD_REPAIRED_FAILCLOSED_ROLLBACK.md). Any failure here (file missing, payload not a valid
-repaired Standard OU25 payload, feature build error, row misalignment, non-finite probability)
-leaves EVERY Standard row WITHOUT an O/U 2.5 probability (p_over25 = NaN -> no edge -> AVOID -> no
-tip), stamps those rows `serving_recipe = "v9_repaired_failed"`, logs an ERROR and records
-status FAIL in output/standard_serving_health.json (system health RED). It never raises, so New
-Format, side and HT tips still go out. There is NO row-level legacy fallback any more: the old
-policy re-scored with the legacy model (stamped "legacy_v9_fallback") and kept sending its tips,
-i.e. silently served a model the owner had moved away from.
-
-CONFIGURATION. STANDARD_OU25_SERVING_RECIPE must be exactly "legacy_v9" or "v9_repaired" (unset /
-empty = legacy_v9, the documented rollback). Any other value raises ServingConfigError from
-check_config(), which predict_upcoming calls before fetching odds: a typo is a red workflow run,
-never a silent legacy run. The explicit owner rollback "legacy_v9" works exactly as before.
-
-Every predictions row carries `serving_recipe` when the switch is on (column absent when off, so
-the default path is byte-identical) and `model_version` names the artifact that produced its
-p_over25 (`standard_repaired_<trained>_<sha8>` for repaired rows).
+What stays here, for audit and research scripts only (scripts/r2b_serving_parity.py,
+scripts/audit/au2_*): validate_payload / load_payload / serving_history / score_fixtures - how the
+retired recipe scored a fixture (frozen identity alias map, src/features_repaired, persisted imputer,
+predict_proba(serving=True), which refuses the retired payload). Readers of old boards keep the
+stamps: "v9_repaired" rows were scored by the standard_repaired model, "v9_repaired_failed" rows
+failed closed with no probability, "legacy_v9_fallback" rows are pre-R2.
 """
 from __future__ import annotations
 
@@ -69,7 +47,7 @@ _LAST_HEALTH: dict = {}
 
 
 class ServingConfigError(RuntimeError):
-    """STANDARD_OU25_SERVING_RECIPE holds a value that is neither legacy_v9 nor v9_repaired."""
+    """STANDARD_OU25_SERVING_RECIPE holds a value other than legacy_v9 (unknown, or RETIRED)."""
 MODEL_TYPE = "standard_repaired"
 CORE_FORM = ("home_scored_last5", "away_scored_last5", "home_conceded_last5", "away_conceded_last5")
 #: what the training workflow writes into the payload; serving refuses a payload without it
@@ -77,26 +55,34 @@ REQUIRED_KEYS = ("models", "feature_cols", "imputer", "recipe", "research", "ide
 
 
 def check_config() -> str:
-    """Raise ServingConfigError unless the configured recipe is valid; return it.
+    """Raise ServingConfigError unless the configured recipe is the one servable recipe (legacy_v9);
+    return it.
+
+    RETIREMENT (owner 2026-11-15, "fix what you need"): v9_repaired - models/model_v9_standard_repaired.pkl,
+    whose 1.0 imputer filled xG / inside-box shots with 0.0 on every training row - is no longer a
+    serving recipe. It is refused like any unknown value (config.RETIRED_STANDARD_OU25_SERVING_RECIPES
+    names it); the file is kept for audit only.
 
     Reads config.STANDARD_OU25_SERVING_RECIPE_RAW (the env value before config.py normalised it)
-    so a typo cannot be laundered into legacy_v9 on the way in. A test or preview that sets
-    config.STANDARD_OU25_SERVING_RECIPE directly is honoured when the two disagree only because
-    the normalised value was overridden."""
+    so a typo cannot be laundered into legacy_v9 on the way in."""
     norm = getattr(config, "STANDARD_OU25_SERVING_RECIPE", LEGACY)
     raw = getattr(config, "STANDARD_OU25_SERVING_RECIPE_RAW", norm)
     raw = (str(raw).strip() if raw is not None else "") or LEGACY
-    if raw not in (LEGACY, REPAIRED):
+    retired = getattr(config, "RETIRED_STANDARD_OU25_SERVING_RECIPES", {})
+    for v in (raw, norm):
+        if v in retired:
+            r = retired[v]
+            raise ServingConfigError(
+                f"STANDARD_OU25_SERVING_RECIPE={v!r} was RETIRED on {r['retired_on']} by {r['approved_by']} "
+                f"(\"{r['owner_words']}\"): {r['why']}. The only serving recipe is {LEGACY!r}. Fix the "
+                f"value in .github/workflows/predict.yml (docs/STANDARD_REPAIRED_FAILCLOSED_ROLLBACK.md).")
+    if raw != LEGACY:
         raise ServingConfigError(
-            f"STANDARD_OU25_SERVING_RECIPE={raw!r} is not a valid serving recipe; expected one of "
-            f"{(LEGACY, REPAIRED)}. Fix the value in .github/workflows/predict.yml "
-            f"(rollback doc: docs/STANDARD_REPAIRED_FAILCLOSED_ROLLBACK.md). Predict refuses to start "
-            f"rather than silently serving the legacy model.")
-    if norm not in (LEGACY, REPAIRED):
+            f"STANDARD_OU25_SERVING_RECIPE={raw!r} is not a valid serving recipe; the only one is "
+            f"{LEGACY!r}. Fix the value in .github/workflows/predict.yml. Predict refuses to start "
+            f"rather than guessing.")
+    if norm != LEGACY:
         raise ServingConfigError(f"config.STANDARD_OU25_SERVING_RECIPE={norm!r} is not a valid serving recipe")
-    if not getattr(config, "STANDARD_OU25_SERVING_RECIPE_EXPLICIT", True) and norm == LEGACY:
-        log.warning("STANDARD_OU25_SERVING_RECIPE is not set: Standard O/U 2.5 is served by legacy_v9 "
-                    "(the documented rollback). Production sets v9_repaired in predict.yml.")
     return norm
 
 
@@ -168,55 +154,29 @@ def score_fixtures(fixtures: pd.DataFrame, history: pd.DataFrame, payload: dict)
     if len(feats) != len(ident) or not (
             feats["home_team"].astype(str).to_numpy() == ident["home_team"].astype(str).to_numpy()).all():
         raise ValueError("repaired feature rows do not line up with the fixtures")
-    p = np.asarray(predict_proba(feats, payload=payload), dtype=float)
-    if not np.isfinite(p).all():
-        raise ValueError("repaired payload produced a non-finite probability")
+    # serving=True (real-data guard, 2026-11-15): a payload that fills a feature with no training
+    # values refuses to score (raises -> fail closed below), and a fixture without its core form
+    # gets NaN, which is exactly the serving_no_form rows.
+    p = np.asarray(predict_proba(feats, payload=payload, serving=True), dtype=float)
     no_form = feats[list(CORE_FORM)].isna().any(axis=1).to_numpy()
+    if not np.isfinite(p[~no_form]).all():
+        raise ValueError("repaired payload produced a non-finite probability")
     return pd.DataFrame({"p_over25_repaired": p, "serving_no_form": no_form}, index=fixtures.index)
 
 
 def apply(feat: pd.DataFrame, std_mask: pd.Series, probas: np.ndarray, historical: pd.DataFrame,
           payload: dict | None = None, model_file: Path | None = None) -> np.ndarray:
-    """Called by src/predict.predict_upcoming AFTER the legacy scores are in `probas`.
+    """Called by src/predict.predict_upcoming AFTER the Standard scores are in `probas`.
 
-    legacy_v9   -> returns `probas` untouched and adds NO column (byte-identical default path).
-    v9_repaired -> overwrites `probas` on Standard rows with the repaired probability and adds
-                   `serving_recipe` (+ `serving_no_form`) to `feat`. On ANY scoring failure the
-                   Standard rows get NaN (no probability, no bet), serving_recipe=v9_repaired_failed.
-                   Never raises for a scoring failure (an invalid recipe raises ServingConfigError).
-    """
+    The only servable recipe is legacy_v9 (models/model_v9_standard.pkl): `probas` comes back untouched
+    and no column is added. The v9_repaired branch that re-scored Standard rows with
+    models/model_v9_standard_repaired.pkl was removed when the owner RETIRED that payload
+    (2026-11-15, "fix what you need"); an invalid or retired recipe raises ServingConfigError.
+    `payload` / `model_file` / `historical` are accepted for call compatibility and unused."""
     global _LAST_HEALTH
     recipe = serving_recipe()
-    if recipe != REPAIRED:
-        _LAST_HEALTH = _health_record(recipe, "PASS", int(std_mask.sum()), 0, 0)
-        return probas
-    out = np.array(probas, dtype=float, copy=True)
-    feat["serving_recipe"] = LEGACY                       # NF / unknown rows: the legacy models
-    feat["serving_no_form"] = False
-    if not std_mask.any():
-        _LAST_HEALTH = _health_record(recipe, "PASS", 0, 0, 0)
-        return out
-    try:
-        pay = payload if payload is not None else load_payload(model_file)
-        validate_payload(pay)
-        hist = serving_history(historical, pay)
-        res = score_fixtures(feat.loc[std_mask], hist, pay)
-        out[std_mask.to_numpy()] = res["p_over25_repaired"].to_numpy()
-        feat.loc[std_mask, "serving_recipe"] = REPAIRED
-        feat.loc[std_mask, "serving_no_form"] = res["serving_no_form"].to_numpy()
-        log.info(f"  Standard O/U 2.5 served by the REPAIRED recipe: {int(std_mask.sum())} fixtures "
-                 f"({int(res['serving_no_form'].sum())} without repaired rolling form -> AVOID)")
-        _LAST_HEALTH = _health_record(recipe, "PASS", int(std_mask.sum()), int(std_mask.sum()), 0)
-    except Exception as e:                                             # noqa: BLE001
-        out[std_mask.to_numpy()] = np.nan                              # FAIL CLOSED: no probability
-        feat.loc[std_mask, "serving_recipe"] = FAILED
-        feat.loc[std_mask, "serving_no_form"] = False
-        log.error(f"  STANDARD_OU25_SERVING_RECIPE=v9_repaired but repaired scoring FAILED "
-                  f"({type(e).__name__}: {e}) - {int(std_mask.sum())} Standard fixture(s) get NO "
-                  f"probability, NO bet (fail closed; stamped serving_recipe={FAILED}; no legacy fallback)")
-        _LAST_HEALTH = _health_record(recipe, "FAIL", int(std_mask.sum()), 0, int(std_mask.sum()),
-                                      error=f"{type(e).__name__}: {e}")
-    return out
+    _LAST_HEALTH = _health_record(recipe, "PASS", int(std_mask.sum()), 0, 0)
+    return probas
 
 
 def _health_record(recipe: str, status: str, n_std: int, n_repaired: int, n_unscored: int,
@@ -225,9 +185,9 @@ def _health_record(recipe: str, status: str, n_std: int, n_repaired: int, n_unsc
     return {"generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
             "serving_recipe": recipe, "status": status, "standard_fixtures": n_std,
             "served_by_repaired": n_repaired, "unscored_fail_closed": n_unscored, "error": error,
-            "policy": "v9_repaired failure -> no probability, no bet, status FAIL (no legacy fallback); "
-                      "invalid recipe -> ServingConfigError before odds are fetched; "
-                      "rollback: docs/STANDARD_REPAIRED_FAILCLOSED_ROLLBACK.md"}
+            "policy": "legacy_v9 is the only serving recipe; v9_repaired RETIRED 2026-11-15 (owner); an "
+                      "invalid or retired recipe -> ServingConfigError before odds are fetched "
+                      "(docs/STANDARD_REPAIRED_FAILCLOSED_ROLLBACK.md)"}
 
 
 def last_health() -> dict:

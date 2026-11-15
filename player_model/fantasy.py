@@ -225,7 +225,10 @@ def _recent_def_actions(pl_all: pd.DataFrame, n: int = 10) -> dict:
     if not cols:
         return {}
     recent = pl_all.sort_values("date").groupby("player_id").tail(n)
-    da = recent.groupby("player_id")[cols].mean().sum(axis=1)
+    # A missing component is MISSING, not 0 (real-data rule 2026-11-15): min_count=len(cols), so a
+    # player with any action unknown has no defensive-action figure (and no bonus estimate).
+    da = recent.groupby("player_id")[cols].mean().sum(axis=1, min_count=len(cols))
+    da = da.dropna()
     return {k: float(v) for k, v in da.items()}
 
 
@@ -538,8 +541,12 @@ def build_fantasy_projections(parquet_path: Path | None = None, min_minutes: flo
                      "non-FPL players", n_matched, len(pl), len(pl) - n_matched)
             pl = pl[pl["fpl_matched"]].copy()
         else:
-            log.warning("fantasy: 0 players matched FPL (matching broken) — keeping all to avoid "
-                        "empty board; departed players may show until matching is fixed")
+            # Real-data rule (2026-11-15): with NO player matched there is no FPL team, status or
+            # price for anyone. Keeping everyone published departed players as fit (injured=False
+            # is a claim, not a default); the board is empty instead.
+            log.error("fantasy: 0 players matched FPL (matching broken: crosswalk missing?) - no "
+                      "projection published (unmatched players' availability is unknown)")
+            pl = pl.iloc[0:0].copy()
 
     # scoring position: FPL position if matched, else parquet position (aliased to FPL codes).
     # An unknown position is NOT 'MID': goal/CS/DC points depend on it, so the player is dropped.
@@ -712,13 +719,16 @@ def build_fantasy_projections(parquet_path: Path | None = None, min_minutes: flo
     _no_fdr = [0]
 
     def _fx_mult(f: dict) -> float:
-        # A fixture with no official FDR gets NO opponent adjustment (x1.0, counted and logged)
-        # rather than an invented neutral FDR of 3 plus a home/away edge.
+        # A fixture with no official FDR has NO fixture adjustment: its fixture-adjusted points are
+        # unknown (NaN, counted and logged). x1.0 published an unadjusted figure as adjusted
+        # (real-data rule 2026-11-15); an invented neutral FDR of 3 was removed before that.
         try:
             fdr = float(f["fdr"])
         except (KeyError, TypeError, ValueError):
+            fdr = float("nan")
+        if fdr != fdr:
             _no_fdr[0] += 1
-            return 1.0
+            return float("nan")
         m = 1.0 + (3.0 - fdr) * _FDR_STEP
         m *= (1.0 + _HOME_EDGE) if f.get("home") else (1.0 - _HOME_EDGE)
         return max(0.60, min(1.40, m))       # never invert or double a projection
@@ -760,7 +770,7 @@ def build_fantasy_projections(parquet_path: Path | None = None, min_minutes: flo
     pl["fixture_adj_pts"] = [round(_per_game(i, tm), 3) for i, tm in enumerate(_teams)]
     pl["total_xpts_next"] = [round(_total(i, tm), 2) for i, tm in enumerate(_teams)]
     if _no_fdr[0]:
-        log.info("fantasy: %d fixture(s) without an official FDR - attack points left unadjusted",
+        log.info("fantasy: %d fixture(s) without an official FDR - fixture-adjusted points unknown",
                  _no_fdr[0])
     _nofx = pl["fixture_adj_pts"].isna()
     if _nofx.any():

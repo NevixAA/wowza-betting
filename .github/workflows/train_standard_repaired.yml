@@ -1,4 +1,10 @@
-name: Standard OU25 repaired model (train + preview / owner install)
+name: Standard OU25 repaired model (RETIRED 2026-11-15 - refuses to run)
+
+# RETIRED (owner Nevo 2026-11-15, "fix what you need"). The v9_repaired Standard O/U 2.5 model this
+# workflow trained and installed (models/model_v9_standard_repaired.pkl) filled xG and inside-box shots
+# - 0% training coverage - with 0.0 on every training row (reports/REAL_DATA_FINAL_AUDIT.md T5).
+# STANDARD_OU25_SERVING_RECIPE accepts only legacy_v9, src.promotion_gate.owner_install refuses the
+# retired type, and both jobs below stop at their first step. Kept, unchanged otherwise, for audit.
 
 # Owner decision 2026-10-28 (Nevo): "switch Standard now" — Standard O/U 2.5 serving moves from the
 # legacy v9 model to the repaired recipe, BEFORE forward evidence, by explicit owner override.
@@ -68,6 +74,10 @@ jobs:
     permissions:
       contents: read
     steps:
+      - name: RETIRED - this workflow no longer trains or installs anything
+        run: |
+          echo "::error title=Retired::standard_repaired / v9_repaired was RETIRED by the owner on 2026-11-15 (\"fix what you need\"); see docs/STANDARD_REPAIRED_FAILCLOSED_ROLLBACK.md"
+          exit 1
       - uses: actions/checkout@v4          # code = the dispatched ref (the branch before landing)
       - name: Board, ledgers, odds history and data banks from MAIN (latest committed state)
         run: |
@@ -112,6 +122,10 @@ jobs:
       contents: write
       actions: read
     steps:
+      - name: RETIRED - this workflow no longer trains or installs anything
+        run: |
+          echo "::error title=Retired::standard_repaired / v9_repaired was RETIRED by the owner on 2026-11-15 (\"fix what you need\"); see docs/STANDARD_REPAIRED_FAILCLOSED_ROLLBACK.md"
+          exit 1
       - name: Refuse anything but main
         run: |
           [ "${{ github.ref }}" = "refs/heads/main" ] || { echo "::error::install runs from main only (dispatched on ${{ github.ref }})"; exit 1; }

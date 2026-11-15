@@ -192,11 +192,11 @@ jobs:
           # models/model_v9_standard.pkl - the clean-retrain recipe (std_v9_repaired) installed by
           # src/promotion_gate.owner_clean_switch - scored on build_upcoming_features, the same builder
           # pair it was trained on (exactly like New Format and the side/HT models). The 2026-10-28
-          # research model (v9_repaired, models/model_v9_standard_repaired.pkl) is ARCHIVED: its file,
-          # registry entry and champion artifact stay as the rollback.
-          # ROLLBACK = set this to "v9_repaired" (src/standard_serving.py, fail closed). Any value other
-          # than legacy_v9 / v9_repaired stops predict (configuration error). "legacy_v9" is the
-          # switch's historical name for "serve models/model_v9_standard.pkl".
+          # research model (v9_repaired, models/model_v9_standard_repaired.pkl) was RETIRED by the owner
+          # on 2026-11-15 ("fix what you need": it learned xG / inside-box shots as 0.0 on every
+          # training row); its file and registry entry stay for audit only. "legacy_v9" is the ONLY
+          # value: anything else - v9_repaired included - stops predict (configuration error).
+          # "legacy_v9" is the switch's historical name for "serve models/model_v9_standard.pkl".
           STANDARD_OU25_SERVING_RECIPE: "legacy_v9"
           LEAGUE_SNIPER_CAP: "0.12"
           MARKSMAN_THRESHOLD: "0.08"

@@ -77,6 +77,12 @@
     "artifact_sha256": "1f5805e63c9945cb3e1804ceb72a52dfdbd75360574183d33d76d35f8a9f1a74",
     "promotion_source": "OWNER_INSTALL",
     "promotion_reason": "OWNER_INSTALL by Nevo (owner): Nevo (owner) 2026-10-28: switch Standard OU25 to repaired recipe before forward evidence; rollback = set STANDARD_OU25_SERVING_RECIPE=legacy_v9",
-    "gate_version": "PG-1.0"
+    "gate_version": "PG-1.0",
+    "status": "RETIRED",
+    "retired_at": "2026-11-15T19:20:24Z",
+    "retired_on": "2026-11-15",
+    "retired_by": "Nevo (owner)",
+    "retirement_owner_words": "fix what you need",
+    "retirement_reason": "the 2026-10-28 v9_repaired Standard O/U 2.5 payload (models/model_v9_standard_repaired.pkl): its 1.0 imputer filled xG and inside-box shots - 0% training coverage - with 0.0 on every training row (FABRICATED_VALUE, reports/REAL_DATA_FINAL_AUDIT.md T5). Retired as a serving recipe (STANDARD_OU25_SERVING_RECIPE accepts only legacy_v9); file kept for audit."
   }
 }

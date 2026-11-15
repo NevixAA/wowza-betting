@@ -458,7 +458,7 @@
   },
   {
    "path": "src/integrity/data_truth.py",
-   "bytes": 51303
+   "bytes": 53520
   },
   {
    "path": "src/integrity/duplicate_matches.py",
@@ -1838,6 +1838,14 @@
     "src/integrity/data_truth.py"
    ],
    "reason": "props feature truth (Data truth 7); reads player_history (excluded from the slim tree) through props_harness. Reached only lazily from src.integrity.data_truth.evaluate, which reports NO_DATA without it; the gate and evidence_refresh run it on the full repository"
+  },
+  {
+   "path": "src/integrity/real_data_provenance.py",
+   "bytes": 36390,
+   "imported_in": [
+    "src/integrity/data_truth.py"
+   ],
+   "reason": "real-data provenance (Data truth 8a-8c); loads the model payloads (models/*.pkl, excluded from the slim tree). Reached only lazily from src.integrity.data_truth.evaluate, which reports NO_DATA without it; the gate and evidence_refresh run it on the full repository"
   },
   {
    "path": "src/ledger.py",
