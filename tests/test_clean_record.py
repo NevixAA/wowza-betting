@@ -34,7 +34,10 @@ def test_one_owner_set_start_date():
     assert config.PROPS_CLEAN_MODELS_LIVE_DATE == config.CLEAN_RECORD_START
     # the pre-repair comparison window opens at the old cutoff and ends at the start
     assert config.PERFORMANCE_CUTOFF_DATE < config.CLEAN_RECORD_START
-    assert CR.start_date() == "2026-11-21" and CR.start_ts() == pd.Timestamp("2026-11-21", tz="UTC")
+    # U6 sets clean_record_start_utc to the go-live (P0) time: the split follows the configured instant
+    want = pd.Timestamp(j["clean_record_start_utc"])
+    want = want.tz_localize("UTC") if want.tzinfo is None else want.tz_convert("UTC")
+    assert CR.start_date() == "2026-11-21" and CR.start_ts() == want
 
 
 # ── the split ─────────────────────────────────────────────────────────────────────────────────────
