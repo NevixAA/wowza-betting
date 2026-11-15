@@ -34,7 +34,7 @@ NOT_CALIBRATED = "edge: not calibrated"
 @lru_cache(maxsize=1)
 def _load_cached():
     from src import top3_league as T
-    return T.load_t3_stats()
+    return T.load_rank_stats()
 
 
 def load(refresh: bool = False) -> pd.DataFrame | None:

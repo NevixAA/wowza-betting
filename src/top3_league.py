@@ -4,17 +4,16 @@ OWNER 2026-11-11 ("Clean rebuild"; TOP-3 "Paper track"). Supersedes the tier / E
   * POOL: tips from the retrained models that clear their cell's ONE owner-approved bar (bars_opt cell,
     valuable_th; src/bars_opt/serve.py). A league x market without its own applied CELL has no tip
     (NO_LEAGUE_BAR) - the legacy three-tier entries are retired. No tier is computed, shown or stored.
-  * RANK: T3 = R3_CAL_EV_LCB of protocol top3-ranking-paper/1 (config/top3_ranking_paper_protocol.json,
-    sha256 363e7f41...), computed by THE research code (src/research/top3_ranking.rank_key, imported, not
-    forked): cautious calibrated value (fair + lam_lo * (p_used - fair)) * odds - 1, lam_lo from the cell's
-    own calibration (its FROZEN statistics: the research freeze record, scripts/top3_paper_freeze.py).
+  * RANK: the LIVE RULE (src.research.top3_ranking.LIVE_RULE; protocol top3-ranking-paper/6, owner 2026-11-15:
+    R2_CAL_EV - was R3_CAL_EV_LCB under v1-v5), computed by THE research code (src/research/top3_ranking.rank_key, imported, not
+    forked): calibrated value from the cell's own calibration (its FROZEN statistics: the research freeze record, scripts/top3_paper_freeze.py).
     The old EV ranking is DROPPED entirely - not a
-    key, not a tie-break, not a reference track. A cell without a T3 statistic ranks after every cell with
+    key, not a tie-break, not a reference track. A cell without a live-rule statistic ranks after every cell with
     one, in kickoff order. Ties: kickoff, then fixture.
   * SLOTS: TOP first; TIER2 (a tip in its cell's VALUABLE..MARKSMAN band where that cell's TIER2 is on,
     study 12.2) only fills slots left empty. At most 3, never padded, the direction rule unchanged.
   * Each pick carries its cell status (PROMISING / UNPROVEN) and its slot (TOP / TIER2).
-  * FAIL CLOSED: no frozen T3 statistics -> nothing is frozen or sent (status T3_STATS_MISSING).
+  * FAIL CLOSED: no frozen live-rule statistics -> nothing is frozen or sent (status RANK_STATS_MISSING).
   * TOP-3 is a named PAPER track in the Clean Record; stakes follow the per-cell status only.
   * OWN LIST (owner 2026-11-11 "Own list"): a LEAGUE-WIDE cell (source NONE / bar_mode LEAGUE_WIDE, e.g.
     Argentina NF BTTS) is NOT in the TOP-3 pool. Its qualifying tips form the league's own line ("League rule:
@@ -113,8 +112,9 @@ FLAG_ENV = "TOP3_LEAGUE_ENABLED"
 LEAD_ENV = "TOP3_FREEZE_LEAD_MIN"
 SELECTION_MODE = "TOP3_LEAGUE_GW"
 OWN_LIST_MODE = "LEAGUE_RULE"              # owner 2026-11-11 "Own list": league-wide cells, outside the 3 slots
-VERSION = "TOP3-2"                         # owner 2026-11-11: cell bar + T3 ranking, no tiers
-from src.research.top3_ranking import LIVE_RULE as T3_RULE, in_pool  # noqa: E402  the research rule, not forked
+VERSION = "TOP3-2"                         # owner 2026-11-11: cell bar + live-rule ranking, no tiers
+from src.research.top3_ranking import LIVE_RULE, in_pool  # noqa: E402  the research rule, not forked
+from src.research import top3_paper as TP3  # noqa: E402  the v6 re-measurement rule, shared with the paper tracks
 SLOT_TOP, SLOT_TIER2 = "TOP", "TIER2"
 TOP_N = 3
 BAR_SOURCE = "LEAGUE"                      # the only source this module ever uses
@@ -151,7 +151,7 @@ PICK_FROZEN = [
     "pick_id", "selection_mode", "version", "league_week_id", "top3_rank", "week_lock_ts", "freeze_ts",
     "issued_at", "league", "model_type", "season", "fixture_id", "match_date", "home_team", "away_team",
     "kickoff_utc", "market", "side", "odds", "opposite_side_odds", "p_model_raw", "p_market_fair", "edge",
-    "slot", "cell_status", "p_used", "t3_key", "t3_has_stat", "edge_calibrated", "bar_valuable", "bar_source",
+    "slot", "cell_status", "p_used", "rank_key", "rank_has_stat", "edge_calibrated", "bar_valuable", "bar_source",
     "bar_status",
     "bar_evidence",
     "ev_point", "ev_lower_bound", "p_lower_bound", "price_quality_state", "market_source", "n_books",
@@ -306,19 +306,19 @@ def qualify(cands: pd.DataFrame, ctx: dict) -> pd.DataFrame:
     return d.assign(**cols)
 
 
-# ── T3 ranking (owner 2026-11-11; protocol top3-ranking-paper/1, the research code) ─────────────────────
-def t3_keys(q: pd.DataFrame, stats: pd.DataFrame) -> pd.DataFrame:
-    """q + t3_key / t3_has_stat from src.research.top3_ranking.rank_key (rule R3_CAL_EV_LCB). Pure."""
+# ── live-rule ranking (owner 2026-11-11; protocol top3-ranking-paper/1, the research code) ─────────────────────
+def rank_keys(q: pd.DataFrame, stats: pd.DataFrame) -> pd.DataFrame:
+    """q + rank_key / rank_has_stat from src.research.top3_ranking.rank_key (rule LIVE_RULE). Pure."""
     from src.research import top3_ranking as TR
     if q is None or q.empty:
         return q
     b = q.assign(odds=pd.to_numeric(q["odds"], errors="coerce"), p_used=pd.to_numeric(q["p_used"], errors="coerce"),
                  fair=pd.to_numeric(q["fair"], errors="coerce"))
     k = TR.rank_key(b[TR.CELL + ["fair", "p_used", "odds"]].reset_index(drop=True),
-                    stats if stats is not None else pd.DataFrame(columns=TR.CELL + TR.STAT_COLS), T3_RULE)
+                    stats if stats is not None else pd.DataFrame(columns=TR.CELL + TR.STAT_COLS), LIVE_RULE)
     out = q.copy()
-    out["t3_key"] = k["key"].to_numpy()
-    out["t3_has_stat"] = k["has_stat"].to_numpy()
+    out["rank_key"] = k["key"].to_numpy()
+    out["rank_has_stat"] = k["has_stat"].to_numpy()
     # the CALIBRATED edge shown for the pick (owner 2026-11-11, src/calibrated_edge.py; same frozen statistics)
     from src import calibrated_edge as CE
     out["edge_calibrated"] = CE.calibrated(b.reset_index(drop=True), stats).to_numpy() \
@@ -326,8 +326,8 @@ def t3_keys(q: pd.DataFrame, stats: pd.DataFrame) -> pd.DataFrame:
     return out
 
 
-def load_t3_stats(root: Path | None = None) -> pd.DataFrame | None:
-    """The FROZEN per-cell T3 statistics: THE research freeze record (scripts/top3_paper_freeze.py, named by
+def load_rank_stats(root: Path | None = None) -> pd.DataFrame | None:
+    """The FROZEN per-cell live-rule statistics: THE research freeze record (scripts/top3_paper_freeze.py, named by
     config/top3_paper_tracks.json -> freeze_ledger, hash-checked by src.research.top3_paper.load_freeze) - one
     freeze for the live TOP-3 and its paper tracks, never a second builder. None when not frozen / not valid."""
     from src.research import top3_paper as TP3
@@ -335,11 +335,15 @@ def load_t3_stats(root: Path | None = None) -> pd.DataFrame | None:
         cfg = TP3.load_config(root)
         stats, _rec, _sha, why = TP3.load_freeze(cfg, root)
     except Exception as e:                                             # noqa: BLE001
-        log.warning(f"[top3_league] T3 statistics unreadable ({type(e).__name__}: {e})")
+        log.warning(f"[top3_league] live-rule statistics unreadable ({type(e).__name__}: {e})")
         return None
     if why:
-        log.warning(f"[top3_league] T3 statistics not usable: {'; '.join(why)[:300]}")
+        log.warning(f"[top3_league] live-rule statistics not usable: {'; '.join(why)[:300]}")
         return None
+    # protocol v6 re-measurement (owner 2026-11-15): which frame the statistics were frozen from, and the all-data
+    # models' engine versions - a candidate of those models is ranked only by statistics from their own frame
+    stats.attrs["frozen_frame"] = _rec.get("frame_hash")
+    stats.attrs["all_data"] = cfg.get("all_data_models")
     return stats
 
 
@@ -362,7 +366,7 @@ def select_week(q: pd.DataFrame, freeze: pd.Timestamp, issue: pd.Timestamp,
         excluded[k] += 1
     if q is None or q.empty:
         return q.iloc[0:0] if q is not None else pd.DataFrame(), dict(excluded)
-    q = t3_keys(q.reset_index(drop=True), stats)
+    q = rank_keys(q.reset_index(drop=True), stats)
     fs = LW._ts(q["first_seen_at"])
     ko = LW._ts(q["kickoff_utc"])
     if "league_wide" not in q.columns:
@@ -375,13 +379,16 @@ def select_week(q: pd.DataFrame, freeze: pd.Timestamp, issue: pd.Timestamp,
             bump(R_PRE_START)
         elif r.get("reason"):
             bump(r["reason"])
+        elif stats is not None and not TP3.stats_valid_for_engine(
+                r.get("prediction_engine_version"), stats.attrs.get("all_data"), stats.attrs.get("frozen_frame")):
+            bump(TP3.R_NOT_REMEASURED)          # all-data models before their re-measurement: refused (v6)
         elif bool(r.get("league_wide")):
             own.append(i)                       # the league's OWN line, outside the TOP-3 slots
         else:
-            # owner 2026-11-11: TOP before TIER2 (TIER2 only fills empty slots); then T3 (cells with a
+            # owner 2026-11-11: TOP before TIER2 (TIER2 only fills empty slots); then live-rule (cells with a
             # statistic first, higher key first); then kickoff, then fixture. No EV anywhere.
-            key = _num(r.get("t3_key"))
-            has = bool(r.get("t3_has_stat")) and not math.isnan(key)
+            key = _num(r.get("rank_key"))
+            has = bool(r.get("rank_has_stat")) and not math.isnan(key)
             kick = ko.iloc[i].value if pd.notna(ko.iloc[i]) else float("inf")
             pool.append(((0 if r.get("slot") != SLOT_TIER2 else 1), (0, -key) if has else (1, 0.0), kick,
                          str(r.get("fixture_id")), i))
@@ -491,7 +498,7 @@ def freeze_due(cands: pd.DataFrame, weeks_done: set, ctx: dict, now: pd.Timestam
                 "selection_mode": r["list"], "version": VERSION, "league_week_id": week,
                 "top3_rank": int(r["top3_rank"]), "week_lock_ts": LW._stamp(lock), "freeze_ts": LW._stamp(freeze),
                 "issued_at": stamp, "edge": LW._r(r["edge"]), "slot": r["slot"], "cell_status": r["cell_status"],
-                "p_used": LW._r(r["p_used"]), "t3_key": LW._r(r["t3_key"]), "t3_has_stat": bool(r["t3_has_stat"]),
+                "p_used": LW._r(r["p_used"]), "rank_key": LW._r(r["rank_key"]), "rank_has_stat": bool(r["rank_has_stat"]),
                 "edge_calibrated": LW._r(r["edge_calibrated"]),
                 "bar_valuable": LW._r(r["bar_valuable"]), "bar_source": BAR_SOURCE,
                 "bar_status": r["bar_status"], "bar_evidence": r["bar_evidence"],
@@ -543,14 +550,14 @@ def run(now=None, out_dir: Path | None = None, root: Path | None = None, env: di
                 from src.direction_guard import committed as _committed
                 committed = _committed()
             from src.direction_guard import real_track_checker
-            stats = load_t3_stats(root)
+            stats = load_rank_stats(root)
             start = top3_start(root)
             if start is None:
                 # fail closed: TOP-3 starts at go-live; without its pinned start nothing is frozen or sent
                 res["status"] = "TOP3_START_NOT_SET"
             elif stats is None:
-                # fail closed (owner 2026-11-11): no frozen T3 statistics, no ranking, nothing frozen or sent
-                res["status"] = "T3_STATS_MISSING"
+                # fail closed (owner 2026-11-11): no frozen live-rule statistics, no ranking, nothing frozen or sent
+                res["status"] = "RANK_STATS_MISSING"
             else:
                 ws = weeks_store(od)
                 done = set(ws.read()["league_week_id"]) if len(ws.read()) else set()
@@ -653,7 +660,7 @@ def report(picks: pd.DataFrame, weeks: pd.DataFrame, now: pd.Timestamp, lead: fl
     return {"generated_at": LW._stamp(now), "selection_mode": SELECTION_MODE, "version": VERSION,
             "freeze_lead_min": lead, "status": "OK" if lead is not None else "FREEZE_LEAD_NOT_SET",
             "note": ("Each league's 3 best tips of the gameweek across O/U 2.5, BTTS, Over 1.5, Over 3.5 from its "
-                     "MODEL cells, each cleared its cell's one owner-approved bar, ranked by T3; fewer than 3 when "
+                     "MODEL cells, each cleared its cell's one owner-approved bar, ranked by the live rule (calibrated value); fewer than 3 when "
                      "fewer clear the bar. League-wide cells are the league's own line (league_rule), outside the 3. "
                      "Flat 1u; a PAPER track - TOP-3 never sizes a stake."),
             "leagues": leagues}
@@ -706,7 +713,7 @@ def message(picks: pd.DataFrame, real_checker=None) -> str:
         for r in g.sort_values("top3_rank", key=lambda s: s.astype(int)).to_dict("records"):
             lines.append(f"   • {escape(str(r['home_team']))} v {escape(str(r['away_team']))} @ {float(r['odds']):.2f}")
     lines.append("<i>TOP-3 is a Paper track; each line's stake follows its own cell (Staked / Paper). Each tip "
-                 "cleared its league's own owner-approved bar; ranked by cautious calibrated value (T3). Fewer "
+                 "cleared its league's own owner-approved bar; ranked by calibrated value (the live rule). Fewer "
                  "than 3 = fewer cleared the bar.</i>")
     return "\n".join(lines)
 

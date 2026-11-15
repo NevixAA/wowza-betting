@@ -118,13 +118,13 @@ def test_a_cell_without_a_t3_statistic_ranks_after_and_by_kickoff_never_by_ev():
             _cand(3, "OVER15", "OVER", ev_lb=0.02, ko="2026-11-21T21:00:00Z")]
     picks, _ = _freeze(_frame(rows), _ctx(), stats=_stats({"over15_over": 0.5}))
     assert list(picks["fixture_id"]) == ["fx3", "fx2", "fx1"]          # stat first, then kickoff
-    assert list(picks["t3_has_stat"]) == [True, False, False]
+    assert list(picks["rank_has_stat"]) == [True, False, False]
 
 
 def test_run_fails_closed_without_frozen_t3_statistics(tmp_path):
     env = {"TOP3_LEAGUE_ENABLED": "true", "TOP3_FREEZE_LEAD_MIN": "120"}
     res = T.run(now=NOW, out_dir=tmp_path, env=env, committed={})
-    assert res.get("status") == "T3_STATS_MISSING" or "error" in res
+    assert res.get("status") == "RANK_STATS_MISSING" or "error" in res
     assert not (tmp_path / T.PICKS_NAME).exists()
 
 
@@ -346,3 +346,19 @@ def test_dashboard_shows_slot_cell_and_the_league_rule_line_no_tier():
     f = D.latest_picks_frame(view)
     assert "Tier" not in f.columns and list(f["Slot"]) == ["TOP"] and list(f["Cell"]) == ["UNPROVEN"]
     assert "League rule (every match, outside the 3): 4 tip(s)" in D.league_rule_line(view)
+
+
+def test_live_top3_refuses_all_data_picks_until_the_remeasurement():
+    """Protocol v6 (owner 2026-11-15): a candidate of the all-data models is ranked only by statistics frozen from
+    their own frame (src.research.top3_paper.stats_valid_for_engine) - the live TOP-3 refuses it before then."""
+    rows = [_cand(1, "OVER15", "OVER"), _cand(2, "OVER15", "OVER")]
+    rows[0]["prediction_engine_version"] = "standard_ALLDATA_x"
+    st = _stats({"over15_over": 0.5})
+    st.attrs["all_data"] = {"status": "PROMOTED", "frame_hash": "alldataframe", "engine_versions": ["standard_ALLDATA_x"]}
+    st.attrs["frozen_frame"] = "58f10476f4c82d7b"
+    picks, weeks = _freeze(_frame(rows), _ctx(), stats=st)
+    assert list(picks["fixture_id"]) == ["fx2"]
+    assert json.loads(weeks["excluded"].iloc[0])["STATS_NOT_REMEASURED"] == 1
+    st.attrs["frozen_frame"] = "alldataframe"                       # re-measured on the all-data frame: allowed
+    picks, _ = _freeze(_frame(rows), _ctx(), stats=st)
+    assert set(picks["fixture_id"]) == {"fx1", "fx2"}

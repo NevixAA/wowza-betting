@@ -1,12 +1,12 @@
-"""DRY RUN of production TOP-3 (owner 2026-11-11: cell bar + T3 ranking, no tiers) on a past board - writes nothing
+"""DRY RUN of production TOP-3 (owner 2026-11-11: cell bar + live-rule ranking (src.research.top3_ranking.LIVE_RULE, R2 since protocol v6), no tiers) on a past board - writes nothing
 in output/, prints counts per league.
 
-    python scripts/top3_t3_dry_run.py --proposal output/threshold_proposals/bars_oddsapi_hist/2026-11.json \
+    python scripts/top3_t3_dry_run.py --proposal output/threshold_proposals/bars_oddsapi_hist/2026-11_bade2c0b.json \
         --week-from 2026-11-03 --week-to 2026-11-09 --lead 120
 
 The cells are the proposal's (ASSUMED owner-applied: the dry run reads them as if threshold_apply had run); the
 candidates are production's own builder (src.research.league_weekly.build_candidates over output/
-edge_engine_shadow.csv) restricted to the league-weeks locking in the window; the T3 statistics are built from
+edge_engine_shadow.csv) restricted to the league-weeks locking in the window; the live-rule statistics are built from
 the research freeze computation (scripts/top3_paper_freeze.compute) with rows dated BEFORE --week-from. Every week is frozen at
 its own FREEZE (lock - lead), the moment production issues it. CAVEAT: the board's probabilities are whatever models produced output/ at the time.
 """
@@ -82,7 +82,7 @@ def main(argv=None) -> int:
     picks = pd.concat(pk, ignore_index=True) if pk else pd.DataFrame(columns=T.PICK_COLS)
     wk = pd.concat(wks, ignore_index=True) if wks else pd.DataFrame(columns=T.WEEK_COLS)
     out = {"window": [a.week_from, a.week_to], "league_weeks": len(weeks), "candidates": int(len(cands)),
-           "t3_cells_with_stat": int(stats["lam"].notna().sum()) if len(stats) else 0,
+           "rank_cells_with_stat": int(stats["lam"].notna().sum()) if len(stats) else 0,
            "stats_as_of_day_exclusive": info.get("as_of_day_exclusive"), "top3_picks": int((picks["selection_mode"] == T.SELECTION_MODE).sum()) if len(picks) else 0,
            "league_rule_picks": int((picks["selection_mode"] == T.OWN_LIST_MODE).sum()) if len(picks) else 0,
            "per_league_top3": (picks[picks["selection_mode"] == T.SELECTION_MODE].groupby("league").size().to_dict()
@@ -91,7 +91,7 @@ def main(argv=None) -> int:
                                if len(picks) else {}),
            "slots": picks["slot"].value_counts().to_dict() if len(picks) else {},
            "cell_status": picks["cell_status"].value_counts().to_dict() if len(picks) else {},
-           "picks_with_t3_stat": int(picks["t3_has_stat"].astype(bool).sum()) if len(picks) else 0,
+           "picks_with_rank_stat": int(picks["rank_has_stat"].astype(bool).sum()) if len(picks) else 0,
            "picks_with_calibrated_edge": int(pd.to_numeric(picks["edge_calibrated"], errors="coerce").notna().sum())
            if len(picks) else 0,
            "weeks_with_0_1_2_3": wk["n_picks"].astype(int).value_counts().sort_index().to_dict() if len(wk) else {},

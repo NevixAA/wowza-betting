@@ -54,7 +54,7 @@ def test_start_is_read_from_the_pinned_top3_config_without_default(tmp_path):
 
 def test_run_without_a_start_freezes_nothing(tmp_path, monkeypatch):
     monkeypatch.setattr(T, "top3_start", lambda root=None: None)
-    monkeypatch.setattr(T, "load_t3_stats", lambda root=None: _stats({}))
+    monkeypatch.setattr(T, "load_rank_stats", lambda root=None: _stats({}))
     shadow = pd.DataFrame([{"market": "OU25", "selection_engine_version": "market_edge_v2"}])
     shadow.to_csv(tmp_path / "edge_engine_shadow.csv", index=False)
     env = {T.FLAG_ENV: "true", T.LEAD_ENV: "120"}
