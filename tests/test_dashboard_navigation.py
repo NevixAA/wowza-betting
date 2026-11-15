@@ -85,6 +85,7 @@ NEW_PAGES = [
     ("pages/21_📡_Market_Intelligence.py", "Research Lab"),
     ("pages/22_🏭_Production.py", "System"),
     ("pages/23_🎲_Specials.py", "Research Lab"),     # owner 2026-11-09, Pro specials tracker (research)
+    ("pages/24_📬_Daily_Progress.py", "System"),       # owner-only daily progress report, 2026-11-15
 ]
 # Results pages the owner asked for on 2026-11-11 ("update the dashboard with all the new models and fixes"):
 # the Clean Record comparison and the per-cell bars registry. Wowza Pro (pro + admin), section Performance.
