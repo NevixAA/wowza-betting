@@ -137,9 +137,9 @@ def test_side_check_catches_a_merge_that_ignores_the_declared_side(monkeypatch):
 
 
 def test_props_truth_is_a_gated_stoplight_rule():
-    assert any(g == "Data truth 6" for g in DT.GATED)
-    red = [PFT._c("Data truth 6a: keeper goals_conceded = match score", PFT.RED, "x", "")]
-    assert any(f.startswith("Data truth 6") for f in DT.gate(checks=red))
+    assert any(g == "Data truth 7" for g in DT.GATED)
+    red = [PFT._c("Data truth 7a: keeper goals_conceded = match score", PFT.RED, "x", "")]
+    assert any(f.startswith("Data truth 7") for f in DT.gate(checks=red))
 
 
 # ── 3. penalty_missed (owner 2026-11-11: "Fix penalties too, then promote") ──────────────────────

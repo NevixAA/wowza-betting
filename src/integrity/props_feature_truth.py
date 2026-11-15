@@ -1,4 +1,4 @@
-"""Props feature truth - Data truth 6 (fix/props-feature-bugs, 2026-11-11).
+"""Props feature truth - Data truth 7 (fix/props-feature-bugs, 2026-11-11).
 
     python -m src.integrity.props_feature_truth            # both checks, printed + JSON on stdout
 
@@ -61,7 +61,7 @@ def _c(check, status, value, rule, detail=""):
 def gk_conceded(raw: pd.DataFrame | None = None, fx: pd.DataFrame | None = None) -> dict:
     """Keeper goals_conceded vs the 90-minute score on the frame the props features read."""
     from player_model import history_refetch as HR
-    label = "Data truth 6a: keeper goals_conceded = match score"
+    label = "Data truth 7a: keeper goals_conceded = match score"
     rule = ("a keeper who was his side's only keeper for the full 90 minutes of a match finished in 90 "
             "minutes has goals_conceded = the opponent's 90-minute goals, or missing - never another value")
     if raw is None:
@@ -93,7 +93,7 @@ def null_missing(raw: pd.DataFrame | None = None) -> dict:
     """Provider-null counts of NULL_IS_MISSING columns stay missing on the frame the features read."""
     from player_model import history_refetch as HR
     from player_model.player_stat_nulls import NULL_IS_MISSING
-    label = "Data truth 6c: provider-null counts stay missing"
+    label = "Data truth 7c: provider-null counts stay missing"
     rule = ("a NULL_IS_MISSING count (" + ", ".join(sorted(NULL_IS_MISSING)) + ") the provider sent as "
             "null is missing on the props frame - never 0; a real provider 0 stays 0")
     raw = _frame() if raw is None else raw
@@ -144,7 +144,7 @@ def side_keys() -> dict:
     """Name <-> side rule for every rolling team feature, and the attach behaviour on synthetic clubs."""
     from player_model import config
     from player_model import feature_engineering as FE
-    label = "Data truth 6b: team features keyed to their side"
+    label = "Data truth 7b: team features keyed to their side"
     rule = ("an opp_* feature reads the opponent's rolling, a team/own feature the player's own team's; "
             "the merge gives each row exactly that side's value")
     issues = []
@@ -183,9 +183,9 @@ def side_keys() -> dict:
 
 def evaluate(raw: pd.DataFrame | None = None) -> list[dict]:
     out = []
-    for label, fn in (("Data truth 6a: keeper goals_conceded = match score", lambda: gk_conceded(raw)),
-                      ("Data truth 6b: team features keyed to their side", side_keys),
-                      ("Data truth 6c: provider-null counts stay missing", lambda: null_missing(raw))):
+    for label, fn in (("Data truth 7a: keeper goals_conceded = match score", lambda: gk_conceded(raw)),
+                      ("Data truth 7b: team features keyed to their side", side_keys),
+                      ("Data truth 7c: provider-null counts stay missing", lambda: null_missing(raw))):
         try:
             out.append(fn())
         except Exception as e:                                         # noqa: BLE001
