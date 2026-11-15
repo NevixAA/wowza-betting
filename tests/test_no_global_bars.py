@@ -169,6 +169,18 @@ def test_rule7_red_on_a_future_tip_with_an_old_tier_or_a_multiplier(tmp_path):
     assert any(g.startswith("Data truth 7") for g in DT.GATED)
 
 
+def test_rule7_board_files_take_their_run_time_from_predictions(tmp_path):
+    """Go-live rehearsal 2026-11-15: bets.csv has no write time, so main's last pre-merge board (old tiers, fixtures
+    on 11-21+) turned the stoplight RED. The board's write time is its predict run (predictions.csv generated_at)."""
+    pd.DataFrame({"date": ["2026-11-22"], "signal_tier": ["SNIPER"]}).to_csv(tmp_path / "bets.csv", index=False)
+    pd.DataFrame({"generated_at": ["2026-11-20T23:30:00Z"]}).to_csv(tmp_path / "predictions.csv", index=False)
+    assert DT.retired_tier_rows(tmp_path) == []                 # the old code's last board: history
+    pd.DataFrame({"generated_at": ["2026-11-21T09:00:00Z"]}).to_csv(tmp_path / "predictions.csv", index=False)
+    assert [h["file"] for h in DT.retired_tier_rows(tmp_path)] == ["bets.csv"]
+    (tmp_path / "predictions.csv").unlink()                     # no run time: the match date decides, as before
+    assert [h["file"] for h in DT.retired_tier_rows(tmp_path)] == ["bets.csv"]
+
+
 # ── rule 8: bars rest on bet-time prices only (owner 2026-11-11) ───────────────────────────────────
 def test_rule8_red_when_an_approved_bar_rests_on_unproven_capture_times(tmp_path):
     prov = {"cells": [{"entry_id": "btts|A", "unproven_share": 0.9, "oddsapi_hist": 0},

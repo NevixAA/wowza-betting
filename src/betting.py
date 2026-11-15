@@ -647,6 +647,11 @@ def generate_bets(df: pd.DataFrame) -> pd.DataFrame:
         # Standard O/U 2.5 serving switch (2026-10-28): present only when the switch is on, so the
         # legacy bets.csv is unchanged; lets the ledger attribute the row to the repaired model.
         "serving_recipe",
+        # Fixture identity and the cell qualification (owner rule 2026-11-21: every tip is QUALIFIED
+        # with its cell_status + qualifying_bar and shows only the CALIBRATED edge). Dropping them
+        # here left bets.csv / bets_ledger blank and the O/U Telegram tips "UNPROVEN, not calibrated".
+        "fixture_id", "oddsapi_event_id",
+        "cell_status", "qualifying_bar", "cell_p_used", "edge_calibrated",
     ]
     output_cols = [c for c in output_cols if c in visible.columns]
     return visible[output_cols].reset_index(drop=True)
