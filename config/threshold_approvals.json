@@ -640,7 +640,7 @@
    "proposal_hash": "bade2c0baf41858f5b65f05bbf62fb5b6832873d8c743efb30da2fe3e193e74e",
    "approved_by": "owner (Nevo)",
    "approved_at": "2026-11-15T09:52:58Z",
-   "owner_words": "owner 2026-11-15: \"Approve, PROMISING small\" (ALL entries); Argentina NF BTTS \"Reduce to 0.5%\"; Japan / Austria NF Unders PAPER (NF-Under rule); everything else PAPER; Cloudbet PAPER_ONLY (relayed by the coordinator 2026-11-15)",
+   "owner_words": "owner 2026-11-15: \"Approve, PROMISING small\" (ALL entries); Argentina NF BTTS \"Reduce to 0.5%\"; Japan / Austria NF Unders PAPER (NF-Under rule); everything else PAPER; Cloudbet PAPER_ONLY (relayed by the coordinator 2026-11-15); owner 2026-11-15 \"Record it for me\"",
    "supersedes": "TP-2026-11-10-d999073a",
    "protocol": "bars-fresh-holdout/5 (sha256 4e5708fdda0b434ad37f002668fdc386b0fca9533d81b1d005b58229fd4bc643); fresh holdout TP-FH-2026-11-15-132a4795; BT lead-time reading confirmed by the coordinator 2026-11-15",
    "evidence_label": "re-test after a price-data fix (outcomes previously seen)",
@@ -897,6 +897,13 @@
     {
      "entry_id": "over35|Sweden Allsvenskan",
      "entry_hash": "51eb2a4aba6e8fb66f9f04458df8cc663855c2f72fc37e27df7d029acbfd7b53"
+    }
+   ],
+   "exemptions": [
+    {
+     "entry_id": "btts|Argentina Primera Division",
+     "owner_words": "owner 2026-11-15: \"Reduce to 0.5%\"; \"Record it for me\"",
+     "basis": "LEAGUE_WIDE rule (every match up to odds 2.50) on 97 own bet-time bets (football-data / own live captures, no backfill: cell_price_provenance_2026-11_v5.json); verdict UNPROVEN on real prices; staked ACTIVE_LOW 0.5% as a league rule by owner decision"
     }
    ]
   }

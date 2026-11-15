@@ -2,7 +2,10 @@
  "about": "TOP-3 paper tracks R1 / R2 (src/research/top3_paper.py) and the one-time statistics freeze (scripts/top3_paper_freeze.py). PAPER/RESEARCH: nothing here stakes, executes or publishes. Every value is pinned; a change is a new protocol version, before the first pick.",
  "protocol_file": "config/top3_ranking_paper_protocol_v3.json",
  "protocol_sha256": "7e521a6b1aa45e4daee026ecb49aac5cb63ca23dc69b23a709db7d0b67cafe10",
- "tracks": ["R1_CELL_LCB", "R2_CAL_EV"],
+ "tracks": [
+  "R1_CELL_LCB",
+  "R2_CAL_EV"
+ ],
  "live_track": "R3_CAL_EV_LCB (the production TOP-3; not recorded here)",
  "start_utc": "2026-11-21T00:00:00Z",
  "stats_as_of_utc": "2026-11-20T23:59:59Z",
@@ -12,23 +15,25 @@
  "freeze_ledger": "output/research/top3_ranking/live_stats_ledger.json",
  "clean_override_id": "clean-data-switch-2026-11-09",
  "approved_proposals": [
-  {"proposal_id": "TP-2026-11-10-d999073a",
-   "proposal_hash": "d999073a5f1744c512011fe7a487a957ced743c6d8b467ec88dc6302d2e100d6",
-   "file": "output/threshold_proposals/bars_oddsapi_hist/2026-11.json",
-   "approved": "owner 2026-11-11 \"Approve, paper + small\" (config/threshold_approvals.json)"}
+  {
+   "proposal_id": "TP-2026-11-15-bade2c0b",
+   "proposal_hash": "bade2c0baf41858f5b65f05bbf62fb5b6832873d8c743efb30da2fe3e193e74e",
+   "file": "output/threshold_proposals/bars_oddsapi_hist/2026-11_bade2c0b.json",
+   "approved": "owner 2026-11-15 \"Approve, PROMISING small\" (config/threshold_approvals.json); replaces TP-2026-11-10-d999073a (superseded, never applied)"
+  }
  ],
  "clean_frames": {
   "58f10476f4c82d7b": {
    "recipe": "Phase 2 champion_recipe (clean retrain), walk-forward predictions, data-truth-100 2e6e6e745",
    "standard_run": "run_20261110T203611Z (GitHub run 42895611758)",
    "new_format_run": "run_20261110T203319Z (local, single-threaded)",
-   "universes_commit": "655ac1e8f (own prices only)",
+   "universes_commit": "655ac1e8f (own prices only); Standard rebuilt through the certified football-data join (protocol v5, 2026-11-15): same rows, every O/U 2.5 pair identical",
    "universe_sha256": {
-    "standard": "f8cb36f3a473240308f4146c82c6f9cb159c1f4d228331969553f72f06b14df4",
+    "standard": "f833a9d9a60fb6340cb6565b5c3cda94a9eefea1971e4ec5db33f591cb264079",
     "new_format": "9ec3222c5a6b788c01a9005023716928b6f5fc26ef7b15deb66b89018a60cba8"
    }
   }
  },
- "fresh_holdout_record": "output/threshold_proposals/bars_oddsapi_hist/fresh_2026-11-10_bc7459cc.json",
- "fresh_holdout_record_sha256": "254c8c2635e24e8c0f5e82594d3372979fab05480312ef1def275f569afbb4be"
+ "fresh_holdout_record": "output/threshold_proposals/bars_oddsapi_hist/fresh_2026-11-15_132a4795.json",
+ "fresh_holdout_record_sha256": "16421cf4928d10a074ef7f067ff7fb05f81db4cbc0d67a0eedbfe3a540b050a3"
 }
