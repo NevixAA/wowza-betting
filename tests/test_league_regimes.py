@@ -81,7 +81,9 @@ def test_production_state_is_what_production_applies():
             staked = f"{e['track']}|{e['league']}" in policy["cell_staking"]["cells"]
             assert e["production_state"] == ("ACTIVE_LOW" if staked else "PAPER"), e["key"]
         if e["market"] == "OVER35":
-            assert e["production_state"] in ("BLOCKED", "PAPER_LEAGUE")
+            # owner 2026-11-15 "Lift for Finland only": exactly ONE cell's block is lifted, by a named override
+            lifted = f"{e['track']}|{e['league']}" in (policy["cell_staking"].get("block_overrides") or {})
+            assert e["production_state"] in (("ACTIVE_LOW",) if lifted else ("BLOCKED", "PAPER_LEAGUE")), e["key"]
         if config.is_paper_league(e["league"]):
             assert e["production_state"] == "PAPER_LEAGUE"
         sel.append({"fixture": f"f{i}", "league": e["league"], "model_type": e["model_type"],

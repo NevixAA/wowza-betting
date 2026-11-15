@@ -3104,10 +3104,10 @@
    "model_type": "new_format",
    "research_regime": "LEARNING",
    "owner_locked": false,
-   "production_state": "BLOCKED",
+   "production_state": "ACTIVE_LOW",
    "track": "new_format|OVER35",
-   "track_state": "BLOCKED",
-   "base_fraction": 0.0,
+   "track_state": "ACTIVE_LOW",
+   "base_fraction": 0.005,
    "paper_league": false,
    "provider_supported": true,
    "reason": "no settled evidence in the first-sight record",
@@ -7710,7 +7710,7 @@
  ],
  "production_fields_refreshed": {
   "on": "2026-11-15",
-  "why": "owner 2026-11-15 'Approve, PROMISING small' (TP-2026-11-15-bade2c0b) + Argentina 'Reduce to 0.5%': track_state / production_state / base_fraction recomputed from config/bankroll_policy.json (src/bankroll_policy.stake_entry); evidence fields, regimes and generated_for unchanged; NF Over 3.5 Finland held PAPER (BLOCKED track)",
-  "fields_changed": 15
+  "why": "owner 2026-11-15 'Approve, PROMISING small' (TP-2026-11-15-bade2c0b) + Argentina 'Reduce to 0.5%': track_state / production_state / base_fraction recomputed from config/bankroll_policy.json (src/bankroll_policy.stake_entry); evidence fields, regimes and generated_for unchanged; NF Over 3.5 Finland held PAPER (BLOCKED track); NF Over 3.5 Finland ACTIVE_LOW by owner override \"Lift for Finland only\" (2026-11-15)",
+  "fields_changed": 18
  }
 }

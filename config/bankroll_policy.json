@@ -142,7 +142,7 @@
     "approved": {
       "proposal_id": "TP-2026-11-15-bade2c0b",
       "proposal_hash": "bade2c0baf41858f5b65f05bbf62fb5b6832873d8c743efb30da2fe3e193e74e",
-      "owner": "owner 2026-11-15 'Approve, PROMISING small' (protocol v5 re-run; supersedes TP-2026-11-10-d999073a). Stakes from 2026-11-21: ACTIVE_LOW 0.5% on Standard O/U 2.5 Over La Liga 2 and NF O/U 2.5 Over Finland; NF Over 3.5 Finland (owner-named) HELD PAPER because the new_format|OVER35 TRACK is BLOCKED (global protection) - it stakes only after the owner lifts that block explicitly; Argentina NF BTTS REDUCED to 0.5% ('Reduce to 0.5%': UNPROVEN on real prices, kept small as a league rule); Japan and Austria NF Unders PAPER (owner NF-Under rule); everything else PAPER; Cloudbet PAPER_ONLY; TOP-3 a paper track; flat per cell"
+      "owner": "owner 2026-11-15 'Approve, PROMISING small' (protocol v5 re-run; supersedes TP-2026-11-10-d999073a). Stakes from 2026-11-21: ACTIVE_LOW 0.5% on Standard O/U 2.5 Over La Liga 2 and NF O/U 2.5 Over Finland; NF Over 3.5 Finland ACTIVE_LOW 0.5% by owner override 2026-11-15 \"Lift for Finland only\" (the new_format|OVER35 track stays BLOCKED for every other cell); Argentina NF BTTS REDUCED to 0.5% ('Reduce to 0.5%': UNPROVEN on real prices, kept small as a league rule); Japan and Austria NF Unders PAPER (owner NF-Under rule); everything else PAPER; Cloudbet PAPER_ONLY; TOP-3 a paper track; flat per cell"
     },
     "previous_state": "per-track staking (tracks{} below), unchanged and still read when enabled is false",
     "cells": {
@@ -168,6 +168,22 @@
         "source": "PROMISING bars_opt cell (proposal TP-2026-11-15-bade2c0b, study FINAL 2026-09-01..11-08); owner 2026-11-09 'Paper + PROMISING small': the policy's ACTIVE_LOW level",
         "max_odds_source": "the cell has no odds range: the reader's HARD max_odds ceiling applies",
         "stake_note": "flat per cell (owner 2026-11-11 'Clean rebuild'): the base fraction on every tip that clears the cell's one approved bar; the old 1.1 / 0.9 / 1.0 tier multipliers are retired"
+      },
+      "new_format|OVER35|Finland Veikkausliiga": {
+        "state": "ACTIVE_LOW",
+        "base_fraction": 0.005,
+        "source": "PROMISING bars_opt cell (proposal TP-2026-11-15-bade2c0b, study FINAL 2026-09-01..11-08); owner 2026-11-09 'Paper + PROMISING small': the policy's ACTIVE_LOW level",
+        "block_override": "owner 2026-11-15: \"Lift for Finland only\" - this cell only; the track stays BLOCKED",
+        "max_odds_source": "the cell has no odds range: the reader's HARD max_odds ceiling applies",
+        "stake_note": "flat per cell (owner 2026-11-11 'Clean rebuild'): the base fraction on every tip that clears the cell's one approved bar; the old 1.1 / 0.9 / 1.0 tier multipliers are retired"
+      }
+    },
+    "block_overrides": {
+      "new_format|OVER35|Finland Veikkausliiga": {
+        "owner_words": "Lift for Finland only",
+        "date": "2026-11-15",
+        "scope": "exactly this one cell stakes (ACTIVE_LOW 0.5%) from 2026-11-21; the new_format|OVER35 track stays BLOCKED for every other cell",
+        "relayed_by": "coordinator 2026-11-15"
       }
     }
   }

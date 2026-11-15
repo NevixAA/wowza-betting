@@ -70,11 +70,10 @@ use them". From go-live:
 * **Stakes from 2026-11-21 (owner 2026-11-15):** ACTIVE_LOW 0.5% flat on Standard O/U 2.5 Over La Liga 2 and NF O/U
   2.5 Over Finland Veikkausliiga; Argentina NF BTTS REDUCED to 0.5% ACTIVE_LOW ("Reduce to 0.5%": UNPROVEN on real
   prices, kept small as a league rule); Japan J-League and Austrian Bundesliga NF Unders PAPER (owner NF-Under rule);
-  everything else PAPER; Cloudbet PAPER_ONLY. **OWNER DECISION PENDING:** NF Over 3.5 Finland (owner-named for 0.5%)
-  is HELD PAPER - the `new_format|OVER35` TRACK is BLOCKED (global protection since the 2026-10-13 policy; the
-  registry / regime tests enforce it) and a cell never lifts a block (`scripts/cell_staking_from_proposal.py`
-  held_by_owner). It stakes only after the owner lifts that block explicitly. Registries: track_registry ACTIVE_LOW 3,
-  PAPER 73, PAPER_LEAGUE 5, BLOCKED 19. Exec dry run on the proposal: 48
+  everything else PAPER; Cloudbet PAPER_ONLY. NF Over 3.5 Finland ACTIVE_LOW 0.5% by OWNER OVERRIDE 2026-11-15 "Lift
+  for Finland only" (`config/bankroll_policy.json` cell_staking.block_overrides names exactly that one cell; the
+  `new_format|OVER35` TRACK stays BLOCKED for every other cell; the regime / registry tests allow exactly this cell).
+  Registries: track_registry ACTIVE_LOW 4, PAPER 73, PAPER_LEAGUE 5, BLOCKED 18. Exec dry run on the proposal: 48
   cells (43 UNPROVEN, 5 PROMISING bars), 2 USA MLS cells held by the manual BLOCKED cell, 17 skipped; exec stays
   PAPER.
 * **Loader fix (2026-11-11):** `src/data_loader` preferred CLOSING columns (AvgC, MaxC, B365C, PC) for the served
@@ -125,7 +124,7 @@ use them". From go-live:
   (2026-11-15): read the approval whose `proposal_id` is `output/threshold_proposals/latest.json` and that has no
   `superseded_by` (today TP-2026-11-15-bade2c0b, no withdrawals); show the fresh-holdout verdicts with their
   `evidence_label` "re-test after a price-data fix (outcomes previously seen)"; stakes from
-  `config/bankroll_policy.json` cell_staking (3 cells at 0.5%; NF Over 3.5 Finland held PAPER by the BLOCKED track); a superseded approval's withdrawals are history only.
+  `config/bankroll_policy.json` cell_staking (4 cells at 0.5%; NF Over 3.5 Finland by the owner's one-cell block override); a superseded approval's withdrawals are history only.
 
 ## 0c. Go-live rehearsal 2026-11-15: corrections that override the steps below
 

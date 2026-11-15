@@ -52,16 +52,17 @@ def test_committed_policy_stakes_exactly_the_owner_cells():
     assert G.build_cells(prop, cs["cells"], pol, None, G.withdrawn_entries(prop)) == cs["cells"]
     # owner 2026-11-15 "Approve, PROMISING small" (TP-2026-11-15-bade2c0b): the three PROMISING cells at 0.5% and
     # Argentina NF BTTS reduced to 0.5% ("Reduce to 0.5%"); the NF Unders stay PAPER (owner rule)
-    # NF Over 3.5 Finland is PROMISING and owner-named, but its TRACK is BLOCKED (global protection): held PAPER
-    # until the owner lifts the block explicitly
+    # NF Over 3.5 Finland: its TRACK is BLOCKED; owner 2026-11-15 "Lift for Finland only" lifts it for this ONE cell
     assert set(cs["cells"]) == {f"new_format|BTTS|{ARG}", "standard|OU25_OVER|La Liga 2",
-                                "new_format|OU25_OVER|Finland Veikkausliiga"}
+                                "new_format|OU25_OVER|Finland Veikkausliiga", "new_format|OVER35|Finland Veikkausliiga"}
+    assert set(cs["block_overrides"]) == {"new_format|OVER35|Finland Veikkausliiga"}
+    assert pol["tracks"]["new_format|OVER35"]["state"] == "BLOCKED"
     assert cs["approved"]["proposal_id"] == "TP-2026-11-15-bade2c0b"
     assert "Reduce to 0.5%" in cs["cells"][f"new_format|BTTS|{ARG}"]["staking_basis"]
     for k, v in cs["cells"].items():
         if k != f"new_format|BTTS|{ARG}":
             assert v["state"] == "ACTIVE_LOW" and v["base_fraction"] == 0.005
-            assert not G.held_by_owner(pol, k.rsplit("|", 1)[0])          # an owner paper hold is never lifted
+            assert not G.held_by_owner(pol, k.rsplit("|", 1)[0], k)       # an owner hold is never lifted silently
     a = cs["cells"][f"new_format|BTTS|{ARG}"]
     t = pol["tracks"]["new_format|BTTS"]
     assert (a["state"], a["base_fraction"], a["max_odds"]) == ("ACTIVE_LOW", 0.005, 2.6)
@@ -126,3 +127,15 @@ def test_cell_tier_multipliers_keep_the_protected_league_wide_track_staked():
     out = _size([_sel(ARG, tier="VALUABLE", fx="F1"), _sel("Test League", tier="VALUABLE", fx="F2")], pol)
     assert (out["reason"] == "OK").all()
     assert out.iloc[0]["requested_fraction"] == 0.005 and out.iloc[1]["requested_fraction"] == 0.005
+
+
+def test_a_block_override_lifts_exactly_the_named_cell():
+    sys.path.insert(0, str(ROOT / "scripts"))
+    import cell_staking_from_proposal as G
+    pol = BP.load_policy()
+    assert G.held_by_owner(pol, "new_format|OVER35", "new_format|OVER35|Finland Veikkausliiga") is None
+    assert G.held_by_owner(pol, "new_format|OVER35", "new_format|OVER35|Sweden Allsvenskan")       # still BLOCKED
+    assert G.held_by_owner(pol, "standard|OVER35", "standard|OVER35|Finland Veikkausliiga")      # other track
+    bad = copy.deepcopy(pol)
+    bad["cell_staking"]["block_overrides"]["new_format|OVER35|Finland Veikkausliiga"]["owner_words"] = ""
+    assert G.held_by_owner(bad, "new_format|OVER35", "new_format|OVER35|Finland Veikkausliiga")  # no words: no lift

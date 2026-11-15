@@ -76,9 +76,14 @@ def test_blocked_and_real_money_tracks_match_the_policy():
     assert REG["global"]["real_money_tracks"] == sorted(k for k, v in tracks.items()
                                                         if v["state"] in REAL_STATES and v.get("base_fraction", 0) > 0)
     assert REG["global"]["player_props"] == tracks["player_props"]["state"] == "BLOCKED_FROM_REAL"
+    lifts = (POLICY["cell_staking"].get("block_overrides") or {})
+    assert set(lifts) <= {"new_format|OVER35|Finland Veikkausliiga"}          # owner 2026-11-15 "Lift for Finland only"
     for e in REG["entries"]:
         if e["market"] == "OVER35":
-            assert e["blocked_market"] and not e["real_money"]
+            if f"{e['track']}|{e['league']}" in lifts:
+                assert e["real_money"] and e["production_state"] == "ACTIVE_LOW"
+            else:
+                assert e["blocked_market"] and not e["real_money"]
 
 
 def test_selection_engine_is_legacy_in_production():

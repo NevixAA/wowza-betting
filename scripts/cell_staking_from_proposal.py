@@ -68,11 +68,22 @@ def promising_cells(proposal: dict, withdrawn: set | None = None) -> list[dict]:
     return out
 
 
-def held_by_owner(policy: dict, track_key: str) -> str | None:
+def block_lifted(policy: dict, cell: str) -> dict | None:
+    """The owner's override that lifts a BLOCKED track for exactly ONE cell (policy.cell_staking.block_overrides,
+    keyed by the full cell key, with the owner's words and date). The track stays BLOCKED for every other cell."""
+    o = ((policy.get("cell_staking") or {}).get("block_overrides") or {}).get(cell)
+    if not o or not str(o.get("owner_words") or "").strip() or not str(o.get("date") or "").strip():
+        return None
+    return o
+
+
+def held_by_owner(policy: dict, track_key: str, cell: str | None = None) -> str | None:
     """The owner's hold on a track: state PAPER with a paper_reason, or a BLOCKED track (a block never creates a
     stake - the module doc's rule, now enforced: before 2026-11-15 only the PAPER hold was checked), else None."""
     t = (policy.get("tracks") or {}).get(track_key) or {}
     if t.get("state") in ("BLOCKED", "BLOCKED_FROM_REAL"):
+        if cell is not None and block_lifted(policy, cell):
+            return None
         return f"track {track_key} is {t['state']} (global protection)"
     return t.get("paper_reason") if t.get("state") == "PAPER" and t.get("paper_reason") else None
 
@@ -96,7 +107,7 @@ def build_cells(proposal: dict, current: dict, policy: dict | None = None, held:
         key = f"{tkey}|{c['league']}"
         if key in cells:              # the protected entry is never overwritten
             continue
-        if policy is not None and held_by_owner(policy, tkey):
+        if policy is not None and held_by_owner(policy, tkey, key):
             if held is not None:
                 held.append(key)
             continue
@@ -104,6 +115,9 @@ def build_cells(proposal: dict, current: dict, policy: dict | None = None, held:
                  "source": (f"PROMISING bars_opt cell (proposal {proposal['proposal_id']}, study FINAL "
                             f"2026-09-01..11-08); owner 2026-11-09 'Paper + PROMISING small': the policy's "
                             f"ACTIVE_LOW level")}
+        if policy is not None and block_lifted(policy, key):
+            o = block_lifted(policy, key)
+            entry["block_override"] = f"owner {o['date']}: \"{o['owner_words']}\" - this cell only; the track stays BLOCKED"
         if c.get("odds_max") is not None:
             entry["max_odds"] = float(c["odds_max"])
             entry["max_odds_source"] = "the cell's own odds_max"
