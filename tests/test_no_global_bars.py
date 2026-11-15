@@ -193,3 +193,22 @@ def test_rule8_red_when_an_approved_bar_rests_on_unproven_capture_times(tmp_path
 
 def test_rule8_is_green_on_the_committed_approvals():
     assert DT.unproven_evidence() == []
+
+
+def test_every_data_truth_rule_number_names_one_rule():
+    """Go-live rehearsal 2026-11-15: data-truth-100 called the props feature checks 'Data truth 7' while this
+    branch's rule 7 is 'no retired tiers'; the merge silently gave two rules one number (and one GATED
+    prefix). Each number (sub-rules 10a/10b/... share their number) must name exactly one rule."""
+    import re
+    from pathlib import Path
+    root = Path(DT.__file__).resolve().parent
+    names: dict = {}
+    for f in ("data_truth.py", "props_feature_truth.py"):
+        txt = (root / f).read_text(encoding="utf-8")
+        for num, sub, name in re.findall(r'"Data truth (\d+)([a-z]?): ([^"]+)"', txt):
+            names.setdefault(num, set())
+            if not sub:
+                names[num].add(name)
+    clash = {n: v for n, v in names.items() if len(v) > 1}
+    assert not clash, clash
+    assert {"6", "7", "8", "10"} <= set(names)

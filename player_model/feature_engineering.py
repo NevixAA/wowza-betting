@@ -196,7 +196,7 @@ def _season_pen_totals(hist: pd.DataFrame) -> pd.DataFrame:
     cols = ["player_id", "_y", "pen_s", "pen_a"]
     parts = []
     if {"penalty_scored", "penalty_missed", "season", "player_id"} <= set(hist.columns):
-        ps, pm = _num(hist, "penalty_scored"), _num(hist, "penalty_missed")
+        ps, pm = _known_attempts(_num(hist, "penalty_scored"), _num(hist, "penalty_missed"))
         h = pd.DataFrame({"player_id": hist["player_id"], "_y": _season_year(hist["season"]).to_numpy(),
                           "pen_s": ps, "pen_a": ps + pm}).dropna(subset=["player_id", "_y"])
         h = h.groupby(["player_id", "_y"]).sum(min_count=1).reset_index()
@@ -218,6 +218,15 @@ def _season_pen_totals(hist: pd.DataFrame) -> pd.DataFrame:
     return t[cols]
 
 
+def _known_attempts(ps: pd.Series, pm: pd.Series) -> tuple[pd.Series, pd.Series]:
+    """(scored, missed) with a row's scored penalties counted only where its misses are known (owner
+    2026-11-11, "Fix penalties too, then promote"): a row whose penalty_missed is missing (provider
+    null, player_stat_nulls.NULL_IS_MISSING) has unknown attempts, so its goals would enter the
+    conversion numerator without their attempts (a rate above its truth, even above 1). A real
+    provider 0 is a known count and still counts."""
+    return ps.where(pm.notna()), pm.where(ps.notna())
+
+
 def _known_before(v: pd.Series, key) -> pd.Series:
     """Per group: the sum of the RECORDED values on earlier rows (an unrecorded value adds nothing;
     the row's own value is never read, so an upcoming row - no result yet - and a played row get the
@@ -235,7 +244,7 @@ def _penalty_asof(df: pd.DataFrame) -> pd.Series:
     below config.MIN_PEN_ATTEMPTS attempts."""
     if not {"penalty_scored", "penalty_missed", "player_id"} <= set(df.columns):
         return pd.Series(np.nan, index=df.index)
-    ps, pm = _num(df, "penalty_scored"), _num(df, "penalty_missed")
+    ps, pm = _known_attempts(_num(df, "penalty_scored"), _num(df, "penalty_missed"))
     att = ps + pm
     if "season" not in df.columns:                  # no season: the per-match record only
         cs = _known_before(ps, [df["player_id"]])
@@ -277,7 +286,7 @@ def _penalty_now(tot: pd.DataFrame, pid, phist_all: pd.DataFrame, season) -> flo
         s, a = (float(prior["pen_s"].sum()), float(prior["pen_a"].sum())) if len(prior) else (0.0, 0.0)
         if "season" in phist_all.columns:
             cur = phist_all[_season_year(phist_all["season"]).to_numpy() == y]
-            ps, pm = _num(cur, "penalty_scored"), _num(cur, "penalty_missed")
+            ps, pm = _known_attempts(_num(cur, "penalty_scored"), _num(cur, "penalty_missed"))
             s += float(ps.sum())
             a += float((ps + pm).sum())
     return s / a if a >= config.MIN_PEN_ATTEMPTS else NAN
@@ -400,27 +409,37 @@ def _team_keys(df: pd.DataFrame) -> tuple[pd.Series, pd.Series]:
 
 # ── one row per (fixture, team): what the team did and what it conceded ─────────────────────────
 
-# Per-fixture team quantities whose rolling mean becomes an opponent feature, with the minimum
-# number of prior fixtures that must carry the quantity.
+# Per-fixture team quantities whose rolling mean becomes a feature: (feature, minimum number of prior
+# fixtures that must carry the quantity, SIDE). SIDE says whose rolling the player row reads:
+#   "opp"  the OPPONENT's (merged on the opponent key _okey); every such feature is named opp_*
+#   "own"  the player's OWN team's (merged on the row's own key _tkey)
+# Fix 2026-11-11 (fix/props-feature-bugs): team_goals_pg_roll was merged on _okey like the opp_*
+# features since the first version (d7b5f48bc joined it "back to player rows via (fixture_id,
+# opponent)"), so it measured the OPPONENT's scoring (Spearman 0.35 with the opponent's expected
+# goals, -0.03 with the own team's; reports/R_COMBINED_MODELS_2026-11-11.md). Its contract
+# (props_feature_contract.json: "derived from the player's own match history"), its name and the
+# composite built on it (team_momentum_forward_matchup = "team momentum x defensive weakness x
+# forward") all mean the player's OWN team, so it is now merged on _tkey. The opponent's scoring
+# rate is not a contract feature and is not added. src.integrity.props_feature_truth.side_keys() checks the sides.
 _TEAM_ROLL = {
-    "goals_conceded":     ("opp_goals_conceded_pg",        "MIN_OPP_MATCHES"),
-    "sot_conceded":       ("opp_sot_conceded_pg",          "MIN_OPP_MATCHES"),
-    "goals_scored":       ("team_goals_pg_roll",           "MIN_OPP_MATCHES"),
-    "def_aerial":         ("opp_def_aerial_win_rate",      "MIN_OPP_MATCHES"),
-    "def_fouls_pg":       ("opp_def_fouls_pg",             "MIN_OPP_MATCHES"),
-    "def_cards_pg":       ("opp_def_cards_pg",             "MIN_OPP_MATCHES"),
-    "def_rating":         ("opp_def_player_rating_pg",     "MIN_OPP_MATCHES"),
-    "def_rating_top":     ("opp_top_def_rating",           "MIN_OPP_MATCHES"),
-    "def_height":         ("opp_def_mean_height",          "MIN_OPP_MATCHES"),
-    "gk_save_rate":       ("opp_gk_save_rate",             "MIN_GK_MATCHES"),
-    "gk_saves":           ("opp_gk_saves_pg",              "MIN_GK_MATCHES"),
-    "conc_fwd_goals":     ("opp_goals_conceded_vs_fwd_pg", "MIN_OPP_MATCHES"),
-    "conc_fwd_sot":       ("opp_sot_conceded_vs_fwd_pg",   "MIN_OPP_MATCHES"),
-    "conc_mid_goals":     ("opp_goals_conceded_vs_mid_pg", "MIN_OPP_MATCHES"),
-    "conc_mid_sot":       ("opp_sot_conceded_vs_mid_pg",   "MIN_OPP_MATCHES"),
-    "mid_fouls_pg":       ("opp_mid_fouls_pg",             "MIN_OPP_MATCHES"),
-    "mid_cards_pg":       ("opp_mid_cards_pg",             "MIN_OPP_MATCHES"),
-    "corners_conceded":   ("opp_corners_conceded_pg",      "MIN_OPP_MATCHES"),
+    "goals_conceded":     ("opp_goals_conceded_pg",        "MIN_OPP_MATCHES", "opp"),
+    "sot_conceded":       ("opp_sot_conceded_pg",          "MIN_OPP_MATCHES", "opp"),
+    "goals_scored":       ("team_goals_pg_roll",           "MIN_OPP_MATCHES", "own"),
+    "def_aerial":         ("opp_def_aerial_win_rate",      "MIN_OPP_MATCHES", "opp"),
+    "def_fouls_pg":       ("opp_def_fouls_pg",             "MIN_OPP_MATCHES", "opp"),
+    "def_cards_pg":       ("opp_def_cards_pg",             "MIN_OPP_MATCHES", "opp"),
+    "def_rating":         ("opp_def_player_rating_pg",     "MIN_OPP_MATCHES", "opp"),
+    "def_rating_top":     ("opp_top_def_rating",           "MIN_OPP_MATCHES", "opp"),
+    "def_height":         ("opp_def_mean_height",          "MIN_OPP_MATCHES", "opp"),
+    "gk_save_rate":       ("opp_gk_save_rate",             "MIN_GK_MATCHES", "opp"),
+    "gk_saves":           ("opp_gk_saves_pg",              "MIN_GK_MATCHES", "opp"),
+    "conc_fwd_goals":     ("opp_goals_conceded_vs_fwd_pg", "MIN_OPP_MATCHES", "opp"),
+    "conc_fwd_sot":       ("opp_sot_conceded_vs_fwd_pg",   "MIN_OPP_MATCHES", "opp"),
+    "conc_mid_goals":     ("opp_goals_conceded_vs_mid_pg", "MIN_OPP_MATCHES", "opp"),
+    "conc_mid_sot":       ("opp_sot_conceded_vs_mid_pg",   "MIN_OPP_MATCHES", "opp"),
+    "mid_fouls_pg":       ("opp_mid_fouls_pg",             "MIN_OPP_MATCHES", "opp"),
+    "mid_cards_pg":       ("opp_mid_cards_pg",             "MIN_OPP_MATCHES", "opp"),
+    "corners_conceded":   ("opp_corners_conceded_pg",      "MIN_OPP_MATCHES", "opp"),
 }
 
 
@@ -620,11 +639,27 @@ def _roll_measured(t: pd.DataFrame, col: str, n: int, min_n: int) -> pd.Series:
     return out
 
 
+def roll_features(side: str) -> list[str]:
+    """The _TEAM_ROLL features read from `side` ('own' | 'opp')."""
+    return [feat for feat, _, sd in _TEAM_ROLL.values() if sd == side]
+
+
+def attach_team_rolls(df: pd.DataFrame, roll: pd.DataFrame) -> pd.DataFrame:
+    """Player rows (`_tkey` own key, `_okey` opponent key) + the per-(fixture, team) rolling values
+    of _team_rolling, each feature read from the side _TEAM_ROLL declares: 'opp' features on the
+    opponent key, 'own' features on the row's own key."""
+    roll = roll.drop(columns=[c for c in ("_opp_team_corners_pg",) if c in roll.columns])
+    df = df.merge(roll[["fixture_id", "_tkey", *roll_features("opp")]].rename(columns={"_tkey": "_okey"}),
+                  on=["fixture_id", "_okey"], how="left")
+    return df.merge(roll[["fixture_id", "_tkey", *roll_features("own")]], on=["fixture_id", "_tkey"],
+                    how="left")
+
+
 def _team_rolling(t: pd.DataFrame, n: int) -> pd.DataFrame:
     """Pre-match rolling value of each _TEAM_ROLL quantity per team: the mean of its last n
     fixtures that measure it (strictly before the fixture; min sample; _roll_measured)."""
     out = t[["fixture_id", "_tkey"]].copy()
-    for src, (feat, min_attr) in _TEAM_ROLL.items():
+    for src, (feat, min_attr, _side) in _TEAM_ROLL.items():
         out[feat] = _roll_measured(t, src, n, getattr(config, min_attr))
     out["_opp_team_corners_pg"] = _roll_measured(t, "team_corners", n, config.MIN_OPP_MATCHES)
     return out
@@ -1045,7 +1080,7 @@ _COMPOSITE_INPUTS = (
     "dribbled_past_pg", "defensive_actions_per90", "penalties_won_pg", "red_cards_pg", "passes_pg",
     "tackles_per90", "offsides_pg", "height_cm", "age", "headed_goals_pg",
     "fk_goals_pg", "referee_yellows_pg",
-    *(feat for feat, _ in _TEAM_ROLL.values()), *_LEAGUE_NORMS,
+    *(feat for feat, _, _ in _TEAM_ROLL.values()), *_LEAGUE_NORMS,
     "lg_yellows_per_match", "pos_forward", "pos_midfielder", "pos_defender",
     *_LQ.MEASURED_COLUMNS, *_SP.SETPIECE_COLUMNS,
 )
@@ -1274,7 +1309,7 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
     # Rows read back from player_history carry the previous build's derived columns: recompute
     # them rather than letting a merge suffix them (_x/_y).
     df = df.drop(columns=[c for c in ("referee_yellows_pg", "referee_strictness", "lg_yellows_per_match",
-                                      *(feat for feat, _ in _TEAM_ROLL.values()), *_LEAGUE_NORMS)
+                                      *(feat for feat, _, _ in _TEAM_ROLL.values()), *_LEAGUE_NORMS)
                           if c in df.columns])
     if "referee" in df.columns and "fixture_id" in df.columns and "yellow_cards" in df.columns:
         df = df.merge(_referee_asof(df), on="fixture_id", how="left")
@@ -1313,11 +1348,10 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
     df["_tkey"], df["_okey"] = _team_keys(df)
     t = team_match_table(df)
     if not t.empty:
-        roll = _team_rolling(t, n).rename(columns={"_tkey": "_okey"})
-        df = df.merge(roll.drop(columns=["_opp_team_corners_pg"]), on=["fixture_id", "_okey"], how="left")
+        df = attach_team_rolls(df, _team_rolling(t, n))
         df["_day"] = pd.to_datetime(df["date"], errors="coerce").dt.normalize()
         df = df.merge(_league_asof(t), on=["league", "_day"], how="left")
-    _ensure(df, [feat for feat, _ in _TEAM_ROLL.values()] + list(_LEAGUE_NORMS))
+    _ensure(df, [feat for feat, _, _ in _TEAM_ROLL.values()] + list(_LEAGUE_NORMS))
 
     # ── Previous season (player and both teams) and the longer-window shot accuracy: real values
     # under their own names, NaN below their minimum samples (one definition, also used by serving).
