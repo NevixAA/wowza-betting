@@ -20,6 +20,9 @@ OUTPUT (output/collect/ only)
   lineups/players_<league_id>_<season>.parquet  one row per (fixture_id, team_id, role, slot):
         player_id, player_name, number, pos, grid, role ('start' | 'sub'), slot (order in the
         provider's list). A player without a provider id keeps player_id None (never matched by name).
+  fetched_at on every team and player row (2026-11-15): the time of the /fixtures/lineups answer the
+        row came from (rows stored before that date took it from their fixture's journal row,
+        backfill_fetched_at(); a fixture without a journal row keeps None).
 ONE FILE PER LEAGUE-SEASON (fix8/history2, 2026-11-04). The full plan is about 119k fixtures x ~40
 player rows: as ONE parquet (lineups_players.parquet, the round-7 layout) it would grow towards
 GitHub's 100 MB file limit and every flush rewrote the whole file. A league-season holds at most a
@@ -34,6 +37,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -53,8 +57,9 @@ LINEUPS_DIR = COLLECT_DIR / "lineups"
 #: the round-7 single-file layout: read if present, never written
 LEGACY = {"teams": COLLECT_DIR / "lineups_teams.parquet", "players": COLLECT_DIR / "lineups_players.parquet"}
 J_COLS = ["fixture_id", "league_id", "season", "n_teams", "fetched_at"]
-T_COLS = ["fixture_id", "team_id", "formation", "coach_id", "coach_name", "n_start", "n_subs"]
-P_COLS = ["fixture_id", "team_id", "role", "slot", "player_id", "player_name", "number", "pos", "grid"]
+T_COLS = ["fixture_id", "team_id", "formation", "coach_id", "coach_name", "n_start", "n_subs", "fetched_at"]
+P_COLS = ["fixture_id", "team_id", "role", "slot", "player_id", "player_name", "number", "pos", "grid",
+          "fetched_at"]
 COLS = {"teams": T_COLS, "players": P_COLS}
 KEYS = {"teams": ["fixture_id", "team_id"], "players": ["fixture_id", "team_id", "role", "slot"]}
 
@@ -94,23 +99,53 @@ def read_lineups(kind: str, league_id: int | None = None, season: str | None = N
     return out.drop_duplicates(KEYS[kind], keep="last").reset_index(drop=True)
 
 
-def parse(body: dict | None, fixture_id: int) -> tuple[list[dict], list[dict]]:
+def parse(body: dict | None, fixture_id: int, fetched_at: str | None = None) -> tuple[list[dict], list[dict]]:
     teams, players = [], []
+    ts = fetched_at or AL.now_iso()
     for t in (body or {}).get("response") or []:
         tid = AL.int_or_none((t.get("team") or {}).get("id"))
         coach = t.get("coach") or {}
         start, subs = t.get("startXI") or [], t.get("substitutes") or []
         teams.append({"fixture_id": int(fixture_id), "team_id": tid, "formation": t.get("formation"),
                       "coach_id": AL.int_or_none(coach.get("id")), "coach_name": coach.get("name"),
-                      "n_start": len(start), "n_subs": len(subs)})
+                      "n_start": len(start), "n_subs": len(subs), "fetched_at": ts})
         for role, lst in (("start", start), ("sub", subs)):
             for i, e in enumerate(lst):
                 p = (e or {}).get("player") or {}
                 players.append({"fixture_id": int(fixture_id), "team_id": tid, "role": role, "slot": i,
                                 "player_id": AL.int_or_none(p.get("id")), "player_name": p.get("name"),
                                 "number": AL.int_or_none(p.get("number")), "pos": p.get("pos"),
-                                "grid": p.get("grid")})
+                                "grid": p.get("grid"), "fetched_at": ts})
     return teams, players
+
+
+def backfill_fetched_at(root: Path | None = None, journal: Path | None = None) -> dict:
+    """One-off (2026-11-15): give every stored partition row without fetched_at the fetched_at of its
+    fixture's journal row (the time that fixture's answer was stored). No call. A row whose fixture
+    has no journal row keeps None. Returns {files_rewritten, rows_filled, rows_left_none}."""
+    root = root or LINEUPS_DIR
+    j = read_parquet(journal or JOURNAL)
+    when = dict(zip(pd.to_numeric(j["fixture_id"]).astype("int64"), j["fetched_at"])) if not j.empty else {}
+    out = {"files_rewritten": 0, "rows_filled": 0, "rows_left_none": 0}
+    for f in sorted(root.glob("*.parquet")) if root.exists() else []:
+        kind = f.name.split("_", 1)[0]
+        if kind not in COLS:
+            continue
+        d = pd.read_parquet(f)
+        if "fetched_at" in d.columns and d["fetched_at"].notna().all():
+            continue
+        if "fetched_at" not in d.columns:
+            d["fetched_at"] = None
+        miss = d["fetched_at"].isna()
+        d["fetched_at"] = d["fetched_at"].astype(object)
+        d.loc[miss, "fetched_at"] = pd.to_numeric(d.loc[miss, "fixture_id"]).astype("int64").map(when)
+        out["rows_filled"] += int((miss & d["fetched_at"].notna()).sum())
+        out["rows_left_none"] += int(d["fetched_at"].isna().sum())
+        tmp = f.with_suffix(".tmp.parquet")
+        d.reindex(columns=COLS[kind]).to_parquet(tmp, index=False)
+        os.replace(tmp, f)
+        out["files_rewritten"] += 1
+    return out
 
 
 def plan(fx: pd.DataFrame | None = None) -> dict:
@@ -145,10 +180,10 @@ def run(limit: int | None = None, dry_run: bool = False, client: AFClient | None
              "planned_coverage_calls": len(p["coverage"]),
              "planned_fixture_calls_upper_bound": int(len(todo)) - no_cov,
              "skipped_no_provider_lineups_known": no_cov, "calls": 0, "fetched": 0,
-             "skipped": {}}
+             "skipped": {}, "player_rows": 0, "per_league": {}}
     stats["planned_calls_total_upper_bound"] = (stats["planned_coverage_calls"]
                                                  + stats["planned_fixture_calls_upper_bound"])
-    print(f"[lineups] {json.dumps({k: v for k, v in stats.items() if k != 'skipped'})}")
+    print(f"[lineups] {json.dumps({k: v for k, v in stats.items() if k not in ('skipped', 'per_league')})}")
     if dry_run:
         return stats
     client = client or AFClient()
@@ -170,12 +205,17 @@ def run(limit: int | None = None, dry_run: bool = False, client: AFClient | None
             if body is None:
                 continue                                   # failed: nothing recorded, asked next run
             stats["calls"] += 1
-            teams, players = parse(body, f.fixture_id)
+            ts = AL.now_iso()
+            teams, players = parse(body, f.fixture_id, ts)
             part = (int(f.league_id), str(f.season))
             tb.setdefault(part, []).extend(teams)
             pb.setdefault(part, []).extend(players)
             jb.append({"fixture_id": int(f.fixture_id), "league_id": int(f.league_id),
-                       "season": str(f.season), "n_teams": len(teams), "fetched_at": AL.now_iso()})
+                       "season": str(f.season), "n_teams": len(teams), "fetched_at": ts})
+            stats["player_rows"] += len(players)
+            lg = stats["per_league"].setdefault(str(int(f.league_id)), {"fixtures": 0, "player_rows": 0})
+            lg["fixtures"] += 1
+            lg["player_rows"] += len(players)
             stats["fetched"] += 1
             if len(jb) >= FLUSH_EVERY:
                 _flush(tb, pb, jb)
@@ -195,7 +235,12 @@ def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description="collect API-Football /fixtures/lineups per finished fixture")
     ap.add_argument("--limit", type=int, default=None, help="at most N fixture calls")
     ap.add_argument("--dry-run", action="store_true", help="print the planned call count; no call")
+    ap.add_argument("--backfill-fetched-at", action="store_true",
+                    help="no call: fill fetched_at of stored rows from the journal, then exit")
     a = ap.parse_args(argv)
+    if a.backfill_fetched_at:
+        print(f"[lineups] backfill fetched_at: {backfill_fetched_at()}")
+        return 0
     run(limit=a.limit, dry_run=a.dry_run)
     return 0
 

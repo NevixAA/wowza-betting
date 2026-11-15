@@ -34,6 +34,13 @@ turns system health RED instead of waiting for the next audit:
                  props features agrees with the match score where he played the full 90 minutes; every
                  rolling team feature reads the side its name says (own team vs opponent); a provider null
                  in a NULL_IS_MISSING count (goals_conceded, penalty_missed) stays missing. Gated.
+    8 FRESHNESS  (2026-11-15, owner "Schedule daily") the collected injuries and lineups
+                 (output/collect/, scripts/collect_daily_injuries_lineups.py) keep up with the matches
+                 played, per registry league: RED when the fixture lists of an open season are older
+                 than FRESH_H hours, when a finished fixture of a lineups-covered season is >= 2 days
+                 old and still has no lineups answer, or when an injuries-covered league with a match
+                 in the last / next 7 days has no injuries answer newer than FRESH_H hours. Not gated
+                 (operational data, like rule 3): RED in system health.
 
 A check whose input is missing is NO_DATA (or RED where the input is a production bank), never GREEN.
 
@@ -797,6 +804,103 @@ def ledgers(start=None, bets: pd.DataFrame | None = None, players: pd.DataFrame 
               rule)
 
 
+# ── 8 INJURIES / LINEUPS FRESHNESS (2026-11-15) ────────────────────────────────────────────────
+COLLECT = OUT / "collect"
+#: the daily collection runs once a day; 36 h tolerates one late firing, never a missed day
+FRESH_H = 36
+#: a finished fixture this many days old must have its lineups answer (the daily run after its day)
+LINEUP_GRACE_D = 2
+LINEUP_LOOKBACK_D = 14
+ACTIVE_D = 7
+
+
+def _registry_af_ids() -> set[int]:
+    from src import league_registry as LR
+    return {int(e["api_football_id"]) for e in LR.leagues() if e.get("api_football_id") is not None}
+
+
+def collect_freshness(now: datetime | None = None, root: Path | None = None,
+                      registry_ids: set[int] | None = None) -> dict:
+    rule = (f"per registry league with an open season: fixture lists read within {FRESH_H} h; every "
+            f"finished fixture of a lineups-covered season >= {LINEUP_GRACE_D} days old (last "
+            f"{LINEUP_LOOKBACK_D} days) has a lineups answer; an injuries-covered league with a match in the "
+            f"last / next {ACTIVE_D} days has an injuries answer within {FRESH_H} h: RED on any")
+    label = "Data truth 8: injuries/lineups freshness"
+    root = Path(root or COLLECT)
+    now = pd.Timestamp(now or datetime.now(timezone.utc))
+    now = now.tz_localize("UTC") if now.tzinfo is None else now.tz_convert("UTC")
+    seasons = _read(root / "competition_seasons.parquet")
+    fixtures = _read(OUT / "strength" / "competition_fixtures.parquet") if root == COLLECT else \
+        _read(root / "competition_fixtures.parquet")
+    cov = _read(root / "af_league_coverage.parquet")
+    inj = _read(root / "injuries_seasons.parquet")
+    lj = _read(root / "lineups_fixtures.parquet")
+    missing_inputs = [n for n, d in (("competition_seasons", seasons), ("competition_fixtures", fixtures),
+                                     ("af_league_coverage", cov), ("injuries_seasons", inj),
+                                     ("lineups_fixtures", lj)) if d.empty]
+    if missing_inputs:
+        return _c(label, GREY, "inputs missing: " + ", ".join(missing_inputs), rule,
+                  "the collected data is on data-truth-100 until the go-live merge")
+    ids = _registry_af_ids() if registry_ids is None else registry_ids
+    today = now.tz_localize(None).normalize()
+    st = pd.to_datetime(seasons["season_start"], errors="coerce")
+    en = pd.to_datetime(seasons["season_end"], errors="coerce")
+    lid = pd.to_numeric(seasons["league_id"], errors="coerce")
+    op = seasons[(st <= today) & (en >= today) & lid.isin(ids)].copy()
+    if op.empty:
+        return _c(label, GREEN, "no open registry season", rule)
+    flag = {}
+    for c in ("injuries", "lineups"):
+        flag[c] = {(int(a), str(b)): (v is True or v == True)                                  # noqa: E712
+                   for a, b, v in zip(cov["league_id"], cov["season"], cov[c])} if c in cov.columns else {}
+    issues, per = [], {}
+    # (a) fixture lists
+    age = (now - pd.to_datetime(op["fetched_at"], errors="coerce", utc=True)).dt.total_seconds() / 3600
+    stale = op[age.isna() | (age > FRESH_H)]
+    for r in stale.itertuples(index=False):
+        per.setdefault(int(r.league_id), []).append(f"fixture list {r.season} read {r.fetched_at}")
+    # (b) lineups: finished fixtures >= LINEUP_GRACE_D days old without a journal row
+    fx = fixtures.copy()
+    fx["d"] = pd.to_datetime(fx["date"], errors="coerce")
+    fx = fx[pd.to_numeric(fx["league_id"], errors="coerce").isin(ids)
+            & (fx["d"] >= today - pd.Timedelta(days=LINEUP_LOOKBACK_D))
+            & (fx["d"] <= today - pd.Timedelta(days=LINEUP_GRACE_D))]
+    fx = fx[pd.Series([flag["lineups"].get((int(a), str(b))) is True for a, b in zip(fx["league_id"], fx["season"])],
+                      index=fx.index, dtype=bool)]
+    have = set(pd.to_numeric(lj["fixture_id"], errors="coerce").dropna().astype("int64"))
+    miss = fx[~pd.to_numeric(fx["fixture_id"], errors="coerce").isin(have)]
+    for lg, g in miss.groupby("league_id"):
+        per.setdefault(int(lg), []).append(f"{len(g)} finished fixture(s) without lineups (oldest {g['d'].min():%Y-%m-%d})")
+    # (c) injuries: covered open league-seasons with a match in the last / next ACTIVE_D days
+    recent = fixtures[pd.to_datetime(fixtures["date"], errors="coerce") >= today - pd.Timedelta(days=ACTIVE_D)]
+    active = {(int(a), str(b)) for a, b in zip(recent["league_id"], recent["season"])}
+    up = _read(root / "upcoming_fixtures.parquet")
+    if not up.empty:
+        ko = pd.to_datetime(up["kickoff"], errors="coerce", utc=True)
+        up = up[(ko >= now) & (ko <= now + pd.Timedelta(days=ACTIVE_D))]
+        active |= {(int(a), str(b)) for a, b in zip(up["league_id"], up["season"])}
+    last_inj = {}
+    for a, b, t in zip(inj["league_id"], inj["season"], pd.to_datetime(inj["fetched_at"], errors="coerce", utc=True)):
+        k = (int(a), str(b))
+        if t == t and (k not in last_inj or t > last_inj[k]):
+            last_inj[k] = t
+    n_inj = 0
+    for r in op.itertuples(index=False):
+        k = (int(r.league_id), str(r.season))
+        if flag["injuries"].get(k) is not True or k not in active:
+            continue
+        n_inj += 1
+        t = last_inj.get(k)
+        if t is None or (now - t).total_seconds() / 3600 > FRESH_H:
+            per.setdefault(k[0], []).append(f"injuries {k[1]} last read {t if t is not None else 'never'}")
+    for lg in sorted(per):
+        issues.append(f"league {lg}: " + "; ".join(per[lg]))
+    value = (f"{len(per)} of {op['league_id'].nunique()} open registry league(s) stale" if per else
+             f"fresh: {op['league_id'].nunique()} open registry league(s), {len(fx)} finished fixture(s) checked "
+             f"for lineups, {n_inj} active injuries-covered league-season(s)")
+    return _c(label, RED if per else GREEN, value, rule, "; ".join(issues)[:1500])
+
+
 def evaluate(now: datetime | None = None) -> list[dict]:
     """The rule checks. Never raises: a check that cannot run is itself RED."""
     out = []
@@ -807,7 +911,8 @@ def evaluate(now: datetime | None = None) -> list[dict]:
                       ("Data truth 3: no missing data", lambda: missing(now)),
                       ("Data truth 4: right league relations", leagues),
                       ("Data truth 5: one match, one row", lambda: one_match()),
-                      ("Data truth 6: clean ledgers", lambda: ledgers())):
+                      ("Data truth 6: clean ledgers", lambda: ledgers()),
+                      ("Data truth 8: injuries/lineups freshness", lambda: collect_freshness(now))):
         try:
             out.append(fn())
         except Exception as e:                                         # noqa: BLE001

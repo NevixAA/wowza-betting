@@ -52,7 +52,8 @@ name: Data Truth Collect (real data)
 # up to ~23,300/day). A budget stop is a clean exit 0; the next run continues.
 #
 # TRIGGER: a push to data-truth-100 that changes .github/collect_trigger.txt, or workflow_dispatch.
-# Not scheduled: the lead starts each run-day.
+# Not scheduled: the lead starts each run-day. (2026-11-15: injuries + lineups ALSO run daily and
+# incrementally in daily_injuries_lineups.yml - same concurrency group, so the two never overlap.)
 
 on:
   push:

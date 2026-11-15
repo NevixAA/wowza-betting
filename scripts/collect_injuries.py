@@ -19,7 +19,11 @@ on (fixture_id, date, team_id, player_id), the newest answer winning.
 
 OUTPUT (output/collect/ only)
   injuries.parquet          one row per entry: league_id, season, fixture_id, date, team_id,
-        player_id, player_name, type, reason, source ('league_season' | 'fixture'), fetched_at.
+        player_id, player_name, type, reason, source ('league_season' | 'fixture' |
+        'fixture_prematch'), fetched_at (the stored answer's fetch time), first_seen_at (2026-11-15:
+        the EARLIEST stored fetch of the row's key - a re-fetch replaces the answer but never moves
+        this, so a feature can prove the entry was known before a tip time; rows stored before
+        2026-11-15 carry their stored answer's fetched_at, an upper bound of the first sight).
         A field the provider does not give stays None (never a placeholder).
   injuries_seasons.parquet  the journal: league_id, season, status ('ok' | 'empty' | 'incomplete'),
         results, n_entries, paging_current, paging_total, n_finished_at_fetch, coverage_injuries
@@ -32,6 +36,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -50,7 +55,7 @@ ROWS = COLLECT_DIR / "injuries.parquet"
 SEASON_JOURNAL = COLLECT_DIR / "injuries_seasons.parquet"
 FIXTURE_JOURNAL = COLLECT_DIR / "injuries_fixtures.parquet"
 ROW_COLS = ["league_id", "season", "fixture_id", "date", "team_id", "player_id", "player_name",
-            "type", "reason", "source", "fetched_at"]
+            "type", "reason", "source", "fetched_at", "first_seen_at"]
 ROW_KEY = ["fixture_id", "date", "team_id", "player_id"]
 SJ_COLS = ["league_id", "season", "status", "results", "n_entries", "paging_current", "paging_total",
            "n_finished_at_fetch", "coverage_injuries", "fetched_at"]
@@ -127,9 +132,35 @@ def plan(fx: pd.DataFrame | None = None) -> dict:
     return {"league_seasons": ls, "seasons": seasons, "fallback": fallback, "coverage": cov_todo}
 
 
+def _key(df: pd.DataFrame) -> pd.Series:
+    return df[ROW_KEY].astype(str).agg("|".join, axis=1)
+
+
+def store_rows(rows: list[dict], path: Path | None = None) -> int:
+    """Append rows (the newest answer wins on ROW_KEY) keeping each key's EARLIEST first_seen_at.
+    A stored row without first_seen_at (before 2026-11-15) takes its own fetched_at."""
+    path = Path(path or ROWS)
+    new = pd.DataFrame(rows, columns=ROW_COLS)
+    new["first_seen_at"] = new["first_seen_at"].where(new["first_seen_at"].notna(), new["fetched_at"])
+    old = read_parquet(path)
+    if not old.empty:
+        old = old.reindex(columns=ROW_COLS)
+        old["first_seen_at"] = old["first_seen_at"].where(old["first_seen_at"].notna(), old["fetched_at"])
+        both = pd.concat([old, new], ignore_index=True)
+        first = both.assign(_k=_key(both)).groupby("_k")["first_seen_at"].min()
+        new["first_seen_at"] = _key(new).map(first).to_numpy()
+        new = pd.concat([old, new], ignore_index=True)
+    new = new.drop_duplicates(subset=ROW_KEY, keep="last").reset_index(drop=True)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_suffix(".tmp.parquet")
+    new.to_parquet(tmp, index=False)
+    os.replace(tmp, path)
+    return len(new)
+
+
 def _flush(rows, sj, fj):
     if rows:                                   # rows first: the journals decide what is asked again
-        append_parquet(ROWS, rows, ROW_KEY, ROW_COLS)
+        store_rows(rows)
     if sj:
         append_parquet(SEASON_JOURNAL, sj, ["league_id", "season"], SJ_COLS)
     if fj:
