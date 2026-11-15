@@ -40,6 +40,15 @@ LR_1_1_ADDS = {
                               "Swiss Super League", "Poland Ekstraklasa"},
 }
 
+# Owner-approved ADDS after LR-1.1, each with its evidence (a value is added, none is changed):
+#   2026-11-11 ODDS_API_SPORT_KEYS: Portuguese Primeira Liga -> soccer_portugal_primeira_liga. Owner decision
+#   "probe, then add": the provider's own /sports?all=true list holds exactly one candidate and the historical
+#   probe (wowza-exec run 43035181427, private ledger/probe_keys.json) returned btts + alternate_totals for a
+#   fixture proven to be ours. Training-only (enabled=false), so predict / live never fetch it.
+LATER_ADDS = {
+    "ODDS_API_SPORT_KEYS": {"Portuguese Primeira Liga"},
+}
+
 
 def _cfg_table(name):
     v = getattr(config, name)
@@ -65,7 +74,7 @@ def test_league_maps_equal_pre_registry_minus_aliases(name):
     # LR-1.1 only ADDS values copied from where the code already held them (see
     # test_league_registry_facts.py for their provenance); every pre-registry value is unchanged.
     added = {k: have[k] for k in set(have) - set(old)}
-    assert set(added) == LR_1_1_ADDS.get(name, set())
+    assert set(added) == LR_1_1_ADDS.get(name, set()) | LATER_ADDS.get(name, set())
     assert {k: v for k, v in have.items() if k not in added} == old
 
 
