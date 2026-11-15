@@ -1,6 +1,6 @@
 """Owner decision 2026-11-15 ("Schedule daily"): the daily incremental injuries + lineups collection
 (scripts/collect_daily_injuries_lineups.py, .github/workflows/daily_injuries_lineups.yml) and the
-Data truth 8 freshness check.
+Data truth 11 freshness check.
 
     PYTHONDONTWRITEBYTECODE=1 python -m pytest -p no:cacheprovider tests/test_daily_injuries_lineups.py -q
 
@@ -194,7 +194,7 @@ def test_prematch_window_and_coverage(env):
     assert D.plan_prematch(NOW).empty                                 # no provider injuries coverage
 
 
-# ── Data truth 8 ────────────────────────────────────────────────────────────────────────────────
+# ── Data truth 11 ───────────────────────────────────────────────────────────────────────────────
 
 def _truth_inputs(root: Path, lineup_journaled: bool, inj_read: datetime, list_read: datetime):
     pd.DataFrame([{"league_id": REG, "season": "2026", "season_start": "2026-08-01", "season_end": "2027-05-30",
@@ -224,3 +224,14 @@ def test_freshness_red_when_stale_while_matches_are_played(tmp_path):
 
 def test_freshness_no_data_without_inputs(tmp_path):
     assert DT.collect_freshness(NOW, root=tmp_path, registry_ids={REG})["status"] == DT.GREY
+
+
+def test_freshness_is_rule_11_and_not_gated():
+    red = {"check": "Data truth 11: injuries/lineups freshness", "status": DT.RED, "value": "stale", "detail": ""}
+    assert not DT.is_gated(red["check"])                     # 'Data truth 11' is not 'Data truth 1'
+    assert DT.is_gated("Data truth 1: one canonical name") and DT.is_gated("Data truth 7b: x")
+    assert DT.is_gated("Data truth 8b: new provenance violations") and not DT.is_gated("Data truth 8a: x")
+    assert not DT.is_gated("Data truth 10: x") and not DT.is_gated("Data truth 3: no missing data")
+    assert not [f for f in DT.gate(checks=[red]) if "Data truth 11" in f]
+    assert DT.collect_freshness.__name__ and any("Data truth 11" in line for line in
+                                                 Path(DT.__file__).read_text(encoding="utf-8").splitlines())

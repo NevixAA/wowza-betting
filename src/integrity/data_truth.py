@@ -34,7 +34,7 @@ turns system health RED instead of waiting for the next audit:
                  props features agrees with the match score where he played the full 90 minutes; every
                  rolling team feature reads the side its name says (own team vs opponent); a provider null
                  in a NULL_IS_MISSING count (goals_conceded, penalty_missed) stays missing. Gated.
-    8 FRESHNESS  (2026-11-15, owner "Schedule daily") the collected injuries and lineups
+   11 FRESHNESS  (2026-11-15, owner "Schedule daily") the collected injuries and lineups
                  (output/collect/, scripts/collect_daily_injuries_lineups.py) keep up with the matches
                  played, per registry league: RED when the fixture lists of an open season are older
                  than FRESH_H hours, when a finished fixture of a lineups-covered season is >= 2 days
@@ -804,7 +804,7 @@ def ledgers(start=None, bets: pd.DataFrame | None = None, players: pd.DataFrame 
               rule)
 
 
-# ── 8 INJURIES / LINEUPS FRESHNESS (2026-11-15) ────────────────────────────────────────────────
+# ── 11 INJURIES / LINEUPS FRESHNESS (2026-11-15) ────────────────────────────────────────────────
 COLLECT = OUT / "collect"
 #: the daily collection runs once a day; 36 h tolerates one late firing, never a missed day
 FRESH_H = 36
@@ -825,7 +825,7 @@ def collect_freshness(now: datetime | None = None, root: Path | None = None,
             f"finished fixture of a lineups-covered season >= {LINEUP_GRACE_D} days old (last "
             f"{LINEUP_LOOKBACK_D} days) has a lineups answer; an injuries-covered league with a match in the "
             f"last / next {ACTIVE_D} days has an injuries answer within {FRESH_H} h: RED on any")
-    label = "Data truth 8: injuries/lineups freshness"
+    label = "Data truth 11: injuries/lineups freshness"
     root = Path(root or COLLECT)
     now = pd.Timestamp(now or datetime.now(timezone.utc))
     now = now.tz_localize("UTC") if now.tzinfo is None else now.tz_convert("UTC")
@@ -912,7 +912,7 @@ def evaluate(now: datetime | None = None) -> list[dict]:
                       ("Data truth 4: right league relations", leagues),
                       ("Data truth 5: one match, one row", lambda: one_match()),
                       ("Data truth 6: clean ledgers", lambda: ledgers()),
-                      ("Data truth 8: injuries/lineups freshness", lambda: collect_freshness(now))):
+                      ("Data truth 11: injuries/lineups freshness", lambda: collect_freshness(now))):
         try:
             out.append(fn())
         except Exception as e:                                         # noqa: BLE001
@@ -976,13 +976,31 @@ def _ratchet() -> dict:
     return json.loads(RATCHET.read_text(encoding="utf-8"))
 
 
+def _rule_id(check: str) -> str:
+    """'Data truth 8b: ...' -> '8b' (the text between 'Data truth ' and the colon)."""
+    head = str(check).split(":", 1)[0]
+    return head[len("Data truth "):].strip() if head.startswith("Data truth ") else ""
+
+
+def is_gated(check: str) -> bool:
+    """A check is gated when its rule id IS a GATED id or that id plus a letter suffix (7 -> 7a / 7b /
+    7c). Exact ids, not text prefixes (2026-11-16): 'Data truth 11' (freshness, not gated) must not
+    match 'Data truth 1', nor 'Data truth 10' match it."""
+    rid = _rule_id(check)
+    for g in GATED:
+        gid = _rule_id(g + ":")
+        if rid == gid or (rid.startswith(gid) and rid[len(gid):].isalpha()):
+            return True
+    return False
+
+
 def gate(previous_ceiling: int | None = None, checks: list[dict] | None = None) -> list[str]:
     """Reasons the stoplight is RED for this commit ([] = green). The known-defaults ceiling in
     config/data_truth_ratchet.json may only go DOWN: the baseline may not exceed it, and the ceiling
     may not rise above the previous commit's."""
     fails = []
     for c in checks if checks is not None else evaluate():
-        if c["status"] == RED and c["check"].startswith(GATED):
+        if c["status"] == RED and is_gated(c["check"]):
             fails.append(f"{c['check']}: {c['value']} {c['detail']}".strip())
     ceiling = int(_ratchet()["max_known_defaults"])
     n = len(_baseline().get("entries", []))
