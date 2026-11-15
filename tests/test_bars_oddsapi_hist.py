@@ -362,3 +362,23 @@ def test_own_backfill_pairs_are_stripped_live_captures_kept():
     assert c["kept_football_data"] == int((u["market"].eq("over25") & u["yes"].notna()).sum())
     kept = s[(s["market"] == "btts") & s["yes"].notna()]
     assert len(kept) == c["kept_live_capture"]
+
+
+# ── protocol v5: BT bet-time snapshots (T-125h / T-153h) ─────────────────────────────────────────
+
+def test_bt_snapshot_days_before_kickoff_is_the_bet_price_only_for_the_bet_role():
+    early = "2024-05-26T12:00:00Z"                       # ~6 days before kickoff: tier BT's lead time
+    q = [dict(x, tier="BT", snapshot_label="bet") for x in _ou("pinnacle", 2.5, 1.9, 1.95, ts=early)]
+    got = P.price_frames(_universe(), pd.DataFrame(q), None, bet_role=True)["priced"]
+    r = _row(got, "over25")
+    assert (r["yes"], r["no"], r["price_source"]) == (1.9, 1.95, P.SRC_HIST)
+    # the same early snapshot outside the BET role keeps the day - 1 bound: no price
+    no = P.price_frames(_universe(), pd.DataFrame(q), None)["priced"]
+    assert pd.isna(_row(no, "over25")["yes"])
+
+
+def test_bt_after_kickoff_is_never_a_price():
+    late = "2024-06-02T00:40:00Z"
+    q = [dict(x, tier="BT", snapshot_label="bet") for x in _ou("pinnacle", 2.5, 1.9, 1.95, ts=late)]
+    got = P.price_frames(_universe(), pd.DataFrame(q), None, bet_role=True)["priced"]
+    assert pd.isna(_row(got, "over25")["yes"])

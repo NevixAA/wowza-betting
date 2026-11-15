@@ -117,12 +117,17 @@ def history_pairs(long: pd.DataFrame) -> tuple[pd.DataFrame, dict]:
     return w[cols].reset_index(drop=True), st
 
 
-def pick_pairs(pairs: pd.DataFrame, fixture_dates: pd.Series, stats: dict | None = None) -> pd.DataFrame:
+def pick_pairs(pairs: pd.DataFrame, fixture_dates: pd.Series, stats: dict | None = None,
+               bet_role: bool = False) -> pd.DataFrame:
     """Per (fixture_id, market): the first book of BOOK_ORDER with a provable pre-kickoff pair; its EARLIEST
     pair is the bet-time price, its LATEST the closing pair (src.league_bars.snapshot_pairs timing).
     fixture_dates: {fixture_id: our match date}. A pair whose provider kickoff is unknown or outside the
     collector's day window of OUR fixture date (src.oddsapi_history.day_window; the adapter also accepts an
-    adjacent-day listing) is never used: the kickoff must match the fixture (counted in stats)."""
+    adjacent-day listing) is never used: the kickoff must match the fixture (counted in stats).
+    bet_role (protocol v4/v5 price_evidence (c)): the pairs come ONLY from BET-role snapshots (tier BT, taken at
+    the measured live-tip lead time, src.oddsapi_history.BT_LEAD_HOURS: T-125h Standard / T-153h New-Format). Such
+    a snapshot is the bet price by construction, so the "from match day - 1" lower bound (written for close /
+    movement snapshots) does not apply; snapshot < kickoff still does."""
     from src import oddsapi_history as OH
     out_cols = ["fixture_id", "market", "league", "event_id", "bookmaker", "ts", "ko", "yes", "no",
                 "ts_c", "yes_c", "no_c"]
@@ -140,7 +145,8 @@ def pick_pairs(pairs: pd.DataFrame, fixture_dates: pd.Series, stats: dict | None
     stats["fixtures_kickoff_outside_fixture_window"] = int(p.loc[~ko_ok, "fixture_id"].nunique())
     p = p[ko_ok]
     pre = p["ts"] < p["ko"]
-    p = p[pre & p["day0"].notna() & (p["ts"] >= p["day0"] - pd.Timedelta(days=1))]
+    lower = pd.Series(True, index=p.index) if bet_role else (p["ts"] >= p["day0"] - pd.Timedelta(days=1))
+    p = p[pre & p["day0"].notna() & lower]
     p = p[p["bookmaker"].isin(BOOK_ORDER)]
     if p.empty:
         return pd.DataFrame(columns=out_cols)
@@ -239,7 +245,10 @@ def price_track(universe: pd.DataFrame, store_root: Path, tiers=None, close_tier
     store = AD.load_store(store_root)
     odds = store[store["tier"].isin(list(tiers))] if tiers is not None else store
     close = store[store["tier"].isin(list(close_tiers))] if close_tiers else None
-    return price_frames(universe, odds, AD.load_context(store_root, universe), close)
+    from src import oddsapi_history as OH
+    bet_role = tiers is not None and len(list(tiers)) > 0 and all(OH.snapshot_role(t, OH.BT_LABEL) == "BET"
+                                                                   for t in tiers)
+    return price_frames(universe, odds, AD.load_context(store_root, universe), close, bet_role=bet_role)
 
 
 def clean_fixture_map(fmap: dict, odds: pd.DataFrame) -> tuple[dict, dict]:
@@ -290,7 +299,7 @@ def close_pairs(universe: pd.DataFrame, odds: pd.DataFrame, ctx: dict | None) ->
 
 
 def price_frames(universe: pd.DataFrame, odds: pd.DataFrame, ctx: dict | None,
-                 close_odds: pd.DataFrame | None = None) -> dict:
+                 close_odds: pd.DataFrame | None = None, bet_role: bool = False) -> dict:
     """price_track on frames (ctx None = the events the odds rows carry, the adapter's own fallback).
     close_odds (protocol v4): close-role prices, read ONLY to fill the closing pair of history-priced rows."""
     from src import oddsapi_history_adapter as AD
@@ -302,7 +311,8 @@ def price_frames(universe: pd.DataFrame, odds: pd.DataFrame, ctx: dict | None,
     pairs, pst = history_pairs(long)
     pst.update(clean)
     fx = universe.assign(fixture_id=universe["row_id"].astype(str)).drop_duplicates("fixture_id")
-    picked = pick_pairs(pairs, fx.set_index("fixture_id")["date"], pst)
+    picked = pick_pairs(pairs, fx.set_index("fixture_id")["date"], pst, bet_role=bet_role)
+    pst["bet_role_only"] = bool(bet_role)
     if close_odds is not None and len(picked):
         cp = close_pairs(universe, close_odds, ctx)
         picked = picked.merge(cp, on=["fixture_id", "market"], how="left")

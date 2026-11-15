@@ -213,7 +213,7 @@ def attach(universe: pd.DataFrame, odds: pd.DataFrame, ctx: dict | None = None
     o["role"] = [OH.snapshot_role(t, lab) for t, lab in zip(o["tier"], o["snapshot_label"])]
     cls = [classify(m, n, ds, p, h, a) for m, n, ds, p, h, a in
            zip(o["market"], o["outcome_name"], o["outcome_description"], o["point"], o["home_team"], o["away_team"])]
-    keep = [c is not None for c in cls]
+    keep = np.array([c is not None for c in cls], dtype=bool)   # an empty list would select no COLUMNS
     o = o[keep].reset_index(drop=True)
     c = pd.DataFrame([x for x in cls if x is not None], columns=["market", "side", "line", "team", "player"])
     o = o.rename(columns={"market": "provider_market"})
