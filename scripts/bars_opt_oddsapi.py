@@ -107,7 +107,7 @@ def cmd_study(a) -> int:
         meta = {"fresh_verdicts_proposal": res["proposal_id"], "protocol_sha256": res["protocol_sha256"],
                 "choices_sha256": res["choices_sha256"], "fresh_holm_family": res["holm_family"],
                 "serving_universe": str(a.serving_universe), "study_cells": str(a.study_cells)}
-        out = H.combine(fresh, fams, study_cells, a.month, meta)
+        out = H.combine(fresh, fams, study_cells, a.month, meta, tag=a.tag or "")
         print(json.dumps(out, indent=1, default=str))
     return 0
 
@@ -165,6 +165,7 @@ def main(argv=None) -> int:
     s.add_argument("--out", required=True)
     s.add_argument("--workers", type=int, default=4)
     s.add_argument("--month", help="also write the owner proposal: serving cells of this month + fresh cells")
+    s.add_argument("--tag", help="re-run label: candidates / evidence under <month>_<tag> (never overwrite an approved one)")
     s.add_argument("--serving-universe", default=str(UNIVERSE_DIR), help="own-priced universes (serving cells)")
     s.add_argument("--study-cells", default=str(UNIVERSE_DIR / "study" / "cells.json"),
                    help="selection study FINAL cells (verdicts of the cells not tested on the fresh holdout)")

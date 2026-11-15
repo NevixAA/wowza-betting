@@ -229,11 +229,15 @@ def status_table(families: list[dict], study_cells: list[dict]) -> list[dict]:
     return sorted(rows, key=lambda r: (r["track"], r["mside"], r["league"]))
 
 
-def combine(fresh: dict, families: list[dict], study_cells: list[dict], month: str, meta: dict) -> dict:
+def combine(fresh: dict, families: list[dict], study_cells: list[dict], month: str, meta: dict,
+            tag: str = "") -> dict:
     """The owner proposal: the month's serving families (selection-based bars, verdicts as in
     TP-2026-11-09-abfb5dc4) with every cell tested on the fresh holdout replaced by its fresh cell (frozen
-    bars + fresh verdict). Candidates -> src/threshold_proposals (id + hash); nothing is applied."""
+    bars + fresh verdict). Candidates -> src/threshold_proposals (id + hash); nothing is applied.
+    tag: a re-run in a month that already has an (approved) proposal writes its candidates and evidence under
+    <month>_<tag>, so the approved evidence / candidates are never overwritten."""
     from src import threshold_proposals as TP
+    key_m = f"{month}_{tag}" if tag else month
     from src.bars_opt import cells as C
     ch = {(c["track"], c["mside"]): c for c in fresh["choices"]}
     fams = [dict(f, cells=list(f["cells"]), off=list(f["off"])) for f in families]
@@ -253,21 +257,24 @@ def combine(fresh: dict, families: list[dict], study_cells: list[dict], month: s
         f["cells"] = [c for c in f["cells"] if c["league"] != t["league"]] + [cell]
         f["off"] = [o for o in f["off"] if o["league"] != t["league"]]
         replaced.append({"track": key[0], "mside": key[1], "league": t["league"], "verdict": cell["verdict"]})
-    cand_dir = TP.CANDIDATE_DIR / NAMESPACE / month
+    cand_dir = TP.CANDIDATE_DIR / NAMESPACE / key_m
     for m, data in C.production_candidates(fams).items():
         TP.write_candidate("standard" if m == "ou25" else m, data, cand_dir)
     table = status_table(fams, study_cells)
     from collections import Counter
     counts = dict(Counter(r["status"] for r in table))
     prop_dir = TP.PROPOSAL_DIR / NAMESPACE
-    TP._safe_write(prop_dir / f"evidence_{month}.json", json.dumps(
+    ev = prop_dir / f"evidence_{key_m}.json"
+    if tag and ev.exists():
+        raise SystemExit(f"{ev} exists - a tagged re-run never overwrites evidence")
+    TP._safe_write(ev, json.dumps(
         {"month": month, "meta": meta, "fresh_cells_replaced": replaced, "fresh_cells_refused": refused,
          "status_counts": counts, "league_market_status": table, "families": fams}, indent=1, default=str))
     rel = cand_dir.resolve().relative_to(ROOT.resolve()).as_posix()
     p = TP.build_proposal(TP.load_candidates(cand_dir), month=month, resolve=True,
                           source={"workflow": "bars fresh holdout + selection-based serving cells (src/bars_opt/hist_study)",
                                   "candidates_dir": rel,
-                                  "evidence": f"output/threshold_proposals/{NAMESPACE}/evidence_{month}.json"} | meta)
+                                  "evidence": f"output/threshold_proposals/{NAMESPACE}/evidence_{key_m}.json"} | meta)
     path = TP.write_proposal(p, prop_dir)
     return {"proposal_id": p["proposal_id"], "proposal_hash": p["proposal_hash"],
             "proposal": Path(path).resolve().relative_to(ROOT.resolve()).as_posix(),
