@@ -219,7 +219,9 @@ def project(panel: pd.DataFrame, bench: dict) -> pd.DataFrame:
     if pend.empty:
         return pd.DataFrame()
     pend = pend[fp.active_mask(pend)].copy()
-    train = prep[prep["status"].isin(["FINAL", "PROVISIONAL"]) & fp.active_mask(prep)]
+    # FINAL gameweeks only - what walk_forward validates (fantasy_residual): a PROVISIONAL (partly
+    # settled) gameweek entered the served fit but never the validation (real-data rule 2026-11-15).
+    train = prep[(prep["status"] == "FINAL") & fp.active_mask(prep)]
     r = (train["actual_points"] - train["ep_next"]).to_numpy(float)
     lin = R.LinearResidual().fit(train, r)
     mm = R.MinutesModel().fit(train)
@@ -318,7 +320,17 @@ def _multi_gw(pend: pd.DataFrame, panel: pd.DataFrame, gw: int) -> pd.DataFrame:
     by_team = {t: g for t, g in fut.groupby("team_id")}
     x3, x5, nxt, run, fdr_run = [], [], [], [], []
     for r in pend.itertuples():
-        g = by_team.get(int(r.team_id), pd.DataFrame(columns=fut.columns))
+        g = by_team.get(int(r.team_id))
+        # No fixture rows for the club (fixtures cache missing / club absent) is MISSING data, not a
+        # run of blanks; a negative ep_next cannot be extrapolated into later gameweeks either.
+        # Both -> later-gameweek points unknown (real-data rule 2026-11-15).
+        if g is None or float(r.final_xpts) < 0:
+            x3.append(float("nan"))
+            x5.append(float("nan"))
+            nxt.append("")
+            run.append("")
+            fdr_run.append("")
+            continue
         cur = g[g["gw"] == gw]
         mults_now = [_fixture_mult(r.position, f.lam_for, f.cs_prob, lam_ref, cs_ref)
                      for f in cur.itertuples()]
