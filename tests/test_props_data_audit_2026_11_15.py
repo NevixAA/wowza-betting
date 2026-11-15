@@ -509,3 +509,16 @@ def test_null_as_zero_catches_the_dribbles_past_pattern_again():
                         "date": [pd.Timestamp("2026-11-01")] * 12, "dribbles_past": [0.0] * 12})
     assert PFT.null_as_zero(raw, rf)["status"] == PFT.RED              # an unpublished group read as 0
     assert PFT.null_as_zero(raw.assign(dribbles_past=np.nan), rf)["status"] == PFT.GREEN
+
+
+def test_a_one_sided_played_fixture_gets_its_opponent_row_like_serving(monkeypatch):
+    from player_model import team_identity as TI
+    monkeypatch.setattr(TI, "fixture_results", lambda: pd.DataFrame())
+    rows = pd.DataFrame({"fixture_id": [7] * 3, "player_id": [1, 2, 3], "date": [pd.Timestamp("2026-11-07")] * 3,
+                         "league": ["Premier League"] * 3, "team": ["Away FC"] * 3, "home_team": ["Home FC"] * 3,
+                         "away_team": ["Away FC"] * 3, "is_home": [0] * 3, "position": ["D", "M", "F"],
+                         "goals": [0, 1, 0], "shots_on_target": [0, 1, 1], "minutes": [90] * 3})
+    t = FE.team_match_table(rows)
+    assert len(t) == 2                                       # the held side + the opponent's empty row
+    assert t["_tkey"].nunique() == 2
+    assert t["sot_scored"].notna().sum() == 1                # only the held side is measured

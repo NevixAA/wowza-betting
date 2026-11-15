@@ -540,11 +540,13 @@ def team_match_table(df: pd.DataFrame) -> pd.DataFrame:
     # Only the side we hold rows for can be measured: a fixture whose opponent was not collected
     # leaves every conceded quantity NaN (it used to drop out of an inner self-join silently).
     t = _with_fixture_scores(t)
-    # An UPCOMING fixture (serving: no result yet) has no score row. The opponent side's row is
-    # added with every quantity missing, so the opponent's pre-match rolling is read at this
-    # fixture exactly as training reads it from the score-only row of the played fixture.
-    if UPCOMING_COL in d.columns and d[UPCOMING_COL].astype(bool).any():
-        u = (d[d[UPCOMING_COL].astype(bool)].groupby(["fixture_id", "_tkey"])
+    # A fixture side we hold rows for whose OPPONENT has no row yet - an UPCOMING fixture (serving:
+    # no result yet), or a PLAYED fixture with one side collected and no stored score (parity
+    # 2026-11-15: Ireland 1648307, UCD v Drogheda, only Drogheda's rows held) - gets the opponent
+    # side's row with every quantity missing, so the opponent's pre-match rolling is read at this
+    # fixture the same way in training and serving.
+    if len(d):
+        u = (d.groupby(["fixture_id", "_tkey"])
              .agg(date=("date", "first"), league=("league", "first"), _okey=("_okey", "first"))
              .reset_index())
         opp = u.rename(columns={"_tkey": "_okey", "_okey": "_tkey"})
