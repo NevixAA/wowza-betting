@@ -917,6 +917,24 @@ def evaluate(now: datetime | None = None) -> list[dict]:
             out.append(fn())
         except Exception as e:                                         # noqa: BLE001
             out.append(_c(label, RED, "check failed", "must run", f"{type(e).__name__}: {e}"[:200]))
+    # 8 REAL DATA ONLY (owner P0 2026-11-15, src.integrity.real_data_provenance): three lines, never
+    # one combined green - 8a ACTIVE production violations (system health), 8b NEW violations against
+    # config/feature_provenance.json (gated), 8c registered historical exceptions.
+    # The slim dashboard tree does not carry it (deploy/dashboard_manifest.json PIPELINE_ONLY: it loads
+    # the model payloads); there the lines are NO_DATA, never a crash.
+    try:
+        from .real_data_provenance import checks as _real_data_checks
+    except ImportError as e:
+        _real_data_checks = None
+        for lab in ("Data truth 8a: active production violations", "Data truth 8b: new provenance violations"):
+            out.append(_c(lab, GREY, "not run in this tree",
+                          "runs on the full repository (data_truth_gate / evidence_refresh)", f"{e}"[:200]))
+    try:
+        if _real_data_checks is not None:
+            out.extend(_real_data_checks())
+    except Exception as e:                                             # noqa: BLE001
+        for lab in ("Data truth 8a: active production violations", "Data truth 8b: new provenance violations"):
+            out.append(_c(lab, RED, "check failed", "must run", f"{type(e).__name__}: {e}"[:200]))
     # 7 PROPS FEATURES (fix/props-feature-bugs 2026-11-11): keeper goals_conceded agrees with the
     # match score on the frame the props features read; team features keyed to their side.
     # The slim dashboard tree does not carry it (deploy/dashboard_manifest.json PIPELINE_ONLY: it reads
@@ -951,7 +969,7 @@ RATCHET = ROOT / "config" / "data_truth_ratchet.json"
 #: must not merge. It runs the loader's identity pipeline on the committed banks (~15 s; it was
 #: ~19-60 s before team_names memoised norm/identity_key and duplicate_pairs stopped slicing
 #: pandas groups).
-GATED = ("Data truth 1", "Data truth 2", "Data truth 4", "Data truth 5", "Data truth 7")
+GATED = ("Data truth 1", "Data truth 2", "Data truth 4", "Data truth 5", "Data truth 7", "Data truth 8b")
 
 
 def _ratchet() -> dict:

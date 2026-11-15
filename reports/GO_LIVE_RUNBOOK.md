@@ -429,6 +429,7 @@ generator, not the dashboard.
 | U6 Clean Record | revert the PR; PATCH the milestone due date back |
 | U7 milestone close | PATCH `state=open` |
 | R1/R2 retrain | `gh variable delete PHASE2_RETRAIN_ENABLED`; nothing to revert (no commits) |
+| Standard O/U 2.5 serving recipe | **no recipe rollback**: `v9_repaired` was RETIRED by the owner 2026-11-15 ("fix what you need"; `docs/STANDARD_REPAIRED_FAILCLOSED_ROLLBACK.md`). `STANDARD_OU25_SERVING_RECIPE` accepts only `legacy_v9`; a Standard model problem is `src.promotion_gate.rollback("standard", <earlier version>)` (owner, logged) |
 
 ---
 

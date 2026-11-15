@@ -135,7 +135,11 @@ def team_strength_asof(snap: pd.DataFrame, tfl: pd.DataFrame, deadline) -> pd.Da
         # The league mean is measured from this league's own finished fixtures; with none yet it
         # is unknown (NaN) - it used to be a typed 1.35.
         mu = float(np.nanmean(raw)) if raw.notna().any() else float("nan")
-        t[k] = ((raw.fillna(mu) * t["games"] + mu * prior) / (t["games"] + prior))
+        # A team WITH games but no measured value stays unknown (NaN): `raw.fillna(mu)` gave it the
+        # league mean weighted by its games, an invented observation (real-data rule 2026-11-15).
+        # Only a team with no game yet is the prior alone (an explicit shrinkage estimate).
+        own = (raw * t["games"]).where(t["games"] > 0, 0.0)
+        t[k] = (own + mu * prior) / (t["games"] + prior)
     # Home advantage MEASURED from the same finished fixtures (goals per game at home / overall,
     # and away / overall); it was an unfitted 1.10 / 0.91. NaN with no finished fixture.
     gf = pd.to_numeric(done["gf"], errors="coerce")

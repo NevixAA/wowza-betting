@@ -657,6 +657,10 @@ def owner_install(model_type: str, raw: bytes, *, approval: str, approved_by: st
     from src import standard_serving
     now = now or reg.utcnow()
     training = dict(training or {})
+    if model_type in reg.RETIRED_MODEL_TYPES:
+        r = reg.RETIRED_MODEL_TYPES[model_type]
+        raise PermissionError(f"{model_type} was RETIRED on {r['retired_on']} by {r['approved_by']} "
+                              f"(\"{r['owner_words']}\"): it is never installed again")
     if model_type not in reg.FROZEN_MODEL_TYPES:
         raise PermissionError(f"owner_install is only for frozen model types "
                               f"{sorted(reg.FROZEN_MODEL_TYPES)}; {model_type} goes through the gate")
@@ -900,6 +904,37 @@ def record_archive(model_type: str, reason: str) -> None:
     record_decision({"stage": "ARCHIVE", "model_type": model_type,
                      "candidate_version": "", "champion_version": ent.get("model_version", ""),
                      "verdict": "ARCHIVED", "promoted": False, "reason": reason[:600]})
+
+
+RETIRE = "RETIRE"
+
+
+def retire_model_type(model_type: str, now=None) -> bool:
+    """Record an owner RETIREMENT (reg.RETIRED_MODEL_TYPES carries the owner's words and the date).
+    The pointer entry keeps its model_version / sha (what was retired) and gains status RETIRED +
+    the record; one decision row (stage RETIRE, verdict RETIRED) is appended. The serving file and
+    the stored champion bytes are NOT touched (kept for audit). Idempotent: returns False when the
+    pointer already says RETIRED."""
+    if model_type not in reg.RETIRED_MODEL_TYPES:
+        raise PermissionError(f"{model_type} is not in reg.RETIRED_MODEL_TYPES (an owner decision)")
+    r = reg.RETIRED_MODEL_TYPES[model_type]
+    ptr = reg.read_pointer()
+    ent = dict(ptr.get(model_type) or {})
+    if ent.get("status") == "RETIRED":
+        return False
+    at = reg.iso(now or reg.utcnow())
+    ent.update({"status": "RETIRED", "retired_at": at, "retired_on": r["retired_on"],
+                "retired_by": r["approved_by"], "retirement_owner_words": r["owner_words"],
+                "retirement_reason": r["reason"]})
+    ptr[model_type] = ent
+    reg._atomic_write_json(reg.POINTER_FILE, ptr)
+    record_decision({"stage": RETIRE, "model_type": model_type, "candidate_version": "",
+                     "champion_version": ent.get("model_version", ""), "verdict": "RETIRED",
+                     "promoted": False,
+                     "reason": (f"owner {r['retired_on']} ({r['approved_by']}): \"{r['owner_words']}\" - "
+                                f"{r['reason']}")[:600]})
+    reg._version_cache.clear()
+    return True
 
 
 def reconstruct_pointer_if_missing(pointer: dict, source: str = "LEGACY_GIT") -> bool:

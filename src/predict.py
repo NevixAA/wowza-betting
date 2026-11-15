@@ -336,6 +336,24 @@ def _detect_postponed(current_df: pd.DataFrame) -> list[dict]:
 
 # ── Main predict function ─────────────────────────────────────────────────────
 
+#: payloads the serving guard refused in this process: [{"model", "reason"}] (real-data rule)
+SERVING_REFUSALS: list = []
+
+
+def _serve_proba(frame: pd.DataFrame, payload: dict, what: str) -> pd.Series:
+    """src.model.predict_proba on LIVE fixtures (serving=True, fix/real-data-provenance 2026-11-15):
+    a payload the real-data guard refuses scores NOTHING (every row NaN -> no edge -> no tip, an
+    ERROR line and SERVING_REFUSALS), and a fixture missing its core rolling form gets no
+    probability. Never the batch-median or a zero-filled feature."""
+    from src.model import predict_proba, UnservablePayload
+    try:
+        return predict_proba(frame, payload=payload, serving=True)
+    except UnservablePayload as e:
+        log.error(f"  {what}: {e} - {len(frame)} fixture(s) left WITHOUT a probability (fail closed)")
+        SERVING_REFUSALS.append({"model": what, "reason": str(e)})
+        return pd.Series(np.nan, index=frame.index, name="p_over25")
+
+
 def predict_upcoming(
     historical:        pd.DataFrame,
     payload:           dict,
@@ -412,7 +430,7 @@ def predict_upcoming(
     nf_mask  = feat["league"].isin(config.NEW_FORMAT_LEAGUES)
 
     if std_mask.any():
-        p_std = predict_proba(feat[std_mask], payload=payload)
+        p_std = _serve_proba(feat[std_mask], payload, "Standard O/U 2.5")
         probas[std_mask.values] = p_std.values
         log.info(f"  Standard model: {std_mask.sum()} fixtures")
 
@@ -429,7 +447,7 @@ def predict_upcoming(
             log.error(f"  New-format model artifact NOT LOADED: {int(nf_mask.sum())} New Format "
                       f"fixture(s) left WITHOUT a probability (no Standard-model fallback; fail closed)")
         else:
-            p_nf = predict_proba(feat[nf_mask], payload=payload_newformat)
+            p_nf = _serve_proba(feat[nf_mask], payload_newformat, "New Format O/U 2.5")
             probas[nf_mask.values] = p_nf.values
             log.info(f"  New-format model: {nf_mask.sum()} fixtures")
 
@@ -494,7 +512,7 @@ def predict_upcoming(
             feat[col] = np.nan
             if side_mask.any():
                 try:
-                    feat.loc[side_mask, col] = predict_proba(feat[side_mask], payload=sp).values
+                    feat.loc[side_mask, col] = _serve_proba(feat[side_mask], sp, col).values
                     log.info(f"  Side-market {target}: {side_mask.sum()} fixtures "
                              f"({std_mask.sum()} std + {nf_mask.sum()} nf)")
                 except Exception as e:
@@ -555,9 +573,9 @@ def predict_upcoming(
             # FAIL CLOSED: scoring on missing features imputes them (z ~ -37, see above) and emits
             # confident nonsense. No HT features, no HT probabilities.
             if _ht_ok:
-                feat.loc[std_mask, "p_ht_over05"] = predict_proba(feat[std_mask], payload=ht_payload_05).values
+                feat.loc[std_mask, "p_ht_over05"] = _serve_proba(feat[std_mask], ht_payload_05, "HT 0.5").values
                 if ht_payload_15:
-                    feat.loc[std_mask, "p_ht_over15"] = predict_proba(feat[std_mask], payload=ht_payload_15).values
+                    feat.loc[std_mask, "p_ht_over15"] = _serve_proba(feat[std_mask], ht_payload_15, "HT 1.5").values
                 log.info(f"  HT model: {std_mask.sum()} fixtures scored")
         except Exception as e:
             log.warning(f"  HT model prediction failed: {e}")

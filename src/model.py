@@ -847,20 +847,55 @@ def score_payload(payload: dict, df: pd.DataFrame, target: str) -> float:
 
 # ── Inference ─────────────────────────────────────────────────────────────────
 
+class UnservablePayload(ValueError):
+    """A payload the SERVING path refuses (src.model.serving_refusal names why)."""
+
+
+def serving_refusal(payload: dict) -> "str | None":
+    """Why `payload` (one flat model, or one track of a split payload) may not score a LIVE fixture,
+    or None. Real-data rule (owner 2026-11-15, fix/real-data-provenance):
+      * no persisted train-only imputer -> legacy _prep fills from the medians of the scoring batch
+        (and an all-missing column with 0.0): a fixture's inputs would be invented from the board;
+      * a 1.0 imputer that recorded a feature with NO training values fills it with the constant
+        `fill_all_missing` (0.0) - the model learned a typed number as if it were an observation
+        (models/model_v9_standard_repaired.pkl: xG and inside-box shots, 0% training coverage)."""
+    imp = payload.get("imputer")
+    if not imp:
+        return "no persisted train-only imputer (batch-median imputation at serving)"
+    feats = imp.get("features") or {}
+    if imp.get("version") == "v9-train-only-imputer-1.0":
+        dead = [c for c in payload.get("feature_cols") or []
+                if isinstance(feats.get(c), dict) and feats[c].get("median") is None
+                and not str(c).endswith("__missing")]
+        if dead:
+            return (f"1.0 imputer fills {len(dead)} feature(s) with no training values with the constant "
+                    f"{imp.get('fill_all_missing')} ({', '.join(dead[:6])})")
+    missing = [c for c in payload.get("feature_cols") or [] if c not in feats]
+    if missing:
+        return f"{len(missing)} feature(s) absent from the imputer manifest ({', '.join(missing[:6])})"
+    return None
+
+
 def predict_proba(df: pd.DataFrame, payload: Optional[dict] = None,
-                  model_file: Optional[Path] = None) -> pd.Series:
+                  model_file: Optional[Path] = None, serving: bool = False) -> pd.Series:
     """
     Return ensemble P(over 2.5) for each row in df.
     Uses meta-logistic learned blend if available, otherwise simple mean.
+
+    serving=True (src/predict.py, live fixtures; fix/real-data-provenance 2026-11-15) FAILS CLOSED:
+      * a payload serving_refusal() names raises UnservablePayload (no row is scored by it);
+      * a row missing a REQUIRED input of the imputer manifest (the core rolling form) gets NO
+        probability (NaN): its inputs would be the training medians, not this fixture's football.
+    serving=False (training, backtests, research) is unchanged.
     """
     if payload is None:
         payload = load_models(model_file)
     if payload.get("tracks") is not None:
-        return _predict_by_track(df, payload)
-    return _predict_flat(df, payload)
+        return _predict_by_track(df, payload, serving=serving)
+    return _predict_flat(df, payload, serving=serving)
 
 
-def _predict_by_track(df: pd.DataFrame, payload: dict) -> pd.Series:
+def _predict_by_track(df: pd.DataFrame, payload: dict, serving: bool = False) -> pd.Series:
     """A track-split payload (`train_by_track`): each row is scored ONLY by the model trained on
     its own track (routing = `track_of`, the function the trainer split on). A row whose track has
     no trained model, or whose league is in no track, gets NO probability (NaN) — never another
@@ -878,12 +913,16 @@ def _predict_by_track(df: pd.DataFrame, payload: dict) -> pd.Series:
             log.warning(f"  {int(m.sum())} {name} row(s): no {name} model in this payload — "
                         f"left without a probability")
             continue
-        out[m] = _predict_flat(df[m], sub).to_numpy()
+        out[m] = _predict_flat(df[m], sub, serving=serving).to_numpy()
     return out
 
 
-def _predict_flat(df: pd.DataFrame, payload: dict) -> pd.Series:
+def _predict_flat(df: pd.DataFrame, payload: dict, serving: bool = False) -> pd.Series:
     feat_cols  = payload["feature_cols"]
+    if serving:
+        why = serving_refusal(payload)
+        if why:
+            raise UnservablePayload(f"refusing to serve {payload.get('recipe') or 'legacy'} payload: {why}")
     # A repaired payload WITHOUT its persisted imputer would silently fall back to the
     # batch-median path (finding 2): refuse it. Legacy payloads carry no `recipe` key.
     if payload.get("recipe") in REPAIRED_RECIPES and not payload.get("imputer"):
@@ -892,6 +931,17 @@ def _predict_flat(df: pd.DataFrame, payload: dict) -> pd.Series:
     # payload["imputer"] exists only on v9_repaired payloads; serving payloads have none, so
     # this is the legacy call exactly.
     X, _       = _prep(df, feat_cols, imputer=payload.get("imputer"))
+    degraded = None
+    if serving:
+        from src.imputer import as_manifest
+        req = [c for c, st in as_manifest(payload["imputer"]).features.items()
+               if st.required and c in feat_cols]
+        if req:
+            present = df.reindex(columns=req).apply(pd.to_numeric, errors="coerce")
+            degraded = present.isna().any(axis=1).to_numpy()
+            if degraded.any():
+                log.warning(f"  {int(degraded.sum())} row(s) miss a required input ({', '.join(req)}): "
+                            f"no probability (inputs would be training medians)")
     base_models = {k: v for k, v in payload["models"].items() if k != "__meta__"}
     meta_model  = payload["models"].get("__meta__")
 
@@ -906,6 +956,9 @@ def _predict_flat(df: pd.DataFrame, payload: dict) -> pd.Series:
     else:
         ensemble = np.mean(probas, axis=0)
 
+    ensemble = np.asarray(ensemble, dtype=float)
+    if degraded is not None and degraded.any():
+        ensemble = np.where(degraded, np.nan, ensemble)
     return pd.Series(ensemble, index=df.index, name="p_over25")
 
 
