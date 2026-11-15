@@ -235,6 +235,9 @@ RAW = {                # why the raw file is the right input
                                             "fixtures the served history lacks"),
     "scripts/probe_oddsapi_history.py": ("P7: reads league / date only to pick one probe match day per "
                                          "league for the OddsAPI history probe (no result is served)"),
+    "src/team_info_features.py": ("2026-11-15: reads fixture_id + HXG / AXG of PROVIDER rows only (a row "
+                                  "without fixture_id is not read), keyed by the provider fixture id; no "
+                                  "club name, date or result is read or served"),
 }
 
 

@@ -321,7 +321,7 @@ def _team_block(ix: _Index, team, T: np.datetime64) -> dict:
     if lus:
         for _f, (pids, pos) in lus:
             for p, q in zip(pids, pos):
-                w[p] = w.get(p, 0.0) + 1.0 / len(lus)
+                w[p] = w[p] + 1.0 / len(lus) if p in w else 1.0 / len(lus)    # start share, counted
                 pos_of.setdefault(p, []).append(q)
         pos_of = {p: max(set(v), key=lambda x: (v.count(x), str(x))) for p, v in pos_of.items()}
         reg = sorted(w, key=lambda p: (-w[p], p))[:11]
@@ -353,9 +353,10 @@ def _team_block(ix: _Index, team, T: np.datetime64) -> dict:
                     continue
                 for p, g in zip(ix.goals.get((f, team), "player_id").tolist(), ix.goals.get((f, team), "goals").astype(float).tolist()):
                     if np.isfinite(g):
-                        tot[p] = tot.get(p, 0.0) + g
+                        tot[p] = tot[p] + g if p in tot else g
             s = sum(tot.values())
-            out["info_goal_share_absent"] = float(sum(tot.get(p, 0.0) for p in absent) / s) if s > 0 else np.nan
+            # an absentee with no goal row in the window scored none of the team's goals there
+            out["info_goal_share_absent"] = float(sum(tot[p] for p in absent if p in tot) / s) if s > 0 else np.nan
 
     # (c) rolling xG for / against, fixtures with kickoff < T
     xf, xa = [], []
