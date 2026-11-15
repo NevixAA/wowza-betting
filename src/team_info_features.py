@@ -375,12 +375,14 @@ def _team_block(ix: _Index, team, T: np.datetime64) -> dict:
 
 
 def _club_facts(ix: _Index, team, T: np.datetime64, out: dict) -> None:
-    # coach tenure at T (career known from the end of its start month)
+    # coach tenure at T: the newest career known before T (start, from the end of its start month,
+    # < T) that has not ended before T. Order-free: two careers of the same month (an interim and
+    # the appointment) give the same start, so no tie can change the value.
     if team in ix.co:
         st, en = ix.co[team]
-        k = int(np.searchsorted(st, T, side="left")) - 1             # known strictly before T
-        if k >= 0 and (np.isnat(en[k]) or en[k] >= T):
-            out["info_coach_tenure_days"] = float((T - st[k]) / np.timedelta64(1, "D"))
+        run = (st < T) & (np.isnat(en) | (en >= T))
+        if run.any():
+            out["info_coach_tenure_days"] = float((T - st[run].max()) / np.timedelta64(1, "D"))
     # transfers in, dated [T - 120 d, T)
     if team in ix.transfer_cover:                 # the provider answered for this club: 0 is real
         d = ix.tr.get(team, np.array([], dtype="datetime64[ns]"))

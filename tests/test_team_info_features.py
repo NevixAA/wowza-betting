@@ -209,3 +209,15 @@ def test_league_levels_slope_one_when_levels_carried_and_zero_when_flat():
     t = E.league_levels(pd.concat(rows), cfg).set_index("candidate")
     assert abs(t.at["carried", "level_slope"] - 1) < 1e-9 and t.at["carried", "mean_abs_gap"] < 1e-9
     assert np.isnan(t.at["flat", "level_slope"]) and t.at["flat", "spread_predicted"] == 0
+
+
+def test_coach_tenure_does_not_depend_on_row_order():
+    s = _store()
+    s.coaches = pd.DataFrame({"team_id": [10, 10, 10],
+                              "start": pd.to_datetime(["2024-03-01", "2024-09-01", "2024-09-01"], utc=True),
+                              "end": pd.to_datetime([None, "2024-10-01", None], utc=True)})
+    r = pd.DataFrame({"date": [pd.Timestamp("2025-02-20")], "league": ["L"], "home_team": ["Ten"], "away_team": ["Twenty"]})
+    a = TI.info_features(r, s)["home_info_coach_tenure_days"].iat[0]
+    s.coaches = s.coaches.iloc[::-1].reset_index(drop=True)
+    b = TI.info_features(r, s)["home_info_coach_tenure_days"].iat[0]
+    assert a == b and a > 150                       # the running 2024-09 career
