@@ -179,6 +179,8 @@ def test_rule7_board_files_take_their_run_time_from_predictions(tmp_path):
     assert [h["file"] for h in DT.retired_tier_rows(tmp_path)] == ["bets.csv"]
     (tmp_path / "predictions.csv").unlink()                     # no run time: the match date decides, as before
     assert [h["file"] for h in DT.retired_tier_rows(tmp_path)] == ["bets.csv"]
+    # rule 1's board list is a different, unchanged list (a same-named constant once shadowed it and crashed rule 1)
+    assert "predictions.csv" in DT.BOARD_FILES and list(DT.BOARD_FILES + DT.BANK_FILES)
 
 
 # ── rule 8: bars rest on bet-time prices only (owner 2026-11-11) ───────────────────────────────────
