@@ -76,8 +76,14 @@ PIT_TEST = "tests/test_real_data_pipeline_trace.py"
 
 # ── what each team feature IS ─────────────────────────────────────────────────────────────────
 # anchor = (file, regex): the transformation's line, located when the registry is built.
-_FD_AF = "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format)"
-_AF_STATS = "API-Football /fixtures/statistics (api_football cache + output/collect/af_history_stats_fill.parquet)"
+#: owner 2026-11-16: the af_history provider rows the old loader write-back replaced, restored from git and
+#: verified (FT score = API-Football's; cells differing from API-Football statistics excluded) - the
+#: loader's last af fill (src/data_loader._enrich_af_restored_rows), nan_only
+_RESTORED = "output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet"
+_FD_AF = ("football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format; "
+          f"+ verified restored provider rows {_RESTORED})")
+_AF_STATS = ("API-Football /fixtures/statistics (api_football cache + output/collect/af_history_stats_fill.parquet "
+             f"+ verified restored provider rows {_RESTORED})")
 _HT = "football-data HTHG/HTAG / API-Football score.halftime (+ ht fills, src/data_loader)"
 
 

@@ -21,7 +21,7 @@
  "features": {
   "home_scored_last5": {
    "source_type": "rolling team form",
-   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format)",
+   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format; + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "home_goals",
     "away_goals"
@@ -33,7 +33,7 @@
   },
   "away_scored_last5": {
    "source_type": "rolling team form",
-   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format)",
+   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format; + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "home_goals",
     "away_goals"
@@ -45,7 +45,7 @@
   },
   "home_conceded_last5": {
    "source_type": "rolling team form",
-   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format)",
+   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format; + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "home_goals",
     "away_goals"
@@ -57,7 +57,7 @@
   },
   "away_conceded_last5": {
    "source_type": "rolling team form",
-   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format)",
+   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format; + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "home_goals",
     "away_goals"
@@ -69,7 +69,7 @@
   },
   "home_over25_last5": {
    "source_type": "rolling team form",
-   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format)",
+   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format; + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "home_goals",
     "away_goals"
@@ -81,7 +81,7 @@
   },
   "away_over25_last5": {
    "source_type": "rolling team form",
-   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format)",
+   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format; + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "home_goals",
     "away_goals"
@@ -93,7 +93,7 @@
   },
   "home_corners_pg_roll": {
    "source_type": "rolling team form",
-   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format)",
+   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format; + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "home_corners",
     "away_corners"
@@ -105,7 +105,7 @@
   },
   "away_corners_pg_roll": {
    "source_type": "rolling team form",
-   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format)",
+   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format; + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "home_corners",
     "away_corners"
@@ -117,7 +117,7 @@
   },
   "home_fouls_pg_roll": {
    "source_type": "rolling team form",
-   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format)",
+   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format; + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "home_fouls",
     "away_fouls"
@@ -129,7 +129,7 @@
   },
   "away_fouls_pg_roll": {
    "source_type": "rolling team form",
-   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format)",
+   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format; + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "home_fouls",
     "away_fouls"
@@ -141,7 +141,7 @@
   },
   "home_xg_last5": {
    "source_type": "rolling team form",
-   "provider": "API-Football /fixtures/statistics (api_football cache + output/collect/af_history_stats_fill.parquet)",
+   "provider": "API-Football /fixtures/statistics (api_football cache + output/collect/af_history_stats_fill.parquet + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "home_xg",
     "away_xg"
@@ -153,7 +153,7 @@
   },
   "away_xg_last5": {
    "source_type": "rolling team form",
-   "provider": "API-Football /fixtures/statistics (api_football cache + output/collect/af_history_stats_fill.parquet)",
+   "provider": "API-Football /fixtures/statistics (api_football cache + output/collect/af_history_stats_fill.parquet + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "home_xg",
     "away_xg"
@@ -165,7 +165,7 @@
   },
   "home_insidebox_last5": {
    "source_type": "rolling team form",
-   "provider": "API-Football /fixtures/statistics (api_football cache + output/collect/af_history_stats_fill.parquet)",
+   "provider": "API-Football /fixtures/statistics (api_football cache + output/collect/af_history_stats_fill.parquet + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "home_insidebox",
     "away_insidebox"
@@ -177,7 +177,7 @@
   },
   "away_insidebox_last5": {
    "source_type": "rolling team form",
-   "provider": "API-Football /fixtures/statistics (api_football cache + output/collect/af_history_stats_fill.parquet)",
+   "provider": "API-Football /fixtures/statistics (api_football cache + output/collect/af_history_stats_fill.parquet + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "home_insidebox",
     "away_insidebox"
@@ -309,7 +309,7 @@
   },
   "home_attack_str": {
    "source_type": "derived ratio",
-   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format)",
+   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format; + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "home_goals",
     "away_goals"
@@ -321,7 +321,7 @@
   },
   "away_attack_str": {
    "source_type": "derived ratio",
-   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format)",
+   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format; + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "home_goals",
     "away_goals"
@@ -333,7 +333,7 @@
   },
   "home_defense_str": {
    "source_type": "derived ratio",
-   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format)",
+   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format; + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "home_goals",
     "away_goals"
@@ -345,7 +345,7 @@
   },
   "away_defense_str": {
    "source_type": "derived ratio",
-   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format)",
+   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format; + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "home_goals",
     "away_goals"
@@ -357,7 +357,7 @@
   },
   "combined_sot_ratio": {
    "source_type": "derived ratio",
-   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format)",
+   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format; + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "home_shots",
     "away_shots",
@@ -407,7 +407,7 @@
   },
   "p_over25_poisson_dc": {
    "source_type": "derived model estimate",
-   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format)",
+   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format; + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "home_goals",
     "away_goals"
@@ -419,7 +419,7 @@
   },
   "home_advantage": {
    "source_type": "derived rate",
-   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format)",
+   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format; + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "date",
     "league",
@@ -434,7 +434,7 @@
   },
   "away_home_adv_factor": {
    "source_type": "derived rate",
-   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format)",
+   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format; + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "date",
     "league",
@@ -449,7 +449,7 @@
   },
   "home_rest_days": {
    "source_type": "derived calendar",
-   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format)",
+   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format; + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "date"
    ],
@@ -460,7 +460,7 @@
   },
   "away_rest_days": {
    "source_type": "derived calendar",
-   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format)",
+   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format; + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "date"
    ],
@@ -471,7 +471,7 @@
   },
   "home_season_goals_h": {
    "source_type": "season-to-date venue stat",
-   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format)",
+   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format; + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "date",
     "league",
@@ -485,7 +485,7 @@
   },
   "away_season_goals_a": {
    "source_type": "season-to-date venue stat",
-   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format)",
+   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format; + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "date",
     "league",
@@ -499,7 +499,7 @@
   },
   "home_season_conceded_h": {
    "source_type": "season-to-date venue stat",
-   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format)",
+   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format; + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "date",
     "league",
@@ -513,7 +513,7 @@
   },
   "away_season_conceded_a": {
    "source_type": "season-to-date venue stat",
-   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format)",
+   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format; + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "date",
     "league",
@@ -527,7 +527,7 @@
   },
   "home_cs_rate_h": {
    "source_type": "season-to-date venue stat",
-   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format)",
+   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format; + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "date",
     "league",
@@ -541,7 +541,7 @@
   },
   "away_cs_rate_a": {
    "source_type": "season-to-date venue stat",
-   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format)",
+   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format; + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "date",
     "league",
@@ -555,7 +555,7 @@
   },
   "home_scored_last5__missing": {
    "source_type": "rolling team form",
-   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format)",
+   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format; + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "home_goals",
     "away_goals"
@@ -567,7 +567,7 @@
   },
   "away_scored_last5__missing": {
    "source_type": "rolling team form",
-   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format)",
+   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format; + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "home_goals",
     "away_goals"
@@ -579,7 +579,7 @@
   },
   "home_conceded_last5__missing": {
    "source_type": "rolling team form",
-   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format)",
+   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format; + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "home_goals",
     "away_goals"
@@ -591,7 +591,7 @@
   },
   "away_conceded_last5__missing": {
    "source_type": "rolling team form",
-   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format)",
+   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format; + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "home_goals",
     "away_goals"
@@ -603,7 +603,7 @@
   },
   "home_over25_last5__missing": {
    "source_type": "rolling team form",
-   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format)",
+   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format; + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "home_goals",
     "away_goals"
@@ -615,7 +615,7 @@
   },
   "away_over25_last5__missing": {
    "source_type": "rolling team form",
-   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format)",
+   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format; + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "home_goals",
     "away_goals"
@@ -627,7 +627,7 @@
   },
   "home_corners_pg_roll__missing": {
    "source_type": "rolling team form",
-   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format)",
+   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format; + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "home_corners",
     "away_corners"
@@ -639,7 +639,7 @@
   },
   "away_corners_pg_roll__missing": {
    "source_type": "rolling team form",
-   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format)",
+   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format; + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "home_corners",
     "away_corners"
@@ -651,7 +651,7 @@
   },
   "home_fouls_pg_roll__missing": {
    "source_type": "rolling team form",
-   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format)",
+   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format; + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "home_fouls",
     "away_fouls"
@@ -663,7 +663,7 @@
   },
   "away_fouls_pg_roll__missing": {
    "source_type": "rolling team form",
-   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format)",
+   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format; + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "home_fouls",
     "away_fouls"
@@ -675,7 +675,7 @@
   },
   "home_xg_last5__missing": {
    "source_type": "rolling team form",
-   "provider": "API-Football /fixtures/statistics (api_football cache + output/collect/af_history_stats_fill.parquet)",
+   "provider": "API-Football /fixtures/statistics (api_football cache + output/collect/af_history_stats_fill.parquet + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "home_xg",
     "away_xg"
@@ -687,7 +687,7 @@
   },
   "away_xg_last5__missing": {
    "source_type": "rolling team form",
-   "provider": "API-Football /fixtures/statistics (api_football cache + output/collect/af_history_stats_fill.parquet)",
+   "provider": "API-Football /fixtures/statistics (api_football cache + output/collect/af_history_stats_fill.parquet + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "home_xg",
     "away_xg"
@@ -699,7 +699,7 @@
   },
   "home_insidebox_last5__missing": {
    "source_type": "rolling team form",
-   "provider": "API-Football /fixtures/statistics (api_football cache + output/collect/af_history_stats_fill.parquet)",
+   "provider": "API-Football /fixtures/statistics (api_football cache + output/collect/af_history_stats_fill.parquet + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "home_insidebox",
     "away_insidebox"
@@ -711,7 +711,7 @@
   },
   "away_insidebox_last5__missing": {
    "source_type": "rolling team form",
-   "provider": "API-Football /fixtures/statistics (api_football cache + output/collect/af_history_stats_fill.parquet)",
+   "provider": "API-Football /fixtures/statistics (api_football cache + output/collect/af_history_stats_fill.parquet + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "home_insidebox",
     "away_insidebox"
@@ -843,7 +843,7 @@
   },
   "home_attack_str__missing": {
    "source_type": "derived ratio",
-   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format)",
+   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format; + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "home_goals",
     "away_goals"
@@ -855,7 +855,7 @@
   },
   "away_attack_str__missing": {
    "source_type": "derived ratio",
-   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format)",
+   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format; + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "home_goals",
     "away_goals"
@@ -867,7 +867,7 @@
   },
   "home_defense_str__missing": {
    "source_type": "derived ratio",
-   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format)",
+   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format; + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "home_goals",
     "away_goals"
@@ -879,7 +879,7 @@
   },
   "away_defense_str__missing": {
    "source_type": "derived ratio",
-   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format)",
+   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format; + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "home_goals",
     "away_goals"
@@ -891,7 +891,7 @@
   },
   "combined_sot_ratio__missing": {
    "source_type": "derived ratio",
-   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format)",
+   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format; + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "home_shots",
     "away_shots",
@@ -941,7 +941,7 @@
   },
   "p_over25_poisson_dc__missing": {
    "source_type": "derived model estimate",
-   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format)",
+   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format; + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "home_goals",
     "away_goals"
@@ -953,7 +953,7 @@
   },
   "home_advantage__missing": {
    "source_type": "derived rate",
-   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format)",
+   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format; + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "date",
     "league",
@@ -968,7 +968,7 @@
   },
   "away_home_adv_factor__missing": {
    "source_type": "derived rate",
-   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format)",
+   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format; + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "date",
     "league",
@@ -983,7 +983,7 @@
   },
   "home_rest_days__missing": {
    "source_type": "derived calendar",
-   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format)",
+   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format; + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "date"
    ],
@@ -994,7 +994,7 @@
   },
   "away_rest_days__missing": {
    "source_type": "derived calendar",
-   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format)",
+   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format; + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "date"
    ],
@@ -1005,7 +1005,7 @@
   },
   "home_season_goals_h__missing": {
    "source_type": "season-to-date venue stat",
-   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format)",
+   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format; + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "date",
     "league",
@@ -1019,7 +1019,7 @@
   },
   "away_season_goals_a__missing": {
    "source_type": "season-to-date venue stat",
-   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format)",
+   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format; + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "date",
     "league",
@@ -1033,7 +1033,7 @@
   },
   "home_season_conceded_h__missing": {
    "source_type": "season-to-date venue stat",
-   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format)",
+   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format; + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "date",
     "league",
@@ -1047,7 +1047,7 @@
   },
   "away_season_conceded_a__missing": {
    "source_type": "season-to-date venue stat",
-   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format)",
+   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format; + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "date",
     "league",
@@ -1061,7 +1061,7 @@
   },
   "home_cs_rate_h__missing": {
    "source_type": "season-to-date venue stat",
-   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format)",
+   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format; + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "date",
     "league",
@@ -1075,7 +1075,7 @@
   },
   "away_cs_rate_a__missing": {
    "source_type": "season-to-date venue stat",
-   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format)",
+   "provider": "football-data.co.uk CSV (Standard leagues) / API-Football fixtures (af_history, New Format; + verified restored provider rows output/corrections/af_history_restored_provider_rows_2026-11_verified.parquet)",
    "raw_columns": [
     "date",
     "league",
