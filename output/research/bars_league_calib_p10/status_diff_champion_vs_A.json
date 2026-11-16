@@ -1,0 +1,1295 @@
+{
+ "cells_compared": 160,
+ "counts_old": {
+  "UNPROVEN": 49,
+  "OFF": 108,
+  "PROMISING": 3
+ },
+ "counts_new": {
+  "UNPROVEN": 70,
+  "OFF": 85,
+  "PROMISING": 5
+ },
+ "status_changes": [
+  {
+   "cell": "new_format|over15_over|Ireland Premier Division",
+   "old": "OFF",
+   "new": "UNPROVEN",
+   "direction": "UP",
+   "old_basis": "OFF_NO_OWN_ESTIMATE",
+   "new_basis": "FRESH_HOLDOUT_SELECTION",
+   "old_config": null,
+   "new_config": "LEARNED|EDGE|max-|min-",
+   "reason": "MODEL_PROB",
+   "rows_old": 261,
+   "rows_new": 261,
+   "rows_common": 261,
+   "mean_abs_dp": 0.0223,
+   "mean_dp": -0.0166
+  },
+  {
+   "cell": "new_format|over15_over|Romanian Superliga",
+   "old": "UNPROVEN",
+   "new": "OFF",
+   "direction": "DOWN",
+   "old_basis": "NO_SELECTION_EVIDENCE",
+   "new_basis": "OFF_NO_OWN_ESTIMATE",
+   "old_config": "RAW|EDGE|max-|min-",
+   "new_config": null,
+   "reason": "MODEL_PROB",
+   "rows_old": 53,
+   "rows_new": 53,
+   "rows_common": 53,
+   "mean_abs_dp": 0.0171,
+   "mean_dp": -0.0118
+  },
+  {
+   "cell": "new_format|over15_over|USA MLS",
+   "old": "OFF",
+   "new": "UNPROVEN",
+   "direction": "UP",
+   "old_basis": "OFF_NO_OWN_ESTIMATE",
+   "new_basis": "NO_SELECTION_EVIDENCE",
+   "old_config": null,
+   "new_config": "RAW|EDGE|max-|min-",
+   "reason": "MODEL_PROB",
+   "rows_old": 1027,
+   "rows_new": 1027,
+   "rows_common": 1027,
+   "mean_abs_dp": 0.0235,
+   "mean_dp": 0.0161
+  },
+  {
+   "cell": "new_format|over25_over|Norway Eliteserien",
+   "old": "UNPROVEN",
+   "new": "OFF",
+   "direction": "DOWN",
+   "old_basis": "FRESH_HOLDOUT_SELECTION",
+   "new_basis": "OFF_NO_VALUE",
+   "old_config": "LEARNED|EDGE|max-|min1.4",
+   "new_config": null,
+   "reason": "MODEL_PROB",
+   "rows_old": 498,
+   "rows_new": 498,
+   "rows_common": 498,
+   "mean_abs_dp": 0.0445,
+   "mean_dp": 0.0423
+  },
+  {
+   "cell": "new_format|over25_under|Argentina Primera Division",
+   "old": "OFF",
+   "new": "PROMISING",
+   "direction": "UP",
+   "old_basis": "OFF_NO_VALUE",
+   "new_basis": "FRESH_HOLDOUT_SELECTION",
+   "old_config": null,
+   "new_config": "LEARNED|EDGE|max-|min1.4",
+   "reason": "MODEL_PROB",
+   "rows_old": 644,
+   "rows_new": 644,
+   "rows_common": 644,
+   "mean_abs_dp": 0.0286,
+   "mean_dp": 0.0242
+  },
+  {
+   "cell": "new_format|over25_under|Denmark Superliga",
+   "old": "UNPROVEN",
+   "new": "OFF",
+   "direction": "DOWN",
+   "old_basis": "NO_SELECTION_EVIDENCE",
+   "new_basis": "OFF_NO_VALUE",
+   "old_config": "RAW|EDGE|max-|min-",
+   "new_config": null,
+   "reason": "MODEL_PROB",
+   "rows_old": 371,
+   "rows_new": 371,
+   "rows_common": 371,
+   "mean_abs_dp": 0.023,
+   "mean_dp": -0.0204
+  },
+  {
+   "cell": "new_format|over25_under|Ireland Premier Division",
+   "old": "OFF",
+   "new": "UNPROVEN",
+   "direction": "UP",
+   "old_basis": "OFF_NO_VALUE",
+   "new_basis": "FRESH_HOLDOUT_SELECTION",
+   "old_config": null,
+   "new_config": "LEARNED|EDGE|max-|min1.4",
+   "reason": "MODEL_PROB",
+   "rows_old": 255,
+   "rows_new": 255,
+   "rows_common": 255,
+   "mean_abs_dp": 0.0222,
+   "mean_dp": 0.0197
+  },
+  {
+   "cell": "new_format|over25_under|K-League 1",
+   "old": "OFF",
+   "new": "UNPROVEN",
+   "direction": "UP",
+   "old_basis": "OFF_NO_VALUE",
+   "new_basis": "FRESH_HOLDOUT_SELECTION",
+   "old_config": null,
+   "new_config": "LEARNED|EDGE|max-|min1.4",
+   "reason": "MODEL_PROB",
+   "rows_old": 314,
+   "rows_new": 314,
+   "rows_common": 314,
+   "mean_abs_dp": 0.018,
+   "mean_dp": 0.0083
+  },
+  {
+   "cell": "new_format|over25_under|Norway Eliteserien",
+   "old": "UNPROVEN",
+   "new": "OFF",
+   "direction": "DOWN",
+   "old_basis": "FRESH_HOLDOUT_SELECTION",
+   "new_basis": "OFF_NO_VALUE",
+   "old_config": "RAW|EDGE|max-|min-",
+   "new_config": null,
+   "reason": "MODEL_PROB",
+   "rows_old": 498,
+   "rows_new": 498,
+   "rows_common": 498,
+   "mean_abs_dp": 0.0445,
+   "mean_dp": -0.0423
+  },
+  {
+   "cell": "new_format|over25_under|Saudi Pro League",
+   "old": "UNPROVEN",
+   "new": "OFF",
+   "direction": "DOWN",
+   "old_basis": "NO_SELECTION_EVIDENCE",
+   "new_basis": "OFF_NO_VALUE",
+   "old_config": "RAW|EDGE|max-|min-",
+   "new_config": null,
+   "reason": "MODEL_PROB",
+   "rows_old": 59,
+   "rows_new": 59,
+   "rows_common": 59,
+   "mean_abs_dp": 0.0263,
+   "mean_dp": -0.0247
+  },
+  {
+   "cell": "new_format|over25_under|USA MLS",
+   "old": "UNPROVEN",
+   "new": "OFF",
+   "direction": "DOWN",
+   "old_basis": "FRESH_HOLDOUT_SELECTION",
+   "new_basis": "OFF_NO_VALUE",
+   "old_config": "RAW|EDGE|max-|min-",
+   "new_config": null,
+   "reason": "MODEL_PROB",
+   "rows_old": 1000,
+   "rows_new": 1000,
+   "rows_common": 1000,
+   "mean_abs_dp": 0.02,
+   "mean_dp": -0.0155
+  },
+  {
+   "cell": "new_format|over35_over|Austrian Bundesliga",
+   "old": "OFF",
+   "new": "UNPROVEN",
+   "direction": "UP",
+   "old_basis": "OFF_NO_VALUE",
+   "new_basis": "NO_SELECTION_EVIDENCE",
+   "old_config": null,
+   "new_config": "RAW|EDGE|max-|min-",
+   "reason": "MODEL_PROB",
+   "rows_old": 454,
+   "rows_new": 454,
+   "rows_common": 454,
+   "mean_abs_dp": 0.0235,
+   "mean_dp": 0.0202
+  },
+  {
+   "cell": "new_format|over35_over|Brazil Serie A",
+   "old": "OFF",
+   "new": "UNPROVEN",
+   "direction": "UP",
+   "old_basis": "OFF_NO_VALUE",
+   "new_basis": "NO_SELECTION_EVIDENCE",
+   "old_config": null,
+   "new_config": "RAW|EDGE|max-|min-",
+   "reason": "MODEL_PROB",
+   "rows_old": 586,
+   "rows_new": 586,
+   "rows_common": 586,
+   "mean_abs_dp": 0.0248,
+   "mean_dp": -0.0212
+  },
+  {
+   "cell": "new_format|over35_over|K-League 1",
+   "old": "OFF",
+   "new": "UNPROVEN",
+   "direction": "UP",
+   "old_basis": "OFF_NO_VALUE",
+   "new_basis": "NO_SELECTION_EVIDENCE",
+   "old_config": null,
+   "new_config": "RAW|EDGE|max-|min-",
+   "reason": "MODEL_PROB",
+   "rows_old": 340,
+   "rows_new": 340,
+   "rows_common": 340,
+   "mean_abs_dp": 0.0193,
+   "mean_dp": -0.0128
+  },
+  {
+   "cell": "new_format|over35_over|Mexico Liga MX",
+   "old": "OFF",
+   "new": "UNPROVEN",
+   "direction": "UP",
+   "old_basis": "OFF_NO_VALUE",
+   "new_basis": "NO_SELECTION_EVIDENCE",
+   "old_config": null,
+   "new_config": "RAW|EDGE|max-|min-",
+   "reason": "MODEL_PROB",
+   "rows_old": 451,
+   "rows_new": 451,
+   "rows_common": 451,
+   "mean_abs_dp": 0.0177,
+   "mean_dp": 0.0145
+  },
+  {
+   "cell": "new_format|over35_over|Romanian Superliga",
+   "old": "UNPROVEN",
+   "new": "OFF",
+   "direction": "DOWN",
+   "old_basis": "NO_SELECTION_EVIDENCE",
+   "new_basis": "OFF_NO_OWN_ESTIMATE",
+   "old_config": "RAW|EDGE|max-|min-",
+   "new_config": null,
+   "reason": "MODEL_PROB",
+   "rows_old": 50,
+   "rows_new": 50,
+   "rows_common": 50,
+   "mean_abs_dp": 0.011,
+   "mean_dp": -0.0078
+  },
+  {
+   "cell": "new_format|over35_over|Saudi Pro League",
+   "old": "OFF",
+   "new": "UNPROVEN",
+   "direction": "UP",
+   "old_basis": "OFF_NO_VALUE",
+   "new_basis": "NO_SELECTION_EVIDENCE",
+   "old_config": null,
+   "new_config": "RAW|EDGE|max-|min-",
+   "reason": "MODEL_PROB",
+   "rows_old": 60,
+   "rows_new": 60,
+   "rows_common": 60,
+   "mean_abs_dp": 0.0259,
+   "mean_dp": 0.0219
+  },
+  {
+   "cell": "new_format|over35_over|USA MLS",
+   "old": "OFF",
+   "new": "UNPROVEN",
+   "direction": "UP",
+   "old_basis": "OFF_NO_VALUE",
+   "new_basis": "NO_SELECTION_EVIDENCE",
+   "old_config": null,
+   "new_config": "RAW|EDGE|max-|min-",
+   "reason": "MODEL_PROB",
+   "rows_old": 1043,
+   "rows_new": 1043,
+   "rows_common": 1043,
+   "mean_abs_dp": 0.0188,
+   "mean_dp": 0.0109
+  },
+  {
+   "cell": "standard|btts_yes|Belgian First Division A",
+   "old": "OFF",
+   "new": "UNPROVEN",
+   "direction": "UP",
+   "old_basis": "OFF_NO_VALUE",
+   "new_basis": "NO_SELECTION_EVIDENCE",
+   "old_config": null,
+   "new_config": "RAW|EDGE|max-|min-",
+   "reason": "MODEL_PROB",
+   "rows_old": 35,
+   "rows_new": 35,
+   "rows_common": 35,
+   "mean_abs_dp": 0.0355,
+   "mean_dp": 0.0337
+  },
+  {
+   "cell": "standard|btts_yes|Bundesliga 2",
+   "old": "OFF",
+   "new": "UNPROVEN",
+   "direction": "UP",
+   "old_basis": "OFF_NO_VALUE",
+   "new_basis": "NO_SELECTION_EVIDENCE",
+   "old_config": null,
+   "new_config": "RAW|EDGE|max-|min-",
+   "reason": "MODEL_PROB",
+   "rows_old": 30,
+   "rows_new": 30,
+   "rows_common": 30,
+   "mean_abs_dp": 0.0594,
+   "mean_dp": 0.0558
+  },
+  {
+   "cell": "standard|btts_yes|Championship",
+   "old": "OFF",
+   "new": "UNPROVEN",
+   "direction": "UP",
+   "old_basis": "OFF_NO_VALUE",
+   "new_basis": "NO_SELECTION_EVIDENCE",
+   "old_config": null,
+   "new_config": "RAW|EDGE|max-|min-",
+   "reason": "MODEL_PROB",
+   "rows_old": 78,
+   "rows_new": 78,
+   "rows_common": 78,
+   "mean_abs_dp": 0.0224,
+   "mean_dp": 0.0062
+  },
+  {
+   "cell": "standard|btts_yes|Dutch Eredivisie",
+   "old": "OFF",
+   "new": "UNPROVEN",
+   "direction": "UP",
+   "old_basis": "OFF_NO_VALUE",
+   "new_basis": "NO_SELECTION_EVIDENCE",
+   "old_config": null,
+   "new_config": "RAW|EDGE|max-|min-",
+   "reason": "MODEL_PROB",
+   "rows_old": 48,
+   "rows_new": 48,
+   "rows_common": 48,
+   "mean_abs_dp": 0.063,
+   "mean_dp": 0.0629
+  },
+  {
+   "cell": "standard|btts_yes|La Liga 2",
+   "old": "OFF",
+   "new": "UNPROVEN",
+   "direction": "UP",
+   "old_basis": "OFF_NO_VALUE",
+   "new_basis": "NO_SELECTION_EVIDENCE",
+   "old_config": null,
+   "new_config": "RAW|EDGE|max-|min-",
+   "reason": "MODEL_PROB",
+   "rows_old": 77,
+   "rows_new": 77,
+   "rows_common": 77,
+   "mean_abs_dp": 0.0516,
+   "mean_dp": -0.0503
+  },
+  {
+   "cell": "standard|btts_yes|Portuguese Primeira Liga",
+   "old": "OFF",
+   "new": "UNPROVEN",
+   "direction": "UP",
+   "old_basis": "OFF_NO_VALUE",
+   "new_basis": "NO_SELECTION_EVIDENCE",
+   "old_config": null,
+   "new_config": "RAW|EDGE|max-|min-",
+   "reason": "MODEL_PROB",
+   "rows_old": 43,
+   "rows_new": 43,
+   "rows_common": 43,
+   "mean_abs_dp": 0.0222,
+   "mean_dp": -0.0034
+  },
+  {
+   "cell": "standard|btts_yes|Scottish Championship",
+   "old": "OFF",
+   "new": "UNPROVEN",
+   "direction": "UP",
+   "old_basis": "OFF_NO_VALUE",
+   "new_basis": "NO_SELECTION_EVIDENCE",
+   "old_config": null,
+   "new_config": "RAW|EDGE|max-|min-",
+   "reason": "MODEL_PROB",
+   "rows_old": 22,
+   "rows_new": 22,
+   "rows_common": 22,
+   "mean_abs_dp": 0.0378,
+   "mean_dp": -0.0375
+  },
+  {
+   "cell": "standard|btts_yes|Scottish League One",
+   "old": "OFF",
+   "new": "UNPROVEN",
+   "direction": "UP",
+   "old_basis": "OFF_NO_VALUE",
+   "new_basis": "NO_SELECTION_EVIDENCE",
+   "old_config": null,
+   "new_config": "RAW|EDGE|max-|min-",
+   "reason": "MODEL_PROB",
+   "rows_old": 8,
+   "rows_new": 8,
+   "rows_common": 8,
+   "mean_abs_dp": 0.0259,
+   "mean_dp": 0.0257
+  },
+  {
+   "cell": "standard|btts_yes|Scottish Premiership",
+   "old": "OFF",
+   "new": "UNPROVEN",
+   "direction": "UP",
+   "old_basis": "OFF_NO_VALUE",
+   "new_basis": "NO_SELECTION_EVIDENCE",
+   "old_config": null,
+   "new_config": "RAW|EDGE|max-|min-",
+   "reason": "MODEL_PROB",
+   "rows_old": 31,
+   "rows_new": 31,
+   "rows_common": 31,
+   "mean_abs_dp": 0.0376,
+   "mean_dp": 0.0343
+  },
+  {
+   "cell": "standard|btts_yes|Serie B",
+   "old": "OFF",
+   "new": "UNPROVEN",
+   "direction": "UP",
+   "old_basis": "OFF_NO_VALUE",
+   "new_basis": "NO_SELECTION_EVIDENCE",
+   "old_config": null,
+   "new_config": "RAW|EDGE|max-|min-",
+   "reason": "MODEL_PROB",
+   "rows_old": 62,
+   "rows_new": 62,
+   "rows_common": 62,
+   "mean_abs_dp": 0.0307,
+   "mean_dp": -0.0262
+  },
+  {
+   "cell": "standard|over15_over|Bundesliga 2",
+   "old": "OFF",
+   "new": "UNPROVEN",
+   "direction": "UP",
+   "old_basis": "OFF_NO_VALUE",
+   "new_basis": "NO_SELECTION_EVIDENCE",
+   "old_config": null,
+   "new_config": "RAW|EDGE|max-|min-",
+   "reason": "MODEL_PROB",
+   "rows_old": 864,
+   "rows_new": 864,
+   "rows_common": 864,
+   "mean_abs_dp": 0.0366,
+   "mean_dp": 0.0346
+  },
+  {
+   "cell": "standard|over15_over|Dutch Eredivisie",
+   "old": "OFF",
+   "new": "UNPROVEN",
+   "direction": "UP",
+   "old_basis": "OFF_NO_VALUE",
+   "new_basis": "FRESH_HOLDOUT_SELECTION",
+   "old_config": null,
+   "new_config": "RAW|EV|max-|min-",
+   "reason": "MODEL_PROB",
+   "rows_old": 850,
+   "rows_new": 850,
+   "rows_common": 850,
+   "mean_abs_dp": 0.0354,
+   "mean_dp": 0.0281
+  },
+  {
+   "cell": "standard|over15_over|La Liga 2",
+   "old": "OFF",
+   "new": "UNPROVEN",
+   "direction": "UP",
+   "old_basis": "OFF_NO_VALUE",
+   "new_basis": "FRESH_HOLDOUT_SELECTION",
+   "old_config": null,
+   "new_config": "RAW|EV|max-|min-",
+   "reason": "MODEL_PROB",
+   "rows_old": 1217,
+   "rows_new": 1217,
+   "rows_common": 1217,
+   "mean_abs_dp": 0.0414,
+   "mean_dp": -0.0372
+  },
+  {
+   "cell": "standard|over15_over|League One",
+   "old": "OFF",
+   "new": "UNPROVEN",
+   "direction": "UP",
+   "old_basis": "OFF_NO_VALUE",
+   "new_basis": "NO_SELECTION_EVIDENCE",
+   "old_config": null,
+   "new_config": "RAW|EDGE|max-|min-",
+   "reason": "MODEL_PROB",
+   "rows_old": 832,
+   "rows_new": 832,
+   "rows_common": 832,
+   "mean_abs_dp": 0.0217,
+   "mean_dp": -0.0015
+  },
+  {
+   "cell": "standard|over15_over|Scottish Championship",
+   "old": "OFF",
+   "new": "UNPROVEN",
+   "direction": "UP",
+   "old_basis": "OFF_NO_VALUE",
+   "new_basis": "NO_SELECTION_EVIDENCE",
+   "old_config": null,
+   "new_config": "RAW|EDGE|max-|min-",
+   "reason": "MODEL_PROB",
+   "rows_old": 20,
+   "rows_new": 20,
+   "rows_common": 20,
+   "mean_abs_dp": 0.0175,
+   "mean_dp": -0.0139
+  },
+  {
+   "cell": "standard|over15_over|Serie B",
+   "old": "UNPROVEN",
+   "new": "PROMISING",
+   "direction": "UP",
+   "old_basis": "NO_SELECTION_EVIDENCE",
+   "new_basis": "FRESH_HOLDOUT_SELECTION",
+   "old_config": "RAW|EDGE|max-|min-",
+   "new_config": "RAW|EV|max-|min-",
+   "reason": "MODEL_PROB",
+   "rows_old": 848,
+   "rows_new": 848,
+   "rows_common": 848,
+   "mean_abs_dp": 0.0304,
+   "mean_dp": -0.026
+  },
+  {
+   "cell": "standard|over25_over|Championship",
+   "old": "OFF",
+   "new": "UNPROVEN",
+   "direction": "UP",
+   "old_basis": "OFF_NO_VALUE",
+   "new_basis": "SELECTED",
+   "old_config": null,
+   "new_config": "RAW|EV|max3.5|min1.4",
+   "reason": "MODEL_PROB",
+   "rows_old": 2121,
+   "rows_new": 2121,
+   "rows_common": 2121,
+   "mean_abs_dp": 0.0193,
+   "mean_dp": -0.0089
+  },
+  {
+   "cell": "standard|over25_over|Greek Super League",
+   "old": "UNPROVEN",
+   "new": "OFF",
+   "direction": "DOWN",
+   "old_basis": "SELECTED",
+   "new_basis": "OFF_NO_VALUE",
+   "old_config": "RAW|EDGE|max-|min-",
+   "new_config": null,
+   "reason": "MODEL_PROB",
+   "rows_old": 905,
+   "rows_new": 905,
+   "rows_common": 905,
+   "mean_abs_dp": 0.0252,
+   "mean_dp": -0.0037
+  },
+  {
+   "cell": "standard|over25_over|La Liga 2",
+   "old": "PROMISING",
+   "new": "UNPROVEN",
+   "direction": "DOWN",
+   "old_basis": "SELECTED",
+   "new_basis": "SELECTED",
+   "old_config": "RAW|EDGE|max-|min-",
+   "new_config": "RAW|EV|max3.5|min1.4",
+   "reason": "MODEL_PROB",
+   "rows_old": 1806,
+   "rows_new": 1806,
+   "rows_common": 1806,
+   "mean_abs_dp": 0.0287,
+   "mean_dp": -0.0213
+  },
+  {
+   "cell": "standard|over25_over|Portuguese Primeira Liga",
+   "old": "OFF",
+   "new": "UNPROVEN",
+   "direction": "UP",
+   "old_basis": "OFF_NO_VALUE",
+   "new_basis": "SELECTED",
+   "old_config": null,
+   "new_config": "RAW|EV|max3.5|min1.4",
+   "reason": "MODEL_PROB",
+   "rows_old": 1193,
+   "rows_new": 1193,
+   "rows_common": 1193,
+   "mean_abs_dp": 0.0229,
+   "mean_dp": -0.0039
+  },
+  {
+   "cell": "standard|over25_under|Dutch Eredivisie",
+   "old": "OFF",
+   "new": "UNPROVEN",
+   "direction": "UP",
+   "old_basis": "OFF_NO_VALUE",
+   "new_basis": "SELECTED",
+   "old_config": null,
+   "new_config": "RAW|EDGE|max2.5|min-",
+   "reason": "MODEL_PROB",
+   "rows_old": 1196,
+   "rows_new": 1196,
+   "rows_common": 1196,
+   "mean_abs_dp": 0.0283,
+   "mean_dp": -0.0185
+  },
+  {
+   "cell": "standard|over35_over|Dutch Eredivisie",
+   "old": "UNPROVEN",
+   "new": "PROMISING",
+   "direction": "UP",
+   "old_basis": "SELECTED",
+   "new_basis": "FRESH_HOLDOUT_SELECTION",
+   "old_config": "LEARNED|EDGE|max-|min-",
+   "new_config": "RAW|EDGE|max-|min-",
+   "reason": "MODEL_PROB",
+   "rows_old": 904,
+   "rows_new": 904,
+   "rows_common": 904,
+   "mean_abs_dp": 0.035,
+   "mean_dp": 0.026
+  },
+  {
+   "cell": "standard|over35_over|League One",
+   "old": "OFF",
+   "new": "UNPROVEN",
+   "direction": "UP",
+   "old_basis": "OFF_NO_OWN_ESTIMATE",
+   "new_basis": "SELECTED",
+   "old_config": null,
+   "new_config": "LEARNED|EDGE|max-|min-",
+   "reason": "MODEL_PROB",
+   "rows_old": 833,
+   "rows_new": 833,
+   "rows_common": 833,
+   "mean_abs_dp": 0.0185,
+   "mean_dp": -0.0014
+  },
+  {
+   "cell": "standard|over35_over|Ligue 2",
+   "old": "OFF",
+   "new": "UNPROVEN",
+   "direction": "UP",
+   "old_basis": "OFF_NO_OWN_ESTIMATE",
+   "new_basis": "FRESH_HOLDOUT_SELECTION",
+   "old_config": null,
+   "new_config": "RAW|EDGE|max-|min-",
+   "reason": "MODEL_PROB",
+   "rows_old": 785,
+   "rows_new": 785,
+   "rows_common": 785,
+   "mean_abs_dp": 0.0263,
+   "mean_dp": -0.022
+  }
+ ],
+ "bar_or_config_changes_same_status": [
+  {
+   "cell": "new_format|over15_over|Argentina Primera Division",
+   "status": "UNPROVEN",
+   "old": [
+    [
+     0.02,
+     0.04,
+     0.04
+    ],
+    "RAW|EDGE|max-|min-"
+   ],
+   "new": [
+    [
+     0.02,
+     0.02,
+     0.02
+    ],
+    "LEARNED|EDGE|max-|min-"
+   ]
+  },
+  {
+   "cell": "new_format|over15_over|Denmark Superliga",
+   "status": "UNPROVEN",
+   "old": [
+    [
+     0.02,
+     0.02,
+     0.02
+    ],
+    "LEARNED|EV|max-|min-"
+   ],
+   "new": [
+    [
+     0.02,
+     0.03,
+     0.03
+    ],
+    "LEARNED|EDGE|max-|min-"
+   ]
+  },
+  {
+   "cell": "new_format|over15_over|Finland Veikkausliiga",
+   "status": "UNPROVEN",
+   "old": [
+    [
+     0.02,
+     0.03,
+     0.04
+    ],
+    "LEARNED|EV|max-|min-"
+   ],
+   "new": [
+    [
+     0.02,
+     0.02,
+     0.04
+    ],
+    "LEARNED|EDGE|max-|min-"
+   ]
+  },
+  {
+   "cell": "new_format|over15_over|K-League 1",
+   "status": "UNPROVEN",
+   "old": [
+    [
+     0.02,
+     0.02,
+     0.03
+    ],
+    "RAW|EDGE|max-|min-"
+   ],
+   "new": [
+    [
+     0.02,
+     0.02,
+     0.02
+    ],
+    "RAW|EDGE|max-|min-"
+   ]
+  },
+  {
+   "cell": "new_format|over15_over|Mexico Liga MX",
+   "status": "UNPROVEN",
+   "old": [
+    [
+     0.02,
+     0.03,
+     0.03
+    ],
+    "RAW|EDGE|max-|min-"
+   ],
+   "new": [
+    [
+     0.02,
+     0.05,
+     0.05
+    ],
+    "RAW|EDGE|max-|min-"
+   ]
+  },
+  {
+   "cell": "new_format|over15_over|Saudi Pro League",
+   "status": "UNPROVEN",
+   "old": [
+    [
+     0.02,
+     0.02,
+     0.07
+    ],
+    "RAW|EDGE|max-|min-"
+   ],
+   "new": [
+    [
+     0.02,
+     0.02,
+     0.02
+    ],
+    "RAW|EDGE|max-|min-"
+   ]
+  },
+  {
+   "cell": "new_format|over15_over|Sweden Allsvenskan",
+   "status": "UNPROVEN",
+   "old": [
+    [
+     0.02,
+     0.02,
+     0.02
+    ],
+    "LEARNED|EV|max-|min-"
+   ],
+   "new": [
+    [
+     0.02,
+     0.02,
+     0.03
+    ],
+    "LEARNED|EDGE|max-|min-"
+   ]
+  },
+  {
+   "cell": "new_format|over25_over|Denmark Superliga",
+   "status": "UNPROVEN",
+   "old": [
+    [
+     0.02,
+     0.03,
+     0.03
+    ],
+    "LEARNED|EDGE|max-|min1.4"
+   ],
+   "new": [
+    [
+     0.02,
+     0.05,
+     0.11
+    ],
+    "LEARNED|EV|max-|min-"
+   ]
+  },
+  {
+   "cell": "new_format|over25_over|Finland Veikkausliiga",
+   "status": "PROMISING",
+   "old": [
+    [
+     0.02,
+     0.04,
+     0.04
+    ],
+    "LEARNED|EDGE|max-|min1.4"
+   ],
+   "new": [
+    [
+     0.02,
+     0.11,
+     0.13
+    ],
+    "LEARNED|EV|max-|min-"
+   ]
+  },
+  {
+   "cell": "new_format|over25_over|Mexico Liga MX",
+   "status": "UNPROVEN",
+   "old": [
+    [
+     0.02,
+     0.03,
+     0.03
+    ],
+    "LEARNED|EDGE|max-|min1.4"
+   ],
+   "new": [
+    [
+     0.02,
+     0.02,
+     0.03
+    ],
+    "LEARNED|EV|max-|min-"
+   ]
+  },
+  {
+   "cell": "new_format|over25_over|Sweden Allsvenskan",
+   "status": "UNPROVEN",
+   "old": [
+    [
+     0.02,
+     0.03,
+     0.03
+    ],
+    "LEARNED|EDGE|max-|min1.4"
+   ],
+   "new": [
+    [
+     0.02,
+     0.03,
+     0.05
+    ],
+    "LEARNED|EV|max-|min-"
+   ]
+  },
+  {
+   "cell": "new_format|over25_over|USA MLS",
+   "status": "UNPROVEN",
+   "old": [
+    [
+     0.02,
+     0.02,
+     0.03
+    ],
+    "LEARNED|EDGE|max-|min1.4"
+   ],
+   "new": [
+    [
+     0.02,
+     0.02,
+     0.02
+    ],
+    "LEARNED|EV|max-|min-"
+   ]
+  },
+  {
+   "cell": "new_format|over25_under|Austrian Bundesliga",
+   "status": "UNPROVEN",
+   "old": [
+    [
+     0.02,
+     0.04,
+     0.06
+    ],
+    "RAW|EDGE|max-|min-"
+   ],
+   "new": [
+    [
+     0.02,
+     0.07,
+     0.11
+    ],
+    "LEARNED|EDGE|max-|min1.4"
+   ]
+  },
+  {
+   "cell": "new_format|over25_under|Finland Veikkausliiga",
+   "status": "UNPROVEN",
+   "old": [
+    [
+     0.02,
+     0.02,
+     0.1
+    ],
+    "RAW|EDGE|max-|min-"
+   ],
+   "new": [
+    [
+     0.02,
+     0.02,
+     0.02
+    ],
+    "RAW|EDGE|max-|min-"
+   ]
+  },
+  {
+   "cell": "new_format|over25_under|Japan J-League",
+   "status": "UNPROVEN",
+   "old": [
+    [
+     0.02,
+     0.04,
+     0.04
+    ],
+    "RAW|EDGE|max-|min-"
+   ],
+   "new": [
+    [
+     0.02,
+     0.02,
+     0.06
+    ],
+    "LEARNED|EDGE|max-|min1.4"
+   ]
+  },
+  {
+   "cell": "new_format|over25_under|Romanian Superliga",
+   "status": "UNPROVEN",
+   "old": [
+    [
+     0.1,
+     0.12,
+     0.12
+    ],
+    "RAW|EDGE|max-|min-"
+   ],
+   "new": [
+    [
+     0.11,
+     0.11,
+     0.11
+    ],
+    "RAW|EDGE|max-|min-"
+   ]
+  },
+  {
+   "cell": "new_format|over25_under|Sweden Allsvenskan",
+   "status": "UNPROVEN",
+   "old": [
+    [
+     0.02,
+     0.1,
+     0.12
+    ],
+    "RAW|EDGE|max-|min-"
+   ],
+   "new": [
+    [
+     0.11,
+     0.11,
+     0.11
+    ],
+    "RAW|EDGE|max-|min-"
+   ]
+  },
+  {
+   "cell": "standard|over15_over|Belgian First Division A",
+   "status": "UNPROVEN",
+   "old": [
+    [
+     0.02,
+     0.02,
+     0.02
+    ],
+    "RAW|EDGE|max-|min-"
+   ],
+   "new": [
+    [
+     0.02,
+     0.03,
+     0.04
+    ],
+    "RAW|EDGE|max-|min-"
+   ]
+  },
+  {
+   "cell": "standard|over15_over|Championship",
+   "status": "UNPROVEN",
+   "old": [
+    [
+     0.03,
+     0.03,
+     0.03
+    ],
+    "RAW|EDGE|max-|min-"
+   ],
+   "new": [
+    [
+     0.05,
+     0.07,
+     0.07
+    ],
+    "RAW|EV|max-|min-"
+   ]
+  },
+  {
+   "cell": "standard|over15_over|Ligue 2",
+   "status": "UNPROVEN",
+   "old": [
+    [
+     0.02,
+     0.04,
+     0.04
+    ],
+    "RAW|EDGE|max-|min-"
+   ],
+   "new": [
+    [
+     0.03,
+     0.07,
+     0.07
+    ],
+    "RAW|EV|max-|min-"
+   ]
+  },
+  {
+   "cell": "standard|over25_over|League One",
+   "status": "UNPROVEN",
+   "old": [
+    [
+     0.11,
+     0.13,
+     0.13
+    ],
+    "RAW|EDGE|max-|min-"
+   ],
+   "new": [
+    [
+     0.22,
+     0.25,
+     0.27
+    ],
+    "RAW|EV|max3.5|min1.4"
+   ]
+  },
+  {
+   "cell": "standard|over25_over|Ligue 2",
+   "status": "UNPROVEN",
+   "old": [
+    [
+     0.14,
+     0.14,
+     0.14
+    ],
+    "RAW|EDGE|max-|min-"
+   ],
+   "new": [
+    [
+     0.24,
+     0.27,
+     0.27
+    ],
+    "RAW|EV|max3.5|min1.4"
+   ]
+  },
+  {
+   "cell": "standard|over25_over|Serie B",
+   "status": "UNPROVEN",
+   "old": [
+    [
+     0.09,
+     0.1,
+     0.16
+    ],
+    "RAW|EDGE|max-|min-"
+   ],
+   "new": [
+    [
+     0.25,
+     0.25,
+     0.25
+    ],
+    "RAW|EV|max3.5|min1.4"
+   ]
+  },
+  {
+   "cell": "standard|over35_over|Championship",
+   "status": "UNPROVEN",
+   "old": [
+    [
+     0.02,
+     0.07,
+     0.07
+    ],
+    "LEARNED|EDGE|max-|min-"
+   ],
+   "new": [
+    [
+     0.02,
+     0.05,
+     0.07
+    ],
+    "LEARNED|EDGE|max-|min-"
+   ]
+  },
+  {
+   "cell": "standard|over35_over|La Liga 2",
+   "status": "UNPROVEN",
+   "old": [
+    [
+     0.02,
+     0.03,
+     0.03
+    ],
+    "SHRINK|EDGE|max-|min-"
+   ],
+   "new": [
+    [
+     0.1,
+     0.1,
+     0.12
+    ],
+    "RAW|EDGE|max-|min-"
+   ]
+  },
+  {
+   "cell": "standard|over35_over|Portuguese Primeira Liga",
+   "status": "UNPROVEN",
+   "old": [
+    [
+     0.02,
+     0.07,
+     0.08
+    ],
+    "LEARNED|EDGE|max-|min-"
+   ],
+   "new": [
+    [
+     0.02,
+     0.08,
+     0.08
+    ],
+    "LEARNED|EDGE|max-|min-"
+   ]
+  },
+  {
+   "cell": "standard|over35_over|Serie B",
+   "status": "UNPROVEN",
+   "old": [
+    [
+     0.02,
+     0.03,
+     0.03
+    ],
+    "SHRINK|EDGE|max-|min-"
+   ],
+   "new": [
+    [
+     0.02,
+     0.06,
+     0.1
+    ],
+    "RAW|EDGE|max-|min-"
+   ]
+  }
+ ],
+ "prediction_diff": [
+  {
+   "track": "new_format",
+   "family": "btts_yes",
+   "rows_common": 683,
+   "mean_abs_dp": 0.0299,
+   "p95_abs_dp": 0.072,
+   "mean_dp": 0.0035
+  },
+  {
+   "track": "new_format",
+   "family": "over15_over",
+   "rows_common": 6299,
+   "mean_abs_dp": 0.0236,
+   "p95_abs_dp": 0.0602,
+   "mean_dp": 0.0031
+  },
+  {
+   "track": "new_format",
+   "family": "over25_over",
+   "rows_common": 6159,
+   "mean_abs_dp": 0.0232,
+   "p95_abs_dp": 0.0621,
+   "mean_dp": 0.0041
+  },
+  {
+   "track": "new_format",
+   "family": "over35_over",
+   "rows_common": 6330,
+   "mean_abs_dp": 0.0231,
+   "p95_abs_dp": 0.0578,
+   "mean_dp": 0.0035
+  },
+  {
+   "track": "standard",
+   "family": "btts_yes",
+   "rows_common": 759,
+   "mean_abs_dp": 0.0333,
+   "p95_abs_dp": 0.0857,
+   "mean_dp": 0.0021
+  },
+  {
+   "track": "standard",
+   "family": "over15_over",
+   "rows_common": 10184,
+   "mean_abs_dp": 0.0293,
+   "p95_abs_dp": 0.078,
+   "mean_dp": -0.0035
+  },
+  {
+   "track": "standard",
+   "family": "over25_over",
+   "rows_common": 23070,
+   "mean_abs_dp": 0.0225,
+   "p95_abs_dp": 0.0686,
+   "mean_dp": -0.0004
+  },
+  {
+   "track": "standard",
+   "family": "over35_over",
+   "rows_common": 10292,
+   "mean_abs_dp": 0.0262,
+   "p95_abs_dp": 0.0758,
+   "mean_dp": -0.0028
+  }
+ ]
+}

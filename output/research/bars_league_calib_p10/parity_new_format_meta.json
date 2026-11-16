@@ -1,0 +1,145 @@
+{
+  "dates": [
+    "2026-11-01",
+    "2026-11-02",
+    "2026-11-03",
+    "2026-11-04",
+    "2026-11-05",
+    "2026-11-06"
+  ],
+  "raw_columns": [
+    "away_attack_str",
+    "away_conceded_last5",
+    "away_corners_pg_roll",
+    "away_cs_rate_a",
+    "away_defense_str",
+    "away_fouls_pg_roll",
+    "away_has_ht_history",
+    "away_home_adv_factor",
+    "away_over25_last5",
+    "away_rest_days",
+    "away_scored_last5",
+    "away_season_conceded_a",
+    "away_season_goals_a",
+    "combined_sot_ratio",
+    "home_advantage",
+    "home_attack_str",
+    "home_conceded_last5",
+    "home_corners_pg_roll",
+    "home_cs_rate_h",
+    "home_defense_str",
+    "home_fouls_pg_roll",
+    "home_has_ht_history",
+    "home_over25_last5",
+    "home_rest_days",
+    "home_scored_last5",
+    "home_season_conceded_h",
+    "home_season_goals_h",
+    "league_asof_btts_rate",
+    "league_asof_goals_pg",
+    "league_asof_over15_rate",
+    "league_asof_over25_rate",
+    "league_asof_over35_rate",
+    "p_over25_poisson_dc"
+  ],
+  "per_date": {
+    "2026-11-01": {
+      "fixtures": 71,
+      "cells": 2343,
+      "mismatched_cells": 0
+    },
+    "2026-11-02": {
+      "fixtures": 24,
+      "cells": 792,
+      "mismatched_cells": 0
+    },
+    "2026-11-03": {
+      "fixtures": 16,
+      "cells": 528,
+      "mismatched_cells": 0
+    },
+    "2026-11-04": {
+      "fixtures": 8,
+      "cells": 264,
+      "mismatched_cells": 0
+    },
+    "2026-11-05": {
+      "fixtures": 5,
+      "cells": 165,
+      "mismatched_cells": 0
+    },
+    "2026-11-06": {
+      "fixtures": 1,
+      "cells": 33,
+      "mismatched_cells": 0
+    }
+  },
+  "total_mismatched_cells": 0,
+  "mismatched_cells_by_column": {},
+  "probability": {
+    "new_format/btts/champion_recipe+league+logitcal.pkl": {
+      "rows": 125,
+      "nan_rows": 0,
+      "mean_abs_pp": 0.0,
+      "max_abs_pp": 0.0,
+      "rows_over_1pp": 0,
+      "rows_exact": 125
+    },
+    "new_format/btts/champion_recipe+logitcal.pkl": {
+      "rows": 125,
+      "nan_rows": 0,
+      "mean_abs_pp": 0.0,
+      "max_abs_pp": 0.0,
+      "rows_over_1pp": 0,
+      "rows_exact": 125
+    },
+    "new_format/over15/champion_recipe+league+logitcal.pkl": {
+      "rows": 125,
+      "nan_rows": 0,
+      "mean_abs_pp": 0.0,
+      "max_abs_pp": 0.0,
+      "rows_over_1pp": 0,
+      "rows_exact": 125
+    },
+    "new_format/over15/champion_recipe+logitcal.pkl": {
+      "rows": 125,
+      "nan_rows": 0,
+      "mean_abs_pp": 0.0,
+      "max_abs_pp": 0.0,
+      "rows_over_1pp": 0,
+      "rows_exact": 125
+    },
+    "new_format/over25/champion_recipe+league+logitcal.pkl": {
+      "rows": 125,
+      "nan_rows": 0,
+      "mean_abs_pp": 0.0,
+      "max_abs_pp": 0.0,
+      "rows_over_1pp": 0,
+      "rows_exact": 125
+    },
+    "new_format/over25/champion_recipe+logitcal.pkl": {
+      "rows": 125,
+      "nan_rows": 0,
+      "mean_abs_pp": 0.0,
+      "max_abs_pp": 0.0,
+      "rows_over_1pp": 0,
+      "rows_exact": 125
+    },
+    "new_format/over35/champion_recipe+league+logitcal.pkl": {
+      "rows": 125,
+      "nan_rows": 0,
+      "mean_abs_pp": 0.0,
+      "max_abs_pp": 0.0,
+      "rows_over_1pp": 0,
+      "rows_exact": 125
+    },
+    "new_format/over35/champion_recipe+logitcal.pkl": {
+      "rows": 125,
+      "nan_rows": 0,
+      "mean_abs_pp": 0.0,
+      "max_abs_pp": 0.0,
+      "rows_over_1pp": 0,
+      "rows_exact": 125
+    }
+  }
+}

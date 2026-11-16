@@ -1,0 +1,1214 @@
+{
+ "family": 71,
+ "tested_with_p": 71,
+ "proven_combined": 0,
+ "cells": [
+  {
+   "run": "champion",
+   "track": "standard",
+   "mside": "over35_over",
+   "league": "La Liga 2",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 99,
+   "roi": -0.2412,
+   "ci95": [
+    -0.6229,
+    0.1511
+   ],
+   "clv": -0.0345,
+   "proven_combined": false
+  },
+  {
+   "run": "champion",
+   "track": "standard",
+   "mside": "over35_over",
+   "league": "Serie B",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 128,
+   "roi": -0.1045,
+   "ci95": [
+    -0.4863,
+    0.2774
+   ],
+   "clv": -0.0093,
+   "proven_combined": false
+  },
+  {
+   "run": "champion",
+   "track": "new_format",
+   "mside": "over25_over",
+   "league": "Denmark Superliga",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 82,
+   "roi": 0.0207,
+   "ci95": [
+    -0.1631,
+    0.2046
+   ],
+   "clv": -0.0112,
+   "proven_combined": false
+  },
+  {
+   "run": "champion",
+   "track": "new_format",
+   "mside": "over25_over",
+   "league": "Finland Veikkausliiga",
+   "verdict_in_run": "PROMISING",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 45,
+   "roi": 0.1198,
+   "ci95": [
+    -0.1961,
+    0.4025
+   ],
+   "clv": 0.0032,
+   "proven_combined": false
+  },
+  {
+   "run": "champion",
+   "track": "new_format",
+   "mside": "over25_over",
+   "league": "Mexico Liga MX",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 70,
+   "roi": 0.0409,
+   "ci95": [
+    -0.1861,
+    0.2927
+   ],
+   "clv": -0.0181,
+   "proven_combined": false
+  },
+  {
+   "run": "champion",
+   "track": "new_format",
+   "mside": "over25_over",
+   "league": "Norway Eliteserien",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 61,
+   "roi": -0.0385,
+   "ci95": [
+    -0.2714,
+    0.1818
+   ],
+   "clv": -0.0175,
+   "proven_combined": false
+  },
+  {
+   "run": "champion",
+   "track": "new_format",
+   "mside": "over25_over",
+   "league": "Sweden Allsvenskan",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 59,
+   "roi": -0.1925,
+   "ci95": [
+    -0.4594,
+    0.0786
+   ],
+   "clv": -0.029,
+   "proven_combined": false
+  },
+  {
+   "run": "champion",
+   "track": "new_format",
+   "mside": "over25_over",
+   "league": "USA MLS",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 105,
+   "roi": -0.1043,
+   "ci95": [
+    -0.2664,
+    0.0578
+   ],
+   "clv": -0.0044,
+   "proven_combined": false
+  },
+  {
+   "run": "champion",
+   "track": "new_format",
+   "mside": "over25_under",
+   "league": "Austrian Bundesliga",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 40,
+   "roi": -0.0175,
+   "ci95": [
+    -0.4019,
+    0.3643
+   ],
+   "clv": 0.019,
+   "proven_combined": false
+  },
+  {
+   "run": "champion",
+   "track": "new_format",
+   "mside": "over25_under",
+   "league": "Japan J-League",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 0.4085,
+   "p_holm_combined": 1.0,
+   "bets": 42,
+   "roi": 0.2969,
+   "ci95": [
+    -0.0386,
+    0.6324
+   ],
+   "clv": -0.0024,
+   "proven_combined": false
+  },
+  {
+   "run": "champion",
+   "track": "new_format",
+   "mside": "over25_under",
+   "league": "Norway Eliteserien",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 9,
+   "roi": -0.3889,
+   "ci95": [
+    -1.1829,
+    0.4744
+   ],
+   "clv": -0.013,
+   "proven_combined": false
+  },
+  {
+   "run": "champion",
+   "track": "new_format",
+   "mside": "over25_under",
+   "league": "USA MLS",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 80,
+   "roi": -0.1415,
+   "ci95": [
+    -0.3894,
+    0.1064
+   ],
+   "clv": 0.0204,
+   "proven_combined": false
+  },
+  {
+   "run": "champion",
+   "track": "new_format",
+   "mside": "over15_over",
+   "league": "Denmark Superliga",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 17,
+   "roi": -0.0241,
+   "ci95": [
+    -0.324,
+    0.252
+   ],
+   "clv": -0.0034,
+   "proven_combined": false
+  },
+  {
+   "run": "champion",
+   "track": "new_format",
+   "mside": "over15_over",
+   "league": "Finland Veikkausliiga",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 21,
+   "roi": -0.1567,
+   "ci95": [
+    -0.4943,
+    0.1809
+   ],
+   "clv": -0.0054,
+   "proven_combined": false
+  },
+  {
+   "run": "champion",
+   "track": "new_format",
+   "mside": "over15_over",
+   "league": "Sweden Allsvenskan",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 10,
+   "roi": -0.035,
+   "ci95": [
+    -0.5404,
+    0.4704
+   ],
+   "clv": -0.0205,
+   "proven_combined": false
+  },
+  {
+   "run": "champion",
+   "track": "new_format",
+   "mside": "over35_over",
+   "league": "Denmark Superliga",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 82,
+   "roi": 0.0871,
+   "ci95": [
+    -0.2197,
+    0.3969
+   ],
+   "clv": -0.017,
+   "proven_combined": false
+  },
+  {
+   "run": "champion",
+   "track": "new_format",
+   "mside": "over35_over",
+   "league": "Finland Veikkausliiga",
+   "verdict_in_run": "PROMISING",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 46,
+   "roi": 0.0809,
+   "ci95": [
+    -0.2998,
+    0.4614
+   ],
+   "clv": 0.0006,
+   "proven_combined": false
+  },
+  {
+   "run": "champion",
+   "track": "new_format",
+   "mside": "over35_over",
+   "league": "Norway Eliteserien",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 31,
+   "roi": -0.2552,
+   "ci95": [
+    -0.6179,
+    0.1076
+   ],
+   "clv": -0.0113,
+   "proven_combined": false
+  },
+  {
+   "run": "champion",
+   "track": "new_format",
+   "mside": "over35_over",
+   "league": "Sweden Allsvenskan",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 17,
+   "roi": -0.4753,
+   "ci95": [
+    -1.0768,
+    0.164
+   ],
+   "clv": -0.0278,
+   "proven_combined": false
+  },
+  {
+   "run": "A",
+   "track": "standard",
+   "mside": "over15_over",
+   "league": "Championship",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 29,
+   "roi": 0.0197,
+   "ci95": [
+    -0.2665,
+    0.3058
+   ],
+   "clv": -0.0053,
+   "proven_combined": false
+  },
+  {
+   "run": "A",
+   "track": "standard",
+   "mside": "over15_over",
+   "league": "Dutch Eredivisie",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 25,
+   "roi": 0.0784,
+   "ci95": [
+    -0.0852,
+    0.2416
+   ],
+   "clv": -0.0143,
+   "proven_combined": false
+  },
+  {
+   "run": "A",
+   "track": "standard",
+   "mside": "over15_over",
+   "league": "La Liga 2",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 18,
+   "roi": 0.0439,
+   "ci95": [
+    -0.3088,
+    0.3966
+   ],
+   "clv": -0.0192,
+   "proven_combined": false
+  },
+  {
+   "run": "A",
+   "track": "standard",
+   "mside": "over15_over",
+   "league": "Ligue 2",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 27,
+   "roi": -0.0944,
+   "ci95": [
+    -0.3989,
+    0.2007
+   ],
+   "clv": -0.0136,
+   "proven_combined": false
+  },
+  {
+   "run": "A",
+   "track": "standard",
+   "mside": "over15_over",
+   "league": "Serie B",
+   "verdict_in_run": "PROMISING",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 61,
+   "roi": 0.0623,
+   "ci95": [
+    -0.092,
+    0.2165
+   ],
+   "clv": 0.004,
+   "proven_combined": false
+  },
+  {
+   "run": "A",
+   "track": "standard",
+   "mside": "over35_over",
+   "league": "Dutch Eredivisie",
+   "verdict_in_run": "PROMISING",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 13,
+   "roi": 0.0938,
+   "ci95": [
+    -0.7152,
+    0.9028
+   ],
+   "clv": 0.0354,
+   "proven_combined": false
+  },
+  {
+   "run": "A",
+   "track": "standard",
+   "mside": "over35_over",
+   "league": "La Liga 2",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 27,
+   "roi": -0.473,
+   "ci95": [
+    -1.0557,
+    0.1341
+   ],
+   "clv": -0.0581,
+   "proven_combined": false
+  },
+  {
+   "run": "A",
+   "track": "standard",
+   "mside": "over35_over",
+   "league": "Ligue 2",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 16,
+   "roi": -0.1856,
+   "ci95": [
+    -1.0651,
+    0.7419
+   ],
+   "clv": -0.0702,
+   "proven_combined": false
+  },
+  {
+   "run": "A",
+   "track": "standard",
+   "mside": "over35_over",
+   "league": "Serie B",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 157,
+   "roi": 0.0324,
+   "ci95": [
+    -0.3044,
+    0.3691
+   ],
+   "clv": -0.0071,
+   "proven_combined": false
+  },
+  {
+   "run": "A",
+   "track": "new_format",
+   "mside": "over25_over",
+   "league": "Denmark Superliga",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 82,
+   "roi": 0.0207,
+   "ci95": [
+    -0.1631,
+    0.2046
+   ],
+   "clv": -0.0112,
+   "proven_combined": false
+  },
+  {
+   "run": "A",
+   "track": "new_format",
+   "mside": "over25_over",
+   "league": "Finland Veikkausliiga",
+   "verdict_in_run": "PROMISING",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 46,
+   "roi": 0.1254,
+   "ci95": [
+    -0.1829,
+    0.4007
+   ],
+   "clv": 0.0028,
+   "proven_combined": false
+  },
+  {
+   "run": "A",
+   "track": "new_format",
+   "mside": "over25_over",
+   "league": "Mexico Liga MX",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 43,
+   "roi": -0.1474,
+   "ci95": [
+    -0.4832,
+    0.1929
+   ],
+   "clv": -0.0158,
+   "proven_combined": false
+  },
+  {
+   "run": "A",
+   "track": "new_format",
+   "mside": "over25_over",
+   "league": "Sweden Allsvenskan",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 60,
+   "roi": -0.1832,
+   "ci95": [
+    -0.4403,
+    0.0802
+   ],
+   "clv": -0.029,
+   "proven_combined": false
+  },
+  {
+   "run": "A",
+   "track": "new_format",
+   "mside": "over25_over",
+   "league": "USA MLS",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 30,
+   "roi": -0.0553,
+   "ci95": [
+    -0.4518,
+    0.3411
+   ],
+   "clv": -0.0177,
+   "proven_combined": false
+  },
+  {
+   "run": "A",
+   "track": "new_format",
+   "mside": "over25_under",
+   "league": "Argentina Primera Division",
+   "verdict_in_run": "PROMISING",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 133,
+   "roi": 0.0023,
+   "ci95": [
+    -0.1225,
+    0.1272
+   ],
+   "clv": 0.0095,
+   "proven_combined": false
+  },
+  {
+   "run": "A",
+   "track": "new_format",
+   "mside": "over25_under",
+   "league": "Austrian Bundesliga",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 105,
+   "roi": -0.0769,
+   "ci95": [
+    -0.2727,
+    0.1189
+   ],
+   "clv": 0.0055,
+   "proven_combined": false
+  },
+  {
+   "run": "A",
+   "track": "new_format",
+   "mside": "over25_under",
+   "league": "Ireland Premier Division",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 65,
+   "roi": -0.0905,
+   "ci95": [
+    -0.3058,
+    0.1249
+   ],
+   "clv": -0.0171,
+   "proven_combined": false
+  },
+  {
+   "run": "A",
+   "track": "new_format",
+   "mside": "over25_under",
+   "league": "Japan J-League",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 123,
+   "roi": 0.0393,
+   "ci95": [
+    -0.1345,
+    0.2132
+   ],
+   "clv": -0.0044,
+   "proven_combined": false
+  },
+  {
+   "run": "A",
+   "track": "new_format",
+   "mside": "over25_under",
+   "league": "K-League 1",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 81,
+   "roi": 0.0131,
+   "ci95": [
+    -0.2388,
+    0.265
+   ],
+   "clv": -0.0044,
+   "proven_combined": false
+  },
+  {
+   "run": "A",
+   "track": "new_format",
+   "mside": "over15_over",
+   "league": "Argentina Primera Division",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 78,
+   "roi": -0.0097,
+   "ci95": [
+    -0.1853,
+    0.1658
+   ],
+   "clv": -0.0361,
+   "proven_combined": false
+  },
+  {
+   "run": "A",
+   "track": "new_format",
+   "mside": "over15_over",
+   "league": "Denmark Superliga",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 63,
+   "roi": -0.0027,
+   "ci95": [
+    -0.1235,
+    0.118
+   ],
+   "clv": -0.0078,
+   "proven_combined": false
+  },
+  {
+   "run": "A",
+   "track": "new_format",
+   "mside": "over15_over",
+   "league": "Finland Veikkausliiga",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 40,
+   "roi": -0.0118,
+   "ci95": [
+    -0.2211,
+    0.1842
+   ],
+   "clv": -0.0023,
+   "proven_combined": false
+  },
+  {
+   "run": "A",
+   "track": "new_format",
+   "mside": "over15_over",
+   "league": "Ireland Premier Division",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 50,
+   "roi": 0.0224,
+   "ci95": [
+    -0.148,
+    0.1928
+   ],
+   "clv": -0.0123,
+   "proven_combined": false
+  },
+  {
+   "run": "A",
+   "track": "new_format",
+   "mside": "over15_over",
+   "league": "Sweden Allsvenskan",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 40,
+   "roi": -0.0625,
+   "ci95": [
+    -0.2558,
+    0.1302
+   ],
+   "clv": -0.0201,
+   "proven_combined": false
+  },
+  {
+   "run": "A",
+   "track": "new_format",
+   "mside": "over35_over",
+   "league": "Denmark Superliga",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 82,
+   "roi": 0.0871,
+   "ci95": [
+    -0.2197,
+    0.3969
+   ],
+   "clv": -0.017,
+   "proven_combined": false
+  },
+  {
+   "run": "A",
+   "track": "new_format",
+   "mside": "over35_over",
+   "league": "Finland Veikkausliiga",
+   "verdict_in_run": "PROMISING",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 46,
+   "roi": 0.0809,
+   "ci95": [
+    -0.2998,
+    0.4614
+   ],
+   "clv": 0.0006,
+   "proven_combined": false
+  },
+  {
+   "run": "A",
+   "track": "new_format",
+   "mside": "over35_over",
+   "league": "Norway Eliteserien",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 14,
+   "roi": -0.135,
+   "ci95": [
+    -0.6937,
+    0.4381
+   ],
+   "clv": -0.0332,
+   "proven_combined": false
+  },
+  {
+   "run": "A",
+   "track": "new_format",
+   "mside": "over35_over",
+   "league": "Sweden Allsvenskan",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 18,
+   "roi": -0.4167,
+   "ci95": [
+    -1.1252,
+    0.3506
+   ],
+   "clv": -0.0444,
+   "proven_combined": false
+  },
+  {
+   "run": "B",
+   "track": "standard",
+   "mside": "over15_over",
+   "league": "Championship",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 53,
+   "roi": -0.0921,
+   "ci95": [
+    -0.303,
+    0.1055
+   ],
+   "clv": -0.0052,
+   "proven_combined": false
+  },
+  {
+   "run": "B",
+   "track": "standard",
+   "mside": "over15_over",
+   "league": "Dutch Eredivisie",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 28,
+   "roi": -0.0021,
+   "ci95": [
+    -0.2005,
+    0.1962
+   ],
+   "clv": -0.0041,
+   "proven_combined": false
+  },
+  {
+   "run": "B",
+   "track": "standard",
+   "mside": "over15_over",
+   "league": "La Liga 2",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 93,
+   "roi": -0.0902,
+   "ci95": [
+    -0.2399,
+    0.0622
+   ],
+   "clv": -0.0143,
+   "proven_combined": false
+  },
+  {
+   "run": "B",
+   "track": "standard",
+   "mside": "over15_over",
+   "league": "Ligue 2",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 20,
+   "roi": -0.06,
+   "ci95": [
+    -0.4029,
+    0.2829
+   ],
+   "clv": -0.0163,
+   "proven_combined": false
+  },
+  {
+   "run": "B",
+   "track": "standard",
+   "mside": "over15_over",
+   "league": "Serie B",
+   "verdict_in_run": "PROMISING",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 81,
+   "roi": 0.0232,
+   "ci95": [
+    -0.1142,
+    0.1607
+   ],
+   "clv": 0.0027,
+   "proven_combined": false
+  },
+  {
+   "run": "B",
+   "track": "standard",
+   "mside": "over35_over",
+   "league": "Dutch Eredivisie",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 22,
+   "roi": -0.1927,
+   "ci95": [
+    -0.6314,
+    0.2459
+   ],
+   "clv": 0.0009,
+   "proven_combined": false
+  },
+  {
+   "run": "B",
+   "track": "new_format",
+   "mside": "over25_over",
+   "league": "Denmark Superliga",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 82,
+   "roi": 0.0207,
+   "ci95": [
+    -0.1631,
+    0.2046
+   ],
+   "clv": -0.0112,
+   "proven_combined": false
+  },
+  {
+   "run": "B",
+   "track": "new_format",
+   "mside": "over25_over",
+   "league": "Finland Veikkausliiga",
+   "verdict_in_run": "PROMISING",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 45,
+   "roi": 0.1198,
+   "ci95": [
+    -0.1961,
+    0.4025
+   ],
+   "clv": 0.0032,
+   "proven_combined": false
+  },
+  {
+   "run": "B",
+   "track": "new_format",
+   "mside": "over25_over",
+   "league": "Mexico Liga MX",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 80,
+   "roi": 0.0239,
+   "ci95": [
+    -0.1904,
+    0.2487
+   ],
+   "clv": -0.0205,
+   "proven_combined": false
+  },
+  {
+   "run": "B",
+   "track": "new_format",
+   "mside": "over25_over",
+   "league": "Norway Eliteserien",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 56,
+   "roi": -0.0714,
+   "ci95": [
+    -0.311,
+    0.1697
+   ],
+   "clv": -0.0243,
+   "proven_combined": false
+  },
+  {
+   "run": "B",
+   "track": "new_format",
+   "mside": "over25_over",
+   "league": "Sweden Allsvenskan",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 59,
+   "roi": -0.1925,
+   "ci95": [
+    -0.4594,
+    0.0786
+   ],
+   "clv": -0.029,
+   "proven_combined": false
+  },
+  {
+   "run": "B",
+   "track": "new_format",
+   "mside": "over25_over",
+   "league": "USA MLS",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 125,
+   "roi": -0.0418,
+   "ci95": [
+    -0.1974,
+    0.1137
+   ],
+   "clv": -0.0031,
+   "proven_combined": false
+  },
+  {
+   "run": "B",
+   "track": "new_format",
+   "mside": "over25_under",
+   "league": "Argentina Primera Division",
+   "verdict_in_run": "PROMISING",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 133,
+   "roi": 0.0023,
+   "ci95": [
+    -0.1225,
+    0.1272
+   ],
+   "clv": 0.0095,
+   "proven_combined": false
+  },
+  {
+   "run": "B",
+   "track": "new_format",
+   "mside": "over25_under",
+   "league": "Austrian Bundesliga",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 105,
+   "roi": -0.0769,
+   "ci95": [
+    -0.2727,
+    0.1189
+   ],
+   "clv": 0.0055,
+   "proven_combined": false
+  },
+  {
+   "run": "B",
+   "track": "new_format",
+   "mside": "over25_under",
+   "league": "Ireland Premier Division",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 65,
+   "roi": -0.0905,
+   "ci95": [
+    -0.3058,
+    0.1249
+   ],
+   "clv": -0.0171,
+   "proven_combined": false
+  },
+  {
+   "run": "B",
+   "track": "new_format",
+   "mside": "over25_under",
+   "league": "Japan J-League",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 124,
+   "roi": 0.0435,
+   "ci95": [
+    -0.1292,
+    0.2161
+   ],
+   "clv": -0.0038,
+   "proven_combined": false
+  },
+  {
+   "run": "B",
+   "track": "new_format",
+   "mside": "over25_under",
+   "league": "K-League 1",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 84,
+   "roi": -0.0187,
+   "ci95": [
+    -0.2562,
+    0.2188
+   ],
+   "clv": -0.0052,
+   "proven_combined": false
+  },
+  {
+   "run": "B",
+   "track": "new_format",
+   "mside": "over15_over",
+   "league": "Denmark Superliga",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 19,
+   "roi": -0.0611,
+   "ci95": [
+    -0.3205,
+    0.1984
+   ],
+   "clv": -0.0083,
+   "proven_combined": false
+  },
+  {
+   "run": "B",
+   "track": "new_format",
+   "mside": "over15_over",
+   "league": "Finland Veikkausliiga",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 23,
+   "roi": -0.1217,
+   "ci95": [
+    -0.4246,
+    0.1794
+   ],
+   "clv": -0.0038,
+   "proven_combined": false
+  },
+  {
+   "run": "B",
+   "track": "new_format",
+   "mside": "over15_over",
+   "league": "Sweden Allsvenskan",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 12,
+   "roi": -0.1908,
+   "ci95": [
+    -0.6862,
+    0.3046
+   ],
+   "clv": -0.0285,
+   "proven_combined": false
+  },
+  {
+   "run": "B",
+   "track": "new_format",
+   "mside": "over35_over",
+   "league": "Denmark Superliga",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 82,
+   "roi": 0.0871,
+   "ci95": [
+    -0.2197,
+    0.3969
+   ],
+   "clv": -0.017,
+   "proven_combined": false
+  },
+  {
+   "run": "B",
+   "track": "new_format",
+   "mside": "over35_over",
+   "league": "Finland Veikkausliiga",
+   "verdict_in_run": "PROMISING",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 46,
+   "roi": 0.0809,
+   "ci95": [
+    -0.2998,
+    0.4614
+   ],
+   "clv": 0.0006,
+   "proven_combined": false
+  },
+  {
+   "run": "B",
+   "track": "new_format",
+   "mside": "over35_over",
+   "league": "Norway Eliteserien",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 24,
+   "roi": -0.1358,
+   "ci95": [
+    -0.558,
+    0.2863
+   ],
+   "clv": -0.0103,
+   "proven_combined": false
+  },
+  {
+   "run": "B",
+   "track": "new_format",
+   "mside": "over35_over",
+   "league": "Sweden Allsvenskan",
+   "verdict_in_run": "UNPROVEN",
+   "p_holm_in_run": 1.0,
+   "p_holm_combined": 1.0,
+   "bets": 21,
+   "roi": -0.4448,
+   "ci95": [
+    -0.9744,
+    0.1169
+   ],
+   "clv": -0.0323,
+   "proven_combined": false
+  }
+ ]
+}
