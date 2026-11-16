@@ -1,0 +1,22 @@
+{
+  "_about": "Inputs for the 'make the public repos private' cost estimate (Option 3). Every value carries its provenance: stated (owner said it), measured (from GitHub run history by the agent on 2026-11-16), estimate (agent's choice, correct it if wrong).",
+  "window": {"value": "2026-10-17..2026-11-15 (30 days)", "provenance": "measured"},
+  "measured_run_minutes_30d": {
+    "wowza-betting":   {"value": 61958, "provenance": "measured: sum over completed runs of ceil(updated_at - run_started_at), runs > 6 h excluded"},
+    "wowzaV9-Pro":     {"value": 28673, "provenance": "measured (same method)"},
+    "wowza-dashboard": {"value": 57,    "provenance": "measured (same method)"},
+    "wowza_v11":       {"value": 410,   "provenance": "measured (same method)"}
+  },
+  "job_sample_ratio_billable_over_run_estimate": {
+    "wowza-betting":   {"value": 0.890, "provenance": "measured: 80 random runs, per-job ceil(completed_at - started_at) / run estimate"},
+    "wowzaV9-Pro":     {"value": 1.091, "provenance": "measured: 80 random runs"},
+    "wowza-dashboard": {"value": 0.930, "provenance": "measured: 50 runs (all)"},
+    "wowza_v11":       {"value": 0.990, "provenance": "measured: 80 random runs"}
+  },
+  "included_private_minutes_per_month": {"value": 3000, "provenance": "stated (owner, via coordinator 2026-11-16: Pro plan)"},
+  "budget_usd_per_month": {"value": 15, "provenance": "stated (owner, via coordinator)"},
+  "private_minutes_used_nov_1_to_16": {"value": 2100, "provenance": "stated (owner, 'about 2,100')"},
+  "days_elapsed_in_november": {"value": 16, "provenance": "derived from today's date 2026-11-16"},
+  "linux_rate_usd_per_min": {"value": 0.006, "provenance": "estimate: GitHub-hosted Linux 2-core list price after the 2026-01-01 price cut, recalled not checked; pre-2026 price was 0.008"},
+  "linux_rate_usd_per_min_alt": {"value": 0.008, "provenance": "estimate: pre-2026 list price, used as the high case"}
+}

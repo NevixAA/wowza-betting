@@ -1,0 +1,38 @@
+{
+ "betting+Pro+dashboard @ $0.006/min": {
+  "public_min": 86478,
+  "total_private_min": 90415,
+  "overage_cost_usd_per_month": 524,
+  "minutes_affordable_within_budget": 5500,
+  "cut_needed_pct": 98
+ },
+ "betting+Pro+dashboard @ $0.008/min": {
+  "public_min": 86478,
+  "total_private_min": 90415,
+  "overage_cost_usd_per_month": 699,
+  "minutes_affordable_within_budget": 4875,
+  "cut_needed_pct": 99
+ },
+ "all four public repos @ $0.006/min": {
+  "public_min": 86884,
+  "total_private_min": 90821,
+  "overage_cost_usd_per_month": 527,
+  "minutes_affordable_within_budget": 5500,
+  "cut_needed_pct": 98
+ },
+ "all four public repos @ $0.008/min": {
+  "public_min": 86884,
+  "total_private_min": 90821,
+  "overage_cost_usd_per_month": 703,
+  "minutes_affordable_within_budget": 4875,
+  "cut_needed_pct": 99
+ },
+ "cross_check": {
+  "raw_run_min": 90688,
+  "job_corrected_min": 86478,
+  "diff_pct": -4.6,
+  "passed": true
+ },
+ "break_even_rate_usd_per_min": 0.00017,
+ "existing_private_min_per_month_extrapolated": 3938
+}
