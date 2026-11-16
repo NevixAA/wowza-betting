@@ -2,8 +2,8 @@
  "calls": 0,
  "filled_rows_this_run": 61792,
  "filled_rows_total": 61792,
- "history_rows": 71837,
- "matched_rows": 70775,
+ "history_rows": 71492,
+ "matched_rows": 70780,
  "non_null_share": {
   "away_blocked": 1.0,
   "away_corners": 1.0,
@@ -67,8 +67,9 @@
   },
   "Brazil Serie A": {
    "filled": 2998,
-   "lacking": 2999,
-   "matched": 2999,
+   "lacking": 3001,
+   "matched": 3001,
+   "not_cached": 2,
    "teams_not_in_answer": 1
   },
   "Bundesliga 2": {
@@ -86,11 +87,11 @@
   },
   "China Super League": {
    "filled": 1814,
-   "lacking": 2191,
+   "lacking": 1841,
    "matched": 1839,
    "not_cached": 8,
    "teams_not_in_answer": 17,
-   "unmatched": 352
+   "unmatched": 2
   },
   "Denmark Superliga": {
    "filled": 1482,
@@ -168,9 +169,9 @@
   },
   "Mexico Liga MX": {
    "filled": 2453,
-   "lacking": 2458,
-   "matched": 2458,
-   "not_cached": 4,
+   "lacking": 2459,
+   "matched": 2459,
+   "not_cached": 5,
    "teams_not_in_answer": 1
   },
   "National League": {
@@ -180,8 +181,9 @@
   },
   "Norway Eliteserien": {
    "filled": 1895,
-   "lacking": 1896,
-   "matched": 1896,
+   "lacking": 1897,
+   "matched": 1897,
+   "not_cached": 1,
    "teams_not_in_answer": 1
   },
   "Portuguese Primeira Liga": {
@@ -192,8 +194,9 @@
   "Romanian Superliga": {
    "empty_answer": 1,
    "filled": 2161,
-   "lacking": 2295,
-   "matched": 2295,
+   "lacking": 2296,
+   "matched": 2296,
+   "not_cached": 1,
    "teams_not_in_answer": 133
   },
   "Saudi Pro League": {
@@ -251,5 +254,5 @@
   }
  },
  "unknown_provider_types": [],
- "written_at": "2026-11-09T16:11:03.985559+00:00"
+ "written_at": "2026-11-16T20:32:48.968449+00:00"
 }
