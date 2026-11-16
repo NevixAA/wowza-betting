@@ -1,11 +1,11 @@
 # API-Football prices: move from the public repos to the private store
 
-Status: PHASE 1 (inventory) and PHASE 2 (copy, no deletes) done 2026-11-16. PHASE 3 is a plan only.
+Status: PHASE 1 (inventory) and PHASE 2 (copy, no deletes) done 2026-11-16, for classes A, B and O. PHASE 3 is a plan only.
 Nothing in any public repo was deleted or changed, and no live reader or writer was touched.
 This document contains no prices: only paths, counts, sizes and dates.
 
 * **Why.** API-Football's terms (https://www.api-football.com/terms) grant no licence to publish its data and forbid resale. The four repos below are PUBLIC.
-* **Owner decisions (2026-11-16).** Class A (raw price archives) and class B (prices inside our own tip, settlement and ledger files) both move private. Models must not be damaged: the parity gate in section 5 is a hard gate. Git history: compare a history purge with making the repos private (section 6).
+* **Owner decisions (2026-11-16).** Class A (raw price archives) and class B (prices inside our own tip, settlement and ledger files) both move private. Models must not be damaged: the parity gate in section 5 is a hard gate. Class O (OddsAPI-only raw archives) moves too, together with A and B. Git history: **kept for now**; a history purge is deferred and decided after go-live (section 6).
 * **Repos and commits inventoried** (all PUBLIC, checked with `gh repo view`):
 
 | Repo | Branch | Commit |
@@ -26,8 +26,8 @@ This document contains no prices: only paths, counts, sizes and dates.
 | **A** | Raw bookmaker price archives from API-Football, or mixed API-Football + OddsAPI where a `source` column says which | Copied private (done). Move private at cut-over. |
 | **B** | Per-row prices inside our own records: ledgers, tips, stake plans, shadows, settlements, research and backtest frames | Copied private (done, owner decision). At cut-over, the public side keeps a price-free view. |
 | **C** | Derived statistics: counts, CLV %, ROI, coverage, band averages (`avg_odds`, `median_clv` and similar) | Stay public. Not listed row by row; the rule is in section 1.1. |
-| **O** | Raw archives from **OddsAPI only** (no API-Football rows) | **Not copied.** Outside this brief (API-Football only). OddsAPI's terms also limit redistribution, so this is an owner decision. |
-| **F** | football-data.co.uk history (`output/fd_history.parquet`) | Not copied. A free public source with its own terms; an owner decision. |
+| **O** | Raw archives from **OddsAPI only** (no API-Football rows) | Copied private (done; owner decision 2026-11-16, "move them too"). Switches over with A and B on Nov 22-24, behind the same parity gate. |
+| **F** | football-data.co.uk history (`output/fd_history.parquet`; also the raw `output/collect/fd_raw/*.csv` downloads on data-truth-100 and prep, whose bookmaker columns use football-data names such as `B365H`) | Not copied. A free public source with its own terms; an owner decision. |
 
 ### 1.1 How a file was classified (reproducible)
 
@@ -139,7 +139,12 @@ The owner has decided that B moves private. These are the items where that decis
 
 ## 4. Other findings
 
-### 4.1 Class O (OddsAPI-only raw archives) and class F: not copied, owner decision
+### 4.1 Class O (OddsAPI-only raw archives: copied, moves with A/B) and class F (not copied)
+
+Other OddsAPI items checked and left as they are:
+* `sharp_ledger.csv`, `sharp_tips.csv`, `worldcup_tips.csv` and `corrections/sharp_ledger_restated.csv` are our own records priced from OddsAPI. They are class B and were already copied.
+* `output/threshold_proposals/bars_oddsapi_hist/*`, `output/collect/oddsapi_history_{probe,plan}.json` and `output/oddsapi_quota_health.json` (prep branch / main) hold thresholds, bands (`odds_min` / `odds_max`), counts and credit plans, not per-row prices. They are class C.
+* The OddsAPI history itself already lives only in private wowza-exec (`odds-history`).
 
 | Repo @ branch | Path | Dataset | Provider | Files | MB | Rows | Date range | Source mix (rows) | Writer | Readers (workflows / code / dashboard / tests) |
 |---|---|---|---|---:|---:|---:|---|---|---|---|
@@ -194,7 +199,7 @@ The owner has decided that B moves private. These are the items where that decis
 | `implied_prob_over/under`, `api_implied_*`, `api_overround` (`src/integrity/price_provenance.PRICE_DERIVED_FEATURES`) | 1/odds of the same columns | As above | Identical by construction. Proven by frame hash. |
 | `src/data_loader.py` fills `odds_btts`, `odds_over15`, `odds_over35` (lines ~104, ~865) | `newformat_odds_history.csv`, `standard_sidemarket_odds_history.csv` | A | Resolver. |
 | `scripts/train_repaired_challengers.py` (first pre-kickoff two-sided quote) | Same two files | A | Resolver. |
-| `src/market_movement.CurveIndex`, `src/drift.py` (movement and drift signals) | `standard_sidemarket_odds_history`, `standard_odds_history` (O), `newformat_odds_history`, `newformat_odds_dense` (O), `player_prop_odds_history` | A + O | Resolver. Class O stays where the owner decides; if it stays public, nothing changes. |
+| `src/market_movement.CurveIndex`, `src/drift.py` (movement and drift signals) | `standard_sidemarket_odds_history`, `standard_odds_history` (O), `newformat_odds_history`, `newformat_odds_dense` (O), `player_prop_odds_history` | A + O | Resolver. Class O moves with A/B, so these files resolve to the store as well. |
 | Props (`player_model/predict.py`, `clv_tracker.py`): `market_odds` and CLV | `player_prop_odds_history.csv` (+ `_archive/`), `prop_quotes/` | A | Resolver. Props parity (`scripts/props_train_serve_parity.py`). |
 | Edge engine and TOP-3 / stake plan inputs (`src/edge_af_quotes.py`, `src/edge_engine_shadow.py`, `src/stake_plan.py`) | `book_quotes/` | A | Resolver. Check the `league_weekly_*` / `stake_plan` outputs for equality. |
 | CLV certification (`src/shadow_settlement.py`, `src/clv_types.py`, `update_results.py`) | `book_quotes/`, capture histories, heartbeats | A | Resolver. Settlement and CLV recompute must show no difference. |
@@ -202,6 +207,7 @@ The owner has decided that B moves private. These are the items where that decis
 | Pro scout model and promotion (`src/scout/*`) | `scout_odds/`, `scout_specials_quotes/` | A | Pro resolver on `data/season_2026_27/`. |
 | Pro paper / shadow / studies (`paper_1x2`, `shadow`, `btts_contradiction`, `price_trader/paths`) | `market_snapshots/` (A), `book_odds_snapshots/` (O: OddsAPI imported from v9) | A + O | Pro resolver. |
 | Pro `xg_value`, data quality | `feature_snapshots/` (B) | B | Pro resolver. |
+| Class O readers: closing prices and CLV fallback (`update_results.py`, `src/ledger.py` via `odds_history_v9.json` / `standard_odds_history.csv` / `newformat_odds_dense.csv`), BTTS book odds (`src/btts_odds.py`), edge replay (`book_odds_snapshots`), sharp and World Cup trackers, exchange capture, Pro `book_odds_snapshots` (canonical market, price_trader paths, snapshot coverage) | Class O files | O | Resolver. Covered by gate items 3-5 (settlement, CLV, bars/TOP-3 inputs). |
 | v11 shadow and movement research | v9 `predictions.csv` (raw URL), own `v11_shadow_*` | B | Token-authenticated read or price-free view (section 7). |
 
 ### 4.4 Cross-repo and public-URL readers (break if a source goes private)
@@ -216,7 +222,7 @@ The owner has decided that B moves private. These are the items where that decis
 
 The cut-over changes only WHERE files are read from, never their bytes. The gate proves that on the same commit inputs, in two layers. **Any difference blocks the cut-over.**
 
-**Layer 1: bytes.** For every class A and B file, compare sha256 of the public file at commit X with sha256 of the private store file at the store commit Y that carries it. The Phase 2 manifest is the first instance of this check: all files matched (section 8). Rerun it at the cut-over commit.
+**Layer 1: bytes.** For every class A, B and O file, compare sha256 of the public file at commit X with sha256 of the private store file at the store commit Y that carries it. The Phase 2 manifest is the first instance of this check: all files matched (section 8). Rerun it at the cut-over commit.
 
 **Layer 2: behaviour.** Run each item twice on the same code commit and the same pinned data commits: once with `PRICE_STORE_DIR` unset (public paths, today's behaviour) and once with `PRICE_STORE_DIR` set to the private checkout. Zero tolerated differences:
 
@@ -265,6 +271,8 @@ The cut-over changes only WHERE files are read from, never their bytes. The gate
 * **Cross-check.** The raw run-duration total (90,688) and the job-level-corrected total (86,478) differ by 4.6%, which passes.
 * **Break-even.** Option 3 fits the budget only at about **$0.00017/min**, about 35x below any GitHub-hosted price. Only self-hosted runners or a much higher budget make Option 3 workable. The conclusion does not depend on which list price is right.
 
+**Owner decision 2026-11-16: keep history for now.** A history purge (Option 2) is deferred and decided after go-live. Nothing in this plan rewrites history.
+
 **Recommendation.**
 1. Option 1 at the cut-over (section 7). It is the only option that is safe for the live pipeline around go-live.
 2. Delete the stale branches that carry price files once each has been archived, which is cheap and non-destructive for `main`.
@@ -275,8 +283,8 @@ The cut-over changes only WHERE files are read from, never their bytes. The gate
 
 ### 7.1 Design
 
-* **Live store.** A new orphan branch `af-prices-live` in NevixAA/wowza-exec, seeded with the latest class A and B files at their ORIGINAL repo-relative paths under `<repo>/`. The Phase 2 branch `af-prices-archive` stays an immutable snapshot.
-* **Writers** (capture workflows, predict, update_results, player_props, Pro scout / live_odds / collect / bet_builder, v11 collect) open the store with a generalised `.github/scripts/price_store.sh open|push <producer>`. This is the same pattern as `side_odds_store.sh`: a write deploy key in a secret, cloned under `$RUNNER_TEMP`, counts-only logs, retry `pull --rebase` on push.
+* **Live store.** A new orphan branch `af-prices-live` in NevixAA/wowza-exec, seeded with the latest class A, B and O files at their ORIGINAL repo-relative paths under `<repo>/`. The Phase 2 branch `af-prices-archive` stays an immutable snapshot.
+* **Writers** (capture workflows, predict, update_results, player_props, Pro scout / live_odds / collect / bet_builder, v11 collect; for class O also `exchange_odds_capture.yml`, `sharp_tracker.yml`, `worldcup.yml` and the OddsAPI parts of `predict.yml`) open the store with a generalised `.github/scripts/price_store.sh open|push <producer>`. This is the same pattern as `side_odds_store.sh`: a write deploy key in a secret, cloned under `$RUNNER_TEMP`, counts-only logs, retry `pull --rebase` on push.
 * **Writers append only.** Each writer appends to producer-owned day files, so two workflows never race on one file.
 * **Readers** in workflows open the store read-only (shallow, sparse checkout of the paths they need) and get `PRICE_STORE_DIR`. One resolver per repo, for example `src/price_store.py: path(rel)`, returns `$PRICE_STORE_DIR/<repo>/<rel>` when set and the public path otherwise. Every reader in sections 2-4 switches to it.
 * **Settlement, ROI and CLV** read prices only from the store.
@@ -295,9 +303,9 @@ The cut-over changes only WHERE files are read from, never their bytes. The gate
 | Sun 11-22 | Seed `af-prices-live` from public HEAD and verify with sha256. Turn on **dual-write**: writers keep writing public as today AND append to the store. A daily check compares row counts and appended-row hashes public vs store. | low: the store push runs after the public commit, so it cannot fail the public write |
 | Mon 11-23 | Parity gate (section 5) on pinned commits. **Any difference stops here.** | none (read-only) |
 | Mon 11-23 | Flip readers to the store (`PRICE_STORE_DIR` set in workflows). Dual-write continues. Watch 24 h: zero red runs, settlement and CLV counts equal. | medium, but rollback is one env line |
-| Tue 11-24 | Writers stop writing class A publicly (store only). Publish the price-free views and class C stats. Switch the dashboard manifest to them. Rerun the parity gate. | low |
-| After 11-24, owner approval | Remove class A and the price columns of B from public HEAD: `git rm` of A files, and the B originals replaced by their views as new files. Only after a third sha256 check that the store holds every byte. Delete stale branches. | low (data verified in two private places) |
-| Owner only | Option 2 (history purge) or accept the history. | high, planned window |
+| Tue 11-24 | Writers stop writing classes A and O publicly (store only). Publish the price-free views and class C stats. Switch the dashboard manifest to them. Rerun the parity gate. | low |
+| After 11-24, owner approval | Remove classes A and O and the price columns of B from public HEAD: `git rm` of A and O files, and the B originals replaced by their views as new files. Only after a third sha256 check that the store holds every byte. Delete stale branches. | low (data verified in two private places) |
+| After go-live, owner decision (deferred 2026-11-16) | Option 2 (history purge) or keep the history. | high, planned window |
 
 ### 7.3 Keys and secrets the owner must create
 
@@ -319,7 +327,7 @@ Delete the local private key files after `gh secret set`.
   * Final (manifest) commit: **`7a40a395b7f9bdd971b301f5de0c61252031a948`**, tree `1b1e434482df`.
   * Pushed in 8 stages (one per source prefix) so no single push was oversized.
 * **Layout.** `<repo>/<branch>/<original path>`, with `/` in a branch name written as `__`. Includes `MANIFEST.csv` (path, source repo / branch / commit / path, class, dataset, provider, bytes, rows, date range, sha256, git blob id), a README and `.gitattributes` (`* -text`, so no line-ending conversion).
-* **Scope.** Every class A and class B file at the commits in the table at the top. Straight copy: no transformation, no filtering, no dedupe. Class O and F are not copied.
+* **Scope.** Every class A and class B file (commit `7a40a395`), then every class O file (commit `e48e95cc`), at the commits in the table at the top. Straight copy: no transformation, no filtering, no dedupe. Class F is not copied.
 
 | Source | Class | Files | MB | Rows |
 |---|---|---:|---:|---:|
@@ -342,3 +350,31 @@ Delete the local private key files after `gh secret set`.
 * **Left out on purpose.** 6 empty (1-byte) CSVs on data-truth-100 / prep could not be parsed and hold no rows.
 * **Logs.** Counts only; no price was printed into any log or document.
 
+
+### 8.1 Class O added (owner decision 2026-11-16: "Yes, move them too")
+
+* **Commit.** `e48e95ccbfd6833272c2a1037960721d52f9986c` on `af-prices-archive`, child of `7a40a395`, tree `b0e979eb2dcb`.
+  * `MANIFEST.csv` was extended append-only: the 4,995 earlier rows are byte-identical and 559 class O rows were added.
+  * The README notes class O.
+* **What was checked for more OddsAPI data.** Every branch inventoried was searched for other OddsAPI-sourced per-row prices (section 4.1). The OddsAPI-priced own records were already in class B; the `bars_oddsapi_hist` / `oddsapi_history_*` files are class C.
+
+| Source | Dataset | Files | MB | Rows | Date range |
+|---|---|---:|---:|---:|---|
+| wowza-betting @ main | book_odds_snapshots (+ `_archive/`) | 81 | 51.8 | 431,608 | 2026-08-19 .. 2026-11-16 |
+| wowza-betting @ main | exchange_quotes | 2 | 2.9 | 14,291 | 2026-10-20 .. 2026-11-15 |
+| wowza-betting @ main | standard_odds_history | 1 | 1.1 | 12,118 | 2026-08-09 .. 2026-11-16 |
+| wowza-betting @ main | newformat_odds_dense | 1 | 1.8 | 17,866 | 2026-08-15 .. 2026-11-16 |
+| wowza-betting @ main | odds_history_v9.json | 1 | 0.2 | 339 keys | - |
+| wowza-betting @ main | sharp_history | 6 | 35.3 | 5,995 keys | - |
+| wowza-betting @ main | worldcup_history.json | 1 | 1.7 | 204 keys | - |
+| wowza-betting @ data-truth-100 | same 7 datasets | 82 | 86.1 | 428,671 | to 2026-11-02 |
+| wowza-betting @ prep/bars-oddsapi-hist | same 7 datasets | 82 | 86.1 | 428,671 | to 2026-11-02 |
+| wowzaV9-Pro @ main | book_odds_snapshots (imported from v9) | 302 | 8.3 | 431,608 | 2026-08-19 .. 2026-11-16 |
+| **Total class O** | | **559** | **275.2** | **1,771,371** | |
+
+* **Unique content.** 401 distinct files (110.8 MB).
+* **Verification.**
+  * Every class O blob id equals its source blob id.
+  * The full manifest was re-read by path from `e48e95cc` and from the public sources at the recorded commits: **5,554 / 5,554 sha256 match, 0 mismatched** (2,407,363,119 bytes, covering A + B + O).
+  * GitHub reports tree `b0e979eb...` with 5,557 blobs.
+* **Archive totals now:** 5,554 data files, 20,368,552 rows, 2,407.4 MB.
