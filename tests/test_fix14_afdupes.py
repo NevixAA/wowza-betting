@@ -161,7 +161,7 @@ def test_every_af_history_reader_applies_the_rule():
               "scripts/collect_af_history_gap.py"):
         assert "apply_af_history_corrections" in (ROOT / f).read_text(encoding="utf-8-sig"), f
     dl = (ROOT / "src/data_loader.py").read_text(encoding="utf-8")
-    assert dl.count("rekey_sidecar(fill") == 2
+    assert dl.count("rekey_sidecar(fill") == 3      # stats fill, fullstats fill, restored provider rows (2026-11-16)
     wf = (ROOT / ".github/workflows/data_truth_collect.yml").read_text(encoding="utf-8")
     assert wf.count("build_af_history_corrections.py") == 2
     assert "output/corrections/af_history_removed_duplicates.csv" in wf

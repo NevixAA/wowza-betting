@@ -1596,6 +1596,81 @@ def _enrich_af_fullstats_fill(df: pd.DataFrame, root: Path | None = None) -> pd.
     return df
 
 
+
+#: af_history PROVIDER rows the old loader write-back replaced, restored from git (PR #35) and VERIFIED
+#: against independent sources (scripts/verify_af_history_restored_rows.py: the row's FT score equals
+#: API-Football's for the fixture; a cell that differs from API-Football's /fixtures/statistics, or
+#: an impossible value, is missing; duplicates of the owner's af_history rule are out). Owner
+#: 2026-11-16: "yes, make the models use them". A separate, labelled source: every row carries
+#: `provenance` and `restored_from_commit`. af_history.parquet itself is never rewritten.
+AF_RESTORED_ROWS = Path("output") / "corrections" / "af_history_restored_provider_rows_2026-11_verified.parquet"
+#: restored column -> history column (the same map step 1 uses for provider rows)
+_AF_RESTORED_COLS = {"HS": "home_shots", "AS": "away_shots", "HST": "home_sot", "AST": "away_sot",
+                     "HC": "home_corners", "AC": "away_corners", "HF": "home_fouls", "AF": "away_fouls",
+                     "HY": "home_yellows", "AY": "away_yellows", "HXG": "home_xg", "AXG": "away_xg",
+                     "HIB": "home_insidebox", "AIB": "away_insidebox"}
+
+
+def _enrich_af_restored_rows(df: pd.DataFrame, root: Path | None = None) -> pd.DataFrame:
+    """Fill cells that are STILL MISSING after every other provider source (step 1's provider rows,
+    the --insidebox and --fullstats sidecars) from AF_RESTORED_ROWS - nan_only: an existing value is
+    never overwritten, and a cell the verified file does not hold stays missing. Same keying as the
+    fullstats fill (af_history's own spelling: rekey_sidecar, join aliases, re-dated fixtures, clubs
+    resolved onto df's spellings with the identity map), ambiguous cells refused by safe_left_enrich.
+    Last of the af fills, so a fixture-id-proven provider answer always wins. Absent file -> df
+    unchanged. Per-column filled cells in df.attrs['af_restored_fill']."""
+    p = (root or Path(__file__).resolve().parents[1]) / AF_RESTORED_ROWS
+    if not p.exists():
+        log.info(f"[af_restored] {AF_RESTORED_ROWS.as_posix()} not present - skipped")
+        return df
+    try:
+        fill = pd.read_parquet(p)
+        from src.af_history_corrections import add_join_aliases, follow_redated_fixtures, rekey_sidecar
+        fill = add_join_aliases(rekey_sidecar(fill, tag="af_restored"), tag="af_restored")
+        fill = follow_redated_fixtures(fill, tag="af_restored")
+        vals = [c for c in _AF_RESTORED_COLS if c in fill.columns and _AF_RESTORED_COLS[c] in df.columns]
+        if "league" not in fill.columns or not vals:
+            log.error("[af_restored] no league / stat column - fill SKIPPED")
+            return df
+        df = df.copy()
+        fill = fill[fill[vals].notna().any(axis=1)].copy()
+        for c in vals:
+            fill[c] = pd.to_numeric(fill[c], errors="coerce")
+        fill["date"] = pd.to_datetime(fill["date"], errors="coerce")
+        fill = _resolve_onto_history(fill, df, "home_team", "away_team", "af_restored",
+                                     aliases=IDENTITY_ALIASES)
+        fill["_date_str"] = fill["date"].dt.strftime("%Y-%m-%d")
+        df["_h"] = df["home_team"].astype(str)
+        df["_a"] = df["away_team"].astype(str)
+        df["_date_str"] = pd.to_datetime(df["date"], errors="coerce").dt.strftime("%Y-%m-%d")
+        shot_cols = [c for c in ("home_shots", "away_shots", "home_sot", "away_sot") if c in df.columns]
+        had_shots = df[shot_cols].notna() if shot_cols else None
+        df, rep = _IJ.safe_left_enrich(
+            df, fill, keys=["league", "_h", "_a", "_date_str"], value_cols=vals,
+            target_cols={c: _AF_RESTORED_COLS[c] for c in vals}, name="af_restored_rows")
+        if had_shots is not None:                          # row SoT ratio from the filled values only
+            for side in ("home", "away"):
+                sh, so = f"{side}_shots", f"{side}_sot"
+                if sh not in df.columns or so not in df.columns:
+                    continue
+                newly = (df[sh].notna() & ~had_shots[sh]) | (df[so].notna() & ~had_shots[so])
+                if newly.any():
+                    with np.errstate(divide="ignore", invalid="ignore"):
+                        r = np.where(df[sh] > 0, df[so] / df[sh], np.nan)
+                    if f"{side}_sot_ratio" not in df.columns:
+                        df[f"{side}_sot_ratio"] = np.nan
+                    df.loc[newly, f"{side}_sot_ratio"] = r[newly.to_numpy()]
+        df.attrs["af_restored_fill"] = {"filled_cells": dict(rep.filled_cells),
+                                        "ambiguous_key_groups": rep.ambiguous_key_groups}
+        log.info(f"[af_restored] verified restored provider rows filled {dict(rep.filled_cells)}; "
+                 f"ambiguous key groups {rep.ambiguous_key_groups}")
+    except Exception as e:                                       # noqa: BLE001
+        log.warning(f"[af_restored] failed to merge {AF_RESTORED_ROWS.as_posix()}: {e}")
+    finally:
+        df = df.drop(columns=["_h", "_a", "_date_str"], errors="ignore")
+    return df
+
+
 #: the committed provider bank this module READS (never writes, owner 2026-11-04)
 AF_HISTORY_PATH = Path(__file__).resolve().parents[1] / "output" / "af_history.parquet"
 
@@ -1865,6 +1940,7 @@ def _finish_af_enrichment(df: pd.DataFrame, wb_blank: pd.DataFrame | None,
     df.attrs['af_written_back']."""
     df = _enrich_af_stats_fill(df)
     df = _enrich_af_fullstats_fill(df)
+    df = _enrich_af_restored_rows(df)   # verified git-restored provider rows, last (owner 2026-11-16)
 
     if recompute_sot_ratio:
         with np.errstate(divide="ignore", invalid="ignore"):

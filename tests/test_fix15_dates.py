@@ -296,4 +296,4 @@ def test_sidecar_row_of_a_redated_fixture_follows_it_by_fixture_id_only():
     assert out2.attrs["af_redated_follow"]["left_key_held"] == 1
     assert AC.follow_redated_fixtures(side, redated={}) is side
     src = (ROOT / "src" / "data_loader.py").read_text(encoding="utf-8")
-    assert src.count("follow_redated_fixtures(") == 3                    # af_history + both sidecars
+    assert src.count("follow_redated_fixtures(") == 4                    # af_history + the stats, fullstats and restored-rows sidecars
