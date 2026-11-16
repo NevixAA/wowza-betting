@@ -1,7 +1,7 @@
 {
   "artifact": "join_integrity_health",
   "helper_version": "safe_left_enrich-1.0",
-  "generated_at": "2026-11-16T18:42:54Z",
+  "generated_at": "2026-11-16T20:25:57Z",
   "status": "FAIL",
   "joins": {
     "af_history_shots.legacy": {
@@ -33,6 +33,50 @@
       "notes": [
         "key omits league/fixture_id"
       ]
+    },
+    "af_restored_rows": {
+      "name": "af_restored_rows",
+      "keys": [
+        "league",
+        "_home_norm",
+        "_away_norm",
+        "_date_str"
+      ],
+      "helper_version": "safe_left_enrich-1.0",
+      "mode": "safe",
+      "left_rows": 83536,
+      "right_rows": 19840,
+      "right_null_key_rows": 0,
+      "right_duplicate_key_groups": 0,
+      "right_duplicate_rows": 0,
+      "ambiguous_key_groups": 0,
+      "ambiguous_cells": {},
+      "left_null_key_rows": 0,
+      "matched_left_rows": 20167,
+      "unmapped_left_rows": 63369,
+      "output_rows": 83536,
+      "duplicate_output_rows": 0,
+      "filled_cells": {
+        "home_shots": 62,
+        "away_shots": 62,
+        "home_sot": 63,
+        "away_sot": 63,
+        "home_corners": 5613,
+        "away_corners": 5612,
+        "home_fouls": 5609,
+        "away_fouls": 5606,
+        "home_yellows": 19517,
+        "away_yellows": 19515,
+        "home_xg": 95,
+        "away_xg": 95,
+        "home_insidebox": 63,
+        "away_insidebox": 63
+      },
+      "overwritten_cells": 0,
+      "legacy_expansion_rows": null,
+      "legacy_misaligned_rows": null,
+      "status": "PASS",
+      "notes": []
     },
     "fd_history_ht_fill.legacy": {
       "name": "fd_history_ht_fill.legacy",
@@ -243,6 +287,50 @@
       "status": "WARN",
       "notes": []
     },
+    "af_restored_rows": {
+      "name": "af_restored_rows",
+      "keys": [
+        "league",
+        "_home_norm",
+        "_away_norm",
+        "_date_str"
+      ],
+      "helper_version": "safe_left_enrich-1.0",
+      "mode": "safe",
+      "left_rows": 83536,
+      "right_rows": 19840,
+      "right_null_key_rows": 0,
+      "right_duplicate_key_groups": 0,
+      "right_duplicate_rows": 0,
+      "ambiguous_key_groups": 0,
+      "ambiguous_cells": {},
+      "left_null_key_rows": 0,
+      "matched_left_rows": 20167,
+      "unmapped_left_rows": 63369,
+      "output_rows": 83536,
+      "duplicate_output_rows": 0,
+      "filled_cells": {
+        "home_shots": 59,
+        "away_shots": 59,
+        "home_sot": 59,
+        "away_sot": 59,
+        "home_corners": 5613,
+        "away_corners": 5612,
+        "home_fouls": 5609,
+        "away_fouls": 5606,
+        "home_yellows": 19517,
+        "away_yellows": 19515,
+        "home_xg": 5,
+        "away_xg": 5,
+        "home_insidebox": 8,
+        "away_insidebox": 9
+      },
+      "overwritten_cells": 0,
+      "legacy_expansion_rows": null,
+      "legacy_misaligned_rows": null,
+      "status": "PASS",
+      "notes": []
+    },
     "fd_history_ht_fill.legacy": {
       "name": "fd_history_ht_fill.legacy",
       "keys": [
@@ -434,7 +522,7 @@
   "replay": {
     "label": "RETROSPECTIVE",
     "rows_total": 83536,
-    "rows_with_any_enriched_value_changed": 40056,
+    "rows_with_any_enriched_value_changed": 40049,
     "first_changed_row": {
       "date": "2019-02-25 00:00:00",
       "league": "Ireland Premier Division",
@@ -443,100 +531,100 @@
     },
     "columns": {
       "home_shots": {
-        "legacy_non_null": 83290,
-        "safe_non_null": 82585,
-        "shifted": 20352,
-        "phantom": 933,
-        "dropped": 228,
-        "rows_changed": 21513
+        "legacy_non_null": 83352,
+        "safe_non_null": 82644,
+        "shifted": 20458,
+        "phantom": 875,
+        "dropped": 167,
+        "rows_changed": 21500
       },
       "away_shots": {
-        "legacy_non_null": 83294,
-        "safe_non_null": 82590,
-        "shifted": 20197,
-        "phantom": 928,
-        "dropped": 224,
-        "rows_changed": 21349
+        "legacy_non_null": 83356,
+        "safe_non_null": 82649,
+        "shifted": 20307,
+        "phantom": 870,
+        "dropped": 163,
+        "rows_changed": 21340
       },
       "home_sot": {
-        "legacy_non_null": 83290,
-        "safe_non_null": 82597,
-        "shifted": 18899,
-        "phantom": 921,
-        "dropped": 228,
-        "rows_changed": 20048
+        "legacy_non_null": 83353,
+        "safe_non_null": 82656,
+        "shifted": 18997,
+        "phantom": 863,
+        "dropped": 166,
+        "rows_changed": 20026
       },
       "away_sot": {
-        "legacy_non_null": 83300,
-        "safe_non_null": 82598,
-        "shifted": 18729,
-        "phantom": 921,
-        "dropped": 219,
-        "rows_changed": 19869
+        "legacy_non_null": 83363,
+        "safe_non_null": 82657,
+        "shifted": 18826,
+        "phantom": 863,
+        "dropped": 157,
+        "rows_changed": 19846
       },
       "home_corners": {
-        "legacy_non_null": 56972,
-        "safe_non_null": 57249,
+        "legacy_non_null": 62585,
+        "safe_non_null": 62862,
         "shifted": 0,
         "phantom": 0,
         "dropped": 277,
         "rows_changed": 277
       },
       "away_corners": {
-        "legacy_non_null": 56972,
-        "safe_non_null": 57249,
+        "legacy_non_null": 62584,
+        "safe_non_null": 62861,
         "shifted": 0,
         "phantom": 0,
         "dropped": 277,
         "rows_changed": 277
       },
       "home_fouls": {
-        "legacy_non_null": 56974,
-        "safe_non_null": 57251,
+        "legacy_non_null": 62583,
+        "safe_non_null": 62860,
         "shifted": 0,
         "phantom": 0,
         "dropped": 277,
         "rows_changed": 277
       },
       "away_fouls": {
-        "legacy_non_null": 56974,
-        "safe_non_null": 57251,
+        "legacy_non_null": 62580,
+        "safe_non_null": 62857,
         "shifted": 0,
         "phantom": 0,
         "dropped": 277,
         "rows_changed": 277
       },
       "home_xg": {
-        "legacy_non_null": 8373,
-        "safe_non_null": 12375,
-        "shifted": 5424,
-        "phantom": 2927,
-        "dropped": 6929,
-        "rows_changed": 15280
+        "legacy_non_null": 8468,
+        "safe_non_null": 12380,
+        "shifted": 5498,
+        "phantom": 2925,
+        "dropped": 6837,
+        "rows_changed": 15260
       },
       "away_xg": {
-        "legacy_non_null": 8373,
-        "safe_non_null": 12379,
-        "shifted": 5422,
-        "phantom": 2925,
-        "dropped": 6931,
-        "rows_changed": 15278
+        "legacy_non_null": 8468,
+        "safe_non_null": 12384,
+        "shifted": 5497,
+        "phantom": 2923,
+        "dropped": 6839,
+        "rows_changed": 15259
       },
       "home_insidebox": {
-        "legacy_non_null": 10621,
-        "safe_non_null": 14908,
-        "shifted": 7538,
-        "phantom": 2490,
-        "dropped": 6777,
-        "rows_changed": 16805
+        "legacy_non_null": 10684,
+        "safe_non_null": 14916,
+        "shifted": 7594,
+        "phantom": 2484,
+        "dropped": 6716,
+        "rows_changed": 16794
       },
       "away_insidebox": {
-        "legacy_non_null": 10621,
-        "safe_non_null": 14907,
-        "shifted": 7445,
-        "phantom": 2497,
-        "dropped": 6783,
-        "rows_changed": 16725
+        "legacy_non_null": 10684,
+        "safe_non_null": 14916,
+        "shifted": 7504,
+        "phantom": 2490,
+        "dropped": 6722,
+        "rows_changed": 16716
       },
       "ht_home_goals": {
         "legacy_non_null": 55356,
@@ -673,8 +761,8 @@
   "serving_replay": {
     "board_fixtures": 148,
     "recipe": "v9_repaired",
-    "tips_legacy": 35,
-    "tips_safe": 36,
+    "tips_legacy": 39,
+    "tips_safe": 35,
     "tips_only_legacy": [
       [
         "Argentina Primera Division",
@@ -682,15 +770,7 @@
         "Barracas Central",
         "over15",
         "OVER",
-        "MARKSMAN"
-      ],
-      [
-        "Austrian Bundesliga",
-        "Austria Wien",
-        "RB Salzburg",
-        "OU25",
-        "UNDER",
-        "VALUABLE"
+        "SNIPER"
       ],
       [
         "Austrian Bundesliga",
@@ -704,6 +784,22 @@
         "Brazil Serie A",
         "Corinthians",
         "Botafogo",
+        "OU25",
+        "UNDER",
+        "VALUABLE"
+      ],
+      [
+        "Brazil Serie A",
+        "Sao Paulo",
+        "Fluminense",
+        "OU25",
+        "OVER",
+        "VALUABLE"
+      ],
+      [
+        "Brazil Serie A",
+        "Vitoria",
+        "Bragantino-SP",
         "OU25",
         "UNDER",
         "VALUABLE"
@@ -751,27 +847,11 @@
         "VALUABLE"
       ],
       [
-        "Brazil Serie A",
-        "Chapecoense",
-        "Cruzeiro",
-        "OU25",
-        "UNDER",
-        "VALUABLE"
-      ],
-      [
-        "Japan J-League",
-        "Vissel Kobe",
-        "Mito HollyHock",
-        "OU25",
+        "Argentina Primera Division",
+        "River Plate",
+        "Lanus",
+        "over15",
         "OVER",
-        "VALUABLE"
-      ],
-      [
-        "Mexico Liga MX",
-        "Pachuca",
-        "Toluca",
-        "OU25",
-        "UNDER",
         "VALUABLE"
       ],
       [
@@ -791,22 +871,6 @@
         "VALUABLE"
       ],
       [
-        "Norway Eliteserien",
-        "KFUM",
-        "SK Brann",
-        "OU25",
-        "UNDER",
-        "VALUABLE"
-      ],
-      [
-        "Norway Eliteserien",
-        "Tromso",
-        "Viking FK",
-        "OU25",
-        "UNDER",
-        "VALUABLE"
-      ],
-      [
         "Sweden Allsvenskan",
         "Hammarby IF",
         "IFK Goteborg",
@@ -816,13 +880,13 @@
       ]
     ],
     "features_changed": {
-      "away_corners_pg_roll": 52,
-      "away_fouls_pg_roll": 52,
+      "away_corners_pg_roll": 51,
+      "away_fouls_pg_roll": 50,
       "away_insidebox_last5": 143,
       "away_xg_last5": 144,
       "combined_sot_ratio": 68,
-      "home_corners_pg_roll": 52,
-      "home_fouls_pg_roll": 52,
+      "home_corners_pg_roll": 48,
+      "home_fouls_pg_roll": 50,
       "home_insidebox_last5": 144,
       "home_xg_last5": 144,
       "p_over25": 72,
