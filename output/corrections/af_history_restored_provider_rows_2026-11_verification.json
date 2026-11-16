@@ -1,0 +1,369 @@
+{
+ "api_calls": 0,
+ "columns": {
+  "AC": {
+   "af_checked": 19968,
+   "af_match": 19954,
+   "af_match_pct": 99.93,
+   "af_mismatch": 14,
+   "excluded_cells": 14,
+   "fd_checked": 20217,
+   "fd_match": 20217,
+   "fd_match_pct": 100.0,
+   "fd_mismatch": 0,
+   "impossible": 0,
+   "no_second_source": 680,
+   "present": 26320
+  },
+  "AF": {
+   "af_checked": 19971,
+   "af_match": 19936,
+   "af_match_pct": 99.82,
+   "af_mismatch": 35,
+   "excluded_cells": 35,
+   "fd_checked": 20220,
+   "fd_match": 20220,
+   "fd_match_pct": 100.0,
+   "fd_mismatch": 0,
+   "impossible": 0,
+   "no_second_source": 681,
+   "present": 26326
+  },
+  "AIB": {
+   "af_checked": 433,
+   "af_match": 430,
+   "af_match_pct": 99.31,
+   "af_mismatch": 3,
+   "excluded_cells": 3,
+   "fd_checked": 0,
+   "fd_match": 0,
+   "fd_match_pct": null,
+   "fd_mismatch": 0,
+   "impossible": 0,
+   "no_second_source": 59,
+   "present": 492
+  },
+  "AR": {
+   "af_checked": 4927,
+   "af_match": 4927,
+   "af_match_pct": 100.0,
+   "af_mismatch": 0,
+   "excluded_cells": 0,
+   "fd_checked": 0,
+   "fd_match": 0,
+   "fd_match_pct": null,
+   "fd_mismatch": 0,
+   "impossible": 0,
+   "no_second_source": 1358,
+   "present": 6285
+  },
+  "AS": {
+   "af_checked": 19994,
+   "af_match": 19904,
+   "af_match_pct": 99.55,
+   "af_mismatch": 90,
+   "excluded_cells": 90,
+   "fd_checked": 20228,
+   "fd_match": 20228,
+   "fd_match_pct": 100.0,
+   "fd_mismatch": 0,
+   "impossible": 0,
+   "no_second_source": 1470,
+   "present": 27138
+  },
+  "AST": {
+   "af_checked": 19986,
+   "af_match": 19934,
+   "af_match_pct": 99.74,
+   "af_mismatch": 52,
+   "excluded_cells": 52,
+   "fd_checked": 20219,
+   "fd_match": 20219,
+   "fd_match_pct": 100.0,
+   "fd_mismatch": 0,
+   "impossible": 0,
+   "no_second_source": 1469,
+   "present": 27128
+  },
+  "AXG": {
+   "af_checked": 287,
+   "af_match": 287,
+   "af_match_pct": 100.0,
+   "af_mismatch": 0,
+   "excluded_cells": 0,
+   "fd_checked": 0,
+   "fd_match": 0,
+   "fd_match_pct": null,
+   "fd_mismatch": 0,
+   "impossible": 0,
+   "no_second_source": 46,
+   "present": 333
+  },
+  "AY": {
+   "af_checked": 19364,
+   "af_match": 19338,
+   "af_match_pct": 99.87,
+   "af_mismatch": 26,
+   "excluded_cells": 26,
+   "fd_checked": 0,
+   "fd_match": 0,
+   "fd_match_pct": null,
+   "fd_mismatch": 0,
+   "impossible": 0,
+   "no_second_source": 6175,
+   "present": 25539
+  },
+  "FTAG": {
+   "excluded_cells": 0,
+   "impossible": 0,
+   "present": 28412
+  },
+  "FTHG": {
+   "excluded_cells": 0,
+   "impossible": 0,
+   "present": 28412
+  },
+  "HC": {
+   "af_checked": 19968,
+   "af_match": 19949,
+   "af_match_pct": 99.9,
+   "af_mismatch": 19,
+   "excluded_cells": 19,
+   "fd_checked": 20217,
+   "fd_match": 20217,
+   "fd_match_pct": 100.0,
+   "fd_mismatch": 0,
+   "impossible": 0,
+   "no_second_source": 680,
+   "present": 26320
+  },
+  "HF": {
+   "af_checked": 19971,
+   "af_match": 19943,
+   "af_match_pct": 99.86,
+   "af_mismatch": 28,
+   "excluded_cells": 28,
+   "fd_checked": 20220,
+   "fd_match": 20220,
+   "fd_match_pct": 100.0,
+   "fd_mismatch": 0,
+   "impossible": 0,
+   "no_second_source": 681,
+   "present": 26326
+  },
+  "HIB": {
+   "af_checked": 433,
+   "af_match": 430,
+   "af_match_pct": 99.31,
+   "af_mismatch": 3,
+   "excluded_cells": 3,
+   "fd_checked": 0,
+   "fd_match": 0,
+   "fd_match_pct": null,
+   "fd_mismatch": 0,
+   "impossible": 0,
+   "no_second_source": 59,
+   "present": 492
+  },
+  "HR": {
+   "af_checked": 4923,
+   "af_match": 4923,
+   "af_match_pct": 100.0,
+   "af_mismatch": 0,
+   "excluded_cells": 0,
+   "fd_checked": 0,
+   "fd_match": 0,
+   "fd_match_pct": null,
+   "fd_mismatch": 0,
+   "impossible": 0,
+   "no_second_source": 1351,
+   "present": 6274
+  },
+  "HS": {
+   "af_checked": 19994,
+   "af_match": 19897,
+   "af_match_pct": 99.51,
+   "af_mismatch": 97,
+   "excluded_cells": 97,
+   "fd_checked": 20228,
+   "fd_match": 20228,
+   "fd_match_pct": 100.0,
+   "fd_mismatch": 0,
+   "impossible": 0,
+   "no_second_source": 1470,
+   "present": 27138
+  },
+  "HST": {
+   "af_checked": 19986,
+   "af_match": 19939,
+   "af_match_pct": 99.76,
+   "af_mismatch": 47,
+   "excluded_cells": 47,
+   "fd_checked": 20219,
+   "fd_match": 20219,
+   "fd_match_pct": 100.0,
+   "fd_mismatch": 0,
+   "impossible": 0,
+   "no_second_source": 1469,
+   "present": 27128
+  },
+  "HXG": {
+   "af_checked": 287,
+   "af_match": 287,
+   "af_match_pct": 100.0,
+   "af_mismatch": 0,
+   "excluded_cells": 0,
+   "fd_checked": 0,
+   "fd_match": 0,
+   "fd_match_pct": null,
+   "fd_mismatch": 0,
+   "impossible": 0,
+   "no_second_source": 46,
+   "present": 333
+  },
+  "HY": {
+   "af_checked": 19364,
+   "af_match": 19339,
+   "af_match_pct": 99.87,
+   "af_mismatch": 25,
+   "excluded_cells": 25,
+   "fd_checked": 0,
+   "fd_match": 0,
+   "fd_match_pct": null,
+   "fd_mismatch": 0,
+   "impossible": 0,
+   "no_second_source": 6175,
+   "present": 25539
+  }
+ },
+ "duplicates": {
+  "club_already_has_provider_row_that_day": 0,
+  "duplicate_key_within_restored": 0,
+  "key_is_current_provider_row": 0,
+  "key_not_a_current_written_back_row": 0,
+  "key_removed_by_duplicate_rule": 6724
+ },
+ "excluded_cells": 439,
+ "excluded_rows": 6726,
+ "excluded_rows_by_reason": {
+  "duplicate: key removed by the owner's af_history duplicate rule": 6724,
+  "score N-N != API-Football FT N-N": 2
+ },
+ "restored_rows": 28412,
+ "score_identity": {
+  "af_ft_match": 21686,
+  "af_ft_mismatch": 2,
+  "fd_also_checked": 21505,
+  "fd_disagrees_where_af_agrees": 1,
+  "fd_match_only": 0,
+  "fd_mismatch_only": 0,
+  "no_second_source": 0
+ },
+ "score_mismatches": [
+  {
+   "api_football": "0-3",
+   "away_team": "Guangzhou R&F",
+   "date": "2020-11-10 00:00:00",
+   "home_team": "Dalian Aerbin",
+   "league": "China Super League",
+   "restored": "0-4",
+   "via": "fixture_id"
+  },
+  {
+   "api_football": "0-3",
+   "away_team": "Dundalk",
+   "date": "2022-08-29 00:00:00",
+   "home_team": "Sligo Rovers",
+   "league": "Ireland Premier Division",
+   "restored": "2-0",
+   "via": "provider_names"
+  }
+ ],
+ "score_mismatches_listed": 2,
+ "served_cells_after_verification": {
+  "AC": 19806,
+  "AF": 19789,
+  "AIB": 431,
+  "AR": 4899,
+  "AS": 20490,
+  "AST": 20520,
+  "AXG": 289,
+  "AY": 19195,
+  "HC": 19802,
+  "HF": 19795,
+  "HIB": 431,
+  "HR": 4895,
+  "HS": 20483,
+  "HST": 20525,
+  "HXG": 289,
+  "HY": 19196
+ },
+ "sources": {
+  "api_football_ft": [
+   "output/collect/af_ht_scores.parquet",
+   "output/strength/competition_fixtures.parquet"
+  ],
+  "api_football_statistics": "output/collect/af_history_fullstats_fill.parquet",
+  "football_data": "output/fd_history.parquet"
+ },
+ "verified_rows": 21686,
+ "writeback_cells_note": "served: none. A loader copy equal to an API-Football value adds nothing (the provider value already fills that cell); one that differs or has no provider value stays excluded.",
+ "writeback_cells_unproven": {
+  "AIB": {
+   "cells": 6214,
+   "differ_from_provider": 2059,
+   "equal_to_provider": 711,
+   "no_provider_value": 3444,
+   "provider_checked": 2770
+  },
+  "AS": {
+   "cells": 17,
+   "differ_from_provider": 0,
+   "equal_to_provider": 0,
+   "no_provider_value": 17,
+   "provider_checked": 0
+  },
+  "AST": {
+   "cells": 7,
+   "differ_from_provider": 0,
+   "equal_to_provider": 0,
+   "no_provider_value": 7,
+   "provider_checked": 0
+  },
+  "AXG": {
+   "cells": 7710,
+   "differ_from_provider": 968,
+   "equal_to_provider": 377,
+   "no_provider_value": 6365,
+   "provider_checked": 1345
+  },
+  "HIB": {
+   "cells": 6214,
+   "differ_from_provider": 2104,
+   "equal_to_provider": 666,
+   "no_provider_value": 3444,
+   "provider_checked": 2770
+  },
+  "HS": {
+   "cells": 20,
+   "differ_from_provider": 0,
+   "equal_to_provider": 0,
+   "no_provider_value": 20,
+   "provider_checked": 0
+  },
+  "HST": {
+   "cells": 17,
+   "differ_from_provider": 0,
+   "equal_to_provider": 0,
+   "no_provider_value": 17,
+   "provider_checked": 0
+  },
+  "HXG": {
+   "cells": 7710,
+   "differ_from_provider": 970,
+   "equal_to_provider": 375,
+   "no_provider_value": 6365,
+   "provider_checked": 1345
+  }
+ }
+}
