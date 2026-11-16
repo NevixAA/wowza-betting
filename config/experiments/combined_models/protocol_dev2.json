@@ -109,5 +109,16 @@
     "no row is filled; missing stays missing",
     "no global (all-league) decision",
     "no configuration outside this file enters the family; anything else is labelled context"
+  ],
+  "amendments": [
+    {
+      "id": "A1",
+      "declared_on": "2026-11-16",
+      "before_any_effect": true,
+      "replaces": "inputs.props.reproduction_check (max |diff| <= 1e-9)",
+      "finding": "The 2026-09-01 refit did NOT reproduce run 43745808793's holdout probabilities bit for bit (max |diff| sot 0.057, sot2 0.119, goals 0.104, assists 0.224, cards 0.063; labels 0 disagreements on 24,690 rows per market). Diagnosis, measured before any effect: (1) the run's own pickle scored locally on the cached frame reproduces the run's CSV to <= 3e-16 (same frame, same features, same scoring); (2) the training window is identical (sot 864,114 rows, calibration cut 2026-01-10, as in the run report); (3) local fits are deterministic (1 vs 4 threads: 3e-16); (4) the HistGradientBoosting bin thresholds differ in 110 of 125 features: the binning subsample (200,000 rows) depends on the ROW ORDER of the training window; re-fitting the SAME rows in a shuffled order moves the probabilities by the same amount (max 0.054, mean 0.0043) as runner vs local (max 0.057, mean 0.0040), with equal log loss (0.47460 / 0.47458 / 0.47460). The runner's frame was built by a different pandas install (row order), so its fit is one draw of the same recipe on the same rows.",
+      "new_rule": "props passes when ALL hold per market on the September rows: (a) the run's pickle reproduces the run's CSV on the cached frame (max |diff| <= 1e-12); (b) 0 label disagreements and every run row matched; (c) refit vs run: |log loss difference| <= 0.0005 and Pearson correlation >= 0.99. Otherwise props is EXCLUDED. The report states that the props OOS probabilities are local refits of the clean recipe on the run's verified frame, equivalent but not bit-identical to the runner's fit.",
+      "nothing_else_changes": true
+    }
   ]
 }
