@@ -212,6 +212,9 @@ def parse_fixture(league_name: str, season: str, f: dict, stats_resp) -> dict | 
         "date":       date_str,
         "home_team":  home,
         "away_team":  away,
+        # The provider's fixture id from the same response (audit G11, owner 2026-11-16), so a row can
+        # be proven against API-Football. Rows stored before this change keep it missing (no backfill).
+        "fixture_id": fix.get("id"),
         "FTHG":       int(fthg),
         "FTAG":       int(ftag),
         "FTR":        "H" if fthg > ftag else ("A" if ftag > fthg else "D"),
@@ -379,6 +382,8 @@ def run(target_league: str | None = None, dry_run: bool = False) -> None:
         df = df.drop_duplicates(subset=["league", "date", "home_team", "away_team"], keep="last")
         df = df.sort_values(["league", "date"]).reset_index(drop=True)
 
+    if "fixture_id" in df.columns:
+        df["fixture_id"] = pd.to_numeric(df["fixture_id"], errors="coerce").astype("Int64")
     df.to_parquet(OUTPUT, index=False)
     pct_with_shots = df["HS"].notna().mean() * 100
     print(f"\n  Saved {len(df)} rows → {OUTPUT.name}")
