@@ -314,6 +314,9 @@ def run() -> int:
     book_rows: list[dict] = []   # per-book quotes, only populated when CAPTURE_BOOK_QUOTES
     # Special-market quotes (src/specials_quotes) kept from the SAME answers: zero extra calls.
     spec_rows: list[dict] = []
+    # Corners/cards quotes (src/side_odds_quotes) from the SAME answers: zero extra calls, written
+    # only to the PRIVATE store when SIDE_ODDS_DIR is set (owner 2026-11-16, audit G1).
+    side_rows: list[dict] = []
     nearest_ko_h = None
     for league in leagues:
         if stop:
@@ -400,6 +403,16 @@ def run() -> int:
                         captured_at=now_iso()))
                 except Exception as _e:                               # noqa: BLE001
                     print(f"  [specials_quotes] skipped fixture {fid}: {_e}")
+                if os.environ.get("SIDE_ODDS_DIR"):
+                    try:
+                        from src import side_odds_quotes as _soq
+                        from src.specials_quotes import now_iso as _now_iso
+                        side_rows.extend(_soq.parse(
+                            raw_payload.get("response") or [], capture="std", captured_at=_now_iso(),
+                            names={fid: (home, away)}, leagues={lid: (league, None)},
+                            kickoffs={fid: _iso_kickoff(raw_ko)}, expect_fixture_id=fid))
+                    except Exception as _e:                           # noqa: BLE001
+                        print(f"  [side_odds] skipped fixture {fid}: {type(_e).__name__}")
             for market, odd in odds.items():
                 rows.append({"snapshot_date": snap_date, "snapshot_ts": snap_ts,
                              "match_date": mdate,
@@ -428,6 +441,14 @@ def run() -> int:
                   f"{len({r['bookmaker_id'] for r in spec_rows})} bookmakers -> {SPECIALS_DIR.name}/")
         except Exception as _e:                                       # noqa: BLE001
             print(f"[specials_quotes] write failed: {_e}")
+    if os.environ.get("SIDE_ODDS_DIR"):
+        # Counts only: these prices never reach a public log or file.
+        try:
+            from src import side_odds_quotes as _soq
+            print(_soq.summary(side_rows, _soq.append(side_rows))
+                  + f" (odds calls this pass: {_ODDS_CALLS})")
+        except Exception as _e:                                       # noqa: BLE001
+            print(f"[side_odds] not written ({type(_e).__name__})")
 
     # LAST-SEEN HEARTBEAT: the change-log below drops an unchanged price, so without this a pass
     # at T-8m that saw the T-3h price again leaves no proof it was still in force at the close.
