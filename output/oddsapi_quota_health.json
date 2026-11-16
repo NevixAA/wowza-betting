@@ -1,21 +1,27 @@
 {
   "artifact": "oddsapi_quota_health",
   "rule_version": "oddsapi-quota-1.0",
-  "generated_at": "2026-11-16T20:28:08Z",
+  "generated_at": "2026-11-16T20:33:44Z",
   "window_hours": 24.0,
-  "runs_listed": 108,
-  "runs_parsed": 108,
+  "runs_listed": 107,
+  "runs_parsed": 107,
   "log_download_failures": 0,
-  "credits_logged_in_window": 1162,
-  "credits_per_day_logged_estimate": 1162,
-  "account_remaining_latest": 663121,
-  "account_remaining_latest_ts": "2026-11-16T18:43:42Z",
-  "account_burn_per_day_from_remaining": 576027,
-  "projected_days_to_exhaustion": 1.2,
+  "credits_logged_in_window": 1184,
+  "credits_per_day_logged_estimate": 1184,
+  "account_remaining_latest": 662787,
+  "account_remaining_latest_ts": "2026-11-16T20:26:24Z",
+  "account_burn_per_day_from_remaining": 249974,
+  "projected_days_to_exhaustion": 2.7,
   "monthly_allowance_assumed": 100000,
   "by_workflow": {
+    "update_results.yml": {
+      "runs": 5,
+      "credits": 0,
+      "calls": 0,
+      "runs_with_unknown_credits": 0
+    },
     "data_truth_gate.yml": {
-      "runs": 27,
+      "runs": 26,
       "credits": 0,
       "calls": 0,
       "runs_with_unknown_credits": 0
@@ -32,14 +38,26 @@
       "calls": 0,
       "runs_with_unknown_credits": 0
     },
+    "predict.yml": {
+      "runs": 5,
+      "credits": 1184,
+      "calls": 588,
+      "runs_with_unknown_credits": 0
+    },
     "af_history_extend.yml": {
       "runs": 3,
       "credits": 0,
       "calls": 0,
       "runs_with_unknown_credits": 0
     },
+    "integrity_health.yml": {
+      "runs": 3,
+      "credits": 0,
+      "calls": 0,
+      "runs_with_unknown_credits": 0
+    },
     "tests.yml": {
-      "runs": 11,
+      "runs": 10,
       "credits": 0,
       "calls": 0,
       "runs_with_unknown_credits": 0
@@ -62,22 +80,10 @@
       "calls": 0,
       "runs_with_unknown_credits": 0
     },
-    "integrity_health.yml": {
-      "runs": 2,
-      "credits": 0,
-      "calls": 0,
-      "runs_with_unknown_credits": 0
-    },
     "prop_odds_snapshot.yml": {
       "runs": 3,
       "credits": 0,
       "calls": 0,
-      "runs_with_unknown_credits": 0
-    },
-    "predict.yml": {
-      "runs": 5,
-      "credits": 1162,
-      "calls": 576,
       "runs_with_unknown_credits": 0
     },
     "daily_injuries_lineups.yml": {
@@ -94,12 +100,6 @@
     },
     "nf_odds_capture.yml": {
       "runs": 7,
-      "credits": 0,
-      "calls": 0,
-      "runs_with_unknown_credits": 0
-    },
-    "update_results.yml": {
-      "runs": 5,
       "credits": 0,
       "calls": 0,
       "runs_with_unknown_credits": 0
@@ -166,29 +166,29 @@
     }
   },
   "by_league": {
-    "Denmark Superliga": 42,
-    "La Liga 2": 100,
-    "Sweden Allsvenskan": 52,
-    "Argentina Primera Division": 44,
+    "Argentina Primera Division": 50,
     "Austrian Bundesliga": 48,
-    "Brazil Serie A": 116,
+    "Brazil Serie A": 120,
     "Bundesliga 2": 72,
     "Championship": 96,
+    "Denmark Superliga": 44,
     "Japan J-League": 80,
+    "La Liga 2": 98,
     "League One": 96,
     "League Two": 96,
-    "Ligue 2": 64,
-    "Mexico Liga MX": 66,
+    "Ligue 2": 66,
+    "Mexico Liga MX": 70,
     "Norway Eliteserien": 64,
     "Serie B": 80,
-    "USA MLS": 46
+    "Sweden Allsvenskan": 56,
+    "USA MLS": 48
   },
   "by_market": {
-    "btts": 1162
+    "btts": 1184
   },
-  "btts_fixtures_considered": 720,
+  "btts_fixtures_considered": 732,
   "btts_suppressed_by_refresh_clock": 144,
-  "btts_duplicate_fetch_suppression_rate": 0.2,
+  "btts_duplicate_fetch_suppression_rate": 0.1967,
   "thresholds": {
     "warn_remaining_fraction": 0.25,
     "warn_days_to_exhaustion": 7,
@@ -196,7 +196,7 @@
   },
   "status": "WARN",
   "reasons": [
-    "exhaustion in 1.2 days at 576027 credits/day"
+    "exhaustion in 2.7 days at 249974 credits/day"
   ],
-  "health_check_line": "OddsAPI quota WARN: remaining 663121, burn 576027/day, 1.2 days left, BTTS suppression 20%"
+  "health_check_line": "OddsAPI quota WARN: remaining 662787, burn 249974/day, 2.7 days left, BTTS suppression 20%"
 }
