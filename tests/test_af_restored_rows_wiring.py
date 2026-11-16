@@ -102,3 +102,22 @@ def test_committed_verified_file_is_labelled_and_clean():
         key = (r.league, pd.Timestamp(r.date).strftime("%Y-%m-%d"), r.home_team, r.away_team)
         if key in vi.index:
             assert pd.isna(vi.loc[key, r.column]), (key, r.column)        # an excluded cell is missing
+
+
+_REPORT = ROOT / "output" / "corrections" / "af_history_restored_provider_rows_2026-11_verification.json"
+
+
+@pytest.mark.skipif(not (VERIFIED.exists() and _REPORT.exists()), reason="no verified restored file")
+def test_only_values_confirmed_by_a_second_source_are_served():
+    """Owner 2026-11-16 ("Exclude them"): every served statistic equals API-Football's fixture-proven
+    value; a cell with no second source is missing and listed with reason 'no second source'."""
+    import json
+    rep = json.loads(_REPORT.read_text(encoding="utf-8"))
+    v = pd.read_parquet(VERIFIED)
+    for c, st in rep["columns"].items():
+        if "af_match" not in st:
+            continue
+        assert int(v[c].notna().sum()) == st["af_match"], c
+    ex = pd.read_csv(EXCLUDED)
+    n = sum(st.get("no_second_source", 0) for st in rep["columns"].values())
+    assert int((ex["reason"] == "no second source").sum()) == n
