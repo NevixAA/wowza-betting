@@ -184,12 +184,10 @@ class _Resp:
         return json.loads(json.dumps(self._b))
 
 
-def _run_capture(monkeypatch, tmp_path, script, league, with_specials=True):
+def _run_capture(monkeypatch, tmp_path, script, league, ko, with_specials=True):
     import src.book_quotes as BQ
     import src.season_resolver as SR
     mod = _load_script(script)
-    now = datetime.now(timezone.utc)
-    ko = (now + timedelta(hours=3)).replace(microsecond=0)
     fixtures = [{"fixture": {"id": 1001, "date": ko.isoformat()},
                  "teams": {"home": {"name": "Leeds"}, "away": {"name": "Hull"}}},
                 {"fixture": {"id": 1002, "date": ko.isoformat()},
@@ -227,8 +225,11 @@ def _run_capture(monkeypatch, tmp_path, script, league, with_specials=True):
 ])
 def test_capture_writes_sidecar_with_zero_extra_calls(monkeypatch, tmp_path, script, league, capture):
     on, off = tmp_path / "on", tmp_path / "off"
-    calls_on = _run_capture(monkeypatch, on, script, league, with_specials=True)
-    calls_off = _run_capture(monkeypatch, off, script, league, with_specials=False)
+    # ONE kickoff for both runs: the comparison is "same fixtures, with vs without specials". Taking
+    # now() inside each run made the two kickoffs differ whenever the runs straddled a second.
+    ko = (datetime.now(timezone.utc) + timedelta(hours=3)).replace(microsecond=0)
+    calls_on = _run_capture(monkeypatch, on, script, league, ko, with_specials=True)
+    calls_off = _run_capture(monkeypatch, off, script, league, ko, with_specials=False)
     # zero extra calls: exactly one /odds request per fixture, identical with or without specials
     assert calls_on == calls_off
     assert [c[1]["fixture"] for c in calls_on] == [1001, 1002]
