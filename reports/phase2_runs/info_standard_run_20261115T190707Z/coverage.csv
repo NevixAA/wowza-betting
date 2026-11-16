@@ -1,0 +1,89 @@
+stage,track,market,candidate,folds_scored,rows_scored,rows_with_probability,folds_not_fitted,folds_error,not_fitted_reasons
+holdout,standard,btts,champion_recipe,1,2857,2857,0,0,[]
+holdout,standard,btts,champion_recipe+info,1,2857,2857,0,0,[]
+holdout,standard,btts,champion_recipe+info+league+logitcal,1,2857,2857,0,0,[]
+holdout,standard,btts,champion_recipe+league,1,2857,2857,0,0,[]
+holdout,standard,btts,champion_recipe+league+logitcal,1,2857,2857,0,0,[]
+holdout,standard,btts,champion_recipe+logitcal,1,2857,2857,0,0,[]
+holdout,standard,btts,market_bet,1,2857,1642,0,0,[]
+holdout,standard,btts,model_market_bet,1,2857,1642,0,0,[]
+holdout,standard,btts,model_market_bet+info,1,2857,1642,0,0,[]
+holdout,standard,btts,model_market_bet+info+league+logitcal,1,2857,1642,0,0,[]
+holdout,standard,btts,model_market_bet+league+logitcal,1,2857,1642,0,0,[]
+holdout,standard,over15,champion_recipe,1,2857,2857,0,0,[]
+holdout,standard,over15,champion_recipe+info,1,2857,2857,0,0,[]
+holdout,standard,over15,champion_recipe+info+league+logitcal,1,2857,2857,0,0,[]
+holdout,standard,over15,champion_recipe+league,1,2857,2857,0,0,[]
+holdout,standard,over15,champion_recipe+league+logitcal,1,2857,2857,0,0,[]
+holdout,standard,over15,champion_recipe+logitcal,1,2857,2857,0,0,[]
+holdout,standard,over15,market_bet,1,2857,1649,0,0,[]
+holdout,standard,over15,model_market_bet,1,2857,1649,0,0,[]
+holdout,standard,over15,model_market_bet+info,1,2857,1649,0,0,[]
+holdout,standard,over15,model_market_bet+info+league+logitcal,1,2857,1649,0,0,[]
+holdout,standard,over15,model_market_bet+league+logitcal,1,2857,1649,0,0,[]
+holdout,standard,over25,champion_recipe,1,2857,2857,0,0,[]
+holdout,standard,over25,champion_recipe+info,1,2857,2857,0,0,[]
+holdout,standard,over25,champion_recipe+info+league+logitcal,1,2857,2857,0,0,[]
+holdout,standard,over25,champion_recipe+league,1,2857,2857,0,0,[]
+holdout,standard,over25,champion_recipe+league+logitcal,1,2857,2857,0,0,[]
+holdout,standard,over25,champion_recipe+logitcal,1,2857,2857,0,0,[]
+holdout,standard,over25,market_bet,1,2857,1649,0,0,[]
+holdout,standard,over25,model_market_bet,1,2857,1649,0,0,[]
+holdout,standard,over25,model_market_bet+info,1,2857,1649,0,0,[]
+holdout,standard,over25,model_market_bet+info+league+logitcal,1,2857,1649,0,0,[]
+holdout,standard,over25,model_market_bet+league+logitcal,1,2857,1649,0,0,[]
+holdout,standard,over35,champion_recipe,1,2857,2857,0,0,[]
+holdout,standard,over35,champion_recipe+info,1,2857,2857,0,0,[]
+holdout,standard,over35,champion_recipe+info+league+logitcal,1,2857,2857,0,0,[]
+holdout,standard,over35,champion_recipe+league,1,2857,2857,0,0,[]
+holdout,standard,over35,champion_recipe+league+logitcal,1,2857,2857,0,0,[]
+holdout,standard,over35,champion_recipe+logitcal,1,2857,2857,0,0,[]
+holdout,standard,over35,market_bet,1,2857,1643,0,0,[]
+holdout,standard,over35,model_market_bet,1,2857,1643,0,0,[]
+holdout,standard,over35,model_market_bet+info,1,2857,1643,0,0,[]
+holdout,standard,over35,model_market_bet+info+league+logitcal,1,2857,1643,0,0,[]
+holdout,standard,over35,model_market_bet+league+logitcal,1,2857,1643,0,0,[]
+walk_forward,standard,btts,champion_recipe,11,20521,20521,0,0,[]
+walk_forward,standard,btts,champion_recipe+info,11,20521,20521,0,0,[]
+walk_forward,standard,btts,champion_recipe+info+league+logitcal,11,20521,20521,0,0,[]
+walk_forward,standard,btts,champion_recipe+league,11,20521,20521,0,0,[]
+walk_forward,standard,btts,champion_recipe+league+logitcal,11,20521,20521,0,0,[]
+walk_forward,standard,btts,champion_recipe+logitcal,11,20521,20521,0,0,[]
+walk_forward,standard,btts,market_bet,11,20521,10962,0,0,[]
+walk_forward,standard,btts,model_market_bet,9,16883,10757,2,0,"['fold 0: validation block has 0 rows with a two-sided bet-time price (need 100 with both outcomes)', 'fold 1: validation block has 0 rows with a two-sided bet-time price (need 100 with both outcomes)']"
+walk_forward,standard,btts,model_market_bet+info,9,16883,10757,2,0,"['fold 0: validation block has 0 rows with a two-sided bet-time price (need 100 with both outcomes)', 'fold 1: validation block has 0 rows with a two-sided bet-time price (need 100 with both outcomes)']"
+walk_forward,standard,btts,model_market_bet+info+league+logitcal,9,16883,10757,2,0,"['fold 0: validation block has 0 rows with a two-sided bet-time price (need 100 with both outcomes)', 'fold 1: validation block has 0 rows with a two-sided bet-time price (need 100 with both outcomes)']"
+walk_forward,standard,btts,model_market_bet+league+logitcal,9,16883,10757,2,0,"['fold 0: validation block has 0 rows with a two-sided bet-time price (need 100 with both outcomes)', 'fold 1: validation block has 0 rows with a two-sided bet-time price (need 100 with both outcomes)']"
+walk_forward,standard,over15,champion_recipe,11,20521,20521,0,0,[]
+walk_forward,standard,over15,champion_recipe+info,11,20521,20521,0,0,[]
+walk_forward,standard,over15,champion_recipe+info+league+logitcal,11,20521,20521,0,0,[]
+walk_forward,standard,over15,champion_recipe+league,11,20521,20521,0,0,[]
+walk_forward,standard,over15,champion_recipe+league+logitcal,11,20521,20521,0,0,[]
+walk_forward,standard,over15,champion_recipe+logitcal,11,20521,20521,0,0,[]
+walk_forward,standard,over15,market_bet,11,20521,10741,0,0,[]
+walk_forward,standard,over15,model_market_bet,9,16883,10541,2,0,"['fold 0: validation block has 0 rows with a two-sided bet-time price (need 100 with both outcomes)', 'fold 1: validation block has 0 rows with a two-sided bet-time price (need 100 with both outcomes)']"
+walk_forward,standard,over15,model_market_bet+info,9,16883,10541,2,0,"['fold 0: validation block has 0 rows with a two-sided bet-time price (need 100 with both outcomes)', 'fold 1: validation block has 0 rows with a two-sided bet-time price (need 100 with both outcomes)']"
+walk_forward,standard,over15,model_market_bet+info+league+logitcal,9,16883,10541,2,0,"['fold 0: validation block has 0 rows with a two-sided bet-time price (need 100 with both outcomes)', 'fold 1: validation block has 0 rows with a two-sided bet-time price (need 100 with both outcomes)']"
+walk_forward,standard,over15,model_market_bet+league+logitcal,9,16883,10541,2,0,"['fold 0: validation block has 0 rows with a two-sided bet-time price (need 100 with both outcomes)', 'fold 1: validation block has 0 rows with a two-sided bet-time price (need 100 with both outcomes)']"
+walk_forward,standard,over25,champion_recipe,11,20521,20521,0,0,[]
+walk_forward,standard,over25,champion_recipe+info,11,20521,20521,0,0,[]
+walk_forward,standard,over25,champion_recipe+info+league+logitcal,11,20521,20521,0,0,[]
+walk_forward,standard,over25,champion_recipe+league,11,20521,20521,0,0,[]
+walk_forward,standard,over25,champion_recipe+league+logitcal,11,20521,20521,0,0,[]
+walk_forward,standard,over25,champion_recipe+logitcal,11,20521,20521,0,0,[]
+walk_forward,standard,over25,market_bet,11,20521,10807,0,0,[]
+walk_forward,standard,over25,model_market_bet,9,16883,10607,2,0,"['fold 0: validation block has 0 rows with a two-sided bet-time price (need 100 with both outcomes)', 'fold 1: validation block has 0 rows with a two-sided bet-time price (need 100 with both outcomes)']"
+walk_forward,standard,over25,model_market_bet+info,9,16883,10607,2,0,"['fold 0: validation block has 0 rows with a two-sided bet-time price (need 100 with both outcomes)', 'fold 1: validation block has 0 rows with a two-sided bet-time price (need 100 with both outcomes)']"
+walk_forward,standard,over25,model_market_bet+info+league+logitcal,9,16883,10607,2,0,"['fold 0: validation block has 0 rows with a two-sided bet-time price (need 100 with both outcomes)', 'fold 1: validation block has 0 rows with a two-sided bet-time price (need 100 with both outcomes)']"
+walk_forward,standard,over25,model_market_bet+league+logitcal,9,16883,10607,2,0,"['fold 0: validation block has 0 rows with a two-sided bet-time price (need 100 with both outcomes)', 'fold 1: validation block has 0 rows with a two-sided bet-time price (need 100 with both outcomes)']"
+walk_forward,standard,over35,champion_recipe,11,20521,20521,0,0,[]
+walk_forward,standard,over35,champion_recipe+info,11,20521,20521,0,0,[]
+walk_forward,standard,over35,champion_recipe+info+league+logitcal,11,20521,20521,0,0,[]
+walk_forward,standard,over35,champion_recipe+league,11,20521,20521,0,0,[]
+walk_forward,standard,over35,champion_recipe+league+logitcal,11,20521,20521,0,0,[]
+walk_forward,standard,over35,champion_recipe+logitcal,11,20521,20521,0,0,[]
+walk_forward,standard,over35,market_bet,11,20521,10322,0,0,[]
+walk_forward,standard,over35,model_market_bet,9,16883,10141,2,0,"['fold 0: validation block has 0 rows with a two-sided bet-time price (need 100 with both outcomes)', 'fold 1: validation block has 0 rows with a two-sided bet-time price (need 100 with both outcomes)']"
+walk_forward,standard,over35,model_market_bet+info,9,16883,10141,2,0,"['fold 0: validation block has 0 rows with a two-sided bet-time price (need 100 with both outcomes)', 'fold 1: validation block has 0 rows with a two-sided bet-time price (need 100 with both outcomes)']"
+walk_forward,standard,over35,model_market_bet+info+league+logitcal,9,16883,10141,2,0,"['fold 0: validation block has 0 rows with a two-sided bet-time price (need 100 with both outcomes)', 'fold 1: validation block has 0 rows with a two-sided bet-time price (need 100 with both outcomes)']"
+walk_forward,standard,over35,model_market_bet+league+logitcal,9,16883,10141,2,0,"['fold 0: validation block has 0 rows with a two-sided bet-time price (need 100 with both outcomes)', 'fold 1: validation block has 0 rows with a two-sided bet-time price (need 100 with both outcomes)']"

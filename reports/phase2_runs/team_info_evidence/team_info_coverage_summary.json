@@ -1,0 +1,41 @@
+{
+  "version": "team-info-1.0",
+  "rows": 59202,
+  "team_ids": {
+    "names_mapped": 1160,
+    "ambiguous_dropped": 0,
+    "fixtures_resolved_from_index": 10462
+  },
+  "by_track": {
+    "standard": {
+      "rows": 32076,
+      "injuries (absence, lineup-weighted)": 0.3319,
+      "lineups (previous XIs)": 0.9737,
+      "player goals (goal share of absentees)": 0.1407,
+      "xG (rolling, per team)": 0.2791,
+      "coach tenure": 0.7326,
+      "transfers": 0.9774,
+      "fixture congestion": 0.9737
+    },
+    "new_format": {
+      "rows": 27126,
+      "injuries (absence, lineup-weighted)": 0.3496,
+      "lineups (previous XIs)": 0.9587,
+      "player goals (goal share of absentees)": 0.2398,
+      "xG (rolling, per team)": 0.4177,
+      "coach tenure": 0.6566,
+      "transfers": 0.9671,
+      "fixture congestion": 0.959
+    },
+    "all": {
+      "rows": 59202,
+      "injuries (absence, lineup-weighted)": 0.34,
+      "lineups (previous XIs)": 0.9668,
+      "player goals (goal share of absentees)": 0.1861,
+      "xG (rolling, per team)": 0.3426,
+      "coach tenure": 0.6978,
+      "transfers": 0.9727,
+      "fixture congestion": 0.967
+    }
+  }
+}
