@@ -1,0 +1,69 @@
+{
+ "protocol": "bars-league-calib-p10/1",
+ "status": "PRE-REGISTERED RESEARCH - proposal only (owner 2026-11-16: per-league bars study for the per-league CALIBRATION variant of the team models). Nothing is installed, approved, flagged or merged into a go-live branch.",
+ "written_before_any_result": "Committed BEFORE any variant metric, calibration slope, league-level gap, bars selection, fresh-holdout test or TOP-3 count of this study was computed or read. Only the frame hash (dry run, no model fitted) and the list of candidate names present in the earlier prediction files were looked at.",
+ "question": "Does a per-league calibration variant of the team models create PROVEN edges in more leagues than the clean champion (champion_recipe, TP-2026-11-16-500964af, reports/P9_BARS_V5_CLEAN_MODELS.md: 0 PROVEN, 3 PROMISING, 49 UNPROVEN, 142 OFF)?",
+ "variants": {
+  "A": {
+   "candidate": "champion_recipe+league+logitcal",
+   "what": "league-level feature block (fix/btts-league-level c1c7b797c, merged into feat/team-info-features) + logit-scale calibration (params.calibration_input = logit); config/phase2_info.json variants['+league+logitcal']",
+   "role": "PRIMARY - the proposal, if any, is built from this variant"
+  },
+  "B": {
+   "candidate": "champion_recipe+logitcal",
+   "what": "logit-scale calibration alone; config/phase2_info.json variants['+logitcal']",
+   "role": "SECONDARY - research evidence; enters the Holm family"
+  },
+  "not_tested": "every other candidate in the prediction files (+info, +league alone, model_market_bet*, market_bet). They are not read."
+ },
+ "predictions": {
+  "frame": "the latest data-truth-100 frame: the dry-run frame hash of feat/team-info-features 0a648a6b4 merged with origin/data-truth-100 at the time of the run (the hash is pinned in the report). Must be 974e04bc77c4d438 or a newer data-truth-100 frame.",
+  "reuse_rule": "earlier harness runs are reused ONLY if their manifest frame_hash equals the pinned frame AND every row of the two variants is out-of-sample (walk-forward rows inside their fold's test block, fold fit dates < test start; holdout rows 2026-04-01..2026-11-08 from models fitted on dates < 2026-04-01). Otherwise the harness (scripts/phase2_retrain.py, config/phase2_info.json) is re-run single-threaded, <= 8 GB, network blocked, no API call.",
+  "tracks_markets": "both tracks (standard, new_format), every market the harness scores (over15, over25 both sides, over35, btts); deployable rows only, as in P9",
+  "verification": [
+   "out-of-sample check per track x market x variant",
+   "frame hash equal to the pinned frame",
+   "python -m src.integrity.data_truth --gate = STOPLIGHT GREEN",
+   "scripts/team_train_serve_parity.py on every variant payload (2 variants x 2 tracks x 4 markets), last 6 dates: 0 mismatched cells and 0.0 pp probability difference"
+  ],
+  "no_defaults": "100% verified data only; no fill beyond the registered learned imputer; missing stays missing",
+  "frame_pinned": {
+   "frame_hash": "974e04bc77c4d438",
+   "dry_run_code": "feat/team-info-features 0a648a6b4 merged with origin/data-truth-100 7d74553a4 (local merge 826881ac1, not pushed)",
+   "note": "data-truth-100 moved 258abac30 -> 7d74553a4 (af writeback preservation, restored provider rows kept beside); the frame hash is unchanged"
+  },
+  "runs_to_reuse": {
+   "standard": "run_20261115T190707Z (code d7ded2ef5, frame 974e04bc77c4d438; scratch-backup-2026-11-16/runs3)",
+   "new_format": "run_20261116T153303Z (code 5245d3493, frame 974e04bc77c4d438; v5clean-runs/nf)",
+   "condition": "both hold both variants (candidate names listed only); reused only after the out-of-sample, frame-hash, stoplight and parity checks pass - otherwise re-run"
+  }
+ },
+ "bars_study": {
+  "protocol": "config/bars_fresh_holdout_protocol.json (bars-fresh-holdout/5) and the v5 runbook steps UNCHANGED - the same pipeline as P9 (v5clean-runs/pipeline.sh): bars_opt.py universe (Standard with --fd-raw output/collect/fd_raw --certified-fd; New-Format without), bars_opt_oddsapi.py prepare (tier BT bet prices only, bet_role_only, own backfill stripped, B1 closing for CLV only), holdout, bars_opt.py select + final, bars_opt_oddsapi.py study --month 2026-11 --tag <variant tag>, the same identity map and the same store commit as P9",
+  "cells": "the same 194 track x market-side x league cells and the same PROVEN / PROMISING / UNPROVEN / OFF rules as P9 (src/bars_opt/study.verdicts, src/bars_opt/hist_study.status_table). The 34 Standard HT cells have no prediction in this harness and stay OFF, not re-measured, exactly as in P9",
+  "per_league": "every cell is one league; no global bar, no pooled verdict, no global fallback",
+  "prices": "rule 8: closing or unproven prices are never bet prices. OddsAPI prices never leave the local work folder (C:/Users/nevo/dev/bars-oddsapi-local/v5lc); only counts and statistics are committed"
+ },
+ "multiplicity": {
+  "holm_family": "ONE Holm family over every fresh-holdout cell tested in this study across BOTH variants, plus the 19 cells the clean champion tested in P9 (they were tested on the same holdout rows). The per-run Holm of hist_study is recomputed on this combined family; a cell is PROVEN only if it meets the PROVEN rule (>= 150 holdout bets, ROI 95% CI lower bound > 0, Holm-adjusted one-sided p < 0.025) on the COMBINED family. PROMISING / UNPROVEN rules do not use Holm and are unchanged.",
+  "no_peek": "nothing is chosen between variants after seeing results: variant A is the primary by registration; B is reported beside it"
+ },
+ "honesty": "The holdout 2026-04-01..2026-11-08 and the fresh-holdout rows (Standard O1.5/O3.5 from 2025-03-01; New-Format O2.5/U2.5/O3.5 2024-09-01..2025-06-22, O1.5 ..2025-06-27) were already scored by other rules (v3, v5, P9 and the all-data study on feat/team-info-features). This is a SECOND LOOK at outcomes already seen, labelled 're-test after a price-data fix (outcomes previously seen)', never untouched proof.",
+ "better_than_champion": {
+  "comparator": "the clean champion's committed evidence output/threshold_proposals/bars_oddsapi_hist/evidence_2026-11_v5clean.json (TP-2026-11-16-500964af), unchanged, not re-run",
+  "rule": "Variant A is BETTER than the clean champion only if, under the same cell rules and the combined Holm family, it has strictly more leagues with at least one PROVEN cell than the champion (0 today) AND loses no PROVEN cell the champion has. A higher PROMISING count alone is reported as 'more promising cells, not proven better'. Fewer or equal PROVEN leagues = NOT better, stated plainly.",
+  "per_cell_comparison": "all 194 cells: champion status vs variant status; every cell that differs is listed with its reason (bar / configuration / fresh-holdout result / selection switched on or off; price coverage old vs new; mean |dp| of the cell's priced rows between champion and variant)"
+ },
+ "report": {
+  "file": "reports/P10_BARS_LEAGUE_CALIB.md, plain-language summary first",
+  "contents": [
+   "verification table",
+   "cell counts vs the clean champion",
+   "every changed cell with its reason",
+   "per-league expected TOP-3 tips per gameweek under the v6 R2 rule (tips clearing the cell's bars, TOP-3 by R2 per league-week, never padded), holdout 2026-04-01..2026-11-08, computed by the same code for champion and variant",
+   "share of league-weeks with 0/1/2/3 tips and the cause breakdown, as in P9",
+   "calibration slope and league-level gap per league, champion vs variant: (1) within-league calibration slope = logistic regression of the outcome on logit(p), holdout rows, per league x market; (2) league-level gap = mean p - observed rate, holdout rows, per league x market; (3) the v6 R2 calibration slope lam per cell vs the fair price (development rows < 2026-04-01; P9 median 0.26); (4) per track x market the cross-league level slope of src/retrain_harness/evaluate.league_levels (1 = league levels carried, 0 = flattened)",
+   "a new proposal id (TP-2026-11-1x-...), AWAITING_OWNER, proposal only"
+  ]
+ }
+}
