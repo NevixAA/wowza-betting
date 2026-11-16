@@ -1508,35 +1508,11 @@ def _enrich_with_api_shots(df: pd.DataFrame) -> pd.DataFrame:
     # skip-if-populated guard above (xG > 50% for a league) short-circuits the whole fetch. The
     # cost goes from "every run, forever" to "once per genuinely new match".
     #
-    # ONLY rows that actually gained data are written, and only the columns af_history owns, so
-    # this cannot widen the schema or overwrite a real value with a null.
+    # COLUMN-PRESERVING since 2026-11-16 (see bank_af_enrichment): the write-back used to REPLACE
+    # each touched af_history row with a shots-only row, so corners, fouls, cards, the full-time
+    # score and fixture_id of 28,412 provider rows went from present to missing.
     try:
-        _hist_p = Path(__file__).resolve().parents[1] / "output" / "af_history.parquet"
-        _COLMAP = {"home_shots": "HS", "away_shots": "AS", "home_sot": "HST", "away_sot": "AST",
-                   "home_xg": "HXG", "away_xg": "AXG",
-                   "home_insidebox": "HIB", "away_insidebox": "AIB"}
-        _have = [c for c in _COLMAP if c in df.columns]
-        if _have:
-            _new = df[df[_have].notna().any(axis=1)][
-                ["league", "season", "date", "home_team", "away_team"] + _have].copy()
-            _new = _new.rename(columns={k: v for k, v in _COLMAP.items() if k in _have})
-            _prev = pd.read_parquet(_hist_p) if _hist_p.exists() else None
-            _merged = pd.concat([_prev, _new], ignore_index=True) if _prev is not None else _new
-            # Never bank a misfiled row: this write-back is how the archive's Dutch-as-Norway and
-            # Bundesliga-2-as-'Denmark 1st Div' copies got into af_history in the first place.
-            _merged = _drop_misfiled_league_rows(_merged, "af_history write-back")
-            # Newest row wins: a later fetch may fill a column an earlier one left null.
-            _merged = _merged.drop_duplicates(
-                subset=[c for c in ("date", "league", "home_team", "away_team")
-                        if c in _merged.columns], keep="last")
-            for _c in ("league", "season", "home_team", "away_team"):
-                if _c in _merged.columns:
-                    _merged[_c] = _merged[_c].astype(str)
-            _hist_p.parent.mkdir(exist_ok=True)
-            _merged.to_parquet(_hist_p, index=False)
-            log.info(f"[af_history] BANKED enrichment: {len(_merged):,} rows "
-                     f"({len(_merged) - (len(_prev) if _prev is not None else 0):+,} this run). "
-                     f"Next run merges these instead of re-fetching them.")
+        bank_af_enrichment(df)
     except Exception as e:                                       # noqa: BLE001
         # Never fail a training run over the cache. Losing the bank costs time, not correctness.
         log.warning(f"[af_history] could not bank the enrichment: {e}")
@@ -1551,6 +1527,68 @@ def _enrich_with_api_shots(df: pd.DataFrame) -> pd.DataFrame:
         )
 
     return df
+
+
+
+#: af_history columns the enrichment write-back owns (internal name -> af_history name). Nothing else.
+AF_WRITEBACK_COLMAP = {"home_shots": "HS", "away_shots": "AS", "home_sot": "HST", "away_sot": "AST",
+                       "home_xg": "HXG", "away_xg": "AXG",
+                       "home_insidebox": "HIB", "away_insidebox": "AIB"}
+AF_HISTORY_KEY = ["league", "date", "home_team", "away_team"]
+
+
+def bank_af_enrichment(df: pd.DataFrame, hist_path: Optional[Path] = None) -> dict:
+    """Bank the shot / xG enrichment of FINISHED matches into output/af_history.parquet - without
+    losing anything the bank does not own.
+
+    THE DATA-LOSS BUG (fixed 2026-11-16). This was `concat([stored, new]).drop_duplicates(key,
+    keep="last")` with `new` carrying ONLY the eight shot / xG columns. Every stored row whose key the
+    loader touched - which is every history row the step-1 merge had matched - was REPLACED by a
+    shots-only row: its corners, fouls, cards, full-time score and (from PR #34) fixture_id went from
+    present to missing, and a null xG in the frame erased a stored one. Git history shows 28,412
+    provider rows lost that way (restored beside the file:
+    output/corrections/af_history_restored_provider_rows_2026-11.parquet).
+
+    NOW (src/integrity/preserving_upsert, mode "fill"): rows are merged by (league, date, home, away);
+    for a stored row only the eight owned columns may change, and only where the stored cell is
+    MISSING - a stored provider value is never overwritten by a loader value (football-data's shot
+    count is not API-Football's) and never erased. A key the bank does not hold is appended with every
+    other column missing (never a default). No stored row or column is ever dropped: a misfiled-league
+    row is refused from the NEW rows only. Nothing to add -> the file is not rewritten at all."""
+    from src.integrity.preserving_upsert import upsert
+    hist_path = Path(hist_path) if hist_path is not None else (
+        Path(__file__).resolve().parents[1] / "output" / "af_history.parquet")
+    have = [c for c in AF_WRITEBACK_COLMAP if c in df.columns]
+    if not have:
+        return {"written": False, "reason": "no owned column in frame"}
+    new = df[df[have].notna().any(axis=1)][
+        [c for c in ["league", "season", "date", "home_team", "away_team"] if c in df.columns] + have].copy()
+    new = new.rename(columns={k: v for k, v in AF_WRITEBACK_COLMAP.items() if k in have})
+    # Never bank a misfiled row: this write-back is how the archive's Dutch-as-Norway and
+    # Bundesliga-2-as-'Denmark 1st Div' copies got into af_history in the first place.
+    new = _drop_misfiled_league_rows(new, "af_history write-back")
+    for c in ("league", "season", "home_team", "away_team"):
+        if c in new.columns:                                # text, but a missing cell stays missing
+            new[c] = new[c].where(new[c].isna(), new[c].astype(str))
+    new["date"] = pd.to_datetime(new["date"], errors="coerce")
+    new = new[new["date"].notna()]
+    owned = [AF_WRITEBACK_COLMAP[c] for c in have]
+    prev = pd.read_parquet(hist_path) if hist_path.exists() else None
+    # `season` is filled only where the stored row has none; it is part of a NEW row's identity.
+    merged, rep = upsert(prev, new, key=AF_HISTORY_KEY, owned=owned + (["season"] if "season" in new else []),
+                         mode="fill", date_keys=("date",))
+    if prev is not None and not rep.changed:
+        log.info("[af_history] bank: nothing new to add - file left untouched")
+        return {"written": False, "rows": int(len(prev)), "appended": 0, "cells_filled": {}}
+    hist_path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = hist_path.with_suffix(".tmp.parquet")
+    merged.to_parquet(tmp, index=False)
+    os.replace(tmp, hist_path)
+    log.info(f"[af_history] BANKED enrichment (column-preserving): {len(merged):,} rows, "
+             f"{rep.appended_rows:+,} appended, cells filled {rep.cells_changed}. "
+             f"No stored row or column dropped.")
+    return {"written": True, "rows": int(len(merged)), "appended": rep.appended_rows,
+            "cells_filled": dict(rep.cells_changed)}
 
 
 def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> pd.DataFrame:
