@@ -224,6 +224,15 @@ def _norm_club(s: str) -> str:
     return re.sub(r"\s+", " ", t).strip()
 
 
+#: Internal column (load_all_matches -> _canonicalise_clubs only): which source a merged row came
+#: from, as a rank. Higher wins a completeness tie. football-data is the primary record, a fresh
+#: download supersedes the committed cache, API-Football covers leagues football-data lacks, and the
+#: backtest archive is v9's own DERIVED backtest output, so it never beats a primary copy on a tie.
+SOURCE_PRIORITY_COL = "_source_priority"
+SOURCE_PRIORITY = {"football_data_download": 3, "football_data_cache": 2, "api_football": 1,
+                   "backtest_archive": 0}
+
+
 def _canonicalise_clubs(df: pd.DataFrame) -> pd.DataFrame:
     """One spelling per club per league, then a real de-duplication.
 
@@ -302,9 +311,20 @@ def _canonicalise_clubs(df: pd.DataFrame) -> pd.DataFrame:
     # `nunique()` ignores NaN -- a row with 2.0 and a row with NaN look like agreement. Ranking
     # by how many fields are populated keeps the informative copy every time and makes the
     # choice deterministic rather than incidental.
+    #
+    # ON A TIE, THE PRIMARY SOURCE WINS (fixed 2026-11-16). Equal completeness used to fall back to
+    # input order, and input order came from an unstable date sort over the WHOLE merged frame, so
+    # adding any row anywhere could flip which copy of a tied fixture survived. On 2026-11-16 it
+    # flipped Antwerp v Beerschot VA (2024-09-29): the backtest-archive copy (v9's own derived
+    # backtest output, price timing unknown) beat football-data's copy of the same match, and a
+    # BACKTEST_ARCHIVE row appeared in a football-data season. Rows now carry SOURCE_PRIORITY_COL
+    # (set in load_all_matches), and among equally complete copies the higher-priority source
+    # wins. The priority column is not counted as a populated field. Without it (direct callers)
+    # the rule is the old one.
     before = len(d)
-    d = d.assign(_completeness=d.notna().sum(axis=1))
-    d = (d.sort_values(["date", "_completeness"], kind="mergesort")
+    rank_cols = ["date", "_completeness"] + ([SOURCE_PRIORITY_COL] if SOURCE_PRIORITY_COL in d.columns else [])
+    d = d.assign(_completeness=d.drop(columns=[SOURCE_PRIORITY_COL], errors="ignore").notna().sum(axis=1))
+    d = (d.sort_values(rank_cols, kind="mergesort")
            .drop_duplicates(["date", "league", "home_team", "away_team"], keep="last")
            .drop(columns=["_completeness"]))
     if n_multi or before != len(d) or n_conflict:
@@ -1772,15 +1792,23 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
             raise RuntimeError(
                 "CI download failed and no cached history is available "
                 f"({cache_p.name} missing or empty) — no data loaded")
-        ci_frames.extend(_load_api_football_only_leagues())
+        _af_frames = list(_load_api_football_only_leagues())
+        ci_frames.extend(_af_frames)
         # The archive goes in BEFORE club canonicalisation, which is the whole reason it can go
         # in at all: the unifier resolves its club vocabulary against football-data's.
         _arch = _load_backtest_archive()
         if len(_arch):
             ci_frames.append(_arch)
-        out = pd.concat(ci_frames, ignore_index=True)
+        # Source priority for the duplicate tie-break in _canonicalise_clubs (dropped right after).
+        _prio = {id(f): SOURCE_PRIORITY["football_data_download"] for f in _downloaded}
+        _prio.update({id(f): SOURCE_PRIORITY["api_football"] for f in _af_frames})
+        if len(_arch):
+            _prio[id(_arch)] = SOURCE_PRIORITY["backtest_archive"]
+        out = pd.concat([f.assign(**{SOURCE_PRIORITY_COL: _prio.get(id(f), SOURCE_PRIORITY["football_data_cache"])})
+                         for f in ci_frames], ignore_index=True)
         out = out[out["home_team"].notna() & out["away_team"].notna()]
-        out = out.sort_values("date").reset_index(drop=True)
+        # STABLE: equal dates keep concat order, so the order never depends on unrelated rows.
+        out = out.sort_values("date", kind="mergesort").reset_index(drop=True)
         out["total_goals"] = out["home_goals"] + out["away_goals"]
         out["over25"] = (out["total_goals"] > 2.5).astype(float)
         out["over15"] = (out["total_goals"] > 1.5).astype(float)
@@ -1811,6 +1839,7 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
         # Club identity BEFORE any enrichment or feature work: a club split across two
         # spellings is two teams to everything downstream.
         out = _canonicalise_clubs(out)
+        out = out.drop(columns=[SOURCE_PRIORITY_COL], errors="ignore")
         out = _canonical_identity_and_seasons(out)
         out = _enrich_with_api_shots(out)
         out = _enrich_with_standard_sidemarket_odds(out)   # real BTTS/O1.5/O3.5 for 2nd-divs
