@@ -1272,6 +1272,65 @@ def _enrich_ht_scores(df: pd.DataFrame, root: Path | None = None) -> pd.DataFram
     return df
 
 
+
+#: af_history PROVIDER rows the old write-back replaced, restored from git (PR #35) and VERIFIED against
+#: independent sources on data-truth-100 (scripts/verify_af_history_restored_rows.py there: the row's FT
+#: score equals API-Football's for the fixture; a cell differing from API-Football /fixtures/statistics
+#: or impossible is missing; the owner's af_history duplicates are out). Owner 2026-11-16: "yes, make the
+#: models use them". A separate, labelled source (`provenance`, `restored_from_commit` per row);
+#: af_history.parquet is never rewritten.
+AF_RESTORED_ROWS = Path("output") / "corrections" / "af_history_restored_provider_rows_2026-11_verified.parquet"
+_AF_RESTORED_COLS = {"HS": "home_shots", "AS": "away_shots", "HST": "home_sot", "AST": "away_sot",
+                     "HC": "home_corners", "AC": "away_corners", "HF": "home_fouls", "AF": "away_fouls",
+                     "HY": "home_yellows", "AY": "away_yellows", "HXG": "home_xg", "AXG": "away_xg",
+                     "HIB": "home_insidebox", "AIB": "away_insidebox"}
+
+
+def _enrich_af_restored_rows(df: pd.DataFrame, root: Optional[Path] = None) -> pd.DataFrame:
+    """Fill cells STILL MISSING after step 1 from AF_RESTORED_ROWS - nan_only: an existing value is
+    never overwritten, and a cell the verified file does not hold stays missing. League-keyed, the
+    same normalised club key as step 1's safe join; ambiguous cells refused by safe_left_enrich.
+    Absent file -> df unchanged. Per-column filled cells in df.attrs['af_restored_fill']."""
+    p = (root or Path(__file__).resolve().parents[1]) / AF_RESTORED_ROWS
+    if not p.exists():
+        log.info(f"[af_restored] {AF_RESTORED_ROWS.as_posix()} not present - skipped")
+        return df
+    try:
+        from src.api_football_ou import _norm_name
+    except ImportError:
+        _norm_name = lambda x: str(x).lower().strip()            # noqa: E731  (as step 1)
+    try:
+        fill = pd.read_parquet(p)
+        fill = _drop_misfiled_league_rows(fill, "af_restored")
+        vals = [c for c in _AF_RESTORED_COLS if c in fill.columns and _AF_RESTORED_COLS[c] in df.columns]
+        if "league" not in fill.columns or not vals:
+            log.error("[af_restored] no league / stat column - fill SKIPPED")
+            return df
+        df = df.copy()
+        fill = fill[fill[vals].notna().any(axis=1)].copy()
+        for c in vals:
+            fill[c] = pd.to_numeric(fill[c], errors="coerce")
+        k = ["league", "_home_norm", "_away_norm", "_date_str"]
+        fill["_home_norm"] = fill["home_team"].apply(_norm_name)
+        fill["_away_norm"] = fill["away_team"].apply(_norm_name)
+        fill["_date_str"] = pd.to_datetime(fill["date"], errors="coerce").dt.strftime("%Y-%m-%d")
+        df["_home_norm"] = df["home_team"].apply(_norm_name)
+        df["_away_norm"] = df["away_team"].apply(_norm_name)
+        df["_date_str"] = pd.to_datetime(df["date"], errors="coerce").dt.strftime("%Y-%m-%d")
+        df, rep = _IJ.safe_left_enrich(df, fill, keys=k, value_cols=vals,
+                                       target_cols={c: _AF_RESTORED_COLS[c] for c in vals},
+                                       name="af_restored_rows")
+        df.attrs["af_restored_fill"] = {"filled_cells": dict(rep.filled_cells),
+                                        "ambiguous_key_groups": rep.ambiguous_key_groups}
+        log.info(f"[af_restored] verified restored provider rows filled {dict(rep.filled_cells)}; "
+                 f"ambiguous key groups {rep.ambiguous_key_groups}")
+    except Exception as e:                                       # noqa: BLE001
+        log.warning(f"[af_restored] failed to merge {AF_RESTORED_ROWS.as_posix()}: {e}")
+    finally:
+        df = df.drop(columns=["_home_norm", "_away_norm", "_date_str"], errors="ignore")
+    return df
+
+
 def _enrich_with_api_shots(df: pd.DataFrame) -> pd.DataFrame:
     """
     For new-format leagues that have no shot data from football-data.co.uk,
@@ -1368,6 +1427,9 @@ def _enrich_with_api_shots(df: pd.DataFrame) -> pd.DataFrame:
             log.info(f"[af_history] merged backfill: {n_with_shots} rows now have shot data")
         except Exception as e:
             log.warning(f"[af_history] failed to merge af_history.parquet: {e}")
+
+    # ── Step 1a: verified git-restored provider rows fill what is still missing (owner 2026-11-16) ──
+    df = _enrich_af_restored_rows(df)
 
     # ── Step 1b: merge HT scores where they are missing ──────────────────────
     df = _enrich_ht_scores(df)

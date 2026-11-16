@@ -31,6 +31,7 @@ import argparse
 import io
 import json
 import subprocess
+from collections import Counter
 import sys
 from pathlib import Path
 
@@ -70,7 +71,7 @@ def build(ref: str = "HEAD") -> tuple[pd.DataFrame, dict]:
     head_k = _keys(head)
     wb = set(head_k[~_provider(head)])
     last: dict = {}
-    lost_by_commit: dict = {}
+    lost_by_commit: Counter = Counter()
     cell_cols = STAT + ["fixture_id", "home_team_id", "away_team_id"]
     seen_v = seen_c = None                     # last non-missing value / its commit, per key x column
     for line in commits:
@@ -94,7 +95,7 @@ def build(ref: str = "HEAD") -> tuple[pd.DataFrame, dict]:
         for c in row:
             if c not in cols:
                 cols.append(c)
-        lost_by_commit[sha[:9]] = lost_by_commit.get(sha[:9], 0) + 1
+        lost_by_commit[sha[:9]] += 1
         rows.append({**row, "restored_from_commit": sha, "restored_from_commit_date": day})
     out = pd.DataFrame(rows, columns=cols + ["restored_from_commit", "restored_from_commit_date"])
     out["date"] = pd.to_datetime(out["date"], errors="coerce")
@@ -137,7 +138,7 @@ def build(ref: str = "HEAD") -> tuple[pd.DataFrame, dict]:
         "writeback_cells_note": "erased loader copies on rows that were never provider rows; listed in "
                                 "af_history_restored_writeback_cells_2026-11.parquet, not served",
         "restored_rows_by_league": {k: int(v) for k, v in out["league"].value_counts().items()},
-        "restored_rows_by_source_commit": lost_by_commit,
+        "restored_rows_by_source_commit": dict(lost_by_commit),
         "not_restored": "rows removed on purpose (misfiled leagues 2026-11-01, proven duplicates) - "
                         "not in the current file; write-back rows that were never provider rows",
     }

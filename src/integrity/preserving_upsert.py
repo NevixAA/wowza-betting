@@ -29,6 +29,7 @@ back exactly as read: the round trip of an untouched row is identical, value and
 """
 from __future__ import annotations
 
+from collections import Counter
 from dataclasses import dataclass, field
 
 import numpy as np
@@ -43,7 +44,7 @@ class UpsertReport:
     new_rows: int = 0
     matched_keys: int = 0
     appended_rows: int = 0
-    cells_changed: dict = field(default_factory=dict)
+    cells_changed: Counter = field(default_factory=Counter)
 
     @property
     def changed(self) -> bool:
@@ -168,7 +169,7 @@ def upsert(stored: pd.DataFrame | None, new: pd.DataFrame, key: list[str], owned
                         out.loc[idx, c] = val[take].to_numpy()
                 else:
                     out.loc[idx, c] = val[take].to_numpy()
-                rep.cells_changed[c] = rep.cells_changed.get(c, 0) + n
+                rep.cells_changed[c] += n
 
     add = new[~new["_k"].isin(set(sk))].drop(columns="_k")
     rep.appended_rows = int(len(add))
