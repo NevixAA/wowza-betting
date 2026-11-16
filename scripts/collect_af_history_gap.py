@@ -63,7 +63,7 @@ if str(ROOT) not in sys.path:
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from collect_common import (COLLECT_DIR, FLUSH_EVERY, AFClient, BudgetStop,  # noqa: E402
-                            append_parquet, read_parquet)
+                            append_parquet, read_parquet, union_columns)
 
 AF_HISTORY = ROOT / "output" / "af_history.parquet"
 FIXTURE_SOURCES = (ROOT / "output" / "strength" / "competition_fixtures.parquet",
@@ -416,7 +416,8 @@ def _write_fill(m: pd.DataFrame, store: pd.DataFrame) -> pd.DataFrame:
         fill = j[FILL_COLS]
     old = _rekeyed(read_parquet(FILL), "af_stats_fill")    # rows on a removed duplicate's key
     if not old.empty:
-        fill = pd.concat([old[FILL_COLS], fill], ignore_index=True)
+        # column-preserving (2026-11-16): was old[FILL_COLS], which dropped any stored column not listed
+        fill = pd.concat([union_columns(old, FILL_COLS), fill], ignore_index=True)
     fill = fill.drop_duplicates(subset=["league", "date", "home_team", "away_team"], keep="last")
     FILL.parent.mkdir(parents=True, exist_ok=True)
     tmp = FILL.with_suffix(".tmp.parquet")
@@ -669,7 +670,9 @@ def run_fullstats(af: pd.DataFrame | None = None, cache_dir: Path = STATS_CACHE,
     if not old.empty:
         # reindex: a sidecar written before a column existed (home/away_free_kicks, fix round 9)
         # keeps that column missing for its rows until this run re-parses them
-        fill = pd.concat([old.reindex(columns=FULL_COLS), fill], ignore_index=True)
+        # column-preserving (2026-11-16): union, never reindex(columns=FULL_COLS), which drops a stored
+        # column FULL_COLS does not list
+        fill = pd.concat([union_columns(old, FULL_COLS), fill], ignore_index=True)
     fill = fill.drop_duplicates(subset=["league", "date", "home_team", "away_team"], keep="last")
     num = [c for c in FULL_COLS if c.startswith(("home_", "away_")) and c not in ("home_team", "away_team")]
     fill[num] = fill[num].apply(pd.to_numeric, errors="coerce")    # None -> NaN (missing), never 0
