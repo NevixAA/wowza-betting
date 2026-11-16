@@ -1,0 +1,71 @@
+{
+ "protocol": "top3-tiers/7",
+ "status": "PROPOSAL - awaiting the owner. Not live: the live TOP-3 stays top3-ranking-paper/6 (LIVE_RULE R2_CAL_EV) until the owner decides. Nothing here is installed, approved or switched on.",
+ "amends": {
+  "protocol": "top3-ranking-paper/6",
+  "file": "config/top3_ranking_paper_protocol_v6.json",
+  "sha256_lf": "5b35327fdd2353e4ecdad4c56e713f1593f16df0ba5920e8aa9a457fcc639f73",
+  "note": "v6 is unchanged and stays in force; v7 is a proposal beside it. v6 hash as pinned in config/top3_paper_tracks.json."
+ },
+ "written": "2026-11-16",
+ "written_before_evaluation": "This file and the code it pins are committed BEFORE the development fit (t3_thresholds.json) and BEFORE any holdout row is ranked under these rules. The thresholds file is committed (its sha256 recorded) before the holdout evaluation; the evaluation refuses otherwise and runs once.",
+ "owner_words": [
+  "2026-11-16 (relayed by the coordinator): TOP-3 becomes three named tiers per league per gameweek: T1 best value, T2 safest, T3 risky but valuable",
+  "2026-11-16: \"Show all, stake by proof\" - every league shows T1 / T2 / T3; a real stake only on a cell with PROVEN or PROMISING proof under the clean-model proposal (PROMISING = small stake, as v5); everything else is a PAPER tip, labelled so",
+  "2026-11-16: \"if we don't have 3 bets for every league, something is wrong\" - never pad; diagnose every shortfall",
+  "2026-11-16: \"so why wait? do it now with the fixed models\" - clean champion_recipe predictions (frame 974e04bc77c4d438)"
+ ],
+ "inputs": {
+  "predictions": "clean champion_recipe (Phase 2 harness phase2-retrain-1.0+info, config/phase2_info.json, --only champion_recipe) on the latest data-truth-100 frame 974e04bc77c4d438, both tracks; walk-forward predictions before 2026-04-01 and holdout-stage predictions 2026-04-01..2026-11-08 (models fitted on rows dated < 2026-04-01)",
+  "prices": "the v5 priced universes (scripts/bars_opt_oddsapi.py prepare, protocol bars-fresh-holdout/5): BET role only - own live captures with snapshot < kickoff, football-data PRE-MATCH through the certified one-to-one join (Standard O/U 2.5), OddsAPI history tier BT (bet role, snapshot < kickoff). Data truth rule 8: closing prices (football-data closing columns, OddsAPI B1 close) are read ONLY for CLV, never as a bet price. Prices stay LOCAL.",
+  "cells": "every track x market-side x league that is NOT OFF in the clean-model bars proposal (TP-2026-11-16-..., evidence_2026-11_v5clean.json) and is a MODEL cell. LEAGUE_WIDE cells (source NONE, e.g. Argentina NF BTTS) stay the owner's own list outside the TOP-3 (v6 'Own list', unchanged)."
+ },
+ "windows": {
+  "development_before": "2026-04-01",
+  "holdout": ["2026-04-01", "2026-11-08"],
+  "development_note": "DEVELOPMENT = rows dated < 2026-04-01 (walk-forward out-of-sample model predictions). The cell's probability source parameters, the R2 calibration slope lam and the per-league T3 thresholds are fitted on these rows ONLY.",
+  "holdout_label": "descriptive holdout: the 2026-04-01..2026-11-08 outcomes were already read by earlier bars studies / fresh holdouts and by the cell statuses of the clean-model proposal (which used all rows through 2026-11); this is the first ranking of them under the v7 rules, not untouched proof"
+ },
+ "probability": "p_used = the cell's own configured source (config of the proposal cell: RAW / BLEND / SHRINK / LEARNED, odds range) with its parameters fitted by src.bars_opt.study.source_params on the family's development rows only (src.research.top3_tiers.cell_rows)",
+ "calibration": "R2 of v6 exactly (src.research.top3_ranking._lams on the cell's development rows, >= MIN_OWN_BETS 40 rows, DerSimonian-Laird shrink inside the league, clipped to [0, 1]): p_cal = fair + lam * (p_used - fair); cal_ev = p_cal * odds - 1. A cell without lam has no calibrated value: its rows never enter the pool (missing stays missing, no fallback).",
+ "pool": "holdout rows of the non-OFF MODEL cells with a two-sided BET-role price, inside the cell's odds range, with cal_ev > 0",
+ "gameweek": "ISO week (%G-W%V) of the match date, per (track, league)",
+ "tiers": {
+  "order": "T1, then T2, then T3, each from the pool minus the earlier picks",
+  "T1_BEST_VALUE": "the highest cal_ev",
+  "T2_SAFEST": "the highest p_cal (calibrated win probability)",
+  "T3_RISKY_VALUE": "among pool rows with odds >= the league's odds_min AND cal_ev >= the league's margin: the highest cal_ev. A league without a fitted threshold gets no T3 (no global fallback).",
+  "distinct": "the three tips are distinct fixture x market (over/under of one line are one market); one direction (OVER / UNDER) per fixture",
+  "ties": "date, then row id, then market-side (stable)",
+  "never_pad": "a tier without a candidate stays EMPTY; it is never filled with a no-value bet"
+ },
+ "t3_thresholds": {
+  "per_league": "fitted per (track, league) on development league-weeks only; never global",
+  "grid": {"odds_min": [2.25, 2.50, 2.75, 3.00], "margin": [0.00, 0.03, 0.05, 0.08, 0.10, 0.15]},
+  "rule": "simulate T1 / T2 / T3 per development league-week for every grid point; keep grid points with >= 40 (MIN_OWN_BETS) development T3 picks; choose the highest development T3 ROI (ties: smaller margin, then lower odds). None kept -> NO threshold for that league.",
+  "file": "output/research/top3_tiers_v7/t3_thresholds.json (committed with its sha256 before the holdout evaluation)"
+ },
+ "stakes": {
+  "rule": "Show all, stake by proof: STAKE when the tip's cell is PROVEN or PROMISING in the clean-model proposal (PROMISING = the small stake of v5 / config/bankroll_policy.json cell_staking, flat per cell), otherwise PAPER and labelled PAPER",
+  "overrides": "the owner's cell_staking.block_overrides (Finland NF Over 3.5 at 0.5%) and the Argentina NF BTTS league rule (0.5%, own list) are unchanged by this protocol"
+ },
+ "shortfall_diagnostics": {
+  "unit": "every (track, league, ISO week) of the holdout with fewer than 3 tips",
+  "fixtures": "the played matches of the frame (src.retrain_harness.protocol.load_committed_frame), per league and week",
+  "slots": "fixture x non-OFF MODEL cell of the league; each slot: model (a prediction exists), price (a two-sided BET-role price), lam (the cell has a calibration slope), value (cal_ev > 0 in range)",
+  "causes_precedence": "NO_FIXTURES (no played match: international break / off-season) > ALL_CELLS_OFF > the largest blocking slot count among NO_MODEL / NO_PRICE / NO_CALIBRATION / NO_POSITIVE_EV; with >= 3 value slots but T3 empty: T3_NO_THRESHOLD or T3_BAND_EMPTY; otherwise RULE_CONFLICT (distinct / direction)",
+  "outputs": "share of league-weeks with 3 / 2 / 1 / 0 tips per league; cause breakdown; a fix list for every data / collection cause (listed with cost, not built)"
+ },
+ "evaluation": {
+  "once": "scripts/top3_tiers_v7.py evaluate runs once (marker file); per tier per league: bets, hit rate, ROI with 95% CI (src.bars_opt.study.score: block bootstrap by match date / max-of-three SE), mean odds, CLV where a closing price exists (football-data closing via the certified join, OddsAPI B1 close, own close); then the combined TOP-3 and STAKE vs PAPER",
+  "comparison": "v6 R2 on the same holdout rows: tips clearing the serving cell's bars (source refitted on development rows only), TOP-3 per league-week by R2 (src.research.top3_ranking.select)",
+  "not_a_test": "descriptive only (see windows.holdout_label); no PROVEN claim comes from this evaluation; the owner decides"
+ },
+ "code": {
+  "file": "src/research/top3_tiers.py",
+  "sha256_lf": "9e5909f7402f13fd9b2f72a7c9697b9d01028284a9be4e08969633a2f5130835",
+  "script": "scripts/top3_tiers_v7.py",
+  "script_sha256_lf": "33440ffb748775783728c521fbb22642846d6556c3b69aaad384ec565f23bde1"
+ },
+ "hash_rule": "sha256 of this file's bytes with LF line ends; any edit = a new version before evaluation"
+}
