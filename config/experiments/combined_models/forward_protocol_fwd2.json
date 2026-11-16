@@ -1,0 +1,20 @@
+{
+  "protocol": "COMBINED-MODELS-FWD-2",
+  "declared_on": "2026-11-16",
+  "status": "RESEARCH ONLY. Registered after COMBINED-MODELS-DEV-2 results, for its surviving cells only. Nothing here is served, staked or tipped.",
+  "development_protocol": "config/experiments/combined_models/protocol_dev2.json (COMBINED-MODELS-DEV-2 + amendment A1, sha256 fafb970e79c783fa9ec8fae2caf2b90c3c867f31eb00225e0cbc7110c5bc4de1)",
+  "replaces": "COMBINED-MODELS-FWD-1 (forward_protocol.json) is VOID: its props champion was replaced and its Serie B anytime-scorer cell did not survive DEV-2 (scored window: +1.2 pp, 95% CI [-0.6, +2.9], Holm p 1.00).",
+  "surviving_cells": [],
+  "registered_pass_not_carried_forward": [
+    {
+      "cell": "Pro Dixon-Coles P(6+ goals) x BET-time market, residual test, Argentina Primera Division",
+      "dev2": "effect +2.76 pp, 95% CI [+2.32, +3.22], Holm p 1.1e-31 (65 top / 58 bottom fixtures)",
+      "why_not_forward": "DEGENERATE: 0 six-goal matches in either group (and in the middle tercile). With no event the residual is minus the predicted probability, its bootstrap variance is near zero, and the 'effect' is only the gap between Pro's own predictions in the two groups (0.8% vs 3.6%). The registered residual test had a fixture minimum but no event minimum; it is not evidence that the market helps Pro. It is not tested forward and gives no tip."
+    }
+  ],
+  "forward_tests": "NONE. No DEV-2 cell met the registered signal rule with a real outcome variance, so nothing is watched forward under this protocol.",
+  "what_would_reopen_it": [
+    "A new development protocol (DEV-3) declared before its results, for example on more scored months once the props clean candidate and the team models are live, or with the side models once research/side-models publishes verified prediction paths.",
+    "Any forward watch needs its own pre-registration with frozen inputs (team champion_recipe run ids, props run 43745808793 recipe, Pro 7344ddb1) and becomes void the day any of them changes."
+  ]
+}

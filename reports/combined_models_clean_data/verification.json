@@ -1,0 +1,194 @@
+{
+ "team_standard": {
+  "input": "team standard champion_recipe",
+  "run_id": "run_20261115T190707Z",
+  "code_sha": "d7ded2ef541d7025a2aab866692f1ad5592af95c",
+  "config_sha256": "41648ecf002bd5107c527a0d31752537f91c54d36c3be7fafb7ab0b599f5d444",
+  "frame_hash": "974e04bc77c4d438",
+  "loaded_rows": 71583,
+  "feature_rows": 59200,
+  "covid_rows_excluded": 12383,
+  "holdout": "2026-04-01..2026-11-08",
+  "features": 43,
+  "features_ineligible_or_unregistered": {},
+  "folds_error": 0,
+  "folds_not_fitted": 0,
+  "dropped_no_training_value": [
+   "dropped (no training value): ['home_xg_last5', 'away_xg_last5']"
+  ],
+  "missing_policy": "src.model.train_repaired (the scheduled-retrain recipe: LR + GB (+ LightGBM if installed), Platt on its CALIBRATION block, meta-logistic on its META block), retrained on the repaired frame. Imputation: missing-indicator columns plus the 1.1 train-only imputer persisted in the payload; a feature with no training value is dropped, never filled.",
+  "require_present": [
+   "home_scored_last5",
+   "away_scored_last5"
+  ],
+  "status": "PASS",
+  "fail_reasons": []
+ },
+ "team_new_format": {
+  "input": "team new_format champion_recipe",
+  "run_id": "run_20261116T142331Z",
+  "code_sha": "0a648a6b45e41b993c7e17cf9a76a2f95e9b4bb8",
+  "config_sha256": "41648ecf002bd5107c527a0d31752537f91c54d36c3be7fafb7ab0b599f5d444",
+  "frame_hash": "974e04bc77c4d438",
+  "loaded_rows": 71583,
+  "feature_rows": 59200,
+  "covid_rows_excluded": 12383,
+  "holdout": "2026-04-01..2026-11-08",
+  "features": 28,
+  "features_ineligible_or_unregistered": {},
+  "folds_error": 0,
+  "folds_not_fitted": 0,
+  "dropped_no_training_value": [],
+  "missing_policy": "src.model.train_repaired (the scheduled-retrain recipe: LR + GB (+ LightGBM if installed), Platt on its CALIBRATION block, meta-logistic on its META block), retrained on the repaired frame. Imputation: missing-indicator columns plus the 1.1 train-only imputer persisted in the payload; a feature with no training value is dropped, never filled.",
+  "require_present": [
+   "home_scored_last5",
+   "away_scored_last5"
+  ],
+  "status": "PASS",
+  "fail_reasons": []
+ },
+ "pro": {
+  "input": "Pro Dixon-Coles (SPC-1)",
+  "pro_commit": "7344ddb1 (wowzaV9-Pro data-truth-100)",
+  "v9_export_commit": "0a648a6b45e41b993c7e17cf9a76a2f95e9b4bb8",
+  "v9_rows": 71582,
+  "v9_rows_dropped_without_score": 1,
+  "v9_history_sha256": "b60cad4b16c852bfb9bde4ece8a9d19311937460442a6441384f1cd01a3b34b7",
+  "predictions": 23199,
+  "leagues": 32,
+  "months": "2024-07-01..2026-11-06",
+  "missing_policy": "a match without a 90-minute score is dropped and counted (Pro history.clean_history); a club / league without enough earlier matches gets no lambda (no fallback)",
+  "status": "PASS",
+  "fail_reasons": []
+ },
+ "props": {
+  "input": "props clean-schema candidate (hgb_nan_native)",
+  "run": "43745808793",
+  "code_sha": "d051ee5c7",
+  "frame_hash": "4f6c603d00c14567",
+  "features": 125,
+  "features_sha256": "3f80d914724df7bc891bb79dda8bb3b9dafaf1afb2f6c021036c0aa263736404",
+  "feature_rule": "all_prior_verified",
+  "eligible_rows": 930593,
+  "oos_rows": 2288743,
+  "oos_window": "2025-01-01..2026-10-31 (monthly refits)",
+  "bit_reproduction_of_run_holdout_sep (original rule, failed; amendment A1)": {
+   "assists": {
+    "rows_run_sep": 24690,
+    "rows_matched": 24690,
+    "max_abs_diff_p": 0.22389155740211228,
+    "label_disagreements": 0
+   },
+   "cards": {
+    "rows_run_sep": 24690,
+    "rows_matched": 24690,
+    "max_abs_diff_p": 0.06254253780450231,
+    "label_disagreements": 0
+   },
+   "goals": {
+    "rows_run_sep": 24690,
+    "rows_matched": 24690,
+    "max_abs_diff_p": 0.10386204972677865,
+    "label_disagreements": 0
+   },
+   "sot": {
+    "rows_run_sep": 24690,
+    "rows_matched": 24690,
+    "max_abs_diff_p": 0.057104531701471895,
+    "label_disagreements": 0
+   },
+   "sot2": {
+    "rows_run_sep": 24690,
+    "rows_matched": 24690,
+    "max_abs_diff_p": 0.1192646326769804,
+    "label_disagreements": 0
+   }
+  },
+  "bit_reproduction_max_abs_diff": 0.22389155740211228,
+  "equivalence_A1": {
+   "sot": {
+    "rows_run": 24690,
+    "rows_matched": 24690,
+    "label_disagreements": 0,
+    "pickle_vs_csv_max_abs": 3.3306690738754696e-16,
+    "refit_vs_run_mean_abs": 0.004036589446558776,
+    "refit_vs_run_max_abs": 0.057104531701471895,
+    "corr": 0.9991941187107157,
+    "log_loss_run": 0.4745978580662914,
+    "log_loss_refit": 0.4746020310305634,
+    "log_loss_diff": 4.172964272020074e-06,
+    "pass": true
+   },
+   "sot2": {
+    "rows_run": 24690,
+    "rows_matched": 24690,
+    "label_disagreements": 0,
+    "pickle_vs_csv_max_abs": 3.3306690738754696e-16,
+    "refit_vs_run_mean_abs": 0.0016821909709584376,
+    "refit_vs_run_max_abs": 0.1192646326769804,
+    "corr": 0.9978837973043425,
+    "log_loss_run": 0.1899471146976123,
+    "log_loss_refit": 0.18987491424035194,
+    "log_loss_diff": -7.220045726036295e-05,
+    "pass": true
+   },
+   "goals": {
+    "rows_run": 24690,
+    "rows_matched": 24690,
+    "label_disagreements": 0,
+    "pickle_vs_csv_max_abs": 3.3306690738754696e-16,
+    "refit_vs_run_mean_abs": 0.002415000301204727,
+    "refit_vs_run_max_abs": 0.10386204972677865,
+    "corr": 0.9977260857385724,
+    "log_loss_run": 0.26341677620600046,
+    "log_loss_refit": 0.2636258566353492,
+    "log_loss_diff": 0.00020908042934875137,
+    "pass": true
+   },
+   "assists": {
+    "rows_run": 24690,
+    "rows_matched": 24690,
+    "label_disagreements": 0,
+    "pickle_vs_csv_max_abs": 2.7755575615628914e-16,
+    "refit_vs_run_mean_abs": 0.0020017006294121595,
+    "refit_vs_run_max_abs": 0.22389155740211228,
+    "corr": 0.9924399335288523,
+    "log_loss_run": 0.2262467886022855,
+    "log_loss_refit": 0.22618536464312033,
+    "log_loss_diff": -6.142395916516885e-05,
+    "pass": true
+   },
+   "cards": {
+    "rows_run": 24690,
+    "rows_matched": 24690,
+    "label_disagreements": 0,
+    "pickle_vs_csv_max_abs": 2.220446049250313e-16,
+    "refit_vs_run_mean_abs": 0.0026414139115909976,
+    "refit_vs_run_max_abs": 0.06254253780450231,
+    "corr": 0.9967443945264052,
+    "log_loss_run": 0.3669665638422348,
+    "log_loss_refit": 0.3670057900502614,
+    "log_loss_diff": 3.922620802659926e-05,
+    "pass": true
+   }
+  },
+  "missing_policy": "NaN-native HistGradientBoosting: no value is filled at train or score time; provider nulls stay missing (Data truth 7c / 7e)",
+  "status": "PASS",
+  "fail_reasons": [],
+  "note": "local monthly refits of the clean recipe on the run's verified frame: equivalent to the runner's fit (amendment A1), not bit-identical (HGB binning subsample depends on row order)"
+ },
+ "side_models": {
+  "input": "side models (corners / cards / specials)",
+  "branch": "origin/research/side-models",
+  "head": "4e165327eed0d0acaee90abf7c6cefc152e653a1",
+  "files_added_vs_data_truth_100": [
+   "reports/R_SIDE_DATA_TRUTH_LIVE_2026-11-16.md",
+   "reports/R_SIDE_DATA_TRUTH_LIVE_2026-11-16_mismatches.csv"
+  ],
+  "docs_notes": [],
+  "status": "PENDING - NOT RUN",
+  "fail_reasons": [
+   "no docs/ note with prediction paths on the branch (only reports/R_SIDE_DATA_TRUTH_LIVE_2026-11-16.md, reports/R_SIDE_DATA_TRUTH_LIVE_2026-11-16_mismatches.csv)"
+  ]
+ }
+}

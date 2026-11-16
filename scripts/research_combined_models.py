@@ -687,7 +687,15 @@ def price_inventory(today: str) -> pd.DataFrame:
     sp = d[(d["match_date"] >= first) & (d["match_date"] <= spent_end)]
     fw = d[(d["match_date"] > spent_end) & (d["match_date"] <= pd.Timestamp(today))]
     weeks = ((spent_end - first).days + 1) / 7
-    out = sp.groupby(["league", "market"]).size().rename("priced_spent").to_frame()         .join(fw.groupby(["league", "market"]).size().rename("priced_forward_to_date"), how="outer").fillna(0)
+    # row COUNTS per window: a (league, market) with no row in a window has a true count of zero
+    # (crosstab counts it), not a default
+    tag = pd.concat([sp.assign(window="priced_spent"), fw.assign(window="priced_forward_to_date")],
+                    ignore_index=True)
+    out = pd.crosstab([tag["league"], tag["market"]], tag["window"])
+    for c in ("priced_spent", "priced_forward_to_date"):
+        if c not in out.columns:
+            out[c] = np.zeros(len(out), dtype=int)
+    out = out[["priced_spent", "priced_forward_to_date"]]
     out["priced_per_week"] = out["priced_spent"] / weeks
     return out.reset_index()
 
