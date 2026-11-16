@@ -25,6 +25,12 @@ on:
         description: 'optional comma-separated candidate subset (blank = every enabled candidate)'
         required: false
         default: ''
+      track:
+        description: 'standard | new_format | both. new_format needs ~10 GB peak in the comparison step and dies on the 16 GB runner (run 42895611758, 2026-11-10); run it locally instead'
+        required: true
+        default: 'standard'
+        type: choice
+        options: [standard, new_format, both]
 
 env:
   PYTHONIOENCODING: utf-8
@@ -43,7 +49,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        track: [standard, new_format]
+        # Only the dispatched track(s): the choice maps to the matrix list (unknown keys are
+        # impossible, the input is a choice). tests/test_workflow_phase2_retrain_track.py.
+        track: ${{ fromJSON('{"standard":["standard"],"new_format":["new_format"],"both":["standard","new_format"]}')[inputs.track] }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

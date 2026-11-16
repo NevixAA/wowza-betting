@@ -74,7 +74,9 @@ def test_profile_composites_stay_nan_on_a_missing_input():
 
 
 def test_feature_list_has_the_profiles_and_no_nan_by_construction_column():
-    assert set(config.PROFILE_FEATURES) <= set(config.PLAYER_FEATURE_COLS)
+    # 2026-11-15: the typed-constant composites are withheld (PROFILE_CONSTANT_FEATURES_WITHHELD)
+    assert set(config.PROFILE_FEATURES) - config.PROFILE_CONSTANT_FEATURES_WITHHELD <= set(config.PLAYER_FEATURE_COLS)
+    assert not config.PROFILE_CONSTANT_FEATURES_WITHHELD & set(config.PLAYER_FEATURE_COLS)
     assert set(config.LEGACY_QUALITY_FEATURES_REMOVED) == set(LQ.LEGACY_COLUMNS)
     assert not set(LQ.LEGACY_COLUMNS) & set(config.PLAYER_FEATURE_COLS)
 

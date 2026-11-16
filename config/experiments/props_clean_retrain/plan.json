@@ -44,5 +44,9 @@
     "hgb_nan_native",
     "player_base_rate"
   ],
+  "candidate_by_market": {
+    "cards": "hgb_nan_native"
+  },
+  "candidate_by_market_note": "Owner 2026-11-15 (props feature audit fix 4): the cards market serves hgb_nan_native at the next retrain, like sot / sot2 / goals / assists. recipe_retrained fills missing inputs with fit-block medians (imputer FIT_BLOCK_MEDIAN_PERSISTED; 98% of the cards training rows carried at least one median-filled value). scripts/promote_props_clean.py promotes the named candidate only (it must still beat player_base_rate) and never falls back to recipe_retrained for a named market. Config only: nothing is retrained or promoted by this entry.",
   "hand_adjustment": "none"
 }

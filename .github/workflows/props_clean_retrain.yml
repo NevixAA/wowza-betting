@@ -13,11 +13,16 @@ name: Props clean retrain (Phase 2, owner-gated)
 # results are uploaded as a run artifact.
 
 concurrency:
-  group: props-clean-retrain
+  group: props-clean-retrain-${{ github.event.inputs.ablation || 'full' }}
   cancel-in-progress: false
 
 on:
   workflow_dispatch:
+    inputs:
+      ablation:
+        description: 'Optional feature-group ablation (injury, started, shots_lgrel, profile, referee); empty = full feature list'
+        required: false
+        default: ''
 
 jobs:
   retrain:
@@ -45,6 +50,7 @@ jobs:
       - name: Owner-gated run
         env:
           PHASE2_RETRAIN_ENABLED: ${{ vars.PHASE2_RETRAIN_ENABLED }}
+          PROPS_ABLATION: ${{ github.event.inputs.ablation }}
         run: |
           start=$(date +%s)
           python -m player_model.props_harness --run
@@ -53,7 +59,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: props-clean-retrain
+          name: props-clean-retrain${{ github.event.inputs.ablation && format('-ablation-{0}', github.event.inputs.ablation) || '' }}
           path: |
             output/props_harness/
             models/challengers/props_clean/

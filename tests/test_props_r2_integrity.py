@@ -94,29 +94,25 @@ def _hgb_only(df: pd.DataFrame, payload: dict) -> np.ndarray:
 
 
 @pytest.mark.parametrize("market", config.MARKETS)
-def test_serving_legacy_payload_scores_exactly_as_before_r2(market):
-    """Data Truth (dt/props, 2026-11-01): wherever every input is measured (or batch-median filled,
-    the legacy recipe), the legacy payload scores EXACTLY as before R2. An ABSENT feature column is
-    no longer a typed 0.0: those rows are scored by the NaN-native estimator alone."""
+def test_serving_legacy_payload_never_fills_from_the_batch(market):
+    """Owner 2026-11-15 (P0 "real data only"): a legacy payload is no longer scored with batch
+    medians. A payload listing an unsupported (fabricated) feature is refused - no probability; any
+    other legacy payload scores the raw matrix (incomplete rows by the NaN-native estimator only),
+    so a row's probability does not depend on the rest of the batch."""
     path = config.MODEL_FILES[market]
     if not path.exists():
         pytest.skip(f"{path.name} absent")
-    raw = path.read_bytes()
-    payload = pickle.loads(raw)
+    payload = pickle.loads(path.read_bytes())
     if M.payload_recipe(payload) == PC.RECIPE_CLEAN_HARNESS:
-        # owner 2026-11-08: sot/sot2/goals/assists/cards serve the props clean-retrain models
-        # (tests/test_props_owner_rules_2026_11_08.py); this test covers the markets still on legacy
         assert market in {"sot", "sot2", "goals", "assists", "cards"}, market
         pytest.skip(f"{market} serves a promoted clean-retrain model")
-    assert "recipe" not in payload and M.payload_recipe(payload) == PC.RECIPE_LEGACY
-    full = _real_rows(absent=())
-    got = M.predict_proba(full, payload).to_numpy()
-    np.testing.assert_array_equal(got, _legacy_reference(full, payload))
-    np.testing.assert_array_equal(M.predict_with_diagnostics(full, payload)["p"].to_numpy(), got)
-    df = _real_rows()
-    got = M.predict_proba(df, payload).to_numpy()
-    np.testing.assert_allclose(got, _hgb_only(df, payload), rtol=0, atol=1e-12)
-    np.testing.assert_array_equal(M.predict_with_diagnostics(df, payload)["p"].to_numpy(), got)
+    df = _real_rows(absent=())
+    got = M.predict_with_diagnostics(df, payload)
+    if M.unsupported_features(payload):
+        assert got["p"].isna().all() and (got["imputer_version"] == M.REFUSED_UNSUPPORTED).all()
+        return
+    alone = pd.concat([M.predict_proba(df.iloc[[i]], payload) for i in range(0, len(df), 37)])
+    np.testing.assert_allclose(alone.to_numpy(), got["p"].iloc[::37].to_numpy(), rtol=0, atol=1e-12)
 
 
 def test_serving_files_are_the_registered_champions():
@@ -128,18 +124,24 @@ def test_serving_files_are_the_registered_champions():
         assert hashlib.sha256(p.read_bytes()).hexdigest() == rec["artifact_sha256"], market
 
 
-def test_legacy_payload_bytes_unchanged_shape():
-    """build_payload for a legacy result adds no R2 keys (props_gate hashes these bytes)."""
-    df = _synthetic(600)
-    res = M.train(df, "goals")
-    assert set(M.build_payload(res, "goals")) == {"market", "models", "feature_cols", "metrics"}
+def test_legacy_recipe_training_is_retired():
+    """Owner 2026-11-15: the legacy recipe (batch medians over the whole frame, holdout included)
+    trains nothing any more."""
+    with pytest.raises(RuntimeError, match="retired"):
+        M.train(_synthetic(600), "goals")
 
 
-def test_legacy_is_batch_dependent_characterisation():
-    """Documents the defect R2 repairs: the legacy path gives a NaN row a different value
-    depending on the rest of the batch. If this ever starts failing, legacy behaviour changed."""
-    df = _synthetic(600)
-    payload = M.build_payload(M.train(df, "goals"), "goals")
+def _legacy_payload(repaired_payload: dict) -> dict:
+    """A legacy-shaped payload (no recipe key) around real fitted estimators."""
+    return {"market": "goals", "models": repaired_payload["models"],
+            "feature_cols": list(repaired_payload["feature_cols"]), "metrics": {}}
+
+
+def test_legacy_path_is_batch_invariant_now(repaired):
+    """The defect R2 documented (a NaN row valued by the rest of the batch) is gone: the legacy path
+    fills nothing, so the same row scores the same in any batch."""
+    df, rp = repaired
+    payload = _legacy_payload(rp)
     row = df.iloc[[5]].copy()
     row["kp_per90"] = np.nan
     other_a = df.iloc[100:130].copy()
@@ -147,7 +149,8 @@ def test_legacy_is_batch_dependent_characterisation():
     other_b["kp_per90"] = 9.0
     pa = M.predict_proba(pd.concat([row, other_a]), payload).iloc[0]
     pb = M.predict_proba(pd.concat([row, other_b]), payload).iloc[0]
-    assert pa != pb
+    alone = M.predict_proba(row, payload).iloc[0]
+    assert (np.isnan(pa) and np.isnan(pb) and np.isnan(alone)) or (pa == pb == alone)
 
 
 # ---------------------------------------------------------------------------- repaired path

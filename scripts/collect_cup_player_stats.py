@@ -209,7 +209,7 @@ def parse(body: dict | None, fix) -> list[dict]:
     """player_history rows of one /fixtures/players answer for the cup fixture `fix` (a row of
     competition_fixtures). A team block that is neither side by team id is skipped."""
     from player_model.data_fetcher import _parse_fixture_player, fixture_side
-    from player_model.player_stat_nulls import fixture_answered
+    from player_model.player_stat_nulls import fixture_answered, fixture_group_unpublished
     rows = []
     hid, aid = int(fix["home_id"]), int(fix["away_id"])
     fixture = {"teams": {"home": {"id": hid}, "away": {"id": aid}}}
@@ -217,6 +217,7 @@ def parse(body: dict | None, fix) -> list[dict]:
     # fixture the provider returned player statistics for - the whole answer decides, read once.
     # Each row carries count_source = 'provider_rule' (verified at parse, never re-fetched).
     answered = fixture_answered((body or {}).get("response") or [])
+    group_unpublished = fixture_group_unpublished((body or {}).get("response") or [])
     for block in (body or {}).get("response") or []:
         is_home = fixture_side(block, fixture, fix["home_name"], fix["away_name"])
         if is_home is None:
@@ -228,7 +229,7 @@ def parse(body: dict | None, fix) -> list[dict]:
                 "team": (block.get("team") or {}).get("name", ""), "is_home": is_home,
                 "team_corners": None, "referee": None, "season": str(fix["season"])}
         for entry in block.get("players") or []:
-            r = _parse_fixture_player(entry, meta, fix["league"], answered)
+            r = _parse_fixture_player(entry, meta, fix["league"], answered, group_unpublished)
             if r:
                 r["team_id"], r["opponent_id"] = (hid, aid) if is_home else (aid, hid)
                 r["fixture_status"] = fix["status"]

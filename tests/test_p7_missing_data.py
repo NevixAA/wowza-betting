@@ -215,6 +215,47 @@ def test_sync_takes_untouched_files_and_only_newer_rows_of_a_file_both_changed(t
     assert len(pd.read_parquet(repo / "output" / "fd_history.parquet")) == 2
 
 
+def test_second_sync_takes_main_again_when_this_branch_holds_an_earlier_main_copy(tmp_path, monkeypatch):
+    """Go-live rehearsal 2026-11-15: after a first sync took main's fd_history whole, every later run
+    saw 'both changed' and appended nothing, so main's newer results never reached this branch."""
+    import sync_results_from_main as SY
+    repo = tmp_path / "r"
+    (repo / "output").mkdir(parents=True)
+    _git(repo, "init", "-q", "-b", "main")
+    fd = repo / "output" / "fd_history.parquet"
+    pd.DataFrame({"x": [1]}).to_parquet(fd, index=False)
+    _git(repo, "add", "-A"); _git(repo, "commit", "-q", "-m", "base")
+    _git(repo, "checkout", "-q", "-b", "dt")
+    _git(repo, "checkout", "-q", "main")
+    pd.DataFrame({"x": [1, 2]}).to_parquet(fd, index=False)
+    _git(repo, "commit", "-qam", "main results 1")
+    _git(repo, "checkout", "-q", "dt")
+    monkeypatch.setattr(SY, "ROOT", repo)
+    monkeypatch.setattr(SY, "MAIN", "main")
+    monkeypatch.setattr(SY, "WHOLE_DIRS", [])
+    monkeypatch.setattr(SY, "ROW_LEVEL", {})
+    monkeypatch.setattr(SY, "SIDECAR", repo / "output" / "corrections" / "synced.csv")
+    assert SY.run()["take_main"] == ["output/fd_history.parquet"]          # first sync
+    _git(repo, "commit", "-qam", "sync 1")
+    _git(repo, "checkout", "-q", "main")
+    pd.DataFrame({"x": [1, 2, 3]}).to_parquet(fd, index=False)
+    _git(repo, "commit", "-qam", "main results 2")
+    _git(repo, "checkout", "-q", "dt")
+    r = SY.run()                                                             # second sync
+    assert r["take_main"] == ["output/fd_history.parquet"] and r["both_changed"] == []
+    assert len(pd.read_parquet(fd)) == 3
+    # a copy this branch changed itself is still never overwritten
+    _git(repo, "commit", "-qam", "sync 2")
+    pd.DataFrame({"x": [9]}).to_parquet(fd, index=False)
+    _git(repo, "commit", "-qam", "dt repair")
+    _git(repo, "checkout", "-q", "main")
+    pd.DataFrame({"x": [1, 2, 3, 4]}).to_parquet(fd, index=False)
+    _git(repo, "commit", "-qam", "main results 3")
+    _git(repo, "checkout", "-q", "dt")
+    r = SY.run(dry_run=True)
+    assert r["take_main"] == [] and r["both_changed"] == ["output/fd_history.parquet"]
+
+
 # ── owner 2026-11-09: date formats and the one-day rule for re-fetch rows ──────────────────
 
 def _plan_case(list_date, hist_date, home="Uruguay", away="Dominican Republic", lh="Uruguay", la="Dominican Republic"):

@@ -111,7 +111,12 @@ def test_null_is_zero_for_a_player_who_played_in_a_fixture_the_provider_answered
     assert q["passes_total"] == 22                                                    # sent value kept
     # nobody in the match has assists / key passes / a penalty: still 0 for a player who played
     assert q["assists"] == 0 and q["key_passes"] == 0 and q["penalty_scored"] == 0
-    assert q["penalty_missed"] == 0 and q["saves"] == 0                               # absent group too
+    assert q["saves"] == 0                                                            # absent group too
+    # OWNER DECISION 2026-11-11 ("Fix penalties too, then promote") replaces the fix-round-9 reading
+    # for penalty_missed: a provider null is missing; no penalty taken with a real 0 is still 0.
+    assert q["penalty_missed"] is None
+    sent0 = _entry(5, 90, penalty={"scored": None, "missed": 0})
+    assert N.player_counts(sent0["statistics"][0], ans)["penalty_missed"] == 0
     assert all(v is None for v in N.player_counts(bench["statistics"][0], ans).values())     # no minutes
     assert all(v is None for v in N.player_counts(zero_min["statistics"][0], ans).values())  # 0 minutes
     # a fixture the provider did not answer: nothing is read as 0, even for a player with minutes
@@ -160,6 +165,9 @@ def test_every_history_count_column_is_read_by_the_shared_rule():
     r = DF._parse_fixture_player({"player": {"id": 5, "name": "Quiet"}, "statistics": [stats]}, META,
                                  "Premier League", ans)
     for col in N.HISTORY_COUNT_COLS:
+        if col in N.NULL_IS_MISSING:                                         # 2026-11-11: goals.conceded
+            assert r[col] is None, col                                       # null is not "none"
+            continue
         assert r[col] == 0, col                                              # played + answered -> 0
     assert r["rating"] is None and r["minutes"] == 90
     r9 = DF._parse_fixture_player(other, META, "Premier League", ans)

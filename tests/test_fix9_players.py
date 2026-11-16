@@ -56,7 +56,8 @@ def test_merge_keeps_a_rule_rows_missing_count_missing():
 def test_cup_merge_carries_the_provenance_column():
     src = (ROOT / "player_model" / "pipeline.py").read_text(encoding="utf-8")
     body = src[src.index("def merge_cup_rows"):src.index("def mode_merge_cups")]
-    assert "c != SOURCE_COL" in body and "or c == SOURCE_COL" in body
+    # 2026-11-15: count_source travels with null_is_missing_cols (both provenance)
+    assert "_prov = (SOURCE_COL, NULL_MISSING_COL)" in body and "c in _prov" in body
 
 
 # ── 3. national-team rows: the PROVIDER's season (fix round 10), never "" and never resolved ──────

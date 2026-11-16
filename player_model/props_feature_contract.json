@@ -1,26 +1,22 @@
 {
-  "contract_sha256": "3d11e2ef579e20475dac05f5fcb1ef4260cc078270ae59b1091b5f2bb3ef1617",
+  "contract_sha256": "d110bea59dcb99cb252047c20b46cc789c7ccc52ec9cf829ce8c90a3240761b4",
   "contract_version": "PFC-1.0",
   "counts": {
-    "IMPUTABLE": 68,
-    "OPTIONAL_DEGRADED": 45,
+    "IMPUTABLE": 69,
+    "OPTIONAL_DEGRADED": 42,
     "REQUIRED_FAIL_ROW": 12,
-    "SEMANTIC_ZERO": 3
+    "SEMANTIC_ZERO": 2
   },
   "features": {
     "aerial_matchup_score": {
       "class": "IMPUTABLE",
-      "reason": "derived from the player's own match history"
+      "reason": "derived from the player's own match history; NAME NOTE: ALL duels, not aerial duels (aerial_won_rate x (1 - opp_def_aerial_win_rate))"
     },
     "aerial_won_rate": {
       "class": "IMPUTABLE",
-      "reason": "derived from the player's own match history"
+      "reason": "derived from the player's own match history; NAME NOTE: ALL duels, not aerial duels: duels.won / duels.total"
     },
     "age": {
-      "class": "OPTIONAL_DEGRADED",
-      "reason": "API-Football /players profile (age, height)"
-    },
-    "age_peak_delta": {
       "class": "OPTIONAL_DEGRADED",
       "reason": "API-Football /players profile (age, height)"
     },
@@ -32,15 +28,15 @@
       "class": "IMPUTABLE",
       "reason": "derived from the player's own match history"
     },
-    "box_actions_per90": {
+    "box_actions_per90_lgrel": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history; NAME NOTE: not box actions: ALL shots (league-relative) + ALL duels won per 90"
+    },
+    "box_dominance_vs_gk_lgrel": {
       "class": "IMPUTABLE",
       "reason": "derived from the player's own match history"
     },
-    "box_dominance_vs_gk": {
-      "class": "IMPUTABLE",
-      "reason": "derived from the player's own match history"
-    },
-    "box_threat_vs_leaky_defense": {
+    "box_threat_vs_leaky_defense_lgrel": {
       "class": "IMPUTABLE",
       "reason": "derived from the player's own match history"
     },
@@ -64,7 +60,7 @@
       "class": "IMPUTABLE",
       "reason": "derived from the player's own match history"
     },
-    "career_shots_pg": {
+    "career_shots_pg_lgrel": {
       "class": "IMPUTABLE",
       "reason": "derived from the player's own match history"
     },
@@ -74,15 +70,15 @@
     },
     "chronic_injury_risk": {
       "class": "OPTIONAL_DEGRADED",
-      "reason": "injury feed (point-in-time since 2026-10-26; serving models trained on leaked values)"
+      "reason": "collected fixture-level injury lists of EARLIER fixtures (2026-11-15); missing where the league-season was not covered or was fetched before the match"
     },
-    "clinical_vs_gk": {
+    "clinical_vs_gk_lgrel": {
       "class": "IMPUTABLE",
       "reason": "derived from the player's own match history"
     },
     "days_since_last_injury": {
       "class": "OPTIONAL_DEGRADED",
-      "reason": "injury feed (point-in-time since 2026-10-26; serving models trained on leaked values)"
+      "reason": "collected fixture-level injury lists of EARLIER fixtures (2026-11-15); missing where the league-season was not covered or was fetched before the match"
     },
     "defensive_actions_per90": {
       "class": "IMPUTABLE",
@@ -90,7 +86,7 @@
     },
     "dribble_contact_rate": {
       "class": "IMPUTABLE",
-      "reason": "derived from the player's own match history"
+      "reason": "derived from the player's own match history; NAME NOTE: dribbles_pg counts SUCCESSFUL dribbles, so this is not failed dribbles"
     },
     "dribble_creativity_score": {
       "class": "IMPUTABLE",
@@ -106,7 +102,7 @@
     },
     "dribbler_vs_defensive_line": {
       "class": "IMPUTABLE",
-      "reason": "derived from the player's own match history"
+      "reason": "derived from the player's own match history; NAME NOTE: ALL duels on the opponent side (1 - opp_def_aerial_win_rate)"
     },
     "dribbles_pg": {
       "class": "IMPUTABLE",
@@ -160,14 +156,6 @@
       "class": "REQUIRED_FAIL_ROW",
       "reason": "core rate"
     },
-    "height_advantage_score": {
-      "class": "OPTIONAL_DEGRADED",
-      "reason": "API-Football /players profile (age, height)"
-    },
-    "height_aerial_interaction": {
-      "class": "OPTIONAL_DEGRADED",
-      "reason": "API-Football /players profile (age, height)"
-    },
     "height_cm": {
       "class": "OPTIONAL_DEGRADED",
       "reason": "API-Football /players profile (age, height)"
@@ -216,13 +204,13 @@
       "class": "SEMANTIC_ZERO",
       "reason": "API-Football reports null for an event that did not happen"
     },
-    "opp_adjusted_shot_threat": {
+    "opp_adjusted_shot_threat_lgrel": {
       "class": "IMPUTABLE",
       "reason": "derived from the player's own match history"
     },
     "opp_def_aerial_win_rate": {
       "class": "IMPUTABLE",
-      "reason": "derived from the player's own match history"
+      "reason": "derived from the player's own match history; NAME NOTE: ALL duels, not aerial duels: the opponent defenders' duels.won / duels.total"
     },
     "opp_def_aggression": {
       "class": "IMPUTABLE",
@@ -242,7 +230,7 @@
     },
     "opp_def_player_quality": {
       "class": "OPTIONAL_DEGRADED",
-      "reason": "opponent lineup-level detail (GK, defenders)"
+      "reason": "opponent lineup-level detail (GK, defenders); NAME NOTE: one factor is ALL duels, not aerial duels (opp_def_aerial_win_rate)"
     },
     "opp_def_player_rating_pg": {
       "class": "OPTIONAL_DEGRADED",
@@ -301,8 +289,8 @@
       "reason": "derived from the player's own match history"
     },
     "penalties_won_pg": {
-      "class": "SEMANTIC_ZERO",
-      "reason": "API-Football reports null for an event that did not happen"
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
     },
     "penalty_conversion_rate": {
       "class": "IMPUTABLE",
@@ -348,11 +336,11 @@
       "class": "OPTIONAL_DEGRADED",
       "reason": "the player's / team's previous season (absent for a debut season)"
     },
-    "prev_season_shot_accuracy": {
+    "prev_season_shot_accuracy_lgrel": {
       "class": "OPTIONAL_DEGRADED",
       "reason": "the player's / team's previous season (absent for a debut season)"
     },
-    "prev_season_shots_pg": {
+    "prev_season_shots_pg_lgrel": {
       "class": "OPTIONAL_DEGRADED",
       "reason": "the player's / team's previous season (absent for a debut season)"
     },
@@ -402,7 +390,7 @@
     },
     "return_from_injury_flag": {
       "class": "OPTIONAL_DEGRADED",
-      "reason": "injury feed (point-in-time since 2026-10-26; serving models trained on leaked values)"
+      "reason": "collected fixture-level injury lists of EARLIER fixtures (2026-11-15); missing where the league-season was not covered or was fetched before the match"
     },
     "season_appearances": {
       "class": "OPTIONAL_DEGRADED",
@@ -436,7 +424,7 @@
       "class": "OPTIONAL_DEGRADED",
       "reason": "API-Football /players/statistics season priors"
     },
-    "season_shots_pg": {
+    "season_shots_pg_lgrel": {
       "class": "OPTIONAL_DEGRADED",
       "reason": "API-Football /players/statistics season priors"
     },
@@ -452,25 +440,25 @@
       "class": "IMPUTABLE",
       "reason": "derived from the player's own match history"
     },
-    "shot_accuracy_l10": {
+    "shot_accuracy_l10_lgrel": {
       "class": "IMPUTABLE",
       "reason": "derived from the player's own match history"
     },
-    "shot_accuracy_rate": {
+    "shot_accuracy_rate_lgrel": {
       "class": "IMPUTABLE",
       "reason": "derived from the player's own match history"
     },
-    "shots_away_pg": {
+    "shots_away_pg_lgrel": {
       "class": "IMPUTABLE",
       "reason": "derived from the player's own match history"
     },
-    "shots_home_pg": {
+    "shots_home_pg_lgrel": {
       "class": "IMPUTABLE",
       "reason": "derived from the player's own match history"
     },
-    "shots_pg": {
+    "shots_pg_lgrel": {
       "class": "REQUIRED_FAIL_ROW",
-      "reason": "core rate"
+      "reason": "core rate (shots relative to the league's own as-of level)"
     },
     "sot_away_pg": {
       "class": "IMPUTABLE",
@@ -484,11 +472,11 @@
       "class": "REQUIRED_FAIL_ROW",
       "reason": "core rate"
     },
-    "sot_quality_score": {
+    "sot_quality_score_lgrel": {
       "class": "IMPUTABLE",
       "reason": "derived from the player's own match history"
     },
-    "sot_rate": {
+    "sot_rate_lgrel": {
       "class": "IMPUTABLE",
       "reason": "derived from the player's own match history"
     },
@@ -516,7 +504,7 @@
       "class": "IMPUTABLE",
       "reason": "derived from the player's own match history"
     },
-    "volume_shot_penetration": {
+    "volume_shot_penetration_lgrel": {
       "class": "IMPUTABLE",
       "reason": "derived from the player's own match history"
     }

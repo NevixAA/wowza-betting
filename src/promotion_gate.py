@@ -444,6 +444,8 @@ def prospective_rows(model_type: str, challenger_version: str, champion_version:
     if outcomes is None:
         outcomes = (pd.read_csv(OUTCOMES_FILE, dtype=str, keep_default_na=False)
                     if Path(OUTCOMES_FILE).exists() else pd.DataFrame())
+        from src.ledger_corrections import drop_v91_duplicates  # one fixture logged on two dates: once
+        outcomes = drop_v91_duplicates(outcomes)
     need_h = {"model_type", "challenger_version", "champion_version", "logged_at", "match_date",
               "home_team", "away_team", "league", "p_champion_raw", "p_challenger"}
     need_o = {"match_date", "home_team", "away_team", "home_goals", "away_goals"}

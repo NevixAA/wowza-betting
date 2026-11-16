@@ -259,6 +259,9 @@ def settled_tips(include_paper: bool = False) -> pd.DataFrame:
     if len(m):
         if "source" in m.columns:
             m = _live_only(m, "bets_ledger.csv")
+        # owner 2026-11-11: post-kickoff tips and the later tip of an opposite O/U pair never count
+        from src.ledger_corrections import drop_historical_excluded
+        m = drop_historical_excluded(m)
         parts.append(pd.DataFrame({**_stake(m, "bets_ledger.csv"),
             "date": m["match_date"].astype(str).str[:10], "league": m["league"],
             "match": m["home_team"].astype(str) + " v " + m["away_team"].astype(str),

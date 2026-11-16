@@ -404,9 +404,11 @@ def merge_cup_rows(existing: "pd.DataFrame", cups: "pd.DataFrame") -> tuple:
     # row together, through a rebuild of player_history.
     # count_source is PROVENANCE, not a feature (owner 2026-11-04, fix round 9): it always travels
     # with the counts it describes, or a verified cup row would read back as zeros_unverified.
-    from player_model.player_stat_nulls import SOURCE_COL
-    extra = sorted(c for c in out.columns if c not in existing.columns and c != SOURCE_COL)
-    out = out[[c for c in out.columns if c in existing.columns or c == SOURCE_COL]]
+    # null_is_missing_cols likewise (2026-11-15): which counts the parser read missing from a null.
+    from player_model.player_stat_nulls import NULL_MISSING_COL, SOURCE_COL
+    _prov = (SOURCE_COL, NULL_MISSING_COL)
+    extra = sorted(c for c in out.columns if c not in existing.columns and c not in _prov)
+    out = out[[c for c in out.columns if c in existing.columns or c in _prov]]
     stats["columns_not_written"] = extra
     combined, _st = HI.merge_history(existing, out)
     stats["appended"] = int(len(combined) - len(existing))

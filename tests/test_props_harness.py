@@ -254,7 +254,7 @@ def test_profile_features_are_readmitted():
     # holds the 7 profile features (real values or NaN) and no legacy NaN-by-construction column
     feats = H.harness_features(pd.DataFrame(columns=list(config.PLAYER_FEATURE_COLS) + ["league_tier"]))
     assert feats == list(config.PLAYER_FEATURE_COLS)
-    assert set(config.PROFILE_FEATURES) <= set(feats)
+    assert set(config.PROFILE_FEATURES) - config.PROFILE_CONSTANT_FEATURES_WITHHELD <= set(feats)   # 2026-11-15
     assert not set(config.LEGACY_QUALITY_FEATURES_REMOVED) & set(feats)
     assert len(feats) == len(set(feats))
 

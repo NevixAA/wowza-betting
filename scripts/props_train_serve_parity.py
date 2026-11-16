@@ -39,9 +39,13 @@ ROW_FIELDS = ("player_id", "player_name", "fixture_id", "league", "team", "home_
 
 
 def _load_model(models: Path, market: str, cand: str):
+    """The harness model of a clean-retrain artifact (props_clean_<market>_<cand>.pkl) or, when absent, of
+    the serving payload models/model_player_<market>.pkl (the promoted champion, same object)."""
     import io
-    raw = (models / f"props_clean_{market}_{cand}.pkl").read_bytes()
-    return PPG._HarnessUnpickler(io.BytesIO(raw)).load()["model"]
+    p = models / f"props_clean_{market}_{cand}.pkl"
+    if not p.exists():
+        p = models / f"model_player_{market}.pkl"
+    return PPG._HarnessUnpickler(io.BytesIO(p.read_bytes())).load()["model"]
 
 
 def _same(a: pd.Series, b: pd.Series) -> pd.Series:
@@ -73,7 +77,11 @@ def main(argv=None) -> int:
     frame["date"] = pd.to_datetime(frame["date"])
     served = [tuple(x.split(":")) for x in a.markets.split(",")]
     mods = {m: _load_model(models, m, c) for m, c in served}
-    feats = sorted(set().union(*[set(mod.feature_cols_) for mod in mods.values()]))
+    # every feature of a served model AND every feature the next retrain trains on (config)
+    from player_model import config as _cfg
+    feats = sorted(set().union(*[set(mod.feature_cols_) for mod in mods.values()], set(_cfg.PLAYER_FEATURE_COLS),
+                               {"starter_rate", "chronic_injury_risk", "return_from_injury_flag",
+                                "days_since_last_injury", "penalties_won_pg", "dribbled_past_pg"}))
     cand = frame[(frame["date"] >= a.start) & (frame["date"] <= a.end)]
     fx = (cand.drop_duplicates("fixture_id")[["fixture_id", "date", "league"]]
           .groupby("league", group_keys=False).head(a.per_league))

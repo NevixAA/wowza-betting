@@ -26,6 +26,18 @@ turns system health RED instead of waiting for the next audit:
                  match (2026-11-02); and (2026-11-10) no PROVIDER fixture claimed by two served rows,
                  nor by two served af_history provider rows (src.integrity.fixture_claims: a match
                  filed under both clubs' old AND new names has no side in common by name).
+    6 LEDGERS    (2026-11-11) from the Clean Record start the live ledgers hold no multi-tip / opposite-tip
+                 fixture, post-kickoff tip, close <= 1.0, |CLV| > 50 new-format row, duplicate player tip
+                 or twice-logged v91 fixture (src/ledger_corrections corrects the rows before it). Not
+                 gated (operational data, like rule 3): RED in system health.
+    7 PROPS      (2026-11-11, src.integrity.props_feature_truth) a keeper's goals_conceded read by the
+                 props features agrees with the match score where he played the full 90 minutes; every
+                 rolling team feature reads the side its name says (own team vs opponent); a provider null
+                 in a NULL_IS_MISSING count (goals_conceded, penalty_missed) stays missing. Gated.
+                 (2026-11-15, props feature audit) 7d `started` is the lineup role and its league-month
+                 share does not drift; 7e no count the provider left unpublished for a whole fixture is
+                 read as 0; 7f the injury lists and lineups keep up with the matches (<= 14 days behind);
+                 7g a shots definition change cancels out of the league-relative shots features.
 
 A check whose input is missing is NO_DATA (or RED where the input is a production bank), never GREEN.
 
@@ -689,6 +701,78 @@ def one_match(banks: dict | None = None, pool: pd.DataFrame | None = None,
               rule, ex)
 
 
+# ── 6 CLEAN LEDGERS (2026-11-11 certification) ─────────────────────────────────────────────────
+def _clean_record_start():
+    try:
+        cfg = json.loads((ROOT / "config" / "trustworthy_performance.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    v = cfg.get("clean_record_start_utc")
+    t = pd.to_datetime(v, errors="coerce", utc=True) if v else pd.NaT
+    return None if pd.isna(t) else t
+
+
+def ledgers(start=None, bets: pd.DataFrame | None = None, players: pd.DataFrame | None = None,
+            v91: pd.DataFrame | None = None, pool: pd.DataFrame | None = None) -> dict:
+    """The live ledgers hold, from the Clean Record start on, no fixture with two live O/U tips (opposite
+    or not), no tip generated after the provider kick-off, no close <= 1.0, no |CLV| > 50 on a new-format
+    row, no second copy of a player tip and no provider fixture logged twice in v91_shadow - the
+    findings of the 2026-11-11 certification, corrected beside the ledgers (src/ledger_corrections).
+    Rows before the start are the corrected 'before the repairs' record. NO_DATA while the start is not
+    set (config/trustworthy_performance.json clean_record_start_utc, set by the owner at go-live)."""
+    rule = ("from the Clean Record start: 0 multi-tip / opposite-tip fixtures, 0 post-kickoff tips, 0 closes "
+            "<= 1.0, 0 |CLV| > 50 new-format rows, 0 duplicate player tips, 0 v91_shadow fixtures logged "
+            "twice: RED on any; NO_DATA before the start is set")
+    from src import ledger_corrections as LC
+    start = _clean_record_start() if start is None else pd.to_datetime(start, utc=True)
+    if start is None:
+        return _c("Data truth 6: clean ledgers", GREY, "Clean Record start not set (go-live sets it)", rule)
+    def since(d, col):
+        if d is None or d.empty or col not in d.columns:
+            return pd.DataFrame()
+        t = pd.to_datetime(d[col], errors="coerce", utc=True, format="mixed")
+        return d[(t >= start).to_numpy()]
+    bets = _read(OUT / "bets_ledger.csv") if bets is None else bets
+    players = _read(OUT / "player_ledger.csv") if players is None else players
+    v91 = _read(OUT / "v91_shadow.csv") if v91 is None else v91
+    b = since(bets, "generated_at")
+    if "source" in b.columns:
+        b = b[b["source"].astype(str) == "live"]
+    issues = []
+    if len(b):
+        m = LC.multi_tip_rows(b)
+        if len(m):
+            fx = m.drop_duplicates(["match_date", "league", "home_team", "away_team"])
+            issues.append(f"{len(fx)} fixture(s) with more than one live tip "
+                          f"({int(fx['opposite_tip_pair'].sum())} opposite)")
+        pk = LC.post_kickoff_rows(b, pool)
+        if len(pk):
+            issues.append(f"{len(pk)} tip(s) generated after kick-off")
+        bad = LC.invalid_close_rows(b)
+        if len(bad):
+            issues.append(f"{len(bad)} close(s) <= 1.0")
+        clv = pd.to_numeric(b.get("clv_pct"), errors="coerce")
+        nf = b.get("model_type", pd.Series("", index=b.index)).astype(str).eq("new_format")
+        n50 = int(((clv.abs() > 50) & nf).sum())
+        if n50:
+            issues.append(f"{n50} new-format row(s) with |CLV| > 50")
+    pl = since(players, "signal_date")
+    if len(pl):
+        pd_ = LC.player_duplicate_rows(pl, pool)
+        if len(pd_):
+            issues.append(f"{len(pd_)} duplicate player tip(s)")
+    v = since(v91, "logged_at")
+    if len(v):
+        vd = LC.v91_duplicate_rows(v)
+        if len(vd):
+            issues.append(f"{len(vd)} v91_shadow fixture(s) logged twice")
+    st = RED if issues else GREEN
+    return _c("Data truth 6: clean ledgers", st,
+              "; ".join(issues) if issues else
+              f"clean since {start:%Y-%m-%d} ({len(b)} live tip(s), {len(pl)} player row(s), {len(v)} v91 row(s))",
+              rule)
+
+
 def evaluate(now: datetime | None = None) -> list[dict]:
     """The rule checks. Never raises: a check that cannot run is itself RED."""
     out = []
@@ -698,11 +782,24 @@ def evaluate(now: datetime | None = None) -> list[dict]:
                       ("Data truth 2: no silent defaults", defaults),
                       ("Data truth 3: no missing data", lambda: missing(now)),
                       ("Data truth 4: right league relations", leagues),
-                      ("Data truth 5: one match, one row", lambda: one_match())):
+                      ("Data truth 5: one match, one row", lambda: one_match()),
+                      ("Data truth 6: clean ledgers", lambda: ledgers())):
         try:
             out.append(fn())
         except Exception as e:                                         # noqa: BLE001
             out.append(_c(label, RED, "check failed", "must run", f"{type(e).__name__}: {e}"[:200]))
+    # 7 PROPS FEATURES (fix/props-feature-bugs 2026-11-11): keeper goals_conceded agrees with the
+    # match score on the frame the props features read; team features keyed to their side.
+    # The slim dashboard tree does not carry it (deploy/dashboard_manifest.json PIPELINE_ONLY: it reads
+    # player_history through props_harness); there the line is NO_DATA, never a crash. The gate and
+    # evidence_refresh run on the full repository, where the import always succeeds.
+    try:
+        from .props_feature_truth import evaluate as _props_truth
+    except ImportError as e:
+        out.append(_c("Data truth 7: props features", GREY, "not run in this tree",
+                      "runs on the full repository (data_truth_gate / evidence_refresh)", f"{e}"[:200]))
+        return out
+    out.extend(_props_truth())
     return out
 
 
@@ -725,7 +822,7 @@ RATCHET = ROOT / "config" / "data_truth_ratchet.json"
 #: must not merge. It runs the loader's identity pipeline on the committed banks (~15 s; it was
 #: ~19-60 s before team_names memoised norm/identity_key and duplicate_pairs stopped slicing
 #: pandas groups).
-GATED = ("Data truth 1", "Data truth 2", "Data truth 4", "Data truth 5")
+GATED = ("Data truth 1", "Data truth 2", "Data truth 4", "Data truth 5", "Data truth 7")
 
 
 def _ratchet() -> dict:

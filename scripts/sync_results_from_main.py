@@ -50,6 +50,12 @@ def _blob(ref, path):
     return _git("rev-parse", f"{ref}:{path}")
 
 
+def _main_blobs_since(mb: str, path: str) -> set[str]:
+    """Every blob `path` has had on main in the commits after the merge-base."""
+    commits = (_git("log", "--format=%H", f"{mb}..{MAIN}", "--", path) or "").split()
+    return {x for x in (_blob(c, path) for c in commits) if x}
+
+
 def plan() -> dict:
     mb = _git("merge-base", MAIN, "HEAD")
     if not mb:
@@ -64,6 +70,13 @@ def plan() -> dict:
         if m is None or m == h:
             continue
         if h == b:                       # this branch never changed it (or never had it)
+            take.append(p)
+        elif p not in ROW_LEVEL and h in _main_blobs_since(mb, p):
+            # This branch's copy IS one of main's own earlier versions (an earlier run of this sync
+            # took main's file whole). The branch made no change of its own, so main's newer file
+            # is taken whole again. Without this, every run after the first one saw "both changed"
+            # for fd_history / player_history and appended nothing (go-live rehearsal 2026-11-15:
+            # 208 fd_history matches and 148 player rows of main were missing on this branch).
             take.append(p)
         elif m == b:
             ours.append(p)

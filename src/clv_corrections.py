@@ -198,11 +198,14 @@ def contaminated_mask(ledger: pd.DataFrame, out_dir=None) -> pd.Series:
             return side & is_side
         rest = ledger[~is_side].drop(columns=["market"])
         return (side & is_side) | contaminated_mask(rest, out_dir).reindex(ledger.index, fill_value=False)
+    # 2026-11-11 certification: a close <= 1.0 is no price at all (clv_invalid_close.csv, by rule too)
+    from src.ledger_corrections import invalid_close_mask
+    bad = invalid_close_mask(ledger, out_dir).reindex(ledger.index, fill_value=False).astype(bool)
     listed = _read(sidecar("clv_first_half_contaminated.csv", out_dir))
     if listed is None:
         log.warning("clv_first_half_contaminated.csv missing - applying the detection rule directly")
-        return contaminated_rule(ledger)
-    return _member(ledger, listed, CLV_KEY)
+        return contaminated_rule(ledger) | bad
+    return _member(ledger, listed, CLV_KEY) | bad
 
 
 def exclude_contaminated_clv(ledger: pd.DataFrame, out_dir=None) -> pd.DataFrame:

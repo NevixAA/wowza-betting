@@ -27,21 +27,38 @@ TARGETS = config.MARKET_TARGETS
 
 
 def _prep(df: pd.DataFrame, feat_cols: list[str] | None = None) -> tuple[pd.DataFrame, list[str]]:
-    """Legacy (batch-median) preprocessing. Data Truth (2026-11-01): a feature column that is
-    absent, or has no value anywhere in the batch, stays NaN (it used to become 0.0 for every
-    row). Only the NaN-native estimator can score such rows; see _ensemble_proba."""
+    """The raw feature matrix of a scoring batch: every column numeric, a missing value and an ABSENT
+    column NaN. NOTHING is filled (owner 2026-11-15, P0 "real data only"): until then this filled every
+    missing cell with the median of the batch being scored (X.median()), so a row's probability
+    depended on the other rows of the batch and live statistics reached the model; before
+    2026-11-01 an absent column became 0.0. Only a NaN-native estimator scores an incomplete row
+    (_ensemble_proba); the persisted train-fitted imputers are the only fill (props_contract)."""
     cols = feat_cols or [c for c in config.PLAYER_FEATURE_COLS if c in df.columns]
     missing = [c for c in cols if c not in df.columns]
     if missing:
         import logging
         logging.getLogger(__name__).warning(
             f"[predict] {len(missing)} feature cols absent from feat_df, left NaN: {missing[:8]}")
-        df = df.copy()
-        for c in missing:
-            df[c] = np.nan
-    X = df[cols].copy().apply(pd.to_numeric, errors="coerce")
-    X = X.fillna(X.median())
+    X = pd.DataFrame({c: (pd.to_numeric(df[c], errors="coerce") if c in df.columns
+                          else pd.Series(np.nan, index=df.index)) for c in cols}, index=df.index).astype(float)
     return X, cols
+
+
+#: features a model may NOT read (fabricated: typed weights / assumed rates / missing -> 0, purged
+#: 2026-11-02, config.SETPIECE_PROXIES_REMOVED). A payload listing one is refused - no probability.
+UNSUPPORTED_FEATURES = frozenset(config.SETPIECE_PROXIES_REMOVED)
+REFUSED_UNSUPPORTED = "REFUSED_UNSUPPORTED_FEATURES"
+
+
+def unsupported_features(payload: dict) -> list[str]:
+    """The payload's feature columns that no model may read (UNSUPPORTED_FEATURES), sorted."""
+    return sorted(set(payload.get("feature_cols") or []) & UNSUPPORTED_FEATURES)
+
+
+def required_features(payload: dict) -> list[str]:
+    """The payload's REQUIRED_FAIL_ROW features (props_contract): a row missing one gets no
+    probability, whatever the recipe (owner 2026-11-15: required missing inputs fail explicitly)."""
+    return [f for f in (payload.get("feature_cols") or []) if PC.classify(f)[0] == "REQUIRED_FAIL_ROW"]
 
 
 def _nan_native(model) -> bool:
@@ -252,14 +269,11 @@ def train(df: pd.DataFrame, market: str, return_holdout: bool = False, recipe: s
     y = df[target_col].astype(int)
     n = len(df)
     if recipe == "legacy":
-        X, feat_cols = _prep(df)
-        # A feature with no value in the whole training frame carries nothing to learn and has no
-        # median: dropped from this candidate (logged), never filled with a typed 0.0.
-        _dead = [c for c in feat_cols if X[c].isna().all()]
-        if _dead:
-            print(f"  [{market}] {len(_dead)} feature(s) with no value in training dropped: {_dead[:12]}")
-            feat_cols = [c for c in feat_cols if c not in _dead]
-            X = X[feat_cols]
+        # RETIRED (owner 2026-11-15, P0 "real data only"): the legacy recipe filled every missing
+        # cell with the median of the WHOLE frame, holdout included. Props models are trained by the
+        # clean harness (player_model.props_harness) or this module's repaired recipe only.
+        raise RuntimeError("props recipe 'legacy' is retired (batch medians over the whole frame): "
+                           "train with player_model.props_harness or recipe='props_r2_repaired'")
     elif recipe == PC.RECIPE_REPAIRED:
         if n < 200:
             raise ValueError(f"Not enough samples for {market}: {n}")
@@ -401,8 +415,35 @@ def predict_with_diagnostics(df: pd.DataFrame, payload: dict, _fill_telemetry: b
     predict() - NaN-native (hgb_nan_native) or its persisted fit-block medians (recipe_retrained);
     an absent column reaches the model as NaN, never as a typed value.
     Repaired payload: persisted train-fitted imputer, batch-invariant, REQUIRED_FAIL_ROW -> p NaN.
-    Legacy payload: EXACTLY the pre-R2 computation (batch medians, absent column -> 0.0); the
-    diagnostics then describe the raw input and imputer_version says BATCH_MEDIAN_LEGACY."""
+    Legacy payload: the raw matrix, NOTHING filled (since 2026-11-15; batch medians before) - an
+    incomplete row is scored by the NaN-native estimator only; imputer_version NONE_LEGACY_NO_FILL.
+    Every recipe: unsupported features -> refused; a missing REQUIRED_FAIL_ROW input -> p NaN."""
+    bad = unsupported_features(payload)
+    if bad:
+        print(f"[props_model] {payload.get('market')}: payload lists unsupported feature(s) {bad[:6]} - "
+              f"refused, no probability ({len(df)} row(s))")
+        out = pd.DataFrame({"p": np.full(len(df), np.nan)}, index=df.index)
+        out["n_missing"] = -1
+        out["n_degraded"] = -1
+        out["n_required_missing"] = -1
+        out["required_fail"] = True
+        out["imputer_version"] = REFUSED_UNSUPPORTED
+        out["contract_version"] = payload.get("contract_version", "NONE")
+        out["recipe"] = payload_recipe(payload)
+        return out
+    out = _predict_recipe(df, payload, _fill_telemetry)
+    req = required_features(payload)
+    if req and payload_recipe(payload) != PC.RECIPE_REPAIRED:      # the repaired imputer applies its own
+        raw = pd.DataFrame({c: (pd.to_numeric(df[c], errors="coerce") if c in df.columns
+                                else pd.Series(np.nan, index=df.index)) for c in req}, index=df.index)
+        n_req = raw.isna().sum(axis=1).astype(int)
+        out["n_required_missing"] = n_req
+        out["required_fail"] = n_req > 0
+        out.loc[out["required_fail"], "p"] = np.nan
+    return out
+
+
+def _predict_recipe(df: pd.DataFrame, payload: dict, _fill_telemetry: bool = False) -> pd.DataFrame:
     if payload_recipe(payload) == PC.RECIPE_CLEAN_HARNESS:
         feat_cols = list(payload["feature_cols"])
         raw = pd.DataFrame({c: (pd.to_numeric(df[c], errors="coerce") if c in df.columns
@@ -434,16 +475,13 @@ def predict_with_diagnostics(df: pd.DataFrame, payload: dict, _fill_telemetry: b
         out["recipe"] = PC.RECIPE_REPAIRED
         return out
     feat_cols = payload["feature_cols"]
-    X, _ = _prep(df, feat_cols)
+    X, _ = _prep(df, feat_cols)                       # nothing filled (2026-11-15)
     out = pd.DataFrame({"p": _ensemble_proba(payload["models"], X)}, index=df.index)
-    raw = pd.DataFrame({c: (pd.to_numeric(df[c], errors="coerce") if c in df.columns
-                            else pd.Series(np.nan, index=df.index)) for c in feat_cols},
-                       index=df.index)
-    out["n_missing"] = raw.isna().sum(axis=1).astype(int)
+    out["n_missing"] = X.isna().sum(axis=1).astype(int)
     out["n_degraded"] = -1          # legacy payloads carry no contract
-    out["n_required_missing"] = -1
-    out["required_fail"] = False    # legacy never fails a row (that is the defect)
-    out["imputer_version"] = "BATCH_MEDIAN_LEGACY"
+    out["n_required_missing"] = 0
+    out["required_fail"] = False
+    out["imputer_version"] = "NONE_LEGACY_NO_FILL"
     out["contract_version"] = "NONE"
     out["recipe"] = PC.RECIPE_LEGACY
     return out
@@ -452,17 +490,13 @@ def predict_with_diagnostics(df: pd.DataFrame, payload: dict, _fill_telemetry: b
 def predict_proba(df: pd.DataFrame, payload: dict) -> pd.Series:
     """Ensemble average probability from both models.
 
-    Legacy payloads (no `recipe` key; all serving props models as of 2026-11-01) take the
-    original code path unchanged - batch-median `_prep` - so serving probabilities are
-    bit-identical to pre-R2 until an owner-approved retrain. Repaired payloads use the persisted
-    train-fitted imputer and return NaN on rows that fail the feature contract."""
-    if payload_recipe(payload) in (PC.RECIPE_REPAIRED, PC.RECIPE_CLEAN_HARNESS):
-        return predict_with_diagnostics(df, payload, _fill_telemetry=True)["p"]
-    feat_cols = payload["feature_cols"]
-    X, _ = _prep(df, feat_cols)
-    _record_median_fill(payload.get("market"), "batch_median_legacy", df, X)
+    Every recipe goes through predict_with_diagnostics (owner 2026-11-15, P0 "real data only"): a
+    payload listing an unsupported feature gets no probability; a row missing a REQUIRED_FAIL_ROW
+    input gets none; nothing is filled from the scoring batch (legacy payloads: NaN-native estimator
+    only on incomplete rows). Repaired payloads use the persisted train-fitted imputer; clean-harness
+    payloads their own NaN-native / persisted-median predict()."""
     before = dict(_ENSEMBLE_LOG)
-    p = pd.Series(_ensemble_proba(payload["models"], X), index=df.index)
+    p = predict_with_diagnostics(df, payload, _fill_telemetry=True)["p"].rename(None)
     n_nn = _ENSEMBLE_LOG["rows_nan_native_only"] - before["rows_nan_native_only"]
     n_un = _ENSEMBLE_LOG["rows_unscorable"] - before["rows_unscorable"]
     if n_nn or n_un:

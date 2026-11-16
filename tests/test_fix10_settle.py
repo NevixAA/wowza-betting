@@ -262,15 +262,10 @@ def test_median_fill_is_counted_without_changing_serving(tmp_path):
     # serving identical to the bare legacy computation
     ref = pd.Series(M._ensemble_proba(payload["models"], X_ref), index=df.index)
     pd.testing.assert_series_equal(p, ref)
-    rows = M.median_fill_rows("2026-11-04T00:00:00Z", "1")
-    got = {r["feature"]: r["cells_filled"] for r in rows}
-    assert got == {"a": 2, "b": 1}             # c / d have no value anywhere: left NaN, not a fill
-    assert all(r["rows_scored"] == 4 and r["imputer"] == "batch_median_legacy" for r in rows)
-    dst = tmp_path / "fill.csv"
-    assert M.write_median_fill(dst, run_at="t1", run_id="1") == 2
-    assert M.write_median_fill(dst, run_at="t2", run_id="2") == 2               # appended per run
-    out = pd.read_csv(dst)
-    assert list(out.columns) == M.MEDIAN_FILL_COLS and len(out) == 4
+    # 2026-11-15: the legacy path fills NOTHING from the batch - no median cell is ever filled
+    assert M.median_fill_rows("2026-11-04T00:00:00Z", "1") == []
+    assert X_ref.isna().sum().to_dict() == {"a": 2, "b": 1, "c": 4, "d": 4}
+    assert p.isna().all()                      # every row incomplete, no NaN-native estimator
     M.median_fill_reset()
     assert M.median_fill_rows("t", "") == []
 
