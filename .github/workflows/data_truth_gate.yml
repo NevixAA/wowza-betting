@@ -9,7 +9,8 @@ name: Data Truth stoplight
 on:
   push:
     # data-truth-100 added 2026-11-05 (Phase 2 KEY=ci): the repair branch was gated on PRs only.
-    branches: [main, data-truth-100]
+    # prep/bars-oddsapi-hist added 2026-11-16 (owner 'Yes, add it'): the go-live branch had no CI, so 5 red tests stayed hidden.
+    branches: [main, data-truth-100, prep/bars-oddsapi-hist]
     paths: ['**.py', 'config/**', '.github/workflows/data_truth_gate.yml']
   pull_request:
     types: [opened, synchronize, reopened, labeled, unlabeled]
