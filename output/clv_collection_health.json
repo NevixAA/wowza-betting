@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-16T01:16:26Z",
+  "generated_at": "2026-11-16T05:48:58Z",
   "close_rule": "strictly pre-kickoff, observed within 30 minutes",
   "shadow_all_time": {
     "eligible": 1056,
@@ -474,95 +474,115 @@
   "measure_from": "2026-10-23T00:00:00Z",
   "collection": {
     "window_days": 7.0,
-    "from": "2026-11-09 01:16:26.110823+00:00",
-    "fixture_markets": 542,
-    "fixtures": 68,
-    "t30_pct": 20.5,
-    "t10_pct": 20.5,
-    "t60_pct": 20.5,
-    "median_last_obs_minutes": 127.0,
+    "from": "2026-11-09 05:48:58.130495+00:00",
+    "fixture_markets": 159,
+    "fixtures": 20,
+    "t30_pct": 64.8,
+    "t10_pct": 64.8,
+    "t60_pct": 64.8,
+    "median_last_obs_minutes": 1.5,
+    "including_incidents": {
+      "fixture_markets": 534,
+      "fixtures": 67,
+      "t30_pct": 19.3,
+      "t10_pct": 19.3,
+      "t60_pct": 19.3,
+      "median_last_obs_minutes": 127.0
+    },
+    "excluded_incidents": [
+      {
+        "id": "INC-2026-11-14-std-1500",
+        "reason": "GitHub delivered no std_odds_capture run 12:59-15:52 UTC (5 scheduled firings 13:23-15:23 skipped while other workflows ran); the previous run (43590925506) ended because the next kickoff was 121 min away. The 15:00 UTC slot (47 standard fixtures) got no observation inside T-30m. Odds are pre-match only, so these closes can never be recovered. Root cause fixed in c0dadfc14 (capture bridges to the next reachable kickoff).",
+        "fixture_markets": 375,
+        "fixtures": 47,
+        "t30_pct": 0.0,
+        "t10_pct": 0.0,
+        "t60_pct": 0.0,
+        "median_last_obs_minutes": 127.0
+      }
+    ],
     "by_track": {
       "new_format": {
-        "fixture_markets": 47,
-        "fixtures": 6,
-        "t30_pct": 51.1,
-        "t10_pct": 51.1,
-        "t60_pct": 51.1,
-        "median_last_obs_minutes": 1.5
+        "fixture_markets": 39,
+        "fixtures": 5,
+        "t30_pct": 41.0,
+        "t10_pct": 41.0,
+        "t60_pct": 41.0,
+        "median_last_obs_minutes": 102.6
       },
       "standard": {
-        "fixture_markets": 495,
-        "fixtures": 62,
-        "t30_pct": 17.6,
-        "t10_pct": 17.6,
-        "t60_pct": 17.6,
-        "median_last_obs_minutes": 127.0
+        "fixture_markets": 120,
+        "fixtures": 15,
+        "t30_pct": 72.5,
+        "t10_pct": 72.5,
+        "t60_pct": 72.5,
+        "median_last_obs_minutes": 0.7
       }
     },
     "by_market": {
       "btts_no": {
-        "fixture_markets": 68,
-        "fixtures": 68,
-        "t30_pct": 20.6,
-        "t10_pct": 20.6,
-        "t60_pct": 20.6,
-        "median_last_obs_minutes": 127.0
+        "fixture_markets": 20,
+        "fixtures": 20,
+        "t30_pct": 65.0,
+        "t10_pct": 65.0,
+        "t60_pct": 65.0,
+        "median_last_obs_minutes": 1.5
       },
       "btts_yes": {
-        "fixture_markets": 68,
-        "fixtures": 68,
-        "t30_pct": 20.6,
-        "t10_pct": 20.6,
-        "t60_pct": 20.6,
-        "median_last_obs_minutes": 127.0
+        "fixture_markets": 20,
+        "fixtures": 20,
+        "t30_pct": 65.0,
+        "t10_pct": 65.0,
+        "t60_pct": 65.0,
+        "median_last_obs_minutes": 1.5
       },
       "over15": {
-        "fixture_markets": 68,
-        "fixtures": 68,
-        "t30_pct": 20.6,
-        "t10_pct": 20.6,
-        "t60_pct": 20.6,
-        "median_last_obs_minutes": 127.0
+        "fixture_markets": 20,
+        "fixtures": 20,
+        "t30_pct": 65.0,
+        "t10_pct": 65.0,
+        "t60_pct": 65.0,
+        "median_last_obs_minutes": 1.5
       },
       "over25": {
-        "fixture_markets": 67,
-        "fixtures": 67,
-        "t30_pct": 19.4,
-        "t10_pct": 19.4,
-        "t60_pct": 19.4,
-        "median_last_obs_minutes": 127.0
+        "fixture_markets": 19,
+        "fixtures": 19,
+        "t30_pct": 63.2,
+        "t10_pct": 63.2,
+        "t60_pct": 63.2,
+        "median_last_obs_minutes": 1.5
       },
       "over35": {
-        "fixture_markets": 68,
-        "fixtures": 68,
-        "t30_pct": 20.6,
-        "t10_pct": 20.6,
-        "t60_pct": 20.6,
-        "median_last_obs_minutes": 127.0
+        "fixture_markets": 20,
+        "fixtures": 20,
+        "t30_pct": 65.0,
+        "t10_pct": 65.0,
+        "t60_pct": 65.0,
+        "median_last_obs_minutes": 1.5
       },
       "under15": {
-        "fixture_markets": 68,
-        "fixtures": 68,
-        "t30_pct": 20.6,
-        "t10_pct": 20.6,
-        "t60_pct": 20.6,
-        "median_last_obs_minutes": 127.0
+        "fixture_markets": 20,
+        "fixtures": 20,
+        "t30_pct": 65.0,
+        "t10_pct": 65.0,
+        "t60_pct": 65.0,
+        "median_last_obs_minutes": 1.5
       },
       "under25": {
-        "fixture_markets": 67,
-        "fixtures": 67,
-        "t30_pct": 20.9,
-        "t10_pct": 20.9,
-        "t60_pct": 20.9,
-        "median_last_obs_minutes": 127.0
+        "fixture_markets": 20,
+        "fixtures": 20,
+        "t30_pct": 65.0,
+        "t10_pct": 65.0,
+        "t60_pct": 65.0,
+        "median_last_obs_minutes": 1.5
       },
       "under35": {
-        "fixture_markets": 68,
-        "fixtures": 68,
-        "t30_pct": 20.6,
-        "t10_pct": 20.6,
-        "t60_pct": 20.6,
-        "median_last_obs_minutes": 127.0
+        "fixture_markets": 20,
+        "fixtures": 20,
+        "t30_pct": 65.0,
+        "t10_pct": 65.0,
+        "t60_pct": 65.0,
+        "median_last_obs_minutes": 1.5
       }
     },
     "by_league": {
@@ -582,37 +602,21 @@
         "t60_pct": 65.6,
         "median_last_obs_minutes": 2.0
       },
-      "League One": {
-        "fixture_markets": 95,
-        "fixtures": 12,
-        "t30_pct": 0.0,
-        "t10_pct": 0.0,
-        "t60_pct": 0.0,
-        "median_last_obs_minutes": 127.0
-      },
       "League Two": {
-        "fixture_markets": 96,
-        "fixtures": 12,
-        "t30_pct": 16.7,
-        "t10_pct": 16.7,
-        "t60_pct": 16.7,
-        "median_last_obs_minutes": 127.0
-      },
-      "Mexico Liga MX": {
         "fixture_markets": 16,
         "fixtures": 2,
-        "t30_pct": 50.0,
-        "t10_pct": 50.0,
-        "t60_pct": 50.0,
-        "median_last_obs_minutes": 47.1
+        "t30_pct": 100.0,
+        "t10_pct": 100.0,
+        "t60_pct": 100.0,
+        "median_last_obs_minutes": 0.9
       },
-      "National League": {
-        "fixture_markets": 96,
-        "fixtures": 12,
+      "Mexico Liga MX": {
+        "fixture_markets": 8,
+        "fixtures": 1,
         "t30_pct": 0.0,
         "t10_pct": 0.0,
         "t60_pct": 0.0,
-        "median_last_obs_minutes": 127.0
+        "median_last_obs_minutes": 102.6
       },
       "Norway Eliteserien": {
         "fixture_markets": 7,
@@ -630,36 +634,20 @@
         "t60_pct": 0.0,
         "median_last_obs_minutes": 106.4
       },
-      "Scottish Championship": {
-        "fixture_markets": 32,
-        "fixtures": 4,
-        "t30_pct": 0.0,
-        "t10_pct": 0.0,
-        "t60_pct": 0.0,
-        "median_last_obs_minutes": 127.0
-      },
       "Scottish League One": {
-        "fixture_markets": 40,
-        "fixtures": 5,
-        "t30_pct": 20.0,
-        "t10_pct": 20.0,
-        "t60_pct": 20.0,
-        "median_last_obs_minutes": 127.0
-      },
-      "Scottish League Two": {
-        "fixture_markets": 40,
-        "fixtures": 5,
-        "t30_pct": 0.0,
-        "t10_pct": 0.0,
-        "t60_pct": 0.0,
-        "median_last_obs_minutes": 127.0
+        "fixture_markets": 8,
+        "fixtures": 1,
+        "t30_pct": 100.0,
+        "t10_pct": 100.0,
+        "t60_pct": 100.0,
+        "median_last_obs_minutes": 0.3
       }
     }
   },
   "check": {
-    "status": "FAIL",
+    "status": "INSUFFICIENT_SAMPLE",
     "reasons": [
-      "collection T-30m 20.5% < 40.0% on 542 fixture-markets"
+      "collection sample 159 < 200"
     ]
   }
 }
