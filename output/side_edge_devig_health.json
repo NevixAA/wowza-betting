@@ -1,51 +1,49 @@
 {
   "artifact": "side_edge_devig_health",
   "shadow_version": "side_edge_devig_shadow-1.0",
-  "generated_at": "2026-11-16T16:38:39Z",
+  "generated_at": "2026-11-16T18:43:35Z",
   "production_rule": "two-sided de-vig since 2026-11-01 (config.SIDE_EDGE_FAIR_PRICE); edge_prod below = the old (1/odds)/1.08, kept for comparison",
   "shadow_rule": "edge = p_model - median_books(power_devig(same-book two-sided pair)), pre-kickoff, carried forward to the decision time; same thresholds",
   "quotes_from": "2026-08-19 09:23:27+00:00",
-  "quote_rows": 230961,
+  "quote_rows": 231658,
   "board": {
-    "generated_at": "2026-11-16T06:21:44Z",
-    "rows": 198,
-    "production_tips": 19,
+    "generated_at": "2026-11-16T18:25:14Z",
+    "rows": 59,
+    "production_tips": 4,
     "classification": {
-      "CONFIRMED_BY_DEVIG": 17,
-      "ONLY_BECAUSE_OF_1_08": 2
+      "CONFIRMED_BY_DEVIG": 3,
+      "ONLY_BECAUSE_OF_1_08": 1
     },
     "by_market": {
       "btts": {
-        "CONFIRMED_BY_DEVIG": 15,
-        "ONLY_BECAUSE_OF_1_08": 1
+        "CONFIRMED_BY_DEVIG": 1
       },
       "over15": {
         "CONFIRMED_BY_DEVIG": 2,
         "ONLY_BECAUSE_OF_1_08": 1
       }
     },
-    "devigged_rows": 198,
-    "median_pair_overround": 0.0808,
-    "median_edge_prod_minus_devig_pp": 0.76,
-    "mean_edge_prod_minus_devig_pp": 0.64,
-    "p90_edge_prod_minus_devig_pp": 2.0,
-    "rows_prod_edge_inflated_ge_2pp": 20,
-    "rows_pair_overround_below_6pct": 1,
-    "mean_inflation_pp_when_overround_below_6pct": 1.11
+    "devigged_rows": 59,
+    "median_pair_overround": 0.0778,
+    "median_edge_prod_minus_devig_pp": -0.14,
+    "mean_edge_prod_minus_devig_pp": 0.19,
+    "p90_edge_prod_minus_devig_pp": 2.28,
+    "rows_prod_edge_inflated_ge_2pp": 12,
+    "rows_pair_overround_below_6pct": 0
   },
   "ledger_retrospective": {
     "label": "RETROSPECTIVE",
-    "tips_since_quotes_exist": 719,
-    "rows": 719,
-    "production_tips": 719,
+    "tips_since_quotes_exist": 721,
+    "rows": 721,
+    "production_tips": 721,
     "classification": {
-      "CONFIRMED_BY_DEVIG": 486,
+      "CONFIRMED_BY_DEVIG": 488,
       "UNVERIFIABLE_ONE_SIDED": 132,
       "ONLY_BECAUSE_OF_1_08": 101
     },
     "by_market": {
       "btts": {
-        "CONFIRMED_BY_DEVIG": 362,
+        "CONFIRMED_BY_DEVIG": 364,
         "UNVERIFIABLE_ONE_SIDED": 98,
         "ONLY_BECAUSE_OF_1_08": 82
       },
@@ -60,7 +58,7 @@
         "ONLY_BECAUSE_OF_1_08": 9
       }
     },
-    "devigged_rows": 587,
+    "devigged_rows": 589,
     "median_pair_overround": 0.0798,
     "median_edge_prod_minus_devig_pp": 0.09,
     "mean_edge_prod_minus_devig_pp": 0.4,
@@ -160,27 +158,27 @@
     ]
   },
   "ledger_open_tips": {
-    "rows": 19,
-    "production_tips": 19,
+    "rows": 21,
+    "production_tips": 21,
     "classification": {
       "UNVERIFIABLE_ONE_SIDED": 16,
-      "CONFIRMED_BY_DEVIG": 3
+      "CONFIRMED_BY_DEVIG": 5
     },
     "by_market": {
       "btts": {
         "UNVERIFIABLE_ONE_SIDED": 15,
-        "CONFIRMED_BY_DEVIG": 2
+        "CONFIRMED_BY_DEVIG": 4
       },
       "over15": {
         "CONFIRMED_BY_DEVIG": 1,
         "UNVERIFIABLE_ONE_SIDED": 1
       }
     },
-    "devigged_rows": 3,
+    "devigged_rows": 5,
     "median_pair_overround": 0.0785,
-    "median_edge_prod_minus_devig_pp": -0.65,
-    "mean_edge_prod_minus_devig_pp": -0.16,
-    "p90_edge_prod_minus_devig_pp": 0.55,
+    "median_edge_prod_minus_devig_pp": -0.14,
+    "mean_edge_prod_minus_devig_pp": -0.02,
+    "p90_edge_prod_minus_devig_pp": 0.72,
     "rows_prod_edge_inflated_ge_2pp": 0,
     "rows_pair_overround_below_6pct": 0
   }
