@@ -1,0 +1,1575 @@
+{
+ "protocol": "top3-tiers/7",
+ "protocol_sha256_lf": "2670e6bf0209b7fe2243d0fc16dae3db3d2d9d7fa732d9d2e01b6aa33ff47cac",
+ "thresholds_sha256_lf": "d62b4b86fdd6fd9d859b0cdd6207a5ca6e6a1bae30916a8307b50d9004cf5b97",
+ "evidence_sha256": "0f1df4cc9c3db0b06467378aaf89eff2f91a89b84bdb24df0c6d07189cedfe13",
+ "holdout": [
+  "2026-04-01",
+  "2026-11-08"
+ ],
+ "label": "descriptive holdout: the 2026-04-01..2026-11-08 outcomes were already read by earlier bars studies / fresh holdouts and by the cell statuses of the clean-model proposal (which used all rows through 2026-11); this is the first ranking of them under the v7 rules, not untouched proof",
+ "pool_rows": 477,
+ "holdout_rows_valued": 5133,
+ "tiers": {
+  "T1_BEST_VALUE": {
+   "bets": 97,
+   "hit_rate": 0.4639,
+   "roi": -0.1665,
+   "ci95": [
+    -0.36,
+    0.0218
+   ],
+   "mean_odds": 1.953,
+   "clv": 0.0097,
+   "clv_n": 97,
+   "mean_cal_ev": 0.1005
+  },
+  "T2_SAFEST": {
+   "bets": 65,
+   "hit_rate": 0.6308,
+   "roi": -0.0937,
+   "ci95": [
+    -0.2761,
+    0.0887
+   ],
+   "mean_odds": 1.581,
+   "clv": -0.0008,
+   "clv_n": 65,
+   "mean_cal_ev": 0.0183
+  },
+  "T3_RISKY_VALUE": {
+   "bets": 19,
+   "hit_rate": 0.1053,
+   "roi": -0.6737,
+   "ci95": [
+    -1.1168,
+    -0.18
+   ],
+   "mean_odds": 3.13,
+   "clv": -0.0123,
+   "clv_n": 19,
+   "mean_cal_ev": 0.1055
+  }
+ },
+ "per_league": {
+  "new_format|Austrian Bundesliga": {
+   "T1_BEST_VALUE": {
+    "bets": 17,
+    "hit_rate": 0.2941,
+    "roi": -0.2671,
+    "ci95": [
+     -0.8471,
+     0.3218
+    ],
+    "mean_odds": 2.634,
+    "clv": -0.0136,
+    "clv_n": 17,
+    "mean_cal_ev": 0.1933
+   },
+   "T2_SAFEST": {
+    "bets": 9,
+    "hit_rate": 0.2222,
+    "roi": -0.5167,
+    "ci95": [
+     -1.1459,
+     0.1889
+    ],
+    "mean_odds": 2.282,
+    "clv": -0.0032,
+    "clv_n": 9,
+    "mean_cal_ev": 0.0514
+   },
+   "T3_RISKY_VALUE": {
+    "bets": 0
+   },
+   "combined": {
+    "bets": 26,
+    "hit_rate": 0.2692,
+    "roi": -0.3535,
+    "ci95": [
+     -0.7729,
+     0.0659
+    ],
+    "mean_odds": 2.512,
+    "clv": -0.01,
+    "clv_n": 26,
+    "mean_cal_ev": 0.1442
+   }
+  },
+  "new_format|Brazil Serie A": {
+   "T1_BEST_VALUE": {
+    "bets": 2,
+    "hit_rate": 0.0,
+    "roi": -1.0,
+    "ci95": [
+     -1.0,
+     -1.0
+    ],
+    "mean_odds": 2.24,
+    "clv": 0.0091,
+    "clv_n": 2,
+    "mean_cal_ev": 0.0111
+   },
+   "T2_SAFEST": {
+    "bets": 0
+   },
+   "T3_RISKY_VALUE": {
+    "bets": 0
+   },
+   "combined": {
+    "bets": 2,
+    "hit_rate": 0.0,
+    "roi": -1.0,
+    "ci95": [
+     -1.0,
+     -1.0
+    ],
+    "mean_odds": 2.24,
+    "clv": 0.0091,
+    "clv_n": 2,
+    "mean_cal_ev": 0.0111
+   }
+  },
+  "new_format|Denmark Superliga": {
+   "T1_BEST_VALUE": {
+    "bets": 17,
+    "hit_rate": 0.5882,
+    "roi": -0.0212,
+    "ci95": [
+     -0.4247,
+     0.3823
+    ],
+    "mean_odds": 1.681,
+    "clv": 0.0222,
+    "clv_n": 17,
+    "mean_cal_ev": 0.0156
+   },
+   "T2_SAFEST": {
+    "bets": 14,
+    "hit_rate": 0.7857,
+    "roi": 0.2321,
+    "ci95": [
+     -0.1191,
+     0.5834
+    ],
+    "mean_odds": 1.579,
+    "clv": 0.008,
+    "clv_n": 14,
+    "mean_cal_ev": 0.0058
+   },
+   "T3_RISKY_VALUE": {
+    "bets": 0
+   },
+   "combined": {
+    "bets": 31,
+    "hit_rate": 0.6774,
+    "roi": 0.0932,
+    "ci95": [
+     -0.1784,
+     0.3649
+    ],
+    "mean_odds": 1.635,
+    "clv": 0.0158,
+    "clv_n": 31,
+    "mean_cal_ev": 0.0111
+   }
+  },
+  "new_format|Finland Veikkausliiga": {
+   "T1_BEST_VALUE": {
+    "bets": 25,
+    "hit_rate": 0.36,
+    "roi": -0.328,
+    "ci95": [
+     -0.6887,
+     0.0327
+    ],
+    "mean_odds": 1.936,
+    "clv": 0.0158,
+    "clv_n": 25,
+    "mean_cal_ev": 0.2173
+   },
+   "T2_SAFEST": {
+    "bets": 25,
+    "hit_rate": 0.76,
+    "roi": -0.1204,
+    "ci95": [
+     -0.3185,
+     0.0777
+    ],
+    "mean_odds": 1.165,
+    "clv": -0.008,
+    "clv_n": 25,
+    "mean_cal_ev": 0.0158
+   },
+   "T3_RISKY_VALUE": {
+    "bets": 18,
+    "hit_rate": 0.1111,
+    "roi": -0.6556,
+    "ci95": [
+     -1.1189,
+     -0.1433
+    ],
+    "mean_odds": 3.026,
+    "clv": -0.013,
+    "clv_n": 18,
+    "mean_cal_ev": 0.1092
+   },
+   "combined": {
+    "bets": 68,
+    "hit_rate": 0.4412,
+    "roi": -0.3384,
+    "ci95": [
+     -0.5485,
+     -0.1262
+    ],
+    "mean_odds": 1.941,
+    "clv": -0.0006,
+    "clv_n": 68,
+    "mean_cal_ev": 0.1146
+   }
+  },
+  "new_format|Japan J-League": {
+   "T1_BEST_VALUE": {
+    "bets": 10,
+    "hit_rate": 0.4,
+    "roi": -0.117,
+    "ci95": [
+     -0.8267,
+     0.5927
+    ],
+    "mean_odds": 2.139,
+    "clv": 0.0106,
+    "clv_n": 10,
+    "mean_cal_ev": 0.0326
+   },
+   "T2_SAFEST": {
+    "bets": 5,
+    "hit_rate": 0.4,
+    "roi": -0.124,
+    "ci95": [
+     -1.1755,
+     0.9275
+    ],
+    "mean_odds": 2.16,
+    "clv": 0.0357,
+    "clv_n": 5,
+    "mean_cal_ev": 0.0322
+   },
+   "T3_RISKY_VALUE": {
+    "bets": 0
+   },
+   "combined": {
+    "bets": 15,
+    "hit_rate": 0.4,
+    "roi": -0.1193,
+    "ci95": [
+     -0.7931,
+     0.5544
+    ],
+    "mean_odds": 2.146,
+    "clv": 0.019,
+    "clv_n": 15,
+    "mean_cal_ev": 0.0325
+   }
+  },
+  "new_format|Mexico Liga MX": {
+   "T1_BEST_VALUE": {
+    "bets": 2,
+    "hit_rate": 1.0,
+    "roi": 0.305,
+    "ci95": [
+     0.1972,
+     0.4128
+    ],
+    "mean_odds": 1.305,
+    "clv": 0.0,
+    "clv_n": 2,
+    "mean_cal_ev": 0.0155
+   },
+   "T2_SAFEST": {
+    "bets": 0
+   },
+   "T3_RISKY_VALUE": {
+    "bets": 0
+   },
+   "combined": {
+    "bets": 2,
+    "hit_rate": 1.0,
+    "roi": 0.305,
+    "ci95": [
+     0.1972,
+     0.4128
+    ],
+    "mean_odds": 1.305,
+    "clv": 0.0,
+    "clv_n": 2,
+    "mean_cal_ev": 0.0155
+   }
+  },
+  "standard|Belgian First Division A": {
+   "T1_BEST_VALUE": {
+    "bets": 4,
+    "hit_rate": 0.5,
+    "roi": -0.3325,
+    "ci95": [
+     -1.0881,
+     0.4231
+    ],
+    "mean_odds": 1.33,
+    "clv": 0.0041,
+    "clv_n": 4,
+    "mean_cal_ev": 0.007
+   },
+   "T2_SAFEST": {
+    "bets": 0
+   },
+   "T3_RISKY_VALUE": {
+    "bets": 0
+   },
+   "combined": {
+    "bets": 4,
+    "hit_rate": 0.5,
+    "roi": -0.3325,
+    "ci95": [
+     -1.0881,
+     0.4231
+    ],
+    "mean_odds": 1.33,
+    "clv": 0.0041,
+    "clv_n": 4,
+    "mean_cal_ev": 0.007
+   }
+  },
+  "standard|Dutch Eredivisie": {
+   "T1_BEST_VALUE": {
+    "bets": 9,
+    "hit_rate": 0.6667,
+    "roi": 0.1589,
+    "ci95": [
+     -0.4237,
+     0.7415
+    ],
+    "mean_odds": 1.779,
+    "clv": 0.0059,
+    "clv_n": 9,
+    "mean_cal_ev": 0.0095
+   },
+   "T2_SAFEST": {
+    "bets": 4,
+    "hit_rate": 0.25,
+    "roi": -0.505,
+    "ci95": [
+     -1.4752,
+     0.485
+    ],
+    "mean_odds": 1.94,
+    "clv": -0.0602,
+    "clv_n": 4,
+    "mean_cal_ev": 0.0047
+   },
+   "T3_RISKY_VALUE": {
+    "bets": 0
+   },
+   "combined": {
+    "bets": 13,
+    "hit_rate": 0.5385,
+    "roi": -0.0454,
+    "ci95": [
+     -0.5544,
+     0.4667
+    ],
+    "mean_odds": 1.828,
+    "clv": -0.0144,
+    "clv_n": 13,
+    "mean_cal_ev": 0.008
+   }
+  },
+  "standard|Serie B": {
+   "T1_BEST_VALUE": {
+    "bets": 11,
+    "hit_rate": 0.6364,
+    "roi": -0.0536,
+    "ci95": [
+     -0.5117,
+     0.4044
+    ],
+    "mean_odds": 1.624,
+    "clv": 0.0188,
+    "clv_n": 11,
+    "mean_cal_ev": 0.0246
+   },
+   "T2_SAFEST": {
+    "bets": 8,
+    "hit_rate": 0.75,
+    "roi": 0.12,
+    "ci95": [
+     -0.3898,
+     0.6298
+    ],
+    "mean_odds": 1.559,
+    "clv": 0.0159,
+    "clv_n": 8,
+    "mean_cal_ev": 0.0094
+   },
+   "T3_RISKY_VALUE": {
+    "bets": 1,
+    "hit_rate": 0.0,
+    "roi": -1.0,
+    "ci95": [
+     null,
+     null
+    ],
+    "mean_odds": 5.0,
+    "clv": 0.0,
+    "clv_n": 1,
+    "mean_cal_ev": 0.039
+   },
+   "combined": {
+    "bets": 20,
+    "hit_rate": 0.65,
+    "roi": -0.0315,
+    "ci95": [
+     -0.4442,
+     0.3812
+    ],
+    "mean_odds": 1.766,
+    "clv": 0.0167,
+    "clv_n": 20,
+    "mean_cal_ev": 0.0193
+   }
+  }
+ },
+ "combined": {
+  "bets": 181,
+  "hit_rate": 0.4862,
+  "roi": -0.1936,
+  "ci95": [
+   -0.3232,
+   -0.064
+  ],
+  "mean_odds": 1.943,
+  "clv": 0.0036,
+  "clv_n": 181,
+  "mean_cal_ev": 0.0715
+ },
+ "by_stake": {
+  "STAKE": {
+   "bets": 43,
+   "hit_rate": 0.2558,
+   "roi": -0.4651,
+   "ci95": [
+    -0.7674,
+    -0.1629
+   ],
+   "mean_odds": 2.392,
+   "clv": 0.0038,
+   "clv_n": 43,
+   "mean_cal_ev": 0.172
+  },
+  "PAPER": {
+   "bets": 138,
+   "hit_rate": 0.558,
+   "roi": -0.109,
+   "ci95": [
+    -0.2513,
+    0.0333
+   ],
+   "mean_odds": 1.803,
+   "clv": 0.0036,
+   "clv_n": 138,
+   "mean_cal_ev": 0.0402
+  }
+ },
+ "v6_r2": {
+  "combined": {
+   "bets": 702,
+   "hit_rate": 0.5,
+   "roi": -0.0852,
+   "ci95": [
+    -0.1775,
+    0.0097
+   ],
+   "mean_odds": 1.996,
+   "clv": -0.0035,
+   "clv_n": 701,
+   "mean_cal_ev": 0.0021
+  },
+  "per_league": {
+   "new_format|Argentina Primera Division": {
+    "bets": 57,
+    "hit_rate": 0.6842,
+    "roi": 0.0502,
+    "ci95": [
+     -0.1407,
+     0.241
+    ],
+    "mean_odds": 1.531,
+    "clv": -0.0094,
+    "clv_n": 56,
+    "mean_cal_ev": -0.0291
+   },
+   "new_format|Austrian Bundesliga": {
+    "bets": 31,
+    "hit_rate": 0.2903,
+    "roi": -0.31,
+    "ci95": [
+     -0.6986,
+     0.0904
+    ],
+    "mean_odds": 2.55,
+    "clv": -0.008,
+    "clv_n": 31,
+    "mean_cal_ev": 0.1413
+   },
+   "new_format|Brazil Serie A": {
+    "bets": 69,
+    "hit_rate": 0.6377,
+    "roi": -0.0154,
+    "ci95": [
+     -0.2181,
+     0.1904
+    ],
+    "mean_odds": 1.639,
+    "clv": -0.0096,
+    "clv_n": 69,
+    "mean_cal_ev": -0.0176
+   },
+   "new_format|Denmark Superliga": {
+    "bets": 58,
+    "hit_rate": 0.6379,
+    "roi": 0.0378,
+    "ci95": [
+     -0.2185,
+     0.294
+    ],
+    "mean_odds": 1.65,
+    "clv": 0.0089,
+    "clv_n": 58,
+    "mean_cal_ev": 0.005
+   },
+   "new_format|Finland Veikkausliiga": {
+    "bets": 75,
+    "hit_rate": 0.3733,
+    "roi": -0.3156,
+    "ci95": [
+     -0.5455,
+     -0.0857
+    ],
+    "mean_odds": 1.886,
+    "clv": 0.001,
+    "clv_n": 75,
+    "mean_cal_ev": 0.1819
+   },
+   "new_format|Japan J-League": {
+    "bets": 29,
+    "hit_rate": 0.3793,
+    "roi": -0.1803,
+    "ci95": [
+     -0.6017,
+     0.241
+    ],
+    "mean_odds": 2.123,
+    "clv": 0.0146,
+    "clv_n": 29,
+    "mean_cal_ev": 0.0096
+   },
+   "new_format|K-League 1": {
+    "bets": 19,
+    "hit_rate": 0.5789,
+    "roi": -0.1853,
+    "ci95": [
+     -0.5272,
+     0.1567
+    ],
+    "mean_odds": 1.409,
+    "clv": -0.0055,
+    "clv_n": 19,
+    "mean_cal_ev": -0.0315
+   },
+   "new_format|Mexico Liga MX": {
+    "bets": 29,
+    "hit_rate": 0.4138,
+    "roi": -0.2655,
+    "ci95": [
+     -0.6152,
+     0.1024
+    ],
+    "mean_odds": 1.812,
+    "clv": -0.0082,
+    "clv_n": 29,
+    "mean_cal_ev": -0.0081
+   },
+   "new_format|Norway Eliteserien": {
+    "bets": 51,
+    "hit_rate": 0.451,
+    "roi": -0.1567,
+    "ci95": [
+     -0.4793,
+     0.1659
+    ],
+    "mean_odds": 1.887,
+    "clv": 0.0015,
+    "clv_n": 51,
+    "mean_cal_ev": -0.0202
+   },
+   "new_format|Romanian Superliga": {
+    "bets": 20,
+    "hit_rate": 0.45,
+    "roi": 0.12,
+    "ci95": [
+     -0.4848,
+     0.7377
+    ],
+    "mean_odds": 2.772,
+    "clv": 0.0231,
+    "clv_n": 20,
+    "mean_cal_ev": NaN
+   },
+   "new_format|Saudi Pro League": {
+    "bets": 9,
+    "hit_rate": 0.7778,
+    "roi": 0.4167,
+    "ci95": [
+     -0.218,
+     1.0513
+    ],
+    "mean_odds": 1.862,
+    "clv": -0.0323,
+    "clv_n": 9,
+    "mean_cal_ev": NaN
+   },
+   "new_format|Sweden Allsvenskan": {
+    "bets": 55,
+    "hit_rate": 0.4909,
+    "roi": 0.0191,
+    "ci95": [
+     -0.3058,
+     0.3367
+    ],
+    "mean_odds": 2.082,
+    "clv": -0.0158,
+    "clv_n": 55,
+    "mean_cal_ev": -0.0637
+   },
+   "new_format|USA MLS": {
+    "bets": 57,
+    "hit_rate": 0.193,
+    "roi": -0.4758,
+    "ci95": [
+     -0.7736,
+     -0.178
+    ],
+    "mean_odds": 2.741,
+    "clv": -0.0364,
+    "clv_n": 57,
+    "mean_cal_ev": -0.0916
+   },
+   "standard|Belgian First Division A": {
+    "bets": 11,
+    "hit_rate": 0.8182,
+    "roi": 0.0736,
+    "ci95": [
+     -0.2782,
+     0.3947
+    ],
+    "mean_odds": 1.315,
+    "clv": 0.0039,
+    "clv_n": 11,
+    "mean_cal_ev": -0.0016
+   },
+   "standard|Championship": {
+    "bets": 9,
+    "hit_rate": 0.8889,
+    "roi": 0.1978,
+    "ci95": [
+     -0.2272,
+     0.5089
+    ],
+    "mean_odds": 1.346,
+    "clv": 0.0169,
+    "clv_n": 9,
+    "mean_cal_ev": -0.0279
+   },
+   "standard|Dutch Eredivisie": {
+    "bets": 45,
+    "hit_rate": 0.5111,
+    "roi": -0.0424,
+    "ci95": [
+     -0.3323,
+     0.2471
+    ],
+    "mean_odds": 1.922,
+    "clv": -0.0158,
+    "clv_n": 45,
+    "mean_cal_ev": -0.0059
+   },
+   "standard|Greek Super League": {
+    "bets": 13,
+    "hit_rate": 0.5385,
+    "roi": 0.2962,
+    "ci95": [
+     -0.5963,
+     1.1886
+    ],
+    "mean_odds": 2.346,
+    "clv": 0.0038,
+    "clv_n": 13,
+    "mean_cal_ev": -0.0548
+   },
+   "standard|La Liga 2": {
+    "bets": 17,
+    "hit_rate": 0.4706,
+    "roi": 0.49,
+    "ci95": [
+     -0.5616,
+     1.5416
+    ],
+    "mean_odds": 3.474,
+    "clv": 0.0236,
+    "clv_n": 17,
+    "mean_cal_ev": -0.0983
+   },
+   "standard|League One": {
+    "bets": 6,
+    "hit_rate": 0.5,
+    "roi": 0.125,
+    "ci95": [
+     -1.0,
+     1.114
+    ],
+    "mean_odds": 2.375,
+    "clv": 0.0062,
+    "clv_n": 6,
+    "mean_cal_ev": -0.0889
+   },
+   "standard|Ligue 2": {
+    "bets": 15,
+    "hit_rate": 0.7333,
+    "roi": 0.0147,
+    "ci95": [
+     -0.3618,
+     0.3912
+    ],
+    "mean_odds": 1.438,
+    "clv": 0.0137,
+    "clv_n": 15,
+    "mean_cal_ev": -0.0232
+   },
+   "standard|Serie B": {
+    "bets": 27,
+    "hit_rate": 0.5185,
+    "roi": 0.0011,
+    "ci95": [
+     -0.4376,
+     0.4398
+    ],
+    "mean_odds": 2.459,
+    "clv": 0.0311,
+    "clv_n": 27,
+    "mean_cal_ev": 0.0036
+   }
+  }
+ },
+ "shortfall": {
+  "all_league_weeks": {
+   "3": 19,
+   "2": 46,
+   "1": 32,
+   "0": 927,
+   "league_weeks": 1024
+  },
+  "league_weeks_with_fixtures": {
+   "3": 19,
+   "2": 46,
+   "1": 32,
+   "0": 585,
+   "league_weeks": 682
+  },
+  "cause_counts_all": {
+   "NO_FIXTURES": 342,
+   "NO_POSITIVE_EV": 263,
+   "ALL_CELLS_OFF": 207,
+   "NO_PRICE": 139,
+   "T3_NO_THRESHOLD": 21,
+   "NO_CALIBRATION": 19,
+   "T3_BAND_EMPTY": 12,
+   "NO_MODEL": 2
+  },
+  "cause_counts_with_fixtures": {
+   "NO_POSITIVE_EV": 263,
+   "ALL_CELLS_OFF": 207,
+   "NO_PRICE": 139,
+   "T3_NO_THRESHOLD": 21,
+   "NO_CALIBRATION": 19,
+   "T3_BAND_EMPTY": 12,
+   "NO_MODEL": 2
+  },
+  "per_league": {
+   "new_format|Argentina Primera Division": {
+    "weeks": 32,
+    "weeks_with_fixtures": 24,
+    "tips_share_with_fixtures": {
+     "3": 0,
+     "2": 0,
+     "1": 0,
+     "0": 24,
+     "league_weeks": 24
+    },
+    "mean_tips_per_week_with_fixtures": 0.0,
+    "causes": {
+     "NO_POSITIVE_EV": 16,
+     "NO_PRICE": 8
+    },
+    "slots": {
+     "slots": 317,
+     "slots_no_model": 0,
+     "slots_no_price": 127,
+     "slots_no_lam": 0,
+     "slots_no_value": 190,
+     "value_slots": 0
+    }
+   },
+   "new_format|Austrian Bundesliga": {
+    "weeks": 32,
+    "weeks_with_fixtures": 21,
+    "tips_share_with_fixtures": {
+     "3": 0,
+     "2": 9,
+     "1": 8,
+     "0": 4,
+     "league_weeks": 21
+    },
+    "mean_tips_per_week_with_fixtures": 1.238,
+    "causes": {
+     "NO_POSITIVE_EV": 11,
+     "NO_PRICE": 6,
+     "T3_NO_THRESHOLD": 4
+    },
+    "slots": {
+     "slots": 117,
+     "slots_no_model": 0,
+     "slots_no_price": 30,
+     "slots_no_lam": 0,
+     "slots_no_value": 55,
+     "value_slots": 32
+    }
+   },
+   "new_format|Brazil Serie A": {
+    "weeks": 32,
+    "weeks_with_fixtures": 25,
+    "tips_share_with_fixtures": {
+     "3": 0,
+     "2": 0,
+     "1": 2,
+     "0": 23,
+     "league_weeks": 25
+    },
+    "mean_tips_per_week_with_fixtures": 0.08,
+    "causes": {
+     "NO_POSITIVE_EV": 19,
+     "NO_PRICE": 6
+    },
+    "slots": {
+     "slots": 522,
+     "slots_no_model": 0,
+     "slots_no_price": 172,
+     "slots_no_lam": 0,
+     "slots_no_value": 348,
+     "value_slots": 2
+    }
+   },
+   "new_format|China Super League": {
+    "weeks": 32,
+    "weeks_with_fixtures": 25,
+    "tips_share_with_fixtures": {
+     "3": 0,
+     "2": 0,
+     "1": 0,
+     "0": 25,
+     "league_weeks": 25
+    },
+    "mean_tips_per_week_with_fixtures": 0.0,
+    "causes": {
+     "ALL_CELLS_OFF": 25
+    },
+    "slots": {
+     "slots": 0,
+     "slots_no_model": 0,
+     "slots_no_price": 0,
+     "slots_no_lam": 0,
+     "slots_no_value": 0,
+     "value_slots": 0
+    }
+   },
+   "new_format|Denmark Superliga": {
+    "weeks": 32,
+    "weeks_with_fixtures": 22,
+    "tips_share_with_fixtures": {
+     "3": 0,
+     "2": 14,
+     "1": 3,
+     "0": 5,
+     "league_weeks": 22
+    },
+    "mean_tips_per_week_with_fixtures": 1.409,
+    "causes": {
+     "T3_NO_THRESHOLD": 12,
+     "NO_POSITIVE_EV": 6,
+     "NO_PRICE": 4
+    },
+    "slots": {
+     "slots": 508,
+     "slots_no_model": 0,
+     "slots_no_price": 193,
+     "slots_no_lam": 0,
+     "slots_no_value": 267,
+     "value_slots": 48
+    }
+   },
+   "new_format|Finland Veikkausliiga": {
+    "weeks": 32,
+    "weeks_with_fixtures": 28,
+    "tips_share_with_fixtures": {
+     "3": 18,
+     "2": 7,
+     "1": 0,
+     "0": 3,
+     "league_weeks": 28
+    },
+    "mean_tips_per_week_with_fixtures": 2.429,
+    "causes": {
+     "T3_BAND_EMPTY": 7,
+     "NO_PRICE": 3
+    },
+    "slots": {
+     "slots": 704,
+     "slots_no_model": 4,
+     "slots_no_price": 283,
+     "slots_no_lam": 0,
+     "slots_no_value": 107,
+     "value_slots": 310
+    }
+   },
+   "new_format|Ireland Premier Division": {
+    "weeks": 32,
+    "weeks_with_fixtures": 28,
+    "tips_share_with_fixtures": {
+     "3": 0,
+     "2": 0,
+     "1": 0,
+     "0": 28,
+     "league_weeks": 28
+    },
+    "mean_tips_per_week_with_fixtures": 0.0,
+    "causes": {
+     "ALL_CELLS_OFF": 28
+    },
+    "slots": {
+     "slots": 0,
+     "slots_no_model": 0,
+     "slots_no_price": 0,
+     "slots_no_lam": 0,
+     "slots_no_value": 0,
+     "value_slots": 0
+    }
+   },
+   "new_format|Japan J-League": {
+    "weeks": 32,
+    "weeks_with_fixtures": 21,
+    "tips_share_with_fixtures": {
+     "3": 0,
+     "2": 5,
+     "1": 5,
+     "0": 11,
+     "league_weeks": 21
+    },
+    "mean_tips_per_week_with_fixtures": 0.714,
+    "causes": {
+     "NO_PRICE": 12,
+     "NO_POSITIVE_EV": 7,
+     "T3_NO_THRESHOLD": 2
+    },
+    "slots": {
+     "slots": 249,
+     "slots_no_model": 2,
+     "slots_no_price": 160,
+     "slots_no_lam": 0,
+     "slots_no_value": 69,
+     "value_slots": 18
+    }
+   },
+   "new_format|K-League 1": {
+    "weeks": 32,
+    "weeks_with_fixtures": 16,
+    "tips_share_with_fixtures": {
+     "3": 0,
+     "2": 0,
+     "1": 0,
+     "0": 16,
+     "league_weeks": 16
+    },
+    "mean_tips_per_week_with_fixtures": 0.0,
+    "causes": {
+     "NO_PRICE": 11,
+     "NO_POSITIVE_EV": 5
+    },
+    "slots": {
+     "slots": 126,
+     "slots_no_model": 0,
+     "slots_no_price": 83,
+     "slots_no_lam": 0,
+     "slots_no_value": 43,
+     "value_slots": 0
+    }
+   },
+   "new_format|Mexico Liga MX": {
+    "weeks": 32,
+    "weeks_with_fixtures": 26,
+    "tips_share_with_fixtures": {
+     "3": 0,
+     "2": 0,
+     "1": 2,
+     "0": 24,
+     "league_weeks": 26
+    },
+    "mean_tips_per_week_with_fixtures": 0.077,
+    "causes": {
+     "NO_POSITIVE_EV": 18,
+     "NO_PRICE": 8
+    },
+    "slots": {
+     "slots": 388,
+     "slots_no_model": 2,
+     "slots_no_price": 119,
+     "slots_no_lam": 0,
+     "slots_no_value": 265,
+     "value_slots": 2
+    }
+   },
+   "new_format|Norway Eliteserien": {
+    "weeks": 32,
+    "weeks_with_fixtures": 22,
+    "tips_share_with_fixtures": {
+     "3": 0,
+     "2": 0,
+     "1": 0,
+     "0": 22,
+     "league_weeks": 22
+    },
+    "mean_tips_per_week_with_fixtures": 0.0,
+    "causes": {
+     "NO_POSITIVE_EV": 12,
+     "NO_PRICE": 10
+    },
+    "slots": {
+     "slots": 561,
+     "slots_no_model": 0,
+     "slots_no_price": 263,
+     "slots_no_lam": 0,
+     "slots_no_value": 298,
+     "value_slots": 0
+    }
+   },
+   "new_format|Romanian Superliga": {
+    "weeks": 32,
+    "weeks_with_fixtures": 26,
+    "tips_share_with_fixtures": {
+     "3": 0,
+     "2": 0,
+     "1": 0,
+     "0": 26,
+     "league_weeks": 26
+    },
+    "mean_tips_per_week_with_fixtures": 0.0,
+    "causes": {
+     "NO_PRICE": 17,
+     "NO_CALIBRATION": 9
+    },
+    "slots": {
+     "slots": 531,
+     "slots_no_model": 3,
+     "slots_no_price": 372,
+     "slots_no_lam": 156,
+     "slots_no_value": 0,
+     "value_slots": 0
+    }
+   },
+   "new_format|Saudi Pro League": {
+    "weeks": 32,
+    "weeks_with_fixtures": 12,
+    "tips_share_with_fixtures": {
+     "3": 0,
+     "2": 0,
+     "1": 0,
+     "0": 12,
+     "league_weeks": 12
+    },
+    "mean_tips_per_week_with_fixtures": 0.0,
+    "causes": {
+     "NO_PRICE": 7,
+     "NO_CALIBRATION": 5
+    },
+    "slots": {
+     "slots": 228,
+     "slots_no_model": 2,
+     "slots_no_price": 129,
+     "slots_no_lam": 97,
+     "slots_no_value": 0,
+     "value_slots": 0
+    }
+   },
+   "new_format|Sweden Allsvenskan": {
+    "weeks": 32,
+    "weeks_with_fixtures": 26,
+    "tips_share_with_fixtures": {
+     "3": 0,
+     "2": 0,
+     "1": 0,
+     "0": 26,
+     "league_weeks": 26
+    },
+    "mean_tips_per_week_with_fixtures": 0.0,
+    "causes": {
+     "NO_POSITIVE_EV": 17,
+     "NO_PRICE": 9
+    },
+    "slots": {
+     "slots": 864,
+     "slots_no_model": 0,
+     "slots_no_price": 371,
+     "slots_no_lam": 0,
+     "slots_no_value": 493,
+     "value_slots": 0
+    }
+   },
+   "new_format|USA MLS": {
+    "weeks": 32,
+    "weeks_with_fixtures": 26,
+    "tips_share_with_fixtures": {
+     "3": 0,
+     "2": 0,
+     "1": 0,
+     "0": 26,
+     "league_weeks": 26
+    },
+    "mean_tips_per_week_with_fixtures": 0.0,
+    "causes": {
+     "NO_POSITIVE_EV": 23,
+     "NO_PRICE": 3
+    },
+    "slots": {
+     "slots": 842,
+     "slots_no_model": 0,
+     "slots_no_price": 266,
+     "slots_no_lam": 0,
+     "slots_no_value": 576,
+     "value_slots": 0
+    }
+   },
+   "standard|Belgian First Division A": {
+    "weeks": 32,
+    "weeks_with_fixtures": 20,
+    "tips_share_with_fixtures": {
+     "3": 0,
+     "2": 0,
+     "1": 4,
+     "0": 16,
+     "league_weeks": 20
+    },
+    "mean_tips_per_week_with_fixtures": 0.2,
+    "causes": {
+     "NO_POSITIVE_EV": 14,
+     "NO_PRICE": 6
+    },
+    "slots": {
+     "slots": 171,
+     "slots_no_model": 2,
+     "slots_no_price": 56,
+     "slots_no_lam": 0,
+     "slots_no_value": 109,
+     "value_slots": 4
+    }
+   },
+   "standard|Bundesliga 2": {
+    "weeks": 32,
+    "weeks_with_fixtures": 19,
+    "tips_share_with_fixtures": {
+     "3": 0,
+     "2": 0,
+     "1": 0,
+     "0": 19,
+     "league_weeks": 19
+    },
+    "mean_tips_per_week_with_fixtures": 0.0,
+    "causes": {
+     "ALL_CELLS_OFF": 19
+    },
+    "slots": {
+     "slots": 0,
+     "slots_no_model": 0,
+     "slots_no_price": 0,
+     "slots_no_lam": 0,
+     "slots_no_value": 0,
+     "value_slots": 0
+    }
+   },
+   "standard|Championship": {
+    "weeks": 32,
+    "weeks_with_fixtures": 19,
+    "tips_share_with_fixtures": {
+     "3": 0,
+     "2": 0,
+     "1": 0,
+     "0": 19,
+     "league_weeks": 19
+    },
+    "mean_tips_per_week_with_fixtures": 0.0,
+    "causes": {
+     "NO_POSITIVE_EV": 14,
+     "NO_PRICE": 5
+    },
+    "slots": {
+     "slots": 516,
+     "slots_no_model": 8,
+     "slots_no_price": 189,
+     "slots_no_lam": 0,
+     "slots_no_value": 319,
+     "value_slots": 0
+    }
+   },
+   "standard|Dutch Eredivisie": {
+    "weeks": 32,
+    "weeks_with_fixtures": 18,
+    "tips_share_with_fixtures": {
+     "3": 0,
+     "2": 4,
+     "1": 5,
+     "0": 9,
+     "league_weeks": 18
+    },
+    "mean_tips_per_week_with_fixtures": 0.722,
+    "causes": {
+     "NO_POSITIVE_EV": 14,
+     "T3_NO_THRESHOLD": 3,
+     "NO_PRICE": 1
+    },
+    "slots": {
+     "slots": 156,
+     "slots_no_model": 0,
+     "slots_no_price": 5,
+     "slots_no_lam": 0,
+     "slots_no_value": 129,
+     "value_slots": 22
+    }
+   },
+   "standard|Greek Super League": {
+    "weeks": 32,
+    "weeks_with_fixtures": 18,
+    "tips_share_with_fixtures": {
+     "3": 0,
+     "2": 0,
+     "1": 0,
+     "0": 18,
+     "league_weeks": 18
+    },
+    "mean_tips_per_week_with_fixtures": 0.0,
+    "causes": {
+     "NO_POSITIVE_EV": 17,
+     "NO_PRICE": 1
+    },
+    "slots": {
+     "slots": 116,
+     "slots_no_model": 2,
+     "slots_no_price": 8,
+     "slots_no_lam": 0,
+     "slots_no_value": 106,
+     "value_slots": 0
+    }
+   },
+   "standard|La Liga 2": {
+    "weeks": 32,
+    "weeks_with_fixtures": 25,
+    "tips_share_with_fixtures": {
+     "3": 0,
+     "2": 0,
+     "1": 0,
+     "0": 25,
+     "league_weeks": 25
+    },
+    "mean_tips_per_week_with_fixtures": 0.0,
+    "causes": {
+     "NO_POSITIVE_EV": 23,
+     "NO_PRICE": 2
+    },
+    "slots": {
+     "slots": 488,
+     "slots_no_model": 6,
+     "slots_no_price": 47,
+     "slots_no_lam": 0,
+     "slots_no_value": 435,
+     "value_slots": 0
+    }
+   },
+   "standard|League One": {
+    "weeks": 32,
+    "weeks_with_fixtures": 21,
+    "tips_share_with_fixtures": {
+     "3": 0,
+     "2": 0,
+     "1": 0,
+     "0": 21,
+     "league_weeks": 21
+    },
+    "mean_tips_per_week_with_fixtures": 0.0,
+    "causes": {
+     "NO_POSITIVE_EV": 20,
+     "NO_PRICE": 1
+    },
+    "slots": {
+     "slots": 249,
+     "slots_no_model": 2,
+     "slots_no_price": 2,
+     "slots_no_lam": 0,
+     "slots_no_value": 245,
+     "value_slots": 0
+    }
+   },
+   "standard|League Two": {
+    "weeks": 32,
+    "weeks_with_fixtures": 21,
+    "tips_share_with_fixtures": {
+     "3": 0,
+     "2": 0,
+     "1": 0,
+     "0": 21,
+     "league_weeks": 21
+    },
+    "mean_tips_per_week_with_fixtures": 0.0,
+    "causes": {
+     "ALL_CELLS_OFF": 21
+    },
+    "slots": {
+     "slots": 0,
+     "slots_no_model": 0,
+     "slots_no_price": 0,
+     "slots_no_lam": 0,
+     "slots_no_value": 0,
+     "value_slots": 0
+    }
+   },
+   "standard|Ligue 2": {
+    "weeks": 32,
+    "weeks_with_fixtures": 20,
+    "tips_share_with_fixtures": {
+     "3": 0,
+     "2": 0,
+     "1": 0,
+     "0": 20,
+     "league_weeks": 20
+    },
+    "mean_tips_per_week_with_fixtures": 0.0,
+    "causes": {
+     "NO_POSITIVE_EV": 18,
+     "NO_PRICE": 1,
+     "NO_MODEL": 1
+    },
+    "slots": {
+     "slots": 314,
+     "slots_no_model": 4,
+     "slots_no_price": 42,
+     "slots_no_lam": 0,
+     "slots_no_value": 268,
+     "value_slots": 0
+    }
+   },
+   "standard|National League": {
+    "weeks": 32,
+    "weeks_with_fixtures": 18,
+    "tips_share_with_fixtures": {
+     "3": 0,
+     "2": 0,
+     "1": 0,
+     "0": 18,
+     "league_weeks": 18
+    },
+    "mean_tips_per_week_with_fixtures": 0.0,
+    "causes": {
+     "ALL_CELLS_OFF": 18
+    },
+    "slots": {
+     "slots": 0,
+     "slots_no_model": 0,
+     "slots_no_price": 0,
+     "slots_no_lam": 0,
+     "slots_no_value": 0,
+     "value_slots": 0
+    }
+   },
+   "standard|Portuguese Primeira Liga": {
+    "weeks": 32,
+    "weeks_with_fixtures": 21,
+    "tips_share_with_fixtures": {
+     "3": 0,
+     "2": 0,
+     "1": 0,
+     "0": 21,
+     "league_weeks": 21
+    },
+    "mean_tips_per_week_with_fixtures": 0.0,
+    "causes": {
+     "NO_PRICE": 15,
+     "NO_CALIBRATION": 5,
+     "NO_MODEL": 1
+    },
+    "slots": {
+     "slots": 157,
+     "slots_no_model": 2,
+     "slots_no_price": 114,
+     "slots_no_lam": 41,
+     "slots_no_value": 0,
+     "value_slots": 0
+    }
+   },
+   "standard|Scottish Championship": {
+    "weeks": 32,
+    "weeks_with_fixtures": 20,
+    "tips_share_with_fixtures": {
+     "3": 0,
+     "2": 0,
+     "1": 0,
+     "0": 20,
+     "league_weeks": 20
+    },
+    "mean_tips_per_week_with_fixtures": 0.0,
+    "causes": {
+     "ALL_CELLS_OFF": 20
+    },
+    "slots": {
+     "slots": 0,
+     "slots_no_model": 0,
+     "slots_no_price": 0,
+     "slots_no_lam": 0,
+     "slots_no_value": 0,
+     "value_slots": 0
+    }
+   },
+   "standard|Scottish League One": {
+    "weeks": 32,
+    "weeks_with_fixtures": 20,
+    "tips_share_with_fixtures": {
+     "3": 0,
+     "2": 0,
+     "1": 0,
+     "0": 20,
+     "league_weeks": 20
+    },
+    "mean_tips_per_week_with_fixtures": 0.0,
+    "causes": {
+     "ALL_CELLS_OFF": 20
+    },
+    "slots": {
+     "slots": 0,
+     "slots_no_model": 0,
+     "slots_no_price": 0,
+     "slots_no_lam": 0,
+     "slots_no_value": 0,
+     "value_slots": 0
+    }
+   },
+   "standard|Scottish League Two": {
+    "weeks": 32,
+    "weeks_with_fixtures": 19,
+    "tips_share_with_fixtures": {
+     "3": 0,
+     "2": 0,
+     "1": 0,
+     "0": 19,
+     "league_weeks": 19
+    },
+    "mean_tips_per_week_with_fixtures": 0.0,
+    "causes": {
+     "ALL_CELLS_OFF": 19
+    },
+    "slots": {
+     "slots": 0,
+     "slots_no_model": 0,
+     "slots_no_price": 0,
+     "slots_no_lam": 0,
+     "slots_no_value": 0,
+     "value_slots": 0
+    }
+   },
+   "standard|Scottish Premiership": {
+    "weeks": 32,
+    "weeks_with_fixtures": 19,
+    "tips_share_with_fixtures": {
+     "3": 0,
+     "2": 0,
+     "1": 0,
+     "0": 19,
+     "league_weeks": 19
+    },
+    "mean_tips_per_week_with_fixtures": 0.0,
+    "causes": {
+     "ALL_CELLS_OFF": 19
+    },
+    "slots": {
+     "slots": 0,
+     "slots_no_model": 0,
+     "slots_no_price": 0,
+     "slots_no_lam": 0,
+     "slots_no_value": 0,
+     "value_slots": 0
+    }
+   },
+   "standard|Serie B": {
+    "weeks": 32,
+    "weeks_with_fixtures": 18,
+    "tips_share_with_fixtures": {
+     "3": 1,
+     "2": 7,
+     "1": 3,
+     "0": 7,
+     "league_weeks": 18
+    },
+    "mean_tips_per_week_with_fixtures": 1.111,
+    "causes": {
+     "NO_POSITIVE_EV": 9,
+     "T3_BAND_EMPTY": 5,
+     "NO_PRICE": 3
+    },
+    "slots": {
+     "slots": 513,
+     "slots_no_model": 6,
+     "slots_no_price": 55,
+     "slots_no_lam": 0,
+     "slots_no_value": 413,
+     "value_slots": 39
+    }
+   },
+   "standard|Turkish Super Lig": {
+    "weeks": 32,
+    "weeks_with_fixtures": 18,
+    "tips_share_with_fixtures": {
+     "3": 0,
+     "2": 0,
+     "1": 0,
+     "0": 18,
+     "league_weeks": 18
+    },
+    "mean_tips_per_week_with_fixtures": 0.0,
+    "causes": {
+     "ALL_CELLS_OFF": 18
+    },
+    "slots": {
+     "slots": 0,
+     "slots_no_model": 0,
+     "slots_no_price": 0,
+     "slots_no_lam": 0,
+     "slots_no_value": 0,
+     "value_slots": 0
+    }
+   }
+  }
+ }
+}
