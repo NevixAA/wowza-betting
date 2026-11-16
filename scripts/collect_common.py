@@ -25,6 +25,9 @@ from pathlib import Path
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in __import__("sys").path:          # src.integrity for the column-preserving merge
+    __import__("sys").path.insert(0, str(ROOT))
+from src.integrity.preserving_upsert import union_columns, upsert  # noqa: E402,F401  (re-exported)
 COLLECT_DIR = ROOT / "output" / "collect"
 BUDGET_FILE = COLLECT_DIR / "af_budget.json"
 BASE_URL = "https://v3.football.api-sports.io"
@@ -180,16 +183,21 @@ def append_parquet(path: Path, rows: list[dict], key: list[str], columns: list[s
     """Append `rows` to the parquet at `path` (created if absent), de-duplicated on `key` with the
     NEW row winning (`keep="first"`: the STORED row wins - an answer kept as first seen, the
     coaches / transfers refresh of fix8/history2). Returns the stored row count."""
+    # COLUMN-PRESERVING (2026-11-16): this was concat([old[columns], new]).drop_duplicates(key), so any
+    # stored column the caller does not list was dropped from the WHOLE file, and a re-answered row lost
+    # every non-listed cell. Now (src/integrity/preserving_upsert) no stored row or column is dropped:
+    # keep="last" -> the new answer replaces only the listed columns of its row; keep="first" -> the
+    # stored row is kept as it is; a new key is appended.
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     new = pd.DataFrame(rows, columns=columns)
     old = read_parquet(path)
     if not old.empty:
-        for c in columns:
-            if c not in old.columns:
-                old[c] = None
-        new = pd.concat([old[columns], new], ignore_index=True)
-    new = new.drop_duplicates(subset=key, keep=keep).reset_index(drop=True)
+        new, _ = upsert(old, new, key=list(key), owned=list(columns),
+                        mode="replace" if keep == "last" else "keep", new_keep=keep)
+    else:
+        new = new.drop_duplicates(subset=key, keep=keep)
+    new = new.reset_index(drop=True)
     tmp = path.with_suffix(".tmp.parquet")
     new.to_parquet(tmp, index=False)
     os.replace(tmp, path)

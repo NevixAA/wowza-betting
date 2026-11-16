@@ -235,6 +235,9 @@ RAW = {                # why the raw file is the right input
                                             "fixtures the served history lacks"),
     "scripts/build_score_conflicts.py": ("go-live R3: builds the score-conflict list FROM the raw rows (the other "
                                          "history lists applied, this one not)"),
+    "scripts/restore_af_history_provider_rows.py": ("2026-11-16: reads every COMMITTED version of the raw "
+                                                     "af_history (git) to restore the provider rows the loader "
+                                                     "write-back replaced, into a sidecar beside it"),
     "scripts/probe_oddsapi_history.py": ("P7: reads league / date only to pick one probe match day per "
                                          "league for the OddsAPI history probe (no result is served)"),
 }

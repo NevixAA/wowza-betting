@@ -42,7 +42,8 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from collect_common import COLLECT_DIR, AFClient, BudgetStop, append_parquet, history_frame, read_parquet  # noqa: E402
+from collect_common import (COLLECT_DIR, AFClient, BudgetStop, append_parquet, history_frame,  # noqa: E402
+                            read_parquet, union_columns)
 
 OUT = ROOT / "output" / "strength" / "competition_fixtures.parquet"
 JOURNAL = COLLECT_DIR / "competition_seasons.parquet"
@@ -153,7 +154,8 @@ def replace_upcoming(rows: list[dict], league_id: int, season: str, path: Path |
         same = (pd.to_numeric(old["league_id"], errors="coerce") == int(league_id)) &                (old["season"].astype(str) == str(season))
         old = old[~same]
     new = pd.DataFrame(rows, columns=UPCOMING_COLS)
-    out = pd.concat([old.reindex(columns=UPCOMING_COLS), new], ignore_index=True) if not old.empty else new
+    # column-preserving (2026-11-16): union, never reindex(columns=UPCOMING_COLS)
+    out = pd.concat([union_columns(old, UPCOMING_COLS), new], ignore_index=True) if not old.empty else new
     out = out.drop_duplicates("fixture_id", keep="last").reset_index(drop=True)
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = path.with_suffix(".tmp.parquet")

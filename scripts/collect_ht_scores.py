@@ -92,7 +92,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from collect_common import COLLECT_DIR, AFClient, BudgetStop, append_parquet, read_parquet  # noqa: E402
+from collect_common import COLLECT_DIR, AFClient, BudgetStop, append_parquet, read_parquet, union_columns  # noqa: E402
 
 HISTORY = ROOT / "output" / "fd_history.parquet"
 SCORES = COLLECT_DIR / "af_ht_scores.parquet"
@@ -608,7 +608,7 @@ def run(dry_run: bool = False, match_only: bool = False, client: AFClient | None
         # refuses (a second history row of another date claiming the same fixture) kept a stale
         # score, and an empty match result left the whole stored file untouched (Phase 2 HT repair,
         # 2026-11-03). Rows outside this run's scope (no longer lacking HT, season unknown) stay.
-        old = old[FILL_COLS].copy()
+        old = union_columns(old, FILL_COLS)      # column-preserving (2026-11-16): was old[FILL_COLS]
         seen = set(zip(lacking["league"].astype(str), pd.to_datetime(lacking["date"]),
                        lacking["home_team"].astype(str), lacking["away_team"].astype(str)))
         re_eval = pd.Series([k in seen for k in zip(old["league"].astype(str), pd.to_datetime(old["date"]),

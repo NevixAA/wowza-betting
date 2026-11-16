@@ -118,7 +118,16 @@ def run(dry_run: bool = False) -> dict:
         if newer.empty:
             out["rows_appended"][p] = 0
             continue
-        merged = pd.concat([ours, newer[[c for c in newer.columns if c in ours.columns]]], ignore_index=True)
+        # EVERY column main's rows carry (2026-11-16): this kept only the columns this branch's file
+        # already had, so a column main added (fixture_id from PR #34) was dropped from every synced row.
+        # This branch's rows are untouched; a column only main has is missing for them, never a default.
+        merged = pd.concat([ours, newer], ignore_index=True)
+        for c in ours.columns:                             # this branch's dtypes stay
+            if merged[c].dtype != ours[c].dtype:
+                try:
+                    merged[c] = merged[c].astype(ours[c].dtype)
+                except (TypeError, ValueError):
+                    pass
         merged.to_parquet(ROOT / p, index=False)
         side = newer[key].copy()
         side["source_commit"], side["synced_at"], side["file"] = pl["main"], now, p
