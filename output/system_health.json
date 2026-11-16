@@ -1,7 +1,7 @@
 {
  "about": "Canonical system health (src/system_health.build_artifact), written daily by evidence_refresh.yml. overall: FAIL if any RED check or protected_tracks_modified; WARN if any AMBER/NO_DATA; PASS otherwise. Every status comes from the rule stored beside it.",
  "artifact_version": "SYSTEM-HEALTH-1",
- "generated_at": "2026-11-16T16:31:00Z",
+ "generated_at": "2026-11-16T20:25:25Z",
  "overall": "WARN",
  "reasons": [
   "AMBER Data contracts: 3 new violation(s) in 3 of 14 files \u00b7 6 known historical (config/contract_baseline.json)",
@@ -17,7 +17,7 @@
   },
   "contracts_version": "CONTRACTS-1",
   "research_lock_digest": "521000edf970df8b4e9af0e640941570bee516c1c666d95dab25d5cb7cbc19a0",
-  "code_commit": "b7568a2c597e"
+  "code_commit": "a8d551719b70"
  },
  "counts": {
   "GREEN": 19,
@@ -29,7 +29,7 @@
   {
    "check": "Side-market routing",
    "status": "GREEN",
-   "value": "18 side tips, 0 unknown|*",
+   "value": "3 side tips, 0 unknown|*",
    "rule": "RED if any ACTIVE/ACTIVE_LOW policy track has tips and 100% map to UNSUPPORTED; GREEN otherwise",
    "detail": ""
   },
@@ -38,21 +38,21 @@
    "status": "GREEN",
    "value": "0.0% unmapped",
    "rule": "GREEN 0% of tips on unknown|* tracks, on an O/U side-less *_UNKNOWN_SIDE track or without odds; AMBER < 5%; RED >= 5%",
-   "detail": "generated 2026-11-16 06:21:48"
+   "detail": "generated 2026-11-16 18:25:17"
   },
   {
    "check": "Shadow settlement coverage",
    "status": "GREEN",
    "value": "97.7% (1056/1081)",
    "rule": "GREEN >= 95% of finished shadow rows settled; AMBER >= 80%; RED < 80%",
-   "detail": "as of 2026-11-16T05:48:58Z"
+   "detail": "as of 2026-11-16T17:16:45Z"
   },
   {
    "check": "Challenger prediction coverage",
    "status": "GREEN",
-   "value": "100% of 148 rows (p_pro_hgb)",
+   "value": "100% of 149 rows (p_pro_hgb)",
    "rule": "over rows logged in the last 7 days AND after the challenger experiment was registered (rows logged before a challenger existed cannot carry one): GREEN >= 90% carry a challenger probability; AMBER > 0%; RED 0%",
-   "detail": "window from 2026-11-09 16:31 UTC"
+   "detail": "window from 2026-11-09 20:25 UTC"
   },
   {
    "check": "Certified CLV coverage",
@@ -78,7 +78,7 @@
   {
    "check": "GitHub workflow health",
    "status": "GREEN",
-   "value": "0 still failing / 129 runs (24 h) \u00b7 3 fixed since",
+   "value": "0 still failing / 170 runs (24 h) \u00b7 4 fixed since",
    "rule": "workflows whose latest run on main (last 24 h, 3 repos) failed or timed out \u2014 failures a later success superseded and branch-only research runs do not count: GREEN 0; AMBER 1-2; RED >= 3 (record > 36 h old = AMBER)",
    "detail": ""
   },
@@ -155,7 +155,7 @@
   {
    "check": "Edge-engine shadow",
    "status": "GREEN",
-   "value": "market_edge_v2 UNVALIDATED_DEFAULTS, 580 rows, shadow_only=True, 10.2 h old",
+   "value": "market_edge_v2 UNVALIDATED_DEFAULTS, 592 rows, shadow_only=True, 2.0 h old",
    "rule": "RED if edge_engine_health.json is missing, older than 72 h, or shadow_only is not true (a shadow engine must never be live); AMBER if older than 24 h or it scored 0 rows; GREEN otherwise",
    "detail": ""
   },
@@ -191,7 +191,7 @@
     "schema": "PREDICTION_ROW",
     "schema_version": "1",
     "present": true,
-    "rows": 145,
+    "rows": 148,
     "n_violations": 0,
     "violations": []
    },
@@ -199,34 +199,34 @@
     "schema": "MARKET_SNAPSHOT_ROW",
     "schema_version": "1",
     "present": true,
-    "rows": 13649,
+    "rows": 15070,
     "n_violations": 4,
     "violations": [
      {
       "kind": "missing_column",
       "column": "minutes_to_kickoff",
-      "n_rows": 13649,
+      "n_rows": 15070,
       "detail": "required column absent",
       "examples": []
      },
      {
       "kind": "missing_column",
       "column": "overround",
-      "n_rows": 13649,
+      "n_rows": 15070,
       "detail": "required column absent",
       "examples": []
      },
      {
       "kind": "missing_column",
       "column": "opposite_odds",
-      "n_rows": 13649,
+      "n_rows": 15070,
       "detail": "required column absent",
       "examples": []
      },
      {
       "kind": "missing_column",
       "column": "source",
-      "n_rows": 13649,
+      "n_rows": 15070,
       "detail": "required column absent",
       "examples": []
      }
@@ -236,7 +236,7 @@
     "schema": "SELECTION_DECISION",
     "schema_version": "1",
     "present": true,
-    "rows": 2468,
+    "rows": 2480,
     "n_violations": 0,
     "violations": []
    },
@@ -244,13 +244,13 @@
     "schema": "V91_SHADOW_ROW",
     "schema_version": "1",
     "present": true,
-    "rows": 1227,
+    "rows": 1230,
     "n_violations": 1,
     "violations": [
      {
       "kind": "missing_column",
       "column": "p_v9_served",
-      "n_rows": 1227,
+      "n_rows": 1230,
       "detail": "required column absent",
       "examples": []
      }
@@ -260,7 +260,7 @@
     "schema": "SHADOW_EXPERIMENT_ROW",
     "schema_version": "1",
     "present": true,
-    "rows": 761,
+    "rows": 764,
     "n_violations": 0,
     "violations": []
    },
@@ -292,7 +292,7 @@
     "schema": "STAKE_PLAN_ROW",
     "schema_version": "1",
     "present": true,
-    "rows": 63,
+    "rows": 48,
     "n_violations": 0,
     "violations": []
    },
@@ -300,7 +300,7 @@
     "schema": "STAKE_AUDIT_ROW",
     "schema_version": "1",
     "present": true,
-    "rows": 969,
+    "rows": 973,
     "n_violations": 3,
     "violations": [
      {
@@ -336,7 +336,7 @@
     "schema": "SETTLEMENT_ROW",
     "schema_version": "1",
     "present": true,
-    "rows": 1925,
+    "rows": 1927,
     "n_violations": 1,
     "violations": [
      {
@@ -354,7 +354,7 @@
     "schema": "SETTLEMENT_ROW",
     "schema_version": "1",
     "present": true,
-    "rows": 752,
+    "rows": 754,
     "n_violations": 0,
     "violations": []
    },
@@ -378,41 +378,41 @@
  },
  "first_sight": {
   "edge_engine_shadow.csv": {
-   "rows": 2468,
-   "frozen_digest": "7718681a68456566293435747c20f82d79f59fde90560ea0137eaab5f794f163",
+   "rows": 2480,
+   "frozen_digest": "677cfc43586dbb738e52b4458d3eca8e14e3cf88206f517f532d0dad15b8de81",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 2376,
+   "prior_rows": 2468,
    "prior_match": true,
    "status": "OK",
    "reasons": []
   },
   "model_lineage/shadow_experiments.csv": {
-   "rows": 761,
-   "frozen_digest": "537044381bfe50a5469442a2ccb7d07373d3afe9b24d04ecf103341bada3ca20",
+   "rows": 764,
+   "frozen_digest": "6a61c2f09db4a2d0af610e690266b01a4454c2a293e8e85466969d79bc5ec5cf",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 738,
+   "prior_rows": 761,
    "prior_match": true,
    "status": "OK",
    "reasons": []
   },
   "v91_shadow.csv": {
-   "rows": 1227,
-   "frozen_digest": "03f7549225c006890399f91fe288f57431e87b39f463546f8b267aa028e5f706",
+   "rows": 1230,
+   "frozen_digest": "9903359bc8791ebb672ed3aac1c3b1f977ee285d6bc7fc896e1686dce201c7e5",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 1204,
+   "prior_rows": 1227,
    "prior_match": true,
    "status": "OK",
    "reasons": []
   },
   "league_weekly_candidates.csv": {
-   "rows": 2468,
-   "frozen_digest": "c2193d6a4d4271a2abce1d6db8b9563b44f1afa9b2ab1e955c634ef0576398b8",
+   "rows": 2480,
+   "frozen_digest": "de0d33c37d8e1f5c59a1f4f6ecd23992daf5e4da0745c6156d3b41a99e0c4bec",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 2376,
+   "prior_rows": 2468,
    "prior_match": true,
    "status": "OK",
    "reasons": []
@@ -428,21 +428,21 @@
    "reasons": []
   },
   "model_lineage/shadow_h2h.csv": {
-   "rows": 5502,
-   "frozen_digest": "fa59dc86072e65885110fc5a962ed8b06dd6efdd3ed1cd48a48de16bfa6d43b9",
+   "rows": 5517,
+   "frozen_digest": "4e4840780ef020c505dc93c0505b4d0697d0da88c0f52709bced01c1f76c6da5",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 5377,
+   "prior_rows": 5502,
    "prior_match": true,
    "status": "OK",
    "reasons": []
   },
   "stake_audit.csv": {
-   "rows": 969,
-   "frozen_digest": "ffaacaed7dfb291adbae91e3491f35b8daac68830c6a0f8a25f7989938bd1bc1",
+   "rows": 973,
+   "frozen_digest": "866d29c2ed00726cbb0f6298aec7b399f7907ff53660cacffb3a0db2edcb6647",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 953,
+   "prior_rows": 969,
    "prior_match": true,
    "status": "OK",
    "reasons": []
@@ -462,7 +462,7 @@
    "frozen_digest": "6980eb824fc4184258bf2443f8f89bc349c0fcfdb89dfc60da5d75673ef81867",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 360,
+   "prior_rows": 378,
    "prior_match": true,
    "status": "OK",
    "reasons": []
@@ -482,13 +482,13 @@
    "feature_version": null
   },
   "bets_ledger.csv": {
-   "model_version": 0.174,
+   "model_version": 0.1749,
    "selection_engine_version": null,
    "policy_version": null,
    "feature_version": null
   },
   "side_bets_ledger.csv": {
-   "model_version": 0.2739,
+   "model_version": 0.2759,
    "selection_engine_version": null,
    "policy_version": null,
    "feature_version": null
