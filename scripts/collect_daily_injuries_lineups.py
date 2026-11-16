@@ -31,6 +31,10 @@ missing. Each daily run asks ONLY what is not stored yet or is due a refresh:
      fixtures only), newest first, seasons the provider flags without lineups skipped. Every team and
      player row carries fetched_at. ANNOUNCED pre-kickoff lineups are the prematch capture's slot
      lineups_45 (scripts/capture_prematch.py, 25..45 min before kickoff): a daily run cannot see them.
+     RE-ASKS (2026-11-16): an EMPTY lineups answer is asked again, after the new fixtures, while its last
+     ask was made before kickoff date + 7 days and >= 20 h ago (the provider fills lower leagues late;
+     collect_lineups.retry_plan). Each re-ask is one call under the same cap and floor; the run record
+     counts them (lineups.retry_due / retry_calls / retry_filled / retry_still_empty).
 
 BUDGET (its own, like the prematch capture): at most DAILY_CAP calls per UTC day, journaled in
 output/collect/af_budget_daily.json (NOT the run-day job's af_budget.json), and the shared account
@@ -41,7 +45,8 @@ stored and committed - when work was DUE and nothing came back:
   * injury league-seasons with injuries coverage were due and 0 entries were stored from them;
   * pre-kickoff fixtures were due and no call succeeded, or >= PREMATCH_MIN_FOR_ZERO_CHECK were
     asked and all came back empty;
-  * finished fixtures with provider lineups were due and 0 player rows were stored;
+  * finished fixtures with provider lineups were due and 0 player rows were stored (FIRST asks only:
+    a re-asked empty that is still empty is the provider's answer, not a failure);
   * a budget stop / failed requests left due work with 0 rows.
 A partial budget stop with rows stored is a warning; the next run continues (every step is journaled).
 
@@ -74,7 +79,9 @@ BUDGET_FILE = COLLECT_DIR / "af_budget_daily.json"
 #: Calls per UTC day (hard). Estimate 2026-11-15 (--dry-run + the stored lists of 2026-10-01..11-09):
 #: fixture lists 52 + ~45 open seasons, injuries ~42 open league-seasons + ~10-60 pre-kickoff fixtures
 #: (14 open league-seasons have injuries coverage; 23 finished fixtures/day on average in them, 56 at most), lineups ~54 finished fixtures/day on average and
-#: ~150-250 on a busy weekend day: ~200-450 calls. 1,500 is > 3x the busiest estimate.
+#: ~150-250 on a busy weekend day: ~200-450 calls. Lineup re-asks of empty answers (2026-11-16) add one
+#: call per empty per daily run for about 7 days after kickoff: 26 empties stored for 2026 seasons on 2026-11-15
+#: (leagues 43 / 180 / 183 / 184), i.e. 26 re-ask calls on a day they are all due. 1,500 is > 3x the busiest estimate.
 DAILY_CAP = 1_500
 FLOOR = CC.FLOOR
 REFRESH_H = 20
@@ -252,14 +259,17 @@ def dry_run(now: datetime) -> dict:
     journal (it decides its seasons from the provider's /leagues answer during the run)."""
     ids = AL.registry_af_ids()
     open_all = open_seasons_all(now)
-    lu = LU.plan()
+    lu = LU.plan(now=now)
     cov_l = AL.coverage_map("lineups")
     lu_due = sum(1 for a, b in zip(lu["todo"]["league_id"], lu["todo"]["season"]) if cov_l.get((int(a), str(b))) is True)
+    lu_retry = sum(1 for a, b in zip(lu["retry"]["league_id"], lu["retry"]["season"])
+                   if cov_l.get((int(a), str(b))) is True)
     out = {"fixture_lists_leagues_calls": len(CF.competitions()), "fixture_lists_open_season_calls": open_all,
            "injury_season_calls": len(plan_injury_seasons(now, ids)),
            "injury_prematch_calls_from_stored_upcoming": int(len(plan_prematch(now, ids))),
            "upcoming_list_stored": CF.UPCOMING.exists(),
-           "lineup_calls_before_list_refresh": lu_due,
+           "lineup_calls_before_list_refresh": lu_due, "lineup_retry_calls": lu_retry,
+           "lineup_retry_final_unknown_kickoff": len(lu["retry_final_unknown_kickoff"]),
            "lineup_note": "newly finished fixtures enter after step 1; ~54/day mean Oct-Nov 2026",
            "daily_cap": DAILY_CAP, "floor": FLOOR}
     print(f"[daily] dry-run: {json.dumps(out)}")
@@ -298,15 +308,22 @@ def run(limit_seasons: int | None = None, limit_prematch: int | None = None, lim
         stats["budget_stop"] = str(e)
     # 3 + 4. injuries
     collect_injuries(client, now, stats, limit_seasons, limit_prematch)
-    # 5. lineups (finished fixtures not in the journal)
-    p = LU.plan()
+    # 5. lineups (finished fixtures not in the journal, then empty answers due a re-ask)
+    p = LU.plan(now=now)
     cov_l = AL.coverage_map("lineups")
     due = sum(1 for a, b in zip(p["todo"]["league_id"], p["todo"]["season"]) if cov_l.get((int(a), str(b))) is True)
+    retry_due = sum(1 for a, b in zip(p["retry"]["league_id"], p["retry"]["season"])
+                    if cov_l.get((int(a), str(b))) is True)
     if limit_lineups is not None:
         due = min(due, limit_lineups)
-    lu = LU.run(limit=limit_lineups, client=client)
+        retry_due = min(retry_due, max(0, limit_lineups - due))
+    lu = LU.run(limit=limit_lineups, client=client, now=now)
     stats["lineups"] = {"due": due, "calls": lu["calls"], "fixtures_stored": lu["fetched"],
                         "player_rows": lu["player_rows"], "per_league": lu["per_league"],
+                        "retry_due": retry_due, "retry_calls": lu["retry_calls"],
+                        "retry_filled": lu["retry_filled"], "retry_still_empty": lu["retry_still_empty"],
+                        "retry_player_rows": lu["retry_player_rows"], "retry_filled_ids": lu["retry_filled_ids"],
+                        "retry_final_unknown_kickoff": lu["retry_final_unknown_kickoff"],
                         "skipped": lu["skipped"], "budget_stop": lu.get("budget_stop")}
     client.flush()
     stats["calls_this_run"] = client.calls_run
