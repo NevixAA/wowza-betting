@@ -371,11 +371,26 @@ def _canonicalise_clubs(df: pd.DataFrame) -> pd.DataFrame:
     # `nunique()` ignores NaN -- a row with 2.0 and a row with NaN look like agreement. Ranking
     # by how many fields are populated keeps the informative copy every time and makes the
     # choice deterministic rather than incidental.
+    #
+    # ON A TIE, THE PRIMARY SOURCE WINS (port of main PR #38, 2026-11-16). Equal completeness used
+    # to fall back to input order, and input order came from an unstable date sort over the WHOLE
+    # merged frame, so adding any row anywhere could flip which copy of a tied fixture survived
+    # (main, 2026-11-16: Antwerp v Beerschot VA 2024-09-29 went to the backtest-archive copy).
+    # Among equally complete copies the row_source ranked first by the one-match rule
+    # (src.integrity.duplicate_matches.SOURCE_PRIORITY: football-data > its cache > API-Football >
+    # backtest archive; unknown last) now wins, so both de-duplication steps apply ONE source rule.
+    # Without row_source (direct callers) the rule is the old one.
     before = len(d)
+    rank_cols = ["date", "_completeness"]
     d = d.assign(_completeness=d.notna().sum(axis=1))
-    d = (d.sort_values(["date", "_completeness"], kind="mergesort")
+    if "row_source" in d.columns:
+        from src.integrity.duplicate_matches import SOURCE_PRIORITY
+        # higher = better here (keep="last"); SOURCE_PRIORITY is lower = better, unknown ranks last
+        d = d.assign(_source_rank=-d["row_source"].map(SOURCE_PRIORITY).fillna(len(SOURCE_PRIORITY)))
+        rank_cols.append("_source_rank")
+    d = (d.sort_values(rank_cols, kind="mergesort")
            .drop_duplicates(["date", "league", "home_team", "away_team"], keep="last")
-           .drop(columns=["_completeness"]))
+           .drop(columns=["_completeness", "_source_rank"], errors="ignore"))
     if n_multi or before != len(d) or n_conflict:
         log.info(f"[clubs] unified {n_multi} alternate club spelling(s); removed "
                  f"{before - len(d):,} duplicate fixture row(s) the old key missed; "
@@ -2101,7 +2116,8 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
         # src/history_supplement), BEFORE the identity pipeline like every other source.
         out = _add_history_supplement(out)
         out = out[out["home_team"].notna() & out["away_team"].notna()]
-        out = out.sort_values("date").reset_index(drop=True)
+        # STABLE: equal dates keep concat order, so the order never depends on unrelated rows.
+        out = out.sort_values("date", kind="mergesort").reset_index(drop=True)
         out["total_goals"] = out["home_goals"] + out["away_goals"]
         # No score -> label NaN, never 0 (NaN > 2.5 is False, which read as an Under / no BTTS)
         _ftn = out["total_goals"].notna()
