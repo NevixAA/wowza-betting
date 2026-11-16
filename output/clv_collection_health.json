@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-15T22:55:53Z",
+  "generated_at": "2026-11-16T01:16:26Z",
   "close_rule": "strictly pre-kickoff, observed within 30 minutes",
   "shadow_all_time": {
     "eligible": 1056,
@@ -474,20 +474,20 @@
   "measure_from": "2026-10-23T00:00:00Z",
   "collection": {
     "window_days": 7.0,
-    "from": "2026-11-08 22:55:53.015020+00:00",
-    "fixture_markets": 550,
-    "fixtures": 69,
-    "t30_pct": 21.5,
-    "t10_pct": 21.5,
-    "t60_pct": 21.5,
+    "from": "2026-11-09 01:16:26.110823+00:00",
+    "fixture_markets": 542,
+    "fixtures": 68,
+    "t30_pct": 20.5,
+    "t10_pct": 20.5,
+    "t60_pct": 20.5,
     "median_last_obs_minutes": 127.0,
     "by_track": {
       "new_format": {
-        "fixture_markets": 55,
-        "fixtures": 7,
-        "t30_pct": 56.4,
-        "t10_pct": 56.4,
-        "t60_pct": 56.4,
+        "fixture_markets": 47,
+        "fixtures": 6,
+        "t30_pct": 51.1,
+        "t10_pct": 51.1,
+        "t60_pct": 51.1,
         "median_last_obs_minutes": 1.5
       },
       "standard": {
@@ -501,54 +501,38 @@
     },
     "by_market": {
       "btts_no": {
-        "fixture_markets": 69,
-        "fixtures": 69,
-        "t30_pct": 21.7,
-        "t10_pct": 21.7,
-        "t60_pct": 21.7,
+        "fixture_markets": 68,
+        "fixtures": 68,
+        "t30_pct": 20.6,
+        "t10_pct": 20.6,
+        "t60_pct": 20.6,
         "median_last_obs_minutes": 127.0
       },
       "btts_yes": {
-        "fixture_markets": 69,
-        "fixtures": 69,
-        "t30_pct": 21.7,
-        "t10_pct": 21.7,
-        "t60_pct": 21.7,
+        "fixture_markets": 68,
+        "fixtures": 68,
+        "t30_pct": 20.6,
+        "t10_pct": 20.6,
+        "t60_pct": 20.6,
         "median_last_obs_minutes": 127.0
       },
       "over15": {
-        "fixture_markets": 69,
-        "fixtures": 69,
-        "t30_pct": 21.7,
-        "t10_pct": 21.7,
-        "t60_pct": 21.7,
+        "fixture_markets": 68,
+        "fixtures": 68,
+        "t30_pct": 20.6,
+        "t10_pct": 20.6,
+        "t60_pct": 20.6,
         "median_last_obs_minutes": 127.0
       },
       "over25": {
-        "fixture_markets": 68,
-        "fixtures": 68,
-        "t30_pct": 20.6,
-        "t10_pct": 20.6,
-        "t60_pct": 20.6,
+        "fixture_markets": 67,
+        "fixtures": 67,
+        "t30_pct": 19.4,
+        "t10_pct": 19.4,
+        "t60_pct": 19.4,
         "median_last_obs_minutes": 127.0
       },
       "over35": {
-        "fixture_markets": 69,
-        "fixtures": 69,
-        "t30_pct": 21.7,
-        "t10_pct": 21.7,
-        "t60_pct": 21.7,
-        "median_last_obs_minutes": 127.0
-      },
-      "under15": {
-        "fixture_markets": 69,
-        "fixtures": 69,
-        "t30_pct": 21.7,
-        "t10_pct": 21.7,
-        "t60_pct": 21.7,
-        "median_last_obs_minutes": 127.0
-      },
-      "under25": {
         "fixture_markets": 68,
         "fixtures": 68,
         "t30_pct": 20.6,
@@ -556,12 +540,28 @@
         "t60_pct": 20.6,
         "median_last_obs_minutes": 127.0
       },
+      "under15": {
+        "fixture_markets": 68,
+        "fixtures": 68,
+        "t30_pct": 20.6,
+        "t10_pct": 20.6,
+        "t60_pct": 20.6,
+        "median_last_obs_minutes": 127.0
+      },
+      "under25": {
+        "fixture_markets": 67,
+        "fixtures": 67,
+        "t30_pct": 20.9,
+        "t10_pct": 20.9,
+        "t60_pct": 20.9,
+        "median_last_obs_minutes": 127.0
+      },
       "under35": {
-        "fixture_markets": 69,
-        "fixtures": 69,
-        "t30_pct": 21.7,
-        "t10_pct": 21.7,
-        "t60_pct": 21.7,
+        "fixture_markets": 68,
+        "fixtures": 68,
+        "t30_pct": 20.6,
+        "t10_pct": 20.6,
+        "t60_pct": 20.6,
         "median_last_obs_minutes": 127.0
       }
     },
@@ -599,12 +599,12 @@
         "median_last_obs_minutes": 127.0
       },
       "Mexico Liga MX": {
-        "fixture_markets": 24,
-        "fixtures": 3,
-        "t30_pct": 62.5,
-        "t10_pct": 62.5,
-        "t60_pct": 62.5,
-        "median_last_obs_minutes": 0.6
+        "fixture_markets": 16,
+        "fixtures": 2,
+        "t30_pct": 50.0,
+        "t10_pct": 50.0,
+        "t60_pct": 50.0,
+        "median_last_obs_minutes": 47.1
       },
       "National League": {
         "fixture_markets": 96,
@@ -659,7 +659,7 @@
   "check": {
     "status": "FAIL",
     "reasons": [
-      "collection T-30m 21.5% < 40.0% on 550 fixture-markets"
+      "collection T-30m 20.5% < 40.0% on 542 fixture-markets"
     ]
   }
 }
