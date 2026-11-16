@@ -1,0 +1,1977 @@
+{
+ "protocol": "top3-tiers/7",
+ "protocol_sha256_lf": "2670e6bf0209b7fe2243d0fc16dae3db3d2d9d7fa732d9d2e01b6aa33ff47cac",
+ "evidence": "evidence_2026-11_v5clean.json",
+ "evidence_sha256": "0f1df4cc9c3db0b06467378aaf89eff2f91a89b84bdb24df0c6d07189cedfe13",
+ "development_before": "2026-04-01",
+ "dev_rows": 21761,
+ "dev_value_rows": 2186,
+ "cells_non_off_model": 44,
+ "cells_with_lam": 38,
+ "lam": [
+  {
+   "track": "new_format",
+   "league": "Argentina Primera Division",
+   "mside": "over15_over",
+   "lam": 0.0668,
+   "lam_se": 0.2481,
+   "lam_rows": 452
+  },
+  {
+   "track": "new_format",
+   "league": "Austrian Bundesliga",
+   "mside": "over25_under",
+   "lam": 1.0,
+   "lam_se": 0.4364,
+   "lam_rows": 363
+  },
+  {
+   "track": "new_format",
+   "league": "Brazil Serie A",
+   "mside": "over15_over",
+   "lam": 0.1966,
+   "lam_se": 0.4796,
+   "lam_rows": 416
+  },
+  {
+   "track": "new_format",
+   "league": "Brazil Serie A",
+   "mside": "over25_under",
+   "lam": 0.1966,
+   "lam_se": 0.3716,
+   "lam_rows": 384
+  },
+  {
+   "track": "new_format",
+   "league": "Denmark Superliga",
+   "mside": "over15_over",
+   "lam": 0.3842,
+   "lam_se": 1.1046,
+   "lam_rows": 308
+  },
+  {
+   "track": "new_format",
+   "league": "Denmark Superliga",
+   "mside": "over25_over",
+   "lam": 0.6581,
+   "lam_se": 0.6073,
+   "lam_rows": 290
+  },
+  {
+   "track": "new_format",
+   "league": "Denmark Superliga",
+   "mside": "over25_under",
+   "lam": 0.0,
+   "lam_se": 0.5071,
+   "lam_rows": 292
+  },
+  {
+   "track": "new_format",
+   "league": "Denmark Superliga",
+   "mside": "over35_over",
+   "lam": 0.3519,
+   "lam_se": 1.4684,
+   "lam_rows": 308
+  },
+  {
+   "track": "new_format",
+   "league": "Finland Veikkausliiga",
+   "mside": "over15_over",
+   "lam": 0.9096,
+   "lam_se": 0.5635,
+   "lam_rows": 194
+  },
+  {
+   "track": "new_format",
+   "league": "Finland Veikkausliiga",
+   "mside": "over25_over",
+   "lam": 0.9748,
+   "lam_se": 0.29,
+   "lam_rows": 164
+  },
+  {
+   "track": "new_format",
+   "league": "Finland Veikkausliiga",
+   "mside": "over25_under",
+   "lam": 0.0,
+   "lam_se": 0.6427,
+   "lam_rows": 170
+  },
+  {
+   "track": "new_format",
+   "league": "Finland Veikkausliiga",
+   "mside": "over35_over",
+   "lam": 1.0,
+   "lam_se": 0.5137,
+   "lam_rows": 196
+  },
+  {
+   "track": "new_format",
+   "league": "Japan J-League",
+   "mside": "over25_under",
+   "lam": 0.3999,
+   "lam_se": 0.3297,
+   "lam_rows": 425
+  },
+  {
+   "track": "new_format",
+   "league": "K-League 1",
+   "mside": "over15_over",
+   "lam": 0.0,
+   "lam_se": 0.6824,
+   "lam_rows": 294
+  },
+  {
+   "track": "new_format",
+   "league": "Mexico Liga MX",
+   "mside": "over15_over",
+   "lam": 0.8296,
+   "lam_se": 0.4543,
+   "lam_rows": 318
+  },
+  {
+   "track": "new_format",
+   "league": "Mexico Liga MX",
+   "mside": "over25_over",
+   "lam": 0.8296,
+   "lam_se": 1.4311,
+   "lam_rows": 310
+  },
+  {
+   "track": "new_format",
+   "league": "Norway Eliteserien",
+   "mside": "over25_over",
+   "lam": 0.3287,
+   "lam_se": 0.7217,
+   "lam_rows": 370
+  },
+  {
+   "track": "new_format",
+   "league": "Norway Eliteserien",
+   "mside": "over25_under",
+   "lam": 0.0,
+   "lam_se": 0.3111,
+   "lam_rows": 399
+  },
+  {
+   "track": "new_format",
+   "league": "Norway Eliteserien",
+   "mside": "over35_over",
+   "lam": 0.4661,
+   "lam_se": 0.64,
+   "lam_rows": 405
+  },
+  {
+   "track": "new_format",
+   "league": "Sweden Allsvenskan",
+   "mside": "over15_over",
+   "lam": 0.0,
+   "lam_se": 1.1879,
+   "lam_rows": 298
+  },
+  {
+   "track": "new_format",
+   "league": "Sweden Allsvenskan",
+   "mside": "over25_over",
+   "lam": 0.0,
+   "lam_se": 1.5109,
+   "lam_rows": 270
+  },
+  {
+   "track": "new_format",
+   "league": "Sweden Allsvenskan",
+   "mside": "over25_under",
+   "lam": 0.0,
+   "lam_se": 0.4151,
+   "lam_rows": 277
+  },
+  {
+   "track": "new_format",
+   "league": "Sweden Allsvenskan",
+   "mside": "over35_over",
+   "lam": 0.0,
+   "lam_se": 3.0577,
+   "lam_rows": 299
+  },
+  {
+   "track": "new_format",
+   "league": "USA MLS",
+   "mside": "over25_over",
+   "lam": 0.0,
+   "lam_se": 1.525,
+   "lam_rows": 699
+  },
+  {
+   "track": "new_format",
+   "league": "USA MLS",
+   "mside": "over25_under",
+   "lam": 0.0,
+   "lam_se": 0.2862,
+   "lam_rows": 712
+  },
+  {
+   "track": "standard",
+   "league": "Belgian First Division A",
+   "mside": "over15_over",
+   "lam": 0.6456,
+   "lam_se": 0.3283,
+   "lam_rows": 705
+  },
+  {
+   "track": "standard",
+   "league": "Championship",
+   "mside": "over15_over",
+   "lam": 0.0009,
+   "lam_se": 0.332,
+   "lam_rows": 919
+  },
+  {
+   "track": "standard",
+   "league": "Championship",
+   "mside": "over35_over",
+   "lam": 0.6283,
+   "lam_se": 0.7024,
+   "lam_rows": 919
+  },
+  {
+   "track": "standard",
+   "league": "Dutch Eredivisie",
+   "mside": "over35_over",
+   "lam": 1.0,
+   "lam_se": 1.1593,
+   "lam_rows": 753
+  },
+  {
+   "track": "standard",
+   "league": "Greek Super League",
+   "mside": "over25_over",
+   "lam": 0.102,
+   "lam_se": 0.223,
+   "lam_rows": 799
+  },
+  {
+   "track": "standard",
+   "league": "La Liga 2",
+   "mside": "over25_over",
+   "lam": 0.0853,
+   "lam_se": 0.1144,
+   "lam_rows": 1568
+  },
+  {
+   "track": "standard",
+   "league": "La Liga 2",
+   "mside": "over35_over",
+   "lam": 0.3805,
+   "lam_se": 0.8913,
+   "lam_rows": 1020
+  },
+  {
+   "track": "standard",
+   "league": "League One",
+   "mside": "over25_over",
+   "lam": 0.0,
+   "lam_se": 0.1907,
+   "lam_rows": 1901
+  },
+  {
+   "track": "standard",
+   "league": "Ligue 2",
+   "mside": "over15_over",
+   "lam": 0.1791,
+   "lam_se": 0.3363,
+   "lam_rows": 670
+  },
+  {
+   "track": "standard",
+   "league": "Ligue 2",
+   "mside": "over25_over",
+   "lam": 0.1791,
+   "lam_se": 0.1851,
+   "lam_rows": 1154
+  },
+  {
+   "track": "standard",
+   "league": "Serie B",
+   "mside": "over15_over",
+   "lam": 0.7328,
+   "lam_se": 0.2988,
+   "lam_rows": 702
+  },
+  {
+   "track": "standard",
+   "league": "Serie B",
+   "mside": "over25_over",
+   "lam": 0.388,
+   "lam_se": 0.1682,
+   "lam_rows": 1317
+  },
+  {
+   "track": "standard",
+   "league": "Serie B",
+   "mside": "over35_over",
+   "lam": 0.969,
+   "lam_se": 0.66,
+   "lam_rows": 702
+  }
+ ],
+ "t3": {
+  "new_format|Austrian Bundesliga": {
+   "threshold": null,
+   "reason": "no grid point with >= 40 dev T3 picks",
+   "grid": [
+    {
+     "odds_min": 2.25,
+     "margin": 0.0,
+     "dev_picks": 14,
+     "dev_roi": 0.4107
+    },
+    {
+     "odds_min": 2.25,
+     "margin": 0.03,
+     "dev_picks": 12,
+     "dev_roi": 0.6458
+    },
+    {
+     "odds_min": 2.25,
+     "margin": 0.05,
+     "dev_picks": 12,
+     "dev_roi": 0.6458
+    },
+    {
+     "odds_min": 2.25,
+     "margin": 0.08,
+     "dev_picks": 12,
+     "dev_roi": 0.6458
+    },
+    {
+     "odds_min": 2.25,
+     "margin": 0.1,
+     "dev_picks": 9,
+     "dev_roi": 0.6733
+    },
+    {
+     "odds_min": 2.25,
+     "margin": 0.15,
+     "dev_picks": 6,
+     "dev_roi": 1.51
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.0,
+     "dev_picks": 5,
+     "dev_roi": 1.552
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.03,
+     "dev_picks": 5,
+     "dev_roi": 1.552
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.05,
+     "dev_picks": 5,
+     "dev_roi": 1.552
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.08,
+     "dev_picks": 4,
+     "dev_roi": 1.5625
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.1,
+     "dev_picks": 4,
+     "dev_roi": 1.5625
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.15,
+     "dev_picks": 4,
+     "dev_roi": 1.5625
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.0,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.03,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.05,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.08,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.1,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.15,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.0,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.03,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.05,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.08,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.1,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.15,
+     "dev_picks": 0,
+     "dev_roi": null
+    }
+   ]
+  },
+  "new_format|Brazil Serie A": {
+   "threshold": null,
+   "reason": "no grid point with >= 40 dev T3 picks",
+   "grid": [
+    {
+     "odds_min": 2.25,
+     "margin": 0.0,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.25,
+     "margin": 0.03,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.25,
+     "margin": 0.05,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.25,
+     "margin": 0.08,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.25,
+     "margin": 0.1,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.25,
+     "margin": 0.15,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.0,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.03,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.05,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.08,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.1,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.15,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.0,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.03,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.05,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.08,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.1,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.15,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.0,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.03,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.05,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.08,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.1,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.15,
+     "dev_picks": 0,
+     "dev_roi": null
+    }
+   ]
+  },
+  "new_format|Denmark Superliga": {
+   "threshold": null,
+   "reason": "no grid point with >= 40 dev T3 picks",
+   "grid": [
+    {
+     "odds_min": 2.25,
+     "margin": 0.0,
+     "dev_picks": 1,
+     "dev_roi": -1.0
+    },
+    {
+     "odds_min": 2.25,
+     "margin": 0.03,
+     "dev_picks": 1,
+     "dev_roi": -1.0
+    },
+    {
+     "odds_min": 2.25,
+     "margin": 0.05,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.25,
+     "margin": 0.08,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.25,
+     "margin": 0.1,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.25,
+     "margin": 0.15,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.0,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.03,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.05,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.08,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.1,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.15,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.0,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.03,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.05,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.08,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.1,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.15,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.0,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.03,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.05,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.08,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.1,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.15,
+     "dev_picks": 0,
+     "dev_roi": null
+    }
+   ]
+  },
+  "new_format|Finland Veikkausliiga": {
+   "threshold": {
+    "odds_min": 2.75,
+    "margin": 0.08
+   },
+   "dev_picks": 44,
+   "dev_roi": 0.2784,
+   "grid": [
+    {
+     "odds_min": 2.25,
+     "margin": 0.0,
+     "dev_picks": 57,
+     "dev_roi": 0.1277
+    },
+    {
+     "odds_min": 2.25,
+     "margin": 0.03,
+     "dev_picks": 57,
+     "dev_roi": 0.1277
+    },
+    {
+     "odds_min": 2.25,
+     "margin": 0.05,
+     "dev_picks": 57,
+     "dev_roi": 0.1277
+    },
+    {
+     "odds_min": 2.25,
+     "margin": 0.08,
+     "dev_picks": 56,
+     "dev_roi": 0.1479
+    },
+    {
+     "odds_min": 2.25,
+     "margin": 0.1,
+     "dev_picks": 48,
+     "dev_roi": 0.1423
+    },
+    {
+     "odds_min": 2.25,
+     "margin": 0.15,
+     "dev_picks": 3,
+     "dev_roi": 0.85
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.0,
+     "dev_picks": 54,
+     "dev_roi": 0.0493
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.03,
+     "dev_picks": 54,
+     "dev_roi": 0.0493
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.05,
+     "dev_picks": 54,
+     "dev_roi": 0.0493
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.08,
+     "dev_picks": 52,
+     "dev_roi": 0.0896
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.1,
+     "dev_picks": 39,
+     "dev_roi": 0.1418
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.15,
+     "dev_picks": 2,
+     "dev_roi": 1.775
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.0,
+     "dev_picks": 47,
+     "dev_roi": 0.1968
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.03,
+     "dev_picks": 47,
+     "dev_roi": 0.1968
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.05,
+     "dev_picks": 47,
+     "dev_roi": 0.1968
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.08,
+     "dev_picks": 44,
+     "dev_roi": 0.2784
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.1,
+     "dev_picks": 29,
+     "dev_roi": 0.3997
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.15,
+     "dev_picks": 2,
+     "dev_roi": 1.775
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.0,
+     "dev_picks": 39,
+     "dev_roi": -0.1895
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.03,
+     "dev_picks": 38,
+     "dev_roi": -0.1682
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.05,
+     "dev_picks": 38,
+     "dev_roi": -0.1682
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.08,
+     "dev_picks": 34,
+     "dev_roi": -0.1744
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.1,
+     "dev_picks": 24,
+     "dev_roi": -0.1138
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.15,
+     "dev_picks": 0,
+     "dev_roi": null
+    }
+   ]
+  },
+  "new_format|Japan J-League": {
+   "threshold": null,
+   "reason": "no grid point with >= 40 dev T3 picks",
+   "grid": [
+    {
+     "odds_min": 2.25,
+     "margin": 0.0,
+     "dev_picks": 6,
+     "dev_roi": 0.645
+    },
+    {
+     "odds_min": 2.25,
+     "margin": 0.03,
+     "dev_picks": 5,
+     "dev_roi": 0.508
+    },
+    {
+     "odds_min": 2.25,
+     "margin": 0.05,
+     "dev_picks": 2,
+     "dev_roi": 1.56
+    },
+    {
+     "odds_min": 2.25,
+     "margin": 0.08,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.25,
+     "margin": 0.1,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.25,
+     "margin": 0.15,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.0,
+     "dev_picks": 2,
+     "dev_roi": 1.56
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.03,
+     "dev_picks": 2,
+     "dev_roi": 1.56
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.05,
+     "dev_picks": 2,
+     "dev_roi": 1.56
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.08,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.1,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.15,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.0,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.03,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.05,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.08,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.1,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.15,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.0,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.03,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.05,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.08,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.1,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.15,
+     "dev_picks": 0,
+     "dev_roi": null
+    }
+   ]
+  },
+  "new_format|Mexico Liga MX": {
+   "threshold": null,
+   "reason": "no grid point with >= 40 dev T3 picks",
+   "grid": [
+    {
+     "odds_min": 2.25,
+     "margin": 0.0,
+     "dev_picks": 1,
+     "dev_roi": 1.27
+    },
+    {
+     "odds_min": 2.25,
+     "margin": 0.03,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.25,
+     "margin": 0.05,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.25,
+     "margin": 0.08,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.25,
+     "margin": 0.1,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.25,
+     "margin": 0.15,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.0,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.03,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.05,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.08,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.1,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.15,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.0,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.03,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.05,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.08,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.1,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.15,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.0,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.03,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.05,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.08,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.1,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.15,
+     "dev_picks": 0,
+     "dev_roi": null
+    }
+   ]
+  },
+  "new_format|Norway Eliteserien": {
+   "threshold": null,
+   "reason": "no grid point with >= 40 dev T3 picks",
+   "grid": [
+    {
+     "odds_min": 2.25,
+     "margin": 0.0,
+     "dev_picks": 1,
+     "dev_roi": 1.33
+    },
+    {
+     "odds_min": 2.25,
+     "margin": 0.03,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.25,
+     "margin": 0.05,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.25,
+     "margin": 0.08,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.25,
+     "margin": 0.1,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.25,
+     "margin": 0.15,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.0,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.03,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.05,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.08,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.1,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.15,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.0,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.03,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.05,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.08,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.1,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.15,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.0,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.03,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.05,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.08,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.1,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.15,
+     "dev_picks": 0,
+     "dev_roi": null
+    }
+   ]
+  },
+  "standard|Belgian First Division A": {
+   "threshold": null,
+   "reason": "no grid point with >= 40 dev T3 picks",
+   "grid": [
+    {
+     "odds_min": 2.25,
+     "margin": 0.0,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.25,
+     "margin": 0.03,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.25,
+     "margin": 0.05,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.25,
+     "margin": 0.08,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.25,
+     "margin": 0.1,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.25,
+     "margin": 0.15,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.0,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.03,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.05,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.08,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.1,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.15,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.0,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.03,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.05,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.08,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.1,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.15,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.0,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.03,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.05,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.08,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.1,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.15,
+     "dev_picks": 0,
+     "dev_roi": null
+    }
+   ]
+  },
+  "standard|Dutch Eredivisie": {
+   "threshold": null,
+   "reason": "no grid point with >= 40 dev T3 picks",
+   "grid": [
+    {
+     "odds_min": 2.25,
+     "margin": 0.0,
+     "dev_picks": 4,
+     "dev_roi": -0.3625
+    },
+    {
+     "odds_min": 2.25,
+     "margin": 0.03,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.25,
+     "margin": 0.05,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.25,
+     "margin": 0.08,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.25,
+     "margin": 0.1,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.25,
+     "margin": 0.15,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.0,
+     "dev_picks": 3,
+     "dev_roi": -0.15
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.03,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.05,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.08,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.1,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.15,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.0,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.03,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.05,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.08,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.1,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.15,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.0,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.03,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.05,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.08,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.1,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.15,
+     "dev_picks": 0,
+     "dev_roi": null
+    }
+   ]
+  },
+  "standard|Ligue 2": {
+   "threshold": null,
+   "reason": "no grid point with >= 40 dev T3 picks",
+   "grid": [
+    {
+     "odds_min": 2.25,
+     "margin": 0.0,
+     "dev_picks": 1,
+     "dev_roi": -1.0
+    },
+    {
+     "odds_min": 2.25,
+     "margin": 0.03,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.25,
+     "margin": 0.05,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.25,
+     "margin": 0.08,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.25,
+     "margin": 0.1,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.25,
+     "margin": 0.15,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.0,
+     "dev_picks": 1,
+     "dev_roi": -1.0
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.03,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.05,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.08,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.1,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.15,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.0,
+     "dev_picks": 1,
+     "dev_roi": -1.0
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.03,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.05,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.08,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.1,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.15,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.0,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.03,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.05,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.08,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.1,
+     "dev_picks": 0,
+     "dev_roi": null
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.15,
+     "dev_picks": 0,
+     "dev_roi": null
+    }
+   ]
+  },
+  "standard|Serie B": {
+   "threshold": {
+    "odds_min": 3.0,
+    "margin": 0.0
+   },
+   "dev_picks": 42,
+   "dev_roi": 0.0907,
+   "grid": [
+    {
+     "odds_min": 2.25,
+     "margin": 0.0,
+     "dev_picks": 83,
+     "dev_roi": -0.1013
+    },
+    {
+     "odds_min": 2.25,
+     "margin": 0.03,
+     "dev_picks": 49,
+     "dev_roi": -0.0114
+    },
+    {
+     "odds_min": 2.25,
+     "margin": 0.05,
+     "dev_picks": 31,
+     "dev_roi": -0.0684
+    },
+    {
+     "odds_min": 2.25,
+     "margin": 0.08,
+     "dev_picks": 16,
+     "dev_roi": -0.3438
+    },
+    {
+     "odds_min": 2.25,
+     "margin": 0.1,
+     "dev_picks": 11,
+     "dev_roi": -0.2818
+    },
+    {
+     "odds_min": 2.25,
+     "margin": 0.15,
+     "dev_picks": 2,
+     "dev_roi": -1.0
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.0,
+     "dev_picks": 60,
+     "dev_roi": 0.0175
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.03,
+     "dev_picks": 39,
+     "dev_roi": 0.0018
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.05,
+     "dev_picks": 26,
+     "dev_roi": -0.1542
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.08,
+     "dev_picks": 15,
+     "dev_roi": -0.3
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.1,
+     "dev_picks": 11,
+     "dev_roi": -0.2818
+    },
+    {
+     "odds_min": 2.5,
+     "margin": 0.15,
+     "dev_picks": 2,
+     "dev_roi": -1.0
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.0,
+     "dev_picks": 43,
+     "dev_roi": 0.0653
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.03,
+     "dev_picks": 31,
+     "dev_roi": -0.2394
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.05,
+     "dev_picks": 23,
+     "dev_roi": -0.387
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.08,
+     "dev_picks": 13,
+     "dev_roi": -0.5992
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.1,
+     "dev_picks": 7,
+     "dev_roi": -1.0
+    },
+    {
+     "odds_min": 2.75,
+     "margin": 0.15,
+     "dev_picks": 2,
+     "dev_roi": -1.0
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.0,
+     "dev_picks": 42,
+     "dev_roi": 0.0907
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.03,
+     "dev_picks": 30,
+     "dev_roi": -0.214
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.05,
+     "dev_picks": 22,
+     "dev_roi": -0.3591
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.08,
+     "dev_picks": 12,
+     "dev_roi": -0.5658
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.1,
+     "dev_picks": 6,
+     "dev_roi": -1.0
+    },
+    {
+     "odds_min": 3.0,
+     "margin": 0.15,
+     "dev_picks": 2,
+     "dev_roi": -1.0
+    }
+   ]
+  }
+ }
+}

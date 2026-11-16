@@ -1,0 +1,5693 @@
+{
+ "schema": "wowza.threshold_proposal/1",
+ "month": "2026-11",
+ "created_at": "2026-11-16T18:21:41Z",
+ "status": "AWAITING_OWNER",
+ "source": {
+  "workflow": "bars fresh holdout + selection-based serving cells (src/bars_opt/hist_study)",
+  "candidates_dir": "output/threshold_proposals/candidates/bars_oddsapi_hist/2026-11_v5clean",
+  "evidence": "output/threshold_proposals/bars_oddsapi_hist/evidence_2026-11_v5clean.json",
+  "fresh_verdicts_proposal": "TP-FH-2026-11-16-fae49848",
+  "protocol_sha256": "4e5708fdda0b434ad37f002668fdc386b0fca9533d81b1d005b58229fd4bc643",
+  "choices_sha256": "5147fa7abd15d9f02bf95117bf4dd368edc38fa3e74a8a4f503a250f90157dea",
+  "fresh_holm_family": 19,
+  "serving_universe": "C:/Users/nevo/dev/bars-oddsapi-local/v5clean/own_bettime",
+  "study_cells": "C:/Users/nevo/dev/bars-oddsapi-local/v5clean/selstudy/cells.json"
+ },
+ "approval_rule": "optimizer rule (src/backtest.py): approved = walk-forward OOS ROI > 0 on >= 20 OOS bets; this is a PROPOSAL only - nothing serves until the owner approves the entry",
+ "deployed_env": {
+  "STANDARD_OU25_SERVING_RECIPE": "legacy_v9"
+ },
+ "markets_with_candidates": [
+  "btts",
+  "ou25",
+  "over15",
+  "over35"
+ ],
+ "markets_missing": [],
+ "base_digests": {
+  "models/best_params_standard.json": "30539d785aacb0e913627e9498b0dd6364a89e16bd570f825d211fb388e480c9",
+  "models/best_params_side_markets.json": "3c985925d1e8bef0c8ae6f9a8cb20b10b848e60c2d05d5feee9e4cfe62afb9a8"
+ },
+ "entries": [
+  {
+   "entry_id": "ou25|Argentina Primera Division",
+   "league": "Argentina Primera Division",
+   "market": "ou25",
+   "production_file": "models/best_params_standard.json",
+   "current": null,
+   "proposed": {
+    "bars_opt": {
+     "over": {
+      "mside": "over25_over",
+      "track": "new_format",
+      "league": "Argentina Primera Division",
+      "month": "2026-11",
+      "config": "NONE|ALL|max-|min-",
+      "config_basis": "SELECTED",
+      "source": "NONE",
+      "measure": "ALL",
+      "odds_max": null,
+      "odds_min": null,
+      "mode": "LEAGUE_WIDE",
+      "valuable_th": 0.02,
+      "marksman_th": 0.02,
+      "sniper_th": 0.3,
+      "bar_basis": "OWN_BETS",
+      "shrink_weight_at_valuable": 0.4642,
+      "wf_bets": 118,
+      "wf_roi": 0.1358,
+      "wf_roi_shrunk": 0.0469,
+      "tier2": false,
+      "tier2_bets": 0,
+      "tier2_roi": null,
+      "source_params": {},
+      "verdict": "UNPROVEN",
+      "study_final": {
+       "bets": 0,
+       "roi": null,
+       "ci95": [
+        null,
+        null
+       ],
+       "p_one_sided": null,
+       "clv": null,
+       "clv_n": 0
+      },
+      "study_verdict": "OFF",
+      "study_reason": "INSUFFICIENT_SELECTION_EVIDENCE",
+      "prod_market": "ou25",
+      "side": "over"
+     }
+    },
+    "drop": false,
+    "source": "bars_opt",
+    "month": "2026-11",
+    "status": "UNPROVEN",
+    "approved": false,
+    "bets": 118,
+    "roi": 0.1358
+   },
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "evidence": {
+    "bets": 118,
+    "roi": 0.1358
+   },
+   "entry_hash": "32a62d8e9d486882c70d01ce556035df32c950e16bde6dd7147a8f921a86be1a",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for Argentina Primera Division",
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for Argentina Primera Division",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.3,
+    "marksman": 0.02,
+    "valuable": 0.02,
+    "sniper_source": "best_params_standard[Argentina Primera Division] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_standard[Argentina Primera Division] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "serves_change": true
+  },
+  {
+   "entry_id": "ou25|Austrian Bundesliga",
+   "league": "Austrian Bundesliga",
+   "market": "ou25",
+   "production_file": "models/best_params_standard.json",
+   "current": null,
+   "proposed": {
+    "bars_opt": {
+     "over": {
+      "mside": "over25_over",
+      "track": "new_format",
+      "league": "Austrian Bundesliga",
+      "month": "2026-11",
+      "config": "NONE|ALL|max-|min-",
+      "config_basis": "SELECTED",
+      "source": "NONE",
+      "measure": "ALL",
+      "odds_max": null,
+      "odds_min": null,
+      "mode": "LEAGUE_WIDE",
+      "valuable_th": 0.02,
+      "marksman_th": 0.02,
+      "sniper_th": 0.3,
+      "bar_basis": "LEARNED_BLEND",
+      "shrink_weight_at_valuable": 0.4105,
+      "wf_bets": 32,
+      "wf_roi": 0.215,
+      "wf_roi_shrunk": 0.0704,
+      "tier2": false,
+      "tier2_bets": 0,
+      "tier2_roi": null,
+      "source_params": {},
+      "verdict": "UNPROVEN",
+      "study_final": {
+       "bets": 0,
+       "roi": null,
+       "ci95": [
+        null,
+        null
+       ],
+       "p_one_sided": null,
+       "clv": null,
+       "clv_n": 0
+      },
+      "study_verdict": "OFF",
+      "study_reason": "INSUFFICIENT_SELECTION_EVIDENCE",
+      "prod_market": "ou25",
+      "side": "over"
+     },
+     "under": {
+      "mside": "over25_under",
+      "track": "new_format",
+      "league": "Austrian Bundesliga",
+      "month": "2026-11",
+      "config": "RAW|EDGE|max-|min-",
+      "config_basis": "FRESH_HOLDOUT_SELECTION",
+      "source": "RAW",
+      "measure": "EDGE",
+      "odds_max": null,
+      "odds_min": null,
+      "mode": "MODEL",
+      "valuable_th": 0.02,
+      "marksman_th": 0.04,
+      "sniper_th": 0.06,
+      "bar_basis": "OWN_BETS",
+      "shrink_weight_at_valuable": 0.6037,
+      "wf_bets": 90,
+      "wf_roi": 0.3336,
+      "wf_roi_shrunk": 0.1798,
+      "tier2": false,
+      "tier2_bets": 20,
+      "tier2_roi": -0.1405,
+      "source_params": {},
+      "verdict": "UNPROVEN",
+      "study_final": {
+       "bets": 40,
+       "roi": -0.0175,
+       "matchdays": 25,
+       "ci95": [
+        -0.4019,
+        0.3643
+       ],
+       "p_one_sided": 0.5592,
+       "clv": 0.019,
+       "clv_n": 40
+      },
+      "study_verdict": "UNPROVEN",
+      "study_reason": null,
+      "fresh_holdout_p_holm": 1.0,
+      "fresh_holdout_family_size": 19,
+      "prod_market": "ou25",
+      "side": "under"
+     }
+    },
+    "drop": false,
+    "source": "bars_opt",
+    "month": "2026-11",
+    "status": "UNPROVEN",
+    "approved": false,
+    "bets": 32,
+    "roi": 0.215
+   },
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "evidence": {
+    "bets": 32,
+    "roi": 0.215
+   },
+   "entry_hash": "3dca151a746bddf98b22e3cda3f344d3b1fca0acae50bb64705dc045c632e4b5",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for Austrian Bundesliga",
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for Austrian Bundesliga",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.3,
+    "marksman": 0.02,
+    "valuable": 0.02,
+    "sniper_source": "best_params_standard[Austrian Bundesliga] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_standard[Austrian Bundesliga] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "serves_change": true
+  },
+  {
+   "entry_id": "ou25|Brazil Serie A",
+   "league": "Brazil Serie A",
+   "market": "ou25",
+   "production_file": "models/best_params_standard.json",
+   "current": null,
+   "proposed": {
+    "bars_opt": {
+     "under": {
+      "mside": "over25_under",
+      "track": "new_format",
+      "league": "Brazil Serie A",
+      "month": "2026-11",
+      "config": "RAW|EDGE|max-|min-",
+      "config_basis": "NO_SELECTION_EVIDENCE",
+      "source": "RAW",
+      "measure": "EDGE",
+      "odds_max": null,
+      "odds_min": null,
+      "mode": "MODEL",
+      "valuable_th": 0.02,
+      "marksman_th": 0.02,
+      "sniper_th": 0.02,
+      "bar_basis": "OWN_BETS",
+      "shrink_weight_at_valuable": 0.4003,
+      "wf_bets": 44,
+      "wf_roi": 0.1336,
+      "wf_roi_shrunk": 0.0162,
+      "tier2": false,
+      "tier2_bets": 0,
+      "tier2_roi": null,
+      "source_params": {},
+      "verdict": "UNPROVEN",
+      "study_final": {
+       "bets": 0,
+       "roi": null,
+       "ci95": [
+        null,
+        null
+       ],
+       "p_one_sided": null,
+       "clv": null,
+       "clv_n": 0
+      },
+      "study_verdict": "OFF",
+      "study_reason": "INSUFFICIENT_SELECTION_EVIDENCE",
+      "prod_market": "ou25",
+      "side": "under"
+     }
+    },
+    "drop": false,
+    "source": "bars_opt",
+    "month": "2026-11",
+    "status": "UNPROVEN",
+    "approved": false,
+    "bets": 44,
+    "roi": 0.1336
+   },
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "evidence": {
+    "bets": 44,
+    "roi": 0.1336
+   },
+   "entry_hash": "41294a1e4507ef9b32c24743d71d1e57c54e1297898e5d8e7b130a4694e61e6c",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for Brazil Serie A",
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for Brazil Serie A",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.02,
+    "marksman": 0.02,
+    "valuable": 0.02,
+    "sniper_source": "best_params_standard[Brazil Serie A] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_standard[Brazil Serie A] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "serves_change": true
+  },
+  {
+   "entry_id": "ou25|Bundesliga 2",
+   "league": "Bundesliga 2",
+   "market": "ou25",
+   "production_file": "models/best_params_standard.json",
+   "current": {
+    "sniper_th": 0.09,
+    "marksman_th": 0.07,
+    "roi_insample": -8.49,
+    "bets_insample": 504,
+    "roi_oos": -8.1,
+    "bets_oos": 465,
+    "approved": false
+   },
+   "proposed": null,
+   "change": "REMOVE",
+   "evidence": {},
+   "entry_hash": "03f0b0110995eed8e8727f3ca00ac0adc2a06c56fac0b7712ff68d88075d63d5",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: ou25 Bundesliga 2 lacks valuable_th",
+    "marksman_source": "NO_LEAGUE_BAR: ou25 Bundesliga 2 lacks valuable_th",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for Bundesliga 2",
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for Bundesliga 2",
+    "own_bars": false
+   },
+   "serves_change": false
+  },
+  {
+   "entry_id": "ou25|Championship",
+   "league": "Championship",
+   "market": "ou25",
+   "production_file": "models/best_params_standard.json",
+   "current": {
+    "sniper_th": 0.14,
+    "marksman_th": 0.12,
+    "roi_insample": 18.87,
+    "bets_insample": 32,
+    "roi_oos": -3.52,
+    "bets_oos": 231,
+    "approved": false
+   },
+   "proposed": null,
+   "change": "REMOVE",
+   "evidence": {},
+   "entry_hash": "7e7f0e1f570db9b7a0d507893454a9bc741e6e09d5292ce9d5db11d8245a2f19",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: ou25 Championship lacks valuable_th",
+    "marksman_source": "NO_LEAGUE_BAR: ou25 Championship lacks valuable_th",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for Championship",
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for Championship",
+    "own_bars": false
+   },
+   "serves_change": false
+  },
+  {
+   "entry_id": "ou25|Denmark Superliga",
+   "league": "Denmark Superliga",
+   "market": "ou25",
+   "production_file": "models/best_params_standard.json",
+   "current": null,
+   "proposed": {
+    "bars_opt": {
+     "over": {
+      "mside": "over25_over",
+      "track": "new_format",
+      "league": "Denmark Superliga",
+      "month": "2026-11",
+      "config": "LEARNED|EDGE|max-|min1.4",
+      "config_basis": "FRESH_HOLDOUT_SELECTION",
+      "source": "LEARNED",
+      "measure": "EDGE",
+      "odds_max": null,
+      "odds_min": 1.4,
+      "mode": "MODEL",
+      "valuable_th": 0.02,
+      "marksman_th": 0.03,
+      "sniper_th": 0.03,
+      "bar_basis": "OWN_BETS",
+      "shrink_weight_at_valuable": 0.0,
+      "wf_bets": 118,
+      "wf_roi": 0.1119,
+      "wf_roi_shrunk": 0.0706,
+      "tier2": false,
+      "tier2_bets": 0,
+      "tier2_roi": null,
+      "source_params": {
+       "leagues": [
+        "Argentina Primera Division",
+        "Austrian Bundesliga",
+        "Brazil Serie A",
+        "China Super League",
+        "Denmark Superliga",
+        "Finland Veikkausliiga",
+        "Ireland Premier Division",
+        "Japan J-League",
+        "K-League 1",
+        "Mexico Liga MX",
+        "Norway Eliteserien",
+        "Sweden Allsvenskan",
+        "USA MLS"
+       ],
+       "coef": [
+        0.7400454585885251,
+        0.3714453135869889,
+        -0.08157868845610497,
+        -0.23698406673771427,
+        -0.18363858740417532,
+        -0.4117738868399888,
+        -0.006842869131234814,
+        -0.06559807810814049,
+        0.3503662115229121,
+        0.38680931405877783,
+        -0.26275209972153285,
+        -0.20113280144733744,
+        -0.16235750263290352,
+        0.14539637318125032,
+        0.061717012049177705,
+        0.266580199508843,
+        0.08967366276616849,
+        -0.30516778207949197,
+        0.32434869302385994,
+        0.07239603145496526,
+        -0.27810061482133364,
+        -0.1696908045378785,
+        0.011442881977097367,
+        0.057240431907736075,
+        0.21724440727119437,
+        0.0947092806481587,
+        0.16119150127306994,
+        8.08962910978216e-05,
+        -0.346865714698789,
+        0.07959210383420869
+       ],
+       "intercept": 0.1485624416368795
+      },
+      "verdict": "UNPROVEN",
+      "study_final": {
+       "bets": 82,
+       "roi": 0.0207,
+       "matchdays": 46,
+       "ci95": [
+        -0.1631,
+        0.2046
+       ],
+       "p_one_sided": 0.4068,
+       "clv": -0.0112,
+       "clv_n": 81
+      },
+      "study_verdict": "UNPROVEN",
+      "study_reason": null,
+      "fresh_holdout_p_holm": 1.0,
+      "fresh_holdout_family_size": 19,
+      "prod_market": "ou25",
+      "side": "over"
+     },
+     "under": {
+      "mside": "over25_under",
+      "track": "new_format",
+      "league": "Denmark Superliga",
+      "month": "2026-11",
+      "config": "RAW|EDGE|max-|min-",
+      "config_basis": "NO_SELECTION_EVIDENCE",
+      "source": "RAW",
+      "measure": "EDGE",
+      "odds_max": null,
+      "odds_min": null,
+      "mode": "MODEL",
+      "valuable_th": 0.1,
+      "marksman_th": 0.1,
+      "sniper_th": 0.1,
+      "bar_basis": "LEARNED_BLEND",
+      "shrink_weight_at_valuable": 0.3507,
+      "wf_bets": 2,
+      "wf_roi": 0.35,
+      "wf_roi_shrunk": 0.0858,
+      "tier2": false,
+      "tier2_bets": 0,
+      "tier2_roi": null,
+      "source_params": {},
+      "verdict": "UNPROVEN",
+      "study_final": {
+       "bets": 0,
+       "roi": null,
+       "ci95": [
+        null,
+        null
+       ],
+       "p_one_sided": null,
+       "clv": null,
+       "clv_n": 0
+      },
+      "study_verdict": "OFF",
+      "study_reason": "INSUFFICIENT_SELECTION_EVIDENCE",
+      "prod_market": "ou25",
+      "side": "under"
+     }
+    },
+    "drop": false,
+    "source": "bars_opt",
+    "month": "2026-11",
+    "status": "UNPROVEN",
+    "approved": false,
+    "bets": 118,
+    "roi": 0.1119
+   },
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "evidence": {
+    "bets": 118,
+    "roi": 0.1119
+   },
+   "entry_hash": "c835b5bb179680577cfd1e78e705e880f5854597ff6b4aeed995e876df3950c5",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for Denmark Superliga",
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for Denmark Superliga",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.03,
+    "marksman": 0.03,
+    "valuable": 0.02,
+    "sniper_source": "best_params_standard[Denmark Superliga] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_standard[Denmark Superliga] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "serves_change": true
+  },
+  {
+   "entry_id": "ou25|Finland Veikkausliiga",
+   "league": "Finland Veikkausliiga",
+   "market": "ou25",
+   "production_file": "models/best_params_standard.json",
+   "current": null,
+   "proposed": {
+    "bars_opt": {
+     "over": {
+      "mside": "over25_over",
+      "track": "new_format",
+      "league": "Finland Veikkausliiga",
+      "month": "2026-11",
+      "config": "LEARNED|EDGE|max-|min1.4",
+      "config_basis": "FRESH_HOLDOUT_SELECTION",
+      "source": "LEARNED",
+      "measure": "EDGE",
+      "odds_max": null,
+      "odds_min": 1.4,
+      "mode": "MODEL",
+      "valuable_th": 0.02,
+      "marksman_th": 0.04,
+      "sniper_th": 0.04,
+      "bar_basis": "OWN_BETS",
+      "shrink_weight_at_valuable": 0.0,
+      "wf_bets": 82,
+      "wf_roi": 0.1699,
+      "wf_roi_shrunk": 0.0706,
+      "tier2": false,
+      "tier2_bets": 0,
+      "tier2_roi": null,
+      "source_params": {
+       "leagues": [
+        "Argentina Primera Division",
+        "Austrian Bundesliga",
+        "Brazil Serie A",
+        "China Super League",
+        "Denmark Superliga",
+        "Finland Veikkausliiga",
+        "Ireland Premier Division",
+        "Japan J-League",
+        "K-League 1",
+        "Mexico Liga MX",
+        "Norway Eliteserien",
+        "Sweden Allsvenskan",
+        "USA MLS"
+       ],
+       "coef": [
+        0.7400454585885251,
+        0.3714453135869889,
+        -0.08157868845610497,
+        -0.23698406673771427,
+        -0.18363858740417532,
+        -0.4117738868399888,
+        -0.006842869131234814,
+        -0.06559807810814049,
+        0.3503662115229121,
+        0.38680931405877783,
+        -0.26275209972153285,
+        -0.20113280144733744,
+        -0.16235750263290352,
+        0.14539637318125032,
+        0.061717012049177705,
+        0.266580199508843,
+        0.08967366276616849,
+        -0.30516778207949197,
+        0.32434869302385994,
+        0.07239603145496526,
+        -0.27810061482133364,
+        -0.1696908045378785,
+        0.011442881977097367,
+        0.057240431907736075,
+        0.21724440727119437,
+        0.0947092806481587,
+        0.16119150127306994,
+        8.08962910978216e-05,
+        -0.346865714698789,
+        0.07959210383420869
+       ],
+       "intercept": 0.1485624416368795
+      },
+      "verdict": "PROMISING",
+      "study_final": {
+       "bets": 45,
+       "roi": 0.1198,
+       "matchdays": 23,
+       "ci95": [
+        -0.1961,
+        0.4025
+       ],
+       "p_one_sided": 0.2199,
+       "clv": 0.0032,
+       "clv_n": 45
+      },
+      "study_verdict": "PROMISING",
+      "study_reason": null,
+      "fresh_holdout_p_holm": 1.0,
+      "fresh_holdout_family_size": 19,
+      "prod_market": "ou25",
+      "side": "over"
+     },
+     "under": {
+      "mside": "over25_under",
+      "track": "new_format",
+      "league": "Finland Veikkausliiga",
+      "month": "2026-11",
+      "config": "RAW|EDGE|max-|min-",
+      "config_basis": "NO_SELECTION_EVIDENCE",
+      "source": "RAW",
+      "measure": "EDGE",
+      "odds_max": null,
+      "odds_min": null,
+      "mode": "MODEL",
+      "valuable_th": 0.02,
+      "marksman_th": 0.02,
+      "sniper_th": 0.1,
+      "bar_basis": "LEARNED_BLEND",
+      "shrink_weight_at_valuable": 0.249,
+      "wf_bets": 24,
+      "wf_roi": 0.3337,
+      "wf_roi_shrunk": 0.0363,
+      "tier2": false,
+      "tier2_bets": 0,
+      "tier2_roi": null,
+      "source_params": {},
+      "verdict": "UNPROVEN",
+      "study_final": {
+       "bets": 0,
+       "roi": null,
+       "ci95": [
+        null,
+        null
+       ],
+       "p_one_sided": null,
+       "clv": null,
+       "clv_n": 0
+      },
+      "study_verdict": "OFF",
+      "study_reason": "INSUFFICIENT_SELECTION_EVIDENCE",
+      "prod_market": "ou25",
+      "side": "under"
+     }
+    },
+    "drop": false,
+    "source": "bars_opt",
+    "month": "2026-11",
+    "status": "PROMISING/UNPROVEN",
+    "approved": false,
+    "bets": 82,
+    "roi": 0.1699
+   },
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "evidence": {
+    "bets": 82,
+    "roi": 0.1699
+   },
+   "entry_hash": "875b961507bab77118ce63189a9a38f07ed9e827c4de9e330689a92518d665c8",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for Finland Veikkausliiga",
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for Finland Veikkausliiga",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.04,
+    "marksman": 0.04,
+    "valuable": 0.02,
+    "sniper_source": "best_params_standard[Finland Veikkausliiga] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_standard[Finland Veikkausliiga] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "serves_change": true
+  },
+  {
+   "entry_id": "ou25|Greek Super League",
+   "league": "Greek Super League",
+   "market": "ou25",
+   "production_file": "models/best_params_standard.json",
+   "current": null,
+   "proposed": {
+    "bars_opt": {
+     "over": {
+      "mside": "over25_over",
+      "track": "standard",
+      "league": "Greek Super League",
+      "month": "2026-11",
+      "config": "RAW|EDGE|max-|min-",
+      "config_basis": "SELECTED",
+      "source": "RAW",
+      "measure": "EDGE",
+      "odds_max": null,
+      "odds_min": null,
+      "mode": "MODEL",
+      "valuable_th": 0.1,
+      "marksman_th": 0.1,
+      "sniper_th": 0.11,
+      "bar_basis": "OWN_BETS",
+      "shrink_weight_at_valuable": 0.6858,
+      "wf_bets": 124,
+      "wf_roi": 0.042,
+      "wf_roi_shrunk": 0.0177,
+      "tier2": false,
+      "tier2_bets": 0,
+      "tier2_roi": null,
+      "source_params": {},
+      "verdict": "UNPROVEN",
+      "study_final": {
+       "bets": 1,
+       "roi": 1.25,
+       "matchdays": 1,
+       "ci95": [
+        null,
+        null
+       ],
+       "p_one_sided": null,
+       "clv": -0.0625,
+       "clv_n": 1
+      },
+      "study_verdict": "UNPROVEN",
+      "study_reason": null,
+      "prod_market": "ou25",
+      "side": "over"
+     }
+    },
+    "drop": false,
+    "source": "bars_opt",
+    "month": "2026-11",
+    "status": "UNPROVEN",
+    "approved": false,
+    "bets": 124,
+    "roi": 0.042
+   },
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "evidence": {
+    "bets": 124,
+    "roi": 0.042
+   },
+   "entry_hash": "2b6df337516e81f102ddfaeee8708d9c87ee6ff2c9370c7dd4cf8ef6d3706835",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for Greek Super League",
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for Greek Super League",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.11,
+    "marksman": 0.1,
+    "valuable": 0.1,
+    "sniper_source": "best_params_standard[Greek Super League] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_standard[Greek Super League] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "serves_change": true
+  },
+  {
+   "entry_id": "ou25|Ireland Premier Division",
+   "league": "Ireland Premier Division",
+   "market": "ou25",
+   "production_file": "models/best_params_standard.json",
+   "current": null,
+   "proposed": {
+    "bars_opt": {
+     "over": {
+      "mside": "over25_over",
+      "track": "new_format",
+      "league": "Ireland Premier Division",
+      "month": "2026-11",
+      "config": "NONE|ALL|max-|min-",
+      "config_basis": "SELECTED",
+      "source": "NONE",
+      "measure": "ALL",
+      "odds_max": null,
+      "odds_min": null,
+      "mode": "LEAGUE_WIDE",
+      "valuable_th": 0.02,
+      "marksman_th": 0.02,
+      "sniper_th": 0.3,
+      "bar_basis": "LEARNED_BLEND",
+      "shrink_weight_at_valuable": 0.4001,
+      "wf_bets": 38,
+      "wf_roi": 0.1061,
+      "wf_roi_shrunk": 0.0243,
+      "tier2": false,
+      "tier2_bets": 0,
+      "tier2_roi": null,
+      "source_params": {},
+      "verdict": "UNPROVEN",
+      "study_final": {
+       "bets": 0,
+       "roi": null,
+       "ci95": [
+        null,
+        null
+       ],
+       "p_one_sided": null,
+       "clv": null,
+       "clv_n": 0
+      },
+      "study_verdict": "OFF",
+      "study_reason": "INSUFFICIENT_SELECTION_EVIDENCE",
+      "prod_market": "ou25",
+      "side": "over"
+     }
+    },
+    "drop": false,
+    "source": "bars_opt",
+    "month": "2026-11",
+    "status": "UNPROVEN",
+    "approved": false,
+    "bets": 38,
+    "roi": 0.1061
+   },
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "evidence": {
+    "bets": 38,
+    "roi": 0.1061
+   },
+   "entry_hash": "1ba9ed0fc2ca8a2e6c35d2207f0920b1fdcd844947be05c70854ceecea46f6ca",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for Ireland Premier Division",
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for Ireland Premier Division",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.3,
+    "marksman": 0.02,
+    "valuable": 0.02,
+    "sniper_source": "best_params_standard[Ireland Premier Division] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_standard[Ireland Premier Division] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "serves_change": true
+  },
+  {
+   "entry_id": "ou25|Japan J-League",
+   "league": "Japan J-League",
+   "market": "ou25",
+   "production_file": "models/best_params_standard.json",
+   "current": null,
+   "proposed": {
+    "bars_opt": {
+     "under": {
+      "mside": "over25_under",
+      "track": "new_format",
+      "league": "Japan J-League",
+      "month": "2026-11",
+      "config": "RAW|EDGE|max-|min-",
+      "config_basis": "FRESH_HOLDOUT_SELECTION",
+      "source": "RAW",
+      "measure": "EDGE",
+      "odds_max": null,
+      "odds_min": null,
+      "mode": "MODEL",
+      "valuable_th": 0.02,
+      "marksman_th": 0.04,
+      "sniper_th": 0.04,
+      "bar_basis": "OWN_BETS",
+      "shrink_weight_at_valuable": 0.5531,
+      "wf_bets": 70,
+      "wf_roi": 0.1363,
+      "wf_roi_shrunk": 0.051,
+      "tier2": false,
+      "tier2_bets": 13,
+      "tier2_roi": -0.0492,
+      "source_params": {},
+      "verdict": "UNPROVEN",
+      "study_final": {
+       "bets": 42,
+       "roi": 0.2969,
+       "matchdays": 23,
+       "ci95": [
+        -0.0386,
+        0.6324
+       ],
+       "p_one_sided": 0.0215,
+       "clv": -0.0024,
+       "clv_n": 41
+      },
+      "study_verdict": "UNPROVEN",
+      "study_reason": null,
+      "fresh_holdout_p_holm": 0.4085,
+      "fresh_holdout_family_size": 19,
+      "prod_market": "ou25",
+      "side": "under"
+     }
+    },
+    "drop": false,
+    "source": "bars_opt",
+    "month": "2026-11",
+    "status": "UNPROVEN",
+    "approved": false,
+    "bets": 70,
+    "roi": 0.1363
+   },
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "evidence": {
+    "bets": 70,
+    "roi": 0.1363
+   },
+   "entry_hash": "6e49a2ca45565a6507556039c443a3fdd811cc615fa6c94fb0781a8ca9a17e33",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for Japan J-League",
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for Japan J-League",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.04,
+    "marksman": 0.04,
+    "valuable": 0.02,
+    "sniper_source": "best_params_standard[Japan J-League] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_standard[Japan J-League] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "serves_change": true
+  },
+  {
+   "entry_id": "ou25|K-League 1",
+   "league": "K-League 1",
+   "market": "ou25",
+   "production_file": "models/best_params_standard.json",
+   "current": null,
+   "proposed": {
+    "bars_opt": {
+     "over": {
+      "mside": "over25_over",
+      "track": "new_format",
+      "league": "K-League 1",
+      "month": "2026-11",
+      "config": "NONE|ALL|max-|min-",
+      "config_basis": "SELECTED",
+      "source": "NONE",
+      "measure": "ALL",
+      "odds_max": null,
+      "odds_min": null,
+      "mode": "LEAGUE_WIDE",
+      "valuable_th": 0.02,
+      "marksman_th": 0.02,
+      "sniper_th": 0.3,
+      "bar_basis": "LEARNED_BLEND",
+      "shrink_weight_at_valuable": 0.1349,
+      "wf_bets": 14,
+      "wf_roi": 0.3071,
+      "wf_roi_shrunk": 0.0153,
+      "tier2": false,
+      "tier2_bets": 0,
+      "tier2_roi": null,
+      "source_params": {},
+      "verdict": "UNPROVEN",
+      "study_final": {
+       "bets": 0,
+       "roi": null,
+       "ci95": [
+        null,
+        null
+       ],
+       "p_one_sided": null,
+       "clv": null,
+       "clv_n": 0
+      },
+      "study_verdict": "OFF",
+      "study_reason": "INSUFFICIENT_SELECTION_EVIDENCE",
+      "prod_market": "ou25",
+      "side": "over"
+     }
+    },
+    "drop": false,
+    "source": "bars_opt",
+    "month": "2026-11",
+    "status": "UNPROVEN",
+    "approved": false,
+    "bets": 14,
+    "roi": 0.3071
+   },
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "evidence": {
+    "bets": 14,
+    "roi": 0.3071
+   },
+   "entry_hash": "7819dc425cb9b81a6bf7dacb247819cf70783d37c425ab368cb48664a3a4c76d",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for K-League 1",
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for K-League 1",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.3,
+    "marksman": 0.02,
+    "valuable": 0.02,
+    "sniper_source": "best_params_standard[K-League 1] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_standard[K-League 1] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "serves_change": true
+  },
+  {
+   "entry_id": "ou25|La Liga 2",
+   "league": "La Liga 2",
+   "market": "ou25",
+   "production_file": "models/best_params_standard.json",
+   "current": {
+    "sniper_th": 0.16,
+    "marksman_th": 0.14,
+    "roi_insample": 25.7,
+    "bets_insample": 54,
+    "roi_oos": -8.23,
+    "bets_oos": 275,
+    "approved": false
+   },
+   "proposed": {
+    "bars_opt": {
+     "over": {
+      "mside": "over25_over",
+      "track": "standard",
+      "league": "La Liga 2",
+      "month": "2026-11",
+      "config": "RAW|EDGE|max-|min-",
+      "config_basis": "SELECTED",
+      "source": "RAW",
+      "measure": "EDGE",
+      "odds_max": null,
+      "odds_min": null,
+      "mode": "MODEL",
+      "valuable_th": 0.13,
+      "marksman_th": 0.17,
+      "sniper_th": 0.17,
+      "bar_basis": "OWN_BETS",
+      "shrink_weight_at_valuable": 0.968,
+      "wf_bets": 384,
+      "wf_roi": 0.0115,
+      "wf_roi_shrunk": 0.0099,
+      "tier2": false,
+      "tier2_bets": 221,
+      "tier2_roi": -0.0057,
+      "source_params": {},
+      "verdict": "PROMISING",
+      "study_final": {
+       "bets": 5,
+       "roi": 0.6,
+       "matchdays": 5,
+       "ci95": [
+        -0.6808,
+        1.8808
+       ],
+       "p_one_sided": 0.1019,
+       "clv": 0.0424,
+       "clv_n": 5
+      },
+      "study_verdict": "PROMISING",
+      "study_reason": null,
+      "prod_market": "ou25",
+      "side": "over"
+     }
+    },
+    "drop": false,
+    "source": "bars_opt",
+    "month": "2026-11",
+    "status": "PROMISING",
+    "approved": false,
+    "bets": 384,
+    "roi": 0.0115
+   },
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "evidence": {
+    "bets": 384,
+    "roi": 0.0115
+   },
+   "entry_hash": "d9dea31b74680101e3bf54c55478b657871eec8ea7434d6af021cc8f6f7f64d8",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: ou25 La Liga 2 lacks valuable_th",
+    "marksman_source": "NO_LEAGUE_BAR: ou25 La Liga 2 lacks valuable_th",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.17,
+    "marksman": 0.17,
+    "valuable": 0.13,
+    "sniper_source": "best_params_standard[La Liga 2] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_standard[La Liga 2] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "serves_change": true
+  },
+  {
+   "entry_id": "ou25|League One",
+   "league": "League One",
+   "market": "ou25",
+   "production_file": "models/best_params_standard.json",
+   "current": {
+    "sniper_th": 0.12,
+    "marksman_th": 0.1,
+    "roi_insample": 9.15,
+    "bets_insample": 59,
+    "roi_oos": -11.75,
+    "bets_oos": 57,
+    "approved": false
+   },
+   "proposed": {
+    "bars_opt": {
+     "over": {
+      "mside": "over25_over",
+      "track": "standard",
+      "league": "League One",
+      "month": "2026-11",
+      "config": "RAW|EDGE|max-|min-",
+      "config_basis": "SELECTED",
+      "source": "RAW",
+      "measure": "EDGE",
+      "odds_max": null,
+      "odds_min": null,
+      "mode": "MODEL",
+      "valuable_th": 0.11,
+      "marksman_th": 0.13,
+      "sniper_th": 0.13,
+      "bar_basis": "OWN_BETS",
+      "shrink_weight_at_valuable": 0.6701,
+      "wf_bets": 96,
+      "wf_roi": 0.0474,
+      "wf_roi_shrunk": 0.0168,
+      "tier2": false,
+      "tier2_bets": 44,
+      "tier2_roi": -0.0609,
+      "source_params": {},
+      "verdict": "UNPROVEN",
+      "study_final": {
+       "bets": 1,
+       "roi": -1.0,
+       "matchdays": 1,
+       "ci95": [
+        null,
+        null
+       ],
+       "p_one_sided": null,
+       "clv": 0.0238,
+       "clv_n": 1
+      },
+      "study_verdict": "UNPROVEN",
+      "study_reason": null,
+      "prod_market": "ou25",
+      "side": "over"
+     }
+    },
+    "drop": false,
+    "source": "bars_opt",
+    "month": "2026-11",
+    "status": "UNPROVEN",
+    "approved": false,
+    "bets": 96,
+    "roi": 0.0474
+   },
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "evidence": {
+    "bets": 96,
+    "roi": 0.0474
+   },
+   "entry_hash": "6481b8a0038a71f81818d03e827db86c0bbdbbc2e8f8893e6d16b4943a749f96",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: ou25 League One lacks valuable_th",
+    "marksman_source": "NO_LEAGUE_BAR: ou25 League One lacks valuable_th",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.13,
+    "marksman": 0.13,
+    "valuable": 0.11,
+    "sniper_source": "best_params_standard[League One] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_standard[League One] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "serves_change": true
+  },
+  {
+   "entry_id": "ou25|League Two",
+   "league": "League Two",
+   "market": "ou25",
+   "production_file": "models/best_params_standard.json",
+   "current": {
+    "sniper_th": 0.13,
+    "marksman_th": 0.11,
+    "roi_insample": 32.95,
+    "bets_insample": 40,
+    "roi_oos": 1.93,
+    "bets_oos": 152,
+    "approved": true
+   },
+   "proposed": null,
+   "change": "REMOVE",
+   "evidence": {},
+   "entry_hash": "5855b4defc28a0743ef9ee220fa4822d31e801739480abe0e078a982924ed6cd",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: ou25 League Two lacks valuable_th",
+    "marksman_source": "NO_LEAGUE_BAR: ou25 League Two lacks valuable_th",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for League Two",
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for League Two",
+    "own_bars": false
+   },
+   "serves_change": false
+  },
+  {
+   "entry_id": "ou25|Ligue 2",
+   "league": "Ligue 2",
+   "market": "ou25",
+   "production_file": "models/best_params_standard.json",
+   "current": {
+    "sniper_th": 0.14,
+    "marksman_th": 0.12,
+    "roi_insample": -2.82,
+    "bets_insample": 45,
+    "roi_oos": -9.4,
+    "bets_oos": 124,
+    "approved": false
+   },
+   "proposed": {
+    "bars_opt": {
+     "over": {
+      "mside": "over25_over",
+      "track": "standard",
+      "league": "Ligue 2",
+      "month": "2026-11",
+      "config": "RAW|EDGE|max-|min-",
+      "config_basis": "SELECTED",
+      "source": "RAW",
+      "measure": "EDGE",
+      "odds_max": null,
+      "odds_min": null,
+      "mode": "MODEL",
+      "valuable_th": 0.14,
+      "marksman_th": 0.14,
+      "sniper_th": 0.14,
+      "bar_basis": "OWN_BETS",
+      "shrink_weight_at_valuable": 0.8575,
+      "wf_bets": 69,
+      "wf_roi": 0.1093,
+      "wf_roi_shrunk": 0.0907,
+      "tier2": false,
+      "tier2_bets": 0,
+      "tier2_roi": null,
+      "source_params": {},
+      "verdict": "UNPROVEN",
+      "study_final": {
+       "bets": 0,
+       "roi": null,
+       "ci95": [
+        null,
+        null
+       ],
+       "p_one_sided": null,
+       "clv": null,
+       "clv_n": 0
+      },
+      "study_verdict": "UNPROVEN",
+      "study_reason": null,
+      "prod_market": "ou25",
+      "side": "over"
+     }
+    },
+    "drop": false,
+    "source": "bars_opt",
+    "month": "2026-11",
+    "status": "UNPROVEN",
+    "approved": false,
+    "bets": 69,
+    "roi": 0.1093
+   },
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "evidence": {
+    "bets": 69,
+    "roi": 0.1093
+   },
+   "entry_hash": "f79f6adb1acb9123a814123fb5a815518d665ff7fee53497d04b28bc1cc62d5a",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: ou25 Ligue 2 lacks valuable_th",
+    "marksman_source": "NO_LEAGUE_BAR: ou25 Ligue 2 lacks valuable_th",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.14,
+    "marksman": 0.14,
+    "valuable": 0.14,
+    "sniper_source": "best_params_standard[Ligue 2] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_standard[Ligue 2] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "serves_change": true
+  },
+  {
+   "entry_id": "ou25|Mexico Liga MX",
+   "league": "Mexico Liga MX",
+   "market": "ou25",
+   "production_file": "models/best_params_standard.json",
+   "current": null,
+   "proposed": {
+    "bars_opt": {
+     "over": {
+      "mside": "over25_over",
+      "track": "new_format",
+      "league": "Mexico Liga MX",
+      "month": "2026-11",
+      "config": "LEARNED|EDGE|max-|min1.4",
+      "config_basis": "FRESH_HOLDOUT_SELECTION",
+      "source": "LEARNED",
+      "measure": "EDGE",
+      "odds_max": null,
+      "odds_min": 1.4,
+      "mode": "MODEL",
+      "valuable_th": 0.02,
+      "marksman_th": 0.03,
+      "sniper_th": 0.03,
+      "bar_basis": "OWN_BETS",
+      "shrink_weight_at_valuable": 0.0,
+      "wf_bets": 103,
+      "wf_roi": 0.0899,
+      "wf_roi_shrunk": 0.0706,
+      "tier2": false,
+      "tier2_bets": 35,
+      "tier2_roi": -0.046,
+      "source_params": {
+       "leagues": [
+        "Argentina Primera Division",
+        "Austrian Bundesliga",
+        "Brazil Serie A",
+        "China Super League",
+        "Denmark Superliga",
+        "Finland Veikkausliiga",
+        "Ireland Premier Division",
+        "Japan J-League",
+        "K-League 1",
+        "Mexico Liga MX",
+        "Norway Eliteserien",
+        "Sweden Allsvenskan",
+        "USA MLS"
+       ],
+       "coef": [
+        0.7400454585885251,
+        0.3714453135869889,
+        -0.08157868845610497,
+        -0.23698406673771427,
+        -0.18363858740417532,
+        -0.4117738868399888,
+        -0.006842869131234814,
+        -0.06559807810814049,
+        0.3503662115229121,
+        0.38680931405877783,
+        -0.26275209972153285,
+        -0.20113280144733744,
+        -0.16235750263290352,
+        0.14539637318125032,
+        0.061717012049177705,
+        0.266580199508843,
+        0.08967366276616849,
+        -0.30516778207949197,
+        0.32434869302385994,
+        0.07239603145496526,
+        -0.27810061482133364,
+        -0.1696908045378785,
+        0.011442881977097367,
+        0.057240431907736075,
+        0.21724440727119437,
+        0.0947092806481587,
+        0.16119150127306994,
+        8.08962910978216e-05,
+        -0.346865714698789,
+        0.07959210383420869
+       ],
+       "intercept": 0.1485624416368795
+      },
+      "verdict": "UNPROVEN",
+      "study_final": {
+       "bets": 70,
+       "roi": 0.0409,
+       "matchdays": 35,
+       "ci95": [
+        -0.1861,
+        0.2927
+       ],
+       "p_one_sided": 0.3523,
+       "clv": -0.0181,
+       "clv_n": 70
+      },
+      "study_verdict": "UNPROVEN",
+      "study_reason": null,
+      "fresh_holdout_p_holm": 1.0,
+      "fresh_holdout_family_size": 19,
+      "prod_market": "ou25",
+      "side": "over"
+     }
+    },
+    "drop": false,
+    "source": "bars_opt",
+    "month": "2026-11",
+    "status": "UNPROVEN",
+    "approved": false,
+    "bets": 103,
+    "roi": 0.0899
+   },
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "evidence": {
+    "bets": 103,
+    "roi": 0.0899
+   },
+   "entry_hash": "855d71a8bb77add5789abf9cc4dcdfab4e8c3c9fed7239cfdb1ff0f3a3162701",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for Mexico Liga MX",
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for Mexico Liga MX",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.03,
+    "marksman": 0.03,
+    "valuable": 0.02,
+    "sniper_source": "best_params_standard[Mexico Liga MX] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_standard[Mexico Liga MX] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "serves_change": true
+  },
+  {
+   "entry_id": "ou25|Norway Eliteserien",
+   "league": "Norway Eliteserien",
+   "market": "ou25",
+   "production_file": "models/best_params_standard.json",
+   "current": null,
+   "proposed": {
+    "bars_opt": {
+     "over": {
+      "mside": "over25_over",
+      "track": "new_format",
+      "league": "Norway Eliteserien",
+      "month": "2026-11",
+      "config": "LEARNED|EDGE|max-|min1.4",
+      "config_basis": "FRESH_HOLDOUT_SELECTION",
+      "source": "LEARNED",
+      "measure": "EDGE",
+      "odds_max": null,
+      "odds_min": 1.4,
+      "mode": "MODEL",
+      "valuable_th": 0.02,
+      "marksman_th": 0.02,
+      "sniper_th": 0.02,
+      "bar_basis": "OWN_BETS",
+      "shrink_weight_at_valuable": 0.0,
+      "wf_bets": 54,
+      "wf_roi": -0.0083,
+      "wf_roi_shrunk": 0.0706,
+      "tier2": false,
+      "tier2_bets": 0,
+      "tier2_roi": null,
+      "source_params": {
+       "leagues": [
+        "Argentina Primera Division",
+        "Austrian Bundesliga",
+        "Brazil Serie A",
+        "China Super League",
+        "Denmark Superliga",
+        "Finland Veikkausliiga",
+        "Ireland Premier Division",
+        "Japan J-League",
+        "K-League 1",
+        "Mexico Liga MX",
+        "Norway Eliteserien",
+        "Sweden Allsvenskan",
+        "USA MLS"
+       ],
+       "coef": [
+        0.7400454585885251,
+        0.3714453135869889,
+        -0.08157868845610497,
+        -0.23698406673771427,
+        -0.18363858740417532,
+        -0.4117738868399888,
+        -0.006842869131234814,
+        -0.06559807810814049,
+        0.3503662115229121,
+        0.38680931405877783,
+        -0.26275209972153285,
+        -0.20113280144733744,
+        -0.16235750263290352,
+        0.14539637318125032,
+        0.061717012049177705,
+        0.266580199508843,
+        0.08967366276616849,
+        -0.30516778207949197,
+        0.32434869302385994,
+        0.07239603145496526,
+        -0.27810061482133364,
+        -0.1696908045378785,
+        0.011442881977097367,
+        0.057240431907736075,
+        0.21724440727119437,
+        0.0947092806481587,
+        0.16119150127306994,
+        8.08962910978216e-05,
+        -0.346865714698789,
+        0.07959210383420869
+       ],
+       "intercept": 0.1485624416368795
+      },
+      "verdict": "UNPROVEN",
+      "study_final": {
+       "bets": 61,
+       "roi": -0.0385,
+       "matchdays": 23,
+       "ci95": [
+        -0.2714,
+        0.1818
+       ],
+       "p_one_sided": 0.6172,
+       "clv": -0.0175,
+       "clv_n": 61
+      },
+      "study_verdict": "UNPROVEN",
+      "study_reason": null,
+      "fresh_holdout_p_holm": 1.0,
+      "fresh_holdout_family_size": 19,
+      "prod_market": "ou25",
+      "side": "over"
+     },
+     "under": {
+      "mside": "over25_under",
+      "track": "new_format",
+      "league": "Norway Eliteserien",
+      "month": "2026-11",
+      "config": "RAW|EDGE|max-|min-",
+      "config_basis": "FRESH_HOLDOUT_SELECTION",
+      "source": "RAW",
+      "measure": "EDGE",
+      "odds_max": null,
+      "odds_min": null,
+      "mode": "MODEL",
+      "valuable_th": 0.11,
+      "marksman_th": 0.11,
+      "sniper_th": 0.11,
+      "bar_basis": "OWN_BETS",
+      "shrink_weight_at_valuable": 0.7025,
+      "wf_bets": 42,
+      "wf_roi": 0.0417,
+      "wf_roi_shrunk": 0.0346,
+      "tier2": false,
+      "tier2_bets": 0,
+      "tier2_roi": null,
+      "source_params": {},
+      "verdict": "UNPROVEN",
+      "study_final": {
+       "bets": 9,
+       "roi": -0.3889,
+       "matchdays": 9,
+       "ci95": [
+        -1.1829,
+        0.4744
+       ],
+       "p_one_sided": 0.8906,
+       "clv": -0.013,
+       "clv_n": 9
+      },
+      "study_verdict": "UNPROVEN",
+      "study_reason": null,
+      "fresh_holdout_p_holm": 1.0,
+      "fresh_holdout_family_size": 19,
+      "prod_market": "ou25",
+      "side": "under"
+     }
+    },
+    "drop": false,
+    "source": "bars_opt",
+    "month": "2026-11",
+    "status": "UNPROVEN",
+    "approved": false,
+    "bets": 54,
+    "roi": -0.0083
+   },
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "evidence": {
+    "bets": 54,
+    "roi": -0.0083
+   },
+   "entry_hash": "168cbcc49bbf9381ede2b889f66f13919c26af207f68b468e36583327c6c9f89",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for Norway Eliteserien",
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for Norway Eliteserien",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.02,
+    "marksman": 0.02,
+    "valuable": 0.02,
+    "sniper_source": "best_params_standard[Norway Eliteserien] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_standard[Norway Eliteserien] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "serves_change": true
+  },
+  {
+   "entry_id": "ou25|Romanian Superliga",
+   "league": "Romanian Superliga",
+   "market": "ou25",
+   "production_file": "models/best_params_standard.json",
+   "current": null,
+   "proposed": {
+    "bars_opt": {
+     "under": {
+      "mside": "over25_under",
+      "track": "new_format",
+      "league": "Romanian Superliga",
+      "month": "2026-11",
+      "config": "RAW|EDGE|max-|min-",
+      "config_basis": "NO_SELECTION_EVIDENCE",
+      "source": "RAW",
+      "measure": "EDGE",
+      "odds_max": null,
+      "odds_min": null,
+      "mode": "MODEL",
+      "valuable_th": 0.1,
+      "marksman_th": 0.12,
+      "sniper_th": 0.12,
+      "bar_basis": "LEARNED_BLEND",
+      "shrink_weight_at_valuable": 0.8184,
+      "wf_bets": 7,
+      "wf_roi": 0.3143,
+      "wf_roi_shrunk": 0.2469,
+      "tier2": false,
+      "tier2_bets": 4,
+      "tier2_roi": -0.4875,
+      "source_params": {},
+      "verdict": "UNPROVEN",
+      "study_final": {
+       "bets": 0,
+       "roi": null,
+       "ci95": [
+        null,
+        null
+       ],
+       "p_one_sided": null,
+       "clv": null,
+       "clv_n": 0
+      },
+      "study_verdict": "OFF",
+      "study_reason": "INSUFFICIENT_SELECTION_EVIDENCE",
+      "prod_market": "ou25",
+      "side": "under"
+     }
+    },
+    "drop": false,
+    "source": "bars_opt",
+    "month": "2026-11",
+    "status": "UNPROVEN",
+    "approved": false,
+    "bets": 7,
+    "roi": 0.3143
+   },
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "evidence": {
+    "bets": 7,
+    "roi": 0.3143
+   },
+   "entry_hash": "fedfedf562fc78bfe6883c95cd804547f4ed948fc74c22a34297a58901231c24",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for Romanian Superliga",
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for Romanian Superliga",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.12,
+    "marksman": 0.12,
+    "valuable": 0.1,
+    "sniper_source": "best_params_standard[Romanian Superliga] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_standard[Romanian Superliga] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "serves_change": true
+  },
+  {
+   "entry_id": "ou25|Saudi Pro League",
+   "league": "Saudi Pro League",
+   "market": "ou25",
+   "production_file": "models/best_params_standard.json",
+   "current": null,
+   "proposed": {
+    "bars_opt": {
+     "under": {
+      "mside": "over25_under",
+      "track": "new_format",
+      "league": "Saudi Pro League",
+      "month": "2026-11",
+      "config": "RAW|EDGE|max-|min-",
+      "config_basis": "NO_SELECTION_EVIDENCE",
+      "source": "RAW",
+      "measure": "EDGE",
+      "odds_max": null,
+      "odds_min": null,
+      "mode": "MODEL",
+      "valuable_th": 0.1,
+      "marksman_th": 0.1,
+      "sniper_th": 0.1,
+      "bar_basis": "LEARNED_BLEND",
+      "shrink_weight_at_valuable": 0.9975,
+      "wf_bets": 2,
+      "wf_roi": 1.45,
+      "wf_roi_shrunk": 1.4462,
+      "tier2": false,
+      "tier2_bets": 0,
+      "tier2_roi": null,
+      "source_params": {},
+      "verdict": "UNPROVEN",
+      "study_final": {
+       "bets": 0,
+       "roi": null,
+       "ci95": [
+        null,
+        null
+       ],
+       "p_one_sided": null,
+       "clv": null,
+       "clv_n": 0
+      },
+      "study_verdict": "OFF",
+      "study_reason": "INSUFFICIENT_SELECTION_EVIDENCE",
+      "prod_market": "ou25",
+      "side": "under"
+     }
+    },
+    "drop": false,
+    "source": "bars_opt",
+    "month": "2026-11",
+    "status": "UNPROVEN",
+    "approved": false,
+    "bets": 2,
+    "roi": 1.45
+   },
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "evidence": {
+    "bets": 2,
+    "roi": 1.45
+   },
+   "entry_hash": "af45ee6871ea430d382a831b5a7c3c1eb5c35eddd411f8b9863bd33fd1f8e4ed",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for Saudi Pro League",
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for Saudi Pro League",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.1,
+    "marksman": 0.1,
+    "valuable": 0.1,
+    "sniper_source": "best_params_standard[Saudi Pro League] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_standard[Saudi Pro League] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "serves_change": true
+  },
+  {
+   "entry_id": "ou25|Serie B",
+   "league": "Serie B",
+   "market": "ou25",
+   "production_file": "models/best_params_standard.json",
+   "current": {
+    "sniper_th": 0.12,
+    "marksman_th": 0.1,
+    "roi_insample": 33.52,
+    "bets_insample": 44,
+    "roi_oos": 7.15,
+    "bets_oos": 171,
+    "approved": true
+   },
+   "proposed": {
+    "bars_opt": {
+     "over": {
+      "mside": "over25_over",
+      "track": "standard",
+      "league": "Serie B",
+      "month": "2026-11",
+      "config": "RAW|EDGE|max-|min-",
+      "config_basis": "SELECTED",
+      "source": "RAW",
+      "measure": "EDGE",
+      "odds_max": null,
+      "odds_min": null,
+      "mode": "MODEL",
+      "valuable_th": 0.09,
+      "marksman_th": 0.1,
+      "sniper_th": 0.16,
+      "bar_basis": "OWN_BETS",
+      "shrink_weight_at_valuable": 0.8217,
+      "wf_bets": 377,
+      "wf_roi": 0.0416,
+      "wf_roi_shrunk": 0.0229,
+      "tier2": false,
+      "tier2_bets": 71,
+      "tier2_roi": -0.0534,
+      "source_params": {},
+      "verdict": "UNPROVEN",
+      "study_final": {
+       "bets": 7,
+       "roi": -0.0357,
+       "matchdays": 6,
+       "ci95": [
+        -1.0335,
+        0.9621
+       ],
+       "p_one_sided": 0.5437,
+       "clv": 0.0871,
+       "clv_n": 7
+      },
+      "study_verdict": "UNPROVEN",
+      "study_reason": null,
+      "prod_market": "ou25",
+      "side": "over"
+     }
+    },
+    "drop": false,
+    "source": "bars_opt",
+    "month": "2026-11",
+    "status": "UNPROVEN",
+    "approved": false,
+    "bets": 377,
+    "roi": 0.0416
+   },
+   "change": "APPROVAL_REVOKED",
+   "evidence": {
+    "bets": 377,
+    "roi": 0.0416
+   },
+   "entry_hash": "6c0bf84e2b23c2ad55e7eb067a121887afd33ed850b5671d4ca830a0c0acd62d",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: ou25 Serie B lacks valuable_th",
+    "marksman_source": "NO_LEAGUE_BAR: ou25 Serie B lacks valuable_th",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.16,
+    "marksman": 0.1,
+    "valuable": 0.09,
+    "sniper_source": "best_params_standard[Serie B] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_standard[Serie B] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "serves_change": true
+  },
+  {
+   "entry_id": "ou25|Sweden Allsvenskan",
+   "league": "Sweden Allsvenskan",
+   "market": "ou25",
+   "production_file": "models/best_params_standard.json",
+   "current": null,
+   "proposed": {
+    "bars_opt": {
+     "over": {
+      "mside": "over25_over",
+      "track": "new_format",
+      "league": "Sweden Allsvenskan",
+      "month": "2026-11",
+      "config": "LEARNED|EDGE|max-|min1.4",
+      "config_basis": "FRESH_HOLDOUT_SELECTION",
+      "source": "LEARNED",
+      "measure": "EDGE",
+      "odds_max": null,
+      "odds_min": 1.4,
+      "mode": "MODEL",
+      "valuable_th": 0.02,
+      "marksman_th": 0.03,
+      "sniper_th": 0.03,
+      "bar_basis": "OWN_BETS",
+      "shrink_weight_at_valuable": 0.0,
+      "wf_bets": 131,
+      "wf_roi": 0.0689,
+      "wf_roi_shrunk": 0.0706,
+      "tier2": false,
+      "tier2_bets": 0,
+      "tier2_roi": null,
+      "source_params": {
+       "leagues": [
+        "Argentina Primera Division",
+        "Austrian Bundesliga",
+        "Brazil Serie A",
+        "China Super League",
+        "Denmark Superliga",
+        "Finland Veikkausliiga",
+        "Ireland Premier Division",
+        "Japan J-League",
+        "K-League 1",
+        "Mexico Liga MX",
+        "Norway Eliteserien",
+        "Sweden Allsvenskan",
+        "USA MLS"
+       ],
+       "coef": [
+        0.7400454585885251,
+        0.3714453135869889,
+        -0.08157868845610497,
+        -0.23698406673771427,
+        -0.18363858740417532,
+        -0.4117738868399888,
+        -0.006842869131234814,
+        -0.06559807810814049,
+        0.3503662115229121,
+        0.38680931405877783,
+        -0.26275209972153285,
+        -0.20113280144733744,
+        -0.16235750263290352,
+        0.14539637318125032,
+        0.061717012049177705,
+        0.266580199508843,
+        0.08967366276616849,
+        -0.30516778207949197,
+        0.32434869302385994,
+        0.07239603145496526,
+        -0.27810061482133364,
+        -0.1696908045378785,
+        0.011442881977097367,
+        0.057240431907736075,
+        0.21724440727119437,
+        0.0947092806481587,
+        0.16119150127306994,
+        8.08962910978216e-05,
+        -0.346865714698789,
+        0.07959210383420869
+       ],
+       "intercept": 0.1485624416368795
+      },
+      "verdict": "UNPROVEN",
+      "study_final": {
+       "bets": 59,
+       "roi": -0.1925,
+       "matchdays": 29,
+       "ci95": [
+        -0.4594,
+        0.0786
+       ],
+       "p_one_sided": 0.9195,
+       "clv": -0.029,
+       "clv_n": 59
+      },
+      "study_verdict": "UNPROVEN",
+      "study_reason": null,
+      "fresh_holdout_p_holm": 1.0,
+      "fresh_holdout_family_size": 19,
+      "prod_market": "ou25",
+      "side": "over"
+     },
+     "under": {
+      "mside": "over25_under",
+      "track": "new_format",
+      "league": "Sweden Allsvenskan",
+      "month": "2026-11",
+      "config": "RAW|EDGE|max-|min-",
+      "config_basis": "NO_SELECTION_EVIDENCE",
+      "source": "RAW",
+      "measure": "EDGE",
+      "odds_max": null,
+      "odds_min": null,
+      "mode": "MODEL",
+      "valuable_th": 0.02,
+      "marksman_th": 0.1,
+      "sniper_th": 0.12,
+      "bar_basis": "LEARNED_BLEND",
+      "shrink_weight_at_valuable": 0.2551,
+      "wf_bets": 34,
+      "wf_roi": 0.2721,
+      "wf_roi_shrunk": 0.023,
+      "tier2": false,
+      "tier2_bets": 18,
+      "tier2_roi": 0.0,
+      "source_params": {},
+      "verdict": "UNPROVEN",
+      "study_final": {
+       "bets": 0,
+       "roi": null,
+       "ci95": [
+        null,
+        null
+       ],
+       "p_one_sided": null,
+       "clv": null,
+       "clv_n": 0
+      },
+      "study_verdict": "OFF",
+      "study_reason": "INSUFFICIENT_SELECTION_EVIDENCE",
+      "prod_market": "ou25",
+      "side": "under"
+     }
+    },
+    "drop": false,
+    "source": "bars_opt",
+    "month": "2026-11",
+    "status": "UNPROVEN",
+    "approved": false,
+    "bets": 131,
+    "roi": 0.0689
+   },
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "evidence": {
+    "bets": 131,
+    "roi": 0.0689
+   },
+   "entry_hash": "479af0530fa773853b5846cb7511b2d1148982c8acc624950bd20863bc0929c3",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for Sweden Allsvenskan",
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for Sweden Allsvenskan",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.03,
+    "marksman": 0.03,
+    "valuable": 0.02,
+    "sniper_source": "best_params_standard[Sweden Allsvenskan] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_standard[Sweden Allsvenskan] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "serves_change": true
+  },
+  {
+   "entry_id": "ou25|USA MLS",
+   "league": "USA MLS",
+   "market": "ou25",
+   "production_file": "models/best_params_standard.json",
+   "current": null,
+   "proposed": {
+    "bars_opt": {
+     "over": {
+      "mside": "over25_over",
+      "track": "new_format",
+      "league": "USA MLS",
+      "month": "2026-11",
+      "config": "LEARNED|EDGE|max-|min1.4",
+      "config_basis": "FRESH_HOLDOUT_SELECTION",
+      "source": "LEARNED",
+      "measure": "EDGE",
+      "odds_max": null,
+      "odds_min": 1.4,
+      "mode": "MODEL",
+      "valuable_th": 0.02,
+      "marksman_th": 0.02,
+      "sniper_th": 0.03,
+      "bar_basis": "OWN_BETS",
+      "shrink_weight_at_valuable": 0.0,
+      "wf_bets": 171,
+      "wf_roi": 0.0005,
+      "wf_roi_shrunk": 0.0706,
+      "tier2": false,
+      "tier2_bets": 0,
+      "tier2_roi": null,
+      "source_params": {
+       "leagues": [
+        "Argentina Primera Division",
+        "Austrian Bundesliga",
+        "Brazil Serie A",
+        "China Super League",
+        "Denmark Superliga",
+        "Finland Veikkausliiga",
+        "Ireland Premier Division",
+        "Japan J-League",
+        "K-League 1",
+        "Mexico Liga MX",
+        "Norway Eliteserien",
+        "Sweden Allsvenskan",
+        "USA MLS"
+       ],
+       "coef": [
+        0.7400454585885251,
+        0.3714453135869889,
+        -0.08157868845610497,
+        -0.23698406673771427,
+        -0.18363858740417532,
+        -0.4117738868399888,
+        -0.006842869131234814,
+        -0.06559807810814049,
+        0.3503662115229121,
+        0.38680931405877783,
+        -0.26275209972153285,
+        -0.20113280144733744,
+        -0.16235750263290352,
+        0.14539637318125032,
+        0.061717012049177705,
+        0.266580199508843,
+        0.08967366276616849,
+        -0.30516778207949197,
+        0.32434869302385994,
+        0.07239603145496526,
+        -0.27810061482133364,
+        -0.1696908045378785,
+        0.011442881977097367,
+        0.057240431907736075,
+        0.21724440727119437,
+        0.0947092806481587,
+        0.16119150127306994,
+        8.08962910978216e-05,
+        -0.346865714698789,
+        0.07959210383420869
+       ],
+       "intercept": 0.1485624416368795
+      },
+      "verdict": "UNPROVEN",
+      "study_final": {
+       "bets": 105,
+       "roi": -0.1043,
+       "matchdays": 43,
+       "ci95": [
+        -0.2664,
+        0.0578
+       ],
+       "p_one_sided": 0.934,
+       "clv": -0.0044,
+       "clv_n": 104
+      },
+      "study_verdict": "UNPROVEN",
+      "study_reason": null,
+      "fresh_holdout_p_holm": 1.0,
+      "fresh_holdout_family_size": 19,
+      "prod_market": "ou25",
+      "side": "over"
+     },
+     "under": {
+      "mside": "over25_under",
+      "track": "new_format",
+      "league": "USA MLS",
+      "month": "2026-11",
+      "config": "RAW|EDGE|max-|min-",
+      "config_basis": "FRESH_HOLDOUT_SELECTION",
+      "source": "RAW",
+      "measure": "EDGE",
+      "odds_max": null,
+      "odds_min": null,
+      "mode": "MODEL",
+      "valuable_th": 0.07,
+      "marksman_th": 0.07,
+      "sniper_th": 0.07,
+      "bar_basis": "OWN_BETS",
+      "shrink_weight_at_valuable": 0.6789,
+      "wf_bets": 53,
+      "wf_roi": 0.0334,
+      "wf_roi_shrunk": 0.0065,
+      "tier2": false,
+      "tier2_bets": 0,
+      "tier2_roi": null,
+      "source_params": {},
+      "verdict": "UNPROVEN",
+      "study_final": {
+       "bets": 80,
+       "roi": -0.1415,
+       "matchdays": 32,
+       "ci95": [
+        -0.3894,
+        0.1064
+       ],
+       "p_one_sided": 0.907,
+       "clv": 0.0204,
+       "clv_n": 79
+      },
+      "study_verdict": "UNPROVEN",
+      "study_reason": null,
+      "fresh_holdout_p_holm": 1.0,
+      "fresh_holdout_family_size": 19,
+      "prod_market": "ou25",
+      "side": "under"
+     }
+    },
+    "drop": false,
+    "source": "bars_opt",
+    "month": "2026-11",
+    "status": "UNPROVEN",
+    "approved": false,
+    "bets": 171,
+    "roi": 0.0005
+   },
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "evidence": {
+    "bets": 171,
+    "roi": 0.0005
+   },
+   "entry_hash": "882037720c581f1d804fa2d099b8a908a2e74b31290f05f0fecf5ef3058fe849",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for USA MLS",
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for USA MLS",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.03,
+    "marksman": 0.02,
+    "valuable": 0.02,
+    "sniper_source": "best_params_standard[USA MLS] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_standard[USA MLS] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "serves_change": true
+  },
+  {
+   "entry_id": "btts|Argentina Primera Division",
+   "league": "Argentina Primera Division",
+   "market": "btts",
+   "production_file": "models/best_params_side_markets.json",
+   "current": null,
+   "proposed": {
+    "bars_opt": {
+     "yes": {
+      "mside": "btts_yes",
+      "track": "new_format",
+      "league": "Argentina Primera Division",
+      "month": "2026-11",
+      "config": "NONE|ALL|max-|min-",
+      "config_basis": "SELECTED",
+      "source": "NONE",
+      "measure": "ALL",
+      "odds_max": null,
+      "odds_min": null,
+      "mode": "LEAGUE_WIDE",
+      "valuable_th": 0.02,
+      "marksman_th": 0.02,
+      "sniper_th": 0.3,
+      "bar_basis": "OWN_BETS",
+      "shrink_weight_at_valuable": 0.5655,
+      "wf_bets": 97,
+      "wf_roi": 0.1741,
+      "wf_roi_shrunk": 0.0917,
+      "tier2": false,
+      "tier2_bets": 0,
+      "tier2_roi": null,
+      "source_params": {},
+      "verdict": "UNPROVEN",
+      "study_final": {
+       "bets": 0,
+       "roi": null,
+       "ci95": [
+        null,
+        null
+       ],
+       "p_one_sided": null,
+       "clv": null,
+       "clv_n": 0
+      },
+      "study_verdict": "OFF",
+      "study_reason": "INSUFFICIENT_SELECTION_EVIDENCE",
+      "prod_market": "btts",
+      "side": "yes"
+     }
+    },
+    "drop": false,
+    "source": "bars_opt",
+    "month": "2026-11",
+    "status": "UNPROVEN",
+    "approved": false,
+    "bets": 97,
+    "roi": 0.1741
+   },
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "evidence": {
+    "bets": 97,
+    "roi": 0.1741
+   },
+   "entry_hash": "c4680b1c8740bba3235152315d44da86bbdaeba3c8eb92037a7835c84eb4643b",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no btts params entry for Argentina Primera Division",
+    "marksman_source": "NO_LEAGUE_BAR: no btts params entry for Argentina Primera Division",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.3,
+    "marksman": 0.02,
+    "valuable": 0.02,
+    "sniper_source": "best_params_side_markets[btts][Argentina Primera Division] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[btts][Argentina Primera Division] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "serves_change": true
+  },
+  {
+   "entry_id": "btts|Brazil Serie A",
+   "league": "Brazil Serie A",
+   "market": "btts",
+   "production_file": "models/best_params_side_markets.json",
+   "current": null,
+   "proposed": {
+    "bars_opt": {
+     "yes": {
+      "mside": "btts_yes",
+      "track": "new_format",
+      "league": "Brazil Serie A",
+      "month": "2026-11",
+      "config": "NONE|ALL|max-|min-",
+      "config_basis": "SELECTED",
+      "source": "NONE",
+      "measure": "ALL",
+      "odds_max": null,
+      "odds_min": null,
+      "mode": "LEAGUE_WIDE",
+      "valuable_th": 0.02,
+      "marksman_th": 0.02,
+      "sniper_th": 0.3,
+      "bar_basis": "OWN_BETS",
+      "shrink_weight_at_valuable": 0.6123,
+      "wf_bets": 78,
+      "wf_roi": 0.0937,
+      "wf_roi_shrunk": 0.0513,
+      "tier2": false,
+      "tier2_bets": 0,
+      "tier2_roi": null,
+      "source_params": {},
+      "verdict": "UNPROVEN",
+      "study_final": {
+       "bets": 0,
+       "roi": null,
+       "ci95": [
+        null,
+        null
+       ],
+       "p_one_sided": null,
+       "clv": null,
+       "clv_n": 0
+      },
+      "study_verdict": "OFF",
+      "study_reason": "INSUFFICIENT_SELECTION_EVIDENCE",
+      "prod_market": "btts",
+      "side": "yes"
+     }
+    },
+    "drop": false,
+    "source": "bars_opt",
+    "month": "2026-11",
+    "status": "UNPROVEN",
+    "approved": false,
+    "bets": 78,
+    "roi": 0.0937
+   },
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "evidence": {
+    "bets": 78,
+    "roi": 0.0937
+   },
+   "entry_hash": "c610f901d6e2571ad9a4645558a78b6fe3e275ec2d0ee2d22aed180361f74af7",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no btts params entry for Brazil Serie A",
+    "marksman_source": "NO_LEAGUE_BAR: no btts params entry for Brazil Serie A",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.3,
+    "marksman": 0.02,
+    "valuable": 0.02,
+    "sniper_source": "best_params_side_markets[btts][Brazil Serie A] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[btts][Brazil Serie A] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "serves_change": true
+  },
+  {
+   "entry_id": "btts|Bundesliga 2",
+   "league": "Bundesliga 2",
+   "market": "btts",
+   "production_file": "models/best_params_side_markets.json",
+   "current": {
+    "sniper_th": 0.06,
+    "marksman_th": 0.04,
+    "roi": 47.59,
+    "bets": 40,
+    "drop": false,
+    "roi_oos": 34.53,
+    "bets_oos": 36,
+    "approved": true
+   },
+   "proposed": null,
+   "change": "REMOVE",
+   "evidence": {},
+   "entry_hash": "1761fdbef24affe693d58fe50e1da53e2eefe63232cc679798dc5c16f98eff79",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: btts Bundesliga 2 lacks valuable_th",
+    "marksman_source": "NO_LEAGUE_BAR: btts Bundesliga 2 lacks valuable_th",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no btts params entry for Bundesliga 2",
+    "marksman_source": "NO_LEAGUE_BAR: no btts params entry for Bundesliga 2",
+    "own_bars": false
+   },
+   "serves_change": false
+  },
+  {
+   "entry_id": "btts|Championship",
+   "league": "Championship",
+   "market": "btts",
+   "production_file": "models/best_params_side_markets.json",
+   "current": {
+    "sniper_th": 0.09,
+    "marksman_th": 0.07,
+    "roi": 13.68,
+    "bets": 21,
+    "drop": false,
+    "roi_oos": 12.73,
+    "bets_oos": 68,
+    "approved": true
+   },
+   "proposed": null,
+   "change": "REMOVE",
+   "evidence": {},
+   "entry_hash": "35b2b3b12fa4cd703426d79ff4d4701276bd767b19b4b9abe2dee1c6802f9db5",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: btts Championship lacks valuable_th",
+    "marksman_source": "NO_LEAGUE_BAR: btts Championship lacks valuable_th",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no btts params entry for Championship",
+    "marksman_source": "NO_LEAGUE_BAR: no btts params entry for Championship",
+    "own_bars": false
+   },
+   "serves_change": false
+  },
+  {
+   "entry_id": "btts|La Liga 2",
+   "league": "La Liga 2",
+   "market": "btts",
+   "production_file": "models/best_params_side_markets.json",
+   "current": {
+    "sniper_th": 0.1,
+    "marksman_th": 0.08,
+    "roi": 31.29,
+    "bets": 21,
+    "drop": false,
+    "roi_oos": 19.67,
+    "bets_oos": 6,
+    "approved": false
+   },
+   "proposed": null,
+   "change": "REMOVE",
+   "evidence": {},
+   "entry_hash": "2f6f6634a93a9e9b5f2bccdd0928ade7185c3dc29d08051ce961b9809d15a843",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: btts La Liga 2 lacks valuable_th",
+    "marksman_source": "NO_LEAGUE_BAR: btts La Liga 2 lacks valuable_th",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no btts params entry for La Liga 2",
+    "marksman_source": "NO_LEAGUE_BAR: no btts params entry for La Liga 2",
+    "own_bars": false
+   },
+   "serves_change": false
+  },
+  {
+   "entry_id": "btts|League One",
+   "league": "League One",
+   "market": "btts",
+   "production_file": "models/best_params_side_markets.json",
+   "current": {
+    "sniper_th": 0.09,
+    "marksman_th": 0.07,
+    "roi": 70.98,
+    "bets": 29,
+    "drop": false,
+    "roi_oos": 55.11,
+    "bets_oos": 7,
+    "approved": false
+   },
+   "proposed": null,
+   "change": "REMOVE",
+   "evidence": {},
+   "entry_hash": "9eb83b86cdc2055607dec5686e1e8fe0f40135729334f246c7140537b63d2078",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: btts League One lacks valuable_th",
+    "marksman_source": "NO_LEAGUE_BAR: btts League One lacks valuable_th",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no btts params entry for League One",
+    "marksman_source": "NO_LEAGUE_BAR: no btts params entry for League One",
+    "own_bars": false
+   },
+   "serves_change": false
+  },
+  {
+   "entry_id": "btts|League Two",
+   "league": "League Two",
+   "market": "btts",
+   "production_file": "models/best_params_side_markets.json",
+   "current": {
+    "sniper_th": 0.05,
+    "marksman_th": 0.04,
+    "roi": 12.97,
+    "bets": 74,
+    "drop": false,
+    "roi_oos": -11.03,
+    "bets_oos": 29,
+    "approved": false
+   },
+   "proposed": null,
+   "change": "REMOVE",
+   "evidence": {},
+   "entry_hash": "cf401e6505d4f5c9ef12a918a9ad1440253493c2bd8ce1e49d57679692d99b6b",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: btts League Two lacks valuable_th",
+    "marksman_source": "NO_LEAGUE_BAR: btts League Two lacks valuable_th",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no btts params entry for League Two",
+    "marksman_source": "NO_LEAGUE_BAR: no btts params entry for League Two",
+    "own_bars": false
+   },
+   "serves_change": false
+  },
+  {
+   "entry_id": "btts|Ligue 2",
+   "league": "Ligue 2",
+   "market": "btts",
+   "production_file": "models/best_params_side_markets.json",
+   "current": {
+    "sniper_th": 0.07,
+    "marksman_th": 0.05,
+    "roi": 28.12,
+    "bets": 27,
+    "drop": false,
+    "roi_oos": null,
+    "bets_oos": 0,
+    "approved": false
+   },
+   "proposed": null,
+   "change": "REMOVE",
+   "evidence": {},
+   "entry_hash": "e87df1eba44073c6f40f112dc28915160669c059d519e53636c2001d7167dc01",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: btts Ligue 2 lacks valuable_th",
+    "marksman_source": "NO_LEAGUE_BAR: btts Ligue 2 lacks valuable_th",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no btts params entry for Ligue 2",
+    "marksman_source": "NO_LEAGUE_BAR: no btts params entry for Ligue 2",
+    "own_bars": false
+   },
+   "serves_change": false
+  },
+  {
+   "entry_id": "btts|Mexico Liga MX",
+   "league": "Mexico Liga MX",
+   "market": "btts",
+   "production_file": "models/best_params_side_markets.json",
+   "current": null,
+   "proposed": {
+    "bars_opt": {
+     "yes": {
+      "mside": "btts_yes",
+      "track": "new_format",
+      "league": "Mexico Liga MX",
+      "month": "2026-11",
+      "config": "NONE|ALL|max-|min-",
+      "config_basis": "SELECTED",
+      "source": "NONE",
+      "measure": "ALL",
+      "odds_max": null,
+      "odds_min": null,
+      "mode": "LEAGUE_WIDE",
+      "valuable_th": 0.02,
+      "marksman_th": 0.02,
+      "sniper_th": 0.3,
+      "bar_basis": "OWN_BETS",
+      "shrink_weight_at_valuable": 0.6015,
+      "wf_bets": 59,
+      "wf_roi": 0.0315,
+      "wf_roi_shrunk": 0.0128,
+      "tier2": false,
+      "tier2_bets": 0,
+      "tier2_roi": null,
+      "source_params": {},
+      "verdict": "UNPROVEN",
+      "study_final": {
+       "bets": 0,
+       "roi": null,
+       "ci95": [
+        null,
+        null
+       ],
+       "p_one_sided": null,
+       "clv": null,
+       "clv_n": 0
+      },
+      "study_verdict": "OFF",
+      "study_reason": "INSUFFICIENT_SELECTION_EVIDENCE",
+      "prod_market": "btts",
+      "side": "yes"
+     }
+    },
+    "drop": false,
+    "source": "bars_opt",
+    "month": "2026-11",
+    "status": "UNPROVEN",
+    "approved": false,
+    "bets": 59,
+    "roi": 0.0315
+   },
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "evidence": {
+    "bets": 59,
+    "roi": 0.0315
+   },
+   "entry_hash": "abf87c7fb6353559a2e056d7d45e3de91fcd0bbd1a0560120b9d63c6a9716309",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no btts params entry for Mexico Liga MX",
+    "marksman_source": "NO_LEAGUE_BAR: no btts params entry for Mexico Liga MX",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.3,
+    "marksman": 0.02,
+    "valuable": 0.02,
+    "sniper_source": "best_params_side_markets[btts][Mexico Liga MX] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[btts][Mexico Liga MX] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "serves_change": true
+  },
+  {
+   "entry_id": "btts|Norway Eliteserien",
+   "league": "Norway Eliteserien",
+   "market": "btts",
+   "production_file": "models/best_params_side_markets.json",
+   "current": null,
+   "proposed": {
+    "bars_opt": {
+     "yes": {
+      "mside": "btts_yes",
+      "track": "new_format",
+      "league": "Norway Eliteserien",
+      "month": "2026-11",
+      "config": "NONE|ALL|max-|min-",
+      "config_basis": "SELECTED",
+      "source": "NONE",
+      "measure": "ALL",
+      "odds_max": null,
+      "odds_min": null,
+      "mode": "LEAGUE_WIDE",
+      "valuable_th": 0.02,
+      "marksman_th": 0.02,
+      "sniper_th": 0.3,
+      "bar_basis": "LEARNED_BLEND",
+      "shrink_weight_at_valuable": 0.5193,
+      "wf_bets": 35,
+      "wf_roi": 0.1251,
+      "wf_roi_shrunk": 0.0575,
+      "tier2": false,
+      "tier2_bets": 0,
+      "tier2_roi": null,
+      "source_params": {},
+      "verdict": "UNPROVEN",
+      "study_final": {
+       "bets": 0,
+       "roi": null,
+       "ci95": [
+        null,
+        null
+       ],
+       "p_one_sided": null,
+       "clv": null,
+       "clv_n": 0
+      },
+      "study_verdict": "OFF",
+      "study_reason": "INSUFFICIENT_SELECTION_EVIDENCE",
+      "prod_market": "btts",
+      "side": "yes"
+     }
+    },
+    "drop": false,
+    "source": "bars_opt",
+    "month": "2026-11",
+    "status": "UNPROVEN",
+    "approved": false,
+    "bets": 35,
+    "roi": 0.1251
+   },
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "evidence": {
+    "bets": 35,
+    "roi": 0.1251
+   },
+   "entry_hash": "02e39c0c963414c181c70d9973153ff2fa9d5fc41da2c3382e59bbe74e1410a8",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no btts params entry for Norway Eliteserien",
+    "marksman_source": "NO_LEAGUE_BAR: no btts params entry for Norway Eliteserien",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.3,
+    "marksman": 0.02,
+    "valuable": 0.02,
+    "sniper_source": "best_params_side_markets[btts][Norway Eliteserien] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[btts][Norway Eliteserien] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "serves_change": true
+  },
+  {
+   "entry_id": "btts|Serie B",
+   "league": "Serie B",
+   "market": "btts",
+   "production_file": "models/best_params_side_markets.json",
+   "current": {
+    "sniper_th": 0.08,
+    "marksman_th": 0.06,
+    "roi": 51.01,
+    "bets": 22,
+    "drop": false,
+    "roi_oos": null,
+    "bets_oos": 0,
+    "approved": false
+   },
+   "proposed": null,
+   "change": "REMOVE",
+   "evidence": {},
+   "entry_hash": "190d362f1dd828e3148d65683ac42d80e51c4d5f437dc9c632183c1de0ab5443",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: btts Serie B lacks valuable_th",
+    "marksman_source": "NO_LEAGUE_BAR: btts Serie B lacks valuable_th",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no btts params entry for Serie B",
+    "marksman_source": "NO_LEAGUE_BAR: no btts params entry for Serie B",
+    "own_bars": false
+   },
+   "serves_change": false
+  },
+  {
+   "entry_id": "over15|Argentina Primera Division",
+   "league": "Argentina Primera Division",
+   "market": "over15",
+   "production_file": "models/best_params_side_markets.json",
+   "current": null,
+   "proposed": {
+    "bars_opt": {
+     "yes": {
+      "mside": "over15_over",
+      "track": "new_format",
+      "league": "Argentina Primera Division",
+      "month": "2026-11",
+      "config": "RAW|EDGE|max-|min-",
+      "config_basis": "NO_SELECTION_EVIDENCE",
+      "source": "RAW",
+      "measure": "EDGE",
+      "odds_max": null,
+      "odds_min": null,
+      "mode": "MODEL",
+      "valuable_th": 0.02,
+      "marksman_th": 0.04,
+      "sniper_th": 0.04,
+      "bar_basis": "OWN_BETS",
+      "shrink_weight_at_valuable": 0.8036,
+      "wf_bets": 70,
+      "wf_roi": 0.0196,
+      "wf_roi_shrunk": 0.0233,
+      "tier2": false,
+      "tier2_bets": 7,
+      "tier2_roi": -0.4,
+      "source_params": {},
+      "verdict": "UNPROVEN",
+      "study_final": {
+       "bets": 0,
+       "roi": null,
+       "ci95": [
+        null,
+        null
+       ],
+       "p_one_sided": null,
+       "clv": null,
+       "clv_n": 0
+      },
+      "study_verdict": "OFF",
+      "study_reason": "INSUFFICIENT_SELECTION_EVIDENCE",
+      "prod_market": "over15",
+      "side": "yes"
+     }
+    },
+    "drop": false,
+    "source": "bars_opt",
+    "month": "2026-11",
+    "status": "UNPROVEN",
+    "approved": false,
+    "bets": 70,
+    "roi": 0.0196
+   },
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "evidence": {
+    "bets": 70,
+    "roi": 0.0196
+   },
+   "entry_hash": "c1cb952b760101d378760736ef0e7f1bcea77a3fc283115c6eedaa225d15b9a2",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over15 params entry for Argentina Primera Division",
+    "marksman_source": "NO_LEAGUE_BAR: no over15 params entry for Argentina Primera Division",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.04,
+    "marksman": 0.04,
+    "valuable": 0.02,
+    "sniper_source": "best_params_side_markets[over15][Argentina Primera Division] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[over15][Argentina Primera Division] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "serves_change": true
+  },
+  {
+   "entry_id": "over15|Belgian First Division A",
+   "league": "Belgian First Division A",
+   "market": "over15",
+   "production_file": "models/best_params_side_markets.json",
+   "current": null,
+   "proposed": {
+    "bars_opt": {
+     "yes": {
+      "mside": "over15_over",
+      "track": "standard",
+      "league": "Belgian First Division A",
+      "month": "2026-11",
+      "config": "RAW|EDGE|max-|min-",
+      "config_basis": "NO_SELECTION_EVIDENCE",
+      "source": "RAW",
+      "measure": "EDGE",
+      "odds_max": null,
+      "odds_min": null,
+      "mode": "MODEL",
+      "valuable_th": 0.02,
+      "marksman_th": 0.02,
+      "sniper_th": 0.02,
+      "bar_basis": "LEARNED_BLEND",
+      "shrink_weight_at_valuable": 0.959,
+      "wf_bets": 2,
+      "wf_roi": 0.32,
+      "wf_roi_shrunk": 0.3016,
+      "tier2": false,
+      "tier2_bets": 0,
+      "tier2_roi": null,
+      "source_params": {},
+      "verdict": "UNPROVEN",
+      "study_final": {
+       "bets": 0,
+       "roi": null,
+       "ci95": [
+        null,
+        null
+       ],
+       "p_one_sided": null,
+       "clv": null,
+       "clv_n": 0
+      },
+      "study_verdict": "OFF",
+      "study_reason": "INSUFFICIENT_SELECTION_EVIDENCE",
+      "prod_market": "over15",
+      "side": "yes"
+     }
+    },
+    "drop": false,
+    "source": "bars_opt",
+    "month": "2026-11",
+    "status": "UNPROVEN",
+    "approved": false,
+    "bets": 2,
+    "roi": 0.32
+   },
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "evidence": {
+    "bets": 2,
+    "roi": 0.32
+   },
+   "entry_hash": "e1d78b09b086faa60e114bd6fe44a0aa9c23da1e34af9a1117cd61ea7401260b",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over15 params entry for Belgian First Division A",
+    "marksman_source": "NO_LEAGUE_BAR: no over15 params entry for Belgian First Division A",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.02,
+    "marksman": 0.02,
+    "valuable": 0.02,
+    "sniper_source": "best_params_side_markets[over15][Belgian First Division A] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[over15][Belgian First Division A] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "serves_change": true
+  },
+  {
+   "entry_id": "over15|Brazil Serie A",
+   "league": "Brazil Serie A",
+   "market": "over15",
+   "production_file": "models/best_params_side_markets.json",
+   "current": null,
+   "proposed": {
+    "bars_opt": {
+     "yes": {
+      "mside": "over15_over",
+      "track": "new_format",
+      "league": "Brazil Serie A",
+      "month": "2026-11",
+      "config": "RAW|EDGE|max-|min-",
+      "config_basis": "NO_SELECTION_EVIDENCE",
+      "source": "RAW",
+      "measure": "EDGE",
+      "odds_max": null,
+      "odds_min": null,
+      "mode": "MODEL",
+      "valuable_th": 0.02,
+      "marksman_th": 0.02,
+      "sniper_th": 0.02,
+      "bar_basis": "LEARNED_BLEND",
+      "shrink_weight_at_valuable": 0.7771,
+      "wf_bets": 15,
+      "wf_roi": 0.2993,
+      "wf_roi_shrunk": 0.2412,
+      "tier2": false,
+      "tier2_bets": 0,
+      "tier2_roi": null,
+      "source_params": {},
+      "verdict": "UNPROVEN",
+      "study_final": {
+       "bets": 0,
+       "roi": null,
+       "ci95": [
+        null,
+        null
+       ],
+       "p_one_sided": null,
+       "clv": null,
+       "clv_n": 0
+      },
+      "study_verdict": "OFF",
+      "study_reason": "INSUFFICIENT_SELECTION_EVIDENCE",
+      "prod_market": "over15",
+      "side": "yes"
+     }
+    },
+    "drop": false,
+    "source": "bars_opt",
+    "month": "2026-11",
+    "status": "UNPROVEN",
+    "approved": false,
+    "bets": 15,
+    "roi": 0.2993
+   },
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "evidence": {
+    "bets": 15,
+    "roi": 0.2993
+   },
+   "entry_hash": "2ae51bb78e90a58f71a15dd46c4eada71cb5063c0f43891c4496617bdeb959f3",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over15 params entry for Brazil Serie A",
+    "marksman_source": "NO_LEAGUE_BAR: no over15 params entry for Brazil Serie A",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.02,
+    "marksman": 0.02,
+    "valuable": 0.02,
+    "sniper_source": "best_params_side_markets[over15][Brazil Serie A] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[over15][Brazil Serie A] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "serves_change": true
+  },
+  {
+   "entry_id": "over15|Bundesliga 2",
+   "league": "Bundesliga 2",
+   "market": "over15",
+   "production_file": "models/best_params_side_markets.json",
+   "current": {
+    "sniper_th": 0.04,
+    "marksman_th": 0.04,
+    "roi": null,
+    "bets": 0,
+    "drop": true,
+    "roi_oos": null,
+    "bets_oos": 0,
+    "approved": false
+   },
+   "proposed": null,
+   "change": "REMOVE",
+   "evidence": {},
+   "entry_hash": "861417f9e6b81a6c64e116f0c13b493f05979ea00a2fa29077d5c621e2eb835a",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: over15 switched OFF for Bundesliga 2 (drop)",
+    "marksman_source": "NO_LEAGUE_BAR: over15 switched OFF for Bundesliga 2 (drop)",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over15 params entry for Bundesliga 2",
+    "marksman_source": "NO_LEAGUE_BAR: no over15 params entry for Bundesliga 2",
+    "own_bars": false
+   },
+   "serves_change": false
+  },
+  {
+   "entry_id": "over15|Championship",
+   "league": "Championship",
+   "market": "over15",
+   "production_file": "models/best_params_side_markets.json",
+   "current": {
+    "sniper_th": 0.04,
+    "marksman_th": 0.04,
+    "roi": null,
+    "bets": 0,
+    "drop": true,
+    "roi_oos": null,
+    "bets_oos": 0,
+    "approved": false
+   },
+   "proposed": {
+    "bars_opt": {
+     "yes": {
+      "mside": "over15_over",
+      "track": "standard",
+      "league": "Championship",
+      "month": "2026-11",
+      "config": "RAW|EDGE|max-|min-",
+      "config_basis": "NO_SELECTION_EVIDENCE",
+      "source": "RAW",
+      "measure": "EDGE",
+      "odds_max": null,
+      "odds_min": null,
+      "mode": "MODEL",
+      "valuable_th": 0.03,
+      "marksman_th": 0.03,
+      "sniper_th": 0.03,
+      "bar_basis": "LEARNED_BLEND",
+      "shrink_weight_at_valuable": 0.9778,
+      "wf_bets": 2,
+      "wf_roi": 0.345,
+      "wf_roi_shrunk": 0.3347,
+      "tier2": false,
+      "tier2_bets": 0,
+      "tier2_roi": null,
+      "source_params": {},
+      "verdict": "UNPROVEN",
+      "study_final": {
+       "bets": 0,
+       "roi": null,
+       "ci95": [
+        null,
+        null
+       ],
+       "p_one_sided": null,
+       "clv": null,
+       "clv_n": 0
+      },
+      "study_verdict": "OFF",
+      "study_reason": "INSUFFICIENT_SELECTION_EVIDENCE",
+      "prod_market": "over15",
+      "side": "yes"
+     }
+    },
+    "drop": false,
+    "source": "bars_opt",
+    "month": "2026-11",
+    "status": "UNPROVEN",
+    "approved": false,
+    "bets": 2,
+    "roi": 0.345
+   },
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "evidence": {
+    "bets": 2,
+    "roi": 0.345
+   },
+   "entry_hash": "956c796b082dc5e1d7bde32b8a02fe272172ce0971d128a93017c34aba637313",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: over15 switched OFF for Championship (drop)",
+    "marksman_source": "NO_LEAGUE_BAR: over15 switched OFF for Championship (drop)",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.03,
+    "marksman": 0.03,
+    "valuable": 0.03,
+    "sniper_source": "best_params_side_markets[over15][Championship] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[over15][Championship] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "serves_change": true
+  },
+  {
+   "entry_id": "over15|Denmark Superliga",
+   "league": "Denmark Superliga",
+   "market": "over15",
+   "production_file": "models/best_params_side_markets.json",
+   "current": null,
+   "proposed": {
+    "bars_opt": {
+     "yes": {
+      "mside": "over15_over",
+      "track": "new_format",
+      "league": "Denmark Superliga",
+      "month": "2026-11",
+      "config": "LEARNED|EV|max-|min-",
+      "config_basis": "FRESH_HOLDOUT_SELECTION",
+      "source": "LEARNED",
+      "measure": "EV",
+      "odds_max": null,
+      "odds_min": null,
+      "mode": "MODEL",
+      "valuable_th": 0.02,
+      "marksman_th": 0.02,
+      "sniper_th": 0.02,
+      "bar_basis": "OWN_BETS",
+      "shrink_weight_at_valuable": 0.9666,
+      "wf_bets": 52,
+      "wf_roi": 0.0167,
+      "wf_roi_shrunk": 0.0185,
+      "tier2": false,
+      "tier2_bets": 0,
+      "tier2_roi": null,
+      "source_params": {
+       "leagues": [
+        "Argentina Primera Division",
+        "Austrian Bundesliga",
+        "Brazil Serie A",
+        "China Super League",
+        "Denmark Superliga",
+        "Finland Veikkausliiga",
+        "Ireland Premier Division",
+        "Japan J-League",
+        "K-League 1",
+        "Mexico Liga MX",
+        "Norway Eliteserien",
+        "Sweden Allsvenskan",
+        "USA MLS"
+       ],
+       "coef": [
+        0.7556624319616865,
+        0.30266843543828087,
+        -0.001760488000316967,
+        -0.0438800965094888,
+        -0.027859459009569744,
+        -0.3144989246213188,
+        -0.08299447059915847,
+        -0.04967638519595688,
+        0.23985915761303472,
+        0.2795550400407236,
+        0.13529364020441428,
+        -0.14820086348653938,
+        -0.2551622367337748,
+        0.0536891748137636,
+        -0.03337211051482785,
+        0.20252426995379327,
+        -0.12385680417014884,
+        -0.09744436706174875,
+        0.008172143017491421,
+        0.042817350327735045,
+        -0.12158679756111829,
+        -0.06422173949214185,
+        -0.004012324710800042,
+        0.003972830562699793,
+        0.21397440503641602,
+        0.01179030641533038,
+        0.1646450380022497,
+        -0.13342570430211678,
+        0.031881931170635716,
+        -0.05832355940494911
+       ],
+       "intercept": -0.04844439167680045
+      },
+      "verdict": "UNPROVEN",
+      "study_final": {
+       "bets": 17,
+       "roi": -0.0241,
+       "matchdays": 15,
+       "ci95": [
+        -0.324,
+        0.252
+       ],
+       "p_one_sided": 0.5492,
+       "clv": -0.0034,
+       "clv_n": 17
+      },
+      "study_verdict": "UNPROVEN",
+      "study_reason": null,
+      "fresh_holdout_p_holm": 1.0,
+      "fresh_holdout_family_size": 19,
+      "prod_market": "over15",
+      "side": "yes"
+     }
+    },
+    "drop": false,
+    "source": "bars_opt",
+    "month": "2026-11",
+    "status": "UNPROVEN",
+    "approved": false,
+    "bets": 52,
+    "roi": 0.0167
+   },
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "evidence": {
+    "bets": 52,
+    "roi": 0.0167
+   },
+   "entry_hash": "29911869d4f21e6f4f822f445fd3a8fb163bcb7e5d05b07004ec565705d4a7c2",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over15 params entry for Denmark Superliga",
+    "marksman_source": "NO_LEAGUE_BAR: no over15 params entry for Denmark Superliga",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.02,
+    "marksman": 0.02,
+    "valuable": 0.02,
+    "sniper_source": "best_params_side_markets[over15][Denmark Superliga] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[over15][Denmark Superliga] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "serves_change": true
+  },
+  {
+   "entry_id": "over15|Finland Veikkausliiga",
+   "league": "Finland Veikkausliiga",
+   "market": "over15",
+   "production_file": "models/best_params_side_markets.json",
+   "current": null,
+   "proposed": {
+    "bars_opt": {
+     "yes": {
+      "mside": "over15_over",
+      "track": "new_format",
+      "league": "Finland Veikkausliiga",
+      "month": "2026-11",
+      "config": "LEARNED|EV|max-|min-",
+      "config_basis": "FRESH_HOLDOUT_SELECTION",
+      "source": "LEARNED",
+      "measure": "EV",
+      "odds_max": null,
+      "odds_min": null,
+      "mode": "MODEL",
+      "valuable_th": 0.02,
+      "marksman_th": 0.03,
+      "sniper_th": 0.04,
+      "bar_basis": "OWN_BETS",
+      "shrink_weight_at_valuable": 0.9806,
+      "wf_bets": 89,
+      "wf_roi": 0.0375,
+      "wf_roi_shrunk": 0.0382,
+      "tier2": false,
+      "tier2_bets": 30,
+      "tier2_roi": -0.0883,
+      "source_params": {
+       "leagues": [
+        "Argentina Primera Division",
+        "Austrian Bundesliga",
+        "Brazil Serie A",
+        "China Super League",
+        "Denmark Superliga",
+        "Finland Veikkausliiga",
+        "Ireland Premier Division",
+        "Japan J-League",
+        "K-League 1",
+        "Mexico Liga MX",
+        "Norway Eliteserien",
+        "Sweden Allsvenskan",
+        "USA MLS"
+       ],
+       "coef": [
+        0.7556624319616865,
+        0.30266843543828087,
+        -0.001760488000316967,
+        -0.0438800965094888,
+        -0.027859459009569744,
+        -0.3144989246213188,
+        -0.08299447059915847,
+        -0.04967638519595688,
+        0.23985915761303472,
+        0.2795550400407236,
+        0.13529364020441428,
+        -0.14820086348653938,
+        -0.2551622367337748,
+        0.0536891748137636,
+        -0.03337211051482785,
+        0.20252426995379327,
+        -0.12385680417014884,
+        -0.09744436706174875,
+        0.008172143017491421,
+        0.042817350327735045,
+        -0.12158679756111829,
+        -0.06422173949214185,
+        -0.004012324710800042,
+        0.003972830562699793,
+        0.21397440503641602,
+        0.01179030641533038,
+        0.1646450380022497,
+        -0.13342570430211678,
+        0.031881931170635716,
+        -0.05832355940494911
+       ],
+       "intercept": -0.04844439167680045
+      },
+      "verdict": "UNPROVEN",
+      "study_final": {
+       "bets": 21,
+       "roi": -0.1567,
+       "matchdays": 14,
+       "ci95": [
+        -0.4943,
+        0.1809
+       ],
+       "p_one_sided": 0.8196,
+       "clv": -0.0054,
+       "clv_n": 21
+      },
+      "study_verdict": "UNPROVEN",
+      "study_reason": null,
+      "fresh_holdout_p_holm": 1.0,
+      "fresh_holdout_family_size": 19,
+      "prod_market": "over15",
+      "side": "yes"
+     }
+    },
+    "drop": false,
+    "source": "bars_opt",
+    "month": "2026-11",
+    "status": "UNPROVEN",
+    "approved": false,
+    "bets": 89,
+    "roi": 0.0375
+   },
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "evidence": {
+    "bets": 89,
+    "roi": 0.0375
+   },
+   "entry_hash": "0e73591186165b11404901e450ca66d9e4e401720e3acb539ecba8c65cf82c8f",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over15 params entry for Finland Veikkausliiga",
+    "marksman_source": "NO_LEAGUE_BAR: no over15 params entry for Finland Veikkausliiga",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.04,
+    "marksman": 0.03,
+    "valuable": 0.02,
+    "sniper_source": "best_params_side_markets[over15][Finland Veikkausliiga] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[over15][Finland Veikkausliiga] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "serves_change": true
+  },
+  {
+   "entry_id": "over15|K-League 1",
+   "league": "K-League 1",
+   "market": "over15",
+   "production_file": "models/best_params_side_markets.json",
+   "current": null,
+   "proposed": {
+    "bars_opt": {
+     "yes": {
+      "mside": "over15_over",
+      "track": "new_format",
+      "league": "K-League 1",
+      "month": "2026-11",
+      "config": "RAW|EDGE|max-|min-",
+      "config_basis": "NO_SELECTION_EVIDENCE",
+      "source": "RAW",
+      "measure": "EDGE",
+      "odds_max": null,
+      "odds_min": null,
+      "mode": "MODEL",
+      "valuable_th": 0.02,
+      "marksman_th": 0.02,
+      "sniper_th": 0.03,
+      "bar_basis": "LEARNED_BLEND",
+      "shrink_weight_at_valuable": 0.9976,
+      "wf_bets": 4,
+      "wf_roi": 0.345,
+      "wf_roi_shrunk": 0.3442,
+      "tier2": false,
+      "tier2_bets": 0,
+      "tier2_roi": null,
+      "source_params": {},
+      "verdict": "UNPROVEN",
+      "study_final": {
+       "bets": 0,
+       "roi": null,
+       "ci95": [
+        null,
+        null
+       ],
+       "p_one_sided": null,
+       "clv": null,
+       "clv_n": 0
+      },
+      "study_verdict": "OFF",
+      "study_reason": "INSUFFICIENT_SELECTION_EVIDENCE",
+      "prod_market": "over15",
+      "side": "yes"
+     }
+    },
+    "drop": false,
+    "source": "bars_opt",
+    "month": "2026-11",
+    "status": "UNPROVEN",
+    "approved": false,
+    "bets": 4,
+    "roi": 0.345
+   },
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "evidence": {
+    "bets": 4,
+    "roi": 0.345
+   },
+   "entry_hash": "8aa3d87ebb985c21fe9be9b7236c256e1ecc4b5093ef8ea22369558bef6f4b34",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over15 params entry for K-League 1",
+    "marksman_source": "NO_LEAGUE_BAR: no over15 params entry for K-League 1",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.03,
+    "marksman": 0.02,
+    "valuable": 0.02,
+    "sniper_source": "best_params_side_markets[over15][K-League 1] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[over15][K-League 1] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "serves_change": true
+  },
+  {
+   "entry_id": "over15|La Liga 2",
+   "league": "La Liga 2",
+   "market": "over15",
+   "production_file": "models/best_params_side_markets.json",
+   "current": {
+    "sniper_th": 0.04,
+    "marksman_th": 0.04,
+    "roi": null,
+    "bets": 0,
+    "drop": true,
+    "roi_oos": null,
+    "bets_oos": 0,
+    "approved": false
+   },
+   "proposed": null,
+   "change": "REMOVE",
+   "evidence": {},
+   "entry_hash": "8270bf75e59b872974aafd2eb2e536ee79787e042941454b7a114789b0b0fd82",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: over15 switched OFF for La Liga 2 (drop)",
+    "marksman_source": "NO_LEAGUE_BAR: over15 switched OFF for La Liga 2 (drop)",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over15 params entry for La Liga 2",
+    "marksman_source": "NO_LEAGUE_BAR: no over15 params entry for La Liga 2",
+    "own_bars": false
+   },
+   "serves_change": false
+  },
+  {
+   "entry_id": "over15|League One",
+   "league": "League One",
+   "market": "over15",
+   "production_file": "models/best_params_side_markets.json",
+   "current": {
+    "sniper_th": 0.04,
+    "marksman_th": 0.04,
+    "roi": null,
+    "bets": 0,
+    "drop": true,
+    "roi_oos": null,
+    "bets_oos": 0,
+    "approved": false
+   },
+   "proposed": null,
+   "change": "REMOVE",
+   "evidence": {},
+   "entry_hash": "ba87008ae90c83540f9531ed0ddd7d1e0dc68565c30efc2d00e309614bdbf410",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: over15 switched OFF for League One (drop)",
+    "marksman_source": "NO_LEAGUE_BAR: over15 switched OFF for League One (drop)",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over15 params entry for League One",
+    "marksman_source": "NO_LEAGUE_BAR: no over15 params entry for League One",
+    "own_bars": false
+   },
+   "serves_change": false
+  },
+  {
+   "entry_id": "over15|League Two",
+   "league": "League Two",
+   "market": "over15",
+   "production_file": "models/best_params_side_markets.json",
+   "current": {
+    "sniper_th": 0.04,
+    "marksman_th": 0.04,
+    "roi": null,
+    "bets": 0,
+    "drop": true,
+    "roi_oos": null,
+    "bets_oos": 0,
+    "approved": false
+   },
+   "proposed": null,
+   "change": "REMOVE",
+   "evidence": {},
+   "entry_hash": "523f87545e413dd35e7eae225074948e726ea85bcec84191cdb399c889c0b677",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: over15 switched OFF for League Two (drop)",
+    "marksman_source": "NO_LEAGUE_BAR: over15 switched OFF for League Two (drop)",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over15 params entry for League Two",
+    "marksman_source": "NO_LEAGUE_BAR: no over15 params entry for League Two",
+    "own_bars": false
+   },
+   "serves_change": false
+  },
+  {
+   "entry_id": "over15|Ligue 2",
+   "league": "Ligue 2",
+   "market": "over15",
+   "production_file": "models/best_params_side_markets.json",
+   "current": {
+    "sniper_th": 0.04,
+    "marksman_th": 0.04,
+    "roi": null,
+    "bets": 0,
+    "drop": true,
+    "roi_oos": null,
+    "bets_oos": 0,
+    "approved": false
+   },
+   "proposed": {
+    "bars_opt": {
+     "yes": {
+      "mside": "over15_over",
+      "track": "standard",
+      "league": "Ligue 2",
+      "month": "2026-11",
+      "config": "RAW|EDGE|max-|min-",
+      "config_basis": "NO_SELECTION_EVIDENCE",
+      "source": "RAW",
+      "measure": "EDGE",
+      "odds_max": null,
+      "odds_min": null,
+      "mode": "MODEL",
+      "valuable_th": 0.02,
+      "marksman_th": 0.04,
+      "sniper_th": 0.04,
+      "bar_basis": "LEARNED_BLEND",
+      "shrink_weight_at_valuable": 0.9894,
+      "wf_bets": 2,
+      "wf_roi": 0.42,
+      "wf_roi_shrunk": 0.4142,
+      "tier2": false,
+      "tier2_bets": 0,
+      "tier2_roi": null,
+      "source_params": {},
+      "verdict": "UNPROVEN",
+      "study_final": {
+       "bets": 0,
+       "roi": null,
+       "ci95": [
+        null,
+        null
+       ],
+       "p_one_sided": null,
+       "clv": null,
+       "clv_n": 0
+      },
+      "study_verdict": "OFF",
+      "study_reason": "INSUFFICIENT_SELECTION_EVIDENCE",
+      "prod_market": "over15",
+      "side": "yes"
+     }
+    },
+    "drop": false,
+    "source": "bars_opt",
+    "month": "2026-11",
+    "status": "UNPROVEN",
+    "approved": false,
+    "bets": 2,
+    "roi": 0.42
+   },
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "evidence": {
+    "bets": 2,
+    "roi": 0.42
+   },
+   "entry_hash": "5b43b0704b8d40e1ffeea00fc037998563afac4c09c0808ab98ca8c1a9eb906b",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: over15 switched OFF for Ligue 2 (drop)",
+    "marksman_source": "NO_LEAGUE_BAR: over15 switched OFF for Ligue 2 (drop)",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.04,
+    "marksman": 0.04,
+    "valuable": 0.02,
+    "sniper_source": "best_params_side_markets[over15][Ligue 2] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[over15][Ligue 2] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "serves_change": true
+  },
+  {
+   "entry_id": "over15|Mexico Liga MX",
+   "league": "Mexico Liga MX",
+   "market": "over15",
+   "production_file": "models/best_params_side_markets.json",
+   "current": null,
+   "proposed": {
+    "bars_opt": {
+     "yes": {
+      "mside": "over15_over",
+      "track": "new_format",
+      "league": "Mexico Liga MX",
+      "month": "2026-11",
+      "config": "RAW|EDGE|max-|min-",
+      "config_basis": "NO_SELECTION_EVIDENCE",
+      "source": "RAW",
+      "measure": "EDGE",
+      "odds_max": null,
+      "odds_min": null,
+      "mode": "MODEL",
+      "valuable_th": 0.02,
+      "marksman_th": 0.03,
+      "sniper_th": 0.03,
+      "bar_basis": "LEARNED_BLEND",
+      "shrink_weight_at_valuable": 0.1384,
+      "wf_bets": 3,
+      "wf_roi": -0.13,
+      "wf_roi_shrunk": 0.0152,
+      "tier2": false,
+      "tier2_bets": 0,
+      "tier2_roi": null,
+      "source_params": {},
+      "verdict": "UNPROVEN",
+      "study_final": {
+       "bets": 0,
+       "roi": null,
+       "ci95": [
+        null,
+        null
+       ],
+       "p_one_sided": null,
+       "clv": null,
+       "clv_n": 0
+      },
+      "study_verdict": "OFF",
+      "study_reason": "INSUFFICIENT_SELECTION_EVIDENCE",
+      "prod_market": "over15",
+      "side": "yes"
+     }
+    },
+    "drop": false,
+    "source": "bars_opt",
+    "month": "2026-11",
+    "status": "UNPROVEN",
+    "approved": false,
+    "bets": 3,
+    "roi": -0.13
+   },
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "evidence": {
+    "bets": 3,
+    "roi": -0.13
+   },
+   "entry_hash": "3e79dadbe32d58dc0d3c8bd956317ee9cd177d3dc8364398591c100833528e9c",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over15 params entry for Mexico Liga MX",
+    "marksman_source": "NO_LEAGUE_BAR: no over15 params entry for Mexico Liga MX",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.03,
+    "marksman": 0.03,
+    "valuable": 0.02,
+    "sniper_source": "best_params_side_markets[over15][Mexico Liga MX] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[over15][Mexico Liga MX] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "serves_change": true
+  },
+  {
+   "entry_id": "over15|Romanian Superliga",
+   "league": "Romanian Superliga",
+   "market": "over15",
+   "production_file": "models/best_params_side_markets.json",
+   "current": null,
+   "proposed": {
+    "bars_opt": {
+     "yes": {
+      "mside": "over15_over",
+      "track": "new_format",
+      "league": "Romanian Superliga",
+      "month": "2026-11",
+      "config": "RAW|EDGE|max-|min-",
+      "config_basis": "NO_SELECTION_EVIDENCE",
+      "source": "RAW",
+      "measure": "EDGE",
+      "odds_max": null,
+      "odds_min": null,
+      "mode": "MODEL",
+      "valuable_th": 0.04,
+      "marksman_th": 0.04,
+      "sniper_th": 0.07,
+      "bar_basis": "LEARNED_BLEND",
+      "shrink_weight_at_valuable": 0.0268,
+      "wf_bets": 4,
+      "wf_roi": -0.3,
+      "wf_roi_shrunk": 0.0315,
+      "tier2": false,
+      "tier2_bets": 0,
+      "tier2_roi": null,
+      "source_params": {},
+      "verdict": "UNPROVEN",
+      "study_final": {
+       "bets": 0,
+       "roi": null,
+       "ci95": [
+        null,
+        null
+       ],
+       "p_one_sided": null,
+       "clv": null,
+       "clv_n": 0
+      },
+      "study_verdict": "OFF",
+      "study_reason": "INSUFFICIENT_SELECTION_EVIDENCE",
+      "prod_market": "over15",
+      "side": "yes"
+     }
+    },
+    "drop": false,
+    "source": "bars_opt",
+    "month": "2026-11",
+    "status": "UNPROVEN",
+    "approved": false,
+    "bets": 4,
+    "roi": -0.3
+   },
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "evidence": {
+    "bets": 4,
+    "roi": -0.3
+   },
+   "entry_hash": "7b3bebb1cebd2091114d8cdda8f6f83ad0b258d58f24ce55868f83189d806b7b",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over15 params entry for Romanian Superliga",
+    "marksman_source": "NO_LEAGUE_BAR: no over15 params entry for Romanian Superliga",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.07,
+    "marksman": 0.04,
+    "valuable": 0.04,
+    "sniper_source": "best_params_side_markets[over15][Romanian Superliga] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[over15][Romanian Superliga] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "serves_change": true
+  },
+  {
+   "entry_id": "over15|Saudi Pro League",
+   "league": "Saudi Pro League",
+   "market": "over15",
+   "production_file": "models/best_params_side_markets.json",
+   "current": null,
+   "proposed": {
+    "bars_opt": {
+     "yes": {
+      "mside": "over15_over",
+      "track": "new_format",
+      "league": "Saudi Pro League",
+      "month": "2026-11",
+      "config": "RAW|EDGE|max-|min-",
+      "config_basis": "NO_SELECTION_EVIDENCE",
+      "source": "RAW",
+      "measure": "EDGE",
+      "odds_max": null,
+      "odds_min": null,
+      "mode": "MODEL",
+      "valuable_th": 0.02,
+      "marksman_th": 0.02,
+      "sniper_th": 0.07,
+      "bar_basis": "LEARNED_BLEND",
+      "shrink_weight_at_valuable": 0.0,
+      "wf_bets": 3,
+      "wf_roi": 0.33,
+      "wf_roi_shrunk": 0.0385,
+      "tier2": false,
+      "tier2_bets": 0,
+      "tier2_roi": null,
+      "source_params": {},
+      "verdict": "UNPROVEN",
+      "study_final": {
+       "bets": 0,
+       "roi": null,
+       "ci95": [
+        null,
+        null
+       ],
+       "p_one_sided": null,
+       "clv": null,
+       "clv_n": 0
+      },
+      "study_verdict": "OFF",
+      "study_reason": "INSUFFICIENT_SELECTION_EVIDENCE",
+      "prod_market": "over15",
+      "side": "yes"
+     }
+    },
+    "drop": false,
+    "source": "bars_opt",
+    "month": "2026-11",
+    "status": "UNPROVEN",
+    "approved": false,
+    "bets": 3,
+    "roi": 0.33
+   },
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "evidence": {
+    "bets": 3,
+    "roi": 0.33
+   },
+   "entry_hash": "ff0497fb734b7fed71ce1081d2cb8dee016cc9b20a116b55f8b83d9a42e22a21",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over15 params entry for Saudi Pro League",
+    "marksman_source": "NO_LEAGUE_BAR: no over15 params entry for Saudi Pro League",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.07,
+    "marksman": 0.02,
+    "valuable": 0.02,
+    "sniper_source": "best_params_side_markets[over15][Saudi Pro League] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[over15][Saudi Pro League] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "serves_change": true
+  },
+  {
+   "entry_id": "over15|Serie B",
+   "league": "Serie B",
+   "market": "over15",
+   "production_file": "models/best_params_side_markets.json",
+   "current": {
+    "sniper_th": 0.04,
+    "marksman_th": 0.04,
+    "roi": null,
+    "bets": 0,
+    "drop": true,
+    "roi_oos": null,
+    "bets_oos": 0,
+    "approved": false
+   },
+   "proposed": {
+    "bars_opt": {
+     "yes": {
+      "mside": "over15_over",
+      "track": "standard",
+      "league": "Serie B",
+      "month": "2026-11",
+      "config": "RAW|EDGE|max-|min-",
+      "config_basis": "NO_SELECTION_EVIDENCE",
+      "source": "RAW",
+      "measure": "EDGE",
+      "odds_max": null,
+      "odds_min": null,
+      "mode": "MODEL",
+      "valuable_th": 0.04,
+      "marksman_th": 0.04,
+      "sniper_th": 0.04,
+      "bar_basis": "LEARNED_BLEND",
+      "shrink_weight_at_valuable": 0.8311,
+      "wf_bets": 13,
+      "wf_roi": 0.0738,
+      "wf_roi_shrunk": 0.0429,
+      "tier2": false,
+      "tier2_bets": 0,
+      "tier2_roi": null,
+      "source_params": {},
+      "verdict": "UNPROVEN",
+      "study_final": {
+       "bets": 0,
+       "roi": null,
+       "ci95": [
+        null,
+        null
+       ],
+       "p_one_sided": null,
+       "clv": null,
+       "clv_n": 0
+      },
+      "study_verdict": "OFF",
+      "study_reason": "INSUFFICIENT_SELECTION_EVIDENCE",
+      "prod_market": "over15",
+      "side": "yes"
+     }
+    },
+    "drop": false,
+    "source": "bars_opt",
+    "month": "2026-11",
+    "status": "UNPROVEN",
+    "approved": false,
+    "bets": 13,
+    "roi": 0.0738
+   },
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "evidence": {
+    "bets": 13,
+    "roi": 0.0738
+   },
+   "entry_hash": "d327e168a6ba9b53d08f959f73bf0054050748c0dc58a0254e7a19bd3b613db3",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: over15 switched OFF for Serie B (drop)",
+    "marksman_source": "NO_LEAGUE_BAR: over15 switched OFF for Serie B (drop)",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.04,
+    "marksman": 0.04,
+    "valuable": 0.04,
+    "sniper_source": "best_params_side_markets[over15][Serie B] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[over15][Serie B] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "serves_change": true
+  },
+  {
+   "entry_id": "over15|Sweden Allsvenskan",
+   "league": "Sweden Allsvenskan",
+   "market": "over15",
+   "production_file": "models/best_params_side_markets.json",
+   "current": null,
+   "proposed": {
+    "bars_opt": {
+     "yes": {
+      "mside": "over15_over",
+      "track": "new_format",
+      "league": "Sweden Allsvenskan",
+      "month": "2026-11",
+      "config": "LEARNED|EV|max-|min-",
+      "config_basis": "FRESH_HOLDOUT_SELECTION",
+      "source": "LEARNED",
+      "measure": "EV",
+      "odds_max": null,
+      "odds_min": null,
+      "mode": "MODEL",
+      "valuable_th": 0.02,
+      "marksman_th": 0.02,
+      "sniper_th": 0.02,
+      "bar_basis": "OWN_BETS",
+      "shrink_weight_at_valuable": 0.9675,
+      "wf_bets": 45,
+      "wf_roi": 0.1207,
+      "wf_roi_shrunk": 0.1191,
+      "tier2": false,
+      "tier2_bets": 0,
+      "tier2_roi": null,
+      "source_params": {
+       "leagues": [
+        "Argentina Primera Division",
+        "Austrian Bundesliga",
+        "Brazil Serie A",
+        "China Super League",
+        "Denmark Superliga",
+        "Finland Veikkausliiga",
+        "Ireland Premier Division",
+        "Japan J-League",
+        "K-League 1",
+        "Mexico Liga MX",
+        "Norway Eliteserien",
+        "Sweden Allsvenskan",
+        "USA MLS"
+       ],
+       "coef": [
+        0.7556624319616865,
+        0.30266843543828087,
+        -0.001760488000316967,
+        -0.0438800965094888,
+        -0.027859459009569744,
+        -0.3144989246213188,
+        -0.08299447059915847,
+        -0.04967638519595688,
+        0.23985915761303472,
+        0.2795550400407236,
+        0.13529364020441428,
+        -0.14820086348653938,
+        -0.2551622367337748,
+        0.0536891748137636,
+        -0.03337211051482785,
+        0.20252426995379327,
+        -0.12385680417014884,
+        -0.09744436706174875,
+        0.008172143017491421,
+        0.042817350327735045,
+        -0.12158679756111829,
+        -0.06422173949214185,
+        -0.004012324710800042,
+        0.003972830562699793,
+        0.21397440503641602,
+        0.01179030641533038,
+        0.1646450380022497,
+        -0.13342570430211678,
+        0.031881931170635716,
+        -0.05832355940494911
+       ],
+       "intercept": -0.04844439167680045
+      },
+      "verdict": "UNPROVEN",
+      "study_final": {
+       "bets": 10,
+       "roi": -0.035,
+       "matchdays": 10,
+       "ci95": [
+        -0.5404,
+        0.4704
+       ],
+       "p_one_sided": 0.6042,
+       "clv": -0.0205,
+       "clv_n": 10
+      },
+      "study_verdict": "UNPROVEN",
+      "study_reason": null,
+      "fresh_holdout_p_holm": 1.0,
+      "fresh_holdout_family_size": 19,
+      "prod_market": "over15",
+      "side": "yes"
+     }
+    },
+    "drop": false,
+    "source": "bars_opt",
+    "month": "2026-11",
+    "status": "UNPROVEN",
+    "approved": false,
+    "bets": 45,
+    "roi": 0.1207
+   },
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "evidence": {
+    "bets": 45,
+    "roi": 0.1207
+   },
+   "entry_hash": "d9c1f019410374d3161288897b4b45911bc62c7f5800dd333894d37225562273",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over15 params entry for Sweden Allsvenskan",
+    "marksman_source": "NO_LEAGUE_BAR: no over15 params entry for Sweden Allsvenskan",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.02,
+    "marksman": 0.02,
+    "valuable": 0.02,
+    "sniper_source": "best_params_side_markets[over15][Sweden Allsvenskan] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[over15][Sweden Allsvenskan] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "serves_change": true
+  },
+  {
+   "entry_id": "over35|Bundesliga 2",
+   "league": "Bundesliga 2",
+   "market": "over35",
+   "production_file": "models/best_params_side_markets.json",
+   "current": {
+    "sniper_th": 0.04,
+    "marksman_th": 0.04,
+    "roi": null,
+    "bets": 0,
+    "drop": true,
+    "roi_oos": null,
+    "bets_oos": 0,
+    "approved": false
+   },
+   "proposed": null,
+   "change": "REMOVE",
+   "evidence": {},
+   "entry_hash": "550f51bbff5429c44bf2f65d9517598207376c124296fa7599c950859567f7a8",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: over35 switched OFF for Bundesliga 2 (drop)",
+    "marksman_source": "NO_LEAGUE_BAR: over35 switched OFF for Bundesliga 2 (drop)",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over35 params entry for Bundesliga 2",
+    "marksman_source": "NO_LEAGUE_BAR: no over35 params entry for Bundesliga 2",
+    "own_bars": false
+   },
+   "serves_change": false
+  },
+  {
+   "entry_id": "over35|Championship",
+   "league": "Championship",
+   "market": "over35",
+   "production_file": "models/best_params_side_markets.json",
+   "current": {
+    "sniper_th": 0.04,
+    "marksman_th": 0.04,
+    "roi": null,
+    "bets": 0,
+    "drop": true,
+    "roi_oos": null,
+    "bets_oos": 0,
+    "approved": false
+   },
+   "proposed": {
+    "bars_opt": {
+     "yes": {
+      "mside": "over35_over",
+      "track": "standard",
+      "league": "Championship",
+      "month": "2026-11",
+      "config": "LEARNED|EDGE|max-|min-",
+      "config_basis": "SELECTED",
+      "source": "LEARNED",
+      "measure": "EDGE",
+      "odds_max": null,
+      "odds_min": null,
+      "mode": "MODEL",
+      "valuable_th": 0.02,
+      "marksman_th": 0.07,
+      "sniper_th": 0.07,
+      "bar_basis": "OWN_BETS",
+      "shrink_weight_at_valuable": 0.0,
+      "wf_bets": 94,
+      "wf_roi": 0.1274,
+      "wf_roi_shrunk": 0.1489,
+      "tier2": false,
+      "tier2_bets": 30,
+      "tier2_roi": -0.1683,
+      "source_params": {
+       "leagues": [
+        "Belgian First Division A",
+        "Bundesliga 2",
+        "Championship",
+        "Dutch Eredivisie",
+        "Greek Super League",
+        "La Liga 2",
+        "League One",
+        "League Two",
+        "Ligue 2",
+        "National League",
+        "Portuguese Primeira Liga",
+        "Scottish Championship",
+        "Scottish League One",
+        "Scottish League Two",
+        "Scottish Premiership",
+        "Serie B",
+        "Turkish Super Lig"
+       ],
+       "coef": [
+        0.7166263405335197,
+        0.03598806710486026,
+        -0.16138224653593902,
+        -0.38969032549384597,
+        -0.070314584683872,
+        -0.40996719058439307,
+        0.3501881334370247,
+        0.13036584969299525,
+        -0.07495838896965235,
+        0.34270442049408867,
+        0.06794580366920282,
+        0.02086884241347276,
+        0.0365650000281186,
+        -0.030429417044414056,
+        0.43502969373511075,
+        -0.10301048386127382,
+        -0.3326765754933781,
+        -0.04129410441200124,
+        -0.20119529605647188,
+        -0.1717104693935788,
+        0.08273890982467028,
+        -0.1659605082736873,
+        -0.014012909881796628,
+        -0.10694352147732057,
+        0.04305040807052036,
+        0.05347872790286297,
+        0.19774028916666384,
+        0.06753731214114553,
+        0.0043087974262821845,
+        0.03892742640878644,
+        -0.08300427167824465,
+        -0.03047448298379851,
+        -0.0029211321649692404,
+        -0.07001513414072141,
+        0.02589460667137294,
+        -0.05254411741161527,
+        0.005635129403370413,
+        -0.0720788657147899
+       ],
+       "intercept": 0.20022499780284403
+      },
+      "verdict": "UNPROVEN",
+      "study_final": {
+       "bets": 0,
+       "roi": null,
+       "ci95": [
+        null,
+        null
+       ],
+       "p_one_sided": null,
+       "clv": null,
+       "clv_n": 0
+      },
+      "study_verdict": "OFF",
+      "study_reason": "INSUFFICIENT_SELECTION_EVIDENCE",
+      "prod_market": "over35",
+      "side": "yes"
+     }
+    },
+    "drop": false,
+    "source": "bars_opt",
+    "month": "2026-11",
+    "status": "UNPROVEN",
+    "approved": false,
+    "bets": 94,
+    "roi": 0.1274
+   },
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "evidence": {
+    "bets": 94,
+    "roi": 0.1274
+   },
+   "entry_hash": "0ea4fb779c07566721dfaf18c0a939d7686b002c6ee8b68b452d59f1bc2b79ca",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: over35 switched OFF for Championship (drop)",
+    "marksman_source": "NO_LEAGUE_BAR: over35 switched OFF for Championship (drop)",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.07,
+    "marksman": 0.07,
+    "valuable": 0.02,
+    "sniper_source": "best_params_side_markets[over35][Championship] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[over35][Championship] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "serves_change": true
+  },
+  {
+   "entry_id": "over35|Denmark Superliga",
+   "league": "Denmark Superliga",
+   "market": "over35",
+   "production_file": "models/best_params_side_markets.json",
+   "current": null,
+   "proposed": {
+    "bars_opt": {
+     "yes": {
+      "mside": "over35_over",
+      "track": "new_format",
+      "league": "Denmark Superliga",
+      "month": "2026-11",
+      "config": "LEARNED|EDGE|max-|min-",
+      "config_basis": "FRESH_HOLDOUT_SELECTION",
+      "source": "LEARNED",
+      "measure": "EDGE",
+      "odds_max": null,
+      "odds_min": null,
+      "mode": "MODEL",
+      "valuable_th": 0.02,
+      "marksman_th": 0.02,
+      "sniper_th": 0.05,
+      "bar_basis": "OWN_BETS",
+      "shrink_weight_at_valuable": 0.0,
+      "wf_bets": 133,
+      "wf_roi": 0.0466,
+      "wf_roi_shrunk": 0.116,
+      "tier2": false,
+      "tier2_bets": 0,
+      "tier2_roi": null,
+      "source_params": {
+       "leagues": [
+        "Argentina Primera Division",
+        "Austrian Bundesliga",
+        "Brazil Serie A",
+        "China Super League",
+        "Denmark Superliga",
+        "Finland Veikkausliiga",
+        "Ireland Premier Division",
+        "Japan J-League",
+        "K-League 1",
+        "Mexico Liga MX",
+        "Norway Eliteserien",
+        "Sweden Allsvenskan",
+        "USA MLS"
+       ],
+       "coef": [
+        0.9129211843836105,
+        0.14507703722372745,
+        -0.2449242628981609,
+        -0.2573909685514486,
+        0.1994812050882616,
+        -0.20727673834706756,
+        -0.06449733666408382,
+        0.03500685369413644,
+        0.22796826756865884,
+        0.1860227697895322,
+        -0.007004389299741505,
+        -0.26742650608981117,
+        0.04689411642600408,
+        -0.14662417309517614,
+        0.03722140028087009,
+        0.05824412010509605,
+        0.015019707135866114,
+        -0.10898776171673862,
+        0.13106037040322574,
+        0.09376664573931265,
+        -0.19105666568235122,
+        -0.06556648933666151,
+        0.097862923918397,
+        0.02452156884599202,
+        0.026675956060683265,
+        0.05576971488485953,
+        0.08394814655725197,
+        -0.12203627808606565,
+        -0.17970783624010325,
+        -0.09117455824596245
+       ],
+       "intercept": 0.319872278397582
+      },
+      "verdict": "UNPROVEN",
+      "study_final": {
+       "bets": 82,
+       "roi": 0.0871,
+       "matchdays": 46,
+       "ci95": [
+        -0.2197,
+        0.3969
+       ],
+       "p_one_sided": 0.2959,
+       "clv": -0.017,
+       "clv_n": 81
+      },
+      "study_verdict": "UNPROVEN",
+      "study_reason": null,
+      "fresh_holdout_p_holm": 1.0,
+      "fresh_holdout_family_size": 19,
+      "prod_market": "over35",
+      "side": "yes"
+     }
+    },
+    "drop": false,
+    "source": "bars_opt",
+    "month": "2026-11",
+    "status": "UNPROVEN",
+    "approved": false,
+    "bets": 133,
+    "roi": 0.0466
+   },
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "evidence": {
+    "bets": 133,
+    "roi": 0.0466
+   },
+   "entry_hash": "1cb86da4079920086b8c11d182757837e1e5381d4a4387d6259bdb362e19fb76",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over35 params entry for Denmark Superliga",
+    "marksman_source": "NO_LEAGUE_BAR: no over35 params entry for Denmark Superliga",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.05,
+    "marksman": 0.02,
+    "valuable": 0.02,
+    "sniper_source": "best_params_side_markets[over35][Denmark Superliga] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[over35][Denmark Superliga] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "serves_change": true
+  },
+  {
+   "entry_id": "over35|Dutch Eredivisie",
+   "league": "Dutch Eredivisie",
+   "market": "over35",
+   "production_file": "models/best_params_side_markets.json",
+   "current": null,
+   "proposed": {
+    "bars_opt": {
+     "yes": {
+      "mside": "over35_over",
+      "track": "standard",
+      "league": "Dutch Eredivisie",
+      "month": "2026-11",
+      "config": "LEARNED|EDGE|max-|min-",
+      "config_basis": "SELECTED",
+      "source": "LEARNED",
+      "measure": "EDGE",
+      "odds_max": null,
+      "odds_min": null,
+      "mode": "MODEL",
+      "valuable_th": 0.02,
+      "marksman_th": 0.02,
+      "sniper_th": 0.08,
+      "bar_basis": "LEARNED_BLEND",
+      "shrink_weight_at_valuable": 0.0,
+      "wf_bets": 32,
+      "wf_roi": 0.1472,
+      "wf_roi_shrunk": 0.1489,
+      "tier2": false,
+      "tier2_bets": 0,
+      "tier2_roi": null,
+      "source_params": {
+       "leagues": [
+        "Belgian First Division A",
+        "Bundesliga 2",
+        "Championship",
+        "Dutch Eredivisie",
+        "Greek Super League",
+        "La Liga 2",
+        "League One",
+        "League Two",
+        "Ligue 2",
+        "National League",
+        "Portuguese Primeira Liga",
+        "Scottish Championship",
+        "Scottish League One",
+        "Scottish League Two",
+        "Scottish Premiership",
+        "Serie B",
+        "Turkish Super Lig"
+       ],
+       "coef": [
+        0.7166263405335197,
+        0.03598806710486026,
+        -0.16138224653593902,
+        -0.38969032549384597,
+        -0.070314584683872,
+        -0.40996719058439307,
+        0.3501881334370247,
+        0.13036584969299525,
+        -0.07495838896965235,
+        0.34270442049408867,
+        0.06794580366920282,
+        0.02086884241347276,
+        0.0365650000281186,
+        -0.030429417044414056,
+        0.43502969373511075,
+        -0.10301048386127382,
+        -0.3326765754933781,
+        -0.04129410441200124,
+        -0.20119529605647188,
+        -0.1717104693935788,
+        0.08273890982467028,
+        -0.1659605082736873,
+        -0.014012909881796628,
+        -0.10694352147732057,
+        0.04305040807052036,
+        0.05347872790286297,
+        0.19774028916666384,
+        0.06753731214114553,
+        0.0043087974262821845,
+        0.03892742640878644,
+        -0.08300427167824465,
+        -0.03047448298379851,
+        -0.0029211321649692404,
+        -0.07001513414072141,
+        0.02589460667137294,
+        -0.05254411741161527,
+        0.005635129403370413,
+        -0.0720788657147899
+       ],
+       "intercept": 0.20022499780284403
+      },
+      "verdict": "UNPROVEN",
+      "study_final": {
+       "bets": 0,
+       "roi": null,
+       "ci95": [
+        null,
+        null
+       ],
+       "p_one_sided": null,
+       "clv": null,
+       "clv_n": 0
+      },
+      "study_verdict": "OFF",
+      "study_reason": "INSUFFICIENT_SELECTION_EVIDENCE",
+      "prod_market": "over35",
+      "side": "yes"
+     }
+    },
+    "drop": false,
+    "source": "bars_opt",
+    "month": "2026-11",
+    "status": "UNPROVEN",
+    "approved": false,
+    "bets": 32,
+    "roi": 0.1472
+   },
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "evidence": {
+    "bets": 32,
+    "roi": 0.1472
+   },
+   "entry_hash": "679063ae32cde7b71aa8be6b4251497b5a5adce5bac8f65b0d597edcd7596df0",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over35 params entry for Dutch Eredivisie",
+    "marksman_source": "NO_LEAGUE_BAR: no over35 params entry for Dutch Eredivisie",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.08,
+    "marksman": 0.02,
+    "valuable": 0.02,
+    "sniper_source": "best_params_side_markets[over35][Dutch Eredivisie] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[over35][Dutch Eredivisie] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "serves_change": true
+  },
+  {
+   "entry_id": "over35|Finland Veikkausliiga",
+   "league": "Finland Veikkausliiga",
+   "market": "over35",
+   "production_file": "models/best_params_side_markets.json",
+   "current": null,
+   "proposed": {
+    "bars_opt": {
+     "yes": {
+      "mside": "over35_over",
+      "track": "new_format",
+      "league": "Finland Veikkausliiga",
+      "month": "2026-11",
+      "config": "LEARNED|EDGE|max-|min-",
+      "config_basis": "FRESH_HOLDOUT_SELECTION",
+      "source": "LEARNED",
+      "measure": "EDGE",
+      "odds_max": null,
+      "odds_min": null,
+      "mode": "MODEL",
+      "valuable_th": 0.02,
+      "marksman_th": 0.02,
+      "sniper_th": 0.02,
+      "bar_basis": "OWN_BETS",
+      "shrink_weight_at_valuable": 0.0,
+      "wf_bets": 98,
+      "wf_roi": 0.0731,
+      "wf_roi_shrunk": 0.116,
+      "tier2": false,
+      "tier2_bets": 0,
+      "tier2_roi": null,
+      "source_params": {
+       "leagues": [
+        "Argentina Primera Division",
+        "Austrian Bundesliga",
+        "Brazil Serie A",
+        "China Super League",
+        "Denmark Superliga",
+        "Finland Veikkausliiga",
+        "Ireland Premier Division",
+        "Japan J-League",
+        "K-League 1",
+        "Mexico Liga MX",
+        "Norway Eliteserien",
+        "Sweden Allsvenskan",
+        "USA MLS"
+       ],
+       "coef": [
+        0.9129211843836105,
+        0.14507703722372745,
+        -0.2449242628981609,
+        -0.2573909685514486,
+        0.1994812050882616,
+        -0.20727673834706756,
+        -0.06449733666408382,
+        0.03500685369413644,
+        0.22796826756865884,
+        0.1860227697895322,
+        -0.007004389299741505,
+        -0.26742650608981117,
+        0.04689411642600408,
+        -0.14662417309517614,
+        0.03722140028087009,
+        0.05824412010509605,
+        0.015019707135866114,
+        -0.10898776171673862,
+        0.13106037040322574,
+        0.09376664573931265,
+        -0.19105666568235122,
+        -0.06556648933666151,
+        0.097862923918397,
+        0.02452156884599202,
+        0.026675956060683265,
+        0.05576971488485953,
+        0.08394814655725197,
+        -0.12203627808606565,
+        -0.17970783624010325,
+        -0.09117455824596245
+       ],
+       "intercept": 0.319872278397582
+      },
+      "verdict": "PROMISING",
+      "study_final": {
+       "bets": 46,
+       "roi": 0.0809,
+       "matchdays": 23,
+       "ci95": [
+        -0.2998,
+        0.4614
+       ],
+       "p_one_sided": 0.3348,
+       "clv": 0.0006,
+       "clv_n": 46
+      },
+      "study_verdict": "PROMISING",
+      "study_reason": null,
+      "fresh_holdout_p_holm": 1.0,
+      "fresh_holdout_family_size": 19,
+      "prod_market": "over35",
+      "side": "yes"
+     }
+    },
+    "drop": false,
+    "source": "bars_opt",
+    "month": "2026-11",
+    "status": "PROMISING",
+    "approved": false,
+    "bets": 98,
+    "roi": 0.0731
+   },
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "evidence": {
+    "bets": 98,
+    "roi": 0.0731
+   },
+   "entry_hash": "a1cdbadfd8dfe03fc225b2bd9690bf280cecb92f65947e866fe8a541e2853991",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over35 params entry for Finland Veikkausliiga",
+    "marksman_source": "NO_LEAGUE_BAR: no over35 params entry for Finland Veikkausliiga",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.02,
+    "marksman": 0.02,
+    "valuable": 0.02,
+    "sniper_source": "best_params_side_markets[over35][Finland Veikkausliiga] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[over35][Finland Veikkausliiga] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "serves_change": true
+  },
+  {
+   "entry_id": "over35|La Liga 2",
+   "league": "La Liga 2",
+   "market": "over35",
+   "production_file": "models/best_params_side_markets.json",
+   "current": {
+    "sniper_th": 0.04,
+    "marksman_th": 0.04,
+    "roi": null,
+    "bets": 0,
+    "drop": true,
+    "roi_oos": null,
+    "bets_oos": 0,
+    "approved": false
+   },
+   "proposed": {
+    "bars_opt": {
+     "yes": {
+      "mside": "over35_over",
+      "track": "standard",
+      "league": "La Liga 2",
+      "month": "2026-11",
+      "config": "SHRINK|EDGE|max-|min-",
+      "config_basis": "FRESH_HOLDOUT_SELECTION",
+      "source": "SHRINK",
+      "measure": "EDGE",
+      "odds_max": null,
+      "odds_min": null,
+      "mode": "MODEL",
+      "valuable_th": 0.02,
+      "marksman_th": 0.03,
+      "sniper_th": 0.03,
+      "bar_basis": "OWN_BETS",
+      "shrink_weight_at_valuable": 0.0,
+      "wf_bets": 301,
+      "wf_roi": -0.0254,
+      "wf_roi_shrunk": 0.0733,
+      "tier2": false,
+      "tier2_bets": 15,
+      "tier2_roi": 0.026,
+      "source_params": {
+       "weights": {
+        "La Liga 2": 0.23780393756509766
+       }
+      },
+      "verdict": "UNPROVEN",
+      "study_final": {
+       "bets": 99,
+       "roi": -0.2412,
+       "matchdays": 74,
+       "ci95": [
+        -0.6229,
+        0.1511
+       ],
+       "p_one_sided": 0.903,
+       "clv": -0.0345,
+       "clv_n": 97
+      },
+      "study_verdict": "UNPROVEN",
+      "study_reason": null,
+      "fresh_holdout_p_holm": 1.0,
+      "fresh_holdout_family_size": 19,
+      "prod_market": "over35",
+      "side": "yes"
+     }
+    },
+    "drop": false,
+    "source": "bars_opt",
+    "month": "2026-11",
+    "status": "UNPROVEN",
+    "approved": false,
+    "bets": 301,
+    "roi": -0.0254
+   },
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "evidence": {
+    "bets": 301,
+    "roi": -0.0254
+   },
+   "entry_hash": "109c7a71a813305cf55ec581dd0c73d187f41a10925b1e855a2c66ea3f9c5bdd",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: over35 switched OFF for La Liga 2 (drop)",
+    "marksman_source": "NO_LEAGUE_BAR: over35 switched OFF for La Liga 2 (drop)",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.03,
+    "marksman": 0.03,
+    "valuable": 0.02,
+    "sniper_source": "best_params_side_markets[over35][La Liga 2] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[over35][La Liga 2] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "serves_change": true
+  },
+  {
+   "entry_id": "over35|League One",
+   "league": "League One",
+   "market": "over35",
+   "production_file": "models/best_params_side_markets.json",
+   "current": {
+    "sniper_th": 0.04,
+    "marksman_th": 0.04,
+    "roi": null,
+    "bets": 0,
+    "drop": true,
+    "roi_oos": null,
+    "bets_oos": 0,
+    "approved": false
+   },
+   "proposed": null,
+   "change": "REMOVE",
+   "evidence": {},
+   "entry_hash": "8efec840d8e7890decd915c03b1b08f9a69fcf4c4f6aca7215d9aba2421baff3",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: over35 switched OFF for League One (drop)",
+    "marksman_source": "NO_LEAGUE_BAR: over35 switched OFF for League One (drop)",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over35 params entry for League One",
+    "marksman_source": "NO_LEAGUE_BAR: no over35 params entry for League One",
+    "own_bars": false
+   },
+   "serves_change": false
+  },
+  {
+   "entry_id": "over35|League Two",
+   "league": "League Two",
+   "market": "over35",
+   "production_file": "models/best_params_side_markets.json",
+   "current": {
+    "sniper_th": 0.04,
+    "marksman_th": 0.04,
+    "roi": null,
+    "bets": 0,
+    "drop": true,
+    "roi_oos": null,
+    "bets_oos": 0,
+    "approved": false
+   },
+   "proposed": null,
+   "change": "REMOVE",
+   "evidence": {},
+   "entry_hash": "b57db4b0cebbf9be66f7598be7211e260902d95cb045cbd866b497cfd4e628a1",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: over35 switched OFF for League Two (drop)",
+    "marksman_source": "NO_LEAGUE_BAR: over35 switched OFF for League Two (drop)",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over35 params entry for League Two",
+    "marksman_source": "NO_LEAGUE_BAR: no over35 params entry for League Two",
+    "own_bars": false
+   },
+   "serves_change": false
+  },
+  {
+   "entry_id": "over35|Ligue 2",
+   "league": "Ligue 2",
+   "market": "over35",
+   "production_file": "models/best_params_side_markets.json",
+   "current": {
+    "sniper_th": 0.04,
+    "marksman_th": 0.04,
+    "roi": null,
+    "bets": 0,
+    "drop": true,
+    "roi_oos": null,
+    "bets_oos": 0,
+    "approved": false
+   },
+   "proposed": null,
+   "change": "REMOVE",
+   "evidence": {},
+   "entry_hash": "97420dc62229fe1656df3d75726db1bd0e51f4ad8f21ece158be3f3aaa63a3ff",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: over35 switched OFF for Ligue 2 (drop)",
+    "marksman_source": "NO_LEAGUE_BAR: over35 switched OFF for Ligue 2 (drop)",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over35 params entry for Ligue 2",
+    "marksman_source": "NO_LEAGUE_BAR: no over35 params entry for Ligue 2",
+    "own_bars": false
+   },
+   "serves_change": false
+  },
+  {
+   "entry_id": "over35|Norway Eliteserien",
+   "league": "Norway Eliteserien",
+   "market": "over35",
+   "production_file": "models/best_params_side_markets.json",
+   "current": null,
+   "proposed": {
+    "bars_opt": {
+     "yes": {
+      "mside": "over35_over",
+      "track": "new_format",
+      "league": "Norway Eliteserien",
+      "month": "2026-11",
+      "config": "LEARNED|EDGE|max-|min-",
+      "config_basis": "FRESH_HOLDOUT_SELECTION",
+      "source": "LEARNED",
+      "measure": "EDGE",
+      "odds_max": null,
+      "odds_min": null,
+      "mode": "MODEL",
+      "valuable_th": 0.02,
+      "marksman_th": 0.02,
+      "sniper_th": 0.02,
+      "bar_basis": "OWN_BETS",
+      "shrink_weight_at_valuable": 0.0,
+      "wf_bets": 66,
+      "wf_roi": 0.2414,
+      "wf_roi_shrunk": 0.116,
+      "tier2": false,
+      "tier2_bets": 0,
+      "tier2_roi": null,
+      "source_params": {
+       "leagues": [
+        "Argentina Primera Division",
+        "Austrian Bundesliga",
+        "Brazil Serie A",
+        "China Super League",
+        "Denmark Superliga",
+        "Finland Veikkausliiga",
+        "Ireland Premier Division",
+        "Japan J-League",
+        "K-League 1",
+        "Mexico Liga MX",
+        "Norway Eliteserien",
+        "Sweden Allsvenskan",
+        "USA MLS"
+       ],
+       "coef": [
+        0.9129211843836105,
+        0.14507703722372745,
+        -0.2449242628981609,
+        -0.2573909685514486,
+        0.1994812050882616,
+        -0.20727673834706756,
+        -0.06449733666408382,
+        0.03500685369413644,
+        0.22796826756865884,
+        0.1860227697895322,
+        -0.007004389299741505,
+        -0.26742650608981117,
+        0.04689411642600408,
+        -0.14662417309517614,
+        0.03722140028087009,
+        0.05824412010509605,
+        0.015019707135866114,
+        -0.10898776171673862,
+        0.13106037040322574,
+        0.09376664573931265,
+        -0.19105666568235122,
+        -0.06556648933666151,
+        0.097862923918397,
+        0.02452156884599202,
+        0.026675956060683265,
+        0.05576971488485953,
+        0.08394814655725197,
+        -0.12203627808606565,
+        -0.17970783624010325,
+        -0.09117455824596245
+       ],
+       "intercept": 0.319872278397582
+      },
+      "verdict": "UNPROVEN",
+      "study_final": {
+       "bets": 31,
+       "roi": -0.2552,
+       "matchdays": 16,
+       "ci95": [
+        -0.6179,
+        0.1076
+       ],
+       "p_one_sided": 0.975,
+       "clv": -0.0113,
+       "clv_n": 31
+      },
+      "study_verdict": "UNPROVEN",
+      "study_reason": null,
+      "fresh_holdout_p_holm": 1.0,
+      "fresh_holdout_family_size": 19,
+      "prod_market": "over35",
+      "side": "yes"
+     }
+    },
+    "drop": false,
+    "source": "bars_opt",
+    "month": "2026-11",
+    "status": "UNPROVEN",
+    "approved": false,
+    "bets": 66,
+    "roi": 0.2414
+   },
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "evidence": {
+    "bets": 66,
+    "roi": 0.2414
+   },
+   "entry_hash": "accef5cbfe448947e2793fd027037450363b65971a4ecb95ed7bb803ab3ea1d7",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over35 params entry for Norway Eliteserien",
+    "marksman_source": "NO_LEAGUE_BAR: no over35 params entry for Norway Eliteserien",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.02,
+    "marksman": 0.02,
+    "valuable": 0.02,
+    "sniper_source": "best_params_side_markets[over35][Norway Eliteserien] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[over35][Norway Eliteserien] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "serves_change": true
+  },
+  {
+   "entry_id": "over35|Portuguese Primeira Liga",
+   "league": "Portuguese Primeira Liga",
+   "market": "over35",
+   "production_file": "models/best_params_side_markets.json",
+   "current": null,
+   "proposed": {
+    "bars_opt": {
+     "yes": {
+      "mside": "over35_over",
+      "track": "standard",
+      "league": "Portuguese Primeira Liga",
+      "month": "2026-11",
+      "config": "LEARNED|EDGE|max-|min-",
+      "config_basis": "SELECTED",
+      "source": "LEARNED",
+      "measure": "EDGE",
+      "odds_max": null,
+      "odds_min": null,
+      "mode": "MODEL",
+      "valuable_th": 0.02,
+      "marksman_th": 0.07,
+      "sniper_th": 0.08,
+      "bar_basis": "LEARNED_BLEND",
+      "shrink_weight_at_valuable": 0.0,
+      "wf_bets": 38,
+      "wf_roi": 0.2113,
+      "wf_roi_shrunk": 0.1489,
+      "tier2": false,
+      "tier2_bets": 1,
+      "tier2_roi": -1.0,
+      "source_params": {
+       "leagues": [
+        "Belgian First Division A",
+        "Bundesliga 2",
+        "Championship",
+        "Dutch Eredivisie",
+        "Greek Super League",
+        "La Liga 2",
+        "League One",
+        "League Two",
+        "Ligue 2",
+        "National League",
+        "Portuguese Primeira Liga",
+        "Scottish Championship",
+        "Scottish League One",
+        "Scottish League Two",
+        "Scottish Premiership",
+        "Serie B",
+        "Turkish Super Lig"
+       ],
+       "coef": [
+        0.7166263405335197,
+        0.03598806710486026,
+        -0.16138224653593902,
+        -0.38969032549384597,
+        -0.070314584683872,
+        -0.40996719058439307,
+        0.3501881334370247,
+        0.13036584969299525,
+        -0.07495838896965235,
+        0.34270442049408867,
+        0.06794580366920282,
+        0.02086884241347276,
+        0.0365650000281186,
+        -0.030429417044414056,
+        0.43502969373511075,
+        -0.10301048386127382,
+        -0.3326765754933781,
+        -0.04129410441200124,
+        -0.20119529605647188,
+        -0.1717104693935788,
+        0.08273890982467028,
+        -0.1659605082736873,
+        -0.014012909881796628,
+        -0.10694352147732057,
+        0.04305040807052036,
+        0.05347872790286297,
+        0.19774028916666384,
+        0.06753731214114553,
+        0.0043087974262821845,
+        0.03892742640878644,
+        -0.08300427167824465,
+        -0.03047448298379851,
+        -0.0029211321649692404,
+        -0.07001513414072141,
+        0.02589460667137294,
+        -0.05254411741161527,
+        0.005635129403370413,
+        -0.0720788657147899
+       ],
+       "intercept": 0.20022499780284403
+      },
+      "verdict": "UNPROVEN",
+      "study_final": {
+       "bets": 0,
+       "roi": null,
+       "ci95": [
+        null,
+        null
+       ],
+       "p_one_sided": null,
+       "clv": null,
+       "clv_n": 0
+      },
+      "study_verdict": "OFF",
+      "study_reason": "INSUFFICIENT_SELECTION_EVIDENCE",
+      "prod_market": "over35",
+      "side": "yes"
+     }
+    },
+    "drop": false,
+    "source": "bars_opt",
+    "month": "2026-11",
+    "status": "UNPROVEN",
+    "approved": false,
+    "bets": 38,
+    "roi": 0.2113
+   },
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "evidence": {
+    "bets": 38,
+    "roi": 0.2113
+   },
+   "entry_hash": "d717321de977bb13b43ed0859514c4869b46834f9c1646de9002adb4e7e5c80f",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over35 params entry for Portuguese Primeira Liga",
+    "marksman_source": "NO_LEAGUE_BAR: no over35 params entry for Portuguese Primeira Liga",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.08,
+    "marksman": 0.07,
+    "valuable": 0.02,
+    "sniper_source": "best_params_side_markets[over35][Portuguese Primeira Liga] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[over35][Portuguese Primeira Liga] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "serves_change": true
+  },
+  {
+   "entry_id": "over35|Romanian Superliga",
+   "league": "Romanian Superliga",
+   "market": "over35",
+   "production_file": "models/best_params_side_markets.json",
+   "current": null,
+   "proposed": {
+    "bars_opt": {
+     "yes": {
+      "mside": "over35_over",
+      "track": "new_format",
+      "league": "Romanian Superliga",
+      "month": "2026-11",
+      "config": "RAW|EDGE|max-|min-",
+      "config_basis": "NO_SELECTION_EVIDENCE",
+      "source": "RAW",
+      "measure": "EDGE",
+      "odds_max": null,
+      "odds_min": null,
+      "mode": "MODEL",
+      "valuable_th": 0.02,
+      "marksman_th": 0.02,
+      "sniper_th": 0.02,
+      "bar_basis": "LEARNED_BLEND",
+      "shrink_weight_at_valuable": 0.1631,
+      "wf_bets": 12,
+      "wf_roi": 0.525,
+      "wf_roi_shrunk": 0.0009,
+      "tier2": false,
+      "tier2_bets": 0,
+      "tier2_roi": null,
+      "source_params": {},
+      "verdict": "UNPROVEN",
+      "study_final": {
+       "bets": 0,
+       "roi": null,
+       "ci95": [
+        null,
+        null
+       ],
+       "p_one_sided": null,
+       "clv": null,
+       "clv_n": 0
+      },
+      "study_verdict": "OFF",
+      "study_reason": "INSUFFICIENT_SELECTION_EVIDENCE",
+      "prod_market": "over35",
+      "side": "yes"
+     }
+    },
+    "drop": false,
+    "source": "bars_opt",
+    "month": "2026-11",
+    "status": "UNPROVEN",
+    "approved": false,
+    "bets": 12,
+    "roi": 0.525
+   },
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "evidence": {
+    "bets": 12,
+    "roi": 0.525
+   },
+   "entry_hash": "20889b3c19f88d52f1cd371ba82536b6e43a6cdc471c20bcaf345689eafb1ba0",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over35 params entry for Romanian Superliga",
+    "marksman_source": "NO_LEAGUE_BAR: no over35 params entry for Romanian Superliga",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.02,
+    "marksman": 0.02,
+    "valuable": 0.02,
+    "sniper_source": "best_params_side_markets[over35][Romanian Superliga] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[over35][Romanian Superliga] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "serves_change": true
+  },
+  {
+   "entry_id": "over35|Serie B",
+   "league": "Serie B",
+   "market": "over35",
+   "production_file": "models/best_params_side_markets.json",
+   "current": {
+    "sniper_th": 0.04,
+    "marksman_th": 0.04,
+    "roi": null,
+    "bets": 0,
+    "drop": true,
+    "roi_oos": null,
+    "bets_oos": 0,
+    "approved": false
+   },
+   "proposed": {
+    "bars_opt": {
+     "yes": {
+      "mside": "over35_over",
+      "track": "standard",
+      "league": "Serie B",
+      "month": "2026-11",
+      "config": "SHRINK|EDGE|max-|min-",
+      "config_basis": "FRESH_HOLDOUT_SELECTION",
+      "source": "SHRINK",
+      "measure": "EDGE",
+      "odds_max": null,
+      "odds_min": null,
+      "mode": "MODEL",
+      "valuable_th": 0.02,
+      "marksman_th": 0.03,
+      "sniper_th": 0.03,
+      "bar_basis": "OWN_BETS",
+      "shrink_weight_at_valuable": 0.0,
+      "wf_bets": 283,
+      "wf_roi": 0.1533,
+      "wf_roi_shrunk": 0.0733,
+      "tier2": false,
+      "tier2_bets": 9,
+      "tier2_roi": 0.7267,
+      "source_params": {
+       "weights": {
+        "Serie B": 0.4207362680443045
+       }
+      },
+      "verdict": "UNPROVEN",
+      "study_final": {
+       "bets": 128,
+       "roi": -0.1045,
+       "matchdays": 60,
+       "ci95": [
+        -0.4863,
+        0.2774
+       ],
+       "p_one_sided": 0.7211,
+       "clv": -0.0093,
+       "clv_n": 128
+      },
+      "study_verdict": "UNPROVEN",
+      "study_reason": null,
+      "fresh_holdout_p_holm": 1.0,
+      "fresh_holdout_family_size": 19,
+      "prod_market": "over35",
+      "side": "yes"
+     }
+    },
+    "drop": false,
+    "source": "bars_opt",
+    "month": "2026-11",
+    "status": "UNPROVEN",
+    "approved": false,
+    "bets": 283,
+    "roi": 0.1533
+   },
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "evidence": {
+    "bets": 283,
+    "roi": 0.1533
+   },
+   "entry_hash": "df1b28c34d27d7aa2f07df8d9c86d75f25fa7f574b74e482851edbfef2b1e0cf",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: over35 switched OFF for Serie B (drop)",
+    "marksman_source": "NO_LEAGUE_BAR: over35 switched OFF for Serie B (drop)",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.03,
+    "marksman": 0.03,
+    "valuable": 0.02,
+    "sniper_source": "best_params_side_markets[over35][Serie B] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[over35][Serie B] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "serves_change": true
+  },
+  {
+   "entry_id": "over35|Sweden Allsvenskan",
+   "league": "Sweden Allsvenskan",
+   "market": "over35",
+   "production_file": "models/best_params_side_markets.json",
+   "current": null,
+   "proposed": {
+    "bars_opt": {
+     "yes": {
+      "mside": "over35_over",
+      "track": "new_format",
+      "league": "Sweden Allsvenskan",
+      "month": "2026-11",
+      "config": "LEARNED|EDGE|max-|min-",
+      "config_basis": "FRESH_HOLDOUT_SELECTION",
+      "source": "LEARNED",
+      "measure": "EDGE",
+      "odds_max": null,
+      "odds_min": null,
+      "mode": "MODEL",
+      "valuable_th": 0.02,
+      "marksman_th": 0.02,
+      "sniper_th": 0.02,
+      "bar_basis": "OWN_BETS",
+      "shrink_weight_at_valuable": 0.0,
+      "wf_bets": 41,
+      "wf_roi": 0.2368,
+      "wf_roi_shrunk": 0.116,
+      "tier2": false,
+      "tier2_bets": 0,
+      "tier2_roi": null,
+      "source_params": {
+       "leagues": [
+        "Argentina Primera Division",
+        "Austrian Bundesliga",
+        "Brazil Serie A",
+        "China Super League",
+        "Denmark Superliga",
+        "Finland Veikkausliiga",
+        "Ireland Premier Division",
+        "Japan J-League",
+        "K-League 1",
+        "Mexico Liga MX",
+        "Norway Eliteserien",
+        "Sweden Allsvenskan",
+        "USA MLS"
+       ],
+       "coef": [
+        0.9129211843836105,
+        0.14507703722372745,
+        -0.2449242628981609,
+        -0.2573909685514486,
+        0.1994812050882616,
+        -0.20727673834706756,
+        -0.06449733666408382,
+        0.03500685369413644,
+        0.22796826756865884,
+        0.1860227697895322,
+        -0.007004389299741505,
+        -0.26742650608981117,
+        0.04689411642600408,
+        -0.14662417309517614,
+        0.03722140028087009,
+        0.05824412010509605,
+        0.015019707135866114,
+        -0.10898776171673862,
+        0.13106037040322574,
+        0.09376664573931265,
+        -0.19105666568235122,
+        -0.06556648933666151,
+        0.097862923918397,
+        0.02452156884599202,
+        0.026675956060683265,
+        0.05576971488485953,
+        0.08394814655725197,
+        -0.12203627808606565,
+        -0.17970783624010325,
+        -0.09117455824596245
+       ],
+       "intercept": 0.319872278397582
+      },
+      "verdict": "UNPROVEN",
+      "study_final": {
+       "bets": 17,
+       "roi": -0.4753,
+       "matchdays": 13,
+       "ci95": [
+        -1.0768,
+        0.164
+       ],
+       "p_one_sided": 0.929,
+       "clv": -0.0278,
+       "clv_n": 17
+      },
+      "study_verdict": "UNPROVEN",
+      "study_reason": null,
+      "fresh_holdout_p_holm": 1.0,
+      "fresh_holdout_family_size": 19,
+      "prod_market": "over35",
+      "side": "yes"
+     }
+    },
+    "drop": false,
+    "source": "bars_opt",
+    "month": "2026-11",
+    "status": "UNPROVEN",
+    "approved": false,
+    "bets": 41,
+    "roi": 0.2368
+   },
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "evidence": {
+    "bets": 41,
+    "roi": 0.2368
+   },
+   "entry_hash": "5fcc5264049d04e1ef900e4c337f714ffd879ecda4abdf08581d9c3d1ccf37eb",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over35 params entry for Sweden Allsvenskan",
+    "marksman_source": "NO_LEAGUE_BAR: no over35 params entry for Sweden Allsvenskan",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.02,
+    "marksman": 0.02,
+    "valuable": 0.02,
+    "sniper_source": "best_params_side_markets[over35][Sweden Allsvenskan] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[over35][Sweden Allsvenskan] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "serves_change": true
+  }
+ ],
+ "roi_by_league": {},
+ "proposal_hash": "500964af2c2ba3d16460f0caa5cafd23fad1980878d7e483144f3baf2f4babc9",
+ "proposal_id": "TP-2026-11-16-500964af"
+}
