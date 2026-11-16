@@ -1,0 +1,113 @@
+{
+  "protocol": "COMBINED-MODELS-DEV-2",
+  "declared_on": "2026-11-16",
+  "status": "RESEARCH ONLY. Declared and committed before any effect (residual, stack gain, log-loss difference) was computed. Nothing here is served, promoted or tipped. No API-Football or OddsAPI call is made.",
+  "question": "Owner 2026-11-16: 'for every model, try to use all the models' data to find if some model gets extra boosts with the help of the other models' - 'but only on 100% verified data'.",
+  "supersedes": "COMBINED-MODELS-DEV-1 (protocol.json, spent: its window 2025-01..2026-03 was scored with the props champion that carried the keeper goals_conceded and team_goals_pg_roll bugs) and COMBINED-MODELS-FWD-1 (forward_protocol.json, VOID: the props model it named was replaced by the fixed / clean-schema candidate).",
+  "verification_first": {
+    "rule": "Before any effect is computed, every input is verified and the result is written into the report: source commit / run, frame hash, Data Truth stoplight and real-data provenance (src/integrity/data_truth; real_data_provenance 8a/8b/8c; props feature checks), train/serve parity status, missing-value policy (missing stays missing). An input that fails is EXCLUDED with its reason and never approximated.",
+    "always_excluded": [
+      "pre-fix props pickles (any props model fitted before f5fb6fe2d keeper goals_conceded / team_goals_pg_roll fix, incl. the DEV-1 served recipe outputs in cm-data/work)",
+      "team payloads trained on unrepaired data (the served / legacy pickles, v9_repaired, wowza_v11's p_model taken from the live v9 board)",
+      "Pro or other outputs whose inputs were not checked",
+      "any closing or unproven price used as a bet price",
+      "any row whose model input carries a default or a fill (the clean props candidate is NaN-native; the team champion_recipe drops a feature with no training value and imputes with a train-only imputer persisted in the payload - recorded as the recipe's own learned imputation, not a row default)"
+    ]
+  },
+  "inputs": {
+    "team": {
+      "what": "phase2-retrain-1.0+info harness (config/phase2_info.json), candidate champion_recipe ONLY (the +info / +league / +logitcal variants and model_market_bet are not targets), markets over15, over25, over35, btts.",
+      "standard": "run_20261115T190707Z, code d7ded2ef5 (feat/team-info-features), frame 974e04bc77c4d438.",
+      "new_format": "re-run of champion_recipe (+ market_bet) on code 0a648a6b4 (= d7ded2ef5 data) single-threaded, because run_20261115T154301Z used the earlier frame f75ea2d98e98ad22. Accepted only if its frame hash equals the Standard run's 974e04bc77c4d438 (the frame hash is computed on the shared loader frame).",
+      "rows": "stage walk_forward (fitted before each fold) for dates < 2026-04-01; stage holdout (one fit on every row before 2026-04-01) for 2026-04-01..2026-10-31. A match scored by two walk-forward folds keeps the earlier fold."
+    },
+    "props": {
+      "what": "the clean-schema candidate of GitHub run 43745808793 (code d051ee5c7, plan PROPS-CLEAN-RETRAIN-1.0, hgb_nan_native for every market, 125 features sha256 3f80d914..., feature rule all_prior_verified), markets sot, sot2, goals, assists, cards.",
+      "frame": "the run's own built frame, hash 4f6c603d00c14567 (sha256 of pandas row hashes, index excluded). Any other hash is refused.",
+      "out_of_sample": "refitted with props_harness.fit_window on the first day of every month 2025-01-01..2026-10-01 on every eligible labelled row dated before that day (the run's own fit / calibration split). Window 2025-01-01..2026-10-31. Single-threaded, < 8 GB.",
+      "reproduction_check": "the 2026-09-01 refit is the run's own holdout fit: its September probabilities must equal the run's p_hgb_nan_native (max |diff| <= 1e-9) on the matched rows, or props is EXCLUDED."
+    },
+    "pro": {
+      "what": "wowzaV9-Pro data-truth-100 7344ddb1, src/specials/study.py SPC-1 unchanged (_fit, predict_rows, base_rates, score_outcomes, flag_candidates), per league Dixon-Coles refitted at every calendar month 2024-07..2026-11 on all earlier matches of v9's repaired history exported by Pro's own exporter (load_all_matches, committed data, network blocked) from v9 0a648a6b4 (the Standard frame's data). Accepted only if the export has the Standard run's loaded_rows (71,583) less rows without a score, counted.",
+      "outputs_used": "lam_home, lam_away (side expectations), the score matrix p_cs_i_j (i, j <= 6) and p_tot_* buckets (same-market probabilities), p_ge6, p_tot_le1, p_nil_nil."
+    },
+    "market": {
+      "what": "the sharp / consensus signal captured before the tip time: the team harness's market_bet candidate = power-de-vigged two-sided BET-TIME price (OddsAPI tier BT, role BET, 125 h Standard / 153 h New-Format before kickoff), only where a two-sided pair exists (missing otherwise, never filled).",
+      "privacy": "OddsAPI-derived values stay in the private local work folder; the repo receives statistics only."
+    },
+    "wowza_v11": "candidate input; used only if its outputs pass verification (see the verification table).",
+    "side_models": "CORNERS, CARDS and SPECIALS models (branch research/side-models): PENDING INPUT. Their cells are run only if a docs/ note with the prediction paths exists on origin/research/side-models AND its inputs pass this verification. Otherwise they are reported NOT YET RUN and nothing is substituted."
+  },
+  "windows": {
+    "learn": "2025-01-01..(month before the scored month): stacks, recalibrations and tercile cutoffs learn only from rows dated strictly before the scored calendar month (expanding, refitted every month).",
+    "scored": "2026-04-01..2026-10-31 ONLY. No combined-model test has scored these months (DEV-1 stopped at 2026-03-31). Disclosed: the team model's holdout (2026-04-01..11-08) was opened on 2026-11-15 by the all-data test, which already compared champion_recipe with model_market_bet there, so the team x market cells are a RE-LOOK, not fresh evidence; the props holdout 2026-09-01..10-31 was scored by run 43745808793 for the props question only.",
+    "not_scored": "anything before 2026-04-01 (learning only) and after 2026-10-31."
+  },
+  "tip_time_rule": {
+    "team_and_pro_targets": "the combined tip is placed at the team bet time (125 h Standard / 153 h New-Format before kickoff). Helpers: Pro Dixon-Coles (fitted before the month starts) and the BET-role market (captured at that moment) are available. Props is NOT available: a props row exists only for a player who appeared in the match and props tips need the confirmed lineup (about 1 h before kickoff), so props as a helper of a team or Pro target would leak the line-up and is excluded.",
+    "props_targets": "props tips are made on the confirmed lineup (about 1 h before kickoff), after every other helper's time: team champion_recipe, Pro Dixon-Coles and the BET-role market are all available."
+  },
+  "matrix": {
+    "targets": {
+      "team": "Standard and New-Format champion_recipe P(O1.5), P(O2.5), P(O3.5), P(BTTS); one row per fixture.",
+      "props": "clean candidate P(SoT 1+), P(SoT 2+), P(anytime scorer), P(assist), P(card); one row per player x fixture.",
+      "pro": "Pro Dixon-Coles P(6+ goals) (ge6), P(0 or 1 goal) (tot_le1), P(0-0) (nil_nil); one row per fixture.",
+      "wowza_v11": "only if verified",
+      "side_models": "corners / cards / specials: PENDING INPUT"
+    },
+    "helpers": {
+      "for_team_target": {
+        "pro": "the Dixon-Coles probability of the SAME market from Pro's score matrix: O1.5 = 1 - p_tot_0_1; O2.5 = 1 - p_tot_0_1 - (p_cs_0_2 + p_cs_1_1 + p_cs_2_0); O3.5 = p_tot_4_5 + p_tot_6p; BTTS = sum of p_cs_i_j with i, j in 1..6.",
+        "market": "the de-vigged BET-time probability of the same market",
+        "props": "EXCLUDED (line-up leak, tip_time_rule)"
+      },
+      "for_pro_target": {
+        "team": "the team model's probability of the same event: tot_le1 = 1 - P_team(O1.5); ge6 and nil_nil from the Poisson total that best fits P_team(O1.5), P(O2.5), P(O3.5) (DEV-1 poisson_total_from_over): P(total >= 6), P(total = 0) = exp(-mu). Standard and New-Format rows both.",
+        "market": "the same construction on the BET-time de-vigged O1.5 / O2.5 / O3.5 (all three present, otherwise missing)",
+        "props": "EXCLUDED (line-up leak)"
+      },
+      "for_props_target": {
+        "team": "the fixture's team champion_recipe P(O1.5), P(O2.5), P(O3.5), P(BTTS) (residual conditioner: P(O2.5), as in DEV-1)",
+        "pro": "Pro Dixon-Coles lambda of the player's own side and of the opponent (residual conditioner: own-side lambda dc_lam_side, exactly DEV-1's conditioner, so the 11-11 effect can be compared)",
+        "market": "the fixture's de-vigged BET-time P(O2.5) (residual conditioner: the same)"
+      },
+      "stack_all": "every available helper of the target together (complete cases: a row lacking any helper is not in the stack-all cell, never filled)"
+    },
+    "within_model_cross_market": "not a helper: the props markets are one harness / one feature set, the team markets one recipe, Pro's outputs one score matrix - 'other models' means another model family."
+  },
+  "tests": {
+    "residual": {
+      "unit": "team / Pro target: fixture; props target: player x fixture, clustered by fixture",
+      "value": "r = y - p_target",
+      "conditioner": "team and Pro targets: the disagreement d = logit(p_helper) - logit(p_target) (a helper that only repeats the target has d ~ 0); props targets: DEV-1's conditioners (team P(O2.5), own-side lambda, market P(O2.5))",
+      "groups": "top tercile (>= the league's 2/3 quantile of the conditioner over rows dated before the scored month, from 2025-01-01, >= 200 earlier fixtures) vs bottom tercile (<= 1/3 quantile); middle excluded",
+      "effect": "mean r(top) - mean r(bottom), percentage points",
+      "inference": "fixture-cluster bootstrap, 2,000 draws, seed 7: 95% percentile CI; two-sided p from the bootstrap standard error (normal form; DEV-1's correction, because the empirical floor 1/2,001 cannot pass Holm in a large family)",
+      "min_sample": ">= 30 fixtures in EACH group in the scored window, else unreadable"
+    },
+    "stack": {
+      "model": "per league, refitted on the first day of every scored month on the league's rows dated 2025-01-01..(day before): sklearn LogisticRegression(C=1.0, lbfgs, max_iter 2000) on [logit(p_target)] + the helper's features, every feature standardised with the training rows' mean / sd. Helper features: team target - logit(p_helper); Pro target - logit(p_helper); props target - team: logit P(O1.5), P(O2.5), P(O3.5), P(BTTS); pro: log lam_side, log lam_opp; market: logit P_mkt(O2.5). Probabilities clipped to [1e-4, 1 - 1e-4] before the logit.",
+      "baseline": "the TARGET ALONE recalibrated the same way (logistic on [logit(p_target)] only, same training rows, same refits), so that a target's own miscalibration is not credited to a helper. The raw target is reported beside it (context).",
+      "rows": "the cell's rows are those with the target AND the helper(s) present; baseline and stack are scored on exactly the same rows",
+      "effect": "out-of-sample log-loss gain = mean over scored rows of [LL(baseline) - LL(stack)] (positive = the helper helps); Brier gain reported beside it",
+      "inference": "fixture-cluster bootstrap, 2,000 draws, seed 7: 95% CI; ONE-sided p (gain <= 0) from the bootstrap SE",
+      "min_sample": ">= 300 training fixtures at the first scored month, >= 150 scored fixtures, >= 30 training events and >= 10 scored events, else unreadable",
+      "gbm_context": "the stack-all cell is also fitted with HistGradientBoostingClassifier(max_depth 2, max_iter 100, learning_rate 0.05, min_samples_leaf 50, random_state 42) - CONTEXT ONLY, never in the family"
+    }
+  },
+  "family": {
+    "unit": "per league x target market x (helper test). Team and Pro targets: 2 residual (pro or team, market) + 2 single-helper stacks + 1 stack-all = 5 cells. Props targets: 3 residual (team, pro, market) + 3 single-helper stacks + 1 stack-all = 7 cells.",
+    "leagues": "every league with target rows in the scored window (never global). Pooled over leagues = CONTEXT ONLY.",
+    "correction": "Holm over the WHOLE family of every registered cell that is run (team + props + Pro + v11 if verified). Unreadable cells enter with p = 1. Cells of an excluded input or of a pending input that is not run are not tests and are listed as NOT RUN.",
+    "signal": "Holm p < 0.05 AND the 95% CI excludes 0 in the stated direction (residual: either sign, reported with its sign; stack: gain > 0)",
+    "boost": "a target gets a boost in a league x market when a STACK cell is a signal. A residual signal without a stack signal is reported as 'residual only' (direction, no out-of-sample gain)."
+  },
+  "comparison_with_dev1": "The 11-11 side-lambda effect (Q1 dc_lam_side, Serie B anytime scorer +1.8 pp, Holm 0.019; pooled SoT +1.3 / SoT 2+ +0.7 / anytime +0.9 pp) is re-measured with the clean candidate: (a) on the scored window inside the family, (b) CONTEXT ONLY, on DEV-1's own months 2025-01..2026-03 with DEV-1's exact definitions, clean props in place of the buggy recipe. (b) is a re-look at spent months and is never a decision.",
+  "forward": "COMBINED-MODELS-FWD-2 is registered after the results, for the surviving cells only, in its own file; it names its frozen inputs and is void if any of them changes.",
+  "what_is_never_done": [
+    "no price is used as a bet price and no ROI is computed on development data",
+    "no row is filled; missing stays missing",
+    "no global (all-league) decision",
+    "no configuration outside this file enters the family; anything else is labelled context"
+  ]
+}
