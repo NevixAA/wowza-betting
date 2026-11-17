@@ -10,6 +10,8 @@ name: Price Store Sync (private dual-write)
 # * Feature gate: scheduled runs do nothing unless the repo variable PRICE_STORE_SYNC is '1'
 #   (default off = today's behaviour). workflow_dispatch always runs, for capped tests.
 # * Logs and the step summary carry paths' counts, sizes and hashes only - never a price.
+# * mode read-test (dispatch only): the reader path the refit uses (scripts/price_store_read.sh with
+#   the read-only key PRICE_STORE_RO_KEY) on the dispatched ref, without any training or scoring.
 # * The daily run (04:43 UTC) also runs the count + sha256 check, public vs store, pinned to the
 #   public commit the store recorded at its last sync; any difference fails that run.
 
@@ -20,11 +22,11 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: 'sync, check, or sync+check'
+        description: 'sync, check, sync+check, or read-test (store -> workspace on this ref, no training)'
         required: true
         default: 'sync'
         type: choice
-        options: [sync, check, sync+check]
+        options: [sync, check, sync+check, read-test]
       dry_run:
         description: 'sync: plan only, push nothing'
         required: false
@@ -44,7 +46,9 @@ permissions:
 
 jobs:
   mirror:
-    if: vars.PRICE_STORE_SYNC == '1' || github.event_name == 'workflow_dispatch'
+    if: >-
+      (github.event_name == 'schedule' && vars.PRICE_STORE_SYNC == '1') ||
+      (github.event_name == 'workflow_dispatch' && inputs.mode != 'read-test')
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
@@ -126,3 +130,23 @@ jobs:
       - name: Remove the key
         if: always()
         run: rm -f "$RUNNER_TEMP/price_store_key"
+
+  read_test:
+    if: github.event_name == 'workflow_dispatch' && inputs.mode == 'read-test'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Read prices from the private store (capped test, no training)
+        env:
+          PRICE_STORE_RO_KEY: ${{ secrets.PRICE_STORE_RO_KEY }}
+          REF_NAME: ${{ github.ref_name }}
+        run: bash scripts/price_store_read.sh wowza-betting "$REF_NAME"
+
+      - name: Summary (counts only)
+        if: always()
+        run: |
+          f="$RUNNER_TEMP/price_store_hydrate.json"
+          [ -f "$f" ] || exit 0
+          { echo '### price_store_hydrate.json'; echo '```json'; cat "$f"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"

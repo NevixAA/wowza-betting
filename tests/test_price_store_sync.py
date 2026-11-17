@@ -174,3 +174,31 @@ def test_hydrate_places_store_bytes_and_prunes(env, tmp_path):
     assert r["differs_from_head"] == 0 and r["head_selected_missing"] == 0
     assert git("status", "--porcelain", cwd=ws) == ""                # byte-identical to the public commit
     assert (ws / "output/fd_history.parquet").read_bytes() == b"PAR1notreally"   # class F untouched
+
+
+def _steps(wf: str):
+    import yaml
+    doc = yaml.safe_load((ROOT / ".github" / "workflows" / wf).read_text(encoding="utf-8"))
+    return doc, next(iter(doc["jobs"].values()))["steps"]
+
+
+@pytest.mark.parametrize("wf,first_work", [("phase2_retrain.yml", "Plan (dry run, committed data, no fitting)"),
+                                           ("props_clean_retrain.yml", "Harness tests (synthetic data)")])
+def test_refit_reads_the_store_only_behind_the_gate_and_before_any_work(wf, first_work):
+    _, steps = _steps(wf)
+    names = [s.get("name", "") for s in steps]
+    i = next(k for k, n in enumerate(names) if n.startswith("Read prices from the private store"))
+    s = steps[i]
+    assert s["if"] == "vars.PRICE_STORE_READ == '1'"            # default off = public files
+    assert "secrets.PRICE_STORE_RO_KEY" in s["env"]["PRICE_STORE_RO_KEY"]
+    assert "scripts/price_store_read.sh wowza-betting" in s["run"]
+    assert i < names.index(first_work)
+
+
+def test_sync_workflow_is_gated_and_read_test_never_mirrors():
+    doc, _ = _steps("price_store_sync.yml")
+    mirror, read_test = doc["jobs"]["mirror"], doc["jobs"]["read_test"]
+    assert "vars.PRICE_STORE_SYNC == '1'" in mirror["if"] and "github.event_name == 'schedule'" in mirror["if"]
+    assert "inputs.mode != 'read-test'" in mirror["if"]
+    assert read_test["if"] == "github.event_name == 'workflow_dispatch' && inputs.mode == 'read-test'"
+    assert (ROOT / "scripts" / "price_store_read.sh").is_file()
