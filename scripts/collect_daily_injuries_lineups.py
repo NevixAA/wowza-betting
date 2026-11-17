@@ -15,6 +15,10 @@ missing. Each daily run asks ONLY what is not stored yet or is due a refresh:
      /fixtures?league&season per OPEN season (ended seasons are never re-read). New finished fixtures
      enter output/strength/competition_fixtures.parquet; the not-yet-played ones are kept in
      output/collect/upcoming_fixtures.parquet (same answer, no extra call).
+     SKIPPED when FRESH (2026-11-17, second daily firing): when every competition-season the step
+     would re-read (journal season started, not ended before its last fetch) was fetched within
+     FIXTURE_REFRESH_H hours, the lists of the earlier run are used as they are - the ~97 calls
+     (52 /leagues + ~45 open seasons) are spent once a day, not once per firing.
   2. COVERAGE       /leagues?id for a league whose coverage journal lacks a planned season (rare).
   3. INJURIES, SEASON  one /injuries?league&season per OPEN registry league-season (season_start <=
      today <= season_end + SEASON_GRACE_D in competition_seasons.parquet) not asked in the last
@@ -85,6 +89,10 @@ BUDGET_FILE = COLLECT_DIR / "af_budget_daily.json"
 DAILY_CAP = 1_500
 FLOOR = CC.FLOOR
 REFRESH_H = 20
+#: Step 1 is skipped while the fixture lists are younger than this (2026-11-17: the workflow fires
+#: twice a day, 05:17 and 17:17 UTC, delivered ~8-16 h apart; the firing after a refresh reuses its
+#: lists, the next one - ~24 h after the refresh - reads them again: one list refresh per day).
+FIXTURE_REFRESH_H = 18
 PREMATCH_WINDOW_H = 26
 SEASON_GRACE_D = 3
 PREMATCH_MIN_FOR_ZERO_CHECK = 10
@@ -101,6 +109,27 @@ def open_seasons_all(now: datetime) -> int:
     today = pd.Timestamp(now.date())
     st, en = pd.to_datetime(j["season_start"], errors="coerce"), pd.to_datetime(j["season_end"], errors="coerce")
     return int(((st <= today) & (en >= today)).sum())
+
+
+def fixture_lists_fresh(now: datetime) -> str | None:
+    """The OLDEST fetch time of the competition-seasons step 1 would re-read, when all of them were
+    fetched within FIXTURE_REFRESH_H hours of `now`; else None (step 1 runs). A season step 1 re-reads:
+    started by today and not ended before its last fetch (collect_competition_fixtures.plan_seasons).
+    An empty or unreadable journal is never fresh."""
+    j = read_parquet(CF.JOURNAL)
+    if j.empty:
+        return None
+    today = pd.Timestamp(now.date())
+    st = pd.to_datetime(j["season_start"], errors="coerce")
+    en = pd.to_datetime(j["season_end"], errors="coerce")
+    t = pd.to_datetime(j["fetched_at"], errors="coerce", utc=True)
+    reread = (st <= today) & ~(en < t.dt.tz_localize(None).dt.normalize())
+    if not reread.any() or t[reread].isna().any():
+        return None
+    oldest = t[reread].min()
+    if oldest < pd.Timestamp(now) - pd.Timedelta(hours=FIXTURE_REFRESH_H):
+        return None
+    return oldest.isoformat()
 
 
 def open_league_seasons(now: datetime, registry_ids: set[int] | None = None) -> list[tuple[int, str]]:
@@ -259,12 +288,15 @@ def dry_run(now: datetime) -> dict:
     journal (it decides its seasons from the provider's /leagues answer during the run)."""
     ids = AL.registry_af_ids()
     open_all = open_seasons_all(now)
+    fresh = fixture_lists_fresh(now)
     lu = LU.plan(now=now)
     cov_l = AL.coverage_map("lineups")
     lu_due = sum(1 for a, b in zip(lu["todo"]["league_id"], lu["todo"]["season"]) if cov_l.get((int(a), str(b))) is True)
     lu_retry = sum(1 for a, b in zip(lu["retry"]["league_id"], lu["retry"]["season"])
                    if cov_l.get((int(a), str(b))) is True)
-    out = {"fixture_lists_leagues_calls": len(CF.competitions()), "fixture_lists_open_season_calls": open_all,
+    out = {"fixture_lists_fresh_since": fresh,
+           "fixture_lists_leagues_calls": 0 if fresh else len(CF.competitions()),
+           "fixture_lists_open_season_calls": 0 if fresh else open_all,
            "injury_season_calls": len(plan_injury_seasons(now, ids)),
            "injury_prematch_calls_from_stored_upcoming": int(len(plan_prematch(now, ids))),
            "upcoming_list_stored": CF.UPCOMING.exists(),
@@ -289,7 +321,11 @@ def run(limit_seasons: int | None = None, limit_prematch: int | None = None, lim
                                           "incomplete_seasons": [], "per_league": {}},
              "lineups": {}}
     # 1. fixture lists (finished + upcoming)
-    if not skip_fixtures:
+    fresh = None if skip_fixtures else fixture_lists_fresh(now)
+    if fresh:
+        stats["fixtures"] = {"skipped": "fresh", "fresh_since": fresh, "fetched": 0, "due": 0}
+        print(f"[daily] fixture lists fetched within {FIXTURE_REFRESH_H} h (oldest {fresh}): step 1 skipped")
+    elif not skip_fixtures:
         due = open_seasons_all(now)
         st = CF.run(client=client)
         stats["fixtures"] = {"fetched": st["fetched"], "finished_rows": st.get("rows"),
