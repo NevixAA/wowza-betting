@@ -1,12 +1,12 @@
 {
  "artifact": "data_truth_health",
  "version": "DATA-TRUTH-1",
- "generated_at": "2026-11-16T20:25:26Z",
+ "generated_at": "2026-11-17T16:11:33Z",
  "checks": [
   {
    "check": "Data truth 1: one canonical name",
    "status": "GREEN",
-   "value": "0 unknown league name(s); blind board fixtures 1.4%",
+   "value": "0 unknown league name(s); blind board fixtures 0.6%",
    "rule": "every league value in predictions / ledgers / player tips / history banks is a registry league (canonical or alias): RED if any is not; AMBER if > 10% of board fixtures are blind (no form)",
    "detail": ""
   },
@@ -29,6 +29,13 @@
    "status": "GREEN",
    "value": "banks clean, registry valid, joins league-keyed",
    "rule": "no misfiled league rows in af_history / backtest archive (unknown league or split label in a calendar-year league), config/leagues.json validates, and the enrichment joins serve league-keyed (WOWZA_SAFE_ENRICH_JOINS on): RED on any violation",
+   "detail": ""
+  },
+  {
+   "check": "Data truth 12: prediction ledger",
+   "status": "GREEN",
+   "value": "no ledger partitions yet",
+   "rule": "Data truth 12: prediction ledger - every model x market prediction stored once, in its own model/market/league/season partition, before kickoff: RED on a duplicate key, a row whose repo/model/market/league/season does not match its partition, an unknown league, a pre-kickoff snapshot written at/after kickoff, a price-like column, or rows under a model x market that is not an active entry of config/prediction_ledger_markets.json",
    "detail": ""
   }
  ]
