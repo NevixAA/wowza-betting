@@ -1,0 +1,1056 @@
+{
+ "version": "DATA-TRUTH-ALLOW-1",
+ "rule": "Owner rule 2026-11-04 (fix9/defaults): genuine counters, lookup tables with a fail-closed fallback, config/transport switches and display code ONLY - each site named exactly, with its reason. A real default (a provider, ledger or model value typed in) is FIXED, never listed here. src/integrity/data_truth rule 2 turns RED on an entry without a reason.",
+ "entries": [
+  {
+   "file": "dashboard_access.py",
+   "kind": "numeric_get_default",
+   "code": "return RANK.get(tier, 0) >= RANK[needed]",
+   "reason": "access-tier rank lookup: an unknown access tier ranks below every real one, so it is denied (fail closed)"
+  },
+  {
+   "file": "dashboard_data/bankroll_view.py",
+   "kind": "fillna_literal",
+   "code": "srt = rows.assign(_o=rows[\"State\"].map(_ORDER).fillna(9)).sort_values([\"_o\", \"Track\"], kind=\"mergesort\")",
+   "reason": "display sort key only: a state not in the display order sorts last; no value is shown or stored"
+  },
+  {
+   "file": "dashboard_data/evidence_view.py",
+   "kind": "or_zero",
+   "code": "sup = [(\"Settled two-sided\", f\"{int(h['settled'] or 0):,} / {int(h['min_settled'] or 0):,}\"),",
+   "reason": "display code: renders counts/progress from CI's own research JSON (output/*evidence*); a count the JSON does not hold renders as 0 on a progress line - never written back, never a tip/stake input"
+  },
+  {
+   "file": "dashboard_data/evidence_view.py",
+   "kind": "or_zero",
+   "code": "(\"Gameweeks · matchdays\", f\"{int(h['gameweeks'] or 0)} / {int(h['min_gameweeks'] or 0)} · \"",
+   "reason": "display code: renders counts/progress from CI's own research JSON (output/*evidence*); a count the JSON does not hold renders as 0 on a progress line - never written back, never a tip/stake input"
+  },
+  {
+   "file": "dashboard_data/evidence_view.py",
+   "kind": "numeric_get_default",
+   "code": "(\"Primary Δ LL · BH q\", f\"{m.get('ll_diff_mean', 0):+.5f} {_ci(*m.get('ll_diff_ci95', [None, None]), dp=5)}\"",
+   "reason": "display code: renders counts/progress from CI's own research JSON (output/*evidence*); a count the JSON does not hold renders as 0 on a progress line - never written back, never a tip/stake input"
+  },
+  {
+   "file": "dashboard_data/evidence_view.py",
+   "kind": "or_zero",
+   "code": "ui.metric_card(\"Progress\", f\"{float(h['progress_pct'] or 0):.1f}%\", title=f\"{h['id']} · {_track(h['track'])} \"",
+   "reason": "display code: renders counts/progress from CI's own research JSON (output/*evidence*); a count the JSON does not hold renders as 0 on a progress line - never written back, never a tip/stake input"
+  },
+  {
+   "file": "dashboard_data/evidence_view.py",
+   "kind": "or_zero",
+   "code": "if rows is None or rows.empty or not int(rows[\"n\"].max() or 0):",
+   "reason": "display code: renders counts/progress from CI's own research JSON (output/*evidence*); a count the JSON does not hold renders as 0 on a progress line - never written back, never a tip/stake input"
+  },
+  {
+   "file": "dashboard_data/evidence_view.py",
+   "kind": "numeric_get_default",
+   "code": "f\"captured, excluding no price ({ex.get('no_price', 0)}), the {1.40:.2f} backtest fill constant \"",
+   "reason": "display code: renders counts/progress from CI's own research JSON (output/*evidence*); a count the JSON does not hold renders as 0 on a progress line - never written back, never a tip/stake input"
+  },
+  {
+   "file": "dashboard_data/evidence_view.py",
+   "kind": "numeric_get_default",
+   "code": "f\"({ex.get('fill_constant_1.40', 0)}; src/backtest.py _DEFAULT_ODDS, dropped fail-closed as in \"",
+   "reason": "display code: renders counts/progress from CI's own research JSON (output/*evidence*); a count the JSON does not hold renders as 0 on a progress line - never written back, never a tip/stake input"
+  },
+  {
+   "file": "dashboard_data/evidence_view.py",
+   "kind": "numeric_get_default",
+   "code": "f\"market_edge.exclude_synthetic_prices) and fair-odds settlements ({ex.get('settled_at_fair_odds', 0)}) — \"",
+   "reason": "display code: renders counts/progress from CI's own research JSON (output/*evidence*); a count the JSON does not hold renders as 0 on a progress line - never written back, never a tip/stake input"
+  },
+  {
+   "file": "dashboard_data/evidence_view.py",
+   "kind": "numeric_get_default",
+   "code": "f\"{ex.get('kept', 0)} of {ex.get('settled_rows', 0)} settled rows kept. ROI CI: matchday block \"",
+   "reason": "display code: renders counts/progress from CI's own research JSON (output/*evidence*); a count the JSON does not hold renders as 0 on a progress line - never written back, never a tip/stake input"
+  },
+  {
+   "file": "dashboard_data/league_research_view.py",
+   "kind": "numeric_get_default",
+   "code": "out[rg] = out.get(rg, 0) + 1",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value"
+  },
+  {
+   "file": "dashboard_data/league_research_view.py",
+   "kind": "or_zero",
+   "code": "n = m.get(\"n_priced_settled\") or 0",
+   "reason": "display code: sample-size badge from the weekly research JSON; never written back or used to decide"
+  },
+  {
+   "file": "dashboard_data/league_research_view.py",
+   "kind": "or_zero",
+   "code": "(\"n · GW\", f\"{int(n)} · {int(m.get('gameweeks') or 0)} GW\"),",
+   "reason": "display code: sample-size badge from the weekly research JSON; never written back or used to decide"
+  },
+  {
+   "file": "dashboard_data/leagues.py",
+   "kind": "numeric_get_default",
+   "code": "\"upcoming\": int(up_n.get(lg, 0)),",
+   "reason": "display count from value_counts(): a league absent from the upcoming counts has zero upcoming tips"
+  },
+  {
+   "file": "dashboard_data/market_intel.py",
+   "kind": "or_zero",
+   "code": "\"basis\": basis, \"cell_status\": status, \"n\": int(m.get(\"n\") or 0), \"matchdays\": m.get(\"matchdays\"),",
+   "reason": "display code: reconciles counts / P&L of CI's own market-intelligence JSON files for the page (a missing count reads 0 in the reconciliation line); never written back, never a decision input"
+  },
+  {
+   "file": "dashboard_data/market_intel.py",
+   "kind": "or_zero",
+   "code": "two_n = int(cj.get(\"two_sided_at_entry\") or 0)",
+   "reason": "display code: reconciles counts / P&L of CI's own market-intelligence JSON files for the page (a missing count reads 0 in the reconciliation line); never written back, never a decision input"
+  },
+  {
+   "file": "dashboard_data/market_intel.py",
+   "kind": "or_zero",
+   "code": "n_all += int(m.get(\"n\") or 0)",
+   "reason": "display code: reconciles counts / P&L of CI's own market-intelligence JSON files for the page (a missing count reads 0 in the reconciliation line); never written back, never a decision input"
+  },
+  {
+   "file": "dashboard_data/market_intel.py",
+   "kind": "or_zero",
+   "code": "pnl_all += float(m.get(\"pnl_u\") or 0.0)",
+   "reason": "display code: reconciles counts / P&L of CI's own market-intelligence JSON files for the page (a missing count reads 0 in the reconciliation line); never written back, never a decision input"
+  },
+  {
+   "file": "dashboard_data/market_intel.py",
+   "kind": "or_zero",
+   "code": "rec.append({\"cell\": lab, \"legacy_json_n\": int(lj.get(\"n\") or 0), \"split_n\": n_all,",
+   "reason": "display code: reconciles counts / P&L of CI's own market-intelligence JSON files for the page (a missing count reads 0 in the reconciliation line); never written back, never a decision input"
+  },
+  {
+   "file": "dashboard_data/market_intel.py",
+   "kind": "or_zero",
+   "code": "\"reconciled\": int(lj.get(\"n\") or 0) == n_all",
+   "reason": "display code: reconciles counts / P&L of CI's own market-intelligence JSON files for the page (a missing count reads 0 in the reconciliation line); never written back, never a decision input"
+  },
+  {
+   "file": "dashboard_data/market_intel.py",
+   "kind": "or_zero",
+   "code": "and abs(float(lj.get(\"pnl_u\") or 0.0) - pnl_all) < 0.02})",
+   "reason": "display code: reconciles counts / P&L of CI's own market-intelligence JSON files for the page (a missing count reads 0 in the reconciliation line); never written back, never a decision input"
+  },
+  {
+   "file": "dashboard_data/market_intel.py",
+   "kind": "or_zero",
+   "code": "\"n\": int((pq.get(\"model\") or {}).get(\"n\") or 0), \"brier_gain\": g.get(\"mean\"),",
+   "reason": "display code: reconciles counts / P&L of CI's own market-intelligence JSON files for the page (a missing count reads 0 in the reconciliation line); never written back, never a decision input"
+  },
+  {
+   "file": "dashboard_data/market_intel.py",
+   "kind": "numeric_get_default",
+   "code": "tot = sum(int(a.get(f, 0) or 0) for f in (\"legacy_only\", \"new_only\", \"both_same_side\",",
+   "reason": "display code: reconciles counts / P&L of CI's own market-intelligence JSON files for the page (a missing count reads 0 in the reconciliation line); never written back, never a decision input"
+  },
+  {
+   "file": "dashboard_data/market_intel.py",
+   "kind": "numeric_get_default",
+   "code": "sel = tot - int(a.get(\"neither\", 0) or 0)",
+   "reason": "display code: reconciles counts / P&L of CI's own market-intelligence JSON files for the page (a missing count reads 0 in the reconciliation line); never written back, never a decision input"
+  },
+  {
+   "file": "dashboard_data/market_intel.py",
+   "kind": "numeric_get_default",
+   "code": "\"agreement_rate\": round((int(a.get(\"both_same_side\", 0) or 0)",
+   "reason": "display code: reconciles counts / P&L of CI's own market-intelligence JSON files for the page (a missing count reads 0 in the reconciliation line); never written back, never a decision input"
+  },
+  {
+   "file": "dashboard_data/market_intel.py",
+   "kind": "numeric_get_default",
+   "code": "+ int(a.get(\"neither\", 0) or 0)) / tot, 4) if tot else None,",
+   "reason": "display code: reconciles counts / P&L of CI's own market-intelligence JSON files for the page (a missing count reads 0 in the reconciliation line); never written back, never a decision input"
+  },
+  {
+   "file": "dashboard_data/market_intel.py",
+   "kind": "numeric_get_default",
+   "code": "\"selection_overlap\": round(int(a.get(\"both_same_side\", 0) or 0) / sel, 4) if sel else None})",
+   "reason": "display code: reconciles counts / P&L of CI's own market-intelligence JSON files for the page (a missing count reads 0 in the reconciliation line); never written back, never a decision input"
+  },
+  {
+   "file": "dashboard_data/overview_view.py",
+   "kind": "or_zero",
+   "code": "stake_pnl = U.total(t[\"staked_only\"].get(\"stake_pnl\") or 0.0 for t in tracks.values())",
+   "reason": "display code: sums the per-track P/L-at-stake the page already received (src.units skips missing); a track without the figure adds nothing to the headline"
+  },
+  {
+   "file": "dashboard_data/research_view.py",
+   "kind": "numeric_get_default",
+   "code": "st.metric(\"TRUE FORWARD n\", f\"{f.get('n', 0)} / {h.get('required_n')}\")",
+   "reason": "display code: TRUE FORWARD progress line from the research JSON; never written back or decided on"
+  },
+  {
+   "file": "dashboard_data/research_view.py",
+   "kind": "numeric_get_default",
+   "code": "ui.stat_line([(\"Matchdays\", f\"{f.get('matchdays', 0)} / {h.get('required_matchdays')}\"),",
+   "reason": "display code: TRUE FORWARD progress line from the research JSON; never written back or decided on"
+  },
+  {
+   "file": "dashboard_data/research_view.py",
+   "kind": "numeric_get_default",
+   "code": "st.markdown(ui.evidence_badge(\"TRUE FORWARD\", f.get(\"n\", 0), span=f\"{f.get('matchdays', 0)} matchdays\",",
+   "reason": "display code: TRUE FORWARD progress line from the research JSON; never written back or decided on"
+  },
+  {
+   "file": "dashboard_data/research_view.py",
+   "kind": "numeric_get_default",
+   "code": "+ ui.sample_marker(f.get(\"n\", 0) or 0))",
+   "reason": "display code: TRUE FORWARD progress line from the research JSON; never written back or decided on"
+  },
+  {
+   "file": "dashboard_data/research_view.py",
+   "kind": "or_zero",
+   "code": "st.progress(min(1.0, float(h.get(\"progress_pct\") or 0) / 100), text=f\"{h.get('progress_pct')}% of required n\")",
+   "reason": "display code: TRUE FORWARD progress line from the research JSON; never written back or decided on"
+  },
+  {
+   "file": "dashboard_data/system_view.py",
+   "kind": "fillna_literal",
+   "code": "d = d.assign(_o=d[\"status\"].map(order).fillna(9)).sort_values([\"_o\", \"check\"], kind=\"mergesort\")",
+   "reason": "display sort key only: a status not in the display order sorts last; no value is shown or stored"
+  },
+  {
+   "file": "pages/00_🎯_Home.py",
+   "kind": "numeric_get_default",
+   "code": "+ f\" :gray[{_cnt.get('GREEN', 0)} green · {_cnt.get('AMBER', 0)} amber · {_cnt.get('RED', 0)} red]\")",
+   "reason": "display code (Streamlit page): counts of statuses/states the page itself tallies, or a chart axis bound; never written to data, tips or stakes"
+  },
+  {
+   "file": "pages/12_💼_Portfolio.py",
+   "kind": "numeric_get_default",
+   "code": "frac = tier_frac.get(bt[\"tier\"], 0.0)",
+   "reason": "display code (Streamlit page): counts of statuses/states the page itself tallies, or a chart axis bound; never written to data, tips or stakes"
+  },
+  {
+   "file": "pages/12_💼_Portfolio.py",
+   "kind": "numeric_get_default",
+   "code": "settled = b[b[\"tier\"].map(lambda t: tier_frac.get(t, 0) > 0)]",
+   "reason": "display code (Streamlit page): counts of statuses/states the page itself tallies, or a chart axis bound; never written to data, tips or stakes"
+  },
+  {
+   "file": "pages/19_🩺_System_Health.py",
+   "kind": "numeric_get_default",
+   "code": "ui.metric_grid([{\"label\": \"GREEN\", \"value\": cnt.get(\"GREEN\", 0)}, {\"label\": \"AMBER\", \"value\": cnt.get(\"AMBER\", 0)},",
+   "reason": "display code (Streamlit page): counts of statuses/states the page itself tallies, or a chart axis bound; never written to data, tips or stakes"
+  },
+  {
+   "file": "pages/19_🩺_System_Health.py",
+   "kind": "numeric_get_default",
+   "code": "{\"label\": \"RED\", \"value\": cnt.get(\"RED\", 0)}, {\"label\": \"NO_DATA\", \"value\": cnt.get(\"NO_DATA\", 0)},",
+   "reason": "display code (Streamlit page): counts of statuses/states the page itself tallies, or a chart axis bound; never written to data, tips or stakes"
+  },
+  {
+   "file": "pages/1_📊_Dashboard.py",
+   "kind": "numeric_get_default",
+   "code": "ui.stat_line([(s, f\"{int(_ps.get(s, 0))}\") for s in _STATES if int(_ps.get(s, 0))])",
+   "reason": "display code (Streamlit page): counts of statuses/states the page itself tallies, or a chart axis bound; never written to data, tips or stakes"
+  },
+  {
+   "file": "pages/1_📊_Dashboard.py",
+   "kind": "or_zero",
+   "code": "_emax = max(float(pd.to_numeric(board[\"edge\"], errors=\"coerce\").max() or 0), 1.0)",
+   "reason": "display code (Streamlit page): counts of statuses/states the page itself tallies, or a chart axis bound; never written to data, tips or stakes"
+  },
+  {
+   "file": "player_model/data_fetcher.py",
+   "kind": "or_zero",
+   "code": "_SEASONS_BACK_ENV = int(os.getenv(\"WOWZA_COLLECT_SEASONS_BACK\", \"0\") or 0)",
+   "reason": "config switch, not data: the environment variable unset/empty means 0 = 'full history depth' (documented on the line above it)"
+  },
+  {
+   "file": "player_model/fantasy_defaults.py",
+   "kind": "numeric_get_default",
+   "code": "by_class[d[\"class\"]] = by_class.get(d[\"class\"], 0) + 1",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value"
+  },
+  {
+   "file": "player_model/fantasy_health.py",
+   "kind": "numeric_get_default",
+   "code": "\"available\": int(avail.get(\"available\", 0)),",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value (availability statuses counted with value_counts; an absent status occurs 0 times)"
+  },
+  {
+   "file": "player_model/fantasy_health.py",
+   "kind": "numeric_get_default",
+   "code": "\"doubtful\": int(avail.get(\"doubtful\", 0)),",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value (availability statuses counted with value_counts; an absent status occurs 0 times)"
+  },
+  {
+   "file": "player_model/fantasy_optimizer.py",
+   "kind": "numeric_get_default",
+   "code": "\"formation\": f\"{counts.get('DEF', 0)}-{counts.get('MID', 0)}-{counts.get('FWD', 0)}\",",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value (players per position in the chosen XI, for the formation label)"
+  },
+  {
+   "file": "player_model/fantasy_transfers.py",
+   "kind": "numeric_get_default",
+   "code": "after = club_counts.get(club, 0) + (0 if club == o.get(\"team\") else 1)",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value (players per club in a squad)"
+  },
+  {
+   "file": "player_model/odds_fetcher.py",
+   "kind": "numeric_get_default",
+   "code": "if not c or int(c.get(\"empty_streak\", 0)) < _COVERAGE_MIN_PROBES:",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value (OddsAPI coverage-probe journal)"
+  },
+  {
+   "file": "player_model/odds_fetcher.py",
+   "kind": "numeric_get_default",
+   "code": "c[\"probes\"] = int(c.get(\"probes\", 0)) + 1",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value (OddsAPI coverage-probe journal)"
+  },
+  {
+   "file": "player_model/odds_fetcher.py",
+   "kind": "numeric_get_default",
+   "code": "c[\"priced_events\"] = int(c.get(\"priced_events\", 0)) + 1",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value (OddsAPI coverage-probe journal)"
+  },
+  {
+   "file": "player_model/odds_fetcher.py",
+   "kind": "numeric_get_default",
+   "code": "c[\"empty_streak\"] = int(c.get(\"empty_streak\", 0)) + 1",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value (OddsAPI coverage-probe journal)"
+  },
+  {
+   "file": "player_model/odds_fetcher.py",
+   "kind": "numeric_get_default",
+   "code": "c[\"far_empty_probes\"] = int(c.get(\"far_empty_probes\", 0)) + 1",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value (OddsAPI coverage-probe journal)"
+  },
+  {
+   "file": "scripts/build_track_registry.py",
+   "kind": "or_zero",
+   "code": "n, md = int(e.get(\"evidence_n\") or 0), int(e.get(\"independent_matchdays\") or 0)",
+   "reason": "registry report: an evidence sample the track file does not record counts as none, which can only keep a track below its evidence bar (fail closed); not written into data"
+  },
+  {
+   "file": "scripts/build_track_registry.py",
+   "kind": "numeric_get_default",
+   "code": "counts[x[\"production_state\"]] = counts.get(x[\"production_state\"], 0) + 1",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value"
+  },
+  {
+   "file": "scripts/capture_exchange_odds.py",
+   "kind": "or_zero",
+   "code": "spent += int(r.headers.get(\"x-requests-last\") or 0)",
+   "reason": "Odds API budget telemetry: a response without the x-requests-last header adds nothing to this run's spent tally; the quota guard reads x-requests-remaining (next line). Never a price or a data value"
+  },
+  {
+   "file": "scripts/capture_exchange_odds.py",
+   "kind": "or_zero",
+   "code": "remaining = int(float(r.headers.get(\"x-requests-remaining\") or 0))",
+   "reason": "Odds API quota guard: a response without the remaining-quota header reads as 0 left, which STOPS the capture (fail closed). Never a price or a data value"
+  },
+  {
+   "file": "scripts/capture_exchange_odds.py",
+   "kind": "numeric_get_default",
+   "code": "by_mkt[x[\"market\"]] = by_mkt.get(x[\"market\"], 0) + 1",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value"
+  },
+  {
+   "file": "scripts/capture_nf_odds_forward.py",
+   "kind": "numeric_get_default",
+   "code": "record_wide_from_env(_PASS_START, _ODDS_CALLS + int(_af._STATS.get(\"calls\", 0)))",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value (API-Football calls this pass made)"
+  },
+  {
+   "file": "scripts/capture_std_sidemarket_odds_forward.py",
+   "kind": "numeric_get_default",
+   "code": "record_wide_from_env(_PASS_START, _ODDS_CALLS + int(_af._STATS.get(\"calls\", 0)))",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value (API-Football calls this pass made)"
+  },
+  {
+   "file": "scripts/check_clv_collection_health.py",
+   "kind": "numeric_get_default",
+   "code": "max_age = float(exp.get(\"max_health_age_hours\", 30))",
+   "reason": "ops health check config: the expectation file may omit its staleness window; 30 h is this check's documented window - a monitoring setting, not a tip, stake or data value"
+  },
+  {
+   "file": "scripts/check_ledger_history.py",
+   "kind": "numeric_get_default",
+   "code": "elif new_fps.get(fpv, 0) > 0:",
+   "reason": "ledger-history audit report: counts of commits / rows it tallies itself; printed only"
+  },
+  {
+   "file": "scripts/check_ledger_history.py",
+   "kind": "numeric_get_default",
+   "code": "print(f\"{path}: {r.get('commits', 0)} commits, {r.get('sampled', 0)} sampled, \"",
+   "reason": "ledger-history audit report: counts of commits / rows it tallies itself; printed only"
+  },
+  {
+   "file": "scripts/check_ledger_history.py",
+   "kind": "numeric_get_default",
+   "code": "f\"{r.get('removal_commits', 0)} removing commit(s); vanished rows: {r.get('vanished', {})}\")",
+   "reason": "ledger-history audit report: counts of commits / rows it tallies itself; printed only"
+  },
+  {
+   "file": "scripts/collect_af_history_gap.py",
+   "kind": "numeric_get_default",
+   "code": "per_league[r.canon][tag] = per_league[r.canon].get(tag, 0) + 1",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value"
+  },
+  {
+   "file": "scripts/collect_common.py",
+   "kind": "numeric_get_default",
+   "code": "self._journal[d] = int(self._journal.get(d, 0)) + 1",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value (AFClient per-day call journal)"
+  },
+  {
+   "file": "scripts/collect_lineups.py",
+   "kind": "numeric_get_default",
+   "code": "stats[\"skipped\"][tag] = stats[\"skipped\"].get(tag, 0) + 1",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value"
+  },
+  {
+   "file": "scripts/collect_player_refetch.py",
+   "kind": "numeric_get_default",
+   "code": "j[\"refused\"][why] = j[\"refused\"].get(why, 0) + 1",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value"
+  },
+  {
+   "file": "scripts/collect_player_refetch.py",
+   "kind": "numeric_get_default",
+   "code": "st[\"rows_refused\"][k] = st[\"rows_refused\"].get(k, 0) + v",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value"
+  },
+  {
+   "file": "scripts/collect_understat_shots.py",
+   "kind": "numeric_get_default",
+   "code": "req, ok = stats.get(\"requests\", 0), stats.get(\"ok\", 0)",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value (Understat request outcomes of this run)"
+  },
+  {
+   "file": "scripts/collect_understat_shots.py",
+   "kind": "numeric_get_default",
+   "code": "net = stats.get(\"unreachable\", 0) + stats.get(\"timeout\", 0)",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value (Understat request outcomes of this run)"
+  },
+  {
+   "file": "scripts/collect_understat_shots.py",
+   "kind": "numeric_get_default",
+   "code": "if ok and stats.get(\"pages_without_matches\", 0) and stored_matches == 0 and stored_shots_matches == 0:",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value (Understat request outcomes of this run)"
+  },
+  {
+   "file": "scripts/collect_understat_shots.py",
+   "kind": "numeric_get_default",
+   "code": "STATS[\"pages_without_matches\"] = STATS.get(\"pages_without_matches\", 0) + 1",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value (Understat request outcomes of this run)"
+  },
+  {
+   "file": "scripts/dashboard_manifest.py",
+   "kind": "or_zero",
+   "code": "\"data_files\": len(data), \"data_bytes\": sum(e[\"bytes\"] or 0 for e in data)},",
+   "reason": "deploy-manifest size report: sums the byte counts it measured; never data"
+  },
+  {
+   "file": "scripts/gate_study.py",
+   "kind": "numeric_get_default",
+   "code": "if m.get(\"n\", 0) >= MIN_LIVE:",
+   "reason": "research report (no production decision): a cell without a live n / ROI reads as none, which can only keep it below the gate (fail closed); printed only"
+  },
+  {
+   "file": "scripts/gate_study.py",
+   "kind": "numeric_get_default",
+   "code": "elif m.get(\"roi\", 0) <= 0:",
+   "reason": "research report (no production decision): a cell without a live n / ROI reads as none, which can only keep it below the gate (fail closed); printed only"
+  },
+  {
+   "file": "scripts/gate_study.py",
+   "kind": "numeric_get_default",
+   "code": "reason=f\"only {m.get('n', 0)} live bets at or above the production gate\")",
+   "reason": "research report (no production decision): a cell without a live n / ROI reads as none, which can only keep it below the gate (fail closed); printed only"
+  },
+  {
+   "file": "scripts/gate_study.py",
+   "kind": "numeric_get_default",
+   "code": "f\"{f('roi_live'):>9.3f}{r.get('live_n', 0):>6}  {r.get('evidence_grade')}\")",
+   "reason": "research report (no production decision): a cell without a live n / ROI reads as none, which can only keep it below the gate (fail closed); printed only"
+  },
+  {
+   "file": "scripts/league_thresholds.py",
+   "kind": "numeric_get_default",
+   "code": "f\"{r.get('live_n', 0):>7}  {r.get('status')}\")",
+   "reason": "research report: printed sample size column only"
+  },
+  {
+   "file": "scripts/report_oddsapi_credits.py",
+   "kind": "or_zero",
+   "code": "credits = {name: sum(int(r.get(col) or 0) for r in runs) for name, col in FEATURES.items()}",
+   "reason": "Odds API credit report: sums the credit columns of CI's own run logs (a run that logged none spent none) and prints schedule figures; a budget report, never a data value"
+  },
+  {
+   "file": "scripts/report_oddsapi_credits.py",
+   "kind": "or_zero",
+   "code": "w[\"credits\"] += sum(int(r.get(col) or 0) for col in FEATURES.values())",
+   "reason": "Odds API credit report: sums the credit columns of CI's own run logs (a run that logged none spent none) and prints schedule figures; a budget report, never a data value"
+  },
+  {
+   "file": "scripts/report_oddsapi_credits.py",
+   "kind": "or_zero",
+   "code": "predict_cost = (sum(sum(int(r.get(c) or 0) for c in PREDICT_FEATURES) for r in predict) / len(predict)",
+   "reason": "Odds API credit report: sums the credit columns of CI's own run logs (a run that logged none spent none) and prints schedule figures; a budget report, never a data value"
+  },
+  {
+   "file": "scripts/report_oddsapi_credits.py",
+   "kind": "or_zero",
+   "code": "alt_calls_per_day = sum(int(r.get(\"alt_totals_calls\") or 0) for r in predict) * 24.0 / hours",
+   "reason": "Odds API credit report: sums the credit columns of CI's own run logs (a run that logged none spent none) and prints schedule figures; a budget report, never a data value"
+  },
+  {
+   "file": "scripts/report_oddsapi_credits.py",
+   "kind": "or_zero",
+   "code": "sharp_per_run = sum(int(r.get(\"sharp_credits\") or 0) for r in sharp) / len(sharp) if sharp else 0.0",
+   "reason": "Odds API credit report: sums the credit columns of CI's own run logs (a run that logged none spent none) and prints schedule figures; a budget report, never a data value"
+  },
+  {
+   "file": "scripts/report_oddsapi_credits.py",
+   "kind": "numeric_get_default",
+   "code": "guard_max = inp[\"schedules_requested_per_day\"].get(\"sharp_tracker.yml\", {}).get(\"guard_max\", 0)",
+   "reason": "Odds API credit report: sums the credit columns of CI's own run logs (a run that logged none spent none) and prints schedule figures; a budget report, never a data value"
+  },
+  {
+   "file": "scripts/report_oddsapi_credits.py",
+   "kind": "numeric_get_default",
+   "code": "f\"{c['by_wf'].get('predict.yml', {}).get('runs_per_day', 0):.0f} times a day** (break-even below).\")",
+   "reason": "Odds API credit report: sums the credit columns of CI's own run logs (a run that logged none spent none) and prints schedule figures; a budget report, never a data value"
+  },
+  {
+   "file": "scripts/report_oddsapi_credits.py",
+   "kind": "numeric_get_default",
+   "code": "f\"(currently ~{c['by_wf'].get('predict.yml', {}).get('runs_per_day', 0):.1f}); once the sharp tracker \"",
+   "reason": "Odds API credit report: sums the credit columns of CI's own run logs (a run that logged none spent none) and prints schedule figures; a budget report, never a data value"
+  },
+  {
+   "file": "scripts/standard_feature_audit.py",
+   "kind": "or_zero",
+   "code": "nn = abs((st[\"train_nonnull\"] or 0) - (st[\"serve_nonnull\"] or 0))",
+   "reason": "feature-parity diagnostic report: compares train/serve non-null counts and std it computed itself; printed only, decides nothing"
+  },
+  {
+   "file": "scripts/standard_feature_audit.py",
+   "kind": "or_zero",
+   "code": "sd = st[\"train_std\"] or 0.0",
+   "reason": "feature-parity diagnostic report: compares train/serve non-null counts and std it computed itself; printed only, decides nothing"
+  },
+  {
+   "file": "src/bankroll_policy.py",
+   "kind": "numeric_get_default",
+   "code": "conv_mult = min(float(conv.get(\"multiplier\", 1.0)), 1.20)",
+   "reason": "policy-file switch, not data: a policy without a convergence multiplier gives no boost (x1.0); capped at 1.20 either way"
+  },
+  {
+   "file": "src/bankroll_policy.py",
+   "kind": "numeric_get_default",
+   "code": "\"_score\": float(t.get(\"evidence_score\", 0.0)), \"reason\": reason})",
+   "reason": "allocation ORDER key only (which planned stake is trimmed first under a cap): a track without an evidence score sorts as least evidenced. It sizes nothing and is not written as a value"
+  },
+  {
+   "file": "src/bankroll_policy.py",
+   "kind": "fillna_literal",
+   "code": "scale = (cap / tot).where(tot > cap, 1.0).fillna(1.0)",
+   "reason": "arithmetic scale factor: 1.0 = 'no down-scaling' where a group total is within its cap or undefined; it multiplies stakes already computed, never creates one"
+  },
+  {
+   "file": "src/book_quotes.py",
+   "kind": "fillna_literal",
+   "code": "+ df[\"market\"].astype(str) + \"|\" + df[\"line\"].fillna(-1).astype(str))",
+   "reason": "dedup KEY string only: a quote without a line (BTTS) is keyed '-1' so it never collides with a real line; the stored quote keeps its missing line"
+  },
+  {
+   "file": "src/book_quotes.py",
+   "kind": "fillna_literal",
+   "code": "+ frame[\"line\"].fillna(-1).astype(str))",
+   "reason": "dedup KEY string only: a quote without a line (BTTS) is keyed '-1' so it never collides with a real line; the stored quote keeps its missing line"
+  },
+  {
+   "file": "src/book_quotes.py",
+   "kind": "fillna_literal",
+   "code": "changed = prev.isna() | ~np.isclose(prev.fillna(-1).astype(float),",
+   "reason": "change test only: a quote never seen before is already 'changed' via prev.isna(); the -1 never matches a real price and is never stored"
+  },
+  {
+   "file": "src/btts_odds.py",
+   "kind": "numeric_get_default",
+   "code": "credits_by_league[_lg] = credits_by_league.get(_lg, 0) + (credits - _c0)",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value (Odds API credits / calls / filled cells this run)"
+  },
+  {
+   "file": "src/btts_odds.py",
+   "kind": "numeric_get_default",
+   "code": "calls_by_league[_lg] = calls_by_league.get(_lg, 0) + 1",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value (Odds API credits / calls / filled cells this run)"
+  },
+  {
+   "file": "src/btts_odds.py",
+   "kind": "numeric_get_default",
+   "code": "filled_alt[col] = filled_alt.get(col, 0) + 1",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value (Odds API credits / calls / filled cells this run)"
+  },
+  {
+   "file": "src/btts_odds.py",
+   "kind": "or_zero",
+   "code": "f\"call(s) (cap {alt_max_calls}, window {alt_window_h:g}h), filled {filled_alt or 0}\")",
+   "reason": "log line: prints an empty fill tally as 0"
+  },
+  {
+   "file": "src/capture_schedule.py",
+   "kind": "numeric_get_default",
+   "code": "passes = int(state.get(\"passes_today\", 0) or 0) if same_day else 0",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value (capture passes / calls today, kept in the scheduler's own state file; a new day starts at 0)"
+  },
+  {
+   "file": "src/capture_schedule.py",
+   "kind": "numeric_get_default",
+   "code": "calls = float(state.get(\"calls_today\", 0) or 0) if same_day else 0.0",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value (capture passes / calls today, kept in the scheduler's own state file; a new day starts at 0)"
+  },
+  {
+   "file": "src/capture_schedule.py",
+   "kind": "numeric_get_default",
+   "code": "passes_today=int(st.get(\"passes_today\", 0) or 0) + 1,",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value (capture passes / calls today, kept in the scheduler's own state file; a new day starts at 0)"
+  },
+  {
+   "file": "src/capture_schedule.py",
+   "kind": "numeric_get_default",
+   "code": "calls_today=int(st.get(\"calls_today\", 0) or 0) + int(calls),",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value (capture passes / calls today, kept in the scheduler's own state file; a new day starts at 0)"
+  },
+  {
+   "file": "src/cloudbet/selection.py",
+   "kind": "numeric_get_default",
+   "code": "self.reasons[reason] = self.reasons.get(reason, 0) + n",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value"
+  },
+  {
+   "file": "src/contracts/__main__.py",
+   "kind": "numeric_get_default",
+   "code": "print(f\"{x.get('n_violations', 0):3d} violation(s)  {x['schema']:30s} {f} ({x.get('rows', 0)} rows\"",
+   "reason": "CLI printout of the contract checker's own violation / row counts"
+  },
+  {
+   "file": "src/contracts/schema.py",
+   "kind": "numeric_get_default",
+   "code": "by[v[\"kind\"]] = by.get(v[\"kind\"], 0) + 1",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value"
+  },
+  {
+   "file": "src/contracts/shadow.py",
+   "kind": "numeric_get_default",
+   "code": "\"n_violations\": int(sum(f.get(\"n_violations\", 0) for f in frames.values())),",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value (violations / unmatched rows the checker counted itself)"
+  },
+  {
+   "file": "src/data_loader.py",
+   "kind": "numeric_get_default",
+   "code": "filled[name] = int(rep.filled_cells.get(\"ht_home_goals\", 0))",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value (cells the safe join filled; a join that filled none reports none)"
+  },
+  {
+   "file": "src/data_loader.py",
+   "kind": "numeric_get_default",
+   "code": "moved = {lg: (before.get(lg, 0.0), v) for lg, v in after.items() if v != before.get(lg, 0.0)}",
+   "reason": "log line only: coverage before -> after per league for the info log; a league with no rows before had 0% coverage. Not stored"
+  },
+  {
+   "file": "src/data_loader.py",
+   "kind": "numeric_get_default",
+   "code": "moved = {lg: (before.get(lg, {}).get(\"home_corners\", 0.0), v[\"home_corners\"])",
+   "reason": "log line only: coverage before -> after per league for the info log; a league with no rows before had 0% coverage. Not stored"
+  },
+  {
+   "file": "src/data_loader.py",
+   "kind": "numeric_get_default",
+   "code": "if v[\"home_corners\"] != before.get(lg, {}).get(\"home_corners\", 0.0)}",
+   "reason": "log line only: coverage before -> after per league for the info log; a league with no rows before had 0% coverage. Not stored"
+  },
+  {
+   "file": "src/drift.py",
+   "kind": "numeric_get_default",
+   "code": "last[\"n\"] = int(last.get(\"n\", 1)) + 1",
+   "reason": "snapshot multiplicity: each stored drift snapshot record is at least one observation; records written before the n field existed are single observations. Not a price"
+  },
+  {
+   "file": "src/drift.py",
+   "kind": "numeric_get_default",
+   "code": "n_seen = sum(int(s.get(\"n\", 1)) for s in snaps)",
+   "reason": "snapshot multiplicity: each stored drift snapshot record is at least one observation; records written before the n field existed are single observations. Not a price"
+  },
+  {
+   "file": "src/edge_af_quotes.py",
+   "kind": "fillna_literal",
+   "code": "fam[(mk == m) & np.isclose(line.fillna(-9.0), ln)] = f",
+   "reason": "match test only: a quote without a line can never equal a real line (-9 is no line); line-less BTTS is classified on the next line by line.isna()"
+  },
+  {
+   "file": "src/imputer.py",
+   "kind": "numeric_get_default",
+   "code": "fitted_on_rows=int(d.get(\"fitted_on_rows\", 0)),",
+   "reason": "FROZEN SERVING (owner: do not change serving now): from_dict of a persisted 1.0 imputer manifest; a manifest without these keys deserialises as written by IMPUTER 1.0. Phase 2 options in reports/P9_MODEL_IMPUTATION.md"
+  },
+  {
+   "file": "src/imputer.py",
+   "kind": "numeric_get_default",
+   "code": "fill_all_missing=float(d.get(\"fill_all_missing\", 0.0)),",
+   "reason": "FROZEN SERVING (owner: do not change serving now): from_dict of a persisted 1.0 imputer manifest; a manifest without these keys deserialises as written by IMPUTER 1.0. Phase 2 options in reports/P9_MODEL_IMPUTATION.md"
+  },
+  {
+   "file": "src/integrity/model_health.py",
+   "kind": "numeric_get_default",
+   "code": "worst = max(checks, key=lambda s: RANK.get(s, 1))",
+   "reason": "rank lookup: an unknown tier/status ranks below every known one, so it can never displace or outrank a real value (fail closed) - not a data value"
+  },
+  {
+   "file": "src/integrity/oddsapi_quota.py",
+   "kind": "numeric_get_default",
+   "code": "w[\"credits\"] += int(u.get(\"credits\", 0))",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value (Odds API usage records CI writes itself)"
+  },
+  {
+   "file": "src/integrity/oddsapi_quota.py",
+   "kind": "numeric_get_default",
+   "code": "w[\"calls\"] += int(u.get(\"calls\", 0))",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value (Odds API usage records CI writes itself)"
+  },
+  {
+   "file": "src/integrity/oddsapi_quota.py",
+   "kind": "numeric_get_default",
+   "code": "for mk, c in (u.get(\"credits_by_market\") or {\"btts\": u.get(\"credits\", 0)}).items():",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value (Odds API usage records CI writes itself)"
+  },
+  {
+   "file": "src/integrity/oddsapi_quota.py",
+   "kind": "numeric_get_default",
+   "code": "considered += int(u.get(\"fixtures_considered\", 0))",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value (Odds API usage records CI writes itself)"
+  },
+  {
+   "file": "src/integrity/oddsapi_quota.py",
+   "kind": "numeric_get_default",
+   "code": "fresh += int(u.get(\"suppressed_fresh\", 0))",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value (Odds API usage records CI writes itself)"
+  },
+  {
+   "file": "src/integrity/parity.py",
+   "kind": "or_zero",
+   "code": "t_std = s.get(\"train_std\") or 0.0",
+   "reason": "parity diagnostic: counts / std the parity check computed itself; a missing stat can only NOT raise a warning. Decides no tip, stake or data value"
+  },
+  {
+   "file": "src/integrity/parity.py",
+   "kind": "numeric_get_default",
+   "code": "constant_live = (s.get(\"live_non_null\", 0) >= MIN_LIVE_N and s.get(\"live_distinct\", 0) == 1",
+   "reason": "parity diagnostic: counts / std the parity check computed itself; a missing stat can only NOT raise a warning. Decides no tip, stake or data value"
+  },
+  {
+   "file": "src/integrity/parity.py",
+   "kind": "numeric_get_default",
+   "code": "and s.get(\"train_distinct\", 0) > 1 and t_std > 0)",
+   "reason": "parity diagnostic: counts / std the parity check computed itself; a missing stat can only NOT raise a warning. Decides no tip, stake or data value"
+  },
+  {
+   "file": "src/integrity/parity.py",
+   "kind": "numeric_get_default",
+   "code": "if s.get(\"live_n\", 0) and s.get(\"live_non_null\", 0) == 0 and tm is not None and tm < 0.5:",
+   "reason": "parity diagnostic: counts / std the parity check computed itself; a missing stat can only NOT raise a warning. Decides no tip, stake or data value"
+  },
+  {
+   "file": "src/integrity/parity.py",
+   "kind": "numeric_get_default",
+   "code": "if tm is not None and lm is not None and lm - tm >= MISSING_JUMP_FAIL and s.get(\"live_non_null\", 0):",
+   "reason": "parity diagnostic: counts / std the parity check computed itself; a missing stat can only NOT raise a warning. Decides no tip, stake or data value"
+  },
+  {
+   "file": "src/league_registry.py",
+   "kind": "numeric_get_default",
+   "code": "if t in (\"start_year\", \"end_year\") and not (1 <= int(rule.get(\"start_month\", 0) or 0) <= 12):",
+   "reason": "registry VALIDATION: a season rule without start_month reads as month 0, which FAILS the 1..12 check (the rule is reported invalid - fail closed)"
+  },
+  {
+   "file": "src/ledger.py",
+   "kind": "numeric_get_default",
+   "code": "out[k] = max(out.get(k, 0), _TIER_RANK.get(str(r.observed_tier), 0))",
+   "reason": "rank lookup: an unknown tier/status ranks below every known one, so it can never displace or outrank a real value (fail closed) - not a data value"
+  },
+  {
+   "file": "src/ledger.py",
+   "kind": "numeric_get_default",
+   "code": "rank = _TIER_RANK.get(tier, 0)",
+   "reason": "rank lookup: an unknown tier/status ranks below every known one, so it can never displace or outrank a real value (fail closed) - not a data value"
+  },
+  {
+   "file": "src/ledger.py",
+   "kind": "numeric_get_default",
+   "code": "if rank > max(_TIER_RANK.get(cur, 0), best_seen.get(seen_key, 0)):",
+   "reason": "rank lookup: an unknown tier/status ranks below every known one, so it can never displace or outrank a real value (fail closed) - not a data value"
+  },
+  {
+   "file": "src/ledger.py",
+   "kind": "numeric_get_default",
+   "code": "rank = _SIDE_RANK.get(tier, 0)",
+   "reason": "rank lookup: an unknown tier/status ranks below every known one, so it can never displace or outrank a real value (fail closed) - not a data value"
+  },
+  {
+   "file": "src/ledger.py",
+   "kind": "numeric_get_default",
+   "code": "if rank > max(_SIDE_RANK.get(cur, 0), best_seen.get(seen_key, 0)):",
+   "reason": "rank lookup: an unknown tier/status ranks below every known one, so it can never displace or outrank a real value (fail closed) - not a data value"
+  },
+  {
+   "file": "src/ledger.py",
+   "kind": "numeric_get_default",
+   "code": "n = seen.get(k, 0)",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value"
+  },
+  {
+   "file": "src/market_edge.py",
+   "kind": "numeric_get_default",
+   "code": "w = float((P[\"residual_weight\"] or {}).get(key, 0.0))",
+   "reason": "market-first engine parameter: a track/family with no fitted residual weight gets none (w=0: the decision probability IS the de-vigged market price - the engine's documented fallback). Not data"
+  },
+  {
+   "file": "src/market_edge.py",
+   "kind": "numeric_get_default",
+   "code": "n_eff = int((P[\"residual_n_eff\"] or {}).get(key, 0) or 0)",
+   "reason": "market-first engine parameter: no fitted residual sample -> n_eff 0 -> the FULL residual penalty (fail closed: the model's view is trusted least). Not data"
+  },
+  {
+   "file": "src/market_edge.py",
+   "kind": "numeric_get_default",
+   "code": "haircut = float(P.get(\"odds_haircut\", 0.0) or 0.0)",
+   "reason": "engine parameter file: a params file without odds_haircut applies none (a policy switch). Not data"
+  },
+  {
+   "file": "src/market_edge.py",
+   "kind": "or_zero",
+   "code": "/ (float(P[\"league_history_n0\"]) + float(c.league_history_n or 0)),",
+   "reason": "market-first engine: an unknown league history count is treated as no history, which gives the MAXIMUM league penalty (fail closed). Not data"
+  },
+  {
+   "file": "src/predict.py",
+   "kind": "numeric_get_default",
+   "code": "why[\"league has no API-Football id\"] = why.get(\"league has no API-Football id\", 0) + len(g)",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value (reasons an API-Football HT lookup was skipped)"
+  },
+  {
+   "file": "src/predict.py",
+   "kind": "numeric_get_default",
+   "code": "why[\"season unknown\"] = why.get(\"season unknown\", 0) + len(g)",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value (reasons an API-Football HT lookup was skipped)"
+  },
+  {
+   "file": "src/predict.py",
+   "kind": "numeric_get_default",
+   "code": "why.get(\"clubs not resolved to one API-Football fixture\", 0) + 1",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value (reasons an API-Football HT lookup was skipped)"
+  },
+  {
+   "file": "src/research/league_weekly.py",
+   "kind": "numeric_get_default",
+   "code": "haircut = float(P.get(\"odds_haircut\", 0.0) or 0.0)",
+   "reason": "engine parameter file: a params file without odds_haircut applies none (a policy switch). Not data"
+  },
+  {
+   "file": "src/research/league_weekly.py",
+   "kind": "numeric_get_default",
+   "code": "pending[\"NOT_FINISHED\"] = pending.get(\"NOT_FINISHED\", 0) + 1",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value"
+  },
+  {
+   "file": "src/research/league_weekly.py",
+   "kind": "numeric_get_default",
+   "code": "pending[\"NO_RESULT_YET\"] = pending.get(\"NO_RESULT_YET\", 0) + 1",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value"
+  },
+  {
+   "file": "src/research/league_weekly.py",
+   "kind": "numeric_get_default",
+   "code": "n_fx = int(fx.get(wk, 0))",
+   "reason": "weekly count from value_counts(): a week absent from the counts had zero fixtures - a real zero"
+  },
+  {
+   "file": "src/research/league_weekly.py",
+   "kind": "numeric_get_default",
+   "code": "n_pre = int(pre.get(wk, 0))",
+   "reason": "weekly count from value_counts(): a week absent from the counts had zero fixtures - a real zero"
+  },
+  {
+   "file": "src/research/quality_tiers.py",
+   "kind": "numeric_get_default",
+   "code": "\"tips_in_record\": int(len(rec)), \"unmatched_tips\": int(rec.attrs.get(\"unmatched\", 0)),",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value (violations / unmatched rows the checker counted itself)"
+  },
+  {
+   "file": "src/shadow_settlement.py",
+   "kind": "numeric_get_default",
+   "code": "pending[reason] = pending.get(reason, 0) + 1",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value"
+  },
+  {
+   "file": "src/sharp_tracker.py",
+   "kind": "or_zero",
+   "code": "spent = int(float(hdr.get(\"x-requests-last\") or 0))",
+   "reason": "Odds API budget telemetry: a response without the x-requests-last header adds nothing to the spent tally; the quota stop reads x-requests-remaining, which is never defaulted. Never a price"
+  },
+  {
+   "file": "src/sharp_tracker.py",
+   "kind": "numeric_get_default",
+   "code": "usage[\"credits_by_league\"][league] = usage[\"credits_by_league\"].get(league, 0) + spent",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value (Odds API credits spent this run)"
+  },
+  {
+   "file": "src/sharp_tracker.py",
+   "kind": "numeric_get_default",
+   "code": "usage[\"credits_by_market\"][market] = usage[\"credits_by_market\"].get(market, 0) + spent",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value (Odds API credits spent this run)"
+  },
+  {
+   "file": "src/strength/build.py",
+   "kind": "numeric_get_default",
+   "code": "sizes[r] = sizes.get(r, 0) + 1",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value (graph component sizes / link counts)"
+  },
+  {
+   "file": "src/strength/build.py",
+   "kind": "numeric_get_default",
+   "code": "q.append((ld[j], lc[j])); count[lc[j]] = count.get(lc[j], 0) + 1; j += 1",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value (graph component sizes / link counts)"
+  },
+  {
+   "file": "src/strength/build.py",
+   "kind": "numeric_get_default",
+   "code": "links[key] = links.get(key, 0) + 1",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value (graph component sizes / link counts)"
+  },
+  {
+   "file": "src/strength/results.py",
+   "kind": "numeric_get_default",
+   "code": "report[\"covered_by_collected\"] = report.get(\"covered_by_collected\", 0) + int(inside.sum())",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value"
+  },
+  {
+   "file": "src/system_health.py",
+   "kind": "numeric_get_default",
+   "code": "n = sum((h.get(\"TRUE_FORWARD\") or {}).get(\"n\", 0) for h in hs)",
+   "reason": "system-health tallies of CI's own research files (sample n vs required n, acknowledged row counts); a missing count can only keep a check from turning GREEN"
+  },
+  {
+   "file": "src/system_health.py",
+   "kind": "numeric_get_default",
+   "code": "need = sum(h.get(\"required_n\", 0) for h in hs if h.get(\"candidate_gate\") is not None)",
+   "reason": "system-health tallies of CI's own research files (sample n vs required n, acknowledged row counts); a missing count can only keep a check from turning GREEN"
+  },
+  {
+   "file": "src/system_health.py",
+   "kind": "or_zero",
+   "code": "if k in ack and (ack[k] is None or int(v.get(\"n_rows\") or 0) <= int(ack[k])):",
+   "reason": "system-health tallies of CI's own research files (sample n vs required n, acknowledged row counts); a missing count can only keep a check from turning GREEN"
+  },
+  {
+   "file": "src/system_health.py",
+   "kind": "numeric_get_default",
+   "code": "\"rows\": x.get(\"rows\"), \"n_violations\": x.get(\"n_violations\", 0),",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value (violations / unmatched rows the checker counted itself)"
+  },
+  {
+   "file": "telegram_bot/daily_pack.py",
+   "kind": "or_zero",
+   "code": "\"P/L\": GREEN if (r[\"pnl\"] or 0) > 0 else RED if (r[\"pnl\"] or 0) < 0 else MUTED}})",
+   "reason": "display colour only (green/red/grey for a P/L or ROI cell of the Telegram picture); the value shown is the recorded one, a missing P/L is drawn grey"
+  },
+  {
+   "file": "telegram_bot/daily_pack.py",
+   "kind": "or_zero",
+   "code": "\"P/L\": GREEN if (p or 0) > 0 else RED if (p or 0) < 0 else MUTED}})",
+   "reason": "display colour only (green/red/grey for a P/L or ROI cell of the Telegram picture); the value shown is the recorded one, a missing P/L is drawn grey"
+  },
+  {
+   "file": "telegram_bot/daily_pack.py",
+   "kind": "or_zero",
+   "code": "\"P/L\": GREEN if (u or 0) > 0 else RED if (u or 0) < 0 else MUTED}}",
+   "reason": "display colour only (green/red/grey for a P/L or ROI cell of the Telegram picture); the value shown is the recorded one, a missing P/L is drawn grey"
+  },
+  {
+   "file": "telegram_bot/daily_pack.py",
+   "kind": "or_zero",
+   "code": "\"colours\": {\"League\": MUTED if paper else INK, \"ROI\": _signed(r[\"ROI %\"] or 0),",
+   "reason": "display colour only (green/red/grey for a P/L or ROI cell of the Telegram picture); the value shown is the recorded one, a missing P/L is drawn grey"
+  },
+  {
+   "file": "telegram_bot/notifier.py",
+   "kind": "numeric_get_default",
+   "code": "retry_after = r.json().get(\"parameters\", {}).get(\"retry_after\", 5)",
+   "reason": "Telegram API back-off: seconds to wait before resending when Telegram's 429 omits retry_after. A transport setting, never a tip or data value"
+  },
+  {
+   "file": "telegram_bot/notifier.py",
+   "kind": "numeric_get_default",
+   "code": "_unr = sharp_state.get(\"unrestated\", 0)",
+   "reason": "message text / alert counters from CI's own state files (sharp tracker, predict health); display only"
+  },
+  {
+   "file": "telegram_bot/notifier.py",
+   "kind": "numeric_get_default",
+   "code": "_unr = _sst.get(\"unrestated\", 0)",
+   "reason": "message text / alert counters from CI's own state files (sharp tracker, predict health); display only"
+  },
+  {
+   "file": "telegram_bot/notifier.py",
+   "kind": "numeric_get_default",
+   "code": "if int(state.get(\"last_n_fixtures\", 0)) > 0:",
+   "reason": "message text / alert counters from CI's own state files (sharp tracker, predict health); display only"
+  },
+  {
+   "file": "telegram_bot/notifier.py",
+   "kind": "numeric_get_default",
+   "code": "queried, ok, err = stats.get(\"queried\", 0), stats.get(\"ok\", 0), stats.get(\"err\", 0)",
+   "reason": "message text / alert counters from CI's own state files (sharp tracker, predict health); display only"
+  },
+  {
+   "file": "update_results.py",
+   "kind": "numeric_get_default",
+   "code": "_KNOCKOUT_UNCHECKED[\"no_api_football_id\"] = _KNOCKOUT_UNCHECKED.get(\"no_api_football_id\", 0) + 1",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value (settlement skip / pending reasons)"
+  },
+  {
+   "file": "update_results.py",
+   "kind": "numeric_get_default",
+   "code": "_KNOCKOUT_UNCHECKED[\"season_unknown\"] = _KNOCKOUT_UNCHECKED.get(\"season_unknown\", 0) + 1",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value (settlement skip / pending reasons)"
+  },
+  {
+   "file": "update_results.py",
+   "kind": "numeric_get_default",
+   "code": "_KNOCKOUT_UNCHECKED[\"no_api_key\"] = _KNOCKOUT_UNCHECKED.get(\"no_api_key\", 0) + 1",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value (settlement skip / pending reasons)"
+  },
+  {
+   "file": "update_results.py",
+   "kind": "numeric_get_default",
+   "code": "skipped[reason] = skipped.get(reason, 0) + 1",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value (settlement skip / pending reasons)"
+  },
+  {
+   "file": "update_results.py",
+   "kind": "numeric_get_default",
+   "code": "reasons[\"no_side\"] = reasons.get(\"no_side\", 0) + 1",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value (settlement skip / pending reasons)"
+  },
+  {
+   "file": "update_results.py",
+   "kind": "numeric_get_default",
+   "code": "reasons[\"market_not_gradable\"] = reasons.get(\"market_not_gradable\", 0) + 1",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value (settlement skip / pending reasons)"
+  },
+  {
+   "file": "update_results.py",
+   "kind": "numeric_get_default",
+   "code": "reasons[\"ht_score_incomplete\"] = reasons.get(\"ht_score_incomplete\", 0) + 1",
+   "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value (settlement skip / pending reasons)"
+  }
+ ]
+}

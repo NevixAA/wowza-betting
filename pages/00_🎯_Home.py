@@ -26,7 +26,9 @@ require("pro")
 
 import dashboard_ui as ui  # noqa: E402
 from src.tier_labels import GAP_EXPLAINER, PAPER_TIER_LABEL, STAKED_LABEL  # noqa: E402
-from dashboard_data import production_view, today_view  # noqa: E402
+from dashboard_data import production_view, today_view, truth_view  # noqa: E402
+from src.staked import DEFINITION as STAKED_DEF, load_records, plan_staked, policy_start  # noqa: E402
+from src import units as U  # noqa: E402
 
 st.set_page_config(page_title="Wowza | Home", page_icon="🎯", layout="wide", initial_sidebar_state="expanded")
 ui.autorefresh(5, key="main_refresh")
@@ -53,20 +55,21 @@ def _home(today: str, local_day: str) -> dict:
     * the Best-bets list (src.top_picks, the Tips page's lists); system health, manifest, API budget."""
     plan = production_view.stake_plan(today=today)
     ko = today_view.kickoffs()
-    active = plan[plan["final_fraction"] > 0] if len(plan) else plan
+    active = plan[plan_staked(plan)] if len(plan) else plan
     times = (pd.to_datetime(active["fixture"].map(ko.set_index("fixture")["kickoff_utc"]), errors="coerce", utc=True)
              if len(active) and len(ko) else pd.Series(dtype="datetime64[ns, UTC]"))
     sh, man = today_view.health_files()
     bb, bb_frozen = _best_bets(today)
     return {"perf": today_view.performance(today_view.load_settled(), today=local_day),
-            "upcoming_ou": today_view.upcoming_staked_ou(today_view.load_bets()),
+            "upcoming_ou": today_view.upcoming_staked_ou(plan),
             "act": today_view.action(plan), "ko_times": times,
             "gen": plan["generated_at"].dropna().astype(str).max() if len(plan) else None,
-            "bb": bb, "bb_frozen": bb_frozen, "sh": sh, "man": man, "budget": today_view.api_budget()}
+            "bb": bb, "bb_frozen": bb_frozen, "sh": sh, "man": man, "budget": today_view.api_budget(),
+            "truth": truth_view.panel(), "policy_start": policy_start(load_records())}
 
 
 today = pd.Timestamp.now(tz="UTC").strftime("%Y-%m-%d")
-H = _home(today, pd.Timestamp.now().normalize().strftime("%Y-%m-%d"))
+H = _home(today, pd.Timestamp.now(tz="UTC").tz_localize(None).normalize().strftime("%Y-%m-%d"))
 perf, act, _gen, bb, bb_frozen = H["perf"], H["act"], H["gen"], H["bb"], H["bb_frozen"]
 sh, man, budget = H["sh"], H["man"], H["budget"]
 _ko_times = H["ko_times"]
@@ -103,31 +106,34 @@ with a:
         r = bb.iloc[0]
         st.caption(f"Best bets #1: **{r['home_team']} v {r['away_team']}** · {r['pick']} @ {ui.fmt_odds(r['odds'])}"
                    f" · chance {ui.fmt_prob(r['p_win'])}")
-    st.caption(f"Upcoming staked tips = {STAKED_LABEL} on O/U 2.5 in the current slate. "
+    st.caption(f"Upcoming staked tips = O/U 2.5 tips in the current stake plan with a policy stake > 0. "
                f"Not staked by state: {_paper_bits}. Kickoff in Israel time. {GAP_EXPLAINER}")
 
 with b:
     if perf["n"]:
         _dd = perf["drawdown"]
         ui.metric_card(
-            "Staked P/L", f"{perf['pnl']:+.2f}u", title="B · Current performance",
-            help=f"Flat 1u, {STAKED_LABEL}, every staked market (O/U 2.5, side markets, HT), settled only. "
-                 "Same number as the Tips page.",
-            supporting=[("ROI", ui.fmt_roi(perf["roi"])),
+            "Staked P/L (flat 1u)", U.fmt(perf['pnl']), title="B · Current performance",
+            help=f"{STAKED_DEF}. Flat 1u per staked bet, every policy market (O/U 2.5, side markets), settled "
+                 "only. Same number as the Tips page.",
+            supporting=[("P/L at recorded stakes", f"{U.fmt(perf['stake_pnl'])} on {perf['stake_units']:.2f}u staked"),
+                        ("ROI", ui.fmt_roi(perf["roi"])),
                         ("Win rate — staked", f"{perf['win_rate'] * 100:.1f}%"),
                         ("Settled staked bets", f"{perf['n']}"),
-                        ("Drawdown from peak", ui.fmt_units(_dd)),
-                        ("Last 7 days", f"{ui.fmt_units(perf['last7_pnl'])} · n={perf['last7_n']}")],
+                        ("Drawdown from peak", U.fmt(_dd)),
+                        ("Last 7 days", f"{U.fmt(perf['last7_pnl'])} · n={perf['last7_n']}")],
             evidence=ui.evidence_badge("settled since", None, span=str(_cut), state="flat 1u"), n=perf["n"],
-            chart_data=perf["curve"]["cum"].round(2).tolist() if len(perf["curve"]) > 1 else None)
+            chart_data=perf["curve"]["cum"].map(U.rnd).tolist() if len(perf["curve"]) > 1 else None)
     else:
         with st.container(border=True):
             ui.eyebrow("B · Current performance")
-            st.metric("Staked P/L", "—")
+            st.metric("Staked P/L (flat 1u)", "—")
             ui.stat_line([("Win rate — staked", "—"), ("Settled staked bets", "0")])
-    st.caption(f"Paper {PAPER_TIER_LABEL} P/L: "
-               + (f"**{perf['paper_pnl']:+.2f}u** · {perf['paper_n']} tips, not bets" if perf["paper_n"] else "—")
-               + " — tracked, never staked, never in the P/L.")
+    st.caption("Not staked (every other settled tip, any tier) P/L: "
+               + (f"**{U.fmt(perf['paper_pnl'])}** · {perf['paper_n']} tips, not bets" if perf["paper_n"] else "—")
+               + " — tracked, never in the staked P/L"
+               + (f"; {perf['paper_pre_policy_n']} of them predate the first recorded policy decision"
+                  if perf.get("paper_pre_policy_n") else "") + ".")
 
 with c:
     overall = str(sh.get("overall", "UNKNOWN")) if sh else "UNKNOWN"
@@ -154,8 +160,15 @@ with c:
                                                                              label="PROTECTED TRACKS: CHECK"))
                     + f" :gray[{_cnt.get('GREEN', 0)} green · {_cnt.get('AMBER', 0)} amber · {_cnt.get('RED', 0)} red]")
 
-st.caption(f"Settled since {_cut} (by match date), flat 1u stakes. Per-market breakdown on the "
-           f"Tips page — one market carries most of the total.")
+_ps = H["policy_start"]
+st.caption(f"Settled since {_cut} (by match date), flat 1u stakes. A staked bet needs a recorded policy stake, and the "
+           f"first recorded policy decision is "
+           + (f"{pd.Timestamp(_ps):%Y-%m-%d %H:%M} UTC" if pd.notna(_ps) else "not recorded (no stake record found)")
+           + ": no earlier tip can count as staked; it is in the not-staked line. Per-market breakdown on the "
+           "Tips page.")
+
+# ── data truth (Phase 2 dashtruth 2026-11-05): the stoplight and what is still unverified ──────────
+truth_view.render(H["truth"], compact=True)
 
 # ── best opportunities today ─────────────────────────────────────────────────────────────────
 ui.section_header("Best opportunities today",
@@ -179,7 +192,7 @@ else:
             for _, r in bb.iloc[3:].iterrows()) + ". All three lists are on the Tips page.")
 
 # ── recent performance ───────────────────────────────────────────────────────────────────────
-ui.section_header("Recent performance", f"Staked P/L per market, flat 1u, {STAKED_LABEL}, settled since the "
+ui.section_header("Recent performance", "Staked P/L per market, flat 1u, policy stake > 0, settled since the "
                   "cutoff. The line on the P/L card above is the cumulative total by match date. A sample, "
                   "not a track record.")
 if perf["n"]:

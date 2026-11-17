@@ -13,6 +13,8 @@ from pathlib import Path
 import pandas as pd
 import pytest
 
+from src import units as U
+
 ROOT = Path(__file__).resolve().parents[1]
 HOME = ROOT / "pages" / "00_🎯_Home.py"
 
@@ -44,6 +46,9 @@ def _metrics(at) -> dict:
 
 
 # ── frozen pre-redesign Home logic (pages/00_🎯_Home.py at 4af43f28), copied verbatim ─────────────
+# EXCEPT the P/L totals: the frozen copy summed floats ({x.sum():+.2f}u), whose last bit depends on
+# summation order, so an exact half (-8.445u) rounded either way (issue #19). The comparison now
+# sums with src.units.total (exact decimal) and formats with src.units.fmt (half-up), as the pages do.
 def _old_home_values():
     import config
 
@@ -65,30 +70,36 @@ def _old_home_values():
                 d = d[d["source"].fillna("live").astype(str) == "live"]
             if "signal_tier" not in d.columns:
                 continue
+            from src import staked as S
+            lab = S.label_ledger(d, fn, S.load_records(config.OUTPUT_DIR))
             d = d.assign(_dt=pd.to_datetime(d.get("match_date"), errors="coerce"),
-                         _pnl=pd.to_numeric(d.get("pnl"), errors="coerce"),
+                         _pnl=pd.to_numeric(d.get("pnl"), errors="coerce"), _staked=S.is_staked(lab),
                          _mkt=d[mkc].astype(str) if mkc and mkc in d.columns else const)
-            parts.append(d[d["_pnl"].notna() & (d["_dt"] >= cut)][["signal_tier", "_mkt", "_pnl"]])
+            parts.append(d[d["_pnl"].notna() & (d["_dt"] >= cut)][["signal_tier", "_mkt", "_pnl", "_staked"]])
         except Exception:                                   # noqa: BLE001
             continue
     settled = pd.concat(parts, ignore_index=True) if parts else pd.DataFrame(columns=["signal_tier", "_mkt", "_pnl"])
-    staked = settled[settled["signal_tier"].isin(("SNIPER", "MARKSMAN"))]
-    paper = settled[settled["signal_tier"] == "VALUABLE"]
-    up = (bets[bets["signal_tier"].isin(("SNIPER", "MARKSMAN")) & bets["bet"].isin(["OVER", "UNDER"])]
-          if not bets.empty else bets)
+    # OWNER 2026-11-04: "Staked" = a recorded policy stake > 0 (src/staked.py), no longer the
+    # SNIPER + MARKSMAN tiers. The frozen arithmetic is unchanged; only the row mask is the new one.
+    staked = settled[settled["_staked"]] if len(settled) else settled
+    paper = settled[~settled["_staked"]] if len(settled) else settled
+    from dashboard_data import production_view
+    from src.staked import plan_staked
+    plan = production_view.stake_plan(today=pd.Timestamp.now(tz="UTC").strftime("%Y-%m-%d"))
+    up = plan[plan_staked(plan) & plan["market"].astype(str).str.upper().eq("OU25")] if len(plan) else plan
     return {
         "🎯 Upcoming staked tips": str(len(up)),
-        "📈 P/L — staked (u)": f"{staked['_pnl'].sum():+.2f}u" if len(staked) else "—",
+        "📈 P/L — staked (u)": U.fmt(U.total(staked['_pnl'])) if len(staked) else "—",
         "✅ Win rate — staked": f"{(staked['_pnl'] > 0).mean() * 100:.1f}%" if len(staked) else "—",
         "📊 Settled staked bets": str(len(staked)),
-        "💎 Paper VALUABLE P/L": f"{paper['_pnl'].sum():+.2f}u" if len(paper) else "—",
+        "💎 Paper VALUABLE P/L": U.fmt(U.total(paper['_pnl'])) if len(paper) else "—",
         "paper_delta": f"{len(paper)} tips, not bets",
     }
 
 
 # Where each pre-redesign Home value lives now (label moved, value identical).
 HOME_MOVES = {"🎯 Upcoming staked tips": ("stat", "Upcoming staked tips (O/U 2.5)"),
-              "📈 P/L — staked (u)": ("metric", "Staked P/L"),
+              "📈 P/L — staked (u)": ("metric", "Staked P/L (flat 1u)"),
               "✅ Win rate — staked": ("stat", "Win rate — staked"),
               "📊 Settled staked bets": ("stat", "Settled staked bets")}
 
@@ -114,15 +125,16 @@ def test_home_new_values_come_from_canonical_functions(monkeypatch):
     metrics, stats = _metrics(at), _stats(at)
     today = pd.Timestamp.now(tz="UTC").strftime("%Y-%m-%d")
     plan = production_view.stake_plan(today=today)
-    assert metrics["Active tips"] == str(int((plan["final_fraction"] > 0).sum()))
+    from src.staked import plan_staked
+    assert metrics["Active tips"] == str(int(plan_staked(plan).sum()))
     act = today_view.action(plan)
     assert stats["Paper / no stake"] == str(act["paper"])
     sh = json.loads((ROOT / "output" / "system_health.json").read_text(encoding="utf-8"))
     assert metrics["System health"] == str(sh.get("overall"))
-    perf = today_view.performance(today_view.load_settled(), today=pd.Timestamp.now().normalize())
+    perf = today_view.performance(today_view.load_settled(), today=pd.Timestamp.now(tz="UTC").tz_localize(None).normalize())
     if perf["n"]:
         assert stats["ROI"] == f"{perf['pnl'] / perf['n'] * 100:+.1f}%"
-        assert stats["Drawdown from peak"] == f"{perf['drawdown']:+.2f}u"
+        assert stats["Drawdown from peak"] == U.fmt(perf['drawdown'])
         assert perf["drawdown"] <= 0
     # needs-attention lists exactly the non-GREEN checks, never a healthy one
     shown = {m.value.split("**")[1] for m in at.markdown if "&nbsp;**" in m.value and "-badge[" in m.value}
@@ -159,7 +171,7 @@ def test_tips_board_is_tips_rows_unchanged(monkeypatch):
     # with no fixture in the current slate is not on the default board.
     import config
     bets = config.drop_paper_leagues(pd.read_csv(config.OUTPUT_DIR / "bets.csv"))
-    bets = bets[pd.to_datetime(bets["date"], errors="coerce") >= pd.Timestamp.now().normalize()]
+    bets = bets[pd.to_datetime(bets["date"], errors="coerce") >= pd.Timestamp.now(tz="UTC").tz_localize(None).normalize()]
     if len(want) and len(bets):
         want = want[want["league"].isin(set(bets["league"].dropna()))]
     got = _selections(at) if len(want) else pd.DataFrame()
@@ -167,8 +179,9 @@ def test_tips_board_is_tips_rows_unchanged(monkeypatch):
     if want.empty:
         return
     assert m["Tips shown"] == str(len(want)) and len(got) == len(want)
-    from src.tier_labels import STAKED_LABEL, tier_label    # display words (owner 2026-10-26)
-    assert m[f"Staked ({STAKED_LABEL})"] == str(int(want["tier"].isin(["SNIPER", "MARKSMAN"]).sum()))
+    from src.tier_labels import tier_label    # display words (owner 2026-10-26)
+    from src.staked import plan_staked        # THE staked definition (owner 2026-11-04), not the tier
+    assert m["Staked (policy stake > 0)"] == str(int(plan_staked(TV.attach(want, TV.load_plan())).sum()))
     assert m["Fixtures"] == str(want[["date", "home_team", "away_team"]].drop_duplicates().shape[0])
 
     def key(match, pick, odds, edge, tier):
@@ -183,6 +196,8 @@ def test_tips_board_is_tips_rows_unchanged(monkeypatch):
 
 
 # ── frozen pre-redesign Tips settled/CLV logic (pages/1_📊_Dashboard.py at 4af43f28) ─────────────
+# P/L total: src.units.total + src.units.fmt instead of float(s.sum()) and {:+.2f} - the float sum
+# showed -8.44u for an exact -8.445u (issue #19); every other line is the frozen logic.
 def _old_tips_settled_metrics() -> dict:
     import config
 
@@ -197,10 +212,15 @@ def _old_tips_settled_metrics() -> dict:
             continue
         try:
             d = _read_csv(fp, low_memory=False)
+            if "source" in d.columns:                       # THE definition counts live rows only
+                d = d[d["source"].fillna("live").astype(str) == "live"]
             d["_dt"] = pd.to_datetime(d.get("match_date"), errors="coerce")
             d["_pnl"] = pd.to_numeric(d.get("pnl"), errors="coerce")
             d["_mkt"] = (d[mkc].astype(str) if mkc and mkc in d.columns else const)
-            keep = d.get("signal_tier").isin(("SNIPER", "MARKSMAN")) & d["_pnl"].notna() & (d["_dt"] >= cut)
+            # OWNER 2026-11-04: staked = a recorded policy stake > 0 (src/staked.py), not the tier
+            from src import staked as S
+            lab = S.label_ledger(d, f, S.load_records(config.OUTPUT_DIR))
+            keep = S.is_staked(lab) & d["_pnl"].notna() & (d["_dt"] >= cut)
             if keep.any():
                 parts.append(d[keep][["_mkt", "_dt", "_pnl"]])
         except Exception:                                    # noqa: BLE001
@@ -208,11 +228,15 @@ def _old_tips_settled_metrics() -> dict:
     out = {}
     if parts:
         s = pd.concat(parts, ignore_index=True)
-        tot = float(s["_pnl"].sum())
-        out["P/L — all staked markets"] = (f"{tot:+.2f}u", f"{tot / len(s):+.3f}u per bet")
+        tot = U.total(s["_pnl"])
+        out["P/L — all staked markets (flat 1u)"] = (U.fmt(tot), f"{U.fmt(tot / len(s), 3)} per bet")
         out["Settled bets"] = (f"{len(s):,}", None)
         out["Days covered"] = (f"{s['_dt'].dt.date.nunique()}", None)
     cl = _read_csv(config.OUTPUT_DIR / "bets_ledger.csv", low_memory=False)
+    # CLAUDE_PROMPT_2 V2 (2026-11-02): first-half prices recorded as full-match closes are quarantined
+    # upstream of every CLV consumer, so the page counts its outlier rejects AFTER that exclusion.
+    from src.clv_corrections import exclude_contaminated_clv
+    cl = exclude_contaminated_clv(cl)
     cl["_clv"] = pd.to_numeric(cl.get("clv_pct"), errors="coerce")
     cl["_o"] = pd.to_numeric(cl.get("odds"), errors="coerce")
     cl["_c"] = pd.to_numeric(cl.get("closing_odds"), errors="coerce")

@@ -47,9 +47,15 @@ SIDES = ("OVER", "UNDER", "YES", "NO")
 RESULTS = ("WIN", "LOSS", "VOID", "PUSH", "HALF_WIN", "HALF_LOSS")
 REAL_STATES = ("PROBATION", "ACTIVE_LOW", "ACTIVE", "ACTIVE_STRONG", "DEGRADED")
 DEPLOYMENT_STATES = REAL_STATES + ("PAPER", "BLOCKED", "BLOCKED_FROM_REAL", "UNSUPPORTED")
+# Every reason src/bankroll_policy.size_day can write (tests/test_stake_contract_guards.py scans the code
+# so a new reason cannot silently become a "violation"). Added 2026-11-03: NO_LEAGUE_THRESHOLD_EVIDENCE,
+# NO_LEAGUE_RATING, NO_RATING_MIN_SCALE (Data Truth 2026-11-01), OPPOSITE_DIRECTION_ON_FIXTURE
+# (2026-10-25) and DUPLICATE_POSITION (2026-11-03) - all zero-stake reasons the code already wrote or
+# now writes; none of them is a violation.
 STAKE_REASON_RX = (r"OK|NO_REAL_STAKE_[A-Z_]+|PAPER_LEAGUE|ODDS_BLOCKED|ODDS_ABOVE_TRACK_CAP|"
                    r"ODDS_BELOW_TRACK_FLOOR|TIER_NOT_STAKED|ONE_POSITION_PER_FIXTURE|[A-Z_]*CAP[A-Z_]*|"
-                   r"DRAWDOWN_[A-Z_]+")
+                   r"DRAWDOWN_[A-Z_]+|NO_LEAGUE_THRESHOLD_EVIDENCE|NO_LEAGUE_RATING|NO_RATING_MIN_SCALE|"
+                   r"OPPOSITE_DIRECTION_ON_FIXTURE|DUPLICATE_POSITION")
 HEX64 = r"[0-9a-f]{64}"
 
 
@@ -403,11 +409,23 @@ def _stake_rules() -> tuple:
         Rule("fixture_matches_date",
              lambda d: text(d["fixture"]).str[:10] != text(d["date"]).str[:10],
              "fixture key starts with its date", ("fixture", "date")),
-        Rule("one_position_per_fixture",
-             lambda d: (num(d["final_fraction"]) > 0)
-             & d.assign(_s=num(d["final_fraction"]) > 0).groupby("fixture")["_s"].transform("sum").gt(1),
-             "the policy allows one real position per fixture", ("final_fraction", "fixture")),
+        Rule("opposite_direction_on_fixture",
+             lambda d: _opposite_staked(d),
+             "real positions on one fixture share one goal direction (owner 2026-11-04: several bets "
+             "on one match are fine, never opposites; BTTS Yes = Over, BTTS No = Under)",
+             ("final_fraction", "fixture", "market", "side")),
     )
+
+
+def _opposite_staked(d: pd.DataFrame) -> pd.Series:
+    """Staked rows whose fixture also carries a staked row of the OTHER goal direction."""
+    from src.bankroll_policy import goal_direction
+    side = d["side"] if "side" in d.columns else pd.Series(None, index=d.index, dtype=object)
+    staked = num(d["final_fraction"]) > 0
+    dirs = pd.Series([goal_direction(m, s) for m, s in zip(text(d["market"]), side)], index=d.index,
+                     dtype=object).where(staked)
+    n_dirs = dirs.groupby(text(d["fixture"])).transform("nunique")
+    return staked & dirs.notna() & n_dirs.gt(1)
 
 
 STAKE_PLAN_ROW = Schema(
@@ -452,6 +470,10 @@ SETTLEMENT_ROW = Schema(
 )
 
 # ── CLV_RECORD ───────────────────────────────────────────────────────────────────────────────────
+#: player_model.clv_integrity.STATUSES / VALID (copied, so the contracts import nothing from player_model)
+CLV_STATUSES = ("VALID_SAME_BOOK", "VALID_CROSS_BOOK", "IDENTITY_UNPROVEN", "CLOSE_AFTER_KICKOFF",
+                "ENTRY_AFTER_KICKOFF", "TIMING_UNPROVEN", "NO_CLOSE")
+CLV_VALID = ("VALID_SAME_BOOK", "VALID_CROSS_BOOK")
 CLV_RECORD = Schema(
     "CLV_RECORD", "1", "One bet's entry vs closing price (output/clv_records.csv).",
     kind="clv", writers=("output/clv_records.csv",), key=("bet_id",), unique_key=True,
@@ -461,8 +483,15 @@ CLV_RECORD = Schema(
         ODDS("odds_bet", nullable=False), ODDS("under_odds_bet"), ODDS("odds_close"), ODDS("under_odds_close"),
         P("p_bet_novig"), P("p_close_novig"), Col("clv_pct", "float"), Col("clv_prob", "float"),
         Col("result", allowed=RESULTS), Col("pnl", "float"), Col("notes"),
+        # Phase 2 part 7 (2026-11-06): written by new entries / close-outs only; older rows have none
+        Col("kickoff_utc", "datetime", required=False),
+        Col("clv_status", allowed=CLV_STATUSES, required=False), Col("clv_status_reason", required=False),
     ),
     rules=(
+        Rule("clv_only_when_valid",
+             lambda d: num(d["clv_pct"]).notna() & ~null_mask(d["clv_status"])
+             & ~text(d["clv_status"]).isin(CLV_VALID),
+             "a CLV value only on a record whose identity and timing are proven", ("clv_pct", "clv_status")),
         Rule("close_has_clv", lambda d: num(d["odds_close"]).notna() & num(d["clv_pct"]).isna(),
              "a closing price has its CLV computed", ("odds_close", "clv_pct")),
         Rule("clv_without_close", lambda d: num(d["odds_close"]).isna() & num(d["clv_pct"]).notna(),

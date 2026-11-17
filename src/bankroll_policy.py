@@ -18,8 +18,11 @@ Order of operations (owner brief, section 32):
  1 track = track_key(model_type, market, side): model_type|market, except O/U 2.5, which is split by
    SIDE (model_type|OU25_OVER / model_type|OU25_UNDER, owner 2026-10-26). An O/U 2.5 tip without a valid
    side maps to model_type|OU25_UNKNOWN_SIDE, which no policy defines -> no stake (fail closed)
- 2 state/base (0 -> no real stake)   3 paper league -> 0
+ 2 state/base (0 -> no real stake)   3 paper league -> 0   (+ no league-threshold evidence /
+   no league rating -> 0, see size_day)
+ (+ a side that does not belong to its market -> 0, NO_REAL_STAKE_INVALID_SIDE, 2026-11-03)
  4 odds caps (track min/max, hard 3.00)   5 tier multiplier   6 convergence multiplier
+ 6b one goal direction per fixture   6c one stake per (fixture, market, side) even with the flag off
  7 ONE position per fixture, chosen by the track's evidence_score (never by raw edge)
  8 single-bet / fixture cap   9 drawdown throttle   10 league and league x market daily caps
  11 daily exposure cap: every stake scaled by cap / total   -> final fraction, stake amount
@@ -46,6 +49,32 @@ HARD = {"single_bet_cap": 0.02, "fixture_cap": 0.02, "daily_cap": 0.075, "league
 #: own state, base fraction, odds caps, tier multipliers and evidence, and Pro reviews it separately.
 SIDE_SPLIT_MARKETS = {"OU25": ("OVER", "UNDER")}
 UNKNOWN_SIDE = "UNKNOWN_SIDE"
+#: The sides each NON-split market can carry (src/contracts STAKE_PLAN_ROW `side_matches_market`). Before
+#: 2026-11-03 size_day ignored `side` on these markets, so a BTTS tip with side "YES/OVER" (the label the
+#: pre-219c1848 producer wrote) or a blank side would have been staked. Now: NO_REAL_STAKE_INVALID_SIDE.
+MARKET_SIDES = {"BTTS": ("YES", "NO"), "OVER15": ("OVER", "UNDER"), "OVER35": ("OVER", "UNDER")}
+
+
+def side_valid(market, side) -> bool:
+    """True when `side` belongs to `market` (OU25: OVER/UNDER; BTTS: YES/NO; OVER15/OVER35: OVER/UNDER).
+    A market outside both maps is not judged here (True); track_key / the policy decide it."""
+    mk = str(market or "").strip().upper()
+    allowed = SIDE_SPLIT_MARKETS.get(mk) or MARKET_SIDES.get(mk)
+    if allowed is None:
+        return True
+    s = "" if side is None or (isinstance(side, float) and side != side) else str(side).strip().upper()
+    return s in allowed
+
+
+def positive_fraction(track: dict) -> bool:
+    """True when a policy track records a base_fraction > 0. A track that records none stakes nothing
+    (fail closed). The readers spelled this `float(t.get("base_fraction", 0) or 0) > 0` - a typed 0 for
+    a missing policy value; one function now, same verdict (fix9/defaults 2026-11-04)."""
+    bf = (track or {}).get("base_fraction")
+    try:
+        return bf is not None and float(bf) > 0.0
+    except (TypeError, ValueError):
+        return False
 
 
 def track_key(model_type, market, side=None) -> str:
@@ -96,23 +125,32 @@ def drawdown_multiplier(policy: dict, bankroll: float, peak: float,
     return m if floor is None else min(m, float(floor))
 
 
-def rating_scale(rating: int | None, min_scale: float) -> float:
+def rating_scale(rating: int | None, min_scale: float) -> float | None:
     """League rating 1-10 -> stake scale (owner 2026-10-18): 10 -> 1.0 (today's stake), 1 -> min_scale,
-    linear between. Never above 1.0, so a rating can only reduce a stake."""
+    linear between. Never above 1.0, so a rating can only reduce a stake.
+
+    No rating -> None, NOT min_scale (Data Truth 2026-11-01): an unrated league has no evidence, and
+    sizing it as if it were rated 1 invented a rating; size_day gives it no stake (NO_LEAGUE_RATING)."""
     if rating is None:
-        return min_scale
+        return None
     r = min(10, max(1, int(rating)))
     return min_scale + (r - 1) / 9.0 * (1.0 - min_scale)
 
 
+def _is_true(v) -> bool:
+    """Only an explicit True counts as evidence; NaN / None / "unknown" do not."""
+    return type(v).__name__ in ("bool", "bool_") and bool(v)       # python bool or numpy.bool_
+
+
 def goal_direction(market, side=None) -> str | None:
     """OVER / UNDER for a goal-total position (OU25 by its side, OVER15/OVER35/OVERxx -> OVER,
-    UNDERxx -> UNDER); None for BTTS and anything else, which never conflicts. Self-contained on
-    purpose: Pro's simulator imports this file alone. Mirrors src/direction_guard.goal_direction."""
+    UNDERxx -> UNDER) and for BTTS (YES -> OVER, NO -> UNDER: owner 2026-11-04, "u cant tipped
+    under1.5 and btts Y"); None for anything else. Self-contained on purpose: Pro's simulator
+    imports this file alone. Mirrors src/direction_guard.goal_direction."""
     m = str(market or "").strip().upper()
     s = str(side or "").strip().upper()
     if m.startswith("BTTS"):
-        return None
+        return {"YES": "OVER", "NO": "UNDER"}.get(s)
     if m.startswith("OVER"):
         return "OVER"
     if m.startswith("UNDER"):
@@ -128,8 +166,13 @@ def size_day(selections: pd.DataFrame, policy: dict, bankroll: float, peak: floa
     """Stake fractions for one day's qualifying selections. Pure: same input -> same output.
 
     league_ratings ({league: 1-10}, Pro league_ratings.json) is applied only when the policy's
-    league_rating_sizing.enabled is true: each stake x rating_scale; an unrated league gets the minimum.
+    league_rating_sizing.enabled is true: each stake x rating_scale; an UNRATED league gets NO stake
+    (reason NO_LEAGUE_RATING), and so does every league when the policy omits min_scale.
     Callers that pass nothing (Pro's simulator) are unaffected.
+
+    Optional selection column `league_threshold_evidence` (src/stake_plan): False = the tip was tiered
+    on a GLOBAL bar, not its league's own threshold -> no stake (NO_LEAGUE_THRESHOLD_EVIDENCE). Absent
+    column (Pro's simulator) -> not applied.
 
     prior_directions ({fixture: "OVER"|"UNDER"}) = the goal direction of positions ALREADY staked on a
     fixture by earlier runs (src/stake_plan reads them from stake_audit.csv). See step 6b."""
@@ -148,15 +191,22 @@ def size_day(selections: pd.DataFrame, policy: dict, bankroll: float, peak: floa
     ddm = drawdown_multiplier(policy, bankroll, peak, dd_floor)
     lrs = policy.get("league_rating_sizing") or {}
     use_rating = bool(lrs.get("enabled")) and league_ratings is not None
-    min_scale = min(max(float(lrs.get("min_scale", 0.2)), 0.0), 1.0)
+    # min_scale comes from the policy file only; a policy that enables rating sizing without it
+    # cannot size any league, so nothing is staked (reason NO_RATING_MIN_SCALE) rather than a typed 0.2.
+    min_scale = (min(max(float(lrs["min_scale"]), 0.0), 1.0)
+                 if lrs.get("min_scale") is not None else None)
 
     d = selections.copy().reset_index(drop=True)
-    side_in = d["side"] if "side" in d.columns else pd.Series(None, index=d.index, dtype=object)
+    has_side = "side" in d.columns     # absent column (a caller that never sends sides): not judged,
+    side_in = d["side"] if has_side else pd.Series(None, index=d.index, dtype=object)  # O/U still fails closed
     d["track"] = [track_key(mt, mk, sd) for mt, mk, sd in zip(d["model_type"], d["market"], side_in)]
+    ev_in = (d["league_threshold_evidence"] if "league_threshold_evidence" in d.columns
+             else pd.Series(True, index=d.index, dtype=object))
     out = []
-    for r in d.itertuples(index=False):
+    for i, r in enumerate(d.itertuples(index=False)):
         t = policy["tracks"].get(r.track, {"state": "UNSUPPORTED", "base_fraction": 0.0})
-        base = min(float(t.get("base_fraction", 0.0)), HARD["base_fraction"])
+        # no recorded base fraction stakes nothing (fail closed; it was a typed .get(..., 0.0))
+        base = min(float(t["base_fraction"]), HARD["base_fraction"]) if positive_fraction(t) else 0.0
         state = t.get("state", "UNSUPPORTED")
         odds = float(r.odds) if pd.notna(r.odds) else float("nan")
         # PER-TRACK TIER MULTIPLIERS (owner 2026-10-22): a track whose edge does not rank outcomes
@@ -168,6 +218,8 @@ def size_day(selections: pd.DataFrame, policy: dict, bankroll: float, peak: floa
         reason = "OK"
         if str(r.track).endswith(f"_{UNKNOWN_SIDE}"):
             reason = "NO_REAL_STAKE_UNKNOWN_SIDE"           # side-split market without a usable side
+        elif has_side and not side_valid(r.market, side_in.iloc[i]):
+            reason = "NO_REAL_STAKE_INVALID_SIDE"           # e.g. BTTS "YES/OVER" / blank (2026-11-03)
         elif state not in REAL_STATES or base <= 0:
             reason = f"NO_REAL_STAKE_{state}"
         elif r.league in paper:
@@ -176,16 +228,20 @@ def size_day(selections: pd.DataFrame, policy: dict, bankroll: float, peak: floa
             reason = "ODDS_BLOCKED"
         elif odds > min(float(t.get("max_odds", HARD["max_odds"])), HARD["max_odds"]):
             reason = "ODDS_ABOVE_TRACK_CAP"
-        elif odds < float(t.get("min_odds", 1.0)):
+        elif t.get("min_odds") is not None and odds < float(t["min_odds"]):   # none recorded = no floor
             reason = "ODDS_BELOW_TRACK_FLOOR"
         elif tm <= 0:
             reason = "TIER_NOT_STAKED"
+        elif not _is_true(ev_in.iloc[i]):
+            reason = "NO_LEAGUE_THRESHOLD_EVIDENCE"         # tiered on a global bar only
         rt = league_ratings.get(r.league) if use_rating else None
-        rs = rating_scale(rt, min_scale) if use_rating else 1.0
+        rs = (rating_scale(rt, min_scale) if min_scale is not None else None) if use_rating else 1.0
+        if reason == "OK" and use_rating and rs is None:
+            reason = "NO_RATING_MIN_SCALE" if min_scale is None else "NO_LEAGUE_RATING"
         req = base * tm * lm * rs if reason == "OK" else 0.0
         out.append({**r._asdict(), "deployment_state": state, "base_fraction": base,
                     "tier_multiplier": tm, "league_multiplier": lm, "requested_fraction": req,
-                    "league_rating": rt, "rating_scale": round(rs, 3),
+                    "league_rating": rt, "rating_scale": round(rs, 3) if rs is not None else None,
                     "_score": float(t.get("evidence_score", 0.0)), "reason": reason})
     a = pd.DataFrame(out)
 
@@ -213,6 +269,22 @@ def size_day(selections: pd.DataFrame, policy: dict, bankroll: float, peak: floa
             a.loc[opp, "requested_fraction"] = 0.0
             a.loc[opp, "reason"] = "OPPOSITE_DIRECTION_ON_FIXTURE"
 
+    # 6c. ONE STAKE PER POSITION (2026-11-03), whatever the one_position_per_fixture flag says: the same
+    # (fixture, market, side) arriving twice in one run (two tracks tipping the same side, a producer
+    # emitting a row twice) is ONE executable position. With the flag on (production) step 7 already
+    # keeps one row per fixture, so this only acts when the flag is off; the survivor is chosen by step
+    # 7's own order (evidence_score, tier, base), so no surviving stake differs from step 7's choice.
+    live = a["requested_fraction"] > 0
+    if not pf.get("one_position_per_fixture", True) and live.any():
+        sides6 = (a["side"] if "side" in a.columns else pd.Series("", index=a.index)).astype(str).str.upper()
+        a["_pos"] = a["fixture"].astype(str) + "#" + a["market"].astype(str).str.upper() + "#" + sides6
+        rank = a[live].sort_values(["_pos", "_score", "tier_multiplier", "base_fraction"],
+                                   ascending=[True, False, False, False], kind="mergesort")
+        dup = [i for i in rank.index if i not in set(rank.drop_duplicates("_pos", keep="first").index)]
+        a.loc[dup, "requested_fraction"] = 0.0
+        a.loc[dup, "reason"] = "DUPLICATE_POSITION"
+        a = a.drop(columns=["_pos"])
+
     # 7. one real position per fixture: highest evidence_score, then tier, then base; never edge
     live = a["requested_fraction"] > 0
     if pf.get("one_position_per_fixture", True) and live.any():
@@ -230,8 +302,11 @@ def size_day(selections: pd.DataFrame, policy: dict, bankroll: float, peak: floa
     if ddm == 0.0:
         a.loc[a["requested_fraction"] > 0, "reason"] = "DRAWDOWN_STOP_PAPER_REVIEW_REQUIRED"
 
-    # 10. league/day and league x market/day caps: scale inside the group down to the cap
-    for keys, cap in ((["league"], caps["league_daily_cap"]),
+    # 10. fixture total, league/day and league x market/day caps: scale inside the group down to the
+    # cap. The fixture total matters since 2026-11-04 (one_position_per_fixture false: several
+    # same-direction positions on one match), when step 8's per-bet clip no longer bounds a fixture.
+    for keys, cap in ((["fixture"], caps["fixture_cap"]),
+                      (["league"], caps["league_daily_cap"]),
                       (["league", "market"], caps["league_market_daily_cap"])):
         tot = f.groupby([a[k] for k in keys]).transform("sum")
         scale = (cap / tot).where(tot > cap, 1.0).fillna(1.0)

@@ -38,7 +38,9 @@ _require_tier("pro")  # tier guard (dashboard_access.PAGES), 2026-10-18
 import config  # noqa: E402
 import dashboard_ui as ui  # noqa: E402
 from src.tier_labels import GAP_EXPLAINER, PAPER_TIER_LABEL, STAKED_LABEL, tier_label  # noqa: E402
+from src.staked import DEFINITION as _STAKED_DEF, plan_staked as _plan_staked  # noqa: E402
 from dashboard_data import tips_view as TV  # noqa: E402
+from src import units as U  # noqa: E402
 
 st.set_page_config(page_title="Tips | Wowza", page_icon="📊", layout="wide")
 ui.autorefresh(5, key="dash_refresh")
@@ -64,8 +66,11 @@ def load_bets():
     # rows can't show up under 'standard' (canonical map in config.model_type_for_league).
     _blank_mt = df["model_type"].str.strip().isin(["", "nan"])
     if _blank_mt.any() and "league" in df.columns:
-        df.loc[_blank_mt, "model_type"] = df.loc[_blank_mt, "league"].map(config.model_type_for_league)
-    df["drift_signal"] = df["drift_signal"].fillna("New").astype(str)
+        from src.league_registry import canonical_name
+        df.loc[_blank_mt, "model_type"] = df.loc[_blank_mt, "league"].map(
+            lambda lg: config.model_type_for_league(canonical_name(lg) or lg))
+    # No recorded drift is its own value - 'New' is a real signal (first snapshot), not a blank.
+    df["drift_signal"] = df["drift_signal"].fillna("no drift data").astype(str)
     df["signal_tier"] = df["signal_tier"].fillna("").astype(str)
     return df
 
@@ -102,7 +107,7 @@ def _top_scoreboard(days):
 from utils.access import is_public  # noqa: E402
 
 df_all = load_bets()
-df = df_all[df_all["date"] >= pd.Timestamp.now().normalize()].copy() if not df_all.empty else df_all
+df = df_all[df_all["date"] >= pd.Timestamp.now(tz="UTC").tz_localize(None).normalize()].copy() if not df_all.empty else df_all
 _today = pd.Timestamp.now(tz="UTC").strftime("%Y-%m-%d")
 _all_board = load_board(_today, "2099-12-31")
 # File mtime is NOT a freshness signal: a git checkout resets it on every deploy. The newest recorded
@@ -201,16 +206,17 @@ if len(board):
 if board.empty:
     ui.empty_state("NO_DATA", "No tips match the current filters.")
 else:
-    _staked = int(board["tier"].isin(["SNIPER", "MARKSMAN"]).sum())
+    # THE staked definition (src/staked.py, owner 2026-11-04): the stake plan recorded a stake > 0 on a
+    # real-money track. Until then this counted SNIPER + MARKSMAN tiers, PAPER tracks included.
+    _staked =int(_plan_staked(board).sum()) if "deployment_state" in board.columns else 0
     _future = pd.to_datetime(board["kickoff_utc"], errors="coerce", utc=True)
     _next = _future[_future > pd.Timestamp.now(tz="UTC")].min()
     ui.metric_grid([
         {"label": "Tips shown", "value": f"{len(board)}",
          "help": "Every live tip in the date range, all markets, one side per fixture."},
-        {"label": f"Staked ({STAKED_LABEL})", "value": f"{_staked}",
-         "help": f"On O/U 2.5 every tier, {PAPER_TIER_LABEL} included, carries the same paper stake (the gap "
-                 f"size does not rank outcomes there); on other markets {PAPER_TIER_LABEL} is tracked but not "
-                 f"staked. {GAP_EXPLAINER}"},
+        {"label": "Staked (policy stake > 0)", "value": f"{_staked}",
+         "help": f"{_STAKED_DEF}. A tier alone never makes a tip staked: a PAPER track, a paper league or an "
+                 f"odds cap gives a zero stake whatever the tier. {GAP_EXPLAINER}"},
         {"label": "Fixtures", "value": f"{board[['date', 'home_team', 'away_team']].drop_duplicates().shape[0]}"},
         {"label": "Next kickoff", "value": (f"{_next.tz_convert(_TZ_NAME):%a %H:%M}" if pd.notna(_next) else "—"),
          "help": f"Israel time ({_TZ_NAME})."},
@@ -265,10 +271,11 @@ else:
         st.markdown(ui.status_chip("LIVE", label="PRODUCTION") + f" &nbsp;{_counts}")
         _ps = board["production_state"].value_counts()
         ui.stat_line([(s, f"{int(_ps.get(s, 0))}") for s in _STATES if int(_ps.get(s, 0))])
-        st.caption("Production state per tip, from the stake plan. O/U 2.5 tiers are staked equally "
-                   f"({tier_label('SNIPER')} −9.9%, {tier_label('MARKSMAN')} −5.8%, {tier_label('VALUABLE')} "
-                   "−0.8% since 26 Aug); on BTTS and Over 1.5 the edge "
-                   "does rank outcomes, so the ladder stays.")
+        # Until 2026-11-05 this caption carried typed per-tier ROIs ("-9.9% / -5.8% / -0.8% since 26 Aug")
+        # that nothing recomputed (dashtruth): the measured edge bands are on the Pro page, with their n.
+        st.caption("Production state per tip, from the stake plan. O/U 2.5 tiers are staked equally because the "
+                   "edge size does not rank O/U 2.5 outcomes (measured edge bands, with n, on the Pro page); on "
+                   "BTTS and Over 1.5 the edge does rank outcomes, so the ladder stays.")
     with sha.container(border=True):
         ui.eyebrow(f"Shadow · market-first ({_sh['engine'] or 'engine n/a'})")
         st.markdown(ui.status_chip("SHADOW") + " &nbsp;" + " · ".join(
@@ -290,8 +297,8 @@ else:
         "Kickoff": st.column_config.DatetimeColumn("Kickoff", format="HH:mm", width="small"),
         "Started": st.column_config.CheckboxColumn("Started", width="small"),
         "Match": ui.text_col("Match", width="medium"),
-        "Rating": ui.num_col("Rating", fmt="%d/10", help="League rating 1-10 (Pro), the number the stake plan "
-                             "sizes by.", width="small"),
+        "Rating": ui.num_col("Rating", fmt="%d/10", help="Pro's pooled league rating 1-10. Display only: "
+                             "not used to size stakes since 2026-11-02.", width="small"),
         "Odds": ui.num_col("Odds", fmt="%.2f", width="small"),
         "Edge %": ui.bar_col("Edge %", max_value=_emax, fmt="+%.1f%%",
                              help="Model-vs-price edge when the tip was sent (this is what the legacy tier sizes)."),
@@ -394,42 +401,28 @@ with t_top:
 # FOUR FILTERS, EACH OF WHICH CHANGES THE ANSWER, so all are stated on screen: STAKED TIERS ONLY
 # (VALUABLE is not a bet), FROM PERFORMANCE_CUTOFF_DATE, SETTLED ONLY, and broken out PER MARKET
 # (a single blended number is either the wrong sign or the wrong story). n is shown beside the total.
-_STAKED_TIERS = ("SNIPER", "MARKSMAN")
-_MKT_SOURCES = [("bets_ledger.csv", None, "O/U 2.5"),
-                ("side_bets_ledger.csv", "market", None),
-                ("ht_ledger.csv", None, "HT O/U")]
 _cut = pd.Timestamp(getattr(config, "PERFORMANCE_CUTOFF_DATE", "1970-01-01"))
 
 
 @st.cache_data(ttl=60)
 def _settled_staked():
-    """Settled staked rows per market (the ledgers are read once a minute, not on every rerun)."""
-    _parts, _missing, _unreadable = [], [], []
-    for _f, _mkc, _const in _MKT_SOURCES:
-        _fp = config.OUTPUT_DIR / _f
-        if not _fp.exists():
-            _missing.append(_f)
-            continue
-        try:
-            _d = _read_csv(_fp, low_memory=False)
-            _d["_dt"] = pd.to_datetime(_d.get("match_date"), errors="coerce")
-            _d["_pnl"] = pd.to_numeric(_d.get("pnl"), errors="coerce")
-            _oc = "odds" if "odds" in _d.columns else "entry_odds"
-            _d["_odds"] = pd.to_numeric(_d.get(_oc), errors="coerce")
-            _d["_mkt"] = (_d[_mkc].astype(str) if _mkc and _mkc in _d.columns else _const)
-            _keep = (_d.get("signal_tier").isin(_STAKED_TIERS)
-                     & _d["_pnl"].notna() & (_d["_dt"] >= _cut))
-            if _keep.any():
-                _parts.append(_d[_keep][["_mkt", "_dt", "_pnl", "_odds", "signal_tier"]])
-        except Exception as _e:                             # noqa: BLE001
-            _unreadable.append(f"{_f} unreadable ({type(_e).__name__}: {_e})")
-    return ((pd.concat(_parts, ignore_index=True).sort_values("_dt") if _parts else pd.DataFrame()),
-            _missing, _unreadable)
+    """Settled staked rows per market - THE staked definition (dashboard_data.today_view.staked_settled:
+    a recorded policy stake > 0 (src/staked.py, owner 2026-11-04), live, settled, since the cutoff,
+    paper leagues out; props never). This page
+    used its own reader until 2026-11-02, without the live filter and reading ht_ledger.csv (which
+    has no signal_tier) as 'unreadable'. Ledgers are read once a minute, not on every rerun."""
+    from dashboard_data import today_view as _TV
+    _missing = [_f for _f, _, _ in _TV.SOURCES if not (config.OUTPUT_DIR / _f).exists()]
+    _s = _TV.staked_settled()
+    return (_s.sort_values("_dt", kind="mergesort").reset_index(drop=True) if len(_s) else pd.DataFrame()), _missing, []
 
 
 @st.cache_data(ttl=60)
 def _clv_rows() -> pd.DataFrame:
-    _cl = _read_csv(config.OUTPUT_DIR / "bets_ledger.csv", low_memory=False)
+    from src.clv_corrections import exclude_contaminated_clv
+    # first-half prices stored as closes (2026-07/08, output/corrections sidecar) are not CLV at all:
+    # blanked here so they are out of the raw mean as well as the plausible one.
+    _cl = exclude_contaminated_clv(_read_csv(config.OUTPUT_DIR / "bets_ledger.csv", low_memory=False))
     _cl["_clv"] = pd.to_numeric(_cl.get("clv_pct"), errors="coerce")
     _cl["_o"] = pd.to_numeric(_cl.get("odds"), errors="coerce")
     _cl["_c"] = pd.to_numeric(_cl.get("closing_odds"), errors="coerce")
@@ -445,18 +438,18 @@ with t_perf:
     if not len(_s):
         ui.empty_state("NO_DATA", "No settled staked bets since the cutoff.")
     else:
-        _tot = float(_s["_pnl"].sum())
+        _tot = U.total(_s["_pnl"])
         _hit = float((_s["_pnl"] > 0).mean())
         _THIN = 20
         _m = (_s.groupby("_mkt")
-              .agg(Bets=("_pnl", "size"), PL=("_pnl", "sum"),
+              .agg(Bets=("_pnl", "size"), PL=("_pnl", U.total),
                    Hit=("_pnl", lambda x: 100.0 * (x > 0).mean()),
                    _avg_odds=("_odds", "mean"), _n_odds=("_odds", "count"))
               .reset_index().rename(columns={"_mkt": "Market"}))
         _m["Per bet"] = _m["PL"] / _m["Bets"]
         # Break-even at the price actually paid; suppressed when a fifth of the market's prices are missing.
         _m["Need"] = (100.0 / _m["_avg_odds"]).where(_m["_n_odds"] >= 0.8 * _m["Bets"])
-        _seq = {k: [round(v, 3) for v in g.sort_values("_dt")["_pnl"].cumsum()]
+        _seq = {k: [round(v, 3) for v in U.running(g.sort_values("_dt")["_pnl"])]
                 for k, g in _s.groupby("_mkt")}
         _m["Run"] = _m["Market"].map(lambda k: _seq.get(k) if len(_seq.get(k, [])) >= 3 else None)
         _m = _m.sort_values("Bets", ascending=False)
@@ -464,14 +457,16 @@ with t_perf:
         _biggest = _m.iloc[_m["PL"].abs().values.argmax()]
         _ex = _s[_s["_mkt"] != _biggest["Market"]]
         ui.metric_grid([
-            {"label": "P/L — all staked markets", "value": f"{_tot:+.2f}u",
-             "delta": f"{_tot / len(_s):+.3f}u per bet",
-             "help": f"Flat 1u stakes, {STAKED_LABEL} only. Read the per-market table below "
+            {"label": "P/L — all staked markets (flat 1u)", "value": U.fmt(_tot),
+             "delta": f"{U.fmt(_tot / len(_s), 3)} per bet",
+             "help": f"Flat 1u per staked bet. {_STAKED_DEF}. At the recorded stakes "
+                     f"({U.fmt(U.total(_s['_stake_units']))} staked) the P/L is "
+                     f"{U.fmt(U.total(_s['_pnl'] * _s['_stake_units']))}. Read the per-market table below "
                      "before this number — it is a sum of very unequal samples."},
             {"label": f"Excluding {_biggest['Market']}",
-             "value": f"{float(_ex['_pnl'].sum()):+.2f}u" if len(_ex) else "—",
+             "value": U.fmt(U.total(_ex["_pnl"])) if len(_ex) else "—",
              "delta": f"{len(_ex)} bets", "delta_color": "off",
-             "help": f"{_biggest['Market']} carries {float(_biggest['PL']):+.2f}u on "
+             "help": f"{_biggest['Market']} carries {U.fmt(_biggest['PL'])} on "
                      f"{int(_biggest['Bets'])} bets — the largest single contribution. Shown so the "
                      "total cannot be read as broad-based when it is not."},
             {"label": "Settled bets", "value": f"{len(_s):,}",
@@ -482,7 +477,8 @@ with t_perf:
                      f"different break-even price."},
         ], per_row=4)
 
-        ui.table(_m[["Market", "Bets", "PL", "Per bet", "Hit", "Need", "Run"]].round(2),
+        ui.table(_m[["Market", "Bets", "PL", "Per bet", "Hit", "Need", "Run"]].round(2)
+                 .assign(PL=_m["PL"].map(U.rnd), **{"Per bet": _m["Per bet"].map(U.rnd)}),
                  sparks={"Run": {"help": "Running total in units, one point per settled bet, oldest "
                                          "to newest. Each row is scaled to its own range — compare "
                                          "the SHAPE, not the height, and read P/L for the level."}},
@@ -493,7 +489,7 @@ with t_perf:
             st.markdown(" ".join(ui.sample_marker(int(r["Bets"]), floor=_THIN) + f" :gray[{r['Market']}]"
                                  for _, r in _thin.iterrows()))
         st.caption(
-            f"Flat 1u stakes · **staked tiers only** ({STAKED_LABEL} — {PAPER_TIER_LABEL} is not a bet) · "
+            f"Flat 1u stakes · **staked only** (policy stake > 0 recorded in the stake plan / audit) · "
             f"settled only · from {_cut.date()}. **Hit** is the share won; **Need** is the "
             f"break-even rate implied by the average price paid, so Hit above Need is a profitable "
             f"market and below it is not."
@@ -511,9 +507,10 @@ with t_perf:
                        f"{_s['_mkt'].nunique()} markets over {_s['_dt'].dt.date.nunique()} days, "
                        f"which is a sample and not a track record.")
 
-        _by = (_s.groupby(["signal_tier", "_mkt"])["_pnl"].agg(Bets="size", **{"P/L": "sum"})
+        _by = (_s.groupby(["signal_tier", "_mkt"])["_pnl"].agg(Bets="size", **{"P/L": U.total})
                .reset_index().rename(columns={"signal_tier": "Tier", "_mkt": "Market"}))
-        _by["Per bet"] = (_by["P/L"] / _by["Bets"]).round(3)
+        _by["Per bet"] = (_by["P/L"] / _by["Bets"]).map(lambda v: U.rnd(v, 3))
+        _by["P/L"] = _by["P/L"].map(U.rnd)
         with st.expander("By tier and market"):
             ui.table(_by.sort_values("Bets", ascending=False),
                      column_config={"P/L": ui.num_col("P/L", fmt="%+.2f"), "Per bet": ui.num_col("Per bet", fmt="%+.3f")})
@@ -599,7 +596,7 @@ def load_predictions_ht():
     if "p_ht_over05" not in preds.columns:
         return pd.DataFrame()
     preds["date"] = pd.to_datetime(preds["date"], errors="coerce")
-    today = pd.Timestamp.now().normalize()
+    today = pd.Timestamp.now(tz="UTC").tz_localize(None).normalize()
     preds = preds[preds["date"] >= today].copy()
     # Only standard-format leagues (have HT data)
     preds = preds[preds["p_ht_over05"].notna()]

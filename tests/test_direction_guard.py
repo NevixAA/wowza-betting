@@ -1,8 +1,10 @@
-"""One goal DIRECTION per fixture (owner rule 2026-10-25).
+"""One goal DIRECTION per fixture (owner rules 2026-10-25 and 2026-11-04).
 
 "what i meant to deny its over 2.5 and under 2.5 for the same match, or over 1.5 and under 2.5, or
-under 3.5 and over 2.5". Same-direction tips on one match are fine; BTTS never conflicts. The FIRST
-tip stands (across runs: the live ledgers; within one run: the O/U 2.5 tip).
+under 3.5 and over 2.5". 2026-11-04: "Several bets on one match are fine ... if its not the opposites
+... u cant tipped under1.5 and btts Y": BTTS YES is OVER, BTTS NO is UNDER. Same-direction tips on one
+match are fine. A paper tip never blocks a real-money one; otherwise the FIRST tip stands (across
+runs: the live ledgers; within one run: the O/U 2.5 tip).
 
 Real case pinned below: 2026-10-25 Viking FK v Tromso, O/U 2.5 UNDER (2026-10-18) + Over 3.5 (10-20).
 """
@@ -36,6 +38,17 @@ def _side(market, tier="VALUABLE", edge=0.05, home=HOME, away=AWAY):
             "fair_prob": 0.45, "edge": edge, "ev": 0.1, "market_odds": 2.06}
 
 
+REAL: set = set()       # (market, side) on a real-money track in the guard's view; empty = all paper
+
+
+@pytest.fixture(autouse=True)
+def _tracks(monkeypatch):
+    """Pin the guard's real-money view (the live policy changes); each test sets REAL itself."""
+    REAL.clear()
+    monkeypatch.setattr(DG, "real_track_checker",
+                        lambda: (lambda mt, m, s: (str(m).lower(), str(s).upper()) in REAL))
+
+
 @pytest.fixture
 def out(tmp_path, monkeypatch):
     monkeypatch.setattr(config, "OUTPUT_DIR", tmp_path)
@@ -67,7 +80,8 @@ def _ledgered(out):
 # ── direction mapping ───────────────────────────────────────────────────────────────────────────
 @pytest.mark.parametrize("market,side,expected", [
     ("ou25", "OVER", "OVER"), ("ou25", "UNDER", "UNDER"), ("over15", "OVER", "OVER"),
-    ("over35", "", "OVER"), ("under35", "", "UNDER"), ("btts", "YES", None), ("btts", "NO", None),
+    ("over35", "", "OVER"), ("under35", "", "UNDER"), ("btts", "YES", "OVER"), ("btts", "NO", "UNDER"),
+    ("btts", "", None),
     ("ou25", "AVOID", None)])
 def test_goal_direction(market, side, expected):
     assert DG.goal_direction(market, side) == expected
@@ -106,9 +120,9 @@ def test_under25_then_over35_across_runs_viking_v_tromso(out):
 
 def test_within_run_ou25_wins(out):
     b, s, c = _run([_ou("UNDER")], [_side("over35", "SNIPER", edge=0.20), _side("btts")])
-    assert len(b) == 1 and list(s["market"]) == ["btts"]
-    assert c.iloc[0]["reason"] == "OPPOSITE_TO_OU25_SAME_RUN"
-    assert sorted(_ledgered(out)) == ["btts", "ou25 UNDER"]
+    assert len(b) == 1 and s.empty                       # BTTS YES is OVER since 2026-11-04
+    assert set(c["reason"]) == {"OPPOSITE_TO_OU25_SAME_RUN"} and len(c) == 2
+    assert sorted(_ledgered(out)) == ["ou25 UNDER"]
 
 
 def test_first_tip_stands_across_runs_even_when_it_is_the_side_market(out):
@@ -128,13 +142,56 @@ def test_same_direction_pairs_are_allowed(out):
     assert c.empty
 
 
-def test_btts_never_conflicts(out):
+def test_btts_yes_is_an_over_direction(out):
+    """Owner 2026-11-04: "u cant tipped under1.5 and btts Y" (all paper here: the first tip stands)."""
     _run([_ou("UNDER")], [])
     b, s, c = _run([_ou("UNDER")], [_side("btts")])
-    assert list(s["market"]) == ["btts"] and c.empty
+    assert s.empty and c.iloc[0]["suppressed_market"] == "btts"
     _run([], [_side("btts", home="A", away="B")])
     b, s, c = _run([_ou("UNDER", home="A", away="B")], [])
-    assert len(b) == 1 and c.empty
+    assert b.empty and c.iloc[0]["stood_market"] == "btts"
+
+
+# ── a paper tip never blocks a real-money one (owner 2026-11-04) ─────────────────────────────────
+def test_real_btts_beats_a_paper_under_in_the_same_run(out):
+    REAL.add(("btts", "YES"))
+    b, s, c = _run([_ou("UNDER")], [_side("btts")])
+    assert b.empty and list(s["market"]) == ["btts"]
+    r = c.iloc[0]
+    assert (r["suppressed_market"], r["stood_market"], r["reason"]) == ("ou25", "btts", "PAPER_YIELDS_TO_REAL")
+    assert _ledgered(out) == ["btts"]
+
+
+def test_real_tip_goes_out_after_an_earlier_paper_tip_and_then_stands(out):
+    _run([_ou("UNDER")], [])                             # run 1: paper Under, already sent
+    REAL.add(("btts", "YES"))
+    b, s, c = _run([], [_side("btts")])                  # run 2: real BTTS YES
+    assert list(s["market"]) == ["btts"]
+    assert c.iloc[0]["reason"] == "REAL_AFTER_EARLIER_PAPER" and c.iloc[0]["suppressed_market"] == "ou25"
+    assert sorted(_ledgered(out)) == ["btts", "ou25 UNDER"]
+
+
+def test_real_versus_real_first_tip_stands(out):
+    REAL.update({("btts", "YES"), ("ou25", "UNDER")})
+    _run([_ou("UNDER")], [])
+    b, s, c = _run([], [_side("btts")])
+    assert s.empty and c.iloc[0]["reason"] == "OPPOSITE_TO_EARLIER_TIP"
+
+
+def test_paper_tip_never_blocks_real_one_regardless_of_order_in_the_run(out):
+    REAL.add(("over15", "OVER"))
+    b, s, c = _run([_ou("UNDER")], [_side("over15"), _side("btts")])     # btts paper, OVER as well
+    assert b.empty and sorted(s["market"]) == ["btts", "over15"]
+
+
+def test_policy_view_of_the_live_policy():
+    """The real checker reads config/bankroll_policy.json: new-format BTTS is real, Under paper."""
+    from importlib import reload
+    import src.direction_guard as fresh
+    chk = reload(fresh).real_track_checker()
+    assert chk("new_format", "btts", "YES") is True
+    assert chk("new_format", "ou25", "UNDER") is False
+    assert chk("", "btts", "YES") is False
 
 
 def test_other_fixtures_are_untouched(out):
@@ -216,24 +273,22 @@ def test_mode_predict_suppressed_tip_reaches_nothing_but_the_conflicts_log(out, 
     assert "over35" not in set(viking(side)["market"])
     assert "over35" not in set(viking(sl)["market"])
     vplan = plan[plan["fixture"] == f"{DAY}|{HOME}|{AWAY}"]
-    assert set(vplan["market"]) == {"OU25", "BTTS"}
-    # BTTS on Viking is not a goal-total line and stays
-    assert "btts" in set(viking(side)["market"]) and "btts" in set(viking(sl)["market"])
+    assert set(vplan["market"]) == {"OU25"}
+    # BTTS YES on Viking is an OVER direction since 2026-11-04 (all paper here): suppressed too
+    assert "btts" not in set(viking(side)["market"]) and "btts" not in set(viking(sl)["market"])
     # the clean fixture is untouched: O/U OVER + Over 1.5
     clean = side[side["home_team"] == "Clean FC"]
     assert set(clean["market"]) == {"over15"}
-    # the evidence row
-    assert len(conf) == 1
-    r = conf.iloc[0]
-    assert (r["home_team"], r["suppressed_market"], r["stood_market"], r["reason"]) == \
-        (HOME, "over35", "ou25", "OPPOSITE_TO_OU25_SAME_RUN")
+    # the evidence rows
+    assert len(conf) == 2 and set(conf["suppressed_market"]) == {"over35", "btts"}
+    assert set(conf["reason"]) == {"OPPOSITE_TO_OU25_SAME_RUN"} and set(conf["stood_market"]) == {"ou25"}
     # the research shadow still saw every tip
     assert "over35" in set(viking(seen["side"])["market"])
 
     # second run: still suppressed, conflicts log stays first-sight
     pipeline.mode_predict(historical=pd.DataFrame({"league": [LG]}))
     assert "over35" not in set(viking(pd.read_csv(out / "side_bets_ledger.csv"))["market"])
-    assert len(pd.read_csv(out / "direction_conflicts.csv")) == 1
+    assert len(pd.read_csv(out / "direction_conflicts.csv")) == 2
 
 
 def test_album_table_does_not_show_the_suppressed_tip(out, predict_env, monkeypatch):
@@ -244,7 +299,7 @@ def test_album_table_does_not_show_the_suppressed_tip(out, predict_env, monkeypa
     hi = (pd.Timestamp(DAY) + pd.Timedelta(days=1)).strftime("%Y-%m-%d")
     rows = pd.DataFrame(TT.tips_rows(lo, hi))
     v = rows[rows["home_team"] == HOME]
-    assert len(v) == 2                                                   # O/U 2.5 UNDER + BTTS
+    assert len(v) == 1                                                   # O/U 2.5 UNDER only
     assert not v["market"].astype(str).str.contains("3.5").any()
 
 
@@ -269,7 +324,7 @@ def test_size_day_zeroes_the_opposite_direction_within_a_day():
     out = size_day(sel, _policy(), 100.0, 100.0)
     r = dict(zip(out["fixture"] + "|" + out["market"], out["reason"]))
     assert r["F1|OVER35"] == "OPPOSITE_DIRECTION_ON_FIXTURE"        # OU25 UNDER wins the day
-    assert r["F1|OU25"] == "OK" and r["F1|BTTS"] == "OK"
+    assert r["F1|OU25"] == "OK" and r["F1|BTTS"] == "OPPOSITE_DIRECTION_ON_FIXTURE"   # BTTS YES = OVER
     assert r["F2|OVER15"] == "OK" and r["F2|OU25"] == "OK"          # same direction
     assert float(out.loc[out["reason"] == "OPPOSITE_DIRECTION_ON_FIXTURE", "final_fraction"].sum()) == 0.0
 
@@ -282,7 +337,7 @@ def test_size_day_respects_an_earlier_staked_direction():
 
 
 def test_size_day_unchanged_without_conflicts():
-    sel = pd.DataFrame([_sel("OU25", "UNDER"), _sel("BTTS", "YES"), _sel("OVER15", "OVER", fixture="F2")])
+    sel = pd.DataFrame([_sel("OU25", "UNDER"), _sel("BTTS", "NO"), _sel("OVER15", "OVER", fixture="F2")])
     pol = _policy()
     a = size_day(sel, pol, 100.0, 100.0)
     b = size_day(sel, pol, 100.0, 100.0, prior_directions={"F1": "UNDER"})
@@ -299,7 +354,7 @@ def test_stake_plan_reads_prior_directions_from_the_audit(out, monkeypatch):
         {"fixture": "F2", "market": "OU25", "side": "UNDER", "final_fraction": 0.0, "generated_at": "2026-10-20 10:00:00"},
         {"fixture": "F3", "market": "BTTS", "side": "YES", "final_fraction": 0.004, "generated_at": "2026-10-20 10:00:00"},
     ]).to_csv(out / "stake_audit.csv", index=False)
-    assert SP.prior_directions() == {"F1": "OVER"}                   # zero stakes and BTTS fix nothing
+    assert SP.prior_directions() == {"F1": "OVER", "F3": "OVER"}     # zero stakes fix nothing; BTTS YES = OVER
     assert SP.prior_directions(["F2"]) == {}
 
 
@@ -319,3 +374,27 @@ def _legacy_side_fair_price(monkeypatch):
     de-vig fair price (production since 2026-11-01) has its own tests: test_side_devig_production.py."""
     import config as _cfg
     monkeypatch.setattr(_cfg, "SIDE_EDGE_FAIR_PRICE", "legacy_1_08")
+
+# ── contract rule (owner 2026-11-04: several same-direction positions are fine) ──────────────────
+def test_contract_flags_only_opposite_staked_positions():
+    from src.contracts.schemas import _opposite_staked
+    d = pd.DataFrame([
+        {"fixture": "F1", "market": "OU25", "side": "OVER", "final_fraction": 0.004},
+        {"fixture": "F1", "market": "BTTS", "side": "YES", "final_fraction": 0.004},
+        {"fixture": "F1", "market": "OVER15", "side": "OVER", "final_fraction": 0.004},
+        {"fixture": "F2", "market": "OU25", "side": "UNDER", "final_fraction": 0.004},
+        {"fixture": "F2", "market": "BTTS", "side": "YES", "final_fraction": 0.004},
+        {"fixture": "F3", "market": "OU25", "side": "UNDER", "final_fraction": 0.004},
+        {"fixture": "F3", "market": "OVER15", "side": "OVER", "final_fraction": 0.0},
+    ])
+    assert list(_opposite_staked(d)) == [False, False, False, True, True, False, False]
+
+
+def test_live_policy_allows_several_positions_per_fixture():
+    import json
+    pf = json.loads((config.ROOT_DIR / "config" / "bankroll_policy.json").read_text(encoding="utf-8"))["portfolio"] \
+        if hasattr(config, "ROOT_DIR") else None
+    if pf is None:
+        from src.bankroll_policy import load_policy
+        pf = load_policy()["portfolio"]
+    assert pf["one_position_per_fixture"] is False

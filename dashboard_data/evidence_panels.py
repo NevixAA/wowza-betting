@@ -64,6 +64,17 @@ def _json(p: Path) -> dict:
         return {}
 
 
+def _num(v, cast):
+    """cast(v) for a value a JSON file actually holds, else None (never a typed default)."""
+    if v is None or isinstance(v, bool):
+        return None
+    try:
+        out = cast(v)
+    except (TypeError, ValueError):
+        return None
+    return None if isinstance(out, float) and out != out else out
+
+
 def _read(p: Path) -> pd.DataFrame:
     try:
         return pd.read_csv(p, low_memory=False) if Path(p).exists() else pd.DataFrame()
@@ -128,12 +139,19 @@ def load_bets(bets: pd.DataFrame | None = None, side_bets: pd.DataFrame | None =
     s = _read(SIDE_BETS) if side_bets is None else side_bets
     parts = []
     if len(m):
+        # first-half prices stored as closes (output/corrections/clv_first_half_contaminated.csv): no CLV
+        from src.clv_corrections import exclude_contaminated_clv
+        m = exclude_contaminated_clv(m)
         parts.append(pd.DataFrame({
             "source": m.get("source"), "date": m["match_date"], "league": m["league"], "home": m["home_team"],
             "away": m["away_team"], "model_type": m.get("model_type"), "market": "OU25",
             "side": m["side"].astype(str).str.upper(), "signal_tier": m["signal_tier"], "odds": m["odds"],
             "result": m["result"], "pnl": m["pnl"], "clv_pct": m.get("clv_pct")}))
     if len(s):
+        # first-half BTTS closes (output/corrections/side_clv_first_half_contaminated.csv): no CLV.
+        # P/L stays; the ledger value is kept as clv_pct_stored by the corrections module.
+        from src.clv_corrections import exclude_contaminated_clv
+        s = exclude_contaminated_clv(s)
         parts.append(pd.DataFrame({
             "source": s.get("source"), "date": s["match_date"], "league": s["league"], "home": s["home_team"],
             "away": s["away_team"], "model_type": s.get("model_type"), "market": s["market"].map(SIDE_MARKET),
@@ -163,8 +181,11 @@ def tier_multiplier(policy: dict, track: str, tier: str) -> float:
     return float((tt if tt is not None else policy.get("tier_multipliers", {})).get(str(tier), 0.0))
 
 
-def staked(bets: pd.DataFrame, policy: dict) -> pd.DataFrame:
-    """Only the tiers the policy stakes (multiplier > 0) — the evidence for a track, as in the review."""
+def review_tier_rows(bets: pd.DataFrame, policy: dict) -> pd.DataFrame:
+    """Only the tiers the review's tier rule counts (multiplier > 0) — the evidence for a track, as in
+    Pro's review. NOT "Staked": that is a recorded policy stake (src/staked.py, owner 2026-11-04); this
+    reproduces Pro's evidence basis, which the review used before stakes were recorded. Renamed from
+    `staked` on 2026-11-04 so the word has one meaning."""
     if bets.empty:
         return bets
     keep = [tier_multiplier(policy, tr, t) > 0 for tr, t in zip(bets["track"], bets["signal_tier"])]
@@ -244,7 +265,7 @@ def since_review(track_evidence: dict, recommendation: dict, policy: dict | None
     evidence counted (review_policy)."""
     policy = _json(POLICY_FILE) if policy is None else policy
     meta = review_meta(recommendation, track_evidence)
-    b = staked(load_bets() if bets is None else bets, review_policy(policy, tier_rules))
+    b = review_tier_rows(load_bets() if bets is None else bets, review_policy(policy, tier_rules))
     cutoff = pd.Timestamp(meta["evidence_cutoff"]) if meta.get("evidence_cutoff") else None
     today = pd.Timestamp(today).normalize() if today is not None else pd.Timestamp.now(tz="UTC").tz_localize(None).normalize()
     ev = (track_evidence or {}).get("tracks") or {}
@@ -285,23 +306,34 @@ def hmodel_rows(eval_path: Path | None = None, exp_path: Path | None = None, gat
     gate = _json(gate_path or GATE_CFG)
     p = gate.get("prospective") or {}
     h = gate.get("holdout") or {}
-    req = {"min_n": int(p.get("min_n_per_track") or 1000), "max_ll_delta_exclusive": float(p.get("max_ll_delta_exclusive", 0.0)),
-           "max_brier_worsening": float(p.get("max_brier_worsening", 0.0001)),
-           "early_fail_min_n": int(p.get("early_fail_min_n") or 300), "max_age_days": int(p.get("max_age_days") or 180),
-           "min_bootstrap_blocks": int(h.get("min_bootstrap_blocks") or 20), "gate_version": gate.get("gate_version")}
+    # Every requirement comes from config/promotion_gate.json; one the file lacks is None (shown as
+    # missing), never a typed-in 1000 / 300 / 180 / 20 / 0.0 / 0.0001 (Data Truth, 2026-11-02).
+    req = {"min_n": _num(p.get("min_n_per_track"), int),
+           "max_ll_delta_exclusive": _num(p.get("max_ll_delta_exclusive"), float),
+           "max_brier_worsening": _num(p.get("max_brier_worsening"), float),
+           "early_fail_min_n": _num(p.get("early_fail_min_n"), int),
+           "max_age_days": _num(p.get("max_age_days"), int),
+           "min_bootstrap_blocks": _num(h.get("min_bootstrap_blocks"), int), "gate_version": gate.get("gate_version")}
     today = pd.Timestamp(today) if today is not None else pd.Timestamp.now(tz="UTC")
     if today.tzinfo is None:
         today = today.tz_localize("UTC")
     rows = []
+    skipped = []
     for key, r in (ev.get("results") or {}).items():
         exp_id, _, track = key.partition("|")
         e = exps.get(exp_id, {})
-        need = int(e.get("n_min_per_track") or req["min_n"])
-        n = int(r.get("settled_paired") or 0)
+        need = _num(e.get("n_min_per_track"), int)
+        need = need if need is not None else req["min_n"]
+        n = _num(r.get("settled_paired"), int)
+        if need is None or n is None:
+            # No registered minimum, or no settled count: the row cannot be judged and is skipped.
+            skipped.append(key)
+            continue
         ci_ll = r.get("delta_log_loss_ci95") or [None, None]
         ci_br = r.get("delta_brier_ci95") or [None, None]
         reg = pd.to_datetime(e.get("registered_at"), utc=True, errors="coerce")
-        expires = (reg + pd.Timedelta(days=req["max_age_days"])) if pd.notna(reg) else None
+        expires = ((reg + pd.Timedelta(days=req["max_age_days"]))
+                   if pd.notna(reg) and req["max_age_days"] is not None else None)
         dll, dbr = r.get("delta_log_loss"), r.get("delta_brier")
         rows.append({
             "experiment": exp_id, "track": track, "hypothesis": e.get("hypothesis_id", exp_id.split("__")[0]),
@@ -313,13 +345,19 @@ def hmodel_rows(eval_path: Path | None = None, exp_path: Path | None = None, gat
             "delta_log_loss": dll, "delta_ll_lo": ci_ll[0], "delta_ll_hi": ci_ll[1],
             "delta_brier": dbr, "delta_brier_lo": ci_br[0], "delta_brier_hi": ci_br[1],
             "req_n_met": n >= need,
-            "req_ll_met": dll is not None and dll < req["max_ll_delta_exclusive"],
-            "req_brier_met": dbr is not None and dbr <= req["max_brier_worsening"],
-            "early_fail_zone": bool(n >= req["early_fail_min_n"] and ci_ll[0] is not None and ci_ll[0] > 0),
+            "req_ll_met": (dll is not None and req["max_ll_delta_exclusive"] is not None
+                           and dll < req["max_ll_delta_exclusive"]),
+            "req_brier_met": (dbr is not None and req["max_brier_worsening"] is not None
+                              and dbr <= req["max_brier_worsening"]),
+            "early_fail_zone": bool(req["early_fail_min_n"] is not None and n >= req["early_fail_min_n"]
+                                    and ci_ll[0] is not None and ci_ll[0] > 0),
             "registered_at": e.get("registered_at"),
             "window_expires": expires.strftime("%Y-%m-%d") if expires is not None else None,
             "days_left": int((expires - today).days) if expires is not None else None,
             "challenger_version": e.get("challenger_version")})
+    if skipped:
+        print(f"[evidence_panels] H-MODEL-01: {len(skipped)} track row(s) skipped - no registered "
+              f"per-track minimum or no settled count: {skipped}")
     meta = {"computed_at": ev.get("computed_at"), **req}
     return meta, pd.DataFrame(rows)
 

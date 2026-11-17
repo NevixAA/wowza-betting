@@ -57,8 +57,7 @@ def _board(day: str = DAY) -> pd.DataFrame:
 @pytest.fixture
 def evidence(monkeypatch):
     """Per-league threshold evidence forced True, so ONLY the track state can zero a stake."""
-    # main has no per-league evidence gate yet (data-truth-100 only): raising=False keeps it a no-op
-    monkeypatch.setattr(betting, "league_threshold_evidence", lambda *a, **k: True, raising=False)
+    monkeypatch.setattr(betting, "league_threshold_evidence", lambda *a, **k: True)
 
 
 # ── 1. policy file, research lock and track registry agree ────────────────────────────────────────

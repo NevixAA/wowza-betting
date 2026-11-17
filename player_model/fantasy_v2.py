@@ -128,7 +128,13 @@ def run_benchmark(panel: pd.DataFrame, extras: dict | None = None) -> tuple[dict
     prod = dict(res["acceptance"][PRODUCTION_ARM])
     # second condition, fixed in advance: the residual must not lose materially on the players the
     # old projection covered (the ones managers actually own).
-    if prod["decision"] == "GO" and (led_v.get("mae_minus_fpl") or 0) > 0.05:
+    led_mae = led_v.get("mae_minus_fpl")
+    if prod["decision"] == "GO" and led_mae is None:
+        # No LEDGER comparison means the condition cannot be checked - it is not a pass (it was
+        # read as a 0 MAE gap).
+        prod["decision"] = "NO-GO"
+        prod["reasons"].append("no LEDGER-population MAE comparison to check")
+    elif prod["decision"] == "GO" and led_mae > 0.05:
         prod["decision"] = "NO-GO"
         prod["reasons"].append("loses > 0.05 MAE to FPL on the LEDGER population")
     res["decision"] = {
@@ -198,9 +204,12 @@ def _future_context(tfl: pd.DataFrame, ts: pd.DataFrame, gws: list) -> pd.DataFr
 
 
 def _fixture_mult(position: str, lam_for: float, cs: float, lam_ref: float, cs_ref: float) -> float:
-    a, d = ATTACK_SHARE.get(position, 0.3), DEFENCE_SHARE.get(position, 0.2)
+    # An unknown position has no share (it used to get a typed 0.3 / 0.2): the multiplier is NaN.
+    if position not in ATTACK_SHARE or position not in DEFENCE_SHARE:
+        return float("nan")
+    a, d = ATTACK_SHARE[position], DEFENCE_SHARE[position]
     m = (1 - a - d) + a * (lam_for / lam_ref) + d * (cs / cs_ref)
-    return float(np.clip(m, 0.55, 1.6))
+    return float(np.clip(m, 0.55, 1.6)) if m == m else float("nan")
 
 
 def project(panel: pd.DataFrame, bench: dict) -> pd.DataFrame:
@@ -210,7 +219,9 @@ def project(panel: pd.DataFrame, bench: dict) -> pd.DataFrame:
     if pend.empty:
         return pd.DataFrame()
     pend = pend[fp.active_mask(pend)].copy()
-    train = prep[prep["status"].isin(["FINAL", "PROVISIONAL"]) & fp.active_mask(prep)]
+    # FINAL gameweeks only - what walk_forward validates (fantasy_residual): a PROVISIONAL (partly
+    # settled) gameweek entered the served fit but never the validation (real-data rule 2026-11-15).
+    train = prep[(prep["status"] == "FINAL") & fp.active_mask(prep)]
     r = (train["actual_points"] - train["ep_next"]).to_numpy(float)
     lin = R.LinearResidual().fit(train, r)
     mm = R.MinutesModel().fit(train)
@@ -285,7 +296,8 @@ def _team_meta() -> dict:
     try:
         b = json.loads(fp.BOOTSTRAP.read_text(encoding="utf-8"))
         return {t["id"]: {"name": t.get("name"), "short": t.get("short_name")} for t in b["teams"]}
-    except Exception:                                                # noqa: BLE001
+    except Exception as e:                                           # noqa: BLE001
+        log.warning(f"[fantasy_v2] no FPL team names ({type(e).__name__}: {e}) - opponents shown as '?'")
         return {}
 
 
@@ -302,22 +314,39 @@ def _multi_gw(pend: pd.DataFrame, panel: pd.DataFrame, gw: int) -> pd.DataFrame:
     gws = list(range(gw, gw + HORIZON))
     fut = _future_context(tfl, ts, gws)
     meta = _team_meta()
-    lam_ref = float(fut["lam_for"].mean()) if len(fut) else 1.35
-    cs_ref = float(fut["cs_prob"].mean()) if len(fut) else 0.28
+    # League references measured over the window's own fixtures; none -> unknown (was 1.35 / 0.28).
+    lam_ref = float(fut["lam_for"].mean()) if len(fut) else float("nan")
+    cs_ref = float(fut["cs_prob"].mean()) if len(fut) else float("nan")
     by_team = {t: g for t, g in fut.groupby("team_id")}
     x3, x5, nxt, run, fdr_run = [], [], [], [], []
     for r in pend.itertuples():
-        g = by_team.get(int(r.team_id), pd.DataFrame(columns=fut.columns))
+        g = by_team.get(int(r.team_id))
+        # No fixture rows for the club (fixtures cache missing / club absent) is MISSING data, not a
+        # run of blanks; a negative ep_next cannot be extrapolated into later gameweeks either.
+        # Both -> later-gameweek points unknown (real-data rule 2026-11-15).
+        if g is None or float(r.final_xpts) < 0:
+            x3.append(float("nan"))
+            x5.append(float("nan"))
+            nxt.append("")
+            run.append("")
+            fdr_run.append("")
+            continue
         cur = g[g["gw"] == gw]
         mults_now = [_fixture_mult(r.position, f.lam_for, f.cs_prob, lam_ref, cs_ref)
                      for f in cur.itertuples()]
         p_play = float(r.p_play)
-        long_play = float(np.clip((r.start_rate or 0) + 0.25, 0, 1)) if (r.minutes or 0) > 0 else 0.2
+        # Long-run play rate from his own start rate; with no minutes or no start rate it is
+        # unknown (it was a typed 0.2), and so are his later-gameweek points.
+        sr = pd.to_numeric(r.start_rate, errors="coerce")
+        mins = pd.to_numeric(r.minutes, errors="coerce")
+        long_play = (float(np.clip(sr + 0.25, 0, 1)) if mins == mins and mins > 0 and sr == sr
+                     else float("nan"))
         if p_play >= 0.15 and mults_now:
             rate = float(r.final_xpts) / (p_play * sum(mults_now))
         else:
+            # Points per fixture from his real points per game; none -> unknown (was a typed 2.0).
             ppg = pd.to_numeric(getattr(r, "ppg", np.nan), errors="coerce")
-            rate = float(ppg) if np.isfinite(ppg) and ppg > 0 else 2.0
+            rate = float(ppg) if np.isfinite(ppg) and ppg > 0 else float("nan")
         tot3 = tot5 = 0.0
         for k, wk in enumerate(gws):
             fx = g[g["gw"] == wk]

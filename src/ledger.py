@@ -53,9 +53,11 @@ from __future__ import annotations
 
 import json
 import logging
+import subprocess
 from datetime import datetime
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 
 import sys
@@ -96,6 +98,12 @@ LEDGER_COLS = [
     "retrain_batch_id",
     "training_cutoff",
     "prediction_role",
+    # FIXTURE IDENTITY (issue #1, 2026-11-02), appended at the END like the attribution block.
+    # fixture_id = the API-Football fixture id src/predict.attach_fixture_ids resolved (blank when
+    # it did not resolve); oddsapi_event_id = the OddsAPI event id, kept in its OWN column so the
+    # two id spaces never mix. Rows written before this are blank (unknown), never back-filled.
+    "fixture_id",
+    "oddsapi_event_id",
 ]
 VERSION_FIELDS = ("model_version", "retrain_batch_id", "training_cutoff", "prediction_role")
 
@@ -121,8 +129,55 @@ def _ou_key(model_type_tag, serving_recipe=None) -> str:
     try:
         from src import model_registry as reg
         return reg.ou_model_for_row(str(model_type_tag), serving_recipe)
-    except Exception:                                                 # noqa: BLE001
-        return "standard"
+    except Exception as e:                                            # noqa: BLE001
+        # Unknown model -> None, so the row is stamped UNKNOWN_LEGACY by _version_fields. This
+        # returned "standard", attributing a new-format tip to the standard model.
+        log.warning(f"Ledger: no model key for model_type {model_type_tag!r} ({e}) - attribution left unknown")
+        return None
+
+
+def _num(v) -> float:
+    """A float from a predictions cell, or NaN when it is missing or not a number. Never 0.0: a
+    missing edge/price/probability written as 0 reads as a real zero."""
+    try:
+        f = float(v)
+    except (TypeError, ValueError):
+        return np.nan
+    return f if np.isfinite(f) else np.nan
+
+
+def _af_fixture_id(v) -> int | str:
+    """A positive integer API-Football fixture id from a bets cell, or '' (blank) when absent."""
+    try:
+        f = float(v)
+    except (TypeError, ValueError):
+        return ""
+    return int(f) if np.isfinite(f) and f > 0 else ""
+
+
+def _event_id(v) -> str:
+    """The OddsAPI event id as sent, or '' (blank) when absent."""
+    if v is None or (isinstance(v, float) and v != v):
+        return ""
+    s = str(v).strip()
+    return "" if s in ("nan", "None", "<NA>") else s
+
+
+def _fixture_identity(row) -> dict:
+    return {"fixture_id": _af_fixture_id(row.get("fixture_id")),
+            "oddsapi_event_id": _event_id(row.get("oddsapi_event_id", row.get("_oa_event_id")))}
+
+
+def _warn_missing_identity(df: pd.DataFrame, ledger: str) -> None:
+    missing = [c for c in ("fixture_id", "oddsapi_event_id") if c not in df.columns]
+    if missing:
+        log.warning(f"{ledger}: tips frame has no {missing} column(s) - those ids are left blank "
+                    f"(src/betting.generate_bets must pass them through)")
+
+
+def _pct(v: float):
+    """round(v * 100, 2), or '' (blank cell) when v is missing."""
+    return round(v * 100, 2) if np.isfinite(v) else ""
 
 
 def _kelly_pct(edge: float, odds: float) -> float:
@@ -158,10 +213,13 @@ def _load_ledger() -> pd.DataFrame:
     """Load ledger, backfilling missing 'source' column on old rows."""
     if LEDGER_FILE.exists():
         df = pd.read_csv(LEDGER_FILE, dtype=str)
+        # A row without a source stays without one (NaN): it is not assumed to be a live tip, so
+        # committed_sides / the dedup never count it as one. Every current row carries 'live'.
         if "source" not in df.columns:
-            df.insert(0, "source", "live")
-        else:
-            df["source"] = df["source"].fillna("live")
+            log.warning("bets_ledger.csv has no 'source' column - rows left without a source")
+            df.insert(0, "source", np.nan)
+        elif df["source"].isna().any():
+            log.warning(f"bets_ledger.csv: {int(df['source'].isna().sum())} row(s) without a source - left blank")
         return df
     return pd.DataFrame(columns=LEDGER_COLS)
 
@@ -218,7 +276,7 @@ def _dedup_keys(df: pd.DataFrame) -> set:
         df.get("home_team",  pd.Series([], dtype=str)).fillna(""),
         df.get("away_team",  pd.Series([], dtype=str)).fillna(""),
         df.get("side",       pd.Series([], dtype=str)).fillna(""),
-        df.get("source",     pd.Series([], dtype=str)).fillna("live"),
+        df.get("source",     pd.Series([], dtype=str)).fillna(""),
     ))
 
 
@@ -267,6 +325,7 @@ def append_tips(bets_df: pd.DataFrame, source: str = "live") -> None:
         raise ValueError(f"bets_ledger.csv holds live tips only, got source={source!r}")
     if bets_df is None or bets_df.empty:
         return
+    _warn_missing_identity(bets_df, "bets_ledger")
 
     existing = _load_ledger()
     now = datetime.utcnow().strftime("%Y-%m-%d %H:%M")
@@ -304,7 +363,7 @@ def append_tips(bets_df: pd.DataFrame, source: str = "live") -> None:
         dedup_key  = (match_date, home, away, side, source)
         tier       = str(row.get("signal_tier", ""))
         odds       = float(row["odds_under25"] if side == "UNDER" else row["odds_over25"])
-        edge       = float(row.get("best_edge", 0.0))
+        edge       = _num(row.get("best_edge"))      # NaN when missing, never 0.0
 
         if dedup_key in key_to_idx:
             # Already logged. The logged tier STANDS; a higher tier now is research information.
@@ -316,7 +375,7 @@ def append_tips(bets_df: pd.DataFrame, source: str = "live") -> None:
                 tier_seen_rows.append({
                     "observed_at": now, "ledger": "ou25", "source": source, "match_date": match_date,
                     "home_team": home, "away_team": away, "selection": side,
-                    "observed_tier": tier, "observed_edge_pct": round(edge * 100, 2), "observed_odds": odds,
+                    "observed_tier": tier, "observed_edge_pct": _pct(edge), "observed_odds": odds,
                     "ledger_tier": cur, "ledger_edge_pct": existing.at[i, "edge_pct"],
                     "ledger_odds": existing.at[i, "odds"],
                     "ledger_generated_at": existing.at[i, "generated_at"]})
@@ -351,10 +410,11 @@ def append_tips(bets_df: pd.DataFrame, source: str = "live") -> None:
             "odds":         odds,
             "opening_odds": opening,
             "odds_drift":   drift_val,
-            "edge_pct":     round(edge * 100, 2),
+            "edge_pct":     _pct(edge),
             "signal_tier":  tier,
             "drift_signal": str(row.get("drift_signal", "")),
-            "kelly_pct":    _kelly_pct(edge, odds),
+            # No edge -> no stake size (blank), not a Kelly computed from an invented 0 edge.
+            "kelly_pct":    _kelly_pct(edge, odds) if np.isfinite(edge) else "",
             "model_type":   str(row.get("model_type", "")),
             "closing_odds": "",
             "clv_pct":      "",
@@ -362,6 +422,7 @@ def append_tips(bets_df: pd.DataFrame, source: str = "live") -> None:
             "pnl":          "",
             "notes":        "",
             **_version_fields(row, _ou_key(row.get("model_type", ""), row.get("serving_recipe"))),
+            **_fixture_identity(row),
         })
 
     if flips:
@@ -388,6 +449,12 @@ SIDE_LEDGER_COLS = [
     "model_prob", "signal_tier", "model_type", "closing_odds", "clv_pct", "result", "pnl", "notes",
     # model attribution, appended (2026-10-18) — see LEDGER_COLS
     *VERSION_FIELDS,
+    # WHICH BAR TIERED THE TIP, appended (fix9/defaults 2026-11-04): "LEAGUE" = the league's own
+    # approved sniper/marksman bars, "GLOBAL" = the declared global policy bar (config.SIDE_GLOBAL_BARS;
+    # src/side_thresholds). Rows logged before it are blank: the bar of a past tip was not recorded
+    # in its row, so it is not written in afterwards (logged rows stand). Reconstructed 2026-11-04
+    # from the params file in force at each generated_at: 525 of 664 live tips were GLOBAL-bar tiers.
+    "threshold_source",
 ]
 _SIDE_RANK = _TIER_RANK
 
@@ -437,9 +504,12 @@ def append_side_market_tips(side_df: pd.DataFrame, source: str = "live") -> None
         home       = str(row["home_team"])
         away       = str(row["away_team"])
         tier       = str(row.get("signal_tier", ""))
-        odds       = float(row.get("market_odds", 0.0) or 0.0)
-        edge_pct   = round(float(row.get("edge", 0.0) or 0.0) * 100, 2)
-        ev_pct     = round(float(row.get("ev", 0.0) or 0.0) * 100, 2)
+        # Missing price / edge / EV stay blank. They were written as 0, and settlement then read
+        # an odds of 0 as "no price" only by luck while edge 0 / EV 0 read as real values.
+        odds       = _num(row.get("market_odds"))
+        odds       = odds if odds > 1.0 else ""
+        edge_pct   = _pct(_num(row.get("edge")))
+        ev_pct     = _pct(_num(row.get("ev")))
         key        = (match_date, home, away, market, source)
 
         if key in key_to_idx:
@@ -472,12 +542,16 @@ def append_side_market_tips(side_df: pd.DataFrame, source: str = "live") -> None
             "side": (str(row["side"]) if pd.notna(row.get("side")) and str(row.get("side")).strip()
                      else _SIDE_OF_MARKET.get(market, "")),
             "odds": odds, "edge_pct": edge_pct, "ev_pct": ev_pct,
-            "model_prob": round(float(row.get("model_prob", 0.0) or 0.0), 4),
+            "model_prob": (round(_num(row.get("model_prob")), 4)
+                           if np.isfinite(_num(row.get("model_prob"))) else ""),
             "signal_tier": tier,
             "model_type": str(row.get("model_type", "")) or config.model_type_for_league(row.get("league", "")),
             "closing_odds": "", "clv_pct": "", "result": "", "pnl": "", "notes": "",
             # side rows are built from a column subset, so look the market's model up directly
             **_version_fields({}, market),
+            # recorded by the producer (pipeline._generate_side_bets); blank when it did not say
+            "threshold_source": (str(row["threshold_source"])
+                                 if pd.notna(row.get("threshold_source")) else ""),
         })
 
     _record_tiers_seen(tier_seen_rows, tier_seen_path)
@@ -613,7 +687,9 @@ def append_ht_tips(preds_df: pd.DataFrame, source: str = "live") -> None:
             "source": source, "generated_at": now, "match_date": md,
             "league": lg, "home_team": home, "away_team": away,
             "market": market, "side": side, "model_prob": round(prob, 4),
-            "fair_odds": round(1.0 / max(prob, 0.01), 2),
+            # prob >= 0.60 on every branch above, so no floor is needed (the max(prob, 0.01) clip
+            # could only ever have manufactured a 100.0 fair price).
+            "fair_odds": round(1.0 / prob, 2),
             "odds": round(mkt_odds, 3) if mkt_odds else "",
             "edge_pct": round(edge * 100, 2) if edge is not None else "",
             "signal_tier": _ht_tier(edge), "model_type": "ht",
@@ -752,3 +828,287 @@ def append_ht_observations(preds_df: pd.DataFrame) -> None:
     out.to_csv(HT_OBS_FILE, index=False)
     log.info(f"HT observations: {len(rows)} new fixture(s) -> {HT_OBS_FILE.name} "
              f"({int(sum(r['would_tip'] for r in rows))} would tip)")
+
+
+# ── LEDGER SYNC: concurrent CI writers never drop each other's rows (fix3/ledger, 2026-11-02) ──
+#
+# predict, update_results, daily_summary, player_props, sharp_tracker and worldcup all rewrite a
+# ledger file in place and used to publish it with `git pull --rebase -X theirs`. That resolves a
+# conflicting HUNK in favour of this run, so another run's rows that sat in the same hunk (an
+# append next to a row this run settled) were deleted without a trace. update_results.yml
+# documented exactly that for v91_shadow.csv and solved it there with "reset to origin + re-apply a
+# journal"; this is the same discipline for the ledgers, at ROW level:
+#
+#   sync-snapshot  (before the job's own commit) saves, per ledger this run changed, the version
+#                  the run started from (HEAD) and the version it wrote, and restores the HEAD
+#                  version so the job's ordinary commit never carries a ledger;
+#   sync-push      fetches the freshest origin/main into a throwaway worktree, re-applies THIS
+#                  run's row changes (three-way, by natural key) on top of the fresh file, commits
+#                  and pushes; a lost race just fetches again. The job's working tree is untouched,
+#                  so its later steps and its own commit work as before.
+#
+# Merge rules (merge_ledger_rows): rows the run ADDED are appended unless already there (then only
+# blank cells are filled - the first logged row stands); cells the run CHANGED are applied; rows
+# the run DELETED are removed only when nobody else changed them meanwhile; every other row on
+# origin is kept exactly as it is. A row is never dropped because two runs overlapped.
+#
+# ledger_tier_seen.csv is NOT here: it is a FirstSightStore with a hash file, single writer
+# (predict, serialised by its own group). fantasy_ledger.csv is NOT here: fantasy_settle rebuilds it
+# whole from the logs every run, single writer.
+SYNC_LEDGERS: dict[str, tuple[str, ...]] = {
+    "output/bets_ledger.csv":      ("source", "match_date", "home_team", "away_team", "side"),
+    "output/side_bets_ledger.csv": ("source", "match_date", "home_team", "away_team", "market"),
+    "output/ht_ledger.csv":        ("source", "match_date", "home_team", "away_team", "market"),
+    "output/sharp_ledger.csv":     ("match_date", "home_team", "away_team", "side"),
+    # player_id when the row has one, else the logged name (legacy rows). Not fixture_id:
+    # update_results writes it back onto rows, so it is not stable across one run.
+    "output/player_ledger.csv":    ("match_date", "home_team", "away_team", "market",
+                                    "player_id|player_name"),
+    "output/ht_observations.csv":  ("match_date", "home_team", "away_team"),
+}
+
+
+def _cell(rec: dict, col: str) -> str:
+    v = rec.get(col, "")
+    if v is None or (isinstance(v, float) and np.isnan(v)):
+        return ""
+    return str(v)
+
+
+def ledger_row_key(rec: dict, key: tuple[str, ...]) -> tuple:
+    """Natural key of one ledger row. 'a|b' means the first non-blank of a, b (tagged)."""
+    out = []
+    for k in key:
+        if "|" in k:
+            for alt in k.split("|"):
+                v = _cell(rec, alt).strip()
+                if v:
+                    out.append(f"{alt}={v}")
+                    break
+            else:
+                out.append("")
+        else:
+            out.append(_cell(rec, k).strip())
+    return tuple(out)
+
+
+def _keyed_rows(df: pd.DataFrame, key: tuple[str, ...]) -> tuple[dict, list]:
+    """{(natural key, occurrence): row} plus file order. The occurrence index keeps legacy
+    duplicate keys distinct instead of collapsing them."""
+    rows, order, seen = {}, [], {}
+    if df is None or df.empty:
+        return rows, order
+    for rec in df.to_dict("records"):
+        rec = {c: _cell(rec, c) for c in df.columns}
+        k = ledger_row_key(rec, key)
+        n = seen.get(k, 0)
+        seen[k] = n + 1
+        rows[(k, n)] = rec
+        order.append((k, n))
+    return rows, order
+
+
+def _same_row(a: dict, b: dict) -> bool:
+    return all(_cell(a, c) == _cell(b, c) for c in set(a) | set(b))
+
+
+def merge_ledger_rows(base: pd.DataFrame | None, ours: pd.DataFrame, theirs: pd.DataFrame | None,
+                      key: tuple[str, ...]) -> tuple[pd.DataFrame, dict]:
+    """Three-way row merge: re-apply the change base -> ours on top of theirs (the fresh file).
+
+    base   = the ledger as this run found it (HEAD at checkout); None if it did not exist
+    ours   = the ledger as this run wrote it
+    theirs = the ledger on origin right now (other runs may have appended / settled meanwhile)
+    Returns (merged frame, stats). Every value is kept as text, exactly as written."""
+    B, _ = _keyed_rows(base, key)
+    O, o_order = _keyed_rows(ours, key)
+    T, t_order = _keyed_rows(theirs, key)
+    cols = list(theirs.columns) if theirs is not None else []
+    cols += [c for c in ours.columns if c not in cols]
+    st = {"added": 0, "cells_applied": 0, "cells_conflict_ours": 0, "filled_blank": 0,
+          "deleted": 0, "delete_refused": 0, "upstream_removed": 0, "kept_upstream_removed": 0,
+          "rows_out": 0}
+    out = []
+    for k in t_order:
+        t = T[k]
+        if k in O:
+            o, b = O[k], B.get(k)
+            row = dict(t)
+            if b is None:
+                # Both sides logged this row: the one already on origin was first and stands;
+                # this run may only fill what it left blank.
+                for c, v in o.items():
+                    if v != "" and _cell(row, c) == "":
+                        row[c] = v
+                        st["filled_blank"] += 1
+            else:
+                for c, v in o.items():
+                    bv, tv = _cell(b, c), _cell(t, c)
+                    if v == bv or v == tv:
+                        continue                     # not changed by this run, or same result
+                    if tv != bv and tv != "":
+                        st["cells_conflict_ours"] += 1
+                        log.warning(f"ledger sync: {k[0]} column {c!r}: origin has {tv!r}, this run "
+                                    f"changed {bv!r} -> {v!r}; this run's value is applied")
+                    row[c] = v
+                    st["cells_applied"] += 1
+            out.append(row)
+        elif k in B:
+            if _same_row(t, B[k]):
+                st["deleted"] += 1                   # this run removed it and nobody touched it
+                continue
+            st["delete_refused"] += 1                # changed on origin meanwhile: keep it
+            out.append(t)
+        else:
+            out.append(t)
+    for k in o_order:
+        if k in T:
+            continue
+        o = O[k]
+        if k in B:
+            if _same_row(o, B[k]):
+                st["upstream_removed"] += 1          # removed on origin, untouched here
+                continue
+            st["kept_upstream_removed"] += 1         # removed on origin but this run changed it
+            log.warning(f"ledger sync: {k[0]} was removed on origin but changed by this run - kept")
+        else:
+            st["added"] += 1
+        out.append(o)
+    merged = pd.DataFrame(out, columns=cols).fillna("")
+    st["rows_out"] = len(merged)
+    return merged, st
+
+
+def _read_csv_text(text: str | None) -> pd.DataFrame | None:
+    import io
+    if text is None:
+        return None
+    if not text.strip():
+        return pd.DataFrame()
+    return pd.read_csv(io.StringIO(text), dtype=str, keep_default_na=False)
+
+
+def _git(repo: Path, *args, check: bool = True, capture: bool = True) -> subprocess.CompletedProcess:
+    return subprocess.run(["git", "-C", str(repo), *args], check=check,
+                          capture_output=capture, text=True, encoding="utf-8")
+
+
+def sync_snapshot(dest: Path, repo: Path | None = None) -> list[str]:
+    """Save base (HEAD) and ours (working tree) of every SYNC_LEDGERS file this run changed into
+    `dest`, then restore the HEAD version in the working tree. Returns the paths saved."""
+    repo = Path(repo or Path(__file__).resolve().parents[1])
+    dest = Path(dest)
+    dest.mkdir(parents=True, exist_ok=True)
+    manifest = {"head": _git(repo, "rev-parse", "HEAD").stdout.strip(), "files": {}}
+    for rel in SYNC_LEDGERS:
+        p = repo / rel
+        if not p.exists():
+            continue
+        tracked = _git(repo, "cat-file", "-e", f"HEAD:{rel}", check=False).returncode == 0
+        if tracked and _git(repo, "diff", "--quiet", "HEAD", "--", rel, check=False).returncode == 0:
+            continue                                 # this run did not change it
+        name = rel.replace("/", "__")
+        (dest / f"{name}.ours").write_bytes(p.read_bytes())
+        if tracked:
+            base = subprocess.run(["git", "-C", str(repo), "show", f"HEAD:{rel}"],
+                                  check=True, capture_output=True).stdout
+            (dest / f"{name}.base").write_bytes(base)
+            _git(repo, "checkout", "HEAD", "--", rel)
+        else:
+            p.unlink()
+        manifest["files"][rel] = {"name": name, "tracked": tracked}
+        print(f"ledger sync: snapshot {rel} (this run's changes held for sync-push)")
+    (dest / "manifest.json").write_text(json.dumps(manifest, indent=1), encoding="utf-8")
+    return list(manifest["files"])
+
+
+def sync_merge_into(snap: Path, root: Path) -> dict:
+    """Re-apply the snapshot's row changes onto the ledger files under `root`. Returns stats."""
+    snap = Path(snap)
+    manifest = json.loads((snap / "manifest.json").read_text(encoding="utf-8"))
+    stats = {}
+    for rel, meta in manifest["files"].items():
+        name = meta["name"]
+        ours = _read_csv_text((snap / f"{name}.ours").read_text(encoding="utf-8"))
+        bp = snap / f"{name}.base"
+        base = _read_csv_text(bp.read_text(encoding="utf-8")) if bp.exists() else None
+        tp = Path(root) / rel
+        theirs = _read_csv_text(tp.read_text(encoding="utf-8")) if tp.exists() else None
+        merged, st = merge_ledger_rows(base, ours, theirs, SYNC_LEDGERS[rel])
+        tp.parent.mkdir(parents=True, exist_ok=True)
+        merged.to_csv(tp, index=False, lineterminator="\n")
+        stats[rel] = st
+    return stats
+
+
+def sync_push(snap: Path, message: str, repo: Path | None = None, branch: str = "main",
+              attempts: int = 6) -> int:
+    """Publish the snapshot's ledger changes on top of the freshest origin/<branch>. 0 = done."""
+    import random
+    import shutil
+    import tempfile
+    import time
+    repo = Path(repo or Path(__file__).resolve().parents[1])
+    snap = Path(snap)
+    mf = snap / "manifest.json"
+    if not mf.exists() or not json.loads(mf.read_text(encoding="utf-8"))["files"]:
+        print("ledger sync: no ledger changed this run - nothing to push")
+        return 0
+    rels = list(json.loads(mf.read_text(encoding="utf-8"))["files"])
+    for i in range(1, attempts + 1):
+        wt = Path(tempfile.mkdtemp(prefix="ledger_sync_"))
+        shutil.rmtree(wt)
+        try:
+            if _git(repo, "fetch", "-q", "origin", branch, check=False).returncode != 0:
+                time.sleep(3)
+                continue
+            _git(repo, "worktree", "add", "-q", "--detach", str(wt), f"origin/{branch}")
+            stats = sync_merge_into(snap, wt)
+            for rel in rels:
+                _git(wt, "add", "-f", rel)
+            if _git(wt, "diff", "--staged", "--quiet", check=False).returncode == 0:
+                print("ledger sync: origin already holds this run's ledger changes")
+                return 0
+            _git(wt, "commit", "-q", "-m", message)
+            if _git(wt, "push", "-q", "origin", f"HEAD:{branch}", check=False).returncode == 0:
+                for rel, st in stats.items():
+                    print(f"ledger sync: {rel}: " + ", ".join(f"{k}={v}" for k, v in st.items() if v))
+                return 0
+            print(f"ledger sync: push race - retry {i}")
+        except subprocess.CalledProcessError as e:
+            print(f"ledger sync: attempt {i} failed ({' '.join(map(str, e.cmd[3:]))}: "
+                  f"{(e.stderr or '').strip()[:300]}) - retrying")
+        finally:
+            _git(repo, "worktree", "remove", "--force", str(wt), check=False)
+            shutil.rmtree(wt, ignore_errors=True)
+        time.sleep(random.randint(3, 8))
+    # Never lose this run's work: put its ledger files back in the working tree, so the job's own
+    # commit (which still lists them) carries them the old way, and go red.
+    manifest = json.loads(mf.read_text(encoding="utf-8"))
+    for rel, meta in manifest["files"].items():
+        (repo / rel).write_bytes((snap / f"{meta['name']}.ours").read_bytes())
+    print(f"::error::ledger sync: could not push after {attempts} attempts; this run's ledger "
+          f"files were restored to the working tree for the job's own commit")
+    return 1
+
+
+def _sync_cli(argv: list[str] | None = None) -> int:
+    import argparse
+    ap = argparse.ArgumentParser(prog="python -m src.ledger")
+    sub = ap.add_subparsers(dest="cmd", required=True)
+    s1 = sub.add_parser("sync-snapshot", help="hold this run's ledger changes for sync-push")
+    s1.add_argument("--dir", required=True)
+    s2 = sub.add_parser("sync-push", help="re-apply them on the freshest origin and push")
+    s2.add_argument("--dir", required=True)
+    s2.add_argument("--message", required=True)
+    s2.add_argument("--branch", default="main")
+    a = ap.parse_args(argv)
+    if a.cmd == "sync-snapshot":
+        sync_snapshot(Path(a.dir))
+        return 0
+    return sync_push(Path(a.dir), a.message, branch=a.branch)
+
+
+if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
+    raise SystemExit(_sync_cli())

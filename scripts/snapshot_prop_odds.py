@@ -24,14 +24,17 @@ os.chdir(PROJ); sys.path.insert(0, str(PROJ))
 import pandas as pd
 from player_model import config
 from player_model.api_football import get_fixtures_between
-from player_model.odds_fetcher import fetch_prop_odds, PROP_SPORT_KEYS
+from player_model.odds_fetcher import fetch_prop_odds
 from player_model import clv_tracker
 
 
 def build_upcoming_signals() -> pd.DataFrame:
     """All upcoming fixtures for prop-covered leagues -> (league, match, date)."""
+    from src import league_registry as LR
+    from src.season_resolver import is_known
     rows = []
-    for league, lg_id in config.PROP_LEAGUES.items():
+    # Prop leagues and their API-Football ids from config/leagues.json (`props` flag).
+    for league, lg_id in LR.prop_leagues().items():
         # NO OddsAPI-KEY FILTER. This used to `continue` unless the league had an OddsAPI sport
         # key, which was right when OddsAPI was the only price source and is wrong now.
         #
@@ -45,8 +48,9 @@ def build_upcoming_signals() -> pd.DataFrame:
         # `fetch_prop_odds` now handles both sources internally and returns nothing gracefully
         # for a league neither can price, so membership in PROP_LEAGUES is the correct gate:
         # that dict IS the set of leagues we want props for.
-        pass
         season = config.prop_season(league)
+        if not is_known(season):
+            print(f"  {league}: season unresolvable (SEASON_UNKNOWN) - skipped"); continue
         # predict's 4-day window, not `next=8`: that cut full rounds short and spent OddsAPI
         # calls on fixtures weeks away that predict never tips.
         _today = pd.Timestamp.utcnow().normalize()
@@ -61,7 +65,9 @@ def build_upcoming_signals() -> pd.DataFrame:
             away = teams.get("away", {}).get("name", "")
             dt = (fx.get("fixture", {}).get("date", "") or "")[:10]
             if home and away:
-                rows.append({"league": league, "match": f"{home} vs {away}", "date": dt})
+                # fixture_id kept from the same response: the fixture's identity, not its spelling
+                rows.append({"league": league, "match": f"{home} vs {away}", "date": dt,
+                             "fixture_id": fx.get("fixture", {}).get("id")})
     return pd.DataFrame(rows)
 
 

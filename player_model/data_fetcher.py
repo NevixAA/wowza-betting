@@ -17,7 +17,7 @@ import os
 import time
 import hashlib
 import json
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Optional
 
@@ -26,6 +26,7 @@ import requests
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from . import config
+from . import player_stat_nulls as _PSN
 from .text_fix import repair_text
 
 BASE_URL          = "https://v3.football.api-sports.io"
@@ -52,23 +53,53 @@ REQUEST_DELAY = float(os.getenv("WOWZA_API_REQUEST_DELAY", "0.20"))
 MAX_RETRIES   = 3
 
 
-def _stable_player_id(raw_id, name: str) -> int:
+def _stable_player_id(raw_id, name: str) -> int | None:
     """Player id that is safe when the API id is missing OR present-but-null.
 
     The old inline `int(p.get("id", abs(hash(name)) % 10_000_000))` broke 3 ways:
     (a) `int(None)` crashed when the key was present but null; (b) `hash()` is salted
     per-process (PYTHONHASHSEED) → the same unknown player got a different id each run →
     rolling-history fragmentation; (c) `% 10_000_000` could collide with real API-Football
-    ids (< 10M) → two players merged. This uses a deterministic md5 in a high namespace.
+    ids (< 10M) → two players merged. This used a deterministic md5 in a high namespace.
+    Data Truth (2026-11-01): the md5-of-name id it minted for a player WITHOUT an API id is gone.
+    A name hash is not an identity (two players sharing a name merge; a re-spelling splits one).
+    No API id -> None, and the caller drops the row (counted in _NO_ID_DROPPED, logged per season).
     """
+    # An id of 0 (or negative) is not an identity either: the provider sends 0 for some unlisted
+    # players, and player_history pooled 256 rows of 153 different players under player_id 0
+    # (props_truth 2026-11-02) - one rolling history for all of them.
     if raw_id is not None:
         try:
-            return int(raw_id)
+            v = int(raw_id)
+            if v > 0:
+                return v
         except (TypeError, ValueError):
             pass
-    import hashlib
-    h = int(hashlib.md5(str(name).encode("utf-8")).hexdigest()[:8], 16)
-    return 900_000_000 + (h % 90_000_000)   # >= 9e8, cannot collide with real ids (< 1e7)
+    _NO_ID_DROPPED[0] += 1
+    return None
+
+
+_NO_ID_DROPPED = [0]     # rows dropped this process because API-Football gave no player id
+
+
+def fixture_side(team_data: dict, fixture: dict, home_name, away_name) -> bool | None:
+    """Is this /fixtures/players team block the HOME side? By API-Football TEAM ID when the
+    fixture carries both ids, else by club identity (club_rule.side_of: exact name, then
+    src.team_names identity). None when neither proves a side - the caller skips the block.
+    Was `team_name == home_team`: the two endpoints spell some clubs differently ("Pachuca" /
+    "CF Pachuca"), so the HOME club was stored as away with ITSELF as the opponent on 2,478
+    player_history rows (props_truth 2026-11-02)."""
+    from .club_rule import side_of
+    tid = (team_data.get("team") or {}).get("id")
+    teams = (fixture or {}).get("teams") or {}
+    hid, aid = (teams.get("home") or {}).get("id"), (teams.get("away") or {}).get("id")
+    if tid is not None and hid is not None and aid is not None and hid != aid:
+        if tid == hid:
+            return True
+        if tid == aid:
+            return False
+        return None
+    return side_of((team_data.get("team") or {}).get("name", ""), home_name, away_name)
 
 # Global rate-limiter: enforces REQUEST_DELAY between API calls across ALL threads.
 # Without this, each thread sleeps independently → no real throughput gain.
@@ -84,19 +115,6 @@ def _rate_limited_sleep() -> None:
         if elapsed < REQUEST_DELAY:
             time.sleep(REQUEST_DELAY - elapsed)
         _last_call_time = time.monotonic()
-
-# Leagues played inside one calendar year (spring→autumn), so the API season IS the year.
-# Everything else starts in July/August and the API keys it by that START year.
-_CALENDAR_YEAR_LEAGUES = {
-    "Ireland Premier Division", "Finland Veikkausliiga", "World Cup",
-    # Added 2026-09-24 with the rest of the bet leagues. Each of these runs Feb/Apr→Nov/Dec
-    # inside a single calendar year, so asking for season 2025 in September 2026 would fetch
-    # a finished campaign and silently miss the live one.
-    "USA MLS", "Brazil Serie A", "Argentina Primera Division",
-    "Sweden Allsvenskan", "Norway Eliteserien", "China Super League", "Japan J-League",
-}
-_WC_LEAGUE_IDS = {"World Cup": 1}
-
 
 def _current_season(league: str, today=None) -> str:
     """API-Football season for `league`, from the canonical registry (src.season_resolver).
@@ -126,51 +144,28 @@ def _current_season(league: str, today=None) -> str:
 # The tell that nobody had read both files together: the two lists spelled the same league
 # differently — "Ireland Premier" here against "Ireland Premier Division" there.
 #
-# European club competitions are deliberately EXCLUDED — we do not bet them, so their player
-# rows would be cost with no consumer (the only-our-leagues rule).
-_CUP_COMPETITIONS = {"Champions League", "Europa League", "Conference League"}
+# European club competitions and national-team tournaments are deliberately EXCLUDED — we do not
+# bet them, so their player rows would be cost with no consumer (the only-our-leagues rule). Which
+# competitions those are comes from the registry's competition_type (LR-1.1), not a typed list.
+_REG = config.league_registry()
 
 APIFOOTBALL_LEAGUES: dict[str, tuple[int, str]] = {
     name: (lid, _current_season(name))
     for name, lid in config.PROP_LEAGUES.items()
-    if name not in _CUP_COMPETITIONS
+    if _REG.competition_type(name) == "club_league"
 }
 
-# Rows collected before 2026-09-24 carry the OLD short spellings. Renaming them on load keeps
-# one league from counting as two once the derived names take over.
-LEGACY_LEAGUE_ALIASES: dict[str, str] = {
-    "Ireland Premier": "Ireland Premier Division",
-    "Finland Veikk":   "Finland Veikkausliiga",
-}
+# (The hand alias table LEGACY_LEAGUE_ALIASES — "Ireland Premier" -> "Ireland Premier Division",
+# "Finland Veikk" -> "Finland Veikkausliiga" — was never read; league spellings resolve through
+# src.league_registry.canonical_name.)
 
-# Multi-season collect config: (league_id, season, last_n)
-# Historical seasons: large last_n to capture full season (cached — free on re-run)
-# Current season: last_n=150 so weekly runs pick up new matches automatically
-_COLLECT_SEASONS_BASE: dict[str, list[tuple[int, str, int]]] = {
-    # (league_id, season, last_n)
-    # last_n >= 100 → full-season fetch (all completed fixtures, for historical seasons)
-    # last_n < 100  → rolling last-N via API `last=` param (current season updates)
-    # top-5 deepened to 4 seasons 2026-07-05 (2022/23-2025/26) for fantasy + medium form window
-    # The LIVE season is appended automatically by _with_current_season below — do not
-    # hardcode it here, that is exactly what went stale.
-    "Premier League":  [(39,  "2022", 500), (39,  "2023", 500), (39,  "2024", 500), (39,  "2025", 99)],
-    "Bundesliga":      [(78,  "2022", 400), (78,  "2023", 400), (78,  "2024", 400), (78,  "2025", 99)],
-    "La Liga":         [(140, "2022", 400), (140, "2023", 400), (140, "2024", 400), (140, "2025", 99)],
-    "Serie A":         [(135, "2022", 400), (135, "2023", 400), (135, "2024", 400), (135, "2025", 99)],
-    "Ligue 1":         [(61,  "2022", 400), (61,  "2023", 400), (61,  "2024", 400), (61,  "2025", 99)],
-    # Our own bet leagues, deepened to the same four seasons as the top five on 2026-09-24.
-    # They had been the SHALLOWEST in the table (two seasons, and one apiece for Ireland and
-    # Finland) despite being the leagues we actually stake, purely because they were added
-    # later and nobody went back.
-    "Championship":    [(40,  "2023", 600), (40,  "2024", 600), (40,  "2025", 99)],
-    "League One":      [(41,  "2023", 600), (41,  "2024", 600), (41,  "2025", 99)],
-    "Bundesliga 2":            [(79,  "2023", 400), (79,  "2024", 400), (79,  "2025", 99)],
-    "Ireland Premier Division": [(357, "2023", 300), (357, "2024", 300), (357, "2025", 300)],
-    "Finland Veikkausliiga":   [(244, "2023", 300), (244, "2024", 300), (244, "2025", 300)],
-    # A tournament, not a league — it exists in 2022 and 2026 only, so it is never
-    # backfilled by season arithmetic. mode_collect_wc handles it.
-    "World Cup":       [],
-}
+# Multi-season collect plan: {league: [(league_id, season, last_n)]}, DERIVED (Data Truth, 2026-11-01).
+# It used to be a typed table of seasons per league ("2022".."2025" for the top five, "2023".. for
+# the bet leagues) that froze and had to be extended by hand. Every club league in PROP_LEAGUES now
+# gets the live season (src.season_resolver) and the HISTORY_SEASONS_BACK - 1 seasons before it;
+# deeper seasons already collected stay in player_history (collect is a union, it never drops rows)
+# and simply are not re-fetched. National-team tournaments are collected by mode_collect_wc.
+_COLLECT_SEASONS_BASE: dict[str, list[tuple[int, str, int]]] = {}
 
 # Enough to cover any domestic season in one fetch (a 20-team league is 380 fixtures; the
 # 24-team EFL divisions are 552). Used when a season has finished and should no longer be
@@ -200,7 +195,11 @@ def _autofill_missing_leagues(base: dict, today=None) -> dict:
         if lg in out:
             continue
         lid = APIFOOTBALL_LEAGUES[lg][0]
-        cur = int(_current_season(lg, today))
+        cur = _current_season(lg, today)
+        if not str(cur).isdigit():
+            print(f"[collect] {lg}: season unknown ({cur}) - no collect plan this run")
+            continue
+        cur = int(cur)
         out[lg] = [(lid, str(cur - k), FULL_SEASON_LAST_N)
                    for k in range(HISTORY_SEASONS_BACK - 1, 0, -1)]
     return out
@@ -221,7 +220,10 @@ def _with_current_season(base: dict, today=None) -> dict:
     out: dict[str, list[tuple[int, str, int]]] = {}
     for lg, seasons in base.items():
         cur = _current_season(lg, today)
-        lid = seasons[0][0] if seasons else _WC_LEAGUE_IDS.get(lg)
+        lid = seasons[0][0] if seasons else config.PROP_LEAGUES.get(lg)
+        if not str(cur).isdigit():
+            print(f"[collect] {lg}: season unknown ({cur}) - live season not collected this run")
+            cur = None
 
         # Promote FINISHED seasons to a full-season fetch.
         #
@@ -241,7 +243,7 @@ def _with_current_season(base: dict, today=None) -> dict:
         ]
 
         have = {s for (_, s, _) in promoted}
-        out[lg] = promoted + ([] if cur in have or lid is None else [(lid, cur, 99)])
+        out[lg] = promoted + ([] if cur is None or cur in have or lid is None else [(lid, cur, 99)])
     return out
 
 
@@ -277,17 +279,18 @@ COLLECT_SEASONS: dict[str, list[tuple[int, str, int]]] = _limit_seasons_back(
     _SEASONS_BACK_ENV,
 )
 
+# Club cups and the national-team tournament, from the registry (competition_type) with the
+# resolver's live season (were typed: UCL/UEL/UECL at season "2024", WC id 1 / season "2026").
 EUROPEAN_CUPS: dict[str, tuple[int, str]] = {
-    "Champions League": (2,   "2024"),
-    "Europa League":    (3,   "2024"),
-    "Conference League":(848, "2024"),
+    name: (config.PROP_LEAGUES[name], _current_season(name))
+    for name in _REG.leagues_of_type("club_cup") if name in config.PROP_LEAGUES
 }
 
 FBREF_LEAGUES = APIFOOTBALL_LEAGUES
 
-WC26_LEAGUE_ID = 1
-WC26_SEASON    = "2026"
-
+_WC = next(iter(_REG.leagues_of_type("national_teams")), None)
+WC26_LEAGUE_ID = (_REG.entry(_WC) or {}).get("api_football_id") if _WC else None
+WC26_SEASON    = _current_season(_WC) if _WC else None
 
 # ── HTTP helper ───────────────────────────────────────────────────────────────
 
@@ -388,15 +391,65 @@ def _save_fixture_cache(fixture_id: int, data: list) -> None:
     p.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
 
 
+def _count_or_none(v) -> Optional[int]:
+    """A count the provider sent, or None when it sent none (null / "" / unparseable). NEVER 0 for a
+    missing value (owner 2026-11-04, the data_fetcher 'or 0' bug): `int(x or 0)` turned "no
+    statistics for this fixture" into a real-looking 0 corners / 0 shots / 0 goals."""
+    if v is None or (isinstance(v, str) and not v.strip()):
+        return None
+    try:
+        return int(float(str(v).strip()))
+    except (TypeError, ValueError):
+        return None
+
+
+def _pct_or_none(v) -> Optional[float]:
+    """'54%' / '54' / 54 -> 54.0; null / '' / unparseable -> None (was '0%' -> 0.0 possession)."""
+    if v is None:
+        return None
+    s = str(v).replace("%", "").strip()
+    if not s:
+        return None
+    try:
+        return float(s)
+    except ValueError:
+        return None
+
+
+#: fixture-stats cache schema. v2 (2026-11-04) stores None for a statistic the provider did not send.
+#: A legacy (v1) file was written by `int(x or 0)`, so its 0s cannot be told from "not sent".
+#: v3 (2026-11-04, fix round 9) reads the answer under the owner's TEAM null rule (src/af_team_stats):
+#: in an answered team block a null count (corners, shots) is 0. A v2 file stored that null as None
+#: and cannot be told from "not sent", so it is served as written (missing stays missing).
+FIXTURE_STATS_SCHEMA = 3
+_FIXTURE_STATS_SERVED_AS_WRITTEN = (2, 3)
+
+
+def _legacy_fixture_stats(teams: dict) -> dict:
+    """A v1 cache entry with its unprovable zeros refused: 0 corners / 0 shots / 0% possession were
+    written for a missing statistic, and a real 0 cannot be told apart from it in that file, so they
+    are None (ambiguity refused, never guessed). Non-zero values are the provider's and are kept."""
+    out = {}
+    for team, st in (teams or {}).items():
+        st = st if isinstance(st, dict) else {}
+        out[team] = {k: (None if (v is None or v == 0) else v)
+                     for k, v in ((k, st.get(k)) for k in ("corners", "shots_total", "possession"))}
+    return out
+
+
 def _fetch_fixture_statistics(fixture_id: int) -> dict:
     """
     Fetch team-level statistics for a completed fixture.
-    Cached permanently. Returns {team_name: {corners: N, shots_total: N, possession: N}}.
+    Cached permanently. Returns {team_name: {corners: N|None, shots_total: N|None, possession: x|None}}.
+    A statistic the provider did not send is None and stays None downstream (team_corners -> NaN).
     """
     cache_p = _fixture_stats_cache_path(fixture_id)
     if cache_p.exists():
         try:
-            return json.loads(cache_p.read_text(encoding="utf-8"))
+            cached = json.loads(cache_p.read_text(encoding="utf-8"))
+            if isinstance(cached, dict) and cached.get("schema") in _FIXTURE_STATS_SERVED_AS_WRITTEN:
+                return cached.get("teams") or {}
+            return _legacy_fixture_stats(cached)
         except Exception:
             pass
 
@@ -405,18 +458,22 @@ def _fetch_fixture_statistics(fixture_id: int) -> dict:
     except RuntimeError:
         return {}
 
+    # Owner's team null rule (2026-11-04, src/af_team_stats): an answered block's null count is 0,
+    # an unanswered block / unlisted type is missing; possession (a %) is never zero-filled.
+    from src.af_team_stats import team_values
     result = {}
     for team_data in data.get("response", []):
         team_name = team_data.get("team", {}).get("name", "")
-        stats = {s.get("type", ""): s.get("value") for s in team_data.get("statistics", [])}
+        stats = team_values(team_data.get("statistics") or [])
         result[team_name] = {
-            "corners":     int(stats.get("Corner Kicks") or 0),
-            "shots_total": int(stats.get("Total Shots") or 0),
-            "possession":  float(str(stats.get("Ball Possession") or "0%").replace("%", "") or 0),
+            "corners":     _count_or_none(stats.get("Corner Kicks")),
+            "shots_total": _count_or_none(stats.get("Total Shots")),
+            "possession":  _pct_or_none(stats.get("Ball Possession")),
         }
 
     if result:
-        cache_p.write_text(json.dumps(result, ensure_ascii=False), encoding="utf-8")
+        cache_p.write_text(json.dumps({"schema": FIXTURE_STATS_SCHEMA, "teams": result}, ensure_ascii=False),
+                           encoding="utf-8")
 
     return result
 
@@ -536,16 +593,34 @@ def fetch_league_teams(league_id: int, season: str) -> list[dict]:
     """
     try:
         data = _api_get("teams", {"league": league_id, "season": season})
+        # A team the provider sends without an id is skipped, never filed under a typed team_id 0
+        # (fix9/defaults 2026-11-04: the id read was `.get("id", 0)`, guarded only by the filter).
         return [
             {
-                "team_id":   int(t.get("team", {}).get("id", 0)),
-                "team_name": t.get("team", {}).get("name", ""),
+                "team_id":   int((t.get("team") or {})["id"]),
+                "team_name": (t.get("team") or {}).get("name", ""),
             }
             for t in data.get("response", [])
-            if t.get("team", {}).get("id")
+            if (t.get("team") or {}).get("id")
         ]
     except RuntimeError:
         return []
+
+
+def _fixture_id_of(fix: dict):
+    """The provider fixture id of a fixture-list entry (the cached '_raw' layout or the API's), or None.
+    It was `fix.get("id") or fix.get("fixture", {}).get("id", 0)`: a fixture without an id was looked
+    up as cache file 0 (fix9/defaults 2026-11-04). Only the cached/to-fetch COUNT read it; the fetch
+    loop already skipped id-less fixtures."""
+    fid = fix.get("id")
+    if fid is None:
+        fid = (fix.get("fixture") or {}).get("id")
+    return fid if fid else None
+
+
+def _is_cached(fixture_id) -> bool:
+    """True when the per-fixture cache holds this fixture; an unknown id is never 'cached'."""
+    return fixture_id is not None and _fixture_cache_path(fixture_id).exists()
 
 
 # ── Per-fixture player stats (match-level data) ───────────────────────────────
@@ -600,8 +675,17 @@ def _fetch_fixture_player_stats(fixture_id: int) -> list[dict]:
     return response
 
 
-def _parse_fixture_player(player_entry: dict, meta: dict, league: str) -> Optional[dict]:
-    """Parse one player from a /fixtures/players response entry."""
+def _parse_fixture_player(player_entry: dict, meta: dict, league: str,
+                          answered: Optional[bool] = None) -> Optional[dict]:
+    """Parse one player from a /fixtures/players response entry.
+
+    `answered` = player_stat_nulls.fixture_answered(<the whole answer of this fixture>). Every
+    per-player count is read by player_stat_nulls (owner 2026-11-04, refined in fix round 9): a
+    null is 0 when the player played (minutes > 0) AND the provider returned player statistics for
+    the fixture, even if nobody in the match has that statistic; without `answered` (a caller that
+    does not hold the whole answer) every null stays missing, the fix-round-7 reading.
+    The row says so in `count_source` (provenance, owner 2026-11-04 fix round 9): a row parsed here
+    with the fixture proof is verified and is never sent to the player re-fetch."""
     p = player_entry.get("player", {})
     name = repair_text(p.get("name", "")).strip()
     if not name:
@@ -613,25 +697,26 @@ def _parse_fixture_player(player_entry: dict, meta: dict, league: str) -> Option
     stats = stats_list[0]
 
     games   = stats.get("games",   {})
-    minutes = int(games.get("minutes") or 0)
-    if minutes < 10:
+    minutes = _count_or_none(games.get("minutes"))
+    if minutes is None or minutes < 10:              # no minutes recorded -> no row (never a 0-minute row)
         return None
 
-    goals_d    = stats.get("goals",    {})
-    shots_d    = stats.get("shots",    {})
-    cards_d    = stats.get("cards",    {})
-    passes_d   = stats.get("passes",   {})
-    duels_d    = stats.get("duels",    {})
-    fouls_d    = stats.get("fouls",    {})
-    tackles_d  = stats.get("tackles",  {})
-    dribbles_d = stats.get("dribbles", {})
-    penalty_d  = stats.get("penalty",  {})
+    # EVERY COUNT BELOW IS THE PROVIDER'S, A NULL READ BY THE OWNER'S RULE, OR None (2026-11-04).
+    # It was `int(x or 0)`, which wrote "API-Football sent no value" as a real 0 even for a fixture
+    # the provider never covered; fix round 7 then made every null None, which lost the ordinary
+    # "played, did not score" 0. player_stat_nulls holds the rule and the per-field table.
+    c = _PSN.player_counts(stats, answered)
 
     substitute = games.get("substitute")
-    started = (not bool(substitute)) if substitute is not None else bool(minutes > 45)
+    # Unknown substitute flag -> started unknown (was guessed from minutes > 45). The real source
+    # is /fixtures/lineups startXI (fetch_lineup), not wired into the collect.
+    started = (not bool(substitute)) if substitute is not None else None
+    pid = _stable_player_id(p.get("id"), name)
+    if pid is None:
+        return None
 
     return {
-        "player_id":       _stable_player_id(p.get("id"), name),
+        "player_id":       pid,
         "player_name":     name,
         "fixture_id":      meta["fixture_id"],
         "date":            meta["date"],
@@ -641,39 +726,20 @@ def _parse_fixture_player(player_entry: dict, meta: dict, league: str) -> Option
         "team":            meta["team"],
         "is_home":         int(meta["is_home"]),
         "referee":         meta.get("referee", ""),
-        "season":          meta.get("season", ""),
+        # no season -> None (was "": 3,423 national-team rows carried a blank season, and the
+        # profile collector sent it to API-Football as season='' - owner 2026-11-04, fix round 9)
+        "season":          (str(meta["season"]).strip() or None) if meta.get("season") is not None else None,
         "position":        str(games.get("position") or p.get("position") or "").strip(),
         "minutes":         minutes,
-        "started":         int(started),
-        "goals":           int(goals_d.get("total")   or 0),
-        "assists":         int(goals_d.get("assists")  or 0),
-        "shots_total":     int(shots_d.get("total")   or 0),
-        "shots_on_target": int(shots_d.get("on")      or 0),
-        "yellow_cards":    int(cards_d.get("yellow")  or 0),
-        "key_passes":      int(passes_d.get("key")    or 0),
-        "rating":          float(games.get("rating")  or 0),
-        "fouls_committed": int(fouls_d.get("committed") or 0),
-        "fouls_drawn":     int(fouls_d.get("drawn")     or 0),
-        "duels_total":     int(duels_d.get("total")     or 0),
-        "duels_won":       int(duels_d.get("won")       or 0),
-        "team_corners":    int(meta.get("team_corners", 0)),
-        # Defensive / technical
-        "red_cards":           int(cards_d.get("red")                or 0),
-        "passes_total":        int(passes_d.get("total")             or 0),
-        "offsides":            int(stats.get("offsides")             or 0),
-        "tackles_total":       int(tackles_d.get("total")            or 0),
-        "interceptions":       int(tackles_d.get("interceptions")    or 0),
-        "dribbles_attempted":  int(dribbles_d.get("attempts")        or 0),
-        "dribbles_success":    int(dribbles_d.get("success")         or 0),
-        "dribbles_past":       int(dribbles_d.get("past")            or 0),
-        # Goalkeeper
-        "goals_conceded":      int(goals_d.get("conceded")           or 0),
-        "saves":               int(goals_d.get("saves")              or 0),
-        # Penalty
-        "penalty_scored":      int(penalty_d.get("scored")           or 0),
-        "penalty_missed":      int(penalty_d.get("missed")           or 0),
-        "penalty_won":         int(penalty_d.get("won")              or 0),
-        "penalty_saved":       int(penalty_d.get("saved")            or 0),
+        "started":         int(started) if started is not None else None,
+        # rating is NOT a count: no rating for some appearances -> None, never 0
+        "rating":          _PSN.rating_of(stats),
+        "team_corners":    (int(meta["team_corners"]) if meta.get("team_corners") is not None
+                            else None),
+        # every per-player count player_history stores, under the owner's null rule
+        **{col: c[col] for col in _PSN.HISTORY_COUNT_COLS},
+        # where these counts came from (player_stat_nulls.SOURCE_COL)
+        _PSN.SOURCE_COL:   _PSN.parsed_source(answered),
     }
 
 
@@ -695,14 +761,12 @@ def _collect_one_season(
         print(f"  [{league_name} {season}] No completed fixtures found")
         return []
 
-    cached_count = sum(
-        1 for fix in fixtures
-        if _fixture_cache_path(fix.get("id") or fix.get("fixture", {}).get("id", 0)).exists()
-    )
+    cached_count = sum(1 for fix in fixtures if _is_cached(_fixture_id_of(fix)))
     to_fetch = len(fixtures) - cached_count
     print(f"  [{league_name} {season}] {len(fixtures)} fixtures ({cached_count} cached, {to_fetch} to fetch)...")
 
     rows: list[dict] = []
+    _no_id_before = _NO_ID_DROPPED[0]
     for fix in fixtures:
         if "_raw" in fix:
             fixture_id = fix["id"]
@@ -726,27 +790,36 @@ def _collect_one_season(
             continue
 
         fix_stats = _fetch_fixture_statistics(fixture_id)
+        _raw = fix.get("_raw", fix)
+        answered = _PSN.fixture_answered(team_data_list)      # the owner's null rule needs the whole answer
 
         for team_data in team_data_list:
             team_name = team_data.get("team", {}).get("name", "")
             team_st   = fix_stats.get(team_name, {})
+            is_home = fixture_side(team_data, _raw, home_team, away_team)
+            if is_home is None:
+                print(f"    [fix {fixture_id}] {team_name!r} is neither side of "
+                      f"{home_team!r} v {away_team!r} - its rows skipped")
+                continue
             meta = {
                 "fixture_id":  fixture_id,
                 "date":        fix_date,
                 "home_team":   home_team,
                 "away_team":   away_team,
                 "team":        team_name,
-                "is_home":     (team_name == home_team),
-                "team_corners": team_st.get("corners", 0),
+                "is_home":     is_home,
+                "team_corners": team_st.get("corners"),      # None when stats are unavailable
                 "referee":     referee,
                 "season":      season,
             }
             for player_entry in team_data.get("players", []):
-                parsed = _parse_fixture_player(player_entry, meta, league_name)
+                parsed = _parse_fixture_player(player_entry, meta, league_name, answered)
                 if parsed:
                     rows.append(parsed)
 
-    print(f"  [{league_name} {season}] {len(rows)} player-match rows collected")
+    _no_id = _NO_ID_DROPPED[0] - _no_id_before
+    print(f"  [{league_name} {season}] {len(rows)} player-match rows collected"
+          + (f"; {_no_id} row(s) without an API-Football player id dropped" if _no_id else ""))
     return rows
 
 
@@ -844,6 +917,60 @@ def _fetch_wc26_teams() -> list[dict]:
     return data.get("response", [])
 
 
+#: provider seasons of the national-team fixtures collect-wc reads, one row per fixture id, written
+#: BESIDE player_history (owner 2026-11-04, fix round 10). scripts/collect_player_profiles.py reads a
+#: blank-season history row's season from here when the provider's own value is recorded.
+NATIONAL_SEASONS_FILE = config.OUTPUT_DIR / "collect" / "national_fixture_seasons.csv"
+NATIONAL_SEASONS_COLS = ["fixture_id", "league", "date", "season", "source", "recorded_at"]
+
+
+def provider_fixture_season(fix: dict) -> Optional[str]:
+    """The season API-Football ITSELF returns on a /fixtures answer (league.season), as text
+    ('2026'); None when the answer carries none or it is not a year. Never a resolved, guessed or
+    typed year (owner decision 2026-11-04, fix round 10: real data only).
+
+    WHY. This collector's row meta carried no season until fix round 9, so _parse_fixture_player
+    wrote "" on every row: 3,423 player_history rows (139 fixtures, 2025-10-10..2026-06-10:
+    Friendlies, World Cup qualifiers, Africa Cup of Nations) hold a blank season, and
+    scripts/collect_player_profiles.py sent 1,516 (player, '') pairs to API-Football, which rejected
+    each one. Fix round 9 asked src.season_resolver, which has no convention for these competitions
+    (every one of the 3,423 rows stayed unresolved); the provider's own league.season is on every
+    fixture of the list this collector already fetches, so that value is stored from now on. The
+    old rows stay blank (counted, output/corrections/player_history_invalid_profile_keys.csv): the
+    provider season of their fixtures is not stored anywhere in the repository."""
+    v = (fix.get("league") or {}).get("season") if isinstance(fix, dict) else None
+    if v is None or isinstance(v, bool):
+        return None
+    s = str(v).strip()
+    if s.endswith(".0"):
+        s = s[:-2]
+    return s if (len(s) == 4 and s.isdigit()) else None
+
+
+def record_national_seasons(rows: list[dict], dst: Optional[Path] = None) -> int:
+    """Union-append {fixture_id, league, date, season} rows (provider season only, never blank) to
+    NATIONAL_SEASONS_FILE; a fixture already recorded is kept as first recorded. Returns rows added."""
+    import pandas as pd
+    from datetime import timezone
+    dst = dst or NATIONAL_SEASONS_FILE
+    rows = [r for r in rows if r.get("season")]
+    if not rows:
+        return 0
+    now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    new = pd.DataFrame([{**r, "source": "api-football /fixtures league.season", "recorded_at": now}
+                        for r in rows], columns=NATIONAL_SEASONS_COLS)
+    new["fixture_id"] = new["fixture_id"].astype(int)
+    new = new.drop_duplicates("fixture_id")
+    if dst.exists():
+        old = pd.read_csv(dst, dtype={"season": str})
+        new = new[~new["fixture_id"].isin(set(pd.to_numeric(old["fixture_id"], errors="coerce").dropna().astype(int)))]
+    if new.empty:
+        return 0
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    new.to_csv(dst, mode="a", header=not dst.exists(), index=False, lineterminator="\n")
+    return len(new)
+
+
 def collect_national_team_history(last_n: int = 10) -> list[dict]:
     """
     Collect per-match player stats for all WC2026 national teams.
@@ -871,6 +998,7 @@ def collect_national_team_history(last_n: int = 10) -> list[dict]:
 
     print(f"[wc26] {len(teams)} teams found. Collecting last {last_n} fixtures each...")
     all_rows: list[dict] = []
+    season_rows: list[dict] = []
 
     for entry in teams:
         team_info = entry.get("team", {})
@@ -891,10 +1019,7 @@ def collect_national_team_history(last_n: int = 10) -> list[dict]:
             print(f"  [{team_name}] No completed fixtures found")
             continue
 
-        cached_count = sum(
-            1 for f in fixtures
-            if _fixture_cache_path(f.get("fixture", {}).get("id", 0)).exists()
-        )
+        cached_count = sum(1 for f in fixtures if _is_cached((f.get("fixture") or {}).get("id")))
         team_rows = 0
         for fix in fixtures:
             fixture_id = fix.get("fixture", {}).get("id")
@@ -904,7 +1029,13 @@ def collect_national_team_history(last_n: int = 10) -> list[dict]:
             fix_date  = fix.get("fixture", {}).get("date", "")[:10]
             home_team = fix.get("teams", {}).get("home", {}).get("name", "")
             away_team = fix.get("teams", {}).get("away", {}).get("name", "")
-            league_name = fix.get("league", {}).get("name", "International")
+            # The competition exactly as API-Football names it (history keeps provider names; the
+            # registry resolves them on read). A fixture without a competition name is skipped and
+            # logged (was labelled "International").
+            league_name = (fix.get("league") or {}).get("name")
+            if not league_name:
+                print(f"    [fix {fixture_id}] no competition name - skipped")
+                continue
 
             try:
                 team_data_list = _fetch_fixture_player_stats(fixture_id)
@@ -913,10 +1044,24 @@ def collect_national_team_history(last_n: int = 10) -> list[dict]:
                 continue
 
             fix_stats = _fetch_fixture_statistics(fixture_id)
+            answered = _PSN.fixture_answered(team_data_list)
+            # The provider's own league.season of this fixture (owner 2026-11-04, fix round 10);
+            # None when the answer carries none - recorded, never a resolved or typed year.
+            season = provider_fixture_season(fix)
+            if season is None:
+                from src.season_resolver import record_degradation
+                record_degradation("data_fetcher.collect_national_team_history", league_name,
+                                   "PROVIDER_SEASON_MISSING")
+            else:
+                season_rows.append({"fixture_id": fixture_id, "league": league_name,
+                                    "date": fix_date, "season": season})
 
             for team_data in team_data_list:
                 t_name  = team_data.get("team", {}).get("name", "")
-                is_home = (t_name == home_team)
+                is_home = fixture_side(team_data, fix, home_team, away_team)
+                if is_home is None:
+                    print(f"    [fix {fixture_id}] {t_name!r} is neither side - its rows skipped")
+                    continue
                 team_st = fix_stats.get(t_name, {})
                 meta = {
                     "fixture_id":   fixture_id,
@@ -925,16 +1070,22 @@ def collect_national_team_history(last_n: int = 10) -> list[dict]:
                     "away_team":    away_team,
                     "team":         t_name,
                     "is_home":      is_home,
-                    "team_corners": team_st.get("corners", 0),
+                    "team_corners": team_st.get("corners"),     # None when unavailable
+                    "season":       season,                     # provider's own; None, never ""
                 }
                 for player_entry in team_data.get("players", []):
-                    parsed = _parse_fixture_player(player_entry, meta, league_name)
+                    parsed = _parse_fixture_player(player_entry, meta, league_name, answered)
                     if parsed:
                         all_rows.append(parsed)
                         team_rows += 1
 
         print(f"  [{team_name}] {len(fixtures)} fixtures ({cached_count} cached) -> {team_rows} rows")
 
+    try:
+        n_seasons = record_national_seasons(season_rows)
+        print(f"[wc26] provider season recorded for {n_seasons} new fixture(s) -> {NATIONAL_SEASONS_FILE}")
+    except Exception as e:                       # the record is beside the history: never fatal
+        print(f"[wc26] provider season record not written: {type(e).__name__}: {e}")
     print(f"[wc26] Done. {len(all_rows)} player-match rows across {len(teams)} national teams.")
     return all_rows
 
@@ -955,26 +1106,29 @@ def _parse_player(entry: dict, league: str) -> Optional[dict]:
     passes = stats.get("passes", {})
     team   = stats.get("team",   {})
 
-    appearances = int(games.get("appearences") or 0)
-    minutes     = int(games.get("minutes")     or 0)
-    if appearances < config.MIN_APPEARANCES or minutes < 1:
+    appearances = _count_or_none(games.get("appearences"))
+    minutes     = _count_or_none(games.get("minutes"))
+    if appearances is None or minutes is None or appearances < config.MIN_APPEARANCES or minutes < 1:
         return None
 
+    pid = _stable_player_id(p.get("id"), name)
+    if pid is None:
+        return None
     return {
-        "player_id":       _stable_player_id(p.get("id"), name),
+        "player_id":       pid,
         "player_name":     name,
         "team":            team.get("name", ""),
         "league":          league,
         "position":        str(games.get("position") or p.get("position") or "").strip(),
         "appearances":     appearances,
         "minutes":         minutes,
-        "goals":           int(goals.get("total")   or 0),
-        "assists":         int(goals.get("assists")  or 0),
-        "shots_total":     int(shots.get("total")   or 0),
-        "shots_on_target": int(shots.get("on")      or 0),
-        "yellow_cards":    int(cards.get("yellow")  or 0),
-        "key_passes":      int(passes.get("key")    or 0),
-        "rating":          float(games.get("rating") or 0),
+        "goals":           _count_or_none(goals.get("total")),
+        "assists":         _count_or_none(goals.get("assists")),
+        "shots_total":     _count_or_none(shots.get("total")),
+        "shots_on_target": _count_or_none(shots.get("on")),
+        "yellow_cards":    _count_or_none(cards.get("yellow")),
+        "key_passes":      _count_or_none(passes.get("key")),
+        "rating":          float(games["rating"]) if games.get("rating") not in (None, "") else None,
     }
 
 
@@ -1007,16 +1161,22 @@ def fetch_league_player_stats(league: str, force_refresh: bool = False) -> list[
             break
 
         entries  = data.get("response", [])
-        paging   = data.get("paging", {})
-        total_pg = int(paging.get("total", 1))
+        # The page count is the provider's paging.total. It was `.get("total", 1)`: a response
+        # without it was read as "1 page". Same stop (no further page is requested), but now said:
+        # an unknown page count is not a known single page (fix9/defaults 2026-11-04).
+        total_raw = (data.get("paging") or {}).get("total")
+        total_pg = int(total_raw) if total_raw is not None else None
 
         for entry in entries:
             parsed = _parse_player(entry, league)
             if parsed:
                 players.append(parsed)
 
-        print(f"    page {page}/{total_pg} -- {len(entries)} entries")
+        print(f"    page {page}/{total_pg if total_pg is not None else '?'} -- {len(entries)} entries")
 
+        if total_pg is None:
+            print(f"  [{league}] provider sent no paging.total - no further page requested")
+            break
         if page >= total_pg:
             break
         page += 1
@@ -1077,7 +1237,8 @@ def fetch_player_season_stats(player_id: int, league_id: int, season: str) -> di
         try:
             data = json.loads(cache_p.read_text(encoding="utf-8"))
             ts = datetime.fromisoformat(data.get("_cached_at", "2000-01-01"))
-            if datetime.now() - ts < timedelta(hours=24):
+            # a pre-2026-11-04 entry (no _schema) holds 'or 0' zeros: not served, re-read instead
+            if data.get("_schema") == FIXTURE_STATS_SCHEMA and datetime.now() - ts < timedelta(hours=24):
                 return data.get("stats", {})
         except Exception:
             pass
@@ -1099,12 +1260,18 @@ def fetch_player_season_stats(player_id: int, league_id: int, season: str) -> di
         _profile_p = CACHE_DIR / f"profile_{player_id}.json"
         if not _profile_p.exists():
             try:
-                _h = _player_obj.get("height") or ""
-                _w = _player_obj.get("weight") or ""
+                # Absent profile fields are None (were 0 - a 0 cm / 0-year-old player).
+                def _num_or_none(v, unit=""):
+                    s = str(v or "").replace(unit, "").strip() if unit else v
+                    try:
+                        x = float(s)
+                    except (TypeError, ValueError):
+                        return None
+                    return x if x > 0 else None
                 _profile_p.write_text(json.dumps({
-                    "age":       int(_player_obj.get("age") or 0),
-                    "height_cm": float(str(_h).replace("cm", "").strip() or 0),
-                    "weight_kg": float(str(_w).replace("kg", "").strip() or 0),
+                    "age":       _num_or_none(_player_obj.get("age")),
+                    "height_cm": _num_or_none(_player_obj.get("height"), "cm"),
+                    "weight_kg": _num_or_none(_player_obj.get("weight"), "kg"),
                 }, ensure_ascii=False), encoding="utf-8")
             except Exception:
                 pass
@@ -1119,32 +1286,43 @@ def fetch_player_season_stats(player_id: int, league_id: int, season: str) -> di
     shots   = s.get("shots",  {})
     cards   = s.get("cards",  {})
 
-    apps = max(int(games.get("appearences") or 0), 1)
+    # Per-game = count / appearances, both as the provider sent them (owner 2026-11-04). It was
+    # `max(int(apps or 0), 1)` and `int(x or 0)`: a player without recorded appearances got a typed
+    # divisor of 1, and a count the provider did not send became 0 per game. Now a missing count or
+    # missing / zero appearances gives None (NaN downstream), never a number.
+    apps = _count_or_none(games.get("appearences"))
+
+    def _pg(*vals):
+        if apps is None or apps <= 0 or any(v is None for v in vals):
+            return None
+        return sum(vals) / apps
+
+    _c = _count_or_none
     result = {
         "season_appearances":  apps,
-        "season_goals_pg":     (int(goals.get("total")   or 0)) / apps,
-        "season_assists_pg":   (int(goals.get("assists")  or 0)) / apps,
-        "season_shots_pg":     (int(shots.get("total")   or 0)) / apps,
-        "season_sot_pg":       (int(shots.get("on")      or 0)) / apps,
-        "season_cards_pg":     (int(cards.get("yellow")  or 0) + int(cards.get("red") or 0)) / apps,
-        "season_minutes_pg":   (int(games.get("minutes") or 0)) / apps,
+        "season_goals_pg":     _pg(_c(goals.get("total"))),
+        "season_assists_pg":   _pg(_c(goals.get("assists"))),
+        "season_shots_pg":     _pg(_c(shots.get("total"))),
+        "season_sot_pg":       _pg(_c(shots.get("on"))),
+        "season_cards_pg":     _pg(_c(cards.get("yellow")), _c(cards.get("red"))),
+        "season_minutes_pg":   _pg(_c(games.get("minutes"))),
     }
 
     # Additional season-level fields (from same API response, zero extra calls)
-    lineups      = s.get("games", {}).get("lineups", 0) or 0
     passes_obj   = s.get("passes",    {}) or {}
     dribbles_obj = s.get("dribbles", {}) or {}
     fouls_obj    = s.get("fouls",     {}) or {}
 
-    result["season_start_rate"]      = (int(lineups) / apps) if apps > 0 else 0.0
-    result["season_pass_accuracy"]   = float(passes_obj.get("accuracy") or 0) / 100.0  # convert % to 0-1
-    result["season_dribble_pg"]      = (int(dribbles_obj.get("success") or 0)) / apps
-    result["season_fouls_pg"]        = (int(fouls_obj.get("committed") or 0)) / apps
-    result["season_fouls_drawn_pg"]  = (int(fouls_obj.get("drawn") or 0)) / apps
+    result["season_start_rate"]      = _pg(_c((s.get("games") or {}).get("lineups")))
+    acc = _pct_or_none(passes_obj.get("accuracy"))
+    result["season_pass_accuracy"]   = acc / 100.0 if acc is not None else None   # % -> 0-1
+    result["season_dribble_pg"]      = _pg(_c(dribbles_obj.get("success")))
+    result["season_fouls_pg"]        = _pg(_c(fouls_obj.get("committed")))
+    result["season_fouls_drawn_pg"]  = _pg(_c(fouls_obj.get("drawn")))
 
     cache_p.write_text(
-        json.dumps({"_cached_at": datetime.now().isoformat(), "stats": result},
-                   ensure_ascii=False),
+        json.dumps({"_cached_at": datetime.now().isoformat(), "_schema": FIXTURE_STATS_SCHEMA,
+                    "stats": result}, ensure_ascii=False),
         encoding="utf-8",
     )
     return result
@@ -1168,9 +1346,13 @@ def fetch_all_player_season_stats(
     tasks: list[tuple[int, int, str]] = []
     seen: set[int] = set()
     for _, row in df.iterrows():
-        pid = int(row.get("player_id", 0))
-        if not pid or pid in seen:
+        # A row without a provider player id is skipped, not read as player 0 (fix9/defaults
+        # 2026-11-04: it was int(row.get("player_id", 0)), which also crashed on a NaN id).
+        import pandas as _pd
+        _pid = _pd.to_numeric(row.get("player_id"), errors="coerce")
+        if _pd.isna(_pid) or not int(_pid) or int(_pid) in seen:
             continue
+        pid = int(_pid)
         seen.add(pid)
         lg   = str(row.get("league", ""))
         info = leagues.get(lg)
@@ -1219,9 +1401,9 @@ def fetch_player_profile(player_id: int) -> dict:
     # Age/height/weight do not depend on the season, but the endpoint needs one. The literal
     # "2025" meant a player first registered in 2026 never got a profile (Data Truth finding 41):
     # this year, then last year.
-    from datetime import date as _date
     resp = []
-    for _s in (_date.today().year, _date.today().year - 1):
+    _y = datetime.now(timezone.utc).year   # UTC year
+    for _s in (_y, _y - 1):
         resp = _api_get("players", {"id": player_id, "season": str(_s)}).get("response", [])
         if resp:
             break
@@ -1229,25 +1411,25 @@ def fetch_player_profile(player_id: int) -> dict:
         return {}
 
     player = resp[0].get("player", {})
-    age_val    = player.get("age") or 0
-    height_str = player.get("height") or ""
-    weight_str = player.get("weight") or ""
+    height_str = player.get("height")
+    weight_str = player.get("weight")
 
-    def _parse_cm(s: str) -> float:
-        # "185 cm" -> 185.0
+    # A field the API does not give is None (was 0 - a 0 cm, 0 kg, 0-year-old player).
+    def _parse_unit(s, unit: str):
         try:
-            return float(str(s).replace("cm", "").strip())
-        except Exception:
-            return 0.0
+            x = float(str(s).replace(unit, "").strip())
+        except (TypeError, ValueError):
+            return None
+        return x if x > 0 else None
 
-    def _parse_kg(s: str) -> float:
-        try:
-            return float(str(s).replace("kg", "").strip())
-        except Exception:
-            return 0.0
+    def _parse_cm(s):
+        return _parse_unit(s, "cm")          # "185 cm" -> 185.0
+
+    def _parse_kg(s):
+        return _parse_unit(s, "kg")
 
     result = {
-        "age":        int(age_val),
+        "age":        _parse_unit(player.get("age"), ""),
         "height_cm":  _parse_cm(height_str),
         "weight_kg":  _parse_kg(weight_str),
     }
@@ -1344,7 +1526,7 @@ def fetch_all_player_sidelined(df: "pd.DataFrame", max_workers: int = 5,
     _available = len(unique_pids)
     if max_players and _available > max_players:
         import datetime as _dt
-        _week   = _dt.date.today().isocalendar()[1]
+        _week   = _dt.datetime.now(_dt.timezone.utc).date().isocalendar()[1]   # UTC ISO week
         _offset = (_week * max_players) % _available
         unique_pids = (unique_pids + unique_pids)[_offset:_offset + max_players]
         print(f"[sidelined] quota cap: fetching {len(unique_pids)}/{_available} players "
@@ -1383,15 +1565,16 @@ def fetch_all_player_sidelined(df: "pd.DataFrame", max_workers: int = 5,
 
 # ── Fixture goal events (set-piece data enrichment) ──────────────────────────
 
-def _fetch_fixture_events(fixture_id: int) -> list[dict]:
-    """Fetch all goal events for one fixture. Cached permanently."""
+def _fetch_fixture_events(fixture_id: int) -> list[dict] | None:
+    """Fetch all goal events for one fixture. Cached permanently. None when the events could not be
+    fetched (no key, HTTP error) - distinct from [] (fetched: the fixture had no goal event)."""
     cache_f = EVENTS_CACHE_DIR / f"events_{fixture_id}.json"
     if cache_f.exists():
         return json.loads(cache_f.read_text(encoding="utf-8"))
     _rate_limited_sleep()
     api_key = os.getenv("APIFOOTBALL_KEY", "").strip()
     if not api_key:
-        return []
+        return None
     try:
         r = requests.get(
             f"{BASE_URL}/fixtures/events",
@@ -1400,12 +1583,24 @@ def _fetch_fixture_events(fixture_id: int) -> list[dict]:
             timeout=20,
         )
         if r.status_code != 200:
-            return []
+            return None
         data = r.json().get("response", [])
         cache_f.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
         return data
     except Exception:
-        return []
+        return None
+
+
+_SP_CLASSIFYING = ("header", "free kick", "penalty", "own goal")
+
+
+def _sp_classified(events) -> bool:
+    """True when this fixture's goal events tell set-piece goals apart: events were fetched and
+    every goal event's detail is one of _SP_CLASSIFYING (no goal at all also qualifies)."""
+    if events is None:
+        return False
+    return all(any(k in str(ev.get("detail") or "").lower() for k in _SP_CLASSIFYING)
+               for ev in events)
 
 
 def _parse_sp_events(events: list[dict], fixture_id: int) -> list[dict]:
@@ -1448,8 +1643,15 @@ def enrich_sp_events(history: list[dict], max_workers: int = 20) -> list[dict]:
     """
     Enrich match history rows with set piece event data.
     Fetches /fixtures/events for each fixture in parallel. Adds columns:
-      sp_goal, headed_goal, fk_goal, sp_assist, fk_assist  (all int, default 0)
+      sp_goal, headed_goal, fk_goal, sp_assist, fk_assist
     Fully cached — subsequent runs cost 0 API calls.
+
+    DATA TRUTH (2026-11-01): a fixture's set-piece counts are KNOWN only when its events were
+    fetched and every goal event carries a classifying detail (header / free kick / penalty / own
+    goal); a fixture with no goal at all is known too (all zero). API-Football labels open-play and
+    set-piece goals alike "Normal Goal", so for most fixtures the split is unknown and the five
+    columns are NaN there. They used to be 0 everywhere (measured: sp_goal sum 0 over 876,130 rows),
+    i.e. "this player never scored from a set piece" written as a fact.
     """
     import pandas as _pd
 
@@ -1460,21 +1662,26 @@ def enrich_sp_events(history: list[dict], max_workers: int = 20) -> list[dict]:
     print(f"  [sp_events] {len(fixture_ids):,} fixtures "
           f"({uncached:,} need API calls)...")
 
-    events_by_fixture: dict[int, list[dict]] = {}
+    events_by_fixture: dict[int, list[dict] | None] = {}
     with ThreadPoolExecutor(max_workers=max_workers) as pool:
         fut_map = {pool.submit(_fetch_fixture_events, fid): fid for fid in fixture_ids}
         for fut in as_completed(fut_map):
             fid = fut_map[fut]
-            events_by_fixture[fid] = fut.result() or []
+            events_by_fixture[fid] = fut.result()
+
+    known = {fid for fid, ev in events_by_fixture.items() if _sp_classified(ev)}
+    print(f"  [sp_events] set-piece split known for {len(known):,} of {len(fixture_ids):,} "
+          f"fixture(s); the rest stay NaN")
 
     sp_rows: list[dict] = []
     for fid, events in events_by_fixture.items():
-        sp_rows.extend(_parse_sp_events(events, fid))
+        if fid in known:
+            sp_rows.extend(_parse_sp_events(events, fid))
 
-    if not sp_rows:
+    if not known:
         for row in history:
             for col in SP_COLS:
-                row.setdefault(col, 0)
+                row[col] = None
         return history
 
     sp_df = (
@@ -1487,7 +1694,7 @@ def enrich_sp_events(history: list[dict], max_workers: int = 20) -> list[dict]:
     if "player_id" not in hist_df.columns:
         for row in history:
             for col in SP_COLS:
-                row.setdefault(col, 0)
+                row[col] = None
         return history
 
     hist_df["player_id"] = hist_df["player_id"].astype(int)
@@ -1495,12 +1702,15 @@ def enrich_sp_events(history: list[dict], max_workers: int = 20) -> list[dict]:
     sp_df["player_id"]   = sp_df["player_id"].astype(int)
     sp_df["fixture_id"]  = sp_df["fixture_id"].astype(int)
 
-    merged = hist_df.merge(sp_df, on=["fixture_id", "player_id"], how="left")
+    hist_df = hist_df.drop(columns=[c for c in SP_COLS if c in hist_df.columns])
+    merged = hist_df.merge(sp_df, on=["fixture_id", "player_id"], how="left") if len(sp_df) \
+        else hist_df.assign(**{c: _pd.NA for c in SP_COLS})
+    in_known = merged["fixture_id"].isin(known)
     for col in SP_COLS:
-        if col not in merged.columns:
-            merged[col] = 0
-        else:
-            merged[col] = merged[col].fillna(0).astype(int)
+        # Known fixture: a player with no SP event really had zero. Unknown fixture: NaN.
+        v = _pd.to_numeric(merged[col], errors="coerce") if col in merged.columns else _pd.Series(
+            float("nan"), index=merged.index)
+        merged[col] = v.where(~in_known | v.notna(), 0.0).where(in_known)
 
     n_sp     = int((merged["sp_goal"]     > 0).sum())
     n_header = int((merged["headed_goal"] > 0).sum())

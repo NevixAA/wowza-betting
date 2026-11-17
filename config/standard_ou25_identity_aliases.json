@@ -1,5 +1,5 @@
 {
- "version": "identity/1.0",
+ "version": "identity/1.1",
  "map": {
   "Argentina Primera Division": {
    "Atletico Tucuman": "Atl. Tucuman",
@@ -100,7 +100,8 @@
    "UC Dublin": "UCD",
    "St Patrick's Athl.": "St. Patricks",
    "Drogheda United": "Drogheda",
-   "Galway United": "Galway"
+   "Galway United": "Galway",
+   "Bray Wanderers": "Bray"
   },
   "Japan J-League": {
    "Iwata": "Jubilo Iwata",
@@ -1174,6 +1175,14 @@
    "b": "Landskrona BoIS",
    "evidence_dates": 2,
    "iteration": 2
+  },
+  {
+   "league": "Ireland Premier Division",
+   "a": "Bray",
+   "b": "Bray Wanderers",
+   "evidence_dates": 1,
+   "iteration": "owner-2026-11-02",
+   "evidence": "owner accepted the evidence-based merge (identity/1.1): fd_history and af_history both hold 2024-11-16 Bray Wanderers 1-3 Drogheda United == Bray 1-3 Drogheda (one fixture, two spellings; Drogheda United -> Drogheda is already in this map). Checked 2026-11-02 on fd_history + af_history: the two names never meet, after the merge Bray has one fixture per date, no club plays itself and no (date, home, away) key carries two scores."
   }
  ],
  "rejected_pairs": [
@@ -1181,13 +1190,6 @@
    "league": "Greek Super League",
    "a": "Iraklis",
    "b": "Iraklis 1908",
-   "evidence_dates": 1,
-   "reason": "only 1 evidence date(s)"
-  },
-  {
-   "league": "Ireland Premier Division",
-   "a": "Bray",
-   "b": "Bray Wanderers",
    "evidence_dates": 1,
    "reason": "only 1 evidence date(s)"
   }

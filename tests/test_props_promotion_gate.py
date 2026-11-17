@@ -370,8 +370,9 @@ def test_only_the_props_gate_writes_props_serving_files():
     # the old tolerance gate is gone from the train path
     src = (ROOT / "player_model" / "pipeline.py").read_text(encoding="utf-8")
     assert 'os.getenv("PROPS_MAX_LOGLOSS_RISE"' not in src and "PROPS_FORCE_PROMOTE" not in src
-    assert "PPG.review_parked(" in src and "PPG.submit_candidate(" in src
-    assert src.index("PPG.review_parked(") < src.index("PPG.submit_candidate(")
+    # owner 2026-11-09: the legacy retrain is retired - it neither parks nor reviews candidates
+    assert "PPG.review_parked(" not in src and "PPG.submit_candidate(" not in src
+    assert "LEGACY_PROPS_RETRAIN_RETIRED" in src
     # no workflow copies or moves a props model into place by hand
     for y in (ROOT / ".github" / "workflows").glob("*.yml"):
         for line in y.read_text(encoding="utf-8").splitlines():
@@ -415,7 +416,9 @@ def _synthetic_history(n=6000, seed=3):
     return d
 
 
-def test_props_retrain_job_completes_and_changes_no_serving_file(ptmp, monkeypatch):
+def test_retired_legacy_props_retrain_trains_nothing(ptmp, monkeypatch, capsys):
+    """Owner 2026-11-09: only the props clean retrain trains props. The legacy weekly job runs (its
+    workflow may be re-enabled) but trains, scores, parks and reviews nothing."""
     from player_model import pipeline as PP
     hist = ptmp / "player_history.parquet"
     _synthetic_history().to_parquet(hist)
@@ -425,19 +428,11 @@ def test_props_retrain_job_completes_and_changes_no_serving_file(ptmp, monkeypat
         _serve(m, col=pconfig.PLAYER_FEATURE_COLS[0])
     before = {m: f.read_bytes() for m, f in pconfig.MODEL_FILES.items()}
     PP.mode_train()
-    blob = json.loads((ptmp / "out" / "props_retrain_log.json").read_text(encoding="utf-8"))
-    run = blob["runs"][blob["latest_run"]]
-    assert set(run) == set(pconfig.MARKETS)
-    assert all(v["gate_version"] == "PG-PROPS-1.0" for v in run.values())
-    assert not any(v["promoted"] for v in run.values())                  # no prospective period
-    assert all(v["verdict"] in (PPG.KEEP, PPG.SHADOW) for v in run.values()), run
-    # the comparison really ran: champion and candidate scored on the same >= 1000 holdout rows
-    assert all(v["holdout_n"] >= 1000 and v["ll_delta"] is not None for v in run.values()), run
+    assert PP.LEGACY_PROPS_RETRAIN_RETIRED in capsys.readouterr().out
     assert {m: f.read_bytes() for m, f in pconfig.MODEL_FILES.items()} == before
-    log = pd.read_csv(PPG.DECISIONS_FILE)
-    assert (log["stage"] == "HOLDOUT").sum() == len(pconfig.MARKETS)
-    assert (log["stage"] == "REGISTER").sum() == len(pconfig.MARKETS)
-    # a second run the same day gets its own key instead of overwriting the first
-    PP.mode_train()
-    blob = json.loads((ptmp / "out" / "props_retrain_log.json").read_text(encoding="utf-8"))
-    assert len(blob["runs"]) == 2 and {m: f.read_bytes() for m, f in pconfig.MODEL_FILES.items()} == before
+    assert not (ptmp / "out" / "props_retrain_log.json").exists()
+    assert not PPG.DECISIONS_FILE.exists()
+    assert not any(PPG.challenger_path(m).exists() for m in pconfig.MARKETS)
+    import inspect
+    src = inspect.getsource(PP.mode_train)
+    assert "submit_candidate" not in src and "review_parked" not in src and "train(" not in src.split('"""')[2]
