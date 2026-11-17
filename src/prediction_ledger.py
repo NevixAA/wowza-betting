@@ -125,7 +125,10 @@ def entry_index(markets: dict | None = None) -> dict:
 # ── league slug ────────────────────────────────────────────────────────────────────────────────────
 
 def load_leagues(path: Path | None = None) -> list:
-    return json.loads(Path(path or LEAGUES_FILE).read_text(encoding="utf-8"))["leagues"]
+    """The league registry (v9 config/leagues.json). Pro has no registry of its own: its workflows check
+    v9 out read-only and point PREDICTION_LEDGER_LEAGUES at v9's file (never a copy that can drift)."""
+    path = path or os.getenv("PREDICTION_LEDGER_LEAGUES") or LEAGUES_FILE
+    return json.loads(Path(path).read_text(encoding="utf-8"))["leagues"]
 
 
 class LeagueSlugs:
