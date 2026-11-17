@@ -1,8 +1,8 @@
 {
  "about": "Approved production-facing fingerprint for src/research_lock.py. Re-approve ONLY for a deliberate, owner-approved production change. Do not hand-edit.",
- "approval_note": "U3a approved early by owner 2026-11-16 ('Approve now'): bars_opt serving (no global bars, NO_LEAGUE_BAR until U3b), predict.yml global threshold variables removed, per-cell staking. Bars still applied separately in U3b after the owner's Nov 20 pick.",
- "approved_at": "2026-11-16T19:56:12Z",
- "approved_by": "Nevo (owner)",
+ "approval_note": "go-live rehearsal U3a: TOP-3 flat 0.5% manual, every cell PAPER (proposal 1545a430d); the owner re-approves on go-live day",
+ "approved_at": "2026-11-17T17:03:13Z",
+ "approved_by": "REHEARSAL 2026-11-17 (agent dry run, NOT an owner approval)",
  "fingerprint": {
   "global": {
    "bankroll_policy": {
@@ -31,7 +31,7 @@
     "paper_leagues": [
      "USA MLS"
     ],
-    "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
+    "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09+top3-flat-manual-2026-11-17",
     "portfolio": {
      "_one_position_per_fixture": "false since 2026-11-04 (owner: several bets on one match are fine unless they are opposites). Several real positions on one fixture are allowed when they share one goal direction (Over lines + BTTS Yes, or Under lines + BTTS No); an opposite-direction position is zeroed by size_day step 6 and the tip itself is suppressed by src/direction_guard.py (a paper tip never blocks a real one). fixture_cap limits the fixture's TOTAL within a sizing run (size_day step 10 scales the positions down together); positions staked in EARLIER runs are not counted against it yet. Previous state: true.",
      "daily_cap": 0.06,
@@ -216,6 +216,40 @@
      "REQUIRE_FORM_DATA_UNTIL": "2026-09-15"
     }
    },
+   "stakes": {
+    "cell_staking_enabled": true,
+    "cells": {
+     "new_format|BTTS|Argentina Primera Division": {
+      "base_fraction": 0.0,
+      "max_odds": 2.6,
+      "min_odds": null,
+      "state": "PAPER"
+     },
+     "new_format|OU25_OVER|Finland Veikkausliiga": {
+      "base_fraction": 0.0,
+      "max_odds": null,
+      "min_odds": null,
+      "state": "PAPER"
+     },
+     "new_format|OVER35|Finland Veikkausliiga": {
+      "base_fraction": 0.0,
+      "max_odds": null,
+      "min_odds": null,
+      "state": "PAPER"
+     },
+     "standard|OU25_OVER|La Liga 2": {
+      "base_fraction": 0.0,
+      "max_odds": null,
+      "min_odds": null,
+      "state": "PAPER"
+     }
+    },
+    "top3_stake": {
+     "execution": "MANUAL",
+     "fraction": 0.005,
+     "rule": "FLAT"
+    }
+   },
    "thresholds": {
     "EDGE_CEILING": 0.19,
     "LEAGUE_EDGE_CEILING": {
@@ -297,5 +331,5 @@
    }
   }
  },
- "fingerprint_sha256": "20ef00daedb3033c29eb5b4f58278e563bbd853538abf2147a219ee834a439ff"
+ "fingerprint_sha256": "f1e66d85e82ccc1f9df03a2a18dd1f308104ec318f2fbd06a4eb9c6ff0c3fd5e"
 }
