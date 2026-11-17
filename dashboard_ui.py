@@ -368,6 +368,31 @@ def page_header(title: str, subtitle: str = "", *, badge: str = "", eyebrow_text
     chips = " ".join(x for x in ((status_chip(state) if state else ""), freshness or "") if x)
     if chips:
         st.markdown(chips)
+    record = _record_label()
+    if record:
+        st.markdown(status_chip("HISTORICAL", label=record, tone="WARNING") + "  "
+                    + tone_text("This page keeps this season's results exactly as recorded. Results on the "
+                                "repaired system count from 0 on the Clean Record page.", "NEUTRAL"))
+
+
+def _record_label() -> str | None:
+    """'Season to 20.11 (pre-repair models)' when the page being drawn is a pre-repair results page
+    (dashboard_data/season.py decides, from the page's own file name; owner 2026-11-17). The one config
+    this presentation module consults, read lazily through that module; any failure shows no label."""
+    import sys
+    f = sys._getframe(1)
+    page = None
+    while f is not None:
+        fn = f.f_code.co_filename.replace("\\", "/")
+        if "/pages/" in fn:
+            page = fn
+            break
+        f = f.f_back
+    try:
+        from dashboard_data import season
+        return season.page_label(page)
+    except Exception:                                                  # noqa: BLE001 - a label never breaks a page
+        return None
 
 
 def section_header(title: str, caption_text: str = "", *, container=None) -> None:
