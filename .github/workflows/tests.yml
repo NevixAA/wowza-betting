@@ -13,9 +13,9 @@ name: Tests and gates
 
 on:
   push:
-    branches: [main, data-truth-100, 'phase2/**']
+    branches: [main, data-truth-100, 'phase2/**', prep/bars-oddsapi-hist]
   pull_request:
-    branches: [main, data-truth-100]
+    branches: [main, data-truth-100, prep/bars-oddsapi-hist]
   workflow_dispatch:
 
 concurrency:

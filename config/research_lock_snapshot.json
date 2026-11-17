@@ -1,7 +1,7 @@
 {
  "about": "Approved production-facing fingerprint for src/research_lock.py. Re-approve ONLY for a deliberate, owner-approved production change. Do not hand-edit.",
- "approval_note": "2026-11-09 decision A: Standard O/U 2.5 serves the clean recipe (clean team models, one-time owner override of the shadow rule)",
- "approved_at": "2026-11-09T15:00:30Z",
+ "approval_note": "U3a approved early by owner 2026-11-16 ('Approve now'): bars_opt serving (no global bars, NO_LEAGUE_BAR until U3b), predict.yml global threshold variables removed, per-cell staking. Bars still applied separately in U3b after the owner's Nov 20 pick.",
+ "approved_at": "2026-11-16T19:56:12Z",
  "approved_by": "Nevo (owner)",
  "fingerprint": {
   "global": {
@@ -31,7 +31,7 @@
     "paper_leagues": [
      "USA MLS"
     ],
-    "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04",
+    "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
     "portfolio": {
      "_one_position_per_fixture": "false since 2026-11-04 (owner: several bets on one match are fine unless they are opposites). Several real positions on one fixture are allowed when they share one goal direction (Over lines + BTTS Yes, or Under lines + BTTS No); an opposite-direction position is zeroed by size_day step 6 and the tip itself is suppressed by src/direction_guard.py (a paper tip never blocks a real one). fixture_cap limits the fixture's TOTAL within a sizing run (size_day step 10 scales the positions down together); positions staked in EARLIER runs are not counted against it yet. Previous state: true.",
      "daily_cap": 0.06,
@@ -130,10 +130,7 @@
     }
    },
    "deployed_env": {
-    "LEAGUE_SNIPER_CAP": "0.12",
-    "MARKSMAN_THRESHOLD": "0.08",
-    "STANDARD_OU25_SERVING_RECIPE": "legacy_v9",
-    "VALUABLE_THRESHOLD": "0.03"
+    "STANDARD_OU25_SERVING_RECIPE": "legacy_v9"
    },
    "eligibility": {
     "AUTO_LEAGUES": [],
@@ -237,8 +234,8 @@
      "USA MLS": 0.17
     },
     "LEAGUE_MARKSMAN_THRESHOLDS": {
-     "Bundesliga 2": 0.12,
-     "League Two": 0.12
+     "Bundesliga 2": 0.2,
+     "League Two": 0.14
     },
     "LEAGUE_SNIPER_CALIBRATED": {
      "Bundesliga 2": 0.2,
@@ -251,16 +248,16 @@
      "Serie B": 0.15
     },
     "LEAGUE_SNIPER_THRESHOLDS": {
-     "Bundesliga 2": 0.12,
-     "Championship": 0.12,
-     "Greek Super League": 0.12,
-     "La Liga 2": 0.12,
-     "League One": 0.12,
-     "League Two": 0.12,
-     "Ligue 2": 0.12,
-     "Serie B": 0.12
+     "Bundesliga 2": 0.2,
+     "Championship": 0.15,
+     "Greek Super League": 0.25,
+     "La Liga 2": 0.2,
+     "League One": 0.25,
+     "League Two": 0.14,
+     "Ligue 2": 0.25,
+     "Serie B": 0.15
     },
-    "MARKSMAN_THRESHOLD": 0.08,
+    "MARKSMAN_THRESHOLD": 0.14,
     "SIDE_GLOBAL": [
      0.1,
      0.08,
@@ -269,7 +266,7 @@
     "SNIPER_THRESHOLD": 0.12,
     "SNIPER_THRESHOLD_OVER": 0.12,
     "SNIPER_THRESHOLD_UNDER": 0.12,
-    "VALUABLE_THRESHOLD": 0.03
+    "VALUABLE_THRESHOLD": 0.04
    }
   },
   "protected_tracks": {
@@ -281,12 +278,12 @@
      "edge_ceiling": null,
      "edge_ceiling_active": false,
      "league_cap_applied": false,
-     "marksman": 0.08,
-     "marksman_source": "pipeline.py fixed side-market global",
-     "sniper": 0.1,
-     "sniper_source": "pipeline.py fixed side-market global",
-     "valuable": 0.04,
-     "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+     "marksman": null,
+     "marksman_source": "NO_LEAGUE_BAR: no btts params entry for Argentina Primera Division",
+     "sniper": null,
+     "sniper_source": "NO_LEAGUE_BAR: no btts params entry for Argentina Primera Division",
+     "valuable": null,
+     "valuable_source": "NO_LEAGUE_BAR: no btts params entry for Argentina Primera Division"
     },
     "max_odds": 2.6,
     "min_odds": null,
@@ -300,5 +297,5 @@
    }
   }
  },
- "fingerprint_sha256": "0fed49b8bf27378c313cdbeabcd76d28f7dbb83cfdfa899774950db1a6001e91"
+ "fingerprint_sha256": "20ef00daedb3033c29eb5b4f58278e563bbd853538abf2147a219ee834a439ff"
 }

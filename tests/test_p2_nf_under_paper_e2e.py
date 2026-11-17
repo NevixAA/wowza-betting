@@ -26,6 +26,15 @@ import config
 from src import bankroll_policy as BP
 from src import betting
 
+@pytest.fixture(autouse=True)
+def _own_bars(monkeypatch):
+    """Owner 2026-11-09: no global bars. These tests predate the cutover and assert the tiers the
+    removed global path served, so every league gets exactly those values as its OWN owner-applied
+    bars (tests/own_bars.install_historical)."""
+    from tests.own_bars import install_historical
+    install_historical(monkeypatch)
+
+
 ROOT = Path(__file__).resolve().parents[1]
 TRACK = "new_format|OU25_UNDER"
 NF_LEAGUE = next(lg for lg in sorted(config.ENABLED_LEAGUES)
@@ -34,7 +43,11 @@ DAY = (pd.Timestamp.now(tz="UTC") + pd.Timedelta(days=2)).strftime("%Y-%m-%d")
 
 
 def _policy() -> dict:
-    return json.loads((ROOT / "config" / "bankroll_policy.json").read_text(encoding="utf-8"))
+    """The committed policy with PER-TRACK staking: these tests flip the NF Under TRACK and pin its
+    mechanics; the live per-cell staking (owner 2026-11-09) is pinned in tests/test_cell_staking.py."""
+    p = json.loads((ROOT / "config" / "bankroll_policy.json").read_text(encoding="utf-8"))
+    p.setdefault("cell_staking", {})["enabled"] = False
+    return p
 
 
 def _board(day: str = DAY) -> pd.DataFrame:
@@ -50,7 +63,7 @@ def _board(day: str = DAY) -> pd.DataFrame:
     ])
     bets = betting.generate_bets(betting.evaluate_value(raw))
     assert set(bets["best_side"]) == {"OVER", "UNDER"}, bets
-    assert set(bets["signal_tier"]) <= {"SNIPER", "MARKSMAN"}, "board must hold STAKED-tier tips"
+    assert set(bets["signal_tier"]) <= {"QUALIFIED"}, "board must hold tips (owner 2026-11-11: one bar per cell)"
     return bets
 
 
@@ -239,5 +252,14 @@ def test_ledger_still_records_nf_under_tips(tmp_path, monkeypatch):
     L.append_tips(_board())
     d = pd.read_csv(tmp_path / "bets_ledger.csv")
     u = d[(d["side"] == "UNDER") & (d["model_type"] == "new_format")]
-    assert len(u) == 1 and u["signal_tier"].iloc[0] in ("SNIPER", "MARKSMAN")
+    assert len(u) == 1 and u["signal_tier"].iloc[0] in ("QUALIFIED",)
     assert float(u["odds"].iloc[0]) == 2.20 and pd.notna(u["edge_pct"].iloc[0])
+
+
+@pytest.fixture(autouse=True)
+def _per_track_policy(monkeypatch):
+    """These tests pin the TRACK mechanics: per-track staking (tests/policy_helpers). The live per-cell
+    staking (owner 2026-11-09) is pinned in tests/test_cell_staking.py."""
+    import sys
+    from tests.policy_helpers import install_per_track
+    install_per_track(monkeypatch, sys.modules[__name__])

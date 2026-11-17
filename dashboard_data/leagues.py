@@ -49,7 +49,7 @@ PRO_WEEKLY = "output/studies/league_results_weekly.csv"
 STAKED = ("SNIPER", "MARKSMAN")
 #: overview_table column for paper (VALUABLE) P/L - display words from src/tier_labels.py
 PAPER_PL_COL = f"{PAPER_TIER_LABEL} (paper) P/L"
-TIERS = ("SNIPER", "MARKSMAN", "VALUABLE")
+TIERS = ("QUALIFIED", "SNIPER", "MARKSMAN", "VALUABLE")   # QUALIFIED = tips from 2026-11-21 (owner 2026-11-11)
 #: Display markets. Sides are never pooled: O/U 2.5 Over and Under are separate rows.
 MARKETS = ["O/U 2.5 Over", "O/U 2.5 Under", "BTTS", "Over 1.5", "Over 3.5"]
 _PICK_TO_MARKET = {"O/U 2.5 OVER": "O/U 2.5 Over", "O/U 2.5 UNDER": "O/U 2.5 Under", "BTTS YES": "BTTS",
