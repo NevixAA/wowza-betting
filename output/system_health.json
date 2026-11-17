@@ -1,7 +1,7 @@
 {
  "about": "Canonical system health (src/system_health.build_artifact), written daily by evidence_refresh.yml. overall: FAIL if any RED check or protected_tracks_modified; WARN if any AMBER/NO_DATA; PASS otherwise. Every status comes from the rule stored beside it.",
  "artifact_version": "SYSTEM-HEALTH-1",
- "generated_at": "2026-11-17T16:13:26Z",
+ "generated_at": "2026-11-17T16:31:46Z",
  "overall": "WARN",
  "reasons": [
   "AMBER Data contracts: 3 new violation(s) in 3 of 14 files \u00b7 6 known historical (config/contract_baseline.json)",
@@ -17,7 +17,7 @@
   },
   "contracts_version": "CONTRACTS-1",
   "research_lock_digest": "521000edf970df8b4e9af0e640941570bee516c1c666d95dab25d5cb7cbc19a0",
-  "code_commit": "36dec997d772"
+  "code_commit": "71134f83ac59"
  },
  "counts": {
   "GREEN": 20,
@@ -38,21 +38,21 @@
    "status": "GREEN",
    "value": "0.0% unmapped",
    "rule": "GREEN 0% of tips on unknown|* tracks, on an O/U side-less *_UNKNOWN_SIDE track or without odds; AMBER < 5%; RED >= 5%",
-   "detail": "generated 2026-11-17 07:52:47"
+   "detail": "generated 2026-11-17 16:15:16"
   },
   {
    "check": "Shadow settlement coverage",
    "status": "GREEN",
    "value": "97.7% (1057/1082)",
    "rule": "GREEN >= 95% of finished shadow rows settled; AMBER >= 80%; RED < 80%",
-   "detail": "as of 2026-11-17T00:58:33Z"
+   "detail": "as of 2026-11-17T16:16:07Z"
   },
   {
    "check": "Challenger prediction coverage",
    "status": "GREEN",
    "value": "100% of 155 rows (p_pro_hgb)",
    "rule": "over rows logged in the last 7 days AND after the challenger experiment was registered (rows logged before a challenger existed cannot carry one): GREEN >= 90% carry a challenger probability; AMBER > 0%; RED 0%",
-   "detail": "window from 2026-11-10 16:13 UTC"
+   "detail": "window from 2026-11-10 16:31 UTC"
   },
   {
    "check": "Certified CLV coverage",
@@ -78,7 +78,7 @@
   {
    "check": "GitHub workflow health",
    "status": "GREEN",
-   "value": "0 still failing / 164 runs (24 h) \u00b7 1 fixed since",
+   "value": "0 still failing / 173 runs (24 h) \u00b7 1 fixed since",
    "rule": "workflows whose latest run on main (last 24 h, 3 repos) failed or timed out \u2014 failures a later success superseded and branch-only research runs do not count: GREEN 0; AMBER 1-2; RED >= 3 (record > 36 h old = AMBER)",
    "detail": ""
   },
@@ -162,7 +162,7 @@
   {
    "check": "Edge-engine shadow",
    "status": "GREEN",
-   "value": "market_edge_v2 UNVALIDATED_DEFAULTS, 616 rows, shadow_only=True, 8.3 h old",
+   "value": "market_edge_v2 UNVALIDATED_DEFAULTS, 616 rows, shadow_only=True, 0.3 h old",
    "rule": "RED if edge_engine_health.json is missing, older than 72 h, or shadow_only is not true (a shadow engine must never be live); AMBER if older than 24 h or it scored 0 rows; GREEN otherwise",
    "detail": ""
   },
@@ -206,34 +206,34 @@
     "schema": "MARKET_SNAPSHOT_ROW",
     "schema_version": "1",
     "present": true,
-    "rows": 9418,
+    "rows": 10117,
     "n_violations": 4,
     "violations": [
      {
       "kind": "missing_column",
       "column": "minutes_to_kickoff",
-      "n_rows": 9418,
+      "n_rows": 10117,
       "detail": "required column absent",
       "examples": []
      },
      {
       "kind": "missing_column",
       "column": "overround",
-      "n_rows": 9418,
+      "n_rows": 10117,
       "detail": "required column absent",
       "examples": []
      },
      {
       "kind": "missing_column",
       "column": "opposite_odds",
-      "n_rows": 9418,
+      "n_rows": 10117,
       "detail": "required column absent",
       "examples": []
      },
      {
       "kind": "missing_column",
       "column": "source",
-      "n_rows": 9418,
+      "n_rows": 10117,
       "detail": "required column absent",
       "examples": []
      }
@@ -307,7 +307,7 @@
     "schema": "STAKE_AUDIT_ROW",
     "schema_version": "1",
     "present": true,
-    "rows": 981,
+    "rows": 982,
     "n_violations": 3,
     "violations": [
      {
@@ -343,7 +343,7 @@
     "schema": "SETTLEMENT_ROW",
     "schema_version": "1",
     "present": true,
-    "rows": 1932,
+    "rows": 1933,
     "n_violations": 1,
     "violations": [
      {
@@ -445,8 +445,8 @@
    "reasons": []
   },
   "stake_audit.csv": {
-   "rows": 981,
-   "frozen_digest": "6d44581fa3f293cfd41e31f0f5bd8252050bef6bef1fbc474bb5ebb66d227617",
+   "rows": 982,
+   "frozen_digest": "88e0ed6efd93141892c94458589eae65dc15e0f86588aefc8f417a06adb50235",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
    "prior_rows": 981,
@@ -489,7 +489,7 @@
    "feature_version": null
   },
   "bets_ledger.csv": {
-   "model_version": 0.177,
+   "model_version": 0.1774,
    "selection_engine_version": null,
    "policy_version": null,
    "feature_version": null
