@@ -72,7 +72,7 @@ def prepare(raw: pd.DataFrame) -> pd.DataFrame:
     """settled_tips(include_paper=True) frame -> the league frame: settled, from the cutoff, with
     display market, staked / paper flags, implied and model probability."""
     cols = ["date", "league", "match", "tier", "mkt", "pick", "odds", "result", "pnl", "edge_pct",
-            "model_prob", "implied", "staked", "paper", "track"]
+            "model_prob", "implied", "staked", "paper", "track", "generated_at"]
     if raw is None or raw.empty:
         return pd.DataFrame(columns=cols)
     cut = str(getattr(config, "PERFORMANCE_CUTOFF_DATE", "1970-01-01"))[:10]
@@ -93,13 +93,20 @@ def prepare(raw: pd.DataFrame) -> pd.DataFrame:
                    else pd.Series(False, index=d.index))
     d["paper"] = d["league"].map(config.is_paper_league).astype(bool)
     d["track"] = d["league"].map(config.model_type_for_league)
+    if "generated_at" not in d.columns:              # the Clean Record split needs it; absent = not recorded
+        d["generated_at"] = pd.NA
     return d[cols].sort_values("date", kind="mergesort").reset_index(drop=True)
 
 
-def settled() -> pd.DataFrame:
-    """Every settled live tip since the cutoff, paper leagues included (flagged)."""
+def settled(record: str | None = None) -> pd.DataFrame:
+    """Every settled live tip since the cutoff, paper leagues included (flagged). `record` = 'CLEAN' / 'BEFORE'
+    keeps one record of the Clean Record split (dashboard_data/clean_record.py, owner 2026-11-11)."""
     from telegram_bot.daily_pack import settled_tips
-    return prepare(settled_tips(include_paper=True))
+    d = prepare(settled_tips(include_paper=True))
+    if record is not None:
+        from dashboard_data import clean_record as CR
+        d = d[CR.assign(d, "generated_at", "date").to_numpy() == record].reset_index(drop=True)
+    return d
 
 
 def upcoming(today: str, days: int = 7) -> pd.DataFrame:
