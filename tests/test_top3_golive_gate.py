@@ -87,6 +87,8 @@ def test_each_line_is_labelled_by_its_cells_stake_not_a_blanket_footer():
     msg = T.message(picks.assign(league_week_id=WEEK), real, policy={})
     rule_line = next(ln for ln in msg.splitlines() if "League rule" in ln)
     top_line = next(ln for ln in msg.splitlines() if ln.startswith("1."))
-    assert "Staked" in rule_line and "Paper" not in rule_line
-    assert "Paper" in top_line and "Staked" not in top_line
+    # owner 2026-11-17 ("Show stake on TOP-3"): without a TOP-3 stake configured no line carries a stake label,
+    # and the word "paper" appears nowhere
+    assert "stake" not in rule_line.lower() and "stake" not in top_line.lower()
+    assert "paper" not in msg.lower()
     assert not any(ln.startswith("<i>Paper track") for ln in msg.splitlines())

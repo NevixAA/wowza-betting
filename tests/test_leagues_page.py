@@ -129,7 +129,7 @@ def test_paper_league_shown_not_totalled(env):
     r = r[(r["date"] >= str(config.PERFORMANCE_CUTOFF_DATE)[:10]) & r["pnl"].notna() & r["staked"]]
     assert len(r) == t["tips"] and r["pnl"].sum() == pytest.approx(t["pl"])
     tab = L.overview_table(ov).set_index("League")
-    assert "USA MLS (paper)" in tab.index
+    assert "USA MLS (no stake)" in tab.index
 
 
 def test_overview_context_columns(env):

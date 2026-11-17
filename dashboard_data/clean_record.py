@@ -224,8 +224,8 @@ def team_split(settled: pd.DataFrame) -> dict:
 
 def team_summaries(settled: pd.DataFrame) -> dict:
     """{record: {'staked': summary, 'all': summary}} over today_view.load_settled() rows. 'staked' = THE
-    staked definition (src/staked.py, a recorded policy stake > 0); 'all' = every settled tip, paper + staked,
-    flat 1u (the paper track)."""
+    staked definition (src/staked.py, a recorded policy stake > 0); 'all' = every settled tip, staked or not,
+    flat 1u (TOP-3: 0.5% flat stake from 2026-11-21)."""
     sp = team_split(settled)
     out = {}
     for rec in RECORDS:

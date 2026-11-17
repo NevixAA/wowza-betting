@@ -172,6 +172,8 @@ def render_table(title: str, columns: list[tuple[str, int]], rows: list[dict],
 def send_album(token: str, chat_id: str, pngs: list[bytes], caption: str = "") -> bool:
     """sendMediaGroup in chunks of 10 (Telegram's cap); a single image uses sendPhoto.
     Never raises; the token is never logged."""
+    from dashboard_words import relabel_text      # owner 2026-11-17: no "paper" in a caption
+    caption = relabel_text(caption)
     import json
 
     import requests

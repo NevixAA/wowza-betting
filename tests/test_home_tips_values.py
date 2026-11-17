@@ -133,7 +133,7 @@ def test_home_new_values_come_from_canonical_functions(monkeypatch):
     from src.staked import plan_staked
     assert metrics["Active tips"] == str(int(plan_staked(plan).sum()))
     act = today_view.action(plan)
-    assert stats["Paper / no stake"] == str(act["paper"])
+    assert stats["No stake"] == str(act["paper"])
     sh = json.loads((ROOT / "output" / "system_health.json").read_text(encoding="utf-8"))
     assert metrics["System health"] == str(sh.get("overall"))
     from dashboard_data import clean_record as CR
@@ -304,5 +304,7 @@ def test_market_labels_round_trip():
     assert TV.plan_key("O/U 1.5 OVER") == ("OVER15", "OVER")
     assert TV.plan_key("O/U 3.5 OVER") == ("OVER35", "OVER")
     assert TV.tip_text("O/U 2.5 UNDER") == "Under 2.5" and TV.tip_text("BTTS YES") == "BTTS — Yes"
-    assert TV.stake_label("SNIPER", "O/U 2.5 OVER") == TV.STAKE_OU
-    assert TV.stake_label("VALUABLE", "BTTS YES") == "paper"
+    # owner 2026-11-17 ("Show stake on TOP-3"): only a TOP-3 pick carries a stake label
+    assert TV.stake_label("SNIPER", "O/U 2.5 OVER") == ""
+    assert TV.stake_label("VALUABLE", "BTTS YES") == ""
+    assert TV.stake_label("QUALIFIED", "BTTS YES", "PAPER", 0.005) == "0.5% stake"

@@ -279,7 +279,7 @@ def overview_table(ov: pd.DataFrame) -> pd.DataFrame:
     if ov is None or ov.empty:
         return pd.DataFrame()
     return pd.DataFrame({
-        "League": ov["league"] + ov["paper"].map({True: " (paper)", False: ""}),
+        "League": ov["league"] + ov["paper"].map({True: " (no stake)", False: ""}),
         "Track": ov["track"],
         "Rating": ov["rating"].map(lambda x: "–" if x is None or pd.isna(x) else f"{int(x)}/10"),
         "State": ov["state"],

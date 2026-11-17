@@ -50,7 +50,7 @@ def test_every_top3_pick_records_and_shows_the_flat_stake():
                     policy=POLICY)
     tip_lines = [ln for ln in msg.splitlines() if ln[:2] in {f"{i}." for i in range(1, 4)}]
     assert len(tip_lines) == len(top)
-    assert all("Stake 0.5% (manual)" in ln for ln in tip_lines)
+    assert all(ln.endswith(" · 0.5% stake") for ln in tip_lines)     # owner 2026-11-17 wording
     assert "Paper" not in msg and "PAPER" not in msg            # owner: TOP-3 tips carry no paper label
 
 

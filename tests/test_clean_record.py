@@ -315,7 +315,7 @@ def test_home_shows_only_the_clean_record_post_golive(golive_out):
     _, m, s = _render("00_*Home.py")
     assert m["Clean Record staked P/L (flat 1u)"] == U.fmt(0.9)
     assert s["Clean Record staked bets"] == "1"
-    assert s["Clean Record all tips, paper + staked (flat 1u)"] == f"{U.fmt(1.0)} · n=3"
+    assert s["Clean Record all tips, staked or not (flat 1u)"] == f"{U.fmt(1.0)} · n=3"
     # the pre-repair card never includes a Clean Record tip, and the trap (generated before the start) is there
     from dashboard_data import today_view
     before = CR.team_split(today_view.load_settled(golive_out))[CR.BEFORE]
@@ -324,7 +324,7 @@ def test_home_shows_only_the_clean_record_post_golive(golive_out):
 
 def test_clean_record_page_and_tips_page_post_golive(golive_out):
     _, m, _ = _render("24_*Clean_Record.py")
-    assert m["Clean Record units · All team tips, paper + staked"] == U.fmt(1.0)
+    assert m["Clean Record units · All team tips, staked or not"] == U.fmt(1.0)
     assert m["Clean Record units · Staked bets"] == U.fmt(0.9)
     assert m["Clean Record units · Player props"] == U.fmt(0.8)
     _, m, _ = _render("1_*Dashboard.py")

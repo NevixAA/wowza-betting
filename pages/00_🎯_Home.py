@@ -104,7 +104,7 @@ with a:
              "— the same count as 'With a stake' on the Production page.",
         supporting=[("Next active kickoff", _nk),
                     ("Upcoming staked tips (O/U 2.5)", f"{H['upcoming_ou']}"),
-                    ("Paper / no stake", f"{act['paper']}"),
+                    ("No stake", f"{act['paper']}"),   # owner 2026-11-17: no "paper" wording
                     ("Shadow engine BET", f"{act['shadow_bet']} of {act['shadow_n']}")],
         status=ui.status_chip("LIVE", label="PRODUCTION") + " " + ui.status_chip("RESEARCH", label="SHADOW SEPARATE"))
     if len(bb):
@@ -128,7 +128,7 @@ with b:
                     ("Clean Record hit rate", f"{100 * _st['hit']:.1f}%" if _st["n"] else "—"),
                     ("Clean Record ROI", ui.fmt_roi(_st["roi"]) if _st["n"] else "—"),
                     ("Clean Record ROI 95% CI", CR.fmt_ci(_st["ci"])),
-                    ("Clean Record all tips, paper + staked (flat 1u)",
+                    ("Clean Record all tips, staked or not (flat 1u)",
                      f"{U.fmt(_al['units']) if _al['n'] else U.fmt(0)} · n={_al['n']}")],
         status=ui.status_chip("LIVE" if CR.started() else "NO_DATA",
                               label="CLEAN RECORD" if CR.started() else f"STARTS {CR.start_date()}"),

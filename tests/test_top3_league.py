@@ -239,7 +239,7 @@ def test_store_settle_and_notify_round_trip(tmp_path):
     assert T.notify(out_dir=tmp_path, env=env, sender=lambda t: sent.append(t) or True)["sent"] == 0
     # owner 2026-11-17 (final): the committed policy stakes every TOP-3 tip 0.5% flat, placed manually
     assert "TOP-3 La Liga 2" in sent[0] and "own owner-approved bar" in sent[0]
-    assert "real stake 0.5% of bankroll, flat, placed manually" in sent[0] and "Paper track" not in sent[0]
+    assert "0.5% stake of bankroll, flat, placed manually" in sent[0] and "paper" not in sent[0].lower()
     assert not any(w in sent[0] for w in ("SNIPER", "MARKSMAN", "VALUABLE"))
 
 

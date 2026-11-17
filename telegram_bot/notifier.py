@@ -374,6 +374,8 @@ def _split_for_telegram(text: str, max_len: int = 4000) -> list:
 
 def _send(token: str, chat_id: str, text: str) -> bool:
     """Send a message, auto-splitting anything over the Telegram length limit."""
+    from dashboard_words import relabel_text     # owner 2026-11-17: no "paper" in anything a user reads
+    text = relabel_text(text)
     ok = True
     for chunk in _split_for_telegram(text):
         ok = _send_one(token, chat_id, chunk) and ok
@@ -496,26 +498,13 @@ def instant_tip_allowed(match_date, notified: set, now: "datetime | None" = None
 
 
 def _paper_track_note(model_type: str, market: str, side: str, league=None) -> str:
-    """'' when the tip's bankroll-policy entry is real money, else a PAPER line for the message.
+    """Always '' (owner 2026-11-17, "Show stake on TOP-3"): an ordinary prediction carries NO stake label at all.
 
-    A tip on a PAPER track (new_format|OU25_UNDER since 2026-11-02, owner: "shown and recorded, never
-    staked") is still sent, but must not read as a staked bet. Policy unreadable -> labelled paper
-    (a label can only under-claim, never invent a stake). Phase 2, 2026-11-03.
-    The entry is src/bankroll_policy.stake_entry (go-live rehearsal 2026-11-15): with per-cell staking
-    on, ONLY the league's own cell entry stakes - an ACTIVE track no longer hides a PAPER cell."""
-    try:
-        from src.bankroll_policy import (REAL_STATES, cell_key, cell_staking_on, load_policy,
-                                         positive_fraction, stake_entry, track_key)
-        tk = track_key(model_type, market, side)
-        pol = load_policy()
-        on = cell_staking_on(pol)
-        t = (stake_entry(pol, tk, league) if on else (pol.get("tracks") or {}).get(tk)) or {}
-        if t.get("state") in REAL_STATES and positive_fraction(t):
-            return ""
-        where = f"cell {cell_key(tk, league)}" if on else f"track {tk}"
-        return f"📄 <b>PAPER</b> — not staked ({where}: {t.get('state', 'not in policy')})"
-    except Exception as e:                                            # noqa: BLE001
-        return f"📄 <b>PAPER</b> — not staked (stake policy unreadable: {type(e).__name__})"
+    From 2026-11-21 the only real stake is the flat TOP-3 stake (config/bankroll_policy.json top3_league.stake,
+    placed manually); the TOP-3 message (src/top3_league.message) shows "0.5% stake" on each pick. Every cell of
+    the policy is PAPER, so the per-cell line this used to add (go-live rehearsal 2026-11-15) would now sit on
+    every tip; the owner asked for no label instead. The name is kept for the callers."""
+    return ""
 
 
 def notify_new_snipers() -> int:
@@ -954,7 +943,7 @@ def notify_ht_tips() -> int:
             _price_line = f"💰 Fair price: <b>{fair}</b> | ⚠️ no market price captured\n"
 
         msg = (
-            f"{emoji} <b>HT {side} {line} — MODEL TIP</b> <i>(PAPER)</i>\n"
+            f"{emoji} <b>HT {side} {line} — MODEL TIP</b>\n"   # owner 2026-11-17: no stake label
             f"━━━━━━━━━━━━━━━━\n"
             f"📅 {_fmt_kickoff(row)}\n"
             f"🏆 {row.get('league', '')}\n"

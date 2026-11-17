@@ -79,8 +79,9 @@ def test_policy_file_nf_under_is_paper_with_zero_base():
     assert t["state"] == "PAPER" and float(t["base_fraction"]) == 0.0
     assert t["state"] not in BP.REAL_STATES
     assert t.get("paper_reason"), "a PAPER track must carry the owner's reason"
-    # the sibling OVER track is still real money (the positive control below depends on it)
-    assert _policy()["tracks"]["new_format|OU25_OVER"]["state"] in BP.REAL_STATES
+    # owner 2026-11-17 (final): the sibling OVER track is PAPER too (only TOP-3 picks stake); it WAS real money,
+    # and the per-track positive controls below run on that pre-decision policy (tests/policy_helpers)
+    assert _policy()["tracks"]["new_format|OU25_OVER"]["before_2026_11_17"]["state"] in BP.REAL_STATES
 
 
 def test_research_lock_and_track_registry_agree_with_policy():
@@ -204,10 +205,12 @@ def _instant_tips(tmp_path, monkeypatch, policy: dict | None = None) -> dict:
     return {("UNDER" if "UNDER 2.5" in m else "OVER"): m for m in tips}
 
 
-def test_telegram_instant_tip_labels_nf_under_as_paper(tmp_path, monkeypatch):
+def test_telegram_instant_tips_carry_no_stake_label(tmp_path, monkeypatch):
+    """Owner 2026-11-17 ("Show stake on TOP-3"): an ordinary tip carries no stake label at all, staked track or
+    not, and never the word paper (was: the NF Under tip labelled PAPER)."""
     msg = _instant_tips(tmp_path, monkeypatch)
-    assert "PAPER" in msg["UNDER"] and "not staked" in msg["UNDER"]
-    assert "PAPER" not in msg["OVER"], "positive control: a real-money track is not labelled paper"
+    for side in ("UNDER", "OVER"):
+        assert "paper" not in msg[side].lower() and "not staked" not in msg[side]
 
 
 def test_telegram_label_follows_the_policy_not_the_side(tmp_path, monkeypatch):
@@ -219,9 +222,10 @@ def test_telegram_label_follows_the_policy_not_the_side(tmp_path, monkeypatch):
 
 def test_dashboard_tips_table_shows_nf_under_as_paper():
     from dashboard_data import tips_view as TV
-    assert TV.stake_label("SNIPER", "O/U 2.5 UNDER", "PAPER") == TV.STAKE_PAPER_TRACK
-    assert TV.stake_label("SNIPER", "O/U 2.5 OVER", "ACTIVE_LOW") == TV.STAKE_OU     # positive control
-    assert TV.stake_label("SNIPER", "O/U 2.5 OVER") == TV.STAKE_OU                     # old call unchanged
+    # owner 2026-11-17 ("Show stake on TOP-3"): no stake label on any ordinary tip; a TOP-3 pick shows 0.5% stake
+    assert TV.stake_label("SNIPER", "O/U 2.5 UNDER", "PAPER") == TV.STAKE_PAPER_TRACK == ""
+    assert TV.stake_label("SNIPER", "O/U 2.5 OVER", "ACTIVE_LOW") == ""
+    assert TV.stake_label("SNIPER", "O/U 2.5 OVER", "ACTIVE_LOW", 0.005) == "0.5% stake"
     b = pd.DataFrame({"_day": [DAY, DAY], "_local": pd.to_datetime([f"{DAY} 20:00"] * 2).tz_localize("UTC"),
                       "started": [False, False], "home_team": ["Under FC", "Over FC"],
                       "away_team": ["Low Town", "High Town"], "league": [NF_LEAGUE] * 2, "rating": [None, None],
@@ -231,7 +235,7 @@ def test_dashboard_tips_table_shows_nf_under_as_paper():
                       "decision_state": [None, None]})
     t = TV.selections_table(b, research=False)
     assert t.loc[0, "Stake note"] == TV.STAKE_PAPER_TRACK and t.loc[0, "Stake %"] == 0.0
-    assert t.loc[1, "Stake note"] == TV.STAKE_OU
+    assert t.loc[1, "Stake note"] == ""                                              # owner 2026-11-17
 
 
 def test_free_tier_never_offers_a_zero_stake_tip():

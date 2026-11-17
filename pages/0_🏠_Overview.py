@@ -98,7 +98,7 @@ ui.section_header("Production — V9 live betting", f"{CR.clean_label()} first; 
 # Clean Record first (owner 2026-11-11): tips generated and played on or after config.CLEAN_RECORD_START only.
 _rc = E["clean"][CR.CLEAN]
 cc1, cc2 = st.columns(2)
-for _col, (_name, _s) in zip((cc1, cc2), (("staked bets", _rc["staked"]), ("all tips, paper + staked", _rc["all"]))):
+for _col, (_name, _s) in zip((cc1, cc2), (("staked bets", _rc["staked"]), ("all tips, staked or not", _rc["all"]))):
     ui.metric_card(f"Clean Record P/L · {_name}", U.fmt(_s["units"]) if _s["n"] else U.fmt(0),
                    title=CR.clean_label(),
                    supporting=[("Clean Record settled", f"{_s['n']}"),

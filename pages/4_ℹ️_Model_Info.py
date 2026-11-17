@@ -321,7 +321,7 @@ with tab_bt:
             "onward is the real test — see the 💼 Portfolio page.")
 
 ui.space("small")
-st.caption("v9 · GitHub Actions CI · live P/L in units (paper) · Streamlit Cloud")
+st.caption("v9 · GitHub Actions CI · live P/L in flat units · Streamlit Cloud")
 
 
 # ── Disclaimer & Terms (shown on every dashboard page) ──

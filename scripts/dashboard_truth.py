@@ -49,7 +49,7 @@ ROOT = Path(__file__).resolve().parents[1]
 #: Fantasy, Model Lab, Bet Builder, League Research, Portfolio, Agent Analysis and Live read other repos,
 #: a live API or user input, and are covered in the report, not here.
 PAGES = {"home": "00_🎯_Home.py", "overview": "0_🏠_Overview.py", "tips": "1_📊_Dashboard.py",
-         "cleanrec": "24_🧾_Clean_Record.py", "cells": "25_📐_Bars_and_Cells.py",
+         "cleanrec": "24_🧾_Clean_Record.py",
          "success": "5_🎯_Success_Rates.py", "modelperf": "9_🎓_Model_Performance.py",
          "props": "11_👤_Player_Props.py", "leagues": "17_🏟️_Leagues.py", "health": "19_🩺_System_Health.py",
          "production": "22_🏭_Production.py", "intel": "21_📡_Market_Intelligence.py",
@@ -386,8 +386,8 @@ def independent(out: Path, ctx: dict) -> dict:
 FIGURES = [
     ("clean_staked_pnl", "home", "Clean Record staked P/L (flat 1u)", "metrics", 0, 0),
     ("clean_staked_n", "home", "Clean Record staked bets", "stats", 0, 0),
-    ("clean_all_units", "home", "Clean Record all tips, paper + staked (flat 1u)", "stats", 0, 0),
-    ("clean_all_n", "home", "Clean Record all tips, paper + staked (flat 1u)", "stats", 0, 1),
+    ("clean_all_units", "home", "Clean Record all tips, staked or not (flat 1u)", "stats", 0, 0),
+    ("clean_all_n", "home", "Clean Record all tips, staked or not (flat 1u)", "stats", 0, 1),
     ("staked_pnl", "home", "Staked P/L (flat 1u)|Staked P/L", "metrics", 0, 0),
     ("staked_n", "home", "Settled staked bets", "stats", 0, 0),
     ("staked_win_pct", "home", "Win rate — staked", "stats", 0, 0),
@@ -411,7 +411,7 @@ FIGURES = [
     ("truth_cup_unproven", "home", "Unproven cup rows", "stats", 0, 0),
     ("truth_scores_refused", "home", "Refused scores", "stats", 0, 0),
     ("clean_staked_pnl", "overview", "Clean Record P/L · staked bets", "metrics", 0, 0),
-    ("clean_all_units", "overview", "Clean Record P/L · all tips, paper + staked", "metrics", 0, 0),
+    ("clean_all_units", "overview", "Clean Record P/L · all tips, staked or not", "metrics", 0, 0),
     ("staked_pnl", "overview", "Staked P/L", "metrics", 0, 0),
     ("staked_n", "overview", "Staked bets", "stats", 0, 0),
     ("stake_pnl", "overview", "P/L at recorded stakes", "stats", 0, 0),
@@ -456,10 +456,7 @@ FIGURES = [
     ("cfg_SNIPER_THRESHOLD_OVER", "modelinfo", "OVER threshold (retired)|OVER threshold", "metrics", 0, 0),
     ("cfg_SNIPER_THRESHOLD_UNDER", "modelinfo", "UNDER threshold (retired)|UNDER threshold", "metrics", 0, 0),
     ("clean_staked_pnl", "cleanrec", "Clean Record units · Staked bets", "metrics", 0, 0),
-    ("clean_all_units", "cleanrec", "Clean Record units · All team tips, paper + staked", "metrics", 0, 0),
-    ("cells_n", "cells", "Cells", "metrics", 0, 0),
-    ("cells_staked", "cells", "Staked cells", "metrics", 0, 0),
-    ("cells_proven", "cells", "PROVEN cells", "metrics", 0, 0),
+    ("clean_all_units", "cleanrec", "Clean Record units · All team tips, staked or not", "metrics", 0, 0),
 ]
 #: where each recomputation comes from (the report's "source" column)
 SOURCES = {

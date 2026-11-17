@@ -719,9 +719,9 @@ def report(picks: pd.DataFrame, weeks: pd.DataFrame, now: pd.Timestamp, lead: fl
 def _report_stake_note() -> str:
     flat = top3_stake(_policy())
     if flat is None:
-        return "Flat 1u; a PAPER track - TOP-3 never sizes a stake."
-    return (f"Every TOP-3 tip: real stake {stake_text(flat)} of bankroll, flat, placed manually by the owner "
-            "(never auto-executed); P/L here in flat units.")
+        return "Flat 1u; TOP-3 sizes no stake."
+    return (f"Every TOP-3 tip: {stake_text(flat)} stake of bankroll, flat, placed manually by the owner at the "
+            "odds shown on the tip (never auto-executed); P/L here in flat units.")
 
 
 def write_report(now=None, out_dir: Path | None = None, lead: float | None = None) -> dict:
@@ -732,17 +732,17 @@ def write_report(now=None, out_dir: Path | None = None, lead: float | None = Non
 
 
 def _stake_label(real_checker, r: dict, flat: float | None = None) -> str:
-    """'💰 Staked' when the pick's CELL stakes under the bankroll policy (src/bankroll_policy.stake_entry via
-    direction_guard.real_track_checker), else '📄 Paper' - per line, never a blanket label (go-live rehearsal
-    2026-11-15: the Argentina league rule is staked while the TOP-3 track is paper)."""
+    """'0.5% stake' on a TOP-3 / TIER2 pick when the policy's flat TOP-3 stake is set (owner 2026-11-17, "Show stake
+    on TOP-3"); '' on everything else - a league-rule line, a paper league's pick, or no TOP-3 stake configured.
+    Owner: an ordinary prediction carries NO stake label at all. `real_checker` is kept for the callers."""
     if (flat is not None and str(r.get("selection_mode") or SELECTION_MODE) != OWN_LIST_MODE
             and not config.is_paper_league(r.get("league"))):
-        return f"💰 Stake {stake_text(flat)} (manual)"
-    try:
-        real = bool(real_checker(r.get("model_type"), MARKETS[str(r["market"])][1], r.get("side"), r.get("league")))
-    except Exception:                                                  # noqa: BLE001 - a label can only under-claim
-        real = False
-    return "💰 Staked" if real else "📄 Paper"
+        return f"{stake_text(flat)} stake"
+    return ""
+
+
+def _with_label(text: str, label: str) -> str:
+    return f"{text} · {label}" if label else text
 
 
 def message(picks: pd.DataFrame, real_checker=None, policy: dict | None = None) -> str:
@@ -766,18 +766,17 @@ def message(picks: pd.DataFrame, real_checker=None, policy: dict | None = None) 
         mk = lab.get(str(r["market"]), str(r["market"]))
         lines.append(f"{r['top3_rank']}. {escape(str(r['home_team']))} v {escape(str(r['away_team']))} - "
                      f"{mk} {side} @ {float(r['odds']):.2f} · {r['slot']} · {r['cell_status']} "
-                     f"({edge_text(pd.to_numeric(r.get('edge_calibrated'), errors='coerce') * 100)})"
-                     f" · {_stake_label(real_checker, r, flat)}")
+                     f"({edge_text(pd.to_numeric(r.get('edge_calibrated'), errors='coerce') * 100)})")
+        lines[-1] = _with_label(lines[-1], _stake_label(real_checker, r, flat))
     for (mk, sd), g in rule.groupby(["market", "side"], sort=True):
         side = "Yes" if str(sd) == "YES" else str(sd).title()
         lines.append(f"📏 League rule: {lab.get(str(mk), str(mk))} {side}, every match "
-                     f"({g['cell_status'].iloc[0]}, outside the 3) · {_stake_label(real_checker, g.iloc[0].to_dict())}")
+                     f"({g['cell_status'].iloc[0]}, outside the 3)")       # owner 2026-11-17: no stake label
         for r in g.sort_values("top3_rank", key=lambda s: s.astype(int)).to_dict("records"):
             lines.append(f"   • {escape(str(r['home_team']))} v {escape(str(r['away_team']))} @ {float(r['odds']):.2f}")
-    head = (f"Every TOP-3 tip: real stake {stake_text(flat)} of bankroll, flat, placed manually. A league-rule "
-            "line follows its own cell." if flat is not None else
-            "TOP-3 is a Paper track; each line's stake follows its own cell (Staked / Paper).")
-    lines.append(f"<i>{head} Each tip cleared its league's own owner-approved bar; ranked by calibrated value "
+    head = (f"Every TOP-3 tip: {stake_text(flat)} stake of bankroll, flat, placed manually." if flat is not None
+            else "")
+    lines.append(f"<i>{head + ' ' if head else ''}Each tip cleared its league's own owner-approved bar; ranked by calibrated value "
                  "(the live rule). Fewer than 3 = fewer cleared the bar.</i>")
     return "\n".join(lines)
 

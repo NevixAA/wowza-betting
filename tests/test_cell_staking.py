@@ -40,7 +40,7 @@ def _pre_top3(pol: dict) -> dict:
     test_committed_policy_stakes_exactly_the_owner_cells."""
     pol = copy.deepcopy(pol)
     pol.pop("top3_league", None)
-    for c in pol["cell_staking"]["cells"].values():
+    for c in list(pol["cell_staking"]["cells"].values()) + list(pol["tracks"].values()):
         c.update(c.pop("before_2026_11_17", {}))
         c.pop("staking_basis_2026_11_17", None)
     return pol
@@ -87,7 +87,8 @@ def test_committed_policy_stakes_exactly_the_owner_cells():
     a = cs["cells"][f"new_format|BTTS|{ARG}"]
     t = pol["tracks"]["new_format|BTTS"]
     assert (a["state"], a["base_fraction"], a["max_odds"]) == ("ACTIVE_LOW", 0.005, 2.6)
-    assert t["state"] == "ACTIVE"          # the per-track fallback (cell staking off) is unchanged
+    # owner 2026-11-17 (O9): the per-track fallback (cell staking off) stakes nothing either
+    assert t["state"] == "PAPER" and t["base_fraction"] == 0.0 and t["before_2026_11_17"]["state"] == "ACTIVE"
 
 
 def test_owner_paper_hold_is_never_lifted_by_a_promising_cell():
@@ -137,7 +138,7 @@ def test_paper_league_and_drawdown_rules_still_apply():
 
 
 def test_switch_off_restores_per_track_staking():
-    pol = copy.deepcopy(BP.load_policy())
+    pol = _pre_top3(BP.load_policy())          # the mechanics; the committed fallback is PAPER (owner 2026-11-17)
     pol["cell_staking"]["enabled"] = False
     out = _size([_sel("Japan J-League")], pol)
     assert out.iloc[0]["reason"] == "OK" and out.iloc[0]["deployment_state"] == "ACTIVE"
