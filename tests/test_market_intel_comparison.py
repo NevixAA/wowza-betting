@@ -233,7 +233,9 @@ def test_page_renders_the_comparison_with_pro(monkeypatch, tmp_path, mig):
     frames = [d.value for d in at.dataframe]
     # first comparison tab = first cell; its engine table is the module's rows for that cell
     first = mig["engines"]["cell"].iloc[0]
-    want = mig["engines"][mig["engines"]["cell"] == first].drop(columns=["cell", "track", "market", "cell_status"])
+    import dashboard_words as W                                     # owner 2026-11-17: shown without "paper"
+    want = W.relabel_obj(mig["engines"][mig["engines"]["cell"] == first].drop(
+        columns=["cell", "track", "market", "cell_status"]))
     hit = [f for f in frames if list(f.columns) == list(want.columns)]
     assert hit, "engine table not rendered"
     pd.testing.assert_frame_equal(hit[0].reset_index(drop=True), want.reset_index(drop=True), check_dtype=False)

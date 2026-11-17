@@ -209,7 +209,7 @@ else:
             return
         tot = tt[tt["Tier"] == "All tips"].iloc[0]
         _pre = "Clean Record " if era == "clean models" else ""          # distinct labels per record
-        ui.metric_card(f"{_pre}Flat ROI (1u, paper)", ui.fmt_roi(tot["ROI %"] / 100) if tot["Priced"] else "—",
+        ui.metric_card(f"{_pre}Flat ROI (1u, no stake)", ui.fmt_roi(tot["ROI %"] / 100) if tot["Priced"] else "—",
                        title=f"All tips · {era} · {period.lower()}",
                        supporting=[(f"{_pre}Settled", f"{int(tot['Settled'])}"),
                                    (f"{_pre}Record", f"{int(tot['Wins'])}W – {int(tot['Settled'] - tot['Wins'])}L"),

@@ -399,7 +399,7 @@ FIGURES = [
     ("last7_n", "home", "Last 7 days", "stats", 0, 1),
     ("plan_active", "home", "Active tips", "metrics", 0, 0),
     ("plan_up_ou", "home", "Upcoming staked tips (O/U 2.5)", "stats", 0, 0),
-    ("plan_paper", "home", "Paper / no stake", "stats", 0, 0),
+    ("plan_paper", "home", "No stake", "stats", 0, 0),
     ("plan_shadow_bet", "home", "Shadow engine BET", "stats", 0, 0),
     ("plan_shadow_n", "home", "Shadow engine BET", "stats", 0, 1),
     ("health_overall", "home", "System health", "metrics", 0, None),

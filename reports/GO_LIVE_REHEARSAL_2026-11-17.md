@@ -40,7 +40,7 @@ Source heads merged (all current at the end of the rehearsal, after catch-up mer
 | 2j | Pro suite against the merged v9 | **GREEN as planned** | 581 passed, 1 failed. The failure is `test_fixture_key_v2` (mixed v1/fk2 warehouse), which P1 fixes, as the runbook expects. |
 | 3 | Runbook dry runs | GREEN | U3b: would apply 63 (and the real apply ran clean). U3e freeze dry run: 40 cells. TOP-3 dry runs. U3d exec: 48 PAPER cells. Details in section 3. |
 | 4 | CI on the rehearsal ref | **GREEN** | Tests and gates (tests + gates) success; Data Truth stoplight success |
-| 5 | Stake decision (owner 2026-11-17, final) | **PROPOSED, needs owner U3a** | Every TOP-3 tip 0.5% flat, placed manually; nothing else stakes; nothing auto-executes. 18 tests. Section 5. |
+| 5 | Stake decision (owner 2026-11-17, final) | **ADOPTED by the owner; U3a on go-live day** | Every TOP-3 tip 0.5% flat, placed manually; nothing else stakes; nothing auto-executes. 18 tests. Section 5. |
 
 ## 1. Merges: every conflict and its resolution
 
@@ -85,7 +85,7 @@ housekeeping. The heads moved during the rehearsal, so main, dt (twice) and prep
 |---|---|---|
 | `pages/24_🧾_Clean_Record.py` | **main** | Per the brief: main's page (PR #42) carries the branch's split path |
 | `pages/24_📬_Daily_Progress.py` | **main** | Main's version is newer and on the design system (`bfa216278`) |
-| `dashboard_access.py`, `tests/test_dashboard_navigation.py` | **both Bars pages registered** (25 Bars & Cells, 26 Bars) | Dropping either removes a feature. **Owner picks one** (decision O3). |
+| `dashboard_access.py`, `tests/test_dashboard_navigation.py` | both Bars pages registered at first; **owner O3 "Today's Bars page": page 26 kept, page 25 dropped** | section 10.3 |
 | `deploy/dashboard_manifest.json` | regenerated | |
 
 ### 1.4 Housekeeping in the merge (runbook 0c)
@@ -239,7 +239,7 @@ No other workflow was dispatched. Every other workflow writes (commits, sends, c
 and Pro CI would be red by design (section 3). Pro branch `rehearsal/golive-2026-11-17` (`7c136285`) was pushed;
 it triggered no run. **0 red runs.**
 
-## 5. Stakes: the owner's final decision of 2026-11-17 (PROPOSED in this branch)
+## 5. Stakes: the owner's final decision of 2026-11-17 (adopted: section 10)
 
 Owner: "From Nov 21, EVERY TOP-3 tip carries a real stake of 0.5% of bankroll, flat. I place the bets manually;
 exec and Cloudbet stay off. Tips carry no paper label; every TOP-3 tip counts in the Clean Record from 21.11."
@@ -294,7 +294,7 @@ exec and Cloudbet stay off. Tips carry no paper label; every TOP-3 tip counts in
 
   Tests that pinned the 11-15 stakes now pin the 11-17 decision, or test the mechanics on the pre-decision policy.
 
-### 5.3 Must change before the decision is fully true (not done here: they are other branches or owner text)
+### 5.3 Texts that had to change (all DONE on 2026-11-17 evening, section 10)
 
 | Where | Today | Needed |
 |---|---|---|
@@ -328,70 +328,72 @@ exec and Cloudbet stay off. Tips carry no paper label; every TOP-3 tip counts in
 9. **The heads keep moving** (4 PRs landed during this rehearsal). On go-live day the merge must be redone on the
    final heads; the resolutions in section 1 are the rules.
 
-## 7. Owner decisions needed
+## 7. Owner decisions (answered 2026-11-17)
 
-| # | Decision | Recommendation |
-|---|---|---|
-| O0 | **Adopt the stake proposal (section 5.2)** and run U3a yourself | Yes, if 11-17 is final. Otherwise drop the three PROPOSED commits; the source branches are unchanged. |
-| O1 | Telegram: ordinary tips on TOP-3 fixtures show "PAPER - not staked" | Label them "not a TOP-3 tip (no stake)", or send only TOP-3 |
-| O2 | "Staked" on the dashboard plus the placed price for manual bets | Count TOP-3 picks as staked at 0.5%; record the odds you took |
-| O3 | Bars page: keep 25 "Bars & Cells" (dashboard/clean-record) or 26 "Bars" (main PR #42), or both | Keep 26 (main, newer, statistics) and fold 25's per-cell registry into it later |
-| O4 | U6 Clean Record start: `config/trustworthy_performance.json` already says `2026-11-21T00:00:00Z` (`owner_confirmed: false`) | Keep 00:00Z if no tip is written between 00:00 and the merge; otherwise the P0 merge instant |
-| O5 | Delete `PHASE2_RETRAIN_ENABLED` (R4) before go-live | Yes, unless the R6 refit is still to run |
-| O6 | R6 gate (runbook 2.6b): refit on 11-19/20, or option A (current clean models) | Team and props parity is 0 on the served models today (G1 parity part) |
-| O7 | D16: delete the two main-only hotfix tests in the merge (done in the rehearsal) | Yes |
-| O8 | P1 fk2 re-migration counts (D2) | Run its dry run first; it must finish before the Pro writers are unfrozen |
-| O9 | Track fallback (risk 7): set the ACTIVE track entries to PAPER too | Yes |
-| O10 | Argentina NF BTTS league rule: under the proposal it is PAPER (not a TOP-3 tip) | Confirm |
+| # | Decision | Owner's answer | Where it is |
+|---|---|---|---|
+| O0 | Adopt the stake proposal (section 5.2); U3a by the owner | **"Yes, adopt"** | `1545a430d`, `08919047f`, `89d5e15d1`, `42063eb5a`; U3a on go-live day |
+| O1 | Telegram labels | **"Show stake on TOP-3"**: TOP-3 picks show "0.5% stake"; every other prediction has NO stake label; the word "paper" never reaches a user | `42063eb5a` (section 10) |
+| O2 | "Staked" figures; price of the manual bets | "Staked" counts TOP-3 tips. **"Use tip's odds"**: settle at the odds shown on the tip at send time, with no manual entry form | `42063eb5a` |
+| O3 | Bars page | **"Today's Bars page"**: keep `pages/26_📏_Bars.py`; page 25 (Bars & Cells) is not merged | `42063eb5a` |
+| O4 | Clean Record start | **"21.11 00:00 UTC"**: `owner_confirmed: true`. Rule kept: if any tip is written on 11-21 before the merge, use the merge instant | `42063eb5a`; command 17 |
+| O5 + O6 | `PHASE2_RETRAIN_ENABLED`; R6 | **REFIT on Nov 19-20**: champion_recipe on the clean data incl. the verified restored rows, reading the private price store (`PRICE_STORE_READ=1`); Nov 20 confirm-diff and owner approval; delete `PHASE2_RETRAIN_ENABLED` only AFTER the refit | commands B1-B7 |
+| O7 | Delete the two main-only hotfix tests in the merge | **yes** | command 6 |
+| O8 | P1 fk2 re-migration | **yes**: dry run first; it must finish before the Pro writers are unfrozen | command 14 |
+| O9 | Fallback tracks to PAPER | **"Yes, adopt"** | `42063eb5a` |
+| O10 | Argentina NF BTTS league rule | **no stake** (not a TOP-3 tip) | `1545a430d` |
 
-The TOP-3 tips stake real money on backtest-derived bars and rankings by the owner's explicit 11-17 decision (risk 2).
-No other go-live config stakes real money once the proposal is adopted. Without the proposal, the source
-branches still stake 4 cells at 0.5%, including the Argentina NF BTTS league rule (the owner decided paper on
-2026-11-17). Those cells are UNPROVEN or PROMISING on backtest evidence only.
+No owner decision is open. Agent-side follow-ups only: the prediction-ledger agent adopts the two reader fixes
+(section 9).
 
-## 8. Go-live-day command list (ordered; each step with its rollback)
+## 8. Go-live command list (ordered; each step with its rollback)
 
-Shell prelude: runbook "Shell prelude" (`$GL`, `$py`, git and gh on PATH). `R` = `origin/rehearsal/golive-2026-11-17`.
+Shell prelude: runbook "Shell prelude" (`$GL`, `$py`, git and gh on PATH). `R` = `origin/rehearsal/golive-2026-11-17`,
+`RP` = the Pro branch of the same name.
 
-**Before go-live day**
+**Nov 19-20: the approved refit (O5/O6)**
 
 | # | Step | Command | Rollback |
 |---|---|---|---|
-| A1 | Owner decisions O0-O10 | (owner) | - |
-| A2 | 11-19/20: R6 gate, or option A (runbook 2.6b, R6, R7) | runbook | do not install |
-| A3 | 11-20 UTC: U3e freeze | `$py scripts/top3_paper_freeze.py --dry-run --out $GL\freeze`, then `$py scripts/top3_paper_freeze.py`; commit both files by path | delete the 2 files before the first pick |
+| B1 | R6 gate (runbook 2.6b) | G1 parity (rehearsal: team 0 of 6,020 cells, props 0 of 128 features), G2 collectors, G3 this rehearsal; record `$GL\r6_gate.txt` | stop; no refit |
+| B2 | Store read on | `gh variable set PRICE_STORE_READ --body 1 --repo NevixAA/wowza-betting` (locally: `bash scripts/price_store_read.sh wowza-betting data-truth-100` before the refit; it stops unless the store bytes equal the commit) | `gh variable set PRICE_STORE_READ --body 0 --repo NevixAA/wowza-betting` |
+| B3 | Refit (runbook R6) | `$env:PHASE2_RETRAIN_ENABLED="true"; $py scripts/phase2_refit_serving.py --out $GL\refit` (champion_recipe, clean data with the verified restored rows); then `$py scripts/team_train_serve_parity.py $GL\parity <12 pkl> 6` = 0 differing cells | do not install |
+| B4 | Nov 20 confirm-diff + owner approval | `$py scripts/promote_clean_switch.py assemble --refit $GL\refit --out $GL\asm`; review the diff with the owner; put the 7 sha256 into `final_refit`; `$py scripts/promote_clean_switch.py install --assembled $GL\asm --override clean-data-switch-2026-11-09` | revert the install commit |
+| B5 | R7 bars re-check | runbook R7 (exit 0 = the approved bars stand; exit 1 = back to the owner) | - |
+| B6 | U3e freeze (11-20 UTC) | add the refit frame to `clean_frames`; `$py scripts/top3_paper_freeze.py --dry-run --out $GL\freeze` (rehearsal: 40 cells), then `$py scripts/top3_paper_freeze.py`; commit both files by path | delete the 2 files before the first pick |
+| B7 | **Only after the refit is installed** | `gh variable delete PHASE2_RETRAIN_ENABLED --repo NevixAA/wowza-betting` | `gh variable set PHASE2_RETRAIN_ENABLED --body true --repo NevixAA/wowza-betting` |
 
 **Go-live day (v9)**
 
 | # | Step | Command | Rollback |
 |---|---|---|---|
-| 1 | Snapshot | `$py scripts/golive/snapshot_state.py --out $GL\state_before.json`; save the premerge SHAs (runbook 1.6) | - |
-| 2 | Freeze the writers | runbook 2.1 (writes `frozen.csv`) | `gh workflow enable` each id in `frozen.csv` |
-| 3 | Results sync on dt | worktree on `origin/data-truth-100`: `$py scripts/sync_results_from_main.py`; commit the synced files by path; push to data-truth-100 | `git revert` that commit on dt |
-| 4 | Merge branch | `git checkout -b golive/m1 origin/main`; `git merge --no-ff --no-commit origin/data-truth-100`, then `origin/prep/bars-oddsapi-hist`, then `origin/dashboard/clean-record`; resolve each per section 1. For a file that neither side changed since the rehearsal: `git checkout R -- <file>` | delete the branch |
-| 5 | Rehearsal fixes | `git checkout R -- src/team_names.py src/integrity/data_truth.py src/integrity/real_data_provenance.py scripts/dashboard_manifest.py config/data_truth_allowlist.json src/clv_collection_health.py src/prediction_ledger_v9.py tests/test_no_global_bars.py tests/test_daily_injuries_lineups.py tests/test_real_data_pipeline_trace.py tests/test_fix16_readers.py tests/test_top3_paper.py tests/test_clv_capture.py` (first: `git diff R origin/<side> -- <file>` must show only the rehearsal fix) | part of the merge PR |
-| 6 | Housekeeping | `git rm tests/test_resolver_hotfix_main.py tests/test_ht_fill_hotfix.py`; `$py -m src.clv_corrections build` (keep only content changes) | part of the merge PR |
-| 7 | Stake change (if O0 = yes) | `git cherry-pick 1545a430d 08919047f 89d5e15d1`. **Do not cherry-pick `c609e92b8` or `84dc83faf`** (REHEARSAL-ONLY). | drop the commits |
-| 8 | U3a (owner) | `$py -m src.research_lock --approve --by "Nevo (owner)" --note "2026-11-21 go-live: bade2c0b bars serving; TOP-3 0.5% flat manual, every cell PAPER"`, then `$py scripts/build_track_registry.py`, then `$py scripts/dashboard_manifest.py --write` | revert |
-| 9 | Validate | full suite 0 failed; `data_truth --gate` GREEN; `research_lock --check`; `build_track_registry.py --check`; `dashboard_manifest.py --check`; `git show --stat HEAD` (no stray `output/*`) | - |
+| 1 | Snapshot | `$py scripts/golive/snapshot_state.py --out $GL\state_before.json`; premerge SHAs (runbook 1.6) | - |
+| 2 | Freeze the writers | runbook 2.1 (`frozen.csv`) | `gh workflow enable` each id in `frozen.csv` |
+| 3 | Results sync on dt | worktree on `origin/data-truth-100`: `$py scripts/sync_results_from_main.py`; commit the synced files by path; push to data-truth-100 | `git revert` that commit |
+| 4 | Merge branch | `git checkout -b golive/m1 origin/main`; `git merge --no-ff --no-commit` `origin/data-truth-100`, then `origin/prep/bars-oddsapi-hist`, then `origin/dashboard/clean-record` (page 25 is NOT taken: `git rm "pages/25_📐_Bars_and_Cells.py"`); resolve per section 1. A file neither side changed since the rehearsal: `git checkout R -- <file>` | delete the branch |
+| 5 | Rehearsal merge fixes | `git checkout R -- src/team_names.py src/integrity/data_truth.py src/integrity/real_data_provenance.py scripts/dashboard_manifest.py config/data_truth_allowlist.json src/clv_collection_health.py src/prediction_ledger_v9.py tests/test_no_global_bars.py tests/test_daily_injuries_lineups.py tests/test_real_data_pipeline_trace.py tests/test_fix16_readers.py tests/test_top3_paper.py tests/test_clv_capture.py` (first `git diff R origin/<side> -- <file>` must show only the rehearsal fix) | part of the merge PR |
+| 6 | Housekeeping (O7) | `git rm tests/test_resolver_hotfix_main.py tests/test_ht_fill_hotfix.py`; `$py -m src.clv_corrections build` (keep content changes only) | part of the merge PR |
+| 7 | Owner decisions (O0-O4, O9, O10) | `git cherry-pick 1545a430d 08919047f 89d5e15d1 42063eb5a` in that order. **Never `c609e92b8`, `84dc83faf`, `3d4e1349e`, `8358223da`** (REHEARSAL-ONLY approvals and registries). | drop the commits |
+| 8 | U3a (owner), then the registry | `$py -m src.research_lock --approve --by "Nevo (owner)" --note "2026-11-21 go-live: bade2c0b bars; TOP-3 0.5% flat manual; every cell and track at 0"`; **then `$py scripts/build_track_registry.py`**; then `$py scripts/dashboard_manifest.py --write` | revert |
+| 9 | Validate | full suite 0 failed; `data_truth --gate` GREEN; `research_lock --check`; `build_track_registry.py --check`; `build_bars_statistics.py --check`; `dashboard_manifest.py --check`; `$py scripts/ui_wording_scan.py` (0 occurrences); `git show --stat HEAD` (no stray `output/*`) | - |
 | 10 | M1 PR | push `golive/m1`; `gh pr create --base main`; `gh pr checks --watch`; `gh pr merge --merge` | `git revert -m 1 <merge>` via PR (runbook 2.4) |
-| 11 | U3b | `$py -m src.threshold_apply --proposal output/threshold_proposals/bars_oddsapi_hist/2026-11_bade2c0b.json --dry-run` (63), then without `--dry-run`; commit `models/best_params_standard.json models/best_params_side_markets.json config/threshold_applied.json config/research_lock_snapshot.json` | revert the apply commit |
-| 12 | **Do not run** `cell_staking_from_proposal.py` (if O0 = yes; it refuses anyway) | - | - |
+| 11 | U3b | `$py -m src.threshold_apply --proposal output/threshold_proposals/bars_oddsapi_hist/2026-11_bade2c0b.json --dry-run` (63), then without `--dry-run`; commit `models/best_params_standard.json models/best_params_side_markets.json config/threshold_applied.json config/research_lock_snapshot.json`, then `$py scripts/build_track_registry.py` and commit `config/track_registry.json` | revert the apply commit |
+| 12 | Do NOT run `cell_staking_from_proposal.py` | it refuses anyway (exit 3) | - |
 
-**Go-live day (other repos and switch-ons)**
+**Go-live day (Pro, exec, v11, dashboard, switch-ons)**
 
 | # | Step | Command | Rollback |
 |---|---|---|---|
-| 13 | M2 Pro | merge dt into main; CSVs → main; `git checkout origin/rehearsal/golive-2026-11-17 -- src/scout tests/test_scout.py tests/test_data_truth_pro.py tests/test_data_truth_round3_pro.py tests/test_scout_data_truth.py src/pipelines/team_stats.py tests/test_bankroll_side_tracks.py tests/test_lab_identity.py src/prediction_ledger_pro.py` (Pro rehearsal branch, after the same diff check); suite (only fk2 fails); PR, merge commit | revert v9 and Pro **together** |
-| 14 | P1 fk2 | runbook P1 (dry run, owner OK on counts, run, suite 0 failed) | revert the migration commit first |
-| 15 | M3 exec | merge `prep/exec-clean-rebuild`; `$py scripts/exec_cells_from_v9.py` (48 cells), then `--write`; suite; commit `registry/execution_policy.json` (stays PAPER_ONLY) | revert |
-| 16 | M4 v11, M5 dashboard | runbook M4/M5 | runbook |
-| 17 | P0 time; U6 | record the merge time; the Clean Record start per O4 | revert the PR; PATCH the milestone back |
-| 18 | P2-P4; U1 unfreeze (Pro writers after P1) | runbook | `gh workflow disable` |
-| 19 | Switch-ons | `gh variable set PREMATCH_CAPTURE_ENABLED --body true`; `gh variable set TOP3_FREEZE_LEAD_MIN --body 120`; `gh variable set TOP3_LEAGUE_ENABLED --body true`; after `pytest tests/test_top3_paper.py tests/test_top3_ranking.py tests/test_top3_flat_stake.py` on main: `gh variable set TOP3_PAPER_ENABLED --body true` (all `--repo NevixAA/wowza-betting`) | `gh variable delete <name> --repo NevixAA/wowza-betting` |
-| 20 | R4 | `gh variable delete PHASE2_RETRAIN_ENABLED --repo NevixAA/wowza-betting` (O5) | `gh variable set ... --body true` |
-| 21 | U8 and retirements | Pro specials to main; retire the dt-targeted workflows (`data_truth_collect.yml` syncmain, `oddsapi_history_probe.yml`, the `price_store_sync.yml` push branches) | revert |
-| 22 | Live validation | runbook section 4 (+1 h, +6 h, +24 h). Plus: the first TOP-3 message shows "Stake 0.5% (manual)" on every pick; `stake_plan.csv` has 0 stake on every row | abort criteria, runbook section 4 |
+| 13 | M2 Pro | merge dt into main; the 6 CSVs → main; `git checkout RP -- src/scout tests/test_scout.py tests/test_data_truth_pro.py tests/test_data_truth_round3_pro.py tests/test_scout_data_truth.py src/pipelines/team_stats.py tests/test_bankroll_side_tracks.py tests/test_lab_identity.py src/prediction_ledger_pro.py tests/test_bankroll.py tests/v9_policy_before.py` (after the same diff check); suite with `V9_LOCAL` = new v9 main: only fk2 fails; PR, merge commit | revert v9 and Pro **together** |
+| 14 | P1 fk2 (O8) | `python -m src.pipelines.migrate_fixture_key_v2 --season season_2026_27 --dry-run` first (counts to the owner), then the run, suite 0 failed, PR. **Must finish before command 18 unfreezes the Pro writers.** | revert the migration commit first |
+| 15 | M3 exec | merge `prep/exec-clean-rebuild`; `$py scripts/exec_cells_from_v9.py` (48 cells), then `--write`; suite; commit `registry/execution_policy.json` (stays `PAPER_ONLY`, real betting off) | revert |
+| 16 | M4 v11, M5 dashboard | runbook M4 / M5 | runbook |
+| 17 | P0 + U6 (O4) | record the merge time. If no tip was written on 11-21 before it: keep `clean_record_start_utc = 2026-11-21T00:00:00Z`; else set it, `PERFORMANCE_CUTOFF_DATE` and `PROPS_CLEAN_MODELS_LIVE_DATE` to the merge instant (PR). Milestone/2 due = start + 2 months | revert the PR; PATCH the milestone back |
+| 18 | P2-P4; U1 unfreeze (Pro writers only after P1) | runbook | `gh workflow disable` |
+| 19 | Switch-ons | `gh variable set PREMATCH_CAPTURE_ENABLED --body true`; `gh variable set TOP3_FREEZE_LEAD_MIN --body 120`; `gh variable set TOP3_LEAGUE_ENABLED --body true`; after `pytest tests/test_top3_paper.py tests/test_top3_ranking.py tests/test_top3_flat_stake.py tests/test_ui_wording.py` on main: `gh variable set TOP3_PAPER_ENABLED --body true` (all `--repo NevixAA/wowza-betting`) | `gh variable delete <name> --repo NevixAA/wowza-betting` |
+| 20 | (`PHASE2_RETRAIN_ENABLED`) | already deleted in B7, after the refit | - |
+| 21 | U8 and retirements | Pro specials to main; retire `data_truth_collect.yml` (syncmain), `oddsapi_history_probe.yml` and the `price_store_sync.yml` push branches | revert |
+| 22 | Live validation | runbook section 4. Plus: the first TOP-3 message shows "0.5% stake" on every pick and no other tip carries a stake label; `stake_plan.csv` has 0 stake on every row; the dashboard "Staked" counts the TOP-3 picks | abort criteria, runbook section 4 |
 
 ## 9. Other agents' work and the merge order
 
@@ -403,3 +405,76 @@ Shell prelude: runbook "Shell prelude" (`$GL`, `$py`, git and gh on PATH). `R` =
 
 Rule for anything landing between now and go-live: a PR to main that touches a file in section 1 adds a conflict
 on the day. Prefer porting to dt in the same text, or wait until after the merge.
+
+## 10. Owner decisions applied (2026-11-17 evening): changes and validation
+
+Commits on the v9 rehearsal branch: `42063eb5a` (the decisions) and `3d4e1349e` / `8358223da`
+(REHEARSAL-ONLY lock approval and registry). Pro: `1cf2ab78`.
+
+### 10.1 Stakes (O0, O9, O10)
+
+- **Every cell and every track at 0.** The fallback tracks were `new_format|BTTS` 1.25%, `new_format|OU25_OVER`
+  0.5% and `new_format|OVER15` 0.5%; now PAPER 0, with the old values kept in `before_2026_11_17`.
+- **The only real stake** is `top3_league.stake` (FLAT 0.005, MANUAL).
+- **`policy_version`** ends `+top3-flat-manual-tracks-paper-2026-11-17`.
+- **Tests on the pre-decision policy.** The mechanics tests (sizer, side routing, caps, Cloudbet bot) use it:
+  v9 `tests/policy_helpers.py`, Pro `tests/v9_policy_before.py`. The committed state is pinned by
+  `tests/test_top3_flat_stake.py` and `tests/test_cell_staking.py`.
+
+### 10.2 Wording (O1, O2): TOP-3 "0.5% stake", nothing else, never "paper"
+
+- **TOP-3 Telegram message.** Each pick ends "· 0.5% stake"; the footer reads "Every TOP-3 tip: 0.5% stake of
+  bankroll, flat, placed manually." League-rule lines carry no label.
+- **Ordinary Telegram tips.** No stake label at all (`_paper_track_note` returns ''). The HT tip header lost its
+  "(PAPER)". The auto-onboard message no longer promises a stake.
+- **Dashboard board.** The "Stake note" column is "0.5% stake" on a TOP-3 pick and empty on every other tip.
+  TOP-3 picks are overlaid from their ledger onto the board (`Stake %`, `plan_staked`).
+- **"Staked" figures.** `src/staked.load_records` reads every TOP-3 pick whose frozen `stake_effect` is REAL as a
+  recorded decision. A TOP-3 decision before kickoff decides its position, so later 0-stake plan rows never
+  withdraw it. Its P/L is at the ledger's tip odds (O2 "Use tip's odds": the odds frozen on the pick at send time).
+  The definition text says so.
+- **"Paper" never reaches a user.** `dashboard_words.py` relabels at the display layer:
+  - every Streamlit text, table, metric, tab and widget call (option values stay raw; only what is shown is relabelled);
+  - PIL text in the Telegram pictures;
+  - every Telegram send and caption.
+
+  Internal states (PAPER in the policy and ledgers) are unchanged. The owner-named pages were reworded at the
+  source: Bars, Clean Record ("TOP-3 per league (0.5% stake, flat; P/L flat 1u)", "staked or not"), Leagues and Home.
+- **Proof.** `scripts/ui_wording_scan.py` renders all 30 pages headless (every visible string, table cells
+  included). Before: 159 occurrences on 23 pages. After: **0**. `tests/test_ui_wording.py` (6 tests) pins the
+  mechanism. The scan covers each page's initial render (every tab); views behind other widget choices are covered
+  by the relabel layer, not by the scan.
+- **`bars_statistics.json`.** `scripts/build_bars_statistics.py` now reads this tree's policy. The stake plan is
+  the 11-17 decision with 0 staked cells, and the per-cell rule reads "no stake of its own; a TOP-3 pick of this
+  cell: 0.5% flat". `--check` is green.
+
+### 10.3 Bars page (O3), Clean Record (O4), runbook
+
+- **Page 25 removed:** `git rm`, navigation, the design-system list, the dashboard truth reproducer (its 3 figures).
+  `cells_view` stays, because Bankroll and Clean Record use it.
+- **`config/trustworthy_performance.json`:** `owner_confirmed: true`, with the owner's words "21.11 00:00 UTC" and
+  the merge-instant rule.
+- **`reports/GO_LIVE_RUNBOOK.md`:** U3a is now followed by `build_track_registry.py`, in the U3a row and in 0c.
+
+### 10.4 Fixes asked for
+
+- **`update_results --dry-run`.** `update_ht_results` and `update_ht_observations` now take `dry_run`, and main()
+  passes it to them. The offline rerun logs "[DRY] would grade 2" and "[DRY] would fill 8", and the worktree stays
+  clean. `tests/test_update_results_dry_run.py` checks every grader.
+- **Prediction-ledger reader fixes.** Already in the tree (`69e7dc623` v9, `7c136285` Pro).
+
+### 10.5 Validation of the new tip
+
+| Check | Result |
+|---|---|
+| v9 full suite | FINAL3_RESULT |
+| `data_truth --gate` | STOPLIGHT GREEN (rule 3 RED, ungated) |
+| `research_lock --check` | clean (rehearsal approval) |
+| `build_track_registry.py --check` | in sync: 100 entries (BLOCKED 18, PAPER 77, PAPER_LEAGUE 5) |
+| `build_bars_statistics.py --check` | up to date |
+| `dashboard_manifest.py --check` + render | 0 missing; 28 pages with 0 exceptions (Dashboard and Live: expected blocked admin buttons) |
+| `ui_wording_scan.py` | 0 occurrences on 30 pages |
+| actionlint 1.7.12 | 0 findings (v9 and Pro) |
+| Offline `update_results --dry-run` | no file written; 86 calls blocked |
+| Pro suite against the v9 tip | 581 passed; 1 failed (fk2, P1) |
+| CI on the rehearsal ref | CI3_RESULT |
