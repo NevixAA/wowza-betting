@@ -61,6 +61,24 @@ def test_tier2_slot_is_a_top3_tip_too():
     assert top["stake_effect"].str.startswith("REAL 0.5%").all()
 
 
+def test_a_paper_league_pick_is_never_staked():
+    """USA MLS is a PAPER league (config.PAPER_LEAGUES): its TOP-3 picks are ledgered and graded but never sent,
+    so the owner cannot place them - no stake (11-03..09 dry run: 1 of 10 picks was USA MLS)."""
+    import config
+    lg = "USA MLS"
+    assert config.is_paper_league(lg)
+    rows = [_cand(1, league=lg)]
+    picks, _ = _freeze_with(POLICY, _frame_for(rows, lg), _ctx(league=lg), _stats({"over25_over": 1.0}, league=lg))
+    top = picks[picks["selection_mode"] == T.SELECTION_MODE]
+    assert len(top) == 1 and top["stake_effect"].str.startswith("NONE").all()
+    assert "0.5%" not in T._stake_label(lambda *a, **k: False, top.iloc[0].to_dict(), 0.005)
+
+
+def _frame_for(rows, league):
+    lock = _cand(99, ko="2026-11-20T19:00:00Z", pm=0.5, pf=0.5, ev_lb=-0.1, league=league)
+    return pd.concat([pd.DataFrame(rows), pd.DataFrame([lock])], ignore_index=True).astype(object)
+
+
 @pytest.mark.parametrize("bad", [
     {}, {"rule": "FLAT", "fraction": 0.005}, {"rule": "FLAT", "fraction": 0.005, "execution": "AUTO"},
     {"rule": "KELLY", "fraction": 0.005, "execution": "MANUAL"}, {"rule": "FLAT", "fraction": float("nan"),

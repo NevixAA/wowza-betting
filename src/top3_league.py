@@ -537,7 +537,10 @@ def freeze_due(cands: pd.DataFrame, weeks_done: set, ctx: dict, now: pd.Timestam
         flat = top3_stake(policy)
         for r in picks.to_dict("records"):
             mk = MARKETS[str(r["market"])][1]
-            staked = str(r["list"]) == SELECTION_MODE and flat is not None   # a league-rule line is not TOP-3
+            # a league-rule line is not TOP-3; a PAPER league's pick (config.PAPER_LEAGUES, e.g. USA MLS) is never
+            # sent (notify drops it), so the owner cannot place it and it never carries a stake
+            staked = (str(r["list"]) == SELECTION_MODE and flat is not None
+                      and not config.is_paper_league(r.get("league")))
             picks_out.append({
                 **{k: r.get(k, "") for k in PICK_FROZEN if k in r},
                 "pick_id": LW.research_id(VERSION, week, str(r["market"]), str(r["fixture_id"]), str(r["side"])),
@@ -732,7 +735,8 @@ def _stake_label(real_checker, r: dict, flat: float | None = None) -> str:
     """'💰 Staked' when the pick's CELL stakes under the bankroll policy (src/bankroll_policy.stake_entry via
     direction_guard.real_track_checker), else '📄 Paper' - per line, never a blanket label (go-live rehearsal
     2026-11-15: the Argentina league rule is staked while the TOP-3 track is paper)."""
-    if flat is not None and str(r.get("selection_mode") or SELECTION_MODE) != OWN_LIST_MODE:
+    if (flat is not None and str(r.get("selection_mode") or SELECTION_MODE) != OWN_LIST_MODE
+            and not config.is_paper_league(r.get("league"))):
         return f"💰 Stake {stake_text(flat)} (manual)"
     try:
         real = bool(real_checker(r.get("model_type"), MARKETS[str(r["market"])][1], r.get("side"), r.get("league")))
