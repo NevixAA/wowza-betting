@@ -1,7 +1,7 @@
 {
   "artifact": "join_integrity_health",
   "helper_version": "safe_left_enrich-1.0",
-  "generated_at": "2026-11-16T20:30:54Z",
+  "generated_at": "2026-11-17T15:41:00Z",
   "status": "FAIL",
   "joins": {
     "af_history_shots.legacy": {
@@ -13,7 +13,7 @@
       ],
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
-      "left_rows": 83536,
+      "left_rows": 83537,
       "right_rows": 91817,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 5972,
@@ -23,12 +23,12 @@
       "left_null_key_rows": 0,
       "matched_left_rows": 82405,
       "unmapped_left_rows": 0,
-      "output_rows": 90579,
+      "output_rows": 90580,
       "duplicate_output_rows": 0,
       "filled_cells": {},
       "overwritten_cells": 0,
       "legacy_expansion_rows": 7043,
-      "legacy_misaligned_rows": 83524,
+      "legacy_misaligned_rows": 83525,
       "status": "FAIL",
       "notes": [
         "key omits league/fixture_id"
@@ -44,7 +44,7 @@
       ],
       "helper_version": "safe_left_enrich-1.0",
       "mode": "safe",
-      "left_rows": 83536,
+      "left_rows": 83537,
       "right_rows": 19840,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
@@ -53,24 +53,24 @@
       "ambiguous_cells": {},
       "left_null_key_rows": 0,
       "matched_left_rows": 20167,
-      "unmapped_left_rows": 63369,
-      "output_rows": 83536,
+      "unmapped_left_rows": 63370,
+      "output_rows": 83537,
       "duplicate_output_rows": 0,
       "filled_cells": {
         "home_shots": 62,
         "away_shots": 62,
-        "home_sot": 63,
-        "away_sot": 63,
+        "home_sot": 62,
+        "away_sot": 59,
         "home_corners": 5613,
         "away_corners": 5612,
         "home_fouls": 5609,
         "away_fouls": 5606,
         "home_yellows": 19517,
         "away_yellows": 19515,
-        "home_xg": 95,
-        "away_xg": 95,
-        "home_insidebox": 63,
-        "away_insidebox": 63
+        "home_xg": 84,
+        "away_xg": 84,
+        "home_insidebox": 61,
+        "away_insidebox": 61
       },
       "overwritten_cells": 0,
       "legacy_expansion_rows": null,
@@ -87,7 +87,7 @@
       ],
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
-      "left_rows": 83536,
+      "left_rows": 83537,
       "right_rows": 33259,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 1174,
@@ -97,12 +97,12 @@
       "left_null_key_rows": 0,
       "matched_left_rows": 32084,
       "unmapped_left_rows": 0,
-      "output_rows": 84709,
+      "output_rows": 84710,
       "duplicate_output_rows": 0,
       "filled_cells": {},
       "overwritten_cells": 0,
       "legacy_expansion_rows": 1173,
-      "legacy_misaligned_rows": 67954,
+      "legacy_misaligned_rows": 67955,
       "status": "FAIL",
       "notes": [
         "key omits league/fixture_id"
@@ -118,7 +118,7 @@
       ],
       "helper_version": "safe_left_enrich-1.0",
       "mode": "safe",
-      "left_rows": 83536,
+      "left_rows": 83537,
       "right_rows": 33259,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 1174,
@@ -127,8 +127,8 @@
       "ambiguous_cells": {},
       "left_null_key_rows": 0,
       "matched_left_rows": 32084,
-      "unmapped_left_rows": 51452,
-      "output_rows": 83536,
+      "unmapped_left_rows": 51453,
+      "output_rows": 83537,
       "duplicate_output_rows": 0,
       "filled_cells": {
         "ht_home_goals": 31526,
@@ -149,8 +149,8 @@
       ],
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
-      "left_rows": 83536,
-      "right_rows": 18753,
+      "left_rows": 83537,
+      "right_rows": 18836,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -158,8 +158,8 @@
       "ambiguous_cells": {},
       "left_null_key_rows": 0,
       "matched_left_rows": 7016,
-      "unmapped_left_rows": 76520,
-      "output_rows": 83536,
+      "unmapped_left_rows": 76521,
+      "output_rows": 83537,
       "duplicate_output_rows": 0,
       "filled_cells": {},
       "overwritten_cells": 0,
@@ -179,8 +179,8 @@
       ],
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
-      "left_rows": 83536,
-      "right_rows": 35220,
+      "left_rows": 83537,
+      "right_rows": 35336,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -188,8 +188,8 @@
       "ambiguous_cells": {},
       "left_null_key_rows": 0,
       "matched_left_rows": 4787,
-      "unmapped_left_rows": 78749,
-      "output_rows": 83536,
+      "unmapped_left_rows": 78750,
+      "output_rows": 83537,
       "duplicate_output_rows": 0,
       "filled_cells": {},
       "overwritten_cells": 0,
@@ -213,7 +213,7 @@
       ],
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
-      "left_rows": 83536,
+      "left_rows": 83537,
       "right_rows": 91817,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 5972,
@@ -223,12 +223,12 @@
       "left_null_key_rows": 0,
       "matched_left_rows": 82405,
       "unmapped_left_rows": 0,
-      "output_rows": 90579,
+      "output_rows": 90580,
       "duplicate_output_rows": 0,
       "filled_cells": {},
       "overwritten_cells": 0,
       "legacy_expansion_rows": 7043,
-      "legacy_misaligned_rows": 83524,
+      "legacy_misaligned_rows": 83525,
       "status": "FAIL",
       "notes": [
         "key omits league/fixture_id"
@@ -244,7 +244,7 @@
       ],
       "helper_version": "safe_left_enrich-1.0",
       "mode": "safe",
-      "left_rows": 83536,
+      "left_rows": 83537,
       "right_rows": 91817,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 5972,
@@ -262,8 +262,8 @@
       },
       "left_null_key_rows": 0,
       "matched_left_rows": 82405,
-      "unmapped_left_rows": 1131,
-      "output_rows": 83536,
+      "unmapped_left_rows": 1132,
+      "output_rows": 83537,
       "duplicate_output_rows": 0,
       "filled_cells": {
         "home_shots": 21765,
@@ -297,7 +297,7 @@
       ],
       "helper_version": "safe_left_enrich-1.0",
       "mode": "safe",
-      "left_rows": 83536,
+      "left_rows": 83537,
       "right_rows": 19840,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
@@ -306,8 +306,8 @@
       "ambiguous_cells": {},
       "left_null_key_rows": 0,
       "matched_left_rows": 20167,
-      "unmapped_left_rows": 63369,
-      "output_rows": 83536,
+      "unmapped_left_rows": 63370,
+      "output_rows": 83537,
       "duplicate_output_rows": 0,
       "filled_cells": {
         "home_shots": 59,
@@ -340,7 +340,7 @@
       ],
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
-      "left_rows": 83536,
+      "left_rows": 83537,
       "right_rows": 33259,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 1174,
@@ -350,12 +350,12 @@
       "left_null_key_rows": 0,
       "matched_left_rows": 32084,
       "unmapped_left_rows": 0,
-      "output_rows": 84709,
+      "output_rows": 84710,
       "duplicate_output_rows": 0,
       "filled_cells": {},
       "overwritten_cells": 0,
       "legacy_expansion_rows": 1173,
-      "legacy_misaligned_rows": 67954,
+      "legacy_misaligned_rows": 67955,
       "status": "FAIL",
       "notes": [
         "key omits league/fixture_id"
@@ -371,7 +371,7 @@
       ],
       "helper_version": "safe_left_enrich-1.0",
       "mode": "safe",
-      "left_rows": 83536,
+      "left_rows": 83537,
       "right_rows": 33259,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 1174,
@@ -380,8 +380,8 @@
       "ambiguous_cells": {},
       "left_null_key_rows": 0,
       "matched_left_rows": 32084,
-      "unmapped_left_rows": 51452,
-      "output_rows": 83536,
+      "unmapped_left_rows": 51453,
+      "output_rows": 83537,
       "duplicate_output_rows": 0,
       "filled_cells": {
         "ht_home_goals": 31526,
@@ -402,8 +402,8 @@
       ],
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
-      "left_rows": 83536,
-      "right_rows": 18753,
+      "left_rows": 83537,
+      "right_rows": 18836,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -411,8 +411,8 @@
       "ambiguous_cells": {},
       "left_null_key_rows": 0,
       "matched_left_rows": 7016,
-      "unmapped_left_rows": 76520,
-      "output_rows": 83536,
+      "unmapped_left_rows": 76521,
+      "output_rows": 83537,
       "duplicate_output_rows": 0,
       "filled_cells": {},
       "overwritten_cells": 0,
@@ -433,8 +433,8 @@
       ],
       "helper_version": "safe_left_enrich-1.0",
       "mode": "safe",
-      "left_rows": 83536,
-      "right_rows": 7800,
+      "left_rows": 83537,
+      "right_rows": 7801,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -442,8 +442,8 @@
       "ambiguous_cells": {},
       "left_null_key_rows": 0,
       "matched_left_rows": 7016,
-      "unmapped_left_rows": 76520,
-      "output_rows": 83536,
+      "unmapped_left_rows": 76521,
+      "output_rows": 83537,
       "duplicate_output_rows": 0,
       "filled_cells": {
         "odds_btts": 6915,
@@ -465,8 +465,8 @@
       ],
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
-      "left_rows": 83536,
-      "right_rows": 35220,
+      "left_rows": 83537,
+      "right_rows": 35336,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -474,8 +474,8 @@
       "ambiguous_cells": {},
       "left_null_key_rows": 0,
       "matched_left_rows": 4787,
-      "unmapped_left_rows": 78749,
-      "output_rows": 83536,
+      "unmapped_left_rows": 78750,
+      "output_rows": 83537,
       "duplicate_output_rows": 0,
       "filled_cells": {},
       "overwritten_cells": 0,
@@ -496,8 +496,8 @@
       ],
       "helper_version": "safe_left_enrich-1.0",
       "mode": "safe",
-      "left_rows": 83536,
-      "right_rows": 6707,
+      "left_rows": 83537,
+      "right_rows": 6719,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -505,8 +505,8 @@
       "ambiguous_cells": {},
       "left_null_key_rows": 0,
       "matched_left_rows": 4787,
-      "unmapped_left_rows": 78749,
-      "output_rows": 83536,
+      "unmapped_left_rows": 78750,
+      "output_rows": 83537,
       "duplicate_output_rows": 0,
       "filled_cells": {
         "odds_over25": 595,
@@ -521,8 +521,8 @@
   },
   "replay": {
     "label": "RETROSPECTIVE",
-    "rows_total": 83536,
-    "rows_with_any_enriched_value_changed": 40049,
+    "rows_total": 83537,
+    "rows_with_any_enriched_value_changed": 40227,
     "first_changed_row": {
       "date": "2019-02-25 00:00:00",
       "league": "Ireland Premier Division",
@@ -531,38 +531,46 @@
     },
     "columns": {
       "home_shots": {
-        "legacy_non_null": 83352,
-        "safe_non_null": 82644,
-        "shifted": 20458,
-        "phantom": 875,
-        "dropped": 167,
-        "rows_changed": 21500
+        "legacy_non_null": 83357,
+        "safe_non_null": 82645,
+        "shifted": 20461,
+        "phantom": 873,
+        "dropped": 161,
+        "rows_changed": 21495
       },
       "away_shots": {
-        "legacy_non_null": 83356,
-        "safe_non_null": 82649,
-        "shifted": 20307,
-        "phantom": 870,
-        "dropped": 163,
-        "rows_changed": 21340
+        "legacy_non_null": 83360,
+        "safe_non_null": 82650,
+        "shifted": 20292,
+        "phantom": 868,
+        "dropped": 158,
+        "rows_changed": 21318
       },
       "home_sot": {
-        "legacy_non_null": 83353,
-        "safe_non_null": 82656,
-        "shifted": 18997,
-        "phantom": 863,
-        "dropped": 166,
-        "rows_changed": 20026
+        "legacy_non_null": 83358,
+        "safe_non_null": 82657,
+        "shifted": 19120,
+        "phantom": 861,
+        "dropped": 160,
+        "rows_changed": 20141
       },
       "away_sot": {
         "legacy_non_null": 83363,
-        "safe_non_null": 82657,
-        "shifted": 18826,
-        "phantom": 863,
-        "dropped": 157,
-        "rows_changed": 19846
+        "safe_non_null": 82658,
+        "shifted": 18734,
+        "phantom": 860,
+        "dropped": 155,
+        "rows_changed": 19749
       },
       "home_corners": {
+        "legacy_non_null": 62586,
+        "safe_non_null": 62863,
+        "shifted": 0,
+        "phantom": 0,
+        "dropped": 277,
+        "rows_changed": 277
+      },
+      "away_corners": {
         "legacy_non_null": 62585,
         "safe_non_null": 62862,
         "shifted": 0,
@@ -570,7 +578,7 @@
         "dropped": 277,
         "rows_changed": 277
       },
-      "away_corners": {
+      "home_fouls": {
         "legacy_non_null": 62584,
         "safe_non_null": 62861,
         "shifted": 0,
@@ -578,109 +586,101 @@
         "dropped": 277,
         "rows_changed": 277
       },
-      "home_fouls": {
-        "legacy_non_null": 62583,
-        "safe_non_null": 62860,
-        "shifted": 0,
-        "phantom": 0,
-        "dropped": 277,
-        "rows_changed": 277
-      },
       "away_fouls": {
-        "legacy_non_null": 62580,
-        "safe_non_null": 62857,
+        "legacy_non_null": 62581,
+        "safe_non_null": 62858,
         "shifted": 0,
         "phantom": 0,
         "dropped": 277,
         "rows_changed": 277
       },
       "home_xg": {
-        "legacy_non_null": 8468,
+        "legacy_non_null": 8458,
         "safe_non_null": 12380,
-        "shifted": 5498,
-        "phantom": 2925,
-        "dropped": 6837,
-        "rows_changed": 15260
+        "shifted": 5510,
+        "phantom": 2905,
+        "dropped": 6827,
+        "rows_changed": 15242
       },
       "away_xg": {
-        "legacy_non_null": 8468,
+        "legacy_non_null": 8458,
         "safe_non_null": 12384,
-        "shifted": 5497,
-        "phantom": 2923,
-        "dropped": 6839,
-        "rows_changed": 15259
+        "shifted": 5512,
+        "phantom": 2902,
+        "dropped": 6828,
+        "rows_changed": 15242
       },
       "home_insidebox": {
-        "legacy_non_null": 10684,
+        "legacy_non_null": 10683,
         "safe_non_null": 14916,
-        "shifted": 7594,
-        "phantom": 2484,
-        "dropped": 6716,
-        "rows_changed": 16794
+        "shifted": 7549,
+        "phantom": 2533,
+        "dropped": 6766,
+        "rows_changed": 16848
       },
       "away_insidebox": {
-        "legacy_non_null": 10684,
+        "legacy_non_null": 10683,
         "safe_non_null": 14916,
-        "shifted": 7504,
-        "phantom": 2490,
-        "dropped": 6722,
-        "rows_changed": 16716
+        "shifted": 7483,
+        "phantom": 2525,
+        "dropped": 6758,
+        "rows_changed": 16766
       },
       "ht_home_goals": {
-        "legacy_non_null": 55356,
-        "safe_non_null": 55356,
+        "legacy_non_null": 55357,
+        "safe_non_null": 55357,
         "shifted": 0,
         "phantom": 0,
         "dropped": 0,
         "rows_changed": 0
       },
       "ht_away_goals": {
-        "legacy_non_null": 55356,
-        "safe_non_null": 55356,
+        "legacy_non_null": 55357,
+        "safe_non_null": 55357,
         "shifted": 0,
         "phantom": 0,
         "dropped": 0,
         "rows_changed": 0
       },
       "odds_btts": {
-        "legacy_non_null": 8097,
+        "legacy_non_null": 8302,
         "safe_non_null": 10463,
-        "shifted": 692,
-        "phantom": 3841,
-        "dropped": 6207,
-        "rows_changed": 10740
+        "shifted": 650,
+        "phantom": 4094,
+        "dropped": 6255,
+        "rows_changed": 10999
       },
       "odds_over15": {
-        "legacy_non_null": 1981,
+        "legacy_non_null": 1989,
         "safe_non_null": 2265,
         "shifted": 0,
-        "phantom": 646,
+        "phantom": 654,
         "dropped": 930,
-        "rows_changed": 1576
+        "rows_changed": 1584
       },
       "odds_over35": {
-        "legacy_non_null": 2301,
+        "legacy_non_null": 2320,
         "safe_non_null": 2597,
         "shifted": 0,
-        "phantom": 651,
+        "phantom": 670,
         "dropped": 947,
-        "rows_changed": 1598
+        "rows_changed": 1617
       },
       "odds_over25": {
-        "legacy_non_null": 44959,
-        "safe_non_null": 43353,
+        "legacy_non_null": 45053,
+        "safe_non_null": 43354,
         "shifted": 1,
-        "phantom": 1710,
+        "phantom": 1803,
         "dropped": 104,
-        "rows_changed": 1815
+        "rows_changed": 1908
       },
       "odds_under25": {
-        "legacy_non_null": 44970,
-        "safe_non_null": 43358,
+        "legacy_non_null": 45064,
+        "safe_non_null": 43359,
         "shifted": 1,
-        "phantom": 1716,
+        "phantom": 1809,
         "dropped": 104,
-        "rows_changed": 1821
+        "rows_changed": 1914
       }
     }
   },
@@ -759,7 +759,7 @@
     }
   ],
   "serving_replay": {
-    "board_fixtures": 150,
+    "board_fixtures": 154,
     "recipe": "v9_repaired",
     "tips_legacy": 55,
     "tips_safe": 51,
@@ -773,25 +773,33 @@
         "MARKSMAN"
       ],
       [
-        "Argentina Primera Division",
-        "Defensa y Justicia",
-        "Barracas Central",
-        "over15",
-        "OVER",
+        "Austrian Bundesliga",
+        "WSG Tirol",
+        "Austria Lustenau",
+        "OU25",
+        "UNDER",
         "SNIPER"
       ],
       [
-        "Argentina Primera Division",
-        "River Plate",
-        "Lanus",
-        "btts",
-        "YES",
-        "MARKSMAN"
+        "Brazil Serie A",
+        "Atletico Paranaense",
+        "Remo",
+        "OU25",
+        "UNDER",
+        "VALUABLE"
       ],
       [
-        "Austrian Bundesliga",
-        "LASK",
-        "Hartberg",
+        "Brazil Serie A",
+        "Atletico Paranaense",
+        "Remo",
+        "btts",
+        "YES",
+        "VALUABLE"
+      ],
+      [
+        "Brazil Serie A",
+        "Botafogo",
+        "Sao Paulo",
         "OU25",
         "UNDER",
         "VALUABLE"
@@ -806,26 +814,10 @@
       ],
       [
         "Brazil Serie A",
-        "Flamengo",
-        "Atletico Paranaense",
-        "btts",
-        "YES",
-        "VALUABLE"
-      ],
-      [
-        "Brazil Serie A",
         "Sao Paulo",
         "Fluminense",
         "OU25",
         "OVER",
-        "VALUABLE"
-      ],
-      [
-        "Brazil Serie A",
-        "Sao Paulo",
-        "Fluminense",
-        "btts",
-        "YES",
         "VALUABLE"
       ],
       [
@@ -870,11 +862,11 @@
       ],
       [
         "Sweden Allsvenskan",
-        "Hammarby IF",
-        "IFK Goteborg",
+        "IF Brommapojkarna",
+        "Halmstads BK",
         "OU25",
         "UNDER",
-        "SNIPER"
+        "VALUABLE"
       ]
     ],
     "tips_only_safe": [
@@ -887,28 +879,20 @@
         "VALUABLE"
       ],
       [
-        "Argentina Primera Division",
-        "Defensa y Justicia",
-        "Barracas Central",
-        "over15",
-        "OVER",
+        "Austrian Bundesliga",
+        "WSG Tirol",
+        "Austria Lustenau",
+        "OU25",
+        "UNDER",
         "VALUABLE"
       ],
       [
-        "Argentina Primera Division",
-        "River Plate",
-        "Lanus",
+        "Bundesliga 2",
+        "Arminia Bielefeld",
+        "1. FC Magdeburg",
         "btts",
         "YES",
-        "SNIPER"
-      ],
-      [
-        "Argentina Primera Division",
-        "River Plate",
-        "Lanus",
-        "over15",
-        "OVER",
-        "VALUABLE"
+        "MARKSMAN"
       ],
       [
         "Championship",
@@ -922,6 +906,14 @@
         "Championship",
         "Middlesbrough",
         "Bristol City",
+        "btts",
+        "YES",
+        "VALUABLE"
+      ],
+      [
+        "Championship",
+        "Wolverhampton Wanderers",
+        "Charlton Athletic",
         "btts",
         "YES",
         "VALUABLE"
@@ -949,30 +941,22 @@
         "OU25",
         "UNDER",
         "VALUABLE"
-      ],
-      [
-        "Sweden Allsvenskan",
-        "Hammarby IF",
-        "IFK Goteborg",
-        "OU25",
-        "UNDER",
-        "VALUABLE"
       ]
     ],
     "features_changed": {
-      "away_corners_pg_roll": 51,
-      "away_fouls_pg_roll": 50,
-      "away_insidebox_last5": 146,
-      "away_xg_last5": 147,
-      "combined_sot_ratio": 69,
-      "home_corners_pg_roll": 48,
-      "home_fouls_pg_roll": 50,
-      "home_insidebox_last5": 146,
-      "home_xg_last5": 146,
-      "p_over25": 73,
-      "p_btts": 149,
-      "p_over15": 150,
-      "p_over35": 150,
+      "away_corners_pg_roll": 55,
+      "away_fouls_pg_roll": 54,
+      "away_insidebox_last5": 149,
+      "away_xg_last5": 151,
+      "combined_sot_ratio": 73,
+      "home_corners_pg_roll": 51,
+      "home_fouls_pg_roll": 53,
+      "home_insidebox_last5": 149,
+      "home_xg_last5": 150,
+      "p_over25": 77,
+      "p_btts": 154,
+      "p_over15": 154,
+      "p_over35": 154,
       "p_ht_over05": 75,
       "p_ht_over15": 75
     }
