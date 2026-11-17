@@ -324,7 +324,7 @@ def cmd_check(a, cfg, log) -> int:
             r["sha256_compared"] = len(both)
             r["sha256_mismatch"] = sum(1 for p in both if hp[desired[p][1]] != hs[have[p][1]])
             r["bytes_compared"] = sum(blob_size(pub_b, desired[p][1]) for p in both)
-        bad = r["missing_in_store"] + r["blob_differs"] + r["extra_in_store"] + r.get("sha256_mismatch", 0)
+        bad = r["missing_in_store"] + r["blob_differs"] + r["extra_in_store"] + (r["sha256_mismatch"] if a.sha256 else 0)
         r["status"] = "EQUAL" if bad == 0 else "DIFFERENT"
         if bad:
             rc = 1
