@@ -16,6 +16,28 @@ name: Price Store Sync (private dual-write)
 #   public commit the store recorded at its last sync; any difference fails that run.
 
 on:
+  # Every completed run of a main-branch price writer triggers a mirror (workflow_run events are
+  # delivered reliably; scheduled runs in this repo are often dropped). Pro and v11 writers live in
+  # other repos and are picked up by the schedule and by every triggered run (each run mirrors all
+  # five sources).
+  workflow_run:
+    workflows:
+      - New-Format Odds Capture
+      - Standard Side-Market Odds Capture
+      - Player Props
+      - Prop Odds Snapshot
+      - Predict
+      - Update Results
+      - Exchange Odds Capture
+      - Sharp Money Tracker
+      - World Cup Tracker
+      - Daily Summary
+      - Model integrity health (R2)
+    types: [completed]
+  # The refit branches get no scheduled price writer; mirror whenever they move, so the refit's
+  # store read (scripts/price_store_read.sh) never meets a lagging store.
+  push:
+    branches: [data-truth-100, prep/bars-oddsapi-hist]
   schedule:
     - cron: '17,47 * * * *'
     - cron: '43 4 * * *'
@@ -37,9 +59,8 @@ on:
         required: false
         default: ''
 
-concurrency:
-  group: price-store-sync
-  cancel-in-progress: false
+# No concurrency group: a queued run would cancel the one pending before it. Overlapping runs are
+# safe - each push re-reads the store head and retries on a race (scripts/price_store_sync.py).
 
 permissions:
   contents: read
@@ -47,7 +68,7 @@ permissions:
 jobs:
   mirror:
     if: >-
-      (github.event_name == 'schedule' && vars.PRICE_STORE_SYNC == '1') ||
+      ((github.event_name == 'schedule' || github.event_name == 'workflow_run' || github.event_name == 'push') && vars.PRICE_STORE_SYNC == '1') ||
       (github.event_name == 'workflow_dispatch' && inputs.mode != 'read-test')
     runs-on: ubuntu-latest
     timeout-minutes: 45
