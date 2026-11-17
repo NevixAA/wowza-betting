@@ -827,7 +827,10 @@ def retired_tier_rows(out_dir: Path | None = None, since: str = TIERS_RETIRED_FR
             continue
         # a record WRITTEN on/after the cut (generated_at where the record has it) - a row written before go-live
         # for a later match is history; without a write time the match date decides
-        wcol = "generated_at" if "generated_at" in d.columns else dcol
+        # player_ledger.csv has no generated_at; its signal_date IS the day the row was written (go-live rehearsal
+        # 2026-11-17: 27 VALUABLE rows main wrote on 11-15/11-17 for 11-21+ matches read as future tips)
+        wcol = ("generated_at" if "generated_at" in d.columns
+                else "signal_date" if "signal_date" in d.columns else dcol)
         dt = pd.to_datetime(d[wcol].astype(str).str[:10], errors="coerce")
         if wcol == dcol and name in TIER_BOARD_FILES:
             # the board (bets.csv / side_bets.csv) is rewritten by each predict run and has no per-row write time;

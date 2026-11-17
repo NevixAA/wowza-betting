@@ -169,6 +169,17 @@ def test_rule7_red_on_a_future_tip_with_an_old_tier_or_a_multiplier(tmp_path):
     assert any(g.startswith("Data truth 7") for g in DT.GATED)
 
 
+def test_rule7_player_ledger_rows_take_their_signal_date_as_the_write_time(tmp_path):
+    """Go-live rehearsal 2026-11-17: player_ledger.csv has no generated_at; main's pre-merge props run wrote
+    VALUABLE rows on 11-15 / 11-17 for matches on 11-21+, and the match date turned the stoplight RED."""
+    pd.DataFrame({"match_date": ["2026-11-22", "2026-11-22"], "signal_date": ["2026-11-17", "2026-11-21"],
+                  "tier": ["VALUABLE", "QUALIFIED"]}).to_csv(tmp_path / "player_ledger.csv", index=False)
+    assert DT.retired_tier_rows(tmp_path) == []                 # written before go-live: history
+    pd.DataFrame({"match_date": ["2026-11-22"], "signal_date": ["2026-11-21"],
+                  "tier": ["VALUABLE"]}).to_csv(tmp_path / "player_ledger.csv", index=False)
+    assert [h["file"] for h in DT.retired_tier_rows(tmp_path)] == ["player_ledger.csv"]
+
+
 def test_rule7_board_files_take_their_run_time_from_predictions(tmp_path):
     """Go-live rehearsal 2026-11-15: bets.csv has no write time, so main's last pre-merge board (old tiers, fixtures
     on 11-21+) turned the stoplight RED. The board's write time is its predict run (predictions.csv generated_at)."""
