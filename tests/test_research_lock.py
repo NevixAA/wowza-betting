@@ -64,7 +64,8 @@ def test_changed_state_or_stake_is_detected():
     r = L.check(policy=p)
     assert any("new_format|BTTS.base_fraction" in c for c in r["changes"])
     if SNAP["fingerprint"]["protected_tracks"]:
-        assert any(c.startswith("protected_tracks.") and c.endswith("0.0125 -> 0.015") for c in r["changes"])
+        old = POLICY["tracks"]["new_format|BTTS"]["base_fraction"]     # 0.0 since the owner's 2026-11-17 decision
+        assert any(c.startswith("protected_tracks.") and c.endswith(f"{old} -> 0.015") for c in r["changes"])
 
 
 def test_missing_snapshot_fails_closed():
