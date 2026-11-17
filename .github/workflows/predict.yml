@@ -259,6 +259,18 @@ jobs:
       - name: Quality-layer shadow (research only)
         run: python -m src.research.quality_tiers --shadow || echo "::warning::quality-layer shadow failed (research only - tips unaffected)"
 
+      # PREDICTION LEDGER (owner rule 2026-11-17, src/prediction_ledger_v9.py). LEARNING ONLY: every board
+      # fixture x team market (Standard + New-Format: O1.5/O2.5/O3.5, BTTS, HT; both selections) is
+      # appended to output/prediction_ledger/v9/<model>/<market>/<league>/<season>.csv at its first-sight
+      # and final pre-kickoff snapshots. It only READS the board this run already wrote: no API call, no
+      # price, and no tip, tier, stake, threshold or Telegram file is touched. OFF unless the repo variable
+      # PREDICTION_LEDGER_ENABLED is 'true'. Tolerant: a failure is a warning and never stops the commit.
+      - name: Prediction ledger - every board fixture x market (learning only)
+        if: vars.PREDICTION_LEDGER_ENABLED == 'true'
+        env:
+          PREDICTION_LEDGER_ENABLED: ${{ vars.PREDICTION_LEDGER_ENABLED }}
+        run: python -m src.prediction_ledger_v9 board || echo "::warning::prediction ledger failed (learning only - tips unaffected)"
+
       - name: Commit and push outputs
         run: |
           git config user.name "github-actions[bot]"
@@ -304,6 +316,8 @@ jobs:
           # finished match-dates move once into this archive dir. Staged as a directory so both
           # new parts and the shrunken live file land in the same commit.
           git add -f output/book_odds_snapshots_archive/ 2>/dev/null || true
+          # Prediction ledger (learning only; written only when PREDICTION_LEDGER_ENABLED is 'true').
+          git add -f output/prediction_ledger/ 2>/dev/null || true
           git diff --staged --quiet || \
             git commit -m "auto: predict $(date -u '+%Y-%m-%d %H:%M UTC')"
           git restore . 2>/dev/null || true

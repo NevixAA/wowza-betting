@@ -426,7 +426,7 @@
   },
   {
    "path": "src/integrity/data_truth.py",
-   "bytes": 14318
+   "bytes": 16703
   },
   {
    "path": "src/integrity/joins.py",
@@ -475,6 +475,10 @@
   {
    "path": "src/predict.py",
    "bytes": 30765
+  },
+  {
+   "path": "src/prediction_ledger.py",
+   "bytes": 39387
   },
   {
    "path": "src/research/__init__.py",
@@ -1466,8 +1470,8 @@
   "urllib3"
  ],
  "totals": {
-  "code_files": 144,
-  "code_bytes": 2577671,
+  "code_files": 145,
+  "code_bytes": 2619443,
   "data_files": 82,
   "data_bytes": 21118789
  },
