@@ -199,6 +199,15 @@ def test_sync_workflow_is_gated_and_read_test_never_mirrors():
     doc, _ = _steps("price_store_sync.yml")
     mirror, read_test = doc["jobs"]["mirror"], doc["jobs"]["read_test"]
     assert "vars.PRICE_STORE_SYNC == '1'" in mirror["if"] and "github.event_name == 'schedule'" in mirror["if"]
+    assert "github.event_name == 'workflow_run'" in mirror["if"]
+    names = {n for n in (doc.get(True) or doc.get("on"))["workflow_run"]["workflows"]}
+    import glob
+    have = set()
+    for f in glob.glob(str(ROOT / ".github" / "workflows" / "*.yml")):
+        for line in open(f, encoding="utf-8"):
+            if line.startswith("name:"):
+                have.add(line[5:].strip()); break
+    assert names <= have, sorted(names - have)            # every trigger names a real workflow
     assert "inputs.mode != 'read-test'" in mirror["if"]
     assert read_test["if"] == "github.event_name == 'workflow_dispatch' && inputs.mode == 'read-test'"
     assert (ROOT / "scripts" / "price_store_read.sh").is_file()
