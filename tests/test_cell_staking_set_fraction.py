@@ -40,7 +40,7 @@ def _pre_top3_policy(pol: dict) -> dict:
     staked, no TOP-3 flat stake): each cell's before_2026_11_17 values are restored and top3_league dropped."""
     pol = json.loads(json.dumps(pol))
     pol.pop("top3_league", None)
-    for c in pol["cell_staking"]["cells"].values():
+    for c in list(pol["cell_staking"]["cells"].values()) + list(pol["tracks"].values()):
         c.update(c.pop("before_2026_11_17", {}))
         c.pop("staking_basis_2026_11_17", None)
     return pol

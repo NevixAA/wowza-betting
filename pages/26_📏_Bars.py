@@ -69,9 +69,10 @@ def _source(p) -> str:
 
 # ── the go-live stake plan ────────────────────────────────────────────────────────────────────────
 plan = D.get("stake_plan") or {}
-ui.section_header("Go-live stake plan (owner decision 2026-11-16)", plan.get("rule", ""))
-ui.compact_table(B.stake_plan_frame(D))
-ui.eyebrow("Owner overrides")
+ui.section_header(f"Go-live stake plan (owner decision {plan.get('decided', '')})", plan.get("rule", ""))
+_plan = B.stake_plan_frame(D)
+if len(_plan):
+    ui.compact_table(_plan)
 for o in plan.get("overrides") or []:
     st.markdown(f"- {o['text']}")
 st.caption(f"Source: {plan.get('source', '')}.")
@@ -88,7 +89,7 @@ for tab, p, chip in ((tabs[0], A, ui.status_chip("QUALIFIED", label="APPROVED BY
         st.markdown(chip)
         st.caption(p["state_text"])
         _counts_line(p)
-        ui.eyebrow("Staked cells - evidence")
+        ui.eyebrow("Cells with a stake of their own - evidence")
         stk = B.staked(p)
         if len(stk):
             ui.compact_table(stk[["League", "Track", "Market", "Status", "Bar", "Measure", "Stake rule", "WF bets",
@@ -98,7 +99,8 @@ for tab, p, chip in ((tabs[0], A, ui.status_chip("QUALIFIED", label="APPROVED BY
                        + (" For (b) the stake column shows the stake the same rule gives if the owner approves "
                           "(b) with the go-live stake scope." if p is C else ""))
         else:
-            ui.empty_state("NO_DATA", "No cell of this proposal stakes.")
+            ui.empty_state("NO_DATA", "No cell stakes on its own: only TOP-3 tips carry a stake (0.5% flat, placed "
+                                      "manually at the tip's odds).")
         ui.eyebrow("Every league × market cell")
         status = st.multiselect("Status", B.STATUS_ORDER, default=["PROVEN", "PROMISING", "UNPROVEN"],
                                 key=f"st_{p['key']}")

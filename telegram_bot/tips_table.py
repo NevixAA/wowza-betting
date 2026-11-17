@@ -25,6 +25,8 @@ import config
 from src.tier_labels import GAP_EXPLAINER, tier_label
 
 from src.calibrated_edge import display_edge_pct  # noqa: E402  owner 2026-11-11
+import dashboard_words as _words  # noqa: E402  owner 2026-11-17: no "paper" in any picture or caption
+_words.install_pil()
 TIER_ORDER = ["QUALIFIED", "SNIPER", "MARKSMAN", "VALUABLE"]   # QUALIFIED = a tip from 2026-11-21 (owner 2026-11-11)
 TIER_COLOUR = {"SNIPER": (196, 43, 43), "MARKSMAN": (217, 119, 6), "VALUABLE": (37, 99, 235)}
 MARKET_LABEL = {"btts": "BTTS", "over15": "O/U 1.5", "over35": "O/U 3.5"}
@@ -265,6 +267,7 @@ def render_pngs(rows: pd.DataFrame, title: str) -> list[bytes]:
 def send_photo(token: str, chat_id: str, png: bytes, caption: str = "") -> bool:
     """Telegram sendPhoto. Never raises; the token is never logged."""
     import requests
+    caption = _words.relabel_text(caption)
     try:
         r = requests.post(f"https://api.telegram.org/bot{token}/sendPhoto",
                           data={"chat_id": chat_id, "caption": caption[:1000], "parse_mode": "HTML"},

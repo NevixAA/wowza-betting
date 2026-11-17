@@ -2095,7 +2095,7 @@ def _read_fd_ht(path: Path, tag: str) -> pd.DataFrame:
         columns={"ht_home_goals": "hh", "ht_away_goals": "ha"})
 
 
-def update_ht_observations() -> None:
+def update_ht_observations(dry_run: bool = False) -> None:
     """Fill half-time scores into output/ht_observations.csv. Idempotent.
 
     The observation log is the forward evidence base for the half-time question: model belief +
@@ -2165,12 +2165,13 @@ def update_ht_observations() -> None:
         obs.at[i, "ht_over15"] = 1.0 if (hh + ha) >= 2 else 0.0
         filled += 1
 
-    if filled:
+    if filled and not dry_run:      # go-live rehearsal 2026-11-17: --dry-run wrote this file
         obs.to_csv(f, index=False)
-    log.info(f"ht_observations: filled {filled} of {len(pending)} pending -> {f.name}")
+    log.info(f"ht_observations: {'[DRY] would fill' if dry_run else 'filled'} {filled} of {len(pending)} pending "
+             f"-> {f.name}")
 
 
-def update_ht_results(days: int = 3) -> None:
+def update_ht_results(days: int = 3, dry_run: bool = False) -> None:
     """Grade ht_ledger.csv against actual HT scores and fill
     entry/closing/CLV from the captured HT odds (standard_sidemarket_odds_history ht_* markets).
     Completes the open->close->CLV->result loop for the HT model. HT closing odds may be absent
@@ -2355,9 +2356,9 @@ def update_ht_results(days: int = 3) -> None:
         graded += 1
 
     _log_pending("ht_ledger", reasons, today, left)
-    if graded:
+    if graded and not dry_run:      # go-live rehearsal 2026-11-17: --dry-run wrote this file
         led.to_csv(f, index=False)
-    log.info(f"ht_ledger: graded {graded} HT tip(s) → {f}")
+    log.info(f"ht_ledger: {'[DRY] would grade' if dry_run else 'graded'} {graded} HT tip(s) → {f}")
 
 
 # ── Live in-play signal grader ────────────────────────────────────────────────
@@ -2994,12 +2995,12 @@ def main():
     update_player_results(days=args.days, dry_run=args.dry_run)
     update_sharp_results(days=args.days, dry_run=args.dry_run)
     update_side_market_results(days=args.days, dry_run=args.dry_run)
-    update_ht_results(days=args.days)
+    update_ht_results(days=args.days, dry_run=args.dry_run)
     # Guarded: this is an EVIDENCE log, not a tipping path. If it ever throws it must not take
     # the live-signal resolution down with it — the workflow comment above records that a crash
     # mid-sequence leaves later ledgers ungraded.
     try:
-        update_ht_observations()
+        update_ht_observations(dry_run=args.dry_run)
     except Exception as e:                                            # noqa: BLE001
         log.warning(f"ht_observations update skipped: {e}")
     update_live_signal_results(days=args.days, dry_run=args.dry_run)

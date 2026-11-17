@@ -1,7 +1,8 @@
-"""Go-live rehearsal defect 2 (2026-11-15): the PAPER line of a Telegram tip read the TRACK state, so with
-per-cell staking on a tip in a cell without its own staking entry (PAPER) read as staked whenever its
-track was ACTIVE; and notify_side_bets never drew a PAPER line at all. Both now use
-src/bankroll_policy.stake_entry (the per-cell verdict the stake plan uses)."""
+"""Telegram stake labels on ORDINARY tips.
+
+History: go-live rehearsal defect 2 (2026-11-15) made the PAPER line per cell. Owner 2026-11-17 ("Show stake on
+TOP-3"): an ordinary prediction carries NO stake label at all - only TOP-3 picks show "0.5% stake"
+(src/top3_league.message) - and the word "paper" never reaches a user. Whatever the policy says, the note is ''."""
 from __future__ import annotations
 
 import sys
@@ -27,22 +28,15 @@ POLICY = {
 }
 
 
-def test_note_is_per_cell_when_cell_staking_is_on(monkeypatch):
-    monkeypatch.setattr(BP, "load_policy", lambda path=None: POLICY)
-    assert N._paper_track_note("new_format", "BTTS", "YES", ARG) == ""
-    note = N._paper_track_note("new_format", "BTTS", "YES", BRA)          # ACTIVE track, no cell entry
-    assert "PAPER" in note and f"new_format|BTTS|{BRA}" in note
-    assert "PAPER" in N._paper_track_note("new_format", "OU25", "OVER", BRA)
+def test_no_stake_label_on_an_ordinary_tip_whatever_the_policy(monkeypatch):
+    for pol in (POLICY, dict(POLICY, cell_staking={"enabled": False})):
+        monkeypatch.setattr(BP, "load_policy", lambda path=None, _p=pol: _p)
+        for args in (("new_format", "BTTS", "YES", ARG), ("new_format", "BTTS", "YES", BRA),
+                     ("new_format", "OU25", "OVER", BRA), ("standard", "BTTS", "YES", BRA)):
+            assert N._paper_track_note(*args) == ""
 
 
-def test_note_reads_the_track_when_cell_staking_is_off(monkeypatch):
-    off = dict(POLICY, cell_staking={"enabled": False})
-    monkeypatch.setattr(BP, "load_policy", lambda path=None: off)
-    assert N._paper_track_note("new_format", "BTTS", "YES", BRA) == ""
-    assert "PAPER" in N._paper_track_note("standard", "BTTS", "YES", BRA)
-
-
-def test_side_bets_message_carries_the_cell_paper_line(monkeypatch, tmp_path):
+def test_side_bets_messages_carry_no_stake_label(monkeypatch, tmp_path):
     monkeypatch.setattr(BP, "load_policy", lambda path=None: POLICY)
     day = (datetime.now(timezone.utc) + timedelta(days=2)).strftime("%Y-%m-%d")
     base = {"date": day, "market": "btts", "side": "YES", "signal_tier": "QUALIFIED", "edge": 0.05,
@@ -61,5 +55,5 @@ def test_side_bets_message_carries_the_cell_paper_line(monkeypatch, tmp_path):
     assert N.notify_side_bets() == 2
     arg = next(m for m in sent if "Boca" in m)
     bra = next(m for m in sent if "Santos" in m)
-    assert "PAPER" not in arg
-    assert "PAPER" in bra and f"new_format|BTTS|{BRA}" in bra
+    for m in (arg, bra):
+        assert "paper" not in m.lower() and "not staked" not in m and "stake" not in m.lower()

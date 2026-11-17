@@ -1,5 +1,5 @@
 {
-  "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09+top3-flat-manual-2026-11-17",
+  "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09+top3-flat-manual-tracks-paper-2026-11-17",
   "name": "WOWZA BALANCED",
   "status": "WIRED_PAPER",
   "note": "Read by src/bankroll_policy.py. WIRED since 2026-10-14: pipeline.py sizes every tip through src/stake_plan.py into output/stake_plan.csv. PAPER: no bet is placed (Cloudbet PAPER_ONLY). Staking is downstream of prediction: this file never decides whether a tip exists. Updated only by a reviewed PR from the monthly Pro bankroll review.",
@@ -29,16 +29,26 @@
   ],
   "tracks": {
     "new_format|BTTS": {
-      "state": "ACTIVE",
-      "base_fraction": 0.0125,
+      "state": "PAPER",
+      "base_fraction": 0.0,
       "max_odds": 2.6,
-      "evidence_score": 3.0
+      "evidence_score": 3.0,
+      "before_2026_11_17": {
+        "state": "ACTIVE",
+        "base_fraction": 0.0125
+      },
+      "staking_basis_2026_11_17": "PAPER: owner 2026-11-17 \"Yes, adopt\" (O9): the per-track fallback (read only if cell_staking.enabled were false) stakes nothing; the only real stake is the manual TOP-3 flat stake (top3_league.stake)."
     },
     "new_format|OU25_OVER": {
-      "state": "ACTIVE_LOW",
-      "base_fraction": 0.005,
+      "state": "PAPER",
+      "base_fraction": 0.0,
       "max_odds": 2.5,
-      "evidence_score": 1.0
+      "evidence_score": 1.0,
+      "before_2026_11_17": {
+        "state": "ACTIVE_LOW",
+        "base_fraction": 0.005
+      },
+      "staking_basis_2026_11_17": "PAPER: owner 2026-11-17 \"Yes, adopt\" (O9): the per-track fallback (read only if cell_staking.enabled were false) stakes nothing; the only real stake is the manual TOP-3 flat stake (top3_league.stake)."
     },
     "new_format|OU25_UNDER": {
       "state": "PAPER",
@@ -52,11 +62,16 @@
       }
     },
     "new_format|OVER15": {
-      "state": "ACTIVE_LOW",
-      "base_fraction": 0.005,
+      "state": "PAPER",
+      "base_fraction": 0.0,
       "min_odds": 1.45,
       "max_odds": 1.9,
-      "evidence_score": 1.5
+      "evidence_score": 1.5,
+      "before_2026_11_17": {
+        "state": "ACTIVE_LOW",
+        "base_fraction": 0.005
+      },
+      "staking_basis_2026_11_17": "PAPER: owner 2026-11-17 \"Yes, adopt\" (O9): the per-track fallback (read only if cell_staking.enabled were false) stakes nothing; the only real stake is the manual TOP-3 flat stake (top3_league.stake)."
     },
     "standard|OU25_OVER": {
       "state": "PAPER",

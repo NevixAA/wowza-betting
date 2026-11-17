@@ -2,33 +2,19 @@
  "schema": "wowza.bars_statistics/1",
  "about": "Per-league bars, statistics only (no bookmaker prices). Built by scripts/build_bars_statistics.py from the commits named in each proposal's `source`. Rebuild after a new proposal or approval.",
  "policy_source": {
-  "branch": "prep/bars-oddsapi-hist",
-  "commit": "d7bf522ef55158b21ebe784b374e194442580fd6",
+  "branch": "this tree",
+  "commit": null,
   "path": "config/bankroll_policy.json",
   "approved": "TP-2026-11-15-bade2c0b"
  },
  "stake_plan": {
-  "decided": "2026-11-16",
-  "rule": "Real stakes on 2026-11-21 ONLY on the 3 PROMISING cells, small (0.5% of bank, flat per cell). Every other cell and every other TOP-3 tip is PAPER (shown and recorded, stake 0).",
-  "source": "owner decision 2026-11-16 (\"3 proven cells only\"); stakes recorded in config/bankroll_policy.json cell_staking on prep/bars-oddsapi-hist",
-  "cells": [
-   {
-    "track": "standard",
-    "mside": "over25_over",
-    "league": "La Liga 2"
-   },
-   {
-    "track": "new_format",
-    "mside": "over25_over",
-    "league": "Finland Veikkausliiga"
-   },
-   {
-    "track": "new_format",
-    "mside": "over35_over",
-    "league": "Finland Veikkausliiga"
-   }
-  ],
-  "overrides": [
+  "decided": "2026-11-17",
+  "rule": "From 2026-11-21 every TOP-3 tip carries a real stake of 0.5% of bankroll, flat, placed manually by the owner at the odds shown on the tip (nothing is executed automatically). No cell and no track stakes on its own, the Argentina NF BTTS league rule included; every other prediction carries no stake.",
+  "source": "owner decisions 2026-11-17 (\"Yes, adopt\", \"Show stake on TOP-3\", \"Use tip's odds\"); config/bankroll_policy.json top3_league.stake (rule FLAT, 0.005, execution MANUAL), every cell and track at 0",
+  "cells": [],
+  "superseded": "the 2026-11-16 plan (real stakes on 3 PROMISING cells, Argentina NF BTTS and Finland NF Over 3.5 at 0.5%) - replaced by the owner on 2026-11-17",
+  "overrides": [],
+  "overrides_before_2026_11_17": [
    {
     "track": "new_format",
     "mside": "over35_over",
@@ -127,9 +113,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "ACTIVE_LOW",
-     "stake_fraction": 0.005,
-     "stake_rule": "ACTIVE_LOW 0.5% of bank, flat per tip that clears the bar"
+     "stake_state": "NO_STAKE",
+     "stake_fraction": null,
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -181,9 +167,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -370,9 +356,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -397,9 +383,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -532,9 +518,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -586,9 +572,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -667,9 +653,9 @@
      "study_ci_hi": 0.1809,
      "study_clv": -0.0054,
      "study_clv_n": 21,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -748,9 +734,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -775,9 +761,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -829,9 +815,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -856,9 +842,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -883,9 +869,9 @@
      "study_ci_hi": 0.3618,
      "study_clv": -0.0251,
      "study_clv_n": 11,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -937,9 +923,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -964,9 +950,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -1045,9 +1031,9 @@
      "study_ci_hi": 0.2046,
      "study_clv": -0.0112,
      "study_clv_n": 81,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -1072,9 +1058,9 @@
      "study_ci_hi": 0.4007,
      "study_clv": 0.0028,
      "study_clv_n": 46,
-     "stake_state": "ACTIVE_LOW",
-     "stake_fraction": 0.005,
-     "stake_rule": "ACTIVE_LOW 0.5% of bank, flat per tip that clears the bar"
+     "stake_state": "NO_STAKE",
+     "stake_fraction": null,
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -1099,9 +1085,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -1153,9 +1139,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -1180,9 +1166,9 @@
      "study_ci_hi": 0.3609,
      "study_clv": -0.0118,
      "study_clv_n": 42,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -1288,9 +1274,9 @@
      "study_ci_hi": 0.107,
      "study_clv": -0.0274,
      "study_clv_n": 58,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -1315,9 +1301,9 @@
      "study_ci_hi": 0.2253,
      "study_clv": -0.0075,
      "study_clv_n": 52,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -1369,9 +1355,9 @@
      "study_ci_hi": 0.3522,
      "study_clv": 0.0197,
      "study_clv_n": 43,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -1396,9 +1382,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -1477,9 +1463,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -1531,9 +1517,9 @@
      "study_ci_hi": 0.6755,
      "study_clv": 0.0008,
      "study_clv_n": 41,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -1612,9 +1598,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -1639,9 +1625,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -1666,9 +1652,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -1693,9 +1679,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -1720,9 +1706,9 @@
      "study_ci_hi": 0.0632,
      "study_clv": 0.0175,
      "study_clv_n": 83,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -1855,9 +1841,9 @@
      "study_ci_hi": 0.3969,
      "study_clv": -0.017,
      "study_clv_n": 81,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -1882,9 +1868,9 @@
      "study_ci_hi": 0.4614,
      "study_clv": 0.0006,
      "study_clv_n": 46,
-     "stake_state": "ACTIVE_LOW",
-     "stake_fraction": 0.005,
-     "stake_rule": "ACTIVE_LOW 0.5% of bank, flat per tip that clears the bar"
+     "stake_state": "NO_STAKE",
+     "stake_fraction": null,
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -2017,9 +2003,9 @@
      "study_ci_hi": 0.1771,
      "study_clv": -0.0088,
      "study_clv_n": 29,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -2098,9 +2084,9 @@
      "study_ci_hi": 0.164,
      "study_clv": -0.0228,
      "study_clv_n": 18,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -3529,9 +3515,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "standard",
@@ -3583,9 +3569,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "standard",
@@ -3745,9 +3731,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "standard",
@@ -3934,9 +3920,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "standard",
@@ -4096,9 +4082,9 @@
      "study_ci_hi": 1.25,
      "study_clv": -0.0048,
      "study_clv_n": 4,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "standard",
@@ -4123,9 +4109,9 @@
      "study_ci_hi": 1.8808,
      "study_clv": 0.0424,
      "study_clv_n": 5,
-     "stake_state": "ACTIVE_LOW",
-     "stake_fraction": 0.005,
-     "stake_rule": "ACTIVE_LOW 0.5% of bank, flat per tip that clears the bar"
+     "stake_state": "NO_STAKE",
+     "stake_fraction": null,
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "standard",
@@ -4150,9 +4136,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "standard",
@@ -4204,9 +4190,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "standard",
@@ -4393,9 +4379,9 @@
      "study_ci_hi": 0.9621,
      "study_clv": 0.0871,
      "study_clv_n": 7,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "standard",
@@ -4447,9 +4433,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "standard",
@@ -4960,9 +4946,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "standard",
@@ -4987,9 +4973,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "standard",
@@ -5041,9 +5027,9 @@
      "study_ci_hi": 0.2561,
      "study_clv": -0.0357,
      "study_clv_n": 100,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "standard",
@@ -5122,9 +5108,9 @@
      "study_ci_hi": 1.0654,
      "study_clv": -0.0746,
      "study_clv_n": 14,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "standard",
@@ -5176,9 +5162,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "standard",
@@ -5311,9 +5297,9 @@
      "study_ci_hi": 0.3225,
      "study_clv": -0.0106,
      "study_clv_n": 140,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "standard",
@@ -5390,9 +5376,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "ACTIVE_LOW",
-     "stake_fraction": 0.005,
-     "stake_rule": "ACTIVE_LOW 0.5% of bank, flat per tip that clears the bar"
+     "stake_state": "NO_STAKE",
+     "stake_fraction": null,
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -5444,9 +5430,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -5633,9 +5619,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -5660,9 +5646,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -5795,9 +5781,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -5849,9 +5835,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -5903,9 +5889,9 @@
      "study_ci_hi": 0.252,
      "study_clv": -0.0034,
      "study_clv_n": 17,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -5930,9 +5916,9 @@
      "study_ci_hi": 0.1809,
      "study_clv": -0.0054,
      "study_clv_n": 21,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -6011,9 +5997,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -6038,9 +6024,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -6092,9 +6078,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -6119,9 +6105,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -6146,9 +6132,9 @@
      "study_ci_hi": 0.4704,
      "study_clv": -0.0205,
      "study_clv_n": 10,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -6200,9 +6186,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -6227,9 +6213,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -6308,9 +6294,9 @@
      "study_ci_hi": 0.2046,
      "study_clv": -0.0112,
      "study_clv_n": 81,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -6335,9 +6321,9 @@
      "study_ci_hi": 0.4025,
      "study_clv": 0.0032,
      "study_clv_n": 45,
-     "stake_state": "ACTIVE_LOW",
-     "stake_fraction": 0.005,
-     "stake_rule": "ACTIVE_LOW 0.5% of bank, flat per tip that clears the bar"
+     "stake_state": "NO_STAKE",
+     "stake_fraction": null,
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -6362,9 +6348,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -6416,9 +6402,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -6443,9 +6429,9 @@
      "study_ci_hi": 0.2927,
      "study_clv": -0.0181,
      "study_clv_n": 70,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -6470,9 +6456,9 @@
      "study_ci_hi": 0.1818,
      "study_clv": -0.0175,
      "study_clv_n": 61,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -6551,9 +6537,9 @@
      "study_ci_hi": 0.0786,
      "study_clv": -0.029,
      "study_clv_n": 59,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -6578,9 +6564,9 @@
      "study_ci_hi": 0.0578,
      "study_clv": -0.0044,
      "study_clv_n": 104,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -6632,9 +6618,9 @@
      "study_ci_hi": 0.3643,
      "study_clv": 0.019,
      "study_clv_n": 40,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -6659,9 +6645,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -6713,9 +6699,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -6740,9 +6726,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -6794,9 +6780,9 @@
      "study_ci_hi": 0.6324,
      "study_clv": -0.0024,
      "study_clv_n": 41,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -6875,9 +6861,9 @@
      "study_ci_hi": 0.4744,
      "study_clv": -0.013,
      "study_clv_n": 9,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -6902,9 +6888,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -6929,9 +6915,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -6956,9 +6942,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -6983,9 +6969,9 @@
      "study_ci_hi": 0.1064,
      "study_clv": 0.0204,
      "study_clv_n": 79,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -7118,9 +7104,9 @@
      "study_ci_hi": 0.3969,
      "study_clv": -0.017,
      "study_clv_n": 81,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -7145,9 +7131,9 @@
      "study_ci_hi": 0.4614,
      "study_clv": 0.0006,
      "study_clv_n": 46,
-     "stake_state": "ACTIVE_LOW",
-     "stake_fraction": 0.005,
-     "stake_rule": "ACTIVE_LOW 0.5% of bank, flat per tip that clears the bar"
+     "stake_state": "NO_STAKE",
+     "stake_fraction": null,
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -7280,9 +7266,9 @@
      "study_ci_hi": 0.1076,
      "study_clv": -0.0113,
      "study_clv_n": 31,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -7307,9 +7293,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -7361,9 +7347,9 @@
      "study_ci_hi": 0.164,
      "study_clv": -0.0278,
      "study_clv_n": 17,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "new_format",
@@ -7874,9 +7860,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "standard",
@@ -7928,9 +7914,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "standard",
@@ -8090,9 +8076,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "standard",
@@ -8279,9 +8265,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "standard",
@@ -8441,9 +8427,9 @@
      "study_ci_hi": null,
      "study_clv": -0.0625,
      "study_clv_n": 1,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "standard",
@@ -8468,9 +8454,9 @@
      "study_ci_hi": 1.8808,
      "study_clv": 0.0424,
      "study_clv_n": 5,
-     "stake_state": "ACTIVE_LOW",
-     "stake_fraction": 0.005,
-     "stake_rule": "ACTIVE_LOW 0.5% of bank, flat per tip that clears the bar"
+     "stake_state": "NO_STAKE",
+     "stake_fraction": null,
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "standard",
@@ -8495,9 +8481,9 @@
      "study_ci_hi": null,
      "study_clv": 0.0238,
      "study_clv_n": 1,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "standard",
@@ -8549,9 +8535,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "standard",
@@ -8738,9 +8724,9 @@
      "study_ci_hi": 0.9621,
      "study_clv": 0.0871,
      "study_clv_n": 7,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "standard",
@@ -9305,9 +9291,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "standard",
@@ -9332,9 +9318,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "standard",
@@ -9386,9 +9372,9 @@
      "study_ci_hi": 0.1511,
      "study_clv": -0.0345,
      "study_clv_n": 97,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "standard",
@@ -9521,9 +9507,9 @@
      "study_ci_hi": null,
      "study_clv": null,
      "study_clv_n": 0,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "standard",
@@ -9656,9 +9642,9 @@
      "study_ci_hi": 0.2774,
      "study_clv": -0.0093,
      "study_clv_n": 128,
-     "stake_state": "PAPER",
+     "stake_state": "NO_STAKE",
      "stake_fraction": null,
-     "stake_rule": "PAPER (no cell entry: stake 0, recorded)"
+     "stake_rule": "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
     },
     {
      "track": "standard",

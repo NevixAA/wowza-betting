@@ -10,8 +10,9 @@ the two proposals straight from git (by commit, recorded in the output) and keep
 KEPT per league x market cell: status (PROVEN / PROMISING / UNPROVEN / OFF), the qualifying bar
 (valuable_th) and how it is measured (EDGE / EV / PROB / ALL), the odds RANGE rule if the cell has one (a
 filter, not a price), mode, the walk-forward bet count and ROI, the study bets / ROI / 95% CI / matchdays /
-mean CLV % and the OFF reason. The stake rule per cell comes from config/bankroll_policy.json cell_staking on
-the approved branch.
+mean CLV % and the OFF reason. The stake rule per cell comes from THIS tree's config/bankroll_policy.json
+(go-live rehearsal 2026-11-17: owner "Yes, adopt" - every cell and track at 0, the only real stake is the flat
+TOP-3 stake, top3_league.stake).
 NEVER KEPT: any bookmaker price, odds snapshot, closing line or price file path (OddsAPI / API-Football
 licences: no redistribution).
 
@@ -48,8 +49,8 @@ SOURCES = [
      "proposal": "output/threshold_proposals/bars_oddsapi_hist/2026-11_500964af.json",
      "report": "reports/P9_BARS_V5_CLEAN_MODELS.md"},
 ]
-POLICY = {"branch": "prep/bars-oddsapi-hist", "commit": "d7bf522ef55158b21ebe784b374e194442580fd6",
-          "path": "config/bankroll_policy.json"}
+#: the policy of THIS tree (the go-live tree carries the owner's 2026-11-17 stake decision)
+POLICY = {"branch": "this tree", "commit": None, "path": "config/bankroll_policy.json"}
 
 MSIDE_LABEL = {"over25_over": "O/U 2.5 Over", "over25_under": "O/U 2.5 Under", "btts_yes": "BTTS Yes",
                "over15_over": "Over 1.5", "over35_over": "Over 3.5", "ht_over05_over": "HT Over 0.5",
@@ -61,17 +62,18 @@ TRACK_LABEL = {"standard": "Standard", "new_format": "New-Format"}
 
 #: Owner stake decisions shown on the page, each with its recorded source.
 STAKE_PLAN = {
-    "decided": "2026-11-16",
-    "rule": "Real stakes on 2026-11-21 ONLY on the 3 PROMISING cells, small (0.5% of bank, flat per cell). "
-            "Every other cell and every other TOP-3 tip is PAPER (shown and recorded, stake 0).",
-    "source": "owner decision 2026-11-16 (\"3 proven cells only\"); stakes recorded in config/bankroll_policy.json "
-              "cell_staking on prep/bars-oddsapi-hist",
-    "cells": [
-        {"track": "standard", "mside": "over25_over", "league": "La Liga 2"},
-        {"track": "new_format", "mside": "over25_over", "league": "Finland Veikkausliiga"},
-        {"track": "new_format", "mside": "over35_over", "league": "Finland Veikkausliiga"},
-    ],
-    "overrides": [
+    "decided": "2026-11-17",
+    "rule": "From 2026-11-21 every TOP-3 tip carries a real stake of 0.5% of bankroll, flat, placed manually by the "
+            "owner at the odds shown on the tip (nothing is executed automatically). No cell and no track stakes on "
+            "its own, the Argentina NF BTTS league rule included; every other prediction carries no stake.",
+    "source": "owner decisions 2026-11-17 (\"Yes, adopt\", \"Show stake on TOP-3\", \"Use tip's odds\"); "
+              "config/bankroll_policy.json top3_league.stake (rule FLAT, 0.005, execution MANUAL), every cell and "
+              "track at 0",
+    "cells": [],
+    "superseded": "the 2026-11-16 plan (real stakes on 3 PROMISING cells, Argentina NF BTTS and Finland NF Over 3.5 "
+                  "at 0.5%) - replaced by the owner on 2026-11-17",
+    "overrides": [],
+    "overrides_before_2026_11_17": [
         {"track": "new_format", "mside": "over35_over", "league": "Finland Veikkausliiga", "fraction": 0.005,
          "text": "Finland NF Over 3.5 at 0.5%: owner override 2026-11-15 \"Lift for Finland only\" (the New-Format "
                  "Over 3.5 track stays blocked for every other league)."},
@@ -117,12 +119,15 @@ def _r(x, nd=4):
     return None if x is None else round(float(x), nd)
 
 
+TOP3_RULE = "no stake of its own; a TOP-3 pick of this cell: 0.5% flat"
+
+
 def _stake(cells: dict, track: str, mside: str, league: str) -> dict:
     if mside not in MSIDE_TRACK:
-        return {"state": "PAPER", "fraction": None, "rule": "PAPER (no policy track for this market)"}
+        return {"state": "NO_STAKE", "fraction": None, "rule": "no stake (no policy track for this market)"}
     e = cells.get(f"{track}|{MSIDE_TRACK[mside]}|{league}")
     if not e or e.get("base_fraction") is None or float(e["base_fraction"]) <= 0:
-        return {"state": "PAPER", "fraction": None, "rule": "PAPER (no cell entry: stake 0, recorded)"}
+        return {"state": "NO_STAKE", "fraction": None, "rule": TOP3_RULE}
     f = float(e["base_fraction"])
     return {"state": str(e.get("state")), "fraction": f,
             "rule": f"{e.get('state')} {100 * f:.1f}% of bank, flat per tip that clears the bar"}
@@ -170,7 +175,7 @@ def build_one(src: dict, policy_cells: dict) -> dict:
 
 
 def build() -> dict:
-    pol = _git_json(POLICY["commit"], POLICY["path"])
+    pol = json.loads((ROOT / POLICY["path"]).read_text(encoding="utf-8"))
     cs = pol.get("cell_staking") or {}
     cells = cs.get("cells") or {}
     plans = [build_one(s, cells) for s in SOURCES]

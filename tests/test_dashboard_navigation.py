@@ -87,12 +87,12 @@ NEW_PAGES = [
     ("pages/23_🎲_Specials.py", "Research Lab"),     # owner 2026-11-09, Pro specials tracker (research)
     ("pages/24_📬_Daily_Progress.py", "System"),       # owner-only daily progress report, 2026-11-15
 ]
-# Results pages the owner asked for (2026-11-11 Clean Record + Bars & Cells on dashboard/clean-record;
-# 2026-11-17 "update the dashboard with the current bars and all the fixes ... after 21.11 it's a new page").
+# Results pages the owner asked for (2026-11-11 Clean Record; 2026-11-17 "update the dashboard with the current bars
+# and all the fixes ... after 21.11 it's a new page"; owner O3 2026-11-17 "Today's Bars page": page 26 is THE bars
+# page, the older 25 Bars & Cells of dashboard/clean-record is not merged).
 # Wowza Pro (pro + admin), section Performance.
 OWNER_PRO_PAGES = [
     ("pages/24_🧾_Clean_Record.py", "Performance"),
-    ("pages/25_📐_Bars_and_Cells.py", "Performance"),
     ("pages/26_📏_Bars.py", "Performance"),
     ("pages/27_🩹_Fixes.py", "Performance"),
 ]
