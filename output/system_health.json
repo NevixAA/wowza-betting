@@ -1,7 +1,7 @@
 {
  "about": "Canonical system health (src/system_health.build_artifact), written daily by evidence_refresh.yml. overall: FAIL if any RED check or protected_tracks_modified; WARN if any AMBER/NO_DATA; PASS otherwise. Every status comes from the rule stored beside it.",
  "artifact_version": "SYSTEM-HEALTH-1",
- "generated_at": "2026-11-17T16:11:31Z",
+ "generated_at": "2026-11-17T16:13:26Z",
  "overall": "WARN",
  "reasons": [
   "AMBER Data contracts: 3 new violation(s) in 3 of 14 files \u00b7 6 known historical (config/contract_baseline.json)",
@@ -52,7 +52,7 @@
    "status": "GREEN",
    "value": "100% of 155 rows (p_pro_hgb)",
    "rule": "over rows logged in the last 7 days AND after the challenger experiment was registered (rows logged before a challenger existed cannot carry one): GREEN >= 90% carry a challenger probability; AMBER > 0%; RED 0%",
-   "detail": "window from 2026-11-10 16:11 UTC"
+   "detail": "window from 2026-11-10 16:13 UTC"
   },
   {
    "check": "Certified CLV coverage",
@@ -78,7 +78,7 @@
   {
    "check": "GitHub workflow health",
    "status": "GREEN",
-   "value": "0 still failing / 165 runs (24 h) \u00b7 1 fixed since",
+   "value": "0 still failing / 164 runs (24 h) \u00b7 1 fixed since",
    "rule": "workflows whose latest run on main (last 24 h, 3 repos) failed or timed out \u2014 failures a later success superseded and branch-only research runs do not count: GREEN 0; AMBER 1-2; RED >= 3 (record > 36 h old = AMBER)",
    "detail": ""
   },
@@ -389,7 +389,7 @@
    "frozen_digest": "759e9143fdb33a03be466e067384a502904267bbb67053c72a1c651cc9787830",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 2480,
+   "prior_rows": 2504,
    "prior_match": true,
    "status": "OK",
    "reasons": []
@@ -399,7 +399,7 @@
    "frozen_digest": "1cfe75804259763e275bdc25d86aea3886d54ea367816857fe642036d86bc3e4",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 764,
+   "prior_rows": 771,
    "prior_match": true,
    "status": "OK",
    "reasons": []
@@ -409,7 +409,7 @@
    "frozen_digest": "cdfa3647081a60fe7f858aa3d4c80a4725dbc257bd6ce4859e0e4c7b55b0e3b3",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 1230,
+   "prior_rows": 1237,
    "prior_match": true,
    "status": "OK",
    "reasons": []
@@ -419,7 +419,7 @@
    "frozen_digest": "0cae3d877977e1a83eb13d2123a144449186b2be20d821d6dc866f20ddaee6b3",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 2480,
+   "prior_rows": 2504,
    "prior_match": true,
    "status": "OK",
    "reasons": []
@@ -429,7 +429,7 @@
    "frozen_digest": "344bf705ed600ec6636b9fa9a5b71c907e0571488b22ec49ae475acfb08dcc1a",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 896,
+   "prior_rows": 916,
    "prior_match": true,
    "status": "OK",
    "reasons": []
@@ -439,7 +439,7 @@
    "frozen_digest": "287208288ca3656c016e0c9a2179ad64e95ecc0ccf9f3c1aec08fa03c6bc10f6",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 5517,
+   "prior_rows": 5556,
    "prior_match": true,
    "status": "OK",
    "reasons": []
@@ -449,7 +449,7 @@
    "frozen_digest": "6d44581fa3f293cfd41e31f0f5bd8252050bef6bef1fbc474bb5ebb66d227617",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 973,
+   "prior_rows": 981,
    "prior_match": true,
    "status": "OK",
    "reasons": []
