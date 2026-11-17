@@ -370,6 +370,7 @@ def append(rows: list, *, repo: str, writer: str, run_id: str = "", root: Path |
     idx = entry_index(markets)
     stats = {"offered": len(rows), "written": 0, "duplicate_skipped": 0, "late_skipped": 0,
              "refused": 0, "refused_reasons": {}, "partitions": 0}
+    touched: list = []
 
     def refuse(why: str):
         stats["refused"] += 1
@@ -421,8 +422,18 @@ def append(rows: list, *, repo: str, writer: str, run_id: str = "", root: Path |
                 w.writerow({c: r.get(c, "") for c in COLUMNS})
         stats["written"] += len(new)
         stats["partitions"] += 1
+        touched.append(p)
 
     _run_log(root, repo, writer, run_id, stats, now)
+    # Data truth 12 on exactly the partitions this call wrote (cheap; the full check runs in the gate).
+    # A violation is reported loudly and returned; it never raises into the pipeline that called us.
+    try:
+        bad = validate(root, slugs=slugs, markets=markets, only=set(touched)) if touched else []
+    except Exception as e:                                             # noqa: BLE001
+        bad = [f"validator failed: {type(e).__name__}: {e}"]
+    for b in bad:
+        print(f"::error title=Prediction ledger (Data truth 12)::{b}")
+    stats["violations"] = len(bad)
     return stats
 
 
@@ -452,7 +463,7 @@ def read_partition(path: Path) -> pd.DataFrame:
 
 
 def validate(root: Path | None = None, slugs: LeagueSlugs | None = None,
-             markets: dict | None = None) -> list:
+             markets: dict | None = None, only: set | None = None) -> list:
     """Every violation of the ledger contract, as text. Empty list = clean.
 
     Fails on: a duplicate key; a row whose repo / model_id / market / league_slug / season does not match
@@ -465,6 +476,8 @@ def validate(root: Path | None = None, slugs: LeagueSlugs | None = None,
     idx = entry_index(markets)
     issues: list = []
     for p in partitions(root):
+        if only is not None and p not in only:
+            continue
         part = parse_partition(root, p)
         rel = p.relative_to(root).as_posix()
         try:

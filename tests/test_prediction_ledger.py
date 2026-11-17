@@ -97,7 +97,7 @@ def test_schema_has_no_price_column():
 
 def test_first_write_wins_and_repeats_are_counted(tmp_path):
     st = PL.append([_row()], repo="v9", writer="t", root=tmp_path, now=NOW)
-    assert st["written"] == 1
+    assert st["written"] == 1 and st["violations"] == 0
     st = PL.append([_row(probability=0.9)], repo="v9", writer="t", root=tmp_path, now=NOW)
     assert st["written"] == 0 and st["duplicate_skipped"] == 1
     p = tmp_path / "v9" / "v9_standard" / "ou25" / "championship" / "2026.csv"
@@ -143,10 +143,12 @@ def _write(tmp_path, rows, rel="v9/v9_standard/ou25/championship/2026.csv"):
     return p
 
 
-def test_validator_fails_on_duplicate_key(tmp_path):
+def test_validator_fails_on_duplicate_key(tmp_path, capsys):
     r = dict(_row(), league_slug="championship")
-    _write(tmp_path, [r, r])
+    p = _write(tmp_path, [r, r])
     assert any("duplicate key" in i for i in PL.validate(tmp_path))
+    assert PL.validate(tmp_path, only=set()) == []                      # scoped check skips it
+    assert any("duplicate key" in i for i in PL.validate(tmp_path, only={p}))
 
 
 def test_validator_fails_on_partition_mismatch(tmp_path):
