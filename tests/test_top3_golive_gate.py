@@ -82,7 +82,9 @@ def test_each_line_is_labelled_by_its_cells_stake_not_a_blanket_footer():
     rows = [_cand(i, "BTTS", "YES", pm=0.5, pf=0.5) for i in range(1, 3)] + [_cand(10, "OU25", "OVER")]
     picks, _ = _freeze(_frame(rows), _lw_ctx(), stats=_stats({"over25_over": 1.0}))
     real = lambda mt, mk, side, league=None: mk == "btts"            # noqa: E731 - the league rule's cell stakes
-    msg = T.message(picks.assign(league_week_id=WEEK), real)
+    # the per-cell label mechanics, with NO TOP-3 flat stake configured (policy {}); the owner's 2026-11-17 flat
+    # stake is tested in tests/test_top3_flat_stake.py
+    msg = T.message(picks.assign(league_week_id=WEEK), real, policy={})
     rule_line = next(ln for ln in msg.splitlines() if "League rule" in ln)
     top_line = next(ln for ln in msg.splitlines() if ln.startswith("1."))
     assert "Staked" in rule_line and "Paper" not in rule_line

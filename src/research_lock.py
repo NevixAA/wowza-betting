@@ -90,7 +90,7 @@ BETTING_PY = ROOT / "src" / "betting.py"
 FORM_GUARD_KEYS = ("REQUIRE_FORM_DATA", "REQUIRE_FORM_DATA_UNTIL")
 #: global blocks added after the approved snapshot was taken: until the next --approve folds them in
 #: they are reported as unapproved_new_watched (AMBER), not as a production change
-WATCHED_GLOBAL_BLOCKS = ("form_guard",)
+WATCHED_GLOBAL_BLOCKS = ("form_guard", "stakes")
 
 _RESOLVE_CODE = r"""
 import json, sys
@@ -190,6 +190,19 @@ def _policy_block(policy: dict) -> dict:
     return out
 
 
+def _stakes_block(policy: dict) -> dict:
+    """Where real stakes live since per-cell staking (owner 2026-11-09) and the flat TOP-3 stake (owner
+    2026-11-17): cell_staking (enabled + every cell's state / fraction / odds caps) and top3_league.stake.
+    Before the go-live rehearsal of 2026-11-17 the lock watched only policy_version and tracks{}, so a cell
+    could start staking without a re-approval."""
+    cs = policy.get("cell_staking") or {}
+    cells = {k: {f: c.get(f) for f in ("state", "base_fraction", "min_odds", "max_odds")}
+             for k, c in sorted((cs.get("cells") or {}).items())}
+    st = (policy.get("top3_league") or {}).get("stake") or {}
+    return {"cell_staking_enabled": cs.get("enabled"), "cells": cells,
+            "top3_stake": {f: st.get(f) for f in ("rule", "fraction", "execution")}}
+
+
 def _execution_block() -> dict:
     src = CLOUDBET_CLIENT.read_text(encoding="utf-8") if CLOUDBET_CLIENT.exists() else ""
     m = re.search(r'^MODE\s*=.*$', src, flags=re.M)
@@ -231,7 +244,8 @@ def fingerprint(track_keys: list[str] | None = None, registry: dict | None = Non
                      "gates": res["gates"][f"{lg}|{gm}|{side}"]}
     return {"global": {"bankroll_policy": _policy_block(policy), "deployed_env": env,
                        "thresholds": res["thresholds"], "eligibility": res["eligibility"],
-                       "execution": _execution_block(), "form_guard": form_guard},
+                       "execution": _execution_block(), "form_guard": form_guard,
+                       "stakes": _stakes_block(policy)},
             "protected_tracks": tracks}
 
 
