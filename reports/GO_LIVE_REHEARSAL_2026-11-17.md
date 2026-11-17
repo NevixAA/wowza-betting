@@ -332,7 +332,7 @@ exec and Cloudbet stay off. Tips carry no paper label; every TOP-3 tip counts in
 
 | # | Decision | Owner's answer | Where it is |
 |---|---|---|---|
-| O0 | Adopt the stake proposal (section 5.2); U3a by the owner | **"Yes, adopt"** | `1545a430d`, `08919047f`, `89d5e15d1`, `42063eb5a`; U3a on go-live day |
+| O0 | Adopt the stake proposal (section 5.2); U3a by the owner | **"Yes, adopt"** | `1545a430d`, `08919047f`, `89d5e15d1`, `42063eb5a`, `18aaca979`; U3a on go-live day |
 | O1 | Telegram labels | **"Show stake on TOP-3"**: TOP-3 picks show "0.5% stake"; every other prediction has NO stake label; the word "paper" never reaches a user | `42063eb5a` (section 10) |
 | O2 | "Staked" figures; price of the manual bets | "Staked" counts TOP-3 tips. **"Use tip's odds"**: settle at the odds shown on the tip at send time, with no manual entry form | `42063eb5a` |
 | O3 | Bars page | **"Today's Bars page"**: keep `pages/26_📏_Bars.py`; page 25 (Bars & Cells) is not merged | `42063eb5a` |
@@ -373,7 +373,7 @@ Shell prelude: runbook "Shell prelude" (`$GL`, `$py`, git and gh on PATH). `R` =
 | 4 | Merge branch | `git checkout -b golive/m1 origin/main`; `git merge --no-ff --no-commit` `origin/data-truth-100`, then `origin/prep/bars-oddsapi-hist`, then `origin/dashboard/clean-record` (page 25 is NOT taken: `git rm "pages/25_📐_Bars_and_Cells.py"`); resolve per section 1. A file neither side changed since the rehearsal: `git checkout R -- <file>` | delete the branch |
 | 5 | Rehearsal merge fixes | `git checkout R -- src/team_names.py src/integrity/data_truth.py src/integrity/real_data_provenance.py scripts/dashboard_manifest.py config/data_truth_allowlist.json src/clv_collection_health.py src/prediction_ledger_v9.py tests/test_no_global_bars.py tests/test_daily_injuries_lineups.py tests/test_real_data_pipeline_trace.py tests/test_fix16_readers.py tests/test_top3_paper.py tests/test_clv_capture.py` (first `git diff R origin/<side> -- <file>` must show only the rehearsal fix) | part of the merge PR |
 | 6 | Housekeeping (O7) | `git rm tests/test_resolver_hotfix_main.py tests/test_ht_fill_hotfix.py`; `$py -m src.clv_corrections build` (keep content changes only) | part of the merge PR |
-| 7 | Owner decisions (O0-O4, O9, O10) | `git cherry-pick 1545a430d 08919047f 89d5e15d1 42063eb5a` in that order. **Never `c609e92b8`, `84dc83faf`, `3d4e1349e`, `8358223da`** (REHEARSAL-ONLY approvals and registries). | drop the commits |
+| 7 | Owner decisions (O0-O4, O9, O10) | `git cherry-pick 1545a430d 08919047f 89d5e15d1 42063eb5a 18aaca979` in that order (`18aaca979` holds the last test fixes and this report). **Never `c609e92b8`, `84dc83faf`, `3d4e1349e`, `8358223da`** (REHEARSAL-ONLY approvals and registries). | drop the commits |
 | 8 | U3a (owner), then the registry | `$py -m src.research_lock --approve --by "Nevo (owner)" --note "2026-11-21 go-live: bade2c0b bars; TOP-3 0.5% flat manual; every cell and track at 0"`; **then `$py scripts/build_track_registry.py`**; then `$py scripts/dashboard_manifest.py --write` | revert |
 | 9 | Validate | full suite 0 failed; `data_truth --gate` GREEN; `research_lock --check`; `build_track_registry.py --check`; `build_bars_statistics.py --check`; `dashboard_manifest.py --check`; `$py scripts/ui_wording_scan.py` (0 occurrences); `git show --stat HEAD` (no stray `output/*`) | - |
 | 10 | M1 PR | push `golive/m1`; `gh pr create --base main`; `gh pr checks --watch`; `gh pr merge --merge` | `git revert -m 1 <merge>` via PR (runbook 2.4) |
@@ -467,7 +467,7 @@ Commits on the v9 rehearsal branch: `42063eb5a` (the decisions) and `3d4e1349e` 
 
 | Check | Result |
 |---|---|
-| v9 full suite | FINAL3_RESULT |
+| v9 full suite | **3,749 passed, 0 failed**, 46 skipped, 6 xfailed (on `18aaca979`, 21 min 55 s) |
 | `data_truth --gate` | STOPLIGHT GREEN (rule 3 RED, ungated) |
 | `research_lock --check` | clean (rehearsal approval) |
 | `build_track_registry.py --check` | in sync: 100 entries (BLOCKED 18, PAPER 77, PAPER_LEAGUE 5) |
