@@ -1,0 +1,152 @@
+name: Price Store Sync (private dual-write)
+
+# DUAL-WRITE phase of the price move (owner decision 2026-11-17, docs/AF_PRICES_PRIVATE_MIGRATION.md
+# on branch chore/af-prices-private). Every class A / B / O price file of the PUBLIC sources
+# (wowza-betting main, data-truth-100, prep/bars-oddsapi-hist; wowzaV9-Pro main; wowza_v11 main) is
+# mirrored byte for byte into the PRIVATE repo NevixAA/wowza-exec, branch af-prices-live.
+#
+# * The public writers are NOT changed: they keep writing their public files exactly as before.
+#   Readers are unchanged. This job only copies committed public bytes into the private store.
+# * Feature gate: scheduled runs do nothing unless the repo variable PRICE_STORE_SYNC is '1'
+#   (default off = today's behaviour). workflow_dispatch always runs, for capped tests.
+# * Logs and the step summary carry paths' counts, sizes and hashes only - never a price.
+# * mode read-test (dispatch only): the reader path the refit uses (scripts/price_store_read.sh with
+#   the read-only key PRICE_STORE_RO_KEY) on the dispatched ref, without any training or scoring.
+# * The daily run (04:43 UTC) also runs the count + sha256 check, public vs store, pinned to the
+#   public commit the store recorded at its last sync; any difference fails that run.
+
+on:
+  schedule:
+    - cron: '17,47 * * * *'
+    - cron: '43 4 * * *'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'sync, check, sync+check, or read-test (store -> workspace on this ref, no training)'
+        required: true
+        default: 'sync'
+        type: choice
+        options: [sync, check, sync+check, read-test]
+      dry_run:
+        description: 'sync: plan only, push nothing'
+        required: false
+        default: false
+        type: boolean
+      source:
+        description: 'one source repo@branch (blank = all sources in config/price_store_paths.json)'
+        required: false
+        default: ''
+
+concurrency:
+  group: price-store-sync
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  mirror:
+    if: >-
+      (github.event_name == 'schedule' && vars.PRICE_STORE_SYNC == '1') ||
+      (github.event_name == 'workflow_dispatch' && inputs.mode != 'read-test')
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout: |
+            scripts/price_store_sync.py
+            config/price_store_paths.json
+          sparse-checkout-cone-mode: false
+
+      - name: Open the private store (deploy key)
+        env:
+          PRICE_STORE_KEY: ${{ secrets.PRICE_STORE_KEY }}
+        run: |
+          if [ -z "${PRICE_STORE_KEY}" ]; then
+            echo "::error title=price store::secret PRICE_STORE_KEY is not set"; exit 1
+          fi
+          ( umask 077; printf '%s\n' "$PRICE_STORE_KEY" > "$RUNNER_TEMP/price_store_key" )
+          # GitHub's published ed25519 host key (docs.github.com, "GitHub's SSH key fingerprints").
+          echo "github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl" > "$RUNNER_TEMP/price_store_known_hosts"
+          echo "GIT_SSH_COMMAND=ssh -i $RUNNER_TEMP/price_store_key -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile=$RUNNER_TEMP/price_store_known_hosts" >> "$GITHUB_ENV"
+
+      - name: Choose mode
+        id: mode
+        env:
+          EVENT: ${{ github.event_name }}
+          SCHED: ${{ github.event.schedule }}
+          IN_MODE: ${{ inputs.mode }}
+          IN_DRY: ${{ inputs.dry_run }}
+          IN_SOURCE: ${{ inputs.source }}
+        run: |
+          mode=sync
+          if [ "$EVENT" = "workflow_dispatch" ]; then mode="$IN_MODE"; fi
+          if [ "$EVENT" = "schedule" ] && [ "$SCHED" = "43 4 * * *" ]; then mode="sync+check"; fi
+          extra=""
+          if [ "$EVENT" = "workflow_dispatch" ] && [ "$IN_DRY" = "true" ]; then extra="--dry-run"; fi
+          if [ "$EVENT" = "workflow_dispatch" ] && [ -n "$IN_SOURCE" ]; then
+            case "$IN_SOURCE" in
+              *[!A-Za-z0-9_./@-]*) echo "::error::bad source"; exit 1 ;;
+            esac
+            extra="$extra --source $IN_SOURCE"
+          fi
+          echo "mode=$mode" >> "$GITHUB_OUTPUT"
+          echo "extra=$extra" >> "$GITHUB_OUTPUT"
+          echo "[price_store] mode=$mode $extra"
+
+      - name: Mirror public price files into the private store
+        if: contains(steps.mode.outputs.mode, 'sync')
+        env:
+          EXTRA: ${{ steps.mode.outputs.extra }}
+        run: |
+          # shellcheck disable=SC2086
+          python3 scripts/price_store_sync.py sync --work "$RUNNER_TEMP/price_store" \
+            --report "$RUNNER_TEMP/price_store_sync.json" $EXTRA
+
+      - name: Count + sha256 check (public vs store)
+        if: contains(steps.mode.outputs.mode, 'check')
+        env:
+          EXTRA: ${{ steps.mode.outputs.extra }}
+        run: |
+          src=""
+          case "$EXTRA" in *--source*) src="--source ${EXTRA##*--source }" ;; esac
+          # shellcheck disable=SC2086
+          python3 scripts/price_store_sync.py check --sha256 --work "$RUNNER_TEMP/price_store_check" \
+            --report "$RUNNER_TEMP/price_store_check.json" $src
+
+      - name: Summary (counts only)
+        if: always()
+        run: |
+          for f in "$RUNNER_TEMP/price_store_sync.json" "$RUNNER_TEMP/price_store_check.json"; do
+            [ -f "$f" ] || continue
+            echo "### $(basename "$f")" >> "$GITHUB_STEP_SUMMARY"
+            echo '```json' >> "$GITHUB_STEP_SUMMARY"
+            cat "$f" >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+          done
+
+      - name: Remove the key
+        if: always()
+        run: rm -f "$RUNNER_TEMP/price_store_key"
+
+  read_test:
+    if: github.event_name == 'workflow_dispatch' && inputs.mode == 'read-test'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Read prices from the private store (capped test, no training)
+        env:
+          PRICE_STORE_RO_KEY: ${{ secrets.PRICE_STORE_RO_KEY }}
+          REF_NAME: ${{ github.ref_name }}
+        run: bash scripts/price_store_read.sh wowza-betting "$REF_NAME"
+
+      - name: Summary (counts only)
+        if: always()
+        run: |
+          f="$RUNNER_TEMP/price_store_hydrate.json"
+          [ -f "$f" ] || exit 0
+          { echo '### price_store_hydrate.json'; echo '```json'; cat "$f"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
