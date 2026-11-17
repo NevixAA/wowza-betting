@@ -378,3 +378,36 @@ Delete the local private key files after `gh secret set`.
   * The full manifest was re-read by path from `e48e95cc` and from the public sources at the recorded commits: **5,554 / 5,554 sha256 match, 0 mismatched** (2,407,363,119 bytes, covering A + B + O).
   * GitHub reports tree `b0e979eb...` with 5,557 blobs.
 * **Archive totals now:** 5,554 data files, 20,368,552 rows, 2,407.4 MB.
+
+## 9. Execution, 2026-11-17 (owner: "Yes, do it now")
+
+### 9.1 Earlier push failure ("unpacker error")
+* Nothing from that attempt reached GitHub (no `af-prices-live`, no PR). Its log was not kept; the most likely cause is one pack of ~1.5-2.4 GB (the whole store re-added as new objects in one push), which is above what GitHub's receive side accepts in one push.
+* Fix: `af-prices-live` was seeded as a new commit that **reuses the archive's trees** (`af-prices-archive` e48e95cc), so the seed push carried only 1 tree, 2 small blobs and 1 commit. Later catch-ups are split into pushes of at most 300 MB.
+
+### 9.2 Phase 1: DUAL-WRITE (live)
+* Store: NevixAA/wowza-exec `af-prices-live`, layout `<repo>/<branch>/<path>`, seed `89e03701`, one `_sync/<source>.json` per source with the mirrored public commit.
+* Mirror: `scripts/price_store_sync.py` + `.github/workflows/price_store_sync.yml` (wowza-betting). Public writers are unchanged. Triggers: completion of every main price writer (`workflow_run`), any push to data-truth-100 / prep, and an hourly schedule. Gate: repo variable `PRICE_STORE_SYNC=1` (set 2026-11-17 15:18 UTC).
+* Daily check (04:43 UTC): count + git blob id + sha256 per file, public vs store, pinned to the recorded public commit.
+* First GitHub check (run 44111894223): 5 sources, 5,597 files, 2,436,832,826 bytes, **0 missing, 0 blob differences, 0 sha256 mismatches**.
+
+### 9.3 Phase 2: ZERO-DIFFERENCE GATE (clean)
+Pinned: store `275651bb`; wowza-betting main `d1105e1f`, data-truth-100 `ce7f4700`, prep `d7bf522e`; wowzaV9-Pro main `15e60d2b`; wowza_v11 main `2ce1fb13`. Run B deleted every class A/B/O file from a fresh checkout and restored it from the store (`price_store_hydrate.py --prune`).
+
+| # | Item | Result |
+|---|---|---|
+| 1 | File bytes, all 5 sources | 5,597 / 5,597 sha256 equal; `git status` clean after restore |
+| 1 | Team frames (loader matches + features, 71,844 rows) | hashes equal |
+| 1 | Phase 2 harness frame (59,461 rows; Standard 32,236, New-Format 27,225) | all / Standard / NF hashes equal; info equal |
+| 1 | Props frames (source 962,244 rows; frame 934,047 rows) | hashes equal |
+| 2 | `team_train_serve_parity.py`, 7 served pickles x 235 real fixtures | output files byte-identical |
+| 3-4 | Settlement and CLV (5 ledgers: result, P/L, ROI, CLV) | equal |
+| 5 | Bars / TOP-3 inputs (12 files incl. threshold proposals) | sha256 equal |
+| 6 | Pro | bytes equal (4,594 files); Pro pipelines not re-run |
+
+Not run: an online `predict` (it calls live APIs) and the props train/serve parity (its `props_clean_*` models are not committed). Inputs are byte-identical, and the team parity scores the served models on real fixtures.
+
+### 9.4 Phase 3: reader switch for the refit
+* `scripts/price_store_read.sh` (read-only key `PRICE_STORE_RO_KEY`) + `phase2_retrain.yml` / `props_clean_retrain.yml`, behind `vars.PRICE_STORE_READ == '1'`. It stops before any work unless the store bytes are identical to the dispatched commit. Rollback: `PRICE_STORE_READ=0`.
+* GitHub read-tests (no training): prep run 44127078919 and data-truth-100 run 44128676688, both 0 differences.
+* Not yet done (moved after go-live): stopping the public A/O writes, the price-free views of class B ledgers, the dashboard switch, and the live main readers.
