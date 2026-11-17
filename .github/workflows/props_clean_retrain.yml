@@ -36,6 +36,16 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt pytest pyyaml
 
+      - name: Read prices from the private store (vars.PRICE_STORE_READ, default off)
+        # Owner decision 2026-11-17: the refit reads the private store (wowza-exec af-prices-live).
+        # Off = the public files exactly as before. Stops before any work unless the store bytes are
+        # byte-identical to this commit. Rollback: set PRICE_STORE_READ to 0.
+        if: vars.PRICE_STORE_READ == '1'
+        env:
+          PRICE_STORE_RO_KEY: ${{ secrets.PRICE_STORE_RO_KEY }}
+          REF_NAME: ${{ github.ref_name }}
+        run: bash scripts/price_store_read.sh wowza-betting "$REF_NAME"
+
       - name: Harness tests (synthetic data)
         run: python -m pytest tests/test_props_harness.py -q -p no:cacheprovider
 
