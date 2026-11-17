@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-17T23:57:21Z",
+ "generated_at": "2026-11-17T23:58:27Z",
  "panel_version": "LWR-1",
  "tracked_leagues": 20,
  "current_tip_day": "2026-11-18",
@@ -14,8 +14,8 @@
  ],
  "panel_start": "2026-10-25T09:25:36Z",
  "market_gap_leagues": [],
- "expected_candidate_rows": 584,
- "actual_candidate_rows": 584,
+ "expected_candidate_rows": 588,
+ "actual_candidate_rows": 588,
  "panel_rows": 916,
  "settled_rows": 867,
  "pending_rows": 49,
@@ -1143,33 +1143,33 @@
    "current": {
     "league_week_id": "Sweden Allsvenskan|2026-W47",
     "state": "PROVISIONAL",
-    "fixtures_known": 6,
+    "fixtures_known": 7,
     "fixtures_before_panel_start": 0,
-    "fixtures_with_candidates": 6,
+    "fixtures_with_candidates": 7,
     "fixtures_without_candidates": 0,
-    "week_lock_ts": "2026-11-21T14:00:00Z",
+    "week_lock_ts": "2026-11-21T12:00:00Z",
     "late_after_lock": 0,
     "market_gaps": [],
     "markets": {
      "OU25": {
-      "candidates": 6,
+      "candidates": 7,
       "panel_rows": 0
      },
      "BTTS": {
-      "candidates": 6,
+      "candidates": 7,
       "panel_rows": 0
      },
      "OVER15": {
-      "candidates": 6,
+      "candidates": 7,
       "panel_rows": 0
      },
      "OVER35": {
-      "candidates": 6,
+      "candidates": 7,
       "panel_rows": 0
      }
     },
-    "expected_candidate_rows": 24,
-    "actual_candidate_rows": 24
+    "expected_candidate_rows": 28,
+    "actual_candidate_rows": 28
    },
    "previous": {
     "league_week_id": "Sweden Allsvenskan|2026-W46",
