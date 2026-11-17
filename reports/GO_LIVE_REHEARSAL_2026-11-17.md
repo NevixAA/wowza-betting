@@ -477,4 +477,4 @@ Commits on the v9 rehearsal branch: `42063eb5a` (the decisions) and `3d4e1349e` 
 | actionlint 1.7.12 | 0 findings (v9 and Pro) |
 | Offline `update_results --dry-run` | no file written; 86 calls blocked |
 | Pro suite against the v9 tip | 581 passed; 1 failed (fk2, P1) |
-| CI on the rehearsal ref | CI3_RESULT |
+| CI on the rehearsal ref (`1b727cd1b`) | Tests and gates [44178513110](https://github.com/NevixAA/wowza-betting/actions/runs/44178513110) success (tests, gates); Data Truth stoplight [44178517909](https://github.com/NevixAA/wowza-betting/actions/runs/44178517909) success. 0 red runs |
