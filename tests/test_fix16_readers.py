@@ -209,6 +209,7 @@ CORRECTED = {          # fd_history through serve_history (and af_history throug
     "src/strength/results.py", "src/research/edge_replay.py", "update_results.py",
     "pages/6_⚡_Live.py", "pages/10_🤖_Agent_Analysis.py",
     "scripts/integrity_price_provenance.py", "scripts/integrity_af_join_replay.py",
+    "src/prediction_ledger_v9.py",   # main's prediction ledger settlement (go-live merge 2026-11-17)
 }
 RAW = {                # why the raw file is the right input
     "src/data_loader.py": "the loader itself: applies the lists in identity_before_one_match / local path",
@@ -243,6 +244,9 @@ RAW = {                # why the raw file is the right input
     "scripts/restore_af_history_provider_rows.py": ("2026-11-16: reads every COMMITTED version of the raw "
                                                      "af_history (git) to restore the provider rows the loader "
                                                      "write-back replaced, into a sidecar beside it"),
+    "scripts/collect_standard_team_cards.py": ("main PR #34: reads only its OWN file af_team_cards_std.parquet; "
+                                               "af_history.parquet is named in its docstring (why it is NOT "
+                                               "written there)"),
     "scripts/probe_oddsapi_history.py": ("P7: reads league / date only to pick one probe match day per "
                                          "league for the OddsAPI history probe (no result is served)"),
 }

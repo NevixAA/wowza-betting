@@ -222,7 +222,10 @@ def test_no_production_reader_touches_the_paper_files():
                "src/research/top3_ranking.py",                      # names the paper module in its docstring only
                # the LIVE TOP-3 reads the ONE statistics freeze (top3_paper.load_freeze, hash-checked) - never a paper
                # ledger; the dry run reuses the freeze computation (owner 2026-11-11: one freeze, no fork)
-               "src/top3_league.py", "scripts/top3_t3_dry_run.py"}
+               "src/top3_league.py", "scripts/top3_t3_dry_run.py",
+               # go-live merge 2026-11-17: the SHARP paper capture (data-truth-100) writes its OWN paper_ledger.parquet
+               # under its own output directory - a different ledger that only shares the file name
+               "scripts/sharp_paper_capture.py"}
     hits = []
     for base in ("src", "telegram_bot", "scripts", "dashboard", "app.py", "streamlit_app.py"):
         p = ROOT / base

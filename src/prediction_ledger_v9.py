@@ -265,14 +265,20 @@ class TeamResults:
     def __init__(self, slugs: PL.LeagueSlugs | None = None):
         self.slugs = slugs or PL.LeagueSlugs()
         frames = []
+        # Go-live merge 2026-11-17 (data-truth-100 fix16/readers): a settlement reader reads the history AS THE
+        # LOADER SERVES IT - the owner's corrections (90-minute scores, proven cup / awarded rows and duplicate
+        # copies out, provider dates) through serve_history / apply_af_history_corrections, never the raw banks.
         if FD_HISTORY.exists():
-            fd = pd.read_parquet(FD_HISTORY)
+            from src.history_corrections import serve_history
+            fd = serve_history(pd.read_parquet(FD_HISTORY), tag="prediction_ledger.fd_history")
             fd = fd.rename(columns={"ht_home_goals": "hth", "ht_away_goals": "hta"})
             fd["src"] = "football-data"
             frames.append(fd[[c for c in ("league", "date", "home_team", "away_team", "home_goals",
                                           "away_goals", "hth", "hta", "src") if c in fd.columns]])
         if AF_HISTORY.exists():
-            af = pd.read_parquet(AF_HISTORY).rename(columns={"FTHG": "home_goals", "FTAG": "away_goals"})
+            from src.af_history_corrections import apply_af_history_corrections
+            af = apply_af_history_corrections(pd.read_parquet(AF_HISTORY), tag="prediction_ledger.af_history")
+            af = af.rename(columns={"FTHG": "home_goals", "FTAG": "away_goals"})
             af["src"] = "api-football"
             frames.append(af[["league", "date", "home_team", "away_team", "home_goals", "away_goals", "src"]])
         d = pd.concat(frames, ignore_index=True) if frames else pd.DataFrame(

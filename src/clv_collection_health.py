@@ -226,11 +226,13 @@ def check(h: dict, exp: dict) -> dict:
         return {"status": "NO_EXPECTATION", "reasons": [f"expectation file lacks {missing}"]}
     sh = h.get("shadow_since_measure_from")
     co = h.get("collection")
-    if sh is None or co is None:
-        return {"status": "INSUFFICIENT_SAMPLE",
-                "reasons": [("shadow" if sh is None else "collection") + " section not measured"]}
-    n_sh = int(sh["eligible"])
-    if n_sh < int(exp["min_shadow_sample"]):
+    # An unmeasured section is a reason (never a 0% FAIL), and the OTHER section is still judged: go-live merge
+    # 2026-11-17 - returning early here hid a measured collection FAIL whenever the shadow section was not
+    # measured (main's capture-incident guard, tests/test_clv_capture).
+    n_sh = None if sh is None else int(sh["eligible"])
+    if sh is None:
+        res["reasons"].append("shadow section not measured")
+    elif n_sh < int(exp["min_shadow_sample"]):
         res["reasons"].append(f"shadow sample {n_sh} < {exp['min_shadow_sample']}")
     elif sh.get("certified_t30_pct") is None:
         res["reasons"].append("certified T-30m close not measured")
@@ -238,8 +240,10 @@ def check(h: dict, exp: dict) -> dict:
         res["status"] = "FAIL"
         res["reasons"].append(f"certified T-30m close {sh.get('certified_t30_pct')}% < "
                               f"{exp['min_certified_t30_pct']}% on {n_sh} settled shadow rows")
-    n_co = int(co["fixture_markets"])
-    if n_co < int(exp["min_collection_sample"]):
+    n_co = None if co is None else int(co["fixture_markets"])
+    if co is None:
+        res["reasons"].append("collection section not measured")
+    elif n_co < int(exp["min_collection_sample"]):
         res["reasons"].append(f"collection sample {n_co} < {exp['min_collection_sample']}")
     elif co.get("t30_pct") is None:
         res["reasons"].append("collection T-30m not measured")
