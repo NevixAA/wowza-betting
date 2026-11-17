@@ -39,7 +39,7 @@ Source heads merged (all current at the end of the rehearsal, after catch-up mer
 | 2i | Offline predict / update_results | GREEN (with 1 defect noted) | Both run end to end with the network blocked (136 and 86 calls blocked). `update_results --dry-run` still writes the HT ledgers (section 3). |
 | 2j | Pro suite against the merged v9 | **GREEN as planned** | 581 passed, 1 failed. The failure is `test_fixture_key_v2` (mixed v1/fk2 warehouse), which P1 fixes, as the runbook expects. |
 | 3 | Runbook dry runs | GREEN | U3b: would apply 63 (and the real apply ran clean). U3e freeze dry run: 40 cells. TOP-3 dry runs. U3d exec: 48 PAPER cells. Details in section 3. |
-| 4 | CI on the rehearsal ref | see section 4 | Tests and gates; Data Truth stoplight |
+| 4 | CI on the rehearsal ref | **GREEN** | Tests and gates (tests + gates) success; Data Truth stoplight success |
 | 5 | Stake decision (owner 2026-11-17, final) | **PROPOSED, needs owner U3a** | Every TOP-3 tip 0.5% flat, placed manually; nothing else stakes; nothing auto-executes. 18 tests. Section 5. |
 
 ## 1. Merges: every conflict and its resolution
@@ -229,7 +229,15 @@ goals `c8579f8a`).
 A push to `rehearsal/**` triggers no workflow in v9 or Pro (every push trigger is branch-filtered; checked).
 Only the two read-only workflows (`contents: read`, no secrets used) were dispatched on the v9 ref:
 
-CI_RESULTS
+| Run | Workflow | Ref / SHA | Jobs | Conclusion |
+|---|---|---|---|---|
+| [44143372990](https://github.com/NevixAA/wowza-betting/actions/runs/44143372990) | Tests and gates (`tests.yml`, workflow_dispatch) | `rehearsal/golive-2026-11-17` @ `be877ca27` | tests (full suite on Linux), gates (lock, registry, manifest) | **success** |
+| [44143377532](https://github.com/NevixAA/wowza-betting/actions/runs/44143377532) | Data Truth stoplight (`data_truth_gate.yml`, workflow_dispatch) | same | ratchet success, upgrades-wait skipped | **success** |
+
+The Linux full suite is green, so the Windows-only price-store order dependency (2.1) does not reproduce in CI.
+No other workflow was dispatched. Every other workflow writes (commits, sends, calls a paid API) or trains,
+and Pro CI would be red by design (section 3). Pro branch `rehearsal/golive-2026-11-17` (`7c136285`) was pushed;
+it triggered no run. **0 red runs.**
 
 ## 5. Stakes: the owner's final decision of 2026-11-17 (PROPOSED in this branch)
 
