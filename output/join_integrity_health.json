@@ -1,7 +1,7 @@
 {
   "artifact": "join_integrity_health",
   "helper_version": "safe_left_enrich-1.0",
-  "generated_at": "2026-11-17T16:12:31Z",
+  "generated_at": "2026-11-17T17:42:57Z",
   "status": "FAIL",
   "joins": {
     "af_history_shots.legacy": {
@@ -28,7 +28,7 @@
       "filled_cells": {},
       "overwritten_cells": 0,
       "legacy_expansion_rows": 7043,
-      "legacy_misaligned_rows": 83525,
+      "legacy_misaligned_rows": 83522,
       "status": "FAIL",
       "notes": [
         "key omits league/fixture_id"
@@ -57,20 +57,20 @@
       "output_rows": 83537,
       "duplicate_output_rows": 0,
       "filled_cells": {
-        "home_shots": 62,
-        "away_shots": 62,
-        "home_sot": 62,
-        "away_sot": 59,
+        "home_shots": 56,
+        "away_shots": 55,
+        "home_sot": 56,
+        "away_sot": 53,
         "home_corners": 5613,
         "away_corners": 5612,
         "home_fouls": 5609,
         "away_fouls": 5606,
         "home_yellows": 19517,
         "away_yellows": 19515,
-        "home_xg": 84,
-        "away_xg": 84,
-        "home_insidebox": 61,
-        "away_insidebox": 61
+        "home_xg": 83,
+        "away_xg": 83,
+        "home_insidebox": 57,
+        "away_insidebox": 57
       },
       "overwritten_cells": 0,
       "legacy_expansion_rows": null,
@@ -180,7 +180,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
       "left_rows": 83537,
-      "right_rows": 35336,
+      "right_rows": 35367,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -228,7 +228,7 @@
       "filled_cells": {},
       "overwritten_cells": 0,
       "legacy_expansion_rows": 7043,
-      "legacy_misaligned_rows": 83525,
+      "legacy_misaligned_rows": 83522,
       "status": "FAIL",
       "notes": [
         "key omits league/fixture_id"
@@ -466,7 +466,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
       "left_rows": 83537,
-      "right_rows": 35336,
+      "right_rows": 35367,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -522,45 +522,45 @@
   "replay": {
     "label": "RETROSPECTIVE",
     "rows_total": 83537,
-    "rows_with_any_enriched_value_changed": 40227,
+    "rows_with_any_enriched_value_changed": 40147,
     "first_changed_row": {
       "date": "2019-02-25 00:00:00",
       "league": "Ireland Premier Division",
-      "home_team": "Derry City",
-      "away_team": "Waterford"
+      "home_team": "St Patrick's Athl.",
+      "away_team": "Finn Harps"
     },
     "columns": {
       "home_shots": {
-        "legacy_non_null": 83357,
+        "legacy_non_null": 83350,
         "safe_non_null": 82645,
-        "shifted": 20461,
-        "phantom": 873,
-        "dropped": 161,
-        "rows_changed": 21495
+        "shifted": 20423,
+        "phantom": 877,
+        "dropped": 172,
+        "rows_changed": 21472
       },
       "away_shots": {
-        "legacy_non_null": 83360,
+        "legacy_non_null": 83351,
         "safe_non_null": 82650,
-        "shifted": 20292,
-        "phantom": 868,
-        "dropped": 158,
-        "rows_changed": 21318
+        "shifted": 20286,
+        "phantom": 871,
+        "dropped": 170,
+        "rows_changed": 21327
       },
       "home_sot": {
-        "legacy_non_null": 83358,
+        "legacy_non_null": 83349,
         "safe_non_null": 82657,
-        "shifted": 19120,
-        "phantom": 861,
-        "dropped": 160,
-        "rows_changed": 20141
+        "shifted": 19076,
+        "phantom": 864,
+        "dropped": 172,
+        "rows_changed": 20112
       },
       "away_sot": {
-        "legacy_non_null": 83363,
+        "legacy_non_null": 83352,
         "safe_non_null": 82658,
-        "shifted": 18734,
-        "phantom": 860,
-        "dropped": 155,
-        "rows_changed": 19749
+        "shifted": 18780,
+        "phantom": 863,
+        "dropped": 169,
+        "rows_changed": 19812
       },
       "home_corners": {
         "legacy_non_null": 62586,
@@ -597,34 +597,34 @@
       "home_xg": {
         "legacy_non_null": 8458,
         "safe_non_null": 12380,
-        "shifted": 5510,
-        "phantom": 2905,
-        "dropped": 6827,
-        "rows_changed": 15242
+        "shifted": 5543,
+        "phantom": 2864,
+        "dropped": 6786,
+        "rows_changed": 15193
       },
       "away_xg": {
         "legacy_non_null": 8458,
         "safe_non_null": 12384,
-        "shifted": 5512,
-        "phantom": 2902,
-        "dropped": 6828,
-        "rows_changed": 15242
+        "shifted": 5544,
+        "phantom": 2862,
+        "dropped": 6788,
+        "rows_changed": 15194
       },
       "home_insidebox": {
-        "legacy_non_null": 10683,
+        "legacy_non_null": 10678,
         "safe_non_null": 14916,
-        "shifted": 7549,
-        "phantom": 2533,
-        "dropped": 6766,
-        "rows_changed": 16848
+        "shifted": 7609,
+        "phantom": 2478,
+        "dropped": 6716,
+        "rows_changed": 16803
       },
       "away_insidebox": {
-        "legacy_non_null": 10683,
+        "legacy_non_null": 10678,
         "safe_non_null": 14916,
-        "shifted": 7483,
-        "phantom": 2525,
-        "dropped": 6758,
-        "rows_changed": 16766
+        "shifted": 7514,
+        "phantom": 2480,
+        "dropped": 6718,
+        "rows_changed": 16712
       },
       "ht_home_goals": {
         "legacy_non_null": 55357,
@@ -643,44 +643,44 @@
         "rows_changed": 0
       },
       "odds_btts": {
-        "legacy_non_null": 8302,
+        "legacy_non_null": 8150,
         "safe_non_null": 10463,
-        "shifted": 650,
-        "phantom": 4094,
-        "dropped": 6255,
-        "rows_changed": 10999
+        "shifted": 608,
+        "phantom": 3986,
+        "dropped": 6299,
+        "rows_changed": 10893
       },
       "odds_over15": {
-        "legacy_non_null": 1989,
+        "legacy_non_null": 2008,
         "safe_non_null": 2265,
         "shifted": 0,
-        "phantom": 654,
+        "phantom": 673,
         "dropped": 930,
-        "rows_changed": 1584
+        "rows_changed": 1603
       },
       "odds_over35": {
-        "legacy_non_null": 2320,
+        "legacy_non_null": 2328,
         "safe_non_null": 2597,
         "shifted": 0,
-        "phantom": 670,
+        "phantom": 678,
         "dropped": 947,
-        "rows_changed": 1617
+        "rows_changed": 1625
       },
       "odds_over25": {
-        "legacy_non_null": 45053,
+        "legacy_non_null": 44981,
         "safe_non_null": 43354,
         "shifted": 1,
-        "phantom": 1803,
+        "phantom": 1731,
         "dropped": 104,
-        "rows_changed": 1908
+        "rows_changed": 1836
       },
       "odds_under25": {
-        "legacy_non_null": 45064,
+        "legacy_non_null": 44992,
         "safe_non_null": 43359,
         "shifted": 1,
-        "phantom": 1809,
+        "phantom": 1737,
         "dropped": 104,
-        "rows_changed": 1914
+        "rows_changed": 1842
       }
     }
   },
@@ -761,48 +761,16 @@
   "serving_replay": {
     "board_fixtures": 154,
     "recipe": "v9_repaired",
-    "tips_legacy": 55,
-    "tips_safe": 51,
+    "tips_legacy": 38,
+    "tips_safe": 34,
     "tips_only_legacy": [
       [
         "Argentina Primera Division",
         "Defensa y Justicia",
         "Barracas Central",
-        "btts",
-        "YES",
+        "over15",
+        "OVER",
         "MARKSMAN"
-      ],
-      [
-        "Austrian Bundesliga",
-        "WSG Tirol",
-        "Austria Lustenau",
-        "OU25",
-        "UNDER",
-        "SNIPER"
-      ],
-      [
-        "Brazil Serie A",
-        "Atletico Paranaense",
-        "Remo",
-        "OU25",
-        "UNDER",
-        "VALUABLE"
-      ],
-      [
-        "Brazil Serie A",
-        "Atletico Paranaense",
-        "Remo",
-        "btts",
-        "YES",
-        "VALUABLE"
-      ],
-      [
-        "Brazil Serie A",
-        "Botafogo",
-        "Sao Paulo",
-        "OU25",
-        "UNDER",
-        "VALUABLE"
       ],
       [
         "Brazil Serie A",
@@ -810,14 +778,6 @@
         "Botafogo",
         "OU25",
         "UNDER",
-        "VALUABLE"
-      ],
-      [
-        "Brazil Serie A",
-        "Sao Paulo",
-        "Fluminense",
-        "OU25",
-        "OVER",
         "VALUABLE"
       ],
       [
@@ -837,30 +797,6 @@
         "VALUABLE"
       ],
       [
-        "Mexico Liga MX",
-        "Quer\u00e9taro",
-        "Necaxa",
-        "OU25",
-        "UNDER",
-        "SNIPER"
-      ],
-      [
-        "Mexico Liga MX",
-        "Santos Laguna",
-        "Le\u00f3n",
-        "OU25",
-        "UNDER",
-        "SNIPER"
-      ],
-      [
-        "Serie B",
-        "S\u00fcdtirol",
-        "Cremonese",
-        "btts",
-        "YES",
-        "VALUABLE"
-      ],
-      [
         "Sweden Allsvenskan",
         "IF Brommapojkarna",
         "Halmstads BK",
@@ -874,72 +810,8 @@
         "Argentina Primera Division",
         "Defensa y Justicia",
         "Barracas Central",
-        "btts",
-        "YES",
-        "VALUABLE"
-      ],
-      [
-        "Austrian Bundesliga",
-        "WSG Tirol",
-        "Austria Lustenau",
-        "OU25",
-        "UNDER",
-        "VALUABLE"
-      ],
-      [
-        "Bundesliga 2",
-        "Arminia Bielefeld",
-        "1. FC Magdeburg",
-        "btts",
-        "YES",
-        "MARKSMAN"
-      ],
-      [
-        "Championship",
-        "Lincoln City",
-        "Wrexham AFC",
-        "btts",
-        "YES",
-        "VALUABLE"
-      ],
-      [
-        "Championship",
-        "Middlesbrough",
-        "Bristol City",
-        "btts",
-        "YES",
-        "VALUABLE"
-      ],
-      [
-        "Championship",
-        "Wolverhampton Wanderers",
-        "Charlton Athletic",
-        "btts",
-        "YES",
-        "VALUABLE"
-      ],
-      [
-        "League Two",
-        "Cheltenham Town",
-        "Bristol Rovers",
-        "btts",
-        "YES",
-        "VALUABLE"
-      ],
-      [
-        "Mexico Liga MX",
-        "Quer\u00e9taro",
-        "Necaxa",
-        "OU25",
-        "UNDER",
-        "VALUABLE"
-      ],
-      [
-        "Mexico Liga MX",
-        "Santos Laguna",
-        "Le\u00f3n",
-        "OU25",
-        "UNDER",
+        "over15",
+        "OVER",
         "VALUABLE"
       ]
     ],
@@ -948,7 +820,7 @@
       "away_fouls_pg_roll": 54,
       "away_insidebox_last5": 149,
       "away_xg_last5": 151,
-      "combined_sot_ratio": 73,
+      "combined_sot_ratio": 72,
       "home_corners_pg_roll": 51,
       "home_fouls_pg_roll": 53,
       "home_insidebox_last5": 149,

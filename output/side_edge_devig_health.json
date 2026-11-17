@@ -1,22 +1,19 @@
 {
   "artifact": "side_edge_devig_health",
   "shadow_version": "side_edge_devig_shadow-1.0",
-  "generated_at": "2026-11-17T16:13:50Z",
+  "generated_at": "2026-11-17T17:43:39Z",
   "production_rule": "two-sided de-vig since 2026-11-01 (config.SIDE_EDGE_FAIR_PRICE); edge_prod below = the old (1/odds)/1.08, kept for comparison",
   "shadow_rule": "edge = p_model - median_books(power_devig(same-book two-sided pair)), pre-kickoff, carried forward to the decision time; same thresholds",
   "quotes_from": "2026-08-19 09:23:27+00:00",
-  "quote_rows": 232151,
+  "quote_rows": 232544,
   "board": {
-    "generated_at": "2026-11-17T07:52:45Z",
-    "rows": 208,
-    "production_tips": 20,
+    "generated_at": "2026-11-17T17:39:13Z",
+    "rows": 54,
+    "production_tips": 3,
     "classification": {
-      "CONFIRMED_BY_DEVIG": 20
+      "CONFIRMED_BY_DEVIG": 3
     },
     "by_market": {
-      "btts": {
-        "CONFIRMED_BY_DEVIG": 17
-      },
       "over15": {
         "CONFIRMED_BY_DEVIG": 2
       },
@@ -24,12 +21,12 @@
         "CONFIRMED_BY_DEVIG": 1
       }
     },
-    "devigged_rows": 208,
-    "median_pair_overround": 0.0808,
-    "median_edge_prod_minus_devig_pp": 0.71,
-    "mean_edge_prod_minus_devig_pp": 0.52,
-    "p90_edge_prod_minus_devig_pp": 1.72,
-    "rows_prod_edge_inflated_ge_2pp": 13,
+    "devigged_rows": 54,
+    "median_pair_overround": 0.0761,
+    "median_edge_prod_minus_devig_pp": -0.29,
+    "mean_edge_prod_minus_devig_pp": -0.09,
+    "p90_edge_prod_minus_devig_pp": 2.35,
+    "rows_prod_edge_inflated_ge_2pp": 9,
     "rows_pair_overround_below_6pct": 1,
     "mean_inflation_pp_when_overround_below_6pct": -0.16
   },
