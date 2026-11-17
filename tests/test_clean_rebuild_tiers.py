@@ -25,7 +25,10 @@ def test_stakes_are_flat_per_cell_no_tier_multiplier():
     sel = pd.DataFrame([{"fixture": f"f{i}", "league": "Argentina Primera Division", "model_type": "new_format",
                          "market": "BTTS", "side": "YES", "signal_tier": t, "odds": 2.0}
                         for i, t in enumerate((QUALIFIED, "SNIPER", "MARKSMAN", "VALUABLE"))])
-    out = size_day(sel, load_policy(), bankroll=100.0, peak=100.0)
+    # the flat-per-cell MECHANICS on the policy before the owner's 2026-11-17 all-cells-PAPER decision (the committed
+    # policy stakes no cell; tests/test_top3_flat_stake.py pins that)
+    from tests.test_cell_staking import _pre_top3
+    out = size_day(sel, _pre_top3(load_policy()), bankroll=100.0, peak=100.0)
     assert set(out["tier_multiplier"]) == {1.0}
     assert set(out["requested_fraction"]) == {0.005}           # Argentina NF BTTS 0.5% flat (owner 2026-11-15)
     cells = load_policy()["cell_staking"]["cells"]
