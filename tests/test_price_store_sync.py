@@ -199,7 +199,8 @@ def test_sync_workflow_is_gated_and_read_test_never_mirrors():
     doc, _ = _steps("price_store_sync.yml")
     mirror, read_test = doc["jobs"]["mirror"], doc["jobs"]["read_test"]
     assert "vars.PRICE_STORE_SYNC == '1'" in mirror["if"] and "github.event_name == 'schedule'" in mirror["if"]
-    assert "github.event_name == 'workflow_run'" in mirror["if"]
+    assert "github.event_name == 'workflow_run'" in mirror["if"] and "github.event_name == 'push'" in mirror["if"]
+    assert (doc.get(True) or doc.get("on"))["push"]["branches"] == ["data-truth-100", "prep/bars-oddsapi-hist"]
     names = {n for n in (doc.get(True) or doc.get("on"))["workflow_run"]["workflows"]}
     import glob
     have = set()
