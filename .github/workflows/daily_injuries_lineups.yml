@@ -38,10 +38,22 @@ name: Daily Injuries + Lineups Collect
 # after the provider's daily quota reset (00:00 UTC). Shares the concurrency group of
 # data_truth_collect.yml, so the two writers of output/collect/ never run at once (a queued run checks
 # out the branch after the other one pushed).
+#
+# 17:17 UTC BACKUP (owner 2026-11-17, "Yes, add backup"). GitHub delivered the 05:17 firing at 13:40
+# (11-16) and 14:26 (11-17), and this repo's other scheduled jobs land +6.5..+10.5 h late; firings of
+# one workflow closer together than that are dropped (af_usage_monitor's 4 slots 6 h apart deliver
+# 2-3 runs a day, update_results' 9 slots ~3), so the backup is 12 h away from the primary, not 6.
+# Covered kickoffs (registry, provider injuries coverage, next 4 weeks) fall 10:00..01:00 UTC with
+# none 01:00..10:00: the backup lands in that gap and its 26 h window holds the whole coming day, so
+# a dropped or late primary still leaves every fixture of the day asked before kickoff. Both firings
+# are incremental: whichever lands second finds the journals fresh (fixture lists < 18 h, league-
+# seasons / pre-kickoff fixtures / lineup re-asks < 20 h) and asks only the pre-kickoff fixtures that
+# entered its own window (~10 a day, at most ~20, for the next 4 weeks).
 
 on:
   schedule:
     - cron: '17 5 * * *'
+    - cron: '17 17 * * *'   # backup, see above
   workflow_dispatch:
     inputs:
       mode:

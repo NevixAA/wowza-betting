@@ -311,6 +311,91 @@ def test_dry_run_counts_the_retries(env):
     assert out["lineup_calls_before_list_refresh"] == 0 and out["lineup_retry_calls"] == 1
 
 
+# ── two firings a day (2026-11-17, backup cron) ────────────────────────────────────────────────
+
+def _lists_read_at(when: datetime):
+    j = pd.read_parquet(CF.JOURNAL)
+    j["fetched_at"] = when.isoformat()
+    j.to_parquet(CF.JOURNAL)
+
+
+def test_fixture_lists_fresh_window(env):
+    _lists_read_at(NOW - timedelta(hours=17))
+    assert D.fixture_lists_fresh(NOW) == (NOW - timedelta(hours=17)).isoformat()
+    _lists_read_at(NOW - timedelta(hours=19))
+    assert D.fixture_lists_fresh(NOW) is None                        # older than FIXTURE_REFRESH_H
+    # an ended season is not re-read by step 1, so its old fetch does not make the lists stale
+    j = pd.read_parquet(CF.JOURNAL)
+    old = {**j.iloc[0].to_dict(), "season": "2025", "season_start": "2025-08-01", "season_end": "2026-05-30",
+           "fetched_at": "2026-06-10T00:00:00+00:00"}
+    pd.concat([j.assign(fetched_at=(NOW - timedelta(hours=2)).isoformat()), pd.DataFrame([old])])         .to_parquet(CF.JOURNAL)
+    assert D.fixture_lists_fresh(NOW) == (NOW - timedelta(hours=2)).isoformat()
+    # a season read BEFORE it ended is re-read once more: it counts
+    pd.concat([j.assign(fetched_at=(NOW - timedelta(hours=2)).isoformat()),
+               pd.DataFrame([{**old, "fetched_at": "2026-05-01T00:00:00+00:00"}])]).to_parquet(CF.JOURNAL)
+    assert D.fixture_lists_fresh(NOW) is None
+    CF.JOURNAL.unlink()
+    assert D.fixture_lists_fresh(NOW) is None                        # no journal: never fresh
+
+
+def test_second_firing_reuses_lists_and_asks_only_new_work(env, monkeypatch):
+    """Primary at NOW, backup 12 h later (05:17 / 17:17 UTC): the backup re-reads no fixture list,
+    no league-season, no pre-kickoff fixture and no lineup the primary stored; it asks only the
+    fixture that entered ITS 26 h window, the daily budget counts both firings, and 'nothing due'
+    is not a failure."""
+    ko3 = NOW + timedelta(hours=33)              # outside the primary's window, inside the backup's
+    up = pd.read_parquet(CF.UPCOMING).to_dict("records")
+    CF.replace_upcoming(up + [{"fixture_id": 3, "league_id": REG, "season": "2026", "kickoff": ko3.isoformat(),
+                               "kickoff_ts": int(ko3.timestamp()), "status": "NS", "home_id": 30, "away_id": 40,
+                               "fetched_at": NOW.isoformat()}], REG, "2026")
+    _lists_read_at(NOW - timedelta(hours=24))
+    list_runs = []
+
+    def fake_lists(client=None):
+        list_runs.append(AL.now_iso())
+        _lists_read_at(datetime.fromisoformat(AL.now_iso()))
+        return {"fetched": 1, "rows": 0}
+    monkeypatch.setattr(CF, "run", fake_lists)
+
+    _clock(monkeypatch, NOW)
+    c1, s1 = _client(env, _bodies())
+    st1 = D.run(client=c1, now=NOW)
+    assert st1["failures"] == [] and len(list_runs) == 1
+    assert sorted((e, tuple(sorted(p.items()))) for e, p in s1.calls) == [
+        ("fixtures/lineups", (("fixture", 1),)), ("injuries", (("fixture", 2),)),
+        ("injuries", (("league", REG), ("season", "2026")))]
+
+    later = NOW + timedelta(hours=12)
+    _clock(monkeypatch, later)
+    c2, s2 = _client(env, _bodies())
+    st2 = D.run(client=c2, now=later)
+    assert len(list_runs) == 1 and st2["fixtures"]["skipped"] == "fresh"
+    assert s2.calls == [("injuries", {"fixture": 3})]
+    assert st2["failures"] == [] and st2["injuries"]["season_calls_due"] == 0
+    assert st2["lineups"]["due"] == 0 and st2["lineups"]["retry_due"] == 0
+    assert c2.calls_today() == 4                 # af_budget_daily.json carries the first firing's 3 calls
+
+    # a third firing right after: nothing at all is due and nothing fails
+    c3, s3 = _client(env, _bodies())
+    st3 = D.run(client=c3, now=later + timedelta(minutes=5))
+    assert s3.calls == [] and st3["failures"] == []
+    # the next day's firing (24 h after the primary) refreshes the lists and re-reads the season
+    nxt = NOW + timedelta(hours=24)
+    _clock(monkeypatch, nxt)
+    c4, s4 = _client(env, _bodies())
+    D.run(client=c4, now=nxt)
+    assert len(list_runs) == 2 and ("injuries", {"league": REG, "season": "2026"}) in s4.calls
+
+
+def test_dry_run_plans_no_list_calls_when_fresh(env):
+    out = D.dry_run(NOW)                         # env journal read at NOW
+    assert out["fixture_lists_fresh_since"] and out["fixture_lists_leagues_calls"] == 0
+    assert out["fixture_lists_open_season_calls"] == 0
+    _lists_read_at(NOW - timedelta(hours=20))
+    out = D.dry_run(NOW)
+    assert out["fixture_lists_fresh_since"] is None and out["fixture_lists_leagues_calls"] > 0
+
+
 # ── Data truth 11 ───────────────────────────────────────────────────────────────────────────────
 
 def _truth_inputs(root: Path, lineup_journaled: bool, inj_read: datetime, list_read: datetime):
