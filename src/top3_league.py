@@ -83,6 +83,15 @@ config/bankroll_policy.json -> top3_league.leagues.<league> in {CURRENT, PAPER, 
 recorded on every pick; CURRENT records whether the league x market x side track is real money today.
 Wiring REAL picks into the stake plan / execution is an owner decision for go-live, not done here.
 
+TOP-3 STAKE (owner 2026-11-17, PROPOSED in the go-live rehearsal): "from Nov 21 every TOP-3 tip carries a real
+stake of 0.5% of bankroll, flat; I place the bets manually; exec and Cloudbet stay off". Read from
+config/bankroll_policy.json -> top3_league.stake ({"rule": "FLAT", "fraction": 0.005, "execution": "MANUAL"}),
+validated by top3_stake() (no default: absent / invalid = no stake, every line keeps its cell's label). When set,
+every TOP-3 / TIER2 pick (selection_mode TOP3_LEAGUE_GW) records stake_effect "REAL <f>% ... MANUAL" and
+track_is_real True, and its Telegram line shows the stake. The stake is NEVER written to output/stake_plan.csv:
+that file feeds Cloudbet and exec, so a TOP-3 stake can only be placed by hand. League-rule (own list) lines are
+not TOP-3 tips: their stake follows their cell, as before.
+
 FLAG. env TOP3_LEAGUE_ENABLED (true/1/yes). Off (the default): every entrypoint returns at once and writes
 nothing. The flag and the lead are read HERE, not in config.py, so turning TOP-3 on does not move the
 research lock's deployed_env; the go-live switch-on is an explicit owner step.
@@ -453,6 +462,41 @@ def policy_switch(policy: dict, league: str) -> str:
     return v if v in POLICY_SWITCH else "CURRENT"
 
 
+STAKE_RULES = ("FLAT",)
+STAKE_EXECUTION = ("MANUAL",)
+
+
+def top3_stake(policy: dict | None) -> float | None:
+    """The flat TOP-3 stake as a bankroll fraction (owner 2026-11-17), or None = no TOP-3 stake.
+
+    Only config/bankroll_policy.json -> top3_league.stake with rule FLAT, execution MANUAL and a finite fraction in
+    (0, HARD single_bet_cap] counts. Anything else (absent, typo, NaN, above the hard cap, an execution mode that
+    is not MANUAL) is no stake: never a default, never a guess."""
+    st = ((policy or {}).get("top3_league") or {}).get("stake") or {}
+    if str(st.get("rule", "")).strip().upper() not in STAKE_RULES:
+        return None
+    if str(st.get("execution", "")).strip().upper() not in STAKE_EXECUTION:
+        return None
+    try:
+        f = float(st.get("fraction"))
+    except (TypeError, ValueError):
+        return None
+    from src.bankroll_policy import HARD
+    return f if math.isfinite(f) and 0.0 < f <= float(HARD["single_bet_cap"]) else None
+
+
+def stake_text(fraction: float) -> str:
+    """'0.5%' for 0.005 (no trailing zeros)."""
+    return f"{fraction * 100:.2f}".rstrip("0").rstrip(".") + "%"
+
+
+def stake_effect_text(fraction: float | None) -> str:
+    if fraction is None:
+        return "NONE (TOP-3 never sizes a stake; stake plan unchanged)"
+    return (f"REAL {stake_text(fraction)} of bankroll, flat (owner 2026-11-17) - placed MANUALLY by the owner; "
+            "never in output/stake_plan.csv, so no automatic execution (exec / Cloudbet)")
+
+
 def freeze_due(cands: pd.DataFrame, weeks_done: set, ctx: dict, now: pd.Timestamp, lead_min: float,
                committed: dict | None = None, policy: dict | None = None,
                real_checker=None, stats: pd.DataFrame | None = None,
@@ -490,8 +534,10 @@ def freeze_due(cands: pd.DataFrame, weeks_done: set, ctx: dict, now: pd.Timestam
                           "n_qualifying": n_q, "n_picks": n_top,
                           "excluded": json.dumps(excl, sort_keys=True), "frozen_at": stamp})
         sw = policy_switch(policy, league)
+        flat = top3_stake(policy)
         for r in picks.to_dict("records"):
             mk = MARKETS[str(r["market"])][1]
+            staked = str(r["list"]) == SELECTION_MODE and flat is not None   # a league-rule line is not TOP-3
             picks_out.append({
                 **{k: r.get(k, "") for k in PICK_FROZEN if k in r},
                 "pick_id": LW.research_id(VERSION, week, str(r["market"]), str(r["fixture_id"]), str(r["side"])),
@@ -502,9 +548,10 @@ def freeze_due(cands: pd.DataFrame, weeks_done: set, ctx: dict, now: pd.Timestam
                 "edge_calibrated": LW._r(r["edge_calibrated"]),
                 "bar_valuable": LW._r(r["bar_valuable"]), "bar_source": BAR_SOURCE,
                 "bar_status": r["bar_status"], "bar_evidence": r["bar_evidence"],
-                "policy_switch": sw, "track_is_real": bool(real_checker(r.get("model_type"), mk, r.get("side"),
-                                                                     r.get("league"))),
-                "stake_effect": "NONE (TOP-3 never sizes a stake; stake plan unchanged)",
+                "policy_switch": sw,
+                "track_is_real": True if staked else bool(real_checker(r.get("model_type"), mk, r.get("side"),
+                                                                       r.get("league"))),
+                "stake_effect": stake_effect_text(flat if staked else None),
             })
     return (pd.DataFrame(picks_out).reindex(columns=PICK_COLS) if picks_out else pd.DataFrame(columns=PICK_COLS),
             pd.DataFrame(weeks_out).reindex(columns=WEEK_COLS) if weeks_out else pd.DataFrame(columns=WEEK_COLS))
@@ -662,8 +709,16 @@ def report(picks: pd.DataFrame, weeks: pd.DataFrame, now: pd.Timestamp, lead: fl
             "note": ("Each league's 3 best tips of the gameweek across O/U 2.5, BTTS, Over 1.5, Over 3.5 from its "
                      "MODEL cells, each cleared its cell's one owner-approved bar, ranked by the live rule (calibrated value); fewer than 3 when "
                      "fewer clear the bar. League-wide cells are the league's own line (league_rule), outside the 3. "
-                     "Flat 1u; a PAPER track - TOP-3 never sizes a stake."),
+                     + _report_stake_note()),
             "leagues": leagues}
+
+
+def _report_stake_note() -> str:
+    flat = top3_stake(_policy())
+    if flat is None:
+        return "Flat 1u; a PAPER track - TOP-3 never sizes a stake."
+    return (f"Every TOP-3 tip: real stake {stake_text(flat)} of bankroll, flat, placed manually by the owner "
+            "(never auto-executed); P/L here in flat units.")
 
 
 def write_report(now=None, out_dir: Path | None = None, lead: float | None = None) -> dict:
@@ -673,10 +728,12 @@ def write_report(now=None, out_dir: Path | None = None, lead: float | None = Non
     return rep
 
 
-def _stake_label(real_checker, r: dict) -> str:
+def _stake_label(real_checker, r: dict, flat: float | None = None) -> str:
     """'💰 Staked' when the pick's CELL stakes under the bankroll policy (src/bankroll_policy.stake_entry via
     direction_guard.real_track_checker), else '📄 Paper' - per line, never a blanket label (go-live rehearsal
     2026-11-15: the Argentina league rule is staked while the TOP-3 track is paper)."""
+    if flat is not None and str(r.get("selection_mode") or SELECTION_MODE) != OWN_LIST_MODE:
+        return f"💰 Stake {stake_text(flat)} (manual)"
     try:
         real = bool(real_checker(r.get("model_type"), MARKETS[str(r["market"])][1], r.get("side"), r.get("league")))
     except Exception:                                                  # noqa: BLE001 - a label can only under-claim
@@ -684,7 +741,7 @@ def _stake_label(real_checker, r: dict) -> str:
     return "💰 Staked" if real else "📄 Paper"
 
 
-def message(picks: pd.DataFrame, real_checker=None) -> str:
+def message(picks: pd.DataFrame, real_checker=None, policy: dict | None = None) -> str:
     """Telegram text for one league-week's picks (HTML). The edge shown is the CALIBRATED one (owner 2026-11-11).
     Each line carries its own cell's stake (Staked / Paper); `real_checker` defaults to the live policy's."""
     from html import escape
@@ -692,6 +749,7 @@ def message(picks: pd.DataFrame, real_checker=None) -> str:
     if real_checker is None:
         from src.direction_guard import real_track_checker
         real_checker = real_track_checker()
+    flat = top3_stake(policy if policy is not None else _policy())
     r0 = picks.iloc[0]
     lines = [f"🏆 <b>TOP-3 {escape(str(r0['league']))}</b> · {escape(str(r0['league_week_id']).split('|')[-1])}"]
     lab = {"OU25": "O/U 2.5", "BTTS": "BTTS", "OVER15": "Over 1.5", "OVER35": "Over 3.5"}
@@ -705,16 +763,18 @@ def message(picks: pd.DataFrame, real_checker=None) -> str:
         lines.append(f"{r['top3_rank']}. {escape(str(r['home_team']))} v {escape(str(r['away_team']))} - "
                      f"{mk} {side} @ {float(r['odds']):.2f} · {r['slot']} · {r['cell_status']} "
                      f"({edge_text(pd.to_numeric(r.get('edge_calibrated'), errors='coerce') * 100)})"
-                     f" · {_stake_label(real_checker, r)}")
+                     f" · {_stake_label(real_checker, r, flat)}")
     for (mk, sd), g in rule.groupby(["market", "side"], sort=True):
         side = "Yes" if str(sd) == "YES" else str(sd).title()
         lines.append(f"📏 League rule: {lab.get(str(mk), str(mk))} {side}, every match "
                      f"({g['cell_status'].iloc[0]}, outside the 3) · {_stake_label(real_checker, g.iloc[0].to_dict())}")
         for r in g.sort_values("top3_rank", key=lambda s: s.astype(int)).to_dict("records"):
             lines.append(f"   • {escape(str(r['home_team']))} v {escape(str(r['away_team']))} @ {float(r['odds']):.2f}")
-    lines.append("<i>TOP-3 is a Paper track; each line's stake follows its own cell (Staked / Paper). Each tip "
-                 "cleared its league's own owner-approved bar; ranked by calibrated value (the live rule). Fewer "
-                 "than 3 = fewer cleared the bar.</i>")
+    head = (f"Every TOP-3 tip: real stake {stake_text(flat)} of bankroll, flat, placed manually. A league-rule "
+            "line follows its own cell." if flat is not None else
+            "TOP-3 is a Paper track; each line's stake follows its own cell (Staked / Paper).")
+    lines.append(f"<i>{head} Each tip cleared its league's own owner-approved bar; ranked by calibrated value "
+                 "(the live rule). Fewer than 3 = fewer cleared the bar.</i>")
     return "\n".join(lines)
 
 

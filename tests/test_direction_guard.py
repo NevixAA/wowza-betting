@@ -200,7 +200,9 @@ def test_policy_view_of_the_live_policy():
     from importlib import reload
     import src.direction_guard as fresh
     chk = reload(fresh).real_track_checker()
-    assert chk("new_format", "btts", "YES", "Argentina Primera Division") is True
+    # owner 2026-11-17 (final): every cell is PAPER (the only real stake is the manual TOP-3 flat stake, which
+    # never enters the policy's cell view), so the Argentina league rule is paper too
+    assert chk("new_format", "btts", "YES", "Argentina Primera Division") is False
     assert chk("new_format", "btts", "YES", "Japan J-League") is False
     assert chk("new_format", "btts", "YES") is False
     assert chk("new_format", "ou25", "UNDER", "Argentina Primera Division") is False

@@ -34,6 +34,18 @@ def _sel(league, model_type="new_format", market="BTTS", side="YES", odds=2.0, t
             "signal_tier": tier, "edge": 0.05}
 
 
+def _pre_top3(pol: dict) -> dict:
+    """The policy as it was before the owner's 2026-11-17 decision (each cell's before_2026_11_17 values, no
+    top3_league): the per-cell staking MECHANICS below are tested on it; the committed state is pinned by
+    test_committed_policy_stakes_exactly_the_owner_cells."""
+    pol = copy.deepcopy(pol)
+    pol.pop("top3_league", None)
+    for c in pol["cell_staking"]["cells"].values():
+        c.update(c.pop("before_2026_11_17", {}))
+        c.pop("staking_basis_2026_11_17", None)
+    return pol
+
+
 def _size(rows, policy):
     return BP.size_day(pd.DataFrame(rows), policy, bankroll=100.0, peak=100.0)
 
@@ -49,7 +61,16 @@ def test_committed_policy_stakes_exactly_the_owner_cells():
     latest = json.loads((ROOT / "output" / "threshold_proposals" / "latest.json").read_text(encoding="utf-8"))
     prop = json.loads((ROOT / latest["path"]).read_text(encoding="utf-8"))
     # owner 2026-11-11 "Strict, keep Argentina": withdrawn entries stake nothing
-    assert G.build_cells(prop, cs["cells"], pol, None, G.withdrawn_entries(prop)) == cs["cells"]
+    # owner 2026-11-17 (final): every cell is PAPER, the only real stake is the flat TOP-3 stake
+    # (top3_league.stake, placed manually). The cells keep their pre-decision values in before_2026_11_17, and
+    # those are exactly what the generator derives from the proposal.
+    assert pol["top3_league"]["stake"] == {**pol["top3_league"]["stake"], "rule": "FLAT", "fraction": 0.005,
+                                          "execution": "MANUAL"}
+    for k, v in cs["cells"].items():
+        assert v["state"] == "PAPER" and v["base_fraction"] == 0.0, k
+    pre = _pre_top3(pol)
+    cs = pre["cell_staking"]
+    assert G.build_cells(prop, cs["cells"], pre, None, G.withdrawn_entries(prop)) == cs["cells"]
     # owner 2026-11-15 "Approve, PROMISING small" (TP-2026-11-15-bade2c0b): the three PROMISING cells at 0.5% and
     # Argentina NF BTTS reduced to 0.5% ("Reduce to 0.5%"); the NF Unders stay PAPER (owner rule)
     # NF Over 3.5 Finland: its TRACK is BLOCKED; owner 2026-11-15 "Lift for Finland only" lifts it for this ONE cell
@@ -83,7 +104,7 @@ def test_owner_paper_hold_is_never_lifted_by_a_promising_cell():
 
 
 def test_cell_without_entry_is_paper_never_inherited_from_its_track():
-    pol = BP.load_policy()
+    pol = _pre_top3(BP.load_policy())
     out = _size([_sel(ARG, fx="F1"), _sel("Japan J-League", fx="F2")], pol)
     arg, jpn = out.iloc[0], out.iloc[1]
     assert arg["reason"] == "OK" and arg["final_fraction"] > 0 and arg["deployment_state"] == "ACTIVE_LOW"   # 0.5% since 2026-11-15
@@ -106,10 +127,10 @@ def test_promising_cell_respects_its_own_odds_cap():
 
 
 def test_paper_league_and_drawdown_rules_still_apply():
-    pol = copy.deepcopy(BP.load_policy())
+    pol = _pre_top3(BP.load_policy())
     pol["paper_leagues"] = list(pol.get("paper_leagues", [])) + [ARG]
     assert _size([_sel(ARG)], pol).iloc[0]["reason"] == "PAPER_LEAGUE"
-    pol = BP.load_policy()
+    pol = _pre_top3(BP.load_policy())
     full = _size([_sel(ARG)], pol).iloc[0]["final_fraction"]
     dd = BP.size_day(pd.DataFrame([_sel(ARG)]), pol, bankroll=90.0, peak=100.0).iloc[0]["final_fraction"]
     assert 0 < dd < full                                                  # the drawdown throttle scales it
@@ -123,7 +144,7 @@ def test_switch_off_restores_per_track_staking():
 
 
 def test_cell_tier_multipliers_keep_the_protected_league_wide_track_staked():
-    pol = _with_cells(BP.load_policy(), ["new_format|BTTS|Test League"])
+    pol = _with_cells(_pre_top3(BP.load_policy()), ["new_format|BTTS|Test League"])
     out = _size([_sel(ARG, tier="VALUABLE", fx="F1"), _sel("Test League", tier="VALUABLE", fx="F2")], pol)
     assert (out["reason"] == "OK").all()
     assert out.iloc[0]["requested_fraction"] == 0.005 and out.iloc[1]["requested_fraction"] == 0.005

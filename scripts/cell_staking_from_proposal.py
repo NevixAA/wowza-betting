@@ -181,6 +181,13 @@ def main(argv=None) -> int:
     proposal = json.loads(Path(a.proposal).read_text(encoding="utf-8"))
     raw = POLICY.read_text(encoding="utf-8")
     pol = json.loads(raw)
+    if not a.dry_run and ((pol.get("top3_league") or {}).get("stake")):
+        # owner 2026-11-17 (final): every cell is PAPER and the only real stake is the flat TOP-3 stake
+        # (top3_league.stake). Re-deriving cells from a proposal would put PROMISING cells back at ACTIVE_LOW.
+        print("refused: config/bankroll_policy.json carries top3_league.stake (owner 2026-11-17: every cell PAPER, "
+              "TOP-3 0.5% flat, placed manually). Cells are not re-derived from a proposal while it is set; "
+              "--dry-run only shows what the proposal would stake.", file=sys.stderr)
+        return 3
     cur = pol["cell_staking"]["cells"]
     held: list = []
     new = build_cells(proposal, cur, pol, held, withdrawn_entries(proposal))

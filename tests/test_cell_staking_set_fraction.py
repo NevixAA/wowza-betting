@@ -28,10 +28,32 @@ def pol(tmp_path, monkeypatch):
     committed = ROOT / "config" / "bankroll_policy.json"
     before = hashlib.sha256(committed.read_bytes()).hexdigest()
     p = tmp_path / "bankroll_policy.json"
-    p.write_bytes(committed.read_bytes())
+    p.write_text(json.dumps(_pre_top3_policy(json.loads(committed.read_text(encoding="utf-8"))), indent=2,
+                            ensure_ascii=False) + "\n", encoding="utf-8")
     monkeypatch.setattr(G, "POLICY", p)
     yield p
     assert hashlib.sha256(committed.read_bytes()).hexdigest() == before
+
+
+def _pre_top3_policy(pol: dict) -> dict:
+    """The script's mechanics are tested on the policy as it was before the owner's 2026-11-17 decision (cells
+    staked, no TOP-3 flat stake): each cell's before_2026_11_17 values are restored and top3_league dropped."""
+    pol = json.loads(json.dumps(pol))
+    pol.pop("top3_league", None)
+    for c in pol["cell_staking"]["cells"].values():
+        c.update(c.pop("before_2026_11_17", {}))
+        c.pop("staking_basis_2026_11_17", None)
+    return pol
+
+
+def test_refuses_to_rederive_cells_while_the_top3_flat_stake_is_set(tmp_path, monkeypatch):
+    committed = ROOT / "config" / "bankroll_policy.json"
+    p = tmp_path / "bankroll_policy.json"
+    p.write_bytes(committed.read_bytes())
+    monkeypatch.setattr(G, "POLICY", p)
+    assert G.main(["--proposal", str(_proposal_path())]) == 3
+    assert p.read_bytes() == committed.read_bytes()
+    assert G.main(["--proposal", str(_proposal_path()), "--dry-run"]) == 0
 
 
 def _cells(p):

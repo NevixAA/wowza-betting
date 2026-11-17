@@ -81,7 +81,10 @@ def test_blocked_and_real_money_tracks_match_the_policy():
     for e in REG["entries"]:
         if e["market"] == "OVER35":
             if f"{e['track']}|{e['league']}" in lifts:
-                assert e["real_money"] and e["production_state"] == "ACTIVE_LOW"
+                # owner 2026-11-17 (final): the lifted cell's own entry is PAPER; the lift never creates a stake
+                cell = POLICY["cell_staking"]["cells"][f"{e['track']}|{e['league']}"]
+                assert e["production_state"] == cell["state"]
+                assert e["real_money"] == (cell["state"] in REAL_STATES and cell.get("base_fraction", 0) > 0)
             else:
                 assert e["blocked_market"] and not e["real_money"]
 
