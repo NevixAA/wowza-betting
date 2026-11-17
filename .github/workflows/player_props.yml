@@ -270,6 +270,9 @@ jobs:
         env:
           APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
           ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+          # Prediction ledger (owner rule 2026-11-17): every scored player x market, learning only.
+          # Recorder inside player_model/predict.py; no-op unless the repo variable is 'true'.
+          PREDICTION_LEDGER_ENABLED: ${{ vars.PREDICTION_LEDGER_ENABLED }}
         run: |
           TODAY=$(date -u +%Y%m%d)
           SCHEDULE="${{ github.event.schedule }}"
@@ -399,6 +402,8 @@ jobs:
           # player_history.parquet is a DIRECTORY of month parts (2026-10-25): -A so a part that
           # appears or disappears is staged too. Directory-scoped, never repo-wide.
           git add -A -f player_history.parquet 2>/dev/null || echo "  (skip, not present: player_history.parquet)"
+          # Prediction ledger (learning only; written only when PREDICTION_LEDGER_ENABLED is 'true').
+          git add -f output/prediction_ledger/ 2>/dev/null || true
           echo "staged: $(git diff --staged --name-only | wc -l) file(s)"
           git diff --staged --quiet || \
             git commit -m "auto: player props $(date -u '+%Y-%m-%d %H:%M UTC')"

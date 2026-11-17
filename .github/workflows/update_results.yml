@@ -160,6 +160,31 @@ jobs:
         if: always()
         run: python -m src.shadow_experiments guard
 
+      # PREDICTION LEDGER SETTLED VIEW (owner rule 2026-11-17, src/prediction_ledger_v9.py). LEARNING ONLY.
+      # Rebuilds output/prediction_ledger_settled/ (outcome + log loss / Brier / RPS, joined 1:1 on the
+      # ledger key; the raw ledger is only READ) from the committed history banks, then the registry.
+      # No API call. Only this step writes these files, so each attempt resets to the freshest origin/main
+      # and re-derives them (deterministic; no merge). OFF unless PREDICTION_LEDGER_ENABLED is 'true'.
+      # Tolerant: a failure is a warning, never a red run.
+      - name: Prediction ledger - settled view + registry (learning only)
+        if: always() && vars.PREDICTION_LEDGER_ENABLED == 'true'
+        env:
+          PREDICTION_LEDGER_ENABLED: ${{ vars.PREDICTION_LEDGER_ENABLED }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          pushed=0
+          for i in 1 2 3 4 5; do
+            git fetch -q origin main && git reset -q --hard origin/main || { sleep 3; continue; }
+            { python -m src.prediction_ledger_v9 settle && python -m src.prediction_ledger_v9 registry; } || { echo "::warning::prediction ledger settlement failed (learning only)"; pushed=1; break; }
+            git add -f output/prediction_ledger_settled/ output/prediction_ledger/registry.json 2>/dev/null || true
+            if git diff --staged --quiet; then pushed=1; echo "prediction ledger: nothing new"; break; fi
+            git commit -q -m "auto: prediction ledger settlement $(date -u '+%Y-%m-%d %H:%M UTC')"
+            git push && { pushed=1; break; }
+            echo "push race - retry $i"; sleep $((RANDOM % 5 + 3))
+          done
+          [ "$pushed" = "1" ] || echo "::warning::prediction ledger settlement push failed after 5 retries"
+
       # CLV COLLECTION GUARD (P1 2026-10-22). Runs LAST, after both commits, so a failing guard can
       # never stop results or settlements from persisting. It turns the run red when certified
       # T-30m close coverage falls below config/clv_collection_expectation.json - the failure that

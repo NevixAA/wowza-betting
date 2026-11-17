@@ -442,6 +442,15 @@ def run_player_predictions(
     except Exception as _e:                                            # noqa: BLE001
         print(f"[predict] first-sight recorder unavailable: {_e}")
         _first_sight = None
+    # PREDICTION LEDGER (owner rule 2026-11-17, src/prediction_ledger_v9.py): EVERY scored player x market,
+    # not only the tips, stored per model x market x league x season. Learning only: it never changes a
+    # probability, tier or tip, never raises, and is None unless PREDICTION_LEDGER_ENABLED == 'true'.
+    try:
+        from src.prediction_ledger_v9 import props_recorder as _pl_props_recorder
+        _pl_props = _pl_props_recorder()
+    except Exception as _e:                                            # noqa: BLE001
+        print(f"[predict] prediction ledger unavailable: {_e}")
+        _pl_props = None
     # R2-D repaired props recipe in SHADOW (owner decision 2026-11-01): scored on the same
     # player-fixtures, logged first-sight to output/props_r2_shadow.csv. Never changes a tip.
     try:
@@ -701,6 +710,11 @@ def run_player_predictions(
                                  match_date=date_str,
                                  kickoff_utc=_ko if isinstance(_ko, str) else "",
                                  fixture_id=match_row.get("fixture_id"))
+            if _pl_props is not None:
+                _ko = match_row.get("kickoff_utc", "")
+                _pl_props.add(market, feat_df, probs.values, league=str(league),
+                              kickoff_utc=_ko if isinstance(_ko, str) else "",
+                              fixture_id=match_row.get("fixture_id"), home=home, away=away, payload=payload)
             if _r2_shadow is not None:
                 _ko = match_row.get("kickoff_utc", "")
                 _r2_shadow.add(market, feat_df, probs.values, league=str(league), match_date=date_str,
@@ -835,6 +849,8 @@ def run_player_predictions(
               f"squad list, or unseen for {config.STALE_DAYS}+ days where no list exists")
     if _first_sight is not None:
         _first_sight.flush()
+    if _pl_props is not None:
+        _pl_props.flush()
     if _r2_shadow is not None:
         _n_r2 = _r2_shadow.flush()
         print(f"[props_r2_shadow] +{_n_r2} first-sight row(s) -> output/props_r2_shadow.csv")

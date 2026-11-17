@@ -267,5 +267,47 @@ def main(argv=None) -> int:
     return 0
 
 
+# ── 12 PREDICTION LEDGER (owner rule 2026-11-17) ─────────────────────────────────────────────────
+# Appended as an extension, not folded into evaluate()/GATED above, so this file merges cleanly with
+# the data-truth-100 rewrite of those blocks at the go-live merge; fold it in after that merge.
+# Rule 11 (injuries/lineups freshness) is the last number used on any branch; 12 is the next free one.
+LEDGER_RULE = ("Data truth 12: prediction ledger - every model x market prediction stored once, in its own "
+               "model/market/league/season partition, before kickoff: RED on a duplicate key, a row whose "
+               "repo/model/market/league/season does not match its partition, an unknown league, a "
+               "pre-kickoff snapshot written at/after kickoff, a price-like column, or rows under a "
+               "model x market that is not an active entry of config/prediction_ledger_markets.json")
+
+
+def prediction_ledger() -> dict:
+    try:
+        from src import prediction_ledger as _PL
+    except ImportError as e:                                           # the slim dashboard tree
+        return _c("Data truth 12: prediction ledger", GREY, "not run in this tree", LEDGER_RULE, f"{e}"[:200])
+    n = len(_PL.partitions())
+    if n == 0:
+        return _c("Data truth 12: prediction ledger", GREEN, "no ledger partitions yet", LEDGER_RULE)
+    issues = _PL.validate()
+    return _c("Data truth 12: prediction ledger", RED if issues else GREEN,
+              f"{len(issues)} violation(s) in {n} partition(s)", LEDGER_RULE, "; ".join(issues)[:600])
+
+
+_evaluate_rules_1_to_11 = evaluate
+
+
+def evaluate(now: datetime | None = None) -> list[dict]:                 # noqa: F811
+    """The rule checks above plus Data truth 12. Never raises: a check that cannot run is itself RED."""
+    out = _evaluate_rules_1_to_11(now)
+    try:
+        out.append(prediction_ledger())
+    except Exception as e:                                             # noqa: BLE001
+        out.append(_c("Data truth 12: prediction ledger", RED, "check failed", "must run",
+                      f"{type(e).__name__}: {e}"[:200]))
+    return out
+
+
+#: Rule 12 blocks a push/PR like rules 1, 2 and 4.
+GATED = tuple(GATED) + ("Data truth 12",)
+
+
 if __name__ == "__main__":
     raise SystemExit(main())
