@@ -25,8 +25,9 @@ st.set_page_config(page_title="System Info | Wowza", page_icon="ℹ️", layout=
 ui.page_header("System documentation", "All tools, methods, thresholds and configs — one place.",
                eyebrow_text="System · model info",
                freshness=ui.status_chip("NO_DATA", label="REFERENCE · READS config.py DEFAULTS", tone="INFO"))
-st.caption("Thresholds below are the config.py defaults; production overrides some through the predict "
-           "workflow environment (see Research → Governance).")
+st.caption("The global thresholds on the Thresholds tab are HISTORICAL (retired): every current bar is per league x "
+           "market cell (Bars & Cells page). Results of the clean models count in the Clean Record from "
+           f"{config.CLEAN_RECORD_START}.")
 
 @st.cache_data(ttl=300)
 def load_fi(name):
@@ -51,6 +52,10 @@ tab_pred, tab_ht, tab_sharp, tab_live, tab_thr, tab_fi, tab_bt = st.tabs([
 # ── Tab 1: Prediction Model ────────────────────────────────────────────────────
 with tab_pred:
     st.markdown("### 🎯 Pre-Match Prediction Model (O/U 2.5 FT)")
+    st.info(f"**Models serving from the Clean Record start ({config.CLEAN_RECORD_START}, owner 2026-11-11):** the "
+            "clean retrained team models (champion_recipe per track x market, config/phase2_retrain.json, final "
+            "refit runbook R6) and the clean props models (Phase 2 props clean retrain, run 42855107089). Their "
+            "results start the Clean Record; the descriptions below are the model families and their history.")
     col1, col2 = st.columns(2)
     with col1:
         st.markdown("""
@@ -96,7 +101,8 @@ with tab_pred:
     2. Features → form, strength, HT rates, market implied prob
     3. Model    → predict p(over 2.5)
     4. Edge     = p_model − p_implied   (p_implied = 1/odds)
-    5. Tier     → {TIER_LABEL['SNIPER']} / {TIER_LABEL['MARKSMAN']} / {TIER_LABEL['VALUABLE']}  (per-league thresholds)
+    5. Bar      → a tip only when its measure clears its league x market cell's ONE approved bar
+                  (no tiers since 2026-11-11; every cell on the Bars & Cells page; shown edge = calibrated)
     6. Guard    → both-losing filter suppresses conflicting bets
     7. Drift    → market movement (sharp money) confirms or conflicts the signal
     ```
@@ -236,20 +242,23 @@ with tab_live:
 # ── Tab 5: Thresholds ──────────────────────────────────────────────────────────
 with tab_thr:
     st.markdown("### 🎚 Signal Thresholds & Calibration")
-    st.warning("Since 2026-11-09 every tip is tiered ONLY on its league's own owner-approved bars "
-               f"({TIER_LABEL['SNIPER']} / {TIER_LABEL['MARKSMAN']} / {TIER_LABEL['VALUABLE']} per league and "
-               "market). A league without its own bars gets no tip. The global values and the hand-set table "
-               "below are HISTORICAL: they show what served before that date and no longer decide any tip.")
+    st.warning("CURRENT (owner 2026-11-11): a tip is a tip only when its measure clears its league x market "
+               "cell's ONE owner-approved bar (proposal TP-2026-11-10-d999073a; every cell, its bar, status and "
+               "stake on the Bars & Cells page). The Big / Medium / Small gap tiers are RETIRED for future tips "
+               "(history and study only), and there is no global bar. Everything below is HISTORICAL: what served "
+               "before, for reading the pre-repair record. It decides no tip.")
 
     col1, col2, col3 = st.columns(3)
     with col1:
-        st.metric(f"Global {TIER_LABEL['SNIPER']}", f"{config.SNIPER_THRESHOLD:.0%}")
+        st.metric(f"Global {TIER_LABEL['SNIPER']} (retired)", f"{config.SNIPER_THRESHOLD:.0%}")
     with col2:
-        st.metric("OVER threshold", f"{config.SNIPER_THRESHOLD_OVER:.0%}", help="OVER bets less reliable post-COVID")
+        st.metric("OVER threshold (retired)", f"{config.SNIPER_THRESHOLD_OVER:.0%}",
+                  help="Historical global value; decides no tip.")
     with col3:
-        st.metric("UNDER threshold", f"{config.SNIPER_THRESHOLD_UNDER:.0%}", help="UNDER bets more reliable")
+        st.metric("UNDER threshold (retired)", f"{config.SNIPER_THRESHOLD_UNDER:.0%}",
+                  help="Historical global value; decides no tip.")
 
-    st.markdown(f"#### Per-League {TIER_LABEL['SNIPER']} Thresholds")
+    st.markdown(f"#### Per-League {TIER_LABEL['SNIPER']} Thresholds (historical hand-set table, retired)")
     st.caption("Calibrated from post-COVID walk-forward backtest. Higher bar = only the largest gaps between "
                f"our probability and the price. {GAP_EXPLAINER}")
     thresh_data = []
