@@ -523,17 +523,17 @@ def checks(h: dict | None = None) -> list[dict]:
     gaps = h["serving_coverage_gaps"]
     rule = "REAL DATA ONLY (owner 2026-11-15): src/integrity/real_data_provenance"
     out = [
-        {"check": "Data truth 8a: active production violations",
+        {"check": "Data truth 13a: active production violations",
          "status": "RED" if b["count"] else ("AMBER" if (gaps or props != "REPORTED") else "GREEN"),
          "value": f"{b['count']} active violation(s); props {props}; {len(gaps)} serving coverage gap(s)",
          "rule": rule + " - fabricated, unsupported, mismatched or refused inputs in a payload that scores live "
                         "fixtures (props: not yet verified until the props agent reports)",
          "detail": "; ".join((b["rows"] + b["refused_active_payloads"])[:8] + gaps[:4])},
-        {"check": "Data truth 8b: new provenance violations",
+        {"check": "Data truth 13b: new provenance violations",
          "status": "RED" if c["count"] else "GREEN", "value": f"{c['count']} new violation(s)",
          "rule": rule + " - a violation or an active feature config/feature_provenance.json does not hold",
          "detail": "; ".join(c["rows"][:8])},
-        {"check": "Data truth 8c: registered historical exceptions",
+        {"check": "Data truth 13c: registered historical exceptions",
          "status": "AMBER" if a["count"] else "GREEN", "value": f"{a['count']} registered exception(s)",
          "rule": rule + " - documented, not reaching a served model",
          "detail": "; ".join([e["id"] for e in a["documented"]] + a["inactive_artifact_violations"][:6])},

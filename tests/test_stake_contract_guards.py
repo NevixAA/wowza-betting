@@ -174,3 +174,12 @@ def test_stake_mapping_is_not_green_on_an_invalid_side():
     assert stake_mapping(bad)["status"] != "GREEN"
     ok = _plan([_row("2026-11-03|C|D", "BTTS", "YES")])
     assert stake_mapping(ok)["status"] == "GREEN"
+
+
+@pytest.fixture(autouse=True)
+def _per_track_policy(monkeypatch):
+    """These tests pin the TRACK mechanics: per-track staking (tests/policy_helpers). The live per-cell
+    staking (owner 2026-11-09) is pinned in tests/test_cell_staking.py."""
+    import sys
+    from tests.policy_helpers import install_per_track
+    install_per_track(monkeypatch, sys.modules[__name__])

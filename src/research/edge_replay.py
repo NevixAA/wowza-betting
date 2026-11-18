@@ -346,11 +346,18 @@ def legacy_side_tier(p_model: float, odds: float, league: str, market: str,
     if not (np.isfinite(p) and np.isfinite(o) and o > 1):
         return "NOT_EVALUATED", float("nan")
     edge = p - (1.0 / o) / SIDE_OVERROUND
-    # The SAME bar choice as production (src/side_thresholds.side_bars, fix9/defaults 2026-11-04);
-    # the global bar was a typed 0.10 / 0.08 / 0.04 here before, now config.SIDE_GLOBAL_BARS.
-    from src.side_thresholds import side_bars, tier_for
+    # A REPLAY OF THE PAST RULE, not serving: until 2026-11-09 production tiered a side tip on the
+    # league's own approved sniper/marksman bars, else on the global bar (now the historical
+    # config.HISTORICAL_SIDE_GLOBAL_BARS); VALUABLE was the global 0.04 for every league. Serving has
+    # no global bar since then (src/side_thresholds.own_bars); this keeps reproducing what WAS served.
+    from src.side_thresholds import tier_for
     lp = ((side_params or {}).get(market) or {}).get(league, {}) or {}
-    return tier_for(edge, side_bars(lp)), edge
+    g = config.HISTORICAL_SIDE_GLOBAL_BARS
+    approved = lp.get("approved")
+    own = bool(approved) if approved is not None else not lp.get("drop", False)
+    sn = lp.get("sniper_th") if own and lp.get("sniper_th") is not None else g["sniper"]
+    mm = lp.get("marksman_th") if own and lp.get("marksman_th") is not None else g["marksman"]
+    return tier_for(edge, (float(sn), float(mm), float(g["valuable"]))), edge
 
 
 def _tier_str(v) -> str:

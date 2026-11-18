@@ -24,7 +24,8 @@ import pandas as pd
 import config
 from src.tier_labels import GAP_EXPLAINER, tier_label
 
-TIER_ORDER = ["SNIPER", "MARKSMAN", "VALUABLE"]
+from src.calibrated_edge import display_edge_pct  # noqa: E402  owner 2026-11-11
+TIER_ORDER = ["QUALIFIED", "SNIPER", "MARKSMAN", "VALUABLE"]   # QUALIFIED = a tip from 2026-11-21 (owner 2026-11-11)
 TIER_COLOUR = {"SNIPER": (196, 43, 43), "MARKSMAN": (217, 119, 6), "VALUABLE": (37, 99, 235)}
 MARKET_LABEL = {"btts": "BTTS", "over15": "O/U 1.5", "over35": "O/U 3.5"}
 ROWS_PER_IMAGE = 22
@@ -127,7 +128,9 @@ def tips_rows(date_from: str, date_to: str) -> pd.DataFrame:
                         "home_team": r["home_team"], "away_team": r["away_team"],
                         "model": _model_of(r),
                         "tier": r["signal_tier"], "market": f"O/U 2.5 {str(r.get('side', '')).upper()}",
-                        "odds": r.get("odds"), "edge": r.get("edge_pct"),
+                        # owner 2026-11-11 "Show calibrated edge": a future tip shows ONLY its calibrated edge
+                        "odds": r.get("odds"), "edge": display_edge_pct(r["signal_tier"], r.get("edge_calibrated_pct"),
+                                                                       r.get("edge_pct")),
                         "drift": r.get("drift_signal"), "model_prob": None,
                         "generated_at": r.get("generated_at"),
                         # O/U 2.5 is tiered by src/betting (its own per-league / global ladder),
@@ -148,7 +151,8 @@ def tips_rows(date_from: str, date_to: str) -> pd.DataFrame:
                         "home_team": r["home_team"], "away_team": r["away_team"],
                         "model": _model_of(r),
                         "tier": r["signal_tier"], "market": label, "odds": r.get("odds"),
-                        "edge": r.get("edge_pct"), "drift": None,
+                        "edge": display_edge_pct(r["signal_tier"], r.get("edge_calibrated_pct"), r.get("edge_pct")),
+                        "drift": None,
                         "model_prob": r.get("model_prob"), "generated_at": r.get("generated_at"),
                         "threshold_source": _threshold_source(r.get("threshold_source")),
                         # notifier.notify_side_bets' dedup key (side suffix only when not YES/OVER)
@@ -230,7 +234,8 @@ def render_pngs(rows: pd.DataFrame, title: str) -> list[bytes]:
             dr.rectangle([0, y, 6, y + row_h], fill=colour)             # tier stripe
             # an untagged model is shown as missing, not labelled New-format by elimination
             model = {"standard": "Standard", "new_format": "New-fmt"}.get(str(r["model"]), "–")
-            edge = "–" if pd.isna(r["edge"]) else f"+{r['edge']:.0f}%"
+            edge = (("n/c" if r["tier"] == "QUALIFIED" else "–") if pd.isna(r["edge"])
+                    else f"{r['edge']:+.1f}pp" if r["tier"] == "QUALIFIED" else f"+{r['edge']:.0f}%")
             odds = "–" if pd.isna(pd.to_numeric(r["odds"], errors="coerce")) else f"{float(r['odds']):.2f}"
             rt = r.get("rating")
             rating = "–" if rt is None or pd.isna(rt) else f"{int(rt)}/10"
@@ -246,7 +251,7 @@ def render_pngs(rows: pd.DataFrame, title: str) -> list[bytes]:
                 dr.text((x + 4, y + 8), _fit(dr, val, font, w - 8), font=font, fill=fill)
                 x += w
             y += row_h
-        dr.text((pad, y + 8), "Times UTC · Rating = league rating 1-10, not used to size stakes · edge as recorded by v9 · paper leagues excluded"
+        dr.text((pad, y + 8), "Times UTC · Rating = league rating 1-10, not used to size stakes · edge = calibrated (pp; n/c = not calibrated), older rows as recorded · paper leagues excluded"
                 + (" · " + GLOBAL_FOOTNOTE if "threshold_source" in page.columns
                    and (page["threshold_source"] == config.THRESHOLD_SOURCE_GLOBAL).any() else ""),
                 font=f_foot, fill=(107, 114, 128))

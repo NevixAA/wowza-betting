@@ -329,7 +329,7 @@ def test_every_traced_team_feature_anchor_resolves():
 def test_health_reports_three_separate_lines_and_no_active_violation():
     h = RP.health()
     lines = RP.checks(h)
-    assert [c["check"][:13] for c in lines] == ["Data truth 8a", "Data truth 8b", "Data truth 8c"]
+    assert [c["check"][:14] for c in lines] == ["Data truth 13a", "Data truth 13b", "Data truth 13c"]
     assert h["B_active_production_violations"]["count"] == 0
     assert h["C_new_violations"]["count"] == 0
     for m in h["per_model"].values():
@@ -364,7 +364,7 @@ def test_classification_rules():
 
 def test_data_truth_gate_includes_8b_only():
     from src.integrity import data_truth as DT
-    assert "Data truth 8b" in DT.GATED and "Data truth 8a" not in DT.GATED
+    assert "Data truth 13b" in DT.GATED and "Data truth 13a" not in DT.GATED
 
 
 def test_pickle_roundtrip_of_registry_is_stable():

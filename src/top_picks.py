@@ -34,7 +34,7 @@ log = logging.getLogger(__name__)
 
 LISTS = ("BEST_BETS", "SAFEST", "VALUE")
 LIST_LABEL = {"BEST_BETS": "Best bets", "SAFEST": "Safest", "VALUE": "Value"}
-TIERS = ("SNIPER", "MARKSMAN", "VALUABLE")
+TIERS = ("QUALIFIED", "SNIPER", "MARKSMAN", "VALUABLE")   # QUALIFIED = a future tip (owner 2026-11-11)
 TOP_K = 5
 HIT_FLOOR = 0.45
 MIN_TRAIN = 300
