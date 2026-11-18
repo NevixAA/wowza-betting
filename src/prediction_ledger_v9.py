@@ -26,6 +26,7 @@ import hashlib
 import json
 import os
 import sys
+from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -190,13 +191,13 @@ def coverage_report(board: pd.DataFrame, rows: list, dropped: list, *, markets: 
     for e in ents:
         want.setdefault(e["model_id"], set()).add(e["market"])
     have: dict = {}
-    unscored: dict = {}
+    unscored: Counter = Counter()
     for r in rows:
         have.setdefault((r["fixture_ref"], r["model_id"]), set()).add(r["market"])
         why = PL._s(r.get("not_scored_reason"))
         if why and r.get("selection") and r.get("snapshot") == "first_sight":
             k = f"{r['model_id']}|{r['market']}: {why.split(' (')[0]}"
-            unscored[k] = unscored.get(k, 0) + 1
+            unscored[k] += 1
     missing = [{"fixture_ref": f, "model_id": m, "markets": sorted(want.get(m, set()) - got)}
                for (f, m), got in have.items() if want.get(m, set()) - got]
     on_board = {slugs.canonical(x) or PL._s(x) for x in board.get("league", pd.Series(dtype=str)).tolist()}
@@ -206,7 +207,7 @@ def coverage_report(board: pd.DataFrame, rows: list, dropped: list, *, markets: 
                 for s in scope if s["scope"].startswith("tracked") and s["league"] not in on_board]
     rep = {"board_fixtures": int(len(board)), "fixtures_with_rows": len({f for f, _ in have}),
            "active_team_entries": {m: sorted(v) for m, v in want.items()},
-           "dropped": dropped, "dropped_n": len(dropped), "unscored_first_sight_rows": unscored,
+           "dropped": dropped, "dropped_n": len(dropped), "unscored_first_sight_rows": dict(unscored),
            "missing_cells": missing, "missing_cells_n": len(missing),
            "tracked_leagues_without_board_fixtures": no_board}
     return rep
@@ -243,9 +244,7 @@ def record_board(path: Path | None = None, *, root: Path | None = None, now: dat
         stats["coverage"] = {k: rep[k] for k in ("board_fixtures", "fixtures_with_rows", "dropped_n",
                                                   "missing_cells_n")}
         if rep["dropped_n"] or rep["missing_cells_n"]:
-            why = {}
-            for d in rep["dropped"]:
-                why[d["reason"]] = why.get(d["reason"], 0) + 1
+            why = dict(Counter(d["reason"] for d in rep["dropped"]))
             print(f"::warning title=Prediction ledger coverage::{rep['dropped_n']} board fixture(s) without a "
                   f"row {why}; {rep['missing_cells_n']} fixture x model with a missing market")
     except Exception as e:                                              # noqa: BLE001
