@@ -63,6 +63,68 @@ def test_manifest_is_sane():
     assert "player_history.parquet" in excluded or not (ROOT / "player_history.parquet").exists()
 
 
+def test_no_committed_file_is_excluded_as_not_committed():
+    """Bars / What-was-fixed regression (2026-11-17): the manifest was written before reports/dashboard/
+    bars_statistics.json and repairs_log.json were `git add`ed, so both sat under `excluded` as 'not
+    committed' and the slim dashboard showed FileNotFoundError."""
+    stale = DM.stale_exclusions(MANIFEST, ROOT)
+    assert not stale, ("files git carries are excluded as 'not committed' - run "
+                       f"`python scripts/dashboard_manifest.py --write`: {stale}")
+
+
+# ── committed = git tree, not working tree or .gitignore ─────────────────────────────────────────
+def _git_repo(tmp_path):
+    import shutil
+    import subprocess
+    if not shutil.which("git"):
+        pytest.skip("git not available")
+
+    def git(*a):
+        subprocess.run(["git", "-c", "user.name=t", "-c", "user.email=t@example.invalid", "-c",
+                        "commit.gpgsign=false", *a], cwd=tmp_path, check=True, capture_output=True)
+    git("init", "-q")
+    (tmp_path / ".gitignore").write_text("reports/\n", encoding="utf-8")
+    (tmp_path / "dashboard_data").mkdir()
+    (tmp_path / "dashboard_data" / "remote_mirror.py").write_text("DASHBOARD_SCHEMA_VERSION = 1\n",
+                                                                  encoding="utf-8")
+    (tmp_path / "reports" / "dashboard").mkdir(parents=True)
+    (tmp_path / "reports" / "dashboard" / "bars_statistics.json").write_text("{}", encoding="utf-8")
+    git("add", ".gitignore", "dashboard_data/remote_mirror.py")
+    git("commit", "-q", "-m", "base")
+    return git
+
+
+def _trace(*paths):
+    return {"modules": [], "reads": {p: {"kinds": ["open"], "pages": ["pages/x.py"]} for p in paths},
+            "pages": {}}
+
+
+def test_committed_file_under_an_ignored_path_lands_in_data(tmp_path, monkeypatch):
+    git = _git_repo(tmp_path)
+    monkeypatch.setattr(DM, "static_closure", lambda *a, **k: set())
+    rel = "reports/dashboard/bars_statistics.json"
+    git("add", "-f", rel)
+    git("commit", "-q", "-m", "force-add under an ignored dir")
+    man = DM.build_manifest(_trace(rel), tmp_path)
+    assert rel in {e["path"] for e in man["data"]}, man["excluded"]
+    assert not man["excluded"]
+
+
+def test_manifest_written_before_git_add_is_caught_and_fixed_by_rewrite(tmp_path, monkeypatch):
+    git = _git_repo(tmp_path)
+    monkeypatch.setattr(DM, "static_closure", lambda *a, **k: set())
+    rel = "reports/dashboard/bars_statistics.json"
+    early = DM.build_manifest(_trace(rel), tmp_path)          # file exists but is not in git yet
+    assert [e["reason"] for e in early["excluded"]] == [DM.NOT_COMMITTED]
+    assert DM.stale_exclusions(early, tmp_path) == []
+    git("add", "-f", rel)                                     # staged: counts as committed already
+    assert DM.stale_exclusions(early, tmp_path) == [rel]
+    git("commit", "-q", "-m", "add")
+    assert DM.stale_exclusions(early, tmp_path) == [rel]
+    again = DM.build_manifest(_trace(rel), tmp_path)
+    assert rel in {e["path"] for e in again["data"]} and not again["excluded"]
+
+
 # ── runtime mirror ────────────────────────────────────────────────────────────────────────────────
 @pytest.fixture
 def mirror(tmp_path, monkeypatch):
