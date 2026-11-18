@@ -217,7 +217,7 @@
     "rule": "total_goals_over",
     "period": "ht"
    },
-   "description": "Half-time O/U (served for Standard leagues only; New-Format has no HT model)."
+   "description": "Half-time O/U (served for Standard leagues only; the New-Format HT entries are registered pending_model - see them)."
   },
   {
    "repo": "v9",
@@ -241,7 +241,51 @@
     "rule": "total_goals_over",
     "period": "ht"
    },
-   "description": "Half-time O/U (served for Standard leagues only; New-Format has no HT model)."
+   "description": "Half-time O/U (served for Standard leagues only; the New-Format HT entries are registered pending_model - see them)."
+  },
+  {
+   "repo": "v9",
+   "model_id": "v9_new_format",
+   "market": "ht_ou05",
+   "family": "team",
+   "status": "pending_model",
+   "track": "new_format",
+   "line": 0.5,
+   "selections": [
+    "OVER",
+    "UNDER"
+   ],
+   "prob_col": null,
+   "positive_selection": "OVER",
+   "version_col": null,
+   "model_file": null,
+   "settle": {
+    "rule": "total_goals_over",
+    "period": "ht"
+   },
+   "description": "Half-time O/U 0.5 for New-Format leagues (owner rule 2026-11-18: every model x market it can). Registered with NO rows: the 2026-11-18 refit fitted New-Format HT payloads (golive refit_1118b new_format/ht_over05.pkl) but src/predict.py scores HT on Standard rows only and the clean-switch override installs Standard HT only, so the board has no New-Format HT probability. Switching it on = an owner-approved install of the New-Format HT payload plus its serving path, then this entry's status -> 'active' with prob_col/version_col/model_file (never empty-filled rows)."
+  },
+  {
+   "repo": "v9",
+   "model_id": "v9_new_format",
+   "market": "ht_ou15",
+   "family": "team",
+   "status": "pending_model",
+   "track": "new_format",
+   "line": 1.5,
+   "selections": [
+    "OVER",
+    "UNDER"
+   ],
+   "prob_col": null,
+   "positive_selection": "OVER",
+   "version_col": null,
+   "model_file": null,
+   "settle": {
+    "rule": "total_goals_over",
+    "period": "ht"
+   },
+   "description": "Half-time O/U 1.5 for New-Format leagues (owner rule 2026-11-18: every model x market it can). Registered with NO rows: the 2026-11-18 refit fitted New-Format HT payloads (golive refit_1118b new_format/ht_over15.pkl) but src/predict.py scores HT on Standard rows only and the clean-switch override installs Standard HT only, so the board has no New-Format HT probability. Switching it on = an owner-approved install of the New-Format HT payload plus its serving path, then this entry's status -> 'active' with prob_col/version_col/model_file (never empty-filled rows)."
   },
   {
    "repo": "v9",

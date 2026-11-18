@@ -23,6 +23,7 @@ none of them can raise into the pipeline that calls it.
 from __future__ import annotations
 
 import hashlib
+import json
 import os
 import sys
 from datetime import datetime, timezone
@@ -95,8 +96,19 @@ def _hash_values(vals) -> str:
 # ── TEAM: the board ──────────────────────────────────────────────────────────────────────────────
 
 def team_rows(board: pd.DataFrame, *, markets: dict | None = None, slugs: PL.LeagueSlugs | None = None,
-              now: datetime | None = None) -> list:
-    """Ledger rows for every board fixture x active v9 team entry x selection x due snapshot."""
+              now: datetime | None = None, coverage: dict | None = None) -> list:
+    """Ledger rows for every board fixture x active v9 team entry x selection x due snapshot.
+
+    `coverage` (a dict, filled in place when given): every board fixture with the reason it got NO row
+    (owner rule 2026-11-17/18: every model predicts every match of every tracked league for every market it
+    can - a fixture that is dropped is reported with its reason, never silently)."""
+    drops = coverage.setdefault("dropped", []) if coverage is not None else None
+
+    def _drop(r, why):
+        if drops is not None:
+            drops.append({"league": PL._s(r.get("league")), "date": PL._s(r.get("date"))[:10],
+                          "home_team": PL._s(r.get("home_team")), "away_team": PL._s(r.get("away_team")),
+                          "reason": why})
     markets = markets or PL.load_markets()
     slugs = slugs or PL.LeagueSlugs()
     now = now or _now()
@@ -111,10 +123,15 @@ def team_rows(board: pd.DataFrame, *, markets: dict | None = None, slugs: PL.Lea
         ko = PL.utc_ts(r.get("kickoff_utc"))
         at = PL.utc_ts(r.get("generated_at")) or pd.Timestamp(now)
         if ko is None:
+            _drop(r, "no kickoff_utc on the board row (cannot be a pre-kickoff snapshot)")
             continue                                   # no kickoff: cannot be a pre-kickoff snapshot
         mtk = (ko - at).total_seconds() / 60.0
         due = PL.snapshots_due(mtk)
-        if not due or model_id is None:
+        if model_id is None:
+            _drop(r, f"model_type {PL._s(r.get('model_type')) or 'missing'!r} is not a v9 track")
+            continue
+        if not due:
+            _drop(r, "predicted at or after kickoff (no pre-kickoff snapshot due)")
             continue
         lentry = slugs.entry(r.get("league"))
         league = slugs.canonical(r.get("league")) or PL._s(r.get("league"))
@@ -156,6 +173,55 @@ TEXT_COLS = ("_oa_event_id", "git_sha", "model_sha", "date", "kickoff_utc", "gen
              "model_version_over15", "model_version_over35", "model_version_ht_over05", "model_version_ht_over15")
 
 
+def coverage_report(board: pd.DataFrame, rows: list, dropped: list, *, markets: dict | None = None,
+                    slugs: PL.LeagueSlugs | None = None) -> dict:
+    """Per run: did every fixture of every tracked league on the board get a ledger row per ACTIVE v9 team
+    model x market? Statistics only (no prices). Lists
+      * dropped: board fixtures with no row at all, with the reason (team_rows);
+      * unscored: rows written without a probability, by reason (the model returned none - e.g. a required
+        input missing; the row is kept so the gap is visible);
+      * missing_cells: a written fixture lacking an active entry of its own track (must be 0);
+      * tracked_leagues_without_board_fixtures: tracked registry leagues with no fixture on this board
+        (no OddsAPI event / odds in the board window, or a provider gap - league_scope gives the reason)."""
+    markets = markets or PL.load_markets()
+    slugs = slugs or PL.LeagueSlugs()
+    ents = [e for e in PL.entries(markets, repo=REPO, status="active") if e.get("family") == "team"]
+    want = {}
+    for e in ents:
+        want.setdefault(e["model_id"], set()).add(e["market"])
+    have: dict = {}
+    unscored: dict = {}
+    for r in rows:
+        have.setdefault((r["fixture_ref"], r["model_id"]), set()).add(r["market"])
+        why = PL._s(r.get("not_scored_reason"))
+        if why and r.get("selection") and r.get("snapshot") == "first_sight":
+            k = f"{r['model_id']}|{r['market']}: {why.split(' (')[0]}"
+            unscored[k] = unscored.get(k, 0) + 1
+    missing = [{"fixture_ref": f, "model_id": m, "markets": sorted(want.get(m, set()) - got)}
+               for (f, m), got in have.items() if want.get(m, set()) - got]
+    on_board = {slugs.canonical(x) or PL._s(x) for x in board.get("league", pd.Series(dtype=str)).tolist()}
+    scope = PL.league_scope(slugs)
+    no_board = [{"league": s["league"], "reason": s["not_scored_reason"] or
+                 "no fixture of this tracked league on this board (no OddsAPI event with odds in the window)"}
+                for s in scope if s["scope"].startswith("tracked") and s["league"] not in on_board]
+    rep = {"board_fixtures": int(len(board)), "fixtures_with_rows": len({f for f, _ in have}),
+           "active_team_entries": {m: sorted(v) for m, v in want.items()},
+           "dropped": dropped, "dropped_n": len(dropped), "unscored_first_sight_rows": unscored,
+           "missing_cells": missing, "missing_cells_n": len(missing),
+           "tracked_leagues_without_board_fixtures": no_board}
+    return rep
+
+
+def _write_coverage(root: Path, rep: dict, now: datetime | None = None) -> Path:
+    now = now or _now()
+    p = Path(root) / REPO / "_coverage" / "team_board" / f"{now:%Y-%m}.jsonl"
+    p.parent.mkdir(parents=True, exist_ok=True)
+    line = json.dumps({"at": now.strftime("%Y-%m-%dT%H:%M:%SZ"), **rep}, sort_keys=True, default=str)
+    with p.open("ab") as fh:
+        fh.write(line.encode("utf-8") + b"\n")
+    return p
+
+
 def read_board(path: Path | None = None) -> pd.DataFrame:
     return pd.read_csv(path or BOARD, low_memory=False, dtype={c: str for c in TEXT_COLS},
                        keep_default_na=True)
@@ -167,8 +233,24 @@ def record_board(path: Path | None = None, *, root: Path | None = None, now: dat
     if not (force or PL.enabled()):
         return {"skipped": f"{PL.FLAG_ENV} is not 'true'"}
     board = read_board(path)
-    rows = team_rows(board, now=now)
-    return PL.append(rows, repo=REPO, writer="team_board", run_id=_run_id(), root=root, now=now)
+    cov: dict = {}
+    rows = team_rows(board, now=now, coverage=cov)
+    stats = PL.append(rows, repo=REPO, writer="team_board", run_id=_run_id(), root=root, now=now)
+    # coverage check (owner rule 2026-11-18): reported every run, never blocks the predict run
+    try:
+        rep = coverage_report(board, rows, cov.get("dropped", []))
+        _write_coverage(Path(root or PL.LEDGER_DIR), rep, now)
+        stats["coverage"] = {k: rep[k] for k in ("board_fixtures", "fixtures_with_rows", "dropped_n",
+                                                  "missing_cells_n")}
+        if rep["dropped_n"] or rep["missing_cells_n"]:
+            why = {}
+            for d in rep["dropped"]:
+                why[d["reason"]] = why.get(d["reason"], 0) + 1
+            print(f"::warning title=Prediction ledger coverage::{rep['dropped_n']} board fixture(s) without a "
+                  f"row {why}; {rep['missing_cells_n']} fixture x model with a missing market")
+    except Exception as e:                                              # noqa: BLE001
+        print(f"::warning title=Prediction ledger coverage::check failed: {type(e).__name__}: {e}")
+    return stats
 
 
 # ── PROPS: recorder called from player_model/predict.py ─────────────────────────────────────────
