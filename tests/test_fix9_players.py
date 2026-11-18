@@ -34,23 +34,31 @@ def _row(fid, pid, date, **vals):
     return {"fixture_id": fid, "player_id": pid, "date": pd.Timestamp(date), **base}
 
 
-def test_merge_keeps_a_rule_rows_missing_count_missing():
+def test_merge_keeps_committed_rows_and_records_a_rule_rows_differences():
+    # Keep-first (2026-11-18, owner: never rewrite committed rows; corrections beside originals).
+    # A re-fetched rule row no longer replaces the stored counts in a 14-day window: the stored row
+    # (and its provenance label) is kept, and every count the rule row reports differently -- a
+    # provider "not answered" against a stored suspect 0 included -- goes to the corrections file.
     existing = pd.DataFrame([_row(1, 10, "2026-10-30"), _row(2, 10, "2026-09-01"), _row(3, 10, "2026-10-30")])
     fresh = pd.DataFrame([
         {**_row(1, 10, "2026-10-30", goals=1, saves=None, rating=None), PSN.SOURCE_COL: PSN.PARSED_WITH_RULE},
-        {**_row(2, 10, "2026-09-01", goals=4, saves=None), PSN.SOURCE_COL: PSN.PARSED_WITH_RULE},   # frozen
+        {**_row(2, 10, "2026-09-01", goals=4, saves=None), PSN.SOURCE_COL: PSN.PARSED_WITH_RULE},
         {**_row(3, 10, "2026-10-30", goals=2, saves=None), PSN.SOURCE_COL: None},                   # old-style
     ])
-    out, st = HI.merge_history(existing, fresh, today="2026-11-04")
+    out, st = HI.merge_history(existing, fresh)
     by = out.set_index(["fixture_id", "player_id"])
-    # live + parsed with the rule: the fresh missing value stays missing (was refilled with the stored 0)
-    assert by.loc[(1, 10), "goals"] == 1 and pd.isna(by.loc[(1, 10), "saves"]) and pd.isna(by.loc[(1, 10), "rating"])
-    assert by.loc[(1, 10), PSN.SOURCE_COL] == PSN.PARSED_WITH_RULE
-    # frozen: stored row kept exactly, so it stays unlabelled (-> zeros_unverified, re-fetch reaches it)
-    assert by.loc[(2, 10), "goals"] == 0 and pd.isna(by.loc[(2, 10), PSN.SOURCE_COL])
-    # a fresh row without the label keeps combine_first semantics
-    assert by.loc[(3, 10), "goals"] == 2 and by.loc[(3, 10), "saves"] == 0
-    assert st["refreshed_counts_as_set"] == 1
+    for k in ((1, 10), (2, 10), (3, 10)):
+        assert by.loc[k, "goals"] == 0 and by.loc[k, "saves"] == 0
+        # stored unlabelled -> stays unlabelled (zeros_unverified for history_refetch)
+        assert PSN.SOURCE_COL not in by.columns or pd.isna(by.loc[k, PSN.SOURCE_COL])
+    assert by.loc[(1, 10), "rating"] == 7.0
+    c = st["corrections"].set_index(["fixture_id", "column"])
+    assert c.loc[(1, "goals"), "fresh_value"] == "1" and c.loc[(1, "saves"), "fresh_value"] == "<missing>"
+    assert c.loc[(1, "rating"), "fresh_value"] == "<missing>"
+    assert c.loc[(2, "goals"), "fresh_value"] == "4" and c.loc[(2, "saves"), "fresh_value"] == "<missing>"
+    assert c.loc[(3, "goals"), "fresh_value"] == "2"
+    assert (3, "saves") not in c.index           # not a rule row: a missing value is no claim
+    assert st["rule_rows_kept"] == 2
 
 
 def test_cup_merge_carries_the_provenance_column():
