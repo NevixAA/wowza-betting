@@ -21,23 +21,41 @@ from dashboard_data import cells_view as CV
 from dashboard_data import clean_record as CR
 from src import units as U
 
+from tests.clean_record_pin import pinned_start  # noqa: F401  (fixture)
+
 ROOT = Path(__file__).resolve().parents[1]
+
+#: tests that read the COMMITTED start (consistency, real ledgers); every other test checks the split
+#: mechanics on synthetic rows around 2026-11-21 with the start pinned there (owner 2026-11-18: the committed
+#: start becomes the go-live merge instant)
+_COMMITTED = {"test_one_owner_set_start_date", "test_committed_ledgers_clean_rows_obey_the_rule"}
+
+
+@pytest.fixture(autouse=True)
+def _pin_unless_committed(request):
+    if request.node.name.split("[")[0] not in _COMMITTED:
+        request.getfixturevalue("pinned_start")
+    yield
 STAT = re.compile(r"<span class='wz-stat-l'>(.*?)</span><span class='wz-stat-v'>(.*?)</span>")
 
 
 # ── the one owner date ─────────────────────────────────────────────────────────────────────────────
 def test_one_owner_set_start_date():
+    from dashboard_data import season
     j = json.loads((ROOT / "config" / "trustworthy_performance.json").read_text(encoding="utf-8"))
-    assert config.CLEAN_RECORD_START == "2026-11-21" == j["clean_record_start_utc"][:10]
+    # ONE value: config, the JSON and the dashboard's name for it agree (owner 2026-11-18: the go-live merge
+    # instant, set by scripts/golive/set_clean_record_start.py; 2026-11-21T00:00:00Z until then)
+    assert config.CLEAN_RECORD_START == j["clean_record_start_utc"][:10] == season.OWNER_DECISION
+    assert pd.Timestamp(j["clean_record_start_utc"]).tzinfo is not None          # a UTC instant
     assert "OWNER DECISION 2026-11-11" in j["_clean_record_start_utc"]
-    # the props clean models start the same day (aligned, never a second date)
-    assert config.PROPS_CLEAN_MODELS_LIVE_DATE == config.CLEAN_RECORD_START
+    # owner 2026-11-18: the props clean models keep 2026-11-21 (never moved with the team start)
+    assert config.PROPS_CLEAN_MODELS_LIVE_DATE == "2026-11-21"
     # the pre-repair comparison window opens at the old cutoff and ends at the start
     assert config.PERFORMANCE_CUTOFF_DATE < config.CLEAN_RECORD_START
     # U6 sets clean_record_start_utc to the go-live (P0) time: the split follows the configured instant
     want = pd.Timestamp(j["clean_record_start_utc"])
     want = want.tz_localize("UTC") if want.tzinfo is None else want.tz_convert("UTC")
-    assert CR.start_date() == "2026-11-21" and CR.start_ts() == want
+    assert CR.start_date() == config.CLEAN_RECORD_START and CR.start_ts() == want
 
 
 # ── the split ─────────────────────────────────────────────────────────────────────────────────────

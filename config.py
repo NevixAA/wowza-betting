@@ -598,7 +598,11 @@ CLEAN_RECORD_START = _clean_record_start()
 # data-truth-100) start serving = the Clean Record start (aligned 2026-11-11: one date for team and props, so
 # the props Clean Record and the team Clean Record start together). pages/11 Player Props shows the results
 # from it apart from the pre-repair props record, never in one headline.
-PROPS_CLEAN_MODELS_LIVE_DATE = CLEAN_RECORD_START
+#
+# OWNER 2026-11-18 ("count them"): the TEAM Clean Record moves to the go-live merge instant (the refit models
+# start serving then); the props date stays 2026-11-21, unchanged (the props switch-on stays with go-live 21.11).
+# From that merge the two dates may differ; each is the owner's own value.
+PROPS_CLEAN_MODELS_LIVE_DATE = "2026-11-21"
 
 # ── Backtesting ───────────────────────────────────────────────────────────────
 BACKTEST_WALK_SIZE = 60

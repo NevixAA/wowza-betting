@@ -10,6 +10,8 @@ from pathlib import Path
 
 import pytest
 
+from tests.clean_record_pin import pinned_start  # noqa: F401  (fixture)
+
 ROOT = Path(__file__).resolve().parents[1]
 STATS = ROOT / "reports" / "dashboard" / "bars_statistics.json"
 LOG = ROOT / "reports" / "dashboard" / "repairs_log.json"
@@ -30,7 +32,11 @@ def _text(at) -> str:
 
 
 @pytest.fixture(autouse=True)
-def _admin(monkeypatch):
+def _admin(monkeypatch, request):
+    # the record NAMES are checked on the start pinned at 2026-11-21 (tests/clean_record_pin.py); the committed
+    # value (owner 2026-11-18: the go-live merge instant) is checked for consistency by test_no_second_start_date
+    if request.node.name != "test_no_second_start_date":
+        request.getfixturevalue("pinned_start")
     monkeypatch.setenv("WOWZA_TIER_OVERRIDE", "admin")
     import streamlit as st
     st.cache_data.clear()
