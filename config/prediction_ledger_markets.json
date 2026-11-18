@@ -695,14 +695,14 @@
    "model_id": "v11_shadow",
    "market": "ou25",
    "family": "team",
-   "status": "pending_writer",
+   "status": "active",
    "track": "board",
    "line": 2.5,
    "selections": [
     "OVER",
     "UNDER"
    ],
-   "prob_col": "p_v11",
+   "prob_col": "v11_p_blend",
    "positive_selection": "OVER",
    "version_col": null,
    "model_file": null,
@@ -710,7 +710,7 @@
     "rule": "total_goals_over",
     "period": "ft"
    },
-   "description": "v11 live O/U 2.5 shadow (scripts/v11_shadow.py, v11_collect.yml). Registered; its writer is a follow-up in NevixAA/wowza_v11 (no rows until wired)."
+   "description": "v11 market-first O/U 2.5 shadow (scripts/v11_shadow.py, v11_collect.yml; writer src/prediction_ledger_v11.py in NevixAA/wowza_v11). probability = v11's own blended forecast for EACH selection from that side's own decision: w*p_model + (1-w)*p_market, w <= the segment cap (new_format 0.45 / standard 0.40) shrunk by the measured N_EFF and the side's odds band, so OVER and UNDER need not sum to 1. Every board fixture v11 evaluates is recorded; one it cannot blend is stored unscored with the engine's reason. Its inputs are never stored: p_model is v9's p_over25 (already in v9's ledger) and p_market is the de-vigged price consensus (price-derived)."
   },
   {
    "repo": "v9",
