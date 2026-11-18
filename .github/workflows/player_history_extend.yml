@@ -253,14 +253,16 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           # Per-file, so one absent path cannot stage nothing (see player_props.yml).
-          for f in output/history_extend_health.json; do
+          # The corrections sidecar (2026-11-18): raw facts a re-fetch reported differently are
+          # recorded BESIDE the committed rows, never written into them.
+          for f in output/history_extend_health.json output/corrections/player_history_collect_diffs.parquet; do
             git add -f "$f" 2>/dev/null || echo "  (skip, not present: $f)"
           done
           # player_history.parquet is a DIRECTORY of month parts (2026-10-25). -A stages new
           # parts AND removed ones (e.g. the old season_YYYY.parquet files on migration); only
-          # parts whose rows changed are rewritten. Since the 14-day frozen window (2026-10-26)
-          # a collect can only change rows from the last 14 days, so this is the current month
-          # part, plus the previous one during the first half of a month.
+          # parts whose rows changed are rewritten. Since keep-first (2026-11-18) a collect never
+          # changes a committed row: it adds new rows and fills cells stored empty, and the guard
+          # below refuses a push that rewrites a committed cell.
           git add -A -f player_history.parquet 2>/dev/null || echo "  (skip, not present: player_history.parquet)"
           echo "staged: $(git diff --staged --name-only | wc -l) file(s)"
           git diff --staged --quiet || \
