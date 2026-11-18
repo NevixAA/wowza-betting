@@ -571,6 +571,59 @@ def cmd_propose(a) -> int:
     return 0
 
 
+# ── 6) price provenance (data truth rule 8) ─────────────────────────────────────────────────
+
+def cmd_provenance(a) -> int:
+    """cell_price_provenance for every entry of the P11 proposal, in the format of
+    scripts/cell_price_provenance.py (counts only). Every P11 cell's evidence is the priced universe (own bet-time
+    rows + BET-role OddsAPI history), so the history rows of EVERY cell are counted (as oddsapi_bet: tiers BT / BTU /
+    OUU are BET-role snapshots at the live-tip lead time, snapshot < kickoff, join-verified); own rows are split
+    football-data pre-match / own forward / own backfill / unmatched by the script's own logic."""
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("cpp", ROOT / "scripts" / "cell_price_provenance.py")
+    cpp = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(cpp)
+    from src import oddsapi_history as OH
+    if not all(OH.snapshot_role(t, OH.BT_LABEL) == "BET" for t in BET_TIERS):
+        raise SystemExit(f"{BET_TIERS} are not all BET-role tiers in src.oddsapi_history")
+    work = P.assert_outside_repo(a.work)
+    prop_path = ROOT / "output" / "threshold_proposals" / NAMESPACE / f"{MONTH}.json"
+    p = json.loads(prop_path.read_text(encoding="utf-8"))
+    cells = cpp.proposal_cells(p)
+    own_dir = work / "own_only"
+    own_dir.mkdir(exist_ok=True)
+    hist = {}
+    for t in TRACKS:
+        u = pd.read_parquet(work / "priced" / f"universe_{t}.parquet")
+        h = u["price_source"] == P.SRC_HIST
+        hist[t] = u.loc[h & u["y"].notna() & (pd.to_datetime(u["date"]) < pd.Timestamp(f"{MONTH}-01")),
+                        ["market", "league"]]
+        u.loc[h, ["yes", "no"]] = np.nan                     # own rows only for the own split
+        u.to_parquet(own_dir / f"universe_{t}.parquet", index=False)
+    aliases = json.loads(Path(a.aliases).read_text(encoding="utf-8"))
+    rows = cpp.provenance(cells, aliases, f"{MONTH}-01", None, own_dir)
+    for r in rows:
+        hh = hist[r["track"]]
+        n = int(((hh["market"] == S.MARKET_SIDES[r["mside"]][0]) & (hh["league"] == r["league"])).sum())
+        r["oddsapi_bet"] = n
+        r["priced_rows"] += n
+        unp = r["own_backfill"] + r["unmatched"] + r["oddsapi_hist"]
+        r["unproven_share"] = round(unp / r["priced_rows"], 4) if r["priced_rows"] else None
+    body = {"proposal_id": p["proposal_id"], "proposal_hash": p["proposal_hash"], "before": f"{MONTH}-01",
+            "rule": "unproven_share = (own_backfill + unmatched + oddsapi_hist) / priced rows; PROVEN capture time = "
+                    "football-data pre-match, our own live capture before kickoff, or a BET-role history snapshot "
+                    f"(tiers {', '.join(BET_TIERS)}) before kickoff (oddsapi_bet)",
+            "price_tiers": {"bet": BET_TIERS, "close_cv_only": CLOSE_TIERS, "btts_fallback_books": list(BTTS_FALLBACK_BOOKS)},
+            "own_universe": "P11 v2 priced universe, own rows (00:00 backfill stripped before pricing)",
+            "cells": rows}
+    out = prop_path.parent / f"cell_price_provenance_{MONTH}_{TAG}.json"
+    out.write_text(json.dumps(body, indent=1, default=str) + chr(10), encoding="utf-8")
+    hit = [r for r in rows if r["oddsapi_hist"] or (r["unproven_share"] or 0) > 0.5]
+    print(json.dumps({"cells": len(rows), "entries": len({r["entry_id"] for r in rows}), "rule8_hits": len(hit),
+                      "file": str(out.relative_to(ROOT))}, indent=1))
+    return 0
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -590,9 +643,12 @@ def main(argv=None) -> int:
     v.add_argument("--approved-evidence", default=str(ROOT / "output" / "threshold_proposals" / "bars_oddsapi_hist"
                                                        / "evidence_2026-11_v5.json"))
     v.add_argument("--again", action="store_true")
+    pv = sub.add_parser("provenance")
+    pv.add_argument("--work", required=True)
+    pv.add_argument("--aliases", required=True)
     a = ap.parse_args(argv)
     return {"prepare": cmd_prepare, "bars": cmd_bars, "tiers-fit": cmd_tiers_fit, "validate": cmd_validate,
-            "propose": cmd_propose}[a.cmd](a)
+            "propose": cmd_propose, "provenance": cmd_provenance}[a.cmd](a)
 
 
 if __name__ == "__main__":
