@@ -1,0 +1,35 @@
+{
+ "schema_version": "side/1.0",
+ "about": "Side-market count models (corners, cards) for the prediction ledger - LEARNING ONLY, never tips or stakes. src/side_models/. A tracked league is served for a family only when its history is VERIFIED by two sources (see `verification`); every other tracked league is listed in the artifact with its reason and gets no rows. Statistics only - no prices are read or written.",
+ "flag_env": "SIDE_MODELS_LEDGER_ENABLED",
+ "families": {
+  "corners": {
+   "model_id": "v9_corners",
+   "markets": {
+    "corners_total": {"part": "total", "lines": [8.5, 9.5, 10.5, 11.5]},
+    "corners_team": {"part": "team", "lines": [3.5, 4.5, 5.5]}
+   },
+   "count": "API-Football /fixtures/statistics 'Corner Kicks' per team (90 minutes), verified per fixture against football-data HC/AC"
+  },
+  "cards": {
+   "model_id": "v9_cards",
+   "markets": {
+    "cards_total": {"part": "total", "lines": [3.5, 4.5, 5.5]},
+    "cards_team": {"part": "team", "lines": [1.5, 2.5]}
+   },
+   "count": "API-Football /fixtures/statistics 'Yellow Cards' + 'Red Cards' per team (a card count, not booking points; a second-yellow dismissal is counted the provider's way - owner rule G9 still open), verified per fixture against football-data HY/AY/HR/AR (src/side_models/data.py)"
+  }
+ },
+ "team_selections": ["HOME_OVER", "HOME_UNDER", "AWAY_OVER", "AWAY_UNDER"],
+ "total_selections": ["OVER", "UNDER"],
+ "features": {"window": 10, "max_age_days": 400, "min_verified": 6},
+ "verification": {
+  "rule": "per fixture: the two sources agree (src/side_models/data.py verify); per league x family: two-source overlap >= min_overlap_pct of the API-Football fixtures in the football-data window AND agreement >= min_agree_pct on that overlap",
+  "min_overlap_pct": 80.0,
+  "min_agree_pct": 95.0
+ },
+ "holdout_split_date": "2025-07-01",
+ "horizon_hours": 168,
+ "fixture_source": "output/collect/upcoming_fixtures.parquet (API-Football fixture ids and team ids; refreshed by daily_injuries_lineups.yml)",
+ "artifact": "models/side_models/side_models.json"
+}

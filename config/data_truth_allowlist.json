@@ -1051,6 +1051,12 @@
    "kind": "numeric_get_default",
    "code": "reasons[\"ht_score_incomplete\"] = reasons.get(\"ht_score_incomplete\", 0) + 1",
    "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value (settlement skip / pending reasons)"
+  },
+  {
+   "file": "src/prediction_ledger.py",
+   "kind": "numeric_get_default",
+   "code": "stats[\"refused_reasons\"][why] = stats[\"refused_reasons\"].get(why, 0) + 1",
+   "reason": "counter: a tally this code keeps itself (rows refused per reason in this append); an absent key is zero occurrences so far - not a provider, ledger or model value (main PR #44, allow-listed at the go-live rehearsal merge 2026-11-17)"
   }
  ]
 }

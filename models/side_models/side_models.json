@@ -1,0 +1,963 @@
+{
+ "schema_version": "side/1.0",
+ "model_version": "side_nb_v1_2026-10-28_3889e35a8c94",
+ "trained_at": "2026-11-18T16:53:12Z",
+ "sources": {
+  "api_football": "output/collect/af_history_fullstats_fill.parquet",
+  "fixtures": "output/strength/competition_fixtures.parquet",
+  "football_data": "output/collect/fd_raw/manifest.json"
+ },
+ "config": {
+  "families": {
+   "corners": {
+    "model_id": "v9_corners",
+    "markets": {
+     "corners_total": {
+      "part": "total",
+      "lines": [
+       8.5,
+       9.5,
+       10.5,
+       11.5
+      ]
+     },
+     "corners_team": {
+      "part": "team",
+      "lines": [
+       3.5,
+       4.5,
+       5.5
+      ]
+     }
+    },
+    "count": "API-Football /fixtures/statistics 'Corner Kicks' per team (90 minutes), verified per fixture against football-data HC/AC"
+   },
+   "cards": {
+    "model_id": "v9_cards",
+    "markets": {
+     "cards_total": {
+      "part": "total",
+      "lines": [
+       3.5,
+       4.5,
+       5.5
+      ]
+     },
+     "cards_team": {
+      "part": "team",
+      "lines": [
+       1.5,
+       2.5
+      ]
+     }
+    },
+    "count": "API-Football /fixtures/statistics 'Yellow Cards' + 'Red Cards' per team (a card count, not booking points; a second-yellow dismissal is counted the provider's way - owner rule G9 still open), verified per fixture against football-data HY/AY/HR/AR (src/side_models/data.py)"
+   }
+  },
+  "features": {
+   "window": 10,
+   "max_age_days": 400,
+   "min_verified": 6
+  },
+  "verification": {
+   "rule": "per fixture: the two sources agree (src/side_models/data.py verify); per league x family: two-source overlap >= min_overlap_pct of the API-Football fixtures in the football-data window AND agreement >= min_agree_pct on that overlap",
+   "min_overlap_pct": 80.0,
+   "min_agree_pct": 95.0
+  },
+  "holdout_split_date": "2025-07-01"
+ },
+ "data_end": "2026-10-28",
+ "coverage": {
+  "corners": {
+   "Championship": {
+    "covered": true,
+    "overlap_pct": 97.51,
+    "agree_pct": 96.51,
+    "fixtures_in_window": 2408,
+    "both_sources": 2348,
+    "verified": 2266,
+    "window_from": "2022-07-29",
+    "reason": ""
+   },
+   "League One": {
+    "covered": true,
+    "overlap_pct": 98.24,
+    "agree_pct": 96.81,
+    "fixtures_in_window": 2391,
+    "both_sources": 2349,
+    "verified": 2274,
+    "window_from": "2022-07-30",
+    "reason": ""
+   },
+   "League Two": {
+    "covered": true,
+    "overlap_pct": 98.21,
+    "agree_pct": 96.74,
+    "fixtures_in_window": 2402,
+    "both_sources": 2359,
+    "verified": 2282,
+    "window_from": "2022-07-30",
+    "reason": ""
+   },
+   "Bundesliga 2": {
+    "covered": true,
+    "overlap_pct": 97.82,
+    "agree_pct": 99.08,
+    "fixtures_in_window": 1331,
+    "both_sources": 1302,
+    "verified": 1290,
+    "window_from": "2022-07-15",
+    "reason": ""
+   },
+   "Ligue 2": {
+    "covered": true,
+    "overlap_pct": 97.85,
+    "agree_pct": 98.08,
+    "fixtures_in_window": 1488,
+    "both_sources": 1456,
+    "verified": 1428,
+    "window_from": "2022-07-30",
+    "reason": ""
+   },
+   "La Liga 2": {
+    "covered": true,
+    "overlap_pct": 97.18,
+    "agree_pct": 98.22,
+    "fixtures_in_window": 2023,
+    "both_sources": 1966,
+    "verified": 1931,
+    "window_from": "2022-08-12",
+    "reason": ""
+   },
+   "Serie B": {
+    "covered": true,
+    "overlap_pct": 94.07,
+    "agree_pct": 98.34,
+    "fixtures_in_window": 1669,
+    "both_sources": 1570,
+    "verified": 1544,
+    "window_from": "2022-08-12",
+    "reason": ""
+   },
+   "Denmark Superliga": {
+    "covered": false,
+    "reason": "single source: API-Football only (football-data's new format for this league carries no corners/cards), so no fixture can be verified by a second source"
+   },
+   "Austrian Bundesliga": {
+    "covered": false,
+    "reason": "single source: API-Football only (football-data's new format for this league carries no corners/cards), so no fixture can be verified by a second source"
+   },
+   "Romanian Superliga": {
+    "covered": false,
+    "reason": "single source: API-Football only (football-data's new format for this league carries no corners/cards), so no fixture can be verified by a second source"
+   },
+   "Sweden Allsvenskan": {
+    "covered": false,
+    "reason": "single source: API-Football only (football-data's new format for this league carries no corners/cards), so no fixture can be verified by a second source"
+   },
+   "Norway Eliteserien": {
+    "covered": false,
+    "reason": "single source: API-Football only (football-data's new format for this league carries no corners/cards), so no fixture can be verified by a second source"
+   },
+   "Finland Veikkausliiga": {
+    "covered": false,
+    "reason": "single source: API-Football only (football-data's new format for this league carries no corners/cards), so no fixture can be verified by a second source"
+   },
+   "Ireland Premier Division": {
+    "covered": false,
+    "reason": "single source: API-Football only (football-data's new format for this league carries no corners/cards), so no fixture can be verified by a second source"
+   },
+   "Argentina Primera Division": {
+    "covered": false,
+    "reason": "single source: API-Football only (football-data's new format for this league carries no corners/cards), so no fixture can be verified by a second source"
+   },
+   "Brazil Serie A": {
+    "covered": false,
+    "reason": "single source: API-Football only (football-data's new format for this league carries no corners/cards), so no fixture can be verified by a second source"
+   },
+   "Japan J-League": {
+    "covered": false,
+    "reason": "single source: API-Football only (football-data's new format for this league carries no corners/cards), so no fixture can be verified by a second source"
+   },
+   "Mexico Liga MX": {
+    "covered": false,
+    "reason": "single source: API-Football only (football-data's new format for this league carries no corners/cards), so no fixture can be verified by a second source"
+   },
+   "China Super League": {
+    "covered": false,
+    "reason": "single source: API-Football only (football-data's new format for this league carries no corners/cards), so no fixture can be verified by a second source"
+   },
+   "USA MLS": {
+    "covered": false,
+    "reason": "single source: API-Football only (football-data's new format for this league carries no corners/cards), so no fixture can be verified by a second source"
+   }
+  },
+  "cards": {
+   "Championship": {
+    "covered": true,
+    "overlap_pct": 97.51,
+    "agree_pct": 97.87,
+    "fixtures_in_window": 2408,
+    "both_sources": 2348,
+    "verified": 2298,
+    "window_from": "2022-07-29",
+    "reason": ""
+   },
+   "League One": {
+    "covered": true,
+    "overlap_pct": 98.24,
+    "agree_pct": 98.34,
+    "fixtures_in_window": 2391,
+    "both_sources": 2349,
+    "verified": 2310,
+    "window_from": "2022-07-30",
+    "reason": ""
+   },
+   "League Two": {
+    "covered": true,
+    "overlap_pct": 98.21,
+    "agree_pct": 98.01,
+    "fixtures_in_window": 2402,
+    "both_sources": 2359,
+    "verified": 2312,
+    "window_from": "2022-07-30",
+    "reason": ""
+   },
+   "Bundesliga 2": {
+    "covered": true,
+    "overlap_pct": 97.82,
+    "agree_pct": 97.24,
+    "fixtures_in_window": 1331,
+    "both_sources": 1302,
+    "verified": 1266,
+    "window_from": "2022-07-15",
+    "reason": ""
+   },
+   "Ligue 2": {
+    "covered": true,
+    "overlap_pct": 97.85,
+    "agree_pct": 95.26,
+    "fixtures_in_window": 1488,
+    "both_sources": 1456,
+    "verified": 1387,
+    "window_from": "2022-07-30",
+    "reason": ""
+   },
+   "La Liga 2": {
+    "covered": false,
+    "overlap_pct": 97.18,
+    "agree_pct": 93.64,
+    "fixtures_in_window": 2023,
+    "both_sources": 1966,
+    "verified": 1841,
+    "window_from": "2022-08-12",
+    "reason": "overlap 97.2% (needs 80.0) / agreement 93.6% (needs 95.0)"
+   },
+   "Serie B": {
+    "covered": true,
+    "overlap_pct": 94.07,
+    "agree_pct": 97.39,
+    "fixtures_in_window": 1669,
+    "both_sources": 1570,
+    "verified": 1529,
+    "window_from": "2022-08-12",
+    "reason": ""
+   },
+   "Denmark Superliga": {
+    "covered": false,
+    "reason": "single source: API-Football only (football-data's new format for this league carries no corners/cards), so no fixture can be verified by a second source"
+   },
+   "Austrian Bundesliga": {
+    "covered": false,
+    "reason": "single source: API-Football only (football-data's new format for this league carries no corners/cards), so no fixture can be verified by a second source"
+   },
+   "Romanian Superliga": {
+    "covered": false,
+    "reason": "single source: API-Football only (football-data's new format for this league carries no corners/cards), so no fixture can be verified by a second source"
+   },
+   "Sweden Allsvenskan": {
+    "covered": false,
+    "reason": "single source: API-Football only (football-data's new format for this league carries no corners/cards), so no fixture can be verified by a second source"
+   },
+   "Norway Eliteserien": {
+    "covered": false,
+    "reason": "single source: API-Football only (football-data's new format for this league carries no corners/cards), so no fixture can be verified by a second source"
+   },
+   "Finland Veikkausliiga": {
+    "covered": false,
+    "reason": "single source: API-Football only (football-data's new format for this league carries no corners/cards), so no fixture can be verified by a second source"
+   },
+   "Ireland Premier Division": {
+    "covered": false,
+    "reason": "single source: API-Football only (football-data's new format for this league carries no corners/cards), so no fixture can be verified by a second source"
+   },
+   "Argentina Primera Division": {
+    "covered": false,
+    "reason": "single source: API-Football only (football-data's new format for this league carries no corners/cards), so no fixture can be verified by a second source"
+   },
+   "Brazil Serie A": {
+    "covered": false,
+    "reason": "single source: API-Football only (football-data's new format for this league carries no corners/cards), so no fixture can be verified by a second source"
+   },
+   "Japan J-League": {
+    "covered": false,
+    "reason": "single source: API-Football only (football-data's new format for this league carries no corners/cards), so no fixture can be verified by a second source"
+   },
+   "Mexico Liga MX": {
+    "covered": false,
+    "reason": "single source: API-Football only (football-data's new format for this league carries no corners/cards), so no fixture can be verified by a second source"
+   },
+   "China Super League": {
+    "covered": false,
+    "reason": "single source: API-Football only (football-data's new format for this league carries no corners/cards), so no fixture can be verified by a second source"
+   },
+   "USA MLS": {
+    "covered": false,
+    "reason": "single source: API-Football only (football-data's new format for this league carries no corners/cards), so no fixture can be verified by a second source"
+   }
+  }
+ },
+ "data_audit": {
+  "Championship": {
+   "fd_window_from": "2022-07-29",
+   "af_fixtures_in_window": 2408,
+   "fd_rows": 2388,
+   "matched": 2388,
+   "matched_pct": 99.17,
+   "corners_both": 2348,
+   "corners_verified": 2266,
+   "cards_both": 2348,
+   "cards_verified": 2298,
+   "zero_fill_suspect": 0
+  },
+  "League One": {
+   "fd_window_from": "2022-07-30",
+   "af_fixtures_in_window": 2391,
+   "fd_rows": 2366,
+   "matched": 2366,
+   "matched_pct": 98.95,
+   "corners_both": 2349,
+   "corners_verified": 2274,
+   "cards_both": 2349,
+   "cards_verified": 2310,
+   "zero_fill_suspect": 0
+  },
+  "League Two": {
+   "fd_window_from": "2022-07-30",
+   "af_fixtures_in_window": 2402,
+   "fd_rows": 2372,
+   "matched": 2372,
+   "matched_pct": 98.75,
+   "corners_both": 2359,
+   "corners_verified": 2282,
+   "cards_both": 2359,
+   "cards_verified": 2312,
+   "zero_fill_suspect": 1
+  },
+  "Bundesliga 2": {
+   "fd_window_from": "2022-07-15",
+   "af_fixtures_in_window": 1331,
+   "fd_rows": 1323,
+   "matched": 1323,
+   "matched_pct": 99.4,
+   "corners_both": 1302,
+   "corners_verified": 1290,
+   "cards_both": 1302,
+   "cards_verified": 1266,
+   "zero_fill_suspect": 0
+  },
+  "Ligue 2": {
+   "fd_window_from": "2022-07-30",
+   "af_fixtures_in_window": 1488,
+   "fd_rows": 1479,
+   "matched": 1477,
+   "matched_pct": 99.26,
+   "corners_both": 1456,
+   "corners_verified": 1428,
+   "cards_both": 1456,
+   "cards_verified": 1387,
+   "zero_fill_suspect": 1
+  },
+  "La Liga 2": {
+   "fd_window_from": "2022-08-12",
+   "af_fixtures_in_window": 2023,
+   "fd_rows": 1986,
+   "matched": 1986,
+   "matched_pct": 98.17,
+   "corners_both": 1966,
+   "corners_verified": 1931,
+   "cards_both": 1966,
+   "cards_verified": 1841,
+   "zero_fill_suspect": 0
+  },
+  "Serie B": {
+   "fd_window_from": "2022-08-12",
+   "af_fixtures_in_window": 1669,
+   "fd_rows": 1630,
+   "matched": 1630,
+   "matched_pct": 97.66,
+   "corners_both": 1570,
+   "corners_verified": 1544,
+   "cards_both": 1570,
+   "cards_verified": 1529,
+   "zero_fill_suspect": 0
+  }
+ },
+ "crosswalk": {
+  "Championship": {
+   "anchors": 1490,
+   "fd_names": 39,
+   "mapped": 39,
+   "unmapped": []
+  },
+  "League One": {
+   "anchors": 1364,
+   "fd_names": 46,
+   "mapped": 46,
+   "unmapped": []
+  },
+  "League Two": {
+   "anchors": 1319,
+   "fd_names": 43,
+   "mapped": 43,
+   "unmapped": []
+  },
+  "Bundesliga 2": {
+   "anchors": 1183,
+   "fd_names": 30,
+   "mapped": 30,
+   "unmapped": []
+  },
+  "Ligue 2": {
+   "anchors": 982,
+   "fd_names": 36,
+   "mapped": 36,
+   "unmapped": []
+  },
+  "La Liga 2": {
+   "anchors": 1555,
+   "fd_names": 41,
+   "mapped": 41,
+   "unmapped": []
+  },
+  "Serie B": {
+   "anchors": 1130,
+   "fd_names": 42,
+   "mapped": 42,
+   "unmapped": []
+  }
+ },
+ "models": {
+  "corners": {
+   "Championship": {
+    "params": {
+     "home": {
+      "coef": [
+       0.5118624602643403,
+       0.3967330148092384,
+       0.288089915940862
+      ],
+      "alpha": 0.0901318046020681,
+      "n": 2063,
+      "mean_y": 5.718371303926321
+     },
+     "away": {
+      "coef": [
+       -0.1445075271978858,
+       0.48600711616142267,
+       0.4323029985919912
+      ],
+      "alpha": 0.0848736030031617,
+      "n": 2063,
+      "mean_y": 4.557925351429956
+     },
+     "total": {
+      "coef": [
+       1.6578664191360772,
+       0.1399408119300832,
+       0.13806000294679072
+      ],
+      "alpha": 0.012580073803965315,
+      "n": 2063,
+      "mean_y": 10.276296655356278
+     }
+    },
+    "n_fit": 2063,
+    "fit_from": "2022-08-30",
+    "fit_to": "2026-10-24",
+    "n_holdout_train": 1450,
+    "n_holdout_test": 613
+   },
+   "League One": {
+    "params": {
+     "home": {
+      "coef": [
+       0.10103438468335554,
+       0.48270442461527086,
+       0.41092887468217565
+      ],
+      "alpha": 0.08648882348026937,
+      "n": 2055,
+      "mean_y": 5.4627737226277375
+     },
+     "away": {
+      "coef": [
+       -0.038925324589253615,
+       0.44066357038902965,
+       0.43669587432499984
+      ],
+      "alpha": 0.10444356920399724,
+      "n": 2055,
+      "mean_y": 4.6335766423357665
+     },
+     "total": {
+      "coef": [
+       1.0853469309243822,
+       0.24182474791096087,
+       0.26914080525551015
+      ],
+      "alpha": 0.019093001552192537,
+      "n": 2055,
+      "mean_y": 10.096350364963504
+     }
+    },
+    "n_fit": 2055,
+    "fit_from": "2022-09-03",
+    "fit_to": "2026-10-27",
+    "n_holdout_train": 1448,
+    "n_holdout_test": 607
+   },
+   "League Two": {
+    "params": {
+     "home": {
+      "coef": [
+       0.2631558672394949,
+       0.32060920132715853,
+       0.4806493147945787
+      ],
+      "alpha": 0.07910147573897994,
+      "n": 2073,
+      "mean_y": 5.346357935359382
+     },
+     "away": {
+      "coef": [
+       -0.05156832562423371,
+       0.35851937456832467,
+       0.5191488365899986
+      ],
+      "alpha": 0.07785652155460465,
+      "n": 2073,
+      "mean_y": 4.492040520984081
+     },
+     "total": {
+      "coef": [
+       0.9021718933193917,
+       0.2884400989957156,
+       0.2939692888995158
+      ],
+      "alpha": 0.010294540027339089,
+      "n": 2073,
+      "mean_y": 9.838398456343464
+     }
+    },
+    "n_fit": 2073,
+    "fit_from": "2022-09-03",
+    "fit_to": "2026-10-27",
+    "n_holdout_train": 1458,
+    "n_holdout_test": 615
+   },
+   "Bundesliga 2": {
+    "params": {
+     "home": {
+      "coef": [
+       0.9278612594596336,
+       0.21055052184765263,
+       0.22710532984028914
+      ],
+      "alpha": 0.0823528241204165,
+      "n": 1131,
+      "mean_y": 5.561450044208665
+     },
+     "away": {
+      "coef": [
+       0.781150982024182,
+       0.12891670808220795,
+       0.28878440922153514
+      ],
+      "alpha": 0.10517115265444611,
+      "n": 1131,
+      "mean_y": 4.645446507515473
+     },
+     "total": {
+      "coef": [
+       1.7390511754267248,
+       0.1323831360845421,
+       0.10921227233078888
+      ],
+      "alpha": 0.013792648758736563,
+      "n": 1131,
+      "mean_y": 10.206896551724139
+     }
+    },
+    "n_fit": 1131,
+    "fit_from": "2022-09-02",
+    "fit_to": "2026-10-25",
+    "n_holdout_train": 793,
+    "n_holdout_test": 338
+   },
+   "Ligue 2": {
+    "params": {
+     "home": {
+      "coef": [
+       0.5093373747647459,
+       0.35589433354896266,
+       0.2819481914340922
+      ],
+      "alpha": 0.08138229247304032,
+      "n": 1252,
+      "mean_y": 4.934504792332269
+     },
+     "away": {
+      "coef": [
+       0.01029257800696725,
+       0.3759535002103209,
+       0.45802615963547627
+      ],
+      "alpha": 0.08852727044702724,
+      "n": 1252,
+      "mean_y": 4.214856230031949
+     },
+     "total": {
+      "coef": [
+       1.1516143503879306,
+       0.3680190757384824,
+       0.0912328567773639
+      ],
+      "alpha": 0.010522244874459226,
+      "n": 1252,
+      "mean_y": 9.149361022364218
+     }
+    },
+    "n_fit": 1252,
+    "fit_from": "2022-09-02",
+    "fit_to": "2026-10-26",
+    "n_holdout_train": 919,
+    "n_holdout_test": 333
+   },
+   "La Liga 2": {
+    "params": {
+     "home": {
+      "coef": [
+       0.7709097852713879,
+       0.30174374164588164,
+       0.21779674649189432
+      ],
+      "alpha": 0.07273399000249495,
+      "n": 1711,
+      "mean_y": 5.277615429573349
+     },
+     "away": {
+      "coef": [
+       0.1109364021797004,
+       0.3632794143934578,
+       0.3893996226472529
+      ],
+      "alpha": 0.10663512430228488,
+      "n": 1711,
+      "mean_y": 4.109292811221508
+     },
+     "total": {
+      "coef": [
+       1.924354000708314,
+       0.06002669398938062,
+       0.0751768311326303
+      ],
+      "alpha": 0.013762618727970343,
+      "n": 1711,
+      "mean_y": 9.386908240794856
+     }
+    },
+    "n_fit": 1711,
+    "fit_from": "2022-09-24",
+    "fit_to": "2026-10-26",
+    "n_holdout_train": 1214,
+    "n_holdout_test": 497
+   },
+   "Serie B": {
+    "params": {
+     "home": {
+      "coef": [
+       0.8786602094305376,
+       0.18465771606656065,
+       0.2563881899522545
+      ],
+      "alpha": 0.08744671955405629,
+      "n": 1330,
+      "mean_y": 5.163157894736842
+     },
+     "away": {
+      "coef": [
+       0.48650415530809143,
+       0.23409333153255837,
+       0.3332072546096657
+      ],
+      "alpha": 0.09619583284566743,
+      "n": 1330,
+      "mean_y": 4.366165413533834
+     },
+     "total": {
+      "coef": [
+       1.6702265524009612,
+       0.13264771651953075,
+       0.11682414309831572
+      ],
+      "alpha": 0.016677530727264068,
+      "n": 1330,
+      "mean_y": 9.529323308270676
+     }
+    },
+    "n_fit": 1330,
+    "fit_from": "2022-10-01",
+    "fit_to": "2026-10-28",
+    "n_holdout_train": 937,
+    "n_holdout_test": 393
+   }
+  },
+  "cards": {
+   "Championship": {
+    "params": {
+     "home": {
+      "coef": [
+       0.07903928338821047,
+       0.21187295747985876,
+       0.252426905902609
+      ],
+      "alpha": 0.0,
+      "n": 2096,
+      "mean_y": 1.797232824427481
+     },
+     "away": {
+      "coef": [
+       0.31978352517580105,
+       0.1415552303260425,
+       0.2763666616342219
+      ],
+      "alpha": 0.0,
+      "n": 2096,
+      "mean_y": 2.1665076335877864
+     },
+     "total": {
+      "coef": [
+       0.9753392859975126,
+       0.1641237016361925,
+       0.08689708391957514
+      ],
+      "alpha": 0.025200537590544077,
+      "n": 2096,
+      "mean_y": 3.963740458015267
+     }
+    },
+    "n_fit": 2096,
+    "fit_from": "2022-08-30",
+    "fit_to": "2026-10-24",
+    "n_holdout_train": 1475,
+    "n_holdout_test": 621
+   },
+   "League One": {
+    "params": {
+     "home": {
+      "coef": [
+       0.01834443034947783,
+       0.30206947392523953,
+       0.2391291590280009
+      ],
+      "alpha": 0.03893265363156488,
+      "n": 2091,
+      "mean_y": 1.8426590148254425
+     },
+     "away": {
+      "coef": [
+       -0.22246716804624553,
+       0.402682877036892,
+       0.5039836263193271
+      ],
+      "alpha": 0.0,
+      "n": 2091,
+      "mean_y": 2.1539933046389286
+     },
+     "total": {
+      "coef": [
+       0.3503290130066072,
+       0.3825792783275843,
+       0.26179456887566954
+      ],
+      "alpha": 0.0410543681868217,
+      "n": 2091,
+      "mean_y": 3.996652319464371
+     }
+    },
+    "n_fit": 2091,
+    "fit_from": "2022-09-03",
+    "fit_to": "2026-10-27",
+    "n_holdout_train": 1475,
+    "n_holdout_test": 616
+   },
+   "League Two": {
+    "params": {
+     "home": {
+      "coef": [
+       -0.24626438494095476,
+       0.36812437966789435,
+       0.40735624251880326
+      ],
+      "alpha": 0.0,
+      "n": 2103,
+      "mean_y": 1.8388017118402282
+     },
+     "away": {
+      "coef": [
+       0.022860572728075217,
+       0.34516089439590325,
+       0.34602059644444266
+      ],
+      "alpha": 0.0,
+      "n": 2103,
+      "mean_y": 2.182120779838326
+     },
+     "total": {
+      "coef": [
+       0.4767189427062868,
+       0.2686995015304644,
+       0.2984352389365777
+      ],
+      "alpha": 0.027915490287728023,
+      "n": 2103,
+      "mean_y": 4.020922491678554
+     }
+    },
+    "n_fit": 2103,
+    "fit_from": "2022-09-03",
+    "fit_to": "2026-10-26",
+    "n_holdout_train": 1482,
+    "n_holdout_test": 621
+   },
+   "Bundesliga 2": {
+    "params": {
+     "home": {
+      "coef": [
+       0.3689569695892739,
+       0.21407719848103962,
+       0.13081267191557402
+      ],
+      "alpha": 0.0,
+      "n": 1105,
+      "mean_y": 2.195475113122172
+     },
+     "away": {
+      "coef": [
+       -0.020394207478911446,
+       0.3477111881618642,
+       0.42283052414416644
+      ],
+      "alpha": 0.0,
+      "n": 1105,
+      "mean_y": 2.4805429864253394
+     },
+     "total": {
+      "coef": [
+       0.7034723191672626,
+       0.3107176218331581,
+       0.17081300577551695
+      ],
+      "alpha": 0.0019487182478007195,
+      "n": 1105,
+      "mean_y": 4.676018099547512
+     }
+    },
+    "n_fit": 1105,
+    "fit_from": "2022-09-02",
+    "fit_to": "2026-10-25",
+    "n_holdout_train": 780,
+    "n_holdout_test": 325
+   },
+   "Ligue 2": {
+    "params": {
+     "home": {
+      "coef": [
+       -0.3660775953783672,
+       0.5460278930842563,
+       0.3517226228759191
+      ],
+      "alpha": 0.0,
+      "n": 1210,
+      "mean_y": 1.8380165289256198
+     },
+     "away": {
+      "coef": [
+       -0.06705000629301187,
+       0.3651018430146341,
+       0.3577032228573525
+      ],
+      "alpha": 0.0,
+      "n": 1210,
+      "mean_y": 2.0429752066115703
+     },
+     "total": {
+      "coef": [
+       0.16427210388707864,
+       0.375060918492907,
+       0.3732451239104841
+      ],
+      "alpha": 0.0023604569202628984,
+      "n": 1210,
+      "mean_y": 3.88099173553719
+     }
+    },
+    "n_fit": 1210,
+    "fit_from": "2022-09-02",
+    "fit_to": "2026-10-26",
+    "n_holdout_train": 901,
+    "n_holdout_test": 309
+   },
+   "Serie B": {
+    "params": {
+     "home": {
+      "coef": [
+       -0.3091118411582016,
+       0.5869600435284649,
+       0.3302503117163399
+      ],
+      "alpha": 0.0,
+      "n": 1310,
+      "mean_y": 2.3687022900763357
+     },
+     "away": {
+      "coef": [
+       0.1432484752410605,
+       0.25460536067498124,
+       0.41144509243501554
+      ],
+      "alpha": 0.0,
+      "n": 1310,
+      "mean_y": 2.689312977099237
+     },
+     "total": {
+      "coef": [
+       0.1463349952932375,
+       0.5192762017797141,
+       0.2914486811014996
+      ],
+      "alpha": 0.0,
+      "n": 1310,
+      "mean_y": 5.0580152671755725
+     }
+    },
+    "n_fit": 1310,
+    "fit_from": "2022-10-07",
+    "fit_to": "2026-10-28",
+    "n_holdout_train": 921,
+    "n_holdout_test": 389
+   }
+  }
+ }
+}
