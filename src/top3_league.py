@@ -126,6 +126,12 @@ from src.research.top3_ranking import LIVE_RULE, in_pool  # noqa: E402  the rese
 from src.research import top3_paper as TP3  # noqa: E402  the v6 re-measurement rule, shared with the paper tracks
 SLOT_TOP, SLOT_TIER2 = "TOP", "TIER2"
 TOP_N = 3
+# P11 (owner 2026-11-18 "best optimized bars and T1, T2, T3"; PROPOSAL, config/p11_bars_tiers_protocol.json): the
+# three named tiers replace the R2 top-3 ONLY when config/top3_tiers_p11.json carries the owner's approval
+# (load_tiers). Absent / not approved -> the v6 R2 TOP-3 above, unchanged.
+TIERS_FILE = Path("config") / "top3_tiers_p11.json"
+TIER_NAMES = ("T1_BEST_VALUE", "T2_SAFEST", "T3_RISKY_VALUE")
+R_TIER_GATE = "TIER_NO_VALUE"              # qualifies on its bar but fails the league's tier gate (CAL / BAR)
 BAR_SOURCE = "LEAGUE"                      # the only source this module ever uses
 
 CANDIDATES_NAME = "top3_league_candidates.csv"
@@ -361,9 +367,45 @@ def _direction(market: str, side: str) -> str | None:
     return goal_direction(MARKETS[str(market)][1], side)
 
 
+def load_tiers(root: Path | None = None) -> dict | None:
+    """The P11 tier config when the OWNER approved it (status starting "APPROVED" and owner_approved_at set),
+    else None (the v6 R2 TOP-3 stays). Never raises."""
+    try:
+        cfg = json.loads(((Path(root) if root else ROOT) / TIERS_FILE).read_text(encoding="utf-8"))
+    except Exception:                                                  # noqa: BLE001
+        return None
+    if not str(cfg.get("status", "")).startswith("APPROVED") or not cfg.get("owner_approved_at"):
+        return None
+    if not isinstance(cfg.get("leagues"), dict) or not (cfg.get("calibration") or {}).get("cells"):
+        return None
+    return cfg
+
+
+def tier_stats(cfg: dict) -> pd.DataFrame:
+    """The tier config's frozen calibration (lam, lam_se per cell) in the live-rule statistics shape."""
+    from src.research import top3_ranking as TR
+    st = pd.DataFrame(cfg["calibration"]["cells"])
+    for c in TR.STAT_COLS:
+        if c not in st.columns:
+            st[c] = np.nan
+    st = st[TR.CELL + TR.STAT_COLS]
+    st.attrs["frozen_frame"], st.attrs["all_data"] = cfg.get("frame_hash"), None
+    return st
+
+
+def _tier_metrics(r: dict) -> dict:
+    """cal_ev / p_cal / ev_lo / ev_raw of one qualified candidate from its frozen lam (NaN = no statistic)."""
+    pu, pf, o = _num(r.get("p_used")), _num(r.get("fair")), _num(r.get("odds"))
+    lam, se = _num(r.get("lam")), _num(r.get("lam_se"))
+    se = 0.0 if math.isnan(se) else se
+    p_cal = pf + lam * (pu - pf)
+    return {"p_cal": p_cal, "cal_ev": p_cal * o - 1.0, "ev_lo": (pf + (lam - se) * (pu - pf)) * o - 1.0,
+            "ev_raw": pu * o - 1.0, "odds": o}
+
+
 def select_week(q: pd.DataFrame, freeze: pd.Timestamp, issue: pd.Timestamp,
                 committed: dict | None = None, stats: pd.DataFrame | None = None,
-                start: pd.Timestamp | None = None) -> tuple[pd.DataFrame, dict]:
+                start: pd.Timestamp | None = None, tiers: dict | None = None) -> tuple[pd.DataFrame, dict]:
     """TOP-3 of ONE league-week from qualified candidates `q` (qualify()). Returns (picks with
     top3_rank 1..k, k <= 3, never padded; {reason: count} for every candidate not picked). Pure.
     `start` (the TOP-3 start, top3_start()): a candidate first seen before it was frozen by the pre-go-live
@@ -422,6 +464,8 @@ def select_week(q: pd.DataFrame, freeze: pd.Timestamp, issue: pd.Timestamp,
         own_taken.append(i)
     # 2) TOP-3 / TIER2 from MODEL cells only; a model tip opposite to an own-list tip yields
     taken = []
+    if tiers is not None:
+        return _select_tiers(q, pool, own_taken, dirs, committed, issue, ko, stats, tiers, excluded)
     for *_k, i in pool:
         r = q.iloc[i]
         if len(taken) >= TOP_N:
@@ -444,6 +488,83 @@ def select_week(q: pd.DataFrame, freeze: pd.Timestamp, issue: pd.Timestamp,
     picks["list"] = SELECTION_MODE
     ol = q.iloc[own_taken].copy()
     ol["top3_rank"] = range(1, len(ol) + 1)
+    ol["slot"] = OWN_LIST_MODE
+    ol["list"] = OWN_LIST_MODE
+    return pd.concat([picks, ol], ignore_index=True), dict(excluded)
+
+
+def _select_tiers(q, pool, own_taken, dirs, committed, issue, ko, stats, tiers, excluded):
+    """P11: T1 = highest cal_ev, T2 = highest p_cal of the rest, T3 = of the rest odds >= the league's floor with
+    the highest ev_lo (REL: the rest's longest odds). Every tier must pass the league's gate (CAL: cal_ev > 0;
+    BAR: p_used * odds - 1 > 0). A tier without a candidate stays EMPTY (never padded); distinct fixture x
+    market and the direction rule as the R2 path."""
+    from src.research import top3_ranking as TR
+    idx = [i for *_k, i in pool]
+    lam = {}
+    if idx and stats is not None and len(stats):
+        st = stats.drop_duplicates(TR.CELL).set_index(TR.CELL)
+        for i in idx:
+            k = tuple(str(q.iloc[i][c]) for c in TR.CELL)
+            if k in st.index:
+                lam[i] = (st.loc[k, "lam"], st.loc[k, "lam_se"])
+    met = {}
+    for i in idx:
+        r = q.iloc[i].to_dict()
+        lm, ls = lam.get(i, (np.nan, np.nan))
+        x = _tier_metrics(r | {"lam": lm, "lam_se": ls})
+        prm = (tiers.get("leagues") or {}).get(f"{r.get('track')}|{r.get('league')}") or {}
+        gate = prm.get("gate", "CAL")
+        ok = bool(np.isfinite(x["cal_ev"]) and np.isfinite(x["p_cal"])) and \
+            (x["cal_ev"] > 0 if gate == "CAL" else x["ev_raw"] > 0)
+        if not ok:
+            excluded[R_TIER_GATE] += 1
+            continue
+        met[i] = x | {"floor": prm.get("t3_floor")}
+    used, taken, names = set(), [], []
+
+    def try_take(order, name):
+        for i in order:
+            r = q.iloc[i]
+            k = (str(r["fixture_id"]), str(r["market"]))
+            if i in taken or k in used:
+                continue
+            if not (pd.notna(ko.iloc[i]) and ko.iloc[i] > issue):
+                continue
+            fx = (str(r["match_date"])[:10], str(r["home_team"]), str(r["away_team"]))
+            dr = _direction(r["market"], r["side"])
+            stood = dirs.get(fx) or (committed.get(fx) or {}).get("direction")
+            if dr and stood and dr != stood:
+                continue
+            if dr:
+                dirs[fx] = dr
+            used.add(k)
+            taken.append(i)
+            names.append(name)
+            return
+
+    cand = list(met)
+    kick = {i: (ko.iloc[i].value if pd.notna(ko.iloc[i]) else float("inf"), str(q.iloc[i]["fixture_id"])) for i in cand}
+    try_take(sorted(cand, key=lambda i: (-met[i]["cal_ev"], kick[i])), TIER_NAMES[0])
+    try_take(sorted(cand, key=lambda i: (-met[i]["p_cal"], kick[i])), TIER_NAMES[1])
+    t3 = [i for i in cand if met[i]["floor"] == "REL"
+          or (met[i]["floor"] is not None and met[i]["odds"] >= float(met[i]["floor"]))]
+    if t3:
+        if met[t3[0]]["floor"] == "REL":
+            try_take(sorted(t3, key=lambda i: (-met[i]["odds"], -met[i]["ev_lo"], kick[i])), TIER_NAMES[2])
+        else:
+            try_take(sorted(t3, key=lambda i: (-met[i]["ev_lo"], kick[i])), TIER_NAMES[2])
+    for i in cand:
+        if i not in taken:
+            excluded[R_RANK] += 1
+    picks = q.iloc[taken].copy()
+    picks["slot"] = names
+    picks["top3_rank"] = [TIER_NAMES.index(n) + 1 for n in names]
+    picks["edge_calibrated"] = [met[i]["p_cal"] - _num(q.iloc[i].get("fair")) for i in taken]
+    picks["rank_key"] = [met[i]["cal_ev"] for i in taken]
+    picks["rank_has_stat"] = True
+    picks["list"] = SELECTION_MODE
+    ol = q.iloc[own_taken].copy()
+    ol["top3_rank"] = range(len(TIER_NAMES) + 1, len(TIER_NAMES) + 1 + len(ol))
     ol["slot"] = OWN_LIST_MODE
     ol["list"] = OWN_LIST_MODE
     return pd.concat([picks, ol], ignore_index=True), dict(excluded)
@@ -500,7 +621,7 @@ def stake_effect_text(fraction: float | None) -> str:
 def freeze_due(cands: pd.DataFrame, weeks_done: set, ctx: dict, now: pd.Timestamp, lead_min: float,
                committed: dict | None = None, policy: dict | None = None,
                real_checker=None, stats: pd.DataFrame | None = None,
-               start: pd.Timestamp | None = None) -> tuple[pd.DataFrame, pd.DataFrame]:
+               start: pd.Timestamp | None = None, tiers: dict | None = None) -> tuple[pd.DataFrame, pd.DataFrame]:
     """(new pick rows, new week rows) for every league-week whose FREEZE has passed and that is not
     decided yet. A week with 0 picks is still recorded (decided once, with its reasons). Pure apart
     from the injected policy / checker.
@@ -524,7 +645,7 @@ def freeze_due(cands: pd.DataFrame, weeks_done: set, ctx: dict, now: pd.Timestam
         if now < freeze or (start is not None and freeze < start):
             continue
         q = qualify(g, ctx)
-        picks, excl = select_week(q, freeze, now, committed, stats, start)
+        picks, excl = select_week(q, freeze, now, committed, stats, start, tiers)
         league = str(g["league"].iloc[0])
         n_q = int((q["reason"] == "").sum()) if len(q) else 0
         n_top = int((picks["list"] == SELECTION_MODE).sum()) if len(picks) else 0
@@ -600,7 +721,8 @@ def run(now=None, out_dir: Path | None = None, root: Path | None = None, env: di
                 from src.direction_guard import committed as _committed
                 committed = _committed()
             from src.direction_guard import real_track_checker
-            stats = load_rank_stats(root)
+            tiers = load_tiers(root)
+            stats = tier_stats(tiers) if tiers is not None else load_rank_stats(root)
             start = top3_start(root)
             if start is None:
                 # fail closed: TOP-3 starts at go-live; without its pinned start nothing is frozen or sent
@@ -612,7 +734,7 @@ def run(now=None, out_dir: Path | None = None, root: Path | None = None, env: di
                 ws = weeks_store(od)
                 done = set(ws.read()["league_week_id"]) if len(ws.read()) else set()
                 picks, weeks = freeze_due(cs.read(), done, bars_context(root), now, lead, committed, _policy(),
-                                          real_track_checker(), stats, start)
+                                          real_track_checker(), stats, start, tiers)
                 res["picks_appended"] = picks_store(od).append(picks)
                 res["weeks_decided"] = ws.append(weeks)
                 res["status"] = "OK"
