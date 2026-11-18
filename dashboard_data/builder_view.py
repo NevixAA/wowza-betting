@@ -11,6 +11,7 @@ import pandas as pd
 import streamlit as st
 
 import dashboard_ui as ui
+from src import units as U
 
 
 def settled_summary(settled: pd.DataFrame) -> dict:
@@ -19,8 +20,8 @@ def settled_summary(settled: pd.DataFrame) -> dict:
     won, lost = int((r == "WON").sum()), int((r == "LOST").sum())
     decided = won + lost
     odds = pd.to_numeric(settled.get("fair_combo_odds", settled.get("fair_odds")), errors="coerce")
-    pnl = float(((odds - 1.0).where(r == "WON", -1.0).where(r != "VOID", 0.0)
-                 .where(r != "UNKNOWN", 0.0)).sum())
+    pnl = U.total(U.profit(odds).where(r == "WON", -1.0).where(r != "VOID", 0.0)
+                  .where(r != "UNKNOWN", 0.0))
     # THE EXPECTATION MUST COME FROM THE DECIDED ROWS ONLY (see the page for why).
     exp = pd.to_numeric(settled.loc[r.isin(["WON", "LOST"]), "joint_probability"],
                         errors="coerce").mean() if "joint_probability" in settled.columns else None
@@ -35,7 +36,7 @@ def settled_card(s: dict, container=None) -> None:
                    help="Compare against the model's expected rate beside it, not against 50%.",
                    supporting=[("Settled", f"{decided:,}"), ("Won", f"{won:,}"),
                                ("Model expected", f"{100 * exp:.1f}%" if exp is not None and exp == exp else "—"),
-                               ("P/L at fair odds", f"{s['pnl']:+.2f}u"), ("Void", f"{s['void']}")],
+                               ("P/L at fair odds", U.fmt(s['pnl'])), ("Void", f"{s['void']}")],
                    status=ui.status_chip("RESEARCH", label="RESEARCH · PAPER"), n=decided, container=container)
 
 

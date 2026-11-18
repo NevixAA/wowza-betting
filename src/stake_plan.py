@@ -49,6 +49,11 @@ BASIS = "notional bankroll, drawdown throttle not applied (no real-bankroll ledg
 SIDE_SELECTION_COLUMNS = ("date", "league", "home_team", "away_team", "model_type", "market", "side",
                           "signal_tier", "odds", "model_prob", "fair_prob", "edge", "ev")
 TIPPED = ("SNIPER", "MARKSMAN", "VALUABLE")
+#: The O/U 2.5 tips frame (betting.generate_bets -> bets.csv) as this reader needs it.
+BET_SELECTION_COLUMNS = ("date", "league", "home_team", "away_team", "model_type", "best_side",
+                         "odds_over25", "odds_under25", "signal_tier")
+#: policy market -> the gate_resolver market whose thresholds tiered it
+THRESHOLD_MARKET = {"OU25": "ou25", "BTTS": "btts", "OVER15": "over15", "OVER35": "over35"}
 
 
 class SelectionSchemaError(ValueError):
@@ -68,6 +73,14 @@ def check_side_selections(side_bets: pd.DataFrame) -> None:
     if bad_mt or bad_odds:
         raise SelectionSchemaError(f"side selections lost model_type on {bad_mt} row(s) / odds on "
                                    f"{bad_odds} row(s) of {len(t)}")
+    # A side outside its market (BTTS "YES/OVER" - the pre-219c1848 union label in 110 committed audit
+    # rows - or a blank side) is a broken contract, not a tip (2026-11-03).
+    from src.bankroll_policy import side_valid
+    bad_side = [f"{m}/{s}" for m, s in zip(t["market"], t["side"])
+                if not side_valid(SIDE_MARKET.get(str(m).lower(), m), s)]
+    if bad_side:
+        raise SelectionSchemaError(f"side selections carry {len(bad_side)} side(s) outside their market: "
+                                   f"{sorted(set(map(str, bad_side)))[:5]}")
 
 
 def health_check(plan: pd.DataFrame, policy: dict) -> list[str]:
@@ -77,14 +90,17 @@ def health_check(plan: pd.DataFrame, policy: dict) -> list[str]:
        100% of those tips map to an UNSUPPORTED track - the 2026-10-22 failure shape.
     2. Any tip whose odds are missing.
     3. Any O/U 2.5 tip routed to no side track (track ..._UNKNOWN_SIDE, owner split 2026-10-26).
+    4. Any tip whose side does not belong to its market (BTTS "YES/OVER", blank, ...).
+    5. Any (fixture, market, side) holding two stakes, and - while the policy allows one position per
+       fixture - any fixture holding two stakes.
     """
-    from src.bankroll_policy import REAL_STATES, UNKNOWN_SIDE, split_track
+    from src.bankroll_policy import REAL_STATES, UNKNOWN_SIDE, positive_fraction, split_track
     if plan is None or plan.empty:
         return []
     probs = []
     # market of a side-split track is its base market: new_format|OU25_OVER -> OU25
     active_markets = {split_track(k)[1] for k, v in (policy.get("tracks") or {}).items()
-                      if "|" in k and v.get("state") in REAL_STATES and float(v.get("base_fraction", 0) or 0) > 0}
+                      if "|" in k and v.get("state") in REAL_STATES and positive_fraction(v)}
     for m in sorted(active_markets):
         g = plan[plan["market"] == m]
         if len(g) and (g["deployment_state"] == "UNSUPPORTED").all():
@@ -96,6 +112,23 @@ def health_check(plan: pd.DataFrame, policy: dict) -> list[str]:
     n_side = int(plan["track"].astype(str).str.endswith(f"_{UNKNOWN_SIDE}").sum()) if "track" in plan else 0
     if n_side:
         probs.append(f"{n_side} O/U tip(s) with no usable side (track *_{UNKNOWN_SIDE}, no stake)")
+    # 4-5 (2026-11-03): the two shapes found in output/stake_audit.csv must show up, never read healthy.
+    from src.bankroll_policy import side_valid
+    sides = plan["side"] if "side" in plan.columns else pd.Series("", index=plan.index, dtype=object)
+    n_bad = (sum(not side_valid(m, s) for m, s in zip(plan["market"], sides)) if "side" in plan.columns
+             else 0)                                      # a plan without sides: the contract's missing_column
+    if n_bad:
+        probs.append(f"{n_bad} tip(s) whose side does not belong to their market")
+    staked = plan[pd.to_numeric(plan["final_fraction"], errors="coerce").fillna(0) > 0]
+    if len(staked):
+        per_pos = staked.groupby([staked["fixture"].astype(str), staked["market"].astype(str),
+                                  sides.reindex(staked.index).astype(str)]).size()
+        if (per_pos > 1).any():
+            probs.append(f"{int((per_pos > 1).sum())} position(s) (fixture, market, side) with more than one stake")
+        per_fx = staked.groupby(staked["fixture"].astype(str)).size()
+        if (policy.get("portfolio") or {}).get("one_position_per_fixture", True) and (per_fx > 1).any():
+            probs.append(f"{int((per_fx > 1).sum())} fixture(s) with more than one stake although the policy "
+                         f"allows one position per fixture: {sorted(per_fx[per_fx > 1].index)[:5]}")
     return probs
 
 
@@ -104,7 +137,8 @@ PRO_RATINGS = "output/studies/league_ratings.json"
 
 def load_league_ratings(max_age_days: float = 8.0) -> dict:
     """Pro's league ratings 1-10 (src/studies/league_results.py). Fail closed: missing, unreadable or
-    older than max_age_days -> {} (every league gets the minimum scale). Recorded timestamp, never mtime."""
+    older than max_age_days -> {} (no league is rated, so NO league is staked - bankroll_policy gives an
+    unrated league no stake since 2026-11-01). Every such case is logged. Recorded timestamp, never mtime."""
     import json
     try:
         j = None
@@ -117,14 +151,19 @@ def load_league_ratings(max_age_days: float = 8.0) -> dict:
             r = requests.get("https://raw.githubusercontent.com/NevixAA/wowzaV9-Pro/main/" + PRO_RATINGS, timeout=20)
             j = r.json() if r.status_code == 200 else None
         if not j:
+            log.warning(f"league ratings unavailable ({PRO_RATINGS} not found) - no league is rated, "
+                        f"so no tip gets a stake")
             return {}
         age = (pd.Timestamp.now(tz="UTC") - pd.Timestamp(j["generated_at"])).total_seconds() / 86400
         if not (0 <= age <= max_age_days):
+            log.warning(f"league ratings are {age:.1f} days old (limit {max_age_days}) - not used, so no "
+                        f"tip gets a stake")
             return {}
         return {str(k): int(v["rating"]) for k, v in (j.get("ratings") or {}).items()
                 if isinstance(v, dict) and isinstance(v.get("rating"), int) and 1 <= v["rating"] <= 10}
     except Exception as e:                                           # noqa: BLE001 - fail closed
-        log.warning(f"league ratings unavailable ({type(e).__name__}) - minimum scale for every league")
+        log.warning(f"league ratings unavailable ({type(e).__name__}) - no league is rated, so no tip "
+                    f"gets a stake")
         return {}
 
 
@@ -132,12 +171,18 @@ def selections(bets: pd.DataFrame | None, side_bets: pd.DataFrame | None) -> pd.
     """Tips -> the reader's input: fixture, league, model_type, market, signal_tier, odds."""
     rows = []
     if bets is not None and not bets.empty:
+        # Same contract discipline as the side path: no getattr defaults. A bets frame without
+        # model_type used to stake every tip on track `unknown|OU25`; without best_side it priced
+        # the tip at the UNDER odds.
+        missing = [c for c in BET_SELECTION_COLUMNS if c not in bets.columns]
+        if missing:
+            raise SelectionSchemaError(f"O/U selections missing column(s) {missing}")
         b = bets[bets["signal_tier"].isin(("SNIPER", "MARKSMAN", "VALUABLE"))]
         for r in b.itertuples(index=False):
-            side = str(getattr(r, "best_side", "")).upper()
-            odds = getattr(r, "odds_over25" if side == "OVER" else "odds_under25", None)
+            side = str(r.best_side).upper()
+            odds = (r.odds_over25 if side == "OVER" else r.odds_under25 if side == "UNDER" else None)
             rows.append({"date": str(r.date)[:10], "fixture": f"{str(r.date)[:10]}|{r.home_team}|{r.away_team}",
-                         "league": r.league, "model_type": getattr(r, "model_type", "unknown"),
+                         "league": r.league, "model_type": str(r.model_type),
                          "market": "OU25", "side": side, "signal_tier": r.signal_tier, "odds": odds})
     if side_bets is not None and not side_bets.empty:
         check_side_selections(side_bets)                    # the contract, or a loud failure
@@ -153,6 +198,23 @@ def selections(bets: pd.DataFrame | None, side_bets: pd.DataFrame | None) -> pd.
     d = pd.DataFrame(rows)
     if not d.empty:
         d["odds"] = pd.to_numeric(d["odds"], errors="coerce")
+        # NO GLOBAL-THRESHOLD STAKES (owner 2026-11-01: "every league should be special thresholds").
+        # A tip tiered on a global bar is still planned and audited, but bankroll_policy gives it no
+        # stake (NO_LEAGUE_THRESHOLD_EVIDENCE).
+        from src.betting import league_threshold_evidence
+        cache: dict = {}
+        ev = []
+        for lg, mk in zip(d["league"].astype(str), d["market"].astype(str)):
+            k = (lg, THRESHOLD_MARKET.get(mk, mk.lower()))
+            if k not in cache:
+                cache[k] = league_threshold_evidence(*k)
+            ev.append(cache[k])
+        d["league_threshold_evidence"] = ev
+        n_no = len(ev) - sum(ev)
+        if n_no:
+            log.info(f"stake plan: {n_no} of {len(ev)} tip(s) tiered on a GLOBAL threshold (no per-league "
+                     f"evidence) - planned with no stake: "
+                     f"{sorted({k for k, v in cache.items() if not v})[:20]}")
     return d
 
 

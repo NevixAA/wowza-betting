@@ -1,6 +1,6 @@
 """The verified git-restored af_history provider rows (owner 2026-11-16: "yes, make the models use them").
 
-The loader reads them as a separate, labelled source, right after step 1's af_history merge (both exits), nan_only: a cell that holds a
+The loader reads them as a separate, labelled source, LAST of the af fills, nan_only: a cell that holds a
 value is never changed, a cell the verified file does not hold stays missing. The committed verified file
 holds only rows whose FT score equals API-Football's, carries provenance + source commit per row, and
 no excluded cell or row reaches it.
@@ -71,11 +71,10 @@ def test_absent_file_leaves_the_frame_unchanged(tmp_path):
     pd.testing.assert_frame_equal(after, before)
 
 
-def test_the_fill_runs_after_step_1_on_both_exits():
+def test_the_fill_is_last_of_the_af_fills():
     import inspect
-    src = inspect.getsource(DL._enrich_with_api_shots)
-    i = src.index("_enrich_af_restored_rows(df)")
-    assert src.index("Step 1: merge from af_history.parquet") < i < src.index("if not api_key:")
+    src = inspect.getsource(DL._finish_af_enrichment)
+    assert src.index("_enrich_af_fullstats_fill(df)") < src.index("_enrich_af_restored_rows(df)")
 
 
 @pytest.mark.skipif(not VERIFIED.exists(), reason="no verified restored file")

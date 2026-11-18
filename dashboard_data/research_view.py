@@ -28,23 +28,30 @@ CALLS = ("system_contract", "candidate_forward", "valuable", "price_trader", "mo
 
 def load_all(pro, max_workers: int = 8) -> dict:
     """{name: pro.<name>()} for every call above, run concurrently. A failing call returns {} for that name
-    only (exactly what the page did with a missing artifact), never an exception for the page."""
+    only, never an exception for the page - and is RECORDED in out["_errors"][name] (Phase 2 Part 10: a
+    raising cross-repo read used to be indistinguishable from a missing artifact)."""
     from dashboard_data import overview_view
     try:
         overview_view.prefetch_pro_listings()          # canonical-store listings, concurrently (same memo)
     except Exception:                                  # noqa: BLE001 - a speed-up must never break the page
         pass
 
+    errors: dict = {}
+
     def _one(name):
         fn = getattr(pro, name, None)
         if fn is None:
+            errors[name] = "adapter missing"
             return name, {}
         try:
             return name, fn()
-        except Exception:                              # noqa: BLE001
+        except Exception as e:                         # noqa: BLE001 - recorded below, shown by the page
+            errors[name] = f"{type(e).__name__}: {str(e)[:200]}"
             return name, {}
     with ThreadPoolExecutor(max_workers=max_workers) as ex:
-        return dict(ex.map(_one, CALLS))
+        out = dict(ex.map(_one, CALLS))
+    out["_errors"] = errors
+    return out
 
 
 # ── forward tests ────────────────────────────────────────────────────────────────────────────────

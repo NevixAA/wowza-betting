@@ -14,6 +14,7 @@ import pandas as pd
 import streamlit as st
 
 import dashboard_ui as ui
+from player_model.fair_basis import label as fair_basis_label
 
 TZ_NAME = "Asia/Jerusalem"
 MARKET_LABEL = {
@@ -23,6 +24,61 @@ MARKET_LABEL = {
     "sot3": "🎯 3+ shots on target", "sot4": "🎯 4+ shots on target",
     "cards": "🟨 Booked",
 }
+
+
+def board_rows(tips: pd.DataFrame) -> tuple[pd.DataFrame, dict]:
+    """The upcoming board under the owner's serving rules (2026-11-08), applied again here so a
+    tips file written before the rules cannot show a blocked row: markets still on a
+    placeholder-trained model are HIDDEN (player_model.config.HIDDEN_PENDING_CLEAN_RETRAIN) and a
+    goalkeeper is never shown on shots on target / goals / assists (GK_BLOCKED_MARKETS). Returns
+    (rows kept, {reason code: rows removed})."""
+    from player_model import config as pconfig
+    from player_model.serving_rules import position_status, serving_skip_reason
+    if tips.empty or "market" not in tips.columns:
+        return tips, {}
+    pos = tips["position"] if "position" in tips.columns else pd.Series(None, index=tips.index)
+    why = pd.Series([serving_skip_reason(m, position_status(p)) for m, p in zip(tips["market"], pos)],
+                    index=tips.index, dtype=object)
+    removed = {r: int((why == r).sum()) for r in (pconfig.SKIP_HIDDEN_MARKET, pconfig.SKIP_GK_ATTACKING)
+               if int((why == r).sum())}
+    return tips[why.isna()].copy(), removed
+
+
+def hidden_markets_note() -> str:
+    """The reason label shown on the board for the hidden markets."""
+    from player_model import config as pconfig
+    names = ", ".join(MARKET_LABEL.get(m, m) for m in sorted(pconfig.HIDDEN_PENDING_CLEAN_RETRAIN))
+    return (f"Hidden until their clean retrain ({pconfig.SKIP_HIDDEN_MARKET}): {names}. Their models "
+            f"were trained on placeholder player profiles. Goalkeepers are never tipped on shots on "
+            f"target, goals or assists ({pconfig.SKIP_GK_ATTACKING}).")
+
+
+#: correction sidecars that flag player_ledger rows (output/corrections), each with `ledger_row`,
+#: `player_name` and `exclude`. Shown beside the record, never subtracted from it here.
+FLAG_FILES = {"props_sentinel_prob.csv": "model probability was a cap value",
+              "props_ghost_tips.csv": "tip not tied to the player's real fixture"}
+
+
+def flagged(settled: pd.DataFrame, corrections_dir) -> dict:
+    """{sidecar: n} of `settled` rows (index = player_ledger row) a sidecar flags with exclude=True, the
+    row proven by the same player_name. A sidecar that is missing is absent from the result."""
+    from pathlib import Path
+    out = {}
+    for name in FLAG_FILES:
+        p = Path(corrections_dir) / name
+        if not p.exists():
+            continue
+        try:
+            f = pd.read_csv(p, usecols=lambda c: c in ("ledger_row", "player_name", "exclude"))
+        except Exception:                                   # noqa: BLE001 - unreadable = not shown
+            continue
+        if "exclude" in f.columns:
+            f = f[f["exclude"].astype(str).str.lower().eq("true")]
+        f = f.drop_duplicates("ledger_row").set_index("ledger_row")
+        hit = settled.index.intersection(f.index)
+        same = [i for i in hit if str(settled.at[i, "player_name"]) == str(f.at[i, "player_name"])]
+        out[name] = len(same)
+    return out
 
 
 def _tz():
@@ -75,20 +131,32 @@ def board(d: pd.DataFrame, priced_view: bool, limit: int) -> tuple[pd.DataFrame,
         out["Edge (pts)"] = shown["_edge"]
         out["EV %"] = shown["ev"] * 100 if "ev" in shown.columns else None
         out["Tier"] = shown.get("tier", pd.Series("", index=shown.index)).astype(str)
+        # Where the fair probability behind EV / tier came from (owner decision 2026-11-05).
+        out["Fair price"] = shown.get("fair_basis", pd.Series(None, index=shown.index)).map(
+            lambda b: fair_basis_label(b) or "–")
     else:
         out["Fair odds"] = pd.to_numeric(shown.get("fair_odds"), errors="coerce")
     return out, days
 
 
+#: what the "Fair price" label means (props tables and cards)
+FAIR_PRICE_HELP = ("Where the fair probability behind EV and tier came from. two-sided price = both "
+                   "sides of the bet from one bookmaker in one answer, de-vigged. margin assumed = only "
+                   "this side is quoted, so the bookmaker's margin is assumed (1.06 / 1.10 / 1.15 by odds).")
+
+
 def board_config(priced_view: bool) -> dict:
-    cfg = {"Model %": ui.num_col("Model", fmt="%.0f%%", help="The model's probability."),
+    cfg = {"Model %": ui.num_col("Model", fmt="%.0f%%",
+                                 help="The model's own probability. It decides EV and tier; the hand "
+                                      "team-strength / quality adjustment is logged beside it, information only."),
            "Kickoff": ui.text_col("Kickoff", help=f"Local time ({TZ_NAME})"), "Pos": ui.text_col("Pos")}
     if priced_view:
         cfg.update({"Book odds": ui.num_col("Book odds"),
                     "Implied %": ui.num_col("Implied", fmt="%.0f%%", help="1 / book odds (includes the margin)."),
                     "Edge (pts)": ui.num_col("Edge", fmt="%+.1f pts",
                                              help="Model probability minus the bookmaker's implied probability."),
-                    "EV %": ui.num_col("EV", fmt="%+.0f%%"), "Tier": ui.text_col("Tier")})
+                    "EV %": ui.num_col("EV", fmt="%+.0f%%"), "Tier": ui.text_col("Tier"),
+                    "Fair price": ui.text_col("Fair price", help=FAIR_PRICE_HELP)})
     else:
         cfg["Fair odds"] = ui.num_col("Fair odds", help="1 / model probability.")
     return cfg
@@ -122,6 +190,7 @@ def prop_card(r, container=None) -> None:
                    supporting=[("Book odds", f"{r['market_odds']:.2f}"), ("Implied", f"{100 / r['market_odds']:.0f}%"),
                                ("Edge", f"{r['_edge']:+.1f} pts"),
                                ("EV", f"{r['ev']:+.0%}" if pd.notna(r.get("ev")) else "—"),
+                               ("Fair price", fair_basis_label(r.get("fair_basis")) or "—"),
                                ("Kickoff", when)],
                    status=ui.status_chip("PAPER", label="PAPER · NOT A BET")
                    + (" " + ui.status_chip(str(r["tier"])) if pd.notna(r.get("tier")) and str(r.get("tier")) else ""),
@@ -132,7 +201,10 @@ def prop_card(r, container=None) -> None:
 RESULTS_CONFIG = {"market_odds": ui.num_col("Odds"), "pnl": ui.num_col("P/L (u)", fmt="%+.2f")}
 RAW_CONFIG = {"model_prob": ui.pct_col("Model"), "fair_odds": ui.num_col("Fair odds"),
               "market_odds": ui.num_col("Book odds"), "ev": ui.num_col("EV", fmt="%+.3f"),
-              "confidence": ui.num_col("Confidence", fmt="%.3f")}
+              "confidence": ui.num_col("Confidence", fmt="%.3f"),
+              "fair_basis": ui.text_col("Fair price", help=FAIR_PRICE_HELP),
+              "model_prob_hand_adjusted": ui.pct_col("Hand-adjusted (info only)"),
+              "prob_adjustment": ui.num_col("Hand factor (info only)", fmt="%.3f")}
 
 
 # ═══ RESULTS — settled record (rebuilt 2026-11-09, owner: "the % isn't correct, the last 2 months ════════

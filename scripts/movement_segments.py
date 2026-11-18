@@ -51,14 +51,18 @@ def _col(s, *names):
 
 def _bands(s):
     o = pd.to_numeric(_col(s, "odds", "market_odds", "entry_odds"), errors="coerce")
+    # Bands stay NaN (not the string 'nan') where the input is missing; main() groups with
+    # dropna=False so those rows form their own visible cell instead of vanishing.
     s["odds_band"] = pd.cut(o, [0, 1.8, 2.2, 3.0, 99],
-                            labels=["<1.8", "1.8-2.2", "2.2-3.0", ">3.0"]).astype(str)
-    # Entry timing: hours between the tip being generated and kickoff, where both are recorded.
-    gen = pd.to_datetime(_col(s, "generated_at", "signal_date"), errors="coerce")
-    ko = pd.to_datetime(_col(s, "kickoff_utc", "match_date"), errors="coerce")
+                            labels=["<1.8", "1.8-2.2", "2.2-3.0", ">3.0"]).astype(object)
+    # Entry timing: hours between the tip being GENERATED and KICKOFF, only where both real
+    # timestamps are recorded. signal_date / match_date are calendar days, and substituting them
+    # manufactured hour counts (midnight-to-midnight); without the timestamps the band is NaN.
+    gen = pd.to_datetime(_col(s, "generated_at"), errors="coerce", utc=True)
+    ko = pd.to_datetime(_col(s, "kickoff_utc"), errors="coerce", utc=True)
     hrs = (ko - gen).dt.total_seconds() / 3600
     s["entry_band"] = pd.cut(hrs, [-1e9, 3, 12, 48, 1e9],
-                             labels=["<3h", "3-12h", "12-48h", ">48h"]).astype(str)
+                             labels=["<3h", "3-12h", "12-48h", ">48h"]).astype(object)
     return s
 
 
@@ -74,11 +78,19 @@ def main() -> int:
             continue
         s = _bands(_settled(d))
         s["won"] = (s["result"].astype(str).str.upper() == "WIN").astype(float)
-        s["model_type"] = _col(s, "model_type").fillna("unknown").astype(str)
-        s["market"] = _col(s, "market").fillna(track).astype(str)
-        s["league"] = _col(s, "league").fillna("unknown").astype(str)
+        # League by canonical registry name; a row with no league cannot be segmented - dropped,
+        # counted. A blank model_type is derived from that league's registry model, never 'unknown'.
+        from src.league_registry import canonical_name
+        lg = _col(s, "league")
+        s["league"] = lg.map(lambda x: (canonical_name(x) or str(x)) if pd.notna(x) else np.nan)
+        if s["league"].isna().any():
+            print(f"{track}: {int(s['league'].isna().sum())} settled row(s) without a league dropped")
+            s = s[s["league"].notna()].copy()
+        mt = _col(s, "model_type").astype(object).where(lambda x: x.astype(str).str.strip() != "")
+        s["model_type"] = mt.fillna(s["league"].map(config.model_type_for_league)).astype(str)
+        s["market"] = _col(s, "market").fillna(track).astype(str)   # main ledger has no column: it IS ou25
         for keys, g in s.groupby(["model_type", "market", "league", "odds_band",
-                                  "entry_band", "mv_signal"], observed=True):
+                                  "entry_band", "mv_signal"], observed=True, dropna=False):
             n = len(g)
             if n < MIN_CELL:
                 continue

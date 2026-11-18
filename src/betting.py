@@ -89,8 +89,10 @@ def reload_league_params() -> None:
 
 
 def _get_league_cfg(league: str) -> dict:
-    params = _load_league_params()
-    return params.get(str(league)) or params.get("_default") or {}
+    # The league's OWN entry only. A "_default" entry used to stand in for every league without one,
+    # i.e. another league's (or nobody's) min-odds and both_losing flag; absent -> the configured
+    # config.MIN_*_ODDS rules in _get_min_odds.
+    return _load_league_params().get(str(league)) or {}
 
 
 def _is_both_losing(league: str) -> bool:
@@ -107,6 +109,11 @@ def _get_min_odds(league: str) -> tuple[float, float]:
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
 def _kelly(p: float, odds: float) -> float:
+    """Kelly fraction. A MISSING price or probability gives a missing fraction (NaN), never 0:
+    until fix9/defaults (2026-11-04) the caller passed odds.fillna(0), so "no price" read as a real
+    zero Kelly stake. A real price at or below evens-of-nothing (odds <= 1) or p <= 0 is a real 0."""
+    if p is None or odds is None or not (np.isfinite(p) and np.isfinite(odds)):
+        return float("nan")
     b = odds - 1.0
     if b <= 0 or p <= 0:
         return 0.0
@@ -114,6 +121,11 @@ def _kelly(p: float, odds: float) -> float:
 
 
 def _stake(edge: float, p: float, odds: float, threshold: float) -> float:
+    """Stake for one side. Missing price / edge -> missing stake (NaN): no stake is sized, and none
+    is recorded as 0 or as the flat stake (a NaN edge used to fall through to FLAT_STAKE when
+    USE_KELLY is off). A side never bet still gets bet_stake 0.0 in evaluate_value."""
+    if edge is None or odds is None or not (np.isfinite(edge) and np.isfinite(odds)):
+        return float("nan")
     if edge < threshold:
         return 0.0
     if config.USE_KELLY:
@@ -138,6 +150,35 @@ def _load_standard_thresholds() -> dict:
         except Exception:
             _STANDARD_TH_CACHE = {}
     return _STANDARD_TH_CACHE
+
+
+def league_threshold_evidence(league: str, market: str = "ou25") -> bool:
+    """True when `league` x `market` is tiered on a threshold of ITS OWN: an approved optimiser value
+    (best_params_standard / best_params_side_markets) or, for O/U 2.5, a calibrated
+    config.LEAGUE_SNIPER_THRESHOLDS entry. False when the tier came from a GLOBAL bar.
+
+    Staking reads this (owner 2026-11-01: "every league should be special thresholds"): a tip tiered
+    on a global bar may still be shown, but it is never staked. Resolved through src/gate_resolver,
+    the one mirror of the production gates, so this cannot drift from what tiered the tip."""
+    from src.gate_resolver import resolve_effective_tier_gates
+    try:
+        g = resolve_effective_tier_gates(str(league), str(market).lower())
+    except Exception as e:                                            # noqa: BLE001 - no evidence
+        log.warning(f"threshold evidence unavailable for {league} {market} ({type(e).__name__}) - no stake")
+        return False
+    if str(market).lower() == "ou25":
+        # edge_ceiling_active is exactly "no per-league value was found" in _base_tier
+        return bool(g.approved_optimizer_applied or not g.edge_ceiling_active)
+    return bool(g.approved_optimizer_applied)
+
+
+def sniper_edge_ceiling_enforced() -> bool:
+    """True only when the owner has switched the documented SNIPER edge ceiling on."""
+    v = getattr(config, "SNIPER_EDGE_CEILING_ENFORCED", None)
+    if v is None:
+        import os
+        v = os.getenv("WOWZA_SNIPER_EDGE_CEILING", "0").strip() == "1"
+    return bool(v)
 
 
 def _base_tier(edge: float, side: str = "", league: str = "") -> str:
@@ -171,17 +212,29 @@ def _base_tier(edge: float, side: str = "", league: str = "") -> str:
         has_per_league = False
         sniper_thresh  = config.SNIPER_THRESHOLD
 
-    if edge >= sniper_thresh:
-        return "SNIPER"
-
     # Ceiling only applies to leagues using the global threshold (no per-league calibration).
     # Per-league thresholds are backtest-optimised — no ceiling needed there.
     # Per-league ceilings override global for new-format leagues with thinner data.
+    #
+    # ORDER (estate scan 2026-11-02, finding e). The ceiling is documented (config.EDGE_CEILING:
+    # "Bets above the ceiling are downgraded to MARKSMAN") but was checked AFTER the SNIPER return,
+    # and every ceiling (0.15-0.19) is above the global SNIPER bar (0.12), so an over-ceiling edge
+    # always returned SNIPER and the ceiling never fired. Checking it first is what the doc says,
+    # but it changes which tips are SNIPER, so it is an OWNER decision: off unless
+    # SNIPER_EDGE_CEILING_ENFORCED (config attribute or env WOWZA_SNIPER_EDGE_CEILING=1) is set.
+    # No threshold or ceiling value changes either way.
+    ceiling = None
     if not has_per_league:
         ceiling = config.LEAGUE_EDGE_CEILING.get(league, config.EDGE_CEILING) \
                   if hasattr(config, "LEAGUE_EDGE_CEILING") else config.EDGE_CEILING
-        if edge > ceiling:
+        if sniper_edge_ceiling_enforced() and edge > ceiling:
             return "MARKSMAN"
+
+    if edge >= sniper_thresh:
+        return "SNIPER"
+
+    if ceiling is not None and edge > ceiling:
+        return "MARKSMAN"
 
     # MARKSMAN floor: optimized marksman_th only for APPROVED leagues, else per-league
     # override, else global (mirrors the SNIPER logic above).
@@ -254,8 +307,10 @@ def evaluate_value(df: pd.DataFrame, p_col: str = "p_over25") -> pd.DataFrame:
     df["edge_over"]  = p_over  - df["impl_prob_over"]
     df["edge_under"] = p_under - df["impl_prob_under"]
 
-    df["kelly_over"]  = [_kelly(p, o) for p, o in zip(p_over,  ov_odds.fillna(0))]
-    df["kelly_under"] = [_kelly(p, o) for p, o in zip(p_under, un_odds.fillna(0))]
+    # Kelly on a MISSING price is missing (NaN), not 0: the prices were passed as .fillna(0) until
+    # fix9/defaults (2026-11-04). See _kelly / _stake.
+    df["kelly_over"]  = [_kelly(p, o) for p, o in zip(p_over,  ov_odds)]
+    df["kelly_under"] = [_kelly(p, o) for p, o in zip(p_under, un_odds)]
 
     df["ev_over"]  = df["edge_over"]  * ov_odds
     df["ev_under"] = df["edge_under"] * un_odds
@@ -282,9 +337,9 @@ def evaluate_value(df: pd.DataFrame, p_col: str = "p_over25") -> pd.DataFrame:
 
     # Stake (uses VALUE_THRESHOLD as minimum to award stake)
     df["stake_over"]  = [_stake(e, p, o, config.VALUE_THRESHOLD) for e, p, o in
-                         zip(df["edge_over"],  p_over,  ov_odds.fillna(0))]
+                         zip(df["edge_over"],  p_over,  ov_odds)]
     df["stake_under"] = [_stake(e, p, o, config.VALUE_THRESHOLD) for e, p, o in
-                         zip(df["edge_under"], p_under, un_odds.fillna(0))]
+                         zip(df["edge_under"], p_under, un_odds)]
 
     # Base tier — per-league threshold if available, else side-specific global
     leagues = df.get("league", pd.Series([""] * len(df), index=df.index))
@@ -297,8 +352,10 @@ def evaluate_value(df: pd.DataFrame, p_col: str = "p_over25") -> pd.DataFrame:
 
     # New-format price cap (config.NF_MAX_OU_ODDS, owner 2026-10-22): a new-format side priced above
     # the cap is not bettable. Still scored and logged - only the tip is withheld.
-    cap = float(getattr(config, "NF_MAX_OU_ODDS", 0) or 0)
-    if cap > 0 and "league" in df.columns:
+    # an unset cap means "no cap" (a config switch, not a price); read without a typed 0 stand-in
+    _cap = getattr(config, "NF_MAX_OU_ODDS", None)
+    cap = float(_cap) if _cap else None
+    if cap is not None and cap > 0 and "league" in df.columns:
         nf = df["league"].map(lambda lg: config.model_type_for_league(str(lg)) == "new_format").astype(bool)
         over_cap, under_cap = nf & (ov_odds > cap), nf & (un_odds > cap)
         df["max_odds_blocked"] = (((df["edge_over"] >= config.VALUE_THRESHOLD) & over_cap) |

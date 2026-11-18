@@ -57,8 +57,12 @@ RAW_FACTS_MUTABLE_AFTER_FREEZE: tuple[str, ...] = ()
 INJURY_COLUMNS = ("chronic_injury_risk", "days_since_last_injury", "return_from_injury_flag")
 # The injury refresh writes only rows whose match is at most this many days old.
 INJURY_REFRESH_WINDOW_DAYS = 60
-# The pre-existing sentinel: "no sidelined spell ended before this match" (config.py: 365 =
-# healthy). Kept so the feature means what the serving models were trained on.
+# "No sidelined spell ended before this match" is now days_since_last_injury = NaN on a row whose
+# chronic_injury_risk / return_from_injury_flag ARE written (a row the refresh never reached has all
+# three NaN) - that pair is the explicit "no recorded spell" flag, with no extra column to rewrite
+# every month part for (Data Truth, 2026-11-01). It used to be the SENTINEL 365 days, a value that is
+# also a real gap. NO_INJURY_DAYS is kept ONLY to decode rows written before that change
+# (reconstruct_from_stamp, the 2026-10 repair script); nothing new is written with it.
 NO_INJURY_DAYS = 365.0
 RETURN_WINDOW_DAYS = 21
 CHRONIC_LOOKBACK_DAYS = 365
@@ -127,7 +131,24 @@ def merge_history(existing: pd.DataFrame, fresh: pd.DataFrame, today=None,
         live_mask = (d >= cutoff).to_numpy()
         live, frozen = both[live_mask], both[~live_mask]
         if len(live):
-            parts.append(b.loc[live].combine_first(a.loc[live]))
+            refreshed = b.loc[live].combine_first(a.loc[live])
+            # A fresh row parsed with the owner's null rule (count_source 'provider_rule', fix round
+            # 9, 2026-11-04) carries its counts AS A SET: a count it leaves missing is the provider's
+            # "not answered", and combine_first would fill that hole with the stored row's `or 0`
+            # zero while the row claims to be verified. Its counts and rating replace the stored
+            # ones whole, missing included.
+            from .player_stat_nulls import HISTORY_COUNT_COLS, PARSED_WITH_RULE, SOURCE_COL
+            if SOURCE_COL in b.columns:
+                ruled = b.loc[live, SOURCE_COL].eq(PARSED_WITH_RULE).to_numpy()
+                if ruled.any():
+                    idx = live[ruled]
+                    for c in (*HISTORY_COUNT_COLS, "rating"):
+                        if c in b.columns:
+                            if c in refreshed.columns and refreshed[c].dtype.kind in "iub":
+                                refreshed[c] = refreshed[c].astype("float64")
+                            refreshed.loc[idx, c] = b.loc[idx, c].to_numpy()
+                    stats["refreshed_counts_as_set"] = int(ruled.sum())
+            parts.append(refreshed)
         if len(frozen):
             keep = a.loc[frozen].copy()
             for c in mutable_after_freeze:
@@ -145,7 +166,42 @@ def merge_history(existing: pd.DataFrame, fresh: pd.DataFrame, today=None,
     # combine_first row order the old merge produced and downstream steps have been reading.
     merged = pd.concat([p for p in parts if len(p)]).sort_index().reset_index()
     stats["added"] = int(len(merged) - len(a))
+    # n_prev_games of every row this collect added or refreshed counts the player's WHOLE stored
+    # history, not just the rows of this fetch batch (build_features sees only the batch: on the
+    # committed history 84k rows, 9.6%, carried a batch-truncated count). Frozen rows are untouched.
+    if "n_prev_games" in merged.columns and "player_id" in merged.columns and len(merged):
+        frozen_keys = set(frozen) if len(both) else set()
+        fresh_keys = set(b.index) - frozen_keys
+        mask = pd.Series([k in fresh_keys for k in zip(*(merged[c] for c in KEY))], index=merged.index)
+        if mask.any():
+            full = prev_games_full(merged)
+            changed = mask & ~((full == merged["n_prev_games"]) | (full.isna() & merged["n_prev_games"].isna()))
+            stats["n_prev_recounted"] = int(changed.sum())
+            merged.loc[mask, "n_prev_games"] = full[mask]
     return merged, stats
+
+
+def prev_games_full(df: pd.DataFrame) -> pd.Series:
+    """n_prev_games recounted over the player's WHOLE stored history: the count stored on his
+    earliest stored row (the games before it, which build_features dropped as first appearances)
+    plus the number of his stored rows before this one (date, then fixture_id order). A row
+    without a real player_id (<= 0 / missing) has no history -> NaN. One definition, used by
+    merge_history (producer) and scripts/rebuild_player_history.py (stored history)."""
+    pid = pd.to_numeric(df["player_id"], errors="coerce")
+    ok = pid > 0
+    out = pd.Series(np.nan, index=df.index, dtype=float)
+    if not ok.any():
+        return out
+    d = df.loc[ok, ["player_id", "date"] + (["fixture_id"] if "fixture_id" in df.columns else [])].copy()
+    d["_d"] = pd.to_datetime(d["date"], errors="coerce")
+    d["_n"] = pd.to_numeric(df.loc[ok, "n_prev_games"], errors="coerce") if "n_prev_games" in df.columns \
+        else np.nan
+    d = d.sort_values(["player_id", "_d"] + (["fixture_id"] if "fixture_id" in d.columns else []),
+                      kind="stable")
+    g = d.groupby("player_id", sort=False)
+    base = g["_n"].transform("first").fillna(0).clip(lower=0)
+    out.loc[d.index] = (base + g.cumcount()).astype(float)
+    return out
 
 
 # ── injury features as of the match date ─────────────────────────────────────────────────────
@@ -171,15 +227,21 @@ def injury_evidence(entries: list[dict], match_date) -> dict:
 def injury_features_asof(entries: list[dict], match_date) -> dict:
     """chronic_injury_risk / days_since_last_injury / return_from_injury_flag for ONE row, as of
     its own match date. `entries` is the player's /sidelined list ({start, end} ISO dates); an
-    empty list is a real answer ("no recorded spell"), and gives the 0 / 365 / 0 the models were
-    trained on. A FAILED fetch must not reach here (it is not an empty list -- see
-    data_fetcher.fetch_all_player_sidelined)."""
+    empty list is a real answer ("no recorded spell"): chronic 0, days_since NaN (no spell ended,
+    so there is no gap to measure), return flag 0 (see no_spell_recorded). A FAILED fetch must not
+    reach here (it is not an empty list -- see data_fetcher.fetch_all_player_sidelined)."""
     ev = injury_evidence(entries, match_date)
-    days = (float((ev["match_date"] - ev["last_end"]).days) if ev["last_end"] is not None
-            else NO_INJURY_DAYS)
+    none = ev["last_end"] is None
+    days = float("nan") if none else float((ev["match_date"] - ev["last_end"]).days)
     return {"chronic_injury_risk": float(len(ev["starts"])),
             "days_since_last_injury": days,
-            "return_from_injury_flag": float(0 < days <= RETURN_WINDOW_DAYS)}
+            "return_from_injury_flag": float((not none) and 0 < days <= RETURN_WINDOW_DAYS)}
+
+
+def no_spell_recorded(df: pd.DataFrame) -> pd.Series:
+    """Rows whose injury refresh found NO sidelined spell ending before the match: days NaN while
+    the return flag was written. (Unrefreshed rows have all three NaN and are False here.)"""
+    return df["days_since_last_injury"].isna() & df["return_from_injury_flag"].notna()
 
 
 def apply_injury_pit(df: pd.DataFrame, sidelined_map: dict, row_mask=None) -> int:
@@ -218,7 +280,8 @@ def reconstruct_from_stamp(match_date, stamp_date, chronic, days) -> tuple[float
     The old refresh wrote days = D - L, where L is the last spell end before D (or the 365
     sentinel when there was none), and chronic = number of spells starting in [D - 365, D].
 
-      days_since at M:  sentinel at D -> no spell ended before D, so none before M -> 365.
+      days_since at M:  sentinel at D -> no spell ended before D, so none before M -> NaN
+                        (no gap to measure; was the 365 sentinel).
                         L < M        -> no end in (L, D) ⊇ (L, M), so the last end before M is
                                         L -> M - L.
                         L >= M       -> the last end before M is unknown -> None.
@@ -236,7 +299,7 @@ def reconstruct_from_stamp(match_date, stamp_date, chronic, days) -> tuple[float
     sentinel = float(days) == NO_INJURY_DAYS
     last_end = None if sentinel else d - pd.Timedelta(days=float(days))
     if last_end is None:
-        out_days = NO_INJURY_DAYS
+        out_days = float("nan")
     elif last_end < m:
         out_days = float((m - last_end).days)
     else:

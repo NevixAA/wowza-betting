@@ -37,7 +37,10 @@ def main(dry_run: bool = False) -> int:
     h["pid"] = pd.to_numeric(h["player_id"], errors="coerce").astype("Int64").astype(str)
     by_pid = {k: g for k, g in h.groupby("pid")}
 
-    cand = led[(led["result"] == "VOID") & (led["notes"] == "DNP") & (led.get("player_id", "") != "")]
+    if "player_id" not in led.columns:
+        print("player_ledger has no player_id column - nothing can be regraded (names are never matched)")
+        return 0
+    cand = led[(led["result"] == "VOID") & (led["notes"] == "DNP") & (led["player_id"] != "")]
     fixed, still = {"WIN": 0, "LOSS": 0, "0min": 0}, 0
     for i, r in cand.iterrows():
         try:
@@ -50,23 +53,25 @@ def main(dry_run: bool = False) -> int:
             still += 1
             continue
         g = g[(g["d"] >= day - pd.Timedelta(days=1)) & (g["d"] <= day + pd.Timedelta(days=1))]
+        # A history row with no minutes recorded proves nothing either way: not used.
+        g = g[pd.to_numeric(g["minutes"], errors="coerce").notna()]
         if g.empty:
             still += 1
             continue
         s = g.sort_values("minutes", ascending=False).iloc[0]
-        if not float(s["minutes"] or 0) > 0:
+        if not float(s["minutes"]) > 0:
             led.at[i, "notes"] = "DNP (0 min)"
             fixed["0min"] += 1
             continue
+        yc = pd.to_numeric(s["yellow_cards"], errors="coerce")
         stats = {"goals": s["goals"], "shots_on_target": s["shots_on_target"], "assists": s["assists"],
-                 "yellow_card": int(float(s["yellow_cards"] or 0) > 0)}
+                 # unknown card count stays unknown (None): _resolve_player_market leaves it pending
+                 "yellow_card": None if pd.isna(yc) else int(float(yc) > 0)}
         res = U._resolve_player_market(r["market"], stats)
         if not res:
             continue
-        try:
-            odds = float(r.get("market_odds") or "nan")
-        except ValueError:
-            odds = float("nan")
+        odds = float(pd.to_numeric(r["market_odds"], errors="coerce")) if "market_odds" in led.columns \
+            else float("nan")
         led.at[i, "result"] = res
         led.at[i, "pnl"] = (str(round(odds - 1.0, 4) if res == "WIN" else -1.0) if odds > 1.0 else "")
         led.at[i, "notes"] = NOTE

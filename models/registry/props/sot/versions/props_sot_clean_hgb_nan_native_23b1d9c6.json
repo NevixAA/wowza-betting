@@ -1,0 +1,57 @@
+{
+  "market": "sot",
+  "model_version": "props_sot_clean_hgb_nan_native_23b1d9c6",
+  "artifact_sha256": "23b1d9c695087b3501ab5d46af927e858b8c21d3bab7b002efe4e17270c46989",
+  "registered_at": "2026-11-10T20:14:51Z",
+  "training_cutoff": "2026-08-31",
+  "training_rows": {
+    "fit": 734045,
+    "calibration": 130673
+  },
+  "candidate": "hgb_nan_native",
+  "harness_version": "PROPS-HARNESS-1.0",
+  "clean_retrain": {
+    "run_id": "42855107089",
+    "code_sha": "4f1889d8dde1c42afe5f53651b24d3d7def3372e",
+    "artifact_sha256": "36b0db6e0c41e11526ca922d0ddab8cff869b518c209804a720a334d51dd39c7",
+    "candidate": "hgb_nan_native",
+    "holdout": {
+      "n": 55907,
+      "events": 13472,
+      "log_loss": 0.48103664104450766,
+      "brier": 0.15696475908744997,
+      "ece10": 0.02898246929890104,
+      "calib_slope": 0.991590934410114,
+      "ll_minus_player_base_rate": {
+        "mean": -0.013572863836312442,
+        "ci95": [
+          -0.01555879521554389,
+          -0.011249840269486654
+        ],
+        "week_blocks": 9
+      },
+      "ll_delta_vs_recipe": -0.0007030578398131628,
+      "ci95_lo": -0.0012902720758111183,
+      "ci95_hi": -0.00019865571595545278,
+      "head_to_head": {
+        "n": 55907,
+        "weeks": 9,
+        "ll_delta_hgb_minus_recipe": -0.0007030578398131628,
+        "ci95_lo": -0.0012902720758111183,
+        "ci95_hi": -0.00019865571595545278,
+        "p_one_sided": 0.000999750062484379,
+        "boot": 4000,
+        "seed": 1
+      },
+      "holdout_dates": [
+        "2026-09-01",
+        "2026-10-31"
+      ],
+      "rule": "beats recipe_retrained (CI95 upper < 0) and player_base_rate"
+    },
+    "approval": "Promote now",
+    "approved_on": "2026-11-10",
+    "prior_champion": "props_sot_clean_hgb_nan_native_a1d72892"
+  },
+  "model_role": "CHAMPION"
+}

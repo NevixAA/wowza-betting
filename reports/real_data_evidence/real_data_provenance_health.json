@@ -1,0 +1,185 @@
+{
+ "artifact": "real_data_provenance",
+ "version": "REAL-DATA-PROVENANCE-1",
+ "generated_at": "2026-11-15T19:26:12Z",
+ "A_registered_historical_exceptions": {
+  "count": 7,
+  "documented": [
+   {
+    "id": "standard-repaired-xg-zero",
+    "artifact": "Standard O/U 2.5 (retired v9_repaired)",
+    "what": "the 2026-10-28 repaired Standard payload's 1.0 imputer filled xG and inside-box shots (0% training coverage) with 0.0 on every training row",
+    "status": "RETIRED by the owner 2026-11-15 (\"fix what you need\"): v9_repaired is no longer a serving recipe, owner_install refuses the type, the registry pointer says RETIRED; the file stays for audit and the serving guard (src.model.serving_refusal) refuses it too"
+   },
+   {
+    "id": "legacy-batch-median",
+    "artifact": "any payload without a persisted imputer",
+    "what": "legacy src.model._prep fills from the scoring batch's medians (all-missing column -> 0.0)",
+    "status": "no served payload uses it; predict_proba(serving=True) refuses such a payload"
+   },
+   {
+    "id": "nf-hist-af-override",
+    "artifact": "every team payload (served 2026-08-16 .. 2026-11-15)",
+    "what": "API-Football /teams/statistics overwrote the six season-venue model features at serving; home advantage compared against today's league average",
+    "status": "fixed at serving (fix/real-data-provenance); predictions logged before the fix keep their values (historical evidence, unchanged)"
+   }
+  ],
+  "inactive_artifact_violations": [
+   "Standard O/U 2.5 (retired v9_repaired)|standard|home_xg_last5|FABRICATED_VALUE",
+   "Standard O/U 2.5 (retired v9_repaired)|standard|away_xg_last5|FABRICATED_VALUE",
+   "Standard O/U 2.5 (retired v9_repaired)|standard|home_insidebox_last5|FABRICATED_VALUE",
+   "Standard O/U 2.5 (retired v9_repaired)|standard|away_insidebox_last5|FABRICATED_VALUE"
+  ]
+ },
+ "B_active_production_violations": {
+  "count": 0,
+  "rows": [],
+  "refused_active_payloads": []
+ },
+ "C_new_violations": {
+  "count": 0,
+  "rows": []
+ },
+ "per_model": {
+  "Standard O/U 2.5 [standard]": {
+   "status": "active",
+   "features": 86,
+   "real_data_verified": 84,
+   "eligible_learned_or_imputed": 2,
+   "unsupported_active": 0,
+   "fabricated_active": 0,
+   "pit_violations": 0,
+   "train_serve_mismatches": 0,
+   "serving_refusal": null,
+   "serving_coverage_gaps": 0
+  },
+  "New Format O/U 2.5 [new_format]": {
+   "status": "active",
+   "features": 56,
+   "real_data_verified": 56,
+   "eligible_learned_or_imputed": 0,
+   "unsupported_active": 0,
+   "fabricated_active": 0,
+   "pit_violations": 0,
+   "train_serve_mismatches": 0,
+   "serving_refusal": null,
+   "serving_coverage_gaps": 0
+  },
+  "BTTS [standard]": {
+   "status": "active",
+   "features": 86,
+   "real_data_verified": 84,
+   "eligible_learned_or_imputed": 2,
+   "unsupported_active": 0,
+   "fabricated_active": 0,
+   "pit_violations": 0,
+   "train_serve_mismatches": 0,
+   "serving_refusal": null,
+   "serving_coverage_gaps": 0
+  },
+  "BTTS [new_format]": {
+   "status": "active",
+   "features": 56,
+   "real_data_verified": 56,
+   "eligible_learned_or_imputed": 0,
+   "unsupported_active": 0,
+   "fabricated_active": 0,
+   "pit_violations": 0,
+   "train_serve_mismatches": 0,
+   "serving_refusal": null,
+   "serving_coverage_gaps": 0
+  },
+  "Over 1.5 [standard]": {
+   "status": "active",
+   "features": 86,
+   "real_data_verified": 84,
+   "eligible_learned_or_imputed": 2,
+   "unsupported_active": 0,
+   "fabricated_active": 0,
+   "pit_violations": 0,
+   "train_serve_mismatches": 0,
+   "serving_refusal": null,
+   "serving_coverage_gaps": 0
+  },
+  "Over 1.5 [new_format]": {
+   "status": "active",
+   "features": 56,
+   "real_data_verified": 56,
+   "eligible_learned_or_imputed": 0,
+   "unsupported_active": 0,
+   "fabricated_active": 0,
+   "pit_violations": 0,
+   "train_serve_mismatches": 0,
+   "serving_refusal": null,
+   "serving_coverage_gaps": 0
+  },
+  "Over 3.5 [standard]": {
+   "status": "active",
+   "features": 86,
+   "real_data_verified": 84,
+   "eligible_learned_or_imputed": 2,
+   "unsupported_active": 0,
+   "fabricated_active": 0,
+   "pit_violations": 0,
+   "train_serve_mismatches": 0,
+   "serving_refusal": null,
+   "serving_coverage_gaps": 0
+  },
+  "Over 3.5 [new_format]": {
+   "status": "active",
+   "features": 56,
+   "real_data_verified": 56,
+   "eligible_learned_or_imputed": 0,
+   "unsupported_active": 0,
+   "fabricated_active": 0,
+   "pit_violations": 0,
+   "train_serve_mismatches": 0,
+   "serving_refusal": null,
+   "serving_coverage_gaps": 0
+  },
+  "HT Over 0.5 [standard]": {
+   "status": "active",
+   "features": 86,
+   "real_data_verified": 84,
+   "eligible_learned_or_imputed": 2,
+   "unsupported_active": 0,
+   "fabricated_active": 0,
+   "pit_violations": 0,
+   "train_serve_mismatches": 0,
+   "serving_refusal": null,
+   "serving_coverage_gaps": 0
+  },
+  "HT Over 1.5 [standard]": {
+   "status": "active",
+   "features": 86,
+   "real_data_verified": 84,
+   "eligible_learned_or_imputed": 2,
+   "unsupported_active": 0,
+   "fabricated_active": 0,
+   "pit_violations": 0,
+   "train_serve_mismatches": 0,
+   "serving_refusal": null,
+   "serving_coverage_gaps": 0
+  },
+  "Fantasy [fpl]": {
+   "status": "active (fitted at run time)",
+   "features": 10,
+   "real_data_verified": 4,
+   "eligible_learned_or_imputed": 5,
+   "unsupported_active": 1,
+   "fabricated_active": 0,
+   "pit_violations": 0,
+   "train_serve_mismatches": 0,
+   "serving_refusal": null,
+   "serving_coverage_gaps": 0
+  }
+ },
+ "serving_coverage_gaps": [],
+ "props": {
+  "status": "PENDING",
+  "source": null,
+  "detail": "props provenance not yet delivered (fix/props-data-audit): props are NOT verified"
+ },
+ "team_fantasy_status": "RED",
+ "note": "GREEN only when unsupported active = 0, fabricated active = 0, critical mismatches = 0, no active payload refused and no new violation. Props are reported apart and are not verified until the props agent's outputs land."
+}

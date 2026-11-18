@@ -9,9 +9,10 @@ only when it passed data quality, market-residual evidence AND the existing-leag
 writing it into config/auto_leagues.json, which config.py merges into every league registry.
 
 FAIL CLOSED, per league:
-  * no OddsAPI sport key that matches the league UNIQUELY (country + league words) -> skipped, reason
-    reported: without a price source predict cannot produce a tip, and a guessed key would price a
-    different league
+  * no APPROVED OddsAPI sport key in the queue entry (or one OddsAPI does not list) -> skipped,
+    reason reported: without a price source predict cannot produce a tip, and a guessed key would
+    price a different league. Word matching (match_sport_key) only SUGGESTS keys in --probe.
+  * no timezone for the league's country -> skipped (never 'UTC' by default)
   * already configured (by name or API-Football id) -> skipped
   * Pro queue unreachable -> nothing changes
 Stakes are not decided here: a new league has no rating, so the stake plan's league-rating sizing
@@ -36,8 +37,8 @@ QUEUE_URL = "https://raw.githubusercontent.com/NevixAA/wowzaV9-Pro/main/output/s
 AUTO = ROOT / "config" / "auto_leagues.json"
 HISTORY_SEASONS = 4
 
-#: Display timezone per country (local match dates in tips). Anything missing -> UTC, which only
-#: affects which calendar day a late kickoff is grouped under.
+#: Display timezone per country (local match dates in tips). A country missing here is not
+#: onboarded until it is added - see league_timezone().
 COUNTRY_TZ = {
     "England": "Europe/London", "Scotland": "Europe/London", "Wales": "Europe/London",
     "Ireland": "Europe/Dublin", "Northern-Ireland": "Europe/London", "France": "Europe/Paris",
@@ -63,8 +64,9 @@ def _toks(s: str) -> set[str]:
 
 
 def match_sport_key(country: str, league: str, sports: list[dict]) -> tuple[str | None, str]:
-    """The OddsAPI soccer key whose title/description carries the COUNTRY and the league's identity
-    words. Unique match only; anything ambiguous or absent returns (None, reason)."""
+    """SUGGESTION for --probe only: the OddsAPI soccer key whose title/description carries the
+    COUNTRY and the league's identity words. Unique match only; anything ambiguous or absent returns
+    (None, reason). Never used to onboard - plan() requires an approved key (approved_sport_key)."""
     c = _toks(country.replace("-", " "))
     lw = _toks(league) - c - _STOP
     if not lw:
@@ -87,12 +89,31 @@ def match_sport_key(country: str, league: str, sports: list[dict]) -> tuple[str 
                   else f"ambiguous OddsAPI keys {cands}")
 
 
-def build_entry(q: dict, sport_key: str, now: str) -> dict:
+def approved_sport_key(q: dict, sports: list[dict]) -> tuple[str | None, str]:
+    """The OddsAPI key APPROVED for this league in the queue entry (`odds_api_sport_key`), checked
+    against OddsAPI's live sports list. No approved key -> (None, reason): the league is not
+    onboarded. match_sport_key's word matching is only a SUGGESTION for --probe; a price source is
+    never chosen by fuzzy matching (owner rule 2026-11-01)."""
+    k = str(q.get("odds_api_sport_key") or "").strip()
+    if not k:
+        return None, "no approved OddsAPI sport key in the queue entry"
+    if k not in {str(s.get("key", "")) for s in sports}:
+        return None, f"approved OddsAPI key {k!r} is not in OddsAPI's sports list"
+    return k, "approved"
+
+
+def league_timezone(q: dict) -> str | None:
+    """The league's display timezone: the queue's own `timezone` if given, else its country's zone.
+    None when neither exists - the league is then NOT onboarded (no 'UTC' stand-in)."""
+    return (str(q.get("timezone") or "").strip() or None) or COUNTRY_TZ.get(str(q.get("country") or ""))
+
+
+def build_entry(q: dict, sport_key: str, now: str, tz: str) -> dict:
     season = str(q.get("current_season") or "")
     hist = [str(int(season) - k) for k in range(1, HISTORY_SEASONS + 1)] if season.isdigit() else []
     return {"name": q["league"], "api_football_id": int(q["league_id"]), "current_season": season,
             "history_seasons": hist, "odds_api_sport_key": sport_key,
-            "timezone": COUNTRY_TZ.get(str(q.get("country") or ""), "UTC"),
+            "timezone": tz,
             "onboarded_at": now, "scout_week": q.get("week"), "promotion_score": q.get("promotion_score"),
             "source": "Pro League Scout auto-onboard (owner standing approval 2026-10-20)"}
 
@@ -103,15 +124,23 @@ def plan(queue: list[dict], current: dict, configured_names: set, configured_ids
     have_names = configured_names | {e["name"] for e in current.get("leagues", [])}
     have_ids = configured_ids | {int(e["api_football_id"]) for e in current.get("leagues", [])}
     add, skipped = [], []
+    from src.league_registry import canonical_name
     for q in queue:
-        if q["league"] in have_names or int(q["league_id"]) in have_ids:
+        # registered under any alias counts as configured (registry lookup, not a raw ==)
+        if (q["league"] in have_names or canonical_name(q["league"]) is not None
+                or int(q["league_id"]) in have_ids):
             skipped.append({"league": q["league"], "reason": "already configured"})
             continue
-        key, why = match_sport_key(str(q.get("country") or ""), q["league"], sports)
+        key, why = approved_sport_key(q, sports)
         if key is None:
             skipped.append({"league": q["league"], "reason": why})
             continue
-        add.append(build_entry(q, key, now))
+        tz = league_timezone(q)
+        if tz is None:
+            skipped.append({"league": q["league"],
+                            "reason": f"no timezone for country {q.get('country')!r} - refusing to assume UTC"})
+            continue
+        add.append(build_entry(q, key, now, tz))
     return add, skipped
 
 

@@ -29,7 +29,9 @@ def test_ou25_tiers_are_staked_equally_and_valuable_is_staked():
 
 def test_btts_keeps_the_global_ladder():
     pol = load_policy()
-    out = size_day(_sel("BTTS", ["SNIPER", "MARKSMAN", "VALUABLE"]), pol, bankroll=100.0, peak=100.0)
+    # BTTS side is YES: "OVER" is not a BTTS side, and the stake-contract guard (phase2/contracts)
+    # rightly refuses it as NO_REAL_STAKE_INVALID_SIDE before the tier ladder is reached
+    out = size_day(_sel("BTTS", ["SNIPER", "MARKSMAN", "VALUABLE"], side="YES"), pol, bankroll=100.0, peak=100.0)
     mult = dict(zip(out["signal_tier"], out["tier_multiplier"]))
     assert mult["SNIPER"] == pol["tier_multipliers"]["SNIPER"]
     assert mult["MARKSMAN"] == pol["tier_multipliers"]["MARKSMAN"]

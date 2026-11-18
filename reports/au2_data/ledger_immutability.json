@@ -1,0 +1,894 @@
+{
+ "versions": 89,
+ "rows_disappeared": 0,
+ "decision_field_changes": 87,
+ "settlement_overwrites": 0,
+ "examples": [
+  {
+   "commit": "52d5765ae",
+   "field": "edge_pct",
+   "key": [
+    "live",
+    "2026-10-25",
+    "Denmark Superliga",
+    "FC Midtjylland",
+    "Lyngby",
+    "UNDER"
+   ],
+   "before": "5.8",
+   "after": "8.18"
+  },
+  {
+   "commit": "52d5765ae",
+   "field": "signal_tier",
+   "key": [
+    "live",
+    "2026-10-25",
+    "Denmark Superliga",
+    "FC Midtjylland",
+    "Lyngby",
+    "UNDER"
+   ],
+   "before": "VALUABLE",
+   "after": "MARKSMAN"
+  },
+  {
+   "commit": "f9af7eda8",
+   "field": "edge_pct",
+   "key": [
+    "live",
+    "2026-10-24",
+    "Bundesliga 2",
+    "1. FC Magdeburg",
+    "Karlsruher SC",
+    "UNDER"
+   ],
+   "before": "9.01",
+   "after": "7.02"
+  },
+  {
+   "commit": "f9af7eda8",
+   "field": "signal_tier",
+   "key": [
+    "live",
+    "2026-10-24",
+    "Bundesliga 2",
+    "1. FC Magdeburg",
+    "Karlsruher SC",
+    "UNDER"
+   ],
+   "before": "VALUABLE",
+   "after": "MARKSMAN"
+  },
+  {
+   "commit": "8eb64ed4c",
+   "field": "edge_pct",
+   "key": [
+    "live",
+    "2026-10-24",
+    "Finland Veikkausliiga",
+    "IF Gnistan",
+    "AC Oulu",
+    "UNDER"
+   ],
+   "before": "11.21",
+   "after": "12.03"
+  },
+  {
+   "commit": "8eb64ed4c",
+   "field": "signal_tier",
+   "key": [
+    "live",
+    "2026-10-24",
+    "Finland Veikkausliiga",
+    "IF Gnistan",
+    "AC Oulu",
+    "UNDER"
+   ],
+   "before": "MARKSMAN",
+   "after": "SNIPER"
+  },
+  {
+   "commit": "591aa5ca0",
+   "field": "edge_pct",
+   "key": [
+    "live",
+    "2026-10-24",
+    "USA MLS",
+    "Philadelphia Union",
+    "New England Revolution",
+    "UNDER"
+   ],
+   "before": "5.81",
+   "after": "9.26"
+  },
+  {
+   "commit": "591aa5ca0",
+   "field": "signal_tier",
+   "key": [
+    "live",
+    "2026-10-24",
+    "USA MLS",
+    "Philadelphia Union",
+    "New England Revolution",
+    "UNDER"
+   ],
+   "before": "VALUABLE",
+   "after": "MARKSMAN"
+  },
+  {
+   "commit": "26d9bd2ae",
+   "field": "edge_pct",
+   "key": [
+    "live",
+    "2026-10-25",
+    "USA MLS",
+    "Colorado Rapids",
+    "Vancouver Whitecaps FC",
+    "UNDER"
+   ],
+   "before": "4.68",
+   "after": "10.34"
+  },
+  {
+   "commit": "26d9bd2ae",
+   "field": "signal_tier",
+   "key": [
+    "live",
+    "2026-10-25",
+    "USA MLS",
+    "Colorado Rapids",
+    "Vancouver Whitecaps FC",
+    "UNDER"
+   ],
+   "before": "VALUABLE",
+   "after": "MARKSMAN"
+  },
+  {
+   "commit": "e6e813499",
+   "field": "edge_pct",
+   "key": [
+    "live",
+    "2026-10-24",
+    "Finland Veikkausliiga",
+    "VPS Vaasa",
+    "FC Inter Turku",
+    "UNDER"
+   ],
+   "before": "3.68",
+   "after": "8.11"
+  },
+  {
+   "commit": "e6e813499",
+   "field": "signal_tier",
+   "key": [
+    "live",
+    "2026-10-24",
+    "Finland Veikkausliiga",
+    "VPS Vaasa",
+    "FC Inter Turku",
+    "UNDER"
+   ],
+   "before": "VALUABLE",
+   "after": "MARKSMAN"
+  },
+  {
+   "commit": "90ab55eba",
+   "field": "edge_pct",
+   "key": [
+    "live",
+    "2026-10-24",
+    "Mexico Liga MX",
+    "Le\u00f3n",
+    "Toluca",
+    "UNDER"
+   ],
+   "before": "7.33",
+   "after": "8.18"
+  },
+  {
+   "commit": "90ab55eba",
+   "field": "signal_tier",
+   "key": [
+    "live",
+    "2026-10-24",
+    "Mexico Liga MX",
+    "Le\u00f3n",
+    "Toluca",
+    "UNDER"
+   ],
+   "before": "VALUABLE",
+   "after": "MARKSMAN"
+  },
+  {
+   "commit": "45c84fc12",
+   "field": "edge_pct",
+   "key": [
+    "live",
+    "2026-10-20",
+    "League One",
+    "Huddersfield Town",
+    "Peterborough United",
+    "UNDER"
+   ],
+   "before": "10.87",
+   "after": "10.0"
+  },
+  {
+   "commit": "45c84fc12",
+   "field": "signal_tier",
+   "key": [
+    "live",
+    "2026-10-20",
+    "League One",
+    "Huddersfield Town",
+    "Peterborough United",
+    "UNDER"
+   ],
+   "before": "MARKSMAN",
+   "after": "SNIPER"
+  },
+  {
+   "commit": "69b208cae",
+   "field": "edge_pct",
+   "key": [
+    "live",
+    "2026-10-24",
+    "USA MLS",
+    "Atlanta United FC",
+    "Chicago Fire",
+    "UNDER"
+   ],
+   "before": "8.65",
+   "after": "12.69"
+  },
+  {
+   "commit": "69b208cae",
+   "field": "signal_tier",
+   "key": [
+    "live",
+    "2026-10-24",
+    "USA MLS",
+    "Atlanta United FC",
+    "Chicago Fire",
+    "UNDER"
+   ],
+   "before": "MARKSMAN",
+   "after": "SNIPER"
+  },
+  {
+   "commit": "3c25c4ad5",
+   "field": "edge_pct",
+   "key": [
+    "live",
+    "2026-10-26",
+    "Denmark Superliga",
+    "FC Copenhagen",
+    "OB Odense BK",
+    "UNDER"
+   ],
+   "before": "4.17",
+   "after": "9.25"
+  },
+  {
+   "commit": "3c25c4ad5",
+   "field": "signal_tier",
+   "key": [
+    "live",
+    "2026-10-26",
+    "Denmark Superliga",
+    "FC Copenhagen",
+    "OB Odense BK",
+    "UNDER"
+   ],
+   "before": "VALUABLE",
+   "after": "MARKSMAN"
+  },
+  {
+   "commit": "f207d8be2",
+   "field": "edge_pct",
+   "key": [
+    "live",
+    "2026-10-24",
+    "Sweden Allsvenskan",
+    "BK Hacken",
+    "Degerfors IF",
+    "UNDER"
+   ],
+   "before": "10.54",
+   "after": "12.18"
+  },
+  {
+   "commit": "f207d8be2",
+   "field": "signal_tier",
+   "key": [
+    "live",
+    "2026-10-24",
+    "Sweden Allsvenskan",
+    "BK Hacken",
+    "Degerfors IF",
+    "UNDER"
+   ],
+   "before": "MARKSMAN",
+   "after": "SNIPER"
+  },
+  {
+   "commit": "c0422cef1",
+   "field": "edge_pct",
+   "key": [
+    "live",
+    "2026-10-21",
+    "Japan J-League",
+    "FC Tokyo",
+    "Kashiwa Reysol",
+    "UNDER"
+   ],
+   "before": "4.55",
+   "after": "8.9"
+  },
+  {
+   "commit": "c0422cef1",
+   "field": "signal_tier",
+   "key": [
+    "live",
+    "2026-10-21",
+    "Japan J-League",
+    "FC Tokyo",
+    "Kashiwa Reysol",
+    "UNDER"
+   ],
+   "before": "VALUABLE",
+   "after": "MARKSMAN"
+  },
+  {
+   "commit": "1b9be791b",
+   "field": "edge_pct",
+   "key": [
+    "live",
+    "2026-10-22",
+    "Mexico Liga MX",
+    "Atlas",
+    "Am\u00e9rica",
+    "UNDER"
+   ],
+   "before": "5.74",
+   "after": "12.02"
+  },
+  {
+   "commit": "1b9be791b",
+   "field": "signal_tier",
+   "key": [
+    "live",
+    "2026-10-22",
+    "Mexico Liga MX",
+    "Atlas",
+    "Am\u00e9rica",
+    "UNDER"
+   ],
+   "before": "VALUABLE",
+   "after": "MARKSMAN"
+  },
+  {
+   "commit": "da767d5a1",
+   "field": "edge_pct",
+   "key": [
+    "live",
+    "2026-10-28",
+    "Sweden Allsvenskan",
+    "Halmstads BK",
+    "Malmo FF",
+    "UNDER"
+   ],
+   "before": "9.83",
+   "after": "12.23"
+  },
+  {
+   "commit": "da767d5a1",
+   "field": "signal_tier",
+   "key": [
+    "live",
+    "2026-10-28",
+    "Sweden Allsvenskan",
+    "Halmstads BK",
+    "Malmo FF",
+    "UNDER"
+   ],
+   "before": "MARKSMAN",
+   "after": "SNIPER"
+  },
+  {
+   "commit": "bb486e655",
+   "field": "edge_pct",
+   "key": [
+    "live",
+    "2026-10-24",
+    "China Super League",
+    "Qingdao West Coast FC",
+    "Yunnan Yukun",
+    "UNDER"
+   ],
+   "before": "4.18",
+   "after": "4.74"
+  },
+  {
+   "commit": "bb486e655",
+   "field": "signal_tier",
+   "key": [
+    "live",
+    "2026-10-24",
+    "China Super League",
+    "Qingdao West Coast FC",
+    "Yunnan Yukun",
+    "UNDER"
+   ],
+   "before": "VALUABLE",
+   "after": "MARKSMAN"
+  },
+  {
+   "commit": "ad2a281fb",
+   "field": "edge_pct",
+   "key": [
+    "live",
+    "2026-10-23",
+    "Championship",
+    "Bolton Wanderers",
+    "Middlesbrough",
+    "UNDER"
+   ],
+   "before": "6.54",
+   "after": "3.83"
+  },
+  {
+   "commit": "ad2a281fb",
+   "field": "signal_tier",
+   "key": [
+    "live",
+    "2026-10-23",
+    "Championship",
+    "Bolton Wanderers",
+    "Middlesbrough",
+    "UNDER"
+   ],
+   "before": "VALUABLE",
+   "after": "MARKSMAN"
+  },
+  {
+   "commit": "7538d41a3",
+   "field": "edge_pct",
+   "key": [
+    "live",
+    "2026-10-24",
+    "League Two",
+    "Exeter City",
+    "Fleetwood Town",
+    "OVER"
+   ],
+   "before": "3.02",
+   "after": "3.55"
+  },
+  {
+   "commit": "7538d41a3",
+   "field": "signal_tier",
+   "key": [
+    "live",
+    "2026-10-24",
+    "League Two",
+    "Exeter City",
+    "Fleetwood Town",
+    "OVER"
+   ],
+   "before": "VALUABLE",
+   "after": "MARKSMAN"
+  },
+  {
+   "commit": "82ffc8231",
+   "field": "edge_pct",
+   "key": [
+    "live",
+    "2026-10-24",
+    "Austrian Bundesliga",
+    "WSG Tirol",
+    "Grazer AK",
+    "OVER"
+   ],
+   "before": "3.08",
+   "after": "3.81"
+  },
+  {
+   "commit": "82ffc8231",
+   "field": "signal_tier",
+   "key": [
+    "live",
+    "2026-10-24",
+    "Austrian Bundesliga",
+    "WSG Tirol",
+    "Grazer AK",
+    "OVER"
+   ],
+   "before": "VALUABLE",
+   "after": "MARKSMAN"
+  },
+  {
+   "commit": "0bad68004",
+   "field": "edge_pct",
+   "key": [
+    "live",
+    "2026-10-30",
+    "Bundesliga 2",
+    "FC Energie Cottbus",
+    "VfL Bochum",
+    "UNDER"
+   ],
+   "before": "6.93",
+   "after": "5.93"
+  },
+  {
+   "commit": "0bad68004",
+   "field": "signal_tier",
+   "key": [
+    "live",
+    "2026-10-30",
+    "Bundesliga 2",
+    "FC Energie Cottbus",
+    "VfL Bochum",
+    "UNDER"
+   ],
+   "before": "VALUABLE",
+   "after": "MARKSMAN"
+  },
+  {
+   "commit": "e40c87876",
+   "field": "edge_pct",
+   "key": [
+    "live",
+    "2026-10-28",
+    "Sweden Allsvenskan",
+    "IF Brommapojkarna",
+    "BK Hacken",
+    "UNDER"
+   ],
+   "before": "7.43",
+   "after": "9.36"
+  },
+  {
+   "commit": "e40c87876",
+   "field": "signal_tier",
+   "key": [
+    "live",
+    "2026-10-28",
+    "Sweden Allsvenskan",
+    "IF Brommapojkarna",
+    "BK Hacken",
+    "UNDER"
+   ],
+   "before": "VALUABLE",
+   "after": "MARKSMAN"
+  }
+ ],
+ "by_commit": [
+  {
+   "commit": "52d5765ae",
+   "commit_ts": "2026-10-18T18:40:47Z",
+   "field": "edge_pct",
+   "rows": 1
+  },
+  {
+   "commit": "52d5765ae",
+   "commit_ts": "2026-10-18T18:40:47Z",
+   "field": "signal_tier",
+   "rows": 1
+  },
+  {
+   "commit": "f9af7eda8",
+   "commit_ts": "2026-10-18T21:06:23Z",
+   "field": "edge_pct",
+   "rows": 1
+  },
+  {
+   "commit": "f9af7eda8",
+   "commit_ts": "2026-10-18T21:06:23Z",
+   "field": "signal_tier",
+   "rows": 1
+  },
+  {
+   "commit": "8eb64ed4c",
+   "commit_ts": "2026-10-18T23:10:11Z",
+   "field": "edge_pct",
+   "rows": 2
+  },
+  {
+   "commit": "8eb64ed4c",
+   "commit_ts": "2026-10-18T23:10:11Z",
+   "field": "signal_tier",
+   "rows": 2
+  },
+  {
+   "commit": "591aa5ca0",
+   "commit_ts": "2026-10-19T01:19:23Z",
+   "field": "edge_pct",
+   "rows": 1
+  },
+  {
+   "commit": "591aa5ca0",
+   "commit_ts": "2026-10-19T01:19:23Z",
+   "field": "signal_tier",
+   "rows": 1
+  },
+  {
+   "commit": "26d9bd2ae",
+   "commit_ts": "2026-10-19T04:35:14Z",
+   "field": "edge_pct",
+   "rows": 1
+  },
+  {
+   "commit": "26d9bd2ae",
+   "commit_ts": "2026-10-19T04:35:14Z",
+   "field": "signal_tier",
+   "rows": 1
+  },
+  {
+   "commit": "e6e813499",
+   "commit_ts": "2026-10-19T10:45:55Z",
+   "field": "edge_pct",
+   "rows": 5
+  },
+  {
+   "commit": "e6e813499",
+   "commit_ts": "2026-10-19T10:45:55Z",
+   "field": "signal_tier",
+   "rows": 5
+  },
+  {
+   "commit": "90ab55eba",
+   "commit_ts": "2026-10-19T20:44:52Z",
+   "field": "edge_pct",
+   "rows": 3
+  },
+  {
+   "commit": "90ab55eba",
+   "commit_ts": "2026-10-19T20:44:52Z",
+   "field": "signal_tier",
+   "rows": 3
+  },
+  {
+   "commit": "45c84fc12",
+   "commit_ts": "2026-10-20T10:01:12Z",
+   "field": "edge_pct",
+   "rows": 4
+  },
+  {
+   "commit": "45c84fc12",
+   "commit_ts": "2026-10-20T10:01:12Z",
+   "field": "signal_tier",
+   "rows": 4
+  },
+  {
+   "commit": "69b208cae",
+   "commit_ts": "2026-10-20T13:33:08Z",
+   "field": "edge_pct",
+   "rows": 1
+  },
+  {
+   "commit": "69b208cae",
+   "commit_ts": "2026-10-20T13:33:08Z",
+   "field": "signal_tier",
+   "rows": 1
+  },
+  {
+   "commit": "3c25c4ad5",
+   "commit_ts": "2026-10-20T18:08:14Z",
+   "field": "edge_pct",
+   "rows": 1
+  },
+  {
+   "commit": "3c25c4ad5",
+   "commit_ts": "2026-10-20T18:08:14Z",
+   "field": "signal_tier",
+   "rows": 1
+  },
+  {
+   "commit": "f207d8be2",
+   "commit_ts": "2026-10-20T21:34:16Z",
+   "field": "edge_pct",
+   "rows": 1
+  },
+  {
+   "commit": "f207d8be2",
+   "commit_ts": "2026-10-20T21:34:16Z",
+   "field": "signal_tier",
+   "rows": 1
+  },
+  {
+   "commit": "c0422cef1",
+   "commit_ts": "2026-10-21T10:05:31Z",
+   "field": "edge_pct",
+   "rows": 1
+  },
+  {
+   "commit": "c0422cef1",
+   "commit_ts": "2026-10-21T10:05:31Z",
+   "field": "signal_tier",
+   "rows": 1
+  },
+  {
+   "commit": "1b9be791b",
+   "commit_ts": "2026-10-21T13:43:50Z",
+   "field": "edge_pct",
+   "rows": 2
+  },
+  {
+   "commit": "1b9be791b",
+   "commit_ts": "2026-10-21T13:43:50Z",
+   "field": "signal_tier",
+   "rows": 2
+  },
+  {
+   "commit": "da767d5a1",
+   "commit_ts": "2026-10-21T21:58:41Z",
+   "field": "edge_pct",
+   "rows": 1
+  },
+  {
+   "commit": "da767d5a1",
+   "commit_ts": "2026-10-21T21:58:41Z",
+   "field": "signal_tier",
+   "rows": 1
+  },
+  {
+   "commit": "bb486e655",
+   "commit_ts": "2026-10-22T00:38:28Z",
+   "field": "edge_pct",
+   "rows": 1
+  },
+  {
+   "commit": "bb486e655",
+   "commit_ts": "2026-10-22T00:38:28Z",
+   "field": "signal_tier",
+   "rows": 1
+  },
+  {
+   "commit": "ad2a281fb",
+   "commit_ts": "2026-10-23T10:01:48Z",
+   "field": "edge_pct",
+   "rows": 1
+  },
+  {
+   "commit": "ad2a281fb",
+   "commit_ts": "2026-10-23T10:01:48Z",
+   "field": "signal_tier",
+   "rows": 1
+  },
+  {
+   "commit": "7538d41a3",
+   "commit_ts": "2026-10-23T23:56:08Z",
+   "field": "edge_pct",
+   "rows": 1
+  },
+  {
+   "commit": "7538d41a3",
+   "commit_ts": "2026-10-23T23:56:08Z",
+   "field": "signal_tier",
+   "rows": 1
+  },
+  {
+   "commit": "82ffc8231",
+   "commit_ts": "2026-10-24T09:08:36Z",
+   "field": "edge_pct",
+   "rows": 1
+  },
+  {
+   "commit": "82ffc8231",
+   "commit_ts": "2026-10-24T09:08:36Z",
+   "field": "signal_tier",
+   "rows": 1
+  },
+  {
+   "commit": "0bad68004",
+   "commit_ts": "2026-10-24T12:40:48Z",
+   "field": "edge_pct",
+   "rows": 1
+  },
+  {
+   "commit": "0bad68004",
+   "commit_ts": "2026-10-24T12:40:48Z",
+   "field": "signal_tier",
+   "rows": 1
+  },
+  {
+   "commit": "e40c87876",
+   "commit_ts": "2026-10-24T21:27:47Z",
+   "field": "edge_pct",
+   "rows": 2
+  },
+  {
+   "commit": "e40c87876",
+   "commit_ts": "2026-10-24T21:27:47Z",
+   "field": "signal_tier",
+   "rows": 2
+  },
+  {
+   "commit": "3af7b90b3",
+   "commit_ts": "2026-10-24T23:43:59Z",
+   "field": "edge_pct",
+   "rows": 1
+  },
+  {
+   "commit": "3af7b90b3",
+   "commit_ts": "2026-10-24T23:43:59Z",
+   "field": "signal_tier",
+   "rows": 2
+  },
+  {
+   "commit": "cb87c2802",
+   "commit_ts": "2026-10-25T02:11:55Z",
+   "field": "edge_pct",
+   "rows": 2
+  },
+  {
+   "commit": "cb87c2802",
+   "commit_ts": "2026-10-25T02:11:55Z",
+   "field": "signal_tier",
+   "rows": 2
+  },
+  {
+   "commit": "a93c3a020",
+   "commit_ts": "2026-10-25T09:25:46Z",
+   "field": "edge_pct",
+   "rows": 2
+  },
+  {
+   "commit": "a93c3a020",
+   "commit_ts": "2026-10-25T09:25:46Z",
+   "field": "signal_tier",
+   "rows": 2
+  },
+  {
+   "commit": "80e116512",
+   "commit_ts": "2026-10-25T13:12:21Z",
+   "field": "edge_pct",
+   "rows": 1
+  },
+  {
+   "commit": "80e116512",
+   "commit_ts": "2026-10-25T13:12:21Z",
+   "field": "signal_tier",
+   "rows": 1
+  },
+  {
+   "commit": "5298f5f32",
+   "commit_ts": "2026-10-25T17:09:42Z",
+   "field": "edge_pct",
+   "rows": 1
+  },
+  {
+   "commit": "5298f5f32",
+   "commit_ts": "2026-10-25T17:09:42Z",
+   "field": "signal_tier",
+   "rows": 1
+  },
+  {
+   "commit": "c66a3a1d1",
+   "commit_ts": "2026-10-25T22:04:28Z",
+   "field": "edge_pct",
+   "rows": 3
+  },
+  {
+   "commit": "c66a3a1d1",
+   "commit_ts": "2026-10-25T22:04:28Z",
+   "field": "signal_tier",
+   "rows": 3
+  },
+  {
+   "commit": "244d5a4b7",
+   "commit_ts": "2026-10-26T00:20:24Z",
+   "field": "edge_pct",
+   "rows": 1
+  },
+  {
+   "commit": "244d5a4b7",
+   "commit_ts": "2026-10-26T00:20:24Z",
+   "field": "signal_tier",
+   "rows": 1
+  }
+ ]
+}

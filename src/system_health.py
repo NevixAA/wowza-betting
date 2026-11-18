@@ -62,13 +62,18 @@ def side_routing(plan: pd.DataFrame, policy: dict) -> dict:
 
 
 def stake_mapping(plan: pd.DataFrame) -> dict:
-    rule = ("GREEN 0% of tips on unknown|* tracks, on an O/U side-less *_UNKNOWN_SIDE track or without odds; "
-            "AMBER < 5%; RED >= 5%")
+    rule = ("GREEN 0% of tips on unknown|* tracks, on an O/U side-less *_UNKNOWN_SIDE track, without odds or "
+            "with a side outside their market (2026-11-03); AMBER < 5%; RED >= 5%")
     if plan.empty:
         return _c("Stake-plan mapping", GREY, "no stake plan", rule)
+    from src.bankroll_policy import side_valid
     tr = plan["track"].astype(str)
+    # judged when the plan carries sides (every stake_plan.csv does; a missing column is the contract's
+    # missing_column finding)
+    bad_side = (pd.Series([not side_valid(m, s) for m, s in zip(plan["market"], plan["side"])], index=plan.index)
+                if "side" in plan.columns else pd.Series(False, index=plan.index))
     bad = (tr.str.startswith("unknown|") | tr.str.endswith("_UNKNOWN_SIDE")
-           | pd.to_numeric(plan["odds"], errors="coerce").isna())
+           | pd.to_numeric(plan["odds"], errors="coerce").isna() | bad_side)
     share = float(bad.mean() * 100)
     return _c("Stake-plan mapping", GREEN if share == 0 else AMBER if share < 5 else RED, f"{share:.1f}% unmapped", rule,
               f"generated {plan['generated_at'].iloc[0] if 'generated_at' in plan else '?'}")
@@ -81,6 +86,12 @@ def shadow_settlement(h: dict) -> dict:
         return _c("Shadow settlement coverage", GREY, "no health file", rule)
     return _c("Shadow settlement coverage", GREEN if v >= 95 else AMBER if v >= 80 else RED,
               f"{v}% ({h.get('settled_rows')}/{h.get('finished_prospective_rows')})", rule, f"as of {h.get('generated_at')}")
+
+
+def _active_experiments() -> list[dict]:
+    """ACTIVE challenger experiments in models/registry/experiments.json (the ones predict scores)."""
+    reg = _json(ROOT / "models" / "registry" / "experiments.json").get("experiments", [])
+    return [e for e in reg if str(e.get("status", "ACTIVE")).upper() == "ACTIVE"]
 
 
 def _experiment_start() -> pd.Timestamp | None:
@@ -97,6 +108,10 @@ def challenger_coverage(shadow: pd.DataFrame, now: datetime) -> dict:
             "probability; AMBER > 0%; RED 0%")
     if shadow.empty:
         return _c("Challenger prediction coverage", GREY, "no shadow log", rule)
+    if not _active_experiments():
+        # no challenger is registered (e.g. the 2026-11-09 clean-data switch retired H-MODEL-01):
+        # there is nothing a row could carry, which is not a coverage failure
+        return _c("Challenger prediction coverage", GREY, "no active challenger experiment", rule)
     ts = pd.to_datetime(shadow.get("logged_at"), utc=True, errors="coerce")
     since = pd.Timestamp(now) - pd.Timedelta(days=7)
     start = _experiment_start()
@@ -134,8 +149,11 @@ def stale_artifacts(manifest: dict) -> dict:
     rule = "decision-facing artifacts STALE/UNKNOWN/MISSING: GREEN 0; AMBER 1-2; RED >= 3 (manifest itself > 36 h old = RED)"
     if not manifest:
         return _c("Stale artifacts", RED, "no manifest", rule)
+    if manifest.get("n_stale_decision_facing") is None or not manifest.get("generated_at"):
+        # a manifest without its count is not "0 stale" (it read GREEN before 2026-11-02)
+        return _c("Stale artifacts", RED, "manifest without n_stale_decision_facing / generated_at", rule)
     age = (pd.Timestamp.now(tz="UTC") - pd.Timestamp(manifest["generated_at"])).total_seconds() / 3600
-    n = int(manifest.get("n_stale_decision_facing", 0))
+    n = int(manifest["n_stale_decision_facing"])
     st = RED if age > 36 or n >= 3 else AMBER if n >= 1 else GREEN
     return _c("Stale artifacts", st, f"{n} stale", rule, ", ".join(manifest.get("stale_decision_facing", [])))
 
@@ -158,7 +176,9 @@ def workflow_health(wh: dict) -> dict:
             "(record > 36 h old = AMBER)")
     if not wh:
         return _c("GitHub workflow health", GREY, "not recorded yet", rule)
-    n = int(wh.get("failures_24h", 0))
+    if wh.get("failures_24h") is None or not wh.get("generated_at"):
+        return _c("GitHub workflow health", GREY, "record without failures_24h / generated_at", rule)
+    n = int(wh["failures_24h"])
     age = (pd.Timestamp.now(tz="UTC") - pd.Timestamp(wh["generated_at"])).total_seconds() / 3600
     st = RED if n >= 3 else AMBER if (n >= 1 or age > 36) else GREEN
     sup = wh.get("superseded_failures_24h")
@@ -208,19 +228,24 @@ def weekly_research_panel(registry: dict, lock: dict | None, panel: dict | None 
     value = f"{leagues} leagues · {counts} · protected_tracks_modified={ptm} · {rows}"
     if ptm:
         return _c("Weekly research panel", RED, value, rule, "; ".join(lock.get("changes", [])[:5]))
-    if not registry or lock.get("unapproved_new_protected_tracks"):
+    if not registry or lock.get("unapproved_new_protected_tracks") or lock.get("unapproved_new_watched"):
         return _c("Weekly research panel", AMBER, value, rule,
                   "no regime registry" if not registry else
-                  f"new PROTECTED awaiting approval: {lock['unapproved_new_protected_tracks']}")
-    if panel:
-        ts = pd.to_datetime(panel.get("generated_at"), errors="coerce", utc=True)
-        age_h = ((pd.Timestamp(now or datetime.now(timezone.utc)) - ts).total_seconds() / 3600
-                 if pd.notna(ts) else 1e9)
-        miss = sorted(set(panel.get("missing_leagues") or []) | set(panel.get("missing_leagues_previous_week") or []))
-        if age_h > 48 or miss:
-            return _c("Weekly research panel", AMBER, value, rule,
-                      (f"panel health {age_h:.0f} h old; " if age_h > 48 else "")
-                      + (f"fixtures but no rows: {miss}" if miss else ""))
+                  f"new PROTECTED awaiting approval: {lock['unapproved_new_protected_tracks']}"
+                  if lock.get("unapproved_new_protected_tracks") else
+                  f"new watched block awaiting approval: {lock['unapproved_new_watched']}")
+    if not panel:
+        # The rule has always said AMBER when the panel health is missing; the code returned GREEN.
+        return _c("Weekly research panel", AMBER, value, rule, "panel health missing "
+                  "(output/league_market_health.json)")
+    ts = pd.to_datetime(panel.get("generated_at"), errors="coerce", utc=True)
+    age_h = ((pd.Timestamp(now or datetime.now(timezone.utc)) - ts).total_seconds() / 3600
+             if pd.notna(ts) else 1e9)
+    miss = sorted(set(panel.get("missing_leagues") or []) | set(panel.get("missing_leagues_previous_week") or []))
+    if age_h > 48 or miss:
+        return _c("Weekly research panel", AMBER, value, rule,
+                  (f"panel health {age_h:.0f} h old; " if age_h > 48 else "")
+                  + (f"fixtures but no rows: {miss}" if miss else ""))
     return _c("Weekly research panel", GREEN, value, rule,
               f"registry evidence cutoff {registry.get('evidence_cutoff')}; lock approved by "
               f"{lock.get('approved_by')} at {lock.get('approved_at')}")
@@ -342,6 +367,10 @@ def first_sight_integrity(prior: dict | None = None) -> tuple[dict, dict]:
         elif r["status"] == "WARN":
             worst = worst if worst == RED else AMBER
             notes.append(f"{name}: {'; '.join(r['reasons'])}")
+        elif not r.get("present"):
+            # a missing store has no integrity to vouch for (it read GREEN before 2026-11-02)
+            worst = GREY if worst == GREEN else worst
+            notes.append(f"{name}: MISSING")
     n_prior = sum(1 for r in out.values() if r.get("prior_match") is not None)
     return (_c("First-sight store integrity", worst,
                f"{len(out)} stores, {n_prior} checked against the previous digest", rule, " | ".join(notes)[:600]),
@@ -378,7 +407,11 @@ def contracts_check() -> tuple[dict, dict]:
                                 for v in x.get("violations", [])][:20]}
              for f, x in r.items()}
     bad = [f"{f}: {len(x.get('new_violations', []))}" for f, x in r.items() if x.get("new_violations")]
-    st = RED if internal else AMBER if n else GREEN
+    absent = [f for f, x in r.items() if x.get("present") is False]
+    # an absent contracted file has 0 violations because it was never read (GREEN before 2026-11-02)
+    st = RED if internal else AMBER if n else GREY if absent else GREEN
+    if absent:
+        bad.append(f"ABSENT: {absent}")
     return (_c("Data contracts", st, f"{n} new violation(s) in {len(bad)} of {len(files)} files"
                + (f" · {n_known} known historical (config/contract_baseline.json)" if n_known else ""),
                rule + "; known historical violations listed in config/contract_baseline.json do not count",
@@ -395,7 +428,8 @@ def standard_serving_health() -> dict:
             "with no probability (v9_repaired_failed) or a repaired row's model is unregistered")
     p = OUT / "predictions.csv"
     if not p.exists():
-        return _c("Standard OU25 serving", GREEN, "no board to check", rule)
+        # nothing checked is not "fine" (it read GREEN before 2026-11-02)
+        return _c("Standard OU25 serving", GREY, "no board to check", rule)
     d = _csv(p, dtype=str, keep_default_na=False)
     if "serving_recipe" not in d.columns:
         return _c("Standard OU25 serving", GREEN, "legacy_v9 (switch off)", rule)
@@ -423,6 +457,9 @@ def promotion_gate_health(now: datetime) -> dict:
     if d.empty or "decided_at" not in d.columns:
         return _c("Promotion gate", RED, "no promotion_decisions.csv", rule)
     champs = _json(ROOT / "models" / "registry" / "current_champions.json")
+    if not champs:
+        # without the champions there is nothing to compare the decisions to (read GREEN before)
+        return _c("Promotion gate", RED, "no models/registry/current_champions.json", rule)
     gate_v = _json(ROOT / "config" / "promotion_gate.json").get("gate_version", "PG-1.0")
     t = pd.to_datetime(d["decided_at"], errors="coerce", utc=True)
     last = t.max()
@@ -490,12 +527,18 @@ def track_registry_check() -> dict:
 
 
 def protected_tracks_check(lock: dict | None) -> dict:
-    rule = "FAIL (RED) if protected_tracks_modified is true or the lock cannot be verified; GREEN otherwise"
+    rule = ("FAIL (RED) if protected_tracks_modified is true or the lock cannot be verified; AMBER if a "
+            "watched block (e.g. the REQUIRE_FORM_DATA guard) is not yet in the approved snapshot; GREEN "
+            "otherwise")
     if lock is None or "protected_tracks_modified" not in lock:
         return _c("Protected tracks (research lock)", RED, "lock not verifiable", rule, (lock or {}).get("error", ""))
-    return _c("Protected tracks (research lock)", RED if lock["protected_tracks_modified"] else GREEN,
-              f"protected_tracks_modified={lock['protected_tracks_modified']}", rule,
-              "; ".join(lock.get("changes", [])[:5]))
+    if lock["protected_tracks_modified"]:
+        return _c("Protected tracks (research lock)", RED, "protected_tracks_modified=True", rule,
+                  "; ".join(lock.get("changes", [])[:5]))
+    nw = lock.get("unapproved_new_watched") or []
+    return _c("Protected tracks (research lock)", AMBER if nw else GREEN,
+              "protected_tracks_modified=False", rule,
+              f"watched but not yet approved: {nw} (python -m src.research_lock --approve)" if nw else "")
 
 
 VERSION_FIELDS = ("model_version", "selection_engine_version", "policy_version", "feature_version")
@@ -591,7 +634,8 @@ def build_artifact(now: datetime | None = None, prior: dict | None = None) -> di
         "counts": {s: sum(c["status"] == s for c in checks) for s in (GREEN, AMBER, RED, GREY)},
         "checks": checks,
         "research_lock": {k: (lock or {}).get(k) for k in ("protected_tracks_modified", "changes",
-                                                           "unapproved_new_protected_tracks", "approved_by",
+                                                           "unapproved_new_protected_tracks",
+                                                           "unapproved_new_watched", "approved_by",
                                                            "approved_at", "error")},
         "contracts": contracts,
         "first_sight": {k: {f: v.get(f) for f in ("rows", "frozen_digest", "duplicate_keys", "post_kickoff_rows",

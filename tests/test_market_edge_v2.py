@@ -304,10 +304,11 @@ def test_synthetic_o15_prices_are_excluded():
     no_flag = df.drop(columns="price_synthetic")                 # cannot tell -> fail closed
     assert ME.exclude_synthetic_prices(no_flag, "OU15", "odds_over15")["odds_over15"].tolist() == [1.33]
     assert ME.SYNTHETIC_DEFAULT_ODDS["OU15"] == pytest.approx(1.40)
+    # backtest stopped filling missing prices on 2026-11-01; these constants only DETECT the
+    # historical fill in legacy outputs
     from src import backtest
-    assert backtest._DEFAULT_ODDS["over15"] == ME.SYNTHETIC_DEFAULT_ODDS["OU15"]   # stay in sync
-    assert backtest._DEFAULT_ODDS["btts"] == ME.SYNTHETIC_DEFAULT_ODDS["BTTS"]
-    assert backtest._DEFAULT_ODDS["over35"] == ME.SYNTHETIC_DEFAULT_ODDS["OU35"]
+    assert not hasattr(backtest, "_DEFAULT_ODDS")
+    assert ME.SYNTHETIC_DEFAULT_ODDS == {"BTTS": 1.85, "OU15": 1.40, "OU35": 2.60}
 
 
 def test_committed_o15_backtest_rows_with_default_price_are_dropped():

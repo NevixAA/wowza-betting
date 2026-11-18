@@ -1,0 +1,431 @@
+{
+  "harness_version": "PROPS-HARNESS-1.0",
+  "generated_at": "2026-11-06T15:55:11Z",
+  "code_sha": "97e48c6a4699e789d94cd78c9f84b042c2de7da4",
+  "mode": "DRY_RUN (counts only: nothing fitted, scored or priced)",
+  "hand_adjustment": "none",
+  "data": {
+    "source_rows": 950556,
+    "source_rows_by_source": {
+      "history": 876130,
+      "cup_rows": 74426
+    },
+    "count_source": {
+      "zeros_unverified": 949250,
+      "provider_rule": 1306
+    },
+    "oldest": "2022-08-12",
+    "newest": "2026-11-05",
+    "population_rows": 922479,
+    "population_rows_in_scope": 920934
+  },
+  "holdout": {
+    "start": "2026-09-01",
+    "end": "2026-10-31",
+    "basis": "PROPOSED (not an owner decision)"
+  },
+  "walk_forward": {
+    "step_matchdays": 7,
+    "n_folds_requested": 8,
+    "n_folds": 8,
+    "folds": [
+      {
+        "fold": 0,
+        "test_start": "2026-07-06",
+        "test_end": "2026-07-13"
+      },
+      {
+        "fold": 1,
+        "test_start": "2026-07-14",
+        "test_end": "2026-07-20"
+      },
+      {
+        "fold": 2,
+        "test_start": "2026-07-21",
+        "test_end": "2026-07-27"
+      },
+      {
+        "fold": 3,
+        "test_start": "2026-07-28",
+        "test_end": "2026-08-03"
+      },
+      {
+        "fold": 4,
+        "test_start": "2026-08-04",
+        "test_end": "2026-08-10"
+      },
+      {
+        "fold": 5,
+        "test_start": "2026-08-11",
+        "test_end": "2026-08-17"
+      },
+      {
+        "fold": 6,
+        "test_start": "2026-08-18",
+        "test_end": "2026-08-24"
+      },
+      {
+        "fold": 7,
+        "test_start": "2026-08-25",
+        "test_end": "2026-08-31"
+      }
+    ],
+    "matchdays_before_holdout": 1336,
+    "test_rows_verified": {
+      "label_only": {
+        "today": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "after_refetch_upper_bound": [
+          793,
+          1389,
+          2306,
+          2179,
+          2862,
+          4645,
+          6441,
+          7213
+        ]
+      },
+      "window_verified": {
+        "today": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "after_refetch_upper_bound": [
+          762,
+          1335,
+          2163,
+          2071,
+          2758,
+          4472,
+          5894,
+          6590
+        ]
+      },
+      "all_prior_verified": {
+        "today": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "after_refetch_upper_bound": [
+          761,
+          1316,
+          2134,
+          2037,
+          2719,
+          4400,
+          5748,
+          6389
+        ]
+      }
+    }
+  },
+  "counts_all_rows": {
+    "sot": {
+      "pre_holdout": 866548,
+      "holdout": 54386,
+      "after_holdout": 1545
+    },
+    "sot2": {
+      "pre_holdout": 866548,
+      "holdout": 54386,
+      "after_holdout": 1545
+    },
+    "goals": {
+      "pre_holdout": 866548,
+      "holdout": 54386,
+      "after_holdout": 1545
+    },
+    "assists": {
+      "pre_holdout": 866548,
+      "holdout": 54386,
+      "after_holdout": 1545
+    },
+    "cards": {
+      "pre_holdout": 866548,
+      "holdout": 54386,
+      "after_holdout": 1545
+    }
+  },
+  "verified_today": {
+    "label_only": {
+      "sot": {
+        "pre_holdout": 0,
+        "holdout": 0,
+        "after_holdout": 1289
+      },
+      "sot2": {
+        "pre_holdout": 0,
+        "holdout": 0,
+        "after_holdout": 1289
+      },
+      "goals": {
+        "pre_holdout": 0,
+        "holdout": 0,
+        "after_holdout": 1289
+      },
+      "assists": {
+        "pre_holdout": 0,
+        "holdout": 0,
+        "after_holdout": 1289
+      },
+      "cards": {
+        "pre_holdout": 0,
+        "holdout": 0,
+        "after_holdout": 1289
+      }
+    },
+    "window_verified": {
+      "sot": {
+        "pre_holdout": 0,
+        "holdout": 0,
+        "after_holdout": 0
+      },
+      "sot2": {
+        "pre_holdout": 0,
+        "holdout": 0,
+        "after_holdout": 0
+      },
+      "goals": {
+        "pre_holdout": 0,
+        "holdout": 0,
+        "after_holdout": 0
+      },
+      "assists": {
+        "pre_holdout": 0,
+        "holdout": 0,
+        "after_holdout": 0
+      },
+      "cards": {
+        "pre_holdout": 0,
+        "holdout": 0,
+        "after_holdout": 0
+      }
+    },
+    "all_prior_verified": {
+      "sot": {
+        "pre_holdout": 0,
+        "holdout": 0,
+        "after_holdout": 0
+      },
+      "sot2": {
+        "pre_holdout": 0,
+        "holdout": 0,
+        "after_holdout": 0
+      },
+      "goals": {
+        "pre_holdout": 0,
+        "holdout": 0,
+        "after_holdout": 0
+      },
+      "assists": {
+        "pre_holdout": 0,
+        "holdout": 0,
+        "after_holdout": 0
+      },
+      "cards": {
+        "pre_holdout": 0,
+        "holdout": 0,
+        "after_holdout": 0
+      }
+    }
+  },
+  "verified_after_refetch_upper_bound": {
+    "label_only": {
+      "sot": {
+        "pre_holdout": 860535,
+        "holdout": 54386,
+        "after_holdout": 1545
+      },
+      "sot2": {
+        "pre_holdout": 860535,
+        "holdout": 54386,
+        "after_holdout": 1545
+      },
+      "goals": {
+        "pre_holdout": 860535,
+        "holdout": 54386,
+        "after_holdout": 1545
+      },
+      "assists": {
+        "pre_holdout": 860535,
+        "holdout": 54386,
+        "after_holdout": 1545
+      },
+      "cards": {
+        "pre_holdout": 860535,
+        "holdout": 54386,
+        "after_holdout": 1545
+      }
+    },
+    "window_verified": {
+      "sot": {
+        "pre_holdout": 854084,
+        "holdout": 51930,
+        "after_holdout": 1435
+      },
+      "sot2": {
+        "pre_holdout": 854084,
+        "holdout": 51930,
+        "after_holdout": 1435
+      },
+      "goals": {
+        "pre_holdout": 854084,
+        "holdout": 51930,
+        "after_holdout": 1435
+      },
+      "assists": {
+        "pre_holdout": 854084,
+        "holdout": 51930,
+        "after_holdout": 1435
+      },
+      "cards": {
+        "pre_holdout": 854084,
+        "holdout": 51930,
+        "after_holdout": 1435
+      }
+    },
+    "all_prior_verified": {
+      "sot": {
+        "pre_holdout": 848548,
+        "holdout": 48057,
+        "after_holdout": 1133
+      },
+      "sot2": {
+        "pre_holdout": 848548,
+        "holdout": 48057,
+        "after_holdout": 1133
+      },
+      "goals": {
+        "pre_holdout": 848548,
+        "holdout": 48057,
+        "after_holdout": 1133
+      },
+      "assists": {
+        "pre_holdout": 848548,
+        "holdout": 48057,
+        "after_holdout": 1133
+      },
+      "cards": {
+        "pre_holdout": 848548,
+        "holdout": 48057,
+        "after_holdout": 1133
+      }
+    }
+  },
+  "verified_share": {
+    "label_only": {
+      "today": 0.0,
+      "after_refetch_upper_bound": 0.9934707590337636
+    },
+    "window_verified": {
+      "today": 0.0,
+      "after_refetch_upper_bound": 0.9837990561755783
+    },
+    "all_prior_verified": {
+      "today": 0.0,
+      "after_refetch_upper_bound": 0.9735822545372416
+    }
+  },
+  "notes": [
+    "verified_after_refetch_upper_bound treats every unverified row of a fixture the re-fetch plan has proven as verified. The real number is lower: a player the answer cannot prove, or an empty answer, stays unverified, and a re-fetched count can become missing, which removes that row's label.",
+    "Label counts use the stored counts (the pre-fix parser wrote no blank), so on unverified rows they are an upper bound for the same reason."
+  ],
+  "profiles": {
+    "players_with_profile": 20914,
+    "rows": 922479,
+    "rows_with_height": 844560,
+    "rows_with_birth_date": 898679,
+    "placeholders_used": "none (age 25 / 180 cm / 75 kg are read as missing)"
+  },
+  "two_sided_prices": {
+    "quotes": 281657,
+    "player_markets_priced": 122874,
+    "player_markets_two_sided": 71,
+    "by_market": {
+      "assists": {
+        "priced": 2392,
+        "two_sided": 0
+      },
+      "cards": {
+        "priced": 6395,
+        "two_sided": 0
+      },
+      "goal_or_assist": {
+        "priced": 22325,
+        "two_sided": 0
+      },
+      "goals": {
+        "priced": 52920,
+        "two_sided": 71
+      },
+      "sot": {
+        "priced": 15427,
+        "two_sided": 0
+      },
+      "sot2": {
+        "priced": 13138,
+        "two_sided": 0
+      },
+      "sot3": {
+        "priced": 7015,
+        "two_sided": 0
+      },
+      "sot4": {
+        "priced": 3262,
+        "two_sided": 0
+      }
+    },
+    "two_sided_fixtures": 38,
+    "two_sided_dates": [
+      "2026-10-14",
+      "2026-11-01"
+    ]
+  },
+  "refetch_plan": {
+    "rows": 950556,
+    "rows_by_source": {
+      "history": 876130,
+      "cup_rows": 74426
+    },
+    "rows_verified_at_parse": 1306,
+    "rows_to_verify": 949250,
+    "fixtures": 32971,
+    "proven_fixtures": 32724,
+    "journaled_fixtures": 0,
+    "planned_calls": 32724,
+    "refused_fixtures": {
+      "fixture_not_in_lists": 247
+    },
+    "refused_rows": {
+      "fixture_not_in_lists": 6354
+    }
+  },
+  "owner_decisions_missing": [
+    "holdout_start",
+    "holdout_end",
+    "min_verified_share",
+    "markets",
+    "feature_rule"
+  ]
+}

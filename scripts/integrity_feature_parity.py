@@ -6,8 +6,9 @@
     output/nf_feature_parity_health.json   the new-format slice (NF OU2.5 + side models on NF rows)
 
 TRAIN side: the training frame rebuilt OFFLINE from the committed caches exactly as the CI loader
-builds it (scripts/integrity_af_join_replay.base_history + the serving enrichment joins, i.e. the
-legacy joins unless WOWZA_SAFE_ENRICH_JOINS=1), then the feature builder the model was trained with:
+builds it (scripts/integrity_af_join_replay.base_history + the serving enrichment joins, which are
+always league-keyed), COVID seasons excluded per league (config.covid_season_mask), then the feature
+builder the model was trained with:
   standard OU2.5     v9_repaired recipe (src/features_repaired), standard-format leagues
   new-format OU2.5   legacy_v9 recipe, new-format leagues (27-feature NF payload)
   BTTS/O1.5/O3.5     legacy_v9 recipe, pooled training, reported per track
@@ -36,9 +37,7 @@ os.chdir(ROOT)
 def _models():
     import config
     from src.model import load_models
-    m = {"standard|OU25": (config.MODEL_FILE_STANDARD_REPAIRED
-                           if hasattr(config, "MODEL_FILE_STANDARD_REPAIRED")
-                           else config.MODELS_DIR / "model_v9_standard_repaired.pkl"),
+    m = {"standard|OU25": config.MODEL_FILE_STANDARD_REPAIRED,
          "new_format|OU25": config.MODEL_FILE_NEWFORMAT}
     for t, f in config.SIDE_MARKETS.items():
         m[f"side|{t}"] = f
@@ -67,8 +66,8 @@ def train_frames():
     raw = DL._enrich_with_api_shots(raw)
     raw = DL._enrich_with_standard_sidemarket_odds(raw)
     raw = DL._enrich_ou25_from_captures(raw)
-    if getattr(config, "EXCLUDE_COVID_SEASONS", False):
-        raw = raw[~raw["season"].isin(config.COVID_SEASONS)]
+    if config.EXCLUDE_COVID_SEASONS:
+        raw = raw[~config.covid_season_mask(raw)]
     legacy = build_features(raw)
     legacy = legacy.dropna(subset=["over25", "home_scored_last5"])
     std_raw = raw[raw["league"].isin(config.STANDARD_FORMAT_LEAGUES)]
@@ -126,8 +125,7 @@ def main(argv=None) -> int:
     common = {"generated_at": gen, "rule_version": PARITY_RULE_VERSION, "live_board": board_meta,
               "train_source": "offline rebuild from committed caches (fd_history + backtest archive + "
                               "af_history + odds captures), serving enrichment joins "
-                              f"(WOWZA_SAFE_ENRICH_JOINS={os.getenv('WOWZA_SAFE_ENRICH_JOINS', '0')}), "
-                              "unweighted, all seasons",
+                              "(league-keyed), unweighted, COVID seasons excluded",
               "nf_feature_parity_flag": os.getenv("NF_FEATURE_PARITY", "1")}
     all_doc = {"artifact": "feature_parity_health", **common, "status": _overall(reports),
                "models": reports}

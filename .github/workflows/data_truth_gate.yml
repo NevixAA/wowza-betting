@@ -8,7 +8,8 @@ name: Data Truth stoplight
 #   2. UPGRADES WAIT (PRs labelled `upgrade`): red while the "Data Truth 100%" milestone has open issues.
 on:
   push:
-    branches: [main]
+    # data-truth-100 added 2026-11-05 (Phase 2 KEY=ci): the repair branch was gated on PRs only.
+    branches: [main, data-truth-100]
     paths: ['**.py', 'config/**', '.github/workflows/data_truth_gate.yml']
   pull_request:
     types: [opened, synchronize, reopened, labeled, unlabeled]

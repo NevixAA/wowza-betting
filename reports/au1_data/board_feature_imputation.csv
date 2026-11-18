@@ -1,0 +1,326 @@
+scope,feature,nan_share,batch_median
+"newformat (legacy, served)",home_scored_last5,0.0455,1.4
+"newformat (legacy, served)",away_scored_last5,0.0455,1.2999999999999998
+"newformat (legacy, served)",home_conceded_last5,0.0455,1.6
+"newformat (legacy, served)",away_conceded_last5,0.0455,1.6
+"newformat (legacy, served)",home_over25_last5,0.0455,0.6
+"newformat (legacy, served)",away_over25_last5,0.0455,0.6
+"newformat (legacy, served)",home_attack_str,0.0455,0.9714150943396226
+"newformat (legacy, served)",away_attack_str,0.0455,0.9323462758724882
+"newformat (legacy, served)",home_defense_str,0.0455,1.1489224873189965
+"newformat (legacy, served)",away_defense_str,0.0455,1.2256563084818104
+"newformat (legacy, served)",home_advantage,0.0,0.55
+"newformat (legacy, served)",away_home_adv_factor,0.0,0.6
+"newformat (legacy, served)",home_rest_days,0.3182,6.0
+"newformat (legacy, served)",away_rest_days,0.4318,6.0
+"newformat (legacy, served)",home_corners_pg_roll,0.1477,4.2
+"newformat (legacy, served)",away_corners_pg_roll,0.2273,4.300000000000001
+"newformat (legacy, served)",home_fouls_pg_roll,0.1477,11.6
+"newformat (legacy, served)",away_fouls_pg_roll,0.2273,11.3
+"newformat (legacy, served)",combined_sot_ratio,0.0,0.3424242424242424
+"newformat (legacy, served)",home_season_goals_h,0.0455,1.5277777777777777
+"newformat (legacy, served)",away_season_goals_a,0.0455,1.2222222222222223
+"newformat (legacy, served)",home_season_conceded_h,0.0455,1.2
+"newformat (legacy, served)",away_season_conceded_a,0.0455,1.7416666666666667
+"newformat (legacy, served)",home_cs_rate_h,0.0455,0.3205128205128205
+"newformat (legacy, served)",away_cs_rate_a,0.0455,0.1666666666666666
+"newformat (legacy, served)",bookmaker_overround,0.0,0.0535896967559428
+"newformat (legacy, served)",p_over25_poisson_dc,0.0,0.4815704240639495
+standard legacy (NOT served since 10-28; feature_health monitors it),home_scored_last5,0.0143,1.2
+standard legacy (NOT served since 10-28; feature_health monitors it),away_scored_last5,0.0143,1.4
+standard legacy (NOT served since 10-28; feature_health monitors it),home_conceded_last5,0.0143,1.5
+standard legacy (NOT served since 10-28; feature_health monitors it),away_conceded_last5,0.0143,1.6
+standard legacy (NOT served since 10-28; feature_health monitors it),home_over25_last5,0.0143,0.6
+standard legacy (NOT served since 10-28; feature_health monitors it),away_over25_last5,0.0143,0.6
+standard legacy (NOT served since 10-28; feature_health monitors it),home_attack_str,0.0143,0.9368250405287442
+standard legacy (NOT served since 10-28; feature_health monitors it),away_attack_str,0.0143,1.1153998416468724
+standard legacy (NOT served since 10-28; feature_health monitors it),home_defense_str,0.0143,1.1444916036169033
+standard legacy (NOT served since 10-28; feature_health monitors it),away_defense_str,0.0143,1.297326565143824
+standard legacy (NOT served since 10-28; feature_health monitors it),home_advantage,0.0,0.4
+standard legacy (NOT served since 10-28; feature_health monitors it),away_home_adv_factor,0.0,0.4
+standard legacy (NOT served since 10-28; feature_health monitors it),home_rest_days,0.6571,7.0
+standard legacy (NOT served since 10-28; feature_health monitors it),away_rest_days,0.5429,7.0
+standard legacy (NOT served since 10-28; feature_health monitors it),home_corners_pg_roll,0.1286,4.8
+standard legacy (NOT served since 10-28; feature_health monitors it),away_corners_pg_roll,0.1429,4.6
+standard legacy (NOT served since 10-28; feature_health monitors it),home_fouls_pg_roll,0.1286,12.8
+standard legacy (NOT served since 10-28; feature_health monitors it),away_fouls_pg_roll,0.1429,12.1
+standard legacy (NOT served since 10-28; feature_health monitors it),combined_sot_ratio,0.0,0.31685036797578925
+standard legacy (NOT served since 10-28; feature_health monitors it),home_xg_last5,0.0429,1.1800000000000002
+standard legacy (NOT served since 10-28; feature_health monitors it),away_xg_last5,0.0143,1.36
+standard legacy (NOT served since 10-28; feature_health monitors it),home_insidebox_last5,0.0286,7.4
+standard legacy (NOT served since 10-28; feature_health monitors it),away_insidebox_last5,0.0143,7.8
+standard legacy (NOT served since 10-28; feature_health monitors it),home_season_goals_h,0.0143,1.5
+standard legacy (NOT served since 10-28; feature_health monitors it),away_season_goals_a,0.0143,1.3333333333333333
+standard legacy (NOT served since 10-28; feature_health monitors it),home_season_conceded_h,0.0143,1.1666666666666667
+standard legacy (NOT served since 10-28; feature_health monitors it),away_season_conceded_a,0.0143,1.6
+standard legacy (NOT served since 10-28; feature_health monitors it),home_cs_rate_h,0.0143,0.2
+standard legacy (NOT served since 10-28; feature_health monitors it),away_cs_rate_a,0.0143,0.2
+standard legacy (NOT served since 10-28; feature_health monitors it),home_ht_scored_last5,0.1286,0.4
+standard legacy (NOT served since 10-28; feature_health monitors it),away_ht_scored_last5,0.1714,0.5
+standard legacy (NOT served since 10-28; feature_health monitors it),home_ht_conceded_last5,0.1286,0.8
+standard legacy (NOT served since 10-28; feature_health monitors it),away_ht_conceded_last5,0.1714,0.6
+standard legacy (NOT served since 10-28; feature_health monitors it),home_ht_attack_str,0.1286,0.324331641285956
+standard legacy (NOT served since 10-28; feature_health monitors it),away_ht_attack_str,0.1714,0.3965769769459463
+standard legacy (NOT served since 10-28; feature_health monitors it),combined_ht_goals_avg,0.0,1.0
+standard legacy (NOT served since 10-28; feature_health monitors it),home_ht_over05_rate,0.6429,0.7
+standard legacy (NOT served since 10-28; feature_health monitors it),away_ht_over05_rate,0.5429,0.7
+standard legacy (NOT served since 10-28; feature_health monitors it),home_ht_over15_rate,0.6429,0.3
+standard legacy (NOT served since 10-28; feature_health monitors it),away_ht_over15_rate,0.5429,0.4
+standard legacy (NOT served since 10-28; feature_health monitors it),bookmaker_overround,0.0,0.08484162895927605
+standard legacy (NOT served since 10-28; feature_health monitors it),p_over25_poisson_dc,0.0,0.4815704240639494
+"side btts (legacy, served std+NF in ONE batch)",home_scored_last5,0.0316,1.2
+"side btts (legacy, served std+NF in ONE batch)",away_scored_last5,0.0316,1.4
+"side btts (legacy, served std+NF in ONE batch)",home_conceded_last5,0.0316,1.6
+"side btts (legacy, served std+NF in ONE batch)",away_conceded_last5,0.0316,1.6
+"side btts (legacy, served std+NF in ONE batch)",home_over25_last5,0.0316,0.6
+"side btts (legacy, served std+NF in ONE batch)",away_over25_last5,0.0316,0.6
+"side btts (legacy, served std+NF in ONE batch)",home_attack_str,0.0316,0.94907658212263
+"side btts (legacy, served std+NF in ONE batch)",away_attack_str,0.0316,0.9809139213602552
+"side btts (legacy, served std+NF in ONE batch)",home_defense_str,0.0316,1.1444916036169033
+"side btts (legacy, served std+NF in ONE batch)",away_defense_str,0.0316,1.2747426761678544
+"side btts (legacy, served std+NF in ONE batch)",home_advantage,0.0,0.4
+"side btts (legacy, served std+NF in ONE batch)",away_home_adv_factor,0.0,0.45
+"side btts (legacy, served std+NF in ONE batch)",home_rest_days,0.4684,6.5
+"side btts (legacy, served std+NF in ONE batch)",away_rest_days,0.481,7.0
+"side btts (legacy, served std+NF in ONE batch)",home_corners_pg_roll,0.1392,4.4
+"side btts (legacy, served std+NF in ONE batch)",away_corners_pg_roll,0.1899,4.6
+"side btts (legacy, served std+NF in ONE batch)",home_fouls_pg_roll,0.1392,12.0
+"side btts (legacy, served std+NF in ONE batch)",away_fouls_pg_roll,0.1899,11.8
+"side btts (legacy, served std+NF in ONE batch)",combined_sot_ratio,0.0,0.33122012681978164
+"side btts (legacy, served std+NF in ONE batch)",home_xg_last5,0.0443,1.222
+"side btts (legacy, served std+NF in ONE batch)",away_xg_last5,0.038,1.2229999999999999
+"side btts (legacy, served std+NF in ONE batch)",home_insidebox_last5,0.038,7.4
+"side btts (legacy, served std+NF in ONE batch)",away_insidebox_last5,0.038,7.4
+"side btts (legacy, served std+NF in ONE batch)",home_season_goals_h,0.0316,1.5
+"side btts (legacy, served std+NF in ONE batch)",away_season_goals_a,0.0316,1.3076923076923077
+"side btts (legacy, served std+NF in ONE batch)",home_season_conceded_h,0.0316,1.1666666666666667
+"side btts (legacy, served std+NF in ONE batch)",away_season_conceded_a,0.0316,1.6666666666666667
+"side btts (legacy, served std+NF in ONE batch)",home_cs_rate_h,0.0316,0.25
+"side btts (legacy, served std+NF in ONE batch)",away_cs_rate_a,0.0316,0.1818181818181818
+"side btts (legacy, served std+NF in ONE batch)",home_ht_scored_last5,0.1582,0.4
+"side btts (legacy, served std+NF in ONE batch)",away_ht_scored_last5,0.2025,0.6
+"side btts (legacy, served std+NF in ONE batch)",home_ht_conceded_last5,0.1582,0.6
+"side btts (legacy, served std+NF in ONE batch)",away_ht_conceded_last5,0.2025,0.6
+"side btts (legacy, served std+NF in ONE batch)",home_ht_attack_str,0.1582,0.326971307120085
+"side btts (legacy, served std+NF in ONE batch)",away_ht_attack_str,0.2025,0.4163207547169811
+"side btts (legacy, served std+NF in ONE batch)",combined_ht_goals_avg,0.0,1.0
+"side btts (legacy, served std+NF in ONE batch)",home_ht_over05_rate,0.5696,0.7
+"side btts (legacy, served std+NF in ONE batch)",away_ht_over05_rate,0.538,0.7
+"side btts (legacy, served std+NF in ONE batch)",home_ht_over15_rate,0.5696,0.3
+"side btts (legacy, served std+NF in ONE batch)",away_ht_over15_rate,0.538,0.4
+"side btts (legacy, served std+NF in ONE batch)",bookmaker_overround,0.0,0.07004202721576765
+"side btts (legacy, served std+NF in ONE batch)",p_over25_poisson_dc,0.0,0.4815704240639495
+"side over15 (legacy, served std+NF in ONE batch)",home_scored_last5,0.0316,1.2
+"side over15 (legacy, served std+NF in ONE batch)",away_scored_last5,0.0316,1.4
+"side over15 (legacy, served std+NF in ONE batch)",home_conceded_last5,0.0316,1.6
+"side over15 (legacy, served std+NF in ONE batch)",away_conceded_last5,0.0316,1.6
+"side over15 (legacy, served std+NF in ONE batch)",home_over25_last5,0.0316,0.6
+"side over15 (legacy, served std+NF in ONE batch)",away_over25_last5,0.0316,0.6
+"side over15 (legacy, served std+NF in ONE batch)",home_attack_str,0.0316,0.94907658212263
+"side over15 (legacy, served std+NF in ONE batch)",away_attack_str,0.0316,0.9809139213602552
+"side over15 (legacy, served std+NF in ONE batch)",home_defense_str,0.0316,1.1444916036169033
+"side over15 (legacy, served std+NF in ONE batch)",away_defense_str,0.0316,1.2747426761678544
+"side over15 (legacy, served std+NF in ONE batch)",home_advantage,0.0,0.4
+"side over15 (legacy, served std+NF in ONE batch)",away_home_adv_factor,0.0,0.45
+"side over15 (legacy, served std+NF in ONE batch)",home_rest_days,0.4684,6.5
+"side over15 (legacy, served std+NF in ONE batch)",away_rest_days,0.481,7.0
+"side over15 (legacy, served std+NF in ONE batch)",home_corners_pg_roll,0.1392,4.4
+"side over15 (legacy, served std+NF in ONE batch)",away_corners_pg_roll,0.1899,4.6
+"side over15 (legacy, served std+NF in ONE batch)",home_fouls_pg_roll,0.1392,12.0
+"side over15 (legacy, served std+NF in ONE batch)",away_fouls_pg_roll,0.1899,11.8
+"side over15 (legacy, served std+NF in ONE batch)",combined_sot_ratio,0.0,0.33122012681978164
+"side over15 (legacy, served std+NF in ONE batch)",home_xg_last5,0.0443,1.222
+"side over15 (legacy, served std+NF in ONE batch)",away_xg_last5,0.038,1.2229999999999999
+"side over15 (legacy, served std+NF in ONE batch)",home_insidebox_last5,0.038,7.4
+"side over15 (legacy, served std+NF in ONE batch)",away_insidebox_last5,0.038,7.4
+"side over15 (legacy, served std+NF in ONE batch)",home_season_goals_h,0.0316,1.5
+"side over15 (legacy, served std+NF in ONE batch)",away_season_goals_a,0.0316,1.3076923076923077
+"side over15 (legacy, served std+NF in ONE batch)",home_season_conceded_h,0.0316,1.1666666666666667
+"side over15 (legacy, served std+NF in ONE batch)",away_season_conceded_a,0.0316,1.6666666666666667
+"side over15 (legacy, served std+NF in ONE batch)",home_cs_rate_h,0.0316,0.25
+"side over15 (legacy, served std+NF in ONE batch)",away_cs_rate_a,0.0316,0.1818181818181818
+"side over15 (legacy, served std+NF in ONE batch)",home_ht_scored_last5,0.1582,0.4
+"side over15 (legacy, served std+NF in ONE batch)",away_ht_scored_last5,0.2025,0.6
+"side over15 (legacy, served std+NF in ONE batch)",home_ht_conceded_last5,0.1582,0.6
+"side over15 (legacy, served std+NF in ONE batch)",away_ht_conceded_last5,0.2025,0.6
+"side over15 (legacy, served std+NF in ONE batch)",home_ht_attack_str,0.1582,0.326971307120085
+"side over15 (legacy, served std+NF in ONE batch)",away_ht_attack_str,0.2025,0.4163207547169811
+"side over15 (legacy, served std+NF in ONE batch)",combined_ht_goals_avg,0.0,1.0
+"side over15 (legacy, served std+NF in ONE batch)",home_ht_over05_rate,0.5696,0.7
+"side over15 (legacy, served std+NF in ONE batch)",away_ht_over05_rate,0.538,0.7
+"side over15 (legacy, served std+NF in ONE batch)",home_ht_over15_rate,0.5696,0.3
+"side over15 (legacy, served std+NF in ONE batch)",away_ht_over15_rate,0.538,0.4
+"side over15 (legacy, served std+NF in ONE batch)",bookmaker_overround,0.0,0.07004202721576765
+"side over15 (legacy, served std+NF in ONE batch)",p_over25_poisson_dc,0.0,0.4815704240639495
+"side over35 (legacy, served std+NF in ONE batch)",home_scored_last5,0.0316,1.2
+"side over35 (legacy, served std+NF in ONE batch)",away_scored_last5,0.0316,1.4
+"side over35 (legacy, served std+NF in ONE batch)",home_conceded_last5,0.0316,1.6
+"side over35 (legacy, served std+NF in ONE batch)",away_conceded_last5,0.0316,1.6
+"side over35 (legacy, served std+NF in ONE batch)",home_over25_last5,0.0316,0.6
+"side over35 (legacy, served std+NF in ONE batch)",away_over25_last5,0.0316,0.6
+"side over35 (legacy, served std+NF in ONE batch)",home_attack_str,0.0316,0.94907658212263
+"side over35 (legacy, served std+NF in ONE batch)",away_attack_str,0.0316,0.9809139213602552
+"side over35 (legacy, served std+NF in ONE batch)",home_defense_str,0.0316,1.1444916036169033
+"side over35 (legacy, served std+NF in ONE batch)",away_defense_str,0.0316,1.2747426761678544
+"side over35 (legacy, served std+NF in ONE batch)",home_advantage,0.0,0.4
+"side over35 (legacy, served std+NF in ONE batch)",away_home_adv_factor,0.0,0.45
+"side over35 (legacy, served std+NF in ONE batch)",home_rest_days,0.4684,6.5
+"side over35 (legacy, served std+NF in ONE batch)",away_rest_days,0.481,7.0
+"side over35 (legacy, served std+NF in ONE batch)",home_corners_pg_roll,0.1392,4.4
+"side over35 (legacy, served std+NF in ONE batch)",away_corners_pg_roll,0.1899,4.6
+"side over35 (legacy, served std+NF in ONE batch)",home_fouls_pg_roll,0.1392,12.0
+"side over35 (legacy, served std+NF in ONE batch)",away_fouls_pg_roll,0.1899,11.8
+"side over35 (legacy, served std+NF in ONE batch)",combined_sot_ratio,0.0,0.33122012681978164
+"side over35 (legacy, served std+NF in ONE batch)",home_xg_last5,0.0443,1.222
+"side over35 (legacy, served std+NF in ONE batch)",away_xg_last5,0.038,1.2229999999999999
+"side over35 (legacy, served std+NF in ONE batch)",home_insidebox_last5,0.038,7.4
+"side over35 (legacy, served std+NF in ONE batch)",away_insidebox_last5,0.038,7.4
+"side over35 (legacy, served std+NF in ONE batch)",home_season_goals_h,0.0316,1.5
+"side over35 (legacy, served std+NF in ONE batch)",away_season_goals_a,0.0316,1.3076923076923077
+"side over35 (legacy, served std+NF in ONE batch)",home_season_conceded_h,0.0316,1.1666666666666667
+"side over35 (legacy, served std+NF in ONE batch)",away_season_conceded_a,0.0316,1.6666666666666667
+"side over35 (legacy, served std+NF in ONE batch)",home_cs_rate_h,0.0316,0.25
+"side over35 (legacy, served std+NF in ONE batch)",away_cs_rate_a,0.0316,0.1818181818181818
+"side over35 (legacy, served std+NF in ONE batch)",home_ht_scored_last5,0.1582,0.4
+"side over35 (legacy, served std+NF in ONE batch)",away_ht_scored_last5,0.2025,0.6
+"side over35 (legacy, served std+NF in ONE batch)",home_ht_conceded_last5,0.1582,0.6
+"side over35 (legacy, served std+NF in ONE batch)",away_ht_conceded_last5,0.2025,0.6
+"side over35 (legacy, served std+NF in ONE batch)",home_ht_attack_str,0.1582,0.326971307120085
+"side over35 (legacy, served std+NF in ONE batch)",away_ht_attack_str,0.2025,0.4163207547169811
+"side over35 (legacy, served std+NF in ONE batch)",combined_ht_goals_avg,0.0,1.0
+"side over35 (legacy, served std+NF in ONE batch)",home_ht_over05_rate,0.5696,0.7
+"side over35 (legacy, served std+NF in ONE batch)",away_ht_over05_rate,0.538,0.7
+"side over35 (legacy, served std+NF in ONE batch)",home_ht_over15_rate,0.5696,0.3
+"side over35 (legacy, served std+NF in ONE batch)",away_ht_over15_rate,0.538,0.4
+"side over35 (legacy, served std+NF in ONE batch)",bookmaker_overround,0.0,0.07004202721576765
+"side over35 (legacy, served std+NF in ONE batch)",p_over25_poisson_dc,0.0,0.4815704240639495
+"ht_over05 (legacy, std only)",home_scored_last5,0.0143,1.2
+"ht_over05 (legacy, std only)",away_scored_last5,0.0143,1.4
+"ht_over05 (legacy, std only)",home_conceded_last5,0.0143,1.5
+"ht_over05 (legacy, std only)",away_conceded_last5,0.0143,1.6
+"ht_over05 (legacy, std only)",home_over25_last5,0.0143,0.6
+"ht_over05 (legacy, std only)",away_over25_last5,0.0143,0.6
+"ht_over05 (legacy, std only)",home_attack_str,0.0143,0.9368250405287442
+"ht_over05 (legacy, std only)",away_attack_str,0.0143,1.1153998416468724
+"ht_over05 (legacy, std only)",home_defense_str,0.0143,1.1444916036169033
+"ht_over05 (legacy, std only)",away_defense_str,0.0143,1.297326565143824
+"ht_over05 (legacy, std only)",home_advantage,0.0,0.4
+"ht_over05 (legacy, std only)",away_home_adv_factor,0.0,0.4
+"ht_over05 (legacy, std only)",home_rest_days,0.6571,7.0
+"ht_over05 (legacy, std only)",away_rest_days,0.5429,7.0
+"ht_over05 (legacy, std only)",home_corners_pg_roll,0.1286,4.8
+"ht_over05 (legacy, std only)",away_corners_pg_roll,0.1429,4.6
+"ht_over05 (legacy, std only)",home_fouls_pg_roll,0.1286,12.8
+"ht_over05 (legacy, std only)",away_fouls_pg_roll,0.1429,12.1
+"ht_over05 (legacy, std only)",combined_sot_ratio,0.0,0.31685036797578925
+"ht_over05 (legacy, std only)",home_xg_last5,0.0429,1.1800000000000002
+"ht_over05 (legacy, std only)",away_xg_last5,0.0143,1.36
+"ht_over05 (legacy, std only)",home_insidebox_last5,0.0286,7.4
+"ht_over05 (legacy, std only)",away_insidebox_last5,0.0143,7.8
+"ht_over05 (legacy, std only)",home_season_goals_h,0.0143,1.5
+"ht_over05 (legacy, std only)",away_season_goals_a,0.0143,1.3333333333333333
+"ht_over05 (legacy, std only)",home_season_conceded_h,0.0143,1.1666666666666667
+"ht_over05 (legacy, std only)",away_season_conceded_a,0.0143,1.6
+"ht_over05 (legacy, std only)",home_cs_rate_h,0.0143,0.2
+"ht_over05 (legacy, std only)",away_cs_rate_a,0.0143,0.2
+"ht_over05 (legacy, std only)",home_ht_scored_last5,0.1286,0.4
+"ht_over05 (legacy, std only)",away_ht_scored_last5,0.1714,0.5
+"ht_over05 (legacy, std only)",home_ht_conceded_last5,0.1286,0.8
+"ht_over05 (legacy, std only)",away_ht_conceded_last5,0.1714,0.6
+"ht_over05 (legacy, std only)",home_ht_attack_str,0.1286,0.324331641285956
+"ht_over05 (legacy, std only)",away_ht_attack_str,0.1714,0.3965769769459463
+"ht_over05 (legacy, std only)",combined_ht_goals_avg,0.0,1.0
+"ht_over05 (legacy, std only)",home_ht_over05_rate,0.6429,0.7
+"ht_over05 (legacy, std only)",away_ht_over05_rate,0.5429,0.7
+"ht_over05 (legacy, std only)",home_ht_over15_rate,0.6429,0.3
+"ht_over05 (legacy, std only)",away_ht_over15_rate,0.5429,0.4
+"ht_over05 (legacy, std only)",bookmaker_overround,0.0,0.08484162895927605
+"ht_over05 (legacy, std only)",p_over25_poisson_dc,0.0,0.4815704240639494
+"ht_over05 (legacy, std only)",ht_lambda_home,0.0,0.6714677662902937
+"ht_over05 (legacy, std only)",ht_lambda_away,0.0,0.5202754299916621
+"ht_over05 (legacy, std only)",ht_lambda_total,0.0,1.2266227030215462
+"ht_over05 (legacy, std only)",ht_p_over05_poisson,0.0,0.7067154800919613
+"ht_over05 (legacy, std only)",ht_p_over15_poisson,0.0,0.34697225862955894
+"ht_over05 (legacy, std only)",ht_home_attack,0.0,1.0
+"ht_over05 (legacy, std only)",ht_home_defence,0.0,1.0
+"ht_over05 (legacy, std only)",ht_away_attack,0.0,1.0
+"ht_over05 (legacy, std only)",ht_away_defence,0.0,1.0
+"ht_over05 (legacy, std only)",ht_league_base,0.0,1.2642059658485267
+"ht_over05 (legacy, std only)",ht_league_over05_base,0.0,0.7328785993746322
+"ht_over05 (legacy, std only)",ht_home_n,0.0,0.0
+"ht_over05 (legacy, std only)",ht_away_n,0.0,0.0
+"ht_over05 (legacy, std only)",ht_home_over05_ewm,0.0,0.7203331798326804
+"ht_over05 (legacy, std only)",ht_away_over05_ewm,0.0,0.7164703446749545
+"ht_over05 (legacy, std only)",ht_home_scored_ewm,0.0,0.6915537452005931
+"ht_over05 (legacy, std only)",ht_home_conceded_ewm,0.0,0.5133894529545164
+"ht_over05 (legacy, std only)",ht_away_scored_ewm,0.0,0.5194063473137103
+"ht_over05 (legacy, std only)",ht_away_conceded_ewm,0.0,0.6815546662092682
+"ht_over05 (legacy, std only)",ht_h2h_over05,0.0,0.7328785993746322
+"ht_over05 (legacy, std only)",ht_h2h_n,0.0,0.0
+"ht_over05 (legacy, std only)",ht_ft_share_home,0.0,0.42
+"ht_over05 (legacy, std only)",ht_ft_share_away,0.0,0.42
+"ht_over15 (legacy, std only)",home_scored_last5,0.0143,1.2
+"ht_over15 (legacy, std only)",away_scored_last5,0.0143,1.4
+"ht_over15 (legacy, std only)",home_conceded_last5,0.0143,1.5
+"ht_over15 (legacy, std only)",away_conceded_last5,0.0143,1.6
+"ht_over15 (legacy, std only)",home_over25_last5,0.0143,0.6
+"ht_over15 (legacy, std only)",away_over25_last5,0.0143,0.6
+"ht_over15 (legacy, std only)",home_attack_str,0.0143,0.9368250405287442
+"ht_over15 (legacy, std only)",away_attack_str,0.0143,1.1153998416468724
+"ht_over15 (legacy, std only)",home_defense_str,0.0143,1.1444916036169033
+"ht_over15 (legacy, std only)",away_defense_str,0.0143,1.297326565143824
+"ht_over15 (legacy, std only)",home_advantage,0.0,0.4
+"ht_over15 (legacy, std only)",away_home_adv_factor,0.0,0.4
+"ht_over15 (legacy, std only)",home_rest_days,0.6571,7.0
+"ht_over15 (legacy, std only)",away_rest_days,0.5429,7.0
+"ht_over15 (legacy, std only)",home_corners_pg_roll,0.1286,4.8
+"ht_over15 (legacy, std only)",away_corners_pg_roll,0.1429,4.6
+"ht_over15 (legacy, std only)",home_fouls_pg_roll,0.1286,12.8
+"ht_over15 (legacy, std only)",away_fouls_pg_roll,0.1429,12.1
+"ht_over15 (legacy, std only)",combined_sot_ratio,0.0,0.31685036797578925
+"ht_over15 (legacy, std only)",home_xg_last5,0.0429,1.1800000000000002
+"ht_over15 (legacy, std only)",away_xg_last5,0.0143,1.36
+"ht_over15 (legacy, std only)",home_insidebox_last5,0.0286,7.4
+"ht_over15 (legacy, std only)",away_insidebox_last5,0.0143,7.8
+"ht_over15 (legacy, std only)",home_season_goals_h,0.0143,1.5
+"ht_over15 (legacy, std only)",away_season_goals_a,0.0143,1.3333333333333333
+"ht_over15 (legacy, std only)",home_season_conceded_h,0.0143,1.1666666666666667
+"ht_over15 (legacy, std only)",away_season_conceded_a,0.0143,1.6
+"ht_over15 (legacy, std only)",home_cs_rate_h,0.0143,0.2
+"ht_over15 (legacy, std only)",away_cs_rate_a,0.0143,0.2
+"ht_over15 (legacy, std only)",home_ht_scored_last5,0.1286,0.4
+"ht_over15 (legacy, std only)",away_ht_scored_last5,0.1714,0.5
+"ht_over15 (legacy, std only)",home_ht_conceded_last5,0.1286,0.8
+"ht_over15 (legacy, std only)",away_ht_conceded_last5,0.1714,0.6
+"ht_over15 (legacy, std only)",home_ht_attack_str,0.1286,0.324331641285956
+"ht_over15 (legacy, std only)",away_ht_attack_str,0.1714,0.3965769769459463
+"ht_over15 (legacy, std only)",combined_ht_goals_avg,0.0,1.0
+"ht_over15 (legacy, std only)",home_ht_over05_rate,0.6429,0.7
+"ht_over15 (legacy, std only)",away_ht_over05_rate,0.5429,0.7
+"ht_over15 (legacy, std only)",home_ht_over15_rate,0.6429,0.3
+"ht_over15 (legacy, std only)",away_ht_over15_rate,0.5429,0.4
+"ht_over15 (legacy, std only)",bookmaker_overround,0.0,0.08484162895927605
+"ht_over15 (legacy, std only)",p_over25_poisson_dc,0.0,0.4815704240639494
+"ht_over15 (legacy, std only)",ht_lambda_home,0.0,0.6714677662902937
+"ht_over15 (legacy, std only)",ht_lambda_away,0.0,0.5202754299916621
+"ht_over15 (legacy, std only)",ht_lambda_total,0.0,1.2266227030215462
+"ht_over15 (legacy, std only)",ht_p_over05_poisson,0.0,0.7067154800919613
+"ht_over15 (legacy, std only)",ht_p_over15_poisson,0.0,0.34697225862955894
+"ht_over15 (legacy, std only)",ht_home_attack,0.0,1.0
+"ht_over15 (legacy, std only)",ht_home_defence,0.0,1.0
+"ht_over15 (legacy, std only)",ht_away_attack,0.0,1.0
+"ht_over15 (legacy, std only)",ht_away_defence,0.0,1.0
+"ht_over15 (legacy, std only)",ht_league_base,0.0,1.2642059658485267
+"ht_over15 (legacy, std only)",ht_league_over05_base,0.0,0.7328785993746322
+"ht_over15 (legacy, std only)",ht_home_n,0.0,0.0
+"ht_over15 (legacy, std only)",ht_away_n,0.0,0.0
+"ht_over15 (legacy, std only)",ht_home_over05_ewm,0.0,0.7203331798326804
+"ht_over15 (legacy, std only)",ht_away_over05_ewm,0.0,0.7164703446749545
+"ht_over15 (legacy, std only)",ht_home_scored_ewm,0.0,0.6915537452005931
+"ht_over15 (legacy, std only)",ht_home_conceded_ewm,0.0,0.5133894529545164
+"ht_over15 (legacy, std only)",ht_away_scored_ewm,0.0,0.5194063473137103
+"ht_over15 (legacy, std only)",ht_away_conceded_ewm,0.0,0.6815546662092682
+"ht_over15 (legacy, std only)",ht_h2h_over05,0.0,0.7328785993746322
+"ht_over15 (legacy, std only)",ht_h2h_n,0.0,0.0
+"ht_over15 (legacy, std only)",ht_ft_share_home,0.0,0.42
+"ht_over15 (legacy, std only)",ht_ft_share_away,0.0,0.42
