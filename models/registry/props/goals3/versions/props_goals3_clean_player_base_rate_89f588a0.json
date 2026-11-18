@@ -1,0 +1,66 @@
+{
+  "market": "goals3",
+  "model_version": "props_goals3_clean_player_base_rate_89f588a0",
+  "artifact_sha256": "89f588a0614e4716d46fb77f96d23bb65cf08564d313ec19e212e325cbf8a0fa",
+  "registered_at": "2026-11-18T19:03:57Z",
+  "training_cutoff": "2026-08-31",
+  "training_rows": {
+    "fit": 734045,
+    "calibration": 130673
+  },
+  "candidate": "player_base_rate",
+  "harness_version": "PROPS-HARNESS-1.0",
+  "clean_retrain": {
+    "run_id": "43035218594",
+    "code_sha": "6fd794964ad031b45ff0a383d996bb09b414175c",
+    "artifact_sha256": "6dade1b85f92ddcbb968df6e537d50546fbd0d62ae54b532e78c5f2e71acb437",
+    "candidate": "player_base_rate",
+    "holdout": {
+      "n": 55907,
+      "events": 52,
+      "log_loss": 0.007445836657930814,
+      "brier": 0.0009292888451703089,
+      "ece10": 0.0,
+      "calib_intercept": -0.13165729892215836,
+      "calib_slope": 0.9498052954927294,
+      "ll_minus_player_base_rate": null,
+      "ml_candidates_minus_player_base_rate": {
+        "hgb_nan_native": {
+          "mean": -2.1252605139940923e-05,
+          "ci95": [
+            -6.062141044028681e-05,
+            2.2138077511361093e-05
+          ],
+          "week_blocks": 9
+        },
+        "recipe_retrained": {
+          "mean": -2.1252605139940923e-05,
+          "ci95": [
+            -6.062141044028681e-05,
+            2.2138077511361093e-05
+          ],
+          "week_blocks": 9
+        }
+      },
+      "head_to_head": {
+        "n": 55907,
+        "weeks": 9,
+        "ll_delta_hgb_minus_recipe": 0.0,
+        "ci95_lo": 0.0,
+        "ci95_hi": 0.0,
+        "p_one_sided": 1.0,
+        "boot": 4000,
+        "seed": 1
+      },
+      "holdout_dates": [
+        "2026-09-01",
+        "2026-10-31"
+      ],
+      "rule": "owner 2026-11-18: serve the clean player_base_rate (no ML candidate beats it: no candidate beats player_base_rate)"
+    },
+    "approval": "serve the clean player_base_rate model (option b) - 100% real data, markets stay on; the clean ML candidates keep predicting as challengers (owner decision 2026-11-18, relayed by the go-live coordinator)",
+    "approved_on": "2026-11-18",
+    "prior_champion": "props_goals3_legacy_521a33c9"
+  },
+  "model_role": "CHAMPION"
+}

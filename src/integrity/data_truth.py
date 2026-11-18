@@ -455,8 +455,8 @@ def _load_props_payload(path: Path) -> dict:
 
 def served_feature_spread() -> dict:
     """{payload label: {"status", "single_value": {feature: finding}, "note"}} over every served
-    payload: the team payloads src/predict.py loads and the props payloads of the markets tips use
-    (config.HIDDEN_PENDING_CLEAN_RETRAIN markets are not served)."""
+    payload: the team payloads src/predict.py loads and every props payload predict scores
+    (config.MODEL_FILES; the rare markets feed the research picks)."""
     import config
     from src.model import load_models
     out = {}
@@ -490,11 +490,11 @@ def served_feature_spread() -> dict:
         except Exception as e:                                         # noqa: BLE001
             out[label] = {"status": RED, "single_value": {}, "note": f"unreadable: {type(e).__name__}"}
             continue
-        if hidden:                     # listed for the record; a hidden market tips nothing
-            out[label] = {"status": NOT_SERVED, "single_value": sv,
-                          "note": "hidden pending clean retrain (config.HIDDEN_PENDING_CLEAN_RETRAIN)"}
-        else:
-            out[label] = {"status": RED if sv else GREEN, "single_value": sv, "note": ""}
+        # The rare markets (config.HIDDEN_PENDING_CLEAN_RETRAIN) make no normal tip, but their payload is
+        # scored for the rare-props research picks (owner 2026-11-18: the clean player base rate), so it
+        # is checked like every served payload.
+        out[label] = {"status": RED if sv else GREEN, "single_value": sv,
+                      "note": "rare market: research picks only" if hidden else ""}
     return out
 
 

@@ -18,6 +18,9 @@ API_SEASON = "SEASON_UNKNOWN"
 
 # ── Markets ───────────────────────────────────────────────────────────────────
 MARKETS    = ["goals", "goals2", "assists", "sot", "sot2", "sot3", "sot4", "cards"]
+#: every market predict scores: MARKETS (retrain loop + promotion gate) plus goals3, which serves the
+#: clean player base rate for the rare-props research only (owner 2026-11-18)
+SERVED_MARKETS = MARKETS + ["goals3"]
 
 # sot4 (4+ shots on target) ADDED 2026-08-27, on the same footing as sot3 and goals2: RESEARCH
 # DATA, never a tip source. The base rate makes that unavoidable rather than a policy choice --
@@ -65,10 +68,16 @@ MIN_SIGNAL_PROB = 0.15
 # assists. Cards stay allowed. Evidence: on the props clean-retrain holdout (2026-09-01..10-31) the
 # 2,992 goalkeeper rows had a real SOT and goal rate of 0%, while the model gave 6.5% / 3.2%.
 GK_BLOCKED_MARKETS = frozenset({"sot", "sot2", "sot3", "sot4", "goals", "goals2", "goals3", "assists"})
-#: "Retrain them too": these markets still serve models trained on the placeholder history
-#: (age 25 / 180 cm / 75 kg). Until the props clean retrain covers them they make NO tip and are
-#: not on the board. The model files stay where they are.
+#: The rare markets: no normal tip and not on the board; their probabilities feed only the rare-props
+#: RESEARCH picks (player_model.rare_props, owner 2026-11-09: max 3 per gameweek). Owner 2026-11-08
+#: "Retrain them too": the props clean retrain (runs 42524325567 .. 43035218594) found no ML candidate
+#: that beats the player base rate on the holdout. Owner 2026-11-18 ("100% truth data, do not shut
+#: down any market"): they SERVE the clean player_base_rate model (BASE_RATE_SERVED_MARKETS); the
+#: legacy placeholder-trained payloads are retired, the clean ML candidates run as parked challengers.
+#: (The name is kept: every reader keys on it.)
 HIDDEN_PENDING_CLEAN_RETRAIN = frozenset({"goals2", "goals3", "sot3", "sot4"})
+#: markets whose served model is the clean-retrain player_base_rate (owner 2026-11-18)
+BASE_RATE_SERVED_MARKETS = frozenset({"goals2", "goals3", "sot3", "sot4"})
 #: reason codes, counted and printed by predict.generate_tips (a skipped tip is never silent)
 SKIP_GK_ATTACKING = "GK_NO_ATTACKING_TIP"
 SKIP_HIDDEN_MARKET = "MARKET_HIDDEN_PENDING_CLEAN_RETRAIN"
@@ -103,6 +112,9 @@ MODEL_FILES = {
     "sot3":    MODELS_DIR / "model_player_sot3.pkl",
     "sot4":    MODELS_DIR / "model_player_sot4.pkl",
     "cards":   MODELS_DIR / "model_player_cards.pkl",
+    # goals3 (hat-trick, owner 2026-11-18): served for the rare-props research only; it is not in
+    # MARKETS (no retrain loop, no promotion-gate thresholds), see SERVED_MARKETS.
+    "goals3":  MODELS_DIR / "model_player_goals3.pkl",
 }
 # Market → target column in training data
 MARKET_TARGETS = {
@@ -125,6 +137,7 @@ MARKET_LABELS = {
     "sot3":    "SOT 3+",
     "sot4":    "SOT 4+",
     "cards":   "Carded",
+    "goals3":  "Hat-trick",
 }
 
 # ── Signal tiers ──────────────────────────────────────────────────────────────

@@ -33,7 +33,10 @@ from player_model import props_gate as PPG  # noqa: E402
 from player_model.feature_engineering import build_upcoming_features  # noqa: E402
 
 SERVED = (("sot", "hgb_nan_native"), ("sot2", "hgb_nan_native"), ("goals", "hgb_nan_native"),
-          ("assists", "hgb_nan_native"), ("cards", "recipe_retrained"))
+          ("assists", "hgb_nan_native"), ("cards", "recipe_retrained"),
+          # owner 2026-11-18: the rare markets serve the clean player base rate (reads the player id only)
+          ("goals2", "player_base_rate"), ("goals3", "player_base_rate"), ("sot3", "player_base_rate"),
+          ("sot4", "player_base_rate"))
 ROW_FIELDS = ("player_id", "player_name", "fixture_id", "league", "team", "home_team", "away_team",
               "is_home", "referee")
 
@@ -73,7 +76,7 @@ def main(argv=None) -> int:
     frame["date"] = pd.to_datetime(frame["date"])
     served = [tuple(x.split(":")) for x in a.markets.split(",")]
     mods = {m: _load_model(models, m, c) for m, c in served}
-    feats = sorted(set().union(*[set(mod.feature_cols_) for mod in mods.values()]))
+    feats = sorted(set().union(*[set(getattr(mod, "feature_cols_", None) or []) for mod in mods.values()]))
     cand = frame[(frame["date"] >= a.start) & (frame["date"] <= a.end)]
     fx = (cand.drop_duplicates("fixture_id")[["fixture_id", "date", "league"]]
           .groupby("league", group_keys=False).head(a.per_league))
@@ -93,10 +96,12 @@ def main(argv=None) -> int:
         if len(sv):
             parts.append(sv)
     sv = pd.concat(parts, ignore_index=True)
+    sv["_sv_player_id_raw"] = sv["player_id"]        # the id exactly as the serving frame carries it
     for df in (sv, frame):
         df["player_id"] = pd.to_numeric(df["player_id"], errors="coerce")
         df["fixture_id"] = pd.to_numeric(df["fixture_id"], errors="coerce")
     j = sv.merge(frame, on=["fixture_id", "player_id"], suffixes=("_s", "_t"))
+    sv_pid = j["_sv_player_id_raw"]
     print("paired player-fixtures", len(j), flush=True)
     j.to_parquet(a.out.replace(".json", "_pairs.parquet"))
     rep = {"paired_rows": int(len(j)), "fixtures": int(j["fixture_id"].nunique()),
@@ -115,12 +120,25 @@ def main(argv=None) -> int:
             examples[c] = j.loc[~ok, ["fixture_id", "player_id", s, t]].head(5).to_dict("records")
     rep["features_mismatched"] = sum(1 for v in rep["features"].values() if v.get("mismatch"))
     rep["features_absent"] = sorted(k for k, v in rep["features"].items() if v.get("mismatch") is None)
+    from player_model import config as pconfig
+    from player_model.model import predict_with_diagnostics
     for m, mod in mods.items():
-        Xs = pd.DataFrame({c: pd.to_numeric(j[c + "_s"], errors="coerce") for c in mod.feature_cols_})
-        Xt = pd.DataFrame({c: pd.to_numeric(j[c + "_t"], errors="coerce") for c in mod.feature_cols_})
-        ps, pt = mod.predict(Xs), mod.predict(Xt)
+        fc = list(getattr(mod, "feature_cols_", None) or [])
+        Xs = pd.DataFrame({c: pd.to_numeric(j[c + "_s"], errors="coerce") for c in fc}, index=j.index)
+        Xt = pd.DataFrame({c: pd.to_numeric(j[c + "_t"], errors="coerce") for c in fc}, index=j.index)
+        pid = j["player_id"].to_numpy()
+        ps, pt = mod.predict(Xs, players=pid), mod.predict(Xt, players=pid)
         rep["probabilities"][m] = {"rows_not_identical": int((ps != pt).sum()),
                                    "max_abs_diff": float(np.max(np.abs(ps - pt))) if len(ps) else 0.0}
+        # the INSTALLED serving payload through the serving call (predict_with_diagnostics) on the
+        # serving-side frame, against the run's artifact on the training frame
+        served = PPG._HarnessUnpickler(open(pconfig.MODEL_FILES[m], "rb")).load()
+        sv_side = Xs.assign(player_id=sv_pid.to_numpy())
+        p_srv = predict_with_diagnostics(sv_side, served)["p"].to_numpy()
+        rep["probabilities"][m].update({
+            "serving_payload_candidate": served.get("candidate"),
+            "serving_payload_rows_not_identical": int((p_srv != pt).sum()),
+            "serving_payload_max_abs_diff": float(np.max(np.abs(p_srv - pt))) if len(pt) else 0.0})
     Path(a.out).write_text(json.dumps(rep, indent=1, default=str), encoding="utf-8")
     Path(a.out.replace(".json", "_examples.json")).write_text(json.dumps(examples, indent=1, default=str),
                                                                encoding="utf-8")

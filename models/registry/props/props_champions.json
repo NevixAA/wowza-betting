@@ -9,12 +9,12 @@
     "gate_version": "PG-PROPS-1.0"
   },
   "goals2": {
-    "model_version": "props_goals2_legacy_426e3bb5",
-    "champion_since": "2026-10-25T12:47:02Z",
-    "artifact_sha256": "426e3bb5a6a6f78385b74d3af4d9efcd34bee925f24044a3f7e03349fecc52c8",
-    "training_cutoff": "",
-    "promotion_source": "REGISTERED_LEGACY",
-    "promotion_reason": "serving file registered as found; bytes unchanged",
+    "model_version": "props_goals2_clean_player_base_rate_81b5b864",
+    "champion_since": "2026-11-18T19:03:55Z",
+    "artifact_sha256": "81b5b8641e2a0ee41677d6fda5057a224d42a7e35f1118898a1650416707e8de",
+    "training_cutoff": "2026-08-31",
+    "promotion_source": "OWNER_APPROVED_CLEAN_RETRAIN",
+    "promotion_reason": "OWNER_APPROVED_CLEAN_RETRAIN: serve the clean player_base_rate model (option b) - 100% real data, markets stay on; the clean ML candidates keep predicting as challengers (owner decision 2026-11-18, relayed by the go-live coordinator)",
     "gate_version": "PG-PROPS-1.0"
   },
   "assists": {
@@ -45,21 +45,21 @@
     "gate_version": "PG-PROPS-1.0"
   },
   "sot3": {
-    "model_version": "props_sot3_legacy_805e72e2",
-    "champion_since": "2026-10-25T12:47:02Z",
-    "artifact_sha256": "805e72e2f0dc44b9d8240bd85093ce6a9560d32a952c4bc533cce7d7248326c7",
-    "training_cutoff": "",
-    "promotion_source": "REGISTERED_LEGACY",
-    "promotion_reason": "serving file registered as found; bytes unchanged",
+    "model_version": "props_sot3_clean_player_base_rate_f11626d9",
+    "champion_since": "2026-11-18T19:03:57Z",
+    "artifact_sha256": "f11626d93c30cac4eb37deb721ebb1b15b18cde346e91b27ed566f61d52e0dd8",
+    "training_cutoff": "2026-08-31",
+    "promotion_source": "OWNER_APPROVED_CLEAN_RETRAIN",
+    "promotion_reason": "OWNER_APPROVED_CLEAN_RETRAIN: serve the clean player_base_rate model (option b) - 100% real data, markets stay on; the clean ML candidates keep predicting as challengers (owner decision 2026-11-18, relayed by the go-live coordinator)",
     "gate_version": "PG-PROPS-1.0"
   },
   "sot4": {
-    "model_version": "props_sot4_legacy_960f5a9b",
-    "champion_since": "2026-10-25T12:47:02Z",
-    "artifact_sha256": "960f5a9ba70fd47c89641935bdeeb2f328381bae651ab4f2bf46bcad28a761f5",
-    "training_cutoff": "",
-    "promotion_source": "REGISTERED_LEGACY",
-    "promotion_reason": "serving file registered as found; bytes unchanged",
+    "model_version": "props_sot4_clean_player_base_rate_e0d074b8",
+    "champion_since": "2026-11-18T19:03:58Z",
+    "artifact_sha256": "e0d074b89ef75a41f079b86f7d431681238c0b6fabaa1d1252feaf8c7655b8b0",
+    "training_cutoff": "2026-08-31",
+    "promotion_source": "OWNER_APPROVED_CLEAN_RETRAIN",
+    "promotion_reason": "OWNER_APPROVED_CLEAN_RETRAIN: serve the clean player_base_rate model (option b) - 100% real data, markets stay on; the clean ML candidates keep predicting as challengers (owner decision 2026-11-18, relayed by the go-live coordinator)",
     "gate_version": "PG-PROPS-1.0"
   },
   "cards": {
@@ -69,6 +69,15 @@
     "training_cutoff": "2026-08-31",
     "promotion_source": "OWNER_APPROVED_CLEAN_RETRAIN",
     "promotion_reason": "OWNER_APPROVED_CLEAN_RETRAIN: Fix penalties too, then promote",
+    "gate_version": "PG-PROPS-1.0"
+  },
+  "goals3": {
+    "model_version": "props_goals3_clean_player_base_rate_89f588a0",
+    "champion_since": "2026-11-18T19:03:57Z",
+    "artifact_sha256": "89f588a0614e4716d46fb77f96d23bb65cf08564d313ec19e212e325cbf8a0fa",
+    "training_cutoff": "2026-08-31",
+    "promotion_source": "OWNER_APPROVED_CLEAN_RETRAIN",
+    "promotion_reason": "OWNER_APPROVED_CLEAN_RETRAIN: serve the clean player_base_rate model (option b) - 100% real data, markets stay on; the clean ML candidates keep predicting as challengers (owner decision 2026-11-18, relayed by the go-live coordinator)",
     "gate_version": "PG-PROPS-1.0"
   }
 }

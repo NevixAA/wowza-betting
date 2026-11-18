@@ -578,7 +578,7 @@ def run_player_predictions(
         except Exception as _e:
             print(f"[predict] Injury fetch failed: {_e}")
 
-    payloads = {m: load_model(m) for m in config.MARKETS}
+    payloads = {m: load_model(m) for m in config.SERVED_MARKETS}   # + goals3 (rare research, base rate)
     missing  = [m for m, p in payloads.items() if p is None]
     if missing:
         print(f"[player_model] Models not trained: {missing}. Run --mode train first.")
@@ -964,7 +964,7 @@ def run_player_predictions(
             # National-team competition by the registry (was: "world cup" in the league name).
             _is_wc = _is_nat
 
-            for market in config.MARKETS:
+            for market in config.SERVED_MARKETS:
                 _skip = serving_skip_reason(market, _pos_status)
                 if _skip:
                     _skip_reasons[_skip] += 1
