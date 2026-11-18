@@ -75,8 +75,12 @@ def test_markets_config_is_unique_and_side_markets_are_their_own_entries():
         for mk in ("ou15", "ou25", "ou35", "btts"):
             assert (mid, mk) in v9
     assert ("v9_standard", "ht_ou05") in v9 and ("v9_new_format", "ht_ou05") not in v9
-    for mk in ("goals", "goals2", "assists", "sot", "sot2", "sot3", "sot4", "cards"):
+    for mk in ("goals", "goals2", "goals3", "assists", "sot", "sot2", "sot3", "sot4", "cards"):
         assert ("v9_props", mk) in v9
+    # owner 2026-11-18: the rare markets serve the clean player base rate; their parked clean ML
+    # challengers predict into the ledger beside it
+    for mk in ("goals2", "goals3", "sot3", "sot4"):
+        assert (V.CHALLENGER_MODEL_ID, mk) in v9
     pending = {e["market"] for e in m["entries"] if e["status"] == "pending_model"}
     assert {"corners_total", "corners_team", "cards_total", "cards_team"} <= pending
     pro = {e["market"] for e in m["entries"] if e["repo"] == "pro"}
@@ -281,6 +285,50 @@ def test_props_recorder_records_every_player(tmp_path, monkeypatch):
     assert d["player_id"].tolist() == ["1", "2", "3"]
     assert d["scored"].tolist() == ["1", "1", "0"] and d["not_scored_reason"].iloc[2]
     assert PL.validate(tmp_path) == []
+
+
+def test_props_recorder_writes_the_parked_challenger_beside_the_champion(tmp_path, monkeypatch):
+    """Owner 2026-11-18: the clean ML challenger of a rare market is recorded on the same player-fixtures
+    as the served base rate, under its own model_id / version / sha; a market without a challenger entry
+    (sot) writes the champion only."""
+    import player_model.props_gate as PPG
+
+    class _M:
+        def predict(self, X, **_):
+            return np.full(len(X), 0.03)
+    payload = {"recipe": "props_clean_harness", "feature_cols": ["f1"], "model": _M()}
+    meta = {"model_version": "props_sot4_clean_recipe_retrained_8ed4b805", "artifact_sha256": "8ed4b805" + "0" * 56}
+    monkeypatch.setattr(PPG, "load_parked", lambda m: (payload, meta) if m == "sot4" else None)
+    monkeypatch.setenv(PL.FLAG_ENV, "true")
+    rec = V.props_recorder()
+    rec.now = NOW
+    feat = pd.DataFrame({"player_id": [1, 2], "player_name": ["A", "B"], "team": ["X", "Y"], "f1": [0.1, 0.2]})
+    for mk in ("sot4", "sot"):
+        rec.add(mk, feat, np.array([0.004, 0.002]), league="Championship", kickoff_utc=KO, fixture_id=1563270,
+                home="X", away="Y", payload={"feature_cols": []})
+    assert rec.flush(root=tmp_path)["written"] == 6
+    ch = pd.read_csv(tmp_path / "v9" / V.CHALLENGER_MODEL_ID / "sot4" / "championship" / "2026.csv", dtype=str,
+                     keep_default_na=False)
+    assert ch["model_version"].unique().tolist() == [meta["model_version"]]
+    assert ch["model_sha"].unique().tolist() == [meta["artifact_sha256"]]
+    assert ch["probability"].astype(float).tolist() == [0.03, 0.03]
+    assert not (tmp_path / "v9" / V.CHALLENGER_MODEL_ID / "sot").exists()
+    assert PL.validate(tmp_path) == []
+
+
+def test_props_results_settle_goals3_from_the_goals_count(tmp_path, monkeypatch):
+    d = pd.DataFrame({"fixture_id": [7, 7, 7], "player_id": [1, 2, 3], "minutes": [90, 90, 90],
+                      "goals": [3.0, 2.0, np.nan]})
+    for c in ("target_goals", "target_goals2", "target_assists", "target_sot", "target_sot2", "target_sot3",
+              "target_sot4", "target_cards"):
+        d[c] = 0.0
+    hist = tmp_path / "ph"
+    hist.mkdir()
+    d.to_parquet(hist / "month_2026-11.parquet")
+    monkeypatch.setattr(V, "PLAYER_HISTORY", hist)
+    r = V.PropsResults({7})
+    assert r.rows[(7, 1)]["target_goals3"] == 1.0 and r.rows[(7, 2)]["target_goals3"] == 0.0
+    assert pd.isna(r.rows[(7, 3)]["target_goals3"])                     # missing count stays missing
 
 
 # ── settled view ─────────────────────────────────────────────────────────────────────────────────
