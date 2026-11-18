@@ -544,8 +544,6 @@ def resolve(name: str, candidates: list[str]) -> str | None:
     cand_tokens = [(c, _tokens(c)) for c in candidates if _is_reserve(c) == res]
 
     def _only(hits):
-        # a pair of known DIFFERENT clubs is never a guessing-tier hit (see _KNOWN_DIFFERENT)
-        hits = [h for h in hits if frozenset((n, norm(h))) not in _KNOWN_DIFFERENT]
         return hits[0] if len(hits) == 1 else None
 
     # 3. identical identity-token sets  ("Cadiz CF" == "Cadiz", "Wimbledon" == "AFC Wimbledon")
