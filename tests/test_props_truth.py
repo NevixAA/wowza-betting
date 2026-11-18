@@ -106,14 +106,16 @@ def test_prev_games_full_counts_whole_stored_history():
     assert np.isnan(prev_games_full(df).iloc[4])
 
 
-def test_merge_history_recounts_fresh_rows_not_frozen_ones():
+def test_merge_history_recounts_added_rows_never_committed_ones():
     from player_model.history_integrity import merge_history
     ex = pd.DataFrame({"fixture_id": [1, 2], "player_id": [7, 7],
                        "date": pd.to_datetime(["2026-01-01", "2026-01-08"]), "n_prev_games": [1, 2]})
-    fresh = pd.DataFrame({"fixture_id": [3], "player_id": [7], "date": pd.to_datetime(["2026-10-30"]),
-                          "n_prev_games": [1]})                 # batch-local count
-    m, st = merge_history(ex, fresh, today="2026-11-02")
+    fresh = pd.DataFrame({"fixture_id": [2, 3], "player_id": [7, 7],
+                          "date": pd.to_datetime(["2026-01-08", "2026-10-30"]),
+                          "n_prev_games": [0, 1]})              # batch-local counts
+    m, st = merge_history(ex, fresh)
     assert m.set_index("fixture_id").loc[3, "n_prev_games"] == 3
+    # committed rows keep their stored count, re-fetched or not (keep-first, 2026-11-18)
     assert m.set_index("fixture_id").loc[[1, 2], "n_prev_games"].tolist() == [1, 2]
 
 
