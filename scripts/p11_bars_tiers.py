@@ -156,6 +156,8 @@ def load_choices(work: Path) -> dict:
 
 def lam_from(rows: pd.DataFrame) -> pd.DataFrame:
     """Per-cell lam / lam_se (R2 of v6) from scored priced rows (track, league, mside, fair, p_used, won)."""
+    if rows is None or rows.empty or "p_used" not in rows.columns:
+        return R._lams(None)
     r = rows[np.isfinite(rows["p_used"].to_numpy(float))]
     return R._lams(r[R.CELL + ["fair", "p_used", "won"]]) if len(r) else R._lams(None)
 
@@ -538,13 +540,22 @@ def cmd_propose(a) -> int:
             rows.append(g.assign(p_used=pu)[pu.notna() & s["in_range"].astype(bool)])
     lam = lam_from(pd.concat(rows, ignore_index=True)) if rows else R._lams(None)
     fit = json.loads((OUT / "tier_fit.json").read_text(encoding="utf-8"))
+    leagues = {k: {kk: v[kk] for kk in ("gate", "t3_floor", "gate_basis", "t3_basis")}
+               for k, v in sorted(fit["params"].items())}
+    for fam in fams:                     # serving MODEL cells of a league with no fit pool: the protocol rule
+        for c in fam["cells"]:
+            k = f"{c['track']}|{c['league']}"
+            if c.get("mode") == S.MODE_MODEL and k not in leagues:
+                leagues[k] = {"gate": "CAL", "t3_floor": "REL",
+                              "gate_basis": "NO_FIT_POOL (cell switched on by the serving refit only): CAL, unvalidated",
+                              "t3_basis": "NO_FIT_POOL: REL, unvalidated"}
+    leagues = dict(sorted(leagues.items()))
     cfg = {"protocol": "p11-bars-tiers-clean/1", "status": "PROPOSAL - AWAITING OWNER (2026-11-20); install with the go-live",
            "bars_proposal_id": p["proposal_id"], "bars_proposal_hash": p["proposal_hash"],
            "tiers": {"T1_BEST_VALUE": "highest cal_ev", "T2_SAFEST": "highest p_cal of the rest",
                      "T3_RISKY_VALUE": "of the rest, odds >= t3_floor, highest ev_lo (REL: the rest's longest odds)"},
            "gates": {"CAL": "cal_ev > 0", "BAR": "cleared bar and p_used * odds - 1 > 0"},
-           "leagues": {k: {kk: v[kk] for kk in ("gate", "t3_floor", "gate_basis", "t3_basis")}
-                       for k, v in sorted(fit["params"].items())},
+           "leagues": leagues,
            "calibration": {"rule": "R2: p_cal = fair + lam * (p_used - fair); ev_lo with lam - lam_se",
                            "fitted_on": f"priced rows < {SERVING_LAM_BEFORE.date()}",
                            "cells": lam.round(6).to_dict("records")},

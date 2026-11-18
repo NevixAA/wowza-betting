@@ -1,0 +1,2643 @@
+{
+ "protocol": "p11-bars-tiers-clean/1",
+ "protocol_sha256_lf": "06908df90533fe687146c6ec8a49ac02b85f9382840a6d6a536538b3eb7ce7e1",
+ "window": [
+  "2026-09-01",
+  "2026-11-08"
+ ],
+ "validation_pool_bets": 264,
+ "tiers": {
+  "ALL": {
+   "bets": 128,
+   "hit": 0.5312,
+   "roi": 0.0556,
+   "ci95": [
+    -0.1266,
+    0.2378
+   ],
+   "p_one_sided": 0.2059,
+   "mean_odds": 2.137,
+   "clv": 0.0087,
+   "clv_n": 128
+  },
+  "T1_BEST_VALUE": {
+   "bets": 57,
+   "hit": 0.5439,
+   "roi": 0.1168,
+   "ci95": [
+    -0.1661,
+    0.3998
+   ],
+   "p_one_sided": 0.1264,
+   "mean_odds": 2.209,
+   "clv": 0.0113,
+   "clv_n": 57
+  },
+  "T2_SAFEST": {
+   "bets": 42,
+   "hit": 0.5714,
+   "roi": 0.051,
+   "ci95": [
+    -0.2871,
+    0.389
+   ],
+   "p_one_sided": 0.3523,
+   "mean_odds": 1.904,
+   "clv": 0.0017,
+   "clv_n": 42
+  },
+  "T3_RISKY_VALUE": {
+   "bets": 29,
+   "hit": 0.4483,
+   "roi": -0.0579,
+   "ci95": [
+    -0.4633,
+    0.3474
+   ],
+   "p_one_sided": 0.6402,
+   "mean_odds": 2.333,
+   "clv": 0.0136,
+   "clv_n": 29
+  }
+ },
+ "v6_p11_bars": {
+  "bets": 157,
+  "hit": 0.465,
+  "roi": -0.0354,
+  "ci95": [
+   -0.2062,
+   0.1354
+  ],
+  "p_one_sided": 0.6987,
+  "mean_odds": 2.196,
+  "clv": 0.0121,
+  "clv_n": 157
+ },
+ "v6_bade2c0b": {
+  "bets": 341,
+  "hit": 0.522,
+  "roi": -0.0218,
+  "ci95": [
+   -0.145,
+   0.1014
+  ],
+  "p_one_sided": 0.6542,
+  "mean_odds": 2.057,
+  "clv": 0.0066,
+  "clv_n": 333
+ },
+ "weeks": {
+  "league_weeks_with_fixtures": 257,
+  "dist_3_2_1_0": [
+   29,
+   13,
+   15,
+   200
+  ],
+  "causes_lt3": {
+   "ALL_CELLS_OFF": 139,
+   "NO_VALUE": 49,
+   "FEW_VALUE": 27,
+   "NO_PRICE": 12,
+   "T3_EMPTY": 1
+  },
+  "slots": 1423,
+  "slots_no_price": 295,
+  "slots_no_calibration": 0
+ },
+ "per_league": {
+  "new_format|Argentina Primera Division": {
+   "params": {
+    "gate": "BAR",
+    "t3_floor": "REL",
+    "gate_basis": "FIT",
+    "t3_basis": "UNFITTED (no floor with >= 40 fit T3 picks): REL"
+   },
+   "weeks_with_fixtures": 10,
+   "tips_per_week": 2.4,
+   "weeks_3_2_1_0": [
+    7,
+    1,
+    1,
+    1
+   ],
+   "causes_lt3": {
+    "FEW_VALUE": 2,
+    "NO_PRICE": 1
+   },
+   "tiers": {
+    "ALL": {
+     "bets": 24,
+     "hit": 0.7083,
+     "roi": 0.1133,
+     "ci95": [
+      -0.1797,
+      0.4064
+     ],
+     "p_one_sided": 0.1914,
+     "mean_odds": 1.562,
+     "clv": 0.0026,
+     "clv_n": 24
+    },
+    "T1_BEST_VALUE": {
+     "bets": 9,
+     "hit": 0.6667,
+     "roi": 0.0444,
+     "ci95": [
+      -0.4789,
+      0.5568
+     ],
+     "p_one_sided": 0.3528,
+     "mean_odds": 1.572,
+     "clv": 0.0126,
+     "clv_n": 9
+    },
+    "T2_SAFEST": {
+     "bets": 8,
+     "hit": 0.625,
+     "roi": -0.0587,
+     "ci95": [
+      -0.6212,
+      0.4925
+     ],
+     "p_one_sided": 0.6327,
+     "mean_odds": 1.498,
+     "clv": -0.011,
+     "clv_n": 8
+    },
+    "T3_RISKY_VALUE": {
+     "bets": 7,
+     "hit": 0.8571,
+     "roi": 0.3986,
+     "ci95": [
+      -0.0743,
+      0.8581
+     ],
+     "p_one_sided": 0.06,
+     "mean_odds": 1.623,
+     "clv": 0.0053,
+     "clv_n": 7
+    }
+   },
+   "v6_p11_bars": {
+    "bets": 24,
+    "hit": 0.5833,
+    "roi": -0.0996,
+    "ci95": [
+     -0.4703,
+     0.2711
+    ],
+    "p_one_sided": 0.7356,
+    "mean_odds": 1.543,
+    "clv": 0.0013,
+    "clv_n": 24
+   },
+   "v6_bade2c0b": {
+    "bets": 28,
+    "hit": 0.5714,
+    "roi": -0.1311,
+    "ci95": [
+     -0.457,
+     0.1949
+    ],
+    "p_one_sided": 0.8211,
+    "mean_odds": 1.514,
+    "clv": -0.0014,
+    "clv_n": 28
+   },
+   "fit": {
+    "ALL": {
+     "bets": 108,
+     "hit": 0.6667,
+     "roi": 0.0867,
+     "ci95": [
+      -0.0672,
+      0.2405
+     ],
+     "p_one_sided": 0.1239,
+     "mean_odds": 1.64,
+     "clv": -0.0305,
+     "clv_n": 108
+    },
+    "T1_BEST_VALUE": {
+     "bets": 51,
+     "hit": 0.6275,
+     "roi": 0.0357,
+     "ci95": [
+      -0.1906,
+      0.2578
+     ],
+     "p_one_sided": 0.3583,
+     "mean_odds": 1.671,
+     "clv": -0.0334,
+     "clv_n": 51
+    },
+    "T2_SAFEST": {
+     "bets": 36,
+     "hit": 0.7222,
+     "roi": 0.1356,
+     "ci95": [
+      -0.1039,
+      0.3703
+     ],
+     "p_one_sided": 0.1204,
+     "mean_odds": 1.571,
+     "clv": -0.0247,
+     "clv_n": 36
+    },
+    "T3_RISKY_VALUE": {
+     "bets": 21,
+     "hit": 0.6667,
+     "roi": 0.1267,
+     "ci95": [
+      -0.2229,
+      0.4763
+     ],
+     "p_one_sided": 0.2414,
+     "mean_odds": 1.684,
+     "clv": -0.0336,
+     "clv_n": 21
+    }
+   }
+  },
+  "new_format|Austrian Bundesliga": {
+   "params": {
+    "gate": "CAL",
+    "t3_floor": "REL",
+    "gate_basis": "FIT",
+    "t3_basis": "FIT"
+   },
+   "weeks_with_fixtures": 8,
+   "tips_per_week": 2.38,
+   "weeks_3_2_1_0": [
+    6,
+    0,
+    1,
+    1
+   ],
+   "causes_lt3": {
+    "FEW_VALUE": 1,
+    "NO_PRICE": 1
+   },
+   "tiers": {
+    "ALL": {
+     "bets": 19,
+     "hit": 0.2632,
+     "roi": -0.3316,
+     "ci95": [
+      -0.96,
+      0.2968
+     ],
+     "p_one_sided": 0.9145,
+     "mean_odds": 2.69,
+     "clv": 0.0132,
+     "clv_n": 19
+    },
+    "T1_BEST_VALUE": {
+     "bets": 7,
+     "hit": 0.1429,
+     "roi": -0.6286,
+     "ci95": [
+      -1.3566,
+      0.1143
+     ],
+     "p_one_sided": 0.9385,
+     "mean_odds": 3.051,
+     "clv": 0.0116,
+     "clv_n": 7
+    },
+    "T2_SAFEST": {
+     "bets": 6,
+     "hit": 0.1667,
+     "roi": -0.6333,
+     "ci95": [
+      -1.352,
+      0.1
+     ],
+     "p_one_sided": 0.9405,
+     "mean_odds": 2.127,
+     "clv": 0.0089,
+     "clv_n": 6
+    },
+    "T3_RISKY_VALUE": {
+     "bets": 6,
+     "hit": 0.5,
+     "roi": 0.3167,
+     "ci95": [
+      -0.8444,
+      1.4778
+     ],
+     "p_one_sided": 0.3303,
+     "mean_odds": 2.832,
+     "clv": 0.0194,
+     "clv_n": 6
+    }
+   },
+   "v6_p11_bars": {
+    "bets": 19,
+    "hit": 0.2632,
+    "roi": -0.3237,
+    "ci95": [
+     -0.9597,
+     0.3124
+    ],
+    "p_one_sided": 0.8881,
+    "mean_odds": 2.772,
+    "clv": 0.0183,
+    "clv_n": 19
+   },
+   "v6_bade2c0b": {
+    "bets": 17,
+    "hit": 0.1765,
+    "roi": -0.5559,
+    "ci95": [
+     -1.0266,
+     -0.0823
+    ],
+    "p_one_sided": 0.9845,
+    "mean_odds": 2.786,
+    "clv": 0.017,
+    "clv_n": 17
+   },
+   "fit": {
+    "ALL": {
+     "bets": 204,
+     "hit": 0.5049,
+     "roi": 0.0394,
+     "ci95": [
+      -0.1113,
+      0.19
+     ],
+     "p_one_sided": 0.2989,
+     "mean_odds": 2.069,
+     "clv": -0.0042,
+     "clv_n": 203
+    },
+    "T1_BEST_VALUE": {
+     "bets": 72,
+     "hit": 0.4583,
+     "roi": 0.0528,
+     "ci95": [
+      -0.2257,
+      0.3213
+     ],
+     "p_one_sided": 0.3563,
+     "mean_odds": 2.244,
+     "clv": -0.0091,
+     "clv_n": 71
+    },
+    "T2_SAFEST": {
+     "bets": 69,
+     "hit": 0.5797,
+     "roi": 0.0638,
+     "ci95": [
+      -0.1525,
+      0.28
+     ],
+     "p_one_sided": 0.2784,
+     "mean_odds": 1.853,
+     "clv": 0.0023,
+     "clv_n": 69
+    },
+    "T3_RISKY_VALUE": {
+     "bets": 63,
+     "hit": 0.4762,
+     "roi": -0.0027,
+     "ci95": [
+      -0.2641,
+      0.2587
+     ],
+     "p_one_sided": 0.5097,
+     "mean_odds": 2.104,
+     "clv": -0.0057,
+     "clv_n": 63
+    }
+   }
+  },
+  "new_format|Brazil Serie A": {
+   "params": {
+    "gate": "BAR",
+    "t3_floor": "REL",
+    "gate_basis": "FIT",
+    "t3_basis": "UNFITTED (no floor with >= 40 fit T3 picks): REL"
+   },
+   "weeks_with_fixtures": 9,
+   "tips_per_week": 0.67,
+   "weeks_3_2_1_0": [
+    0,
+    2,
+    2,
+    5
+   ],
+   "causes_lt3": {
+    "FEW_VALUE": 4,
+    "NO_VALUE": 4,
+    "NO_PRICE": 1
+   },
+   "tiers": {
+    "ALL": {
+     "bets": 6,
+     "hit": 0.8333,
+     "roi": 0.1733,
+     "ci95": [
+      -0.2868,
+      0.6335
+     ],
+     "p_one_sided": 0.1404,
+     "mean_odds": 1.407,
+     "clv": -0.008,
+     "clv_n": 6
+    },
+    "T1_BEST_VALUE": {
+     "bets": 4,
+     "hit": 1.0,
+     "roi": 0.41,
+     "ci95": [
+      0.3904,
+      0.43
+     ],
+     "p_one_sided": 0.0005,
+     "mean_odds": 1.41,
+     "clv": -0.0124,
+     "clv_n": 4
+    },
+    "T2_SAFEST": {
+     "bets": 2,
+     "hit": 0.5,
+     "roi": -0.3,
+     "ci95": [
+      -1.672,
+      1.072
+     ],
+     "p_one_sided": null,
+     "mean_odds": 1.4,
+     "clv": 0.0008,
+     "clv_n": 2
+    },
+    "T3_RISKY_VALUE": {
+     "bets": 0
+    }
+   },
+   "v6_p11_bars": {
+    "bets": 6,
+    "hit": 0.8333,
+    "roi": 0.1733,
+    "ci95": [
+     -0.2868,
+     0.6335
+    ],
+    "p_one_sided": 0.1404,
+    "mean_odds": 1.407,
+    "clv": -0.008,
+    "clv_n": 6
+   },
+   "v6_bade2c0b": {
+    "bets": 26,
+    "hit": 0.5385,
+    "roi": -0.0508,
+    "ci95": [
+     -0.4286,
+     0.327
+    ],
+    "p_one_sided": 0.6052,
+    "mean_odds": 1.917,
+    "clv": -0.0165,
+    "clv_n": 26
+   },
+   "fit": {
+    "ALL": {
+     "bets": 62,
+     "hit": 0.6935,
+     "roi": 0.0102,
+     "ci95": [
+      -0.1734,
+      0.189
+     ],
+     "p_one_sided": 0.4368,
+     "mean_odds": 1.458,
+     "clv": -0.0052,
+     "clv_n": 62
+    },
+    "T1_BEST_VALUE": {
+     "bets": 35,
+     "hit": 0.7143,
+     "roi": 0.036,
+     "ci95": [
+      -0.1846,
+      0.2566
+     ],
+     "p_one_sided": 0.4003,
+     "mean_odds": 1.459,
+     "clv": -0.0082,
+     "clv_n": 35
+    },
+    "T2_SAFEST": {
+     "bets": 19,
+     "hit": 0.5789,
+     "roi": -0.1542,
+     "ci95": [
+      -0.4878,
+      0.1793
+     ],
+     "p_one_sided": 0.8166,
+     "mean_odds": 1.454,
+     "clv": -0.004,
+     "clv_n": 19
+    },
+    "T3_RISKY_VALUE": {
+     "bets": 8,
+     "hit": 0.875,
+     "roi": 0.2875,
+     "ci95": [
+      -0.0888,
+      0.6488
+     ],
+     "p_one_sided": 0.0655,
+     "mean_odds": 1.465,
+     "clv": 0.0049,
+     "clv_n": 8
+    }
+   }
+  },
+  "new_format|China Super League": {
+   "params": {
+    "gate": "CAL",
+    "t3_floor": "REL",
+    "gate_basis": "UNFITTED (< 40 fit picks): CAL",
+    "t3_basis": "UNFITTED (no floor with >= 40 fit T3 picks): REL"
+   },
+   "weeks_with_fixtures": 7,
+   "tips_per_week": 1.0,
+   "weeks_3_2_1_0": [
+    1,
+    2,
+    0,
+    4
+   ],
+   "causes_lt3": {
+    "NO_VALUE": 2,
+    "NO_PRICE": 2,
+    "FEW_VALUE": 2
+   },
+   "tiers": {
+    "ALL": {
+     "bets": 7,
+     "hit": 0.7143,
+     "roi": 0.27,
+     "ci95": [
+      -0.6443,
+      1.1843
+     ],
+     "p_one_sided": 0.2189,
+     "mean_odds": 1.87,
+     "clv": 0.019,
+     "clv_n": 7
+    },
+    "T1_BEST_VALUE": {
+     "bets": 3,
+     "hit": 0.6667,
+     "roi": 0.1833,
+     "ci95": [
+      -1.0,
+      1.3562
+     ],
+     "p_one_sided": 0.2509,
+     "mean_odds": 1.857,
+     "clv": 0.0396,
+     "clv_n": 3
+    },
+    "T2_SAFEST": {
+     "bets": 3,
+     "hit": 1.0,
+     "roi": 0.78,
+     "ci95": [
+      0.4613,
+      1.1
+     ],
+     "p_one_sided": 0.0005,
+     "mean_odds": 1.78,
+     "clv": 0.0,
+     "clv_n": 3
+    },
+    "T3_RISKY_VALUE": {
+     "bets": 1,
+     "hit": 0.0,
+     "roi": -1.0,
+     "ci95": [
+      null,
+      null
+     ],
+     "p_one_sided": null,
+     "mean_odds": 2.18,
+     "clv": 0.014,
+     "clv_n": 1
+    }
+   },
+   "v6_p11_bars": {
+    "bets": 13,
+    "hit": 0.4615,
+    "roi": -0.1777,
+    "ci95": [
+     -0.7575,
+     0.4021
+    ],
+    "p_one_sided": 0.7021,
+    "mean_odds": 1.945,
+    "clv": 0.0273,
+    "clv_n": 13
+   },
+   "v6_bade2c0b": {
+    "bets": 0
+   },
+   "fit": {
+    "ALL": {
+     "bets": 22,
+     "hit": 0.5,
+     "roi": 0.0677,
+     "ci95": [
+      -0.4872,
+      0.6227
+     ],
+     "p_one_sided": 0.3918,
+     "mean_odds": 2.185,
+     "clv": 0.0022,
+     "clv_n": 21
+    },
+    "T1_BEST_VALUE": {
+     "bets": 12,
+     "hit": 0.5,
+     "roi": 0.0792,
+     "ci95": [
+      -0.5646,
+      0.723
+     ],
+     "p_one_sided": 0.3798,
+     "mean_odds": 2.171,
+     "clv": -0.0274,
+     "clv_n": 12
+    },
+    "T2_SAFEST": {
+     "bets": 7,
+     "hit": 0.4286,
+     "roi": -0.0929,
+     "ci95": [
+      -0.9484,
+      0.7626
+     ],
+     "p_one_sided": 0.6067,
+     "mean_odds": 2.191,
+     "clv": 0.003,
+     "clv_n": 6
+    },
+    "T3_RISKY_VALUE": {
+     "bets": 3,
+     "hit": 0.6667,
+     "roi": 0.3967,
+     "ci95": [
+      -1.033,
+      1.8264
+     ],
+     "p_one_sided": 0.2594,
+     "mean_odds": 2.223,
+     "clv": 0.119,
+     "clv_n": 3
+    }
+   }
+  },
+  "new_format|Denmark Superliga": {
+   "params": {
+    "gate": "CAL",
+    "t3_floor": 2.25,
+    "gate_basis": "FIT",
+    "t3_basis": "FIT"
+   },
+   "weeks_with_fixtures": 8,
+   "tips_per_week": 1.62,
+   "weeks_3_2_1_0": [
+    3,
+    1,
+    2,
+    2
+   ],
+   "causes_lt3": {
+    "NO_PRICE": 1,
+    "FEW_VALUE": 3,
+    "NO_VALUE": 1
+   },
+   "tiers": {
+    "ALL": {
+     "bets": 13,
+     "hit": 0.2308,
+     "roi": -0.4669,
+     "ci95": [
+      -1.0192,
+      0.0853
+     ],
+     "p_one_sided": 0.996,
+     "mean_odds": 2.332,
+     "clv": -0.006,
+     "clv_n": 13
+    },
+    "T1_BEST_VALUE": {
+     "bets": 6,
+     "hit": 0.3333,
+     "roi": -0.2633,
+     "ci95": [
+      -1.1772,
+      0.6505
+     ],
+     "p_one_sided": 0.6787,
+     "mean_odds": 2.18,
+     "clv": -0.0319,
+     "clv_n": 6
+    },
+    "T2_SAFEST": {
+     "bets": 4,
+     "hit": 0.25,
+     "roi": -0.3725,
+     "ci95": [
+      -1.6024,
+      0.8825
+     ],
+     "p_one_sided": 0.7356,
+     "mean_odds": 2.393,
+     "clv": 0.0086,
+     "clv_n": 4
+    },
+    "T3_RISKY_VALUE": {
+     "bets": 3,
+     "hit": 0.0,
+     "roi": -1.0,
+     "ci95": [
+      -1.0,
+      -1.0
+     ],
+     "p_one_sided": 1.0,
+     "mean_odds": 2.553,
+     "clv": 0.0262,
+     "clv_n": 3
+    }
+   },
+   "v6_p11_bars": {
+    "bets": 22,
+    "hit": 0.3636,
+    "roi": -0.1191,
+    "ci95": [
+     -0.6396,
+     0.4015
+    ],
+    "p_one_sided": 0.6792,
+    "mean_odds": 2.353,
+    "clv": 0.0034,
+    "clv_n": 22
+   },
+   "v6_bade2c0b": {
+    "bets": 23,
+    "hit": 0.5652,
+    "roi": -0.0843,
+    "ci95": [
+     -0.4371,
+     0.2538
+    ],
+    "p_one_sided": 0.6972,
+    "mean_odds": 1.661,
+    "clv": -0.0013,
+    "clv_n": 23
+   },
+   "fit": {
+    "ALL": {
+     "bets": 156,
+     "hit": 0.3974,
+     "roi": -0.0205,
+     "ci95": [
+      -0.217,
+      0.176
+     ],
+     "p_one_sided": 0.5797,
+     "mean_odds": 2.546,
+     "clv": -0.0166,
+     "clv_n": 156
+    },
+    "T1_BEST_VALUE": {
+     "bets": 59,
+     "hit": 0.4068,
+     "roi": -0.0124,
+     "ci95": [
+      -0.3214,
+      0.2986
+     ],
+     "p_one_sided": 0.5397,
+     "mean_odds": 2.465,
+     "clv": -0.0184,
+     "clv_n": 59
+    },
+    "T2_SAFEST": {
+     "bets": 52,
+     "hit": 0.4615,
+     "roi": 0.1125,
+     "ci95": [
+      -0.2221,
+      0.4471
+     ],
+     "p_one_sided": 0.2574,
+     "mean_odds": 2.472,
+     "clv": -0.0166,
+     "clv_n": 52
+    },
+    "T3_RISKY_VALUE": {
+     "bets": 45,
+     "hit": 0.3111,
+     "roi": -0.1849,
+     "ci95": [
+      -0.5444,
+      0.1746
+     ],
+     "p_one_sided": 0.8681,
+     "mean_odds": 2.738,
+     "clv": -0.0143,
+     "clv_n": 45
+    }
+   }
+  },
+  "new_format|Finland Veikkausliiga": {
+   "params": {
+    "gate": "CAL",
+    "t3_floor": "REL",
+    "gate_basis": "FIT",
+    "t3_basis": "UNFITTED (no floor with >= 40 fit T3 picks): REL"
+   },
+   "weeks_with_fixtures": 7,
+   "tips_per_week": 2.0,
+   "weeks_3_2_1_0": [
+    3,
+    2,
+    1,
+    1
+   ],
+   "causes_lt3": {
+    "FEW_VALUE": 3,
+    "NO_VALUE": 1
+   },
+   "tiers": {
+    "ALL": {
+     "bets": 14,
+     "hit": 0.4286,
+     "roi": 0.0321,
+     "ci95": [
+      -0.7374,
+      0.8017
+     ],
+     "p_one_sided": 0.4678,
+     "mean_odds": 2.474,
+     "clv": 0.0034,
+     "clv_n": 14
+    },
+    "T1_BEST_VALUE": {
+     "bets": 6,
+     "hit": 0.5,
+     "roi": 0.1967,
+     "ci95": [
+      -0.8632,
+      1.2565
+     ],
+     "p_one_sided": 0.3328,
+     "mean_odds": 2.472,
+     "clv": 0.0059,
+     "clv_n": 6
+    },
+    "T2_SAFEST": {
+     "bets": 5,
+     "hit": 0.6,
+     "roi": 0.454,
+     "ci95": [
+      -0.7235,
+      1.6315
+     ],
+     "p_one_sided": 0.2419,
+     "mean_odds": 2.406,
+     "clv": 0.0038,
+     "clv_n": 5
+    },
+    "T3_RISKY_VALUE": {
+     "bets": 3,
+     "hit": 0.0,
+     "roi": -1.0,
+     "ci95": [
+      -1.0,
+      -1.0
+     ],
+     "p_one_sided": 1.0,
+     "mean_odds": 2.593,
+     "clv": -0.0021,
+     "clv_n": 3
+    }
+   },
+   "v6_p11_bars": {
+    "bets": 20,
+    "hit": 0.45,
+    "roi": 0.166,
+    "ci95": [
+     -0.4345,
+     0.7556
+    ],
+    "p_one_sided": 0.2794,
+    "mean_odds": 2.632,
+    "clv": 0.0064,
+    "clv_n": 20
+   },
+   "v6_bade2c0b": {
+    "bets": 21,
+    "hit": 0.4286,
+    "roi": -0.25,
+    "ci95": [
+     -0.6751,
+     0.1751
+    ],
+    "p_one_sided": 0.8931,
+    "mean_odds": 1.816,
+    "clv": 0.0193,
+    "clv_n": 21
+   },
+   "fit": {
+    "ALL": {
+     "bets": 142,
+     "hit": 0.3803,
+     "roi": -0.0092,
+     "ci95": [
+      -0.2321,
+      0.2243
+     ],
+     "p_one_sided": 0.5282,
+     "mean_odds": 2.684,
+     "clv": -0.0081,
+     "clv_n": 142
+    },
+    "T1_BEST_VALUE": {
+     "bets": 60,
+     "hit": 0.45,
+     "roi": 0.1253,
+     "ci95": [
+      -0.1972,
+      0.4479
+     ],
+     "p_one_sided": 0.2094,
+     "mean_odds": 2.562,
+     "clv": -0.0102,
+     "clv_n": 60
+    },
+    "T2_SAFEST": {
+     "bets": 48,
+     "hit": 0.3125,
+     "roi": -0.2156,
+     "ci95": [
+      -0.5525,
+      0.1342
+     ],
+     "p_one_sided": 0.8856,
+     "mean_odds": 2.582,
+     "clv": -0.0147,
+     "clv_n": 48
+    },
+    "T3_RISKY_VALUE": {
+     "bets": 34,
+     "hit": 0.3529,
+     "roi": 0.0447,
+     "ci95": [
+      -0.4469,
+      0.5369
+     ],
+     "p_one_sided": 0.4278,
+     "mean_odds": 3.044,
+     "clv": 0.0049,
+     "clv_n": 34
+    }
+   }
+  },
+  "new_format|Ireland Premier Division": {
+   "params": {
+    "gate": null,
+    "t3_floor": null,
+    "gate_basis": null,
+    "t3_basis": null
+   },
+   "weeks_with_fixtures": 10,
+   "tips_per_week": 0.0,
+   "weeks_3_2_1_0": [
+    0,
+    0,
+    0,
+    10
+   ],
+   "causes_lt3": {
+    "ALL_CELLS_OFF": 10
+   },
+   "tiers": {
+    "ALL": {
+     "bets": 0
+    }
+   },
+   "v6_p11_bars": {
+    "bets": 0
+   },
+   "v6_bade2c0b": {
+    "bets": 0
+   },
+   "fit": null
+  },
+  "new_format|Japan J-League": {
+   "params": {
+    "gate": "BAR",
+    "t3_floor": "REL",
+    "gate_basis": "FIT",
+    "t3_basis": "FIT"
+   },
+   "weeks_with_fixtures": 8,
+   "tips_per_week": 1.75,
+   "weeks_3_2_1_0": [
+    4,
+    1,
+    0,
+    3
+   ],
+   "causes_lt3": {
+    "NO_PRICE": 3,
+    "FEW_VALUE": 1
+   },
+   "tiers": {
+    "ALL": {
+     "bets": 14,
+     "hit": 0.5,
+     "roi": -0.0279,
+     "ci95": [
+      -0.5751,
+      0.5194
+     ],
+     "p_one_sided": 0.5422,
+     "mean_odds": 2.105,
+     "clv": 0.0083,
+     "clv_n": 14
+    },
+    "T1_BEST_VALUE": {
+     "bets": 5,
+     "hit": 0.4,
+     "roi": -0.054,
+     "ci95": [
+      -1.1895,
+      1.0815
+     ],
+     "p_one_sided": 0.6872,
+     "mean_odds": 2.254,
+     "clv": 0.0183,
+     "clv_n": 5
+    },
+    "T2_SAFEST": {
+     "bets": 5,
+     "hit": 0.8,
+     "roi": 0.366,
+     "ci95": [
+      -0.354,
+      1.086
+     ],
+     "p_one_sided": 0.1549,
+     "mean_odds": 1.766,
+     "clv": -0.0145,
+     "clv_n": 5
+    },
+    "T3_RISKY_VALUE": {
+     "bets": 4,
+     "hit": 0.25,
+     "roi": -0.4875,
+     "ci95": [
+      -1.492,
+      0.5375
+     ],
+     "p_one_sided": 0.7501,
+     "mean_odds": 2.343,
+     "clv": 0.0242,
+     "clv_n": 4
+    }
+   },
+   "v6_p11_bars": {
+    "bets": 14,
+    "hit": 0.3571,
+    "roi": -0.27,
+    "ci95": [
+     -0.8146,
+     0.2746
+    ],
+    "p_one_sided": 0.8696,
+    "mean_odds": 2.187,
+    "clv": 0.0152,
+    "clv_n": 14
+   },
+   "v6_bade2c0b": {
+    "bets": 13,
+    "hit": 0.4615,
+    "roi": -0.0192,
+    "ci95": [
+     -0.6207,
+     0.5823
+    ],
+    "p_one_sided": 0.5752,
+    "mean_odds": 2.173,
+    "clv": 0.0182,
+    "clv_n": 13
+   },
+   "fit": {
+    "ALL": {
+     "bets": 158,
+     "hit": 0.5253,
+     "roi": 0.0033,
+     "ci95": [
+      -0.1536,
+      0.1621
+     ],
+     "p_one_sided": 0.4653,
+     "mean_odds": 1.952,
+     "clv": -0.0016,
+     "clv_n": 157
+    },
+    "T1_BEST_VALUE": {
+     "bets": 63,
+     "hit": 0.4286,
+     "roi": -0.1049,
+     "ci95": [
+      -0.3705,
+      0.1637
+     ],
+     "p_one_sided": 0.7851,
+     "mean_odds": 2.099,
+     "clv": -0.0092,
+     "clv_n": 62
+    },
+    "T2_SAFEST": {
+     "bets": 52,
+     "hit": 0.6154,
+     "roi": 0.0246,
+     "ci95": [
+      -0.2085,
+      0.2517
+     ],
+     "p_one_sided": 0.4033,
+     "mean_odds": 1.674,
+     "clv": 0.0071,
+     "clv_n": 52
+    },
+    "T3_RISKY_VALUE": {
+     "bets": 43,
+     "hit": 0.5581,
+     "roi": 0.136,
+     "ci95": [
+      -0.1731,
+      0.4602
+     ],
+     "p_one_sided": 0.2054,
+     "mean_odds": 2.073,
+     "clv": -0.0011,
+     "clv_n": 43
+    }
+   }
+  },
+  "new_format|K-League 1": {
+   "params": {
+    "gate": "CAL",
+    "t3_floor": "REL",
+    "gate_basis": "FIT",
+    "t3_basis": "UNFITTED (no floor with >= 40 fit T3 picks): REL"
+   },
+   "weeks_with_fixtures": 0,
+   "tips_per_week": null,
+   "weeks_3_2_1_0": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "causes_lt3": {},
+   "tiers": {
+    "ALL": {
+     "bets": 0
+    }
+   },
+   "v6_p11_bars": {
+    "bets": 0
+   },
+   "v6_bade2c0b": {
+    "bets": 0
+   },
+   "fit": {
+    "ALL": {
+     "bets": 91,
+     "hit": 0.4286,
+     "roi": -0.1714,
+     "ci95": [
+      -0.3934,
+      0.0505
+     ],
+     "p_one_sided": 0.9405,
+     "mean_odds": 1.953,
+     "clv": -0.0108,
+     "clv_n": 91
+    },
+    "T1_BEST_VALUE": {
+     "bets": 38,
+     "hit": 0.4737,
+     "roi": -0.0468,
+     "ci95": [
+      -0.3751,
+      0.2814
+     ],
+     "p_one_sided": 0.6192,
+     "mean_odds": 2.05,
+     "clv": -0.0027,
+     "clv_n": 38
+    },
+    "T2_SAFEST": {
+     "bets": 30,
+     "hit": 0.4667,
+     "roi": -0.1517,
+     "ci95": [
+      -0.4827,
+      0.1794
+     ],
+     "p_one_sided": 0.8211,
+     "mean_odds": 1.806,
+     "clv": -0.0212,
+     "clv_n": 30
+    },
+    "T3_RISKY_VALUE": {
+     "bets": 23,
+     "hit": 0.3043,
+     "roi": -0.403,
+     "ci95": [
+      -0.7813,
+      -0.0061
+     ],
+     "p_one_sided": 0.9755,
+     "mean_odds": 1.986,
+     "clv": -0.0105,
+     "clv_n": 23
+    }
+   }
+  },
+  "new_format|Mexico Liga MX": {
+   "params": {
+    "gate": null,
+    "t3_floor": null,
+    "gate_basis": null,
+    "t3_basis": null
+   },
+   "weeks_with_fixtures": 10,
+   "tips_per_week": 0.0,
+   "weeks_3_2_1_0": [
+    0,
+    0,
+    0,
+    10
+   ],
+   "causes_lt3": {
+    "ALL_CELLS_OFF": 10
+   },
+   "tiers": {
+    "ALL": {
+     "bets": 0
+    }
+   },
+   "v6_p11_bars": {
+    "bets": 0
+   },
+   "v6_bade2c0b": {
+    "bets": 24,
+    "hit": 0.625,
+    "roi": 0.065,
+    "ci95": [
+     -0.2736,
+     0.4036
+    ],
+    "p_one_sided": 0.3243,
+    "mean_odds": 1.706,
+    "clv": -0.0026,
+    "clv_n": 23
+   },
+   "fit": null
+  },
+  "new_format|Norway Eliteserien": {
+   "params": {
+    "gate": "CAL",
+    "t3_floor": "REL",
+    "gate_basis": "FIT",
+    "t3_basis": "UNFITTED (no floor with >= 40 fit T3 picks): REL"
+   },
+   "weeks_with_fixtures": 8,
+   "tips_per_week": 2.12,
+   "weeks_3_2_1_0": [
+    4,
+    2,
+    1,
+    1
+   ],
+   "causes_lt3": {
+    "FEW_VALUE": 3,
+    "NO_PRICE": 1
+   },
+   "tiers": {
+    "ALL": {
+     "bets": 17,
+     "hit": 0.7059,
+     "roi": 0.4929,
+     "ci95": [
+      -0.1327,
+      1.1024
+     ],
+     "p_one_sided": 0.051,
+     "mean_odds": 2.101,
+     "clv": 0.0065,
+     "clv_n": 17
+    },
+    "T1_BEST_VALUE": {
+     "bets": 7,
+     "hit": 0.7143,
+     "roi": 0.4843,
+     "ci95": [
+      -0.3571,
+      1.2428
+     ],
+     "p_one_sided": 0.1044,
+     "mean_odds": 2.109,
+     "clv": 0.0134,
+     "clv_n": 7
+    },
+    "T2_SAFEST": {
+     "bets": 6,
+     "hit": 0.6667,
+     "roi": 0.235,
+     "ci95": [
+      -0.5611,
+      1.0311
+     ],
+     "p_one_sided": 0.2899,
+     "mean_odds": 1.823,
+     "clv": 0.0087,
+     "clv_n": 6
+    },
+    "T3_RISKY_VALUE": {
+     "bets": 4,
+     "hit": 0.75,
+     "roi": 0.895,
+     "ci95": [
+      -0.3661,
+      2.1561
+     ],
+     "p_one_sided": 0.0495,
+     "mean_odds": 2.505,
+     "clv": -0.009,
+     "clv_n": 4
+    }
+   },
+   "v6_p11_bars": {
+    "bets": 21,
+    "hit": 0.5238,
+    "roi": 0.1148,
+    "ci95": [
+     -0.403,
+     0.5887
+    ],
+    "p_one_sided": 0.3343,
+    "mean_odds": 2.109,
+    "clv": 0.0037,
+    "clv_n": 21
+   },
+   "v6_bade2c0b": {
+    "bets": 21,
+    "hit": 0.6667,
+    "roi": 0.2867,
+    "ci95": [
+     -0.1242,
+     0.6975
+    ],
+    "p_one_sided": 0.0825,
+    "mean_odds": 1.972,
+    "clv": 0.0055,
+    "clv_n": 21
+   },
+   "fit": {
+    "ALL": {
+     "bets": 97,
+     "hit": 0.3711,
+     "roi": -0.1278,
+     "ci95": [
+      -0.3587,
+      0.103
+     ],
+     "p_one_sided": 0.8906,
+     "mean_odds": 2.399,
+     "clv": -0.0142,
+     "clv_n": 97
+    },
+    "T1_BEST_VALUE": {
+     "bets": 37,
+     "hit": 0.4054,
+     "roi": -0.0641,
+     "ci95": [
+      -0.4371,
+      0.309
+     ],
+     "p_one_sided": 0.6432,
+     "mean_odds": 2.261,
+     "clv": -0.0218,
+     "clv_n": 37
+    },
+    "T2_SAFEST": {
+     "bets": 33,
+     "hit": 0.3939,
+     "roi": -0.1561,
+     "ci95": [
+      -0.5236,
+      0.2125
+     ],
+     "p_one_sided": 0.8046,
+     "mean_odds": 2.283,
+     "clv": -0.0059,
+     "clv_n": 33
+    },
+    "T3_RISKY_VALUE": {
+     "bets": 27,
+     "hit": 0.2963,
+     "roi": -0.1807,
+     "ci95": [
+      -0.6726,
+      0.3074
+     ],
+     "p_one_sided": 0.7731,
+     "mean_odds": 2.73,
+     "clv": -0.0138,
+     "clv_n": 27
+    }
+   }
+  },
+  "new_format|Romanian Superliga": {
+   "params": {
+    "gate": null,
+    "t3_floor": null,
+    "gate_basis": null,
+    "t3_basis": null
+   },
+   "weeks_with_fixtures": 9,
+   "tips_per_week": 0.0,
+   "weeks_3_2_1_0": [
+    0,
+    0,
+    0,
+    9
+   ],
+   "causes_lt3": {
+    "ALL_CELLS_OFF": 9
+   },
+   "tiers": {
+    "ALL": {
+     "bets": 0
+    }
+   },
+   "v6_p11_bars": {
+    "bets": 0
+   },
+   "v6_bade2c0b": {
+    "bets": 9,
+    "hit": 0.5556,
+    "roi": 0.1822,
+    "ci95": [
+     -0.8936,
+     1.258
+    ],
+    "p_one_sided": 0.3118,
+    "mean_odds": 2.053,
+    "clv": 0.0161,
+    "clv_n": 9
+   },
+   "fit": null
+  },
+  "new_format|Saudi Pro League": {
+   "params": {
+    "gate": null,
+    "t3_floor": null,
+    "gate_basis": null,
+    "t3_basis": null
+   },
+   "weeks_with_fixtures": 1,
+   "tips_per_week": 2.0,
+   "weeks_3_2_1_0": [
+    0,
+    1,
+    0,
+    0
+   ],
+   "causes_lt3": {
+    "T3_EMPTY": 1
+   },
+   "tiers": {
+    "ALL": {
+     "bets": 2,
+     "hit": 0.5,
+     "roi": 0.55,
+     "ci95": [
+      -2.488,
+      3.588
+     ],
+     "p_one_sided": null,
+     "mean_odds": 2.575,
+     "clv": -0.0441,
+     "clv_n": 2
+    },
+    "T1_BEST_VALUE": {
+     "bets": 1,
+     "hit": 1.0,
+     "roi": 2.1,
+     "ci95": [
+      null,
+      null
+     ],
+     "p_one_sided": null,
+     "mean_odds": 3.1,
+     "clv": -0.0882,
+     "clv_n": 1
+    },
+    "T2_SAFEST": {
+     "bets": 1,
+     "hit": 0.0,
+     "roi": -1.0,
+     "ci95": [
+      null,
+      null
+     ],
+     "p_one_sided": null,
+     "mean_odds": 2.05,
+     "clv": 0.0,
+     "clv_n": 1
+    },
+    "T3_RISKY_VALUE": {
+     "bets": 0
+    }
+   },
+   "v6_p11_bars": {
+    "bets": 3,
+    "hit": 0.3333,
+    "roi": 0.0333,
+    "ci95": [
+     -1.992,
+     2.0587
+    ],
+    "p_one_sided": null,
+    "mean_odds": 2.733,
+    "clv": -0.0134,
+    "clv_n": 3
+   },
+   "v6_bade2c0b": {
+    "bets": 2,
+    "hit": 1.0,
+    "roi": 0.865,
+    "ci95": [
+     -0.1836,
+     1.9136
+    ],
+    "p_one_sided": null,
+    "mean_odds": 1.865,
+    "clv": -0.0556,
+    "clv_n": 2
+   },
+   "fit": null
+  },
+  "new_format|Sweden Allsvenskan": {
+   "params": {
+    "gate": null,
+    "t3_floor": null,
+    "gate_basis": null,
+    "t3_basis": null
+   },
+   "weeks_with_fixtures": 8,
+   "tips_per_week": 0.0,
+   "weeks_3_2_1_0": [
+    0,
+    0,
+    0,
+    8
+   ],
+   "causes_lt3": {
+    "ALL_CELLS_OFF": 8
+   },
+   "tiers": {
+    "ALL": {
+     "bets": 0
+    }
+   },
+   "v6_p11_bars": {
+    "bets": 0
+   },
+   "v6_bade2c0b": {
+    "bets": 24,
+    "hit": 0.2917,
+    "roi": -0.5779,
+    "ci95": [
+     -0.9543,
+     -0.2016
+    ],
+    "p_one_sided": 1.0,
+    "mean_odds": 1.512,
+    "clv": -0.012,
+    "clv_n": 24
+   },
+   "fit": null
+  },
+  "new_format|USA MLS": {
+   "params": {
+    "gate": null,
+    "t3_floor": null,
+    "gate_basis": null,
+    "t3_basis": null
+   },
+   "weeks_with_fixtures": 10,
+   "tips_per_week": 0.0,
+   "weeks_3_2_1_0": [
+    0,
+    0,
+    0,
+    10
+   ],
+   "causes_lt3": {
+    "ALL_CELLS_OFF": 10
+   },
+   "tiers": {
+    "ALL": {
+     "bets": 0
+    }
+   },
+   "v6_p11_bars": {
+    "bets": 0
+   },
+   "v6_bade2c0b": {
+    "bets": 27,
+    "hit": 0.7037,
+    "roi": 0.0267,
+    "ci95": [
+     -0.28,
+     0.3333
+    ],
+    "p_one_sided": 0.4208,
+    "mean_odds": 1.595,
+    "clv": 0.0051,
+    "clv_n": 27
+   },
+   "fit": null
+  },
+  "standard|Belgian First Division A": {
+   "params": {
+    "gate": null,
+    "t3_floor": null,
+    "gate_basis": null,
+    "t3_basis": null
+   },
+   "weeks_with_fixtures": 7,
+   "tips_per_week": 0.0,
+   "weeks_3_2_1_0": [
+    0,
+    0,
+    0,
+    7
+   ],
+   "causes_lt3": {
+    "ALL_CELLS_OFF": 7
+   },
+   "tiers": {
+    "ALL": {
+     "bets": 0
+    }
+   },
+   "v6_p11_bars": {
+    "bets": 0
+   },
+   "v6_bade2c0b": {
+    "bets": 3,
+    "hit": 1.0,
+    "roi": 0.3167,
+    "ci95": [
+     0.2709,
+     0.3624
+    ],
+    "p_one_sided": 0.0005,
+    "mean_odds": 1.317,
+    "clv": -0.005,
+    "clv_n": 3
+   },
+   "fit": null
+  },
+  "standard|Bundesliga 2": {
+   "params": {
+    "gate": null,
+    "t3_floor": null,
+    "gate_basis": null,
+    "t3_basis": null
+   },
+   "weeks_with_fixtures": 8,
+   "tips_per_week": 0.0,
+   "weeks_3_2_1_0": [
+    0,
+    0,
+    0,
+    8
+   ],
+   "causes_lt3": {
+    "ALL_CELLS_OFF": 8
+   },
+   "tiers": {
+    "ALL": {
+     "bets": 0
+    }
+   },
+   "v6_p11_bars": {
+    "bets": 0
+   },
+   "v6_bade2c0b": {
+    "bets": 0
+   },
+   "fit": null
+  },
+  "standard|Championship": {
+   "params": {
+    "gate": null,
+    "t3_floor": null,
+    "gate_basis": null,
+    "t3_basis": null
+   },
+   "weeks_with_fixtures": 8,
+   "tips_per_week": 0.0,
+   "weeks_3_2_1_0": [
+    0,
+    0,
+    0,
+    8
+   ],
+   "causes_lt3": {
+    "ALL_CELLS_OFF": 8
+   },
+   "tiers": {
+    "ALL": {
+     "bets": 0
+    }
+   },
+   "v6_p11_bars": {
+    "bets": 0
+   },
+   "v6_bade2c0b": {
+    "bets": 22,
+    "hit": 0.4545,
+    "roi": -0.095,
+    "ci95": [
+     -0.5703,
+     0.3803
+    ],
+    "p_one_sided": 0.6802,
+    "mean_odds": 2.235,
+    "clv": 0.0055,
+    "clv_n": 22
+   },
+   "fit": null
+  },
+  "standard|Dutch Eredivisie": {
+   "params": {
+    "gate": null,
+    "t3_floor": null,
+    "gate_basis": null,
+    "t3_basis": null
+   },
+   "weeks_with_fixtures": 8,
+   "tips_per_week": 0.0,
+   "weeks_3_2_1_0": [
+    0,
+    0,
+    0,
+    8
+   ],
+   "causes_lt3": {
+    "ALL_CELLS_OFF": 8
+   },
+   "tiers": {
+    "ALL": {
+     "bets": 0
+    }
+   },
+   "v6_p11_bars": {
+    "bets": 0
+   },
+   "v6_bade2c0b": {
+    "bets": 21,
+    "hit": 0.6667,
+    "roi": 0.3638,
+    "ci95": [
+     -0.1439,
+     0.8715
+    ],
+    "p_one_sided": 0.0695,
+    "mean_odds": 2.055,
+    "clv": 0.0148,
+    "clv_n": 21
+   },
+   "fit": null
+  },
+  "standard|Greek Super League": {
+   "params": {
+    "gate": "BAR",
+    "t3_floor": "REL",
+    "gate_basis": "FIT",
+    "t3_basis": "UNFITTED (no floor with >= 40 fit T3 picks): REL"
+   },
+   "weeks_with_fixtures": 8,
+   "tips_per_week": 0.12,
+   "weeks_3_2_1_0": [
+    0,
+    0,
+    1,
+    7
+   ],
+   "causes_lt3": {
+    "NO_VALUE": 7,
+    "FEW_VALUE": 1
+   },
+   "tiers": {
+    "ALL": {
+     "bets": 1,
+     "hit": 1.0,
+     "roi": 1.25,
+     "ci95": [
+      null,
+      null
+     ],
+     "p_one_sided": null,
+     "mean_odds": 2.25,
+     "clv": -0.0625,
+     "clv_n": 1
+    },
+    "T1_BEST_VALUE": {
+     "bets": 1,
+     "hit": 1.0,
+     "roi": 1.25,
+     "ci95": [
+      null,
+      null
+     ],
+     "p_one_sided": null,
+     "mean_odds": 2.25,
+     "clv": -0.0625,
+     "clv_n": 1
+    },
+    "T2_SAFEST": {
+     "bets": 0
+    },
+    "T3_RISKY_VALUE": {
+     "bets": 0
+    }
+   },
+   "v6_p11_bars": {
+    "bets": 1,
+    "hit": 1.0,
+    "roi": 1.25,
+    "ci95": [
+     null,
+     null
+    ],
+    "p_one_sided": null,
+    "mean_odds": 2.25,
+    "clv": -0.0625,
+    "clv_n": 1
+   },
+   "v6_bade2c0b": {
+    "bets": 1,
+    "hit": 1.0,
+    "roi": 1.25,
+    "ci95": [
+     null,
+     null
+    ],
+    "p_one_sided": null,
+    "mean_odds": 2.25,
+    "clv": -0.0625,
+    "clv_n": 1
+   },
+   "fit": {
+    "ALL": {
+     "bets": 47,
+     "hit": 0.4043,
+     "roi": -0.0032,
+     "ci95": [
+      -0.355,
+      0.3486
+     ],
+     "p_one_sided": 0.5092,
+     "mean_odds": 2.464,
+     "clv": -0.0063,
+     "clv_n": 47
+    },
+    "T1_BEST_VALUE": {
+     "bets": 30,
+     "hit": 0.4,
+     "roi": -0.0133,
+     "ci95": [
+      -0.4569,
+      0.4302
+     ],
+     "p_one_sided": 0.5457,
+     "mean_odds": 2.463,
+     "clv": -0.0063,
+     "clv_n": 30
+    },
+    "T2_SAFEST": {
+     "bets": 13,
+     "hit": 0.3077,
+     "roi": -0.2385,
+     "ci95": [
+      -0.8861,
+      0.4091
+     ],
+     "p_one_sided": 0.8111,
+     "mean_odds": 2.454,
+     "clv": -0.0207,
+     "clv_n": 13
+    },
+    "T3_RISKY_VALUE": {
+     "bets": 4,
+     "hit": 0.75,
+     "roi": 0.8375,
+     "ci95": [
+      -0.375,
+      2.04
+     ],
+     "p_one_sided": 0.0445,
+     "mean_odds": 2.513,
+     "clv": 0.0406,
+     "clv_n": 4
+    }
+   }
+  },
+  "standard|La Liga 2": {
+   "params": {
+    "gate": "BAR",
+    "t3_floor": "REL",
+    "gate_basis": "FIT",
+    "t3_basis": "UNFITTED (no floor with >= 40 fit T3 picks): REL"
+   },
+   "weeks_with_fixtures": 10,
+   "tips_per_week": 0.5,
+   "weeks_3_2_1_0": [
+    0,
+    0,
+    5,
+    5
+   ],
+   "causes_lt3": {
+    "FEW_VALUE": 5,
+    "NO_VALUE": 5
+   },
+   "tiers": {
+    "ALL": {
+     "bets": 5,
+     "hit": 0.6,
+     "roi": 0.6,
+     "ci95": [
+      -0.6808,
+      1.8808
+     ],
+     "p_one_sided": 0.1019,
+     "mean_odds": 2.62,
+     "clv": 0.0424,
+     "clv_n": 5
+    },
+    "T1_BEST_VALUE": {
+     "bets": 5,
+     "hit": 0.6,
+     "roi": 0.6,
+     "ci95": [
+      -0.6808,
+      1.8808
+     ],
+     "p_one_sided": 0.1019,
+     "mean_odds": 2.62,
+     "clv": 0.0424,
+     "clv_n": 5
+    },
+    "T2_SAFEST": {
+     "bets": 0
+    },
+    "T3_RISKY_VALUE": {
+     "bets": 0
+    }
+   },
+   "v6_p11_bars": {
+    "bets": 5,
+    "hit": 0.6,
+    "roi": 0.6,
+    "ci95": [
+     -0.6808,
+     1.8808
+    ],
+    "p_one_sided": 0.1019,
+    "mean_odds": 2.62,
+    "clv": 0.0424,
+    "clv_n": 5
+   },
+   "v6_bade2c0b": {
+    "bets": 15,
+    "hit": 0.3333,
+    "roi": 0.1667,
+    "ci95": [
+     -0.9776,
+     1.311
+    ],
+    "p_one_sided": 0.4188,
+    "mean_odds": 4.147,
+    "clv": 0.0214,
+    "clv_n": 15
+   },
+   "fit": {
+    "ALL": {
+     "bets": 70,
+     "hit": 0.3714,
+     "roi": -0.0004,
+     "ci95": [
+      -0.3104,
+      0.3096
+     ],
+     "p_one_sided": 0.4868,
+     "mean_odds": 2.709,
+     "clv": -0.0031,
+     "clv_n": 70
+    },
+    "T1_BEST_VALUE": {
+     "bets": 42,
+     "hit": 0.4524,
+     "roi": 0.2367,
+     "ci95": [
+      -0.1874,
+      0.6587
+     ],
+     "p_one_sided": 0.1394,
+     "mean_odds": 2.723,
+     "clv": 0.0001,
+     "clv_n": 42
+    },
+    "T2_SAFEST": {
+     "bets": 24,
+     "hit": 0.2917,
+     "roi": -0.2487,
+     "ci95": [
+      -0.7292,
+      0.2317
+     ],
+     "p_one_sided": 0.8521,
+     "mean_odds": 2.671,
+     "clv": 0.0019,
+     "clv_n": 24
+    },
+    "T3_RISKY_VALUE": {
+     "bets": 4,
+     "hit": 0.0,
+     "roi": -1.0,
+     "ci95": [
+      -1.0,
+      -1.0
+     ],
+     "p_one_sided": 1.0,
+     "mean_odds": 2.795,
+     "clv": -0.0677,
+     "clv_n": 4
+    }
+   }
+  },
+  "standard|League One": {
+   "params": {
+    "gate": null,
+    "t3_floor": null,
+    "gate_basis": null,
+    "t3_basis": null
+   },
+   "weeks_with_fixtures": 10,
+   "tips_per_week": 0.0,
+   "weeks_3_2_1_0": [
+    0,
+    0,
+    0,
+    10
+   ],
+   "causes_lt3": {
+    "NO_VALUE": 10
+   },
+   "tiers": {
+    "ALL": {
+     "bets": 0
+    }
+   },
+   "v6_p11_bars": {
+    "bets": 1,
+    "hit": 0.0,
+    "roi": -1.0,
+    "ci95": [
+     null,
+     null
+    ],
+    "p_one_sided": null,
+    "mean_odds": 2.15,
+    "clv": 0.0238,
+    "clv_n": 1
+   },
+   "v6_bade2c0b": {
+    "bets": 0
+   },
+   "fit": null
+  },
+  "standard|League Two": {
+   "params": {
+    "gate": null,
+    "t3_floor": null,
+    "gate_basis": null,
+    "t3_basis": null
+   },
+   "weeks_with_fixtures": 10,
+   "tips_per_week": 0.0,
+   "weeks_3_2_1_0": [
+    0,
+    0,
+    0,
+    10
+   ],
+   "causes_lt3": {
+    "ALL_CELLS_OFF": 10
+   },
+   "tiers": {
+    "ALL": {
+     "bets": 0
+    }
+   },
+   "v6_p11_bars": {
+    "bets": 0
+   },
+   "v6_bade2c0b": {
+    "bets": 0
+   },
+   "fit": null
+  },
+  "standard|Ligue 2": {
+   "params": {
+    "gate": "CAL",
+    "t3_floor": "REL",
+    "gate_basis": "UNFITTED (< 40 fit picks): CAL",
+    "t3_basis": "UNFITTED (no floor with >= 40 fit T3 picks): REL"
+   },
+   "weeks_with_fixtures": 8,
+   "tips_per_week": 0.0,
+   "weeks_3_2_1_0": [
+    0,
+    0,
+    0,
+    8
+   ],
+   "causes_lt3": {
+    "NO_PRICE": 1,
+    "NO_VALUE": 7
+   },
+   "tiers": {
+    "ALL": {
+     "bets": 0
+    }
+   },
+   "v6_p11_bars": {
+    "bets": 0
+   },
+   "v6_bade2c0b": {
+    "bets": 4,
+    "hit": 0.75,
+    "roi": 0.0525,
+    "ci95": [
+     -0.65,
+     0.7407
+    ],
+    "p_one_sided": 0.2689,
+    "mean_odds": 1.425,
+    "clv": 0.0219,
+    "clv_n": 4
+   },
+   "fit": {
+    "ALL": {
+     "bets": 3,
+     "hit": 0.3333,
+     "roi": -0.5133,
+     "ci95": [
+      -1.4672,
+      0.46
+     ],
+     "p_one_sided": 0.9685,
+     "mean_odds": 1.497,
+     "clv": -0.0493,
+     "clv_n": 3
+    },
+    "T1_BEST_VALUE": {
+     "bets": 3,
+     "hit": 0.3333,
+     "roi": -0.5133,
+     "ci95": [
+      -1.4672,
+      0.46
+     ],
+     "p_one_sided": 0.9685,
+     "mean_odds": 1.497,
+     "clv": -0.0493,
+     "clv_n": 3
+    },
+    "T2_SAFEST": {
+     "bets": 0
+    },
+    "T3_RISKY_VALUE": {
+     "bets": 0
+    }
+   }
+  },
+  "standard|National League": {
+   "params": {
+    "gate": "CAL",
+    "t3_floor": "REL",
+    "gate_basis": "UNFITTED (< 40 fit picks): CAL",
+    "t3_basis": "UNFITTED (no floor with >= 40 fit T3 picks): REL"
+   },
+   "weeks_with_fixtures": 8,
+   "tips_per_week": 0.0,
+   "weeks_3_2_1_0": [
+    0,
+    0,
+    0,
+    8
+   ],
+   "causes_lt3": {
+    "NO_VALUE": 8
+   },
+   "tiers": {
+    "ALL": {
+     "bets": 0
+    }
+   },
+   "v6_p11_bars": {
+    "bets": 0
+   },
+   "v6_bade2c0b": {
+    "bets": 0
+   },
+   "fit": null
+  },
+  "standard|Portuguese Primeira Liga": {
+   "params": {
+    "gate": null,
+    "t3_floor": null,
+    "gate_basis": null,
+    "t3_basis": null
+   },
+   "weeks_with_fixtures": 8,
+   "tips_per_week": 0.0,
+   "weeks_3_2_1_0": [
+    0,
+    0,
+    0,
+    8
+   ],
+   "causes_lt3": {
+    "ALL_CELLS_OFF": 8
+   },
+   "tiers": {
+    "ALL": {
+     "bets": 0
+    }
+   },
+   "v6_p11_bars": {
+    "bets": 0
+   },
+   "v6_bade2c0b": {
+    "bets": 21,
+    "hit": 0.381,
+    "roi": 0.0843,
+    "ci95": [
+     -0.8268,
+     0.9954
+    ],
+    "p_one_sided": 0.3898,
+    "mean_odds": 2.857,
+    "clv": 0.0428,
+    "clv_n": 14
+   },
+   "fit": null
+  },
+  "standard|Scottish Championship": {
+   "params": {
+    "gate": null,
+    "t3_floor": null,
+    "gate_basis": null,
+    "t3_basis": null
+   },
+   "weeks_with_fixtures": 10,
+   "tips_per_week": 0.0,
+   "weeks_3_2_1_0": [
+    0,
+    0,
+    0,
+    10
+   ],
+   "causes_lt3": {
+    "ALL_CELLS_OFF": 10
+   },
+   "tiers": {
+    "ALL": {
+     "bets": 0
+    }
+   },
+   "v6_p11_bars": {
+    "bets": 0
+   },
+   "v6_bade2c0b": {
+    "bets": 0
+   },
+   "fit": null
+  },
+  "standard|Scottish League One": {
+   "params": {
+    "gate": null,
+    "t3_floor": null,
+    "gate_basis": null,
+    "t3_basis": null
+   },
+   "weeks_with_fixtures": 9,
+   "tips_per_week": 0.0,
+   "weeks_3_2_1_0": [
+    0,
+    0,
+    0,
+    9
+   ],
+   "causes_lt3": {
+    "ALL_CELLS_OFF": 9
+   },
+   "tiers": {
+    "ALL": {
+     "bets": 0
+    }
+   },
+   "v6_p11_bars": {
+    "bets": 0
+   },
+   "v6_bade2c0b": {
+    "bets": 0
+   },
+   "fit": null
+  },
+  "standard|Scottish League Two": {
+   "params": {
+    "gate": null,
+    "t3_floor": null,
+    "gate_basis": null,
+    "t3_basis": null
+   },
+   "weeks_with_fixtures": 8,
+   "tips_per_week": 0.0,
+   "weeks_3_2_1_0": [
+    0,
+    0,
+    0,
+    8
+   ],
+   "causes_lt3": {
+    "ALL_CELLS_OFF": 8
+   },
+   "tiers": {
+    "ALL": {
+     "bets": 0
+    }
+   },
+   "v6_p11_bars": {
+    "bets": 0
+   },
+   "v6_bade2c0b": {
+    "bets": 0
+   },
+   "fit": null
+  },
+  "standard|Scottish Premiership": {
+   "params": {
+    "gate": null,
+    "t3_floor": null,
+    "gate_basis": null,
+    "t3_basis": null
+   },
+   "weeks_with_fixtures": 8,
+   "tips_per_week": 0.0,
+   "weeks_3_2_1_0": [
+    0,
+    0,
+    0,
+    8
+   ],
+   "causes_lt3": {
+    "ALL_CELLS_OFF": 8
+   },
+   "tiers": {
+    "ALL": {
+     "bets": 0
+    }
+   },
+   "v6_p11_bars": {
+    "bets": 0
+   },
+   "v6_bade2c0b": {
+    "bets": 0
+   },
+   "fit": null
+  },
+  "standard|Serie B": {
+   "params": {
+    "gate": "CAL",
+    "t3_floor": "REL",
+    "gate_basis": "FIT",
+    "t3_basis": "UNFITTED (no floor with >= 40 fit T3 picks): REL"
+   },
+   "weeks_with_fixtures": 8,
+   "tips_per_week": 0.75,
+   "weeks_3_2_1_0": [
+    1,
+    1,
+    1,
+    5
+   ],
+   "causes_lt3": {
+    "FEW_VALUE": 2,
+    "NO_VALUE": 4,
+    "NO_PRICE": 1
+   },
+   "tiers": {
+    "ALL": {
+     "bets": 6,
+     "hit": 0.5,
+     "roi": 0.0083,
+     "ci95": [
+      -1.1728,
+      1.1895
+     ],
+     "p_one_sided": 0.4403,
+     "mean_odds": 2.125,
+     "clv": 0.0763,
+     "clv_n": 6
+    },
+    "T1_BEST_VALUE": {
+     "bets": 3,
+     "hit": 0.3333,
+     "roi": -0.2,
+     "ci95": [
+      -1.768,
+      1.4
+     ],
+     "p_one_sided": 0.7411,
+     "mean_odds": 2.267,
+     "clv": 0.097,
+     "clv_n": 3
+    },
+    "T2_SAFEST": {
+     "bets": 2,
+     "hit": 1.0,
+     "roi": 0.825,
+     "ci95": [
+      -0.008,
+      1.658
+     ],
+     "p_one_sided": null,
+     "mean_odds": 1.825,
+     "clv": 0.0357,
+     "clv_n": 2
+    },
+    "T3_RISKY_VALUE": {
+     "bets": 1,
+     "hit": 0.0,
+     "roi": -1.0,
+     "ci95": [
+      null,
+      null
+     ],
+     "p_one_sided": null,
+     "mean_odds": 2.3,
+     "clv": 0.0952,
+     "clv_n": 1
+    }
+   },
+   "v6_p11_bars": {
+    "bets": 8,
+    "hit": 0.625,
+    "roi": 0.1962,
+    "ci95": [
+     -0.7424,
+     1.1349
+    ],
+    "p_one_sided": 0.3208,
+    "mean_odds": 2.034,
+    "clv": 0.0733,
+    "clv_n": 8
+   },
+   "v6_bade2c0b": {
+    "bets": 19,
+    "hit": 0.5789,
+    "roi": 0.2321,
+    "ci95": [
+     -0.394,
+     0.8582
+    ],
+    "p_one_sided": 0.2369,
+    "mean_odds": 2.465,
+    "clv": 0.0251,
+    "clv_n": 19
+   },
+   "fit": {
+    "ALL": {
+     "bets": 110,
+     "hit": 0.6636,
+     "roi": 0.1118,
+     "ci95": [
+      -0.0572,
+      0.2809
+     ],
+     "p_one_sided": 0.095,
+     "mean_odds": 1.813,
+     "clv": 0.0124,
+     "clv_n": 110
+    },
+    "T1_BEST_VALUE": {
+     "bets": 48,
+     "hit": 0.7292,
+     "roi": 0.1821,
+     "ci95": [
+      -0.0427,
+      0.4068
+     ],
+     "p_one_sided": 0.052,
+     "mean_odds": 1.749,
+     "clv": 0.0155,
+     "clv_n": 48
+    },
+    "T2_SAFEST": {
+     "bets": 37,
+     "hit": 0.8108,
+     "roi": 0.2735,
+     "ci95": [
+      0.0397,
+      0.4975
+     ],
+     "p_one_sided": 0.013,
+     "mean_odds": 1.592,
+     "clv": 0.0032,
+     "clv_n": 37
+    },
+    "T3_RISKY_VALUE": {
+     "bets": 25,
+     "hit": 0.32,
+     "roi": -0.2624,
+     "ci95": [
+      -0.6997,
+      0.1749
+     ],
+     "p_one_sided": 0.8976,
+     "mean_odds": 2.263,
+     "clv": 0.0201,
+     "clv_n": 25
+    }
+   }
+  },
+  "standard|Turkish Super Lig": {
+   "params": {
+    "gate": null,
+    "t3_floor": null,
+    "gate_basis": null,
+    "t3_basis": null
+   },
+   "weeks_with_fixtures": 8,
+   "tips_per_week": 0.0,
+   "weeks_3_2_1_0": [
+    0,
+    0,
+    0,
+    8
+   ],
+   "causes_lt3": {
+    "ALL_CELLS_OFF": 8
+   },
+   "tiers": {
+    "ALL": {
+     "bets": 0
+    }
+   },
+   "v6_p11_bars": {
+    "bets": 0
+   },
+   "v6_bade2c0b": {
+    "bets": 0
+   },
+   "fit": null
+  }
+ }
+}

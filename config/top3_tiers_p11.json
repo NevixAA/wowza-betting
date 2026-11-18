@@ -1,0 +1,318 @@
+{
+ "protocol": "p11-bars-tiers-clean/1",
+ "status": "PROPOSAL - AWAITING OWNER (2026-11-20); install with the go-live",
+ "bars_proposal_id": "TP-2026-11-18-42a409c5",
+ "bars_proposal_hash": "42a409c5520d68be9a5136b69e7e0dae5cc1cf5ec23c81f138d9f73230a297b9",
+ "tiers": {
+  "T1_BEST_VALUE": "highest cal_ev",
+  "T2_SAFEST": "highest p_cal of the rest",
+  "T3_RISKY_VALUE": "of the rest, odds >= t3_floor, highest ev_lo (REL: the rest's longest odds)"
+ },
+ "gates": {
+  "CAL": "cal_ev > 0",
+  "BAR": "cleared bar and p_used * odds - 1 > 0"
+ },
+ "leagues": {
+  "new_format|Argentina Primera Division": {
+   "gate": "BAR",
+   "t3_floor": "REL",
+   "gate_basis": "FIT",
+   "t3_basis": "UNFITTED (no floor with >= 40 fit T3 picks): REL"
+  },
+  "new_format|Austrian Bundesliga": {
+   "gate": "CAL",
+   "t3_floor": "REL",
+   "gate_basis": "FIT",
+   "t3_basis": "FIT"
+  },
+  "new_format|Brazil Serie A": {
+   "gate": "BAR",
+   "t3_floor": "REL",
+   "gate_basis": "FIT",
+   "t3_basis": "UNFITTED (no floor with >= 40 fit T3 picks): REL"
+  },
+  "new_format|China Super League": {
+   "gate": "CAL",
+   "t3_floor": "REL",
+   "gate_basis": "UNFITTED (< 40 fit picks): CAL",
+   "t3_basis": "UNFITTED (no floor with >= 40 fit T3 picks): REL"
+  },
+  "new_format|Denmark Superliga": {
+   "gate": "CAL",
+   "t3_floor": 2.25,
+   "gate_basis": "FIT",
+   "t3_basis": "FIT"
+  },
+  "new_format|Finland Veikkausliiga": {
+   "gate": "CAL",
+   "t3_floor": "REL",
+   "gate_basis": "FIT",
+   "t3_basis": "UNFITTED (no floor with >= 40 fit T3 picks): REL"
+  },
+  "new_format|Ireland Premier Division": {
+   "gate": "CAL",
+   "t3_floor": "REL",
+   "gate_basis": "NO_FIT_POOL (cell switched on by the serving refit only): CAL, unvalidated",
+   "t3_basis": "NO_FIT_POOL: REL, unvalidated"
+  },
+  "new_format|Japan J-League": {
+   "gate": "BAR",
+   "t3_floor": "REL",
+   "gate_basis": "FIT",
+   "t3_basis": "FIT"
+  },
+  "new_format|K-League 1": {
+   "gate": "CAL",
+   "t3_floor": "REL",
+   "gate_basis": "FIT",
+   "t3_basis": "UNFITTED (no floor with >= 40 fit T3 picks): REL"
+  },
+  "new_format|Norway Eliteserien": {
+   "gate": "CAL",
+   "t3_floor": "REL",
+   "gate_basis": "FIT",
+   "t3_basis": "UNFITTED (no floor with >= 40 fit T3 picks): REL"
+  },
+  "new_format|Romanian Superliga": {
+   "gate": "CAL",
+   "t3_floor": "REL",
+   "gate_basis": "NO_FIT_POOL (cell switched on by the serving refit only): CAL, unvalidated",
+   "t3_basis": "NO_FIT_POOL: REL, unvalidated"
+  },
+  "new_format|Saudi Pro League": {
+   "gate": "CAL",
+   "t3_floor": "REL",
+   "gate_basis": "NO_FIT_POOL (cell switched on by the serving refit only): CAL, unvalidated",
+   "t3_basis": "NO_FIT_POOL: REL, unvalidated"
+  },
+  "new_format|Sweden Allsvenskan": {
+   "gate": "CAL",
+   "t3_floor": "REL",
+   "gate_basis": "NO_FIT_POOL (cell switched on by the serving refit only): CAL, unvalidated",
+   "t3_basis": "NO_FIT_POOL: REL, unvalidated"
+  },
+  "new_format|USA MLS": {
+   "gate": "CAL",
+   "t3_floor": "REL",
+   "gate_basis": "NO_FIT_POOL (cell switched on by the serving refit only): CAL, unvalidated",
+   "t3_basis": "NO_FIT_POOL: REL, unvalidated"
+  },
+  "standard|Belgian First Division A": {
+   "gate": "CAL",
+   "t3_floor": "REL",
+   "gate_basis": "NO_FIT_POOL (cell switched on by the serving refit only): CAL, unvalidated",
+   "t3_basis": "NO_FIT_POOL: REL, unvalidated"
+  },
+  "standard|Greek Super League": {
+   "gate": "BAR",
+   "t3_floor": "REL",
+   "gate_basis": "FIT",
+   "t3_basis": "UNFITTED (no floor with >= 40 fit T3 picks): REL"
+  },
+  "standard|La Liga 2": {
+   "gate": "BAR",
+   "t3_floor": "REL",
+   "gate_basis": "FIT",
+   "t3_basis": "UNFITTED (no floor with >= 40 fit T3 picks): REL"
+  },
+  "standard|League One": {
+   "gate": "CAL",
+   "t3_floor": "REL",
+   "gate_basis": "NO_FIT_POOL (cell switched on by the serving refit only): CAL, unvalidated",
+   "t3_basis": "NO_FIT_POOL: REL, unvalidated"
+  },
+  "standard|Ligue 2": {
+   "gate": "CAL",
+   "t3_floor": "REL",
+   "gate_basis": "UNFITTED (< 40 fit picks): CAL",
+   "t3_basis": "UNFITTED (no floor with >= 40 fit T3 picks): REL"
+  },
+  "standard|National League": {
+   "gate": "CAL",
+   "t3_floor": "REL",
+   "gate_basis": "UNFITTED (< 40 fit picks): CAL",
+   "t3_basis": "UNFITTED (no floor with >= 40 fit T3 picks): REL"
+  },
+  "standard|Serie B": {
+   "gate": "CAL",
+   "t3_floor": "REL",
+   "gate_basis": "FIT",
+   "t3_basis": "UNFITTED (no floor with >= 40 fit T3 picks): REL"
+  }
+ },
+ "calibration": {
+  "rule": "R2: p_cal = fair + lam * (p_used - fair); ev_lo with lam - lam_se",
+  "fitted_on": "priced rows < 2026-11-09",
+  "cells": [
+   {
+    "track": "new_format",
+    "league": "Argentina Primera Division",
+    "mside": "over15_over",
+    "lam": 0.153023,
+    "lam_se": 0.225313,
+    "lam_rows": 565
+   },
+   {
+    "track": "new_format",
+    "league": "Austrian Bundesliga",
+    "mside": "over25_under",
+    "lam": 1.0,
+    "lam_se": 0.880252,
+    "lam_rows": 450
+   },
+   {
+    "track": "new_format",
+    "league": "China Super League",
+    "mside": "over25_under",
+    "lam": 1.0,
+    "lam_se": 1.061219,
+    "lam_rows": 309
+   },
+   {
+    "track": "new_format",
+    "league": "China Super League",
+    "mside": "over35_over",
+    "lam": 1.0,
+    "lam_se": 0.951466,
+    "lam_rows": 306
+   },
+   {
+    "track": "new_format",
+    "league": "Denmark Superliga",
+    "mside": "over35_over",
+    "lam": 1.0,
+    "lam_se": 0.822994,
+    "lam_rows": 378
+   },
+   {
+    "track": "new_format",
+    "league": "Finland Veikkausliiga",
+    "mside": "over35_over",
+    "lam": 0.708171,
+    "lam_se": 1.386188,
+    "lam_rows": 263
+   },
+   {
+    "track": "new_format",
+    "league": "Ireland Premier Division",
+    "mside": "over15_over",
+    "lam": 1.0,
+    "lam_se": 1.1249,
+    "lam_rows": 45
+   },
+   {
+    "track": "new_format",
+    "league": "Japan J-League",
+    "mside": "over15_over",
+    "lam": 0.311331,
+    "lam_se": 0.640124,
+    "lam_rows": 97
+   },
+   {
+    "track": "new_format",
+    "league": "Japan J-League",
+    "mside": "over25_under",
+    "lam": 1.0,
+    "lam_se": 0.806085,
+    "lam_rows": 508
+   },
+   {
+    "track": "new_format",
+    "league": "K-League 1",
+    "mside": "over25_under",
+    "lam": 0.901566,
+    "lam_se": 1.154368,
+    "lam_rows": 314
+   },
+   {
+    "track": "new_format",
+    "league": "Norway Eliteserien",
+    "mside": "over35_over",
+    "lam": 1.0,
+    "lam_se": 0.742919,
+    "lam_rows": 486
+   },
+   {
+    "track": "new_format",
+    "league": "Saudi Pro League",
+    "mside": "over25_under",
+    "lam": 1.0,
+    "lam_se": 1.400912,
+    "lam_rows": 59
+   },
+   {
+    "track": "standard",
+    "league": "Belgian First Division A",
+    "mside": "over25_under",
+    "lam": 1.0,
+    "lam_se": 0.543952,
+    "lam_rows": 1093
+   },
+   {
+    "track": "standard",
+    "league": "Greek Super League",
+    "mside": "over15_over",
+    "lam": 1.0,
+    "lam_se": 1.908253,
+    "lam_rows": 516
+   },
+   {
+    "track": "standard",
+    "league": "Greek Super League",
+    "mside": "over25_over",
+    "lam": 0.072158,
+    "lam_se": 0.21071,
+    "lam_rows": 912
+   },
+   {
+    "track": "standard",
+    "league": "La Liga 2",
+    "mside": "over25_over",
+    "lam": 0.07034,
+    "lam_se": 0.111055,
+    "lam_rows": 1813
+   },
+   {
+    "track": "standard",
+    "league": "League One",
+    "mside": "over25_over",
+    "lam": 0.0,
+    "lam_se": 0.179197,
+    "lam_rows": 2146
+   },
+   {
+    "track": "standard",
+    "league": "Ligue 2",
+    "mside": "over15_over",
+    "lam": 0.781756,
+    "lam_se": 1.623703,
+    "lam_rows": 786
+   },
+   {
+    "track": "standard",
+    "league": "Ligue 2",
+    "mside": "over25_over",
+    "lam": 0.069078,
+    "lam_se": 0.179638,
+    "lam_rows": 1315
+   },
+   {
+    "track": "standard",
+    "league": "Serie B",
+    "mside": "over15_over",
+    "lam": 1.0,
+    "lam_se": 0.884548,
+    "lam_rows": 848
+   },
+   {
+    "track": "standard",
+    "league": "Serie B",
+    "mside": "over25_over",
+    "lam": 0.306601,
+    "lam_se": 0.163084,
+    "lam_rows": 1488
+   }
+  ]
+ },
+ "stake": "0.5% flat on every TOP-3 tip (owner 2026-11-17); unchanged"
+}
