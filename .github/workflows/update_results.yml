@@ -179,6 +179,32 @@ jobs:
           done
           [ "$pushed" = "1" ] || echo "::warning::league research settlement push failed after 5 retries"
 
+      # SIDE MODELS SETTLED VIEW (owner 2026-11-18; src/side_models/ledger.py settle). LEARNING ONLY.
+      # Rebuilds output/prediction_ledger_settled/v9/v9_corners|v9_cards/... from the VERIFIED corners / cards
+      # statistics (two sources agree, or API-Football's single certified source passing the sanity rules;
+      # src/prediction_ledger.stat_outcome). The raw ledger is only READ. No API call. Must run AFTER any
+      # other v9 settled-view step (that one cannot read statistics). OFF unless SIDE_MODELS_LEDGER_ENABLED
+      # and PREDICTION_LEDGER_ENABLED are both 'true'. Tolerant: a failure is a warning, never a red run.
+      - name: Side models ledger - settled view (learning only)
+        if: always() && vars.SIDE_MODELS_LEDGER_ENABLED == 'true' && vars.PREDICTION_LEDGER_ENABLED == 'true'
+        env:
+          SIDE_MODELS_LEDGER_ENABLED: ${{ vars.SIDE_MODELS_LEDGER_ENABLED }}
+          PREDICTION_LEDGER_ENABLED: ${{ vars.PREDICTION_LEDGER_ENABLED }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          pushed=0
+          for i in 1 2 3 4 5; do
+            git fetch -q origin main && git reset -q --hard origin/main || { sleep 3; continue; }
+            python -m src.side_models.ledger settle || { echo "::warning::side models settlement failed (learning only)"; pushed=1; break; }
+            git add -f output/prediction_ledger_settled/ 2>/dev/null || true
+            if git diff --staged --quiet; then pushed=1; echo "side models settlement: nothing new"; break; fi
+            git commit -q -m "auto: side models settlement $(date -u '+%Y-%m-%d %H:%M UTC')"
+            git push && { pushed=1; break; }
+            echo "push race - retry $i"; sleep $((RANDOM % 5 + 3))
+          done
+          [ "$pushed" = "1" ] || echo "::warning::side models settlement push failed after 5 retries"
+
       # CORRECTIONS SIDECARS (ops6, 2026-11-02). The two round-5 sidecars need API-Football, so they
       # can only be built here, never on a laptop:
       #   output/corrections/player_ledger_restored_2026-11.csv   graded_* columns of the 111 restored

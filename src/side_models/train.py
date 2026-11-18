@@ -51,32 +51,52 @@ def has_fd_stats(e: dict) -> bool:
     return bool(e.get("football_data_code")) and e.get("football_data_format") == "mmz4281"
 
 
+def single_source_leagues(cfg: dict, tracked: list) -> dict:
+    """{league: window start} for tracked leagues without football-data match statistics (owner
+    2026-11-18: API-Football is their single certified source)."""
+    ss = cfg["single_source"]
+    return {e["name"]: ss["window_from"] for e in tracked
+            if not has_fd_stats(e) and e.get("api_football_id") is not None}
+
+
 def coverage(cfg: dict, tracked: list, audit: dict) -> dict:
-    """{family: {league: {"covered": bool, "reason": str, evidence...}}} for every tracked league."""
-    v = cfg["verification"]
+    """{family: {league: {"covered": bool, "basis", "reason", evidence...}}} for every tracked league.
+    two_source:    overlap >= min_overlap_pct and agreement >= min_agree_pct (`verification`).
+    single_source: API-Football stats on >= single_source.min_stats_pct of the window's fixtures, and
+                   sane on >= single_source.min_sane_pct of those (`single_source`)."""
+    v, ss = cfg["verification"], cfg["single_source"]
     out = {fam: {} for fam in cfg["families"]}
     for e in tracked:
         lg = e["name"]
         a = audit.get(lg)
         for fam in cfg["families"]:
-            if not has_fd_stats(e) or a is None or not a.get("fd_rows"):
-                out[fam][lg] = {"covered": False, "reason": (
-                    "single source: API-Football only (football-data's "
-                    f"{e.get('football_data_format') or 'no'} format for this league carries no corners/cards), "
-                    "so no fixture can be verified by a second source")}
+            if a is None:
+                out[fam][lg] = {"covered": False, "basis": None,
+                                "reason": "no API-Football league id: no statistics source"}
                 continue
             n = a["af_fixtures_in_window"]
             both = a[f"{fam}_both"]
             agree = a[f"{fam}_verified"]
             ov = 100.0 * both / n if n else 0.0
             ag = 100.0 * agree / both if both else 0.0
-            ok = ov >= v["min_overlap_pct"] and ag >= v["min_agree_pct"]
-            out[fam][lg] = {"covered": bool(ok), "overlap_pct": round(ov, 2), "agree_pct": round(ag, 2),
-                            "fixtures_in_window": int(n), "both_sources": int(both),
-                            "verified": int(agree), "window_from": a["fd_window_from"],
-                            "reason": "" if ok else (
-                                f"overlap {ov:.1f}% (needs {v['min_overlap_pct']}) / agreement {ag:.1f}% "
-                                f"(needs {v['min_agree_pct']})")}
+            if a["basis"] == "two_source":
+                ok = ov >= v["min_overlap_pct"] and ag >= v["min_agree_pct"]
+                why = (f"two sources: overlap {ov:.1f}% (needs {v['min_overlap_pct']}) / agreement {ag:.1f}% "
+                       f"(needs {v['min_agree_pct']})")
+                out[fam][lg] = {"covered": bool(ok), "basis": "two_source", "overlap_pct": round(ov, 2),
+                                "agree_pct": round(ag, 2), "fixtures_in_window": int(n),
+                                "both_sources": int(both), "verified": int(agree),
+                                "window_from": a["fd_window_from"], "reason": "" if ok else why}
+            else:
+                ok = ov >= ss["min_stats_pct"] and ag >= ss["min_sane_pct"]
+                why = (f"single source (API-Football): stats on {ov:.1f}% of window fixtures (needs "
+                       f"{ss['min_stats_pct']}), sane {ag:.1f}% (needs {ss['min_sane_pct']}); by year "
+                       f"{a.get('with_stats_pct_by_year')}")
+                out[fam][lg] = {"covered": bool(ok), "basis": "single_source", "stats_pct": round(ov, 2),
+                                "sane_pct": round(ag, 2), "fixtures_in_window": int(n),
+                                "with_stats": int(both), "verified": int(agree),
+                                "with_stats_pct_by_year": a.get("with_stats_pct_by_year"),
+                                "window_from": a["fd_window_from"], "reason": "" if ok else why}
     return out
 
 
@@ -149,7 +169,7 @@ def run(*, write: bool = True, out_dir: Path | None = None) -> dict:
     fcfg = cfg["features"]
     tracked = tracked_leagues()
     fd_leagues = [e["name"] for e in tracked if has_fd_stats(e)]
-    table, audit = D.build(fd_leagues)
+    table, audit = D.build(fd_leagues, single_source=single_source_leagues(cfg, tracked))
     cov = coverage(cfg, tracked, audit)
     split = cfg["holdout_split_date"]
     metrics, models = [], {}
@@ -167,10 +187,11 @@ def run(*, write: bool = True, out_dir: Path | None = None) -> dict:
                                "fit_from": str(fr["date"].min()), "fit_to": str(fr["date"].max()),
                                "n_holdout_train": int(len(tr)), "n_holdout_test": int(len(te))}
     data_end = str(table.loc[table["corners_verified"] | table["cards_verified"], "date"].max())
-    body = {"config": {k: cfg[k] for k in ("families", "features", "verification", "holdout_split_date")},
+    body = {"config": {k: cfg[k] for k in ("families", "features", "verification", "single_source",
+                                           "holdout_split_date")},
             "data_end": data_end, "coverage": cov,
             "data_audit": {lg: {k: v for k, v in a.items() if k != "crosswalk"} for lg, a in audit.items()},
-            "crosswalk": {lg: a["crosswalk"] for lg, a in audit.items()}, "models": models}
+            "crosswalk": {lg: a["crosswalk"] for lg, a in audit.items() if "crosswalk" in a}, "models": models}
     sha = M.params_sha(body)
     art = {"schema_version": "side/1.0", "model_version": f"side_nb_v1_{data_end}_{sha}",
            "trained_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),

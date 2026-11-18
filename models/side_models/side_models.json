@@ -1,7 +1,7 @@
 {
  "schema_version": "side/1.0",
- "model_version": "side_nb_v1_2026-10-28_3889e35a8c94",
- "trained_at": "2026-11-18T16:53:12Z",
+ "model_version": "side_nb_v1_2026-11-09_c9e06a6a9c92",
+ "trained_at": "2026-11-18T17:42:53Z",
  "sources": {
   "api_football": "output/collect/af_history_fullstats_fill.parquet",
   "fixtures": "output/strength/competition_fixtures.parquet",
@@ -30,7 +30,7 @@
       ]
      }
     },
-    "count": "API-Football /fixtures/statistics 'Corner Kicks' per team (90 minutes), verified per fixture against football-data HC/AC"
+    "count": "API-Football /fixtures/statistics 'Corner Kicks' per team (90 minutes), verified per fixture against football-data HC/AC where football-data has them, else single-source sanity"
    },
    "cards": {
     "model_id": "v9_cards",
@@ -51,7 +51,7 @@
       ]
      }
     },
-    "count": "API-Football /fixtures/statistics 'Yellow Cards' + 'Red Cards' per team (a card count, not booking points; a second-yellow dismissal is counted the provider's way - owner rule G9 still open), verified per fixture against football-data HY/AY/HR/AR (src/side_models/data.py)"
+    "count": "API-Football /fixtures/statistics 'Yellow Cards' + 'Red Cards' per team (a card count, not booking points; a second-yellow dismissal is counted the provider's way - owner cards rule 2026-11-18 closes G9), verified per fixture against football-data HY/AY/HR/AR where football-data has them, else single-source sanity (src/side_models/data.py)"
    }
   },
   "features": {
@@ -62,15 +62,23 @@
   "verification": {
    "rule": "per fixture: the two sources agree (src/side_models/data.py verify); per league x family: two-source overlap >= min_overlap_pct of the API-Football fixtures in the football-data window AND agreement >= min_agree_pct on that overlap",
    "min_overlap_pct": 80.0,
-   "min_agree_pct": 95.0
+   "min_agree_pct": 95.0,
+   "cards_rule": "owner 2026-11-18 (closes audit G9): reds exact; yellows exact on a team without a red; on a team with a red, API-Football yellows - football-data yellows in [0, 2 x reds]"
+  },
+  "single_source": {
+   "rule": "owner 2026-11-18: a tracked league football-data publishes no corners/cards for uses API-Football /fixtures/statistics as its single certified source. A fixture is used only when its counts pass the sanity rules (src/side_models/data.py SANITY: every count present, none negative or impossible, not all zero); nothing is filled. The league is covered when API-Football holds stats for >= min_stats_pct of its finished fixtures since window_from and >= min_sane_pct of those pass. Rows carry basis 'single_source' (ledger payload_version).",
+   "window_from": "2022-01-01",
+   "min_stats_pct": 80.0,
+   "min_sane_pct": 95.0
   },
   "holdout_split_date": "2025-07-01"
  },
- "data_end": "2026-10-28",
+ "data_end": "2026-11-09",
  "coverage": {
   "corners": {
    "Championship": {
     "covered": true,
+    "basis": "two_source",
     "overlap_pct": 97.51,
     "agree_pct": 96.51,
     "fixtures_in_window": 2408,
@@ -81,6 +89,7 @@
    },
    "League One": {
     "covered": true,
+    "basis": "two_source",
     "overlap_pct": 98.24,
     "agree_pct": 96.81,
     "fixtures_in_window": 2391,
@@ -91,6 +100,7 @@
    },
    "League Two": {
     "covered": true,
+    "basis": "two_source",
     "overlap_pct": 98.21,
     "agree_pct": 96.74,
     "fixtures_in_window": 2402,
@@ -101,6 +111,7 @@
    },
    "Bundesliga 2": {
     "covered": true,
+    "basis": "two_source",
     "overlap_pct": 97.82,
     "agree_pct": 99.08,
     "fixtures_in_window": 1331,
@@ -111,6 +122,7 @@
    },
    "Ligue 2": {
     "covered": true,
+    "basis": "two_source",
     "overlap_pct": 97.85,
     "agree_pct": 98.08,
     "fixtures_in_window": 1488,
@@ -121,6 +133,7 @@
    },
    "La Liga 2": {
     "covered": true,
+    "basis": "two_source",
     "overlap_pct": 97.18,
     "agree_pct": 98.22,
     "fixtures_in_window": 2023,
@@ -131,6 +144,7 @@
    },
    "Serie B": {
     "covered": true,
+    "basis": "two_source",
     "overlap_pct": 94.07,
     "agree_pct": 98.34,
     "fixtures_in_window": 1669,
@@ -140,61 +154,244 @@
     "reason": ""
    },
    "Denmark Superliga": {
-    "covered": false,
-    "reason": "single source: API-Football only (football-data's new format for this league carries no corners/cards), so no fixture can be verified by a second source"
+    "covered": true,
+    "basis": "single_source",
+    "stats_pct": 99.79,
+    "sane_pct": 100.0,
+    "fixtures_in_window": 947,
+    "with_stats": 945,
+    "verified": 945,
+    "with_stats_pct_by_year": {
+     "2022": 99.5,
+     "2023": 100.0,
+     "2024": 100.0,
+     "2025": 100.0,
+     "2026": 99.4
+    },
+    "window_from": "2022-01-01",
+    "reason": ""
    },
    "Austrian Bundesliga": {
-    "covered": false,
-    "reason": "single source: API-Football only (football-data's new format for this league carries no corners/cards), so no fixture can be verified by a second source"
+    "covered": true,
+    "basis": "single_source",
+    "stats_pct": 100.0,
+    "sane_pct": 100.0,
+    "fixtures_in_window": 939,
+    "with_stats": 939,
+    "verified": 939,
+    "with_stats_pct_by_year": {
+     "2022": 100.0,
+     "2023": 100.0,
+     "2024": 100.0,
+     "2025": 100.0,
+     "2026": 100.0
+    },
+    "window_from": "2022-01-01",
+    "reason": ""
    },
    "Romanian Superliga": {
-    "covered": false,
-    "reason": "single source: API-Football only (football-data's new format for this league carries no corners/cards), so no fixture can be verified by a second source"
+    "covered": true,
+    "basis": "single_source",
+    "stats_pct": 92.97,
+    "sane_pct": 99.93,
+    "fixtures_in_window": 1550,
+    "with_stats": 1441,
+    "verified": 1440,
+    "with_stats_pct_by_year": {
+     "2022": 72.2,
+     "2023": 98.4,
+     "2024": 97.5,
+     "2025": 99.1,
+     "2026": 98.2
+    },
+    "window_from": "2022-01-01",
+    "reason": ""
    },
    "Sweden Allsvenskan": {
-    "covered": false,
-    "reason": "single source: API-Football only (football-data's new format for this league carries no corners/cards), so no fixture can be verified by a second source"
+    "covered": true,
+    "basis": "single_source",
+    "stats_pct": 100.0,
+    "sane_pct": 100.0,
+    "fixtures_in_window": 1192,
+    "with_stats": 1192,
+    "verified": 1192,
+    "with_stats_pct_by_year": {
+     "2022": 100.0,
+     "2023": 100.0,
+     "2024": 100.0,
+     "2025": 100.0,
+     "2026": 100.0
+    },
+    "window_from": "2022-01-01",
+    "reason": ""
    },
    "Norway Eliteserien": {
-    "covered": false,
-    "reason": "single source: API-Football only (football-data's new format for this league carries no corners/cards), so no fixture can be verified by a second source"
+    "covered": true,
+    "basis": "single_source",
+    "stats_pct": 99.91,
+    "sane_pct": 99.91,
+    "fixtures_in_window": 1175,
+    "with_stats": 1174,
+    "verified": 1173,
+    "with_stats_pct_by_year": {
+     "2022": 100.0,
+     "2023": 100.0,
+     "2024": 100.0,
+     "2025": 100.0,
+     "2026": 99.5
+    },
+    "window_from": "2022-01-01",
+    "reason": ""
    },
    "Finland Veikkausliiga": {
     "covered": false,
-    "reason": "single source: API-Football only (football-data's new format for this league carries no corners/cards), so no fixture can be verified by a second source"
+    "basis": "single_source",
+    "stats_pct": 50.64,
+    "sane_pct": 100.0,
+    "fixtures_in_window": 863,
+    "with_stats": 437,
+    "verified": 437,
+    "with_stats_pct_by_year": {
+     "2022": 53.9,
+     "2023": 82.8,
+     "2024": 0.0,
+     "2025": 39.1,
+     "2026": 76.5
+    },
+    "window_from": "2022-01-01",
+    "reason": "single source (API-Football): stats on 50.6% of window fixtures (needs 80.0), sane 100.0% (needs 95.0); by year {'2022': 53.9, '2023': 82.8, '2024': 0.0, '2025': 39.1, '2026': 76.5}"
    },
    "Ireland Premier Division": {
     "covered": false,
-    "reason": "single source: API-Football only (football-data's new format for this league carries no corners/cards), so no fixture can be verified by a second source"
+    "basis": "single_source",
+    "stats_pct": 66.26,
+    "sane_pct": 100.0,
+    "fixtures_in_window": 904,
+    "with_stats": 599,
+    "verified": 599,
+    "with_stats_pct_by_year": {
+     "2022": 0.0,
+     "2023": 42.5,
+     "2024": 97.2,
+     "2025": 93.4,
+     "2026": 98.3
+    },
+    "window_from": "2022-01-01",
+    "reason": "single source (API-Football): stats on 66.3% of window fixtures (needs 80.0), sane 100.0% (needs 95.0); by year {'2022': 0.0, '2023': 42.5, '2024': 97.2, '2025': 93.4, '2026': 98.3}"
    },
    "Argentina Primera Division": {
-    "covered": false,
-    "reason": "single source: API-Football only (football-data's new format for this league carries no corners/cards), so no fixture can be verified by a second source"
+    "covered": true,
+    "basis": "single_source",
+    "stats_pct": 99.74,
+    "sane_pct": 100.0,
+    "fixtures_in_window": 2342,
+    "with_stats": 2336,
+    "verified": 2336,
+    "with_stats_pct_by_year": {
+     "2022": 100.0,
+     "2023": 100.0,
+     "2024": 100.0,
+     "2025": 100.0,
+     "2026": 98.8
+    },
+    "window_from": "2022-01-01",
+    "reason": ""
    },
    "Brazil Serie A": {
-    "covered": false,
-    "reason": "single source: API-Football only (football-data's new format for this league carries no corners/cards), so no fixture can be verified by a second source"
+    "covered": true,
+    "basis": "single_source",
+    "stats_pct": 99.84,
+    "sane_pct": 100.0,
+    "fixtures_in_window": 1861,
+    "with_stats": 1858,
+    "verified": 1858,
+    "with_stats_pct_by_year": {
+     "2022": 100.0,
+     "2023": 100.0,
+     "2024": 99.7,
+     "2025": 100.0,
+     "2026": 99.4
+    },
+    "window_from": "2022-01-01",
+    "reason": ""
    },
    "Japan J-League": {
-    "covered": false,
-    "reason": "single source: API-Football only (football-data's new format for this league carries no corners/cards), so no fixture can be verified by a second source"
+    "covered": true,
+    "basis": "single_source",
+    "stats_pct": 96.73,
+    "sane_pct": 100.0,
+    "fixtures_in_window": 1712,
+    "with_stats": 1656,
+    "verified": 1656,
+    "with_stats_pct_by_year": {
+     "2022": 100.0,
+     "2023": 100.0,
+     "2024": 100.0,
+     "2025": 100.0,
+     "2026": 83.5
+    },
+    "window_from": "2022-01-01",
+    "reason": ""
    },
    "Mexico Liga MX": {
-    "covered": false,
-    "reason": "single source: API-Football only (football-data's new format for this league carries no corners/cards), so no fixture can be verified by a second source"
+    "covered": true,
+    "basis": "single_source",
+    "stats_pct": 99.64,
+    "sane_pct": 99.94,
+    "fixtures_in_window": 1674,
+    "with_stats": 1668,
+    "verified": 1667,
+    "with_stats_pct_by_year": {
+     "2022": 100.0,
+     "2023": 99.7,
+     "2024": 100.0,
+     "2025": 100.0,
+     "2026": 98.4
+    },
+    "window_from": "2022-01-01",
+    "reason": ""
    },
    "China Super League": {
-    "covered": false,
-    "reason": "single source: API-Football only (football-data's new format for this league carries no corners/cards), so no fixture can be verified by a second source"
+    "covered": true,
+    "basis": "single_source",
+    "stats_pct": 98.67,
+    "sane_pct": 100.0,
+    "fixtures_in_window": 1280,
+    "with_stats": 1263,
+    "verified": 1263,
+    "with_stats_pct_by_year": {
+     "2022": 97.2,
+     "2023": 100.0,
+     "2024": 100.0,
+     "2025": 100.0,
+     "2026": 96.7
+    },
+    "window_from": "2022-01-01",
+    "reason": ""
    },
    "USA MLS": {
-    "covered": false,
-    "reason": "single source: API-Football only (football-data's new format for this league carries no corners/cards), so no fixture can be verified by a second source"
+    "covered": true,
+    "basis": "single_source",
+    "stats_pct": 99.69,
+    "sane_pct": 100.0,
+    "fixtures_in_window": 2582,
+    "with_stats": 2574,
+    "verified": 2574,
+    "with_stats_pct_by_year": {
+     "2022": 99.8,
+     "2023": 100.0,
+     "2024": 100.0,
+     "2025": 100.0,
+     "2026": 98.6
+    },
+    "window_from": "2022-01-01",
+    "reason": ""
    }
   },
   "cards": {
    "Championship": {
     "covered": true,
+    "basis": "two_source",
     "overlap_pct": 97.51,
     "agree_pct": 97.87,
     "fixtures_in_window": 2408,
@@ -205,6 +402,7 @@
    },
    "League One": {
     "covered": true,
+    "basis": "two_source",
     "overlap_pct": 98.24,
     "agree_pct": 98.34,
     "fixtures_in_window": 2391,
@@ -215,6 +413,7 @@
    },
    "League Two": {
     "covered": true,
+    "basis": "two_source",
     "overlap_pct": 98.21,
     "agree_pct": 98.01,
     "fixtures_in_window": 2402,
@@ -225,6 +424,7 @@
    },
    "Bundesliga 2": {
     "covered": true,
+    "basis": "two_source",
     "overlap_pct": 97.82,
     "agree_pct": 97.24,
     "fixtures_in_window": 1331,
@@ -235,6 +435,7 @@
    },
    "Ligue 2": {
     "covered": true,
+    "basis": "two_source",
     "overlap_pct": 97.85,
     "agree_pct": 95.26,
     "fixtures_in_window": 1488,
@@ -245,16 +446,18 @@
    },
    "La Liga 2": {
     "covered": false,
+    "basis": "two_source",
     "overlap_pct": 97.18,
     "agree_pct": 93.64,
     "fixtures_in_window": 2023,
     "both_sources": 1966,
     "verified": 1841,
     "window_from": "2022-08-12",
-    "reason": "overlap 97.2% (needs 80.0) / agreement 93.6% (needs 95.0)"
+    "reason": "two sources: overlap 97.2% (needs 80.0) / agreement 93.6% (needs 95.0)"
    },
    "Serie B": {
     "covered": true,
+    "basis": "two_source",
     "overlap_pct": 94.07,
     "agree_pct": 97.39,
     "fixtures_in_window": 1669,
@@ -264,61 +467,244 @@
     "reason": ""
    },
    "Denmark Superliga": {
-    "covered": false,
-    "reason": "single source: API-Football only (football-data's new format for this league carries no corners/cards), so no fixture can be verified by a second source"
+    "covered": true,
+    "basis": "single_source",
+    "stats_pct": 99.79,
+    "sane_pct": 100.0,
+    "fixtures_in_window": 947,
+    "with_stats": 945,
+    "verified": 945,
+    "with_stats_pct_by_year": {
+     "2022": 99.5,
+     "2023": 100.0,
+     "2024": 100.0,
+     "2025": 100.0,
+     "2026": 99.4
+    },
+    "window_from": "2022-01-01",
+    "reason": ""
    },
    "Austrian Bundesliga": {
-    "covered": false,
-    "reason": "single source: API-Football only (football-data's new format for this league carries no corners/cards), so no fixture can be verified by a second source"
+    "covered": true,
+    "basis": "single_source",
+    "stats_pct": 100.0,
+    "sane_pct": 100.0,
+    "fixtures_in_window": 939,
+    "with_stats": 939,
+    "verified": 939,
+    "with_stats_pct_by_year": {
+     "2022": 100.0,
+     "2023": 100.0,
+     "2024": 100.0,
+     "2025": 100.0,
+     "2026": 100.0
+    },
+    "window_from": "2022-01-01",
+    "reason": ""
    },
    "Romanian Superliga": {
-    "covered": false,
-    "reason": "single source: API-Football only (football-data's new format for this league carries no corners/cards), so no fixture can be verified by a second source"
+    "covered": true,
+    "basis": "single_source",
+    "stats_pct": 92.97,
+    "sane_pct": 99.93,
+    "fixtures_in_window": 1550,
+    "with_stats": 1441,
+    "verified": 1440,
+    "with_stats_pct_by_year": {
+     "2022": 72.2,
+     "2023": 98.4,
+     "2024": 97.5,
+     "2025": 99.1,
+     "2026": 98.2
+    },
+    "window_from": "2022-01-01",
+    "reason": ""
    },
    "Sweden Allsvenskan": {
-    "covered": false,
-    "reason": "single source: API-Football only (football-data's new format for this league carries no corners/cards), so no fixture can be verified by a second source"
+    "covered": true,
+    "basis": "single_source",
+    "stats_pct": 100.0,
+    "sane_pct": 100.0,
+    "fixtures_in_window": 1192,
+    "with_stats": 1192,
+    "verified": 1192,
+    "with_stats_pct_by_year": {
+     "2022": 100.0,
+     "2023": 100.0,
+     "2024": 100.0,
+     "2025": 100.0,
+     "2026": 100.0
+    },
+    "window_from": "2022-01-01",
+    "reason": ""
    },
    "Norway Eliteserien": {
-    "covered": false,
-    "reason": "single source: API-Football only (football-data's new format for this league carries no corners/cards), so no fixture can be verified by a second source"
+    "covered": true,
+    "basis": "single_source",
+    "stats_pct": 99.91,
+    "sane_pct": 99.91,
+    "fixtures_in_window": 1175,
+    "with_stats": 1174,
+    "verified": 1173,
+    "with_stats_pct_by_year": {
+     "2022": 100.0,
+     "2023": 100.0,
+     "2024": 100.0,
+     "2025": 100.0,
+     "2026": 99.5
+    },
+    "window_from": "2022-01-01",
+    "reason": ""
    },
    "Finland Veikkausliiga": {
     "covered": false,
-    "reason": "single source: API-Football only (football-data's new format for this league carries no corners/cards), so no fixture can be verified by a second source"
+    "basis": "single_source",
+    "stats_pct": 50.64,
+    "sane_pct": 100.0,
+    "fixtures_in_window": 863,
+    "with_stats": 437,
+    "verified": 437,
+    "with_stats_pct_by_year": {
+     "2022": 53.9,
+     "2023": 82.8,
+     "2024": 0.0,
+     "2025": 39.1,
+     "2026": 76.5
+    },
+    "window_from": "2022-01-01",
+    "reason": "single source (API-Football): stats on 50.6% of window fixtures (needs 80.0), sane 100.0% (needs 95.0); by year {'2022': 53.9, '2023': 82.8, '2024': 0.0, '2025': 39.1, '2026': 76.5}"
    },
    "Ireland Premier Division": {
     "covered": false,
-    "reason": "single source: API-Football only (football-data's new format for this league carries no corners/cards), so no fixture can be verified by a second source"
+    "basis": "single_source",
+    "stats_pct": 66.26,
+    "sane_pct": 100.0,
+    "fixtures_in_window": 904,
+    "with_stats": 599,
+    "verified": 599,
+    "with_stats_pct_by_year": {
+     "2022": 0.0,
+     "2023": 42.5,
+     "2024": 97.2,
+     "2025": 93.4,
+     "2026": 98.3
+    },
+    "window_from": "2022-01-01",
+    "reason": "single source (API-Football): stats on 66.3% of window fixtures (needs 80.0), sane 100.0% (needs 95.0); by year {'2022': 0.0, '2023': 42.5, '2024': 97.2, '2025': 93.4, '2026': 98.3}"
    },
    "Argentina Primera Division": {
-    "covered": false,
-    "reason": "single source: API-Football only (football-data's new format for this league carries no corners/cards), so no fixture can be verified by a second source"
+    "covered": true,
+    "basis": "single_source",
+    "stats_pct": 99.74,
+    "sane_pct": 100.0,
+    "fixtures_in_window": 2342,
+    "with_stats": 2336,
+    "verified": 2336,
+    "with_stats_pct_by_year": {
+     "2022": 100.0,
+     "2023": 100.0,
+     "2024": 100.0,
+     "2025": 100.0,
+     "2026": 98.8
+    },
+    "window_from": "2022-01-01",
+    "reason": ""
    },
    "Brazil Serie A": {
-    "covered": false,
-    "reason": "single source: API-Football only (football-data's new format for this league carries no corners/cards), so no fixture can be verified by a second source"
+    "covered": true,
+    "basis": "single_source",
+    "stats_pct": 99.84,
+    "sane_pct": 100.0,
+    "fixtures_in_window": 1861,
+    "with_stats": 1858,
+    "verified": 1858,
+    "with_stats_pct_by_year": {
+     "2022": 100.0,
+     "2023": 100.0,
+     "2024": 99.7,
+     "2025": 100.0,
+     "2026": 99.4
+    },
+    "window_from": "2022-01-01",
+    "reason": ""
    },
    "Japan J-League": {
-    "covered": false,
-    "reason": "single source: API-Football only (football-data's new format for this league carries no corners/cards), so no fixture can be verified by a second source"
+    "covered": true,
+    "basis": "single_source",
+    "stats_pct": 96.73,
+    "sane_pct": 100.0,
+    "fixtures_in_window": 1712,
+    "with_stats": 1656,
+    "verified": 1656,
+    "with_stats_pct_by_year": {
+     "2022": 100.0,
+     "2023": 100.0,
+     "2024": 100.0,
+     "2025": 100.0,
+     "2026": 83.5
+    },
+    "window_from": "2022-01-01",
+    "reason": ""
    },
    "Mexico Liga MX": {
-    "covered": false,
-    "reason": "single source: API-Football only (football-data's new format for this league carries no corners/cards), so no fixture can be verified by a second source"
+    "covered": true,
+    "basis": "single_source",
+    "stats_pct": 99.64,
+    "sane_pct": 99.94,
+    "fixtures_in_window": 1674,
+    "with_stats": 1668,
+    "verified": 1667,
+    "with_stats_pct_by_year": {
+     "2022": 100.0,
+     "2023": 99.7,
+     "2024": 100.0,
+     "2025": 100.0,
+     "2026": 98.4
+    },
+    "window_from": "2022-01-01",
+    "reason": ""
    },
    "China Super League": {
-    "covered": false,
-    "reason": "single source: API-Football only (football-data's new format for this league carries no corners/cards), so no fixture can be verified by a second source"
+    "covered": true,
+    "basis": "single_source",
+    "stats_pct": 98.67,
+    "sane_pct": 100.0,
+    "fixtures_in_window": 1280,
+    "with_stats": 1263,
+    "verified": 1263,
+    "with_stats_pct_by_year": {
+     "2022": 97.2,
+     "2023": 100.0,
+     "2024": 100.0,
+     "2025": 100.0,
+     "2026": 96.7
+    },
+    "window_from": "2022-01-01",
+    "reason": ""
    },
    "USA MLS": {
-    "covered": false,
-    "reason": "single source: API-Football only (football-data's new format for this league carries no corners/cards), so no fixture can be verified by a second source"
+    "covered": true,
+    "basis": "single_source",
+    "stats_pct": 99.69,
+    "sane_pct": 100.0,
+    "fixtures_in_window": 2582,
+    "with_stats": 2574,
+    "verified": 2574,
+    "with_stats_pct_by_year": {
+     "2022": 99.8,
+     "2023": 100.0,
+     "2024": 100.0,
+     "2025": 100.0,
+     "2026": 98.6
+    },
+    "window_from": "2022-01-01",
+    "reason": ""
    }
   }
  },
  "data_audit": {
   "Championship": {
+   "basis": "two_source",
    "fd_window_from": "2022-07-29",
    "af_fixtures_in_window": 2408,
    "fd_rows": 2388,
@@ -331,6 +717,7 @@
    "zero_fill_suspect": 0
   },
   "League One": {
+   "basis": "two_source",
    "fd_window_from": "2022-07-30",
    "af_fixtures_in_window": 2391,
    "fd_rows": 2366,
@@ -343,6 +730,7 @@
    "zero_fill_suspect": 0
   },
   "League Two": {
+   "basis": "two_source",
    "fd_window_from": "2022-07-30",
    "af_fixtures_in_window": 2402,
    "fd_rows": 2372,
@@ -355,6 +743,7 @@
    "zero_fill_suspect": 1
   },
   "Bundesliga 2": {
+   "basis": "two_source",
    "fd_window_from": "2022-07-15",
    "af_fixtures_in_window": 1331,
    "fd_rows": 1323,
@@ -367,6 +756,7 @@
    "zero_fill_suspect": 0
   },
   "Ligue 2": {
+   "basis": "two_source",
    "fd_window_from": "2022-07-30",
    "af_fixtures_in_window": 1488,
    "fd_rows": 1479,
@@ -379,6 +769,7 @@
    "zero_fill_suspect": 1
   },
   "La Liga 2": {
+   "basis": "two_source",
    "fd_window_from": "2022-08-12",
    "af_fixtures_in_window": 2023,
    "fd_rows": 1986,
@@ -391,6 +782,7 @@
    "zero_fill_suspect": 0
   },
   "Serie B": {
+   "basis": "two_source",
    "fd_window_from": "2022-08-12",
    "af_fixtures_in_window": 1669,
    "fd_rows": 1630,
@@ -400,6 +792,266 @@
    "corners_verified": 1544,
    "cards_both": 1570,
    "cards_verified": 1529,
+   "zero_fill_suspect": 0
+  },
+  "Denmark Superliga": {
+   "basis": "single_source",
+   "fd_window_from": "2022-01-01",
+   "af_fixtures_in_window": 947,
+   "with_stats": 945,
+   "with_stats_pct": 99.79,
+   "with_stats_pct_by_year": {
+    "2022": 99.5,
+    "2023": 100.0,
+    "2024": 100.0,
+    "2025": 100.0,
+    "2026": 99.4
+   },
+   "corners_both": 945,
+   "corners_verified": 945,
+   "cards_both": 945,
+   "cards_verified": 945,
+   "failed_sanity": 0,
+   "zero_fill_suspect": 0
+  },
+  "Austrian Bundesliga": {
+   "basis": "single_source",
+   "fd_window_from": "2022-01-01",
+   "af_fixtures_in_window": 939,
+   "with_stats": 939,
+   "with_stats_pct": 100.0,
+   "with_stats_pct_by_year": {
+    "2022": 100.0,
+    "2023": 100.0,
+    "2024": 100.0,
+    "2025": 100.0,
+    "2026": 100.0
+   },
+   "corners_both": 939,
+   "corners_verified": 939,
+   "cards_both": 939,
+   "cards_verified": 939,
+   "failed_sanity": 0,
+   "zero_fill_suspect": 0
+  },
+  "Romanian Superliga": {
+   "basis": "single_source",
+   "fd_window_from": "2022-01-01",
+   "af_fixtures_in_window": 1550,
+   "with_stats": 1441,
+   "with_stats_pct": 92.97,
+   "with_stats_pct_by_year": {
+    "2022": 72.2,
+    "2023": 98.4,
+    "2024": 97.5,
+    "2025": 99.1,
+    "2026": 98.2
+   },
+   "corners_both": 1441,
+   "corners_verified": 1440,
+   "cards_both": 1441,
+   "cards_verified": 1440,
+   "failed_sanity": 1,
+   "zero_fill_suspect": 1
+  },
+  "Sweden Allsvenskan": {
+   "basis": "single_source",
+   "fd_window_from": "2022-01-01",
+   "af_fixtures_in_window": 1192,
+   "with_stats": 1192,
+   "with_stats_pct": 100.0,
+   "with_stats_pct_by_year": {
+    "2022": 100.0,
+    "2023": 100.0,
+    "2024": 100.0,
+    "2025": 100.0,
+    "2026": 100.0
+   },
+   "corners_both": 1192,
+   "corners_verified": 1192,
+   "cards_both": 1192,
+   "cards_verified": 1192,
+   "failed_sanity": 0,
+   "zero_fill_suspect": 0
+  },
+  "Norway Eliteserien": {
+   "basis": "single_source",
+   "fd_window_from": "2022-01-01",
+   "af_fixtures_in_window": 1175,
+   "with_stats": 1174,
+   "with_stats_pct": 99.91,
+   "with_stats_pct_by_year": {
+    "2022": 100.0,
+    "2023": 100.0,
+    "2024": 100.0,
+    "2025": 100.0,
+    "2026": 99.5
+   },
+   "corners_both": 1174,
+   "corners_verified": 1173,
+   "cards_both": 1174,
+   "cards_verified": 1173,
+   "failed_sanity": 1,
+   "zero_fill_suspect": 1
+  },
+  "Finland Veikkausliiga": {
+   "basis": "single_source",
+   "fd_window_from": "2022-01-01",
+   "af_fixtures_in_window": 863,
+   "with_stats": 437,
+   "with_stats_pct": 50.64,
+   "with_stats_pct_by_year": {
+    "2022": 53.9,
+    "2023": 82.8,
+    "2024": 0.0,
+    "2025": 39.1,
+    "2026": 76.5
+   },
+   "corners_both": 437,
+   "corners_verified": 437,
+   "cards_both": 437,
+   "cards_verified": 437,
+   "failed_sanity": 0,
+   "zero_fill_suspect": 0
+  },
+  "Ireland Premier Division": {
+   "basis": "single_source",
+   "fd_window_from": "2022-01-01",
+   "af_fixtures_in_window": 904,
+   "with_stats": 599,
+   "with_stats_pct": 66.26,
+   "with_stats_pct_by_year": {
+    "2022": 0.0,
+    "2023": 42.5,
+    "2024": 97.2,
+    "2025": 93.4,
+    "2026": 98.3
+   },
+   "corners_both": 599,
+   "corners_verified": 599,
+   "cards_both": 599,
+   "cards_verified": 599,
+   "failed_sanity": 0,
+   "zero_fill_suspect": 0
+  },
+  "Argentina Primera Division": {
+   "basis": "single_source",
+   "fd_window_from": "2022-01-01",
+   "af_fixtures_in_window": 2342,
+   "with_stats": 2336,
+   "with_stats_pct": 99.74,
+   "with_stats_pct_by_year": {
+    "2022": 100.0,
+    "2023": 100.0,
+    "2024": 100.0,
+    "2025": 100.0,
+    "2026": 98.8
+   },
+   "corners_both": 2336,
+   "corners_verified": 2336,
+   "cards_both": 2336,
+   "cards_verified": 2336,
+   "failed_sanity": 0,
+   "zero_fill_suspect": 0
+  },
+  "Brazil Serie A": {
+   "basis": "single_source",
+   "fd_window_from": "2022-01-01",
+   "af_fixtures_in_window": 1861,
+   "with_stats": 1858,
+   "with_stats_pct": 99.84,
+   "with_stats_pct_by_year": {
+    "2022": 100.0,
+    "2023": 100.0,
+    "2024": 99.7,
+    "2025": 100.0,
+    "2026": 99.4
+   },
+   "corners_both": 1858,
+   "corners_verified": 1858,
+   "cards_both": 1858,
+   "cards_verified": 1858,
+   "failed_sanity": 0,
+   "zero_fill_suspect": 0
+  },
+  "Japan J-League": {
+   "basis": "single_source",
+   "fd_window_from": "2022-01-01",
+   "af_fixtures_in_window": 1712,
+   "with_stats": 1656,
+   "with_stats_pct": 96.73,
+   "with_stats_pct_by_year": {
+    "2022": 100.0,
+    "2023": 100.0,
+    "2024": 100.0,
+    "2025": 100.0,
+    "2026": 83.5
+   },
+   "corners_both": 1656,
+   "corners_verified": 1656,
+   "cards_both": 1656,
+   "cards_verified": 1656,
+   "failed_sanity": 0,
+   "zero_fill_suspect": 0
+  },
+  "Mexico Liga MX": {
+   "basis": "single_source",
+   "fd_window_from": "2022-01-01",
+   "af_fixtures_in_window": 1674,
+   "with_stats": 1668,
+   "with_stats_pct": 99.64,
+   "with_stats_pct_by_year": {
+    "2022": 100.0,
+    "2023": 99.7,
+    "2024": 100.0,
+    "2025": 100.0,
+    "2026": 98.4
+   },
+   "corners_both": 1668,
+   "corners_verified": 1667,
+   "cards_both": 1668,
+   "cards_verified": 1667,
+   "failed_sanity": 1,
+   "zero_fill_suspect": 1
+  },
+  "China Super League": {
+   "basis": "single_source",
+   "fd_window_from": "2022-01-01",
+   "af_fixtures_in_window": 1280,
+   "with_stats": 1263,
+   "with_stats_pct": 98.67,
+   "with_stats_pct_by_year": {
+    "2022": 97.2,
+    "2023": 100.0,
+    "2024": 100.0,
+    "2025": 100.0,
+    "2026": 96.7
+   },
+   "corners_both": 1263,
+   "corners_verified": 1263,
+   "cards_both": 1263,
+   "cards_verified": 1263,
+   "failed_sanity": 0,
+   "zero_fill_suspect": 0
+  },
+  "USA MLS": {
+   "basis": "single_source",
+   "fd_window_from": "2022-01-01",
+   "af_fixtures_in_window": 2582,
+   "with_stats": 2574,
+   "with_stats_pct": 99.69,
+   "with_stats_pct_by_year": {
+    "2022": 99.8,
+    "2023": 100.0,
+    "2024": 100.0,
+    "2025": 100.0,
+    "2026": 98.6
+   },
+   "corners_both": 2574,
+   "corners_verified": 2574,
+   "cards_both": 2574,
+   "cards_verified": 2574,
+   "failed_sanity": 0,
    "zero_fill_suspect": 0
   }
  },
@@ -721,6 +1373,435 @@
     "fit_to": "2026-10-28",
     "n_holdout_train": 937,
     "n_holdout_test": 393
+   },
+   "Denmark Superliga": {
+    "params": {
+     "home": {
+      "coef": [
+       0.3163776470449054,
+       0.2597951711631282,
+       0.503279501846056
+      ],
+      "alpha": 0.08899501258598673,
+      "n": 887,
+      "mean_y": 5.325817361894025
+     },
+     "away": {
+      "coef": [
+       0.2935053712710651,
+       0.11445850781866657,
+       0.574946211314563
+      ],
+      "alpha": 0.07237778976757407,
+      "n": 887,
+      "mean_y": 4.586245772266065
+     },
+     "total": {
+      "coef": [
+       1.0141617968495242,
+       0.1831877371845147,
+       0.3521070669645462
+      ],
+      "alpha": 0.01569377799167725,
+      "n": 887,
+      "mean_y": 9.91206313416009
+     }
+    },
+    "n_fit": 887,
+    "fit_from": "2022-02-18",
+    "fit_to": "2026-11-08",
+    "n_holdout_train": 634,
+    "n_holdout_test": 253
+   },
+   "Austrian Bundesliga": {
+    "params": {
+     "home": {
+      "coef": [
+       -0.06624918986069465,
+       0.4739903943312545,
+       0.5073031806649498
+      ],
+      "alpha": 0.0802405282501284,
+      "n": 909,
+      "mean_y": 5.248624862486249
+     },
+     "away": {
+      "coef": [
+       -0.2694482127181636,
+       0.6132454989028229,
+       0.3915937043711385
+      ],
+      "alpha": 0.08326406216236826,
+      "n": 909,
+      "mean_y": 4.488448844884489
+     },
+     "total": {
+      "coef": [
+       1.8835928832302808,
+       0.04927118694591275,
+       0.11641591638273684
+      ],
+      "alpha": 0.009841429337474651,
+      "n": 909,
+      "mean_y": 9.737073707370737
+     }
+    },
+    "n_fit": 909,
+    "fit_from": "2022-02-11",
+    "fit_to": "2026-11-08",
+    "n_holdout_train": 654,
+    "n_holdout_test": 255
+   },
+   "Romanian Superliga": {
+    "params": {
+     "home": {
+      "coef": [
+       -0.14541806021719064,
+       0.5485547996913136,
+       0.492296736944599
+      ],
+      "alpha": 0.08620422330377413,
+      "n": 1314,
+      "mean_y": 5.168188736681888
+     },
+     "away": {
+      "coef": [
+       -0.05655812287541728,
+       0.40433280427152796,
+       0.46110148481013435
+      ],
+      "alpha": 0.11392229003973021,
+      "n": 1314,
+      "mean_y": 4.19634703196347
+     },
+     "total": {
+      "coef": [
+       1.5192891140403357,
+       0.2509505615924042,
+       0.05766189434784789
+      ],
+      "alpha": 0.012402996949938006,
+      "n": 1314,
+      "mean_y": 9.364535768645357
+     }
+    },
+    "n_fit": 1314,
+    "fit_from": "2022-01-21",
+    "fit_to": "2026-11-08",
+    "n_holdout_train": 910,
+    "n_holdout_test": 404
+   },
+   "Sweden Allsvenskan": {
+    "params": {
+     "home": {
+      "coef": [
+       0.1948428059141373,
+       0.4183656611548138,
+       0.43269454044865446
+      ],
+      "alpha": 0.06903936847979583,
+      "n": 1118,
+      "mean_y": 5.7710196779964225
+     },
+     "away": {
+      "coef": [
+       -0.19777903461738558,
+       0.48000585122026057,
+       0.4909333560224599
+      ],
+      "alpha": 0.09532673190313509,
+      "n": 1118,
+      "mean_y": 4.884615384615385
+     },
+     "total": {
+      "coef": [
+       1.712016293130649,
+       0.17966954840617352,
+       0.08742822259084942
+      ],
+      "alpha": 0.015977571344502915,
+      "n": 1118,
+      "mean_y": 10.655635062611807
+     }
+    },
+    "n_fit": 1118,
+    "fit_from": "2022-04-02",
+    "fit_to": "2026-11-08",
+    "n_holdout_train": 775,
+    "n_holdout_test": 343
+   },
+   "Norway Eliteserien": {
+    "params": {
+     "home": {
+      "coef": [
+       -0.3373192292369778,
+       0.5970126706207668,
+       0.5573687815467674
+      ],
+      "alpha": 0.09531080130065704,
+      "n": 1096,
+      "mean_y": 5.891423357664234
+     },
+     "away": {
+      "coef": [
+       -0.7121740796735916,
+       0.506002204374052,
+       0.730038306567546
+      ],
+      "alpha": 0.11160360656098431,
+      "n": 1096,
+      "mean_y": 4.764598540145985
+     },
+     "total": {
+      "coef": [
+       0.5375935780755611,
+       0.39869282735702016,
+       0.348219847263416
+      ],
+      "alpha": 0.03077541465061305,
+      "n": 1096,
+      "mean_y": 10.656021897810218
+     }
+    },
+    "n_fit": 1096,
+    "fit_from": "2022-04-02",
+    "fit_to": "2026-11-08",
+    "n_holdout_train": 758,
+    "n_holdout_test": 338
+   },
+   "Argentina Primera Division": {
+    "params": {
+     "home": {
+      "coef": [
+       0.5433726469138481,
+       0.29813870310310636,
+       0.3492404231723191
+      ],
+      "alpha": 0.0960562874527856,
+      "n": 2277,
+      "mean_y": 5.195432586736935
+     },
+     "away": {
+      "coef": [
+       -0.11996694386144152,
+       0.3042533904784833,
+       0.5729468233853197
+      ],
+      "alpha": 0.08494461647262681,
+      "n": 2277,
+      "mean_y": 3.9934123847167324
+     },
+     "total": {
+      "coef": [
+       1.0115624298261658,
+       0.256776334229502,
+       0.2643957840414418
+      ],
+      "alpha": 0.011797050328775094,
+      "n": 2277,
+      "mean_y": 9.188844971453667
+     }
+    },
+    "n_fit": 2277,
+    "fit_from": "2022-02-10",
+    "fit_to": "2026-11-08",
+    "n_holdout_train": 1545,
+    "n_holdout_test": 732
+   },
+   "Brazil Serie A": {
+    "params": {
+     "home": {
+      "coef": [
+       0.4086237237438211,
+       0.38493221365542096,
+       0.3703105894414902
+      ],
+      "alpha": 0.08130498544673745,
+      "n": 1747,
+      "mean_y": 5.898111047510017
+     },
+     "away": {
+      "coef": [
+       0.5119887522854062,
+       0.26208069925487953,
+       0.288802300153976
+      ],
+      "alpha": 0.12563000187839204,
+      "n": 1747,
+      "mean_y": 4.536348025186033
+     },
+     "total": {
+      "coef": [
+       1.4527655113387306,
+       0.14237503509898095,
+       0.22537392117186494
+      ],
+      "alpha": 0.014802108094686444,
+      "n": 1747,
+      "mean_y": 10.43445907269605
+     }
+    },
+    "n_fit": 1747,
+    "fit_from": "2022-04-09",
+    "fit_to": "2026-11-06",
+    "n_holdout_train": 1166,
+    "n_holdout_test": 581
+   },
+   "Japan J-League": {
+    "params": {
+     "home": {
+      "coef": [
+       0.643590973357912,
+       0.3616958614271373,
+       0.19752466355183207
+      ],
+      "alpha": 0.06865219462128526,
+      "n": 1558,
+      "mean_y": 5.036585365853658
+     },
+     "away": {
+      "coef": [
+       0.3770906074656394,
+       0.2765439935634453,
+       0.37541416205198036
+      ],
+      "alpha": 0.09463054343977194,
+      "n": 1558,
+      "mean_y": 4.548780487804878
+     },
+     "total": {
+      "coef": [
+       1.2171736342375425,
+       0.309400528758461,
+       0.13448277978778841
+      ],
+      "alpha": 0.01475785285978991,
+      "n": 1558,
+      "mean_y": 9.585365853658537
+     }
+    },
+    "n_fit": 1558,
+    "fit_from": "2022-02-18",
+    "fit_to": "2026-11-07",
+    "n_holdout_train": 1153,
+    "n_holdout_test": 405
+   },
+   "Mexico Liga MX": {
+    "params": {
+     "home": {
+      "coef": [
+       0.29826138835796084,
+       0.4573385672380551,
+       0.33398863653095967
+      ],
+      "alpha": 0.09173034982524589,
+      "n": 1661,
+      "mean_y": 5.4346779048765805
+     },
+     "away": {
+      "coef": [
+       0.1111732796814065,
+       0.33116776937974524,
+       0.4470646762159026
+      ],
+      "alpha": 0.11578948647512513,
+      "n": 1661,
+      "mean_y": 4.419024683925346
+     },
+     "total": {
+      "coef": [
+       1.3329098664001777,
+       0.28312011509391,
+       0.11914401439325203
+      ],
+      "alpha": 0.012104510521638518,
+      "n": 1661,
+      "mean_y": 9.853702588801927
+     }
+    },
+    "n_fit": 1661,
+    "fit_from": "2022-01-07",
+    "fit_to": "2026-11-09",
+    "n_holdout_train": 1191,
+    "n_holdout_test": 470
+   },
+   "China Super League": {
+    "params": {
+     "home": {
+      "coef": [
+       -0.11481394712018819,
+       0.6641114469471412,
+       0.3455253911325998
+      ],
+      "alpha": 0.09347410755851497,
+      "n": 1192,
+      "mean_y": 5.239093959731544
+     },
+     "away": {
+      "coef": [
+       -0.18605042609579386,
+       0.5938020551153979,
+       0.3625611849827241
+      ],
+      "alpha": 0.12042228875727885,
+      "n": 1192,
+      "mean_y": 4.4630872483221475
+     },
+     "total": {
+      "coef": [
+       1.2279303104007502,
+       0.24174140830820046,
+       0.200128363399814
+      ],
+      "alpha": 0.023519726926563112,
+      "n": 1192,
+      "mean_y": 9.702181208053691
+     }
+    },
+    "n_fit": 1192,
+    "fit_from": "2022-01-01",
+    "fit_to": "2026-10-24",
+    "n_holdout_train": 859,
+    "n_holdout_test": 333
+   },
+   "USA MLS": {
+    "params": {
+     "home": {
+      "coef": [
+       0.7582111127449133,
+       0.2721873499377243,
+       0.2645806162627538
+      ],
+      "alpha": 0.07302184043178826,
+      "n": 2556,
+      "mean_y": 5.499608763693271
+     },
+     "away": {
+      "coef": [
+       0.47995705473991784,
+       0.1864882726921603,
+       0.3690433408928281
+      ],
+      "alpha": 0.09944832978887085,
+      "n": 2556,
+      "mean_y": 4.326682316118936
+     },
+     "total": {
+      "coef": [
+       1.4828798982347207,
+       0.2147706917481055,
+       0.12256217740586578
+      ],
+      "alpha": 0.01173237987474788,
+      "n": 2556,
+      "mean_y": 9.826291079812206
+     }
+    },
+    "n_fit": 2556,
+    "fit_from": "2022-02-26",
+    "fit_to": "2026-11-07",
+    "n_holdout_train": 1804,
+    "n_holdout_test": 752
    }
   },
   "cards": {
@@ -957,6 +2038,435 @@
     "fit_to": "2026-10-28",
     "n_holdout_train": 921,
     "n_holdout_test": 389
+   },
+   "Denmark Superliga": {
+    "params": {
+     "home": {
+      "coef": [
+       0.10188965616519283,
+       0.3348005417054573,
+       0.08864971488374677
+      ],
+      "alpha": 0.0,
+      "n": 887,
+      "mean_y": 1.7249154453213078
+     },
+     "away": {
+      "coef": [
+       -0.15213961585651564,
+       0.3199223046914977,
+       0.4867865561078019
+      ],
+      "alpha": 0.0,
+      "n": 887,
+      "mean_y": 2.0011273957158964
+     },
+     "total": {
+      "coef": [
+       0.2808170035163186,
+       0.40836265645965203,
+       0.2585654605711713
+      ],
+      "alpha": 0.021429365794040804,
+      "n": 887,
+      "mean_y": 3.726042841037204
+     }
+    },
+    "n_fit": 887,
+    "fit_from": "2022-02-18",
+    "fit_to": "2026-11-08",
+    "n_holdout_train": 634,
+    "n_holdout_test": 253
+   },
+   "Austrian Bundesliga": {
+    "params": {
+     "home": {
+      "coef": [
+       -0.18229063233532591,
+       0.5142047370363981,
+       0.25869995388883166
+      ],
+      "alpha": 0.03054411552414528,
+      "n": 909,
+      "mean_y": 2.068206820682068
+     },
+     "away": {
+      "coef": [
+       0.14809313715932232,
+       0.3385607361285153,
+       0.2927722822920477
+      ],
+      "alpha": 0.0,
+      "n": 909,
+      "mean_y": 2.426842684268427
+     },
+     "total": {
+      "coef": [
+       0.3099866033014079,
+       0.3851511922940125,
+       0.31623618791174374
+      ],
+      "alpha": 0.022481224337193673,
+      "n": 909,
+      "mean_y": 4.4950495049504955
+     }
+    },
+    "n_fit": 909,
+    "fit_from": "2022-02-11",
+    "fit_to": "2026-11-08",
+    "n_holdout_train": 654,
+    "n_holdout_test": 255
+   },
+   "Romanian Superliga": {
+    "params": {
+     "home": {
+      "coef": [
+       0.35622095186566877,
+       0.17975051996227318,
+       0.15986621987066094
+      ],
+      "alpha": 0.03099847268987082,
+      "n": 1314,
+      "mean_y": 2.1202435312024352
+     },
+     "away": {
+      "coef": [
+       0.45274263503261386,
+       0.029390447553791662,
+       0.31423451583475726
+      ],
+      "alpha": 0.01519512105333702,
+      "n": 1314,
+      "mean_y": 2.3477929984779298
+     },
+     "total": {
+      "coef": [
+       0.9722195105134165,
+       0.2748601393775369,
+       0.0351415064934235
+      ],
+      "alpha": 0.06817396175306581,
+      "n": 1314,
+      "mean_y": 4.468036529680365
+     }
+    },
+    "n_fit": 1314,
+    "fit_from": "2022-01-21",
+    "fit_to": "2026-11-08",
+    "n_holdout_train": 910,
+    "n_holdout_test": 404
+   },
+   "Sweden Allsvenskan": {
+    "params": {
+     "home": {
+      "coef": [
+       -0.42877054215498117,
+       0.6645369166494234,
+       0.2778638353806641
+      ],
+      "alpha": 0.0,
+      "n": 1118,
+      "mean_y": 1.7280858676207513
+     },
+     "away": {
+      "coef": [
+       -0.12496785137354818,
+       0.4539432133230647,
+       0.28325419775610555
+      ],
+      "alpha": 0.0,
+      "n": 1118,
+      "mean_y": 1.8810375670840787
+     },
+     "total": {
+      "coef": [
+       0.41573366722471367,
+       0.2943733347184741,
+       0.27274496766336714
+      ],
+      "alpha": 0.004923024450974882,
+      "n": 1118,
+      "mean_y": 3.60912343470483
+     }
+    },
+    "n_fit": 1118,
+    "fit_from": "2022-04-02",
+    "fit_to": "2026-11-08",
+    "n_holdout_train": 775,
+    "n_holdout_test": 343
+   },
+   "Norway Eliteserien": {
+    "params": {
+     "home": {
+      "coef": [
+       -0.4539607654777382,
+       0.3637519373428372,
+       0.5506122691601858
+      ],
+      "alpha": 0.0,
+      "n": 1096,
+      "mean_y": 1.5556569343065694
+     },
+     "away": {
+      "coef": [
+       -0.19215006790171582,
+       0.35812333648763606,
+       0.4517596554519115
+      ],
+      "alpha": 0.0,
+      "n": 1096,
+      "mean_y": 1.8193430656934306
+     },
+     "total": {
+      "coef": [
+       0.2892550144765935,
+       0.2817099621597821,
+       0.3515551892676734
+      ],
+      "alpha": 0.031707922108059575,
+      "n": 1096,
+      "mean_y": 3.375
+     }
+    },
+    "n_fit": 1096,
+    "fit_from": "2022-04-02",
+    "fit_to": "2026-11-08",
+    "n_holdout_train": 758,
+    "n_holdout_test": 338
+   },
+   "Argentina Primera Division": {
+    "params": {
+     "home": {
+      "coef": [
+       -0.02226295484998431,
+       0.28163975980411027,
+       0.42363979599663387
+      ],
+      "alpha": 0.0,
+      "n": 2277,
+      "mean_y": 2.4233640755379886
+     },
+     "away": {
+      "coef": [
+       0.03588165066486835,
+       0.23834696971956318,
+       0.5551947089393974
+      ],
+      "alpha": 0.0,
+      "n": 2277,
+      "mean_y": 2.8743961352657004
+     },
+     "total": {
+      "coef": [
+       0.38332482588439576,
+       0.4022860163555973,
+       0.29830153461005415
+      ],
+      "alpha": 0.013819994655063306,
+      "n": 2277,
+      "mean_y": 5.297760210803689
+     }
+    },
+    "n_fit": 2277,
+    "fit_from": "2022-02-10",
+    "fit_to": "2026-11-08",
+    "n_holdout_train": 1545,
+    "n_holdout_test": 732
+   },
+   "Brazil Serie A": {
+    "params": {
+     "home": {
+      "coef": [
+       -0.06961092863998795,
+       0.3487789054003995,
+       0.406313399416509
+      ],
+      "alpha": 0.0,
+      "n": 1747,
+      "mean_y": 2.46937607326846
+     },
+     "away": {
+      "coef": [
+       0.39786054414101335,
+       0.12033433040268283,
+       0.36394861193638317
+      ],
+      "alpha": 0.0,
+      "n": 1747,
+      "mean_y": 2.777332570120206
+     },
+     "total": {
+      "coef": [
+       0.772607768473239,
+       0.2737598176189534,
+       0.20859007849813702
+      ],
+      "alpha": 0.03980195964330556,
+      "n": 1747,
+      "mean_y": 5.246708643388667
+     }
+    },
+    "n_fit": 1747,
+    "fit_from": "2022-04-09",
+    "fit_to": "2026-11-06",
+    "n_holdout_train": 1166,
+    "n_holdout_test": 581
+   },
+   "Japan J-League": {
+    "params": {
+     "home": {
+      "coef": [
+       -0.48827414854265566,
+       0.3496488828593524,
+       0.5250068523340777
+      ],
+      "alpha": 0.0,
+      "n": 1558,
+      "mean_y": 1.266367137355584
+     },
+     "away": {
+      "coef": [
+       -0.6867789008056245,
+       0.6132230464835908,
+       0.6108426959191695
+      ],
+      "alpha": 0.010653195021067997,
+      "n": 1558,
+      "mean_y": 1.3902439024390243
+     },
+     "total": {
+      "coef": [
+       0.11424324759613556,
+       0.3417670411419405,
+       0.3337778259893724
+      ],
+      "alpha": 0.0,
+      "n": 1558,
+      "mean_y": 2.6566110397946083
+     }
+    },
+    "n_fit": 1558,
+    "fit_from": "2022-02-18",
+    "fit_to": "2026-11-07",
+    "n_holdout_train": 1153,
+    "n_holdout_test": 405
+   },
+   "Mexico Liga MX": {
+    "params": {
+     "home": {
+      "coef": [
+       -0.06592330721225176,
+       0.39384363712351045,
+       0.3460873946356799
+      ],
+      "alpha": 0.0,
+      "n": 1661,
+      "mean_y": 2.320891029500301
+     },
+     "away": {
+      "coef": [
+       0.0931176771795991,
+       0.3175104283666596,
+       0.3674721625596761
+      ],
+      "alpha": 0.0,
+      "n": 1661,
+      "mean_y": 2.5436484045755567
+     },
+     "total": {
+      "coef": [
+       0.641877057849115,
+       0.3076134957255627,
+       0.22552100333012332
+      ],
+      "alpha": 0.04539378106098472,
+      "n": 1661,
+      "mean_y": 4.864539434075858
+     }
+    },
+    "n_fit": 1661,
+    "fit_from": "2022-01-07",
+    "fit_to": "2026-11-09",
+    "n_holdout_train": 1191,
+    "n_holdout_test": 470
+   },
+   "China Super League": {
+    "params": {
+     "home": {
+      "coef": [
+       -0.052536597253614245,
+       0.28306352605218943,
+       0.32827723990816143
+      ],
+      "alpha": 0.03200290694325948,
+      "n": 1192,
+      "mean_y": 1.8506711409395973
+     },
+     "away": {
+      "coef": [
+       0.10359843443844344,
+       0.2970173174526488,
+       0.3083137035259103
+      ],
+      "alpha": 0.009533290125732168,
+      "n": 1192,
+      "mean_y": 2.148489932885906
+     },
+     "total": {
+      "coef": [
+       0.21198014294893122,
+       0.37954272807531036,
+       0.3515907881200554
+      ],
+      "alpha": 0.05141842801354876,
+      "n": 1192,
+      "mean_y": 3.9991610738255035
+     }
+    },
+    "n_fit": 1192,
+    "fit_from": "2022-01-01",
+    "fit_to": "2026-10-24",
+    "n_holdout_train": 859,
+    "n_holdout_test": 333
+   },
+   "USA MLS": {
+    "params": {
+     "home": {
+      "coef": [
+       0.35099208428927453,
+       0.18146952961277615,
+       0.1528074335706113
+      ],
+      "alpha": 6.0821468695924424e-05,
+      "n": 2556,
+      "mean_y": 2.0892018779342725
+     },
+     "away": {
+      "coef": [
+       0.17088967204785865,
+       0.30985928250303024,
+       0.2645902562261818
+      ],
+      "alpha": 0.0,
+      "n": 2556,
+      "mean_y": 2.29773082942097
+     },
+     "total": {
+      "coef": [
+       0.7854366604215296,
+       0.18604075517608726,
+       0.22741358883104856
+      ],
+      "alpha": 0.018943756301735136,
+      "n": 2556,
+      "mean_y": 4.386932707355243
+     }
+    },
+    "n_fit": 2556,
+    "fit_from": "2022-02-26",
+    "fit_to": "2026-11-07",
+    "n_holdout_train": 1804,
+    "n_holdout_test": 752
    }
   }
  }

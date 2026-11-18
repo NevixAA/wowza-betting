@@ -6,30 +6,77 @@
   "corners": {
    "model_id": "v9_corners",
    "markets": {
-    "corners_total": {"part": "total", "lines": [8.5, 9.5, 10.5, 11.5]},
-    "corners_team": {"part": "team", "lines": [3.5, 4.5, 5.5]}
+    "corners_total": {
+     "part": "total",
+     "lines": [
+      8.5,
+      9.5,
+      10.5,
+      11.5
+     ]
+    },
+    "corners_team": {
+     "part": "team",
+     "lines": [
+      3.5,
+      4.5,
+      5.5
+     ]
+    }
    },
-   "count": "API-Football /fixtures/statistics 'Corner Kicks' per team (90 minutes), verified per fixture against football-data HC/AC"
+   "count": "API-Football /fixtures/statistics 'Corner Kicks' per team (90 minutes), verified per fixture against football-data HC/AC where football-data has them, else single-source sanity"
   },
   "cards": {
    "model_id": "v9_cards",
    "markets": {
-    "cards_total": {"part": "total", "lines": [3.5, 4.5, 5.5]},
-    "cards_team": {"part": "team", "lines": [1.5, 2.5]}
+    "cards_total": {
+     "part": "total",
+     "lines": [
+      3.5,
+      4.5,
+      5.5
+     ]
+    },
+    "cards_team": {
+     "part": "team",
+     "lines": [
+      1.5,
+      2.5
+     ]
+    }
    },
-   "count": "API-Football /fixtures/statistics 'Yellow Cards' + 'Red Cards' per team (a card count, not booking points; a second-yellow dismissal is counted the provider's way - owner rule G9 still open), verified per fixture against football-data HY/AY/HR/AR (src/side_models/data.py)"
+   "count": "API-Football /fixtures/statistics 'Yellow Cards' + 'Red Cards' per team (a card count, not booking points; a second-yellow dismissal is counted the provider's way - owner cards rule 2026-11-18 closes G9), verified per fixture against football-data HY/AY/HR/AR where football-data has them, else single-source sanity (src/side_models/data.py)"
   }
  },
- "team_selections": ["HOME_OVER", "HOME_UNDER", "AWAY_OVER", "AWAY_UNDER"],
- "total_selections": ["OVER", "UNDER"],
- "features": {"window": 10, "max_age_days": 400, "min_verified": 6},
+ "team_selections": [
+  "HOME_OVER",
+  "HOME_UNDER",
+  "AWAY_OVER",
+  "AWAY_UNDER"
+ ],
+ "total_selections": [
+  "OVER",
+  "UNDER"
+ ],
+ "features": {
+  "window": 10,
+  "max_age_days": 400,
+  "min_verified": 6
+ },
  "verification": {
   "rule": "per fixture: the two sources agree (src/side_models/data.py verify); per league x family: two-source overlap >= min_overlap_pct of the API-Football fixtures in the football-data window AND agreement >= min_agree_pct on that overlap",
   "min_overlap_pct": 80.0,
-  "min_agree_pct": 95.0
+  "min_agree_pct": 95.0,
+  "cards_rule": "owner 2026-11-18 (closes audit G9): reds exact; yellows exact on a team without a red; on a team with a red, API-Football yellows - football-data yellows in [0, 2 x reds]"
  },
  "holdout_split_date": "2025-07-01",
  "horizon_hours": 168,
  "fixture_source": "output/collect/upcoming_fixtures.parquet (API-Football fixture ids and team ids; refreshed by daily_injuries_lineups.yml)",
- "artifact": "models/side_models/side_models.json"
+ "artifact": "models/side_models/side_models.json",
+ "single_source": {
+  "rule": "owner 2026-11-18: a tracked league football-data publishes no corners/cards for uses API-Football /fixtures/statistics as its single certified source. A fixture is used only when its counts pass the sanity rules (src/side_models/data.py SANITY: every count present, none negative or impossible, not all zero); nothing is filled. The league is covered when API-Football holds stats for >= min_stats_pct of its finished fixtures since window_from and >= min_sane_pct of those pass. Rows carry basis 'single_source' (ledger payload_version).",
+  "window_from": "2022-01-01",
+  "min_stats_pct": 80.0,
+  "min_sane_pct": 95.0
+ }
 }

@@ -2,6 +2,7 @@
 ====================================================================================================
 
     python -m src.side_models.ledger board       # append due snapshots (predict.yml; flag-gated)
+    python -m src.side_models.ledger settle      # settled views of the side partitions (update_results.yml)
     python -m src.side_models.ledger preview     # print counts only, write nothing
 
 LEARNING ONLY (owner rule 2026-11-17/18: every model predicts every match of every tracked league for
@@ -45,7 +46,11 @@ WRITER = "side_models"
 UPCOMING = ROOT / "output" / "collect" / "upcoming_fixtures.parquet"
 ARTIFACT = ROOT / "models" / "side_models" / "side_models.json"
 FLAG_ENV = "SIDE_MODELS_LEDGER_ENABLED"
-PAYLOAD_VERSION = "side/1.0"
+PAYLOAD_VERSION = "side/1.1"
+#: How long after kickoff a fixture with no usable statistics stays PENDING before it is NO_RESULT.
+NO_RESULT_AFTER_H = 72
+#: Owner settlement rule: a fixture moved by more than 48 h from a snapshot's kickoff is VOID for it.
+RESCHEDULE_VOID_H = 48
 UPCOMING_STATUSES = ("NS", "TBD")
 
 
@@ -68,6 +73,27 @@ def _fhash(vals) -> str:
         f = float(v)
         h.update(b"nan|" if f != f else f"{f:.10g}|".encode())
     return h.hexdigest()[:12]
+
+
+def verified_table(art: dict) -> pd.DataFrame:
+    """The verified match table for every league the artifact covers in any family, each under its
+    own basis (two-source / single-source) - the same build the training used."""
+    two, single = set(), {}
+    for fam, cov in art["coverage"].items():
+        for lg, c in cov.items():
+            if not c.get("covered"):
+                continue
+            if c.get("basis") == "single_source":
+                single[lg] = c["window_from"]
+            else:
+                two.add(lg)
+    table, _ = D.build(sorted(two), single_source=single)
+    return table
+
+
+def payload_version(art: dict, family: str, league: str) -> str:
+    """'side/1.1;basis=two_source|single_source' - the truth basis of the league's history."""
+    return f"{PAYLOAD_VERSION};basis={art['coverage'][family][league].get('basis') or 'two_source'}"
 
 
 def upcoming(now: datetime, horizon_h: float, path: Path | None = None, slugs: PL.LeagueSlugs | None = None
@@ -162,7 +188,8 @@ def rows_for(scored: dict, art: dict, cfg: dict, *, now: datetime, slugs: PL.Lea
                             for snap in due:
                                 rows.append(PL.make_row(
                                     repo=REPO, model_id=fc["model_id"], model_version=art["model_version"],
-                                    model_sha=sha, payload_version=PAYLOAD_VERSION, feature_hash=fh,
+                                    model_sha=sha, payload_version=payload_version(art, fam, r["league"]),
+                                    feature_hash=fh,
                                     track=(entry or {}).get("model_type", ""), market=market, line=line,
                                     selection=sel, fixture_ref=PL.fixture_ref(r["fixture_id"]),
                                     fixture_id=r["fixture_id"], league=r["league"], season=season,
@@ -184,10 +211,7 @@ def build_rows(now: datetime | None = None, *, upcoming_path=None, slugs=None) -
     art = load_artifact()
     slugs = slugs or PL.LeagueSlugs()
     tg = upcoming(now, cfg["horizon_hours"], upcoming_path, slugs)
-    covered_any = set()
-    for fam in cfg["families"]:
-        covered_any |= {lg for lg, c in art["coverage"][fam].items() if c.get("covered")}
-    table, _ = D.build(sorted(covered_any))
+    table = verified_table(art)
     scored = score(table, tg, art, cfg)
     rows = rows_for(scored, art, cfg, now=now, slugs=slugs, names=_team_names())
     summ = {"fixtures_in_horizon": int(len(tg)), "rows": len(rows),
@@ -199,6 +223,63 @@ def build_rows(now: datetime | None = None, *, upcoming_path=None, slugs=None) -
                 fam: sorted(set(tg["league"]) - {lg for lg, c in art["coverage"][fam].items() if c.get("covered")})
                 for fam in cfg["families"]}}
     return rows, summ
+
+
+def outcome_fn(table: pd.DataFrame, *, markets: dict | None = None, now: datetime | None = None):
+    """outcome_of(row) for the side markets, from the VERIFIED statistics only (the same table and
+    rules the model trained on: two sources agree, or the single certified source passes sanity)."""
+    idx = PL.entry_index(markets)
+    now_ts = pd.Timestamp(now or datetime.now(timezone.utc))
+    stamp = PL.iso(now_ts)
+    by_id = {int(r["fixture_id"]): r for r in table.to_dict("records")}
+
+    def pending_or_missing(ko, why):
+        if ko is not None and (now_ts - ko).total_seconds() / 3600 >= NO_RESULT_AFTER_H:
+            return {"outcome_status": "NO_RESULT", "outcome_value": why}
+        return {"outcome_status": "PENDING"}
+
+    def outcome_of(r: dict) -> dict:
+        e = idx.get((r["repo"], r["model_id"], r["market"]))
+        if e is None:
+            return {"outcome_status": "UNREGISTERED"}
+        ko = PL.utc_ts(r.get("kickoff_utc"))
+        if ko is None or ko > now_ts:
+            return {"outcome_status": "PENDING"}
+        fid = PL._s(r.get("fixture_id"))
+        m = by_id.get(int(fid)) if fid else None
+        if m is None:
+            return pending_or_missing(ko, "fixture not finished in the fixture list")
+        played = pd.Timestamp(m["date"], tz="UTC")
+        if abs((played - ko.normalize()).total_seconds()) / 3600 > RESCHEDULE_VOID_H:
+            return {"outcome_status": "VOID_RESCHEDULED",
+                    "outcome_value": f"kickoff {PL.iso(ko)} -> played {m['date']}"}
+        st = e["settle"]
+        fam = st["stat"]
+        if not m[f"{fam}_verified"]:
+            if m[f"{fam}_both"]:
+                return {"outcome_status": "NO_RESULT", "result_source": m.get("basis"),
+                        "outcome_value": f"{fam} statistics not verified (sources disagree / failed sanity)"}
+            return pending_or_missing(ko, f"no {fam} statistics yet")
+        y, val = PL.match_outcome(st, r["selection"], r.get("line"), m["ft_home"], m["ft_away"],
+                                  hs=m[f"home_{fam}"], as_=m[f"away_{fam}"])
+        if y is None:
+            return {"outcome_status": "NO_RESULT", "outcome_value": val, "result_source": m.get("basis")}
+        return {"outcome_status": "SETTLED", "y": y, "home_goals": int(m["ft_home"]),
+                "away_goals": int(m["ft_away"]), "outcome_value": val,
+                "result_source": f"{m.get('basis')}:{m.get('stats_source')}", "settled_at": stamp}
+    return outcome_of
+
+
+def settle(now: datetime | None = None, *, root=None, settled_root=None) -> dict:
+    """Rebuild the settled views of the side-model partitions only (v9_corners / v9_cards)."""
+    if not enabled():
+        print(f"[side_models] {FLAG_ENV} / {PL.FLAG_ENV} not both 'true': nothing settled")
+        return {"disabled": True}
+    fn = outcome_fn(verified_table(load_artifact()), now=now)
+    st = PL.write_settled(fn, repo=REPO, root=root, settled_root=settled_root,
+                          models=tuple(f["model_id"] for f in T.load_config()["families"].values()))
+    print(f"[side_models] settled views: {st}")
+    return st
 
 
 def board(now: datetime | None = None) -> dict:
@@ -220,11 +301,13 @@ def main(argv=None) -> int:
     try:
         if cmd == "board":
             board()
+        elif cmd == "settle":
+            settle()
         elif cmd == "preview":
             rows, summ = build_rows()
             print(json.dumps(summ, indent=1))
         else:
-            print(f"unknown command {cmd!r} (board | preview)")
+            print(f"unknown command {cmd!r} (board | settle | preview)")
             return 2
     except Exception as e:                                             # noqa: BLE001
         print(f"::warning::side models ledger failed (learning only - tips unaffected): "

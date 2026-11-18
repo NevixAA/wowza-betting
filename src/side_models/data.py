@@ -26,6 +26,16 @@ VERIFIED (per fixture, per family):
              lie in [0, 2 x reds] - the documented convention band (audit G9), never a wider tolerance.
 A fixture failing its check is NOT used for that family (missing stays missing; nothing is corrected
 or averaged). Rows where every AF corner and card value is 0 are refused (suspected zero-fill, audit).
+The cards rule above is the owner's (2026-11-18; closes audit G9).
+
+SINGLE SOURCE (owner 2026-11-18). A league football-data publishes no corners/cards for (the New-Format
+leagues) uses API-Football as its single certified source. A fixture's counts are used only when they
+pass the sanity rules (`SANITY`: every count present, none negative or impossible, not all-zero);
+nothing is filled. Such rows carry basis 'single_source' (two-source rows: 'two_source').
+
+API-FOOTBALL'S SIDE has two stores: the fullstats fill (by fixture_id) and, for fixtures the fill does
+not hold, the side-stats sidecar output/collect/af_side_stats.parquet (scripts/collect_side_stats.py,
+the capped daily refresh). Both are parsed under the same owner null rule (src/af_team_stats).
 """
 from __future__ import annotations
 
@@ -39,6 +49,10 @@ ROOT = Path(__file__).resolve().parents[2]
 FILL = ROOT / "output" / "collect" / "af_history_fullstats_fill.parquet"
 FIXTURES = ROOT / "output" / "strength" / "competition_fixtures.parquet"
 FD_RAW = ROOT / "output" / "collect" / "fd_raw"
+SIDECAR = ROOT / "output" / "collect" / "af_side_stats.parquet"
+STAT_COLS = ["af_hc", "af_ac", "af_hy", "af_ay", "af_hr", "af_ar"]
+#: impossible-value rules of the side-data audit (2026-11-16): a count beyond these is not real
+SANITY = {"max_match_corners": 30, "max_match_cards": 22, "max_team_red": 5, "max_team_yellow": 16}
 
 MIN_VOTES = 5
 MIN_SHARE = 0.95
@@ -78,26 +92,70 @@ def load_fd_raw(leagues: list, fd_dir: Path | None = None) -> pd.DataFrame:
     return fd[fd["date"].notna()].reset_index(drop=True)
 
 
-def load_af(leagues: list, fixtures_path: Path | None = None, fill_path: Path | None = None) -> pd.DataFrame:
-    """API-Football finished fixtures of `leagues` with their /fixtures/statistics counts (NaN when the
-    fill has no answer for the fixture)."""
-    fx = pd.read_parquet(fixtures_path or FIXTURES)
-    fx = fx[fx["league"].isin(leagues) & fx["status"].isin(FT_STATUSES)].copy()
-    fx = fx.drop_duplicates("fixture_id")
-    fill = pd.read_parquet(fill_path or FILL,
-                           columns=["fixture_id", "home_id", "away_id", "home_corners", "away_corners",
-                                    "home_yellow", "away_yellow", "home_red", "away_red"])
-    fill = fill.drop_duplicates("fixture_id").rename(columns={
+SIDE_COLS = ["fixture_id", "home_id", "away_id", "home_corners", "away_corners", "home_yellow",
+             "away_yellow", "home_red", "away_red"]
+
+
+def load_stats(fill_path: Path | None = None, sidecar_path: Path | None = None) -> pd.DataFrame:
+    """API-Football per-fixture counts: the fullstats fill, plus the side-stats sidecar for fixtures the
+    fill does not hold (the fill wins on an overlap; nothing is averaged or combined)."""
+    fill = pd.read_parquet(fill_path or FILL, columns=SIDE_COLS)
+    fill = fill.drop_duplicates("fixture_id").assign(stats_source="fullstats_fill")
+    sp = Path(sidecar_path or SIDECAR)
+    if sp.exists():
+        side = pd.read_parquet(sp)
+        side = side[side["answered"].eq(True)].sort_values("fetched_at").drop_duplicates("fixture_id", keep="last")
+        side = side[~side["fixture_id"].isin(fill["fixture_id"])][SIDE_COLS].assign(stats_source="side_stats")
+        fill = pd.concat([fill, side], ignore_index=True)
+    return fill.rename(columns={
         "home_id": "fill_home_id", "away_id": "fill_away_id",
         "home_corners": "af_hc", "away_corners": "af_ac", "home_yellow": "af_hy", "away_yellow": "af_ay",
         "home_red": "af_hr", "away_red": "af_ar"})
-    af = fx.merge(fill, on="fixture_id", how="left")
-    # a fill row whose team ids disagree with the fixture list is not this fixture's answer
+
+
+def load_af(leagues: list, fixtures_path: Path | None = None, fill_path: Path | None = None,
+            sidecar_path: Path | None = None) -> pd.DataFrame:
+    """API-Football finished fixtures of `leagues` with their /fixtures/statistics counts (NaN when no
+    store holds an answer for the fixture)."""
+    fx = pd.read_parquet(fixtures_path or FIXTURES)
+    fx = fx[fx["league"].isin(leagues) & fx["status"].isin(FT_STATUSES)].copy()
+    fx = fx.drop_duplicates("fixture_id")
+    af = fx.merge(load_stats(fill_path, sidecar_path), on="fixture_id", how="left")
+    # a stats row whose team ids disagree with the fixture list is not this fixture's answer
     bad = af["fill_home_id"].notna() & ((af["fill_home_id"] != af["home_id"]) | (af["fill_away_id"] != af["away_id"]))
-    af.loc[bad, ["af_hc", "af_ac", "af_hy", "af_ay", "af_hr", "af_ar"]] = np.nan
+    af.loc[bad, STAT_COLS] = np.nan
     cols = ["fixture_id", "league", "season", "date", "home_id", "away_id", "home_name", "away_name",
-            "ft_home", "ft_away", "af_hc", "af_ac", "af_hy", "af_ay", "af_hr", "af_ar"]
+            "ft_home", "ft_away", *STAT_COLS, "stats_source"]
     return af[cols].reset_index(drop=True)
+
+
+def sane(af: pd.DataFrame) -> pd.Series:
+    """Every count present, none negative or impossible (SANITY), not all zero (suspected zero-fill)."""
+    v = af[STAT_COLS]
+    present = v.notna().all(axis=1)
+    nonneg = ~(v < 0).any(axis=1)
+    ok_c = (af["af_hc"] + af["af_ac"]) <= SANITY["max_match_corners"]
+    ok_k = (af["af_hy"] + af["af_ay"] + af["af_hr"] + af["af_ar"]) <= SANITY["max_match_cards"]
+    ok_r = (af["af_hr"] <= SANITY["max_team_red"]) & (af["af_ar"] <= SANITY["max_team_red"])
+    ok_y = (af["af_hy"] <= SANITY["max_team_yellow"]) & (af["af_ay"] <= SANITY["max_team_yellow"])
+    return present & nonneg & ok_c & ok_k & ok_r & ok_y & ~v.eq(0).all(axis=1)
+
+
+def verify_single(af: pd.DataFrame) -> pd.DataFrame:
+    """Single-source leagues: API-Football counts that pass `sane` are used, nothing else."""
+    out = af.copy()
+    ok = sane(out)
+    has = out[STAT_COLS].notna().all(axis=1)
+    out["zero_fill_suspect"] = has & out[STAT_COLS].eq(0).all(axis=1)
+    out["corners_both"] = has
+    out["cards_both"] = has
+    out["corners_verified"] = ok
+    out["cards_verified"] = ok
+    out["home_corners"] = out["af_hc"].where(ok)
+    out["away_corners"] = out["af_ac"].where(ok)
+    out["home_cards"] = (out["af_hy"] + out["af_hr"]).where(ok)
+    out["away_cards"] = (out["af_ay"] + out["af_ar"]).where(ok)
+    return out
 
 
 def crosswalk(fd: pd.DataFrame, af: pd.DataFrame) -> tuple[dict, dict]:
@@ -163,13 +221,13 @@ def join(fd: pd.DataFrame, af: pd.DataFrame, xw: dict) -> pd.DataFrame:
 
 
 def verify(j: pd.DataFrame) -> pd.DataFrame:
-    """Per-fixture verification flags + the verified counts (NaN where not verified)."""
+    """Two-source leagues: per-fixture verification flags + the verified counts (NaN where not verified).
+    The API-Football side must also pass `sane`."""
     out = j.copy()
-    stats = ["af_hc", "af_ac", "af_hy", "af_ay", "af_hr", "af_ar"]
-    allzero = out[stats].eq(0).all(axis=1)          # NaN is not 0: a missing value is not a zero
-    has_af = out[stats].notna().all(axis=1)
-    out["zero_fill_suspect"] = allzero
-    c_ok = has_af & ~allzero & out[["fd_hc", "fd_ac"]].notna().all(axis=1) & \
+    has_af = out[STAT_COLS].notna().all(axis=1)
+    out["zero_fill_suspect"] = has_af & out[STAT_COLS].eq(0).all(axis=1)
+    is_sane = sane(out)
+    c_ok = is_sane & out[["fd_hc", "fd_ac"]].notna().all(axis=1) & \
         (out["af_hc"] == out["fd_hc"]) & (out["af_ac"] == out["fd_ac"])
     fd_cards = out[["fd_hy", "fd_ay", "fd_hr", "fd_ar"]].notna().all(axis=1)
 
@@ -180,7 +238,7 @@ def verify(j: pd.DataFrame) -> pd.DataFrame:
         with_red = (fdr > 0) & (diff >= 0) & (diff <= 2 * fdr)
         return red_eq & (no_red | with_red)
 
-    k_ok = has_af & ~allzero & fd_cards & \
+    k_ok = is_sane & fd_cards & \
         team_ok(out["af_hy"], out["fd_hy"], out["af_hr"], out["fd_hr"]) & \
         team_ok(out["af_ay"], out["fd_ay"], out["af_ar"], out["fd_ar"])
     out["corners_both"] = has_af & out[["fd_hc", "fd_ac"]].notna().all(axis=1)
@@ -194,38 +252,75 @@ def verify(j: pd.DataFrame) -> pd.DataFrame:
     return out
 
 
-def build(leagues: list, *, fixtures_path=None, fill_path=None, fd_dir=None) -> tuple[pd.DataFrame, dict]:
-    """(verified match table, audit) for `leagues`. The table holds every finished AF fixture of those
-    leagues (also unmatched ones, with NaN counts) so the as-of features can see a team's real
-    fixture sequence and count the matches whose statistics are not verified."""
-    fd = load_fd_raw(leagues, fd_dir)
-    af = load_af(leagues, fixtures_path, fill_path)
-    xw, xaudit = crosswalk(fd, af)
-    j = verify(join(fd, af, xw))
-    keep = ["fixture_id", "corners_both", "cards_both", "corners_verified", "cards_verified", "zero_fill_suspect",
-            "home_corners", "away_corners", "home_cards", "away_cards"]
-    table = af.merge(j[keep], on="fixture_id", how="left")
-    for c in ("corners_both", "cards_both", "corners_verified", "cards_verified", "zero_fill_suspect"):
-        table[c] = table[c].eq(True)                 # a fixture football-data does not hold is not verified
-    table["fd_matched"] = table["fixture_id"].isin(j["fixture_id"])
+FLAGS = ("corners_both", "cards_both", "corners_verified", "cards_verified", "zero_fill_suspect")
+KEEP = ["fixture_id", *FLAGS, "home_corners", "away_corners", "home_cards", "away_cards"]
+
+
+def build(leagues: list, *, single_source: dict | None = None, fixtures_path=None, fill_path=None,
+          fd_dir=None, sidecar_path=None) -> tuple[pd.DataFrame, dict]:
+    """(verified match table, audit). `leagues` are two-source (football-data + API-Football);
+    `single_source` maps a league to its window start ('YYYY-MM-DD') under the API-Football single
+    certified source rule. The table holds every finished AF fixture of those leagues (also ones without
+    usable stats, with NaN counts) so the as-of features see a team's real fixture sequence and count
+    the matches whose statistics are not usable. Column `basis`: 'two_source' / 'single_source'."""
+    single_source = dict(single_source or {})
+    two = [lg for lg in leagues if lg not in single_source]
+    allg = two + list(single_source)
+    af = load_af(allg, fixtures_path, fill_path, sidecar_path)
+    parts, audit = [], {}
+    if two:
+        fd = load_fd_raw(two, fd_dir)
+        af2 = af[af["league"].isin(two)]
+        xw, xaudit = crosswalk(fd, af2)
+        j = verify(join(fd, af2, xw))
+        t2 = af2.merge(j[KEEP], on="fixture_id", how="left")
+        for c in FLAGS:
+            t2[c] = t2[c].eq(True)                 # a fixture football-data does not hold is not verified
+        t2["fd_matched"] = t2["fixture_id"].isin(j["fixture_id"])
+        t2["basis"] = "two_source"
+        parts.append(t2)
+        first_fd = fd.groupby("league")["date"].min().to_dict()
+        for lg in two:
+            t = t2[t2["league"] == lg]
+            w = t[t["date"] >= first_fd.get(lg, "9999")]          # the fd_raw window (2022/23 on)
+            m = w[w["fd_matched"]]
+            audit[lg] = {
+                "basis": "two_source",
+                "fd_window_from": first_fd.get(lg),
+                "af_fixtures_in_window": int(len(w)),
+                "fd_rows": int((fd["league"] == lg).sum()),
+                "matched": int(len(m)),
+                "matched_pct": round(100 * len(m) / len(w), 2) if len(w) else None,
+                "corners_both": int(m["corners_both"].sum()),
+                "corners_verified": int(m["corners_verified"].sum()),
+                "cards_both": int(m["cards_both"].sum()),
+                "cards_verified": int(m["cards_verified"].sum()),
+                "zero_fill_suspect": int(m["zero_fill_suspect"].sum()),
+                "crosswalk": xaudit.get(lg, {}),
+            }
+    if single_source:
+        afs = verify_single(af[af["league"].isin(list(single_source))])
+        afs["fd_matched"] = False
+        afs["basis"] = "single_source"
+        parts.append(afs[t2.columns] if two else afs)
+        for lg, since in single_source.items():
+            w = afs[(afs["league"] == lg) & (afs["date"] >= since)]
+            by_season = (w.assign(y=w["date"].str[:4]).groupby("y")
+                         .apply(lambda g: round(100 * g["corners_both"].mean(), 1), include_groups=False).to_dict())
+            audit[lg] = {
+                "basis": "single_source",
+                "fd_window_from": since,
+                "af_fixtures_in_window": int(len(w)),
+                "with_stats": int(w["corners_both"].sum()),
+                "with_stats_pct": round(100 * w["corners_both"].mean(), 2) if len(w) else None,
+                "with_stats_pct_by_year": by_season,
+                "corners_both": int(w["corners_both"].sum()),
+                "corners_verified": int(w["corners_verified"].sum()),
+                "cards_both": int(w["cards_both"].sum()),
+                "cards_verified": int(w["cards_verified"].sum()),
+                "failed_sanity": int((w["corners_both"] & ~w["corners_verified"]).sum()),
+                "zero_fill_suspect": int(w["zero_fill_suspect"].sum()),
+            }
+    table = pd.concat(parts, ignore_index=True) if parts else af.iloc[0:0]
     table = table.sort_values(["league", "date", "fixture_id"]).reset_index(drop=True)
-    first_fd = fd.groupby("league")["date"].min().to_dict()
-    audit = {}
-    for lg in leagues:
-        t = table[table["league"] == lg]
-        w = t[t["date"] >= first_fd.get(lg, "9999")]          # the fd_raw window (2022/23 on)
-        m = w[w["fd_matched"]]
-        audit[lg] = {
-            "fd_window_from": first_fd.get(lg),
-            "af_fixtures_in_window": int(len(w)),
-            "fd_rows": int((fd["league"] == lg).sum()),
-            "matched": int(len(m)),
-            "matched_pct": round(100 * len(m) / len(w), 2) if len(w) else None,
-            "corners_both": int(m["corners_both"].sum()),
-            "corners_verified": int(m["corners_verified"].sum()),
-            "cards_both": int(m["cards_both"].sum()),
-            "cards_verified": int(m["cards_verified"].sum()),
-            "zero_fill_suspect": int(m["zero_fill_suspect"].sum()),
-            "crosswalk": xaudit.get(lg, {}),
-        }
     return table, audit

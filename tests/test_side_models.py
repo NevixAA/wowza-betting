@@ -172,7 +172,7 @@ def test_ledger_entries_are_active_and_match_the_side_config():
     assert {mk for (_, mk) in by if mk in SIDE_MARKETS} == set(SIDE_MARKETS)
 
 
-def test_artifact_covers_only_two_source_leagues_and_lists_every_tracked_league():
+def test_artifact_covers_only_leagues_passing_their_truth_rule_and_lists_every_tracked_league():
     art = L.load_artifact()
     cfg = T.load_config()
     tracked = T.tracked_leagues()
@@ -182,10 +182,15 @@ def test_artifact_covers_only_two_source_leagues_and_lists_every_tracked_league(
         cov = art["coverage"][fam]
         assert set(cov) == names                                     # every tracked league, with a verdict
         for lg, c in cov.items():
-            if c["covered"]:
+            if c["covered"] and c["basis"] == "two_source":
                 assert fmt[lg] == "mmz4281"
                 assert c["overlap_pct"] >= cfg["verification"]["min_overlap_pct"]
                 assert c["agree_pct"] >= cfg["verification"]["min_agree_pct"]
+            elif c["covered"]:
+                assert c["basis"] == "single_source" and fmt[lg] != "mmz4281"
+                assert c["stats_pct"] >= cfg["single_source"]["min_stats_pct"]
+                assert c["sane_pct"] >= cfg["single_source"]["min_sane_pct"]
+            if c["covered"]:
                 assert set(art["models"][fam][lg]["params"]) == set(M.PARTS)
             else:
                 assert c["reason"] and lg not in art["models"][fam]

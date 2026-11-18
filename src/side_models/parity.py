@@ -23,7 +23,6 @@ ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from src.side_models import data as D  # noqa: E402
 from src.side_models import features as F  # noqa: E402
 from src.side_models import model as M  # noqa: E402
 from src.side_models import train as T  # noqa: E402
@@ -35,8 +34,7 @@ def run(sample_per_cell: int = 60, art: dict | None = None) -> dict:
     from src.side_models import ledger as L
     cfg = T.load_config()
     art = art or L.load_artifact()
-    covered = sorted({lg for fam in cfg["families"] for lg, c in art["coverage"][fam].items() if c.get("covered")})
-    table, _ = D.build(covered)
+    table = L.verified_table(art)
     res = {"fixtures": 0, "probabilities": 0, "max_abs_feature_diff": 0.0, "max_abs_prob_diff": 0.0,
            "asof_checked": 0, "asof_max_abs_diff": 0.0, "mismatches": []}
     for fam, fc in cfg["families"].items():
