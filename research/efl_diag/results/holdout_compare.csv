@@ -1,0 +1,1126 @@
+market,group,model,vs,n,diff,ci95,p_a_better
+over25,EFL,champion_p11,base_league_2y,758,-0.00682,"[-0.01373, 0.00015]",0.971
+over25,EFL,champion_p11,market_bettime,751,0.00857,"[0.00038, 0.01672]",0.021
+over25,EFL,base_league_2y,market_bettime,751,0.01617,"[0.00558, 0.02682]",0.001
+over25,EFL,base_league_2y,champion_p11,758,0.00682,"[-0.00015, 0.01373]",0.029
+over25,EFL,base_global_2y,base_league_2y,758,-0.00543,"[-0.01018, -0.00103]",0.991
+over25,EFL,base_global_2y,market_bettime,751,0.01035,"[0.00107, 0.01979]",0.013
+over25,EFL,base_global_2y,champion_p11,758,0.00139,"[-0.00279, 0.00534]",0.254
+over25,EFL,market_bettime,base_league_2y,751,-0.01617,"[-0.02682, -0.00558]",0.999
+over25,EFL,market_bettime,champion_p11,751,-0.00857,"[-0.01672, -0.00038]",0.98
+over25,EFL,market_close,base_league_2y,751,-0.01878,"[-0.03133, -0.00689]",0.999
+over25,EFL,market_close,market_bettime,751,-0.00261,"[-0.00685, 0.0017]",0.887
+over25,EFL,market_close,champion_p11,751,-0.01118,"[-0.02023, -0.00225]",0.993
+over25,EFL,logistic_all,base_league_2y,758,-0.00498,"[-0.01231, 0.00244]",0.898
+over25,EFL,logistic_all,market_bettime,751,0.01035,"[0.00069, 0.02091]",0.019
+over25,EFL,logistic_all,champion_p11,758,0.00184,"[-0.00323, 0.00683]",0.251
+over25,EFL,hgb_all,base_league_2y,758,0.01965,"[0.00362, 0.0349]",0.011
+over25,EFL,hgb_all,market_bettime,751,0.0353,"[0.01618, 0.05373]",0.0
+over25,EFL,hgb_all,champion_p11,758,0.02647,"[0.01206, 0.04011]",0.0
+over25,EFL,logistic_leagueFE,base_league_2y,758,-0.00374,"[-0.0106, 0.00355]",0.856
+over25,EFL,logistic_leagueFE,market_bettime,751,0.01161,"[0.00121, 0.02234]",0.015
+over25,EFL,logistic_leagueFE,champion_p11,758,0.00307,"[-0.00347, 0.00943]",0.2
+over25,EFL,logistic_leagueFE_shots,base_league_2y,758,-0.00248,"[-0.00936, 0.00511]",0.767
+over25,EFL,logistic_leagueFE_shots,market_bettime,751,0.01293,"[0.00238, 0.02363]",0.006
+over25,EFL,logistic_leagueFE_shots,champion_p11,758,0.00434,"[-0.00236, 0.01094]",0.121
+over25,EFL,logistic_eflonly,base_league_2y,758,0.00299,"[-0.00599, 0.01182]",0.27
+over25,EFL,logistic_eflonly,market_bettime,751,0.01874,"[0.00548, 0.03339]",0.002
+over25,EFL,logistic_eflonly,champion_p11,758,0.0098,"[-0.00073, 0.02124]",0.034
+over25,EFL,hgb_eflonly,base_league_2y,758,0.05815,"[0.03722, 0.07868]",0.0
+over25,EFL,hgb_eflonly,market_bettime,751,0.07424,"[0.04762, 0.09944]",0.0
+over25,EFL,hgb_eflonly,champion_p11,758,0.06497,"[0.04361, 0.08544]",0.0
+over25,EFL,dixon_coles,base_league_2y,589,0.00677,"[-0.00309, 0.0176]",0.101
+over25,EFL,dixon_coles,market_bettime,582,0.02345,"[0.01183, 0.03414]",0.0
+over25,EFL,dixon_coles,champion_p11,589,0.01562,"[0.00272, 0.02853]",0.005
+over25,EFL,stack_dc_logFE,base_league_2y,589,-0.00789,"[-0.01686, 0.00191]",0.94
+over25,EFL,stack_dc_logFE,market_bettime,582,0.00758,"[-0.00115, 0.01572]",0.044
+over25,EFL,stack_dc_logFE,champion_p11,589,0.00096,"[-0.00598, 0.00801]",0.376
+over25,EFL,champ+market_stack,base_league_2y,751,-0.01668,"[-0.02775, -0.00569]",0.999
+over25,EFL,champ+market_stack,market_bettime,751,-0.00051,"[-0.00129, 0.00032]",0.879
+over25,EFL,champ+market_stack,champion_p11,751,-0.00907,"[-0.01742, -0.00065]",0.984
+over25,Championship,champion_p11,base_league_2y,266,-0.01549,"[-0.03017, -0.00069]",0.979
+over25,Championship,champion_p11,market_bettime,263,0.00663,"[-0.00454, 0.01837]",0.11
+over25,Championship,base_league_2y,market_bettime,263,0.02392,"[0.00439, 0.04412]",0.007
+over25,Championship,base_league_2y,champion_p11,266,0.01549,"[0.00069, 0.03017]",0.021
+over25,Championship,base_global_2y,base_league_2y,266,-0.01336,"[-0.02307, -0.00246]",0.992
+over25,Championship,base_global_2y,market_bettime,263,0.00954,"[-0.00513, 0.02406]",0.091
+over25,Championship,base_global_2y,champion_p11,266,0.00213,"[-0.00463, 0.00867]",0.272
+over25,Championship,market_bettime,base_league_2y,263,-0.02392,"[-0.04412, -0.00439]",0.993
+over25,Championship,market_bettime,champion_p11,263,-0.00663,"[-0.01837, 0.00454]",0.89
+over25,Championship,market_close,base_league_2y,263,-0.02821,"[-0.04801, -0.00868]",0.996
+over25,Championship,market_close,market_bettime,263,-0.00429,"[-0.01111, 0.00258]",0.889
+over25,Championship,market_close,champion_p11,263,-0.01092,"[-0.02246, 6e-05]",0.975
+over25,Championship,logistic_all,base_league_2y,266,-0.01138,"[-0.02639, 0.00437]",0.924
+over25,Championship,logistic_all,market_bettime,263,0.01067,"[-0.00208, 0.02329]",0.044
+over25,Championship,logistic_all,champion_p11,266,0.00411,"[-0.00277, 0.01076]",0.125
+over25,Championship,hgb_all,base_league_2y,266,-0.0017,"[-0.03103, 0.02941]",0.556
+over25,Championship,hgb_all,market_bettime,263,0.02089,"[-0.00967, 0.05492]",0.092
+over25,Championship,hgb_all,champion_p11,266,0.01379,"[-0.0137, 0.04107]",0.161
+over25,Championship,logistic_leagueFE,base_league_2y,266,-0.00786,"[-0.02179, 0.00666]",0.856
+over25,Championship,logistic_leagueFE,market_bettime,263,0.01423,"[0.00064, 0.028]",0.021
+over25,Championship,logistic_leagueFE,champion_p11,266,0.00764,"[-0.00088, 0.01586]",0.043
+over25,Championship,logistic_leagueFE_shots,base_league_2y,266,-0.00665,"[-0.02108, 0.00843]",0.812
+over25,Championship,logistic_leagueFE_shots,market_bettime,263,0.01553,"[0.00215, 0.02931]",0.009
+over25,Championship,logistic_leagueFE_shots,champion_p11,266,0.00884,"[-0.00035, 0.01801]",0.035
+over25,Championship,logistic_eflonly,base_league_2y,266,-0.01153,"[-0.02583, 0.00438]",0.924
+over25,Championship,logistic_eflonly,market_bettime,263,0.01082,"[-0.0052, 0.02841]",0.096
+over25,Championship,logistic_eflonly,champion_p11,266,0.00396,"[-0.00872, 0.01658]",0.279
+over25,Championship,hgb_eflonly,base_league_2y,266,0.04132,"[0.0005, 0.08353]",0.024
+over25,Championship,hgb_eflonly,market_bettime,263,0.06313,"[0.02005, 0.10889]",0.002
+over25,Championship,hgb_eflonly,champion_p11,266,0.05681,"[0.01775, 0.0953]",0.002
+over25,Championship,dixon_coles,base_league_2y,215,0.02013,"[0.00143, 0.03931]",0.018
+over25,Championship,dixon_coles,market_bettime,212,0.04017,"[0.01667, 0.0635]",0.001
+over25,Championship,dixon_coles,champion_p11,215,0.03257,"[0.00547, 0.0583]",0.011
+over25,Championship,stack_dc_logFE,base_league_2y,215,-0.00656,"[-0.02533, 0.01485]",0.736
+over25,Championship,stack_dc_logFE,market_bettime,212,0.01108,"[-0.00029, 0.02346]",0.029
+over25,Championship,stack_dc_logFE,champion_p11,215,0.00588,"[-0.00613, 0.01802]",0.183
+over25,Championship,champ+market_stack,base_league_2y,263,-0.0255,"[-0.04648, -0.00471]",0.992
+over25,Championship,champ+market_stack,market_bettime,263,-0.00158,"[-0.00312, 5e-05]",0.972
+over25,Championship,champ+market_stack,champion_p11,263,-0.00821,"[-0.02037, 0.00288]",0.929
+over25,League One,champion_p11,base_league_2y,247,-0.00318,"[-0.01329, 0.00916]",0.698
+over25,League One,champion_p11,market_bettime,245,0.01388,"[-0.00167, 0.0289]",0.038
+over25,League One,base_league_2y,market_bettime,245,0.01761,"[-0.00338, 0.03903]",0.052
+over25,League One,base_league_2y,champion_p11,247,0.00318,"[-0.00916, 0.01329]",0.302
+over25,League One,base_global_2y,base_league_2y,247,-0.00046,"[-0.00245, 0.00197]",0.644
+over25,League One,base_global_2y,market_bettime,245,0.01701,"[-0.00322, 0.03781]",0.052
+over25,League One,base_global_2y,champion_p11,247,0.00272,"[-0.00791, 0.01196]",0.303
+over25,League One,market_bettime,base_league_2y,245,-0.01761,"[-0.03903, 0.00338]",0.948
+over25,League One,market_bettime,champion_p11,245,-0.01388,"[-0.0289, 0.00167]",0.962
+over25,League One,market_close,base_league_2y,245,-0.01746,"[-0.04369, 0.00759]",0.906
+over25,League One,market_close,market_bettime,245,0.00015,"[-0.00806, 0.00866]",0.496
+over25,League One,market_close,champion_p11,245,-0.01373,"[-0.03323, 0.00541]",0.912
+over25,League One,logistic_all,base_league_2y,247,-0.0024,"[-0.01885, 0.01501]",0.622
+over25,League One,logistic_all,market_bettime,245,0.01449,"[-0.00357, 0.03341]",0.056
+over25,League One,logistic_all,champion_p11,247,0.00078,"[-0.01094, 0.01246]",0.462
+over25,League One,hgb_all,base_league_2y,247,0.03194,"[0.00925, 0.05627]",0.004
+over25,League One,hgb_all,market_bettime,245,0.04802,"[0.02789, 0.07011]",0.0
+over25,League One,hgb_all,champion_p11,247,0.03512,"[0.01378, 0.05594]",0.001
+over25,League One,logistic_leagueFE,base_league_2y,247,-0.00293,"[-0.01945, 0.01435]",0.643
+over25,League One,logistic_leagueFE,market_bettime,245,0.01394,"[-0.00388, 0.03229]",0.065
+over25,League One,logistic_leagueFE,champion_p11,247,0.00025,"[-0.01158, 0.01185]",0.501
+over25,League One,logistic_leagueFE_shots,base_league_2y,247,-0.0021,"[-0.01844, 0.01497]",0.61
+over25,League One,logistic_leagueFE_shots,market_bettime,245,0.01494,"[-0.00276, 0.0327]",0.051
+over25,League One,logistic_leagueFE_shots,champion_p11,247,0.00108,"[-0.011, 0.01258]",0.429
+over25,League One,logistic_eflonly,base_league_2y,247,0.01183,"[-0.01028, 0.03253]",0.142
+over25,League One,logistic_eflonly,market_bettime,245,0.02934,"[0.00171, 0.0579]",0.018
+over25,League One,logistic_eflonly,champion_p11,247,0.01502,"[-0.00815, 0.03652]",0.098
+over25,League One,hgb_eflonly,base_league_2y,247,0.08728,"[0.04538, 0.13569]",0.0
+over25,League One,hgb_eflonly,market_bettime,245,0.10578,"[0.06018, 0.14747]",0.0
+over25,League One,hgb_eflonly,champion_p11,247,0.09046,"[0.04726, 0.13767]",0.0
+over25,League One,dixon_coles,base_league_2y,191,-0.00987,"[-0.03088, 0.01157]",0.821
+over25,League One,dixon_coles,market_bettime,189,0.01229,"[-0.00904, 0.03207]",0.137
+over25,League One,dixon_coles,champion_p11,191,-0.00491,"[-0.02773, 0.01605]",0.69
+over25,League One,stack_dc_logFE,base_league_2y,191,-0.01304,"[-0.03044, 0.00616]",0.918
+over25,League One,stack_dc_logFE,market_bettime,189,0.00751,"[-0.00621, 0.02066]",0.139
+over25,League One,stack_dc_logFE,champion_p11,191,-0.00808,"[-0.02085, 0.00425]",0.891
+over25,League One,champ+market_stack,base_league_2y,245,-0.01738,"[-0.03913, 0.00444]",0.939
+over25,League One,champ+market_stack,market_bettime,245,0.00022,"[-0.00126, 0.00196]",0.386
+over25,League One,champ+market_stack,champion_p11,245,-0.01365,"[-0.02895, 0.00201]",0.956
+over25,League Two,champion_p11,base_league_2y,245,-0.00106,"[-0.01235, 0.01128]",0.591
+over25,League Two,champion_p11,market_bettime,243,0.0053,"[-0.00704, 0.01721]",0.203
+over25,League Two,base_league_2y,market_bettime,243,0.00633,"[-0.0062, 0.01842]",0.15
+over25,League Two,base_league_2y,champion_p11,245,0.00106,"[-0.01128, 0.01235]",0.409
+over25,League Two,base_global_2y,base_league_2y,245,-0.00182,"[-0.01166, 0.0075]",0.652
+over25,League Two,base_global_2y,market_bettime,243,0.0045,"[-0.00848, 0.01663]",0.239
+over25,League Two,base_global_2y,champion_p11,245,-0.00076,"[-0.00678, 0.00548]",0.603
+over25,League Two,market_bettime,base_league_2y,243,-0.00633,"[-0.01842, 0.0062]",0.85
+over25,League Two,market_bettime,champion_p11,243,-0.0053,"[-0.01721, 0.00704]",0.797
+over25,League Two,market_close,base_league_2y,243,-0.00991,"[-0.02302, 0.00443]",0.929
+over25,League Two,market_close,market_bettime,243,-0.00358,"[-0.01062, 0.0034]",0.844
+over25,League Two,market_close,champion_p11,243,-0.00888,"[-0.02067, 0.00441]",0.905
+over25,League Two,logistic_all,base_league_2y,245,-0.00063,"[-0.0108, 0.00974]",0.552
+over25,League Two,logistic_all,market_bettime,243,0.00583,"[-0.00668, 0.01827]",0.182
+over25,League Two,logistic_all,champion_p11,245,0.00043,"[-0.00908, 0.01066]",0.48
+over25,League Two,hgb_all,base_league_2y,245,0.03044,"[0.0052, 0.05694]",0.009
+over25,League Two,hgb_all,market_bettime,243,0.03806,"[0.01273, 0.06464]",0.003
+over25,League Two,hgb_all,champion_p11,245,0.03151,"[0.00623, 0.06024]",0.004
+over25,League Two,logistic_leagueFE,base_league_2y,245,-0.0001,"[-0.01272, 0.01255]",0.511
+over25,League Two,logistic_leagueFE,market_bettime,243,0.00643,"[-0.00936, 0.02294]",0.22
+over25,League Two,logistic_leagueFE,champion_p11,245,0.00096,"[-0.01577, 0.01862]",0.466
+over25,League Two,logistic_leagueFE_shots,base_league_2y,245,0.00168,"[-0.011, 0.01401]",0.397
+over25,League Two,logistic_leagueFE_shots,market_bettime,243,0.0081,"[-0.00813, 0.02502]",0.167
+over25,League Two,logistic_leagueFE_shots,champion_p11,245,0.00274,"[-0.01467, 0.02086]",0.383
+over25,League Two,logistic_eflonly,base_league_2y,245,0.00983,"[-0.00768, 0.02592]",0.133
+over25,League Two,logistic_eflonly,market_bettime,243,0.01664,"[-0.00383, 0.0382]",0.064
+over25,League Two,logistic_eflonly,champion_p11,245,0.01089,"[-0.01182, 0.03181]",0.158
+over25,League Two,hgb_eflonly,base_league_2y,245,0.04707,"[0.01039, 0.09076]",0.004
+over25,League Two,hgb_eflonly,market_bettime,243,0.05447,"[0.01475, 0.10401]",0.003
+over25,League Two,hgb_eflonly,champion_p11,245,0.04814,"[0.01093, 0.09199]",0.004
+over25,League Two,dixon_coles,base_league_2y,183,0.00844,"[-0.0063, 0.02438]",0.147
+over25,League Two,dixon_coles,market_bettime,181,0.01553,"[-0.00269, 0.03344]",0.044
+over25,League Two,dixon_coles,champion_p11,183,0.01715,"[-0.00132, 0.03504]",0.033
+over25,League Two,stack_dc_logFE,base_league_2y,183,-0.00407,"[-0.01818, 0.01054]",0.715
+over25,League Two,stack_dc_logFE,market_bettime,181,0.00356,"[-0.01153, 0.01767]",0.304
+over25,League Two,stack_dc_logFE,champion_p11,183,0.00464,"[-0.00772, 0.01695]",0.23
+over25,League Two,champ+market_stack,base_league_2y,243,-0.00641,"[-0.01944, 0.007]",0.843
+over25,League Two,champ+market_stack,market_bettime,243,-8e-05,"[-0.00195, 0.00161]",0.541
+over25,League Two,champ+market_stack,champion_p11,243,-0.00538,"[-0.01675, 0.00626]",0.805
+over25,ALL_STD,champion_p11,base_league_2y,2967,-0.00214,"[-0.00502, 0.00102]",0.9
+over25,ALL_STD,champion_p11,market_bettime,2898,0.01109,"[0.00644, 0.01551]",0.0
+over25,ALL_STD,base_league_2y,market_bettime,2898,0.01345,"[0.0084, 0.01795]",0.0
+over25,ALL_STD,base_league_2y,champion_p11,2967,0.00214,"[-0.00102, 0.00502]",0.1
+over25,ALL_STD,base_global_2y,base_league_2y,2967,0.00323,"[-3e-05, 0.00685]",0.028
+over25,ALL_STD,base_global_2y,market_bettime,2898,0.01693,"[0.01118, 0.0224]",0.0
+over25,ALL_STD,base_global_2y,champion_p11,2967,0.00537,"[0.00301, 0.0076]",0.0
+over25,ALL_STD,market_bettime,base_league_2y,2898,-0.01345,"[-0.01795, -0.0084]",1.0
+over25,ALL_STD,market_bettime,champion_p11,2898,-0.01109,"[-0.01551, -0.00644]",1.0
+over25,ALL_STD,market_close,base_league_2y,2909,-0.0163,"[-0.02151, -0.01076]",1.0
+over25,ALL_STD,market_close,market_bettime,2898,-0.00241,"[-0.00485, -7e-05]",0.977
+over25,ALL_STD,market_close,champion_p11,2909,-0.01388,"[-0.01884, -0.00858]",1.0
+over25,ALL_STD,logistic_all,base_league_2y,2967,-0.00274,"[-0.00659, 0.00115]",0.912
+over25,ALL_STD,logistic_all,market_bettime,2898,0.01056,"[0.00513, 0.01601]",0.0
+over25,ALL_STD,logistic_all,champion_p11,2967,-0.0006,"[-0.00379, 0.00267]",0.66
+over25,ALL_STD,hgb_all,base_league_2y,2967,0.01094,"[0.00319, 0.019]",0.003
+over25,ALL_STD,hgb_all,market_bettime,2898,0.02397,"[0.0153, 0.03259]",0.0
+over25,ALL_STD,hgb_all,champion_p11,2967,0.01308,"[0.00586, 0.02023]",0.0
+over25,ALL_STD,logistic_leagueFE,base_league_2y,2967,-0.00071,"[-0.00467, 0.0032]",0.646
+over25,ALL_STD,logistic_leagueFE,market_bettime,2898,0.01262,"[0.00702, 0.01824]",0.0
+over25,ALL_STD,logistic_leagueFE,champion_p11,2967,0.00142,"[-0.00233, 0.00506]",0.24
+over25,ALL_STD,logistic_leagueFE_shots,base_league_2y,2967,-0.00088,"[-0.00489, 0.00325]",0.675
+over25,ALL_STD,logistic_leagueFE_shots,market_bettime,2898,0.01247,"[0.00672, 0.01793]",0.0
+over25,ALL_STD,logistic_leagueFE_shots,champion_p11,2967,0.00126,"[-0.00282, 0.00512]",0.281
+over25,ALL_STD,logistic_eflonly,base_league_2y,758,0.00299,"[-0.00599, 0.01182]",0.27
+over25,ALL_STD,logistic_eflonly,market_bettime,751,0.01874,"[0.00548, 0.03339]",0.002
+over25,ALL_STD,logistic_eflonly,champion_p11,758,0.0098,"[-0.00073, 0.02124]",0.034
+over25,ALL_STD,hgb_eflonly,base_league_2y,758,0.05815,"[0.03722, 0.07868]",0.0
+over25,ALL_STD,hgb_eflonly,market_bettime,751,0.07424,"[0.04762, 0.09944]",0.0
+over25,ALL_STD,hgb_eflonly,champion_p11,758,0.06497,"[0.04361, 0.08544]",0.0
+over25,ALL_STD,dixon_coles,base_league_2y,2467,0.00226,"[-0.00267, 0.00744]",0.2
+over25,ALL_STD,dixon_coles,market_bettime,2412,0.01381,"[0.00799, 0.01915]",0.0
+over25,ALL_STD,dixon_coles,champion_p11,2467,0.00453,"[-0.00143, 0.01016]",0.064
+over25,ALL_STD,stack_dc_logFE,base_league_2y,2467,-0.00563,"[-0.01026, -0.00047]",0.986
+over25,ALL_STD,stack_dc_logFE,market_bettime,2412,0.00544,"[5e-05, 0.01037]",0.024
+over25,ALL_STD,stack_dc_logFE,champion_p11,2467,-0.00336,"[-0.00817, 0.00107]",0.927
+over25,ALL_STD,champ+market_stack,base_league_2y,2898,-0.01362,"[-0.01831, -0.0085]",1.0
+over25,ALL_STD,champ+market_stack,market_bettime,2898,-0.00018,"[-0.00055, 0.0002]",0.818
+over25,ALL_STD,champ+market_stack,champion_p11,2898,-0.01127,"[-0.01588, -0.00647]",1.0
+over15,EFL,champion_p11,base_league_2y,758,-0.00504,"[-0.01093, 0.00102]",0.949
+over15,EFL,champion_p11,market_bettime,497,0.00952,"[0.00079, 0.01846]",0.014
+over15,EFL,base_league_2y,market_bettime,497,0.01261,"[-0.0009, 0.02587]",0.034
+over15,EFL,base_league_2y,champion_p11,758,0.00504,"[-0.00102, 0.01093]",0.051
+over15,EFL,base_global_2y,base_league_2y,758,-0.00401,"[-0.00722, -0.00071]",0.99
+over15,EFL,base_global_2y,market_bettime,497,0.00944,"[-0.00092, 0.01967]",0.041
+over15,EFL,base_global_2y,champion_p11,758,0.00103,"[-0.00236, 0.0045]",0.288
+over15,EFL,market_bettime,base_league_2y,497,-0.01261,"[-0.02587, 0.0009]",0.967
+over15,EFL,market_bettime,champion_p11,497,-0.00952,"[-0.01846, -0.00079]",0.986
+over15,EFL,market_close,base_league_2y,497,-0.01367,"[-0.02645, -0.00039]",0.978
+over15,EFL,market_close,market_bettime,497,-0.00106,"[-0.00583, 0.00318]",0.666
+over15,EFL,market_close,champion_p11,497,-0.01057,"[-0.01938, -0.00148]",0.99
+over15,EFL,logistic_all,base_league_2y,758,-0.00255,"[-0.00904, 0.00393]",0.778
+over15,EFL,logistic_all,market_bettime,497,0.01247,"[0.00239, 0.0223]",0.005
+over15,EFL,logistic_all,champion_p11,758,0.00249,"[-0.00192, 0.00689]",0.136
+over15,EFL,hgb_all,base_league_2y,758,0.0219,"[0.00712, 0.03665]",0.003
+over15,EFL,hgb_all,market_bettime,497,0.04533,"[0.02699, 0.06355]",0.0
+over15,EFL,hgb_all,champion_p11,758,0.02693,"[0.01498, 0.03845]",0.0
+over15,EFL,logistic_leagueFE,base_league_2y,758,-0.00199,"[-0.00805, 0.00432]",0.734
+over15,EFL,logistic_leagueFE,market_bettime,497,0.01261,"[0.00191, 0.02325]",0.011
+over15,EFL,logistic_leagueFE,champion_p11,758,0.00305,"[-0.00192, 0.00809]",0.115
+over15,EFL,logistic_leagueFE_shots,base_league_2y,758,-0.00224,"[-0.00829, 0.00401]",0.766
+over15,EFL,logistic_leagueFE_shots,market_bettime,497,0.01198,"[0.00068, 0.02302]",0.018
+over15,EFL,logistic_leagueFE_shots,champion_p11,758,0.00279,"[-0.0022, 0.00783]",0.145
+over15,EFL,logistic_eflonly,base_league_2y,758,0.00665,"[-0.00294, 0.01554]",0.071
+over15,EFL,logistic_eflonly,market_bettime,497,0.02177,"[0.00357, 0.0409]",0.011
+over15,EFL,logistic_eflonly,champion_p11,758,0.01168,"[-0.00078, 0.02318]",0.031
+over15,EFL,hgb_eflonly,base_league_2y,758,0.02617,"[0.00781, 0.04475]",0.004
+over15,EFL,hgb_eflonly,market_bettime,497,0.04742,"[0.02726, 0.06777]",0.0
+over15,EFL,hgb_eflonly,champion_p11,758,0.03121,"[0.01398, 0.04941]",0.0
+over15,EFL,dixon_coles,base_league_2y,589,0.00078,"[-0.00826, 0.01036]",0.421
+over15,EFL,dixon_coles,market_bettime,361,0.01238,"[-0.00674, 0.02736]",0.08
+over15,EFL,dixon_coles,champion_p11,589,0.00701,"[-0.00386, 0.01815]",0.115
+over15,EFL,stack_dc_logFE,base_league_2y,589,-0.00444,"[-0.01338, 0.00456]",0.841
+over15,EFL,stack_dc_logFE,market_bettime,361,0.0105,"[-0.00561, 0.02371]",0.088
+over15,EFL,stack_dc_logFE,champion_p11,589,0.00178,"[-0.00667, 0.00976]",0.313
+over15,EFL,champ+market_stack,base_league_2y,497,-0.01268,"[-0.02445, -0.00086]",0.981
+over15,EFL,champ+market_stack,market_bettime,497,-7e-05,"[-0.00231, 0.00191]",0.544
+over15,EFL,champ+market_stack,champion_p11,497,-0.00958,"[-0.01764, -0.00199]",0.991
+over15,Championship,champion_p11,base_league_2y,266,-0.00339,"[-0.01439, 0.00823]",0.725
+over15,Championship,champion_p11,market_bettime,157,0.01024,"[-0.00564, 0.0236]",0.087
+over15,Championship,base_league_2y,market_bettime,157,0.01378,"[-0.01295, 0.03541]",0.141
+over15,Championship,base_league_2y,champion_p11,266,0.00339,"[-0.00823, 0.01439]",0.276
+over15,Championship,base_global_2y,base_league_2y,266,-0.00552,"[-0.01064, -3e-05]",0.977
+over15,Championship,base_global_2y,market_bettime,157,0.00808,"[-0.01273, 0.02574]",0.2
+over15,Championship,base_global_2y,champion_p11,266,-0.00214,"[-0.00932, 0.00495]",0.726
+over15,Championship,market_bettime,base_league_2y,157,-0.01378,"[-0.03541, 0.01295]",0.859
+over15,Championship,market_bettime,champion_p11,157,-0.01024,"[-0.0236, 0.00564]",0.913
+over15,Championship,market_close,base_league_2y,157,-0.0116,"[-0.03558, 0.01792]",0.807
+over15,Championship,market_close,market_bettime,157,0.00218,"[-0.00364, 0.00808]",0.233
+over15,Championship,market_close,champion_p11,157,-0.00806,"[-0.02236, 0.00916]",0.84
+over15,Championship,logistic_all,base_league_2y,266,0.0033,"[-0.0109, 0.01713]",0.335
+over15,Championship,logistic_all,market_bettime,157,0.0212,"[0.00395, 0.03704]",0.004
+over15,Championship,logistic_all,champion_p11,266,0.00669,"[0.00041, 0.01252]",0.021
+over15,Championship,hgb_all,base_league_2y,266,0.017,"[-0.01133, 0.04623]",0.119
+over15,Championship,hgb_all,market_bettime,157,0.03043,"[-0.00045, 0.06186]",0.026
+over15,Championship,hgb_all,champion_p11,266,0.02039,"[-0.00109, 0.04367]",0.033
+over15,Championship,logistic_leagueFE,base_league_2y,266,0.00411,"[-0.01031, 0.01841]",0.297
+over15,Championship,logistic_leagueFE,market_bettime,157,0.02132,"[0.00376, 0.03765]",0.007
+over15,Championship,logistic_leagueFE,champion_p11,266,0.0075,"[0.00072, 0.01367]",0.016
+over15,Championship,logistic_leagueFE_shots,base_league_2y,266,0.00417,"[-0.01024, 0.01853]",0.296
+over15,Championship,logistic_leagueFE_shots,market_bettime,157,0.02146,"[0.00356, 0.03738]",0.009
+over15,Championship,logistic_leagueFE_shots,champion_p11,266,0.00756,"[0.00095, 0.01368]",0.013
+over15,Championship,logistic_eflonly,base_league_2y,266,0.00287,"[-0.00826, 0.01522]",0.316
+over15,Championship,logistic_eflonly,market_bettime,157,0.02304,"[-0.00169, 0.04722]",0.034
+over15,Championship,logistic_eflonly,champion_p11,266,0.00626,"[-0.00545, 0.01781]",0.134
+over15,Championship,hgb_eflonly,base_league_2y,266,0.01552,"[-0.02139, 0.05441]",0.226
+over15,Championship,hgb_eflonly,market_bettime,157,0.02672,"[-0.01675, 0.0732]",0.127
+over15,Championship,hgb_eflonly,champion_p11,266,0.01891,"[-0.01378, 0.05396]",0.141
+over15,Championship,dixon_coles,base_league_2y,215,0.01722,"[0.00438, 0.03274]",0.004
+over15,Championship,dixon_coles,market_bettime,119,0.03062,"[0.00397, 0.05419]",0.013
+over15,Championship,dixon_coles,champion_p11,215,0.02108,"[0.00552, 0.03703]",0.005
+over15,Championship,stack_dc_logFE,base_league_2y,215,0.0101,"[-0.00667, 0.02895]",0.126
+over15,Championship,stack_dc_logFE,market_bettime,119,0.02954,"[0.01082, 0.04853]",0.001
+over15,Championship,stack_dc_logFE,champion_p11,215,0.01396,"[0.00262, 0.02539]",0.007
+over15,Championship,champ+market_stack,base_league_2y,157,-0.01209,"[-0.0324, 0.01214]",0.854
+over15,Championship,champ+market_stack,market_bettime,157,0.00168,"[-0.00192, 0.00477]",0.162
+over15,Championship,champ+market_stack,champion_p11,157,-0.00855,"[-0.02091, 0.00452]",0.905
+over15,League One,champion_p11,base_league_2y,247,-0.00701,"[-0.01579, 0.0035]",0.916
+over15,League One,champion_p11,market_bettime,161,0.0139,"[-0.0073, 0.02957]",0.085
+over15,League One,base_league_2y,market_bettime,161,0.01648,"[-0.01237, 0.03593]",0.112
+over15,League One,base_league_2y,champion_p11,247,0.00701,"[-0.0035, 0.01579]",0.084
+over15,League One,base_global_2y,base_league_2y,247,-0.00232,"[-0.00632, 0.0026]",0.84
+over15,League One,base_global_2y,market_bettime,161,0.01374,"[-0.01242, 0.03152]",0.129
+over15,League One,base_global_2y,champion_p11,247,0.00469,"[-0.00252, 0.01106]",0.092
+over15,League One,market_bettime,base_league_2y,161,-0.01648,"[-0.03593, 0.01237]",0.888
+over15,League One,market_bettime,champion_p11,161,-0.0139,"[-0.02957, 0.0073]",0.915
+over15,League One,market_close,base_league_2y,161,-0.0158,"[-0.03588, 0.01353]",0.879
+over15,League One,market_close,market_bettime,161,0.00069,"[-0.00545, 0.0061]",0.394
+over15,League One,market_close,champion_p11,161,-0.01322,"[-0.03036, 0.00958]",0.887
+over15,League One,logistic_all,base_league_2y,247,-0.00418,"[-0.01845, 0.01055]",0.709
+over15,League One,logistic_all,market_bettime,161,0.02001,"[0.00059, 0.03532]",0.022
+over15,League One,logistic_all,champion_p11,247,0.00284,"[-0.00752, 0.01247]",0.311
+over15,League One,hgb_all,base_league_2y,247,0.02171,"[-0.0074, 0.05234]",0.074
+over15,League One,hgb_all,market_bettime,161,0.06085,"[0.02602, 0.09287]",0.0
+over15,League One,hgb_all,champion_p11,247,0.02872,"[0.00488, 0.05182]",0.011
+over15,League One,logistic_leagueFE,base_league_2y,247,-0.00426,"[-0.01825, 0.01017]",0.716
+over15,League One,logistic_leagueFE,market_bettime,161,0.02079,"[0.00105, 0.03636]",0.021
+over15,League One,logistic_leagueFE,champion_p11,247,0.00276,"[-0.00789, 0.01285]",0.325
+over15,League One,logistic_leagueFE_shots,base_league_2y,247,-0.00595,"[-0.0194, 0.00815]",0.795
+over15,League One,logistic_leagueFE_shots,market_bettime,161,0.01823,"[-0.00048, 0.03296]",0.029
+over15,League One,logistic_leagueFE_shots,champion_p11,247,0.00106,"[-0.00868, 0.01085]",0.446
+over15,League One,logistic_eflonly,base_league_2y,247,0.01479,"[-0.00504, 0.03286]",0.076
+over15,League One,logistic_eflonly,market_bettime,161,0.03716,"[0.0009, 0.067]",0.02
+over15,League One,logistic_eflonly,champion_p11,247,0.0218,"[-0.00063, 0.04243]",0.029
+over15,League One,hgb_eflonly,base_league_2y,247,0.04186,"[0.00755, 0.07385]",0.007
+over15,League One,hgb_eflonly,market_bettime,161,0.0883,"[0.05648, 0.12009]",0.0
+over15,League One,hgb_eflonly,champion_p11,247,0.04887,"[0.01701, 0.07593]",0.0
+over15,League One,dixon_coles,base_league_2y,191,-0.01859,"[-0.03855, 0.00297]",0.955
+over15,League One,dixon_coles,market_bettime,115,-0.01234,"[-0.04802, 0.01802]",0.767
+over15,League One,dixon_coles,champion_p11,191,-0.01191,"[-0.03792, 0.01052]",0.842
+over15,League One,stack_dc_logFE,base_league_2y,191,-0.02239,"[-0.03631, -0.00608]",0.994
+over15,League One,stack_dc_logFE,market_bettime,115,-0.00893,"[-0.03169, 0.00947]",0.815
+over15,League One,stack_dc_logFE,champion_p11,191,-0.01571,"[-0.03094, -0.00157]",0.986
+over15,League One,champ+market_stack,base_league_2y,161,-0.01663,"[-0.035, 0.01061]",0.904
+over15,League One,champ+market_stack,market_bettime,161,-0.00015,"[-0.00417, 0.00314]",0.551
+over15,League One,champ+market_stack,champion_p11,161,-0.01405,"[-0.02968, 0.0064]",0.922
+over15,League Two,champion_p11,base_league_2y,245,-0.00484,"[-0.01422, 0.00501]",0.84
+over15,League Two,champion_p11,market_bettime,179,0.00494,"[-0.00996, 0.01861]",0.257
+over15,League Two,base_league_2y,market_bettime,179,0.00811,"[-0.01277, 0.02867]",0.222
+over15,League Two,base_league_2y,champion_p11,245,0.00484,"[-0.00501, 0.01422]",0.161
+over15,League Two,base_global_2y,base_league_2y,245,-0.00406,"[-0.01146, 0.00273]",0.874
+over15,League Two,base_global_2y,market_bettime,179,0.00675,"[-0.00744, 0.02121]",0.189
+over15,League Two,base_global_2y,champion_p11,245,0.00077,"[-0.00437, 0.00567]",0.367
+over15,League Two,market_bettime,base_league_2y,179,-0.00811,"[-0.02867, 0.01277]",0.778
+over15,League Two,market_bettime,champion_p11,179,-0.00494,"[-0.01861, 0.00996]",0.744
+over15,League Two,market_close,base_league_2y,179,-0.01358,"[-0.03321, 0.00682]",0.905
+over15,League Two,market_close,market_bettime,179,-0.00547,"[-0.01474, 0.003]",0.891
+over15,League Two,market_close,champion_p11,179,-0.01041,"[-0.02526, 0.00572]",0.897
+over15,League Two,logistic_all,base_league_2y,245,-0.00725,"[-0.01577, 0.00128]",0.95
+over15,League Two,logistic_all,market_bettime,179,-0.00198,"[-0.02606, 0.01978]",0.57
+over15,League Two,logistic_all,champion_p11,245,-0.00242,"[-0.01251, 0.00733]",0.678
+over15,League Two,hgb_all,base_league_2y,245,0.0274,"[-0.00162, 0.05483]",0.031
+over15,League Two,hgb_all,market_bettime,179,0.04442,"[0.00265, 0.08419]",0.018
+over15,League Two,hgb_all,champion_p11,245,0.03224,"[0.0069, 0.05701]",0.005
+over15,League Two,logistic_leagueFE,base_league_2y,245,-0.00633,"[-0.01491, 0.00268]",0.913
+over15,League Two,logistic_leagueFE,market_bettime,179,-0.0024,"[-0.02827, 0.02132]",0.576
+over15,League Two,logistic_leagueFE,champion_p11,245,-0.00149,"[-0.01407, 0.01108]",0.585
+over15,League Two,logistic_leagueFE_shots,base_league_2y,245,-0.00547,"[-0.0151, 0.00435]",0.86
+over15,League Two,logistic_leagueFE_shots,market_bettime,179,-0.00196,"[-0.03052, 0.02377]",0.56
+over15,League Two,logistic_leagueFE_shots,champion_p11,245,-0.00063,"[-0.01451, 0.01354]",0.528
+over15,League Two,logistic_eflonly,base_league_2y,245,0.00253,"[-0.0112, 0.0149]",0.338
+over15,League Two,logistic_eflonly,market_bettime,179,0.00681,"[-0.03039, 0.04051]",0.34
+over15,League Two,logistic_eflonly,champion_p11,245,0.00737,"[-0.01416, 0.02716]",0.227
+over15,League Two,hgb_eflonly,base_league_2y,245,0.02193,"[-0.01216, 0.05648]",0.108
+over15,League Two,hgb_eflonly,market_bettime,179,0.0288,"[-0.02068, 0.07581]",0.128
+over15,League Two,hgb_eflonly,champion_p11,245,0.02676,"[-0.00687, 0.06122]",0.064
+over15,League Two,dixon_coles,base_league_2y,183,0.00168,"[-0.01445, 0.01948]",0.437
+over15,League Two,dixon_coles,market_bettime,127,0.01768,"[-0.00908, 0.0414]",0.084
+over15,League Two,dixon_coles,champion_p11,183,0.01023,"[-0.00704, 0.02801]",0.122
+over15,League Two,stack_dc_logFE,base_league_2y,183,-0.0028,"[-0.01571, 0.01024]",0.665
+over15,League Two,stack_dc_logFE,market_bettime,127,0.01026,"[-0.01425, 0.03195]",0.203
+over15,League Two,stack_dc_logFE,champion_p11,183,0.00574,"[-0.00652, 0.01737]",0.158
+over15,League Two,champ+market_stack,base_league_2y,179,-0.00964,"[-0.0269, 0.00757]",0.857
+over15,League Two,champ+market_stack,market_bettime,179,-0.00153,"[-0.00578, 0.00233]",0.771
+over15,League Two,champ+market_stack,champion_p11,179,-0.00646,"[-0.01792, 0.0052]",0.853
+over15,ALL_STD,champion_p11,base_league_2y,2967,-0.00216,"[-0.00533, 0.00083]",0.908
+over15,ALL_STD,champion_p11,market_bettime,1848,0.00745,"[0.0008, 0.01342]",0.016
+over15,ALL_STD,base_league_2y,market_bettime,1848,0.01055,"[0.00405, 0.01674]",0.002
+over15,ALL_STD,base_league_2y,champion_p11,2967,0.00216,"[-0.00083, 0.00533]",0.091
+over15,ALL_STD,base_global_2y,base_league_2y,2967,0.00234,"[-0.00102, 0.00556]",0.082
+over15,ALL_STD,base_global_2y,market_bettime,1848,0.01217,"[0.00424, 0.01923]",0.001
+over15,ALL_STD,base_global_2y,champion_p11,2967,0.0045,"[0.00245, 0.00646]",0.0
+over15,ALL_STD,market_bettime,base_league_2y,1848,-0.01055,"[-0.01674, -0.00405]",0.998
+over15,ALL_STD,market_bettime,champion_p11,1848,-0.00745,"[-0.01342, -0.0008]",0.984
+over15,ALL_STD,market_close,base_league_2y,1752,-0.01198,"[-0.01887, -0.00541]",1.0
+over15,ALL_STD,market_close,market_bettime,1752,-0.00111,"[-0.00331, 0.00127]",0.836
+over15,ALL_STD,market_close,champion_p11,1752,-0.00863,"[-0.01538, -0.00206]",0.994
+over15,ALL_STD,logistic_all,base_league_2y,2967,0.00044,"[-0.00332, 0.00415]",0.42
+over15,ALL_STD,logistic_all,market_bettime,1848,0.01092,"[0.00547, 0.01603]",0.0
+over15,ALL_STD,logistic_all,champion_p11,2967,0.00261,"[-0.00068, 0.00585]",0.067
+over15,ALL_STD,hgb_all,base_league_2y,2967,0.00925,"[0.00252, 0.01648]",0.004
+over15,ALL_STD,hgb_all,market_bettime,1848,0.02397,"[0.01527, 0.03236]",0.0
+over15,ALL_STD,hgb_all,champion_p11,2967,0.01141,"[0.00511, 0.01791]",0.001
+over15,ALL_STD,logistic_leagueFE,base_league_2y,2967,0.00084,"[-0.00269, 0.00435]",0.334
+over15,ALL_STD,logistic_leagueFE,market_bettime,1848,0.01173,"[0.00582, 0.01737]",0.0
+over15,ALL_STD,logistic_leagueFE,champion_p11,2967,0.003,"[-0.00051, 0.00654]",0.052
+over15,ALL_STD,logistic_leagueFE_shots,base_league_2y,2967,0.00084,"[-0.0029, 0.00447]",0.344
+over15,ALL_STD,logistic_leagueFE_shots,market_bettime,1848,0.01225,"[0.00629, 0.01802]",0.0
+over15,ALL_STD,logistic_leagueFE_shots,champion_p11,2967,0.003,"[-0.00075, 0.00692]",0.065
+over15,ALL_STD,logistic_eflonly,base_league_2y,758,0.00665,"[-0.00294, 0.01554]",0.071
+over15,ALL_STD,logistic_eflonly,market_bettime,497,0.02177,"[0.00357, 0.0409]",0.011
+over15,ALL_STD,logistic_eflonly,champion_p11,758,0.01168,"[-0.00078, 0.02318]",0.031
+over15,ALL_STD,hgb_eflonly,base_league_2y,758,0.02617,"[0.00781, 0.04475]",0.004
+over15,ALL_STD,hgb_eflonly,market_bettime,497,0.04742,"[0.02726, 0.06777]",0.0
+over15,ALL_STD,hgb_eflonly,champion_p11,758,0.03121,"[0.01398, 0.04941]",0.0
+over15,ALL_STD,dixon_coles,base_league_2y,2467,0.00114,"[-0.00361, 0.00572]",0.32
+over15,ALL_STD,dixon_coles,market_bettime,1526,0.00873,"[0.00182, 0.01535]",0.008
+over15,ALL_STD,dixon_coles,champion_p11,2467,0.00401,"[-0.001, 0.00887]",0.059
+over15,ALL_STD,stack_dc_logFE,base_league_2y,2467,-0.0028,"[-0.00793, 0.00269]",0.865
+over15,ALL_STD,stack_dc_logFE,market_bettime,1526,0.00568,"[-0.00115, 0.01242]",0.05
+over15,ALL_STD,stack_dc_logFE,champion_p11,2467,7e-05,"[-0.0055, 0.00575]",0.484
+over15,ALL_STD,champ+market_stack,base_league_2y,1848,-0.0107,"[-0.01642, -0.00487]",1.0
+over15,ALL_STD,champ+market_stack,market_bettime,1848,-0.00015,"[-0.00146, 0.0011]",0.606
+over15,ALL_STD,champ+market_stack,champion_p11,1848,-0.0076,"[-0.01318, -0.00154]",0.994
+over35,EFL,champion_p11,base_league_2y,758,-0.012,"[-0.01903, -0.00556]",1.0
+over35,EFL,champion_p11,market_bettime,506,0.00905,"[0.00056, 0.01879]",0.018
+over35,EFL,base_league_2y,market_bettime,506,0.02011,"[0.00773, 0.03355]",0.001
+over35,EFL,base_league_2y,champion_p11,758,0.012,"[0.00556, 0.01903]",0.001
+over35,EFL,base_global_2y,base_league_2y,758,-0.01005,"[-0.01626, -0.00411]",1.0
+over35,EFL,base_global_2y,market_bettime,506,0.01004,"[0.00054, 0.02146]",0.02
+over35,EFL,base_global_2y,champion_p11,758,0.00195,"[-0.00217, 0.00623]",0.179
+over35,EFL,market_bettime,base_league_2y,506,-0.02011,"[-0.03355, -0.00773]",1.0
+over35,EFL,market_bettime,champion_p11,506,-0.00905,"[-0.01879, -0.00056]",0.982
+over35,EFL,market_close,base_league_2y,506,-0.02121,"[-0.03598, -0.00658]",0.998
+over35,EFL,market_close,market_bettime,506,-0.0011,"[-0.00529, 0.0033]",0.677
+over35,EFL,market_close,champion_p11,506,-0.01015,"[-0.02053, 0.00022]",0.974
+over35,EFL,logistic_all,base_league_2y,758,-0.01006,"[-0.01867, -0.00217]",0.995
+over35,EFL,logistic_all,market_bettime,506,0.00956,"[-0.00078, 0.02132]",0.036
+over35,EFL,logistic_all,champion_p11,758,0.00194,"[-0.00424, 0.00754]",0.266
+over35,EFL,hgb_all,base_league_2y,758,-0.0016,"[-0.01784, 0.01602]",0.576
+over35,EFL,hgb_all,market_bettime,506,0.01384,"[-0.00468, 0.03342]",0.086
+over35,EFL,hgb_all,champion_p11,758,0.01039,"[-0.00401, 0.02606]",0.086
+over35,EFL,logistic_leagueFE,base_league_2y,758,-0.00655,"[-0.015, 0.00087]",0.962
+over35,EFL,logistic_leagueFE,market_bettime,506,0.01319,"[0.00069, 0.02797]",0.019
+over35,EFL,logistic_leagueFE,champion_p11,758,0.00544,"[-0.00208, 0.01278]",0.081
+over35,EFL,logistic_leagueFE_shots,base_league_2y,758,-0.00634,"[-0.01485, 0.00142]",0.949
+over35,EFL,logistic_leagueFE_shots,market_bettime,506,0.01246,"[0.00017, 0.02695]",0.024
+over35,EFL,logistic_leagueFE_shots,champion_p11,758,0.00566,"[-0.00191, 0.01286]",0.076
+over35,EFL,logistic_eflonly,base_league_2y,758,0.00117,"[-0.00907, 0.0107]",0.407
+over35,EFL,logistic_eflonly,market_bettime,506,0.01953,"[0.00582, 0.0331]",0.003
+over35,EFL,logistic_eflonly,champion_p11,758,0.01317,"[0.00335, 0.0232]",0.004
+over35,EFL,hgb_eflonly,base_league_2y,758,0.05001,"[0.02442, 0.0768]",0.0
+over35,EFL,hgb_eflonly,market_bettime,506,0.07675,"[0.03723, 0.11804]",0.001
+over35,EFL,hgb_eflonly,champion_p11,758,0.062,"[0.03575, 0.0898]",0.0
+over35,EFL,dixon_coles,base_league_2y,589,0.00081,"[-0.00936, 0.01155]",0.433
+over35,EFL,dixon_coles,market_bettime,364,0.01861,"[0.0057, 0.03189]",0.004
+over35,EFL,dixon_coles,champion_p11,589,0.01287,"[0.00336, 0.02269]",0.003
+over35,EFL,stack_dc_logFE,base_league_2y,589,-0.00987,"[-0.01838, -0.00152]",0.992
+over35,EFL,stack_dc_logFE,market_bettime,364,0.00507,"[-0.00514, 0.01407]",0.139
+over35,EFL,stack_dc_logFE,champion_p11,589,0.00219,"[-0.00274, 0.00711]",0.184
+over35,EFL,champ+market_stack,base_league_2y,506,-0.02004,"[-0.03293, -0.00817]",1.0
+over35,EFL,champ+market_stack,market_bettime,506,7e-05,"[-0.00157, 0.00193]",0.462
+over35,EFL,champ+market_stack,champion_p11,506,-0.00898,"[-0.01775, -0.00127]",0.987
+over35,Championship,champion_p11,base_league_2y,266,-0.0233,"[-0.04086, -0.00633]",0.997
+over35,Championship,champion_p11,market_bettime,162,0.01844,"[0.0064, 0.03136]",0.004
+over35,Championship,base_league_2y,market_bettime,162,0.04405,"[0.01517, 0.07269]",0.001
+over35,Championship,base_league_2y,champion_p11,266,0.0233,"[0.00633, 0.04086]",0.004
+over35,Championship,base_global_2y,base_league_2y,266,-0.02075,"[-0.03657, -0.00532]",0.995
+over35,Championship,base_global_2y,market_bettime,162,0.01987,"[0.00403, 0.03631]",0.004
+over35,Championship,base_global_2y,champion_p11,266,0.00256,"[-0.00296, 0.00813]",0.179
+over35,Championship,market_bettime,base_league_2y,162,-0.04405,"[-0.07269, -0.01517]",1.0
+over35,Championship,market_bettime,champion_p11,162,-0.01844,"[-0.03136, -0.0064]",0.997
+over35,Championship,market_close,base_league_2y,162,-0.04458,"[-0.0738, -0.01388]",0.999
+over35,Championship,market_close,market_bettime,162,-0.00053,"[-0.00802, 0.00752]",0.554
+over35,Championship,market_close,champion_p11,162,-0.01896,"[-0.03305, -0.00582]",0.998
+over35,Championship,logistic_all,base_league_2y,266,-0.02429,"[-0.04582, -0.0044]",0.994
+over35,Championship,logistic_all,market_bettime,162,0.02252,"[0.00746, 0.03853]",0.002
+over35,Championship,logistic_all,champion_p11,266,-0.00098,"[-0.00973, 0.0073]",0.6
+over35,Championship,hgb_all,base_league_2y,266,-0.01041,"[-0.0411, 0.02234]",0.745
+over35,Championship,hgb_all,market_bettime,162,0.0316,"[0.00631, 0.05783]",0.006
+over35,Championship,hgb_all,champion_p11,266,0.0129,"[-0.00659, 0.03344]",0.1
+over35,Championship,logistic_leagueFE,base_league_2y,266,-0.01634,"[-0.03302, -0.00082]",0.982
+over35,Championship,logistic_leagueFE,market_bettime,162,0.0324,"[0.01187, 0.05364]",0.001
+over35,Championship,logistic_leagueFE,champion_p11,266,0.00696,"[-0.00472, 0.01837]",0.128
+over35,Championship,logistic_leagueFE_shots,base_league_2y,266,-0.01657,"[-0.03357, -0.00073]",0.98
+over35,Championship,logistic_leagueFE_shots,market_bettime,162,0.03104,"[0.01053, 0.05286]",0.001
+over35,Championship,logistic_leagueFE_shots,champion_p11,266,0.00673,"[-0.00523, 0.01857]",0.141
+over35,Championship,logistic_eflonly,base_league_2y,266,-0.01882,"[-0.03565, -0.00347]",0.993
+over35,Championship,logistic_eflonly,market_bettime,162,0.02759,"[0.0056, 0.0513]",0.009
+over35,Championship,logistic_eflonly,champion_p11,266,0.00449,"[-0.00735, 0.01687]",0.241
+over35,Championship,hgb_eflonly,base_league_2y,266,0.02652,"[-0.01442, 0.07027]",0.1
+over35,Championship,hgb_eflonly,market_bettime,162,0.06869,"[0.01877, 0.11515]",0.007
+over35,Championship,hgb_eflonly,champion_p11,266,0.04983,"[0.00681, 0.09441]",0.011
+over35,Championship,dixon_coles,base_league_2y,215,-0.00107,"[-0.01774, 0.0159]",0.566
+over35,Championship,dixon_coles,market_bettime,123,0.03072,"[-0.00163, 0.0711]",0.033
+over35,Championship,dixon_coles,champion_p11,215,0.01551,"[-0.00617, 0.03744]",0.079
+over35,Championship,stack_dc_logFE,base_league_2y,215,-0.01542,"[-0.03066, -0.00022]",0.976
+over35,Championship,stack_dc_logFE,market_bettime,123,0.01831,"[-0.0041, 0.04411]",0.051
+over35,Championship,stack_dc_logFE,champion_p11,215,0.00116,"[-0.00894, 0.01146]",0.41
+over35,Championship,champ+market_stack,base_league_2y,162,-0.04331,"[-0.07095, -0.01475]",1.0
+over35,Championship,champ+market_stack,market_bettime,162,0.00074,"[-0.00149, 0.00323]",0.264
+over35,Championship,champ+market_stack,champion_p11,162,-0.0177,"[-0.02954, -0.0068]",0.999
+over35,League One,champion_p11,base_league_2y,247,-0.00687,"[-0.01947, 0.00731]",0.825
+over35,League One,champion_p11,market_bettime,162,0.00638,"[-0.01332, 0.03094]",0.282
+over35,League One,base_league_2y,market_bettime,162,0.01362,"[-0.01231, 0.04656]",0.189
+over35,League One,base_league_2y,champion_p11,247,0.00687,"[-0.00731, 0.01947]",0.175
+over35,League One,base_global_2y,base_league_2y,247,-0.00457,"[-0.01405, 0.00512]",0.819
+over35,League One,base_global_2y,market_bettime,162,0.00893,"[-0.01306, 0.03693]",0.251
+over35,League One,base_global_2y,champion_p11,247,0.00229,"[-0.00485, 0.00935]",0.296
+over35,League One,market_bettime,base_league_2y,162,-0.01362,"[-0.04656, 0.01231]",0.811
+over35,League One,market_bettime,champion_p11,162,-0.00638,"[-0.03094, 0.01332]",0.718
+over35,League One,market_close,base_league_2y,162,-0.014,"[-0.05057, 0.0153]",0.792
+over35,League One,market_close,market_bettime,162,-0.00038,"[-0.00909, 0.00741]",0.503
+over35,League One,market_close,champion_p11,162,-0.00676,"[-0.03236, 0.01512]",0.701
+over35,League One,logistic_all,base_league_2y,247,-0.00307,"[-0.01881, 0.01267]",0.623
+over35,League One,logistic_all,market_bettime,162,0.00238,"[-0.02284, 0.03076]",0.432
+over35,League One,logistic_all,champion_p11,247,0.0038,"[-0.00975, 0.01822]",0.301
+over35,League One,hgb_all,base_league_2y,247,0.00938,"[-0.01497, 0.03575]",0.234
+over35,League One,hgb_all,market_bettime,162,0.01959,"[-0.01615, 0.05819]",0.146
+over35,League One,hgb_all,champion_p11,247,0.01625,"[-0.00556, 0.03803]",0.074
+over35,League One,logistic_leagueFE,base_league_2y,247,-0.00233,"[-0.01827, 0.01362]",0.604
+over35,League One,logistic_leagueFE,market_bettime,162,0.00317,"[-0.02362, 0.03485]",0.418
+over35,League One,logistic_leagueFE,champion_p11,247,0.00454,"[-0.01123, 0.02211]",0.307
+over35,League One,logistic_leagueFE_shots,base_league_2y,247,-0.00222,"[-0.01893, 0.01427]",0.59
+over35,League One,logistic_leagueFE_shots,market_bettime,162,0.00204,"[-0.02475, 0.0341]",0.453
+over35,League One,logistic_leagueFE_shots,champion_p11,247,0.00464,"[-0.01211, 0.02287]",0.309
+over35,League One,logistic_eflonly,base_league_2y,247,0.0194,"[-0.00059, 0.03846]",0.029
+over35,League One,logistic_eflonly,market_bettime,162,0.02266,"[-0.00998, 0.06005]",0.1
+over35,League One,logistic_eflonly,champion_p11,247,0.02626,"[0.00296, 0.05079]",0.009
+over35,League One,hgb_eflonly,base_league_2y,247,0.07853,"[0.03002, 0.13015]",0.0
+over35,League One,hgb_eflonly,market_bettime,162,0.10286,"[0.02049, 0.19612]",0.005
+over35,League One,hgb_eflonly,champion_p11,247,0.08539,"[0.03145, 0.141]",0.0
+over35,League One,dixon_coles,base_league_2y,191,-0.00566,"[-0.02919, 0.0168]",0.675
+over35,League One,dixon_coles,market_bettime,114,0.01075,"[-0.00998, 0.0342]",0.165
+over35,League One,dixon_coles,champion_p11,191,0.00377,"[-0.01297, 0.02074]",0.346
+over35,League One,stack_dc_logFE,base_league_2y,191,-0.00968,"[-0.02393, 0.00502]",0.896
+over35,League One,stack_dc_logFE,market_bettime,114,-0.00152,"[-0.02292, 0.02125]",0.528
+over35,League One,stack_dc_logFE,champion_p11,191,-0.00025,"[-0.01119, 0.01038]",0.514
+over35,League One,champ+market_stack,base_league_2y,162,-0.01368,"[-0.04391, 0.01065]",0.835
+over35,League One,champ+market_stack,market_bettime,162,-6e-05,"[-0.00302, 0.00347]",0.526
+over35,League One,champ+market_stack,champion_p11,162,-0.00644,"[-0.0276, 0.01132]",0.737
+over35,League Two,champion_p11,base_league_2y,245,-0.00489,"[-0.01231, 0.00314]",0.891
+over35,League Two,champion_p11,market_bettime,182,0.00307,"[-0.0117, 0.0182]",0.347
+over35,League Two,base_league_2y,market_bettime,182,0.00458,"[-0.00662, 0.01867]",0.233
+over35,League Two,base_league_2y,champion_p11,245,0.00489,"[-0.00314, 0.01231]",0.108
+over35,League Two,base_global_2y,base_league_2y,245,-0.00395,"[-0.00945, 0.00166]",0.911
+over35,League Two,base_global_2y,market_bettime,182,0.00228,"[-0.00989, 0.0153]",0.359
+over35,League Two,base_global_2y,champion_p11,245,0.00094,"[-0.0063, 0.00813]",0.375
+over35,League Two,market_bettime,base_league_2y,182,-0.00458,"[-0.01867, 0.00662]",0.767
+over35,League Two,market_bettime,champion_p11,182,-0.00307,"[-0.0182, 0.0117]",0.653
+over35,League Two,market_close,base_league_2y,182,-0.00683,"[-0.02324, 0.00761]",0.836
+over35,League Two,market_close,market_bettime,182,-0.00225,"[-0.01059, 0.00498]",0.721
+over35,League Two,market_close,champion_p11,182,-0.00533,"[-0.02296, 0.01077]",0.736
+over35,League Two,logistic_all,base_league_2y,245,-0.00166,"[-0.01118, 0.00837]",0.646
+over35,League Two,logistic_all,market_bettime,182,0.0044,"[-0.01129, 0.02124]",0.321
+over35,League Two,logistic_all,champion_p11,245,0.00323,"[-0.00506, 0.01263]",0.25
+over35,League Two,hgb_all,base_league_2y,245,-0.00311,"[-0.02614, 0.02379]",0.628
+over35,League Two,hgb_all,market_bettime,182,-0.00708,"[-0.02851, 0.02037]",0.728
+over35,League Two,hgb_all,champion_p11,245,0.00178,"[-0.02041, 0.02851]",0.457
+over35,League Two,logistic_leagueFE,base_league_2y,245,-0.00017,"[-0.01092, 0.01171]",0.526
+over35,League Two,logistic_leagueFE,market_bettime,182,0.00501,"[-0.01224, 0.02503]",0.314
+over35,League Two,logistic_leagueFE,champion_p11,245,0.00472,"[-0.00613, 0.01743]",0.221
+over35,League Two,logistic_leagueFE_shots,base_league_2y,245,0.00063,"[-0.01066, 0.01247]",0.469
+over35,League Two,logistic_leagueFE_shots,market_bettime,182,0.00518,"[-0.01244, 0.02464]",0.305
+over35,League Two,logistic_leagueFE_shots,champion_p11,245,0.00552,"[-0.00565, 0.01803]",0.188
+over35,League Two,logistic_eflonly,base_league_2y,245,0.00451,"[-0.00982, 0.01822]",0.268
+over35,League Two,logistic_eflonly,market_bettime,182,0.00957,"[-0.00647, 0.02812]",0.139
+over35,League Two,logistic_eflonly,champion_p11,245,0.00939,"[-0.00662, 0.02446]",0.122
+over35,League Two,hgb_eflonly,base_league_2y,245,0.04675,"[0.0097, 0.07918]",0.007
+over35,League Two,hgb_eflonly,market_bettime,182,0.06069,"[0.01995, 0.1057]",0.002
+over35,League Two,hgb_eflonly,champion_p11,245,0.05164,"[0.01326, 0.08382]",0.004
+over35,League Two,dixon_coles,base_league_2y,183,0.00977,"[-0.00979, 0.02953]",0.177
+over35,League Two,dixon_coles,market_bettime,127,0.01393,"[-0.01202, 0.04039]",0.166
+over35,League Two,dixon_coles,champion_p11,183,0.01927,"[-0.00057, 0.03811]",0.032
+over35,League Two,stack_dc_logFE,base_league_2y,183,-0.00355,"[-0.01713, 0.00991]",0.71
+over35,League Two,stack_dc_logFE,market_bettime,127,-0.00184,"[-0.02073, 0.01378]",0.576
+over35,League Two,stack_dc_logFE,champion_p11,183,0.00595,"[-0.00579, 0.0177]",0.167
+over35,League Two,champ+market_stack,base_league_2y,182,-0.005,"[-0.0184, 0.00545]",0.808
+over35,League Two,champ+market_stack,market_bettime,182,-0.00042,"[-0.00296, 0.00201]",0.622
+over35,League Two,champ+market_stack,champion_p11,182,-0.00349,"[-0.01834, 0.01022]",0.679
+over35,ALL_STD,champion_p11,base_league_2y,2967,-0.00166,"[-0.00496, 0.00181]",0.831
+over35,ALL_STD,champion_p11,market_bettime,1896,0.00859,"[0.0013, 0.01526]",0.011
+over35,ALL_STD,base_league_2y,market_bettime,1896,0.01015,"[0.00354, 0.01614]",0.003
+over35,ALL_STD,base_league_2y,champion_p11,2967,0.00166,"[-0.00181, 0.00496]",0.17
+over35,ALL_STD,base_global_2y,base_league_2y,2967,0.00304,"[-0.00096, 0.00717]",0.062
+over35,ALL_STD,base_global_2y,market_bettime,1896,0.01289,"[0.00443, 0.02084]",0.002
+over35,ALL_STD,base_global_2y,champion_p11,2967,0.00471,"[0.00216, 0.00715]",0.0
+over35,ALL_STD,market_bettime,base_league_2y,1896,-0.01015,"[-0.01614, -0.00354]",0.998
+over35,ALL_STD,market_bettime,champion_p11,1896,-0.00859,"[-0.01526, -0.0013]",0.99
+over35,ALL_STD,market_close,base_league_2y,1811,-0.01204,"[-0.01892, -0.00448]",0.998
+over35,ALL_STD,market_close,market_bettime,1811,-0.00115,"[-0.00351, 0.00129]",0.817
+over35,ALL_STD,market_close,champion_p11,1811,-0.01088,"[-0.01796, -0.00294]",0.998
+over35,ALL_STD,logistic_all,base_league_2y,2967,-0.00491,"[-0.0096, -0.00038]",0.986
+over35,ALL_STD,logistic_all,market_bettime,1896,0.00732,"[0.00069, 0.01402]",0.014
+over35,ALL_STD,logistic_all,champion_p11,2967,-0.00324,"[-0.00712, 0.00091]",0.938
+over35,ALL_STD,hgb_all,base_league_2y,2967,0.01231,"[0.00455, 0.02049]",0.001
+over35,ALL_STD,hgb_all,market_bettime,1896,0.02301,"[0.01388, 0.03216]",0.0
+over35,ALL_STD,hgb_all,champion_p11,2967,0.01397,"[0.00698, 0.02149]",0.0
+over35,ALL_STD,logistic_leagueFE,base_league_2y,2967,-0.00408,"[-0.00881, 0.00043]",0.962
+over35,ALL_STD,logistic_leagueFE,market_bettime,1896,0.00756,"[0.0006, 0.01457]",0.015
+over35,ALL_STD,logistic_leagueFE,champion_p11,2967,-0.00242,"[-0.0066, 0.0021]",0.87
+over35,ALL_STD,logistic_leagueFE_shots,base_league_2y,2967,-0.00478,"[-0.00987, -6e-05]",0.976
+over35,ALL_STD,logistic_leagueFE_shots,market_bettime,1896,0.00655,"[-0.00056, 0.01367]",0.038
+over35,ALL_STD,logistic_leagueFE_shots,champion_p11,2967,-0.00311,"[-0.00747, 0.00162]",0.916
+over35,ALL_STD,logistic_eflonly,base_league_2y,758,0.00117,"[-0.00907, 0.0107]",0.407
+over35,ALL_STD,logistic_eflonly,market_bettime,506,0.01953,"[0.00582, 0.0331]",0.003
+over35,ALL_STD,logistic_eflonly,champion_p11,758,0.01317,"[0.00335, 0.0232]",0.004
+over35,ALL_STD,hgb_eflonly,base_league_2y,758,0.05001,"[0.02442, 0.0768]",0.0
+over35,ALL_STD,hgb_eflonly,market_bettime,506,0.07675,"[0.03723, 0.11804]",0.001
+over35,ALL_STD,hgb_eflonly,champion_p11,758,0.062,"[0.03575, 0.0898]",0.0
+over35,ALL_STD,dixon_coles,base_league_2y,2467,-0.00018,"[-0.00588, 0.00516]",0.534
+over35,ALL_STD,dixon_coles,market_bettime,1564,0.01225,"[0.00546, 0.01825]",0.001
+over35,ALL_STD,dixon_coles,champion_p11,2467,0.0014,"[-0.00569, 0.0076]",0.332
+over35,ALL_STD,stack_dc_logFE,base_league_2y,2467,-0.00708,"[-0.01152, -0.00293]",0.999
+over35,ALL_STD,stack_dc_logFE,market_bettime,1564,0.003,"[-0.00349, 0.009]",0.184
+over35,ALL_STD,stack_dc_logFE,champion_p11,2467,-0.00551,"[-0.00998, -0.00173]",0.999
+over35,ALL_STD,champ+market_stack,base_league_2y,1896,-0.01082,"[-0.01609, -0.00508]",0.999
+over35,ALL_STD,champ+market_stack,market_bettime,1896,-0.00068,"[-0.00196, 0.00053]",0.858
+over35,ALL_STD,champ+market_stack,champion_p11,1896,-0.00926,"[-0.0151, -0.00295]",0.998
+btts,EFL,champion_p11,base_league_2y,758,-0.00593,"[-0.00883, -0.00278]",1.0
+btts,EFL,champion_p11,market_bettime,231,0.0115,"[0.00575, 0.01952]",0.0
+btts,EFL,base_league_2y,market_bettime,231,0.0192,"[0.00928, 0.03223]",0.0
+btts,EFL,base_league_2y,champion_p11,758,0.00593,"[0.00278, 0.00883]",0.0
+btts,EFL,base_global_2y,base_league_2y,758,-0.00398,"[-0.00586, -0.00197]",1.0
+btts,EFL,base_global_2y,market_bettime,231,0.01392,"[0.00648, 0.02408]",0.0
+btts,EFL,base_global_2y,champion_p11,758,0.00195,"[0.00066, 0.00311]",0.001
+btts,EFL,market_bettime,base_league_2y,231,-0.0192,"[-0.03223, -0.00928]",1.0
+btts,EFL,market_bettime,champion_p11,231,-0.0115,"[-0.01952, -0.00575]",1.0
+btts,EFL,market_close,base_league_2y,231,-0.01587,"[-0.02868, -0.00557]",0.999
+btts,EFL,market_close,market_bettime,231,0.00333,"[-0.0004, 0.0082]",0.043
+btts,EFL,market_close,champion_p11,231,-0.00817,"[-0.01554, -0.00207]",0.994
+btts,EFL,logistic_all,base_league_2y,758,-0.00198,"[-0.006, 0.0021]",0.848
+btts,EFL,logistic_all,market_bettime,231,0.01505,"[0.00746, 0.02425]",0.0
+btts,EFL,logistic_all,champion_p11,758,0.00395,"[2e-05, 0.00764]",0.024
+btts,EFL,hgb_all,base_league_2y,758,0.00653,"[-0.00766, 0.02045]",0.173
+btts,EFL,hgb_all,market_bettime,231,0.0243,"[-0.01092, 0.0565]",0.077
+btts,EFL,hgb_all,champion_p11,758,0.01246,"[-0.00102, 0.02558]",0.038
+btts,EFL,logistic_leagueFE,base_league_2y,758,-0.0005,"[-0.00446, 0.00349]",0.631
+btts,EFL,logistic_leagueFE,market_bettime,231,0.01586,"[0.0079, 0.02645]",0.0
+btts,EFL,logistic_leagueFE,champion_p11,758,0.00543,"[0.00079, 0.0098]",0.009
+btts,EFL,logistic_leagueFE_shots,base_league_2y,758,-0.00172,"[-0.00565, 0.00226]",0.837
+btts,EFL,logistic_leagueFE_shots,market_bettime,231,0.01412,"[0.00655, 0.02415]",0.0
+btts,EFL,logistic_leagueFE_shots,champion_p11,758,0.00422,"[-0.00046, 0.0087]",0.037
+btts,EFL,logistic_eflonly,base_league_2y,758,-0.00106,"[-0.00642, 0.00468]",0.645
+btts,EFL,logistic_eflonly,market_bettime,231,0.01537,"[0.00588, 0.02771]",0.001
+btts,EFL,logistic_eflonly,champion_p11,758,0.00487,"[-0.00144, 0.01163]",0.072
+btts,EFL,hgb_eflonly,base_league_2y,758,0.04865,"[0.02743, 0.06967]",0.0
+btts,EFL,hgb_eflonly,market_bettime,231,0.0575,"[0.02445, 0.09078]",0.001
+btts,EFL,hgb_eflonly,champion_p11,758,0.05458,"[0.03312, 0.07535]",0.0
+btts,EFL,dixon_coles,base_league_2y,589,0.0037,"[-0.00572, 0.01419]",0.221
+btts,EFL,dixon_coles,market_bettime,155,0.02927,"[0.00604, 0.05999]",0.006
+btts,EFL,dixon_coles,champion_p11,589,0.01011,"[-0.00037, 0.02162]",0.029
+btts,EFL,stack_dc_logFE,base_league_2y,589,-0.00247,"[-0.01071, 0.00553]",0.733
+btts,EFL,stack_dc_logFE,market_bettime,155,0.01545,"[-0.00237, 0.03601]",0.044
+btts,EFL,stack_dc_logFE,champion_p11,589,0.00394,"[-0.00457, 0.01246]",0.176
+btts,Championship,champion_p11,base_league_2y,266,-0.00783,"[-0.01429, -0.00111]",0.99
+btts,Championship,champion_p11,market_bettime,78,0.01115,"[-0.00472, 0.02817]",0.089
+btts,Championship,base_league_2y,market_bettime,78,0.0195,"[-0.00333, 0.04728]",0.054
+btts,Championship,base_league_2y,champion_p11,266,0.00783,"[0.00111, 0.01429]",0.011
+btts,Championship,base_global_2y,base_league_2y,266,-0.0048,"[-0.00824, -0.00132]",0.998
+btts,Championship,base_global_2y,market_bettime,78,0.01456,"[-0.00408, 0.03577]",0.07
+btts,Championship,base_global_2y,champion_p11,266,0.00302,"[-0.00026, 0.00618]",0.036
+btts,Championship,market_bettime,base_league_2y,78,-0.0195,"[-0.04728, 0.00333]",0.946
+btts,Championship,market_bettime,champion_p11,78,-0.01115,"[-0.02817, 0.00472]",0.911
+btts,Championship,market_close,base_league_2y,78,-0.01372,"[-0.04048, 0.01014]",0.863
+btts,Championship,market_close,market_bettime,78,0.00578,"[-0.00364, 0.01366]",0.106
+btts,Championship,market_close,champion_p11,78,-0.00537,"[-0.02339, 0.01154]",0.732
+btts,Championship,logistic_all,base_league_2y,266,0.00295,"[-0.00638, 0.01214]",0.288
+btts,Championship,logistic_all,market_bettime,78,0.01773,"[0.00135, 0.03596]",0.017
+btts,Championship,logistic_all,champion_p11,266,0.01078,"[0.00362, 0.01814]",0.002
+btts,Championship,hgb_all,base_league_2y,266,0.00354,"[-0.01689, 0.025]",0.365
+btts,Championship,hgb_all,market_bettime,78,0.00739,"[-0.0385, 0.05565]",0.378
+btts,Championship,hgb_all,champion_p11,266,0.01136,"[-0.00851, 0.0321]",0.141
+btts,Championship,logistic_leagueFE,base_league_2y,266,0.00338,"[-0.00557, 0.01261]",0.253
+btts,Championship,logistic_leagueFE,market_bettime,78,0.01687,"[0.00018, 0.03539]",0.024
+btts,Championship,logistic_leagueFE,champion_p11,266,0.01121,"[0.00376, 0.01879]",0.002
+btts,Championship,logistic_leagueFE_shots,base_league_2y,266,0.00207,"[-0.0069, 0.01128]",0.364
+btts,Championship,logistic_leagueFE_shots,market_bettime,78,0.01478,"[-0.00301, 0.0348]",0.051
+btts,Championship,logistic_leagueFE_shots,champion_p11,266,0.0099,"[0.00244, 0.01749]",0.003
+btts,Championship,logistic_eflonly,base_league_2y,266,0.00361,"[-0.00534, 0.01401]",0.257
+btts,Championship,logistic_eflonly,market_bettime,78,0.01924,"[-0.00117, 0.0409]",0.034
+btts,Championship,logistic_eflonly,champion_p11,266,0.01143,"[0.00319, 0.01981]",0.001
+btts,Championship,hgb_eflonly,base_league_2y,266,0.06817,"[0.04349, 0.09807]",0.0
+btts,Championship,hgb_eflonly,market_bettime,78,0.02655,"[-0.02215, 0.07806]",0.144
+btts,Championship,hgb_eflonly,champion_p11,266,0.07599,"[0.05035, 0.10639]",0.0
+btts,Championship,dixon_coles,base_league_2y,215,0.0179,"[0.00112, 0.03475]",0.015
+btts,Championship,dixon_coles,market_bettime,57,0.06212,"[0.01223, 0.11799]",0.009
+btts,Championship,dixon_coles,champion_p11,215,0.02551,"[0.00512, 0.04635]",0.007
+btts,Championship,stack_dc_logFE,base_league_2y,215,0.00638,"[-0.008, 0.02229]",0.2
+btts,Championship,stack_dc_logFE,market_bettime,57,0.03021,"[0.00033, 0.06143]",0.023
+btts,Championship,stack_dc_logFE,champion_p11,215,0.01399,"[-0.0004, 0.02829]",0.028
+btts,League One,champion_p11,base_league_2y,247,-0.00344,"[-0.0094, 0.00364]",0.829
+btts,League One,champion_p11,market_bettime,73,0.00406,"[-0.01434, 0.0218]",0.34
+btts,League One,base_league_2y,market_bettime,73,0.00338,"[-0.0225, 0.02966]",0.416
+btts,League One,base_league_2y,champion_p11,247,0.00344,"[-0.00364, 0.0094]",0.171
+btts,League One,base_global_2y,base_league_2y,247,-0.00205,"[-0.00526, 0.00166]",0.866
+btts,League One,base_global_2y,market_bettime,73,0.00356,"[-0.01829, 0.02556]",0.389
+btts,League One,base_global_2y,champion_p11,247,0.00139,"[-0.00201, 0.00439]",0.217
+btts,League One,market_bettime,base_league_2y,73,-0.00338,"[-0.02966, 0.0225]",0.584
+btts,League One,market_bettime,champion_p11,73,-0.00406,"[-0.0218, 0.01434]",0.66
+btts,League One,market_close,base_league_2y,73,-0.00209,"[-0.03067, 0.02538]",0.542
+btts,League One,market_close,market_bettime,73,0.00129,"[-0.00324, 0.00708]",0.318
+btts,League One,market_close,champion_p11,73,-0.00277,"[-0.02302, 0.01751]",0.587
+btts,League One,logistic_all,base_league_2y,247,-0.0026,"[-0.01101, 0.00508]",0.726
+btts,League One,logistic_all,market_bettime,73,0.00241,"[-0.02106, 0.02328]",0.416
+btts,League One,logistic_all,champion_p11,247,0.00085,"[-0.00827, 0.00919]",0.433
+btts,League One,hgb_all,base_league_2y,247,0.0152,"[-0.0094, 0.04046]",0.11
+btts,League One,hgb_all,market_bettime,73,0.0353,"[-0.0345, 0.09884]",0.16
+btts,League One,hgb_all,champion_p11,247,0.01864,"[-0.0064, 0.04268]",0.069
+btts,League One,logistic_leagueFE,base_league_2y,247,-0.00094,"[-0.00906, 0.00681]",0.59
+btts,League One,logistic_leagueFE,market_bettime,73,0.00013,"[-0.02557, 0.02481]",0.497
+btts,League One,logistic_leagueFE,champion_p11,247,0.0025,"[-0.00849, 0.01287]",0.338
+btts,League One,logistic_leagueFE_shots,base_league_2y,247,-0.00286,"[-0.01056, 0.0047]",0.768
+btts,League One,logistic_leagueFE_shots,market_bettime,73,-0.00248,"[-0.02772, 0.02154]",0.579
+btts,League One,logistic_leagueFE_shots,champion_p11,247,0.00058,"[-0.01051, 0.01094]",0.469
+btts,League One,logistic_eflonly,base_league_2y,247,-0.00279,"[-0.01509, 0.00848]",0.681
+btts,League One,logistic_eflonly,market_bettime,73,0.0005,"[-0.02772, 0.02574]",0.479
+btts,League One,logistic_eflonly,champion_p11,247,0.00066,"[-0.01502, 0.01602]",0.477
+btts,League One,hgb_eflonly,base_league_2y,247,0.04305,"[0.01215, 0.07362]",0.004
+btts,League One,hgb_eflonly,market_bettime,73,0.09363,"[0.01791, 0.15439]",0.009
+btts,League One,hgb_eflonly,champion_p11,247,0.04649,"[0.01523, 0.07865]",0.004
+btts,League One,dixon_coles,base_league_2y,191,-0.00992,"[-0.02818, 0.00784]",0.858
+btts,League One,dixon_coles,market_bettime,49,-0.01422,"[-0.04817, 0.0202]",0.777
+btts,League One,dixon_coles,champion_p11,191,-0.00872,"[-0.0286, 0.00979]",0.815
+btts,League One,stack_dc_logFE,base_league_2y,191,-0.01017,"[-0.02716, 0.00618]",0.894
+btts,League One,stack_dc_logFE,market_bettime,49,-0.01458,"[-0.03952, 0.01044]",0.864
+btts,League One,stack_dc_logFE,champion_p11,191,-0.00898,"[-0.02824, 0.00823]",0.833
+btts,League Two,champion_p11,base_league_2y,245,-0.00639,"[-0.01654, 0.00343]",0.902
+btts,League Two,champion_p11,market_bettime,80,0.01863,"[0.00384, 0.0328]",0.006
+btts,League Two,base_league_2y,market_bettime,80,0.03334,"[0.00396, 0.05529]",0.015
+btts,League Two,base_league_2y,champion_p11,245,0.00639,"[-0.00343, 0.01654]",0.098
+btts,League Two,base_global_2y,base_league_2y,245,-0.00504,"[-0.01182, 0.00174]",0.931
+btts,League Two,base_global_2y,market_bettime,80,0.02275,"[0.00323, 0.03846]",0.01
+btts,League Two,base_global_2y,champion_p11,245,0.00136,"[-0.00191, 0.00469]",0.202
+btts,League Two,market_bettime,base_league_2y,80,-0.03334,"[-0.05529, -0.00396]",0.985
+btts,League Two,market_bettime,champion_p11,80,-0.01863,"[-0.0328, -0.00384]",0.994
+btts,League Two,market_close,base_league_2y,80,-0.03054,"[-0.05208, -0.00099]",0.98
+btts,League Two,market_close,market_bettime,80,0.0028,"[-0.0048, 0.01228]",0.264
+btts,League Two,market_close,champion_p11,80,-0.01583,"[-0.02751, -0.00285]",0.99
+btts,League Two,logistic_all,base_league_2y,245,-0.00672,"[-0.01383, 0.00027]",0.971
+btts,League Two,logistic_all,market_bettime,80,0.02398,"[0.00362, 0.04106]",0.011
+btts,League Two,logistic_all,champion_p11,245,-0.00033,"[-0.01238, 0.00971]",0.487
+btts,League Two,hgb_all,base_league_2y,245,0.00103,"[-0.02511, 0.02363]",0.47
+btts,League Two,hgb_all,market_bettime,80,0.03075,"[-0.01769, 0.07629]",0.1
+btts,League Two,hgb_all,champion_p11,245,0.00742,"[-0.01556, 0.02796]",0.263
+btts,League Two,logistic_leagueFE,base_league_2y,245,-0.00427,"[-0.01159, 0.00184]",0.895
+btts,League Two,logistic_leagueFE,market_bettime,80,0.02925,"[0.00264, 0.05141]",0.017
+btts,League Two,logistic_leagueFE,champion_p11,245,0.00212,"[-0.0122, 0.01493]",0.357
+btts,League Two,logistic_leagueFE_shots,base_league_2y,245,-0.00468,"[-0.01253, 0.00192]",0.896
+btts,League Two,logistic_leagueFE_shots,market_bettime,80,0.02863,"[-4e-05, 0.05327]",0.025
+btts,League Two,logistic_leagueFE_shots,champion_p11,245,0.00172,"[-0.01396, 0.0159]",0.383
+btts,League Two,logistic_eflonly,base_league_2y,245,-0.0044,"[-0.01605, 0.0063]",0.77
+btts,League Two,logistic_eflonly,market_bettime,80,0.02516,"[-0.00224, 0.05304]",0.038
+btts,League Two,logistic_eflonly,champion_p11,245,0.002,"[-0.01676, 0.01835]",0.383
+btts,League Two,hgb_eflonly,base_league_2y,245,0.03309,"[-0.00557, 0.07117]",0.046
+btts,League Two,hgb_eflonly,market_bettime,80,0.05472,"[0.00874, 0.09759]",0.013
+btts,League Two,hgb_eflonly,champion_p11,245,0.03949,"[0.00404, 0.07721]",0.015
+btts,League Two,dixon_coles,base_league_2y,183,0.00122,"[-0.01232, 0.01539]",0.429
+btts,League Two,dixon_coles,market_bettime,49,0.03453,"[-0.00416, 0.07002]",0.043
+btts,League Two,dixon_coles,champion_p11,183,0.01166,"[-0.00141, 0.02518]",0.044
+btts,League Two,stack_dc_logFE,base_league_2y,183,-0.00484,"[-0.02032, 0.01154]",0.716
+btts,League Two,stack_dc_logFE,market_bettime,49,0.02833,"[-0.00415, 0.05887]",0.05
+btts,League Two,stack_dc_logFE,champion_p11,183,0.0056,"[-0.01032, 0.02136]",0.232
+btts,ALL_STD,champion_p11,base_league_2y,2967,-0.00089,"[-0.00324, 0.00155]",0.765
+btts,ALL_STD,champion_p11,market_bettime,760,0.00504,"[-0.00335, 0.01373]",0.118
+btts,ALL_STD,base_league_2y,market_bettime,760,0.00506,"[-0.00263, 0.01311]",0.112
+btts,ALL_STD,base_league_2y,champion_p11,2967,0.00089,"[-0.00155, 0.00324]",0.234
+btts,ALL_STD,base_global_2y,base_league_2y,2967,0.00043,"[-0.00205, 0.00293]",0.366
+btts,ALL_STD,base_global_2y,market_bettime,760,0.00634,"[-0.00277, 0.01603]",0.092
+btts,ALL_STD,base_global_2y,champion_p11,2967,0.00131,"[0.00036, 0.00221]",0.005
+btts,ALL_STD,market_bettime,base_league_2y,760,-0.00506,"[-0.01311, 0.00263]",0.888
+btts,ALL_STD,market_bettime,champion_p11,760,-0.00504,"[-0.01373, 0.00335]",0.882
+btts,ALL_STD,market_close,base_league_2y,760,-0.00395,"[-0.01185, 0.00301]",0.85
+btts,ALL_STD,market_close,market_bettime,760,0.00111,"[-0.00143, 0.00343]",0.212
+btts,ALL_STD,market_close,champion_p11,760,-0.00393,"[-0.01235, 0.00387]",0.848
+btts,ALL_STD,logistic_all,base_league_2y,2967,0.00043,"[-0.00261, 0.00336]",0.4
+btts,ALL_STD,logistic_all,market_bettime,760,0.00555,"[-0.00186, 0.01243]",0.068
+btts,ALL_STD,logistic_all,champion_p11,2967,0.00132,"[-0.00184, 0.00412]",0.203
+btts,ALL_STD,hgb_all,base_league_2y,2967,0.01367,"[0.0064, 0.02013]",0.0
+btts,ALL_STD,hgb_all,market_bettime,760,0.0289,"[0.01344, 0.04439]",0.0
+btts,ALL_STD,hgb_all,champion_p11,2967,0.01455,"[0.00785, 0.02048]",0.0
+btts,ALL_STD,logistic_leagueFE,base_league_2y,2967,0.00308,"[0.00022, 0.00574]",0.018
+btts,ALL_STD,logistic_leagueFE,market_bettime,760,0.00687,"[-0.00182, 0.0151]",0.061
+btts,ALL_STD,logistic_leagueFE,champion_p11,2967,0.00396,"[0.00039, 0.00701]",0.014
+btts,ALL_STD,logistic_leagueFE_shots,base_league_2y,2967,0.00244,"[-0.00043, 0.00512]",0.042
+btts,ALL_STD,logistic_leagueFE_shots,market_bettime,760,0.00596,"[-0.00257, 0.01373]",0.091
+btts,ALL_STD,logistic_leagueFE_shots,champion_p11,2967,0.00333,"[-0.00015, 0.00657]",0.03
+btts,ALL_STD,logistic_eflonly,base_league_2y,758,-0.00106,"[-0.00642, 0.00468]",0.645
+btts,ALL_STD,logistic_eflonly,market_bettime,231,0.01537,"[0.00588, 0.02771]",0.001
+btts,ALL_STD,logistic_eflonly,champion_p11,758,0.00487,"[-0.00144, 0.01163]",0.072
+btts,ALL_STD,hgb_eflonly,base_league_2y,758,0.04865,"[0.02743, 0.06967]",0.0
+btts,ALL_STD,hgb_eflonly,market_bettime,231,0.0575,"[0.02445, 0.09078]",0.001
+btts,ALL_STD,hgb_eflonly,champion_p11,758,0.05458,"[0.03312, 0.07535]",0.0
+btts,ALL_STD,dixon_coles,base_league_2y,2467,0.00363,"[-0.00077, 0.00769]",0.057
+btts,ALL_STD,dixon_coles,market_bettime,562,0.01119,"[-0.0, 0.02311]",0.025
+btts,ALL_STD,dixon_coles,champion_p11,2467,0.00419,"[-0.00078, 0.00849]",0.054
+btts,ALL_STD,stack_dc_logFE,base_league_2y,2467,0.0053,"[0.00031, 0.00982]",0.021
+btts,ALL_STD,stack_dc_logFE,market_bettime,562,0.01215,"[0.00194, 0.02248]",0.008
+btts,ALL_STD,stack_dc_logFE,champion_p11,2467,0.00585,"[-0.0, 0.01112]",0.025
+ht_over05,EFL,champion_p11,base_league_2y,745,-0.00355,"[-0.00799, 0.00112]",0.936
+ht_over05,EFL,champion_p11,market_bettime,183,0.00485,"[-0.00342, 0.0152]",0.119
+ht_over05,EFL,base_league_2y,market_bettime,183,0.0167,"[0.00226, 0.03197]",0.013
+ht_over05,EFL,base_league_2y,champion_p11,745,0.00355,"[-0.00112, 0.00799]",0.064
+ht_over05,EFL,base_global_2y,base_league_2y,745,-0.00198,"[-0.00522, 0.00132]",0.882
+ht_over05,EFL,base_global_2y,market_bettime,183,0.00899,"[-0.00258, 0.02229]",0.058
+ht_over05,EFL,base_global_2y,champion_p11,745,0.00157,"[-0.00085, 0.00391]",0.107
+ht_over05,EFL,market_bettime,base_league_2y,183,-0.0167,"[-0.03197, -0.00226]",0.988
+ht_over05,EFL,market_bettime,champion_p11,183,-0.00485,"[-0.0152, 0.00342]",0.881
+ht_over05,EFL,market_close,base_league_2y,183,-0.01807,"[-0.03334, -0.00303]",0.991
+ht_over05,EFL,market_close,market_bettime,183,-0.00137,"[-0.00365, 0.00211]",0.827
+ht_over05,EFL,market_close,champion_p11,183,-0.00623,"[-0.01626, 0.00232]",0.928
+ht_over05,EFL,logistic_all,base_league_2y,745,-0.0002,"[-0.00685, 0.00692]",0.54
+ht_over05,EFL,logistic_all,market_bettime,183,0.01136,"[-0.00039, 0.02207]",0.03
+ht_over05,EFL,logistic_all,champion_p11,745,0.00335,"[-0.0014, 0.00796]",0.084
+ht_over05,EFL,hgb_all,base_league_2y,745,0.02779,"[0.01215, 0.04364]",0.0
+ht_over05,EFL,hgb_all,market_bettime,183,0.00969,"[-0.01375, 0.02963]",0.194
+ht_over05,EFL,hgb_all,champion_p11,745,0.03134,"[0.01815, 0.04393]",0.0
+ht_over05,EFL,logistic_leagueFE,base_league_2y,745,0.00033,"[-0.00617, 0.00678]",0.485
+ht_over05,EFL,logistic_leagueFE,market_bettime,183,0.01473,"[0.00138, 0.02646]",0.017
+ht_over05,EFL,logistic_leagueFE,champion_p11,745,0.00388,"[-0.00184, 0.00927]",0.091
+ht_over05,EFL,logistic_leagueFE_shots,base_league_2y,745,0.00024,"[-0.00611, 0.00636]",0.493
+ht_over05,EFL,logistic_leagueFE_shots,market_bettime,183,0.01768,"[0.00429, 0.0294]",0.005
+ht_over05,EFL,logistic_leagueFE_shots,champion_p11,745,0.00379,"[-0.00186, 0.00931]",0.089
+ht_over05,EFL,logistic_eflonly,base_league_2y,745,0.0063,"[-0.00136, 0.01382]",0.054
+ht_over05,EFL,logistic_eflonly,market_bettime,183,0.0317,"[0.01371, 0.04884]",0.0
+ht_over05,EFL,logistic_eflonly,champion_p11,745,0.00985,"[0.00213, 0.01739]",0.006
+ht_over05,EFL,hgb_eflonly,base_league_2y,745,0.0466,"[0.02183, 0.07086]",0.001
+ht_over05,EFL,hgb_eflonly,market_bettime,183,0.06012,"[0.02621, 0.1031]",0.001
+ht_over05,EFL,hgb_eflonly,champion_p11,745,0.05015,"[0.02689, 0.07256]",0.0
+ht_over05,EFL,dixon_coles,base_league_2y,576,-0.00348,"[-0.0096, 0.00243]",0.887
+ht_over05,EFL,dixon_coles,market_bettime,119,0.00898,"[-0.00517, 0.02569]",0.107
+ht_over05,EFL,dixon_coles,champion_p11,576,8e-05,"[-0.00733, 0.00758]",0.504
+ht_over05,EFL,stack_dc_logFE,base_league_2y,576,-0.00426,"[-0.009, 0.00033]",0.968
+ht_over05,EFL,stack_dc_logFE,market_bettime,119,0.00216,"[-0.00753, 0.0151]",0.337
+ht_over05,EFL,stack_dc_logFE,champion_p11,576,-0.0007,"[-0.00463, 0.00298]",0.644
+ht_over05,Championship,champion_p11,base_league_2y,262,-0.00563,"[-0.0128, 0.00185]",0.936
+ht_over05,Championship,champion_p11,market_bettime,65,0.01287,"[0.00038, 0.02266]",0.023
+ht_over05,Championship,base_league_2y,market_bettime,65,0.03279,"[0.01743, 0.05073]",0.0
+ht_over05,Championship,base_league_2y,champion_p11,262,0.00563,"[-0.00185, 0.0128]",0.064
+ht_over05,Championship,base_global_2y,base_league_2y,262,-0.0057,"[-0.0097, -0.00145]",0.998
+ht_over05,Championship,base_global_2y,market_bettime,65,0.02145,"[0.00896, 0.03636]",0.001
+ht_over05,Championship,base_global_2y,champion_p11,262,-7e-05,"[-0.00525, 0.00492]",0.513
+ht_over05,Championship,market_bettime,base_league_2y,65,-0.03279,"[-0.05073, -0.01743]",1.0
+ht_over05,Championship,market_bettime,champion_p11,65,-0.01287,"[-0.02266, -0.00038]",0.977
+ht_over05,Championship,market_close,base_league_2y,65,-0.03575,"[-0.05579, -0.01516]",1.0
+ht_over05,Championship,market_close,market_bettime,65,-0.00296,"[-0.00946, 0.00534]",0.784
+ht_over05,Championship,market_close,champion_p11,65,-0.01583,"[-0.02711, -0.00207]",0.986
+ht_over05,Championship,logistic_all,base_league_2y,262,0.00251,"[-0.00969, 0.01456]",0.344
+ht_over05,Championship,logistic_all,market_bettime,65,0.01908,"[0.00368, 0.03231]",0.005
+ht_over05,Championship,logistic_all,champion_p11,262,0.00814,"[0.00118, 0.01523]",0.009
+ht_over05,Championship,hgb_all,base_league_2y,262,0.02478,"[-0.00203, 0.05437]",0.042
+ht_over05,Championship,hgb_all,market_bettime,65,0.00033,"[-0.04566, 0.04258]",0.507
+ht_over05,Championship,hgb_all,champion_p11,262,0.03041,"[0.0055, 0.05575]",0.005
+ht_over05,Championship,logistic_leagueFE,base_league_2y,262,0.00344,"[-0.00868, 0.0153]",0.294
+ht_over05,Championship,logistic_leagueFE,market_bettime,65,0.02125,"[0.00552, 0.03412]",0.002
+ht_over05,Championship,logistic_leagueFE,champion_p11,262,0.00907,"[0.00201, 0.01639]",0.002
+ht_over05,Championship,logistic_leagueFE_shots,base_league_2y,262,0.00494,"[-0.00623, 0.01633]",0.2
+ht_over05,Championship,logistic_leagueFE_shots,market_bettime,65,0.02817,"[0.01155, 0.04287]",0.0
+ht_over05,Championship,logistic_leagueFE_shots,champion_p11,262,0.01057,"[0.0036, 0.01796]",0.0
+ht_over05,Championship,logistic_eflonly,base_league_2y,262,0.00781,"[-0.00349, 0.01967]",0.091
+ht_over05,Championship,logistic_eflonly,market_bettime,65,0.02726,"[0.01062, 0.04527]",0.001
+ht_over05,Championship,logistic_eflonly,champion_p11,262,0.01344,"[0.00445, 0.02236]",0.001
+ht_over05,Championship,hgb_eflonly,base_league_2y,262,0.04039,"[0.00198, 0.07745]",0.019
+ht_over05,Championship,hgb_eflonly,market_bettime,65,0.01963,"[-0.05235, 0.09758]",0.296
+ht_over05,Championship,hgb_eflonly,champion_p11,262,0.04602,"[0.01007, 0.0809]",0.008
+ht_over05,Championship,dixon_coles,base_league_2y,211,0.00279,"[-0.0067, 0.01432]",0.295
+ht_over05,Championship,dixon_coles,market_bettime,45,0.03016,"[0.00265, 0.06149]",0.013
+ht_over05,Championship,dixon_coles,champion_p11,211,0.00799,"[-0.00372, 0.01989]",0.088
+ht_over05,Championship,stack_dc_logFE,base_league_2y,211,-0.00262,"[-0.01202, 0.0074]",0.711
+ht_over05,Championship,stack_dc_logFE,market_bettime,45,0.01783,"[0.00587, 0.03144]",0.0
+ht_over05,Championship,stack_dc_logFE,champion_p11,211,0.00258,"[-0.0025, 0.00776]",0.15
+ht_over05,League One,champion_p11,base_league_2y,242,-7e-05,"[-0.00619, 0.00733]",0.5
+ht_over05,League One,champion_p11,market_bettime,59,0.00592,"[-0.00863, 0.02665]",0.234
+ht_over05,League One,base_league_2y,market_bettime,59,0.01187,"[-0.00918, 0.03421]",0.13
+ht_over05,League One,base_league_2y,champion_p11,242,7e-05,"[-0.00733, 0.00619]",0.499
+ht_over05,League One,base_global_2y,base_league_2y,242,0.0005,"[-0.00128, 0.00233]",0.276
+ht_over05,League One,base_global_2y,market_bettime,59,0.0103,"[-0.00937, 0.03036]",0.145
+ht_over05,League One,base_global_2y,champion_p11,242,0.00058,"[-0.00586, 0.00598]",0.439
+ht_over05,League One,market_bettime,base_league_2y,59,-0.01187,"[-0.03421, 0.00918]",0.87
+ht_over05,League One,market_bettime,champion_p11,59,-0.00592,"[-0.02665, 0.00863]",0.766
+ht_over05,League One,market_close,base_league_2y,59,-0.0147,"[-0.03587, 0.0066]",0.913
+ht_over05,League One,market_close,market_bettime,59,-0.00284,"[-0.00464, -0.00028]",0.983
+ht_over05,League One,market_close,champion_p11,59,-0.00876,"[-0.02821, 0.00591]",0.861
+ht_over05,League One,logistic_all,base_league_2y,242,0.00804,"[-0.00604, 0.02317]",0.123
+ht_over05,League One,logistic_all,market_bettime,59,0.00429,"[-0.01821, 0.03425]",0.353
+ht_over05,League One,logistic_all,champion_p11,242,0.00811,"[-0.00186, 0.01804]",0.049
+ht_over05,League One,hgb_all,base_league_2y,242,0.03654,"[0.00641, 0.06916]",0.009
+ht_over05,League One,hgb_all,market_bettime,59,0.0159,"[-0.01648, 0.0606]",0.181
+ht_over05,League One,hgb_all,champion_p11,242,0.03662,"[0.00962, 0.06497]",0.004
+ht_over05,League One,logistic_leagueFE,base_league_2y,242,0.00814,"[-0.00559, 0.02331]",0.113
+ht_over05,League One,logistic_leagueFE,market_bettime,59,0.00555,"[-0.01785, 0.03703]",0.319
+ht_over05,League One,logistic_leagueFE,champion_p11,242,0.00822,"[-0.00155, 0.01781]",0.043
+ht_over05,League One,logistic_leagueFE_shots,base_league_2y,242,0.00706,"[-0.00573, 0.02141]",0.142
+ht_over05,League One,logistic_leagueFE_shots,market_bettime,59,0.00523,"[-0.01728, 0.03603]",0.324
+ht_over05,League One,logistic_leagueFE_shots,champion_p11,242,0.00714,"[-0.00188, 0.01593]",0.053
+ht_over05,League One,logistic_eflonly,base_league_2y,242,0.01102,"[-0.00245, 0.02404]",0.052
+ht_over05,League One,logistic_eflonly,market_bettime,59,0.03829,"[0.01104, 0.06711]",0.003
+ht_over05,League One,logistic_eflonly,champion_p11,242,0.0111,"[-0.00159, 0.02252]",0.037
+ht_over05,League One,hgb_eflonly,base_league_2y,242,0.06107,"[0.01877, 0.1013]",0.001
+ht_over05,League One,hgb_eflonly,market_bettime,59,0.16474,"[0.0601, 0.28003]",0.0
+ht_over05,League One,hgb_eflonly,champion_p11,242,0.06114,"[0.01815, 0.10254]",0.002
+ht_over05,League One,dixon_coles,base_league_2y,186,-0.00993,"[-0.02566, 0.00501]",0.894
+ht_over05,League One,dixon_coles,market_bettime,38,0.00137,"[-0.02352, 0.02673]",0.44
+ht_over05,League One,dixon_coles,champion_p11,186,-0.0098,"[-0.02798, 0.00765]",0.866
+ht_over05,League One,stack_dc_logFE,base_league_2y,186,-0.00461,"[-0.01417, 0.00489]",0.828
+ht_over05,League One,stack_dc_logFE,market_bettime,38,-0.01251,"[-0.03551, 0.01478]",0.811
+ht_over05,League One,stack_dc_logFE,champion_p11,186,-0.00448,"[-0.0146, 0.00455]",0.819
+ht_over05,League Two,champion_p11,base_league_2y,241,-0.00478,"[-0.01256, 0.00423]",0.857
+ht_over05,League Two,champion_p11,market_bettime,59,-0.00505,"[-0.01796, 0.01095]",0.751
+ht_over05,League Two,base_league_2y,market_bettime,59,0.00379,"[-0.02042, 0.02924]",0.341
+ht_over05,League Two,base_league_2y,champion_p11,241,0.00478,"[-0.00423, 0.01256]",0.143
+ht_over05,League Two,base_global_2y,base_league_2y,241,-0.00043,"[-0.00908, 0.00873]",0.542
+ht_over05,League Two,base_global_2y,market_bettime,59,-0.00605,"[-0.02302, 0.01362]",0.729
+ht_over05,League Two,base_global_2y,champion_p11,241,0.00435,"[-0.00011, 0.00898]",0.029
+ht_over05,League Two,market_bettime,base_league_2y,59,-0.00379,"[-0.02924, 0.02042]",0.659
+ht_over05,League Two,market_bettime,champion_p11,59,0.00505,"[-0.01095, 0.01796]",0.248
+ht_over05,League Two,market_close,base_league_2y,59,-0.00196,"[-0.0297, 0.02358]",0.595
+ht_over05,League Two,market_close,market_bettime,59,0.00183,"[-0.00167, 0.00443]",0.13
+ht_over05,League Two,market_close,champion_p11,59,0.00688,"[-0.01011, 0.02066]",0.204
+ht_over05,League Two,logistic_all,base_league_2y,241,-0.01141,"[-0.02273, -0.00034]",0.977
+ht_over05,League Two,logistic_all,market_bettime,59,0.00991,"[-0.01374, 0.03324]",0.218
+ht_over05,League Two,logistic_all,champion_p11,241,-0.00663,"[-0.01724, 0.00359]",0.903
+ht_over05,League Two,hgb_all,base_league_2y,241,0.02226,"[-0.00456, 0.047]",0.051
+ht_over05,League Two,hgb_all,market_bettime,59,0.0138,"[-0.01996, 0.03875]",0.181
+ht_over05,League Two,hgb_all,champion_p11,241,0.02704,"[0.00404, 0.0478]",0.011
+ht_over05,League Two,logistic_leagueFE,base_league_2y,241,-0.0109,"[-0.0235, 0.00087]",0.965
+ht_over05,League Two,logistic_leagueFE,market_bettime,59,0.01674,"[-0.01126, 0.04159]",0.119
+ht_over05,League Two,logistic_leagueFE,champion_p11,241,-0.00612,"[-0.02031, 0.00786]",0.816
+ht_over05,League Two,logistic_leagueFE_shots,base_league_2y,241,-0.01173,"[-0.02472, 0.00076]",0.967
+ht_over05,League Two,logistic_leagueFE_shots,market_bettime,59,0.01858,"[-0.01015, 0.04335]",0.101
+ht_over05,League Two,logistic_leagueFE_shots,champion_p11,241,-0.00695,"[-0.02162, 0.00733]",0.833
+ht_over05,League Two,logistic_eflonly,base_league_2y,241,-9e-05,"[-0.01545, 0.0147]",0.493
+ht_over05,League Two,logistic_eflonly,market_bettime,59,0.03,"[-0.00128, 0.05862]",0.028
+ht_over05,League Two,logistic_eflonly,champion_p11,241,0.00469,"[-0.01171, 0.02148]",0.29
+ht_over05,League Two,hgb_eflonly,base_league_2y,241,0.03881,"[-0.00287, 0.08256]",0.034
+ht_over05,League Two,hgb_eflonly,market_bettime,59,0.00013,"[-0.05577, 0.06913]",0.498
+ht_over05,League Two,hgb_eflonly,champion_p11,241,0.04359,"[0.00537, 0.08574]",0.013
+ht_over05,League Two,dixon_coles,base_league_2y,179,-0.00416,"[-0.01263, 0.00412]",0.828
+ht_over05,League Two,dixon_coles,market_bettime,36,-0.00947,"[-0.04517, 0.03135]",0.667
+ht_over05,League Two,dixon_coles,champion_p11,179,0.00102,"[-0.01063, 0.01219]",0.429
+ht_over05,League Two,stack_dc_logFE,base_league_2y,179,-0.00583,"[-0.01397, 0.00292]",0.907
+ht_over05,League Two,stack_dc_logFE,market_bettime,36,-0.00194,"[-0.0228, 0.01945]",0.587
+ht_over05,League Two,stack_dc_logFE,champion_p11,179,-0.00064,"[-0.00648, 0.0049]",0.591
+ht_over05,ALL_STD,champion_p11,base_league_2y,2937,-0.00108,"[-0.00341, 0.00115]",0.849
+ht_over05,ALL_STD,champion_p11,market_bettime,522,0.00558,"[-0.00342, 0.01473]",0.11
+ht_over05,ALL_STD,base_league_2y,market_bettime,522,0.01105,"[0.00134, 0.02013]",0.011
+ht_over05,ALL_STD,base_league_2y,champion_p11,2937,0.00108,"[-0.00115, 0.00341]",0.151
+ht_over05,ALL_STD,base_global_2y,base_league_2y,2937,0.00113,"[-0.00127, 0.00328]",0.172
+ht_over05,ALL_STD,base_global_2y,market_bettime,522,0.01079,"[2e-05, 0.02134]",0.025
+ht_over05,ALL_STD,base_global_2y,champion_p11,2937,0.00221,"[0.00068, 0.00377]",0.002
+ht_over05,ALL_STD,market_bettime,base_league_2y,522,-0.01105,"[-0.02013, -0.00134]",0.989
+ht_over05,ALL_STD,market_bettime,champion_p11,522,-0.00558,"[-0.01473, 0.00342]",0.89
+ht_over05,ALL_STD,market_close,base_league_2y,522,-0.01193,"[-0.02094, -0.00239]",0.992
+ht_over05,ALL_STD,market_close,market_bettime,522,-0.00088,"[-0.00282, 0.00113]",0.791
+ht_over05,ALL_STD,market_close,champion_p11,522,-0.00646,"[-0.01552, 0.00237]",0.917
+ht_over05,ALL_STD,logistic_all,base_league_2y,2937,-0.00065,"[-0.00449, 0.00309]",0.631
+ht_over05,ALL_STD,logistic_all,market_bettime,522,0.0078,"[-0.00299, 0.01868]",0.074
+ht_over05,ALL_STD,logistic_all,champion_p11,2937,0.00043,"[-0.00287, 0.0039]",0.396
+ht_over05,ALL_STD,hgb_all,base_league_2y,2937,0.01877,"[0.01131, 0.02566]",0.0
+ht_over05,ALL_STD,hgb_all,market_bettime,522,0.02511,"[0.00563, 0.04227]",0.01
+ht_over05,ALL_STD,hgb_all,champion_p11,2937,0.01985,"[0.01291, 0.02609]",0.0
+ht_over05,ALL_STD,logistic_leagueFE,base_league_2y,2937,0.00134,"[-0.00275, 0.00524]",0.252
+ht_over05,ALL_STD,logistic_leagueFE,market_bettime,522,0.01017,"[-0.00303, 0.02332]",0.068
+ht_over05,ALL_STD,logistic_leagueFE,champion_p11,2937,0.00242,"[-0.00152, 0.00634]",0.111
+ht_over05,ALL_STD,logistic_leagueFE_shots,base_league_2y,2937,0.00213,"[-0.00194, 0.00612]",0.143
+ht_over05,ALL_STD,logistic_leagueFE_shots,market_bettime,522,0.0124,"[-0.00149, 0.02628]",0.043
+ht_over05,ALL_STD,logistic_leagueFE_shots,champion_p11,2937,0.00322,"[-0.00095, 0.00739]",0.059
+ht_over05,ALL_STD,logistic_eflonly,base_league_2y,745,0.0063,"[-0.00136, 0.01382]",0.054
+ht_over05,ALL_STD,logistic_eflonly,market_bettime,183,0.0317,"[0.01371, 0.04884]",0.0
+ht_over05,ALL_STD,logistic_eflonly,champion_p11,745,0.00985,"[0.00213, 0.01739]",0.006
+ht_over05,ALL_STD,hgb_eflonly,base_league_2y,745,0.0466,"[0.02183, 0.07086]",0.001
+ht_over05,ALL_STD,hgb_eflonly,market_bettime,183,0.06012,"[0.02621, 0.1031]",0.001
+ht_over05,ALL_STD,hgb_eflonly,champion_p11,745,0.05015,"[0.02689, 0.07256]",0.0
+ht_over05,ALL_STD,dixon_coles,base_league_2y,2438,-0.00043,"[-0.00398, 0.00336]",0.579
+ht_over05,ALL_STD,dixon_coles,market_bettime,378,0.00925,"[-0.00131, 0.01969]",0.045
+ht_over05,ALL_STD,dixon_coles,champion_p11,2438,0.00112,"[-0.00214, 0.00482]",0.246
+ht_over05,ALL_STD,stack_dc_logFE,base_league_2y,2438,-0.00303,"[-0.0059, 3e-05]",0.973
+ht_over05,ALL_STD,stack_dc_logFE,market_bettime,378,0.00598,"[-0.00232, 0.0145]",0.086
+ht_over05,ALL_STD,stack_dc_logFE,champion_p11,2438,-0.00148,"[-0.00428, 0.00173]",0.823
+ht_over15,EFL,champion_p11,base_league_2y,745,-0.00276,"[-0.00798, 0.00234]",0.853
+ht_over15,EFL,champion_p11,market_bettime,175,0.00215,"[-0.00908, 0.01307]",0.382
+ht_over15,EFL,base_league_2y,market_bettime,175,-0.00181,"[-0.01704, 0.01119]",0.615
+ht_over15,EFL,base_league_2y,champion_p11,745,0.00276,"[-0.00234, 0.00798]",0.147
+ht_over15,EFL,base_global_2y,base_league_2y,745,-0.00179,"[-0.0043, 0.00067]",0.922
+ht_over15,EFL,base_global_2y,market_bettime,175,3e-05,"[-0.01245, 0.01168]",0.519
+ht_over15,EFL,base_global_2y,champion_p11,745,0.00097,"[-0.00166, 0.00387]",0.267
+ht_over15,EFL,market_bettime,base_league_2y,175,0.00181,"[-0.01119, 0.01704]",0.385
+ht_over15,EFL,market_bettime,champion_p11,175,-0.00215,"[-0.01307, 0.00908]",0.619
+ht_over15,EFL,market_close,base_league_2y,175,-0.0001,"[-0.01361, 0.01498]",0.483
+ht_over15,EFL,market_close,market_bettime,175,-0.00191,"[-0.00527, 0.00092]",0.917
+ht_over15,EFL,market_close,champion_p11,175,-0.00406,"[-0.01574, 0.00757]",0.747
+ht_over15,EFL,logistic_all,base_league_2y,745,-0.00208,"[-0.00864, 0.00426]",0.748
+ht_over15,EFL,logistic_all,market_bettime,175,0.00324,"[-0.01672, 0.02092]",0.413
+ht_over15,EFL,logistic_all,champion_p11,745,0.00068,"[-0.00488, 0.00611]",0.421
+ht_over15,EFL,hgb_all,base_league_2y,745,0.01855,"[0.00626, 0.03101]",0.001
+ht_over15,EFL,hgb_all,market_bettime,175,0.0076,"[-0.01613, 0.02755]",0.266
+ht_over15,EFL,hgb_all,champion_p11,745,0.02131,"[0.00808, 0.03403]",0.0
+ht_over15,EFL,logistic_leagueFE,base_league_2y,745,-0.00277,"[-0.0089, 0.00318]",0.826
+ht_over15,EFL,logistic_leagueFE,market_bettime,175,0.00093,"[-0.02007, 0.01943]",0.508
+ht_over15,EFL,logistic_leagueFE,champion_p11,745,-1e-05,"[-0.00595, 0.0058]",0.531
+ht_over15,EFL,logistic_leagueFE_shots,base_league_2y,745,-0.0027,"[-0.00886, 0.00334]",0.818
+ht_over15,EFL,logistic_leagueFE_shots,market_bettime,175,0.00258,"[-0.01862, 0.02167]",0.456
+ht_over15,EFL,logistic_leagueFE_shots,champion_p11,745,6e-05,"[-0.00612, 0.00625]",0.521
+ht_over15,EFL,logistic_eflonly,base_league_2y,745,0.00091,"[-0.00748, 0.00963]",0.433
+ht_over15,EFL,logistic_eflonly,market_bettime,175,-0.00792,"[-0.02647, 0.01196]",0.8
+ht_over15,EFL,logistic_eflonly,champion_p11,745,0.00367,"[-0.00477, 0.01209]",0.209
+ht_over15,EFL,hgb_eflonly,base_league_2y,745,0.03674,"[0.01669, 0.05944]",0.0
+ht_over15,EFL,hgb_eflonly,market_bettime,175,0.01821,"[-0.01775, 0.04472]",0.14
+ht_over15,EFL,hgb_eflonly,champion_p11,745,0.0395,"[0.01656, 0.06412]",0.0
+ht_over15,EFL,dixon_coles,base_league_2y,576,-0.00041,"[-0.00793, 0.00727]",0.535
+ht_over15,EFL,dixon_coles,market_bettime,109,-0.00172,"[-0.02424, 0.01867]",0.595
+ht_over15,EFL,dixon_coles,champion_p11,576,0.00108,"[-0.00678, 0.00963]",0.394
+ht_over15,EFL,stack_dc_logFE,base_league_2y,576,-0.00469,"[-0.01108, 0.00099]",0.95
+ht_over15,EFL,stack_dc_logFE,market_bettime,109,-0.00743,"[-0.02022, 0.00419]",0.895
+ht_over15,EFL,stack_dc_logFE,champion_p11,576,-0.0032,"[-0.00546, -0.0008]",0.995
+ht_over15,Championship,champion_p11,base_league_2y,262,-0.01093,"[-0.02147, -0.00105]",0.981
+ht_over15,Championship,champion_p11,market_bettime,64,0.0031,"[-0.01622, 0.02532]",0.382
+ht_over15,Championship,base_league_2y,market_bettime,64,0.00145,"[-0.02297, 0.02554]",0.452
+ht_over15,Championship,base_league_2y,champion_p11,262,0.01093,"[0.00105, 0.02147]",0.019
+ht_over15,Championship,base_global_2y,base_league_2y,262,-0.00679,"[-0.0126, -0.00144]",0.995
+ht_over15,Championship,base_global_2y,market_bettime,64,0.00156,"[-0.01971, 0.02553]",0.428
+ht_over15,Championship,base_global_2y,champion_p11,262,0.00414,"[-0.00084, 0.00901]",0.046
+ht_over15,Championship,market_bettime,base_league_2y,64,-0.00145,"[-0.02554, 0.02297]",0.548
+ht_over15,Championship,market_bettime,champion_p11,64,-0.0031,"[-0.02532, 0.01622]",0.618
+ht_over15,Championship,market_close,base_league_2y,64,-0.00533,"[-0.03134, 0.02027]",0.678
+ht_over15,Championship,market_close,market_bettime,64,-0.00388,"[-0.00906, 0.00135]",0.93
+ht_over15,Championship,market_close,champion_p11,64,-0.00698,"[-0.02985, 0.01195]",0.772
+ht_over15,Championship,logistic_all,base_league_2y,262,-0.0013,"[-0.0139, 0.01031]",0.575
+ht_over15,Championship,logistic_all,market_bettime,64,0.01349,"[-0.01015, 0.03402]",0.142
+ht_over15,Championship,logistic_all,champion_p11,262,0.00962,"[0.00086, 0.01823]",0.013
+ht_over15,Championship,hgb_all,base_league_2y,262,0.02297,"[-0.00406, 0.04853]",0.045
+ht_over15,Championship,hgb_all,market_bettime,64,-0.01898,"[-0.06901, 0.04681]",0.711
+ht_over15,Championship,hgb_all,champion_p11,262,0.03389,"[0.00677, 0.05927]",0.009
+ht_over15,Championship,logistic_leagueFE,base_league_2y,262,-0.00124,"[-0.01297, 0.0101]",0.573
+ht_over15,Championship,logistic_leagueFE,market_bettime,64,0.01195,"[-0.01201, 0.03254]",0.177
+ht_over15,Championship,logistic_leagueFE,champion_p11,262,0.00969,"[0.0006, 0.01874]",0.015
+ht_over15,Championship,logistic_leagueFE_shots,base_league_2y,262,-0.00079,"[-0.0123, 0.01048]",0.549
+ht_over15,Championship,logistic_leagueFE_shots,market_bettime,64,0.01284,"[-0.01213, 0.03376]",0.17
+ht_over15,Championship,logistic_leagueFE_shots,champion_p11,262,0.01014,"[0.00153, 0.01902]",0.008
+ht_over15,Championship,logistic_eflonly,base_league_2y,262,0.00613,"[-0.00923, 0.02145]",0.221
+ht_over15,Championship,logistic_eflonly,market_bettime,64,0.00992,"[-0.02157, 0.04083]",0.258
+ht_over15,Championship,logistic_eflonly,champion_p11,262,0.01706,"[0.00531, 0.02933]",0.002
+ht_over15,Championship,hgb_eflonly,base_league_2y,262,0.06252,"[0.01879, 0.10611]",0.001
+ht_over15,Championship,hgb_eflonly,market_bettime,64,0.01528,"[-0.08145, 0.11961]",0.395
+ht_over15,Championship,hgb_eflonly,champion_p11,262,0.07345,"[0.02702, 0.11944]",0.001
+ht_over15,Championship,dixon_coles,base_league_2y,211,0.00485,"[-0.00972, 0.01843]",0.272
+ht_over15,Championship,dixon_coles,market_bettime,43,0.00295,"[-0.02321, 0.03356]",0.422
+ht_over15,Championship,dixon_coles,champion_p11,211,0.01415,"[-0.00259, 0.03171]",0.06
+ht_over15,Championship,stack_dc_logFE,base_league_2y,211,-0.00858,"[-0.01991, 0.00325]",0.932
+ht_over15,Championship,stack_dc_logFE,market_bettime,43,-0.00187,"[-0.02487, 0.02007]",0.57
+ht_over15,Championship,stack_dc_logFE,champion_p11,211,0.00072,"[-0.00446, 0.00562]",0.397
+ht_over15,League One,champion_p11,base_league_2y,242,0.00428,"[-0.0042, 0.01333]",0.161
+ht_over15,League One,champion_p11,market_bettime,55,-0.00711,"[-0.03422, 0.01932]",0.703
+ht_over15,League One,base_league_2y,market_bettime,55,-0.01808,"[-0.04924, 0.0102]",0.891
+ht_over15,League One,base_league_2y,champion_p11,242,-0.00428,"[-0.01333, 0.0042]",0.839
+ht_over15,League One,base_global_2y,base_league_2y,242,0.00201,"[-0.00118, 0.00528]",0.11
+ht_over15,League One,base_global_2y,market_bettime,55,-0.01424,"[-0.04229, 0.0123]",0.845
+ht_over15,League One,base_global_2y,champion_p11,242,-0.00228,"[-0.00806, 0.0031]",0.799
+ht_over15,League One,market_bettime,base_league_2y,55,0.01808,"[-0.0102, 0.04924]",0.109
+ht_over15,League One,market_bettime,champion_p11,55,0.00711,"[-0.01932, 0.03422]",0.297
+ht_over15,League One,market_close,base_league_2y,55,0.01316,"[-0.01405, 0.04297]",0.177
+ht_over15,League One,market_close,market_bettime,55,-0.00492,"[-0.00907, -0.00139]",0.997
+ht_over15,League One,market_close,champion_p11,55,0.00219,"[-0.02378, 0.02922]",0.421
+ht_over15,League One,logistic_all,base_league_2y,242,-0.00214,"[-0.01695, 0.01171]",0.574
+ht_over15,League One,logistic_all,market_bettime,55,-0.00345,"[-0.0411, 0.03]",0.575
+ht_over15,League One,logistic_all,champion_p11,242,-0.00643,"[-0.01546, 0.00263]",0.908
+ht_over15,League One,hgb_all,base_league_2y,242,0.01615,"[-0.01222, 0.0473]",0.148
+ht_over15,League One,hgb_all,market_bettime,55,0.02838,"[-0.06375, 0.12192]",0.35
+ht_over15,League One,hgb_all,champion_p11,242,0.01187,"[-0.01464, 0.04114]",0.229
+ht_over15,League One,logistic_leagueFE,base_league_2y,242,-0.00431,"[-0.01692, 0.00753]",0.732
+ht_over15,League One,logistic_leagueFE,market_bettime,55,-0.0086,"[-0.0489, 0.02782]",0.68
+ht_over15,League One,logistic_leagueFE,champion_p11,242,-0.0086,"[-0.01772, 0.00066]",0.963
+ht_over15,League One,logistic_leagueFE_shots,base_league_2y,242,-0.00532,"[-0.01745, 0.00594]",0.798
+ht_over15,League One,logistic_leagueFE_shots,market_bettime,55,-0.00793,"[-0.0501, 0.03045]",0.661
+ht_over15,League One,logistic_leagueFE_shots,champion_p11,242,-0.0096,"[-0.01889, -0.00047]",0.983
+ht_over15,League One,logistic_eflonly,base_league_2y,242,-0.00268,"[-0.02166, 0.01814]",0.6
+ht_over15,League One,logistic_eflonly,market_bettime,55,-0.01718,"[-0.05549, 0.02068]",0.842
+ht_over15,League One,logistic_eflonly,champion_p11,242,-0.00696,"[-0.02497, 0.01561]",0.752
+ht_over15,League One,hgb_eflonly,base_league_2y,242,0.02275,"[-0.02027, 0.07806]",0.183
+ht_over15,League One,hgb_eflonly,market_bettime,55,-0.02951,"[-0.14123, 0.08317]",0.727
+ht_over15,League One,hgb_eflonly,champion_p11,242,0.01847,"[-0.02787, 0.07806]",0.257
+ht_over15,League One,dixon_coles,base_league_2y,186,-0.00071,"[-0.01362, 0.01204]",0.536
+ht_over15,League One,dixon_coles,market_bettime,32,0.00577,"[-0.02516, 0.0335]",0.349
+ht_over15,League One,dixon_coles,champion_p11,186,-0.00806,"[-0.02107, 0.00426]",0.897
+ht_over15,League One,stack_dc_logFE,base_league_2y,186,0.00041,"[-0.00841, 0.00979]",0.456
+ht_over15,League One,stack_dc_logFE,market_bettime,32,-0.01506,"[-0.03292, 0.00464]",0.931
+ht_over15,League One,stack_dc_logFE,champion_p11,186,-0.00695,"[-0.01273, -0.00122]",0.992
+ht_over15,League Two,champion_p11,base_league_2y,241,-0.00095,"[-0.00777, 0.00549]",0.622
+ht_over15,League Two,champion_p11,market_bettime,56,0.01016,"[-0.0051, 0.02731]",0.089
+ht_over15,League Two,base_league_2y,market_bettime,56,0.01045,"[-0.00826, 0.032]",0.132
+ht_over15,League Two,base_league_2y,champion_p11,241,0.00095,"[-0.00549, 0.00777]",0.379
+ht_over15,League Two,base_global_2y,base_league_2y,241,-0.00016,"[-0.00349, 0.00291]",0.547
+ht_over15,League Two,base_global_2y,market_bettime,56,0.0123,"[-0.00348, 0.03253]",0.065
+ht_over15,League Two,base_global_2y,champion_p11,241,0.00078,"[-0.00265, 0.00465]",0.312
+ht_over15,League Two,market_bettime,base_league_2y,56,-0.01045,"[-0.032, 0.00826]",0.868
+ht_over15,League Two,market_bettime,champion_p11,56,-0.01016,"[-0.02731, 0.0051]",0.91
+ht_over15,League Two,market_close,base_league_2y,56,-0.00715,"[-0.02892, 0.01235]",0.77
+ht_over15,League Two,market_close,market_bettime,56,0.0033,"[-0.00045, 0.00811]",0.034
+ht_over15,League Two,market_close,champion_p11,56,-0.00687,"[-0.0243, 0.00876]",0.812
+ht_over15,League Two,logistic_all,base_league_2y,241,-0.00285,"[-0.01095, 0.00663]",0.768
+ht_over15,League Two,logistic_all,market_bettime,56,-0.00191,"[-0.02405, 0.0168]",0.55
+ht_over15,League Two,logistic_all,champion_p11,241,-0.0019,"[-0.01257, 0.00835]",0.638
+ht_over15,League Two,hgb_all,base_league_2y,241,0.01615,"[-0.00543, 0.03882]",0.08
+ht_over15,League Two,hgb_all,market_bettime,56,0.01758,"[-0.02211, 0.06128]",0.183
+ht_over15,League Two,hgb_all,champion_p11,241,0.0171,"[-0.00796, 0.04171]",0.085
+ht_over15,League Two,logistic_leagueFE,base_league_2y,241,-0.0029,"[-0.01105, 0.00633]",0.771
+ht_over15,League Two,logistic_leagueFE,market_bettime,56,-0.00232,"[-0.02548, 0.01741]",0.568
+ht_over15,League Two,logistic_leagueFE,champion_p11,241,-0.00195,"[-0.01297, 0.00865]",0.634
+ht_over15,League Two,logistic_leagueFE_shots,base_league_2y,241,-0.00215,"[-0.0099, 0.00648]",0.729
+ht_over15,League Two,logistic_leagueFE_shots,market_bettime,56,0.00118,"[-0.02116, 0.02151]",0.448
+ht_over15,League Two,logistic_leagueFE_shots,champion_p11,241,-0.0012,"[-0.01227, 0.00934]",0.569
+ht_over15,League Two,logistic_eflonly,base_league_2y,241,-0.00116,"[-0.01338, 0.01198]",0.563
+ht_over15,League Two,logistic_eflonly,market_bettime,56,-0.01921,"[-0.04472, 0.01633]",0.868
+ht_over15,League Two,logistic_eflonly,champion_p11,241,-0.00021,"[-0.01482, 0.01515]",0.492
+ht_over15,League Two,hgb_eflonly,base_league_2y,241,0.02275,"[-0.02132, 0.0652]",0.139
+ht_over15,League Two,hgb_eflonly,market_bettime,56,0.06845,"[-0.04489, 0.1723]",0.12
+ht_over15,League Two,hgb_eflonly,champion_p11,241,0.0237,"[-0.02142, 0.06754]",0.13
+ht_over15,League Two,dixon_coles,base_league_2y,179,-0.0063,"[-0.01409, 0.00182]",0.934
+ht_over15,League Two,dixon_coles,market_bettime,34,-0.01467,"[-0.05114, 0.01635]",0.81
+ht_over15,League Two,dixon_coles,champion_p11,179,-0.00484,"[-0.01652, 0.00815]",0.771
+ht_over15,League Two,stack_dc_logFE,base_league_2y,179,-0.0054,"[-0.01436, 0.00401]",0.875
+ht_over15,League Two,stack_dc_logFE,market_bettime,34,-0.00727,"[-0.03063, 0.01096]",0.761
+ht_over15,League Two,stack_dc_logFE,champion_p11,179,-0.00393,"[-0.00779, 0.00062]",0.959
+ht_over15,ALL_STD,champion_p11,base_league_2y,2937,-0.00086,"[-0.00289, 0.00124]",0.792
+ht_over15,ALL_STD,champion_p11,market_bettime,560,0.00948,"[-0.00036, 0.01792]",0.029
+ht_over15,ALL_STD,base_league_2y,market_bettime,560,0.0089,"[0.00041, 0.01653]",0.022
+ht_over15,ALL_STD,base_league_2y,champion_p11,2937,0.00086,"[-0.00124, 0.00289]",0.207
+ht_over15,ALL_STD,base_global_2y,base_league_2y,2937,0.00127,"[-0.00106, 0.00337]",0.136
+ht_over15,ALL_STD,base_global_2y,market_bettime,560,0.01166,"[0.00028, 0.02182]",0.024
+ht_over15,ALL_STD,base_global_2y,champion_p11,2937,0.00213,"[0.00035, 0.00381]",0.012
+ht_over15,ALL_STD,market_bettime,base_league_2y,560,-0.0089,"[-0.01653, -0.00041]",0.978
+ht_over15,ALL_STD,market_bettime,champion_p11,560,-0.00948,"[-0.01792, 0.00036]",0.971
+ht_over15,ALL_STD,market_close,base_league_2y,560,-0.00976,"[-0.01733, -0.00107]",0.987
+ht_over15,ALL_STD,market_close,market_bettime,560,-0.00086,"[-0.00299, 0.00124]",0.798
+ht_over15,ALL_STD,market_close,champion_p11,560,-0.01034,"[-0.01908, -0.00061]",0.979
+ht_over15,ALL_STD,logistic_all,base_league_2y,2937,0.00093,"[-0.00301, 0.00494]",0.322
+ht_over15,ALL_STD,logistic_all,market_bettime,560,0.01027,"[0.00158, 0.01818]",0.011
+ht_over15,ALL_STD,logistic_all,champion_p11,2937,0.0018,"[-0.00208, 0.00566]",0.18
+ht_over15,ALL_STD,hgb_all,base_league_2y,2937,0.01745,"[0.00997, 0.02496]",0.0
+ht_over15,ALL_STD,hgb_all,market_bettime,560,0.02207,"[0.00821, 0.03766]",0.002
+ht_over15,ALL_STD,hgb_all,champion_p11,2937,0.01831,"[0.01081, 0.02579]",0.0
+ht_over15,ALL_STD,logistic_leagueFE,base_league_2y,2937,0.01686,"[0.00787, 0.02719]",0.0
+ht_over15,ALL_STD,logistic_leagueFE,market_bettime,560,0.0316,"[0.01277, 0.05127]",0.0
+ht_over15,ALL_STD,logistic_leagueFE,champion_p11,2937,0.01773,"[0.00816, 0.02866]",0.0
+ht_over15,ALL_STD,logistic_leagueFE_shots,base_league_2y,2937,0.01619,"[0.0072, 0.02636]",0.0
+ht_over15,ALL_STD,logistic_leagueFE_shots,market_bettime,560,0.0299,"[0.01132, 0.04931]",0.0
+ht_over15,ALL_STD,logistic_leagueFE_shots,champion_p11,2937,0.01705,"[0.0074, 0.02804]",0.0
+ht_over15,ALL_STD,logistic_eflonly,base_league_2y,745,0.00091,"[-0.00748, 0.00963]",0.433
+ht_over15,ALL_STD,logistic_eflonly,market_bettime,175,-0.00792,"[-0.02647, 0.01196]",0.8
+ht_over15,ALL_STD,logistic_eflonly,champion_p11,745,0.00367,"[-0.00477, 0.01209]",0.209
+ht_over15,ALL_STD,hgb_eflonly,base_league_2y,745,0.03674,"[0.01669, 0.05944]",0.0
+ht_over15,ALL_STD,hgb_eflonly,market_bettime,175,0.01821,"[-0.01775, 0.04472]",0.14
+ht_over15,ALL_STD,hgb_eflonly,champion_p11,745,0.0395,"[0.01656, 0.06412]",0.0
+ht_over15,ALL_STD,dixon_coles,base_league_2y,2438,0.00122,"[-0.00246, 0.00502]",0.271
+ht_over15,ALL_STD,dixon_coles,market_bettime,406,0.01283,"[0.00309, 0.02212]",0.006
+ht_over15,ALL_STD,dixon_coles,champion_p11,2438,0.00143,"[-0.00258, 0.00575]",0.246
+ht_over15,ALL_STD,stack_dc_logFE,base_league_2y,2438,-7e-05,"[-0.00331, 0.00339]",0.518
+ht_over15,ALL_STD,stack_dc_logFE,market_bettime,406,0.01081,"[-0.00086, 0.02228]",0.035
+ht_over15,ALL_STD,stack_dc_logFE,champion_p11,2438,0.00014,"[-0.00286, 0.00324]",0.452

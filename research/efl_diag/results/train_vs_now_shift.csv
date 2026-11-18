@@ -1,0 +1,130 @@
+league,feature,train_missing,now_missing,train_mean,now_mean,smd,n_train,n_now
+Championship,home_scored_last5,0.008,0.0,1.254,1.412,0.29,2695,144
+Championship,away_scored_last5,0.007,0.0,1.272,1.489,0.39,2695,144
+Championship,home_conceded_last5,0.008,0.0,1.274,1.509,0.43,2695,144
+Championship,away_conceded_last5,0.007,0.0,1.251,1.425,0.32,2695,144
+Championship,home_over25_last5,0.008,0.0,0.475,0.607,0.58,2695,144
+Championship,away_over25_last5,0.007,0.0,0.474,0.61,0.59,2695,144
+Championship,home_corners_pg_roll,0.009,0.0,5.031,5.151,0.08,2695,144
+Championship,away_corners_pg_roll,0.008,0.0,5.132,5.333,0.14,2695,144
+Championship,home_fouls_pg_roll,0.009,0.0,10.913,11.141,0.12,2695,144
+Championship,away_fouls_pg_roll,0.008,0.0,10.873,10.991,0.07,2695,144
+Championship,home_xg_last5,0.419,0.0,1.222,1.427,0.53,2695,144
+Championship,away_xg_last5,0.42,0.0,1.244,1.455,0.54,2695,144
+Championship,home_insidebox_last5,0.009,0.0,7.685,9.022,0.67,2695,144
+Championship,away_insidebox_last5,0.008,0.0,7.833,9.182,0.66,2695,144
+Championship,home_ht_scored_last5,0.406,0.0,0.586,0.686,0.26,2695,144
+Championship,away_ht_scored_last5,0.407,0.0,0.585,0.728,0.37,2695,144
+Championship,home_ht_conceded_last5,0.406,0.0,0.59,0.726,0.35,2695,144
+Championship,away_ht_conceded_last5,0.407,0.0,0.582,0.704,0.33,2695,144
+Championship,home_ht_over05_rate,0.406,0.0,0.693,0.773,0.37,2695,144
+Championship,away_ht_over05_rate,0.407,0.0,0.69,0.779,0.41,2695,144
+Championship,home_ht_over15_rate,0.406,0.0,0.33,0.392,0.27,2695,144
+Championship,away_ht_over15_rate,0.407,0.0,0.327,0.401,0.32,2695,144
+Championship,home_has_ht_history,0.0,0.0,0.594,1.0,0.83,2695,144
+Championship,away_has_ht_history,0.0,0.0,0.593,1.0,0.83,2695,144
+Championship,home_attack_str,0.008,0.0,0.998,1.111,0.26,2695,144
+Championship,away_attack_str,0.007,0.0,1.012,1.171,0.36,2695,144
+Championship,home_defense_str,0.008,0.0,1.014,1.187,0.4,2695,144
+Championship,away_defense_str,0.007,0.0,0.996,1.121,0.29,2695,144
+Championship,combined_sot_ratio,0.012,0.0,0.331,0.317,-0.3,2695,144
+Championship,home_ht_attack_str,0.406,0.0,0.465,0.54,0.24,2695,144
+Championship,away_ht_attack_str,0.407,0.0,0.464,0.573,0.35,2695,144
+Championship,combined_ht_goals_avg,0.417,0.0,1.18,1.414,0.42,2695,144
+Championship,p_over25_poisson_dc,0.01,0.0,0.45,0.531,0.46,2695,144
+Championship,home_advantage,0.015,0.0,0.406,0.45,0.17,2695,144
+Championship,away_home_adv_factor,0.007,0.0,0.406,0.463,0.23,2695,144
+Championship,home_rest_days,0.008,0.0,7.734,5.771,-0.1,2695,144
+Championship,away_rest_days,0.007,0.0,8.103,5.896,-0.09,2695,144
+Championship,home_season_goals_h,0.045,0.0,1.417,1.554,0.25,2695,144
+Championship,away_season_goals_a,0.045,0.0,1.141,1.321,0.36,2695,144
+Championship,home_season_conceded_h,0.045,0.0,1.138,1.321,0.39,2695,144
+Championship,away_season_conceded_a,0.045,0.0,1.415,1.587,0.32,2695,144
+Championship,home_cs_rate_h,0.045,0.0,0.32,0.214,-0.53,2695,144
+Championship,away_cs_rate_a,0.045,0.0,0.236,0.192,-0.25,2695,144
+League One,home_scored_last5,0.01,0.0,1.286,1.462,0.31,2694,123
+League One,away_scored_last5,0.007,0.0,1.315,1.396,0.14,2694,123
+League One,home_conceded_last5,0.01,0.0,1.312,1.435,0.21,2694,123
+League One,away_conceded_last5,0.007,0.0,1.288,1.395,0.19,2694,123
+League One,home_over25_last5,0.01,0.0,0.49,0.555,0.27,2694,123
+League One,away_over25_last5,0.007,0.0,0.49,0.525,0.15,2694,123
+League One,home_corners_pg_roll,0.01,0.0,5.017,5.495,0.34,2694,123
+League One,away_corners_pg_roll,0.009,0.0,5.09,5.571,0.33,2694,123
+League One,home_fouls_pg_roll,0.01,0.0,11.27,12.116,0.46,2694,123
+League One,away_fouls_pg_roll,0.009,0.0,11.214,12.145,0.51,2694,123
+League One,home_xg_last5,0.866,0.0,1.386,1.441,0.1,2694,123
+League One,away_xg_last5,0.865,0.0,1.417,1.41,-0.01,2694,123
+League One,home_insidebox_last5,0.01,0.0,7.528,9.119,0.84,2694,123
+League One,away_insidebox_last5,0.009,0.0,7.658,9.174,0.78,2694,123
+League One,home_ht_scored_last5,0.41,0.0,0.572,0.575,0.01,2694,123
+League One,away_ht_scored_last5,0.409,0.0,0.582,0.564,-0.05,2694,123
+League One,home_ht_conceded_last5,0.41,0.0,0.586,0.592,0.02,2694,123
+League One,away_ht_conceded_last5,0.409,0.0,0.576,0.552,-0.07,2694,123
+League One,home_ht_over05_rate,0.41,0.0,0.703,0.676,-0.12,2694,123
+League One,away_ht_over05_rate,0.409,0.0,0.702,0.662,-0.19,2694,123
+League One,home_ht_over15_rate,0.41,0.0,0.322,0.321,-0.01,2694,123
+League One,away_ht_over15_rate,0.409,0.0,0.323,0.313,-0.04,2694,123
+League One,home_has_ht_history,0.0,0.0,0.59,1.0,0.83,2694,123
+League One,away_has_ht_history,0.0,0.0,0.591,1.0,0.83,2694,123
+League One,home_attack_str,0.01,0.0,0.98,1.117,0.32,2694,123
+League One,away_attack_str,0.007,0.0,1.002,1.068,0.15,2694,123
+League One,home_defense_str,0.01,0.0,1.0,1.097,0.22,2694,123
+League One,away_defense_str,0.007,0.0,0.982,1.066,0.19,2694,123
+League One,combined_sot_ratio,0.014,0.0,0.336,0.322,-0.29,2694,123
+League One,home_ht_attack_str,0.41,0.0,0.439,0.44,0.0,2694,123
+League One,away_ht_attack_str,0.409,0.0,0.447,0.431,-0.05,2694,123
+League One,combined_ht_goals_avg,0.419,0.0,1.149,1.139,-0.02,2694,123
+League One,p_over25_poisson_dc,0.012,0.0,0.467,0.525,0.31,2694,123
+League One,home_advantage,0.022,0.0,0.428,0.41,-0.07,2694,123
+League One,away_home_adv_factor,0.016,0.0,0.426,0.416,-0.04,2694,123
+League One,home_rest_days,0.01,0.0,7.774,6.22,-0.05,2694,123
+League One,away_rest_days,0.007,0.0,8.312,6.333,-0.06,2694,123
+League One,home_season_goals_h,0.045,0.0,1.419,1.608,0.36,2694,123
+League One,away_season_goals_a,0.045,0.0,1.145,1.36,0.43,2694,123
+League One,home_season_conceded_h,0.045,0.0,1.14,1.338,0.43,2694,123
+League One,away_season_conceded_a,0.045,0.0,1.418,1.563,0.29,2694,123
+League One,home_cs_rate_h,0.045,0.0,0.331,0.267,-0.32,2694,123
+League One,away_cs_rate_a,0.045,0.0,0.24,0.196,-0.23,2694,123
+League Two,home_scored_last5,0.009,0.0,1.269,1.203,-0.12,2702,128
+League Two,away_scored_last5,0.007,0.0,1.287,1.339,0.09,2702,128
+League Two,home_conceded_last5,0.009,0.0,1.293,1.317,0.04,2702,128
+League Two,away_conceded_last5,0.007,0.0,1.265,1.245,-0.04,2702,128
+League Two,home_over25_last5,0.009,0.0,0.468,0.436,-0.14,2702,128
+League Two,away_over25_last5,0.007,0.0,0.468,0.45,-0.08,2702,128
+League Two,home_corners_pg_roll,0.009,0.0,4.873,5.044,0.13,2702,128
+League Two,away_corners_pg_roll,0.007,0.0,4.932,4.944,0.01,2702,128
+League Two,home_fouls_pg_roll,0.009,0.0,11.361,12.062,0.37,2702,128
+League Two,away_fouls_pg_roll,0.007,0.0,11.299,11.899,0.31,2702,128
+League Two,home_xg_last5,0.865,0.0,1.325,1.59,0.51,2702,128
+League Two,away_xg_last5,0.865,0.0,1.37,1.639,0.51,2702,128
+League Two,home_insidebox_last5,0.009,0.0,7.554,8.432,0.46,2702,128
+League Two,away_insidebox_last5,0.007,0.0,7.656,8.625,0.51,2702,128
+League Two,home_ht_scored_last5,0.412,0.0,0.596,0.517,-0.22,2702,128
+League Two,away_ht_scored_last5,0.41,0.0,0.607,0.574,-0.09,2702,128
+League Two,home_ht_conceded_last5,0.412,0.0,0.605,0.6,-0.01,2702,128
+League Two,away_ht_conceded_last5,0.41,0.0,0.601,0.527,-0.21,2702,128
+League Two,home_ht_over05_rate,0.412,0.0,0.697,0.692,-0.02,2702,128
+League Two,away_ht_over05_rate,0.41,0.0,0.701,0.668,-0.15,2702,128
+League Two,home_ht_over15_rate,0.412,0.0,0.34,0.318,-0.1,2702,128
+League Two,away_ht_over15_rate,0.41,0.0,0.34,0.315,-0.12,2702,128
+League Two,home_has_ht_history,0.0,0.0,0.588,1.0,0.84,2702,128
+League Two,away_has_ht_history,0.0,0.0,0.59,1.0,0.83,2702,128
+League Two,home_attack_str,0.009,0.0,1.018,0.938,-0.18,2702,128
+League Two,away_attack_str,0.007,0.0,1.033,1.044,0.02,2702,128
+League Two,home_defense_str,0.009,0.0,1.039,1.026,-0.03,2702,128
+League Two,away_defense_str,0.007,0.0,1.015,0.97,-0.1,2702,128
+League Two,combined_sot_ratio,0.011,0.0,0.335,0.311,-0.5,2702,128
+League Two,home_ht_attack_str,0.412,0.0,0.468,0.403,-0.23,2702,128
+League Two,away_ht_attack_str,0.41,0.0,0.477,0.447,-0.1,2702,128
+League Two,combined_ht_goals_avg,0.418,0.0,1.21,1.091,-0.23,2702,128
+League Two,p_over25_poisson_dc,0.01,0.0,0.457,0.455,-0.01,2702,128
+League Two,home_advantage,0.02,0.0,0.411,0.483,0.29,2702,128
+League Two,away_home_adv_factor,0.015,0.0,0.411,0.479,0.27,2702,128
+League Two,home_rest_days,0.009,0.0,7.736,5.945,-0.07,2702,128
+League Two,away_rest_days,0.007,0.0,8.305,5.898,-0.08,2702,128
+League Two,home_season_goals_h,0.044,0.0,1.414,1.551,0.25,2702,128
+League Two,away_season_goals_a,0.044,0.0,1.145,1.051,-0.2,2702,128
+League Two,home_season_conceded_h,0.044,0.0,1.141,1.016,-0.27,2702,128
+League Two,away_season_conceded_a,0.044,0.0,1.413,1.549,0.25,2702,128
+League Two,home_cs_rate_h,0.044,0.0,0.321,0.372,0.24,2702,128
+League Two,away_cs_rate_a,0.044,0.0,0.241,0.173,-0.38,2702,128
