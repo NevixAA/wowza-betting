@@ -263,7 +263,7 @@ def pick(pool: pd.DataFrame, params: dict) -> pd.DataFrame:
                 if free(r):
                     used.add((r.row_id, r.market))
                     dirs[r.row_id] = r.direction
-                    taken.append(r._asdict() | {"tier": tier, "gate": prm["gate"], "t3_floor": prm["t3_floor"]})
+                    taken.append(r._asdict() | {"tier": tier, "gate": prm["gate"], "t3_floor": str(prm["t3_floor"])})
                     return
 
         first(g.sort_values("cal_ev", ascending=False, kind="mergesort"), TIERS[0])
