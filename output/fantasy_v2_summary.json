@@ -1,9 +1,9 @@
 {
  "calculation_version": "fantasy_v2-1.0.0",
- "generated_at": "2026-11-17T16:26:18Z",
+ "generated_at": "2026-11-18T16:00:25Z",
  "gameweek": 11,
  "deadline": "2026-11-21T11:00:00Z",
- "fpl_fetched_at": "2026-11-17T16:24:27Z",
+ "fpl_fetched_at": "2026-11-18T15:58:17Z",
  "fpl_age_hours_at_build": 0.0,
  "projection_health": {
   "players": 461,
@@ -82,7 +82,7 @@
    "p6": 0.511,
    "p10": 0.3612,
    "p15": 0.248,
-   "p_blank": 0.2858,
+   "p_blank": 0.2857,
    "p_start": 0.883,
    "exp_minutes": 75.3,
    "ceiling": 28.0,
@@ -130,7 +130,7 @@
    "p6": 0.5279,
    "p10": 0.3637,
    "p15": 0.2407,
-   "p_blank": 0.2445,
+   "p_blank": 0.2444,
    "p_start": 0.938,
    "exp_minutes": 79.7,
    "ceiling": 26.0,
@@ -154,7 +154,7 @@
     "p_blank": 0.286,
     "p_start": 0.883,
     "ceiling": 28.0,
-    "sd": 9.344,
+    "sd": 9.343,
     "next_fixture": "SUN(H)"
    },
    {
@@ -229,23 +229,23 @@
     "p_blank": 0.28,
     "p_start": 0.955,
     "ceiling": 17.0,
-    "sd": 6.95,
+    "sd": 6.949,
     "next_fixture": "IPS(H)"
    },
    {
-    "player_name": "Enzo Le F\u00e9e",
-    "web_name": "E.Le F\u00e9e",
-    "team": "Sunderland",
-    "position": "MID",
+    "player_name": "Tarik Muharemovi\u0107",
+    "web_name": "Muharemovi\u0107",
+    "team": "Leeds",
+    "position": "DEF",
     "final_xpts": 7.3,
-    "p6": 0.419,
-    "p10": 0.247,
-    "p15": 0.136,
-    "p_blank": 0.315,
-    "p_start": 0.909,
+    "p6": 0.426,
+    "p10": 0.246,
+    "p15": 0.132,
+    "p_blank": 0.29,
+    "p_start": 0.948,
     "ceiling": 17.0,
-    "sd": 7.026,
-    "next_fixture": "AVL(A)"
+    "sd": 6.836,
+    "next_fixture": "CHE(A)"
    },
    {
     "player_name": "James Trafford",
@@ -278,34 +278,19 @@
     "next_fixture": "BHA(H)"
    },
    {
-    "player_name": "Tarik Muharemovi\u0107",
-    "web_name": "Muharemovi\u0107",
-    "team": "Leeds",
-    "position": "DEF",
+    "player_name": "Enzo Le F\u00e9e",
+    "web_name": "E.Le F\u00e9e",
+    "team": "Sunderland",
+    "position": "MID",
     "final_xpts": 7.3,
-    "p6": 0.426,
-    "p10": 0.246,
-    "p15": 0.132,
-    "p_blank": 0.29,
-    "p_start": 0.948,
+    "p6": 0.419,
+    "p10": 0.247,
+    "p15": 0.136,
+    "p_blank": 0.315,
+    "p_start": 0.909,
     "ceiling": 17.0,
-    "sd": 6.836,
-    "next_fixture": "CHE(A)"
-   },
-   {
-    "player_name": "James Hill",
-    "web_name": "Hill",
-    "team": "Bournemouth",
-    "position": "DEF",
-    "final_xpts": 7.0,
-    "p6": 0.412,
-    "p10": 0.233,
-    "p15": 0.122,
-    "p_blank": 0.3,
-    "p_start": 0.944,
-    "ceiling": 16.0,
-    "sd": 6.609,
-    "next_fixture": "NFO(H)"
+    "sd": 7.026,
+    "next_fixture": "AVL(A)"
    },
    {
     "player_name": "Ronald Araujo",
@@ -321,6 +306,21 @@
     "ceiling": 17.0,
     "sd": 6.853,
     "next_fixture": "MUN(H)"
+   },
+   {
+    "player_name": "James Hill",
+    "web_name": "Hill",
+    "team": "Bournemouth",
+    "position": "DEF",
+    "final_xpts": 7.0,
+    "p6": 0.412,
+    "p10": 0.233,
+    "p15": 0.122,
+    "p_blank": 0.3,
+    "p_start": 0.944,
+    "ceiling": 16.0,
+    "sd": 6.609,
+    "next_fixture": "NFO(H)"
    }
   ]
  },
@@ -386,7 +386,7 @@
    "p6": 0.2911,
    "p10": 0.1308,
    "p15": 0.0527,
-   "p_blank": 0.2858,
+   "p_blank": 0.2857,
    "p_start": 0.883,
    "exp_minutes": 75.3,
    "ceiling": 11.0,
@@ -455,7 +455,7 @@
     "p_blank": 0.286,
     "p_start": 0.883,
     "ceiling": 11.0,
-    "sd": 9.344,
+    "sd": 9.343,
     "next_fixture": "SUN(H)"
    },
    {
@@ -530,7 +530,7 @@
     "p_blank": 0.28,
     "p_start": 0.955,
     "ceiling": 10.0,
-    "sd": 6.95,
+    "sd": 6.949,
     "next_fixture": "IPS(H)"
    },
    {
@@ -575,7 +575,7 @@
     "p_blank": 0.314,
     "p_start": 0.95,
     "ceiling": 9.0,
-    "sd": 5.922,
+    "sd": 5.921,
     "next_fixture": "HUL(A)"
    }
   ]
