@@ -33,99 +33,158 @@ def _by_fid(df):
 # ── 1. frozen window ─────────────────────────────────────────────────────────────────────────
 
 def test_constants_are_named_and_documented():
-    assert HI.FROZEN_AFTER_DAYS == 14
-    assert HI.RAW_FACTS_MUTABLE_AFTER_FREEZE == ()      # evidence: no raw fact changed after 14 days
+    assert not hasattr(HI, "FROZEN_AFTER_DAYS")          # no refresh window any more (2026-11-18)
+    assert {"referee", "goals", "minutes", "team_corners"} <= set(HI.RAW_FACT_COLUMNS)
+    assert not {"referee_yellows_pg", "opp_strength_index", "n_prev_games"} & set(HI.RAW_FACT_COLUMNS)
     assert HI.INJURY_REFRESH_WINDOW_DAYS == 60
     assert set(HI.INJURY_COLUMNS) == {"chronic_injury_risk", "days_since_last_injury",
                                       "return_from_injury_flag"}
 
 
-def test_frozen_rows_are_immutable_and_window_rows_refresh():
-    existing = _rows(["2026-08-01", "2026-10-01", "2026-10-12", "2026-10-20"])
+def test_committed_rows_are_kept_as_first_written_whatever_their_age():
+    existing = _rows(["2026-08-01", "2026-10-01", "2026-10-25", "2026-10-26"])
     fresh = existing.copy()
     fresh["opp_strength_index"] = 0.9          # derived feature re-derived by the collect
-    fresh["goals"] = 2                         # and a raw fact "corrected"
-    out, st = HI.merge_history(existing, fresh, today=TODAY)
+    fresh["goals"] = 2                         # and a raw fact reported differently
+    out, st = HI.merge_history(existing, fresh)
     o = _by_fid(out)
-    # 08-01 and 10-01 are > 14 days old: untouched
-    assert (o.loc[[1, 2], "opp_strength_index"] == 0.5).all() and (o.loc[[1, 2], "goals"] == 0).all()
-    # 10-12 (exactly 14 days) and 10-20 are inside the window: refreshed
-    assert (o.loc[[3, 4], "opp_strength_index"] == 0.9).all() and (o.loc[[3, 4], "goals"] == 2).all()
-    assert st["frozen"] == 2 and st["refreshed"] == 2 and st["added"] == 0
-    assert len(out) == len(existing)
+    assert (o["opp_strength_index"] == 0.5).all() and (o["goals"] == 0).all()
+    assert st["kept"] == 4 and st["added"] == 0 and len(out) == len(existing)
+    # the raw difference is returned for the corrections file; the derived one is not
+    c = st["corrections"]
+    assert set(c["column"]) == {"goals"} and len(c) == 4
+    assert set(c["stored_value"]) == {"0"} and set(c["fresh_value"]) == {"2"}
 
 
-def test_frozen_row_with_unparseable_date_is_frozen():
-    existing = _rows(["2026-10-20"])
-    existing["date"] = "not a date"
+def test_empty_stored_cells_and_new_columns_are_filled_not_rewritten():
+    existing = _rows(["2026-10-20", "2026-10-21"])
+    existing.loc[0, "opp_strength_index"] = np.nan
     fresh = existing.copy()
     fresh["opp_strength_index"] = 0.9
-    out, st = HI.merge_history(existing, fresh, today=TODAY)
-    assert out["opp_strength_index"].iloc[0] == 0.5 and st["frozen"] == 1
+    fresh["new_feature"] = 1.5
+    out, st = HI.merge_history(existing, fresh)
+    o = _by_fid(out)
+    assert o.loc[1, "opp_strength_index"] == 0.9            # was empty -> filled
+    assert o.loc[2, "opp_strength_index"] == 0.5            # was stored -> kept
+    assert (o["new_feature"] == 1.5).all()
+    assert st["filled_cells"] == 1 + 2 and len(st["corrections"]) == 0
 
 
 def test_new_rows_are_added_whatever_their_age():
     existing = _rows(["2026-10-20"])
     fresh = pd.concat([_rows(["2026-10-20"]), _rows(["2023-03-01", "2026-10-25"], start_fid=10)],
                       ignore_index=True)
-    out, st = HI.merge_history(existing, fresh, today=TODAY)
+    out, st = HI.merge_history(existing, fresh)
     assert sorted(out["fixture_id"]) == [1, 10, 11]
     assert st["added"] == 2
     # a collect never removes a row
-    out2, _ = HI.merge_history(out, _rows(["2026-10-25"], start_fid=11), today=TODAY)
+    out2, _ = HI.merge_history(out, _rows(["2026-10-25"], start_fid=11))
     assert sorted(out2["fixture_id"]) == [1, 10, 11]
 
 
-def test_raw_fact_policy_only_named_raw_columns_can_change_after_freeze():
-    existing = _rows(["2026-07-01"])
+def test_a_null_fresh_value_never_erases_a_stored_one():
+    existing = _rows(["2026-10-20"])
     fresh = existing.copy()
-    fresh["goals"] = 3
-    fresh["opp_strength_index"] = 0.9
-    # the shipped policy: nothing changes
-    out, st = HI.merge_history(existing, fresh, today=TODAY)
-    assert out["goals"].iloc[0] == 0 and out["opp_strength_index"].iloc[0] == 0.5
-    # the mechanism, if evidence ever justifies a raw-fact exception: ONLY that column moves
-    out, st = HI.merge_history(existing, fresh, today=TODAY, mutable_after_freeze=("goals",))
-    assert out["goals"].iloc[0] == 3 and out["opp_strength_index"].iloc[0] == 0.5
-    assert st["frozen_raw_updates"] == 1
-    # a null fresh raw value never erases a stored one
     fresh["goals"] = np.nan
-    out, _ = HI.merge_history(existing, fresh, today=TODAY, mutable_after_freeze=("goals",))
-    assert out["goals"].iloc[0] == 0
+    fresh["opp_strength_index"] = np.nan
+    out, st = HI.merge_history(existing, fresh)
+    assert out["goals"].iloc[0] == 0 and out["opp_strength_index"].iloc[0] == 0.5
+    assert len(st["corrections"]) == 0
+
+
+def test_referee_respelling_is_compared_by_canonical_name():
+    aliases = {"Brazil Serie A": {"R. Abatti": "Ramon Abatti Abel, Brazil"}}
+    existing = _rows(["2026-11-01"], league="Brazil Serie A", referee="Ramon Abatti Abel, Brazil")
+    fresh = existing.copy()
+    fresh["referee"] = "R. Abatti"                     # provider re-spelling: same referee
+    out, st = HI.merge_history(existing, fresh, referee_aliases=aliases)
+    assert out["referee"].iloc[0] == "Ramon Abatti Abel, Brazil"
+    assert len(st["corrections"]) == 0
+    fresh["referee"] = "S. Boiko"                      # provider re-assignment: a correction
+    out, st = HI.merge_history(existing, fresh, referee_aliases=aliases)
+    assert out["referee"].iloc[0] == "Ramon Abatti Abel, Brazil"
+    assert st["corrections"][["column", "stored_value", "fresh_value"]].values.tolist() == [
+        ["referee", "Ramon Abatti Abel, Brazil", "S. Boiko"]]
+
+
+def test_corrections_file_is_append_only_and_keeps_first_seen(tmp_path):
+    path = tmp_path / "output" / "corrections" / "diffs.parquet"
+    existing = _rows(["2026-10-20", "2026-10-21"])
+    fresh = existing.copy()
+    fresh["goals"] = 2
+    _, st = HI.merge_history(existing, fresh)
+    assert HI.append_corrections(st["corrections"], path, observed_utc="2026-11-01T00:00:00Z") == 2
+    # the same difference seen again the next night: nothing new, first stamp kept
+    assert HI.append_corrections(st["corrections"], path, observed_utc="2026-11-02T00:00:00Z") == 0
+    fresh["goals"] = 3
+    _, st = HI.merge_history(existing, fresh)
+    assert HI.append_corrections(st["corrections"], path, observed_utc="2026-11-03T00:00:00Z") == 2
+    c = pd.read_parquet(path)
+    assert len(c) == 4
+    assert sorted(c["observed_utc"].unique()) == ["2026-11-01T00:00:00Z", "2026-11-03T00:00:00Z"]
+    assert HI.append_corrections(st["corrections"].iloc[0:0], path) == 0
 
 
 def test_collect_never_writes_injury_columns():
     existing = _rows(["2026-10-20", "2026-01-10"], days_since_last_injury=12.0, chronic_injury_risk=1.0)
     fresh = existing.copy()
     fresh[["chronic_injury_risk", "days_since_last_injury", "return_from_injury_flag"]] = [0.0, 365.0, 0.0]
-    out, _ = HI.merge_history(existing, fresh, today=TODAY)
+    out, _ = HI.merge_history(existing, fresh)
     assert (out["days_since_last_injury"] == 12.0).all() and (out["chronic_injury_risk"] == 1.0).all()
     # a brand-new row gets NaN, not the 365/0/0 default
-    out, _ = HI.merge_history(existing, _rows(["2026-10-25"], start_fid=50), today=TODAY)
+    out, _ = HI.merge_history(existing, _rows(["2026-10-25"], start_fid=50))
     assert out.loc[out.fixture_id == 50, "days_since_last_injury"].isna().all()
 
 
-def test_mode_collect_applies_the_frozen_window(tmp_path, monkeypatch):
+def test_mode_collect_keeps_committed_rows_and_records_raw_differences(tmp_path, monkeypatch):
     path = tmp_path / "player_history.parquet"
+    corr = tmp_path / "output" / "corrections" / "player_history_collect_diffs.parquet"
     stored = _rows(["2026-06-01", "2026-10-20"], days_since_last_injury=40.0)
     P._save_history(stored, path)
     fetched = pd.concat([_rows(["2026-06-01", "2026-10-20"]), _rows(["2026-10-25"], start_fid=9)],
                         ignore_index=True)
     fetched["opp_strength_index"] = 0.9
+    fetched.loc[fetched.fixture_id == 2, "goals"] = 1
     fetched[["chronic_injury_risk", "days_since_last_injury", "return_from_injury_flag"]] = [0.0, 365.0, 0.0]
     monkeypatch.setattr(P, "HISTORY_CACHE", path)
+    monkeypatch.setattr(HI, "CORRECTIONS_PATH", corr)
     monkeypatch.setattr(P, "collect_match_history", lambda *a, **k: [{"x": 1}])
     monkeypatch.setattr(P, "enrich_sp_events", lambda r: r)
     monkeypatch.setattr(P, "enrich_league_quality", lambda r: r)
     monkeypatch.setattr(P, "build_features", lambda r: fetched.copy())
-    monkeypatch.setattr(HI, "_utc_today", lambda: TODAY)
     P.mode_collect()
     o = _by_fid(pd.read_parquet(path))
-    assert o.loc[1, "opp_strength_index"] == pytest.approx(0.5)        # frozen
-    assert o.loc[2, "opp_strength_index"] == pytest.approx(0.9)        # in window
-    assert (o.loc[[1, 2], "days_since_last_injury"] == 40.0).all()     # injury kept
-    assert np.isnan(o.loc[9, "days_since_last_injury"])                # new row: NaN, not 365
+    assert (o.loc[[1, 2], "opp_strength_index"] == 0.5).all()           # kept, any age
+    assert o.loc[2, "goals"] == 0                                        # raw fact not applied
+    assert o.loc[9, "opp_strength_index"] == pytest.approx(0.9)          # new row added
+    assert (o.loc[[1, 2], "days_since_last_injury"] == 40.0).all()      # injury kept
+    assert np.isnan(o.loc[9, "days_since_last_injury"])                 # new row: NaN, not 365
     assert len(o) == 3
+    c = pd.read_parquet(corr)
+    assert c[["fixture_id", "column", "stored_value", "fresh_value"]].values.tolist() == [[2, "goals", "0", "1"]]
+
+
+def test_mode_collect_gives_new_rows_the_canonical_referee(tmp_path, monkeypatch):
+    path = tmp_path / "player_history.parquet"
+    rows = [{"fixture_id": 1, "player_id": 1, "league": "Brazil Serie A", "referee": "R. Abatti"},
+            {"fixture_id": 2, "player_id": 1, "league": "Serie A", "referee": "R. Abatti"}]
+    seen = {}
+
+    def fake_build(r):
+        seen["referees"] = [x["referee"] for x in r]
+        return _rows(["2026-11-01", "2026-11-02"], referee="x")
+
+    monkeypatch.setattr(P, "HISTORY_CACHE", path)
+    monkeypatch.setattr(P, "collect_match_history", lambda *a, **k: [dict(x) for x in rows])
+    monkeypatch.setattr(P, "enrich_sp_events", lambda r: r)
+    monkeypatch.setattr(P, "enrich_league_quality", lambda r: r)
+    monkeypatch.setattr(P, "build_features", fake_build)
+    import player_model.referee_names as RN
+    monkeypatch.setattr(RN, "load_aliases", lambda path=None: {
+        "Brazil Serie A": {"R. Abatti": "Ramon Abatti Abel, Brazil"}})
+    P.mode_collect()
+    # mapped only inside the league the evidence came from
+    assert seen["referees"] == ["Ramon Abatti Abel, Brazil", "R. Abatti"]
 
 
 # ── 2. point-in-time injury features ─────────────────────────────────────────────────────────
@@ -297,11 +356,10 @@ def test_growth_replay_daily_collect_and_weekly_refresh_touch_only_recent_parts(
         new = pd.DataFrame({"fixture_id": state["fixture_id"].max() + 1 + np.arange(4), "player_id": np.arange(4),
                             "date": today, "league": "Championship", "goals": 1,
                             "opp_strength_index": 0.5})
-        state, _ = HI.merge_history(state, pd.concat([recent, new], ignore_index=True), today=today)
+        state, _ = HI.merge_history(state, pd.concat([recent, new], ignore_index=True))
         st = P._save_history(state, root)
-        months = {f"month_{m}.parquet" for m in
-                  {today.strftime("%Y-%m"), (today - pd.Timedelta(days=HI.FROZEN_AFTER_DAYS)).strftime("%Y-%m")}}
-        assert set(st["written"]) <= months, (today, st["written"])
+        # keep-first: a collect only adds today's rows, so only today's month part is written
+        assert set(st["written"]) <= {f"month_{today.strftime('%Y-%m')}.parquet"}, (today, st["written"])
     # the weekly refresh: fills only the window
     mask = pd.to_datetime(state["date"]) >= pd.Timestamp("2026-10-25") - pd.Timedelta(days=HI.INJURY_REFRESH_WINDOW_DAYS)
     n = HI.apply_injury_pit(state, {p: [] for p in range(4)}, mask)
@@ -360,6 +418,43 @@ def test_guard_cli_refuses_a_push_that_drops_committed_rows(tmp_path, monkeypatc
     assert HI.guard_cli("origin_main") == 0                       # rows only added
     P._save_history(base.iloc[:2], root)
     assert HI.guard_cli("origin_main") == 1                       # a committed row would vanish
+
+
+def test_guard_cli_refuses_a_push_that_rewrites_committed_cells(tmp_path, monkeypatch):
+    _git(tmp_path, "init", "-q")
+    _git(tmp_path, "config", "user.email", "t@t")
+    _git(tmp_path, "config", "user.name", "t")
+    root = tmp_path / "player_history.parquet"
+    base = _rows(["2026-10-20", "2026-10-21"], referee="Ramon Abatti Abel, Brazil")
+    base.loc[1, "opp_strength_index"] = np.nan
+    P._save_history(base, root)
+    _git(tmp_path, "add", "-A")
+    _git(tmp_path, "commit", "-qm", "base")
+    _git(tmp_path, "branch", "origin_main")
+    monkeypatch.chdir(tmp_path)
+    filled = base.copy()
+    filled.loc[1, "opp_strength_index"] = 0.7                     # an empty cell filled: allowed
+    filled[["chronic_injury_risk", "days_since_last_injury"]] = [3.0, 9.0]   # injury refresh: allowed
+    P._save_history(filled, root)
+    assert HI.guard_cli("origin_main") == 0
+    bad = filled.copy()
+    bad.loc[0, "referee"] = "R. Abatti"                           # a committed value rewritten
+    P._save_history(bad, root)
+    assert HI.guard_cli("origin_main") == 1
+    bad = filled.copy()
+    bad.loc[0, "opp_strength_index"] = 0.51                       # a derived value recomputed
+    P._save_history(bad, root)
+    assert HI.guard_cli("origin_main") == 1
+
+
+def test_rewritten_cells_counts_by_column():
+    a = _rows(["2026-10-20", "2026-10-21"])
+    b = a.copy()
+    b.loc[0, "goals"] = 5
+    b["opp_strength_index"] = 0.1
+    rw = HI.rewritten_cells(a, b).set_index("column")
+    assert rw.loc["goals", "cells"] == 1 and rw.loc["opp_strength_index", "cells"] == 2
+    assert len(HI.rewritten_cells(a, a)) == 0
 
 
 # ── the real, repaired history ───────────────────────────────────────────────────────────────
