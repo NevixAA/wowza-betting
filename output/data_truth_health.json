@@ -1,7 +1,7 @@
 {
  "artifact": "data_truth_health",
  "version": "DATA-TRUTH-1",
- "generated_at": "2026-11-17T16:31:47Z",
+ "generated_at": "2026-11-18T16:01:01Z",
  "checks": [
   {
    "check": "Data truth 1: one canonical name",
@@ -34,7 +34,7 @@
   {
    "check": "Data truth 12: prediction ledger",
    "status": "GREEN",
-   "value": "no ledger partitions yet",
+   "value": "0 violation(s) in 254 partition(s)",
    "rule": "Data truth 12: prediction ledger - every model x market prediction stored once, in its own model/market/league/season partition, before kickoff: RED on a duplicate key, a row whose repo/model/market/league/season does not match its partition, an unknown league, a pre-kickoff snapshot written at/after kickoff, a price-like column, or rows under a model x market that is not an active entry of config/prediction_ledger_markets.json",
    "detail": ""
   }
