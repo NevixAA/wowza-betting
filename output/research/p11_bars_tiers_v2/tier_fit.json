@@ -1,0 +1,1596 @@
+{
+ "protocol": "p11-bars-tiers-clean/2",
+ "protocol_sha256_lf": "691bd2f5d868418aef17835385ffaf6fcf82f40ff185e2f8323f4d7592b941bb",
+ "script_sha256_lf": "4ecab21f868f9bff43ae82f4e50a1ae29afda1f663f980b4acbfae5fa30592cf",
+ "fit_pool_bets": 2615,
+ "fit_pool_from": "2024-01-13",
+ "fit_pool_to": "2026-08-31",
+ "params": {
+  "new_format|Argentina Primera Division": {
+   "gate": "BAR",
+   "t3_floor": "REL",
+   "gate_basis": "FIT",
+   "t3_basis": "FIT",
+   "grid": [
+    {
+     "gate": "CAL",
+     "t3_floor": "REL",
+     "fit_picks": 4,
+     "fit_roi": -1.0
+    },
+    {
+     "gate": "BAR",
+     "t3_floor": "REL",
+     "fit_picks": 161,
+     "fit_roi": 0.0458
+    },
+    {
+     "gate": "BAR",
+     "t3_floor": "REL",
+     "fit_t3_picks": 43,
+     "fit_t3_roi": 0.0474
+    },
+    {
+     "gate": "BAR",
+     "t3_floor": 2.25,
+     "fit_t3_picks": 37,
+     "fit_t3_roi": -0.0392
+    },
+    {
+     "gate": "BAR",
+     "t3_floor": 2.5,
+     "fit_t3_picks": 4,
+     "fit_t3_roi": 0.875
+    },
+    {
+     "gate": "BAR",
+     "t3_floor": 2.75,
+     "fit_t3_picks": 0,
+     "fit_t3_roi": null
+    },
+    {
+     "gate": "BAR",
+     "t3_floor": 3.0,
+     "fit_t3_picks": 0,
+     "fit_t3_roi": null
+    }
+   ]
+  },
+  "new_format|Austrian Bundesliga": {
+   "gate": "CAL",
+   "t3_floor": "REL",
+   "gate_basis": "FIT",
+   "t3_basis": "FIT",
+   "grid": [
+    {
+     "gate": "CAL",
+     "t3_floor": "REL",
+     "fit_picks": 207,
+     "fit_roi": 0.0306
+    },
+    {
+     "gate": "BAR",
+     "t3_floor": "REL",
+     "fit_picks": 209,
+     "fit_roi": 0.0296
+    },
+    {
+     "gate": "CAL",
+     "t3_floor": "REL",
+     "fit_t3_picks": 64,
+     "fit_t3_roi": 0.0217
+    },
+    {
+     "gate": "CAL",
+     "t3_floor": 2.25,
+     "fit_t3_picks": 11,
+     "fit_t3_roi": -0.1373
+    },
+    {
+     "gate": "CAL",
+     "t3_floor": 2.5,
+     "fit_t3_picks": 1,
+     "fit_t3_roi": -1.0
+    },
+    {
+     "gate": "CAL",
+     "t3_floor": 2.75,
+     "fit_t3_picks": 0,
+     "fit_t3_roi": null
+    },
+    {
+     "gate": "CAL",
+     "t3_floor": 3.0,
+     "fit_t3_picks": 0,
+     "fit_t3_roi": null
+    }
+   ]
+  },
+  "new_format|Brazil Serie A": {
+   "gate": "BAR",
+   "t3_floor": "REL",
+   "gate_basis": "FIT",
+   "t3_basis": "FIT",
+   "grid": [
+    {
+     "gate": "CAL",
+     "t3_floor": "REL",
+     "fit_picks": 57,
+     "fit_roi": 0.1195
+    },
+    {
+     "gate": "BAR",
+     "t3_floor": "REL",
+     "fit_picks": 178,
+     "fit_roi": 0.0927
+    },
+    {
+     "gate": "BAR",
+     "t3_floor": "REL",
+     "fit_t3_picks": 44,
+     "fit_t3_roi": 0.4252
+    },
+    {
+     "gate": "BAR",
+     "t3_floor": 2.25,
+     "fit_t3_picks": 13,
+     "fit_t3_roi": 0.9492
+    },
+    {
+     "gate": "BAR",
+     "t3_floor": 2.5,
+     "fit_t3_picks": 0,
+     "fit_t3_roi": null
+    },
+    {
+     "gate": "BAR",
+     "t3_floor": 2.75,
+     "fit_t3_picks": 0,
+     "fit_t3_roi": null
+    },
+    {
+     "gate": "BAR",
+     "t3_floor": 3.0,
+     "fit_t3_picks": 0,
+     "fit_t3_roi": null
+    }
+   ]
+  },
+  "new_format|China Super League": {
+   "gate": "CAL",
+   "t3_floor": "REL",
+   "gate_basis": "UNFITTED (< 40 fit picks): CAL",
+   "t3_basis": "UNFITTED (no floor with >= 40 fit T3 picks): REL",
+   "grid": [
+    {
+     "gate": "CAL",
+     "t3_floor": "REL",
+     "fit_picks": 22,
+     "fit_roi": 0.0677
+    },
+    {
+     "gate": "BAR",
+     "t3_floor": "REL",
+     "fit_picks": 22,
+     "fit_roi": 0.0677
+    },
+    {
+     "gate": "CAL",
+     "t3_floor": "REL",
+     "fit_t3_picks": 3,
+     "fit_t3_roi": 0.3967
+    },
+    {
+     "gate": "CAL",
+     "t3_floor": 2.25,
+     "fit_t3_picks": 2,
+     "fit_t3_roi": 0.23
+    },
+    {
+     "gate": "CAL",
+     "t3_floor": 2.5,
+     "fit_t3_picks": 0,
+     "fit_t3_roi": null
+    },
+    {
+     "gate": "CAL",
+     "t3_floor": 2.75,
+     "fit_t3_picks": 0,
+     "fit_t3_roi": null
+    },
+    {
+     "gate": "CAL",
+     "t3_floor": 3.0,
+     "fit_t3_picks": 0,
+     "fit_t3_roi": null
+    }
+   ]
+  },
+  "new_format|Denmark Superliga": {
+   "gate": "CAL",
+   "t3_floor": 2.25,
+   "gate_basis": "FIT",
+   "t3_basis": "FIT",
+   "grid": [
+    {
+     "gate": "CAL",
+     "t3_floor": "REL",
+     "fit_picks": 156,
+     "fit_roi": -0.0708
+    },
+    {
+     "gate": "BAR",
+     "t3_floor": "REL",
+     "fit_picks": 156,
+     "fit_roi": -0.0708
+    },
+    {
+     "gate": "CAL",
+     "t3_floor": "REL",
+     "fit_t3_picks": 45,
+     "fit_t3_roi": -0.3593
+    },
+    {
+     "gate": "CAL",
+     "t3_floor": 2.25,
+     "fit_t3_picks": 45,
+     "fit_t3_roi": -0.1849
+    },
+    {
+     "gate": "CAL",
+     "t3_floor": 2.5,
+     "fit_t3_picks": 45,
+     "fit_t3_roi": -0.2882
+    },
+    {
+     "gate": "CAL",
+     "t3_floor": 2.75,
+     "fit_t3_picks": 28,
+     "fit_t3_roi": -0.5911
+    },
+    {
+     "gate": "CAL",
+     "t3_floor": 3.0,
+     "fit_t3_picks": 13,
+     "fit_t3_roi": -0.2331
+    }
+   ]
+  },
+  "new_format|Finland Veikkausliiga": {
+   "gate": "CAL",
+   "t3_floor": "REL",
+   "gate_basis": "FIT",
+   "t3_basis": "UNFITTED (no floor with >= 40 fit T3 picks): REL",
+   "grid": [
+    {
+     "gate": "CAL",
+     "t3_floor": "REL",
+     "fit_picks": 142,
+     "fit_roi": -0.0092
+    },
+    {
+     "gate": "BAR",
+     "t3_floor": "REL",
+     "fit_picks": 149,
+     "fit_roi": -0.0999
+    },
+    {
+     "gate": "CAL",
+     "t3_floor": "REL",
+     "fit_t3_picks": 34,
+     "fit_t3_roi": 0.0447
+    },
+    {
+     "gate": "CAL",
+     "t3_floor": 2.25,
+     "fit_t3_picks": 33,
+     "fit_t3_roi": 0.2458
+    },
+    {
+     "gate": "CAL",
+     "t3_floor": 2.5,
+     "fit_t3_picks": 31,
+     "fit_t3_roi": 0.2613
+    },
+    {
+     "gate": "CAL",
+     "t3_floor": 2.75,
+     "fit_t3_picks": 27,
+     "fit_t3_roi": -0.1111
+    },
+    {
+     "gate": "CAL",
+     "t3_floor": 3.0,
+     "fit_t3_picks": 19,
+     "fit_t3_roi": -0.4905
+    }
+   ]
+  },
+  "new_format|Ireland Premier Division": {
+   "gate": "CAL",
+   "t3_floor": "REL",
+   "gate_basis": "UNFITTED (< 40 fit picks): CAL",
+   "t3_basis": "UNFITTED (no floor with >= 40 fit T3 picks): REL",
+   "grid": [
+    {
+     "gate": "CAL",
+     "t3_floor": "REL",
+     "fit_picks": 28,
+     "fit_roi": 0.2743
+    },
+    {
+     "gate": "BAR",
+     "t3_floor": "REL",
+     "fit_picks": 28,
+     "fit_roi": 0.2743
+    },
+    {
+     "gate": "CAL",
+     "t3_floor": "REL",
+     "fit_t3_picks": 0,
+     "fit_t3_roi": null
+    },
+    {
+     "gate": "CAL",
+     "t3_floor": 2.25,
+     "fit_t3_picks": 0,
+     "fit_t3_roi": null
+    },
+    {
+     "gate": "CAL",
+     "t3_floor": 2.5,
+     "fit_t3_picks": 0,
+     "fit_t3_roi": null
+    },
+    {
+     "gate": "CAL",
+     "t3_floor": 2.75,
+     "fit_t3_picks": 0,
+     "fit_t3_roi": null
+    },
+    {
+     "gate": "CAL",
+     "t3_floor": 3.0,
+     "fit_t3_picks": 0,
+     "fit_t3_roi": null
+    }
+   ]
+  },
+  "new_format|Japan J-League": {
+   "gate": "BAR",
+   "t3_floor": "REL",
+   "gate_basis": "FIT",
+   "t3_basis": "FIT",
+   "grid": [
+    {
+     "gate": "CAL",
+     "t3_floor": "REL",
+     "fit_picks": 155,
+     "fit_roi": -0.0099
+    },
+    {
+     "gate": "BAR",
+     "t3_floor": "REL",
+     "fit_picks": 158,
+     "fit_roi": 0.0033
+    },
+    {
+     "gate": "BAR",
+     "t3_floor": "REL",
+     "fit_t3_picks": 43,
+     "fit_t3_roi": 0.136
+    },
+    {
+     "gate": "BAR",
+     "t3_floor": 2.25,
+     "fit_t3_picks": 10,
+     "fit_t3_roi": 0.175
+    },
+    {
+     "gate": "BAR",
+     "t3_floor": 2.5,
+     "fit_t3_picks": 1,
+     "fit_t3_roi": -1.0
+    },
+    {
+     "gate": "BAR",
+     "t3_floor": 2.75,
+     "fit_t3_picks": 1,
+     "fit_t3_roi": -1.0
+    },
+    {
+     "gate": "BAR",
+     "t3_floor": 3.0,
+     "fit_t3_picks": 0,
+     "fit_t3_roi": null
+    }
+   ]
+  },
+  "new_format|K-League 1": {
+   "gate": "CAL",
+   "t3_floor": "REL",
+   "gate_basis": "FIT",
+   "t3_basis": "UNFITTED (no floor with >= 40 fit T3 picks): REL",
+   "grid": [
+    {
+     "gate": "CAL",
+     "t3_floor": "REL",
+     "fit_picks": 109,
+     "fit_roi": -0.1614
+    },
+    {
+     "gate": "BAR",
+     "t3_floor": "REL",
+     "fit_picks": 109,
+     "fit_roi": -0.1614
+    },
+    {
+     "gate": "CAL",
+     "t3_floor": "REL",
+     "fit_t3_picks": 25,
+     "fit_t3_roi": -0.294
+    },
+    {
+     "gate": "CAL",
+     "t3_floor": 2.25,
+     "fit_t3_picks": 0,
+     "fit_t3_roi": null
+    },
+    {
+     "gate": "CAL",
+     "t3_floor": 2.5,
+     "fit_t3_picks": 0,
+     "fit_t3_roi": null
+    },
+    {
+     "gate": "CAL",
+     "t3_floor": 2.75,
+     "fit_t3_picks": 0,
+     "fit_t3_roi": null
+    },
+    {
+     "gate": "CAL",
+     "t3_floor": 3.0,
+     "fit_t3_picks": 0,
+     "fit_t3_roi": null
+    }
+   ]
+  },
+  "new_format|Norway Eliteserien": {
+   "gate": "CAL",
+   "t3_floor": "REL",
+   "gate_basis": "FIT",
+   "t3_basis": "UNFITTED (no floor with >= 40 fit T3 picks): REL",
+   "grid": [
+    {
+     "gate": "CAL",
+     "t3_floor": "REL",
+     "fit_picks": 97,
+     "fit_roi": -0.1278
+    },
+    {
+     "gate": "BAR",
+     "t3_floor": "REL",
+     "fit_picks": 97,
+     "fit_roi": -0.1278
+    },
+    {
+     "gate": "CAL",
+     "t3_floor": "REL",
+     "fit_t3_picks": 27,
+     "fit_t3_roi": -0.1807
+    },
+    {
+     "gate": "CAL",
+     "t3_floor": 2.25,
+     "fit_t3_picks": 25,
+     "fit_t3_roi": -0.362
+    },
+    {
+     "gate": "CAL",
+     "t3_floor": 2.5,
+     "fit_t3_picks": 21,
+     "fit_t3_roi": -0.4638
+    },
+    {
+     "gate": "CAL",
+     "t3_floor": 2.75,
+     "fit_t3_picks": 16,
+     "fit_t3_roi": -0.0956
+    },
+    {
+     "gate": "CAL",
+     "t3_floor": 3.0,
+     "fit_t3_picks": 3,
+     "fit_t3_roi": 0.0333
+    }
+   ]
+  },
+  "standard|Greek Super League": {
+   "gate": "BAR",
+   "t3_floor": "REL",
+   "gate_basis": "FIT",
+   "t3_basis": "UNFITTED (no floor with >= 40 fit T3 picks): REL",
+   "grid": [
+    {
+     "gate": "CAL",
+     "t3_floor": "REL",
+     "fit_picks": 2,
+     "fit_roi": -1.0
+    },
+    {
+     "gate": "BAR",
+     "t3_floor": "REL",
+     "fit_picks": 47,
+     "fit_roi": -0.0032
+    },
+    {
+     "gate": "BAR",
+     "t3_floor": "REL",
+     "fit_t3_picks": 4,
+     "fit_t3_roi": 0.8375
+    },
+    {
+     "gate": "BAR",
+     "t3_floor": 2.25,
+     "fit_t3_picks": 4,
+     "fit_t3_roi": 0.2125
+    },
+    {
+     "gate": "BAR",
+     "t3_floor": 2.5,
+     "fit_t3_picks": 3,
+     "fit_t3_roi": 0.6667
+    },
+    {
+     "gate": "BAR",
+     "t3_floor": 2.75,
+     "fit_t3_picks": 0,
+     "fit_t3_roi": null
+    },
+    {
+     "gate": "BAR",
+     "t3_floor": 3.0,
+     "fit_t3_picks": 0,
+     "fit_t3_roi": null
+    }
+   ]
+  },
+  "standard|La Liga 2": {
+   "gate": "BAR",
+   "t3_floor": "REL",
+   "gate_basis": "FIT",
+   "t3_basis": "UNFITTED (no floor with >= 40 fit T3 picks): REL",
+   "grid": [
+    {
+     "gate": "CAL",
+     "t3_floor": "REL",
+     "fit_picks": 0,
+     "fit_roi": null
+    },
+    {
+     "gate": "BAR",
+     "t3_floor": "REL",
+     "fit_picks": 70,
+     "fit_roi": -0.0004
+    },
+    {
+     "gate": "BAR",
+     "t3_floor": "REL",
+     "fit_t3_picks": 4,
+     "fit_t3_roi": -1.0
+    },
+    {
+     "gate": "BAR",
+     "t3_floor": 2.25,
+     "fit_t3_picks": 4,
+     "fit_t3_roi": -1.0
+    },
+    {
+     "gate": "BAR",
+     "t3_floor": 2.5,
+     "fit_t3_picks": 4,
+     "fit_t3_roi": -1.0
+    },
+    {
+     "gate": "BAR",
+     "t3_floor": 2.75,
+     "fit_t3_picks": 2,
+     "fit_t3_roi": -1.0
+    },
+    {
+     "gate": "BAR",
+     "t3_floor": 3.0,
+     "fit_t3_picks": 1,
+     "fit_t3_roi": -1.0
+    }
+   ]
+  },
+  "standard|Ligue 2": {
+   "gate": "CAL",
+   "t3_floor": "REL",
+   "gate_basis": "UNFITTED (< 40 fit picks): CAL",
+   "t3_basis": "UNFITTED (no floor with >= 40 fit T3 picks): REL",
+   "grid": [
+    {
+     "gate": "CAL",
+     "t3_floor": "REL",
+     "fit_picks": 3,
+     "fit_roi": -0.5133
+    },
+    {
+     "gate": "BAR",
+     "t3_floor": "REL",
+     "fit_picks": 16,
+     "fit_roi": -0.0738
+    },
+    {
+     "gate": "CAL",
+     "t3_floor": "REL",
+     "fit_t3_picks": 0,
+     "fit_t3_roi": null
+    },
+    {
+     "gate": "CAL",
+     "t3_floor": 2.25,
+     "fit_t3_picks": 0,
+     "fit_t3_roi": null
+    },
+    {
+     "gate": "CAL",
+     "t3_floor": 2.5,
+     "fit_t3_picks": 0,
+     "fit_t3_roi": null
+    },
+    {
+     "gate": "CAL",
+     "t3_floor": 2.75,
+     "fit_t3_picks": 0,
+     "fit_t3_roi": null
+    },
+    {
+     "gate": "CAL",
+     "t3_floor": 3.0,
+     "fit_t3_picks": 0,
+     "fit_t3_roi": null
+    }
+   ]
+  },
+  "standard|National League": {
+   "gate": "CAL",
+   "t3_floor": "REL",
+   "gate_basis": "UNFITTED (< 40 fit picks): CAL",
+   "t3_basis": "UNFITTED (no floor with >= 40 fit T3 picks): REL",
+   "grid": [
+    {
+     "gate": "CAL",
+     "t3_floor": "REL",
+     "fit_picks": 0,
+     "fit_roi": null
+    },
+    {
+     "gate": "BAR",
+     "t3_floor": "REL",
+     "fit_picks": 3,
+     "fit_roi": -0.2833
+    },
+    {
+     "gate": "CAL",
+     "t3_floor": "REL",
+     "fit_t3_picks": 0,
+     "fit_t3_roi": null
+    },
+    {
+     "gate": "CAL",
+     "t3_floor": 2.25,
+     "fit_t3_picks": 0,
+     "fit_t3_roi": null
+    },
+    {
+     "gate": "CAL",
+     "t3_floor": 2.5,
+     "fit_t3_picks": 0,
+     "fit_t3_roi": null
+    },
+    {
+     "gate": "CAL",
+     "t3_floor": 2.75,
+     "fit_t3_picks": 0,
+     "fit_t3_roi": null
+    },
+    {
+     "gate": "CAL",
+     "t3_floor": 3.0,
+     "fit_t3_picks": 0,
+     "fit_t3_roi": null
+    }
+   ]
+  },
+  "standard|Serie B": {
+   "gate": "CAL",
+   "t3_floor": "REL",
+   "gate_basis": "FIT",
+   "t3_basis": "FIT",
+   "grid": [
+    {
+     "gate": "CAL",
+     "t3_floor": "REL",
+     "fit_picks": 203,
+     "fit_roi": 0.1436
+    },
+    {
+     "gate": "BAR",
+     "t3_floor": "REL",
+     "fit_picks": 206,
+     "fit_roi": 0.1018
+    },
+    {
+     "gate": "CAL",
+     "t3_floor": "REL",
+     "fit_t3_picks": 59,
+     "fit_t3_roi": 0.081
+    },
+    {
+     "gate": "CAL",
+     "t3_floor": 2.25,
+     "fit_t3_picks": 26,
+     "fit_t3_roi": -0.0681
+    },
+    {
+     "gate": "CAL",
+     "t3_floor": 2.5,
+     "fit_t3_picks": 11,
+     "fit_t3_roi": -0.0382
+    },
+    {
+     "gate": "CAL",
+     "t3_floor": 2.75,
+     "fit_t3_picks": 2,
+     "fit_t3_roi": 0.44
+    },
+    {
+     "gate": "CAL",
+     "t3_floor": 3.0,
+     "fit_t3_picks": 0,
+     "fit_t3_roi": null
+    }
+   ]
+  }
+ },
+ "fit_all": {
+  "ALL": {
+   "bets": 1581,
+   "hit": 0.4908,
+   "roi": 0.0208,
+   "ci95": [
+    -0.0339,
+    0.0754
+   ],
+   "p_one_sided": 0.2189,
+   "mean_odds": 2.171,
+   "clv": -0.0057,
+   "clv_n": 1576
+  },
+  "T1_BEST_VALUE": {
+   "bets": 663,
+   "hit": 0.4706,
+   "roi": 0.0178,
+   "ci95": [
+    -0.0727,
+    0.1083
+   ],
+   "p_one_sided": 0.3718,
+   "mean_odds": 2.202,
+   "clv": -0.008,
+   "clv_n": 662
+  },
+  "T2_SAFEST": {
+   "bets": 523,
+   "hit": 0.5392,
+   "roi": 0.0129,
+   "ci95": [
+    -0.0712,
+    0.097
+   ],
+   "p_one_sided": 0.3838,
+   "mean_odds": 2.003,
+   "clv": -0.0077,
+   "clv_n": 521
+  },
+  "T3_RISKY_VALUE": {
+   "bets": 395,
+   "hit": 0.4608,
+   "roi": 0.0362,
+   "ci95": [
+    -0.0772,
+    0.1495
+   ],
+   "p_one_sided": 0.2654,
+   "mean_odds": 2.343,
+   "clv": 0.001,
+   "clv_n": 393
+  }
+ },
+ "fit_2026_04_08": {
+  "ALL": {
+   "bets": 305,
+   "hit": 0.5148,
+   "roi": 0.0794,
+   "ci95": [
+    -0.0609,
+    0.2198
+   ],
+   "p_one_sided": 0.1119,
+   "mean_odds": 2.211,
+   "clv": 0.0001,
+   "clv_n": 304
+  },
+  "T1_BEST_VALUE": {
+   "bets": 134,
+   "hit": 0.4776,
+   "roi": 0.0061,
+   "ci95": [
+    -0.178,
+    0.1902
+   ],
+   "p_one_sided": 0.4708,
+   "mean_odds": 2.185,
+   "clv": -0.0053,
+   "clv_n": 134
+  },
+  "T2_SAFEST": {
+   "bets": 98,
+   "hit": 0.602,
+   "roi": 0.1642,
+   "ci95": [
+    -0.0845,
+    0.4129
+   ],
+   "p_one_sided": 0.0655,
+   "mean_odds": 2.038,
+   "clv": -0.0018,
+   "clv_n": 97
+  },
+  "T3_RISKY_VALUE": {
+   "bets": 73,
+   "hit": 0.4658,
+   "roi": 0.1003,
+   "ci95": [
+    -0.1805,
+    0.381
+   ],
+   "p_one_sided": 0.2259,
+   "mean_odds": 2.491,
+   "clv": 0.0124,
+   "clv_n": 73
+  }
+ },
+ "fit_per_league": {
+  "new_format|Argentina Primera Division": {
+   "ALL": {
+    "bets": 161,
+    "hit": 0.559,
+    "roi": 0.0458,
+    "ci95": [
+     -0.1088,
+     0.2005
+    ],
+    "p_one_sided": 0.2849,
+    "mean_odds": 1.948,
+    "clv": -0.0237,
+    "clv_n": 159
+   },
+   "T1_BEST_VALUE": {
+    "bets": 64,
+    "hit": 0.5625,
+    "roi": -0.0369,
+    "ci95": [
+     -0.2503,
+     0.176
+    ],
+    "p_one_sided": 0.6227,
+    "mean_odds": 1.788,
+    "clv": -0.0345,
+    "clv_n": 64
+   },
+   "T2_SAFEST": {
+    "bets": 54,
+    "hit": 0.6481,
+    "roi": 0.1426,
+    "ci95": [
+     -0.1009,
+     0.3811
+    ],
+    "p_one_sided": 0.1329,
+    "mean_odds": 1.812,
+    "clv": -0.0284,
+    "clv_n": 53
+   },
+   "T3_RISKY_VALUE": {
+    "bets": 43,
+    "hit": 0.4419,
+    "roi": 0.0474,
+    "ci95": [
+     -0.3106,
+     0.4054
+    ],
+    "p_one_sided": 0.4018,
+    "mean_odds": 2.357,
+    "clv": -0.0014,
+    "clv_n": 42
+   }
+  },
+  "new_format|Austrian Bundesliga": {
+   "ALL": {
+    "bets": 207,
+    "hit": 0.5024,
+    "roi": 0.0306,
+    "ci95": [
+     -0.1202,
+     0.1813
+    ],
+    "p_one_sided": 0.3378,
+    "mean_odds": 2.062,
+    "clv": -0.0035,
+    "clv_n": 206
+   },
+   "T1_BEST_VALUE": {
+    "bets": 73,
+    "hit": 0.4521,
+    "roi": 0.0267,
+    "ci95": [
+     -0.2402,
+     0.2905
+    ],
+    "p_one_sided": 0.4458,
+    "mean_odds": 2.217,
+    "clv": -0.0057,
+    "clv_n": 73
+   },
+   "T2_SAFEST": {
+    "bets": 70,
+    "hit": 0.5714,
+    "roi": 0.0427,
+    "ci95": [
+     -0.1713,
+     0.2567
+    ],
+    "p_one_sided": 0.3498,
+    "mean_odds": 1.846,
+    "clv": -0.0013,
+    "clv_n": 70
+   },
+   "T3_RISKY_VALUE": {
+    "bets": 64,
+    "hit": 0.4844,
+    "roi": 0.0217,
+    "ci95": [
+     -0.2433,
+     0.2831
+    ],
+    "p_one_sided": 0.4358,
+    "mean_odds": 2.121,
+    "clv": -0.0033,
+    "clv_n": 63
+   }
+  },
+  "new_format|Brazil Serie A": {
+   "ALL": {
+    "bets": 178,
+    "hit": 0.573,
+    "roi": 0.0927,
+    "ci95": [
+     -0.0514,
+     0.2368
+    ],
+    "p_one_sided": 0.0945,
+    "mean_odds": 1.947,
+    "clv": -0.001,
+    "clv_n": 178
+   },
+   "T1_BEST_VALUE": {
+    "bets": 76,
+    "hit": 0.5263,
+    "roi": 0.0207,
+    "ci95": [
+     -0.2065,
+     0.2478
+    ],
+    "p_one_sided": 0.4243,
+    "mean_odds": 2.014,
+    "clv": 0.0033,
+    "clv_n": 76
+   },
+   "T2_SAFEST": {
+    "bets": 58,
+    "hit": 0.5517,
+    "roi": -0.0652,
+    "ci95": [
+     -0.2911,
+     0.1618
+    ],
+    "p_one_sided": 0.7241,
+    "mean_odds": 1.742,
+    "clv": -0.0105,
+    "clv_n": 58
+   },
+   "T3_RISKY_VALUE": {
+    "bets": 44,
+    "hit": 0.6818,
+    "roi": 0.4252,
+    "ci95": [
+     0.1113,
+     0.722
+    ],
+    "p_one_sided": 0.006,
+    "mean_odds": 2.1,
+    "clv": 0.0044,
+    "clv_n": 44
+   }
+  },
+  "new_format|China Super League": {
+   "ALL": {
+    "bets": 22,
+    "hit": 0.5,
+    "roi": 0.0677,
+    "ci95": [
+     -0.4872,
+     0.6227
+    ],
+    "p_one_sided": 0.3918,
+    "mean_odds": 2.185,
+    "clv": 0.0022,
+    "clv_n": 21
+   },
+   "T1_BEST_VALUE": {
+    "bets": 12,
+    "hit": 0.5,
+    "roi": 0.0792,
+    "ci95": [
+     -0.5646,
+     0.723
+    ],
+    "p_one_sided": 0.3798,
+    "mean_odds": 2.171,
+    "clv": -0.0274,
+    "clv_n": 12
+   },
+   "T2_SAFEST": {
+    "bets": 7,
+    "hit": 0.4286,
+    "roi": -0.0929,
+    "ci95": [
+     -0.9484,
+     0.7626
+    ],
+    "p_one_sided": 0.6067,
+    "mean_odds": 2.191,
+    "clv": 0.003,
+    "clv_n": 6
+   },
+   "T3_RISKY_VALUE": {
+    "bets": 3,
+    "hit": 0.6667,
+    "roi": 0.3967,
+    "ci95": [
+     -1.033,
+     1.8264
+    ],
+    "p_one_sided": 0.2594,
+    "mean_odds": 2.223,
+    "clv": 0.119,
+    "clv_n": 3
+   }
+  },
+  "new_format|Denmark Superliga": {
+   "ALL": {
+    "bets": 156,
+    "hit": 0.3974,
+    "roi": -0.0205,
+    "ci95": [
+     -0.217,
+     0.176
+    ],
+    "p_one_sided": 0.5797,
+    "mean_odds": 2.546,
+    "clv": -0.0166,
+    "clv_n": 156
+   },
+   "T1_BEST_VALUE": {
+    "bets": 59,
+    "hit": 0.4068,
+    "roi": -0.0124,
+    "ci95": [
+     -0.3214,
+     0.2986
+    ],
+    "p_one_sided": 0.5397,
+    "mean_odds": 2.465,
+    "clv": -0.0184,
+    "clv_n": 59
+   },
+   "T2_SAFEST": {
+    "bets": 52,
+    "hit": 0.4615,
+    "roi": 0.1125,
+    "ci95": [
+     -0.2221,
+     0.4471
+    ],
+    "p_one_sided": 0.2574,
+    "mean_odds": 2.472,
+    "clv": -0.0166,
+    "clv_n": 52
+   },
+   "T3_RISKY_VALUE": {
+    "bets": 45,
+    "hit": 0.3111,
+    "roi": -0.1849,
+    "ci95": [
+     -0.5444,
+     0.1746
+    ],
+    "p_one_sided": 0.8681,
+    "mean_odds": 2.738,
+    "clv": -0.0143,
+    "clv_n": 45
+   }
+  },
+  "new_format|Finland Veikkausliiga": {
+   "ALL": {
+    "bets": 142,
+    "hit": 0.3803,
+    "roi": -0.0092,
+    "ci95": [
+     -0.2321,
+     0.2243
+    ],
+    "p_one_sided": 0.5282,
+    "mean_odds": 2.684,
+    "clv": -0.0081,
+    "clv_n": 142
+   },
+   "T1_BEST_VALUE": {
+    "bets": 60,
+    "hit": 0.45,
+    "roi": 0.1253,
+    "ci95": [
+     -0.1972,
+     0.4479
+    ],
+    "p_one_sided": 0.2094,
+    "mean_odds": 2.562,
+    "clv": -0.0102,
+    "clv_n": 60
+   },
+   "T2_SAFEST": {
+    "bets": 48,
+    "hit": 0.3125,
+    "roi": -0.2156,
+    "ci95": [
+     -0.5525,
+     0.1342
+    ],
+    "p_one_sided": 0.8856,
+    "mean_odds": 2.582,
+    "clv": -0.0147,
+    "clv_n": 48
+   },
+   "T3_RISKY_VALUE": {
+    "bets": 34,
+    "hit": 0.3529,
+    "roi": 0.0447,
+    "ci95": [
+     -0.4469,
+     0.5369
+    ],
+    "p_one_sided": 0.4278,
+    "mean_odds": 3.044,
+    "clv": 0.0049,
+    "clv_n": 34
+   }
+  },
+  "new_format|Ireland Premier Division": {
+   "ALL": {
+    "bets": 28,
+    "hit": 0.6429,
+    "roi": 0.2743,
+    "ci95": [
+     -0.11,
+     0.6586
+    ],
+    "p_one_sided": 0.0665,
+    "mean_odds": 1.998,
+    "clv": 0.021,
+    "clv_n": 28
+   },
+   "T1_BEST_VALUE": {
+    "bets": 22,
+    "hit": 0.5455,
+    "roi": 0.1,
+    "ci95": [
+     -0.3388,
+     0.5306
+    ],
+    "p_one_sided": 0.3168,
+    "mean_odds": 2.021,
+    "clv": 0.0296,
+    "clv_n": 22
+   },
+   "T2_SAFEST": {
+    "bets": 6,
+    "hit": 1.0,
+    "roi": 0.9133,
+    "ci95": [
+     0.8555,
+     0.9712
+    ],
+    "p_one_sided": 0.0005,
+    "mean_odds": 1.913,
+    "clv": -0.0104,
+    "clv_n": 6
+   },
+   "T3_RISKY_VALUE": {
+    "bets": 0
+   }
+  },
+  "new_format|Japan J-League": {
+   "ALL": {
+    "bets": 158,
+    "hit": 0.5253,
+    "roi": 0.0033,
+    "ci95": [
+     -0.1536,
+     0.1621
+    ],
+    "p_one_sided": 0.4653,
+    "mean_odds": 1.952,
+    "clv": -0.0016,
+    "clv_n": 157
+   },
+   "T1_BEST_VALUE": {
+    "bets": 63,
+    "hit": 0.4286,
+    "roi": -0.1049,
+    "ci95": [
+     -0.3705,
+     0.1637
+    ],
+    "p_one_sided": 0.7851,
+    "mean_odds": 2.099,
+    "clv": -0.0092,
+    "clv_n": 62
+   },
+   "T2_SAFEST": {
+    "bets": 52,
+    "hit": 0.6154,
+    "roi": 0.0246,
+    "ci95": [
+     -0.2085,
+     0.2517
+    ],
+    "p_one_sided": 0.4033,
+    "mean_odds": 1.674,
+    "clv": 0.0071,
+    "clv_n": 52
+   },
+   "T3_RISKY_VALUE": {
+    "bets": 43,
+    "hit": 0.5581,
+    "roi": 0.136,
+    "ci95": [
+     -0.1731,
+     0.4602
+    ],
+    "p_one_sided": 0.2054,
+    "mean_odds": 2.073,
+    "clv": -0.0011,
+    "clv_n": 43
+   }
+  },
+  "new_format|K-League 1": {
+   "ALL": {
+    "bets": 109,
+    "hit": 0.4312,
+    "roi": -0.1614,
+    "ci95": [
+     -0.3582,
+     0.0354
+    ],
+    "p_one_sided": 0.9445,
+    "mean_odds": 1.957,
+    "clv": -0.0076,
+    "clv_n": 109
+   },
+   "T1_BEST_VALUE": {
+    "bets": 48,
+    "hit": 0.4583,
+    "roi": -0.0744,
+    "ci95": [
+     -0.3655,
+     0.2167
+    ],
+    "p_one_sided": 0.7036,
+    "mean_odds": 2.043,
+    "clv": -0.0023,
+    "clv_n": 48
+   },
+   "T2_SAFEST": {
+    "bets": 36,
+    "hit": 0.4444,
+    "roi": -0.1853,
+    "ci95": [
+     -0.4879,
+     0.1189
+    ],
+    "p_one_sided": 0.8776,
+    "mean_odds": 1.824,
+    "clv": -0.0129,
+    "clv_n": 36
+   },
+   "T3_RISKY_VALUE": {
+    "bets": 25,
+    "hit": 0.36,
+    "roi": -0.294,
+    "ci95": [
+     -0.6764,
+     0.0876
+    ],
+    "p_one_sided": 0.9325,
+    "mean_odds": 1.984,
+    "clv": -0.0103,
+    "clv_n": 25
+   }
+  },
+  "new_format|Norway Eliteserien": {
+   "ALL": {
+    "bets": 97,
+    "hit": 0.3711,
+    "roi": -0.1278,
+    "ci95": [
+     -0.3587,
+     0.103
+    ],
+    "p_one_sided": 0.8906,
+    "mean_odds": 2.399,
+    "clv": -0.0142,
+    "clv_n": 97
+   },
+   "T1_BEST_VALUE": {
+    "bets": 37,
+    "hit": 0.4054,
+    "roi": -0.0641,
+    "ci95": [
+     -0.4371,
+     0.309
+    ],
+    "p_one_sided": 0.6432,
+    "mean_odds": 2.261,
+    "clv": -0.0218,
+    "clv_n": 37
+   },
+   "T2_SAFEST": {
+    "bets": 33,
+    "hit": 0.3939,
+    "roi": -0.1561,
+    "ci95": [
+     -0.5236,
+     0.2125
+    ],
+    "p_one_sided": 0.8046,
+    "mean_odds": 2.283,
+    "clv": -0.0059,
+    "clv_n": 33
+   },
+   "T3_RISKY_VALUE": {
+    "bets": 27,
+    "hit": 0.2963,
+    "roi": -0.1807,
+    "ci95": [
+     -0.6726,
+     0.3074
+    ],
+    "p_one_sided": 0.7731,
+    "mean_odds": 2.73,
+    "clv": -0.0138,
+    "clv_n": 27
+   }
+  },
+  "standard|Greek Super League": {
+   "ALL": {
+    "bets": 47,
+    "hit": 0.4043,
+    "roi": -0.0032,
+    "ci95": [
+     -0.355,
+     0.3486
+    ],
+    "p_one_sided": 0.5092,
+    "mean_odds": 2.464,
+    "clv": -0.0063,
+    "clv_n": 47
+   },
+   "T1_BEST_VALUE": {
+    "bets": 30,
+    "hit": 0.4,
+    "roi": -0.0133,
+    "ci95": [
+     -0.4569,
+     0.4302
+    ],
+    "p_one_sided": 0.5457,
+    "mean_odds": 2.463,
+    "clv": -0.0063,
+    "clv_n": 30
+   },
+   "T2_SAFEST": {
+    "bets": 13,
+    "hit": 0.3077,
+    "roi": -0.2385,
+    "ci95": [
+     -0.8861,
+     0.4091
+    ],
+    "p_one_sided": 0.8111,
+    "mean_odds": 2.454,
+    "clv": -0.0207,
+    "clv_n": 13
+   },
+   "T3_RISKY_VALUE": {
+    "bets": 4,
+    "hit": 0.75,
+    "roi": 0.8375,
+    "ci95": [
+     -0.375,
+     2.04
+    ],
+    "p_one_sided": 0.0445,
+    "mean_odds": 2.513,
+    "clv": 0.0406,
+    "clv_n": 4
+   }
+  },
+  "standard|La Liga 2": {
+   "ALL": {
+    "bets": 70,
+    "hit": 0.3714,
+    "roi": -0.0004,
+    "ci95": [
+     -0.3104,
+     0.3096
+    ],
+    "p_one_sided": 0.4868,
+    "mean_odds": 2.709,
+    "clv": -0.0031,
+    "clv_n": 70
+   },
+   "T1_BEST_VALUE": {
+    "bets": 42,
+    "hit": 0.4524,
+    "roi": 0.2367,
+    "ci95": [
+     -0.1874,
+     0.6587
+    ],
+    "p_one_sided": 0.1394,
+    "mean_odds": 2.723,
+    "clv": 0.0001,
+    "clv_n": 42
+   },
+   "T2_SAFEST": {
+    "bets": 24,
+    "hit": 0.2917,
+    "roi": -0.2487,
+    "ci95": [
+     -0.7292,
+     0.2317
+    ],
+    "p_one_sided": 0.8521,
+    "mean_odds": 2.671,
+    "clv": 0.0019,
+    "clv_n": 24
+   },
+   "T3_RISKY_VALUE": {
+    "bets": 4,
+    "hit": 0.0,
+    "roi": -1.0,
+    "ci95": [
+     -1.0,
+     -1.0
+    ],
+    "p_one_sided": 1.0,
+    "mean_odds": 2.795,
+    "clv": -0.0677,
+    "clv_n": 4
+   }
+  },
+  "standard|Ligue 2": {
+   "ALL": {
+    "bets": 3,
+    "hit": 0.3333,
+    "roi": -0.5133,
+    "ci95": [
+     -1.4672,
+     0.46
+    ],
+    "p_one_sided": 0.9685,
+    "mean_odds": 1.497,
+    "clv": -0.0493,
+    "clv_n": 3
+   },
+   "T1_BEST_VALUE": {
+    "bets": 3,
+    "hit": 0.3333,
+    "roi": -0.5133,
+    "ci95": [
+     -1.4672,
+     0.46
+    ],
+    "p_one_sided": 0.9685,
+    "mean_odds": 1.497,
+    "clv": -0.0493,
+    "clv_n": 3
+   },
+   "T2_SAFEST": {
+    "bets": 0
+   },
+   "T3_RISKY_VALUE": {
+    "bets": 0
+   }
+  },
+  "standard|Serie B": {
+   "ALL": {
+    "bets": 203,
+    "hit": 0.6059,
+    "roi": 0.1436,
+    "ci95": [
+     0.0066,
+     0.2801
+    ],
+    "p_one_sided": 0.02,
+    "mean_odds": 1.967,
+    "clv": 0.0096,
+    "clv_n": 203
+   },
+   "T1_BEST_VALUE": {
+    "bets": 74,
+    "hit": 0.5135,
+    "roi": 0.0712,
+    "ci95": [
+     -0.1689,
+     0.3113
+    ],
+    "p_one_sided": 0.2864,
+    "mean_odds": 2.085,
+    "clv": 0.0034,
+    "clv_n": 74
+   },
+   "T2_SAFEST": {
+    "bets": 70,
+    "hit": 0.7857,
+    "roi": 0.2729,
+    "ci95": [
+     0.0953,
+     0.4404
+    ],
+    "p_one_sided": 0.001,
+    "mean_odds": 1.657,
+    "clv": 0.0046,
+    "clv_n": 70
+   },
+   "T3_RISKY_VALUE": {
+    "bets": 59,
+    "hit": 0.5085,
+    "roi": 0.081,
+    "ci95": [
+     -0.2063,
+     0.3599
+    ],
+    "p_one_sided": 0.2659,
+    "mean_odds": 2.186,
+    "clv": 0.0233,
+    "clv_n": 59
+   }
+  }
+ }
+}
