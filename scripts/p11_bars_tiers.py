@@ -34,14 +34,18 @@ from src.bars_opt import serve as BS  # noqa: E402
 from src.bars_opt import study as S  # noqa: E402
 from src.research import top3_ranking as R  # noqa: E402
 
-PROTOCOL = ROOT / "config" / "p11_bars_tiers_protocol.json"
-OUT = ROOT / "output" / "research" / "p11_bars_tiers"
+PROTOCOL = ROOT / "config" / "p11_bars_tiers_protocol_v2.json"
+OUT = ROOT / "output" / "research" / "p11_bars_tiers_v2"
 TIER_CONFIG = ROOT / "config" / "top3_tiers_p11.json"
-NAMESPACE = "bars_p11"
+NAMESPACE = "bars_p11v2"
 MONTH = "2026-11"
-TAG = "p11"
+TAG = "p11v2"
 BET_TIERS = ["BT", "BTU", "OUU"]
 CLOSE_TIERS = ["B1"]
+#: protocol v2 (owner 2026-11-18 "O1 APPROVED"): BTTS bet price falls back to these books, in order, when neither
+#: Bet365 nor Pinnacle quotes it (bet-time BET-role snapshots only)
+BTTS_FALLBACK_BOOKS = ("williamhill", "onexbet", "ladbrokes_uk")
+P.BOOK_FALLBACK_BY_MARKET["btts"] = BTTS_FALLBACK_BOOKS
 FIT_END = S.SELECT_END                      # 2026-09-01 (fit = date < FIT_END)
 VAL_START, VAL_END = S.FINAL_START, S.FINAL_END
 SERVING_LAM_BEFORE = pd.Timestamp("2026-11-09")
@@ -509,9 +513,9 @@ def cmd_propose(a) -> int:
     counts = dict(Counter(r["status"] for r in table))
     prop_dir = TP.PROPOSAL_DIR / NAMESPACE
     prop_dir.mkdir(parents=True, exist_ok=True)
-    meta = {"protocol": "p11-bars-tiers-clean/1", "protocol_sha256_lf": sha_lf(PROTOCOL),
+    meta = {"protocol": json.loads(PROTOCOL.read_text(encoding="utf-8"))["protocol"], "protocol_sha256_lf": sha_lf(PROTOCOL),
             "predictions": "champion_recipe holdout harness, code 694995f90, frame 9ed237ebc04aee09",
-            "price_tiers": {"bet": BET_TIERS + ["own (backfill stripped)", "FD pre-match certified join"],
+            "price_tiers": {"bet": BET_TIERS + ["own (backfill stripped)", "FD pre-match certified join"], "btts_fallback_books": list(BTTS_FALLBACK_BOOKS),
                             "close": CLOSE_TIERS},
             "validation_window": [str(VAL_START.date()), str(VAL_END.date())]}
     ev = prop_dir / f"evidence_{key_m}.json"
@@ -550,7 +554,7 @@ def cmd_propose(a) -> int:
                               "gate_basis": "NO_FIT_POOL (cell switched on by the serving refit only): CAL, unvalidated",
                               "t3_basis": "NO_FIT_POOL: REL, unvalidated"}
     leagues = dict(sorted(leagues.items()))
-    cfg = {"protocol": "p11-bars-tiers-clean/1", "status": "PROPOSAL - AWAITING OWNER (2026-11-20); install with the go-live",
+    cfg = {"protocol": json.loads(PROTOCOL.read_text(encoding="utf-8"))["protocol"], "status": "PROPOSAL - AWAITING OWNER (2026-11-20); install with the go-live",
            "bars_proposal_id": p["proposal_id"], "bars_proposal_hash": p["proposal_hash"],
            "tiers": {"T1_BEST_VALUE": "highest cal_ev", "T2_SAFEST": "highest p_cal of the rest",
                      "T3_RISKY_VALUE": "of the rest, odds >= t3_floor, highest ev_lo (REL: the rest's longest odds)"},

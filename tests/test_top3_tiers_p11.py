@@ -76,3 +76,27 @@ def test_no_tier_config_keeps_the_v6_r2_top3():
     rows = [_cand(1, "OU25", "OVER", ev_lb=0.30), _cand(2, "BTTS", "YES", ev_lb=0.01)]
     picks, _ = _freeze(_frame(rows), _ctx(), stats=_stats({"btts_yes": 1.0, "over25_over": 0.2}))
     assert set(picks["slot"]) == {"TOP"}
+
+
+def test_btts_book_fallback_only_when_set_and_only_after_bet365_pinnacle(monkeypatch):
+    """P11 v2 (owner 2026-11-18 O1): BTTS falls back to William Hill (then 1xBet / Ladbrokes) only when neither
+    Bet365 nor Pinnacle has a pair; other markets and the default stay Bet365 / Pinnacle only."""
+    from src.bars_opt import oddsapi_prices as P
+    ko = pd.Timestamp("2026-10-04T15:00:00Z")
+    ts = ko - pd.Timedelta(hours=125)
+    rows = [{"fixture_id": "f1", "market": "btts", "league": "L", "event_id": "e1", "bookmaker": "williamhill",
+             "ts": ts, "ko": ko, "yes": 1.8, "no": 2.0},
+            {"fixture_id": "f2", "market": "btts", "league": "L", "event_id": "e2", "bookmaker": "williamhill",
+             "ts": ts, "ko": ko, "yes": 1.8, "no": 2.0},
+            {"fixture_id": "f2", "market": "btts", "league": "L", "event_id": "e2", "bookmaker": "pinnacle",
+             "ts": ts, "ko": ko, "yes": 1.9, "no": 1.95},
+            {"fixture_id": "f3", "market": "over15", "league": "L", "event_id": "e3", "bookmaker": "williamhill",
+             "ts": ts, "ko": ko, "yes": 1.3, "no": 3.4}]
+    pairs = pd.DataFrame(rows)
+    dates = pd.Series({"f1": "2026-10-04", "f2": "2026-10-04", "f3": "2026-10-04"})
+    monkeypatch.setattr(P, "BOOK_FALLBACK_BY_MARKET", {})
+    got = P.pick_pairs(pairs, dates, bet_role=True)
+    assert set(got["fixture_id"]) == {"f2"} and set(got["bookmaker"]) == {"pinnacle"}
+    monkeypatch.setattr(P, "BOOK_FALLBACK_BY_MARKET", {"btts": ("williamhill", "onexbet", "ladbrokes_uk")})
+    got = P.pick_pairs(pairs, dates, bet_role=True).set_index("fixture_id")["bookmaker"].to_dict()
+    assert got == {"f1": "williamhill", "f2": "pinnacle"}           # f3 (O1.5, William Hill only): no price

@@ -43,6 +43,9 @@ ROOT = Path(__file__).resolve().parents[2]
 
 #: the study's own same-book order (src.league_bars.fd_ou25_pairs: Bet365, else Pinnacle), as OddsAPI keys
 BOOK_ORDER = ("bet365", "pinnacle")
+#: per-market extension of BOOK_ORDER (books tried AFTER Bet365 / Pinnacle). Empty by default; set only by a protocol
+#: that names it (P11 v2, owner 2026-11-18 "O1 APPROVED": BTTS falls back to William Hill, then 1xBet / Ladbrokes)
+BOOK_FALLBACK_BY_MARKET: dict = {}
 #: the exact provider line of each universe market (None = no line: BTTS)
 LINE_OF = {"over15": 1.5, "over25": 2.5, "over35": 3.5, "btts": None}
 SRC_OWN, SRC_HIST = "own", "oddsapi_hist"
@@ -147,10 +150,12 @@ def pick_pairs(pairs: pd.DataFrame, fixture_dates: pd.Series, stats: dict | None
     pre = p["ts"] < p["ko"]
     lower = pd.Series(True, index=p.index) if bet_role else (p["ts"] >= p["day0"] - pd.Timedelta(days=1))
     p = p[pre & p["day0"].notna() & lower]
-    p = p[p["bookmaker"].isin(BOOK_ORDER)]
+    orders = {m: tuple(BOOK_ORDER) + tuple(BOOK_FALLBACK_BY_MARKET.get(m, ())) for m in p["market"].unique()}
+    rank = [({b: i for i, b in enumerate(orders[m])}).get(b) for m, b in zip(p["market"], p["bookmaker"])]
+    p = p.assign(rank=rank)
+    p = p[p["rank"].notna()]
     if p.empty:
         return pd.DataFrame(columns=out_cols)
-    p["rank"] = p["bookmaker"].map({b: i for i, b in enumerate(BOOK_ORDER)})
     best = p.groupby(["fixture_id", "market"])["rank"].transform("min")
     p = p[p["rank"] == best].sort_values("ts")
     g = p.groupby(["fixture_id", "market"], as_index=False)
