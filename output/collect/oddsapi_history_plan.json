@@ -272,6 +272,301 @@
     "2026": 150362
    }
   },
+  "BTU": {
+   "kind": "event",
+   "markets": [
+    "btts"
+   ],
+   "regions": [
+    "uk"
+   ],
+   "snapshots": {
+    "new_format": [
+     "bet -153h"
+    ],
+    "standard": [
+     "bet -125h"
+    ]
+   },
+   "window": [
+    "2023-05-03",
+    "2026-11-09"
+   ],
+   "gate": null,
+   "purpose": "BET-TIME btts from the uk books (BT's eu region priced no BTTS in some leagues)",
+   "league_days": 9373,
+   "matches": 31027,
+   "odds_calls": 31027,
+   "lookup_calls": 0,
+   "calls": 31027,
+   "max_credits": 310270,
+   "max_credits_odds": 310270,
+   "max_credits_lookups": 0,
+   "conditional_saudi_credits": 10030,
+   "cumulative_max_credits": 2813486,
+   "fits_in_usable": true,
+   "hours_at_sec_per_call": {
+    "0.5": 4.3,
+    "1.0": 8.6
+   },
+   "max_credits_by_league": {
+    "Argentina Primera Division": 15560,
+    "Austrian Bundesliga": 6810,
+    "Belgian First Division A": 10250,
+    "Brazil Serie A": 14480,
+    "Bundesliga 2": 10490,
+    "Championship": 18500,
+    "China Super League": 9200,
+    "Denmark Superliga": 6870,
+    "Dutch Eredivisie": 10530,
+    "Finland Veikkausliiga": 6690,
+    "Greek Super League": 7900,
+    "Ireland Premier Division": 6580,
+    "Japan J-League": 12550,
+    "K-League 1": 7890,
+    "La Liga 2": 15780,
+    "League One": 18410,
+    "League Two": 18460,
+    "Ligue 2": 11400,
+    "Mexico Liga MX": 11680,
+    "Norway Eliteserien": 8940,
+    "Portuguese Primeira Liga": 10440,
+    "Saudi Pro League": 10030,
+    "Scottish Premiership": 7830,
+    "Serie B": 12980,
+    "Sweden Allsvenskan": 9020,
+    "Turkish Super Lig": 11600,
+    "USA MLS": 19400
+   },
+   "max_credits_by_year": {
+    "2023": 56830,
+    "2024": 88360,
+    "2025": 89950,
+    "2026": 75130
+   }
+  },
+  "HTB": {
+   "kind": "event",
+   "markets": [
+    "totals_h1",
+    "alternate_totals_h1"
+   ],
+   "regions": [
+    "eu",
+    "uk"
+   ],
+   "snapshots": {
+    "new_format": [
+     "bet -153h"
+    ],
+    "standard": [
+     "bet -125h"
+    ]
+   },
+   "window": [
+    "2023-05-03",
+    "2026-11-09"
+   ],
+   "gate": "ht_probe",
+   "purpose": "BET-TIME first-half over/under; only the markets and regions the HT probe saw returned",
+   "league_days": 9373,
+   "matches": 31027,
+   "odds_calls": 31027,
+   "lookup_calls": 0,
+   "calls": 31027,
+   "max_credits": 1241080,
+   "max_credits_odds": 1241080,
+   "max_credits_lookups": 0,
+   "conditional_saudi_credits": 40120,
+   "cumulative_max_credits": 4054566,
+   "fits_in_usable": true,
+   "hours_at_sec_per_call": {
+    "0.5": 4.3,
+    "1.0": 8.6
+   },
+   "max_credits_by_league": {
+    "Argentina Primera Division": 62240,
+    "Austrian Bundesliga": 27240,
+    "Belgian First Division A": 41000,
+    "Brazil Serie A": 57920,
+    "Bundesliga 2": 41960,
+    "Championship": 74000,
+    "China Super League": 36800,
+    "Denmark Superliga": 27480,
+    "Dutch Eredivisie": 42120,
+    "Finland Veikkausliiga": 26760,
+    "Greek Super League": 31600,
+    "Ireland Premier Division": 26320,
+    "Japan J-League": 50200,
+    "K-League 1": 31560,
+    "La Liga 2": 63120,
+    "League One": 73640,
+    "League Two": 73840,
+    "Ligue 2": 45600,
+    "Mexico Liga MX": 46720,
+    "Norway Eliteserien": 35760,
+    "Portuguese Primeira Liga": 41760,
+    "Saudi Pro League": 40120,
+    "Scottish Premiership": 31320,
+    "Serie B": 51920,
+    "Sweden Allsvenskan": 36080,
+    "Turkish Super Lig": 46400,
+    "USA MLS": 77600
+   },
+   "max_credits_by_year": {
+    "2023": 227320,
+    "2024": 353440,
+    "2025": 359800,
+    "2026": 300520
+   }
+  },
+  "OUU": {
+   "kind": "event",
+   "markets": [
+    "alternate_totals"
+   ],
+   "regions": [
+    "uk"
+   ],
+   "snapshots": {
+    "new_format": [
+     "bet -153h"
+    ],
+    "standard": [
+     "bet -125h"
+    ]
+   },
+   "window": [
+    "2023-05-03",
+    "2026-11-09"
+   ],
+   "gate": null,
+   "purpose": "BET-TIME every total line from the uk books (more books: consensus, best price)",
+   "league_days": 9373,
+   "matches": 31027,
+   "odds_calls": 31027,
+   "lookup_calls": 0,
+   "calls": 31027,
+   "max_credits": 310270,
+   "max_credits_odds": 310270,
+   "max_credits_lookups": 0,
+   "conditional_saudi_credits": 10030,
+   "cumulative_max_credits": 4364836,
+   "fits_in_usable": true,
+   "hours_at_sec_per_call": {
+    "0.5": 4.3,
+    "1.0": 8.6
+   },
+   "max_credits_by_league": {
+    "Argentina Primera Division": 15560,
+    "Austrian Bundesliga": 6810,
+    "Belgian First Division A": 10250,
+    "Brazil Serie A": 14480,
+    "Bundesliga 2": 10490,
+    "Championship": 18500,
+    "China Super League": 9200,
+    "Denmark Superliga": 6870,
+    "Dutch Eredivisie": 10530,
+    "Finland Veikkausliiga": 6690,
+    "Greek Super League": 7900,
+    "Ireland Premier Division": 6580,
+    "Japan J-League": 12550,
+    "K-League 1": 7890,
+    "La Liga 2": 15780,
+    "League One": 18410,
+    "League Two": 18460,
+    "Ligue 2": 11400,
+    "Mexico Liga MX": 11680,
+    "Norway Eliteserien": 8940,
+    "Portuguese Primeira Liga": 10440,
+    "Saudi Pro League": 10030,
+    "Scottish Premiership": 7830,
+    "Serie B": 12980,
+    "Sweden Allsvenskan": 9020,
+    "Turkish Super Lig": 11600,
+    "USA MLS": 19400
+   },
+   "max_credits_by_year": {
+    "2023": 56830,
+    "2024": 88360,
+    "2025": 89950,
+    "2026": 75130
+   }
+  },
+  "TT": {
+   "kind": "event",
+   "markets": [
+    "alternate_team_totals"
+   ],
+   "regions": [
+    "eu",
+    "uk"
+   ],
+   "snapshots": {
+    "new_format": [
+     "bet -153h"
+    ],
+    "standard": [
+     "bet -125h"
+    ]
+   },
+   "window": [
+    "2023-05-03",
+    "2026-11-09"
+   ],
+   "gate": null,
+   "purpose": "BET-TIME team totals (specials research)",
+   "league_days": 9373,
+   "matches": 31027,
+   "odds_calls": 31027,
+   "lookup_calls": 0,
+   "calls": 31027,
+   "max_credits": 620540,
+   "max_credits_odds": 620540,
+   "max_credits_lookups": 0,
+   "conditional_saudi_credits": 20060,
+   "cumulative_max_credits": 4985376,
+   "fits_in_usable": false,
+   "hours_at_sec_per_call": {
+    "0.5": 4.3,
+    "1.0": 8.6
+   },
+   "max_credits_by_league": {
+    "Argentina Primera Division": 31120,
+    "Austrian Bundesliga": 13620,
+    "Belgian First Division A": 20500,
+    "Brazil Serie A": 28960,
+    "Bundesliga 2": 20980,
+    "Championship": 37000,
+    "China Super League": 18400,
+    "Denmark Superliga": 13740,
+    "Dutch Eredivisie": 21060,
+    "Finland Veikkausliiga": 13380,
+    "Greek Super League": 15800,
+    "Ireland Premier Division": 13160,
+    "Japan J-League": 25100,
+    "K-League 1": 15780,
+    "La Liga 2": 31560,
+    "League One": 36820,
+    "League Two": 36920,
+    "Ligue 2": 22800,
+    "Mexico Liga MX": 23360,
+    "Norway Eliteserien": 17880,
+    "Portuguese Primeira Liga": 20880,
+    "Saudi Pro League": 20060,
+    "Scottish Premiership": 15660,
+    "Serie B": 25960,
+    "Sweden Allsvenskan": 18040,
+    "Turkish Super Lig": 23200,
+    "USA MLS": 38800
+   },
+   "max_credits_by_year": {
+    "2023": 113660,
+    "2024": 176720,
+    "2025": 179900,
+    "2026": 150260
+   }
+  },
   "B3": {
    "kind": "event",
    "markets": [
@@ -301,8 +596,8 @@
    "max_credits_odds": 523760,
    "max_credits_lookups": 741,
    "conditional_saudi_credits": 0,
-   "cumulative_max_credits": 3027717,
-   "fits_in_usable": true,
+   "cumulative_max_credits": 5509877,
+   "fits_in_usable": false,
    "hours_at_sec_per_call": {
     "0.5": 0.7,
     "1.0": 1.4
@@ -346,8 +641,8 @@
    "max_credits_odds": 0,
    "max_credits_lookups": 0,
    "conditional_saudi_credits": 0,
-   "cumulative_max_credits": 3027717,
-   "fits_in_usable": true,
+   "cumulative_max_credits": 5509877,
+   "fits_in_usable": false,
    "hours_at_sec_per_call": {
     "0.5": 0.0,
     "1.0": 0.0
@@ -382,8 +677,8 @@
    "max_credits_odds": 599660,
    "max_credits_lookups": 0,
    "conditional_saudi_credits": 20060,
-   "cumulative_max_credits": 3627377,
-   "fits_in_usable": true,
+   "cumulative_max_credits": 6109537,
+   "fits_in_usable": false,
    "hours_at_sec_per_call": {
     "0.5": 4.2,
     "1.0": 8.3
@@ -451,8 +746,8 @@
    "max_credits_odds": 276990,
    "max_credits_lookups": 3596,
    "conditional_saudi_credits": 8530,
-   "cumulative_max_credits": 3907963,
-   "fits_in_usable": true,
+   "cumulative_max_credits": 6390123,
+   "fits_in_usable": false,
    "hours_at_sec_per_call": {
     "0.5": 2.7,
     "1.0": 5.4
@@ -521,8 +816,8 @@
    "max_credits_odds": 523760,
    "max_credits_lookups": 0,
    "conditional_saudi_credits": 0,
-   "cumulative_max_credits": 4431723,
-   "fits_in_usable": true,
+   "cumulative_max_credits": 6913883,
+   "fits_in_usable": false,
    "hours_at_sec_per_call": {
     "0.5": 0.6,
     "1.0": 1.2
@@ -566,7 +861,7 @@
    "max_credits_odds": 599660,
    "max_credits_lookups": 0,
    "conditional_saudi_credits": 20060,
-   "cumulative_max_credits": 5031383,
+   "cumulative_max_credits": 7513543,
    "fits_in_usable": false,
    "hours_at_sec_per_call": {
     "0.5": 4.2,
@@ -641,7 +936,7 @@
    "max_credits_odds": 951960,
    "max_credits_lookups": 0,
    "conditional_saudi_credits": 33600,
-   "cumulative_max_credits": 5983343,
+   "cumulative_max_credits": 8465503,
    "fits_in_usable": false,
    "hours_at_sec_per_call": {
     "0.5": 6.6,
@@ -688,6 +983,10 @@
   "B2",
   "B4",
   "BT",
+  "BTU",
+  "HTB",
+  "OUU",
+  "TT",
   "B3",
   "S",
   "C1",
@@ -700,11 +999,12 @@
  "plan_credits": 5000000,
  "floor": 260000,
  "history_end": "2026-11-09",
- "total_max_credits": 5983343,
- "total_calls": 276262,
- "planned_at": "2026-11-15T08:18:40Z",
- "plan_digest": "9d694341a4da82cd",
+ "total_max_credits": 8465503,
+ "total_calls": 400370,
+ "planned_at": "2026-11-15T11:08:49Z",
+ "plan_digest": "1d2c27cfa98ca211",
  "s_probe": "applied",
+ "ht_probe": "not run: HTB counted for every HT market and region (maximum)",
  "props_markets_from_probe": {
   "Ligue 1": [
    "player_goal_scorer_anytime",
