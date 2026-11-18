@@ -1,8 +1,8 @@
 {
  "about": "Approved production-facing fingerprint for src/research_lock.py. Re-approve ONLY for a deliberate, owner-approved production change. Do not hand-edit.",
- "approval_note": "2026-11-18 go-live pulled forward: refit_1118b models; bade2c0b bars; TOP-3 0.5% flat manual; every other cell and track at 0. Signed by the Claude session on the owner's explicit instruction in chat (2026-11-18).",
- "approved_at": "2026-11-18T18:59:34Z",
- "approved_by": "Nevo (owner)",
+ "approval_note": "threshold_apply TP-2026-11-18-1ddfc9f1 (67 entries: ou25|Austrian Bundesliga, ou25|Belgian First Division A, ou25|Bundesliga 2, ou25|Championship, ou25|China Super League, ou25|Greek Super League, ou25|Japan J-League, ou25|K-League 1, ou25|La Liga 2, ou25|League One, ou25|League Two, ou25|Ligue 2, ou25|Saudi Pro League, ou25|Serie B, btts|Argentina Primera Division, btts|Austrian Bundesliga, btts|Belgian First Division A, btts|Brazil Serie A, btts|Bundesliga 2, btts|Championship, btts|China Super League, btts|Denmark Superliga, btts|Finland Veikkausliiga, btts|Greek Super League, btts|Ireland Premier Division, btts|Japan J-League, btts|K-League 1, btts|La Liga 2, btts|League One, btts|League Two, btts|Ligue 2, btts|Mexico Liga MX, btts|Norway Eliteserien, btts|Portuguese Primeira Liga, btts|Saudi Pro League, btts|Scottish Premiership, btts|Serie B, btts|Turkish Super Lig, over15|Argentina Primera Division, over15|Brazil Serie A, over15|Bundesliga 2, over15|Championship, over15|Finland Veikkausliiga, over15|Greek Super League, over15|Ireland Premier Division, over15|Japan J-League, over15|K-League 1, over15|La Liga 2, over15|League One, over15|League Two, over15|Ligue 2, over15|Norway Eliteserien, over15|Serie B, over15|Sweden Allsvenskan, over15|USA MLS, over35|Bundesliga 2, over35|Championship, over35|China Super League, over35|Denmark Superliga, over35|Finland Veikkausliiga, over35|La Liga 2, over35|League One, over35|League Two, over35|Ligue 2, over35|Norway Eliteserien, over35|Romanian Superliga, over35|Serie B); approved_at 2026-11-18T20:18:00Z",
+ "approved_at": "2026-11-18T20:18:04Z",
+ "approved_by": "owner (Nevo)",
  "fingerprint": {
   "global": {
    "bankroll_policy": {
@@ -323,16 +323,16 @@
     "base_fraction": 0.0,
     "evidence_score": 3.0,
     "gates": {
-     "approved_optimizer_applied": false,
+     "approved_optimizer_applied": true,
      "edge_ceiling": null,
      "edge_ceiling_active": false,
      "league_cap_applied": false,
-     "marksman": null,
-     "marksman_source": "NO_LEAGUE_BAR: no btts params entry for Argentina Primera Division",
-     "sniper": null,
-     "sniper_source": "NO_LEAGUE_BAR: no btts params entry for Argentina Primera Division",
-     "valuable": null,
-     "valuable_source": "NO_LEAGUE_BAR: no btts params entry for Argentina Primera Division"
+     "marksman": 0.19,
+     "marksman_source": "best_params_side_markets[btts][Argentina Primera Division] (owner-applied, threshold_apply)",
+     "sniper": 0.28,
+     "sniper_source": "best_params_side_markets[btts][Argentina Primera Division] (owner-applied, threshold_apply)",
+     "valuable": 0.11,
+     "valuable_source": "best_params_side_markets[btts][Argentina Primera Division] (owner-applied, threshold_apply)"
     },
     "max_odds": 2.6,
     "min_odds": null,
@@ -346,5 +346,5 @@
    }
   }
  },
- "fingerprint_sha256": "0846b435ff16eb666719b6e4d47d32dd1b7ea718291ba651389c7e0e131f0e7c"
+ "fingerprint_sha256": "3416ad0e5e8ae71db66cb14e70323226265a9b2377b2cd4eb998fde1a9c4cf58"
 }

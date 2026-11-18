@@ -30,8 +30,8 @@
   },
   "research_lock_snapshot": {
    "path": "config/research_lock_snapshot.json",
-   "approved_at": "2026-11-18T18:59:34Z",
-   "approved_by": "Nevo (owner)"
+   "approved_at": "2026-11-18T20:18:04Z",
+   "approved_by": "owner (Nevo)"
   }
  },
  "global": {
@@ -77,16 +77,16 @@
     "track_max_odds": 2.6
    },
    "gates": {
-    "approved_optimizer_applied": false,
+    "approved_optimizer_applied": true,
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: no btts params entry for Argentina Primera Division",
-    "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: no btts params entry for Argentina Primera Division",
-    "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: no btts params entry for Argentina Primera Division"
+    "marksman": 0.19,
+    "marksman_source": "best_params_side_markets[btts][Argentina Primera Division] (owner-applied, threshold_apply)",
+    "sniper": 0.28,
+    "sniper_source": "best_params_side_markets[btts][Argentina Primera Division] (owner-applied, threshold_apply)",
+    "valuable": 0.11,
+    "valuable_source": "best_params_side_markets[btts][Argentina Primera Division] (owner-applied, threshold_apply)"
    },
    "prediction_engine": {
     "model_slot": "btts",
@@ -115,7 +115,7 @@
    "last_reviewed": {
     "research_regime": "2026-10-25",
     "bankroll_policy": "2026-10-13",
-    "owner_lock_approved_at": "2026-11-18T18:59:34Z"
+    "owner_lock_approved_at": "2026-11-18T20:18:04Z"
    }
   },
   {
@@ -273,16 +273,16 @@
     "track_max_odds": null
    },
    "gates": {
-    "approved_optimizer_applied": false,
+    "approved_optimizer_applied": true,
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: no over15 params entry for Argentina Primera Division",
-    "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: no over15 params entry for Argentina Primera Division",
-    "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: no over15 params entry for Argentina Primera Division"
+    "marksman": 0.09,
+    "marksman_source": "best_params_side_markets[over15][Argentina Primera Division] (owner-applied, threshold_apply)",
+    "sniper": 0.18,
+    "sniper_source": "best_params_side_markets[over15][Argentina Primera Division] (owner-applied, threshold_apply)",
+    "valuable": 0.05,
+    "valuable_source": "best_params_side_markets[over15][Argentina Primera Division] (owner-applied, threshold_apply)"
    },
    "prediction_engine": {
     "model_slot": "over15",
@@ -401,16 +401,16 @@
     "track_max_odds": null
    },
    "gates": {
-    "approved_optimizer_applied": false,
+    "approved_optimizer_applied": true,
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: no btts params entry for Austrian Bundesliga",
-    "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: no btts params entry for Austrian Bundesliga",
-    "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: no btts params entry for Austrian Bundesliga"
+    "marksman": 0.02,
+    "marksman_source": "best_params_side_markets[btts][Austrian Bundesliga] (owner-applied, threshold_apply)",
+    "sniper": 0.02,
+    "sniper_source": "best_params_side_markets[btts][Austrian Bundesliga] (owner-applied, threshold_apply)",
+    "valuable": 0.02,
+    "valuable_source": "best_params_side_markets[btts][Austrian Bundesliga] (owner-applied, threshold_apply)"
    },
    "prediction_engine": {
     "model_slot": "btts",
@@ -467,16 +467,16 @@
     "nf_max_ou_odds": 3.0
    },
    "gates": {
-    "approved_optimizer_applied": false,
+    "approved_optimizer_applied": true,
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for Austrian Bundesliga",
-    "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for Austrian Bundesliga",
-    "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: no ou25 params entry for Austrian Bundesliga"
+    "marksman": 0.02,
+    "marksman_source": "best_params_standard[Austrian Bundesliga] (owner-applied, threshold_apply)",
+    "sniper": 0.02,
+    "sniper_source": "best_params_standard[Austrian Bundesliga] (owner-applied, threshold_apply)",
+    "valuable": 0.02,
+    "valuable_source": "best_params_standard[Austrian Bundesliga] (owner-applied, threshold_apply)"
    },
    "prediction_engine": {
     "model_slot": "newformat",
@@ -533,16 +533,16 @@
     "nf_max_ou_odds": 3.0
    },
    "gates": {
-    "approved_optimizer_applied": false,
+    "approved_optimizer_applied": true,
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for Austrian Bundesliga",
-    "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for Austrian Bundesliga",
-    "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: no ou25 params entry for Austrian Bundesliga"
+    "marksman": 0.02,
+    "marksman_source": "best_params_standard[Austrian Bundesliga] (owner-applied, threshold_apply)",
+    "sniper": 0.02,
+    "sniper_source": "best_params_standard[Austrian Bundesliga] (owner-applied, threshold_apply)",
+    "valuable": 0.02,
+    "valuable_source": "best_params_standard[Austrian Bundesliga] (owner-applied, threshold_apply)"
    },
    "prediction_engine": {
     "model_slot": "newformat",
@@ -725,16 +725,16 @@
     "track_max_odds": null
    },
    "gates": {
-    "approved_optimizer_applied": false,
+    "approved_optimizer_applied": true,
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: no btts params entry for Brazil Serie A",
-    "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: no btts params entry for Brazil Serie A",
-    "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: no btts params entry for Brazil Serie A"
+    "marksman": 0.08,
+    "marksman_source": "best_params_side_markets[btts][Brazil Serie A] (owner-applied, threshold_apply)",
+    "sniper": 0.19,
+    "sniper_source": "best_params_side_markets[btts][Brazil Serie A] (owner-applied, threshold_apply)",
+    "valuable": 0.02,
+    "valuable_source": "best_params_side_markets[btts][Brazil Serie A] (owner-applied, threshold_apply)"
    },
    "prediction_engine": {
     "model_slot": "btts",
@@ -921,16 +921,16 @@
     "track_max_odds": null
    },
    "gates": {
-    "approved_optimizer_applied": false,
+    "approved_optimizer_applied": true,
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: no over15 params entry for Brazil Serie A",
-    "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: no over15 params entry for Brazil Serie A",
-    "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: no over15 params entry for Brazil Serie A"
+    "marksman": 0.02,
+    "marksman_source": "best_params_side_markets[over15][Brazil Serie A] (owner-applied, threshold_apply)",
+    "sniper": 0.3,
+    "sniper_source": "best_params_side_markets[over15][Brazil Serie A] (owner-applied, threshold_apply)",
+    "valuable": 0.02,
+    "valuable_source": "best_params_side_markets[over15][Brazil Serie A] (owner-applied, threshold_apply)"
    },
    "prediction_engine": {
     "model_slot": "over15",
@@ -1054,11 +1054,11 @@
     "edge_ceiling_active": false,
     "league_cap_applied": false,
     "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: btts Bundesliga 2 lacks valuable_th",
+    "marksman_source": "NO_LEAGUE_BAR: no btts params entry for Bundesliga 2",
     "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: btts Bundesliga 2 lacks valuable_th",
+    "sniper_source": "NO_LEAGUE_BAR: no btts params entry for Bundesliga 2",
     "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: btts Bundesliga 2 lacks valuable_th"
+    "valuable_source": "NO_LEAGUE_BAR: no btts params entry for Bundesliga 2"
    },
    "prediction_engine": {
     "model_slot": "btts",
@@ -1119,11 +1119,11 @@
     "edge_ceiling_active": false,
     "league_cap_applied": false,
     "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: ou25 Bundesliga 2 lacks valuable_th",
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for Bundesliga 2",
     "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: ou25 Bundesliga 2 lacks valuable_th",
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for Bundesliga 2",
     "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: ou25 Bundesliga 2 lacks valuable_th"
+    "valuable_source": "NO_LEAGUE_BAR: no ou25 params entry for Bundesliga 2"
    },
    "prediction_engine": {
     "model_slot": "standard",
@@ -1184,11 +1184,11 @@
     "edge_ceiling_active": false,
     "league_cap_applied": false,
     "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: ou25 Bundesliga 2 lacks valuable_th",
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for Bundesliga 2",
     "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: ou25 Bundesliga 2 lacks valuable_th",
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for Bundesliga 2",
     "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: ou25 Bundesliga 2 lacks valuable_th"
+    "valuable_source": "NO_LEAGUE_BAR: no ou25 params entry for Bundesliga 2"
    },
    "prediction_engine": {
     "model_slot": "standard",
@@ -1248,11 +1248,11 @@
     "edge_ceiling_active": false,
     "league_cap_applied": false,
     "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: over15 switched OFF for Bundesliga 2 (drop)",
+    "marksman_source": "NO_LEAGUE_BAR: no over15 params entry for Bundesliga 2",
     "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: over15 switched OFF for Bundesliga 2 (drop)",
+    "sniper_source": "NO_LEAGUE_BAR: no over15 params entry for Bundesliga 2",
     "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: over15 switched OFF for Bundesliga 2 (drop)"
+    "valuable_source": "NO_LEAGUE_BAR: no over15 params entry for Bundesliga 2"
    },
    "prediction_engine": {
     "model_slot": "over15",
@@ -1312,11 +1312,11 @@
     "edge_ceiling_active": false,
     "league_cap_applied": false,
     "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: over35 switched OFF for Bundesliga 2 (drop)",
+    "marksman_source": "NO_LEAGUE_BAR: no over35 params entry for Bundesliga 2",
     "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: over35 switched OFF for Bundesliga 2 (drop)",
+    "sniper_source": "NO_LEAGUE_BAR: no over35 params entry for Bundesliga 2",
     "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: over35 switched OFF for Bundesliga 2 (drop)"
+    "valuable_source": "NO_LEAGUE_BAR: no over35 params entry for Bundesliga 2"
    },
    "prediction_engine": {
     "model_slot": "over35",
@@ -1376,11 +1376,11 @@
     "edge_ceiling_active": false,
     "league_cap_applied": false,
     "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: btts Championship lacks valuable_th",
+    "marksman_source": "NO_LEAGUE_BAR: no btts params entry for Championship",
     "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: btts Championship lacks valuable_th",
+    "sniper_source": "NO_LEAGUE_BAR: no btts params entry for Championship",
     "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: btts Championship lacks valuable_th"
+    "valuable_source": "NO_LEAGUE_BAR: no btts params entry for Championship"
    },
    "prediction_engine": {
     "model_slot": "btts",
@@ -1441,11 +1441,11 @@
     "edge_ceiling_active": false,
     "league_cap_applied": false,
     "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: ou25 Championship lacks valuable_th",
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for Championship",
     "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: ou25 Championship lacks valuable_th",
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for Championship",
     "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: ou25 Championship lacks valuable_th"
+    "valuable_source": "NO_LEAGUE_BAR: no ou25 params entry for Championship"
    },
    "prediction_engine": {
     "model_slot": "standard",
@@ -1506,11 +1506,11 @@
     "edge_ceiling_active": false,
     "league_cap_applied": false,
     "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: ou25 Championship lacks valuable_th",
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for Championship",
     "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: ou25 Championship lacks valuable_th",
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for Championship",
     "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: ou25 Championship lacks valuable_th"
+    "valuable_source": "NO_LEAGUE_BAR: no ou25 params entry for Championship"
    },
    "prediction_engine": {
     "model_slot": "standard",
@@ -1570,11 +1570,11 @@
     "edge_ceiling_active": false,
     "league_cap_applied": false,
     "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: over15 switched OFF for Championship (drop)",
+    "marksman_source": "NO_LEAGUE_BAR: no over15 params entry for Championship",
     "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: over15 switched OFF for Championship (drop)",
+    "sniper_source": "NO_LEAGUE_BAR: no over15 params entry for Championship",
     "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: over15 switched OFF for Championship (drop)"
+    "valuable_source": "NO_LEAGUE_BAR: no over15 params entry for Championship"
    },
    "prediction_engine": {
     "model_slot": "over15",
@@ -1634,11 +1634,11 @@
     "edge_ceiling_active": false,
     "league_cap_applied": false,
     "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: over35 switched OFF for Championship (drop)",
+    "marksman_source": "NO_LEAGUE_BAR: no over35 params entry for Championship",
     "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: over35 switched OFF for Championship (drop)",
+    "sniper_source": "NO_LEAGUE_BAR: no over35 params entry for Championship",
     "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: over35 switched OFF for Championship (drop)"
+    "valuable_source": "NO_LEAGUE_BAR: no over35 params entry for Championship"
    },
    "prediction_engine": {
     "model_slot": "over35",
@@ -1693,16 +1693,16 @@
     "track_max_odds": null
    },
    "gates": {
-    "approved_optimizer_applied": false,
+    "approved_optimizer_applied": true,
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: no btts params entry for China Super League",
-    "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: no btts params entry for China Super League",
-    "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: no btts params entry for China Super League"
+    "marksman": 0.19,
+    "marksman_source": "best_params_side_markets[btts][China Super League] (owner-applied, threshold_apply)",
+    "sniper": 0.3,
+    "sniper_source": "best_params_side_markets[btts][China Super League] (owner-applied, threshold_apply)",
+    "valuable": 0.11,
+    "valuable_source": "best_params_side_markets[btts][China Super League] (owner-applied, threshold_apply)"
    },
    "prediction_engine": {
     "model_slot": "btts",
@@ -1759,16 +1759,16 @@
     "nf_max_ou_odds": 3.0
    },
    "gates": {
-    "approved_optimizer_applied": false,
+    "approved_optimizer_applied": true,
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for China Super League",
-    "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for China Super League",
-    "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: no ou25 params entry for China Super League"
+    "marksman": 0.02,
+    "marksman_source": "best_params_standard[China Super League] (owner-applied, threshold_apply)",
+    "sniper": 0.03,
+    "sniper_source": "best_params_standard[China Super League] (owner-applied, threshold_apply)",
+    "valuable": 0.02,
+    "valuable_source": "best_params_standard[China Super League] (owner-applied, threshold_apply)"
    },
    "prediction_engine": {
     "model_slot": "newformat",
@@ -1825,16 +1825,16 @@
     "nf_max_ou_odds": 3.0
    },
    "gates": {
-    "approved_optimizer_applied": false,
+    "approved_optimizer_applied": true,
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for China Super League",
-    "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for China Super League",
-    "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: no ou25 params entry for China Super League"
+    "marksman": 0.02,
+    "marksman_source": "best_params_standard[China Super League] (owner-applied, threshold_apply)",
+    "sniper": 0.03,
+    "sniper_source": "best_params_standard[China Super League] (owner-applied, threshold_apply)",
+    "valuable": 0.02,
+    "valuable_source": "best_params_standard[China Super League] (owner-applied, threshold_apply)"
    },
    "prediction_engine": {
     "model_slot": "newformat",
@@ -1953,16 +1953,16 @@
     "track_max_odds": null
    },
    "gates": {
-    "approved_optimizer_applied": false,
+    "approved_optimizer_applied": true,
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: no over35 params entry for China Super League",
-    "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: no over35 params entry for China Super League",
-    "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: no over35 params entry for China Super League"
+    "marksman": 0.03,
+    "marksman_source": "best_params_side_markets[over35][China Super League] (owner-applied, threshold_apply)",
+    "sniper": 0.03,
+    "sniper_source": "best_params_side_markets[over35][China Super League] (owner-applied, threshold_apply)",
+    "valuable": 0.02,
+    "valuable_source": "best_params_side_markets[over35][China Super League] (owner-applied, threshold_apply)"
    },
    "prediction_engine": {
     "model_slot": "over35",
@@ -2017,16 +2017,16 @@
     "track_max_odds": null
    },
    "gates": {
-    "approved_optimizer_applied": false,
+    "approved_optimizer_applied": true,
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: no btts params entry for Denmark Superliga",
-    "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: no btts params entry for Denmark Superliga",
-    "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: no btts params entry for Denmark Superliga"
+    "marksman": 0.02,
+    "marksman_source": "best_params_side_markets[btts][Denmark Superliga] (owner-applied, threshold_apply)",
+    "sniper": 0.3,
+    "sniper_source": "best_params_side_markets[btts][Denmark Superliga] (owner-applied, threshold_apply)",
+    "valuable": 0.02,
+    "valuable_source": "best_params_side_markets[btts][Denmark Superliga] (owner-applied, threshold_apply)"
    },
    "prediction_engine": {
     "model_slot": "btts",
@@ -2277,16 +2277,16 @@
     "track_max_odds": null
    },
    "gates": {
-    "approved_optimizer_applied": false,
+    "approved_optimizer_applied": true,
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: no over35 params entry for Denmark Superliga",
-    "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: no over35 params entry for Denmark Superliga",
-    "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: no over35 params entry for Denmark Superliga"
+    "marksman": 0.03,
+    "marksman_source": "best_params_side_markets[over35][Denmark Superliga] (owner-applied, threshold_apply)",
+    "sniper": 0.03,
+    "sniper_source": "best_params_side_markets[over35][Denmark Superliga] (owner-applied, threshold_apply)",
+    "valuable": 0.02,
+    "valuable_source": "best_params_side_markets[over35][Denmark Superliga] (owner-applied, threshold_apply)"
    },
    "prediction_engine": {
     "model_slot": "over35",
@@ -2341,16 +2341,16 @@
     "track_max_odds": null
    },
    "gates": {
-    "approved_optimizer_applied": false,
+    "approved_optimizer_applied": true,
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: no btts params entry for Finland Veikkausliiga",
-    "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: no btts params entry for Finland Veikkausliiga",
-    "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: no btts params entry for Finland Veikkausliiga"
+    "marksman": 0.02,
+    "marksman_source": "best_params_side_markets[btts][Finland Veikkausliiga] (owner-applied, threshold_apply)",
+    "sniper": 0.02,
+    "sniper_source": "best_params_side_markets[btts][Finland Veikkausliiga] (owner-applied, threshold_apply)",
+    "valuable": 0.02,
+    "valuable_source": "best_params_side_markets[btts][Finland Veikkausliiga] (owner-applied, threshold_apply)"
    },
    "prediction_engine": {
     "model_slot": "btts",
@@ -2537,16 +2537,16 @@
     "track_max_odds": null
    },
    "gates": {
-    "approved_optimizer_applied": false,
+    "approved_optimizer_applied": true,
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: no over15 params entry for Finland Veikkausliiga",
-    "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: no over15 params entry for Finland Veikkausliiga",
-    "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: no over15 params entry for Finland Veikkausliiga"
+    "marksman": 0.17,
+    "marksman_source": "best_params_side_markets[over15][Finland Veikkausliiga] (owner-applied, threshold_apply)",
+    "sniper": 0.17,
+    "sniper_source": "best_params_side_markets[over15][Finland Veikkausliiga] (owner-applied, threshold_apply)",
+    "valuable": 0.02,
+    "valuable_source": "best_params_side_markets[over15][Finland Veikkausliiga] (owner-applied, threshold_apply)"
    },
    "prediction_engine": {
     "model_slot": "over15",
@@ -2601,16 +2601,16 @@
     "track_max_odds": null
    },
    "gates": {
-    "approved_optimizer_applied": false,
+    "approved_optimizer_applied": true,
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: no over35 params entry for Finland Veikkausliiga",
-    "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: no over35 params entry for Finland Veikkausliiga",
-    "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: no over35 params entry for Finland Veikkausliiga"
+    "marksman": 0.02,
+    "marksman_source": "best_params_side_markets[over35][Finland Veikkausliiga] (owner-applied, threshold_apply)",
+    "sniper": 0.02,
+    "sniper_source": "best_params_side_markets[over35][Finland Veikkausliiga] (owner-applied, threshold_apply)",
+    "valuable": 0.02,
+    "valuable_source": "best_params_side_markets[over35][Finland Veikkausliiga] (owner-applied, threshold_apply)"
    },
    "prediction_engine": {
     "model_slot": "over35",
@@ -2665,16 +2665,16 @@
     "track_max_odds": null
    },
    "gates": {
-    "approved_optimizer_applied": false,
+    "approved_optimizer_applied": true,
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: no btts params entry for Ireland Premier Division",
-    "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: no btts params entry for Ireland Premier Division",
-    "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: no btts params entry for Ireland Premier Division"
+    "marksman": 0.02,
+    "marksman_source": "best_params_side_markets[btts][Ireland Premier Division] (owner-applied, threshold_apply)",
+    "sniper": 0.02,
+    "sniper_source": "best_params_side_markets[btts][Ireland Premier Division] (owner-applied, threshold_apply)",
+    "valuable": 0.02,
+    "valuable_source": "best_params_side_markets[btts][Ireland Premier Division] (owner-applied, threshold_apply)"
    },
    "prediction_engine": {
     "model_slot": "btts",
@@ -2861,16 +2861,16 @@
     "track_max_odds": null
    },
    "gates": {
-    "approved_optimizer_applied": false,
+    "approved_optimizer_applied": true,
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: no over15 params entry for Ireland Premier Division",
-    "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: no over15 params entry for Ireland Premier Division",
-    "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: no over15 params entry for Ireland Premier Division"
+    "marksman": 0.02,
+    "marksman_source": "best_params_side_markets[over15][Ireland Premier Division] (owner-applied, threshold_apply)",
+    "sniper": 0.06,
+    "sniper_source": "best_params_side_markets[over15][Ireland Premier Division] (owner-applied, threshold_apply)",
+    "valuable": 0.02,
+    "valuable_source": "best_params_side_markets[over15][Ireland Premier Division] (owner-applied, threshold_apply)"
    },
    "prediction_engine": {
     "model_slot": "over15",
@@ -2989,16 +2989,16 @@
     "track_max_odds": null
    },
    "gates": {
-    "approved_optimizer_applied": false,
+    "approved_optimizer_applied": true,
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: no btts params entry for Japan J-League",
-    "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: no btts params entry for Japan J-League",
-    "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: no btts params entry for Japan J-League"
+    "marksman": 0.02,
+    "marksman_source": "best_params_side_markets[btts][Japan J-League] (owner-applied, threshold_apply)",
+    "sniper": 0.02,
+    "sniper_source": "best_params_side_markets[btts][Japan J-League] (owner-applied, threshold_apply)",
+    "valuable": 0.02,
+    "valuable_source": "best_params_side_markets[btts][Japan J-League] (owner-applied, threshold_apply)"
    },
    "prediction_engine": {
     "model_slot": "btts",
@@ -3055,16 +3055,16 @@
     "nf_max_ou_odds": 3.0
    },
    "gates": {
-    "approved_optimizer_applied": false,
+    "approved_optimizer_applied": true,
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for Japan J-League",
-    "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for Japan J-League",
-    "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: no ou25 params entry for Japan J-League"
+    "marksman": 0.02,
+    "marksman_source": "best_params_standard[Japan J-League] (owner-applied, threshold_apply)",
+    "sniper": 0.03,
+    "sniper_source": "best_params_standard[Japan J-League] (owner-applied, threshold_apply)",
+    "valuable": 0.02,
+    "valuable_source": "best_params_standard[Japan J-League] (owner-applied, threshold_apply)"
    },
    "prediction_engine": {
     "model_slot": "newformat",
@@ -3121,16 +3121,16 @@
     "nf_max_ou_odds": 3.0
    },
    "gates": {
-    "approved_optimizer_applied": false,
+    "approved_optimizer_applied": true,
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for Japan J-League",
-    "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for Japan J-League",
-    "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: no ou25 params entry for Japan J-League"
+    "marksman": 0.02,
+    "marksman_source": "best_params_standard[Japan J-League] (owner-applied, threshold_apply)",
+    "sniper": 0.03,
+    "sniper_source": "best_params_standard[Japan J-League] (owner-applied, threshold_apply)",
+    "valuable": 0.02,
+    "valuable_source": "best_params_standard[Japan J-League] (owner-applied, threshold_apply)"
    },
    "prediction_engine": {
     "model_slot": "newformat",
@@ -3185,16 +3185,16 @@
     "track_max_odds": null
    },
    "gates": {
-    "approved_optimizer_applied": false,
+    "approved_optimizer_applied": true,
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: no over15 params entry for Japan J-League",
-    "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: no over15 params entry for Japan J-League",
-    "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: no over15 params entry for Japan J-League"
+    "marksman": 0.02,
+    "marksman_source": "best_params_side_markets[over15][Japan J-League] (owner-applied, threshold_apply)",
+    "sniper": 0.06,
+    "sniper_source": "best_params_side_markets[over15][Japan J-League] (owner-applied, threshold_apply)",
+    "valuable": 0.02,
+    "valuable_source": "best_params_side_markets[over15][Japan J-League] (owner-applied, threshold_apply)"
    },
    "prediction_engine": {
     "model_slot": "over15",
@@ -3318,11 +3318,11 @@
     "edge_ceiling_active": false,
     "league_cap_applied": false,
     "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: btts La Liga 2 lacks valuable_th",
+    "marksman_source": "NO_LEAGUE_BAR: no btts params entry for La Liga 2",
     "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: btts La Liga 2 lacks valuable_th",
+    "sniper_source": "NO_LEAGUE_BAR: no btts params entry for La Liga 2",
     "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: btts La Liga 2 lacks valuable_th"
+    "valuable_source": "NO_LEAGUE_BAR: no btts params entry for La Liga 2"
    },
    "prediction_engine": {
     "model_slot": "btts",
@@ -3378,16 +3378,16 @@
     "min_side_odds": 1.75
    },
    "gates": {
-    "approved_optimizer_applied": false,
+    "approved_optimizer_applied": true,
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: ou25 La Liga 2 lacks valuable_th",
-    "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: ou25 La Liga 2 lacks valuable_th",
-    "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: ou25 La Liga 2 lacks valuable_th"
+    "marksman": 0.17,
+    "marksman_source": "best_params_standard[La Liga 2] (owner-applied, threshold_apply)",
+    "sniper": 0.17,
+    "sniper_source": "best_params_standard[La Liga 2] (owner-applied, threshold_apply)",
+    "valuable": 0.13,
+    "valuable_source": "best_params_standard[La Liga 2] (owner-applied, threshold_apply)"
    },
    "prediction_engine": {
     "model_slot": "standard",
@@ -3443,16 +3443,16 @@
     "min_side_odds": 1.75
    },
    "gates": {
-    "approved_optimizer_applied": false,
+    "approved_optimizer_applied": true,
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: ou25 La Liga 2 lacks valuable_th",
-    "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: ou25 La Liga 2 lacks valuable_th",
-    "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: ou25 La Liga 2 lacks valuable_th"
+    "marksman": 0.17,
+    "marksman_source": "best_params_standard[La Liga 2] (owner-applied, threshold_apply)",
+    "sniper": 0.17,
+    "sniper_source": "best_params_standard[La Liga 2] (owner-applied, threshold_apply)",
+    "valuable": 0.13,
+    "valuable_source": "best_params_standard[La Liga 2] (owner-applied, threshold_apply)"
    },
    "prediction_engine": {
     "model_slot": "standard",
@@ -3512,11 +3512,11 @@
     "edge_ceiling_active": false,
     "league_cap_applied": false,
     "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: over15 switched OFF for La Liga 2 (drop)",
+    "marksman_source": "NO_LEAGUE_BAR: no over15 params entry for La Liga 2",
     "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: over15 switched OFF for La Liga 2 (drop)",
+    "sniper_source": "NO_LEAGUE_BAR: no over15 params entry for La Liga 2",
     "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: over15 switched OFF for La Liga 2 (drop)"
+    "valuable_source": "NO_LEAGUE_BAR: no over15 params entry for La Liga 2"
    },
    "prediction_engine": {
     "model_slot": "over15",
@@ -3576,11 +3576,11 @@
     "edge_ceiling_active": false,
     "league_cap_applied": false,
     "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: over35 switched OFF for La Liga 2 (drop)",
+    "marksman_source": "NO_LEAGUE_BAR: no over35 params entry for La Liga 2",
     "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: over35 switched OFF for La Liga 2 (drop)",
+    "sniper_source": "NO_LEAGUE_BAR: no over35 params entry for La Liga 2",
     "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: over35 switched OFF for La Liga 2 (drop)"
+    "valuable_source": "NO_LEAGUE_BAR: no over35 params entry for La Liga 2"
    },
    "prediction_engine": {
     "model_slot": "over35",
@@ -3640,11 +3640,11 @@
     "edge_ceiling_active": false,
     "league_cap_applied": false,
     "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: btts League One lacks valuable_th",
+    "marksman_source": "NO_LEAGUE_BAR: no btts params entry for League One",
     "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: btts League One lacks valuable_th",
+    "sniper_source": "NO_LEAGUE_BAR: no btts params entry for League One",
     "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: btts League One lacks valuable_th"
+    "valuable_source": "NO_LEAGUE_BAR: no btts params entry for League One"
    },
    "prediction_engine": {
     "model_slot": "btts",
@@ -3700,16 +3700,16 @@
     "min_side_odds": 1.75
    },
    "gates": {
-    "approved_optimizer_applied": false,
+    "approved_optimizer_applied": true,
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: ou25 League One lacks valuable_th",
-    "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: ou25 League One lacks valuable_th",
-    "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: ou25 League One lacks valuable_th"
+    "marksman": 0.13,
+    "marksman_source": "best_params_standard[League One] (owner-applied, threshold_apply)",
+    "sniper": 0.13,
+    "sniper_source": "best_params_standard[League One] (owner-applied, threshold_apply)",
+    "valuable": 0.11,
+    "valuable_source": "best_params_standard[League One] (owner-applied, threshold_apply)"
    },
    "prediction_engine": {
     "model_slot": "standard",
@@ -3765,16 +3765,16 @@
     "min_side_odds": 1.75
    },
    "gates": {
-    "approved_optimizer_applied": false,
+    "approved_optimizer_applied": true,
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: ou25 League One lacks valuable_th",
-    "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: ou25 League One lacks valuable_th",
-    "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: ou25 League One lacks valuable_th"
+    "marksman": 0.13,
+    "marksman_source": "best_params_standard[League One] (owner-applied, threshold_apply)",
+    "sniper": 0.13,
+    "sniper_source": "best_params_standard[League One] (owner-applied, threshold_apply)",
+    "valuable": 0.11,
+    "valuable_source": "best_params_standard[League One] (owner-applied, threshold_apply)"
    },
    "prediction_engine": {
     "model_slot": "standard",
@@ -3834,11 +3834,11 @@
     "edge_ceiling_active": false,
     "league_cap_applied": false,
     "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: over15 switched OFF for League One (drop)",
+    "marksman_source": "NO_LEAGUE_BAR: no over15 params entry for League One",
     "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: over15 switched OFF for League One (drop)",
+    "sniper_source": "NO_LEAGUE_BAR: no over15 params entry for League One",
     "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: over15 switched OFF for League One (drop)"
+    "valuable_source": "NO_LEAGUE_BAR: no over15 params entry for League One"
    },
    "prediction_engine": {
     "model_slot": "over15",
@@ -3898,11 +3898,11 @@
     "edge_ceiling_active": false,
     "league_cap_applied": false,
     "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: over35 switched OFF for League One (drop)",
+    "marksman_source": "NO_LEAGUE_BAR: no over35 params entry for League One",
     "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: over35 switched OFF for League One (drop)",
+    "sniper_source": "NO_LEAGUE_BAR: no over35 params entry for League One",
     "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: over35 switched OFF for League One (drop)"
+    "valuable_source": "NO_LEAGUE_BAR: no over35 params entry for League One"
    },
    "prediction_engine": {
     "model_slot": "over35",
@@ -3957,16 +3957,16 @@
     "track_max_odds": null
    },
    "gates": {
-    "approved_optimizer_applied": false,
+    "approved_optimizer_applied": true,
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: btts League Two lacks valuable_th",
-    "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: btts League Two lacks valuable_th",
-    "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: btts League Two lacks valuable_th"
+    "marksman": 0.02,
+    "marksman_source": "best_params_side_markets[btts][League Two] (owner-applied, threshold_apply)",
+    "sniper": 0.03,
+    "sniper_source": "best_params_side_markets[btts][League Two] (owner-applied, threshold_apply)",
+    "valuable": 0.02,
+    "valuable_source": "best_params_side_markets[btts][League Two] (owner-applied, threshold_apply)"
    },
    "prediction_engine": {
     "model_slot": "btts",
@@ -4027,11 +4027,11 @@
     "edge_ceiling_active": false,
     "league_cap_applied": false,
     "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: ou25 League Two lacks valuable_th",
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for League Two",
     "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: ou25 League Two lacks valuable_th",
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for League Two",
     "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: ou25 League Two lacks valuable_th"
+    "valuable_source": "NO_LEAGUE_BAR: no ou25 params entry for League Two"
    },
    "prediction_engine": {
     "model_slot": "standard",
@@ -4092,11 +4092,11 @@
     "edge_ceiling_active": false,
     "league_cap_applied": false,
     "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: ou25 League Two lacks valuable_th",
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for League Two",
     "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: ou25 League Two lacks valuable_th",
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for League Two",
     "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: ou25 League Two lacks valuable_th"
+    "valuable_source": "NO_LEAGUE_BAR: no ou25 params entry for League Two"
    },
    "prediction_engine": {
     "model_slot": "standard",
@@ -4156,11 +4156,11 @@
     "edge_ceiling_active": false,
     "league_cap_applied": false,
     "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: over15 switched OFF for League Two (drop)",
+    "marksman_source": "NO_LEAGUE_BAR: no over15 params entry for League Two",
     "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: over15 switched OFF for League Two (drop)",
+    "sniper_source": "NO_LEAGUE_BAR: no over15 params entry for League Two",
     "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: over15 switched OFF for League Two (drop)"
+    "valuable_source": "NO_LEAGUE_BAR: no over15 params entry for League Two"
    },
    "prediction_engine": {
     "model_slot": "over15",
@@ -4220,11 +4220,11 @@
     "edge_ceiling_active": false,
     "league_cap_applied": false,
     "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: over35 switched OFF for League Two (drop)",
+    "marksman_source": "NO_LEAGUE_BAR: no over35 params entry for League Two",
     "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: over35 switched OFF for League Two (drop)",
+    "sniper_source": "NO_LEAGUE_BAR: no over35 params entry for League Two",
     "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: over35 switched OFF for League Two (drop)"
+    "valuable_source": "NO_LEAGUE_BAR: no over35 params entry for League Two"
    },
    "prediction_engine": {
     "model_slot": "over35",
@@ -4279,16 +4279,16 @@
     "track_max_odds": null
    },
    "gates": {
-    "approved_optimizer_applied": false,
+    "approved_optimizer_applied": true,
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: btts Ligue 2 lacks valuable_th",
-    "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: btts Ligue 2 lacks valuable_th",
-    "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: btts Ligue 2 lacks valuable_th"
+    "marksman": 0.02,
+    "marksman_source": "best_params_side_markets[btts][Ligue 2] (owner-applied, threshold_apply)",
+    "sniper": 0.03,
+    "sniper_source": "best_params_side_markets[btts][Ligue 2] (owner-applied, threshold_apply)",
+    "valuable": 0.02,
+    "valuable_source": "best_params_side_markets[btts][Ligue 2] (owner-applied, threshold_apply)"
    },
    "prediction_engine": {
     "model_slot": "btts",
@@ -4344,16 +4344,16 @@
     "min_side_odds": 1.75
    },
    "gates": {
-    "approved_optimizer_applied": false,
+    "approved_optimizer_applied": true,
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: ou25 Ligue 2 lacks valuable_th",
-    "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: ou25 Ligue 2 lacks valuable_th",
-    "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: ou25 Ligue 2 lacks valuable_th"
+    "marksman": 0.14,
+    "marksman_source": "best_params_standard[Ligue 2] (owner-applied, threshold_apply)",
+    "sniper": 0.14,
+    "sniper_source": "best_params_standard[Ligue 2] (owner-applied, threshold_apply)",
+    "valuable": 0.14,
+    "valuable_source": "best_params_standard[Ligue 2] (owner-applied, threshold_apply)"
    },
    "prediction_engine": {
     "model_slot": "standard",
@@ -4409,16 +4409,16 @@
     "min_side_odds": 1.75
    },
    "gates": {
-    "approved_optimizer_applied": false,
+    "approved_optimizer_applied": true,
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: ou25 Ligue 2 lacks valuable_th",
-    "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: ou25 Ligue 2 lacks valuable_th",
-    "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: ou25 Ligue 2 lacks valuable_th"
+    "marksman": 0.14,
+    "marksman_source": "best_params_standard[Ligue 2] (owner-applied, threshold_apply)",
+    "sniper": 0.14,
+    "sniper_source": "best_params_standard[Ligue 2] (owner-applied, threshold_apply)",
+    "valuable": 0.14,
+    "valuable_source": "best_params_standard[Ligue 2] (owner-applied, threshold_apply)"
    },
    "prediction_engine": {
     "model_slot": "standard",
@@ -4473,16 +4473,16 @@
     "track_max_odds": null
    },
    "gates": {
-    "approved_optimizer_applied": false,
+    "approved_optimizer_applied": true,
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: over15 switched OFF for Ligue 2 (drop)",
-    "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: over15 switched OFF for Ligue 2 (drop)",
-    "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: over15 switched OFF for Ligue 2 (drop)"
+    "marksman": 0.02,
+    "marksman_source": "best_params_side_markets[over15][Ligue 2] (owner-applied, threshold_apply)",
+    "sniper": 0.02,
+    "sniper_source": "best_params_side_markets[over15][Ligue 2] (owner-applied, threshold_apply)",
+    "valuable": 0.02,
+    "valuable_source": "best_params_side_markets[over15][Ligue 2] (owner-applied, threshold_apply)"
    },
    "prediction_engine": {
     "model_slot": "over15",
@@ -4542,11 +4542,11 @@
     "edge_ceiling_active": false,
     "league_cap_applied": false,
     "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: over35 switched OFF for Ligue 2 (drop)",
+    "marksman_source": "NO_LEAGUE_BAR: no over35 params entry for Ligue 2",
     "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: over35 switched OFF for Ligue 2 (drop)",
+    "sniper_source": "NO_LEAGUE_BAR: no over35 params entry for Ligue 2",
     "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: over35 switched OFF for Ligue 2 (drop)"
+    "valuable_source": "NO_LEAGUE_BAR: no over35 params entry for Ligue 2"
    },
    "prediction_engine": {
     "model_slot": "over35",
@@ -4601,16 +4601,16 @@
     "track_max_odds": null
    },
    "gates": {
-    "approved_optimizer_applied": false,
+    "approved_optimizer_applied": true,
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: no btts params entry for Mexico Liga MX",
-    "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: no btts params entry for Mexico Liga MX",
-    "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: no btts params entry for Mexico Liga MX"
+    "marksman": 0.3,
+    "marksman_source": "best_params_side_markets[btts][Mexico Liga MX] (owner-applied, threshold_apply)",
+    "sniper": 0.3,
+    "sniper_source": "best_params_side_markets[btts][Mexico Liga MX] (owner-applied, threshold_apply)",
+    "valuable": 0.11,
+    "valuable_source": "best_params_side_markets[btts][Mexico Liga MX] (owner-applied, threshold_apply)"
    },
    "prediction_engine": {
     "model_slot": "btts",
@@ -4925,16 +4925,16 @@
     "track_max_odds": null
    },
    "gates": {
-    "approved_optimizer_applied": false,
+    "approved_optimizer_applied": true,
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: no btts params entry for Norway Eliteserien",
-    "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: no btts params entry for Norway Eliteserien",
-    "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: no btts params entry for Norway Eliteserien"
+    "marksman": 0.02,
+    "marksman_source": "best_params_side_markets[btts][Norway Eliteserien] (owner-applied, threshold_apply)",
+    "sniper": 0.02,
+    "sniper_source": "best_params_side_markets[btts][Norway Eliteserien] (owner-applied, threshold_apply)",
+    "valuable": 0.02,
+    "valuable_source": "best_params_side_markets[btts][Norway Eliteserien] (owner-applied, threshold_apply)"
    },
    "prediction_engine": {
     "model_slot": "btts",
@@ -5121,16 +5121,16 @@
     "track_max_odds": null
    },
    "gates": {
-    "approved_optimizer_applied": false,
+    "approved_optimizer_applied": true,
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: no over15 params entry for Norway Eliteserien",
-    "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: no over15 params entry for Norway Eliteserien",
-    "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: no over15 params entry for Norway Eliteserien"
+    "marksman": 0.04,
+    "marksman_source": "best_params_side_markets[over15][Norway Eliteserien] (owner-applied, threshold_apply)",
+    "sniper": 0.08,
+    "sniper_source": "best_params_side_markets[over15][Norway Eliteserien] (owner-applied, threshold_apply)",
+    "valuable": 0.02,
+    "valuable_source": "best_params_side_markets[over15][Norway Eliteserien] (owner-applied, threshold_apply)"
    },
    "prediction_engine": {
     "model_slot": "over15",
@@ -5185,16 +5185,16 @@
     "track_max_odds": null
    },
    "gates": {
-    "approved_optimizer_applied": false,
+    "approved_optimizer_applied": true,
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: no over35 params entry for Norway Eliteserien",
-    "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: no over35 params entry for Norway Eliteserien",
-    "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: no over35 params entry for Norway Eliteserien"
+    "marksman": 0.03,
+    "marksman_source": "best_params_side_markets[over35][Norway Eliteserien] (owner-applied, threshold_apply)",
+    "sniper": 0.03,
+    "sniper_source": "best_params_side_markets[over35][Norway Eliteserien] (owner-applied, threshold_apply)",
+    "valuable": 0.02,
+    "valuable_source": "best_params_side_markets[over35][Norway Eliteserien] (owner-applied, threshold_apply)"
    },
    "prediction_engine": {
     "model_slot": "over35",
@@ -5509,16 +5509,16 @@
     "track_max_odds": null
    },
    "gates": {
-    "approved_optimizer_applied": false,
+    "approved_optimizer_applied": true,
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: no over35 params entry for Romanian Superliga",
-    "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: no over35 params entry for Romanian Superliga",
-    "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: no over35 params entry for Romanian Superliga"
+    "marksman": 0.04,
+    "marksman_source": "best_params_side_markets[over35][Romanian Superliga] (owner-applied, threshold_apply)",
+    "sniper": 0.04,
+    "sniper_source": "best_params_side_markets[over35][Romanian Superliga] (owner-applied, threshold_apply)",
+    "valuable": 0.02,
+    "valuable_source": "best_params_side_markets[over35][Romanian Superliga] (owner-applied, threshold_apply)"
    },
    "prediction_engine": {
     "model_slot": "over35",
@@ -5573,16 +5573,16 @@
     "track_max_odds": null
    },
    "gates": {
-    "approved_optimizer_applied": false,
+    "approved_optimizer_applied": true,
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: btts Serie B lacks valuable_th",
-    "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: btts Serie B lacks valuable_th",
-    "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: btts Serie B lacks valuable_th"
+    "marksman": 0.03,
+    "marksman_source": "best_params_side_markets[btts][Serie B] (owner-applied, threshold_apply)",
+    "sniper": 0.03,
+    "sniper_source": "best_params_side_markets[btts][Serie B] (owner-applied, threshold_apply)",
+    "valuable": 0.02,
+    "valuable_source": "best_params_side_markets[btts][Serie B] (owner-applied, threshold_apply)"
    },
    "prediction_engine": {
     "model_slot": "btts",
@@ -5638,16 +5638,16 @@
     "min_side_odds": 1.75
    },
    "gates": {
-    "approved_optimizer_applied": false,
+    "approved_optimizer_applied": true,
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: ou25 Serie B lacks valuable_th",
-    "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: ou25 Serie B lacks valuable_th",
-    "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: ou25 Serie B lacks valuable_th"
+    "marksman": 0.1,
+    "marksman_source": "best_params_standard[Serie B] (owner-applied, threshold_apply)",
+    "sniper": 0.16,
+    "sniper_source": "best_params_standard[Serie B] (owner-applied, threshold_apply)",
+    "valuable": 0.09,
+    "valuable_source": "best_params_standard[Serie B] (owner-applied, threshold_apply)"
    },
    "prediction_engine": {
     "model_slot": "standard",
@@ -5703,16 +5703,16 @@
     "min_side_odds": 1.75
    },
    "gates": {
-    "approved_optimizer_applied": false,
+    "approved_optimizer_applied": true,
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: ou25 Serie B lacks valuable_th",
-    "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: ou25 Serie B lacks valuable_th",
-    "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: ou25 Serie B lacks valuable_th"
+    "marksman": 0.1,
+    "marksman_source": "best_params_standard[Serie B] (owner-applied, threshold_apply)",
+    "sniper": 0.16,
+    "sniper_source": "best_params_standard[Serie B] (owner-applied, threshold_apply)",
+    "valuable": 0.09,
+    "valuable_source": "best_params_standard[Serie B] (owner-applied, threshold_apply)"
    },
    "prediction_engine": {
     "model_slot": "standard",
@@ -5767,16 +5767,16 @@
     "track_max_odds": null
    },
    "gates": {
-    "approved_optimizer_applied": false,
+    "approved_optimizer_applied": true,
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: over15 switched OFF for Serie B (drop)",
-    "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: over15 switched OFF for Serie B (drop)",
-    "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: over15 switched OFF for Serie B (drop)"
+    "marksman": 0.02,
+    "marksman_source": "best_params_side_markets[over15][Serie B] (owner-applied, threshold_apply)",
+    "sniper": 0.02,
+    "sniper_source": "best_params_side_markets[over15][Serie B] (owner-applied, threshold_apply)",
+    "valuable": 0.02,
+    "valuable_source": "best_params_side_markets[over15][Serie B] (owner-applied, threshold_apply)"
    },
    "prediction_engine": {
     "model_slot": "over15",
@@ -5836,11 +5836,11 @@
     "edge_ceiling_active": false,
     "league_cap_applied": false,
     "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: over35 switched OFF for Serie B (drop)",
+    "marksman_source": "NO_LEAGUE_BAR: no over35 params entry for Serie B",
     "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: over35 switched OFF for Serie B (drop)",
+    "sniper_source": "NO_LEAGUE_BAR: no over35 params entry for Serie B",
     "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: over35 switched OFF for Serie B (drop)"
+    "valuable_source": "NO_LEAGUE_BAR: no over35 params entry for Serie B"
    },
    "prediction_engine": {
     "model_slot": "over35",
@@ -6091,16 +6091,16 @@
     "track_max_odds": null
    },
    "gates": {
-    "approved_optimizer_applied": false,
+    "approved_optimizer_applied": true,
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: no over15 params entry for Sweden Allsvenskan",
-    "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: no over15 params entry for Sweden Allsvenskan",
-    "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: no over15 params entry for Sweden Allsvenskan"
+    "marksman": 0.03,
+    "marksman_source": "best_params_side_markets[over15][Sweden Allsvenskan] (owner-applied, threshold_apply)",
+    "sniper": 0.03,
+    "sniper_source": "best_params_side_markets[over15][Sweden Allsvenskan] (owner-applied, threshold_apply)",
+    "valuable": 0.02,
+    "valuable_source": "best_params_side_markets[over15][Sweden Allsvenskan] (owner-applied, threshold_apply)"
    },
    "prediction_engine": {
     "model_slot": "over15",
@@ -6415,16 +6415,16 @@
     "track_max_odds": null
    },
    "gates": {
-    "approved_optimizer_applied": false,
+    "approved_optimizer_applied": true,
     "edge_ceiling": null,
     "edge_ceiling_active": false,
     "league_cap_applied": false,
-    "marksman": null,
-    "marksman_source": "NO_LEAGUE_BAR: no over15 params entry for USA MLS",
-    "sniper": null,
-    "sniper_source": "NO_LEAGUE_BAR: no over15 params entry for USA MLS",
-    "valuable": null,
-    "valuable_source": "NO_LEAGUE_BAR: no over15 params entry for USA MLS"
+    "marksman": 0.17,
+    "marksman_source": "best_params_side_markets[over15][USA MLS] (owner-applied, threshold_apply)",
+    "sniper": 0.17,
+    "sniper_source": "best_params_side_markets[over15][USA MLS] (owner-applied, threshold_apply)",
+    "valuable": 0.06,
+    "valuable_source": "best_params_side_markets[over15][USA MLS] (owner-applied, threshold_apply)"
    },
    "prediction_engine": {
     "model_slot": "over15",
