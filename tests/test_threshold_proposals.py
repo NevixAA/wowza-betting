@@ -20,6 +20,13 @@ from src import threshold_proposals as TP
 ROOT = Path(__file__).resolve().parents[1]
 WF = ROOT / ".github" / "workflows"
 PROD = [ROOT / TP.PROD_STANDARD, ROOT / TP.PROD_SIDE]
+#: The mechanics tests below (proposal, apply, refusals, lock) run on a FROZEN copy of the production threshold
+#: files as they stood before the first bars_opt apply (main / pre-P11, unchanged since 2026-10-06), so they keep
+#: testing the same synthetic moves ('ou25|Serie B' re-thresholded, 'btts|Championship' approval revoked) after
+#: the owner-approved P11 bars (TP-2026-11-18-1ddfc9f1) replaced the production entries. Real-repo checks still
+#: read the live files (PROD).
+BASE = ROOT / "tests" / "fixtures" / "threshold_base"
+BASE_FILES = [BASE / TP.PROD_STANDARD, BASE / TP.PROD_SIDE]
 
 
 def _bytes():
@@ -120,7 +127,7 @@ def test_write_candidate_and_proposal_writer_refuse_production_paths(tmp_path):
 def sandbox(tmp_path, monkeypatch):
     (tmp_path / "models").mkdir()
     (tmp_path / "config").mkdir()
-    for p in PROD:
+    for p in BASE_FILES:
         shutil.copy(p, tmp_path / "models" / p.name)
     shutil.copy(L.SNAPSHOT_PATH, tmp_path / "config" / "research_lock_snapshot.json")
     monkeypatch.setattr(L, "THRESHOLD_ROOT", tmp_path)
@@ -288,13 +295,15 @@ def test_full_propose_run_on_the_real_repo_leaves_every_served_gate_unchanged(tm
     before = [g.as_dict() for g in G.all_gates()]
     cand = tmp_path / "cand"
     cand.mkdir()
-    for k, v in _candidates(ROOT).items():
+    for k, v in _candidates(BASE).items():          # synthetic moves on the frozen base, proposed against LIVE
         name = "standard" if k == "ou25" else k
         (cand / f"best_params_{name}.json").write_text(json.dumps(v), encoding="utf-8")
     monkeypatch.setattr(TP, "PROPOSAL_DIR", tmp_path / "proposals")
     assert TP.main(["propose", "--candidates", str(cand), "--evidence-dir", str(tmp_path), "--month", "2026-11"]) == 0
     latest = json.loads((tmp_path / "proposals" / "latest.json").read_text(encoding="utf-8"))
-    assert latest["n_serving_changes"] == 1 and latest["status"] == "AWAITING_OWNER"   # Serie B only (2026-11-09)
+    # the frozen-base candidates differ from the live P11 entries in many cells; whatever the count, proposing
+    # them changes nothing that serves (below)
+    assert latest["n_serving_changes"] >= 1 and latest["status"] == "AWAITING_OWNER"
     assert (tmp_path / "proposals" / "2026-11.md").exists()
     # nothing approved -> the committed approvals file has no entry -> apply refuses, nothing served moves
     with pytest.raises(A.ApplyRefused):

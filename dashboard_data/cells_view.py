@@ -6,7 +6,9 @@ proposal, never a global bar.
 SOURCES (read, never written):
   config/threshold_approvals.json                 the owner's approvals; the newest one names the proposal
                                                   (id + sha256) that is approved
-  output/threshold_proposals/bars_oddsapi_hist/latest.json -> path of that proposal; its id and hash must
+  output/threshold_proposals/<namespace>/latest.json -> path of that proposal (the ONE pointer whose id is the
+                                                  approval's: bars_oddsapi_hist for bade2c0b, bars_p11v2 for the
+                                                  owner-approved P11 proposal of 2026-11-18); its id and hash must
                                                   equal the approval's, or the page says so and shows nothing
   <proposal>.json  entries[].proposed.bars_opt    each served cell: qualifying bar (valuable_th, the ONE bar a
                                                   tip must clear since 2026-11-11), TIER2 boundary
@@ -35,6 +37,8 @@ APPROVALS = ROOT / "config" / "threshold_approvals.json"
 POLICY = ROOT / "config" / "bankroll_policy.json"
 PROPOSAL_DIR = ROOT / "output" / "threshold_proposals" / "bars_oddsapi_hist"
 LATEST = PROPOSAL_DIR / "latest.json"
+#: every proposal namespace's pointer; the approved proposal's is the one whose proposal_id is the approval's
+POINTERS = (LATEST, ROOT / "output" / "threshold_proposals" / "bars_p11v2" / "latest.json")
 
 MSIDE_LABEL = {"over25_over": "O/U 2.5 Over", "over25_under": "O/U 2.5 Under", "btts_yes": "BTTS Yes",
                "over15_over": "Over 1.5", "over35_over": "Over 3.5", "ht_over05_over": "HT Over 0.5",
@@ -70,11 +74,14 @@ def load() -> dict:
     if not ap:
         out["problems"].append("no owner approval in config/threshold_approvals.json")
         return out
-    lt = _json(LATEST) or {}
-    if lt.get("proposal_id") != ap["proposal_id"] or not lt.get("path"):
-        out["problems"].append(f"output/threshold_proposals/bars_oddsapi_hist/latest.json does not point at the "
+    hits = [lt for lt in (_json(p) or {} for p in POINTERS)
+            if lt.get("proposal_id") == ap["proposal_id"] and lt.get("path")]
+    if len(hits) != 1:
+        names = ", ".join(str(p.relative_to(ROOT)).replace("\\", "/") for p in POINTERS)
+        out["problems"].append(f"{'no' if not hits else 'more than one'} proposal pointer ({names}) points at the "
                                f"approved proposal {ap['proposal_id']}")
         return out
+    lt = hits[0]
     pr = _json(ROOT / lt["path"])
     if not pr or pr.get("proposal_id") != ap["proposal_id"] or pr.get("proposal_hash") != ap.get("proposal_hash"):
         out["problems"].append(f"{lt['path']}: id / sha256 differ from the approval of {ap['proposal_id']}")

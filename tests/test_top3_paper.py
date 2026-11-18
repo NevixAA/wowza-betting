@@ -358,7 +358,8 @@ def test_protocol_records_own_list_no_ev_fallback_and_history():
     assert any("ranked by T2" in w for w in proto["amendment"]["owner_words"])
     assert {t["id"]: t["kind"] for t in proto["tracks"]} == {"T2_R2_CAL_EV": "LIVE", "T3_R3_CAL_EV_LCB": "PAPER"}
     assert "remeasurement" in proto["live_statistics"] and "STATS_NOT_REMEASURED" in proto["pool"]["refusal_reasons"]
-    assert [a["proposal_id"] for a in cfg["approved_proposals"]] == ["TP-2026-11-15-bade2c0b"]
+    # owner 2026-11-18 chat (P11 O2/O1): TP-2026-11-18-1ddfc9f1 approved after bade2c0b (kept as the history)
+    assert [a["proposal_id"] for a in cfg["approved_proposals"]] == ["TP-2026-11-15-bade2c0b", "TP-2026-11-18-1ddfc9f1"]
     assert [t["id"] for t in proto["tracks"]] == ["T2_R2_CAL_EV", "T3_R3_CAL_EV_LCB"]
     assert "2 tracks" in proto["evaluation"]["family"] and "no_pick_exists" in proto
     assert "LEAGUE_WIDE_OWN_LIST" in proto["pool"]["refusal_reasons"]

@@ -121,11 +121,27 @@ def test_a_cell_without_a_t3_statistic_ranks_after_and_by_kickoff_never_by_ev():
     assert list(picks["rank_has_stat"]) == [True, False, False]
 
 
-def test_run_fails_closed_without_frozen_t3_statistics(tmp_path):
+def test_run_fails_closed_without_frozen_t3_statistics(tmp_path, monkeypatch):
+    # neither source of frozen statistics: no owner-approved P11 tier config (its frozen calibration) and no
+    # frozen live-rule statistics (U3e) -> nothing is ranked, frozen or sent
+    monkeypatch.setattr(T, "load_tiers", lambda root=None: None)
+    monkeypatch.setattr(T, "load_rank_stats", lambda root=None: None)
     env = {"TOP3_LEAGUE_ENABLED": "true", "TOP3_FREEZE_LEAD_MIN": "120"}
     res = T.run(now=NOW, out_dir=tmp_path, env=env, committed={})
     assert res.get("status") == "RANK_STATS_MISSING" or "error" in res
     assert not (tmp_path / T.PICKS_NAME).exists()
+
+
+def test_an_approved_tier_config_without_its_frozen_calibration_is_no_statistic(tmp_path):
+    # owner 2026-11-18 (P11 O2): the tiers rank on the config's FROZEN calibration; a config that is approved but
+    # carries no calibration cells (or no owner_approved_at) is not loaded, so the fail-closed rule above applies
+    cfg = json.loads((T.ROOT / T.TIERS_FILE).read_text(encoding="utf-8"))
+    assert T.load_tiers() is not None and cfg["calibration"]["cells"]       # the committed, approved config
+    (tmp_path / "config").mkdir()
+    (tmp_path / T.TIERS_FILE).write_text(json.dumps({**cfg, "calibration": {"cells": []}}), encoding="utf-8")
+    assert T.load_tiers(tmp_path) is None
+    (tmp_path / T.TIERS_FILE).write_text(json.dumps({**cfg, "owner_approved_at": None}), encoding="utf-8")
+    assert T.load_tiers(tmp_path) is None
 
 
 def test_pre_repair_params_without_valuable_bar_are_not_the_league_bars():

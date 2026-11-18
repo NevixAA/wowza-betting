@@ -361,8 +361,14 @@ def independent(out: Path, ctx: dict) -> dict:
             v[f"cfg_{k}"] = 100 * float(x)
     # Bars & Cells: the approved proposal's evidence file (every cell) and the policy's staked cells
     try:
-        lt_path = out / "threshold_proposals" / "bars_oddsapi_hist" / "latest.json"
-        lt = json.loads(lt_path.read_text(encoding="utf-8"))
+        # the pointer of the NEWEST owner approval (bade2c0b: bars_oddsapi_hist; P11 2026-11-18: bars_p11v2),
+        # the same rule as dashboard_data/cells_view.load
+        aps = json.loads((out.parent / "config" / "threshold_approvals.json").read_text(encoding="utf-8"))["approvals"]
+        ap_id = max(aps, key=lambda x: str(x["approved_at"]))["proposal_id"]
+        lts = [json.loads(p.read_text(encoding="utf-8"))
+               for p in (out / "threshold_proposals" / ns / "latest.json" for ns in ("bars_oddsapi_hist", "bars_p11v2"))
+               if p.exists()]
+        lt = [x for x in lts if x.get("proposal_id") == ap_id][0]
         pr = json.loads((out.parent / lt["path"]).read_text(encoding="utf-8"))
         # the evidence file the proposal names (a tagged re-run has its own; cells_view.evidence_path)
         ev_rel = (pr.get("source") or {}).get("evidence") or \
@@ -376,7 +382,7 @@ def independent(out: Path, ctx: dict) -> dict:
         # a cell without a base_fraction stakes nothing: it is simply not counted (no stand-in value)
         v["cells_staked"] = sum(1 for c in cs.values()
                                 if c.get("base_fraction") is not None and float(c["base_fraction"]) > 0)
-    except (OSError, KeyError, ValueError):
+    except (OSError, KeyError, ValueError, IndexError):
         pass
     return v
 
@@ -473,7 +479,7 @@ SOURCES = {
              "output/collect/player_history_refetch_audit.json (plan.rows_to_verify - stored_rows)",
     "clean": "bets_ledger.csv + side_bets_ledger.csv, record CLEAN (generated_at AND match_date >= "
              "config.CLEAN_RECORD_START) x src/staked.py labels",
-    "cells": "output/threshold_proposals/bars_oddsapi_hist/latest.json -> proposal -> evidence_<month>.json "
+    "cells": "output/threshold_proposals/<newest approval's namespace>/latest.json -> proposal -> evidence_<month>.json "
              "league_market_status; config/bankroll_policy.json cell_staking (base_fraction > 0)",
 }
 
