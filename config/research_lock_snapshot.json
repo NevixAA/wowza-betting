@@ -1,7 +1,7 @@
 {
  "about": "Approved production-facing fingerprint for src/research_lock.py. Re-approve ONLY for a deliberate, owner-approved production change. Do not hand-edit.",
- "approval_note": "U3a approved early by owner 2026-11-16 ('Approve now'): bars_opt serving (no global bars, NO_LEAGUE_BAR until U3b), predict.yml global threshold variables removed, per-cell staking. Bars still applied separately in U3b after the owner's Nov 20 pick.",
- "approved_at": "2026-11-16T19:56:12Z",
+ "approval_note": "2026-11-18 go-live pulled forward: refit_1118b models; bade2c0b bars; TOP-3 0.5% flat manual; every other cell and track at 0. Signed by the Claude session on the owner's explicit instruction in chat (2026-11-18).",
+ "approved_at": "2026-11-18T18:59:34Z",
  "approved_by": "Nevo (owner)",
  "fingerprint": {
   "global": {
@@ -31,7 +31,7 @@
     "paper_leagues": [
      "USA MLS"
     ],
-    "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09",
+    "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04+per-cell-staking-2026-11-09+top3-flat-manual-tracks-paper-2026-11-17",
     "portfolio": {
      "_one_position_per_fixture": "false since 2026-11-04 (owner: several bets on one match are fine unless they are opposites). Several real positions on one fixture are allowed when they share one goal direction (Over lines + BTTS Yes, or Under lines + BTTS No); an opposite-direction position is zeroed by size_day step 6 and the tip itself is suppressed by src/direction_guard.py (a paper tip never blocks a real one). fixture_cap limits the fixture's TOTAL within a sizing run (size_day step 10 scales the positions down together); positions staked in EARLIER runs are not counted against it yet. Previous state: true.",
      "daily_cap": 0.06,
@@ -70,16 +70,26 @@
     },
     "tracks": {
      "new_format|BTTS": {
-      "base_fraction": 0.0125,
+      "base_fraction": 0.0,
+      "before_2026_11_17": {
+       "base_fraction": 0.0125,
+       "state": "ACTIVE"
+      },
       "evidence_score": 3.0,
       "max_odds": 2.6,
-      "state": "ACTIVE"
+      "staking_basis_2026_11_17": "PAPER: owner 2026-11-17 \"Yes, adopt\" (O9): the per-track fallback (read only if cell_staking.enabled were false) stakes nothing; the only real stake is the manual TOP-3 flat stake (top3_league.stake).",
+      "state": "PAPER"
      },
      "new_format|OU25_OVER": {
-      "base_fraction": 0.005,
+      "base_fraction": 0.0,
+      "before_2026_11_17": {
+       "base_fraction": 0.005,
+       "state": "ACTIVE_LOW"
+      },
       "evidence_score": 1.0,
       "max_odds": 2.5,
-      "state": "ACTIVE_LOW"
+      "staking_basis_2026_11_17": "PAPER: owner 2026-11-17 \"Yes, adopt\" (O9): the per-track fallback (read only if cell_staking.enabled were false) stakes nothing; the only real stake is the manual TOP-3 flat stake (top3_league.stake).",
+      "state": "PAPER"
      },
      "new_format|OU25_UNDER": {
       "base_fraction": 0.0,
@@ -93,11 +103,16 @@
       "state": "PAPER"
      },
      "new_format|OVER15": {
-      "base_fraction": 0.005,
+      "base_fraction": 0.0,
+      "before_2026_11_17": {
+       "base_fraction": 0.005,
+       "state": "ACTIVE_LOW"
+      },
       "evidence_score": 1.5,
       "max_odds": 1.9,
       "min_odds": 1.45,
-      "state": "ACTIVE_LOW"
+      "staking_basis_2026_11_17": "PAPER: owner 2026-11-17 \"Yes, adopt\" (O9): the per-track fallback (read only if cell_staking.enabled were false) stakes nothing; the only real stake is the manual TOP-3 flat stake (top3_league.stake).",
+      "state": "PAPER"
      },
      "new_format|OVER35": {
       "base_fraction": 0.0,
@@ -216,6 +231,40 @@
      "REQUIRE_FORM_DATA_UNTIL": "2026-09-15"
     }
    },
+   "stakes": {
+    "cell_staking_enabled": true,
+    "cells": {
+     "new_format|BTTS|Argentina Primera Division": {
+      "base_fraction": 0.0,
+      "max_odds": 2.6,
+      "min_odds": null,
+      "state": "PAPER"
+     },
+     "new_format|OU25_OVER|Finland Veikkausliiga": {
+      "base_fraction": 0.0,
+      "max_odds": null,
+      "min_odds": null,
+      "state": "PAPER"
+     },
+     "new_format|OVER35|Finland Veikkausliiga": {
+      "base_fraction": 0.0,
+      "max_odds": null,
+      "min_odds": null,
+      "state": "PAPER"
+     },
+     "standard|OU25_OVER|La Liga 2": {
+      "base_fraction": 0.0,
+      "max_odds": null,
+      "min_odds": null,
+      "state": "PAPER"
+     }
+    },
+    "top3_stake": {
+     "execution": "MANUAL",
+     "fraction": 0.005,
+     "rule": "FLAT"
+    }
+   },
    "thresholds": {
     "EDGE_CEILING": 0.19,
     "LEAGUE_EDGE_CEILING": {
@@ -271,7 +320,7 @@
   },
   "protected_tracks": {
    "Argentina Primera Division|BTTS|YES|new_format": {
-    "base_fraction": 0.0125,
+    "base_fraction": 0.0,
     "evidence_score": 3.0,
     "gates": {
      "approved_optimizer_applied": false,
@@ -287,15 +336,15 @@
     },
     "max_odds": 2.6,
     "min_odds": null,
-    "production_state": "ACTIVE",
+    "production_state": "PAPER",
     "tier_multipliers": {
      "MARKSMAN": 0.9,
      "SNIPER": 1.1
     },
     "track": "new_format|BTTS",
-    "track_state": "ACTIVE"
+    "track_state": "PAPER"
    }
   }
  },
- "fingerprint_sha256": "20ef00daedb3033c29eb5b4f58278e563bbd853538abf2147a219ee834a439ff"
+ "fingerprint_sha256": "0846b435ff16eb666719b6e4d47d32dd1b7ea718291ba651389c7e0e131f0e7c"
 }
