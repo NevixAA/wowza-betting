@@ -13,7 +13,8 @@ SAME ROWS AND BASES AS THE REST OF THE APP - nothing here is a new definition:
   rows      telegram_bot.daily_pack.settled_tips(): live tips from bets_ledger.csv + side_bets_ledger.csv,
             every sent tip (no first-per-fixture filter, exactly as the dashboard's record)
   window    match date >= config.PERFORMANCE_CUTOFF_DATE, settled only (pnl present), flat 1u
-  staked    SNIPER + MARKSMAN (daily_pack.STAKED); VALUABLE is shown on its own line as paper
+  staked    a recorded policy stake > 0 (src/staked.py via settled_tips' `staked`, owner 2026-11-04);
+            every other tip, any tier, is shown on its own line as not staked
   paper     config.PAPER_LEAGUES rows are KEPT so the league can be shown, labelled PAPER LEAGUE,
             and are excluded from every all-league total
   upcoming  telegram_bot.tips_table.tips_rows() over tip days today..+7 (src/tip_day.py) - the sent
@@ -35,6 +36,7 @@ from pathlib import Path
 
 import pandas as pd
 
+from src import units as U
 from src.tier_labels import PAPER_TIER_LABEL
 
 import config
@@ -47,7 +49,7 @@ PRO_WEEKLY = "output/studies/league_results_weekly.csv"
 STAKED = ("SNIPER", "MARKSMAN")
 #: overview_table column for paper (VALUABLE) P/L - display words from src/tier_labels.py
 PAPER_PL_COL = f"{PAPER_TIER_LABEL} (paper) P/L"
-TIERS = ("SNIPER", "MARKSMAN", "VALUABLE")
+TIERS = ("QUALIFIED", "SNIPER", "MARKSMAN", "VALUABLE")   # QUALIFIED = tips from 2026-11-21 (owner 2026-11-11)
 #: Display markets. Sides are never pooled: O/U 2.5 Over and Under are separate rows.
 MARKETS = ["O/U 2.5 Over", "O/U 2.5 Under", "BTTS", "Over 1.5", "Over 3.5"]
 _PICK_TO_MARKET = {"O/U 2.5 OVER": "O/U 2.5 Over", "O/U 2.5 UNDER": "O/U 2.5 Under", "BTTS YES": "BTTS",
@@ -70,7 +72,7 @@ def prepare(raw: pd.DataFrame) -> pd.DataFrame:
     """settled_tips(include_paper=True) frame -> the league frame: settled, from the cutoff, with
     display market, staked / paper flags, implied and model probability."""
     cols = ["date", "league", "match", "tier", "mkt", "pick", "odds", "result", "pnl", "edge_pct",
-            "model_prob", "implied", "staked", "paper", "track"]
+            "model_prob", "implied", "staked", "paper", "track", "generated_at"]
     if raw is None or raw.empty:
         return pd.DataFrame(columns=cols)
     cut = str(getattr(config, "PERFORMANCE_CUTOFF_DATE", "1970-01-01"))[:10]
@@ -85,16 +87,26 @@ def prepare(raw: pd.DataFrame) -> pd.DataFrame:
         float("nan"), index=d.index)
     ou = d["mkt"].str.startswith("O/U 2.5")
     d["model_prob"] = mp.where(~ou, d["implied"] + d["edge_pct"] / 100.0)
-    d["staked"] = d["tier"].isin(STAKED)
+    # THE staked definition (src/staked.py, owner 2026-11-04): settled_tips() labels each row with its
+    # recorded policy stake. A frame without that label proves no stake (False), never a tier guess.
+    d["staked"] = (d["staked"].fillna(False).astype(bool) if "staked" in d.columns
+                   else pd.Series(False, index=d.index))
     d["paper"] = d["league"].map(config.is_paper_league).astype(bool)
     d["track"] = d["league"].map(config.model_type_for_league)
+    if "generated_at" not in d.columns:              # the Clean Record split needs it; absent = not recorded
+        d["generated_at"] = pd.NA
     return d[cols].sort_values("date", kind="mergesort").reset_index(drop=True)
 
 
-def settled() -> pd.DataFrame:
-    """Every settled live tip since the cutoff, paper leagues included (flagged)."""
+def settled(record: str | None = None) -> pd.DataFrame:
+    """Every settled live tip since the cutoff, paper leagues included (flagged). `record` = 'CLEAN' / 'BEFORE'
+    keeps one record of the Clean Record split (dashboard_data/clean_record.py, owner 2026-11-11)."""
     from telegram_bot.daily_pack import settled_tips
-    return prepare(settled_tips(include_paper=True))
+    d = prepare(settled_tips(include_paper=True))
+    if record is not None:
+        from dashboard_data import clean_record as CR
+        d = d[CR.assign(d, "generated_at", "date").to_numpy() == record].reset_index(drop=True)
+    return d
 
 
 def upcoming(today: str, days: int = 7) -> pd.DataFrame:
@@ -109,7 +121,7 @@ def upcoming(today: str, days: int = 7) -> pd.DataFrame:
 
 # ── context: rating, production state, research regime ──────────────────────────────────────────
 def ratings() -> dict:
-    """Pro's league rating 1-10 (the stake plan's source). {} when missing or stale - shown as '–'."""
+    """Pro's pooled league rating 1-10 (display only; not used to size stakes since 2026-11-02). {} when missing or stale - shown as '–'."""
     try:
         from src.stake_plan import load_league_ratings
         return load_league_ratings()
@@ -193,21 +205,21 @@ def summarise(g: pd.DataFrame) -> dict:
                 "avg_model_prob": float("nan"), "avg_implied": float("nan")}
     pnl = g["pnl"]
     won, lost = int((pnl > 0).sum()), int((pnl < 0).sum())
-    pl = float(pnl.sum())
+    pl = U.total(pnl)
     return {"tips": n, "won": won, "lost": lost, "void": n - won - lost, "hit": won / n, "roi": pl / n,
-            "pl": round(pl, 4), "avg_odds": float(g["odds"].mean()), "avg_edge": float(g["edge_pct"].mean()),
+            "pl": pl, "avg_odds": float(g["odds"].mean()), "avg_edge": float(g["edge_pct"].mean()),
             "avg_model_prob": float(g["model_prob"].mean()), "avg_implied": float(g["implied"].mean())}
 
 
 def _best_worst(st: pd.DataFrame) -> tuple[str, str]:
     if st.empty:
         return "–", "–"
-    m = st.groupby("mkt")["pnl"].agg(["size", "sum"])
+    m = st.groupby("mkt")["pnl"].agg(size="size", sum=U.total)
     m = m[m["size"] >= MIN_MARKET_N] if (m["size"] >= MIN_MARKET_N).any() else m
     if len(m) == 0:
         return "–", "–"
     m = m.sort_values("sum", ascending=False)
-    fmt = lambda k: f"{k} ({m.loc[k, 'sum']:+.1f}u)"                    # noqa: E731
+    fmt = lambda k: f"{k} ({U.fmt(m.loc[k, 'sum'], 1)})"                 # noqa: E731
     best = fmt(m.index[0])
     worst = fmt(m.index[-1]) if len(m) > 1 else "–"
     return best, worst
@@ -221,8 +233,8 @@ def leagues_list(d: pd.DataFrame) -> list[str]:
 
 def overview(d: pd.DataFrame, today: str, up: pd.DataFrame | None = None, rat: dict | None = None,
              pol: dict | None = None, reg: dict | None = None, only_with_tips: bool = False) -> pd.DataFrame:
-    """One row per league. Results columns are STAKED tiers (SNIPER + MARKSMAN); VALUABLE is its
-    own pair of columns (paper). Sorted best P/L first, paper leagues last."""
+    """One row per league. Results columns are STAKED tips (a recorded policy stake > 0, `staked`);
+    VALUABLE is its own pair of columns (tier view). Sorted best P/L first, paper leagues last."""
     rat = {} if rat is None else rat
     week = (pd.Timestamp(today) - pd.Timedelta(days=7)).strftime("%Y-%m-%d")
     up_n = (up["league"].value_counts() if up is not None and len(up) and "league" in up.columns
@@ -246,8 +258,8 @@ def overview(d: pd.DataFrame, today: str, up: pd.DataFrame | None = None, rat: d
                      "state": state, "state_detail": state_detail,
                      "regime": research_regime(lg, reg or {}),
                      **s,
-                     "pl_7d": round(float(w7["pnl"].sum()), 4), "tips_7d": int(len(w7)),
-                     "valuable_tips": int(len(v)), "valuable_pl": round(float(v["pnl"].sum()), 4),
+                     "pl_7d": U.total(w7["pnl"]), "tips_7d": int(len(w7)),
+                     "valuable_tips": int(len(v)), "valuable_pl": U.total(v["pnl"]),
                      "upcoming": int(up_n.get(lg, 0)),
                      "best_market": best, "worst_market": worst,
                      "paper": bool(config.is_paper_league(lg))})
@@ -267,7 +279,7 @@ def overview_table(ov: pd.DataFrame) -> pd.DataFrame:
     if ov is None or ov.empty:
         return pd.DataFrame()
     return pd.DataFrame({
-        "League": ov["league"] + ov["paper"].map({True: " (paper)", False: ""}),
+        "League": ov["league"] + ov["paper"].map({True: " (no stake)", False: ""}),
         "Track": ov["track"],
         "Rating": ov["rating"].map(lambda x: "–" if x is None or pd.isna(x) else f"{int(x)}/10"),
         "State": ov["state"],
@@ -276,13 +288,13 @@ def overview_table(ov: pd.DataFrame) -> pd.DataFrame:
         "W-L": [wl(w, l, v) for w, l, v in zip(ov["won"], ov["lost"], ov["void"])],
         "Hit %": (ov["hit"] * 100).round(1),
         "ROI %": (ov["roi"] * 100).round(1),
-        "P/L (u)": ov["pl"].round(2),
+        "P/L (u)": ov["pl"].map(U.rnd),
         "Avg odds": ov["avg_odds"].round(2),
         "Avg edge %": ov["avg_edge"].round(1),
         "Model %": (ov["avg_model_prob"] * 100).round(1),
         "Implied %": (ov["avg_implied"] * 100).round(1),
-        "P/L 7d (u)": ov["pl_7d"].round(2),
-        PAPER_PL_COL: ov["valuable_pl"].round(2),
+        "P/L 7d (u)": ov["pl_7d"].map(U.rnd),
+        PAPER_PL_COL: ov["valuable_pl"].map(U.rnd),
         "Upcoming": ov["upcoming"].astype(int),
         "Best market": ov["best_market"],
         "Worst market": ov["worst_market"],
@@ -294,9 +306,10 @@ def totals(d: pd.DataFrame) -> dict:
     return summarise(d[d["staked"] & ~d["paper"]])
 
 
-def by_market(g: pd.DataFrame, tiers=STAKED, reg: dict | None = None, league: str | None = None) -> pd.DataFrame:
-    """One row per display market (sides apart), on the given tiers. Markets with no tips are omitted."""
-    x = g[g["tier"].isin(tiers)]
+def by_market(g: pd.DataFrame, tiers=None, reg: dict | None = None, league: str | None = None) -> pd.DataFrame:
+    """One row per display market (sides apart). tiers=None (default) = STAKED tips (THE definition,
+    `staked`); a tuple = those tiers, staked or not (a tier view). Markets with no tips are omitted."""
+    x = g[g["staked"]] if tiers is None else g[g["tier"].isin(tiers)]
     regs = regime_entries(league, reg) if league and reg else {}
     rows = []
     for mk in MARKETS + sorted(set(x["mkt"]) - set(MARKETS)):
@@ -309,16 +322,18 @@ def by_market(g: pd.DataFrame, tiers=STAKED, reg: dict | None = None, league: st
 def by_tier(g: pd.DataFrame) -> pd.DataFrame:
     rows = []
     for t in TIERS:
-        s = summarise(g[g["tier"] == t])
+        x = g[g["tier"] == t]
+        s = summarise(x)
         if s["tips"]:
-            rows.append({"tier": t + ("" if t in STAKED else " (paper)"), **s})
+            # a tier is not a stake (owner 2026-11-04): the row says how many of its tips were staked
+            rows.append({"tier": t, "staked_tips": int(x["staked"].sum()), **s})
     return pd.DataFrame(rows)
 
 
 def recent(g: pd.DataFrame, n: int = 30) -> pd.DataFrame:
     x = g.sort_values("date", kind="mergesort").tail(n).iloc[::-1]
     return pd.DataFrame({"date": x["date"], "match": x["match"], "market": x["mkt"],
-                         "tier": x["tier"].where(x["staked"], x["tier"] + " (paper)"),
+                         "tier": x["tier"].where(x["staked"], x["tier"] + " (not staked)"),
                          "odds": x["odds"].round(2), "result": x["result"], "pnl": x["pnl"].round(2)})
 
 
@@ -327,8 +342,8 @@ def cumulative(g: pd.DataFrame) -> pd.DataFrame:
     st = g[g["staked"]]
     if st.empty:
         return pd.DataFrame(columns=["date", "cum_pl"])
-    s = st.groupby("date")["pnl"].sum().cumsum()
-    return pd.DataFrame({"date": pd.to_datetime(s.index), "cum_pl": s.values.round(3)})
+    s = st.groupby("date")["pnl"].agg(U.total)
+    return pd.DataFrame({"date": pd.to_datetime(s.index), "cum_pl": [U.rnd(v, 3) for v in U.running(s)]})
 
 
 def last_week(d: pd.DataFrame, today: str) -> pd.DataFrame:
@@ -341,7 +356,7 @@ def last_week(d: pd.DataFrame, today: str) -> pd.DataFrame:
         s = summarise(g[g["staked"]])
         v = g[g["tier"] == "VALUABLE"]
         rows.append({"league": lg, "paper": bool(config.is_paper_league(lg)), **s,
-                     "valuable_tips": int(len(v)), "valuable_pl": round(float(v["pnl"].sum()), 4)})
+                     "valuable_tips": int(len(v)), "valuable_pl": U.total(v["pnl"])})
     out = pd.DataFrame(rows)
     if out.empty:
         return out

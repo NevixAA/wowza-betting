@@ -1,9 +1,9 @@
 {
-  "contract_sha256": "50ad676151903ebce9fc7a4d4d3d09f87c4642f99e11a815bada8cba736fe1f9",
+  "contract_sha256": "3d11e2ef579e20475dac05f5fcb1ef4260cc078270ae59b1091b5f2bb3ef1617",
   "contract_version": "PFC-1.0",
   "counts": {
-    "IMPUTABLE": 83,
-    "OPTIONAL_DEGRADED": 40,
+    "IMPUTABLE": 68,
+    "OPTIONAL_DEGRADED": 45,
     "REQUIRED_FAIL_ROW": 12,
     "SEMANTIC_ZERO": 3
   },
@@ -23,10 +23,6 @@
     "age_peak_delta": {
       "class": "OPTIONAL_DEGRADED",
       "reason": "API-Football /players profile (age, height)"
-    },
-    "aggression_adjusted_threat": {
-      "class": "IMPUTABLE",
-      "reason": "derived from the player's own match history"
     },
     "assists_pg": {
       "class": "REQUIRED_FAIL_ROW",
@@ -56,10 +52,6 @@
       "class": "IMPUTABLE",
       "reason": "derived from the player's own match history"
     },
-    "card_risk_index": {
-      "class": "IMPUTABLE",
-      "reason": "derived from the player's own match history"
-    },
     "cards_pg": {
       "class": "REQUIRED_FAIL_ROW",
       "reason": "core rate"
@@ -80,10 +72,6 @@
       "class": "IMPUTABLE",
       "reason": "derived from the player's own match history"
     },
-    "carrier_vs_press": {
-      "class": "IMPUTABLE",
-      "reason": "derived from the player's own match history"
-    },
     "chronic_injury_risk": {
       "class": "OPTIONAL_DEGRADED",
       "reason": "injury feed (point-in-time since 2026-10-26; serving models trained on leaked values)"
@@ -92,39 +80,11 @@
       "class": "IMPUTABLE",
       "reason": "derived from the player's own match history"
     },
-    "context_quality_discount": {
-      "class": "OPTIONAL_DEGRADED",
-      "reason": "league / opponent-quality enrichment"
-    },
-    "creative_playmaker_score": {
-      "class": "IMPUTABLE",
-      "reason": "derived from the player's own match history"
-    },
-    "creative_pressure_matchup": {
-      "class": "IMPUTABLE",
-      "reason": "derived from the player's own match history"
-    },
     "days_since_last_injury": {
       "class": "OPTIONAL_DEGRADED",
       "reason": "injury feed (point-in-time since 2026-10-26; serving models trained on leaked values)"
     },
-    "defender_sot_role_index": {
-      "class": "IMPUTABLE",
-      "reason": "derived from the player's own match history"
-    },
     "defensive_actions_per90": {
-      "class": "IMPUTABLE",
-      "reason": "derived from the player's own match history"
-    },
-    "defensive_solidity": {
-      "class": "IMPUTABLE",
-      "reason": "derived from the player's own match history"
-    },
-    "defensive_vulnerability_index": {
-      "class": "IMPUTABLE",
-      "reason": "derived from the player's own match history"
-    },
-    "disciplinary_pressure_index": {
       "class": "IMPUTABLE",
       "reason": "derived from the player's own match history"
     },
@@ -173,10 +133,6 @@
       "reason": "derived from the player's own match history"
     },
     "foul_draw_matchup_score": {
-      "class": "IMPUTABLE",
-      "reason": "derived from the player's own match history"
-    },
-    "foul_magnet_score": {
       "class": "IMPUTABLE",
       "reason": "derived from the player's own match history"
     },
@@ -240,19 +196,7 @@
       "class": "IMPUTABLE",
       "reason": "derived from the player's own match history"
     },
-    "league_quality": {
-      "class": "OPTIONAL_DEGRADED",
-      "reason": "league / opponent-quality enrichment"
-    },
-    "league_tier": {
-      "class": "OPTIONAL_DEGRADED",
-      "reason": "league / opponent-quality enrichment"
-    },
     "mid_threat_vs_defense": {
-      "class": "IMPUTABLE",
-      "reason": "derived from the player's own match history"
-    },
-    "midfield_engine_score": {
       "class": "IMPUTABLE",
       "reason": "derived from the player's own match history"
     },
@@ -328,10 +272,6 @@
       "class": "IMPUTABLE",
       "reason": "derived from the player's own match history"
     },
-    "opp_mid_discipline": {
-      "class": "IMPUTABLE",
-      "reason": "derived from the player's own match history"
-    },
     "opp_mid_fouls_pg": {
       "class": "IMPUTABLE",
       "reason": "derived from the player's own match history"
@@ -368,14 +308,6 @@
       "class": "IMPUTABLE",
       "reason": "derived from the player's own match history"
     },
-    "penalty_threat_score": {
-      "class": "IMPUTABLE",
-      "reason": "derived from the player's own match history"
-    },
-    "player_career_avg_quality": {
-      "class": "OPTIONAL_DEGRADED",
-      "reason": "league / opponent-quality enrichment"
-    },
     "pos_defender": {
       "class": "REQUIRED_FAIL_ROW",
       "reason": "position encoding"
@@ -388,23 +320,63 @@
       "class": "REQUIRED_FAIL_ROW",
       "reason": "position encoding"
     },
-    "progressive_carrier_score": {
-      "class": "IMPUTABLE",
-      "reason": "derived from the player's own match history"
+    "prev_season_appearances": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "the player's / team's previous season (absent for a debut season)"
+    },
+    "prev_season_assists_pg": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "the player's / team's previous season (absent for a debut season)"
+    },
+    "prev_season_cards_pg": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "the player's / team's previous season (absent for a debut season)"
+    },
+    "prev_season_goals_pg": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "the player's / team's previous season (absent for a debut season)"
+    },
+    "prev_season_minutes_pg": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "the player's / team's previous season (absent for a debut season)"
+    },
+    "prev_season_opp_conceded_pg": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "the player's / team's previous season (absent for a debut season)"
+    },
+    "prev_season_opp_goals_pg": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "the player's / team's previous season (absent for a debut season)"
+    },
+    "prev_season_shot_accuracy": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "the player's / team's previous season (absent for a debut season)"
+    },
+    "prev_season_shots_pg": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "the player's / team's previous season (absent for a debut season)"
+    },
+    "prev_season_sot_pg": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "the player's / team's previous season (absent for a debut season)"
+    },
+    "prev_season_start_rate": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "the player's / team's previous season (absent for a debut season)"
+    },
+    "prev_season_team_conceded_pg": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "the player's / team's previous season (absent for a debut season)"
+    },
+    "prev_season_team_goals_pg": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "the player's / team's previous season (absent for a debut season)"
     },
     "quality_adj_goals_pg": {
       "class": "OPTIONAL_DEGRADED",
       "reason": "league / opponent-quality enrichment"
     },
     "quality_adj_sot_pg": {
-      "class": "OPTIONAL_DEGRADED",
-      "reason": "league / opponent-quality enrichment"
-    },
-    "quality_mismatch_goals": {
-      "class": "OPTIONAL_DEGRADED",
-      "reason": "league / opponent-quality enrichment"
-    },
-    "quality_mismatch_sot": {
       "class": "OPTIONAL_DEGRADED",
       "reason": "league / opponent-quality enrichment"
     },
@@ -476,15 +448,11 @@
       "class": "OPTIONAL_DEGRADED",
       "reason": "API-Football /players/statistics season priors"
     },
-    "set_piece_corner_matchup": {
-      "class": "IMPUTABLE",
-      "reason": "derived from the player's own match history"
-    },
-    "set_piece_threat_score": {
-      "class": "IMPUTABLE",
-      "reason": "derived from the player's own match history"
-    },
     "shooting_efficiency_index": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "shot_accuracy_l10": {
       "class": "IMPUTABLE",
       "reason": "derived from the player's own match history"
     },
@@ -523,14 +491,6 @@
     "sot_rate": {
       "class": "IMPUTABLE",
       "reason": "derived from the player's own match history"
-    },
-    "sp_receiver_score": {
-      "class": "OPTIONAL_DEGRADED",
-      "reason": "set-piece role enrichment"
-    },
-    "sp_taker_score": {
-      "class": "OPTIONAL_DEGRADED",
-      "reason": "set-piece role enrichment"
     },
     "starter_rate": {
       "class": "REQUIRED_FAIL_ROW",

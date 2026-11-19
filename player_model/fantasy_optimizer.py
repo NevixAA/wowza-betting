@@ -24,8 +24,12 @@ conditional points is how a squad ends up full of injured stars.
 """
 from __future__ import annotations
 
+import logging
+
 import numpy as np
 import pandas as pd
+
+log = logging.getLogger(__name__)
 
 #: FPL squad composition.
 SQUAD_QUOTA = {"GKP": 2, "DEF": 5, "MID": 5, "FWD": 3}
@@ -39,15 +43,22 @@ MAX_PER_CLUB = 3
 BENCH_WEIGHT = 0.10
 
 
-def _points_column(df: pd.DataFrame, points_col: str | None) -> pd.Series:
-    """Unconditional points if we can get them; never silently conditional."""
+def _points_column(df: pd.DataFrame, points_col: str | None) -> pd.Series | None:
+    """Unconditional points if we can get them; never silently conditional.
+
+    Unknown points stay NaN (the caller drops those players, logged) - a 0 here would make an
+    unscored player look like a known blank. With neither an unconditional column nor both
+    fantasy_pts AND p_start, returns None: assuming P(start)=1 would optimise conditional points.
+    """
     if points_col and points_col in df.columns:
-        return pd.to_numeric(df[points_col], errors="coerce").fillna(0.0)
+        return pd.to_numeric(df[points_col], errors="coerce")
     for c in ("xpts_uncond", "xpts_rot"):
         if c in df.columns:
-            return pd.to_numeric(df[c], errors="coerce").fillna(0.0)
-    base = pd.to_numeric(df.get("fantasy_pts", 0), errors="coerce").fillna(0.0)
-    p = pd.to_numeric(df.get("p_start", 1.0), errors="coerce").fillna(0.0).clip(0, 1)
+            return pd.to_numeric(df[c], errors="coerce")
+    if "fantasy_pts" not in df.columns or "p_start" not in df.columns:
+        return None
+    base = pd.to_numeric(df["fantasy_pts"], errors="coerce")
+    p = pd.to_numeric(df["p_start"], errors="coerce").clip(0, 1)
     return base * p
 
 
@@ -66,13 +77,37 @@ def optimal_squad(proj: pd.DataFrame, budget: float = BUDGET,
         return {}
 
     if exclude_unavailable and "availability" in df.columns:
-        av = df["availability"].astype(str).str.lower()
-        df = df[~av.isin(("injured", "unavailable", "suspended"))].reset_index(drop=True)
+        # Ruled out OR availability unknown: neither is recommendable (Data Truth 2026-11-02).
+        from player_model.fpl_api import availability_unknown, not_recommendable
+        out_mask = not_recommendable(df["availability"])
+        n_unknown = int(availability_unknown(df["availability"]).sum())
+        if n_unknown:
+            log.info("optimal_squad: excluded %d player(s) whose availability is unknown", n_unknown)
+        df = df[~out_mask].reset_index(drop=True)
     if df.empty:
         return {}
 
-    pts = _points_column(df, points_col).to_numpy(dtype=float)
-    price = pd.to_numeric(df["price"], errors="coerce").fillna(0.0).to_numpy(dtype=float)
+    pts_s = _points_column(df, points_col)
+    if pts_s is None:
+        log.warning("optimal_squad: no unconditional points (need xpts_uncond/xpts_rot or "
+                    "fantasy_pts + p_start) - not optimising")
+        return {"feasible": False, "reason": "no unconditional points column"}
+    # A player with no FPL price or no projected points cannot be costed or valued: he is left
+    # out (logged), never priced at £0.0m (which made him free to the solver) or scored 0.
+    price_s = pd.to_numeric(df["price"], errors="coerce")
+    unknown = price_s.isna() | pts_s.isna()
+    if unknown.any():
+        log.info("optimal_squad: excluded %d player(s) with no price or no projected points: %s",
+                 int(unknown.sum()),
+                 ", ".join(df.loc[unknown, "player_name"].astype(str).head(20))
+                 if "player_name" in df.columns else "")
+        df, pts_s, price_s = (df[~unknown].reset_index(drop=True),
+                              pts_s[~unknown].reset_index(drop=True),
+                              price_s[~unknown].reset_index(drop=True))
+    if df.empty:
+        return {"feasible": False, "reason": "no player has both a price and projected points"}
+    pts = pts_s.to_numpy(dtype=float)
+    price = price_s.to_numpy(dtype=float)
     pos = df["position"].astype(str).to_numpy()
     club = df.get("team", pd.Series("", index=df.index)).astype(str).to_numpy()
     n = len(df)

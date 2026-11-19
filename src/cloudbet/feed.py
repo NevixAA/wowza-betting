@@ -30,7 +30,6 @@ sources — `1. FC Kaiserslautern` / `Kaiserslautern`, `QPR` / `Queens Park Rang
 from __future__ import annotations
 
 import logging
-import re
 from dataclasses import dataclass
 
 log = logging.getLogger(__name__)
@@ -50,48 +49,29 @@ SIDE_MAP = {"OVER": "over", "UNDER": "under", "YES": "yes", "NO": "no"}
 #: The line each of our market names implies. ou25 is 2.5 by definition; the others say it.
 MARKET_LINE = {"ou25": 2.5, "over15": 1.5, "over35": 3.5, "btts": None}
 
-#: Tokens that distinguish clubs and must match. Same principle as src/team_names: a name is
-#: resolved on its identity token, never on a prefix, so Manchester City never matches
-#: Manchester United.
-_NOISE = {"fc", "cf", "afc", "sc", "ac", "club", "de", "the", "1", "calcio", "sv", "bk", "if",
-          "cd", "ud", "ca", "ss", "us", "as", "fk", "sk", "nk", "og", "sd", "rc"}
-
-
-def _tokens(name: str) -> set[str]:
-    t = re.sub(r"[^\w\s]", " ", str(name).lower())
-    return {w for w in t.split() if w and w not in _NOISE}
+#: Cloudbet selection states that are tradeable. A selection must STATE one of them: a missing
+#: status is unknown, and an unknown status is never a price.
+TRADEABLE_STATUS = ("SELECTION_ENABLED", "ENABLED", "ACTIVE")
 
 
 def match_team(ours: str, candidates: list[str]) -> tuple[str | None, str]:
     """Resolve one of our club names against Cloudbet's, or refuse.
 
-    Refuses on ambiguity rather than picking the best score. A wrong fixture is a bet on the
-    wrong match, which no amount of edge compensates for.
+    THE ESTATE'S ONE CLUB RESOLVER (src/team_names.resolve: league-scoped tiers + the canonical
+    alias store), not a private token-overlap score. The Jaccard matcher that lived here had its own
+    noise list and typed cut-offs (0.34 / 0.17), so it could pair clubs the resolver keeps apart.
+    `resolve` returns None on no match AND on ambiguity, so a wrong fixture is still never bet.
+    Cloudbet spellings it cannot bridge belong in the alias store (src/team_names._ALIASES).
     """
-    ot = _tokens(ours)
-    if not ot:
-        return None, "our name has no identity tokens"
-    scored = []
-    for c in candidates:
-        ct = _tokens(c)
-        if not ct:
-            continue
-        inter = ot & ct
-        if not inter:
-            continue
-        # Jaccard on identity tokens — symmetric, so neither a long nor a short name wins by
-        # length alone.
-        scored.append((len(inter) / len(ot | ct), c))
-    if not scored:
-        return None, f"no candidate shares an identity token with {ours!r}"
-    scored.sort(reverse=True)
-    best, second = scored[0], (scored[1] if len(scored) > 1 else (0.0, None))
-    if best[0] < 0.34:
-        return None, f"best candidate {best[1]!r} shares too little with {ours!r}"
-    if second[1] is not None and best[0] - second[0] < 0.17:
-        return None, (f"ambiguous: {best[1]!r} and {second[1]!r} score {best[0]:.2f} vs "
-                      f"{second[0]:.2f} for {ours!r} — refusing rather than guessing")
-    return best[1], ""
+    from src.team_names import resolve
+    names = [str(c) for c in candidates if str(c).strip()]
+    if not str(ours).strip():
+        return None, "our name is empty"
+    hit = resolve(str(ours), names)
+    if hit is None:
+        return None, (f"no unambiguous Cloudbet club for {ours!r} among {len(names)} name(s) "
+                      f"(team_names.resolve) - refusing rather than guessing")
+    return hit, ""
 
 
 @dataclass(frozen=True)
@@ -164,8 +144,8 @@ def price_for(event: dict, market: str, side: str,
             if str(sel.get("outcome", "")).lower() != outcome:
                 continue
             # A selection that is not currently tradeable must never be treated as a price.
-            if str(sel.get("status", "SELECTION_ENABLED")).upper() not in (
-                    "SELECTION_ENABLED", "ENABLED", "ACTIVE", ""):
+            # The status must be STATED: a missing one was read as enabled.
+            if str(sel.get("status") or "").upper() not in TRADEABLE_STATUS:
                 continue
             try:
                 price = float(sel.get("price"))

@@ -1,0 +1,329 @@
+{
+ "generated_at": "2026-11-03T06:28:24+00:00",
+ "totals": {
+  "rows": 42084.0,
+  "completed": 42084.0,
+  "with_ft": 42084.0,
+  "ht_from_history": 4011.0,
+  "ht_from_fill": 33259.0,
+  "before_pct": 9.5,
+  "after_pct": 88.6,
+  "missing": 4814.0
+ },
+ "missing_reasons_total": {
+  "club_not_resolved": 3197,
+  "refused_fixture_claimed_by_two_dates": 1198,
+  "no_provider_fixture_on_date_pm1": 410,
+  "provider_ht_null": 9
+ },
+ "ft_mismatch_rows": 0,
+ "checks": {
+  "fill_key_unique": {
+   "value": 0,
+   "pass": true,
+   "detail": "two sidecar rows for one history key"
+  },
+  "rederived_fill_equals_sidecar_keys": {
+   "value": {
+    "rederived": 33259,
+    "sidecar": 33259,
+    "only_rederived": 0,
+    "only_sidecar": 0
+   },
+   "pass": true,
+   "detail": "independent re-implementation of the matching rule reproduces the committed sidecar"
+  },
+  "rederived_fill_equals_sidecar_values": {
+   "value": 0,
+   "pass": true,
+   "detail": "same fixture_id, HT score and match rule per key"
+  },
+  "every_missing_row_has_a_reason": {
+   "value": 0,
+   "pass": true,
+   "detail": ""
+  },
+  "fixture_id_claimed_by_two_dates": {
+   "value": 0,
+   "pass": true,
+   "detail": "a fixture id written to history rows of different dates = two matches for one fixture"
+  },
+  "fixture_id_shared_same_date_rows": {
+   "value": {
+    "fixture_ids": 4110,
+    "rows": 8220
+   },
+   "pass": true,
+   "detail": "history repeats one match under two club spellings; each copy carries the same score (informational; the loader's one_club_one_match merges them)"
+  },
+  "provider_fixture_id_unique": {
+   "value": 0,
+   "pass": true,
+   "detail": ""
+  },
+  "fill_fixture_in_provider_store": {
+   "value": 0,
+   "pass": true,
+   "detail": ""
+  },
+  "cross_league_joins": {
+   "value": 0,
+   "pass": true,
+   "detail": "fill league (canonical) == provider league name and registry api_football_id == provider league_id"
+  },
+  "fill_ht_equals_provider_halftime": {
+   "value": 0,
+   "pass": true,
+   "detail": "every HT value is the provider's score.halftime for that fixture id (none derived from FT)"
+  },
+  "fill_ht_nulls": {
+   "value": 0,
+   "pass": true,
+   "detail": ""
+  },
+  "provider_null_ht_never_written": {
+   "value": {
+    "provider_null_ht_fixtures": 9,
+    "in_fill": 0
+   },
+   "pass": true,
+   "detail": "a provider null half-time stays missing (never 0)"
+  },
+  "fill_ht_negative": {
+   "value": 0,
+   "pass": true,
+   "detail": ""
+  },
+  "fill_rows_on_history_rows_that_already_had_ht": {
+   "value": 0,
+   "pass": true,
+   "detail": "informational: the loader joins nan_only, so a stored history HT is never overwritten"
+  },
+  "fill_date_gap_max_days": {
+   "value": 1,
+   "pass": true,
+   "detail": "same day or adjacent day only"
+  },
+  "fill_match_rule_counts": {
+   "value": {
+    "same_day": 32551,
+    "adjacent_day": 708
+   },
+   "pass": true,
+   "detail": ""
+  },
+  "fill_ht_le_history_ft": {
+   "value": {
+    "violations": 0,
+    "filled_rows_without_history_ft": 0
+   },
+   "pass": true,
+   "detail": ""
+  },
+  "placebo_wrong_match_ht_gt_ft_rate": {
+   "value": {
+    "mean_share": 0.303,
+    "min_share": 0.299,
+    "draws": 20
+   },
+   "pass": true,
+   "detail": "share of rows that would break HT<=FT if each HT were attached to a random match of the same league; a near-zero real rate against this is evidence the matches are right"
+  },
+  "history_ht_le_history_ft": {
+   "value": 0,
+   "pass": true,
+   "detail": "the history's own HT"
+  },
+  "history_rows_with_half_an_ht_score": {
+   "value": 0,
+   "pass": true,
+   "detail": "informational: one HT side present, the other missing"
+  },
+  "ft_crosscheck_coverage": {
+   "value": {
+    "filled_rows": 33259,
+    "provider_ft_available": 1489,
+    "unidentifiable_no_provider_ft": 31770
+   },
+   "pass": true,
+   "detail": "provider FT taken from output/af_history.parquet by fixture_id; af_ht_scores stores no FT"
+  },
+  "ft_mismatch_fill_vs_history": {
+   "value": {
+    "rows": 0,
+    "of_which_AET_PEN": 0,
+    "regular_time_status": 0
+   },
+   "pass": true,
+   "detail": "possible wrong match: listed in ft_mismatch.csv"
+  },
+  "fill_ht_le_provider_ft": {
+   "value": 0,
+   "pass": true,
+   "detail": ""
+  },
+  "audit_json_filled_matches_recount": {
+   "value": 0,
+   "pass": true,
+   "detail": ""
+  },
+  "audit_json_total_rows": {
+   "value": {
+    "audit": 33259,
+    "sidecar_rows": 33259
+   },
+   "pass": true,
+   "detail": ""
+  },
+  "sidecar_written_in_one_run": {
+   "value": 1,
+   "pass": true,
+   "detail": "matched_at values: ['2026-11-03T00:15:42Z']"
+  }
+ },
+ "loader_level": {
+  "history_rows": 42084,
+  "after_one_club_one_match": 32303,
+  "identity_aliases_applied": 87,
+  "filled_without_alias_placement": {
+   "fd_history_ht_fill": 24716
+  },
+  "filled_with_alias_placement": {
+   "fd_history_ht_fill": 26984
+  },
+  "per_league": {
+   "Argentina Primera Division": {
+    "rows": 3624,
+    "before_fill_pct": 7.6,
+    "after_fill_old_pct": 86.3,
+    "after_fill_fixed_pct": 86.3,
+    "missing_after_fixed": 497
+   },
+   "Austrian Bundesliga": {
+    "rows": 1424,
+    "before_fill_pct": 16.0,
+    "after_fill_old_pct": 96.0,
+    "after_fill_fixed_pct": 99.6,
+    "missing_after_fixed": 6
+   },
+   "Brazil Serie A": {
+    "rows": 2987,
+    "before_fill_pct": 8.8,
+    "after_fill_old_pct": 89.2,
+    "after_fill_fixed_pct": 96.4,
+    "missing_after_fixed": 108
+   },
+   "China Super League": {
+    "rows": 1833,
+    "before_fill_pct": 12.5,
+    "after_fill_old_pct": 39.5,
+    "after_fill_fixed_pct": 88.0,
+    "missing_after_fixed": 220
+   },
+   "Denmark Superliga": {
+    "rows": 1471,
+    "before_fill_pct": 7.0,
+    "after_fill_old_pct": 99.9,
+    "after_fill_fixed_pct": 99.9,
+    "missing_after_fixed": 1
+   },
+   "Finland Veikkausliiga": {
+    "rows": 1322,
+    "before_fill_pct": 6.3,
+    "after_fill_old_pct": 98.1,
+    "after_fill_fixed_pct": 99.4,
+    "missing_after_fixed": 8
+   },
+   "Ireland Premier Division": {
+    "rows": 1350,
+    "before_fill_pct": 11.3,
+    "after_fill_old_pct": 99.9,
+    "after_fill_fixed_pct": 99.9,
+    "missing_after_fixed": 1
+   },
+   "Japan J-League": {
+    "rows": 2637,
+    "before_fill_pct": 8.1,
+    "after_fill_old_pct": 92.1,
+    "after_fill_fixed_pct": 98.9,
+    "missing_after_fixed": 28
+   },
+   "K-League 1": {
+    "rows": 1472,
+    "before_fill_pct": 27.0,
+    "after_fill_old_pct": 100.0,
+    "after_fill_fixed_pct": 100.0,
+    "missing_after_fixed": 0
+   },
+   "Mexico Liga MX": {
+    "rows": 2438,
+    "before_fill_pct": 7.3,
+    "after_fill_old_pct": 97.7,
+    "after_fill_fixed_pct": 97.7,
+    "missing_after_fixed": 56
+   },
+   "Norway Eliteserien": {
+    "rows": 1881,
+    "before_fill_pct": 7.3,
+    "after_fill_old_pct": 92.0,
+    "after_fill_fixed_pct": 99.9,
+    "missing_after_fixed": 1
+   },
+   "Romanian Superliga": {
+    "rows": 2290,
+    "before_fill_pct": 22.1,
+    "after_fill_old_pct": 68.1,
+    "after_fill_fixed_pct": 98.2,
+    "missing_after_fixed": 42
+   },
+   "Saudi Pro League": {
+    "rows": 1920,
+    "before_fill_pct": 25.9,
+    "after_fill_old_pct": 100.0,
+    "after_fill_fixed_pct": 100.0,
+    "missing_after_fixed": 0
+   },
+   "Sweden Allsvenskan": {
+    "rows": 1902,
+    "before_fill_pct": 17.9,
+    "after_fill_old_pct": 95.6,
+    "after_fill_fixed_pct": 99.6,
+    "missing_after_fixed": 7
+   },
+   "USA MLS": {
+    "rows": 3752,
+    "before_fill_pct": 10.3,
+    "after_fill_old_pct": 90.6,
+    "after_fill_fixed_pct": 90.6,
+    "missing_after_fixed": 353
+   }
+  },
+  "totals": {
+   "before_fill": 3991,
+   "after_fill_old": 28707,
+   "after_fill_fixed": 30975,
+   "rows": 32303
+  },
+  "ht_gt_ft_rows": 0,
+  "half_filled_rows": 0,
+  "ht_over05_label_mismatch": 0,
+  "ht_label_where_ht_missing": 0,
+  "train_has_ht_history_share": {
+   "without_fill": {
+    "home_has_ht_history": 0.3108,
+    "away_has_ht_history": 0.3132,
+    "flag_vs_ht_scored_last5_disagree": 0
+   },
+   "with_fill_fixed": {
+    "home_has_ht_history": 0.9783,
+    "away_has_ht_history": 0.9784,
+    "flag_vs_ht_scored_last5_disagree": 0
+   }
+  },
+  "serve_vs_train_parity": {
+   "fixtures_compared": 15,
+   "cells_disagreeing": 0,
+   "serve_has_ht_history_share": 0.933
+  }
+ }
+}

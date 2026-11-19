@@ -28,6 +28,20 @@ Three defects, measured 2026-10-25/26 on the real history and its git snapshots:
    10-24 and `git pull --rebase -X theirs` let the older copy of a part win, dropping 764 rows
    until the next collect re-added them. guard_cli() refuses to push a commit whose history is
    missing any (fixture_id, player_id) that origin already had.
+
+4. THE 14-DAY WINDOW STILL REWROTE COMMITTED ROWS (2026-11-18, owner rule "never rewrite
+   committed rows; corrections beside originals"). Inside the window a re-fetch let every fresh
+   value win: on 2026-11-17 and 11-18 the collect rewrote `referee` on 91 rows of 3 Brazil
+   fixtures ("Ramon Abatti Abel, Brazil" -> "R. Abatti": the provider re-spelled the same
+   referee, see referee_names.py) and recomputed referee_yellows_pg / referee_strictness /
+   card_clash_index / opp_strength_index ... on 110 fixtures, partly BECAUSE the spelling split
+   the referee's history. Now a committed row is KEPT AS FIRST WRITTEN, whatever its age: a
+   collect only adds new keys and fills cells that were stored empty. A raw provider fact that
+   comes back different is not applied; it is recorded beside the original in
+   output/corrections/player_history_collect_diffs.parquet (append-only, first-seen kept).
+   Re-derived features are not corrections and are dropped. The push guard now also refuses a
+   push that changes a stored non-empty cell of any committed row (injury columns excepted:
+   the injury refresh owns them).
 """
 from __future__ import annotations
 
@@ -42,14 +56,24 @@ import pandas as pd
 
 KEY = ["fixture_id", "player_id"]
 
-# ── Rule 1: the frozen window ────────────────────────────────────────────────────────────────
-# A row whose match date is more than FROZEN_AFTER_DAYS before today is IMMUTABLE to a collect.
-# New rows are always added, whatever their age; rows inside the window may still be refreshed
-# (late result corrections, data arriving after the match).
-FROZEN_AFTER_DAYS = 14
-# Columns a collect may still correct on a frozen row (raw facts only, never derived features).
-# EMPTY on the evidence in the module docstring: no raw fact changed after 14 days.
-RAW_FACTS_MUTABLE_AFTER_FREEZE: tuple[str, ...] = ()
+# ── Rule 1: committed rows are kept as first written ──────────────────────────────────────────
+# Raw per-match facts a provider re-fetch may report differently. A difference on one of these is
+# recorded in the corrections sidecar (never applied); a difference on any other column is a
+# re-derived feature and is dropped. `referee` is compared by canonical name (referee_names).
+RAW_FACT_COLUMNS: tuple[str, ...] = (
+    "player_name", "date", "league", "home_team", "away_team", "team", "is_home", "referee",
+    "season", "position", "minutes", "started", "goals", "assists", "shots_total",
+    "shots_on_target", "yellow_cards", "key_passes", "rating", "fouls_committed", "fouls_drawn",
+    "duels_total", "duels_won", "team_corners", "red_cards", "passes_total", "offsides",
+    "tackles_total", "interceptions", "dribbles_attempted", "dribbles_success", "dribbles_past",
+    "goals_conceded", "saves", "penalty_scored", "penalty_missed", "penalty_won",
+    "penalty_saved",
+)
+CORRECTIONS_PATH = (Path(__file__).resolve().parents[1] / "output" / "corrections"
+                    / "player_history_collect_diffs.parquet")
+CORRECTION_KEY = ["fixture_id", "player_id", "column", "stored_value", "fresh_value"]
+CORRECTION_COLUMNS = ["fixture_id", "player_id", "date", "league", "column", "stored_value",
+                      "fresh_value"]
 
 # ── Rule 2: point-in-time injury features ─────────────────────────────────────────────────────
 # Every column derived from the /sidelined history. The collect never produces them (they are
@@ -57,8 +81,12 @@ RAW_FACTS_MUTABLE_AFTER_FREEZE: tuple[str, ...] = ()
 INJURY_COLUMNS = ("chronic_injury_risk", "days_since_last_injury", "return_from_injury_flag")
 # The injury refresh writes only rows whose match is at most this many days old.
 INJURY_REFRESH_WINDOW_DAYS = 60
-# The pre-existing sentinel: "no sidelined spell ended before this match" (config.py: 365 =
-# healthy). Kept so the feature means what the serving models were trained on.
+# "No sidelined spell ended before this match" is now days_since_last_injury = NaN on a row whose
+# chronic_injury_risk / return_from_injury_flag ARE written (a row the refresh never reached has all
+# three NaN) - that pair is the explicit "no recorded spell" flag, with no extra column to rewrite
+# every month part for (Data Truth, 2026-11-01). It used to be the SENTINEL 365 days, a value that is
+# also a real gap. NO_INJURY_DAYS is kept ONLY to decode rows written before that change
+# (reconstruct_from_stamp, the 2026-10 repair script); nothing new is written with it.
 NO_INJURY_DAYS = 365.0
 RETURN_WINDOW_DAYS = 21
 CHRONIC_LOOKBACK_DAYS = 365
@@ -87,27 +115,36 @@ def _parse_day(s) -> dt.date | None:
 
 # ── merge (collect) ───────────────────────────────────────────────────────────────────────────
 
-def merge_history(existing: pd.DataFrame, fresh: pd.DataFrame, today=None,
-                  frozen_after_days: int = FROZEN_AFTER_DAYS,
-                  mutable_after_freeze: tuple[str, ...] = RAW_FACTS_MUTABLE_AFTER_FREEZE,
-                  ) -> tuple[pd.DataFrame, dict]:
+def _same(a, b) -> bool:
+    if pd.isna(a) and pd.isna(b):
+        return True
+    num = (int, float, np.integer, np.floating)
+    if isinstance(a, num) and isinstance(b, num):
+        return float(a) == float(b)
+    if isinstance(a, (pd.Timestamp, dt.date)) or isinstance(b, (pd.Timestamp, dt.date)):
+        try:
+            return _as_day(a) == _as_day(b)
+        except (TypeError, ValueError):
+            return False
+    return str(a) == str(b)
+
+
+def merge_history(existing: pd.DataFrame, fresh: pd.DataFrame,
+                  raw_fact_columns: tuple[str, ...] = RAW_FACT_COLUMNS,
+                  referee_aliases: dict | None = None) -> tuple[pd.DataFrame, dict]:
     """Union `fresh` (what a collect just fetched and derived) into `existing`.
 
       * a key only in `existing` is carried through untouched (a collect never removes a row);
       * a key only in `fresh` is ADDED, whatever its date;
-      * a key in both whose stored match date is inside the window (>= today - frozen_after_days)
-        is refreshed: the fresh value wins wherever it is non-null, the stored one fills gaps
-        (combine_first semantics, as before);
-      * a key in both whose stored match date is OLDER is FROZEN: the stored row is kept
-        exactly, except columns named in `mutable_after_freeze`, which take a non-null fresh
-        value. A row with an unparseable stored date counts as frozen.
+      * a key in both is KEPT AS STORED: a stored non-empty cell is never changed. A cell that is
+        stored empty (or a column the stored row does not have) takes the fresh value;
+      * where a stored raw fact (raw_fact_columns) and a fresh non-empty value disagree, the
+        difference is returned in stats["corrections"] (CORRECTION_COLUMNS) for the caller to
+        record beside the original (append_corrections). `referee` is compared by canonical name.
 
-    Injury columns in `fresh` are blanked first: a collect does not compute them (build_features
-    only inserts the 365/0/0 defaults when the column is absent), so letting them through would
-    overwrite real point-in-time values with an invented default -- which it did, nightly.
+    Injury columns in `fresh` are blanked first: a collect does not compute them.
     """
-    today = _utc_today() if today is None else _as_day(today)
-    cutoff = today - pd.Timedelta(days=int(frozen_after_days))
+    from . import referee_names as RN
     fresh = fresh.copy()
     for c in INJURY_COLUMNS:
         if c in fresh.columns:
@@ -116,36 +153,139 @@ def merge_history(existing: pd.DataFrame, fresh: pd.DataFrame, today=None,
     a = existing.drop_duplicates(subset=KEY, keep="last").set_index(KEY)
     b = fresh.drop_duplicates(subset=KEY, keep="last").set_index(KEY)
     both = a.index.intersection(b.index)
-    stats = {"existing": len(a), "fetched": len(b), "added": 0, "refreshed": 0, "frozen": 0,
-             "frozen_raw_updates": 0}
+    stats = {"existing": len(a), "fetched": len(b), "added": 0, "kept": int(len(both)),
+             "filled_cells": 0, "corrections": pd.DataFrame(columns=CORRECTION_COLUMNS)}
     parts = [a.drop(index=both), b.drop(index=both)] if len(both) else [a, b]
     if len(both):
-        d = pd.to_datetime(a.loc[both, "date"], errors="coerce") if "date" in a.columns \
-            else pd.Series(pd.NaT, index=both)
-        if getattr(d.dt, "tz", None) is not None:
-            d = d.dt.tz_convert("UTC").dt.tz_localize(None)
-        live_mask = (d >= cutoff).to_numpy()
-        live, frozen = both[live_mask], both[~live_mask]
-        if len(live):
-            parts.append(b.loc[live].combine_first(a.loc[live]))
-        if len(frozen):
-            keep = a.loc[frozen].copy()
-            for c in mutable_after_freeze:
-                if c in b.columns:
-                    new = b.loc[frozen, c]
-                    if c in keep.columns:
-                        changed = new.notna() & ~((new == keep[c]) | (new.isna() & keep[c].isna()))
-                        stats["frozen_raw_updates"] += int(changed.sum())
-                        keep[c] = new.where(new.notna(), keep[c])
-                    else:
-                        keep[c] = new
-            parts.append(keep)
-        stats["refreshed"], stats["frozen"] = int(len(live)), int(len(frozen))
+        keep = a.loc[both].copy()
+        new = b.loc[both]
+        from .player_stat_nulls import HISTORY_COUNT_COLS, PARSED_WITH_RULE, SOURCE_COL
+        for c in new.columns:
+            if c == SOURCE_COL:
+                # PROVENANCE describes the counts a row holds. The stored counts are kept, so the
+                # stored label is kept too (an unlabelled row stays 'zeros_unverified' for
+                # history_refetch); a fresh label never lands on counts it did not produce.
+                continue
+            if c not in keep.columns:
+                keep[c] = new[c]
+                stats["filled_cells"] += int(new[c].notna().sum())
+                continue
+            gap = (keep[c].isna() & new[c].notna()).to_numpy()
+            if gap.any():
+                keep.loc[keep.index[gap], c] = new.loc[new.index[gap], c].to_numpy()
+                stats["filled_cells"] += int(gap.sum())
+        recs = []
+        aliases = None
+        lg = a.loc[both, "league"] if "league" in a.columns else pd.Series("", index=both)
+        for c in raw_fact_columns:
+            if c not in new.columns or c not in a.columns:
+                continue
+            sv, fv = a.loc[both, c], new[c]
+            cand = (sv.notna() & fv.notna()).to_numpy()
+            if not cand.any():
+                continue
+            if c == "referee" and aliases is None:
+                aliases = RN.load_aliases() if referee_aliases is None else referee_aliases
+            idx = both[cand]
+            for k, x, y in zip(idx, sv[cand], fv[cand]):
+                if c == "referee":
+                    league = lg.get(k, "")
+                    same = _same(RN.canonical(x, league, aliases), RN.canonical(y, league, aliases))
+                else:
+                    same = _same(x, y)
+                if not same:
+                    recs.append({"fixture_id": k[0], "player_id": k[1],
+                                 "date": str(a.loc[k, "date"])[:10] if "date" in a.columns else "",
+                                 "league": str(lg.get(k, "")), "column": c,
+                                 "stored_value": str(x), "fresh_value": str(y)})
+        # A fresh row parsed with the owner's null rule (count_source 'provider_rule', fix round 9)
+        # carries its counts AS A SET: a count it leaves missing is the provider's "not answered".
+        # Where the stored row holds a value there (the old `or 0` parser's suspect zero), that is a
+        # raw difference too -- recorded, not applied (it used to replace the stored counts whole
+        # inside the 14-day window).
+        if SOURCE_COL in new.columns:
+            ruled = new[SOURCE_COL].eq(PARSED_WITH_RULE).to_numpy()
+            if ruled.any():
+                stats["rule_rows_kept"] = int(ruled.sum())
+                for c in (*HISTORY_COUNT_COLS, "rating"):
+                    if c not in new.columns or c not in a.columns:
+                        continue
+                    sv, fv = a.loc[both, c], new[c]
+                    m = ruled & sv.notna().to_numpy() & fv.isna().to_numpy()
+                    for k, x in zip(both[m], sv[m]):
+                        recs.append({"fixture_id": k[0], "player_id": k[1],
+                                     "date": str(a.loc[k, "date"])[:10] if "date" in a.columns else "",
+                                     "league": str(lg.get(k, "")), "column": c,
+                                     "stored_value": str(x), "fresh_value": "<missing>"})
+        if recs:
+            stats["corrections"] = pd.DataFrame(recs, columns=CORRECTION_COLUMNS)
+        parts.append(keep)
     # existing first, so the stored column order is kept; sort_index reproduces the
     # combine_first row order the old merge produced and downstream steps have been reading.
     merged = pd.concat([p for p in parts if len(p)]).sort_index().reset_index()
     stats["added"] = int(len(merged) - len(a))
+    # n_prev_games of every row this collect ADDED counts the player's WHOLE stored history, not
+    # just the rows of this fetch batch (build_features sees only the batch: on the committed
+    # history 84k rows, 9.6%, carried a batch-truncated count). Committed rows are untouched.
+    if "n_prev_games" in merged.columns and "player_id" in merged.columns and len(merged):
+        added_keys = set(b.index.difference(a.index))
+        mask = pd.Series([k in added_keys for k in zip(*(merged[c] for c in KEY))], index=merged.index)
+        if mask.any():
+            full = prev_games_full(merged)
+            changed = mask & ~((full == merged["n_prev_games"]) | (full.isna() & merged["n_prev_games"].isna()))
+            stats["n_prev_recounted"] = int(changed.sum())
+            merged.loc[mask, "n_prev_games"] = full[mask]
     return merged, stats
+
+
+def append_corrections(recs: pd.DataFrame, path=None, observed_utc: str | None = None) -> int:
+    """Append collect differences to the corrections sidecar. A difference already recorded
+    (same fixture, player, column, stored and fresh value) keeps its first-seen stamp. Returns
+    the number of NEW records written (0 = the file is not touched)."""
+    if recs is None or not len(recs):
+        return 0
+    path = Path(path) if path is not None else CORRECTIONS_PATH
+    recs = recs[CORRECTION_COLUMNS].copy()
+    recs["observed_utc"] = observed_utc or pd.Timestamp.now("UTC").strftime("%Y-%m-%dT%H:%M:%SZ")
+    for c in ("fixture_id", "player_id"):
+        recs[c] = pd.to_numeric(recs[c], errors="coerce").astype("int64")
+    for c in ("date", "league", "column", "stored_value", "fresh_value", "observed_utc"):
+        recs[c] = recs[c].astype(str)
+    old = pd.read_parquet(path) if path.exists() else recs.iloc[0:0]
+    seen = set(map(tuple, old[CORRECTION_KEY].astype(str).to_numpy())) if len(old) else set()
+    keys = list(map(tuple, recs[CORRECTION_KEY].astype(str).to_numpy()))
+    add = recs[[k not in seen for k in keys]].drop_duplicates(subset=CORRECTION_KEY, keep="first")
+    if not len(add):
+        return 0
+    path.parent.mkdir(parents=True, exist_ok=True)
+    out = pd.concat([old, add], ignore_index=True)
+    tmp = path.with_name(path.name + ".tmp")
+    out.to_parquet(tmp, index=False)
+    tmp.replace(path)
+    return int(len(add))
+
+
+def prev_games_full(df: pd.DataFrame) -> pd.Series:
+    """n_prev_games recounted over the player's WHOLE stored history: the count stored on his
+    earliest stored row (the games before it, which build_features dropped as first appearances)
+    plus the number of his stored rows before this one (date, then fixture_id order). A row
+    without a real player_id (<= 0 / missing) has no history -> NaN. One definition, used by
+    merge_history (producer) and scripts/rebuild_player_history.py (stored history)."""
+    pid = pd.to_numeric(df["player_id"], errors="coerce")
+    ok = pid > 0
+    out = pd.Series(np.nan, index=df.index, dtype=float)
+    if not ok.any():
+        return out
+    d = df.loc[ok, ["player_id", "date"] + (["fixture_id"] if "fixture_id" in df.columns else [])].copy()
+    d["_d"] = pd.to_datetime(d["date"], errors="coerce")
+    d["_n"] = pd.to_numeric(df.loc[ok, "n_prev_games"], errors="coerce") if "n_prev_games" in df.columns \
+        else np.nan
+    d = d.sort_values(["player_id", "_d"] + (["fixture_id"] if "fixture_id" in d.columns else []),
+                      kind="stable")
+    g = d.groupby("player_id", sort=False)
+    base = g["_n"].transform("first").fillna(0).clip(lower=0)
+    out.loc[d.index] = (base + g.cumcount()).astype(float)
+    return out
 
 
 # ── injury features as of the match date ─────────────────────────────────────────────────────
@@ -171,15 +311,21 @@ def injury_evidence(entries: list[dict], match_date) -> dict:
 def injury_features_asof(entries: list[dict], match_date) -> dict:
     """chronic_injury_risk / days_since_last_injury / return_from_injury_flag for ONE row, as of
     its own match date. `entries` is the player's /sidelined list ({start, end} ISO dates); an
-    empty list is a real answer ("no recorded spell"), and gives the 0 / 365 / 0 the models were
-    trained on. A FAILED fetch must not reach here (it is not an empty list -- see
-    data_fetcher.fetch_all_player_sidelined)."""
+    empty list is a real answer ("no recorded spell"): chronic 0, days_since NaN (no spell ended,
+    so there is no gap to measure), return flag 0 (see no_spell_recorded). A FAILED fetch must not
+    reach here (it is not an empty list -- see data_fetcher.fetch_all_player_sidelined)."""
     ev = injury_evidence(entries, match_date)
-    days = (float((ev["match_date"] - ev["last_end"]).days) if ev["last_end"] is not None
-            else NO_INJURY_DAYS)
+    none = ev["last_end"] is None
+    days = float("nan") if none else float((ev["match_date"] - ev["last_end"]).days)
     return {"chronic_injury_risk": float(len(ev["starts"])),
             "days_since_last_injury": days,
-            "return_from_injury_flag": float(0 < days <= RETURN_WINDOW_DAYS)}
+            "return_from_injury_flag": float((not none) and 0 < days <= RETURN_WINDOW_DAYS)}
+
+
+def no_spell_recorded(df: pd.DataFrame) -> pd.Series:
+    """Rows whose injury refresh found NO sidelined spell ending before the match: days NaN while
+    the return flag was written. (Unrefreshed rows have all three NaN and are False here.)"""
+    return df["days_since_last_injury"].isna() & df["return_from_injury_flag"].notna()
 
 
 def apply_injury_pit(df: pd.DataFrame, sidelined_map: dict, row_mask=None) -> int:
@@ -218,7 +364,8 @@ def reconstruct_from_stamp(match_date, stamp_date, chronic, days) -> tuple[float
     The old refresh wrote days = D - L, where L is the last spell end before D (or the 365
     sentinel when there was none), and chronic = number of spells starting in [D - 365, D].
 
-      days_since at M:  sentinel at D -> no spell ended before D, so none before M -> 365.
+      days_since at M:  sentinel at D -> no spell ended before D, so none before M -> NaN
+                        (no gap to measure; was the 365 sentinel).
                         L < M        -> no end in (L, D) ⊇ (L, M), so the last end before M is
                                         L -> M - L.
                         L >= M       -> the last end before M is unknown -> None.
@@ -236,7 +383,7 @@ def reconstruct_from_stamp(match_date, stamp_date, chronic, days) -> tuple[float
     sentinel = float(days) == NO_INJURY_DAYS
     last_end = None if sentinel else d - pd.Timedelta(days=float(days))
     if last_end is None:
-        out_days = NO_INJURY_DAYS
+        out_days = float("nan")
     elif last_end < m:
         out_days = float((m - last_end).days)
     else:
@@ -263,11 +410,44 @@ def _git(*args: str, binary: bool = False):
     return r.stdout if binary else r.stdout.decode("utf-8", "replace")
 
 
+def rewritten_cells(before: pd.DataFrame, after: pd.DataFrame,
+                    exempt: tuple[str, ...] = INJURY_COLUMNS) -> pd.DataFrame:
+    """Cells of rows present in both frames whose `before` value is non-empty and differs in
+    `after` (a column dropped from `after` counts too). Filling an empty cell is not a rewrite.
+    Returns one row per (column) with the count and the number of fixtures affected."""
+    a = before.drop_duplicates(subset=KEY, keep="last").set_index(KEY)
+    b = after.drop_duplicates(subset=KEY, keep="last").set_index(KEY)
+    both = a.index.intersection(b.index)
+    out = []
+    if not len(both):
+        return pd.DataFrame(columns=["column", "cells", "fixtures"])
+    a, b = a.loc[both], b.loc[both]
+    for c in a.columns:
+        if c in exempt:
+            continue
+        x = a[c]
+        if c not in b.columns:
+            bad = x.notna().to_numpy()
+        else:
+            y = b[c]
+            try:
+                eq = (x == y).to_numpy(dtype=bool)
+            except (TypeError, ValueError):
+                eq = (x.astype(str) == y.astype(str)).to_numpy()
+            bad = x.notna().to_numpy() & ~eq
+        if bad.any():
+            out.append({"column": c, "cells": int(bad.sum()),
+                        "fixtures": int(both[bad].get_level_values(0).nunique())})
+    return pd.DataFrame(out, columns=["column", "cells", "fixtures"])
+
+
 def guard_cli(ref: str = "origin/main", root: str = "player_history.parquet") -> int:
     """Run in a workflow AFTER `git pull --rebase` and BEFORE `git push`. Every month part
     that differs between `ref` (what origin already has) and the working tree is read from
     `ref`; if any of its (fixture_id, player_id) keys is absent from the working tree's history
-    the push would delete rows another writer committed, so this exits 1 instead.
+    the push would delete rows another writer committed, so this exits 1 instead. It also
+    exits 1 when a committed non-empty cell of a row in that part would change (rewritten_cells;
+    injury columns are the injury refresh's and are exempt; filling an empty cell is allowed).
 
     With the shared concurrency group both writers start from a fresh checkout and this should
     never fire; it is the tripwire that makes the 2026-10-24 failure loud instead of silent."""
@@ -281,18 +461,29 @@ def guard_cli(ref: str = "origin/main", root: str = "player_history.parquet") ->
         print(f"::error title=history guard::{root} missing but {ref} has it")
         return 1
     have = pd.read_parquet(root, columns=KEY)
-    total_lost = 0
+    total_lost = total_rewritten = 0
     for p in changed:
-        before = pd.read_parquet(io.BytesIO(_git("show", f"{ref}:{p}", binary=True)), columns=KEY)
-        lost = lost_keys(before, have)
+        before = pd.read_parquet(io.BytesIO(_git("show", f"{ref}:{p}", binary=True)))
+        lost = lost_keys(before[KEY], have)
         if len(lost):
             total_lost += len(lost)
             print(f"::error title=history guard::{p}: {len(lost)} row(s) on {ref} would be "
                   f"dropped by this push")
-    if total_lost:
-        print(f"[history-guard] REFUSING to push: {total_lost} committed row(s) would be lost")
+        # Cells: compared part by part (a row's month part follows its stored date, which a
+        # collect never changes), so the guard never loads the whole history's columns.
+        here = Path(p)
+        after = pd.read_parquet(here) if here.exists() else before.iloc[0:0]
+        rw = rewritten_cells(before, after)
+        if len(rw):
+            total_rewritten += int(rw["cells"].sum())
+            print(f"::error title=history guard::{p}: {int(rw['cells'].sum())} committed cell(s) "
+                  f"on {ref} would be rewritten: "
+                  + ", ".join(f"{r.column}={r.cells}" for r in rw.head(12).itertuples()))
+    if total_lost or total_rewritten:
+        print(f"[history-guard] REFUSING to push: {total_lost} committed row(s) would be lost, "
+              f"{total_rewritten} committed cell(s) rewritten")
         return 1
-    print(f"[history-guard] ok: {len(changed)} changed part(s), no committed row lost")
+    print(f"[history-guard] ok: {len(changed)} changed part(s), no committed row lost or rewritten")
     return 0
 
 

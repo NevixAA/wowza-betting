@@ -1,0 +1,144 @@
+{
+ "audited_commit": "fb0e9697ec8556d4dd3df57f31f8ed5415a5012d",
+ "board_generated_at": "2026-11-01T10:59:39Z",
+ "board_rows": 158,
+ "model_types": {
+  "new_format": 88,
+  "standard": 70
+ },
+ "reproduce_served_from_persisted_features": {
+  "NF_OU25": {
+   "n": 88,
+   "max_abs_diff": 0.0005395510009907345,
+   "reproduced_within_1e-6": 84
+  },
+  "BTTS": {
+   "n": 158,
+   "max_abs_diff": 2.220446049250313e-16,
+   "reproduced_within_1e-6": 158,
+   "std_rows_rescored_in_std_only_batch_max_diff_pp": 0.99,
+   "std_rows_rescored_in_std_only_batch_rows_gt_0.5pp": 5
+  },
+  "O15": {
+   "n": 158,
+   "max_abs_diff": 0.0031217387963294874,
+   "reproduced_within_1e-6": 146,
+   "std_rows_rescored_in_std_only_batch_max_diff_pp": 1.486,
+   "std_rows_rescored_in_std_only_batch_rows_gt_0.5pp": 17
+  },
+  "O35": {
+   "n": 158,
+   "max_abs_diff": 0.0008171232605300172,
+   "reproduced_within_1e-6": 156,
+   "std_rows_rescored_in_std_only_batch_max_diff_pp": 1.058,
+   "std_rows_rescored_in_std_only_batch_rows_gt_0.5pp": 4
+  },
+  "HT05": {
+   "n": 70,
+   "max_abs_diff": 1.1102230246251565e-16,
+   "reproduced_within_1e-6": 70
+  },
+  "HT15": {
+   "n": 70,
+   "max_abs_diff": 1.1102230246251565e-16,
+   "reproduced_within_1e-6": 70
+  }
+ },
+ "rest_days_legacy": {
+  "standard": {
+   "rows": 70,
+   "persisted_home_missing": 0.657,
+   "persisted_away_missing": 0.543,
+   "reproduced_prod_home_missing": 0.657,
+   "reproduced_prod_agrees_with_persisted_missingness": 1.0,
+   "by_key_raw_name_home_missing": 0.529,
+   "by_key_resolved_name_home_missing": 0.014
+  },
+  "new_format": {
+   "rows": 88,
+   "persisted_home_missing": 0.318,
+   "persisted_away_missing": 0.432,
+   "reproduced_prod_home_missing": 0.318,
+   "reproduced_prod_agrees_with_persisted_missingness": 1.0,
+   "by_key_raw_name_home_missing": 0.5,
+   "by_key_resolved_name_home_missing": 0.045
+  },
+  "rows_whose_positional_tail_row_is_a_different_fixture": 157,
+  "board_rows": 158,
+  "board_is_date_sorted": false
+ },
+ "ht_alignment": {
+  "ht_home_n": {
+   "persisted_eq_positional": 1.0,
+   "persisted_eq_key_aligned": 0.348,
+   "positional_eq_key_aligned": 0.348
+  },
+  "ht_away_n": {
+   "persisted_eq_positional": 1.0,
+   "persisted_eq_key_aligned": 0.329,
+   "positional_eq_key_aligned": 0.329
+  },
+  "ht_lambda_total": {
+   "persisted_eq_positional": 1.0,
+   "persisted_eq_key_aligned": 0.063,
+   "positional_eq_key_aligned": 0.063
+  },
+  "ht_home_attack": {
+   "persisted_eq_positional": 1.0,
+   "persisted_eq_key_aligned": 0.348,
+   "positional_eq_key_aligned": 0.348
+  },
+  "attach_returns_rows": 158,
+  "rows_on_board": 158,
+  "ht05_prob_positional_vs_aligned": {
+   "n": 70,
+   "median_pp": 0.614,
+   "max_pp": 1.724,
+   "rows_gt_1pp": 19
+  },
+  "ht15_prob_positional_vs_aligned": {
+   "n": 70,
+   "median_pp": 1.052,
+   "max_pp": 3.587,
+   "rows_gt_1pp": 36
+  }
+ },
+ "repaired_standard_board": {
+  "rows": 70,
+  "home_rest_days_missing": 0.014,
+  "away_rest_days_missing": 0.014,
+  "home_scored_last5_missing": 0.014,
+  "away_scored_last5_missing": 0.014,
+  "home_ht_over05_rate_missing": 0.014,
+  "home_season_goals_h_missing": 0.014,
+  "home_xg_last5_missing": 0.014,
+  "home_rest_days_median": 11.0,
+  "home_rest_days_gt_14": 0.043,
+  "home_names_not_in_history_after_resolution": 1,
+  "p_rebuilt_vs_served": {
+   "median_abs_pp": 0.0,
+   "max_abs_pp": 0.03,
+   "within_0.5pp": 1.0,
+   "note": "history differs from production's (offline committed cache vs live download), so exact equality is not expected"
+  },
+  "history_max_date_by_league": {
+   "Belgian First Division A": "2026-10-25",
+   "Bundesliga 2": "2026-10-25",
+   "Championship": "2026-10-24",
+   "Dutch Eredivisie": "2026-10-25",
+   "Greek Super League": "2026-10-25",
+   "La Liga 2": "2026-10-26",
+   "League One": "2026-10-27",
+   "League Two": "2026-10-27",
+   "Ligue 2": "2026-10-26",
+   "National League": "2026-10-28",
+   "Portuguese Primeira Liga": "2026-10-26",
+   "Scottish Championship": "2026-10-27",
+   "Scottish League One": "2026-04-18",
+   "Scottish League Two": "2026-04-18",
+   "Scottish Premiership": "2026-10-28",
+   "Serie B": "2026-10-28",
+   "Turkish Super Lig": "2026-10-26"
+  }
+ }
+}

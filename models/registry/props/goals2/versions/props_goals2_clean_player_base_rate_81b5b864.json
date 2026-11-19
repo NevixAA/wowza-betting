@@ -1,0 +1,66 @@
+{
+  "market": "goals2",
+  "model_version": "props_goals2_clean_player_base_rate_81b5b864",
+  "artifact_sha256": "81b5b8641e2a0ee41677d6fda5057a224d42a7e35f1118898a1650416707e8de",
+  "registered_at": "2026-11-18T19:03:55Z",
+  "training_cutoff": "2026-08-31",
+  "training_rows": {
+    "fit": 734045,
+    "calibration": 130673
+  },
+  "candidate": "player_base_rate",
+  "harness_version": "PROPS-HARNESS-1.0",
+  "clean_retrain": {
+    "run_id": "43035218594",
+    "code_sha": "6fd794964ad031b45ff0a383d996bb09b414175c",
+    "artifact_sha256": "d22e92ebb87f4c78a881b626b855123a9cb0e8f8516b2c6a016a6320bbcecc96",
+    "candidate": "player_base_rate",
+    "holdout": {
+      "n": 55907,
+      "events": 480,
+      "log_loss": 0.044926540022886714,
+      "brier": 0.008356120179071162,
+      "ece10": 0.0013998373429191407,
+      "calib_intercept": 0.32707742938072326,
+      "calib_slope": 1.0589714721519463,
+      "ll_minus_player_base_rate": null,
+      "ml_candidates_minus_player_base_rate": {
+        "hgb_nan_native": {
+          "mean": 0.0006450299344477942,
+          "ci95": [
+            6.530809968128068e-05,
+            0.001198587576807718
+          ],
+          "week_blocks": 9
+        },
+        "recipe_retrained": {
+          "mean": 0.0008405242981649206,
+          "ci95": [
+            0.0002577324247655846,
+            0.0013961888802847527
+          ],
+          "week_blocks": 9
+        }
+      },
+      "head_to_head": {
+        "n": 55907,
+        "weeks": 9,
+        "ll_delta_hgb_minus_recipe": -0.00019549436371712632,
+        "ci95_lo": -0.0003411486567496919,
+        "ci95_hi": -5.1947495645495305e-05,
+        "p_one_sided": 0.0047488127968008,
+        "boot": 4000,
+        "seed": 1
+      },
+      "holdout_dates": [
+        "2026-09-01",
+        "2026-10-31"
+      ],
+      "rule": "owner 2026-11-18: serve the clean player_base_rate (no ML candidate beats it: no candidate beats player_base_rate)"
+    },
+    "approval": "serve the clean player_base_rate model (option b) - 100% real data, markets stay on; the clean ML candidates keep predicting as challengers (owner decision 2026-11-18, relayed by the go-live coordinator)",
+    "approved_on": "2026-11-18",
+    "prior_champion": "props_goals2_legacy_426e3bb5"
+  },
+  "model_role": "CHAMPION"
+}

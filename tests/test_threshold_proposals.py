@@ -20,6 +20,13 @@ from src import threshold_proposals as TP
 ROOT = Path(__file__).resolve().parents[1]
 WF = ROOT / ".github" / "workflows"
 PROD = [ROOT / TP.PROD_STANDARD, ROOT / TP.PROD_SIDE]
+#: The mechanics tests below (proposal, apply, refusals, lock) run on a FROZEN copy of the production threshold
+#: files as they stood before the first bars_opt apply (main / pre-P11, unchanged since 2026-10-06), so they keep
+#: testing the same synthetic moves ('ou25|Serie B' re-thresholded, 'btts|Championship' approval revoked) after
+#: the owner-approved P11 bars (TP-2026-11-18-1ddfc9f1) replaced the production entries. Real-repo checks still
+#: read the live files (PROD).
+BASE = ROOT / "tests" / "fixtures" / "threshold_base"
+BASE_FILES = [BASE / TP.PROD_STANDARD, BASE / TP.PROD_SIDE]
 
 
 def _bytes():
@@ -120,7 +127,7 @@ def test_write_candidate_and_proposal_writer_refuse_production_paths(tmp_path):
 def sandbox(tmp_path, monkeypatch):
     (tmp_path / "models").mkdir()
     (tmp_path / "config").mkdir()
-    for p in PROD:
+    for p in BASE_FILES:
         shutil.copy(p, tmp_path / "models" / p.name)
     shutil.copy(L.SNAPSHOT_PATH, tmp_path / "config" / "research_lock_snapshot.json")
     monkeypatch.setattr(L, "THRESHOLD_ROOT", tmp_path)
@@ -135,7 +142,7 @@ def _candidates(root):
     """Two cells moved: Serie B ou25 (approved, new threshold) and Championship btts (approval revoked)."""
     prod = TP.production_params(root)
     ou = copy.deepcopy(prod["ou25"])
-    ou["Serie B"] = dict(ou["Serie B"], sniper_th=0.15, marksman_th=0.13, bets_oos=88, roi_oos=6.1,
+    ou["Serie B"] = dict(ou["Serie B"], sniper_th=0.15, marksman_th=0.13, valuable_th=0.05, bets_oos=88, roi_oos=6.1,
                          oos_matchdays=61, oos_roi_ci95=[-12.0, 24.2])
     bt = copy.deepcopy(prod["btts"])
     bt["Championship"] = dict(bt["Championship"], approved=False, roi_oos=-3.0)
@@ -166,10 +173,15 @@ def test_proposal_compares_with_production_and_resolves_served_gates(sandbox):
     assert set(by) == {"ou25|Serie B", "btts|Championship"}
     sb = by["ou25|Serie B"]
     assert sb["change"] == "THRESHOLD_CHANGE" and sb["serves_change"]
-    assert sb["served_now"]["sniper"] == 0.12 and sb["served_if_approved"]["sniper"] == 0.15
+    # owner 2026-11-09 (no global bars): today's pre-repair entry has no valuable_th, so nothing serves it;
+    # once applied, the league's own three bars serve
+    assert sb["served_now"]["sniper"] is None and not sb["served_now"]["own_bars"]
+    assert (sb["served_if_approved"]["sniper"], sb["served_if_approved"]["valuable"]) == (0.15, 0.05)
     assert sb["evidence"]["bets_oos"] == 88 and sb["evidence"]["oos_matchdays"] == 61
     ch = by["btts|Championship"]
-    assert ch["change"] == "APPROVAL_REVOKED" and ch["served_if_approved"]["sniper"] == 0.10
+    # the approved (PROVEN) flag alone no longer moves serving, and there is no global bar to fall to
+    assert ch["change"] == "APPROVAL_REVOKED" and ch["served_if_approved"]["sniper"] is None
+    assert not ch["serves_change"]
     assert p["status"] == "AWAITING_OWNER" and p["proposal_id"].startswith("TP-2026-11-01-")
     md = TP.to_markdown(p)
     assert "ou25|Serie B" in md and "How to approve" in md
@@ -283,13 +295,15 @@ def test_full_propose_run_on_the_real_repo_leaves_every_served_gate_unchanged(tm
     before = [g.as_dict() for g in G.all_gates()]
     cand = tmp_path / "cand"
     cand.mkdir()
-    for k, v in _candidates(ROOT).items():
+    for k, v in _candidates(BASE).items():          # synthetic moves on the frozen base, proposed against LIVE
         name = "standard" if k == "ou25" else k
         (cand / f"best_params_{name}.json").write_text(json.dumps(v), encoding="utf-8")
     monkeypatch.setattr(TP, "PROPOSAL_DIR", tmp_path / "proposals")
     assert TP.main(["propose", "--candidates", str(cand), "--evidence-dir", str(tmp_path), "--month", "2026-11"]) == 0
     latest = json.loads((tmp_path / "proposals" / "latest.json").read_text(encoding="utf-8"))
-    assert latest["n_serving_changes"] == 2 and latest["status"] == "AWAITING_OWNER"
+    # the frozen-base candidates differ from the live P11 entries in many cells; whatever the count, proposing
+    # them changes nothing that serves (below)
+    assert latest["n_serving_changes"] >= 1 and latest["status"] == "AWAITING_OWNER"
     assert (tmp_path / "proposals" / "2026-11.md").exists()
     # nothing approved -> the committed approvals file has no entry -> apply refuses, nothing served moves
     with pytest.raises(A.ApplyRefused):
@@ -384,3 +398,59 @@ def test_dashboard_reads_the_proposal_state(tmp_path):
     led.write_text(json.dumps({"history": [{"proposal_id": "TP-x", "applied_at": "2026-11-02T09:00:00Z"}]}),
                    encoding="utf-8")
     assert V.threshold_proposal(latest=lt, approvals=none, applied=led)["state"] == "APPLIED"
+
+
+# ── withdrawals (owner 2026-11-11 "Bet-time snapshot + re-run" / "Strict, keep Argentina") ─────────────────
+def test_withdrawn_entries_are_never_applied(sandbox):
+    p, path = _proposal(sandbox, sandbox)
+    by = {e["entry_id"]: e for e in p["entries"]}
+    wd = [{"entry_id": "ou25|Serie B", "entry_hash": by["ou25|Serie B"]["entry_hash"],
+           "withdrawn_at": "2026-11-11T12:00:00Z", "reason": "test: evidence price not bet-time"}]
+    ap = _approve(sandbox, p, ["ou25|Serie B", "btts|Championship"], withdrawals=wd)
+    r = A.apply(path, approvals_path=ap, dry_run=True, lock=False)
+    assert "ou25|Serie B" not in r["applied"] and r["withdrawn"] == ["ou25|Serie B"]
+    assert "btts|Championship" in r["applied"]
+
+
+def test_a_withdrawal_must_match_the_entry_and_carry_a_reason(sandbox):
+    p, path = _proposal(sandbox, sandbox)
+    by = {e["entry_id"]: e for e in p["entries"]}
+    bad = [{"entry_id": "ou25|Serie B", "entry_hash": "0" * 64, "withdrawn_at": "x", "reason": "r"}]
+    with pytest.raises(A.ApplyRefused, match="does not match"):
+        A.apply(path, approvals_path=_approve(sandbox, p, ["ou25|Serie B"], withdrawals=bad), dry_run=True, lock=False)
+    noreason = [{"entry_id": "ou25|Serie B", "entry_hash": by["ou25|Serie B"]["entry_hash"], "withdrawn_at": "x"}]
+    with pytest.raises(A.ApplyRefused, match="reason"):
+        A.apply(path, approvals_path=_approve(sandbox, p, ["ou25|Serie B"], withdrawals=noreason), dry_run=True,
+                lock=False)
+
+
+def test_committed_withdrawal_of_the_november_proposal():
+    """The committed record: 37 history / unproven-capture entries + La Liga 2 O/U 2.5 ("Paper until re-run")
+    withdrawn; Argentina NF BTTS stays approved (owner 2026-11-11)."""
+    import json as _j
+    ap = _j.loads((ROOT / "config" / "threshold_approvals.json").read_text(encoding="utf-8"))
+    a = next(x for x in ap["approvals"] if x["proposal_id"] == "TP-2026-11-10-d999073a")
+    w = {x["entry_id"] for x in a["withdrawals"]}
+    assert "btts|Argentina Primera Division" not in w
+    assert {"btts|La Liga 2", "ou25|La Liga 2"} <= w and len(w) == 38
+    assert all("Bet-time snapshot + re-run" in x["owner_words"] for x in a["withdrawals"])
+
+
+def test_committed_approval_of_the_v5_rerun_supersedes_the_november_one():
+    """Owner 2026-11-15 "Approve, PROMISING small": every entry of TP-2026-11-15-bade2c0b by id + hash; the
+    2026-11-10 record and its withdrawals stay as history, marked superseded; Data truth 8 finds every approved
+    cell on proven bet-time prices (tier BT counts as proven)."""
+    import json as _j
+    from src import threshold_apply as A
+    from src.integrity import data_truth as DT
+    ap = _j.loads((ROOT / "config" / "threshold_approvals.json").read_text(encoding="utf-8"))
+    p = _j.loads((ROOT / "output" / "threshold_proposals" / "bars_oddsapi_hist" / "2026-11_bade2c0b.json")
+                 .read_text(encoding="utf-8"))
+    new = A.find_approval(p, ap)
+    assert new["approved_by"] == "owner (Nevo)" and new["supersedes"] == "TP-2026-11-10-d999073a"
+    assert {(e["entry_id"], e["entry_hash"]) for e in new["entries"]} == \
+        {(e["entry_id"], e["entry_hash"]) for e in p["entries"]}
+    assert not new.get("withdrawals")
+    old = next(x for x in ap["approvals"] if x["proposal_id"] == "TP-2026-11-10-d999073a")
+    assert old["superseded_by"] == p["proposal_id"] and len(old["withdrawals"]) == 38
+    assert DT.unproven_evidence() == []

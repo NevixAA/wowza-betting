@@ -1,20 +1,29 @@
 {
- "generated_at": "2026-11-18T07:21:14+00:00",
+ "generated_at": "2026-11-19T17:23:53+00:00",
  "registry_file": "config/leagues.json",
- "registry_version": "LR-1.0-2026-11-01",
+ "registry_version": "LR-1.2-2026-11-02",
  "errors": [],
  "counts": {
-  "leagues": 48,
-  "aliases": 3,
+  "leagues": 53,
+  "aliases": 11,
   "standard": 17,
   "new_format": 15,
   "enabled": 20,
-  "paper": 1
+  "paper": 1,
+  "props": 29
  },
  "aliases": {
   "Danish Superliga": "Denmark Superliga",
   "Austria Bundesliga": "Austrian Bundesliga",
-  "World Cup": "World Cup 2026"
+  "World Cup": "World Cup 2026",
+  "Netherlands Eredivisie": "Dutch Eredivisie",
+  "Eredivisie": "Dutch Eredivisie",
+  "Portugal Primeira Liga": "Portuguese Primeira Liga",
+  "Primeira Liga": "Portuguese Primeira Liga",
+  "Belgium Pro League": "Belgian First Division A",
+  "Belgian Pro League": "Belgian First Division A",
+  "Turkey Super Lig": "Turkish Super Lig",
+  "Switzerland Super League": "Swiss Super League"
  },
  "config_consistency": {
   "STANDARD_FORMAT_LEAGUES": {
@@ -89,17 +98,19 @@
    "differs": []
   }
  },
- "coverage_gaps": [],
+ "coverage_gaps": [
+  "Cyprus First Division: club league with no timezone in any repo source"
+ ],
  "last_predict_routing": {
-  "generated_at": "2026-11-18T07:21:08Z",
-  "fixtures": 172,
-  "standard": 90,
-  "new_format": 82,
+  "generated_at": "2026-11-19T17:23:48Z",
+  "fixtures": 176,
+  "standard": 98,
+  "new_format": 78,
   "unknown_league_fixtures": [],
   "new_format_artifact_missing": false,
   "new_format_unscored_fixtures": 0,
   "policy": "unknown league -> model_type=unknown, no probability, no bet; missing NF artifact -> NF fixtures unscored (no Standard fallback)",
   "status": "PASS"
  },
- "status": "PASS"
+ "status": "WARN"
 }

@@ -41,7 +41,9 @@ import pandas as pd
 
 log = logging.getLogger(__name__)
 
-STAKED_TIERS = ("SNIPER", "MARKSMAN")
+#: a tip row (owner 2026-11-11: QUALIFIED by its cell; stakes follow the cell, never a tier); legacy codes
+#: only on historical rows
+STAKED_TIERS = ("QUALIFIED", "SNIPER", "MARKSMAN")
 DEFAULT_MARKETS = ("ou25", "btts", "over15", "over35")
 #: Player props, enabled by the owner on 2026-10-05 with a different bar: any POSITIVE edge,
 #: not the 5% the team markets must clear. They compete for the same daily cap, so a prop only

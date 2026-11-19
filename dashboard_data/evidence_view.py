@@ -18,6 +18,11 @@ def _none(x) -> bool:
     return x is None or (isinstance(x, float) and x != x) or (not isinstance(x, (str, dict, list)) and pd.isna(x))
 
 
+def _fmt(x, spec: str) -> str:
+    """A gate requirement as the config states it, or '—' when the config has none."""
+    return "—" if _none(x) else format(x, spec)
+
+
 def _roi(x) -> str:
     return "—" if _none(x) else ui.fmt_roi(float(x))
 
@@ -143,18 +148,18 @@ def hmodel_panel(meta: dict, rows: pd.DataFrame) -> None:
                                                     "settled paired rows")
             st.caption(" · ".join([
                 _req(r["req_n_met"], f"n ≥ {int(r['required_n']):,}"),
-                _req(r["req_ll_met"], f"Δ LL < {meta.get('max_ll_delta_exclusive', 0.0):g}"),
-                _req(r["req_brier_met"], f"Δ Brier ≤ {meta.get('max_brier_worsening', 0.0001):g}"),
+                _req(r["req_ll_met"], f"Δ LL < {_fmt(meta.get('max_ll_delta_exclusive'), 'g')}"),
+                _req(r["req_brier_met"], f"Δ Brier ≤ {_fmt(meta.get('max_brier_worsening'), 'g')}"),
                 f"window closes {r['window_expires'] or '—'} ({r['days_left'] if r['days_left'] is not None else '—'} d)"]))
             if r["early_fail_zone"]:
                 st.markdown(ui.status_chip("FAIL", label="EARLY-FAIL ZONE · CHAMPION SIGNIFICANTLY AHEAD"))
     st.caption(f"Second-period requirement ({meta.get('gate_version') or 'PG-1.0'}, config/promotion_gate.json "
-               f"prospective): per track n ≥ {meta.get('min_n', 1000):,} settled rows after the freeze, Δ log loss < "
-               f"{meta.get('max_ll_delta_exclusive', 0.0):g}, Δ Brier ≤ {meta.get('max_brier_worsening', 0.0001):g}, "
-               f"within {meta.get('max_age_days', 180)} days of registration; from n ≥ "
-               f"{meta.get('early_fail_min_n', 300)} a CI wholly above zero fails early. A ✓ below the n "
+               f"prospective): per track n ≥ {_fmt(meta.get('min_n'), ',')} settled rows after the freeze, Δ log loss < "
+               f"{_fmt(meta.get('max_ll_delta_exclusive'), 'g')}, Δ Brier ≤ {_fmt(meta.get('max_brier_worsening'), 'g')}, "
+               f"within {_fmt(meta.get('max_age_days'), '')} days of registration; from n ≥ "
+               f"{_fmt(meta.get('early_fail_min_n'), '')} a CI wholly above zero fails early. A ✓ below the n "
                "minimum is NOT evidence. CIs are the evaluator's matchday block bootstrap (≥ 5 blocks to print; "
-               f"the gate itself wants ≥ {meta.get('min_bootstrap_blocks', 20)}). Computed "
+               f"the gate itself wants ≥ {_fmt(meta.get('min_bootstrap_blocks'), '')}). Computed "
                f"{str(meta.get('computed_at') or '—')[:16]} by src/shadow_experiments.evaluate (update_results CI).")
 
 

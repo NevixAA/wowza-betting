@@ -1,10 +1,12 @@
-"""The af_history write-back must never lose a column or a row it does not own (2026-11-16).
+"""No writer of af_history or of a collect file may lose a column or a row it does not own (2026-11-16).
 
-The bug: src/data_loader's 'BANK THE ENRICHMENT' did concat + drop_duplicates(keep="last") with a
+The bug: main's src/data_loader 'BANK THE ENRICHMENT' did concat + drop_duplicates(keep="last") with a
 shots-only frame, so every touched provider row lost its corners, fouls, cards, full-time score and
-fixture_id. These tests run the real write-back (data_loader.bank_af_enrichment) and the shared helper
-(src/integrity/preserving_upsert) through a parquet round trip and require every pre-existing cell to
-come back identical, value and dtype, except the intended updates.
+fixture_id. On this branch the loader no longer writes af_history at all (fix round 9,
+tests/test_fix9_bank.py); the writers that remain - backfill_af_history's merge, the results sync from
+main, collect_common.append_parquet and the sidecar collectors - merge through
+src/integrity/preserving_upsert. These tests run them through a parquet round trip and require every
+pre-existing cell to come back identical, value and dtype, except the intended updates.
 """
 from __future__ import annotations
 
@@ -12,7 +14,10 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from src import data_loader as DL
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 from src.integrity.preserving_upsert import union_columns, upsert
 
 LG = "Brazil Serie A"
@@ -73,63 +78,85 @@ def _assert_unchanged_except(before: pd.DataFrame, after: pd.DataFrame, changed:
             assert (pd.isna(a) and pd.isna(b)) or a == b, (i, c, a, b)
 
 
-def test_bank_round_trip_keeps_corners_cards_scores_and_fixture_id(tmp_path):
-    p = tmp_path / "af_history.parquet"
-    before = _stored()
-    before.to_parquet(p, index=False)
-    before = pd.read_parquet(p)                     # compare against exactly what is on disk
-
-    out = DL.bank_af_enrichment(_loader_frame(), hist_path=p)
-    after = pd.read_parquet(p)
-
-    assert out["written"] is True
-    assert len(after) == len(before) + 1            # nothing dropped (not even the stored duplicate)
-    intended = {(0, "HXG"), (0, "AXG"), (3, "HS"), (3, "AS"), (3, "HST"), (3, "AST")}
-    _assert_unchanged_except(before, after.iloc[: len(before)].reset_index(drop=True), intended)
-    assert after.at[0, "HXG"] == 1.7 and after.at[0, "AXG"] == 0.4
-    assert after.at[0, "HS"] == 14.0                # the provider value is never overwritten
-    assert after.at[3, "HS"] == 10.0                # a missing cell is filled
-    for c in ("HC", "AC", "HF", "AF", "HY", "AY", "HR", "AR", "FTHG", "FTAG", "fixture_id"):
-        assert after.loc[:2, c].notna().all(), c    # corners / cards / score / fixture_id survive
-    new = after.iloc[-1]
-    assert new["home_team"] == "Bahia" and new["HS"] == 12.0
-    for c in ("HC", "AC", "HY", "AY", "FTHG", "fixture_id"):
-        assert pd.isna(new[c]), c                   # missing stays missing, never a default
-    assert after["fixture_id"].dtype == "Int64"
+def test_append_parquet_keeps_columns_and_rows_it_does_not_own(tmp_path):
+    import collect_common as CC
+    p = tmp_path / "c.parquet"
+    pd.DataFrame({"fixture_id": [1, 2], "v": [1.0, 2.0], "note": ["kept", "kept2"]}).to_parquet(p, index=False)
+    n = CC.append_parquet(p, [{"fixture_id": 2, "v": 5.0}, {"fixture_id": 3, "v": 3.0}],
+                          key=["fixture_id"], columns=["fixture_id", "v"])
+    out = pd.read_parquet(p)
+    assert n == 3 and list(out.columns) == ["fixture_id", "v", "note"]
+    assert out["v"].tolist() == [1.0, 5.0, 3.0]                  # keep="last": the new answer wins
+    assert out["note"].tolist()[:2] == ["kept", "kept2"] and pd.isna(out.at[2, "note"])
+    CC.append_parquet(p, [{"fixture_id": 1, "v": 9.0}], key=["fixture_id"], columns=["fixture_id", "v"],
+                      keep="first")
+    assert pd.read_parquet(p)["v"].tolist() == [1.0, 5.0, 3.0]   # keep="first": the stored row wins
 
 
-def test_bank_second_run_is_a_byte_identical_no_op(tmp_path):
-    p = tmp_path / "af_history.parquet"
-    _stored().to_parquet(p, index=False)
-    DL.bank_af_enrichment(_loader_frame(), hist_path=p)
-    once = p.read_bytes()
-    out = DL.bank_af_enrichment(_loader_frame(), hist_path=p)
-    assert out["written"] is False
-    assert p.read_bytes() == once
-
-
-def test_bank_keeps_stored_misfiled_rows_and_refuses_new_ones(tmp_path):
-    p = tmp_path / "af_history.parquet"
-    st = _stored()
-    st.loc[3, "league"] = "Denmark 1st Div"         # not in the registry: misfiled
-    st.to_parquet(p, index=False)
-    fr = _loader_frame()
-    fr.loc[3, "league"] = "Denmark 1st Div"
-    DL.bank_af_enrichment(fr, hist_path=p)
-    after = pd.read_parquet(p)
-    assert (after["league"] == "Denmark 1st Div").sum() == 1   # the stored row stays, the new is refused
-    assert "Bahia" not in set(after["home_team"])
-
-
-def test_bank_never_drops_a_column_the_frame_lacks(tmp_path):
-    p = tmp_path / "af_history.parquet"
+def test_backfill_merge_keeps_corners_cards_and_fixture_id(tmp_path):
+    """backfill_af_history's merge, as it runs (mode "update"): a provider answer for a stored key
+    fills / updates only cells it gives and never drops a stored column (here one it does not emit)."""
     st = _stored()
     st["home_team_id"] = [1.0, 2.0, 2.0, np.nan]
+    p = tmp_path / "af_history.parquet"
     st.to_parquet(p, index=False)
-    DL.bank_af_enrichment(_loader_frame(), hist_path=p)
-    after = pd.read_parquet(p)
-    assert "home_team_id" in after.columns
-    assert after.loc[:2, "home_team_id"].tolist() == [1.0, 2.0, 2.0]
+    before = pd.read_parquet(p)
+    fresh = pd.DataFrame({"league": [LG, LG], "season": ["2024", "2024"],
+                          "date": pd.to_datetime(["2024-04-20", "2024-05-01"]),
+                          "home_team": ["Santos", "Bahia"], "away_team": ["Gremio", "Cuiaba"],
+                          "FTHG": [3, 0], "FTAG": [1, 0], "FTR": ["H", "D"], "HS": [11.0, 8.0],
+                          "HC": [7.0, np.nan], "fixture_id": pd.array([2004, 2005], dtype="Int64")})
+    out, rep = upsert(before, fresh, key=["league", "date", "home_team", "away_team"], mode="update",
+                      date_keys=("date",))
+    intended = {(3, "FTHG"), (3, "FTAG"), (3, "FTR"), (3, "HS"), (3, "HC"), (3, "fixture_id")}
+    _assert_unchanged_except(before, out.iloc[: len(before)].reset_index(drop=True), intended)
+    assert out.at[3, "HC"] == 7.0 and out.at[3, "fixture_id"] == 2004 and out.at[3, "AC"] != out.at[3, "AC"]
+    assert len(out) == 5 and out.at[4, "home_team"] == "Bahia" and pd.isna(out.at[4, "HC"])
+    assert out["fixture_id"].dtype == "Int64" and "home_team_id" in out.columns
+
+
+def test_sync_from_main_keeps_every_column_main_rows_carry(tmp_path, monkeypatch):
+    """A column only main's file has (fixture_id, PR #34) reaches the synced rows; this branch's rows
+    are untouched and the column is missing for them, never a default."""
+    import subprocess
+
+    import sync_results_from_main as SY
+
+    def g(*a):
+        subprocess.run(["git", "-c", "user.name=t", "-c", "user.email=t@t", *a], cwd=repo, check=True,
+                       capture_output=True)
+    repo = tmp_path / "r"
+    (repo / "output").mkdir(parents=True)
+    g("init", "-q", "-b", "main")
+    af = repo / "output" / "af_history.parquet"
+    base = pd.DataFrame({"league": ["L"], "date": pd.to_datetime(["2026-10-01"]), "home_team": ["A"],
+                         "away_team": ["B"], "HC": [4.0]})
+    base.to_parquet(af, index=False)
+    g("add", "-A"); g("commit", "-q", "-m", "base")
+    g("checkout", "-q", "-b", "dt")
+    pd.concat([base, pd.DataFrame({"league": ["L"], "date": pd.to_datetime(["2026-10-03"]),
+                                   "home_team": ["G"], "away_team": ["H"], "HC": [2.0]})],
+              ignore_index=True).to_parquet(af, index=False)
+    g("commit", "-qam", "dt gap row")
+    g("checkout", "-q", "main")
+    pd.concat([base.assign(fixture_id=pd.array([pd.NA], dtype="Int64")),
+               pd.DataFrame({"league": ["L"], "date": pd.to_datetime(["2026-11-05"]), "home_team": ["E"],
+                             "away_team": ["F"], "HC": [6.0], "fixture_id": pd.array([77], dtype="Int64")})],
+              ignore_index=True).to_parquet(af, index=False)
+    g("commit", "-qam", "main extend with fixture_id")
+    g("checkout", "-q", "dt")
+    monkeypatch.setattr(SY, "ROOT", repo)
+    monkeypatch.setattr(SY, "MAIN", "main")
+    monkeypatch.setattr(SY, "WHOLE_FILE", [])
+    monkeypatch.setattr(SY, "WHOLE_DIRS", [])
+    monkeypatch.setattr(SY, "SIDECAR", repo / "output" / "corrections" / "synced.csv")
+    r = SY.run()
+    out = pd.read_parquet(af)
+    assert r["rows_appended"]["output/af_history.parquet"] == 1
+    assert "fixture_id" in out.columns
+    assert out.set_index("home_team").at["E", "fixture_id"] == 77
+    assert out.set_index("home_team").loc[["A", "G"], "fixture_id"].isna().all()
+    assert out.set_index("home_team").loc[["A", "G", "E"], "HC"].tolist() == [4.0, 2.0, 6.0]
 
 
 # ── the shared helper ────────────────────────────────────────────────────────────────────────────

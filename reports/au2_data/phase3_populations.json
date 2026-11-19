@@ -1,0 +1,435 @@
+{
+ "audited_v9_commit": "fb0e9697ec8556d4dd3df57f31f8ed5415a5012d",
+ "switch_first_repaired_board_utc": "2026-10-28 12:48:14+00:00",
+ "min_settled_for_decision": 150,
+ "outcome_conflicts_excluded": 0,
+ "ledger_duplicate_fixture_rows": 12,
+ "attribution_checks": {
+  "repaired_rows_before_switch": 0,
+  "legacy_rows_after_switch": 0,
+  "unattributed_rows_after_2026-10-18": 0
+ },
+ "ledger": {
+  "L1_legacy_unversioned_2026-09-01_to_2026-10-18": {
+   "tips": 299,
+   "settled": 283,
+   "void": 0,
+   "unsettled": 16,
+   "first_generated": "2026-09-01 00:48",
+   "last_generated": "2026-10-18 04:25",
+   "wins": 123,
+   "hit_rate": 0.4346,
+   "flat_profit_u": -23.35,
+   "flat_roi": -0.0825,
+   "flat_roi_ci95_matchday_boot": [
+    -0.1884,
+    0.0498
+   ],
+   "ledger_pnl_matches_recomputed": true,
+   "mean_odds": 2.125,
+   "side_prob_metrics": {
+    "n": 283,
+    "logloss": 0.7138,
+    "brier": 0.26,
+    "mean_p": 0.5435,
+    "base_rate": 0.4346,
+    "calib_gap_pp": 10.88,
+    "auc": 0.5227
+   },
+   "clv": {
+    "n": 283,
+    "mean_pct": 0.339,
+    "median_pct": 0.0,
+    "pct_positive": 0.41,
+    "ci95_matchday_boot": [
+     -0.2958,
+     1.0098
+    ]
+   },
+   "by_direction": {
+    "OVER": {
+     "n": 160,
+     "hit": 0.438,
+     "roi": -0.1263
+    },
+    "UNDER": {
+     "n": 123,
+     "hit": 0.431,
+     "roi": -0.0256
+    }
+   },
+   "by_odds_band": {
+    "<2": {
+     "n": 110,
+     "hit": 0.482,
+     "roi": -0.0826
+    },
+    "2-2.5": {
+     "n": 141,
+     "hit": 0.418,
+     "roi": -0.0876
+    },
+    "2.5-3": {
+     "n": 30,
+     "hit": 0.3,
+     "roi": -0.202
+    },
+    ">=3": {
+     "n": 2,
+     "hit": 1.0,
+     "roi": 2.075
+    }
+   },
+   "by_tier": {
+    "MARKSMAN": {
+     "n": 74,
+     "roi": -0.0023
+    },
+    "SNIPER": {
+     "n": 39,
+     "roi": -0.0915
+    },
+    "VALUABLE": {
+     "n": 170,
+     "roi": -0.1154
+    }
+   }
+  },
+  "L2_legacy_standard_20261018": {
+   "tips": 43,
+   "settled": 38,
+   "void": 0,
+   "unsettled": 5,
+   "first_generated": "2026-10-18 12:38",
+   "last_generated": "2026-10-27 00:05",
+   "wins": 14,
+   "hit_rate": 0.3684,
+   "flat_profit_u": -6.39,
+   "flat_roi": -0.1682,
+   "flat_roi_ci95_matchday_boot": [
+    -0.5208,
+    0.19
+   ],
+   "ledger_pnl_matches_recomputed": true,
+   "mean_odds": 2.314,
+   "side_prob_metrics": {
+    "n": 38,
+    "logloss": 0.6733,
+    "brier": 0.2401,
+    "mean_p": 0.4913,
+    "base_rate": 0.3684,
+    "calib_gap_pp": 12.28,
+    "auc": 0.6012
+   },
+   "clv": {
+    "n": 38,
+    "mean_pct": 1.318,
+    "median_pct": 0.695,
+    "pct_positive": 0.526,
+    "ci95_matchday_boot": [
+     -0.2275,
+     3.4412
+    ]
+   },
+   "by_direction": {
+    "OVER": {
+     "n": 10,
+     "hit": 0.4,
+     "roi": -0.237
+    },
+    "UNDER": {
+     "n": 28,
+     "hit": 0.357,
+     "roi": -0.1436
+    }
+   },
+   "by_odds_band": {
+    "<2": {
+     "n": 6,
+     "hit": 0.667,
+     "roi": 0.2717
+    },
+    "2-2.5": {
+     "n": 24,
+     "hit": 0.333,
+     "roi": -0.2362
+    },
+    "2.5-3": {
+     "n": 8,
+     "hit": 0.25,
+     "roi": -0.2938
+    },
+    ">=3": {
+     "n": 0,
+     "hit": null,
+     "roi": null
+    }
+   },
+   "by_tier": {
+    "MARKSMAN": {
+     "n": 9,
+     "roi": 0.0522
+    },
+    "SNIPER": {
+     "n": 2,
+     "roi": -1.0
+    },
+    "VALUABLE": {
+     "n": 27,
+     "roi": -0.18
+    }
+   }
+  },
+  "R_repaired_standard_repaired_20261028": {
+   "tips": 23,
+   "settled": 4,
+   "void": 0,
+   "unsettled": 19,
+   "first_generated": "2026-10-28 12:48",
+   "last_generated": "2026-11-01 01:00",
+   "wins": 1,
+   "hit_rate": 0.25,
+   "flat_profit_u": -1.65,
+   "flat_roi": -0.4125,
+   "flat_roi_ci95_matchday_boot": [
+    -0.4125,
+    -0.4125
+   ],
+   "ledger_pnl_matches_recomputed": true,
+   "mean_odds": 2.203,
+   "side_prob_metrics": {
+    "n": 4,
+    "logloss": 0.7205,
+    "brier": 0.2637,
+    "mean_p": 0.5128,
+    "base_rate": 0.25,
+    "calib_gap_pp": 26.28,
+    "auc": 0.3333
+   },
+   "clv": {
+    "n": 4,
+    "mean_pct": 2.145,
+    "median_pct": 0.0,
+    "pct_positive": 0.25,
+    "ci95_matchday_boot": [
+     2.145,
+     2.145
+    ]
+   },
+   "by_direction": {
+    "OVER": {
+     "n": 1,
+     "hit": 0.0,
+     "roi": -1.0
+    },
+    "UNDER": {
+     "n": 3,
+     "hit": 0.333,
+     "roi": -0.2167
+    }
+   },
+   "by_odds_band": {
+    "<2": {
+     "n": 0,
+     "hit": null,
+     "roi": null
+    },
+    "2-2.5": {
+     "n": 4,
+     "hit": 0.25,
+     "roi": -0.4125
+    },
+    "2.5-3": {
+     "n": 0,
+     "hit": null,
+     "roi": null
+    },
+    ">=3": {
+     "n": 0,
+     "hit": null,
+     "roi": null
+    }
+   },
+   "by_tier": {
+    "VALUABLE": {
+     "n": 4,
+     "roi": -0.4125
+    }
+   }
+  }
+ },
+ "repaired_verdict_sentence": "INSUFFICIENT FORWARD EVIDENCE \u2014 CANNOT DECLARE REPAIRED MODEL UNPROFITABLE.",
+ "outcome_history_conflicts": 0,
+ "outcome_sources": {
+  "v9_ledger": 1320,
+  "v9_ledger;v9_shadow_experiments": 151,
+  "v9_shadow_experiments": 105,
+  "v9_shadow_experiments;v9_history": 34,
+  "v9_ledger;v9_shadow_experiments;v9_history": 31,
+  "v9_ledger;v9_history": 13,
+  "v9_history": 11,
+  "pro_forward_settled;v9_shadow_experiments;v9_history": 1,
+  "pro_forward_settled;v9_shadow_experiments": 1,
+  "pro_forward_settled;v9_ledger;v9_shadow_experiments;v9_history": 1
+ },
+ "board_first_sight": {
+  "B_leg_first_sight_standard_legacy": {
+   "fixtures_first_seen": 212,
+   "settled": 175,
+   "versions": {
+    "standard_20261018T080423Z_64313878": 212
+   },
+   "logged_from": "2026-10-18T12:38:10.034718+00:00",
+   "logged_to": "2026-10-27T23:09:38.059786+00:00",
+   "model": {
+    "n": 175,
+    "logloss": 0.6965,
+    "brier": 0.2517,
+    "mean_p": 0.5305,
+    "base_rate": 0.5257,
+    "calib_gap_pp": 0.48,
+    "auc": 0.4619
+   },
+   "same_rows_with_market": {
+    "model": {
+     "n": 86,
+     "logloss": 0.6867,
+     "brier": 0.2468,
+     "mean_p": 0.5306,
+     "base_rate": 0.5814,
+     "calib_gap_pp": -5.08,
+     "auc": 0.4889
+    },
+    "market_devig": {
+     "n": 86,
+     "logloss": 0.6654,
+     "brier": 0.2362,
+     "mean_p": 0.5439,
+     "base_rate": 0.5814,
+     "calib_gap_pp": -3.75,
+     "auc": 0.6028
+    }
+   }
+  },
+  "B_rep_first_sight_standard_repaired": {
+   "fixtures_first_seen": 131,
+   "settled": 60,
+   "versions": {
+    "standard_repaired_20261028T123040Z_1f5805e6": 131
+   },
+   "logged_from": "2026-10-28T12:48:14.970130+00:00",
+   "logged_to": "2026-11-01T01:00:57.534595+00:00",
+   "model": {
+    "n": 60,
+    "logloss": 0.6955,
+    "brier": 0.2512,
+    "mean_p": 0.5168,
+    "base_rate": 0.6,
+    "calib_gap_pp": -8.32,
+    "auc": 0.4259
+   },
+   "same_rows_with_market": {
+    "model": {
+     "n": 60,
+     "logloss": 0.6955,
+     "brier": 0.2512,
+     "mean_p": 0.5168,
+     "base_rate": 0.6,
+     "calib_gap_pp": -8.32,
+     "auc": 0.4259
+    },
+    "market_devig": {
+     "n": 60,
+     "logloss": 0.6804,
+     "brier": 0.2435,
+     "mean_p": 0.5463,
+     "base_rate": 0.6,
+     "calib_gap_pp": -5.37,
+     "auc": 0.5336
+    }
+   }
+  },
+  "paired_v9_lineage_same_fixture": {
+   "fixtures": 89,
+   "settled": 60,
+   "legacy": {
+    "n": 60,
+    "logloss": 0.6872,
+    "brier": 0.247,
+    "mean_p": 0.5286,
+    "base_rate": 0.6,
+    "calib_gap_pp": -7.14,
+    "auc": 0.4606
+   },
+   "repaired": {
+    "n": 60,
+    "logloss": 0.6955,
+    "brier": 0.2512,
+    "mean_p": 0.5168,
+    "base_rate": 0.6,
+    "calib_gap_pp": -8.32,
+    "auc": 0.4259
+   },
+   "mean_abs_prob_diff_pp_all": 3.05,
+   "note": "legacy p is from an EARLIER board than repaired p (legacy first sight precedes the switch); not the same scoring time"
+  },
+  "excluded_post_switch_legacy_labelled_rows": 42
+ },
+ "pro_forward_shadow": {
+  "fixtures_first_sight": 125,
+  "settled": 58,
+  "served_versions_at_first_sight": {
+   "standard_20261018T080423Z_64313878": 87,
+   "standard_repaired_20261028T123040Z_1f5805e6": 38
+  },
+  "scored_from": "2026-10-28T11:54:30.892547+00:00",
+  "scored_to": "2026-11-01T06:54:33.252674+00:00",
+  "p_CURRENT_V9_SERVED": {
+   "n": 58,
+   "logloss": 0.6794,
+   "brier": 0.2432,
+   "mean_p": 0.5344,
+   "base_rate": 0.5862,
+   "calib_gap_pp": -5.18,
+   "auc": 0.5466
+  },
+  "p_V9_REPAIRED": {
+   "n": 58,
+   "logloss": 0.6961,
+   "brier": 0.2514,
+   "mean_p": 0.5171,
+   "base_rate": 0.5862,
+   "calib_gap_pp": -6.91,
+   "auc": 0.4289
+  },
+  "p_MARKET": {
+   "n": 58,
+   "logloss": 0.6853,
+   "brier": 0.2458,
+   "mean_p": 0.5525,
+   "base_rate": 0.5862,
+   "calib_gap_pp": -3.37,
+   "auc": 0.5288
+  },
+  "p_MKT_RESID_LR": {
+   "n": 58,
+   "logloss": 0.69,
+   "brier": 0.2481,
+   "mean_p": 0.5699,
+   "base_rate": 0.5862,
+   "calib_gap_pp": -1.63,
+   "auc": 0.5123
+  },
+  "p_MKT_RESID_HGB": {
+   "n": 58,
+   "logloss": 0.6825,
+   "brier": 0.2445,
+   "mean_p": 0.567,
+   "base_rate": 0.5862,
+   "calib_gap_pp": -1.92,
+   "auc": 0.5319
+  },
+  "post_switch_rows_served_equals_repaired_maxdiff": 0.0,
+  "pre_switch_rows_mean_abs_diff_served_vs_repaired_pp": 3.17
+ }
+}

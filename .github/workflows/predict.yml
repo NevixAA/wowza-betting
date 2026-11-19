@@ -187,21 +187,19 @@ jobs:
           # comparison would pool the two silently.
           REQUIRE_FORM_DATA: "0"
           REQUIRE_FORM_DATA_UNTIL: "2026-09-15"
-          # STANDARD O/U 2.5 SERVING RECIPE (owner Nevo, 2026-10-28: "switch Standard now"). Standard
-          # fixtures' p_over25 comes from models/model_v9_standard_repaired.pkl on repaired as-of features
-          # (src/standard_serving.py). New Format, BTTS/O1.5/O3.5 and HT are unaffected; thresholds,
-          # tiers, stakes and Telegram logic are unchanged. Every row says which served it
-          # (predictions.csv serving_recipe + model_version; ledger model_version).
-          # ROLLBACK = set this to "legacy_v9" (or delete the line). models/model_v9_standard.pkl is the
-          # untouched legacy champion. FAIL CLOSED since R2-A (2026-11-01): a missing/broken repaired file
-          # leaves Standard O/U 2.5 with NO probability and NO tip (stamped v9_repaired_failed,
-          # output/standard_serving_health.json FAIL, system_health RED) - no silent legacy fallback. Any
-          # value other than legacy_v9 / v9_repaired stops predict (configuration error).
-          # Owner rollback doc: docs/STANDARD_REPAIRED_FAILCLOSED_ROLLBACK.md
-          STANDARD_OU25_SERVING_RECIPE: "v9_repaired"
-          LEAGUE_SNIPER_CAP: "0.12"
-          MARKSMAN_THRESHOLD: "0.08"
-          VALUABLE_THRESHOLD: "0.03"
+          # STANDARD O/U 2.5 SERVING (owner Nevo, 2026-11-09, clean-data switch: "the models that worked
+          # before we reach 100% clean data are irrelevant"). Standard fixtures' p_over25 comes from
+          # models/model_v9_standard.pkl - the clean-retrain recipe (std_v9_repaired) installed by
+          # src/promotion_gate.owner_clean_switch - scored on build_upcoming_features, the same builder
+          # pair it was trained on (exactly like New Format and the side/HT models). The 2026-10-28
+          # research model (v9_repaired, models/model_v9_standard_repaired.pkl) was RETIRED by the owner
+          # on 2026-11-15 ("fix what you need": it learned xG / inside-box shots as 0.0 on every
+          # training row); its file and registry entry stay for audit only. "legacy_v9" is the ONLY
+          # value: anything else - v9_repaired included - stops predict (configuration error).
+          # "legacy_v9" is the switch's historical name for "serve models/model_v9_standard.pkl".
+          STANDARD_OU25_SERVING_RECIPE: "legacy_v9"
+          # LEAGUE_SNIPER_CAP / MARKSMAN_THRESHOLD / VALUABLE_THRESHOLD removed 2026-11-09: global bars,
+          # no longer read by serving (owner rule "no global vars"); every bar is the league's own cell.
           # RE-ENABLED 2026-08-16, after the two preconditions were met: the API-Football
           # plan moved to 75,000/day, and the cache step above now persists
           # api_football_cache/ between runs.
@@ -252,6 +250,32 @@ jobs:
       - name: Weekly league research panel (research only)
         run: python -m src.research.league_weekly || echo "::warning::league_weekly research panel failed (research only - tips unaffected)"
 
+      # TOP-3 PER LEAGUE PER GAMEWEEK (owner 2026-11-08, src/top3_league.py). PRODUCTION TIPS, OFF until the owner
+      # switches it on at go-live: repository variables TOP3_LEAGUE_ENABLED (true) and TOP3_FREEZE_LEAD_MIN (the
+      # owner's minutes before a league-week's first kickoff; no default - unset = nothing is frozen or sent).
+      # Each league's 3 best value tips of the week on the league's OWN owner-applied bars (never a global bar),
+      # fewer when fewer clear the bar. Never sizes a stake. Tolerant: a failure cannot stop the commit below.
+      - name: TOP-3 per league per gameweek (flag, default off)
+        env:
+          TOP3_LEAGUE_ENABLED: ${{ vars.TOP3_LEAGUE_ENABLED }}
+          TOP3_FREEZE_LEAD_MIN: ${{ vars.TOP3_FREEZE_LEAD_MIN }}
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          python -m src.top3_league run || echo "::warning::TOP-3 per league failed (other tips unaffected)"
+          python -m src.top3_league notify || echo "::warning::TOP-3 per league notify failed"
+
+      # TOP-3 PAPER TRACK R3 (owner 2026-11-11 "Add the 3 tracks" / "Clean rebuild" / "Drop T1"; 2026-11-15 live = R2; protocol
+      # config/top3_ranking_paper_protocol_v6.json; model cells only, no EV ordering). PAPER/RESEARCH ONLY: writes only output/research/top3_paper/,
+      # never a tip, stake, order, production ledger or Telegram message. OFF until the owner sets the repository
+      # variable TOP3_PAPER_ENABLED (runbook U3e); refuses to freeze anything until the statistics are frozen and
+      # every pinned hash matches. Tolerant: a failure cannot stop the commit below.
+      - name: TOP-3 paper track R3 (research only, flag default off)
+        env:
+          TOP3_PAPER_ENABLED: ${{ vars.TOP3_PAPER_ENABLED }}
+          TOP3_FREEZE_LEAD_MIN: ${{ vars.TOP3_FREEZE_LEAD_MIN }}
+        run: python -m src.research.top3_paper run || echo "::warning::TOP-3 paper tracks failed (research only - tips unaffected)"
+
       # QUALITY-LAYER SHADOW (2026-10-26, docs/QUALITY_TIERS_STUDY_2026_10.md). RESEARCH ONLY: logs, at first sight,
       # the learned Best / Second / Third layer of every tip on the board to output/quality_tier_shadow.csv. Reads
       # the ledgers and predictions.csv; never writes a tip, tier, stake, threshold, ledger or Telegram file.
@@ -275,6 +299,15 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          # LEDGERS GO THROUGH THE ROW-LEVEL SYNC, NOT THE REBASE BELOW (estate scan P1, 2026-11-02).
+          # bets/side/ht ledgers and ht_observations are also rewritten by update_results and
+          # daily_summary; `pull --rebase -X theirs` dropped the other run's rows in a conflicting
+          # hunk. sync-push re-applies this run's row changes on the freshest origin/main
+          # (src/ledger.py "LEDGER SYNC"); on failure it puts the files back for the add below.
+          ledger_sync_failed=0
+          python -m src.ledger sync-snapshot --dir "$RUNNER_TEMP/ledger_sync" || echo "::warning::ledger sync-snapshot failed"
+          python -m src.ledger sync-push --dir "$RUNNER_TEMP/ledger_sync" \
+            --message "auto: predict ledgers $(date -u '+%Y-%m-%d %H:%M UTC')" || ledger_sync_failed=1
           # Add each file INDIVIDUALLY: a single missing pathspec makes `git add a b missing`
           # abort and stage NOTHING (the `|| true` then hides it) -> no commit -> notified.json
           # dedup never persists -> every 5-min run re-sends the same tips (the duplicate flood).
@@ -298,6 +331,9 @@ jobs:
                    output/league_weekly_candidates.csv output/league_weekly_research.csv \
                    output/league_weekly_research.csv.first_sight.json output/league_weekly_research_summary.json \
                    output/league_market_health.json output/weekly_league_report.json \
+                   output/top3_league_candidates.csv output/top3_league_ledger.csv \
+                   output/top3_league_ledger.csv.first_sight.json output/top3_league_weeks.csv \
+                   output/top3_league_report.json output/top3_league_notified.json                    output/research/top3_paper/paper_ledger.csv output/research/top3_paper/paper_ledger.csv.first_sight.json                    output/research/top3_paper/paper_weeks.csv output/research/top3_paper/summary.json \
                    output/fd_history.parquet \
                    output/book_odds_snapshots.csv output/btts_fetch_clock.json \
                    output/v91_shadow.csv \
@@ -334,4 +370,5 @@ jobs:
             echo "push race - retry $i"; sleep $((RANDOM % 5 + 3))
           done
           [ "$pushed" = "1" ] || { echo "push failed after 5 retries"; exit 1; }
+          [ "$ledger_sync_failed" = "0" ] || { echo "::error::ledger sync failed (see above)"; exit 1; }
 # schedule re-registered after the 2026-10-26 history clean-up (comment only)

@@ -1,0 +1,235 @@
+{
+ "records": 8471,
+ "by_status": {
+  "VALID_SAME_BOOK": 871,
+  "VALID_CROSS_BOOK": 2518,
+  "IDENTITY_UNPROVEN": 537,
+  "CLOSE_AFTER_KICKOFF": 93,
+  "ENTRY_AFTER_KICKOFF": 35,
+  "TIMING_UNPROVEN": 226,
+  "NO_CLOSE": 4191
+ },
+ "by_status_market": {
+  "VALID_SAME_BOOK": {
+   "sot": 511,
+   "goals": 213,
+   "cards": 83,
+   "sot2": 54,
+   "assists": 10
+  },
+  "VALID_CROSS_BOOK": {
+   "sot": 1499,
+   "goals": 541,
+   "cards": 332,
+   "sot2": 115,
+   "assists": 30,
+   "sot3": 1
+  },
+  "IDENTITY_UNPROVEN": {
+   "sot": 315,
+   "goals": 131,
+   "cards": 71,
+   "sot2": 14,
+   "assists": 6
+  },
+  "CLOSE_AFTER_KICKOFF": {
+   "sot": 37,
+   "goals": 32,
+   "cards": 13,
+   "sot2": 10,
+   "sot3": 1
+  },
+  "ENTRY_AFTER_KICKOFF": {
+   "sot": 31,
+   "goals": 4
+  },
+  "TIMING_UNPROVEN": {
+   "goals": 107,
+   "sot": 103,
+   "sot2": 10,
+   "cards": 6
+  },
+  "NO_CLOSE": {
+   "sot": 2136,
+   "goals": 1342,
+   "cards": 463,
+   "sot2": 223,
+   "assists": 23,
+   "sot3": 4
+  }
+ },
+ "by_status_month": {
+  "VALID_SAME_BOOK": {
+   "2026-10": 784,
+   "2026-11": 87
+  },
+  "VALID_CROSS_BOOK": {
+   "2026-07": 20,
+   "2026-08": 737,
+   "2026-09": 1318,
+   "2026-10": 418,
+   "2026-11": 25
+  },
+  "IDENTITY_UNPROVEN": {
+   "2026-08": 109,
+   "2026-09": 220,
+   "2026-10": 181,
+   "2026-11": 27
+  },
+  "CLOSE_AFTER_KICKOFF": {
+   "2026-08": 24,
+   "2026-09": 26,
+   "2026-10": 30,
+   "2026-11": 13
+  },
+  "ENTRY_AFTER_KICKOFF": {
+   "2026-08": 9,
+   "2026-09": 4,
+   "2026-10": 22
+  },
+  "TIMING_UNPROVEN": {
+   "2026-08": 19,
+   "2026-09": 85,
+   "2026-10": 119,
+   "2026-11": 3
+  },
+  "NO_CLOSE": {
+   "2026-07": 5,
+   "2026-08": 33,
+   "2026-09": 82,
+   "2026-10": 3202,
+   "2026-11": 869
+  }
+ },
+ "by_reason": [
+  {
+   "status": "CLOSE_AFTER_KICKOFF",
+   "reason": "close price first quoted at or after kickoff",
+   "n": 93
+  },
+  {
+   "status": "ENTRY_AFTER_KICKOFF",
+   "reason": "tip logged at or after kickoff",
+   "n": 35
+  },
+  {
+   "status": "IDENTITY_UNPROVEN",
+   "reason": "close price never quoted for this player/market/fixture",
+   "n": 2
+  },
+  {
+   "status": "IDENTITY_UNPROVEN",
+   "reason": "entry price never quoted for this player/market/fixture",
+   "n": 114
+  },
+  {
+   "status": "IDENTITY_UNPROVEN",
+   "reason": "entry price quoted for this player/market/fixture only after the tip time",
+   "n": 12
+  },
+  {
+   "status": "IDENTITY_UNPROVEN",
+   "reason": "no history rows for this player/market/fixture",
+   "n": 409
+  },
+  {
+   "status": "NO_CLOSE",
+   "reason": "no close recorded",
+   "n": 3611
+  },
+  {
+   "status": "NO_CLOSE",
+   "reason": "no close recorded; match on or after the file's last entry (2026-11-02)",
+   "n": 580
+  },
+  {
+   "status": "TIMING_UNPROVEN",
+   "reason": "close price quoted both before and after kickoff",
+   "n": 3
+  },
+  {
+   "status": "TIMING_UNPROVEN",
+   "reason": "kickoff recorded with two values",
+   "n": 4
+  },
+  {
+   "status": "TIMING_UNPROVEN",
+   "reason": "no recorded kickoff",
+   "n": 219
+  },
+  {
+   "status": "VALID_CROSS_BOOK",
+   "reason": "no book quoted the entry price and then closed at the stored close",
+   "n": 214
+  },
+  {
+   "status": "VALID_CROSS_BOOK",
+   "reason": "no per-book quotes for this player/market/fixture",
+   "n": 2304
+  },
+  {
+   "status": "VALID_SAME_BOOK",
+   "reason": "",
+   "n": 871
+  }
+ ],
+ "by_close_basis": [
+  {
+   "close_basis": "last_row_any_book",
+   "status": "CLOSE_AFTER_KICKOFF",
+   "n": 93
+  },
+  {
+   "close_basis": "last_row_any_book",
+   "status": "ENTRY_AFTER_KICKOFF",
+   "n": 35
+  },
+  {
+   "close_basis": "last_row_any_book",
+   "status": "IDENTITY_UNPROVEN",
+   "n": 537
+  },
+  {
+   "close_basis": "last_row_any_book",
+   "status": "NO_CLOSE",
+   "n": 4191
+  },
+  {
+   "close_basis": "last_row_any_book",
+   "status": "TIMING_UNPROVEN",
+   "n": 226
+  },
+  {
+   "close_basis": "last_row_any_book",
+   "status": "VALID_CROSS_BOOK",
+   "n": 2518
+  },
+  {
+   "close_basis": "last_row_any_book",
+   "status": "VALID_SAME_BOOK",
+   "n": 871
+  }
+ ],
+ "kickoff_basis": {
+  "index": 7453,
+  "none": 1018
+ },
+ "player_id_attached": 8409,
+ "namesake_records": 3,
+ "clv_value_on_non_valid": 891,
+ "inputs": {
+  "clv_records": 8471,
+  "history_rows": 629862,
+  "prop_quote_rows": 281657,
+  "prop_quote_match_dates": [
+   "2026-10-14",
+   "2026-11-14"
+  ],
+  "history_match_dates": [
+   "2026-06-28",
+   "2026-11-14"
+  ],
+  "kickoff_fixtures": 1729,
+  "kickoff_refused_two_values": 19
+ }
+}

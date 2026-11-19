@@ -51,6 +51,14 @@ output/fantasy_projection_log.csv            merge=union
 output/player_prop_odds_history.csv          merge=union
 output/player_prop_odds_history_archive/*.csv merge=union
 output/prop_quotes/*.csv                     merge=union
+# fix10 (owner 2026-11-04): three append-only records written LF by their writers (lineterminator
+# "\n"), each pushed with `pull --rebase -X theirs` by more than one job - union keeps every row.
+#   props_median_fill.csv                    median-fill telemetry, one block per props predict run
+#   collect/national_fixture_seasons.csv     provider seasons of national-team fixtures (collect-wc)
+#   corrections/player_ledger_null_rule_settled.csv  prop results the null rule decided (settlement)
+output/props_median_fill.csv                 merge=union
+output/collect/national_fixture_seasons.csv  merge=union
+output/corrections/player_ledger_null_rule_settled.csv merge=union
 
 # Keep line endings stable so a Windows local checkout and a Linux runner cannot produce a
 # whole-file diff (which would turn every append into a maximal conflict).

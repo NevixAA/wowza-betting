@@ -34,6 +34,10 @@ FINGERPRINT CONTENTS
                            local .env and this process's environment cannot leak in).
   global.eligibility       ENABLED / PAPER / STANDARD / NEW_FORMAT league sets, PROVIDER_UNSUPPORTED,
                            auto-onboarded leagues, MIN_OVER/UNDER_ODDS, NF_MAX_OU_ODDS.
+  global.form_guard        REQUIRE_FORM_DATA and REQUIRE_FORM_DATA_UNTIL (the blind-fixture guard, read by
+                           src/betting.py, so not in deployed_env): predict.yml's values and betting.py's
+                           defaults. Added 2026-11-02; reported as unapproved_new_watched until the next
+                           --approve folds it into the snapshot.
   global.execution         Cloudbet default mode line (src/cloudbet/client.py) and any workflow that sets
                            CLOUDBET_MODE (must be none: Cloudbet stays PAPER_ONLY).
   protected_tracks[key]    for every PROTECTED entry of config/league_market_regimes.json: production
@@ -78,6 +82,15 @@ THRESHOLD_ROOT = ROOT
 THRESHOLD_LEDGER_PATH = ROOT / "config" / "threshold_applied.json"
 #: Registry market -> gate_resolver market key
 GATE_MARKET = {"OU25": "ou25", "BTTS": "btts", "OVER15": "over15", "OVER35": "over35"}
+#: The blind-fixture guard (invariant 8) is read by src/betting.py, NOT config.py, so deployed_env never
+#: saw it: predict.yml could switch the guard off, or move its self-expiry date, and the lock stayed
+#: green (CLAUDE_PROMPT_2 P2, 2026-11-02). Watched as global.form_guard: the value predict.yml deploys
+#: and the default betting.py falls back to when it does not.
+BETTING_PY = ROOT / "src" / "betting.py"
+FORM_GUARD_KEYS = ("REQUIRE_FORM_DATA", "REQUIRE_FORM_DATA_UNTIL")
+#: global blocks added after the approved snapshot was taken: until the next --approve folds them in
+#: they are reported as unapproved_new_watched (AMBER), not as a production change
+WATCHED_GLOBAL_BLOCKS = ("form_guard", "stakes")
 
 _RESOLVE_CODE = r"""
 import json, sys
@@ -100,7 +113,7 @@ out = {"gates": g, "thresholds": {
     "LEAGUE_SNIPER_CALIBRATED": config._LEAGUE_SNIPER_CALIBRATED,
     "LEAGUE_MARKSMAN_THRESHOLDS": config.LEAGUE_MARKSMAN_THRESHOLDS,
     "LEAGUE_EDGE_CEILING": config.LEAGUE_EDGE_CEILING,
-    "SIDE_GLOBAL": [G.SIDE_GLOBAL_SNIPER, G.SIDE_GLOBAL_MARKSMAN, G.SIDE_VALUABLE_HARDCODED]},
+    "SIDE_GLOBAL": [config.HISTORICAL_SIDE_GLOBAL_BARS[k] for k in ("sniper", "marksman", "valuable")]},
   "eligibility": {
     "ENABLED_LEAGUES": sorted(config.ENABLED_LEAGUES), "PAPER_LEAGUES": sorted(config.PAPER_LEAGUES),
     "STANDARD_FORMAT_LEAGUES": sorted(config.STANDARD_FORMAT_LEAGUES),
@@ -140,6 +153,21 @@ def deployed_env(yml_text: str | None = None, keys: list[str] | None = None) -> 
     return {k: (sorted(v)[0] if len(v) == 1 else sorted(v)) for k, v in sorted(found.items())}
 
 
+def form_guard_block(yml_text: str | None = None, betting_src: str | None = None) -> dict:
+    """{deployed: {key: value predict.yml sets | None}, code_default: {key: betting.py's getenv default
+    | None}}. Both halves are fingerprinted: a change to either moves production behaviour."""
+    yml = yml_text if yml_text is not None else (PREDICT_YML.read_text(encoding="utf-8")
+                                                 if PREDICT_YML.exists() else "")
+    src = betting_src if betting_src is not None else (BETTING_PY.read_text(encoding="utf-8")
+                                                       if BETTING_PY.exists() else "")
+    dep = deployed_env(yml, list(FORM_GUARD_KEYS))
+    dflt = {}
+    for k in FORM_GUARD_KEYS:
+        vals = sorted(set(re.findall(r'os\.getenv\(\s*"' + k + r'"\s*,\s*"([^"]*)"\s*\)', src)))
+        dflt[k] = None if not vals else (vals[0] if len(vals) == 1 else vals)
+    return {"deployed": {k: dep.get(k) for k in FORM_GUARD_KEYS}, "code_default": dflt}
+
+
 def _resolve(env: dict, cells: list) -> dict:
     keys = config_env_keys()
     e = {k: v for k, v in os.environ.items() if k not in keys}
@@ -162,6 +190,19 @@ def _policy_block(policy: dict) -> dict:
     return out
 
 
+def _stakes_block(policy: dict) -> dict:
+    """Where real stakes live since per-cell staking (owner 2026-11-09) and the flat TOP-3 stake (owner
+    2026-11-17): cell_staking (enabled + every cell's state / fraction / odds caps) and top3_league.stake.
+    Before the go-live rehearsal of 2026-11-17 the lock watched only policy_version and tracks{}, so a cell
+    could start staking without a re-approval."""
+    cs = policy.get("cell_staking") or {}
+    cells = {k: {f: c.get(f) for f in ("state", "base_fraction", "min_odds", "max_odds")}
+             for k, c in sorted((cs.get("cells") or {}).items())}
+    st = (policy.get("top3_league") or {}).get("stake") or {}
+    return {"cell_staking_enabled": cs.get("enabled"), "cells": cells,
+            "top3_stake": {f: st.get(f) for f in ("rule", "fraction", "execution")}}
+
+
 def _execution_block() -> dict:
     src = CLOUDBET_CLIENT.read_text(encoding="utf-8") if CLOUDBET_CLIENT.exists() else ""
     m = re.search(r'^MODE\s*=.*$', src, flags=re.M)
@@ -175,11 +216,13 @@ def protected_keys(registry: dict) -> list[str]:
 
 
 def fingerprint(track_keys: list[str] | None = None, registry: dict | None = None,
-                policy: dict | None = None, env: dict | None = None) -> dict:
+                policy: dict | None = None, env: dict | None = None,
+                form_guard: dict | None = None) -> dict:
     """Production-facing fingerprint. `track_keys` defaults to the registry's PROTECTED entries."""
     registry = registry if registry is not None else _read_json(REGISTRY_PATH)
     policy = policy if policy is not None else _read_json(POLICY_PATH)
     env = env if env is not None else deployed_env()
+    form_guard = form_guard if form_guard is not None else form_guard_block()
     track_keys = sorted(track_keys if track_keys is not None else protected_keys(registry))
     cells = []
     for k in track_keys:
@@ -201,7 +244,8 @@ def fingerprint(track_keys: list[str] | None = None, registry: dict | None = Non
                      "gates": res["gates"][f"{lg}|{gm}|{side}"]}
     return {"global": {"bankroll_policy": _policy_block(policy), "deployed_env": env,
                        "thresholds": res["thresholds"], "eligibility": res["eligibility"],
-                       "execution": _execution_block()},
+                       "execution": _execution_block(), "form_guard": form_guard,
+                       "stakes": _stakes_block(policy)},
             "protected_tracks": tracks}
 
 
@@ -263,20 +307,29 @@ def threshold_files_changes(ledger: dict | None = None, root: Path | None = None
 
 
 def check(snapshot: dict | None = None, registry: dict | None = None, policy: dict | None = None,
-          env: dict | None = None, ledger: dict | None = None) -> dict:
+          env: dict | None = None, ledger: dict | None = None, form_guard: dict | None = None) -> dict:
     snap = snapshot if snapshot is not None else _read_json(SNAPSHOT_PATH)
     registry = registry if registry is not None else _read_json(REGISTRY_PATH)
     if not snap.get("fingerprint"):
         return {"protected_tracks_modified": True, "changes": ["no approved snapshot (config/research_lock_snapshot.json)"],
-                "unapproved_new_protected_tracks": [], "approved_by": None, "approved_at": None}
+                "unapproved_new_protected_tracks": [], "unapproved_new_watched": [],
+                "approved_by": None, "approved_at": None}
     approved_keys = sorted(snap["fingerprint"].get("protected_tracks", {}))
-    now = fingerprint(approved_keys, registry=registry, policy=policy, env=env)
+    now = fingerprint(approved_keys, registry=registry, policy=policy, env=env, form_guard=form_guard)
+    # A block the approved snapshot predates is reported, not diffed (it would read as a change
+    # nobody made). The next --approve folds it in; from then on any change to it IS a change.
+    old_global = snap["fingerprint"].get("global") or {}
+    new_watched = [f"global.{b}" for b in WATCHED_GLOBAL_BLOCKS if b not in old_global]
+    cmp_now = {**now, "global": {k: v for k, v in now["global"].items()
+                                 if f"global.{k}" not in new_watched}}
     tf_changes = threshold_files_changes(ledger)
-    changes = diff(snap["fingerprint"], now) + tf_changes
+    changes = diff(snap["fingerprint"], cmp_now) + tf_changes
     new_keys = sorted(set(protected_keys(registry)) - set(approved_keys))
     return {"protected_tracks_modified": bool(changes), "changes": changes,
             "threshold_files_unapproved": tf_changes,
             "unapproved_new_protected_tracks": new_keys, "n_protected_tracks": len(approved_keys),
+            "unapproved_new_watched": new_watched,
+            "watched_now": {b: now["global"].get(b) for b in WATCHED_GLOBAL_BLOCKS},
             "approved_by": snap.get("approved_by"), "approved_at": snap.get("approved_at"),
             "approved_digest": snap.get("fingerprint_sha256"), "current_digest": digest(now)}
 
@@ -313,6 +366,8 @@ def main(argv=None) -> int:
         print("  CHANGED", c)
     for k in r["unapproved_new_protected_tracks"]:
         print("  NEW PROTECTED (not yet approved)", k)
+    for k in r.get("unapproved_new_watched", []):
+        print("  NEW WATCHED (not yet approved)", k, json.dumps(r["watched_now"].get(k.split(".", 1)[1])))
     return 1 if r["protected_tracks_modified"] else 0
 
 

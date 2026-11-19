@@ -26,13 +26,21 @@ TZ_NAME = "Asia/Jerusalem"
 
 from src.tier_labels import TIER_ICON, tier_label  # noqa: E402 - display words (owner 2026-10-26)
 
-TIER_ORDER = ("SNIPER", "MARKSMAN", "VALUABLE")
-STAKE = {"SNIPER": "staked · full", "MARKSMAN": "staked · ¾", "VALUABLE": "paper"}
+#: QUALIFIED = a tip from 2026-11-21 (owner 2026-11-11: one bar per cell, no tiers); the rest = history rows
+TIER_ORDER = ("QUALIFIED", "SNIPER", "MARKSMAN", "VALUABLE")
+# Tier-multiplier notes, NOT "staked": whether a tip is staked is the stake plan's recorded stake
+# (src/staked.py, owner 2026-11-04), shown in the "Stake %" column.
+STAKE = {"QUALIFIED": "flat per cell", "SNIPER": "tier multiplier · full", "MARKSMAN": "tier multiplier · ¾",
+         "VALUABLE": "paper"}
 # SIGNAL TIER != EVIDENCE RANK (P1-6, 2026-10-22): on O/U 2.5 the edge size does not rank outcomes, so the
 # bankroll policy stakes every O/U tier the same and the page must not imply SNIPER is the stronger bet.
 STAKE_OU = "equal stake · tier ≠ confidence"
+#: threshold_source -> the 'Bar' column word, so a row reads "Bar: GLOBAL" (src/side_thresholds; a missing
+#: source stays blank - never guessed)
+BAR_LABEL = {"LEAGUE": "LEAGUE", "GLOBAL": "GLOBAL"}
 
-PLAN_COLS = ["date", "fixture", "market", "side", "deployment_state", "final_fraction", "decision_state",
+PLAN_COLS = ["date", "fixture", "market", "side", "deployment_state", "base_fraction", "final_fraction",
+             "stake_amount", "decision_state",
              "engine_version", "p_market_fair", "p_decision", "p_lower_bound", "ev_lower_bound",
              "clv_evidence_state", "track", "generated_at"]
 SHADOW_COLS = ["prediction_ts", "match_date", "home_team", "away_team", "market", "side", "ev_point",
@@ -48,15 +56,32 @@ def market_group(m: str) -> str:
 
 
 #: A tip whose bankroll-policy track is not real money (stake_plan deployment_state PAPER / BLOCKED /
-#: UNSUPPORTED; new_format|OU25_UNDER since 2026-11-02) is never "staked", whatever its tier (Phase 2).
-STAKE_PAPER_TRACK = "paper track · not staked"
+#: UNSUPPORTED) is never "staked", whatever its tier (Phase 2). Owner 2026-11-17 ("Show stake on TOP-3"): such a
+#: tip carries NO stake label at all (was "paper track · not staked"); a TOP-3 pick shows "0.5% stake".
+STAKE_PAPER_TRACK = ""
 NON_REAL_STATES = ("PAPER", "BLOCKED", "BLOCKED_FROM_REAL", "UNSUPPORTED")
 
 
-def stake_label(tier: str, market: str, production_state: str | None = None) -> str:
-    if str(production_state or "").strip().upper() in NON_REAL_STATES:
-        return STAKE_PAPER_TRACK
-    return STAKE_OU if market_group(str(market)) == "O/U 2.5" else STAKE.get(tier, "")
+def stake_label(tier: str, market: str, production_state: str | None = None, top3_fraction=None) -> str:
+    try:
+        f = float(top3_fraction)
+    except (TypeError, ValueError):
+        f = float("nan")
+    if f == f and f > 0:
+        from src.top3_league import stake_text
+        return f"{stake_text(f)} stake"
+    # owner 2026-11-17: every other prediction carries NO stake label (the tier / state wordings are retired)
+    return STAKE_PAPER_TRACK
+
+
+def _top3_frame():
+    """The committed TOP-3 ledger (src/top3_league), or None. Display only; a missing file adds nothing."""
+    try:
+        import config
+        f = Path(config.OUTPUT_DIR) / "top3_league_ledger.csv"
+        return pd.read_csv(f, dtype=str) if f.exists() else None
+    except Exception:                                                  # noqa: BLE001
+        return None
 
 
 def tip_text(market: str) -> str:
@@ -101,7 +126,8 @@ def load_shadow(path: Path | None = None) -> pd.DataFrame:
             .drop_duplicates(["match_date", "home_team", "away_team", "market", "side"], keep="last"))
 
 
-def attach(board: pd.DataFrame, plan: pd.DataFrame, shadow: pd.DataFrame | None = None) -> pd.DataFrame:
+def attach(board: pd.DataFrame, plan: pd.DataFrame, shadow: pd.DataFrame | None = None,
+           top3: pd.DataFrame | None = None) -> pd.DataFrame:
     """The board with production's and the shadow engine's recorded view of each tip. Row count and
     order are unchanged (left joins on a unique key)."""
     b = board.copy()
@@ -114,11 +140,33 @@ def attach(board: pd.DataFrame, plan: pd.DataFrame, shadow: pd.DataFrame | None 
     p = plan.copy() if plan is not None else pd.DataFrame(columns=PLAN_COLS)
     p["side"] = p["side"].astype(str).str.upper()
     p = p.drop_duplicates(["fixture", "market", "side"], keep="last")
-    cols = ["deployment_state", "final_fraction", "decision_state", "engine_version", "p_market_fair",
+    cols = ["deployment_state", "base_fraction", "final_fraction", "stake_amount", "decision_state",
+            "engine_version", "p_market_fair",
             "p_decision", "p_lower_bound", "ev_lower_bound", "clv_evidence_state", "track"]
+    p = p.reindex(columns=list(dict.fromkeys(list(p.columns) + cols)))     # absent column = missing, never 0
     b = b.merge(p[["fixture", "market", "side"] + cols].rename(columns={"fixture": "_fx", "market": "_pm",
                                                                          "side": "_ps"}),
                 on=["_fx", "_pm", "_ps"], how="left")
+    # TOP-3 (owner 2026-11-17): every TOP-3 pick carries the flat stake, placed by hand - it is never in the stake
+    # plan, so it is overlaid here from its own ledger (src/staked.top3_records_frame, the same rows "Staked" counts)
+    b["top3_fraction"] = float("nan")
+    try:
+        from src.staked import top3_records_frame
+        t3 = top3_records_frame(top3 if top3 is not None else _top3_frame())
+    except Exception:                                                  # noqa: BLE001
+        t3 = None
+    if t3 is not None and len(t3):
+        t3 = t3.assign(_pm=t3["market"].astype(str).str.upper(), _ps=t3["side"].astype(str).str.upper())
+        t3 = t3.drop_duplicates(["fixture", "_pm", "_ps"], keep="last").set_index(["fixture", "_pm", "_ps"])
+        idx = pd.MultiIndex.from_arrays([b["_fx"], b["_pm"].astype(str).str.upper(), b["_ps"].astype(str).str.upper()])
+        hit = idx.isin(t3.index)
+        if hit.any():
+            m = t3.loc[idx[hit]]
+            b.loc[hit, "top3_fraction"] = m["final_fraction"].to_numpy()
+            b.loc[hit, "deployment_state"] = "ACTIVE"
+            b.loc[hit, "base_fraction"] = m["base_fraction"].to_numpy()
+            b.loc[hit, "final_fraction"] = m["final_fraction"].to_numpy()
+            b.loc[hit, "stake_amount"] = m["stake_amount"].to_numpy()
     b["in_plan"] = b["deployment_state"].notna()
     b["final_fraction"] = pd.to_numeric(b["final_fraction"], errors="coerce")
     b["production_state"] = b["deployment_state"].fillna(NOT_IN_PLAN)
@@ -189,7 +237,13 @@ def selections_table(b: pd.DataFrame, research: bool = True) -> pd.DataFrame:
         "Production": b["production_state"].map(_state),
         "Stake %": b["final_fraction"] * 100,
         "Gap": b["tier"].map(tier_label),
-        "Stake note": [stake_label(t, m, s) for t, m, s in zip(b["tier"], b["market"], b["production_state"])],
+        # WHICH BAR TIERED IT (fix9/defaults 2026-11-04): a side tip on the declared GLOBAL bar is never
+        # shown as a per-league tier. Blank for O/U 2.5 and for rows logged before the column existed.
+        "Bar": (b["threshold_source"].map(BAR_LABEL) if "threshold_source" in b.columns
+                else pd.Series(None, index=b.index, dtype=object)),
+        "Stake note": [stake_label(t, m, s, f) for t, m, s, f in
+                       zip(b["tier"], b["market"], b["production_state"],
+                           b["top3_fraction"] if "top3_fraction" in b.columns else [None] * len(b))],
         "Model": b["model"].map(lambda m: "Standard" if str(m) == "standard" else "New-format"),
     })
     if research:

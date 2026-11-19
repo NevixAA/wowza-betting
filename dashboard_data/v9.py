@@ -5,6 +5,7 @@ import pandas as pd
 
 import config
 
+from src import units as U
 from dashboard_data.core import (V9_DIR, Freshness, freshness_from_timestamp,
                                  newest_date, read_csv, read_json)
 
@@ -17,7 +18,7 @@ def predictions() -> pd.DataFrame:
 
 def ledger(include_side_markets: bool = True,
            since_cutoff: bool = True,
-           include_paper_leagues: bool = False) -> pd.DataFrame:
+           include_paper_leagues: bool = False, record: str | None = None) -> pd.DataFrame:
     """Settled + open bets. `model_type` separates the two tracks and must never be pooled.
 
     TWO DEFECTS FIXED HERE, 2026-10-06. Together they inverted the headline: the dashboard
@@ -39,6 +40,10 @@ def ledger(include_side_markets: bool = True,
     frames = []
     main = read_csv(OUT / "bets_ledger.csv")
     if not main.empty:
+        # owner 2026-11-11: post-kickoff tips and the later tip of an opposite O/U pair never count
+        # (output/corrections; src/ledger_corrections.historical_excluded)
+        from src.ledger_corrections import drop_historical_excluded
+        main = drop_historical_excluded(main)
         main = main.copy()
         main["market"] = "ou25"
         frames.append(main)
@@ -60,7 +65,23 @@ def ledger(include_side_markets: bool = True,
         # Paper leagues are collected and settled but never counted (config.PAPER_LEAGUES).
         # Every dashboard KPI reads through here, so this is the one place it has to happen.
         d = config.drop_paper_leagues(d)
+    if record is not None:
+        # THE Clean Record split (dashboard_data/clean_record.py, owner 2026-11-11): 'CLEAN' / 'BEFORE' rows only
+        from dashboard_data import clean_record as CR
+        d = d[CR.assign(d, "generated_at", "match_date").to_numpy() == record]
     return d.reset_index(drop=True)
+
+
+def stake_labels(d: pd.DataFrame) -> pd.DataFrame:
+    """src.staked labels for ledger() rows (bets_ledger rows carry market 'ou25', side rows their own),
+    from the recorded stake_audit.csv / stake_plan.csv read through the dashboard's reader."""
+    from src import staked as S
+    rec = S.load_records(OUT, reader=read_csv)
+    x = d.copy()
+    for c in ("match_date", "generated_at"):
+        if c in x.columns and isinstance(x[c].dtype, pd.DatetimeTZDtype):
+            x[c] = x[c].dt.tz_convert(None)
+    return S.label(x, rec)
 
 
 def retrain_log() -> dict:
@@ -85,7 +106,22 @@ def _break_even(frame) -> float | None:
     return round(float(np.mean(1.0 / o[ok])), 4) if ok.any() else None
 
 
-def performance(days: int | None = None) -> dict:
+def _settled_stats(t: pd.DataFrame) -> dict:
+    """n / P&L / ROI / hit over the rows with a RECORDED P/L only (fix9/defaults 2026-11-04).
+
+    This used pnl.fillna(0): a WIN/LOSS row whose P/L was not recorded yet counted as a 0.00u bet,
+    pulling ROI towards zero and inflating n. Now such a row is left out of every figure and counted
+    in `n_without_pnl`; `n` and `n_settled` are the rows the P/L, ROI and hit rate are computed on."""
+    pnl = pd.to_numeric(t.get("pnl"), errors="coerce") if len(t) else pd.Series(dtype=float)
+    ok = pnl.notna()
+    n = int(ok.sum())
+    return {"n": n, "n_settled": n, "n_without_pnl": int((~ok).sum()),
+            "pnl": U.total(pnl[ok]) if n else None,
+            "roi": round(U.total(pnl[ok]) / n, 4) if n else None,
+            "hit": round(float((t.loc[ok, "result"] == "WIN").mean()), 4) if n else None}
+
+
+def performance(days: int | None = None, record: str | None = None) -> dict:
     """P&L split by track and tier. NEVER one blended total across unrelated markets.
 
     VALUABLE is reported separately and excluded from the staked figure: it is a half-stake
@@ -93,7 +129,7 @@ def performance(days: int | None = None) -> dict:
     Sample size travels with every number, because a percentage without an n invites exactly
     the celebration of noise the brief warns about.
     """
-    d = ledger()
+    d = ledger(record=record)
     if d.empty or "result" not in d.columns:
         return {"available": False, "why": "no settled bets in bets_ledger.csv"}
     s = d[d["result"].isin(["WIN", "LOSS"])].copy()
@@ -103,27 +139,39 @@ def performance(days: int | None = None) -> dict:
     if s.empty:
         return {"available": False, "why": f"no settled bets in the last {days} days"}
     out = {"available": True, "window_days": days, "by_track": {}}
+    # THE staked definition (dashboard_data.today_view.is_staked over src/staked.py: a recorded policy
+    # stake > 0 on a real-money track, live, settled, since the cutoff, paper leagues out; owner
+    # 2026-11-04). Until 2026-11-02 this counted WIN/LOSS rows of any source and kept rows without a
+    # match date; until 2026-11-04 it counted the SNIPER + MARKSMAN tiers, PAPER tracks included.
+    from dashboard_data.today_view import is_staked
+    dd = d.copy()
+    if days and "generated_at" in dd.columns:
+        dd = dd[dd["generated_at"] >= cut]
+    lab = stake_labels(dd)
+    smask = is_staked(lab,
+                      source=dd["source"] if "source" in dd.columns else None,
+                      dt=dd["match_date"].dt.tz_convert(None) if "match_date" in dd.columns else None,
+                      league=dd["league"] if "league" in dd.columns else None, pnl=dd.get("pnl"))
+    staked_all = dd[smask.to_numpy()].assign(_stake_units=lab.loc[smask.to_numpy(), "stake_units"].to_numpy())
     for track, g in s.groupby(s.get("model_type", "unknown")):
         tiers = {}
         for tier, t in g.groupby(s.loc[g.index].get("signal_tier", "unknown")):
-            pnl = pd.to_numeric(t.get("pnl"), errors="coerce").fillna(0)
-            tiers[str(tier)] = {"n": int(len(t)), "pnl": round(float(pnl.sum()), 2),
-                                "roi": round(float(pnl.sum() / len(t)), 4) if len(t) else None,
-                                "hit": round(float((t["result"] == "WIN").mean()), 4)}
-        pnl = pd.to_numeric(g.get("pnl"), errors="coerce").fillna(0)
-        staked = g[g.get("signal_tier", "").isin(["SNIPER", "MARKSMAN"])]
-        spnl = pd.to_numeric(staked.get("pnl"), errors="coerce").fillna(0)
+            tiers[str(tier)] = _settled_stats(t)
+        staked = staked_all[staked_all.get("model_type", pd.Series("unknown", index=staked_all.index)) == track]
+        spnl = pd.to_numeric(staked.get("pnl"), errors="coerce")
         out["by_track"][str(track)] = {
-            "n": int(len(g)), "pnl": round(float(pnl.sum()), 2),
-            "roi": round(float(pnl.sum() / len(g)), 4) if len(g) else None,
-            "hit": round(float((g["result"] == "WIN").mean()), 4),
+            **_settled_stats(g),
             # BREAK-EVEN TRAVELS WITH THE HIT RATE. A 45% hit rate is excellent at 2.40 and a
             # disaster at 1.70, so a hit rate shown without the bar it has to clear invites
             # exactly the wrong read. mean(1/odds), never 1/mean(odds).
+            # "staked_only" = THE staked definition (policy stake > 0). pnl is flat 1u; stake_pnl is the
+            # P/L at the recorded stakes (notional 100-unit bankroll).
             "staked_only": {
-                "n": int(len(staked)), "pnl": round(float(spnl.sum()), 2),
-                "roi": round(float(spnl.sum() / len(staked)), 4) if len(staked) else None,
-                "hit": (round(float((staked["result"] == "WIN").mean()), 4)
+                "n": int(len(staked)), "pnl": U.total(spnl),
+                "stake_units": U.total(staked["_stake_units"]) if len(staked) else 0.0,
+                "stake_pnl": U.total(spnl * staked["_stake_units"]) if len(staked) else 0.0,
+                "roi": round(U.total(spnl) / len(staked), 4) if len(staked) else None,
+                "hit": (round(float((spnl > 0).mean()), 4)
                         if len(staked) else None),
                 "break_even": _break_even(staked)},
             "by_tier": tiers,
@@ -132,7 +180,7 @@ def performance(days: int | None = None) -> dict:
 
 
 def by_league(days: int | None = 30, min_n: int = 5,
-              staked_only: bool = True) -> pd.DataFrame:
+              staked_only: bool = True, record: str | None = None) -> pd.DataFrame:
     """Per-league performance. Rows under `min_n` are KEPT but flagged, never hidden or greened.
 
     STAKED TIERS ONLY BY DEFAULT. This pooled VALUABLE with SNIPER and MARKSMAN, so a chart
@@ -140,21 +188,30 @@ def by_league(days: int | None = 30, min_n: int = 5,
     cosmetic: on 2026-10-06 the standard track read -65.11u across 553 tips while the staked
     loss was -9.17u across 133 — seven times larger. Pass staked_only=False to see every tip.
     """
-    d = ledger()
+    d = ledger(record=record)
     if d.empty or "result" not in d.columns:
         return pd.DataFrame()
     s = d[d["result"].isin(["WIN", "LOSS"])].copy()
-    if staked_only and "signal_tier" in s.columns:
-        s = s[s["signal_tier"].astype(str).str.upper().isin(("SNIPER", "MARKSMAN"))]
+    if staked_only:
+        # THE staked definition (src/staked.py, owner 2026-11-04): a recorded policy stake > 0. Until
+        # then this kept the SNIPER + MARKSMAN tiers, PAPER tracks included.
+        from src.staked import is_staked as _is
+        s = s[_is(stake_labels(s)).to_numpy()]
     if days and "generated_at" in s.columns:
         s = s[s["generated_at"] >= pd.Timestamp.now(tz="UTC") - pd.Timedelta(days=days)]
     if s.empty:
         return pd.DataFrame()
-    s["pnl"] = pd.to_numeric(s.get("pnl"), errors="coerce").fillna(0)
+    # SETTLED ROWS ONLY (fix9/defaults 2026-11-04): a WIN/LOSS row without a recorded P/L was
+    # pnl.fillna(0) - a 0.00u bet in the league's n, P/L and ROI. It is left out now, and n is the
+    # number of settled rows the figures are computed on.
+    s["pnl"] = pd.to_numeric(s.get("pnl"), errors="coerce")
+    s = s[s["pnl"].notna()].copy()
+    if s.empty:
+        return pd.DataFrame()
     s["_inv"] = 1.0 / pd.to_numeric(s.get("odds"), errors="coerce").where(
         lambda x: x > 1)
     g = s.groupby(["league", s.get("model_type", "unknown")]).agg(
-        n=("result", "size"), pnl=("pnl", "sum"),
+        n=("result", "size"), pnl=("pnl", U.total),
         hit=("result", lambda x: (x == "WIN").mean()),
         # Each league's OWN bar. A 45% hit rate is excellent at 2.40 and a disaster at 1.70,
         # so comparing every league against one estate-wide mean compares them against a line
@@ -212,7 +269,7 @@ def shadow_settlement_health() -> dict:
     return h
 
 
-def calibration(bins: int = 8, min_bin: int = 20) -> dict:
+def calibration(bins: int = 8, min_bin: int = 20, record: str | None = None) -> dict:
     """Claimed probability against what actually happened.
 
     HOW THE CLAIM IS RECOVERED. v9's edge is `model_prob − 1/odds`, so the model's probability is
@@ -228,9 +285,16 @@ def calibration(bins: int = 8, min_bin: int = 20) -> dict:
 
     Bins below `min_bin` are returned flagged, never dropped: a bin of 3 that sits on the diagonal
     is not evidence of calibration.
+
+    SIDE MARKETS (fixed 2026-11-02, estate scan "calibration headline 8.97pp, corrected 7.44pp").
+    `edge_pct/100 + 1/odds` is the claim ONLY on the O/U 2.5 ledger. The side-market ledger's edge is
+    measured against the DE-VIGGED price, so the same formula added the bookmaker margin to every
+    side-market claim (+4.4pp on average over 603 settled side rows on 2026-11-02) and inflated the
+    headline. Side rows record the claim itself (`model_prob`), and that is what is used; a side row
+    without a recorded model_prob is left out (no reconstruction), and the count is returned.
     """
     import numpy as np
-    d = ledger()
+    d = ledger(record=record)
     if d.empty or "result" not in d.columns:
         return {"available": False, "why": "no settled bets"}
     s = d[d["result"].isin(["WIN", "LOSS"])].copy()
@@ -238,8 +302,13 @@ def calibration(bins: int = 8, min_bin: int = 20) -> dict:
     edge = pd.to_numeric(s.get("edge_pct"), errors="coerce")
     if odds.isna().all() or edge.isna().all():
         return {"available": False, "why": "ledger has no odds/edge_pct to recover a claim from"}
-    # edge_pct is stored as a percentage in the ledger, so it is divided by 100 here.
-    s["claimed"] = (edge / 100.0) + (1.0 / odds)
+    # edge_pct is stored as a percentage in the ledger, so it is divided by 100 here. That recovers the
+    # claim on O/U 2.5 only; side markets use their recorded model_prob (see the docstring).
+    ou = (s["market"].astype(str) == "ou25") if "market" in s.columns else pd.Series(True, index=s.index)
+    mp = pd.to_numeric(s["model_prob"], errors="coerce") if "model_prob" in s.columns else pd.Series(
+        float("nan"), index=s.index)
+    s["claimed"] = ((edge / 100.0) + (1.0 / odds)).where(ou, mp)
+    no_claim_side = int((~ou & mp.isna()).sum())
     s["won"] = (s["result"] == "WIN").astype(float)
     s = s[s["claimed"].between(0, 1)].dropna(subset=["claimed"])
     if len(s) < min_bin:
@@ -270,4 +339,4 @@ def calibration(bins: int = 8, min_bin: int = 20) -> dict:
             "claimed": round(overall_claim, 4), "realised": round(overall_real, 4),
             "gap_pp": round((overall_claim - overall_real) * 100, 2),
             "z": round((overall_claim - overall_real) / se, 2) if se else None,
-            "by_tier": by_tier}
+            "by_tier": by_tier, "side_rows_without_model_prob": no_claim_side}

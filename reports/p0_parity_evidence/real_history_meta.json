@@ -1,0 +1,79 @@
+{
+  "history_rows_played": 71146,
+  "dates": [
+    "2026-10-25",
+    "2026-10-26",
+    "2026-10-27",
+    "2026-10-28",
+    "2026-10-29",
+    "2026-10-30"
+  ],
+  "training_rows": 71146,
+  "per_date": {
+    "2026-10-25": {
+      "fixtures": 73,
+      "excluded_twice_same_day": 0,
+      "cells": 2044,
+      "mismatched_cells": 0
+    },
+    "2026-10-26": {
+      "fixtures": 19,
+      "excluded_twice_same_day": 0,
+      "cells": 532,
+      "mismatched_cells": 0
+    },
+    "2026-10-27": {
+      "fixtures": 27,
+      "excluded_twice_same_day": 0,
+      "cells": 756,
+      "mismatched_cells": 0
+    },
+    "2026-10-28": {
+      "fixtures": 25,
+      "excluded_twice_same_day": 0,
+      "cells": 700,
+      "mismatched_cells": 0
+    },
+    "2026-10-29": {
+      "fixtures": 19,
+      "excluded_twice_same_day": 0,
+      "cells": 532,
+      "mismatched_cells": 0
+    },
+    "2026-10-30": {
+      "fixtures": 1,
+      "excluded_twice_same_day": 0,
+      "cells": 28,
+      "mismatched_cells": 0
+    }
+  },
+  "total_mismatched_cells": 0,
+  "training_form_cells_differing_pre_fix_vs_now": {
+    "home_scored_last5": 236,
+    "away_scored_last5": 232,
+    "home_conceded_last5": 250,
+    "away_conceded_last5": 241,
+    "home_over25_last5": 250,
+    "away_over25_last5": 241,
+    "home_shots_last5": 254,
+    "away_shots_last5": 248,
+    "home_sot_last5": 250,
+    "away_sot_last5": 243,
+    "home_corners_pg_roll": 254,
+    "away_corners_pg_roll": 237,
+    "home_fouls_pg_roll": 253,
+    "away_fouls_pg_roll": 243,
+    "home_xg_last5": 180,
+    "away_xg_last5": 169,
+    "home_insidebox_last5": 195,
+    "away_insidebox_last5": 191,
+    "home_ht_scored_last5": 183,
+    "away_ht_scored_last5": 181,
+    "home_ht_conceded_last5": 185,
+    "away_ht_conceded_last5": 183,
+    "home_ht_over05_rate": 182,
+    "away_ht_over05_rate": 174,
+    "home_ht_over15_rate": 186,
+    "away_ht_over15_rate": 183
+  }
+}

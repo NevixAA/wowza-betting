@@ -1,0 +1,4545 @@
+{
+ "artifact": "fixture_probe",
+ "fixture_id": 645877,
+ "generated_at": "2026-11-15T13:48:10Z",
+ "calls": [
+  {
+   "name": "fixture",
+   "endpoint": "fixtures",
+   "params": {
+    "id": 645877
+   },
+   "ok": true,
+   "response": [
+    {
+     "fixture": {
+      "id": 645877,
+      "referee": "Guan Xing",
+      "timezone": "UTC",
+      "date": "2020-11-10T07:30:00+00:00",
+      "timestamp": 1604993400,
+      "periods": {
+       "first": 1604993400,
+       "second": 1604997000
+      },
+      "venue": {
+       "id": null,
+       "name": "Dalian Pro Soccer Academy Base",
+       "city": "Dalian"
+      },
+      "status": {
+       "long": "Match Finished",
+       "short": "FT",
+       "elapsed": 90,
+       "extra": null
+      }
+     },
+     "league": {
+      "id": 169,
+      "name": "Super League",
+      "country": "China",
+      "logo": "https://media.api-sports.io/football/leagues/169.png",
+      "flag": "https://media.api-sports.io/flags/cn.svg",
+      "season": 2020,
+      "round": "11th Place Final",
+      "standings": true
+     },
+     "teams": {
+      "home": {
+       "id": 831,
+       "name": "Dalian Aerbin",
+       "logo": "https://media.api-sports.io/football/teams/831.png",
+       "winner": false
+      },
+      "away": {
+       "id": 838,
+       "name": "Guangzhou R&F",
+       "logo": "https://media.api-sports.io/football/teams/838.png",
+       "winner": true
+      }
+     },
+     "goals": {
+      "home": 0,
+      "away": 4
+     },
+     "score": {
+      "halftime": {
+       "home": 0,
+       "away": 1
+      },
+      "fulltime": {
+       "home": 0,
+       "away": 3
+      },
+      "extratime": {
+       "home": null,
+       "away": null
+      },
+      "penalty": {
+       "home": null,
+       "away": null
+      }
+     },
+     "events": [
+      {
+       "time": {
+        "elapsed": 10,
+        "extra": null
+       },
+       "team": {
+        "id": 838,
+        "name": "Guangzhou R&F",
+        "logo": "https://media.api-sports.io/football/teams/838.png"
+       },
+       "player": {
+        "id": 12986,
+        "name": "Li Shuai"
+       },
+       "assist": {
+        "id": null,
+        "name": null
+       },
+       "type": "Goal",
+       "detail": "Own Goal",
+       "comments": null
+      },
+      {
+       "time": {
+        "elapsed": 30,
+        "extra": null
+       },
+       "team": {
+        "id": 838,
+        "name": "Guangzhou R&F",
+        "logo": "https://media.api-sports.io/football/teams/838.png"
+       },
+       "player": {
+        "id": 12818,
+        "name": "Adrian Mierzejewski"
+       },
+       "assist": {
+        "id": null,
+        "name": null
+       },
+       "type": "Card",
+       "detail": "Yellow Card",
+       "comments": null
+      },
+      {
+       "time": {
+        "elapsed": 63,
+        "extra": null
+       },
+       "team": {
+        "id": 838,
+        "name": "Guangzhou R&F",
+        "logo": "https://media.api-sports.io/football/teams/838.png"
+       },
+       "player": {
+        "id": 80841,
+        "name": "Renatinho"
+       },
+       "assist": {
+        "id": 12932,
+        "name": "Chen Zhizhao"
+       },
+       "type": "subst",
+       "detail": "Substitution 1",
+       "comments": null
+      },
+      {
+       "time": {
+        "elapsed": 63,
+        "extra": null
+       },
+       "team": {
+        "id": 838,
+        "name": "Guangzhou R&F",
+        "logo": "https://media.api-sports.io/football/teams/838.png"
+       },
+       "player": {
+        "id": 12935,
+        "name": "Li Tixiang"
+       },
+       "assist": {
+        "id": 2921,
+        "name": "M. Dembélé"
+       },
+       "type": "subst",
+       "detail": "Substitution 2",
+       "comments": null
+      },
+      {
+       "time": {
+        "elapsed": 66,
+        "extra": null
+       },
+       "team": {
+        "id": 831,
+        "name": "Dalian Aerbin",
+        "logo": "https://media.api-sports.io/football/teams/831.png"
+       },
+       "player": {
+        "id": 12996,
+        "name": "Sun Bo"
+       },
+       "assist": {
+        "id": 12477,
+        "name": "Tong Lei"
+       },
+       "type": "subst",
+       "detail": "Substitution 1",
+       "comments": null
+      },
+      {
+       "time": {
+        "elapsed": 66,
+        "extra": null
+       },
+       "team": {
+        "id": 831,
+        "name": "Dalian Aerbin",
+        "logo": "https://media.api-sports.io/football/teams/831.png"
+       },
+       "player": {
+        "id": 12998,
+        "name": "Wang Jinxian"
+       },
+       "assist": {
+        "id": 46932,
+        "name": "Lin Liangming"
+       },
+       "type": "subst",
+       "detail": "Substitution 2",
+       "comments": null
+      },
+      {
+       "time": {
+        "elapsed": 71,
+        "extra": null
+       },
+       "team": {
+        "id": 831,
+        "name": "Dalian Aerbin",
+        "logo": "https://media.api-sports.io/football/teams/831.png"
+       },
+       "player": {
+        "id": 12982,
+        "name": "Yanfeng Dong"
+       },
+       "assist": {
+        "id": null,
+        "name": null
+       },
+       "type": "Card",
+       "detail": "Yellow Card",
+       "comments": null
+      },
+      {
+       "time": {
+        "elapsed": 73,
+        "extra": null
+       },
+       "team": {
+        "id": 838,
+        "name": "Guangzhou R&F",
+        "logo": "https://media.api-sports.io/football/teams/838.png"
+       },
+       "player": {
+        "id": 12928,
+        "name": "D. Tošić"
+       },
+       "assist": {
+        "id": 12818,
+        "name": "A. Mierzejewski"
+       },
+       "type": "Goal",
+       "detail": "Normal Goal",
+       "comments": null
+      },
+      {
+       "time": {
+        "elapsed": 78,
+        "extra": null
+       },
+       "team": {
+        "id": 831,
+        "name": "Dalian Aerbin",
+        "logo": "https://media.api-sports.io/football/teams/831.png"
+       },
+       "player": {
+        "id": 80868,
+        "name": "Wu Wei"
+       },
+       "assist": {
+        "id": 12993,
+        "name": "Cui Ming'an"
+       },
+       "type": "subst",
+       "detail": "Substitution 3",
+       "comments": null
+      },
+      {
+       "time": {
+        "elapsed": 82,
+        "extra": null
+       },
+       "team": {
+        "id": 831,
+        "name": "Dalian Aerbin",
+        "logo": "https://media.api-sports.io/football/teams/831.png"
+       },
+       "player": {
+        "id": 3429,
+        "name": "Emmanuel Boateng"
+       },
+       "assist": {
+        "id": null,
+        "name": null
+       },
+       "type": "Card",
+       "detail": "Yellow Card",
+       "comments": null
+      },
+      {
+       "time": {
+        "elapsed": 86,
+        "extra": null
+       },
+       "team": {
+        "id": 838,
+        "name": "Guangzhou R&F",
+        "logo": "https://media.api-sports.io/football/teams/838.png"
+       },
+       "player": {
+        "id": 12932,
+        "name": "Chen Zhizhao"
+       },
+       "assist": {
+        "id": 12818,
+        "name": "A. Mierzejewski"
+       },
+       "type": "Goal",
+       "detail": "Normal Goal",
+       "comments": null
+      },
+      {
+       "time": {
+        "elapsed": 90,
+        "extra": null
+       },
+       "team": {
+        "id": 831,
+        "name": "Dalian Aerbin",
+        "logo": "https://media.api-sports.io/football/teams/831.png"
+       },
+       "player": {
+        "id": 12982,
+        "name": "Dong Yanfeng"
+       },
+       "assist": {
+        "id": 12984,
+        "name": "Huang Jiahui"
+       },
+       "type": "subst",
+       "detail": "Substitution 4",
+       "comments": null
+      },
+      {
+       "time": {
+        "elapsed": 94,
+        "extra": null
+       },
+       "team": {
+        "id": 838,
+        "name": "Guangzhou R&F",
+        "logo": "https://media.api-sports.io/football/teams/838.png"
+       },
+       "player": {
+        "id": 12932,
+        "name": "Chen Zhizhao"
+       },
+       "assist": {
+        "id": null,
+        "name": null
+       },
+       "type": "Goal",
+       "detail": "Normal Goal",
+       "comments": null
+      },
+      {
+       "time": {
+        "elapsed": 99,
+        "extra": null
+       },
+       "team": {
+        "id": 831,
+        "name": "Dalian Aerbin",
+        "logo": "https://media.api-sports.io/football/teams/831.png"
+       },
+       "player": {
+        "id": 12986,
+        "name": "Shuai Li"
+       },
+       "assist": {
+        "id": null,
+        "name": null
+       },
+       "type": "Card",
+       "detail": "Yellow Card",
+       "comments": null
+      },
+      {
+       "time": {
+        "elapsed": 103,
+        "extra": null
+       },
+       "team": {
+        "id": 831,
+        "name": "Dalian Aerbin",
+        "logo": "https://media.api-sports.io/football/teams/831.png"
+       },
+       "player": {
+        "id": 12986,
+        "name": "Li Shuai"
+       },
+       "assist": {
+        "id": 12983,
+        "name": "He Yupeng"
+       },
+       "type": "subst",
+       "detail": "Substitution 5",
+       "comments": null
+      },
+      {
+       "time": {
+        "elapsed": 105,
+        "extra": null
+       },
+       "team": {
+        "id": 838,
+        "name": "Guangzhou R&F",
+        "logo": "https://media.api-sports.io/football/teams/838.png"
+       },
+       "player": {
+        "id": 12929,
+        "name": "Yi Teng"
+       },
+       "assist": {
+        "id": 12925,
+        "name": "Jiang Jihong"
+       },
+       "type": "subst",
+       "detail": "Substitution 3",
+       "comments": null
+      },
+      {
+       "time": {
+        "elapsed": 110,
+        "extra": null
+       },
+       "team": {
+        "id": 838,
+        "name": "Guangzhou R&F",
+        "logo": "https://media.api-sports.io/football/teams/838.png"
+       },
+       "player": {
+        "id": 12922,
+        "name": "Jiaqi Han"
+       },
+       "assist": {
+        "id": null,
+        "name": null
+       },
+       "type": "Card",
+       "detail": "Yellow Card",
+       "comments": null
+      },
+      {
+       "time": {
+        "elapsed": 111,
+        "extra": null
+       },
+       "team": {
+        "id": 838,
+        "name": "Guangzhou R&F",
+        "logo": "https://media.api-sports.io/football/teams/838.png"
+       },
+       "player": {
+        "id": 12924,
+        "name": "Huang Zhengyu"
+       },
+       "assist": {
+        "id": 133936,
+        "name": "Wang Huapeng"
+       },
+       "type": "subst",
+       "detail": "Substitution 4",
+       "comments": null
+      },
+      {
+       "time": {
+        "elapsed": 112,
+        "extra": null
+       },
+       "team": {
+        "id": 838,
+        "name": "Guangzhou R&F",
+        "logo": "https://media.api-sports.io/football/teams/838.png"
+       },
+       "player": {
+        "id": 80867,
+        "name": "Chen Zhechao"
+       },
+       "assist": {
+        "id": 266498,
+        "name": "Zhang Jinliang"
+       },
+       "type": "subst",
+       "detail": "Substitution 5",
+       "comments": null
+      },
+      {
+       "time": {
+        "elapsed": 115,
+        "extra": null
+       },
+       "team": {
+        "id": 838,
+        "name": "Guangzhou R&F",
+        "logo": "https://media.api-sports.io/football/teams/838.png"
+       },
+       "player": {
+        "id": 12942,
+        "name": "Ye Chugui"
+       },
+       "assist": {
+        "id": 12937,
+        "name": "Lu Lin"
+       },
+       "type": "subst",
+       "detail": "Substitution 6",
+       "comments": null
+      }
+     ],
+     "lineups": [
+      {
+       "team": {
+        "id": 831,
+        "name": "Dalian Aerbin",
+        "logo": "https://media.api-sports.io/football/teams/831.png",
+        "colors": null
+       },
+       "coach": {
+        "id": 67,
+        "name": "Rafael Benítez",
+        "photo": "https://media.api-sports.io/football/coachs/67.png"
+       },
+       "formation": "5-4-1",
+       "startXI": [
+        {
+         "player": {
+          "id": 78871,
+          "name": "Xu Jiamin",
+          "number": 32,
+          "pos": "G",
+          "grid": "1:1"
+         }
+        },
+        {
+         "player": {
+          "id": 12987,
+          "name": "Shan Pengfei",
+          "number": 3,
+          "pos": "D",
+          "grid": "2:5"
+         }
+        },
+        {
+         "player": {
+          "id": 12988,
+          "name": "Wang Yaopeng",
+          "number": 13,
+          "pos": "D",
+          "grid": "2:4"
+         }
+        },
+        {
+         "player": {
+          "id": 12986,
+          "name": "Li Shuai",
+          "number": 4,
+          "pos": "D",
+          "grid": "2:3"
+         }
+        },
+        {
+         "player": {
+          "id": 12982,
+          "name": "Dong Yanfeng",
+          "number": 22,
+          "pos": "D",
+          "grid": "2:2"
+         }
+        },
+        {
+         "player": {
+          "id": 12997,
+          "name": "Sun Guowen",
+          "number": 11,
+          "pos": "D",
+          "grid": "2:1"
+         }
+        },
+        {
+         "player": {
+          "id": 12996,
+          "name": "Sun Bo",
+          "number": 29,
+          "pos": "M",
+          "grid": "3:4"
+         }
+        },
+        {
+         "player": {
+          "id": 12998,
+          "name": "Wang Jinxian",
+          "number": 20,
+          "pos": "M",
+          "grid": "3:3"
+         }
+        },
+        {
+         "player": {
+          "id": 1364,
+          "name": "Jaílson",
+          "number": 12,
+          "pos": "M",
+          "grid": "3:2"
+         }
+        },
+        {
+         "player": {
+          "id": 80868,
+          "name": "Wu Wei",
+          "number": 5,
+          "pos": "M",
+          "grid": "3:1"
+         }
+        },
+        {
+         "player": {
+          "id": 3429,
+          "name": "E. Boateng",
+          "number": 21,
+          "pos": "F",
+          "grid": "4:1"
+         }
+        }
+       ],
+       "substitutes": [
+        {
+         "player": {
+          "id": 12477,
+          "name": "Tong Lei",
+          "number": 16,
+          "pos": "D",
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 46932,
+          "name": "Lin Liangming",
+          "number": 28,
+          "pos": "M",
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 12993,
+          "name": "Cui Ming'an",
+          "number": 26,
+          "pos": "M",
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 12984,
+          "name": "Huang Jiahui",
+          "number": 14,
+          "pos": "M",
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 12983,
+          "name": "He Yupeng",
+          "number": 18,
+          "pos": "D",
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 266712,
+          "name": "Zhu Jiaxuan",
+          "number": 40,
+          "pos": "M",
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 266711,
+          "name": "Wang Xianjun",
+          "number": 33,
+          "pos": "M",
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 12985,
+          "name": "Li Jianbin",
+          "number": 25,
+          "pos": "D",
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 133927,
+          "name": "Li Xuebo",
+          "number": 23,
+          "pos": "G",
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 13003,
+          "name": "Zheng Long",
+          "number": 31,
+          "pos": "M",
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 13002,
+          "name": "Zhao Xuri",
+          "number": 7,
+          "pos": "M",
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 12981,
+          "name": "Zhang Chong",
+          "number": 1,
+          "pos": "G",
+          "grid": null
+         }
+        }
+       ]
+      },
+      {
+       "team": {
+        "id": 838,
+        "name": "Guangzhou R&F",
+        "logo": "https://media.api-sports.io/football/teams/838.png",
+        "colors": null
+       },
+       "coach": {
+        "id": 3102,
+        "name": "G. van Bronckhorst",
+        "photo": "https://media.api-sports.io/football/coachs/3102.png"
+       },
+       "formation": "3-4-2-1",
+       "startXI": [
+        {
+         "player": {
+          "id": 12922,
+          "name": "Han Jiaqi",
+          "number": 22,
+          "pos": "G",
+          "grid": "1:1"
+         }
+        },
+        {
+         "player": {
+          "id": 12928,
+          "name": "D. Tošić",
+          "number": 3,
+          "pos": "D",
+          "grid": "2:3"
+         }
+        },
+        {
+         "player": {
+          "id": 12927,
+          "name": "Tang Miao",
+          "number": 20,
+          "pos": "M",
+          "grid": "2:2"
+         }
+        },
+        {
+         "player": {
+          "id": 12929,
+          "name": "Yi Teng",
+          "number": 18,
+          "pos": "D",
+          "grid": "2:1"
+         }
+        },
+        {
+         "player": {
+          "id": 12924,
+          "name": "Huang Zhengyu",
+          "number": 36,
+          "pos": "D",
+          "grid": "3:4"
+         }
+        },
+        {
+         "player": {
+          "id": 12818,
+          "name": "A. Mierzejewski",
+          "number": 6,
+          "pos": "M",
+          "grid": "3:3"
+         }
+        },
+        {
+         "player": {
+          "id": 12935,
+          "name": "Li Tixiang",
+          "number": 15,
+          "pos": "M",
+          "grid": "3:2"
+         }
+        },
+        {
+         "player": {
+          "id": 80867,
+          "name": "Chen Zhechao",
+          "number": 25,
+          "pos": "M",
+          "grid": "3:1"
+         }
+        },
+        {
+         "player": {
+          "id": 12942,
+          "name": "Ye Chugui",
+          "number": 13,
+          "pos": "F",
+          "grid": "4:2"
+         }
+        },
+        {
+         "player": {
+          "id": 80841,
+          "name": "Renatinho",
+          "number": 11,
+          "pos": "F",
+          "grid": "4:1"
+         }
+        },
+        {
+         "player": {
+          "id": 12555,
+          "name": "R. Zivkovic",
+          "number": 9,
+          "pos": "F",
+          "grid": "5:1"
+         }
+        }
+       ],
+       "substitutes": [
+        {
+         "player": {
+          "id": 12932,
+          "name": "Chen Zhizhao",
+          "number": 32,
+          "pos": "M",
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 2921,
+          "name": "M. Dembélé",
+          "number": 8,
+          "pos": "M",
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 12925,
+          "name": "Jiang Jihong",
+          "number": 19,
+          "pos": "D",
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 133936,
+          "name": "Wang Huapeng",
+          "number": 42,
+          "pos": "D",
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 266498,
+          "name": "Zhang Jinliang",
+          "number": 41,
+          "pos": "M",
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 12937,
+          "name": "Lu Lin",
+          "number": 23,
+          "pos": "M",
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 80860,
+          "name": "Li Songyi",
+          "number": 5,
+          "pos": "D",
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 266497,
+          "name": "Fu Yuncheng",
+          "number": 17,
+          "pos": "D",
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 12920,
+          "name": "Cheng Yuelei",
+          "number": 1,
+          "pos": "G",
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 12941,
+          "name": "Wang Peng",
+          "number": 30,
+          "pos": "M",
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 266499,
+          "name": "Wu Chengru",
+          "number": 28,
+          "pos": "M",
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 12945,
+          "name": "Zhang Gong",
+          "number": 4,
+          "pos": "M",
+          "grid": null
+         }
+        }
+       ]
+      }
+     ],
+     "statistics": [
+      {
+       "team": {
+        "id": 831,
+        "name": "Dalian Aerbin",
+        "logo": "https://media.api-sports.io/football/teams/831.png"
+       },
+       "statistics": [
+        {
+         "type": "Shots on Goal",
+         "value": 3
+        },
+        {
+         "type": "Shots off Goal",
+         "value": 14
+        },
+        {
+         "type": "Total Shots",
+         "value": 21
+        },
+        {
+         "type": "Blocked Shots",
+         "value": 4
+        },
+        {
+         "type": "Shots insidebox",
+         "value": 16
+        },
+        {
+         "type": "Shots outsidebox",
+         "value": 5
+        },
+        {
+         "type": "Fouls",
+         "value": 15
+        },
+        {
+         "type": "Corner Kicks",
+         "value": 10
+        },
+        {
+         "type": "Offsides",
+         "value": 1
+        },
+        {
+         "type": "Ball Possession",
+         "value": "48%"
+        },
+        {
+         "type": "Yellow Cards",
+         "value": 3
+        },
+        {
+         "type": "Red Cards",
+         "value": null
+        },
+        {
+         "type": "Goalkeeper Saves",
+         "value": 3
+        },
+        {
+         "type": "Total passes",
+         "value": 600
+        },
+        {
+         "type": "Passes accurate",
+         "value": 502
+        },
+        {
+         "type": "Passes %",
+         "value": "84%"
+        }
+       ]
+      },
+      {
+       "team": {
+        "id": 838,
+        "name": "Guangzhou R&F",
+        "logo": "https://media.api-sports.io/football/teams/838.png"
+       },
+       "statistics": [
+        {
+         "type": "Shots on Goal",
+         "value": 6
+        },
+        {
+         "type": "Shots off Goal",
+         "value": 6
+        },
+        {
+         "type": "Total Shots",
+         "value": 14
+        },
+        {
+         "type": "Blocked Shots",
+         "value": 2
+        },
+        {
+         "type": "Shots insidebox",
+         "value": 10
+        },
+        {
+         "type": "Shots outsidebox",
+         "value": 4
+        },
+        {
+         "type": "Fouls",
+         "value": 16
+        },
+        {
+         "type": "Corner Kicks",
+         "value": 3
+        },
+        {
+         "type": "Offsides",
+         "value": 2
+        },
+        {
+         "type": "Ball Possession",
+         "value": "52%"
+        },
+        {
+         "type": "Yellow Cards",
+         "value": 2
+        },
+        {
+         "type": "Red Cards",
+         "value": null
+        },
+        {
+         "type": "Goalkeeper Saves",
+         "value": 3
+        },
+        {
+         "type": "Total passes",
+         "value": 677
+        },
+        {
+         "type": "Passes accurate",
+         "value": 564
+        },
+        {
+         "type": "Passes %",
+         "value": "83%"
+        }
+       ]
+      }
+     ],
+     "players": [
+      {
+       "team": {
+        "id": 831,
+        "name": "Dalian Aerbin",
+        "logo": "https://media.api-sports.io/football/teams/831.png",
+        "update": "2020-11-20T01:19:54+00:00"
+       },
+       "players": [
+        {
+         "player": {
+          "id": 78871,
+          "name": "Jiamin Xu",
+          "photo": "https://media.api-sports.io/football/players/78871.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 120,
+            "number": 32,
+            "position": "G",
+            "rating": "5.9",
+            "captain": false,
+            "substitute": false
+           },
+           "offsides": null,
+           "shots": {
+            "total": null,
+            "on": null
+           },
+           "goals": {
+            "total": null,
+            "conceded": 4,
+            "assists": null,
+            "saves": 3
+           },
+           "passes": {
+            "total": 17,
+            "key": null,
+            "accuracy": "7"
+           },
+           "tackles": {
+            "total": null,
+            "blocks": null,
+            "interceptions": null
+           },
+           "duels": {
+            "total": 1,
+            "won": 1
+           },
+           "dribbles": {
+            "attempts": null,
+            "success": null,
+            "past": null
+           },
+           "fouls": {
+            "drawn": null,
+            "committed": null
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": 0,
+            "saved": 0
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 12997,
+          "name": "Guowen Sun",
+          "photo": "https://media.api-sports.io/football/players/12997.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 120,
+            "number": 11,
+            "position": "D",
+            "rating": "6.6",
+            "captain": false,
+            "substitute": false
+           },
+           "offsides": null,
+           "shots": {
+            "total": 2,
+            "on": null
+           },
+           "goals": {
+            "total": null,
+            "conceded": 0,
+            "assists": null,
+            "saves": null
+           },
+           "passes": {
+            "total": 46,
+            "key": 1,
+            "accuracy": "37"
+           },
+           "tackles": {
+            "total": 6,
+            "blocks": null,
+            "interceptions": 2
+           },
+           "duels": {
+            "total": 11,
+            "won": 9
+           },
+           "dribbles": {
+            "attempts": 3,
+            "success": 1,
+            "past": null
+           },
+           "fouls": {
+            "drawn": 1,
+            "committed": null
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": 0,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 12982,
+          "name": "Yanfeng Dong",
+          "photo": "https://media.api-sports.io/football/players/12982.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 90,
+            "number": 22,
+            "position": "D",
+            "rating": "6.3",
+            "captain": false,
+            "substitute": false
+           },
+           "offsides": null,
+           "shots": {
+            "total": 1,
+            "on": null
+           },
+           "goals": {
+            "total": null,
+            "conceded": 0,
+            "assists": null,
+            "saves": null
+           },
+           "passes": {
+            "total": 40,
+            "key": null,
+            "accuracy": "34"
+           },
+           "tackles": {
+            "total": 1,
+            "blocks": null,
+            "interceptions": 1
+           },
+           "duels": {
+            "total": 5,
+            "won": 2
+           },
+           "dribbles": {
+            "attempts": null,
+            "success": null,
+            "past": 1
+           },
+           "fouls": {
+            "drawn": null,
+            "committed": 2
+           },
+           "cards": {
+            "yellow": 1,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": 0,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 12988,
+          "name": "Yaopeng Wang",
+          "photo": "https://media.api-sports.io/football/players/12988.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 120,
+            "number": 13,
+            "position": "D",
+            "rating": "6.5",
+            "captain": true,
+            "substitute": false
+           },
+           "offsides": null,
+           "shots": {
+            "total": null,
+            "on": null
+           },
+           "goals": {
+            "total": null,
+            "conceded": 0,
+            "assists": null,
+            "saves": null
+           },
+           "passes": {
+            "total": 48,
+            "key": 1,
+            "accuracy": "44"
+           },
+           "tackles": {
+            "total": 1,
+            "blocks": 1,
+            "interceptions": 1
+           },
+           "duels": {
+            "total": 6,
+            "won": 4
+           },
+           "dribbles": {
+            "attempts": null,
+            "success": null,
+            "past": null
+           },
+           "fouls": {
+            "drawn": 1,
+            "committed": 1
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": 0,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 12987,
+          "name": "Pengfei Shan",
+          "photo": "https://media.api-sports.io/football/players/12987.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 120,
+            "number": 3,
+            "position": "D",
+            "rating": "6.5",
+            "captain": false,
+            "substitute": false
+           },
+           "offsides": null,
+           "shots": {
+            "total": 2,
+            "on": null
+           },
+           "goals": {
+            "total": null,
+            "conceded": 0,
+            "assists": null,
+            "saves": null
+           },
+           "passes": {
+            "total": 46,
+            "key": null,
+            "accuracy": "40"
+           },
+           "tackles": {
+            "total": 2,
+            "blocks": null,
+            "interceptions": 1
+           },
+           "duels": {
+            "total": 5,
+            "won": 2
+           },
+           "dribbles": {
+            "attempts": null,
+            "success": null,
+            "past": null
+           },
+           "fouls": {
+            "drawn": null,
+            "committed": 2
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": 0,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 12986,
+          "name": "Shuai Li",
+          "photo": "https://media.api-sports.io/football/players/12986.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 103,
+            "number": 4,
+            "position": "D",
+            "rating": "6.2",
+            "captain": false,
+            "substitute": false
+           },
+           "offsides": null,
+           "shots": {
+            "total": 1,
+            "on": null
+           },
+           "goals": {
+            "total": null,
+            "conceded": 0,
+            "assists": null,
+            "saves": null
+           },
+           "passes": {
+            "total": 56,
+            "key": 1,
+            "accuracy": "51"
+           },
+           "tackles": {
+            "total": 1,
+            "blocks": null,
+            "interceptions": null
+           },
+           "duels": {
+            "total": 8,
+            "won": 5
+           },
+           "dribbles": {
+            "attempts": 1,
+            "success": 1,
+            "past": null
+           },
+           "fouls": {
+            "drawn": 3,
+            "committed": 3
+           },
+           "cards": {
+            "yellow": 1,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": 0,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 12998,
+          "name": "Jinxian Wang",
+          "photo": "https://media.api-sports.io/football/players/12998.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 66,
+            "number": 20,
+            "position": "M",
+            "rating": "7",
+            "captain": false,
+            "substitute": false
+           },
+           "offsides": null,
+           "shots": {
+            "total": null,
+            "on": null
+           },
+           "goals": {
+            "total": null,
+            "conceded": 0,
+            "assists": null,
+            "saves": null
+           },
+           "passes": {
+            "total": 27,
+            "key": 1,
+            "accuracy": "18"
+           },
+           "tackles": {
+            "total": null,
+            "blocks": null,
+            "interceptions": 1
+           },
+           "duels": {
+            "total": 10,
+            "won": 6
+           },
+           "dribbles": {
+            "attempts": 3,
+            "success": 3,
+            "past": 3
+           },
+           "fouls": {
+            "drawn": 2,
+            "committed": null
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": 0,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 1364,
+          "name": "Jailson Siqueira",
+          "photo": "https://media.api-sports.io/football/players/1364.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 120,
+            "number": 12,
+            "position": "M",
+            "rating": "7.9",
+            "captain": false,
+            "substitute": false
+           },
+           "offsides": null,
+           "shots": {
+            "total": null,
+            "on": null
+           },
+           "goals": {
+            "total": null,
+            "conceded": 0,
+            "assists": null,
+            "saves": null
+           },
+           "passes": {
+            "total": 88,
+            "key": 2,
+            "accuracy": "82"
+           },
+           "tackles": {
+            "total": 7,
+            "blocks": null,
+            "interceptions": null
+           },
+           "duels": {
+            "total": 19,
+            "won": 13
+           },
+           "dribbles": {
+            "attempts": 1,
+            "success": 1,
+            "past": 2
+           },
+           "fouls": {
+            "drawn": 4,
+            "committed": null
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": 0,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 80868,
+          "name": "Wei Wu",
+          "photo": "https://media.api-sports.io/football/players/80868.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 78,
+            "number": 5,
+            "position": "M",
+            "rating": "6.7",
+            "captain": false,
+            "substitute": false
+           },
+           "offsides": null,
+           "shots": {
+            "total": null,
+            "on": null
+           },
+           "goals": {
+            "total": null,
+            "conceded": 0,
+            "assists": null,
+            "saves": null
+           },
+           "passes": {
+            "total": 39,
+            "key": 1,
+            "accuracy": "32"
+           },
+           "tackles": {
+            "total": null,
+            "blocks": null,
+            "interceptions": 1
+           },
+           "duels": {
+            "total": 8,
+            "won": 4
+           },
+           "dribbles": {
+            "attempts": 3,
+            "success": 2,
+            "past": 1
+           },
+           "fouls": {
+            "drawn": 1,
+            "committed": 1
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": 0,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 12996,
+          "name": "Bo Sun",
+          "photo": "https://media.api-sports.io/football/players/12996.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 66,
+            "number": 29,
+            "position": "M",
+            "rating": "6.9",
+            "captain": false,
+            "substitute": false
+           },
+           "offsides": null,
+           "shots": {
+            "total": 1,
+            "on": null
+           },
+           "goals": {
+            "total": null,
+            "conceded": 0,
+            "assists": null,
+            "saves": null
+           },
+           "passes": {
+            "total": 29,
+            "key": 1,
+            "accuracy": "26"
+           },
+           "tackles": {
+            "total": null,
+            "blocks": null,
+            "interceptions": null
+           },
+           "duels": {
+            "total": 3,
+            "won": null
+           },
+           "dribbles": {
+            "attempts": null,
+            "success": null,
+            "past": null
+           },
+           "fouls": {
+            "drawn": null,
+            "committed": 3
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": 0,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 3429,
+          "name": "Emmanuel Boateng",
+          "photo": "https://media.api-sports.io/football/players/3429.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 120,
+            "number": 21,
+            "position": "F",
+            "rating": "7.5",
+            "captain": false,
+            "substitute": false
+           },
+           "offsides": null,
+           "shots": {
+            "total": 6,
+            "on": 1
+           },
+           "goals": {
+            "total": null,
+            "conceded": 0,
+            "assists": null,
+            "saves": null
+           },
+           "passes": {
+            "total": 31,
+            "key": 2,
+            "accuracy": "25"
+           },
+           "tackles": {
+            "total": 1,
+            "blocks": null,
+            "interceptions": null
+           },
+           "duels": {
+            "total": 18,
+            "won": 9
+           },
+           "dribbles": {
+            "attempts": 1,
+            "success": null,
+            "past": null
+           },
+           "fouls": {
+            "drawn": null,
+            "committed": 2
+           },
+           "cards": {
+            "yellow": 1,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": 0,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 12981,
+          "name": "Chong Zhang",
+          "photo": "https://media.api-sports.io/football/players/12981.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": null,
+            "number": 1,
+            "position": "G",
+            "rating": null,
+            "captain": false,
+            "substitute": true
+           },
+           "offsides": null,
+           "shots": {
+            "total": null,
+            "on": null
+           },
+           "goals": {
+            "total": null,
+            "conceded": 0,
+            "assists": null,
+            "saves": null
+           },
+           "passes": {
+            "total": null,
+            "key": null,
+            "accuracy": null
+           },
+           "tackles": {
+            "total": null,
+            "blocks": null,
+            "interceptions": null
+           },
+           "duels": {
+            "total": null,
+            "won": null
+           },
+           "dribbles": {
+            "attempts": null,
+            "success": null,
+            "past": null
+           },
+           "fouls": {
+            "drawn": null,
+            "committed": null
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": 0,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 133927,
+          "name": "Li Xuebo",
+          "photo": "https://media.api-sports.io/football/players/133927.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": null,
+            "number": 23,
+            "position": "G",
+            "rating": null,
+            "captain": false,
+            "substitute": true
+           },
+           "offsides": null,
+           "shots": {
+            "total": null,
+            "on": null
+           },
+           "goals": {
+            "total": null,
+            "conceded": 0,
+            "assists": null,
+            "saves": null
+           },
+           "passes": {
+            "total": null,
+            "key": null,
+            "accuracy": null
+           },
+           "tackles": {
+            "total": null,
+            "blocks": null,
+            "interceptions": null
+           },
+           "duels": {
+            "total": null,
+            "won": null
+           },
+           "dribbles": {
+            "attempts": null,
+            "success": null,
+            "past": null
+           },
+           "fouls": {
+            "drawn": null,
+            "committed": null
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": 0,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 266711,
+          "name": "Xianjun Wang",
+          "photo": "https://media.api-sports.io/football/players/266711.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": null,
+            "number": 33,
+            "position": "M",
+            "rating": null,
+            "captain": false,
+            "substitute": true
+           },
+           "offsides": null,
+           "shots": {
+            "total": null,
+            "on": null
+           },
+           "goals": {
+            "total": null,
+            "conceded": 0,
+            "assists": null,
+            "saves": null
+           },
+           "passes": {
+            "total": null,
+            "key": null,
+            "accuracy": null
+           },
+           "tackles": {
+            "total": null,
+            "blocks": null,
+            "interceptions": null
+           },
+           "duels": {
+            "total": null,
+            "won": null
+           },
+           "dribbles": {
+            "attempts": null,
+            "success": null,
+            "past": null
+           },
+           "fouls": {
+            "drawn": null,
+            "committed": null
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": 0,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 12983,
+          "name": "Yupeng He",
+          "photo": "https://media.api-sports.io/football/players/12983.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 17,
+            "number": 18,
+            "position": "D",
+            "rating": "6.3",
+            "captain": false,
+            "substitute": true
+           },
+           "offsides": null,
+           "shots": {
+            "total": null,
+            "on": null
+           },
+           "goals": {
+            "total": null,
+            "conceded": 0,
+            "assists": null,
+            "saves": null
+           },
+           "passes": {
+            "total": 4,
+            "key": null,
+            "accuracy": "3"
+           },
+           "tackles": {
+            "total": null,
+            "blocks": null,
+            "interceptions": null
+           },
+           "duels": {
+            "total": 3,
+            "won": 1
+           },
+           "dribbles": {
+            "attempts": null,
+            "success": null,
+            "past": null
+           },
+           "fouls": {
+            "drawn": 1,
+            "committed": null
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": 0,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 12985,
+          "name": "Jianbin Li",
+          "photo": "https://media.api-sports.io/football/players/12985.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": null,
+            "number": 25,
+            "position": "D",
+            "rating": null,
+            "captain": false,
+            "substitute": true
+           },
+           "offsides": null,
+           "shots": {
+            "total": null,
+            "on": null
+           },
+           "goals": {
+            "total": null,
+            "conceded": 0,
+            "assists": null,
+            "saves": null
+           },
+           "passes": {
+            "total": null,
+            "key": null,
+            "accuracy": null
+           },
+           "tackles": {
+            "total": null,
+            "blocks": null,
+            "interceptions": null
+           },
+           "duels": {
+            "total": null,
+            "won": null
+           },
+           "dribbles": {
+            "attempts": null,
+            "success": null,
+            "past": null
+           },
+           "fouls": {
+            "drawn": null,
+            "committed": null
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": 0,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 12477,
+          "name": "Tong Lei",
+          "photo": "https://media.api-sports.io/football/players/12477.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 54,
+            "number": 16,
+            "position": "D",
+            "rating": "6.9",
+            "captain": false,
+            "substitute": true
+           },
+           "offsides": null,
+           "shots": {
+            "total": 1,
+            "on": null
+           },
+           "goals": {
+            "total": null,
+            "conceded": 0,
+            "assists": null,
+            "saves": null
+           },
+           "passes": {
+            "total": 37,
+            "key": 2,
+            "accuracy": "31"
+           },
+           "tackles": {
+            "total": 3,
+            "blocks": null,
+            "interceptions": 1
+           },
+           "duels": {
+            "total": 5,
+            "won": 3
+           },
+           "dribbles": {
+            "attempts": 1,
+            "success": null,
+            "past": 1
+           },
+           "fouls": {
+            "drawn": null,
+            "committed": 1
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": 0,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 13002,
+          "name": "Xuri Zhao",
+          "photo": "https://media.api-sports.io/football/players/13002.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": null,
+            "number": 7,
+            "position": "M",
+            "rating": null,
+            "captain": false,
+            "substitute": true
+           },
+           "offsides": null,
+           "shots": {
+            "total": null,
+            "on": null
+           },
+           "goals": {
+            "total": null,
+            "conceded": 0,
+            "assists": null,
+            "saves": null
+           },
+           "passes": {
+            "total": null,
+            "key": null,
+            "accuracy": null
+           },
+           "tackles": {
+            "total": null,
+            "blocks": null,
+            "interceptions": null
+           },
+           "duels": {
+            "total": null,
+            "won": null
+           },
+           "dribbles": {
+            "attempts": null,
+            "success": null,
+            "past": null
+           },
+           "fouls": {
+            "drawn": null,
+            "committed": null
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": 0,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 12993,
+          "name": "Ming’an Cui",
+          "photo": "https://media.api-sports.io/football/players/12993.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 42,
+            "number": 26,
+            "position": "M",
+            "rating": "6.9",
+            "captain": false,
+            "substitute": true
+           },
+           "offsides": null,
+           "shots": {
+            "total": 1,
+            "on": null
+           },
+           "goals": {
+            "total": null,
+            "conceded": 0,
+            "assists": null,
+            "saves": null
+           },
+           "passes": {
+            "total": 32,
+            "key": 2,
+            "accuracy": "22"
+           },
+           "tackles": {
+            "total": 1,
+            "blocks": null,
+            "interceptions": null
+           },
+           "duels": {
+            "total": 5,
+            "won": 1
+           },
+           "dribbles": {
+            "attempts": null,
+            "success": null,
+            "past": 2
+           },
+           "fouls": {
+            "drawn": null,
+            "committed": null
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": 0,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 46932,
+          "name": "Liangming Lin",
+          "photo": "https://media.api-sports.io/football/players/46932.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 54,
+            "number": 28,
+            "position": "M",
+            "rating": "6.5",
+            "captain": false,
+            "substitute": true
+           },
+           "offsides": null,
+           "shots": {
+            "total": 1,
+            "on": 1
+           },
+           "goals": {
+            "total": null,
+            "conceded": 0,
+            "assists": null,
+            "saves": null
+           },
+           "passes": {
+            "total": 34,
+            "key": 3,
+            "accuracy": "26"
+           },
+           "tackles": {
+            "total": null,
+            "blocks": null,
+            "interceptions": 2
+           },
+           "duels": {
+            "total": 6,
+            "won": 2
+           },
+           "dribbles": {
+            "attempts": 3,
+            "success": 1,
+            "past": null
+           },
+           "fouls": {
+            "drawn": null,
+            "committed": null
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": 0,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 13003,
+          "name": "Long Zheng",
+          "photo": "https://media.api-sports.io/football/players/13003.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": null,
+            "number": 31,
+            "position": "M",
+            "rating": null,
+            "captain": false,
+            "substitute": true
+           },
+           "offsides": null,
+           "shots": {
+            "total": null,
+            "on": null
+           },
+           "goals": {
+            "total": null,
+            "conceded": 0,
+            "assists": null,
+            "saves": null
+           },
+           "passes": {
+            "total": null,
+            "key": null,
+            "accuracy": null
+           },
+           "tackles": {
+            "total": null,
+            "blocks": null,
+            "interceptions": null
+           },
+           "duels": {
+            "total": null,
+            "won": null
+           },
+           "dribbles": {
+            "attempts": null,
+            "success": null,
+            "past": null
+           },
+           "fouls": {
+            "drawn": null,
+            "committed": null
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": 0,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 12984,
+          "name": "Jiahui Huang",
+          "photo": "https://media.api-sports.io/football/players/12984.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 30,
+            "number": 14,
+            "position": "M",
+            "rating": "6.7",
+            "captain": false,
+            "substitute": true
+           },
+           "offsides": null,
+           "shots": {
+            "total": 1,
+            "on": 1
+           },
+           "goals": {
+            "total": null,
+            "conceded": 0,
+            "assists": null,
+            "saves": null
+           },
+           "passes": {
+            "total": 26,
+            "key": null,
+            "accuracy": "24"
+           },
+           "tackles": {
+            "total": null,
+            "blocks": 1,
+            "interceptions": null
+           },
+           "duels": {
+            "total": 3,
+            "won": null
+           },
+           "dribbles": {
+            "attempts": 1,
+            "success": null,
+            "past": null
+           },
+           "fouls": {
+            "drawn": null,
+            "committed": null
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": 0,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 266712,
+          "name": "Zhu Jiaxuan",
+          "photo": "https://media.api-sports.io/football/players/266712.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": null,
+            "number": 40,
+            "position": "M",
+            "rating": null,
+            "captain": false,
+            "substitute": true
+           },
+           "offsides": null,
+           "shots": {
+            "total": null,
+            "on": null
+           },
+           "goals": {
+            "total": null,
+            "conceded": 0,
+            "assists": null,
+            "saves": null
+           },
+           "passes": {
+            "total": null,
+            "key": null,
+            "accuracy": null
+           },
+           "tackles": {
+            "total": null,
+            "blocks": null,
+            "interceptions": null
+           },
+           "duels": {
+            "total": null,
+            "won": null
+           },
+           "dribbles": {
+            "attempts": null,
+            "success": null,
+            "past": null
+           },
+           "fouls": {
+            "drawn": null,
+            "committed": null
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": 0,
+            "saved": null
+           }
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "team": {
+        "id": 838,
+        "name": "Guangzhou R&F",
+        "logo": "https://media.api-sports.io/football/teams/838.png",
+        "update": "2020-11-20T01:19:54+00:00"
+       },
+       "players": [
+        {
+         "player": {
+          "id": 12922,
+          "name": "Jiaqi Han",
+          "photo": "https://media.api-sports.io/football/players/12922.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 120,
+            "number": 22,
+            "position": "G",
+            "rating": "7.5",
+            "captain": false,
+            "substitute": false
+           },
+           "offsides": null,
+           "shots": {
+            "total": null,
+            "on": null
+           },
+           "goals": {
+            "total": null,
+            "conceded": 0,
+            "assists": null,
+            "saves": 3
+           },
+           "passes": {
+            "total": 26,
+            "key": null,
+            "accuracy": "18"
+           },
+           "tackles": {
+            "total": null,
+            "blocks": null,
+            "interceptions": null
+           },
+           "duels": {
+            "total": null,
+            "won": null
+           },
+           "dribbles": {
+            "attempts": null,
+            "success": null,
+            "past": null
+           },
+           "fouls": {
+            "drawn": null,
+            "committed": null
+           },
+           "cards": {
+            "yellow": 1,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": 0,
+            "saved": 0
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 12929,
+          "name": "Teng Yi",
+          "photo": "https://media.api-sports.io/football/players/12929.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 105,
+            "number": 18,
+            "position": "D",
+            "rating": "7",
+            "captain": false,
+            "substitute": false
+           },
+           "offsides": null,
+           "shots": {
+            "total": null,
+            "on": null
+           },
+           "goals": {
+            "total": null,
+            "conceded": 0,
+            "assists": null,
+            "saves": null
+           },
+           "passes": {
+            "total": 65,
+            "key": null,
+            "accuracy": "61"
+           },
+           "tackles": {
+            "total": 1,
+            "blocks": null,
+            "interceptions": 2
+           },
+           "duels": {
+            "total": 6,
+            "won": 2
+           },
+           "dribbles": {
+            "attempts": null,
+            "success": null,
+            "past": null
+           },
+           "fouls": {
+            "drawn": null,
+            "committed": null
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": 0,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 12924,
+          "name": "Zhengyu Huang",
+          "photo": "https://media.api-sports.io/football/players/12924.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 111,
+            "number": 36,
+            "position": "D",
+            "rating": "6.9",
+            "captain": false,
+            "substitute": false
+           },
+           "offsides": null,
+           "shots": {
+            "total": null,
+            "on": null
+           },
+           "goals": {
+            "total": null,
+            "conceded": 0,
+            "assists": null,
+            "saves": null
+           },
+           "passes": {
+            "total": 59,
+            "key": null,
+            "accuracy": "51"
+           },
+           "tackles": {
+            "total": 1,
+            "blocks": null,
+            "interceptions": 2
+           },
+           "duels": {
+            "total": 9,
+            "won": 4
+           },
+           "dribbles": {
+            "attempts": null,
+            "success": null,
+            "past": 1
+           },
+           "fouls": {
+            "drawn": 2,
+            "committed": 1
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": 0,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 12928,
+          "name": "Duško Tošić",
+          "photo": "https://media.api-sports.io/football/players/12928.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 120,
+            "number": 3,
+            "position": "D",
+            "rating": "8.2",
+            "captain": false,
+            "substitute": false
+           },
+           "offsides": null,
+           "shots": {
+            "total": 1,
+            "on": 1
+           },
+           "goals": {
+            "total": 1,
+            "conceded": 0,
+            "assists": null,
+            "saves": null
+           },
+           "passes": {
+            "total": 85,
+            "key": 1,
+            "accuracy": "74"
+           },
+           "tackles": {
+            "total": 1,
+            "blocks": null,
+            "interceptions": 2
+           },
+           "duels": {
+            "total": 18,
+            "won": 10
+           },
+           "dribbles": {
+            "attempts": 5,
+            "success": 4,
+            "past": 2
+           },
+           "fouls": {
+            "drawn": 1,
+            "committed": null
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": 0,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 12927,
+          "name": "Miao Tang",
+          "photo": "https://media.api-sports.io/football/players/12927.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 120,
+            "number": 20,
+            "position": "M",
+            "rating": "7.3",
+            "captain": true,
+            "substitute": false
+           },
+           "offsides": null,
+           "shots": {
+            "total": null,
+            "on": null
+           },
+           "goals": {
+            "total": null,
+            "conceded": 0,
+            "assists": null,
+            "saves": null
+           },
+           "passes": {
+            "total": 50,
+            "key": null,
+            "accuracy": "40"
+           },
+           "tackles": {
+            "total": 1,
+            "blocks": null,
+            "interceptions": 1
+           },
+           "duels": {
+            "total": 8,
+            "won": 4
+           },
+           "dribbles": {
+            "attempts": null,
+            "success": null,
+            "past": 1
+           },
+           "fouls": {
+            "drawn": 2,
+            "committed": 2
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": 0,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 12818,
+          "name": "Adrian Mierzejewski",
+          "photo": "https://media.api-sports.io/football/players/12818.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 120,
+            "number": 6,
+            "position": "M",
+            "rating": "8.5",
+            "captain": false,
+            "substitute": false
+           },
+           "offsides": null,
+           "shots": {
+            "total": 1,
+            "on": null
+           },
+           "goals": {
+            "total": null,
+            "conceded": 0,
+            "assists": 2,
+            "saves": null
+           },
+           "passes": {
+            "total": 85,
+            "key": 3,
+            "accuracy": "72"
+           },
+           "tackles": {
+            "total": 3,
+            "blocks": null,
+            "interceptions": null
+           },
+           "duels": {
+            "total": 20,
+            "won": 12
+           },
+           "dribbles": {
+            "attempts": 2,
+            "success": 2,
+            "past": 1
+           },
+           "fouls": {
+            "drawn": 2,
+            "committed": 4
+           },
+           "cards": {
+            "yellow": 1,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": 0,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 12935,
+          "name": "Tixiang Li",
+          "photo": "https://media.api-sports.io/football/players/12935.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 63,
+            "number": 15,
+            "position": "M",
+            "rating": "7",
+            "captain": false,
+            "substitute": false
+           },
+           "offsides": null,
+           "shots": {
+            "total": null,
+            "on": null
+           },
+           "goals": {
+            "total": null,
+            "conceded": 0,
+            "assists": null,
+            "saves": null
+           },
+           "passes": {
+            "total": 54,
+            "key": null,
+            "accuracy": "46"
+           },
+           "tackles": {
+            "total": 4,
+            "blocks": null,
+            "interceptions": null
+           },
+           "duels": {
+            "total": 8,
+            "won": 4
+           },
+           "dribbles": {
+            "attempts": null,
+            "success": null,
+            "past": 1
+           },
+           "fouls": {
+            "drawn": null,
+            "committed": null
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": 0,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 80867,
+          "name": "Zhechao Chen",
+          "photo": "https://media.api-sports.io/football/players/80867.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 112,
+            "number": 25,
+            "position": "M",
+            "rating": "7",
+            "captain": false,
+            "substitute": false
+           },
+           "offsides": null,
+           "shots": {
+            "total": null,
+            "on": null
+           },
+           "goals": {
+            "total": null,
+            "conceded": 0,
+            "assists": null,
+            "saves": null
+           },
+           "passes": {
+            "total": 65,
+            "key": 1,
+            "accuracy": "53"
+           },
+           "tackles": {
+            "total": 2,
+            "blocks": null,
+            "interceptions": null
+           },
+           "duels": {
+            "total": 4,
+            "won": 2
+           },
+           "dribbles": {
+            "attempts": null,
+            "success": null,
+            "past": null
+           },
+           "fouls": {
+            "drawn": null,
+            "committed": 1
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": 0,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 80841,
+          "name": "Renatinho",
+          "photo": "https://media.api-sports.io/football/players/80841.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 63,
+            "number": 11,
+            "position": "F",
+            "rating": "7.2",
+            "captain": false,
+            "substitute": false
+           },
+           "offsides": null,
+           "shots": {
+            "total": 2,
+            "on": 2
+           },
+           "goals": {
+            "total": null,
+            "conceded": 0,
+            "assists": null,
+            "saves": null
+           },
+           "passes": {
+            "total": 20,
+            "key": null,
+            "accuracy": "14"
+           },
+           "tackles": {
+            "total": null,
+            "blocks": null,
+            "interceptions": null
+           },
+           "duels": {
+            "total": 5,
+            "won": 3
+           },
+           "dribbles": {
+            "attempts": null,
+            "success": null,
+            "past": null
+           },
+           "fouls": {
+            "drawn": 3,
+            "committed": null
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": 0,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 12942,
+          "name": "Chugui Ye",
+          "photo": "https://media.api-sports.io/football/players/12942.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 115,
+            "number": 13,
+            "position": "F",
+            "rating": "6.3",
+            "captain": false,
+            "substitute": false
+           },
+           "offsides": null,
+           "shots": {
+            "total": 1,
+            "on": null
+           },
+           "goals": {
+            "total": null,
+            "conceded": 0,
+            "assists": null,
+            "saves": null
+           },
+           "passes": {
+            "total": 53,
+            "key": 1,
+            "accuracy": "47"
+           },
+           "tackles": {
+            "total": null,
+            "blocks": null,
+            "interceptions": 2
+           },
+           "duels": {
+            "total": 11,
+            "won": 2
+           },
+           "dribbles": {
+            "attempts": 3,
+            "success": 2,
+            "past": 3
+           },
+           "fouls": {
+            "drawn": null,
+            "committed": 2
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": 0,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 12555,
+          "name": "Richairo Zivkovic",
+          "photo": "https://media.api-sports.io/football/players/12555.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 120,
+            "number": 9,
+            "position": "F",
+            "rating": "7.5",
+            "captain": false,
+            "substitute": false
+           },
+           "offsides": null,
+           "shots": {
+            "total": 3,
+            "on": null
+           },
+           "goals": {
+            "total": null,
+            "conceded": 0,
+            "assists": null,
+            "saves": null
+           },
+           "passes": {
+            "total": 35,
+            "key": 2,
+            "accuracy": "30"
+           },
+           "tackles": {
+            "total": 1,
+            "blocks": null,
+            "interceptions": null
+           },
+           "duels": {
+            "total": 9,
+            "won": 4
+           },
+           "dribbles": {
+            "attempts": 1,
+            "success": 1,
+            "past": null
+           },
+           "fouls": {
+            "drawn": 2,
+            "committed": 3
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": 0,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 12920,
+          "name": "Yuelei Cheng",
+          "photo": "https://media.api-sports.io/football/players/12920.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": null,
+            "number": 1,
+            "position": "G",
+            "rating": null,
+            "captain": false,
+            "substitute": true
+           },
+           "offsides": null,
+           "shots": {
+            "total": null,
+            "on": null
+           },
+           "goals": {
+            "total": null,
+            "conceded": 0,
+            "assists": null,
+            "saves": null
+           },
+           "passes": {
+            "total": null,
+            "key": null,
+            "accuracy": null
+           },
+           "tackles": {
+            "total": null,
+            "blocks": null,
+            "interceptions": null
+           },
+           "duels": {
+            "total": null,
+            "won": null
+           },
+           "dribbles": {
+            "attempts": null,
+            "success": null,
+            "past": null
+           },
+           "fouls": {
+            "drawn": null,
+            "committed": null
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": 0,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 80860,
+          "name": "Songyi Li",
+          "photo": "https://media.api-sports.io/football/players/80860.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": null,
+            "number": 5,
+            "position": "D",
+            "rating": null,
+            "captain": false,
+            "substitute": true
+           },
+           "offsides": null,
+           "shots": {
+            "total": null,
+            "on": null
+           },
+           "goals": {
+            "total": null,
+            "conceded": 0,
+            "assists": null,
+            "saves": null
+           },
+           "passes": {
+            "total": null,
+            "key": null,
+            "accuracy": null
+           },
+           "tackles": {
+            "total": null,
+            "blocks": null,
+            "interceptions": null
+           },
+           "duels": {
+            "total": null,
+            "won": null
+           },
+           "dribbles": {
+            "attempts": null,
+            "success": null,
+            "past": null
+           },
+           "fouls": {
+            "drawn": null,
+            "committed": null
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": 0,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 266497,
+          "name": "Fu Yuncheng",
+          "photo": "https://media.api-sports.io/football/players/266497.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": null,
+            "number": 17,
+            "position": "D",
+            "rating": null,
+            "captain": false,
+            "substitute": true
+           },
+           "offsides": null,
+           "shots": {
+            "total": null,
+            "on": null
+           },
+           "goals": {
+            "total": null,
+            "conceded": 0,
+            "assists": null,
+            "saves": null
+           },
+           "passes": {
+            "total": null,
+            "key": null,
+            "accuracy": null
+           },
+           "tackles": {
+            "total": null,
+            "blocks": null,
+            "interceptions": null
+           },
+           "duels": {
+            "total": null,
+            "won": null
+           },
+           "dribbles": {
+            "attempts": null,
+            "success": null,
+            "past": null
+           },
+           "fouls": {
+            "drawn": null,
+            "committed": null
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": 0,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 133936,
+          "name": "Wang Huapeng",
+          "photo": "https://media.api-sports.io/football/players/133936.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 9,
+            "number": 42,
+            "position": "D",
+            "rating": "6.7",
+            "captain": false,
+            "substitute": true
+           },
+           "offsides": null,
+           "shots": {
+            "total": null,
+            "on": null
+           },
+           "goals": {
+            "total": null,
+            "conceded": 0,
+            "assists": null,
+            "saves": null
+           },
+           "passes": {
+            "total": 4,
+            "key": null,
+            "accuracy": "3"
+           },
+           "tackles": {
+            "total": null,
+            "blocks": null,
+            "interceptions": null
+           },
+           "duels": {
+            "total": null,
+            "won": null
+           },
+           "dribbles": {
+            "attempts": null,
+            "success": null,
+            "past": null
+           },
+           "fouls": {
+            "drawn": null,
+            "committed": null
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": 0,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 12925,
+          "name": "Jihong Jiang",
+          "photo": "https://media.api-sports.io/football/players/12925.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 15,
+            "number": 19,
+            "position": "D",
+            "rating": "6.6",
+            "captain": false,
+            "substitute": true
+           },
+           "offsides": null,
+           "shots": {
+            "total": null,
+            "on": null
+           },
+           "goals": {
+            "total": null,
+            "conceded": 0,
+            "assists": null,
+            "saves": null
+           },
+           "passes": {
+            "total": 6,
+            "key": null,
+            "accuracy": "4"
+           },
+           "tackles": {
+            "total": 1,
+            "blocks": null,
+            "interceptions": null
+           },
+           "duels": {
+            "total": 1,
+            "won": 1
+           },
+           "dribbles": {
+            "attempts": null,
+            "success": null,
+            "past": null
+           },
+           "fouls": {
+            "drawn": null,
+            "committed": null
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": 0,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 12945,
+          "name": "Gong Zhang",
+          "photo": "https://media.api-sports.io/football/players/12945.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": null,
+            "number": 4,
+            "position": "M",
+            "rating": null,
+            "captain": false,
+            "substitute": true
+           },
+           "offsides": null,
+           "shots": {
+            "total": null,
+            "on": null
+           },
+           "goals": {
+            "total": null,
+            "conceded": 0,
+            "assists": null,
+            "saves": null
+           },
+           "passes": {
+            "total": null,
+            "key": null,
+            "accuracy": null
+           },
+           "tackles": {
+            "total": null,
+            "blocks": null,
+            "interceptions": null
+           },
+           "duels": {
+            "total": null,
+            "won": null
+           },
+           "dribbles": {
+            "attempts": null,
+            "success": null,
+            "past": null
+           },
+           "fouls": {
+            "drawn": null,
+            "committed": null
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": 0,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 12937,
+          "name": "Lin Lu",
+          "photo": "https://media.api-sports.io/football/players/12937.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 8,
+            "number": 23,
+            "position": "M",
+            "rating": "6.7",
+            "captain": false,
+            "substitute": true
+           },
+           "offsides": null,
+           "shots": {
+            "total": null,
+            "on": null
+           },
+           "goals": {
+            "total": null,
+            "conceded": 0,
+            "assists": null,
+            "saves": null
+           },
+           "passes": {
+            "total": 1,
+            "key": null,
+            "accuracy": null
+           },
+           "tackles": {
+            "total": 1,
+            "blocks": null,
+            "interceptions": null
+           },
+           "duels": {
+            "total": 2,
+            "won": 1
+           },
+           "dribbles": {
+            "attempts": null,
+            "success": null,
+            "past": null
+           },
+           "fouls": {
+            "drawn": null,
+            "committed": null
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": 0,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 12932,
+          "name": "Zhizhao Chen",
+          "photo": "https://media.api-sports.io/football/players/12932.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 57,
+            "number": 32,
+            "position": "M",
+            "rating": "8",
+            "captain": false,
+            "substitute": true
+           },
+           "offsides": null,
+           "shots": {
+            "total": 3,
+            "on": 3
+           },
+           "goals": {
+            "total": 2,
+            "conceded": 0,
+            "assists": null,
+            "saves": null
+           },
+           "passes": {
+            "total": 19,
+            "key": 1,
+            "accuracy": "10"
+           },
+           "tackles": {
+            "total": null,
+            "blocks": null,
+            "interceptions": null
+           },
+           "duels": {
+            "total": 4,
+            "won": null
+           },
+           "dribbles": {
+            "attempts": null,
+            "success": null,
+            "past": null
+           },
+           "fouls": {
+            "drawn": null,
+            "committed": 2
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": 0,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 266498,
+          "name": "Zhang Jinliang",
+          "photo": "https://media.api-sports.io/football/players/266498.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 8,
+            "number": 41,
+            "position": "M",
+            "rating": "6.5",
+            "captain": false,
+            "substitute": true
+           },
+           "offsides": null,
+           "shots": {
+            "total": null,
+            "on": null
+           },
+           "goals": {
+            "total": null,
+            "conceded": 0,
+            "assists": null,
+            "saves": null
+           },
+           "passes": {
+            "total": 6,
+            "key": null,
+            "accuracy": "1"
+           },
+           "tackles": {
+            "total": null,
+            "blocks": null,
+            "interceptions": null
+           },
+           "duels": {
+            "total": 2,
+            "won": 1
+           },
+           "dribbles": {
+            "attempts": null,
+            "success": null,
+            "past": null
+           },
+           "fouls": {
+            "drawn": null,
+            "committed": null
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": 0,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 2921,
+          "name": "Mousa Dembélé",
+          "photo": "https://media.api-sports.io/football/players/2921.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": 57,
+            "number": 8,
+            "position": "M",
+            "rating": "6.6",
+            "captain": false,
+            "substitute": true
+           },
+           "offsides": null,
+           "shots": {
+            "total": 1,
+            "on": null
+           },
+           "goals": {
+            "total": null,
+            "conceded": 0,
+            "assists": null,
+            "saves": null
+           },
+           "passes": {
+            "total": 44,
+            "key": null,
+            "accuracy": "40"
+           },
+           "tackles": {
+            "total": null,
+            "blocks": null,
+            "interceptions": 3
+           },
+           "duels": {
+            "total": 9,
+            "won": 4
+           },
+           "dribbles": {
+            "attempts": 1,
+            "success": 1,
+            "past": null
+           },
+           "fouls": {
+            "drawn": 1,
+            "committed": 1
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": 0,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 12941,
+          "name": "Peng Wang",
+          "photo": "https://media.api-sports.io/football/players/12941.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": null,
+            "number": 30,
+            "position": "M",
+            "rating": null,
+            "captain": false,
+            "substitute": true
+           },
+           "offsides": null,
+           "shots": {
+            "total": null,
+            "on": null
+           },
+           "goals": {
+            "total": null,
+            "conceded": 0,
+            "assists": null,
+            "saves": null
+           },
+           "passes": {
+            "total": null,
+            "key": null,
+            "accuracy": null
+           },
+           "tackles": {
+            "total": null,
+            "blocks": null,
+            "interceptions": null
+           },
+           "duels": {
+            "total": null,
+            "won": null
+           },
+           "dribbles": {
+            "attempts": null,
+            "success": null,
+            "past": null
+           },
+           "fouls": {
+            "drawn": null,
+            "committed": null
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": 0,
+            "saved": null
+           }
+          }
+         ]
+        },
+        {
+         "player": {
+          "id": 266499,
+          "name": "Wu Chengru",
+          "photo": "https://media.api-sports.io/football/players/266499.png"
+         },
+         "statistics": [
+          {
+           "games": {
+            "minutes": null,
+            "number": 28,
+            "position": "M",
+            "rating": null,
+            "captain": false,
+            "substitute": true
+           },
+           "offsides": null,
+           "shots": {
+            "total": null,
+            "on": null
+           },
+           "goals": {
+            "total": null,
+            "conceded": 0,
+            "assists": null,
+            "saves": null
+           },
+           "passes": {
+            "total": null,
+            "key": null,
+            "accuracy": null
+           },
+           "tackles": {
+            "total": null,
+            "blocks": null,
+            "interceptions": null
+           },
+           "duels": {
+            "total": null,
+            "won": null
+           },
+           "dribbles": {
+            "attempts": null,
+            "success": null,
+            "past": null
+           },
+           "fouls": {
+            "drawn": null,
+            "committed": null
+           },
+           "cards": {
+            "yellow": 0,
+            "red": 0
+           },
+           "penalty": {
+            "won": null,
+            "commited": null,
+            "scored": 0,
+            "missed": 0,
+            "saved": null
+           }
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "events",
+   "endpoint": "fixtures/events",
+   "params": {
+    "fixture": 645877
+   },
+   "ok": true,
+   "response": [
+    {
+     "time": {
+      "elapsed": 10,
+      "extra": null
+     },
+     "team": {
+      "id": 838,
+      "name": "Guangzhou R&F",
+      "logo": "https://media.api-sports.io/football/teams/838.png"
+     },
+     "player": {
+      "id": 12986,
+      "name": "Li Shuai"
+     },
+     "assist": {
+      "id": null,
+      "name": null
+     },
+     "type": "Goal",
+     "detail": "Own Goal",
+     "comments": null
+    },
+    {
+     "time": {
+      "elapsed": 30,
+      "extra": null
+     },
+     "team": {
+      "id": 838,
+      "name": "Guangzhou R&F",
+      "logo": "https://media.api-sports.io/football/teams/838.png"
+     },
+     "player": {
+      "id": 12818,
+      "name": "Adrian Mierzejewski"
+     },
+     "assist": {
+      "id": null,
+      "name": null
+     },
+     "type": "Card",
+     "detail": "Yellow Card",
+     "comments": null
+    },
+    {
+     "time": {
+      "elapsed": 63,
+      "extra": null
+     },
+     "team": {
+      "id": 838,
+      "name": "Guangzhou R&F",
+      "logo": "https://media.api-sports.io/football/teams/838.png"
+     },
+     "player": {
+      "id": 80841,
+      "name": "Renatinho"
+     },
+     "assist": {
+      "id": 12932,
+      "name": "Chen Zhizhao"
+     },
+     "type": "subst",
+     "detail": "Substitution 1",
+     "comments": null
+    },
+    {
+     "time": {
+      "elapsed": 63,
+      "extra": null
+     },
+     "team": {
+      "id": 838,
+      "name": "Guangzhou R&F",
+      "logo": "https://media.api-sports.io/football/teams/838.png"
+     },
+     "player": {
+      "id": 12935,
+      "name": "Li Tixiang"
+     },
+     "assist": {
+      "id": 2921,
+      "name": "M. Dembélé"
+     },
+     "type": "subst",
+     "detail": "Substitution 2",
+     "comments": null
+    },
+    {
+     "time": {
+      "elapsed": 66,
+      "extra": null
+     },
+     "team": {
+      "id": 831,
+      "name": "Dalian Aerbin",
+      "logo": "https://media.api-sports.io/football/teams/831.png"
+     },
+     "player": {
+      "id": 12996,
+      "name": "Sun Bo"
+     },
+     "assist": {
+      "id": 12477,
+      "name": "Tong Lei"
+     },
+     "type": "subst",
+     "detail": "Substitution 1",
+     "comments": null
+    },
+    {
+     "time": {
+      "elapsed": 66,
+      "extra": null
+     },
+     "team": {
+      "id": 831,
+      "name": "Dalian Aerbin",
+      "logo": "https://media.api-sports.io/football/teams/831.png"
+     },
+     "player": {
+      "id": 12998,
+      "name": "Wang Jinxian"
+     },
+     "assist": {
+      "id": 46932,
+      "name": "Lin Liangming"
+     },
+     "type": "subst",
+     "detail": "Substitution 2",
+     "comments": null
+    },
+    {
+     "time": {
+      "elapsed": 71,
+      "extra": null
+     },
+     "team": {
+      "id": 831,
+      "name": "Dalian Aerbin",
+      "logo": "https://media.api-sports.io/football/teams/831.png"
+     },
+     "player": {
+      "id": 12982,
+      "name": "Yanfeng Dong"
+     },
+     "assist": {
+      "id": null,
+      "name": null
+     },
+     "type": "Card",
+     "detail": "Yellow Card",
+     "comments": null
+    },
+    {
+     "time": {
+      "elapsed": 73,
+      "extra": null
+     },
+     "team": {
+      "id": 838,
+      "name": "Guangzhou R&F",
+      "logo": "https://media.api-sports.io/football/teams/838.png"
+     },
+     "player": {
+      "id": 12928,
+      "name": "D. Tošić"
+     },
+     "assist": {
+      "id": 12818,
+      "name": "A. Mierzejewski"
+     },
+     "type": "Goal",
+     "detail": "Normal Goal",
+     "comments": null
+    },
+    {
+     "time": {
+      "elapsed": 78,
+      "extra": null
+     },
+     "team": {
+      "id": 831,
+      "name": "Dalian Aerbin",
+      "logo": "https://media.api-sports.io/football/teams/831.png"
+     },
+     "player": {
+      "id": 80868,
+      "name": "Wu Wei"
+     },
+     "assist": {
+      "id": 12993,
+      "name": "Cui Ming'an"
+     },
+     "type": "subst",
+     "detail": "Substitution 3",
+     "comments": null
+    },
+    {
+     "time": {
+      "elapsed": 82,
+      "extra": null
+     },
+     "team": {
+      "id": 831,
+      "name": "Dalian Aerbin",
+      "logo": "https://media.api-sports.io/football/teams/831.png"
+     },
+     "player": {
+      "id": 3429,
+      "name": "Emmanuel Boateng"
+     },
+     "assist": {
+      "id": null,
+      "name": null
+     },
+     "type": "Card",
+     "detail": "Yellow Card",
+     "comments": null
+    },
+    {
+     "time": {
+      "elapsed": 86,
+      "extra": null
+     },
+     "team": {
+      "id": 838,
+      "name": "Guangzhou R&F",
+      "logo": "https://media.api-sports.io/football/teams/838.png"
+     },
+     "player": {
+      "id": 12932,
+      "name": "Chen Zhizhao"
+     },
+     "assist": {
+      "id": 12818,
+      "name": "A. Mierzejewski"
+     },
+     "type": "Goal",
+     "detail": "Normal Goal",
+     "comments": null
+    },
+    {
+     "time": {
+      "elapsed": 90,
+      "extra": null
+     },
+     "team": {
+      "id": 831,
+      "name": "Dalian Aerbin",
+      "logo": "https://media.api-sports.io/football/teams/831.png"
+     },
+     "player": {
+      "id": 12982,
+      "name": "Dong Yanfeng"
+     },
+     "assist": {
+      "id": 12984,
+      "name": "Huang Jiahui"
+     },
+     "type": "subst",
+     "detail": "Substitution 4",
+     "comments": null
+    },
+    {
+     "time": {
+      "elapsed": 94,
+      "extra": null
+     },
+     "team": {
+      "id": 838,
+      "name": "Guangzhou R&F",
+      "logo": "https://media.api-sports.io/football/teams/838.png"
+     },
+     "player": {
+      "id": 12932,
+      "name": "Chen Zhizhao"
+     },
+     "assist": {
+      "id": null,
+      "name": null
+     },
+     "type": "Goal",
+     "detail": "Normal Goal",
+     "comments": null
+    },
+    {
+     "time": {
+      "elapsed": 99,
+      "extra": null
+     },
+     "team": {
+      "id": 831,
+      "name": "Dalian Aerbin",
+      "logo": "https://media.api-sports.io/football/teams/831.png"
+     },
+     "player": {
+      "id": 12986,
+      "name": "Shuai Li"
+     },
+     "assist": {
+      "id": null,
+      "name": null
+     },
+     "type": "Card",
+     "detail": "Yellow Card",
+     "comments": null
+    },
+    {
+     "time": {
+      "elapsed": 103,
+      "extra": null
+     },
+     "team": {
+      "id": 831,
+      "name": "Dalian Aerbin",
+      "logo": "https://media.api-sports.io/football/teams/831.png"
+     },
+     "player": {
+      "id": 12986,
+      "name": "Li Shuai"
+     },
+     "assist": {
+      "id": 12983,
+      "name": "He Yupeng"
+     },
+     "type": "subst",
+     "detail": "Substitution 5",
+     "comments": null
+    },
+    {
+     "time": {
+      "elapsed": 105,
+      "extra": null
+     },
+     "team": {
+      "id": 838,
+      "name": "Guangzhou R&F",
+      "logo": "https://media.api-sports.io/football/teams/838.png"
+     },
+     "player": {
+      "id": 12929,
+      "name": "Yi Teng"
+     },
+     "assist": {
+      "id": 12925,
+      "name": "Jiang Jihong"
+     },
+     "type": "subst",
+     "detail": "Substitution 3",
+     "comments": null
+    },
+    {
+     "time": {
+      "elapsed": 110,
+      "extra": null
+     },
+     "team": {
+      "id": 838,
+      "name": "Guangzhou R&F",
+      "logo": "https://media.api-sports.io/football/teams/838.png"
+     },
+     "player": {
+      "id": 12922,
+      "name": "Jiaqi Han"
+     },
+     "assist": {
+      "id": null,
+      "name": null
+     },
+     "type": "Card",
+     "detail": "Yellow Card",
+     "comments": null
+    },
+    {
+     "time": {
+      "elapsed": 111,
+      "extra": null
+     },
+     "team": {
+      "id": 838,
+      "name": "Guangzhou R&F",
+      "logo": "https://media.api-sports.io/football/teams/838.png"
+     },
+     "player": {
+      "id": 12924,
+      "name": "Huang Zhengyu"
+     },
+     "assist": {
+      "id": 133936,
+      "name": "Wang Huapeng"
+     },
+     "type": "subst",
+     "detail": "Substitution 4",
+     "comments": null
+    },
+    {
+     "time": {
+      "elapsed": 112,
+      "extra": null
+     },
+     "team": {
+      "id": 838,
+      "name": "Guangzhou R&F",
+      "logo": "https://media.api-sports.io/football/teams/838.png"
+     },
+     "player": {
+      "id": 80867,
+      "name": "Chen Zhechao"
+     },
+     "assist": {
+      "id": 266498,
+      "name": "Zhang Jinliang"
+     },
+     "type": "subst",
+     "detail": "Substitution 5",
+     "comments": null
+    },
+    {
+     "time": {
+      "elapsed": 115,
+      "extra": null
+     },
+     "team": {
+      "id": 838,
+      "name": "Guangzhou R&F",
+      "logo": "https://media.api-sports.io/football/teams/838.png"
+     },
+     "player": {
+      "id": 12942,
+      "name": "Ye Chugui"
+     },
+     "assist": {
+      "id": 12937,
+      "name": "Lu Lin"
+     },
+     "type": "subst",
+     "detail": "Substitution 6",
+     "comments": null
+    }
+   ]
+  }
+ ]
+}

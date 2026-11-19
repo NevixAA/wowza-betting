@@ -1,7 +1,7 @@
 {
- "af_history_head_commit": "eec7123d2f3290c92085843333cf315cd22d872d",
- "committed_versions_walked": 87,
- "current_rows": 91817,
+ "af_history_head_commit": "5caf4ab68a7d944935c43a99e3be32c0811ea751",
+ "committed_versions_walked": 86,
+ "current_rows": 93489,
  "current_written_back_rows_no_score": 90897,
  "not_restored": "rows removed on purpose (misfiled leagues 2026-11-01, proven duplicates) - not in the current file; write-back rows that were never provider rows",
  "restored_cells_present": {
@@ -77,7 +77,8 @@
   "HS": 28412,
   "HST": 28411,
   "HXG": 3434,
-  "HY": 0
+  "HY": 0,
+  "fixture_id": 0
  },
  "what": "af_history provider rows replaced by the loader write-back, restored from git beside the original; af_history.parquet is not modified",
  "writeback_cells_listed": {

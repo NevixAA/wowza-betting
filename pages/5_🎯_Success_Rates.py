@@ -12,12 +12,16 @@ its own bucket.
 WHAT IT REFUSES TO DO:
   * No bare percentages. Every rate carries its n, because "67% success" on three bets is noise
     wearing a number's clothes.
-  * STAKED (SNIPER/MARKSMAN) is separated from RECORDED (VALUABLE and below). VALUABLE is tracked
-    for measurement and never bet, so folding it into a win rate misstates what the money did.
+  * STAKED (a recorded policy stake > 0, src/staked.py, owner 2026-11-04) is separated from RECORDED
+    (every other tip, any tier). A tip without a stake is tracked for measurement and never bet, so
+    folding it into a win rate misstates what the money did.
   * Player props are labelled PAPER throughout. Invariant 2: the props model is accurate but has no
     betting edge, so its rates are research, not performance.
   * PERFORMANCE_CUTOFF_DATE is applied by default and named on screen. Pre-cutoff rows exist to
     contribute CLV, not P&L.
+  * CLEAN RECORD FIRST (owner 2026-11-11): the default record is the Clean Record (tips generated and played on
+    or after config.CLEAN_RECORD_START, dashboard_data/clean_record.py), grouped by the cell status the tip
+    carried (no tiers). "Before the repairs" is a separate choice, never pooled with it.
 """
 import sys
 from pathlib import Path
@@ -42,6 +46,8 @@ import config
 import dashboard_ui as ui  # noqa: E402
 from src.tier_labels import PAPER_TIER_LABEL, STAKED_LABEL, display_frame, relabel_text  # noqa: E402
 from dashboard_data import freshness as _fresh, success_view as V  # noqa: E402
+from dashboard_data import clean_record as CR  # noqa: E402
+from src import units as U  # noqa: E402
 import importlib  # noqa: E402
 V = importlib.reload(V)              # page + helper always the same version (see 15_League_Scout)
 
@@ -54,8 +60,11 @@ _LOSS = ("LOSS",)
 
 @st.cache_data(ttl=120)
 def _load() -> pd.DataFrame:
-    """Union the ledgers into (model, market, tier, result, odds, date)."""
+    """Union the ledgers into (model, market, tier, result, odds, date), each row labelled with its
+    recorded policy stake (src/staked.py — THE staked definition, owner 2026-11-04)."""
+    from src import staked as _S
     out = []
+    _records = _S.load_records(config.OUTPUT_DIR)
 
     def _grab(path, *, model_col=None, model_const=None, market_col=None,
               market_const=None, tier_col="signal_tier", label=""):
@@ -68,22 +77,46 @@ def _load() -> pd.DataFrame:
             return
         if tier_col not in d.columns or "result" not in d.columns:
             return
+        if path == "bets_ledger.csv":
+            # owner 2026-11-11: post-kickoff tips and the later tip of an opposite O/U pair never count
+            from src.ledger_corrections import drop_historical_excluded
+            d = drop_historical_excluded(d)
         res = d["result"].astype(str).str.upper()
         d = d[res.isin(_WIN + _LOSS)].copy()
         if d.empty:
             return
         d["_res"] = d["result"].astype(str).str.upper()
         d["_tier"] = d[tier_col].astype(str)
-        d["_model"] = (d[model_col].astype(str) if model_col and model_col in d.columns
-                       else model_const or "unknown")
+        # The recorded model_type; a blank on an O/U ledger row is derived from the canonical
+        # league's registry model. A ledger with no model at all shows '—' (missing), not 'unknown'.
+        if model_const:
+            d["_model"] = model_const
+        elif model_col and model_col in d.columns:
+            mt = d[model_col].astype("string").str.strip().replace("", pd.NA)
+            d["_model"] = mt.fillna(d["league"].map(_model_from_league)) if "league" in d.columns else mt
+            d["_model"] = d["_model"].replace("unknown", pd.NA).fillna("—").astype(str)
+        else:
+            d["_model"] = "—"
         d["_market"] = (d[market_col].astype(str) if market_col and market_col in d.columns
-                        else market_const or "unknown")
+                        else market_const or "—")
         dc = next((c for c in ("match_date", "date", "signal_date") if c in d.columns), None)
         d["_date"] = pd.to_datetime(d[dc], errors="coerce") if dc else pd.NaT
         oc = next((c for c in ("odds", "entry_odds", "market_odds") if c in d.columns), None)
         d["_odds"] = pd.to_numeric(d[oc], errors="coerce") if oc else np.nan
+        if path == "ht_ledger.csv":   # unpriced HT bets settled at the model's own fair odds: no P/L
+            from src.clv_corrections import ht_priced_mask
+            d["_odds"] = d["_odds"].where(ht_priced_mask(d))
         d["_source"] = label
-        out.append(d[["_source", "_model", "_market", "_tier", "_res", "_odds", "_date"]])
+        d["_ledger"] = path
+        d["_live"] = d["source"] if "source" in d.columns else "live"
+        d["_league"] = d["league"] if "league" in d.columns else pd.NA
+        # Clean Record split inputs: generation time (props: signal_date) and the tip's cell status
+        d["_gen"] = d["generated_at"] if "generated_at" in d.columns else (
+            d["signal_date"] if "signal_date" in d.columns else pd.NA)
+        d["_cell"] = d["cell_status"] if "cell_status" in d.columns else pd.NA
+        d["_stake_status"] = _S.label_ledger(d, path, _records)["stake_status"]
+        out.append(d[["_source", "_model", "_market", "_tier", "_res", "_odds", "_date",
+                      "_ledger", "_live", "_league", "_stake_status", "_gen", "_cell"]])
 
     # Main O/U carries no `market` column — it IS the OU25 line. Named explicitly so it never
     # lands in an "unknown" bucket next to a genuinely missing value.
@@ -98,12 +131,19 @@ def _load() -> pd.DataFrame:
     df = pd.concat(out, ignore_index=True)
     df["win"] = (df["_res"] == "WIN").astype(int)
     # Flat 1u return, matching v9's "P/L in units" convention rather than an invented stake plan.
-    df["ret"] = np.where(df["win"] == 1, df["_odds"].fillna(2.0) - 1.0, -1.0)
+    # PRICED BETS ONLY: a bet without a recorded price has no return (NaN), so P/L and ROI are
+    # over priced bets and the unpriced count is shown beside them - no 2.00 stand-in.
+    df["ret"] = np.where(df["_odds"].isna(), np.nan, np.where(df["win"] == 1, U.profit(df["_odds"]), -1.0))
     return df
 
 
+def _model_from_league(lg):
+    from src.league_registry import canonical_name
+    return config.model_type_for_league(canonical_name(lg) or lg)
+
+
 df = _load()
-_SUB = ("Every rate with its n, staked tiers apart from recorded ones, and props labelled PAPER — the breakdown a "
+_SUB = ("Every rate with its n, staked bets (policy stake > 0) apart from recorded ones, and props labelled PAPER — the breakdown a "
         "single headline number hides.")
 _EYEBROW = "Performance · success rates"
 if df.empty:
@@ -122,6 +162,12 @@ ui.page_header("Success rates", _SUB, eyebrow_text=_EYEBROW,
 # pro = 7/14/30/60/90 days; admin also "all time". The window is applied to the settled match date.
 from dashboard_access import WINDOWS, current_tier  # noqa: E402
 _tier = current_tier()
+record = st.radio("Record", [CR.CLEAN, CR.BEFORE], horizontal=True, index=0, key="sr_record",
+                  format_func=lambda r: CR.clean_label() if r == CR.CLEAN else CR.before_label(),
+                  help="The Clean Record counts only tips generated and played on or after the start (owner "
+                       "2026-11-11). Before the repairs = the old models and the retired tiers, for comparison.")
+if record == CR.BEFORE:
+    st.caption(CR.BEFORE_NOTE)
 _wins = WINDOWS[_tier]
 c1, c2 = st.columns([1.4, 1])
 if len(_wins) > 1:
@@ -133,13 +179,13 @@ else:
     st.caption(f"Last {window} days · Wowza Pro shows 7 / 14 / 30 / 60 / 90 days.")
 
 if _tier == "free":
-    use_cut, scope = bool(cut), f"STAKED only ({STAKED_LABEL})"
+    use_cut, scope = bool(cut), "STAKED only (policy stake > 0)"
     with st.expander("Advanced filters"):
         min_n = st.number_input("Hide cells with fewer than n", 1, 100, 5, 1,
                                 help="A rate on a handful of bets is noise. Hidden, not zeroed.")
 else:
     with c2:
-        scope = st.radio("Scope", [f"STAKED only ({STAKED_LABEL})", "All tiers"], index=0,
+        scope = st.radio("Scope", ["STAKED only (policy stake > 0)", "All tiers"], index=0,
                          help=f"{PAPER_TIER_LABEL} is recorded for measurement and never bet. Including it in a "
                               "win rate describes something other than what the money did.")
     with st.expander("Advanced filters"):
@@ -154,43 +200,55 @@ else:
                                     help="A rate on a handful of bets is noise. Hidden, not zeroed.")
 
 d = df.copy()
-if use_cut and cut:
+d = d[CR.assign(d, "_gen", "_date").to_numpy() == record]
+if record == CR.CLEAN:
+    # no tiers on Clean Record tips (retired 2026-11-11): grouped by the cell status the tip carried
+    d["_tier"] = d["_cell"].astype("string").replace("", pd.NA).fillna("—").astype(str)
+if use_cut and cut and record == CR.BEFORE:
     d = d[d["_date"].isna() | (d["_date"] >= pd.to_datetime(cut))]
 if window:
     _since = pd.Timestamp.now(tz="UTC").tz_localize(None).normalize() - pd.Timedelta(days=int(window))
     d = d[d["_date"] >= _since]
 if scope.startswith("STAKED"):
-    d = d[d["_tier"].isin(STAKED)]
+    # THE staked definition (dashboard_data.today_view.is_staked over src/staked.py): a recorded policy
+    # stake > 0 on a real-money track, live, settled, since the cutoff (whatever the checkbox says),
+    # paper leagues out, and never a player prop. Until 2026-11-04 it was the SNIPER + MARKSMAN tiers.
+    from dashboard_data.today_view import is_staked as _is_staked
+    d = d[_is_staked(d["_stake_status"], source=d["_live"], dt=d["_date"], league=d["_league"],
+                     ledger=d["_ledger"]).to_numpy()]
 
 st.caption(f"{len(d):,} settled observation(s) after filters · "
            f"sources: {d['_source'].value_counts().to_dict()}")
 if d.empty:
-    ui.empty_state("NO_DATA", "Nothing left after these filters.")
+    ui.empty_state("NO_DATA", CR.empty_text() if record == CR.CLEAN else "Nothing left after these filters.")
     st.stop()
+_TIERWORD = "cell status" if record == CR.CLEAN else "retired tier"
 
 
 def _table(g: pd.DataFrame) -> pd.DataFrame:
     t = g.groupby(["_model", "_market", "_tier"]).agg(
         n=("win", "size"), wins=("win", "sum"),
-        pl_u=("ret", "sum"), roi=("ret", "mean"),
+        pl_u=("ret", lambda s: U.total(s) if s.notna().any() else np.nan), roi=("ret", "mean"),
+        n_priced=("_odds", "count"),
         avg_odds=("_odds", "mean")).reset_index()
+    t["unpriced"] = t["n"] - t["n_priced"]
     t["win_pct"] = (100 * t["wins"] / t["n"]).round(1)
     t["roi_pct"] = (100 * t["roi"]).round(1)
     # Standard error on the mean return: the honest width around every ROI figure.
     se = g.groupby(["_model", "_market", "_tier"])["ret"].sem().reset_index(name="se")
     t = t.merge(se, on=["_model", "_market", "_tier"], how="left")
     t["roi_ci95"] = t.apply(
-        lambda r: "—" if pd.isna(r["se"]) or r["n"] < 5
+        lambda r: "—" if pd.isna(r["se"]) or r["n_priced"] < 5
         else f"{100*(r['roi']-1.96*r['se']):+.0f}% … {100*(r['roi']+1.96*r['se']):+.0f}%", axis=1)
     # Numeric CI bounds kept ALONGSIDE the display string. The string is right for the table (it
     # is a range, not a sortable quantity) but a chart needs numbers, and recomputing them
     # somewhere else would let the table and the chart disagree about the same cell.
-    t["roi_lo"] = (100 * (t["roi"] - 1.96 * t["se"])).where(t["n"] >= 5)
-    t["roi_hi"] = (100 * (t["roi"] + 1.96 * t["se"])).where(t["n"] >= 5)
+    t["roi_lo"] = (100 * (t["roi"] - 1.96 * t["se"])).where(t["n_priced"] >= 5)
+    t["roi_hi"] = (100 * (t["roi"] + 1.96 * t["se"])).where(t["n_priced"] >= 5)
     t = t.rename(columns={"_model": "model", "_market": "market", "_tier": "tier"})
     return t[["model", "market", "tier", "n", "wins", "win_pct", "pl_u",
               "roi_pct", "roi_ci95", "roi_lo", "roi_hi",
-              "avg_odds"]].sort_values("n", ascending=False)
+              "avg_odds", "unpriced"]].sort_values("n", ascending=False)
 
 
 full = _table(d)
@@ -204,7 +262,7 @@ cc = st.columns(3)
 ui.metric_card("Settled observations", f"{len(d):,}", title="In this view",
                supporting=[(k, f"{v:,}") for k, v in d["_source"].value_counts().to_dict().items()],
                n=len(d), container=cc[0])
-ui.metric_card("Cells shown", f"{len(shown):,}", title="Model × market × tier",
+ui.metric_card("Cells shown", f"{len(shown):,}", title=f"Model × market × {_TIERWORD}",
                supporting=[("Hidden (n < " + str(min_n) + ")", f"{len(hidden):,}"),
                            ("Observations hidden", f"{int(hidden['n'].sum()):,}")], container=cc[1])
 ui.metric_card("Intervals clearing zero", f"{_n_dec} of {len(_ch)}", title="Read the CI, not the ROI",
@@ -213,7 +271,7 @@ ui.metric_card("Intervals clearing zero", f"{_n_dec} of {len(_ch)}", title="Read
                                      label="NOT YET DISTINGUISHABLE FROM BREAK-EVEN" if _n_dec == 0 else
                                      f"{_n_dec} CELL(S) DECISIVE"), container=cc[2])
 
-ui.section_header("Model × market × tier")
+ui.section_header(f"Model × market × {_TIERWORD}")
 ui.dataframe(shown.drop(columns=["roi_lo", "roi_hi"], errors="ignore"),
              width="stretch", hide_index=True,
              column_config={
@@ -222,6 +280,9 @@ ui.dataframe(shown.drop(columns=["roi_lo", "roi_hi"], errors="ignore"),
                  "roi_pct": st.column_config.NumberColumn("ROI %", format="%.1f"),
                  "roi_ci95": st.column_config.TextColumn("ROI 95% CI"),
                  "avg_odds": st.column_config.NumberColumn("avg odds", format="%.2f"),
+                 "unpriced": st.column_config.NumberColumn(
+                     "unpriced", help="Settled bets with no recorded price: counted in win %, "
+                                      "left out of P/L and ROI (no stand-in price)."),
              })
 if not hidden.empty:
     st.caption(f"{len(hidden)} cell(s) hidden for n < {min_n} "
@@ -266,7 +327,7 @@ def _rollup(g: pd.DataFrame, by: str) -> None:
     lost. Nothing here is a new claim — it is the existing arithmetic drawn instead of tabulated.
     """
     t = g.groupby(by).agg(n=("win", "size"), win_pct=("win", "mean"),
-                          pl_u=("ret", "sum"), roi=("ret", "mean"),
+                          pl_u=("ret", lambda s: U.total(s) if s.notna().any() else np.nan), roi=("ret", "mean"),
                           avg_odds=("_odds", "mean"),
                           n_odds=("_odds", "count")).reset_index()
     t["win_pct"] = (100 * t["win_pct"]).round(1)
@@ -277,9 +338,8 @@ def _rollup(g: pd.DataFrame, by: str) -> None:
     # drawn as the break-even line for all 13 would be an invented reference level, so the marker
     # is suppressed below 80% coverage instead of being drawn from a fragment.
     #
-    # `_odds.mean()` also skips NaN whereas `ret` substitutes 2.00 for a missing price, so on a
-    # thinly-priced group the two would disagree about the same bets. Showing coverage makes that
-    # visible rather than letting it quietly shift the comparison.
+    # `ret` is NaN for an unpriced bet, so P/L and ROI cover the same priced bets `_odds.mean()`
+    # does. Coverage is shown so a thinly-priced group is visibly so.
     t["odds_cov"] = (100.0 * t["n_odds"] / t["n"]).round(0)
     _ok = t["odds_cov"] >= 80
     t["need_pct"] = (100.0 / t["avg_odds"]).round(1).where(_ok)
@@ -301,7 +361,7 @@ def _rollup(g: pd.DataFrame, by: str) -> None:
                      "odds_cov": st.column_config.NumberColumn(
                          "priced %", format="%.0f%%",
                          help="Share of settled bets in this group with a recorded price. "
-                              "Where this is low, P/L uses a 2.00 stand-in."),
+                              "P/L and ROI cover the priced bets only."),
                      "pl_u": st.column_config.NumberColumn("P/L (u)", format="%.1f"),
                      "roi_pct": st.column_config.NumberColumn("ROI %", format="%.1f"),
                  })
@@ -313,8 +373,7 @@ def _rollup(g: pd.DataFrame, by: str) -> None:
     _thin = t[t["n"] < 20]
     if not _thin.empty:
         st.markdown(ui.status_chip("SMALL_SAMPLE", label=f"{len(_thin)} THIN GROUP(S) · n < 20"))
-        # group keys go through the same label helper as the table: a tier group must read as its
-        # label ("Big gap"), never its code (tests/test_tier_labels.py)
+        # relabel_text: a group named by its tier code (grouping by tier) shows the label, not the code
         st.caption(relabel_text("Thin: " + ", ".join(f"{r[by]} n={int(r['n'])}" for _, r in _thin.iterrows())
                                 + " — a single result moves these by a full unit."))
 
@@ -326,11 +385,11 @@ with r1:
     ui.eyebrow("By market")
     _rollup(d, "_market")
 with r2:
-    ui.eyebrow("By tier")
+    ui.eyebrow(f"By {_TIERWORD}")
     _rollup(d, "_tier")
 
 st.caption(
     "Flat 1u stakes, matching v9's 'P/L in units' convention. Player props are labelled PAPER: "
     "invariant 2 makes them permanently unbet, so their rates are research rather than "
-    "performance. Missing odds default to 2.00 for the return calculation, which is stated here "
-    "because it flatters nothing but is still an assumption.")
+    "performance. A bet without a recorded price has no return: it counts in win % and is left out of "
+    "P/L and ROI (no stand-in price).")

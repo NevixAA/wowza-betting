@@ -36,6 +36,27 @@ SYNTHETIC_LABEL = "SYNTHETIC_PRICE_DIAGNOSTIC_ONLY"
 INVALID_PROFIT = "INVALID_FOR_PROFITABILITY"
 REAL_LABEL = "REAL_QUOTE"
 
+def overround_or_missing(over, under):
+    """Bookmaker margin 1/over + 1/under - 1 of an O/U pair, or NaN when the pair is NOT A PRICE.
+
+    A negative margin is not a book's quote: no bookmaker offers both sides above fair odds. It is
+    two best prices from different books (432 O/U 2.5 pairs in the v9 training frame, 427 of them
+    new-format best-price-per-side). src/feature_engineering used to `.clip(lower=0.0)` it, which
+    INVENTED an overround of exactly 0 on 11.5% of new-format priced rows. The owner rule: missing,
+    never an invented 0. Non-positive or missing odds -> NaN. Works on scalars and Series."""
+    o = pd.to_numeric(over, errors="coerce")
+    u = pd.to_numeric(under, errors="coerce")
+    if np.ndim(o) == 0:
+        if not (np.isfinite(o) and np.isfinite(u)) or o <= 0 or u <= 0:
+            return np.nan
+        m = 1.0 / o + 1.0 / u - 1.0
+        return m if m >= 0 else np.nan
+    o = pd.Series(o).where(lambda s: s > 0)
+    u = pd.Series(u, index=o.index).where(lambda s: s > 0)
+    m = 1.0 / o + 1.0 / u - 1.0
+    return m.where(m >= 0)
+
+
 #: (file, family) -> first snapshot time (UTC) at which the forward parser is known correct.
 PARSER_FIX_UTC = {
     ("newformat_odds_history", "ou"): pd.Timestamp("2026-08-10T08:00:00Z"),     # ac6406cb4

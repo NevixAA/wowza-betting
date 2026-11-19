@@ -2,8 +2,23 @@ name: Sharp Money Tracker
 
 on:
   schedule:
-    - cron: '0 8,10,12,14,16,18,20,22 * * *'  # every 2h
+    # EVERY HOUR, AROUND THE CLOCK (Data Truth round 5; owner: keep Pro 1X2's 12h max price age and
+    # snapshot more often). The old '0 8,10,...,22' asked for 8 slots and had NO slot from 22:00 to
+    # 08:00 UTC; GitHub delivered ~3 a day (2026-10-19..11-02 on main), so every morning the newest h2h
+    # price was 12-14h old and Pro withheld its 1X2 picks as STALE_PRICE. Asking hourly (minute 23, off
+    # the top-of-hour crowd) closes the overnight hole; src/sharp_tracker.MIN_INTERVAL_H (1.75h) makes a
+    # fire within 1.75h of the newest snapshot a 0-credit no-op, so at most 12 fetches a day are paid
+    # for. Cost per fetch <= 19 leagues x 2 markets x 1 region = 38 credits (calls with no events are
+    # not billed): <= 456/day worst case. The run stops below SHARP_CREDIT_FLOOR (15,000) remaining,
+    # and logs an [oddsapi_usage] line, so integrity_health measures the real cost.
+    - cron: '23 * * * *'
   workflow_dispatch:
+
+# One sharp run at a time (it had no group at all). Cross-workflow ledger safety comes from the
+# row-level ledger sync in the commit step, not from this group.
+concurrency:
+  group: sharp-tracker
+  cancel-in-progress: false
 
 jobs:
   sharp:
@@ -47,6 +62,15 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          # LEDGERS GO THROUGH THE ROW-LEVEL SYNC, NOT THE REBASE BELOW (estate scan P1, 2026-11-02).
+          # sharp_ledger.csv is also written by worldcup, update_results and daily_summary;
+          # `pull --rebase -X theirs` dropped the other run's rows in a conflicting hunk. sync-push
+          # re-applies this run's row changes on the freshest origin/main (src/ledger.py
+          # "LEDGER SYNC"); on failure it puts the file back for the add below.
+          ledger_sync_failed=0
+          python -m src.ledger sync-snapshot --dir "$RUNNER_TEMP/ledger_sync" || echo "::warning::ledger sync-snapshot failed"
+          python -m src.ledger sync-push --dir "$RUNNER_TEMP/ledger_sync" \
+            --message "auto: sharp ledger $(date -u '+%Y-%m-%d %H:%M UTC')" || ledger_sync_failed=1
           # Per-file loop: `git add -f a b missing` validates all pathspecs first and stages
           # NOTHING if one is absent, and `|| true` hides it. That exact pattern silenced
           # player_props.yml for three days (see its comment). output/sharp_history.json is
@@ -77,4 +101,5 @@ jobs:
             echo "push race - retry $i"; sleep $((RANDOM % 5 + 3))
           done
           [ "$pushed" = "1" ] || { echo "push failed after 5 retries"; exit 1; }
+          [ "$ledger_sync_failed" = "0" ] || { echo "::error::ledger sync failed (see above)"; exit 1; }
 # schedule re-registered after the 2026-10-26 history clean-up (comment only)

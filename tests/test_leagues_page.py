@@ -59,12 +59,23 @@ def env(tmp_path, monkeypatch):
     ]
     pd.DataFrame(main).to_csv(tmp_path / "bets_ledger.csv", index=False)
     pd.DataFrame(side).to_csv(tmp_path / "side_bets_ledger.csv", index=False)
+    # THE staked definition (src/staked.py, owner 2026-11-04): only a recorded policy stake > 0 makes a
+    # tip staked. The SNIPER / MARKSMAN rows carry one; the VALUABLE row is recorded with a zero stake.
+    def _rec(date, home, market, side, amount, state="ACTIVE_LOW"):
+        return {"date": date, "fixture": f"{date}|{home}|A", "league": "x", "model_type": "new_format",
+                "market": market, "side": side, "deployment_state": state, "base_fraction": 0.005,
+                "stake_amount": amount, "final_fraction": amount / 100, "reason": "OK" if amount else "TIER_NOT_STAKED",
+                "policy_version": "t", "generated_at": "2026-09-01 06:00:00"}
+    pd.DataFrame([_rec("2026-10-01", "B1", "OU25", "OVER", 0.5), _rec("2026-10-02", "B2", "OU25", "UNDER", 0.4),
+                  _rec(RECENT, "B3", "OU25", "OVER", 0.0), _rec(RECENT, "L1", "OU25", "OVER", 0.5),
+                  _rec("2026-10-05", "M1", "OU25", "UNDER", 0.5), _rec("2026-10-01", "B1", "BTTS", "YES", 1.0),
+                  _rec(RECENT, "B4", "OVER15", "OVER", 0.5)]).to_csv(tmp_path / "stake_audit.csv", index=False)
     return tmp_path
 
 
 def _ov():
     from dashboard_data import leagues as L
-    d = L.settled()
+    d = L.settled("BEFORE")      # these fixtures are pre-repair rows; the page's default is the Clean Record
     return d, L.overview(d, TODAY, up=L.upcoming(TODAY, 7), rat=L.ratings(), pol=L.policy(), reg=L.regimes())
 
 
@@ -96,10 +107,11 @@ def test_by_market_and_tier(env):
     paper = L.by_market(br, ("VALUABLE",)).set_index("market")
     assert list(paper.index) == ["O/U 2.5 Over"] and paper.loc["O/U 2.5 Over", "pl"] == pytest.approx(1.2)
     bt = L.by_tier(br).set_index("tier")
-    assert list(bt.index) == ["SNIPER", "MARKSMAN", "VALUABLE (paper)"]
+    assert list(bt.index) == ["SNIPER", "MARKSMAN", "VALUABLE"]      # a tier is a tier, not a stake
     assert bt.loc["SNIPER", "tips"] == 2 and bt.loc["SNIPER", "pl"] == pytest.approx(2.0)
     assert bt.loc["MARKSMAN", "pl"] == pytest.approx(-2.0)
-    assert bt.loc["VALUABLE (paper)", "roi"] == pytest.approx(1.2)
+    assert bt.loc["VALUABLE", "roi"] == pytest.approx(1.2) and bt.loc["VALUABLE", "staked_tips"] == 0
+    assert bt.loc["SNIPER", "staked_tips"] == 2
 
 
 def test_paper_league_shown_not_totalled(env):
@@ -114,10 +126,10 @@ def test_paper_league_shown_not_totalled(env):
     # identical to the record picture's basis (daily_pack.settled_tips with paper leagues dropped)
     from telegram_bot.daily_pack import settled_tips
     r = settled_tips()
-    r = r[(r["date"] >= str(config.PERFORMANCE_CUTOFF_DATE)[:10]) & r["pnl"].notna() & r["tier"].isin(L.STAKED)]
+    r = r[(r["date"] >= str(config.PERFORMANCE_CUTOFF_DATE)[:10]) & r["pnl"].notna() & r["staked"]]
     assert len(r) == t["tips"] and r["pnl"].sum() == pytest.approx(t["pl"])
     tab = L.overview_table(ov).set_index("League")
-    assert "USA MLS (paper)" in tab.index
+    assert "USA MLS (no stake)" in tab.index
 
 
 def test_overview_context_columns(env):
@@ -168,6 +180,8 @@ def test_page_renders_same_table(env):
     at = testing.AppTest.from_file(str(PAGE), default_timeout=120)
     at.run()
     assert not at.exception, [e.value for e in at.exception]
+    at.radio(key="lg_record").set_value("BEFORE").run()             # the pre-repair record (owner 2026-11-11)
+    assert not at.exception, [e.value for e in at.exception]
     shown = at.dataframe[0].value
     _, ov = _ov()
     want = L.overview_table(ov)
@@ -198,10 +212,14 @@ def test_page_cards_and_profile_carry_module_values(env):
     st.cache_data.clear()
     at = testing.AppTest.from_file(str(PAGE), default_timeout=120).run()
     assert not at.exception, [e.value for e in at.exception]
+    metrics = [(m.label, m.value) for m in at.metric]
+    assert metrics[0] == ("Clean Record P/L", ui.units(0))                # Clean Record headline: nothing yet
+    at.radio(key="lg_record").set_value("BEFORE").run()
+    assert not at.exception, [e.value for e in at.exception]
     d, ov = _ov()
     tot = L.totals(d)
     metrics = [(m.label, m.value) for m in at.metric]
-    assert ("P/L", ui.units(tot["pl"])) == metrics[0]                    # the headline card
+    assert ("P/L", ui.units(tot["pl"])) == metrics[1]                    # the pre-repair headline card
     cards = {r["league"]: r for r in ov.to_dict("records") if r["tips"] > 0 and not r["paper"]}
     staked = [v for lab, v in metrics if lab == "P/L (staked)"]
     assert staked == [ui.units(cards[k]["pl"]) for k in cards]           # one card per league, overview order

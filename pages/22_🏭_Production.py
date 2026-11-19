@@ -48,7 +48,7 @@ plan, summ, meta, reg, prot = _load(today)
 _tp = production_view.threshold_proposal()
 if _tp:
     _txt = (f"**Threshold proposal {_tp['proposal_id']}** ({_tp.get('created_at', '?')}) — "
-            f"{_tp.get('n_serving_changes', 0)} league × market gate(s) would change if approved · "
+            f"{_tp.get('n_serving_changes') if _tp.get('n_serving_changes') is not None else '—'} league × market gate(s) would change if approved · "
             f"state **{_tp['state']}**")
     if _tp["state"] == "AWAITING_OWNER":
         st.info(_txt + ". Nothing is live until the owner approves entries in `config/threshold_approvals.json` "
@@ -69,7 +69,8 @@ if _fstate != "FRESH":                     # the header chip states freshness; t
 if plan.empty:
     st.info(f"No tips dated {today} or later in output/stake_plan.csv — predict writes it on its next run.")
 else:
-    staked = plan[plan["final_fraction"] > 0]
+    from src.staked import plan_staked                  # THE staked definition (owner 2026-11-04)
+    staked = plan[plan_staked(plan)]
     ui.metric_grid([{"label": "Tips sized", "value": f"{len(plan):,}"},
                     {"label": "With a stake", "value": f"{len(staked):,}"},
                     {"label": "Days covered", "value": plan["date"].nunique()},

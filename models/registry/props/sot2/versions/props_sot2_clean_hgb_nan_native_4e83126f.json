@@ -1,0 +1,57 @@
+{
+  "market": "sot2",
+  "model_version": "props_sot2_clean_hgb_nan_native_4e83126f",
+  "artifact_sha256": "4e83126fa0e8b710e6533349e4c0aa6fe97ef07a84322a077a9a47548cda606f",
+  "registered_at": "2026-11-08T20:37:23Z",
+  "training_cutoff": "2026-08-31",
+  "training_rows": {
+    "fit": 707101,
+    "calibration": 124967
+  },
+  "candidate": "hgb_nan_native",
+  "harness_version": "PROPS-HARNESS-1.0",
+  "clean_retrain": {
+    "run_id": "42513445187",
+    "code_sha": "271632d0c14536911a49479e7c9be61caaa7d322",
+    "artifact_sha256": "55a38ae5c180de37b8e9852a1b6460f5fe848232297c8f4e9eb9368385ad1a86",
+    "candidate": "hgb_nan_native",
+    "holdout": {
+      "n": 47103,
+      "events": 2637,
+      "log_loss": 0.1866248865565674,
+      "brier": 0.049253869561977665,
+      "ece10": 0.018018599391058952,
+      "calib_slope": 0.9628662449303168,
+      "ll_minus_player_base_rate": {
+        "mean": -0.005636253457123504,
+        "ci95": [
+          -0.006825146798050297,
+          -0.004441016253846394
+        ],
+        "week_blocks": 9
+      },
+      "ll_delta_vs_recipe": -0.0010554817569991052,
+      "ci95_lo": -0.0014907471481423963,
+      "ci95_hi": -0.0006342370329338061,
+      "head_to_head": {
+        "n": 47103,
+        "weeks": 9,
+        "ll_delta_hgb_minus_recipe": -0.0010554817569991052,
+        "ci95_lo": -0.0014907471481423963,
+        "ci95_hi": -0.0006342370329338061,
+        "p_one_sided": 0.00024993751562109475,
+        "boot": 4000,
+        "seed": 1
+      },
+      "holdout_dates": [
+        "2026-09-01",
+        "2026-10-31"
+      ],
+      "rule": "beats recipe_retrained (CI95 upper < 0) and player_base_rate"
+    },
+    "approval": "u can upload the new props ofcourse, and still collect the opening moving closing",
+    "approved_on": "2026-11-08",
+    "prior_champion": "props_sot2_legacy_a3c186a8"
+  },
+  "model_role": "CHAMPION"
+}

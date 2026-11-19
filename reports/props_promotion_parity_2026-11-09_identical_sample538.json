@@ -1,0 +1,441 @@
+{
+ "paired_rows": 538,
+ "fixtures": 19,
+ "sample": {
+  "per_league": 1,
+  "start": "2026-10-25",
+  "end": "2026-10-25"
+ },
+ "position_source": {
+  "LINEUP_ANNOUNCED": 536,
+  "LATEST_EARLIER_MATCH": 2
+ },
+ "features": {
+  "aerial_matchup_score": {
+   "mismatch": 0
+  },
+  "aerial_won_rate": {
+   "mismatch": 0
+  },
+  "age": {
+   "mismatch": 0
+  },
+  "age_peak_delta": {
+   "mismatch": 0
+  },
+  "assists_pg": {
+   "mismatch": 0
+  },
+  "att_vs_gk_threat": {
+   "mismatch": 0
+  },
+  "box_actions_per90": {
+   "mismatch": 0
+  },
+  "box_dominance_vs_gk": {
+   "mismatch": 0
+  },
+  "box_threat_vs_leaky_defense": {
+   "mismatch": 0
+  },
+  "card_clash_index": {
+   "mismatch": 0
+  },
+  "card_exposure_index": {
+   "mismatch": 0
+  },
+  "cards_pg": {
+   "mismatch": 0
+  },
+  "career_assists_pg": {
+   "mismatch": 0
+  },
+  "career_goals_pg": {
+   "mismatch": 0
+  },
+  "career_shots_pg": {
+   "mismatch": 0
+  },
+  "career_sot_pg": {
+   "mismatch": 0
+  },
+  "chronic_injury_risk": {
+   "mismatch": 0
+  },
+  "clinical_vs_gk": {
+   "mismatch": 0
+  },
+  "context_quality_discount": {
+   "mismatch": 0
+  },
+  "days_since_last_injury": {
+   "mismatch": 0
+  },
+  "defensive_actions_per90": {
+   "mismatch": 0
+  },
+  "dribble_contact_rate": {
+   "mismatch": 0
+  },
+  "dribble_creativity_score": {
+   "mismatch": 0
+  },
+  "dribble_success_rate": {
+   "mismatch": 0
+  },
+  "dribbled_past_pg": {
+   "mismatch": 0
+  },
+  "dribbler_vs_defensive_line": {
+   "mismatch": 0
+  },
+  "dribbles_pg": {
+   "mismatch": 0
+  },
+  "duel_intensity_per90": {
+   "mismatch": 0
+  },
+  "efficiency_vs_leaky_keeper": {
+   "mismatch": 0
+  },
+  "finishing_threat_index": {
+   "mismatch": 0
+  },
+  "forward_matchup_score": {
+   "mismatch": 0
+  },
+  "foul_committer_ratio": {
+   "mismatch": 0
+  },
+  "foul_draw_matchup_score": {
+   "mismatch": 0
+  },
+  "fouls_drawn_per90": {
+   "mismatch": 0
+  },
+  "fouls_per90": {
+   "mismatch": 0
+  },
+  "goal_involvement_rate": {
+   "mismatch": 0
+  },
+  "goals_away_pg": {
+   "mismatch": 0
+  },
+  "goals_home_pg": {
+   "mismatch": 0
+  },
+  "goals_pg": {
+   "mismatch": 0
+  },
+  "height_advantage_score": {
+   "mismatch": 0
+  },
+  "height_aerial_interaction": {
+   "mismatch": 0
+  },
+  "height_cm": {
+   "mismatch": 0
+  },
+  "height_diff_vs_opp_def": {
+   "mismatch": 0
+  },
+  "interceptions_pg": {
+   "mismatch": 0
+  },
+  "is_home": {
+   "mismatch": 0
+  },
+  "key_passes_pg": {
+   "mismatch": 0
+  },
+  "kp_per90": {
+   "mismatch": 0
+  },
+  "kp_vs_aggressive_defense": {
+   "mismatch": 0
+  },
+  "league_quality": {
+   "mismatch": 0
+  },
+  "league_tier": {
+   "mismatch": 0
+  },
+  "mid_threat_vs_defense": {
+   "mismatch": 0
+  },
+  "minutes_pg": {
+   "mismatch": 0
+  },
+  "n_prev_games": {
+   "mismatch": 0
+  },
+  "offside_aggressiveness": {
+   "mismatch": 0
+  },
+  "offsides_pg": {
+   "mismatch": 0
+  },
+  "opp_adjusted_shot_threat": {
+   "mismatch": 0
+  },
+  "opp_def_aerial_win_rate": {
+   "mismatch": 0
+  },
+  "opp_def_aggression": {
+   "mismatch": 0
+  },
+  "opp_def_cards_pg": {
+   "mismatch": 0
+  },
+  "opp_def_fouls_pg": {
+   "mismatch": 0
+  },
+  "opp_def_mean_height": {
+   "mismatch": 0
+  },
+  "opp_def_player_quality": {
+   "mismatch": 0
+  },
+  "opp_def_player_rating_pg": {
+   "mismatch": 0
+  },
+  "opp_gk_save_rate": {
+   "mismatch": 0
+  },
+  "opp_gk_saves_pg": {
+   "mismatch": 0
+  },
+  "opp_goals_conceded_pg": {
+   "mismatch": 0
+  },
+  "opp_goals_conceded_vs_fwd_pg": {
+   "mismatch": 0
+  },
+  "opp_goals_conceded_vs_mid_pg": {
+   "mismatch": 0
+  },
+  "opp_mid_cards_pg": {
+   "mismatch": 0
+  },
+  "opp_mid_fouls_pg": {
+   "mismatch": 0
+  },
+  "opp_sot_conceded_pg": {
+   "mismatch": 0
+  },
+  "opp_sot_conceded_vs_fwd_pg": {
+   "mismatch": 0
+  },
+  "opp_sot_conceded_vs_mid_pg": {
+   "mismatch": 0
+  },
+  "opp_strength_index": {
+   "mismatch": 0
+  },
+  "opp_top_def_rating": {
+   "mismatch": 0
+  },
+  "passes_pg": {
+   "mismatch": 0
+  },
+  "penalties_won_pg": {
+   "mismatch": 0
+  },
+  "penalty_conversion_rate": {
+   "mismatch": 0
+  },
+  "player_career_avg_quality": {
+   "mismatch": 0
+  },
+  "pos_defender": {
+   "mismatch": 0
+  },
+  "pos_forward": {
+   "mismatch": 0
+  },
+  "pos_midfielder": {
+   "mismatch": 0
+  },
+  "prev_season_appearances": {
+   "mismatch": 0
+  },
+  "prev_season_assists_pg": {
+   "mismatch": 0
+  },
+  "prev_season_cards_pg": {
+   "mismatch": 0
+  },
+  "prev_season_goals_pg": {
+   "mismatch": 0
+  },
+  "prev_season_minutes_pg": {
+   "mismatch": 0
+  },
+  "prev_season_opp_conceded_pg": {
+   "mismatch": 0
+  },
+  "prev_season_opp_goals_pg": {
+   "mismatch": 0
+  },
+  "prev_season_shot_accuracy": {
+   "mismatch": 0
+  },
+  "prev_season_shots_pg": {
+   "mismatch": 0
+  },
+  "prev_season_sot_pg": {
+   "mismatch": 0
+  },
+  "prev_season_start_rate": {
+   "mismatch": 0
+  },
+  "prev_season_team_conceded_pg": {
+   "mismatch": 0
+  },
+  "prev_season_team_goals_pg": {
+   "mismatch": 0
+  },
+  "quality_adj_goals_pg": {
+   "mismatch": 0
+  },
+  "quality_adj_sot_pg": {
+   "mismatch": 0
+  },
+  "quality_mismatch_goals": {
+   "mismatch": 0
+  },
+  "quality_mismatch_sot": {
+   "mismatch": 0
+  },
+  "rating_pg": {
+   "mismatch": 0
+  },
+  "red_cards_pg": {
+   "mismatch": 0
+  },
+  "referee_strictness": {
+   "mismatch": 0
+  },
+  "referee_yellows_pg": {
+   "mismatch": 0
+  },
+  "rest_days": {
+   "mismatch": 0
+  },
+  "return_from_injury_flag": {
+   "mismatch": 0
+  },
+  "season_appearances": {
+   "mismatch": 0
+  },
+  "season_assists_pg": {
+   "mismatch": 0
+  },
+  "season_cards_pg": {
+   "mismatch": 0
+  },
+  "season_dribble_pg": {
+   "mismatch": 0
+  },
+  "season_fouls_drawn_pg": {
+   "mismatch": 0
+  },
+  "season_fouls_pg": {
+   "mismatch": 0
+  },
+  "season_goals_pg": {
+   "mismatch": 0
+  },
+  "season_minutes_pg": {
+   "mismatch": 0
+  },
+  "season_shots_pg": {
+   "mismatch": 0
+  },
+  "season_sot_pg": {
+   "mismatch": 0
+  },
+  "season_start_rate": {
+   "mismatch": 0
+  },
+  "shooting_efficiency_index": {
+   "mismatch": 0
+  },
+  "shot_accuracy_l10": {
+   "mismatch": 0
+  },
+  "shot_accuracy_rate": {
+   "mismatch": 0
+  },
+  "shots_away_pg": {
+   "mismatch": 0
+  },
+  "shots_home_pg": {
+   "mismatch": 0
+  },
+  "shots_pg": {
+   "mismatch": 0
+  },
+  "sot_away_pg": {
+   "mismatch": 0
+  },
+  "sot_home_pg": {
+   "mismatch": 0
+  },
+  "sot_pg": {
+   "mismatch": 0
+  },
+  "sot_quality_score": {
+   "mismatch": 0
+  },
+  "sot_rate": {
+   "mismatch": 0
+  },
+  "starter_rate": {
+   "mismatch": 0
+  },
+  "tackle_dribble_clash": {
+   "mismatch": 0
+  },
+  "tackles_pg": {
+   "mismatch": 0
+  },
+  "team_corners_pg": {
+   "mismatch": 0
+  },
+  "team_goals_pg_roll": {
+   "mismatch": 0
+  },
+  "team_momentum_forward_matchup": {
+   "mismatch": 0
+  },
+  "volume_shot_penetration": {
+   "mismatch": 0
+  }
+ },
+ "probabilities": {
+  "sot": {
+   "rows_not_identical": 0,
+   "max_abs_diff": 0.0
+  },
+  "sot2": {
+   "rows_not_identical": 0,
+   "max_abs_diff": 0.0
+  },
+  "goals": {
+   "rows_not_identical": 0,
+   "max_abs_diff": 0.0
+  },
+  "assists": {
+   "rows_not_identical": 0,
+   "max_abs_diff": 0.0
+  },
+  "cards": {
+   "rows_not_identical": 0,
+   "max_abs_diff": 0.0
+  }
+ },
+ "features_mismatched": 0,
+ "features_absent": []
+}

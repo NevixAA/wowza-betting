@@ -1,0 +1,222 @@
+artifact,commit,committed_at,blob,subject
+models/model_v9_standard.pkl,eac0db9b7f,2026-06-07T13:26:32+03:00,173cc9e04a,add GitHub Actions workflows: predict/results/sharp/worldcup/live/weekly run in cloud inde
+models/model_v9_standard.pkl,37e4e79e04,2026-06-07T10:58:13Z,1b30332c44,auto: predict 2026-06-07 10:58 UTC
+models/model_v9_standard.pkl,f7dfc8cf47,2026-06-08T14:20:54Z,1a1b841470,auto: retrain models 2026-06-08
+models/model_v9_standard.pkl,291bc69d2b,2026-06-09T07:19:47Z,2cdc924be5,auto: retrain models 2026-06-09
+models/model_v9_standard.pkl,63b6cc6085,2026-06-10T11:41:30Z,949fd975da,auto: backtest results 2026-06-10
+models/model_v9_standard.pkl,b12d50cbb4,2026-06-15T12:19:05Z,8722e2cbdc,auto: retrain models 2026-06-15
+models/model_v9_standard.pkl,1780a5238a,2026-06-15T14:59:13Z,7a39d7ac17,auto: backtest results 2026-06-15
+models/model_v9_standard.pkl,d0b6ce10cf,2026-06-17T14:05:39+03:00,f71f89febe,"feat: API enrichment phases 3-7, tier-calibrated thresholds, retrained models"
+models/model_v9_standard.pkl,7e7b18e0cd,2026-06-17T14:25:18+03:00,90d083d789,upgrade: sklearn 1.9.0 + fix home_xg KeyError
+models/model_v9_standard.pkl,8771bd3a6b,2026-06-21T08:29:23Z,20e286625c,auto: retrain models 2026-06-21
+models/model_v9_standard.pkl,075eeb3136,2026-06-22T18:52:14+03:00,d73b54d7d2,"feat: v9.2 — side markets, new player models, workflow optimisation"
+models/model_v9_standard.pkl,6b738ce513,2026-06-23T11:16:22Z,d8b3b2ff42,auto: retrain models 2026-06-23
+models/model_v9_standard.pkl,ce4b92ce2a,2026-06-24T15:15:49+03:00,6f852c9ec0,fix: player props bugs + remove goals3/sot4 + 7-market retrain
+models/model_v9_standard.pkl,3b164f28bd,2026-08-02T08:45:08Z,7b34902751,auto: weekly main-model retrain 2026-08-02
+models/model_v9_standard.pkl,8acc4a560e,2026-08-09T05:17:36Z,6242d4c4fd,auto: weekly main-model retrain 2026-08-09
+models/model_v9_standard.pkl,5ed4018cc6,2026-08-09T13:29:38Z,da908c6a0c,auto: weekly main-model retrain 2026-08-09
+models/model_v9_standard.pkl,4570fc95b6,2026-08-16T04:57:21Z,3da31019ce,auto: weekly main-model retrain 2026-08-16
+models/model_v9_standard.pkl,cd0bf48d87,2026-08-23T04:56:58Z,e2a0661034,auto: weekly main-model retrain 2026-08-23
+models/model_v9_standard.pkl,206bd67c6d,2026-08-30T09:58:22Z,b74bbb33ce,auto: weekly main-model retrain 2026-08-30
+models/model_v9_standard.pkl,07ef755199,2026-09-22T11:14:51Z,014ace04bf,auto: main-model retrain 2026-09-22
+models/model_v9_standard.pkl,6bf25b2330,2026-09-23T08:33:50Z,4ad1f3aedf,auto: main-model retrain 2026-09-23
+models/model_v9_standard.pkl,0de1414cd5,2026-09-25T08:45:41Z,b09c1bab6c,auto: main-model retrain 2026-09-25
+models/model_v9_standard.pkl,854ca75e4b,2026-09-26T08:32:19Z,7b6137ba6b,auto: main-model retrain 2026-09-26
+models/model_v9_standard.pkl,4c22ef8066,2026-09-27T09:12:01Z,f206cc6ecb,auto: main-model retrain 2026-09-27
+models/model_v9_standard.pkl,aeeb29fddb,2026-09-28T09:39:14Z,c89a5a1179,auto: main-model retrain 2026-09-28
+models/model_v9_standard.pkl,4c5a01ef0a,2026-09-29T09:43:51Z,35586d7b48,auto: main-model retrain 2026-09-29
+models/model_v9_standard.pkl,94fcc4d94f,2026-09-30T09:35:42Z,a928ca14fb,auto: main-model retrain 2026-09-30
+models/model_v9_standard.pkl,76e533514b,2026-10-01T10:03:34Z,c4252aa90a,auto: main-model retrain 2026-10-01
+models/model_v9_standard.pkl,f74fb7f795,2026-10-02T09:38:39Z,5e3677bf75,auto: main-model retrain 2026-10-02
+models/model_v9_standard.pkl,5f9fdc4b92,2026-10-03T09:05:08Z,d8f07326d4,auto: main-model retrain 2026-10-03
+models/model_v9_standard.pkl,3354e97f26,2026-10-04T09:38:28Z,27c9f04cef,auto: main-model retrain 2026-10-04
+models/model_v9_standard.pkl,57c3518887,2026-10-18T08:04:23Z,4ba32dca06,auto: main-model retrain 2026-10-18
+models/model_v9_standard_repaired.pkl,cc46a26bfb,2026-10-28T12:37:39Z,fef4723609,owner install: standard_repaired standard_repaired_20261028T123040Z_1f5805e6
+models/model_v9_newformat.pkl,eac0db9b7f,2026-06-07T13:26:32+03:00,f59c20c18f,add GitHub Actions workflows: predict/results/sharp/worldcup/live/weekly run in cloud inde
+models/model_v9_newformat.pkl,37e4e79e04,2026-06-07T10:58:13Z,eb3811b621,auto: predict 2026-06-07 10:58 UTC
+models/model_v9_newformat.pkl,f7dfc8cf47,2026-06-08T14:20:54Z,c815a48c6a,auto: retrain models 2026-06-08
+models/model_v9_newformat.pkl,291bc69d2b,2026-06-09T07:19:47Z,b9660e8e96,auto: retrain models 2026-06-09
+models/model_v9_newformat.pkl,63b6cc6085,2026-06-10T11:41:30Z,ff98910d93,auto: backtest results 2026-06-10
+models/model_v9_newformat.pkl,b12d50cbb4,2026-06-15T12:19:05Z,c7b25b27ab,auto: retrain models 2026-06-15
+models/model_v9_newformat.pkl,1780a5238a,2026-06-15T14:59:13Z,a13fb73734,auto: backtest results 2026-06-15
+models/model_v9_newformat.pkl,d0b6ce10cf,2026-06-17T14:05:39+03:00,2dd2f85b00,"feat: API enrichment phases 3-7, tier-calibrated thresholds, retrained models"
+models/model_v9_newformat.pkl,7e7b18e0cd,2026-06-17T14:25:18+03:00,adb638e1bd,upgrade: sklearn 1.9.0 + fix home_xg KeyError
+models/model_v9_newformat.pkl,8771bd3a6b,2026-06-21T08:29:23Z,9b483099c5,auto: retrain models 2026-06-21
+models/model_v9_newformat.pkl,075eeb3136,2026-06-22T18:52:14+03:00,2e1220a238,"feat: v9.2 — side markets, new player models, workflow optimisation"
+models/model_v9_newformat.pkl,6b738ce513,2026-06-23T11:16:22Z,79277c619a,auto: retrain models 2026-06-23
+models/model_v9_newformat.pkl,ce4b92ce2a,2026-06-24T15:15:49+03:00,2ab5298a98,fix: player props bugs + remove goals3/sot4 + 7-market retrain
+models/model_v9_newformat.pkl,3b164f28bd,2026-08-02T08:45:08Z,63c43bfc8f,auto: weekly main-model retrain 2026-08-02
+models/model_v9_newformat.pkl,8acc4a560e,2026-08-09T05:17:36Z,fb3304aa0b,auto: weekly main-model retrain 2026-08-09
+models/model_v9_newformat.pkl,5ed4018cc6,2026-08-09T13:29:38Z,db2628b55b,auto: weekly main-model retrain 2026-08-09
+models/model_v9_newformat.pkl,4570fc95b6,2026-08-16T04:57:21Z,109045e3d5,auto: weekly main-model retrain 2026-08-16
+models/model_v9_newformat.pkl,cd0bf48d87,2026-08-23T04:56:58Z,d2eddba36d,auto: weekly main-model retrain 2026-08-23
+models/model_v9_newformat.pkl,206bd67c6d,2026-08-30T09:58:22Z,43d6c56d3b,auto: weekly main-model retrain 2026-08-30
+models/model_v9_newformat.pkl,07ef755199,2026-09-22T11:14:51Z,598c29ce28,auto: main-model retrain 2026-09-22
+models/model_v9_newformat.pkl,6bf25b2330,2026-09-23T08:33:50Z,4f2cfbf79c,auto: main-model retrain 2026-09-23
+models/model_v9_newformat.pkl,dbdab3e3e3,2026-09-24T08:22:54Z,0777be34d1,auto: main-model retrain 2026-09-24
+models/model_v9_newformat.pkl,0de1414cd5,2026-09-25T08:45:41Z,82efe07cd0,auto: main-model retrain 2026-09-25
+models/model_v9_newformat.pkl,854ca75e4b,2026-09-26T08:32:19Z,12b675f7d0,auto: main-model retrain 2026-09-26
+models/model_v9_newformat.pkl,4c22ef8066,2026-09-27T09:12:01Z,00743ffd2f,auto: main-model retrain 2026-09-27
+models/model_v9_newformat.pkl,aeeb29fddb,2026-09-28T09:39:14Z,035935b5a4,auto: main-model retrain 2026-09-28
+models/model_v9_newformat.pkl,4c5a01ef0a,2026-09-29T09:43:51Z,1cc9a977e6,auto: main-model retrain 2026-09-29
+models/model_v9_newformat.pkl,94fcc4d94f,2026-09-30T09:35:42Z,bef7ad748d,auto: main-model retrain 2026-09-30
+models/model_v9_newformat.pkl,76e533514b,2026-10-01T10:03:34Z,351d6cc8f3,auto: main-model retrain 2026-10-01
+models/model_v9_newformat.pkl,f74fb7f795,2026-10-02T09:38:39Z,0ac95e0792,auto: main-model retrain 2026-10-02
+models/model_v9_newformat.pkl,5f9fdc4b92,2026-10-03T09:05:08Z,335b06abe0,auto: main-model retrain 2026-10-03
+models/model_v9_newformat.pkl,3354e97f26,2026-10-04T09:38:28Z,dd5545442a,auto: main-model retrain 2026-10-04
+models/model_v9_newformat.pkl,57c3518887,2026-10-18T08:04:23Z,86654cc4bb,auto: main-model retrain 2026-10-18
+models/model_v9_newformat.pkl,45c20d0ed9,2026-10-25T08:29:06Z,406b9c4a49,auto: main-model retrain 2026-10-25
+models/model_v9_newformat.pkl,9187ca697f,2026-10-25T10:46:27+02:00,86654cc4bb,"models: roll back newformat to 20261018, park 20261025 as PG-1.0 challenger (owner decisio"
+models/model_v9_btts.pkl,075eeb3136,2026-06-22T18:52:14+03:00,8f0fc35cf1,"feat: v9.2 — side markets, new player models, workflow optimisation"
+models/model_v9_btts.pkl,ce4b92ce2a,2026-06-24T15:15:49+03:00,86390ab5a7,fix: player props bugs + remove goals3/sot4 + 7-market retrain
+models/model_v9_btts.pkl,3b164f28bd,2026-08-02T08:45:08Z,bb59e2989f,auto: weekly main-model retrain 2026-08-02
+models/model_v9_btts.pkl,8acc4a560e,2026-08-09T05:17:36Z,e5afb4f879,auto: weekly main-model retrain 2026-08-09
+models/model_v9_btts.pkl,5ed4018cc6,2026-08-09T13:29:38Z,013cfff189,auto: weekly main-model retrain 2026-08-09
+models/model_v9_btts.pkl,4570fc95b6,2026-08-16T04:57:21Z,152d1e9c63,auto: weekly main-model retrain 2026-08-16
+models/model_v9_btts.pkl,cd0bf48d87,2026-08-23T04:56:58Z,4bd7e24947,auto: weekly main-model retrain 2026-08-23
+models/model_v9_btts.pkl,206bd67c6d,2026-08-30T09:58:22Z,70557880de,auto: weekly main-model retrain 2026-08-30
+models/model_v9_btts.pkl,07ef755199,2026-09-22T11:14:51Z,0d0459efcf,auto: main-model retrain 2026-09-22
+models/model_v9_btts.pkl,6bf25b2330,2026-09-23T08:33:50Z,511f24e8f7,auto: main-model retrain 2026-09-23
+models/model_v9_btts.pkl,dbdab3e3e3,2026-09-24T08:22:54Z,61957dff9f,auto: main-model retrain 2026-09-24
+models/model_v9_btts.pkl,0de1414cd5,2026-09-25T08:45:41Z,91b4a1b30e,auto: main-model retrain 2026-09-25
+models/model_v9_btts.pkl,854ca75e4b,2026-09-26T08:32:19Z,e7cec93d05,auto: main-model retrain 2026-09-26
+models/model_v9_btts.pkl,4c22ef8066,2026-09-27T09:12:01Z,9fce9691fd,auto: main-model retrain 2026-09-27
+models/model_v9_btts.pkl,aeeb29fddb,2026-09-28T09:39:14Z,34992dea30,auto: main-model retrain 2026-09-28
+models/model_v9_btts.pkl,4c5a01ef0a,2026-09-29T09:43:51Z,dc5c31c0d6,auto: main-model retrain 2026-09-29
+models/model_v9_btts.pkl,94fcc4d94f,2026-09-30T09:35:42Z,bb4d05cf23,auto: main-model retrain 2026-09-30
+models/model_v9_btts.pkl,76e533514b,2026-10-01T10:03:34Z,54fc383df8,auto: main-model retrain 2026-10-01
+models/model_v9_btts.pkl,f74fb7f795,2026-10-02T09:38:39Z,2f15190765,auto: main-model retrain 2026-10-02
+models/model_v9_btts.pkl,5f9fdc4b92,2026-10-03T09:05:08Z,594ca7f583,auto: main-model retrain 2026-10-03
+models/model_v9_btts.pkl,3354e97f26,2026-10-04T09:38:28Z,ef303c6dca,auto: main-model retrain 2026-10-04
+models/model_v9_btts.pkl,ad3d3729e9,2026-10-05T10:19:05Z,a61c4efe1b,auto: main-model retrain 2026-10-05
+models/model_v9_over15.pkl,075eeb3136,2026-06-22T18:52:14+03:00,95dae1b478,"feat: v9.2 — side markets, new player models, workflow optimisation"
+models/model_v9_over15.pkl,ce4b92ce2a,2026-06-24T15:15:49+03:00,31a371546f,fix: player props bugs + remove goals3/sot4 + 7-market retrain
+models/model_v9_over15.pkl,3b164f28bd,2026-08-02T08:45:08Z,9633439d6c,auto: weekly main-model retrain 2026-08-02
+models/model_v9_over15.pkl,8acc4a560e,2026-08-09T05:17:36Z,89d55b5caa,auto: weekly main-model retrain 2026-08-09
+models/model_v9_over15.pkl,5ed4018cc6,2026-08-09T13:29:38Z,f521a8b7db,auto: weekly main-model retrain 2026-08-09
+models/model_v9_over15.pkl,4570fc95b6,2026-08-16T04:57:21Z,4c167cc38e,auto: weekly main-model retrain 2026-08-16
+models/model_v9_over15.pkl,cd0bf48d87,2026-08-23T04:56:58Z,efba66a0c9,auto: weekly main-model retrain 2026-08-23
+models/model_v9_over15.pkl,206bd67c6d,2026-08-30T09:58:22Z,f0bc1bd7db,auto: weekly main-model retrain 2026-08-30
+models/model_v9_over15.pkl,07ef755199,2026-09-22T11:14:51Z,4535b8d924,auto: main-model retrain 2026-09-22
+models/model_v9_over15.pkl,6bf25b2330,2026-09-23T08:33:50Z,8857a32d41,auto: main-model retrain 2026-09-23
+models/model_v9_over15.pkl,dbdab3e3e3,2026-09-24T08:22:54Z,967acfb17f,auto: main-model retrain 2026-09-24
+models/model_v9_over15.pkl,0de1414cd5,2026-09-25T08:45:41Z,01a32079f2,auto: main-model retrain 2026-09-25
+models/model_v9_over15.pkl,854ca75e4b,2026-09-26T08:32:19Z,39238746ea,auto: main-model retrain 2026-09-26
+models/model_v9_over15.pkl,4c22ef8066,2026-09-27T09:12:01Z,75e1bb247b,auto: main-model retrain 2026-09-27
+models/model_v9_over15.pkl,aeeb29fddb,2026-09-28T09:39:14Z,345ba5f9a6,auto: main-model retrain 2026-09-28
+models/model_v9_over15.pkl,4c5a01ef0a,2026-09-29T09:43:51Z,d8f80a90e3,auto: main-model retrain 2026-09-29
+models/model_v9_over15.pkl,94fcc4d94f,2026-09-30T09:35:42Z,d5be8311bd,auto: main-model retrain 2026-09-30
+models/model_v9_over15.pkl,76e533514b,2026-10-01T10:03:34Z,a33e212d70,auto: main-model retrain 2026-10-01
+models/model_v9_over15.pkl,f74fb7f795,2026-10-02T09:38:39Z,d732d67f2e,auto: main-model retrain 2026-10-02
+models/model_v9_over15.pkl,5f9fdc4b92,2026-10-03T09:05:08Z,4b632699ca,auto: main-model retrain 2026-10-03
+models/model_v9_over15.pkl,3354e97f26,2026-10-04T09:38:28Z,846e4c220d,auto: main-model retrain 2026-10-04
+models/model_v9_over15.pkl,ad3d3729e9,2026-10-05T10:19:05Z,9c98ebbbf5,auto: main-model retrain 2026-10-05
+models/model_v9_over15.pkl,cea6031edd,2026-10-11T10:01:50Z,f8a4bfc9c6,auto: main-model retrain 2026-10-11
+models/model_v9_over15.pkl,57c3518887,2026-10-18T08:04:23Z,b295204263,auto: main-model retrain 2026-10-18
+models/model_v9_over35.pkl,075eeb3136,2026-06-22T18:52:14+03:00,6a06c11d3f,"feat: v9.2 — side markets, new player models, workflow optimisation"
+models/model_v9_over35.pkl,ce4b92ce2a,2026-06-24T15:15:49+03:00,daf4864fc4,fix: player props bugs + remove goals3/sot4 + 7-market retrain
+models/model_v9_over35.pkl,3b164f28bd,2026-08-02T08:45:08Z,1868052af8,auto: weekly main-model retrain 2026-08-02
+models/model_v9_over35.pkl,8acc4a560e,2026-08-09T05:17:36Z,ca122d25df,auto: weekly main-model retrain 2026-08-09
+models/model_v9_over35.pkl,5ed4018cc6,2026-08-09T13:29:38Z,e9d9db6717,auto: weekly main-model retrain 2026-08-09
+models/model_v9_over35.pkl,4570fc95b6,2026-08-16T04:57:21Z,50ec5621a4,auto: weekly main-model retrain 2026-08-16
+models/model_v9_over35.pkl,cd0bf48d87,2026-08-23T04:56:58Z,e993ef7bd6,auto: weekly main-model retrain 2026-08-23
+models/model_v9_over35.pkl,206bd67c6d,2026-08-30T09:58:22Z,2869d810a8,auto: weekly main-model retrain 2026-08-30
+models/model_v9_over35.pkl,07ef755199,2026-09-22T11:14:51Z,3166b818a3,auto: main-model retrain 2026-09-22
+models/model_v9_over35.pkl,6bf25b2330,2026-09-23T08:33:50Z,02086b1442,auto: main-model retrain 2026-09-23
+models/model_v9_over35.pkl,dbdab3e3e3,2026-09-24T08:22:54Z,5057476bef,auto: main-model retrain 2026-09-24
+models/model_v9_over35.pkl,0de1414cd5,2026-09-25T08:45:41Z,854966fa9e,auto: main-model retrain 2026-09-25
+models/model_v9_over35.pkl,854ca75e4b,2026-09-26T08:32:19Z,e0fb0b30ba,auto: main-model retrain 2026-09-26
+models/model_v9_over35.pkl,4c22ef8066,2026-09-27T09:12:01Z,01827d76f4,auto: main-model retrain 2026-09-27
+models/model_v9_over35.pkl,aeeb29fddb,2026-09-28T09:39:14Z,88fc86aa88,auto: main-model retrain 2026-09-28
+models/model_v9_over35.pkl,4c5a01ef0a,2026-09-29T09:43:51Z,b8e4a206e4,auto: main-model retrain 2026-09-29
+models/model_v9_over35.pkl,94fcc4d94f,2026-09-30T09:35:42Z,324defe08d,auto: main-model retrain 2026-09-30
+models/model_v9_over35.pkl,76e533514b,2026-10-01T10:03:34Z,3fc9b284bc,auto: main-model retrain 2026-10-01
+models/model_v9_over35.pkl,f74fb7f795,2026-10-02T09:38:39Z,057b6f41a8,auto: main-model retrain 2026-10-02
+models/model_v9_over35.pkl,5f9fdc4b92,2026-10-03T09:05:08Z,63dc0341bd,auto: main-model retrain 2026-10-03
+models/model_v9_over35.pkl,3354e97f26,2026-10-04T09:38:28Z,ef8499ee0b,auto: main-model retrain 2026-10-04
+models/model_v9_over35.pkl,ad3d3729e9,2026-10-05T10:19:05Z,3174ff3530,auto: main-model retrain 2026-10-05
+models/model_ht_over05.pkl,eac0db9b7f,2026-06-07T13:26:32+03:00,47d0a6666a,add GitHub Actions workflows: predict/results/sharp/worldcup/live/weekly run in cloud inde
+models/model_ht_over05.pkl,37e4e79e04,2026-06-07T10:58:13Z,8487615f7b,auto: predict 2026-06-07 10:58 UTC
+models/model_ht_over05.pkl,f7dfc8cf47,2026-06-08T14:20:54Z,3c9200b535,auto: retrain models 2026-06-08
+models/model_ht_over05.pkl,291bc69d2b,2026-06-09T07:19:47Z,47432eec90,auto: retrain models 2026-06-09
+models/model_ht_over05.pkl,63b6cc6085,2026-06-10T11:41:30Z,f5521496fd,auto: backtest results 2026-06-10
+models/model_ht_over05.pkl,b12d50cbb4,2026-06-15T12:19:05Z,ae40f0dc51,auto: retrain models 2026-06-15
+models/model_ht_over05.pkl,1780a5238a,2026-06-15T14:59:13Z,740b832697,auto: backtest results 2026-06-15
+models/model_ht_over05.pkl,7e7b18e0cd,2026-06-17T14:25:18+03:00,58cbc7db48,upgrade: sklearn 1.9.0 + fix home_xg KeyError
+models/model_ht_over05.pkl,8771bd3a6b,2026-06-21T08:29:23Z,33e7d8e0a7,auto: retrain models 2026-06-21
+models/model_ht_over05.pkl,075eeb3136,2026-06-22T18:52:14+03:00,dd49492c40,"feat: v9.2 — side markets, new player models, workflow optimisation"
+models/model_ht_over05.pkl,6b738ce513,2026-06-23T11:16:22Z,17ebf9e441,auto: retrain models 2026-06-23
+models/model_ht_over05.pkl,ce4b92ce2a,2026-06-24T15:15:49+03:00,7cbe7a7e01,fix: player props bugs + remove goals3/sot4 + 7-market retrain
+models/model_ht_over05.pkl,3b164f28bd,2026-08-02T08:45:08Z,5edb5ebe1f,auto: weekly main-model retrain 2026-08-02
+models/model_ht_over05.pkl,8acc4a560e,2026-08-09T05:17:36Z,51e920728a,auto: weekly main-model retrain 2026-08-09
+models/model_ht_over05.pkl,5ed4018cc6,2026-08-09T13:29:38Z,810ce0fc13,auto: weekly main-model retrain 2026-08-09
+models/model_ht_over05.pkl,4570fc95b6,2026-08-16T04:57:21Z,f31233c304,auto: weekly main-model retrain 2026-08-16
+models/model_ht_over05.pkl,cd0bf48d87,2026-08-23T04:56:58Z,c691d8b822,auto: weekly main-model retrain 2026-08-23
+models/model_ht_over05.pkl,206bd67c6d,2026-08-30T09:58:22Z,6d2490f0da,auto: weekly main-model retrain 2026-08-30
+models/model_ht_over05.pkl,dbdab3e3e3,2026-09-24T08:22:54Z,a0677f78ab,auto: main-model retrain 2026-09-24
+models/model_ht_over05.pkl,0de1414cd5,2026-09-25T08:45:41Z,49b2497609,auto: main-model retrain 2026-09-25
+models/model_ht_over05.pkl,854ca75e4b,2026-09-26T08:32:19Z,d679ca541a,auto: main-model retrain 2026-09-26
+models/model_ht_over05.pkl,4c22ef8066,2026-09-27T09:12:01Z,25d0b7052b,auto: main-model retrain 2026-09-27
+models/model_ht_over05.pkl,aeeb29fddb,2026-09-28T09:39:14Z,bb60d6b9d3,auto: main-model retrain 2026-09-28
+models/model_ht_over05.pkl,4c5a01ef0a,2026-09-29T09:43:51Z,ac6517d856,auto: main-model retrain 2026-09-29
+models/model_ht_over05.pkl,94fcc4d94f,2026-09-30T09:35:42Z,16b4c85d89,auto: main-model retrain 2026-09-30
+models/model_ht_over05.pkl,76e533514b,2026-10-01T10:03:34Z,83be703f56,auto: main-model retrain 2026-10-01
+models/model_ht_over05.pkl,f74fb7f795,2026-10-02T09:38:39Z,3b1b11adb3,auto: main-model retrain 2026-10-02
+models/model_ht_over05.pkl,5f9fdc4b92,2026-10-03T09:05:08Z,64490143c8,auto: main-model retrain 2026-10-03
+models/model_ht_over05.pkl,3354e97f26,2026-10-04T09:38:28Z,fcb11a23b1,auto: main-model retrain 2026-10-04
+models/model_ht_over05.pkl,ad3d3729e9,2026-10-05T10:19:05Z,efcea44cd7,auto: main-model retrain 2026-10-05
+models/model_ht_over05.pkl,cea6031edd,2026-10-11T10:01:50Z,86d30771ed,auto: main-model retrain 2026-10-11
+models/model_ht_over05.pkl,57c3518887,2026-10-18T08:04:23Z,5167f44547,auto: main-model retrain 2026-10-18
+models/model_ht_over15.pkl,eac0db9b7f,2026-06-07T13:26:32+03:00,ae14e96af8,add GitHub Actions workflows: predict/results/sharp/worldcup/live/weekly run in cloud inde
+models/model_ht_over15.pkl,37e4e79e04,2026-06-07T10:58:13Z,992523a0a6,auto: predict 2026-06-07 10:58 UTC
+models/model_ht_over15.pkl,f7dfc8cf47,2026-06-08T14:20:54Z,f6de806e91,auto: retrain models 2026-06-08
+models/model_ht_over15.pkl,291bc69d2b,2026-06-09T07:19:47Z,54ff5ba919,auto: retrain models 2026-06-09
+models/model_ht_over15.pkl,63b6cc6085,2026-06-10T11:41:30Z,958c9d24c9,auto: backtest results 2026-06-10
+models/model_ht_over15.pkl,b12d50cbb4,2026-06-15T12:19:05Z,33baa93dfa,auto: retrain models 2026-06-15
+models/model_ht_over15.pkl,1780a5238a,2026-06-15T14:59:13Z,8dddbb054b,auto: backtest results 2026-06-15
+models/model_ht_over15.pkl,7e7b18e0cd,2026-06-17T14:25:18+03:00,7bd99769cb,upgrade: sklearn 1.9.0 + fix home_xg KeyError
+models/model_ht_over15.pkl,8771bd3a6b,2026-06-21T08:29:23Z,69fd7aa104,auto: retrain models 2026-06-21
+models/model_ht_over15.pkl,075eeb3136,2026-06-22T18:52:14+03:00,e53f345881,"feat: v9.2 — side markets, new player models, workflow optimisation"
+models/model_ht_over15.pkl,6b738ce513,2026-06-23T11:16:22Z,1654ce99a0,auto: retrain models 2026-06-23
+models/model_ht_over15.pkl,ce4b92ce2a,2026-06-24T15:15:49+03:00,44b09e8369,fix: player props bugs + remove goals3/sot4 + 7-market retrain
+models/model_ht_over15.pkl,3b164f28bd,2026-08-02T08:45:08Z,e32c8af792,auto: weekly main-model retrain 2026-08-02
+models/model_ht_over15.pkl,8acc4a560e,2026-08-09T05:17:36Z,117afd24b1,auto: weekly main-model retrain 2026-08-09
+models/model_ht_over15.pkl,5ed4018cc6,2026-08-09T13:29:38Z,8cdc287b23,auto: weekly main-model retrain 2026-08-09
+models/model_ht_over15.pkl,4570fc95b6,2026-08-16T04:57:21Z,9b0a8d0247,auto: weekly main-model retrain 2026-08-16
+models/model_ht_over15.pkl,cd0bf48d87,2026-08-23T04:56:58Z,ee7d4ae999,auto: weekly main-model retrain 2026-08-23
+models/model_ht_over15.pkl,206bd67c6d,2026-08-30T09:58:22Z,47fa91cc84,auto: weekly main-model retrain 2026-08-30
+models/model_ht_over15.pkl,07ef755199,2026-09-22T11:14:51Z,04a105e50b,auto: main-model retrain 2026-09-22
+models/model_ht_over15.pkl,6bf25b2330,2026-09-23T08:33:50Z,3357e75169,auto: main-model retrain 2026-09-23
+models/model_ht_over15.pkl,dbdab3e3e3,2026-09-24T08:22:54Z,44fdc9a32e,auto: main-model retrain 2026-09-24
+models/model_ht_over15.pkl,0de1414cd5,2026-09-25T08:45:41Z,83b6b7f452,auto: main-model retrain 2026-09-25
+models/model_ht_over15.pkl,854ca75e4b,2026-09-26T08:32:19Z,8dfbcd9766,auto: main-model retrain 2026-09-26
+models/model_ht_over15.pkl,4c22ef8066,2026-09-27T09:12:01Z,d30c938966,auto: main-model retrain 2026-09-27
+models/model_ht_over15.pkl,aeeb29fddb,2026-09-28T09:39:14Z,22469ea441,auto: main-model retrain 2026-09-28
+models/model_ht_over15.pkl,4c5a01ef0a,2026-09-29T09:43:51Z,26106a91f2,auto: main-model retrain 2026-09-29
+models/model_ht_over15.pkl,94fcc4d94f,2026-09-30T09:35:42Z,5c422c0c6a,auto: main-model retrain 2026-09-30
+models/model_ht_over15.pkl,76e533514b,2026-10-01T10:03:34Z,fbd9d31c34,auto: main-model retrain 2026-10-01
+models/model_ht_over15.pkl,f74fb7f795,2026-10-02T09:38:39Z,48cf862e84,auto: main-model retrain 2026-10-02
+models/model_ht_over15.pkl,5f9fdc4b92,2026-10-03T09:05:08Z,a81ba4f62b,auto: main-model retrain 2026-10-03
+models/model_ht_over15.pkl,3354e97f26,2026-10-04T09:38:28Z,7470012afc,auto: main-model retrain 2026-10-04
+models/best_params_standard.json,3fd830da20,2026-07-26T14:24:30+03:00,276596eb05,feat(standard): per-league threshold optimizer + all-signals live test
+models/best_params_standard.json,d3ed309835,2026-08-02T12:12:36Z,6660c8bd00,auto: parallel backtest 2026-08-02 12:12 UTC
+models/best_params_standard.json,d57a3e1bfe,2026-09-01T09:43:42Z,35fec2165e,auto: parallel backtest 2026-09-01 09:43 UTC
+models/best_params_standard.json,d311bb2f8f,2026-10-06T11:26:08Z,6b147c3de8,auto: parallel backtest 2026-10-06 11:26 UTC
+models/best_params_side_markets.json,075eeb3136,2026-06-22T18:52:14+03:00,6ca1bb35d9,"feat: v9.2 — side markets, new player models, workflow optimisation"
+models/best_params_side_markets.json,593b446e24,2026-07-02T11:09:40+03:00,479fcae74a,fantasy family + BTTS real-odds config
+models/best_params_side_markets.json,d3ed309835,2026-08-02T12:12:36Z,6f7cca882d,auto: parallel backtest 2026-08-02 12:12 UTC
+models/best_params_side_markets.json,d57a3e1bfe,2026-09-01T09:43:42Z,7c4c1d9b99,auto: parallel backtest 2026-09-01 09:43 UTC
+models/best_params_side_markets.json,f412aee241,2026-10-01T11:34:50Z,b337fc7e28,auto: parallel backtest 2026-10-01 11:34 UTC
+models/best_params_side_markets.json,d311bb2f8f,2026-10-06T11:26:08Z,e6591aeb50,auto: parallel backtest 2026-10-06 11:26 UTC
+config/bankroll_policy.json,d77c48b1b6,2026-10-13T16:00:24+03:00,d4d570d5f6,bankroll: WOWZA BALANCED policy file + deterministic policy reader (not wired)
+config/bankroll_policy.json,ee911b3932,2026-10-18T12:03:59+03:00,b48b47c239,stake plan: size by league rating 1-10 (owner 2026-10-18)
+config/bankroll_policy.json,a6c329d4ca,2026-10-22T10:13:47+03:00,ef89ff8568,"staking: equal OU25 tier stakes, VALUABLE staked - owner decision 2026-10-22"
+config/bankroll_policy.json,763aea3206,2026-10-22T13:50:33+03:00,dae3dc78f8,"governance: artifact freshness manifest, STALE banners, daily evidence refresh (P1-3)"
+config/bankroll_policy.json,ab23726d57,2026-10-26T13:48:13+02:00,aca769f22e,Bankroll policy: split O/U 2.5 tracks by side (identical stakes)
+output/league_roi_config.json,1e780fe96e,2026-07-12T11:04:14Z,ef79f36b56,auto: backtest results 2026-07-12
+output/league_roi_config.json,d3ed309835,2026-08-02T12:12:36Z,fe086b6db2,auto: parallel backtest 2026-08-02 12:12 UTC
+output/league_roi_config.json,d57a3e1bfe,2026-09-01T09:43:42Z,14e8e4c076,auto: parallel backtest 2026-09-01 09:43 UTC
+output/league_roi_config.json,d311bb2f8f,2026-10-06T11:26:08Z,5b735559bc,auto: parallel backtest 2026-10-06 11:26 UTC
+config/leagues.json,246b2cc4eb,2026-11-01T12:25:24+02:00,746b94959f,"feat(r2-a): canonical league registry + league-aware season resolver (findings 6, 7)"
+config/threshold_applied.json,8b46b37f88,2026-10-26T10:12:29+02:00,a68d8cbd35,"thresholds: monthly backtest PROPOSES, owner approves, apply is the only writer"
+config/threshold_approvals.json,8b46b37f88,2026-10-26T10:12:29+02:00,3ed4e1a2d2,"thresholds: monthly backtest PROPOSES, owner approves, apply is the only writer"

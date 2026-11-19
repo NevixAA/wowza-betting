@@ -1,0 +1,83 @@
+{
+ "audited_commit": "fb0e9697ec8556d4dd3df57f31f8ed5415a5012d",
+ "window": [
+  "2026-10-10",
+  "2026-10-30"
+ ],
+ "sampled": 400,
+ "compared": 393,
+ "skipped": {
+  "no_prior_history": 7
+ },
+ "feature_verdicts": {
+  "DISAGREE": 122,
+  "MOSTLY_AGREE": 13,
+  "AGREE": 3
+ },
+ "markets": {
+  "goals": {
+   "n": 393,
+   "pass_rate_0.5pp": 0.4224,
+   "median_abs_diff_pp": 0.726,
+   "p90_abs_diff_pp": 6.821,
+   "mean_p_train": 0.0912,
+   "mean_p_serve": 0.0842
+  },
+  "goals2": {
+   "n": 393,
+   "pass_rate_0.5pp": 0.9695,
+   "median_abs_diff_pp": 0.008,
+   "p90_abs_diff_pp": 0.122,
+   "mean_p_train": 0.0072,
+   "mean_p_serve": 0.0067
+  },
+  "assists": {
+   "n": 393,
+   "pass_rate_0.5pp": 0.5216,
+   "median_abs_diff_pp": 0.445,
+   "p90_abs_diff_pp": 2.891,
+   "mean_p_train": 0.0598,
+   "mean_p_serve": 0.0531
+  },
+  "sot": {
+   "n": 393,
+   "pass_rate_0.5pp": 0.1807,
+   "median_abs_diff_pp": 2.412,
+   "p90_abs_diff_pp": 14.561,
+   "mean_p_train": 0.2408,
+   "mean_p_serve": 0.219
+  },
+  "sot2": {
+   "n": 393,
+   "pass_rate_0.5pp": 0.6031,
+   "median_abs_diff_pp": 0.28,
+   "p90_abs_diff_pp": 4.676,
+   "mean_p_train": 0.0631,
+   "mean_p_serve": 0.0454
+  },
+  "sot3": {
+   "n": 393,
+   "pass_rate_0.5pp": 0.9084,
+   "median_abs_diff_pp": 0.02,
+   "p90_abs_diff_pp": 0.42,
+   "mean_p_train": 0.0135,
+   "mean_p_serve": 0.0101
+  },
+  "sot4": {
+   "n": 393,
+   "pass_rate_0.5pp": 1.0,
+   "median_abs_diff_pp": 0.0,
+   "p90_abs_diff_pp": 0.0,
+   "mean_p_train": 0.0025,
+   "mean_p_serve": 0.0025
+  },
+  "cards": {
+   "n": 393,
+   "pass_rate_0.5pp": 0.2239,
+   "median_abs_diff_pp": 1.318,
+   "p90_abs_diff_pp": 5.142,
+   "mean_p_train": 0.1336,
+   "mean_p_serve": 0.1187
+  }
+ }
+}

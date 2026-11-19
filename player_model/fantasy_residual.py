@@ -52,36 +52,51 @@ RESIDUAL_ARMS = ["LINEAR", "RIDGE", "HGB"]
 
 
 def prepare(d: pd.DataFrame) -> pd.DataFrame:
-    """Derived/imputed model columns. Pure and row-wise, so train and test see the same thing."""
+    """Derived model columns. Pure and row-wise, so train and test see the same thing.
+
+    NAN-NATIVE (Data Truth, 2026-11-02). A missing input stays NaN. The only fallbacks left are to
+    another REAL column for the same player (last match minutes -> his minutes per team game, last
+    start -> his start rate, last points -> his points per team game). Typed fills are gone: minutes
+    / start / ownership / points 0, wowza_gap 0, home 0.5, fdr 3.0, lambdas 0.0, cs_exp 0.0,
+    attack_fixture 1.0. The models below handle NaN themselves (HistGradientBoosting) or fit and
+    predict on complete rows only (the closed-form linear arms), so no value is manufactured."""
     x = d.copy()
-    x["min_last_imp"] = x["min_last"].fillna(x["min_per_team_game"]).fillna(0) / 90.0
-    x["started_last_imp"] = x["started_last"].fillna(x["start_rate"]).fillna(0).clip(0, 2)
-    x["wowza_p_start_imp"] = x["wowza_p_start"].fillna(x["start_rate"]).fillna(0)
-    x["att_pts90"] = x["xg90"] * x["goal_pts"] + x["xa90"] * 3.0
-    x["att_pts90_x_start"] = x["att_pts90"] * x["start_rate"].fillna(0)
-    x["cs_exp_x_start"] = x["cs_exp"].fillna(0) * x["start_rate"].fillna(0)
-    x["log_own"] = np.log1p(x["ownership"].fillna(0))
+    x["min_last_imp"] = x["min_last"].fillna(x["min_per_team_game"]) / 90.0
+    x["started_last_imp"] = x["started_last"].fillna(x["start_rate"]).clip(0, 2)
+    x["wowza_p_start_imp"] = x["wowza_p_start"].fillna(x["start_rate"])
+    x["att_pts90"] = x["xg90"] * x["goal_pts"] + x["xa90"] * 3.0      # FPL rule: assist = 3
+    x["att_pts90_x_start"] = x["att_pts90"] * x["start_rate"]
+    x["cs_exp_x_start"] = pd.to_numeric(x["cs_exp"], errors="coerce") * x["start_rate"]
+    x["log_own"] = np.log1p(pd.to_numeric(x["ownership"], errors="coerce"))
     x["net_transfers_s"] = np.sign(x["net_transfers_k"]) * np.log1p(x["net_transfers_k"].abs())
     x["form_n"] = pd.to_numeric(x.get("form"), errors="coerce")
-    x["pts_last_imp"] = x["pts_last"].fillna(x["pts_per_team_game"]).fillna(0)
+    x["pts_last_imp"] = x["pts_last"].fillna(x["pts_per_team_game"])
     x["has_wowza"] = x["wowza_uncond"].notna().astype(int)
-    x["wowza_gap"] = (x["wowza_uncond"] - x["ep_next"]).fillna(0.0)
+    x["wowza_gap"] = x["wowza_uncond"] - x["ep_next"]                 # NaN without a projection
     for c in ("home", "fdr", "lam_for", "lam_against", "cs_exp", "attack_fixture"):
         x[c] = pd.to_numeric(x[c], errors="coerce")
-    x["home"] = x["home"].fillna(0.5)
-    x["fdr"] = x["fdr"].fillna(3.0)
-    x["lam_for"] = x["lam_for"].fillna(0.0)
-    x["lam_against"] = x["lam_against"].fillna(0.0)
-    x["cs_exp"] = x["cs_exp"].fillna(0.0)
-    x["attack_fixture"] = x["attack_fixture"].fillna(1.0)
     for c in FEATURES + LINEAR_FEATURES:
         x[c] = pd.to_numeric(x[c], errors="coerce")
     return x
 
 
 def _matrix(x: pd.DataFrame, cols) -> np.ndarray:
+    """Float matrix of `cols`; every missing or non-finite cell is NaN (never 0)."""
     m = x[cols].to_numpy(float)
-    return np.where(np.isfinite(m), m, 0.0)
+    return np.where(np.isfinite(m), m, np.nan)
+
+
+def _observed_columns(X: np.ndarray) -> np.ndarray:
+    """Indices of the columns with at least one value in the training rows. A feature missing on
+    EVERY training row carries no information (and sklearn's binning cannot take an all-NaN
+    column), so the NaN-native models leave it out rather than fill it."""
+    return np.where(np.isfinite(X).any(0))[0] if X.size else np.arange(X.shape[1])
+
+
+def _complete(X: np.ndarray) -> np.ndarray:
+    """Rows with every feature present. The closed-form linear arms cannot take a NaN, so they
+    fit on these rows only and predict NaN for the rest (no value is imputed)."""
+    return np.isfinite(X).all(1)
 
 
 # ── residual models ───────────────────────────────────────────────────────────────────────────
@@ -101,18 +116,28 @@ class LinearResidual:
 
     def fit(self, x, r, groups=None):
         X = _matrix(x, self.cols)
+        r = np.asarray(r, float)
+        ok = _complete(X) & np.isfinite(r)
+        self.n_fit_, self.n_skipped_ = int(ok.sum()), int((~ok).sum())
+        X, r = X[ok], r[ok]
+        if not len(X):
+            # Nothing complete to fit on: no coefficients, every prediction NaN.
+            self.mean_ = np.full(len(self.cols), np.nan)
+            self.coef_ = np.full(len(self.cols) + 1, np.nan)
+            return self
         self.mean_ = X.mean(0)
-        X1 = np.column_stack([np.ones(len(x)), X])
+        X1 = np.column_stack([np.ones(len(X)), X])
         self.coef_ = np.linalg.lstsq(X1, r, rcond=None)[0]
         return self
 
     def predict(self, x):
+        # A row with a missing feature gets NaN (NaN propagates through the product).
         return np.column_stack([np.ones(len(x)), _matrix(x, self.cols)]) @ self.coef_
 
     def contributions(self, x) -> pd.DataFrame:
         """Exact additive split: residual = base + sum of group terms, each term measured from
         the training-average player, so 'minutes +0.8' means 'his minutes evidence is worth 0.8
-        more than an average player's'."""
+        more than an average player's'. A group with a missing feature is NaN for that row."""
         X = _matrix(x, self.cols)
         terms = (X - self.mean_) * self.coef_[1:]
         out = pd.DataFrame(index=x.index)
@@ -144,6 +169,19 @@ class RidgeResidual:
 
     def fit(self, x, r, groups=None):
         X = _matrix(x, self.cols)
+        r = np.asarray(r, float)
+        ok = _complete(X) & np.isfinite(r)
+        self.n_fit_, self.n_skipped_ = int(ok.sum()), int((~ok).sum())
+        X, r = X[ok], r[ok]
+        if groups is not None:
+            groups = np.asarray(groups)[ok]
+        if not len(X):
+            # Nothing complete to fit on: every prediction NaN.
+            k = len(self.cols)
+            self.alpha_ = self.alpha
+            self.mu_, self.sd_, self.b0_, self.w_ = (np.full(k, np.nan), np.ones(k), np.nan,
+                                                     np.full(k, np.nan))
+            return self
         alpha = self.alpha
         if alpha is None:
             g = np.asarray(groups) if groups is not None else None
@@ -191,14 +229,18 @@ class HGBResidual:
 
     def fit(self, x, r, groups=None):
         from sklearn.ensemble import HistGradientBoostingRegressor
+        X = _matrix(x, self.cols)
+        r = np.asarray(r, float)
+        ok = np.isfinite(r)                      # a missing TARGET is not a training row
+        self.keep_ = _observed_columns(X[ok])
         self.m_ = HistGradientBoostingRegressor(
             max_depth=3, learning_rate=0.04, max_iter=150, min_samples_leaf=40,
             l2_regularization=5.0, random_state=7)
-        self.m_.fit(x[self.cols].to_numpy(float), r)
+        self.m_.fit(X[ok][:, self.keep_], r[ok])
         return self
 
     def predict(self, x):
-        return self.m_.predict(x[self.cols].to_numpy(float))
+        return self.m_.predict(_matrix(x, self.cols)[:, self.keep_])
 
 
 def make(arm: str):
@@ -366,7 +408,10 @@ def acceptance(score: dict, arm: str) -> dict:
     n_final = len(fin)
     v = score["vs_fpl_final_only"].get(arm, {})
     mae_ok = v.get("mae_minus_fpl") is not None and v["mae_minus_fpl"] <= 0
-    won = sum(1 for r in fin if r.get(arm, {}).get("mae", 9e9) <= r["FPL"].get("mae", -1))
+    # a gameweek is won only when BOTH MAEs exist (they were typed 9e9 / -1, fix9/defaults 2026-11-04)
+    won = sum(1 for r in fin
+              if r.get(arm, {}).get("mae") is not None and r["FPL"].get("mae") is not None
+              and r[arm]["mae"] <= r["FPL"]["mae"])
     # The promised CI (R2-D bug 'ranking_gate_without_ci'): this used to require only that the arm's
     # Spearman beat FPL's in every final gameweek - a point comparison, no interval. Now the
     # player-clustered 90% CI of the mean per-GW Spearman gain must exclude zero.
@@ -392,7 +437,7 @@ def acceptance(score: dict, arm: str) -> dict:
 P60_BINS = (0.0, 0.1, 0.3, 0.5, 0.7, 0.9, 1.0 + 1e-9)
 #: which minutes forecast each arm carries. The three residual arms share the V2 minutes mixture
 #: (the residual only moves the MEAN), so their minutes columns are identical by construction.
-MINUTES_SOURCE = {"FPL": "FPL chance x usage heuristic", "WOWZA": "old Wowza p_start (60+ only)",
+MINUTES_SOURCE = {"FPL": "FPL chance x own minutes history", "WOWZA": "old Wowza p_start (60+ only)",
                   "LINEAR": "V2 minutes mixture", "RIDGE": "V2 minutes mixture",
                   "HGB": "V2 minutes mixture"}
 
@@ -583,13 +628,18 @@ class MinutesModel:
     minutes/points per bucket estimated from the training gameweeks."""
 
     def fit(self, x: pd.DataFrame):
-        from sklearn.linear_model import LogisticRegression
+        # NaN-NATIVE (Data Truth, 2026-11-02): a gradient-boosted classifier routes a missing
+        # feature down its own learned branch, so an unknown chance/start rate/minutes is never
+        # turned into a typed 0 first. Was a standardised LogisticRegression on NaN->0 inputs.
+        # Shallow and heavily regularised, like HGBResidual: the training panel is small.
+        from sklearn.ensemble import HistGradientBoostingClassifier
         X = _matrix(x, MIN_FEATURES)
-        self.mu_, self.sd_ = X.mean(0), X.std(0)
-        self.sd_[self.sd_ < 1e-9] = 1.0
-        self.m_ = LogisticRegression(C=0.5, max_iter=2000)
+        self.keep_ = _observed_columns(X)
+        self.m_ = HistGradientBoostingClassifier(
+            max_depth=3, learning_rate=0.05, max_iter=150, min_samples_leaf=20,
+            l2_regularization=5.0, random_state=7)
         y = x["bucket"].to_numpy()
-        self.m_.fit((X - self.mu_) / self.sd_, y)
+        self.m_.fit(X[:, self.keep_], y)
         self.classes_ = list(self.m_.classes_)
         self.cond_minutes_ = x.groupby("bucket")["actual_minutes"].mean().to_dict()
         sub = x[x["bucket"] == "m1_59"]
@@ -641,14 +691,13 @@ class MinutesModel:
         return self
 
     def predict_proba(self, x: pd.DataFrame) -> pd.DataFrame:
-        X = (_matrix(x, MIN_FEATURES) - self.mu_) / self.sd_
-        P = self.m_.predict_proba(X)
+        P = self.m_.predict_proba(_matrix(x, MIN_FEATURES)[:, self.keep_])
         out = pd.DataFrame(P, columns=self.classes_, index=x.index)
         for b in ("m0", "m1_59", "m60"):
             if b not in out:
                 out[b] = 0.0
         # A blank gameweek is certain zero minutes, whatever the usage history says.
-        blank = x["n_fix"].fillna(1).to_numpy() == 0
+        blank = (pd.to_numeric(x["n_fix"], errors="coerce") == 0).to_numpy()   # NaN: not a known blank
         out.loc[blank, ["m1_59", "m60"]] = 0.0
         out.loc[blank, "m0"] = 1.0
         return out[["m0", "m1_59", "m60"]]
@@ -661,14 +710,31 @@ def log_loss(y, P: pd.DataFrame) -> float:
 
 
 def heuristic_minutes(x: pd.DataFrame) -> pd.DataFrame:
-    """Baseline: P(play) = FPL chance x usage rate, P(60+) = chance x start rate."""
-    ch = x["chance_next_f"].fillna(0).clip(0, 1)
-    play = (ch * (x["min_per_team_game"].fillna(0) > 0).astype(float)
-            * np.maximum(x["start_rate"].fillna(0), 0.35)).clip(0.01, 0.98)
-    p60 = (ch * x["start_rate"].fillna(0) * 0.92).clip(0.005, 0.97)
-    p60 = np.minimum(p60, play - 0.005)
+    """Baseline: P(play) = FPL chance x the player's own play share, P(60+) = chance x start rate x
+    the share of HIS starts that reached 60 minutes.
+
+    REAL INPUTS ONLY (fix9/defaults 2026-11-04). It was
+        P(play) = chance.fillna(0) x [minutes > 0] x max(start_rate.fillna(0), 0.35)
+        P(60+)  = chance.fillna(0) x start_rate.fillna(0) x 0.92
+    - an unknown chance or start rate read as 0 %, usage floored at a typed 0.35 and a typed 0.92 for
+    "a start reaches 60'". The usage and the 60-minute share now come from the player's own FINAL
+    single-fixture gameweeks before this one (fantasy_panel.add_own_minutes_history:
+    hist_play_share, hist_p60_given_start). Where any input is missing the forecast is MISSING
+    (NaN in all three buckets), never a number; a known blank gameweek stays a real zero. The
+    consumers (gw_scoreboard, evaluate_distribution) score the rows that have a forecast and say how
+    many."""
+    def _col(c):
+        return (pd.to_numeric(x[c], errors="coerce") if c in x.columns
+                else pd.Series(np.nan, index=x.index, dtype=float))
+    ch = _col("chance_next_f").clip(0, 1)
+    mpg = _col("min_per_team_game")
+    used = (mpg > 0).astype(float).where(mpg.notna())
+    play = (ch * used * _col("hist_play_share")).clip(0.01, 0.98)
+    p60 = (ch * _col("start_rate") * _col("hist_p60_given_start")).clip(0.005, 0.97)
+    p60 = np.minimum(p60, play - 0.005)                     # NaN in either -> NaN
     out = pd.DataFrame({"m0": 1 - play, "m1_59": play - p60, "m60": p60}, index=x.index)
-    blank = x["n_fix"].fillna(1).to_numpy() == 0
+    out.loc[out.isna().any(axis=1), ["m0", "m1_59", "m60"]] = np.nan
+    blank = (pd.to_numeric(x["n_fix"], errors="coerce") == 0).to_numpy()   # NaN: not a known blank
     out.loc[blank, ["m1_59", "m60"]] = 0.001
     out.loc[blank, "m0"] = 0.998
     return out
@@ -703,9 +769,14 @@ def point_distribution(mu: float, probs: dict, position: str, mm: MinutesModel) 
             pmf[k + off] += p1 * v
             m1 += k * v
     if p60 > 1e-6:
+        size = mm.size_.get(position)
+        if size is None or not mu == mu:
+            # No dispersion fitted for this position (or no mean): the distribution is unknown,
+            # not a negative binomial of a typed size 2.0.
+            return np.full(MAX_PTS + off + 1, np.nan)
         m60 = (mu - p1 * m1) / p60
         m60 = float(np.clip(m60, 1.5, 16.0))
-        nb = _negbin_pmf(max(m60 - 2.0, 0.05), mm.size_.get(position, 2.0), MAX_PTS - 2)
+        nb = _negbin_pmf(max(m60 - 2.0, 0.05), size, MAX_PTS - 2)
         for k, v in enumerate(nb):
             pmf[k + 2 + off] += p60 * v
     s = pmf.sum()
@@ -714,6 +785,9 @@ def point_distribution(mu: float, probs: dict, position: str, mm: MinutesModel) 
 
 def dist_summary(pmf: np.ndarray) -> dict:
     off = 2
+    if not np.isfinite(pmf).all():
+        return {k: np.nan for k in ("dist_mean", "p25", "median", "p75", "p90", "sd",
+                                    "p_blank", "p6", "p10", "p15")}
     pts = np.arange(len(pmf)) - off
     cdf = np.cumsum(pmf)
 
@@ -739,22 +813,29 @@ P_START_GIVEN_1_59 = 0.227
 
 def event_probs(x: pd.DataFrame, P: pd.DataFrame, cond_minutes: dict) -> pd.DataFrame:
     """Goal / assist / clean-sheet / bonus quantities from role x expected minutes x fixture."""
-    em = P["m1_59"] * cond_minutes.get("m1_59", 25.0) + P["m60"] * cond_minutes.get("m60", 88.0)
-    fx = x["attack_fixture"].fillna(1.0).clip(0.4, 2.5)
-    nfx = x["n_fix"].fillna(1).clip(lower=0)
-    lam_g = (x["xg90"] * em / 90.0 * fx).fillna(0)
-    lam_a = (x["xa90"] * em / 90.0 * fx).fillna(0)
+    # Conditional minutes per bucket come from the training gameweeks; a bucket that never
+    # occurred there leaves expected minutes unknown (it was a typed 25 / 88).
+    cm = {b: float(cond_minutes[b]) if b in cond_minutes else np.nan for b in ("m1_59", "m60")}
+    em = P["m1_59"] * cm["m1_59"] + P["m60"] * cm["m60"]
+    nfx = pd.to_numeric(x["n_fix"], errors="coerce").clip(lower=0)
+    blank = (nfx == 0).to_numpy()
+    # Unknown fixture factor / rate -> unknown probability (no neutral 1.0, no 0). A BLANK
+    # gameweek is a real zero: no fixture, no goal, no assist, no clean sheet, no bonus.
+    fx = pd.to_numeric(x["attack_fixture"], errors="coerce").clip(0.4, 2.5)
+    lam_g = (x["xg90"] * em / 90.0 * fx).where(~blank, 0.0)
+    lam_a = (x["xa90"] * em / 90.0 * fx).where(~blank, 0.0)
     out = pd.DataFrame(index=x.index)
     out["exp_minutes"] = em.round(1)
     out["p_start"] = (P["m60"] + P_START_GIVEN_1_59 * P["m1_59"]).clip(0, 1).round(3)
     out["p_play"] = (1 - P["m0"]).round(3)
     out["goal_prob"] = (1 - np.exp(-lam_g)).round(3)
     out["assist_prob"] = (1 - np.exp(-lam_a)).round(3)
-    cs_team = x["cs_prob"].fillna(0)
+    cs_team = pd.to_numeric(x["cs_prob"], errors="coerce").where(~blank, 0.0)
     out["team_cs_prob"] = cs_team.round(3)
     out["cs_prob"] = np.where(x["position"].isin(["GKP", "DEF", "MID"]),
                               (cs_team * P["m60"]).round(3), np.nan)
-    out["exp_bonus"] = (x["bonus_per_start"].fillna(0.2) * P["m60"] * nfx.clip(upper=2)).round(3)
+    out["exp_bonus"] = (pd.to_numeric(x["bonus_per_start"], errors="coerce")
+                        * P["m60"] * nfx.clip(upper=2)).where(~blank, 0.0).round(3)
     out["team_goal_exp"] = x["lam_for"].round(2)
     return out
 
@@ -784,14 +865,28 @@ def evaluate_distribution(oos_rows: pd.DataFrame, train_for: dict, mean_col: str
            "mean_column": mean_col}
     Pm = d[["P_m0", "P_m1_59", "P_m60"]].rename(columns=lambda c: c[2:])
     Ph = d[["H_m0", "H_m1_59", "H_m60"]].rename(columns=lambda c: c[2:])
-    res["minutes_log_loss"] = {"mixture_model": round(log_loss(y, Pm), 4),
-                               "heuristic_chance_x_rate": round(log_loss(y, Ph), 4)}
+    # The heuristic is MISSING where a player has no real chance / start rate / own minutes history
+    # (fix9/defaults 2026-11-04): it is scored on the rows it covers, with the mixture beside it on
+    # the SAME rows, and the coverage is reported - never a typed number standing in for the gap.
+    okh = Ph.notna().all(axis=1).to_numpy()
+    yh = [v for v, k in zip(y, okh) if k]
     played = (d["actual_minutes"] > 0).astype(float)
     started60 = (d["bucket"] == "m60").astype(float)
-    res["brier_play"] = {"mixture_model": round(float(((1 - d["P_m0"]) - played).pow(2).mean()), 4),
-                         "heuristic": round(float(((1 - d["H_m0"]) - played).pow(2).mean()), 4)}
-    res["brier_60plus"] = {"mixture_model": round(float((d["P_m60"] - started60).pow(2).mean()), 4),
-                           "heuristic": round(float((d["H_m60"] - started60).pow(2).mean()), 4)}
+
+    def _brier(p, hit, mask=None):
+        m = np.ones(len(p), dtype=bool) if mask is None else mask
+        return round(float((p[m] - hit[m]).pow(2).mean()), 4) if m.any() else None
+    res["heuristic_rows"] = {"covered": int(okh.sum()), "missing_input": int((~okh).sum())}
+    res["minutes_log_loss"] = {
+        "mixture_model": round(log_loss(y, Pm), 4),
+        "heuristic_chance_x_rate": round(log_loss(yh, Ph[okh]), 4) if okh.any() else None,
+        "mixture_model_heuristic_rows": round(log_loss(yh, Pm[okh]), 4) if okh.any() else None}
+    res["brier_play"] = {"mixture_model": _brier(1 - d["P_m0"], played),
+                         "heuristic": _brier(1 - d["H_m0"], played, okh),
+                         "mixture_model_heuristic_rows": _brier(1 - d["P_m0"], played, okh)}
+    res["brier_60plus"] = {"mixture_model": _brier(d["P_m60"], started60),
+                           "heuristic": _brier(d["H_m60"], started60, okh),
+                           "mixture_model_heuristic_rows": _brier(d["P_m60"], started60, okh)}
     led = d[d["in_ledger"] == 1].dropna(subset=["wowza_p_start"])
     if len(led) >= 30:
         pl = (led["actual_minutes"] > 0).astype(float)

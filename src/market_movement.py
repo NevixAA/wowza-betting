@@ -90,7 +90,7 @@ class CurveIndex:
                 # for a plain file with no archive dir this is exactly read_csv.
                 d = read_all(p, usecols=lambda c: c in {
                     "snapshot_ts", "snapshot_date", "match_date", "league", "match",
-                    "market", "odds", "player"})
+                    "market", "odds", "player", "player_id"})
             except Exception as e:                                    # noqa: BLE001
                 log.warning(f"[curve] {fname} unreadable ({e})")
                 continue
@@ -106,6 +106,11 @@ class CurveIndex:
 
         c = pd.concat(frames, ignore_index=True)
         c["odds"] = pd.to_numeric(c["odds"], errors="coerce")
+        # Prop curves are keyed by the API-Football player_id odds_fetcher writes (2026-11-02);
+        # a prop row without one belongs to no player and is never looked up.
+        if "player_id" in c.columns:
+            pid = pd.to_numeric(c["player_id"], errors="coerce")
+            c["player_id"] = pid.where(pid > 0)
         c = c[c["odds"] > 1.0].dropna(subset=["market"])
         # Sort ONCE, stably, so "first row = opening" and "last row = closing" hold everywhere.
         # mergesort because the default sort is not stable and same-timestamp rows would
@@ -134,24 +139,27 @@ class CurveIndex:
         return m if not m.empty else None
 
     def curve(self, league: str, home: str, away: str, day: str, market: str,
-              player: str | None = None) -> dict | None:
+              player_id=None) -> dict | None:
         """Opening, closing and movement for one fixture+market. None when never priced.
 
-        `player` is REQUIRED for prop markets and ignored elsewhere. A prop fixture carries a
-        separate price curve per player — dozens of them under the same market key — so a
-        lookup that omits the player attaches an arbitrary team-mate's curve to every row. That
-        is not a small error: it produced a mean CLV of +18.6% out of nothing.
+        `player_id` (API-Football) is REQUIRED for prop markets and ignored elsewhere. A prop
+        fixture carries a separate price curve per player — dozens of them under the same market
+        key — so a lookup that omits the player attaches an arbitrary team-mate's curve to every
+        row. That is not a small error: it produced a mean CLV of +18.6% out of nothing.
+        Data Truth (2026-11-02): matched on the id only; the lower-cased player NAME comparison
+        is gone. A prop row the odds writer could not tie to one player has no id and no curve.
         """
         fx = self.fixture(league, home, away, day)
         if fx is None:
             return None
         m = fx[fx["market"].astype(str) == str(market)]
-        if player is not None and "player" in m.columns:
-            want = str(player).strip().lower()
-            m = m[m["player"].astype(str).str.strip().str.lower() == want]
-        elif "player" in m.columns and m["player"].notna().any():
-            # A prop market reached without a player: refuse rather than pick one at random.
-            return None
+        is_prop = "player" in m.columns and m["player"].notna().any()
+        if is_prop:
+            pid = pd.to_numeric(pd.Series([player_id]), errors="coerce").iloc[0]
+            if pd.isna(pid) or pid <= 0 or "player_id" not in m.columns:
+                # A prop market reached without a player id: refuse rather than pick one.
+                return None
+            m = m[m["player_id"] == pid]
         if m.empty:
             return None
         o, c = float(m.iloc[0]["odds"]), float(m.iloc[-1]["odds"])
@@ -189,7 +197,7 @@ def clv_pct(entry: float | None, close: float | None) -> float | None:
 
 def enrich(df: pd.DataFrame, market_of, idx: CurveIndex | None = None,
            league_col="league", home_col="home_team", away_col="away_team",
-           date_col="match_date", entry_col=None, player_col=None,
+           date_col="match_date", entry_col=None, player_id_col=None,
            prefix="mv_") -> pd.DataFrame:
     """Attach opening / closing / drift / signal / CLV to any ledger.
 
@@ -214,14 +222,14 @@ def enrich(df: pd.DataFrame, market_of, idx: CurveIndex | None = None,
         out[f"{prefix}{c}"] = pd.Series([None] * len(out), index=out.index, dtype=object)
     out[f"{prefix}signal"] = "NO_CURVE"
 
-    hits = 0
+    hits = no_entry = 0
     for i, row in out.iterrows():
         mkt = market_of(row)
         if not mkt:
             continue
         c = idx.curve(row.get(league_col), row.get(home_col), row.get(away_col),
                       row.get(date_col), mkt,
-                      player=row.get(player_col) if player_col else None)
+                      player_id=row.get(player_id_col) if player_id_col else None)
         if c is None:
             continue
         hits += 1
@@ -233,9 +241,13 @@ def enrich(df: pd.DataFrame, market_of, idx: CurveIndex | None = None,
         out.at[i, f"{prefix}source"] = c["source"]
         entry = pd.to_numeric(row.get(entry_col), errors="coerce") if entry_col else np.nan
         if pd.isna(entry):
-            entry = c["open"]          # no recorded entry -> the opening price is our best proxy
-        v = clv_pct(float(entry) if pd.notna(entry) else None, c["close"])
+            # No recorded entry price: CLV is unknown (NaN). The opening price is NOT our entry,
+            # so it no longer stands in for one (Data Truth, 2026-11-02).
+            no_entry += 1
+            continue
+        v = clv_pct(float(entry), c["close"])
         if v is not None:
             out.at[i, f"{prefix}clv_pct"] = v
-    log.info(f"[curve] enriched {hits:,} of {len(out):,} rows with a real price curve")
+    log.info(f"[curve] enriched {hits:,} of {len(out):,} rows with a real price curve"
+             + (f"; {no_entry:,} without a recorded entry price have no CLV" if no_entry else ""))
     return out

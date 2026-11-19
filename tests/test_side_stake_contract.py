@@ -19,6 +19,15 @@ import pipeline
 from src import stake_plan as sp
 from src.bankroll_policy import load_policy, size_day
 
+@pytest.fixture(autouse=True)
+def _own_bars(monkeypatch):
+    """Owner 2026-11-09: no global bars. These tests predate the cutover and assert the tiers the
+    removed global path served, so every league gets exactly those values as its OWN owner-applied
+    bars (tests/own_bars.install_historical)."""
+    from tests.own_bars import install_historical
+    install_historical(monkeypatch)
+
+
 NF = "Argentina Primera Division"
 NF2 = "Brazil Serie A"
 STD = "Championship"
@@ -35,6 +44,23 @@ def _isolate(tmp_path, monkeypatch):
         lg: 10 for lg in (NF, NF2, STD, PAPER)})
     monkeypatch.setattr(sp, "PLAN", tmp_path / "stake_plan.csv")
     monkeypatch.setattr(sp, "AUDIT", tmp_path / "stake_audit.csv")
+    # The contract under test is model_type / odds / side reaching the policy; the leagues here are
+    # given per-league threshold evidence so the stake is decided by the track. The no-evidence rule
+    # (owner 2026-11-01) is test_global_threshold_tip_is_not_staked below.
+    import src.betting as betting
+    monkeypatch.setattr(betting, "league_threshold_evidence", lambda league, market="ou25": True)
+
+
+def test_global_threshold_tip_is_not_staked(monkeypatch):
+    """With no approved per-league side threshold the BTTS tip was tiered on the global bar: it is
+    still planned and audited, with NO stake."""
+    import src.betting as betting
+    monkeypatch.setattr(betting, "league_threshold_evidence", lambda league, market="ou25": False)
+    side = pipeline._generate_side_bets(pd.DataFrame([_pred("G", NF, btts=(0.62, 2.10))]),
+                                        config.SIDE_MARKETS)
+    plan = sp.write(None, side)
+    assert len(plan) == 1 and plan["final_fraction"].iloc[0] == 0
+    assert plan["reason"].iloc[0] == "NO_LEAGUE_THRESHOLD_EVIDENCE"
 
 
 def _pred(home, league, model_type=None, **mk):
@@ -65,7 +91,15 @@ def _row(plan, home, market):
 def test_producer_emits_the_contract():
     side = pipeline._generate_side_bets(pd.DataFrame([_pred("A", NF, btts=(0.62, 2.10))]),
                                         config.SIDE_MARKETS)
-    assert list(side.columns) == list(sp.SIDE_SELECTION_COLUMNS) + ["market_odds"]
+    # threshold_source (fix9/defaults 2026-11-04): which bar tiered the tip, for ledger / Telegram / dashboard;
+    # bar_mode (2026-11-09): MODEL / LEAGUE_WIDE of a bars_opt cell ("" for a legacy own-bars entry)
+    # cell_status / qualifying_bar (owner 2026-11-11): the tip's cell status and its one approved bar
+    assert list(side.columns) == list(sp.SIDE_SELECTION_COLUMNS) + ["market_odds", "threshold_source", "bar_mode",
+                                                                     "cell_p_used", "cell_status", "qualifying_bar",
+                                                                     "edge_calibrated"]
+    assert set(side["signal_tier"]) == {"QUALIFIED"}
+    # owner 2026-11-09: a tip exists only on the league's OWN owner-applied bars, so the source is LEAGUE
+    assert (side["threshold_source"] == "LEAGUE").all()
     sp.check_side_selections(side)                                  # does not raise
 
 
@@ -116,9 +150,11 @@ def test_no_unknown_track_unless_source_is_unknown():                # (7)
     _, _, plan = _run([_pred("I", NF, btts=(0.62, 2.10), over15=(0.75, 1.60)),
                        _pred("J", STD, btts=(0.62, 2.10), over15=(0.80, 1.53))])
     assert not plan["track"].str.startswith("unknown|").any()
-    # a genuinely untagged league (neither list) is still reported as unknown, not forced
-    _, _, plan = _run([_pred("K", "Nowhere League", btts=(0.62, 2.10))])
-    assert _row(plan, "K", "BTTS")["track"] == "unknown|BTTS"
+    # A genuinely untagged league (neither list) has NO model (config.model_type_for_league -> None,
+    # Data Truth round 2, no 'unknown' placeholder). The selection contract refuses it loudly
+    # instead of staking an invented track; it is never forced onto standard / new_format.
+    with pytest.raises(sp.SelectionSchemaError):
+        _run([_pred("K", "Nowhere League", btts=(0.62, 2.10))])
 
 
 def test_predictions_tag_wins_and_blank_tag_falls_back():
@@ -130,11 +166,30 @@ def test_predictions_tag_wins_and_blank_tag_falls_back():
     assert got == {"L": "standard", "M": "new_format"}
 
 
-def test_one_position_per_fixture_still_holds():                     # (8)
+def test_same_direction_positions_share_the_fixture_cap():           # (8)
+    """Owner 2026-11-04: several bets on one match are fine unless opposite. BTTS YES + Over 1.5 are
+    both OVER, so both are staked, and together they stay within fixture_cap."""
     _, _, plan = _run([_pred("N", NF, btts=(0.62, 2.10), over15=(0.75, 1.60))])
     live = plan[plan["final_fraction"] > 0]
-    assert len(live) == 1 and live.iloc[0]["market"] == "BTTS"           # higher evidence_score
-    assert _row(plan, "N", "OVER15")["reason"] == "ONE_POSITION_PER_FIXTURE"
+    assert sorted(live["market"]) == ["BTTS", "OVER15"]
+    assert "ONE_POSITION_PER_FIXTURE" not in set(plan["reason"])
+    cap = load_policy()["portfolio"]["fixture_cap"]
+    assert float(live["final_fraction"].sum()) <= cap + 1e-9
+
+
+def test_fixture_cap_bounds_the_fixture_total():
+    import pandas as pd
+    from src.bankroll_policy import size_day
+    t = {"state": "ACTIVE", "base_fraction": 0.015, "max_odds": 2.75, "evidence_score": 1.0}
+    pol = {"policy_version": "t", "tier_multipliers": {"SNIPER": 1.0},
+           "portfolio": {"one_position_per_fixture": False, "fixture_cap": 0.02, "single_bet_cap": 0.02},
+           "tracks": {f"new_format|{m}": dict(t) for m in ("BTTS", "OVER15", "OU25_OVER")}}
+    sel = pd.DataFrame([{"date": "2026-11-05", "fixture": "F1", "league": "Argentina Primera Division",
+                         "model_type": "new_format", "market": m, "side": s, "signal_tier": "SNIPER", "odds": 2.0}
+                        for m, s in (("BTTS", "YES"), ("OVER15", "OVER"), ("OU25", "OVER"))])
+    out = size_day(sel, pol, 100.0, 100.0)
+    assert float(out["final_fraction"].sum()) == pytest.approx(0.02, abs=1e-5)
+    assert (out["final_fraction"] > 0).all()
 
 
 def test_paper_league_stays_paper():                                 # (9)
@@ -194,7 +249,19 @@ def test_health_check_flags_active_market_all_unsupported():
 
 @pytest.fixture(autouse=True)
 def _legacy_side_fair_price(monkeypatch):
-    """Synthetic rows here carry no book quotes, and these tests pin other behaviour. The two-sided
-    de-vig fair price (production since 2026-11-01) has its own tests: test_side_devig_production.py."""
-    import config as _cfg
-    monkeypatch.setattr(_cfg, "SIDE_EDGE_FAIR_PRICE", "legacy_1_08")
+    """Synthetic rows here carry no book quotes, and these tests pin other behaviour. TEST-ONLY fair price:
+    the synthetic rows' fair probability is supplied directly (production reads a real two-sided de-vig,
+    tested in test_side_devig_production.py; the legacy_1_08 switch these tests used was removed 2026-11-09)."""
+    from src.integrity import side_edge_devig as _SE
+    monkeypatch.setattr(_SE, "load_quotes", lambda *a, **k: __import__("pandas").DataFrame())
+    monkeypatch.setattr(_SE, "production_fair_probs",
+                        lambda df, target, quotes, asof: (1.0 / df["market_odds"]) / 1.08)
+
+
+@pytest.fixture(autouse=True)
+def _per_track_policy(monkeypatch):
+    """These tests pin the TRACK mechanics: per-track staking (tests/policy_helpers). The live per-cell
+    staking (owner 2026-11-09) is pinned in tests/test_cell_staking.py."""
+    import sys
+    from tests.policy_helpers import install_per_track
+    install_per_track(monkeypatch, sys.modules[__name__])

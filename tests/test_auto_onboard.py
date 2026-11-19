@@ -36,7 +36,8 @@ def test_generic_division_name_never_takes_the_top_flight_key():
 
 
 def test_plan_is_additive_and_idempotent():
-    q = [{"league_id": 72, "league": "Brazil Serie B", "country": "Brazil", "current_season": "2026", "week": "W45"},
+    q = [{"league_id": 72, "league": "Brazil Serie B", "country": "Brazil", "current_season": "2026", "week": "W45",
+          "odds_api_sport_key": "soccer_brazil_serie_b"},
          {"league_id": 71, "league": "Brazil Serie A", "country": "Brazil", "current_season": "2026"},
          {"league_id": 570, "league": "Ghana Premier League", "country": "Ghana", "current_season": "2026"}]
     add, skipped = AO.plan(q, {"leagues": []}, {"Brazil Serie A"}, {71}, SPORTS, "2026-11-10T09:00:00Z")
@@ -48,6 +49,26 @@ def test_plan_is_additive_and_idempotent():
     assert reasons["Brazil Serie A"] == "already configured" and "Ghana Premier League" in reasons
     add2, _ = AO.plan(q, {"leagues": add}, {"Brazil Serie A"}, {71}, SPORTS, "2026-11-17T09:00:00Z")
     assert add2 == []                                   # second run adds nothing
+
+
+def test_plan_never_onboards_on_a_word_matched_key():
+    # Owner rule 2026-11-01: a price source is APPROVED per league, never word-matched. Without an
+    # approved key the league is skipped even though match_sport_key would have found a unique one.
+    q = [{"league_id": 72, "league": "Brazil Serie B", "country": "Brazil", "current_season": "2026"}]
+    assert AO.match_sport_key("Brazil", "Brazil Serie B", SPORTS)[0] == "soccer_brazil_serie_b"
+    add, skipped = AO.plan(q, {"leagues": []}, set(), set(), SPORTS, "2026-11-10T09:00:00Z")
+    assert add == [] and "approved" in skipped[0]["reason"]
+    # an approved key OddsAPI does not list is refused too
+    q[0]["odds_api_sport_key"] = "soccer_brazil_serie_z"
+    add, skipped = AO.plan(q, {"leagues": []}, set(), set(), SPORTS, "2026-11-10T09:00:00Z")
+    assert add == [] and "not in OddsAPI" in skipped[0]["reason"]
+
+
+def test_plan_refuses_a_league_without_a_timezone():
+    q = [{"league_id": 900, "league": "Atlantis Premier", "country": "Atlantis", "current_season": "2026",
+          "odds_api_sport_key": "soccer_brazil_serie_b"}]
+    add, skipped = AO.plan(q, {"leagues": []}, set(), set(), SPORTS, "2026-11-10T09:00:00Z")
+    assert add == [] and "timezone" in skipped[0]["reason"]          # never 'UTC' by default
 
 
 def test_config_merge_is_additive(tmp_path, monkeypatch):

@@ -74,11 +74,13 @@ def production_view(league: str, market: str, side: str, model_type: str, policy
     """What production applies to this cell. Mirrors src/bankroll_policy.size_day (track state, base
     fraction, paper-league override, odds caps) and config (ENABLED/PAPER leagues, provider support,
     NF O/U cap, min O/U odds), with eligibility resolved under the deployed env."""
-    from src.bankroll_policy import track_key
+    from src.bankroll_policy import stake_entry, track_key
     track = track_key(model_type, market, side)          # O/U 2.5 per side since 2026-10-26
-    t = (policy.get("tracks") or {}).get(track) or {}
+    # the CELL's entry when per-cell staking is on (owner 2026-11-09), else the track's - as size_day reads it
+    t = stake_entry(policy, track, league) or {}
     track_state = t.get("state", "UNSUPPORTED")
-    base = float(t.get("base_fraction", 0.0) or 0.0)
+    # Policy values as written; an absent one is None (no stake can be sized from it), never 0.0 / 3.0.
+    base = None if t.get("base_fraction") is None else float(t["base_fraction"])
     enabled = league in set(elig.get("ENABLED_LEAGUES", []))
     paper = league in set(policy.get("paper_leagues", [])) or league in set(elig.get("PAPER_LEAGUES", []))
     if not enabled:
@@ -87,24 +89,27 @@ def production_view(league: str, market: str, side: str, model_type: str, policy
         state = "PAPER_LEAGUE"
     else:
         state = track_state
-    hard = float((policy.get("portfolio") or {}).get("hard_max_odds", 3.0))
+    _hard = (policy.get("portfolio") or {}).get("hard_max_odds")
+    hard = None if _hard is None else float(_hard)
     caps = {"hard_max_odds": hard, "track_min_odds": t.get("min_odds"), "track_max_odds": t.get("max_odds")}
     if market == "OU25":
         caps["min_side_odds"] = elig.get("MIN_OVER_ODDS") if side == "OVER" else elig.get("MIN_UNDER_ODDS")
         if model_type == "new_format":
             caps["nf_max_ou_odds"] = elig.get("NF_MAX_OU_ODDS")
-    tt = (policy.get("track_tier_multipliers") or {}).get(track)
+    flat = bool((policy.get("cell_staking") or {}).get("enabled"))      # owner 2026-11-11: flat per cell, as size_day
+    tt = None if flat else (policy.get("track_tier_multipliers") or {}).get(track)
     return {
         "track": track, "track_state": track_state, "production_state": state,
         "enabled": enabled, "paper_league": paper,
         "provider_supported": league not in set(elig.get("PROVIDER_UNSUPPORTED", [])),
         "sent": bool(enabled and not paper),
-        "real_money": bool(state in REAL_STATES and base > 0),
+        "real_money": bool(state in REAL_STATES and base is not None and base > 0),
         "blocked_market": track_state in BLOCKED_STATES,
         "odds_caps": caps,
         "stake_policy": {"policy_version": policy.get("policy_version"), "base_fraction": base,
-                         "tier_multipliers": tt if tt is not None else policy.get("tier_multipliers"),
-                         "tier_multiplier_source": "track_tier_multipliers" if tt is not None else "tier_multipliers",
+                         "tier_multipliers": None if flat else (tt if tt is not None else policy.get("tier_multipliers")),
+                         "tier_multiplier_source": ("FLAT_PER_CELL" if flat
+                                                    else "track_tier_multipliers" if tt is not None else "tier_multipliers"),
                          "evidence_score": t.get("evidence_score")},
     }
 
@@ -176,7 +181,8 @@ def build(regimes: dict, policy: dict, champions: dict, elig: dict, gates: dict,
             "blocked_tracks": sorted(k for k, v in (policy.get("tracks") or {}).items()
                                      if v.get("state") in BLOCKED_STATES),
             "real_money_tracks": sorted(k for k, v in (policy.get("tracks") or {}).items()
-                                        if v.get("state") in REAL_STATES and float(v.get("base_fraction", 0) or 0) > 0),
+                                        if v.get("state") in REAL_STATES and v.get("base_fraction") is not None
+                                        and float(v["base_fraction"]) > 0),
             "player_props": (policy.get("tracks") or {}).get("player_props", {}).get("state"),
             "cloudbet": "PAPER_ONLY",
         },

@@ -1,0 +1,79 @@
+{
+  "protocol": "p11-bars-tiers-clean/2",
+  "status": "PROPOSAL ONLY - amendment v2 written and committed BEFORE the v2 re-fit / re-validation. Everything of v1 is unchanged except the BTTS bet-price book order below.",
+  "owner_request": "Owner 2026-11-18: \"I want the best optimized bars and T1, T2, T3 best that we can achieve right now on the 100% truth data retrained models.\" Proposal for the 2026-11-20 approval; install with the go-live (TOP-3 live 2026-11-21).",
+  "predictions": {
+    "harness": "scripts/phase2_retrain.py --stage all --only champion_recipe (both tracks), code 694995f90 (data-truth-100 a214f5e16 + results sync), the SAME commit and frame as the serving refit refit_1118b (frame 9ed237ebc04aee09 must match)",
+    "out_of_sample": "walk-forward rows: fold models fitted on dates <= train_end < test_start; holdout rows 2026-04-01..2026-11-08: holdout models fitted on dates < 2026-04-01 only. Research artifacts, kept outside models/ and outside the repo."
+  },
+  "prices": {
+    "rule": "rule 8: BET-time prices only, never a closing price as a bet price",
+    "own": "own pre-kickoff captures with the 00:00-stamped backfill stripped (src.bars_opt.oddsapi_prices.strip_unproven_own) + football-data PRE-MATCH Bet365/Pinnacle through the certified join for Standard O/U 2.5 (bars_opt.py universe --certified-fd)",
+    "history": "OddsAPI history from the private exec odds-history branch, BET-role tiers only: BT (eu), BTU (uk BTTS), OUU (uk alternate totals) - all taken at the measured live-tip lead time (T-125h Standard / T-153h New-Format; src.oddsapi_history.BT_LEAD_HOURS). Same-book pair, Bet365 first then Pinnacle, exact line, snapshot strictly before the provider kickoff, join integrity re-verified on every row. Own pairs always win.",
+    "close": "tier B1 (closing) is read ONLY for CLV, never as a bet price",
+    "privacy": "prices and per-pick frames stay local; only counts and statistics are committed",
+    "btts_books_v2": "Bet365 > Pinnacle > William Hill > 1xBet > Ladbrokes (owner 2026-11-18 O1)"
+  },
+  "windows": {
+    "fit": "every out-of-sample row dated < 2026-09-01 (walk-forward folds + the holdout models' 2026-04-01..2026-08-31 rows)",
+    "validation": [
+      "2026-09-01",
+      "2026-11-08"
+    ],
+    "validation_note": "Untouched by every choice of this protocol (bars, configuration, calibration, tier parameters). Its outcomes were read once before by the P9 v6/v7 holdout replay (2026-04-01..2026-11-08) with other predictions and other rules: reported as 'validation, outcomes previously seen by earlier rules', never as proof (owner 2026-11-17: only live tips prove a cell)."
+  },
+  "bars": {
+    "method": "src.bars_opt.study unchanged (pre-registered selection: per family the configuration chosen by nested inner validation on the fit window, per league its OWN bars - never global - with MODEL vs LEAGUE_WIDE switch), run_select on fit, run_final once on validation",
+    "proven_rule": "PROVEN = >= 150 validation bets AND Holm-adjusted one-sided p < 0.025 AND matchday-block-bootstrap 95% CI lower bound > 0 (Holm family = every cell tested on the validation window + every configuration searched); PROMISING = validation ROI > 0 and CLV > 0 (or no CLV); else UNPROVEN; OFF with its reason",
+    "serving_cells": "src.bars_opt.cells.build on every priced row before 2026-11-01 (allow_blend, OFF rules unchanged) with the validation verdicts -> threshold_proposals candidates -> one proposal id"
+  },
+  "tiers": {
+    "pool": "per (track, league, ISO week): tips of MODEL-mode cells clearing their cell's VALUABLE bar. LEAGUE_WIDE cells are not in the pool (own list, as live). Distinct fixture x market; one goal direction per fixture (BTTS Yes = OVER).",
+    "calibration": "R2 of protocol v6: p_cal = fair + lam * (p_used - fair), lam per cell (track, league, market-side) = the study's shrink weight of the cell's own slope inside its league (src.research.top3_ranking._lams, >= 40 priced rows), fitted ONLY on rows dated before the pool's period (inner block start / 2026-09-01 / serving: 2026-11-09). cal_ev = p_cal * odds - 1. ev_lo = (fair + (lam - lam_se) * (p_used - fair)) * odds - 1.",
+    "T1_BEST_VALUE": "the pool tip with the highest cal_ev",
+    "T2_SAFEST": "of the rest, the tip with the highest p_cal",
+    "T3_RISKY_VALUE": "of the rest, odds >= the league's T3 odds floor, highest ev_lo; floor REL = the rest's longest-odds tip",
+    "gates": {
+      "CAL": "every tier needs cal_ev > 0",
+      "BAR": "every tier needs the cell's own value: cleared bar AND p_used * odds - 1 > 0 (cal_ev ranks only)"
+    },
+    "per_league_parameters": {
+      "gate": [
+        "CAL",
+        "BAR"
+      ],
+      "t3_floor": [
+        "REL",
+        2.25,
+        2.5,
+        2.75,
+        3.0
+      ]
+    },
+    "fit_pool": "inner out-of-sample bets of the fit window: for every inner block (study.inner_blocks: 5 equal matchday blocks, blocks 2..5 scored) the family's chosen configuration and bars are refitted on rows before the block and applied to it; lam refitted on the same earlier rows",
+    "choice": "per (track, league): gate = argmax of (mean pnl - 1 SE) over all tiers' fit picks (T3 = REL while choosing the gate), a gate needs >= 40 fit picks; none -> CAL, labelled UNFITTED; T3 floor = argmax of (mean pnl - 1 SE) of the fit T3 picks among candidates with >= 40 fit T3 picks, else REL, labelled UNFITTED (REL is a definition - the week's longest-odds value tip - not a fitted number). SE = study.max_se (largest of independent / matchday / ISO-week block SE). No global value is fitted; the grids are declared here.",
+    "never_pad": "a tier without a qualifying tip stays EMPTY; every league-week with < 3 tips gets a cause: NO_FIXTURES, ALL_CELLS_OFF, NO_PRICE, NO_CALIBRATION, NO_VALUE, FEW_VALUE (1-2 value tips), T3_EMPTY, RULE_CONFLICT",
+    "stake": "unchanged owner decision 2026-11-17: 0.5% flat on every TOP-3 tip, placed manually; this protocol does not change stakes"
+  },
+  "reporting": {
+    "per": [
+      "tier",
+      "league",
+      "fit vs validation"
+    ],
+    "stats": "bets, hit rate, ROI, matchday-block bootstrap 95% CI, CLV (B1 / own closing pair) where available, mean odds",
+    "comparisons": [
+      "v6 R2 (top 3 by cal_ev, no positivity) on the P11 bars, same validation rows",
+      "v6 R2 on the approved TP-2026-11-15-bade2c0b cells (as approved), same validation rows",
+      "P9 v7 numbers as published"
+    ],
+    "tips_per_week": "tips per league-week over validation weeks with at least one fixture of the league"
+  },
+  "amendment_v2": {
+    "owner_decision": "Owner 2026-11-18 (relayed by the coordinator): \"O1 APPROVED - for BTTS, when neither Bet365 nor Pinnacle quotes, fall back to William Hill, then 1xBet/Ladbrokes (bet-time quotes only).\" Also \"O2 APPROVED - use the P11 bars + T1/T2/T3 from 21.11 (stakes 0.5% flat, manual)\".",
+    "change": "BTTS bet-time pair: Bet365, else Pinnacle, else William Hill, else 1xBet, else Ladbrokes (same-book pair, BET-role tiers BT / BTU only, snapshot before kickoff, join integrity unchanged). Every other market keeps Bet365, else Pinnacle.",
+    "supersedes": "p11-bars-tiers-clean/1 results (TP-2026-11-18-42a409c5) - kept in git for the diff",
+    "validation_label": "validation window 2026-09-01..11-08 scored a SECOND time (v1 already scored it): the v2 numbers are \"re-validation after a price-rule amendment, outcomes previously seen\"",
+    "outputs": "output/research/p11_bars_tiers_v2/, output/threshold_proposals/bars_p11v2/, config/top3_tiers_p11.json"
+  }
+}

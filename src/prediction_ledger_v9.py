@@ -23,8 +23,10 @@ none of them can raise into the pipeline that calls it.
 from __future__ import annotations
 
 import hashlib
+import json
 import os
 import sys
+from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -38,6 +40,8 @@ if str(ROOT) not in sys.path:
 from src import prediction_ledger as PL  # noqa: E402
 
 REPO = "v9"
+#: the parked props challengers (player_model.props_gate challenger slot), owner 2026-11-18
+CHALLENGER_MODEL_ID = "v9_props_challenger"
 BOARD = ROOT / "output" / "predictions.csv"
 FD_HISTORY = ROOT / "output" / "fd_history.parquet"
 AF_HISTORY = ROOT / "output" / "af_history.parquet"
@@ -95,8 +99,19 @@ def _hash_values(vals) -> str:
 # ── TEAM: the board ──────────────────────────────────────────────────────────────────────────────
 
 def team_rows(board: pd.DataFrame, *, markets: dict | None = None, slugs: PL.LeagueSlugs | None = None,
-              now: datetime | None = None) -> list:
-    """Ledger rows for every board fixture x active v9 team entry x selection x due snapshot."""
+              now: datetime | None = None, coverage: dict | None = None) -> list:
+    """Ledger rows for every board fixture x active v9 team entry x selection x due snapshot.
+
+    `coverage` (a dict, filled in place when given): every board fixture with the reason it got NO row
+    (owner rule 2026-11-17/18: every model predicts every match of every tracked league for every market it
+    can - a fixture that is dropped is reported with its reason, never silently)."""
+    drops = coverage.setdefault("dropped", []) if coverage is not None else None
+
+    def _drop(r, why):
+        if drops is not None:
+            drops.append({"league": PL._s(r.get("league")), "date": PL._s(r.get("date"))[:10],
+                          "home_team": PL._s(r.get("home_team")), "away_team": PL._s(r.get("away_team")),
+                          "reason": why})
     markets = markets or PL.load_markets()
     slugs = slugs or PL.LeagueSlugs()
     now = now or _now()
@@ -111,10 +126,15 @@ def team_rows(board: pd.DataFrame, *, markets: dict | None = None, slugs: PL.Lea
         ko = PL.utc_ts(r.get("kickoff_utc"))
         at = PL.utc_ts(r.get("generated_at")) or pd.Timestamp(now)
         if ko is None:
+            _drop(r, "no kickoff_utc on the board row (cannot be a pre-kickoff snapshot)")
             continue                                   # no kickoff: cannot be a pre-kickoff snapshot
         mtk = (ko - at).total_seconds() / 60.0
         due = PL.snapshots_due(mtk)
-        if not due or model_id is None:
+        if model_id is None:
+            _drop(r, f"model_type {PL._s(r.get('model_type')) or 'missing'!r} is not a v9 track")
+            continue
+        if not due:
+            _drop(r, "predicted at or after kickoff (no pre-kickoff snapshot due)")
             continue
         lentry = slugs.entry(r.get("league"))
         league = slugs.canonical(r.get("league")) or PL._s(r.get("league"))
@@ -156,6 +176,55 @@ TEXT_COLS = ("_oa_event_id", "git_sha", "model_sha", "date", "kickoff_utc", "gen
              "model_version_over15", "model_version_over35", "model_version_ht_over05", "model_version_ht_over15")
 
 
+def coverage_report(board: pd.DataFrame, rows: list, dropped: list, *, markets: dict | None = None,
+                    slugs: PL.LeagueSlugs | None = None) -> dict:
+    """Per run: did every fixture of every tracked league on the board get a ledger row per ACTIVE v9 team
+    model x market? Statistics only (no prices). Lists
+      * dropped: board fixtures with no row at all, with the reason (team_rows);
+      * unscored: rows written without a probability, by reason (the model returned none - e.g. a required
+        input missing; the row is kept so the gap is visible);
+      * missing_cells: a written fixture lacking an active entry of its own track (must be 0);
+      * tracked_leagues_without_board_fixtures: tracked registry leagues with no fixture on this board
+        (no OddsAPI event / odds in the board window, or a provider gap - league_scope gives the reason)."""
+    markets = markets or PL.load_markets()
+    slugs = slugs or PL.LeagueSlugs()
+    ents = [e for e in PL.entries(markets, repo=REPO, status="active") if e.get("family") == "team"]
+    want = {}
+    for e in ents:
+        want.setdefault(e["model_id"], set()).add(e["market"])
+    have: dict = {}
+    unscored: Counter = Counter()
+    for r in rows:
+        have.setdefault((r["fixture_ref"], r["model_id"]), set()).add(r["market"])
+        why = PL._s(r.get("not_scored_reason"))
+        if why and r.get("selection") and r.get("snapshot") == "first_sight":
+            k = f"{r['model_id']}|{r['market']}: {why.split(' (')[0]}"
+            unscored[k] += 1
+    missing = [{"fixture_ref": f, "model_id": m, "markets": sorted(want.get(m, set()) - got)}
+               for (f, m), got in have.items() if want.get(m, set()) - got]
+    on_board = {slugs.canonical(x) or PL._s(x) for x in board.get("league", pd.Series(dtype=str)).tolist()}
+    scope = PL.league_scope(slugs)
+    no_board = [{"league": s["league"], "reason": s["not_scored_reason"] or
+                 "no fixture of this tracked league on this board (no OddsAPI event with odds in the window)"}
+                for s in scope if s["scope"].startswith("tracked") and s["league"] not in on_board]
+    rep = {"board_fixtures": int(len(board)), "fixtures_with_rows": len({f for f, _ in have}),
+           "active_team_entries": {m: sorted(v) for m, v in want.items()},
+           "dropped": dropped, "dropped_n": len(dropped), "unscored_first_sight_rows": dict(unscored),
+           "missing_cells": missing, "missing_cells_n": len(missing),
+           "tracked_leagues_without_board_fixtures": no_board}
+    return rep
+
+
+def _write_coverage(root: Path, rep: dict, now: datetime | None = None) -> Path:
+    now = now or _now()
+    p = Path(root) / REPO / "_coverage" / "team_board" / f"{now:%Y-%m}.jsonl"
+    p.parent.mkdir(parents=True, exist_ok=True)
+    line = json.dumps({"at": now.strftime("%Y-%m-%dT%H:%M:%SZ"), **rep}, sort_keys=True, default=str)
+    with p.open("ab") as fh:
+        fh.write(line.encode("utf-8") + b"\n")
+    return p
+
+
 def read_board(path: Path | None = None) -> pd.DataFrame:
     return pd.read_csv(path or BOARD, low_memory=False, dtype={c: str for c in TEXT_COLS},
                        keep_default_na=True)
@@ -167,8 +236,22 @@ def record_board(path: Path | None = None, *, root: Path | None = None, now: dat
     if not (force or PL.enabled()):
         return {"skipped": f"{PL.FLAG_ENV} is not 'true'"}
     board = read_board(path)
-    rows = team_rows(board, now=now)
-    return PL.append(rows, repo=REPO, writer="team_board", run_id=_run_id(), root=root, now=now)
+    cov: dict = {}
+    rows = team_rows(board, now=now, coverage=cov)
+    stats = PL.append(rows, repo=REPO, writer="team_board", run_id=_run_id(), root=root, now=now)
+    # coverage check (owner rule 2026-11-18): reported every run, never blocks the predict run
+    try:
+        rep = coverage_report(board, rows, cov.get("dropped", []))
+        _write_coverage(Path(root or PL.LEDGER_DIR), rep, now)
+        stats["coverage"] = {k: rep[k] for k in ("board_fixtures", "fixtures_with_rows", "dropped_n",
+                                                  "missing_cells_n")}
+        if rep["dropped_n"] or rep["missing_cells_n"]:
+            why = dict(Counter(d["reason"] for d in rep["dropped"]))
+            print(f"::warning title=Prediction ledger coverage::{rep['dropped_n']} board fixture(s) without a "
+                  f"row {why}; {rep['missing_cells_n']} fixture x model with a missing market")
+    except Exception as e:                                              # noqa: BLE001
+        print(f"::warning title=Prediction ledger coverage::check failed: {type(e).__name__}: {e}")
+    return stats
 
 
 # ── PROPS: recorder called from player_model/predict.py ─────────────────────────────────────────
@@ -185,6 +268,22 @@ class PropsRecorder:
         self.slugs = PL.LeagueSlugs()
         self.ents = {e["market"]: e for e in PL.entries(self.markets, repo=REPO, status="active")
                      if e.get("model_id") == "v9_props"}
+        #: the parked clean ML challengers beside the served player base rate (owner 2026-11-18)
+        self.ch_ents = {e["market"]: e for e in PL.entries(self.markets, repo=REPO, status="active")
+                        if e.get("model_id") == CHALLENGER_MODEL_ID}
+        self._parked: dict = {}
+
+    def _challenger(self, market: str):
+        """(payload, meta) of the market's parked challenger (player_model.props_gate.load_parked: bytes
+        verified against their manifest), or None. Loaded once per run."""
+        if market not in self._parked:
+            try:
+                from player_model.props_gate import load_parked
+                self._parked[market] = load_parked(market)
+            except Exception as ex:                                    # noqa: BLE001
+                print(f"[prediction_ledger] props challenger {market}: not loaded ({type(ex).__name__}: {ex})")
+                self._parked[market] = None
+        return self._parked[market]
 
     def add(self, market: str, feat_df: pd.DataFrame, probs, *, league: str, kickoff_utc: str = "",
             fixture_id=None, home: str = "", away: str = "", payload: dict | None = None) -> None:
@@ -213,21 +312,34 @@ class PropsRecorder:
             pid = feat_df["player_id"].tolist() if "player_id" in feat_df else [None] * len(feat_df)
             pname = feat_df["player_name"].tolist() if "player_name" in feat_df else [""] * len(feat_df)
             team = feat_df["team"].tolist() if "team" in feat_df else [""] * len(feat_df)
-            for i in range(len(feat_df)):
-                p = p_arr[i] if i < len(p_arr) else float("nan")
-                ok = bool(np.isfinite(p))
-                for snap in due:
-                    self.rows.append(PL.make_row(
-                        repo=REPO, model_id="v9_props", model_version=ver, model_sha=sha,
-                        payload_version=recipe, feature_hash=_hash_values(fvals[i]) if fvals is not None else "",
-                        track="props", market=market, line=e.get("line"), selection=e["selections"][0],
-                        fixture_ref=fref, fixture_id=fixture_id, oddsapi_event_id="", league=canon,
-                        season=PL.season_of(lentry, ko), kickoff_utc=PL.iso(ko), home_team=home,
-                        away_team=away, player_id=pid[i], player_name=pname[i], team=team[i],
-                        probability=float(min(max(p, 0.0), 1.0)) if ok else None, snapshot=snap,
-                        predicted_at=PL.iso(pd.Timestamp(now)), minutes_to_kickoff=round(mtk, 1),
-                        not_scored_reason="" if ok else "props model returned no probability",
-                        git_sha=_git_sha(), run_id=_run_id()))
+            models = [("v9_props", ver, sha, recipe, e, p_arr, fvals)]
+            ce, ch = self.ch_ents.get(market), None
+            if ce is not None:
+                ch = self._challenger(market)
+            if ch is not None:
+                from player_model.model import predict_proba
+                cpl, cmeta = ch
+                ccols = list(cpl.get("feature_cols") or [])
+                models.append((CHALLENGER_MODEL_ID, cmeta.get("model_version", ""), cmeta.get("artifact_sha256", ""),
+                               str(cpl.get("recipe") or ""), ce,
+                               np.asarray(predict_proba(feat_df, cpl), dtype=float),
+                               feat_df.reindex(columns=ccols).to_numpy() if ccols else None))
+            for mid, mver, msha, mrec, me, mp, mf in models:
+                for i in range(len(feat_df)):
+                    p = mp[i] if i < len(mp) else float("nan")
+                    ok = bool(np.isfinite(p))
+                    for snap in due:
+                        self.rows.append(PL.make_row(
+                            repo=REPO, model_id=mid, model_version=mver, model_sha=msha,
+                            payload_version=mrec, feature_hash=_hash_values(mf[i]) if mf is not None else "",
+                            track="props", market=market, line=me.get("line"), selection=me["selections"][0],
+                            fixture_ref=fref, fixture_id=fixture_id, oddsapi_event_id="", league=canon,
+                            season=PL.season_of(lentry, ko), kickoff_utc=PL.iso(ko), home_team=home,
+                            away_team=away, player_id=pid[i], player_name=pname[i], team=team[i],
+                            probability=float(min(max(p, 0.0), 1.0)) if ok else None, snapshot=snap,
+                            predicted_at=PL.iso(pd.Timestamp(now)), minutes_to_kickoff=round(mtk, 1),
+                            not_scored_reason="" if ok else "props model returned no probability",
+                            git_sha=_git_sha(), run_id=_run_id()))
         except Exception as ex:                                        # noqa: BLE001
             print(f"[prediction_ledger] props {market}: not recorded ({type(ex).__name__}: {ex})")
 
@@ -265,14 +377,20 @@ class TeamResults:
     def __init__(self, slugs: PL.LeagueSlugs | None = None):
         self.slugs = slugs or PL.LeagueSlugs()
         frames = []
+        # Go-live merge 2026-11-17 (data-truth-100 fix16/readers): a settlement reader reads the history AS THE
+        # LOADER SERVES IT - the owner's corrections (90-minute scores, proven cup / awarded rows and duplicate
+        # copies out, provider dates) through serve_history / apply_af_history_corrections, never the raw banks.
         if FD_HISTORY.exists():
-            fd = pd.read_parquet(FD_HISTORY)
+            from src.history_corrections import serve_history
+            fd = serve_history(pd.read_parquet(FD_HISTORY), tag="prediction_ledger.fd_history")
             fd = fd.rename(columns={"ht_home_goals": "hth", "ht_away_goals": "hta"})
             fd["src"] = "football-data"
             frames.append(fd[[c for c in ("league", "date", "home_team", "away_team", "home_goals",
                                           "away_goals", "hth", "hta", "src") if c in fd.columns]])
         if AF_HISTORY.exists():
-            af = pd.read_parquet(AF_HISTORY).rename(columns={"FTHG": "home_goals", "FTAG": "away_goals"})
+            from src.af_history_corrections import apply_af_history_corrections
+            af = apply_af_history_corrections(pd.read_parquet(AF_HISTORY), tag="prediction_ledger.af_history")
+            af = af.rename(columns={"FTHG": "home_goals", "FTAG": "away_goals"})
             af["src"] = "api-football"
             frames.append(af[["league", "date", "home_team", "away_team", "home_goals", "away_goals", "src"]])
         d = pd.concat(frames, ignore_index=True) if frames else pd.DataFrame(
@@ -308,7 +426,7 @@ class PropsResults:
 
     def __init__(self, fixture_ids: set):
         cols = ["fixture_id", "player_id", "minutes", "target_goals", "target_goals2", "target_assists",
-                "target_sot", "target_sot2", "target_sot3", "target_sot4", "target_cards"]
+                "target_sot", "target_sot2", "target_sot3", "target_sot4", "target_cards", "goals"]
         parts = sorted(PLAYER_HISTORY.glob("*.parquet")) if PLAYER_HISTORY.is_dir() else (
             [PLAYER_HISTORY] if PLAYER_HISTORY.exists() else [])
         frames = []
@@ -323,6 +441,10 @@ class PropsResults:
         d = pd.concat(frames, ignore_index=True) if frames else pd.DataFrame(columns=cols)
         d["fixture_id"] = pd.to_numeric(d["fixture_id"], errors="coerce").astype("Int64")
         d["player_id"] = pd.to_numeric(d["player_id"], errors="coerce").astype("Int64")
+        # goals3 (hat-trick) has no stored target: the same _label rule from the provider's goals count
+        # (missing count -> missing label, never 0)
+        g = pd.to_numeric(d["goals"], errors="coerce") if "goals" in d.columns else pd.Series(np.nan, index=d.index)
+        d["target_goals3"] = (g >= 3).astype(float).where(g.notna())
         self.fixtures = set(d["fixture_id"].dropna().astype(int))
         self.rows = {(int(a), int(b)): r for a, b, r in zip(d["fixture_id"], d["player_id"],
                                                             d.to_dict("records")) if pd.notna(a) and pd.notna(b)}
@@ -414,7 +536,7 @@ def settle(*, root: Path | None = None, settled_root: Path | None = None, now: d
     fids: set = set()
     for p in PL.partitions(root):
         part = PL.parse_partition(root, p)
-        if part["repo"] == REPO and part["model_id"] == "v9_props":
+        if part["repo"] == REPO and part["model_id"] in ("v9_props", CHALLENGER_MODEL_ID):
             f = pd.read_csv(p, usecols=["fixture_id"], dtype=str, keep_default_na=False)["fixture_id"]
             fids |= {int(x) for x in f if x}
     fn = outcome_fn(now=now, team=TeamResults(), props=PropsResults(fids) if fids else None,

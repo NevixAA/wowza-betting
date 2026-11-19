@@ -157,7 +157,7 @@ def _update_history(history: dict, events: list[dict]) -> dict:
         history[key]["snapshots"].append({
             "at":      ev["fetched_at"],
             "odds":    _extract_odds(ev),
-            "n_books": ev.get("n_books", 1),
+            "n_books": ev.get("n_books"),          # not sent -> unknown (was a typed 1)
         })
         # Keep only last 50 snapshots
         history[key]["snapshots"] = history[key]["snapshots"][-50:]
@@ -205,7 +205,7 @@ def _build_tips(history: dict) -> pd.DataFrame:
         opening = rec["opening"]
         current = rec["snapshots"][-1]["odds"]
         n_snaps = len(rec["snapshots"])
-        n_books = rec["snapshots"][-1].get("n_books", 1)
+        n_books = rec["snapshots"][-1].get("n_books")      # unknown stays unknown (was a typed 1)
 
         if rec["market"] == "totals":
             for side, ok, label in [
@@ -368,7 +368,11 @@ def _add_model_value(history: dict) -> pd.DataFrame:
         return pd.DataFrame()
 
     for _, row in feat.iterrows():
-        p_over = float(row.get("p_over25", 0.5))
+        # No model probability -> no fair price for this match. It was a typed 0.5 (a coin flip
+        # shown as the model's opinion, with value % computed from it). fix9/defaults 2026-11-04.
+        if pd.isna(pd.to_numeric(row.get("p_over25"), errors="coerce")):
+            continue
+        p_over = float(row["p_over25"])
         market_over  = float(row["odds_over25"])
         market_under = float(row["odds_under25"])
         fair_over  = round(1 / max(p_over, 0.01), 2)
