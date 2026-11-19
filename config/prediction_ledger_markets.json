@@ -891,10 +891,15 @@
    "model_id": "v9_corners",
    "market": "corners_total",
    "family": "corners",
-   "status": "pending_model",
-   "track": null,
+   "status": "active",
+   "track": "standard",
    "line": null,
-   "lines": "per row (the model's O/U line)",
+   "lines": [
+    8.5,
+    9.5,
+    10.5,
+    11.5
+   ],
    "selections": [
     "OVER",
     "UNDER"
@@ -902,47 +907,65 @@
    "prob_col": null,
    "positive_selection": "OVER",
    "version_col": null,
-   "model_file": null,
+   "model_file": {
+    "*": "models/side_models/side_models.json"
+   },
    "settle": {
     "rule": "total_stat_over",
     "stat": "corners",
-    "period": "90min"
+    "period": "90min",
+    "source": "verified statistics (src/side_models/ledger.py settle -> src/prediction_ledger.stat_outcome)"
    },
-   "description": "total corners O/U - research only (research/side-models). Pre-registered: NO rows until the model is verified; switching it on is this entry's status -> 'active' plus prob_col/model_file, not a code change."
+   "description": "total corners O/U. Per-league negative-binomial count model on as-of team for/against means of VERIFIED matches (src/side_models/). Lines [8.5, 9.5, 10.5, 11.5]. Every upcoming fixture of a tracked league whose history is verified - two sources agree (Standard), or API-Football as the single certified source passing the sanity rules (New-Format; owner 2026-11-18) - the basis is in each row's payload_version (coverage + reasons: models/side_models/side_models.json); a fixture the model cannot score is stored unscored with its reason. Count: API-Football /fixtures/statistics 'Corner Kicks' per team (90 minutes), verified per fixture against football-data HC/AC where football-data has them, else single-source sanity. Learning only - no price, no tip, no stake.",
+   "writer": "src/side_models/ledger.py (python -m src.side_models.ledger board; repo variable SIDE_MODELS_LEDGER_ENABLED)"
   },
   {
    "repo": "v9",
    "model_id": "v9_corners",
    "market": "corners_team",
    "family": "corners",
-   "status": "pending_model",
-   "track": null,
+   "status": "active",
+   "track": "standard",
    "line": null,
-   "lines": "per row (the model's O/U line)",
+   "lines": [
+    3.5,
+    4.5,
+    5.5
+   ],
    "selections": [
-    "OVER",
-    "UNDER"
+    "HOME_OVER",
+    "HOME_UNDER",
+    "AWAY_OVER",
+    "AWAY_UNDER"
    ],
    "prob_col": null,
-   "positive_selection": "OVER",
+   "positive_selection": null,
    "version_col": null,
-   "model_file": null,
-   "settle": {
-    "rule": "total_stat_over",
-    "stat": "corners",
-    "period": "90min"
+   "model_file": {
+    "*": "models/side_models/side_models.json"
    },
-   "description": "team corners O/U (HOME/AWAY) - research only (research/side-models). Pre-registered: NO rows until the model is verified; switching it on is this entry's status -> 'active' plus prob_col/model_file, not a code change."
+   "settle": {
+    "rule": "team_stat_over",
+    "stat": "corners",
+    "period": "90min",
+    "source": "verified statistics (src/side_models/ledger.py settle -> src/prediction_ledger.stat_outcome)"
+   },
+   "description": "team corners O/U per side (selection HOME_OVER/HOME_UNDER/AWAY_OVER/AWAY_UNDER; `team` names the side). Per-league negative-binomial count model on as-of team for/against means of VERIFIED matches (src/side_models/). Lines [3.5, 4.5, 5.5]. Every upcoming fixture of a tracked league whose history is verified - two sources agree (Standard), or API-Football as the single certified source passing the sanity rules (New-Format; owner 2026-11-18) - the basis is in each row's payload_version (coverage + reasons: models/side_models/side_models.json); a fixture the model cannot score is stored unscored with its reason. Count: API-Football /fixtures/statistics 'Corner Kicks' per team (90 minutes), verified per fixture against football-data HC/AC where football-data has them, else single-source sanity. Learning only - no price, no tip, no stake.",
+   "writer": "src/side_models/ledger.py (python -m src.side_models.ledger board; repo variable SIDE_MODELS_LEDGER_ENABLED)"
   },
   {
    "repo": "v9",
    "model_id": "v9_cards",
    "market": "cards_total",
    "family": "cards",
-   "status": "pending_model",
-   "track": null,
+   "status": "active",
+   "track": "standard",
    "line": null,
-   "lines": "per row (the model's O/U line)",
+   "lines": [
+    3.5,
+    4.5,
+    5.5
+   ],
    "selections": [
     "OVER",
     "UNDER"
@@ -950,37 +973,50 @@
    "prob_col": null,
    "positive_selection": "OVER",
    "version_col": null,
-   "model_file": null,
+   "model_file": {
+    "*": "models/side_models/side_models.json"
+   },
    "settle": {
     "rule": "total_stat_over",
     "stat": "cards",
-    "period": "90min"
+    "period": "90min",
+    "source": "verified statistics (src/side_models/ledger.py settle -> src/prediction_ledger.stat_outcome)"
    },
-   "description": "total cards/bookings O/U - research only (research/side-models). Pre-registered: NO rows until the model is verified; switching it on is this entry's status -> 'active' plus prob_col/model_file, not a code change."
+   "description": "total cards O/U (card count, not booking points). Per-league negative-binomial count model on as-of team for/against means of VERIFIED matches (src/side_models/). Lines [3.5, 4.5, 5.5]. Every upcoming fixture of a tracked league whose history is verified - two sources agree (Standard), or API-Football as the single certified source passing the sanity rules (New-Format; owner 2026-11-18) - the basis is in each row's payload_version (coverage + reasons: models/side_models/side_models.json); a fixture the model cannot score is stored unscored with its reason. Count: API-Football /fixtures/statistics 'Yellow Cards' + 'Red Cards' per team (a card count, not booking points; a second-yellow dismissal is counted the provider's way - owner cards rule 2026-11-18, closes G9), verified per fixture against football-data HY/AY/HR/AR where football-data has them, else single-source sanity (src/side_models/data.py). Learning only - no price, no tip, no stake.",
+   "writer": "src/side_models/ledger.py (python -m src.side_models.ledger board; repo variable SIDE_MODELS_LEDGER_ENABLED)"
   },
   {
    "repo": "v9",
    "model_id": "v9_cards",
    "market": "cards_team",
    "family": "cards",
-   "status": "pending_model",
-   "track": null,
+   "status": "active",
+   "track": "standard",
    "line": null,
-   "lines": "per row (the model's O/U line)",
+   "lines": [
+    1.5,
+    2.5
+   ],
    "selections": [
-    "OVER",
-    "UNDER"
+    "HOME_OVER",
+    "HOME_UNDER",
+    "AWAY_OVER",
+    "AWAY_UNDER"
    ],
    "prob_col": null,
-   "positive_selection": "OVER",
+   "positive_selection": null,
    "version_col": null,
-   "model_file": null,
-   "settle": {
-    "rule": "total_stat_over",
-    "stat": "cards",
-    "period": "90min"
+   "model_file": {
+    "*": "models/side_models/side_models.json"
    },
-   "description": "team cards O/U (HOME/AWAY) - research only (research/side-models). Pre-registered: NO rows until the model is verified; switching it on is this entry's status -> 'active' plus prob_col/model_file, not a code change."
+   "settle": {
+    "rule": "team_stat_over",
+    "stat": "cards",
+    "period": "90min",
+    "source": "verified statistics (src/side_models/ledger.py settle -> src/prediction_ledger.stat_outcome)"
+   },
+   "description": "team cards O/U per side (selection HOME_OVER/HOME_UNDER/AWAY_OVER/AWAY_UNDER; `team` names the side). Per-league negative-binomial count model on as-of team for/against means of VERIFIED matches (src/side_models/). Lines [1.5, 2.5]. Every upcoming fixture of a tracked league whose history is verified - two sources agree (Standard), or API-Football as the single certified source passing the sanity rules (New-Format; owner 2026-11-18) - the basis is in each row's payload_version (coverage + reasons: models/side_models/side_models.json); a fixture the model cannot score is stored unscored with its reason. Count: API-Football /fixtures/statistics 'Yellow Cards' + 'Red Cards' per team (a card count, not booking points; a second-yellow dismissal is counted the provider's way - owner cards rule 2026-11-18, closes G9), verified per fixture against football-data HY/AY/HR/AR where football-data has them, else single-source sanity (src/side_models/data.py). Learning only - no price, no tip, no stake.",
+   "writer": "src/side_models/ledger.py (python -m src.side_models.ledger board; repo variable SIDE_MODELS_LEDGER_ENABLED)"
   }
  ]
 }

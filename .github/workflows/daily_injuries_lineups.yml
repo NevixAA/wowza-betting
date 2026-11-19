@@ -147,6 +147,27 @@ jobs:
           echo "rc=$rc" >> "$GITHUB_OUTPUT"
           echo "collector exit code: $rc"
 
+      # SIDE-STATS REFRESH (owner 2026-11-18, "keep the verified stats fresh"; scripts/collect_side_stats.py).
+      # The corners / cards models (src/side_models/) and their ledger settlement read only VERIFIED match
+      # statistics; the stores froze on 2026-11-09. This step (a) re-downloads football-data's raw season
+      # files (free, no key: scripts/collect_fd_raw.py) and (b) asks /fixtures/statistics once for each
+      # finished tracked-league fixture neither stats store answers yet, newest first.
+      # CALLS: backlog 1,267 fixtures on 2026-11-18 (2022 on; 730 of them Finland / Ireland holes), then
+      # ~19 finished fixtures/day (tracked leagues, last 365 days) + re-asks of empty answers (at most 3
+      # per fixture, 48 h apart). HARD CAP: SIDE_STATS_MAX_CALLS per run (2 firings/day -> <= 300/day),
+      # inside this job's own 1,500/day journal (af_budget_daily.json, shared with the collector above)
+      # and the account floor collect_common.FLOOR (25,000 of 75,000/day). The backlog clears in ~5 days.
+      # OFF unless the repo variable SIDE_STATS_REFRESH_ENABLED is 'true'. Tolerant: never fails the job.
+      - name: Side-stats refresh (corners / cards truth, capped)
+        id: sidestats
+        if: env.MODE == 'collect' && vars.SIDE_STATS_REFRESH_ENABLED == 'true'
+        env:
+          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
+          SIDE_STATS_MAX_CALLS: '150'
+        run: |
+          python scripts/collect_fd_raw.py || echo "::warning::football-data raw refresh failed - stored files kept"
+          python scripts/collect_side_stats.py --max-calls "$SIDE_STATS_MAX_CALLS" || echo "::warning::side-stats refresh failed - stored rows kept"
+
       - name: Commit the collected rows
         if: always() && steps.collect.outcome != 'skipped'
         env:
@@ -160,7 +181,9 @@ jobs:
                    output/collect/lineups_fixtures.parquet output/collect/lineups \
                    output/collect/upcoming_fixtures.parquet output/collect/competition_seasons.parquet \
                    output/collect/af_league_coverage.parquet output/collect/af_budget_daily.json \
-                   output/collect/daily_collect_runs.jsonl output/strength/competition_fixtures.parquet; do
+                   output/collect/daily_collect_runs.jsonl output/strength/competition_fixtures.parquet \
+                   output/collect/af_side_stats.parquet output/collect/side_stats_runs.jsonl \
+                   output/collect/fd_raw; do
             if [ -e "$p" ]; then git add -f "$p"; fi
           done
           if git diff --staged --quiet; then echo "nothing new to commit"; exit 0; fi
