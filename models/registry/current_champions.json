@@ -1,12 +1,12 @@
 {
   "standard": {
-    "model_version": "standard_20261118T172020Z_50a974bb",
-    "champion_since": "2026-11-18T17:20:20Z",
+    "model_version": "standard_20261119T134019Z_67ee3666",
+    "champion_since": "2026-11-19T13:40:19Z",
     "retrain_batch_id": "phase2_refit_clean-data-switch-2026-11-09",
     "training_cutoff": "2026-11-01",
-    "artifact_sha256": "50a974bb83a88fc5c28ac4f9d2af25b475a9c880e21675a3b084a9fa49b81e8d",
+    "artifact_sha256": "67ee36668c21109d3ec8bf5050ac87d51997056299fa4472a501d39e3e7553b4",
     "promotion_source": "OWNER_CLEAN_SWITCH",
-    "promotion_reason": "OWNER_CLEAN_SWITCH [clean-data-switch-2026-11-09] stage final_refit by Nevo (owner) (2026-11-09): \"Approve 2nd + final refit\" - ONE final refit right before go-live, on the final collected data (after the last collection and results sync): the same recipe (scripts/phase2_refit_serving.py, champion_recipe per track x market), live = training at 0 differences required (scripts/team_train_serve_parit",
+    "promotion_reason": "OWNER_CLEAN_SWITCH [clean-data-switch-2026-11-09] stage std_2016_refit by Nevo (owner) (2026-11-19): \"Install (Recommended)\" - the Standard track only: the same champion_recipe (scripts/phase2_refit_serving.py) refitted with Standard training starting at the 2016/17 season (config/phase2_retrain.json data.train_start standard=2016-07-01) on the football-data seasons connected by PR #59 (frame ebe4",
     "gate_version": "PG-1.0"
   },
   "newformat": {
@@ -20,53 +20,53 @@
     "gate_version": "PG-1.0"
   },
   "btts": {
-    "model_version": "btts_20261118T172022Z_a8ddb87e",
-    "champion_since": "2026-11-18T17:20:22Z",
+    "model_version": "btts_20261119T134019Z_44c67049",
+    "champion_since": "2026-11-19T13:40:19Z",
     "retrain_batch_id": "phase2_refit_clean-data-switch-2026-11-09",
     "training_cutoff": "2026-11-01",
-    "artifact_sha256": "a8ddb87e86078fdab46f95251b677cfc3086cdf22917d8214f5af993a8860676",
+    "artifact_sha256": "44c670490d5101c13423b715a92f3b2d40396d35b1d9fc7c83f2c688a9afc1f1",
     "promotion_source": "OWNER_CLEAN_SWITCH",
-    "promotion_reason": "OWNER_CLEAN_SWITCH [clean-data-switch-2026-11-09] stage final_refit by Nevo (owner) (2026-11-09): \"Approve 2nd + final refit\" - ONE final refit right before go-live, on the final collected data (after the last collection and results sync): the same recipe (scripts/phase2_refit_serving.py, champion_recipe per track x market), live = training at 0 differences required (scripts/team_train_serve_parit",
+    "promotion_reason": "OWNER_CLEAN_SWITCH [clean-data-switch-2026-11-09] stage std_2016_refit by Nevo (owner) (2026-11-19): \"Install (Recommended)\" - the Standard track only: the same champion_recipe (scripts/phase2_refit_serving.py) refitted with Standard training starting at the 2016/17 season (config/phase2_retrain.json data.train_start standard=2016-07-01) on the football-data seasons connected by PR #59 (frame ebe4",
     "gate_version": "PG-1.0"
   },
   "over15": {
-    "model_version": "over15_20261118T172023Z_2e70abf1",
-    "champion_since": "2026-11-18T17:20:23Z",
+    "model_version": "over15_20261119T134019Z_ca01b7d3",
+    "champion_since": "2026-11-19T13:40:19Z",
     "retrain_batch_id": "phase2_refit_clean-data-switch-2026-11-09",
     "training_cutoff": "2026-11-01",
-    "artifact_sha256": "2e70abf10adfa403749718e824b728964ba305d6a888acfec9051999c9dad2fb",
+    "artifact_sha256": "ca01b7d3a4f6fcae12ec4fe58691d736245415a09efdcbecdb8ab62f3e865bb7",
     "promotion_source": "OWNER_CLEAN_SWITCH",
-    "promotion_reason": "OWNER_CLEAN_SWITCH [clean-data-switch-2026-11-09] stage final_refit by Nevo (owner) (2026-11-09): \"Approve 2nd + final refit\" - ONE final refit right before go-live, on the final collected data (after the last collection and results sync): the same recipe (scripts/phase2_refit_serving.py, champion_recipe per track x market), live = training at 0 differences required (scripts/team_train_serve_parit",
+    "promotion_reason": "OWNER_CLEAN_SWITCH [clean-data-switch-2026-11-09] stage std_2016_refit by Nevo (owner) (2026-11-19): \"Install (Recommended)\" - the Standard track only: the same champion_recipe (scripts/phase2_refit_serving.py) refitted with Standard training starting at the 2016/17 season (config/phase2_retrain.json data.train_start standard=2016-07-01) on the football-data seasons connected by PR #59 (frame ebe4",
     "gate_version": "PG-1.0"
   },
   "over35": {
-    "model_version": "over35_20261118T172024Z_0331cee9",
-    "champion_since": "2026-11-18T17:20:24Z",
+    "model_version": "over35_20261119T134019Z_e8b12d74",
+    "champion_since": "2026-11-19T13:40:19Z",
     "retrain_batch_id": "phase2_refit_clean-data-switch-2026-11-09",
     "training_cutoff": "2026-11-01",
-    "artifact_sha256": "0331cee9ec14ef62a6a402cb05079b0fc0dc378e4abf65cac89cc10eb96ef1a6",
+    "artifact_sha256": "e8b12d74f1b0d51a75355321b5d10c7868d22c1c4ccb8a8452ba3bfdd814cb86",
     "promotion_source": "OWNER_CLEAN_SWITCH",
-    "promotion_reason": "OWNER_CLEAN_SWITCH [clean-data-switch-2026-11-09] stage final_refit by Nevo (owner) (2026-11-09): \"Approve 2nd + final refit\" - ONE final refit right before go-live, on the final collected data (after the last collection and results sync): the same recipe (scripts/phase2_refit_serving.py, champion_recipe per track x market), live = training at 0 differences required (scripts/team_train_serve_parit",
+    "promotion_reason": "OWNER_CLEAN_SWITCH [clean-data-switch-2026-11-09] stage std_2016_refit by Nevo (owner) (2026-11-19): \"Install (Recommended)\" - the Standard track only: the same champion_recipe (scripts/phase2_refit_serving.py) refitted with Standard training starting at the 2016/17 season (config/phase2_retrain.json data.train_start standard=2016-07-01) on the football-data seasons connected by PR #59 (frame ebe4",
     "gate_version": "PG-1.0"
   },
   "ht_over05": {
-    "model_version": "ht_over05_20261118T172021Z_65646406",
-    "champion_since": "2026-11-18T17:20:21Z",
+    "model_version": "ht_over05_20261119T134019Z_5a76d680",
+    "champion_since": "2026-11-19T13:40:19Z",
     "retrain_batch_id": "phase2_refit_clean-data-switch-2026-11-09",
     "training_cutoff": "2026-11-01",
-    "artifact_sha256": "656464066143e0feba1a7357a328e7476338e18115ceb5a8a73d25be86b13ed8",
+    "artifact_sha256": "5a76d680e2fc53d6d8841781d6100bfbd1df2c54ccce9c55d7d782c778e52a75",
     "promotion_source": "OWNER_CLEAN_SWITCH",
-    "promotion_reason": "OWNER_CLEAN_SWITCH [clean-data-switch-2026-11-09] stage final_refit by Nevo (owner) (2026-11-09): \"Approve 2nd + final refit\" - ONE final refit right before go-live, on the final collected data (after the last collection and results sync): the same recipe (scripts/phase2_refit_serving.py, champion_recipe per track x market), live = training at 0 differences required (scripts/team_train_serve_parit",
+    "promotion_reason": "OWNER_CLEAN_SWITCH [clean-data-switch-2026-11-09] stage std_2016_refit by Nevo (owner) (2026-11-19): \"Install (Recommended)\" - the Standard track only: the same champion_recipe (scripts/phase2_refit_serving.py) refitted with Standard training starting at the 2016/17 season (config/phase2_retrain.json data.train_start standard=2016-07-01) on the football-data seasons connected by PR #59 (frame ebe4",
     "gate_version": "PG-1.0"
   },
   "ht_over15": {
-    "model_version": "ht_over15_20261118T172021Z_5365d223",
-    "champion_since": "2026-11-18T17:20:21Z",
+    "model_version": "ht_over15_20261119T134019Z_e9a12ce1",
+    "champion_since": "2026-11-19T13:40:19Z",
     "retrain_batch_id": "phase2_refit_clean-data-switch-2026-11-09",
     "training_cutoff": "2026-11-01",
-    "artifact_sha256": "5365d223ab1e0f7c50d7997867b76ce62106a1986ab7f84ebca8b24e6e0ca95a",
+    "artifact_sha256": "e9a12ce1b6af077fc9dc8efb9f663d2c757eb07880a2378b18049ba891e6552b",
     "promotion_source": "OWNER_CLEAN_SWITCH",
-    "promotion_reason": "OWNER_CLEAN_SWITCH [clean-data-switch-2026-11-09] stage final_refit by Nevo (owner) (2026-11-09): \"Approve 2nd + final refit\" - ONE final refit right before go-live, on the final collected data (after the last collection and results sync): the same recipe (scripts/phase2_refit_serving.py, champion_recipe per track x market), live = training at 0 differences required (scripts/team_train_serve_parit",
+    "promotion_reason": "OWNER_CLEAN_SWITCH [clean-data-switch-2026-11-09] stage std_2016_refit by Nevo (owner) (2026-11-19): \"Install (Recommended)\" - the Standard track only: the same champion_recipe (scripts/phase2_refit_serving.py) refitted with Standard training starting at the 2016/17 season (config/phase2_retrain.json data.train_start standard=2016-07-01) on the football-data seasons connected by PR #59 (frame ebe4",
     "gate_version": "PG-1.0"
   },
   "standard_repaired": {

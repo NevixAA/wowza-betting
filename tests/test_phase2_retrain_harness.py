@@ -189,6 +189,19 @@ def test_feature_list_never_creates_a_column_and_never_uses_a_price():
     assert "home_xg_last5" not in feats_nf and ex_nf["home_xg_last5"] == "excluded for track new_format"
 
 
+def test_standard_train_start_is_the_owner_2016_17_decision(feat):
+    """Owner 2026-11-19 ("Yes, from 2016/17"): Standard trains from 2016-07-01; new_format has no start.
+    A row dated before a track's start is not eligible; the rest are untouched."""
+    assert P.load_config()["data"]["train_start"] == {"standard": "2016-07-01"}
+    cfg = _cfg()
+    rows = P.eligible_rows(feat, cfg, "standard", "over25")
+    mid = pd.to_datetime(rows["date"]).sort_values().iloc[len(rows) // 2]
+    cfg["data"]["train_start"] = {"standard": str(mid.date())}
+    cut = P.eligible_rows(feat, cfg, "standard", "over25")
+    assert len(cut) == int((pd.to_datetime(rows["date"]) >= mid).sum()) and pd.to_datetime(cut["date"]).min() >= mid
+    assert len(P.eligible_rows(feat, cfg, "new_format", "over25")) ==         len(P.eligible_rows(feat, _cfg(), "new_format", "over25"))
+
+
 # ── splits ────────────────────────────────────────────────────────────────────────────────────
 
 def test_walk_forward_is_whole_date_expanding_and_never_touches_the_holdout(feat):
