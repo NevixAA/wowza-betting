@@ -28,7 +28,7 @@ TP_CONFIG = ROOT / "config" / "trustworthy_performance.json"
 
 #: Owner decision 2026-11-11 (restated 2026-11-17): the Clean Record counts from Sat 2026-11-21. Used only
 #: when config/trustworthy_performance.json has no clean_record_start_utc; a test pins the two together.
-OWNER_DECISION = "2026-11-21"
+OWNER_DECISION = "2026-11-19"
 
 #: Results pages of the season before the repairs (file names under pages/).
 PRE_REPAIR_PAGES = ("00_🎯_Home.py", "1_📊_Dashboard.py", "17_🏟️_Leagues.py", "5_🎯_Success_Rates.py",
