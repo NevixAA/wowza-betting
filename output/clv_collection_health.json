@@ -1,14 +1,14 @@
 {
-  "generated_at": "2026-11-19T04:25:12Z",
+  "generated_at": "2026-11-19T18:34:33Z",
   "close_rule": "strictly pre-kickoff, observed within 30 minutes",
   "shadow_all_time": {
-    "eligible": 1061,
-    "with_t30_close": 443,
-    "with_t10_close": 375,
-    "stale_close": 618,
+    "eligible": 1063,
+    "with_t30_close": 444,
+    "with_t10_close": 376,
+    "stale_close": 619,
     "no_close": 0,
     "certified_t30_pct": 41.8,
-    "certified_t10_pct": 35.3,
+    "certified_t10_pct": 35.4,
     "median_close_minutes_certified": 1.2,
     "median_last_pre_kickoff_minutes": 104.9,
     "by_league": {
@@ -35,13 +35,13 @@
         "median_last_pre_kickoff_minutes": 125.5
       },
       "Brazil Serie A": {
-        "eligible": 66,
-        "with_t30_close": 31,
-        "with_t10_close": 24,
-        "stale_close": 35,
+        "eligible": 68,
+        "with_t30_close": 32,
+        "with_t10_close": 25,
+        "stale_close": 36,
         "no_close": 0,
-        "certified_t30_pct": 47.0,
-        "certified_t10_pct": 36.4,
+        "certified_t30_pct": 47.1,
+        "certified_t10_pct": 36.8,
         "median_close_minutes_certified": 1.4,
         "median_last_pre_kickoff_minutes": 60.9
       },
@@ -224,26 +224,26 @@
     },
     "by_market": {
       "ou25": {
-        "eligible": 1061,
-        "with_t30_close": 443,
-        "with_t10_close": 375,
-        "stale_close": 618,
+        "eligible": 1063,
+        "with_t30_close": 444,
+        "with_t10_close": 376,
+        "stale_close": 619,
         "no_close": 0,
         "certified_t30_pct": 41.8,
-        "certified_t10_pct": 35.3,
+        "certified_t10_pct": 35.4,
         "median_close_minutes_certified": 1.2,
         "median_last_pre_kickoff_minutes": 104.9
       }
     }
   },
   "shadow_since_measure_from": {
-    "eligible": 597,
-    "with_t30_close": 407,
-    "with_t10_close": 367,
-    "stale_close": 190,
+    "eligible": 599,
+    "with_t30_close": 408,
+    "with_t10_close": 368,
+    "stale_close": 191,
     "no_close": 0,
-    "certified_t30_pct": 68.2,
-    "certified_t10_pct": 61.5,
+    "certified_t30_pct": 68.1,
+    "certified_t10_pct": 61.4,
     "median_close_minutes_certified": 1.1,
     "median_last_pre_kickoff_minutes": 1.7,
     "by_league": {
@@ -270,13 +270,13 @@
         "median_last_pre_kickoff_minutes": 16.6
       },
       "Brazil Serie A": {
-        "eligible": 36,
-        "with_t30_close": 27,
-        "with_t10_close": 23,
-        "stale_close": 9,
+        "eligible": 38,
+        "with_t30_close": 28,
+        "with_t10_close": 24,
+        "stale_close": 10,
         "no_close": 0,
-        "certified_t30_pct": 75.0,
-        "certified_t10_pct": 63.9,
+        "certified_t30_pct": 73.7,
+        "certified_t10_pct": 63.2,
         "median_close_minutes_certified": 1.4,
         "median_last_pre_kickoff_minutes": 1.7
       },
@@ -459,13 +459,13 @@
     },
     "by_market": {
       "ou25": {
-        "eligible": 597,
-        "with_t30_close": 407,
-        "with_t10_close": 367,
-        "stale_close": 190,
+        "eligible": 599,
+        "with_t30_close": 408,
+        "with_t10_close": 368,
+        "stale_close": 191,
         "no_close": 0,
-        "certified_t30_pct": 68.2,
-        "certified_t10_pct": 61.5,
+        "certified_t30_pct": 68.1,
+        "certified_t10_pct": 61.4,
         "median_close_minutes_certified": 1.1,
         "median_last_pre_kickoff_minutes": 1.7
       }
@@ -474,7 +474,7 @@
   "measure_from": "2026-10-23T00:00:00Z",
   "collection": {
     "window_days": 7.0,
-    "from": "2026-11-12 04:25:12.549287+00:00",
+    "from": "2026-11-12 18:34:33.001091+00:00",
     "fixture_markets": 184,
     "fixtures": 23,
     "t30_pct": 81.5,
