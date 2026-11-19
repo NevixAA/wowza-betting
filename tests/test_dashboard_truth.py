@@ -146,6 +146,24 @@ def test_home_and_tips_book_matches_independent(out):
     assert _close(ex, v["staked_pnl_ex_ou25"])
 
 
+def test_ht_ledger_with_a_tier_column_stays_out_of_the_book(out):
+    """Regression 2026-11-19: the go-live ledger writer added signal_tier (and odds/edge_pct) to
+    ht_ledger.csv. HT O/U has no policy market, so its settled rows must stay out of Home's staked AND
+    not-staked figures whatever columns the file carries."""
+    from dashboard_data import today_view as T
+    before = T.performance(T.load_settled(out), today="2026-10-20")
+    pd.DataFrame([("live", "2026-10-16 08:00", "2026-10-16", "Brazil Serie A", "C", "D", "HT_OU05", "OVER",
+                   0.7, 1.4, 1.5, "WIN", 0.5, 1.5, 6.0, "QUALIFIED", "ht")],
+                 columns=["source", "generated_at", "match_date", "league", "home_team", "away_team", "market",
+                          "side", "model_prob", "fair_odds", "entry_odds", "result", "pnl", "odds", "edge_pct",
+                          "signal_tier", "model_type"]).to_csv(out / "ht_ledger.csv", index=False)
+    s = T.load_settled(out)
+    assert not s["_ledger"].eq("ht_ledger.csv").any()
+    after = T.performance(s, today="2026-10-20")
+    assert (after["n"], after["paper_n"]) == (before["n"], before["paper_n"])
+    assert after["paper_n"] == DT.independent(out, _ctx())["not_staked_n"]
+
+
 def test_overview_tracks_match_independent(out, monkeypatch):
     from dashboard_data import v9
     monkeypatch.setattr(v9, "OUT", out)
