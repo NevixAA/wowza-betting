@@ -179,9 +179,10 @@ def production_state(policy: dict, league: str, model_type: str, market: str, si
     """Exactly what production applies: bankroll_policy track state, then the paper-league override
     (src/bankroll_policy.size_day: PAPER_LEAGUE -> no stake; config.PAPER_LEAGUES -> never sent).
     The track key is src/bankroll_policy.track_key: O/U 2.5 is per side since 2026-10-26."""
-    from src.bankroll_policy import positive_fraction, track_key
+    from src.bankroll_policy import positive_fraction, stake_entry, track_key
     track = track_key(model_type, market, side)
-    t = (policy.get("tracks") or {}).get(track)
+    # the CELL's entry when per-cell staking is on (owner 2026-11-09), else the track's - src/bankroll_policy
+    t = stake_entry(policy, track, league)
     track_state = t.get("state", "UNSUPPORTED") if t else "UNSUPPORTED"
     paper = league in set(policy.get("paper_leagues", [])) or config.is_paper_league(league)
     return {"track": track, "track_state": track_state,

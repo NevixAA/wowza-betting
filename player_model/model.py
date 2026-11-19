@@ -408,7 +408,13 @@ def predict_with_diagnostics(df: pd.DataFrame, payload: dict, _fill_telemetry: b
         raw = pd.DataFrame({c: (pd.to_numeric(df[c], errors="coerce") if c in df.columns
                                 else pd.Series(np.nan, index=df.index)) for c in feat_cols},
                            index=df.index)
-        out = pd.DataFrame({"p": np.asarray(payload["model"].predict(raw), dtype=float)}, index=df.index)
+        # player_base_rate (owner 2026-11-18, the rare markets) reads the player id, never a feature:
+        # the player's training-window rate, the window's market rate for a player it never saw. The
+        # id is passed as a number (the harness fitted on numeric ids); the ML candidates ignore it.
+        players = (pd.to_numeric(df["player_id"], errors="coerce").to_numpy() if "player_id" in df.columns
+                   else np.full(len(df), np.nan))
+        out = pd.DataFrame({"p": np.asarray(payload["model"].predict(raw, players=players), dtype=float)},
+                           index=df.index)
         out["n_missing"] = raw.isna().sum(axis=1).astype(int)
         out["n_degraded"] = -1
         out["n_required_missing"] = -1

@@ -199,9 +199,9 @@ def _drop_without_real_track(cands: pd.DataFrame) -> pd.DataFrame:
     does not define. An unreadable policy drops everything (fail closed). Every drop is logged."""
     if cands.empty:
         return cands
-    from src.bankroll_policy import REAL_STATES, load_policy, positive_fraction, track_key
+    from src.bankroll_policy import REAL_STATES, load_policy, positive_fraction, stake_entry, track_key
     try:
-        tracks = load_policy().get("tracks") or {}
+        policy = load_policy()
     except Exception as e:                                            # noqa: BLE001 - fail closed
         log.error(f"no stake: bankroll policy unreadable ({type(e).__name__}) - every candidate dropped")
         return cands.iloc[0:0]
@@ -210,7 +210,8 @@ def _drop_without_real_track(cands: pd.DataFrame) -> pd.DataFrame:
         mk = _POLICY_MARKET.get(str(r.get("market")).lower())
         if mk is None:
             return False
-        t = tracks.get(track_key(r.get("model_type"), mk, r.get("side"))) or {}
+        # the CELL's entry when per-cell staking is on (owner 2026-11-09), else the track's
+        t = stake_entry(policy, track_key(r.get("model_type"), mk, r.get("side")), r.get("league")) or {}
         return t.get("state") in REAL_STATES and positive_fraction(t)
 
     keep = cands.apply(_real, axis=1).astype(bool)

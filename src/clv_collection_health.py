@@ -101,8 +101,28 @@ def shadow_section(df: pd.DataFrame, since: pd.Timestamp | None = None) -> dict:
 
 
 # ── collection (every fixture the captures saw) ──────────────────────────────────────────────
+def _incident_mask(last: pd.DataFrame, incidents: list[dict] | None) -> pd.Series:
+    """True for fixture-markets whose kickoff falls in an owner-acknowledged capture incident
+    (config/clv_collection_expectation.json `acknowledged_incidents`): a window whose closes were
+    provably never captured (e.g. GitHub skipped the scheduled capture firings) and can never be
+    recovered because odds are pre-match only. Excluded from the PASS/FAIL figure only; the
+    unfiltered figure is always reported beside it (`including_incidents`)."""
+    m = pd.Series(False, index=last.index)
+    for inc in incidents or []:
+        lo = pd.Timestamp(inc["kickoff_from"])
+        hi = pd.Timestamp(inc["kickoff_to"])
+        lo = lo.tz_localize("UTC") if lo.tzinfo is None else lo
+        hi = hi.tz_localize("UTC") if hi.tzinfo is None else hi
+        hit = (last["_ko"] >= lo) & (last["_ko"] < hi)
+        if inc.get("track"):
+            hit &= last["track"].eq(inc["track"])
+        m |= hit
+    return m
+
+
 def collection_section(archives: list[tuple[str, pd.DataFrame | None]], now: pd.Timestamp,
-                       window_days: float = 7.0, since: pd.Timestamp | None = None) -> dict:
+                       window_days: float = 7.0, since: pd.Timestamp | None = None,
+                       incidents: list[dict] | None = None) -> dict:
     lo = now - pd.Timedelta(days=window_days)
     if since is not None and since > lo:
         lo = since                    # never judge the new capture on kickoffs from before it
@@ -140,7 +160,20 @@ def collection_section(archives: list[tuple[str, pd.DataFrame | None]], now: pd.
                 "t60_pct": _pct(int(g["minutes"].le(60).sum()), n),
                 "median_last_obs_minutes": round(float(g["minutes"].median()), 1)}
 
-    out = {"window_days": window_days, "from": str(lo), **counts(a)}
+    full = counts(a)
+    mask = _incident_mask(a, incidents)
+    excluded = []
+    for inc in incidents or []:
+        one = _incident_mask(a, [inc])
+        if one.any():
+            excluded.append({"id": inc.get("id"), "reason": inc.get("reason"), **counts(a[one])})
+    if mask.any():
+        a = a[~mask]
+    if a.empty:
+        return {"window_days": window_days, "from": str(lo), "fixture_markets": 0,
+                "including_incidents": full, "excluded_incidents": excluded}
+    out = {"window_days": window_days, "from": str(lo), **counts(a),
+           "including_incidents": full, "excluded_incidents": excluded}
     out["by_track"] = {k: counts(g) for k, g in a.groupby("track")}
     out["by_market"] = {k: counts(g) for k, g in a.groupby("market")}
     out["by_league"] = {k: counts(g) for k, g in a.groupby("league")}
@@ -171,7 +204,9 @@ def build(shadow_df: pd.DataFrame, archives: list, now=None,
                                       if since is not None else None),
         "measure_from": exp.get("measure_from"),
         # No window configured -> the collection view is not measured (it defaulted to 7 days).
-        "collection": (collection_section(archives, now_ts, float(exp["collection_window_days"]), since)
+        # Go-live merge: main's acknowledged capture incidents (2026-11-14 15:00 UTC std) are kept.
+        "collection": (collection_section(archives, now_ts, float(exp["collection_window_days"]), since,
+                                          exp.get("acknowledged_incidents") or [])
                        if exp.get("collection_window_days") is not None else None),
     }
     h["check"] = check(h, exp)
@@ -191,11 +226,13 @@ def check(h: dict, exp: dict) -> dict:
         return {"status": "NO_EXPECTATION", "reasons": [f"expectation file lacks {missing}"]}
     sh = h.get("shadow_since_measure_from")
     co = h.get("collection")
-    if sh is None or co is None:
-        return {"status": "INSUFFICIENT_SAMPLE",
-                "reasons": [("shadow" if sh is None else "collection") + " section not measured"]}
-    n_sh = int(sh["eligible"])
-    if n_sh < int(exp["min_shadow_sample"]):
+    # An unmeasured section is a reason (never a 0% FAIL), and the OTHER section is still judged: go-live merge
+    # 2026-11-17 - returning early here hid a measured collection FAIL whenever the shadow section was not
+    # measured (main's capture-incident guard, tests/test_clv_capture).
+    n_sh = None if sh is None else int(sh["eligible"])
+    if sh is None:
+        res["reasons"].append("shadow section not measured")
+    elif n_sh < int(exp["min_shadow_sample"]):
         res["reasons"].append(f"shadow sample {n_sh} < {exp['min_shadow_sample']}")
     elif sh.get("certified_t30_pct") is None:
         res["reasons"].append("certified T-30m close not measured")
@@ -203,8 +240,10 @@ def check(h: dict, exp: dict) -> dict:
         res["status"] = "FAIL"
         res["reasons"].append(f"certified T-30m close {sh.get('certified_t30_pct')}% < "
                               f"{exp['min_certified_t30_pct']}% on {n_sh} settled shadow rows")
-    n_co = int(co["fixture_markets"])
-    if n_co < int(exp["min_collection_sample"]):
+    n_co = None if co is None else int(co["fixture_markets"])
+    if co is None:
+        res["reasons"].append("collection section not measured")
+    elif n_co < int(exp["min_collection_sample"]):
         res["reasons"].append(f"collection sample {n_co} < {exp['min_collection_sample']}")
     elif co.get("t30_pct") is None:
         res["reasons"].append("collection T-30m not measured")

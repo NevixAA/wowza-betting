@@ -104,6 +104,15 @@ LEDGER_COLS = [
     # two id spaces never mix. Rows written before this are blank (unknown), never back-filled.
     "fixture_id",
     "oddsapi_event_id",
+    # THE CELL'S SERVED PROBABILITY, appended (2026-11-10): the probability the league x market x side
+    # bars_opt cell scored the tip with (its source: RAW / BLEND / SHRINK / LEARNED). wowza-exec re-checks the
+    # SAME cell measure at the Cloudbet price from it (owner 2026-11-10 'exec cells from approved bars').
+    # Blank when no cell scored the tip; rows written before it stay blank, never back-filled.
+    "cell_p_used",
+    # ONE BAR PER CELL + THE CALIBRATED EDGE, appended (owner 2026-11-11 "Clean rebuild" / "Show calibrated
+    # edge"): the tip's cell status, its qualifying bar and the edge a person is shown (percent; blank = not
+    # calibrated). The raw edge_pct stays for study. Rows written before stay blank, never back-filled.
+    "cell_status", "qualifying_bar", "edge_calibrated_pct",
 ]
 VERSION_FIELDS = ("model_version", "retrain_batch_id", "training_cutoff", "prediction_role")
 
@@ -224,7 +233,17 @@ def _load_ledger() -> pd.DataFrame:
     return pd.DataFrame(columns=LEDGER_COLS)
 
 
-_TIER_RANK = {"SNIPER": 3, "MARKSMAN": 2, "VALUABLE": 1, "": 0, "AVOID": 0, "nan": 0}
+def _cell_fields(row) -> dict:
+    """cell_status / qualifying_bar / edge_calibrated_pct of a tip row (blank when the producer did not say)."""
+    st = row.get("cell_status")
+    cal = _num(row.get("edge_calibrated"))
+    return {"cell_status": "" if st is None or (isinstance(st, float) and pd.isna(st)) else str(st),
+            "qualifying_bar": _num(row.get("qualifying_bar")),
+            "edge_calibrated_pct": "" if not isinstance(cal, float) or pd.isna(cal) else round(cal * 100, 2)}
+
+
+#: dedupe rank; QUALIFIED (owner 2026-11-11: one bar per cell, no tiers) is the only value of a future tip
+_TIER_RANK = {"QUALIFIED": 1, "SNIPER": 3, "MARKSMAN": 2, "VALUABLE": 1, "": 0, "AVOID": 0, "nan": 0}
 
 # ── Later higher tiers: an append-only research log, never the ledger (2026-10-26) ─────────────
 TIER_SEEN_NAME = "ledger_tier_seen.csv"     # beside the ledger it describes (output/)
@@ -423,6 +442,8 @@ def append_tips(bets_df: pd.DataFrame, source: str = "live") -> None:
             "notes":        "",
             **_version_fields(row, _ou_key(row.get("model_type", ""), row.get("serving_recipe"))),
             **_fixture_identity(row),
+            "cell_p_used":  _num(row.get("cell_p_used")),
+            **_cell_fields(row),
         })
 
     if flips:
@@ -450,11 +471,17 @@ SIDE_LEDGER_COLS = [
     # model attribution, appended (2026-10-18) — see LEDGER_COLS
     *VERSION_FIELDS,
     # WHICH BAR TIERED THE TIP, appended (fix9/defaults 2026-11-04): "LEAGUE" = the league's own
-    # approved sniper/marksman bars, "GLOBAL" = the declared global policy bar (config.SIDE_GLOBAL_BARS;
+    # approved sniper/marksman bars, "GLOBAL" = the global bar that served until 2026-11-09 (config.HISTORICAL_SIDE_GLOBAL_BARS;
     # src/side_thresholds). Rows logged before it are blank: the bar of a past tip was not recorded
     # in its row, so it is not written in afterwards (logged rows stand). Reconstructed 2026-11-04
     # from the params file in force at each generated_at: 525 of 664 live tips were GLOBAL-bar tiers.
     "threshold_source",
+    # THE CELL'S SERVED PROBABILITY, appended (2026-11-10): the probability the league x market x side
+    # bars_opt cell scored the tip with (its source: RAW / BLEND / SHRINK / LEARNED). wowza-exec re-checks the
+    # SAME cell measure at the Cloudbet price from it (owner 2026-11-10 'exec cells from approved bars').
+    # Blank when no cell scored the tip; rows written before it stay blank, never back-filled.
+    "cell_p_used",
+    "cell_status", "qualifying_bar", "edge_calibrated_pct",      # see LEDGER_COLS (owner 2026-11-11)
 ]
 _SIDE_RANK = _TIER_RANK
 
@@ -472,7 +499,7 @@ def _load_side_ledger() -> pd.DataFrame:
 _SIDE_OF_MARKET = {"btts": "YES", "over15": "OVER", "over35": "OVER"}
 
 
-def append_side_market_tips(side_df: pd.DataFrame, source: str = "live") -> None:
+def append_side_market_tips(side_df: pd.DataFrame, source: str = "live") -> pd.DataFrame:
     """Append BTTS / Over 1.5 / Over 3.5 tips to their OWN ledger (side_bets_ledger.csv),
     one row per (fixture, market), ALL tiers. Same rule as append_tips: the FIRST logged tier stands,
     a later higher tier goes to the research log (ledger_tier_seen.csv), never into the row.
@@ -481,9 +508,14 @@ def append_side_market_tips(side_df: pd.DataFrame, source: str = "live") -> None
     markets are now tracked for the season-long live test. result/pnl/closing_odds/clv fill
     in when a settling pass runs; until then rows are 'pending' and readers skip them
     (`_settled_only`), so an unsettled ledger never breaks a summary.
+
+    RETURNS the rows of `side_df` the ledger holds AS THESE TIPS (go-live rehearsal 2026-11-15): a row
+    logged now, or one already logged by the SAME model version (an earlier run of this model). A row
+    deduplicated against an older tip of another model (e.g. a pre-go-live SNIPER row) or a repeat
+    within the batch is not returned. The stake plan sizes only these, so every stake has its ledger row.
     """
     if side_df is None or side_df.empty:
-        return
+        return side_df if side_df is not None else pd.DataFrame()
     existing = _load_side_ledger()
     now   = datetime.utcnow().strftime("%Y-%m-%d %H:%M")
     today = now[:10]
@@ -497,8 +529,16 @@ def append_side_market_tips(side_df: pd.DataFrame, source: str = "live") -> None
              str(r["market"]), str(r["source"]))
         key_to_idx[k] = i
 
-    new_rows, batch = [], set()
-    for _, row in side_df.iterrows():
+    new_rows, batch, accepted = [], set(), []
+    _cur_version: dict = {}
+
+    def _same_model(i, market) -> bool:
+        if market not in _cur_version:
+            _cur_version[market] = str(_version_fields({}, market).get("model_version", "") or "")
+        v = existing.at[i, "model_version"] if "model_version" in existing.columns else None
+        return bool(_cur_version[market]) and pd.notna(v) and str(v) == _cur_version[market]
+
+    for idx, (_, row) in enumerate(side_df.iterrows()):      # idx = position (the index may repeat)
         market     = str(row.get("market", ""))
         match_date = str(row["date"])[:10]
         home       = str(row["home_team"])
@@ -516,6 +556,9 @@ def append_side_market_tips(side_df: pd.DataFrame, source: str = "live") -> None
             # Already logged. The logged tier, odds, edge and ev STAND (2026-10-26): the row is settled
             # and CLV-graded at the price it was logged at. A higher tier is research info only.
             i   = key_to_idx[key]
+            if key not in batch and _same_model(i, market):
+                accepted.append(idx)            # this model's tip, logged by an earlier run
+                batch.add(key)
             cur = str(existing.at[i, "signal_tier"])
             rank = _SIDE_RANK.get(tier, 0)
             seen_key = (source, match_date, home, away, market)
@@ -532,6 +575,7 @@ def append_side_market_tips(side_df: pd.DataFrame, source: str = "live") -> None
         if key in batch:
             continue
         batch.add(key)
+        accepted.append(idx)
 
         new_rows.append({
             "source": source, "generated_at": now, "signal_date": today,
@@ -552,15 +596,22 @@ def append_side_market_tips(side_df: pd.DataFrame, source: str = "live") -> None
             # recorded by the producer (pipeline._generate_side_bets); blank when it did not say
             "threshold_source": (str(row["threshold_source"])
                                  if pd.notna(row.get("threshold_source")) else ""),
+            "cell_p_used": _num(row.get("cell_p_used")),
+            **_cell_fields(row),
         })
 
     _record_tiers_seen(tier_seen_rows, tier_seen_path)
+    out = side_df.iloc[accepted]
+    if len(out) < len(side_df):
+        log.info(f"Side ledger: {len(side_df) - len(out)} tip(s) already logged as an older tip (another model "
+                 f"version) or repeated - not this run's ledger tips, so not staked")
     if not new_rows:
         log.info("Side ledger: no new tips (all already logged).")
-        return
+        return out
     updated = pd.concat([existing, pd.DataFrame(new_rows, columns=SIDE_LEDGER_COLS)], ignore_index=True)
     updated.to_csv(SIDE_LEDGER_FILE, index=False)
     log.info(f"Side ledger: {len(new_rows)} new tip(s); logged rows unchanged → {SIDE_LEDGER_FILE}")
+    return out
 
 
 # ── HT (half-time O/U) ledger ───────────────────────────────────────────────────
@@ -581,15 +632,11 @@ HT_LEDGER_COLS = [
 #: Informational only. HT is PAPER — these labels let HT be read on the same axis as the other
 #: ledgers; they do NOT authorise a stake, and nothing reads them to size one.
 def _ht_tier(edge: float | None) -> str:
+    """Owner 2026-11-11 ("Clean rebuild"): no SNIPER / MARKSMAN / VALUABLE on a future row. HT has no
+    owner-approved cell, so an HT row is never a tip: PAPER (priced, recorded for study) or NO_PRICE."""
     if edge is None or pd.isna(edge):
         return "NO_PRICE"
-    if edge >= 0.10:
-        return "SNIPER"
-    if edge >= 0.05:
-        return "MARKSMAN"
-    if edge >= 0.02:
-        return "VALUABLE"
-    return "AVOID"
+    return "PAPER"
 
 
 def _ht_price_lookup():
@@ -732,7 +779,7 @@ def print_ledger() -> None:
         if grp.empty:
             continue
         print(f"\n  [{src.upper()}]")
-        for tier in ["SNIPER", "MARKSMAN", "VALUABLE"]:
+        for tier in ["QUALIFIED", "SNIPER", "MARKSMAN", "VALUABLE"]:
             t = grp[grp["signal_tier"] == tier]
             if t.empty:
                 continue

@@ -356,26 +356,105 @@ date,league,match,score,elapsed_mins,signal_type,bet,fair_under_odds,fair_over_o
 2026-10-31,La Liga 2,Albacete vs Sabadell,2-0,52,UNDER_RECOVERY,UNDER 2.5,1.97,2.03,0.5075,0.4925,0.463,21:20,3.0,2.0,LOSS
 2026-10-31,Argentina Primera Division,Velez Sarsfield vs San Lorenzo,0-0,20,HT_OVER_0.5,HT OVER 0.5,1.88,2.14,0.5317,0.4683,0.397,22:35,4.0,3.0,WIN
 2026-10-31,Argentina Primera Division,Velez Sarsfield vs San Lorenzo,2-0,25,UNDER_RECOVERY,UNDER 2.5,10.65,1.1,0.0939,0.9061,0.397,22:40,4.0,3.0,LOSS
-2026-11-01,Japan J-League,JEF United Chiba vs Avispa Fukuoka,1-0,37,HT_UNDER_1.5,HT UNDER 1.5,1.27,4.65,0.7847,0.2153,0.513,05:39,,,
-2026-11-01,Japan J-League,V-varen Nagasaki vs Tokyo Verdy,0-0,37,HT_UNDER_0.5,HT UNDER 0.5,1.26,4.91,0.7965,0.2035,0.471,05:39,,,
-2026-11-01,Bundesliga 2,Hannover 96 vs Dynamo Dresden,0-1,35,HT_UNDER_1.5,HT UNDER 1.5,1.36,3.78,0.7356,0.2644,0.522,13:05,,,
-2026-11-01,Bundesliga 2,FC St. Pauli vs 1. FC Nürnberg,0-1,35,HT_UNDER_1.5,HT UNDER 1.5,1.38,3.65,0.7261,0.2739,0.549,13:05,,,
-2026-11-01,Sweden Allsvenskan,Malmo FF vs Hammarby FF,1-0,30,HT_UNDER_1.5,HT UNDER 1.5,1.5,2.98,0.6649,0.3351,0.443,13:30,,,
-2026-11-01,Sweden Allsvenskan,Djurgardens IF vs Degerfors IF,1-0,35,HT_UNDER_1.5,HT UNDER 1.5,1.41,3.44,0.7089,0.2911,0.598,13:35,,,
-2026-11-01,Austrian Bundesliga,Wolfsberger AC vs Sturm Graz,0-0,20,HT_UNDER_1.5,HT UNDER 1.5,1.22,5.57,0.8203,0.1797,0.522,13:50,,,
-2026-11-01,Austrian Bundesliga,Wolfsberger AC vs Sturm Graz,0-0,35,HT_UNDER_0.5,HT UNDER 0.5,1.36,3.78,0.7356,0.2644,0.522,14:05,,,
-2026-11-01,Serie B,Arezzo vs Ascoli,0-0,24,HT_OVER_0.5,HT OVER 0.5,1.92,2.09,0.5208,0.4792,0.53,14:25,,,
-2026-11-01,League One,Sheffield Wednesday vs Blackpool,0-0,22,HT_UNDER_1.5,HT UNDER 1.5,1.19,6.28,0.8407,0.1593,0.525,14:25,,,
-2026-11-01,Serie B,Avellino vs Pisa,0-0,22,HT_UNDER_1.5,HT UNDER 1.5,1.2,6.03,0.8342,0.1658,0.543,14:25,,,
-2026-11-01,Serie B,Arezzo vs Ascoli,0-0,39,HT_UNDER_0.5,HT UNDER 0.5,1.2,5.88,0.8299,0.1701,0.53,14:40,,,
-2026-11-01,Serie B,Empoli vs Juve Stabia,0-1,39,HT_UNDER_1.5,HT UNDER 1.5,1.19,6.29,0.8411,0.1589,0.48,14:40,,,
-2026-11-01,Serie B,Avellino vs Pisa,1-0,55,STRONG_STUCK,OVER 2.5,1.48,3.1,0.6773,0.3227,0.543,15:15,,,
-2026-11-01,Denmark Superliga,FC Nordsjaelland vs FC Midtjylland,1-0,28,HT_UNDER_1.5,HT UNDER 1.5,1.55,2.82,0.6451,0.3549,0.41,15:30,,,
-2026-11-01,Denmark Superliga,FC Nordsjaelland vs FC Midtjylland,2-0,38,UNDER_RECOVERY,UNDER 2.5,12.11,1.09,0.0826,0.9174,0.41,15:40,,,
-2026-11-01,La Liga 2,AD Ceuta FC vs Sporting Gijon,0-0,24,HT_OVER_0.5,HT OVER 0.5,1.87,2.15,0.5343,0.4657,0.503,15:40,,,
-2026-11-01,La Liga 2,AD Ceuta FC vs Sporting Gijon,0-1,34,HT_UNDER_1.5,HT UNDER 1.5,1.39,3.57,0.7202,0.2798,0.503,15:50,,,
-2026-11-02,USA MLS,New England Revolution vs Inter Miami,0-0,21,HT_UNDER_1.5,HT UNDER 1.5,1.28,4.56,0.7807,0.2193,0.639,00:46,,,
-2026-11-02,Argentina Primera Division,Lanus vs Gimnasia M.,1-0,49,UNDER_HOLD,UNDER 2.5,1.29,4.46,0.7757,0.2243,0.418,00:56,,,
-2026-11-02,USA MLS,New England Revolution vs Inter Miami,0-0,36,HT_UNDER_0.5,HT UNDER 0.5,1.39,3.57,0.7196,0.2804,0.639,01:01,,,
-2026-11-02,USA MLS,Los Angeles FC vs Minnesota United FC,0-0,21,HT_UNDER_1.5,HT UNDER 1.5,1.28,4.53,0.7794,0.2206,0.641,02:01,,,
-2026-11-02,USA MLS,Portland Timbers vs Houston Dynamo,0-0,21,HT_UNDER_1.5,HT UNDER 1.5,1.3,4.36,0.7705,0.2295,0.659,03:16,,,
+2026-11-01,Japan J-League,JEF United Chiba vs Avispa Fukuoka,1-0,37,HT_UNDER_1.5,HT UNDER 1.5,1.27,4.65,0.7847,0.2153,0.513,05:39,3.0,1.0,WIN
+2026-11-01,Japan J-League,V-varen Nagasaki vs Tokyo Verdy,0-0,37,HT_UNDER_0.5,HT UNDER 0.5,1.26,4.91,0.7965,0.2035,0.471,05:39,3.0,1.0,LOSS
+2026-11-01,Bundesliga 2,Hannover 96 vs Dynamo Dresden,0-1,35,HT_UNDER_1.5,HT UNDER 1.5,1.36,3.78,0.7356,0.2644,0.522,13:05,3.0,1.0,WIN
+2026-11-01,Bundesliga 2,FC St. Pauli vs 1. FC Nürnberg,0-1,35,HT_UNDER_1.5,HT UNDER 1.5,1.38,3.65,0.7261,0.2739,0.549,13:05,4.0,1.0,WIN
+2026-11-01,Sweden Allsvenskan,Malmo FF vs Hammarby FF,1-0,30,HT_UNDER_1.5,HT UNDER 1.5,1.5,2.98,0.6649,0.3351,0.443,13:30,3.0,1.0,WIN
+2026-11-01,Sweden Allsvenskan,Djurgardens IF vs Degerfors IF,1-0,35,HT_UNDER_1.5,HT UNDER 1.5,1.41,3.44,0.7089,0.2911,0.598,13:35,3.0,2.0,LOSS
+2026-11-01,Austrian Bundesliga,Wolfsberger AC vs Sturm Graz,0-0,20,HT_UNDER_1.5,HT UNDER 1.5,1.22,5.57,0.8203,0.1797,0.522,13:50,2.0,1.0,WIN
+2026-11-01,Austrian Bundesliga,Wolfsberger AC vs Sturm Graz,0-0,35,HT_UNDER_0.5,HT UNDER 0.5,1.36,3.78,0.7356,0.2644,0.522,14:05,2.0,1.0,LOSS
+2026-11-01,Serie B,Arezzo vs Ascoli,0-0,24,HT_OVER_0.5,HT OVER 0.5,1.92,2.09,0.5208,0.4792,0.53,14:25,0.0,0.0,LOSS
+2026-11-01,League One,Sheffield Wednesday vs Blackpool,0-0,22,HT_UNDER_1.5,HT UNDER 1.5,1.19,6.28,0.8407,0.1593,0.525,14:25,2.0,1.0,WIN
+2026-11-01,Serie B,Avellino vs Pisa,0-0,22,HT_UNDER_1.5,HT UNDER 1.5,1.2,6.03,0.8342,0.1658,0.543,14:25,2.0,1.0,WIN
+2026-11-01,Serie B,Arezzo vs Ascoli,0-0,39,HT_UNDER_0.5,HT UNDER 0.5,1.2,5.88,0.8299,0.1701,0.53,14:40,0.0,0.0,WIN
+2026-11-01,Serie B,Empoli vs Juve Stabia,0-1,39,HT_UNDER_1.5,HT UNDER 1.5,1.19,6.29,0.8411,0.1589,0.48,14:40,4.0,3.0,LOSS
+2026-11-01,Serie B,Avellino vs Pisa,1-0,55,STRONG_STUCK,OVER 2.5,1.48,3.1,0.6773,0.3227,0.543,15:15,2.0,1.0,LOSS
+2026-11-01,Denmark Superliga,FC Nordsjaelland vs FC Midtjylland,1-0,28,HT_UNDER_1.5,HT UNDER 1.5,1.55,2.82,0.6451,0.3549,0.41,15:30,5.0,2.0,LOSS
+2026-11-01,Denmark Superliga,FC Nordsjaelland vs FC Midtjylland,2-0,38,UNDER_RECOVERY,UNDER 2.5,12.11,1.09,0.0826,0.9174,0.41,15:40,5.0,2.0,LOSS
+2026-11-01,La Liga 2,AD Ceuta FC vs Sporting Gijon,0-0,24,HT_OVER_0.5,HT OVER 0.5,1.87,2.15,0.5343,0.4657,0.503,15:40,2.0,1.0,WIN
+2026-11-01,La Liga 2,AD Ceuta FC vs Sporting Gijon,0-1,34,HT_UNDER_1.5,HT UNDER 1.5,1.39,3.57,0.7202,0.2798,0.503,15:50,2.0,1.0,WIN
+2026-11-02,USA MLS,New England Revolution vs Inter Miami,0-0,21,HT_UNDER_1.5,HT UNDER 1.5,1.28,4.56,0.7807,0.2193,0.639,00:46,3.0,0.0,WIN
+2026-11-02,Argentina Primera Division,Lanus vs Gimnasia M.,1-0,49,UNDER_HOLD,UNDER 2.5,1.29,4.46,0.7757,0.2243,0.418,00:56,2.0,1.0,WIN
+2026-11-02,USA MLS,New England Revolution vs Inter Miami,0-0,36,HT_UNDER_0.5,HT UNDER 0.5,1.39,3.57,0.7196,0.2804,0.639,01:01,3.0,0.0,WIN
+2026-11-02,USA MLS,Los Angeles FC vs Minnesota United FC,0-0,21,HT_UNDER_1.5,HT UNDER 1.5,1.28,4.53,0.7794,0.2206,0.641,02:01,4.0,2.0,LOSS
+2026-11-02,USA MLS,Portland Timbers vs Houston Dynamo,0-0,21,HT_UNDER_1.5,HT UNDER 1.5,1.3,4.36,0.7705,0.2295,0.659,03:16,4.0,1.0,WIN
+2026-11-02,Argentina Primera Division,Platense vs Central Cordoba de Santiago,0-0,20,HT_UNDER_1.5,HT UNDER 1.5,1.19,6.37,0.8431,0.1569,0.464,22:19,2.0,0.0,WIN
+2026-11-02,Argentina Primera Division,Defensa Y Justicia vs Independiente,0-0,23,HT_OVER_0.5,HT OVER 0.5,1.79,2.26,0.5578,0.4422,0.427,22:24,2.0,2.0,WIN
+2026-11-02,Argentina Primera Division,Platense vs Central Cordoba de Santiago,0-0,35,HT_UNDER_0.5,HT UNDER 0.5,1.32,4.08,0.7549,0.2451,0.464,22:34,2.0,0.0,WIN
+2026-11-02,Argentina Primera Division,Defensa Y Justicia vs Independiente,1-0,38,HT_UNDER_1.5,HT UNDER 1.5,1.2,5.9,0.8305,0.1695,0.427,22:39,2.0,2.0,LOSS
+2026-11-02,Argentina Primera Division,Defensa Y Justicia vs Independiente,1-1,45,UNDER_RECOVERY,UNDER 2.5,3.4,1.42,0.2941,0.7059,0.427,22:49,2.0,2.0,WIN
+2026-11-03,Brazil Serie A,Chapecoense-sc vs Mirassol,1-0,37,HT_UNDER_1.5,HT UNDER 1.5,1.23,5.36,0.8135,0.1865,0.41,23:09,3.0,2.0,LOSS
+2026-11-03,Brazil Serie A,Chapecoense-sc vs Mirassol,1-0,45,UNDER_HOLD,UNDER 2.5,1.38,3.66,0.7269,0.2731,0.41,23:19,3.0,2.0,LOSS
+2026-11-03,Brazil Serie A,Chapecoense-sc vs Mirassol,1-1,45,UNDER_RECOVERY,UNDER 2.5,2.78,1.56,0.3591,0.6409,0.41,23:24,3.0,2.0,LOSS
+2026-11-04,Brazil Serie A,Internacional vs Coritiba,0-0,39,HT_UNDER_0.5,HT UNDER 0.5,1.21,5.69,0.8243,0.1757,0.554,01:09,1.0,0.0,WIN
+2026-11-04,Brazil Serie A,Atletico Paranaense vs Vasco DA Gama,1-0,33,HT_UNDER_1.5,HT UNDER 1.5,1.5,3.01,0.6674,0.3326,0.584,23:03,4.0,1.0,WIN
+2026-11-05,Argentina Primera Division,Aldosivi vs River Plate,0-0,38,HT_UNDER_0.5,HT UNDER 0.5,1.2,6.06,0.8351,0.1649,0.409,18:37,2.0,0.0,WIN
+2026-11-05,Argentina Primera Division,Aldosivi vs River Plate,1-0,64,UNDER_HOLD,UNDER 2.5,1.3,4.3,0.7675,0.2325,0.409,19:22,2.0,0.0,WIN
+2026-11-06,Brazil Serie A,Cruzeiro vs Bahia,0-0,21,HT_UNDER_1.5,HT UNDER 1.5,1.25,4.94,0.7975,0.2025,0.603,00:51,5.0,2.0,LOSS
+2026-11-06,Brazil Serie A,Cruzeiro vs Bahia,0-0,26,HT_OVER_0.5,HT OVER 0.5,1.93,2.07,0.5179,0.4821,0.603,00:56,5.0,2.0,WIN
+2026-11-06,Denmark Superliga,Silkeborg vs Lyngby,0-0,23,HT_UNDER_1.5,HT UNDER 1.5,1.26,4.85,0.7937,0.2063,0.669,18:22,1.0,0.0,WIN
+2026-11-06,Argentina Primera Division,Barracas Central vs Racing Club,0-0,22,HT_OVER_0.5,HT OVER 0.5,1.77,2.29,0.564,0.436,0.388,18:22,2.0,1.0,WIN
+2026-11-06,Denmark Superliga,Silkeborg vs Lyngby,0-0,38,HT_UNDER_0.5,HT UNDER 0.5,1.31,4.26,0.765,0.235,0.669,18:37,1.0,0.0,WIN
+2026-11-06,Argentina Primera Division,Barracas Central vs Racing Club,0-0,37,HT_UNDER_0.5,HT UNDER 0.5,1.22,5.54,0.8194,0.1806,0.388,18:37,2.0,1.0,LOSS
+2026-11-06,Sweden Allsvenskan,Hammarby FF vs IF Elfsborg,0-0,24,HT_UNDER_1.5,HT UNDER 1.5,1.18,6.64,0.8494,0.1506,0.562,19:07,5.0,1.0,WIN
+2026-11-06,Argentina Primera Division,Barracas Central vs Racing Club,1-0,49,UNDER_HOLD,UNDER 2.5,1.28,4.6,0.7827,0.2173,0.388,19:12,2.0,1.0,WIN
+2026-11-06,Sweden Allsvenskan,Hammarby FF vs IF Elfsborg,0-0,29,HT_OVER_0.5,HT OVER 0.5,1.69,2.46,0.5935,0.4065,0.562,19:12,5.0,1.0,WIN
+2026-11-06,Sweden Allsvenskan,Hammarby FF vs IF Elfsborg,0-0,39,HT_UNDER_0.5,HT UNDER 0.5,1.22,5.63,0.8223,0.1777,0.562,19:22,5.0,1.0,LOSS
+2026-11-06,Ligue 2,Dijon vs RED Star FC 93,0-0,23,HT_OVER_0.5,HT OVER 0.5,1.97,2.03,0.5082,0.4918,0.523,19:22,1.0,0.0,LOSS
+2026-11-06,Ligue 2,Montpellier vs Metz,0-0,22,HT_UNDER_1.5,HT UNDER 1.5,1.18,6.52,0.8466,0.1534,0.509,19:22,5.0,2.0,LOSS
+2026-11-06,Ligue 2,Nancy vs Sochaux,0-0,22,HT_OVER_0.5,HT OVER 0.5,1.96,2.04,0.5097,0.4903,0.491,19:22,1.0,0.0,LOSS
+2026-11-06,Argentina Primera Division,Union Santa Fe vs Velez Sarsfield,2-0,43,UNDER_RECOVERY,UNDER 2.5,3.94,1.34,0.2539,0.7461,0.495,22:57,2.0,2.0,WIN
+2026-11-06,Argentina Primera Division,Independiente vs Deportivo Riestra,1-0,45,UNDER_HOLD,UNDER 2.5,1.37,3.71,0.7302,0.2698,0.397,23:02,3.0,1.0,LOSS
+2026-11-06,Argentina Primera Division,San Lorenzo vs Platense,0-1,45,UNDER_HOLD,UNDER 2.5,1.53,2.9,0.6551,0.3449,0.423,23:02,2.0,1.0,WIN
+2026-11-06,Argentina Primera Division,San Lorenzo vs Platense,0-2,54,UNDER_RECOVERY,UNDER 2.5,3.12,1.47,0.3203,0.6797,0.423,23:32,2.0,1.0,WIN
+2026-11-06,Brazil Serie A,Vitoria vs Fluminense,0-1,32,HT_UNDER_1.5,HT UNDER 1.5,1.52,2.93,0.6583,0.3417,0.553,23:32,3.0,2.0,LOSS
+2026-11-06,Argentina Primera Division,Union Santa Fe vs Velez Sarsfield,2-0,69,COMEBACK,OVER 2.5,1.55,2.81,0.6441,0.3559,0.495,23:47,2.0,2.0,LOSS
+2026-11-07,Japan J-League,Yokohama F. Marinos vs Fagiano Okayama,0-0,35,HT_UNDER_0.5,HT UNDER 0.5,1.39,3.57,0.7196,0.2804,0.568,05:39,2.0,2.0,LOSS
+2026-11-07,Japan J-League,Avispa Fukuoka vs V-varen Nagasaki,0-1,30,HT_UNDER_1.5,HT UNDER 1.5,1.58,2.72,0.6321,0.3679,0.519,06:34,2.0,1.0,WIN
+2026-11-07,Japan J-League,Kashiwa Reysol vs Kawasaki Frontale,0-0,20,HT_UNDER_1.5,HT UNDER 1.5,1.29,4.43,0.7745,0.2255,0.624,07:24,3.0,2.0,LOSS
+2026-11-07,Japan J-League,Kashiwa Reysol vs Kawasaki Frontale,0-0,30,HT_OVER_0.5,HT OVER 0.5,1.71,2.41,0.5847,0.4153,0.624,07:34,3.0,2.0,WIN
+2026-11-07,Japan J-League,Kashiwa Reysol vs Kawasaki Frontale,0-0,35,HT_UNDER_0.5,HT UNDER 0.5,1.43,3.32,0.6992,0.3008,0.624,07:39,3.0,2.0,LOSS
+2026-11-07,Championship,Portsmouth vs Stoke City,1-0,29,HT_UNDER_1.5,HT UNDER 1.5,1.61,2.64,0.6205,0.3795,0.503,12:58,3.0,1.0,WIN
+2026-11-07,Serie B,Juve Stabia vs Arezzo,1-0,30,HT_UNDER_1.5,HT UNDER 1.5,1.58,2.74,0.6344,0.3656,0.514,14:34,1.0,1.0,WIN
+2026-11-07,Serie B,Padova vs Empoli,1-0,29,HT_UNDER_1.5,HT UNDER 1.5,1.58,2.72,0.6324,0.3676,0.476,14:34,4.0,3.0,LOSS
+2026-11-07,Serie B,Padova vs Empoli,1-1,34,UNDER_RECOVERY,UNDER 2.5,8.27,1.14,0.1209,0.8791,0.476,14:39,4.0,3.0,LOSS
+2026-11-07,Championship,Blackburn vs West Ham,0-0,24,HT_OVER_0.5,HT OVER 0.5,1.92,2.08,0.5203,0.4797,0.53,15:24,3.0,0.0,LOSS
+2026-11-07,Championship,Watford vs Middlesbrough,0-0,23,HT_UNDER_1.5,HT UNDER 1.5,1.18,6.59,0.8481,0.1519,0.535,15:24,0.0,0.0,WIN
+2026-11-07,Championship,West Brom vs Millwall,0-0,23,HT_OVER_0.5,HT OVER 0.5,1.93,2.08,0.519,0.481,0.502,15:24,3.0,0.0,LOSS
+2026-11-07,Championship,Charlton vs Sheffield Utd,1-1,27,UNDER_RECOVERY,UNDER 2.5,7.49,1.15,0.1336,0.8664,0.498,15:29,3.0,2.0,LOSS
+2026-11-07,Championship,Watford vs Middlesbrough,0-0,27,HT_OVER_0.5,HT OVER 0.5,1.76,2.32,0.5693,0.4307,0.535,15:29,0.0,0.0,LOSS
+2026-11-07,Bundesliga 2,Hertha BSC vs VfL Wolfsburg,0-0,20,HT_UNDER_1.5,HT UNDER 1.5,1.25,4.99,0.7998,0.2002,0.57,19:50,3.0,2.0,LOSS
+2026-11-07,Bundesliga 2,Hertha BSC vs VfL Wolfsburg,0-0,25,HT_OVER_0.5,HT OVER 0.5,1.93,2.07,0.5169,0.4831,0.57,19:55,3.0,2.0,WIN
+2026-11-07,Bundesliga 2,Hertha BSC vs VfL Wolfsburg,0-0,35,HT_UNDER_0.5,HT UNDER 0.5,1.39,3.56,0.7189,0.2811,0.57,20:05,3.0,2.0,LOSS
+2026-11-07,Argentina Primera Division,Boca Juniors vs Defensa Y Justicia,0-0,20,HT_UNDER_1.5,HT UNDER 1.5,1.21,5.85,0.8292,0.1708,0.5,20:50,1.0,0.0,WIN
+2026-11-07,Argentina Primera Division,Rosario Central vs Estudiantes de Rio Cuarto,0-0,20,HT_UNDER_1.5,HT UNDER 1.5,1.22,5.49,0.8179,0.1821,0.528,20:50,2.0,1.0,WIN
+2026-11-07,Argentina Primera Division,Boca Juniors vs Defensa Y Justicia,0-0,25,HT_OVER_0.5,HT OVER 0.5,1.81,2.23,0.552,0.448,0.5,20:55,1.0,0.0,LOSS
+2026-11-07,Argentina Primera Division,Rosario Central vs Estudiantes de Rio Cuarto,0-0,25,HT_OVER_0.5,HT OVER 0.5,1.86,2.17,0.5382,0.4618,0.528,20:55,2.0,1.0,WIN
+2026-11-07,Argentina Primera Division,Boca Juniors vs Defensa Y Justicia,0-0,35,HT_UNDER_0.5,HT UNDER 0.5,1.35,3.89,0.743,0.257,0.5,21:05,1.0,0.0,WIN
+2026-11-07,Argentina Primera Division,Rosario Central vs Estudiantes de Rio Cuarto,0-0,35,HT_UNDER_0.5,HT UNDER 0.5,1.36,3.75,0.7336,0.2664,0.528,21:05,2.0,1.0,LOSS
+2026-11-07,USA MLS,FC Cincinnati vs Nashville SC,0-0,21,HT_UNDER_1.5,HT UNDER 1.5,1.19,6.3,0.8412,0.1588,0.496,21:30,2.0,0.0,WIN
+2026-11-07,USA MLS,Philadelphia Union vs Toronto FC,0-0,21,HT_UNDER_1.5,HT UNDER 1.5,1.25,5.04,0.8016,0.1984,0.594,21:30,5.0,3.0,LOSS
+2026-11-07,USA MLS,New York Red Bulls vs Atlanta United FC,0-0,21,HT_UNDER_1.5,HT UNDER 1.5,1.22,5.6,0.8214,0.1786,0.546,21:30,3.0,1.0,WIN
+2026-11-07,USA MLS,CF Montreal vs Vancouver Whitecaps,0-0,21,HT_UNDER_1.5,HT UNDER 1.5,1.2,6.03,0.8341,0.1659,0.514,21:30,2.0,0.0,WIN
+2026-11-07,USA MLS,Orlando City SC vs New England Revolution,0-0,21,HT_UNDER_1.5,HT UNDER 1.5,1.26,4.87,0.7947,0.2053,0.609,21:30,1.0,1.0,WIN
+2026-11-07,USA MLS,FC Cincinnati vs Nashville SC,0-0,26,HT_OVER_0.5,HT OVER 0.5,1.75,2.33,0.5707,0.4293,0.496,21:35,2.0,0.0,LOSS
+2026-11-07,USA MLS,Philadelphia Union vs Toronto FC,0-0,26,HT_OVER_0.5,HT OVER 0.5,1.91,2.09,0.5225,0.4775,0.594,21:35,5.0,3.0,WIN
+2026-11-07,USA MLS,CF Montreal vs Vancouver Whitecaps,0-0,26,HT_OVER_0.5,HT OVER 0.5,1.78,2.28,0.5616,0.4384,0.514,21:35,2.0,0.0,LOSS
+2026-11-07,USA MLS,Orlando City SC vs New England Revolution,0-0,26,HT_OVER_0.5,HT OVER 0.5,1.94,2.06,0.5147,0.4853,0.609,21:35,1.0,1.0,WIN
+2026-11-07,USA MLS,Inter Miami vs Charlotte,1-0,31,HT_UNDER_1.5,HT UNDER 1.5,1.58,2.71,0.6316,0.3684,0.566,21:40,6.0,3.0,LOSS
+2026-11-07,USA MLS,FC Cincinnati vs Nashville SC,0-0,35,HT_UNDER_0.5,HT UNDER 0.5,1.34,3.91,0.7444,0.2556,0.496,21:45,2.0,0.0,WIN
+2026-11-07,USA MLS,CF Montreal vs Vancouver Whitecaps,0-0,35,HT_UNDER_0.5,HT UNDER 0.5,1.35,3.82,0.7381,0.2619,0.514,21:45,2.0,0.0,WIN
+2026-11-07,USA MLS,Orlando City SC vs New England Revolution,0-0,35,HT_UNDER_0.5,HT UNDER 0.5,1.42,3.39,0.705,0.295,0.609,21:45,1.0,1.0,LOSS
+2026-11-08,USA MLS,Seattle Sounders vs Los Angeles FC,2-0,55,UNDER_RECOVERY,UNDER 2.5,2.73,1.58,0.3659,0.6341,0.496,01:26,3.0,2.0,LOSS
+2026-11-08,Argentina Primera Division,Instituto Cordoba vs Newells Old Boys,1-0,31,HT_UNDER_1.5,HT UNDER 1.5,1.49,3.02,0.6691,0.3309,0.477,01:31,4.0,1.0,WIN
+2026-11-08,Bundesliga 2,1. FC Heidenheim vs Hannover 96,0-0,22,HT_UNDER_1.5,HT UNDER 1.5,1.22,5.51,0.8185,0.1815,0.582,12:51,4.0,1.0,WIN
+2026-11-08,Bundesliga 2,1. FC Magdeburg vs FC St. Pauli,0-0,21,HT_UNDER_1.5,HT UNDER 1.5,1.23,5.28,0.8107,0.1893,0.572,12:51,5.0,1.0,WIN
+2026-11-08,Argentina Primera Division,Central Cordoba de Santiago vs Lanus,1-0,36,HT_UNDER_1.5,HT UNDER 1.5,1.22,5.65,0.8229,0.1771,0.309,23:05,2.0,2.0,LOSS
+2026-11-08,Argentina Primera Division,Central Cordoba de Santiago vs Lanus,1-1,45,UNDER_RECOVERY,UNDER 2.5,2.58,1.63,0.3869,0.6131,0.309,23:15,2.0,2.0,WIN
+2026-11-14,League Two,Fleetwood Town vs Tranmere,0-0,23,HT_OVER_0.5,HT OVER 0.5,1.97,2.03,0.5072,0.4928,0.525,17:53,1.0,0.0,LOSS
+2026-11-14,League Two,Fleetwood Town vs Tranmere,0-0,38,HT_UNDER_0.5,HT UNDER 0.5,1.24,5.15,0.8057,0.1943,0.525,18:08,1.0,0.0,WIN
+2026-11-15,Brazil Serie A,Chapecoense-sc vs Vasco DA Gama,0-1,38,HT_UNDER_1.5,HT UNDER 1.5,1.22,5.54,0.8195,0.1805,0.471,00:09,2.0,1.0,WIN
+2026-11-15,La Liga 2,Granada CF vs Las Palmas,0-0,24,HT_OVER_0.5,HT OVER 0.5,1.88,2.14,0.5331,0.4669,0.505,15:38,1.0,0.0,LOSS
+2026-11-15,La Liga 2,Granada CF vs Las Palmas,0-0,39,HT_UNDER_0.5,HT UNDER 0.5,1.2,6.08,0.8355,0.1645,0.505,15:53,1.0,0.0,WIN
+2026-11-18,Brazil Serie A,Coritiba vs Santos,0-0,21,HT_UNDER_1.5,HT UNDER 1.5,1.19,6.18,0.8381,0.1619,0.504,22:55,1,0,WIN

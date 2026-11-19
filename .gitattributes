@@ -81,3 +81,10 @@ output/newformat_odds_dense.csv              text eol=lf
 output/book_odds_snapshots.csv               text eol=lf
 output/book_odds_snapshots_archive/*.csv     text eol=lf
 output/api_usage_log.csv                     text eol=lf
+
+# PREDICTION LEDGER (src/prediction_ledger.py, 2026-11-17). Raw partitions are APPEND-ONLY CSV (first write
+# wins, never edited in place) with one writer workflow each, so union is the lossless resolution; a
+# duplicate line union could ever create is caught by Data truth 12 (duplicate key). The settled view
+# (output/prediction_ledger_settled/) is a full rewrite by one step and is deliberately NOT listed.
+output/prediction_ledger/**/*.csv            merge=union
+output/prediction_ledger/**/*.csv            text eol=lf

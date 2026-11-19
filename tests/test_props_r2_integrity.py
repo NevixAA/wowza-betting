@@ -105,8 +105,8 @@ def test_serving_legacy_payload_scores_exactly_as_before_r2(market):
     payload = pickle.loads(raw)
     if M.payload_recipe(payload) == PC.RECIPE_CLEAN_HARNESS:
         # owner 2026-11-08: sot/sot2/goals/assists/cards serve the props clean-retrain models
-        # (tests/test_props_owner_rules_2026_11_08.py); this test covers the markets still on legacy
-        assert market in {"sot", "sot2", "goals", "assists", "cards"}, market
+        # (tests/test_props_owner_rules_2026_11_08.py); owner 2026-11-18: goals2/sot3/sot4 serve the
+        # clean player base rate (tests/test_props_base_rate_serving.py). No served market is legacy.
         pytest.skip(f"{market} serves a promoted clean-retrain model")
     assert "recipe" not in payload and M.payload_recipe(payload) == PC.RECIPE_LEGACY
     full = _real_rows(absent=())

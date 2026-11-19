@@ -60,6 +60,20 @@ def test_loop_never_passes_the_cap():
     assert cs.plan_next([10.0], elapsed_min=cs.CAP_MIN - 1)[0] is False
 
 
+def test_loop_bridges_to_a_reachable_kickoff_beyond_keepalive():
+    # 2026-11-14: a std run (started 11:39) finished the 13:00 kickoff at 12:59 with the 15:00
+    # slot 121 minutes away. It stopped (90-minute keep-alive), GitHub delivered no run until
+    # 15:52, and the 15:00 slot closed with 0% T-30m coverage. The run must stay for it, at the
+    # far-horizon pass spacing so the wait stays cheap.
+    assert cs.plan_next([121.0], elapsed_min=80) == (True, 300)
+
+
+def test_loop_does_not_bridge_to_a_kickoff_it_cannot_reach_before_the_cap():
+    # after the sleep 155 min elapsed, 65 left to the cap; the close window (T-25m) is 96 away
+    assert cs.plan_next([121.0], elapsed_min=150)[0] is False
+    assert cs.plan_next([600.0], elapsed_min=60)[0] is False
+
+
 def test_started_matches_do_not_keep_the_loop_alive():
     assert cs.plan_next([-5.0, -60.0], elapsed_min=60)[0] is False
 
@@ -373,6 +387,37 @@ def test_update_results_runs_the_guard_last_and_commits_the_health_file():
     assert "check_clv_collection_health.py" in steps[-1]["run"] and steps[-1]["if"] == "always()"
     assert any("output/clv_collection_health.json" in str(s.get("run", ""))
                and "git add" in str(s.get("run", "")) for s in steps)
+
+
+def test_acknowledged_incident_is_excluded_from_the_guard_but_reported():
+    """A recorded capture incident (closes provably never captured) leaves the PASS/FAIL figure,
+    but the unfiltered figure and the window's own counts stay in the health file."""
+    now = datetime(2026, 11, 16, 6, tzinfo=timezone.utc)
+
+    def rows(ko, minutes, n, tag):
+        k = pd.Timestamp(ko, tz="UTC")
+        return [{"kickoff_utc": str(k), "snapshot_ts": str(k - pd.Timedelta(minutes=minutes)),
+                 "match": f"{tag}{i} v X", "market": "over25", "league": "L"} for i in range(n)]
+
+    good = rows("2026-11-15 17:00", 5, 220, "g")
+    missed = rows("2026-11-14 15:00", 127, 400, "m")
+    arch = [("standard_odds_history.csv", pd.DataFrame(good + missed))]
+    exp = {"min_certified_t30_pct": 35.0, "min_shadow_sample": 40, "min_collection_t30_pct": 40.0,
+           "min_collection_sample": 200, "collection_window_days": 7}
+    assert cch.build(pd.DataFrame(), arch, now=now, expectation=exp)["check"]["status"] == "FAIL"
+    inc = {"id": "INC-T", "track": "standard", "kickoff_from": "2026-11-14T14:45:00Z",
+           "kickoff_to": "2026-11-14T15:15:00Z", "reason": "test"}
+    h = cch.build(pd.DataFrame(), arch, now=now, expectation={**exp, "acknowledged_incidents": [inc]})
+    co = h["collection"]
+    assert h["check"]["status"] != "FAIL"      # shadow sample empty here -> INSUFFICIENT_SAMPLE
+    assert co["fixture_markets"] == 220 and co["t30_pct"] == 100.0
+    assert co["including_incidents"]["fixture_markets"] == 620
+    assert co["excluded_incidents"][0]["id"] == "INC-T"
+    assert co["excluded_incidents"][0]["fixture_markets"] == 400
+    # another track's kickoffs in the same window are NOT excluded
+    other = {**inc, "track": "new_format"}
+    h2 = cch.build(pd.DataFrame(), arch, now=now, expectation={**exp, "acknowledged_incidents": [other]})
+    assert h2["check"]["status"] == "FAIL" and h2["collection"]["excluded_incidents"] == []
 
 
 def test_clv_health_floors_come_only_from_the_expectation_file():

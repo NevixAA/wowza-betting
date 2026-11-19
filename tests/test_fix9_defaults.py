@@ -15,46 +15,57 @@ import pytest
 import config
 
 
-# ── 1. the side-market GLOBAL bar is ONE declared policy, labelled everywhere ───────────────────
-def test_global_bar_values_unchanged_and_declared_once():
+# ── 1. the side-market bar (owner 2026-11-09: no global vars) ────────────────────────────────────
+def test_the_old_global_bar_is_historical_and_not_served():
+    """fix9 declared the side-market global bar once; since 2026-11-09 it is HISTORICAL (renamed) and
+    serving never reads it: a league x market without its own owner-applied bars gets no tier."""
     from src import side_thresholds as ST
-    assert config.SIDE_GLOBAL_BARS == {"sniper": 0.10, "marksman": 0.08, "valuable": 0.04}
-    assert ST.global_bars() == (0.10, 0.08, 0.04)
+    assert config.HISTORICAL_SIDE_GLOBAL_BARS == {"sniper": 0.10, "marksman": 0.08, "valuable": 0.04}
+    assert not hasattr(config, "SIDE_GLOBAL_BARS") and not hasattr(ST, "global_bars")
 
 
-@pytest.mark.parametrize("lp, expect", [
-    ({"sniper_th": 0.06, "marksman_th": 0.04, "approved": True}, (0.06, 0.04, 0.04, "LEAGUE")),
-    ({"sniper_th": 0.06, "marksman_th": 0.04, "approved": False}, (0.10, 0.08, 0.04, "GLOBAL")),
-    ({}, (0.10, 0.08, 0.04, "GLOBAL")),                                   # league not in the file
-    (None, (0.10, 0.08, 0.04, "GLOBAL")),
-    ({"sniper_th": 0.07, "marksman_th": 0.05, "drop": False}, (0.07, 0.05, 0.04, "LEAGUE")),  # pre-`approved` file
-    ({"sniper_th": 0.07, "marksman_th": 0.05, "drop": True}, (0.10, 0.08, 0.04, "GLOBAL")),
-    ({"sniper_th": 0.07, "approved": True}, (0.07, 0.08, 0.04, "GLOBAL")),  # one own bar: not a league tier
+ALL = frozenset({"btts|L"})
+
+
+@pytest.mark.parametrize("lp, applied, expect", [
+    ({"sniper_th": 0.06, "marksman_th": 0.04, "valuable_th": 0.02}, ALL, (0.06, 0.04, 0.02, "LEAGUE")),
+    ({"sniper_th": 0.06, "marksman_th": 0.04, "valuable_th": 0.02, "approved": False}, ALL,
+     (0.06, 0.04, 0.02, "LEAGUE")),                                       # UNPROVEN but owner-applied
+    ({"sniper_th": 0.06, "marksman_th": 0.04, "valuable_th": 0.02}, frozenset(), None),   # not applied
+    ({}, ALL, None),                                                      # league not in the file
+    (None, ALL, None),
+    ({"sniper_th": 0.07, "marksman_th": 0.05, "valuable_th": 0.02, "drop": True}, ALL, None),
+    ({"sniper_th": 0.07, "marksman_th": 0.05, "approved": True}, ALL, None),   # no own VALUABLE
 ])
-def test_side_bars_rule(lp, expect):
-    from src.side_thresholds import side_bars
-    got = side_bars(lp)
-    assert got[:3] == pytest.approx(expect[:3]) and got[3] == expect[3]
+def test_side_bars_rule(monkeypatch, lp, applied, expect):
+    from src import side_thresholds as ST
+    monkeypatch.setattr(ST, "applied_entries", lambda path=None: applied)
+    got = ST.side_bars(lp, "btts", "L")
+    if expect is None:
+        assert got is None
+    else:
+        assert got[:3] == pytest.approx(expect[:3]) and got[3] == expect[3]
 
 
-def test_three_callers_use_the_same_choice():
+def test_three_callers_use_the_same_choice(monkeypatch):
+    from src import side_thresholds as ST
     from src.integrity import side_edge_devig as SE
     from src.research import edge_replay as ER
-    from src.side_thresholds import side_bars
-    params = {"btts": {"Championship": {"sniper_th": 0.09, "marksman_th": 0.07, "approved": True},
-                       "Ligue 2": {"sniper_th": 0.07, "marksman_th": 0.05, "approved": False}}}
+    params = {"btts": {"Championship": {"sniper_th": 0.09, "marksman_th": 0.07, "valuable_th": 0.03},
+                       "Ligue 2": {"sniper_th": 0.07, "marksman_th": 0.05, "valuable_th": 0.03,
+                                   "approved": False}}}
+    monkeypatch.setattr(ST, "applied_entries", lambda path=None: frozenset({"btts|Championship"}))
     for lg in ("Championship", "Ligue 2", "Argentina Primera Division"):
-        b = side_bars(params["btts"].get(lg, {}))
-        assert SE.thresholds(params, "btts", lg) == pytest.approx(b[:3])
-        assert SE.thresholds_with_source(params, "btts", lg)[3] == b[3]
-    assert SE.DEFAULT_BARS == (0.10, 0.08, 0.04)
-    # edge_replay: p 0.60 at odds 2.00 -> edge 0.60 - 0.5/1.08 = 0.137 -> SNIPER on every bar here
+        b = ST.side_bars(params["btts"].get(lg, {}), "btts", lg)
+        got = SE.thresholds(params, "btts", lg)
+        assert (got is None and b is None) or got == pytest.approx(b[:3])
+    assert SE.thresholds(params, "btts", "Ligue 2") is None              # not owner-applied
+    assert not hasattr(SE, "DEFAULT_BARS")
+    # edge_replay replays the PAST rule (historical global bar), unchanged by the 2026-11-09 cutover
     t, e = ER.legacy_side_tier(0.60, 2.00, "Ligue 2", "btts", params)
     assert t == "SNIPER" and e == pytest.approx(0.60 - 0.5 / ER.SIDE_OVERROUND)
-    # 0.09 edge: MARKSMAN on the global bar (0.10 / 0.08), SNIPER on Championship's own 0.09
     p = 0.095 + (1 / 2.0) / ER.SIDE_OVERROUND
     assert ER.legacy_side_tier(p, 2.0, "Ligue 2", "btts", params)[0] == "MARKSMAN"
-    assert ER.legacy_side_tier(p, 2.0, "Championship", "btts", params)[0] == "SNIPER"
 
 
 def test_ledger_writes_threshold_source(tmp_path, monkeypatch):

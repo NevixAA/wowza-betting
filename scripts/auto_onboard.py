@@ -159,8 +159,7 @@ def _notify(added: list[dict]) -> None:
                 continue
             text = (f"🆕 <b>New league added: {e['name']}</b>\n"
                     f"Passed every League Scout gate (data quality, market evidence, no harm to existing "
-                    f"leagues). Tips start with the next predict run; stakes start at the minimum until the "
-                    f"league earns a rating.")
+                    f"leagues). Tips start with the next predict run.")   # owner 2026-11-17: only TOP-3 tips are staked
             r = requests.post(f"https://api.telegram.org/bot{token}/sendMessage",
                               data={"chat_id": chat, "text": text, "parse_mode": "HTML"}, timeout=30)
             if r.status_code == 200:

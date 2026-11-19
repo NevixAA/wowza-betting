@@ -90,7 +90,7 @@ def test_board_drops_hidden_and_gk_rows_and_counts_them():
     assert list(kept.index) == [1, 4, 5]
     assert removed == {pconfig.SKIP_HIDDEN_MARKET: 2, pconfig.SKIP_GK_ATTACKING: 1}
     note = V.hidden_markets_note()
-    assert pconfig.SKIP_HIDDEN_MARKET in note and "placeholder" in note
+    assert pconfig.SKIP_HIDDEN_MARKET in note and "base rate" in note and "placeholder" not in note
 
 
 # ── CLV placeholder quotes ───────────────────────────────────────────────────────────────────────
@@ -342,7 +342,8 @@ def test_committed_serving_models_are_the_clean_ones_where_promoted():
     """After the promotion commit: sot/sot2/goals/assists serve hgb_nan_native and cards serves
     recipe_retrained, from run 43035218594 (owner 2026-11-11 "Fix penalties too, then promote": keeper
     goals_conceded and penalty_missed provider nulls missing, team_goals_pg_roll on the own side; it replaced
-    run 42855107089 of 2026-11-10, which replaced 42640972400); the four hidden markets keep their old files."""
+    run 42855107089 of 2026-11-10, which replaced 42640972400). Owner 2026-11-18: the four rare markets
+    serve the same run's clean player_base_rate (tests/test_props_base_rate_serving.py)."""
     ptr = json.loads((ROOT / "models" / "registry" / "props" / "props_champions.json").read_text(encoding="utf-8"))
     want = {"sot": "hgb_nan_native", "sot2": "hgb_nan_native", "goals": "hgb_nan_native",
             "assists": "hgb_nan_native", "cards": "recipe_retrained"}
@@ -351,5 +352,8 @@ def test_committed_serving_models_are_the_clean_ones_where_promoted():
         payload = pickle.loads((ROOT / "models" / f"model_player_{m}.pkl").read_bytes())
         assert payload["recipe"] == PC.RECIPE_CLEAN_HARNESS and payload["candidate"] == cand
         assert payload["provenance"]["run_id"] == "43035218594"
-    for m in ("goals2", "sot3", "sot4"):
-        assert ptr[m]["promotion_source"] != PPG.CLEAN_RETRAIN_SOURCE, m
+    for m in ("goals2", "goals3", "sot3", "sot4"):
+        assert ptr[m]["promotion_source"] == PPG.CLEAN_RETRAIN_SOURCE, m
+        payload = pickle.loads((ROOT / "models" / f"model_player_{m}.pkl").read_bytes())
+        assert payload["recipe"] == PC.RECIPE_CLEAN_HARNESS and payload["candidate"] == "player_base_rate"
+        assert payload["provenance"]["run_id"] == "43035218594"

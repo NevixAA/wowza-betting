@@ -154,11 +154,75 @@
           "owner_quote": "Approve 2nd + final refit",
           "scope": "ONE final refit right before go-live, on the final collected data (after the last collection and results sync): the same recipe (scripts/phase2_refit_serving.py, champion_recipe per track x market), live = training at 0 differences required (scripts/team_train_serve_parity.py) before install. Its artifact sha256s are added to `artifacts` at that time under this same owner approval; no further owner ask is needed for it, and nothing beyond it is covered.",
           "install_window": [
-            "2026-11-19",
+            "2026-11-18",
             "2026-11-20"
           ],
           "gate": "scripts/team_train_serve_parity.py on all refit models: 0 differing cells and every probability identical",
-          "artifacts": {}
+          "artifacts": {
+            "standard": {
+              "sha256": "50a974bb83a88fc5c28ac4f9d2af25b475a9c880e21675a3b084a9fa49b81e8d",
+              "sources": [
+                "standard/over25"
+              ],
+              "recipe": "std_v9_repaired"
+            },
+            "newformat": {
+              "sha256": "303c9a05071e7afd4e7dfd42074052554b74213a0ae92d9e6421a1cdc138ca71",
+              "sources": [
+                "new_format/over25"
+              ],
+              "recipe": "nf_v9_repaired"
+            },
+            "ht_over05": {
+              "sha256": "656464066143e0feba1a7357a328e7476338e18115ceb5a8a73d25be86b13ed8",
+              "sources": [
+                "standard/ht_over05"
+              ],
+              "recipe": "ht_v9_repaired"
+            },
+            "ht_over15": {
+              "sha256": "5365d223ab1e0f7c50d7997867b76ce62106a1986ab7f84ebca8b24e6e0ca95a",
+              "sources": [
+                "standard/ht_over15"
+              ],
+              "recipe": "ht_v9_repaired"
+            },
+            "btts": {
+              "sha256": "a8ddb87e86078fdab46f95251b677cfc3086cdf22917d8214f5af993a8860676",
+              "sources": [
+                "standard/btts",
+                "new_format/btts"
+              ],
+              "recipe": "side_v9_repaired"
+            },
+            "over15": {
+              "sha256": "2e70abf10adfa403749718e824b728964ba305d6a888acfec9051999c9dad2fb",
+              "sources": [
+                "standard/over15",
+                "new_format/over15"
+              ],
+              "recipe": "side_v9_repaired"
+            },
+            "over35": {
+              "sha256": "0331cee9ec14ef62a6a402cb05079b0fc0dc378e4abf65cac89cc10eb96ef1a6",
+              "sources": [
+                "standard/over35",
+                "new_format/over35"
+              ],
+              "recipe": "side_v9_repaired"
+            }
+          },
+          "install_window_change": "owner 2026-11-18 (\"Start now, live by tomorrow\"; models only today, the new refit models tip the upcoming matches): the go-live merge was pulled forward, so the window opens 2026-11-18 instead of 2026-11-19; the end (2026-11-20) and everything else in this stage are unchanged",
+          "evidence": {
+            "refit_code_sha": "694995f90b90920f596d7290d624ce6d99301612",
+            "data": {
+              "loaded_rows": 71845,
+              "frame_hash": "9ed237ebc04aee09"
+            },
+            "data_end": "2026-11-08",
+            "refit_dir": "golive/refit_1118b (scripts/phase2_refit_serving.py, champion_recipe)",
+            "parity": "scripts/team_train_serve_parity.py: 0 of 6,020 cells (140 fixtures 2026-11-08..16), 140/140 probabilities identical x12 payloads"
+          }
         }
       ]
     }

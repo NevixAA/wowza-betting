@@ -56,6 +56,14 @@ ui.page_header("Bankroll policy", "How much bankroll each track deserves. Displa
 if _rstate != "FRESH":                              # the long STALE / HISTORICAL / dated-study explanation
     _fresh.banner(st, "output/bankroll/current_policy_recommendation.json", "Pro bankroll recommendation", _man)
 
+from dashboard_data import cells_view as _CV  # noqa: E402
+_stk = _CV.staked(_CV.cells_frame(_CV.load()))
+st.info("Since 2026-11-11 (owner 'Approve, paper + small') staking is PER CELL (league x market x side): "
+        + ("; ".join(f"{r['League']} {r['Track']} {r['Market']} {r['Stake']} {r['Stake %']:.2f}%"
+                     for _, r in _stk.iterrows()) or "no staked cell")
+        + ". Every other cell is PAPER; Cloudbet PAPER_ONLY (config/bankroll_policy.json cell_staking). The full cell "
+        "list with bars and status is on the Bars & Cells page; the track view below is the policy's track layer.")
+
 # ═══ ACTION — is a policy change recommended? ════════════════════════════════════════════════════
 ui.section_header("Decision", "What production runs, what Pro recommends, and when it last looked.")
 asof = pd.Timestamp(review["as_of"]) if review.get("as_of") else None
@@ -111,8 +119,9 @@ with st.expander("All tracks — table"):
 pf = prod.get("portfolio", {})
 st.caption(f"Caps: single bet {pct(pf.get('single_bet_cap'))} · fixture {pct(pf.get('fixture_cap'))} · day "
            f"{pct(pf.get('daily_cap'))} · league/day {pct(pf.get('league_daily_cap'))} · league×market/day "
-           f"{pct(pf.get('league_market_daily_cap'))} · one real position per fixture · tiers "
-           f"{ {tier_label(k): v for k, v in (prod.get('tier_multipliers') or {}).items()} } · convergence leagues: "
+           f"{pct(pf.get('league_market_daily_cap'))} · one real position per fixture · legacy tier multipliers "
+           f"{ {tier_label(k): v for k, v in (prod.get('tier_multipliers') or {}).items()} } (tiers retired for future "
+           f"tips 2026-11-11: flat stake per cell) · convergence leagues: "
            f"{(prod.get('convergence') or {}).get('leagues') or 'none'}")
 
 # ═══ ACTION — the policy applied to the current tips (src/stake_plan.py, wired 2026-10-14) ═══════

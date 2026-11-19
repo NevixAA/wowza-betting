@@ -37,15 +37,20 @@ def test_snapshot_covers_every_protected_track_and_the_global_protections():
     assert g["bankroll_policy"]["tracks"]["standard|OU25_UNDER"]["state"] == "PAPER"
     assert g["bankroll_policy"]["tracks"]["player_props"]["state"] == "BLOCKED_FROM_REAL"
     assert g["execution"]["workflows_setting_CLOUDBET_MODE"] == []
-    assert g["deployed_env"]["MARKSMAN_THRESHOLD"] == "0.08"
+    # Owner 2026-11-09 "no global bars" (3047125c3 / c1ebe4ef9): predict.yml no longer deploys the global tier
+    # thresholds; the lock approved 2026-11-16 (U3a, owner "Approve now") records them as absent.
+    assert "MARKSMAN_THRESHOLD" not in g["deployed_env"]
+    assert "SNIPER_THRESHOLD" not in g["deployed_env"] and "VALUABLE_THRESHOLD" not in g["deployed_env"]
 
 
 def test_changed_deployed_threshold_is_detected_and_named():
     env = dict(SNAP["fingerprint"]["global"]["deployed_env"], MARKSMAN_THRESHOLD="0.09")
     r = L.check(env=env)
     assert r["protected_tracks_modified"] is True
-    assert any("deployed_env.MARKSMAN_THRESHOLD" in c for c in r["changes"])
-    assert any("thresholds.MARKSMAN_THRESHOLD: 0.08 -> 0.09" in c for c in r["changes"])
+    # Re-adding a global bar to the deployed env (removed by the owner 2026-11-09) is caught and named.
+    base = SNAP["fingerprint"]["global"]["thresholds"]["MARKSMAN_THRESHOLD"]
+    assert any("deployed_env.MARKSMAN_THRESHOLD: <absent> -> \"0.09\"" in c for c in r["changes"])
+    assert any(f"thresholds.MARKSMAN_THRESHOLD: {base} -> 0.09" in c for c in r["changes"])
 
 
 def test_changed_state_or_stake_is_detected():
@@ -59,7 +64,8 @@ def test_changed_state_or_stake_is_detected():
     r = L.check(policy=p)
     assert any("new_format|BTTS.base_fraction" in c for c in r["changes"])
     if SNAP["fingerprint"]["protected_tracks"]:
-        assert any(c.startswith("protected_tracks.") and c.endswith("0.0125 -> 0.015") for c in r["changes"])
+        old = POLICY["tracks"]["new_format|BTTS"]["base_fraction"]     # 0.0 since the owner's 2026-11-17 decision
+        assert any(c.startswith("protected_tracks.") and c.endswith(f"{old} -> 0.015") for c in r["changes"])
 
 
 def test_missing_snapshot_fails_closed():

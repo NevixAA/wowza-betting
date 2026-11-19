@@ -27,6 +27,7 @@ _require_tier("admin")  # tier guard (dashboard_access.PAGES), 2026-10-18
 import dashboard_ui as ui  # noqa: E402
 from src.tier_labels import TIER_LABEL  # noqa: E402
 from dashboard_data import fantasy, pro, v9, v11  # noqa: E402
+from dashboard_data import clean_record as CR  # noqa: E402
 
 st.set_page_config(page_title="Wowza | Model performance", page_icon="🎓", layout="wide")
 
@@ -43,14 +44,31 @@ def _remote() -> dict:
     return {"residual": r, "shadow_learning": sl, "pro_absent": pro_absent}
 
 
-cal = v9.calibration()
+cal = v9.calibration(record=CR.BEFORE)          # the pre-repair models (old models and tiers)
+cal_clean = v9.calibration(record=CR.CLEAN)    # the clean models, from config.CLEAN_RECORD_START
 R = _remote()
 ui.page_header("Model performance", "Accuracy, not profit. The two are measured separately on purpose.",
                eyebrow_text="Research Lab · model accuracy",
                freshness=ui.status_chip("RESEARCH", label="RESEARCH · NOT A P/L PAGE"))
 
+# ═══ 0 · the clean models (Clean Record, owner 2026-11-11) ═══════════════════════════════════════
+ui.section_header(f"Clean models · {CR.clean_label()}", "The same calibration test on tips of the clean retrained "
+                  "models only (generated and played on or after the start). The pre-repair models' result is in "
+                  "section 1 below, for comparison.")
+if not cal_clean.get("available"):
+    ui.empty_state("NO_DATA", CR.empty_text("tips from the clean models"))
+else:
+    _kc = st.columns(3)
+    ui.metric_card("Clean models: claimed", f"{cal_clean['claimed']:.4f}", title="Average stated probability",
+                   supporting=[("Settled", f"{cal_clean['n']:,}")], n=cal_clean["n"], container=_kc[0])
+    ui.metric_card("Clean models: happened", f"{cal_clean['realised']:.4f}", title="Realised rate",
+                   supporting=[("Settled", f"{cal_clean['n']:,}")], container=_kc[1])
+    ui.metric_card("Clean models: gap", f"{cal_clean['gap_pp']:+.2f}pp", title="Claimed minus realised",
+                   supporting=[("z", f"{cal_clean['z']}")], container=_kc[2])
+
 # ═══ 1 · calibration: the load-bearing negative result ═══════════════════════════════════════════
-ui.section_header("1 · Does the model mean what it says?")
+ui.section_header(f"1 · Did the old model mean what it said? — {CR.before_label()}",
+                  CR.BEFORE_NOTE)
 if not cal.get("available"):
     ui.empty_state("NO_DATA", cal.get("why", "not computable"))
 else:
@@ -101,7 +119,7 @@ else:
                        "evidence is.")
 
     # ── the finding that actually bites ───────────────────────────────────────────────────────
-    ui.section_header("Does the tier ladder carry information?")
+    ui.section_header("Did the tier ladder carry information? (tiers retired 2026-11-11)")
     bt = cal.get("by_tier") or {}
     if bt:
         d = pd.DataFrame([{"tier": k, **v} for k, v in bt.items()]).sort_values("gap_pp")
