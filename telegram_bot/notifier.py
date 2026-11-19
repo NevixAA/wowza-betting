@@ -42,6 +42,7 @@ from src import league_registry as _LRG
 from src import units as U
 from src.utc_clock import utc_now as _utc_now, utc_today_str as _utc_today_str
 from src.tier_labels import GAP_EXPLAINER, TIER_ICON, tier_label, tier_tag
+from src.calibrated_edge import edge_text   # owner 2026-11-11: the only edge shown on a future tip
 from player_model.fair_basis import label as _fair_basis_label
 
 
@@ -373,6 +374,8 @@ def _split_for_telegram(text: str, max_len: int = 4000) -> list:
 
 def _send(token: str, chat_id: str, text: str) -> bool:
     """Send a message, auto-splitting anything over the Telegram length limit."""
+    from dashboard_words import relabel_text     # owner 2026-11-17: no "paper" in anything a user reads
+    text = relabel_text(text)
     ok = True
     for chunk in _split_for_telegram(text):
         ok = _send_one(token, chat_id, chunk) and ok
@@ -494,21 +497,14 @@ def instant_tip_allowed(match_date, notified: set, now: "datetime | None" = None
     return f"DIGEST|{today}" in notified or now.hour >= 12
 
 
-def _paper_track_note(model_type: str, market: str, side: str) -> str:
-    """'' when the tip's bankroll-policy track is real money, else a PAPER line for the message.
+def _paper_track_note(model_type: str, market: str, side: str, league=None) -> str:
+    """Always '' (owner 2026-11-17, "Show stake on TOP-3"): an ordinary prediction carries NO stake label at all.
 
-    A tip on a PAPER track (new_format|OU25_UNDER since 2026-11-02, owner: "shown and recorded, never
-    staked") is still sent, but must not read as a staked bet. Policy unreadable -> labelled paper
-    (a label can only under-claim, never invent a stake). Phase 2, 2026-11-03."""
-    try:
-        from src.bankroll_policy import REAL_STATES, load_policy, positive_fraction, track_key
-        tk = track_key(model_type, market, side)
-        t = (load_policy().get("tracks") or {}).get(tk) or {}
-        if t.get("state") in REAL_STATES and positive_fraction(t):
-            return ""
-        return f"📄 <b>PAPER</b> — not staked (track {tk}: {t.get('state', 'not in policy')})"
-    except Exception as e:                                            # noqa: BLE001
-        return f"📄 <b>PAPER</b> — not staked (stake policy unreadable: {type(e).__name__})"
+    From 2026-11-21 the only real stake is the flat TOP-3 stake (config/bankroll_policy.json top3_league.stake,
+    placed manually); the TOP-3 message (src/top3_league.message) shows "0.5% stake" on each pick. Every cell of
+    the policy is PAPER, so the per-cell line this used to add (go-live rehearsal 2026-11-15) would now sit on
+    every tip; the owner asked for no label instead. The name is kept for the callers."""
+    return ""
 
 
 def notify_new_snipers() -> int:
@@ -548,8 +544,9 @@ def notify_new_snipers() -> int:
     # Send SNIPER + MARKSMAN + VALUABLE for ALL models (Nevo 2026-08-09: enable new-format
     # VALUABLE live too, now that the NF model is recalibrated). Dedup (notified.json) sends
     # each fixture+side once, so the higher NF volume won't re-flood.
+    from src.tier_labels import TIPPED              # QUALIFIED (owner 2026-11-11) + legacy codes of history rows
     tips = df[
-        df["signal_tier"].isin(["SNIPER", "MARKSMAN", "VALUABLE"]) &
+        df["signal_tier"].isin(TIPPED) &
         df["bet"].isin(["UNDER", "OVER"])
     ].copy()
 
@@ -622,8 +619,12 @@ def notify_new_snipers() -> int:
         model = "🏴󠁧󠁢󠁥󠁮󠁧󠁿 Standard" if _is_std else "🌍 New-Format"
         mtag  = "standard" if _is_std else "new-format"
 
-        # Display words from src/tier_labels.py: the tier is the size of the gap, not confidence.
-        if tier in ("SNIPER", "MARKSMAN"):
+        # Owner 2026-11-11 ("Clean rebuild"): no tier word on a future tip. The header names the tip and its
+        # CELL STATUS (PROMISING / UNPROVEN) - the status of the cell's one approved bar.
+        _status = str(row.get("cell_status") or "").strip().upper()
+        if tier == "QUALIFIED":
+            header = f"▸ <b>TIP</b> · {_status or 'UNPROVEN'} ({mtag}) {drift}"
+        elif tier in ("SNIPER", "MARKSMAN"):
             header = f"{TIER_ICON[tier]} <b>{tier_label(tier).upper()} TIP</b> {drift}"
         elif tier == "VALUABLE":
             header = f"{TIER_ICON[tier]} <b>{tier_label(tier).upper()} TIP</b> ({mtag}) {drift}"
@@ -637,11 +638,13 @@ def notify_new_snipers() -> int:
             f"🏆 {row.get('league','')}\n"
             f"⚽ {row['home_team']} vs {row['away_team']}\n"
             f"📌 <b>{side} 2.5</b>  @ {odds:.2f}\n"
-            f"📊 Edge: <b>{edge:.1f}%</b>  |  {model}\n"
+            + (f"📊 {edge_text(pd.to_numeric(row.get('edge_calibrated'), errors='coerce') * 100)}  |  {model}\n"
+               if tier == "QUALIFIED" else f"📊 Edge: <b>{edge:.1f}%</b>  |  {model}\n") +
+            f""
             # Drift is information only since 2026-10-26: it never changes the tier above.
             f"🔀 Drift: {_drift_sig} {drift} (info only)"
         )
-        _paper = _paper_track_note(_mt, "OU25", side)
+        _paper = _paper_track_note(_mt, "OU25", side, row.get("league"))
         if _paper:
             msg += f"\n{_paper}"
 
@@ -940,7 +943,7 @@ def notify_ht_tips() -> int:
             _price_line = f"💰 Fair price: <b>{fair}</b> | ⚠️ no market price captured\n"
 
         msg = (
-            f"{emoji} <b>HT {side} {line} — MODEL TIP</b> <i>(PAPER)</i>\n"
+            f"{emoji} <b>HT {side} {line} — MODEL TIP</b>\n"   # owner 2026-11-17: no stake label
             f"━━━━━━━━━━━━━━━━\n"
             f"📅 {_fmt_kickoff(row)}\n"
             f"🏆 {row.get('league', '')}\n"
@@ -1249,7 +1252,7 @@ def notify_weekly_summary() -> bool:
 
     # ── Build message — by market then tier ──────────────────────────────────
     TIER_SYM   = TIER_ICON
-    TIER_ORDER = ["SNIPER", "MARKSMAN", "VALUABLE"]
+    TIER_ORDER = ["QUALIFIED", "SNIPER", "MARKSMAN", "VALUABLE"]   # QUALIFIED = tips from 2026-11-21
     # BTTS alone does not say which side; this path only ever produces YES.
     SIDE_LABELS = {"btts": "BTTS — YES", "over15": "Over 1.5", "over35": "Over 3.5"}
 
@@ -1881,11 +1884,11 @@ def notify_props_daily_digest() -> bool:
         ("cards",   "Carded",         "🟨"),
     ]
     TIER_SYM   = TIER_ICON
-    TIER_ORDER = ["SNIPER", "MARKSMAN"]                            # what gets SENT as a tip
+    TIER_ORDER = ["QUALIFIED", "SNIPER", "MARKSMAN"]               # what gets SENT as a tip (QUALIFIED from 2026-11-21)
     # What gets COUNTED in results. Wider than TIER_ORDER because VALUABLE/PAPER picks are
     # real tracked positions even though they don't trigger an individual alert. AVOID/WATCH
     # are excluded upstream by _bet_tiers_only, so they can never appear here.
-    LEDGER_TIERS = ["SNIPER", "MARKSMAN", "VALUABLE", "PAPER"]
+    LEDGER_TIERS = ["QUALIFIED", "SNIPER", "MARKSMAN", "VALUABLE", "PAPER"]
 
     lines = [
         f"👤 <b>PLAYER PROPS BRIEFING</b> — {hdr_date}",
@@ -2257,7 +2260,7 @@ def notify_daily_digest() -> bool:
         return False
 
     TIER_SYM   = TIER_ICON
-    TIER_ORDER = ["SNIPER", "MARKSMAN", "VALUABLE"]
+    TIER_ORDER = ["QUALIFIED", "SNIPER", "MARKSMAN", "VALUABLE"]   # QUALIFIED = tips from 2026-11-21
     # BTTS alone does not say which side; this path only ever produces YES.
     SIDE_LABELS = {"btts": "BTTS — YES", "over15": "Over 1.5", "over35": "Over 3.5"}
     SIG_SYM     = {"STEAM_STRONG": "🔴", "STEAM_SHARP": "🟠", "STRONG": "🟡"}
@@ -2815,7 +2818,7 @@ def notify_retrain_result() -> bool:
 
 def threshold_source_line(src) -> str:
     """The alert line that says a side tip was tiered on the GLOBAL bar (fix9/defaults 2026-11-04).
-    A tier on the declared global policy bar (config.SIDE_GLOBAL_BARS) must never read like a
+    A tier on the historical global bar (config.HISTORICAL_SIDE_GLOBAL_BARS, served until 2026-11-09) must never read like a
     per-league tier; a LEAGUE tier, or a row that does not record its bar, adds no line."""
     s = str(src).strip().upper() if src is not None and not (isinstance(src, float) and src != src) else ""
     if s == app_config.THRESHOLD_SOURCE_GLOBAL:
@@ -2845,7 +2848,8 @@ def notify_side_bets() -> int:
     # Sending is not staking. These arrive labelled VALUABLE for a human to judge; real money
     # stays where the season-start plan put it. Volume is bounded by notified.json, which sends
     # each fixture+market once.
-    df = df[df["signal_tier"].isin(["SNIPER", "MARKSMAN", "VALUABLE"])].copy()
+    from src.tier_labels import TIPPED              # QUALIFIED (owner 2026-11-11) + legacy codes of history rows
+    df = df[df["signal_tier"].isin(TIPPED)].copy()
 
     today_str = _utc_today_str()   # UTC day: stored dates are UTC (src/utc_clock.py)
     df = df[df["date"].astype(str).str[:10] >= today_str]
@@ -2853,7 +2857,8 @@ def notify_side_bets() -> int:
     if df.empty:
         return 0
 
-    df = df.sort_values(["signal_tier", "ev"], ascending=[True, False])
+    # kickoff order (owner 2026-11-11: no tier and no EV ranking of tips)
+    df = df.sort_values(["date", "league", "home_team"])
 
     # NAME THE SIDE. "BTTS" alone is ambiguous — a reader cannot tell whether the tip is that
     # both teams DO score or that they do not. "Over 1.5" and "Over 3.5" already state their side
@@ -2890,7 +2895,11 @@ def notify_side_bets() -> int:
         # VALUABLE to the filter above would have silently relabelled every VALUABLE side-market
         # tip as MARKSMAN — a wrong tier on a live alert, which is precisely the number the
         # reader uses to size. Same shape as the tier symbols used everywhere else in this file.
-        tier_header = f"{tier_tag(tier)} — <b>{label}</b>"   # icon + display word (src/tier_labels)
+        if tier == "QUALIFIED":       # owner 2026-11-11: no tier word; the cell status of its one bar
+            _st = str(row.get("cell_status") or "").strip().upper() or "UNPROVEN"
+            tier_header = f"▸ TIP · {_st} — <b>{label}</b>"
+        else:
+            tier_header = f"{tier_tag(tier)} — <b>{label}</b>"   # icon + display word (src/tier_labels)
 
         msg = (
             f"{emoji} {tier_header}\n"
@@ -2899,10 +2908,21 @@ def notify_side_bets() -> int:
             f"🏆 {row.get('league', '')}\n"
             f"⚽ {row['home_team']} vs {row['away_team']}\n"
             f"📌 <b>{label}</b>  @ {float(row['market_odds']):.2f}\n"
-            f"📊 Edge: <b>{edge:.1f}%</b>  |  EV: <b>{ev:+.1f}%</b>  |  Model P={float(row['model_prob'])*100:.0f}%\n"
+            + (f"📊 {edge_text(pd.to_numeric(row.get('edge_calibrated'), errors='coerce') * 100)}\n"
+               if tier == "QUALIFIED" else
+               f"📊 Edge: <b>{edge:.1f}%</b>  |  EV: <b>{ev:+.1f}%</b>  |  Model P={float(row['model_prob'])*100:.0f}%\n") +
+            f""
             + threshold_source_line(row.get("threshold_source")) +
             f"⚠️ Check your bookmaker's {label} market"
         )
+        # Same per-cell PAPER line as the O/U tips (go-live rehearsal 2026-11-15): a side tip whose cell
+        # has no staking entry must not read as a staked bet.
+        from src.stake_plan import SIDE_MARKET as _SIDE_TRACK_MARKET
+        _paper = _paper_track_note(str(row.get("model_type") or "").strip(),
+                                   _SIDE_TRACK_MARKET.get(str(mkt), str(mkt).upper()),
+                                   row.get("side"), row.get("league"))
+        if _paper:
+            msg += f"\n{_paper}"
 
         if _send(token, chat_id, msg):
             notified.add(key)

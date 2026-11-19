@@ -23,6 +23,21 @@ alive and where inside it the API calls go:
   re-priced hourly, 1-6h every ~15 min, 30-60 min every ~5 min, and inside 30 min on EVERY pass.
   That is what pays for the longer runs: the API spend moves to where the close forms.
 * PASS SPACING tightens to 2 minutes when a kickoff is inside 35 minutes.
+* BRIDGE (2026-11-16). Past KEEPALIVE_MIN a run also stays alive for a later kickoff whose close
+  window it can still reach before CAP_MIN (kickoff - BRIDGE_LEAD_MIN <= minutes left to the cap).
+  WHY: on Sat 2026-11-14 a std run started 11:39, finished the 13:00 kickoff and stopped at 12:59
+  because the 15:00 slot (47 fixtures, 375 CLV fixture-markets, the biggest of the week) was 121
+  minutes away, outside the 90-minute keep-alive. GitHub then delivered NO std_odds_capture run
+  between 12:59 and 15:52 although five NEAR firings (13:23-15:23) were requested, so the whole
+  slot closed with its last observation at T-2h and 0% T-30m coverage; it alone pulled the 7-day
+  collection view to 18.7% and turned Update Results red on 2026-11-15 20:30. Ending a run while
+  a reachable close is ahead bets that GitHub will deliver another firing in time, and it
+  routinely does not.
+  CAP_MIN 170 -> 220 lets a run started ~3h before a slot bridge to it. Replayed on the delivered
+  run times 2026-10-28..11-15 (model, kickoff-level): a capture alive inside T-30m 72.8% -> 99.2%
+  (standard) and 66.8% -> 86.9% (new-format), for roughly +200 / +180 API-Football odds calls a
+  day per job (the bridge prices only what the per-fixture due intervals ask for). API-Football
+  only: no OddsAPI credits are involved.
 
 The scheduler is OFF unless CAPTURE_STATE is set (manual single runs keep the old behaviour:
 everything due, no state, no plan printed). It never fetches anything itself and costs no calls.
@@ -50,7 +65,9 @@ SLEEP_STEPS: tuple[tuple[float, int], ...] = ((35.0, 120), (70.0, 180), (math.in
 
 BASE_MIN = 40.0         # a run always samples at least this long (unchanged from before)
 KEEPALIVE_MIN = 90.0    # ...and then stays alive while a kickoff lies within this many minutes
-CAP_MIN = 170.0         # ...but never longer than this (workflow timeout is set above it)
+CAP_MIN = 220.0         # ...but never longer than this (workflow timeout is set above it;
+                        # shadow_settlement.CLOSE_SETTLE_DELAY_MIN (240) must stay > CAP + 15)
+BRIDGE_LEAD_MIN = 25.0  # past keep-alive, also stay for a kickoff whose T-25m is reachable by CAP
 
 
 def due_interval_min(minutes_to_ko: float | None) -> float:
@@ -76,13 +93,15 @@ def sleep_seconds(nearest_ko_min: float | None) -> int:
 
 
 def plan_next(kickoff_minutes: list[float], elapsed_min: float, *, base_min: float = BASE_MIN,
-              keepalive_min: float = KEEPALIVE_MIN, cap_min: float = CAP_MIN
-              ) -> tuple[bool, int]:
+              keepalive_min: float = KEEPALIVE_MIN, cap_min: float = CAP_MIN,
+              bridge_lead_min: float = BRIDGE_LEAD_MIN) -> tuple[bool, int]:
     """(continue?, seconds to sleep) for the loop, from the kickoffs the last pass saw.
 
     `kickoff_minutes` are minutes from NOW to each fixture's kickoff (negative = already started;
     those are ignored). Continue while inside the base length; past it, only while a kickoff is
-    still ahead after the sleep and within `keepalive_min`; never past `cap_min`."""
+    still ahead after the sleep and either within `keepalive_min` or close enough that the run
+    can still be alive at its T-`bridge_lead_min` before `cap_min` (BRIDGE); never past
+    `cap_min`."""
     upcoming = sorted(m for m in kickoff_minutes if m is not None and math.isfinite(m) and m > 0)
     nearest = upcoming[0] if upcoming else None
     sleep_s = sleep_seconds(nearest)
@@ -91,7 +110,9 @@ def plan_next(kickoff_minutes: list[float], elapsed_min: float, *, base_min: flo
         return False, sleep_s
     if after < base_min:
         return True, sleep_s
-    wanted = [m for m in upcoming if sleep_s / 60.0 < m <= keepalive_min]
+    left = cap_min - after
+    wanted = [m for m in upcoming
+              if sleep_s / 60.0 < m and (m <= keepalive_min or m - bridge_lead_min <= left)]
     return bool(wanted), sleep_s
 
 

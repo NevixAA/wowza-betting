@@ -34,7 +34,7 @@ OUT = ROOT / "output"
 # are never staked. Every page that says "Staked" reads staked_settled() / is_staked(); P/L stays
 # flat 1u per bet (labelled so), with the P/L at the recorded stake beside it.
 #: TIER words only (the old basis) — kept for tier displays, never to decide "Staked"
-STAKED = ("SNIPER", "MARKSMAN")
+STAKED = ("QUALIFIED", "SNIPER", "MARKSMAN")   # QUALIFIED = tips from 2026-11-21 (owner 2026-11-11)
 SOURCES = [("bets_ledger.csv", None, "O/U 2.5"), ("side_bets_ledger.csv", "market", None),
            ("ht_ledger.csv", None, "HT O/U")]
 #: ledgers that can never hold a staked bet (props are paper-only)
@@ -75,7 +75,8 @@ def load_bets(out_dir=None) -> pd.DataFrame:
 
 
 SETTLED_COLS = ["signal_tier", "_mkt", "_pnl", "_dt", "league", "_odds", "_ledger",
-                 "_stake_status", "_stake_units", "_staked"]
+                 "_stake_status", "_stake_units", "_staked",
+                 "_gen", "_side", "_model"]   # generated_at (Clean Record split), side, model_type (per-cell join)
 
 
 def is_staked(labels, source=None, dt=None, league=None, ledger=None, pnl=None) -> pd.Series:
@@ -127,14 +128,20 @@ def load_settled(out_dir=None) -> pd.DataFrame:
             d = _read_csv(p, low_memory=False)
             if "source" in d.columns:
                 d = d[d["source"].fillna("live").astype(str) == "live"]
-            if "signal_tier" not in d.columns:
-                continue                                  # HT O/U: no tier and no policy track - never staked
+            if S.LEDGER_MARKET.get(f, (None, None)) == (None, None):
+                # HT O/U: no policy market - never staked, never a team-market tip. Decided by the ledger's
+                # policy market (src/staked.LEDGER_MARKET), not by a missing column: the go-live ledger
+                # writer added signal_tier to ht_ledger.csv, and the old `"signal_tier" not in columns`
+                # test then let 61 HT rows into Home's "Not staked" count (1766 vs 1705, 2026-11-19).
+                continue
             oc = "odds" if "odds" in d.columns else "entry_odds"
             lab = S.label_ledger(d, f, records)
             d = d.assign(_dt=pd.to_datetime(d.get("match_date"), errors="coerce"),
                          _pnl=pd.to_numeric(d.get("pnl"), errors="coerce"),
                          _odds=pd.to_numeric(d[oc], errors="coerce") if oc in d.columns else float("nan"),
-                         _ledger=f,
+                         _ledger=f, _gen=d["generated_at"] if "generated_at" in d.columns else pd.NA,
+                         _side=d["side"] if "side" in d.columns else pd.NA,
+                         _model=d["model_type"] if "model_type" in d.columns else pd.NA,
                          league=d["league"] if "league" in d.columns else pd.NA,
                          _mkt=d[mkc].astype(str) if mkc and mkc in d.columns else const,
                          _stake_status=lab["stake_status"], _stake_units=lab["stake_units"],

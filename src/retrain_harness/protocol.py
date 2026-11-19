@@ -253,6 +253,9 @@ def eligible_rows(feat: pd.DataFrame, cfg: dict, track: str, market: str) -> pd.
         d = d[pd.to_numeric(d[c], errors="coerce").notna()]
     d = d.copy()
     d["date"] = pd.to_datetime(d["date"]).dt.normalize()
+    start = (cfg["data"].get("train_start") or {}).get(track)
+    if start:                                    # owner 2026-11-19: Standard from 2016/17
+        d = d[d["date"] >= pd.Timestamp(start)]
     tie = [c for c in ("league", "home_team", "away_team") if c in d.columns]
     return d.sort_values(["date"] + tie, kind="mergesort").reset_index(drop=True)
 
@@ -330,13 +333,17 @@ def price_coverage(rows: pd.DataFrame, mcfg: dict) -> dict:
         return {"two_sided": 0, "any": 0, "note": "no price in the frame for this market"}
     yes = pd.to_numeric(rows[pr["yes"]], errors="coerce") if pr.get("yes") in rows.columns else None
     no = pd.to_numeric(rows[pr["no"]], errors="coerce") if pr.get("no") and pr["no"] in rows.columns else None
+    flag = pr.get("pair_valid_flag")
+    if yes is not None and flag:   # bet-time prices only, fail-closed (owner 2026-11-11)
+        yes = yes.where(rows[flag].astype("boolean").fillna(False).astype(bool) if flag in rows.columns
+                        else pd.Series(False, index=rows.index))
     any_ = int((yes > 1).sum()) if yes is not None else 0
     if yes is None or no is None:
         return {"two_sided": 0, "any": any_, "note": "one-sided price only: no de-vig possible"}
     ok = (yes > 1) & (no > 1)
-    flag = pr.get("pair_valid_flag")
-    if flag and flag in rows.columns:
-        ok &= rows[flag].astype("boolean").fillna(False).astype(bool)
+    if flag:          # fail-closed: without the configured flag no pair counts
+        ok &= (rows[flag].astype("boolean").fillna(False).astype(bool) if flag in rows.columns
+               else pd.Series(False, index=rows.index))
     return {"two_sided": int(ok.sum()), "any": any_}
 
 

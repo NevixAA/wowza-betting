@@ -27,8 +27,9 @@ LABEL_WORDS = re.compile(r"Big gap|Medium gap|Small gap|No tip", re.I)
 
 # ── 1. mapping ────────────────────────────────────────────────────────────────────────────────────
 def test_mapping_is_the_owner_decision():
-    assert TL.TIER_LABEL == {"SNIPER": "Big gap", "MARKSMAN": "Medium gap", "VALUABLE": "Small gap",
-                             "AVOID": "No tip"}
+    assert TL.TIER_LABEL == {"QUALIFIED": "Tip", "SNIPER": "Big gap", "MARKSMAN": "Medium gap",
+                             "VALUABLE": "Small gap", "AVOID": "No tip"}
+    assert TL.TIPPED == ("QUALIFIED", "SNIPER", "MARKSMAN", "VALUABLE")      # owner 2026-11-11: legacy = history
     assert TL.GAP_EXPLAINER == ("Gap = how far our probability is from the bookmaker's price. "
                                 "It is not a confidence rating.")
     assert TL.STAKED_LABEL == "Big + Medium gap" and TL.PAPER_TIER_LABEL == "Small gap"

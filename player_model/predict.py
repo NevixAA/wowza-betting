@@ -282,7 +282,8 @@ def _classify_tier(
     confidence: float, lazy_count: int, ges: float = float("nan"),
     market: str = "", position: str = ""
 ) -> str:
-    """Classify signal into SNIPER/MARKSMAN/VALUABLE/AVOID (WATCH removed).
+    """Classify a props signal: QUALIFIED (clears the lowest qualifying bar; owner 2026-11-11 - no tiers),
+    PAPER (a capped data-only combination) or AVOID.
 
     Applies a real-odds-backtest role×market gate: clear money-losing combos
     (defenders→goals, multi-SOT/goals2) are capped at VALUABLE (data-only) rather
@@ -328,15 +329,16 @@ def _classify_tier(
         return "AVOID"
 
     # ── Role × market gate (real-odds backtest Jun 2026) ──────────────────────
-    # Cap clear money-losers at VALUABLE (data-only): multi-SOT/goals2 markets,
-    # and defenders for anytime-goalscorer.
+    # Clear money-losers were capped at VALUABLE = data-only (tracked, never a tip): multi-SOT /
+    # goals2 / cards markets, and defenders for anytime-goalscorer.
     pos = (position or "").strip().upper()[:1]
-    if tier in ("SNIPER", "MARKSMAN") and (
-        market in getattr(config, "VALUABLE_ONLY_MARKETS", set())
-        or (pos, market) in getattr(config, "VALUABLE_ONLY_ROLE_MARKET", set())
-    ):
-        tier = "VALUABLE"
-    return tier
+    capped = (market in getattr(config, "VALUABLE_ONLY_MARKETS", set())
+              or (pos, market) in getattr(config, "VALUABLE_ONLY_ROLE_MARKET", set()))
+    # OWNER 2026-11-11 ("Clean rebuild"): no SNIPER / MARKSMAN / VALUABLE on a future props tip. Until props
+    # get per-league bars, a props tip qualifies at the props cell's LOWEST qualifying bar - the VALUABLE
+    # gates above (ev >= VALUABLE_EV, the odds-banded relative-edge floor, and for goals / SOT the GES floor)
+    # - and is QUALIFIED (UNPROVEN). A capped (data-only) combination stays a tracked PAPER row, never a tip.
+    return "PAPER" if capped else "QUALIFIED"
 
 
 # ── Lazy market factor detection ──────────────────────────────────────────────
@@ -576,7 +578,7 @@ def run_player_predictions(
         except Exception as _e:
             print(f"[predict] Injury fetch failed: {_e}")
 
-    payloads = {m: load_model(m) for m in config.MARKETS}
+    payloads = {m: load_model(m) for m in config.SERVED_MARKETS}   # + goals3 (rare research, base rate)
     missing  = [m for m, p in payloads.items() if p is None]
     if missing:
         print(f"[player_model] Models not trained: {missing}. Run --mode train first.")
@@ -593,6 +595,15 @@ def run_player_predictions(
     except Exception as _e:                                            # noqa: BLE001
         print(f"[predict] first-sight recorder unavailable: {_e}")
         _first_sight = None
+    # PREDICTION LEDGER (owner rule 2026-11-17, src/prediction_ledger_v9.py): EVERY scored player x market,
+    # not only the tips, stored per model x market x league x season. Learning only: it never changes a
+    # probability, tier or tip, never raises, and is None unless PREDICTION_LEDGER_ENABLED == 'true'.
+    try:
+        from src.prediction_ledger_v9 import props_recorder as _pl_props_recorder
+        _pl_props = _pl_props_recorder()
+    except Exception as _e:                                            # noqa: BLE001
+        print(f"[predict] prediction ledger unavailable: {_e}")
+        _pl_props = None
     # R2-D repaired props recipe in SHADOW (owner decision 2026-11-01): scored on the same
     # player-fixtures, logged first-sight to output/props_r2_shadow.csv. Never changes a tip.
     try:
@@ -916,6 +927,11 @@ def run_player_predictions(
                                  match_date=date_str,
                                  kickoff_utc=_ko if isinstance(_ko, str) else "",
                                  fixture_id=match_row.get("fixture_id"))
+            if _pl_props is not None:
+                _ko = match_row.get("kickoff_utc", "")
+                _pl_props.add(market, feat_df, probs.values, league=str(league),
+                              kickoff_utc=_ko if isinstance(_ko, str) else "",
+                              fixture_id=match_row.get("fixture_id"), home=home, away=away, payload=payload)
             if _r2_shadow is not None:
                 _ko = match_row.get("kickoff_utc", "")
                 _r2_shadow.add(market, feat_df, probs.values, league=str(league), match_date=date_str,
@@ -948,7 +964,7 @@ def run_player_predictions(
             # National-team competition by the registry (was: "world cup" in the league name).
             _is_wc = _is_nat
 
-            for market in config.MARKETS:
+            for market in config.SERVED_MARKETS:
                 _skip = serving_skip_reason(market, _pos_status)
                 if _skip:
                     _skip_reasons[_skip] += 1
@@ -1119,6 +1135,8 @@ def run_player_predictions(
               f"{_n_quality_cap_skipped} player-market(s): league/opponent quality not measured")
     if _first_sight is not None:
         _first_sight.flush()
+    if _pl_props is not None:
+        _pl_props.flush()
     if _r2_shadow is not None:
         _n_r2 = _r2_shadow.flush()
         print(f"[props_r2_shadow] +{_n_r2} first-sight row(s) -> output/props_r2_shadow.csv")
@@ -1239,9 +1257,12 @@ def enrich_no_odds_markets(tips_df: pd.DataFrame) -> pd.DataFrame:
     could reach VALUABLE/MARKSMAN/SNIPER against a price no book ever offered. Now a tip without a
     real quote keeps market_odds / ev / edge unset and tier AVOID. Real assist quotes reach tips
     through odds_fetcher (OddsAPI player_assists) and player_model/prop_odds_af (API-Football).
-    The count of unpriced rows is logged.
+    The count of unpriced rows is logged. (Go-live merge: main's hotfix guard for a frame without a
+    market_odds column is kept.)
     """
     if tips_df.empty or "market" not in tips_df.columns:
+        return tips_df
+    if "market_odds" not in tips_df.columns:
         return tips_df
     unpriced = tips_df["market"].isin(_NO_ODDS_MARKETS) & tips_df["market_odds"].isna()
     if unpriced.any():

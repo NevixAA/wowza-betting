@@ -172,6 +172,8 @@ def render_table(title: str, columns: list[tuple[str, int]], rows: list[dict],
 def send_album(token: str, chat_id: str, pngs: list[bytes], caption: str = "") -> bool:
     """sendMediaGroup in chunks of 10 (Telegram's cap); a single image uses sendPhoto.
     Never raises; the token is never logged."""
+    from dashboard_words import relabel_text      # owner 2026-11-17: no "paper" in a caption
+    caption = relabel_text(caption)
     import json
 
     import requests
@@ -270,7 +272,8 @@ def settled_tips(include_paper: bool = False) -> pd.DataFrame:
             "pick": "O/U 2.5 " + m["side"].astype(str).str.upper(),
             "odds": pd.to_numeric(m["odds"], errors="coerce"),
             "result": m["result"], "pnl": pd.to_numeric(m["pnl"], errors="coerce"),
-            "edge_pct": _col(m, "edge_pct"), "model_prob": float("nan")}))
+            "edge_pct": _col(m, "edge_pct"), "model_prob": float("nan"),
+            "generated_at": m["generated_at"] if "generated_at" in m.columns else None}))   # Clean Record split
     s = _read("side_bets_ledger.csv", include_paper, _TIP_COLS)
     if len(s):
         if "source" in s.columns:
@@ -284,14 +287,15 @@ def settled_tips(include_paper: bool = False) -> pd.DataFrame:
             "pick": mk.map(lambda k: "BTTS YES" if k == "btts" else f"{SIDE_LABEL.get(k, k)} OVER"),
             "odds": pd.to_numeric(s["odds"], errors="coerce"),
             "result": s["result"], "pnl": pd.to_numeric(s["pnl"], errors="coerce"),
-            "edge_pct": _col(s, "edge_pct"), "model_prob": _col(s, "model_prob")}))
+            "edge_pct": _col(s, "edge_pct"), "model_prob": _col(s, "model_prob"),
+            "generated_at": s["generated_at"] if "generated_at" in s.columns else None}))   # Clean Record split
     if not parts:
         return pd.DataFrame()
     d = pd.concat(parts, ignore_index=True)
     d["result"] = d["result"].astype(str).str.upper().str.strip()
     from src.tip_day import add_tip_day                    # "yesterday" = the album that carried it
     d = add_tip_day(d, date_col="date")
-    return d[d["tier"].isin(("SNIPER", "MARKSMAN", "VALUABLE"))]
+    return d[d["tier"].isin(("QUALIFIED", "SNIPER", "MARKSMAN", "VALUABLE"))]   # QUALIFIED: tips from 2026-11-21
 
 
 def _res_cell(result: str, pnl) -> tuple[str, tuple]:
@@ -313,7 +317,7 @@ def results_image(day: str) -> list[bytes]:
     y = d[d["tip_day"] == day].copy()
     if y.empty:
         return []
-    y["_t"] = y["tier"].map({"SNIPER": 0, "MARKSMAN": 1, "VALUABLE": 2})
+    y["_t"] = y["tier"].map({"QUALIFIED": 0, "SNIPER": 0, "MARKSMAN": 1, "VALUABLE": 2})
     y = y.sort_values(["_t", "market", "match"])
     st = y[_staked(y) & y["pnl"].notna()]
     pp = y[~_staked(y) & y["pnl"].notna()]

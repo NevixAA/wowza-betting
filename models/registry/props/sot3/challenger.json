@@ -1,0 +1,82 @@
+{
+  "market": "sot3",
+  "model_version": "props_sot3_clean_hgb_nan_native_a3646f1d",
+  "artifact_sha256": "a3646f1d284ad4191f3e4a5cdf13e3e83222104554f0e1705040435eb0c43c70",
+  "registered_at": "2026-11-18T19:03:57Z",
+  "training_cutoff": "2026-08-31",
+  "training_rows": {
+    "fit": 734045,
+    "calibration": 130673
+  },
+  "candidate": "hgb_nan_native",
+  "harness_version": "PROPS-HARNESS-1.0",
+  "clean_retrain": {
+    "run_id": "43035218594",
+    "code_sha": "6fd794964ad031b45ff0a383d996bb09b414175c",
+    "artifact_sha256": "a6a3ef0f854941e2a0cc41280454542cfa5f911ba86007b1d79614a7e6571706",
+    "candidate": "hgb_nan_native",
+    "holdout": {
+      "n": 55907,
+      "events": 803,
+      "log_loss": 0.06630307896405446,
+      "brier": 0.013709663135981544,
+      "ece10": 0.010240431223476253,
+      "calib_intercept": 0.6419333661233296,
+      "calib_slope": 1.1362167026160312,
+      "ll_minus_player_base_rate": {
+        "mean": -0.0002644018077513107,
+        "ci95": [
+          -0.0012940286652139464,
+          0.0007756127804160861
+        ],
+        "week_blocks": 9
+      },
+      "ml_candidates_minus_player_base_rate": {
+        "hgb_nan_native": {
+          "mean": -0.0002644018077513107,
+          "ci95": [
+            -0.0012940286652139464,
+            0.0007756127804160861
+          ],
+          "week_blocks": 9
+        },
+        "recipe_retrained": {
+          "mean": 0.00030643041105303894,
+          "ci95": [
+            -0.0007380956788029825,
+            0.0013337907119956975
+          ],
+          "week_blocks": 9
+        }
+      },
+      "head_to_head": {
+        "n": 55907,
+        "weeks": 9,
+        "ll_delta_hgb_minus_recipe": -0.0005708322188043497,
+        "ci95_lo": -0.0006697341135101834,
+        "ci95_hi": -0.000471107277661535,
+        "p_one_sided": 0.00024993751562109475,
+        "boot": 4000,
+        "seed": 1
+      },
+      "holdout_dates": [
+        "2026-09-01",
+        "2026-10-31"
+      ],
+      "rule": "challenger: hgb_nan_native beats recipe_retrained (CI95 upper < 0)"
+    },
+    "approval": "serve the clean player_base_rate model (option b) - 100% real data, markets stay on; the clean ML candidates keep predicting as challengers (owner decision 2026-11-18, relayed by the go-live coordinator)",
+    "approved_on": "2026-11-18",
+    "champion": "props_sot3_clean_player_base_rate_f11626d9"
+  },
+  "parent_champion_version": "props_sot3_clean_player_base_rate_f11626d9",
+  "promotion_status": "SHADOW_RESEARCH",
+  "model_role": "SHADOW",
+  "gate_version": "PG-PROPS-1.0",
+  "shadow_since": "2026-11-18T19:03:57Z",
+  "gate": {
+    "gate_version": "PG-PROPS-1.0",
+    "qualified": false,
+    "reason": "clean-retrain holdout: no ML candidate beats player_base_rate (research shadow)"
+  }
+}

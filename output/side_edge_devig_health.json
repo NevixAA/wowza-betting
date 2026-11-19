@@ -1,194 +1,194 @@
 {
   "artifact": "side_edge_devig_health",
   "shadow_version": "side_edge_devig_shadow-1.0",
-  "generated_at": "2026-11-01T18:57:55Z",
+  "generated_at": "2026-11-19T17:30:12Z",
   "production_rule": "two-sided de-vig since 2026-11-01 (config.SIDE_EDGE_FAIR_PRICE); edge_prod below = the old (1/odds)/1.08, kept for comparison",
   "shadow_rule": "edge = p_model - median_books(power_devig(same-book two-sided pair)), pre-kickoff, carried forward to the decision time; same thresholds",
   "quotes_from": "2026-08-19 09:23:27+00:00",
-  "quote_rows": 199944,
+  "quote_rows": 236156,
   "board": {
-    "generated_at": "2026-11-01T17:03:41Z",
-    "rows": 242,
-    "production_tips": 17,
+    "generated_at": "2026-11-19T17:23:53Z",
+    "rows": 247,
+    "production_tips": 33,
     "classification": {
-      "CONFIRMED_BY_DEVIG": 16,
-      "ONLY_BECAUSE_OF_1_08": 1
+      "CONFIRMED_BY_DEVIG": 27,
+      "ONLY_BECAUSE_OF_1_08": 6
     },
     "by_market": {
       "btts": {
-        "CONFIRMED_BY_DEVIG": 15
+        "CONFIRMED_BY_DEVIG": 23,
+        "ONLY_BECAUSE_OF_1_08": 5
       },
       "over15": {
+        "CONFIRMED_BY_DEVIG": 4,
         "ONLY_BECAUSE_OF_1_08": 1
-      },
-      "over35": {
-        "CONFIRMED_BY_DEVIG": 1
       }
     },
-    "devigged_rows": 242,
-    "median_pair_overround": 0.0802,
+    "devigged_rows": 247,
+    "median_pair_overround": 0.0807,
     "median_edge_prod_minus_devig_pp": 0.68,
-    "mean_edge_prod_minus_devig_pp": 0.56,
-    "p90_edge_prod_minus_devig_pp": 2.39,
-    "rows_prod_edge_inflated_ge_2pp": 32,
-    "rows_pair_overround_below_6pct": 1,
-    "mean_inflation_pp_when_overround_below_6pct": 0.04
+    "mean_edge_prod_minus_devig_pp": 0.51,
+    "p90_edge_prod_minus_devig_pp": 1.98,
+    "rows_prod_edge_inflated_ge_2pp": 24,
+    "rows_pair_overround_below_6pct": 2,
+    "mean_inflation_pp_when_overround_below_6pct": 0.31
   },
   "ledger_retrospective": {
     "label": "RETROSPECTIVE",
-    "tips_since_quotes_exist": 629,
-    "rows": 629,
-    "production_tips": 629,
+    "tips_since_quotes_exist": 742,
+    "rows": 742,
+    "production_tips": 742,
     "classification": {
-      "CONFIRMED_BY_DEVIG": 431,
-      "UNVERIFIABLE_ONE_SIDED": 105,
-      "ONLY_BECAUSE_OF_1_08": 93
+      "CONFIRMED_BY_DEVIG": 316,
+      "ONLY_BECAUSE_OF_1_08": 293,
+      "UNVERIFIABLE_ONE_SIDED": 133
     },
     "by_market": {
       "btts": {
-        "CONFIRMED_BY_DEVIG": 336,
-        "UNVERIFIABLE_ONE_SIDED": 83,
-        "ONLY_BECAUSE_OF_1_08": 78
+        "CONFIRMED_BY_DEVIG": 237,
+        "ONLY_BECAUSE_OF_1_08": 220,
+        "UNVERIFIABLE_ONE_SIDED": 99
       },
       "over15": {
-        "CONFIRMED_BY_DEVIG": 77,
-        "UNVERIFIABLE_ONE_SIDED": 20,
-        "ONLY_BECAUSE_OF_1_08": 8
+        "CONFIRMED_BY_DEVIG": 71,
+        "ONLY_BECAUSE_OF_1_08": 33,
+        "UNVERIFIABLE_ONE_SIDED": 25
       },
       "over35": {
-        "CONFIRMED_BY_DEVIG": 18,
-        "ONLY_BECAUSE_OF_1_08": 7,
-        "UNVERIFIABLE_ONE_SIDED": 2
+        "ONLY_BECAUSE_OF_1_08": 40,
+        "UNVERIFIABLE_ONE_SIDED": 9,
+        "CONFIRMED_BY_DEVIG": 8
       }
     },
-    "devigged_rows": 524,
+    "devigged_rows": 609,
     "median_pair_overround": 0.0798,
-    "median_edge_prod_minus_devig_pp": 0.1,
-    "mean_edge_prod_minus_devig_pp": 0.45,
-    "p90_edge_prod_minus_devig_pp": 2.5,
-    "rows_prod_edge_inflated_ge_2pp": 83,
-    "rows_pair_overround_below_6pct": 15,
-    "mean_inflation_pp_when_overround_below_6pct": 2.67,
+    "median_edge_prod_minus_devig_pp": 0.07,
+    "mean_edge_prod_minus_devig_pp": 0.38,
+    "p90_edge_prod_minus_devig_pp": 2.51,
+    "rows_prod_edge_inflated_ge_2pp": 99,
+    "rows_pair_overround_below_6pct": 16,
+    "mean_inflation_pp_when_overround_below_6pct": 2.66,
     "examples_only_because_of_1_08": [
       {
-        "fixture": "V\u00e4ster\u00e5s SK v IF Brommapojkarna",
-        "league": "Sweden Allsvenskan",
+        "fixture": "Wolverhampton Wanderers v Derby County",
+        "league": "Championship",
         "market": "btts",
         "tier_prod": "VALUABLE",
-        "edge_prod": 0.0464,
-        "edge_devig": 0.0367,
-        "odds": 1.59,
-        "p_fair_devig": 0.592,
-        "books": "betfred_uk;coral;ladbrokes_uk;leovegas;livescorebet;onexbet;virginbet"
+        "edge_prod": 0.0667,
+        "edge_devig": 0.0657,
+        "odds": 1.85,
+        "p_fair_devig": 0.5015,
+        "books": "livescorebet;virginbet"
       },
       {
-        "fixture": "New York City FC v CF Montreal",
-        "league": "USA MLS",
+        "fixture": "Boca Juniors v Independiente Rivadavia",
+        "league": "Argentina Primera Division",
         "market": "btts",
-        "tier_prod": "VALUABLE",
-        "edge_prod": 0.0444,
-        "edge_devig": 0.0379,
-        "odds": 1.65,
-        "p_fair_devig": 0.5677,
-        "books": "betfred_uk;coral;ladbrokes_uk;leovegas;livescorebet;mybookieag;onexbet;pinnacle;virginbet;williamhill"
+        "tier_prod": "MARKSMAN",
+        "edge_prod": 0.084,
+        "edge_devig": 0.0932,
+        "odds": 2.0,
+        "p_fair_devig": 0.4538,
+        "books": "livescorebet;onexbet;virginbet"
       },
       {
-        "fixture": "Mj\u00e4llby AIF v Kalmar FF",
-        "league": "Sweden Allsvenskan",
-        "market": "btts",
-        "tier_prod": "VALUABLE",
-        "edge_prod": 0.0438,
-        "edge_devig": 0.0372,
-        "odds": 1.72,
-        "p_fair_devig": 0.5449,
-        "books": "betfred_uk;coral;ladbrokes_uk;leovegas;livescorebet;onexbet;virginbet;williamhill"
-      },
-      {
-        "fixture": "Northampton Town v Oldham Athletic",
-        "league": "League Two",
-        "market": "btts",
-        "tier_prod": "VALUABLE",
-        "edge_prod": 0.0412,
-        "edge_devig": -0.0072,
-        "odds": 1.8900000000000001,
-        "p_fair_devig": 0.5383,
-        "books": "betfred_uk;leovegas;livescorebet;onexbet;virginbet;williamhill"
-      },
-      {
-        "fixture": "Arminia Bielefeld v Eintracht Braunschweig",
-        "league": "Bundesliga 2",
+        "fixture": "Sao Paulo v Fluminense",
+        "league": "Brazil Serie A",
         "market": "over35",
         "tier_prod": "VALUABLE",
-        "edge_prod": 0.0533,
-        "edge_devig": -0.0054,
-        "odds": 2.81,
-        "p_fair_devig": 0.3882,
-        "books": "codere_it;marathonbet;onexbet;tipico_de"
+        "edge_prod": 0.0181,
+        "edge_devig": 0.0422,
+        "odds": 3.75,
+        "p_fair_devig": 0.2228,
+        "books": "betfair_ex_uk;codere_it;coolbet;coral;ladbrokes_uk;leovegas;pinnacle;virginbet"
       },
       {
-        "fixture": "Accrington Stanley v Northampton Town",
-        "league": "League Two",
-        "market": "btts",
-        "tier_prod": "VALUABLE",
-        "edge_prod": 0.0411,
-        "edge_devig": 0.0392,
-        "odds": 1.84,
-        "p_fair_devig": 0.5051,
-        "books": "betfred_uk;coral;ladbrokes_uk;leovegas;livescorebet;matchbook;onexbet;pinnacle;virginbet;williamhill"
+        "fixture": "AGF Aarhus v Lyngby",
+        "league": "Denmark Superliga",
+        "market": "over35",
+        "tier_prod": "QUALIFIED",
+        "edge_prod": -0.0058,
+        "edge_devig": 0.0098,
+        "odds": 2.38,
+        "p_fair_devig": 0.3734,
+        "books": "leovegas_se;tipico_de;unibet_nl;unibet_se"
       },
       {
-        "fixture": "Wrexham AFC v Wolverhampton Wanderers",
-        "league": "Championship",
-        "market": "btts",
-        "tier_prod": "VALUABLE",
-        "edge_prod": 0.0436,
-        "edge_devig": 0.0368,
-        "odds": 1.69,
-        "p_fair_devig": 0.5547,
-        "books": "betfred_uk;coral;ladbrokes_uk;leovegas;livescorebet;onexbet;virginbet;williamhill"
+        "fixture": "Aalesund v Rosenborg",
+        "league": "Norway Eliteserien",
+        "market": "over35",
+        "tier_prod": "QUALIFIED",
+        "edge_prod": -0.0007,
+        "edge_devig": -0.0082,
+        "odds": 1.81,
+        "p_fair_devig": 0.5191,
+        "books": "codere_it;coolbet;gtbets;leovegas_se;marathonbet;onexbet;pinnacle;pmu_fr;tipico_de;unibet_nl;unibet_se"
       },
       {
-        "fixture": "Blackburn Rovers v West Ham United",
-        "league": "Championship",
-        "market": "btts",
-        "tier_prod": "VALUABLE",
-        "edge_prod": 0.0424,
-        "edge_devig": 0.0331,
-        "odds": 1.62,
-        "p_fair_devig": 0.5809,
-        "books": "betfred_uk;coral;ladbrokes_uk;leovegas;livescorebet;onexbet;virginbet;williamhill"
+        "fixture": "Viborg FF v Randers FC",
+        "league": "Denmark Superliga",
+        "market": "over35",
+        "tier_prod": "QUALIFIED",
+        "edge_prod": -0.0787,
+        "edge_devig": -0.0746,
+        "odds": 2.19,
+        "p_fair_devig": 0.4187,
+        "books": "codere_it;gtbets;leovegas_se;marathonbet;onexbet;pmu_fr;tipico_de;unibet_nl;unibet_se"
+      },
+      {
+        "fixture": "Molde v Bod\u00f8/Glimt",
+        "league": "Norway Eliteserien",
+        "market": "over35",
+        "tier_prod": "QUALIFIED",
+        "edge_prod": -0.0554,
+        "edge_devig": -0.0825,
+        "odds": 1.71,
+        "p_fair_devig": 0.5686,
+        "books": "codere_it;gtbets;leovegas_se;marathonbet;onexbet;tipico_de;unibet_nl;unibet_se"
+      },
+      {
+        "fixture": "V\u00e5lerenga v IK Start",
+        "league": "Norway Eliteserien",
+        "market": "over35",
+        "tier_prod": "QUALIFIED",
+        "edge_prod": -0.0907,
+        "edge_devig": -0.1113,
+        "odds": 1.89,
+        "p_fair_devig": 0.5105,
+        "books": "betanysports;betonlineag;codere_it;coolbet;gtbets;leovegas_se;marathonbet;onexbet;pinnacle;pmu_fr;tipico_de;unibet_nl;unibet_se"
       }
     ]
   },
   "ledger_open_tips": {
-    "rows": 42,
-    "production_tips": 42,
+    "rows": 41,
+    "production_tips": 41,
     "classification": {
-      "CONFIRMED_BY_DEVIG": 23,
-      "UNVERIFIABLE_ONE_SIDED": 10,
-      "ONLY_BECAUSE_OF_1_08": 9
+      "UNVERIFIABLE_ONE_SIDED": 16,
+      "ONLY_BECAUSE_OF_1_08": 14,
+      "CONFIRMED_BY_DEVIG": 11
     },
     "by_market": {
       "btts": {
-        "CONFIRMED_BY_DEVIG": 21,
-        "UNVERIFIABLE_ONE_SIDED": 9,
+        "UNVERIFIABLE_ONE_SIDED": 15,
+        "CONFIRMED_BY_DEVIG": 8,
         "ONLY_BECAUSE_OF_1_08": 7
       },
       "over15": {
-        "ONLY_BECAUSE_OF_1_08": 2,
-        "CONFIRMED_BY_DEVIG": 1
+        "CONFIRMED_BY_DEVIG": 2,
+        "UNVERIFIABLE_ONE_SIDED": 1,
+        "ONLY_BECAUSE_OF_1_08": 1
       },
       "over35": {
-        "UNVERIFIABLE_ONE_SIDED": 1,
+        "ONLY_BECAUSE_OF_1_08": 6,
         "CONFIRMED_BY_DEVIG": 1
       }
     },
-    "devigged_rows": 32,
-    "median_pair_overround": 0.0803,
-    "median_edge_prod_minus_devig_pp": 0.02,
-    "mean_edge_prod_minus_devig_pp": 0.1,
-    "p90_edge_prod_minus_devig_pp": 1.17,
-    "rows_prod_edge_inflated_ge_2pp": 3,
+    "devigged_rows": 25,
+    "median_pair_overround": 0.0795,
+    "median_edge_prod_minus_devig_pp": -0.41,
+    "mean_edge_prod_minus_devig_pp": 0.01,
+    "p90_edge_prod_minus_devig_pp": 2.2,
+    "rows_prod_edge_inflated_ge_2pp": 4,
     "rows_pair_overround_below_6pct": 0
   }
 }

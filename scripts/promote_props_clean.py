@@ -15,6 +15,14 @@ not promoted at all.
 Every number recorded in the promotion comes from the artifact: the report (metrics, hashes, code sha)
 and props_harness_holdout_scored.csv.gz (the head-to-head). Markets hidden pending their own clean
 retrain (config.HIDDEN_PENDING_CLEAN_RETRAIN) are refused by the gate.
+
+RARE MARKETS (--owner-base-rate, owner 2026-11-18: "serve the clean player_base_rate ... the clean ML
+candidates keep predicting as challengers"). For goals2 / goals3 / sot3 / sot4 the rule above picks no
+candidate (none beats player_base_rate). With --owner-base-rate each listed market (it must be in
+config.BASE_RATE_SERVED_MARKETS) SERVES the run's player_base_rate artifact, and the ML candidate the
+same head-to-head picks between the two (hgb_nan_native when its CI95 upper < 0, else recipe_retrained)
+is PARKED as its challenger (props_gate.park_clean_challenger). Nothing is chosen by hand: the run's
+own artifacts, hashes and holdout numbers are recorded.
 """
 from __future__ import annotations
 
@@ -71,6 +79,44 @@ def choose(market_rep: dict, h2h: dict) -> tuple[str | None, str]:
     return None, "no candidate beats player_base_rate"
 
 
+def _holdout_metrics(mr: dict, cand: str, h2h: dict, rule: str) -> dict:
+    hm = mr["holdout"]["metrics"][cand]
+    vs = mr["holdout"]["log_loss_minus_base_rate"]
+    return {"n": hm["n"], "events": hm["events"], "log_loss": hm["log_loss"], "brier": hm["brier"],
+            "ece10": hm["ece10"], "calib_intercept": hm.get("calib_intercept"), "calib_slope": hm["calib_slope"],
+            "ll_minus_player_base_rate": vs.get(cand) if cand != "player_base_rate" else None,
+            "ml_candidates_minus_player_base_rate": {c: vs.get(c) for c in ("hgb_nan_native", "recipe_retrained")},
+            "head_to_head": h2h, "holdout_dates": mr["holdout"]["dates"], "rule": rule}
+
+
+def _owner_base_rate(d: Path, a, rep: dict, mr: dict, m: str, h2h: dict) -> dict:
+    from player_model import config as pconfig
+    if m not in pconfig.BASE_RATE_SERVED_MARKETS:
+        raise SystemExit(f"{m} is not in config.BASE_RATE_SERVED_MARKETS - refused")
+    champ_why = ("owner 2026-11-18: serve the clean player_base_rate (no ML candidate beats it: "
+                 + choose(mr, h2h)[1] + ")")
+    ch = "hgb_nan_native" if h2h["ci95_hi"] < 0 else "recipe_retrained"
+    ch_why = ("challenger: " + ("hgb_nan_native beats recipe_retrained (CI95 upper < 0)" if ch == "hgb_nan_native"
+                                else "hgb_nan_native not shown better than recipe_retrained"))
+    row = {"market": m, "champion": "player_base_rate", "challenger": ch, "head_to_head": h2h}
+    for cand, why, role in (("player_base_rate", champ_why, "champion"), (ch, ch_why, "challenger")):
+        art = mr["artifacts"][cand]
+        raw = (d / art["path"]).read_bytes()
+        metrics = _holdout_metrics(mr, cand, h2h, why)
+        if a.dry_run:
+            PPG.load_clean_artifact(raw, art["sha256"])
+            row[f"{role}_artifact_sha256"] = art["sha256"]
+            continue
+        kw = dict(expected_sha256=art["sha256"], run_id=a.run_id, code_sha=rep["code_sha"],
+                  holdout_metrics=metrics, approval=a.approval, approved_on=a.approved_on)
+        rec = (PPG.promote_clean_retrain(m, raw, owner_base_rate=True, **kw) if role == "champion"
+               else PPG.park_clean_challenger(m, raw, **kw))
+        row[f"{role}_artifact_sha256"] = art["sha256"]
+        row[f"{role}_model_version"] = rec["model_version"]
+        row[f"{role}_payload_sha256"] = rec.get("serving_sha256") or rec.get("artifact_sha256")
+    return row
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--artifact-dir", required=True)
@@ -79,6 +125,8 @@ def main(argv=None) -> int:
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--approval", default=APPROVAL)
     ap.add_argument("--approved-on", default=APPROVED_ON)
+    ap.add_argument("--owner-base-rate", action="store_true",
+                    help="rare markets: serve player_base_rate, park the ML challenger (owner 2026-11-18)")
     a = ap.parse_args(argv)
     d = Path(a.artifact_dir)
     rep = json.loads((d / "output" / "props_harness" / "props_harness_report.json").read_text(encoding="utf-8"))
@@ -89,6 +137,9 @@ def main(argv=None) -> int:
     for m in [x.strip() for x in a.markets.split(",") if x.strip()]:
         mr = rep["markets"][m]
         h2h = head_to_head(scored, m)
+        if a.owner_base_rate:
+            out.append(_owner_base_rate(d, a, rep, mr, m, h2h))
+            continue
         cand, why = choose(mr, h2h)
         row = {"market": m, "candidate": cand, "why": why, "head_to_head": h2h}
         if cand is None:

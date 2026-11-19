@@ -126,16 +126,21 @@ STAGE3_PAGES = ("pages/12_💼_Portfolio.py", "pages/16_💰_Bankroll.py", "page
                 "pages/4_ℹ️_Model_Info.py", "pages/7_🔬_Pro.py", "pages/8_🛰️_V11_Market.py",
                 "pages/15_🔭_League_Scout.py", "pages/10_🤖_Agent_Analysis.py", "pages/account.py",
                 "pages/free_tips.py", "pages/19_🩺_System_Health.py", "pages/20_🧪_Model_Lab.py",
-                "pages/21_📡_Market_Intelligence.py", "pages/22_🏭_Production.py")
+                "pages/21_📡_Market_Intelligence.py", "pages/22_🏭_Production.py",
+                "pages/24_📬_Daily_Progress.py",
+                "pages/24_🧾_Clean_Record.py", "pages/26_📏_Bars.py", "pages/27_🩹_Fixes.py")   # owner 2026-11-17
 STAGE3_VIEWS = ("dashboard_data/portfolio_view.py", "dashboard_data/bankroll_view.py", "dashboard_data/props_view.py",
                 "dashboard_data/builder_view.py", "dashboard_data/success_view.py",
                 "dashboard_data/model_info_view.py", "dashboard_data/research_view.py",
-                "dashboard_data/evidence_view.py")       # evidence panels, owner brief 2026-10-26 part D
+                "dashboard_data/evidence_view.py",
+                "dashboard_data/bars_stats_view.py", "dashboard_data/season.py")       # evidence panels, owner brief 2026-10-26 part D
 REDESIGNED = ("pages/00_🎯_Home.py", "pages/1_📊_Dashboard.py", "pages/18_🔧_League_Research.py",
               "pages/17_🏟️_Leagues.py", "pages/0_🏠_Overview.py", "pages/6_⚡_Live.py", "pages/13_⚽_Fantasy.py",
               "dashboard_data/league_research_view.py", "dashboard_data/leagues_view.py",
               "dashboard_data/overview_view.py", "dashboard_data/live_view.py", "dashboard_data/fantasy_view.py",
               "pages/23_🎲_Specials.py", "dashboard_data/specials_view.py",   # owner 2026-11-09, research
+              "pages/24_🧾_Clean_Record.py",       # owner 2026-11-11, go-live
+              "pages/24_📬_Daily_Progress.py",                                  # owner 2026-11-15, admin only
               ) + STAGE3_PAGES + STAGE3_VIEWS
 
 

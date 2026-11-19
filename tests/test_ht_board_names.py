@@ -58,10 +58,10 @@ def test_board_spelling_reaches_the_history_club():
 
 def test_the_identity_map_is_what_proves_a_renamed_club():
     h = _hist()
-    no_map = HT.attach_ht_features(h, _board("Bolton", "Stockport County FC"))
+    no_map = HT.attach_ht_features(h, _board("Bolton", "Stockport County AFC"))
     assert no_map.loc[0, "ht_away_n"] == 0                       # resolve() alone cannot prove it
-    assert HT.LAST_NAME_REPORT["unresolved_names"] == ["League One|Stockport County FC"]
-    with_map = HT.attach_ht_features(h, _board("Bolton", "Stockport County FC"), identity_aliases=AMAP)
+    assert HT.LAST_NAME_REPORT["unresolved_names"] == ["League One|Stockport County AFC"]
+    with_map = HT.attach_ht_features(h, _board("Bolton", "Stockport County AFC"), identity_aliases=AMAP)
     assert with_map.loc[0, "ht_away_n"] > 0
 
 

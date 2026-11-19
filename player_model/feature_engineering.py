@@ -981,7 +981,6 @@ def _add_composites(df: pd.DataFrame) -> pd.DataFrame:
     f["card_exposure_index"] = f["cards_pg"] * (f["minutes_pg"] / 90.0) * (1 - pf)
     f["sot_quality_score"] = f["shot_accuracy_rate"] * f["sot_pg"]
     f["opp_adjusted_shot_threat"] = f["shots_pg"] * f["opp_sot_conceded_pg"]
-    f["creative_playmaker_score"] = f["kp_per90"] * (pm + 0.5 * pf)
 
     corners_rel = _ratio(f["team_corners_pg"], f["lg_corners_per_team"])
 
@@ -1001,31 +1000,10 @@ def _add_composites(df: pd.DataFrame) -> pd.DataFrame:
     f["att_vs_gk_threat"] = (f["sot_pg"] * save_gap).clip(lower=0.0)
     f["clinical_vs_gk"] = (f["shot_accuracy_rate"] * save_gap).clip(lower=0.0)
     f["dribble_creativity_score"] = f["dribbles_pg"] * f["dribble_success_rate"]
-    f["defensive_solidity"] = (f["defensive_actions_per90"]
-                               * (1.0 - f["dribbled_past_pg"] / (f["dribbled_past_pg"] + 1.0))).clip(lower=0.0)
-    f["penalty_threat_score"] = (f["penalties_won_pg"] * 3.0 + f["fouls_drawn_per90"] * 0.08).clip(upper=1.0)
-    f["card_risk_index"] = (f["cards_pg"] * 2.0 + f["red_cards_pg"] * 3.0
-                            + f["foul_committer_ratio"] * 0.5).clip(upper=1.0)
-    f["midfield_engine_score"] = ((f["passes_pg"] / 50.0).clip(upper=1.0) * 0.4
-                                  + (f["kp_per90"] / 3.0).clip(upper=1.0) * 0.4
-                                  + (f["tackles_per90"] / 5.0).clip(upper=1.0) * 0.2) * (pm + 0.3 * pd_)
     f["offside_aggressiveness"] = f["offsides_pg"] * pf               # unclipped (was upper=2.0)
     f["volume_shot_penetration"] = (f["shots_pg"] * f["shot_accuracy_rate"] * save_gap).clip(lower=0.0)
     f["finishing_threat_index"] = (f["sot_pg"] * f["shooting_efficiency_index"] * save_gap).clip(lower=0.0)
     f["box_dominance_vs_gk"] = ((f["box_actions_per90"] + f["dribbles_pg"]) * save_gap).clip(lower=0.0)
-    f["aggression_adjusted_threat"] = (f["sot_pg"] * save_gap / (1.0 + f["offsides_pg"] * 0.3)).clip(lower=0.0)
-    f["defensive_vulnerability_index"] = (
-        (f["dribbled_past_pg"] * 1.5 + (1.0 - f["dribble_success_rate"]) * 0.5
-         + (1.0 - f["aerial_won_rate"]) * 0.5).clip(upper=2.0)
-        * (pf * 1.0 + pm * 0.7 + pd_ * 0.3))
-    f["progressive_carrier_score"] = (
-        ((f["dribbles_pg"] / 3.0).clip(upper=1.0) * 0.45 + (f["passes_pg"] / 60.0).clip(upper=1.0) * 0.35
-         + f["dribble_success_rate"] * 0.20).clip(upper=1.0)
-        * (pm * 1.0 + pf * 0.8 + pd_ * 0.5))
-    f["disciplinary_pressure_index"] = (f["fouls_drawn_per90"] * 0.20 + f["fouls_per90"] * 0.25
-                                        + f["cards_pg"] * 1.5 + f["duel_intensity_per90"] * 0.10).clip(upper=2.0)
-    f["foul_magnet_score"] = (f["fouls_drawn_per90"] * 0.30 + f["penalty_threat_score"] * 0.40
-                              + f["progressive_carrier_score"] * 0.30).clip(upper=1.0)
     f["forward_matchup_score"] = (f["sot_pg"] * f["opp_goals_conceded_vs_fwd_pg"] * pf).clip(lower=0.0)
     f["mid_threat_vs_defense"] = (f["kp_per90"] * f["opp_goals_conceded_vs_mid_pg"] * pm).clip(lower=0.0)
     f["box_threat_vs_leaky_defense"] = (f["box_actions_per90"] * f["opp_goals_conceded_pg"]).clip(lower=0.0)
@@ -1033,11 +1011,14 @@ def _add_composites(df: pd.DataFrame) -> pd.DataFrame:
     f["kp_vs_aggressive_defense"] = (f["kp_per90"] * f["opp_def_cards_pg"]).clip(lower=0.0)
     f["team_momentum_forward_matchup"] = (f["team_goals_pg_roll"] * f["opp_goals_conceded_pg"] * pf).clip(lower=0.0)
 
+    # The 13 typed-formula features (config.TYPED_FORMULA_FEATURES_WITHHELD: hand weights, normalisers
+    # and clips, not measurements) are no longer built (owner 2026-11-18, "100% truth data"): no served
+    # payload reads them since goals2/goals3/sot3/sot4 serve the clean player base rate. A payload that
+    # still lists one (rollback copies, the R2-D shadow) reads it as absent -> NaN, as the removed
+    # set-piece proxies are read since 2026-11-02.
     # Height: the player's and the opponent defenders' measured heights (NaN while unprofiled).
     profile_composites(f)
-    f["creative_pressure_matchup"] = (f["creative_playmaker_score"] * f["opp_def_fouls_pg"]).clip(lower=0.0)
     f["dribbler_vs_defensive_line"] = (f["dribble_creativity_score"] * (1.0 - f["opp_def_aerial_win_rate"])).clip(lower=0.0)
-    f["carrier_vs_press"] = (f["progressive_carrier_score"] * f["opp_def_aggression"]).clip(lower=0.0)
     f["dribble_contact_rate"] = (f["dribbles_pg"] * (1.0 - f["dribble_success_rate"])).clip(lower=0.0)
     f["tackle_dribble_clash"] = (f["dribble_contact_rate"] * f["opp_mid_fouls_pg"]).clip(lower=0.0)
     # The referee's yellows relative to the league's MEASURED yellows/match (was / 3.5). Unclipped
@@ -1045,7 +1026,6 @@ def _add_composites(df: pd.DataFrame) -> pd.DataFrame:
     f["card_clash_index"] = ((f["fouls_per90"] + f["dribble_contact_rate"]) * f["opp_mid_cards_pg"]
                              * _ratio(f["referee_yellows_pg"], f["lg_yellows_per_match"])
                              ).clip(lower=0.0)
-    f["opp_mid_discipline"] = (f["opp_mid_fouls_pg"] * 0.6 + f["opp_mid_cards_pg"] * 2.0).clip(lower=0.0)
 
     # Opposition strength: the opponent's goals CONCEDED per match relative to its league's goals per
     # team-match, both measured (was goals scored over a typed/whole-frame mean, fillna 1.3).

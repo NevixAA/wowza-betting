@@ -95,23 +95,29 @@ _POLICY_MARKET = {OU25: "OU25", "btts": "BTTS", "over15": "OVER15", "over35": "O
 
 
 def real_track_checker():
-    """f(model_type, market, side) -> True when the tip's bankroll-policy track is real money
-    (state in REAL_STATES and base_fraction > 0). Policy unreadable -> always False (every tip
-    counts as paper, so the guard falls back to first-tip-stands; logged)."""
+    """f(model_type, market, side, league=None) -> True when the tip is real money under the bankroll
+    policy (state in REAL_STATES and base_fraction > 0): its CELL's own entry when per-cell staking is on
+    (owner 2026-11-09; a cell without one is paper, and so is a tip without a league), else its track.
+    Policy unreadable -> always False (every tip counts as paper, so the guard falls back to
+    first-tip-stands; logged)."""
     try:
-        from src.bankroll_policy import REAL_STATES, load_policy, positive_fraction, track_key
-        tracks = load_policy().get("tracks") or {}
+        from src.bankroll_policy import (REAL_STATES, cell_staking_on, load_policy, positive_fraction,
+                                         stake_entry, track_key)
+        policy = load_policy()
     except Exception as e:                                           # noqa: BLE001
         log.warning(f"direction guard: bankroll policy unreadable ({type(e).__name__}: {e}) — "
                     "every tip treated as paper (first tip stands)")
-        return lambda *a: False
+        return lambda *a, **k: False
 
-    def _real(model_type, market, side) -> bool:
+    def _real(model_type, market, side, league=None) -> bool:
         mk = _POLICY_MARKET.get(str(market or "").strip().lower())
         mt = str(model_type or "").strip()
         if mk is None or not mt or mt == "nan":
             return False
-        t = tracks.get(track_key(mt, mk, str(side or "").strip().upper())) or {}
+        lg = "" if league is None or (isinstance(league, float) and league != league) else str(league).strip()
+        if cell_staking_on(policy) and not lg:
+            return False
+        t = stake_entry(policy, track_key(mt, mk, str(side or "").strip().upper()), lg) or {}
         return t.get("state") in REAL_STATES and positive_fraction(t)
     return _real
 
@@ -144,7 +150,7 @@ def committed(source: str = "live") -> dict:
                 "match_date": b["match_date"].astype(str).str[:10], "home_team": b["home_team"].astype(str),
                 "away_team": b["away_team"].astype(str), "market": OU25,
                 "side": b["side"].astype(str).str.strip().str.upper(), "tier": b.get("signal_tier"),
-                "model_type": b.get("model_type"),
+                "model_type": b.get("model_type"), "league": b.get("league"),
                 "generated_at": b["generated_at"].astype(str), "ledger": "bets_ledger", "_pri": 0}))
         p = _L.SIDE_LEDGER_FILE
         if p.exists():
@@ -156,7 +162,7 @@ def committed(source: str = "live") -> dict:
                 "match_date": s["match_date"].astype(str).str[:10], "home_team": s["home_team"].astype(str),
                 "away_team": s["away_team"].astype(str), "market": s["market"].astype(str).str.lower(),
                 "side": side.fillna("").astype(str), "tier": s.get("signal_tier"),
-                "model_type": s.get("model_type"),
+                "model_type": s.get("model_type"), "league": s.get("league"),
                 "generated_at": s["generated_at"].astype(str), "ledger": "side_bets_ledger", "_pri": 1}))
     except Exception as e:                                           # noqa: BLE001
         log.warning(f"direction guard: ledgers unreadable ({type(e).__name__}: {e}) — within-run rule only")
@@ -174,7 +180,7 @@ def committed(source: str = "live") -> dict:
     return {(r.match_date, r.home_team, r.away_team): {
                 "direction": r.direction, "market": r.market, "side": r.side, "tier": r.tier,
                 "generated_at": r.generated_at, "ledger": r.ledger,
-                "real": bool(is_real(r.model_type, r.market, r.side))}
+                "real": bool(is_real(r.model_type, r.market, r.side, getattr(r, "league", None)))}
             for r in d.itertuples(index=False)}
 
 
@@ -227,7 +233,7 @@ def apply(bets: pd.DataFrame | None, side_bets: pd.DataFrame | None,
                 cands.append(("s", i, r, str(r.get("market", "")).lower(), str(r.get("side", "") or ""),
                               r.get("odds", r.get("market_odds")),
                               round(float(edge) * 100, 2) if pd.notna(edge) else None))
-        real = [bool(is_real(c[2].get("model_type"), c[3], c[4])) for c in cands]
+        real = [bool(is_real(c[2].get("model_type"), c[3], c[4], c[2].get("league"))) for c in cands]
         order = sorted(range(len(cands)), key=lambda k: (not real[k], k))
 
         # fixture -> the direction that stands: the ledger's first tip, else this run's first claim

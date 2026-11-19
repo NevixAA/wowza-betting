@@ -36,6 +36,10 @@ def frozen_map():
 
 
 LEAGUE_ONE = ["Bolton", "Stockport", "Wigan", "Wycombe", "Reading"]
+# A board spelling of the renamed club that NO alias-store entry or token rule proves, so only the
+# applied map can reach it. (Until 2026-11-19 this was 'Stockport County FC'; that spelling is in the
+# alias store since, with fixture-level proof, and resolves without the map.)
+BLIND = "Stockport County AFC"
 BUNDES_2 = ["Cottbus", "Hertha", "Karlsruhe", "Darmstadt", "Paderborn"]
 
 
@@ -45,8 +49,9 @@ def test_frozen_map_carries_the_renames_this_fix_relies_on(frozen_map):
 
 
 def test_stockport_county_fc_reaches_the_canonical_stockport_through_the_frozen_map(frozen_map):
-    # the regression: resolve() alone cannot see 'Stockport' in the board spelling
-    assert resolve("Stockport County FC", LEAGUE_ONE) is None
+    # the fix12 regression (resolve() alone could not see 'Stockport' in the board spelling) is
+    # closed in the alias store since 2026-11-19; the map path below still holds on its own
+    assert resolve("Stockport County FC", LEAGUE_ONE) == "Stockport"
     assert resolve("Stockport County FC", ["Stockport County", "Bolton"]) == "Stockport County"
     assert resolve_identity("Stockport County FC", LEAGUE_ONE, frozen_map["League One"]) == "Stockport"
     assert identity_alias_hit("Stockport County FC", LEAGUE_ONE, frozen_map["League One"]) == "Stockport"
@@ -69,8 +74,8 @@ def test_two_canonical_clubs_are_refused():
     # two alias spellings both proven equal to the board name, pointing at two different clubs
     amap = {"Stockport County": "Stockport", "Stockport County AFC": "Stockport Town"}
     pool = ["Stockport", "Stockport Town", "Bolton"]
-    assert identity_alias_hit("Stockport County FC", pool, amap) is None
-    assert resolve_identity("Stockport County FC", pool, amap) is None
+    assert identity_alias_hit(BLIND, pool, amap) is None
+    assert resolve_identity(BLIND, pool, amap) is None
 
 
 def test_two_aliases_of_one_canonical_still_resolve():
@@ -79,8 +84,8 @@ def test_two_aliases_of_one_canonical_still_resolve():
 
 
 def test_without_a_map_nothing_changes():
-    assert resolve_identity("Stockport County FC", LEAGUE_ONE, None) is None
-    assert resolve_identity("Stockport County FC", LEAGUE_ONE, {}) is None
+    assert resolve_identity(BLIND, LEAGUE_ONE, None) is None
+    assert resolve_identity(BLIND, LEAGUE_ONE, {}) is None
     assert resolve_identity("Wigan Athletic", LEAGUE_ONE, None) == resolve("Wigan Athletic", LEAGUE_ONE)
 
 
@@ -102,7 +107,7 @@ def test_data_loader_uses_the_same_shared_rule():
     from src import data_loader as dl
     hist = pd.DataFrame({"league": ["L1"] * 2, "home_team": ["Stockport", "Bolton"],
                          "away_team": ["Bolton", "Stockport"]})
-    right = pd.DataFrame({"league": ["L1"], "home_team": ["Stockport County FC"], "away_team": ["Bolton"]})
+    right = pd.DataFrame({"league": ["L1"], "home_team": [BLIND], "away_team": ["Bolton"]})
     got = dl._resolve_onto_history(right, hist, "home_team", "away_team", "t",
                                    aliases={"L1": {"Stockport County": "Stockport"}})
     assert got["_h"].tolist() == ["Stockport"] and got["_a"].tolist() == ["Bolton"]
@@ -122,7 +127,7 @@ def test_build_upcoming_features_repaired_gives_stockport_real_form():
     from src.features_repaired import build_upcoming_features_repaired
     raw, lg = _history_with_stockport()
     up = pd.DataFrame({"date": [raw["date"].max() + pd.Timedelta(days=7)], "league": [lg],
-                       "home_team": ["Stockport County FC"], "away_team": ["A1"]})
+                       "home_team": [BLIND], "away_team": ["A1"]})
     blind = build_upcoming_features_repaired(up, raw)
     assert bool(blind["name_unresolved"].iloc[0]) and np.isnan(blind["home_scored_last5"].iloc[0])
     f = build_upcoming_features_repaired(up, raw, identity_aliases={lg: {"Stockport County": "Stockport"}})
@@ -130,7 +135,7 @@ def test_build_upcoming_features_repaired_gives_stockport_real_form():
     assert f["history_team_home"].iloc[0] == "Stockport"
     for c in ("home_scored_last5", "home_conceded_last5", "away_scored_last5"):
         assert np.isfinite(f[c].iloc[0]), c
-    assert f["home_team"].iloc[0] == "Stockport County FC"     # board spelling preserved
+    assert f["home_team"].iloc[0] == BLIND     # board spelling preserved
     # the same numbers as a board that already used the history's own spelling
     same = build_upcoming_features_repaired(up.assign(home_team="Stockport"), raw)
     assert f["home_scored_last5"].iloc[0] == same["home_scored_last5"].iloc[0]
@@ -158,7 +163,7 @@ def test_legacy_builder_resolves_through_the_loader_map():
     from src.feature_engineering import build_upcoming_features
     raw, lg = _history_with_stockport()
     up = pd.DataFrame({"date": [raw["date"].max() + pd.Timedelta(days=7)], "league": [lg],
-                       "home_team": ["Stockport County FC"], "away_team": ["A1"],
+                       "home_team": [BLIND], "away_team": ["A1"],
                        "odds_over25": [1.9], "odds_under25": [1.9]})
     blind = build_upcoming_features(up, raw)
     f = build_upcoming_features(up, raw, identity_aliases={lg: {"Stockport County": "Stockport"}})

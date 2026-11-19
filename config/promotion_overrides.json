@@ -154,11 +154,163 @@
           "owner_quote": "Approve 2nd + final refit",
           "scope": "ONE final refit right before go-live, on the final collected data (after the last collection and results sync): the same recipe (scripts/phase2_refit_serving.py, champion_recipe per track x market), live = training at 0 differences required (scripts/team_train_serve_parity.py) before install. Its artifact sha256s are added to `artifacts` at that time under this same owner approval; no further owner ask is needed for it, and nothing beyond it is covered.",
           "install_window": [
-            "2026-11-19",
+            "2026-11-18",
             "2026-11-20"
           ],
           "gate": "scripts/team_train_serve_parity.py on all refit models: 0 differing cells and every probability identical",
-          "artifacts": {}
+          "artifacts": {
+            "standard": {
+              "sha256": "50a974bb83a88fc5c28ac4f9d2af25b475a9c880e21675a3b084a9fa49b81e8d",
+              "sources": [
+                "standard/over25"
+              ],
+              "recipe": "std_v9_repaired"
+            },
+            "newformat": {
+              "sha256": "303c9a05071e7afd4e7dfd42074052554b74213a0ae92d9e6421a1cdc138ca71",
+              "sources": [
+                "new_format/over25"
+              ],
+              "recipe": "nf_v9_repaired"
+            },
+            "ht_over05": {
+              "sha256": "656464066143e0feba1a7357a328e7476338e18115ceb5a8a73d25be86b13ed8",
+              "sources": [
+                "standard/ht_over05"
+              ],
+              "recipe": "ht_v9_repaired"
+            },
+            "ht_over15": {
+              "sha256": "5365d223ab1e0f7c50d7997867b76ce62106a1986ab7f84ebca8b24e6e0ca95a",
+              "sources": [
+                "standard/ht_over15"
+              ],
+              "recipe": "ht_v9_repaired"
+            },
+            "btts": {
+              "sha256": "a8ddb87e86078fdab46f95251b677cfc3086cdf22917d8214f5af993a8860676",
+              "sources": [
+                "standard/btts",
+                "new_format/btts"
+              ],
+              "recipe": "side_v9_repaired"
+            },
+            "over15": {
+              "sha256": "2e70abf10adfa403749718e824b728964ba305d6a888acfec9051999c9dad2fb",
+              "sources": [
+                "standard/over15",
+                "new_format/over15"
+              ],
+              "recipe": "side_v9_repaired"
+            },
+            "over35": {
+              "sha256": "0331cee9ec14ef62a6a402cb05079b0fc0dc378e4abf65cac89cc10eb96ef1a6",
+              "sources": [
+                "standard/over35",
+                "new_format/over35"
+              ],
+              "recipe": "side_v9_repaired"
+            }
+          },
+          "install_window_change": "owner 2026-11-18 (\"Start now, live by tomorrow\"; models only today, the new refit models tip the upcoming matches): the go-live merge was pulled forward, so the window opens 2026-11-18 instead of 2026-11-19; the end (2026-11-20) and everything else in this stage are unchanged",
+          "evidence": {
+            "refit_code_sha": "694995f90b90920f596d7290d624ce6d99301612",
+            "data": {
+              "loaded_rows": 71845,
+              "frame_hash": "9ed237ebc04aee09"
+            },
+            "data_end": "2026-11-08",
+            "refit_dir": "golive/refit_1118b (scripts/phase2_refit_serving.py, champion_recipe)",
+            "parity": "scripts/team_train_serve_parity.py: 0 of 6,020 cells (140 fixtures 2026-11-08..16), 140/140 probabilities identical x12 payloads"
+          }
+        },
+        {
+          "stage": "std_2016_refit",
+          "approved_on": "2026-11-19",
+          "owner_quote": "Install (Recommended)",
+          "retrain_owner_quote": "Yes, from 2016/17",
+          "retrain_approved_on": "2026-11-19",
+          "scope": "the Standard track only: the same champion_recipe (scripts/phase2_refit_serving.py) refitted with Standard training starting at the 2016/17 season (config/phase2_retrain.json data.train_start standard=2016-07-01) on the football-data seasons connected by PR #59 (frame ebe47c041a7f595f, data to 2026-11-08, COVID seasons excluded); the New-Format over25 model (303c9a05, final_refit) is unchanged and the btts/over15/over35 files carry the final_refit New-Format sub-models byte-identical. Nothing beyond these six artifacts is covered.",
+          "install_window": [
+            "2026-11-19",
+            "2026-11-21"
+          ],
+          "gate": "scripts/team_train_serve_parity.py on the installed Standard models: 0 differing cells and every probability identical",
+          "artifacts": {
+            "standard": {
+              "sha256": "67ee36668c21109d3ec8bf5050ac87d51997056299fa4472a501d39e3e7553b4",
+              "sources": [
+                "standard/over25"
+              ],
+              "recipe": "std_v9_repaired"
+            },
+            "ht_over05": {
+              "sha256": "5a76d680e2fc53d6d8841781d6100bfbd1df2c54ccce9c55d7d782c778e52a75",
+              "sources": [
+                "standard/ht_over05"
+              ],
+              "recipe": "ht_v9_repaired"
+            },
+            "ht_over15": {
+              "sha256": "e9a12ce1b6af077fc9dc8efb9f663d2c757eb07880a2378b18049ba891e6552b",
+              "sources": [
+                "standard/ht_over15"
+              ],
+              "recipe": "ht_v9_repaired"
+            },
+            "btts": {
+              "sha256": "44c670490d5101c13423b715a92f3b2d40396d35b1d9fc7c83f2c688a9afc1f1",
+              "sources": [
+                "standard/btts",
+                "new_format/btts"
+              ],
+              "recipe": "side_v9_repaired"
+            },
+            "over15": {
+              "sha256": "ca01b7d3a4f6fcae12ec4fe58691d736245415a09efdcbecdb8ab62f3e865bb7",
+              "sources": [
+                "standard/over15",
+                "new_format/over15"
+              ],
+              "recipe": "side_v9_repaired"
+            },
+            "over35": {
+              "sha256": "e8b12d74f1b0d51a75355321b5d10c7868d22c1c4ccb8a8452ba3bfdd814cb86",
+              "sources": [
+                "standard/over35",
+                "new_format/over35"
+              ],
+              "recipe": "side_v9_repaired"
+            }
+          },
+          "evidence": {
+            "refit_code_sha": "047442d9501e0f018d5263fee519e2ff8ce49b92",
+            "config_sha256": "8edfa2adfd1940753644d8338d14fcbf54fd5a59e57067e21cd592a4fd9798d2",
+            "data": {
+              "loaded_rows": 93375,
+              "frame_hash": "ebe47c041a7f595f"
+            },
+            "data_end": "2026-11-08",
+            "train_dates": [
+              "2016-08-05",
+              "2026-11-01"
+            ],
+            "training_rows_standard": {
+              "over25_btts_over15_over35": 49544,
+              "ht_over05_ht_over15": 49393
+            },
+            "refit_dir": "golive/std_retrain_1611 (scripts/phase2_refit_serving.py, champion_recipe, Standard only)",
+            "frame_reverified_on_main": "e1b4b2db1 (PR #59 merged) + the train_start commit: frame ebe47c041a7f595f rebuilt read-only, identical",
+            "standard_model_sha256": {
+              "over25": "468c6096c8e88cc17433ce877a15969c317be318e5e32ee63607c34d5828ba06",
+              "btts": "17e439d687dded596369702ebb2690655004441ff63898888e79ee244675386e",
+              "over15": "71791ca4d697cc85f3ecb0c8768197e309c0a10a2cf504c3f7cd4ddfa8587f6d",
+              "over35": "9ce97ee5f79035bc7549e4b99df561f5743824b3434514855bab67824c0e5866",
+              "ht_over05": "f3c68d95892fdc8c51db09cc860f718f066a60956aa1675c5ac92739276efa6b",
+              "ht_over15": "ec22a31bcb982c4306c33d1bffc9b03a656dabad27cd3926cba83f27a91e9c51"
+            },
+            "parity": "scripts/team_train_serve_parity.py on the refit: 0 of 6,020 cells (140 fixtures 2026-11-08..16)"
+          }
         }
       ]
     }

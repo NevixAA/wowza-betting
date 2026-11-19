@@ -1053,6 +1053,12 @@
    "reason": "counter: a tally this code keeps itself (events / reasons / calls seen in this run or journal); an absent key is zero occurrences so far - not a provider, ledger or model value (settlement skip / pending reasons)"
   },
   {
+   "file": "dashboard_data/bars_stats_view.py",
+   "kind": "numeric_get_default",
+   "code": "return {s: int(((p or {}).get(\"counts\") or {}).get(s, 0)) for s in STATUS_ORDER}",
+   "reason": "counter (display): number of cells per status in reports/dashboard/bars_statistics.json; a status absent from the report's counts has zero cells - not a provider, ledger or model value (main PR #42, allow-listed at the go-live rehearsal merge 2026-11-17)"
+  },
+  {
    "file": "src/prediction_ledger.py",
    "kind": "numeric_get_default",
    "code": "stats[\"refused_reasons\"][why] = stats[\"refused_reasons\"].get(why, 0) + 1",

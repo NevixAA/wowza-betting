@@ -39,6 +39,14 @@ EVERY OTHER ROW IS LABELLED, NEVER GUESSED (`stake_status`):
   NOT_A_POLICY_MARKET     the market has no bankroll-policy track (HT O/U, player props): never staked
 No stake is invented: a row without a record has stake_units = NaN, not 0.
 
+TOP-3 (owner 2026-11-17, "Show stake on TOP-3"; "Yes, adopt"): every TOP-3 pick carries a real flat stake
+(config/bankroll_policy.json top3_league.stake, 0.5%), placed MANUALLY by the owner at the odds shown on the tip.
+It is never written to the stake plan (that file feeds automatic execution), so each pick whose frozen
+`stake_effect` says REAL (output/top3_league_ledger.csv, written once at issue, before kickoff) is read here as
+one more recorded decision (reason TOP3_FLAT_MANUAL, fraction from its own stake_effect, notional 100-unit
+bankroll like the stake plan). A position with such a decision before kickoff is STAKED: later predict runs keep
+writing 0-stake plan rows for the same tip (every cell is PAPER), and they never withdraw a TOP-3 stake.
+
 P/L. Ledgers record flat-1u P/L (pnl per 1 unit). Pages keep that as a separate, labelled number
 ("flat 1u") and may add `stake_pnl` = stake_units x flat-1u pnl, the P/L at the recorded stake on the
 policy's NOTIONAL 100-unit bankroll (stake_plan.BASIS).
@@ -81,9 +89,13 @@ PRE_POLICY, NO_RECORD, NOT_POLICY = "PRE_POLICY_NO_RECORD", "NO_STAKE_RECORD", "
 STATUSES = (STAKED, NOT_STAKED, PRE_POLICY, NO_RECORD, NOT_POLICY)
 
 #: the words pages print next to every "Staked" figure
-DEFINITION = ("Staked = the bankroll policy recorded a stake > 0 on a real-money track "
-              "(stake plan / stake audit)")
-SHORT = "policy stake > 0"
+DEFINITION = ("Staked = a recorded stake > 0: every TOP-3 tip (0.5% flat, placed manually at the tip's odds) "
+              "or a bankroll-policy stake on a real-money track (stake plan / stake audit)")
+SHORT = "policy stake > 0"       # the TOP-3 flat stake is a policy stake too (top3_league.stake)
+TOP3_LEDGER = "top3_league_ledger.csv"
+TOP3_REASON = "TOP3_FLAT_MANUAL"
+#: notional bankroll the stake plan sizes on (stake_amount = final_fraction x 100 units)
+NOTIONAL_UNITS = 100.0
 FLAT_LABEL = "flat 1u"
 
 LABEL_COLS = ["stake_status", "stake_units", "stake_fraction", "stake_reason", "stake_policy_version"]
@@ -203,6 +215,31 @@ def with_kickoffs(records: pd.DataFrame, kickoffs: pd.DataFrame) -> pd.DataFrame
     return m.drop(columns="_k")
 
 
+def top3_records_frame(top3: pd.DataFrame | None) -> pd.DataFrame | None:
+    """TOP-3 picks with a REAL flat stake -> rows in the stake-plan schema (records_from reads them)."""
+    import re
+    if top3 is None or top3.empty or not {"selection_mode", "stake_effect", "match_date", "home_team",
+                                          "away_team", "market", "side", "issued_at"} <= set(top3.columns):
+        return None
+    t = top3[(top3["selection_mode"].astype(str) == "TOP3_LEAGUE_GW")
+             & top3["stake_effect"].astype(str).str.startswith("REAL ")].copy()
+    if t.empty:
+        return None
+    pct = t["stake_effect"].astype(str).map(lambda v: (lambda m: float(m.group(1)) if m else None)(
+        re.match(r"REAL ([0-9]+(?:\.[0-9]+)?)%", v)))
+    t = t[pct.notna()]
+    if t.empty:
+        return None
+    f = pct[pct.notna()] / 100.0
+    return pd.DataFrame({
+        "fixture": t["match_date"].astype(str).str[:10] + "|" + t["home_team"].astype(str) + "|"
+                   + t["away_team"].astype(str),
+        "market": t["market"], "side": t["side"], "model_type": t.get("model_type"),
+        "generated_at": t["issued_at"], "deployment_state": "ACTIVE", "base_fraction": f, "final_fraction": f,
+        "stake_amount": f * NOTIONAL_UNITS, "reason": TOP3_REASON, "policy_version": "top3_league.stake",
+        "kickoff_utc": t.get("kickoff_utc")})
+
+
 def load_records(out_dir=None, reader=None) -> pd.DataFrame:
     """Read RECORD_FILES from `out_dir` (default config.OUTPUT_DIR), with each fixture's recorded
     kickoff (KICKOFF_FILES). `reader(path)` lets the dashboard pass its mirror-aware reader; a missing
@@ -211,6 +248,9 @@ def load_records(out_dir=None, reader=None) -> pd.DataFrame:
         import config
         out_dir = config.OUTPUT_DIR
     frames = [f for f in (_read(out_dir, name, reader) for name in RECORD_FILES) if f is not None and len(f)]
+    t3 = top3_records_frame(_read(out_dir, TOP3_LEDGER, reader))
+    if t3 is not None and len(t3):
+        frames.append(t3)
     return with_kickoffs(records_from(*frames), load_kickoffs(out_dir, reader))
 
 
@@ -257,6 +297,14 @@ def decisions(records: pd.DataFrame) -> pd.DataFrame:
                             stake_reason=NO_PRE_KICKOFF, stake_policy_version=str(last["policy_version"]),
                             withdrawn=False, n_records=int(len(g)), kickoff_basis=basis,
                             n_after_kickoff=n_after))
+            continue
+        t3 = pre[pre["reason"].astype(str) == TOP3_REASON]
+        if len(t3):                    # a TOP-3 stake decides its position (placed by hand; never withdrawn by a
+            last = t3.iloc[-1]         # later 0-stake plan row of the same tip)
+            out.append(dict(zip(key, k), staked=True, stake_units=float(last["stake_amount"]),
+                            stake_fraction=float(last["final_fraction"]), stake_reason="OK",
+                            stake_policy_version=str(last["policy_version"]), withdrawn=False,
+                            n_records=int(len(g)), kickoff_basis=basis, n_after_kickoff=n_after))
             continue
         last = pre.iloc[-1]
         # two records at the same last moment that disagree prove no single decision: refused

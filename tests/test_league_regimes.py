@@ -77,9 +77,18 @@ def test_production_state_is_what_production_applies():
     sel = []
     for i, e in enumerate(REG["entries"]):
         if e["model_type"] == "standard" and e["market"] == "OU25":
-            assert e["production_state"] == "PAPER"
+            # per-cell staking (owner 2026-11-09): PAPER unless the cell has its own staking entry
+            # owner 2026-11-17: a cell entry stakes only when its own state is real (every cell is PAPER today)
+            cell = policy["cell_staking"]["cells"].get(f"{e['track']}|{e['league']}") or {}
+            staked = cell.get("state") == "ACTIVE_LOW" and float(cell.get("base_fraction") or 0) > 0
+            assert e["production_state"] == ("ACTIVE_LOW" if staked else "PAPER"), e["key"]
         if e["market"] == "OVER35":
-            assert e["production_state"] in ("BLOCKED", "PAPER_LEAGUE")
+            # owner 2026-11-15 "Lift for Finland only": exactly ONE cell's block is lifted, by a named override
+            lifted = f"{e['track']}|{e['league']}" in (policy["cell_staking"].get("block_overrides") or {})
+            cell = policy["cell_staking"]["cells"].get(f"{e['track']}|{e['league']}") or {}
+            # owner 2026-11-17: the lifted cell's own entry is PAPER now; the lift alone never creates a stake
+            want = (cell.get("state", "BLOCKED"),) if lifted else ("BLOCKED", "PAPER_LEAGUE")
+            assert e["production_state"] in want, e["key"]
         if config.is_paper_league(e["league"]):
             assert e["production_state"] == "PAPER_LEAGUE"
         sel.append({"fixture": f"f{i}", "league": e["league"], "model_type": e["model_type"],
@@ -105,7 +114,9 @@ def test_sustained_loss_is_repair_and_credible_staked_profit_is_protected():
     assert e["repair_priority_terms"]["neg_roi"] > 0
 
     win = _af(n_days=12, per_day=4, win_every=1, odds=1.9)     # every bet wins on an ACTIVE track
-    e = _entry(_build(win), "Argentina Primera Division|BTTS|YES|new_format")
+    # the rule needs a STAKED cell: the policy before the owner's 2026-11-17 all-cells-PAPER decision
+    from tests.test_cell_staking import _pre_top3
+    e = _entry(_build(win, policy=_pre_top3(load_policy())), "Argentina Primera Division|BTTS|YES|new_format")
     assert e["research_regime"] == "PROTECTED" and e["owner_locked"] is True
 
     # the same profit on a PAPER track is not protected: protection is for staked tracks only

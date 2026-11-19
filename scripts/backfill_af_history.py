@@ -409,11 +409,13 @@ def run(target_league: str | None = None, dry_run: bool = False) -> None:
     df["date"] = pd.to_datetime(df["date"], errors="coerce")
     df = df.sort_values(["league", "date"]).reset_index(drop=True)
 
+
+
     # Merge with existing af_history if it exists (incremental runs). COLUMN-PRESERVING (2026-11-16):
     # this was concat + drop_duplicates(keep="last"), which replaces a stored row WHOLE - any column
-    # the new row lacks went missing for that row. Now a stored row keeps every column and row; a
-    # provider value only replaces a stored cell when the provider gives one (a missing answer never
-    # erases a stored value); new keys are appended (src/integrity/preserving_upsert).
+    # the new row lacks (a column added after this parser, e.g. one a correction wrote) went missing.
+    # Now a stored row keeps every column and row; a provider value only replaces a stored cell when
+    # the provider gives one (a missing answer never erases a stored value); new keys are appended.
     if OUTPUT.exists():
         sys.path.insert(0, str(ROOT))
         from src.integrity.preserving_upsert import upsert
@@ -422,7 +424,6 @@ def run(target_league: str | None = None, dry_run: bool = False) -> None:
                           mode="update", date_keys=("date",))
         print(f"  merge: {_rep.appended_rows} appended, {_rep.matched_keys} stored key(s) updated "
               f"{_rep.cells_changed}; no stored row or column dropped")
-
     df.to_parquet(OUTPUT, index=False)
     pct_with_shots = df["HS"].notna().mean() * 100
     print(f"\n  Saved {len(df)} rows → {OUTPUT.name}")

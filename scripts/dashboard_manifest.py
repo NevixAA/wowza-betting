@@ -4,6 +4,10 @@
     python scripts/dashboard_manifest.py --check     # trace and fail if the manifest is missing anything
     python scripts/dashboard_manifest.py --static    # fast static check only (what the unit test runs)
 
+A file is "committed" when git carries it (HEAD tree or index: committed_files), never judged by the
+working tree or .gitignore. Run --write AFTER `git add` of any new data file a page reads; --check and
+--static fail when an entry excluded as not committed is in fact committed (stale_exclusions).
+
 WHY. The dashboard deploys from a SLIM generated repo (scripts/build_dashboard_repo.py) that holds
 only the files listed here; its data is mirrored at runtime from v9's raw URLs
 (dashboard_data/remote_mirror.py). A page that imports a module or reads a file that is not in the
@@ -46,7 +50,9 @@ MANIFEST = ROOT / "deploy" / "dashboard_manifest.json"
 ASSETS = [".streamlit/config.toml",
           # config.py derives every league table from it at import (R2-A); a missing file stops config
           # loading, so it ships WITH the code instead of arriving later through the data mirror.
-          "config/leagues.json"]
+          "config/leagues.json",
+          # config.py reads CLEAN_RECORD_START from it at import (owner 2026-11-11); same reason
+          "config/trustworthy_performance.json"]
 #: The deploy machinery itself (the mirror is imported by app.py; the builder ships for provenance).
 ALWAYS_CODE = ["app.py", "dashboard_data/remote_mirror.py"]
 #: Never mirrored, whatever reads them.
@@ -156,11 +162,11 @@ PIPELINE_ONLY = {
     "src/predict.py": "prediction pipeline; reached only from src/edge_engine_shadow.run (the predict job), "
                       "the dashboard reads output/predictions.csv instead",
     "src/feature_engineering.py": "feature building for predict/train; reached only through src/predict.py",
-    "src/integrity/props_feature_truth.py": "props feature truth (Data truth 7); reads player_history (excluded "
+    "src/integrity/props_feature_truth.py": "props feature truth (Data truth 10); reads player_history (excluded "
                                             "from the slim tree) through props_harness. Reached only lazily from "
                                             "src.integrity.data_truth.evaluate, which reports NO_DATA without it; "
                                             "the gate and evidence_refresh run it on the full repository",
-    "src/integrity/real_data_provenance.py": "real-data provenance (Data truth 8a-8c); loads the model payloads "
+    "src/integrity/real_data_provenance.py": "real-data provenance (Data truth 13a-13c); loads the model payloads "
                                              "(models/*.pkl, excluded from the slim tree). Reached only lazily "
                                              "from src.integrity.data_truth.evaluate, which reports NO_DATA "
                                              "without it; the gate and evidence_refresh run it on the full "
@@ -271,6 +277,7 @@ def unmatched_literals(manifest: dict, root: Path = ROOT) -> list[str]:
     (as data or as a deliberate exclusion). Used by the fast static test."""
     code = [e["path"] for e in manifest["code"]]
     known = {e["path"] for e in manifest["data"]} | {e["path"] for e in manifest.get("excluded", [])}
+    known |= set(code)              # an ASSET shipped with the code (config/trustworthy_performance.json) is carried
     bad = []
     for lit in sorted(data_literals(root, code)):
         hits = resolve_literal(lit, root)
@@ -429,8 +436,35 @@ def _schema_version(root: Path = ROOT) -> int:
     return int(m.group(1)) if m else 0
 
 
+#: The one reason a present file is excluded because git does not carry it. Kept as a constant so the
+#: stale-exclusion check can find these entries again.
+NOT_COMMITTED = "not committed to v9 (raw URL cannot serve it)"
+
+
+def committed_files(root: Path = ROOT) -> set[str]:
+    """Files the raw URLs can serve (or will, once the commit being prepared lands): the committed tree
+    at HEAD plus the index. Decided by git only, never by the working tree or by .gitignore, so a file
+    force-added under an ignored directory (reports/dashboard/ ...) counts as committed. Empty when git
+    is unavailable, in which case nothing is excluded as 'not committed'."""
+    out = set(_git(root, "ls-tree", "-r", "-z", "--name-only", "HEAD").split("\0"))
+    out |= set(_git(root, "ls-files", "-z", "--cached").split("\0"))
+    return out - {""}
+
+
+def stale_exclusions(manifest: dict, root: Path = ROOT, tracked: set[str] | None = None) -> list[str]:
+    """Paths the manifest excludes as 'not committed' that git now carries. This is how the Bars and
+    What-was-fixed pages lost their data (2026-11-17): the manifest was written BEFORE their JSON files
+    were `git add`ed in the same commit, so the files were classified as uncommitted, the slim dashboard
+    never mirrored them, and --check could not notice because it counted every excluded path as known."""
+    tracked = committed_files(root) if tracked is None else tracked
+    if not tracked:
+        return []
+    return sorted(e["path"] for e in manifest.get("excluded", [])
+                  if e.get("reason") == NOT_COMMITTED and e["path"] in tracked)
+
+
 def build_manifest(trace: dict, root: Path = ROOT) -> dict:
-    tracked = set(_git(root, "ls-files", "-z").split("\0")) - {""}
+    tracked = committed_files(root)
     code = set(ALWAYS_CODE) | set(ASSETS) | static_closure(root)
     code |= {m for m in trace["modules"] if m.endswith(".py")}
     data, excluded = [], []
@@ -459,7 +493,7 @@ def build_manifest(trace: dict, root: Path = ROOT) -> dict:
             excluded.append({"path": rel, "bytes": size, "reason": KNOWN_EXCLUDED.get(rel, "too big to mirror")})
             continue
         if tracked and rel not in tracked:
-            excluded.append({"path": rel, "bytes": size, "reason": "not committed to v9 (raw URL cannot serve it)"})
+            excluded.append({"path": rel, "bytes": size, "reason": NOT_COMMITTED})
             continue
         data.append({"path": rel, "bytes": size, "pages": v["pages"]})
     # Branches the trace could not reach (radios with format_func, functions behind rarely-true
@@ -520,9 +554,11 @@ def main(argv=None) -> int:
         miss_code = sorted(static_closure() - have)
         bad = unmatched_literals(cur)
         unsafe = check_pipeline_only()
+        stale = stale_exclusions(cur)
         print(f"static: {len(miss_code)} code file(s) missing {miss_code}; {len(bad)} unmatched data literal(s) {bad}; "
-              f"{len(unsafe)} unsafe pipeline-only import(s) {unsafe}")
-        return 1 if (miss_code or bad or unsafe) else 0
+              f"{len(unsafe)} unsafe pipeline-only import(s) {unsafe}; "
+              f"{len(stale)} committed file(s) wrongly excluded as not committed {stale}")
+        return 1 if (miss_code or bad or unsafe or stale) else 0
     trace = run_trace()
     new = build_manifest(trace)
     errs = {p: i["exceptions"] for p, i in trace["pages"].items() if i["exceptions"]}
@@ -536,13 +572,19 @@ def main(argv=None) -> int:
         t = new["totals"]
         print(f"wrote {MANIFEST}: {t['code_files']} code files ({t['code_bytes'] / 1e6:.2f} MB), "
               f"{t['data_files']} data files ({t['data_bytes'] / 1e6:.2f} MB), {len(new['excluded'])} excluded")
+        unc = [e["path"] for e in new["excluded"] if e.get("reason") == NOT_COMMITTED]
+        if unc:
+            print(f"WARNING: {len(unc)} file(s) a page reads are not committed, so the slim dashboard will not "
+                  f"mirror them: {unc}. If they belong in v9, `git add` them and run --write again.")
         return 0
     have_code = {e["path"] for e in (cur or {}).get("code", [])}
     have_data = {e["path"] for e in (cur or {}).get("data", [])} | {e["path"] for e in (cur or {}).get("excluded", [])}
     miss_c = sorted({e["path"] for e in new["code"]} - have_code)
     miss_d = sorted({e["path"] for e in new["data"]} - have_data)
-    print(f"check: missing code {miss_c}; missing data {miss_d}")
-    return 1 if (miss_c or miss_d) else 0
+    # A path excluded as 'not committed' that git now carries is not "known": it must move to data.
+    stale = stale_exclusions(cur or {})
+    print(f"check: missing code {miss_c}; missing data {miss_d}; committed but excluded as not committed {stale}")
+    return 1 if (miss_c or miss_d or stale) else 0
 
 
 if __name__ == "__main__":

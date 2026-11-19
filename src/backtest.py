@@ -76,6 +76,9 @@ def run_backtest(
     walk_size = walk_size or config.BACKTEST_WALK_SIZE
     min_train = min_train or config.BACKTEST_MIN_TRAIN
 
+    # BET prices only (owner 2026-11-11): unproven-capture / closing / multi-book pairs are masked first
+    from src.data_loader import ou25_bet_prices
+    df = ou25_bet_prices(df)
     df = df.dropna(subset=[target, "odds_over25", "odds_under25"]).copy()
     df = df.sort_values("date").reset_index(drop=True)
 
@@ -118,7 +121,7 @@ def run_backtest(
             log.warning(f"Window {window_count}: prediction failed — {e}")
             continue
 
-        test_df = evaluate_value(test_df)
+        test_df = evaluate_value(test_df, cells_only=False)   # historical study replay: legacy rows kept
         all_preds.append(test_df)
         window_count += 1
 
@@ -281,6 +284,9 @@ def run_side_market_backtest(
     walk_size = walk_size or config.BACKTEST_WALK_SIZE
     min_train = min_train or config.BACKTEST_MIN_TRAIN
     odds_col  = f"odds_{target}"
+    # BET prices only (owner 2026-11-11): unproven-capture / multi-book side prices are never bets
+    from src.data_loader import side_bet_prices
+    df = side_bet_prices(df)
 
     # Only require the target outcome — unpriced rows still TRAIN (no odds needed) but are
     # never bets; their odds stay NaN

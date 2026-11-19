@@ -6,5 +6,17 @@
   "min_collection_t30_pct": 40.0,
   "min_collection_sample": 200,
   "collection_window_days": 7,
-  "max_health_age_hours": 30
+  "max_health_age_hours": 30,
+  "acknowledged_incidents": [
+    {
+      "id": "INC-2026-11-14-std-1500",
+      "track": "standard",
+      "kickoff_from": "2026-11-14T14:45:00Z",
+      "kickoff_to": "2026-11-14T15:15:00Z",
+      "reason": "GitHub delivered no std_odds_capture run 12:59-15:52 UTC (5 scheduled firings 13:23-15:23 skipped while other workflows ran); the previous run (43590925506) ended because the next kickoff was 121 min away. The 15:00 UTC slot (47 standard fixtures) got no observation inside T-30m. Odds are pre-match only, so these closes can never be recovered. Root cause fixed in c0dadfc14 (capture bridges to the next reachable kickoff).",
+      "recorded": "2026-11-16, owner: 'fix all the failures'",
+      "expires_naturally": "leaves the 7-day window ~2026-11-21T15:00Z"
+    }
+  ],
+  "_doc_incidents": "acknowledged_incidents: kickoff windows whose closes were provably never captured for a recorded external cause. Excluded from the collection PASS/FAIL figure only, never from shadow certification; the health file always reports the unfiltered figure (collection.including_incidents) and each excluded window's own counts (collection.excluded_incidents). Never add a window to make a red guard green without a root cause and a fix."
 }

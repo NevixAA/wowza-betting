@@ -26,6 +26,15 @@ import config
 from src import bankroll_policy as BP
 from src import betting
 
+@pytest.fixture(autouse=True)
+def _own_bars(monkeypatch):
+    """Owner 2026-11-09: no global bars. These tests predate the cutover and assert the tiers the
+    removed global path served, so every league gets exactly those values as its OWN owner-applied
+    bars (tests/own_bars.install_historical)."""
+    from tests.own_bars import install_historical
+    install_historical(monkeypatch)
+
+
 ROOT = Path(__file__).resolve().parents[1]
 TRACK = "new_format|OU25_UNDER"
 NF_LEAGUE = next(lg for lg in sorted(config.ENABLED_LEAGUES)
@@ -34,7 +43,11 @@ DAY = (pd.Timestamp.now(tz="UTC") + pd.Timedelta(days=2)).strftime("%Y-%m-%d")
 
 
 def _policy() -> dict:
-    return json.loads((ROOT / "config" / "bankroll_policy.json").read_text(encoding="utf-8"))
+    """The committed policy with PER-TRACK staking: these tests flip the NF Under TRACK and pin its
+    mechanics; the live per-cell staking (owner 2026-11-09) is pinned in tests/test_cell_staking.py."""
+    p = json.loads((ROOT / "config" / "bankroll_policy.json").read_text(encoding="utf-8"))
+    p.setdefault("cell_staking", {})["enabled"] = False
+    return p
 
 
 def _board(day: str = DAY) -> pd.DataFrame:
@@ -50,7 +63,7 @@ def _board(day: str = DAY) -> pd.DataFrame:
     ])
     bets = betting.generate_bets(betting.evaluate_value(raw))
     assert set(bets["best_side"]) == {"OVER", "UNDER"}, bets
-    assert set(bets["signal_tier"]) <= {"SNIPER", "MARKSMAN"}, "board must hold STAKED-tier tips"
+    assert set(bets["signal_tier"]) <= {"QUALIFIED"}, "board must hold tips (owner 2026-11-11: one bar per cell)"
     return bets
 
 
@@ -66,8 +79,9 @@ def test_policy_file_nf_under_is_paper_with_zero_base():
     assert t["state"] == "PAPER" and float(t["base_fraction"]) == 0.0
     assert t["state"] not in BP.REAL_STATES
     assert t.get("paper_reason"), "a PAPER track must carry the owner's reason"
-    # the sibling OVER track is still real money (the positive control below depends on it)
-    assert _policy()["tracks"]["new_format|OU25_OVER"]["state"] in BP.REAL_STATES
+    # owner 2026-11-17 (final): the sibling OVER track is PAPER too (only TOP-3 picks stake); it WAS real money,
+    # and the per-track positive controls below run on that pre-decision policy (tests/policy_helpers)
+    assert _policy()["tracks"]["new_format|OU25_OVER"]["before_2026_11_17"]["state"] in BP.REAL_STATES
 
 
 def test_research_lock_and_track_registry_agree_with_policy():
@@ -191,10 +205,12 @@ def _instant_tips(tmp_path, monkeypatch, policy: dict | None = None) -> dict:
     return {("UNDER" if "UNDER 2.5" in m else "OVER"): m for m in tips}
 
 
-def test_telegram_instant_tip_labels_nf_under_as_paper(tmp_path, monkeypatch):
+def test_telegram_instant_tips_carry_no_stake_label(tmp_path, monkeypatch):
+    """Owner 2026-11-17 ("Show stake on TOP-3"): an ordinary tip carries no stake label at all, staked track or
+    not, and never the word paper (was: the NF Under tip labelled PAPER)."""
     msg = _instant_tips(tmp_path, monkeypatch)
-    assert "PAPER" in msg["UNDER"] and "not staked" in msg["UNDER"]
-    assert "PAPER" not in msg["OVER"], "positive control: a real-money track is not labelled paper"
+    for side in ("UNDER", "OVER"):
+        assert "paper" not in msg[side].lower() and "not staked" not in msg[side]
 
 
 def test_telegram_label_follows_the_policy_not_the_side(tmp_path, monkeypatch):
@@ -206,9 +222,10 @@ def test_telegram_label_follows_the_policy_not_the_side(tmp_path, monkeypatch):
 
 def test_dashboard_tips_table_shows_nf_under_as_paper():
     from dashboard_data import tips_view as TV
-    assert TV.stake_label("SNIPER", "O/U 2.5 UNDER", "PAPER") == TV.STAKE_PAPER_TRACK
-    assert TV.stake_label("SNIPER", "O/U 2.5 OVER", "ACTIVE_LOW") == TV.STAKE_OU     # positive control
-    assert TV.stake_label("SNIPER", "O/U 2.5 OVER") == TV.STAKE_OU                     # old call unchanged
+    # owner 2026-11-17 ("Show stake on TOP-3"): no stake label on any ordinary tip; a TOP-3 pick shows 0.5% stake
+    assert TV.stake_label("SNIPER", "O/U 2.5 UNDER", "PAPER") == TV.STAKE_PAPER_TRACK == ""
+    assert TV.stake_label("SNIPER", "O/U 2.5 OVER", "ACTIVE_LOW") == ""
+    assert TV.stake_label("SNIPER", "O/U 2.5 OVER", "ACTIVE_LOW", 0.005) == "0.5% stake"
     b = pd.DataFrame({"_day": [DAY, DAY], "_local": pd.to_datetime([f"{DAY} 20:00"] * 2).tz_localize("UTC"),
                       "started": [False, False], "home_team": ["Under FC", "Over FC"],
                       "away_team": ["Low Town", "High Town"], "league": [NF_LEAGUE] * 2, "rating": [None, None],
@@ -218,7 +235,7 @@ def test_dashboard_tips_table_shows_nf_under_as_paper():
                       "decision_state": [None, None]})
     t = TV.selections_table(b, research=False)
     assert t.loc[0, "Stake note"] == TV.STAKE_PAPER_TRACK and t.loc[0, "Stake %"] == 0.0
-    assert t.loc[1, "Stake note"] == TV.STAKE_OU
+    assert t.loc[1, "Stake note"] == ""                                              # owner 2026-11-17
 
 
 def test_free_tier_never_offers_a_zero_stake_tip():
@@ -239,5 +256,14 @@ def test_ledger_still_records_nf_under_tips(tmp_path, monkeypatch):
     L.append_tips(_board())
     d = pd.read_csv(tmp_path / "bets_ledger.csv")
     u = d[(d["side"] == "UNDER") & (d["model_type"] == "new_format")]
-    assert len(u) == 1 and u["signal_tier"].iloc[0] in ("SNIPER", "MARKSMAN")
+    assert len(u) == 1 and u["signal_tier"].iloc[0] in ("QUALIFIED",)
     assert float(u["odds"].iloc[0]) == 2.20 and pd.notna(u["edge_pct"].iloc[0])
+
+
+@pytest.fixture(autouse=True)
+def _per_track_policy(monkeypatch):
+    """These tests pin the TRACK mechanics: per-track staking (tests/policy_helpers). The live per-cell
+    staking (owner 2026-11-09) is pinned in tests/test_cell_staking.py."""
+    import sys
+    from tests.policy_helpers import install_per_track
+    install_per_track(monkeypatch, sys.modules[__name__])

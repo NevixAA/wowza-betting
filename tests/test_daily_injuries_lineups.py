@@ -432,8 +432,9 @@ def test_freshness_is_rule_11_and_not_gated():
     red = {"check": "Data truth 11: injuries/lineups freshness", "status": DT.RED, "value": "stale", "detail": ""}
     assert not DT.is_gated(red["check"])                     # 'Data truth 11' is not 'Data truth 1'
     assert DT.is_gated("Data truth 1: one canonical name") and DT.is_gated("Data truth 7b: x")
-    assert DT.is_gated("Data truth 8b: new provenance violations") and not DT.is_gated("Data truth 8a: x")
-    assert not DT.is_gated("Data truth 10: x") and not DT.is_gated("Data truth 3: no missing data")
+    assert DT.is_gated("Data truth 13b: new provenance violations") and not DT.is_gated("Data truth 13a: x")
+    # go-live merge: 10 = props features (gated, prep numbering), so the ungated example is rule 3 only
+    assert DT.is_gated("Data truth 10b: x") and not DT.is_gated("Data truth 3: no missing data")
     assert not [f for f in DT.gate(checks=[red]) if "Data truth 11" in f]
     assert DT.collect_freshness.__name__ and any("Data truth 11" in line for line in
                                                  Path(DT.__file__).read_text(encoding="utf-8").splitlines())

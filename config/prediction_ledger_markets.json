@@ -217,7 +217,7 @@
     "rule": "total_goals_over",
     "period": "ht"
    },
-   "description": "Half-time O/U (served for Standard leagues only; New-Format has no HT model)."
+   "description": "Half-time O/U (served for Standard leagues only; the New-Format HT entries are registered pending_model - see them)."
   },
   {
    "repo": "v9",
@@ -241,7 +241,51 @@
     "rule": "total_goals_over",
     "period": "ht"
    },
-   "description": "Half-time O/U (served for Standard leagues only; New-Format has no HT model)."
+   "description": "Half-time O/U (served for Standard leagues only; the New-Format HT entries are registered pending_model - see them)."
+  },
+  {
+   "repo": "v9",
+   "model_id": "v9_new_format",
+   "market": "ht_ou05",
+   "family": "team",
+   "status": "pending_model",
+   "track": "new_format",
+   "line": 0.5,
+   "selections": [
+    "OVER",
+    "UNDER"
+   ],
+   "prob_col": null,
+   "positive_selection": "OVER",
+   "version_col": null,
+   "model_file": null,
+   "settle": {
+    "rule": "total_goals_over",
+    "period": "ht"
+   },
+   "description": "Half-time O/U 0.5 for New-Format leagues (owner rule 2026-11-18: every model x market it can). Registered with NO rows: the 2026-11-18 refit fitted New-Format HT payloads (golive refit_1118b new_format/ht_over05.pkl) but src/predict.py scores HT on Standard rows only and the clean-switch override installs Standard HT only, so the board has no New-Format HT probability. Switching it on = an owner-approved install of the New-Format HT payload plus its serving path, then this entry's status -> 'active' with prob_col/version_col/model_file (never empty-filled rows)."
+  },
+  {
+   "repo": "v9",
+   "model_id": "v9_new_format",
+   "market": "ht_ou15",
+   "family": "team",
+   "status": "pending_model",
+   "track": "new_format",
+   "line": 1.5,
+   "selections": [
+    "OVER",
+    "UNDER"
+   ],
+   "prob_col": null,
+   "positive_selection": "OVER",
+   "version_col": null,
+   "model_file": null,
+   "settle": {
+    "rule": "total_goals_over",
+    "period": "ht"
+   },
+   "description": "Half-time O/U 1.5 for New-Format leagues (owner rule 2026-11-18: every model x market it can). Registered with NO rows: the 2026-11-18 refit fitted New-Format HT payloads (golive refit_1118b new_format/ht_over15.pkl) but src/predict.py scores HT on Standard rows only and the clean-switch override installs Standard HT only, so the board has no New-Format HT probability. Switching it on = an owner-approved install of the New-Format HT payload plus its serving path, then this entry's status -> 'active' with prob_col/version_col/model_file (never empty-filled rows)."
   },
   {
    "repo": "v9",
@@ -450,6 +494,136 @@
     "period": "90min"
    },
    "description": "Player cards >= 1. The props model's own probability (predict_proba of the serving payload) for EVERY scored player x fixture, before the team-strength multiplier, caps and the tip filters (MIN_SIGNAL_PROB, MIN_GAMES_SIGNAL, starter proxy, GK skip) that player_tips.csv applies."
+  },
+  {
+   "repo": "v9",
+   "model_id": "v9_props",
+   "market": "goals3",
+   "family": "props",
+   "status": "active",
+   "track": "props",
+   "line": 2.5,
+   "selections": [
+    "YES"
+   ],
+   "prob_col": "p_goals3",
+   "positive_selection": "YES",
+   "version_col": null,
+   "model_file": {
+    "*": "models/model_player_goals3.pkl"
+   },
+   "settle": {
+    "rule": "player_target",
+    "target_col": "target_goals3",
+    "stat": "goals",
+    "n": 3,
+    "period": "90min"
+   },
+   "description": "Player goals >= 3 (hat-trick; owner 2026-11-18: served for the rare-props research, the clean player base rate). The props model's own probability (predict_proba of the serving payload) for EVERY scored player x fixture, before the team-strength multiplier, caps and the tip filters (MIN_SIGNAL_PROB, MIN_GAMES_SIGNAL, starter proxy, GK skip) that player_tips.csv applies."
+  },
+  {
+   "repo": "v9",
+   "model_id": "v9_props_challenger",
+   "market": "goals2",
+   "family": "props",
+   "status": "active",
+   "track": "props",
+   "line": 1.5,
+   "selections": [
+    "YES"
+   ],
+   "prob_col": null,
+   "positive_selection": "YES",
+   "version_col": null,
+   "model_file": {
+    "*": "models/registry/props/goals2/challenger.pkl.gz"
+   },
+   "settle": {
+    "rule": "player_target",
+    "target_col": "target_goals2",
+    "stat": "goals",
+    "n": 2,
+    "period": "90min"
+   },
+   "description": "Player goals >= 2. The PARKED CHALLENGER's own probability (props_gate challenger slot: the clean ML candidate of the props clean retrain, beside the served player base rate; owner 2026-11-18) for EVERY player x fixture the serving model scores, so it can replace the base rate once it wins under the clean-retrain rule. Learning only: never a tip."
+  },
+  {
+   "repo": "v9",
+   "model_id": "v9_props_challenger",
+   "market": "goals3",
+   "family": "props",
+   "status": "active",
+   "track": "props",
+   "line": 2.5,
+   "selections": [
+    "YES"
+   ],
+   "prob_col": null,
+   "positive_selection": "YES",
+   "version_col": null,
+   "model_file": {
+    "*": "models/registry/props/goals3/challenger.pkl.gz"
+   },
+   "settle": {
+    "rule": "player_target",
+    "target_col": "target_goals3",
+    "stat": "goals",
+    "n": 3,
+    "period": "90min"
+   },
+   "description": "Player goals >= 3. The PARKED CHALLENGER's own probability (props_gate challenger slot: the clean ML candidate of the props clean retrain, beside the served player base rate; owner 2026-11-18) for EVERY player x fixture the serving model scores, so it can replace the base rate once it wins under the clean-retrain rule. Learning only: never a tip."
+  },
+  {
+   "repo": "v9",
+   "model_id": "v9_props_challenger",
+   "market": "sot3",
+   "family": "props",
+   "status": "active",
+   "track": "props",
+   "line": 2.5,
+   "selections": [
+    "YES"
+   ],
+   "prob_col": null,
+   "positive_selection": "YES",
+   "version_col": null,
+   "model_file": {
+    "*": "models/registry/props/sot3/challenger.pkl.gz"
+   },
+   "settle": {
+    "rule": "player_target",
+    "target_col": "target_sot3",
+    "stat": "shots_on_target",
+    "n": 3,
+    "period": "90min"
+   },
+   "description": "Player shots_on_target >= 3. The PARKED CHALLENGER's own probability (props_gate challenger slot: the clean ML candidate of the props clean retrain, beside the served player base rate; owner 2026-11-18) for EVERY player x fixture the serving model scores, so it can replace the base rate once it wins under the clean-retrain rule. Learning only: never a tip."
+  },
+  {
+   "repo": "v9",
+   "model_id": "v9_props_challenger",
+   "market": "sot4",
+   "family": "props",
+   "status": "active",
+   "track": "props",
+   "line": 3.5,
+   "selections": [
+    "YES"
+   ],
+   "prob_col": null,
+   "positive_selection": "YES",
+   "version_col": null,
+   "model_file": {
+    "*": "models/registry/props/sot4/challenger.pkl.gz"
+   },
+   "settle": {
+    "rule": "player_target",
+    "target_col": "target_sot4",
+    "stat": "shots_on_target",
+    "n": 4,
+    "period": "90min"
+   },
+   "description": "Player shots_on_target >= 4. The PARKED CHALLENGER's own probability (props_gate challenger slot: the clean ML candidate of the props clean retrain, beside the served player base rate; owner 2026-11-18) for EVERY player x fixture the serving model scores, so it can replace the base rate once it wins under the clean-retrain rule. Learning only: never a tip."
   },
   {
    "repo": "pro",
@@ -695,14 +869,14 @@
    "model_id": "v11_shadow",
    "market": "ou25",
    "family": "team",
-   "status": "pending_writer",
+   "status": "active",
    "track": "board",
    "line": 2.5,
    "selections": [
     "OVER",
     "UNDER"
    ],
-   "prob_col": "p_v11",
+   "prob_col": "v11_p_blend",
    "positive_selection": "OVER",
    "version_col": null,
    "model_file": null,
@@ -710,7 +884,7 @@
     "rule": "total_goals_over",
     "period": "ft"
    },
-   "description": "v11 live O/U 2.5 shadow (scripts/v11_shadow.py, v11_collect.yml). Registered; its writer is a follow-up in NevixAA/wowza_v11 (no rows until wired)."
+   "description": "v11 market-first O/U 2.5 shadow (scripts/v11_shadow.py, v11_collect.yml; writer src/prediction_ledger_v11.py in NevixAA/wowza_v11). probability = v11's own blended forecast for EACH selection from that side's own decision: w*p_model + (1-w)*p_market, w <= the segment cap (new_format 0.45 / standard 0.40) shrunk by the measured N_EFF and the side's odds band, so OVER and UNDER need not sum to 1. Every board fixture v11 evaluates is recorded; one it cannot blend is stored unscored with the engine's reason. Its inputs are never stored: p_model is v9's p_over25 (already in v9's ledger) and p_market is the de-vigged price consensus (price-derived)."
   },
   {
    "repo": "v9",

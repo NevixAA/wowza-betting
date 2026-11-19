@@ -1,0 +1,53 @@
+{
+ "about": "TOP-3 paper track R3 (protocol v6, owner 2026-11-15: live TOP-3 ranked by R2, R3 the paper comparison) (src/research/top3_paper.py) and the statistics freeze (scripts/top3_paper_freeze.py). PAPER/RESEARCH: nothing here stakes, executes or publishes. Every value is pinned; a change is a new protocol version, before the first pick.",
+ "protocol_file": "config/top3_ranking_paper_protocol_v6.json",
+ "protocol_sha256": "5b35327fdd2353e4ecdad4c56e713f1593f16df0ba5920e8aa9a457fcc639f73",
+ "tracks": [
+  "R3_CAL_EV_LCB"
+ ],
+ "live_track": "R2_CAL_EV (the production TOP-3; not recorded here)",
+ "start_utc": "2026-11-21T00:00:00Z",
+ "stats_as_of_utc": "2026-11-20T23:59:59Z",
+ "freeze_window_from_utc": "2026-11-20T00:00:00Z",
+ "bets_from": "2026-09-01",
+ "freeze_record": "output/research/top3_ranking/live_stats_2026-11-20.json",
+ "freeze_ledger": "output/research/top3_ranking/live_stats_ledger.json",
+ "clean_override_ids": [
+  "clean-data-switch-2026-11-09"
+ ],
+ "approved_proposals": [
+  {
+   "proposal_id": "TP-2026-11-15-bade2c0b",
+   "proposal_hash": "bade2c0baf41858f5b65f05bbf62fb5b6832873d8c743efb30da2fe3e193e74e",
+   "file": "output/threshold_proposals/bars_oddsapi_hist/2026-11_bade2c0b.json",
+   "approved": "owner 2026-11-15 \"Approve, PROMISING small\" (config/threshold_approvals.json); replaces TP-2026-11-10-d999073a (superseded, never applied)"
+  },
+  {
+   "proposal_id": "TP-2026-11-18-1ddfc9f1",
+   "proposal_hash": "1ddfc9f1c7dc4e2e4692e81d7e27aeb36960efd5963250541ed401b6cc852a92",
+   "file": "output/threshold_proposals/bars_p11v2/2026-11.json",
+   "approved": "owner 2026-11-18 chat: O2 approved, O1 BTTS fallback approved (config/threshold_approvals.json); supersedes TP-2026-11-15-bade2c0b and TP-2026-11-18-42a409c5"
+  }
+ ],
+ "clean_frames": {
+  "58f10476f4c82d7b": {
+   "recipe": "Phase 2 champion_recipe (clean retrain), walk-forward predictions, data-truth-100 2e6e6e745",
+   "standard_run": "run_20261110T203611Z (GitHub run 42895611758)",
+   "new_format_run": "run_20261110T203319Z (local, single-threaded)",
+   "universes_commit": "655ac1e8f (own prices only); Standard rebuilt through the certified football-data join (protocol v5, 2026-11-15): same rows, every O/U 2.5 pair identical",
+   "universe_sha256": {
+    "standard": "f833a9d9a60fb6340cb6565b5c3cda94a9eefea1971e4ec5db33f591cb264079",
+    "new_format": "9ec3222c5a6b788c01a9005023716928b6f5fc26ef7b15deb66b89018a60cba8"
+   }
+  }
+ },
+ "fresh_holdout_record": "output/threshold_proposals/bars_oddsapi_hist/fresh_2026-11-15_132a4795.json",
+ "fresh_holdout_record_sha256": "16421cf4928d10a074ef7f067ff7fb05f81db4cbc0d67a0eedbfe3a540b050a3",
+ "remeasure_record": "output/research/top3_ranking/live_stats_remeasure.json",
+ "all_data_models": {
+  "status": "NOT_PROMOTED",
+  "frame_hash": null,
+  "engine_versions": [],
+  "how": "when the all-data models (gate on feat/team-info-features) are promoted: set status PROMOTED, their frame_hash (also listed in clean_frames with universe sha256s) and the engine versions they serve, add their promotion override id to clean_override_ids, then run scripts/top3_paper_freeze.py --remeasure before their first pick"
+ }
+}

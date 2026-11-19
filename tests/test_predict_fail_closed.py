@@ -96,8 +96,10 @@ def test_unknown_or_near_name_league_gets_no_probability_and_no_bet(run, name):
     assert (known["p_over25"] == P_STUB).all()                      # neighbours unaffected
 
 
-def test_unknown_league_never_reaches_tips(run):
+def test_unknown_league_never_reaches_tips(run, monkeypatch):
     from src.betting import generate_bets
+    from tests.own_bars import install_historical
+    install_historical(monkeypatch)                  # every league has its own bars (no global bar since 2026-11-09)
     out, _ = run(KNOWN + [("Austria Bundesliga", "X1", "X2")])
     # P_STUB=0.62 at 2.10 is a ~14pp edge on every scored row: ONLY the missing probability stops it
     b = generate_bets(out)

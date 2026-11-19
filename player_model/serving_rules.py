@@ -3,8 +3,9 @@ generation) and dashboard_data.props_view (the board), so both apply the same ru
 
   * "No GK attacking tips": a goalkeeper is never tipped on shots on target, goals or assists
     (config.GK_BLOCKED_MARKETS); cards stay allowed.
-  * "Retrain them too": goals2 / goals3 / sot3 / sot4 still serve placeholder-trained models and are
-    HIDDEN until the props clean retrain covers them (config.HIDDEN_PENDING_CLEAN_RETRAIN).
+  * The rare markets goals2 / goals3 / sot3 / sot4 make no normal tip and are not on the board
+    (config.HIDDEN_PENDING_CLEAN_RETRAIN); their probabilities (the clean player base rate since the
+    owner's 2026-11-18 decision) feed only the rare-props research picks.
   * An unknown position is never guessed: the tip is kept and labelled UNKNOWN.
 """
 from __future__ import annotations
@@ -24,8 +25,8 @@ def position_status(pos) -> str:
 
 
 def serving_skip_reason(market: str, pos_status: str) -> str | None:
-    """The owner rule that blocks this player-market, or None. The hidden market comes first (no
-    tip from a placeholder-trained model, whoever the player is), then the goalkeeper rule."""
+    """The owner rule that blocks this player-market, or None. The hidden (rare, research-only) market
+    comes first, whoever the player is, then the goalkeeper rule."""
     if market in config.HIDDEN_PENDING_CLEAN_RETRAIN:
         return config.SKIP_HIDDEN_MARKET
     if pos_status == "G" and market in config.GK_BLOCKED_MARKETS:

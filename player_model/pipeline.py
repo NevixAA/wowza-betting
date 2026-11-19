@@ -39,6 +39,7 @@ from player_model.predict import run_player_predictions, enrich_with_odds, enric
 from player_model.odds_fetcher import fetch_prop_odds, match_odds_to_tips, match_fair_to_tips
 from player_model.ledger import append_player_signals
 from player_model import history_integrity as HI
+from player_model.referee_names import canonicalise_rows as canonicalise_referee_rows
 
 HISTORY_CACHE = config.BASE_DIR / "player_history.parquet"
 
@@ -221,6 +222,11 @@ def mode_collect(extended: bool = False, last_n: int = 100) -> None:
 
     rows = enrich_sp_events(rows)
     rows = enrich_league_quality(rows)
+    # One canonical referee name per referee (evidence-derived aliases, referee_names.py), so
+    # a provider re-spelling cannot split a referee's history in the referee features.
+    _n_ref = canonicalise_referee_rows(rows)
+    if _n_ref:
+        print(f"[collect] referee: {_n_ref} row(s) given the canonical spelling")
     df = build_features(rows)
     if df.empty:
         print("[collect] Feature engineering returned empty DataFrame.")
@@ -252,6 +258,7 @@ def mode_collect(extended: bool = False, last_n: int = 100) -> None:
     # A hard guard refuses to write a smaller file than we started with, so no future change
     # to last_n or to the fetchers can quietly lose data.
     _before = 0
+    _corrections = None
     if HISTORY_CACHE.exists():
         try:
             existing = pd.read_parquet(HISTORY_CACHE)
@@ -281,17 +288,17 @@ def mode_collect(extended: bool = False, last_n: int = 100) -> None:
                 # re-fetched row had its injury values reset to the default every night.
                 # merge_history now blanks them in the fetched frame.)
                 #
-                # FROZEN WINDOW (2026-10-26, owner-approved). The overlap is now split by match
-                # date: a row more than FROZEN_AFTER_DAYS (14) old is IMMUTABLE -- the nightly
-                # re-derivation of opp_strength_index / referee_* / n_prev_games on rows up to
-                # ~120 days old rewrote seven month parts a day and changed what old training
-                # rows said. New rows are still always added. Injury columns are never taken
-                # from a collect. Rules and evidence: player_model/history_integrity.py.
+                # FROZEN WINDOW (2026-10-26) -> KEEP FIRST (2026-11-18, owner rule "never
+                # rewrite committed rows"). Every committed row is kept as first written; a
+                # collect adds new keys and fills only cells stored empty. A raw fact that comes
+                # back different goes to the corrections sidecar beside the original, never
+                # into the row. Rules and evidence: player_model/history_integrity.py.
                 df, st = HI.merge_history(existing, df)
+                _corrections = st["corrections"]
                 print(f"[collect] union: {st['existing']} existing + {st['fetched']} fetched -> "
-                      f"{len(df)} rows (+{st['added']} new, {st['refreshed']} refreshed inside "
-                      f"the {HI.FROZEN_AFTER_DAYS}-day window, {st['frozen']} frozen kept as "
-                      f"stored, 0 removed)")
+                      f"{len(df)} rows (+{st['added']} new, {st['kept']} re-fetched kept as "
+                      f"stored, {st['filled_cells']} empty cell(s) filled, "
+                      f"{len(_corrections)} raw difference(s) for the corrections file, 0 removed)")
             else:
                 df = pd.concat([existing, df], ignore_index=True)
                 print(f"[collect] union without key columns -> {len(df)} rows")
@@ -308,6 +315,10 @@ def mode_collect(extended: bool = False, last_n: int = 100) -> None:
 
     _save_history(df)
     print(f"[collect] Saved {len(df)} player rows, {df['player_id'].nunique()} players -> {HISTORY_CACHE.name}")
+    if _corrections is not None and len(_corrections):
+        n_new = HI.append_corrections(_corrections)
+        print(f"[collect] corrections: {n_new} new raw difference(s) recorded beside the "
+              f"originals -> output/corrections/{HI.CORRECTIONS_PATH.name}")
 
     # Summary — all markets
     for market, target_col in config.MARKET_TARGETS.items():
@@ -327,6 +338,7 @@ def mode_collect_wc(last_n: int = 10) -> None:
 
     rows = enrich_sp_events(rows)
     rows = enrich_league_quality(rows)
+    canonicalise_referee_rows(rows)
     new_df = build_features(rows)
     if new_df.empty:
         print("[collect-wc] Feature engineering returned empty DataFrame.")
@@ -341,13 +353,15 @@ def mode_collect_wc(last_n: int = 10) -> None:
     # injury enrichment columns, for instance) was overwritten with NaN. combine_first keeps
     # the fresh value only where there IS one.
     _before = 0
+    _wc_corrections = None
     if HISTORY_CACHE.exists():
         existing = pd.read_parquet(HISTORY_CACHE)
         _before = len(existing)
         key = ["fixture_id", "player_id"]
         if set(key).issubset(new_df.columns) and set(key).issubset(existing.columns):
-            # Same frozen-window rule as mode_collect (history_integrity.merge_history).
+            # Same keep-first rule as mode_collect (history_integrity.merge_history).
             combined, _st = HI.merge_history(existing, new_df)
+            _wc_corrections = _st["corrections"]
         else:
             combined = pd.concat([existing, new_df], ignore_index=True)
     else:
@@ -359,6 +373,8 @@ def mode_collect_wc(last_n: int = 10) -> None:
         return
 
     _save_history(combined)
+    if _wc_corrections is not None and len(_wc_corrections):
+        HI.append_corrections(_wc_corrections)
     wc_players = new_df["player_id"].nunique()
     print(f"[collect-wc] +{len(new_df)} WC rows ({wc_players} players) merged -> {len(combined)} total rows")
 
@@ -380,7 +396,7 @@ def merge_cup_rows(existing: "pd.DataFrame", cups: "pd.DataFrame") -> tuple:
     columns of history + every cup row), so a cup row's form / rest days / opponent features see
     the player's league AND cup matches. Only the new cup rows are taken from that pass: every
     stored row stays exactly as it is (history_integrity.merge_history adds, never rewrites a
-    frozen row). Extra-time cup fixtures are context, not training rows (cup_history)."""
+    committed row). Extra-time cup fixtures are context, not training rows (cup_history)."""
     from player_model import cup_history as CH
     new = CH.training_rows(CH.new_cup_rows(existing, cups))
     stats = {"cup_rows": int(len(cups)), "to_append": int(len(new)), "appended": 0,
@@ -687,10 +703,9 @@ def mode_predict() -> None:
     if api_key:
         tips = _filter_by_lineup(tips)
 
-    sniper   = tips[tips["tier"] == "SNIPER"]
-    marksman = tips[tips["tier"] == "MARKSMAN"]
-    valuable = tips[tips["tier"] == "VALUABLE"]
-    print(f"[predict] SNIPER:{len(sniper)}  MARKSMAN:{len(marksman)}  VALUABLE:{len(valuable)}")
+    qualified = tips[tips["tier"] == "QUALIFIED"]          # owner 2026-11-11: one bar, no tiers
+    paper     = tips[tips["tier"] == "PAPER"]
+    print(f"[predict] TIPS (lowest props bar cleared, UNPROVEN):{len(qualified)}  PAPER:{len(paper)}")
 
     n_new = append_player_signals(tips)
     if n_new:

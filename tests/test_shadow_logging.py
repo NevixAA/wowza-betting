@@ -110,9 +110,11 @@ def test_the_workflow_commits_the_shadow_log():
 
 
 # ── §5/§6: the prospective gate dataset ───────────────────────────────────────────────────────
-def test_the_gates_in_force_are_recorded_with_every_prediction(shadow):
+def test_the_gates_in_force_are_recorded_with_every_prediction(shadow, monkeypatch):
     """Without them the log records what was decided but not the RULE it was decided under, so
     a later threshold change silently re-interprets every historical row."""
+    from tests.own_bars import install_historical
+    install_historical(monkeypatch)
     pipeline._log_shadow(_preds(n=2))
     d = pd.read_csv(shadow.SHADOW_FILE)
     for c in ("production_valuable_gate", "production_marksman_gate",

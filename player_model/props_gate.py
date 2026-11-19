@@ -414,10 +414,13 @@ def clean_serving_payload(art: dict, provenance: dict) -> dict:
     calls the predict() the holdout was scored with), its feature columns and the provenance."""
     from player_model import props_contract as PC
     m = art["model"]
-    imputer = ("NONE_NAN_NATIVE" if art["candidate"] == "hgb_nan_native"
-               else "FIT_BLOCK_MEDIAN_PERSISTED")
+    imputer = {"hgb_nan_native": "NONE_NAN_NATIVE",
+               "player_base_rate": "NONE_PLAYER_ID_RATE"}.get(art["candidate"], "FIT_BLOCK_MEDIAN_PERSISTED")
+    # player_base_rate (owner 2026-11-18) reads NO feature: the player id only (model.predict_with_diagnostics
+    # passes it), its training-window rate shrunk to the window's market rate.
     return {"market": art["market"], "recipe": PC.RECIPE_CLEAN_HARNESS, "candidate": art["candidate"],
-            "model": m, "feature_cols": list(m.feature_cols_), "state": art["state"],
+            "model": m, "feature_cols": list(getattr(m, "feature_cols_", None) or []),
+            "inputs": ["player_id"] if art["candidate"] == "player_base_rate" else [], "state": art["state"],
             "window": art["window"], "harness_version": art["harness_version"],
             "hand_adjustment": art.get("hand_adjustment"), "owner_decisions": art.get("owner_decisions"),
             "imputer_version": imputer, "contract_version": art["harness_version"],
@@ -426,20 +429,27 @@ def clean_serving_payload(art: dict, provenance: dict) -> dict:
 
 def promote_clean_retrain(market: str, artifact_raw: bytes, *, expected_sha256: str, run_id: str,
                           code_sha: str, holdout_metrics: dict, approval: str, approved_on: str,
-                          now: datetime | None = None) -> dict:
+                          now: datetime | None = None, owner_base_rate: bool = False) -> dict:
     """Install a props clean-retrain model as the serving champion of `market`, approved by the owner.
 
     The serving model in place is registered first (its exact bytes are kept in the registry, so
     rollback_props restores it); the new payload is written through _install_props_champion, the only
-    writer of a serving props file, and the decision is logged with the run, code and hashes."""
+    writer of a serving props file, and the decision is logged with the run, code and hashes.
+
+    A rare (hidden) market takes ONLY its clean player_base_rate, and only with owner_base_rate=True
+    (owner 2026-11-18: config.BASE_RATE_SERVED_MARKETS)."""
     if market not in pconfig.MODEL_FILES:
         raise ValueError(f"unknown props market {market!r}")
-    if market in pconfig.HIDDEN_PENDING_CLEAN_RETRAIN:
+    if owner_base_rate and market not in pconfig.BASE_RATE_SERVED_MARKETS:
+        raise PermissionError(f"{market} is not in config.BASE_RATE_SERVED_MARKETS")
+    if market in pconfig.HIDDEN_PENDING_CLEAN_RETRAIN and not owner_base_rate:
         raise PermissionError(f"{market} is hidden pending its own clean retrain")
     now = now or utcnow()
     art = load_clean_artifact(artifact_raw, expected_sha256)
     if art["market"] != market:
         raise ValueError(f"artifact is for {art['market']}, not {market}")
+    if owner_base_rate and art["candidate"] != "player_base_rate":
+        raise PermissionError(f"owner_base_rate installs player_base_rate only, not {art['candidate']}")
     prior = champion_identity(market, now=now)             # registers (archives) the model in place
     prov = {"run_id": run_id, "code_sha": code_sha, "artifact_sha256": expected_sha256,
             "candidate": art["candidate"], "holdout": holdout_metrics, "approval": approval,
@@ -468,6 +478,52 @@ def promote_clean_retrain(market: str, artifact_raw: bytes, *, expected_sha256: 
            "reason": f"owner approved {approved_on}: {approval}"}
     record_decision(rec)
     return {**rec, "serving_sha256": sha, "model_version": version}
+
+
+def park_clean_challenger(market: str, artifact_raw: bytes, *, expected_sha256: str, run_id: str,
+                          code_sha: str, holdout_metrics: dict, approval: str, approved_on: str,
+                          now: datetime | None = None) -> dict:
+    """Park a props clean-retrain ML candidate in the market's challenger slot (owner 2026-11-18: the
+    clean ML candidates keep predicting beside the served player base rate). predict scores it
+    first-sight next to the champion (FirstSightRecorder -> props_shadow_h2h.csv). It did NOT qualify on
+    its holdout against the champion (the clean-retrain rule picked the base rate), so the gate keeps it
+    as a research shadow (review_parked) and never promotes it from this slot; a later clean retrain
+    that wins under the rule (scripts/promote_props_clean.py) replaces the base rate."""
+    if market not in pconfig.MODEL_FILES:
+        raise ValueError(f"unknown props market {market!r}")
+    now = now or utcnow()
+    art = load_clean_artifact(artifact_raw, expected_sha256)
+    if art["market"] != market:
+        raise ValueError(f"artifact is for {art['market']}, not {market}")
+    if art["candidate"] == "player_base_rate":
+        raise ValueError("player_base_rate is the champion recipe, not a challenger")
+    champ = champion_identity(market, register=False, now=now)
+    prov = {"run_id": run_id, "code_sha": code_sha, "artifact_sha256": expected_sha256,
+            "candidate": art["candidate"], "holdout": holdout_metrics, "approval": approval,
+            "approved_on": approved_on, "champion": champ}
+    raw = pickle.dumps(clean_serving_payload(art, prov), protocol=pickle.HIGHEST_PROTOCOL)
+    sha = reg.sha256_bytes(raw)
+    version = f"props_{market}_clean_{art['candidate']}_{sha[:8]}"
+    win = art["window"] or {}
+    meta = {"market": market, "model_version": version, "artifact_sha256": sha,
+            "registered_at": reg.iso(now), "training_cutoff": (win.get("calibration_dates") or [""])[-1] or "",
+            "training_rows": {"fit": win.get("fit_rows"), "calibration": win.get("calibration_rows")},
+            "candidate": art["candidate"], "harness_version": art["harness_version"],
+            "clean_retrain": prov, "parent_champion_version": champ,
+            "promotion_status": "SHADOW_RESEARCH", "model_role": "SHADOW", "gate_version": GATE_VERSION,
+            "shadow_since": reg.iso(now),
+            "gate": {"gate_version": GATE_VERSION, "qualified": False,
+                     "reason": "clean-retrain holdout: no ML candidate beats player_base_rate (research shadow)"}}
+    _write_manifest(meta)
+    _park(market, meta, raw)
+    rec = {"stage": "OWNER_CLEAN_CHALLENGER", "market": market, "candidate_version": version,
+           "champion_version": champ, "verdict": SHADOW, "promoted": False, "qualified": False,
+           "parked": True, "holdout_n": holdout_metrics.get("n"), "holdout_events": holdout_metrics.get("events"),
+           "metrics": {"holdout": holdout_metrics, "run_id": run_id, "code_sha": code_sha,
+                       "harness_artifact_sha256": expected_sha256},
+           "reason": f"owner approved {approved_on}: {approval}"}
+    record_decision(rec)
+    return {**rec, "artifact_sha256": sha, "model_version": version}
 
 
 # ── PERIOD 1: the untouched holdout, per market ───────────────────────────────────────────────

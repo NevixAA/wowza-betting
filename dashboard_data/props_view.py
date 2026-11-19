@@ -28,8 +28,8 @@ MARKET_LABEL = {
 
 def board_rows(tips: pd.DataFrame) -> tuple[pd.DataFrame, dict]:
     """The upcoming board under the owner's serving rules (2026-11-08), applied again here so a
-    tips file written before the rules cannot show a blocked row: markets still on a
-    placeholder-trained model are HIDDEN (player_model.config.HIDDEN_PENDING_CLEAN_RETRAIN) and a
+    tips file written before the rules cannot show a blocked row: the rare research-only markets
+    are HIDDEN (player_model.config.HIDDEN_PENDING_CLEAN_RETRAIN) and a
     goalkeeper is never shown on shots on target / goals / assists (GK_BLOCKED_MARKETS). Returns
     (rows kept, {reason code: rows removed})."""
     from player_model import config as pconfig
@@ -48,9 +48,10 @@ def hidden_markets_note() -> str:
     """The reason label shown on the board for the hidden markets."""
     from player_model import config as pconfig
     names = ", ".join(MARKET_LABEL.get(m, m) for m in sorted(pconfig.HIDDEN_PENDING_CLEAN_RETRAIN))
-    return (f"Hidden until their clean retrain ({pconfig.SKIP_HIDDEN_MARKET}): {names}. Their models "
-            f"were trained on placeholder player profiles. Goalkeepers are never tipped on shots on "
-            f"target, goals or assists ({pconfig.SKIP_GK_ATTACKING}).")
+    return (f"Research only, not on the board ({pconfig.SKIP_HIDDEN_MARKET}): {names}. They serve the "
+            f"clean player base rate (no model beat it on the clean-retrain holdout); at most 3 research "
+            f"picks per gameweek. Goalkeepers are never tipped on shots on target, goals or assists "
+            f"({pconfig.SKIP_GK_ATTACKING}).")
 
 
 #: correction sidecars that flag player_ledger rows (output/corrections), each with `ledger_row`,

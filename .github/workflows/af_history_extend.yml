@@ -41,6 +41,10 @@ on:
         description: "Single league only (blank = all)"
         required: false
         default: ""
+      cards_max_calls:
+        description: "Standard team cards: API call cap for this run (blank = 80)"
+        required: false
+        default: ""
 
 jobs:
   extend:
@@ -80,11 +84,25 @@ jobs:
             python scripts/backfill_af_history.py
           fi
 
+      # TEAM CARDS FOR THE 17 STANDARD LEAGUES (owner 2026-11-16, audit gap G6). From 2026-11-16 on,
+      # no backfill: 3 /fixtures?date calls + 1 /fixtures/statistics per new finished fixture
+      # (~16/day), capped at 80 calls a run and stopping at the shared account floor. Written to its
+      # own file, output/af_team_cards_std.parquet (never af_history, which feeds Standard training).
+      # OFF SWITCH: repo variable STD_TEAM_CARDS_ENABLED != 'true'.
+      - name: Collect Standard-league team cards
+        if: vars.STD_TEAM_CARDS_ENABLED == 'true'
+        env:
+          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
+        run: |
+          MC="${{ github.event.inputs.cards_max_calls }}"; [ -n "$MC" ] || MC=80
+          python scripts/collect_standard_team_cards.py --max-calls "$MC"
+
       - name: Commit updated backfill
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -f output/af_history.parquet 2>/dev/null || true
+          git add -f output/af_team_cards_std.parquet 2>/dev/null || true
           git diff --staged --quiet || \
             git commit -m "auto: af_history extend $(date -u '+%Y-%m-%d %H:%M UTC')"
           pushed=0

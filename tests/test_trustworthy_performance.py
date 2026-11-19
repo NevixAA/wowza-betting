@@ -71,7 +71,11 @@ def test_config_minimums_are_the_existing_rules():
     m = TP.minimums(cfg)
     assert (m["settled"], m["matchdays"]) == (LW.MIN_N, LW.MIN_WEEKS)
     assert m["clv"] == nf_calibration.MIN_N == json.load(open(TP.ROOT / "config" / "market_edge_v2.json"))["strong_min_n"]
-    assert cfg["clean_record_start_utc"] is None and cfg["performance_claims_enabled"] is False
+    # the owner sets the Clean Record start (2026-11-11: 2026-11-21; 2026-11-18: the go-live merge instant):
+    # a UTC instant, never empty; claims stay off until he enables them
+    import re
+    assert re.fullmatch(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z", cfg["clean_record_start_utc"])
+    assert cfg["performance_claims_enabled"] is False
     assert all(v["source"] for v in cfg["minimums"].values())
 
 

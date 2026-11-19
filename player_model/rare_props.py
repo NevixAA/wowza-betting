@@ -5,7 +5,9 @@
 
 RESEARCH ONLY. A pick here is paper, labelled RESEARCH, never staked, never on the normal tip board.
 The four markets stay hidden from normal tips (config.HIDDEN_PENDING_CLEAN_RETRAIN): their clean
-retrain (run 42524325567) found no model better than the player base rate.
+retrain (runs 42524325567 .. 43035218594) found no ML model better than the player base rate, so since
+the owner's 2026-11-18 decision they SERVE that clean player_base_rate (config.BASE_RATE_SERVED_MARKETS);
+model_prob here is its probability. The clean ML candidates are parked challengers (props_gate).
 
 WHAT A PICK NEEDS, in order (the first failing step is the row's reason, every row is counted):
   1. NO_BAR_YET           the market has no 'exceptional' bar in config/rare_props_bars.json. The bar

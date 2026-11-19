@@ -14,6 +14,17 @@ seasons from 2022-23 to the current season (the loader's July roll, UTC). No API
 
     python scripts/collect_fd_raw.py            # download + manifest
     python scripts/collect_fd_raw.py --dry-run  # list the planned files only
+    python scripts/collect_fd_raw.py --history  # the OLDER finished seasons (see below)
+
+OLDER SEASONS (--history, fix/fd-ht-and-history-backfill 2026-11-18). The loader's Standard history
+started at 2023/24 (fd_history) plus a backtest archive with NO half-time score, so Standard training
+had HT goals on ~1% of 2021/22-2022/23 rows although football-data publishes them on every row.
+--history downloads the finished seasons 2016/17 .. 2021/22 of the same registry leagues into
+output/collect/fd_raw_history/ (its own manifest, same rules: a file is written only when its content
+changed, a failed download never replaces a stored file). A SEPARATE directory on purpose: the bars
+study (src.standard_repair.load_fd_entry_prices) globs fd_raw/ and must not change under it. The COVID
+seasons are banked like any other (they are real matches); training drops them by
+config.covid_season_mask, as before. Finished seasons never change, so this runs once.
 """
 from __future__ import annotations
 
@@ -36,6 +47,9 @@ MANIFEST = OUT_DIR / "manifest.json"
 URL = "https://www.football-data.co.uk/mmz4281/{season}/{code}.csv"
 #: first season of the bars study's walk-forward window (the Pro fd_raw copy starts here too)
 FIRST_SEASON_START = 2022
+#: --history: the older finished seasons, start years HISTORY_FIRST..FIRST_SEASON_START-1
+HISTORY_DIR = ROOT / "output" / "collect" / "fd_raw_history"
+HISTORY_FIRST = 2016
 
 
 def seasons(now: datetime) -> list[str]:
@@ -43,10 +57,15 @@ def seasons(now: datetime) -> list[str]:
     return [f"{str(y)[2:]}{str(y + 1)[2:]}" for y in range(FIRST_SEASON_START, start + 1)]
 
 
-def plan(now: datetime) -> list[tuple[str, str, str]]:
+def history_seasons() -> list[str]:
+    return [f"{str(y)[2:]}{str(y + 1)[2:]}" for y in range(HISTORY_FIRST, FIRST_SEASON_START)]
+
+
+def plan(now: datetime, history: bool = False) -> list[tuple[str, str, str]]:
     from src.data_loader import _fd_download_tables
     std, _new = _fd_download_tables()
-    return [(lg, code, s) for lg, code in sorted(std.items()) for s in seasons(now)]
+    ss = history_seasons() if history else seasons(now)
+    return [(lg, code, s) for lg, code in sorted(std.items()) for s in ss]
 
 
 def _summary(raw: bytes) -> dict:
@@ -63,14 +82,16 @@ def _summary(raw: bytes) -> dict:
             "has_entry_ou25": bool({"Avg>2.5", "B365>2.5", "P>2.5", "Max>2.5"} & set(df.columns))}
 
 
-def run(dry_run: bool = False, session=None) -> dict:
+def run(dry_run: bool = False, session=None, history: bool = False) -> dict:
     import requests
     now = datetime.now(timezone.utc)
-    jobs = plan(now)
+    jobs = plan(now, history=True) if history else plan(now)
+    out_dir = HISTORY_DIR if history else OUT_DIR
+    manifest = out_dir / "manifest.json" if history else MANIFEST
     if dry_run:
         return {"planned": [f"{c}_{s}.csv ({lg})" for lg, c, s in jobs]}
-    OUT_DIR.mkdir(parents=True, exist_ok=True)
-    man = json.loads(MANIFEST.read_text(encoding="utf-8")) if MANIFEST.exists() else {"files": {}}
+    out_dir.mkdir(parents=True, exist_ok=True)
+    man = json.loads(manifest.read_text(encoding="utf-8")) if manifest.exists() else {"files": {}}
     s = session or requests.Session()
     counts = {"written": 0, "unchanged": 0, "failed": 0, "not_published": 0}
     for lg, code, season in jobs:
@@ -99,7 +120,7 @@ def run(dry_run: bool = False, session=None) -> dict:
         if prev and prev.get("sha256") == sha:
             counts["unchanged"] += 1
             continue
-        (OUT_DIR / name).write_bytes(r.content)
+        (out_dir / name).write_bytes(r.content)
         man["files"][name] = {"league": lg, "code": code, "season": season, "url": url, "sha256": sha,
                               "fetched_at": now.strftime("%Y-%m-%dT%H:%M:%SZ"), **info}
         counts["written"] += 1
@@ -107,7 +128,7 @@ def run(dry_run: bool = False, session=None) -> dict:
     man["source"] = "football-data.co.uk (free CSV files; the loader downloads the same files in CI)"
     man["updated_at"] = now.strftime("%Y-%m-%dT%H:%M:%SZ")
     man["last_run"] = counts
-    MANIFEST.write_text(json.dumps(man, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    manifest.write_text(json.dumps(man, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     print(f"[fd_raw] {counts}")
     return counts
 
@@ -115,8 +136,10 @@ def run(dry_run: bool = False, session=None) -> dict:
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--history", action="store_true",
+                    help="the older finished seasons into output/collect/fd_raw_history/")
     a = ap.parse_args(argv)
-    out = run(dry_run=a.dry_run)
+    out = run(dry_run=a.dry_run, history=a.history)
     if a.dry_run:
         print(f"[fd_raw] {len(out['planned'])} planned file(s): {out['planned'][:6]} ...")
     return 0

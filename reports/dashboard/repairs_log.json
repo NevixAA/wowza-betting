@@ -1,0 +1,941 @@
+{
+ "schema": "wowza.repairs_log/1",
+ "generated_at": "2026-11-17T14:45:28Z",
+ "source_refs": {
+  "main": "d1105e1fd31bb81000ace27989769ec0a83af31e",
+  "data-truth-100": "ce7f4700f53a79d86b20460ca2adf7e63c3982a8",
+  "wowzaV9-Pro main": "265cc78a1eada5826ca1808b253e261be604153e"
+ },
+ "items": [
+  {
+   "date": "2026-11-16",
+   "title": "API-Football and OddsAPI prices moving to a private store",
+   "what_was_wrong": "API-Football's terms give no licence to publish its data, and the repos that hold raw price archives and prices inside our own ledgers are public.",
+   "what_changed": "Every price-bearing file was inventoried and copied byte-exact to the private wowza-exec store. Nothing public was deleted and no live reader or writer changed yet; the cut-over is planned for Nov 22-24 behind a model parity gate, and the git history purge is deferred until after go-live. Owner 2026-11-17: the cut-over moves forward (dual-write from 17.11, zero-difference parity gate on 18.11, then the readers switch); it rolls back if anything differs.",
+   "numbers": [
+    "4,995 class A+B files copied, sha256-verified 4,995/4,995 (39eb0f1e8)",
+    "559 OddsAPI-only (class O) files copied; full manifest re-verified 5,554/5,554 (c5d3c2538)",
+    "cut-over planned Nov 22-24 (c5d3c2538)"
+   ],
+   "where": "in progress (branch chore/af-prices-private, not merged)",
+   "refs": [
+    {
+     "kind": "commit",
+     "id": "39eb0f1e8",
+     "branch": "chore/af-prices-private"
+    },
+    {
+     "kind": "commit",
+     "id": "c5d3c2538",
+     "branch": "chore/af-prices-private"
+    },
+    {
+     "kind": "report",
+     "id": "docs/AF_PRICES_PRIVATE_MIGRATION.md",
+     "branch": "chore/af-prices-private"
+    },
+    {
+     "kind": "decision",
+     "id": "owner 2026-11-17 \"Yes, do it now\""
+    }
+   ]
+  },
+  {
+   "date": "2026-11-16",
+   "title": "Research lock U3a re-approved; CI added to the go-live branch",
+   "what_was_wrong": "The research lock snapshot dated from 2026-11-09 and did not record the owner's later production changes, and the go-live branch had no CI, so red tests stayed hidden.",
+   "what_changed": "The owner re-approved the lock, recording no global bars, per-cell staking and Argentina NF BTTS waiting for its league bar. The tests and stoplight workflows now run on prep/bars-oddsapi-hist; the league bars themselves are applied later in U3b after the owner's Nov 20 pick.",
+   "numbers": [
+    "5 red tests had stayed hidden without CI (cf3b4ffc1)",
+    "full suite 3443 passed, 0 failed (cf3b4ffc1)"
+   ],
+   "where": "branch prep/bars-oddsapi-hist, not merged",
+   "refs": [
+    {
+     "kind": "commit",
+     "id": "cf3b4ffc1",
+     "branch": "prep/bars-oddsapi-hist"
+    }
+   ]
+  },
+  {
+   "date": "2026-11-16",
+   "title": "Duplicate-fixture tie-break goes to the primary source",
+   "what_was_wrong": "When two copies of the same match were equally complete, the loader kept whichever copy happened to sort last, so an unrelated data refresh could swap a football-data row for a backtest-archive row. This crashed a Pro Standard Repair run.",
+   "what_changed": "Completeness still decides first; a tie now goes to the source ranked first (football-data, its cache, API-Football, then the backtest archive), and the date sort is stable.",
+   "numbers": [
+    "4 of the 17,178 fixtures carried by both sources tied this way on main (PR #38)",
+    "data-truth-100: 23,696 overlapping fixtures, 17,210 cross-source, exactly 1 cross-source tie (PR #40)",
+    "surviving copy changed: 0 fixtures; 0 cells changed (PR #40)",
+    "team parity 0 of 5,375 cells, 125/125 probabilities exact per payload (PR #40)"
+   ],
+   "where": "main + data-truth-100 (goes live 2026-11-21)",
+   "refs": [
+    {
+     "kind": "pr",
+     "id": "#38",
+     "branch": "fix/dedupe-source-tiebreak"
+    },
+    {
+     "kind": "commit",
+     "id": "931c7671d",
+     "branch": "main"
+    },
+    {
+     "kind": "pr",
+     "id": "#40",
+     "branch": "fix/dedupe-source-tiebreak-dt100"
+    },
+    {
+     "kind": "commit",
+     "id": "f77147eb7",
+     "branch": "data-truth-100"
+    },
+    {
+     "kind": "report",
+     "id": "docs/DEDUPE_SOURCE_TIEBREAK_FRAME_CHANGE_2026-11-16.md",
+     "branch": "data-truth-100"
+    }
+   ]
+  },
+  {
+   "date": "2026-11-16",
+   "title": "Restored af_history rows verified and wired into the models",
+   "what_was_wrong": "The provider rows recovered after the write-back data loss sat beside the history but no loader read them, so matches still had missing corners, fouls and cards.",
+   "what_changed": "Each restored row was checked against API-Football; only rows whose full-time score matches are used, and a statistic is served only when API-Football holds the same value. The loader fills missing cells only and never overwrites an existing value (owner: \"yes, make the models use them\", \"Exclude them\").",
+   "numbers": [
+    "28,412 rows restored, 21,686 verified (PR #37, PR #39)",
+    "6,726 rows excluded: 6,724 duplicates, 2 with a score that differs from API-Football (PR #37, PR #39)",
+    "3,387 cells excluded: 437 differ from API-Football, 2,950 have no second source (PR #39)",
+    "main: corners 5,301 / 5,300 and yellows 16,374 / 16,377 cells filled that were missing (PR #37)",
+    "data-truth-100: yellows 19,194 / 19,193, inside-box 394, xG 258 cells filled (PR #39)",
+    "overwritten or erased cells: 0 (PR #37, PR #39)"
+   ],
+   "where": "main + data-truth-100 (goes live 2026-11-21)",
+   "refs": [
+    {
+     "kind": "pr",
+     "id": "#37",
+     "branch": "feat/af-restored-rows-main"
+    },
+    {
+     "kind": "commit",
+     "id": "6e289e74a",
+     "branch": "main"
+    },
+    {
+     "kind": "commit",
+     "id": "3887bb387",
+     "branch": "main"
+    },
+    {
+     "kind": "pr",
+     "id": "#39",
+     "branch": "feat/af-restored-rows-dt100"
+    },
+    {
+     "kind": "commit",
+     "id": "c5c28ccc1",
+     "branch": "data-truth-100"
+    },
+    {
+     "kind": "report",
+     "id": "docs/AF_RESTORED_ROWS_FRAME_CHANGE_2026-11-16.md",
+     "branch": "data-truth-100"
+    }
+   ]
+  },
+  {
+   "date": "2026-11-16",
+   "title": "af_history write-back data loss fixed; lost rows restored",
+   "what_was_wrong": "A loader write-back replaced stored API-Football history rows with shots-only rows, wiping their full-time score, corners, fouls, cards and xG. Several collectors on data-truth-100 could drop columns they did not own in the same way.",
+   "what_changed": "Writers now merge by key and change only the columns they own; they never drop a stored row or column. The lost rows were recovered from git history and stored beside the original file, which was not modified.",
+   "numbers": [
+    "28,412 provider rows replaced by 19 retrain commits, 2026-09-23 to 2026-11-01 (PR #35)",
+    "87 committed versions of af_history scanned (PR #35)",
+    "cells lost: score 28,412; corners 26,320; fouls 26,326; yellows 25,539; xG 7,714 (PR #35)",
+    "27,909 erased loader-copy cells kept separately as unproven (PR #35)"
+   ],
+   "where": "main + data-truth-100 (goes live 2026-11-21)",
+   "refs": [
+    {
+     "kind": "pr",
+     "id": "#35",
+     "branch": "fix/af-writeback-preserve-main"
+    },
+    {
+     "kind": "commit",
+     "id": "3f206e1f1",
+     "branch": "main"
+    },
+    {
+     "kind": "pr",
+     "id": "#36",
+     "branch": "fix/af-writeback-preserve-dt100"
+    },
+    {
+     "kind": "commit",
+     "id": "7bcb54449",
+     "branch": "data-truth-100"
+    }
+   ]
+  },
+  {
+   "date": "2026-11-16",
+   "title": "Corners/cards odds kept privately; Standard team cards collected daily",
+   "what_was_wrong": "The corners and cards quotes already fetched were thrown away, Standard leagues had no daily team-cards source, and new af_history rows carried no provider fixture id.",
+   "what_changed": "Corners and cards quotes from existing calls are kept, but only in the private wowza-exec store because of the API-Football licence. A daily step collects Standard team cards into its own file, and new af_history rows carry the provider fixture_id. Both collectors sit behind off switches.",
+   "numbers": [
+    "0 extra API calls for the corners/cards quotes (PR #34)",
+    "17 Standard leagues for daily team cards, runs capped at 80 calls (PR #34)",
+    "replay: 272 fixtures answered, 137 with quotes (PR #34)"
+   ],
+   "where": "main (wowza-betting #34 and wowzaV9-Pro #1)",
+   "refs": [
+    {
+     "kind": "pr",
+     "id": "#34",
+     "branch": "feat/side-odds-cards"
+    },
+    {
+     "kind": "commit",
+     "id": "8d3f914fe",
+     "branch": "main"
+    },
+    {
+     "kind": "report",
+     "id": "reports/R_SIDE_DATA_TRUTH_LIVE_2026-11-16.md",
+     "branch": "research/side-models"
+    },
+    {
+     "kind": "pr",
+     "id": "#1",
+     "repo": "NevixAA/wowzaV9-Pro"
+    }
+   ]
+  },
+  {
+   "date": "2026-11-16",
+   "title": "Props data audit: provider gaps read as missing, memory fix",
+   "what_was_wrong": "Several props features read bad inputs: a drifting provider 'started' flag, unpublished provider counts read as 0, stale injury lists and raw shot counts whose definition changed. The props retrain also ran out of memory on the 16 GB runner.",
+   "what_changed": "Started now comes from the collected lineups, unpublished counts stay missing, injuries are rebuilt from fixture lists and shots are league-relative. New checks 7d-7g catch a recurrence, and the harness memory fix keeps the frame identical. Props stay paper; nothing was promoted.",
+   "numbers": [
+    "peak memory 17.3 GB -> 7.8 GB, identical frame (36f1609e3)",
+    "parity 0 features / 0 probabilities differ on 2,231 player-fixtures (36f1609e3)",
+    "9 set-piece features excluded from the active model (a0db73d61)",
+    "holdout 55,907 rows per market; clean schema not worse on any market (e18f541a5)",
+    "\"22 RED features\": not recorded in any commit, PR or committed report"
+   ],
+   "where": "branch fix/props-data-audit, not merged",
+   "refs": [
+    {
+     "kind": "commit",
+     "id": "5d5cefb23",
+     "branch": "fix/props-data-audit"
+    },
+    {
+     "kind": "commit",
+     "id": "af27fa808",
+     "branch": "fix/props-data-audit"
+    },
+    {
+     "kind": "commit",
+     "id": "22835e03a",
+     "branch": "fix/props-data-audit"
+    },
+    {
+     "kind": "commit",
+     "id": "c41165a49",
+     "branch": "fix/props-data-audit"
+    },
+    {
+     "kind": "commit",
+     "id": "36f1609e3",
+     "branch": "fix/props-data-audit"
+    },
+    {
+     "kind": "commit",
+     "id": "e18f541a5",
+     "branch": "fix/props-data-audit"
+    },
+    {
+     "kind": "report",
+     "id": "reports/UNSUPPORTED_FEATURES_REMOVED.md",
+     "branch": "fix/props-data-audit"
+    },
+    {
+     "kind": "report",
+     "id": "reports/CLEAN_MODEL_BACKTEST.md",
+     "branch": "fix/props-data-audit"
+    }
+   ]
+  },
+  {
+   "date": "2026-11-16",
+   "title": "CLV capture bridges to the next kickoff (Nov 14 incident)",
+   "what_was_wrong": "On 2026-11-14 a Standard capture run stopped before the 15:00 UTC slot and GitHub delivered no new run, so the week's largest slot got no closing observation and the CLV collection guard went red. Pre-match odds cannot be backfilled.",
+   "what_changed": "A capture run now stays alive to reach a later kickoff it can still catch (run cap 170 -> 220 minutes). The incident is recorded as acknowledged; the health file still reports the unfiltered figure and the 40% floor is unchanged.",
+   "numbers": [
+    "47 Standard fixtures / 375 CLV fixture-markets in the missed slot (c0dadfc14)",
+    "5 scheduled firings not delivered, 12:59-15:52 UTC (dbc858417)",
+    "replay: capture alive inside T-30m 72.8% -> 99.2% Standard, 66.8% -> 86.9% New-Format (c0dadfc14)",
+    "with the incident excluded: T-30m 64.8% on 159 fixture-markets; unfiltered 19.3% on 534 (dbc858417)"
+   ],
+   "where": "main",
+   "refs": [
+    {
+     "kind": "commit",
+     "id": "c0dadfc14",
+     "branch": "main"
+    },
+    {
+     "kind": "commit",
+     "id": "dbc858417",
+     "branch": "main"
+    }
+   ]
+  },
+  {
+   "date": "2026-11-16",
+   "title": "Empty lineup answers asked again",
+   "what_was_wrong": "An empty lineups answer from right after full time was saved as final, so lineups the provider filled in later stayed missing for good.",
+   "what_changed": "An empty answer is asked again at least 20 hours apart until kickoff date + 7 days, after new fixtures and inside the daily budget. Every answer is also kept in an append-only audit file.",
+   "numbers": [
+    "11 empty fixtures in league 43 and 15 in leagues 180, 183, 184 found (PR #32)",
+    "full suite 3227 passed (PR #32)"
+   ],
+   "where": "data-truth-100 (goes live 2026-11-21)",
+   "refs": [
+    {
+     "kind": "pr",
+     "id": "#32",
+     "branch": "fix/lineup-empty-retry"
+    },
+    {
+     "kind": "commit",
+     "id": "109e8f080",
+     "branch": "data-truth-100"
+    }
+   ]
+  },
+  {
+   "date": "2026-11-16",
+   "title": "Pro Standard Repair no longer crashes on a slice it cannot fit",
+   "what_was_wrong": "The scheduled Pro Standard Repair run (43917999786) crashed in its forensic audit. One backtest-archive row (Antwerp v Beerschot VA, 2024-09-29) sat in a football-data season, which left a cross-validation fold with only one class. The row was there because of the v9 duplicate-fixture tie (fixed in PR #38).",
+   "what_changed": "A slice that cannot be fitted (one class, too few minority rows or fewer than 100 rows) is skipped and reported with its reason; no class or AUC is invented. A missing AUC is no longer turned into 0.5: the verdict says NOT_TESTABLE. Integrity failures still fail the job.",
+   "numbers": [
+    "1 archive row in a football-data season caused the crash (Pro PR #3)",
+    "4 new tests; full Pro suite 420 passed, 0 failed (Pro PR #3)"
+   ],
+   "where": "main (wowzaV9-Pro)",
+   "refs": [
+    {
+     "kind": "pr",
+     "id": "#3",
+     "repo": "NevixAA/wowzaV9-Pro"
+    },
+    {
+     "kind": "commit",
+     "id": "a2d8caa12",
+     "repo": "NevixAA/wowzaV9-Pro",
+     "branch": "main"
+    },
+    {
+     "kind": "pr",
+     "id": "#38",
+     "branch": "fix/dedupe-source-tiebreak"
+    }
+   ]
+  },
+  {
+   "date": "2026-11-16",
+   "title": "All-data test: team info, league level, calibration and the bet-time market (research)",
+   "what_was_wrong": "Not a defect: an open question. The owner asked whether every collected input (injuries, lineups, xG, coach, transfers, fixture congestion), a league-level block and logit calibration make the team models better, on real data only.",
+   "what_changed": "Three runs on the pre-registered Nov 9/10 protocol (holdout 2026-04-01..2026-11-08, one Holm family per run). Nothing was promoted or refitted. The team-info block stays out of the Nov 19-20 refit.",
+   "numbers": [
+    "champion + team info: better than the champion in 0 comparisons, either track (comparison.csv, 0a648a6b4)",
+    "holdout: 0 candidates better than the champion in any of the 3 runs (comparison.csv, 0a648a6b4)",
+    "league level + logit calibration: better on New-Format O/U 2.5 and O/U 3.5 in walk-forward only (20,523 rows each), not on the holdout (comparison.csv, 0a648a6b4)",
+    "the bet-time market alone beats the champion in walk-forward on BTTS, O1.5, O2.5 and O3.5 on both tracks (comparison.csv, 0a648a6b4)",
+    "parity: 0 mismatched cells (65 dates, 1,311 rows; and 125 fixtures, 72 raw columns) (README, 0a648a6b4)"
+   ],
+   "where": "research only (branch feat/team-info-features, not merged)",
+   "refs": [
+    {
+     "kind": "commit",
+     "id": "0a648a6b4",
+     "branch": "feat/team-info-features"
+    },
+    {
+     "kind": "report",
+     "id": "reports/phase2_runs/team_info_evidence/README.md",
+     "branch": "feat/team-info-features"
+    }
+   ]
+  },
+  {
+   "date": "2026-11-16",
+   "title": "Combined models on verified data only (research)",
+   "what_was_wrong": "Not a defect: an open question. The owner asked whether any model gets a boost from the other models' data, using only 100% verified data.",
+   "what_changed": "A pre-registered study (COMBINED-MODELS-DEV-2) tested every target against every other model per league, with residual tests and stacks. Nothing changes in serving and nothing is promoted.",
+   "numbers": [
+    "1,679 per-league cells registered, 593 with enough data; 0 genuine cells survive Holm (R_COMBINED_MODELS_CLEAN_2026-11-16.md)",
+    "stacking: no per-league stack beats the recalibrated model alone after Holm; the largest pooled gain is about 0.003-0.005 log loss (R_COMBINED_MODELS_CLEAN_2026-11-16.md)",
+    "the 11-11 props side pattern was not caused by the two props bugs: pooled SoT +1.6 pp, CI +0.9 to +2.3, on 2026-04..10; not significant in any single league after Holm (R_COMBINED_MODELS_CLEAN_2026-11-16.md)"
+   ],
+   "where": "research only (branch research/combined-models-clean, not merged)",
+   "refs": [
+    {
+     "kind": "commit",
+     "id": "d0f7ef38b",
+     "branch": "research/combined-models-clean"
+    },
+    {
+     "kind": "report",
+     "id": "reports/R_COMBINED_MODELS_CLEAN_2026-11-16.md",
+     "branch": "research/combined-models-clean"
+    }
+   ]
+  },
+  {
+   "date": "2026-11-15",
+   "title": "Daily injuries and lineups collector",
+   "what_was_wrong": "Injuries and lineups were last collected on 2026-11-08, so newer matches read injuries and 'started' as missing.",
+   "what_changed": "A daily 05:17 UTC workflow collects new injuries and lineups with a fetch time on every row, under its own daily call cap. New rule Data truth 11 turns system health red when this data falls behind the matches being played.",
+   "numbers": [
+    "daily cap 1,500 calls; about 220 calls on an average day, about 400 on the busiest (PR #29)",
+    "11 offline tests (PR #29)"
+   ],
+   "where": "data-truth-100 (goes live 2026-11-21); workflow file also on main (PR #30)",
+   "refs": [
+    {
+     "kind": "pr",
+     "id": "#29",
+     "branch": "feat/daily-injuries-lineups"
+    },
+    {
+     "kind": "commit",
+     "id": "95619cff3",
+     "branch": "data-truth-100"
+    },
+    {
+     "kind": "commit",
+     "id": "aeaefd2e0",
+     "branch": "data-truth-100"
+    },
+    {
+     "kind": "pr",
+     "id": "#30",
+     "branch": "feat/daily-injuries-lineups-main"
+    },
+    {
+     "kind": "commit",
+     "id": "d78c1e43a",
+     "branch": "main"
+    }
+   ]
+  },
+  {
+   "date": "2026-11-15",
+   "title": "Real data only: team/fantasy provenance (8a/8b/8c); v9_repaired retired",
+   "what_was_wrong": "Live serving had drifted from training: provider season statistics overwrote six model features, home advantage used today's average, and duplicate fixtures got 0 rest days. The v9_repaired Standard model had learned xG and inside-box shots as 0.0 on every training row.",
+   "what_changed": "Serving now uses training's derivation and refuses payloads with invented inputs; a fixture with no core form gets no probability. A provenance registry adds Data truth 8a/8b/8c, fantasy invented values were removed, and v9_repaired is retired (file kept for audit).",
+   "numbers": [
+    "Standard O/U 2.5: 0 of 86 unsupported active features (REAL_DATA_FINAL_VERDICT.md)",
+    "New-Format O/U 2.5: 0 of 56 unsupported active features (REAL_DATA_FINAL_VERDICT.md)",
+    "all 7 active team payloads SAFE (PR #31)",
+    "8c: 7 registered historical exceptions (REAL_DATA_FINAL_VERDICT.md)",
+    "45 pipeline trace tests (PR #31)"
+   ],
+   "where": "data-truth-100 (goes live 2026-11-21)",
+   "refs": [
+    {
+     "kind": "pr",
+     "id": "#31",
+     "branch": "fix/real-data-provenance"
+    },
+    {
+     "kind": "commit",
+     "id": "0615abd20",
+     "branch": "data-truth-100"
+    },
+    {
+     "kind": "commit",
+     "id": "39f72c74f",
+     "branch": "data-truth-100"
+    },
+    {
+     "kind": "commit",
+     "id": "b41a8c009",
+     "branch": "data-truth-100"
+    },
+    {
+     "kind": "commit",
+     "id": "13ed94736",
+     "branch": "data-truth-100"
+    },
+    {
+     "kind": "report",
+     "id": "reports/REAL_DATA_FINAL_VERDICT.md",
+     "branch": "data-truth-100"
+    },
+    {
+     "kind": "report",
+     "id": "reports/REAL_DATA_FINAL_AUDIT.md",
+     "branch": "data-truth-100"
+    }
+   ]
+  },
+  {
+   "date": "2026-11-15",
+   "title": "Score conflicts settled by goal events; awarded matches excluded",
+   "what_was_wrong": "Football-data and API-Football disagreed on the score of 7 fixtures, and two history rows held a 3-0 forfeit instead of a played result.",
+   "what_changed": "Each conflict was settled from API-Football's goal events and applied for every source. Awarded results are removed from the history, and rule 5 turns red on any served score that differs from the provider's 90-minute score without a settled decision.",
+   "numbers": [
+    "7 score-conflict fixtures probed, 16 calls (55fac53ef)",
+    "3 scores corrected: UC Dublin v Drogheda, Antwerp v Beerschot, Dalian v Guangzhou R&F (55fac53ef)",
+    "2 awarded results excluded: Istanbulspor v Trabzonspor, Galatasaray v Adana Demirspor (8cc489874)",
+    "fd_history rows 64,816 -> 64,814 (8cc489874)"
+   ],
+   "where": "data-truth-100 (goes live 2026-11-21)",
+   "refs": [
+    {
+     "kind": "commit",
+     "id": "55fac53ef",
+     "branch": "data-truth-100"
+    },
+    {
+     "kind": "commit",
+     "id": "8cc489874",
+     "branch": "data-truth-100"
+    },
+    {
+     "kind": "commit",
+     "id": "bca7693fa",
+     "branch": "data-truth-100"
+    }
+   ]
+  },
+  {
+   "date": "2026-11-15",
+   "title": "COVID seasons left out of serving league averages",
+   "what_was_wrong": "Training drops the COVID seasons, but live serving averaged league goals and away goals over the full history, so attack/defence strengths and home advantage differed from what the models learned.",
+   "what_changed": "Serving league aggregates now exclude the COVID seasons, as every trainer does; team-level lookups keep the full history. The parity check was corrected, because it had the same skew on both sides and reported 0.",
+   "numbers": [
+    "up to 0.107 goals/game apart (Austrian Bundesliga) (e92b4602a)",
+    "before: 743 of 5,375 cells differed, probabilities up to 2.69 pp apart (e92b4602a)",
+    "after: 0 cells, 125/125 rows exact for every payload (e92b4602a)"
+   ],
+   "where": "data-truth-100 (goes live 2026-11-21)",
+   "refs": [
+    {
+     "kind": "commit",
+     "id": "e92b4602a",
+     "branch": "data-truth-100"
+    },
+    {
+     "kind": "commit",
+     "id": "364c66400",
+     "branch": "fix/serve-covid-league-avg"
+    }
+   ]
+  },
+  {
+   "date": "2026-11-15",
+   "title": "Props feature bugs fixed and clean retrain promoted",
+   "what_was_wrong": "A keeper's missing goals_conceded and a missing penalty_missed were read as 0, and team_goals_pg_roll was merged on the opponent instead of the player's own team.",
+   "what_changed": "Provider nulls stay missing and the team feature reads the right side. New gated rule Data truth 7 (7a-7c) checks this, and the clean retrain was promoted with code and models together.",
+   "numbers": [
+    "parity 0 differences on 6,316 rows (PR #25)",
+    "log loss within +/-0.0005 of the served run in every served market (PR #25)",
+    "full suite 3120 passed (PR #25)"
+   ],
+   "where": "data-truth-100 (goes live 2026-11-21)",
+   "refs": [
+    {
+     "kind": "pr",
+     "id": "#25",
+     "branch": "fix/props-feature-bugs"
+    },
+    {
+     "kind": "commit",
+     "id": "f5fb6fe2d",
+     "branch": "data-truth-100"
+    },
+    {
+     "kind": "commit",
+     "id": "6fd794964",
+     "branch": "data-truth-100"
+    },
+    {
+     "kind": "commit",
+     "id": "89ee9d8ab",
+     "branch": "data-truth-100"
+    }
+   ]
+  },
+  {
+   "date": "2026-11-11",
+   "title": "Ledger certification findings corrected beside the ledgers (rule 6)",
+   "what_was_wrong": "The live ledgers held fixtures with several or opposite tips, tips logged after kickoff, duplicate player tips and fixtures logged twice in the v91 shadow.",
+   "what_changed": "Correction files beside the ledgers flag or exclude these rows; no ledger row is rewritten. Data truth 6 (clean ledgers) turns red on any recurrence from the Clean Record start.",
+   "numbers": [
+    "67 fixtures with more than one live row (139 rows), 38 with opposite O/U tips (2d2c0e101)",
+    "6 tips generated after kickoff excluded (2d2c0e101)",
+    "1,695 later duplicate player-tip copies excluded (2d2c0e101)",
+    "9 v91 shadow fixtures logged on two dates (2d2c0e101)"
+   ],
+   "where": "data-truth-100 (goes live 2026-11-21)",
+   "refs": [
+    {
+     "kind": "commit",
+     "id": "2d2c0e101",
+     "branch": "data-truth-100"
+    }
+   ]
+  },
+  {
+   "date": "2026-11-11",
+   "title": "History supplement: missing finished-season fixtures added, cup ties refused",
+   "what_was_wrong": "The served history lacked provider fixtures from finished seasons, and the first supplement also carried cup and knockout ties.",
+   "what_changed": "Missing league fixtures were added from API-Football with 90-minute scores and no copied statistics. A fixture is now kept only when the provider labels it a league round.",
+   "numbers": [
+    "598 provider fixtures added at first (cd05bf898), 608 after the Edinburgh alias (2e6e6e745)",
+    "437 cup / knockout ties refused by round label; supplement 608 -> 171 rows (ba0f96eb5)",
+    "served history 71,618 -> 71,181 rows (ba0f96eb5)"
+   ],
+   "where": "data-truth-100 (goes live 2026-11-21)",
+   "refs": [
+    {
+     "kind": "commit",
+     "id": "cd05bf898",
+     "branch": "data-truth-100"
+    },
+    {
+     "kind": "commit",
+     "id": "2e6e6e745",
+     "branch": "data-truth-100"
+    },
+    {
+     "kind": "commit",
+     "id": "ba0f96eb5",
+     "branch": "data-truth-100"
+    }
+   ]
+  },
+  {
+   "date": "2026-11-10",
+   "title": "One provider fixture, one history row; China cancelled games out",
+   "what_was_wrong": "A China Super League match was stored twice because both clubs had been renamed, and two China 3-0s from 2022-12-23 were awarded results for cancelled games, not played matches.",
+   "what_changed": "Rule 5 now also turns red when two served rows claim the same provider fixture. The two cancelled games are excluded as not played, and 3 China club aliases were proven.",
+   "numbers": [
+    "served history 0 duplicates (71,013 rows) (7682c35c8)",
+    "2 cancelled China fixtures excluded (3eae41455)",
+    "China proven aliases 13 -> 16 (3eae41455)"
+   ],
+   "where": "data-truth-100 (goes live 2026-11-21)",
+   "refs": [
+    {
+     "kind": "commit",
+     "id": "7682c35c8",
+     "branch": "data-truth-100"
+    },
+    {
+     "kind": "commit",
+     "id": "3eae41455",
+     "branch": "data-truth-100"
+    }
+   ]
+  },
+  {
+   "date": "2026-11-07",
+   "title": "Fix rounds 14-17: provider dates, af_history duplicates, every reader corrected",
+   "what_was_wrong": "Some matches were stored one day off the provider date or twice on adjacent days, and several readers read the raw history without the loader's corrections, so edge replay missed matches.",
+   "what_changed": "The provider's date is used for proven one-day-off rows, proven af_history duplicates are removed beside the file, every direct history reader applies the loader's corrections, and replay settles by proven club identity.",
+   "numbers": [
+    "352 rows re-dated, 0 refused (f8446d781)",
+    "1,336 af_history duplicate pairs proven, 0 conflicts; 1,338 copies removed (64a7c2e7f)",
+    "replay entries settled 3,295 -> 3,944 of 4,467, 0 lost, 0 score changes (bb7af49e0)"
+   ],
+   "where": "data-truth-100 (goes live 2026-11-21)",
+   "refs": [
+    {
+     "kind": "commit",
+     "id": "64a7c2e7f",
+     "branch": "data-truth-100"
+    },
+    {
+     "kind": "commit",
+     "id": "f8446d781",
+     "branch": "data-truth-100"
+    },
+    {
+     "kind": "commit",
+     "id": "fba854ae8",
+     "branch": "data-truth-100"
+    },
+    {
+     "kind": "commit",
+     "id": "bb7af49e0",
+     "branch": "data-truth-100"
+    }
+   ]
+  },
+  {
+   "date": "2026-11-07",
+   "title": "Fix rounds 12-13: club names and the UTC day",
+   "what_was_wrong": "Board club names did not reach the renamed history (for example 'Stockport County FC'), leaving fixtures with no form. Between local midnight and UTC midnight the notifier dropped the whole UTC day's tips as already played.",
+   "what_changed": "Board names resolve through the applied identity map, proven identities only. Every site that decides a day now uses the UTC day; the notifier port reached main on 2026-11-16.",
+   "numbers": [],
+   "where": "data-truth-100 (goes live 2026-11-21); UTC-day notifier port also on main (936c80b9d)",
+   "refs": [
+    {
+     "kind": "commit",
+     "id": "5291760cd",
+     "branch": "data-truth-100"
+    },
+    {
+     "kind": "commit",
+     "id": "c7aa0beb3",
+     "branch": "data-truth-100"
+    },
+    {
+     "kind": "commit",
+     "id": "936c80b9d",
+     "branch": "main"
+    }
+   ]
+  },
+  {
+   "date": "2026-11-04",
+   "title": "Fix rounds 7-10: history duplicates, 90-minute scores, write-back values out",
+   "what_was_wrong": "Some matches were filed twice on two dates, a few extra-time results stored the after-extra-time score, and the loader served statistics it had written back itself. Settlement had its own null rule for player counts.",
+   "what_changed": "Proven duplicates are removed, results use the 90-minute score, and score disagreements that cannot be proven are refused and listed. Written-back af_history values are no longer served or written, and settlement uses the shared null rule.",
+   "numbers": [
+    "599 matches filed twice removed, 0 conflicts (f9ed94d72)",
+    "4 extra-time rows corrected to the 90-minute score (9347f0d76)",
+    "8 score disagreements listed as unidentifiable, never applied (9347f0d76)",
+    "1,971 past-due rows re-graded on 2026-11-04 (2bd50741b)"
+   ],
+   "where": "data-truth-100 (goes live 2026-11-21)",
+   "refs": [
+    {
+     "kind": "commit",
+     "id": "f9ed94d72",
+     "branch": "data-truth-100"
+    },
+    {
+     "kind": "commit",
+     "id": "9347f0d76",
+     "branch": "data-truth-100"
+    },
+    {
+     "kind": "commit",
+     "id": "b0bafe937",
+     "branch": "data-truth-100"
+    },
+    {
+     "kind": "commit",
+     "id": "2bd50741b",
+     "branch": "data-truth-100"
+    }
+   ]
+  },
+  {
+   "date": "2026-11-02",
+   "title": "Settlement fixes: 90 minutes, 48h reschedule void, restored ledger rows",
+   "what_was_wrong": "Team ledgers could settle on extra-time scores, rescheduled matches were not voided by a clear rule, and bot commits had lost player ledger rows.",
+   "what_changed": "Team ledgers settle on 90 minutes, a match rescheduled beyond 48 hours is void, and one card rule applies everywhere. Corrections and restored rows are kept beside the ledgers.",
+   "numbers": [
+    "111 player_ledger rows lost in 6 bot commits restored (85daf1fd1)",
+    "36 card rows regraded (85daf1fd1)"
+   ],
+   "where": "data-truth-100 (goes live 2026-11-21)",
+   "refs": [
+    {
+     "kind": "commit",
+     "id": "290583f4e",
+     "branch": "data-truth-100"
+    },
+    {
+     "kind": "commit",
+     "id": "85daf1fd1",
+     "branch": "data-truth-100"
+    },
+    {
+     "kind": "commit",
+     "id": "a34ff1f9c",
+     "branch": "data-truth-100"
+    }
+   ]
+  },
+  {
+   "date": "2026-11-01",
+   "title": "Props wrongly voided as 'did not play' regraded; backtest rows out of the record",
+   "what_was_wrong": "The props settler matched players by name guess, so players who played were voided as 'did not play'. The production ledger also held old backtest rows that were never real tips.",
+   "what_changed": "Settlement matches players by id, and the false voids were regraded with the settler's own rules. The ledger now accepts live tips only.",
+   "numbers": [
+    "4,334 of 10,687 'DNP' voids were players who played; 1,451 WIN / 2,883 LOSS (34267dd25)",
+    "4,115 stale backtest rows removed; 1,819 live tips remain (7709b9221)"
+   ],
+   "where": "main",
+   "refs": [
+    {
+     "kind": "commit",
+     "id": "a8a0e6ec1",
+     "branch": "main"
+    },
+    {
+     "kind": "commit",
+     "id": "34267dd25",
+     "branch": "main"
+    },
+    {
+     "kind": "commit",
+     "id": "7709b9221",
+     "branch": "main"
+    }
+   ]
+  },
+  {
+   "date": "2026-11-01",
+   "title": "Data Truth 100 program and the stoplight gate",
+   "what_was_wrong": "An A-to-Z audit found wrong names, invented defaults, missing data and misfiled leagues across the code and data, with nothing to stop them coming back.",
+   "what_changed": "The audit findings were fixed and the owner's rules became RED/AMBER/GREEN checks. `python -m src.integrity.data_truth --gate` blocks a push when a gated rule is red or the known-defaults ceiling rises, and scheduled retrain/backtest workflows stay off until the milestone closes.",
+   "numbers": [
+    "audit: 399 code sites in 5 repos, 7,702 data files profiled (729e25adc)",
+    "Data Truth register: 55 of 56 findings fixed with commits (fc1f9dc79)",
+    "known-defaults ceiling 39 -> 35 on main (038153bcb); 35 -> 0 on data-truth-100 (0704142d9)"
+   ],
+   "rules": [
+    {
+     "rule": "1",
+     "name": "one canonical name",
+     "checks": "Every league value in boards, ledgers, player tips and history banks is a registry league.",
+     "gated": true
+    },
+    {
+     "rule": "2",
+     "name": "no silent defaults",
+     "checks": "No new invented default (literal fills, season fallbacks, 'or 0', price fills) in any production code.",
+     "gated": true
+    },
+    {
+     "rule": "3",
+     "name": "no missing data",
+     "checks": "The live board is priced and every served model track has all its inputs; banks are fresh.",
+     "gated": false
+    },
+    {
+     "rule": "4",
+     "name": "right league relations",
+     "checks": "No misfiled league rows in the banks, the registry validates, joins are league-keyed.",
+     "gated": true
+    },
+    {
+     "rule": "5",
+     "name": "one match, one row",
+     "checks": "No match stored twice and no provider fixture claimed by two served rows; served scores match the provider's 90-minute score.",
+     "gated": true
+    },
+    {
+     "rule": "6 (9 on prep/bars-oddsapi-hist)",
+     "name": "clean ledgers",
+     "checks": "From the Clean Record start: no multi or opposite tips, post-kickoff tips, invalid closes, duplicate player tips or twice-logged fixtures.",
+     "gated": false
+    },
+    {
+     "rule": "7 (10 on prep/bars-oddsapi-hist)",
+     "name": "props features",
+     "checks": "Keeper goals conceded match the score, team features read the right side, provider nulls stay missing (7d-7g drift checks on fix/props-data-audit).",
+     "gated": true
+    },
+    {
+     "rule": "8a / 8b / 8c",
+     "name": "real data only",
+     "checks": "8a active production violations, 8b new provenance violations (gated), 8c registered historical exceptions.",
+     "gated": "8b only"
+    },
+    {
+     "rule": "6 on prep/bars-oddsapi-hist",
+     "name": "no global bars in serving",
+     "checks": "No serving module reads a global or hand-set tier bar; tiers come only from each league's own approved bars.",
+     "gated": true
+    },
+    {
+     "rule": "7 on prep/bars-oddsapi-hist",
+     "name": "no retired tiers on future tips",
+     "checks": "No tip or stake record from the retirement date carries SNIPER / MARKSMAN / VALUABLE or a tier multiplier other than 1.",
+     "gated": true
+    },
+    {
+     "rule": "8 on prep/bars-oddsapi-hist",
+     "name": "bars rest on bet-time prices only",
+     "checks": "No approved bar rests on a price not proven captured before kickoff, and closing prices are never read as bet prices.",
+     "gated": true
+    },
+    {
+     "rule": "11",
+     "name": "injuries/lineups freshness",
+     "checks": "Collected injuries and lineups keep up with the matches played in each registry league.",
+     "gated": false
+    }
+   ],
+   "rules_note": "Rule numbers differ between branches until the go-live merge: on data-truth-100, 6 = clean ledgers, 7 = props features, 8a-8c = real data only; on prep/bars-oddsapi-hist, 6-8 are the bars rules, 9 = clean ledgers, 10 = props features. How 8 and 8a-8c are numbered after the merge is not recorded. main still runs rules 1-4, with 1, 2 and 4 gated.",
+   "where": "main (rules 1-4) + data-truth-100 (goes live 2026-11-21) (rules 1-8c, 11)",
+   "refs": [
+    {
+     "kind": "commit",
+     "id": "422a3e142",
+     "branch": "main"
+    },
+    {
+     "kind": "commit",
+     "id": "b2fcf64ee",
+     "branch": "main"
+    },
+    {
+     "kind": "commit",
+     "id": "b927bc20b",
+     "branch": "main"
+    },
+    {
+     "kind": "commit",
+     "id": "038153bcb",
+     "branch": "main"
+    },
+    {
+     "kind": "commit",
+     "id": "729e25adc",
+     "branch": "main"
+    },
+    {
+     "kind": "commit",
+     "id": "fc1f9dc79",
+     "branch": "main"
+    },
+    {
+     "kind": "commit",
+     "id": "0704142d9",
+     "branch": "data-truth-100"
+    },
+    {
+     "kind": "commit",
+     "id": "aeaefd2e0",
+     "branch": "data-truth-100"
+    },
+    {
+     "kind": "report",
+     "id": "src/integrity/data_truth.py",
+     "branch": "data-truth-100"
+    },
+    {
+     "kind": "report",
+     "id": "docs/DATA_TRUTH_PROGRAM.md",
+     "branch": "main"
+    }
+   ]
+  }
+ ],
+ "about": "Data-truth repairs, newest first. Every number is copied from the cited commit, PR or report; 'not recorded' where no committed source holds it. Built 2026-11-17 from repo history (main and data-truth-100 refs below)."
+}
