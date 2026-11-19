@@ -1,7 +1,7 @@
 {
   "artifact": "model_integrity_health",
   "version": "model-integrity-health-0.1",
-  "generated_at": "2026-11-19T13:40:44Z",
+  "generated_at": "2026-11-19T17:31:20Z",
   "status": "FAIL",
   "inputs_present": {
     "feature_parity_health": true,
@@ -18,13 +18,13 @@
       "model_type": "standard",
       "market": "OU25",
       "payload": "model_v9_standard.pkl",
-      "payload_sha256_16": "50a974bb83a88fc5",
+      "payload_sha256_16": "67ee36668c21109d",
       "recipe": "std_v9_repaired",
       "model_recipe_version": "r2-repaired-1.0",
-      "serving_version": "standard_20261118T172020Z_50a974bb",
+      "serving_version": "standard_20261119T134019Z_67ee3666",
       "training_cutoff": "2026-11-01",
-      "code_sha": "17ac8b7c2f3b",
-      "data_hash": "5cc04f65fff4c470",
+      "code_sha": "ee4633c1133c",
+      "data_hash": "823d465eeb05f5a0",
       "identity_version": null,
       "feature_recipe_version": null,
       "imputer_version": "v9-train-only-imputer-1.1",
@@ -35,23 +35,23 @@
         "status": "PASS",
         "blocks": {
           "base": {
-            "rows": 25298,
+            "rows": 39523,
             "dates": [
-              "2021-07-30",
-              "2025-10-10"
+              "2016-08-05",
+              "2025-02-13"
             ]
           },
           "calibration": {
-            "rows": 3120,
+            "rows": 4917,
             "dates": [
-              "2025-10-11",
-              "2026-03-13"
+              "2025-02-14",
+              "2025-12-20"
             ]
           },
           "meta": {
-            "rows": 3224,
+            "rows": 4967,
             "dates": [
-              "2026-03-14",
+              "2025-12-21",
               "2026-11-01"
             ]
           },
@@ -67,8 +67,8 @@
       "parity": {
         "status": "WARN",
         "counts": {
-          "PASS": 27,
-          "WARN": 14,
+          "PASS": 28,
+          "WARN": 13,
           "FAIL": 0
         },
         "fail_features": []
@@ -116,7 +116,7 @@
       "model_recipe_version": "r2-repaired-1.0",
       "serving_version": "newformat_20261118T172020Z_303c9a05",
       "training_cutoff": "2026-11-01",
-      "code_sha": "17ac8b7c2f3b",
+      "code_sha": "ee4633c1133c",
       "data_hash": "25ea42fe32607275",
       "identity_version": null,
       "feature_recipe_version": null,
@@ -207,13 +207,13 @@
       "model_type": "standard",
       "market": "BTTS",
       "payload": "model_v9_btts.pkl",
-      "payload_sha256_16": "a8ddb87e86078fda",
+      "payload_sha256_16": "44c670490d5101c1",
       "recipe": "side_v9_repaired",
       "model_recipe_version": "r2-repaired-1.0",
-      "serving_version": "btts_20261118T172022Z_a8ddb87e",
+      "serving_version": "btts_20261119T134019Z_44c67049",
       "training_cutoff": "2026-11-01",
-      "code_sha": "17ac8b7c2f3b",
-      "data_hash": "963cf904f5b38b39",
+      "code_sha": "ee4633c1133c",
+      "data_hash": "0c4cdc31d41d19f0",
       "identity_version": null,
       "feature_recipe_version": null,
       "imputer_version": "v9-train-only-imputer-1.1",
@@ -224,23 +224,23 @@
         "status": "PASS",
         "blocks": {
           "base": {
-            "rows": 25298,
+            "rows": 39523,
             "dates": [
-              "2021-07-30",
-              "2025-10-10"
+              "2016-08-05",
+              "2025-02-13"
             ]
           },
           "calibration": {
-            "rows": 3120,
+            "rows": 4917,
             "dates": [
-              "2025-10-11",
-              "2026-03-13"
+              "2025-02-14",
+              "2025-12-20"
             ]
           },
           "meta": {
-            "rows": 3224,
+            "rows": 4967,
             "dates": [
-              "2026-03-14",
+              "2025-12-21",
               "2026-11-01"
             ]
           },
@@ -256,8 +256,8 @@
       "parity": {
         "status": "FAIL",
         "counts": {
-          "PASS": 61,
-          "WARN": 23,
+          "PASS": 62,
+          "WARN": 22,
           "FAIL": 2
         },
         "fail_features": [
@@ -311,12 +311,12 @@
       "model_type": "new_format",
       "market": "BTTS",
       "payload": "model_v9_btts.pkl",
-      "payload_sha256_16": "a8ddb87e86078fda",
+      "payload_sha256_16": "44c670490d5101c1",
       "recipe": "side_v9_repaired",
       "model_recipe_version": "r2-repaired-1.0",
-      "serving_version": "btts_20261118T172022Z_a8ddb87e",
+      "serving_version": "btts_20261119T134019Z_44c67049",
       "training_cutoff": "2026-11-01",
-      "code_sha": "17ac8b7c2f3b",
+      "code_sha": "ee4633c1133c",
       "data_hash": "d3f6d80a374fc72d",
       "identity_version": null,
       "feature_recipe_version": null,
@@ -415,13 +415,13 @@
       "model_type": "standard",
       "market": "OU15",
       "payload": "model_v9_over15.pkl",
-      "payload_sha256_16": "2e70abf10adfa403",
+      "payload_sha256_16": "ca01b7d3a4f6fcae",
       "recipe": "side_v9_repaired",
       "model_recipe_version": "r2-repaired-1.0",
-      "serving_version": "over15_20261118T172023Z_2e70abf1",
+      "serving_version": "over15_20261119T134019Z_ca01b7d3",
       "training_cutoff": "2026-11-01",
-      "code_sha": "17ac8b7c2f3b",
-      "data_hash": "2e8ccf47ab3251ab",
+      "code_sha": "ee4633c1133c",
+      "data_hash": "23839609719fc515",
       "identity_version": null,
       "feature_recipe_version": null,
       "imputer_version": "v9-train-only-imputer-1.1",
@@ -432,23 +432,23 @@
         "status": "PASS",
         "blocks": {
           "base": {
-            "rows": 25298,
+            "rows": 39523,
             "dates": [
-              "2021-07-30",
-              "2025-10-10"
+              "2016-08-05",
+              "2025-02-13"
             ]
           },
           "calibration": {
-            "rows": 3120,
+            "rows": 4917,
             "dates": [
-              "2025-10-11",
-              "2026-03-13"
+              "2025-02-14",
+              "2025-12-20"
             ]
           },
           "meta": {
-            "rows": 3224,
+            "rows": 4967,
             "dates": [
-              "2026-03-14",
+              "2025-12-21",
               "2026-11-01"
             ]
           },
@@ -464,8 +464,8 @@
       "parity": {
         "status": "FAIL",
         "counts": {
-          "PASS": 61,
-          "WARN": 23,
+          "PASS": 62,
+          "WARN": 22,
           "FAIL": 2
         },
         "fail_features": [
@@ -519,12 +519,12 @@
       "model_type": "new_format",
       "market": "OU15",
       "payload": "model_v9_over15.pkl",
-      "payload_sha256_16": "2e70abf10adfa403",
+      "payload_sha256_16": "ca01b7d3a4f6fcae",
       "recipe": "side_v9_repaired",
       "model_recipe_version": "r2-repaired-1.0",
-      "serving_version": "over15_20261118T172023Z_2e70abf1",
+      "serving_version": "over15_20261119T134019Z_ca01b7d3",
       "training_cutoff": "2026-11-01",
-      "code_sha": "17ac8b7c2f3b",
+      "code_sha": "ee4633c1133c",
       "data_hash": "33bacb811e7f56e8",
       "identity_version": null,
       "feature_recipe_version": null,
@@ -623,13 +623,13 @@
       "model_type": "standard",
       "market": "OU35",
       "payload": "model_v9_over35.pkl",
-      "payload_sha256_16": "0331cee9ec14ef62",
+      "payload_sha256_16": "e8b12d74f1b0d51a",
       "recipe": "side_v9_repaired",
       "model_recipe_version": "r2-repaired-1.0",
-      "serving_version": "over35_20261118T172024Z_0331cee9",
+      "serving_version": "over35_20261119T134019Z_e8b12d74",
       "training_cutoff": "2026-11-01",
-      "code_sha": "17ac8b7c2f3b",
-      "data_hash": "ae434abf60d9d4b8",
+      "code_sha": "ee4633c1133c",
+      "data_hash": "054d6a550c7bd908",
       "identity_version": null,
       "feature_recipe_version": null,
       "imputer_version": "v9-train-only-imputer-1.1",
@@ -640,23 +640,23 @@
         "status": "PASS",
         "blocks": {
           "base": {
-            "rows": 25298,
+            "rows": 39523,
             "dates": [
-              "2021-07-30",
-              "2025-10-10"
+              "2016-08-05",
+              "2025-02-13"
             ]
           },
           "calibration": {
-            "rows": 3120,
+            "rows": 4917,
             "dates": [
-              "2025-10-11",
-              "2026-03-13"
+              "2025-02-14",
+              "2025-12-20"
             ]
           },
           "meta": {
-            "rows": 3224,
+            "rows": 4967,
             "dates": [
-              "2026-03-14",
+              "2025-12-21",
               "2026-11-01"
             ]
           },
@@ -672,8 +672,8 @@
       "parity": {
         "status": "FAIL",
         "counts": {
-          "PASS": 61,
-          "WARN": 23,
+          "PASS": 62,
+          "WARN": 22,
           "FAIL": 2
         },
         "fail_features": [
@@ -727,12 +727,12 @@
       "model_type": "new_format",
       "market": "OU35",
       "payload": "model_v9_over35.pkl",
-      "payload_sha256_16": "0331cee9ec14ef62",
+      "payload_sha256_16": "e8b12d74f1b0d51a",
       "recipe": "side_v9_repaired",
       "model_recipe_version": "r2-repaired-1.0",
-      "serving_version": "over35_20261118T172024Z_0331cee9",
+      "serving_version": "over35_20261119T134019Z_e8b12d74",
       "training_cutoff": "2026-11-01",
-      "code_sha": "17ac8b7c2f3b",
+      "code_sha": "ee4633c1133c",
       "data_hash": "bfe9e3425792535e",
       "identity_version": null,
       "feature_recipe_version": null,
@@ -831,13 +831,13 @@
       "model_type": "standard",
       "market": "HT_O05",
       "payload": "model_ht_over05.pkl",
-      "payload_sha256_16": "656464066143e0fe",
+      "payload_sha256_16": "5a76d680e2fc53d6",
       "recipe": "ht_v9_repaired",
       "model_recipe_version": "r2-repaired-1.0",
-      "serving_version": "ht_over05_20261118T172021Z_65646406",
+      "serving_version": "ht_over05_20261119T134019Z_5a76d680",
       "training_cutoff": "2026-11-01",
-      "code_sha": "17ac8b7c2f3b",
-      "data_hash": "5081149789e3c47e",
+      "code_sha": "ee4633c1133c",
+      "data_hash": "17be13b413bd7a0e",
       "identity_version": null,
       "feature_recipe_version": null,
       "imputer_version": "v9-train-only-imputer-1.1",
@@ -848,23 +848,23 @@
         "status": "PASS",
         "blocks": {
           "base": {
-            "rows": 15840,
+            "rows": 39400,
             "dates": [
-              "2022-04-23",
-              "2026-02-08"
+              "2016-08-05",
+              "2025-02-10"
             ]
           },
           "calibration": {
-            "rows": 1964,
+            "rows": 4919,
             "dates": [
-              "2026-02-09",
-              "2026-05-02"
+              "2025-02-11",
+              "2025-12-20"
             ]
           },
           "meta": {
-            "rows": 2002,
+            "rows": 4937,
             "dates": [
-              "2026-05-03",
+              "2025-12-21",
               "2026-11-01"
             ]
           },
@@ -880,8 +880,8 @@
       "parity": {
         "status": "FAIL",
         "counts": {
-          "PASS": 61,
-          "WARN": 23,
+          "PASS": 62,
+          "WARN": 22,
           "FAIL": 2
         },
         "fail_features": [
@@ -928,13 +928,13 @@
       "model_type": "standard",
       "market": "HT_O15",
       "payload": "model_ht_over15.pkl",
-      "payload_sha256_16": "5365d223ab1e0f7c",
+      "payload_sha256_16": "e9a12ce1b6af077f",
       "recipe": "ht_v9_repaired",
       "model_recipe_version": "r2-repaired-1.0",
-      "serving_version": "ht_over15_20261118T172021Z_5365d223",
+      "serving_version": "ht_over15_20261119T134019Z_e9a12ce1",
       "training_cutoff": "2026-11-01",
-      "code_sha": "17ac8b7c2f3b",
-      "data_hash": "4d16c5bb898fecd1",
+      "code_sha": "ee4633c1133c",
+      "data_hash": "1c02282b9a293157",
       "identity_version": null,
       "feature_recipe_version": null,
       "imputer_version": "v9-train-only-imputer-1.1",
@@ -945,23 +945,23 @@
         "status": "PASS",
         "blocks": {
           "base": {
-            "rows": 15840,
+            "rows": 39400,
             "dates": [
-              "2022-04-23",
-              "2026-02-08"
+              "2016-08-05",
+              "2025-02-10"
             ]
           },
           "calibration": {
-            "rows": 1964,
+            "rows": 4919,
             "dates": [
-              "2026-02-09",
-              "2026-05-02"
+              "2025-02-11",
+              "2025-12-20"
             ]
           },
           "meta": {
-            "rows": 2002,
+            "rows": 4937,
             "dates": [
-              "2026-05-03",
+              "2025-12-21",
               "2026-11-01"
             ]
           },
@@ -977,8 +977,8 @@
       "parity": {
         "status": "FAIL",
         "counts": {
-          "PASS": 61,
-          "WARN": 23,
+          "PASS": 62,
+          "WARN": 22,
           "FAIL": 2
         },
         "fail_features": [
