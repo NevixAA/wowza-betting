@@ -81,8 +81,13 @@ def test_markets_config_is_unique_and_side_markets_are_their_own_entries():
     # challengers predict into the ledger beside it
     for mk in ("goals2", "goals3", "sot3", "sot4"):
         assert (V.CHALLENGER_MODEL_ID, mk) in v9
-    pending = {e["market"] for e in m["entries"] if e["status"] == "pending_model"}
-    assert {"corners_total", "corners_team", "cards_total", "cards_team"} <= pending
+    # corners / cards: active since the side models went live (src/side_models/, owner "make it work");
+    # the New-Format HT entries stay registered pending_model (no served payload yet)
+    for mid, mk in (("v9_corners", "corners_total"), ("v9_corners", "corners_team"),
+                    ("v9_cards", "cards_total"), ("v9_cards", "cards_team")):
+        assert (mid, mk) in v9
+    pending = {(e["model_id"], e["market"]) for e in m["entries"] if e["status"] == "pending_model"}
+    assert {("v9_new_format", "ht_ou05"), ("v9_new_format", "ht_ou15")} <= pending
     pro = {e["market"] for e in m["entries"] if e["repo"] == "pro"}
     assert {"1x2", "correct_score", "goals_exact_0", "goals_le1", "goals_ge6", "combo"} <= pro
 
@@ -119,7 +124,7 @@ def test_first_write_wins_and_repeats_are_counted(tmp_path):
 
 def test_refusals(tmp_path):
     rows = [_row(league="Atlantis League"),                               # unknown league
-            _row(model_id="v9_corners", market="corners_total", line=9.5),  # pending model: no rows
+            _row(model_id="v9_new_format", market="ht_ou05", line=0.5),   # pending model: no rows
             _row(fixture_ref=""),                                          # no fixture identity
             _row(predicted_at="2026-11-21T15:00:00Z"),                     # at kickoff: not pre-kickoff
             _row(season="")]
@@ -189,9 +194,9 @@ def test_validator_fails_on_price_column_and_pending_rows(tmp_path):
     d.to_csv(p, index=False)
     assert any("price-like column" in i for i in PL.validate(tmp_path))
     shutil.rmtree(tmp_path / "v9")
-    r2 = dict(_row(model_id="v9_corners", market="corners_total", selection="OVER", line=9.5),
+    r2 = dict(_row(model_id="v9_new_format", market="ht_ou05", selection="OVER", line=0.5),
               league_slug="championship")
-    _write(tmp_path, [r2], rel="v9/v9_corners/corners_total/championship/2026.csv")
+    _write(tmp_path, [r2], rel="v9/v9_new_format/ht_ou05/championship/2026.csv")
     assert any("pending_model" in i for i in PL.validate(tmp_path))
 
 
@@ -402,6 +407,27 @@ def test_registry_lists_pending_and_counts(tmp_path):
     by = {(m["repo"], m["model_id"], m["market"]): m for m in reg["models"]}
     assert by[("v9", "v9_standard", "ou25")]["rows"] == 1
     assert by[("v9", "v9_standard", "ou25")]["leagues"]["championship"]["predicted"] == 1
-    assert by[("v9", "v9_corners", "corners_total")]["status"] == "pending_model"
-    assert by[("v9", "v9_corners", "corners_total")]["rows"] == 0
+    assert by[("v9", "v9_new_format", "ht_ou05")]["status"] == "pending_model"
+    assert by[("v9", "v9_new_format", "ht_ou05")]["rows"] == 0
+    assert by[("v9", "v9_corners", "corners_total")]["status"] == "active"
     json.dumps(reg)
+
+
+def test_v9_settle_skips_side_model_partitions(tmp_path, monkeypatch):
+    """v9_corners / v9_cards settle from match statistics (src/side_models/ledger.py settle, which runs
+    after this step); the goals settle must never write their settled view."""
+    root, sroot = tmp_path / "L", tmp_path / "S"
+    PL.append([_row()], repo="v9", writer="t", root=root, now=NOW)
+    side = _row(model_id="v9_corners", market="corners_total", line=9.5)
+    PL.append([side], repo="v9", writer="t", root=root, now=NOW)
+    parts = {PL.parse_partition(root, p)["model_id"]: p for p in PL.partitions(root)}
+    assert set(parts) == {"v9_standard", "v9_corners"}
+
+    class _T:
+        def find(self, *a):
+            return {"home_goals": 3, "away_goals": 1, "src": "football-data"}
+    monkeypatch.setattr(V, "TeamResults", lambda: _T())
+    st = V.settle(root=root, settled_root=sroot, now=datetime(2026, 11, 26, tzinfo=timezone.utc), force=True)
+    assert st["partitions"] == 1 and st["settled"] == 1
+    assert PL.settled_path(sroot, root, parts["v9_standard"]).exists()
+    assert not PL.settled_path(sroot, root, parts["v9_corners"]).exists()

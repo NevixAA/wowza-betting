@@ -1,0 +1,24 @@
+{
+ "generated_at": "2026-11-19T20:53:51Z",
+ "label": "PAPER/RESEARCH",
+ "status": "NOT_RUN: statistics not frozen (no record in the freeze ledger)",
+ "protocol_sha256": "5b35327fdd2353e4ecdad4c56e713f1593f16df0ba5920e8aa9a457fcc639f73",
+ "start_utc": "2026-11-21T00:00:00Z",
+ "note": "PAPER/RESEARCH: flat 1 unit, never staked, never published. R3 is the live TOP-3 (its own ledger); evaluation dates and test in the protocol file.",
+ "tracks": {
+  "R3_CAL_EV_LCB": {
+   "picks": 0,
+   "settled": 0,
+   "won": 0,
+   "flat_pnl_units": 0.0,
+   "roi": null,
+   "ci95": [
+    null,
+    null
+   ],
+   "no_stat_picks": 0,
+   "rank_basis": {},
+   "reached_min_picks": false
+  }
+ }
+}

@@ -454,6 +454,9 @@ class PropsResults:
 #: VOID for that snapshot (the opinion was about a different match day).
 RESCHEDULE_VOID_H = 48
 
+#: Model ids settled by src/side_models/ledger.py (match statistics), never by settle() below.
+SIDE_MODEL_IDS = ("v9_corners", "v9_cards")
+
 
 def latest_kickoffs(root: Path) -> dict:
     """{fixture_ref: kickoff of its most recent snapshot} over every v9 partition (reschedules)."""
@@ -539,9 +542,16 @@ def settle(*, root: Path | None = None, settled_root: Path | None = None, now: d
         if part["repo"] == REPO and part["model_id"] in ("v9_props", CHALLENGER_MODEL_ID):
             f = pd.read_csv(p, usecols=["fixture_id"], dtype=str, keep_default_na=False)["fixture_id"]
             fids |= {int(x) for x in f if x}
+    # The corners / cards partitions (v9_corners / v9_cards) settle from match STATISTICS, which only the
+    # side-models settle step reads (src/side_models/ledger.py settle, run after this one in
+    # update_results.yml). Settling them here would overwrite that view with "no statistics" rows.
+    models = tuple(sorted({PL.parse_partition(root, p)["model_id"] for p in PL.partitions(root)
+                           if PL.parse_partition(root, p)["repo"] == REPO} - set(SIDE_MODEL_IDS)))
+    if not models:
+        return {"partitions": 0, "rows": 0, "written": 0, "settled": 0}
     fn = outcome_fn(now=now, team=TeamResults(), props=PropsResults(fids) if fids else None,
                     latest_ko=latest_kickoffs(root))
-    return PL.write_settled(fn, repo=REPO, root=root, settled_root=settled_root)
+    return PL.write_settled(fn, repo=REPO, root=root, settled_root=settled_root, models=models)
 
 
 def main(argv=None) -> int:

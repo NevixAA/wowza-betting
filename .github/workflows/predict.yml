@@ -295,6 +295,20 @@ jobs:
           PREDICTION_LEDGER_ENABLED: ${{ vars.PREDICTION_LEDGER_ENABLED }}
         run: python -m src.prediction_ledger_v9 board || echo "::warning::prediction ledger failed (learning only - tips unaffected)"
 
+      # SIDE MODELS -> PREDICTION LEDGER (owner 2026-11-18 "make it work"; src/side_models/ledger.py). LEARNING
+      # ONLY: every upcoming fixture (output/collect/upcoming_fixtures.parquet, next 168 h) of a league whose
+      # corners / cards history two sources verify gets corners_total, corners_team, cards_total and cards_team
+      # rows (v9_corners / v9_cards) at first-sight and final snapshots. Coverage and the reason for every
+      # tracked league left out: models/side_models/side_models.json. No API call, no price, and no tip, tier,
+      # stake, threshold or Telegram file is touched. OFF unless BOTH repo variables SIDE_MODELS_LEDGER_ENABLED
+      # and PREDICTION_LEDGER_ENABLED are 'true'. Tolerant: a failure is a warning and never stops the commit.
+      - name: Side models ledger - corners / cards, every covered fixture (learning only)
+        if: vars.SIDE_MODELS_LEDGER_ENABLED == 'true' && vars.PREDICTION_LEDGER_ENABLED == 'true'
+        env:
+          SIDE_MODELS_LEDGER_ENABLED: ${{ vars.SIDE_MODELS_LEDGER_ENABLED }}
+          PREDICTION_LEDGER_ENABLED: ${{ vars.PREDICTION_LEDGER_ENABLED }}
+        run: python -m src.side_models.ledger board || echo "::warning::side models ledger failed (learning only - tips unaffected)"
+
       - name: Commit and push outputs
         run: |
           git config user.name "github-actions[bot]"
