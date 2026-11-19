@@ -1,8 +1,8 @@
 {
- "generated_at": "2026-11-19T04:31:00+00:00",
+ "generated_at": "2026-11-19T07:39:51+00:00",
  "resolver_version": "SR-1.0-2026-11-01",
  "as_of_date": "2026-11-19",
- "status": "PASS",
+ "status": "WARN",
  "rule": "FAIL if an ACTIVE league resolves to SEASON_UNKNOWN; WARN for an inactive unknown, a static auto-league season, or any call site that skipped work on SEASON_UNKNOWN",
  "deprecated": {
   "config.API_SEASON": "removed from every call site (R2-A); value is SEASON_UNKNOWN"
@@ -679,6 +679,76 @@
    "model_type": "standard",
    "api_football_id": 184,
    "status": "PASS"
+  },
+  {
+   "league": "Friendlies",
+   "canonical": "Friendlies",
+   "provider": "api_football",
+   "kickoff_date": "2026-11-19",
+   "season": "SEASON_UNKNOWN",
+   "rule": "bad season_rule: argument of type 'NoneType' is not iterable",
+   "source": "config/leagues.json",
+   "reason": "bad season_rule: argument of type 'NoneType' is not iterable",
+   "active": false,
+   "model_type": null,
+   "api_football_id": null,
+   "status": "WARN"
+  },
+  {
+   "league": "World Cup - Qualification Europe",
+   "canonical": "World Cup - Qualification Europe",
+   "provider": "api_football",
+   "kickoff_date": "2026-11-19",
+   "season": "SEASON_UNKNOWN",
+   "rule": "bad season_rule: argument of type 'NoneType' is not iterable",
+   "source": "config/leagues.json",
+   "reason": "bad season_rule: argument of type 'NoneType' is not iterable",
+   "active": false,
+   "model_type": null,
+   "api_football_id": null,
+   "status": "WARN"
+  },
+  {
+   "league": "World Cup - Qualification CONCACAF",
+   "canonical": "World Cup - Qualification CONCACAF",
+   "provider": "api_football",
+   "kickoff_date": "2026-11-19",
+   "season": "SEASON_UNKNOWN",
+   "rule": "bad season_rule: argument of type 'NoneType' is not iterable",
+   "source": "config/leagues.json",
+   "reason": "bad season_rule: argument of type 'NoneType' is not iterable",
+   "active": false,
+   "model_type": null,
+   "api_football_id": null,
+   "status": "WARN"
+  },
+  {
+   "league": "World Cup - Qualification Intercontinental Play-offs",
+   "canonical": "World Cup - Qualification Intercontinental Play-offs",
+   "provider": "api_football",
+   "kickoff_date": "2026-11-19",
+   "season": "SEASON_UNKNOWN",
+   "rule": "bad season_rule: argument of type 'NoneType' is not iterable",
+   "source": "config/leagues.json",
+   "reason": "bad season_rule: argument of type 'NoneType' is not iterable",
+   "active": false,
+   "model_type": null,
+   "api_football_id": null,
+   "status": "WARN"
+  },
+  {
+   "league": "Africa Cup of Nations",
+   "canonical": "Africa Cup of Nations",
+   "provider": "api_football",
+   "kickoff_date": "2026-11-19",
+   "season": "SEASON_UNKNOWN",
+   "rule": "bad season_rule: argument of type 'NoneType' is not iterable",
+   "source": "config/leagues.json",
+   "reason": "bad season_rule: argument of type 'NoneType' is not iterable",
+   "active": false,
+   "model_type": null,
+   "api_football_id": null,
+   "status": "WARN"
   }
  ],
  "degradations_this_process": []
