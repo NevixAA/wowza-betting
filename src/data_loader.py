@@ -1188,11 +1188,10 @@ def parse_fd_season_file(raw: pd.DataFrame, league: str, season_label: str) -> p
     df["away_team"] = raw.get("AwayTeam", np.nan)
     for out_col, src_col in _FD_STAT_COLS:
         df[out_col] = pd.to_numeric(raw[src_col], errors="coerce") if src_col in raw.columns else np.nan
-    df["odds_over25"] = _pick_odds(raw, _OVER_COLS)
-    df["odds_under25"] = _pick_odds(raw, _UNDER_COLS)
-    df["odds_btts"] = _pick_odds(raw, _BTTS_COLS)
-    df["odds_over15"] = _pick_odds(raw, _OVER15_COLS)
-    df["odds_over35"] = _pick_odds(raw, _OVER35_COLS)
+    for _k, _v in ou25_prices(raw).items():      # pre-match pair + closing pair, apart (2026-11-11)
+        df[_k] = _v
+    for _k, _v in _side_fd_prices(raw).items():
+        df[_k] = _v
     df["ftr"] = raw.get("FTR", np.nan)
     df = df[df["date"].notna() & df["home_team"].notna() & df["away_team"].notna()
             & df["home_goals"].notna() & df["away_goals"].notna()]

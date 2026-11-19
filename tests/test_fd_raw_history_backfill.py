@@ -151,3 +151,15 @@ def test_verify_pairs_rows_with_the_provider_fixture():
     chk = dict(zip(p["home_team"], p["ft_check"]))
     assert chk == {"Fulham": "equal", "Derby": "mismatch"}
     assert p.loc[p["home_team"] == "Fulham", "ht_check"].iloc[0] == "equal"
+
+
+def test_banked_files_keep_the_prematch_and_closing_pairs_apart():
+    """Main's 2026-11-11 rule holds for the banked season files too: odds_over25 / odds_under25 are the
+    PRE-MATCH pair (Bet365 first), the closing pair is separate (CLV only), each with its source."""
+    raw = pd.DataFrame({"Div": ["E1"], "Date": ["06/08/2021"], "HomeTeam": ["Fulham"], "AwayTeam": ["Derby"],
+                        "FTHG": [1], "FTAG": [1], "FTR": ["D"], "HTHG": [0], "HTAG": [1],
+                        "B365>2.5": [2.0], "B365<2.5": [1.8], "AvgC>2.5": [2.2], "AvgC<2.5": [1.7]})
+    f = DL.parse_fd_season_file(raw, "Championship", "2021/22")
+    assert f["odds_over25"].iloc[0] == 2.0 and f["odds_under25"].iloc[0] == 1.8
+    assert f["odds_ou25_source"].iloc[0] == "B365"
+    assert f["odds_over25_close"].iloc[0] == 2.2 and f["odds_ou25_close_source"].iloc[0] == "AVGC"
