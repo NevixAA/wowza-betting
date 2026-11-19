@@ -9,7 +9,9 @@
     "source_note": "committed = src.data_loader.load_all_matches on the committed banks/sidecars with the football-data download switched off and the network blocked, so the frame is exactly the committed, corrected data and its hash is reproducible. Every loader correction (identity, one-match, history corrections, written-back cells not served, impossible stats missing, negative-margin O/U pairs flagged) applies because the loader applies it.",
     "exclude_covid_seasons": true,
     "require_present": ["home_scored_last5", "away_scored_last5"],
-    "require_present_note": "pipeline.mode_train's training filter (home_scored_last5) on both sides: a fixture with no rolling form is a blind fixture, which serving never tips, so it is neither trained on nor scored."
+    "require_present_note": "pipeline.mode_train's training filter (home_scored_last5) on both sides: a fixture with no rolling form is a blind fixture, which serving never tips, so it is neither trained on nor scored.",
+    "train_start": {"standard": "2016-07-01"},
+    "train_start_note": "Owner 2026-11-19 (\"Yes, from 2016/17\"): Standard trains from the 2016/17 season (first Standard season start; no Standard league kicks off before July), on the football-data seasons connected by PR #59 (fix/fd-ht-and-history-backfill). Before this the Standard start was not configured: it was the first loaded Standard row, 2021-07-30. COVID seasons stay excluded (exclude_covid_seasons, config.covid_season_mask). new_format has no entry and is unchanged. Rows dated before the track's start are not eligible (protocol.eligible_rows)."
   },
 
   "holdout": {

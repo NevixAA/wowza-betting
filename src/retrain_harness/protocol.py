@@ -253,6 +253,9 @@ def eligible_rows(feat: pd.DataFrame, cfg: dict, track: str, market: str) -> pd.
         d = d[pd.to_numeric(d[c], errors="coerce").notna()]
     d = d.copy()
     d["date"] = pd.to_datetime(d["date"]).dt.normalize()
+    start = (cfg["data"].get("train_start") or {}).get(track)
+    if start:                                    # owner 2026-11-19: Standard from 2016/17
+        d = d[d["date"] >= pd.Timestamp(start)]
     tie = [c for c in ("league", "home_team", "away_team") if c in d.columns]
     return d.sort_values(["date"] + tie, kind="mergesort").reset_index(drop=True)
 
