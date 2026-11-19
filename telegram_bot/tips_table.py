@@ -89,8 +89,29 @@ def gap_text(tier: str, threshold_source=None) -> str:
 
 
 def todays_rows(today_str: str) -> pd.DataFrame:
-    """One row per tip, best first: tier order, then edge."""
-    return tips_rows(today_str, today_str)
+    """One row per tip, best first: tier order, then edge. Telegram only (the album, the text-digest photo):
+    run through the fixture coherence gate (coherent_rows), so a tip that mismatches one already sent - or a
+    higher-ranked tip of the same day - is not shown, and therefore not marked as notified either."""
+    return coherent_rows(tips_rows(today_str, today_str))
+
+
+def coherent_rows(rows: pd.DataFrame, gate=None) -> pd.DataFrame:
+    """`rows` (tips_rows) minus every tip that is a MISMATCH on its match (src/tip_coherence, owner 2026-11-19):
+    against a tip already sent (notified store, sent TOP-3 picks) the first one stands; between two of these
+    rows the higher calibrated EV (edge x odds) stands. Skips are printed. Never raises (gate failure -> rows)."""
+    if rows is None or rows.empty:
+        return rows
+    try:
+        from src.tip_coherence import CoherenceGate, filter_frame
+        gate = gate or CoherenceGate.load()
+        rank = pd.to_numeric(rows["edge"], errors="coerce") / 100.0 * pd.to_numeric(rows["odds"], errors="coerce")
+        kept, lines = filter_frame(rows, gate, "album", market_col="market", date_col="date", rank=rank)
+        for ln in lines:
+            print(f"[tips_table] {ln}")
+        return kept.reset_index(drop=True)
+    except Exception as e:                                              # noqa: BLE001
+        print(f"[tips_table] coherence gate failed ({type(e).__name__}: {e}) - rows unfiltered")
+        return rows
 
 
 def tips_rows(date_from: str, date_to: str) -> pd.DataFrame:
@@ -253,7 +274,7 @@ def render_pngs(rows: pd.DataFrame, title: str) -> list[bytes]:
                 dr.text((x + 4, y + 8), _fit(dr, val, font, w - 8), font=font, fill=fill)
                 x += w
             y += row_h
-        dr.text((pad, y + 8), "Times UTC · Rating = league rating 1-10, not used to size stakes · edge = calibrated (pp; n/c = not calibrated), older rows as recorded · paper leagues excluded"
+        dr.text((pad, y + 8), "Times UTC · Rating = league rating 1-10, not used to size stakes · edge = calibrated (pp; n/c = not calibrated), older rows as recorded · no-stake leagues excluded"
                 + (" · " + GLOBAL_FOOTNOTE if "threshold_source" in page.columns
                    and (page["threshold_source"] == config.THRESHOLD_SOURCE_GLOBAL).any() else ""),
                 font=f_foot, fill=(107, 114, 128))

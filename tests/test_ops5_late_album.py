@@ -50,7 +50,7 @@ def pack(monkeypatch):
     monkeypatch.setattr(dp, "render_pngs", lambda rows, title: seen.update(tips=rows, title=title) or [b"png"])
     monkeypatch.setattr(dp, "top_picks_image", lambda today, freeze=False, now=None: seen.update(tp_now=now) or [])
     monkeypatch.setattr(dp, "props_image", lambda today, freeze=False, cutoff=None: seen.update(props=cutoff) or [])
-    monkeypatch.setattr(dp, "bet_builder_image", lambda today, cutoff=None: seen.update(bb=cutoff) or [])
+    monkeypatch.setattr(dp, "bet_builder_image", lambda today, cutoff=None, **k: seen.update(bb=cutoff) or [])
     monkeypatch.setattr(dp, "sharp_image", lambda today, cutoff=None: seen.update(sharp=cutoff) or [])
     for name in ("top_picks_results_image", "results_image", "props_results_image", "record_image",
                  "one_x_two_image"):

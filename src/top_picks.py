@@ -131,6 +131,22 @@ def started_by(tips: pd.DataFrame, now) -> pd.Series:
     return (ko.notna() & (ko <= now)) | (ko.isna() & (md < now.strftime("%Y-%m-%d")))
 
 
+def _coherent(g: pd.DataFrame) -> pd.DataFrame:
+    """The day's tips minus every MISMATCH on its match (src/tip_coherence, owner 2026-11-19): a tip working
+    against one already sent (first stands) or against a higher-EV tip of the day is never listed. The ranker's
+    EV (learned P(win) x odds - 1) is the calibrated EV that decides between two of the day's tips."""
+    try:
+        from src.tip_coherence import CoherenceGate, filter_frame
+        kept, lines = filter_frame(g, CoherenceGate.load(), "top picks", market_col="market", side_col="side",
+                                   date_col="match_date", rank=g["ev"])
+        for ln in lines:
+            log.info("top picks: %s", ln)
+        return kept
+    except Exception as e:                                           # noqa: BLE001 - never break the album
+        log.warning("top picks: coherence gate failed (%s) - lists unfiltered", e)
+        return g
+
+
 def todays_lists(day: str, tips: pd.DataFrame | None = None, now=None) -> pd.DataFrame:
     """The three lists for `day` (not frozen). Columns: list, rank, day, league, home_team, away_team,
     market, pick, odds, p_win, ev, signal_tier, model_type.
@@ -150,6 +166,9 @@ def todays_lists(day: str, tips: pd.DataFrame | None = None, now=None) -> pd.Dat
         return pd.DataFrame()
     g["p_win"] = p_win(g, day, allt)
     g["ev"] = g["p_win"] * g["odds"] - 1.0
+    g = _coherent(g)
+    if g.empty:
+        return pd.DataFrame()
     # SAFEST = shortest prices, but never a tip the ranker itself scores as a losing bet (ev < 0):
     # on 2026-11-01 two Under 2.5 picks at 1.75/1.78 were listed as "safest" at -3% EV (owner
     # 2026-11-01). Tips without a P(win) yet (too little history) are still eligible.

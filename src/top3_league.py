@@ -159,6 +159,7 @@ R_LATE = "FIRST_SEEN_AFTER_FREEZE"
 R_PRE_START = "FIRST_SEEN_BEFORE_TOP3_START"   # go-live rehearsal 2026-11-15: TOP-3 starts at go-live
 R_STARTED = "STARTED_BEFORE_ISSUE"
 R_DIRECTION = "DIRECTION_CONFLICT"
+R_MISMATCH = "MISMATCH_WITH_SENT_TIP"          # src/tip_coherence (owner 2026-11-19): vs a tip already sent
 R_RANK = "RANKED_BELOW_TOP3"
 
 PICK_KEY = ["selection_mode", "league_week_id", "top3_rank"]
@@ -367,6 +368,32 @@ def _direction(market: str, side: str) -> str | None:
     return goal_direction(MARKETS[str(market)][1], side)
 
 
+def _gate_candidate(r):
+    """A TOP-3 candidate row as a src/tip_coherence Candidate (None when its market has no event)."""
+    from src.tip_coherence import Candidate, fixture_id, parse_event
+    ev = parse_event(r["market"], r["side"])
+    if ev is None:
+        return None
+    return Candidate(fixture_id(r["match_date"], r["home_team"], r["away_team"]), ev, "TOP-3",
+                     uid=f"top3|{r.get('fixture_id')}|{r['market']}|{r['side']}")
+
+
+def _gate_blocks(gate, r) -> str:
+    """'' or why the fixture coherence gate refuses this candidate (a MISMATCH with a tip already SENT by any
+    sender - HT, O/U, side markets, an earlier TOP-3 week). No gate -> ''."""
+    if not gate:
+        return ""
+    c = _gate_candidate(r)
+    return gate.check(c) if c is not None else ""
+
+
+def _gate_take(gate, r) -> None:
+    if gate:
+        c = _gate_candidate(r)
+        if c is not None:
+            gate.commit(c)
+
+
 def load_tiers(root: Path | None = None) -> dict | None:
     """The P11 tier config when the OWNER approved it (status starting "APPROVED" and owner_approved_at set),
     else None (the v6 R2 TOP-3 stays). Never raises."""
@@ -405,7 +432,8 @@ def _tier_metrics(r: dict) -> dict:
 
 def select_week(q: pd.DataFrame, freeze: pd.Timestamp, issue: pd.Timestamp,
                 committed: dict | None = None, stats: pd.DataFrame | None = None,
-                start: pd.Timestamp | None = None, tiers: dict | None = None) -> tuple[pd.DataFrame, dict]:
+                start: pd.Timestamp | None = None, tiers: dict | None = None,
+                gate=None) -> tuple[pd.DataFrame, dict]:
     """TOP-3 of ONE league-week from qualified candidates `q` (qualify()). Returns (picks with
     top3_rank 1..k, k <= 3, never padded; {reason: count} for every candidate not picked). Pure.
     `start` (the TOP-3 start, top3_start()): a candidate first seen before it was frozen by the pre-go-live
@@ -459,13 +487,17 @@ def select_week(q: pd.DataFrame, freeze: pd.Timestamp, issue: pd.Timestamp,
         if dr and stood and dr != stood:
             bump(R_DIRECTION)
             continue
+        if _gate_blocks(gate, r):
+            bump(R_MISMATCH)
+            continue
         if dr:
             dirs[fx] = dr
+        _gate_take(gate, r)
         own_taken.append(i)
     # 2) TOP-3 / TIER2 from MODEL cells only; a model tip opposite to an own-list tip yields
     taken = []
     if tiers is not None:
-        return _select_tiers(q, pool, own_taken, dirs, committed, issue, ko, stats, tiers, excluded)
+        return _select_tiers(q, pool, own_taken, dirs, committed, issue, ko, stats, tiers, excluded, coherence=gate)
     for *_k, i in pool:
         r = q.iloc[i]
         if len(taken) >= TOP_N:
@@ -480,8 +512,12 @@ def select_week(q: pd.DataFrame, freeze: pd.Timestamp, issue: pd.Timestamp,
         if dr and stood and dr != stood:
             bump(R_DIRECTION)
             continue
+        if _gate_blocks(gate, r):
+            bump(R_MISMATCH)
+            continue
         if dr:
             dirs[fx] = dr
+        _gate_take(gate, r)
         taken.append(i)
     picks = q.iloc[taken].copy()
     picks["top3_rank"] = range(1, len(picks) + 1)
@@ -493,7 +529,7 @@ def select_week(q: pd.DataFrame, freeze: pd.Timestamp, issue: pd.Timestamp,
     return pd.concat([picks, ol], ignore_index=True), dict(excluded)
 
 
-def _select_tiers(q, pool, own_taken, dirs, committed, issue, ko, stats, tiers, excluded):
+def _select_tiers(q, pool, own_taken, dirs, committed, issue, ko, stats, tiers, excluded, coherence=None):
     """P11: T1 = highest cal_ev, T2 = highest p_cal of the rest, T3 = of the rest odds >= the league's floor with
     the highest ev_lo (REL: the rest's longest odds). Every tier must pass the league's gate (CAL: cal_ev > 0;
     BAR: p_used * odds - 1 > 0). A tier without a candidate stays EMPTY (never padded); distinct fixture x
@@ -535,8 +571,12 @@ def _select_tiers(q, pool, own_taken, dirs, committed, issue, ko, stats, tiers, 
             stood = dirs.get(fx) or (committed.get(fx) or {}).get("direction")
             if dr and stood and dr != stood:
                 continue
+            if _gate_blocks(coherence, r):
+                excluded[R_MISMATCH] += 1
+                continue
             if dr:
                 dirs[fx] = dr
+            _gate_take(coherence, r)
             used.add(k)
             taken.append(i)
             names.append(name)
@@ -621,7 +661,8 @@ def stake_effect_text(fraction: float | None) -> str:
 def freeze_due(cands: pd.DataFrame, weeks_done: set, ctx: dict, now: pd.Timestamp, lead_min: float,
                committed: dict | None = None, policy: dict | None = None,
                real_checker=None, stats: pd.DataFrame | None = None,
-               start: pd.Timestamp | None = None, tiers: dict | None = None) -> tuple[pd.DataFrame, pd.DataFrame]:
+               start: pd.Timestamp | None = None, tiers: dict | None = None,
+               gate=None) -> tuple[pd.DataFrame, pd.DataFrame]:
     """(new pick rows, new week rows) for every league-week whose FREEZE has passed and that is not
     decided yet. A week with 0 picks is still recorded (decided once, with its reasons). Pure apart
     from the injected policy / checker.
@@ -645,7 +686,7 @@ def freeze_due(cands: pd.DataFrame, weeks_done: set, ctx: dict, now: pd.Timestam
         if now < freeze or (start is not None and freeze < start):
             continue
         q = qualify(g, ctx)
-        picks, excl = select_week(q, freeze, now, committed, stats, start, tiers)
+        picks, excl = select_week(q, freeze, now, committed, stats, start, tiers, gate)
         league = str(g["league"].iloc[0])
         n_q = int((q["reason"] == "").sum()) if len(q) else 0
         n_top = int((picks["list"] == SELECTION_MODE).sum()) if len(picks) else 0
@@ -733,8 +774,16 @@ def run(now=None, out_dir: Path | None = None, root: Path | None = None, env: di
             else:
                 ws = weeks_store(od)
                 done = set(ws.read()["league_week_id"]) if len(ws.read()) else set()
+                # the fixture coherence gate (src/tip_coherence, owner 2026-11-19): a pick that mismatches a
+                # tip already SENT on its match (HT / O/U / side / an earlier TOP-3 week) is never frozen
+                try:
+                    from src.tip_coherence import CoherenceGate
+                    gate = CoherenceGate.load(out_dir=od)
+                except Exception as e:                                 # noqa: BLE001
+                    log.warning(f"[top3_league] coherence gate unavailable ({type(e).__name__}: {e})")
+                    gate = None
                 picks, weeks = freeze_due(cs.read(), done, bars_context(root), now, lead, committed, _policy(),
-                                          real_track_checker(), stats, start, tiers)
+                                          real_track_checker(), stats, start, tiers, gate)
                 res["picks_appended"] = picks_store(od).append(picks)
                 res["weeks_decided"] = ws.append(weeks)
                 res["status"] = "OK"
@@ -925,15 +974,41 @@ def notify(out_dir: Path | None = None, env: dict | None = None, sender=None) ->
     sent = set(_read_json(nf).get("weeks", []))
     n = 0
     checker = None
+    gate = None
     for week, g in (picks.groupby("league_week_id", sort=True) if len(picks) else []):
         if week in sent:
             continue
         if checker is None:
             from src.direction_guard import real_track_checker
             checker = real_track_checker()
+        # last check at send time (src/tip_coherence, owner 2026-11-19): a pick that now mismatches a tip SENT
+        # since its freeze is left out of the message (logged); picks are checked in TOP-3 rank order
+        if gate is None:
+            try:
+                from src.tip_coherence import CoherenceGate
+                gate = CoherenceGate.load(out_dir=od)
+            except Exception as e:                                     # noqa: BLE001
+                log.warning(f"[top3_league] coherence gate unavailable ({type(e).__name__}: {e})")
+                gate = False
+        if gate:
+            keep = []
+            for i, r in g.sort_values("top3_rank", key=lambda x: pd.to_numeric(x, errors="coerce")).iterrows():
+                why = _gate_blocks(gate, r)
+                if why:
+                    log.warning(f"[top3_league] SKIP {r['home_team']} v {r['away_team']} {r['market']} {r['side']} "
+                                f"({week}): {why}")
+                else:
+                    keep.append(i)
+            g = g.loc[keep]
+        if g.empty:
+            sent.add(week)                       # nothing left to send for this week; never retried
+            continue
         if sender(message(g, checker)):
             sent.add(week)
             n += 1
+            if gate:
+                for _, r in g.iterrows():
+                    _gate_take(gate, r)
     if n:
         LW._write_json(nf, {"weeks": sorted(sent)})
     return {"enabled": True, "sent": n}
