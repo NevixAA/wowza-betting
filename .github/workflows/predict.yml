@@ -309,6 +309,23 @@ jobs:
           PREDICTION_LEDGER_ENABLED: ${{ vars.PREDICTION_LEDGER_ENABLED }}
         run: python -m src.side_models.ledger board || echo "::warning::side models ledger failed (learning only - tips unaffected)"
 
+      # LEDGER-ONLY LEAGUES (owner 2026-11-19, src/ledger_all_leagues.py). LEARNING ONLY: every match of the 10
+      # TRAINING_ONLY Standard leagues (Scottish Prem / Champ / L1 / L2, Belgian A, Eredivisie, Greek SL,
+      # Primeira Liga, Super Lig, National League) x every Standard team market (O1.5/O2.5/O3.5, BTTS, HT) ->
+      # output/prediction_ledger/v9/v9_standard/... (fixture_ref af:<id>, payload_version ...|ledger_only:
+      # TRAINING_ONLY) + output/ledger_only/board.csv (no price; Pro's ledger-only grid reads it). Fixtures
+      # from the daily collector's API-Football upcoming_fixtures; features + probabilities from the board's own
+      # serving path (src.predict.serve_fixtures) with the NETWORK BLOCKED and no API key passed: no API call,
+      # no OddsAPI credit. Never touches predictions.csv / bets / Telegram / TOP-3 / stakes. Loads the history
+      # only when a snapshot is due. OFF unless LEDGER_ALL_LEAGUES_ENABLED and PREDICTION_LEDGER_ENABLED are
+      # both 'true'. Tolerant: a failure is a warning and never stops the commit.
+      - name: Ledger-only leagues - every TRAINING_ONLY match x market (learning only)
+        if: vars.LEDGER_ALL_LEAGUES_ENABLED == 'true' && vars.PREDICTION_LEDGER_ENABLED == 'true'
+        env:
+          LEDGER_ALL_LEAGUES_ENABLED: ${{ vars.LEDGER_ALL_LEAGUES_ENABLED }}
+          PREDICTION_LEDGER_ENABLED: ${{ vars.PREDICTION_LEDGER_ENABLED }}
+        run: python -m src.ledger_all_leagues board || echo "::warning::ledger-only predictions failed (learning only - tips unaffected)"
+
       - name: Commit and push outputs
         run: |
           git config user.name "github-actions[bot]"
@@ -368,6 +385,7 @@ jobs:
           git add -f output/book_odds_snapshots_archive/ 2>/dev/null || true
           # Prediction ledger (learning only; written only when PREDICTION_LEDGER_ENABLED is 'true').
           git add -f output/prediction_ledger/ 2>/dev/null || true
+          git add -f output/ledger_only/ 2>/dev/null || true
           git diff --staged --quiet || \
             git commit -m "auto: predict $(date -u '+%Y-%m-%d %H:%M UTC')"
           git restore . 2>/dev/null || true

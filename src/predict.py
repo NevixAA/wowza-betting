@@ -354,65 +354,26 @@ def _serve_proba(frame: pd.DataFrame, payload: dict, what: str) -> pd.Series:
         return pd.Series(np.nan, index=frame.index, name="p_over25")
 
 
-def predict_upcoming(
+def serve_fixtures(
+    upcoming:          pd.DataFrame,
     historical:        pd.DataFrame,
     payload:           dict,
     payload_newformat: dict | None = None,
     side_payloads:     dict | None = None,
-    days_ahead:        int = 7,
-) -> tuple[pd.DataFrame, list[dict]]:
-    """
-    Full predict pipeline for upcoming fixtures.
+    *,
+    record_health:     bool = True,
+) -> pd.DataFrame:
+    """Steps 4-5b of predict_upcoming: features (build_upcoming_features + the HT block) and every
+    model's probability (O/U 2.5 routed by track, the Standard serving recipe, NF calibration, the
+    side markets BTTS / O1.5 / O3.5 and HT 0.5 / 1.5) for the fixtures in `upcoming`.
 
-    Parameters
-    ----------
-    historical : raw historical DataFrame from data_loader.load_all_matches()
-    payload    : trained model payload from model.load_models()
-    days_ahead : how far ahead to look for fixtures
-
-    Returns
-    -------
-    (predictions_df, postponed_list)
-      predictions_df : all fixtures with model score + signal_tier + drift columns
-      postponed_list : fixtures that disappeared since last run
-    """
+    The ONE serving path: predict_upcoming calls it for the OddsAPI board, and the ledger-only writer
+    (src/ledger_all_leagues.py) calls it for the TRAINING_ONLY leagues, so both score with the same code.
+    record_health=False skips the two run diagnostics this writes for the board (league routing and
+    feature health in output/*_health.json), which describe the board run only. No value evaluation,
+    drift, fixture-id lookup or file write happens here."""
     from src.feature_engineering import build_upcoming_features
-    from src.model import predict_proba
-    from src.betting import evaluate_value
-    from src.drift import snapshot, enrich, purge_old
     from src import standard_serving as _std_serving
-
-    # 0. Configuration gate (R2 finding 17): an invalid STANDARD_OU25_SERVING_RECIPE is a
-    #    configuration error, raised BEFORE any OddsAPI credit is spent - never a silent legacy run.
-    _std_serving.check_config()
-
-    # 1. Fetch live fixtures
-    log.info("Fetching upcoming fixtures from OddsAPI...")
-    upcoming = _fetch_odds_api(days_ahead)
-    log.info(f"  OddsAPI: {len(upcoming)} fixtures found")
-
-    # Record fetch health so the notifier can alert on an outage (0 fixtures because
-    # every league errored — the btts-422 signature that silently killed tips ~2wk).
-    try:
-        from src.health_check import record_fetch
-        record_fetch(len(upcoming), _LAST_FETCH_STATS)
-    except Exception as e:
-        log.debug(f"health record skipped: {e}")
-
-    if upcoming.empty:
-        log.warning("No upcoming fixtures found")
-        return pd.DataFrame(), []
-
-    # 2. Detect postponements (before we snapshot — compare prev vs current)
-    postponed = _detect_postponed(upcoming)
-    if postponed:
-        log.info(f"  Postponed/disappeared since last run: {len(postponed)}")
-        for p in postponed:
-            log.info(f"    [PST] {p['home_team']} vs {p['away_team']} ({str(p['date'])[:10]})")
-
-    # 3. Snapshot current odds for drift tracking
-    snapshot(upcoming)
-    purge_old(cutoff_days=10)
 
     # 4. Build features
     log.info(f"Building features for {len(upcoming)} upcoming fixtures...")
@@ -457,7 +418,8 @@ def predict_upcoming(
         log.error(f"  UNKNOWN LEAGUE: {int(unknown_mask.sum())} fixture(s) in league(s) {_unk} are in "
                   f"neither STANDARD_FORMAT_LEAGUES nor NEW_FORMAT_LEAGUES -> model_type=unknown, "
                   f"NO probability, NO bet (fail closed; no Standard-model fallback)")
-    _record_routing(feat, std_mask, nf_mask, unknown_mask, nf_payload_missing)
+    if record_health:
+        _record_routing(feat, std_mask, nf_mask, unknown_mask, nf_payload_missing)
 
     # Standard O/U 2.5 serving recipe (owner 2026-10-28, config.STANDARD_OU25_SERVING_RECIPE).
     # legacy_v9 (default): a no-op — nothing above or below changes. v9_repaired: the Standard rows'
@@ -490,14 +452,15 @@ def predict_upcoming(
     # How much of each model's input actually arrived? Blank/constant features are imputed
     # silently and skew the calibrated logistic member — the new-format bug in one line.
     # Diagnostic only; never alters a prediction.
-    try:
-        from src.health_check import record_feature_health
-        _cols = {"standard": payload.get("feature_cols", [])}
-        if payload_newformat is not None:
-            _cols["new_format"] = payload_newformat.get("feature_cols", [])
-        record_feature_health(feat, _cols)
-    except Exception as e:
-        log.debug(f"feature health skipped: {e}")
+    if record_health:
+        try:
+            from src.health_check import record_feature_health
+            _cols = {"standard": payload.get("feature_cols", [])}
+            if payload_newformat is not None:
+                _cols["new_format"] = payload_newformat.get("feature_cols", [])
+            record_feature_health(feat, _cols)
+        except Exception as e:
+            log.debug(f"feature health skipped: {e}")
 
     # Side-market predictions (BTTS / O1.5 / O3.5) — all known leagues.
     # TRACK ROUTING lives in src.model.predict_proba: a payload trained by a scheduled retrain since
@@ -579,6 +542,70 @@ def predict_upcoming(
                 log.info(f"  HT model: {std_mask.sum()} fixtures scored")
         except Exception as e:
             log.warning(f"  HT model prediction failed: {e}")
+
+    return feat
+
+
+def predict_upcoming(
+    historical:        pd.DataFrame,
+    payload:           dict,
+    payload_newformat: dict | None = None,
+    side_payloads:     dict | None = None,
+    days_ahead:        int = 7,
+) -> tuple[pd.DataFrame, list[dict]]:
+    """
+    Full predict pipeline for upcoming fixtures.
+
+    Parameters
+    ----------
+    historical : raw historical DataFrame from data_loader.load_all_matches()
+    payload    : trained model payload from model.load_models()
+    days_ahead : how far ahead to look for fixtures
+
+    Returns
+    -------
+    (predictions_df, postponed_list)
+      predictions_df : all fixtures with model score + signal_tier + drift columns
+      postponed_list : fixtures that disappeared since last run
+    """
+    from src.betting import evaluate_value
+    from src.drift import snapshot, enrich, purge_old
+    from src import standard_serving as _std_serving
+
+    # 0. Configuration gate (R2 finding 17): an invalid STANDARD_OU25_SERVING_RECIPE is a
+    #    configuration error, raised BEFORE any OddsAPI credit is spent - never a silent legacy run.
+    _std_serving.check_config()
+
+    # 1. Fetch live fixtures
+    log.info("Fetching upcoming fixtures from OddsAPI...")
+    upcoming = _fetch_odds_api(days_ahead)
+    log.info(f"  OddsAPI: {len(upcoming)} fixtures found")
+
+    # Record fetch health so the notifier can alert on an outage (0 fixtures because
+    # every league errored — the btts-422 signature that silently killed tips ~2wk).
+    try:
+        from src.health_check import record_fetch
+        record_fetch(len(upcoming), _LAST_FETCH_STATS)
+    except Exception as e:
+        log.debug(f"health record skipped: {e}")
+
+    if upcoming.empty:
+        log.warning("No upcoming fixtures found")
+        return pd.DataFrame(), []
+
+    # 2. Detect postponements (before we snapshot — compare prev vs current)
+    postponed = _detect_postponed(upcoming)
+    if postponed:
+        log.info(f"  Postponed/disappeared since last run: {len(postponed)}")
+        for p in postponed:
+            log.info(f"    [PST] {p['home_team']} vs {p['away_team']} ({str(p['date'])[:10]})")
+
+    # 3. Snapshot current odds for drift tracking
+    snapshot(upcoming)
+    purge_old(cutoff_days=10)
+
+    # 4-5b. Features + every model's probability (serve_fixtures: the one serving path)
+    feat = serve_fixtures(upcoming, historical, payload, payload_newformat, side_payloads)
 
     # 6. Value betting evaluation (includes both-losing guard)
     log.info("Applying value betting logic...")
