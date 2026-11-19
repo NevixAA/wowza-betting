@@ -688,7 +688,8 @@ def _ht_price_lookup():
 
 def append_ht_tips(preds_df: pd.DataFrame, source: str = "live") -> None:
     """Log half-time O/U tips (HT model) to ht_ledger.csv — one row per (fixture, HT line).
-    Tip thresholds mirror notifier.notify_ht_tips. entry/closing/clv/result fill in when
+    Rows = the pre-2026-11-19 HT candidate rule, kept as the LEARNING record (the notifier no longer uses it:
+    an HT tip is sent only with a captured price on an approved per-league HT bar). entry/closing/clv/result fill in when
     update_results settles against captured HT odds (standard_sidemarket_odds_history: the
     ht_* markets) + HT scores. HT is standard-only. Completes open->close->CLV for every model."""
     if preds_df is None or preds_df.empty or "p_ht_over05" not in preds_df.columns:
@@ -849,7 +850,8 @@ def append_ht_observations(preds_df: pd.DataFrame) -> None:
             o = price(md, lg, home, away, mkt) if price else None
             odds[f"odds_{mkt}"] = round(o, 3) if o else ""
 
-        # Mirror notifier.notify_ht_tips exactly, so `would_tip` means what it says.
+        # The pre-2026-11-19 HT candidate rule (a learning label): since 2026-11-19 `would_tip` is NOT what is
+        # sent - telegram_bot/notifier.ht_tip_candidates needs a captured price and an approved per-league HT bar.
         if p05 >= 0.75:
             wt, tm = True, "ht_over05"
         elif p05 <= 0.30:

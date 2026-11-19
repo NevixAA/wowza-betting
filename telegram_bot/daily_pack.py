@@ -341,7 +341,7 @@ def results_image(day: str) -> list[bytes]:
                                  "P/L": GREEN if (r["pnl"] or 0) > 0 else RED if (r["pnl"] or 0) < 0 else MUTED}})
     label = pd.Timestamp(day).strftime("%a %d %b")
     return render_table(f"Yesterday's results — {label}", cols, rows, subtitle=subtitle,
-                        footer=f"Flat 1u stakes · staked = {STAKED_TEXT} · paper leagues excluded")
+                        footer=f"Flat 1u stakes · staked = {STAKED_TEXT} · no-stake leagues excluded")
 
 
 def record_image(today: str) -> list[bytes]:
@@ -383,7 +383,7 @@ def record_image(today: str) -> list[bytes]:
     return render_table("Record by market", cols, rows,
                         subtitle=f"Settled since {cut}, flat 1u. Hit is green when above the break-even "
                                  f"rate implied by the average price. {GAP_EXPLAINER}",
-                        footer="Same basis as the dashboard · paper leagues excluded")
+                        footer="Same basis as the dashboard · no-stake leagues excluded")
 
 
 PROPS_SHOWN_LOG = config.OUTPUT_DIR / "props_shown_log.csv"
@@ -479,8 +479,8 @@ def props_image(today: str, freeze: bool = False, cutoff=None) -> list[bytes]:
                         subtitle="Edge = model probability minus the bookmaker's implied probability. "
                                  "Fair price: two-sided price = both sides of one book, de-vigged; "
                                  "margin assumed = one side quoted, margin assumed. "
-                                 "Props are paper research — never staked.",
-                        footer="Times UTC · paper leagues excluded · not betting advice")
+                                 "Props are research — never staked.",
+                        footer="Times UTC · no-stake leagues excluded · not betting advice")
 
 
 def _pro_csv(rel: str) -> pd.DataFrame:
@@ -534,8 +534,8 @@ def one_x_two_image(now: _dt.datetime) -> list[bytes]:
                                    pick_lbl.get(str(r["notified_pick"]), r["notified_pick"]),
                                    f"{float(r['notified_odds']):.2f}", "", "WON" if w else "LOST"],
                          "stripe": GREEN if w else RED, "colours": {"Result": GREEN if w else RED}})
-    return render_table("1X2 picks (paper)", cols, rows,
-                        subtitle="Pro's 1X2 model, top slice by edge. Paper only - the backtest says this slice "
+    return render_table("1X2 picks (no stake)", cols, rows,
+                        subtitle="Pro's 1X2 model, top slice by edge. Never staked - the backtest says this slice "
                                  "has lost; it is tracked forward to settle that.",
                         footer="Times UTC · not betting advice")
 
@@ -579,7 +579,7 @@ def _shown_results(day: str, ledger_day: pd.DataFrame) -> list[bytes] | None:
         band = f"{label} — shown yesterday: {won}-{len(played) - won}"
         if section == "priced" and len(played):
             pl = U.total(U.profit(played["market_odds"]).where(played["result"] == "WIN", -1.0))
-            band += f" · paper {U.fmt(pl)} at the odds shown"
+            band += f" · {U.fmt(pl)} at the odds shown (no stake)"
         n_pend = int((~g["result"].isin(["WIN", "LOSS", "VOID"])).sum())
         rows.append({"band": band + (f" · {n_pend} pending" if n_pend else "")})
         for _, r in g.iterrows():
@@ -603,8 +603,8 @@ def _shown_results(day: str, ledger_day: pd.DataFrame) -> list[bytes] | None:
     label = pd.Timestamp(day).strftime("%a %d %b")
     return render_table(f"Player props — results {label}", cols, rows,
                         subtitle="The same players yesterday's album showed, at the odds shown then. "
-                                 "Paper — never staked.",
-                        footer="paper leagues excluded · not betting advice")
+                                 "Never staked.",
+                        footer="no-stake leagues excluded · not betting advice")
 
 
 def props_results_image(day: str) -> list[bytes]:
@@ -640,7 +640,7 @@ def props_results_image(day: str) -> list[bytes]:
         # flat 1u at the recorded price (the ledger's pnl column is not filled for every row)
         pl = U.total(U.profit(pr["market_odds"]).where(pr["result"] == "WIN", -1.0))
         rows.append({"band": f"Priced — {won}-{len(pr) - won} · hit {hit:.0f}% vs {need:.0f}% needed · "
-                             f"paper {U.fmt(pl)} at 1u"})
+                             f"{U.fmt(pl)} at 1u, no stake"})
         pr = pr.assign(_edge=pr["model_prob"] - 1 / pr["market_odds"]).sort_values("_edge", ascending=False)
         for _, r in pr.head(12).iterrows():
             w = r["result"] == "WIN"
@@ -664,8 +664,8 @@ def props_results_image(day: str) -> list[bytes]:
     label = pd.Timestamp(day).strftime("%a %d %b")
     return render_table(f"Player props — results {label}", cols, rows,
                         subtitle="Played only (VOID / did not play excluded). Priced props vs the price; "
-                                 "model-only props vs the model's own probability. Paper — never staked.",
-                        footer="paper leagues excluded · not betting advice")
+                                 "model-only props vs the model's own probability. Never staked.",
+                        footer="no-stake leagues excluded · not betting advice")
 
 
 # ── Sharp movements ───────────────────────────────────────────────────────────
@@ -957,14 +957,61 @@ def _combo_kickoffs(d: pd.DataFrame, ko: pd.DataFrame | None = None) -> list:
             for _, r in d.iterrows()]
 
 
-def bet_builder_image(today: str, cutoff=None, ko: pd.DataFrame | None = None) -> list[bytes]:
+def coherent_combos(d: pd.DataFrame, gate=None) -> pd.DataFrame:
+    """Bet Builder combos minus every combo with a leg that is a MISMATCH on its match (src/tip_coherence, owner
+    2026-11-19): against a tip already sent / shown (the gate's sent tips), or against another leg of the same
+    combo. Pro's club names are matched to the sent tips' names by src.team_names.resolve on the same date.
+    A leg with no goal relation (assists are a player's goal involvement, corners have none) is judged by the
+    hard list. Skips are printed. Never raises (gate failure -> combos unfiltered)."""
+    if d is None or d.empty:
+        return d
+    try:
+        from src.team_names import resolve
+        from src.tip_coherence import Candidate, CoherenceGate, fixture_id, parse_event
+        gate = gate or CoherenceGate.load()
+        by_day: dict = {}
+        for fx in gate.sent:
+            day, h, a = fx.split("|", 2)
+            by_day.setdefault(day, []).append((h, a))
+        keep = []
+        for _, r in d.iterrows():
+            day = str(r.get("match_date"))[:10]
+            home, _, away = str(r.get("match") or "").partition(" vs ")
+            fx = fixture_id(day, home, away)
+            if fx not in gate.sent and by_day.get(day):
+                hs, as_ = [h for h, _ in by_day[day]], [a for _, a in by_day[day]]
+                h2, a2 = resolve(home.strip().casefold(), hs), resolve(away.strip().casefold(), as_)
+                if h2 and a2 and (h2, a2) in by_day[day]:
+                    fx = fixture_id(day, h2, a2)
+            legs = []
+            for leg in str(r.get("legs") or "").split(" · "):
+                label = leg.rpartition(" (")[0] or leg
+                ev = parse_event(label)
+                if ev is not None:
+                    legs.append(Candidate(fx, ev, "Bet Builder leg", label=label))
+            why = ""
+            for i, c in enumerate(legs):
+                why = gate.conflict(c) or gate.conflict(c, legs[:i])
+                if why:
+                    print(f"[daily_pack] SKIP Bet Builder {r.get('match')}: leg {c.label} {why}")
+                    break
+            keep.append(not why)
+        return d[keep]
+    except Exception as e:                                              # noqa: BLE001
+        print(f"[daily_pack] Bet Builder coherence check failed ({type(e).__name__}: {e}) - combos unfiltered")
+        return d
+
+
+def bet_builder_image(today: str, cutoff=None, ko: pd.DataFrame | None = None, gate=None) -> list[bytes]:
     """Today's Bet Builder combos (owner 2026-10-18: moved here from Pro's separate Telegram
     messages, which were "spammy"). Pro chooses them with its own tip rules; this only draws them:
-    one band per combo (match, joint probability, fair odds), one row per leg."""
+    one band per combo (match, joint probability, fair odds), one row per leg. A combo with a leg that is a
+    mismatch with a tip already sent or shown in the same album is left out (coherent_combos)."""
     d = _pro_bet_builder()
     if d.empty or "match_date" not in d.columns:
         return []
     d = d[d["match_date"].astype(str).str[:10] == today]
+    d = coherent_combos(d, gate)
     if cutoff is not None and not d.empty:
         d = _late_filter(d, _combo_kickoffs(d, ko), cutoff, "Bet Builder combo(s)")
     if d.empty:
@@ -997,7 +1044,7 @@ def bet_builder_image(today: str, cutoff=None, ko: pd.DataFrame | None = None) -
                             cols, rows,
                             subtitle="Same-match combos where the legs are correlated more than a book "
                                      "pricing them separately assumes. FAIR odds - no bookmaker builder "
-                                     "price is collected. Paper research, never staked.",
+                                     "price is collected. Research, never staked.",
                             footer="One combo per match · chosen by Pro's combo rules · not betting advice")
     return out
 
@@ -1051,7 +1098,7 @@ def scoreboard_images() -> list[bytes]:
                          "colours": {"Tips sent": MUTED, "Hit": MUTED}})
     out = render_table("Pro tips scoreboard — 1X2 and Bet Builder", cols, rows,
                        subtitle="Are the tips Pro sends hitting? Hit vs the rate needed to break even "
-                                "(1X2) or vs the model's own claim (Bet Builder). Paper leagues excluded.",
+                                "(1X2) or vs the model's own claim (Bet Builder). No-stake leagues excluded.",
                        footer=f"From Pro output/tip_scoreboard.json · generated {sb.get('generated_at', '?')}")
     last = (x or {}).get("last_10") or []
     if last:
@@ -1106,7 +1153,7 @@ def week_images(today: str) -> list[bytes]:
                        _market_rows(w),
                        subtitle="Every settled tip of the last 7 days, flat 1u. Hit is green when above "
                                 "the break-even rate implied by the average price.",
-                       footer="Same basis as the dashboard · paper leagues excluded")
+                       footer="Same basis as the dashboard · no-stake leagues excluded")
     st = w[_staked(w)]
     if len(st):
         lg = (st.groupby("league")["pnl"].agg(Bets="size", PL=U.total,
@@ -1144,7 +1191,7 @@ def props_week_image(today: str) -> list[bytes]:
                                f"{need:.0f}%", U.fmt(pl)],
                      "bold": {"P/L at 1u"}, "colours": {"Hit": GREEN if hit > need else RED,
                                                        "P/L at 1u": GREEN if pl > 0 else RED}})
-    return render_table("Player props — week in review (paper)",
+    return render_table("Player props — week in review (no stake)",
                         [("Market", 220), ("Priced", 80), ("Won-Lost", 120), ("Hit", 70),
                          ("Needed", 90), ("P/L at 1u", 110)], rows,
                         subtitle="Every priced prop signal settled in the last 7 days, all tiers. "
@@ -1294,7 +1341,7 @@ def league_rows(tab: pd.DataFrame) -> list[dict]:
         rows.append({"cells": [r["League"], r["Rating"], str(r["Tips"]), r["W-L"], _na(r["Hit %"], "{:.0f}%"),
                                _na(r["Avg odds"], "{:.2f}"), _na(r["Avg edge %"], "{:.1f}%"),
                                _na(r["ROI %"], "{:+.0f}%"), U.fmt(r['P/L (u)']), U.fmt(r['P/L 7d (u)']),
-                               r["Best market"], r["Worst market"], "Paper league" if paper else r["State"]],
+                               r["Best market"], r["Worst market"], "No-stake league" if paper else r["State"]],
                      "stripe": MUTED if paper else _signed(r["P/L (u)"]), "bold": {"P/L"},
                      "colours": {"League": MUTED if paper else INK, "ROI": _signed(r["ROI %"] or 0),
                                  "P/L": _signed(r["P/L (u)"]), "Last 7d": _signed(r["P/L 7d (u)"]),
@@ -1318,7 +1365,7 @@ def leagues_image(today: str | None = None) -> list[bytes]:
     t = L.totals(d)
     sub = (f"Staked tips ({STAKED_TEXT}), settled since {str(config.PERFORMANCE_CUTOFF_DATE)[:10]}, flat 1u. "
            f"All leagues: {t['tips']} tips, {L.wl(t['won'], t['lost'], t['void'])}, ROI {t['roi']:+.0%}, "
-           f"{U.fmt(t['pl'])} (paper leagues not counted). Rating = Pro league rating 1-10.")
+           f"{U.fmt(t['pl'])} (no-stake leagues not counted). Rating = Pro league rating 1-10.")
     return render_table("Leagues — season to date", LEAGUE_COLUMNS, league_rows(L.overview_table(ov)),
                         subtitle=sub,
                         footer="Same numbers as the app's Leagues page · best/worst market needs 5+ tips · "
@@ -1335,7 +1382,7 @@ def last_week_leagues_image(today: str | None = None) -> list[bytes]:
     rows = []
     for r in lw.to_dict("records"):
         paper = r["paper"]
-        rows.append({"cells": [r["league"] + (" (paper)" if paper else ""), str(r["tips"]),
+        rows.append({"cells": [r["league"] + (" (no stake)" if paper else ""), str(r["tips"]),
                                L.wl(r["won"], r["lost"], r["void"]) if r["tips"] else "–",
                                U.fmt(r['pl']) if r["tips"] else "–",
                                str(r["valuable_tips"]), U.fmt(r['valuable_pl']) if r["valuable_tips"] else "–"],
@@ -1417,6 +1464,18 @@ def build_pack(now: _dt.datetime | None = None, freeze: bool = False) -> tuple[l
     except Exception as e:                                              # noqa: BLE001
         print(f"[daily_pack] tips skipped: {type(e).__name__}: {e}")
         tips = pd.DataFrame()
+    # the album's coherence gate: every tip already sent + the tips this album shows (src/tip_coherence)
+    try:
+        from src.tip_coherence import Candidate, CoherenceGate, fixture_id, parse_event
+        gate = CoherenceGate.load()
+        for r in (tips.to_dict("records") if len(tips) else []):
+            ev = parse_event(r.get("market"))
+            if ev is not None:
+                gate.commit(Candidate(fixture_id(r.get("date"), r.get("home_team"), r.get("away_team")), ev,
+                                      "album tip"))
+    except Exception as e:                                              # noqa: BLE001
+        print(f"[daily_pack] coherence gate unavailable ({type(e).__name__}: {e})")
+        gate = None
     steps =[("top_picks", lambda: top_picks_image(today, freeze=freeze, now=now if late else None)),
              ("tips", lambda: render_pngs(tips, f"Today's tips — {header}{tag}") if len(tips) else []),
              ("top_picks_results", lambda: top_picks_results_image(yday)),
@@ -1425,7 +1484,7 @@ def build_pack(now: _dt.datetime | None = None, freeze: bool = False) -> tuple[l
              ("record", lambda: record_image(today)),
              ("props", lambda: props_image(today, freeze=freeze, cutoff=cutoff)),
              ("one_x_two", lambda: one_x_two_image(now)),
-             ("bet_builder", lambda: bet_builder_image(today, cutoff=cutoff)),
+             ("bet_builder", lambda: bet_builder_image(today, cutoff=cutoff, gate=gate)),
              ("sharp", lambda: sharp_image(today, cutoff=cutoff)),
              ("scoreboard", scoreboard_images)]
     for name, fn in steps:

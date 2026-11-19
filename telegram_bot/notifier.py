@@ -507,7 +507,67 @@ def _paper_track_note(model_type: str, market: str, side: str, league=None) -> s
     return ""
 
 
-def notify_new_snipers() -> int:
+def _coherence_gate(gate, notified: set | None = None):
+    """The fixture coherence gate (src/tip_coherence, owner 2026-11-19): `gate` when a caller planned one for the
+    whole run, else a fresh one over every tip already sent (this module's notified store + sent TOP-3 picks)."""
+    if gate is not None:
+        return gate
+    from src.tip_coherence import CoherenceGate
+    return CoherenceGate.load(notified_keys=notified if notified is not None else _load_notified())
+
+
+def _ou_key(row) -> str:
+    return f"{str(row['date'])[:10]}|{row['home_team']}|{row['away_team']}|{row.get('best_side','')}"
+
+
+def _ou_candidate(row):
+    from src.tip_coherence import Candidate, Event, calibrated_ev, fixture_id
+    side = str(row.get("best_side") or row.get("bet") or "").upper()
+    odds = row.get("odds_under25") if side == "UNDER" else row.get("odds_over25")
+    return Candidate(fixture_id(row["date"], row["home_team"], row["away_team"]),
+                     Event("FT", "TOTAL", side, 2.5), "O/U 2.5",
+                     rank=calibrated_ev(row.get("edge_calibrated"), odds, row.get("best_edge")), uid=_ou_key(row))
+
+
+def _ou_pending() -> "pd.DataFrame":
+    """bets.csv tips notify_new_snipers would consider (tiered, O/U, match day today or later)."""
+    bets_file = app_config.OUTPUT_DIR / "bets.csv"
+    if not bets_file.exists():
+        return pd.DataFrame()
+    df = _read_csv(bets_file)
+    from src.tier_labels import TIPPED
+    tips = df[df["signal_tier"].isin(TIPPED) & df["bet"].isin(["UNDER", "OVER"])].copy()
+    return tips[tips["date"].astype(str).str[:10] >= _utc_today_str()]
+
+
+def plan_run_gate(notified: set | None = None):
+    """ONE gate for a predict run's three senders (O/U 2.5, side markets, HT): every candidate they could send
+    is planned together, best calibrated EV first, so between two mismatched tips of the same run the
+    higher-ranked one stands whichever sender carries it (src/tip_coherence.CoherenceGate.plan)."""
+    notified = notified if notified is not None else _load_notified()
+    gate = _coherence_gate(None, notified)
+    cands = []
+    try:
+        cands += [_ou_candidate(r) for _, r in _ou_pending().iterrows() if _ou_key(r) not in notified]
+    except Exception as e:                                              # noqa: BLE001
+        print(f"  coherence plan: O/U candidates unreadable ({type(e).__name__}: {e})")
+    try:
+        cands += [_side_candidate(r) for _, r in _side_pending().iterrows() if _side_key(r) not in notified]
+    except Exception as e:                                              # noqa: BLE001
+        print(f"  coherence plan: side candidates unreadable ({type(e).__name__}: {e})")
+    try:
+        b = _ht_board()
+        if not b.empty:
+            cands += [_ht_candidate(c) for c in ht_tip_candidates(b) if not c["reason"]
+                      and _ht_key(c) not in notified]
+    except Exception as e:                                              # noqa: BLE001
+        print(f"  coherence plan: HT candidates unreadable ({type(e).__name__}: {e})")
+    losers = gate.plan(cands)
+    print(f"  coherence gate: {len(cands)} candidate tip(s) planned, {len(losers)} lose to a mismatch")
+    return gate
+
+
+def notify_new_snipers(gate=None) -> int:
     """Check bets.csv for new SNIPER and VALUE tips and send Telegram alerts. Returns count sent."""
     cfg = _load_config()
     token   = cfg.get("token", "")
@@ -564,10 +624,11 @@ def notify_new_snipers() -> int:
         return 0
 
     notified = _load_notified()
+    gate = _coherence_gate(gate, notified)
     sent = 0
 
     for _, row in tips.iterrows():
-        key = f"{str(row['date'])[:10]}|{row['home_team']}|{row['away_team']}|{row.get('best_side','')}"
+        key = _ou_key(row)
         if key in notified:
             continue
 
@@ -599,6 +660,14 @@ def notify_new_snipers() -> int:
 
         # Goes out in its day's morning album instead (not marked notified here: the album marks it).
         if not instant_tip_allowed(row["date"], notified, row=row):
+            continue
+
+        # ONE MATCH, NO MISMATCHED TIPS (owner 2026-11-19, src/tip_coherence): not BTTS Yes + Under 2.5, not an
+        # HT Over + FT Under, from any sender. The first tip sent stands; within a run the higher-ranked one.
+        _cand = _ou_candidate(row)
+        _why = gate.check(_cand)
+        if _why:
+            print(f"  SKIP {row['home_team']} vs {row['away_team']} O/U 2.5 {_cand.event.side}: {_why}")
             continue
 
         tier  = row["signal_tier"]
@@ -650,6 +719,7 @@ def notify_new_snipers() -> int:
 
         if _send(token, chat_id, msg):
             notified.add(key)
+            gate.commit(_cand)
             sent += 1
             _save_notified(notified)  # save after each send so crashes don't cause duplicates
             print(f"  Sent [{tier}]: {row['home_team']} vs {row['away_team']} — {side}")
@@ -704,6 +774,12 @@ def notify_live_signals() -> int:
         minute_bucket = (int(row["elapsed_mins"]) // 10) * 10
         key = f"LIVE|{row['match']}|{row['signal_type']}|{minute_bucket}"
         if key in live_notified:
+            continue
+        # A tip needs a captured market price (owner 2026-11-19). live_tips.csv carries only the model's FAIR
+        # price (and src/live_scanner's signal rules are one global set, not per-league bars), so a live
+        # signal is never sent as a tip until the scanner records a real in-play price; it stays collected.
+        if pd.isna(pd.to_numeric(row.get("market_odds"), errors="coerce")):
+            print(f"  SKIP live {row['match']} [{row['signal_type']}]: NO_MARKET_PRICE (fair price only)")
             continue
 
         emoji   = SIGNAL_EMOJI.get(row["signal_type"], "📌")
@@ -861,105 +937,176 @@ def notify_sharp_strong() -> int:
     return sent
 
 
-def notify_ht_tips() -> int:
-    """Send Telegram alerts for strong HT O/U model predictions. Returns count sent."""
+#: the four HT market-sides the board prices: (price market name, side, line, model column of P(HT over line))
+HT_MARKETS = (("ht_over05", "OVER", "0.5", "p_ht_over05"), ("ht_under05", "UNDER", "0.5", "p_ht_over05"),
+              ("ht_over15", "OVER", "1.5", "p_ht_over15"), ("ht_under15", "UNDER", "1.5", "p_ht_over15"))
+#: HT bars would live in models/best_params_side_markets.json under these keys, one bars_opt cell per side
+#: (src/bars_opt/serve.served_cell), applied by src/threshold_apply like every other cell. None exists today.
+HT_PARAMS_KEY = {"0.5": "ht_ou05", "1.5": "ht_ou15"}
+HT_SKIP_NO_PRICE = "NO_MARKET_PRICE"
+HT_SKIP_NO_BAR = "NO_LEAGUE_BAR"
+
+
+def _ht_price_fn():
+    """src.ledger._ht_price_lookup (the captured bet-time HT prices), or None. Cached per process."""
+    global _HT_PRICE_FN
+    if "_HT_PRICE_FN" not in globals() or _HT_PRICE_FN is None:
+        try:
+            from src.ledger import _ht_price_lookup as _hpl
+            _HT_PRICE_FN = _hpl()
+        except Exception as e:                                          # noqa: BLE001
+            print(f"  HT prices unavailable ({type(e).__name__}: {e})")
+            _HT_PRICE_FN = None
+    return _HT_PRICE_FN
+
+
+def ht_bar(league: str, line: str, side: str, ctx: dict | None = None) -> tuple:
+    """(cell, "") when league x HT line x side has its OWN owner-applied bar, else (None, reason). Read the way
+    every other tip reads its bar (src/bars_opt/serve.served_cell over the production params file + the
+    threshold_apply ledger). Never a global value: no cell -> no HT tip."""
+    from src.bars_opt import serve as BS
+    try:
+        if ctx is None:
+            ctx = {"side": json.loads((app_config.MODELS_DIR / "best_params_side_markets.json")
+                                      .read_text(encoding="utf-8"))}
+        key = HT_PARAMS_KEY[line]
+        lp = (ctx.get("side") or {}).get(key, {}).get(league)
+        cell, why = BS.served_cell(lp, key, league, side.lower(), ctx.get("applied"))
+    except Exception as e:                                              # noqa: BLE001
+        return None, f"{HT_SKIP_NO_BAR}: HT bars unreadable ({type(e).__name__})"
+    if cell is None:
+        return None, why or f"{HT_SKIP_NO_BAR}: no approved HT bar"
+    return cell, ""
+
+
+def ht_tip_candidates(df: "pd.DataFrame", price_fn=None, bar_fn=None) -> list:
+    """Every fixture x HT market-side of the board, each with its decision. A candidate is SENDABLE only when
+    (a) a captured bet-time price exists for that exact market-side (src.ledger._ht_price_lookup) and (b) the
+    league's own approved HT bar for that cell is cleared (ht_bar + src/bars_opt/serve.score on the two-sided
+    de-vigged price). There is NO global probability threshold here any more (owner rule 2026-11-08: every
+    league its own bars, never global): until HT bars are approved nothing is sendable and every candidate
+    says why. The prediction ledgers (ht_ledger / ht_observations / prediction_ledger) keep recording every
+    HT prediction; this only decides what is SENT.
+    Returns dicts: row, market, side, line, prob, odds, reason ("" = sendable), measure."""
+    from src.bars_opt import serve as BS
+    price_fn = price_fn if price_fn is not None else _ht_price_fn()
+    bar_fn = bar_fn or ht_bar
+    out = []
+    for _, row in df.iterrows():
+        date = str(row["date"])[:10]
+        lg = str(row.get("league", ""))
+        for mkt, side, line, col in HT_MARKETS:
+            p_over = pd.to_numeric(row.get(col), errors="coerce")
+            if pd.isna(p_over):
+                continue
+            prob = float(p_over) if side == "OVER" else 1.0 - float(p_over)
+            c = {"row": row, "market": mkt, "side": side, "line": line, "prob": prob, "odds": None,
+                 "reason": "", "measure": None}
+            odds = price_fn(date, lg, row["home_team"], row["away_team"], mkt) if price_fn else None
+            if not odds:
+                c["reason"] = HT_SKIP_NO_PRICE
+                out.append(c)
+                continue
+            c["odds"] = float(odds)
+            cell, why = bar_fn(lg, line, side)
+            if cell is None:
+                c["reason"] = why
+                out.append(c)
+                continue
+            other = mkt.replace("over", "under") if side == "OVER" else mkt.replace("under", "over")
+            o2 = price_fn(date, lg, row["home_team"], row["away_team"], other) if price_fn else None
+            fair = BS.fair_yes(odds, o2)
+            try:
+                res = BS.score(pd.DataFrame([{"league": lg, "p_side": prob, "fair": fair, "odds": float(odds)}]),
+                               cell)
+                if not str(res["tier"].iloc[0] or ""):
+                    c["reason"] = str(res["reason"].iloc[0] or BS.R_BELOW)
+                else:
+                    c["measure"] = pd.to_numeric(res["measure"].iloc[0], errors="coerce")
+            except Exception as e:                                      # noqa: BLE001
+                c["reason"] = f"{HT_SKIP_NO_BAR}: HT cell not servable ({type(e).__name__})"
+            out.append(c)
+    return out
+
+
+def _ht_key(c: dict) -> str:
+    r = c["row"]
+    return f"HT|{str(r['date'])[:10]}|{r['home_team']}|{r['away_team']}|HT{c['side']}{c['line']}"
+
+
+def _ht_candidate(c: dict):
+    from src.tip_coherence import Candidate, Event, calibrated_ev, fixture_id
+    r = c["row"]
+    return Candidate(fixture_id(r["date"], r["home_team"], r["away_team"]),
+                     Event("HT", "TOTAL", c["side"], float(c["line"])), "HT",
+                     rank=calibrated_ev(c.get("measure"), c.get("odds")), uid=_ht_key(c))
+
+
+def _ht_board() -> "pd.DataFrame":
+    preds_file = app_config.OUTPUT_DIR / "predictions.csv"
+    if not preds_file.exists():
+        return pd.DataFrame()
+    df = _read_csv(preds_file)
+    if "p_ht_over05" not in df.columns:
+        return pd.DataFrame()
+    df = df[df["date"].astype(str).str[:10] >= _utc_today_str()]   # UTC day: stored dates are UTC
+    return df[df["p_ht_over05"].notna()]
+
+
+def notify_ht_tips(gate=None) -> int:
+    """Send HT O/U tips that have a captured market price AND clear their league's own approved HT bar
+    (ht_tip_candidates), through the fixture coherence gate (src/tip_coherence). Returns count sent.
+    Every skipped candidate is logged with its reason, one line per fixture."""
     cfg = _load_config()
     token   = cfg.get("token", "")
     chat_id = cfg.get("chat_id", "")
     if not token or token == "YOUR_BOT_TOKEN":
         return 0
 
-    preds_file = app_config.OUTPUT_DIR / "predictions.csv"
-    if not preds_file.exists():
-        return 0
-
-    df = _read_csv(preds_file)
-    if "p_ht_over05" not in df.columns:
-        return 0
-
-    today_str = _utc_today_str()   # UTC day: stored dates are UTC (src/utc_clock.py)
-    df = df[df["date"].astype(str).str[:10] >= today_str]
-    df = df[df["p_ht_over05"].notna()]
-
+    df = _ht_board()
     if df.empty:
         return 0
 
+    from collections import Counter
     notified = _load_notified()
+    cands = ht_tip_candidates(df)
+    gate = _coherence_gate(gate, notified)
     sent = 0
-
-    for _, row in df.iterrows():
-        p05  = float(row["p_ht_over05"])
-        p15  = float(row["p_ht_over15"]) if pd.notna(row.get("p_ht_over15")) else None
-        date = str(row["date"])[:10]
-
-        # Only alert on strong signals
-        if p05 >= 0.75:
-            side, prob, line = "OVER", p05, "0.5"
-            fair = round(1 / max(p05, 0.01), 2)
-            emoji = "⚡"
-        elif p05 <= 0.30:
-            side, prob, line = "UNDER", 1 - p05, "0.5"
-            fair = round(1 / max(1 - p05, 0.01), 2)
-            emoji = "🧊"
-        elif p15 is not None and p15 >= 0.60:
-            side, prob, line = "OVER", p15, "1.5"
-            fair = round(1 / max(p15, 0.01), 2)
-            emoji = "🔥"
-        elif p15 is not None and p15 <= 0.25:
-            side, prob, line = "UNDER", 1 - p15, "1.5"
-            fair = round(1 / max(1 - p15, 0.01), 2)
-            emoji = "🔒"
-        else:
-            continue
-
-        key = f"HT|{date}|{row['home_team']}|{row['away_team']}|HT{side}{line}"
+    skipped: dict = {}
+    counts: Counter = Counter()
+    for c in cands:
+        key = _ht_key(c)
         if key in notified:
             continue
+        why = c["reason"] or gate.check(_ht_candidate(c))
+        r = c["row"]
+        if why:
+            counts[why.split(":")[0].split(" (")[0]] += 1
+            skipped.setdefault(f"{r['home_team']} v {r['away_team']}", []).append(f"{c['market']} {why}")
+            continue
 
-        # SHOW THE MARKET PRICE AND THE EDGE, not just our own fair odds. A tip that quotes
-        # only `1/p` tells the reader what we believe and nothing about whether it is worth
-        # taking — and a fair price always looks attractive next to no price at all. The
-        # captured HT market is used when we have it; when we do not, that is stated rather
-        # than hidden, because "no price" and "no edge" call for opposite reactions.
-        _mkt, _edge = None, None
-        try:
-            from src.ledger import _ht_price_lookup as _hpl
-            global _HT_PRICE_FN
-            if "_HT_PRICE_FN" not in globals() or _HT_PRICE_FN is None:
-                _HT_PRICE_FN = _hpl()
-            if _HT_PRICE_FN:
-                _mktname = f"ht_{'over' if side == 'OVER' else 'under'}{line.replace('.', '')}"
-                _mkt = _HT_PRICE_FN(date, row.get("league", ""), row["home_team"],
-                                    row["away_team"], _mktname)
-                if _mkt:
-                    _edge = prob - 1.0 / _mkt
-        except Exception:
-            _mkt = _edge = None
-
-        if _mkt:
-            _price_line = (f"💰 Market: <b>{_mkt:.2f}</b> | fair {fair} | "
-                           f"edge <b>{_edge*100:+.1f}%</b>\n")
-        else:
-            _price_line = f"💰 Fair price: <b>{fair}</b> | ⚠️ no market price captured\n"
-
+        side, line, prob = c["side"], c["line"], c["prob"]
         msg = (
-            f"{emoji} <b>HT {side} {line} — MODEL TIP</b>\n"   # owner 2026-11-17: no stake label
+            f"{'⚡' if side == 'OVER' else '🧊'} <b>HT {side} {line} — TIP</b>\n"
             f"━━━━━━━━━━━━━━━━\n"
-            f"📅 {_fmt_kickoff(row)}\n"
-            f"🏆 {row.get('league', '')}\n"
-            f"⚽ {row['home_team']} vs {row['away_team']}\n"
-            f"📌 <b>HT {side} {line}</b>\n"
-            f"📊 P(HT {side} {line}) = <b>{prob*100:.0f}%</b>\n"
-            f"{_price_line}"
-            f"⚠️ Paper only — the HT market has beaten this model in testing"
+            f"📅 {_fmt_kickoff(r)}\n"
+            f"🏆 {r.get('league', '')}\n"
+            f"⚽ {r['home_team']} vs {r['away_team']}\n"
+            f"📌 <b>HT {side} {line}</b>  @ {c['odds']:.2f}\n"
+            f"📊 P(HT {side} {line}) = <b>{prob*100:.0f}%</b>  |  {edge_text(float('nan'))}\n"
+            f"📏 Cleared the league's own approved HT bar"
         )
-
         if _send(token, chat_id, msg):
             notified.add(key)
+            gate.commit(_ht_candidate(c))
             sent += 1
             _save_notified(notified)
-            print(f"  HT tip: {row['home_team']} vs {row['away_team']} — HT {side} {line} ({prob*100:.0f}%)")
+            print(f"  HT tip: {r['home_team']} vs {r['away_team']} — HT {side} {line} ({prob*100:.0f}%)")
 
+    for fx, why in skipped.items():
+        print(f"  HT skip {fx}: " + "; ".join(why))
+    if counts:
+        print(f"  HT candidates: {len(cands)}, sent {sent}, skipped by reason {dict(counts)}")
     return sent
 
 
@@ -1363,7 +1510,7 @@ def notify_weekly_summary() -> bool:
             pend = int(((hl["result"].isna() | (hl["result"].astype(str).str.strip() == ""))
                         & (hl["_d"] >= week_ago)).sum())
             if not hw.empty or pend:
-                lines.append("⏱️ <b>Half-time O/U</b> <i>(PAPER)</i>")
+                lines.append("⏱️ <b>Half-time O/U</b> <i>(no stake)</i>")
                 if hw.empty:
                     lines.append(f"  ⏳ {pend} tip(s) awaiting results")
                 else:
@@ -2826,8 +2973,37 @@ def threshold_source_line(src) -> str:
     return ""
 
 
-def notify_side_bets() -> int:
-    """Send Telegram alerts for SNIPER/MARKSMAN BTTS / Over 1.5 / Over 3.5 tips. Returns count sent."""
+def _side_key(row) -> str:
+    # Side is part of the dedup key so a future BTTS-NO signal cannot be suppressed by an already-sent BTTS-YES
+    # on the same fixture. Falls back to "" for existing keys, so no previously notified tip is re-sent.
+    _sd = str(row.get("side", "") or "")
+    return (f"SIDE|{str(row['date'])[:10]}|{row['home_team']}|{row['away_team']}"
+            f"|{row['market']}" + (f"|{_sd}" if _sd and _sd.upper() not in ("YES", "OVER", "NAN") else ""))
+
+
+def _side_candidate(row):
+    from src.tip_coherence import Candidate, Event, calibrated_ev, fixture_id, parse_event
+    _sd = str(row.get("side", "") or "").upper()
+    ev = parse_event(row.get("market"), _sd if _sd and _sd != "NAN" else "YES")
+    return Candidate(fixture_id(row["date"], row["home_team"], row["away_team"]),
+                     ev or Event("FT", "OTHER", "OVER"), f"side {row.get('market')}",
+                     rank=calibrated_ev(row.get("edge_calibrated"), row.get("market_odds"), row.get("edge")),
+                     uid=_side_key(row))
+
+
+def _side_pending() -> "pd.DataFrame":
+    """side_bets.csv tips notify_side_bets would consider (tiered, match day today or later)."""
+    side_file = app_config.OUTPUT_DIR / "side_bets.csv"
+    if not side_file.exists():
+        return pd.DataFrame()
+    df = _read_csv(side_file)
+    from src.tier_labels import TIPPED
+    df = df[df["signal_tier"].isin(TIPPED)].copy()
+    return df[df["date"].astype(str).str[:10] >= _utc_today_str()]
+
+
+def notify_side_bets(gate=None) -> int:
+    """Send Telegram alerts for BTTS / Over 1.5 / Over 3.5 tips. Returns count sent."""
     cfg = _load_config()
     token   = cfg.get("token", "")
     chat_id = cfg.get("chat_id", "")
@@ -2869,18 +3045,29 @@ def notify_side_bets() -> int:
     MARKET_EMOJI = {"btts": "🔁", "over15": "📈", "over35": "🚀"}
 
     notified = _load_notified()
+    gate = _coherence_gate(gate, notified)
     sent = 0
 
     for _, row in df.iterrows():
-        # Side is part of the dedup key so a future BTTS-NO signal cannot be suppressed by an
-        # already-sent BTTS-YES on the same fixture. Falls back to "" for existing keys, so no
-        # previously notified tip is re-sent by this change.
-        _sd = str(row.get("side", "") or "")
-        key = (f"SIDE|{str(row['date'])[:10]}|{row['home_team']}|{row['away_team']}"
-               f"|{row['market']}" + (f"|{_sd}" if _sd and _sd.upper() not in ("YES", "OVER") else ""))
+        key = _side_key(row)
         if key in notified:
             continue
         if not instant_tip_allowed(row["date"], notified, row=row):      # morning album carries it
+            continue
+        # A tip goes out only with its bet-time price and on its league's OWN bar (owner 2026-11-19): a row
+        # without a market price, or tiered on the historical GLOBAL bar, is skipped and logged.
+        if pd.isna(pd.to_numeric(row.get("market_odds"), errors="coerce")):
+            print(f"  SKIP side {row['home_team']} vs {row['away_team']} {row['market']}: NO_MARKET_PRICE")
+            continue
+        _src = str(row.get("threshold_source") or "").strip().upper()
+        if _src == app_config.THRESHOLD_SOURCE_GLOBAL:
+            print(f"  SKIP side {row['home_team']} vs {row['away_team']} {row['market']}: GLOBAL_BAR "
+                  f"(no approved per-league bar)")
+            continue
+        _cand = _side_candidate(row)
+        _why = gate.check(_cand)
+        if _why:
+            print(f"  SKIP side {row['home_team']} vs {row['away_team']} {row['market']}: {_why}")
             continue
 
         tier  = row["signal_tier"]
@@ -2926,6 +3113,7 @@ def notify_side_bets() -> int:
 
         if _send(token, chat_id, msg):
             notified.add(key)
+            gate.commit(_cand)
             sent += 1
             _save_notified(notified)
             print(f"  Side [{tier}]: {row['home_team']} vs {row['away_team']} — {label} @ {row['market_odds']:.2f}")
@@ -3029,9 +3217,16 @@ if __name__ == "__main__":
     else:
         # Only predict-specific notifications — sharp/WC handled by sharp_tracker,
         # player props by player_props workflow, digests by daily_summary.
-        n    = notify_new_snipers()
-        side = notify_side_bets()
-        ht   = notify_ht_tips()
+        # ONE coherence gate for the run (owner 2026-11-19): every candidate of the three senders is planned
+        # together, so of two mismatched tips on one match only the higher-ranked one can go out.
+        try:
+            gate = plan_run_gate()
+        except Exception as e:                                          # noqa: BLE001 - senders build their own
+            print(f"  coherence plan failed ({type(e).__name__}: {e}) - each sender checks on its own")
+            gate = None
+        n    = notify_new_snipers(gate)
+        side = notify_side_bets(gate)
+        ht   = notify_ht_tips(gate)
         # notify_live_signals() is owned by live_scanner.py + its own workflow. Calling it here
         # too (predict runs every 5 min) raced live_scanner's dedup -> DUPLICATE live alerts.
         # Removed 2026-08-09 so live signals have exactly ONE sender.
