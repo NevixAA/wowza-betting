@@ -1,235 +1,35 @@
 {
   "artifact": "join_integrity_health",
   "helper_version": "safe_left_enrich-1.0",
-  "generated_at": "2026-11-18T17:23:21Z",
+  "generated_at": "2026-11-19T13:37:02Z",
   "status": "FAIL",
   "joins": {
     "af_history_shots.legacy": {
       "name": "af_history_shots.legacy",
       "keys": [
-        "_home_norm",
-        "_away_norm",
+        "_h",
+        "_a",
         "_date_str"
       ],
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
-      "left_rows": 83537,
-      "right_rows": 91817,
-      "right_null_key_rows": 0,
-      "right_duplicate_key_groups": 5972,
-      "right_duplicate_rows": 12139,
-      "ambiguous_key_groups": 0,
-      "ambiguous_cells": {},
-      "left_null_key_rows": 0,
-      "matched_left_rows": 82405,
-      "unmapped_left_rows": 0,
-      "output_rows": 90580,
-      "duplicate_output_rows": 0,
-      "filled_cells": {},
-      "overwritten_cells": 0,
-      "legacy_expansion_rows": 7043,
-      "legacy_misaligned_rows": 83525,
-      "status": "FAIL",
-      "notes": [
-        "key omits league/fixture_id"
-      ]
-    },
-    "af_restored_rows": {
-      "name": "af_restored_rows",
-      "keys": [
-        "league",
-        "_home_norm",
-        "_away_norm",
-        "_date_str"
-      ],
-      "helper_version": "safe_left_enrich-1.0",
-      "mode": "safe",
-      "left_rows": 83537,
-      "right_rows": 19840,
+      "left_rows": 80523,
+      "right_rows": 2599,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
       "ambiguous_key_groups": 0,
       "ambiguous_cells": {},
       "left_null_key_rows": 0,
-      "matched_left_rows": 20167,
-      "unmapped_left_rows": 63370,
-      "output_rows": 83537,
-      "duplicate_output_rows": 0,
-      "filled_cells": {
-        "home_shots": 62,
-        "away_shots": 62,
-        "home_sot": 62,
-        "away_sot": 59,
-        "home_corners": 5613,
-        "away_corners": 5612,
-        "home_fouls": 5609,
-        "away_fouls": 5606,
-        "home_yellows": 19517,
-        "away_yellows": 19515,
-        "home_xg": 84,
-        "away_xg": 84,
-        "home_insidebox": 61,
-        "away_insidebox": 61
-      },
-      "overwritten_cells": 0,
-      "legacy_expansion_rows": null,
-      "legacy_misaligned_rows": null,
-      "status": "PASS",
-      "notes": []
-    },
-    "fd_history_ht_fill.legacy": {
-      "name": "fd_history_ht_fill.legacy",
-      "keys": [
-        "_h",
-        "_a",
-        "_date_str"
-      ],
-      "helper_version": "safe_left_enrich-1.0",
-      "mode": "legacy_audit",
-      "left_rows": 83537,
-      "right_rows": 33259,
-      "right_null_key_rows": 0,
-      "right_duplicate_key_groups": 1174,
-      "right_duplicate_rows": 2348,
-      "ambiguous_key_groups": 0,
-      "ambiguous_cells": {},
-      "left_null_key_rows": 0,
-      "matched_left_rows": 32084,
+      "matched_left_rows": 1058,
       "unmapped_left_rows": 0,
-      "output_rows": 84710,
-      "duplicate_output_rows": 0,
-      "filled_cells": {},
-      "overwritten_cells": 0,
-      "legacy_expansion_rows": 1173,
-      "legacy_misaligned_rows": 67955,
-      "status": "FAIL",
-      "notes": [
-        "key omits league/fixture_id"
-      ]
-    },
-    "fd_history_ht_fill": {
-      "name": "fd_history_ht_fill",
-      "keys": [
-        "league",
-        "_h",
-        "_a",
-        "_date_str"
-      ],
-      "helper_version": "safe_left_enrich-1.0",
-      "mode": "safe",
-      "left_rows": 83537,
-      "right_rows": 33259,
-      "right_null_key_rows": 0,
-      "right_duplicate_key_groups": 1174,
-      "right_duplicate_rows": 2348,
-      "ambiguous_key_groups": 0,
-      "ambiguous_cells": {},
-      "left_null_key_rows": 0,
-      "matched_left_rows": 32084,
-      "unmapped_left_rows": 51453,
-      "output_rows": 83537,
-      "duplicate_output_rows": 0,
-      "filled_cells": {
-        "ht_home_goals": 31526,
-        "ht_away_goals": 31526
-      },
-      "overwritten_cells": 0,
-      "legacy_expansion_rows": null,
-      "legacy_misaligned_rows": null,
-      "status": "PASS",
-      "notes": []
-    },
-    "std_sidemarket_odds.legacy": {
-      "name": "std_sidemarket_odds.legacy",
-      "keys": [
-        "_h",
-        "_a",
-        "_d"
-      ],
-      "helper_version": "safe_left_enrich-1.0",
-      "mode": "legacy_audit",
-      "left_rows": 83537,
-      "right_rows": 18885,
-      "right_null_key_rows": 0,
-      "right_duplicate_key_groups": 0,
-      "right_duplicate_rows": 0,
-      "ambiguous_key_groups": 0,
-      "ambiguous_cells": {},
-      "left_null_key_rows": 0,
-      "matched_left_rows": 7016,
-      "unmapped_left_rows": 76521,
-      "output_rows": 83537,
+      "output_rows": 80523,
       "duplicate_output_rows": 0,
       "filled_cells": {},
       "overwritten_cells": 0,
       "legacy_expansion_rows": 0,
       "legacy_misaligned_rows": 0,
       "status": "PASS",
-      "notes": [
-        "key omits league/fixture_id; pivot aggfunc picks one value per key"
-      ]
-    },
-    "ou25_captures.legacy": {
-      "name": "ou25_captures.legacy",
-      "keys": [
-        "_h",
-        "_a",
-        "_d"
-      ],
-      "helper_version": "safe_left_enrich-1.0",
-      "mode": "legacy_audit",
-      "left_rows": 83537,
-      "right_rows": 35540,
-      "right_null_key_rows": 0,
-      "right_duplicate_key_groups": 0,
-      "right_duplicate_rows": 0,
-      "ambiguous_key_groups": 0,
-      "ambiguous_cells": {},
-      "left_null_key_rows": 0,
-      "matched_left_rows": 4787,
-      "unmapped_left_rows": 78750,
-      "output_rows": 83537,
-      "duplicate_output_rows": 0,
-      "filled_cells": {},
-      "overwritten_cells": 0,
-      "legacy_expansion_rows": 0,
-      "legacy_misaligned_rows": 0,
-      "status": "PASS",
-      "notes": [
-        "key omits league/fixture_id; pivot aggfunc picks one value per key"
-      ]
-    }
-  },
-  "serving_join_mode": "legacy",
-  "flag": "WOWZA_SAFE_ENRICH_JOINS (default 0 = legacy joins serve; owner review pending)",
-  "safe_join_reports": {
-    "af_history_shots.legacy": {
-      "name": "af_history_shots.legacy",
-      "keys": [
-        "_home_norm",
-        "_away_norm",
-        "_date_str"
-      ],
-      "helper_version": "safe_left_enrich-1.0",
-      "mode": "legacy_audit",
-      "left_rows": 83537,
-      "right_rows": 91817,
-      "right_null_key_rows": 0,
-      "right_duplicate_key_groups": 5972,
-      "right_duplicate_rows": 12139,
-      "ambiguous_key_groups": 0,
-      "ambiguous_cells": {},
-      "left_null_key_rows": 0,
-      "matched_left_rows": 82405,
-      "unmapped_left_rows": 0,
-      "output_rows": 90580,
-      "duplicate_output_rows": 0,
-      "filled_cells": {},
-      "overwritten_cells": 0,
-      "legacy_expansion_rows": 7043,
-      "legacy_misaligned_rows": 83525,
-      "status": "FAIL",
       "notes": [
         "key omits league/fixture_id"
       ]
@@ -238,92 +38,39 @@
       "name": "af_history_shots",
       "keys": [
         "league",
-        "_home_norm",
-        "_away_norm",
+        "_h",
+        "_a",
         "_date_str"
       ],
       "helper_version": "safe_left_enrich-1.0",
       "mode": "safe",
-      "left_rows": 83537,
-      "right_rows": 91817,
-      "right_null_key_rows": 0,
-      "right_duplicate_key_groups": 5972,
-      "right_duplicate_rows": 12139,
-      "ambiguous_key_groups": 631,
-      "ambiguous_cells": {
-        "home_shots": 227,
-        "away_shots": 213,
-        "home_sot": 180,
-        "away_sot": 169,
-        "home_xg": 210,
-        "away_xg": 206,
-        "home_insidebox": 282,
-        "away_insidebox": 280
-      },
-      "left_null_key_rows": 0,
-      "matched_left_rows": 82405,
-      "unmapped_left_rows": 1132,
-      "output_rows": 83537,
-      "duplicate_output_rows": 0,
-      "filled_cells": {
-        "home_shots": 21765,
-        "away_shots": 21770,
-        "home_sot": 21787,
-        "away_sot": 21788,
-        "home_corners": 277,
-        "away_corners": 277,
-        "home_fouls": 277,
-        "away_fouls": 277,
-        "home_yellows": 274,
-        "away_yellows": 274,
-        "home_xg": 12375,
-        "away_xg": 12379,
-        "home_insidebox": 14908,
-        "away_insidebox": 14907
-      },
-      "overwritten_cells": 0,
-      "legacy_expansion_rows": null,
-      "legacy_misaligned_rows": null,
-      "status": "WARN",
-      "notes": []
-    },
-    "af_restored_rows": {
-      "name": "af_restored_rows",
-      "keys": [
-        "league",
-        "_home_norm",
-        "_away_norm",
-        "_date_str"
-      ],
-      "helper_version": "safe_left_enrich-1.0",
-      "mode": "safe",
-      "left_rows": 83537,
-      "right_rows": 19840,
+      "left_rows": 80523,
+      "right_rows": 2599,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
       "ambiguous_key_groups": 0,
       "ambiguous_cells": {},
       "left_null_key_rows": 0,
-      "matched_left_rows": 20167,
-      "unmapped_left_rows": 63370,
-      "output_rows": 83537,
+      "matched_left_rows": 1058,
+      "unmapped_left_rows": 79465,
+      "output_rows": 80523,
       "duplicate_output_rows": 0,
       "filled_cells": {
-        "home_shots": 59,
-        "away_shots": 59,
-        "home_sot": 59,
-        "away_sot": 59,
-        "home_corners": 5613,
-        "away_corners": 5612,
-        "home_fouls": 5609,
-        "away_fouls": 5606,
-        "home_yellows": 19517,
-        "away_yellows": 19515,
-        "home_xg": 5,
-        "away_xg": 5,
-        "home_insidebox": 8,
-        "away_insidebox": 9
+        "home_shots": 1039,
+        "away_shots": 1039,
+        "home_sot": 1039,
+        "away_sot": 1039,
+        "home_corners": 1039,
+        "away_corners": 1039,
+        "home_fouls": 1039,
+        "away_fouls": 1039,
+        "home_yellows": 1025,
+        "away_yellows": 1025,
+        "home_xg": 846,
+        "away_xg": 846,
+        "home_insidebox": 1040,
+        "away_insidebox": 1040
       },
       "overwritten_cells": 0,
       "legacy_expansion_rows": null,
@@ -340,22 +87,22 @@
       ],
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
-      "left_rows": 83537,
-      "right_rows": 33259,
+      "left_rows": 80523,
+      "right_rows": 36393,
       "right_null_key_rows": 0,
-      "right_duplicate_key_groups": 1174,
-      "right_duplicate_rows": 2348,
+      "right_duplicate_key_groups": 1920,
+      "right_duplicate_rows": 3840,
       "ambiguous_key_groups": 0,
       "ambiguous_cells": {},
       "left_null_key_rows": 0,
-      "matched_left_rows": 32084,
+      "matched_left_rows": 34473,
       "unmapped_left_rows": 0,
-      "output_rows": 84710,
+      "output_rows": 82443,
       "duplicate_output_rows": 0,
       "filled_cells": {},
       "overwritten_cells": 0,
-      "legacy_expansion_rows": 1173,
-      "legacy_misaligned_rows": 67955,
+      "legacy_expansion_rows": 1920,
+      "legacy_misaligned_rows": 64941,
       "status": "FAIL",
       "notes": [
         "key omits league/fixture_id"
@@ -371,21 +118,137 @@
       ],
       "helper_version": "safe_left_enrich-1.0",
       "mode": "safe",
-      "left_rows": 83537,
-      "right_rows": 33259,
+      "left_rows": 80523,
+      "right_rows": 36393,
       "right_null_key_rows": 0,
-      "right_duplicate_key_groups": 1174,
-      "right_duplicate_rows": 2348,
+      "right_duplicate_key_groups": 1920,
+      "right_duplicate_rows": 3840,
       "ambiguous_key_groups": 0,
       "ambiguous_cells": {},
       "left_null_key_rows": 0,
-      "matched_left_rows": 32084,
-      "unmapped_left_rows": 51453,
-      "output_rows": 83537,
+      "matched_left_rows": 34473,
+      "unmapped_left_rows": 46050,
+      "output_rows": 80523,
       "duplicate_output_rows": 0,
       "filled_cells": {
-        "ht_home_goals": 31526,
-        "ht_away_goals": 31526
+        "ht_home_goals": 33586,
+        "ht_away_goals": 33586
+      },
+      "overwritten_cells": 0,
+      "legacy_expansion_rows": null,
+      "legacy_misaligned_rows": null,
+      "status": "PASS",
+      "notes": []
+    },
+    "af_stats_fill": {
+      "name": "af_stats_fill",
+      "keys": [
+        "league",
+        "_h",
+        "_a",
+        "_date_str"
+      ],
+      "helper_version": "safe_left_enrich-1.0",
+      "mode": "safe",
+      "left_rows": 80523,
+      "right_rows": 58356,
+      "right_null_key_rows": 0,
+      "right_duplicate_key_groups": 1,
+      "right_duplicate_rows": 2,
+      "ambiguous_key_groups": 0,
+      "ambiguous_cells": {},
+      "left_null_key_rows": 0,
+      "matched_left_rows": 56015,
+      "unmapped_left_rows": 24508,
+      "output_rows": 80523,
+      "duplicate_output_rows": 0,
+      "filled_cells": {
+        "home_insidebox": 55650,
+        "away_insidebox": 55650,
+        "home_xg": 15710,
+        "away_xg": 15710
+      },
+      "overwritten_cells": 0,
+      "legacy_expansion_rows": null,
+      "legacy_misaligned_rows": null,
+      "status": "PASS",
+      "notes": []
+    },
+    "af_fullstats_fill": {
+      "name": "af_fullstats_fill",
+      "keys": [
+        "league",
+        "_h",
+        "_a",
+        "_date_str"
+      ],
+      "helper_version": "safe_left_enrich-1.0",
+      "mode": "safe",
+      "left_rows": 80523,
+      "right_rows": 62780,
+      "right_null_key_rows": 0,
+      "right_duplicate_key_groups": 1,
+      "right_duplicate_rows": 2,
+      "ambiguous_key_groups": 0,
+      "ambiguous_cells": {},
+      "left_null_key_rows": 0,
+      "matched_left_rows": 59366,
+      "unmapped_left_rows": 21157,
+      "output_rows": 80523,
+      "duplicate_output_rows": 0,
+      "filled_cells": {
+        "home_corners": 10565,
+        "away_corners": 10565,
+        "home_fouls": 10561,
+        "away_fouls": 10561,
+        "home_shots": 9333,
+        "away_shots": 9333,
+        "home_sot": 9343,
+        "away_sot": 9343
+      },
+      "overwritten_cells": 0,
+      "legacy_expansion_rows": null,
+      "legacy_misaligned_rows": null,
+      "status": "PASS",
+      "notes": []
+    },
+    "af_restored_rows": {
+      "name": "af_restored_rows",
+      "keys": [
+        "league",
+        "_h",
+        "_a",
+        "_date_str"
+      ],
+      "helper_version": "safe_left_enrich-1.0",
+      "mode": "safe",
+      "left_rows": 80523,
+      "right_rows": 20591,
+      "right_null_key_rows": 0,
+      "right_duplicate_key_groups": 1,
+      "right_duplicate_rows": 2,
+      "ambiguous_key_groups": 0,
+      "ambiguous_cells": {},
+      "left_null_key_rows": 0,
+      "matched_left_rows": 19839,
+      "unmapped_left_rows": 60684,
+      "output_rows": 80523,
+      "duplicate_output_rows": 0,
+      "filled_cells": {
+        "home_shots": 0,
+        "away_shots": 0,
+        "home_sot": 0,
+        "away_sot": 0,
+        "home_corners": 0,
+        "away_corners": 0,
+        "home_fouls": 0,
+        "away_fouls": 0,
+        "home_yellows": 19194,
+        "away_yellows": 19193,
+        "home_xg": 258,
+        "away_xg": 258,
+        "home_insidebox": 394,
+        "away_insidebox": 394
       },
       "overwritten_cells": 0,
       "legacy_expansion_rows": null,
@@ -402,17 +265,17 @@
       ],
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
-      "left_rows": 83537,
-      "right_rows": 18885,
+      "left_rows": 80523,
+      "right_rows": 18914,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
       "ambiguous_key_groups": 0,
       "ambiguous_cells": {},
       "left_null_key_rows": 0,
-      "matched_left_rows": 7016,
-      "unmapped_left_rows": 76521,
-      "output_rows": 83537,
+      "matched_left_rows": 7384,
+      "unmapped_left_rows": 73139,
+      "output_rows": 80523,
       "duplicate_output_rows": 0,
       "filled_cells": {},
       "overwritten_cells": 0,
@@ -433,22 +296,22 @@
       ],
       "helper_version": "safe_left_enrich-1.0",
       "mode": "safe",
-      "left_rows": 83537,
-      "right_rows": 7802,
+      "left_rows": 80523,
+      "right_rows": 7804,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
       "ambiguous_key_groups": 0,
       "ambiguous_cells": {},
       "left_null_key_rows": 0,
-      "matched_left_rows": 7016,
-      "unmapped_left_rows": 76521,
-      "output_rows": 83537,
+      "matched_left_rows": 7384,
+      "unmapped_left_rows": 73139,
+      "output_rows": 80523,
       "duplicate_output_rows": 0,
       "filled_cells": {
-        "odds_btts": 6915,
-        "odds_over15": 930,
-        "odds_over35": 947
+        "odds_btts": 7270,
+        "odds_over15": 1299,
+        "odds_over35": 1316
       },
       "overwritten_cells": 0,
       "legacy_expansion_rows": null,
@@ -465,17 +328,17 @@
       ],
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
-      "left_rows": 83537,
-      "right_rows": 35540,
+      "left_rows": 80523,
+      "right_rows": 35285,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
       "ambiguous_key_groups": 0,
       "ambiguous_cells": {},
       "left_null_key_rows": 0,
-      "matched_left_rows": 4787,
-      "unmapped_left_rows": 78750,
-      "output_rows": 83537,
+      "matched_left_rows": 5065,
+      "unmapped_left_rows": 75458,
+      "output_rows": 80523,
       "duplicate_output_rows": 0,
       "filled_cells": {},
       "overwritten_cells": 0,
@@ -496,21 +359,21 @@
       ],
       "helper_version": "safe_left_enrich-1.0",
       "mode": "safe",
-      "left_rows": 83537,
-      "right_rows": 6751,
+      "left_rows": 80523,
+      "right_rows": 6297,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
       "ambiguous_key_groups": 0,
       "ambiguous_cells": {},
       "left_null_key_rows": 0,
-      "matched_left_rows": 4787,
-      "unmapped_left_rows": 78750,
-      "output_rows": 83537,
+      "matched_left_rows": 5065,
+      "unmapped_left_rows": 75458,
+      "output_rows": 80523,
       "duplicate_output_rows": 0,
       "filled_cells": {
-        "odds_over25": 595,
-        "odds_under25": 597
+        "odds_over25_close": 3326,
+        "odds_under25_close": 3331
       },
       "overwritten_cells": 0,
       "legacy_expansion_rows": null,
@@ -519,171 +382,8 @@
       "notes": []
     }
   },
-  "replay": {
-    "label": "RETROSPECTIVE",
-    "rows_total": 83537,
-    "rows_with_any_enriched_value_changed": 40227,
-    "first_changed_row": {
-      "date": "2019-02-25 00:00:00",
-      "league": "Ireland Premier Division",
-      "home_team": "Derry City",
-      "away_team": "Waterford"
-    },
-    "columns": {
-      "home_shots": {
-        "legacy_non_null": 83357,
-        "safe_non_null": 82645,
-        "shifted": 20461,
-        "phantom": 873,
-        "dropped": 161,
-        "rows_changed": 21495
-      },
-      "away_shots": {
-        "legacy_non_null": 83360,
-        "safe_non_null": 82650,
-        "shifted": 20292,
-        "phantom": 868,
-        "dropped": 158,
-        "rows_changed": 21318
-      },
-      "home_sot": {
-        "legacy_non_null": 83358,
-        "safe_non_null": 82657,
-        "shifted": 19120,
-        "phantom": 861,
-        "dropped": 160,
-        "rows_changed": 20141
-      },
-      "away_sot": {
-        "legacy_non_null": 83363,
-        "safe_non_null": 82658,
-        "shifted": 18734,
-        "phantom": 860,
-        "dropped": 155,
-        "rows_changed": 19749
-      },
-      "home_corners": {
-        "legacy_non_null": 62586,
-        "safe_non_null": 62863,
-        "shifted": 0,
-        "phantom": 0,
-        "dropped": 277,
-        "rows_changed": 277
-      },
-      "away_corners": {
-        "legacy_non_null": 62585,
-        "safe_non_null": 62862,
-        "shifted": 0,
-        "phantom": 0,
-        "dropped": 277,
-        "rows_changed": 277
-      },
-      "home_fouls": {
-        "legacy_non_null": 62584,
-        "safe_non_null": 62861,
-        "shifted": 0,
-        "phantom": 0,
-        "dropped": 277,
-        "rows_changed": 277
-      },
-      "away_fouls": {
-        "legacy_non_null": 62581,
-        "safe_non_null": 62858,
-        "shifted": 0,
-        "phantom": 0,
-        "dropped": 277,
-        "rows_changed": 277
-      },
-      "home_xg": {
-        "legacy_non_null": 8458,
-        "safe_non_null": 12380,
-        "shifted": 5510,
-        "phantom": 2905,
-        "dropped": 6827,
-        "rows_changed": 15242
-      },
-      "away_xg": {
-        "legacy_non_null": 8458,
-        "safe_non_null": 12384,
-        "shifted": 5512,
-        "phantom": 2902,
-        "dropped": 6828,
-        "rows_changed": 15242
-      },
-      "home_insidebox": {
-        "legacy_non_null": 10683,
-        "safe_non_null": 14916,
-        "shifted": 7549,
-        "phantom": 2533,
-        "dropped": 6766,
-        "rows_changed": 16848
-      },
-      "away_insidebox": {
-        "legacy_non_null": 10683,
-        "safe_non_null": 14916,
-        "shifted": 7483,
-        "phantom": 2525,
-        "dropped": 6758,
-        "rows_changed": 16766
-      },
-      "ht_home_goals": {
-        "legacy_non_null": 55357,
-        "safe_non_null": 55357,
-        "shifted": 0,
-        "phantom": 0,
-        "dropped": 0,
-        "rows_changed": 0
-      },
-      "ht_away_goals": {
-        "legacy_non_null": 55357,
-        "safe_non_null": 55357,
-        "shifted": 0,
-        "phantom": 0,
-        "dropped": 0,
-        "rows_changed": 0
-      },
-      "odds_btts": {
-        "legacy_non_null": 8302,
-        "safe_non_null": 10463,
-        "shifted": 650,
-        "phantom": 4094,
-        "dropped": 6255,
-        "rows_changed": 10999
-      },
-      "odds_over15": {
-        "legacy_non_null": 1989,
-        "safe_non_null": 2265,
-        "shifted": 0,
-        "phantom": 654,
-        "dropped": 930,
-        "rows_changed": 1584
-      },
-      "odds_over35": {
-        "legacy_non_null": 2320,
-        "safe_non_null": 2597,
-        "shifted": 0,
-        "phantom": 670,
-        "dropped": 947,
-        "rows_changed": 1617
-      },
-      "odds_over25": {
-        "legacy_non_null": 45053,
-        "safe_non_null": 43354,
-        "shifted": 1,
-        "phantom": 1803,
-        "dropped": 104,
-        "rows_changed": 1908
-      },
-      "odds_under25": {
-        "legacy_non_null": 45064,
-        "safe_non_null": 43359,
-        "shifted": 1,
-        "phantom": 1809,
-        "dropped": 104,
-        "rows_changed": 1914
-      }
-    }
-  },
+  "serving_join_mode": "safe",
+  "flag": "none - league-keyed joins always serve (WOWZA_SAFE_ENRICH_JOINS removed 2026-11-01)",
   "fixture_level_enrichment_joins_in_v9": [
     {
       "site": "src/data_loader.py::_enrich_with_api_shots step 1 (af_history.parquet)",
@@ -757,248 +457,5 @@
       "fix": "-",
       "owner": "other"
     }
-  ],
-  "serving_replay": {
-    "board_fixtures": 172,
-    "recipe": "v9_repaired",
-    "tips_legacy": 54,
-    "tips_safe": 55,
-    "tips_only_legacy": [
-      [
-        "Argentina Primera Division",
-        "Defensa y Justicia",
-        "Barracas Central",
-        "over15",
-        "OVER",
-        "VALUABLE"
-      ],
-      [
-        "Austrian Bundesliga",
-        "WSG Tirol",
-        "Austria Lustenau",
-        "OU25",
-        "UNDER",
-        "SNIPER"
-      ],
-      [
-        "Brazil Serie A",
-        "Atletico Paranaense",
-        "Remo",
-        "OU25",
-        "UNDER",
-        "VALUABLE"
-      ],
-      [
-        "Brazil Serie A",
-        "Atletico Paranaense",
-        "Remo",
-        "btts",
-        "YES",
-        "VALUABLE"
-      ],
-      [
-        "Brazil Serie A",
-        "Botafogo",
-        "Sao Paulo",
-        "OU25",
-        "UNDER",
-        "VALUABLE"
-      ],
-      [
-        "Brazil Serie A",
-        "Chapecoense",
-        "Palmeiras",
-        "btts",
-        "YES",
-        "VALUABLE"
-      ],
-      [
-        "Brazil Serie A",
-        "Corinthians",
-        "Botafogo",
-        "OU25",
-        "UNDER",
-        "VALUABLE"
-      ],
-      [
-        "Brazil Serie A",
-        "Vitoria",
-        "Bragantino-SP",
-        "OU25",
-        "UNDER",
-        "VALUABLE"
-      ],
-      [
-        "Denmark Superliga",
-        "Viborg FF",
-        "Randers FC",
-        "OU25",
-        "UNDER",
-        "VALUABLE"
-      ],
-      [
-        "Mexico Liga MX",
-        "Quer\u00e9taro",
-        "Necaxa",
-        "OU25",
-        "UNDER",
-        "SNIPER"
-      ],
-      [
-        "Mexico Liga MX",
-        "Santos Laguna",
-        "Le\u00f3n",
-        "OU25",
-        "UNDER",
-        "SNIPER"
-      ],
-      [
-        "Serie B",
-        "S\u00fcdtirol",
-        "Cremonese",
-        "btts",
-        "YES",
-        "VALUABLE"
-      ],
-      [
-        "Sweden Allsvenskan",
-        "IF Brommapojkarna",
-        "Halmstads BK",
-        "OU25",
-        "UNDER",
-        "VALUABLE"
-      ]
-    ],
-    "tips_only_safe": [
-      [
-        "Argentina Primera Division",
-        "Defensa y Justicia",
-        "Barracas Central",
-        "over15",
-        "OVER",
-        "MARKSMAN"
-      ],
-      [
-        "Austrian Bundesliga",
-        "WSG Tirol",
-        "Austria Lustenau",
-        "OU25",
-        "UNDER",
-        "VALUABLE"
-      ],
-      [
-        "Brazil Serie A",
-        "Chapecoense",
-        "Palmeiras",
-        "OU25",
-        "UNDER",
-        "VALUABLE"
-      ],
-      [
-        "Bundesliga 2",
-        "Arminia Bielefeld",
-        "1. FC Magdeburg",
-        "btts",
-        "YES",
-        "MARKSMAN"
-      ],
-      [
-        "Championship",
-        "Lincoln City",
-        "Wrexham AFC",
-        "btts",
-        "YES",
-        "VALUABLE"
-      ],
-      [
-        "Championship",
-        "Middlesbrough",
-        "Bristol City",
-        "btts",
-        "YES",
-        "VALUABLE"
-      ],
-      [
-        "Championship",
-        "Wolverhampton Wanderers",
-        "Charlton Athletic",
-        "btts",
-        "YES",
-        "VALUABLE"
-      ],
-      [
-        "Championship",
-        "Wolverhampton Wanderers",
-        "Derby County",
-        "btts",
-        "YES",
-        "VALUABLE"
-      ],
-      [
-        "La Liga 2",
-        "Burgos CF",
-        "Albacete",
-        "btts",
-        "YES",
-        "VALUABLE"
-      ],
-      [
-        "League Two",
-        "Cheltenham Town",
-        "Bristol Rovers",
-        "btts",
-        "YES",
-        "VALUABLE"
-      ],
-      [
-        "League Two",
-        "Northampton Town",
-        "Rochdale",
-        "btts",
-        "YES",
-        "VALUABLE"
-      ],
-      [
-        "Mexico Liga MX",
-        "Quer\u00e9taro",
-        "Necaxa",
-        "OU25",
-        "UNDER",
-        "VALUABLE"
-      ],
-      [
-        "Mexico Liga MX",
-        "Santos Laguna",
-        "Le\u00f3n",
-        "OU25",
-        "UNDER",
-        "VALUABLE"
-      ],
-      [
-        "Serie B",
-        "Benevento",
-        "Empoli",
-        "btts",
-        "YES",
-        "VALUABLE"
-      ]
-    ],
-    "features_changed": {
-      "away_corners_pg_roll": 57,
-      "away_fouls_pg_roll": 56,
-      "away_insidebox_last5": 165,
-      "away_xg_last5": 168,
-      "combined_sot_ratio": 75,
-      "home_corners_pg_roll": 53,
-      "home_fouls_pg_roll": 55,
-      "home_insidebox_last5": 166,
-      "home_xg_last5": 167,
-      "p_over25": 79,
-      "p_btts": 172,
-      "p_over15": 172,
-      "p_over35": 172,
-      "p_ht_over05": 90,
-      "p_ht_over15": 90
-    }
-  }
+  ]
 }
