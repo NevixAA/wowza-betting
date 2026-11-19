@@ -23,7 +23,8 @@ two real matches. Also one match: the SAME DAY, the same score and ONE side the 
 naming stays with src.team_names / src/data_loader._one_side_aliases.
 
 SURVIVOR (stated source rule): the row from the highest-priority source in SOURCE_PRIORITY
-(football-data > its cache > API-Football > backtest archive; a row without a source ranks last),
+(football-data > its cache > API-Football > the banked football-data season files > backtest archive;
+a row without a source ranks last),
 then the most populated row, then the earliest. Its empty cells are filled from the dropped copy of
 the SAME match (real values, never invented); the dropped copy's date and spellings are kept in the
 report. Copies whose scores disagree are not merged here (not evidence of one match); same-day score
@@ -38,8 +39,12 @@ import pandas as pd
 
 WINDOW_DAYS = 3
 #: lower = preferred survivor
+#: football_data_raw (the banked season files, fix/fd-ht-and-history-backfill 2026-11-18) ranks BELOW the
+#: history and the provider rows - a 1-3 day pair keeps the history's / provider's date (owner rule: the
+#: provider's date decides) and only takes the raw copy's cells for its gaps - and ABOVE the backtest
+#: archive, which carries no half-time score.
 SOURCE_PRIORITY = {"football_data": 0, "fd_cache": 1, "api_football": 2, "provider_supplement": 2,
-                   "backtest_archive": 3}
+                   "football_data_raw": 3, "backtest_archive": 4}
 _MOJIBAKE_MARKS = ("Ã", "Â", "Å", "Ä", "Æ", "Ð", "Ñ", "â€")
 
 

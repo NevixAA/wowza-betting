@@ -626,9 +626,45 @@ def _canonicalise_clubs(df: pd.DataFrame) -> pd.DataFrame:
         # higher = better here (keep="last"); SOURCE_PRIORITY is lower = better, unknown ranks last
         d = d.assign(_source_rank=-d["row_source"].map(SOURCE_PRIORITY).fillna(len(SOURCE_PRIORITY)))
         rank_cols.append("_source_rank")
-    d = (d.sort_values(rank_cols, kind="mergesort")
-           .drop_duplicates(["date", "league", "home_team", "away_team"], keep="last")
+    d = d.sort_values(rank_cols, kind="mergesort")
+    # THE SURVIVOR KEEPS ITS OWN VALUES AND TAKES THE OTHER COPIES' VALUES FOR ITS GAPS (fix/fd-ht-and-
+    # history-backfill 2026-11-18). drop_duplicates threw away every cell only the dropped copy held:
+    # an fd copy with half-time goals lost to an equally complete copy with bookings, and the HT score
+    # vanished. The scores of all copies agree (conflicts were dropped above), so they are one match
+    # and a real value of that match is never discarded - the one-match step below already fills this
+    # way. Prices are NOT mixed across copies (an O/U pair stays from one source); a cell no copy holds
+    # stays missing.
+    _k = ["date", "league", "home_team", "away_team"]
+    _dup = d.duplicated(_k, keep=False)
+    _filled = 0
+    if _dup.any():
+        _vals = [c for c in d.columns if c not in _k and not str(c).startswith("odds_")
+                 and c not in ("row_source", "season", "_completeness", "_source_rank")]
+        _grp = d.loc[_dup].groupby(_k, sort=False)[_vals].last()        # last non-null, survivor first
+        _surv = d.loc[_dup].drop_duplicates(_k, keep="last")
+        _fill = _grp.reindex(pd.MultiIndex.from_frame(_surv[_k]))
+        _fill.index = _surv.index
+        _cur = d.loc[_surv.index, _vals]
+        _new = _cur.where(_cur.notna(), _fill)
+        _filled = int((_cur.isna() & _new.notna()).to_numpy().sum())
+        if _filled:
+            d.loc[_surv.index, _vals] = _new
+        # ...and ranks as the BEST source among its exact copies, so the one-match step below compares
+        # sources, not which copy happened to carry more columns (a banked season-file copy of an
+        # fd_history row is the same row of the same file family: it must not demote that row below a
+        # thin same-day copy under another spelling - Cottbus v Hannover, 2026-08-09).
+        if "row_source" in d.columns:
+            from src.integrity.duplicate_matches import SOURCE_PRIORITY as _SP
+            _pr = d.loc[_dup, "row_source"].map(_SP).fillna(len(_SP))
+            _best = (d.loc[_dup].assign(_p=_pr.to_numpy()).sort_values("_p", kind="mergesort")
+                     .groupby(_k, sort=False)["row_source"].first())
+            _bs = _best.reindex(pd.MultiIndex.from_frame(_surv[_k])).to_numpy()
+            d.loc[_surv.index, "row_source"] = _bs
+    d = (d.drop_duplicates(_k, keep="last")
            .drop(columns=["_completeness", "_source_rank"], errors="ignore"))
+    if _filled:
+        log.info(f"[clubs] {_filled:,} empty cell(s) of surviving fixture rows filled from their "
+                 f"dropped same-match copies (same date, clubs and score)")
     if n_multi or before != len(d) or n_conflict:
         log.info(f"[clubs] unified {n_multi} alternate club spelling(s); removed "
                  f"{before - len(d):,} duplicate fixture row(s) the old key missed; "
@@ -1110,6 +1146,197 @@ def _load_backtest_archive() -> pd.DataFrame:
              f"({d['date'].min().date()}..{d['date'].max().date()}, "
              f"{d['league'].nunique()} leagues)")
     return d
+
+
+#: football-data raw season files banked by scripts/collect_fd_raw.py: fd_raw/ (2022/23 on, the bars
+#: study's copy) and fd_raw_history/ (--history, 2016/17 .. 2021/22). Read as one more history source.
+FD_RAW_DIRS = (Path("output") / "collect" / "fd_raw", Path("output") / "collect" / "fd_raw_history")
+#: per-row provenance + API-Football full-time cross-check (scripts/verify_fd_raw_seasons.py).
+FD_RAW_PROVENANCE = Path("output") / "collect" / "fd_raw_provenance.parquet"
+#: ft_check values never served: the score differs from the provider's, or the provider marks the
+#: fixture awarded / abandoned (not a played score, owner fix9)
+FD_RAW_NOT_SERVED = ("mismatch", "provider_not_played")
+#: football-data column -> history column (the download's map plus the booking counts)
+_FD_STAT_COLS = (("home_goals", "FTHG"), ("away_goals", "FTAG"),
+                 ("ht_home_goals", "HTHG"), ("ht_away_goals", "HTAG"),
+                 ("home_corners", "HC"), ("away_corners", "AC"),
+                 ("home_fouls", "HF"), ("away_fouls", "AF"),
+                 ("home_shots", "HS"), ("away_shots", "AS"),
+                 ("home_sot", "HST"), ("away_sot", "AST"),
+                 ("home_yellows", "HY"), ("away_yellows", "AY"))
+
+
+def _fd_dates(s: pd.Series) -> pd.Series:
+    """football-data 'dd/mm/yyyy' (2018/19 on) or 'dd/mm/yy' (older files), never month-first."""
+    s = s.astype(str).str.strip()
+    d = pd.to_datetime(s, format="%d/%m/%Y", errors="coerce")
+    short = d.isna()
+    if short.any():
+        d[short] = pd.to_datetime(s[short], format="%d/%m/%y", errors="coerce")
+    return d
+
+
+def parse_fd_season_file(raw: pd.DataFrame, league: str, season_label: str) -> pd.DataFrame:
+    """One football-data per-season (mmz4281) table -> history rows, the download's column map
+    (_ci_download_all) plus booking counts. A column the file does not publish stays MISSING (the
+    2016/17 files of most leagues carry no shots / corners / cards) - never 0."""
+    df = pd.DataFrame(index=raw.index)
+    df["date"] = _fd_dates(raw["Date"]) if "Date" in raw.columns else pd.NaT
+    df["league"] = league
+    df["season"] = season_label
+    df["home_team"] = raw.get("HomeTeam", np.nan)
+    df["away_team"] = raw.get("AwayTeam", np.nan)
+    for out_col, src_col in _FD_STAT_COLS:
+        df[out_col] = pd.to_numeric(raw[src_col], errors="coerce") if src_col in raw.columns else np.nan
+    for _k, _v in ou25_prices(raw).items():      # pre-match pair + closing pair, apart (2026-11-11)
+        df[_k] = _v
+    for _k, _v in _side_fd_prices(raw).items():
+        df[_k] = _v
+    df["ftr"] = raw.get("FTR", np.nan)
+    df = df[df["date"].notna() & df["home_team"].notna() & df["away_team"].notna()
+            & df["home_goals"].notna() & df["away_goals"].notna()]
+    return df.reset_index(drop=True)
+
+
+#: API-Football statistics stored by fixture id: (file, {file column: history column})
+AF_FIXTURE_VALUE_SOURCES = (
+    (Path("output") / "collect" / "af_fixture_stats.parquet",
+     {"HXG": "home_xg", "AXG": "away_xg", "HIB": "home_insidebox", "AIB": "away_insidebox"}),
+    (Path("output") / "collect" / "af_history_fullstats_fill.parquet",
+     {c: c for c in ("home_xg", "away_xg", "home_insidebox", "away_insidebox", "home_shots",
+                     "away_shots", "home_sot", "away_sot", "home_corners", "away_corners",
+                     "home_fouls", "away_fouls")} | {"home_yellow": "home_yellows",
+                                                     "away_yellow": "away_yellows"}),
+)
+
+
+def _attach_af_fixture_values(out: pd.DataFrame, prov: pd.DataFrame, root: Path) -> pd.DataFrame:
+    """Fill MISSING cells of the football-data season rows from API-Football statistics of the SAME
+    fixture: the fixture id comes from FD_RAW_PROVENANCE, and only for rows whose full-time score
+    equals API-Football's (ft_check 'equal'). nan_only; a fixture id held twice in a source is
+    refused; per-column filled cells are logged. Absent / unreadable sources are skipped."""
+    k = ["fd_file", "league", "date", "home_team", "away_team"]
+    ok = prov[(prov["ft_check"] == "equal") & prov["af_fixture_id"].notna()][k + ["af_fixture_id"]].copy()
+    if ok.empty or "fd_file" not in out.columns:
+        return out
+    ok["date"] = pd.to_datetime(ok["date"])
+    fid = out[k].merge(ok.drop_duplicates(k), on=k, how="left")["af_fixture_id"]
+    fid = pd.to_numeric(fid, errors="coerce").to_numpy()
+    out = out.copy()
+    from collections import Counter
+    filled: Counter = Counter()        # cells filled per column (a count, not a value default)
+    for rel, cmap in AF_FIXTURE_VALUE_SOURCES:
+        p = root / rel
+        if not p.exists():
+            continue
+        try:
+            src = pd.read_parquet(p)
+        except Exception as e:                                           # noqa: BLE001
+            log.warning(f"[fd_raw] {rel.as_posix()} unreadable ({type(e).__name__}) - skipped")
+            continue
+        cols = [c for c in cmap if c in src.columns]
+        if "fixture_id" not in src.columns or not cols:
+            continue
+        src = src[src["fixture_id"].notna()]
+        src = src[~src["fixture_id"].duplicated(keep=False)]           # ambiguous id -> refused
+        src = src.set_index(pd.to_numeric(src["fixture_id"], errors="coerce"))[cols]
+        vals = src.reindex(fid)
+        for c in cols:
+            tgt = cmap[c]
+            if tgt not in out.columns:
+                out[tgt] = np.nan
+            v = pd.to_numeric(vals[c], errors="coerce").to_numpy()
+            m = out[tgt].isna().to_numpy() & ~np.isnan(v)
+            if m.any():
+                out.loc[m, tgt] = v[m]
+                filled[tgt] += int(m.sum())
+    if filled:
+        log.info(f"[fd_raw] API-Football values of the proven same fixture filled: {dict(filled)}")
+    return out
+
+
+def read_fd_raw_seasons(root: Path | None = None, verified_only: bool = True) -> pd.DataFrame:
+    """Every banked football-data season file (FD_RAW_DIRS) of the registry's Standard leagues, as
+    history rows (fix/fd-ht-and-history-backfill, 2026-11-18).
+
+    WHY. The Standard history the loader served had half-time goals on ~1% of its 2021/22 and 2022/23
+    rows and nothing before 2020/21: fd_history.parquet starts at 2023/24 and the older seasons came
+    only from output/backtest_all_leagues.csv, which carries no half-time score at all. The raw files
+    hold HTHG/HTAG on ~100% of rows. A season file present in both directories is read once (fd_raw/
+    wins). `verified_only`: rows FD_RAW_PROVENANCE marks FD_RAW_NOT_SERVED (football-data and
+    API-Football disagree on the score of the proven same fixture, or the provider marks it awarded /
+    abandoned) are dropped, counted and logged;
+    an unreadable provenance file serves NO raw row (an unverified score never reaches training)."""
+    root = root or Path(__file__).resolve().parents[1]
+    std, _new = _fd_download_tables()
+    frames, seen = [], set()
+    for rel in FD_RAW_DIRS:
+        d = root / rel
+        if not d.is_dir():
+            continue
+        for league, code in sorted(std.items()):
+            for p in sorted(d.glob(f"{code}_*.csv")):
+                m = re.match(rf"^{re.escape(code)}_(\d{{2}})(\d{{2}})\.csv$", p.name)
+                if not m or p.name in seen:
+                    continue
+                seen.add(p.name)
+                try:
+                    from io import StringIO
+                    raw = pd.read_csv(StringIO(_decode_csv(p.read_bytes())), on_bad_lines="skip",
+                                      low_memory=False)
+                except Exception as e:                                   # noqa: BLE001
+                    log.warning(f"[fd_raw] {rel.as_posix()}/{p.name} unreadable "
+                                f"({type(e).__name__}) - skipped")
+                    continue
+                f = parse_fd_season_file(raw, league, f"20{m.group(1)}/{m.group(2)}")
+                if len(f):
+                    frames.append(f.assign(fd_file=p.name))
+    if not frames:
+        return pd.DataFrame()
+    out = pd.concat(frames, ignore_index=True)
+    prov_p = root / FD_RAW_PROVENANCE
+    if verified_only and prov_p.exists():
+        try:
+            prov = pd.read_parquet(prov_p, columns=["fd_file", "league", "date", "home_team",
+                                                    "away_team", "ft_check", "af_date", "af_fixture_id"])
+        except Exception as e:                                           # noqa: BLE001
+            log.error(f"[fd_raw] provenance unreadable ({type(e).__name__}: {e}) - raw seasons NOT "
+                      f"served (an unverified score never reaches training)")
+            return pd.DataFrame()
+        bad = prov[prov["ft_check"].isin(FD_RAW_NOT_SERVED)]
+        if len(bad):
+            k = ["fd_file", "league", "date", "home_team", "away_team"]
+            bad = bad.assign(date=pd.to_datetime(bad["date"]), _bad=True)[k + ["_bad"]] \
+                .drop_duplicates(k)
+            hit = out[k].merge(bad, on=k, how="left")["_bad"].notna().to_numpy()
+            if hit.any():
+                log.warning(f"[fd_raw] {int(hit.sum())} row(s) NOT served: football-data and "
+                            f"API-Football disagree on the score, or the provider marks the fixture "
+                            f"awarded / abandoned ({FD_RAW_PROVENANCE.as_posix()})")
+            out = out[~hit]
+        # EVERY BOUGHT VALUE OF THE PROVEN FIXTURE: API-Football statistics stored by fixture id (xG and
+        # shots inside the box, which football-data never publishes; shots / SoT / corners / fouls /
+        # bookings where the file has none), nan_only - a football-data value is never overwritten.
+        out = _attach_af_fixture_values(out, prov, root)
+        # THE PROVIDER'S DATE (owner 2026-11-07): a row proven to be an API-Football fixture with the
+        # SAME score but dated a day apart is served on the provider's date (the file's date stays in
+        # the provenance file), exactly as apply_date_corrections does for fd_history.
+        k = ["fd_file", "league", "date", "home_team", "away_team"]
+        ok = prov[(prov["ft_check"] == "equal") & prov["af_date"].notna()].copy()
+        ok["date"] = pd.to_datetime(ok["date"])
+        ok["af_date"] = pd.to_datetime(ok["af_date"], errors="coerce")
+        ok = ok[ok["af_date"].notna() & (ok["af_date"] != ok["date"])].drop_duplicates(k)
+        if len(ok):
+            nd = out[k].merge(ok[k + ["af_date"]], on=k, how="left")["af_date"].to_numpy()
+            moved = pd.notna(nd)
+            if moved.any():
+                out.loc[moved, "date"] = nd[moved]
+                log.info(f"[fd_raw] {int(moved.sum())} row(s) served on API-Football's date for the "
+                         f"proven same fixture (football-data's date kept in the provenance file)")
+    out = _drop_misfiled_league_rows(out.drop(columns=["fd_file"]), "fd_raw")
+    log.info(f"[fd_raw] {len(out):,} rows from {len(seen)} football-data season file(s) "
+             f"({out['date'].min().date()}..{out['date'].max().date()})")
+    return out.reset_index(drop=True)
 
 
 def _report_training_coverage(out: pd.DataFrame) -> None:
@@ -2516,6 +2743,14 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
                          for f in _load_api_football_only_leagues())
         # The archive goes in BEFORE club canonicalisation, which is the whole reason it can go
         # in at all: the unifier resolves its club vocabulary against football-data's.
+        # The banked football-data season files (fd_raw/ + fd_raw_history/): the 2016/17..2022/23
+        # Standard seasons no other source holds with half-time goals (fix/fd-ht-and-history-backfill).
+        if os.getenv("WOWZA_USE_FD_RAW_SEASONS", "1") == "1":
+            _fdr = read_fd_raw_seasons()
+            if len(_fdr):
+                ci_frames.append(_fdr.assign(row_source="football_data_raw"))
+        else:
+            log.info("[fd_raw] disabled by WOWZA_USE_FD_RAW_SEASONS=0")
         _arch = _load_backtest_archive()
         if len(_arch):
             ci_frames.append(_arch.assign(row_source="backtest_archive"))

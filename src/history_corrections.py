@@ -106,7 +106,7 @@ DATE_COLS = ["league", "history_date", "home_team", "away_team", "home_goals", "
              "provider_date", "fixture_id"]
 SCORE_COLS =["history_ft_home", "history_ft_away", "ft90_home", "ft90_away"]
 KEY = ["league", "date", "home_team", "away_team"]
-HISTORY_SOURCES = {"football_data", "fd_cache"}
+HISTORY_SOURCES = {"football_data", "fd_cache", "football_data_raw"}   # raw: same file family + spelling
 #: never copied from a removed duplicate onto the kept row (identity, provenance, derived labels)
 _NO_FILL = set(KEY) | {"row_source", "season", "ftr"}
 
