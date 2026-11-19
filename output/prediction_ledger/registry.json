@@ -1,6 +1,6 @@
 {
  "schema_version": "pl/1.0",
- "generated_at": "2026-11-19T18:35:39Z",
+ "generated_at": "2026-11-19T21:48:31Z",
  "layout": "output/prediction_ledger/<repo>/<model_id>/<market>/<league_slug>/<season>.csv",
  "key": [
   "model_id",
@@ -415,9 +415,9 @@
     "newformat_20261118T172020Z_303c9a05"
    ],
    "first_prediction": "2026-11-17T17:20:31Z",
-   "last_prediction": "2026-11-19T07:39:51Z",
-   "rows": 328,
-   "predicted": 328,
+   "last_prediction": "2026-11-19T20:53:31Z",
+   "rows": 332,
+   "predicted": 332,
    "settled": 0,
    "leagues": {
     "argentina_primera_division": {
@@ -441,11 +441,11 @@
      ]
     },
     "brazil_serie_a": {
-     "rows": 72,
-     "predicted": 72,
+     "rows": 76,
+     "predicted": 76,
      "settled": 0,
      "first": "2026-11-17T17:20:31Z",
-     "last": "2026-11-19T07:39:51Z",
+     "last": "2026-11-19T20:53:31Z",
      "seasons": [
       "2026"
      ]
@@ -529,9 +529,9 @@
     "over15_20261119T134019Z_ca01b7d3"
    ],
    "first_prediction": "2026-11-17T17:20:31Z",
-   "last_prediction": "2026-11-19T14:54:45Z",
-   "rows": 484,
-   "predicted": 484,
+   "last_prediction": "2026-11-19T20:53:31Z",
+   "rows": 488,
+   "predicted": 488,
    "settled": 0,
    "leagues": {
     "argentina_primera_division": {
@@ -555,11 +555,11 @@
      ]
     },
     "brazil_serie_a": {
-     "rows": 100,
-     "predicted": 100,
+     "rows": 104,
+     "predicted": 104,
      "settled": 0,
      "first": "2026-11-17T17:20:31Z",
-     "last": "2026-11-19T14:54:45Z",
+     "last": "2026-11-19T20:53:31Z",
      "seasons": [
       "2026"
      ]
@@ -643,9 +643,9 @@
     "over35_20261119T134019Z_e8b12d74"
    ],
    "first_prediction": "2026-11-17T17:20:31Z",
-   "last_prediction": "2026-11-19T14:54:45Z",
-   "rows": 484,
-   "predicted": 484,
+   "last_prediction": "2026-11-19T20:53:31Z",
+   "rows": 488,
+   "predicted": 488,
    "settled": 0,
    "leagues": {
     "argentina_primera_division": {
@@ -669,11 +669,11 @@
      ]
     },
     "brazil_serie_a": {
-     "rows": 100,
-     "predicted": 100,
+     "rows": 104,
+     "predicted": 104,
      "settled": 0,
      "first": "2026-11-17T17:20:31Z",
-     "last": "2026-11-19T14:54:45Z",
+     "last": "2026-11-19T20:53:31Z",
      "seasons": [
       "2026"
      ]
@@ -757,9 +757,9 @@
     "btts_20261119T134019Z_44c67049"
    ],
    "first_prediction": "2026-11-17T17:20:31Z",
-   "last_prediction": "2026-11-19T14:54:45Z",
-   "rows": 484,
-   "predicted": 484,
+   "last_prediction": "2026-11-19T20:53:31Z",
+   "rows": 488,
+   "predicted": 488,
    "settled": 0,
    "leagues": {
     "argentina_primera_division": {
@@ -783,11 +783,11 @@
      ]
     },
     "brazil_serie_a": {
-     "rows": 100,
-     "predicted": 100,
+     "rows": 104,
+     "predicted": 104,
      "settled": 0,
      "first": "2026-11-17T17:20:31Z",
-     "last": "2026-11-19T14:54:45Z",
+     "last": "2026-11-19T20:53:31Z",
      "seasons": [
       "2026"
      ]
@@ -3314,7 +3314,7 @@
    "repo": "v11",
    "model_id": "v11_shadow",
    "market": "ou25",
-   "status": "pending_writer",
+   "status": "active",
    "family": "team",
    "selections": [
     "OVER",
@@ -3333,77 +3333,689 @@
    "repo": "v9",
    "model_id": "v9_corners",
    "market": "corners_total",
-   "status": "pending_model",
+   "status": "active",
    "family": "corners",
    "selections": [
     "OVER",
     "UNDER"
    ],
-   "lines": "per row (the model's O/U line)",
-   "model_versions": [],
-   "first_prediction": null,
-   "last_prediction": null,
-   "rows": 0,
-   "predicted": 0,
+   "lines": [
+    8.5,
+    9.5,
+    10.5,
+    11.5
+   ],
+   "model_versions": [
+    "side_nb_v1_2026-11-09_c9e06a6a9c92"
+   ],
+   "first_prediction": "2026-11-19T21:44:13Z",
+   "last_prediction": "2026-11-19T21:44:13Z",
+   "rows": 1464,
+   "predicted": 1456,
    "settled": 0,
-   "leagues": {}
+   "leagues": {
+    "austrian_bundesliga": {
+     "rows": 48,
+     "predicted": 48,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2026"
+     ]
+    },
+    "brazil_serie_a": {
+     "rows": 128,
+     "predicted": 128,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2026"
+     ]
+    },
+    "bundesliga_2": {
+     "rows": 72,
+     "predicted": 72,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2026"
+     ]
+    },
+    "championship": {
+     "rows": 192,
+     "predicted": 192,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2026"
+     ]
+    },
+    "denmark_superliga": {
+     "rows": 48,
+     "predicted": 48,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2026"
+     ]
+    },
+    "japan_j_league": {
+     "rows": 136,
+     "predicted": 136,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2027"
+     ]
+    },
+    "la_liga_2": {
+     "rows": 88,
+     "predicted": 88,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2026"
+     ]
+    },
+    "league_one": {
+     "rows": 136,
+     "predicted": 136,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2026"
+     ]
+    },
+    "league_two": {
+     "rows": 112,
+     "predicted": 112,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2026"
+     ]
+    },
+    "ligue_2": {
+     "rows": 72,
+     "predicted": 72,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2026"
+     ]
+    },
+    "mexico_liga_mx": {
+     "rows": 72,
+     "predicted": 72,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2026"
+     ]
+    },
+    "norway_eliteserien": {
+     "rows": 64,
+     "predicted": 64,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2026"
+     ]
+    },
+    "romanian_superliga": {
+     "rows": 64,
+     "predicted": 64,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2026"
+     ]
+    },
+    "serie_b": {
+     "rows": 160,
+     "predicted": 160,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2026"
+     ]
+    },
+    "sweden_allsvenskan": {
+     "rows": 72,
+     "predicted": 64,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2026"
+     ]
+    }
+   }
   },
   {
    "repo": "v9",
    "model_id": "v9_corners",
    "market": "corners_team",
-   "status": "pending_model",
+   "status": "active",
    "family": "corners",
    "selections": [
-    "OVER",
-    "UNDER"
+    "HOME_OVER",
+    "HOME_UNDER",
+    "AWAY_OVER",
+    "AWAY_UNDER"
    ],
-   "lines": "per row (the model's O/U line)",
-   "model_versions": [],
-   "first_prediction": null,
-   "last_prediction": null,
-   "rows": 0,
-   "predicted": 0,
+   "lines": [
+    3.5,
+    4.5,
+    5.5
+   ],
+   "model_versions": [
+    "side_nb_v1_2026-11-09_c9e06a6a9c92"
+   ],
+   "first_prediction": "2026-11-19T21:44:13Z",
+   "last_prediction": "2026-11-19T21:44:13Z",
+   "rows": 2196,
+   "predicted": 2184,
    "settled": 0,
-   "leagues": {}
+   "leagues": {
+    "austrian_bundesliga": {
+     "rows": 72,
+     "predicted": 72,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2026"
+     ]
+    },
+    "brazil_serie_a": {
+     "rows": 192,
+     "predicted": 192,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2026"
+     ]
+    },
+    "bundesliga_2": {
+     "rows": 108,
+     "predicted": 108,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2026"
+     ]
+    },
+    "championship": {
+     "rows": 288,
+     "predicted": 288,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2026"
+     ]
+    },
+    "denmark_superliga": {
+     "rows": 72,
+     "predicted": 72,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2026"
+     ]
+    },
+    "japan_j_league": {
+     "rows": 204,
+     "predicted": 204,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2027"
+     ]
+    },
+    "la_liga_2": {
+     "rows": 132,
+     "predicted": 132,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2026"
+     ]
+    },
+    "league_one": {
+     "rows": 204,
+     "predicted": 204,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2026"
+     ]
+    },
+    "league_two": {
+     "rows": 168,
+     "predicted": 168,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2026"
+     ]
+    },
+    "ligue_2": {
+     "rows": 108,
+     "predicted": 108,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2026"
+     ]
+    },
+    "mexico_liga_mx": {
+     "rows": 108,
+     "predicted": 108,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2026"
+     ]
+    },
+    "norway_eliteserien": {
+     "rows": 96,
+     "predicted": 96,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2026"
+     ]
+    },
+    "romanian_superliga": {
+     "rows": 96,
+     "predicted": 96,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2026"
+     ]
+    },
+    "serie_b": {
+     "rows": 240,
+     "predicted": 240,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2026"
+     ]
+    },
+    "sweden_allsvenskan": {
+     "rows": 108,
+     "predicted": 96,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2026"
+     ]
+    }
+   }
   },
   {
    "repo": "v9",
    "model_id": "v9_cards",
    "market": "cards_total",
-   "status": "pending_model",
+   "status": "active",
    "family": "cards",
    "selections": [
     "OVER",
     "UNDER"
    ],
-   "lines": "per row (the model's O/U line)",
-   "model_versions": [],
-   "first_prediction": null,
-   "last_prediction": null,
-   "rows": 0,
-   "predicted": 0,
+   "lines": [
+    3.5,
+    4.5,
+    5.5
+   ],
+   "model_versions": [
+    "side_nb_v1_2026-11-09_c9e06a6a9c92"
+   ],
+   "first_prediction": "2026-11-19T21:44:13Z",
+   "last_prediction": "2026-11-19T21:44:13Z",
+   "rows": 1032,
+   "predicted": 1014,
    "settled": 0,
-   "leagues": {}
+   "leagues": {
+    "austrian_bundesliga": {
+     "rows": 36,
+     "predicted": 36,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2026"
+     ]
+    },
+    "brazil_serie_a": {
+     "rows": 96,
+     "predicted": 96,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2026"
+     ]
+    },
+    "bundesliga_2": {
+     "rows": 54,
+     "predicted": 54,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2026"
+     ]
+    },
+    "championship": {
+     "rows": 144,
+     "predicted": 144,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2026"
+     ]
+    },
+    "denmark_superliga": {
+     "rows": 36,
+     "predicted": 36,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2026"
+     ]
+    },
+    "japan_j_league": {
+     "rows": 102,
+     "predicted": 102,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2027"
+     ]
+    },
+    "league_one": {
+     "rows": 102,
+     "predicted": 102,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2026"
+     ]
+    },
+    "league_two": {
+     "rows": 84,
+     "predicted": 72,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2026"
+     ]
+    },
+    "ligue_2": {
+     "rows": 54,
+     "predicted": 54,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2026"
+     ]
+    },
+    "mexico_liga_mx": {
+     "rows": 54,
+     "predicted": 54,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2026"
+     ]
+    },
+    "norway_eliteserien": {
+     "rows": 48,
+     "predicted": 48,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2026"
+     ]
+    },
+    "romanian_superliga": {
+     "rows": 48,
+     "predicted": 48,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2026"
+     ]
+    },
+    "serie_b": {
+     "rows": 120,
+     "predicted": 120,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2026"
+     ]
+    },
+    "sweden_allsvenskan": {
+     "rows": 54,
+     "predicted": 48,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2026"
+     ]
+    }
+   }
   },
   {
    "repo": "v9",
    "model_id": "v9_cards",
    "market": "cards_team",
-   "status": "pending_model",
+   "status": "active",
    "family": "cards",
    "selections": [
-    "OVER",
-    "UNDER"
+    "HOME_OVER",
+    "HOME_UNDER",
+    "AWAY_OVER",
+    "AWAY_UNDER"
    ],
-   "lines": "per row (the model's O/U line)",
-   "model_versions": [],
-   "first_prediction": null,
-   "last_prediction": null,
-   "rows": 0,
-   "predicted": 0,
+   "lines": [
+    1.5,
+    2.5
+   ],
+   "model_versions": [
+    "side_nb_v1_2026-11-09_c9e06a6a9c92"
+   ],
+   "first_prediction": "2026-11-19T21:44:13Z",
+   "last_prediction": "2026-11-19T21:44:13Z",
+   "rows": 1376,
+   "predicted": 1352,
    "settled": 0,
-   "leagues": {}
+   "leagues": {
+    "austrian_bundesliga": {
+     "rows": 48,
+     "predicted": 48,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2026"
+     ]
+    },
+    "brazil_serie_a": {
+     "rows": 128,
+     "predicted": 128,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2026"
+     ]
+    },
+    "bundesliga_2": {
+     "rows": 72,
+     "predicted": 72,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2026"
+     ]
+    },
+    "championship": {
+     "rows": 192,
+     "predicted": 192,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2026"
+     ]
+    },
+    "denmark_superliga": {
+     "rows": 48,
+     "predicted": 48,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2026"
+     ]
+    },
+    "japan_j_league": {
+     "rows": 136,
+     "predicted": 136,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2027"
+     ]
+    },
+    "league_one": {
+     "rows": 136,
+     "predicted": 136,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2026"
+     ]
+    },
+    "league_two": {
+     "rows": 112,
+     "predicted": 96,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2026"
+     ]
+    },
+    "ligue_2": {
+     "rows": 72,
+     "predicted": 72,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2026"
+     ]
+    },
+    "mexico_liga_mx": {
+     "rows": 72,
+     "predicted": 72,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2026"
+     ]
+    },
+    "norway_eliteserien": {
+     "rows": 64,
+     "predicted": 64,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2026"
+     ]
+    },
+    "romanian_superliga": {
+     "rows": 64,
+     "predicted": 64,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2026"
+     ]
+    },
+    "serie_b": {
+     "rows": 160,
+     "predicted": 160,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2026"
+     ]
+    },
+    "sweden_allsvenskan": {
+     "rows": 72,
+     "predicted": 64,
+     "settled": 0,
+     "first": "2026-11-19T21:44:13Z",
+     "last": "2026-11-19T21:44:13Z",
+     "seasons": [
+      "2026"
+     ]
+    }
+   }
   }
  ],
  "leagues": [
