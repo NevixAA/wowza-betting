@@ -68,8 +68,8 @@ def _old_home_values():
             d = _read_csv(p, low_memory=False)
             if "source" in d.columns:
                 d = d[d["source"].fillna("live").astype(str) == "live"]
-            if "signal_tier" not in d.columns:
-                continue
+            if fn == "ht_ledger.csv":                # HT O/U: no policy market, never staked (the ledger
+                continue                             # gained signal_tier at go-live; not a column test)
             from src import staked as S
             lab = S.label_ledger(d, fn, S.load_records(config.OUTPUT_DIR))
             d = d.assign(_dt=pd.to_datetime(d.get("match_date"), errors="coerce"),

@@ -170,14 +170,43 @@ def test_threshold_regime_switch_b82cec9f():
     assert R.legacy_ou25_base_tier(0.035, "UNDER", "Serie A", pd.Timestamp("2026-08-22T00:00Z")) == "VALUABLE"
 
 
-@pytest.mark.skipif(not (ROOT / "output" / "predictions.csv").exists(), reason="no committed board")
-def test_legacy_ou25_reproduces_the_committed_board_exactly():
-    b = pd.read_csv(ROOT / "output" / "predictions.csv", low_memory=False)
+#: The LAST board the legacy three-tier engine produced (predict run 2026-11-19 04:31 UTC, git 1ecafbee0, the
+#: main commit before the go-live merge 17ac8b7c2), frozen with the models/best_params_standard.json in force
+#: at that commit. Every board since is produced by the bars_opt engine (tiers retired, owner 2026-11-11:
+#: QUALIFIED / AVOID, `threshold_source` column), so the live output/predictions.csv can no longer be the
+#: legacy reproduction's reference - comparing them would compare two different engines.
+LEGACY_BOARD = ROOT / "tests" / "fixtures" / "legacy_board" / "predictions_2026-11-19T0431Z.csv"
+LEGACY_PARAMS = ROOT / "tests" / "fixtures" / "legacy_board" / "best_params_standard_1ecafbee0.json"
+
+
+def _legacy_reproduces(b: pd.DataFrame, stdp: dict) -> None:
     ts = pd.to_datetime(b["generated_at"], utc=True).max()
-    stdp = json.loads((ROOT / "models" / "best_params_standard.json").read_text(encoding="utf-8"))
     for side, ecol, tcol in (("OVER", "edge_over", "tier_over"), ("UNDER", "edge_under", "tier_under")):
         rep = [R.legacy_ou25_base_tier(e, side, lg, ts, stdp) for e, lg in zip(b[ecol], b["league"])]
-        assert (pd.Series(rep) == b[tcol].map(R._tier_str)).all()
+        assert (pd.Series(rep) == b[tcol].map(R._tier_str)).all(), (side, ecol)
+
+
+def test_legacy_ou25_reproduces_the_last_legacy_board_exactly():
+    b = pd.read_csv(LEGACY_BOARD, low_memory=False)
+    assert len(b) == 176 and b["git_sha"].eq("1ecafbee0350").all()
+    assert "threshold_source" not in b.columns
+    _legacy_reproduces(b, json.loads(LEGACY_PARAMS.read_text(encoding="utf-8")))
+    # the reference is not trivially all-AVOID: every legacy tier is exercised
+    assert set(b["tier_over"]).union(b["tier_under"]) >= {"SNIPER", "MARKSMAN", "VALUABLE", "AVOID"}
+
+
+@pytest.mark.skipif(not (ROOT / "output" / "predictions.csv").exists(), reason="no committed board")
+def test_committed_board_is_legacy_reproducible_or_carries_no_retired_tier():
+    """The committed board is either a legacy-engine board (no `threshold_source`): the replay must reproduce
+    it exactly; or a bars_opt board, which must not carry a retired tier word (SNIPER / MARKSMAN /
+    VALUABLE) on any row."""
+    b = pd.read_csv(ROOT / "output" / "predictions.csv", low_memory=False)
+    if "threshold_source" not in b.columns:
+        _legacy_reproduces(b, json.loads((ROOT / "models" / "best_params_standard.json").read_text(encoding="utf-8")))
+        return
+    for col in ("tier_over", "tier_under", "signal_tier"):
+        seen = set(b[col].map(R._tier_str))
+        assert not seen & set(R.TIERS), (col, sorted(seen & set(R.TIERS)))
 
 
 def test_legacy_side_tier_bars():
