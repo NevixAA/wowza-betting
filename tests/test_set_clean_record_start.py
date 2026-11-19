@@ -28,11 +28,11 @@ def _mod(tmp_path, monkeypatch):
 def test_sets_both_places_and_nothing_else(tmp_path, monkeypatch):
     m, cfg, sea = _mod(tmp_path, monkeypatch)
     before_c, before_s = cfg.read_text(encoding="utf-8"), sea.read_text(encoding="utf-8")
-    assert m.main(["--at", "2026-11-19T06:30:00Z"]) == 0
+    assert m.main(["--at", "2030-01-02T06:30:00Z"]) == 0
     j = json.loads(cfg.read_text(encoding="utf-8"))
-    assert j["clean_record_start_utc"] == "2026-11-19T06:30:00Z"
+    assert j["clean_record_start_utc"] == "2030-01-02T06:30:00Z"
     assert "2026-11-18" in j["_owner_confirmed"] and "count them" in j["_owner_confirmed"]
-    assert 'OWNER_DECISION = "2026-11-19"' in sea.read_text(encoding="utf-8")
+    assert 'OWNER_DECISION = "2030-01-02"' in sea.read_text(encoding="utf-8")
     changed_c = [a for a, b in zip(before_c.splitlines(), cfg.read_text(encoding="utf-8").splitlines()) if a != b]
     changed_s = [a for a, b in zip(before_s.splitlines(), sea.read_text(encoding="utf-8").splitlines()) if a != b]
     assert len(changed_c) == 2 and len(changed_s) == 1
