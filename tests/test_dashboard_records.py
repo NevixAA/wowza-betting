@@ -10,6 +10,8 @@ from pathlib import Path
 
 import pytest
 
+from tests.clean_record_pin import pinned_start  # noqa: F401  (fixture)
+
 ROOT = Path(__file__).resolve().parents[1]
 STATS = ROOT / "reports" / "dashboard" / "bars_statistics.json"
 LOG = ROOT / "reports" / "dashboard" / "repairs_log.json"
@@ -30,7 +32,11 @@ def _text(at) -> str:
 
 
 @pytest.fixture(autouse=True)
-def _admin(monkeypatch):
+def _admin(monkeypatch, request):
+    # the record NAMES are checked on the start pinned at 2026-11-21 (tests/clean_record_pin.py); the committed
+    # value (owner 2026-11-18: the go-live merge instant) is checked for consistency by test_no_second_start_date
+    if request.node.name != "test_no_second_start_date":
+        request.getfixturevalue("pinned_start")
     monkeypatch.setenv("WOWZA_TIER_OVERRIDE", "admin")
     import streamlit as st
     st.cache_data.clear()
@@ -117,14 +123,17 @@ def test_bars_statistics_hold_no_price():
                 assert c["stake_state"] == "OFF" and not c["stake_fraction"]
 
 
-def test_stake_plan_cells_are_the_three_promising_cells():
+def test_stake_plan_has_no_staked_cell_only_the_top3_flat_stake():
+    """Owner 2026-11-17 ("Yes, adopt"): no cell stakes on its own; every TOP-3 tip carries 0.5% flat, placed manually
+    (was: the 3 PROMISING cells, 2026-11-16)."""
     from dashboard_data import bars_stats_view as B
     d = B.load()["data"]
-    f = B.stake_plan_frame(d)
-    assert sorted(zip(f["League"], f["Market"])) == [("Finland Veikkausliiga", "O/U 2.5 Over"),
-                                                     ("Finland Veikkausliiga", "Over 3.5"),
-                                                     ("La Liga 2", "O/U 2.5 Over")]
-    assert set(f["Status (a)"]) == {"PROMISING"} and set(f["Status (b)"]) == {"PROMISING"}
+    assert len(B.stake_plan_frame(d)) == 0
+    plan = d["stake_plan"]
+    assert plan["decided"] == "2026-11-17" and "every TOP-3 tip" in plan["rule"] and "0.5%" in plan["rule"]
+    assert "paper" not in plan["rule"].lower()
+    for p in d["proposals"]:
+        assert not any(c["stake_fraction"] for c in p["cells"])
 
 
 def test_repairs_log_is_cited_and_newest_first():

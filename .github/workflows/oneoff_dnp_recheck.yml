@@ -1,13 +1,21 @@
 name: One-off - recheck props DNP voids (2026-11-01)
 
 # Re-checks every props row voided 'DNP' against API-Football's fixture stats with the id-based
-# matching of a8a0e6ec (scripts/oneoff_recheck_dnp_voids_2026_11.py). Manual only. The results go
-# to a journal outside the repo and are applied to the LATEST ledger in the commit step, so rows
-# other workflows append meanwhile are never lost. Delete this file once it has run.
+# matching of a8a0e6ec (scripts/oneoff_recheck_dnp_voids_2026_11.py). The results go to a journal
+# outside the repo and are applied to the LATEST ledger in the commit step, so rows other workflows
+# append meanwhile are never lost.
+#
+# SCHEDULE: NIGHTLY BY OWNER INTENT, UNTIL DONE. It is NOT manual-only (an earlier comment said so;
+# the cron below has run it every night since 2026-11-01 and that is what the owner wants).
 # API-FOOTBALL QUOTA: a full pass is ~1,600 fixtures (~2,000 calls) and the account had ~3,800
 # left on 2026-11-01 evening, which production collectors need. So it runs in nightly BATCHES of
 # 300 fixtures right after the daily quota reset; each checked row leaves the 'DNP' pool
-# (RECHECKED / DNP_CONFIRMED / DNP (0 min) / NO_STATS / DNP_NO_FIXTURE), so it ends by itself.
+# (RECHECKED / DNP_CONFIRMED / DNP (0 min) / NO_STATS / DNP_NO_FIXTURE), so the pool drains.
+#
+# IT STOPS ITSELF (2026-11-02). The first step counts the pool (result VOID + notes DNP, the
+# script's own selection) with the standard library only; when it is empty, or when a run reports
+# 'checked 0 fixture(s)', nothing else runs and the workflow DISABLES ITSELF (gh workflow disable,
+# needs actions: write). Delete this file afterwards.
 on:
   schedule:
     - cron: '0 3 * * *'
@@ -27,27 +35,45 @@ jobs:
     timeout-minutes: 150
     permissions:
       contents: write
+      actions: write      # only to disable this workflow once the pool is empty
     steps:
       - uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Anything left to re-check?
+        id: pool
+        run: |
+          left=$(python3 - <<'PY'
+          import csv
+          with open("output/player_ledger.csv", encoding="utf-8", newline="") as f:
+              print(sum(1 for r in csv.DictReader(f) if r.get("result") == "VOID" and r.get("notes") == "DNP"))
+          PY
+          )
+          echo "left=$left" >> "$GITHUB_OUTPUT"
+          echo "rows still voided 'DNP' (the re-check pool): $left"
       - uses: actions/setup-python@v5
+        if: steps.pool.outputs.left != '0'
         with:
           python-version: '3.11'
       - name: Install dependencies
+        if: steps.pool.outputs.left != '0'
         run: pip install -r requirements.txt
       - name: Recheck DNP voids
+        id: run
+        if: steps.pool.outputs.left != '0'
         env:
           APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
         run: |
           LIM="${{ github.event.inputs.limit_fixtures }}"; [ -n "$LIM" ] || LIM=300
           python scripts/oneoff_recheck_dnp_voids_2026_11.py --journal "$RUNNER_TEMP/dnp.json" \
             --limit-fixtures "$LIM" | tee recheck.txt
-          if grep -q 'checked 0 fixture' recheck.txt; then
-            echo "::notice::No DNP voids left to re-check - delete .github/workflows/oneoff_dnp_recheck.yml"
+          if grep -qE '^checked 0 fixture' recheck.txt; then
+            echo "done=1" >> "$GITHUB_OUTPUT"
+            echo "::notice::No DNP voids left to re-check - disabling this workflow"
           fi
           { echo '## DNP recheck'; echo '```'; tail -n 5 recheck.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
       - name: Apply to the latest ledger and commit
+        if: steps.pool.outputs.left != '0' && steps.run.outputs.done != '1'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -61,3 +87,11 @@ jobs:
             sleep $((i * 15))
           done
           echo "::error::could not push the recheck after 5 attempts"; exit 1
+      - name: Done - disable this workflow
+        if: steps.pool.outputs.left == '0' || steps.run.outputs.done == '1'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh workflow disable oneoff_dnp_recheck.yml -R "${{ github.repository }}" \
+            && echo "::notice::oneoff_dnp_recheck disabled - the DNP pool is empty; delete this file" \
+            || echo "::warning::could not disable the workflow - delete .github/workflows/oneoff_dnp_recheck.yml"

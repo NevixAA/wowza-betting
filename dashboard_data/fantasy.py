@@ -163,14 +163,18 @@ def availability_split() -> dict:
     p = tips()
     if p.empty or "p_start" not in p.columns:
         return {"available": False, "why": "no start probabilities in fantasy_tips.csv"}
-    s = pd.to_numeric(p["p_start"], errors="coerce").fillna(0.0)
+    # An unknown start probability is counted as UNKNOWN, never as 0 = "unavailable" (it was
+    # fillna(0.0); propsdef 2026-11-05). NaN compares False, so it falls in no other bucket.
+    s = pd.to_numeric(p["p_start"], errors="coerce")
     top = s.iloc[:20] if len(s) >= 20 else s
     return {"available": True, "total": int(len(p)),
             "nailed": int((s >= 0.85).sum()),
             "rotation_risk": int(((s >= 0.60) & (s < 0.85)).sum()),
             "doubtful": int(((s > 0.0) & (s < 0.60)).sum()),
             "unavailable": int((s <= 0.0).sum()),
-            "unavailable_in_top20": int((top <= 0.0).sum())}
+            "unknown": int(s.isna().sum()),
+            "unavailable_in_top20": int((top <= 0.0).sum()),
+            "unknown_in_top20": int(top.isna().sum())}
 
 
 def board(n: int = 25) -> pd.DataFrame:

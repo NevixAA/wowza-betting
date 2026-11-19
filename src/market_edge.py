@@ -282,7 +282,7 @@ def strong_evidence_ok(evidence: dict | None, track: str, family: str, params: d
     e = (evidence.get("tracks") or {}).get(f"{track}|{family}") or {}
     try:
         return (e.get("evidence_type") == "prospective"
-                and int(e.get("n", 0)) >= int(params["strong_min_n"])
+                and int(e.get("n")) >= int(params["strong_min_n"])    # no n: TypeError -> False
                 and float(e.get("ci_lo")) > 0.0)
     except (TypeError, ValueError):
         return False
@@ -305,13 +305,14 @@ def _evaluate(c: Candidate, P: dict) -> dict:
     out = _nan_out(c)
     now, ko = _utc(c.now), _utc(c.kickoff)
     clv = c.clv or {}
-    out.update(clv_track_n=clv.get("n", 0), clv_track_mean=clv.get("mean", float("nan")),
+    # A track with no CLV record has an UNKNOWN sample size, not n = 0 (fix9/defaults 2026-11-04)
+    out.update(clv_track_n=clv.get("n"), clv_track_mean=clv.get("mean", float("nan")),
                clv_track_median=clv.get("median", float("nan")),
                clv_track_positive_pct=clv.get("positive_pct", float("nan")))
     key = f"{c.track}|{c.family}"
     strong_ok = strong_evidence_ok(c.evidence, c.track, c.family, P)
     out["clv_evidence_state"] = ("PROSPECTIVE_VALIDATED" if strong_ok else
-                                 "RETROSPECTIVE_ONLY" if clv.get("n", 0) else "NONE")
+                                 "RETROSPECTIVE_ONLY" if clv.get("n") else "NONE")   # no record -> NONE
 
     # 1. fail-closed gates ─────────────────────────────────────────────────────────────────────
     if c.family not in SIDES:
@@ -420,7 +421,8 @@ def _evaluate(c: Candidate, P: dict) -> dict:
             return float("nan")
     # The clipped mean alone is not enough: on the committed ledgers new_format|OU25 has mean +4.69
     # but median 0.0 and 45% positive — a tail, not a track. Both must be above zero (NaN -> weak).
-    weak_clv = (int(clv.get("n", 0) or 0) < int(P["clv_min_n"]) or not (_f(clv.get("mean")) > 0)
+    # an unknown CLV sample is not a sample: NaN >= min is False -> weak (it was a typed 0, same verdict)
+    weak_clv = (not (_f(clv.get("n")) >= int(P["clv_min_n"])) or not (_f(clv.get("mean")) > 0)
                 or (bool(P.get("clv_require_positive_median", True)) and not (_f(clv.get("median")) > 0)))
 
     sides = []

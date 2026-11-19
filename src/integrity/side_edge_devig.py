@@ -19,8 +19,9 @@ strictly before kickoff and at or before the decision time, de-vigged with the p
 median over books. A fixture with no two-sided pair is ONE_SIDED: it has NO de-vigged price and is
 never described as having one.
 
-The shadow tier uses the SAME thresholds production would use for that league and market (approved
-per-league bars from models/best_params_side_markets.json, else 0.10/0.08/0.04), so the only thing
+The shadow tier uses the SAME thresholds production would use for that league and market (the league's
+own owner-applied bars from models/best_params_side_markets.json, else NO tier - no global bar since
+2026-11-09), so the only thing
 that differs is the fair-price definition. Classification of each production tip:
 
     CONFIRMED_BY_DEVIG     shadow tier is not AVOID either
@@ -37,6 +38,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+from src import side_thresholds as _ST
 from src.market_edge import overround, power_devig
 
 SHADOW_VERSION = "side_edge_devig_shadow-1.0"
@@ -46,7 +48,6 @@ FAMILY = {  # production market -> (snapshot market, side A, side B, p column, o
     "over15": ("OU15", "OVER", "UNDER", "p_over15", "odds_over15"),
     "over35": ("OU35", "OVER", "UNDER", "p_over35", "odds_over35"),
 }
-DEFAULT_BARS = (0.10, 0.08, 0.04)
 
 
 def _utc(x):
@@ -54,21 +55,24 @@ def _utc(x):
     return t
 
 
-def thresholds(league_params: dict, market: str, league: str) -> tuple[float, float, float]:
-    """Exactly pipeline._generate_side_bets' threshold choice (duplicated read-only)."""
+def thresholds(league_params: dict, market: str, league: str):
+    """Exactly pipeline._generate_side_bets' threshold choice: the SAME function
+    (src/side_thresholds.side_bars). (sniper, marksman, valuable), or None when the league has no own
+    owner-applied bars (NO_LEAGUE_BAR: no tier - never a global bar, owner 2026-11-09)."""
+    b = thresholds_with_source(league_params, market, league)
+    return None if b is None else b[:3]
+
+
+def thresholds_with_source(league_params: dict, market: str, league: str):
+    """(sniper, marksman, valuable, 'LEAGUE') or None (NO_LEAGUE_BAR)."""
     lp = (league_params.get(market, {}) or {}).get(league, {}) or {}
-    approved = lp.get("approved")
-    use_own = (lp.get("approved", not lp.get("drop", False)) if approved is not None
-               else not lp.get("drop", False))
-    if use_own:
-        return float(lp.get("sniper_th", 0.10)), float(lp.get("marksman_th", 0.08)), 0.04
-    return DEFAULT_BARS
+    return _ST.side_bars(lp, market, league)
 
 
-def tier(edge: float, bars: tuple) -> str:
-    if edge is None or not np.isfinite(edge):
+def tier(edge: float, bars) -> str:
+    if bars is None or edge is None or not np.isfinite(edge):
         return "AVOID"
-    s, m, v = bars
+    s, m, v = bars[:3]
     if edge >= s:
         return "SNIPER"
     if edge >= m:
@@ -135,7 +139,8 @@ def evaluate_rows(rows: pd.DataFrame, quotes: pd.DataFrame, league_params: dict,
                "model_type": r.get("model_type", ""), "p_model": p_model, "odds": odds,
                "fair_prod_1_08": fair_prod, "edge_prod": edge_prod,
                "tier_prod": r.get("tier_prod") or tier(edge_prod, bars),
-               "bars": "/".join(f"{b:g}" for b in bars), "n_two_sided_books": len(pairs)}
+               "bars": ("/".join(f"{b:g}" for b in bars) if bars is not None else _ST.NO_LEAGUE_BAR),
+               "n_two_sided_books": len(pairs)}
         if pairs:
             pf = float(statistics.median(p["p_fair"] for p in pairs))
             rec.update(devig_state="DEVIGGED_TWO_SIDED", devig_method="power",

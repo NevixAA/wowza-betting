@@ -58,6 +58,7 @@ import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import config
+from src.utc_clock import utc_now, utc_today
 
 HISTORY_FILE = config.ODDS_HISTORY_JSON
 
@@ -213,7 +214,7 @@ def snapshot(df: pd.DataFrame) -> None:
     Call this BEFORE enrich() so the current run is already stored.
     """
     history = _load()
-    ts = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
+    ts = utc_now().strftime("%Y-%m-%dT%H:%M:%S")   # naive UTC (repo convention; was local)
 
     for _, row in df.iterrows():
         ov  = row.get("odds_over25")
@@ -318,7 +319,7 @@ def enrich(df: pd.DataFrame) -> pd.DataFrame:
 def purge_old(cutoff_days: int = 10) -> int:
     """Remove fixture history older than cutoff_days. Returns count removed."""
     history  = _load()
-    cutoff   = date.today() - timedelta(days=cutoff_days)
+    cutoff   = utc_today() - timedelta(days=cutoff_days)   # keys carry UTC match dates
     to_del   = []
     for k in history:
         try:

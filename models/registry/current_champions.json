@@ -1,67 +1,73 @@
 {
   "standard": {
-    "model_version": "standard_20261018T080423Z_64313878",
-    "champion_since": "2026-10-18T08:04:23Z",
-    "retrain_batch_id": "rb_2026-10-18_legacy",
-    "training_cutoff": "",
-    "artifact_sha256": "643138788406aa03c6ae741bdfe9f8c9a06b7b22ea674492450b178bfbc38a45",
-    "promotion_source": "LEGACY_GIT",
-    "promotion_reason": "reconstructed from git history 2026-10-18"
+    "model_version": "standard_20261118T172020Z_50a974bb",
+    "champion_since": "2026-11-18T17:20:20Z",
+    "retrain_batch_id": "phase2_refit_clean-data-switch-2026-11-09",
+    "training_cutoff": "2026-11-01",
+    "artifact_sha256": "50a974bb83a88fc5c28ac4f9d2af25b475a9c880e21675a3b084a9fa49b81e8d",
+    "promotion_source": "OWNER_CLEAN_SWITCH",
+    "promotion_reason": "OWNER_CLEAN_SWITCH [clean-data-switch-2026-11-09] stage final_refit by Nevo (owner) (2026-11-09): \"Approve 2nd + final refit\" - ONE final refit right before go-live, on the final collected data (after the last collection and results sync): the same recipe (scripts/phase2_refit_serving.py, champion_recipe per track x market), live = training at 0 differences required (scripts/team_train_serve_parit",
+    "gate_version": "PG-1.0"
   },
   "newformat": {
-    "model_version": "newformat_20261018T080423Z_9eb6b4b4",
-    "champion_since": "2026-10-25T08:46:05Z",
-    "retrain_batch_id": "rb_2026-10-18_legacy",
-    "training_cutoff": null,
-    "artifact_sha256": "9eb6b4b4860c7970a8c9217c31c6c58f15635936b3405bc0f12c2bcb99db8d98",
-    "promotion_source": "ROLLBACK",
-    "promotion_reason": "ROLLBACK: owner 2026-10-25: promoted by the retired champion_gate minutes before PG-1.0 went live; holdout-qualified but no prospective period - parked as challenger",
+    "model_version": "newformat_20261118T172020Z_303c9a05",
+    "champion_since": "2026-11-18T17:20:20Z",
+    "retrain_batch_id": "phase2_refit_clean-data-switch-2026-11-09",
+    "training_cutoff": "2026-11-01",
+    "artifact_sha256": "303c9a05071e7afd4e7dfd42074052554b74213a0ae92d9e6421a1cdc138ca71",
+    "promotion_source": "OWNER_CLEAN_SWITCH",
+    "promotion_reason": "OWNER_CLEAN_SWITCH [clean-data-switch-2026-11-09] stage final_refit by Nevo (owner) (2026-11-09): \"Approve 2nd + final refit\" - ONE final refit right before go-live, on the final collected data (after the last collection and results sync): the same recipe (scripts/phase2_refit_serving.py, champion_recipe per track x market), live = training at 0 differences required (scripts/team_train_serve_parit",
     "gate_version": "PG-1.0"
   },
   "btts": {
-    "model_version": "btts_20261005T101905Z_238e3419",
-    "champion_since": "2026-10-05T10:19:05Z",
-    "retrain_batch_id": "rb_2026-10-05_legacy",
-    "training_cutoff": "",
-    "artifact_sha256": "238e3419f41449563d2024644e988f694c54a20bf6c9e276fc8cb33caf691098",
-    "promotion_source": "LEGACY_GIT",
-    "promotion_reason": "reconstructed from git history 2026-10-18"
+    "model_version": "btts_20261118T172022Z_a8ddb87e",
+    "champion_since": "2026-11-18T17:20:22Z",
+    "retrain_batch_id": "phase2_refit_clean-data-switch-2026-11-09",
+    "training_cutoff": "2026-11-01",
+    "artifact_sha256": "a8ddb87e86078fdab46f95251b677cfc3086cdf22917d8214f5af993a8860676",
+    "promotion_source": "OWNER_CLEAN_SWITCH",
+    "promotion_reason": "OWNER_CLEAN_SWITCH [clean-data-switch-2026-11-09] stage final_refit by Nevo (owner) (2026-11-09): \"Approve 2nd + final refit\" - ONE final refit right before go-live, on the final collected data (after the last collection and results sync): the same recipe (scripts/phase2_refit_serving.py, champion_recipe per track x market), live = training at 0 differences required (scripts/team_train_serve_parit",
+    "gate_version": "PG-1.0"
   },
   "over15": {
-    "model_version": "over15_20261018T080423Z_da4743a2",
-    "champion_since": "2026-10-18T08:04:23Z",
-    "retrain_batch_id": "rb_2026-10-18_legacy",
-    "training_cutoff": "",
-    "artifact_sha256": "da4743a2669fef1390f31c3b12eb5969d912e43dbb50a4e254efb0b4c3cb9c4a",
-    "promotion_source": "LEGACY_GIT",
-    "promotion_reason": "reconstructed from git history 2026-10-18"
+    "model_version": "over15_20261118T172023Z_2e70abf1",
+    "champion_since": "2026-11-18T17:20:23Z",
+    "retrain_batch_id": "phase2_refit_clean-data-switch-2026-11-09",
+    "training_cutoff": "2026-11-01",
+    "artifact_sha256": "2e70abf10adfa403749718e824b728964ba305d6a888acfec9051999c9dad2fb",
+    "promotion_source": "OWNER_CLEAN_SWITCH",
+    "promotion_reason": "OWNER_CLEAN_SWITCH [clean-data-switch-2026-11-09] stage final_refit by Nevo (owner) (2026-11-09): \"Approve 2nd + final refit\" - ONE final refit right before go-live, on the final collected data (after the last collection and results sync): the same recipe (scripts/phase2_refit_serving.py, champion_recipe per track x market), live = training at 0 differences required (scripts/team_train_serve_parit",
+    "gate_version": "PG-1.0"
   },
   "over35": {
-    "model_version": "over35_20261005T101905Z_f546ce72",
-    "champion_since": "2026-10-05T10:19:05Z",
-    "retrain_batch_id": "rb_2026-10-05_legacy",
-    "training_cutoff": "",
-    "artifact_sha256": "f546ce723bdb31f665a60b3b66c64bbe1cd250594a7564c53955e82423a883fe",
-    "promotion_source": "LEGACY_GIT",
-    "promotion_reason": "reconstructed from git history 2026-10-18"
+    "model_version": "over35_20261118T172024Z_0331cee9",
+    "champion_since": "2026-11-18T17:20:24Z",
+    "retrain_batch_id": "phase2_refit_clean-data-switch-2026-11-09",
+    "training_cutoff": "2026-11-01",
+    "artifact_sha256": "0331cee9ec14ef62a6a402cb05079b0fc0dc378e4abf65cac89cc10eb96ef1a6",
+    "promotion_source": "OWNER_CLEAN_SWITCH",
+    "promotion_reason": "OWNER_CLEAN_SWITCH [clean-data-switch-2026-11-09] stage final_refit by Nevo (owner) (2026-11-09): \"Approve 2nd + final refit\" - ONE final refit right before go-live, on the final collected data (after the last collection and results sync): the same recipe (scripts/phase2_refit_serving.py, champion_recipe per track x market), live = training at 0 differences required (scripts/team_train_serve_parit",
+    "gate_version": "PG-1.0"
   },
   "ht_over05": {
-    "model_version": "ht_over05_20261018T080423Z_359b491a",
-    "champion_since": "2026-10-18T08:04:23Z",
-    "retrain_batch_id": "rb_2026-10-18_legacy",
-    "training_cutoff": "",
-    "artifact_sha256": "359b491a454efa0eb5236bae365bf6a9784067583cae2d2db3588179c4062832",
-    "promotion_source": "LEGACY_GIT",
-    "promotion_reason": "reconstructed from git history 2026-10-18"
+    "model_version": "ht_over05_20261118T172021Z_65646406",
+    "champion_since": "2026-11-18T17:20:21Z",
+    "retrain_batch_id": "phase2_refit_clean-data-switch-2026-11-09",
+    "training_cutoff": "2026-11-01",
+    "artifact_sha256": "656464066143e0feba1a7357a328e7476338e18115ceb5a8a73d25be86b13ed8",
+    "promotion_source": "OWNER_CLEAN_SWITCH",
+    "promotion_reason": "OWNER_CLEAN_SWITCH [clean-data-switch-2026-11-09] stage final_refit by Nevo (owner) (2026-11-09): \"Approve 2nd + final refit\" - ONE final refit right before go-live, on the final collected data (after the last collection and results sync): the same recipe (scripts/phase2_refit_serving.py, champion_recipe per track x market), live = training at 0 differences required (scripts/team_train_serve_parit",
+    "gate_version": "PG-1.0"
   },
   "ht_over15": {
-    "model_version": "ht_over15_20261004T093828Z_6f370f63",
-    "champion_since": "2026-10-04T09:38:28Z",
-    "retrain_batch_id": "rb_2026-10-04_legacy",
-    "training_cutoff": "",
-    "artifact_sha256": "6f370f6304d7009403b77c416cc277fcf65c821f126b5ca78b70e7e00fd6f63b",
-    "promotion_source": "LEGACY_GIT",
-    "promotion_reason": "reconstructed from git history 2026-10-18"
+    "model_version": "ht_over15_20261118T172021Z_5365d223",
+    "champion_since": "2026-11-18T17:20:21Z",
+    "retrain_batch_id": "phase2_refit_clean-data-switch-2026-11-09",
+    "training_cutoff": "2026-11-01",
+    "artifact_sha256": "5365d223ab1e0f7c50d7997867b76ce62106a1986ab7f84ebca8b24e6e0ca95a",
+    "promotion_source": "OWNER_CLEAN_SWITCH",
+    "promotion_reason": "OWNER_CLEAN_SWITCH [clean-data-switch-2026-11-09] stage final_refit by Nevo (owner) (2026-11-09): \"Approve 2nd + final refit\" - ONE final refit right before go-live, on the final collected data (after the last collection and results sync): the same recipe (scripts/phase2_refit_serving.py, champion_recipe per track x market), live = training at 0 differences required (scripts/team_train_serve_parit",
+    "gate_version": "PG-1.0"
   },
   "standard_repaired": {
     "model_version": "standard_repaired_20261028T123040Z_1f5805e6",
@@ -71,6 +77,12 @@
     "artifact_sha256": "1f5805e63c9945cb3e1804ceb72a52dfdbd75360574183d33d76d35f8a9f1a74",
     "promotion_source": "OWNER_INSTALL",
     "promotion_reason": "OWNER_INSTALL by Nevo (owner): Nevo (owner) 2026-10-28: switch Standard OU25 to repaired recipe before forward evidence; rollback = set STANDARD_OU25_SERVING_RECIPE=legacy_v9",
-    "gate_version": "PG-1.0"
+    "gate_version": "PG-1.0",
+    "status": "RETIRED",
+    "retired_at": "2026-11-15T19:20:24Z",
+    "retired_on": "2026-11-15",
+    "retired_by": "Nevo (owner)",
+    "retirement_owner_words": "fix what you need",
+    "retirement_reason": "the 2026-10-28 v9_repaired Standard O/U 2.5 payload (models/model_v9_standard_repaired.pkl): its 1.0 imputer filled xG and inside-box shots - 0% training coverage - with 0.0 on every training row (FABRICATED_VALUE, reports/REAL_DATA_FINAL_AUDIT.md T5). Retired as a serving recipe (STANDARD_OU25_SERVING_RECIPE accepts only legacy_v9); file kept for audit."
   }
 }

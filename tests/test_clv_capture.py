@@ -418,3 +418,18 @@ def test_acknowledged_incident_is_excluded_from_the_guard_but_reported():
     other = {**inc, "track": "new_format"}
     h2 = cch.build(pd.DataFrame(), arch, now=now, expectation={**exp, "acknowledged_incidents": [other]})
     assert h2["check"]["status"] == "FAIL" and h2["collection"]["excluded_incidents"] == []
+
+
+def test_clv_health_floors_come_only_from_the_expectation_file():
+    from src import clv_collection_health as cch
+    h = {"shadow_since_measure_from": {"eligible": 100, "certified_t30_pct": 90.0},
+         "collection": {"fixture_markets": 500, "t30_pct": 90.0}}
+    exp = {"min_shadow_sample": 40, "min_certified_t30_pct": 35.0, "min_collection_sample": 200,
+           "min_collection_t30_pct": 40.0, "collection_window_days": 7}
+    assert cch.check(h, exp)["status"] == "PASS"
+    short = {k: v for k, v in exp.items() if k != "min_shadow_sample"}
+    r = cch.check(h, short)
+    assert r["status"] == "NO_EXPECTATION" and "min_shadow_sample" in r["reasons"][0]
+    # A percentage that was not measured is not 0% -> never a FAIL.
+    h2 = {**h, "shadow_since_measure_from": {"eligible": 100, "certified_t30_pct": None}}
+    assert cch.check(h2, exp)["status"] == "INSUFFICIENT_SAMPLE"

@@ -34,6 +34,12 @@ market_intel = importlib.reload(market_intel)
 
 st.set_page_config(page_title="Wowza | Market Intelligence", page_icon="📡", layout="wide")
 import dashboard_ui as ui  # noqa: E402
+
+
+def _n(v) -> str:
+    """A count from a health file, or '—' when the file does not carry it (missing is not 0)."""
+    return "—" if v is None else f"{v:,}"
+
 from src.tier_labels import TIER_LABEL  # noqa: E402
 
 ui.page_header("Market Intelligence", "Research and monitoring only — nothing here is a bet. Market-first rows are "
@@ -63,8 +69,8 @@ if d["cov"].empty:
 else:
     ui.metric_grid([{"label": "Engine", "value": str(m.get("selection_engine_version"))},
                     {"label": "Config", "value": str(m.get("config_status"))},
-                    {"label": "Rows scored (last run)", "value": f"{m.get('rows_scored') or 0:,}"},
-                    {"label": "Book quotes (last run)", "value": f"{m.get('current_run_book_quotes') or 0:,}"}],
+                    {"label": "Rows scored (last run)", "value": _n(m.get('rows_scored'))},
+                    {"label": "Book quotes (last run)", "value": _n(m.get('current_run_book_quotes'))}],
                    per_row=2)
     if m.get("shadow_only") is not True:
         st.error("shadow_only is not true in edge_engine_health.json — the market-first engine must stay shadow.")
@@ -170,9 +176,9 @@ if mig["engines"].empty:
                    "run `python -m src.research.edge_replay`.")
 else:
     inp = mm.get("inputs") or {}
-    ui.metric_grid([{"label": "Replay rows", "value": f"{inp.get('replay_rows') or 0:,}",
+    ui.metric_grid([{"label": "Replay rows", "value": _n(inp.get('replay_rows')),
                      "help": "first-sight fixture × market rows"},
-                    {"label": "Settled replay rows", "value": f"{inp.get('settled_rows') or 0:,}"},
+                    {"label": "Settled replay rows", "value": _n(inp.get('settled_rows'))},
                     {"label": "Engine config", "value": str(mm.get("config_status"))},
                     {"label": "Bankroll policy (DEPLOYABLE split)", "value": str(mig["policy_version"])}],
                    per_row=2)

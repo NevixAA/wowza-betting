@@ -104,7 +104,10 @@ def test_mirrored_rules_equal_production():
     assert EP.SIDE_SPLIT_MARKETS == bankroll_policy.SIDE_SPLIT_MARKETS
     assert EP.PERFORMANCE_CUTOFF == config.PERFORMANCE_CUTOFF_DATE
     assert EP._paper_leagues() == set(config.PAPER_LEAGUES)
-    assert EP.O15_FILL_PRICE == backtest._DEFAULT_ODDS["over15"] == market_edge.SYNTHETIC_DEFAULT_ODDS["OU15"]
+    # backtest no longer fills a missing price (2026-11-01); the detector constants still name the
+    # historical fill so legacy rows that carry it are recognised and dropped
+    assert not hasattr(backtest, "_DEFAULT_ODDS")
+    assert EP.O15_FILL_PRICE == market_edge.SYNTHETIC_DEFAULT_ODDS["OU15"]
 
 
 def test_since_review_numbers_equal_independent_computation():
@@ -210,6 +213,12 @@ def test_bankroll_panel_shows_the_review_and_ledger_numbers(monkeypatch, tmp_pat
     (br / "track_evidence.json").write_text(json.dumps(TRACK_EVIDENCE), encoding="utf-8")
     (br / "current_policy_recommendation.json").write_text(json.dumps(RECOMMENDATION), encoding="utf-8")
     _offline(monkeypatch, tmp_path)
+    # the cards show REAL tracks; since the owner's 2026-11-17 decision every v9 track is at 0, so the mechanism is
+    # shown on the policy before it (tests/policy_helpers)
+    from tests.policy_helpers import per_track_policy
+    pol = tmp_path / "bankroll_policy_before.json"
+    pol.write_text(json.dumps(per_track_policy()), encoding="utf-8")
+    monkeypatch.setattr(EP, "POLICY_FILE", pol)
     at = _render(BANKROLL, monkeypatch)
     text = _text(at)
     assert EP.NO_POLICY_CHANGE in text and "Since last formal bankroll review" in text

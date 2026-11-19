@@ -1,0 +1,66 @@
+{
+  "market": "sot3",
+  "model_version": "props_sot3_clean_player_base_rate_f11626d9",
+  "artifact_sha256": "f11626d93c30cac4eb37deb721ebb1b15b18cde346e91b27ed566f61d52e0dd8",
+  "registered_at": "2026-11-18T19:03:57Z",
+  "training_cutoff": "2026-08-31",
+  "training_rows": {
+    "fit": 734045,
+    "calibration": 130673
+  },
+  "candidate": "player_base_rate",
+  "harness_version": "PROPS-HARNESS-1.0",
+  "clean_retrain": {
+    "run_id": "43035218594",
+    "code_sha": "6fd794964ad031b45ff0a383d996bb09b414175c",
+    "artifact_sha256": "89bdb2e1712dd95679c0779ccd3c6ac38e4c586a00cd1c79107439776a5cd8fe",
+    "candidate": "player_base_rate",
+    "holdout": {
+      "n": 55907,
+      "events": 803,
+      "log_loss": 0.06656748077180578,
+      "brier": 0.013720138711441439,
+      "ece10": 0.0015206712507978342,
+      "calib_intercept": 0.1368006936112922,
+      "calib_slope": 1.011116290515491,
+      "ll_minus_player_base_rate": null,
+      "ml_candidates_minus_player_base_rate": {
+        "hgb_nan_native": {
+          "mean": -0.0002644018077513107,
+          "ci95": [
+            -0.0012940286652139464,
+            0.0007756127804160861
+          ],
+          "week_blocks": 9
+        },
+        "recipe_retrained": {
+          "mean": 0.00030643041105303894,
+          "ci95": [
+            -0.0007380956788029825,
+            0.0013337907119956975
+          ],
+          "week_blocks": 9
+        }
+      },
+      "head_to_head": {
+        "n": 55907,
+        "weeks": 9,
+        "ll_delta_hgb_minus_recipe": -0.0005708322188043497,
+        "ci95_lo": -0.0006697341135101834,
+        "ci95_hi": -0.000471107277661535,
+        "p_one_sided": 0.00024993751562109475,
+        "boot": 4000,
+        "seed": 1
+      },
+      "holdout_dates": [
+        "2026-09-01",
+        "2026-10-31"
+      ],
+      "rule": "owner 2026-11-18: serve the clean player_base_rate (no ML candidate beats it: no candidate beats player_base_rate)"
+    },
+    "approval": "serve the clean player_base_rate model (option b) - 100% real data, markets stay on; the clean ML candidates keep predicting as challengers (owner decision 2026-11-18, relayed by the go-live coordinator)",
+    "approved_on": "2026-11-18",
+    "prior_champion": "props_sot3_legacy_805e72e2"
+  },
+  "model_role": "CHAMPION"
+}

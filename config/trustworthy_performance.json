@@ -1,0 +1,20 @@
+{
+  "_doc": "src/trustworthy_performance.py (Phase 2 part 11, P1_TRUSTWORTHY_PERFORMANCE). The owner sets every value in this file. The minimums below are COPIED from rules already in the repo (each `source` names it); none is new. Until the owner confirms them (`owner_confirmed`), the framework labels its output with that fact.",
+  "owner_confirmed": true,
+  "_owner_confirmed": "OWNER DECISION 2026-11-18 (\"count them\"): the Clean Record starts at the go-live merge instant 2026-11-19T06:41:48Z, when the clean refit models start serving (supersedes O4 \"21.11 00:00 UTC\" of 2026-11-17). Old-season history is kept unchanged as the pre-repair record.",
+  "clean_record_start_utc": "2026-11-19T06:41:48Z",
+  "_clean_record_start_utc": "OWNER DECISION 2026-11-11 (\"adjust to count from 0 after all the fixing (to see the difference later)\"): the Clean Record starts 2026-11-21, the first round on the clean models (clean retrained team models, clean props models, the approved per-cell bars TP-2026-11-10-d999073a). THE one value: config.py CLEAN_RECORD_START and PROPS_CLEAN_MODELS_LIVE_DATE read it, every dashboard results figure splits on it (dashboard_data/clean_record.py). View C = live tips generated AND played on or after it; every earlier tip is view A ('Before the repairs'). Never inferred; only the owner changes it.",
+  "performance_claims_enabled": false,
+  "_performance_claims_enabled": "Owner rule: no new performance claims until the data is complete and he approves. While false the CLI only runs --dry-run (row counts per view); the full build needs this set to true by the owner.",
+  "minimums": {
+    "settled": {"value": 30, "source": "src/research/league_weekly_eval.py MIN_N = 30 (NOT_ENOUGH_DATA below 30 priced settled rows; the regime registry's adequacy bar)"},
+    "matchdays": {"value": 8, "source": "src/research/league_weekly_eval.py MIN_WEEKS = 8 (8 independent gameweeks). Here the unit is the match date, the block of the bootstrap; the owner confirms or changes the unit"},
+    "clv": {"value": 150, "source": "config/market_edge_v2.json strong_min_n = 150 (STRONG needs prospective CLV evidence, n >= 150) and src/nf_calibration.py MIN_N = 150"}
+  },
+  "bootstrap": {
+    "draws": 2000,
+    "ci": 0.95,
+    "block": "match_date",
+    "source": "config/promotion_gate.json: match-date block bootstrap, 2000 draws, 95%"
+  }
+}

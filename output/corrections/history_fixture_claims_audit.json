@@ -1,0 +1,431 @@
+{
+ "artifact": "history_fixture_claims_audit",
+ "generated_at": "2026-11-10T16:51:38Z",
+ "rule": "(the matcher of scripts/collect_ht_scores.claims and scripts/prove_af_history_aliases,\nnothing looser). A row claims a provider fixture of its league when\n  * it stores that fixture id (rule 'fixture_id'), else\n  * SAME DAY, both clubs resolved home->home and away->away (src.team_names.resolve_result, else the\n    league-scoped PROVEN alias of config/af_history_proven_aliases.json on that date) onto exactly\n    one finished fixture (rule 'both_clubs'), else\n  * SAME DAY, one club resolved, it plays exactly one finished fixture of the league that day on that\n    side, and the row's full-time score is that fixture's score.fulltime (rule\n    'forced_opponent+score': a club does not play twice in a day), else\n  * ADJACENT DAY (+-1, the UTC/local date split), both clubs resolved onto exactly one fixture AND\n    the row's score is the fixture's score (rule 'both_clubs_adjacent_day').\nAnything else claims nothing. A provider fixture claimed by TWO OR MORE rows is one match filed\ntwice: the frame double-counts it.",
+ "frames": {
+  "af_history_raw": {
+   "rows": 93489,
+   "claimed": 91431,
+   "fixtures_claimed_twice": 18501,
+   "extra_rows": 20665,
+   "per_league": {
+    "Argentina Primera Division": {
+     "fixtures_claimed_twice": 1387,
+     "extra_rows": 1461,
+     "written_back_and_provider": 297,
+     "written_back_only": 1090,
+     "provider_only": 0
+    },
+    "Austrian Bundesliga": {
+     "fixtures_claimed_twice": 1197,
+     "extra_rows": 1477,
+     "written_back_and_provider": 188,
+     "written_back_only": 1009,
+     "provider_only": 0
+    },
+    "Brazil Serie A": {
+     "fixtures_claimed_twice": 1386,
+     "extra_rows": 1458,
+     "written_back_and_provider": 187,
+     "written_back_only": 1199,
+     "provider_only": 0
+    },
+    "Bundesliga 2": {
+     "fixtures_claimed_twice": 931,
+     "extra_rows": 1522,
+     "written_back_and_provider": 0,
+     "written_back_only": 931,
+     "provider_only": 0
+    },
+    "Championship": {
+     "fixtures_claimed_twice": 563,
+     "extra_rows": 591,
+     "written_back_and_provider": 0,
+     "written_back_only": 563,
+     "provider_only": 0
+    },
+    "China Super League": {
+     "fixtures_claimed_twice": 1272,
+     "extra_rows": 1320,
+     "written_back_and_provider": 254,
+     "written_back_only": 1018,
+     "provider_only": 0
+    },
+    "Denmark Superliga": {
+     "fixtures_claimed_twice": 606,
+     "extra_rows": 610,
+     "written_back_and_provider": 121,
+     "written_back_only": 485,
+     "provider_only": 0
+    },
+    "Finland Veikkausliiga": {
+     "fixtures_claimed_twice": 353,
+     "extra_rows": 359,
+     "written_back_and_provider": 19,
+     "written_back_only": 334,
+     "provider_only": 0
+    },
+    "Greek Super League": {
+     "fixtures_claimed_twice": 425,
+     "extra_rows": 458,
+     "written_back_and_provider": 0,
+     "written_back_only": 425,
+     "provider_only": 0
+    },
+    "Ireland Premier Division": {
+     "fixtures_claimed_twice": 479,
+     "extra_rows": 483,
+     "written_back_and_provider": 18,
+     "written_back_only": 461,
+     "provider_only": 0
+    },
+    "Japan J-League": {
+     "fixtures_claimed_twice": 1319,
+     "extra_rows": 1370,
+     "written_back_and_provider": 318,
+     "written_back_only": 1001,
+     "provider_only": 0
+    },
+    "La Liga 2": {
+     "fixtures_claimed_twice": 806,
+     "extra_rows": 914,
+     "written_back_and_provider": 0,
+     "written_back_only": 806,
+     "provider_only": 0
+    },
+    "League One": {
+     "fixtures_claimed_twice": 769,
+     "extra_rows": 799,
+     "written_back_and_provider": 0,
+     "written_back_only": 769,
+     "provider_only": 0
+    },
+    "League Two": {
+     "fixtures_claimed_twice": 719,
+     "extra_rows": 765,
+     "written_back_and_provider": 0,
+     "written_back_only": 719,
+     "provider_only": 0
+    },
+    "Mexico Liga MX": {
+     "fixtures_claimed_twice": 1454,
+     "extra_rows": 1600,
+     "written_back_and_provider": 216,
+     "written_back_only": 1238,
+     "provider_only": 0
+    },
+    "Norway Eliteserien": {
+     "fixtures_claimed_twice": 685,
+     "extra_rows": 728,
+     "written_back_and_provider": 18,
+     "written_back_only": 667,
+     "provider_only": 0
+    },
+    "Romanian Superliga": {
+     "fixtures_claimed_twice": 1341,
+     "extra_rows": 1418,
+     "written_back_and_provider": 4,
+     "written_back_only": 1337,
+     "provider_only": 0
+    },
+    "Serie B": {
+     "fixtures_claimed_twice": 42,
+     "extra_rows": 42,
+     "written_back_and_provider": 0,
+     "written_back_only": 42,
+     "provider_only": 0
+    },
+    "Sweden Allsvenskan": {
+     "fixtures_claimed_twice": 1717,
+     "extra_rows": 2233,
+     "written_back_and_provider": 56,
+     "written_back_only": 1661,
+     "provider_only": 0
+    },
+    "USA MLS": {
+     "fixtures_claimed_twice": 1050,
+     "extra_rows": 1057,
+     "written_back_and_provider": 176,
+     "written_back_only": 874,
+     "provider_only": 0
+    }
+   }
+  },
+  "af_history_corrected": {
+   "rows": 71487,
+   "claimed": 70766,
+   "fixtures_claimed_twice": 0,
+   "extra_rows": 0,
+   "per_league": {}
+  },
+  "af_history_shadows": {
+   "rows": 71487,
+   "claimed": 70840,
+   "fixtures_claimed_twice": 70,
+   "extra_rows": 70,
+   "per_league": {
+    "Bundesliga 2": {
+     "fixtures_claimed_twice": 34,
+     "extra_rows": 34,
+     "written_back_and_provider": 0,
+     "written_back_only": 34,
+     "provider_only": 0
+    },
+    "Greek Super League": {
+     "fixtures_claimed_twice": 33,
+     "extra_rows": 33,
+     "written_back_and_provider": 0,
+     "written_back_only": 33,
+     "provider_only": 0
+    },
+    "Ireland Premier Division": {
+     "fixtures_claimed_twice": 1,
+     "extra_rows": 1,
+     "written_back_and_provider": 0,
+     "written_back_only": 1,
+     "provider_only": 0
+    },
+    "Sweden Allsvenskan": {
+     "fixtures_claimed_twice": 2,
+     "extra_rows": 2,
+     "written_back_and_provider": 0,
+     "written_back_only": 2,
+     "provider_only": 0
+    }
+   }
+  },
+  "af_history_served": {
+   "rows": 2592,
+   "claimed": 2592,
+   "fixtures_claimed_twice": 0,
+   "extra_rows": 0,
+   "per_league": {}
+  },
+  "fd_history_raw": {
+   "rows": 66213,
+   "claimed": 65790,
+   "fixtures_claimed_twice": 14051,
+   "extra_rows": 14051,
+   "per_league": {
+    "Argentina Primera Division": {
+     "fixtures_claimed_twice": 880,
+     "extra_rows": 880
+    },
+    "Austrian Bundesliga": {
+     "fixtures_claimed_twice": 742,
+     "extra_rows": 742
+    },
+    "Belgian First Division A": {
+     "fixtures_claimed_twice": 1,
+     "extra_rows": 1
+    },
+    "Brazil Serie A": {
+     "fixtures_claimed_twice": 876,
+     "extra_rows": 876
+    },
+    "Bundesliga 2": {
+     "fixtures_claimed_twice": 940,
+     "extra_rows": 940
+    },
+    "Championship": {
+     "fixtures_claimed_twice": 561,
+     "extra_rows": 561
+    },
+    "China Super League": {
+     "fixtures_claimed_twice": 936,
+     "extra_rows": 936
+    },
+    "Denmark Superliga": {
+     "fixtures_claimed_twice": 299,
+     "extra_rows": 299
+    },
+    "Finland Veikkausliiga": {
+     "fixtures_claimed_twice": 297,
+     "extra_rows": 297
+    },
+    "Greek Super League": {
+     "fixtures_claimed_twice": 448,
+     "extra_rows": 448
+    },
+    "Ireland Premier Division": {
+     "fixtures_claimed_twice": 462,
+     "extra_rows": 462
+    },
+    "Japan J-League": {
+     "fixtures_claimed_twice": 522,
+     "extra_rows": 522
+    },
+    "La Liga 2": {
+     "fixtures_claimed_twice": 800,
+     "extra_rows": 800
+    },
+    "League One": {
+     "fixtures_claimed_twice": 763,
+     "extra_rows": 763
+    },
+    "League Two": {
+     "fixtures_claimed_twice": 717,
+     "extra_rows": 717
+    },
+    "Mexico Liga MX": {
+     "fixtures_claimed_twice": 900,
+     "extra_rows": 900
+    },
+    "Norway Eliteserien": {
+     "fixtures_claimed_twice": 416,
+     "extra_rows": 416
+    },
+    "Romanian Superliga": {
+     "fixtures_claimed_twice": 1354,
+     "extra_rows": 1354
+    },
+    "Serie B": {
+     "fixtures_claimed_twice": 42,
+     "extra_rows": 42
+    },
+    "Sweden Allsvenskan": {
+     "fixtures_claimed_twice": 1087,
+     "extra_rows": 1087
+    },
+    "USA MLS": {
+     "fixtures_claimed_twice": 1008,
+     "extra_rows": 1008
+    }
+   }
+  },
+  "fd_history_corrected": {
+   "rows": 64816,
+   "claimed": 64799,
+   "fixtures_claimed_twice": 13061,
+   "extra_rows": 13061,
+   "per_league": {
+    "Argentina Primera Division": {
+     "fixtures_claimed_twice": 726,
+     "extra_rows": 726
+    },
+    "Austrian Bundesliga": {
+     "fixtures_claimed_twice": 742,
+     "extra_rows": 742
+    },
+    "Belgian First Division A": {
+     "fixtures_claimed_twice": 1,
+     "extra_rows": 1
+    },
+    "Brazil Serie A": {
+     "fixtures_claimed_twice": 711,
+     "extra_rows": 711
+    },
+    "Bundesliga 2": {
+     "fixtures_claimed_twice": 940,
+     "extra_rows": 940
+    },
+    "Championship": {
+     "fixtures_claimed_twice": 561,
+     "extra_rows": 561
+    },
+    "China Super League": {
+     "fixtures_claimed_twice": 936,
+     "extra_rows": 936
+    },
+    "Denmark Superliga": {
+     "fixtures_claimed_twice": 299,
+     "extra_rows": 299
+    },
+    "Finland Veikkausliiga": {
+     "fixtures_claimed_twice": 297,
+     "extra_rows": 297
+    },
+    "Greek Super League": {
+     "fixtures_claimed_twice": 447,
+     "extra_rows": 447
+    },
+    "Ireland Premier Division": {
+     "fixtures_claimed_twice": 461,
+     "extra_rows": 461
+    },
+    "Japan J-League": {
+     "fixtures_claimed_twice": 522,
+     "extra_rows": 522
+    },
+    "La Liga 2": {
+     "fixtures_claimed_twice": 800,
+     "extra_rows": 800
+    },
+    "League One": {
+     "fixtures_claimed_twice": 763,
+     "extra_rows": 763
+    },
+    "League Two": {
+     "fixtures_claimed_twice": 717,
+     "extra_rows": 717
+    },
+    "Mexico Liga MX": {
+     "fixtures_claimed_twice": 821,
+     "extra_rows": 821
+    },
+    "Norway Eliteserien": {
+     "fixtures_claimed_twice": 416,
+     "extra_rows": 416
+    },
+    "Romanian Superliga": {
+     "fixtures_claimed_twice": 1354,
+     "extra_rows": 1354
+    },
+    "Serie B": {
+     "fixtures_claimed_twice": 42,
+     "extra_rows": 42
+    },
+    "Sweden Allsvenskan": {
+     "fixtures_claimed_twice": 1087,
+     "extra_rows": 1087
+    },
+    "USA MLS": {
+     "fixtures_claimed_twice": 418,
+     "extra_rows": 418
+    }
+   }
+  },
+  "served": {
+   "rows": 71608,
+   "claimed": 71588,
+   "fixtures_claimed_twice": 0,
+   "extra_rows": 0,
+   "per_league": {}
+  }
+ },
+ "verified_rows": [
+  {
+   "league": "Argentina Primera Division",
+   "date": "2024-05-12",
+   "home_team": "Lanus",
+   "away_team": "Ind. Rivadavia",
+   "history_score": "0-2",
+   "provider_fixture_id": 1158665,
+   "claim_rule": "both_clubs",
+   "provider_home": "Lanus",
+   "provider_away": "Independ. Rivadavia",
+   "provider_home_id": 446,
+   "provider_away_id": 473,
+   "provider_score": "0-2",
+   "provider_status": "FT",
+   "verdict": "HISTORY_CORRECT: the provider's fixture record names the history's clubs and score; left as it is"
+  },
+  {
+   "league": "Argentina Primera Division",
+   "date": "2024-05-18",
+   "home_team": "Ind. Rivadavia",
+   "away_team": "Godoy Cruz",
+   "history_score": "0-0",
+   "provider_fixture_id": 1158682,
+   "claim_rule": "both_clubs",
+   "provider_home": "Independ. Rivadavia",
+   "provider_away": "Godoy Cruz",
+   "provider_home_id": 473,
+   "provider_away_id": 439,
+   "provider_score": "0-0",
+   "provider_status": "FT",
+   "verdict": "HISTORY_CORRECT: the provider's fixture record names the history's clubs and score; left as it is"
+  }
+ ],
+ "provider_fixtures_not_served": []
+}

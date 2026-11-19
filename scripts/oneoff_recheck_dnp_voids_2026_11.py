@@ -7,12 +7,16 @@ Follow-up to a8a0e6ec / 34267dd2. The settler matched players by NAME, so abbrev
 player_history. The rest (players absent from player_history) can only be checked against the
 fixture's own stats, which needs APIFOOTBALL_KEY - so this runs in CI (oneoff_dnp_recheck.yml).
 
-Per row (same rules as update_results.update_player_results after a8a0e6ec):
+Per row (the settler's own helpers in update_results: _find_prop_fixture, _fixture_players,
+_appearance, _fill_null_stats, _resolve_player_market):
   * fixture stats empty           -> VOID, notes NO_STATS (honest label, not 'did not play')
-  * player found (id, exact name, initial+surname unique), minutes > 0 -> WIN/LOSS from his stats,
-    P/L only on priced rows, notes RECHECKED_FROM_DNP_2026-11-01
-  * player found with 0 minutes    -> stays VOID, notes 'DNP (0 min)'
-  * player not in the fixture's stats -> stays VOID 'DNP' (genuinely did not play)
+  * player found BY player_id ONLY, played -> WIN/LOSS from his stats, P/L only on priced rows,
+    notes RECHECKED_FROM_DNP_2026-11-01. Names are never matched (Data Truth: the initial+surname
+    name match was removed from update_results; a ledger row without a player_id is not checked).
+  * the match sheet proves he did not play -> stays VOID with the settler's note
+    ('DNP (0 min)', 'DNP (not in matchday squad)', 'DNP (unused substitute)')
+  * no player_id / appearance or stat not published -> stays VOID, notes DNP_NO_PLAYER_ID /
+    DNP_UNVERIFIED (labels saying it was not checked, so the batch pool still drains)
 Updates are applied by row identity onto the LATEST ledger at the end, so concurrent workflows'
 writes are not lost.
 """
@@ -32,55 +36,56 @@ NOTE = "RECHECKED_FROM_DNP_2026-11-01"
 
 
 def recheck(led: pd.DataFrame, limit_fixtures: int | None = None) -> dict:
-    from player_model.api_football import find_fixture_id, get_fixture_player_stats
-    from player_model.config import PROP_LEAGUES
+    from src.league_registry import prop_leagues
     from src.season_resolver import resolve_api_season, is_known
+    prop_ids = prop_leagues()
+    has_pid, has_odds = "player_id" in led.columns, "market_odds" in led.columns
     cand = led[(led["result"] == "VOID") & (led["notes"] == "DNP")]
     fixtures = list(cand.groupby(["league", "match_date", "home_team", "away_team"]).groups.items())
     if limit_fixtures:
         fixtures = fixtures[:limit_fixtures]
-    upd, counts = {}, {"WIN": 0, "LOSS": 0, "NO_STATS": 0, "DNP (0 min)": 0, "DNP": 0, "no_fixture": 0}
+    upd = {}
+    counts = {"WIN": 0, "LOSS": 0, "NO_STATS": 0, "DNP": 0, "no_fixture": 0, "no_player_id": 0,
+              "unverified": 0}
+    void = {"result": "VOID", "pnl": "0.0"}
     for n, ((league, md, home, away), idx) in enumerate(fixtures, 1):
-        lid = PROP_LEAGUES.get(league)
-        season = resolve_api_season(league, str(md)[:10]) if lid else None
-        fid = find_fixture_id(lid, season, str(md)[:10], home, away) if (lid and is_known(season)) else None
-        if not fid:
+        day = str(md)[:10]
+        lg = U._canon_league(league)
+        lid = prop_ids.get(lg) if lg else None
+        season = resolve_api_season(lg, day) if lid else None
+        fx = U._find_prop_fixture(lid, season, day, home, away)[0] if (lid and is_known(season)) else None
+        fid = U._as_id((fx.get("fixture") or {}).get("id")) if fx else None
+        if fid is None:
             for i in idx:   # no fixture id at all: record it, so batches move on
-                upd[tuple(str(led.loc[i, c]) for c in KEY)] = {"result": "VOID", "pnl": "0.0",
-                                                               "notes": "DNP_NO_FIXTURE"}
+                upd[tuple(str(led.loc[i, c]) for c in KEY)] = {**void, "notes": "DNP_NO_FIXTURE"}
             counts["no_fixture"] += len(idx)
             continue
-        raw = get_fixture_player_stats(fid)
-        smap = {U._norm(p["player_name"]): p for p in raw if p.get("player_name")}
+        players = U._fixture_players(fid)
         for i in idx:
             r = led.loc[i]
             k = tuple(str(r[c]) for c in KEY)
-            if not smap:
-                upd[k] = {"result": "VOID", "pnl": "0.0", "notes": "NO_STATS"}
+            if not players["by_id"]:
+                upd[k] = {**void, "notes": "NO_STATS"}
                 counts["NO_STATS"] += 1
                 continue
-            s = None
-            pid = str(r.get("player_id", "") or "").split(".")[0]
-            if pid:
-                s = next((v for v in smap.values() if str(v.get("player_id")) == pid), None)
-            s = s or smap.get(U._norm(r["player_name"])) or U._initial_surname_match(U._norm(r["player_name"]), smap)
-            if s is None:
-                # Genuinely absent from the fixture's stats: confirmed, and marked so the next
-                # batch run does not spend API calls on it again.
-                upd[k] = {"result": "VOID", "pnl": "0.0", "notes": "DNP_CONFIRMED"}
+            pid = U._as_id(r["player_id"]) if has_pid else None
+            if pid is None:
+                upd[k] = {**void, "notes": "DNP_NO_PLAYER_ID"}
+                counts["no_player_id"] += 1
+                continue
+            rec = players["by_id"].get(pid)
+            played, note = U._appearance(rec, players, fid, pid)
+            if played == "DNP":
+                upd[k] = {**void, "notes": note}
                 counts["DNP"] += 1
                 continue
-            if int(s.get("minutes_played") or 0) == 0:
-                upd[k] = {"result": "VOID", "pnl": "0.0", "notes": "DNP (0 min)"}
-                counts["DNP (0 min)"] += 1
-                continue
-            res = U._resolve_player_market(r["market"], s)
+            res = (U._resolve_player_market(r["market"], U._fill_null_stats(rec, fid, fx, players))
+                   if played == "PLAYED" else "")
             if not res:
+                upd[k] = {**void, "notes": "DNP_UNVERIFIED"}
+                counts["unverified"] += 1
                 continue
-            try:
-                odds = float(r.get("market_odds") or "nan")
-            except ValueError:
-                odds = float("nan")
+            odds = float(pd.to_numeric(r["market_odds"], errors="coerce")) if has_odds else float("nan")
             upd[k] = {"result": res, "notes": NOTE,
                       "pnl": (str(round(odds - 1.0, 4) if res == "WIN" else -1.0) if odds > 1.0 else "")}
             counts[res] += 1

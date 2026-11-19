@@ -4,6 +4,8 @@
 """
 from __future__ import annotations
 
+import inspect
+
 import pandas as pd
 import pytest
 
@@ -11,6 +13,15 @@ import config
 import pipeline
 from src.integrity import side_edge_devig as SE
 from src.market_edge import power_devig
+
+@pytest.fixture(autouse=True)
+def _own_bars(monkeypatch):
+    """Owner 2026-11-09: no global bars. These tests predate the cutover and assert the tiers the
+    removed global path served, so every league gets exactly those values as its OWN owner-applied
+    bars (tests/own_bars.install_historical)."""
+    from tests.own_bars import install_historical
+    install_historical(monkeypatch)
+
 
 NOW = pd.Timestamp.now(tz="UTC")
 KO = (NOW + pd.Timedelta(days=1)).strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -82,8 +93,11 @@ def test_blind_fixture_gets_no_side_tip(monkeypatch):
     assert list(out["home_team"]) == ["A"]
 
 
-def test_rollback_switch_restores_legacy(monkeypatch):
-    monkeypatch.setattr(config, "SIDE_EDGE_FAIR_PRICE", "legacy_1_08")
+def test_assumed_margin_rollback_is_gone(monkeypatch):
+    """legacy_1_08 ((1/odds)/1.08, an ASSUMED margin = a fake price) was removed 2026-11-09 (owner: no fakes,
+    no global vars): even with the old switch set, a fixture without a real two-sided pair gets no tip."""
+    monkeypatch.setattr(config, "SIDE_EDGE_FAIR_PRICE", "legacy_1_08", raising=False)
     out = _run(monkeypatch, [_pred("A", 0.66, 1.80)], _quotes([]).iloc[0:0])
-    assert len(out) == 1
-    assert out["fair_prob"].iloc[0] == pytest.approx((1 / 1.80) / 1.08)
+    assert out is None or len(out) == 0
+    import pipeline
+    assert "1.08" not in inspect.getsource(pipeline._generate_side_bets)

@@ -23,7 +23,7 @@ import logging
 import os
 import sys
 import time
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from io import StringIO
 from pathlib import Path
 
@@ -98,7 +98,7 @@ _YEAR_MAP = {
 
 
 def _auto_season() -> str:
-    today = date.today()
+    today = datetime.now(timezone.utc).date()   # UTC day: seasons roll on the UTC date
     if today.month >= 7:
         y1, y2 = today.year % 100, (today.year + 1) % 100
     else:
@@ -396,6 +396,11 @@ def main():
     from src.backtest import run_backtest
 
     raw  = load_all_matches(force=True)
+    # BET prices only (owner 2026-11-11): the O/U 2.5 pair stays only where it is a bet-time price
+    # (football-data single-book pre-match or a new-format capture proven before kickoff); every count and
+    # backtest below reads this frame (src.data_loader.ou25_bet_prices)
+    from src.data_loader import ou25_bet_prices
+    raw = ou25_bet_prices(raw)
     log.info(f"Loaded {len(raw):,} matches | {raw['league'].nunique()} leagues | "
              f"{raw['date'].min().date()} → {raw['date'].max().date()}")
 

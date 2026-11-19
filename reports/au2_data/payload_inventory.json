@@ -1,0 +1,3803 @@
+{
+ "audited_commit": "fb0e9697ec8556d4dd3df57f31f8ed5415a5012d",
+ "team": {
+  "standard_legacy": {
+   "name": "standard_legacy",
+   "path": "models/model_v9_standard.pkl",
+   "exists": true,
+   "sha256": "643138788406aa03c6ae741bdfe9f8c9a06b7b22ea674492450b178bfbc38a45",
+   "bytes": 1291755,
+   "keys": [
+    "feature_cols",
+    "metrics",
+    "models",
+    "target"
+   ],
+   "recipe": "<absent = legacy>",
+   "n_features": 42,
+   "feature_cols": [
+    "home_scored_last5",
+    "away_scored_last5",
+    "home_conceded_last5",
+    "away_conceded_last5",
+    "home_over25_last5",
+    "away_over25_last5",
+    "home_attack_str",
+    "away_attack_str",
+    "home_defense_str",
+    "away_defense_str",
+    "home_advantage",
+    "away_home_adv_factor",
+    "home_rest_days",
+    "away_rest_days",
+    "home_corners_pg_roll",
+    "away_corners_pg_roll",
+    "home_fouls_pg_roll",
+    "away_fouls_pg_roll",
+    "combined_sot_ratio",
+    "home_xg_last5",
+    "away_xg_last5",
+    "home_insidebox_last5",
+    "away_insidebox_last5",
+    "home_season_goals_h",
+    "away_season_goals_a",
+    "home_season_conceded_h",
+    "away_season_conceded_a",
+    "home_cs_rate_h",
+    "away_cs_rate_a",
+    "home_ht_scored_last5",
+    "away_ht_scored_last5",
+    "home_ht_conceded_last5",
+    "away_ht_conceded_last5",
+    "home_ht_attack_str",
+    "away_ht_attack_str",
+    "combined_ht_goals_avg",
+    "home_ht_over05_rate",
+    "away_ht_over05_rate",
+    "home_ht_over15_rate",
+    "away_ht_over15_rate",
+    "bookmaker_overround",
+    "p_over25_poisson_dc"
+   ],
+   "feature_order_sha": "bf1214ff751d28ab",
+   "has_persisted_imputer": false,
+   "base_models": [
+    "logistic",
+    "gradient_boost",
+    "lightgbm"
+   ],
+   "has_meta": true,
+   "model_classes": {
+    "logistic": "_CalibratedModel",
+    "gradient_boost": "_CalibratedModel",
+    "lightgbm": "_CalibratedModel",
+    "__meta__": "LogisticRegression"
+   },
+   "target": "over25",
+   "metrics": {
+    "logistic": {
+     "accuracy": 0.5415,
+     "auc": 0.5574,
+     "log_loss": 0.68729,
+     "n_train": 14708,
+     "n_cal": 2596,
+     "n_test": 4327
+    },
+    "gradient_boost": {
+     "accuracy": 0.5419,
+     "auc": 0.555,
+     "log_loss": 0.68836,
+     "n_train": 14708,
+     "n_cal": 2596,
+     "n_test": 4327
+    },
+    "lightgbm": {
+     "accuracy": 0.5385,
+     "auc": 0.5459,
+     "log_loss": 0.68914,
+     "n_train": 14708,
+     "n_cal": 2596,
+     "n_test": 4327
+    },
+    "__meta__": {}
+   },
+   "scaler_from": "logistic",
+   "train_scaler": {
+    "home_scored_last5": {
+     "mean": 1.334161,
+     "sd": 0.647287
+    },
+    "away_scored_last5": {
+     "mean": 1.361183,
+     "sd": 0.658555
+    },
+    "home_conceded_last5": {
+     "mean": 1.361821,
+     "sd": 0.635983
+    },
+    "away_conceded_last5": {
+     "mean": 1.333657,
+     "sd": 0.620942
+    },
+    "home_over25_last5": {
+     "mean": 0.510851,
+     "sd": 0.252743
+    },
+    "away_over25_last5": {
+     "mean": 0.511563,
+     "sd": 0.253506
+    },
+    "home_attack_str": {
+     "mean": 0.97826,
+     "sd": 0.466939
+    },
+    "away_attack_str": {
+     "mean": 0.998705,
+     "sd": 0.474941
+    },
+    "home_defense_str": {
+     "mean": 0.998833,
+     "sd": 0.459746
+    },
+    "away_defense_str": {
+     "mean": 0.978336,
+     "sd": 0.449589
+    },
+    "home_advantage": {
+     "mean": 0.449231,
+     "sd": 0.269923
+    },
+    "away_home_adv_factor": {
+     "mean": 0.445941,
+     "sd": 0.26991
+    },
+    "home_rest_days": {
+     "mean": 8.244561,
+     "sd": 14.808522
+    },
+    "away_rest_days": {
+     "mean": 8.045553,
+     "sd": 14.892926
+    },
+    "home_corners_pg_roll": {
+     "mean": 4.8938,
+     "sd": 1.406973
+    },
+    "away_corners_pg_roll": {
+     "mean": 4.961608,
+     "sd": 1.416193
+    },
+    "home_fouls_pg_roll": {
+     "mean": 12.051898,
+     "sd": 2.263704
+    },
+    "away_fouls_pg_roll": {
+     "mean": 12.031409,
+     "sd": 2.280819
+    },
+    "combined_sot_ratio": {
+     "mean": 0.345593,
+     "sd": 0.057136
+    },
+    "home_xg_last5": {
+     "mean": 1.282356,
+     "sd": 0.287218
+    },
+    "away_xg_last5": {
+     "mean": 1.342614,
+     "sd": 0.294362
+    },
+    "home_insidebox_last5": {
+     "mean": 7.866235,
+     "sd": 1.579494
+    },
+    "away_insidebox_last5": {
+     "mean": 8.0852,
+     "sd": 1.643953
+    },
+    "home_season_goals_h": {
+     "mean": 1.485897,
+     "sd": 0.667873
+    },
+    "away_season_goals_a": {
+     "mean": 1.183298,
+     "sd": 0.574684
+    },
+    "home_season_conceded_h": {
+     "mean": 1.184655,
+     "sd": 0.545942
+    },
+    "away_season_conceded_a": {
+     "mean": 1.486751,
+     "sd": 0.647489
+    },
+    "home_cs_rate_h": {
+     "mean": 0.315686,
+     "sd": 0.226918
+    },
+    "away_cs_rate_a": {
+     "mean": 0.23586,
+     "sd": 0.211718
+    },
+    "home_ht_scored_last5": {
+     "mean": 0.59223,
+     "sd": 0.380134
+    },
+    "away_ht_scored_last5": {
+     "mean": 0.604359,
+     "sd": 0.382525
+    },
+    "home_ht_conceded_last5": {
+     "mean": 0.602654,
+     "sd": 0.373546
+    },
+    "away_ht_conceded_last5": {
+     "mean": 0.594787,
+     "sd": 0.370097
+    },
+    "home_ht_attack_str": {
+     "mean": 0.911123,
+     "sd": 0.584822
+    },
+    "away_ht_attack_str": {
+     "mean": 0.929784,
+     "sd": 0.588501
+    },
+    "combined_ht_goals_avg": {
+     "mean": 1.069556,
+     "sd": 0.617939
+    },
+    "home_ht_over05_rate": {
+     "mean": 0.706462,
+     "sd": 0.214252
+    },
+    "away_ht_over05_rate": {
+     "mean": 0.709524,
+     "sd": 0.212918
+    },
+    "home_ht_over15_rate": {
+     "mean": 0.335759,
+     "sd": 0.22412
+    },
+    "away_ht_over15_rate": {
+     "mean": 0.337069,
+     "sd": 0.22264
+    },
+    "bookmaker_overround": {
+     "mean": 0.061713,
+     "sd": 0.008526
+    },
+    "p_over25_poisson_dc": {
+     "mean": 0.48259,
+     "sd": 0.199687
+    }
+   },
+   "constant_in_training": []
+  },
+  "standard_repaired": {
+   "name": "standard_repaired",
+   "path": "models/model_v9_standard_repaired.pkl",
+   "exists": true,
+   "sha256": "1f5805e63c9945cb3e1804ceb72a52dfdbd75360574183d33d76d35f8a9f1a74",
+   "bytes": 1295112,
+   "keys": [
+    "blocks",
+    "feature_cols",
+    "identity_alias_map",
+    "imputer",
+    "imputer_version",
+    "metrics",
+    "model_recipe_version",
+    "models",
+    "recipe",
+    "research",
+    "served_holdout_metrics",
+    "target"
+   ],
+   "recipe": "v9_repaired",
+   "n_features": 41,
+   "feature_cols": [
+    "home_scored_last5",
+    "away_scored_last5",
+    "home_conceded_last5",
+    "away_conceded_last5",
+    "home_over25_last5",
+    "away_over25_last5",
+    "home_attack_str",
+    "away_attack_str",
+    "home_defense_str",
+    "away_defense_str",
+    "home_advantage",
+    "away_home_adv_factor",
+    "home_rest_days",
+    "away_rest_days",
+    "home_corners_pg_roll",
+    "away_corners_pg_roll",
+    "home_fouls_pg_roll",
+    "away_fouls_pg_roll",
+    "combined_sot_ratio",
+    "home_xg_last5",
+    "away_xg_last5",
+    "home_insidebox_last5",
+    "away_insidebox_last5",
+    "home_season_goals_h",
+    "away_season_goals_a",
+    "home_season_conceded_h",
+    "away_season_conceded_a",
+    "home_cs_rate_h",
+    "away_cs_rate_a",
+    "home_ht_scored_last5",
+    "away_ht_scored_last5",
+    "home_ht_conceded_last5",
+    "away_ht_conceded_last5",
+    "home_ht_attack_str",
+    "away_ht_attack_str",
+    "combined_ht_goals_avg",
+    "home_ht_over05_rate",
+    "away_ht_over05_rate",
+    "home_ht_over15_rate",
+    "away_ht_over15_rate",
+    "p_over25_poisson_dc"
+   ],
+   "feature_order_sha": "74e7abb665d7fe3e",
+   "has_persisted_imputer": true,
+   "base_models": [
+    "logistic",
+    "gradient_boost",
+    "lightgbm"
+   ],
+   "has_meta": true,
+   "model_classes": {
+    "logistic": "_CalibratedModel",
+    "gradient_boost": "_CalibratedModel",
+    "lightgbm": "_CalibratedModel",
+    "__meta__": "LogisticRegression"
+   },
+   "target": "over25",
+   "metrics": {
+    "logistic": {
+     "accuracy": 0.5326,
+     "auc": 0.5565,
+     "log_loss": 0.6892,
+     "brier": 0.24803,
+     "n_train": 19843,
+     "n_cal": 2457,
+     "n_meta": 2547,
+     "n_test": 6239,
+     "evaluated_on": "holdout"
+    },
+    "gradient_boost": {
+     "accuracy": 0.5224,
+     "auc": 0.5467,
+     "log_loss": 0.69055,
+     "brier": 0.24871,
+     "n_train": 19843,
+     "n_cal": 2457,
+     "n_meta": 2547,
+     "n_test": 6239,
+     "evaluated_on": "holdout"
+    },
+    "lightgbm": {
+     "accuracy": 0.5228,
+     "auc": 0.5381,
+     "log_loss": 0.69159,
+     "brier": 0.24922,
+     "n_train": 19843,
+     "n_cal": 2457,
+     "n_meta": 2547,
+     "n_test": 6239,
+     "evaluated_on": "holdout"
+    },
+    "__meta__": {
+     "accuracy": 0.5448,
+     "auc": 0.5554,
+     "log_loss": 0.68778,
+     "brier": 0.24733,
+     "n_meta": 2547,
+     "n_test": 6239,
+     "evaluated_on": "holdout"
+    }
+   },
+   "research": {
+    "recipe": "v9_repaired",
+    "arm": "V9_REPAIRED",
+    "price_mode": "none",
+    "track": "standard",
+    "target": "over25",
+    "team_scope": "league",
+    "weights": "derived",
+    "rows": 31086,
+    "frame_hash": "3fd56c29e2c55ee8",
+    "training_cutoff": "2026-10-28",
+    "training_start": "2021-07-30",
+    "training_end": "2026-10-26",
+    "identity": "v9r-identity-1.0:explicit+derived",
+    "identity_version": "v9r-identity-1.0",
+    "alias_map_file": "config/standard_ou25_identity_aliases.json",
+    "alias_map_sha256": "7ee523a3523008b813b4125e969f24265154640b402b5e5b019b1c3759f41f32",
+    "identity_report": {
+     "identity_version": "v9r-identity-1.0",
+     "n_aliases": 142,
+     "team_cells_renamed": 15020,
+     "duplicate_rows_removed": 9683,
+     "quarantined_fixtures": 4
+    },
+    "feature_recipe_version": "v9r-features-1.0",
+    "imputer_version": "v9-train-only-imputer-1.0",
+    "model_recipe_version": "v9_repaired-1.0",
+    "v9_commit": "4b77a998a0c9dae53785f5f4cc1f266183f77fd2",
+    "sklearn": "1.9.1",
+    "pandas": "3.1.0",
+    "python": "3.11.17",
+    "data_env": {
+     "WOWZA_FULL_ENRICH": "",
+     "WOWZA_USE_BACKTEST_ARCHIVE": ""
+    },
+    "generated_at": "2026-10-28T12:30:40Z"
+   },
+   "scaler_from": "logistic",
+   "train_scaler": {
+    "home_scored_last5": {
+     "mean": 1.311284,
+     "sd": 0.624653
+    },
+    "away_scored_last5": {
+     "mean": 1.338637,
+     "sd": 0.63181
+    },
+    "home_conceded_last5": {
+     "mean": 1.337685,
+     "sd": 0.607603
+    },
+    "away_conceded_last5": {
+     "mean": 1.312375,
+     "sd": 0.600492
+    },
+    "home_over25_last5": {
+     "mean": 0.494634,
+     "sd": 0.239917
+    },
+    "away_over25_last5": {
+     "mean": 0.495347,
+     "sd": 0.240484
+    },
+    "home_attack_str": {
+     "mean": 1.001278,
+     "sd": 0.467323
+    },
+    "away_attack_str": {
+     "mean": 1.022624,
+     "sd": 0.473562
+    },
+    "home_defense_str": {
+     "mean": 1.021732,
+     "sd": 0.456006
+    },
+    "away_defense_str": {
+     "mean": 1.002068,
+     "sd": 0.448553
+    },
+    "home_advantage": {
+     "mean": 0.453201,
+     "sd": 0.268552
+    },
+    "away_home_adv_factor": {
+     "mean": 0.451848,
+     "sd": 0.267856
+    },
+    "home_rest_days": {
+     "mean": 9.260848,
+     "sd": 20.059738
+    },
+    "away_rest_days": {
+     "mean": 8.920778,
+     "sd": 20.901872
+    },
+    "home_corners_pg_roll": {
+     "mean": 4.881451,
+     "sd": 1.393601
+    },
+    "away_corners_pg_roll": {
+     "mean": 4.968532,
+     "sd": 1.403675
+    },
+    "home_fouls_pg_roll": {
+     "mean": 12.018861,
+     "sd": 2.367681
+    },
+    "away_fouls_pg_roll": {
+     "mean": 11.978426,
+     "sd": 2.363821
+    },
+    "combined_sot_ratio": {
+     "mean": 0.352947,
+     "sd": 0.060366
+    },
+    "home_xg_last5": {
+     "mean": 0.0,
+     "sd": 1.0
+    },
+    "away_xg_last5": {
+     "mean": 0.0,
+     "sd": 1.0
+    },
+    "home_insidebox_last5": {
+     "mean": 0.0,
+     "sd": 1.0
+    },
+    "away_insidebox_last5": {
+     "mean": 0.0,
+     "sd": 1.0
+    },
+    "home_season_goals_h": {
+     "mean": 1.452582,
+     "sd": 0.649064
+    },
+    "away_season_goals_a": {
+     "mean": 1.184495,
+     "sd": 0.571
+    },
+    "home_season_conceded_h": {
+     "mean": 1.182559,
+     "sd": 0.544116
+    },
+    "away_season_conceded_a": {
+     "mean": 1.452372,
+     "sd": 0.615186
+    },
+    "home_cs_rate_h": {
+     "mean": 0.320805,
+     "sd": 0.221267
+    },
+    "away_cs_rate_a": {
+     "mean": 0.243408,
+     "sd": 0.205626
+    },
+    "home_ht_scored_last5": {
+     "mean": 0.598933,
+     "sd": 0.241421
+    },
+    "away_ht_scored_last5": {
+     "mean": 0.605319,
+     "sd": 0.247816
+    },
+    "home_ht_conceded_last5": {
+     "mean": 0.603775,
+     "sd": 0.237889
+    },
+    "away_ht_conceded_last5": {
+     "mean": 0.599634,
+     "sd": 0.234883
+    },
+    "home_ht_attack_str": {
+     "mean": 0.436862,
+     "sd": 0.183064
+    },
+    "away_ht_attack_str": {
+     "mean": 0.453779,
+     "sd": 0.188066
+    },
+    "combined_ht_goals_avg": {
+     "mean": 0.455424,
+     "sd": 0.682497
+    },
+    "home_ht_over05_rate": {
+     "mean": 0.765468,
+     "sd": 0.140654
+    },
+    "away_ht_over05_rate": {
+     "mean": 0.766216,
+     "sd": 0.139785
+    },
+    "home_ht_over15_rate": {
+     "mean": 0.37786,
+     "sd": 0.144126
+    },
+    "away_ht_over15_rate": {
+     "mean": 0.378561,
+     "sd": 0.144461
+    },
+    "p_over25_poisson_dc": {
+     "mean": 0.47484,
+     "sd": 0.195207
+    }
+   },
+   "constant_in_training": []
+  },
+  "newformat": {
+   "name": "newformat",
+   "path": "models/model_v9_newformat.pkl",
+   "exists": true,
+   "sha256": "9eb6b4b4860c7970a8c9217c31c6c58f15635936b3405bc0f12c2bcb99db8d98",
+   "bytes": 1350605,
+   "keys": [
+    "feature_cols",
+    "metrics",
+    "models",
+    "target"
+   ],
+   "recipe": "<absent = legacy>",
+   "n_features": 27,
+   "feature_cols": [
+    "home_scored_last5",
+    "away_scored_last5",
+    "home_conceded_last5",
+    "away_conceded_last5",
+    "home_over25_last5",
+    "away_over25_last5",
+    "home_attack_str",
+    "away_attack_str",
+    "home_defense_str",
+    "away_defense_str",
+    "home_advantage",
+    "away_home_adv_factor",
+    "home_rest_days",
+    "away_rest_days",
+    "home_corners_pg_roll",
+    "away_corners_pg_roll",
+    "home_fouls_pg_roll",
+    "away_fouls_pg_roll",
+    "combined_sot_ratio",
+    "home_season_goals_h",
+    "away_season_goals_a",
+    "home_season_conceded_h",
+    "away_season_conceded_a",
+    "home_cs_rate_h",
+    "away_cs_rate_a",
+    "bookmaker_overround",
+    "p_over25_poisson_dc"
+   ],
+   "feature_order_sha": "39cdb8cb29379098",
+   "has_persisted_imputer": false,
+   "base_models": [
+    "logistic",
+    "gradient_boost",
+    "lightgbm"
+   ],
+   "has_meta": true,
+   "model_classes": {
+    "logistic": "_CalibratedModel",
+    "gradient_boost": "_CalibratedModel",
+    "lightgbm": "_CalibratedModel",
+    "__meta__": "LogisticRegression"
+   },
+   "target": "over25",
+   "metrics": {
+    "logistic": {
+     "accuracy": 0.5642,
+     "auc": 0.5864,
+     "log_loss": 0.6798,
+     "n_train": 26251,
+     "n_cal": 4633,
+     "n_test": 7722
+    },
+    "gradient_boost": {
+     "accuracy": 0.557,
+     "auc": 0.5827,
+     "log_loss": 0.6816,
+     "n_train": 26251,
+     "n_cal": 4633,
+     "n_test": 7722
+    },
+    "lightgbm": {
+     "accuracy": 0.5563,
+     "auc": 0.5779,
+     "log_loss": 0.68101,
+     "n_train": 26251,
+     "n_cal": 4633,
+     "n_test": 7722
+    },
+    "__meta__": {}
+   },
+   "scaler_from": "logistic",
+   "train_scaler": {
+    "home_scored_last5": {
+     "mean": 1.322416,
+     "sd": 0.640399
+    },
+    "away_scored_last5": {
+     "mean": 1.344223,
+     "sd": 0.64264
+    },
+    "home_conceded_last5": {
+     "mean": 1.339644,
+     "sd": 0.638378
+    },
+    "away_conceded_last5": {
+     "mean": 1.3176,
+     "sd": 0.635673
+    },
+    "home_over25_last5": {
+     "mean": 0.500968,
+     "sd": 0.255029
+    },
+    "away_over25_last5": {
+     "mean": 0.500822,
+     "sd": 0.254781
+    },
+    "home_attack_str": {
+     "mean": 0.990693,
+     "sd": 0.470441
+    },
+    "away_attack_str": {
+     "mean": 1.007343,
+     "sd": 0.471024
+    },
+    "home_defense_str": {
+     "mean": 1.003952,
+     "sd": 0.469241
+    },
+    "away_defense_str": {
+     "mean": 0.98706,
+     "sd": 0.466601
+    },
+    "home_advantage": {
+     "mean": 0.493662,
+     "sd": 0.278249
+    },
+    "away_home_adv_factor": {
+     "mean": 0.490133,
+     "sd": 0.279438
+    },
+    "home_rest_days": {
+     "mean": 10.111081,
+     "sd": 26.661034
+    },
+    "away_rest_days": {
+     "mean": 9.70923,
+     "sd": 25.124378
+    },
+    "home_corners_pg_roll": {
+     "mean": 4.866891,
+     "sd": 1.604473
+    },
+    "away_corners_pg_roll": {
+     "mean": 4.894693,
+     "sd": 1.607093
+    },
+    "home_fouls_pg_roll": {
+     "mean": 12.656576,
+     "sd": 2.569665
+    },
+    "away_fouls_pg_roll": {
+     "mean": 12.623397,
+     "sd": 2.574668
+    },
+    "combined_sot_ratio": {
+     "mean": 0.349422,
+     "sd": 0.055373
+    },
+    "home_season_goals_h": {
+     "mean": 1.433618,
+     "sd": 0.659724
+    },
+    "away_season_goals_a": {
+     "mean": 1.164017,
+     "sd": 0.592128
+    },
+    "home_season_conceded_h": {
+     "mean": 1.160134,
+     "sd": 0.589327
+    },
+    "away_season_conceded_a": {
+     "mean": 1.432259,
+     "sd": 0.65021
+    },
+    "home_cs_rate_h": {
+     "mean": 0.314631,
+     "sd": 0.237049
+    },
+    "away_cs_rate_a": {
+     "mean": 0.240065,
+     "sd": 0.219931
+    },
+    "bookmaker_overround": {
+     "mean": 0.049816,
+     "sd": 0.003527
+    },
+    "p_over25_poisson_dc": {
+     "mean": 0.477182,
+     "sd": 0.201062
+    }
+   },
+   "constant_in_training": []
+  },
+  "btts": {
+   "name": "btts",
+   "path": "models/model_v9_btts.pkl",
+   "exists": true,
+   "sha256": "238e3419f41449563d2024644e988f694c54a20bf6c9e276fc8cb33caf691098",
+   "bytes": 1356796,
+   "keys": [
+    "feature_cols",
+    "metrics",
+    "models",
+    "target"
+   ],
+   "recipe": "<absent = legacy>",
+   "n_features": 42,
+   "feature_cols": [
+    "home_scored_last5",
+    "away_scored_last5",
+    "home_conceded_last5",
+    "away_conceded_last5",
+    "home_over25_last5",
+    "away_over25_last5",
+    "home_attack_str",
+    "away_attack_str",
+    "home_defense_str",
+    "away_defense_str",
+    "home_advantage",
+    "away_home_adv_factor",
+    "home_rest_days",
+    "away_rest_days",
+    "home_corners_pg_roll",
+    "away_corners_pg_roll",
+    "home_fouls_pg_roll",
+    "away_fouls_pg_roll",
+    "combined_sot_ratio",
+    "home_xg_last5",
+    "away_xg_last5",
+    "home_insidebox_last5",
+    "away_insidebox_last5",
+    "home_season_goals_h",
+    "away_season_goals_a",
+    "home_season_conceded_h",
+    "away_season_conceded_a",
+    "home_cs_rate_h",
+    "away_cs_rate_a",
+    "home_ht_scored_last5",
+    "away_ht_scored_last5",
+    "home_ht_conceded_last5",
+    "away_ht_conceded_last5",
+    "home_ht_attack_str",
+    "away_ht_attack_str",
+    "combined_ht_goals_avg",
+    "home_ht_over05_rate",
+    "away_ht_over05_rate",
+    "home_ht_over15_rate",
+    "away_ht_over15_rate",
+    "bookmaker_overround",
+    "p_over25_poisson_dc"
+   ],
+   "feature_order_sha": "bf1214ff751d28ab",
+   "has_persisted_imputer": false,
+   "base_models": [
+    "logistic",
+    "gradient_boost",
+    "lightgbm"
+   ],
+   "has_meta": true,
+   "model_classes": {
+    "logistic": "_CalibratedModel",
+    "gradient_boost": "_CalibratedModel",
+    "lightgbm": "_CalibratedModel",
+    "__meta__": "LogisticRegression"
+   },
+   "target": "over25",
+   "metrics": {
+    "logistic": {
+     "accuracy": 0.5538,
+     "auc": 0.5512,
+     "log_loss": 0.68482,
+     "n_train": 40752,
+     "n_cal": 7192,
+     "n_test": 11986
+    },
+    "gradient_boost": {
+     "accuracy": 0.5506,
+     "auc": 0.547,
+     "log_loss": 0.68514,
+     "n_train": 40752,
+     "n_cal": 7192,
+     "n_test": 11986
+    },
+    "lightgbm": {
+     "accuracy": 0.5515,
+     "auc": 0.5415,
+     "log_loss": 0.68543,
+     "n_train": 40752,
+     "n_cal": 7192,
+     "n_test": 11986
+    },
+    "__meta__": {}
+   },
+   "scaler_from": "logistic",
+   "train_scaler": {
+    "home_scored_last5": {
+     "mean": 1.327566,
+     "sd": 0.648375
+    },
+    "away_scored_last5": {
+     "mean": 1.348728,
+     "sd": 0.654356
+    },
+    "home_conceded_last5": {
+     "mean": 1.346637,
+     "sd": 0.641147
+    },
+    "away_conceded_last5": {
+     "mean": 1.322403,
+     "sd": 0.633119
+    },
+    "home_over25_last5": {
+     "mean": 0.503457,
+     "sd": 0.2556
+    },
+    "away_over25_last5": {
+     "mean": 0.503344,
+     "sd": 0.256096
+    },
+    "home_attack_str": {
+     "mean": 0.988789,
+     "sd": 0.472743
+    },
+    "away_attack_str": {
+     "mean": 1.004977,
+     "sd": 0.476495
+    },
+    "home_defense_str": {
+     "mean": 1.003319,
+     "sd": 0.468043
+    },
+    "away_defense_str": {
+     "mean": 0.985016,
+     "sd": 0.462019
+    },
+    "home_advantage": {
+     "mean": 0.481746,
+     "sd": 0.276154
+    },
+    "away_home_adv_factor": {
+     "mean": 0.477857,
+     "sd": 0.277802
+    },
+    "home_rest_days": {
+     "mean": 9.392766,
+     "sd": 23.863726
+    },
+    "away_rest_days": {
+     "mean": 9.098572,
+     "sd": 22.593105
+    },
+    "home_corners_pg_roll": {
+     "mean": 4.883733,
+     "sd": 1.562463
+    },
+    "away_corners_pg_roll": {
+     "mean": 4.92742,
+     "sd": 1.566587
+    },
+    "home_fouls_pg_roll": {
+     "mean": 12.375485,
+     "sd": 2.498189
+    },
+    "away_fouls_pg_roll": {
+     "mean": 12.359067,
+     "sd": 2.504624
+    },
+    "combined_sot_ratio": {
+     "mean": 0.348711,
+     "sd": 0.055378
+    },
+    "home_xg_last5": {
+     "mean": 1.279889,
+     "sd": 0.124731
+    },
+    "away_xg_last5": {
+     "mean": 1.318764,
+     "sd": 0.127294
+    },
+    "home_insidebox_last5": {
+     "mean": 7.769557,
+     "sd": 0.658671
+    },
+    "away_insidebox_last5": {
+     "mean": 8.020435,
+     "sd": 0.672314
+    },
+    "home_season_goals_h": {
+     "mean": 1.455435,
+     "sd": 0.66563
+    },
+    "away_season_goals_a": {
+     "mean": 1.169503,
+     "sd": 0.583663
+    },
+    "home_season_conceded_h": {
+     "mean": 1.16762,
+     "sd": 0.575355
+    },
+    "away_season_conceded_a": {
+     "mean": 1.45495,
+     "sd": 0.65167
+    },
+    "home_cs_rate_h": {
+     "mean": 0.315033,
+     "sd": 0.232563
+    },
+    "away_cs_rate_a": {
+     "mean": 0.237582,
+     "sd": 0.216704
+    },
+    "home_ht_scored_last5": {
+     "mean": 0.538617,
+     "sd": 0.347197
+    },
+    "away_ht_scored_last5": {
+     "mean": 0.542575,
+     "sd": 0.350804
+    },
+    "home_ht_conceded_last5": {
+     "mean": 0.544446,
+     "sd": 0.350572
+    },
+    "away_ht_conceded_last5": {
+     "mean": 0.53897,
+     "sd": 0.344391
+    },
+    "home_ht_attack_str": {
+     "mean": 0.828641,
+     "sd": 0.53415
+    },
+    "away_ht_attack_str": {
+     "mean": 0.83473,
+     "sd": 0.539698
+    },
+    "combined_ht_goals_avg": {
+     "mean": 0.524372,
+     "sd": 0.725909
+    },
+    "home_ht_over05_rate": {
+     "mean": 0.725962,
+     "sd": 0.206376
+    },
+    "away_ht_over05_rate": {
+     "mean": 0.725897,
+     "sd": 0.20777
+    },
+    "home_ht_over15_rate": {
+     "mean": 0.287599,
+     "sd": 0.213666
+    },
+    "away_ht_over15_rate": {
+     "mean": 0.2866,
+     "sd": 0.213309
+    },
+    "bookmaker_overround": {
+     "mean": 0.060106,
+     "sd": 0.007849
+    },
+    "p_over25_poisson_dc": {
+     "mean": 0.478679,
+     "sd": 0.20186
+    }
+   },
+   "constant_in_training": []
+  },
+  "over15": {
+   "name": "over15",
+   "path": "models/model_v9_over15.pkl",
+   "exists": true,
+   "sha256": "da4743a2669fef1390f31c3b12eb5969d912e43dbb50a4e254efb0b4c3cb9c4a",
+   "bytes": 1354157,
+   "keys": [
+    "feature_cols",
+    "metrics",
+    "models",
+    "target"
+   ],
+   "recipe": "<absent = legacy>",
+   "n_features": 42,
+   "feature_cols": [
+    "home_scored_last5",
+    "away_scored_last5",
+    "home_conceded_last5",
+    "away_conceded_last5",
+    "home_over25_last5",
+    "away_over25_last5",
+    "home_attack_str",
+    "away_attack_str",
+    "home_defense_str",
+    "away_defense_str",
+    "home_advantage",
+    "away_home_adv_factor",
+    "home_rest_days",
+    "away_rest_days",
+    "home_corners_pg_roll",
+    "away_corners_pg_roll",
+    "home_fouls_pg_roll",
+    "away_fouls_pg_roll",
+    "combined_sot_ratio",
+    "home_xg_last5",
+    "away_xg_last5",
+    "home_insidebox_last5",
+    "away_insidebox_last5",
+    "home_season_goals_h",
+    "away_season_goals_a",
+    "home_season_conceded_h",
+    "away_season_conceded_a",
+    "home_cs_rate_h",
+    "away_cs_rate_a",
+    "home_ht_scored_last5",
+    "away_ht_scored_last5",
+    "home_ht_conceded_last5",
+    "away_ht_conceded_last5",
+    "home_ht_attack_str",
+    "away_ht_attack_str",
+    "combined_ht_goals_avg",
+    "home_ht_over05_rate",
+    "away_ht_over05_rate",
+    "home_ht_over15_rate",
+    "away_ht_over15_rate",
+    "bookmaker_overround",
+    "p_over25_poisson_dc"
+   ],
+   "feature_order_sha": "bf1214ff751d28ab",
+   "has_persisted_imputer": false,
+   "base_models": [
+    "logistic",
+    "gradient_boost",
+    "lightgbm"
+   ],
+   "has_meta": true,
+   "model_classes": {
+    "logistic": "_CalibratedModel",
+    "gradient_boost": "_CalibratedModel",
+    "lightgbm": "_CalibratedModel",
+    "__meta__": "LogisticRegression"
+   },
+   "target": "over25",
+   "metrics": {
+    "logistic": {
+     "accuracy": 0.7615,
+     "auc": 0.576,
+     "log_loss": 0.54343,
+     "n_train": 40960,
+     "n_cal": 7229,
+     "n_test": 12048
+    },
+    "gradient_boost": {
+     "accuracy": 0.7615,
+     "auc": 0.5678,
+     "log_loss": 0.54468,
+     "n_train": 40960,
+     "n_cal": 7229,
+     "n_test": 12048
+    },
+    "lightgbm": {
+     "accuracy": 0.7615,
+     "auc": 0.5598,
+     "log_loss": 0.54629,
+     "n_train": 40960,
+     "n_cal": 7229,
+     "n_test": 12048
+    },
+    "__meta__": {}
+   },
+   "scaler_from": "logistic",
+   "train_scaler": {
+    "home_scored_last5": {
+     "mean": 1.327265,
+     "sd": 0.648147
+    },
+    "away_scored_last5": {
+     "mean": 1.348556,
+     "sd": 0.654177
+    },
+    "home_conceded_last5": {
+     "mean": 1.346136,
+     "sd": 0.640692
+    },
+    "away_conceded_last5": {
+     "mean": 1.322281,
+     "sd": 0.632921
+    },
+    "home_over25_last5": {
+     "mean": 0.503361,
+     "sd": 0.25556
+    },
+    "away_over25_last5": {
+     "mean": 0.503344,
+     "sd": 0.256033
+    },
+    "home_attack_str": {
+     "mean": 0.988516,
+     "sd": 0.472599
+    },
+    "away_attack_str": {
+     "mean": 1.004823,
+     "sd": 0.476253
+    },
+    "home_defense_str": {
+     "mean": 1.002967,
+     "sd": 0.467932
+    },
+    "away_defense_str": {
+     "mean": 0.984992,
+     "sd": 0.462086
+    },
+    "home_advantage": {
+     "mean": 0.480611,
+     "sd": 0.276701
+    },
+    "away_home_adv_factor": {
+     "mean": 0.476878,
+     "sd": 0.278195
+    },
+    "home_rest_days": {
+     "mean": 9.382056,
+     "sd": 23.821737
+    },
+    "away_rest_days": {
+     "mean": 9.084326,
+     "sd": 22.540392
+    },
+    "home_corners_pg_roll": {
+     "mean": 4.884135,
+     "sd": 1.559346
+    },
+    "away_corners_pg_roll": {
+     "mean": 4.927369,
+     "sd": 1.566764
+    },
+    "home_fouls_pg_roll": {
+     "mean": 12.373101,
+     "sd": 2.499669
+    },
+    "away_fouls_pg_roll": {
+     "mean": 12.358811,
+     "sd": 2.500678
+    },
+    "combined_sot_ratio": {
+     "mean": 0.348719,
+     "sd": 0.055429
+    },
+    "home_xg_last5": {
+     "mean": 1.28002,
+     "sd": 0.130587
+    },
+    "away_xg_last5": {
+     "mean": 1.329974,
+     "sd": 0.134557
+    },
+    "home_insidebox_last5": {
+     "mean": 7.818903,
+     "sd": 0.701728
+    },
+    "away_insidebox_last5": {
+     "mean": 8.023399,
+     "sd": 0.72429
+    },
+    "home_season_goals_h": {
+     "mean": 1.456573,
+     "sd": 0.664643
+    },
+    "away_season_goals_a": {
+     "mean": 1.171143,
+     "sd": 0.583396
+    },
+    "home_season_conceded_h": {
+     "mean": 1.168564,
+     "sd": 0.575475
+    },
+    "away_season_conceded_a": {
+     "mean": 1.454947,
+     "sd": 0.648563
+    },
+    "home_cs_rate_h": {
+     "mean": 0.315274,
+     "sd": 0.232604
+    },
+    "away_cs_rate_a": {
+     "mean": 0.237594,
+     "sd": 0.215583
+    },
+    "home_ht_scored_last5": {
+     "mean": 0.53837,
+     "sd": 0.346794
+    },
+    "away_ht_scored_last5": {
+     "mean": 0.542722,
+     "sd": 0.350915
+    },
+    "home_ht_conceded_last5": {
+     "mean": 0.544218,
+     "sd": 0.350421
+    },
+    "away_ht_conceded_last5": {
+     "mean": 0.539355,
+     "sd": 0.344501
+    },
+    "home_ht_attack_str": {
+     "mean": 0.828261,
+     "sd": 0.53353
+    },
+    "away_ht_attack_str": {
+     "mean": 0.834957,
+     "sd": 0.53987
+    },
+    "combined_ht_goals_avg": {
+     "mean": 0.525892,
+     "sd": 0.725512
+    },
+    "home_ht_over05_rate": {
+     "mean": 0.725872,
+     "sd": 0.206325
+    },
+    "away_ht_over05_rate": {
+     "mean": 0.725919,
+     "sd": 0.207868
+    },
+    "home_ht_over15_rate": {
+     "mean": 0.287417,
+     "sd": 0.213657
+    },
+    "away_ht_over15_rate": {
+     "mean": 0.286871,
+     "sd": 0.213525
+    },
+    "bookmaker_overround": {
+     "mean": 0.060139,
+     "sd": 0.007767
+    },
+    "p_over25_poisson_dc": {
+     "mean": 0.478588,
+     "sd": 0.201804
+    }
+   },
+   "constant_in_training": []
+  },
+  "over35": {
+   "name": "over35",
+   "path": "models/model_v9_over35.pkl",
+   "exists": true,
+   "sha256": "f546ce723bdb31f665a60b3b66c64bbe1cd250594a7564c53955e82423a883fe",
+   "bytes": 1366863,
+   "keys": [
+    "feature_cols",
+    "metrics",
+    "models",
+    "target"
+   ],
+   "recipe": "<absent = legacy>",
+   "n_features": 42,
+   "feature_cols": [
+    "home_scored_last5",
+    "away_scored_last5",
+    "home_conceded_last5",
+    "away_conceded_last5",
+    "home_over25_last5",
+    "away_over25_last5",
+    "home_attack_str",
+    "away_attack_str",
+    "home_defense_str",
+    "away_defense_str",
+    "home_advantage",
+    "away_home_adv_factor",
+    "home_rest_days",
+    "away_rest_days",
+    "home_corners_pg_roll",
+    "away_corners_pg_roll",
+    "home_fouls_pg_roll",
+    "away_fouls_pg_roll",
+    "combined_sot_ratio",
+    "home_xg_last5",
+    "away_xg_last5",
+    "home_insidebox_last5",
+    "away_insidebox_last5",
+    "home_season_goals_h",
+    "away_season_goals_a",
+    "home_season_conceded_h",
+    "away_season_conceded_a",
+    "home_cs_rate_h",
+    "away_cs_rate_a",
+    "home_ht_scored_last5",
+    "away_ht_scored_last5",
+    "home_ht_conceded_last5",
+    "away_ht_conceded_last5",
+    "home_ht_attack_str",
+    "away_ht_attack_str",
+    "combined_ht_goals_avg",
+    "home_ht_over05_rate",
+    "away_ht_over05_rate",
+    "home_ht_over15_rate",
+    "away_ht_over15_rate",
+    "bookmaker_overround",
+    "p_over25_poisson_dc"
+   ],
+   "feature_order_sha": "bf1214ff751d28ab",
+   "has_persisted_imputer": false,
+   "base_models": [
+    "logistic",
+    "gradient_boost",
+    "lightgbm"
+   ],
+   "has_meta": true,
+   "model_classes": {
+    "logistic": "_CalibratedModel",
+    "gradient_boost": "_CalibratedModel",
+    "lightgbm": "_CalibratedModel",
+    "__meta__": "LogisticRegression"
+   },
+   "target": "over25",
+   "metrics": {
+    "logistic": {
+     "accuracy": 0.7044,
+     "auc": 0.5849,
+     "log_loss": 0.59753,
+     "n_train": 40752,
+     "n_cal": 7192,
+     "n_test": 11986
+    },
+    "gradient_boost": {
+     "accuracy": 0.7049,
+     "auc": 0.5677,
+     "log_loss": 0.60098,
+     "n_train": 40752,
+     "n_cal": 7192,
+     "n_test": 11986
+    },
+    "lightgbm": {
+     "accuracy": 0.7039,
+     "auc": 0.5701,
+     "log_loss": 0.60096,
+     "n_train": 40752,
+     "n_cal": 7192,
+     "n_test": 11986
+    },
+    "__meta__": {}
+   },
+   "scaler_from": "logistic",
+   "train_scaler": {
+    "home_scored_last5": {
+     "mean": 1.327566,
+     "sd": 0.648375
+    },
+    "away_scored_last5": {
+     "mean": 1.348728,
+     "sd": 0.654356
+    },
+    "home_conceded_last5": {
+     "mean": 1.346637,
+     "sd": 0.641147
+    },
+    "away_conceded_last5": {
+     "mean": 1.322403,
+     "sd": 0.633119
+    },
+    "home_over25_last5": {
+     "mean": 0.503457,
+     "sd": 0.2556
+    },
+    "away_over25_last5": {
+     "mean": 0.503344,
+     "sd": 0.256096
+    },
+    "home_attack_str": {
+     "mean": 0.988789,
+     "sd": 0.472743
+    },
+    "away_attack_str": {
+     "mean": 1.004977,
+     "sd": 0.476495
+    },
+    "home_defense_str": {
+     "mean": 1.003319,
+     "sd": 0.468043
+    },
+    "away_defense_str": {
+     "mean": 0.985016,
+     "sd": 0.462019
+    },
+    "home_advantage": {
+     "mean": 0.481746,
+     "sd": 0.276154
+    },
+    "away_home_adv_factor": {
+     "mean": 0.477857,
+     "sd": 0.277802
+    },
+    "home_rest_days": {
+     "mean": 9.392766,
+     "sd": 23.863726
+    },
+    "away_rest_days": {
+     "mean": 9.098572,
+     "sd": 22.593105
+    },
+    "home_corners_pg_roll": {
+     "mean": 4.883733,
+     "sd": 1.562463
+    },
+    "away_corners_pg_roll": {
+     "mean": 4.92742,
+     "sd": 1.566587
+    },
+    "home_fouls_pg_roll": {
+     "mean": 12.375485,
+     "sd": 2.498189
+    },
+    "away_fouls_pg_roll": {
+     "mean": 12.359067,
+     "sd": 2.504624
+    },
+    "combined_sot_ratio": {
+     "mean": 0.348711,
+     "sd": 0.055378
+    },
+    "home_xg_last5": {
+     "mean": 1.279889,
+     "sd": 0.124731
+    },
+    "away_xg_last5": {
+     "mean": 1.318764,
+     "sd": 0.127294
+    },
+    "home_insidebox_last5": {
+     "mean": 7.769557,
+     "sd": 0.658671
+    },
+    "away_insidebox_last5": {
+     "mean": 8.020435,
+     "sd": 0.672314
+    },
+    "home_season_goals_h": {
+     "mean": 1.455435,
+     "sd": 0.66563
+    },
+    "away_season_goals_a": {
+     "mean": 1.169503,
+     "sd": 0.583663
+    },
+    "home_season_conceded_h": {
+     "mean": 1.16762,
+     "sd": 0.575355
+    },
+    "away_season_conceded_a": {
+     "mean": 1.45495,
+     "sd": 0.65167
+    },
+    "home_cs_rate_h": {
+     "mean": 0.315033,
+     "sd": 0.232563
+    },
+    "away_cs_rate_a": {
+     "mean": 0.237582,
+     "sd": 0.216704
+    },
+    "home_ht_scored_last5": {
+     "mean": 0.538617,
+     "sd": 0.347197
+    },
+    "away_ht_scored_last5": {
+     "mean": 0.542575,
+     "sd": 0.350804
+    },
+    "home_ht_conceded_last5": {
+     "mean": 0.544446,
+     "sd": 0.350572
+    },
+    "away_ht_conceded_last5": {
+     "mean": 0.53897,
+     "sd": 0.344391
+    },
+    "home_ht_attack_str": {
+     "mean": 0.828641,
+     "sd": 0.53415
+    },
+    "away_ht_attack_str": {
+     "mean": 0.83473,
+     "sd": 0.539698
+    },
+    "combined_ht_goals_avg": {
+     "mean": 0.524372,
+     "sd": 0.725909
+    },
+    "home_ht_over05_rate": {
+     "mean": 0.725962,
+     "sd": 0.206376
+    },
+    "away_ht_over05_rate": {
+     "mean": 0.725897,
+     "sd": 0.20777
+    },
+    "home_ht_over15_rate": {
+     "mean": 0.287599,
+     "sd": 0.213666
+    },
+    "away_ht_over15_rate": {
+     "mean": 0.2866,
+     "sd": 0.213309
+    },
+    "bookmaker_overround": {
+     "mean": 0.060106,
+     "sd": 0.007849
+    },
+    "p_over25_poisson_dc": {
+     "mean": 0.478679,
+     "sd": 0.20186
+    }
+   },
+   "constant_in_training": []
+  },
+  "ht_over05": {
+   "name": "ht_over05",
+   "path": "models/model_ht_over05.pkl",
+   "exists": true,
+   "sha256": "359b491a454efa0eb5236bae365bf6a9784067583cae2d2db3588179c4062832",
+   "bytes": 1262671,
+   "keys": [
+    "feature_cols",
+    "metrics",
+    "models",
+    "target"
+   ],
+   "recipe": "<absent = legacy>",
+   "n_features": 65,
+   "feature_cols": [
+    "home_scored_last5",
+    "away_scored_last5",
+    "home_conceded_last5",
+    "away_conceded_last5",
+    "home_over25_last5",
+    "away_over25_last5",
+    "home_attack_str",
+    "away_attack_str",
+    "home_defense_str",
+    "away_defense_str",
+    "home_advantage",
+    "away_home_adv_factor",
+    "home_rest_days",
+    "away_rest_days",
+    "home_corners_pg_roll",
+    "away_corners_pg_roll",
+    "home_fouls_pg_roll",
+    "away_fouls_pg_roll",
+    "combined_sot_ratio",
+    "home_xg_last5",
+    "away_xg_last5",
+    "home_insidebox_last5",
+    "away_insidebox_last5",
+    "home_season_goals_h",
+    "away_season_goals_a",
+    "home_season_conceded_h",
+    "away_season_conceded_a",
+    "home_cs_rate_h",
+    "away_cs_rate_a",
+    "home_ht_scored_last5",
+    "away_ht_scored_last5",
+    "home_ht_conceded_last5",
+    "away_ht_conceded_last5",
+    "home_ht_attack_str",
+    "away_ht_attack_str",
+    "combined_ht_goals_avg",
+    "home_ht_over05_rate",
+    "away_ht_over05_rate",
+    "home_ht_over15_rate",
+    "away_ht_over15_rate",
+    "bookmaker_overround",
+    "p_over25_poisson_dc",
+    "ht_lambda_home",
+    "ht_lambda_away",
+    "ht_lambda_total",
+    "ht_p_over05_poisson",
+    "ht_p_over15_poisson",
+    "ht_home_attack",
+    "ht_home_defence",
+    "ht_away_attack",
+    "ht_away_defence",
+    "ht_league_base",
+    "ht_league_over05_base",
+    "ht_home_n",
+    "ht_away_n",
+    "ht_home_over05_ewm",
+    "ht_away_over05_ewm",
+    "ht_home_scored_ewm",
+    "ht_home_conceded_ewm",
+    "ht_away_scored_ewm",
+    "ht_away_conceded_ewm",
+    "ht_h2h_over05",
+    "ht_h2h_n",
+    "ht_ft_share_home",
+    "ht_ft_share_away"
+   ],
+   "feature_order_sha": "47da0e665dbd7b8d",
+   "has_persisted_imputer": false,
+   "base_models": [
+    "logistic",
+    "gradient_boost",
+    "lightgbm"
+   ],
+   "has_meta": true,
+   "model_classes": {
+    "logistic": "_CalibratedModel",
+    "gradient_boost": "_CalibratedModel",
+    "lightgbm": "_CalibratedModel",
+    "__meta__": "LogisticRegression"
+   },
+   "target": "over25",
+   "metrics": {
+    "logistic": {
+     "accuracy": 0.7065,
+     "auc": 0.5535,
+     "log_loss": 0.60346,
+     "n_train": 14439,
+     "n_cal": 2549,
+     "n_test": 4248
+    },
+    "gradient_boost": {
+     "accuracy": 0.7065,
+     "auc": 0.5388,
+     "log_loss": 0.60391,
+     "n_train": 14439,
+     "n_cal": 2549,
+     "n_test": 4248
+    },
+    "lightgbm": {
+     "accuracy": 0.7065,
+     "auc": 0.5372,
+     "log_loss": 0.60397,
+     "n_train": 14439,
+     "n_cal": 2549,
+     "n_test": 4248
+    },
+    "__meta__": {}
+   },
+   "scaler_from": "logistic",
+   "train_scaler": {
+    "home_scored_last5": {
+     "mean": 1.331007,
+     "sd": 0.647932
+    },
+    "away_scored_last5": {
+     "mean": 1.362682,
+     "sd": 0.659803
+    },
+    "home_conceded_last5": {
+     "mean": 1.361839,
+     "sd": 0.637673
+    },
+    "away_conceded_last5": {
+     "mean": 1.330129,
+     "sd": 0.62456
+    },
+    "home_over25_last5": {
+     "mean": 0.50824,
+     "sd": 0.252587
+    },
+    "away_over25_last5": {
+     "mean": 0.509623,
+     "sd": 0.252173
+    },
+    "home_attack_str": {
+     "mean": 0.980636,
+     "sd": 0.468774
+    },
+    "away_attack_str": {
+     "mean": 1.004615,
+     "sd": 0.477388
+    },
+    "home_defense_str": {
+     "mean": 1.003498,
+     "sd": 0.462811
+    },
+    "away_defense_str": {
+     "mean": 0.980012,
+     "sd": 0.452921
+    },
+    "home_advantage": {
+     "mean": 0.450863,
+     "sd": 0.268583
+    },
+    "away_home_adv_factor": {
+     "mean": 0.447124,
+     "sd": 0.270319
+    },
+    "home_rest_days": {
+     "mean": 8.381259,
+     "sd": 16.06894
+    },
+    "away_rest_days": {
+     "mean": 8.168433,
+     "sd": 18.987704
+    },
+    "home_corners_pg_roll": {
+     "mean": 4.859315,
+     "sd": 1.504112
+    },
+    "away_corners_pg_roll": {
+     "mean": 4.957892,
+     "sd": 1.537713
+    },
+    "home_fouls_pg_roll": {
+     "mean": 12.014334,
+     "sd": 2.409096
+    },
+    "away_fouls_pg_roll": {
+     "mean": 11.977548,
+     "sd": 2.427418
+    },
+    "combined_sot_ratio": {
+     "mean": 0.347688,
+     "sd": 0.056234
+    },
+    "home_xg_last5": {
+     "mean": 1.270884,
+     "sd": 0.270408
+    },
+    "away_xg_last5": {
+     "mean": 1.348033,
+     "sd": 0.27437
+    },
+    "home_insidebox_last5": {
+     "mean": 7.866685,
+     "sd": 1.476314
+    },
+    "away_insidebox_last5": {
+     "mean": 8.083645,
+     "sd": 1.522442
+    },
+    "home_season_goals_h": {
+     "mean": 1.476915,
+     "sd": 0.636723
+    },
+    "away_season_goals_a": {
+     "mean": 1.186258,
+     "sd": 0.561713
+    },
+    "home_season_conceded_h": {
+     "mean": 1.184565,
+     "sd": 0.529684
+    },
+    "away_season_conceded_a": {
+     "mean": 1.479072,
+     "sd": 0.615604
+    },
+    "home_cs_rate_h": {
+     "mean": 0.316989,
+     "sd": 0.211904
+    },
+    "away_cs_rate_a": {
+     "mean": 0.237745,
+     "sd": 0.198824
+    },
+    "home_ht_scored_last5": {
+     "mean": 0.589074,
+     "sd": 0.443848
+    },
+    "away_ht_scored_last5": {
+     "mean": 0.60335,
+     "sd": 0.434113
+    },
+    "home_ht_conceded_last5": {
+     "mean": 0.60029,
+     "sd": 0.440134
+    },
+    "away_ht_conceded_last5": {
+     "mean": 0.590952,
+     "sd": 0.421856
+    },
+    "home_ht_attack_str": {
+     "mean": 0.906267,
+     "sd": 0.682842
+    },
+    "away_ht_attack_str": {
+     "mean": 0.92823,
+     "sd": 0.667866
+    },
+    "combined_ht_goals_avg": {
+     "mean": 1.16853,
+     "sd": 0.636649
+    },
+    "home_ht_over05_rate": {
+     "mean": 0.698486,
+     "sd": 0.256225
+    },
+    "away_ht_over05_rate": {
+     "mean": 0.703663,
+     "sd": 0.245189
+    },
+    "home_ht_over15_rate": {
+     "mean": 0.334625,
+     "sd": 0.26433
+    },
+    "away_ht_over15_rate": {
+     "mean": 0.335921,
+     "sd": 0.254623
+    },
+    "bookmaker_overround": {
+     "mean": 0.061243,
+     "sd": 0.007674
+    },
+    "p_over25_poisson_dc": {
+     "mean": 0.482289,
+     "sd": 0.20031
+    },
+    "ht_lambda_home": {
+     "mean": 0.644227,
+     "sd": 0.122876
+    },
+    "ht_lambda_away": {
+     "mean": 0.521582,
+     "sd": 0.100359
+    },
+    "ht_lambda_total": {
+     "mean": 1.165808,
+     "sd": 0.161747
+    },
+    "ht_p_over05_poisson": {
+     "mean": 0.684288,
+     "sd": 0.050212
+    },
+    "ht_p_over15_poisson": {
+     "mean": 0.324301,
+     "sd": 0.058063
+    },
+    "ht_home_attack": {
+     "mean": 1.016105,
+     "sd": 0.125289
+    },
+    "ht_home_defence": {
+     "mean": 1.014471,
+     "sd": 0.112962
+    },
+    "ht_away_attack": {
+     "mean": 1.021537,
+     "sd": 0.1279
+    },
+    "ht_away_defence": {
+     "mean": 1.011369,
+     "sd": 0.108115
+    },
+    "ht_league_base": {
+     "mean": 1.132868,
+     "sd": 0.108975
+    },
+    "ht_league_over05_base": {
+     "mean": 0.698993,
+     "sd": 0.040659
+    },
+    "ht_home_n": {
+     "mean": 13.868388,
+     "sd": 8.866743
+    },
+    "ht_away_n": {
+     "mean": 13.737182,
+     "sd": 8.978578
+    },
+    "ht_home_over05_ewm": {
+     "mean": 0.700046,
+     "sd": 0.05193
+    },
+    "ht_away_over05_ewm": {
+     "mean": 0.700153,
+     "sd": 0.050265
+    },
+    "ht_home_scored_ewm": {
+     "mean": 0.637571,
+     "sd": 0.104075
+    },
+    "ht_home_conceded_ewm": {
+     "mean": 0.511241,
+     "sd": 0.078922
+    },
+    "ht_away_scored_ewm": {
+     "mean": 0.514797,
+     "sd": 0.084779
+    },
+    "ht_away_conceded_ewm": {
+     "mean": 0.634448,
+     "sd": 0.094397
+    },
+    "ht_h2h_over05": {
+     "mean": 0.6999,
+     "sd": 0.079641
+    },
+    "ht_h2h_n": {
+     "mean": 1.243012,
+     "sd": 1.364494
+    },
+    "ht_ft_share_home": {
+     "mean": 0.429711,
+     "sd": 0.056756
+    },
+    "ht_ft_share_away": {
+     "mean": 0.431201,
+     "sd": 0.058249
+    }
+   },
+   "constant_in_training": []
+  },
+  "ht_over15": {
+   "name": "ht_over15",
+   "path": "models/model_ht_over15.pkl",
+   "exists": true,
+   "sha256": "6f370f6304d7009403b77c416cc277fcf65c821f126b5ca78b70e7e00fd6f63b",
+   "bytes": 1233490,
+   "keys": [
+    "feature_cols",
+    "metrics",
+    "models",
+    "target"
+   ],
+   "recipe": "<absent = legacy>",
+   "n_features": 65,
+   "feature_cols": [
+    "home_scored_last5",
+    "away_scored_last5",
+    "home_conceded_last5",
+    "away_conceded_last5",
+    "home_over25_last5",
+    "away_over25_last5",
+    "home_attack_str",
+    "away_attack_str",
+    "home_defense_str",
+    "away_defense_str",
+    "home_advantage",
+    "away_home_adv_factor",
+    "home_rest_days",
+    "away_rest_days",
+    "home_corners_pg_roll",
+    "away_corners_pg_roll",
+    "home_fouls_pg_roll",
+    "away_fouls_pg_roll",
+    "combined_sot_ratio",
+    "home_xg_last5",
+    "away_xg_last5",
+    "home_insidebox_last5",
+    "away_insidebox_last5",
+    "home_season_goals_h",
+    "away_season_goals_a",
+    "home_season_conceded_h",
+    "away_season_conceded_a",
+    "home_cs_rate_h",
+    "away_cs_rate_a",
+    "home_ht_scored_last5",
+    "away_ht_scored_last5",
+    "home_ht_conceded_last5",
+    "away_ht_conceded_last5",
+    "home_ht_attack_str",
+    "away_ht_attack_str",
+    "combined_ht_goals_avg",
+    "home_ht_over05_rate",
+    "away_ht_over05_rate",
+    "home_ht_over15_rate",
+    "away_ht_over15_rate",
+    "bookmaker_overround",
+    "p_over25_poisson_dc",
+    "ht_lambda_home",
+    "ht_lambda_away",
+    "ht_lambda_total",
+    "ht_p_over05_poisson",
+    "ht_p_over15_poisson",
+    "ht_home_attack",
+    "ht_home_defence",
+    "ht_away_attack",
+    "ht_away_defence",
+    "ht_league_base",
+    "ht_league_over05_base",
+    "ht_home_n",
+    "ht_away_n",
+    "ht_home_over05_ewm",
+    "ht_away_over05_ewm",
+    "ht_home_scored_ewm",
+    "ht_home_conceded_ewm",
+    "ht_away_scored_ewm",
+    "ht_away_conceded_ewm",
+    "ht_h2h_over05",
+    "ht_h2h_n",
+    "ht_ft_share_home",
+    "ht_ft_share_away"
+   ],
+   "feature_order_sha": "47da0e665dbd7b8d",
+   "has_persisted_imputer": false,
+   "base_models": [
+    "logistic",
+    "gradient_boost",
+    "lightgbm"
+   ],
+   "has_meta": true,
+   "model_classes": {
+    "logistic": "_CalibratedModel",
+    "gradient_boost": "_CalibratedModel",
+    "lightgbm": "_CalibratedModel",
+    "__meta__": "LogisticRegression"
+   },
+   "target": "over25",
+   "metrics": {
+    "logistic": {
+     "accuracy": 0.6452,
+     "auc": 0.5648,
+     "log_loss": 0.6472,
+     "n_train": 14314,
+     "n_cal": 2526,
+     "n_test": 4211
+    },
+    "gradient_boost": {
+     "accuracy": 0.6452,
+     "auc": 0.536,
+     "log_loss": 0.64937,
+     "n_train": 14314,
+     "n_cal": 2526,
+     "n_test": 4211
+    },
+    "lightgbm": {
+     "accuracy": 0.6452,
+     "auc": 0.526,
+     "log_loss": 0.64956,
+     "n_train": 14314,
+     "n_cal": 2526,
+     "n_test": 4211
+    },
+    "__meta__": {}
+   },
+   "scaler_from": "logistic",
+   "train_scaler": {
+    "home_scored_last5": {
+     "mean": 1.331237,
+     "sd": 0.647168
+    },
+    "away_scored_last5": {
+     "mean": 1.362597,
+     "sd": 0.659194
+    },
+    "home_conceded_last5": {
+     "mean": 1.36125,
+     "sd": 0.637198
+    },
+    "away_conceded_last5": {
+     "mean": 1.32837,
+     "sd": 0.623077
+    },
+    "home_over25_last5": {
+     "mean": 0.508088,
+     "sd": 0.252287
+    },
+    "away_over25_last5": {
+     "mean": 0.509095,
+     "sd": 0.252242
+    },
+    "home_attack_str": {
+     "mean": 0.981331,
+     "sd": 0.468778
+    },
+    "away_attack_str": {
+     "mean": 1.004925,
+     "sd": 0.477807
+    },
+    "home_defense_str": {
+     "mean": 1.003443,
+     "sd": 0.462466
+    },
+    "away_defense_str": {
+     "mean": 0.979015,
+     "sd": 0.452091
+    },
+    "home_advantage": {
+     "mean": 0.450163,
+     "sd": 0.268259
+    },
+    "away_home_adv_factor": {
+     "mean": 0.447192,
+     "sd": 0.268718
+    },
+    "home_rest_days": {
+     "mean": 8.293629,
+     "sd": 15.4941
+    },
+    "away_rest_days": {
+     "mean": 8.153766,
+     "sd": 18.946743
+    },
+    "home_corners_pg_roll": {
+     "mean": 4.857469,
+     "sd": 1.504337
+    },
+    "away_corners_pg_roll": {
+     "mean": 4.959219,
+     "sd": 1.537895
+    },
+    "home_fouls_pg_roll": {
+     "mean": 12.01619,
+     "sd": 2.407794
+    },
+    "away_fouls_pg_roll": {
+     "mean": 11.97841,
+     "sd": 2.429028
+    },
+    "combined_sot_ratio": {
+     "mean": 0.347828,
+     "sd": 0.056064
+    },
+    "home_xg_last5": {
+     "mean": 1.270612,
+     "sd": 0.262188
+    },
+    "away_xg_last5": {
+     "mean": 1.324701,
+     "sd": 0.269918
+    },
+    "home_insidebox_last5": {
+     "mean": 7.857539,
+     "sd": 1.438145
+    },
+    "away_insidebox_last5": {
+     "mean": 8.071607,
+     "sd": 1.433899
+    },
+    "home_season_goals_h": {
+     "mean": 1.477294,
+     "sd": 0.630476
+    },
+    "away_season_goals_a": {
+     "mean": 1.184906,
+     "sd": 0.559029
+    },
+    "home_season_conceded_h": {
+     "mean": 1.185903,
+     "sd": 0.526238
+    },
+    "away_season_conceded_a": {
+     "mean": 1.478387,
+     "sd": 0.607468
+    },
+    "home_cs_rate_h": {
+     "mean": 0.316434,
+     "sd": 0.209282
+    },
+    "away_cs_rate_a": {
+     "mean": 0.237749,
+     "sd": 0.197022
+    },
+    "home_ht_scored_last5": {
+     "mean": 0.58913,
+     "sd": 0.443963
+    },
+    "away_ht_scored_last5": {
+     "mean": 0.602973,
+     "sd": 0.434111
+    },
+    "home_ht_conceded_last5": {
+     "mean": 0.599689,
+     "sd": 0.439363
+    },
+    "away_ht_conceded_last5": {
+     "mean": 0.589757,
+     "sd": 0.42119
+    },
+    "home_ht_attack_str": {
+     "mean": 0.906353,
+     "sd": 0.68302
+    },
+    "away_ht_attack_str": {
+     "mean": 0.92765,
+     "sd": 0.667863
+    },
+    "combined_ht_goals_avg": {
+     "mean": 1.168126,
+     "sd": 0.637074
+    },
+    "home_ht_over05_rate": {
+     "mean": 0.698222,
+     "sd": 0.256327
+    },
+    "away_ht_over05_rate": {
+     "mean": 0.702974,
+     "sd": 0.245447
+    },
+    "home_ht_over15_rate": {
+     "mean": 0.334506,
+     "sd": 0.264288
+    },
+    "away_ht_over15_rate": {
+     "mean": 0.335441,
+     "sd": 0.25474
+    },
+    "bookmaker_overround": {
+     "mean": 0.06108,
+     "sd": 0.007685
+    },
+    "p_over25_poisson_dc": {
+     "mean": 0.482316,
+     "sd": 0.200201
+    },
+    "ht_lambda_home": {
+     "mean": 0.643864,
+     "sd": 0.122553
+    },
+    "ht_lambda_away": {
+     "mean": 0.521534,
+     "sd": 0.10028
+    },
+    "ht_lambda_total": {
+     "mean": 1.165398,
+     "sd": 0.161551
+    },
+    "ht_p_over05_poisson": {
+     "mean": 0.684167,
+     "sd": 0.050188
+    },
+    "ht_p_over15_poisson": {
+     "mean": 0.324155,
+     "sd": 0.058003
+    },
+    "ht_home_attack": {
+     "mean": 1.01605,
+     "sd": 0.125164
+    },
+    "ht_home_defence": {
+     "mean": 1.014503,
+     "sd": 0.112691
+    },
+    "ht_away_attack": {
+     "mean": 1.021578,
+     "sd": 0.127765
+    },
+    "ht_away_defence": {
+     "mean": 1.011272,
+     "sd": 0.107998
+    },
+    "ht_league_base": {
+     "mean": 1.132554,
+     "sd": 0.109159
+    },
+    "ht_league_over05_base": {
+     "mean": 0.698875,
+     "sd": 0.04069
+    },
+    "ht_home_n": {
+     "mean": 13.778129,
+     "sd": 8.811088
+    },
+    "ht_away_n": {
+     "mean": 13.646898,
+     "sd": 8.912675
+    },
+    "ht_home_over05_ewm": {
+     "mean": 0.699975,
+     "sd": 0.051941
+    },
+    "ht_away_over05_ewm": {
+     "mean": 0.700029,
+     "sd": 0.050334
+    },
+    "ht_home_scored_ewm": {
+     "mean": 0.637298,
+     "sd": 0.104014
+    },
+    "ht_home_conceded_ewm": {
+     "mean": 0.511179,
+     "sd": 0.078942
+    },
+    "ht_away_scored_ewm": {
+     "mean": 0.514742,
+     "sd": 0.084856
+    },
+    "ht_away_conceded_ewm": {
+     "mean": 0.634141,
+     "sd": 0.094294
+    },
+    "ht_h2h_over05": {
+     "mean": 0.699808,
+     "sd": 0.079567
+    },
+    "ht_h2h_n": {
+     "mean": 1.234227,
+     "sd": 1.354105
+    },
+    "ht_ft_share_home": {
+     "mean": 0.429637,
+     "sd": 0.056823
+    },
+    "ht_ft_share_away": {
+     "mean": 0.43116,
+     "sd": 0.058316
+    }
+   },
+   "constant_in_training": []
+  }
+ },
+ "player": {
+  "goals": {
+   "name": "player_goals",
+   "path": "models/model_player_goals.pkl",
+   "exists": true,
+   "sha256": "1592478c1c33d49a8508ed6a5808fda262dde65e5aa8646987814332f9da9685",
+   "keys": [
+    "feature_cols",
+    "market",
+    "metrics",
+    "models"
+   ],
+   "n_features": 138,
+   "feature_cols": [
+    "goals_pg",
+    "assists_pg",
+    "shots_pg",
+    "sot_pg",
+    "cards_pg",
+    "minutes_pg",
+    "key_passes_pg",
+    "sot_rate",
+    "starter_rate",
+    "n_prev_games",
+    "rating_pg",
+    "career_goals_pg",
+    "career_sot_pg",
+    "career_shots_pg",
+    "career_assists_pg",
+    "shot_accuracy_rate",
+    "kp_per90",
+    "goal_involvement_rate",
+    "shooting_efficiency_index",
+    "box_actions_per90",
+    "aerial_won_rate",
+    "duel_intensity_per90",
+    "fouls_drawn_per90",
+    "fouls_per90",
+    "foul_committer_ratio",
+    "card_exposure_index",
+    "sot_quality_score",
+    "opp_adjusted_shot_threat",
+    "creative_playmaker_score",
+    "team_corners_pg",
+    "set_piece_threat_score",
+    "is_home",
+    "opp_goals_conceded_pg",
+    "opp_sot_conceded_pg",
+    "team_goals_pg_roll",
+    "opp_def_aerial_win_rate",
+    "opp_def_fouls_pg",
+    "opp_def_cards_pg",
+    "aerial_matchup_score",
+    "foul_draw_matchup_score",
+    "opp_def_aggression",
+    "pos_forward",
+    "pos_midfielder",
+    "pos_defender",
+    "rest_days",
+    "goals_home_pg",
+    "goals_away_pg",
+    "shots_home_pg",
+    "shots_away_pg",
+    "sot_home_pg",
+    "sot_away_pg",
+    "tackles_pg",
+    "interceptions_pg",
+    "defensive_actions_per90",
+    "dribbles_pg",
+    "dribble_success_rate",
+    "dribbled_past_pg",
+    "red_cards_pg",
+    "passes_pg",
+    "offsides_pg",
+    "penalties_won_pg",
+    "penalty_conversion_rate",
+    "opp_gk_save_rate",
+    "opp_gk_saves_pg",
+    "att_vs_gk_threat",
+    "clinical_vs_gk",
+    "volume_shot_penetration",
+    "finishing_threat_index",
+    "box_dominance_vs_gk",
+    "aggression_adjusted_threat",
+    "dribble_creativity_score",
+    "defensive_solidity",
+    "penalty_threat_score",
+    "card_risk_index",
+    "midfield_engine_score",
+    "offside_aggressiveness",
+    "defensive_vulnerability_index",
+    "progressive_carrier_score",
+    "disciplinary_pressure_index",
+    "foul_magnet_score",
+    "season_goals_pg",
+    "season_assists_pg",
+    "season_shots_pg",
+    "season_sot_pg",
+    "season_cards_pg",
+    "season_minutes_pg",
+    "season_appearances",
+    "age",
+    "age_peak_delta",
+    "height_cm",
+    "height_aerial_interaction",
+    "season_start_rate",
+    "season_dribble_pg",
+    "season_fouls_pg",
+    "season_fouls_drawn_pg",
+    "days_since_last_injury",
+    "return_from_injury_flag",
+    "chronic_injury_risk",
+    "referee_yellows_pg",
+    "referee_strictness",
+    "opp_goals_conceded_vs_fwd_pg",
+    "opp_sot_conceded_vs_fwd_pg",
+    "opp_goals_conceded_vs_mid_pg",
+    "opp_sot_conceded_vs_mid_pg",
+    "forward_matchup_score",
+    "mid_threat_vs_defense",
+    "box_threat_vs_leaky_defense",
+    "efficiency_vs_leaky_keeper",
+    "kp_vs_aggressive_defense",
+    "team_momentum_forward_matchup",
+    "set_piece_corner_matchup",
+    "creative_pressure_matchup",
+    "dribbler_vs_defensive_line",
+    "carrier_vs_press",
+    "opp_mid_fouls_pg",
+    "opp_mid_cards_pg",
+    "dribble_contact_rate",
+    "tackle_dribble_clash",
+    "card_clash_index",
+    "opp_mid_discipline",
+    "sp_taker_score",
+    "sp_receiver_score",
+    "opp_def_mean_height",
+    "height_diff_vs_opp_def",
+    "height_advantage_score",
+    "defender_sot_role_index",
+    "opp_strength_index",
+    "quality_adj_goals_pg",
+    "quality_adj_sot_pg",
+    "league_tier",
+    "league_quality",
+    "player_career_avg_quality",
+    "opp_def_player_rating_pg",
+    "opp_top_def_rating",
+    "opp_def_player_quality",
+    "context_quality_discount",
+    "quality_mismatch_goals",
+    "quality_mismatch_sot"
+   ],
+   "feature_order_sha": "626c14e5d9e81485",
+   "has_persisted_imputer": false,
+   "recipe": "<absent = legacy>",
+   "market": "goals",
+   "metrics": {
+    "logistic": {
+     "auc": 0.737314278098276,
+     "log_loss": 0.266991997401953,
+     "n_train": 696684,
+     "n_test": 174172
+    },
+    "gradient_boost": {
+     "auc": 0.741772665131398,
+     "log_loss": 0.26106301509317525,
+     "n_train": 696684,
+     "n_test": 174172
+    }
+   },
+   "model_classes": {
+    "logistic": "_PlattCalibratedModel",
+    "gradient_boost": "_PlattCalibratedModel"
+   }
+  },
+  "goals2": {
+   "name": "player_goals2",
+   "path": "models/model_player_goals2.pkl",
+   "exists": true,
+   "sha256": "426e3bb5a6a6f78385b74d3af4d9efcd34bee925f24044a3f7e03349fecc52c8",
+   "keys": [
+    "feature_cols",
+    "market",
+    "metrics",
+    "models"
+   ],
+   "n_features": 138,
+   "feature_cols": [
+    "goals_pg",
+    "assists_pg",
+    "shots_pg",
+    "sot_pg",
+    "cards_pg",
+    "minutes_pg",
+    "key_passes_pg",
+    "sot_rate",
+    "starter_rate",
+    "n_prev_games",
+    "rating_pg",
+    "career_goals_pg",
+    "career_sot_pg",
+    "career_shots_pg",
+    "career_assists_pg",
+    "shot_accuracy_rate",
+    "kp_per90",
+    "goal_involvement_rate",
+    "shooting_efficiency_index",
+    "box_actions_per90",
+    "aerial_won_rate",
+    "duel_intensity_per90",
+    "fouls_drawn_per90",
+    "fouls_per90",
+    "foul_committer_ratio",
+    "card_exposure_index",
+    "sot_quality_score",
+    "opp_adjusted_shot_threat",
+    "creative_playmaker_score",
+    "team_corners_pg",
+    "set_piece_threat_score",
+    "is_home",
+    "opp_goals_conceded_pg",
+    "opp_sot_conceded_pg",
+    "team_goals_pg_roll",
+    "opp_def_aerial_win_rate",
+    "opp_def_fouls_pg",
+    "opp_def_cards_pg",
+    "aerial_matchup_score",
+    "foul_draw_matchup_score",
+    "opp_def_aggression",
+    "pos_forward",
+    "pos_midfielder",
+    "pos_defender",
+    "rest_days",
+    "goals_home_pg",
+    "goals_away_pg",
+    "shots_home_pg",
+    "shots_away_pg",
+    "sot_home_pg",
+    "sot_away_pg",
+    "tackles_pg",
+    "interceptions_pg",
+    "defensive_actions_per90",
+    "dribbles_pg",
+    "dribble_success_rate",
+    "dribbled_past_pg",
+    "red_cards_pg",
+    "passes_pg",
+    "offsides_pg",
+    "penalties_won_pg",
+    "penalty_conversion_rate",
+    "opp_gk_save_rate",
+    "opp_gk_saves_pg",
+    "att_vs_gk_threat",
+    "clinical_vs_gk",
+    "volume_shot_penetration",
+    "finishing_threat_index",
+    "box_dominance_vs_gk",
+    "aggression_adjusted_threat",
+    "dribble_creativity_score",
+    "defensive_solidity",
+    "penalty_threat_score",
+    "card_risk_index",
+    "midfield_engine_score",
+    "offside_aggressiveness",
+    "defensive_vulnerability_index",
+    "progressive_carrier_score",
+    "disciplinary_pressure_index",
+    "foul_magnet_score",
+    "season_goals_pg",
+    "season_assists_pg",
+    "season_shots_pg",
+    "season_sot_pg",
+    "season_cards_pg",
+    "season_minutes_pg",
+    "season_appearances",
+    "age",
+    "age_peak_delta",
+    "height_cm",
+    "height_aerial_interaction",
+    "season_start_rate",
+    "season_dribble_pg",
+    "season_fouls_pg",
+    "season_fouls_drawn_pg",
+    "days_since_last_injury",
+    "return_from_injury_flag",
+    "chronic_injury_risk",
+    "referee_yellows_pg",
+    "referee_strictness",
+    "opp_goals_conceded_vs_fwd_pg",
+    "opp_sot_conceded_vs_fwd_pg",
+    "opp_goals_conceded_vs_mid_pg",
+    "opp_sot_conceded_vs_mid_pg",
+    "forward_matchup_score",
+    "mid_threat_vs_defense",
+    "box_threat_vs_leaky_defense",
+    "efficiency_vs_leaky_keeper",
+    "kp_vs_aggressive_defense",
+    "team_momentum_forward_matchup",
+    "set_piece_corner_matchup",
+    "creative_pressure_matchup",
+    "dribbler_vs_defensive_line",
+    "carrier_vs_press",
+    "opp_mid_fouls_pg",
+    "opp_mid_cards_pg",
+    "dribble_contact_rate",
+    "tackle_dribble_clash",
+    "card_clash_index",
+    "opp_mid_discipline",
+    "sp_taker_score",
+    "sp_receiver_score",
+    "opp_def_mean_height",
+    "height_diff_vs_opp_def",
+    "height_advantage_score",
+    "defender_sot_role_index",
+    "opp_strength_index",
+    "quality_adj_goals_pg",
+    "quality_adj_sot_pg",
+    "league_tier",
+    "league_quality",
+    "player_career_avg_quality",
+    "opp_def_player_rating_pg",
+    "opp_top_def_rating",
+    "opp_def_player_quality",
+    "context_quality_discount",
+    "quality_mismatch_goals",
+    "quality_mismatch_sot"
+   ],
+   "feature_order_sha": "626c14e5d9e81485",
+   "has_persisted_imputer": false,
+   "recipe": "<absent = legacy>",
+   "market": "goals2",
+   "metrics": {
+    "logistic": {
+     "auc": 0.8387016348060969,
+     "log_loss": 0.04365033718123392,
+     "n_train": 696684,
+     "n_test": 174172
+    },
+    "gradient_boost": {
+     "auc": 0.8365390164125771,
+     "log_loss": 0.04355310632893241,
+     "n_train": 696684,
+     "n_test": 174172
+    }
+   },
+   "model_classes": {
+    "logistic": "_PlattCalibratedModel",
+    "gradient_boost": "_PlattCalibratedModel"
+   }
+  },
+  "assists": {
+   "name": "player_assists",
+   "path": "models/model_player_assists.pkl",
+   "exists": true,
+   "sha256": "6c56f3fdd84bbe9686abde93898dcd57c956818dc4d00683a75095d6f816619d",
+   "keys": [
+    "feature_cols",
+    "market",
+    "metrics",
+    "models"
+   ],
+   "n_features": 138,
+   "feature_cols": [
+    "goals_pg",
+    "assists_pg",
+    "shots_pg",
+    "sot_pg",
+    "cards_pg",
+    "minutes_pg",
+    "key_passes_pg",
+    "sot_rate",
+    "starter_rate",
+    "n_prev_games",
+    "rating_pg",
+    "career_goals_pg",
+    "career_sot_pg",
+    "career_shots_pg",
+    "career_assists_pg",
+    "shot_accuracy_rate",
+    "kp_per90",
+    "goal_involvement_rate",
+    "shooting_efficiency_index",
+    "box_actions_per90",
+    "aerial_won_rate",
+    "duel_intensity_per90",
+    "fouls_drawn_per90",
+    "fouls_per90",
+    "foul_committer_ratio",
+    "card_exposure_index",
+    "sot_quality_score",
+    "opp_adjusted_shot_threat",
+    "creative_playmaker_score",
+    "team_corners_pg",
+    "set_piece_threat_score",
+    "is_home",
+    "opp_goals_conceded_pg",
+    "opp_sot_conceded_pg",
+    "team_goals_pg_roll",
+    "opp_def_aerial_win_rate",
+    "opp_def_fouls_pg",
+    "opp_def_cards_pg",
+    "aerial_matchup_score",
+    "foul_draw_matchup_score",
+    "opp_def_aggression",
+    "pos_forward",
+    "pos_midfielder",
+    "pos_defender",
+    "rest_days",
+    "goals_home_pg",
+    "goals_away_pg",
+    "shots_home_pg",
+    "shots_away_pg",
+    "sot_home_pg",
+    "sot_away_pg",
+    "tackles_pg",
+    "interceptions_pg",
+    "defensive_actions_per90",
+    "dribbles_pg",
+    "dribble_success_rate",
+    "dribbled_past_pg",
+    "red_cards_pg",
+    "passes_pg",
+    "offsides_pg",
+    "penalties_won_pg",
+    "penalty_conversion_rate",
+    "opp_gk_save_rate",
+    "opp_gk_saves_pg",
+    "att_vs_gk_threat",
+    "clinical_vs_gk",
+    "volume_shot_penetration",
+    "finishing_threat_index",
+    "box_dominance_vs_gk",
+    "aggression_adjusted_threat",
+    "dribble_creativity_score",
+    "defensive_solidity",
+    "penalty_threat_score",
+    "card_risk_index",
+    "midfield_engine_score",
+    "offside_aggressiveness",
+    "defensive_vulnerability_index",
+    "progressive_carrier_score",
+    "disciplinary_pressure_index",
+    "foul_magnet_score",
+    "season_goals_pg",
+    "season_assists_pg",
+    "season_shots_pg",
+    "season_sot_pg",
+    "season_cards_pg",
+    "season_minutes_pg",
+    "season_appearances",
+    "age",
+    "age_peak_delta",
+    "height_cm",
+    "height_aerial_interaction",
+    "season_start_rate",
+    "season_dribble_pg",
+    "season_fouls_pg",
+    "season_fouls_drawn_pg",
+    "days_since_last_injury",
+    "return_from_injury_flag",
+    "chronic_injury_risk",
+    "referee_yellows_pg",
+    "referee_strictness",
+    "opp_goals_conceded_vs_fwd_pg",
+    "opp_sot_conceded_vs_fwd_pg",
+    "opp_goals_conceded_vs_mid_pg",
+    "opp_sot_conceded_vs_mid_pg",
+    "forward_matchup_score",
+    "mid_threat_vs_defense",
+    "box_threat_vs_leaky_defense",
+    "efficiency_vs_leaky_keeper",
+    "kp_vs_aggressive_defense",
+    "team_momentum_forward_matchup",
+    "set_piece_corner_matchup",
+    "creative_pressure_matchup",
+    "dribbler_vs_defensive_line",
+    "carrier_vs_press",
+    "opp_mid_fouls_pg",
+    "opp_mid_cards_pg",
+    "dribble_contact_rate",
+    "tackle_dribble_clash",
+    "card_clash_index",
+    "opp_mid_discipline",
+    "sp_taker_score",
+    "sp_receiver_score",
+    "opp_def_mean_height",
+    "height_diff_vs_opp_def",
+    "height_advantage_score",
+    "defender_sot_role_index",
+    "opp_strength_index",
+    "quality_adj_goals_pg",
+    "quality_adj_sot_pg",
+    "league_tier",
+    "league_quality",
+    "player_career_avg_quality",
+    "opp_def_player_rating_pg",
+    "opp_top_def_rating",
+    "opp_def_player_quality",
+    "context_quality_discount",
+    "quality_mismatch_goals",
+    "quality_mismatch_sot"
+   ],
+   "feature_order_sha": "626c14e5d9e81485",
+   "has_persisted_imputer": false,
+   "recipe": "<absent = legacy>",
+   "market": "assists",
+   "metrics": {
+    "logistic": {
+     "auc": 0.6781392133547455,
+     "log_loss": 0.22245913065545353,
+     "n_train": 696684,
+     "n_test": 174172
+    },
+    "gradient_boost": {
+     "auc": 0.6814436077734946,
+     "log_loss": 0.21936503304529353,
+     "n_train": 696684,
+     "n_test": 174172
+    }
+   },
+   "model_classes": {
+    "logistic": "_PlattCalibratedModel",
+    "gradient_boost": "_PlattCalibratedModel"
+   }
+  },
+  "sot": {
+   "name": "player_sot",
+   "path": "models/model_player_sot.pkl",
+   "exists": true,
+   "sha256": "8e31d4d869c5e0d22c0bf4ec5e730060e2eef99eff431ec9e3af97c275e72caa",
+   "keys": [
+    "feature_cols",
+    "market",
+    "metrics",
+    "models"
+   ],
+   "n_features": 138,
+   "feature_cols": [
+    "goals_pg",
+    "assists_pg",
+    "shots_pg",
+    "sot_pg",
+    "cards_pg",
+    "minutes_pg",
+    "key_passes_pg",
+    "sot_rate",
+    "starter_rate",
+    "n_prev_games",
+    "rating_pg",
+    "career_goals_pg",
+    "career_sot_pg",
+    "career_shots_pg",
+    "career_assists_pg",
+    "shot_accuracy_rate",
+    "kp_per90",
+    "goal_involvement_rate",
+    "shooting_efficiency_index",
+    "box_actions_per90",
+    "aerial_won_rate",
+    "duel_intensity_per90",
+    "fouls_drawn_per90",
+    "fouls_per90",
+    "foul_committer_ratio",
+    "card_exposure_index",
+    "sot_quality_score",
+    "opp_adjusted_shot_threat",
+    "creative_playmaker_score",
+    "team_corners_pg",
+    "set_piece_threat_score",
+    "is_home",
+    "opp_goals_conceded_pg",
+    "opp_sot_conceded_pg",
+    "team_goals_pg_roll",
+    "opp_def_aerial_win_rate",
+    "opp_def_fouls_pg",
+    "opp_def_cards_pg",
+    "aerial_matchup_score",
+    "foul_draw_matchup_score",
+    "opp_def_aggression",
+    "pos_forward",
+    "pos_midfielder",
+    "pos_defender",
+    "rest_days",
+    "goals_home_pg",
+    "goals_away_pg",
+    "shots_home_pg",
+    "shots_away_pg",
+    "sot_home_pg",
+    "sot_away_pg",
+    "tackles_pg",
+    "interceptions_pg",
+    "defensive_actions_per90",
+    "dribbles_pg",
+    "dribble_success_rate",
+    "dribbled_past_pg",
+    "red_cards_pg",
+    "passes_pg",
+    "offsides_pg",
+    "penalties_won_pg",
+    "penalty_conversion_rate",
+    "opp_gk_save_rate",
+    "opp_gk_saves_pg",
+    "att_vs_gk_threat",
+    "clinical_vs_gk",
+    "volume_shot_penetration",
+    "finishing_threat_index",
+    "box_dominance_vs_gk",
+    "aggression_adjusted_threat",
+    "dribble_creativity_score",
+    "defensive_solidity",
+    "penalty_threat_score",
+    "card_risk_index",
+    "midfield_engine_score",
+    "offside_aggressiveness",
+    "defensive_vulnerability_index",
+    "progressive_carrier_score",
+    "disciplinary_pressure_index",
+    "foul_magnet_score",
+    "season_goals_pg",
+    "season_assists_pg",
+    "season_shots_pg",
+    "season_sot_pg",
+    "season_cards_pg",
+    "season_minutes_pg",
+    "season_appearances",
+    "age",
+    "age_peak_delta",
+    "height_cm",
+    "height_aerial_interaction",
+    "season_start_rate",
+    "season_dribble_pg",
+    "season_fouls_pg",
+    "season_fouls_drawn_pg",
+    "days_since_last_injury",
+    "return_from_injury_flag",
+    "chronic_injury_risk",
+    "referee_yellows_pg",
+    "referee_strictness",
+    "opp_goals_conceded_vs_fwd_pg",
+    "opp_sot_conceded_vs_fwd_pg",
+    "opp_goals_conceded_vs_mid_pg",
+    "opp_sot_conceded_vs_mid_pg",
+    "forward_matchup_score",
+    "mid_threat_vs_defense",
+    "box_threat_vs_leaky_defense",
+    "efficiency_vs_leaky_keeper",
+    "kp_vs_aggressive_defense",
+    "team_momentum_forward_matchup",
+    "set_piece_corner_matchup",
+    "creative_pressure_matchup",
+    "dribbler_vs_defensive_line",
+    "carrier_vs_press",
+    "opp_mid_fouls_pg",
+    "opp_mid_cards_pg",
+    "dribble_contact_rate",
+    "tackle_dribble_clash",
+    "card_clash_index",
+    "opp_mid_discipline",
+    "sp_taker_score",
+    "sp_receiver_score",
+    "opp_def_mean_height",
+    "height_diff_vs_opp_def",
+    "height_advantage_score",
+    "defender_sot_role_index",
+    "opp_strength_index",
+    "quality_adj_goals_pg",
+    "quality_adj_sot_pg",
+    "league_tier",
+    "league_quality",
+    "player_career_avg_quality",
+    "opp_def_player_rating_pg",
+    "opp_top_def_rating",
+    "opp_def_player_quality",
+    "context_quality_discount",
+    "quality_mismatch_goals",
+    "quality_mismatch_sot"
+   ],
+   "feature_order_sha": "626c14e5d9e81485",
+   "has_persisted_imputer": false,
+   "recipe": "<absent = legacy>",
+   "market": "sot",
+   "metrics": {
+    "logistic": {
+     "auc": 0.7301442793796641,
+     "log_loss": 0.4811620605389229,
+     "n_train": 696684,
+     "n_test": 174172
+    },
+    "gradient_boost": {
+     "auc": 0.735140306955409,
+     "log_loss": 0.47552050152545716,
+     "n_train": 696684,
+     "n_test": 174172
+    }
+   },
+   "model_classes": {
+    "logistic": "_PlattCalibratedModel",
+    "gradient_boost": "_PlattCalibratedModel"
+   }
+  },
+  "sot2": {
+   "name": "player_sot2",
+   "path": "models/model_player_sot2.pkl",
+   "exists": true,
+   "sha256": "a3c186a86c808362f16f57872942533c8bc13ab8266adf6ced0adeeefb0424a1",
+   "keys": [
+    "feature_cols",
+    "market",
+    "metrics",
+    "models"
+   ],
+   "n_features": 138,
+   "feature_cols": [
+    "goals_pg",
+    "assists_pg",
+    "shots_pg",
+    "sot_pg",
+    "cards_pg",
+    "minutes_pg",
+    "key_passes_pg",
+    "sot_rate",
+    "starter_rate",
+    "n_prev_games",
+    "rating_pg",
+    "career_goals_pg",
+    "career_sot_pg",
+    "career_shots_pg",
+    "career_assists_pg",
+    "shot_accuracy_rate",
+    "kp_per90",
+    "goal_involvement_rate",
+    "shooting_efficiency_index",
+    "box_actions_per90",
+    "aerial_won_rate",
+    "duel_intensity_per90",
+    "fouls_drawn_per90",
+    "fouls_per90",
+    "foul_committer_ratio",
+    "card_exposure_index",
+    "sot_quality_score",
+    "opp_adjusted_shot_threat",
+    "creative_playmaker_score",
+    "team_corners_pg",
+    "set_piece_threat_score",
+    "is_home",
+    "opp_goals_conceded_pg",
+    "opp_sot_conceded_pg",
+    "team_goals_pg_roll",
+    "opp_def_aerial_win_rate",
+    "opp_def_fouls_pg",
+    "opp_def_cards_pg",
+    "aerial_matchup_score",
+    "foul_draw_matchup_score",
+    "opp_def_aggression",
+    "pos_forward",
+    "pos_midfielder",
+    "pos_defender",
+    "rest_days",
+    "goals_home_pg",
+    "goals_away_pg",
+    "shots_home_pg",
+    "shots_away_pg",
+    "sot_home_pg",
+    "sot_away_pg",
+    "tackles_pg",
+    "interceptions_pg",
+    "defensive_actions_per90",
+    "dribbles_pg",
+    "dribble_success_rate",
+    "dribbled_past_pg",
+    "red_cards_pg",
+    "passes_pg",
+    "offsides_pg",
+    "penalties_won_pg",
+    "penalty_conversion_rate",
+    "opp_gk_save_rate",
+    "opp_gk_saves_pg",
+    "att_vs_gk_threat",
+    "clinical_vs_gk",
+    "volume_shot_penetration",
+    "finishing_threat_index",
+    "box_dominance_vs_gk",
+    "aggression_adjusted_threat",
+    "dribble_creativity_score",
+    "defensive_solidity",
+    "penalty_threat_score",
+    "card_risk_index",
+    "midfield_engine_score",
+    "offside_aggressiveness",
+    "defensive_vulnerability_index",
+    "progressive_carrier_score",
+    "disciplinary_pressure_index",
+    "foul_magnet_score",
+    "season_goals_pg",
+    "season_assists_pg",
+    "season_shots_pg",
+    "season_sot_pg",
+    "season_cards_pg",
+    "season_minutes_pg",
+    "season_appearances",
+    "age",
+    "age_peak_delta",
+    "height_cm",
+    "height_aerial_interaction",
+    "season_start_rate",
+    "season_dribble_pg",
+    "season_fouls_pg",
+    "season_fouls_drawn_pg",
+    "days_since_last_injury",
+    "return_from_injury_flag",
+    "chronic_injury_risk",
+    "referee_yellows_pg",
+    "referee_strictness",
+    "opp_goals_conceded_vs_fwd_pg",
+    "opp_sot_conceded_vs_fwd_pg",
+    "opp_goals_conceded_vs_mid_pg",
+    "opp_sot_conceded_vs_mid_pg",
+    "forward_matchup_score",
+    "mid_threat_vs_defense",
+    "box_threat_vs_leaky_defense",
+    "efficiency_vs_leaky_keeper",
+    "kp_vs_aggressive_defense",
+    "team_momentum_forward_matchup",
+    "set_piece_corner_matchup",
+    "creative_pressure_matchup",
+    "dribbler_vs_defensive_line",
+    "carrier_vs_press",
+    "opp_mid_fouls_pg",
+    "opp_mid_cards_pg",
+    "dribble_contact_rate",
+    "tackle_dribble_clash",
+    "card_clash_index",
+    "opp_mid_discipline",
+    "sp_taker_score",
+    "sp_receiver_score",
+    "opp_def_mean_height",
+    "height_diff_vs_opp_def",
+    "height_advantage_score",
+    "defender_sot_role_index",
+    "opp_strength_index",
+    "quality_adj_goals_pg",
+    "quality_adj_sot_pg",
+    "league_tier",
+    "league_quality",
+    "player_career_avg_quality",
+    "opp_def_player_rating_pg",
+    "opp_top_def_rating",
+    "opp_def_player_quality",
+    "context_quality_discount",
+    "quality_mismatch_goals",
+    "quality_mismatch_sot"
+   ],
+   "feature_order_sha": "626c14e5d9e81485",
+   "has_persisted_imputer": false,
+   "recipe": "<absent = legacy>",
+   "market": "sot2",
+   "metrics": {
+    "logistic": {
+     "auc": 0.7960693015263985,
+     "log_loss": 0.19253258160452463,
+     "n_train": 696684,
+     "n_test": 174172
+    },
+    "gradient_boost": {
+     "auc": 0.8020756656178634,
+     "log_loss": 0.18385754732586074,
+     "n_train": 696684,
+     "n_test": 174172
+    }
+   },
+   "model_classes": {
+    "logistic": "_PlattCalibratedModel",
+    "gradient_boost": "_PlattCalibratedModel"
+   }
+  },
+  "sot3": {
+   "name": "player_sot3",
+   "path": "models/model_player_sot3.pkl",
+   "exists": true,
+   "sha256": "805e72e2f0dc44b9d8240bd85093ce6a9560d32a952c4bc533cce7d7248326c7",
+   "keys": [
+    "feature_cols",
+    "market",
+    "metrics",
+    "models"
+   ],
+   "n_features": 138,
+   "feature_cols": [
+    "goals_pg",
+    "assists_pg",
+    "shots_pg",
+    "sot_pg",
+    "cards_pg",
+    "minutes_pg",
+    "key_passes_pg",
+    "sot_rate",
+    "starter_rate",
+    "n_prev_games",
+    "rating_pg",
+    "career_goals_pg",
+    "career_sot_pg",
+    "career_shots_pg",
+    "career_assists_pg",
+    "shot_accuracy_rate",
+    "kp_per90",
+    "goal_involvement_rate",
+    "shooting_efficiency_index",
+    "box_actions_per90",
+    "aerial_won_rate",
+    "duel_intensity_per90",
+    "fouls_drawn_per90",
+    "fouls_per90",
+    "foul_committer_ratio",
+    "card_exposure_index",
+    "sot_quality_score",
+    "opp_adjusted_shot_threat",
+    "creative_playmaker_score",
+    "team_corners_pg",
+    "set_piece_threat_score",
+    "is_home",
+    "opp_goals_conceded_pg",
+    "opp_sot_conceded_pg",
+    "team_goals_pg_roll",
+    "opp_def_aerial_win_rate",
+    "opp_def_fouls_pg",
+    "opp_def_cards_pg",
+    "aerial_matchup_score",
+    "foul_draw_matchup_score",
+    "opp_def_aggression",
+    "pos_forward",
+    "pos_midfielder",
+    "pos_defender",
+    "rest_days",
+    "goals_home_pg",
+    "goals_away_pg",
+    "shots_home_pg",
+    "shots_away_pg",
+    "sot_home_pg",
+    "sot_away_pg",
+    "tackles_pg",
+    "interceptions_pg",
+    "defensive_actions_per90",
+    "dribbles_pg",
+    "dribble_success_rate",
+    "dribbled_past_pg",
+    "red_cards_pg",
+    "passes_pg",
+    "offsides_pg",
+    "penalties_won_pg",
+    "penalty_conversion_rate",
+    "opp_gk_save_rate",
+    "opp_gk_saves_pg",
+    "att_vs_gk_threat",
+    "clinical_vs_gk",
+    "volume_shot_penetration",
+    "finishing_threat_index",
+    "box_dominance_vs_gk",
+    "aggression_adjusted_threat",
+    "dribble_creativity_score",
+    "defensive_solidity",
+    "penalty_threat_score",
+    "card_risk_index",
+    "midfield_engine_score",
+    "offside_aggressiveness",
+    "defensive_vulnerability_index",
+    "progressive_carrier_score",
+    "disciplinary_pressure_index",
+    "foul_magnet_score",
+    "season_goals_pg",
+    "season_assists_pg",
+    "season_shots_pg",
+    "season_sot_pg",
+    "season_cards_pg",
+    "season_minutes_pg",
+    "season_appearances",
+    "age",
+    "age_peak_delta",
+    "height_cm",
+    "height_aerial_interaction",
+    "season_start_rate",
+    "season_dribble_pg",
+    "season_fouls_pg",
+    "season_fouls_drawn_pg",
+    "days_since_last_injury",
+    "return_from_injury_flag",
+    "chronic_injury_risk",
+    "referee_yellows_pg",
+    "referee_strictness",
+    "opp_goals_conceded_vs_fwd_pg",
+    "opp_sot_conceded_vs_fwd_pg",
+    "opp_goals_conceded_vs_mid_pg",
+    "opp_sot_conceded_vs_mid_pg",
+    "forward_matchup_score",
+    "mid_threat_vs_defense",
+    "box_threat_vs_leaky_defense",
+    "efficiency_vs_leaky_keeper",
+    "kp_vs_aggressive_defense",
+    "team_momentum_forward_matchup",
+    "set_piece_corner_matchup",
+    "creative_pressure_matchup",
+    "dribbler_vs_defensive_line",
+    "carrier_vs_press",
+    "opp_mid_fouls_pg",
+    "opp_mid_cards_pg",
+    "dribble_contact_rate",
+    "tackle_dribble_clash",
+    "card_clash_index",
+    "opp_mid_discipline",
+    "sp_taker_score",
+    "sp_receiver_score",
+    "opp_def_mean_height",
+    "height_diff_vs_opp_def",
+    "height_advantage_score",
+    "defender_sot_role_index",
+    "opp_strength_index",
+    "quality_adj_goals_pg",
+    "quality_adj_sot_pg",
+    "league_tier",
+    "league_quality",
+    "player_career_avg_quality",
+    "opp_def_player_rating_pg",
+    "opp_top_def_rating",
+    "opp_def_player_quality",
+    "context_quality_discount",
+    "quality_mismatch_goals",
+    "quality_mismatch_sot"
+   ],
+   "feature_order_sha": "626c14e5d9e81485",
+   "has_persisted_imputer": false,
+   "recipe": "<absent = legacy>",
+   "market": "sot3",
+   "metrics": {
+    "logistic": {
+     "auc": 0.8467383063755695,
+     "log_loss": 0.06380090388981376,
+     "n_train": 696684,
+     "n_test": 174172
+    },
+    "gradient_boost": {
+     "auc": 0.8512442739073974,
+     "log_loss": 0.06078325495223892,
+     "n_train": 696684,
+     "n_test": 174172
+    }
+   },
+   "model_classes": {
+    "logistic": "_PlattCalibratedModel",
+    "gradient_boost": "_PlattCalibratedModel"
+   }
+  },
+  "sot4": {
+   "name": "player_sot4",
+   "path": "models/model_player_sot4.pkl",
+   "exists": true,
+   "sha256": "960f5a9ba70fd47c89641935bdeeb2f328381bae651ab4f2bf46bcad28a761f5",
+   "keys": [
+    "feature_cols",
+    "market",
+    "metrics",
+    "models"
+   ],
+   "n_features": 138,
+   "feature_cols": [
+    "goals_pg",
+    "assists_pg",
+    "shots_pg",
+    "sot_pg",
+    "cards_pg",
+    "minutes_pg",
+    "key_passes_pg",
+    "sot_rate",
+    "starter_rate",
+    "n_prev_games",
+    "rating_pg",
+    "career_goals_pg",
+    "career_sot_pg",
+    "career_shots_pg",
+    "career_assists_pg",
+    "shot_accuracy_rate",
+    "kp_per90",
+    "goal_involvement_rate",
+    "shooting_efficiency_index",
+    "box_actions_per90",
+    "aerial_won_rate",
+    "duel_intensity_per90",
+    "fouls_drawn_per90",
+    "fouls_per90",
+    "foul_committer_ratio",
+    "card_exposure_index",
+    "sot_quality_score",
+    "opp_adjusted_shot_threat",
+    "creative_playmaker_score",
+    "team_corners_pg",
+    "set_piece_threat_score",
+    "is_home",
+    "opp_goals_conceded_pg",
+    "opp_sot_conceded_pg",
+    "team_goals_pg_roll",
+    "opp_def_aerial_win_rate",
+    "opp_def_fouls_pg",
+    "opp_def_cards_pg",
+    "aerial_matchup_score",
+    "foul_draw_matchup_score",
+    "opp_def_aggression",
+    "pos_forward",
+    "pos_midfielder",
+    "pos_defender",
+    "rest_days",
+    "goals_home_pg",
+    "goals_away_pg",
+    "shots_home_pg",
+    "shots_away_pg",
+    "sot_home_pg",
+    "sot_away_pg",
+    "tackles_pg",
+    "interceptions_pg",
+    "defensive_actions_per90",
+    "dribbles_pg",
+    "dribble_success_rate",
+    "dribbled_past_pg",
+    "red_cards_pg",
+    "passes_pg",
+    "offsides_pg",
+    "penalties_won_pg",
+    "penalty_conversion_rate",
+    "opp_gk_save_rate",
+    "opp_gk_saves_pg",
+    "att_vs_gk_threat",
+    "clinical_vs_gk",
+    "volume_shot_penetration",
+    "finishing_threat_index",
+    "box_dominance_vs_gk",
+    "aggression_adjusted_threat",
+    "dribble_creativity_score",
+    "defensive_solidity",
+    "penalty_threat_score",
+    "card_risk_index",
+    "midfield_engine_score",
+    "offside_aggressiveness",
+    "defensive_vulnerability_index",
+    "progressive_carrier_score",
+    "disciplinary_pressure_index",
+    "foul_magnet_score",
+    "season_goals_pg",
+    "season_assists_pg",
+    "season_shots_pg",
+    "season_sot_pg",
+    "season_cards_pg",
+    "season_minutes_pg",
+    "season_appearances",
+    "age",
+    "age_peak_delta",
+    "height_cm",
+    "height_aerial_interaction",
+    "season_start_rate",
+    "season_dribble_pg",
+    "season_fouls_pg",
+    "season_fouls_drawn_pg",
+    "days_since_last_injury",
+    "return_from_injury_flag",
+    "chronic_injury_risk",
+    "referee_yellows_pg",
+    "referee_strictness",
+    "opp_goals_conceded_vs_fwd_pg",
+    "opp_sot_conceded_vs_fwd_pg",
+    "opp_goals_conceded_vs_mid_pg",
+    "opp_sot_conceded_vs_mid_pg",
+    "forward_matchup_score",
+    "mid_threat_vs_defense",
+    "box_threat_vs_leaky_defense",
+    "efficiency_vs_leaky_keeper",
+    "kp_vs_aggressive_defense",
+    "team_momentum_forward_matchup",
+    "set_piece_corner_matchup",
+    "creative_pressure_matchup",
+    "dribbler_vs_defensive_line",
+    "carrier_vs_press",
+    "opp_mid_fouls_pg",
+    "opp_mid_cards_pg",
+    "dribble_contact_rate",
+    "tackle_dribble_clash",
+    "card_clash_index",
+    "opp_mid_discipline",
+    "sp_taker_score",
+    "sp_receiver_score",
+    "opp_def_mean_height",
+    "height_diff_vs_opp_def",
+    "height_advantage_score",
+    "defender_sot_role_index",
+    "opp_strength_index",
+    "quality_adj_goals_pg",
+    "quality_adj_sot_pg",
+    "league_tier",
+    "league_quality",
+    "player_career_avg_quality",
+    "opp_def_player_rating_pg",
+    "opp_top_def_rating",
+    "opp_def_player_quality",
+    "context_quality_discount",
+    "quality_mismatch_goals",
+    "quality_mismatch_sot"
+   ],
+   "feature_order_sha": "626c14e5d9e81485",
+   "has_persisted_imputer": false,
+   "recipe": "<absent = legacy>",
+   "market": "sot4",
+   "metrics": {
+    "logistic": {
+     "auc": 0.8851065533553544,
+     "log_loss": 0.01824106011907141,
+     "n_train": 692362,
+     "n_test": 173091
+    },
+    "gradient_boost": {
+     "auc": 0.8859453632861265,
+     "log_loss": 0.018243411355655492,
+     "n_train": 692362,
+     "n_test": 173091
+    }
+   },
+   "model_classes": {
+    "logistic": "_PlattCalibratedModel",
+    "gradient_boost": "_PlattCalibratedModel"
+   }
+  },
+  "cards": {
+   "name": "player_cards",
+   "path": "models/model_player_cards.pkl",
+   "exists": true,
+   "sha256": "1e8f8ce712b5746f79c437137a2fb5f73f6ecd7025eef64330543ac571ddd3bb",
+   "keys": [
+    "feature_cols",
+    "market",
+    "metrics",
+    "models"
+   ],
+   "n_features": 138,
+   "feature_cols": [
+    "goals_pg",
+    "assists_pg",
+    "shots_pg",
+    "sot_pg",
+    "cards_pg",
+    "minutes_pg",
+    "key_passes_pg",
+    "sot_rate",
+    "starter_rate",
+    "n_prev_games",
+    "rating_pg",
+    "career_goals_pg",
+    "career_sot_pg",
+    "career_shots_pg",
+    "career_assists_pg",
+    "shot_accuracy_rate",
+    "kp_per90",
+    "goal_involvement_rate",
+    "shooting_efficiency_index",
+    "box_actions_per90",
+    "aerial_won_rate",
+    "duel_intensity_per90",
+    "fouls_drawn_per90",
+    "fouls_per90",
+    "foul_committer_ratio",
+    "card_exposure_index",
+    "sot_quality_score",
+    "opp_adjusted_shot_threat",
+    "creative_playmaker_score",
+    "team_corners_pg",
+    "set_piece_threat_score",
+    "is_home",
+    "opp_goals_conceded_pg",
+    "opp_sot_conceded_pg",
+    "team_goals_pg_roll",
+    "opp_def_aerial_win_rate",
+    "opp_def_fouls_pg",
+    "opp_def_cards_pg",
+    "aerial_matchup_score",
+    "foul_draw_matchup_score",
+    "opp_def_aggression",
+    "pos_forward",
+    "pos_midfielder",
+    "pos_defender",
+    "rest_days",
+    "goals_home_pg",
+    "goals_away_pg",
+    "shots_home_pg",
+    "shots_away_pg",
+    "sot_home_pg",
+    "sot_away_pg",
+    "tackles_pg",
+    "interceptions_pg",
+    "defensive_actions_per90",
+    "dribbles_pg",
+    "dribble_success_rate",
+    "dribbled_past_pg",
+    "red_cards_pg",
+    "passes_pg",
+    "offsides_pg",
+    "penalties_won_pg",
+    "penalty_conversion_rate",
+    "opp_gk_save_rate",
+    "opp_gk_saves_pg",
+    "att_vs_gk_threat",
+    "clinical_vs_gk",
+    "volume_shot_penetration",
+    "finishing_threat_index",
+    "box_dominance_vs_gk",
+    "aggression_adjusted_threat",
+    "dribble_creativity_score",
+    "defensive_solidity",
+    "penalty_threat_score",
+    "card_risk_index",
+    "midfield_engine_score",
+    "offside_aggressiveness",
+    "defensive_vulnerability_index",
+    "progressive_carrier_score",
+    "disciplinary_pressure_index",
+    "foul_magnet_score",
+    "season_goals_pg",
+    "season_assists_pg",
+    "season_shots_pg",
+    "season_sot_pg",
+    "season_cards_pg",
+    "season_minutes_pg",
+    "season_appearances",
+    "age",
+    "age_peak_delta",
+    "height_cm",
+    "height_aerial_interaction",
+    "season_start_rate",
+    "season_dribble_pg",
+    "season_fouls_pg",
+    "season_fouls_drawn_pg",
+    "days_since_last_injury",
+    "return_from_injury_flag",
+    "chronic_injury_risk",
+    "referee_yellows_pg",
+    "referee_strictness",
+    "opp_goals_conceded_vs_fwd_pg",
+    "opp_sot_conceded_vs_fwd_pg",
+    "opp_goals_conceded_vs_mid_pg",
+    "opp_sot_conceded_vs_mid_pg",
+    "forward_matchup_score",
+    "mid_threat_vs_defense",
+    "box_threat_vs_leaky_defense",
+    "efficiency_vs_leaky_keeper",
+    "kp_vs_aggressive_defense",
+    "team_momentum_forward_matchup",
+    "set_piece_corner_matchup",
+    "creative_pressure_matchup",
+    "dribbler_vs_defensive_line",
+    "carrier_vs_press",
+    "opp_mid_fouls_pg",
+    "opp_mid_cards_pg",
+    "dribble_contact_rate",
+    "tackle_dribble_clash",
+    "card_clash_index",
+    "opp_mid_discipline",
+    "sp_taker_score",
+    "sp_receiver_score",
+    "opp_def_mean_height",
+    "height_diff_vs_opp_def",
+    "height_advantage_score",
+    "defender_sot_role_index",
+    "opp_strength_index",
+    "quality_adj_goals_pg",
+    "quality_adj_sot_pg",
+    "league_tier",
+    "league_quality",
+    "player_career_avg_quality",
+    "opp_def_player_rating_pg",
+    "opp_top_def_rating",
+    "opp_def_player_quality",
+    "context_quality_discount",
+    "quality_mismatch_goals",
+    "quality_mismatch_sot"
+   ],
+   "feature_order_sha": "626c14e5d9e81485",
+   "has_persisted_imputer": false,
+   "recipe": "<absent = legacy>",
+   "market": "cards",
+   "metrics": {
+    "logistic": {
+     "auc": 0.6163128132735944,
+     "log_loss": 0.37330068355279333,
+     "n_train": 696684,
+     "n_test": 174172
+    },
+    "gradient_boost": {
+     "auc": 0.6193800672973193,
+     "log_loss": 0.372217313904677,
+     "n_train": 696684,
+     "n_test": 174172
+    }
+   },
+   "model_classes": {
+    "logistic": "_PlattCalibratedModel",
+    "gradient_boost": "_PlattCalibratedModel"
+   }
+  }
+ }
+}

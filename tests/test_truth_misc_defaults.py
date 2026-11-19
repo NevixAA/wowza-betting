@@ -9,20 +9,26 @@ import math
 import pandas as pd
 import pytest
 
-from player_model.league_quality import LEAGUE_TIERS, league_tier
+from player_model import league_quality as LQ
+from player_model.league_quality import league_tier
 from src.api_football_ou import injury_features_from_context
 
 
-@pytest.mark.parametrize("league", ["La Liga 2", "Bundesliga 2", "Brazil Serie A", "Austrian Bundesliga"])
-def test_second_divisions_get_their_own_tier(league):
-    assert league in LEAGUE_TIERS
-    assert league_tier(league) == LEAGUE_TIERS[league]
+# dt/props (2026-11-01): the hand LEAGUE_TIERS table is gone (owner rule: measured strength or
+# missing). No measured cross-league strength exists in the repos, so every league - including the
+# second divisions finding 40 was about, and an unknown league that used to get tier 3 - is NaN.
+@pytest.mark.parametrize("league", ["La Liga 2", "Bundesliga 2", "Brazil Serie A", "Austrian Bundesliga",
+                                    "Premier League", "World Cup - Qualification Europe",
+                                    "Totally Unknown League", None])
+def test_no_hand_tier_every_league_is_missing(league):
+    assert math.isnan(league_tier(league))
+    assert not hasattr(LQ, "LEAGUE_TIERS") and not hasattr(LQ, "NATIONAL_TEAM_TIERS")
 
 
-def test_competition_variants_take_the_longest_prefix():
-    if "World Cup" in LEAGUE_TIERS:
-        assert league_tier("World Cup - Qualification Europe") == LEAGUE_TIERS["World Cup"]
-    assert league_tier("Totally Unknown League") == 3
+def test_enrich_writes_nan_quality_columns():
+    rows = [{"player_id": 1, "date": "2026-01-01", "league": "Premier League", "team": "A"}]
+    out = LQ.enrich_league_quality(rows)[0]
+    assert all(math.isnan(out[c]) for c in LQ.QUALITY_COLUMNS)
 
 
 def test_injury_flags_are_nan_when_not_fetched():

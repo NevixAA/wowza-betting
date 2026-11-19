@@ -44,6 +44,8 @@ from dataclasses import dataclass, asdict
 import numpy as np
 import pandas as pd
 
+from src import units as U
+
 log = logging.getLogger(__name__)
 
 #: The system has run without a KNOWN pipeline defect only since the September data fixes
@@ -153,7 +155,7 @@ def _cell(d: pd.DataFrame, league: str, market: str, track: str,
     weeks = (need / rate) if (rate and rate > 0 and need) else (0.0 if not need else None)
 
     base = dict(league=league, market=market, model_type=track, n=int(len(d)), matchdays=nd,
-                pnl=round(float(pnl.sum()), 2),
+                pnl=U.rnd(U.total(pnl)),
                 roi=round(roi, 4) if roi is not None else None,
                 hit=round(hit, 4) if hit is not None else None,
                 break_even=round(be, 4) if be is not None else None,
@@ -186,7 +188,11 @@ def _cell(d: pd.DataFrame, league: str, market: str, track: str,
                     reason=(f"CI includes zero [{lo:+.4f}, {hi:+.4f}] — the honest reading of "
                             f"'could be negative' is zero stake, not a small one"))
 
-    f = _kelly_fraction(lo, mean_odds or 2.0) * shrink
+    if mean_odds is None:
+        # Kelly needs the price; it used to assume even money (2.0) when the cell had none.
+        return Cell(**base, fraction=0.0, state=ACCUMULATING,
+                    reason="no readable odds on the settled bets - cannot size without a price")
+    f = _kelly_fraction(lo, mean_odds) * shrink
     f = min(f, MAX_CELL_FRACTION)
     return Cell(**base, fraction=round(f, 5), state=ALLOCATABLE,
                 reason=(f"lower-bound edge {lo:+.4f} at mean odds {mean_odds:.2f} -> "
@@ -216,7 +222,8 @@ def allocate(bets: pd.DataFrame, reliable_from: str = RELIABLE_FROM,
     cells = []
     for (lg, mk, tr), g in d.groupby(["league", "market", "model_type"]):
         cells.append(_cell(g, str(lg), str(mk), str(tr)))
-    cells.sort(key=lambda c: (-c.fraction, -(c.roi or -9)))
+    # A cell with no ROI sorts after every cell that has one (no -9 sentinel standing in for it).
+    cells.sort(key=lambda c: (-c.fraction, c.roi is None, -(c.roi if c.roi is not None else 0.0)))
 
     total = sum(c.fraction for c in cells)
     scaled = 1.0
@@ -274,7 +281,7 @@ def diagnose(d: pd.DataFrame, min_n: int = 25) -> list[dict]:
     o = pd.to_numeric(d["odds"], errors="coerce").to_numpy(dtype=float)
     ok = np.isfinite(o) & (o > 1)
     won = (d["result"].astype(str).str.upper() == "WIN").to_numpy()
-    total = float(pnl.sum())
+    total = U.total(pnl)
 
     # 1. LONGSHOT DRAG — the loss concentrated in one price band. Cheapest thing to fix, because
     #    it needs a price bound rather than a model change.
@@ -282,7 +289,7 @@ def diagnose(d: pd.DataFrame, min_n: int = 25) -> list[dict]:
         band = pd.cut(pd.Series(o[ok]), [0, 1.8, 2.2, 2.8, 3.5, 99],
                       labels=["<1.80", "1.80-2.20", "2.20-2.80", "2.80-3.50", ">3.50"])
         g = pd.DataFrame({"band": band, "pnl": pnl[ok]}).groupby("band", observed=True)["pnl"]
-        agg = g.agg(["sum", "size"]).sort_values("sum")
+        agg = g.agg(sum=U.total, size="size").sort_values("sum")
         if len(agg) and total < 0:
             worst = agg.iloc[0]
             share = float(worst["sum"]) / total if total else 0
@@ -291,7 +298,7 @@ def diagnose(d: pd.DataFrame, min_n: int = 25) -> list[dict]:
                     "cause": CAUSE_ODDS_BAND, "severity": round(share, 3),
                     "evidence": (f"{agg.index[0]} is {share:.0%} of the loss on "
                                  f"{int(worst['size'])} of {int(ok.sum())} bets "
-                                 f"({worst['sum']:+.2f}u)"),
+                                 f"({U.fmt(worst['sum'])})"),
                     "fix": "a price bound on this cell — no model change needed"})
 
     # 2. ONE-SIDED — the model only ever takes one side here, so it is a directional position
@@ -304,7 +311,7 @@ def diagnose(d: pd.DataFrame, min_n: int = 25) -> list[dict]:
             out.append({
                 "cause": CAUSE_SIDE_BIAS, "severity": round(float(vc.iloc[0]), 3),
                 "evidence": (f"{vc.iloc[0]:.0%} of bets are {side} "
-                             f"({pd.to_numeric(sub['pnl'], errors='coerce').sum():+.2f}u) — "
+                             f"({U.fmt(U.total(pd.to_numeric(sub['pnl'], errors='coerce')))}) — "
                              f"one opinion applied {len(sub)} times, not {len(sub)} opinions"),
                 "fix": "check the model's mean probability against the league base rate"})
 
@@ -343,14 +350,14 @@ def diagnose(d: pd.DataFrame, min_n: int = 25) -> list[dict]:
         days = pd.to_datetime(d["match_date"], errors="coerce", utc=True
                               ).dt.floor("D").astype("int64").to_numpy()
         lo, hi = _block_ci(pnl, days)
-        if lo is not None and lo <= 0 <= (hi or 0):
+        if lo is not None and hi is not None and lo <= 0 <= hi:
             out.append({
                 "cause": CAUSE_VARIANCE, "severity": 0.0,
                 "evidence": f"CI [{lo:+.3f}, {hi:+.3f}] spans zero on {len(d)} bets",
                 "fix": "no identified defect — keep collecting before acting"})
         else:
             out.append({"cause": CAUSE_UNKNOWN, "severity": 0.0,
-                        "evidence": f"{total:+.2f}u over {len(d)} bets, no single cause found",
+                        "evidence": f"{U.fmt(total)} over {len(d)} bets, no single cause found",
                         "fix": "inspect manually"})
 
     return sorted(out, key=lambda x: -x["severity"])

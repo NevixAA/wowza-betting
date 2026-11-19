@@ -1,0 +1,603 @@
+{
+ "root": "data-truth-100 f66ebbe5 (+ this branch)",
+ "ctx": {
+  "now_utc": "2026-11-05T14:14:09.846331+00:00",
+  "today_local": "2026-11-05",
+  "cutoff": "2026-08-10",
+  "paper_leagues": [
+   "USA MLS"
+  ],
+  "thresholds": {
+   "SNIPER_THRESHOLD": 0.12,
+   "SNIPER_THRESHOLD_OVER": 0.12,
+   "SNIPER_THRESHOLD_UNDER": 0.12
+  }
+ },
+ "counts": {
+  "MATCH": 58,
+  "MISMATCH": 0,
+  "UNIDENTIFIABLE": 0
+ },
+ "figures": [
+  {
+   "page": "00_🎯_Home.py",
+   "label": "Staked P/L (flat 1u)",
+   "figure": "staked_pnl",
+   "shown": "-15.18u",
+   "independent": -15.175,
+   "source": "bets_ledger.csv + side_bets_ledger.csv (live, settled, >= cutoff, paper leagues out) x src/staked.py labels from stake_audit.csv + stake_plan.csv",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "00_🎯_Home.py",
+   "label": "Settled staked bets",
+   "figure": "staked_n",
+   "shown": "97",
+   "independent": 97.0,
+   "source": "bets_ledger.csv + side_bets_ledger.csv (live, settled, >= cutoff, paper leagues out) x src/staked.py labels from stake_audit.csv + stake_plan.csv",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "00_🎯_Home.py",
+   "label": "Win rate — staked",
+   "figure": "staked_win_pct",
+   "shown": "40.2%",
+   "independent": 40.206186,
+   "source": "bets_ledger.csv + side_bets_ledger.csv (live, settled, >= cutoff, paper leagues out) x src/staked.py labels from stake_audit.csv + stake_plan.csv",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "00_🎯_Home.py",
+   "label": "ROI",
+   "figure": "staked_roi_pct",
+   "shown": "-15.6%",
+   "independent": -15.64433,
+   "source": "bets_ledger.csv + side_bets_ledger.csv (live, settled, >= cutoff, paper leagues out) x src/staked.py labels from stake_audit.csv + stake_plan.csv",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "00_🎯_Home.py",
+   "label": "P/L at recorded stakes",
+   "figure": "stake_pnl",
+   "shown": "-7.92u on 40.88u staked",
+   "independent": -7.9213,
+   "source": "bets_ledger.csv + side_bets_ledger.csv (live, settled, >= cutoff, paper leagues out) x src/staked.py labels from stake_audit.csv + stake_plan.csv",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "00_🎯_Home.py",
+   "label": "P/L at recorded stakes",
+   "figure": "stake_units",
+   "shown": "-7.92u on 40.88u staked",
+   "independent": 40.88,
+   "source": "bets_ledger.csv + side_bets_ledger.csv (live, settled, >= cutoff, paper leagues out) x src/staked.py labels from stake_audit.csv + stake_plan.csv",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "00_🎯_Home.py",
+   "label": "Drawdown from peak",
+   "figure": "drawdown",
+   "shown": "-21.02u",
+   "independent": -21.015,
+   "source": "bets_ledger.csv + side_bets_ledger.csv (live, settled, >= cutoff, paper leagues out) x src/staked.py labels from stake_audit.csv + stake_plan.csv",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "00_🎯_Home.py",
+   "label": "Last 7 days",
+   "figure": "last7_pnl",
+   "shown": "-1.56u · n=32",
+   "independent": -1.56,
+   "source": "bets_ledger.csv + side_bets_ledger.csv (live, settled, >= cutoff, paper leagues out) x src/staked.py labels from stake_audit.csv + stake_plan.csv",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "00_🎯_Home.py",
+   "label": "Last 7 days",
+   "figure": "last7_n",
+   "shown": "-1.56u · n=32",
+   "independent": 32.0,
+   "source": "bets_ledger.csv + side_bets_ledger.csv (live, settled, >= cutoff, paper leagues out) x src/staked.py labels from stake_audit.csv + stake_plan.csv",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "00_🎯_Home.py",
+   "label": "Active tips",
+   "figure": "plan_active",
+   "shown": "18",
+   "independent": 18.0,
+   "source": "stake_plan.csv rows dated today (UTC) or later x src/staked.plan_staked",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "00_🎯_Home.py",
+   "label": "Upcoming staked tips (O/U 2.5)",
+   "figure": "plan_up_ou",
+   "shown": "15",
+   "independent": 15.0,
+   "source": "stake_plan.csv rows dated today (UTC) or later x src/staked.plan_staked",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "00_🎯_Home.py",
+   "label": "Paper / no stake",
+   "figure": "plan_paper",
+   "shown": "38",
+   "independent": 38.0,
+   "source": "stake_plan.csv rows dated today (UTC) or later x src/staked.plan_staked",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "00_🎯_Home.py",
+   "label": "Shadow engine BET",
+   "figure": "plan_shadow_bet",
+   "shown": "0 of 56",
+   "independent": 0.0,
+   "source": "stake_plan.csv rows dated today (UTC) or later x src/staked.plan_staked",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "00_🎯_Home.py",
+   "label": "Shadow engine BET",
+   "figure": "plan_shadow_n",
+   "shown": "0 of 56",
+   "independent": 56.0,
+   "source": "stake_plan.csv rows dated today (UTC) or later x src/staked.plan_staked",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "00_🎯_Home.py",
+   "label": "System health",
+   "figure": "health_overall",
+   "shown": "WARN",
+   "independent": "WARN",
+   "source": "system_health.json checks[] recounted",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "00_🎯_Home.py",
+   "label": "Not staked",
+   "figure": "not_staked_pnl",
+   "shown": "Not staked (every other settled tip, any tier) P/L: **-8.19u** · 1552 tips, not bets — tracked, never in the staked P/L; 1204 of them predate the first recorded policy decision.",
+   "independent": -8.19,
+   "source": "bets_ledger.csv + side_bets_ledger.csv (live, settled, >= cutoff, paper leagues out) x src/staked.py labels from stake_audit.csv + stake_plan.csv",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "00_🎯_Home.py",
+   "label": "Not staked",
+   "figure": "not_staked_n",
+   "shown": "Not staked (every other settled tip, any tier) P/L: **-8.19u** · 1552 tips, not bets — tracked, never in the staked P/L; 1204 of them predate the first recorded policy decision.",
+   "independent": 1552.0,
+   "source": "bets_ledger.csv + side_bets_ledger.csv (live, settled, >= cutoff, paper leagues out) x src/staked.py labels from stake_audit.csv + stake_plan.csv",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "00_🎯_Home.py",
+   "label": "Not staked",
+   "figure": "not_staked_pre_policy_n",
+   "shown": "Not staked (every other settled tip, any tier) P/L: **-8.19u** · 1552 tips, not bets — tracked, never in the staked P/L; 1204 of them predate the first recorded policy decision.",
+   "independent": 1204.0,
+   "source": "bets_ledger.csv + side_bets_ledger.csv (live, settled, >= cutoff, paper leagues out) x src/staked.py labels from stake_audit.csv + stake_plan.csv",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "00_🎯_Home.py",
+   "label": "Player rows zeros_unverified",
+   "figure": "truth_zeros_unverified",
+   "shown": "949,250",
+   "independent": 949250.0,
+   "source": "output/corrections/history_cup_unproven_rows.csv, history_score_refused.csv (rows); output/collect/player_history_refetch_audit.json (plan.rows_to_verify - stored_rows)",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "00_🎯_Home.py",
+   "label": "Unproven cup rows",
+   "figure": "truth_cup_unproven",
+   "shown": "410",
+   "independent": 410.0,
+   "source": "output/corrections/history_cup_unproven_rows.csv, history_score_refused.csv (rows); output/collect/player_history_refetch_audit.json (plan.rows_to_verify - stored_rows)",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "00_🎯_Home.py",
+   "label": "Refused scores",
+   "figure": "truth_scores_refused",
+   "shown": "6",
+   "independent": 6.0,
+   "source": "output/corrections/history_cup_unproven_rows.csv, history_score_refused.csv (rows); output/collect/player_history_refetch_audit.json (plan.rows_to_verify - stored_rows)",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "0_🏠_Overview.py",
+   "label": "Staked P/L",
+   "figure": "staked_pnl",
+   "shown": "-15.18u",
+   "independent": -15.175,
+   "source": "bets_ledger.csv + side_bets_ledger.csv (live, settled, >= cutoff, paper leagues out) x src/staked.py labels from stake_audit.csv + stake_plan.csv",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "0_🏠_Overview.py",
+   "label": "Staked bets",
+   "figure": "staked_n",
+   "shown": "97",
+   "independent": 97.0,
+   "source": "bets_ledger.csv + side_bets_ledger.csv (live, settled, >= cutoff, paper leagues out) x src/staked.py labels from stake_audit.csv + stake_plan.csv",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "0_🏠_Overview.py",
+   "label": "P/L at recorded stakes",
+   "figure": "stake_pnl",
+   "shown": "-7.92u",
+   "independent": -7.9213,
+   "source": "bets_ledger.csv + side_bets_ledger.csv (live, settled, >= cutoff, paper leagues out) x src/staked.py labels from stake_audit.csv + stake_plan.csv",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "0_🏠_Overview.py",
+   "label": "new-format",
+   "figure": "track_new_format_pnl",
+   "shown": "-15.18u",
+   "independent": -15.175,
+   "source": "bets_ledger.csv + side_bets_ledger.csv (live, settled, >= cutoff, paper leagues out) x src/staked.py labels from stake_audit.csv + stake_plan.csv",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "0_🏠_Overview.py",
+   "label": "standard",
+   "figure": "track_standard_pnl",
+   "shown": "+0.00u",
+   "independent": 0.0,
+   "source": "bets_ledger.csv + side_bets_ledger.csv (live, settled, >= cutoff, paper leagues out) x src/staked.py labels from stake_audit.csv + stake_plan.csv",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "0_🏠_Overview.py",
+   "label": "Staked",
+   "figure": "track_new_format_n",
+   "shown": "97",
+   "independent": 97.0,
+   "source": "bets_ledger.csv + side_bets_ledger.csv (live, settled, >= cutoff, paper leagues out) x src/staked.py labels from stake_audit.csv + stake_plan.csv",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "0_🏠_Overview.py",
+   "label": "Hit",
+   "figure": "track_new_format_hit_pct",
+   "shown": "40.2%",
+   "independent": 40.206186,
+   "source": "bets_ledger.csv + side_bets_ledger.csv (live, settled, >= cutoff, paper leagues out) x src/staked.py labels from stake_audit.csv + stake_plan.csv",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "0_🏠_Overview.py",
+   "label": "Break-even",
+   "figure": "track_new_format_be_pct",
+   "shown": "47.2%",
+   "independent": 47.186678,
+   "source": "bets_ledger.csv + side_bets_ledger.csv (live, settled, >= cutoff, paper leagues out) x src/staked.py labels from stake_audit.csv + stake_plan.csv",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "0_🏠_Overview.py",
+   "label": "ROI",
+   "figure": "track_new_format_roi_pct",
+   "shown": "-15.6%",
+   "independent": -15.64433,
+   "source": "bets_ledger.csv + side_bets_ledger.csv (live, settled, >= cutoff, paper leagues out) x src/staked.py labels from stake_audit.csv + stake_plan.csv",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "1_📊_Dashboard.py",
+   "label": "P/L — all staked markets (flat 1u)",
+   "figure": "staked_pnl",
+   "shown": "-15.18u",
+   "independent": -15.175,
+   "source": "bets_ledger.csv + side_bets_ledger.csv (live, settled, >= cutoff, paper leagues out) x src/staked.py labels from stake_audit.csv + stake_plan.csv",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "1_📊_Dashboard.py",
+   "label": "Excluding O/U 2.5",
+   "figure": "staked_pnl_ex_ou25",
+   "shown": "-2.75u",
+   "independent": -2.745,
+   "source": "bets_ledger.csv + side_bets_ledger.csv (live, settled, >= cutoff, paper leagues out) x src/staked.py labels from stake_audit.csv + stake_plan.csv",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "1_📊_Dashboard.py",
+   "label": "Settled bets",
+   "figure": "staked_n",
+   "shown": "97",
+   "independent": 97.0,
+   "source": "bets_ledger.csv + side_bets_ledger.csv (live, settled, >= cutoff, paper leagues out) x src/staked.py labels from stake_audit.csv + stake_plan.csv",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "5_🎯_Success_Rates.py",
+   "label": "Settled observations",
+   "figure": "success_obs",
+   "shown": "39",
+   "independent": 39.0,
+   "source": "bets_ledger.csv + side_bets_ledger.csv (live, settled, >= cutoff, paper leagues out) x src/staked.py labels from stake_audit.csv + stake_plan.csv",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "9_🎓_Model_Performance.py",
+   "label": "Overconfident by",
+   "figure": "cal_gap_pp",
+   "shown": "+6.41pp",
+   "independent": 6.410782,
+   "source": "bets_ledger (edge_pct/100 + 1/odds) + side_bets_ledger (model_prob), WIN/LOSS, >= cutoff",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "9_🎓_Model_Performance.py",
+   "label": "Model claimed",
+   "figure": "cal_claimed",
+   "shown": "0.5437",
+   "independent": 0.543693,
+   "source": "bets_ledger (edge_pct/100 + 1/odds) + side_bets_ledger (model_prob), WIN/LOSS, >= cutoff",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "9_🎓_Model_Performance.py",
+   "label": "Actually happened",
+   "figure": "cal_realised",
+   "shown": "0.4796",
+   "independent": 0.479586,
+   "source": "bets_ledger (edge_pct/100 + 1/odds) + side_bets_ledger (model_prob), WIN/LOSS, >= cutoff",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "9_🎓_Model_Performance.py",
+   "label": "Settled sample",
+   "figure": "cal_n",
+   "shown": "1,641",
+   "independent": 1641.0,
+   "source": "bets_ledger (edge_pct/100 + 1/odds) + side_bets_ledger (model_prob), WIN/LOSS, >= cutoff",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "11_👤_Player_Props.py",
+   "label": "Win rate",
+   "figure": "props_win_pct",
+   "shown": "9%",
+   "independent": 8.62069,
+   "source": "player_ledger.csv SNIPER + MARKSMAN, WIN/LOSS",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "11_👤_Player_Props.py",
+   "label": "Settled",
+   "figure": "props_n",
+   "shown": "116",
+   "independent": 116.0,
+   "source": "player_ledger.csv SNIPER + MARKSMAN, WIN/LOSS",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "11_👤_Player_Props.py",
+   "label": "Flat ROI (1u, paper)",
+   "figure": "props_roi_pct",
+   "shown": "-57.8%",
+   "independent": -57.758621,
+   "source": "player_ledger.csv SNIPER + MARKSMAN, WIN/LOSS",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "11_👤_Player_Props.py",
+   "label": "Includes rows flagged",
+   "figure": "props_flagged_sentinel",
+   "shown": "Includes rows flagged in output/corrections (kept, not removed): 79 of 116 in props_sentinel_prob.csv (model probability was a cap value).",
+   "independent": 79.0,
+   "source": "player_ledger.csv SNIPER + MARKSMAN, WIN/LOSS",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "17_🏟️_Leagues.py",
+   "label": "P/L",
+   "figure": "leagues_pnl",
+   "shown": "-15.18u",
+   "independent": -15.175,
+   "source": "bets_ledger.csv + side_bets_ledger.csv (live, settled, >= cutoff, paper leagues out) x src/staked.py labels from stake_audit.csv + stake_plan.csv",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "17_🏟️_Leagues.py",
+   "label": "Staked tips settled",
+   "figure": "leagues_n",
+   "shown": "97",
+   "independent": 97.0,
+   "source": "bets_ledger.csv + side_bets_ledger.csv (live, settled, >= cutoff, paper leagues out) x src/staked.py labels from stake_audit.csv + stake_plan.csv",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "17_🏟️_Leagues.py",
+   "label": "Hit",
+   "figure": "leagues_hit_pct",
+   "shown": "40.2%",
+   "independent": 40.206186,
+   "source": "bets_ledger.csv + side_bets_ledger.csv (live, settled, >= cutoff, paper leagues out) x src/staked.py labels from stake_audit.csv + stake_plan.csv",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "19_🩺_System_Health.py",
+   "label": "GREEN",
+   "figure": "health_GREEN",
+   "shown": "20",
+   "independent": 20.0,
+   "source": "system_health.json checks[] recounted",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "19_🩺_System_Health.py",
+   "label": "AMBER",
+   "figure": "health_AMBER",
+   "shown": "1",
+   "independent": 1.0,
+   "source": "system_health.json checks[] recounted",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "19_🩺_System_Health.py",
+   "label": "RED",
+   "figure": "health_RED",
+   "shown": "0",
+   "independent": 0.0,
+   "source": "system_health.json checks[] recounted",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "19_🩺_System_Health.py",
+   "label": "NO_DATA",
+   "figure": "health_NO_DATA",
+   "shown": "0",
+   "independent": 0.0,
+   "source": "system_health.json checks[] recounted",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "19_🩺_System_Health.py",
+   "label": "Contract violations (new)",
+   "figure": "health_contract_new",
+   "shown": "2",
+   "independent": 2.0,
+   "source": "system_health.json checks[] recounted",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "19_🩺_System_Health.py",
+   "label": "Known (baseline)",
+   "figure": "health_contract_known",
+   "shown": "6",
+   "independent": 6.0,
+   "source": "system_health.json checks[] recounted",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "22_🏭_Production.py",
+   "label": "Tips sized",
+   "figure": "plan_tips",
+   "shown": "56",
+   "independent": 56.0,
+   "source": "stake_plan.csv rows dated today (UTC) or later x src/staked.plan_staked",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "22_🏭_Production.py",
+   "label": "With a stake",
+   "figure": "plan_active",
+   "shown": "18",
+   "independent": 18.0,
+   "source": "stake_plan.csv rows dated today (UTC) or later x src/staked.plan_staked",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "22_🏭_Production.py",
+   "label": "Days covered",
+   "figure": "plan_days",
+   "shown": "5",
+   "independent": 5.0,
+   "source": "stake_plan.csv rows dated today (UTC) or later x src/staked.plan_staked",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "21_📡_Market_Intelligence.py",
+   "label": "Suppressed tips (all time)",
+   "figure": "intel_suppressed",
+   "shown": "5",
+   "independent": 5.0,
+   "source": "direction_conflicts.csv rows",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "4_ℹ️_Model_Info.py",
+   "label": "Global Big gap",
+   "figure": "cfg_SNIPER_THRESHOLD",
+   "shown": "12%",
+   "independent": 12.0,
+   "source": "config.py thresholds",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "4_ℹ️_Model_Info.py",
+   "label": "OVER threshold",
+   "figure": "cfg_SNIPER_THRESHOLD_OVER",
+   "shown": "12%",
+   "independent": 12.0,
+   "source": "config.py thresholds",
+   "status": "MATCH",
+   "why": ""
+  },
+  {
+   "page": "4_ℹ️_Model_Info.py",
+   "label": "UNDER threshold",
+   "figure": "cfg_SNIPER_THRESHOLD_UNDER",
+   "shown": "12%",
+   "independent": 12.0,
+   "source": "config.py thresholds",
+   "status": "MATCH",
+   "why": ""
+  }
+ ]
+}

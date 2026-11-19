@@ -21,7 +21,6 @@ import os
 import re
 import sys
 import time
-import unicodedata
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Optional
@@ -162,33 +161,18 @@ def _get(endpoint: str, params: dict, ttl_h: float = 24.0) -> Optional[dict]:
         return None
 
 
-# ── Name normalisation ────────────────────────────────────────────────────────
+# ── Club identity ─────────────────────────────────────────────────────────────
+#
+# Board (OddsAPI) club names are matched to API-Football's names ONLY through the canonical,
+# league-scoped resolver src.team_names.resolve (2026-11-02). The old _norm_name key stripped
+# suffixes like "SP"/"MG"/"RJ" ("Atletico-MG" and "Atletico GO" both lost their state tag) and
+# carried its own alias dict (_POST_NORM_ALIASES, now in the team_names alias store). Within one
+# API-Football payload names are compared as API-Football wrote them; players by player id.
 
-_STRIP_SUFFIXES = re.compile(
-    r"\b(FC|CF|SC|BK|IF|IFK|SK|FK|AC|AS|SS|SD|CD|UD|RJ|SP|MG|RS|PA|BA|CE|EC|"
-    r"CA|CR|SE|AF|GD|BS|SL|RFC|AFC|FBC|JFC)\b",
-    re.IGNORECASE,
-)
-
-# Known cross-source aliases: applied after suffix stripping and lowercasing.
-# Keys and values are already normalised (lowercase, no accents).
-_POST_NORM_ALIASES: dict[str, str] = {
-    "vasco da gama": "vasco",
-    "rb bragantino": "bragantino",
-    "red bull bragantino": "bragantino",
-    "atlanta united": "atlanta utd",
-    "internazionale": "inter",
-    "sporting cp": "sporting",
-}
-
-
-def _norm_name(name: str) -> str:
-    """Lowercase, strip accents, remove common football suffixes."""
-    name = unicodedata.normalize("NFKD", str(name)).encode("ascii", "ignore").decode()
-    name = _STRIP_SUFFIXES.sub("", name)
-    name = re.sub(r"\s+", " ", name).strip().lower()
-    name = name.rstrip("-").strip()   # "Atletico-MG" → "atletico-" → "atletico"
-    return _POST_NORM_ALIASES.get(name, name)
+def _resolve_club(name: str, af_names) -> Optional[str]:
+    """The ONE API-Football name in `af_names` (one league) that is provably `name`, else None."""
+    from src.team_names import resolve
+    return resolve(str(name or ""), sorted({str(n) for n in af_names if n}))
 
 
 def _to_int(val) -> Optional[int]:
@@ -203,6 +187,13 @@ def _to_float(val) -> Optional[float]:
         return float(val) if val is not None else None
     except (ValueError, TypeError):
         return None
+
+
+def _pct(val) -> Optional[float]:
+    """'55%' -> 55.0; None/empty/unparseable -> None (never 0)."""
+    if val is None:
+        return None
+    return _to_float(str(val).replace("%", "").strip() or None)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -243,11 +234,13 @@ def get_fixture_statistics(fixture_id: int) -> dict:
     if len(response) < 2:
         return {}
 
-    def _extract(team_block: dict) -> dict:
-        return {s["type"]: s.get("value") for s in team_block.get("statistics", [])}
+    # Owner's team null rule (2026-11-04, src/af_team_stats): in an ANSWERED team block a null
+    # COUNT (shots, SoT, corners, fouls, inside-box, blocked) is 0; an unanswered block or an
+    # unlisted type is None. xG and possession are not counts: a null stays None.
+    from src.af_team_stats import team_values
 
-    home_s = _extract(response[0])
-    away_s = _extract(response[1])
+    home_s = team_values(response[0].get("statistics") or [])
+    away_s = team_values(response[1].get("statistics") or [])
     return {
         "home_shots":      _to_int(home_s.get("Total Shots")),
         "away_shots":      _to_int(away_s.get("Total Shots")),
@@ -261,8 +254,9 @@ def get_fixture_statistics(fixture_id: int) -> dict:
         "away_xg":         _to_float(away_s.get("expected_goals")),
         "home_insidebox":  _to_int(home_s.get("Shots insidebox")),
         "away_insidebox":  _to_int(away_s.get("Shots insidebox")),
-        "home_possession": _to_float(str(home_s.get("Ball Possession") or "0").replace("%", "") or None),
-        "away_possession": _to_float(str(away_s.get("Ball Possession") or "0").replace("%", "") or None),
+        # absent possession -> None (was "0" -> 0%, an invented value)
+        "home_possession": _pct(home_s.get("Ball Possession")),
+        "away_possession": _pct(away_s.get("Ball Possession")),
         "home_blocked":    _to_int(home_s.get("Blocked Shots")),
         "away_blocked":    _to_int(away_s.get("Blocked Shots")),
     }
@@ -271,10 +265,10 @@ def get_fixture_statistics(fixture_id: int) -> dict:
 def fetch_shots_for_league(league_id: int, season: str, league_name: str = "") -> pd.DataFrame:
     """
     Fetch match stats (shots, corners, fouls) for a league/season from cache.
-    Returns DataFrame: date(datetime), home_team, away_team,
+    Returns DataFrame: date(datetime), home_team, away_team (API-Football spellings),
                        home_shots, away_shots, home_sot, away_sot,
-                       home_corners, away_corners, home_fouls, away_fouls,
-                       _home_norm, _away_norm  (for matching).
+                       home_corners, away_corners, home_fouls, away_fouls.
+    Callers match the clubs with src.team_names.resolve within the league.
     """
     fixtures = get_completed_fixtures(league_id, season)
     if not fixtures:
@@ -323,8 +317,6 @@ def fetch_shots_for_league(league_id: int, season: str, league_name: str = "") -
                 "home_xg", "away_xg", "home_insidebox", "away_insidebox",
                 "home_possession", "away_possession", "home_blocked", "away_blocked"]:
         df[col] = pd.to_numeric(df[col], errors="coerce")
-    df["_home_norm"] = df["home_team"].apply(_norm_name)
-    df["_away_norm"] = df["away_team"].apply(_norm_name)
 
     print(f"[api_football_ou] {len(df)} fixtures with shot data for {label}")
     return df
@@ -334,8 +326,64 @@ def fetch_shots_for_league(league_id: int, season: str, league_name: str = "") -
 # PHASE 1b — Fixture results for leagues not on football-data.co.uk
 # ─────────────────────────────────────────────────────────────────────────────
 
+#: API-Football statuses of a match decided after extra time / on penalties. For these `goals` holds
+#: the 120-minute score; `score.fulltime` holds the 90-minute one (regular time + stoppage).
+EXTRA_TIME_STATUSES = ("AET", "PEN")
+
+
+def _results_ttl(season, league_name: str) -> float:
+    """A finished season keeps a year; the current one (or an unknown league) is refreshed every 6 h."""
+    if league_name:
+        from src.season_resolver import resolve_api_season, is_known
+        cur = resolve_api_season(league_name)
+        if is_known(cur) and str(season) != str(cur):
+            return 8760
+    return 6
+
+
+def _result_rows(data: dict, with_status: bool) -> list[dict]:
+    """One row per finished fixture of an API-Football /fixtures response.
+
+    SETTLEMENT IS ON 90 MINUTES (owner rule): for an AET / PEN fixture the goals are taken from
+    score.fulltime (the 90-minute score), never from `goals` (120 minutes). An extra-time fixture
+    without a 90-minute score is skipped - never filled from the 120-minute total."""
+    rows = []
+    for f in data.get("response", []):
+        fix   = f.get("fixture") or {}
+        teams = f.get("teams") or {}
+        goals = f.get("goals") or {}
+        score = f.get("score") or {}
+        ht    = score.get("halftime") or {}
+        status = (fix.get("status") or {}).get("short") or "FT"
+        src = (score.get("fulltime") or {}) if status in EXTRA_TIME_STATUSES else goals
+        home_g, away_g = src.get("home"), src.get("away")
+        if home_g is None or away_g is None:
+            continue
+        ht_home, ht_away = ht.get("home"), ht.get("away")
+        row = {
+            "date":          str(fix.get("date", ""))[:10],
+            "home_team":     (teams.get("home") or {}).get("name", ""),
+            "away_team":     (teams.get("away") or {}).get("name", ""),
+            "home_goals":    int(home_g),
+            "away_goals":    int(away_g),
+            "ht_home_goals": int(ht_home) if ht_home is not None else None,
+            "ht_away_goals": int(ht_away) if ht_away is not None else None,
+        }
+        if with_status:
+            row["status"] = status
+            row["fixture_id"] = fix.get("id")
+        rows.append(row)
+    return rows
+
+
+def _results_frame(rows: list[dict]) -> pd.DataFrame:
+    df = pd.DataFrame(rows)
+    df["date"] = pd.to_datetime(df["date"], errors="coerce")
+    return df[df["date"].notna() & df["home_team"].notna() & df["away_team"].notna()]
+
+
 def fetch_league_fixture_results(
-    league_id: int, season: str, league_name: str = ""
+    league_id: int, season: str, league_name: str = "", statuses: str = "FT"
 ) -> pd.DataFrame:
     """
     Fetch completed fixture results (goals + HT) for a league/season.
@@ -345,88 +393,82 @@ def fetch_league_fixture_results(
     runs by actions/cache), so its history stopped at the first fetch (Data Truth audit finding 35).
     A finished season keeps the year; the current one (or an unknown league) is refreshed every 6 h.
 
+    `statuses` is API-Football's status filter. The default 'FT' keeps the training loader's
+    frame exactly as it was. Settlement passes 'FT-AET-PEN': extra-time fixtures then carry their
+    90-minute score (score.fulltime) plus `status` and `fixture_id` columns.
+
     Returns DataFrame: date, home_team, away_team,
-                       home_goals, away_goals, ht_home_goals, ht_away_goals
+                       home_goals, away_goals, ht_home_goals, ht_away_goals [, status, fixture_id]
     """
-    ttl = 6
-    if league_name:
-        from src.season_resolver import resolve_api_season, is_known
-        cur = resolve_api_season(league_name)
-        if is_known(cur) and str(season) != str(cur):
-            ttl = 8760
-    data = _get("fixtures", {"league": league_id, "season": season, "status": "FT"}, ttl_h=ttl)
+    ttl = _results_ttl(season, league_name)
+    data = _get("fixtures", {"league": league_id, "season": season, "status": statuses}, ttl_h=ttl)
     if not data:
         return pd.DataFrame()
 
-    rows = []
-    for f in data.get("response", []):
-        fix   = f.get("fixture", {})
-        teams = f.get("teams", {})
-        goals = f.get("goals", {})
-        score = f.get("score", {})
-        ht    = score.get("halftime", {})
-
-        home_g = goals.get("home")
-        away_g = goals.get("away")
-        if home_g is None or away_g is None:
-            continue
-
-        ht_home = ht.get("home")
-        ht_away = ht.get("away")
-
-        rows.append({
-            "date":          str(fix.get("date", ""))[:10],
-            "home_team":     teams.get("home", {}).get("name", ""),
-            "away_team":     teams.get("away", {}).get("name", ""),
-            "home_goals":    int(home_g),
-            "away_goals":    int(away_g),
-            "ht_home_goals": int(ht_home) if ht_home is not None else None,
-            "ht_away_goals": int(ht_away) if ht_away is not None else None,
-        })
-
+    rows = _result_rows(data, with_status=statuses != "FT")
     if not rows:
         return pd.DataFrame()
 
     label = league_name or str(league_id)
     print(f"[api_football_ou] {label} season {season}: {len(rows)} fixture results loaded")
+    return _results_frame(rows)
 
-    df = pd.DataFrame(rows)
-    df["date"] = pd.to_datetime(df["date"], errors="coerce")
-    df = df[df["date"].notna() & df["home_team"].notna() & df["away_team"].notna()]
-    return df
+
+def fetch_league_extra_time_results(
+    league_id: int, season: str, league_name: str = ""
+) -> Optional[pd.DataFrame]:
+    """The league/season's fixtures decided after extra time or on penalties (status AET / PEN),
+    each with its 90-minute score. The KNOCKOUT GUARD of update_results reads this before it lets
+    a football-data / OddsAPI score settle a fixture: those sources do not say whether a score is
+    90 or 120 minutes (MLS play-offs, Argentina knockouts).
+
+    None when the list could not be fetched (no key, HTTP error) - the caller must not read that
+    as "no extra-time fixtures". An empty frame means the provider answered with none."""
+    if not _KEY:
+        return None
+    data = _get("fixtures", {"league": league_id, "season": season, "status": "AET-PEN"},
+                ttl_h=_results_ttl(season, league_name))
+    if data is None or data.get("errors"):           # quota / rate-limit answers come as HTTP 200
+        return None
+    rows = [r for r in _result_rows(data, with_status=True) if r["status"] in EXTRA_TIME_STATUSES]
+    if not rows:
+        return pd.DataFrame(columns=["date", "home_team", "away_team", "home_goals", "away_goals",
+                                     "ht_home_goals", "ht_away_goals", "status", "fixture_id"])
+    return _results_frame(rows)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
 # PHASE 2 — Injury features
 # ─────────────────────────────────────────────────────────────────────────────
 
-def get_top_scorers(league_id: int, season: str) -> dict[str, list[str]]:
+def get_top_scorers(league_id: int, season: str) -> dict[str, list[int]]:
     """
     Top 3 goal scorers per team for the league/season.
-    Returns {team_name_norm: [player_norm, ...]}  — cached 7 days.
+    Returns {API-Football team name: [player id, ...]}  — cached 7 days. A scorer without a
+    player id or team is skipped (never matched by name).
     """
     data = _get("players/topscorers", {"league": league_id, "season": season}, ttl_h=168)
     if not data:
         return {}
 
-    team_scorers: dict[str, list[str]] = {}
+    team_scorers: dict[str, list[int]] = {}
     for entry in data.get("response", []):
-        player_norm = _norm_name(entry.get("player", {}).get("name", ""))
-        stats_list  = entry.get("statistics", [])
-        if not stats_list:
+        pid        = (entry.get("player") or {}).get("id")
+        stats_list = entry.get("statistics", [])
+        if pid is None or not stats_list:
             continue
-        team_norm = _norm_name(stats_list[0].get("team", {}).get("name", ""))
-        if team_norm not in team_scorers:
-            team_scorers[team_norm] = []
-        if len(team_scorers[team_norm]) < 3:
-            team_scorers[team_norm].append(player_norm)
+        team = (stats_list[0].get("team") or {}).get("name")
+        if not team:
+            continue
+        if len(team_scorers.setdefault(team, [])) < 3:
+            team_scorers[team].append(pid)
 
     return team_scorers
 
 
 def get_upcoming_fixture_ids(league_id: int, season: str, next_n: int = 20) -> dict[tuple, int]:
     """
-    Upcoming fixture IDs keyed by (home_norm, away_norm, date_str).
+    Upcoming fixture IDs keyed by (home, away, date_str) as API-Football names the clubs.
     Cached 4 h.
     """
     data = _get("fixtures", {"league": league_id, "season": season, "next": next_n}, ttl_h=4)
@@ -437,29 +479,31 @@ def get_upcoming_fixture_ids(league_id: int, season: str, next_n: int = 20) -> d
     for f in data.get("response", []):
         fix   = f.get("fixture", {})
         teams = f.get("teams", {})
-        fix_id    = fix.get("id")
-        date_str  = str(fix.get("date", ""))[:10]
-        home_norm = _norm_name(teams.get("home", {}).get("name", ""))
-        away_norm = _norm_name(teams.get("away", {}).get("name", ""))
-        result[(home_norm, away_norm, date_str)] = fix_id
+        fix_id   = fix.get("id")
+        date_str = str(fix.get("date", ""))[:10]
+        home = teams.get("home", {}).get("name")
+        away = teams.get("away", {}).get("name")
+        if fix_id and home and away and len(date_str) == 10:
+            result[(home, away, date_str)] = fix_id
 
     return result
 
 
-def get_injuries_for_fixture(fixture_id: int) -> dict[str, list[str]]:
+def get_injuries_for_fixture(fixture_id: int) -> dict[str, list[int]]:
     """
     Injured/suspended players for a specific fixture.
-    Returns {team_norm: [player_norm, ...]}  — cached 2 h.
+    Returns {API-Football team name: [player id, ...]}  — cached 2 h.
     """
     data = _get("injuries", {"fixture": fixture_id}, ttl_h=2)
     if not data:
         return {}
 
-    injuries: dict[str, list[str]] = {}
+    injuries: dict[str, list[int]] = {}
     for entry in data.get("response", []):
-        team_norm   = _norm_name(entry.get("team", {}).get("name", ""))
-        player_norm = _norm_name(entry.get("player", {}).get("name", ""))
-        injuries.setdefault(team_norm, []).append(player_norm)
+        team = (entry.get("team") or {}).get("name")
+        pid  = (entry.get("player") or {}).get("id")
+        if team and pid is not None:
+            injuries.setdefault(team, []).append(pid)
 
     return injuries
 
@@ -469,11 +513,11 @@ def get_league_injury_context(league_id: int, season: str) -> dict:
     Pre-fetch everything needed for injury features for all upcoming fixtures
     in one league.  Call once per league, reuse for every row.
 
-    Returns:
+    Returns (API-Football club names, player ids):
         {
-            "top_scorers":  {team_norm: [player_norm, ...]},
-            "fixture_ids":  {(home_norm, away_norm, date_str): fixture_id},
-            "injuries":     {fixture_id: {team_norm: [player_norm, ...]}},
+            "top_scorers":  {team: [player_id, ...]},
+            "fixture_ids":  {(home, away, date_str): fixture_id},
+            "injuries":     {fixture_id: {team: [player_id, ...]}},
         }
     """
     ctx: dict = {
@@ -503,22 +547,25 @@ def injury_features_from_context(
     if not ctx:
         return unknown
 
-    home_norm = _norm_name(home_team)
-    away_norm = _norm_name(away_team)
-    date_str  = str(match_date)[:10]
-
-    fix_id = ctx["fixture_ids"].get((home_norm, away_norm, date_str))
-    if fix_id is None:
+    date_str = str(match_date)[:10]
+    # The board clubs resolved (src.team_names.resolve) among THAT date's API-Football fixtures
+    # of the league; exactly one fixture or unknown.
+    day = [(h, a, fid) for (h, a, d), fid in ctx.get("fixture_ids", {}).items() if d == date_str]
+    rh = _resolve_club(home_team, [h for h, _, _ in day])
+    ra = _resolve_club(away_team, [a for _, a, _ in day])
+    hits = [(h, a, fid) for h, a, fid in day if h == rh and a == ra] if rh and ra else []
+    if len(hits) != 1:
         return unknown
+    af_home, af_away, fix_id = hits[0]
     out = {"key_attacker_absent_home": 0.0, "key_attacker_absent_away": 0.0}
 
     injuries     = ctx["injuries"].get(fix_id, {})
     top_scorers  = ctx["top_scorers"]
 
-    home_scorers = top_scorers.get(home_norm, [])
-    away_scorers = top_scorers.get(away_norm, [])
-    home_injured = injuries.get(home_norm, [])
-    away_injured = injuries.get(away_norm, [])
+    home_scorers = top_scorers.get(af_home, [])
+    away_scorers = top_scorers.get(af_away, [])
+    home_injured = injuries.get(af_home, [])
+    away_injured = injuries.get(af_away, [])
 
     if home_scorers and any(p in home_injured for p in home_scorers):
         out["key_attacker_absent_home"] = 1.0
@@ -535,61 +582,25 @@ def injury_features_from_context(
 # ~40 calls/day (2 per upcoming match × ~20 matches/day). TTL: 24h.
 # ─────────────────────────────────────────────────────────────────────────────
 
-_TEAM_ID_CACHE_PATH = config.BASE_DIR / "team_id_cache.json"
-
-
-def _load_team_id_cache() -> dict:
-    try:
-        return json.loads(_TEAM_ID_CACHE_PATH.read_text(encoding="utf-8"))
-    except Exception:
-        return {}
-
-
-def _save_team_id_cache(cache: dict) -> None:
-    try:
-        _TEAM_ID_CACHE_PATH.write_text(
-            json.dumps(cache, ensure_ascii=False, indent=2), encoding="utf-8"
-        )
-    except Exception:
-        pass
-
-
 def _resolve_team_id(
     team_name: str, league_id: int, season: str
 ) -> Optional[int]:
     """
-    Resolve API-Football team ID by name within a league/season.
-    Checks persistent local cache first (zero API cost on cache hit).
-    Falls back to GET /teams?league=&season= (1 call per league-season, not per team).
-    Results cached permanently — team IDs don't change.
+    Resolve API-Football team ID by name within a league/season: the league-season's team list
+    (GET /teams?league=&season=, one call per league-season, disk-cached a year by _get) and the
+    canonical resolver src.team_names.resolve over its names. None when no team is provably the
+    club. (The old persistent team_id_cache.json was keyed by the _norm_name identity guess.)
     """
-    norm      = _norm_name(team_name)
-    league_key = str(league_id)
-    cache      = _load_team_id_cache()
-
-    if league_key in cache and norm in cache[league_key]:
-        return cache[league_key].get(norm)
-
-    # Fetch all teams in this league/season at once (1 API call, populates many teams)
     data = _get("teams", {"league": league_id, "season": season}, ttl_h=8760)
     if not data:
         return None
-
-    if league_key not in cache:
-        cache[league_key] = {}
-
-    team_id = None
+    ids: dict[str, int] = {}
     for entry in data.get("response", []):
-        t    = entry.get("team", {})
-        t_id = t.get("id")
-        t_nm = _norm_name(t.get("name", ""))
-        if t_id and t_nm:
-            cache[league_key][t_nm] = t_id
-            if t_nm == norm:
-                team_id = t_id
-
-    _save_team_id_cache(cache)
-    return team_id
+        t = entry.get("team", {}) or {}
+        if t.get("id") and t.get("name"):
+            ids[str(t["name"])] = t["id"]
+    hit = _resolve_club(team_name, ids)
+    return ids.get(hit) if hit else None
 
 
 def fetch_team_season_stats(
@@ -636,12 +647,17 @@ def fetch_team_season_stats(
     cs       = resp.get("clean_sheet",  {})
     form_str = resp.get("form", "")     or ""
 
-    played_h = int(fixtures.get("played", {}).get("home", 0) or 0) or 1
-    played_a = int(fixtures.get("played", {}).get("away", 0) or 0) or 1
-    wins_h   = int(fixtures.get("wins",   {}).get("home", 0) or 0)
-    wins_a   = int(fixtures.get("wins",   {}).get("away", 0) or 0)
-    cs_h     = int(cs.get("home", 0) or 0)
-    cs_a     = int(cs.get("away", 0) or 0)
+    played_h = _to_int((fixtures.get("played") or {}).get("home"))
+    played_a = _to_int((fixtures.get("played") or {}).get("away"))
+    wins_h   = _to_int((fixtures.get("wins")   or {}).get("home"))
+    wins_a   = _to_int((fixtures.get("wins")   or {}).get("away"))
+    cs_h     = _to_int(cs.get("home"))
+    cs_a     = _to_int(cs.get("away"))
+
+    def _rate(num, den):
+        # 0 games played or a missing count -> None, so the caller's override is skipped (the
+        # divisor used to be forced to 1, giving a 0.0 rate at every season start)
+        return (num / den) if (num is not None and den) else None
 
     def _gavg(block: dict, venue: str) -> Optional[float]:
         try:
@@ -656,17 +672,17 @@ def fetch_team_season_stats(
     goals_agn_a = _gavg(goals.get("against", {}), "away")
 
     recent  = form_str[-5:] if form_str else ""
-    form_wr = recent.count("W") / max(len(recent), 1)
+    form_wr = recent.count("W") / len(recent) if recent else None
 
     return {
         "goals_for_h":     goals_for_h,
         "goals_for_a":     goals_for_a,
         "goals_against_h": goals_agn_h,
         "goals_against_a": goals_agn_a,
-        "cs_rate_h":       cs_h / played_h,
-        "cs_rate_a":       cs_a / played_a,
-        "wins_rate_h":     wins_h / played_h,
-        "wins_rate_a":     wins_a / played_a,
+        "cs_rate_h":       _rate(cs_h, played_h),
+        "cs_rate_a":       _rate(cs_a, played_a),
+        "wins_rate_h":     _rate(wins_h, played_h),
+        "wins_rate_a":     _rate(wins_a, played_a),
         "form_win_rate":   form_wr,
         "played_h":        played_h,
         "played_a":        played_a,
@@ -676,16 +692,17 @@ def fetch_team_season_stats(
 def fetch_upcoming_team_stats(
     upcoming_df: "pd.DataFrame",  # type: ignore[type-arg]
     season: str | None = None,
-) -> dict[str, dict]:
+) -> dict[tuple[str, str], dict]:
     """
     Batch-fetch /teams/statistics for every home + away team in upcoming_df.
-    Returns {team_name: stats_dict}. Skips leagues not in API_FOOTBALL_IDS.
+    Returns {(league, team_name): stats_dict} - keyed by league so two board clubs with the same
+    name in different leagues never overwrite each other. Skips leagues not in API_FOOTBALL_IDS.
     Falls back to {} per team on any failure — never raises.
     """
     if not _KEY:
         return {}
 
-    results: dict[str, dict] = {}
+    results: dict[tuple[str, str], dict] = {}
     seen: set[tuple[str, str]] = set()
 
     for _, row in upcoming_df.iterrows():
@@ -696,9 +713,9 @@ def fetch_upcoming_team_stats(
                 try:
                     s = fetch_team_season_stats(team, lg, season, kickoff_date=_row_date(row))
                     if s:
-                        results[team] = s
-                except Exception:
-                    pass
+                        results[(lg, team)] = s
+                except Exception as e:
+                    print(f"[api_football_ou] team stats skipped for {team} ({lg}): {e}")
 
     return results
 
@@ -713,10 +730,14 @@ def fetch_upcoming_team_stats(
 def resolve_upcoming_fixture_ids(
     upcoming_df: "pd.DataFrame",
     season: str | None = None,
-) -> dict[tuple[str, str], int]:
+) -> dict[tuple[str, str, str, str], int]:
     """
     Fetch /fixtures?league=X&season=Y&next=10 per league in upcoming_df.
-    Returns {(home_norm, away_norm): fixture_id}.
+    Returns {(league, date_str, home, away): fixture_id} with API-Football's club names - see
+    _fixture_key; _row_fixture_id resolves board names onto them. Keyed by
+    league and date too: one name-only dict across all leagues let a same-named pairing in
+    another competition (or a second leg) overwrite the id. Each fixture's API-Football team ids
+    are kept in _FIXTURE_TEAM_IDS so lineups are matched by id, never by position.
     """
     if not _KEY:
         return {}
@@ -735,12 +756,42 @@ def resolve_upcoming_fixture_ids(
             continue
         for entry in data.get("response", []):
             teams = entry.get("teams", {})
-            hn    = _norm_name(teams.get("home", {}).get("name", ""))
-            an    = _norm_name(teams.get("away", {}).get("name", ""))
             fid   = entry.get("fixture", {}).get("id")
-            if hn and an and fid:
-                result[(hn, an)] = fid
+            key   = _fixture_key(lg, entry.get("fixture", {}).get("date"),
+                                 teams.get("home", {}).get("name", ""),
+                                 teams.get("away", {}).get("name", ""))
+            if key and fid:
+                result[key] = fid
+                _FIXTURE_TEAM_IDS[fid] = (teams.get("home", {}).get("id"),
+                                          teams.get("away", {}).get("id"))
     return result
+
+
+#: fixture_id -> (home team id, away team id), filled by resolve_upcoming_fixture_ids
+_FIXTURE_TEAM_IDS: dict[int, tuple] = {}
+
+
+def _fixture_key(league, date, home, away):
+    """(league, 'YYYY-MM-DD', home, away), or None when any part is missing. Names as given."""
+    d = str(date)[:10] if date is not None else ""
+    hn, an = str(home or "").strip(), str(away or "").strip()
+    if not (league and len(d) == 10 and hn and an):
+        return None
+    return (str(league), d, hn, an)
+
+
+def _row_fixture_id(row, fixture_ids: dict):
+    """The API-Football fixture id of a board row: both clubs resolved (src.team_names.resolve)
+    among the API-Football fixtures of the SAME league and date; exactly one fixture or None."""
+    key = _fixture_key(row.get("league"), _row_date(row), row.get("home_team"), row.get("away_team"))
+    if not key:
+        return None
+    lg, d, home, away = key
+    day = [(k, fid) for k, fid in fixture_ids.items() if k[0] == lg and k[1] == d]
+    rh = _resolve_club(home, [k[2] for k, _ in day])
+    ra = _resolve_club(away, [k[3] for k, _ in day])
+    hits = [fid for k, fid in day if rh and ra and k[2] == rh and k[3] == ra]
+    return hits[0] if len(hits) == 1 else None
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -763,16 +814,13 @@ def _formation_attack_score(formation: str) -> float:
     clean = (formation or "").strip()
     if clean in _FORMATION_ATTACK:
         return _FORMATION_ATTACK[clean]
-    parts = clean.split("-")
-    try:
-        return min(0.40 + int(parts[-1]) * 0.12, 1.0)
-    except (IndexError, ValueError):
-        return 0.65
+    # unlisted or missing formation -> NaN (was a typed formula / 0.65)
+    return float("nan")
 
 
 def fetch_lineup_features(
     upcoming_df: "pd.DataFrame",
-    fixture_ids: "dict[tuple[str, str], int] | None" = None,
+    fixture_ids: "dict[tuple, int] | None" = None,
     season: str | None = None,
 ) -> dict[int, dict]:
     """
@@ -788,9 +836,7 @@ def fetch_lineup_features(
     results: dict[int, dict] = {}
 
     for idx, row in upcoming_df.iterrows():
-        hn  = _norm_name(str(row.get("home_team", "")))
-        an  = _norm_name(str(row.get("away_team", "")))
-        fid = fixture_ids.get((hn, an))
+        fid = _row_fixture_id(row, fixture_ids)
         if not fid:
             continue
 
@@ -801,8 +847,14 @@ def fetch_lineup_features(
         if len(resp) < 2:
             continue
 
-        home_e = next((e for e in resp if _norm_name(e.get("team", {}).get("name", "")) == hn), resp[0])
-        away_e = next((e for e in resp if _norm_name(e.get("team", {}).get("name", "")) == an), resp[-1])
+        # Match each block by the fixture's API-Football team id, never by position: an
+        # unmatched block used to be assumed to be resp[0] / resp[-1].
+        home_id, away_id = _FIXTURE_TEAM_IDS.get(fid, (None, None))
+        home_e = next((e for e in resp if home_id and e.get("team", {}).get("id") == home_id), None)
+        away_e = next((e for e in resp if away_id and e.get("team", {}).get("id") == away_id), None)
+        if home_e is None or away_e is None:
+            print(f"[api_football_ou] lineup skipped for fixture {fid}: team ids not matched")
+            continue
 
         def _fwd_count(entry: dict) -> float:
             return float(sum(
@@ -870,8 +922,10 @@ def fetch_h2h_features(
         over25, goals_list, home_wins = [], [], []
         for m in matches:
             g  = m.get("goals", {})
-            gh = _to_int(g.get("home")) or 0
-            ga = _to_int(g.get("away")) or 0
+            gh = _to_int(g.get("home"))
+            ga = _to_int(g.get("away"))
+            if gh is None or ga is None:     # postponed/abandoned: no score, not a 0-0
+                continue
             t  = gh + ga
             goals_list.append(t)
             over25.append(1 if t > 2 else 0)
@@ -880,6 +934,8 @@ def fetch_h2h_features(
             home_wins.append(1 if (m_home_id == home_id and m_home_won) else 0)
 
         n = len(goals_list)
+        if not n:
+            continue
         results[idx] = {
             "h2h_over25_rate":   sum(over25)      / n,
             "h2h_avg_goals":     sum(goals_list)   / n,
@@ -899,7 +955,7 @@ def fetch_h2h_features(
 
 def fetch_prematch_odds_features(
     upcoming_df: "pd.DataFrame",
-    fixture_ids: "dict[tuple[str, str], int] | None" = None,
+    fixture_ids: "dict[tuple, int] | None" = None,
     season: str | None = None,
 ) -> dict[int, dict]:
     """
@@ -916,9 +972,7 @@ def fetch_prematch_odds_features(
     results: dict[int, dict] = {}
 
     for idx, row in upcoming_df.iterrows():
-        hn  = _norm_name(str(row.get("home_team", "")))
-        an  = _norm_name(str(row.get("away_team", "")))
-        fid = fixture_ids.get((hn, an))
+        fid = _row_fixture_id(row, fixture_ids)
         if not fid:
             continue
 
@@ -1057,7 +1111,7 @@ def fetch_season_round_features(
 
 def fetch_coach_features(
     upcoming_df: "pd.DataFrame",
-    fixture_ids: "dict[tuple[str, str], int] | None" = None,
+    fixture_ids: "dict[tuple, int] | None" = None,
     season: str | None = None,
 ) -> dict[int, dict]:
     """
@@ -1072,9 +1126,11 @@ def fetch_coach_features(
 
     team_coach: dict[str, dict] = {}
 
+    # keyed (league, team): a same-named club in another league is a different coach
     def _get_coach(team_name: str, league: str) -> dict:
-        if team_name in team_coach:
-            return team_coach[team_name]
+        key = (league, team_name)
+        if key in team_coach:
+            return team_coach[key]
         lid = config.API_FOOTBALL_IDS.get(league)
         if not lid:
             return {}
@@ -1086,7 +1142,7 @@ def fetch_coach_features(
             return {}
         data = _get("coachs", {"team": team_id}, ttl_h=168)
         if not data or not data.get("response"):
-            team_coach[team_name] = {}
+            team_coach[key] = {}
             return {}
         for coach in data["response"]:
             career = coach.get("career", [])
@@ -1098,14 +1154,16 @@ def fetch_coach_features(
                         start_date = date_cls.fromisoformat(str(start_str)[:10])
                         tenure_days = (date_cls.today() - start_date).days
                     except Exception:
-                        tenure_days = 180
+                        # unparseable start -> tenure unknown (was an invented 180 days)
+                        team_coach[key] = {}
+                        return {}
                     result = {
                         "coach_tenure_days":  tenure_days,
                         "coach_is_caretaker": float(tenure_days < 14),
                     }
-                    team_coach[team_name] = result
+                    team_coach[key] = result
                     return result
-        team_coach[team_name] = {}
+        team_coach[key] = {}
         return {}
 
     results: dict[int, dict] = {}
@@ -1115,10 +1173,12 @@ def fetch_coach_features(
         lg = str(row.get("league", ""))
         hc = _get_coach(ht, lg)
         ac = _get_coach(at, lg)
+        # unknown coach -> NaN, never 180 days / "not a caretaker"
+        _nan = float("nan")
         results[idx] = {
-            "home_coach_tenure_days":  float(hc.get("coach_tenure_days",  180)),
-            "home_coach_is_caretaker": float(hc.get("coach_is_caretaker", 0.0)),
-            "away_coach_tenure_days":  float(ac.get("coach_tenure_days",  180)),
-            "away_coach_is_caretaker": float(ac.get("coach_is_caretaker", 0.0)),
+            "home_coach_tenure_days":  float(hc["coach_tenure_days"]) if hc else _nan,
+            "home_coach_is_caretaker": float(hc["coach_is_caretaker"]) if hc else _nan,
+            "away_coach_tenure_days":  float(ac["coach_tenure_days"]) if ac else _nan,
+            "away_coach_is_caretaker": float(ac["coach_is_caretaker"]) if ac else _nan,
         }
     return results

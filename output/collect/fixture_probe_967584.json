@@ -1,0 +1,1290 @@
+{
+ "artifact": "fixture_probe",
+ "fixture_id": 967584,
+ "generated_at": "2026-11-15T13:48:12Z",
+ "calls": [
+  {
+   "name": "fixture",
+   "endpoint": "fixtures",
+   "params": {
+    "id": 967584
+   },
+   "ok": true,
+   "response": [
+    {
+     "fixture": {
+      "id": 967584,
+      "referee": "J. Hyytiä",
+      "timezone": "UTC",
+      "date": "2022-10-22T14:00:00+00:00",
+      "timestamp": 1666447200,
+      "periods": {
+       "first": 1666447200,
+       "second": 1666450800
+      },
+      "venue": {
+       "id": 627,
+       "name": "Raatin stadion",
+       "city": "Oulu"
+      },
+      "status": {
+       "long": "Match Finished",
+       "short": "FT",
+       "elapsed": 90,
+       "extra": null
+      }
+     },
+     "league": {
+      "id": 244,
+      "name": "Veikkausliiga",
+      "country": "Finland",
+      "logo": "https://media.api-sports.io/football/leagues/244.png",
+      "flag": "https://media.api-sports.io/flags/fi.svg",
+      "season": 2022,
+      "round": "Conference League Play-offs - 2nd Round",
+      "standings": true
+     },
+     "teams": {
+      "home": {
+       "id": 2077,
+       "name": "AC Oulu",
+       "logo": "https://media.api-sports.io/football/teams/2077.png",
+       "winner": false
+      },
+      "away": {
+       "id": 650,
+       "name": "VPS",
+       "logo": "https://media.api-sports.io/football/teams/650.png",
+       "winner": true
+      }
+     },
+     "goals": {
+      "home": 0,
+      "away": 1
+     },
+     "score": {
+      "halftime": {
+       "home": 0,
+       "away": 0
+      },
+      "fulltime": {
+       "home": 0,
+       "away": 1
+      },
+      "extratime": {
+       "home": null,
+       "away": null
+      },
+      "penalty": {
+       "home": null,
+       "away": null
+      }
+     },
+     "events": [
+      {
+       "time": {
+        "elapsed": 67,
+        "extra": null
+       },
+       "team": {
+        "id": 2077,
+        "name": "AC oulu",
+        "logo": "https://media.api-sports.io/football/teams/2077.png"
+       },
+       "player": {
+        "id": 55383,
+        "name": "R. Karjalainen"
+       },
+       "assist": {
+        "id": 18703,
+        "name": "I. Sekajja"
+       },
+       "type": "subst",
+       "detail": "Substitution 1",
+       "comments": null
+      },
+      {
+       "time": {
+        "elapsed": 71,
+        "extra": null
+       },
+       "team": {
+        "id": 2077,
+        "name": "AC oulu",
+        "logo": "https://media.api-sports.io/football/teams/2077.png"
+       },
+       "player": {
+        "id": 48715,
+        "name": "M. Breitenmoser"
+       },
+       "assist": {
+        "id": null,
+        "name": null
+       },
+       "type": "Card",
+       "detail": "Yellow Card",
+       "comments": null
+      },
+      {
+       "time": {
+        "elapsed": 74,
+        "extra": null
+       },
+       "team": {
+        "id": 650,
+        "name": "vaasa PS",
+        "logo": "https://media.api-sports.io/football/teams/650.png"
+       },
+       "player": {
+        "id": 55411,
+        "name": "J. Vahtera"
+       },
+       "assist": {
+        "id": 126616,
+        "name": "R. Jääskä"
+       },
+       "type": "subst",
+       "detail": "Substitution 1",
+       "comments": null
+      },
+      {
+       "time": {
+        "elapsed": 80,
+        "extra": null
+       },
+       "team": {
+        "id": 650,
+        "name": "vaasa PS",
+        "logo": "https://media.api-sports.io/football/teams/650.png"
+       },
+       "player": {
+        "id": 55363,
+        "name": "L. Murillo"
+       },
+       "assist": {
+        "id": null,
+        "name": null
+       },
+       "type": "Card",
+       "detail": "Yellow Card",
+       "comments": null
+      },
+      {
+       "time": {
+        "elapsed": 83,
+        "extra": null
+       },
+       "team": {
+        "id": 2077,
+        "name": "AC oulu",
+        "logo": "https://media.api-sports.io/football/teams/2077.png"
+       },
+       "player": {
+        "id": 57327,
+        "name": "Lucas Morais"
+       },
+       "assist": {
+        "id": 5619,
+        "name": "M. López"
+       },
+       "type": "subst",
+       "detail": "Substitution 2",
+       "comments": null
+      },
+      {
+       "time": {
+        "elapsed": 83,
+        "extra": null
+       },
+       "team": {
+        "id": 2077,
+        "name": "AC oulu",
+        "logo": "https://media.api-sports.io/football/teams/2077.png"
+       },
+       "player": {
+        "id": 96452,
+        "name": "Rafael Floro"
+       },
+       "assist": {
+        "id": 55400,
+        "name": "Rafinha"
+       },
+       "type": "subst",
+       "detail": "Substitution 3",
+       "comments": null
+      },
+      {
+       "time": {
+        "elapsed": 84,
+        "extra": null
+       },
+       "team": {
+        "id": 650,
+        "name": "vaasa PS",
+        "logo": "https://media.api-sports.io/football/teams/650.png"
+       },
+       "player": {
+        "id": 55363,
+        "name": "L. Murillo"
+       },
+       "assist": {
+        "id": 83389,
+        "name": "A. Räisänen"
+       },
+       "type": "subst",
+       "detail": "Substitution 2",
+       "comments": null
+      },
+      {
+       "time": {
+        "elapsed": 84,
+        "extra": null
+       },
+       "team": {
+        "id": 650,
+        "name": "vaasa PS",
+        "logo": "https://media.api-sports.io/football/teams/650.png"
+       },
+       "player": {
+        "id": 55854,
+        "name": "S. Lindeman"
+       },
+       "assist": {
+        "id": 55563,
+        "name": "S. Alanko"
+       },
+       "type": "subst",
+       "detail": "Substitution 3",
+       "comments": null
+      },
+      {
+       "time": {
+        "elapsed": 90,
+        "extra": 1
+       },
+       "team": {
+        "id": 650,
+        "name": "vaasa PS",
+        "logo": "https://media.api-sports.io/football/teams/650.png"
+       },
+       "player": {
+        "id": 55604,
+        "name": "J. Pikkarainen"
+       },
+       "assist": {
+        "id": null,
+        "name": null
+       },
+       "type": "Card",
+       "detail": "Yellow Card",
+       "comments": null
+      },
+      {
+       "time": {
+        "elapsed": 90,
+        "extra": 3
+       },
+       "team": {
+        "id": 2077,
+        "name": "AC oulu",
+        "logo": "https://media.api-sports.io/football/teams/2077.png"
+       },
+       "player": {
+        "id": null,
+        "name": "R. Duarte"
+       },
+       "assist": {
+        "id": null,
+        "name": null
+       },
+       "type": "Card",
+       "detail": "Yellow Card",
+       "comments": null
+      },
+      {
+       "time": {
+        "elapsed": 97,
+        "extra": null
+       },
+       "team": {
+        "id": 650,
+        "name": "vaasa PS",
+        "logo": "https://media.api-sports.io/football/teams/650.png"
+       },
+       "player": {
+        "id": 55833,
+        "name": "K. Multanen"
+       },
+       "assist": {
+        "id": null,
+        "name": null
+       },
+       "type": "Card",
+       "detail": "Yellow Card",
+       "comments": null
+      },
+      {
+       "time": {
+        "elapsed": 99,
+        "extra": null
+       },
+       "team": {
+        "id": 650,
+        "name": "vaasa PS",
+        "logo": "https://media.api-sports.io/football/teams/650.png"
+       },
+       "player": {
+        "id": 55833,
+        "name": "K. Multanen"
+       },
+       "assist": {
+        "id": 55564,
+        "name": "S. Morrissey"
+       },
+       "type": "subst",
+       "detail": "Substitution 4",
+       "comments": null
+      },
+      {
+       "time": {
+        "elapsed": 106,
+        "extra": null
+       },
+       "team": {
+        "id": 2077,
+        "name": "AC oulu",
+        "logo": "https://media.api-sports.io/football/teams/2077.png"
+       },
+       "player": {
+        "id": 48715,
+        "name": "M. Breitenmoser"
+       },
+       "assist": {
+        "id": 363664,
+        "name": "R. Nogha"
+       },
+       "type": "subst",
+       "detail": "Substitution 4",
+       "comments": null
+      },
+      {
+       "time": {
+        "elapsed": 108,
+        "extra": null
+       },
+       "team": {
+        "id": 650,
+        "name": "vaasa PS",
+        "logo": "https://media.api-sports.io/football/teams/650.png"
+       },
+       "player": {
+        "id": 126616,
+        "name": "R. Jääskä"
+       },
+       "assist": {
+        "id": null,
+        "name": null
+       },
+       "type": "Goal",
+       "detail": "Normal Goal",
+       "comments": null
+      },
+      {
+       "time": {
+        "elapsed": 112,
+        "extra": null
+       },
+       "team": {
+        "id": 2077,
+        "name": "AC oulu",
+        "logo": "https://media.api-sports.io/football/teams/2077.png"
+       },
+       "player": {
+        "id": 298069,
+        "name": "O. Liimatta"
+       },
+       "assist": {
+        "id": 55535,
+        "name": "N. Jokelainen"
+       },
+       "type": "subst",
+       "detail": "Substitution 5",
+       "comments": null
+      },
+      {
+       "time": {
+        "elapsed": 112,
+        "extra": null
+       },
+       "team": {
+        "id": 2077,
+        "name": "AC oulu",
+        "logo": "https://media.api-sports.io/football/teams/2077.png"
+       },
+       "player": {
+        "id": 55584,
+        "name": "R. Selander"
+       },
+       "assist": {
+        "id": 55674,
+        "name": "A. Heikkilä"
+       },
+       "type": "subst",
+       "detail": "Substitution 6",
+       "comments": null
+      },
+      {
+       "time": {
+        "elapsed": 114,
+        "extra": null
+       },
+       "team": {
+        "id": 650,
+        "name": "vaasa PS",
+        "logo": "https://media.api-sports.io/football/teams/650.png"
+       },
+       "player": {
+        "id": null,
+        "name": "J. Nuorela"
+       },
+       "assist": {
+        "id": null,
+        "name": null
+       },
+       "type": "Card",
+       "detail": "Yellow Card",
+       "comments": null
+      },
+      {
+       "time": {
+        "elapsed": 117,
+        "extra": null
+       },
+       "team": {
+        "id": 650,
+        "name": "vaasa PS",
+        "logo": "https://media.api-sports.io/football/teams/650.png"
+       },
+       "player": {
+        "id": 126618,
+        "name": "M. Niemi"
+       },
+       "assist": {
+        "id": 78524,
+        "name": "K. Moses"
+       },
+       "type": "subst",
+       "detail": "Substitution 5",
+       "comments": null
+      },
+      {
+       "time": {
+        "elapsed": 120,
+        "extra": 3
+       },
+       "team": {
+        "id": 2077,
+        "name": "AC oulu",
+        "logo": "https://media.api-sports.io/football/teams/2077.png"
+       },
+       "player": {
+        "id": null,
+        "name": "R. Duarte"
+       },
+       "assist": {
+        "id": null,
+        "name": null
+       },
+       "type": "Card",
+       "detail": "Yellow Card",
+       "comments": null
+      }
+     ],
+     "lineups": [
+      {
+       "team": {
+        "id": 2077,
+        "name": "AC oulu",
+        "logo": "https://media.api-sports.io/football/teams/2077.png",
+        "colors": null
+       },
+       "coach": {
+        "id": 13849,
+        "name": "Ricardo Duarte",
+        "photo": "https://media.api-sports.io/football/coachs/13849.png"
+       },
+       "formation": null,
+       "startXI": [
+        {
+         "player": {
+          "id": 167106,
+          "name": "C. Ward",
+          "number": 35,
+          "pos": null,
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 55584,
+          "name": "R. Selander",
+          "number": 6,
+          "pos": null,
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 96452,
+          "name": "Rafael Floro",
+          "number": 24,
+          "pos": null,
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 7471,
+          "name": "M. Hetemaj",
+          "number": 70,
+          "pos": null,
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 173852,
+          "name": "N. Pallas",
+          "number": 30,
+          "pos": null,
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 137510,
+          "name": "M. Koskela",
+          "number": 3,
+          "pos": null,
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 48715,
+          "name": "M. Breitenmoser",
+          "number": 44,
+          "pos": null,
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 196062,
+          "name": "J. Kallinen",
+          "number": 15,
+          "pos": null,
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 298069,
+          "name": "O. Liimatta",
+          "number": 20,
+          "pos": null,
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 55383,
+          "name": "R. Karjalainen",
+          "number": 7,
+          "pos": null,
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 57327,
+          "name": "Lucas Morais",
+          "number": 10,
+          "pos": null,
+          "grid": null
+         }
+        }
+       ],
+       "substitutes": [
+        {
+         "player": {
+          "id": 18703,
+          "name": "I. Sekajja",
+          "number": 16,
+          "pos": null,
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 5619,
+          "name": "M. López",
+          "number": 9,
+          "pos": null,
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 55400,
+          "name": "Rafinha",
+          "number": 11,
+          "pos": null,
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 363664,
+          "name": "R. Nogha",
+          "number": 18,
+          "pos": null,
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 55535,
+          "name": "N. Jokelainen",
+          "number": 14,
+          "pos": null,
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 55674,
+          "name": "A. Heikkilä",
+          "number": 21,
+          "pos": null,
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 55667,
+          "name": "J. Pennanen",
+          "number": 1,
+          "pos": null,
+          "grid": null
+         }
+        }
+       ]
+      },
+      {
+       "team": {
+        "id": 650,
+        "name": "vaasa PS",
+        "logo": "https://media.api-sports.io/football/teams/650.png",
+        "colors": null
+       },
+       "coach": {
+        "id": 14794,
+        "name": "J. Nuorela",
+        "photo": "https://media.api-sports.io/football/coachs/14794.png"
+       },
+       "formation": null,
+       "startXI": [
+        {
+         "player": {
+          "id": 55415,
+          "name": "O. Forsman",
+          "number": 1,
+          "pos": null,
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 55363,
+          "name": "L. Murillo",
+          "number": 13,
+          "pos": null,
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 55366,
+          "name": "M. Pitkänen",
+          "number": 5,
+          "pos": null,
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 19320,
+          "name": "T. Reid",
+          "number": 20,
+          "pos": null,
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 55604,
+          "name": "J. Pikkarainen",
+          "number": 3,
+          "pos": null,
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 55411,
+          "name": "J. Vahtera",
+          "number": 30,
+          "pos": null,
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 55854,
+          "name": "S. Lindeman",
+          "number": 25,
+          "pos": null,
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 214279,
+          "name": "P. Ahiabu",
+          "number": 21,
+          "pos": null,
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 55833,
+          "name": "K. Multanen",
+          "number": 17,
+          "pos": null,
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 126618,
+          "name": "M. Niemi",
+          "number": 23,
+          "pos": null,
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 296645,
+          "name": "T. Yengi",
+          "number": 14,
+          "pos": null,
+          "grid": null
+         }
+        }
+       ],
+       "substitutes": [
+        {
+         "player": {
+          "id": 126616,
+          "name": "R. Jääskä",
+          "number": 9,
+          "pos": null,
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 83389,
+          "name": "A. Räisänen",
+          "number": 34,
+          "pos": null,
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 55563,
+          "name": "S. Alanko",
+          "number": 77,
+          "pos": null,
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 55564,
+          "name": "S. Morrissey",
+          "number": 10,
+          "pos": null,
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 78524,
+          "name": "K. Moses",
+          "number": 12,
+          "pos": null,
+          "grid": null
+         }
+        },
+        {
+         "player": {
+          "id": 55621,
+          "name": "J. Immonen",
+          "number": 22,
+          "pos": null,
+          "grid": null
+         }
+        }
+       ]
+      }
+     ],
+     "statistics": [],
+     "players": []
+    }
+   ]
+  },
+  {
+   "name": "events",
+   "endpoint": "fixtures/events",
+   "params": {
+    "fixture": 967584
+   },
+   "ok": true,
+   "response": [
+    {
+     "time": {
+      "elapsed": 67,
+      "extra": null
+     },
+     "team": {
+      "id": 2077,
+      "name": "AC oulu",
+      "logo": "https://media.api-sports.io/football/teams/2077.png"
+     },
+     "player": {
+      "id": 55383,
+      "name": "R. Karjalainen"
+     },
+     "assist": {
+      "id": 18703,
+      "name": "I. Sekajja"
+     },
+     "type": "subst",
+     "detail": "Substitution 1",
+     "comments": null
+    },
+    {
+     "time": {
+      "elapsed": 71,
+      "extra": null
+     },
+     "team": {
+      "id": 2077,
+      "name": "AC oulu",
+      "logo": "https://media.api-sports.io/football/teams/2077.png"
+     },
+     "player": {
+      "id": 48715,
+      "name": "M. Breitenmoser"
+     },
+     "assist": {
+      "id": null,
+      "name": null
+     },
+     "type": "Card",
+     "detail": "Yellow Card",
+     "comments": null
+    },
+    {
+     "time": {
+      "elapsed": 74,
+      "extra": null
+     },
+     "team": {
+      "id": 650,
+      "name": "vaasa PS",
+      "logo": "https://media.api-sports.io/football/teams/650.png"
+     },
+     "player": {
+      "id": 55411,
+      "name": "J. Vahtera"
+     },
+     "assist": {
+      "id": 126616,
+      "name": "R. Jääskä"
+     },
+     "type": "subst",
+     "detail": "Substitution 1",
+     "comments": null
+    },
+    {
+     "time": {
+      "elapsed": 80,
+      "extra": null
+     },
+     "team": {
+      "id": 650,
+      "name": "vaasa PS",
+      "logo": "https://media.api-sports.io/football/teams/650.png"
+     },
+     "player": {
+      "id": 55363,
+      "name": "L. Murillo"
+     },
+     "assist": {
+      "id": null,
+      "name": null
+     },
+     "type": "Card",
+     "detail": "Yellow Card",
+     "comments": null
+    },
+    {
+     "time": {
+      "elapsed": 83,
+      "extra": null
+     },
+     "team": {
+      "id": 2077,
+      "name": "AC oulu",
+      "logo": "https://media.api-sports.io/football/teams/2077.png"
+     },
+     "player": {
+      "id": 57327,
+      "name": "Lucas Morais"
+     },
+     "assist": {
+      "id": 5619,
+      "name": "M. López"
+     },
+     "type": "subst",
+     "detail": "Substitution 2",
+     "comments": null
+    },
+    {
+     "time": {
+      "elapsed": 83,
+      "extra": null
+     },
+     "team": {
+      "id": 2077,
+      "name": "AC oulu",
+      "logo": "https://media.api-sports.io/football/teams/2077.png"
+     },
+     "player": {
+      "id": 96452,
+      "name": "Rafael Floro"
+     },
+     "assist": {
+      "id": 55400,
+      "name": "Rafinha"
+     },
+     "type": "subst",
+     "detail": "Substitution 3",
+     "comments": null
+    },
+    {
+     "time": {
+      "elapsed": 84,
+      "extra": null
+     },
+     "team": {
+      "id": 650,
+      "name": "vaasa PS",
+      "logo": "https://media.api-sports.io/football/teams/650.png"
+     },
+     "player": {
+      "id": 55363,
+      "name": "L. Murillo"
+     },
+     "assist": {
+      "id": 83389,
+      "name": "A. Räisänen"
+     },
+     "type": "subst",
+     "detail": "Substitution 2",
+     "comments": null
+    },
+    {
+     "time": {
+      "elapsed": 84,
+      "extra": null
+     },
+     "team": {
+      "id": 650,
+      "name": "vaasa PS",
+      "logo": "https://media.api-sports.io/football/teams/650.png"
+     },
+     "player": {
+      "id": 55854,
+      "name": "S. Lindeman"
+     },
+     "assist": {
+      "id": 55563,
+      "name": "S. Alanko"
+     },
+     "type": "subst",
+     "detail": "Substitution 3",
+     "comments": null
+    },
+    {
+     "time": {
+      "elapsed": 90,
+      "extra": 1
+     },
+     "team": {
+      "id": 650,
+      "name": "vaasa PS",
+      "logo": "https://media.api-sports.io/football/teams/650.png"
+     },
+     "player": {
+      "id": 55604,
+      "name": "J. Pikkarainen"
+     },
+     "assist": {
+      "id": null,
+      "name": null
+     },
+     "type": "Card",
+     "detail": "Yellow Card",
+     "comments": null
+    },
+    {
+     "time": {
+      "elapsed": 90,
+      "extra": 3
+     },
+     "team": {
+      "id": 2077,
+      "name": "AC oulu",
+      "logo": "https://media.api-sports.io/football/teams/2077.png"
+     },
+     "player": {
+      "id": null,
+      "name": "R. Duarte"
+     },
+     "assist": {
+      "id": null,
+      "name": null
+     },
+     "type": "Card",
+     "detail": "Yellow Card",
+     "comments": null
+    },
+    {
+     "time": {
+      "elapsed": 97,
+      "extra": null
+     },
+     "team": {
+      "id": 650,
+      "name": "vaasa PS",
+      "logo": "https://media.api-sports.io/football/teams/650.png"
+     },
+     "player": {
+      "id": 55833,
+      "name": "K. Multanen"
+     },
+     "assist": {
+      "id": null,
+      "name": null
+     },
+     "type": "Card",
+     "detail": "Yellow Card",
+     "comments": null
+    },
+    {
+     "time": {
+      "elapsed": 99,
+      "extra": null
+     },
+     "team": {
+      "id": 650,
+      "name": "vaasa PS",
+      "logo": "https://media.api-sports.io/football/teams/650.png"
+     },
+     "player": {
+      "id": 55833,
+      "name": "K. Multanen"
+     },
+     "assist": {
+      "id": 55564,
+      "name": "S. Morrissey"
+     },
+     "type": "subst",
+     "detail": "Substitution 4",
+     "comments": null
+    },
+    {
+     "time": {
+      "elapsed": 106,
+      "extra": null
+     },
+     "team": {
+      "id": 2077,
+      "name": "AC oulu",
+      "logo": "https://media.api-sports.io/football/teams/2077.png"
+     },
+     "player": {
+      "id": 48715,
+      "name": "M. Breitenmoser"
+     },
+     "assist": {
+      "id": 363664,
+      "name": "R. Nogha"
+     },
+     "type": "subst",
+     "detail": "Substitution 4",
+     "comments": null
+    },
+    {
+     "time": {
+      "elapsed": 108,
+      "extra": null
+     },
+     "team": {
+      "id": 650,
+      "name": "vaasa PS",
+      "logo": "https://media.api-sports.io/football/teams/650.png"
+     },
+     "player": {
+      "id": 126616,
+      "name": "R. Jääskä"
+     },
+     "assist": {
+      "id": null,
+      "name": null
+     },
+     "type": "Goal",
+     "detail": "Normal Goal",
+     "comments": null
+    },
+    {
+     "time": {
+      "elapsed": 112,
+      "extra": null
+     },
+     "team": {
+      "id": 2077,
+      "name": "AC oulu",
+      "logo": "https://media.api-sports.io/football/teams/2077.png"
+     },
+     "player": {
+      "id": 298069,
+      "name": "O. Liimatta"
+     },
+     "assist": {
+      "id": 55535,
+      "name": "N. Jokelainen"
+     },
+     "type": "subst",
+     "detail": "Substitution 5",
+     "comments": null
+    },
+    {
+     "time": {
+      "elapsed": 112,
+      "extra": null
+     },
+     "team": {
+      "id": 2077,
+      "name": "AC oulu",
+      "logo": "https://media.api-sports.io/football/teams/2077.png"
+     },
+     "player": {
+      "id": 55584,
+      "name": "R. Selander"
+     },
+     "assist": {
+      "id": 55674,
+      "name": "A. Heikkilä"
+     },
+     "type": "subst",
+     "detail": "Substitution 6",
+     "comments": null
+    },
+    {
+     "time": {
+      "elapsed": 114,
+      "extra": null
+     },
+     "team": {
+      "id": 650,
+      "name": "vaasa PS",
+      "logo": "https://media.api-sports.io/football/teams/650.png"
+     },
+     "player": {
+      "id": null,
+      "name": "J. Nuorela"
+     },
+     "assist": {
+      "id": null,
+      "name": null
+     },
+     "type": "Card",
+     "detail": "Yellow Card",
+     "comments": null
+    },
+    {
+     "time": {
+      "elapsed": 117,
+      "extra": null
+     },
+     "team": {
+      "id": 650,
+      "name": "vaasa PS",
+      "logo": "https://media.api-sports.io/football/teams/650.png"
+     },
+     "player": {
+      "id": 126618,
+      "name": "M. Niemi"
+     },
+     "assist": {
+      "id": 78524,
+      "name": "K. Moses"
+     },
+     "type": "subst",
+     "detail": "Substitution 5",
+     "comments": null
+    },
+    {
+     "time": {
+      "elapsed": 120,
+      "extra": 3
+     },
+     "team": {
+      "id": 2077,
+      "name": "AC oulu",
+      "logo": "https://media.api-sports.io/football/teams/2077.png"
+     },
+     "player": {
+      "id": null,
+      "name": "R. Duarte"
+     },
+     "assist": {
+      "id": null,
+      "name": null
+     },
+     "type": "Card",
+     "detail": "Yellow Card",
+     "comments": null
+    }
+   ]
+  }
+ ]
+}

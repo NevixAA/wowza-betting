@@ -51,9 +51,9 @@ if not SPLIT:
                                   "models and the approved per-league bars, live from the go-live merge. No tip of "
                                   "the clean system has been made or settled yet, so there is nothing to count. "
                                   "Nothing from before the start will ever be counted here.")
-    ui.section_header("Staked vs paper, per league and market",
+    ui.section_header("Staked vs not staked, per league and market",
                       "Bets, hit rate, P/L and ROI with its 95% CI, and CLV % where a certified close exists; "
-                      "staked and paper apart. Fills from the first settled Clean Record tip.")
+                      "staked and not staked apart. Fills from the first settled Clean Record tip.")
     ui.empty_state("NO_DATA", "No settled Clean Record tip yet.")
     ui.section_header(f"Comparison: {season.clean_label()} vs {season.season_label()}",
                       "The same metrics side by side, never one total.")
@@ -88,9 +88,9 @@ ui.page_header(season.clean_label(),
 
 _cfg = CR.table_config(ui)
 SCOPES = [("Staked bets (a recorded policy stake > 0)", D["team"][CR.CLEAN]["staked"], D["team"][CR.BEFORE]["staked"]),
-          ("All team tips, paper + staked (flat 1u)", D["team"][CR.CLEAN]["all"], D["team"][CR.BEFORE]["all"]),
-          ("Player props (paper research)", D["props"][CR.CLEAN], D["props"][CR.BEFORE]),
-          ("TOP-3 per league (paper track)", D["top3"][CR.CLEAN], D["top3"][CR.BEFORE])]
+          ("All team tips, staked or not (flat 1u)", D["team"][CR.CLEAN]["all"], D["team"][CR.BEFORE]["all"]),
+          ("Player props (research, no stake)", D["props"][CR.CLEAN], D["props"][CR.BEFORE]),
+          ("TOP-3 per league (0.5% stake, flat; P/L flat 1u)", D["top3"][CR.CLEAN], D["top3"][CR.BEFORE])]
 
 # ── headline: the Clean Record only ───────────────────────────────────────────────────────────────
 ui.section_header(CR.clean_label(), "Tips generated and played on or after the start. Flat 1u per tip; the "
@@ -103,13 +103,12 @@ for col, (name, c, _b) in zip(cols, SCOPES):
                                ("Hit rate", f"{100 * c['hit']:.1f}%" if c["n"] else "—"),
                                ("ROI", ui.fmt_roi(c["roi"]) if c["n"] else "—"),
                                ("ROI 95% CI", CR.fmt_ci(c["ci"]))],
-                   status=ui.status_chip("PAPER", label="PAPER") if "paper" in name.lower() and "staked" not in name.lower()
-                   else "", n=c["n"] or None, container=col)
+                   status=ui.status_chip("PAPER", label="NO STAKE") if "no stake" in name.lower() else "", n=c["n"] or None, container=col)
 if not any(c["n"] for _n, c, _b in SCOPES):
     ui.empty_state("NO_DATA", CR.empty_text())
 
-# ── staked vs paper, per league and market ────────────────────────────────────────────────────────
-ui.section_header("Staked vs paper, per league and market",
+# ── staked vs not staked, per league and market ────────────────────────────────────────────────────────
+ui.section_header("Staked vs not staked, per league and market",
                   "Every settled team tip of the Clean Record, split by THE staked definition (src/staked.py: a "
                   "recorded policy stake > 0). A cell is the league × market-side unit the bars are approved in.")
 _c = D["sp"][CR.CLEAN]
@@ -123,7 +122,7 @@ else:
         ui.eyebrow("Staked")
         ui.compact_table(CR.group_table(_cell[_stk], "Cell", pnl="_pnl", date="_dt", key="clean|staked|cell"), _cfg)
     with s2:
-        ui.eyebrow("Paper (stake 0, flat 1u)")
+        ui.eyebrow("Not staked (flat 1u)")
         ui.compact_table(CR.group_table(_cell[[not x for x in _stk]], "Cell", pnl="_pnl", date="_dt",
                                         key="clean|paper|cell"), _cfg)
 st.caption("CLV %: shown only where a certified close exists (observed at most 30 minutes before kickoff). The "
@@ -143,7 +142,7 @@ for name, c, b in SCOPES:
     else:
         ui.empty_state("NO_DATA", f"{NOT_ENOUGH}: the Clean Record has {c['n']} settled over {c['matchdays']} "
                                   f"matchdays (needs {mins['settled']} over {mins['matchdays']}).")
-st.caption(CR.BEFORE_NOTE + " TOP-3 starts as a named paper track on the start date, so it has no pre-repair "
+st.caption(CR.BEFORE_NOTE + " TOP-3 starts on the start date with its 0.5% flat stake (owner 2026-11-17), so it has no pre-repair "
            "row. A tip neither rule can place (no generation time and a match after the start) is in neither row: "
            f"team {D['team'][CR.UNPLACED]}, props {D['props'][CR.UNPLACED]}, TOP-3 {D['top3'][CR.UNPLACED]}.")
 

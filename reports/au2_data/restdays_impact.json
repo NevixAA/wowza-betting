@@ -1,0 +1,44 @@
+{
+ "board_generated_at": "2026-11-01T10:59:39Z",
+ "NF_OU25": {
+  "n": 88,
+  "median_abs_pp": 0.378,
+  "p90_abs_pp": 1.921,
+  "max_abs_pp": 12.157,
+  "mean_signed_pp": -0.289,
+  "rows_crossing_0.03_edge_floor": 6,
+  "rows_with_best_side_flip": 2
+ },
+ "BTTS": {
+  "n": 158,
+  "median_abs_pp": 0.293,
+  "p90_abs_pp": 1.004,
+  "max_abs_pp": 15.599,
+  "mean_signed_pp": -0.029
+ },
+ "O15": {
+  "n": 158,
+  "median_abs_pp": 0.319,
+  "p90_abs_pp": 0.96,
+  "max_abs_pp": 4.892,
+  "mean_signed_pp": -0.234
+ },
+ "O35": {
+  "n": 158,
+  "median_abs_pp": 0.172,
+  "p90_abs_pp": 0.89,
+  "max_abs_pp": 8.853,
+  "mean_signed_pp": -0.268
+ },
+ "STD_legacy_shadow": {
+  "n": 70,
+  "median_abs_pp": 0.252,
+  "p90_abs_pp": 1.128,
+  "max_abs_pp": 12.528,
+  "mean_signed_pp": -0.265
+ },
+ "fixed_rest_days_missing": {
+  "standard": 0.014,
+  "new_format": 0.045
+ }
+}

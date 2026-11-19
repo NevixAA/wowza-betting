@@ -1,0 +1,96 @@
+{
+  "model_type": "over35",
+  "model_version": "over35_20261109T211852Z_ffeaa631",
+  "retrain_batch_id": "phase2_refit_clean-data-switch-2026-11-09",
+  "trained_at": "2026-11-09T21:18:52Z",
+  "training_start": "2021-07-30",
+  "training_end": "2026-11-01",
+  "training_cutoff": "2026-11-01",
+  "training_rows": 31251,
+  "target": "over35",
+  "recipe": "side_v9_repaired",
+  "model_recipe_version": "r2-repaired-1.0",
+  "imputer_version": "v9-train-only-imputer-1.1",
+  "feature_schema_version": "f8b51ce6cc01",
+  "n_features": 86,
+  "track_split": {
+    "primary": "standard",
+    "routed": [
+      "new_format"
+    ],
+    "router": "src.model.track_of (config.model_type_for_league)",
+    "rows": {
+      "standard": 31278,
+      "new_format": 26812
+    },
+    "rows_in_no_track": 0,
+    "status": {
+      "standard": "trained",
+      "new_format": "trained"
+    },
+    "assembled_from": "scripts/promote_clean_switch.py (Phase 2 refit, per track)"
+  },
+  "code_commit_sha": "a29fdb1ef5f6",
+  "artifact_sha256": "ffeaa631f6e67b23854fc9235cd45068865ea919741cdbab968a156187650d62",
+  "parent_champion_version": "over35_20261109T125212Z_c05e41a4",
+  "validation_metrics": {
+    "served_holdout": {
+      "accuracy": 0.6667,
+      "auc": 0.3704,
+      "log_loss": 0.65698,
+      "brier": 0.23136,
+      "ece": 0.04699
+    },
+    "blocks": {
+      "base": {
+        "rows": 24995,
+        "dates": [
+          "2021-07-30",
+          "2025-10-17"
+        ]
+      },
+      "calibration": {
+        "rows": 3076,
+        "dates": [
+          "2025-10-18",
+          "2026-03-13"
+        ]
+      },
+      "meta": {
+        "rows": 3180,
+        "dates": [
+          "2026-03-14",
+          "2026-11-01"
+        ]
+      },
+      "holdout": {
+        "rows": 27,
+        "dates": [
+          "2026-11-02",
+          "2026-11-04"
+        ]
+      }
+    },
+    "evidence": {
+      "phase2_runs": "reports/phase2_runs/ (leak-fixed re-run)",
+      "sources": [
+        "standard/over35",
+        "new_format/over35"
+      ]
+    }
+  },
+  "promotion_status": "OWNER_CLEAN_SWITCH",
+  "model_role": "CHAMPION",
+  "owner_approval": {
+    "override_id": "clean-data-switch-2026-11-09",
+    "override_stage": "second_refit",
+    "stage_quote": "Approve 2nd + final refit",
+    "owner_quote": "Override for this switch.",
+    "approved_by": "Nevo (owner)",
+    "approved_on": "2026-11-09",
+    "scope": "the one-time switch of every team model to the Phase 2 clean-retrain recipe on the repaired data, in exactly the stages below (first_refit, second_refit, final_refit); the 1,000-settled-row prospective rule (PG-1.0 Period 2) stays in force for every later promotion",
+    "installed_at": "2026-11-09T21:18:52Z",
+    "gate_version_overridden": "PG-1.0",
+    "rule_overridden": "PG-1.0 Period 2: >= 1,000 prospective first-sight settled rows per track before PROMOTE"
+  }
+}

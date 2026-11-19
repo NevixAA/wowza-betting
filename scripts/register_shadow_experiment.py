@@ -88,7 +88,7 @@ def main() -> int:
 
     raw = load_all_matches()
     if config.EXCLUDE_COVID_SEASONS:
-        raw = raw[~raw["season"].isin(config.COVID_SEASONS)]
+        raw = raw[~config.covid_season_mask(raw)]
     feat = build_features(raw)
     valid = feat.dropna(subset=["over25", "home_scored_last5"]).copy()
     valid["date"] = pd.to_datetime(valid["date"], errors="coerce")

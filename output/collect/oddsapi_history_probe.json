@@ -1,0 +1,1775 @@
+{
+ "calls": 116,
+ "calls_with_unknown_cost": 0,
+ "cap": 6000,
+ "credits_spent": 1590,
+ "leagues": {
+  "Argentina Primera Division": {
+   "credits": {
+    "events": 1,
+    "featured": 20,
+    "props": 0,
+    "side_markets": 20
+   },
+   "event": {
+    "away": "Argentinos Juniors",
+    "home": "Independiente",
+    "id": "c2d7d4c6cf173fb0085a9cc976a8ea0d",
+    "kickoff": "2024-09-22T17:30:00Z"
+   },
+   "featured": {
+    "books": 14,
+    "events": 24,
+    "snapshot": "2024-09-22T07:55:38Z",
+    "with_h2h": 24,
+    "with_totals": 24,
+    "with_totals_2_5": 15
+   },
+   "probe_date": "2024-09-22",
+   "props": {
+    "books": 0,
+    "markets": {}
+   },
+   "side_markets": {
+    "books": 3,
+    "markets": {
+     "alternate_totals": {
+      "books": 2,
+      "outcomes": 23,
+      "points": [
+       0.5,
+       1.25,
+       1.5,
+       1.75,
+       2.0,
+       2.25,
+       2.5,
+       3.5,
+       4.5
+      ]
+     },
+     "btts": {
+      "books": 2,
+      "outcomes": 4,
+      "points": []
+     }
+    }
+   },
+   "sport_key": "soccer_argentina_primera_division"
+  },
+  "Austrian Bundesliga": {
+   "credits": {
+    "events": 1,
+    "featured": 20,
+    "props": 0,
+    "side_markets": 20
+   },
+   "event": {
+    "away": "Rheindorf Altach",
+    "home": "Austria Klagenfurt",
+    "id": "fd65943d4e56c272fdc3f04fb78b7170",
+    "kickoff": "2025-03-16T16:00:00Z"
+   },
+   "featured": {
+    "books": 15,
+    "events": 6,
+    "snapshot": "2025-03-16T07:55:37Z",
+    "with_h2h": 6,
+    "with_totals": 6,
+    "with_totals_2_5": 5
+   },
+   "probe_date": "2025-03-16",
+   "props": {
+    "books": 0,
+    "markets": {}
+   },
+   "side_markets": {
+    "books": 5,
+    "markets": {
+     "alternate_totals": {
+      "books": 4,
+      "outcomes": 62,
+      "points": [
+       0.5,
+       0.75,
+       1.0,
+       1.25,
+       1.5,
+       1.75,
+       2.0,
+       2.25,
+       2.5,
+       2.75,
+       3.0,
+       3.25
+      ]
+     },
+     "btts": {
+      "books": 2,
+      "outcomes": 4,
+      "points": []
+     }
+    }
+   },
+   "sport_key": "soccer_austria_bundesliga"
+  },
+  "Belgian First Division A": {
+   "credits": {
+    "events": 1,
+    "featured": 20,
+    "side_markets": 20
+   },
+   "event": {
+    "away": "Royal Antwerp",
+    "home": "Standard Liege",
+    "id": "5dc716a143d6a85cb21384a9c33c5865",
+    "kickoff": "2025-03-16T12:30:00Z"
+   },
+   "featured": {
+    "books": 18,
+    "events": 7,
+    "snapshot": "2025-03-16T07:55:37Z",
+    "with_h2h": 7,
+    "with_totals": 7,
+    "with_totals_2_5": 6
+   },
+   "probe_date": "2025-03-16",
+   "side_markets": {
+    "books": 5,
+    "markets": {
+     "alternate_totals": {
+      "books": 4,
+      "outcomes": 74,
+      "points": [
+       0.5,
+       0.75,
+       1.0,
+       1.25,
+       1.5,
+       1.75,
+       2.0,
+       2.25,
+       2.5,
+       2.75,
+       3.0,
+       3.25
+      ]
+     },
+     "btts": {
+      "books": 2,
+      "outcomes": 4,
+      "points": []
+     }
+    }
+   },
+   "sport_key": "soccer_belgium_first_div"
+  },
+  "Brazil Serie A": {
+   "credits": {
+    "events": 1,
+    "featured": 20,
+    "props": 0,
+    "side_markets": 20
+   },
+   "event": {
+    "away": "Atletico Goianiense",
+    "home": "Bahia",
+    "id": "8b357e30dfe9125a3ef7a714f2ffa81d",
+    "kickoff": "2024-12-08T19:00:00Z"
+   },
+   "featured": {
+    "books": 17,
+    "events": 10,
+    "snapshot": "2024-12-08T07:55:37Z",
+    "with_h2h": 10,
+    "with_totals": 10,
+    "with_totals_2_5": 10
+   },
+   "probe_date": "2024-12-08",
+   "props": {
+    "books": 0,
+    "markets": {}
+   },
+   "side_markets": {
+    "books": 4,
+    "markets": {
+     "alternate_totals": {
+      "books": 3,
+      "outcomes": 40,
+      "points": [
+       1.0,
+       1.5,
+       2.0,
+       2.5,
+       2.75,
+       3.0,
+       3.25,
+       3.5,
+       4.0,
+       4.5,
+       5.0,
+       5.5
+      ]
+     },
+     "btts": {
+      "books": 3,
+      "outcomes": 6,
+      "points": []
+     }
+    }
+   },
+   "sport_key": "soccer_brazil_campeonato"
+  },
+  "Bundesliga": {
+   "credits": {
+    "events": 1,
+    "featured": 20,
+    "props": 0,
+    "side_markets": 20
+   },
+   "event": {
+    "away": "Augsburg",
+    "home": "Bayer Leverkusen",
+    "id": "3fc9fde77ba0a64655f61f559db89a4c",
+    "kickoff": "2024-05-18T13:30:00Z"
+   },
+   "featured": {
+    "books": 17,
+    "events": 9,
+    "snapshot": "2024-05-18T07:55:39Z",
+    "with_h2h": 9,
+    "with_totals": 9,
+    "with_totals_2_5": 2
+   },
+   "probe_date": "2024-05-18",
+   "props": {
+    "books": 0,
+    "markets": {}
+   },
+   "side_markets": {
+    "books": 6,
+    "markets": {
+     "alternate_totals": {
+      "books": 5,
+      "outcomes": 106,
+      "points": [
+       1.25,
+       1.5,
+       1.75,
+       2.0,
+       2.25,
+       2.5,
+       2.75,
+       3.0,
+       3.25,
+       3.5,
+       3.75,
+       4.0
+      ]
+     },
+     "btts": {
+      "books": 4,
+      "outcomes": 8,
+      "points": []
+     }
+    }
+   },
+   "sport_key": "soccer_germany_bundesliga"
+  },
+  "Bundesliga 2": {
+   "credits": {
+    "events": 1,
+    "featured": 20,
+    "props": 0,
+    "side_markets": 20
+   },
+   "event": {
+    "away": "Eintracht Braunschweig",
+    "home": "1. FC Kaiserslautern",
+    "id": "c247c5dfaef072a74ca399688f271bdc",
+    "kickoff": "2024-05-19T13:30:00Z"
+   },
+   "featured": {
+    "books": 17,
+    "events": 9,
+    "snapshot": "2024-05-19T07:55:38Z",
+    "with_h2h": 9,
+    "with_totals": 9,
+    "with_totals_2_5": 1
+   },
+   "probe_date": "2024-05-19",
+   "props": {
+    "books": 0,
+    "markets": {}
+   },
+   "side_markets": {
+    "books": 6,
+    "markets": {
+     "alternate_totals": {
+      "books": 5,
+      "outcomes": 100,
+      "points": [
+       0.5,
+       1.25,
+       1.5,
+       1.75,
+       2.0,
+       2.25,
+       2.5,
+       2.75,
+       3.0,
+       3.25,
+       3.5,
+       3.75
+      ]
+     },
+     "btts": {
+      "books": 3,
+      "outcomes": 6,
+      "points": []
+     }
+    }
+   },
+   "sport_key": "soccer_germany_bundesliga2"
+  },
+  "Champions League": {
+   "credits": {},
+   "probe_date": null,
+   "skipped": "no match day of ours in the probe window",
+   "sport_key": "soccer_uefa_champs_league"
+  },
+  "Championship": {
+   "credits": {
+    "events": 1,
+    "featured": 20,
+    "props": 0,
+    "side_markets": 20
+   },
+   "event": {
+    "away": "Bristol City",
+    "home": "Plymouth Argyle",
+    "id": "3b651a5ce1e898418dec2c8b4085276d",
+    "kickoff": "2025-01-01T12:30:00Z"
+   },
+   "featured": {
+    "books": 17,
+    "events": 24,
+    "snapshot": "2025-01-01T07:55:38Z",
+    "with_h2h": 24,
+    "with_totals": 24,
+    "with_totals_2_5": 16
+   },
+   "probe_date": "2025-01-01",
+   "props": {
+    "books": 0,
+    "markets": {}
+   },
+   "side_markets": {
+    "books": 5,
+    "markets": {
+     "alternate_totals": {
+      "books": 4,
+      "outcomes": 82,
+      "points": [
+       0.5,
+       0.75,
+       1.0,
+       1.25,
+       1.5,
+       1.75,
+       2.0,
+       2.25,
+       2.5,
+       2.75,
+       3.0,
+       3.25
+      ]
+     },
+     "btts": {
+      "books": 3,
+      "outcomes": 6,
+      "points": []
+     }
+    }
+   },
+   "sport_key": "soccer_efl_champ"
+  },
+  "China Super League": {
+   "credits": {
+    "events": 1,
+    "featured": 20,
+    "props": 0,
+    "side_markets": 20
+   },
+   "event": {
+    "away": "Shanghai Shenhua FC",
+    "home": "Chengdu Rongcheng FC",
+    "id": "9c3a45a01f8725f04a0843d888628f9a",
+    "kickoff": "2024-11-02T07:29:00Z"
+   },
+   "featured": {
+    "books": 9,
+    "events": 8,
+    "snapshot": "2024-11-02T07:55:39Z",
+    "with_h2h": 8,
+    "with_totals": 8,
+    "with_totals_2_5": 4
+   },
+   "probe_date": "2024-11-02",
+   "props": {
+    "books": 0,
+    "markets": {}
+   },
+   "side_markets": {
+    "books": 5,
+    "markets": {
+     "alternate_totals": {
+      "books": 4,
+      "outcomes": 49,
+      "points": [
+       0.5,
+       1.0,
+       1.5,
+       2.0,
+       2.25,
+       2.5,
+       2.75,
+       3.0,
+       3.25,
+       3.5,
+       4.0,
+       4.5
+      ]
+     },
+     "btts": {
+      "books": 3,
+      "outcomes": 6,
+      "points": []
+     }
+    }
+   },
+   "sport_key": "soccer_china_superleague"
+  },
+  "Conference League": {
+   "credits": {},
+   "probe_date": null,
+   "skipped": "no match day of ours in the probe window",
+   "sport_key": "soccer_uefa_europa_conference_league"
+  },
+  "Denmark Superliga": {
+   "credits": {
+    "events": 1,
+    "featured": 20,
+    "props": 0,
+    "side_markets": 20
+   },
+   "event": {
+    "away": "AGF Aarhus",
+    "home": "Vejle Boldklub",
+    "id": "c27a03986623413bbf984f74d833a6cd",
+    "kickoff": "2025-03-16T16:00:00Z"
+   },
+   "featured": {
+    "books": 19,
+    "events": 6,
+    "snapshot": "2025-03-16T07:55:37Z",
+    "with_h2h": 6,
+    "with_totals": 6,
+    "with_totals_2_5": 6
+   },
+   "probe_date": "2025-03-16",
+   "props": {
+    "books": 0,
+    "markets": {}
+   },
+   "side_markets": {
+    "books": 5,
+    "markets": {
+     "alternate_totals": {
+      "books": 4,
+      "outcomes": 82,
+      "points": [
+       0.5,
+       0.75,
+       1.0,
+       1.25,
+       1.5,
+       1.75,
+       2.0,
+       2.25,
+       2.5,
+       2.75,
+       3.0,
+       3.25
+      ]
+     },
+     "btts": {
+      "books": 2,
+      "outcomes": 4,
+      "points": []
+     }
+    }
+   },
+   "sport_key": "soccer_denmark_superliga"
+  },
+  "Dutch Eredivisie": {
+   "credits": {
+    "events": 1,
+    "featured": 20,
+    "side_markets": 20
+   },
+   "event": {
+    "away": "FC Utrecht",
+    "home": "AZ Alkmaar",
+    "id": "39801e4ab2dc534648df64f17aa43cbf",
+    "kickoff": "2024-05-19T12:30:00Z"
+   },
+   "featured": {
+    "books": 16,
+    "events": 9,
+    "snapshot": "2024-05-19T07:55:38Z",
+    "with_h2h": 9,
+    "with_totals": 9,
+    "with_totals_2_5": 1
+   },
+   "probe_date": "2024-05-19",
+   "side_markets": {
+    "books": 6,
+    "markets": {
+     "alternate_totals": {
+      "books": 5,
+      "outcomes": 99,
+      "points": [
+       0.5,
+       1.25,
+       1.5,
+       1.75,
+       2.0,
+       2.25,
+       2.5,
+       2.75,
+       3.0,
+       3.25,
+       3.5,
+       3.75
+      ]
+     },
+     "btts": {
+      "books": 3,
+      "outcomes": 6,
+      "points": []
+     }
+    }
+   },
+   "sport_key": "soccer_netherlands_eredivisie"
+  },
+  "Europa League": {
+   "credits": {},
+   "probe_date": null,
+   "skipped": "no match day of ours in the probe window",
+   "sport_key": "soccer_uefa_europa_league"
+  },
+  "Finland Veikkausliiga": {
+   "credits": {
+    "events": 1,
+    "featured": 20,
+    "props": 0,
+    "side_markets": 20
+   },
+   "event": {
+    "away": "IFK Mariehamn",
+    "home": "AC Oulu",
+    "id": "10d6dfdb3d9bec799a666443483db2d3",
+    "kickoff": "2024-10-19T11:00:00Z"
+   },
+   "featured": {
+    "books": 15,
+    "events": 6,
+    "snapshot": "2024-10-19T07:55:39Z",
+    "with_h2h": 6,
+    "with_totals": 6,
+    "with_totals_2_5": 0
+   },
+   "probe_date": "2024-10-19",
+   "props": {
+    "books": 0,
+    "markets": {}
+   },
+   "side_markets": {
+    "books": 5,
+    "markets": {
+     "alternate_totals": {
+      "books": 4,
+      "outcomes": 54,
+      "points": [
+       0.5,
+       1.0,
+       1.5,
+       2.0,
+       2.25,
+       2.5,
+       2.75,
+       3.0,
+       3.25,
+       3.5,
+       4.0,
+       4.5
+      ]
+     },
+     "btts": {
+      "books": 3,
+      "outcomes": 6,
+      "points": []
+     }
+    }
+   },
+   "sport_key": "soccer_finland_veikkausliiga"
+  },
+  "Greek Super League": {
+   "credits": {
+    "events": 1,
+    "featured": 20,
+    "side_markets": 20
+   },
+   "event": {
+    "away": "AEK Athens",
+    "home": "Aris Thessaloniki",
+    "id": "bbbb5ff52778eaa8a69165414b522739",
+    "kickoff": "2025-03-09T17:00:00Z"
+   },
+   "featured": {
+    "books": 14,
+    "events": 7,
+    "snapshot": "2025-03-09T07:55:38Z",
+    "with_h2h": 7,
+    "with_totals": 7,
+    "with_totals_2_5": 0
+   },
+   "probe_date": "2025-03-09",
+   "side_markets": {
+    "books": 5,
+    "markets": {
+     "alternate_totals": {
+      "books": 4,
+      "outcomes": 74,
+      "points": [
+       0.5,
+       0.75,
+       1.0,
+       1.25,
+       1.5,
+       1.75,
+       2.0,
+       2.25,
+       2.5,
+       2.75,
+       3.0,
+       3.25
+      ]
+     },
+     "btts": {
+      "books": 2,
+      "outcomes": 4,
+      "points": []
+     }
+    }
+   },
+   "sport_key": "soccer_greece_super_league"
+  },
+  "Ireland Premier Division": {
+   "credits": {
+    "events": 1,
+    "featured": 20,
+    "props": 0,
+    "side_markets": 20
+   },
+   "event": {
+    "away": "Bohemians",
+    "home": "Derry City",
+    "id": "7cae0656e72e4f71542776f21619e972",
+    "kickoff": "2024-05-10T18:45:00Z"
+   },
+   "featured": {
+    "books": 16,
+    "events": 5,
+    "snapshot": "2024-05-10T07:55:39Z",
+    "with_h2h": 5,
+    "with_totals": 5,
+    "with_totals_2_5": 1
+   },
+   "probe_date": "2024-05-10",
+   "props": {
+    "books": 0,
+    "markets": {}
+   },
+   "side_markets": {
+    "books": 5,
+    "markets": {
+     "alternate_totals": {
+      "books": 4,
+      "outcomes": 50,
+      "points": [
+       0.5,
+       1.0,
+       1.5,
+       2.0,
+       2.25,
+       2.5,
+       2.75,
+       3.0,
+       3.5,
+       4.0,
+       4.5,
+       5.0
+      ]
+     },
+     "btts": {
+      "books": 3,
+      "outcomes": 6,
+      "points": []
+     }
+    }
+   },
+   "sport_key": "soccer_league_of_ireland"
+  },
+  "Japan J-League": {
+   "credits": {
+    "events": 1,
+    "featured": 20,
+    "props": 0,
+    "side_markets": 20
+   },
+   "event": {
+    "away": "Nagoya Grampus",
+    "home": "Hiroshima Sanfrecce FC",
+    "id": "2347430d608c7449f984fb449ae5690b",
+    "kickoff": "2024-05-06T06:03:10Z"
+   },
+   "featured": {
+    "books": 17,
+    "events": 12,
+    "snapshot": "2024-05-06T07:55:38Z",
+    "with_h2h": 12,
+    "with_totals": 12,
+    "with_totals_2_5": 8
+   },
+   "probe_date": "2024-05-06",
+   "props": {
+    "books": 0,
+    "markets": {}
+   },
+   "side_markets": {
+    "books": 6,
+    "markets": {
+     "alternate_totals": {
+      "books": 5,
+      "outcomes": 84,
+      "points": [
+       0.5,
+       0.75,
+       1.0,
+       1.25,
+       1.5,
+       1.75,
+       2.0,
+       2.25,
+       2.5,
+       2.75,
+       3.0,
+       3.25
+      ]
+     },
+     "btts": {
+      "books": 3,
+      "outcomes": 6,
+      "points": []
+     }
+    }
+   },
+   "sport_key": "soccer_japan_j_league"
+  },
+  "K-League 1": {
+   "credits": {
+    "events": 1,
+    "featured": 20,
+    "side_markets": 20
+   },
+   "event": {
+    "away": "Daejeon Citizen",
+    "home": "Jeju United FC",
+    "id": "b647b8d21f890fea8b50c9f207cb9e99",
+    "kickoff": "2024-10-06T06:00:00Z"
+   },
+   "featured": {
+    "books": 10,
+    "events": 6,
+    "snapshot": "2024-10-06T07:55:38Z",
+    "with_h2h": 6,
+    "with_totals": 6,
+    "with_totals_2_5": 2
+   },
+   "probe_date": "2024-10-06",
+   "side_markets": {
+    "books": 6,
+    "markets": {
+     "alternate_totals": {
+      "books": 5,
+      "outcomes": 86,
+      "points": [
+       0.5,
+       0.75,
+       1.0,
+       1.25,
+       1.5,
+       1.75,
+       2.0,
+       2.25,
+       2.5,
+       2.75,
+       3.0,
+       3.25
+      ]
+     },
+     "btts": {
+      "books": 3,
+      "outcomes": 6,
+      "points": []
+     }
+    }
+   },
+   "sport_key": "soccer_korea_kleague1"
+  },
+  "La Liga": {
+   "credits": {
+    "events": 1,
+    "featured": 20,
+    "props": 0,
+    "side_markets": 20
+   },
+   "event": {
+    "away": "Almer\u00eda",
+    "home": "Mallorca",
+    "id": "0cb3a2ad054eef22dbc9290984f96160",
+    "kickoff": "2024-05-19T17:00:00Z"
+   },
+   "featured": {
+    "books": 17,
+    "events": 9,
+    "snapshot": "2024-05-19T07:55:38Z",
+    "with_h2h": 9,
+    "with_totals": 9,
+    "with_totals_2_5": 4
+   },
+   "probe_date": "2024-05-19",
+   "props": {
+    "books": 0,
+    "markets": {}
+   },
+   "side_markets": {
+    "books": 6,
+    "markets": {
+     "alternate_totals": {
+      "books": 5,
+      "outcomes": 96,
+      "points": [
+       0.5,
+       0.75,
+       1.0,
+       1.25,
+       1.5,
+       1.75,
+       2.0,
+       2.25,
+       2.5,
+       2.75,
+       3.0,
+       3.25
+      ]
+     },
+     "btts": {
+      "books": 4,
+      "outcomes": 8,
+      "points": []
+     }
+    }
+   },
+   "sport_key": "soccer_spain_la_liga"
+  },
+  "La Liga 2": {
+   "credits": {
+    "events": 1,
+    "featured": 20,
+    "props": 0,
+    "side_markets": 20
+   },
+   "event": {
+    "away": "CD Mirand\u00e9s",
+    "home": "Albacete",
+    "id": "b8e2a546f6c0c69ba2af50b053aec7fa",
+    "kickoff": "2024-05-26T16:30:00Z"
+   },
+   "featured": {
+    "books": 16,
+    "events": 11,
+    "snapshot": "2024-05-26T07:55:38Z",
+    "with_h2h": 11,
+    "with_totals": 11,
+    "with_totals_2_5": 5
+   },
+   "probe_date": "2024-05-26",
+   "props": {
+    "books": 0,
+    "markets": {}
+   },
+   "side_markets": {
+    "books": 6,
+    "markets": {
+     "alternate_totals": {
+      "books": 5,
+      "outcomes": 92,
+      "points": [
+       0.5,
+       0.75,
+       1.0,
+       1.25,
+       1.5,
+       1.75,
+       2.0,
+       2.25,
+       2.5,
+       2.75,
+       3.0,
+       3.25
+      ]
+     },
+     "btts": {
+      "books": 3,
+      "outcomes": 6,
+      "points": []
+     }
+    }
+   },
+   "sport_key": "soccer_spain_segunda_division"
+  },
+  "League One": {
+   "credits": {
+    "events": 1,
+    "featured": 20,
+    "props": 0,
+    "side_markets": 20
+   },
+   "event": {
+    "away": "Wycombe Wanderers",
+    "home": "Barnsley",
+    "id": "b917da935b5c4370a42f345849c2009c",
+    "kickoff": "2024-10-01T18:45:00Z"
+   },
+   "featured": {
+    "books": 17,
+    "events": 24,
+    "snapshot": "2024-10-01T07:55:38Z",
+    "with_h2h": 24,
+    "with_totals": 24,
+    "with_totals_2_5": 19
+   },
+   "probe_date": "2024-10-01",
+   "props": {
+    "books": 0,
+    "markets": {}
+   },
+   "side_markets": {
+    "books": 6,
+    "markets": {
+     "alternate_totals": {
+      "books": 4,
+      "outcomes": 52,
+      "points": [
+       1.5,
+       1.75,
+       2.0,
+       2.25,
+       2.5,
+       2.75,
+       3.0,
+       3.25,
+       3.5,
+       3.75,
+       4.0,
+       4.5
+      ]
+     },
+     "btts": {
+      "books": 4,
+      "outcomes": 8,
+      "points": []
+     }
+    }
+   },
+   "sport_key": "soccer_england_league1"
+  },
+  "League Two": {
+   "credits": {
+    "events": 1,
+    "featured": 20,
+    "props": 0,
+    "side_markets": 20
+   },
+   "event": {
+    "away": "Grimsby Town",
+    "home": "Walsall",
+    "id": "62d1a2ed7ad4b09ee43ad25813384a2b",
+    "kickoff": "2025-03-08T12:30:00Z"
+   },
+   "featured": {
+    "books": 15,
+    "events": 12,
+    "snapshot": "2025-03-08T07:55:38Z",
+    "with_h2h": 12,
+    "with_totals": 12,
+    "with_totals_2_5": 3
+   },
+   "probe_date": "2025-03-08",
+   "props": {
+    "books": 0,
+    "markets": {}
+   },
+   "side_markets": {
+    "books": 5,
+    "markets": {
+     "alternate_totals": {
+      "books": 4,
+      "outcomes": 60,
+      "points": [
+       0.5,
+       1.0,
+       1.5,
+       1.75,
+       2.0,
+       2.25,
+       2.5,
+       2.75,
+       3.0,
+       3.25,
+       3.5,
+       3.75
+      ]
+     },
+     "btts": {
+      "books": 3,
+      "outcomes": 6,
+      "points": []
+     }
+    }
+   },
+   "sport_key": "soccer_england_league2"
+  },
+  "Ligue 1": {
+   "credits": {
+    "events": 1,
+    "featured": 20,
+    "props": 80,
+    "side_markets": 20
+   },
+   "event": {
+    "away": "Nantes",
+    "home": "AS Monaco",
+    "id": "982c5589499af6eb0efb6786125b5be1",
+    "kickoff": "2024-05-19T19:00:00Z"
+   },
+   "featured": {
+    "books": 17,
+    "events": 9,
+    "snapshot": "2024-05-19T07:55:38Z",
+    "with_h2h": 9,
+    "with_totals": 9,
+    "with_totals_2_5": 3
+   },
+   "probe_date": "2024-05-19",
+   "props": {
+    "books": 6,
+    "markets": {
+     "player_goal_scorer_anytime": {
+      "books": 6,
+      "outcomes": 279,
+      "points": []
+     },
+     "player_shots_on_target": {
+      "books": 2,
+      "outcomes": 64,
+      "points": [
+       0.5,
+       1.5,
+       2.5
+      ]
+     }
+    }
+   },
+   "side_markets": {
+    "books": 6,
+    "markets": {
+     "alternate_totals": {
+      "books": 5,
+      "outcomes": 105,
+      "points": [
+       0.5,
+       1.0,
+       1.25,
+       1.5,
+       1.75,
+       2.0,
+       2.25,
+       2.5,
+       2.75,
+       3.0,
+       3.25,
+       3.5
+      ]
+     },
+     "btts": {
+      "books": 4,
+      "outcomes": 8,
+      "points": []
+     }
+    }
+   },
+   "sport_key": "soccer_france_ligue_one"
+  },
+  "Ligue 2": {
+   "credits": {
+    "events": 1,
+    "featured": 20,
+    "props": 0,
+    "side_markets": 20
+   },
+   "event": {
+    "away": "Caen",
+    "home": "Auxerre",
+    "id": "423b445e35d75f67c8268d95ac61df05",
+    "kickoff": "2024-03-16T14:00:00Z"
+   },
+   "featured": {
+    "books": 16,
+    "events": 10,
+    "snapshot": "2024-03-16T07:55:38Z",
+    "with_h2h": 10,
+    "with_totals": 10,
+    "with_totals_2_5": 3
+   },
+   "probe_date": "2024-03-16",
+   "props": {
+    "books": 0,
+    "markets": {}
+   },
+   "side_markets": {
+    "books": 5,
+    "markets": {
+     "alternate_totals": {
+      "books": 5,
+      "outcomes": 92,
+      "points": [
+       0.5,
+       0.75,
+       1.0,
+       1.25,
+       1.5,
+       1.75,
+       2.0,
+       2.25,
+       2.5,
+       2.75,
+       3.0,
+       3.25
+      ]
+     },
+     "btts": {
+      "books": 2,
+      "outcomes": 4,
+      "points": []
+     }
+    }
+   },
+   "sport_key": "soccer_france_ligue_two"
+  },
+  "Mexico Liga MX": {
+   "credits": {
+    "events": 1,
+    "featured": 20,
+    "props": 0,
+    "side_markets": 20
+   },
+   "event": {
+    "away": "Tijuana",
+    "home": "Toluca",
+    "id": "3e76397fb3af77f71c1cf4643df5f3dc",
+    "kickoff": "2024-09-14T22:45:00Z"
+   },
+   "featured": {
+    "books": 15,
+    "events": 12,
+    "snapshot": "2024-09-14T07:55:39Z",
+    "with_h2h": 12,
+    "with_totals": 12,
+    "with_totals_2_5": 6
+   },
+   "probe_date": "2024-09-14",
+   "props": {
+    "books": 0,
+    "markets": {}
+   },
+   "side_markets": {
+    "books": 4,
+    "markets": {
+     "alternate_totals": {
+      "books": 4,
+      "outcomes": 60,
+      "points": [
+       1.5,
+       2.0,
+       2.25,
+       2.5,
+       2.75,
+       3.0,
+       3.25,
+       3.5,
+       3.75,
+       4.0,
+       4.25,
+       4.5
+      ]
+     },
+     "btts": {
+      "books": 1,
+      "outcomes": 2,
+      "points": []
+     }
+    }
+   },
+   "sport_key": "soccer_mexico_ligamx"
+  },
+  "Norway Eliteserien": {
+   "credits": {
+    "events": 1,
+    "featured": 20,
+    "props": 0,
+    "side_markets": 20
+   },
+   "event": {
+    "away": "Bod\u00f8/Glimt",
+    "home": "HamKam",
+    "id": "1f7a92882d8630c16ab5dd5a29f97523",
+    "kickoff": "2024-05-20T15:00:00Z"
+   },
+   "featured": {
+    "books": 17,
+    "events": 8,
+    "snapshot": "2024-05-20T07:55:37Z",
+    "with_h2h": 8,
+    "with_totals": 8,
+    "with_totals_2_5": 5
+   },
+   "probe_date": "2024-05-20",
+   "props": {
+    "books": 0,
+    "markets": {}
+   },
+   "side_markets": {
+    "books": 6,
+    "markets": {
+     "alternate_totals": {
+      "books": 5,
+      "outcomes": 92,
+      "points": [
+       0.5,
+       1.0,
+       1.25,
+       1.5,
+       1.75,
+       2.0,
+       2.25,
+       2.5,
+       2.75,
+       3.0,
+       3.25,
+       3.5
+      ]
+     },
+     "btts": {
+      "books": 3,
+      "outcomes": 6,
+      "points": []
+     }
+    }
+   },
+   "sport_key": "soccer_norway_eliteserien"
+  },
+  "Poland Ekstraklasa": {
+   "credits": {},
+   "probe_date": null,
+   "skipped": "no match day of ours in the probe window",
+   "sport_key": "soccer_poland_ekstraklasa"
+  },
+  "Premier League": {
+   "credits": {
+    "events": 1,
+    "featured": 20,
+    "props": 160,
+    "side_markets": 20
+   },
+   "event": {
+    "away": "Everton",
+    "home": "Arsenal",
+    "id": "672a1729a6b0323ecd5b47e4d5a33c23",
+    "kickoff": "2024-05-19T15:00:00Z"
+   },
+   "featured": {
+    "books": 17,
+    "events": 10,
+    "snapshot": "2024-05-19T07:55:38Z",
+    "with_h2h": 10,
+    "with_totals": 10,
+    "with_totals_2_5": 0
+   },
+   "probe_date": "2024-05-19",
+   "props": {
+    "books": 7,
+    "markets": {
+     "player_assists": {
+      "books": 3,
+      "outcomes": 74,
+      "points": [
+       0.5,
+       1.5
+      ]
+     },
+     "player_goal_scorer_anytime": {
+      "books": 7,
+      "outcomes": 354,
+      "points": []
+     },
+     "player_shots_on_target": {
+      "books": 5,
+      "outcomes": 139,
+      "points": [
+       0.5,
+       1.0,
+       1.5,
+       2.5,
+       3.5
+      ]
+     },
+     "player_to_receive_card": {
+      "books": 2,
+      "outcomes": 90,
+      "points": []
+     }
+    }
+   },
+   "side_markets": {
+    "books": 6,
+    "markets": {
+     "alternate_totals": {
+      "books": 5,
+      "outcomes": 107,
+      "points": [
+       0.5,
+       1.0,
+       1.25,
+       1.5,
+       1.75,
+       2.0,
+       2.25,
+       2.5,
+       2.75,
+       3.0,
+       3.25,
+       3.5
+      ]
+     },
+     "btts": {
+      "books": 4,
+      "outcomes": 8,
+      "points": []
+     }
+    }
+   },
+   "sport_key": "soccer_epl"
+  },
+  "Saudi Pro League": {
+   "credits": {
+    "events": 0,
+    "featured": 0
+   },
+   "event": "no event of that day in the provider's event list",
+   "featured": {
+    "books": 0,
+    "events": 0,
+    "snapshot": null,
+    "with_h2h": 0,
+    "with_totals": 0,
+    "with_totals_2_5": 0
+   },
+   "probe_date": "2024-05-27",
+   "sport_key": "soccer_saudi_arabia_pro_league"
+  },
+  "Scottish Premiership": {
+   "credits": {
+    "events": 1,
+    "featured": 20,
+    "side_markets": 20
+   },
+   "event": {
+    "away": "Rangers",
+    "home": "Hibernian",
+    "id": "6ff45f7f0961a9a63d0433f784abaf3c",
+    "kickoff": "2025-01-05T12:00:00Z"
+   },
+   "featured": {
+    "books": 15,
+    "events": 6,
+    "snapshot": "2025-01-05T07:55:39Z",
+    "with_h2h": 6,
+    "with_totals": 6,
+    "with_totals_2_5": 4
+   },
+   "probe_date": "2025-01-05",
+   "side_markets": {
+    "books": 5,
+    "markets": {
+     "alternate_totals": {
+      "books": 4,
+      "outcomes": 76,
+      "points": [
+       1.0,
+       1.25,
+       1.5,
+       1.75,
+       2.0,
+       2.25,
+       2.5,
+       2.75,
+       3.0,
+       3.25,
+       3.5,
+       3.75
+      ]
+     },
+     "btts": {
+      "books": 2,
+      "outcomes": 4,
+      "points": []
+     }
+    }
+   },
+   "sport_key": "soccer_spl"
+  },
+  "Serie A": {
+   "credits": {
+    "events": 1,
+    "featured": 20,
+    "props": 0,
+    "side_markets": 20
+   },
+   "event": {
+    "away": "Torino",
+    "home": "Atalanta BC",
+    "id": "bf5d4a250797068cf3b51fa08b24a66f",
+    "kickoff": "2024-05-26T16:00:00Z"
+   },
+   "featured": {
+    "books": 17,
+    "events": 6,
+    "snapshot": "2024-05-26T07:55:38Z",
+    "with_h2h": 6,
+    "with_totals": 6,
+    "with_totals_2_5": 2
+   },
+   "probe_date": "2024-05-26",
+   "props": {
+    "books": 0,
+    "markets": {}
+   },
+   "side_markets": {
+    "books": 6,
+    "markets": {
+     "alternate_totals": {
+      "books": 5,
+      "outcomes": 102,
+      "points": [
+       0.5,
+       0.75,
+       1.0,
+       1.25,
+       1.5,
+       1.75,
+       2.0,
+       2.25,
+       2.5,
+       2.75,
+       3.0,
+       3.25
+      ]
+     },
+     "btts": {
+      "books": 4,
+      "outcomes": 8,
+      "points": []
+     }
+    }
+   },
+   "sport_key": "soccer_italy_serie_a"
+  },
+  "Serie B": {
+   "credits": {
+    "events": 1,
+    "featured": 20,
+    "props": 0,
+    "side_markets": 20
+   },
+   "event": {
+    "away": "Ascoli",
+    "home": "Palermo",
+    "id": "fc267d0fee5e8af1a48c3e9252f840b2",
+    "kickoff": "2024-05-05T13:00:00Z"
+   },
+   "featured": {
+    "books": 15,
+    "events": 10,
+    "snapshot": "2024-05-05T07:55:39Z",
+    "with_h2h": 10,
+    "with_totals": 10,
+    "with_totals_2_5": 6
+   },
+   "probe_date": "2024-05-05",
+   "props": {
+    "books": 0,
+    "markets": {}
+   },
+   "side_markets": {
+    "books": 6,
+    "markets": {
+     "alternate_totals": {
+      "books": 5,
+      "outcomes": 86,
+      "points": [
+       0.5,
+       0.75,
+       1.0,
+       1.25,
+       1.5,
+       1.75,
+       2.0,
+       2.25,
+       2.5,
+       2.75,
+       3.0,
+       3.25
+      ]
+     },
+     "btts": {
+      "books": 3,
+      "outcomes": 6,
+      "points": []
+     }
+    }
+   },
+   "sport_key": "soccer_italy_serie_b"
+  },
+  "Sweden Allsvenskan": {
+   "credits": {
+    "events": 1,
+    "featured": 20,
+    "props": 0,
+    "side_markets": 20
+   },
+   "event": {
+    "away": "Halmstads BK",
+    "home": "AIK",
+    "id": "a673baaaad84b33f7a27dfac723f18ef",
+    "kickoff": "2024-11-10T14:00:00Z"
+   },
+   "featured": {
+    "books": 16,
+    "events": 8,
+    "snapshot": "2024-11-10T07:55:37Z",
+    "with_h2h": 8,
+    "with_totals": 8,
+    "with_totals_2_5": 2
+   },
+   "probe_date": "2024-11-10",
+   "props": {
+    "books": 0,
+    "markets": {}
+   },
+   "side_markets": {
+    "books": 6,
+    "markets": {
+     "alternate_totals": {
+      "books": 4,
+      "outcomes": 72,
+      "points": [
+       0.5,
+       0.75,
+       1.0,
+       1.25,
+       1.5,
+       1.75,
+       2.0,
+       2.25,
+       2.5,
+       2.75,
+       3.0,
+       3.25
+      ]
+     },
+     "btts": {
+      "books": 3,
+      "outcomes": 6,
+      "points": []
+     }
+    }
+   },
+   "sport_key": "soccer_sweden_allsvenskan"
+  },
+  "Turkish Super Lig": {
+   "credits": {
+    "events": 1,
+    "featured": 20,
+    "side_markets": 20
+   },
+   "event": {
+    "away": "Gazi\u015fehir Gaziantep",
+    "home": "Adana Demirspor",
+    "id": "9c877bc2ecc6bd65397aa1ffce060b31",
+    "kickoff": "2024-05-12T16:00:00Z"
+   },
+   "featured": {
+    "books": 16,
+    "events": 10,
+    "snapshot": "2024-05-12T07:55:38Z",
+    "with_h2h": 10,
+    "with_totals": 10,
+    "with_totals_2_5": 5
+   },
+   "probe_date": "2024-05-12",
+   "side_markets": {
+    "books": 5,
+    "markets": {
+     "alternate_totals": {
+      "books": 4,
+      "outcomes": 88,
+      "points": [
+       0.5,
+       1.0,
+       1.25,
+       1.5,
+       1.75,
+       2.0,
+       2.25,
+       2.5,
+       2.75,
+       3.0,
+       3.25,
+       3.5
+      ]
+     },
+     "btts": {
+      "books": 2,
+      "outcomes": 4,
+      "points": []
+     }
+    }
+   },
+   "sport_key": "soccer_turkey_super_league"
+  },
+  "USA MLS": {
+   "credits": {
+    "events": 1,
+    "featured": 20,
+    "props": 120,
+    "side_markets": 20
+   },
+   "event": {
+    "away": "LA Galaxy",
+    "home": "Houston Dynamo",
+    "id": "b46eeaf8a59a45190fa9dcd7aaf6935f",
+    "kickoff": "2024-10-20T01:00:00Z"
+   },
+   "featured": {
+    "books": 11,
+    "events": 3,
+    "snapshot": "2024-10-20T03:25:38Z",
+    "with_h2h": 3,
+    "with_totals": 3,
+    "with_totals_2_5": 0
+   },
+   "probe_date": "2024-10-20",
+   "props": {
+    "books": 5,
+    "markets": {
+     "player_assists": {
+      "books": 2,
+      "outcomes": 32,
+      "points": [
+       0.5
+      ]
+     },
+     "player_goal_scorer_anytime": {
+      "books": 5,
+      "outcomes": 193,
+      "points": []
+     },
+     "player_shots_on_target": {
+      "books": 2,
+      "outcomes": 119,
+      "points": [
+       0.5,
+       1.0,
+       1.5,
+       2.0,
+       2.5,
+       3.0,
+       4.0
+      ]
+     }
+    }
+   },
+   "side_markets": {
+    "books": 6,
+    "markets": {
+     "alternate_totals": {
+      "books": 5,
+      "outcomes": 99,
+      "points": [
+       0.5,
+       1.0,
+       1.25,
+       1.5,
+       1.75,
+       2.0,
+       2.25,
+       2.5,
+       2.75,
+       3.0,
+       3.25,
+       3.5
+      ]
+     },
+     "btts": {
+      "books": 4,
+      "outcomes": 8,
+      "points": []
+     }
+    }
+   },
+   "sport_key": "soccer_usa_mls"
+  },
+  "World Cup 2026": {
+   "credits": {},
+   "probe_date": null,
+   "skipped": "no match day of ours in the probe window",
+   "sport_key": "soccer_fifa_world_cup"
+  }
+ },
+ "probed_at": "2026-11-09T15:51:09Z",
+ "stopped": false
+}
