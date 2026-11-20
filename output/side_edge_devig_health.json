@@ -1,45 +1,45 @@
 {
   "artifact": "side_edge_devig_health",
   "shadow_version": "side_edge_devig_shadow-1.0",
-  "generated_at": "2026-11-20T09:55:39Z",
+  "generated_at": "2026-11-20T17:06:06Z",
   "production_rule": "two-sided de-vig since 2026-11-01 (config.SIDE_EDGE_FAIR_PRICE); edge_prod below = the old (1/odds)/1.08, kept for comparison",
   "shadow_rule": "edge = p_model - median_books(power_devig(same-book two-sided pair)), pre-kickoff, carried forward to the decision time; same thresholds",
   "quotes_from": "2026-08-19 09:23:27+00:00",
-  "quote_rows": 237965,
+  "quote_rows": 240663,
   "board": {
-    "generated_at": "2026-11-20T07:03:41Z",
-    "rows": 250,
-    "production_tips": 32,
+    "generated_at": "2026-11-20T16:59:28Z",
+    "rows": 90,
+    "production_tips": 9,
     "classification": {
-      "CONFIRMED_BY_DEVIG": 20,
-      "ONLY_BECAUSE_OF_1_08": 12
+      "CONFIRMED_BY_DEVIG": 5,
+      "ONLY_BECAUSE_OF_1_08": 4
     },
     "by_market": {
       "btts": {
-        "CONFIRMED_BY_DEVIG": 15,
-        "ONLY_BECAUSE_OF_1_08": 4
+        "ONLY_BECAUSE_OF_1_08": 1,
+        "CONFIRMED_BY_DEVIG": 1
       },
       "over15": {
-        "ONLY_BECAUSE_OF_1_08": 8,
-        "CONFIRMED_BY_DEVIG": 5
+        "CONFIRMED_BY_DEVIG": 4,
+        "ONLY_BECAUSE_OF_1_08": 3
       }
     },
-    "devigged_rows": 250,
-    "median_pair_overround": 0.0809,
-    "median_edge_prod_minus_devig_pp": 0.79,
-    "mean_edge_prod_minus_devig_pp": 0.58,
-    "p90_edge_prod_minus_devig_pp": 2.77,
-    "rows_prod_edge_inflated_ge_2pp": 39,
+    "devigged_rows": 90,
+    "median_pair_overround": 0.0798,
+    "median_edge_prod_minus_devig_pp": 0.24,
+    "mean_edge_prod_minus_devig_pp": 0.26,
+    "p90_edge_prod_minus_devig_pp": 3.32,
+    "rows_prod_edge_inflated_ge_2pp": 19,
     "rows_pair_overround_below_6pct": 3,
-    "mean_inflation_pp_when_overround_below_6pct": 0.51
+    "mean_inflation_pp_when_overround_below_6pct": 1.04
   },
   "ledger_retrospective": {
     "label": "RETROSPECTIVE",
-    "tips_since_quotes_exist": 742,
-    "rows": 742,
-    "production_tips": 742,
+    "tips_since_quotes_exist": 743,
+    "rows": 743,
+    "production_tips": 743,
     "classification": {
-      "CONFIRMED_BY_DEVIG": 316,
+      "CONFIRMED_BY_DEVIG": 317,
       "ONLY_BECAUSE_OF_1_08": 293,
       "UNVERIFIABLE_ONE_SIDED": 133
     },
@@ -50,7 +50,7 @@
         "UNVERIFIABLE_ONE_SIDED": 99
       },
       "over15": {
-        "CONFIRMED_BY_DEVIG": 71,
+        "CONFIRMED_BY_DEVIG": 72,
         "ONLY_BECAUSE_OF_1_08": 33,
         "UNVERIFIABLE_ONE_SIDED": 25
       },
@@ -60,14 +60,14 @@
         "CONFIRMED_BY_DEVIG": 8
       }
     },
-    "devigged_rows": 609,
+    "devigged_rows": 610,
     "median_pair_overround": 0.0798,
     "median_edge_prod_minus_devig_pp": 0.07,
-    "mean_edge_prod_minus_devig_pp": 0.38,
+    "mean_edge_prod_minus_devig_pp": 0.39,
     "p90_edge_prod_minus_devig_pp": 2.51,
-    "rows_prod_edge_inflated_ge_2pp": 99,
-    "rows_pair_overround_below_6pct": 16,
-    "mean_inflation_pp_when_overround_below_6pct": 2.66,
+    "rows_prod_edge_inflated_ge_2pp": 100,
+    "rows_pair_overround_below_6pct": 17,
+    "mean_inflation_pp_when_overround_below_6pct": 2.65,
     "examples_only_because_of_1_08": [
       {
         "fixture": "Wolverhampton Wanderers v Derby County",
@@ -160,12 +160,12 @@
     ]
   },
   "ledger_open_tips": {
-    "rows": 41,
-    "production_tips": 41,
+    "rows": 42,
+    "production_tips": 42,
     "classification": {
       "UNVERIFIABLE_ONE_SIDED": 16,
       "ONLY_BECAUSE_OF_1_08": 14,
-      "CONFIRMED_BY_DEVIG": 11
+      "CONFIRMED_BY_DEVIG": 12
     },
     "by_market": {
       "btts": {
@@ -174,7 +174,7 @@
         "ONLY_BECAUSE_OF_1_08": 7
       },
       "over15": {
-        "CONFIRMED_BY_DEVIG": 2,
+        "CONFIRMED_BY_DEVIG": 3,
         "UNVERIFIABLE_ONE_SIDED": 1,
         "ONLY_BECAUSE_OF_1_08": 1
       },
@@ -183,12 +183,13 @@
         "CONFIRMED_BY_DEVIG": 1
       }
     },
-    "devigged_rows": 25,
-    "median_pair_overround": 0.0795,
-    "median_edge_prod_minus_devig_pp": -0.41,
-    "mean_edge_prod_minus_devig_pp": 0.01,
-    "p90_edge_prod_minus_devig_pp": 2.2,
-    "rows_prod_edge_inflated_ge_2pp": 4,
-    "rows_pair_overround_below_6pct": 0
+    "devigged_rows": 26,
+    "median_pair_overround": 0.0793,
+    "median_edge_prod_minus_devig_pp": -0.39,
+    "mean_edge_prod_minus_devig_pp": 0.11,
+    "p90_edge_prod_minus_devig_pp": 2.4,
+    "rows_prod_edge_inflated_ge_2pp": 5,
+    "rows_pair_overround_below_6pct": 1,
+    "mean_inflation_pp_when_overround_below_6pct": 2.5
   }
 }
