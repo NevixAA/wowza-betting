@@ -1,6 +1,6 @@
 {
  "schema_version": "pl/1.0",
- "generated_at": "2026-11-20T16:22:58Z",
+ "generated_at": "2026-11-20T23:21:47Z",
  "layout": "output/prediction_ledger/<repo>/<model_id>/<market>/<league_slug>/<season>.csv",
  "key": [
   "model_id",
@@ -40,27 +40,27 @@
     "standard_repaired_20261028T123040Z_1f5805e6"
    ],
    "first_prediction": "2026-11-17T17:20:31Z",
-   "last_prediction": "2026-11-20T16:06:19Z",
-   "rows": 756,
-   "predicted": 756,
+   "last_prediction": "2026-11-20T23:06:42Z",
+   "rows": 776,
+   "predicted": 776,
    "settled": 0,
    "leagues": {
     "belgian_first_division_a": {
-     "rows": 18,
-     "predicted": 18,
+     "rows": 20,
+     "predicted": 20,
      "settled": 0,
      "first": "2026-11-19T22:05:30Z",
-     "last": "2026-11-19T22:05:30Z",
+     "last": "2026-11-20T23:06:42Z",
      "seasons": [
       "2026"
      ]
     },
     "bundesliga_2": {
-     "rows": 58,
-     "predicted": 58,
+     "rows": 62,
+     "predicted": 62,
      "settled": 0,
      "first": "2026-11-17T17:20:31Z",
-     "last": "2026-11-20T16:06:19Z",
+     "last": "2026-11-20T23:06:17Z",
      "seasons": [
       "2026"
      ]
@@ -76,11 +76,11 @@
      ]
     },
     "dutch_eredivisie": {
-     "rows": 18,
-     "predicted": 18,
+     "rows": 20,
+     "predicted": 20,
      "settled": 0,
      "first": "2026-11-19T22:05:30Z",
-     "last": "2026-11-19T22:05:30Z",
+     "last": "2026-11-20T23:06:42Z",
      "seasons": [
       "2026"
      ]
@@ -96,21 +96,21 @@
      ]
     },
     "la_liga_2": {
-     "rows": 66,
-     "predicted": 66,
+     "rows": 68,
+     "predicted": 68,
      "settled": 0,
      "first": "2026-11-17T17:20:31Z",
-     "last": "2026-11-19T14:54:45Z",
+     "last": "2026-11-20T23:06:17Z",
      "seasons": [
       "2026"
      ]
     },
     "league_one": {
-     "rows": 84,
-     "predicted": 84,
+     "rows": 86,
+     "predicted": 86,
      "settled": 0,
      "first": "2026-11-17T17:20:31Z",
-     "last": "2026-11-19T14:54:45Z",
+     "last": "2026-11-20T23:06:17Z",
      "seasons": [
       "2026"
      ]
@@ -136,11 +136,21 @@
      ]
     },
     "national_league": {
-     "rows": 48,
-     "predicted": 48,
+     "rows": 50,
+     "predicted": 50,
      "settled": 0,
      "first": "2026-11-19T22:05:30Z",
-     "last": "2026-11-19T22:05:30Z",
+     "last": "2026-11-20T23:06:42Z",
+     "seasons": [
+      "2026"
+     ]
+    },
+    "portuguese_primeira_liga": {
+     "rows": 2,
+     "predicted": 2,
+     "settled": 0,
+     "first": "2026-11-20T23:06:42Z",
+     "last": "2026-11-20T23:06:42Z",
      "seasons": [
       "2026"
      ]
@@ -196,11 +206,11 @@
      ]
     },
     "turkish_super_lig": {
-     "rows": 18,
-     "predicted": 18,
+     "rows": 22,
+     "predicted": 22,
      "settled": 0,
      "first": "2026-11-19T22:05:30Z",
-     "last": "2026-11-19T22:05:30Z",
+     "last": "2026-11-20T17:00:00Z",
      "seasons": [
       "2026"
      ]
@@ -224,27 +234,27 @@
     "over15_20261119T134019Z_ca01b7d3"
    ],
    "first_prediction": "2026-11-17T17:20:31Z",
-   "last_prediction": "2026-11-20T16:06:19Z",
-   "rows": 756,
-   "predicted": 756,
+   "last_prediction": "2026-11-20T23:06:42Z",
+   "rows": 776,
+   "predicted": 776,
    "settled": 0,
    "leagues": {
     "belgian_first_division_a": {
-     "rows": 18,
-     "predicted": 18,
+     "rows": 20,
+     "predicted": 20,
      "settled": 0,
      "first": "2026-11-19T22:05:30Z",
-     "last": "2026-11-19T22:05:30Z",
+     "last": "2026-11-20T23:06:42Z",
      "seasons": [
       "2026"
      ]
     },
     "bundesliga_2": {
-     "rows": 58,
-     "predicted": 58,
+     "rows": 62,
+     "predicted": 62,
      "settled": 0,
      "first": "2026-11-17T17:20:31Z",
-     "last": "2026-11-20T16:06:19Z",
+     "last": "2026-11-20T23:06:17Z",
      "seasons": [
       "2026"
      ]
@@ -260,11 +270,11 @@
      ]
     },
     "dutch_eredivisie": {
-     "rows": 18,
-     "predicted": 18,
+     "rows": 20,
+     "predicted": 20,
      "settled": 0,
      "first": "2026-11-19T22:05:30Z",
-     "last": "2026-11-19T22:05:30Z",
+     "last": "2026-11-20T23:06:42Z",
      "seasons": [
       "2026"
      ]
@@ -280,21 +290,21 @@
      ]
     },
     "la_liga_2": {
-     "rows": 66,
-     "predicted": 66,
+     "rows": 68,
+     "predicted": 68,
      "settled": 0,
      "first": "2026-11-17T17:20:31Z",
-     "last": "2026-11-19T14:54:45Z",
+     "last": "2026-11-20T23:06:17Z",
      "seasons": [
       "2026"
      ]
     },
     "league_one": {
-     "rows": 84,
-     "predicted": 84,
+     "rows": 86,
+     "predicted": 86,
      "settled": 0,
      "first": "2026-11-17T17:20:31Z",
-     "last": "2026-11-19T14:54:45Z",
+     "last": "2026-11-20T23:06:17Z",
      "seasons": [
       "2026"
      ]
@@ -320,11 +330,21 @@
      ]
     },
     "national_league": {
-     "rows": 48,
-     "predicted": 48,
+     "rows": 50,
+     "predicted": 50,
      "settled": 0,
      "first": "2026-11-19T22:05:30Z",
-     "last": "2026-11-19T22:05:30Z",
+     "last": "2026-11-20T23:06:42Z",
+     "seasons": [
+      "2026"
+     ]
+    },
+    "portuguese_primeira_liga": {
+     "rows": 2,
+     "predicted": 2,
+     "settled": 0,
+     "first": "2026-11-20T23:06:42Z",
+     "last": "2026-11-20T23:06:42Z",
      "seasons": [
       "2026"
      ]
@@ -380,11 +400,11 @@
      ]
     },
     "turkish_super_lig": {
-     "rows": 18,
-     "predicted": 18,
+     "rows": 22,
+     "predicted": 22,
      "settled": 0,
      "first": "2026-11-19T22:05:30Z",
-     "last": "2026-11-19T22:05:30Z",
+     "last": "2026-11-20T17:00:00Z",
      "seasons": [
       "2026"
      ]
@@ -408,27 +428,27 @@
     "over35_20261119T134019Z_e8b12d74"
    ],
    "first_prediction": "2026-11-17T17:20:31Z",
-   "last_prediction": "2026-11-20T16:06:19Z",
-   "rows": 756,
-   "predicted": 756,
+   "last_prediction": "2026-11-20T23:06:42Z",
+   "rows": 776,
+   "predicted": 776,
    "settled": 0,
    "leagues": {
     "belgian_first_division_a": {
-     "rows": 18,
-     "predicted": 18,
+     "rows": 20,
+     "predicted": 20,
      "settled": 0,
      "first": "2026-11-19T22:05:30Z",
-     "last": "2026-11-19T22:05:30Z",
+     "last": "2026-11-20T23:06:42Z",
      "seasons": [
       "2026"
      ]
     },
     "bundesliga_2": {
-     "rows": 58,
-     "predicted": 58,
+     "rows": 62,
+     "predicted": 62,
      "settled": 0,
      "first": "2026-11-17T17:20:31Z",
-     "last": "2026-11-20T16:06:19Z",
+     "last": "2026-11-20T23:06:17Z",
      "seasons": [
       "2026"
      ]
@@ -444,11 +464,11 @@
      ]
     },
     "dutch_eredivisie": {
-     "rows": 18,
-     "predicted": 18,
+     "rows": 20,
+     "predicted": 20,
      "settled": 0,
      "first": "2026-11-19T22:05:30Z",
-     "last": "2026-11-19T22:05:30Z",
+     "last": "2026-11-20T23:06:42Z",
      "seasons": [
       "2026"
      ]
@@ -464,21 +484,21 @@
      ]
     },
     "la_liga_2": {
-     "rows": 66,
-     "predicted": 66,
+     "rows": 68,
+     "predicted": 68,
      "settled": 0,
      "first": "2026-11-17T17:20:31Z",
-     "last": "2026-11-19T14:54:45Z",
+     "last": "2026-11-20T23:06:17Z",
      "seasons": [
       "2026"
      ]
     },
     "league_one": {
-     "rows": 84,
-     "predicted": 84,
+     "rows": 86,
+     "predicted": 86,
      "settled": 0,
      "first": "2026-11-17T17:20:31Z",
-     "last": "2026-11-19T14:54:45Z",
+     "last": "2026-11-20T23:06:17Z",
      "seasons": [
       "2026"
      ]
@@ -504,11 +524,21 @@
      ]
     },
     "national_league": {
-     "rows": 48,
-     "predicted": 48,
+     "rows": 50,
+     "predicted": 50,
      "settled": 0,
      "first": "2026-11-19T22:05:30Z",
-     "last": "2026-11-19T22:05:30Z",
+     "last": "2026-11-20T23:06:42Z",
+     "seasons": [
+      "2026"
+     ]
+    },
+    "portuguese_primeira_liga": {
+     "rows": 2,
+     "predicted": 2,
+     "settled": 0,
+     "first": "2026-11-20T23:06:42Z",
+     "last": "2026-11-20T23:06:42Z",
      "seasons": [
       "2026"
      ]
@@ -564,11 +594,11 @@
      ]
     },
     "turkish_super_lig": {
-     "rows": 18,
-     "predicted": 18,
+     "rows": 22,
+     "predicted": 22,
      "settled": 0,
      "first": "2026-11-19T22:05:30Z",
-     "last": "2026-11-19T22:05:30Z",
+     "last": "2026-11-20T17:00:00Z",
      "seasons": [
       "2026"
      ]
@@ -592,27 +622,27 @@
     "btts_20261119T134019Z_44c67049"
    ],
    "first_prediction": "2026-11-17T17:20:31Z",
-   "last_prediction": "2026-11-20T16:06:19Z",
-   "rows": 756,
-   "predicted": 756,
+   "last_prediction": "2026-11-20T23:06:42Z",
+   "rows": 776,
+   "predicted": 776,
    "settled": 0,
    "leagues": {
     "belgian_first_division_a": {
-     "rows": 18,
-     "predicted": 18,
+     "rows": 20,
+     "predicted": 20,
      "settled": 0,
      "first": "2026-11-19T22:05:30Z",
-     "last": "2026-11-19T22:05:30Z",
+     "last": "2026-11-20T23:06:42Z",
      "seasons": [
       "2026"
      ]
     },
     "bundesliga_2": {
-     "rows": 58,
-     "predicted": 58,
+     "rows": 62,
+     "predicted": 62,
      "settled": 0,
      "first": "2026-11-17T17:20:31Z",
-     "last": "2026-11-20T16:06:19Z",
+     "last": "2026-11-20T23:06:17Z",
      "seasons": [
       "2026"
      ]
@@ -628,11 +658,11 @@
      ]
     },
     "dutch_eredivisie": {
-     "rows": 18,
-     "predicted": 18,
+     "rows": 20,
+     "predicted": 20,
      "settled": 0,
      "first": "2026-11-19T22:05:30Z",
-     "last": "2026-11-19T22:05:30Z",
+     "last": "2026-11-20T23:06:42Z",
      "seasons": [
       "2026"
      ]
@@ -648,21 +678,21 @@
      ]
     },
     "la_liga_2": {
-     "rows": 66,
-     "predicted": 66,
+     "rows": 68,
+     "predicted": 68,
      "settled": 0,
      "first": "2026-11-17T17:20:31Z",
-     "last": "2026-11-19T14:54:45Z",
+     "last": "2026-11-20T23:06:17Z",
      "seasons": [
       "2026"
      ]
     },
     "league_one": {
-     "rows": 84,
-     "predicted": 84,
+     "rows": 86,
+     "predicted": 86,
      "settled": 0,
      "first": "2026-11-17T17:20:31Z",
-     "last": "2026-11-19T14:54:45Z",
+     "last": "2026-11-20T23:06:17Z",
      "seasons": [
       "2026"
      ]
@@ -688,11 +718,21 @@
      ]
     },
     "national_league": {
-     "rows": 48,
-     "predicted": 48,
+     "rows": 50,
+     "predicted": 50,
      "settled": 0,
      "first": "2026-11-19T22:05:30Z",
-     "last": "2026-11-19T22:05:30Z",
+     "last": "2026-11-20T23:06:42Z",
+     "seasons": [
+      "2026"
+     ]
+    },
+    "portuguese_primeira_liga": {
+     "rows": 2,
+     "predicted": 2,
+     "settled": 0,
+     "first": "2026-11-20T23:06:42Z",
+     "last": "2026-11-20T23:06:42Z",
      "seasons": [
       "2026"
      ]
@@ -748,11 +788,11 @@
      ]
     },
     "turkish_super_lig": {
-     "rows": 18,
-     "predicted": 18,
+     "rows": 22,
+     "predicted": 22,
      "settled": 0,
      "first": "2026-11-19T22:05:30Z",
-     "last": "2026-11-19T22:05:30Z",
+     "last": "2026-11-20T17:00:00Z",
      "seasons": [
       "2026"
      ]
@@ -775,9 +815,9 @@
     "newformat_20261118T172020Z_303c9a05"
    ],
    "first_prediction": "2026-11-17T17:20:31Z",
-   "last_prediction": "2026-11-20T16:06:19Z",
-   "rows": 350,
-   "predicted": 350,
+   "last_prediction": "2026-11-20T23:06:17Z",
+   "rows": 372,
+   "predicted": 372,
    "settled": 58,
    "leagues": {
     "argentina_primera_division": {
@@ -791,21 +831,21 @@
      ]
     },
     "austrian_bundesliga": {
-     "rows": 24,
-     "predicted": 24,
+     "rows": 26,
+     "predicted": 26,
      "settled": 0,
      "first": "2026-11-17T17:20:31Z",
-     "last": "2026-11-19T07:39:51Z",
+     "last": "2026-11-20T23:06:17Z",
      "seasons": [
       "2026"
      ]
     },
     "brazil_serie_a": {
-     "rows": 78,
-     "predicted": 78,
+     "rows": 82,
+     "predicted": 82,
      "settled": 34,
      "first": "2026-11-17T17:20:31Z",
-     "last": "2026-11-19T23:51:11Z",
+     "last": "2026-11-20T23:06:17Z",
      "seasons": [
       "2026"
      ]
@@ -821,21 +861,21 @@
      ]
     },
     "japan_j_league": {
-     "rows": 46,
-     "predicted": 46,
+     "rows": 60,
+     "predicted": 60,
      "settled": 18,
      "first": "2026-11-17T17:20:31Z",
-     "last": "2026-11-20T09:55:54Z",
+     "last": "2026-11-20T23:06:17Z",
      "seasons": [
       "2027"
      ]
     },
     "mexico_liga_mx": {
-     "rows": 36,
-     "predicted": 36,
+     "rows": 38,
+     "predicted": 38,
      "settled": 0,
      "first": "2026-11-17T17:20:31Z",
-     "last": "2026-11-19T07:39:51Z",
+     "last": "2026-11-20T23:06:17Z",
      "seasons": [
       "2026"
      ]
@@ -889,9 +929,9 @@
     "over15_20261119T134019Z_ca01b7d3"
    ],
    "first_prediction": "2026-11-17T17:20:31Z",
-   "last_prediction": "2026-11-20T16:06:19Z",
-   "rows": 506,
-   "predicted": 506,
+   "last_prediction": "2026-11-20T23:06:17Z",
+   "rows": 528,
+   "predicted": 528,
    "settled": 72,
    "leagues": {
     "argentina_primera_division": {
@@ -905,21 +945,21 @@
      ]
     },
     "austrian_bundesliga": {
-     "rows": 36,
-     "predicted": 36,
+     "rows": 38,
+     "predicted": 38,
      "settled": 0,
      "first": "2026-11-17T17:20:31Z",
-     "last": "2026-11-19T14:54:45Z",
+     "last": "2026-11-20T23:06:17Z",
      "seasons": [
       "2026"
      ]
     },
     "brazil_serie_a": {
-     "rows": 106,
-     "predicted": 106,
+     "rows": 110,
+     "predicted": 110,
      "settled": 40,
      "first": "2026-11-17T17:20:31Z",
-     "last": "2026-11-19T23:51:11Z",
+     "last": "2026-11-20T23:06:17Z",
      "seasons": [
       "2026"
      ]
@@ -935,21 +975,21 @@
      ]
     },
     "japan_j_league": {
-     "rows": 66,
-     "predicted": 66,
+     "rows": 80,
+     "predicted": 80,
      "settled": 24,
      "first": "2026-11-17T17:20:31Z",
-     "last": "2026-11-20T09:55:54Z",
+     "last": "2026-11-20T23:06:17Z",
      "seasons": [
       "2027"
      ]
     },
     "mexico_liga_mx": {
-     "rows": 54,
-     "predicted": 54,
+     "rows": 56,
+     "predicted": 56,
      "settled": 0,
      "first": "2026-11-17T17:20:31Z",
-     "last": "2026-11-19T14:54:45Z",
+     "last": "2026-11-20T23:06:17Z",
      "seasons": [
       "2026"
      ]
@@ -1003,9 +1043,9 @@
     "over35_20261119T134019Z_e8b12d74"
    ],
    "first_prediction": "2026-11-17T17:20:31Z",
-   "last_prediction": "2026-11-20T16:06:19Z",
-   "rows": 506,
-   "predicted": 506,
+   "last_prediction": "2026-11-20T23:06:17Z",
+   "rows": 528,
+   "predicted": 528,
    "settled": 72,
    "leagues": {
     "argentina_primera_division": {
@@ -1019,21 +1059,21 @@
      ]
     },
     "austrian_bundesliga": {
-     "rows": 36,
-     "predicted": 36,
+     "rows": 38,
+     "predicted": 38,
      "settled": 0,
      "first": "2026-11-17T17:20:31Z",
-     "last": "2026-11-19T14:54:45Z",
+     "last": "2026-11-20T23:06:17Z",
      "seasons": [
       "2026"
      ]
     },
     "brazil_serie_a": {
-     "rows": 106,
-     "predicted": 106,
+     "rows": 110,
+     "predicted": 110,
      "settled": 40,
      "first": "2026-11-17T17:20:31Z",
-     "last": "2026-11-19T23:51:11Z",
+     "last": "2026-11-20T23:06:17Z",
      "seasons": [
       "2026"
      ]
@@ -1049,21 +1089,21 @@
      ]
     },
     "japan_j_league": {
-     "rows": 66,
-     "predicted": 66,
+     "rows": 80,
+     "predicted": 80,
      "settled": 24,
      "first": "2026-11-17T17:20:31Z",
-     "last": "2026-11-20T09:55:54Z",
+     "last": "2026-11-20T23:06:17Z",
      "seasons": [
       "2027"
      ]
     },
     "mexico_liga_mx": {
-     "rows": 54,
-     "predicted": 54,
+     "rows": 56,
+     "predicted": 56,
      "settled": 0,
      "first": "2026-11-17T17:20:31Z",
-     "last": "2026-11-19T14:54:45Z",
+     "last": "2026-11-20T23:06:17Z",
      "seasons": [
       "2026"
      ]
@@ -1117,9 +1157,9 @@
     "btts_20261119T134019Z_44c67049"
    ],
    "first_prediction": "2026-11-17T17:20:31Z",
-   "last_prediction": "2026-11-20T16:06:19Z",
-   "rows": 506,
-   "predicted": 506,
+   "last_prediction": "2026-11-20T23:06:17Z",
+   "rows": 528,
+   "predicted": 528,
    "settled": 72,
    "leagues": {
     "argentina_primera_division": {
@@ -1133,21 +1173,21 @@
      ]
     },
     "austrian_bundesliga": {
-     "rows": 36,
-     "predicted": 36,
+     "rows": 38,
+     "predicted": 38,
      "settled": 0,
      "first": "2026-11-17T17:20:31Z",
-     "last": "2026-11-19T14:54:45Z",
+     "last": "2026-11-20T23:06:17Z",
      "seasons": [
       "2026"
      ]
     },
     "brazil_serie_a": {
-     "rows": 106,
-     "predicted": 106,
+     "rows": 110,
+     "predicted": 110,
      "settled": 40,
      "first": "2026-11-17T17:20:31Z",
-     "last": "2026-11-19T23:51:11Z",
+     "last": "2026-11-20T23:06:17Z",
      "seasons": [
       "2026"
      ]
@@ -1163,21 +1203,21 @@
      ]
     },
     "japan_j_league": {
-     "rows": 66,
-     "predicted": 66,
+     "rows": 80,
+     "predicted": 80,
      "settled": 24,
      "first": "2026-11-17T17:20:31Z",
-     "last": "2026-11-20T09:55:54Z",
+     "last": "2026-11-20T23:06:17Z",
      "seasons": [
       "2027"
      ]
     },
     "mexico_liga_mx": {
-     "rows": 54,
-     "predicted": 54,
+     "rows": 56,
+     "predicted": 56,
      "settled": 0,
      "first": "2026-11-17T17:20:31Z",
-     "last": "2026-11-19T14:54:45Z",
+     "last": "2026-11-20T23:06:17Z",
      "seasons": [
       "2026"
      ]
@@ -1231,27 +1271,27 @@
     "ht_over05_20261119T134019Z_5a76d680"
    ],
    "first_prediction": "2026-11-17T17:20:31Z",
-   "last_prediction": "2026-11-20T16:06:19Z",
-   "rows": 756,
-   "predicted": 756,
+   "last_prediction": "2026-11-20T23:06:42Z",
+   "rows": 776,
+   "predicted": 776,
    "settled": 0,
    "leagues": {
     "belgian_first_division_a": {
-     "rows": 18,
-     "predicted": 18,
+     "rows": 20,
+     "predicted": 20,
      "settled": 0,
      "first": "2026-11-19T22:05:30Z",
-     "last": "2026-11-19T22:05:30Z",
+     "last": "2026-11-20T23:06:42Z",
      "seasons": [
       "2026"
      ]
     },
     "bundesliga_2": {
-     "rows": 58,
-     "predicted": 58,
+     "rows": 62,
+     "predicted": 62,
      "settled": 0,
      "first": "2026-11-17T17:20:31Z",
-     "last": "2026-11-20T16:06:19Z",
+     "last": "2026-11-20T23:06:17Z",
      "seasons": [
       "2026"
      ]
@@ -1267,11 +1307,11 @@
      ]
     },
     "dutch_eredivisie": {
-     "rows": 18,
-     "predicted": 18,
+     "rows": 20,
+     "predicted": 20,
      "settled": 0,
      "first": "2026-11-19T22:05:30Z",
-     "last": "2026-11-19T22:05:30Z",
+     "last": "2026-11-20T23:06:42Z",
      "seasons": [
       "2026"
      ]
@@ -1287,21 +1327,21 @@
      ]
     },
     "la_liga_2": {
-     "rows": 66,
-     "predicted": 66,
+     "rows": 68,
+     "predicted": 68,
      "settled": 0,
      "first": "2026-11-17T17:20:31Z",
-     "last": "2026-11-19T14:54:45Z",
+     "last": "2026-11-20T23:06:17Z",
      "seasons": [
       "2026"
      ]
     },
     "league_one": {
-     "rows": 84,
-     "predicted": 84,
+     "rows": 86,
+     "predicted": 86,
      "settled": 0,
      "first": "2026-11-17T17:20:31Z",
-     "last": "2026-11-19T14:54:45Z",
+     "last": "2026-11-20T23:06:17Z",
      "seasons": [
       "2026"
      ]
@@ -1327,11 +1367,21 @@
      ]
     },
     "national_league": {
-     "rows": 48,
-     "predicted": 48,
+     "rows": 50,
+     "predicted": 50,
      "settled": 0,
      "first": "2026-11-19T22:05:30Z",
-     "last": "2026-11-19T22:05:30Z",
+     "last": "2026-11-20T23:06:42Z",
+     "seasons": [
+      "2026"
+     ]
+    },
+    "portuguese_primeira_liga": {
+     "rows": 2,
+     "predicted": 2,
+     "settled": 0,
+     "first": "2026-11-20T23:06:42Z",
+     "last": "2026-11-20T23:06:42Z",
      "seasons": [
       "2026"
      ]
@@ -1387,11 +1437,11 @@
      ]
     },
     "turkish_super_lig": {
-     "rows": 18,
-     "predicted": 18,
+     "rows": 22,
+     "predicted": 22,
      "settled": 0,
      "first": "2026-11-19T22:05:30Z",
-     "last": "2026-11-19T22:05:30Z",
+     "last": "2026-11-20T17:00:00Z",
      "seasons": [
       "2026"
      ]
@@ -1415,27 +1465,27 @@
     "ht_over15_20261119T134019Z_e9a12ce1"
    ],
    "first_prediction": "2026-11-17T17:20:31Z",
-   "last_prediction": "2026-11-20T16:06:19Z",
-   "rows": 756,
-   "predicted": 756,
+   "last_prediction": "2026-11-20T23:06:42Z",
+   "rows": 776,
+   "predicted": 776,
    "settled": 0,
    "leagues": {
     "belgian_first_division_a": {
-     "rows": 18,
-     "predicted": 18,
+     "rows": 20,
+     "predicted": 20,
      "settled": 0,
      "first": "2026-11-19T22:05:30Z",
-     "last": "2026-11-19T22:05:30Z",
+     "last": "2026-11-20T23:06:42Z",
      "seasons": [
       "2026"
      ]
     },
     "bundesliga_2": {
-     "rows": 58,
-     "predicted": 58,
+     "rows": 62,
+     "predicted": 62,
      "settled": 0,
      "first": "2026-11-17T17:20:31Z",
-     "last": "2026-11-20T16:06:19Z",
+     "last": "2026-11-20T23:06:17Z",
      "seasons": [
       "2026"
      ]
@@ -1451,11 +1501,11 @@
      ]
     },
     "dutch_eredivisie": {
-     "rows": 18,
-     "predicted": 18,
+     "rows": 20,
+     "predicted": 20,
      "settled": 0,
      "first": "2026-11-19T22:05:30Z",
-     "last": "2026-11-19T22:05:30Z",
+     "last": "2026-11-20T23:06:42Z",
      "seasons": [
       "2026"
      ]
@@ -1471,21 +1521,21 @@
      ]
     },
     "la_liga_2": {
-     "rows": 66,
-     "predicted": 66,
+     "rows": 68,
+     "predicted": 68,
      "settled": 0,
      "first": "2026-11-17T17:20:31Z",
-     "last": "2026-11-19T14:54:45Z",
+     "last": "2026-11-20T23:06:17Z",
      "seasons": [
       "2026"
      ]
     },
     "league_one": {
-     "rows": 84,
-     "predicted": 84,
+     "rows": 86,
+     "predicted": 86,
      "settled": 0,
      "first": "2026-11-17T17:20:31Z",
-     "last": "2026-11-19T14:54:45Z",
+     "last": "2026-11-20T23:06:17Z",
      "seasons": [
       "2026"
      ]
@@ -1511,11 +1561,21 @@
      ]
     },
     "national_league": {
-     "rows": 48,
-     "predicted": 48,
+     "rows": 50,
+     "predicted": 50,
      "settled": 0,
      "first": "2026-11-19T22:05:30Z",
-     "last": "2026-11-19T22:05:30Z",
+     "last": "2026-11-20T23:06:42Z",
+     "seasons": [
+      "2026"
+     ]
+    },
+    "portuguese_primeira_liga": {
+     "rows": 2,
+     "predicted": 2,
+     "settled": 0,
+     "first": "2026-11-20T23:06:42Z",
+     "last": "2026-11-20T23:06:42Z",
      "seasons": [
       "2026"
      ]
@@ -1571,11 +1631,11 @@
      ]
     },
     "turkish_super_lig": {
-     "rows": 18,
-     "predicted": 18,
+     "rows": 22,
+     "predicted": 22,
      "settled": 0,
      "first": "2026-11-19T22:05:30Z",
-     "last": "2026-11-19T22:05:30Z",
+     "last": "2026-11-20T17:00:00Z",
      "seasons": [
       "2026"
      ]
@@ -1597,9 +1657,9 @@
     "ht_over05_nf_20261120T085150Z_ae89ea10"
    ],
    "first_prediction": "2026-11-20T09:55:54Z",
-   "last_prediction": "2026-11-20T16:06:19Z",
-   "rows": 156,
-   "predicted": 156,
+   "last_prediction": "2026-11-20T23:06:17Z",
+   "rows": 180,
+   "predicted": 180,
    "settled": 0,
    "leagues": {
     "argentina_primera_division": {
@@ -1613,21 +1673,21 @@
      ]
     },
     "austrian_bundesliga": {
-     "rows": 12,
-     "predicted": 12,
+     "rows": 14,
+     "predicted": 14,
      "settled": 0,
      "first": "2026-11-20T09:55:54Z",
-     "last": "2026-11-20T09:55:54Z",
+     "last": "2026-11-20T23:06:17Z",
      "seasons": [
       "2026"
      ]
     },
     "brazil_serie_a": {
-     "rows": 20,
-     "predicted": 20,
+     "rows": 26,
+     "predicted": 26,
      "settled": 0,
      "first": "2026-11-20T09:55:54Z",
-     "last": "2026-11-20T09:55:54Z",
+     "last": "2026-11-20T23:06:17Z",
      "seasons": [
       "2026"
      ]
@@ -1643,21 +1703,21 @@
      ]
     },
     "japan_j_league": {
-     "rows": 26,
-     "predicted": 26,
+     "rows": 40,
+     "predicted": 40,
      "settled": 0,
      "first": "2026-11-20T09:55:54Z",
-     "last": "2026-11-20T09:55:54Z",
+     "last": "2026-11-20T23:06:17Z",
      "seasons": [
       "2027"
      ]
     },
     "mexico_liga_mx": {
-     "rows": 18,
-     "predicted": 18,
+     "rows": 20,
+     "predicted": 20,
      "settled": 0,
      "first": "2026-11-20T09:55:54Z",
-     "last": "2026-11-20T09:55:54Z",
+     "last": "2026-11-20T23:06:17Z",
      "seasons": [
       "2026"
      ]
@@ -1709,9 +1769,9 @@
     "ht_over15_nf_20261120T085150Z_ead4bb74"
    ],
    "first_prediction": "2026-11-20T09:55:54Z",
-   "last_prediction": "2026-11-20T16:06:19Z",
-   "rows": 156,
-   "predicted": 156,
+   "last_prediction": "2026-11-20T23:06:17Z",
+   "rows": 180,
+   "predicted": 180,
    "settled": 0,
    "leagues": {
     "argentina_primera_division": {
@@ -1725,21 +1785,21 @@
      ]
     },
     "austrian_bundesliga": {
-     "rows": 12,
-     "predicted": 12,
+     "rows": 14,
+     "predicted": 14,
      "settled": 0,
      "first": "2026-11-20T09:55:54Z",
-     "last": "2026-11-20T09:55:54Z",
+     "last": "2026-11-20T23:06:17Z",
      "seasons": [
       "2026"
      ]
     },
     "brazil_serie_a": {
-     "rows": 20,
-     "predicted": 20,
+     "rows": 26,
+     "predicted": 26,
      "settled": 0,
      "first": "2026-11-20T09:55:54Z",
-     "last": "2026-11-20T09:55:54Z",
+     "last": "2026-11-20T23:06:17Z",
      "seasons": [
       "2026"
      ]
@@ -1755,21 +1815,21 @@
      ]
     },
     "japan_j_league": {
-     "rows": 26,
-     "predicted": 26,
+     "rows": 40,
+     "predicted": 40,
      "settled": 0,
      "first": "2026-11-20T09:55:54Z",
-     "last": "2026-11-20T09:55:54Z",
+     "last": "2026-11-20T23:06:17Z",
      "seasons": [
       "2027"
      ]
     },
     "mexico_liga_mx": {
-     "rows": 18,
-     "predicted": 18,
+     "rows": 20,
+     "predicted": 20,
      "settled": 0,
      "first": "2026-11-20T09:55:54Z",
-     "last": "2026-11-20T09:55:54Z",
+     "last": "2026-11-20T23:06:17Z",
      "seasons": [
       "2026"
      ]
@@ -1821,17 +1881,17 @@
     "props_goals_props_clean_harness_5de94714"
    ],
    "first_prediction": "2026-11-18T00:31:06Z",
-   "last_prediction": "2026-11-20T13:57:06Z",
-   "rows": 22603,
-   "predicted": 22603,
+   "last_prediction": "2026-11-20T22:36:55Z",
+   "rows": 22646,
+   "predicted": 22646,
    "settled": 744,
    "leagues": {
     "argentina_primera_division": {
-     "rows": 812,
-     "predicted": 812,
+     "rows": 855,
+     "predicted": 855,
      "settled": 0,
      "first": "2026-11-18T01:13:11Z",
-     "last": "2026-11-19T22:10:11Z",
+     "last": "2026-11-20T22:36:55Z",
      "seasons": [
       "2026"
      ]
@@ -2073,17 +2133,17 @@
     "props_goals2_props_clean_harness_81b5b864"
    ],
    "first_prediction": "2026-11-18T00:31:06Z",
-   "last_prediction": "2026-11-20T13:57:07Z",
-   "rows": 22603,
-   "predicted": 22603,
+   "last_prediction": "2026-11-20T22:36:55Z",
+   "rows": 22646,
+   "predicted": 22646,
    "settled": 744,
    "leagues": {
     "argentina_primera_division": {
-     "rows": 812,
-     "predicted": 812,
+     "rows": 855,
+     "predicted": 855,
      "settled": 0,
      "first": "2026-11-18T01:13:11Z",
-     "last": "2026-11-19T22:10:11Z",
+     "last": "2026-11-20T22:36:55Z",
      "seasons": [
       "2026"
      ]
@@ -2325,17 +2385,17 @@
     "props_assists_props_clean_harness_abf39bb5"
    ],
    "first_prediction": "2026-11-18T00:31:07Z",
-   "last_prediction": "2026-11-20T13:57:07Z",
-   "rows": 22603,
-   "predicted": 22603,
+   "last_prediction": "2026-11-20T22:36:55Z",
+   "rows": 22646,
+   "predicted": 22646,
    "settled": 744,
    "leagues": {
     "argentina_primera_division": {
-     "rows": 812,
-     "predicted": 812,
+     "rows": 855,
+     "predicted": 855,
      "settled": 0,
      "first": "2026-11-18T01:13:11Z",
-     "last": "2026-11-19T22:10:11Z",
+     "last": "2026-11-20T22:36:55Z",
      "seasons": [
       "2026"
      ]
@@ -2577,17 +2637,17 @@
     "props_sot_props_clean_harness_571b102c"
    ],
    "first_prediction": "2026-11-18T00:31:07Z",
-   "last_prediction": "2026-11-20T13:57:07Z",
-   "rows": 22603,
-   "predicted": 22603,
+   "last_prediction": "2026-11-20T22:36:55Z",
+   "rows": 22646,
+   "predicted": 22646,
    "settled": 744,
    "leagues": {
     "argentina_primera_division": {
-     "rows": 812,
-     "predicted": 812,
+     "rows": 855,
+     "predicted": 855,
      "settled": 0,
      "first": "2026-11-18T01:13:11Z",
-     "last": "2026-11-19T22:10:11Z",
+     "last": "2026-11-20T22:36:55Z",
      "seasons": [
       "2026"
      ]
@@ -2829,17 +2889,17 @@
     "props_sot2_props_clean_harness_5b5fad60"
    ],
    "first_prediction": "2026-11-18T00:31:07Z",
-   "last_prediction": "2026-11-20T13:57:07Z",
-   "rows": 22603,
-   "predicted": 22603,
+   "last_prediction": "2026-11-20T22:36:55Z",
+   "rows": 22646,
+   "predicted": 22646,
    "settled": 744,
    "leagues": {
     "argentina_primera_division": {
-     "rows": 812,
-     "predicted": 812,
+     "rows": 855,
+     "predicted": 855,
      "settled": 0,
      "first": "2026-11-18T01:13:11Z",
-     "last": "2026-11-19T22:10:11Z",
+     "last": "2026-11-20T22:36:55Z",
      "seasons": [
       "2026"
      ]
@@ -3081,17 +3141,17 @@
     "props_sot3_props_clean_harness_f11626d9"
    ],
    "first_prediction": "2026-11-18T00:31:07Z",
-   "last_prediction": "2026-11-20T13:57:07Z",
-   "rows": 22603,
-   "predicted": 22603,
+   "last_prediction": "2026-11-20T22:36:55Z",
+   "rows": 22646,
+   "predicted": 22646,
    "settled": 744,
    "leagues": {
     "argentina_primera_division": {
-     "rows": 812,
-     "predicted": 812,
+     "rows": 855,
+     "predicted": 855,
      "settled": 0,
      "first": "2026-11-18T01:13:11Z",
-     "last": "2026-11-19T22:10:12Z",
+     "last": "2026-11-20T22:36:55Z",
      "seasons": [
       "2026"
      ]
@@ -3333,17 +3393,17 @@
     "props_sot4_props_clean_harness_e0d074b8"
    ],
    "first_prediction": "2026-11-18T00:31:07Z",
-   "last_prediction": "2026-11-20T13:57:07Z",
-   "rows": 22603,
-   "predicted": 22603,
+   "last_prediction": "2026-11-20T22:36:55Z",
+   "rows": 22646,
+   "predicted": 22646,
    "settled": 744,
    "leagues": {
     "argentina_primera_division": {
-     "rows": 812,
-     "predicted": 812,
+     "rows": 855,
+     "predicted": 855,
      "settled": 0,
      "first": "2026-11-18T01:13:11Z",
-     "last": "2026-11-19T22:10:12Z",
+     "last": "2026-11-20T22:36:55Z",
      "seasons": [
       "2026"
      ]
@@ -3585,17 +3645,17 @@
     "props_cards_props_clean_harness_bfd5e1cc"
    ],
    "first_prediction": "2026-11-18T00:31:07Z",
-   "last_prediction": "2026-11-20T13:57:07Z",
-   "rows": 22603,
-   "predicted": 22603,
+   "last_prediction": "2026-11-20T22:36:55Z",
+   "rows": 22646,
+   "predicted": 22646,
    "settled": 744,
    "leagues": {
     "argentina_primera_division": {
-     "rows": 812,
-     "predicted": 812,
+     "rows": 855,
+     "predicted": 855,
      "settled": 0,
      "first": "2026-11-18T01:13:12Z",
-     "last": "2026-11-19T22:10:12Z",
+     "last": "2026-11-20T22:36:55Z",
      "seasons": [
       "2026"
      ]
@@ -3836,17 +3896,17 @@
     "props_goals3_props_clean_harness_89f588a0"
    ],
    "first_prediction": "2026-11-19T22:09:09Z",
-   "last_prediction": "2026-11-20T13:57:07Z",
-   "rows": 12067,
-   "predicted": 12067,
+   "last_prediction": "2026-11-20T22:36:55Z",
+   "rows": 12110,
+   "predicted": 12110,
    "settled": 286,
    "leagues": {
     "argentina_primera_division": {
-     "rows": 406,
-     "predicted": 406,
+     "rows": 449,
+     "predicted": 449,
      "settled": 0,
      "first": "2026-11-19T22:10:08Z",
-     "last": "2026-11-19T22:10:12Z",
+     "last": "2026-11-20T22:36:55Z",
      "seasons": [
       "2026"
      ]
@@ -4087,17 +4147,17 @@
     "props_goals2_clean_hgb_nan_native_e218cb6c"
    ],
    "first_prediction": "2026-11-19T22:09:06Z",
-   "last_prediction": "2026-11-20T13:57:07Z",
-   "rows": 12067,
-   "predicted": 12067,
+   "last_prediction": "2026-11-20T22:36:55Z",
+   "rows": 12110,
+   "predicted": 12110,
    "settled": 286,
    "leagues": {
     "argentina_primera_division": {
-     "rows": 406,
-     "predicted": 406,
+     "rows": 449,
+     "predicted": 449,
      "settled": 0,
      "first": "2026-11-19T22:10:08Z",
-     "last": "2026-11-19T22:10:11Z",
+     "last": "2026-11-20T22:36:55Z",
      "seasons": [
       "2026"
      ]
@@ -4338,17 +4398,17 @@
     "props_goals3_clean_recipe_retrained_62e5b2bb"
    ],
    "first_prediction": "2026-11-19T22:09:09Z",
-   "last_prediction": "2026-11-20T13:57:07Z",
-   "rows": 12067,
-   "predicted": 12067,
+   "last_prediction": "2026-11-20T22:36:55Z",
+   "rows": 12110,
+   "predicted": 12110,
    "settled": 286,
    "leagues": {
     "argentina_primera_division": {
-     "rows": 406,
-     "predicted": 406,
+     "rows": 449,
+     "predicted": 449,
      "settled": 0,
      "first": "2026-11-19T22:10:08Z",
-     "last": "2026-11-19T22:10:12Z",
+     "last": "2026-11-20T22:36:55Z",
      "seasons": [
       "2026"
      ]
@@ -4589,17 +4649,17 @@
     "props_sot3_clean_hgb_nan_native_a3646f1d"
    ],
    "first_prediction": "2026-11-19T22:09:06Z",
-   "last_prediction": "2026-11-20T13:57:07Z",
-   "rows": 12067,
-   "predicted": 12067,
+   "last_prediction": "2026-11-20T22:36:55Z",
+   "rows": 12110,
+   "predicted": 12110,
    "settled": 286,
    "leagues": {
     "argentina_primera_division": {
-     "rows": 406,
-     "predicted": 406,
+     "rows": 449,
+     "predicted": 449,
      "settled": 0,
      "first": "2026-11-19T22:10:08Z",
-     "last": "2026-11-19T22:10:12Z",
+     "last": "2026-11-20T22:36:55Z",
      "seasons": [
       "2026"
      ]
@@ -4840,17 +4900,17 @@
     "props_sot4_clean_recipe_retrained_8ed4b805"
    ],
    "first_prediction": "2026-11-19T22:09:06Z",
-   "last_prediction": "2026-11-20T13:57:07Z",
-   "rows": 12067,
-   "predicted": 12067,
+   "last_prediction": "2026-11-20T22:36:55Z",
+   "rows": 12110,
+   "predicted": 12110,
    "settled": 286,
    "leagues": {
     "argentina_primera_division": {
-     "rows": 406,
-     "predicted": 406,
+     "rows": 449,
+     "predicted": 449,
      "settled": 0,
      "first": "2026-11-19T22:10:08Z",
-     "last": "2026-11-19T22:10:12Z",
+     "last": "2026-11-20T22:36:55Z",
      "seasons": [
       "2026"
      ]
@@ -5328,57 +5388,57 @@
     "side_nb_v1_2026-11-09_c9e06a6a9c92"
    ],
    "first_prediction": "2026-11-19T21:44:13Z",
-   "last_prediction": "2026-11-20T16:06:44Z",
-   "rows": 1544,
-   "predicted": 1536,
+   "last_prediction": "2026-11-20T23:06:38Z",
+   "rows": 1616,
+   "predicted": 1608,
    "settled": 0,
    "leagues": {
     "austrian_bundesliga": {
-     "rows": 48,
-     "predicted": 48,
+     "rows": 56,
+     "predicted": 56,
      "settled": 0,
      "first": "2026-11-19T21:44:13Z",
-     "last": "2026-11-19T21:44:13Z",
+     "last": "2026-11-20T23:06:38Z",
      "seasons": [
       "2026"
      ]
     },
     "brazil_serie_a": {
-     "rows": 144,
-     "predicted": 144,
+     "rows": 152,
+     "predicted": 152,
      "settled": 0,
      "first": "2026-11-19T21:44:13Z",
-     "last": "2026-11-19T23:51:33Z",
+     "last": "2026-11-20T23:06:38Z",
      "seasons": [
       "2026"
      ]
     },
     "bundesliga_2": {
-     "rows": 88,
-     "predicted": 88,
+     "rows": 104,
+     "predicted": 104,
      "settled": 0,
      "first": "2026-11-19T21:44:13Z",
-     "last": "2026-11-20T16:06:44Z",
+     "last": "2026-11-20T23:06:38Z",
      "seasons": [
       "2026"
      ]
     },
     "championship": {
-     "rows": 192,
-     "predicted": 192,
+     "rows": 200,
+     "predicted": 200,
      "settled": 0,
      "first": "2026-11-19T21:44:13Z",
-     "last": "2026-11-19T21:44:13Z",
+     "last": "2026-11-20T23:06:38Z",
      "seasons": [
       "2026"
      ]
     },
     "denmark_superliga": {
-     "rows": 56,
-     "predicted": 56,
+     "rows": 64,
+     "predicted": 64,
      "settled": 0,
      "first": "2026-11-19T21:44:13Z",
-     "last": "2026-11-20T16:06:44Z",
+     "last": "2026-11-20T23:06:38Z",
      "seasons": [
       "2026"
      ]
@@ -5434,11 +5494,11 @@
      ]
     },
     "mexico_liga_mx": {
-     "rows": 72,
-     "predicted": 72,
+     "rows": 80,
+     "predicted": 80,
      "settled": 0,
      "first": "2026-11-19T21:44:13Z",
-     "last": "2026-11-19T21:44:13Z",
+     "last": "2026-11-20T23:06:38Z",
      "seasons": [
       "2026"
      ]
@@ -5454,11 +5514,11 @@
      ]
     },
     "romanian_superliga": {
-     "rows": 72,
-     "predicted": 72,
+     "rows": 88,
+     "predicted": 88,
      "settled": 0,
      "first": "2026-11-19T21:44:13Z",
-     "last": "2026-11-20T16:06:44Z",
+     "last": "2026-11-20T23:06:38Z",
      "seasons": [
       "2026"
      ]
@@ -5506,57 +5566,57 @@
     "side_nb_v1_2026-11-09_c9e06a6a9c92"
    ],
    "first_prediction": "2026-11-19T21:44:13Z",
-   "last_prediction": "2026-11-20T16:06:44Z",
-   "rows": 2316,
-   "predicted": 2304,
+   "last_prediction": "2026-11-20T23:06:38Z",
+   "rows": 2424,
+   "predicted": 2412,
    "settled": 0,
    "leagues": {
     "austrian_bundesliga": {
-     "rows": 72,
-     "predicted": 72,
+     "rows": 84,
+     "predicted": 84,
      "settled": 0,
      "first": "2026-11-19T21:44:13Z",
-     "last": "2026-11-19T21:44:13Z",
+     "last": "2026-11-20T23:06:38Z",
      "seasons": [
       "2026"
      ]
     },
     "brazil_serie_a": {
-     "rows": 216,
-     "predicted": 216,
+     "rows": 228,
+     "predicted": 228,
      "settled": 0,
      "first": "2026-11-19T21:44:13Z",
-     "last": "2026-11-19T23:51:33Z",
+     "last": "2026-11-20T23:06:38Z",
      "seasons": [
       "2026"
      ]
     },
     "bundesliga_2": {
-     "rows": 132,
-     "predicted": 132,
+     "rows": 156,
+     "predicted": 156,
      "settled": 0,
      "first": "2026-11-19T21:44:13Z",
-     "last": "2026-11-20T16:06:44Z",
+     "last": "2026-11-20T23:06:38Z",
      "seasons": [
       "2026"
      ]
     },
     "championship": {
-     "rows": 288,
-     "predicted": 288,
+     "rows": 300,
+     "predicted": 300,
      "settled": 0,
      "first": "2026-11-19T21:44:13Z",
-     "last": "2026-11-19T21:44:13Z",
+     "last": "2026-11-20T23:06:38Z",
      "seasons": [
       "2026"
      ]
     },
     "denmark_superliga": {
-     "rows": 84,
-     "predicted": 84,
+     "rows": 96,
+     "predicted": 96,
      "settled": 0,
      "first": "2026-11-19T21:44:13Z",
-     "last": "2026-11-20T16:06:44Z",
+     "last": "2026-11-20T23:06:38Z",
      "seasons": [
       "2026"
      ]
@@ -5612,11 +5672,11 @@
      ]
     },
     "mexico_liga_mx": {
-     "rows": 108,
-     "predicted": 108,
+     "rows": 120,
+     "predicted": 120,
      "settled": 0,
      "first": "2026-11-19T21:44:13Z",
-     "last": "2026-11-19T21:44:13Z",
+     "last": "2026-11-20T23:06:38Z",
      "seasons": [
       "2026"
      ]
@@ -5632,11 +5692,11 @@
      ]
     },
     "romanian_superliga": {
-     "rows": 108,
-     "predicted": 108,
+     "rows": 132,
+     "predicted": 132,
      "settled": 0,
      "first": "2026-11-19T21:44:13Z",
-     "last": "2026-11-20T16:06:44Z",
+     "last": "2026-11-20T23:06:38Z",
      "seasons": [
       "2026"
      ]
@@ -5682,57 +5742,57 @@
     "side_nb_v1_2026-11-09_c9e06a6a9c92"
    ],
    "first_prediction": "2026-11-19T21:44:13Z",
-   "last_prediction": "2026-11-20T16:06:44Z",
-   "rows": 1092,
-   "predicted": 1074,
+   "last_prediction": "2026-11-20T23:06:38Z",
+   "rows": 1146,
+   "predicted": 1128,
    "settled": 0,
    "leagues": {
     "austrian_bundesliga": {
-     "rows": 36,
-     "predicted": 36,
+     "rows": 42,
+     "predicted": 42,
      "settled": 0,
      "first": "2026-11-19T21:44:13Z",
-     "last": "2026-11-19T21:44:13Z",
+     "last": "2026-11-20T23:06:38Z",
      "seasons": [
       "2026"
      ]
     },
     "brazil_serie_a": {
-     "rows": 108,
-     "predicted": 108,
+     "rows": 114,
+     "predicted": 114,
      "settled": 0,
      "first": "2026-11-19T21:44:13Z",
-     "last": "2026-11-19T23:51:33Z",
+     "last": "2026-11-20T23:06:38Z",
      "seasons": [
       "2026"
      ]
     },
     "bundesliga_2": {
-     "rows": 66,
-     "predicted": 66,
+     "rows": 78,
+     "predicted": 78,
      "settled": 0,
      "first": "2026-11-19T21:44:13Z",
-     "last": "2026-11-20T16:06:44Z",
+     "last": "2026-11-20T23:06:38Z",
      "seasons": [
       "2026"
      ]
     },
     "championship": {
-     "rows": 144,
-     "predicted": 144,
+     "rows": 150,
+     "predicted": 150,
      "settled": 0,
      "first": "2026-11-19T21:44:13Z",
-     "last": "2026-11-19T21:44:13Z",
+     "last": "2026-11-20T23:06:38Z",
      "seasons": [
       "2026"
      ]
     },
     "denmark_superliga": {
-     "rows": 42,
-     "predicted": 42,
+     "rows": 48,
+     "predicted": 48,
      "settled": 0,
      "first": "2026-11-19T21:44:13Z",
-     "last": "2026-11-20T16:06:44Z",
+     "last": "2026-11-20T23:06:38Z",
      "seasons": [
       "2026"
      ]
@@ -5778,11 +5838,11 @@
      ]
     },
     "mexico_liga_mx": {
-     "rows": 54,
-     "predicted": 54,
+     "rows": 60,
+     "predicted": 60,
      "settled": 0,
      "first": "2026-11-19T21:44:13Z",
-     "last": "2026-11-19T21:44:13Z",
+     "last": "2026-11-20T23:06:38Z",
      "seasons": [
       "2026"
      ]
@@ -5798,11 +5858,11 @@
      ]
     },
     "romanian_superliga": {
-     "rows": 54,
-     "predicted": 54,
+     "rows": 66,
+     "predicted": 66,
      "settled": 0,
      "first": "2026-11-19T21:44:13Z",
-     "last": "2026-11-20T16:06:44Z",
+     "last": "2026-11-20T23:06:38Z",
      "seasons": [
       "2026"
      ]
@@ -5849,57 +5909,57 @@
     "side_nb_v1_2026-11-09_c9e06a6a9c92"
    ],
    "first_prediction": "2026-11-19T21:44:13Z",
-   "last_prediction": "2026-11-20T16:06:44Z",
-   "rows": 1456,
-   "predicted": 1432,
+   "last_prediction": "2026-11-20T23:06:38Z",
+   "rows": 1528,
+   "predicted": 1504,
    "settled": 0,
    "leagues": {
     "austrian_bundesliga": {
-     "rows": 48,
-     "predicted": 48,
+     "rows": 56,
+     "predicted": 56,
      "settled": 0,
      "first": "2026-11-19T21:44:13Z",
-     "last": "2026-11-19T21:44:13Z",
+     "last": "2026-11-20T23:06:38Z",
      "seasons": [
       "2026"
      ]
     },
     "brazil_serie_a": {
-     "rows": 144,
-     "predicted": 144,
+     "rows": 152,
+     "predicted": 152,
      "settled": 0,
      "first": "2026-11-19T21:44:13Z",
-     "last": "2026-11-19T23:51:33Z",
+     "last": "2026-11-20T23:06:38Z",
      "seasons": [
       "2026"
      ]
     },
     "bundesliga_2": {
-     "rows": 88,
-     "predicted": 88,
+     "rows": 104,
+     "predicted": 104,
      "settled": 0,
      "first": "2026-11-19T21:44:13Z",
-     "last": "2026-11-20T16:06:44Z",
+     "last": "2026-11-20T23:06:38Z",
      "seasons": [
       "2026"
      ]
     },
     "championship": {
-     "rows": 192,
-     "predicted": 192,
+     "rows": 200,
+     "predicted": 200,
      "settled": 0,
      "first": "2026-11-19T21:44:13Z",
-     "last": "2026-11-19T21:44:13Z",
+     "last": "2026-11-20T23:06:38Z",
      "seasons": [
       "2026"
      ]
     },
     "denmark_superliga": {
-     "rows": 56,
-     "predicted": 56,
+     "rows": 64,
+     "predicted": 64,
      "settled": 0,
      "first": "2026-11-19T21:44:13Z",
-     "last": "2026-11-20T16:06:44Z",
+     "last": "2026-11-20T23:06:38Z",
      "seasons": [
       "2026"
      ]
@@ -5945,11 +6005,11 @@
      ]
     },
     "mexico_liga_mx": {
-     "rows": 72,
-     "predicted": 72,
+     "rows": 80,
+     "predicted": 80,
      "settled": 0,
      "first": "2026-11-19T21:44:13Z",
-     "last": "2026-11-19T21:44:13Z",
+     "last": "2026-11-20T23:06:38Z",
      "seasons": [
       "2026"
      ]
@@ -5965,11 +6025,11 @@
      ]
     },
     "romanian_superliga": {
-     "rows": 72,
-     "predicted": 72,
+     "rows": 88,
+     "predicted": 88,
      "settled": 0,
      "first": "2026-11-19T21:44:13Z",
-     "last": "2026-11-20T16:06:44Z",
+     "last": "2026-11-20T23:06:38Z",
      "seasons": [
       "2026"
      ]
