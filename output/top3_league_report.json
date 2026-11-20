@@ -1,9 +1,73 @@
 {
- "generated_at": "2026-11-20T13:28:56Z",
+ "generated_at": "2026-11-20T16:06:35Z",
  "selection_mode": "TOP3_LEAGUE_GW",
  "version": "TOP3-2",
  "freeze_lead_min": 120.0,
  "status": "OK",
  "note": "Each league's 3 best tips of the gameweek across O/U 2.5, BTTS, Over 1.5, Over 3.5 from its MODEL cells, each cleared its cell's one owner-approved bar, ranked by the live rule (calibrated value); fewer than 3 when fewer clear the bar. League-wide cells are the league's own line (league_rule), outside the 3. Every TOP-3 tip: 0.5% stake of bankroll, flat, placed manually by the owner at the odds shown on the tip (never auto-executed); P/L here in flat units.",
- "leagues": {}
+ "leagues": {
+  "Bundesliga 2": {
+   "league_rule": {
+    "picks": 0,
+    "settled": 0,
+    "flat_pnl_units": 0.0
+   },
+   "latest_league_week_id": "Bundesliga 2|2026-W47",
+   "latest_excluded": {
+    "NO_LEAGUE_BAR": 34,
+    "NO_TWO_SIDED_PRICE": 2
+   },
+   "latest_picks": [],
+   "weeks_decided": 1,
+   "picks": 0,
+   "settled": 0,
+   "won": 0,
+   "flat_pnl_units": 0.0,
+   "roi": null
+  },
+  "Denmark Superliga": {
+   "league_rule": {
+    "picks": 0,
+    "settled": 0,
+    "flat_pnl_units": 0.0
+   },
+   "latest_league_week_id": "Denmark Superliga|2026-W47",
+   "latest_excluded": {
+    "BELOW_LEAGUE_BAR": 5,
+    "NO_LEAGUE_BAR": 10,
+    "NO_TWO_SIDED_PRICE": 2,
+    "TIER_NO_VALUE": 3
+   },
+   "latest_picks": [],
+   "weeks_decided": 1,
+   "picks": 0,
+   "settled": 0,
+   "won": 0,
+   "flat_pnl_units": 0.0,
+   "roi": null
+  },
+  "Norway Eliteserien": {
+   "league_rule": {
+    "picks": 0,
+    "settled": 0,
+    "flat_pnl_units": 0.0
+   },
+   "latest_league_week_id": "Norway Eliteserien|2026-W47",
+   "latest_excluded": {
+    "BELOW_LEAGUE_BAR": 9,
+    "NO_LEAGUE_BAR": 8,
+    "NO_TWO_SIDED_PRICE": 1,
+    "OUTSIDE_ODDS_RANGE": 8,
+    "RANKED_BELOW_TOP3": 1,
+    "TIER_NO_VALUE": 5
+   },
+   "latest_picks": [],
+   "weeks_decided": 1,
+   "picks": 0,
+   "settled": 0,
+   "won": 0,
+   "flat_pnl_units": 0.0,
+   "roi": null
+  }
+ }
 }
