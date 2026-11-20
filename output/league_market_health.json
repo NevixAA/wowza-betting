@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-20T09:56:00Z",
+ "generated_at": "2026-11-20T13:28:48Z",
  "panel_version": "LWR-1",
  "tracked_leagues": 20,
  "current_tip_day": "2026-11-20",
@@ -16,9 +16,9 @@
  "market_gap_leagues": [],
  "expected_candidate_rows": 596,
  "actual_candidate_rows": 596,
- "panel_rows": 956,
+ "panel_rows": 976,
  "settled_rows": 879,
- "pending_rows": 77,
+ "pending_rows": 97,
  "clv_certified_rows": 388,
  "clv_coverage": 0.4414,
  "protected_tracks_modified": false,
@@ -584,7 +584,7 @@
   "Japan J-League": {
    "current": {
     "league_week_id": "Japan J-League|2026-W47",
-    "state": "PROVISIONAL",
+    "state": "FROZEN",
     "fixtures_known": 10,
     "fixtures_before_panel_start": 0,
     "fixtures_with_candidates": 10,
@@ -595,19 +595,19 @@
     "markets": {
      "OU25": {
       "candidates": 10,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "BTTS": {
       "candidates": 10,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER15": {
       "candidates": 10,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER35": {
       "candidates": 10,
-      "panel_rows": 0
+      "panel_rows": 5
      }
     },
     "expected_candidate_rows": 40,
