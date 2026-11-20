@@ -1,8 +1,8 @@
 {
- "generated_at": "2026-11-20T16:59:34Z",
+ "generated_at": "2026-11-20T23:06:23Z",
  "panel_version": "LWR-1",
  "tracked_leagues": 20,
- "current_tip_day": "2026-11-20",
+ "current_tip_day": "2026-11-21",
  "leagues_with_current_week_data": 16,
  "missing_leagues": [],
  "missing_leagues_previous_week": [],
@@ -16,9 +16,9 @@
  "market_gap_leagues": [],
  "expected_candidate_rows": 596,
  "actual_candidate_rows": 596,
- "panel_rows": 976,
+ "panel_rows": 1116,
  "settled_rows": 898,
- "pending_rows": 78,
+ "pending_rows": 218,
  "clv_certified_rows": 398,
  "clv_coverage": 0.4432,
  "protected_tracks_modified": false,
@@ -26,7 +26,7 @@
   "Argentina Primera Division": {
    "current": {
     "league_week_id": "Argentina Primera Division|2026-W47",
-    "state": "PROVISIONAL",
+    "state": "FROZEN",
     "fixtures_known": 7,
     "fixtures_before_panel_start": 0,
     "fixtures_with_candidates": 7,
@@ -37,19 +37,19 @@
     "markets": {
      "OU25": {
       "candidates": 7,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "BTTS": {
       "candidates": 7,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER15": {
       "candidates": 7,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER35": {
       "candidates": 7,
-      "panel_rows": 0
+      "panel_rows": 5
      }
     },
     "expected_candidate_rows": 28,
@@ -212,7 +212,7 @@
   "Bundesliga 2": {
    "current": {
     "league_week_id": "Bundesliga 2|2026-W47",
-    "state": "PROVISIONAL",
+    "state": "FROZEN",
     "fixtures_known": 9,
     "fixtures_before_panel_start": 0,
     "fixtures_with_candidates": 9,
@@ -223,19 +223,19 @@
     "markets": {
      "OU25": {
       "candidates": 9,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "BTTS": {
       "candidates": 9,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER15": {
       "candidates": 9,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER35": {
       "candidates": 9,
-      "panel_rows": 0
+      "panel_rows": 5
      }
     },
     "expected_candidate_rows": 36,
@@ -398,7 +398,7 @@
   "Denmark Superliga": {
    "current": {
     "league_week_id": "Denmark Superliga|2026-W47",
-    "state": "PROVISIONAL",
+    "state": "FROZEN",
     "fixtures_known": 5,
     "fixtures_before_panel_start": 0,
     "fixtures_with_candidates": 5,
@@ -409,19 +409,19 @@
     "markets": {
      "OU25": {
       "candidates": 5,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "BTTS": {
       "candidates": 5,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER15": {
       "candidates": 5,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER35": {
       "candidates": 5,
-      "panel_rows": 0
+      "panel_rows": 5
      }
     },
     "expected_candidate_rows": 20,
@@ -708,7 +708,7 @@
   "League One": {
    "current": {
     "league_week_id": "League One|2026-W47",
-    "state": "PROVISIONAL",
+    "state": "FROZEN",
     "fixtures_known": 12,
     "fixtures_before_panel_start": 0,
     "fixtures_with_candidates": 12,
@@ -719,19 +719,19 @@
     "markets": {
      "OU25": {
       "candidates": 12,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "BTTS": {
       "candidates": 12,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER15": {
       "candidates": 12,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER35": {
       "candidates": 12,
-      "panel_rows": 0
+      "panel_rows": 5
      }
     },
     "expected_candidate_rows": 48,
@@ -832,7 +832,7 @@
   "Ligue 2": {
    "current": {
     "league_week_id": "Ligue 2|2026-W47",
-    "state": "PROVISIONAL",
+    "state": "FROZEN",
     "fixtures_known": 8,
     "fixtures_before_panel_start": 0,
     "fixtures_with_candidates": 8,
@@ -843,19 +843,19 @@
     "markets": {
      "OU25": {
       "candidates": 8,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "BTTS": {
       "candidates": 8,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER15": {
       "candidates": 8,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER35": {
       "candidates": 8,
-      "panel_rows": 0
+      "panel_rows": 5
      }
     },
     "expected_candidate_rows": 32,
@@ -956,7 +956,7 @@
   "Norway Eliteserien": {
    "current": {
     "league_week_id": "Norway Eliteserien|2026-W47",
-    "state": "PROVISIONAL",
+    "state": "FROZEN",
     "fixtures_known": 8,
     "fixtures_before_panel_start": 0,
     "fixtures_with_candidates": 8,
@@ -967,19 +967,19 @@
     "markets": {
      "OU25": {
       "candidates": 8,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "BTTS": {
       "candidates": 8,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER15": {
       "candidates": 8,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER35": {
       "candidates": 8,
-      "panel_rows": 0
+      "panel_rows": 5
      }
     },
     "expected_candidate_rows": 32,
@@ -1080,7 +1080,7 @@
   "Serie B": {
    "current": {
     "league_week_id": "Serie B|2026-W47",
-    "state": "PROVISIONAL",
+    "state": "FROZEN",
     "fixtures_known": 10,
     "fixtures_before_panel_start": 0,
     "fixtures_with_candidates": 10,
@@ -1091,19 +1091,19 @@
     "markets": {
      "OU25": {
       "candidates": 10,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "BTTS": {
       "candidates": 10,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER15": {
       "candidates": 10,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER35": {
       "candidates": 10,
-      "panel_rows": 0
+      "panel_rows": 5
      }
     },
     "expected_candidate_rows": 40,

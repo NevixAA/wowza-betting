@@ -1,11 +1,73 @@
 {
- "generated_at": "2026-11-20T16:59:45Z",
+ "generated_at": "2026-11-20T23:06:30Z",
  "selection_mode": "TOP3_LEAGUE_GW",
  "version": "TOP3-2",
  "freeze_lead_min": 120.0,
  "status": "OK",
  "note": "Each league's 3 best tips of the gameweek across O/U 2.5, BTTS, Over 1.5, Over 3.5 from its MODEL cells, each cleared its cell's one owner-approved bar, ranked by the live rule (calibrated value); fewer than 3 when fewer clear the bar. League-wide cells are the league's own line (league_rule), outside the 3. Every TOP-3 tip: 0.5% stake of bankroll, flat, placed manually by the owner at the odds shown on the tip (never auto-executed); P/L here in flat units.",
  "leagues": {
+  "Argentina Primera Division": {
+   "league_rule": {
+    "picks": 0,
+    "settled": 0,
+    "flat_pnl_units": 0.0
+   },
+   "latest_league_week_id": "Argentina Primera Division|2026-W47",
+   "latest_excluded": {
+    "BELOW_LEAGUE_BAR": 2,
+    "NO_LEAGUE_BAR": 6,
+    "NO_TWO_SIDED_PRICE": 6,
+    "OUTSIDE_ODDS_RANGE": 1,
+    "RANKED_BELOW_TOP3": 6
+   },
+   "latest_picks": [
+    {
+     "top3_rank": "1",
+     "home_team": "Argentinos Juniors",
+     "away_team": "Independiente",
+     "kickoff_utc": "2026-11-21T20:00:00Z",
+     "market": "OVER15",
+     "side": "OVER",
+     "odds": "1.48",
+     "edge_calibrated": "0.014904",
+     "slot": "T1_BEST_VALUE",
+     "cell_status": "PROMISING",
+     "result": ""
+    },
+    {
+     "top3_rank": "2",
+     "home_team": "River Plate",
+     "away_team": "Lanus",
+     "kickoff_utc": "2026-11-22T22:00:00Z",
+     "market": "OVER15",
+     "side": "OVER",
+     "odds": "1.4",
+     "edge_calibrated": "0.013036",
+     "slot": "T2_SAFEST",
+     "cell_status": "PROMISING",
+     "result": ""
+    },
+    {
+     "top3_rank": "3",
+     "home_team": "Instituto de C\u00f3rdoba",
+     "away_team": "Atl\u00e9tico Hurac\u00e1n",
+     "kickoff_utc": "2026-11-23T01:00:00Z",
+     "market": "BTTS",
+     "side": "YES",
+     "odds": "2.16",
+     "edge_calibrated": "0.021269",
+     "slot": "T3_RISKY_VALUE",
+     "cell_status": "PROMISING",
+     "result": ""
+    }
+   ],
+   "weeks_decided": 1,
+   "picks": 3,
+   "settled": 0,
+   "won": 0,
+   "flat_pnl_units": 0.0,
+   "roi": null
+  },
   "Bundesliga 2": {
    "league_rule": {
     "picks": 0,
@@ -46,6 +108,66 @@
    "flat_pnl_units": 0.0,
    "roi": null
   },
+  "League One": {
+   "league_rule": {
+    "picks": 0,
+    "settled": 0,
+    "flat_pnl_units": 0.0
+   },
+   "latest_league_week_id": "League One|2026-W47",
+   "latest_excluded": {
+    "BELOW_LEAGUE_BAR": 11,
+    "NO_LEAGUE_BAR": 30,
+    "NO_TWO_SIDED_PRICE": 7
+   },
+   "latest_picks": [],
+   "weeks_decided": 1,
+   "picks": 0,
+   "settled": 0,
+   "won": 0,
+   "flat_pnl_units": 0.0,
+   "roi": null
+  },
+  "Ligue 2": {
+   "league_rule": {
+    "picks": 0,
+    "settled": 0,
+    "flat_pnl_units": 0.0
+   },
+   "latest_league_week_id": "Ligue 2|2026-W47",
+   "latest_excluded": {
+    "BELOW_LEAGUE_BAR": 16,
+    "NO_LEAGUE_BAR": 11,
+    "NO_TWO_SIDED_PRICE": 1
+   },
+   "latest_picks": [],
+   "weeks_decided": 1,
+   "picks": 0,
+   "settled": 0,
+   "won": 0,
+   "flat_pnl_units": 0.0,
+   "roi": null
+  },
+  "Mexico Liga MX": {
+   "league_rule": {
+    "picks": 0,
+    "settled": 0,
+    "flat_pnl_units": 0.0
+   },
+   "latest_league_week_id": "Mexico Liga MX|2026-W47",
+   "latest_excluded": {
+    "BELOW_LEAGUE_BAR": 9,
+    "NO_LEAGUE_BAR": 22,
+    "NO_TWO_SIDED_PRICE": 5
+   },
+   "latest_picks": [],
+   "weeks_decided": 1,
+   "picks": 0,
+   "settled": 0,
+   "won": 0,
+   "flat_pnl_units": 0.0,
+   "roi": null
+  },
   "Norway Eliteserien": {
    "league_rule": {
     "picks": 0,
@@ -60,6 +182,27 @@
     "OUTSIDE_ODDS_RANGE": 8,
     "RANKED_BELOW_TOP3": 1,
     "TIER_NO_VALUE": 5
+   },
+   "latest_picks": [],
+   "weeks_decided": 1,
+   "picks": 0,
+   "settled": 0,
+   "won": 0,
+   "flat_pnl_units": 0.0,
+   "roi": null
+  },
+  "Serie B": {
+   "league_rule": {
+    "picks": 0,
+    "settled": 0,
+    "flat_pnl_units": 0.0
+   },
+   "latest_league_week_id": "Serie B|2026-W47",
+   "latest_excluded": {
+    "BELOW_LEAGUE_BAR": 26,
+    "NO_LEAGUE_BAR": 5,
+    "NO_TWO_SIDED_PRICE": 8,
+    "TIER_NO_VALUE": 1
    },
    "latest_picks": [],
    "weeks_decided": 1,
