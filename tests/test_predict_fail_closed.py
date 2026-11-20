@@ -62,6 +62,7 @@ def run(monkeypatch, tmp_path):
     monkeypatch.setattr(H, "record_feature_health", lambda *a, **k: None)
     monkeypatch.setattr(M, "predict_proba", lambda X, payload=None, **k: pd.Series(P_STUB, index=X.index))
     monkeypatch.setattr(config, "HT_MODEL_FILE_05", tmp_path / "no_ht.pkl")
+    monkeypatch.setattr(config, "HT_MODEL_FILE_05_NF", tmp_path / "no_ht_nf.pkl")
     monkeypatch.setattr(config, "STANDARD_OU25_SERVING_RECIPE", "legacy_v9")
     monkeypatch.setattr(config, "STANDARD_OU25_SERVING_RECIPE_RAW", "legacy_v9")
 

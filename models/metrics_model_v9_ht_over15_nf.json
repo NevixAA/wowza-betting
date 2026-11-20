@@ -1,0 +1,48 @@
+{
+  "logistic": {
+    "accuracy": 0.4444,
+    "auc": 0.3889,
+    "log_loss": 0.80875,
+    "brier": 0.30362,
+    "ece": 0.21434,
+    "n_train": 21362,
+    "n_cal": 2704,
+    "n_meta": 2693,
+    "n_test": 27,
+    "evaluated_on": "holdout"
+  },
+  "gradient_boost": {
+    "accuracy": 0.4444,
+    "auc": 0.6111,
+    "log_loss": 0.76577,
+    "brier": 0.28443,
+    "ece": 0.2068,
+    "n_train": 21362,
+    "n_cal": 2704,
+    "n_meta": 2693,
+    "n_test": 27,
+    "evaluated_on": "holdout"
+  },
+  "lightgbm": {
+    "accuracy": 0.4444,
+    "auc": 0.6056,
+    "log_loss": 0.7648,
+    "brier": 0.28428,
+    "ece": 0.20512,
+    "n_train": 21362,
+    "n_cal": 2704,
+    "n_meta": 2693,
+    "n_test": 27,
+    "evaluated_on": "holdout"
+  },
+  "__meta__": {
+    "accuracy": 0.4444,
+    "auc": 0.3889,
+    "log_loss": 0.79203,
+    "brier": 0.29662,
+    "ece": 0.20343,
+    "n_meta": 2693,
+    "n_test": 27,
+    "evaluated_on": "holdout"
+  }
+}

@@ -1,8 +1,9 @@
 """The clean-data switch (owner 2026-11-09): assemble the serving payloads from a refit and install
 them through the promotion gate's one-time owner override.
 
-    python scripts/promote_clean_switch.py assemble --refit <refit_dir> --out <dir>
-        writes <dir>/<model_type>.pkl + assembly.json (sha256 per model type); installs nothing
+    python scripts/promote_clean_switch.py assemble --refit <refit_dir> --out <dir> [--only mt,mt]
+        writes <dir>/<model_type>.pkl + assembly.json (sha256 per model type); installs nothing.
+        --only assembles just those model types (e.g. ht_over05_nf,ht_over15_nf, owner 2026-11-20)
     python scripts/promote_clean_switch.py install --assembled <dir> --override <override_id>
         src.promotion_gate.owner_clean_switch for every assembled model type (the override record in
         config/promotion_overrides.json must list each artifact's exact sha256), then records the
@@ -14,8 +15,9 @@ SERVING MAP (src/predict.py, src/model.py):
     btts / over15 / over35 <- refit standard/<m> + new_format/<m> as ONE track-split payload: the
                Standard payload at the top level and the New-Format payload under tracks['new_format']
                - the format src.model.train_by_track writes and _predict_by_track routes per row
-    ht_over05 / ht_over15 <- refit standard/<m> (predict.py scores HT on Standard rows only; the
-               New-Format HT refits have no serving path and are not installed)
+    ht_over05 / ht_over15 <- refit standard/<m>   model_ht_over05/15.pkl (Standard rows)
+    ht_over05_nf / ht_over15_nf <- refit new_format/<m>   model_v9_ht_over05/15_nf.pkl (New-Format rows;
+               owner 2026-11-20: connected to live predictions, prediction ledger only)
 """
 from __future__ import annotations
 
@@ -30,7 +32,8 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 SINGLE = {"standard": ("standard", "over25"), "newformat": ("new_format", "over25"),
-          "ht_over05": ("standard", "ht_over05"), "ht_over15": ("standard", "ht_over15")}
+          "ht_over05": ("standard", "ht_over05"), "ht_over15": ("standard", "ht_over15"),
+          "ht_over05_nf": ("new_format", "ht_over05"), "ht_over15_nf": ("new_format", "ht_over15")}
 SPLIT = ("btts", "over15", "over35")
 
 
@@ -38,7 +41,7 @@ def _load(refit: Path, track: str, market: str) -> dict:
     return pickle.loads((refit / track / f"{market}.pkl").read_bytes())
 
 
-def assemble(refit: Path, out: Path) -> dict:
+def assemble(refit: Path, out: Path, only: list | None = None) -> dict:
     from src import model as M
     man = json.loads((refit / "refit_manifest.json").read_text(encoding="utf-8"))
     out.mkdir(parents=True, exist_ok=True)
@@ -53,9 +56,16 @@ def assemble(refit: Path, out: Path) -> dict:
                              "n_features": len(payload.get("feature_cols") or []),
                              "track_split": payload.get("track_split")}
 
+    known = set(SINGLE) | set(SPLIT)
+    if only and not set(only) <= known:
+        raise ValueError(f"unknown model type(s) {sorted(set(only) - known)}")
     for mt, (track, market) in SINGLE.items():
+        if only and mt not in only:
+            continue
         _write(mt, _load(refit, track, market), [f"{track}/{market}"])
     for market in SPLIT:
+        if only and market not in only:
+            continue
         std = dict(_load(refit, "standard", market))
         nf = _load(refit, "new_format", market)
         rows = {t: (man["models"].get(f"{t}/{market}") or {}).get("rows") for t in ("standard", "new_format")}
@@ -114,12 +124,14 @@ def main(argv=None) -> int:
     a1 = sub.add_parser("assemble")
     a1.add_argument("--refit", required=True)
     a1.add_argument("--out", required=True)
+    a1.add_argument("--only", default="", help="comma-separated model types (default: all)")
     a2 = sub.add_parser("install")
     a2.add_argument("--assembled", required=True)
     a2.add_argument("--override", required=True)
     a = ap.parse_args(argv)
     if a.cmd == "assemble":
-        print(json.dumps({k: v["sha256"] for k, v in assemble(Path(a.refit), Path(a.out))["models"].items()},
+        print(json.dumps({k: v["sha256"] for k, v in assemble(Path(a.refit), Path(a.out),
+                                                         [m for m in a.only.split(",") if m] or None)["models"].items()},
                          indent=2))
     else:
         print(json.dumps(install(Path(a.assembled), a.override), indent=2))

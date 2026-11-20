@@ -84,5 +84,25 @@
     "retired_by": "Nevo (owner)",
     "retirement_owner_words": "fix what you need",
     "retirement_reason": "the 2026-10-28 v9_repaired Standard O/U 2.5 payload (models/model_v9_standard_repaired.pkl): its 1.0 imputer filled xG and inside-box shots - 0% training coverage - with 0.0 on every training row (FABRICATED_VALUE, reports/REAL_DATA_FINAL_AUDIT.md T5). Retired as a serving recipe (STANDARD_OU25_SERVING_RECIPE accepts only legacy_v9); file kept for audit."
+  },
+  "ht_over05_nf": {
+    "model_version": "ht_over05_nf_20261120T085150Z_ae89ea10",
+    "champion_since": "2026-11-20T08:51:50Z",
+    "retrain_batch_id": "phase2_refit_clean-data-switch-2026-11-09",
+    "training_cutoff": "2026-11-01",
+    "artifact_sha256": "ae89ea10ee628636bb308e26952cb20937536bed8c0ce79dc83b93d45bc89a84",
+    "promotion_source": "OWNER_CLEAN_SWITCH",
+    "promotion_reason": "OWNER_CLEAN_SWITCH [clean-data-switch-2026-11-09] stage nf_ht_connect by Nevo (owner) (2026-11-20): \"only this and that's it\" - the two New-Format half-time payloads fitted by the 2026-11-18 refit (golive refit_1118b new_format/ht_over05.pkl and new_format/ht_over15.pkl, champion_recipe, no retraining), installed as their own model types ht_over05_nf / ht_over15_nf (models/model_v9_ht_over05_nf.pk",
+    "gate_version": "PG-1.0"
+  },
+  "ht_over15_nf": {
+    "model_version": "ht_over15_nf_20261120T085150Z_ead4bb74",
+    "champion_since": "2026-11-20T08:51:50Z",
+    "retrain_batch_id": "phase2_refit_clean-data-switch-2026-11-09",
+    "training_cutoff": "2026-11-01",
+    "artifact_sha256": "ead4bb74188de2de80a00b10f2bbcfcf4453c4a5c4389ac46c5eae17caa9057c",
+    "promotion_source": "OWNER_CLEAN_SWITCH",
+    "promotion_reason": "OWNER_CLEAN_SWITCH [clean-data-switch-2026-11-09] stage nf_ht_connect by Nevo (owner) (2026-11-20): \"only this and that's it\" - the two New-Format half-time payloads fitted by the 2026-11-18 refit (golive refit_1118b new_format/ht_over05.pkl and new_format/ht_over15.pkl, champion_recipe, no retraining), installed as their own model types ht_over05_nf / ht_over15_nf (models/model_v9_ht_over05_nf.pk",
+    "gate_version": "PG-1.0"
   }
 }

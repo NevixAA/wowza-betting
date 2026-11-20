@@ -686,13 +686,26 @@ def _ht_price_lookup():
     return _get
 
 
+def _standard_ht_rows(preds_df: pd.DataFrame) -> pd.DataFrame:
+    """The Standard rows of a board. Since 2026-11-20 New-Format rows carry a New-Format HT probability too
+    (owner: prediction ledger ONLY - no tips), so the Standard HT tip/observation logs below keep reading
+    Standard rows only, exactly as before."""
+    if "model_type" not in preds_df.columns:
+        return preds_df
+    return preds_df[preds_df["model_type"].astype(str) == "standard"]
+
+
 def append_ht_tips(preds_df: pd.DataFrame, source: str = "live") -> None:
     """Log half-time O/U tips (HT model) to ht_ledger.csv — one row per (fixture, HT line).
     Rows = the pre-2026-11-19 HT candidate rule, kept as the LEARNING record (the notifier no longer uses it:
     an HT tip is sent only with a captured price on an approved per-league HT bar). entry/closing/clv/result fill in when
     update_results settles against captured HT odds (standard_sidemarket_odds_history: the
-    ht_* markets) + HT scores. HT is standard-only. Completes open->close->CLV for every model."""
+    ht_* markets) + HT scores. HT is standard-only here: New-Format HT (2026-11-20) goes to the prediction
+    ledger only. Completes open->close->CLV for every model."""
     if preds_df is None or preds_df.empty or "p_ht_over05" not in preds_df.columns:
+        return
+    preds_df = _standard_ht_rows(preds_df)
+    if preds_df.empty:
         return
     existing = pd.read_csv(HT_LEDGER_FILE) if HT_LEDGER_FILE.exists() else pd.DataFrame(columns=HT_LEDGER_COLS)
     seen = {(str(r["match_date"])[:10], str(r["home_team"]), str(r["away_team"]),
@@ -818,8 +831,13 @@ def append_ht_observations(preds_df: pd.DataFrame) -> None:
     already lives in standard_sidemarket_odds_history.csv; this captures the model's belief and
     the market price AT THE MOMENT WE SCORED IT, which is the pair an edge is computed from and
     the thing that cannot be reconstructed afterwards.
+
+    Standard rows only (New-Format HT, 2026-11-20, is recorded in the prediction ledger only).
     """
     if preds_df is None or preds_df.empty or "p_ht_over05" not in preds_df.columns:
+        return
+    preds_df = _standard_ht_rows(preds_df)
+    if preds_df.empty:
         return
     existing = pd.read_csv(HT_OBS_FILE) if HT_OBS_FILE.exists() else pd.DataFrame(columns=HT_OBS_COLS)
     seen = {(str(r["match_date"])[:10], str(r["home_team"]), str(r["away_team"]))

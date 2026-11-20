@@ -781,7 +781,8 @@ def save_models(results: dict, target: str = "over25",
     serving = {Path(p).resolve() for p in (
         config.MODEL_FILE_STANDARD, config.MODEL_FILE_NEWFORMAT, config.MODEL_FILE_BTTS,
         config.MODEL_FILE_OVER15, config.MODEL_FILE_OVER35, config.HT_MODEL_FILE_05,
-        config.HT_MODEL_FILE_15, config.MODEL_FILE_STANDARD_REPAIRED)}
+        config.HT_MODEL_FILE_15, config.MODEL_FILE_STANDARD_REPAIRED, config.HT_MODEL_FILE_05_NF,
+        config.HT_MODEL_FILE_15_NF)}
     if path.resolve() in serving:
         raise PermissionError(f"{path.name} is a SERVING model file; only src/promotion_gate.py "
                               f"may write it (submit the candidate to the gate instead)")

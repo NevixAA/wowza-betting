@@ -269,6 +269,10 @@ MARKET_PAYLOADS = {"BTTS": ("MODEL_FILE_BTTS", MODEL_TYPES), "Over 1.5": ("MODEL
                    "Over 3.5": ("MODEL_FILE_OVER35", MODEL_TYPES),
                    "HT Over 0.5": ("HT_MODEL_FILE_05", ("standard",)),
                    "HT Over 1.5": ("HT_MODEL_FILE_15", ("standard",))}
+#: (model type, market) -> config attribute, for a market whose tracks are served by SEPARATE files: HT O/U on
+#: New-Format fixtures is scored by the New-Format HT payloads (owner 2026-11-20, src/predict.py 5b).
+TRACK_PAYLOADS = {("new_format", "HT Over 0.5"): "HT_MODEL_FILE_05_NF",
+                  ("new_format", "HT Over 1.5"): "HT_MODEL_FILE_15_NF"}
 #: the HT form + rest inputs checked on every track whatever its payload lists (2026-11-02 gap)
 HT_FORM_INPUTS = ("home_ht_over05_rate", "away_ht_over05_rate", "home_ht_over15_rate", "away_ht_over15_rate",
                   "home_ht_scored_last5", "away_ht_scored_last5", "home_ht_conceded_last5",
@@ -310,6 +314,9 @@ def serving_features() -> dict:
         pl = _load(attr)
         for mt in mts:
             out[(mt, market)] = pl if isinstance(pl, str) else _payload_cols(pl, mt)
+    for (mt, market), attr in TRACK_PAYLOADS.items():
+        pl = _load(attr)
+        out[(mt, market)] = pl if isinstance(pl, str) else _payload_cols(pl, mt)
     return out
 
 
@@ -462,7 +469,7 @@ def served_feature_spread() -> dict:
     out = {}
     recipe = str(getattr(config, "STANDARD_OU25_SERVING_RECIPE", "legacy_v9"))
     attrs = ["MODEL_FILE_STANDARD" if recipe == "legacy_v9" else "MODEL_FILE_STANDARD_REPAIRED",
-             "MODEL_FILE_NEWFORMAT"] + [a for a, _ in MARKET_PAYLOADS.values()]
+             "MODEL_FILE_NEWFORMAT"] + [a for a, _ in MARKET_PAYLOADS.values()] + list(TRACK_PAYLOADS.values())
     for attr in dict.fromkeys(attrs):
         label = f"team:{Path(getattr(config, attr)).name}"
         try:

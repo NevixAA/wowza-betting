@@ -184,6 +184,9 @@ TEAM_ARTIFACTS = (
     ("Over 3.5", "MODEL_FILE_OVER35", ("standard", "new_format")),
     ("HT Over 0.5", "HT_MODEL_FILE_05", ("standard",)),
     ("HT Over 1.5", "HT_MODEL_FILE_15", ("standard",)),
+    # New-Format HT O/U (owner 2026-11-20): own payloads, New-Format rows only (prediction ledger only)
+    ("New Format HT Over 0.5", "HT_MODEL_FILE_05_NF", ("new_format",)),
+    ("New Format HT Over 1.5", "HT_MODEL_FILE_15_NF", ("new_format",)),
 )
 
 #: the FANTASY projection inputs (player_model/fantasy*.py). No fantasy model is serialized: the V2

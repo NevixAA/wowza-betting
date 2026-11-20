@@ -1,7 +1,7 @@
 """Prediction ledger coverage (owner rule 2026-11-17, reconfirmed 2026-11-18): every model predicts every match
 of every tracked league for every market it can. Pins that
   * every v9 team market registered for one track is registered for the other track too (the New-Format
-    HT O/U 0.5 / 1.5 entries exist; they are pending_model, so they write NO rows until their model serves);
+    HT O/U 0.5 / 1.5 entries are active since the owner connected the New-Format HT models on 2026-11-20);
   * the per-run coverage check names every board fixture that got no row, with its reason, and finds no
     fixture missing an active market of its own track;
   * the check runs only behind the ledger flag (flag off: nothing written).
@@ -36,7 +36,8 @@ def _board():
     return pd.DataFrame([
         _r(),
         _r(league="Norway Eliteserien", home_team="Molde", away_team="Brann", _oa_event_id="e2",
-           model_type="new_format", p_ht_over05=float("nan"), p_ht_over15=float("nan")),
+           model_type="new_format", p_ht_over05=0.66, p_ht_over15=0.3, model_version_ht_over05="h05nf",
+           model_version_ht_over15="h15nf"),
         _r(home_team="Hull City", away_team="Derby County", _oa_event_id="e3", kickoff_utc=None),
         _r(home_team="Leeds United", away_team="Stoke City", _oa_event_id="e4", model_type="unknown"),
         _r(home_team="Millwall", away_team="Watford", _oa_event_id="e5", kickoff_utc="2026-11-17 11:00:00"),
@@ -52,8 +53,10 @@ def test_every_team_market_is_registered_for_both_tracks():
     for m in ("ht_ou05", "ht_ou15"):
         nf = by["v9_new_format"][m]
         assert nf["track"] == "new_format" and nf["settle"]["period"] == "ht"
-        # no New-Format HT model serves yet: registered, never empty-filled
-        assert nf["status"] == "pending_model" and nf["prob_col"] is None and nf["model_file"] is None
+        # owner 2026-11-20: the New-Format HT model serves New-Format rows (its own file)
+        assert nf["status"] == "active" and nf["prob_col"] == by["v9_standard"][m]["prob_col"]
+        assert nf["model_file"]["*"].endswith("_nf.pkl")
+        assert nf["model_file"] != by["v9_standard"][m]["model_file"]
 
 
 def test_coverage_names_every_dropped_fixture_and_misses_no_market():
@@ -68,12 +71,13 @@ def test_coverage_names_every_dropped_fixture_and_misses_no_market():
     assert "not a v9 track" in why["Leeds United"]
     assert "after kickoff" in why["Millwall"]
     assert rep["missing_cells_n"] == 0
-    # every active market of each track got rows; New-Format writes no HT rows (pending_model)
+    # every active market of each track got rows; New-Format HT rows carry the New-Format HT versions
     d = pd.DataFrame(rows)
     active = rep["active_team_entries"]
     for mid, g in d.groupby("model_id"):
         assert set(g["market"]) == set(active[mid])
-    assert not d[(d["model_id"] == "v9_new_format") & d["market"].str.startswith("ht_")].shape[0]
+    nf_ht = d[(d["model_id"] == "v9_new_format") & d["market"].str.startswith("ht_")]
+    assert set(nf_ht["model_version"]) == {"h05nf", "h15nf"} and (nf_ht["scored"] == 1).all()
     # tracked leagues with no board fixture are listed with a reason
     assert all(x["reason"] for x in rep["tracked_leagues_without_board_fixtures"])
     assert "Championship" not in {x["league"] for x in rep["tracked_leagues_without_board_fixtures"]}

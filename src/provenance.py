@@ -126,6 +126,15 @@ def stamp_versions(df):
         df["prediction_role"] = "CHAMPION"
         for m, col in SIDE_VERSION_COLS.items():
             df[col] = reg.stamp_for(m)["model_version"]
+        # HT O/U is served per league track (owner 2026-11-20): a New-Format row's HT probability comes
+        # from the New-Format HT model, so its version column names THAT model, never the Standard one.
+        if tag is not None:
+            nf_rows = (tag.astype(str) == "new_format").to_numpy()
+            if nf_rows.any():
+                for m, by_track in reg.HT_MODEL_BY_TRACK.items():
+                    col = SIDE_VERSION_COLS[m]
+                    df[col] = df[col].astype(object)
+                    df.loc[nf_rows, col] = reg.stamp_for(by_track["new_format"])["model_version"]
     except Exception as e:                                    # pragma: no cover
         log.warning(f"[provenance] version stamping failed ({e}); writing UNKNOWN")
         for col in ("model_version", *SIDE_VERSION_COLS.values()):

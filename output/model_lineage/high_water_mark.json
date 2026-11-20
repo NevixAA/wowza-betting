@@ -249,5 +249,33 @@
       "promotion_source": "OWNER_INSTALL"
     },
     "updated_at": "2026-10-28T12:37:38Z"
+  },
+  "ht_over05_nf": {
+    "champion_version": "ht_over05_nf_20261120T085150Z_ae89ea10",
+    "historical": {
+      "accuracy": 0.7037,
+      "auc": 0.4276,
+      "log_loss": 0.6151,
+      "brier": 0.2114,
+      "ece": 0.08534,
+      "promoted_at": "2026-11-20T08:51:50Z",
+      "gate_version": "PG-1.0",
+      "promotion_source": "OWNER_CLEAN_SWITCH"
+    },
+    "updated_at": "2026-11-20T08:51:50Z"
+  },
+  "ht_over15_nf": {
+    "champion_version": "ht_over15_nf_20261120T085150Z_ead4bb74",
+    "historical": {
+      "accuracy": 0.4444,
+      "auc": 0.3889,
+      "log_loss": 0.79203,
+      "brier": 0.29662,
+      "ece": 0.20343,
+      "promoted_at": "2026-11-20T08:51:50Z",
+      "gate_version": "PG-1.0",
+      "promotion_source": "OWNER_CLEAN_SWITCH"
+    },
+    "updated_at": "2026-11-20T08:51:50Z"
   }
 }

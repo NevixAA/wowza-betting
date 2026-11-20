@@ -65,15 +65,30 @@ MODEL_FILES: dict[str, Path] = {
     # serving file, so the legacy "standard" champion stays intact as the rollback. Installed only
     # by promotion_gate.owner_install; FROZEN (see FROZEN_MODEL_TYPES) — no retrain submits to it.
     "standard_repaired": config.MODEL_FILE_STANDARD_REPAIRED,
+    # New-Format half-time O/U (owner 2026-11-20: connect the NF HT models to live predictions). Their own
+    # model types and serving files: src/predict.py scores NEW-FORMAT rows with them; the two HT types
+    # above keep scoring Standard rows only.
+    "ht_over05_nf": config.HT_MODEL_FILE_05_NF,
+    "ht_over15_nf": config.HT_MODEL_FILE_15_NF,
 }
 #: What each model's probability column is called in predictions.csv.
 PRED_COLUMN = {"standard": "p_over25", "newformat": "p_over25", "btts": "p_btts",
                "over15": "p_over15", "over35": "p_over35",
                "ht_over05": "p_ht_over05", "ht_over15": "p_ht_over15",
-               "standard_repaired": "p_over25"}
+               "standard_repaired": "p_over25",
+               "ht_over05_nf": "p_ht_over05", "ht_over15_nf": "p_ht_over15"}
 TARGET = {"standard": "over25", "newformat": "over25", "btts": "btts", "over15": "over15",
           "over35": "over35", "ht_over05": "ht_over05", "ht_over15": "ht_over15",
-          "standard_repaired": "over25"}
+          "standard_repaired": "over25", "ht_over05_nf": "ht_over05", "ht_over15_nf": "ht_over15"}
+#: Model types that score ONE league track only (predict's model_type column): their probability column is
+#: shared with the other track's model, so a reader must attribute each row by its track. The HT columns
+#: p_ht_over05 / p_ht_over15 carry the Standard HT model on Standard rows and the New-Format HT model on
+#: New-Format rows (owner 2026-11-20).
+SERVES_TRACK = {"ht_over05": "standard", "ht_over15": "standard",
+                "ht_over05_nf": "new_format", "ht_over15_nf": "new_format"}
+#: per HT market: {league track: model type}
+HT_MODEL_BY_TRACK = {"ht_over05": {"standard": "ht_over05", "new_format": "ht_over05_nf"},
+                     "ht_over15": {"standard": "ht_over15", "new_format": "ht_over15_nf"}}
 #: Model types no scheduled retrain may submit a candidate to (promotion_gate refuses them). The
 #: repaired Standard model changes only by an explicit owner_install (owner decision 2026-10-28:
 #: frozen until the owner decides how it is retrained).

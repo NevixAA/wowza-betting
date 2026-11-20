@@ -627,8 +627,11 @@ def load_predictions_ht():
     preds["date"] = pd.to_datetime(preds["date"], errors="coerce")
     today = pd.Timestamp.now(tz="UTC").tz_localize(None).normalize()
     preds = preds[preds["date"] >= today].copy()
-    # Only standard-format leagues (have HT data)
+    # Only standard-format leagues: New-Format rows carry a New-Format HT probability since 2026-11-20,
+    # recorded in the prediction ledger only (owner: no tips for New-Format HT)
     preds = preds[preds["p_ht_over05"].notna()]
+    if "model_type" in preds.columns:
+        preds = preds[preds["model_type"].astype(str) == "standard"]
     return preds
 
 

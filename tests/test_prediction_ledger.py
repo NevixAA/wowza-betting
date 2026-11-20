@@ -34,6 +34,20 @@ def _row(**kw):
     return PL.make_row(**base)
 
 
+@pytest.fixture
+def pending_markets(tmp_path, monkeypatch):
+    """The shared config with one entry turned back to pending_model (no entry is pending since the
+    New-Format HT models went live, owner 2026-11-20): the pending-model rules stay pinned."""
+    m = PL.load_markets()
+    for e in m["entries"]:
+        if (e["repo"], e["model_id"], e["market"]) == ("v9", "v9_new_format", "ht_ou05"):
+            e.update(status="pending_model", prob_col=None, version_col=None, model_file=None)
+    f = tmp_path / "pending_markets.json"
+    f.write_text(json.dumps(m), encoding="utf-8")
+    monkeypatch.setattr(PL, "MARKETS_FILE", f)
+    return m
+
+
 # ── slug / registry ──────────────────────────────────────────────────────────────────────────────
 
 def test_slug_is_the_registry_id_and_derivable_from_the_name():
@@ -74,20 +88,26 @@ def test_markets_config_is_unique_and_side_markets_are_their_own_entries():
     for mid in ("v9_standard", "v9_new_format"):
         for mk in ("ou15", "ou25", "ou35", "btts"):
             assert (mid, mk) in v9
-    assert ("v9_standard", "ht_ou05") in v9 and ("v9_new_format", "ht_ou05") not in v9
+    # HT O/U: Standard and (owner 2026-11-20) New-Format, each its own model
+    for mid in ("v9_standard", "v9_new_format"):
+        for mk in ("ht_ou05", "ht_ou15"):
+            assert (mid, mk) in v9
     for mk in ("goals", "goals2", "goals3", "assists", "sot", "sot2", "sot3", "sot4", "cards"):
         assert ("v9_props", mk) in v9
     # owner 2026-11-18: the rare markets serve the clean player base rate; their parked clean ML
     # challengers predict into the ledger beside it
     for mk in ("goals2", "goals3", "sot3", "sot4"):
         assert (V.CHALLENGER_MODEL_ID, mk) in v9
-    # corners / cards: active since the side models went live (src/side_models/, owner "make it work");
-    # the New-Format HT entries stay registered pending_model (no served payload yet)
+    # corners / cards: active since the side models went live (src/side_models/, owner "make it work")
     for mid, mk in (("v9_corners", "corners_total"), ("v9_corners", "corners_team"),
                     ("v9_cards", "cards_total"), ("v9_cards", "cards_team")):
         assert (mid, mk) in v9
-    pending = {(e["model_id"], e["market"]) for e in m["entries"] if e["status"] == "pending_model"}
-    assert {("v9_new_format", "ht_ou05"), ("v9_new_format", "ht_ou15")} <= pending
+    nf_ht = {e["market"]: e for e in m["entries"] if e["model_id"] == "v9_new_format"
+             and e["market"] in ("ht_ou05", "ht_ou15")}
+    for mk, tag in (("ht_ou05", "05"), ("ht_ou15", "15")):
+        assert nf_ht[mk]["prob_col"] == f"p_ht_over{tag}"
+        assert nf_ht[mk]["version_col"] == f"model_version_ht_over{tag}"
+        assert nf_ht[mk]["model_file"] == {"*": f"models/model_v9_ht_over{tag}_nf.pkl"}
     pro = {e["market"] for e in m["entries"] if e["repo"] == "pro"}
     assert {"1x2", "correct_score", "goals_exact_0", "goals_le1", "goals_ge6", "combo"} <= pro
 
@@ -122,7 +142,7 @@ def test_first_write_wins_and_repeats_are_counted(tmp_path):
     assert PL.validate(tmp_path) == []
 
 
-def test_refusals(tmp_path):
+def test_refusals(tmp_path, pending_markets):
     rows = [_row(league="Atlantis League"),                               # unknown league
             _row(model_id="v9_new_format", market="ht_ou05", line=0.5),   # pending model: no rows
             _row(fixture_ref=""),                                          # no fixture identity
@@ -186,7 +206,7 @@ def test_validator_fails_on_post_kickoff_snapshot(tmp_path):
     assert any("not strictly before kickoff" in i for i in PL.validate(tmp_path))
 
 
-def test_validator_fails_on_price_column_and_pending_rows(tmp_path):
+def test_validator_fails_on_price_column_and_pending_rows(tmp_path, pending_markets):
     r = dict(_row(), league_slug="championship")
     p = _write(tmp_path, [r])
     d = pd.read_csv(p, dtype=str)
@@ -250,11 +270,21 @@ def test_team_rows_every_market_both_selections_no_prices(tmp_path):
     assert st["written"] == len(rows) and PL.validate(tmp_path / "L") == []
 
 
-def test_team_rows_new_format_has_no_ht_and_final_snapshot_near_kickoff():
-    b = _board(model_type="new_format", serving_recipe="legacy_v9", generated_at="2026-11-21T14:00:00Z")
+def test_team_rows_new_format_ht_and_final_snapshot_near_kickoff():
+    # owner 2026-11-20: New-Format fixtures get HT O/U 0.5 / 1.5 rows from the New-Format HT model
+    b = _board(model_type="new_format", serving_recipe="legacy_v9", generated_at="2026-11-21T14:00:00Z",
+               p_ht_over05=0.7, p_ht_over15=0.35, model_version_ht_over05="ht_over05_nf_x",
+               model_version_ht_over15="ht_over15_nf_x")
     d = pd.DataFrame(V.team_rows(b, now=NOW))
     assert set(d["model_id"]) == {"v9_new_format"}
-    assert not d["market"].str.startswith("ht_").any()
+    assert set(d["market"]) == {"ou25", "ou15", "ou35", "btts", "ht_ou05", "ht_ou15"}
+    ht = d[d["market"].str.startswith("ht_")]
+    assert set(ht["track"]) == {"new_format"} and (ht["scored"] == 1).all()
+    assert set(ht.loc[ht["market"] == "ht_ou05", "model_version"]) == {"ht_over05_nf_x"}
+    assert set(ht.loc[ht["market"] == "ht_ou15", "model_version"]) == {"ht_over15_nf_x"}
+    o = ht[(ht["market"] == "ht_ou05") & (ht["snapshot"] == "first_sight")].set_index("selection")
+    assert math.isclose(float(o.at["OVER", "probability"]), 0.7)
+    assert math.isclose(float(o.at["UNDER", "probability"]), 0.3)
     assert set(d["snapshot"]) == {"first_sight", "final"}
     assert V.team_rows(_board(generated_at="2026-11-21T15:00:00Z"), now=NOW) == []   # at kickoff: nothing
 
@@ -401,7 +431,7 @@ def test_write_settled_never_touches_raw_and_reschedule_voids(tmp_path, monkeypa
     assert PL.write_settled(fn, repo="v9", root=root, settled_root=sroot)["written"] == 0   # unchanged
 
 
-def test_registry_lists_pending_and_counts(tmp_path):
+def test_registry_lists_pending_and_counts(tmp_path, pending_markets):
     PL.append([_row()], repo="v9", writer="t", root=tmp_path, now=NOW)
     reg = PL.build_registry(root=tmp_path, settled_root=tmp_path / "none", now=NOW)
     by = {(m["repo"], m["model_id"], m["market"]): m for m in reg["models"]}
