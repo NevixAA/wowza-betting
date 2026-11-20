@@ -29,6 +29,7 @@ OWNER 2026-11-11 ("Clean rebuild"; TOP-3 "Paper track"). Supersedes the tier / E
     python -m src.top3_league notify    # predict.yml: send newly frozen picks to Telegram (once each)
     python -m src.top3_league settle    # update_results.yml: grade finished picks (grading columns only)
     python -m src.top3_league report    # rewrite output/top3_league_report.json
+    python -m src.top3_league reseed    # predict.yml, before the pipeline: the one-shot re-seed (owner 2026-11-20)
 
 Owner rules (2026-11-08, verbatim intent):
   * "3 tips every gw per league (bets value)": each league gets its 3 best VALUE tips per gameweek, across
@@ -1014,10 +1015,106 @@ def notify(out_dir: Path | None = None, env: dict | None = None, sender=None) ->
     return {"enabled": True, "sent": n}
 
 
+# ── one-shot re-seed (owner 2026-11-20 "Re-seed for this weekend") ──────────────────────────────
+SHADOW_NAME = "edge_engine_shadow.csv"
+RESEED_KEY = "reseed"
+
+
+def _archive_path(p: Path, tag: str) -> Path:
+    return p.with_name(f"{p.stem}_{tag}{p.suffix}")
+
+
+def _split_unplayed(raw: bytes, at: pd.Timestamp) -> tuple[bytes, int, int]:
+    """(kept bytes, kept rows, dropped rows) of a first-sight CSV: drop every row first seen BEFORE `at`
+    (prediction_ts) whose kickoff is AT/AFTER `at` - the unplayed fixtures scored by the pre-re-seed models.
+    Every kept line keeps its exact bytes and order. Fails (ValueError) on any line it cannot read as one row."""
+    import csv
+    lines = raw.splitlines(keepends=True)
+    if not lines:
+        raise ValueError("empty store")
+    head = next(csv.reader([lines[0].decode("utf-8-sig").rstrip("\r\n")]))
+    i_ts, i_ko = head.index("prediction_ts"), head.index("kickoff_utc")
+    out, kept, dropped = [lines[0]], 0, 0
+    for ln in lines[1:]:
+        if not ln.strip():
+            out.append(ln)
+            continue
+        rows = list(csv.reader([ln.decode("utf-8").rstrip("\r\n")]))
+        if len(rows) != 1 or len(rows[0]) != len(head):
+            raise ValueError("a row spans lines or has the wrong width - refusing to rewrite")
+        ts = pd.to_datetime(rows[0][i_ts], utc=True, errors="coerce")
+        ko = pd.to_datetime(rows[0][i_ko], utc=True, errors="coerce")
+        if pd.notna(ts) and pd.notna(ko) and ts < at <= ko:
+            dropped += 1
+            continue
+        out.append(ln)
+        kept += 1
+    return b"".join(out), kept, dropped
+
+
+def reseed(now=None, out_dir: Path | None = None, root: Path | None = None, env: dict | None = None) -> dict:
+    """ONE-SHOT re-seed of the TOP-3 candidates from the CURRENT models (owner 2026-11-20 "Re-seed for this
+    weekend"). Configured by config/top3_paper_tracks.json -> reseed {at_utc, archive_tag}; at_utc MUST equal
+    start_utc (the TOP-3 start moved to the re-seed instant). Run BEFORE the predict pipeline (predict.yml), so
+    the same run re-scores every unplayed fixture with the served models and live prices:
+      * output/top3_league_candidates.csv (+ any sidecar) -> *_<tag>.csv, bytes unchanged (archived, never deleted);
+      * output/edge_engine_shadow.csv is copied byte-for-byte to edge_engine_shadow_<tag>.csv, then the live file
+        keeps every line except the rows first seen before at_utc of fixtures kicking off at/after it (those were
+        scored by the pre-re-seed models, and the candidates take first_seen_at from these rows). Kept lines are
+        byte-identical, in order; the pipeline then logs those fixtures again at first sight from the new models.
+    Idempotent: once the candidates archive exists it does nothing (ALREADY_DONE). Fails closed (nothing
+    written) without the flag, without a coherent config, or before at_utc."""
+    if not enabled(env):
+        return {"enabled": False}
+    now = LW._now(now)
+    od = Path(out_dir) if out_dir else OUT
+    rs = _read_json((Path(root) if root else ROOT) / START_CONFIG).get(RESEED_KEY) or {}
+    if not rs:
+        return {"enabled": True, "status": "NO_RESEED_CONFIGURED"}
+    tag = str(rs.get("archive_tag") or "").strip()
+    try:
+        at = pd.Timestamp(rs.get("at_utc")) if rs.get("at_utc") else None
+    except (TypeError, ValueError):
+        at = None
+    if at is None or pd.isna(at) or not tag or not tag.replace("_", "").replace("-", "").isalnum():
+        return {"enabled": True, "status": "RESEED_CONFIG_INVALID"}
+    at = at.tz_localize("UTC") if at.tzinfo is None else at.tz_convert("UTC")
+    start = top3_start(root)
+    if start is None or at != start:
+        return {"enabled": True, "status": "RESEED_NOT_AT_START", "at_utc": LW._stamp(at)}
+    if now < at:
+        return {"enabled": True, "status": "BEFORE_RESEED_INSTANT", "at_utc": LW._stamp(at)}
+    cands = od / CANDIDATES_NAME
+    cands_arc = _archive_path(cands, tag)
+    if cands_arc.exists():
+        return {"enabled": True, "status": "ALREADY_DONE", "archive": cands_arc.name}
+    shadow = od / SHADOW_NAME
+    shadow_arc = _archive_path(shadow, tag)
+    res = {"enabled": True, "status": "RESEEDED", "at_utc": LW._stamp(at), "tag": tag,
+           "shadow_rows_kept": 0, "shadow_rows_archived_out": 0, "candidates_archived": False}
+    if shadow.exists():
+        raw = shadow.read_bytes()
+        kept_b, kept, dropped = _split_unplayed(raw, at)          # raises before anything is written
+        if shadow_arc.exists() and shadow_arc.read_bytes() != raw:
+            return {"enabled": True, "status": "RESEED_PARTIAL_ARCHIVE_DIFFERS", "archive": shadow_arc.name}
+        shadow_arc.write_bytes(raw)                               # the archive first, then the live file
+        shadow.write_bytes(kept_b)
+        res.update(shadow_rows_kept=kept, shadow_rows_archived_out=dropped, shadow_archive=shadow_arc.name)
+    for p in sorted(od.glob(CANDIDATES_NAME + "?*")):             # any sidecar (e.g. .first_sight.json)
+        p.replace(p.with_name(cands_arc.name + p.name[len(CANDIDATES_NAME):]))
+    if cands.exists():
+        cands.replace(cands_arc)
+        res["candidates_archived"] = True
+    else:
+        cands_arc.write_bytes(b"")                                # the marker: the re-seed ran once
+    res["candidates_archive"] = cands_arc.name
+    return res
+
+
 def _cli(argv: list[str]) -> int:
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)-7s %(message)s", datefmt="%H:%M:%S")
     cmd = argv[0] if argv else "run"
-    fn = {"run": run, "settle": settle, "notify": notify}.get(cmd)
+    fn = {"run": run, "settle": settle, "notify": notify, "reseed": reseed}.get(cmd)
     if fn is not None:
         print(json.dumps(fn(), default=str))
         return 0
