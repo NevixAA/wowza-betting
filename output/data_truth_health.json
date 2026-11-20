@@ -1,28 +1,235 @@
 {
  "artifact": "data_truth_health",
  "version": "DATA-TRUTH-1",
- "generated_at": "2026-11-18T16:01:01Z",
+ "generated_at": "2026-11-20T09:56:40Z",
  "checks": [
   {
    "check": "Data truth 1: one canonical name",
    "status": "GREEN",
-   "value": "0 unknown league name(s); blind board fixtures 0.6%",
+   "value": "0 unknown league name(s); blind board fixtures 0.0%",
    "rule": "every league value in predictions / ledgers / player tips / history banks is a registry league (canonical or alias): RED if any is not; AMBER if > 10% of board fixtures are blind (no form)",
    "detail": ""
   },
   {
    "check": "Data truth 2: no silent defaults",
    "status": "GREEN",
-   "value": "0 new default(s); 35 known (baseline); 0 baseline entr(ies) now gone",
-   "rule": "no NEW invented default in production code (fillna(<non-zero literal>), literal season fallback/list, pinned football-data folder): RED if any site is not in config/data_truth_baseline.json; GREEN otherwise (baseline entries each carry a reason)",
+   "value": "0 new default(s); 0 known (baseline); 195 allow-listed (counters/display); 0 baseline entr(ies) now gone; 0 allow-list entr(ies) now gone; 438 production files scanned",
+   "rule": "no NEW invented default in ALL production code (fillna(<non-zero literal>), literal season fallback/list, pinned football-data folder, numeric .get(<key>, <number>), an or-zero on a parsed value, a zero fillna on a price/odds): RED if any site is in neither config/data_truth_baseline.json nor config/data_truth_allowlist.json, or an allow-list entry has no reason; GREEN otherwise",
    "detail": ""
   },
   {
    "check": "Data truth 3: no missing data",
-   "status": "GREEN",
-   "value": "board priced, features present",
-   "rule": "live board: every fixture priced (odds_over25); Standard fixtures' rest days and HT form present (RED if > 50% missing, AMBER if > 20%); history banks fresh (AMBER if the newest match is > 10 days old)",
-   "detail": ""
+   "status": "RED",
+   "value": "team:model_ht_over05.pkl: 1 served feature(s) hold one value on the training rows (home_has_ht_history=1.0); team:model_ht_over15.pkl: 1 served feature(s) hold one value on the training rows (home_has_ht_history=1.0)",
+   "rule": "live board: every fixture priced (odds_over25); on EVERY served model track (standard and new_format x O/U 2.5, BTTS, Over 1.5, Over 3.5; HT O/U on standard) each input the scoring payload needs, plus the HT form and rest-day inputs, is present (RED if > 50% missing on a track, AMBER if > 20%); history banks fresh (AMBER if the newest match is > 10 days old); every served model feature (team and props payloads) carries data on its training rows (RED if one value - a placeholder, a constant or NaN - covers > 99.9% of them)",
+   "detail": "",
+   "tracks": {
+    "standard|O/U 2.5": {
+     "status": "GREEN",
+     "fixtures": 75,
+     "worst_pct": 9.3,
+     "missing": {},
+     "n_inputs": 43
+    },
+    "new_format|O/U 2.5": {
+     "status": "GREEN",
+     "fixtures": 74,
+     "worst_pct": 1.4,
+     "missing": {},
+     "n_inputs": 36
+    },
+    "standard|BTTS": {
+     "status": "GREEN",
+     "fixtures": 75,
+     "worst_pct": 9.3,
+     "missing": {},
+     "n_inputs": 43
+    },
+    "new_format|BTTS": {
+     "status": "GREEN",
+     "fixtures": 74,
+     "worst_pct": 1.4,
+     "missing": {},
+     "n_inputs": 36
+    },
+    "standard|Over 1.5": {
+     "status": "GREEN",
+     "fixtures": 75,
+     "worst_pct": 9.3,
+     "missing": {},
+     "n_inputs": 43
+    },
+    "new_format|Over 1.5": {
+     "status": "GREEN",
+     "fixtures": 74,
+     "worst_pct": 1.4,
+     "missing": {},
+     "n_inputs": 36
+    },
+    "standard|Over 3.5": {
+     "status": "GREEN",
+     "fixtures": 75,
+     "worst_pct": 9.3,
+     "missing": {},
+     "n_inputs": 43
+    },
+    "new_format|Over 3.5": {
+     "status": "GREEN",
+     "fixtures": 74,
+     "worst_pct": 1.4,
+     "missing": {},
+     "n_inputs": 36
+    },
+    "standard|HT Over 0.5": {
+     "status": "GREEN",
+     "fixtures": 75,
+     "worst_pct": 9.3,
+     "missing": {},
+     "n_inputs": 43
+    },
+    "standard|HT Over 1.5": {
+     "status": "GREEN",
+     "fixtures": 75,
+     "worst_pct": 9.3,
+     "missing": {},
+     "n_inputs": 43
+    },
+    "new_format|HT Over 0.5": {
+     "status": "GREEN",
+     "fixtures": 74,
+     "worst_pct": 1.4,
+     "missing": {},
+     "n_inputs": 36
+    },
+    "new_format|HT Over 1.5": {
+     "status": "GREEN",
+     "fixtures": 74,
+     "worst_pct": 1.4,
+     "missing": {},
+     "n_inputs": 36
+    }
+   },
+   "served_feature_spread": {
+    "team:model_v9_standard.pkl": {
+     "status": "GREEN",
+     "single_value": {},
+     "note": ""
+    },
+    "team:model_v9_newformat.pkl": {
+     "status": "GREEN",
+     "single_value": {},
+     "note": ""
+    },
+    "team:model_v9_btts.pkl": {
+     "status": "GREEN",
+     "single_value": {},
+     "note": ""
+    },
+    "team:model_v9_btts.pkl[new_format]": {
+     "status": "GREEN",
+     "single_value": {},
+     "note": ""
+    },
+    "team:model_v9_over15.pkl": {
+     "status": "GREEN",
+     "single_value": {},
+     "note": ""
+    },
+    "team:model_v9_over15.pkl[new_format]": {
+     "status": "GREEN",
+     "single_value": {},
+     "note": ""
+    },
+    "team:model_v9_over35.pkl": {
+     "status": "GREEN",
+     "single_value": {},
+     "note": ""
+    },
+    "team:model_v9_over35.pkl[new_format]": {
+     "status": "GREEN",
+     "single_value": {},
+     "note": ""
+    },
+    "team:model_ht_over05.pkl": {
+     "status": "RED",
+     "single_value": {
+      "home_has_ht_history": {
+       "value": 1.0,
+       "share": 1.0,
+       "how": "imputer: training min == max",
+       "placeholder": false
+      }
+     },
+     "note": ""
+    },
+    "team:model_ht_over15.pkl": {
+     "status": "RED",
+     "single_value": {
+      "home_has_ht_history": {
+       "value": 1.0,
+       "share": 1.0,
+       "how": "imputer: training min == max",
+       "placeholder": false
+      }
+     },
+     "note": ""
+    },
+    "team:model_v9_ht_over05_nf.pkl": {
+     "status": "GREEN",
+     "single_value": {},
+     "note": ""
+    },
+    "team:model_v9_ht_over15_nf.pkl": {
+     "status": "GREEN",
+     "single_value": {},
+     "note": ""
+    },
+    "props:model_player_goals.pkl": {
+     "status": "GREEN",
+     "single_value": {},
+     "note": ""
+    },
+    "props:model_player_goals2.pkl": {
+     "status": "GREEN",
+     "single_value": {},
+     "note": "rare market: research picks only"
+    },
+    "props:model_player_assists.pkl": {
+     "status": "GREEN",
+     "single_value": {},
+     "note": ""
+    },
+    "props:model_player_sot.pkl": {
+     "status": "GREEN",
+     "single_value": {},
+     "note": ""
+    },
+    "props:model_player_sot2.pkl": {
+     "status": "GREEN",
+     "single_value": {},
+     "note": ""
+    },
+    "props:model_player_sot3.pkl": {
+     "status": "GREEN",
+     "single_value": {},
+     "note": "rare market: research picks only"
+    },
+    "props:model_player_sot4.pkl": {
+     "status": "GREEN",
+     "single_value": {},
+     "note": "rare market: research picks only"
+    },
+    "props:model_player_cards.pkl": {
+     "status": "GREEN",
+     "single_value": {},
+     "note": ""
+    },
+    "props:model_player_goals3.pkl": {
+     "status": "GREEN",
+     "single_value": {},
+     "note": "rare market: research picks only"
+    }
+   }
   },
   {
    "check": "Data truth 4: right league relations",
@@ -32,11 +239,359 @@
    "detail": ""
   },
   {
+   "check": "Data truth 5: one match, one row",
+   "status": "GREEN",
+   "value": "0 duplicate pair(s), 0 self-containing row(s) after the loader's identity pipeline (107,108 bank rows -> 71,844; 35,264 copies removed); 0 provider fixture(s) claimed by 2+ served rows, 0 by 2+ af_history provider rows, 0 unsettled provider score conflict(s)",
+   "rule": "one match, one row: fd_history + the backtest archive + the provider supplement, through data_loader.one_club_one_match, hold 0 duplicate-match pairs (same league, canonical clubs, same score, dates <= 3 d apart; or same day, same score, one side the same club), 0 rows whose last-5 window holds their own match, 0 provider fixtures (API-Football fixture id) claimed by two served rows or by two served af_history provider rows, and 0 served rows whose score differs from the provider's 90-minute score without a settled decision: RED on any, or when the provider fixture lists are missing; NO_DATA if fd_history is missing",
+   "detail": ""
+  },
+  {
+   "check": "Data truth 6: no global bars in serving",
+   "status": "GREEN",
+   "value": "0 global-bar read(s) in 11 serving module(s)",
+   "rule": "no serving module (tiering, gates, staking) reads a global / pooled / hand-set tier bar or writes the GLOBAL threshold source: every tier is the league's own owner-applied bars (src/side_thresholds.own_bars) or none (NO_LEAGUE_BAR); RED on any hit",
+   "detail": ""
+  },
+  {
+   "check": "Data truth 7: no retired tiers on future tips",
+   "status": "GREEN",
+   "value": "0 future row(s) with a retired tier / multiplier",
+   "rule": "owner 2026-11-11: no tip / stake record dated on or after 2026-11-21 carries a retired tier label (SNIPER / MARKSMAN / VALUABLE) or a tier multiplier other than 1; a tip qualifies only by its cell's one approved bar; RED on any hit",
+   "detail": ""
+  },
+  {
+   "check": "Data truth 8: bars rest on bet-time prices only",
+   "status": "GREEN",
+   "value": "0 approved entr(ies) on unproven capture times; 0 closing / unproven price(s) read as a bet price",
+   "rule": "owner 2026-11-11: no approved, non-withdrawn bar or verdict rests on a price whose capture time is not proven before kickoff (no OddsAPI-history close price, unproven-capture share <= 50%), unless the owner recorded an exemption with its basis; RED on any hit; and no CLOSING price column / tier is ever read as a bet price (served pre-match pair, the study's football-data pair, Phase 2 market benchmarks, the history bet tiers) - closing is CLV only; and no UNPROVEN-capture price (NF 00:00 backfill, legacy rows, multi-book averages) reaches a bet-price consumer (backtest, retrain, Phase 2 market benchmarks, bars, edge_replay)",
+   "detail": ""
+  },
+  {
+   "check": "Data truth 9: clean ledgers",
+   "status": "GREEN",
+   "value": "clean since 2026-11-19 (5 live tip(s), 795 player row(s), 2 v91 row(s))",
+   "rule": "from the Clean Record start: 0 multi-tip / opposite-tip fixtures, 0 post-kickoff tips, 0 closes <= 1.0, 0 |CLV| > 50 new-format rows, 0 duplicate player tips, 0 v91_shadow fixtures logged twice: RED on any; NO_DATA before the start is set",
+   "detail": ""
+  },
+  {
+   "check": "Data truth 11: injuries/lineups freshness",
+   "status": "GREEN",
+   "value": "fresh: 42 open registry league(s), 369 finished fixture(s) checked for lineups, 14 active injuries-covered league-season(s)",
+   "rule": "per registry league with an open season: fixture lists read within 36 h; every finished fixture of a lineups-covered season >= 2 days old (last 14 days) has a lineups answer; an injuries-covered league with a match in the last / next 7 days has an injuries answer within 36 h: RED on any",
+   "detail": ""
+  },
+  {
+   "check": "Data truth 13a: active production violations",
+   "status": "AMBER",
+   "value": "0 active violation(s); props PENDING; 0 serving coverage gap(s)",
+   "rule": "REAL DATA ONLY (owner 2026-11-15): src/integrity/real_data_provenance - fabricated, unsupported, mismatched or refused inputs in a payload that scores live fixtures (props: not yet verified until the props agent reports)",
+   "detail": ""
+  },
+  {
+   "check": "Data truth 13b: new provenance violations",
+   "status": "GREEN",
+   "value": "0 new violation(s)",
+   "rule": "REAL DATA ONLY (owner 2026-11-15): src/integrity/real_data_provenance - a violation or an active feature config/feature_provenance.json does not hold",
+   "detail": ""
+  },
+  {
+   "check": "Data truth 13c: registered historical exceptions",
+   "status": "AMBER",
+   "value": "7 registered exception(s)",
+   "rule": "REAL DATA ONLY (owner 2026-11-15): src/integrity/real_data_provenance - documented, not reaching a served model",
+   "detail": "standard-repaired-xg-zero; legacy-batch-median; nf-hist-af-override; Standard O/U 2.5 (retired v9_repaired)|standard|home_xg_last5|FABRICATED_VALUE; Standard O/U 2.5 (retired v9_repaired)|standard|away_xg_last5|FABRICATED_VALUE; Standard O/U 2.5 (retired v9_repaired)|standard|home_insidebox_last5|FABRICATED_VALUE; Standard O/U 2.5 (retired v9_repaired)|standard|away_insidebox_last5|FABRICATED_VALUE"
+  },
+  {
+   "check": "Data truth 10a: keeper goals_conceded = match score",
+   "status": "GREEN",
+   "value": "0 disagreement(s) in 61,628 checkable keeper value(s) read by the features; 335 provider value(s) contradicted the score and are missing",
+   "rule": "a keeper who was his side's only keeper for the full 90 minutes of a match finished in 90 minutes has goals_conceded = the opponent's 90-minute goals, or missing - never another value",
+   "detail": "2026-06: 0/84 contradicted before, 0 missing after; 2026-07: 4/407 contradicted before, 54 missing after; 2026-08: 13/1566 contradicted before, 105 missing after; 2026-09: 10/1700 contradicted before, 222 missing after; 2026-10: 29/2146 contradicted before, 1003 missing after; 2026-11: 87/750 contradicted before, 617 missing after",
+   "by_month": {
+    "2022-08": {
+     "rows": 354,
+     "contradicted_before_check": 0,
+     "missing_after": 0
+    },
+    "2022-09": {
+     "rows": 457,
+     "contradicted_before_check": 0,
+     "missing_after": 0
+    },
+    "2022-10": {
+     "rows": 783,
+     "contradicted_before_check": 0,
+     "missing_after": 0
+    },
+    "2022-11": {
+     "rows": 324,
+     "contradicted_before_check": 0,
+     "missing_after": 0
+    },
+    "2022-12": {
+     "rows": 73,
+     "contradicted_before_check": 0,
+     "missing_after": 0
+    },
+    "2023-01": {
+     "rows": 373,
+     "contradicted_before_check": 0,
+     "missing_after": 0
+    },
+    "2023-02": {
+     "rows": 598,
+     "contradicted_before_check": 0,
+     "missing_after": 0
+    },
+    "2023-03": {
+     "rows": 608,
+     "contradicted_before_check": 0,
+     "missing_after": 0
+    },
+    "2023-04": {
+     "rows": 1094,
+     "contradicted_before_check": 0,
+     "missing_after": 0
+    },
+    "2023-05": {
+     "rows": 1143,
+     "contradicted_before_check": 0,
+     "missing_after": 0
+    },
+    "2023-06": {
+     "rows": 533,
+     "contradicted_before_check": 1,
+     "missing_after": 1
+    },
+    "2023-07": {
+     "rows": 799,
+     "contradicted_before_check": 4,
+     "missing_after": 4
+    },
+    "2023-08": {
+     "rows": 1426,
+     "contradicted_before_check": 2,
+     "missing_after": 2
+    },
+    "2023-09": {
+     "rows": 1773,
+     "contradicted_before_check": 9,
+     "missing_after": 9
+    },
+    "2023-10": {
+     "rows": 1835,
+     "contradicted_before_check": 0,
+     "missing_after": 0
+    },
+    "2023-11": {
+     "rows": 1464,
+     "contradicted_before_check": 0,
+     "missing_after": 0
+    },
+    "2023-12": {
+     "rows": 1435,
+     "contradicted_before_check": 0,
+     "missing_after": 0
+    },
+    "2024-01": {
+     "rows": 863,
+     "contradicted_before_check": 0,
+     "missing_after": 0
+    },
+    "2024-02": {
+     "rows": 1465,
+     "contradicted_before_check": 0,
+     "missing_after": 0
+    },
+    "2024-03": {
+     "rows": 1639,
+     "contradicted_before_check": 32,
+     "missing_after": 32
+    },
+    "2024-04": {
+     "rows": 2061,
+     "contradicted_before_check": 11,
+     "missing_after": 11
+    },
+    "2024-05": {
+     "rows": 1537,
+     "contradicted_before_check": 12,
+     "missing_after": 12
+    },
+    "2024-06": {
+     "rows": 595,
+     "contradicted_before_check": 13,
+     "missing_after": 13
+    },
+    "2024-07": {
+     "rows": 759,
+     "contradicted_before_check": 2,
+     "missing_after": 2
+    },
+    "2024-08": {
+     "rows": 1543,
+     "contradicted_before_check": 20,
+     "missing_after": 20
+    },
+    "2024-09": {
+     "rows": 1747,
+     "contradicted_before_check": 0,
+     "missing_after": 0
+    },
+    "2024-10": {
+     "rows": 1825,
+     "contradicted_before_check": 10,
+     "missing_after": 10
+    },
+    "2024-11": {
+     "rows": 1728,
+     "contradicted_before_check": 2,
+     "missing_after": 2
+    },
+    "2024-12": {
+     "rows": 1505,
+     "contradicted_before_check": 0,
+     "missing_after": 0
+    },
+    "2025-01": {
+     "rows": 1281,
+     "contradicted_before_check": 2,
+     "missing_after": 2
+    },
+    "2025-02": {
+     "rows": 1640,
+     "contradicted_before_check": 0,
+     "missing_after": 0
+    },
+    "2025-03": {
+     "rows": 1770,
+     "contradicted_before_check": 3,
+     "missing_after": 3
+    },
+    "2025-04": {
+     "rows": 2132,
+     "contradicted_before_check": 2,
+     "missing_after": 2
+    },
+    "2025-05": {
+     "rows": 1640,
+     "contradicted_before_check": 0,
+     "missing_after": 0
+    },
+    "2025-06": {
+     "rows": 382,
+     "contradicted_before_check": 7,
+     "missing_after": 7
+    },
+    "2025-07": {
+     "rows": 714,
+     "contradicted_before_check": 7,
+     "missing_after": 7
+    },
+    "2025-08": {
+     "rows": 1900,
+     "contradicted_before_check": 5,
+     "missing_after": 5
+    },
+    "2025-09": {
+     "rows": 1651,
+     "contradicted_before_check": 7,
+     "missing_after": 7
+    },
+    "2025-10": {
+     "rows": 1865,
+     "contradicted_before_check": 9,
+     "missing_after": 9
+    },
+    "2025-11": {
+     "rows": 1829,
+     "contradicted_before_check": 15,
+     "missing_after": 15
+    },
+    "2025-12": {
+     "rows": 1265,
+     "contradicted_before_check": 0,
+     "missing_after": 0
+    },
+    "2026-01": {
+     "rows": 1377,
+     "contradicted_before_check": 1,
+     "missing_after": 1
+    },
+    "2026-02": {
+     "rows": 1387,
+     "contradicted_before_check": 5,
+     "missing_after": 5
+    },
+    "2026-03": {
+     "rows": 1340,
+     "contradicted_before_check": 5,
+     "missing_after": 11
+    },
+    "2026-04": {
+     "rows": 1537,
+     "contradicted_before_check": 2,
+     "missing_after": 5
+    },
+    "2026-05": {
+     "rows": 1131,
+     "contradicted_before_check": 4,
+     "missing_after": 7
+    },
+    "2026-06": {
+     "rows": 84,
+     "contradicted_before_check": 0,
+     "missing_after": 0
+    },
+    "2026-07": {
+     "rows": 407,
+     "contradicted_before_check": 4,
+     "missing_after": 54
+    },
+    "2026-08": {
+     "rows": 1566,
+     "contradicted_before_check": 13,
+     "missing_after": 105
+    },
+    "2026-09": {
+     "rows": 1700,
+     "contradicted_before_check": 10,
+     "missing_after": 222
+    },
+    "2026-10": {
+     "rows": 2146,
+     "contradicted_before_check": 29,
+     "missing_after": 1003
+    },
+    "2026-11": {
+     "rows": 750,
+     "contradicted_before_check": 87,
+     "missing_after": 617
+    }
+   }
+  },
+  {
+   "check": "Data truth 10b: team features keyed to their side",
+   "status": "GREEN",
+   "value": "18 rolling + 4 previous-season team features; 486 synthetic value(s) checked; 0 issue(s)",
+   "rule": "an opp_* feature reads the opponent's rolling, a team/own feature the player's own team's; the merge gives each row exactly that side's value",
+   "detail": ""
+  },
+  {
+   "check": "Data truth 10c: provider-null counts stay missing",
+   "status": "GREEN",
+   "value": "goals_conceded: 28,036 provider null(s), 0 read as a value, penalty_missed: 28,036 provider null(s), 0 read as a value",
+   "rule": "a NULL_IS_MISSING count (goals_conceded, penalty_missed) the provider sent as null is missing on the props frame - never 0; a real provider 0 stays 0",
+   "detail": "2026-06: 7 missed / 24 scored on known rows, 106 null miss count(s); 2026-07: 10 missed / 44 scored on known rows, 968 null miss count(s); 2026-08: 46 missed / 169 scored on known rows, 1440 null miss count(s); 2026-09: 37 missed / 137 scored on known rows, 3146 null miss count(s); 2026-10: 38 missed / 140 scored on known rows, 14472 null miss count(s); 2026-11: 2 missed / 22 scored on known rows, 7713 null miss count(s)"
+  },
+  {
    "check": "Data truth 12: prediction ledger",
    "status": "GREEN",
-   "value": "0 violation(s) in 254 partition(s)",
+   "value": "0 violation(s) in 489 partition(s)",
    "rule": "Data truth 12: prediction ledger - every model x market prediction stored once, in its own model/market/league/season partition, before kickoff: RED on a duplicate key, a row whose repo/model/market/league/season does not match its partition, an unknown league, a pre-kickoff snapshot written at/after kickoff, a price-like column, or rows under a model x market that is not an active entry of config/prediction_ledger_markets.json",
    "detail": ""
   }
- ]
+ ],
+ "stoplight": "GREEN",
+ "gate_reasons": []
 }
