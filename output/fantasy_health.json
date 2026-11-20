@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-18T15:58:20Z",
+  "generated_at": "2026-11-20T15:46:37Z",
   "thresholds_hours": {
     "fpl_bootstrap": {
       "aging": 12,
@@ -34,31 +34,31 @@
     "official_squads": {
       "file": "pl_squads_official.csv",
       "exists": true,
-      "age_hours": 1.37,
+      "age_hours": 0.55,
       "state": "CURRENT"
     }
   },
   "coverage": {
-    "projection_players": 129,
+    "projection_players": 395,
     "clubs": 20,
-    "available": 73,
-    "doubtful": 5,
-    "unavailable": 51,
+    "available": 313,
+    "doubtful": 13,
+    "unavailable": 69,
     "availability_breakdown": {
-      "available": 73,
-      "unavailable": 32,
-      "injured": 18,
-      "doubtful": 5,
+      "available": 313,
+      "unavailable": 35,
+      "injured": 33,
+      "doubtful": 13,
       "suspended": 1
     },
-    "p_start_zero": 51,
+    "p_start_zero": 69,
     "fpl_match_rate": 1.0,
     "fixture_coverage": 1.0
   },
   "projection_log": {
-    "rows": 13076,
-    "distinct_days": 63,
-    "rows_with_gameweek": 4710,
+    "rows": 13471,
+    "distinct_days": 64,
+    "rows_with_gameweek": 5105,
     "settleable": true,
     "gameweeks_logged": [
       6,
@@ -75,14 +75,14 @@
   "live_gameweek": 10,
   "last_finished_gameweek": 10,
   "season_complete": false,
-  "hours_to_deadline": 67.0,
+  "hours_to_deadline": 19.2,
   "status": "OK",
   "settlement_ready": true,
   "defaults_audit": {
     "register_version": "FANTASY-DEFAULTS-1.0",
     "counts_by_class": {
       "MISSING_DATA_FALLBACK": 15,
-      "DOMAIN_PRIOR": 13,
+      "DOMAIN_PRIOR": 22,
       "OBSERVED": 2,
       "TRAIN_FITTED_PRIOR": 4
     },
@@ -105,7 +105,7 @@
         "reach": "V1->V2",
         "importance": "HIGH",
         "detectable": false,
-        "note": "all attacking points vanish silently"
+        "note": "FIXED 2026-11-01 (data truth, dt/fantasy): a missing props model -> no projections published (logged)"
       },
       {
         "id": "v2_p_start_from_mix",
@@ -125,7 +125,7 @@
         "reach": "V2",
         "importance": "HIGH",
         "detectable": false,
-        "note": "follows FPL convention (harsh, not optimistic)"
+        "note": "FIXED 2026-11-01 (data truth, dt/fantasy): null chance on a non-'a' status -> NaN (the residual's prepare still imputes)"
       },
       {
         "id": "v2_captain_pools",
@@ -140,18 +140,18 @@
     ],
     "suspected_bugs": [],
     "fire_counts": {
-      "v1_rows": 129,
-      "p_start_exactly_0_6": 2,
+      "v1_rows": 395,
+      "p_start_exactly_0_6": 4,
       "fpl_unmatched_rows": 0,
       "fixtures_unavailable_rows": 0,
       "p_goal_all_zero": false,
       "p_assist_all_zero": false,
       "p_sot2_all_zero": false,
       "mean_dc_pts_by_position": {
-        "DEF": 0.249,
+        "DEF": 0.398,
         "FWD": 0.008,
         "GKP": 0.0,
-        "MID": 0.128
+        "MID": 0.195
       },
       "v2_rows": 461,
       "v2_blank_gw_rows": 0,
