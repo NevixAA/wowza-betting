@@ -138,7 +138,16 @@ def test_newformat_probability_independent_of_batch():
     p = pd.read_csv(O / "predictions.csv", low_memory=False)
     nf = p[p["model_type"].eq("new_format")]
     pl = pickle.load(open(config.MODEL_FILE_NEWFORMAT, "rb"))
-    nan_rows = nf[nf[[c for c in pl["feature_cols"] if c in nf]].isna().any(axis=1)]
+    cols = [c for c in pl["feature_cols"] if c in nf]
+    assert len(nf) > 0 and cols
+    nan_rows = nf[nf[cols].isna().any(axis=1)]
+    if nan_rows.empty:
+        # the committed board can be complete (bot data, 2026-11-20): blank one feature on a few rows so the
+        # guard still exercises the imputer instead of failing on the data state or passing vacuously
+        nf = nf.copy()
+        idx = nf.index[: min(3, len(nf))]
+        nf.loc[idx, cols[0]] = np.nan
+        nan_rows = nf.loc[idx]
     assert len(nan_rows) > 0
     batch = predict_proba(nf, payload=pl).loc[nan_rows.index]
     solo = pd.Series([predict_proba(nf.loc[[i]], payload=pl).iloc[0] for i in nan_rows.index], index=nan_rows.index)
