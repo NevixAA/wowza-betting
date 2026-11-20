@@ -481,15 +481,24 @@ def serve_fixtures(
                 except Exception as e:
                     log.warning(f"  Side-market {target} prediction failed: {e}")
 
-    # 5b. HT model predictions (standard-format leagues only)
+    # 5b. HT model predictions. Standard rows: the Standard HT models (model_ht_over05/15.pkl).
+    # New-Format rows: the New-Format HT models (model_v9_ht_over05/15_nf.pkl, owner 2026-11-20 -
+    # ledger only: no HT bar is approved for any New-Format league, so telegram_bot/notifier
+    # ht_tip_candidates sends nothing for them). Each track is scored by ITS OWN payload only; a missing
+    # file leaves that track's HT probability empty (fail closed, never the other track's model).
     from src.model import load_models as _load_models
     feat["p_ht_over05"] = np.nan
     feat["p_ht_over15"] = np.nan
-    if config.HT_MODEL_FILE_05.exists() and std_mask.any():
+    _ht_std = bool(config.HT_MODEL_FILE_05.exists() and std_mask.any())
+    _ht_nf = bool(config.HT_MODEL_FILE_05_NF.exists() and nf_mask.any())
+    if _ht_std or _ht_nf:
         try:
-            ht_payload_05 = _load_models(model_file=config.HT_MODEL_FILE_05)
+            ht_payload_05 = _load_models(model_file=config.HT_MODEL_FILE_05) if _ht_std else None
             ht_payload_15 = _load_models(model_file=config.HT_MODEL_FILE_15) \
-                            if config.HT_MODEL_FILE_15.exists() else None
+                            if _ht_std and config.HT_MODEL_FILE_15.exists() else None
+            ht_nf_05 = _load_models(model_file=config.HT_MODEL_FILE_05_NF) if _ht_nf else None
+            ht_nf_15 = _load_models(model_file=config.HT_MODEL_FILE_15_NF) \
+                       if _ht_nf and config.HT_MODEL_FILE_15_NF.exists() else None
 
             # THE HT MODELS NOW TRAIN ON THEIR OWN FEATURES, SO PREDICT MUST BUILD THEM TOO.
             # Training goes through feature_engineering.build_features; this path goes through
@@ -535,11 +544,16 @@ def serve_fixtures(
 
             # FAIL CLOSED: scoring on missing features imputes them (z ~ -37, see above) and emits
             # confident nonsense. No HT features, no HT probabilities.
-            if _ht_ok:
+            if _ht_ok and ht_payload_05 is not None:
                 feat.loc[std_mask, "p_ht_over05"] = _serve_proba(feat[std_mask], ht_payload_05, "HT 0.5").values
                 if ht_payload_15:
                     feat.loc[std_mask, "p_ht_over15"] = _serve_proba(feat[std_mask], ht_payload_15, "HT 1.5").values
                 log.info(f"  HT model: {std_mask.sum()} fixtures scored")
+            if _ht_ok and ht_nf_05 is not None:
+                feat.loc[nf_mask, "p_ht_over05"] = _serve_proba(feat[nf_mask], ht_nf_05, "NF HT 0.5").values
+                if ht_nf_15:
+                    feat.loc[nf_mask, "p_ht_over15"] = _serve_proba(feat[nf_mask], ht_nf_15, "NF HT 1.5").values
+                log.info(f"  New-Format HT model: {nf_mask.sum()} fixtures scored (prediction ledger only)")
         except Exception as e:
             log.warning(f"  HT model prediction failed: {e}")
 

@@ -59,6 +59,8 @@ def load_ht():
     df["date"] = pd.to_datetime(df["date"], errors="coerce")
     df = df[df["date"] >= pd.Timestamp.now(tz="UTC").tz_localize(None).normalize()]
     df = df[df["p_ht_over05"].notna()].copy()
+    if "model_type" in df.columns:   # Standard only: New-Format HT (2026-11-20) is prediction-ledger only
+        df = df[df["model_type"].astype(str) == "standard"].copy()
     df["p_ht_over05"] = pd.to_numeric(df["p_ht_over05"], errors="coerce")
     df["p_ht_over15"] = pd.to_numeric(df.get("p_ht_over15"), errors="coerce")
     return df.sort_values("p_ht_over05", ascending=False).reset_index(drop=True)

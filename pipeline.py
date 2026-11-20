@@ -461,6 +461,12 @@ def _log_h2h(preds: "pd.DataFrame", exp_rows: "pd.DataFrame | None" = None) -> N
                 continue
             sub = (preds[tag == mt] if mt in ("standard", "newformat", "standard_repaired")
                    else preds)
+            if mt in reg.SERVES_TRACK:
+                # HT: p_ht_over05/15 carry the Standard HT model on Standard rows and the New-Format HT
+                # model on New-Format rows (owner 2026-11-20) - each row is logged under its own model
+                _mtc = (preds["model_type"].astype(str) if "model_type" in preds.columns
+                        else pd.Series("standard", index=preds.index))
+                sub = preds[_mtc == reg.SERVES_TRACK[mt]]
             sub = sub[pd.to_numeric(sub[col], errors="coerce").notna()]
             if mt in exp_types and not reg.challenger_path(mt).exists():
                 # Fixtures an experiment already logged need no champion-only blank row.

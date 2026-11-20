@@ -332,7 +332,7 @@ def _reference_predict(df, payload):
 
 SERVING = ["MODEL_FILE_STANDARD", "MODEL_FILE_STANDARD_REPAIRED", "MODEL_FILE_NEWFORMAT",
            "MODEL_FILE_BTTS", "MODEL_FILE_OVER15", "MODEL_FILE_OVER35", "HT_MODEL_FILE_05",
-           "HT_MODEL_FILE_15"]
+           "HT_MODEL_FILE_15", "HT_MODEL_FILE_05_NF", "HT_MODEL_FILE_15_NF"]
 
 
 @pytest.mark.parametrize("name", SERVING)

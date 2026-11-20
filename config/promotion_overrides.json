@@ -311,6 +311,54 @@
             },
             "parity": "scripts/team_train_serve_parity.py on the refit: 0 of 6,020 cells (140 fixtures 2026-11-08..16)"
           }
+        },
+        {
+          "stage": "nf_ht_connect",
+          "approved_on": "2026-11-20",
+          "owner_quote": "only this and that's it",
+          "owner_instruction": "Owner 2026-11-20: connect the New-Format half-time models to live predictions (\"only this and that's it\" for this weekend) - predictions into the prediction ledger for every New-Format fixture (HT O/U 0.5 and 1.5); no tips, Telegram, TOP-3 or stakes for New-Format HT.",
+          "scope": "the two New-Format half-time payloads fitted by the 2026-11-18 refit (golive refit_1118b new_format/ht_over05.pkl and new_format/ht_over15.pkl, champion_recipe, no retraining), installed as their own model types ht_over05_nf / ht_over15_nf (models/model_v9_ht_over05_nf.pkl, models/model_v9_ht_over15_nf.pkl) that src/predict.py scores on New-Format rows only. Prediction ledger only: no HT bar is approved for any New-Format league, so the Telegram HT gate (PR #64: captured price + approved league bar) sends nothing; no bets row, TOP-3 candidate or stake. The Standard HT models (ht_over05 / ht_over15) and every other artifact are unchanged. Nothing beyond these two artifacts is covered.",
+          "install_window": [
+            "2026-11-20",
+            "2026-11-22"
+          ],
+          "gate": "scripts/team_train_serve_parity.py on the two New-Format HT payloads: 0 differing cells on New-Format fixtures and every probability identical",
+          "artifacts": {
+            "ht_over05_nf": {
+              "sha256": "ae89ea10ee628636bb308e26952cb20937536bed8c0ce79dc83b93d45bc89a84",
+              "sources": [
+                "new_format/ht_over05"
+              ],
+              "recipe": "ht_v9_repaired"
+            },
+            "ht_over15_nf": {
+              "sha256": "ead4bb74188de2de80a00b10f2bbcfcf4453c4a5c4389ac46c5eae17caa9057c",
+              "sources": [
+                "new_format/ht_over15"
+              ],
+              "recipe": "ht_v9_repaired"
+            }
+          },
+          "evidence": {
+            "refit_code_sha": "694995f90b90920f596d7290d624ce6d99301612",
+            "config_sha256": "3a4fd24a89345fe195bd4934fd7a4227f8c27988fc187e1545c451c908e24e92",
+            "data": {
+              "loaded_rows": 71845,
+              "frame_hash": "9ed237ebc04aee09"
+            },
+            "data_end": "2026-11-08",
+            "train_dates": [
+              "2019-02-22",
+              "2026-11-01"
+            ],
+            "refit_dir": "golive/refit_1118b (scripts/phase2_refit_serving.py, champion_recipe)",
+            "refit_model_sha256": {
+              "ht_over05": "3b628fcf06bcdd40aac65721bde926dca3b7f7a2f543776db36be6b6953b6942",
+              "ht_over15": "d7d5c596f15c5275313c5a71dcb8a0c282f8442ff6d00b5f222e87cdd6ef1f2a"
+            },
+            "assembled": "scripts/promote_clean_switch.py assemble --only ht_over05_nf,ht_over15_nf (golive nfht_1120)",
+            "parity_refit": "scripts/team_train_serve_parity.py on refit_1118b (code 694995f90): 0 of 6,020 cells, 140/140 probabilities identical x12 payloads"
+          }
         }
       ]
     }

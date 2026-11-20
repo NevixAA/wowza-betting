@@ -75,6 +75,11 @@ MODEL_FILE_STANDARD_REPAIRED = MODELS_DIR / "model_v9_standard_repaired.pkl"
 # ── HT models (standard-format leagues only — they have HTHG/HTAG data) ──────
 HT_MODEL_FILE_05 = MODELS_DIR / "model_ht_over05.pkl"
 HT_MODEL_FILE_15 = MODELS_DIR / "model_ht_over15.pkl"
+# ── New-Format HT models (owner 2026-11-20: connect them to live predictions, ledger only) ──
+# Their own serving files and model types (ht_over05_nf / ht_over15_nf), written only by
+# src/promotion_gate; src/predict.py scores New-Format rows with them, Standard rows keep the files above.
+HT_MODEL_FILE_05_NF = MODELS_DIR / "model_v9_ht_over05_nf.pkl"
+HT_MODEL_FILE_15_NF = MODELS_DIR / "model_v9_ht_over15_nf.pkl"
 
 # ── Side-market models (BTTS / O1.5 / O3.5) — same feature set as main model ─
 MODEL_FILE_BTTS   = MODELS_DIR / "model_v9_btts.pkl"

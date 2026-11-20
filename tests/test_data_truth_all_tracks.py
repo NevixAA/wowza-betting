@@ -102,7 +102,7 @@ def test_missing_rolls_the_worst_track_up_and_names_it(tmp_path, monkeypatch):
 def test_committed_payloads_cover_every_served_track():
     f = DT.serving_features()
     want = {(mt, m) for mt in DT.MODEL_TYPES for m in ("O/U 2.5", "BTTS", "Over 1.5", "Over 3.5")}
-    want |= {("standard", "HT Over 0.5"), ("standard", "HT Over 1.5")}
+    want |= {(mt, m) for mt in DT.MODEL_TYPES for m in ("HT Over 0.5", "HT Over 1.5")}   # NF HT: owner 2026-11-20
     assert set(f) == want
     for k, cols in f.items():
         assert cols is None or (isinstance(cols, list) and cols), k

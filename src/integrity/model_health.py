@@ -32,6 +32,11 @@ TRACKS = {
     "new_format|OU35": ("new_format", "OU35", "model_v9_over35.pkl", "model_version_over35", "p_over35"),
     "standard|HT_O05": ("standard", "HT_O05", "model_ht_over05.pkl", "model_version_ht_over05", "p_ht_over05"),
     "standard|HT_O15": ("standard", "HT_O15", "model_ht_over15.pkl", "model_version_ht_over15", "p_ht_over15"),
+    # New-Format HT (owner 2026-11-20): own payloads; the board's HT version column names them on NF rows
+    "new_format|HT_O05": ("new_format", "HT_O05", "model_v9_ht_over05_nf.pkl", "model_version_ht_over05",
+                          "p_ht_over05"),
+    "new_format|HT_O15": ("new_format", "HT_O15", "model_v9_ht_over15_nf.pkl", "model_version_ht_over15",
+                          "p_ht_over15"),
 }
 def serving_file(key: str, default: str) -> str:
     """The payload file that SERVES this track. Standard O/U 2.5 follows the serving switch
@@ -49,7 +54,8 @@ PARITY_KEY = {"standard|OU25": "standard|OU25", "new_format|OU25": "new_format|O
               "standard|BTTS": "standard|btts", "new_format|BTTS": "new_format|btts",
               "standard|OU15": "standard|over15", "new_format|OU15": "new_format|over15",
               "standard|OU35": "standard|over35", "new_format|OU35": "new_format|over35",
-              "standard|HT_O05": "standard|ht_over05", "standard|HT_O15": "standard|ht_over15"}
+              "standard|HT_O05": "standard|ht_over05", "standard|HT_O15": "standard|ht_over15",
+              "new_format|HT_O05": "new_format|ht_over05", "new_format|HT_O15": "new_format|ht_over15"}
 
 
 def _read(p: Path):
