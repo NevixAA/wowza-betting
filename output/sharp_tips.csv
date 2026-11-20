@@ -1,60 +1,68 @@
 date,league,match,market,opening_odds,current_odds,drift_pct,signal,steam,consensus_pct,n_books,snapshots,updated_at,move_pp,threshold_pp,threshold_n,lead_h,open_lead_h
-2026-11-21,Brazil Serie A,Palmeiras vs Flamengo,1X2 AWAY (Flamengo),2.815,1.915,-32.0,STRONG,False,100,24,21,2026-11-20 00:44,16.06,1.52,173,42.8,74.6
-2026-11-22,Brazil Serie A,Chapecoense vs Cruzeiro,1X2 AWAY (Cruzeiro),1.58,1.44,-8.9,STRONG,False,3,24,19,2026-11-20 00:44,6.02,1.52,173,47.3,72.2
-2026-11-21,League Two,Cheltenham Town vs Bristol Rovers,1X2 HOME (Cheltenham Town),3.15,2.75,-12.7,STRONG,False,3,16,13,2026-11-20 00:44,4.49,1.58,178,38.3,70.1
-2026-11-21,Serie B,US Catanzaro 1929 vs Palermo,1X2 AWAY (Palermo),1.87,1.73,-7.5,STRONG,False,3,21,26,2026-11-20 00:44,4.11,1.19,110,39.5,71.4
-2026-11-22,Brazil Serie A,Chapecoense vs Cruzeiro,O/U 2.5 OVER,1.59,1.51,-5.0,STRONG,False,3,7,19,2026-11-20 00:44,3.29,1.29,172,47.3,72.2
-2026-11-21,Sweden Allsvenskan,Östersunds FK vs Varbergs BoIS,1X2 HOME (Östersunds FK),2.09,2.02,-3.3,STRONG,False,100,9,5,2026-11-20 00:44,2.91,1.38,137,35.3,67.1
-2026-11-21,La Liga 2,Sabadell FC vs Granada CF,1X2 AWAY (Granada CF),3.18,2.9,-8.8,STRONG,False,3,20,14,2026-11-20 00:44,2.55,1.5,154,36.3,68.1
-2026-11-21,Brazil Serie A,Bahia vs Coritiba,1X2 AWAY (Coritiba),6.875,5.91,-14.0,STRONG,False,3,24,20,2026-11-20 00:44,2.46,1.52,173,43.8,68.7
-2026-11-21,Brazil Serie A,Bahia vs Coritiba,1X2 DRAW (Draw),4.625,4.4,-4.9,STRONG,False,100,24,20,2026-11-20 00:44,1.39,0.61,173,43.8,68.7
-2026-11-21,Norway Eliteserien,HamKam vs Fredrikstad FK,1X2 DRAW (Draw),3.33,3.2,-3.9,STRONG,False,100,21,21,2026-11-20 00:44,1.1,0.57,120,38.3,70.1
-2026-11-21,League Two,Grimsby Town vs Rotherham United,1X2 DRAW (Draw),4.3,4.175,-2.9,STRONG,False,3,16,13,2026-11-20 00:44,0.66,0.52,178,38.3,70.1
-2026-11-20,Serie B,Hellas Verona vs Cesena FC,1X2 HOME (Hellas Verona),1.67,1.62,-3.0,SHARP,False,3,19,26,2026-11-20 00:44,2.24,1.05,105,18.8,74.2
-2026-11-20,League One,Barnsley vs Sheffield Wednesday,1X2 AWAY (Sheffield Wednesday),2.21,2.125,-3.8,SHARP,False,100,14,16,2026-11-20 00:44,1.94,1.13,160,19.3,74.7
-2026-11-21,Serie B,Modena vs Juve Stabia,1X2 HOME (Modena),1.58,1.55,-1.9,SHARP,False,3,21,26,2026-11-20 00:44,1.61,0.67,110,37.3,69.1
-2026-11-21,Championship,Sheffield United vs Watford,1X2 HOME (Sheffield United),1.62,1.56,-3.7,SHARP,False,3,21,30,2026-11-20 00:44,1.52,1.15,171,38.3,70.1
-2026-11-21,La Liga 2,Tenerife vs Mallorca,1X2 AWAY (Mallorca),2.23,2.155,-3.4,SHARP,False,3,20,13,2026-11-20 00:44,1.49,0.71,154,43.3,75.1
-2026-11-21,Mexico Liga MX,Tijuana vs Atlante FC,1X2 HOME (Tijuana),1.6,1.56,-2.5,SHARP,False,3,17,17,2026-11-20 00:44,1.37,1.15,143,26.3,74.7
-2026-11-21,Japan J-League,Kawasaki Frontale vs Avispa Fukuoka,1X2 HOME (Kawasaki Frontale),1.85,1.83,-1.1,SHARP,False,3,19,14,2026-11-20 00:44,1.37,0.9,136,29.3,77.7
-2026-11-21,La Liga 2,CD Castellón vs CD Eldense,O/U 2.5 UNDER,2.31,2.29,-0.9,SHARP,False,3,6,11,2026-11-20 00:44,0.93,0.47,154,40.8,72.6
-2026-11-21,Norway Eliteserien,HamKam vs Fredrikstad FK,O/U 2.5 UNDER,2.2,2.145,-2.5,SHARP,False,97,12,21,2026-11-20 00:44,0.88,0.47,120,38.3,70.1
-2026-11-21,Brazil Serie A,Bahia vs Coritiba,O/U 2.5 UNDER,2.405,2.375,-1.2,SHARP,False,3,12,20,2026-11-20 00:44,0.87,0.68,172,43.8,68.7
-2026-11-21,League One,Bradford City vs Doncaster Rovers,O/U 2.5 OVER,1.715,1.7,-0.9,SHARP,False,97,12,13,2026-11-20 00:44,0.64,0.54,174,38.3,70.1
-2026-11-21,La Liga 2,Tenerife vs Mallorca,O/U 2.5 UNDER,1.665,1.65,-0.9,SHARP,False,3,13,13,2026-11-20 00:44,0.58,0.47,154,43.3,75.1
-2026-11-21,League Two,Cheltenham Town vs Bristol Rovers,O/U 2.5 UNDER,2.05,2.025,-1.2,SHARP,False,3,12,13,2026-11-20 00:44,0.58,0.46,178,38.3,70.1
-2026-11-21,League Two,Crawley Town vs Fleetwood Town,1X2 AWAY (Fleetwood Town),2.22,2.18,-1.8,SHARP,False,3,16,13,2026-11-20 00:44,0.53,0.5,178,38.3,70.1
-2026-11-21,League Two,York City vs Walsall,1X2 DRAW (Draw),3.9,3.85,-1.3,SHARP,False,0,16,13,2026-11-20 00:44,0.3,0.26,178,38.3,70.1
-2026-11-21,La Liga 2,Tenerife vs Mallorca,1X2 DRAW (Draw),3.1,3.15,1.6,FADING,False,100,20,13,2026-11-20 00:44,-0.43,0.41,154,43.3,75.1
-2026-11-21,League One,Plymouth Argyle vs Peterborough United,1X2 DRAW (Draw),4.0,4.1,2.5,FADING,False,100,16,13,2026-11-20 00:44,-0.44,0.4,174,38.3,70.1
-2026-11-21,Championship,Sheffield United vs Watford,1X2 DRAW (Draw),3.98,4.02,1.0,FADING,False,100,21,30,2026-11-20 00:44,-0.51,0.34,171,38.3,70.1
-2026-11-21,League Two,Grimsby Town vs Rotherham United,1X2 AWAY (Rotherham United),5.0,5.15,3.0,FADING,False,100,16,13,2026-11-20 00:44,-0.52,0.5,178,38.3,70.1
-2026-11-21,La Liga 2,Tenerife vs Mallorca,O/U 2.5 OVER,2.095,2.12,1.2,FADING,False,100,13,13,2026-11-20 00:44,-0.58,0.47,154,43.3,75.1
-2026-11-21,League Two,Cheltenham Town vs Bristol Rovers,O/U 2.5 OVER,1.7,1.715,0.9,FADING,False,100,12,13,2026-11-20 00:44,-0.58,0.46,178,38.3,70.1
-2026-11-21,Japan J-League,Gamba Osaka vs Fagiano Okayama,1X2 DRAW (Draw),3.3,3.4,3.0,FADING,False,100,19,14,2026-11-20 00:44,-0.59,0.42,136,30.3,78.7
-2026-11-21,League One,Bradford City vs Doncaster Rovers,O/U 2.5 UNDER,2.02,2.05,1.5,FADING,False,100,12,13,2026-11-20 00:44,-0.64,0.54,174,38.3,70.1
-2026-11-21,Japan J-League,Kawasaki Frontale vs Avispa Fukuoka,1X2 DRAW (Draw),3.5,3.65,4.3,FADING,False,100,19,14,2026-11-20 00:44,-0.66,0.42,136,29.3,77.7
-2026-11-21,Serie B,Modena vs Juve Stabia,1X2 DRAW (Draw),3.8,3.95,3.9,FADING,False,100,21,26,2026-11-20 00:44,-0.72,0.43,110,37.3,69.1
-2026-11-20,Argentina Primera Division,Defensa y Justicia vs Barracas Central,1X2 DRAW (Draw),2.95,3.05,3.4,FADING,False,100,15,21,2026-11-20 00:44,-0.72,0.54,234,18.3,73.7
-2026-11-20,Serie B,Hellas Verona vs Cesena FC,1X2 DRAW (Draw),3.6,3.75,4.2,FADING,False,100,19,26,2026-11-20 00:44,-0.77,0.49,105,18.8,74.2
-2026-11-21,Norway Eliteserien,HamKam vs Fredrikstad FK,1X2 HOME (HamKam),2.43,2.48,2.1,FADING,False,97,21,21,2026-11-20 00:44,-0.82,0.5,120,38.3,70.1
-2026-11-21,Brazil Serie A,Bahia vs Coritiba,O/U 2.5 OVER,1.515,1.54,1.7,FADING,False,100,12,20,2026-11-20 00:44,-0.87,0.68,172,43.8,68.7
-2026-11-21,Norway Eliteserien,HamKam vs Fredrikstad FK,O/U 2.5 OVER,1.61,1.625,0.9,FADING,False,100,12,21,2026-11-20 00:44,-0.88,0.47,120,38.3,70.1
-2026-11-21,Serie B,Modena vs Juve Stabia,1X2 AWAY (Juve Stabia),5.0,5.3,6.0,FADING,False,100,21,26,2026-11-20 00:44,-0.89,0.6,110,37.3,69.1
-2026-11-21,La Liga 2,CD Castellón vs CD Eldense,O/U 2.5 OVER,1.52,1.55,2.0,FADING,False,100,6,11,2026-11-20 00:44,-0.93,0.47,154,40.8,72.6
-2026-11-21,Serie B,US Catanzaro 1929 vs Palermo,1X2 DRAW (Draw),3.6,3.75,4.2,FADING,False,100,21,26,2026-11-20 00:44,-0.95,0.43,110,39.5,71.4
-2026-11-21,Championship,Sheffield United vs Watford,1X2 AWAY (Watford),5.08,5.31,4.5,FADING,False,100,21,30,2026-11-20 00:44,-1.01,0.96,171,38.3,70.1
-2026-11-21,La Liga 2,Tenerife vs Mallorca,1X2 HOME (Tenerife),3.1,3.22,3.9,FADING,False,3,20,13,2026-11-20 00:44,-1.06,0.79,154,43.3,75.1
-2026-11-21,Brazil Serie A,Palmeiras vs Flamengo,1X2 DRAW (Draw),3.35,3.55,6.0,FADING,False,100,24,21,2026-11-20 00:44,-1.13,0.32,173,42.8,74.6
-2026-11-21,Mexico Liga MX,Tijuana vs Atlante FC,1X2 AWAY (Atlante FC),4.72,5.01,6.1,FADING,False,100,17,17,2026-11-20 00:44,-1.16,1.03,143,26.3,74.7
-2026-11-20,Serie B,Hellas Verona vs Cesena FC,1X2 AWAY (Cesena FC),4.5,4.9,8.9,FADING,False,97,19,26,2026-11-20 00:44,-1.47,0.9,105,18.8,74.2
-2026-11-20,League One,Barnsley vs Sheffield Wednesday,1X2 HOME (Barnsley),2.8,2.975,6.3,FADING,False,100,14,16,2026-11-20 00:44,-1.76,1.3,160,19.3,74.7
-2026-11-21,La Liga 2,Sabadell FC vs Granada CF,1X2 HOME (Sabadell FC),2.3,2.42,5.2,FADING,False,100,20,14,2026-11-20 00:44,-2.3,0.79,154,36.3,68.1
-2026-11-22,Brazil Serie A,Chapecoense vs Cruzeiro,1X2 DRAW (Draw),4.1,4.6,12.2,FADING,False,100,24,19,2026-11-20 00:44,-2.36,0.32,173,47.3,72.2
-2026-11-21,Sweden Allsvenskan,Östersunds FK vs Varbergs BoIS,1X2 AWAY (Varbergs BoIS),2.965,3.4,14.7,FADING,False,100,9,5,2026-11-20 00:44,-2.95,0.81,137,35.3,67.1
-2026-11-21,Serie B,US Catanzaro 1929 vs Palermo,1X2 HOME (US Catanzaro 1929),3.6,4.12,14.4,FADING,False,100,21,26,2026-11-20 00:44,-3.16,0.67,110,39.5,71.4
-2026-11-22,Brazil Serie A,Chapecoense vs Cruzeiro,O/U 2.5 UNDER,2.225,2.38,7.0,FADING,False,100,7,19,2026-11-20 00:44,-3.29,0.68,172,47.3,72.2
-2026-11-22,Brazil Serie A,Chapecoense vs Cruzeiro,1X2 HOME (Chapecoense),4.945,6.175,24.9,FADING,False,100,24,19,2026-11-20 00:44,-3.66,0.82,173,47.3,72.2
-2026-11-21,Brazil Serie A,Bahia vs Coritiba,1X2 HOME (Bahia),1.37,1.48,8.0,FADING,False,100,24,20,2026-11-20 00:44,-3.85,0.82,173,43.8,68.7
-2026-11-21,League Two,Cheltenham Town vs Bristol Rovers,1X2 AWAY (Bristol Rovers),2.1,2.37,12.9,FADING,False,100,16,13,2026-11-20 00:44,-4.7,0.5,178,38.3,70.1
-2026-11-21,Brazil Serie A,Palmeiras vs Flamengo,1X2 HOME (Palmeiras),2.285,3.7,61.9,FADING,False,100,24,21,2026-11-20 00:44,-14.94,0.82,173,42.8,74.6
+2026-11-21,Mexico Liga MX,Tijuana vs Atlante FC,O/U 2.5 UNDER,2.17,1.955,-9.9,STEAM_STRONG,True,98,14,18,2026-11-20 08:42,5.07,1.66,142,18.3,74.7
+2026-11-21,Brazil Serie A,Palmeiras vs Flamengo,1X2 AWAY (Flamengo),2.815,1.855,-34.1,STRONG,False,100,24,22,2026-11-20 08:42,17.25,2.34,171,34.8,74.6
+2026-11-22,Brazil Serie A,Chapecoense vs Cruzeiro,1X2 AWAY (Cruzeiro),1.58,1.44,-8.9,STRONG,False,0,24,20,2026-11-20 08:42,6.02,1.52,173,39.3,72.2
+2026-11-21,League Two,Cheltenham Town vs Bristol Rovers,1X2 HOME (Cheltenham Town),3.15,2.75,-12.7,STRONG,False,0,16,14,2026-11-20 08:42,4.49,1.91,164,30.3,70.1
+2026-11-21,Serie B,US Catanzaro 1929 vs Palermo,1X2 AWAY (Palermo),1.87,1.72,-8.0,STRONG,False,98,21,27,2026-11-20 08:42,4.25,1.9,105,31.6,71.4
+2026-11-21,Sweden Allsvenskan,Östersunds FK vs Varbergs BoIS,1X2 HOME (Östersunds FK),2.09,1.99,-4.8,STRONG,False,100,9,6,2026-11-20 08:42,3.58,1.38,137,27.3,67.1
+2026-11-22,Brazil Serie A,Chapecoense vs Cruzeiro,O/U 2.5 OVER,1.59,1.51,-5.0,STRONG,False,0,7,20,2026-11-20 08:42,3.29,1.29,172,39.3,72.2
+2026-11-21,La Liga 2,Sabadell FC vs Granada CF,1X2 AWAY (Granada CF),3.18,2.9,-8.8,STRONG,False,0,20,15,2026-11-20 08:42,2.55,2.14,153,28.3,68.1
+2026-11-21,Brazil Serie A,Bahia vs Coritiba,1X2 AWAY (Coritiba),6.875,5.895,-14.3,STRONG,False,98,24,21,2026-11-20 08:42,2.52,2.34,171,35.8,68.7
+2026-11-21,Japan J-League,Kawasaki Frontale vs Avispa Fukuoka,1X2 HOME (Kawasaki Frontale),1.85,1.8,-2.7,STRONG,False,98,20,15,2026-11-20 08:42,2.2,1.6,136,21.3,77.7
+2026-11-21,League One,Reading vs Bromley FC,O/U 2.5 OVER,1.5,1.44,-4.0,STRONG,False,98,1,14,2026-11-20 08:42,1.55,1.45,160,27.8,67.6
+2026-11-21,Norway Eliteserien,HamKam vs Fredrikstad FK,1X2 DRAW (Draw),3.33,3.15,-5.4,STRONG,False,100,21,22,2026-11-20 08:42,1.43,0.64,115,30.3,70.1
+2026-11-22,La Liga 2,Burgos CF vs Albacete,1X2 HOME (Burgos CF),2.055,2.0,-2.7,STRONG,False,2,21,11,2026-11-20 08:42,1.39,1.35,154,59.3,74.5
+2026-11-21,Brazil Serie A,Bahia vs Coritiba,1X2 DRAW (Draw),4.625,4.435,-4.1,STRONG,False,2,24,21,2026-11-20 08:42,1.25,0.73,171,35.8,68.7
+2026-11-22,Norway Eliteserien,Sarpsborg FK vs Lillestrom,O/U 2.5 OVER,1.39,1.37,-1.4,STRONG,False,98,3,22,2026-11-20 08:42,1.11,1.1,120,57.5,72.8
+2026-11-21,League Two,Grimsby Town vs Rotherham United,1X2 DRAW (Draw),4.3,4.175,-2.9,STRONG,False,0,16,14,2026-11-20 08:42,0.66,0.62,164,30.3,70.1
+2026-11-20,League One,Barnsley vs Sheffield Wednesday,1X2 AWAY (Sheffield Wednesday),2.21,2.125,-3.8,SHARP,False,2,14,17,2026-11-20 08:42,2.06,1.35,134,11.3,74.7
+2026-11-21,Mexico Liga MX,Puebla vs Atlético San Luis,O/U 2.5 UNDER,2.09,2.02,-3.3,SHARP,False,98,15,18,2026-11-20 08:42,1.94,1.76,120,16.3,72.7
+2026-11-21,Championship,Stoke City vs Birmingham City,O/U 2.5 UNDER,1.78,1.72,-3.4,SHARP,False,98,15,31,2026-11-20 08:42,1.93,1.06,165,30.3,70.1
+2026-11-21,Championship,Sheffield United vs Watford,1X2 HOME (Sheffield United),1.62,1.57,-3.1,SHARP,False,0,21,31,2026-11-20 08:42,1.54,1.38,165,30.3,70.1
+2026-11-21,La Liga 2,Tenerife vs Mallorca,1X2 AWAY (Mallorca),2.23,2.155,-3.4,SHARP,False,0,20,14,2026-11-20 08:42,1.49,1.14,153,35.3,75.1
+2026-11-21,League One,Plymouth Argyle vs Peterborough United,1X2 HOME (Plymouth Argyle),1.8,1.76,-2.2,SHARP,False,98,16,14,2026-11-20 08:42,1.46,1.3,160,30.3,70.1
+2026-11-20,La Liga 2,Andorra CF vs Leganés,1X2 HOME (Andorra CF),1.87,1.83,-2.1,SHARP,False,98,21,17,2026-11-20 08:42,1.44,1.23,100,10.8,74.2
+2026-11-21,Sweden Allsvenskan,AIK vs Degerfors IF,1X2 HOME (AIK),2.18,2.11,-3.2,SHARP,False,98,21,27,2026-11-20 08:42,1.34,0.9,137,29.3,69.1
+2026-11-21,Brazil Serie A,Palmeiras vs Flamengo,O/U 2.5 OVER,1.79,1.76,-1.7,SHARP,False,100,17,22,2026-11-20 08:42,1.24,0.75,171,34.8,74.6
+2026-11-21,Serie B,Modena vs Juve Stabia,1X2 HOME (Modena),1.58,1.55,-1.9,SHARP,False,0,21,27,2026-11-20 08:42,1.21,1.05,105,29.3,69.1
+2026-11-21,Brazil Serie A,Bahia vs Coritiba,O/U 2.5 UNDER,2.405,2.35,-2.3,SHARP,False,98,11,21,2026-11-20 08:42,1.07,0.75,171,35.8,68.7
+2026-11-21,Sweden Allsvenskan,AIK vs Degerfors IF,O/U 2.5 OVER,1.61,1.585,-1.6,SHARP,False,98,10,27,2026-11-20 08:42,1.06,0.74,137,29.3,69.1
+2026-11-22,Norway Eliteserien,KFUM vs SK Brann,O/U 2.5 OVER,1.46,1.44,-1.4,SHARP,False,98,3,22,2026-11-20 08:42,0.98,0.47,120,55.3,70.5
+2026-11-21,Norway Eliteserien,HamKam vs Fredrikstad FK,O/U 2.5 UNDER,2.2,2.145,-2.5,SHARP,False,2,12,22,2026-11-20 08:42,0.88,0.77,114,30.3,70.1
+2026-11-21,League Two,Cheltenham Town vs Bristol Rovers,O/U 2.5 UNDER,2.05,2.02,-1.5,SHARP,False,98,12,14,2026-11-20 08:42,0.64,0.58,164,30.3,70.1
+2026-11-21,Mexico Liga MX,Pachuca vs Toluca,1X2 DRAW (Draw),3.73,3.7,-0.8,SHARP,False,100,18,18,2026-11-20 08:42,0.35,0.34,148,38.1,71.0
+2026-11-21,Sweden Allsvenskan,Östersunds FK vs Varbergs BoIS,1X2 DRAW (Draw),3.15,3.3,4.8,FADING,False,100,9,6,2026-11-20 08:42,-0.39,0.38,137,27.3,67.1
+2026-11-21,Japan J-League,Gamba Osaka vs Fagiano Okayama,1X2 DRAW (Draw),3.3,3.4,3.0,FADING,False,100,20,15,2026-11-20 08:42,-0.43,0.42,136,22.3,78.7
+2026-11-21,League One,Plymouth Argyle vs Peterborough United,1X2 DRAW (Draw),4.0,4.1,2.5,FADING,False,100,16,14,2026-11-20 08:42,-0.45,0.42,160,30.3,70.1
+2026-11-21,Championship,Southampton vs Derby County,1X2 DRAW (Draw),4.8,4.9,2.1,FADING,False,100,22,31,2026-11-20 08:42,-0.5,0.45,165,27.8,67.6
+2026-11-21,Argentina Primera Division,Argentinos Juniors vs Independiente,1X2 DRAW (Draw),3.1,3.15,1.6,FADING,False,100,15,20,2026-11-20 08:42,-0.54,0.54,234,35.3,75.1
+2026-11-21,League Two,Cheltenham Town vs Bristol Rovers,O/U 2.5 OVER,1.7,1.715,0.9,FADING,False,100,12,14,2026-11-20 08:42,-0.64,0.58,164,30.3,70.1
+2026-11-21,Serie B,Modena vs Juve Stabia,1X2 DRAW (Draw),3.8,3.95,3.9,FADING,False,100,21,27,2026-11-20 08:42,-0.88,0.49,105,29.3,69.1
+2026-11-21,Norway Eliteserien,HamKam vs Fredrikstad FK,O/U 2.5 OVER,1.61,1.625,0.9,FADING,False,100,12,22,2026-11-20 08:42,-0.88,0.77,114,30.3,70.1
+2026-11-22,Norway Eliteserien,KFUM vs SK Brann,O/U 2.5 UNDER,2.68,2.75,2.6,FADING,False,100,3,22,2026-11-20 08:42,-0.98,0.47,120,55.3,70.5
+2026-11-21,Norway Eliteserien,HamKam vs Fredrikstad FK,1X2 HOME (HamKam),2.43,2.48,2.1,FADING,False,100,21,22,2026-11-20 08:42,-0.99,0.99,115,30.3,70.1
+2026-11-21,Serie B,US Catanzaro 1929 vs Palermo,1X2 DRAW (Draw),3.6,3.75,4.2,FADING,False,100,21,27,2026-11-20 08:42,-1.03,0.49,105,31.6,71.4
+2026-11-21,Mexico Liga MX,Tijuana vs Atlante FC,1X2 AWAY (Atlante FC),4.72,5.02,6.4,FADING,False,100,17,18,2026-11-20 08:42,-1.06,1.03,143,18.3,74.7
+2026-11-21,Japan J-League,Kawasaki Frontale vs Avispa Fukuoka,1X2 DRAW (Draw),3.5,3.705,5.9,FADING,False,100,20,15,2026-11-20 08:42,-1.06,0.42,136,21.3,77.7
+2026-11-21,Sweden Allsvenskan,AIK vs Degerfors IF,O/U 2.5 UNDER,2.225,2.28,2.5,FADING,False,100,10,27,2026-11-20 08:42,-1.06,0.74,137,29.3,69.1
+2026-11-21,Sweden Allsvenskan,AIK vs Degerfors IF,1X2 AWAY (Degerfors IF),2.8,2.89,3.2,FADING,False,100,21,27,2026-11-20 08:42,-1.07,0.81,137,29.3,69.1
+2026-11-21,Brazil Serie A,Bahia vs Coritiba,O/U 2.5 OVER,1.515,1.54,1.7,FADING,False,100,11,21,2026-11-20 08:42,-1.07,0.75,171,35.8,68.7
+2026-11-22,Norway Eliteserien,Sarpsborg FK vs Lillestrom,O/U 2.5 UNDER,2.95,3.05,3.4,FADING,False,100,3,22,2026-11-20 08:42,-1.11,0.47,120,57.5,72.8
+2026-11-21,Japan J-League,Kawasaki Frontale vs Avispa Fukuoka,1X2 AWAY (Avispa Fukuoka),3.82,4.075,6.7,FADING,False,100,20,15,2026-11-20 08:42,-1.14,0.77,136,21.3,77.7
+2026-11-21,Brazil Serie A,Palmeiras vs Flamengo,O/U 2.5 UNDER,1.925,1.98,2.9,FADING,False,100,17,22,2026-11-20 08:42,-1.24,0.75,171,34.8,74.6
+2026-11-21,Brazil Serie A,Palmeiras vs Flamengo,1X2 DRAW (Draw),3.35,3.55,6.0,FADING,False,100,24,22,2026-11-20 08:42,-1.33,0.43,171,34.8,74.6
+2026-11-22,La Liga 2,Burgos CF vs Albacete,1X2 AWAY (Albacete),3.435,3.65,6.3,FADING,False,100,21,11,2026-11-20 08:42,-1.49,0.71,154,59.3,74.5
+2026-11-21,League One,Reading vs Bromley FC,O/U 2.5 UNDER,2.52,2.5,-0.8,FADING,False,2,1,14,2026-11-20 08:42,-1.55,0.77,160,27.8,67.6
+2026-11-21,Championship,Stoke City vs Birmingham City,O/U 2.5 OVER,1.96,2.03,3.6,FADING,False,100,15,31,2026-11-20 08:42,-1.93,1.06,165,30.3,70.1
+2026-11-21,Mexico Liga MX,Puebla vs Atlético San Luis,O/U 2.5 OVER,1.68,1.74,3.6,FADING,False,100,15,18,2026-11-20 08:42,-1.94,1.76,120,16.3,72.7
+2026-11-20,League One,Barnsley vs Sheffield Wednesday,1X2 HOME (Barnsley),2.8,3.0,7.1,FADING,False,100,14,17,2026-11-20 08:42,-1.94,1.46,134,11.3,74.7
+2026-11-21,La Liga 2,Sabadell FC vs Granada CF,1X2 HOME (Sabadell FC),2.3,2.42,5.2,FADING,False,100,20,15,2026-11-20 08:42,-2.3,1.27,153,28.3,68.1
+2026-11-22,Brazil Serie A,Chapecoense vs Cruzeiro,1X2 DRAW (Draw),4.1,4.6,12.2,FADING,False,100,24,20,2026-11-20 08:42,-2.36,0.32,173,39.3,72.2
+2026-11-21,Sweden Allsvenskan,Östersunds FK vs Varbergs BoIS,1X2 AWAY (Varbergs BoIS),2.965,3.43,15.7,FADING,False,100,9,6,2026-11-20 08:42,-3.19,0.81,137,27.3,67.1
+2026-11-21,Serie B,US Catanzaro 1929 vs Palermo,1X2 HOME (US Catanzaro 1929),3.6,4.12,14.4,FADING,False,100,21,27,2026-11-20 08:42,-3.23,1.05,105,31.6,71.4
+2026-11-22,Brazil Serie A,Chapecoense vs Cruzeiro,O/U 2.5 UNDER,2.225,2.38,7.0,FADING,False,100,7,20,2026-11-20 08:42,-3.29,0.68,172,39.3,72.2
+2026-11-22,Brazil Serie A,Chapecoense vs Cruzeiro,1X2 HOME (Chapecoense),4.945,6.175,24.9,FADING,False,100,24,20,2026-11-20 08:42,-3.66,0.82,173,39.3,72.2
+2026-11-21,Brazil Serie A,Bahia vs Coritiba,1X2 HOME (Bahia),1.37,1.48,8.0,FADING,False,100,24,21,2026-11-20 08:42,-3.77,1.3,171,35.8,68.7
+2026-11-21,League Two,Cheltenham Town vs Bristol Rovers,1X2 AWAY (Bristol Rovers),2.1,2.37,12.9,FADING,False,100,16,14,2026-11-20 08:42,-4.7,0.77,164,30.3,70.1
+2026-11-21,Mexico Liga MX,Tijuana vs Atlante FC,O/U 2.5 OVER,1.65,1.79,8.5,FADING,False,100,14,18,2026-11-20 08:42,-5.07,0.99,142,18.3,74.7
+2026-11-21,Brazil Serie A,Palmeiras vs Flamengo,1X2 HOME (Palmeiras),2.285,3.82,67.2,FADING,False,100,24,22,2026-11-20 08:42,-15.92,1.3,171,34.8,74.6
