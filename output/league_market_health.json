@@ -1,10 +1,12 @@
 {
- "generated_at": "2026-11-19T23:51:17Z",
+ "generated_at": "2026-11-20T01:27:07Z",
  "panel_version": "LWR-1",
  "tracked_leagues": 20,
  "current_tip_day": "2026-11-20",
  "leagues_with_current_week_data": 16,
- "missing_leagues": [],
+ "missing_leagues": [
+  "USA MLS"
+ ],
  "missing_leagues_previous_week": [],
  "no_fixture_leagues": [
   "China Super League",
@@ -1204,7 +1206,7 @@
   "USA MLS": {
    "current": {
     "league_week_id": "USA MLS|2026-W47",
-    "state": "PROVISIONAL",
+    "state": "LOCKED_NOT_FROZEN",
     "fixtures_known": 6,
     "fixtures_before_panel_start": 0,
     "fixtures_with_candidates": 6,
