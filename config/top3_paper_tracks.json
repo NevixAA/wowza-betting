@@ -6,9 +6,16 @@
   "R3_CAL_EV_LCB"
  ],
  "live_track": "R2_CAL_EV (the production TOP-3; not recorded here)",
- "start_utc": "2026-11-21T00:00:00Z",
- "stats_as_of_utc": "2026-11-20T23:59:59Z",
+ "start_utc": "2026-11-20T13:00:00Z",
+ "_start_utc": "OWNER DECISION 2026-11-20 (chat): \"Re-seed for this weekend\". The TOP-3 start moves from 2026-11-21T00:00:00Z to the re-seed instant so this weekend's TOP-3 picks from the NEW (Nov 19-20 refit) models: the old candidate records are archived (bytes kept, never deleted) and every unplayed fixture is re-seeded fresh from the current models (reseed below, src/top3_league.reseed). A league-week whose freeze is before this start is never decided. stats_as_of_utc stays the end of the day before the start; the Clean Record start (config/trustworthy_performance.json) is unchanged.",
+ "stats_as_of_utc": "2026-11-19T23:59:59Z",
  "freeze_window_from_utc": "2026-11-20T00:00:00Z",
+ "reseed": {
+  "at_utc": "2026-11-20T13:00:00Z",
+  "archive_tag": "pre_reseed_2026-11-20",
+  "decision": "owner 2026-11-20 chat: \"Re-seed for this weekend\"",
+  "how": "python -m src.top3_league reseed (predict.yml, before the pipeline; one-shot, idempotent): output/top3_league_candidates.csv -> output/top3_league_candidates_pre_reseed_2026-11-20.csv (bytes unchanged); output/edge_engine_shadow.csv is copied byte-for-byte to output/edge_engine_shadow_pre_reseed_2026-11-20.csv, then the rows first seen before at_utc of fixtures kicking off at/after at_utc leave the live file (the same run logs them again at first sight from the new models). at_utc must equal start_utc."
+ },
  "bets_from": "2026-09-01",
  "freeze_record": "output/research/top3_ranking/live_stats_2026-11-20.json",
  "freeze_ledger": "output/research/top3_ranking/live_stats_ledger.json",

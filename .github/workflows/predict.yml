@@ -131,6 +131,15 @@ jobs:
           key: af-cache-${{ github.run_id }}
           restore-keys: af-cache-
 
+      # TOP-3 RE-SEED (owner 2026-11-20 "Re-seed for this weekend"; src/top3_league.reseed, config/top3_paper_tracks.json
+      # -> reseed). ONE-SHOT and idempotent: archives the old TOP-3 candidates (bytes kept) and takes the unplayed
+      # fixtures' pre-re-seed rows out of the live edge shadow (archived byte-for-byte first) so THIS run's pipeline
+      # logs them again from the served models. Does nothing once done, without the flag, or without the config.
+      - name: TOP-3 re-seed (one-shot)
+        env:
+          TOP3_LEAGUE_ENABLED: ${{ vars.TOP3_LEAGUE_ENABLED }}
+        run: python -m src.top3_league reseed || echo "::warning::TOP-3 re-seed failed (other tips unaffected)"
+
       - name: Run predict
         env:
           ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
@@ -364,7 +373,7 @@ jobs:
                    output/league_market_health.json output/weekly_league_report.json \
                    output/top3_league_candidates.csv output/top3_league_ledger.csv \
                    output/top3_league_ledger.csv.first_sight.json output/top3_league_weeks.csv \
-                   output/top3_league_report.json output/top3_league_notified.json                    output/research/top3_paper/paper_ledger.csv output/research/top3_paper/paper_ledger.csv.first_sight.json                    output/research/top3_paper/paper_weeks.csv output/research/top3_paper/summary.json \
+                   output/top3_league_candidates_pre_reseed_2026-11-20.csv                    output/edge_engine_shadow_pre_reseed_2026-11-20.csv                    output/top3_league_report.json output/top3_league_notified.json                    output/research/top3_paper/paper_ledger.csv output/research/top3_paper/paper_ledger.csv.first_sight.json                    output/research/top3_paper/paper_weeks.csv output/research/top3_paper/summary.json \
                    output/fd_history.parquet \
                    output/book_odds_snapshots.csv output/btts_fetch_clock.json \
                    output/v91_shadow.csv \
