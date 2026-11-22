@@ -1,7 +1,14 @@
 {
- "generated_at": "2026-11-22T18:10:37Z",
- "runs_24h": 197,
- "failures_24h": 0,
- "failures": [],
+ "generated_at": "2026-11-22T18:30:59Z",
+ "runs_24h": 205,
+ "failures_24h": 1,
+ "failures": [
+  {
+   "repo": "wowzaV9-Pro",
+   "workflow": "Pro Player V3 Forward Test",
+   "at": "2026-11-22T17:34:00Z",
+   "sha": "62468fc1"
+  }
+ ],
  "superseded_failures_24h": 2
 }
