@@ -189,6 +189,35 @@ def test_feature_list_never_creates_a_column_and_never_uses_a_price():
     assert "home_xg_last5" not in feats_nf and ex_nf["home_xg_last5"] == "excluded for track new_format"
 
 
+def test_standard_ht_markets_drop_only_the_degenerate_home_ht_history_flag():
+    """Owner 2026-11-22 ("Yes, retrain the 2 HT models"): Standard ht_over05 / ht_over15 drop
+    home_has_ht_history (1.0 on every HT training row after PR #59, Data truth 3 RED); nothing else
+    changes - away_has_ht_history stays, every other track x market keeps its list."""
+    committed = P.load_config()["features"]["market_exclude"]
+    assert committed == {"standard": {"ht_over05": ["home_has_ht_history"], "ht_over15": ["home_has_ht_history"]}}
+    cfg = _cfg()
+    cols = FEATS + ["home_has_ht_history", "away_has_ht_history"]
+    base, _ = P.feature_list(cfg, "standard", cols)
+    assert "home_has_ht_history" in base
+    for m in cfg["markets"]:
+        feats, ex = P.feature_list(cfg, "standard", cols, market=m)
+        if m in ("ht_over05", "ht_over15"):
+            assert feats == [c for c in base if c != "home_has_ht_history"]
+            assert ex["home_has_ht_history"] == f"excluded for track standard market {m}"
+            assert "away_has_ht_history" in feats
+            assert P.feature_sets(cfg, "standard", cols, m)[""][0] == feats
+        else:
+            assert feats == base
+        assert P.feature_list(cfg, "new_format", cols, market=m)[0] == P.feature_list(cfg, "new_format", cols)[0]
+    bad = copy.deepcopy(cfg)
+    bad["features"]["market_exclude"] = {"standard": {"ht_over05": ["not_a_feature"]}}
+    with pytest.raises(ValueError, match="not in a feature group"):
+        P.validate_config(bad)
+    bad["features"]["market_exclude"] = {"standard": {"nope": ["home_has_ht_history"]}}
+    with pytest.raises(ValueError, match="unknown market"):
+        P.validate_config(bad)
+
+
 def test_standard_train_start_is_the_owner_2016_17_decision(feat):
     """Owner 2026-11-19 ("Yes, from 2016/17"): Standard trains from 2016-07-01; new_format has no start.
     A row dated before a track's start is not eligible; the rest are untouched."""

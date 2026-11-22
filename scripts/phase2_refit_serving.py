@@ -71,8 +71,8 @@ def refit(cfg: dict, feat: pd.DataFrame, out: Path, tracks: list[str], markets: 
            "candidate": "champion_recipe", "tail_rule": __doc__.split("THE RECIPE'S OWN TAIL.")[1].split("\n\n")[0].strip(),
            "models": {}}
     for track in tracks:
-        feats = P.feature_sets(cfg, track, feat.columns)[""][0]
         for market in markets or list(cfg["markets"]):
+            feats = P.feature_sets(cfg, track, feat.columns, market)[""][0]
             rows = P.eligible_rows(feat, cfg, track, market)
             rows = rows[pd.to_datetime(rows["date"]).dt.normalize() <= end]
             if rows.empty:
@@ -95,6 +95,7 @@ def refit(cfg: dict, feat: pd.DataFrame, out: Path, tracks: list[str], markets: 
                 "tail": [str(hs.date()), str(end.date())], "tail_rows": int((d >= hs).sum()),
                 "blocks": payload.get("blocks"), "n_features": len(payload.get("feature_cols") or []),
                 "dropped_all_missing_features": payload.get("dropped_all_missing_features"),
+                "market_excluded_features": P.market_exclude(cfg, track, market),
                 "served_tail_metrics": payload.get("served_holdout_metrics"),
                 "notes": list(cand.notes)}
             print(track, market, rec["models"][f"{track}/{market}"]["train_dates"],
