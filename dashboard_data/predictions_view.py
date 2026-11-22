@@ -128,7 +128,7 @@ def pick_text(row) -> str:
     """What the model picked on this row (a single-selection question picks YES or NO by p >= 0.5)."""
     if not bool(row["pick"]):
         return ""
-    if int(row.get("q_size", 1) or 1) > 1:
+    if int(row["q_size"]) > 1:
         return str(row["selection"])
     return str(row["selection"]) if float(row["probability"]) >= 0.5 else f"not {row['selection']}"
 
