@@ -1,7 +1,7 @@
 {
  "artifact": "data_truth_health",
  "version": "DATA-TRUTH-1",
- "generated_at": "2026-11-21T15:01:31Z",
+ "generated_at": "2026-11-22T14:58:31Z",
  "checks": [
   {
    "check": "Data truth 1: one canonical name",
@@ -26,84 +26,84 @@
    "tracks": {
     "standard|O/U 2.5": {
      "status": "GREEN",
-     "fixtures": 92,
+     "fixtures": 93,
      "worst_pct": 4.3,
      "missing": {},
      "n_inputs": 43
     },
     "new_format|O/U 2.5": {
      "status": "GREEN",
-     "fixtures": 69,
+     "fixtures": 54,
      "worst_pct": 0.0,
      "missing": {},
      "n_inputs": 36
     },
     "standard|BTTS": {
      "status": "GREEN",
-     "fixtures": 92,
+     "fixtures": 93,
      "worst_pct": 4.3,
      "missing": {},
      "n_inputs": 43
     },
     "new_format|BTTS": {
      "status": "GREEN",
-     "fixtures": 69,
+     "fixtures": 54,
      "worst_pct": 0.0,
      "missing": {},
      "n_inputs": 36
     },
     "standard|Over 1.5": {
      "status": "GREEN",
-     "fixtures": 92,
+     "fixtures": 93,
      "worst_pct": 4.3,
      "missing": {},
      "n_inputs": 43
     },
     "new_format|Over 1.5": {
      "status": "GREEN",
-     "fixtures": 69,
+     "fixtures": 54,
      "worst_pct": 0.0,
      "missing": {},
      "n_inputs": 36
     },
     "standard|Over 3.5": {
      "status": "GREEN",
-     "fixtures": 92,
+     "fixtures": 93,
      "worst_pct": 4.3,
      "missing": {},
      "n_inputs": 43
     },
     "new_format|Over 3.5": {
      "status": "GREEN",
-     "fixtures": 69,
+     "fixtures": 54,
      "worst_pct": 0.0,
      "missing": {},
      "n_inputs": 36
     },
     "standard|HT Over 0.5": {
      "status": "GREEN",
-     "fixtures": 92,
+     "fixtures": 93,
      "worst_pct": 4.3,
      "missing": {},
      "n_inputs": 43
     },
     "standard|HT Over 1.5": {
      "status": "GREEN",
-     "fixtures": 92,
+     "fixtures": 93,
      "worst_pct": 4.3,
      "missing": {},
      "n_inputs": 43
     },
     "new_format|HT Over 0.5": {
      "status": "GREEN",
-     "fixtures": 69,
+     "fixtures": 54,
      "worst_pct": 0.0,
      "missing": {},
      "n_inputs": 36
     },
     "new_format|HT Over 1.5": {
      "status": "GREEN",
-     "fixtures": 69,
+     "fixtures": 54,
      "worst_pct": 0.0,
      "missing": {},
      "n_inputs": 36
@@ -269,14 +269,14 @@
   {
    "check": "Data truth 9: clean ledgers",
    "status": "GREEN",
-   "value": "clean since 2026-11-19 (5 live tip(s), 1506 player row(s), 16 v91 row(s))",
+   "value": "clean since 2026-11-19 (6 live tip(s), 2233 player row(s), 75 v91 row(s))",
    "rule": "from the Clean Record start: 0 multi-tip / opposite-tip fixtures, 0 post-kickoff tips, 0 closes <= 1.0, 0 |CLV| > 50 new-format rows, 0 duplicate player tips, 0 v91_shadow fixtures logged twice: RED on any; NO_DATA before the start is set",
    "detail": ""
   },
   {
    "check": "Data truth 11: injuries/lineups freshness",
    "status": "GREEN",
-   "value": "fresh: 42 open registry league(s), 335 finished fixture(s) checked for lineups, 14 active injuries-covered league-season(s)",
+   "value": "fresh: 42 open registry league(s), 226 finished fixture(s) checked for lineups, 14 active injuries-covered league-season(s)",
    "rule": "per registry league with an open season: fixture lists read within 36 h; every finished fixture of a lineups-covered season >= 2 days old (last 14 days) has a lineups answer; an injuries-covered league with a match in the last / next 7 days has an injuries answer within 36 h: RED on any",
    "detail": ""
   },
@@ -304,9 +304,9 @@
   {
    "check": "Data truth 10a: keeper goals_conceded = match score",
    "status": "GREEN",
-   "value": "0 disagreement(s) in 61,650 checkable keeper value(s) read by the features; 335 provider value(s) contradicted the score and are missing",
+   "value": "0 disagreement(s) in 61,656 checkable keeper value(s) read by the features; 335 provider value(s) contradicted the score and are missing",
    "rule": "a keeper who was his side's only keeper for the full 90 minutes of a match finished in 90 minutes has goals_conceded = the opponent's 90-minute goals, or missing - never another value",
-   "detail": "2026-06: 0/84 contradicted before, 0 missing after; 2026-07: 4/407 contradicted before, 54 missing after; 2026-08: 13/1566 contradicted before, 105 missing after; 2026-09: 10/1700 contradicted before, 222 missing after; 2026-10: 29/2146 contradicted before, 1003 missing after; 2026-11: 87/805 contradicted before, 650 missing after",
+   "detail": "2026-06: 0/84 contradicted before, 0 missing after; 2026-07: 4/407 contradicted before, 54 missing after; 2026-08: 13/1566 contradicted before, 105 missing after; 2026-09: 10/1700 contradicted before, 222 missing after; 2026-10: 29/2146 contradicted before, 1003 missing after; 2026-11: 87/997 contradicted before, 836 missing after",
    "by_month": {
     "2022-08": {
      "rows": 354,
@@ -564,9 +564,9 @@
      "missing_after": 1003
     },
     "2026-11": {
-     "rows": 805,
+     "rows": 997,
      "contradicted_before_check": 87,
-     "missing_after": 650
+     "missing_after": 836
     }
    }
   },
@@ -582,12 +582,12 @@
    "status": "GREEN",
    "value": "goals_conceded: 28,036 provider null(s), 0 read as a value, penalty_missed: 28,036 provider null(s), 0 read as a value",
    "rule": "a NULL_IS_MISSING count (goals_conceded, penalty_missed) the provider sent as null is missing on the props frame - never 0; a real provider 0 stays 0",
-   "detail": "2026-06: 7 missed / 24 scored on known rows, 106 null miss count(s); 2026-07: 10 missed / 44 scored on known rows, 968 null miss count(s); 2026-08: 46 missed / 169 scored on known rows, 1440 null miss count(s); 2026-09: 38 missed / 137 scored on known rows, 3146 null miss count(s); 2026-10: 38 missed / 140 scored on known rows, 14472 null miss count(s); 2026-11: 2 missed / 24 scored on known rows, 8575 null miss count(s)"
+   "detail": "2026-06: 7 missed / 24 scored on known rows, 106 null miss count(s); 2026-07: 10 missed / 44 scored on known rows, 968 null miss count(s); 2026-08: 46 missed / 169 scored on known rows, 1440 null miss count(s); 2026-09: 38 missed / 137 scored on known rows, 3146 null miss count(s); 2026-10: 38 missed / 140 scored on known rows, 14472 null miss count(s); 2026-11: 2 missed / 26 scored on known rows, 11315 null miss count(s)"
   },
   {
    "check": "Data truth 12: prediction ledger",
    "status": "GREEN",
-   "value": "0 violation(s) in 513 partition(s)",
+   "value": "0 violation(s) in 539 partition(s)",
    "rule": "Data truth 12: prediction ledger - every model x market prediction stored once, in its own model/market/league/season partition, before kickoff: RED on a duplicate key, a row whose repo/model/market/league/season does not match its partition, an unknown league, a pre-kickoff snapshot written at/after kickoff, a price-like column, or rows under a model x market that is not an active entry of config/prediction_ledger_markets.json",
    "detail": ""
   }
