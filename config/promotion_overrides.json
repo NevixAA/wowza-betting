@@ -363,10 +363,10 @@
         {
           "stage": "std_ht_drop_home_ht_history",
           "approved_on": "2026-11-22",
-          "owner_quote": "Yes, retrain the 2 HT models",
+          "owner_quote": "Install (Recommended)",
           "retrain_owner_quote": "Yes, retrain the 2 HT models",
           "retrain_approved_on": "2026-11-22",
-          "install_approval": "PENDING: the owner approves the old-vs-new comparison first; the owner's install words and date are added here before this PR is merged.",
+          "install_approval": "Owner 2026-11-22: \"Install (Recommended)\" after the old-vs-new comparison (PR #78).",
           "scope": "the two Standard half-time payloads (ht_over05 / ht_over15, models/model_ht_over05.pkl / model_ht_over15.pkl) refitted with the same champion_recipe on the same frame (ebe47c041a7f595f), the same cut-offs (Standard from 2016-07-01, training 2016-08-05..2026-11-01, data end 2026-11-08) and the same rows (49,393), dropping only home_has_ht_history (config/phase2_retrain.json features.market_exclude, owner 2026-11-22): after PR #59 the flag is 1.0 on every training row, so Data truth 3 is RED on the served std_2016_refit payloads 5a76d680 / e9a12ce1. Every other artifact (standard, btts, over15, over35, newformat, ht_over05_nf, ht_over15_nf) is unchanged. Nothing beyond these two artifacts is covered.",
           "install_window": [
             "2026-11-22",

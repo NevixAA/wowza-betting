@@ -7,7 +7,7 @@ Counts and probabilities only. No prices.
 |---|---|
 | Repo | NevixAA/wowza-betting, branch `retrain/std-ht-drop-has-ht-history` (base main `ce044147d`) |
 | Commits | `f9cfba733` config + harness (per-market exclusion) · `cbc00c134` install (NOT merged) · `300011fe2` track registry · `5e6d6aedb` HT atomic fix + test + evidence |
-| Owner approval needed | **Yes, for the install.** The PR stays unmerged until the owner approves the comparison below. |
+| Owner approval | **Given 2026-11-22: "Install (Recommended)"**, after the comparison below (PR #78). The install commit ran before approval; its lineage rows carry the retrain quote ("Yes, retrain the 2 HT models") as stage_quote. The override stage records both. |
 
 ## 1. Root cause
 
@@ -103,7 +103,7 @@ Row-level files in `reports/ht_feature_parity/`. Columns: fixture_id, league, ki
 
 ## 7. Production impact
 
-- Until install: none. Main still serves 5a76d680 / e9a12ce1, and DT3 stays RED.
+- Before the merge of PR #78, main served 5a76d680 / e9a12ce1 and DT3 was RED.
 - After install: DT3 GREEN on both HT payloads. HT probabilities move by at most 0.19 pp on the holdout and 0.09 pp on the current board.
 - No other model, threshold, bar, tier or stake changes.
 - The feature-engineering fix changes 0 values on the committed data.
