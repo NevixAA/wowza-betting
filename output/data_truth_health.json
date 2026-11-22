@@ -1,7 +1,7 @@
 {
  "artifact": "data_truth_health",
  "version": "DATA-TRUTH-1",
- "generated_at": "2026-11-22T19:06:29Z",
+ "generated_at": "2026-11-22T20:00:50Z",
  "checks": [
   {
    "check": "Data truth 1: one canonical name",
@@ -13,7 +13,7 @@
   {
    "check": "Data truth 2: no silent defaults",
    "status": "GREEN",
-   "value": "0 new default(s); 0 known (baseline); 195 allow-listed (counters/display); 0 baseline entr(ies) now gone; 0 allow-list entr(ies) now gone; 443 production files scanned",
+   "value": "0 new default(s); 0 known (baseline); 195 allow-listed (counters/display); 0 baseline entr(ies) now gone; 0 allow-list entr(ies) now gone; 451 production files scanned",
    "rule": "no NEW invented default in ALL production code (fillna(<non-zero literal>), literal season fallback/list, pinned football-data folder, numeric .get(<key>, <number>), an or-zero on a parsed value, a zero fillna on a price/odds): RED if any site is in neither config/data_truth_baseline.json nor config/data_truth_allowlist.json, or an allow-list entry has no reason; GREEN otherwise",
    "detail": ""
   },
@@ -26,7 +26,7 @@
    "tracks": {
     "standard|O/U 2.5": {
      "status": "GREEN",
-     "fixtures": 93,
+     "fixtures": 94,
      "worst_pct": 3.2,
      "missing": {},
      "n_inputs": 43
@@ -40,7 +40,7 @@
     },
     "standard|BTTS": {
      "status": "GREEN",
-     "fixtures": 93,
+     "fixtures": 94,
      "worst_pct": 3.2,
      "missing": {},
      "n_inputs": 43
@@ -54,7 +54,7 @@
     },
     "standard|Over 1.5": {
      "status": "GREEN",
-     "fixtures": 93,
+     "fixtures": 94,
      "worst_pct": 3.2,
      "missing": {},
      "n_inputs": 43
@@ -68,7 +68,7 @@
     },
     "standard|Over 3.5": {
      "status": "GREEN",
-     "fixtures": 93,
+     "fixtures": 94,
      "worst_pct": 3.2,
      "missing": {},
      "n_inputs": 43
@@ -82,14 +82,14 @@
     },
     "standard|HT Over 0.5": {
      "status": "GREEN",
-     "fixtures": 93,
+     "fixtures": 94,
      "worst_pct": 3.2,
      "missing": {},
      "n_inputs": 43
     },
     "standard|HT Over 1.5": {
      "status": "GREEN",
-     "fixtures": 93,
+     "fixtures": 94,
      "worst_pct": 3.2,
      "missing": {},
      "n_inputs": 43
@@ -269,7 +269,7 @@
   {
    "check": "Data truth 9: clean ledgers",
    "status": "GREEN",
-   "value": "clean since 2026-11-19 (6 live tip(s), 2264 player row(s), 105 v91 row(s))",
+   "value": "clean since 2026-11-19 (7 live tip(s), 2264 player row(s), 108 v91 row(s))",
    "rule": "from the Clean Record start: 0 multi-tip / opposite-tip fixtures, 0 post-kickoff tips, 0 closes <= 1.0, 0 |CLV| > 50 new-format rows, 0 duplicate player tips, 0 v91_shadow fixtures logged twice: RED on any; NO_DATA before the start is set",
    "detail": ""
   },
@@ -282,9 +282,9 @@
   },
   {
    "check": "Data truth 13a: active production violations",
-   "status": "AMBER",
-   "value": "0 active violation(s); props PENDING; 0 serving coverage gap(s)",
-   "rule": "REAL DATA ONLY (owner 2026-11-15): src/integrity/real_data_provenance - fabricated, unsupported, mismatched or refused inputs in a payload that scores live fixtures (props: not yet verified until the props agent reports)",
+   "status": "GREEN",
+   "value": "0 active violation(s); props VERIFIED; 0 serving coverage gap(s)",
+   "rule": "REAL DATA ONLY (owner 2026-11-15): src/integrity/real_data_provenance - fabricated, unsupported, mismatched or refused inputs in a payload that scores live fixtures (props: GREEN only when output/props_real_data_provenance.json is VERIFIED and current)",
    "detail": ""
   },
   {
@@ -593,5 +593,19 @@
   }
  ],
  "stoplight": "GREEN",
- "gate_reasons": []
+ "gate_reasons": [],
+ "stoplight_scope": "CI/change-control gate: gated rules + known-defaults ratchet; NOT data quality",
+ "operational_status": "RED",
+ "operational_failing": [
+  {
+   "check": "Data truth 3: no missing data",
+   "status": "RED",
+   "gated": false
+  },
+  {
+   "check": "Data truth 13c: registered historical exceptions",
+   "status": "AMBER",
+   "gated": false
+  }
+ ]
 }
