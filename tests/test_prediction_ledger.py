@@ -419,7 +419,7 @@ def test_write_settled_never_touches_raw_and_reschedule_voids(tmp_path, monkeypa
     before = raw_p.read_bytes()
 
     class _T:
-        def find(self, *a):
+        def find(self, *a, **k):
             return {"home_goals": 3, "away_goals": 1, "src": "football-data"}
     fn = V.outcome_fn(now=datetime(2026, 11, 26, tzinfo=timezone.utc), team=_T(),
                       latest_ko=V.latest_kickoffs(root))
@@ -454,7 +454,7 @@ def test_v9_settle_skips_side_model_partitions(tmp_path, monkeypatch):
     assert set(parts) == {"v9_standard", "v9_corners"}
 
     class _T:
-        def find(self, *a):
+        def find(self, *a, **k):
             return {"home_goals": 3, "away_goals": 1, "src": "football-data"}
     monkeypatch.setattr(V, "TeamResults", lambda: _T())
     st = V.settle(root=root, settled_root=sroot, now=datetime(2026, 11, 26, tzinfo=timezone.utc), force=True)
