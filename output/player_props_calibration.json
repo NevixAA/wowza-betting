@@ -1,4 +1,25 @@
 {
+  "_quarantine": {
+    "status": "INVALID_FOR_REAL_BETTING_ROI",
+    "reason": "ROI computed against synthetic implied prices derived from base rates (implied odds ~ 1 / base rate), never a bookmaker quote; in-sample; reports/MODEL_DATA_AUDIT_2026-08-10.md M9",
+    "usable_for": [
+      "audit"
+    ],
+    "refused_for": [
+      "betting_performance",
+      "roi",
+      "staking",
+      "bankroll",
+      "promotion",
+      "edge_validation",
+      "dashboard_profitability",
+      "dashboard_ranking",
+      "telegram",
+      "pro_research_roi"
+    ],
+    "decided": "owner P0 deep-repair list 2026-11-22, item 6",
+    "reader": "src/integrity/synthetic_roi.py (load_for_audit only)"
+  },
   "goals": {
     "bets": 791,
     "wins": 173,
