@@ -57,10 +57,12 @@
   {"id": "v9_bars_monthly", "name": "Bars monthly proposals", "repo": "v9", "workflows": ["bars_monthly.yml"],
    "schedule": "1st of the month 05:00 (only when BARS_MONTHLY_ENABLED)",
    "purpose": "Re-selects every league's bars each month as a proposal; nothing serves until the owner applies it.",
-   "record": {"path": "output/threshold_proposals/latest.json", "kind": "json", "fields": [
-     {"label": "proposal", "key": "proposal_id"}, {"label": "status", "key": "status"},
-     {"label": "entries", "key": "n_entries"}, {"label": "serving changes", "key": "n_serving_changes"}]},
-   "record_note": "Owner approval (config/threshold_approvals.json); no numeric gate."},
+   "record": {"path": "config/threshold_applied.json", "kind": "json", "fields": [
+     {"label": "applied proposal", "key": "last_applied.proposal_id"},
+     {"label": "applied at", "key": "last_applied.applied_at"},
+     {"label": "approved by", "key": "last_applied.approved_by"},
+     {"label": "entries", "key": "last_applied.entries#len"}]},
+   "record_note": "Record = the APPLIED proposal (config/threshold_applied.json; approval in config/threshold_approvals.json). output/threshold_proposals/latest.json is only the last generated proposal (superseded TP-2026-11-15-bade2c0b), not what serves. Owner approval; no numeric gate."},
   {"id": "v9_data_truth", "name": "Data Truth collect", "repo": "v9", "workflows": ["data_truth_collect.yml"],
    "schedule": "chained / manual",
    "purpose": "Collects the real-data inputs the Data Truth stoplight checks."},
@@ -175,6 +177,6 @@
   {"id": "exec_cloudbet_shadow", "name": "Cloudbet shadow (dry)", "repo": "exec", "workflows": ["cloudbet_shadow.yml"],
    "schedule": "every 3 h",
    "purpose": "Dry Cloudbet measurement: logs what it would do, places nothing.",
-   "record_note": "No record file committed (exec main has only output/.gitkeep)."}
+   "record_note": "No record file (DRY, produces nothing): CLOUDBET_API_KEY is not set, so every run prints SKIPPED and writes nothing (exec main has only output/.gitkeep). Once the key is added it commits output/cloudbet_candidate_log.csv, cloudbet_bets.csv, cloudbet_price_snapshots.csv, cloudbet_competition_map.json and cloudbet_market_mapping.json."}
  ]
 }
