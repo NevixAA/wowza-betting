@@ -17,6 +17,7 @@ V9_DIR = Path(__file__).resolve().parents[1]
 REPORT = V9_DIR / "output" / "top3_league_report.json"
 LEDGER = V9_DIR / "output" / "top3_league_ledger.csv"
 MARKET_LABEL = {"OU25": "O/U 2.5", "BTTS": "BTTS", "OVER15": "Over 1.5", "OVER35": "Over 3.5"}
+TIER_LABEL = {"T1_BEST_VALUE": "T1 best value", "T2_SAFEST": "T2 safest", "T3_RISKY_VALUE": "T3 risky value"}
 
 
 def report() -> dict:
@@ -42,7 +43,10 @@ def latest_picks_frame(view: dict) -> pd.DataFrame:
         "Calibrated edge pp": ((pd.to_numeric(d["edge_calibrated"], errors="coerce") * 100).round(1)
                                if "edge_calibrated" in d.columns else pd.Series(float("nan"), index=d.index)),
         # owner 2026-11-11: no tier - the slot (TOP / TIER2) and the cell's status
-        "Slot": d["slot"] if "slot" in d.columns else "", "Cell": d["cell_status"] if "cell_status" in d.columns else "",
+        "Slot": (d["slot"].map(TIER_LABEL).fillna(d["slot"]) if "slot" in d.columns else ""),
+        "Cell": d["cell_status"] if "cell_status" in d.columns else "",
+        # owner 2026-11-22 "stake by proof": "0.5% stake" or why the pick carries none ("No stake: below bar")
+        "Stake": d["stake_label"].fillna("") if "stake_label" in d.columns else "",
         "Result": d["result"].fillna("")})
 
 

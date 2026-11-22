@@ -1,10 +1,10 @@
 {
- "generated_at": "2026-11-22T16:15:49Z",
+ "generated_at": "2026-11-22T18:26:06Z",
  "selection_mode": "TOP3_LEAGUE_GW",
  "version": "TOP3-2",
  "freeze_lead_min": 120.0,
  "status": "OK",
- "note": "Each league's 3 best tips of the gameweek across O/U 2.5, BTTS, Over 1.5, Over 3.5 from its MODEL cells, each cleared its cell's one owner-approved bar, ranked by the live rule (calibrated value); fewer than 3 when fewer clear the bar. League-wide cells are the league's own line (league_rule), outside the 3. Every TOP-3 tip: 0.5% stake of bankroll, flat, placed manually by the owner at the odds shown on the tip (never auto-executed); P/L here in flat units.",
+ "note": "Each league's T1 best value / T2 safest / T3 risky value of the gameweek across O/U 2.5, BTTS, Over 1.5, Over 3.5: always 3 when at least 3 priced, coherent candidates exist. Only a pick that cleared its league's own approved bar carries the stake; the others are shown with their no-stake reason and counted apart (staked / no_stake). League-wide cells are the league's own line (league_rule), outside the 3. A staked TOP-3 tip: 0.5% stake of bankroll, flat, placed manually by the owner at the odds shown on the tip (never auto-executed); P/L here in flat units.",
  "leagues": {
   "Argentina Primera Division": {
    "league_rule": {
@@ -32,7 +32,11 @@
      "edge_calibrated": "0.014904",
      "slot": "T1_BEST_VALUE",
      "cell_status": "PROMISING",
-     "result": "WIN"
+     "result": "WIN",
+     "stake": "0.005",
+     "stake_reason": "STAKED",
+     "value_basis": "",
+     "stake_label": "0.5% stake"
     },
     {
      "top3_rank": "2",
@@ -45,7 +49,11 @@
      "edge_calibrated": "0.013036",
      "slot": "T2_SAFEST",
      "cell_status": "PROMISING",
-     "result": ""
+     "result": "",
+     "stake": "0.005",
+     "stake_reason": "STAKED",
+     "value_basis": "",
+     "stake_label": "0.5% stake"
     },
     {
      "top3_rank": "3",
@@ -58,9 +66,27 @@
      "edge_calibrated": "0.021269",
      "slot": "T3_RISKY_VALUE",
      "cell_status": "PROMISING",
-     "result": ""
+     "result": "",
+     "stake": "0.005",
+     "stake_reason": "STAKED",
+     "value_basis": "",
+     "stake_label": "0.5% stake"
     }
    ],
+   "staked": {
+    "picks": 3,
+    "settled": 1,
+    "won": 1,
+    "flat_pnl_units": 0.48,
+    "roi": 0.48
+   },
+   "no_stake": {
+    "picks": 0,
+    "settled": 0,
+    "won": 0,
+    "flat_pnl_units": 0.0,
+    "roi": null
+   },
    "weeks_decided": 1,
    "picks": 3,
    "settled": 1,
@@ -81,6 +107,20 @@
     "NO_TWO_SIDED_PRICE": 2
    },
    "latest_picks": [],
+   "staked": {
+    "picks": 0,
+    "settled": 0,
+    "won": 0,
+    "flat_pnl_units": 0.0,
+    "roi": null
+   },
+   "no_stake": {
+    "picks": 0,
+    "settled": 0,
+    "won": 0,
+    "flat_pnl_units": 0.0,
+    "roi": null
+   },
    "weeks_decided": 1,
    "picks": 0,
    "settled": 0,
@@ -100,6 +140,20 @@
     "NO_TWO_SIDED_PRICE": 2
    },
    "latest_picks": [],
+   "staked": {
+    "picks": 0,
+    "settled": 0,
+    "won": 0,
+    "flat_pnl_units": 0.0,
+    "roi": null
+   },
+   "no_stake": {
+    "picks": 0,
+    "settled": 0,
+    "won": 0,
+    "flat_pnl_units": 0.0,
+    "roi": null
+   },
    "weeks_decided": 1,
    "picks": 0,
    "settled": 0,
@@ -119,6 +173,20 @@
     "NO_TWO_SIDED_PRICE": 6
    },
    "latest_picks": [],
+   "staked": {
+    "picks": 0,
+    "settled": 0,
+    "won": 0,
+    "flat_pnl_units": 0.0,
+    "roi": null
+   },
+   "no_stake": {
+    "picks": 0,
+    "settled": 0,
+    "won": 0,
+    "flat_pnl_units": 0.0,
+    "roi": null
+   },
    "weeks_decided": 1,
    "picks": 0,
    "settled": 0,
@@ -140,6 +208,20 @@
     "TIER_NO_VALUE": 3
    },
    "latest_picks": [],
+   "staked": {
+    "picks": 0,
+    "settled": 0,
+    "won": 0,
+    "flat_pnl_units": 0.0,
+    "roi": null
+   },
+   "no_stake": {
+    "picks": 0,
+    "settled": 0,
+    "won": 0,
+    "flat_pnl_units": 0.0,
+    "roi": null
+   },
    "weeks_decided": 1,
    "picks": 0,
    "settled": 0,
@@ -160,6 +242,20 @@
     "NO_TWO_SIDED_PRICE": 7
    },
    "latest_picks": [],
+   "staked": {
+    "picks": 0,
+    "settled": 0,
+    "won": 0,
+    "flat_pnl_units": 0.0,
+    "roi": null
+   },
+   "no_stake": {
+    "picks": 0,
+    "settled": 0,
+    "won": 0,
+    "flat_pnl_units": 0.0,
+    "roi": null
+   },
    "weeks_decided": 1,
    "picks": 0,
    "settled": 0,
@@ -180,6 +276,20 @@
     "NO_TWO_SIDED_PRICE": 8
    },
    "latest_picks": [],
+   "staked": {
+    "picks": 0,
+    "settled": 0,
+    "won": 0,
+    "flat_pnl_units": 0.0,
+    "roi": null
+   },
+   "no_stake": {
+    "picks": 0,
+    "settled": 0,
+    "won": 0,
+    "flat_pnl_units": 0.0,
+    "roi": null
+   },
    "weeks_decided": 1,
    "picks": 0,
    "settled": 0,
@@ -200,6 +310,20 @@
     "NO_TWO_SIDED_PRICE": 1
    },
    "latest_picks": [],
+   "staked": {
+    "picks": 0,
+    "settled": 0,
+    "won": 0,
+    "flat_pnl_units": 0.0,
+    "roi": null
+   },
+   "no_stake": {
+    "picks": 0,
+    "settled": 0,
+    "won": 0,
+    "flat_pnl_units": 0.0,
+    "roi": null
+   },
    "weeks_decided": 1,
    "picks": 0,
    "settled": 0,
@@ -220,6 +344,20 @@
     "NO_TWO_SIDED_PRICE": 5
    },
    "latest_picks": [],
+   "staked": {
+    "picks": 0,
+    "settled": 0,
+    "won": 0,
+    "flat_pnl_units": 0.0,
+    "roi": null
+   },
+   "no_stake": {
+    "picks": 0,
+    "settled": 0,
+    "won": 0,
+    "flat_pnl_units": 0.0,
+    "roi": null
+   },
    "weeks_decided": 1,
    "picks": 0,
    "settled": 0,
@@ -243,6 +381,20 @@
     "TIER_NO_VALUE": 5
    },
    "latest_picks": [],
+   "staked": {
+    "picks": 0,
+    "settled": 0,
+    "won": 0,
+    "flat_pnl_units": 0.0,
+    "roi": null
+   },
+   "no_stake": {
+    "picks": 0,
+    "settled": 0,
+    "won": 0,
+    "flat_pnl_units": 0.0,
+    "roi": null
+   },
    "weeks_decided": 1,
    "picks": 0,
    "settled": 0,
@@ -264,6 +416,20 @@
     "TIER_NO_VALUE": 1
    },
    "latest_picks": [],
+   "staked": {
+    "picks": 0,
+    "settled": 0,
+    "won": 0,
+    "flat_pnl_units": 0.0,
+    "roi": null
+   },
+   "no_stake": {
+    "picks": 0,
+    "settled": 0,
+    "won": 0,
+    "flat_pnl_units": 0.0,
+    "roi": null
+   },
    "weeks_decided": 1,
    "picks": 0,
    "settled": 0,
@@ -284,6 +450,20 @@
     "OUTSIDE_ODDS_RANGE": 6
    },
    "latest_picks": [],
+   "staked": {
+    "picks": 0,
+    "settled": 0,
+    "won": 0,
+    "flat_pnl_units": 0.0,
+    "roi": null
+   },
+   "no_stake": {
+    "picks": 0,
+    "settled": 0,
+    "won": 0,
+    "flat_pnl_units": 0.0,
+    "roi": null
+   },
    "weeks_decided": 1,
    "picks": 0,
    "settled": 0,

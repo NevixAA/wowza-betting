@@ -394,6 +394,10 @@ def _closing_for_market(home: str, away: str, match_date: str, mkt: str,
         if not rh or not ra:
             continue
         m = same[(same["_h"] == rh) & (same["_a"] == ra)]
+        # NO DECIMAL PRICE CAN BE <= 1.0 (2026-11-22): a suspended book's 1.0 quote is not a close
+        # (bets_ledger HJK v AC Oulu 2026-11-08 took one; output/corrections/clv_invalid_close.csv).
+        # The close is the last REAL quote; none -> no close.
+        m = m[pd.to_numeric(m["odds"], errors="coerce") > 1.0]
         if not m.empty:
             try:
                 return float(m.sort_values("snapshot_ts").iloc[-1]["odds"])
@@ -443,10 +447,16 @@ def _closing_odds_json(home: str, away: str, match_date: str, side: str) -> floa
         snapshots = history.get(key)
         if not snapshots:
             return np.nan
-        last = snapshots[-1]
         field = "under" if side == "UNDER" else "over"
-        val = last.get(field)
-        return float(val) if val is not None else np.nan
+        # The last REAL quote (2026-11-22): a snapshot <= 1.0 is a suspended book, not a price, and is
+        # skipped; a last snapshot with no value still means no close here (CSV archives decide).
+        for snap in reversed(snapshots):
+            val = snap.get(field)
+            if val is None:
+                return np.nan
+            if float(val) > 1.0:
+                return float(val)
+        return np.nan
     except Exception:
         return np.nan
 

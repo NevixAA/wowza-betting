@@ -316,7 +316,7 @@ def first_sight_stores() -> dict:
     from src.research.first_sight import FirstSightStore
     from src import edge_engine_shadow as EES
     from src import shadow_experiments as SE
-    from src.shadow_compare import COLUMNS as V91_COLS, FROZEN as V91_FROZEN
+    from src.shadow_compare import COLUMNS as V91_COLS, FROZEN as V91_FROZEN, LATE_FIRST_SIGHT as V91_LATE
     from src.research import league_weekly as LW
     lin = OUT / "model_lineage"
     h2h_cols = ["logged_at", "match_date", "kickoff_utc", "league", "home_team", "away_team", "model_type",
@@ -326,7 +326,7 @@ def first_sight_stores() -> dict:
         "model_lineage/shadow_experiments.csv": SE.first_sight_store(lin / "shadow_experiments.csv"),
         "v91_shadow.csv": FirstSightStore(OUT / "v91_shadow.csv", key=["fixture_id", "market", "match_date"],
                                           columns=V91_COLS, observed_col="logged_at", kickoff_col="kickoff_utc",
-                                          frozen_cols=list(V91_FROZEN)),
+                                          frozen_cols=[c for c in V91_FROZEN if c not in V91_LATE]),
         "league_weekly_candidates.csv": LW.candidate_store(OUT / "league_weekly_candidates.csv"),
         "league_weekly_research.csv": LW.panel_store(OUT / "league_weekly_research.csv"),
         "model_lineage/shadow_h2h.csv": FirstSightStore(
