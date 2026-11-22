@@ -230,7 +230,8 @@ def test_truth_panel_reads_recorded_values(out):
     assert u["Unproven cup rows (kept in history)"] == v["truth_cup_unproven"] == 3
     assert u["Refused scores (history vs provider)"] == v["truth_scores_refused"] == 1
     s = p["stoplight"]
-    assert s["status"] == "GREEN" and s["basis"].startswith("gate verdict") and s["age_h"] == 6.0
+    # P0 item 2 (2026-11-22): the status is the WORST check (rule 3 AMBER here), the gate verdict is beside it
+    assert s["status"] == "AMBER" and s["gate"] == "GREEN" and "gated or not" in s["basis"] and s["age_h"] == 6.0
     assert not s["stale"]
     assert p["collection"]["last_collection"] == "2026-10-19"      # audit generated_at; budget day 10-19 = 0 calls
 
@@ -250,7 +251,7 @@ def test_truth_panel_without_gate_shows_worst_status_labelled(out):
     d.pop("stoplight")
     (out / "data_truth_health.json").write_text(json.dumps(d), encoding="utf-8")
     s = TV.stoplight(out, now="2026-10-25T12:00:00Z")
-    assert s["status"] == "AMBER" and "no gate verdict" in s["basis"] and s["stale"]
+    assert s["status"] == "AMBER" and s["gate"] == TV.NO_DATA and "gated or not" in s["basis"] and s["stale"]
 
 
 # ── the checker itself ─────────────────────────────────────────────────────────────────────────

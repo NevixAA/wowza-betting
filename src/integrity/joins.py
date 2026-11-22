@@ -265,7 +265,13 @@ def write_join_health(path: str | Path, extra: dict | None = None) -> dict:
                                                   ("PASS" if statuses else "UNKNOWN"))
     doc = {"artifact": "join_integrity_health", "helper_version": JOIN_HELPER_VERSION,
            "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-           "status": overall, "joins": _REPORTS}
+           "status": overall,
+           "status_scope": "worst of EVERY report, the legacy replay included; read the scopes below for "
+                           "what serves (P0 item 3, 2026-11-22)",
+           "joins": _REPORTS}
+    # active serving joins (mode safe) vs the legacy replay (mode legacy_audit), never one verdict
+    from src.integrity.training_lineage import join_scopes
+    doc.update(join_scopes(doc))
     if extra:
         doc.update(extra)
     p = Path(path)
