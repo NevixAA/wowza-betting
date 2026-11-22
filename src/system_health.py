@@ -590,9 +590,16 @@ def build_artifact(now: datetime | None = None, prior: dict | None = None) -> di
     checks.append(fs_check)
     # The owner's four Data Truth rules (2026-11-01): one canonical name, no silent defaults, no
     # missing data, right league relations. Any violation is a RED line here (src/integrity/data_truth).
+    dt_gate = {"stoplight": GREY, "gate_reasons": ["data truth checks did not run"]}
     try:
         from src.integrity import data_truth as _DT
-        checks += _DT.evaluate(now)
+        _dt_checks = _DT.evaluate(now)
+        checks += _dt_checks
+        # the CI gate verdict on the SAME checks, recorded beside them (P0 item 2, 2026-11-22): a merge-
+        # control answer, never the operational one (that is the worst check, indicators below)
+        _fails = _DT.gate(checks=_dt_checks)
+        dt_gate = {"stoplight": RED if _fails else GREEN, "gate_reasons": _fails,
+                   "scope": "CI/change-control: gated rules + known-defaults ratchet only"}
     except Exception as e:                                             # noqa: BLE001
         checks.append(_c("Data truth checks", RED, "failed", "src/integrity/data_truth must run",
                          f"{type(e).__name__}: {e}"[:200]))
@@ -617,10 +624,12 @@ def build_artifact(now: datetime | None = None, prior: dict | None = None) -> di
     elif any(c["status"] in (AMBER, GREY) for c in checks):
         overall = "WARN"
     policy = _json(ROOT / "config" / "bankroll_policy.json")
-    return {
+    art = {
         "about": "Canonical system health (src/system_health.build_artifact), written daily by "
                  "evidence_refresh.yml. overall: FAIL if any RED check or protected_tracks_modified; WARN if any "
-                 "AMBER/NO_DATA; PASS otherwise. Every status comes from the rule stored beside it.",
+                 "AMBER/NO_DATA; PASS otherwise. Every status comes from the rule stored beside it. "
+                 "`indicators` holds FOUR separate verdicts (CI gate, operational data quality, production model "
+                 "integrity, full-system certification) - never one GREEN for all four.",
         "artifact_version": ARTIFACT_VERSION,
         "generated_at": now.strftime("%Y-%m-%dT%H:%M:%SZ"),
         "overall": overall, "reasons": reasons,
@@ -642,7 +651,14 @@ def build_artifact(now: datetime | None = None, prior: dict | None = None) -> di
                                                    "prior_rows", "prior_match", "status", "reasons")}
                         for k, v in fs.items()},
         "version_field_coverage": version_field_coverage(),
+        "data_truth_gate": dt_gate,
     }
+    try:
+        from dashboard_data import health_status as _HS
+        art["indicators"] = _HS.indicators(OUT, now, docs={HEALTH_FILE.name: art})
+    except Exception as e:                                             # noqa: BLE001 - recorded, never assumed
+        art["indicators"] = {"error": f"{type(e).__name__}: {e}"[:300]}
+    return art
 
 
 def write_artifact(path: Path | None = None, now: datetime | None = None) -> dict:
@@ -713,6 +729,9 @@ if __name__ == "__main__":
         a = write_artifact()
         for c in a["checks"]:
             print(f"{c['status']:8s} {c['check']:34s} {c['value']}")
+        for k, ind in (a.get("indicators") or {}).items():
+            if isinstance(ind, dict):
+                print(f"INDICATOR {k:28s} {ind.get('status')}  ({len(ind.get('failing') or [])} failing)")
         print(f"OVERALL {a['overall']}  protected_tracks_modified={a['protected_tracks_modified']}  "
               f"contract_violations={a['contract_violations']}")
         for r in a["reasons"]:
