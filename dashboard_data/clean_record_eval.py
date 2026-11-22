@@ -182,8 +182,8 @@ def render(st, ui, *, admin: bool = False) -> None:
     if len(ht):
         ui.eyebrow("Before the repairs: the owner's historical figures, recomputed")
         ui.compact_table(ht)
-        st.caption("Older models, SNIPER + MARKSMAN tiers, matches from the performance cutoff, settled before the "
-                   "Clean Record start. Kept apart; never part of a Clean Record figure.")
+        st.caption("Older models, the two top retired tiers (the old staked basis), matches from the performance "
+                   "cutoff, settled before the Clean Record start. Kept apart; never part of a Clean Record figure.")
     if cells is None:
         st.caption(problem)
         return
