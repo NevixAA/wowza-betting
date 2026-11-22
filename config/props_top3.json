@@ -1,0 +1,8 @@
+{
+ "about": "Props TOP-3 per league per gameweek (src/props_top3.py). Owner 2026-11-22 (chat): \"Like TOP-3: 3 per league, stake by proof\". T1 best value / T2 safest / T3 risky value among priced props with positive value; same league-week and freeze conventions as src/top3_league.py (env TOP3_LEAGUE_ENABLED, TOP3_FREEZE_LEAD_MIN). No prop cell is proven, so every pick carries stake 0 and the label below.",
+ "start_utc": "2026-11-23T00:00:00Z",
+ "_start_utc": "A league-week whose freeze is before this instant is never decided (no back-fill of weeks already under way when props TOP-3 went live: the first props TOP-3 gameweek is 2026-W48).",
+ "stake_fraction": 0.0,
+ "stake_label": "No stake: props not proven yet",
+ "decision": "owner 2026-11-22 chat: \"Like TOP-3: 3 per league, stake by proof\""
+}

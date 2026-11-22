@@ -1703,147 +1703,16 @@ def notify_agent_analysis() -> int:
 
 
 def notify_player_props() -> int:
-    """Send Telegram alerts for top player prop tips. Returns count sent.
+    """Send the props TOP-3 per league per gameweek (src/props_top3.py). Returns the number of league-week messages.
 
-    MUTED BY DEFAULT since 2026-10-13 (owner: props as one daily picture, not a message stream —
-    see telegram_bot/daily_pack.props_image). PROPS_INSTANT_ALERTS=1 re-enables."""
-    if os.getenv("PROPS_INSTANT_ALERTS", "").strip() != "1":
-        return 0
-    cfg = _load_config()
-    token   = cfg.get("token", "")
-    chat_id = cfg.get("chat_id", "")
-    if not token or token == "YOUR_BOT_TOKEN":
-        return 0
-
-    tips_file = app_config.OUTPUT_DIR / "player_tips.csv"
-    if not tips_file.exists():
-        return 0
-
-    df = _read_csv(tips_file)
-    if df.empty:
-        return 0
-
-    today_str = _utc_today_str()   # UTC day: stored dates are UTC (src/utc_clock.py)
-    df = df[df["date"].astype(str).str[:10] >= today_str]
-
-    # Pre-populate kickoff cache from ALL current tips (solves cold-start for cashout gate)
-    if "kickoff_utc" in df.columns:
-        try:
-            _kc = json.loads(PLAYER_KICKOFF_FILE.read_text()) if PLAYER_KICKOFF_FILE.exists() else {}
-            for _, _row in df.iterrows():
-                _ku = str(_row.get("kickoff_utc", ""))
-                if _ku and _ku not in ("nan", "None", ""):
-                    _k = f"PLAYER|{str(_row['date'])[:10]}|{_row['player_name']}|{_row['market']}"
-                    _kc[_k] = _ku
-            PLAYER_KICKOFF_FILE.write_text(json.dumps(_kc))
-        except Exception:
-            pass
-
-    # Only leagues with actual bookmaker player prop markets (registry `props` flag)
-    df = df[_is_prop_league(df["league"])].copy()
-
-    # ── WEEKEND "MEAT" FEED (props are a calibrated-but-unproven TEST model) ─────────
-    # Props have no proven market edge, so this is NOT an edge-gated send: we surface a fixed
-    # weekly slate for tracking — the strongest 20 priced picks by model EV, bucketed
-    # 5 SNIPER / 5 MARKSMAN / 10 VALUABLE. Here the tier labels are STRENGTH RANKS, not
-    # real-money tiers. EVERY pick is tracked in player_ledger + clv_records regardless of
-    # whether it's sent — this only decides what goes to Telegram.
-    #
-    # GK safety net: keepers have no goals/SOT/assist props (but can have card props).
-    if "position" in df.columns:
-        _gk = df["position"].astype(str).str.strip().str.upper().str.startswith("G")
-        df = df[~(_gk & (df["market"] != "cards"))].copy()
-
-    # Only priced picks can be a sendable "bet option" (need odds for EV).
-    df["_mkt_odds_num"] = pd.to_numeric(df.get("market_odds"), errors="coerce")
-    df = df[df["_mkt_odds_num"] > 1.0].copy()
-    if df.empty:
-        return 0
-
-    # Rank by model EV (fallbacks edge_rel, model_prob); one row per player/market/date.
-    df["_ev_rank"]   = pd.to_numeric(df.get("ev"), errors="coerce")
-    df["_edge_rank"] = pd.to_numeric(df.get("edge_rel"), errors="coerce")
-    df["_prob_rank"] = pd.to_numeric(df.get("model_prob"), errors="coerce")
-    df = (df.sort_values(["_ev_rank", "_edge_rank", "_prob_rank"], ascending=False)
-            .drop_duplicates(subset=["date", "player_name", "market"], keep="first"))
-
-    # Bucket the top 20: ranks 1-5 SNIPER, 6-10 MARKSMAN, 11-20 VALUABLE.
-    FEED_SNIPER, FEED_MM, FEED_TOTAL = 5, 10, 20
-    df = df.head(FEED_TOTAL).reset_index(drop=True)
-    df["feed_tier"] = ["SNIPER" if i < FEED_SNIPER else ("MARKSMAN" if i < FEED_MM else "VALUABLE")
-                       for i in range(len(df))]
-    if df.empty:
-        return 0
-
-    notified = _load_notified(PLAYER_NOTIFIED_FILE)
-    sent = 0
-
-    MARKET_EMOJI = {
-        "goals": "⚽", "goals2": "⚽⚽",
-        "assists": "🎯",
-        "sot": "🔫", "sot2": "🔫", "sot3": "🔫",
-        "cards": "🟨",
-    }
-
-    for _, row in df.iterrows():
-        # Key intentionally excludes match string — match formatting varies between runs
-        # and excluding tier means SNIPER→MARKSMAN changes don't re-trigger an alert.
-        key = f"PLAYER|{str(row['date'])[:10]}|{row['player_name']}|{row['market']}"
-        if key in notified:
-            continue
-
-        emoji  = MARKET_EMOJI.get(row["market"], "📌")
-        p      = float(row["model_prob"])
-        fair   = float(row["fair_odds"])
-        tier   = row.get("feed_tier", "VALUABLE")   # strength-rank bucket, not a real-money tier
-        mkt_odds = row.get("market_odds")
-        ev_val   = row.get("ev")
-        tier_emoji = TIER_ICON.get(tier, TIER_ICON["VALUABLE"])
-        market_label = {
-            "goals": "Anytime Goalscorer", "goals2": "Score 2+",
-            "assists": "Assist",
-            "sot": "SOT 1+", "sot2": "SOT 2+", "sot3": "SOT 3+",
-            "cards": "Yellow Card",
-        }.get(row["market"], row["market"])
-
-        # Where the market's fair probability came from (2026-11-05): "two-sided price" or
-        # "margin assumed". Absent on a row without a basis (unpriced, or written before the label).
-        _basis = _fair_basis_label(row.get("fair_basis"))
-        odds_line = (f"📈 Odds: <b>{mkt_odds:.2f}</b>  |  Fair: <b>{fair:.2f}</b>  |  EV: <b>{ev_val:+.1%}</b>"
-                     + (f"  |  <i>{_basis}</i>" if _basis else "")) \
-                    if mkt_odds and not (isinstance(mkt_odds, float) and mkt_odds != mkt_odds) \
-                       and ev_val and not (isinstance(ev_val, float) and ev_val != ev_val) \
-                    else f"📊 Model P: <b>{p*100:.0f}%</b>  |  Fair Odds: <b>{fair:.2f}</b>"
-
-        _title = f"{tier_label(tier).upper()} · TEST"
-        _footer = ("🧪 <i>Test model — calibrated & strong at predicting, but NOT proven vs the "
-                   "market. Tracking only — do NOT bet real money.</i>")
-        msg = (
-            f"{tier_emoji} <b>{_title} — {market_label.upper()}</b>\n"
-            f"━━━━━━━━━━━━━━━━\n"
-            f"👤 <b>{row['player_name']}</b> ({row.get('position', '')} · {row['team']})\n"
-            f"⚽ {row['match']}\n"
-            f"🏆 {row.get('league', '')}  |  📅 {str(row['date'])[:10]}\n"
-            f"{odds_line}\n"
-            f"{_footer}"
-        )
-
-        if _send(token, chat_id, msg):
-            notified.add(key)
-            # Cache kickoff time so cashout alert can gate on the 60-min window
-            _ku = str(row.get("kickoff_utc", ""))
-            if _ku and _ku not in ("nan", "None", ""):
-                try:
-                    _kc = json.loads(PLAYER_KICKOFF_FILE.read_text()) if PLAYER_KICKOFF_FILE.exists() else {}
-                    _kc[key] = _ku
-                    PLAYER_KICKOFF_FILE.write_text(json.dumps(_kc))
-                except Exception:
-                    pass
-            sent += 1
-            _save_notified(notified, PLAYER_NOTIFIED_FILE)
-            print(f"  Player prop: {row['player_name']} — {market_label} ({p*100:.0f}%)")
-
-    return sent
+    Owner 2026-11-22 ("Like TOP-3: 3 per league, stake by proof"): the old daily feed - the top 20 priced props by
+    model EV, bucketed into the RETIRED SNIPER / MARKSMAN / VALUABLE names - is gone. Each prop league gets ONE
+    message per gameweek with T1 best value / T2 safest / T3 risky value, frozen 120 min (TOP3_FREEZE_LEAD_MIN)
+    before the league-week's first kickoff, through the shared fixture coherence gate, never after kickoff, and
+    labelled "No stake: props not proven yet". Same switch as the team TOP-3 (TOP3_LEAGUE_ENABLED)."""
+    from src import props_top3
+    res = props_top3.notify()
+    return int(res.get("sent", 0) or 0)
 
 
 def notify_lineup_cashout() -> int:
@@ -1992,213 +1861,41 @@ def notify_lineup_cashout() -> int:
 
 
 def notify_props_daily_digest() -> bool:
-    """
-    Player props daily briefing structured by MARKET then SIGNAL TIER.
-    Msg 1: Tips grouped by market (all 9) then tier. Watch section same way.
-    Msg 2: Yesterday's results + all-time ledger by market then tier.
-    Returns True if sent.
-    """
-    import datetime as _dt
-    cfg = _load_config()
-    token   = cfg.get("token", "")
-    chat_id = cfg.get("chat_id", "")
-    if not token or token == "YOUR_BOT_TOKEN":
-        return False
+    """RETIRED (owner 2026-11-22, "Like TOP-3: 3 per league, stake by proof"). The props briefing grouped today's
+    props by the retired SNIPER / MARKSMAN / VALUABLE / PAPER labels. The props TOP-3 per league-week
+    (src/props_top3.py, notify_player_props) is the only props tip message now. Kept as a no-op so old callers
+    (test_telegram.py) keep working; nothing is sent."""
+    return False
 
-    # TODAY ONLY, UTC — same rule and same reasoning as notify_daily_digest. Both are sent by
-    # the same 07:00 UTC job, so they must agree on what "today" means or the two morning
-    # messages will disagree with each other about the same board.
-    today     = datetime.now(_dt.timezone.utc)
-    today_str = today.strftime("%Y-%m-%d")
-    yest_str  = (today - _dt.timedelta(days=1)).strftime("%Y-%m-%d")
-    hdr_date  = today.strftime("%a, %b %d").replace(" 0", " ")
-    props_upcoming = 0   # future-dated prop rows, for the footer line
 
-    notified = _load_notified(PLAYER_NOTIFIED_FILE)
-    props_digest_key = f"PROPS_DIGEST|{today_str}"
-    if props_digest_key in notified:
-        print("Player props digest already sent today — skipping.")
-        return False
-
-    # (key, display label, emoji)
-    PLAYER_MARKETS = [
-        ("goals",   "Anytime Scorer", "⚽"),
-        ("goals2",  "Score 2+",       "⚽⚽"),
-        ("assists", "Assist",         "🎯"),
-        ("sot",     "SOT 1+",         "🔫"),
-        ("sot2",    "SOT 2+",         "🔫"),
-        ("sot3",    "SOT 3+",         "🔫"),
-        ("cards",   "Carded",         "🟨"),
-    ]
-    TIER_SYM   = TIER_ICON
-    TIER_ORDER = ["QUALIFIED", "SNIPER", "MARKSMAN"]               # what gets SENT as a tip (QUALIFIED from 2026-11-21)
-    # What gets COUNTED in results. Wider than TIER_ORDER because VALUABLE/PAPER picks are
-    # real tracked positions even though they don't trigger an individual alert. AVOID/WATCH
-    # are excluded upstream by _bet_tiers_only, so they can never appear here.
-    LEDGER_TIERS = ["QUALIFIED", "SNIPER", "MARKSMAN", "VALUABLE", "PAPER"]
-
-    lines = [
-        f"👤 <b>PLAYER PROPS BRIEFING</b> — {hdr_date}",
-        "━━━━━━━━━━━━━━━━",
-        "",
-    ]
-
-    tips_data = pd.DataFrame()
-    player_file = app_config.OUTPUT_DIR / "player_tips.csv"
-    if player_file.exists():
-        try:
-            all_props = _read_csv(player_file)
-            _in_props = _is_prop_league(all_props["league"])
-            _dates = all_props["date"].astype(str).str[:10]
-            # Count the footer with the SAME two filters this briefing applies below — prop
-            # leagues, and only tiers that would actually be sent. An unfiltered count is
-            # dominated by AVOID rows in leagues we never price, and AVOID on a prop usually
-            # means "never priced" rather than "rejected", so the raw number advertises a board
-            # that does not exist: 787 rows against 3 real ones when this was written.
-            props_upcoming = int((
-                (_dates > today_str)
-                & _in_props
-                & all_props["tier"].isin(TIER_ORDER)
-            ).sum())
-            all_props = all_props[(_dates == today_str) & _in_props].copy()
-            tips_data = all_props
-        except Exception as e:
-            lines.append(f"  error loading player_tips.csv: {e}")
-
-    # SNIPER and MARKSMAN only — same rule as individual alerts
-    tips = tips_data[tips_data["tier"].isin(TIER_ORDER)].copy() if not tips_data.empty else pd.DataFrame()
-
-    total_tips = len(tips)
-    lines.append(f"🎯 <b>TIPS</b>  ({total_tips} signal{'s' if total_tips != 1 else ''})")
-    lines.append("")
-
-    if tips.empty:
-        lines.append("  No tips today")
-    else:
-        for mkt_key, mkt_label, mkt_emoji in PLAYER_MARKETS:
-            mkt_tips = tips[tips["market"] == mkt_key] if "market" in tips.columns else pd.DataFrame()
-            if mkt_tips.empty:
-                continue
-            lines.append(f"── {mkt_emoji} <b>{mkt_label}</b>  ({len(mkt_tips)})")
-            for tier in TIER_ORDER:
-                tb = mkt_tips[mkt_tips["tier"] == tier]
-                if tb.empty:
-                    continue
-                sym = TIER_SYM[tier]
-                for _, r in tb.iterrows():
-                    ev = r.get("ev"); odds = r.get("market_odds")
-                    ev_str = f" EV {float(ev):+.0%}" if pd.notna(ev) else ""
-                    _mp = pd.to_numeric(r.get("model_prob"), errors="coerce")
-                    od_str = (f" @ {float(odds):.2f}" if pd.notna(odds)
-                              else (f" {_mp*100:.0f}%" if pd.notna(_mp) else " –"))
-                    _basis = _fair_basis_label(r.get("fair_basis")) if pd.notna(odds) else None
-                    lines.append(
-                        f"  {sym} <b>{r['player_name']}</b> ({r.get('team','')})"
-                        f"{od_str}{ev_str}{f' ({_basis})' if _basis else ''}  [{r.get('league','')}]"
-                    )
-            lines.append("")
-
-    if not player_file.exists():
-        lines.append("  No player_tips.csv yet")
-
-    # Same reason as notify_daily_digest: under a `== today` filter, "nothing today" and "the
-    # date filter broke" look identical. Say what is on the board beyond today.
-    if props_upcoming:
-        lines.append(f"🗓 <b>Beyond today</b> — {props_upcoming} prop row(s) on the board")
-        lines.append("")
-
-    msg1 = "\n".join(lines)
-    sent1 = _send(token, chat_id, msg1)
-    if not sent1:
-        return False
-
-    # ── Message 2: Yesterday's results + all-time by market then tier ─────────
-    MKT_LABEL_MAP = {k: lbl for k, lbl, _ in PLAYER_MARKETS}
-
-    lines2 = [
-        f"📋 <b>PLAYER PROPS RESULTS</b> — {hdr_date}",
-        "━━━━━━━━━━━━━━━━",
-        "",
-        "<b>Yesterday's Results</b>",
-    ]
-    player_led = app_config.OUTPUT_DIR / "player_ledger.csv"
-    if player_led.exists():
-        try:
-            pled = _countable_props(_read_csv(player_led))  # AVOID/WATCH + wrong-fixture: never counted
-            pled["pnl"] = pd.to_numeric(pled["pnl"], errors="coerce")
-            yest = pled[
-                (pled["match_date"].astype(str).str[:10] == yest_str) &
-                pled["pnl"].notna()
-            ]
-            if yest.empty:
-                lines2.append("  No settled results yesterday")
-            else:
-                wins   = int((yest["pnl"] > 0).sum())
-                losses = int((yest["pnl"] < 0).sum())
-                voids  = int(yest["result"].str.upper().eq("VOID").sum()) if "result" in yest.columns else 0
-                pnl    = U.total(yest["pnl"])
-                lines2.append(f"  {wins}W / {losses}L / {voids} VOID  |  P/L <b>{U.fmt(pnl)}</b>")
-                # Results by market
-                for mkt_key, mkt_label, _ in PLAYER_MARKETS:
-                    ms = yest[yest["market"] == mkt_key] if "market" in yest.columns else pd.DataFrame()
-                    if ms.empty:
-                        continue
-                    for _, r in ms.iterrows():
-                        res   = str(r.get("result", "")).upper()
-                        if res == "VOID":
-                            continue  # don't list individual voided bets (shown only in the W/L/VOID count)
-                        emoji = {"WIN": "✅", "LOSS": "❌"}.get(res, "⬜")
-                        pnl_r = float(r["pnl"])
-                        tier_s = f"[{tier_label(r['tier'])}] " if "tier" in r and pd.notna(r.get("tier")) else ""
-                        note   = f" ({r['notes']})" if pd.notna(r.get("notes")) and str(r.get("notes")).strip() else ""
-                        lines2.append(
-                            f"  {emoji} {tier_s}{r['player_name']} — {mkt_label}{note}  <b>{U.fmt(pnl_r)}</b>"
-                        )
-        except Exception as e:
-            lines2.append(f"  error: {e}")
-    else:
-        lines2.append("  No player_ledger.csv yet")
-
-    # ── All-time player ledger by market then tier ─────────────────────────────
-    lines2 += ["", "📈 <b>All-time Player Ledger</b>"]
-    if player_led.exists():
-        try:
-            pled = _countable_props(_read_csv(player_led))  # AVOID/WATCH + wrong-fixture: never counted
-            pled["pnl"] = pd.to_numeric(pled["pnl"], errors="coerce")
-            all_p = _settled_only(pled)
-            if not all_p.empty:
-                n = len(all_p); w_all = int((all_p["pnl"] > 0).sum()); pnl = U.total(all_p["pnl"])
-                lines2.append(f"  Total: {w_all}W/{n-w_all}L | P/L <b>{U.fmt(pnl)}</b>")
-                lines2.append("")
-                for mkt_key, mkt_label, _ in PLAYER_MARKETS:
-                    ms = all_p[all_p["market"] == mkt_key] if "market" in all_p.columns else pd.DataFrame()
-                    if ms.empty:
-                        continue
-                    mn = len(ms); mw = int((ms["pnl"] > 0).sum()); mp = U.total(ms["pnl"])
-                    lines2.append(f"  📌 <b>{mkt_label}</b>  {mw}W/{mn-mw}L | P/L {U.fmt(mp)}")
-                    if "tier" in ms.columns:
-                        for tier in LEDGER_TIERS:
-                            ts = ms[ms["tier"] == tier]
-                            if ts.empty:
-                                continue
-                            tn = len(ts); w = int((ts["pnl"] > 0).sum())
-                            lines2.append(f"    {TIER_SYM[tier]} {tier_label(tier)}: {w}W/{tn-w}L | P/L {U.fmt(U.total(ts['pnl']))}")
-        except Exception:
-            pass
-
-    msg2 = "\n".join(lines2)
-    _send(token, chat_id, msg2)
-
-    notified.add(props_digest_key)
-    _save_notified(notified, PLAYER_NOTIFIED_FILE)
-    print("Player props daily digest sent (2 messages).")
-    return True
+def _props_top3_week_lines(week_ago) -> list[str]:
+    """Lines for the props TOP-3 picks settled this week, by role (T1 / T2 / T3); [] when none."""
+    try:
+        from dashboard_data import props_top3_view as P3
+        d = P3.load_picks(app_config.OUTPUT_DIR)
+    except Exception:                                                  # noqa: BLE001
+        return []
+    if d.empty:
+        return []
+    when = pd.to_datetime(d["settled_at"], errors="coerce", utc=True).dt.tz_convert(None)
+    d = d[d["R"].isin(("WIN", "LOSS")) & (when >= pd.Timestamp(week_ago))]
+    if d.empty:
+        return []
+    out = ["", "━━━━━━━━━━━━━━━━", "<b>Props TOP-3 this week</b> (no stake: props not proven yet)", ""]
+    for role in P3.ROLE_ORDER:
+        g = d[d["role"] == role]
+        if g.empty:
+            continue
+        w = int((g["R"] == "WIN").sum())
+        out.append(f"  {P3.ROLE_TEXT[role]}: {w}W/{len(g) - w}L | P/L {U.fmt(U.total(g['flat_pnl']))}")
+    return out
 
 
 def notify_props_weekly_summary() -> bool:
     """
     Send a player-props-only weekly performance summary.
-    Groups settled bets by market (SOT/Goals/Assists/Cards) and tier.
+    Groups settled signals by market (SOT/Goals/Assists/Cards) and the props TOP-3 picks by role (T1 / T2 / T3);
+    never by the retired tier labels (owner 2026-11-22).
     Returns True if message sent.
     """
     import datetime as _dt
@@ -2241,11 +1938,7 @@ def notify_props_weekly_summary() -> bool:
     ]
     MKT_LABEL = {k: lbl for k, lbl, _ in PLAYER_MARKETS}
     MKT_EMOJI = {k: emj for k, _, emj in PLAYER_MARKETS}
-    TIER_SYM  = TIER_ICON
     MARKETS   = [k for k, _, _ in PLAYER_MARKETS]
-    # WATCH dropped: it's a watchlist, not a position — _bet_tiers_only filters it out with
-    # AVOID, so listing it here would only ever render an empty row.
-    TIERS     = ["SNIPER", "MARKSMAN", "VALUABLE", "PAPER"]
 
     def _row(data: "pd.DataFrame") -> tuple | None:
         d = data[data["result"].str.upper().isin(["WIN", "LOSS"])] if "result" in data.columns else data
@@ -2282,17 +1975,6 @@ def notify_props_weekly_summary() -> bool:
                 f"{mn} bets | {mw}W/{mn-mw}L | P/L <b>{U.fmt(mp)}</b>"
             )
         lines.append("")
-        # By tier
-        lines.append("  By tier:")
-        for tier in TIERS:
-            sub = settled_week[settled_week["tier"] == tier] if "tier" in settled_week.columns else pd.DataFrame()
-            tr = _row(sub)
-            if not tr:
-                continue
-            tn, tw, tp = tr
-            lines.append(
-                f"  {TIER_SYM.get(tier, '📌')} {tier_label(tier)}: {tw}W/{tn-tw}L | P/L {U.fmt(tp)}"
-            )
     else:
         pending = int(settled_week["pnl"].isna().sum()) if not settled_week.empty else 0
         total   = len(settled_week)
@@ -2321,6 +2003,9 @@ def notify_props_weekly_summary() -> bool:
     else:
         total_all = len(pled)
         lines.append(f"  {total_all} signals tracked — no settled results yet")
+
+    # ── Props TOP-3 by role (owner 2026-11-22: T1 / T2 / T3, never the retired tier labels) ─────
+    lines += _props_top3_week_lines(week_ago)
 
     msg = "\n".join(lines)
     if _send(token, chat_id, msg):
@@ -2514,30 +2199,20 @@ def notify_daily_digest() -> bool:
             lines.append(f"  Side markets error: {e}")
             lines.append("")
 
-    # ── Player props summary line ───────────────────────────────────────────────
-    player_file = app_config.OUTPUT_DIR / "player_tips.csv"
-    if player_file.exists():
-        try:
-            all_props = _read_csv(player_file)
-            _dates = all_props["date"].astype(str).str[:10]
-            # Count only tiers this section actually reports. An unfiltered count is dominated
-            # by AVOID rows, and AVOID on a prop usually means "never priced" rather than
-            # "rejected" (enrich_with_odds skips unpriced rows before any edge is computed), so
-            # a raw total advertises a board of opportunities that does not exist — 787 rows
-            # against 3 real ones when this was written.
-            _rated = all_props["tier"].isin(["SNIPER", "MARKSMAN", "VALUABLE", "WATCH"])
-            upcoming["player props"] = int((_rated & (_dates > today_str)).sum())
-            all_props = all_props[_dates == today_str]
-            tips_count  = int(all_props["tier"].isin(["SNIPER", "MARKSMAN", "VALUABLE"]).sum())
-            watch_count = int((all_props["tier"] == "WATCH").sum())
-            lines.append(
-                f"👤 <b>Player Props</b> — {tips_count} tip{'s' if tips_count != 1 else ''}, "
-                f"{watch_count} on watch  →  see Player Props Briefing"
-            )
-        except Exception as e:
-            lines.append(f"👤 <b>Player Props</b> — error: {e}")
-    else:
-        lines.append("👤 <b>Player Props</b> — no data yet")
+    # ── Player props summary line (owner 2026-11-22: the props TOP-3 per league, never the retired tiers) ──
+    try:
+        from dashboard_data import props_top3_view as _P3
+        _p3 = _P3.load_picks(app_config.OUTPUT_DIR)
+        if _p3.empty:
+            lines.append("👤 <b>Player Props</b> — no props TOP-3 pick yet")
+        else:
+            _d3 = _p3["kickoff"].dt.strftime("%Y-%m-%d")
+            upcoming["props TOP-3 picks"] = int((_d3 > today_str).sum())
+            _n3 = int((_d3 == today_str).sum())
+            lines.append(f"👤 <b>Player Props</b> — {_n3} props TOP-3 pick{'s' if _n3 != 1 else ''} today "
+                         "(no stake: props not proven yet)")
+    except Exception as e:                                             # noqa: BLE001
+        lines.append(f"👤 <b>Player Props</b> — error: {e}")
     lines.append("")
 
     # ── Sharp signals ───────────────────────────────────────────────────────────

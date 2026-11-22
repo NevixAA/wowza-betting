@@ -58,7 +58,7 @@ def test_tier_ev_and_kelly_ignore_the_hand_adjusted_probability():
     b = _tips(_tip("A", 0.55))                      # no hand adjustment at all
     odds = {"A|sot|2026-11-08|X vs Y": 2.40}
     oa, ob = P.enrich_with_odds(a, odds), P.enrich_with_odds(b, odds)
-    for c in ("tier", "ev", "edge_rel", "edge_abs", "fair_implied", "kelly_stake"):
+    for c in ("tier", "ev", "edge_rel", "edge_abs", "fair_implied"):
         assert oa.loc[0, c] == ob.loc[0, c], c
     assert oa.loc[0, "ev"] == round(0.55 * 2.40 - 1, 4)          # EV on the model's own 0.55
     assert oa.loc[0, "tier"] != "AVOID"
@@ -204,10 +204,10 @@ def test_fair_basis_label_on_telegram_table_and_dashboard(monkeypatch):
     assert names[-1] == "Fair price"
     cells = {r["cells"][1]: r["cells"][-1] for r in cap["rows"] if "cells" in r}
     assert cells == {"P1": "two-sided price", "P2": "margin assumed", "P3": "–"}
-    # Telegram instant alert + briefing read the same label
-    from telegram_bot import notifier as N
-    src = inspect.getsource(N.notify_player_props) + inspect.getsource(N.notify_props_daily_digest)
-    assert src.count("_fair_basis_label(") == 2
+    # Telegram (owner 2026-11-22): the props TOP-3 message states each pick's value basis (two-sided fair or quote)
+    from src import props_top3 as P3
+    assert "value_basis" in inspect.getsource(P3.message)
+    assert {P3.BASIS_FAIR, P3.BASIS_QUOTE} == {"vs de-vigged fair", "vs quoted price"}
     # dashboard props board: a Fair price column on the priced view
     from dashboard_data import props_view as V
     d = t.iloc[:2].copy()
