@@ -161,3 +161,31 @@ def calibration_frame(grid: pd.DataFrame, league: str) -> pd.DataFrame:
         return g
     g["gap"] = g["actual"] - g["mean_p"]
     return g[["score", "n", "events", "mean_p", "actual", "base_mean", "gap"]]
+
+
+# ── prices are private (2026-11-22) ───────────────────────────────────────────────────────────────
+# Pro's public specials_log.csv carries no price since 2026-11-22: the full log, with its price columns, is in the
+# private store (wowza-exec branch specials-prices, data/specials_log.csv). The page merges those columns back by
+# row_id when the read-only token can reach the store; otherwise "best price" stays empty and the page says why.
+
+V9_PRICE_VALUES = ("price_under15", "price_over15")
+
+
+def price_value_columns(cols) -> list[str]:
+    """The log columns holding a bookmaker price (Pro src/specials/price_store.price_value_columns)."""
+    return [c for c in cols if c in V9_PRICE_VALUES or (str(c).startswith("price_") and str(c).endswith("_best"))]
+
+
+def merge_private_prices(log: pd.DataFrame, private: pd.DataFrame | None) -> pd.DataFrame:
+    """The public log with the private log's price columns joined on row_id. Every other column, and every
+    row, stays the public one; a row the private log lacks keeps empty prices."""
+    if log is None or log.empty or private is None or private.empty or "row_id" not in private:
+        return log
+    cols = price_value_columns(private.columns)
+    if not cols:
+        return log
+    p = private[["row_id"] + cols].drop_duplicates("row_id", keep="first")
+    p = p.assign(row_id=p["row_id"].astype(str))
+    base = log.drop(columns=[c for c in cols if c in log.columns])
+    out = base.assign(row_id=base["row_id"].astype(str)).merge(p, on="row_id", how="left")
+    return out[list(base.columns) + cols]

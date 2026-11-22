@@ -1,7 +1,7 @@
 {
   "artifact": "model_integrity_health",
   "version": "model-integrity-health-0.1",
-  "generated_at": "2026-11-21T16:18:50Z",
+  "generated_at": "2026-11-22T16:28:59Z",
   "status": "FAIL",
   "inputs_present": {
     "feature_parity_health": true,
@@ -23,7 +23,7 @@
       "model_recipe_version": "r2-repaired-1.0",
       "serving_version": "standard_20261119T134019Z_67ee3666",
       "training_cutoff": "2026-11-01",
-      "code_sha": "4239eb04a48d",
+      "code_sha": "ce044147d58d",
       "data_hash": "823d465eeb05f5a0",
       "identity_version": null,
       "feature_recipe_version": null,
@@ -67,8 +67,8 @@
       "parity": {
         "status": "WARN",
         "counts": {
-          "PASS": 27,
-          "WARN": 14,
+          "PASS": 31,
+          "WARN": 10,
           "FAIL": 0
         },
         "fail_features": []
@@ -116,7 +116,7 @@
       "model_recipe_version": "r2-repaired-1.0",
       "serving_version": "newformat_20261118T172020Z_303c9a05",
       "training_cutoff": "2026-11-01",
-      "code_sha": "4239eb04a48d",
+      "code_sha": "ce044147d58d",
       "data_hash": "25ea42fe32607275",
       "identity_version": null,
       "feature_recipe_version": null,
@@ -160,8 +160,8 @@
       "parity": {
         "status": "FAIL",
         "counts": {
-          "PASS": 41,
-          "WARN": 13,
+          "PASS": 39,
+          "WARN": 15,
           "FAIL": 2
         },
         "fail_features": [
@@ -212,7 +212,7 @@
       "model_recipe_version": "r2-repaired-1.0",
       "serving_version": "btts_20261119T134019Z_44c67049",
       "training_cutoff": "2026-11-01",
-      "code_sha": "4239eb04a48d",
+      "code_sha": "ce044147d58d",
       "data_hash": "0c4cdc31d41d19f0",
       "identity_version": null,
       "feature_recipe_version": null,
@@ -256,8 +256,8 @@
       "parity": {
         "status": "FAIL",
         "counts": {
-          "PASS": 61,
-          "WARN": 23,
+          "PASS": 65,
+          "WARN": 19,
           "FAIL": 2
         },
         "fail_features": [
@@ -316,7 +316,7 @@
       "model_recipe_version": "r2-repaired-1.0",
       "serving_version": "btts_20261119T134019Z_44c67049",
       "training_cutoff": "2026-11-01",
-      "code_sha": "4239eb04a48d",
+      "code_sha": "ce044147d58d",
       "data_hash": "d3f6d80a374fc72d",
       "identity_version": null,
       "feature_recipe_version": null,
@@ -360,8 +360,8 @@
       "parity": {
         "status": "FAIL",
         "counts": {
-          "PASS": 60,
-          "WARN": 24,
+          "PASS": 57,
+          "WARN": 27,
           "FAIL": 2
         },
         "fail_features": [
@@ -420,7 +420,7 @@
       "model_recipe_version": "r2-repaired-1.0",
       "serving_version": "over15_20261119T134019Z_ca01b7d3",
       "training_cutoff": "2026-11-01",
-      "code_sha": "4239eb04a48d",
+      "code_sha": "ce044147d58d",
       "data_hash": "23839609719fc515",
       "identity_version": null,
       "feature_recipe_version": null,
@@ -464,8 +464,8 @@
       "parity": {
         "status": "FAIL",
         "counts": {
-          "PASS": 61,
-          "WARN": 23,
+          "PASS": 65,
+          "WARN": 19,
           "FAIL": 2
         },
         "fail_features": [
@@ -524,7 +524,7 @@
       "model_recipe_version": "r2-repaired-1.0",
       "serving_version": "over15_20261119T134019Z_ca01b7d3",
       "training_cutoff": "2026-11-01",
-      "code_sha": "4239eb04a48d",
+      "code_sha": "ce044147d58d",
       "data_hash": "33bacb811e7f56e8",
       "identity_version": null,
       "feature_recipe_version": null,
@@ -568,8 +568,8 @@
       "parity": {
         "status": "FAIL",
         "counts": {
-          "PASS": 60,
-          "WARN": 24,
+          "PASS": 57,
+          "WARN": 27,
           "FAIL": 2
         },
         "fail_features": [
@@ -628,7 +628,7 @@
       "model_recipe_version": "r2-repaired-1.0",
       "serving_version": "over35_20261119T134019Z_e8b12d74",
       "training_cutoff": "2026-11-01",
-      "code_sha": "4239eb04a48d",
+      "code_sha": "ce044147d58d",
       "data_hash": "054d6a550c7bd908",
       "identity_version": null,
       "feature_recipe_version": null,
@@ -672,8 +672,8 @@
       "parity": {
         "status": "FAIL",
         "counts": {
-          "PASS": 61,
-          "WARN": 23,
+          "PASS": 65,
+          "WARN": 19,
           "FAIL": 2
         },
         "fail_features": [
@@ -705,9 +705,9 @@
         "placed_rows_synthetic": 0,
         "production_edge_rule": "p - (1/odds)/1.08 (fixed 8% margin assumption)",
         "devig_shadow_ledger": {
-          "ONLY_BECAUSE_OF_1_08": 40,
-          "UNVERIFIABLE_ONE_SIDED": 9,
-          "CONFIRMED_BY_DEVIG": 9
+          "ONLY_BECAUSE_OF_1_08": 42,
+          "CONFIRMED_BY_DEVIG": 10,
+          "UNVERIFIABLE_ONE_SIDED": 9
         },
         "status": "WARN",
         "note": "historical side prices mostly SYNTHETIC (diagnostic only, excluded from ROI); live edge uses a fixed 1.08 margin, not a two-sided de-vig (shadow logged)"
@@ -732,7 +732,7 @@
       "model_recipe_version": "r2-repaired-1.0",
       "serving_version": "over35_20261119T134019Z_e8b12d74",
       "training_cutoff": "2026-11-01",
-      "code_sha": "4239eb04a48d",
+      "code_sha": "ce044147d58d",
       "data_hash": "bfe9e3425792535e",
       "identity_version": null,
       "feature_recipe_version": null,
@@ -776,8 +776,8 @@
       "parity": {
         "status": "FAIL",
         "counts": {
-          "PASS": 60,
-          "WARN": 24,
+          "PASS": 57,
+          "WARN": 27,
           "FAIL": 2
         },
         "fail_features": [
@@ -809,9 +809,9 @@
         "placed_rows_synthetic": 0,
         "production_edge_rule": "p - (1/odds)/1.08 (fixed 8% margin assumption)",
         "devig_shadow_ledger": {
-          "ONLY_BECAUSE_OF_1_08": 40,
-          "UNVERIFIABLE_ONE_SIDED": 9,
-          "CONFIRMED_BY_DEVIG": 9
+          "ONLY_BECAUSE_OF_1_08": 42,
+          "CONFIRMED_BY_DEVIG": 10,
+          "UNVERIFIABLE_ONE_SIDED": 9
         },
         "status": "WARN",
         "note": "historical side prices mostly SYNTHETIC (diagnostic only, excluded from ROI); live edge uses a fixed 1.08 margin, not a two-sided de-vig (shadow logged)"
@@ -836,7 +836,7 @@
       "model_recipe_version": "r2-repaired-1.0",
       "serving_version": "ht_over05_20261119T134019Z_5a76d680",
       "training_cutoff": "2026-11-01",
-      "code_sha": "4239eb04a48d",
+      "code_sha": "ce044147d58d",
       "data_hash": "17be13b413bd7a0e",
       "identity_version": null,
       "feature_recipe_version": null,
@@ -880,8 +880,8 @@
       "parity": {
         "status": "FAIL",
         "counts": {
-          "PASS": 61,
-          "WARN": 23,
+          "PASS": 65,
+          "WARN": 19,
           "FAIL": 2
         },
         "fail_features": [
@@ -933,7 +933,7 @@
       "model_recipe_version": "r2-repaired-1.0",
       "serving_version": "ht_over15_20261119T134019Z_e9a12ce1",
       "training_cutoff": "2026-11-01",
-      "code_sha": "4239eb04a48d",
+      "code_sha": "ce044147d58d",
       "data_hash": "1c02282b9a293157",
       "identity_version": null,
       "feature_recipe_version": null,
@@ -977,8 +977,8 @@
       "parity": {
         "status": "FAIL",
         "counts": {
-          "PASS": 61,
-          "WARN": 23,
+          "PASS": 65,
+          "WARN": 19,
           "FAIL": 2
         },
         "fail_features": [
@@ -1030,7 +1030,7 @@
       "model_recipe_version": "r2-repaired-1.0",
       "serving_version": "ht_over05_nf_20261120T085150Z_ae89ea10",
       "training_cutoff": "2026-11-01",
-      "code_sha": "4239eb04a48d",
+      "code_sha": "ce044147d58d",
       "data_hash": "f66c0a73b4de730a",
       "identity_version": null,
       "feature_recipe_version": null,
@@ -1121,7 +1121,7 @@
       "model_recipe_version": "r2-repaired-1.0",
       "serving_version": "ht_over15_nf_20261120T085150Z_ead4bb74",
       "training_cutoff": "2026-11-01",
-      "code_sha": "4239eb04a48d",
+      "code_sha": "ce044147d58d",
       "data_hash": "a13e2088d9b8453a",
       "identity_version": null,
       "feature_recipe_version": null,
