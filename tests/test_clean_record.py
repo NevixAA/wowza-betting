@@ -362,7 +362,19 @@ def test_other_results_pages_render_post_golive(golive_out, page):
 
 
 def test_props_page_shows_clean_record_post_golive_even_without_a_board(golive_out):
-    _, m, s = _render("11_*Player_Props.py")
-    assert s["Clean Record Settled"] == "1"                          # the clean prop tip only, never the old ones
-    assert m["Clean Record Flat ROI (1u, no stake)"] == "+80.0%"
-    assert "Flat ROI (1u, no stake)" in m                               # the pre-repair card, in its own section
+    # owner 2026-11-22 ("Like TOP-3: 3 per league, stake by proof"): the props results are the props TOP-3 record by
+    # role / market / league, plus a settled-vs-waiting count of every prop prediction since the Clean Record start;
+    # the earlier signal record (one summary, by market, by month) sits in its own section, never by retired tier
+    at, _, _ = _render("11_*Player_Props.py")
+    text = " ".join(str(x.value) for x in list(at.caption) + list(at.markdown))
+    assert "Prop predictions since the Clean Record start" in text
+    led = pd.read_csv(golive_out / "player_ledger.csv", low_memory=False)
+    from dashboard_data import props_top3_view as P3
+    pc = P3.prediction_counts(led, config.CLEAN_RECORD_START)
+    assert pc["settled"] >= 1                                          # the clean prop tip is counted as settled
+    assert f"{pc['settled']:,} settled" in text
+    tables = [t.value for t in at.dataframe]
+    rec = [t for t in tables if "Record" in t.columns]
+    assert rec and any("All prop signals" in set(t["Record"]) for t in rec)
+    assert not any("Tier" in t.columns and {"SNIPER", "MARKSMAN", "VALUABLE"} & set(t["Tier"].astype(str))
+                   for t in tables)
