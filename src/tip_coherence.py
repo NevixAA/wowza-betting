@@ -42,9 +42,18 @@ RESOLUTION. The FIRST tip already sent stands (the existing principle: src/direc
 both-sides skip). Among this run's candidates the higher-ranked one stands (TOP-3 rank, else calibrated EV);
 the other is skipped with the logged reason "MISMATCH with <tip>". Two mismatched tips are never both sent.
 
+PLAYER PROPS (owner 2026-11-22, props TOP-3 - src/props_top3.py). A prop market code (goals / assists / sot /
+sot2 ... ; prop_event) is a PLAYER event: a player's goal involvement needs MORE goals, so on the hard list it is a
+mismatch with every FEWER-goals tip on the same match - Under any line (0.5 = a 0-0 included), HT Under, BTTS No
+(the player's team scoring makes "one side blank" depend on the other side alone). Conservative on purpose: the
+hard list flags every such pair, not only Under 0.5 / BTTS No, because on an independent-Poisson grid a player's
+goal involvement is increasing in the goal counts (the FKG argument above) - so it is negatively dependent with
+every Under / BTTS No. A booking prop (cards) has no goal direction and is never called a mismatch. Props vs props
+(all MORE goals) never mismatch.
+
 WHAT COUNTS AS SENT. Every Telegram dedup store that records a tip: telegram_bot/notified.json (instant O/U 2.5,
-side-market, HT and album-marked tips) and the TOP-3 picks of every league-week in output/top3_league_notified.
-json. A tip that was only ledgered (never sent) does not block anything here; the pipeline's direction guard
+side-market, HT and album-marked tips), the TOP-3 picks of every league-week in output/top3_league_notified.
+json and the props TOP-3 picks of every league-week in output/props_top3_notified.json. A tip that was only ledgered (never sent) does not block anything here; the pipeline's direction guard
 already keeps the ledgers one-directional.
 
 Read-only: no ledger, tip, tier, threshold or stake is written. Prices are never printed.
@@ -69,6 +78,10 @@ ROOT = Path(__file__).resolve().parents[1]
 NOTIFIED_FILE = ROOT / "telegram_bot" / "notified.json"
 TOP3_PICKS = "top3_league_ledger.csv"
 TOP3_NOTIFIED = "top3_league_notified.json"
+PROPS_TOP3_PICKS = "props_top3_ledger.csv"
+PROPS_TOP3_NOTIFIED = "props_top3_notified.json"
+#: player prop market codes with a goal direction (MORE goals). cards: no goal relation.
+PROP_GOAL_MARKETS = frozenset({"goals", "goals2", "goals3", "assists", "sot", "sot2", "sot3", "sot4"})
 
 #: floating-point tolerance of P(A and B) - P(A)P(B); a grid sum is exact to ~1e-15, so this is not a bar
 NUM_TOL = 1e-9
@@ -172,6 +185,13 @@ def parse_event(market, side=None) -> Event | None:
                 sd = "OVER"
             return Event(period, "TOTAL", sd, ln)
     return None
+
+
+def prop_event(market) -> Event | None:
+    """A player-prop market code -> its Event: PLAYER (MORE goals) for a goal-involvement market, None otherwise
+    (cards / unknown: no goal relation)."""
+    m = str(market or "").strip().lower()
+    return Event("FT", "PLAYER", "OVER") if m in PROP_GOAL_MARKETS else None
 
 
 # ── fixture identity ────────────────────────────────────────────────────────────────────────────
@@ -474,6 +494,33 @@ def sent_from_top3(out_dir: Path | None = None) -> list[Candidate]:
     return out
 
 
+def sent_from_props_top3(out_dir: Path | None = None) -> list[Candidate]:
+    """Every props TOP-3 pick of every league-week already sent (output/props_top3_notified.json weeks), on the team
+    board's names of its match when the pick resolved them (board_home_team / board_away_team)."""
+    od = Path(out_dir) if out_dir else config.OUTPUT_DIR
+    try:
+        weeks = set(json.loads((od / PROPS_TOP3_NOTIFIED).read_text(encoding="utf-8")).get("weeks", []))
+    except Exception:                                                  # noqa: BLE001
+        return []
+    p = od / PROPS_TOP3_PICKS
+    if not weeks or not p.exists():
+        return []
+    try:
+        d = pd.read_csv(p, dtype=str, keep_default_na=False)
+    except Exception:                                                  # noqa: BLE001
+        return []
+    d = d[d["league_week_id"].isin(weeks)]
+    out = []
+    for r in d.to_dict("records"):
+        ev = prop_event(r.get("market"))
+        if ev:
+            out.append(Candidate(fixture_id(r.get("match_date"), r.get("board_home_team") or r.get("home_team"),
+                                            r.get("board_away_team") or r.get("away_team")), ev, "sent props TOP-3",
+                                 label=f"{r.get('player_name')} {r.get('market')}",
+                                 uid=f"props_top3|{r.get('league_week_id')}|{r.get('props_rank')}"))
+    return out
+
+
 # ── the gate ────────────────────────────────────────────────────────────────────────────────────
 class CoherenceGate:
     """Tips already sent (per fixture) + this run's planned losers. Never raises from check/plan/commit: on an
@@ -504,7 +551,7 @@ class CoherenceGate:
             except Exception as e:                                     # noqa: BLE001
                 log.warning(f"coherence gate: notified store unreadable ({type(e).__name__}: {e})")
                 notified_keys = []
-        sent = sent_from_notified(notified_keys) + sent_from_top3(out_dir)
+        sent = sent_from_notified(notified_keys) + sent_from_top3(out_dir) + sent_from_props_top3(out_dir)
         return cls(sent, _LazyBoard(board if board is not None else load_board()))
 
     def _model(self, fx):

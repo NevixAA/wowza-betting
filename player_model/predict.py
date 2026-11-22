@@ -1,7 +1,7 @@
 """
 Player Prop Predictions v2
 ===========================
-Generates player prop signals for today's SNIPER/MARKSMAN matches.
+Generates player prop signals for the upcoming matches (no tiers: QUALIFIED / RESEARCH / AVOID; owner 2026-11-11/22).
 Uses de-vigged edge, relative edge floors, and 5-component confidence scoring.
 """
 from __future__ import annotations
@@ -173,13 +173,6 @@ def _edge_passes_floor(rel_edge: float, market_odds: float) -> bool:
     return rel_edge >= config.RELATIVE_EDGE_FLOORS[min(config.RELATIVE_EDGE_FLOORS.keys())]
 
 
-def _kelly_stake(ev: float, market_odds: float) -> float:
-    if market_odds <= 1.0:
-        return 0.0
-    full_kelly = ev / (market_odds - 1)
-    return max(0.0, round(full_kelly * config.KELLY_FRACTION, 4))
-
-
 def _team_strength_mult(team_win_prob: float, market: str) -> float:
     """
     Bidirectional team-strength adjustment on model probability.
@@ -219,6 +212,9 @@ def _team_strength_mult(team_win_prob: float, market: str) -> float:
 #: the tip's side is quoted, so it rests on an overround ASSUMED from config.OVERROUND_BY_ODDS.
 FAIR_BASIS_ASSUMED_OVERROUND = _fair_basis.ASSUMED_OVERROUND
 FAIR_BASIS_TWO_SIDED_DEVIG = _fair_basis.TWO_SIDED_DEVIG
+#: the neutral ledger label of a capped (data-only) props row (owner 2026-11-22: tier "PAPER" retired from props;
+#: the old top-N "paper feed" promotion is gone - the props TOP-3, src/props_top3.py, is the only props selection)
+RESEARCH_TIER = "RESEARCH"
 
 #: Markets the quality-mismatch discount applies to.
 _QUALITY_CAP_MARKETS = ("goals", "goals2", "sot", "sot2", "sot3")
@@ -283,7 +279,7 @@ def _classify_tier(
     market: str = "", position: str = ""
 ) -> str:
     """Classify a props signal: QUALIFIED (clears the lowest qualifying bar; owner 2026-11-11 - no tiers),
-    PAPER (a capped data-only combination) or AVOID.
+    RESEARCH (a capped data-only combination; owner 2026-11-22: never the word "paper" on a tip) or AVOID.
 
     Applies a real-odds-backtest role×market gate: clear money-losing combos
     (defenders→goals, multi-SOT/goals2) are capped at VALUABLE (data-only) rather
@@ -337,8 +333,10 @@ def _classify_tier(
     # OWNER 2026-11-11 ("Clean rebuild"): no SNIPER / MARKSMAN / VALUABLE on a future props tip. Until props
     # get per-league bars, a props tip qualifies at the props cell's LOWEST qualifying bar - the VALUABLE
     # gates above (ev >= VALUABLE_EV, the odds-banded relative-edge floor, and for goals / SOT the GES floor)
-    # - and is QUALIFIED (UNPROVEN). A capped (data-only) combination stays a tracked PAPER row, never a tip.
-    return "PAPER" if capped else "QUALIFIED"
+    # - and is QUALIFIED (UNPROVEN). A capped (data-only) combination stays a tracked RESEARCH row, never a tip.
+    # STAKE BY PROOF (owner 2026-11-22): no props cell is proven, so no props row carries a stake at all (the old
+    # kelly_stake column is gone from the board); the props TOP-3 (src/props_top3.py) is the only props selection.
+    return RESEARCH_TIER if capped else "QUALIFIED"
 
 
 # ── Lazy market factor detection ──────────────────────────────────────────────
@@ -1095,7 +1093,6 @@ def run_player_predictions(
                     "n_games":       n_games,
                     "data_source":   feat_row.get("data_source", ""),
                     "tier":          "AVOID",   # updated when market odds available
-                    "kelly_stake":   None,
                     # model_prob IS the model's own probability (owner decision 2026-11-05);
                     # model_prob_raw repeats it at 4 dp. The typed hand adjustment is INFORMATION
                     # ONLY: its factor (1.0 = none) and the probability it would have given.
@@ -1210,37 +1207,10 @@ def enrich_with_odds(tips_df: pd.DataFrame, odds_data: dict,
         tips_df.at[idx, "edge_rel"]     = rel_edge
         tips_df.at[idx, "ev"]           = ev_val
         tips_df.at[idx, "tier"]         = tier
-        tips_df.at[idx, "kelly_stake"]  = _kelly_stake(ev_val, mkt_odds) if tier != "AVOID" else 0.0
         # Where the fair probability came from: a de-vigged real two-sided price, or 1/odds over an
         # overround assumed from config.OVERROUND_BY_ODDS. Said on the row (2026-11-05).
         tips_df.at[idx, "fair_basis"]   = basis
 
-    return tips_df
-
-
-def tag_paper_feed(tips_df: pd.DataFrame, top_n: int | None = None) -> pd.DataFrame:
-    """PAPER (tracking-only) feed: after real tiers are set, promote the top-N remaining
-    AVOID picks (that HAVE odds) by EV to tier='PAPER'. These are the model's strongest
-    picks on the efficient props markets — NO proven edge (validation 2026-07-09: props
-    have no bettable edge), so they are PAPER ONLY, never real money. Sending + logging
-    them builds a live track record to check whether live diverges from backtest.
-    config.PROPS_PAPER_FEED_N (default 5) controls how many per run; 0 disables.
-    """
-    if tips_df.empty:
-        return tips_df
-    n = int(getattr(config, "PROPS_PAPER_FEED_N", 5)) if top_n is None else int(top_n)
-    if n <= 0 or "tier" not in tips_df.columns:
-        return tips_df
-    cand = tips_df[(tips_df["tier"] == "AVOID") & tips_df["market_odds"].notna()].copy()
-    if cand.empty:
-        return tips_df
-    cand["_ev"] = pd.to_numeric(cand["ev"], errors="coerce")
-    cand = cand[cand["_ev"].notna()]          # a PAPER pick needs a real EV - never a sentinel rank
-    if cand.empty:
-        return tips_df
-    top_idx = cand.sort_values("_ev", ascending=False).head(n).index
-    tips_df.loc[top_idx, "tier"] = "PAPER"
-    print(f"[player_model] PAPER feed: promoted {len(top_idx)} top picks (tracking-only, no edge)")
     return tips_df
 
 

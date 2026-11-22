@@ -85,7 +85,12 @@ def scan_page(page: str, word: re.Pattern) -> list[dict]:
 # ── Telegram (owner 2026-11-19: an HT tip said "Paper only"; the page scan above never saw Telegram) ──────
 #: every module that builds Telegram text or pictures. Their user-facing string literals are scanned statically:
 #: a message is assembled from these literals, so a retired word in one of them can reach a user.
-TELEGRAM_SOURCES = ("telegram_bot/*.py", "src/top3_league.py", "src/live_scanner.py", "src/top_picks.py")
+TELEGRAM_SOURCES = ("telegram_bot/*.py", "src/top3_league.py", "src/props_top3.py", "src/live_scanner.py",
+                    "src/top_picks.py")
+#: dashboard sources scanned STATICALLY as well as rendered (owner 2026-11-22: the Player Props page said "PAPER" /
+#: "Paper research" in its source and only the display relabel hid it; a literal there now fails the scan)
+STATIC_PAGE_SOURCES = ("pages/11_*Player_Props.py", "dashboard_data/props_view.py",
+                       "dashboard_data/props_top3_view.py")
 #: (file, exact literal) the owner kept on purpose. EMPTY: owner 2026-11-17 "no paper label on tips" and
 #: dashboard_words ("the word paper never appears in anything a user sees") leave no user-facing exception.
 TELEGRAM_ALLOW: frozenset = frozenset()
@@ -104,13 +109,13 @@ def _docstring_ids(tree) -> set:
     return out
 
 
-def scan_telegram_sources(word: re.Pattern, root: Path | None = None) -> list[dict]:
+def scan_telegram_sources(word: re.Pattern, root: Path | None = None, sources=TELEGRAM_SOURCES) -> list[dict]:
     """Every user-facing string literal of the Telegram builders that contains `word`. Skipped as CODE, not text:
     docstrings and comments, a bare identifier / state token ('PAPER', 'paper_1x2'), a literal compared against
     (==, in, a .endswith(...) / .get(...) argument, a subscript or dict key)."""
     import ast
     r = Path(root) if root else ROOT
-    files = sorted({p for g in TELEGRAM_SOURCES for p in r.glob(g)})
+    files = sorted({p for g in sources for p in r.glob(g)})
     hits = []
     for f in files:
         tree = ast.parse(f.read_text(encoding="utf-8"))
@@ -133,7 +138,8 @@ def scan_telegram_sources(word: re.Pattern, root: Path | None = None) -> list[di
             rel = f.relative_to(r).as_posix()
             if code or (rel, n.value) in TELEGRAM_ALLOW:
                 continue
-            hits.append({"page": rel, "kind": f"telegram literal L{n.lineno}", "text": n.value[:160]})
+            hits.append({"page": rel, "kind": f"{'telegram' if sources is TELEGRAM_SOURCES else 'source'} literal "
+                                              f"L{n.lineno}", "text": n.value[:160]})
     return hits
 
 
@@ -146,8 +152,12 @@ def main(argv=None) -> int:
     a = ap.parse_args(argv)
     os.chdir(ROOT)
     sys.path.insert(0, str(ROOT))
-    tg = scan_telegram_sources(re.compile(r"\b" + re.escape(a.word) + r"\b", re.IGNORECASE))
+    _w = re.compile(r"\b" + re.escape(a.word) + r"\b", re.IGNORECASE)
+    tg = scan_telegram_sources(_w)
     print(f"telegram builders: {len(tg)} hit(s)", flush=True)
+    st_hits = scan_telegram_sources(_w, sources=STATIC_PAGE_SOURCES)
+    print(f"static page sources: {len(st_hits)} hit(s)", flush=True)
+    tg += st_hits
     for x in tg:
         print(f"  {x['page']} [{x['kind']}] {x['text']}")
     if a.telegram:

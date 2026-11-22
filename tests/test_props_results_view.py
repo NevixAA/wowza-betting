@@ -1,6 +1,6 @@
-"""Player Props results section (owner 2026-11-09: "the % isn't correct, the last 2 months were crazy results
-and we don't show it"): period filter, every tip tier incl. VALUABLE, month and market tables, AVOID kept out,
-P/L only from priced rows, model-era labels."""
+"""Player Props earlier-signals record (owner 2026-11-09: "the % isn't correct ..."; 2026-11-22: no grouping by the
+retired labels): period filter, one summary, month and market tables, AVOID kept out, P/L only from priced rows,
+model-era labels."""
 import math
 
 import pandas as pd
@@ -46,42 +46,41 @@ def test_period_filter_drops_old_rows():
     assert len(V.in_period(d, "All time", TODAY)) == len(d)
 
 
-def test_tier_table_shows_valuable_and_keeps_avoid_out():
+def test_record_table_is_one_summary_and_keeps_avoid_out():
+    # owner 2026-11-22: the record is no longer grouped by the retired SNIPER / MARKSMAN / VALUABLE / PAPER labels
     d = V.in_period(V.prepare_ledger(_led()), "Last 60 days", TODAY)
-    t = V.tier_table(d).set_index("Tier")
-    assert {"VALUABLE", "MARKSMAN", "All tips"} <= set(t.index) and "AVOID" not in t.index
-    v = t.loc["VALUABLE"]
-    assert (v["Settled"], v["Wins"], v["Priced"]) == (3, 2, 2)      # the unpriced WIN is counted, no P/L
-    assert v["Profit (u)"] == 2.0 and math.isclose(v["ROI %"], 100.0)  # (3 - 1) / 2 priced
-    assert (v["Void"], v["Pending"]) == (1, 1)
-    allt = t.loc["All tips"]
-    assert allt["Settled"] == 4 and allt["Profit (u)"] == 6.0       # AVOID's +1 is not in the tip record
+    t = V.record_table(d).set_index("Record")
+    assert list(t.index) == ["All prop signals"] and "Tier" not in V.record_table(d).columns
+    allt = t.loc["All prop signals"]
+    assert (allt["Settled"], allt["Wins"], allt["Priced"]) == (4, 3, 3)    # the unpriced WIN is counted, no P/L
+    assert allt["Profit (u)"] == 6.0                                       # AVOID's +1 is not in the record
+    assert (allt["Void"], allt["Pending"]) == (1, 1)
     assert V.avoid_count(d) == 2
 
 
 def test_all_time_includes_the_june_rows():
-    t = V.tier_table(V.in_period(V.prepare_ledger(_led()), "All time", TODAY)).set_index("Tier")
-    assert t.loc["SNIPER", "Settled"] == 1 and t.loc["MARKSMAN", "Settled"] == 2
+    t = V.record_table(V.in_period(V.prepare_ledger(_led()), "All time", TODAY)).set_index("Record")
+    assert t.loc["All prop signals", "Settled"] == 6
 
 
 def test_month_and_market_tables():
     d = V.in_period(V.prepare_ledger(_led()), "All time", TODAY)
     m = V.month_table(d)
-    assert list(m["Month"])[0] == "2026-11"                         # newest first
-    octv = m[(m["Month"] == "2026-10") & (m["Tier"] == "VALUABLE")].iloc[0]
+    assert list(m["Month"])[0] == "2026-11" and "Tier" not in m.columns   # newest first, no label grouping
+    octv = m[m["Month"] == "2026-10"].iloc[0]
     assert (octv["Settled"], octv["Wins"], octv["Profit (u)"]) == (3, 2, 2.0)
     mk = V.market_table(d).set_index("Market")
     assert V.MARKET_LABEL["goals"] in mk.index and mk.loc[V.MARKET_LABEL["goals"], "Settled"] == 3
 
 
 def test_small_sample_marked():
-    t = V.tier_table(V.prepare_ledger(_led())).set_index("Tier")
-    assert t.loc["VALUABLE", "Sample"] == "small sample"
+    t = V.record_table(V.prepare_ledger(_led())).set_index("Record")
+    assert t.loc["All prop signals", "Sample"] == "small sample"
 
 
 def test_empty_period_and_empty_ledger():
     d = V.prepare_ledger(_led())
-    assert V.tier_table(V.in_period(d, "This month", pd.Timestamp("2030-01-15"))).empty
+    assert V.record_table(V.in_period(d, "This month", pd.Timestamp("2030-01-15"))).empty
     assert V.month_table(d.iloc[0:0]).empty and V.market_table(d.iloc[0:0]).empty
 
 
