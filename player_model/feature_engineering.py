@@ -1134,7 +1134,7 @@ def _prematch_position(df: pd.DataFrame) -> tuple[pd.Series, pd.Series]:
     return pos.astype(str), src
 
 
-def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
+def build_features(match_rows: list[dict], n: int = None, copy: bool = True) -> pd.DataFrame:
     """
     Build ML training data from per-match player stats.
 
@@ -1150,7 +1150,10 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
 
     # A list of row dicts, or a DataFrame (pipeline.merge_cup_rows passes the history frame: a
     # 900k-row list of dicts would cost several GB).
-    df = match_rows.copy() if isinstance(match_rows, pd.DataFrame) else pd.DataFrame(match_rows)
+    # copy=False: the caller hands over a frame it built for this call and never reads again
+    # (build_upcoming_features), so the defensive copy of ~1M history rows is skipped (props predict peak
+    # memory, 2026-11-22). Values are identical either way.
+    df = (match_rows.copy() if copy else match_rows) if isinstance(match_rows, pd.DataFrame)         else pd.DataFrame(match_rows)
     df["date"] = pd.to_datetime(df["date"])
     # A row without a real player id has no player to build a history for: player_id 0 pooled
     # 153 different players into ONE rolling history (props_truth 2026-11-02). Dropped, logged.
@@ -1436,11 +1439,22 @@ def build_upcoming_features(upcoming: list[dict], history: pd.DataFrame, n: int 
     if up.empty or history is None or history.empty:
         return pd.DataFrame()
     n = n or config.ROLLING_N
-    h = history.copy()
-    h[UPCOMING_COL] = False
-    if "fixture_id" in h.columns and "fixture_id" in up.columns:
-        h = h[~pd.to_numeric(h["fixture_id"], errors="coerce").isin(pd.to_numeric(up["fixture_id"], errors="coerce"))]
-    frame = build_features(pd.concat([h, up], ignore_index=True, sort=False), n)
+    # MEMORY (2026-11-22): the props predict step peaked at ~15 GB on a 16 GB hosted runner and was killed
+    # ("runner lost communication"). The history (~1M rows) is no longer copied twice before the build
+    # (a full copy + the flag column, then the filter): the rows to keep are selected once, the
+    # upcoming flag is set on the one concatenated frame, and build_features takes that frame without a
+    # third defensive copy. Same rows, same order, same values (tests/test_props_predict_memory.py).
+    if "fixture_id" in history.columns and "fixture_id" in up.columns:
+        keep = ~pd.to_numeric(history["fixture_id"], errors="coerce").isin(
+            pd.to_numeric(up["fixture_id"], errors="coerce"))
+        h = history[keep.to_numpy()] if not keep.all() else history
+    else:
+        h = history
+    both = pd.concat([h, up], ignore_index=True, sort=False)
+    del h
+    both[UPCOMING_COL] = both[UPCOMING_COL].fillna(False).astype(bool)
+    frame = build_features(both, n, copy=False)
+    del both
     if frame.empty or UPCOMING_COL not in frame.columns:
         return pd.DataFrame()
     out = frame[frame[UPCOMING_COL].astype(bool)].copy()
