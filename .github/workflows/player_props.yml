@@ -265,6 +265,23 @@ jobs:
           PY
         continue-on-error: true
 
+      # MEMORY HEADROOM (2026-11-22). The predict step peaks at ~15 GB resident (measured with /usr/bin/time -v:
+      # 15.16 GB on the pre-#70 code, 15.05 GB after it) on a 16 GB hosted runner. Two runs on 2026-11-22 were killed
+      # ("The hosted runner lost communication with the server ... starves it for CPU/Memory"). The serving feature
+      # build (build_features over the ~1M-row history + the upcoming rows) is the peak; it no longer copies the
+      # history twice (-1 GB, player_model/feature_engineering.build_upcoming_features), and a 12 GB swap file on
+      # the runner's /mnt disk replaces the default 4 GB one, so a peak above RAM pages instead of killing the runner.
+      # Values are unchanged either way. Never fatal: without the swap the run proceeds as before.
+      - name: Add swap for the props predict peak
+        run: |
+          sudo swapoff -a || true
+          sudo fallocate -l 12G /mnt/props.swap
+          sudo chmod 600 /mnt/props.swap
+          sudo mkswap /mnt/props.swap
+          sudo swapon /mnt/props.swap
+          free -m
+        continue-on-error: true
+
       - name: Generate player prop predictions
         id: predict_props
         env:
@@ -286,7 +303,8 @@ jobs:
           # SUCCESS on every hourly run since 2026-08-15 while player_tips.csv never changed.
           # Committed evidence beats log archaeology.
           set -o pipefail
-          python -m player_model.pipeline --mode predict 2>&1 | tee /tmp/props_predict.log
+          # /usr/bin/time -v adds the peak resident memory to the log tail (props_health.json)
+          /usr/bin/time -v python -m player_model.pipeline --mode predict 2>&1 | tee /tmp/props_predict.log
         continue-on-error: true
 
       # PROPS TOP-3 PER LEAGUE PER GAMEWEEK (owner 2026-11-22, "Like TOP-3: 3 per league, stake by proof";
