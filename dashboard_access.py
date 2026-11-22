@@ -142,6 +142,7 @@ PAGES = [
     ("pages/24_🧾_Clean_Record.py",      "Clean Record (from 21.11)", "🧾", "pro"),   # owner 2026-11-11; own page 2026-11-17
     ("pages/26_📏_Bars.py",              "Bars",              "📏", "pro"),     # owner 2026-11-17, statistics only
     ("pages/27_🩹_Fixes.py",             "What was fixed",    "🩹", "pro"),     # owner 2026-11-17, repairs log
+    ("pages/28_🔮_Predictions.py",       "Predictions",       "🔮", "pro"),     # owner 2026-11-22, learning record, no prices
     ("pages/12_💼_Portfolio.py",         "Portfolio",         "💼", "pro"),
     ("pages/16_💰_Bankroll.py",          "Bankroll",          "💰", "pro"),
     ("pages/0_🏠_Overview.py",           "Overview",          "🏠", "admin"),
@@ -158,6 +159,7 @@ PAGES = [
     ("pages/22_🏭_Production.py",        "Production",        "🏭", "admin"),   # new 2026-10-25
     ("pages/23_🎲_Specials.py",          "Specials",          "🎲", "admin"),   # new 2026-11-09, research only
     ("pages/24_📬_Daily_Progress.py",    "Daily Progress",    "📬", "admin"),   # owner-only report, 2026-11-15
+    ("pages/29_🧭_Admin_Board.py",       "Admin Board",       "🧭", "admin"),   # owner 2026-11-22: bars, TOP-3, research tracker
     ("pages/account.py",                "Account",           "👤", "free"),
 ]
 
@@ -169,14 +171,15 @@ SECTIONS = {"free": "Free", "pro": "Wowza Pro", "admin": "Admin center"}   # tie
 # Only DISPLAY labels live here and in PAGES - page FILE names never change (URLs, bookmarks, tests).
 NAV = {
     "Today":        ["pages/00_🎯_Home.py", "pages/free_tips.py", "pages/1_📊_Dashboard.py", "pages/6_⚡_Live.py"],
-    "Performance":  ["pages/24_🧾_Clean_Record.py", "pages/17_🏟️_Leagues.py", "pages/26_📏_Bars.py", "pages/27_🩹_Fixes.py", "pages/12_💼_Portfolio.py",
+    "Performance":  ["pages/24_🧾_Clean_Record.py", "pages/17_🏟️_Leagues.py", "pages/26_📏_Bars.py", "pages/27_🩹_Fixes.py", "pages/28_🔮_Predictions.py",
+                     "pages/12_💼_Portfolio.py",
                      "pages/16_💰_Bankroll.py", "pages/5_🎯_Success_Rates.py"],
     "Tools":        ["pages/13_⚽_Fantasy.py", "pages/11_👤_Player_Props.py", "pages/14_🧩_Bet_Builder.py"],
     "Research Lab": ["pages/18_🔧_League_Research.py", "pages/23_🎲_Specials.py", "pages/20_🧪_Model_Lab.py",
                      "pages/9_🎓_Model_Performance.py",
                      "pages/21_📡_Market_Intelligence.py", "pages/7_🔬_Pro.py",
                      "pages/8_🛰️_V11_Market.py", "pages/15_🔭_League_Scout.py", "pages/10_🤖_Agent_Analysis.py"],
-    "System":       ["pages/19_🩺_System_Health.py", "pages/24_📬_Daily_Progress.py", "pages/22_🏭_Production.py", "pages/0_🏠_Overview.py", "pages/4_ℹ️_Model_Info.py",
+    "System":       ["pages/29_🧭_Admin_Board.py", "pages/19_🩺_System_Health.py", "pages/24_📬_Daily_Progress.py", "pages/22_🏭_Production.py", "pages/0_🏠_Overview.py", "pages/4_ℹ️_Model_Info.py",
                      "pages/account.py"],
 }
 NAV_SECTIONS = list(NAV)

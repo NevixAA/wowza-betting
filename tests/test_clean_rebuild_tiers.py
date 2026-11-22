@@ -15,8 +15,8 @@ def test_props_tip_qualifies_at_the_lowest_bar_without_a_tier():
     assert PP._classify_tier(0.60, 2.5, 0.40, 1.0, 3, 0.9, "goals", "F") == QUALIFIED
     assert PP._classify_tier(0.10, 2.5, 0.15, 1.0, 0, 0.5, "assists", "M") == "AVOID"     # below the bar
     # capped data-only combinations stay PAPER rows, never a tip
-    assert PP._classify_tier(0.60, 2.5, 0.40, 1.0, 3, 0.9, "goals", "D") == "PAPER"
-    assert PP._classify_tier(0.60, 2.5, 0.40, 1.0, 3, 0.9, "sot2", "F") == "PAPER"
+    assert PP._classify_tier(0.60, 2.5, 0.40, 1.0, 3, 0.9, "goals", "D") == "RESEARCH"
+    assert PP._classify_tier(0.60, 2.5, 0.40, 1.0, 3, 0.9, "sot2", "F") == "RESEARCH"
     for args in ((0.2, 2.5, 0.15, 1.0, 0, 0.5, "assists", "M"), (0.6, 7.0, 0.5, 1.0, 3, 0.9, "sot", "F")):
         assert PP._classify_tier(*args) not in LEGACY_TIERS
 

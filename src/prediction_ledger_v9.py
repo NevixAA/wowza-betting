@@ -45,6 +45,11 @@ CHALLENGER_MODEL_ID = "v9_props_challenger"
 BOARD = ROOT / "output" / "predictions.csv"
 FD_HISTORY = ROOT / "output" / "fd_history.parquet"
 AF_HISTORY = ROOT / "output" / "af_history.parquet"
+#: API-Football 90-minute + HT scores of every finished fixture in a config league, written daily from the
+#: /fixtures?date answers by scripts/collect_standard_team_cards.py (no extra call).
+AF_RESULTS = ROOT / "output" / "af_results_recent.parquet"
+#: API-Football FT scores of the Standard leagues' stat-answered fixtures (same collector, since 2026-11-16).
+AF_STD_CARDS = ROOT / "output" / "af_team_cards_std.parquet"
 PLAYER_HISTORY = ROOT / "player_history.parquet"
 #: board model_type -> ledger model_id
 TRACK_MODEL = {"standard": "v9_standard", "new_format": "v9_new_format"}
@@ -372,7 +377,16 @@ def props_recorder():
 class TeamResults:
     """Played scores from the committed history banks (football-data first, API-Football for the
     leagues football-data does not carry). Matched on registry league + date (+-1 day) + team names
-    (exact, else src/team_names.resolve_result)."""
+    (exact, else src/team_names.resolve_result).
+
+    STANDARD-LEAGUE GAP (fixed 2026-11-22). The Standard leagues are in neither API-Football bank above
+    (af_history carries only the new-format / AF-only leagues), and football-data uploads a round days
+    after it is played, so every v9_standard row waited for that upload (2,964 of 2,964 past-kickoff
+    rows PENDING on 2026-11-22). Two more VERIFIED provider banks are now read AFTER those two, each on
+    its own: af_results_recent (API-Football 90-minute + HT score of every finished fixture) and
+    af_team_cards_std (API-Football FT score, status FT only, no HT). When football-data uploads the
+    match it is searched first and wins, as before. A row that carries an API-Football fixture id
+    (fixture_ref af:<id>) is matched on that id in the API-Football banks before names."""
 
     def __init__(self, slugs: PL.LeagueSlugs | None = None):
         self.slugs = slugs or PL.LeagueSlugs()
@@ -393,21 +407,68 @@ class TeamResults:
             af = af.rename(columns={"FTHG": "home_goals", "FTAG": "away_goals"})
             af["src"] = "api-football"
             frames.append(af[["league", "date", "home_team", "away_team", "home_goals", "away_goals", "src"]])
+        if AF_RESULTS.exists():
+            r = pd.read_parquet(AF_RESULTS)
+            # score.fulltime of a finished fixture = the regular-time (90-minute) score, also after AET / PEN
+            r = r[r["status"].isin(["FT", "AET", "PEN"])].rename(columns={
+                "match_date": "date", "ft_home": "home_goals", "ft_away": "away_goals", "ht_home": "hth",
+                "ht_away": "hta"})
+            r["src"] = "api-football-results"
+            frames.append(r[["league", "date", "home_team", "away_team", "home_goals", "away_goals", "hth",
+                             "hta", "fixture_id", "src"]])
+        if AF_STD_CARDS.exists():
+            c = pd.read_parquet(AF_STD_CARDS)
+            # `goals` there include extra time: only status FT (no extra time played) is a 90-minute score
+            c = c[c["status"] == "FT"].rename(columns={"match_date": "date", "FTHG": "home_goals",
+                                                       "FTAG": "away_goals"})
+            c["src"] = "api-football-std-cards"
+            frames.append(c[["league", "date", "home_team", "away_team", "home_goals", "away_goals",
+                             "fixture_id", "src"]])
+        frames = [f.astype({k: "float64" for k in ("home_goals", "away_goals", "hth", "hta") if k in f.columns})
+                  for f in frames]
         d = pd.concat(frames, ignore_index=True) if frames else pd.DataFrame(
             columns=["league", "date", "home_team", "away_team", "home_goals", "away_goals", "src"])
+        if "fixture_id" not in d.columns:
+            d["fixture_id"] = np.nan
         d["slug"] = d["league"].map(self.slugs.slug)
         d["date"] = pd.to_datetime(d["date"], errors="coerce").dt.strftime("%Y-%m-%d")
         d = d.dropna(subset=["slug", "date", "home_goals", "away_goals"])
-        self.srcs = [x for x in ("football-data", "api-football") if x in set(d["src"])]
+        self.srcs = [x for x in self.SOURCES if x in set(d["src"])]
         self.by = {k: g for k, g in d.groupby(["slug", "date", "src"])}
+        fid = pd.to_numeric(d["fixture_id"], errors="coerce")
+        self.by_fid = {(s, int(f)): r for s, f, r in zip(d["src"], fid, d.to_dict("records"))
+                       if pd.notna(f) and s in self.ID_SOURCES}
 
-    def find(self, slug: str, kickoff, home: str, away: str):
+    #: search order; football-data wins whenever it carries the match
+    SOURCES = ("football-data", "api-football", "api-football-results", "api-football-std-cards")
+    #: banks keyed by the API-Football fixture id
+    ID_SOURCES = ("api-football-results", "api-football-std-cards")
+
+    def find(self, slug: str, kickoff, home: str, away: str, fixture_id=None, need_ht: bool = False):
+        """The first bank's row for the match (SOURCES order), or None. need_ht: a bank whose row has no
+        half-time score is passed over for the next bank (an HT market waits for a bank that HAS it; the
+        HT score is never inferred)."""
         ko = PL.utc_ts(kickoff)
         if ko is None:
             return None
+        fid = pd.to_numeric(pd.Series([fixture_id]), errors="coerce").iloc[0]
+        for src in self.srcs:
+            m = self._find_in(src, slug, ko, home, away, fid)
+            if m is None:
+                continue
+            if need_ht and (pd.isna(m.get("hth")) or pd.isna(m.get("hta"))):
+                continue
+            return m                                 # football-data is searched first and wins
+        return None
+
+    def _find_in(self, src: str, slug: str, ko, home: str, away: str, fid):
         from src import team_names as TN
-        # each bank on its own (the two banks spell clubs differently; a pair is never split across them)
-        for off, src in ((o, s) for s in self.srcs for o in (0, -1, 1)):
+        if src in self.ID_SOURCES and pd.notna(fid):
+            m = self.by_fid.get((src, int(fid)))
+            if m is not None and m.get("slug") == slug:
+                return m
+        # each bank on its own (the banks spell clubs differently; a pair is never split across them)
+        for off in (0, -1, 1):
             g = self.by.get((slug, (ko + pd.Timedelta(days=off)).strftime("%Y-%m-%d"), src))
             if g is None:
                 continue
@@ -417,7 +478,7 @@ class TeamResults:
                 ra = TN.resolve_result(away, g["away_team"].tolist())
                 m = g[(g["home_team"] == rh) & (g["away_team"] == ra)] if rh and ra else m
             if len(m):
-                return m.iloc[0].to_dict()          # football-data is searched first and wins
+                return m.iloc[0].to_dict()
         return None
 
 
@@ -518,9 +579,13 @@ def outcome_fn(markets: dict | None = None, *, now: datetime | None = None,
                     "result_source": "player_history", "settled_at": stamp}
         if team is None:
             return pending_or_missing(ko, "no team results loaded")
-        m = team.find(r["league_slug"], PL.iso(ko), r["home_team"], r["away_team"])
+        ht = st.get("period", "ft") == "ht"
+        m = team.find(r["league_slug"], PL.iso(ko), r["home_team"], r["away_team"],
+                      fixture_id=r.get("fixture_id") if str(r.get("fixture_ref", "")).startswith("af:") else None,
+                      need_ht=ht)
         if m is None:
-            return pending_or_missing(ko, "no result in the history banks")
+            return pending_or_missing(ko, "no HT score in the history banks" if ht else
+                                      "no result in the history banks")
         y, val = PL.match_outcome(st, r["selection"], r.get("line"), m.get("home_goals"), m.get("away_goals"),
                                   m.get("hth"), m.get("hta"))
         if y is None:

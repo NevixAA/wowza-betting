@@ -35,7 +35,7 @@ from player_model.data_fetcher import (
 from player_model.league_quality import enrich_league_quality
 from player_model.feature_engineering import build_features
 from player_model.model import train, load_model
-from player_model.predict import run_player_predictions, enrich_with_odds, enrich_no_odds_markets, tag_paper_feed
+from player_model.predict import run_player_predictions, enrich_with_odds, enrich_no_odds_markets, RESEARCH_TIER
 from player_model.odds_fetcher import fetch_prop_odds, match_odds_to_tips, match_fair_to_tips
 from player_model.ledger import append_player_signals
 from player_model import history_integrity as HI
@@ -681,9 +681,11 @@ def mode_predict() -> None:
     # Markets with no live Odds API coverage (assists): an unpriced tip stays AVOID and is counted
     # (no synthetic price since 2026-11-01; the old comment said "via calibration base rates")
     tips = enrich_no_odds_markets(tips)
-    # PAPER feed: promote the top-N strongest AVOID picks (with odds) to tier='PAPER'
-    # so the strongest props signals are tracked live (no edge — tracking only, never real money)
-    tips = tag_paper_feed(tips)
+    # Owner 2026-11-22 ("Like TOP-3: 3 per league, stake by proof"): the old top-N promotion of AVOID picks to a
+    # tracking tier is gone - the props TOP-3 (src/props_top3.py, run after this step in player_props.yml) picks 3
+    # per league-week from this board. No props row carries a stake: props are not proven, so the board has no
+    # stake column (kelly_stake removed; policy stake for every prop = 0).
+    tips = tips.drop(columns=["kelly_stake"], errors="ignore")
     tips.to_csv(config.OUTPUT_DIR / "player_tips.csv", index=False)
 
     # CLV paper tracking (year-long, no money): log entry prices for new tips, close out
@@ -704,8 +706,8 @@ def mode_predict() -> None:
         tips = _filter_by_lineup(tips)
 
     qualified = tips[tips["tier"] == "QUALIFIED"]          # owner 2026-11-11: one bar, no tiers
-    paper     = tips[tips["tier"] == "PAPER"]
-    print(f"[predict] TIPS (lowest props bar cleared, UNPROVEN):{len(qualified)}  PAPER:{len(paper)}")
+    research  = tips[tips["tier"] == RESEARCH_TIER]
+    print(f"[predict] TIPS (lowest props bar cleared, UNPROVEN):{len(qualified)}  {RESEARCH_TIER}:{len(research)}")
 
     n_new = append_player_signals(tips)
     if n_new:

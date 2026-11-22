@@ -1,4 +1,5 @@
-"""Player Model Configuration — v2 (3-tier SNIPER/MARKSMAN/VALUABLE system)."""
+"""Player Model Configuration — v2. The SNIPER/MARKSMAN/VALUABLE names below are RETIRED from tips (owner 2026-11-11): only
+the VALUABLE gates still define the lowest props bar (QUALIFIED); props selection is the props TOP-3 (src/props_top3.py)."""
 from __future__ import annotations
 import os
 from pathlib import Path
@@ -173,9 +174,8 @@ REL_EDGE_MARKSMAN = 0.12   # ≥12% relative edge required for MARKSMAN
 #   - defenders for anytime-goalscorer: defenders ~never score (≈0-3% hit rate)
 VALUABLE_ONLY_MARKETS     = {"sot2", "sot3", "sot4", "goals2", "cards"}
 VALUABLE_ONLY_ROLE_MARKET = {("D", "goals")}
-# PAPER feed: send the top-N strongest props picks per run as tracking-only signals
-# (no proven edge — validation 2026-07-09 — never real money). 0 disables.
-PROPS_PAPER_FEED_N        = 5
+# The old top-N props tracking feed (PROPS_PAPER_FEED_N) is RETIRED (owner 2026-11-22, "Like TOP-3: 3 per league,
+# stake by proof"): the props TOP-3 per league-week (src/props_top3.py) is the only props selection.
 # cards: the model outputs a near-constant ~0.378 for every player (referee features are
 # leaked in training + mis-scaled at predict; card_clash_index reads an unpopulated key), so
 # card "edges" are degenerate. Capped at VALUABLE (tracked, never a real SNIPER/MARKSMAN tip)

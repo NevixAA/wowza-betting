@@ -40,7 +40,7 @@ SHARP_LEDGER_COLS = [
 
 # Track EVERY pick the model produces (2026/27: props are a calibrated-but-unproven TEST
 # model — keep the whole prediction record for calibration/accuracy, not just the top tiers).
-PLAYER_TRACKED_TIERS  = {"QUALIFIED", "SNIPER", "MARKSMAN", "VALUABLE", "WATCH", "PAPER", "AVOID"}
+PLAYER_TRACKED_TIERS  = {"QUALIFIED", "RESEARCH", "SNIPER", "MARKSMAN", "VALUABLE", "WATCH", "PAPER", "AVOID"}   # legacy codes: history rows only
 SHARP_TRACKED_SIGNALS = {"STEAM_STRONG", "STEAM_SHARP", "STRONG"}
 
 

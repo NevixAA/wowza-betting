@@ -1,51 +1,54 @@
 {
   "artifact": "side_edge_devig_health",
   "shadow_version": "side_edge_devig_shadow-1.0",
-  "generated_at": "2026-11-21T16:17:55Z",
+  "generated_at": "2026-11-22T19:12:24Z",
   "production_rule": "two-sided de-vig since 2026-11-01 (config.SIDE_EDGE_FAIR_PRICE); edge_prod below = the old (1/odds)/1.08, kept for comparison",
   "shadow_rule": "edge = p_model - median_books(power_devig(same-book two-sided pair)), pre-kickoff, carried forward to the decision time; same thresholds",
   "quotes_from": "2026-08-19 09:23:27+00:00",
-  "quote_rows": 244808,
+  "quote_rows": 249953,
   "board": {
-    "generated_at": "2026-11-21T16:09:17Z",
-    "rows": 92,
-    "production_tips": 11,
+    "generated_at": "2026-11-22T18:25:46Z",
+    "rows": 224,
+    "production_tips": 27,
     "classification": {
-      "CONFIRMED_BY_DEVIG": 6,
-      "ONLY_BECAUSE_OF_1_08": 5
+      "CONFIRMED_BY_DEVIG": 20,
+      "ONLY_BECAUSE_OF_1_08": 7
     },
     "by_market": {
       "btts": {
-        "CONFIRMED_BY_DEVIG": 3,
-        "ONLY_BECAUSE_OF_1_08": 2
+        "CONFIRMED_BY_DEVIG": 17,
+        "ONLY_BECAUSE_OF_1_08": 4
       },
       "over15": {
         "ONLY_BECAUSE_OF_1_08": 3,
-        "CONFIRMED_BY_DEVIG": 3
+        "CONFIRMED_BY_DEVIG": 2
+      },
+      "over35": {
+        "CONFIRMED_BY_DEVIG": 1
       }
     },
-    "devigged_rows": 92,
-    "median_pair_overround": 0.0799,
-    "median_edge_prod_minus_devig_pp": 0.56,
-    "mean_edge_prod_minus_devig_pp": 0.39,
-    "p90_edge_prod_minus_devig_pp": 3.31,
-    "rows_prod_edge_inflated_ge_2pp": 16,
+    "devigged_rows": 224,
+    "median_pair_overround": 0.0795,
+    "median_edge_prod_minus_devig_pp": 0.7,
+    "mean_edge_prod_minus_devig_pp": 0.57,
+    "p90_edge_prod_minus_devig_pp": 2.12,
+    "rows_prod_edge_inflated_ge_2pp": 26,
     "rows_pair_overround_below_6pct": 3,
-    "mean_inflation_pp_when_overround_below_6pct": 0.34
+    "mean_inflation_pp_when_overround_below_6pct": 0.78
   },
   "ledger_retrospective": {
     "label": "RETROSPECTIVE",
-    "tips_since_quotes_exist": 747,
-    "rows": 747,
-    "production_tips": 747,
+    "tips_since_quotes_exist": 755,
+    "rows": 755,
+    "production_tips": 755,
     "classification": {
-      "CONFIRMED_BY_DEVIG": 321,
-      "ONLY_BECAUSE_OF_1_08": 293,
+      "CONFIRMED_BY_DEVIG": 324,
+      "ONLY_BECAUSE_OF_1_08": 298,
       "UNVERIFIABLE_ONE_SIDED": 133
     },
     "by_market": {
       "btts": {
-        "CONFIRMED_BY_DEVIG": 240,
+        "CONFIRMED_BY_DEVIG": 241,
         "ONLY_BECAUSE_OF_1_08": 220,
         "UNVERIFIABLE_ONE_SIDED": 99
       },
@@ -55,75 +58,20 @@
         "UNVERIFIABLE_ONE_SIDED": 25
       },
       "over35": {
-        "ONLY_BECAUSE_OF_1_08": 40,
-        "UNVERIFIABLE_ONE_SIDED": 9,
-        "CONFIRMED_BY_DEVIG": 9
+        "ONLY_BECAUSE_OF_1_08": 45,
+        "CONFIRMED_BY_DEVIG": 11,
+        "UNVERIFIABLE_ONE_SIDED": 9
       }
     },
-    "devigged_rows": 614,
+    "devigged_rows": 622,
     "median_pair_overround": 0.0798,
-    "median_edge_prod_minus_devig_pp": 0.04,
-    "mean_edge_prod_minus_devig_pp": 0.38,
+    "median_edge_prod_minus_devig_pp": 0.02,
+    "mean_edge_prod_minus_devig_pp": 0.35,
     "p90_edge_prod_minus_devig_pp": 2.5,
     "rows_prod_edge_inflated_ge_2pp": 100,
     "rows_pair_overround_below_6pct": 17,
     "mean_inflation_pp_when_overround_below_6pct": 2.65,
     "examples_only_because_of_1_08": [
-      {
-        "fixture": "Wolverhampton Wanderers v Derby County",
-        "league": "Championship",
-        "market": "btts",
-        "tier_prod": "VALUABLE",
-        "edge_prod": 0.0667,
-        "edge_devig": 0.0657,
-        "odds": 1.85,
-        "p_fair_devig": 0.5015,
-        "books": "livescorebet;virginbet"
-      },
-      {
-        "fixture": "Boca Juniors v Independiente Rivadavia",
-        "league": "Argentina Primera Division",
-        "market": "btts",
-        "tier_prod": "MARKSMAN",
-        "edge_prod": 0.084,
-        "edge_devig": 0.0932,
-        "odds": 2.0,
-        "p_fair_devig": 0.4538,
-        "books": "livescorebet;onexbet;virginbet"
-      },
-      {
-        "fixture": "Sao Paulo v Fluminense",
-        "league": "Brazil Serie A",
-        "market": "over35",
-        "tier_prod": "VALUABLE",
-        "edge_prod": 0.0181,
-        "edge_devig": 0.0422,
-        "odds": 3.75,
-        "p_fair_devig": 0.2228,
-        "books": "betfair_ex_uk;codere_it;coolbet;coral;ladbrokes_uk;leovegas;pinnacle;virginbet"
-      },
-      {
-        "fixture": "AGF Aarhus v Lyngby",
-        "league": "Denmark Superliga",
-        "market": "over35",
-        "tier_prod": "QUALIFIED",
-        "edge_prod": -0.0058,
-        "edge_devig": 0.0098,
-        "odds": 2.38,
-        "p_fair_devig": 0.3734,
-        "books": "leovegas_se;tipico_de;unibet_nl;unibet_se"
-      },
-      {
-        "fixture": "Aalesund v Rosenborg",
-        "league": "Norway Eliteserien",
-        "market": "over35",
-        "tier_prod": "QUALIFIED",
-        "edge_prod": -0.0007,
-        "edge_devig": -0.0082,
-        "odds": 1.81,
-        "p_fair_devig": 0.5191,
-        "books": "codere_it;coolbet;gtbets;leovegas_se;marathonbet;onexbet;pinnacle;pmu_fr;tipico_de;unibet_nl;unibet_se"
-      },
       {
         "fixture": "Viborg FF v Randers FC",
         "league": "Denmark Superliga",
@@ -156,40 +104,93 @@
         "odds": 1.89,
         "p_fair_devig": 0.5105,
         "books": "betanysports;betonlineag;codere_it;coolbet;gtbets;leovegas_se;marathonbet;onexbet;pinnacle;pmu_fr;tipico_de;unibet_nl;unibet_se"
+      },
+      {
+        "fixture": "Lyngby v Viborg FF",
+        "league": "Denmark Superliga",
+        "market": "over35",
+        "tier_prod": "QUALIFIED",
+        "edge_prod": -0.0277,
+        "edge_devig": -0.0189,
+        "odds": 2.33,
+        "p_fair_devig": 0.3886,
+        "books": "leovegas_se;pmu_fr;unibet_nl;unibet_se"
+      },
+      {
+        "fixture": "SonderjyskE v Brondby IF",
+        "league": "Denmark Superliga",
+        "market": "over35",
+        "tier_prod": "QUALIFIED",
+        "edge_prod": -0.0565,
+        "edge_devig": -0.0242,
+        "odds": 2.2,
+        "p_fair_devig": 0.3886,
+        "books": "gtbets;leovegas_se;marathonbet;onexbet;pmu_fr;unibet_nl;unibet_se"
+      },
+      {
+        "fixture": "Rosenborg v Molde",
+        "league": "Norway Eliteserien",
+        "market": "over35",
+        "tier_prod": "QUALIFIED",
+        "edge_prod": 0.0192,
+        "edge_devig": 0.0087,
+        "odds": 1.83,
+        "p_fair_devig": 0.5165,
+        "books": "gtbets;leovegas_se;marathonbet;onexbet;pmu_fr;tipico_de;unibet_nl;unibet_se"
+      },
+      {
+        "fixture": "SK Brann v Kristiansund BK",
+        "league": "Norway Eliteserien",
+        "market": "over35",
+        "tier_prod": "QUALIFIED",
+        "edge_prod": -0.0258,
+        "edge_devig": -0.0007,
+        "odds": 1.73,
+        "p_fair_devig": 0.5101,
+        "books": "leovegas_se;marathonbet;onexbet;pinnacle;pmu_fr;tipico_de;unibet_nl;unibet_se"
+      },
+      {
+        "fixture": "Silkeborg IF v AGF Aarhus",
+        "league": "Denmark Superliga",
+        "market": "over35",
+        "tier_prod": "QUALIFIED",
+        "edge_prod": -0.1049,
+        "edge_devig": -0.0665,
+        "odds": 2.14,
+        "p_fair_devig": 0.3943,
+        "books": "leovegas_se;marathonbet;onexbet;pmu_fr;unibet_nl;unibet_se"
       }
     ]
   },
   "ledger_open_tips": {
-    "rows": 39,
-    "production_tips": 39,
+    "rows": 31,
+    "production_tips": 31,
     "classification": {
-      "CONFIRMED_BY_DEVIG": 15,
-      "UNVERIFIABLE_ONE_SIDED": 13,
-      "ONLY_BECAUSE_OF_1_08": 11
+      "ONLY_BECAUSE_OF_1_08": 13,
+      "CONFIRMED_BY_DEVIG": 13,
+      "UNVERIFIABLE_ONE_SIDED": 5
     },
     "by_market": {
       "btts": {
-        "UNVERIFIABLE_ONE_SIDED": 12,
-        "CONFIRMED_BY_DEVIG": 11,
-        "ONLY_BECAUSE_OF_1_08": 7
+        "CONFIRMED_BY_DEVIG": 9,
+        "ONLY_BECAUSE_OF_1_08": 5,
+        "UNVERIFIABLE_ONE_SIDED": 4
       },
       "over15": {
-        "CONFIRMED_BY_DEVIG": 2,
         "UNVERIFIABLE_ONE_SIDED": 1,
         "ONLY_BECAUSE_OF_1_08": 1
       },
       "over35": {
-        "ONLY_BECAUSE_OF_1_08": 3,
-        "CONFIRMED_BY_DEVIG": 2
+        "ONLY_BECAUSE_OF_1_08": 7,
+        "CONFIRMED_BY_DEVIG": 4
       }
     },
     "devigged_rows": 26,
-    "median_pair_overround": 0.0806,
-    "median_edge_prod_minus_devig_pp": -0.52,
-    "mean_edge_prod_minus_devig_pp": -0.09,
-    "p90_edge_prod_minus_devig_pp": 1.45,
-    "rows_prod_edge_inflated_ge_2pp": 3,
-    "rows_pair_overround_below_6pct": 1,
-    "mean_inflation_pp_when_overround_below_6pct": 2.5
+    "median_pair_overround": 0.0821,
+    "median_edge_prod_minus_devig_pp": -0.63,
+    "mean_edge_prod_minus_devig_pp": -0.74,
+    "p90_edge_prod_minus_devig_pp": 0.53,
+    "rows_prod_edge_inflated_ge_2pp": 1,
+    "rows_pair_overround_below_6pct": 0
   }
 }

@@ -215,10 +215,11 @@ else:
 
 # TOP-3 per league per gameweek (owner 2026-11-08; src/top3_league.py writes, this only reads)
 from dashboard_data import top3_league as T3  # noqa: E402
-ui.section_header("TOP-3 this gameweek", "This league's 3 best tips of the week across O/U 2.5, BTTS, Over 1.5 "
-                  "and Over 3.5 from its MODEL cells, each past its cell's own owner-approved bar, ranked by "
-                  "cautious calibrated value (T3) - fewer when fewer clear the bar. Every TOP-3 tip: 0.5% stake, flat, placed manually at the tip's odds (owner 2026-11-17). League-wide "
-                  "cells are the league's own line, outside the 3. The same picks Telegram sent.")
+ui.section_header("TOP-3 this gameweek", "This league's T1 best value, T2 safest and T3 risky value of the week "
+                  "across O/U 2.5, BTTS, Over 1.5 and Over 3.5 - always 3 when 3 priced, coherent candidates exist "
+                  "(owner 2026-11-22). Stake by proof: only a pick past its league's own owner-approved bar carries "
+                  "the 0.5% stake, flat, placed manually at the tip's odds; the others say why they carry no stake. "
+                  "League-wide cells are the league's own line, outside the 3. The same picks Telegram sent.")
 _t3 = T3.report()
 if not _t3:
     ui.empty_state("NO_DATA", "TOP-3 per league is not switched on yet (owner switch-on at go-live).")
@@ -237,6 +238,11 @@ else:
     if _v.get("settled"):
         st.caption(f"Settled TOP-3 picks for {pick}: {_v['settled']} ({_v['won']} won), flat "
                    f"{ui.fmt_units(_v.get('flat_pnl_units'))}, ROI {ui.fmt_roi(_v.get('roi'))}.")
+        for _k, _lbl in (("staked", "Staked"), ("no_stake", "No stake")):
+            _s = _v.get(_k) or {}
+            if _s.get("settled"):
+                st.caption(f"{_lbl}: {_s['settled']} settled ({_s['won']} won), flat "
+                           f"{ui.fmt_units(_s.get('flat_pnl_units'))}, ROI {ui.fmt_roi(_s.get('roi'))}.")
 
 # research status: regimes per market + Pro season ranking
 ui.section_header("Research status", "Research regime per market (where research effort goes, never a stake) and "

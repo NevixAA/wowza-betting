@@ -74,7 +74,9 @@ def _data() -> dict:
     led = pd.read_csv(config.OUTPUT_DIR / "player_ledger.csv", low_memory=False) \
         if (config.OUTPUT_DIR / "player_ledger.csv").exists() else pd.DataFrame()
     return {"team": CR.team_summaries(settled), "sp": sp, "props": CR.props_summaries(led),
-            "top3": CR.top3_summaries(T3.ledger())}
+            "top3": CR.top3_summaries(T3.ledger(), staked=True),
+            # owner 2026-11-22 "3 per league, stake by proof": picks shown without a stake, reported apart
+            "top3_ns": CR.top3_summaries(T3.ledger(), staked=False)}
 
 
 D = _data()
@@ -90,7 +92,9 @@ _cfg = CR.table_config(ui)
 SCOPES = [("Staked bets (a recorded policy stake > 0)", D["team"][CR.CLEAN]["staked"], D["team"][CR.BEFORE]["staked"]),
           ("All team tips, staked or not (flat 1u)", D["team"][CR.CLEAN]["all"], D["team"][CR.BEFORE]["all"]),
           ("Player props (research, no stake)", D["props"][CR.CLEAN], D["props"][CR.BEFORE]),
-          ("TOP-3 per league (0.5% stake, flat; P/L flat 1u)", D["top3"][CR.CLEAN], D["top3"][CR.BEFORE])]
+          ("TOP-3 per league, staked (0.5% stake, flat; P/L flat 1u)", D["top3"][CR.CLEAN], D["top3"][CR.BEFORE]),
+          ("TOP-3 per league, no stake (below or without its league's bar; flat 1u)", D["top3_ns"][CR.CLEAN],
+           D["top3_ns"][CR.BEFORE])]
 
 # ── headline: the Clean Record only ───────────────────────────────────────────────────────────────
 ui.section_header(CR.clean_label(), "Tips generated and played on or after the start. Flat 1u per tip; the "
@@ -142,9 +146,11 @@ for name, c, b in SCOPES:
     else:
         ui.empty_state("NO_DATA", f"{NOT_ENOUGH}: the Clean Record has {c['n']} settled over {c['matchdays']} "
                                   f"matchdays (needs {mins['settled']} over {mins['matchdays']}).")
-st.caption(CR.BEFORE_NOTE + " TOP-3 starts on the start date with its 0.5% flat stake (owner 2026-11-17), so it has no pre-repair "
-           "row. A tip neither rule can place (no generation time and a match after the start) is in neither row: "
-           f"team {D['team'][CR.UNPLACED]}, props {D['props'][CR.UNPLACED]}, TOP-3 {D['top3'][CR.UNPLACED]}.")
+st.caption(CR.BEFORE_NOTE + " TOP-3 starts on the start date (owner 2026-11-17), so it has no pre-repair row; since "
+           "2026-11-22 each league shows 3 picks, staked only where the pick cleared its league's own approved bar, and "
+           "the no-stake picks are counted in their own row. A tip neither rule can place (no generation time and a match "
+           f"after the start) is in neither row: team {D['team'][CR.UNPLACED]}, props {D['props'][CR.UNPLACED]}, "
+           f"TOP-3 {D['top3'][CR.UNPLACED] + D['top3_ns'][CR.UNPLACED]}.")
 
 with st.expander(f"{CR.before_label()} — by market, for reference"):
     st.caption(CR.BEFORE_NOTE)

@@ -1,7 +1,7 @@
 {
  "artifact": "data_truth_health",
  "version": "DATA-TRUTH-1",
- "generated_at": "2026-11-22T14:58:31Z",
+ "generated_at": "2026-11-22T19:06:29Z",
  "checks": [
   {
    "check": "Data truth 1: one canonical name",
@@ -13,7 +13,7 @@
   {
    "check": "Data truth 2: no silent defaults",
    "status": "GREEN",
-   "value": "0 new default(s); 0 known (baseline); 195 allow-listed (counters/display); 0 baseline entr(ies) now gone; 0 allow-list entr(ies) now gone; 438 production files scanned",
+   "value": "0 new default(s); 0 known (baseline); 195 allow-listed (counters/display); 0 baseline entr(ies) now gone; 0 allow-list entr(ies) now gone; 443 production files scanned",
    "rule": "no NEW invented default in ALL production code (fillna(<non-zero literal>), literal season fallback/list, pinned football-data folder, numeric .get(<key>, <number>), an or-zero on a parsed value, a zero fillna on a price/odds): RED if any site is in neither config/data_truth_baseline.json nor config/data_truth_allowlist.json, or an allow-list entry has no reason; GREEN otherwise",
    "detail": ""
   },
@@ -27,13 +27,13 @@
     "standard|O/U 2.5": {
      "status": "GREEN",
      "fixtures": 93,
-     "worst_pct": 4.3,
+     "worst_pct": 3.2,
      "missing": {},
      "n_inputs": 43
     },
     "new_format|O/U 2.5": {
      "status": "GREEN",
-     "fixtures": 54,
+     "fixtures": 60,
      "worst_pct": 0.0,
      "missing": {},
      "n_inputs": 36
@@ -41,13 +41,13 @@
     "standard|BTTS": {
      "status": "GREEN",
      "fixtures": 93,
-     "worst_pct": 4.3,
+     "worst_pct": 3.2,
      "missing": {},
      "n_inputs": 43
     },
     "new_format|BTTS": {
      "status": "GREEN",
-     "fixtures": 54,
+     "fixtures": 60,
      "worst_pct": 0.0,
      "missing": {},
      "n_inputs": 36
@@ -55,13 +55,13 @@
     "standard|Over 1.5": {
      "status": "GREEN",
      "fixtures": 93,
-     "worst_pct": 4.3,
+     "worst_pct": 3.2,
      "missing": {},
      "n_inputs": 43
     },
     "new_format|Over 1.5": {
      "status": "GREEN",
-     "fixtures": 54,
+     "fixtures": 60,
      "worst_pct": 0.0,
      "missing": {},
      "n_inputs": 36
@@ -69,13 +69,13 @@
     "standard|Over 3.5": {
      "status": "GREEN",
      "fixtures": 93,
-     "worst_pct": 4.3,
+     "worst_pct": 3.2,
      "missing": {},
      "n_inputs": 43
     },
     "new_format|Over 3.5": {
      "status": "GREEN",
-     "fixtures": 54,
+     "fixtures": 60,
      "worst_pct": 0.0,
      "missing": {},
      "n_inputs": 36
@@ -83,27 +83,27 @@
     "standard|HT Over 0.5": {
      "status": "GREEN",
      "fixtures": 93,
-     "worst_pct": 4.3,
+     "worst_pct": 3.2,
      "missing": {},
      "n_inputs": 43
     },
     "standard|HT Over 1.5": {
      "status": "GREEN",
      "fixtures": 93,
-     "worst_pct": 4.3,
+     "worst_pct": 3.2,
      "missing": {},
      "n_inputs": 43
     },
     "new_format|HT Over 0.5": {
      "status": "GREEN",
-     "fixtures": 54,
+     "fixtures": 60,
      "worst_pct": 0.0,
      "missing": {},
      "n_inputs": 36
     },
     "new_format|HT Over 1.5": {
      "status": "GREEN",
-     "fixtures": 54,
+     "fixtures": 60,
      "worst_pct": 0.0,
      "missing": {},
      "n_inputs": 36
@@ -269,7 +269,7 @@
   {
    "check": "Data truth 9: clean ledgers",
    "status": "GREEN",
-   "value": "clean since 2026-11-19 (6 live tip(s), 2233 player row(s), 75 v91 row(s))",
+   "value": "clean since 2026-11-19 (6 live tip(s), 2264 player row(s), 105 v91 row(s))",
    "rule": "from the Clean Record start: 0 multi-tip / opposite-tip fixtures, 0 post-kickoff tips, 0 closes <= 1.0, 0 |CLV| > 50 new-format rows, 0 duplicate player tips, 0 v91_shadow fixtures logged twice: RED on any; NO_DATA before the start is set",
    "detail": ""
   },

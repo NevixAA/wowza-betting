@@ -1,0 +1,2200 @@
+{
+ "artifact": "props_real_data_provenance",
+ "version": "PROPS-CERT-1.0",
+ "generated_at": "2026-11-22T18:06:37Z",
+ "code_sha": "2a86ab87a824d37df2ac1cd032438af91135552b",
+ "verdict": "VERIFIED",
+ "failing": [],
+ "counts": {
+  "artifacts": 13,
+  "verified": 13,
+  "by_role": {
+   "production": 5,
+   "rare_served": 4,
+   "research": 4
+  }
+ },
+ "installed_hashes": {
+  "goals:champion": "5de94714b722dbc3fd1ecd294fa246725749cc8ea5dced294d7487f934110038",
+  "goals2:champion": "81b5b8641e2a0ee41677d6fda5057a224d42a7e35f1118898a1650416707e8de",
+  "assists:champion": "abf39bb5abbb2d6097d9d2d83082e3b7abefc22bf7fd91689b01ba8f810c499b",
+  "sot:champion": "571b102c4214f619b2d2d9c4f390c214481c74f68c3db88ef6812befa843025c",
+  "sot2:champion": "5b5fad604a126baac702bef3ade27cbac662625b0e4936ba7fe48337b2621734",
+  "sot3:champion": "f11626d93c30cac4eb37deb721ebb1b15b18cde346e91b27ed566f61d52e0dd8",
+  "sot4:champion": "e0d074b89ef75a41f079b86f7d431681238c0b6fabaa1d1252feaf8c7655b8b0",
+  "cards:champion": "bfd5e1cc51835a63f9abfcfe5e8fa7a7873ed079e07102f8af8764f68a6d9279",
+  "goals3:champion": "89f588a0614e4716d46fb77f96d23bb65cf08564d313ec19e212e325cbf8a0fa",
+  "goals2:challenger": "e218cb6ca5483db2085dce67fed814065f9329134490b2bf81e29f1999d13d1a",
+  "goals3:challenger": "62e5b2bb90b4ddd2264e91802b8cb8ccc0b8c6471e1b072cb51ffde466fe0f7e",
+  "sot3:challenger": "a3646f1d284ad4191f3e4a5cdf13e3e83222104554f0e1705040435eb0c43c70",
+  "sot4:challenger": "8ed4b8055873945dae348d63bbfca0d7d0891213a9230f6d37adbe2a6b35a45d"
+ },
+ "artifacts": [
+  {
+   "key": "goals:champion",
+   "market": "goals",
+   "role": "production",
+   "model_version": "props_goals_clean_hgb_nan_native_5de94714",
+   "path": "models/model_player_goals.pkl",
+   "checks": {
+    "file_present": {
+     "ok": true,
+     "detail": ""
+    },
+    "sha256_matches_registry": {
+     "ok": true,
+     "detail": "bytes 5de94714b722 | manifest 5de94714b722 | pointer 5de94714b722"
+    },
+    "recipe_clean_harness": {
+     "ok": true,
+     "detail": "recipe props_clean_harness, harness PROPS-HARNESS-1.0, candidate hgb_nan_native, hand_adjustment none"
+    },
+    "raw_input_provenance": {
+     "ok": true,
+     "detail": "feature_rule all_prior_verified, floors 0.95/0.85; run 43035218594 status OK; harness artifact fd31c5e105c9 vs run fd31c5e105c9 (downloaded bytes re-hashed); verified share train 0.9979192656611899 / holdout 0.9884023124657462"
+    },
+    "feature_schema": {
+     "ok": true,
+     "detail": "128 features, withheld/proxy/removed 0, outside contract 0, = config.PLAYER_FEATURE_COLS True, schema sha 59e3dd18f769 = run"
+    },
+    "no_single_value_feature": {
+     "ok": true,
+     "detail": "0 served feature(s) one value on > 99.9% of training rows"
+    },
+    "training_window_and_cutoff": {
+     "ok": true,
+     "detail": "fit ['2022-08-18', '2026-01-09'], calibration ['2026-01-10', '2026-08-31'], cutoff 2026-08-31, holdout ['2026-09-01', '2026-10-31']"
+    },
+    "chronological_validation": {
+     "ok": true,
+     "detail": "8/8 walk-forward folds trained strictly before their test week; holdout window = run"
+    },
+    "historical_coverage": {
+     "ok": true,
+     "detail": "734045 fit + 130673 calibration rows from 2022-08-18; holdout n 55907"
+    },
+    "missing_data_handling": {
+     "ok": true,
+     "detail": "NaN-native HistGradientBoosting, no value filled anywhere"
+    },
+    "player_identity": {
+     "ok": true,
+     "detail": "scores the API-Football player_id x fixture_id rows built by build_upcoming_features (identity tests: global evidence)"
+    },
+    "no_batch_statistics": {
+     "ok": true,
+     "detail": "25 players alone vs with 10 / 1,000 others, shuffled, beside unrelated rows with missing inputs: max |diff| 0.0 (tolerance 1e-12); mixed-dtype probe (informational) 0.0"
+    },
+    "train_serve_recipe_parity": {
+     "ok": true,
+     "detail": "serving calls the harness model's own predict() True; pickled sklearn ['1.9.1'] vs runtime 1.9.1"
+    },
+    "permission": {
+     "ok": true,
+     "detail": "PRODUCTION (owner-approved clean retrain champion)"
+    }
+   },
+   "sha256": "5de94714b722dbc3fd1ecd294fa246725749cc8ea5dced294d7487f934110038",
+   "candidate": "hgb_nan_native",
+   "recipe": "props_clean_harness",
+   "harness_version": "PROPS-HARNESS-1.0",
+   "provider": "API-Football player match statistics (player_history + cup rows, re-fetched counts), built by player_model.props_harness.build_frame",
+   "run_id": "43035218594",
+   "code_sha": "6fd794964ad031b45ff0a383d996bb09b414175c",
+   "harness_artifact_sha256": "fd31c5e105c9b82d1f227c1932bb4b496486f70174f91f4c314a797a1da6b492",
+   "training_cutoff": "2026-08-31",
+   "window": {
+    "fit_rows": 734045,
+    "calibration_rows": 130673,
+    "fit_dates": [
+     "2022-08-18",
+     "2026-01-09"
+    ],
+    "calibration_dates": [
+     "2026-01-10",
+     "2026-08-31"
+    ]
+   },
+   "holdout": {
+    "n": 55907,
+    "events": 4980,
+    "holdout_dates": [
+     "2026-09-01",
+     "2026-10-31"
+    ],
+    "rule": "beats recipe_retrained (CI95 upper < 0) and player_base_rate"
+   },
+   "approval": {
+    "approved_on": "2026-11-11",
+    "approval": "Fix penalties too, then promote"
+   },
+   "pickled_sklearn": [
+    "1.9.1"
+   ],
+   "runtime_sklearn": "1.9.1",
+   "features": 128,
+   "withheld_or_proxy_features": [],
+   "historical_coverage": {
+    "fit_rows": 734045,
+    "calibration_rows": 130673,
+    "first_training_date": "2022-08-18",
+    "holdout_rows": 55907
+   },
+   "batch_invariance": {
+    "with_10_others": {
+     "max_abs_diff": 0.0,
+     "rows_not_bit_identical": 0,
+     "rows_differing": 0
+    },
+    "with_1000_others": {
+     "max_abs_diff": 0.0,
+     "rows_not_bit_identical": 0,
+     "rows_differing": 0
+    },
+    "shuffled": {
+     "max_abs_diff": 0.0,
+     "rows_not_bit_identical": 0,
+     "rows_differing": 0
+    },
+    "with_unrelated_missing_rows": {
+     "max_abs_diff": 0.0,
+     "rows_not_bit_identical": 0,
+     "rows_differing": 0
+    },
+    "targets": 25,
+    "targets_scored": 25,
+    "invariant": true,
+    "informational": {
+     "mixed_dtype_float64_neighbours": {
+      "max_abs_diff": 0.0,
+      "rows_not_bit_identical": 0,
+      "rows_differing": 0
+     }
+    }
+   },
+   "permission": "PRODUCTION (owner-approved clean retrain champion)",
+   "status": "VERIFIED"
+  },
+  {
+   "key": "goals2:champion",
+   "market": "goals2",
+   "role": "rare_served",
+   "model_version": "props_goals2_clean_player_base_rate_81b5b864",
+   "path": "models/model_player_goals2.pkl",
+   "checks": {
+    "file_present": {
+     "ok": true,
+     "detail": ""
+    },
+    "sha256_matches_registry": {
+     "ok": true,
+     "detail": "bytes 81b5b8641e2a | manifest 81b5b8641e2a | pointer 81b5b8641e2a"
+    },
+    "recipe_clean_harness": {
+     "ok": true,
+     "detail": "recipe props_clean_harness, harness PROPS-HARNESS-1.0, candidate player_base_rate, hand_adjustment none"
+    },
+    "raw_input_provenance": {
+     "ok": true,
+     "detail": "feature_rule all_prior_verified, floors 0.95/0.85; run 43035218594 status OK; harness artifact d22e92ebb87f vs run d22e92ebb87f (downloaded bytes re-hashed); verified share train 0.9979192656611899 / holdout 0.9884023124657462"
+    },
+    "feature_schema": {
+     "ok": true,
+     "detail": "no feature (inputs ['player_id'])"
+    },
+    "no_single_value_feature": {
+     "ok": true,
+     "detail": "0 served feature(s) one value on > 99.9% of training rows"
+    },
+    "training_window_and_cutoff": {
+     "ok": true,
+     "detail": "fit ['2022-08-18', '2026-01-09'], calibration ['2026-01-10', '2026-08-31'], cutoff 2026-08-31, holdout ['2026-09-01', '2026-10-31']"
+    },
+    "chronological_validation": {
+     "ok": true,
+     "detail": "8/8 walk-forward folds trained strictly before their test week; holdout window = run"
+    },
+    "historical_coverage": {
+     "ok": true,
+     "detail": "734045 fit + 130673 calibration rows from 2022-08-18; holdout n 55907"
+    },
+    "missing_data_handling": {
+     "ok": true,
+     "detail": "player's training-window rate (22260 players); a player never seen in training gets the training window's market rate (fitted, persisted), never a typed value"
+    },
+    "player_identity": {
+     "ok": true,
+     "detail": "22260 API-Football player ids, all positive integers"
+    },
+    "no_batch_statistics": {
+     "ok": true,
+     "detail": "25 players alone vs with 10 / 1,000 others, shuffled, beside unrelated rows with missing inputs: max |diff| 0.0 (tolerance 1e-12); mixed-dtype probe (informational) 0.0"
+    },
+    "train_serve_recipe_parity": {
+     "ok": true,
+     "detail": "serving calls the harness model's own predict() True; pickled sklearn none (no estimator) vs runtime 1.9.1"
+    },
+    "permission": {
+     "ok": true,
+     "detail": "RARE_RESEARCH_PICKS (hidden market: no normal tip; owner 2026-11-18)"
+    }
+   },
+   "sha256": "81b5b8641e2a0ee41677d6fda5057a224d42a7e35f1118898a1650416707e8de",
+   "candidate": "player_base_rate",
+   "recipe": "props_clean_harness",
+   "harness_version": "PROPS-HARNESS-1.0",
+   "provider": "API-Football player match statistics (player_history + cup rows, re-fetched counts), built by player_model.props_harness.build_frame",
+   "run_id": "43035218594",
+   "code_sha": "6fd794964ad031b45ff0a383d996bb09b414175c",
+   "harness_artifact_sha256": "d22e92ebb87f4c78a881b626b855123a9cb0e8f8516b2c6a016a6320bbcecc96",
+   "training_cutoff": "2026-08-31",
+   "window": {
+    "fit_rows": 734045,
+    "calibration_rows": 130673,
+    "fit_dates": [
+     "2022-08-18",
+     "2026-01-09"
+    ],
+    "calibration_dates": [
+     "2026-01-10",
+     "2026-08-31"
+    ]
+   },
+   "holdout": {
+    "n": 55907,
+    "events": 480,
+    "holdout_dates": [
+     "2026-09-01",
+     "2026-10-31"
+    ],
+    "rule": "owner 2026-11-18: serve the clean player_base_rate (no ML candidate beats it: no candidate beats player_base_rate)"
+   },
+   "approval": {
+    "approved_on": "2026-11-18",
+    "approval": "serve the clean player_base_rate model (option b) - 100% real data, markets stay on; the clean ML candidates keep predicting as challengers (owner decision 2026-11-18, relayed by the go-live coordinator)"
+   },
+   "pickled_sklearn": [],
+   "runtime_sklearn": "1.9.1",
+   "features": 0,
+   "withheld_or_proxy_features": [],
+   "historical_coverage": {
+    "fit_rows": 734045,
+    "calibration_rows": 130673,
+    "first_training_date": "2022-08-18",
+    "holdout_rows": 55907
+   },
+   "batch_invariance": {
+    "with_10_others": {
+     "max_abs_diff": 0.0,
+     "rows_not_bit_identical": 0,
+     "rows_differing": 0
+    },
+    "with_1000_others": {
+     "max_abs_diff": 0.0,
+     "rows_not_bit_identical": 0,
+     "rows_differing": 0
+    },
+    "shuffled": {
+     "max_abs_diff": 0.0,
+     "rows_not_bit_identical": 0,
+     "rows_differing": 0
+    },
+    "with_unrelated_missing_rows": {
+     "max_abs_diff": 0.0,
+     "rows_not_bit_identical": 0,
+     "rows_differing": 0
+    },
+    "targets": 25,
+    "targets_scored": 25,
+    "invariant": true,
+    "informational": {
+     "mixed_dtype_float64_neighbours": {
+      "max_abs_diff": 0.0,
+      "rows_not_bit_identical": 0,
+      "rows_differing": 0
+     }
+    }
+   },
+   "permission": "RARE_RESEARCH_PICKS (hidden market: no normal tip; owner 2026-11-18)",
+   "status": "VERIFIED"
+  },
+  {
+   "key": "assists:champion",
+   "market": "assists",
+   "role": "production",
+   "model_version": "props_assists_clean_hgb_nan_native_abf39bb5",
+   "path": "models/model_player_assists.pkl",
+   "checks": {
+    "file_present": {
+     "ok": true,
+     "detail": ""
+    },
+    "sha256_matches_registry": {
+     "ok": true,
+     "detail": "bytes abf39bb5abbb | manifest abf39bb5abbb | pointer abf39bb5abbb"
+    },
+    "recipe_clean_harness": {
+     "ok": true,
+     "detail": "recipe props_clean_harness, harness PROPS-HARNESS-1.0, candidate hgb_nan_native, hand_adjustment none"
+    },
+    "raw_input_provenance": {
+     "ok": true,
+     "detail": "feature_rule all_prior_verified, floors 0.95/0.85; run 43035218594 status OK; harness artifact b2d702224b37 vs run b2d702224b37 (downloaded bytes re-hashed); verified share train 0.9979192656611899 / holdout 0.9884023124657462"
+    },
+    "feature_schema": {
+     "ok": true,
+     "detail": "128 features, withheld/proxy/removed 0, outside contract 0, = config.PLAYER_FEATURE_COLS True, schema sha 59e3dd18f769 = run"
+    },
+    "no_single_value_feature": {
+     "ok": true,
+     "detail": "0 served feature(s) one value on > 99.9% of training rows"
+    },
+    "training_window_and_cutoff": {
+     "ok": true,
+     "detail": "fit ['2022-08-18', '2026-01-09'], calibration ['2026-01-10', '2026-08-31'], cutoff 2026-08-31, holdout ['2026-09-01', '2026-10-31']"
+    },
+    "chronological_validation": {
+     "ok": true,
+     "detail": "8/8 walk-forward folds trained strictly before their test week; holdout window = run"
+    },
+    "historical_coverage": {
+     "ok": true,
+     "detail": "734045 fit + 130673 calibration rows from 2022-08-18; holdout n 55907"
+    },
+    "missing_data_handling": {
+     "ok": true,
+     "detail": "NaN-native HistGradientBoosting, no value filled anywhere"
+    },
+    "player_identity": {
+     "ok": true,
+     "detail": "scores the API-Football player_id x fixture_id rows built by build_upcoming_features (identity tests: global evidence)"
+    },
+    "no_batch_statistics": {
+     "ok": true,
+     "detail": "25 players alone vs with 10 / 1,000 others, shuffled, beside unrelated rows with missing inputs: max |diff| 0.0 (tolerance 1e-12); mixed-dtype probe (informational) 0.0"
+    },
+    "train_serve_recipe_parity": {
+     "ok": true,
+     "detail": "serving calls the harness model's own predict() True; pickled sklearn ['1.9.1'] vs runtime 1.9.1"
+    },
+    "permission": {
+     "ok": true,
+     "detail": "PRODUCTION (owner-approved clean retrain champion)"
+    }
+   },
+   "sha256": "abf39bb5abbb2d6097d9d2d83082e3b7abefc22bf7fd91689b01ba8f810c499b",
+   "candidate": "hgb_nan_native",
+   "recipe": "props_clean_harness",
+   "harness_version": "PROPS-HARNESS-1.0",
+   "provider": "API-Football player match statistics (player_history + cup rows, re-fetched counts), built by player_model.props_harness.build_frame",
+   "run_id": "43035218594",
+   "code_sha": "6fd794964ad031b45ff0a383d996bb09b414175c",
+   "harness_artifact_sha256": "b2d702224b37b6c8ab0a270993c61ad6fac04219a32952b2ca4334a9e9de8d01",
+   "training_cutoff": "2026-08-31",
+   "window": {
+    "fit_rows": 734045,
+    "calibration_rows": 130673,
+    "fit_dates": [
+     "2022-08-18",
+     "2026-01-09"
+    ],
+    "calibration_dates": [
+     "2026-01-10",
+     "2026-08-31"
+    ]
+   },
+   "holdout": {
+    "n": 55907,
+    "events": 3696,
+    "holdout_dates": [
+     "2026-09-01",
+     "2026-10-31"
+    ],
+    "rule": "beats recipe_retrained (CI95 upper < 0) and player_base_rate"
+   },
+   "approval": {
+    "approved_on": "2026-11-11",
+    "approval": "Fix penalties too, then promote"
+   },
+   "pickled_sklearn": [
+    "1.9.1"
+   ],
+   "runtime_sklearn": "1.9.1",
+   "features": 128,
+   "withheld_or_proxy_features": [],
+   "historical_coverage": {
+    "fit_rows": 734045,
+    "calibration_rows": 130673,
+    "first_training_date": "2022-08-18",
+    "holdout_rows": 55907
+   },
+   "batch_invariance": {
+    "with_10_others": {
+     "max_abs_diff": 0.0,
+     "rows_not_bit_identical": 0,
+     "rows_differing": 0
+    },
+    "with_1000_others": {
+     "max_abs_diff": 0.0,
+     "rows_not_bit_identical": 0,
+     "rows_differing": 0
+    },
+    "shuffled": {
+     "max_abs_diff": 0.0,
+     "rows_not_bit_identical": 0,
+     "rows_differing": 0
+    },
+    "with_unrelated_missing_rows": {
+     "max_abs_diff": 0.0,
+     "rows_not_bit_identical": 0,
+     "rows_differing": 0
+    },
+    "targets": 25,
+    "targets_scored": 25,
+    "invariant": true,
+    "informational": {
+     "mixed_dtype_float64_neighbours": {
+      "max_abs_diff": 0.0,
+      "rows_not_bit_identical": 0,
+      "rows_differing": 0
+     }
+    }
+   },
+   "permission": "PRODUCTION (owner-approved clean retrain champion)",
+   "status": "VERIFIED"
+  },
+  {
+   "key": "sot:champion",
+   "market": "sot",
+   "role": "production",
+   "model_version": "props_sot_clean_hgb_nan_native_571b102c",
+   "path": "models/model_player_sot.pkl",
+   "checks": {
+    "file_present": {
+     "ok": true,
+     "detail": ""
+    },
+    "sha256_matches_registry": {
+     "ok": true,
+     "detail": "bytes 571b102c4214 | manifest 571b102c4214 | pointer 571b102c4214"
+    },
+    "recipe_clean_harness": {
+     "ok": true,
+     "detail": "recipe props_clean_harness, harness PROPS-HARNESS-1.0, candidate hgb_nan_native, hand_adjustment none"
+    },
+    "raw_input_provenance": {
+     "ok": true,
+     "detail": "feature_rule all_prior_verified, floors 0.95/0.85; run 43035218594 status OK; harness artifact a4ecd8bae2b5 vs run a4ecd8bae2b5 (downloaded bytes re-hashed); verified share train 0.9979192656611899 / holdout 0.9884023124657462"
+    },
+    "feature_schema": {
+     "ok": true,
+     "detail": "128 features, withheld/proxy/removed 0, outside contract 0, = config.PLAYER_FEATURE_COLS True, schema sha 59e3dd18f769 = run"
+    },
+    "no_single_value_feature": {
+     "ok": true,
+     "detail": "0 served feature(s) one value on > 99.9% of training rows"
+    },
+    "training_window_and_cutoff": {
+     "ok": true,
+     "detail": "fit ['2022-08-18', '2026-01-09'], calibration ['2026-01-10', '2026-08-31'], cutoff 2026-08-31, holdout ['2026-09-01', '2026-10-31']"
+    },
+    "chronological_validation": {
+     "ok": true,
+     "detail": "8/8 walk-forward folds trained strictly before their test week; holdout window = run"
+    },
+    "historical_coverage": {
+     "ok": true,
+     "detail": "734045 fit + 130673 calibration rows from 2022-08-18; holdout n 55907"
+    },
+    "missing_data_handling": {
+     "ok": true,
+     "detail": "NaN-native HistGradientBoosting, no value filled anywhere"
+    },
+    "player_identity": {
+     "ok": true,
+     "detail": "scores the API-Football player_id x fixture_id rows built by build_upcoming_features (identity tests: global evidence)"
+    },
+    "no_batch_statistics": {
+     "ok": true,
+     "detail": "25 players alone vs with 10 / 1,000 others, shuffled, beside unrelated rows with missing inputs: max |diff| 0.0 (tolerance 1e-12); mixed-dtype probe (informational) 0.0"
+    },
+    "train_serve_recipe_parity": {
+     "ok": true,
+     "detail": "serving calls the harness model's own predict() True; pickled sklearn ['1.9.1'] vs runtime 1.9.1"
+    },
+    "permission": {
+     "ok": true,
+     "detail": "PRODUCTION (owner-approved clean retrain champion)"
+    }
+   },
+   "sha256": "571b102c4214f619b2d2d9c4f390c214481c74f68c3db88ef6812befa843025c",
+   "candidate": "hgb_nan_native",
+   "recipe": "props_clean_harness",
+   "harness_version": "PROPS-HARNESS-1.0",
+   "provider": "API-Football player match statistics (player_history + cup rows, re-fetched counts), built by player_model.props_harness.build_frame",
+   "run_id": "43035218594",
+   "code_sha": "6fd794964ad031b45ff0a383d996bb09b414175c",
+   "harness_artifact_sha256": "a4ecd8bae2b56b648b21a5bb4f8f1c171ce9e5925faa5f4c8fd3850abbb169f7",
+   "training_cutoff": "2026-08-31",
+   "window": {
+    "fit_rows": 734045,
+    "calibration_rows": 130673,
+    "fit_dates": [
+     "2022-08-18",
+     "2026-01-09"
+    ],
+    "calibration_dates": [
+     "2026-01-10",
+     "2026-08-31"
+    ]
+   },
+   "holdout": {
+    "n": 55907,
+    "events": 13472,
+    "holdout_dates": [
+     "2026-09-01",
+     "2026-10-31"
+    ],
+    "rule": "beats recipe_retrained (CI95 upper < 0) and player_base_rate"
+   },
+   "approval": {
+    "approved_on": "2026-11-11",
+    "approval": "Fix penalties too, then promote"
+   },
+   "pickled_sklearn": [
+    "1.9.1"
+   ],
+   "runtime_sklearn": "1.9.1",
+   "features": 128,
+   "withheld_or_proxy_features": [],
+   "historical_coverage": {
+    "fit_rows": 734045,
+    "calibration_rows": 130673,
+    "first_training_date": "2022-08-18",
+    "holdout_rows": 55907
+   },
+   "batch_invariance": {
+    "with_10_others": {
+     "max_abs_diff": 0.0,
+     "rows_not_bit_identical": 0,
+     "rows_differing": 0
+    },
+    "with_1000_others": {
+     "max_abs_diff": 0.0,
+     "rows_not_bit_identical": 0,
+     "rows_differing": 0
+    },
+    "shuffled": {
+     "max_abs_diff": 0.0,
+     "rows_not_bit_identical": 0,
+     "rows_differing": 0
+    },
+    "with_unrelated_missing_rows": {
+     "max_abs_diff": 0.0,
+     "rows_not_bit_identical": 0,
+     "rows_differing": 0
+    },
+    "targets": 25,
+    "targets_scored": 25,
+    "invariant": true,
+    "informational": {
+     "mixed_dtype_float64_neighbours": {
+      "max_abs_diff": 0.0,
+      "rows_not_bit_identical": 0,
+      "rows_differing": 0
+     }
+    }
+   },
+   "permission": "PRODUCTION (owner-approved clean retrain champion)",
+   "status": "VERIFIED"
+  },
+  {
+   "key": "sot2:champion",
+   "market": "sot2",
+   "role": "production",
+   "model_version": "props_sot2_clean_hgb_nan_native_5b5fad60",
+   "path": "models/model_player_sot2.pkl",
+   "checks": {
+    "file_present": {
+     "ok": true,
+     "detail": ""
+    },
+    "sha256_matches_registry": {
+     "ok": true,
+     "detail": "bytes 5b5fad604a12 | manifest 5b5fad604a12 | pointer 5b5fad604a12"
+    },
+    "recipe_clean_harness": {
+     "ok": true,
+     "detail": "recipe props_clean_harness, harness PROPS-HARNESS-1.0, candidate hgb_nan_native, hand_adjustment none"
+    },
+    "raw_input_provenance": {
+     "ok": true,
+     "detail": "feature_rule all_prior_verified, floors 0.95/0.85; run 43035218594 status OK; harness artifact b0603240f8e8 vs run b0603240f8e8 (downloaded bytes re-hashed); verified share train 0.9979192656611899 / holdout 0.9884023124657462"
+    },
+    "feature_schema": {
+     "ok": true,
+     "detail": "128 features, withheld/proxy/removed 0, outside contract 0, = config.PLAYER_FEATURE_COLS True, schema sha 59e3dd18f769 = run"
+    },
+    "no_single_value_feature": {
+     "ok": true,
+     "detail": "0 served feature(s) one value on > 99.9% of training rows"
+    },
+    "training_window_and_cutoff": {
+     "ok": true,
+     "detail": "fit ['2022-08-18', '2026-01-09'], calibration ['2026-01-10', '2026-08-31'], cutoff 2026-08-31, holdout ['2026-09-01', '2026-10-31']"
+    },
+    "chronological_validation": {
+     "ok": true,
+     "detail": "8/8 walk-forward folds trained strictly before their test week; holdout window = run"
+    },
+    "historical_coverage": {
+     "ok": true,
+     "detail": "734045 fit + 130673 calibration rows from 2022-08-18; holdout n 55907"
+    },
+    "missing_data_handling": {
+     "ok": true,
+     "detail": "NaN-native HistGradientBoosting, no value filled anywhere"
+    },
+    "player_identity": {
+     "ok": true,
+     "detail": "scores the API-Football player_id x fixture_id rows built by build_upcoming_features (identity tests: global evidence)"
+    },
+    "no_batch_statistics": {
+     "ok": true,
+     "detail": "25 players alone vs with 10 / 1,000 others, shuffled, beside unrelated rows with missing inputs: max |diff| 0.0 (tolerance 1e-12); mixed-dtype probe (informational) 0.0"
+    },
+    "train_serve_recipe_parity": {
+     "ok": true,
+     "detail": "serving calls the harness model's own predict() True; pickled sklearn ['1.9.1'] vs runtime 1.9.1"
+    },
+    "permission": {
+     "ok": true,
+     "detail": "PRODUCTION (owner-approved clean retrain champion)"
+    }
+   },
+   "sha256": "5b5fad604a126baac702bef3ade27cbac662625b0e4936ba7fe48337b2621734",
+   "candidate": "hgb_nan_native",
+   "recipe": "props_clean_harness",
+   "harness_version": "PROPS-HARNESS-1.0",
+   "provider": "API-Football player match statistics (player_history + cup rows, re-fetched counts), built by player_model.props_harness.build_frame",
+   "run_id": "43035218594",
+   "code_sha": "6fd794964ad031b45ff0a383d996bb09b414175c",
+   "harness_artifact_sha256": "b0603240f8e8da04e908b9d280491afff3dea6193f322c5de2aa1c42284ced66",
+   "training_cutoff": "2026-08-31",
+   "window": {
+    "fit_rows": 734045,
+    "calibration_rows": 130673,
+    "fit_dates": [
+     "2022-08-18",
+     "2026-01-09"
+    ],
+    "calibration_dates": [
+     "2026-01-10",
+     "2026-08-31"
+    ]
+   },
+   "holdout": {
+    "n": 55907,
+    "events": 3311,
+    "holdout_dates": [
+     "2026-09-01",
+     "2026-10-31"
+    ],
+    "rule": "beats recipe_retrained (CI95 upper < 0) and player_base_rate"
+   },
+   "approval": {
+    "approved_on": "2026-11-11",
+    "approval": "Fix penalties too, then promote"
+   },
+   "pickled_sklearn": [
+    "1.9.1"
+   ],
+   "runtime_sklearn": "1.9.1",
+   "features": 128,
+   "withheld_or_proxy_features": [],
+   "historical_coverage": {
+    "fit_rows": 734045,
+    "calibration_rows": 130673,
+    "first_training_date": "2022-08-18",
+    "holdout_rows": 55907
+   },
+   "batch_invariance": {
+    "with_10_others": {
+     "max_abs_diff": 0.0,
+     "rows_not_bit_identical": 0,
+     "rows_differing": 0
+    },
+    "with_1000_others": {
+     "max_abs_diff": 0.0,
+     "rows_not_bit_identical": 0,
+     "rows_differing": 0
+    },
+    "shuffled": {
+     "max_abs_diff": 0.0,
+     "rows_not_bit_identical": 0,
+     "rows_differing": 0
+    },
+    "with_unrelated_missing_rows": {
+     "max_abs_diff": 0.0,
+     "rows_not_bit_identical": 0,
+     "rows_differing": 0
+    },
+    "targets": 25,
+    "targets_scored": 25,
+    "invariant": true,
+    "informational": {
+     "mixed_dtype_float64_neighbours": {
+      "max_abs_diff": 0.0,
+      "rows_not_bit_identical": 0,
+      "rows_differing": 0
+     }
+    }
+   },
+   "permission": "PRODUCTION (owner-approved clean retrain champion)",
+   "status": "VERIFIED"
+  },
+  {
+   "key": "sot3:champion",
+   "market": "sot3",
+   "role": "rare_served",
+   "model_version": "props_sot3_clean_player_base_rate_f11626d9",
+   "path": "models/model_player_sot3.pkl",
+   "checks": {
+    "file_present": {
+     "ok": true,
+     "detail": ""
+    },
+    "sha256_matches_registry": {
+     "ok": true,
+     "detail": "bytes f11626d93c30 | manifest f11626d93c30 | pointer f11626d93c30"
+    },
+    "recipe_clean_harness": {
+     "ok": true,
+     "detail": "recipe props_clean_harness, harness PROPS-HARNESS-1.0, candidate player_base_rate, hand_adjustment none"
+    },
+    "raw_input_provenance": {
+     "ok": true,
+     "detail": "feature_rule all_prior_verified, floors 0.95/0.85; run 43035218594 status OK; harness artifact 89bdb2e1712d vs run 89bdb2e1712d (downloaded bytes re-hashed); verified share train 0.9979192656611899 / holdout 0.9884023124657462"
+    },
+    "feature_schema": {
+     "ok": true,
+     "detail": "no feature (inputs ['player_id'])"
+    },
+    "no_single_value_feature": {
+     "ok": true,
+     "detail": "0 served feature(s) one value on > 99.9% of training rows"
+    },
+    "training_window_and_cutoff": {
+     "ok": true,
+     "detail": "fit ['2022-08-18', '2026-01-09'], calibration ['2026-01-10', '2026-08-31'], cutoff 2026-08-31, holdout ['2026-09-01', '2026-10-31']"
+    },
+    "chronological_validation": {
+     "ok": true,
+     "detail": "8/8 walk-forward folds trained strictly before their test week; holdout window = run"
+    },
+    "historical_coverage": {
+     "ok": true,
+     "detail": "734045 fit + 130673 calibration rows from 2022-08-18; holdout n 55907"
+    },
+    "missing_data_handling": {
+     "ok": true,
+     "detail": "player's training-window rate (22260 players); a player never seen in training gets the training window's market rate (fitted, persisted), never a typed value"
+    },
+    "player_identity": {
+     "ok": true,
+     "detail": "22260 API-Football player ids, all positive integers"
+    },
+    "no_batch_statistics": {
+     "ok": true,
+     "detail": "25 players alone vs with 10 / 1,000 others, shuffled, beside unrelated rows with missing inputs: max |diff| 0.0 (tolerance 1e-12); mixed-dtype probe (informational) 0.0"
+    },
+    "train_serve_recipe_parity": {
+     "ok": true,
+     "detail": "serving calls the harness model's own predict() True; pickled sklearn none (no estimator) vs runtime 1.9.1"
+    },
+    "permission": {
+     "ok": true,
+     "detail": "RARE_RESEARCH_PICKS (hidden market: no normal tip; owner 2026-11-18)"
+    }
+   },
+   "sha256": "f11626d93c30cac4eb37deb721ebb1b15b18cde346e91b27ed566f61d52e0dd8",
+   "candidate": "player_base_rate",
+   "recipe": "props_clean_harness",
+   "harness_version": "PROPS-HARNESS-1.0",
+   "provider": "API-Football player match statistics (player_history + cup rows, re-fetched counts), built by player_model.props_harness.build_frame",
+   "run_id": "43035218594",
+   "code_sha": "6fd794964ad031b45ff0a383d996bb09b414175c",
+   "harness_artifact_sha256": "89bdb2e1712dd95679c0779ccd3c6ac38e4c586a00cd1c79107439776a5cd8fe",
+   "training_cutoff": "2026-08-31",
+   "window": {
+    "fit_rows": 734045,
+    "calibration_rows": 130673,
+    "fit_dates": [
+     "2022-08-18",
+     "2026-01-09"
+    ],
+    "calibration_dates": [
+     "2026-01-10",
+     "2026-08-31"
+    ]
+   },
+   "holdout": {
+    "n": 55907,
+    "events": 803,
+    "holdout_dates": [
+     "2026-09-01",
+     "2026-10-31"
+    ],
+    "rule": "owner 2026-11-18: serve the clean player_base_rate (no ML candidate beats it: no candidate beats player_base_rate)"
+   },
+   "approval": {
+    "approved_on": "2026-11-18",
+    "approval": "serve the clean player_base_rate model (option b) - 100% real data, markets stay on; the clean ML candidates keep predicting as challengers (owner decision 2026-11-18, relayed by the go-live coordinator)"
+   },
+   "pickled_sklearn": [],
+   "runtime_sklearn": "1.9.1",
+   "features": 0,
+   "withheld_or_proxy_features": [],
+   "historical_coverage": {
+    "fit_rows": 734045,
+    "calibration_rows": 130673,
+    "first_training_date": "2022-08-18",
+    "holdout_rows": 55907
+   },
+   "batch_invariance": {
+    "with_10_others": {
+     "max_abs_diff": 0.0,
+     "rows_not_bit_identical": 0,
+     "rows_differing": 0
+    },
+    "with_1000_others": {
+     "max_abs_diff": 0.0,
+     "rows_not_bit_identical": 0,
+     "rows_differing": 0
+    },
+    "shuffled": {
+     "max_abs_diff": 0.0,
+     "rows_not_bit_identical": 0,
+     "rows_differing": 0
+    },
+    "with_unrelated_missing_rows": {
+     "max_abs_diff": 0.0,
+     "rows_not_bit_identical": 0,
+     "rows_differing": 0
+    },
+    "targets": 25,
+    "targets_scored": 25,
+    "invariant": true,
+    "informational": {
+     "mixed_dtype_float64_neighbours": {
+      "max_abs_diff": 0.0,
+      "rows_not_bit_identical": 0,
+      "rows_differing": 0
+     }
+    }
+   },
+   "permission": "RARE_RESEARCH_PICKS (hidden market: no normal tip; owner 2026-11-18)",
+   "status": "VERIFIED"
+  },
+  {
+   "key": "sot4:champion",
+   "market": "sot4",
+   "role": "rare_served",
+   "model_version": "props_sot4_clean_player_base_rate_e0d074b8",
+   "path": "models/model_player_sot4.pkl",
+   "checks": {
+    "file_present": {
+     "ok": true,
+     "detail": ""
+    },
+    "sha256_matches_registry": {
+     "ok": true,
+     "detail": "bytes e0d074b89ef7 | manifest e0d074b89ef7 | pointer e0d074b89ef7"
+    },
+    "recipe_clean_harness": {
+     "ok": true,
+     "detail": "recipe props_clean_harness, harness PROPS-HARNESS-1.0, candidate player_base_rate, hand_adjustment none"
+    },
+    "raw_input_provenance": {
+     "ok": true,
+     "detail": "feature_rule all_prior_verified, floors 0.95/0.85; run 43035218594 status OK; harness artifact 7c8cbff0f5d2 vs run 7c8cbff0f5d2 (downloaded bytes re-hashed); verified share train 0.9979192656611899 / holdout 0.9884023124657462"
+    },
+    "feature_schema": {
+     "ok": true,
+     "detail": "no feature (inputs ['player_id'])"
+    },
+    "no_single_value_feature": {
+     "ok": true,
+     "detail": "0 served feature(s) one value on > 99.9% of training rows"
+    },
+    "training_window_and_cutoff": {
+     "ok": true,
+     "detail": "fit ['2022-08-18', '2026-01-09'], calibration ['2026-01-10', '2026-08-31'], cutoff 2026-08-31, holdout ['2026-09-01', '2026-10-31']"
+    },
+    "chronological_validation": {
+     "ok": true,
+     "detail": "8/8 walk-forward folds trained strictly before their test week; holdout window = run"
+    },
+    "historical_coverage": {
+     "ok": true,
+     "detail": "734045 fit + 130673 calibration rows from 2022-08-18; holdout n 55907"
+    },
+    "missing_data_handling": {
+     "ok": true,
+     "detail": "player's training-window rate (22260 players); a player never seen in training gets the training window's market rate (fitted, persisted), never a typed value"
+    },
+    "player_identity": {
+     "ok": true,
+     "detail": "22260 API-Football player ids, all positive integers"
+    },
+    "no_batch_statistics": {
+     "ok": true,
+     "detail": "25 players alone vs with 10 / 1,000 others, shuffled, beside unrelated rows with missing inputs: max |diff| 0.0 (tolerance 1e-12); mixed-dtype probe (informational) 0.0"
+    },
+    "train_serve_recipe_parity": {
+     "ok": true,
+     "detail": "serving calls the harness model's own predict() True; pickled sklearn none (no estimator) vs runtime 1.9.1"
+    },
+    "permission": {
+     "ok": true,
+     "detail": "RARE_RESEARCH_PICKS (hidden market: no normal tip; owner 2026-11-18)"
+    }
+   },
+   "sha256": "e0d074b89ef75a41f079b86f7d431681238c0b6fabaa1d1252feaf8c7655b8b0",
+   "candidate": "player_base_rate",
+   "recipe": "props_clean_harness",
+   "harness_version": "PROPS-HARNESS-1.0",
+   "provider": "API-Football player match statistics (player_history + cup rows, re-fetched counts), built by player_model.props_harness.build_frame",
+   "run_id": "43035218594",
+   "code_sha": "6fd794964ad031b45ff0a383d996bb09b414175c",
+   "harness_artifact_sha256": "7c8cbff0f5d2028967dde6c728124371a90fb5752d7c36ed39900cadc32c1e46",
+   "training_cutoff": "2026-08-31",
+   "window": {
+    "fit_rows": 734045,
+    "calibration_rows": 130673,
+    "fit_dates": [
+     "2022-08-18",
+     "2026-01-09"
+    ],
+    "calibration_dates": [
+     "2026-01-10",
+     "2026-08-31"
+    ]
+   },
+   "holdout": {
+    "n": 55907,
+    "events": 179,
+    "holdout_dates": [
+     "2026-09-01",
+     "2026-10-31"
+    ],
+    "rule": "owner 2026-11-18: serve the clean player_base_rate (no ML candidate beats it: no candidate beats player_base_rate)"
+   },
+   "approval": {
+    "approved_on": "2026-11-18",
+    "approval": "serve the clean player_base_rate model (option b) - 100% real data, markets stay on; the clean ML candidates keep predicting as challengers (owner decision 2026-11-18, relayed by the go-live coordinator)"
+   },
+   "pickled_sklearn": [],
+   "runtime_sklearn": "1.9.1",
+   "features": 0,
+   "withheld_or_proxy_features": [],
+   "historical_coverage": {
+    "fit_rows": 734045,
+    "calibration_rows": 130673,
+    "first_training_date": "2022-08-18",
+    "holdout_rows": 55907
+   },
+   "batch_invariance": {
+    "with_10_others": {
+     "max_abs_diff": 0.0,
+     "rows_not_bit_identical": 0,
+     "rows_differing": 0
+    },
+    "with_1000_others": {
+     "max_abs_diff": 0.0,
+     "rows_not_bit_identical": 0,
+     "rows_differing": 0
+    },
+    "shuffled": {
+     "max_abs_diff": 0.0,
+     "rows_not_bit_identical": 0,
+     "rows_differing": 0
+    },
+    "with_unrelated_missing_rows": {
+     "max_abs_diff": 0.0,
+     "rows_not_bit_identical": 0,
+     "rows_differing": 0
+    },
+    "targets": 25,
+    "targets_scored": 25,
+    "invariant": true,
+    "informational": {
+     "mixed_dtype_float64_neighbours": {
+      "max_abs_diff": 0.0,
+      "rows_not_bit_identical": 0,
+      "rows_differing": 0
+     }
+    }
+   },
+   "permission": "RARE_RESEARCH_PICKS (hidden market: no normal tip; owner 2026-11-18)",
+   "status": "VERIFIED"
+  },
+  {
+   "key": "cards:champion",
+   "market": "cards",
+   "role": "production",
+   "model_version": "props_cards_clean_recipe_retrained_bfd5e1cc",
+   "path": "models/model_player_cards.pkl",
+   "checks": {
+    "file_present": {
+     "ok": true,
+     "detail": ""
+    },
+    "sha256_matches_registry": {
+     "ok": true,
+     "detail": "bytes bfd5e1cc5183 | manifest bfd5e1cc5183 | pointer bfd5e1cc5183"
+    },
+    "recipe_clean_harness": {
+     "ok": true,
+     "detail": "recipe props_clean_harness, harness PROPS-HARNESS-1.0, candidate recipe_retrained, hand_adjustment none"
+    },
+    "raw_input_provenance": {
+     "ok": true,
+     "detail": "feature_rule all_prior_verified, floors 0.95/0.85; run 43035218594 status OK; harness artifact 4fee5290ccd9 vs run 4fee5290ccd9 (downloaded bytes re-hashed); verified share train 0.9979192656611899 / holdout 0.9883850437549722"
+    },
+    "feature_schema": {
+     "ok": true,
+     "detail": "128 features, withheld/proxy/removed 0, outside contract 0, = config.PLAYER_FEATURE_COLS True, schema sha 59e3dd18f769 = run"
+    },
+    "no_single_value_feature": {
+     "ok": true,
+     "detail": "0 served feature(s) one value on > 99.9% of training rows"
+    },
+    "training_window_and_cutoff": {
+     "ok": true,
+     "detail": "fit ['2022-08-18', '2026-01-09'], calibration ['2026-01-10', '2026-08-31'], cutoff 2026-08-31, holdout ['2026-09-01', '2026-10-31']"
+    },
+    "chronological_validation": {
+     "ok": true,
+     "detail": "8/8 walk-forward folds trained strictly before their test week; holdout window = run"
+    },
+    "historical_coverage": {
+     "ok": true,
+     "detail": "734045 fit + 130673 calibration rows from 2022-08-18; holdout n 55908"
+    },
+    "missing_data_handling": {
+     "ok": true,
+     "detail": "persisted FIT-block medians for 128 features (computed at fit, never from the scoring batch)"
+    },
+    "player_identity": {
+     "ok": true,
+     "detail": "scores the API-Football player_id x fixture_id rows built by build_upcoming_features (identity tests: global evidence)"
+    },
+    "no_batch_statistics": {
+     "ok": true,
+     "detail": "25 players alone vs with 10 / 1,000 others, shuffled, beside unrelated rows with missing inputs: max |diff| 5.551115123125783e-17 (tolerance 1e-12); mixed-dtype probe (informational) 6.691108267312118e-05"
+    },
+    "train_serve_recipe_parity": {
+     "ok": true,
+     "detail": "serving calls the harness model's own predict() True; pickled sklearn ['1.9.1'] vs runtime 1.9.1"
+    },
+    "permission": {
+     "ok": true,
+     "detail": "PRODUCTION (owner-approved clean retrain champion)"
+    }
+   },
+   "sha256": "bfd5e1cc51835a63f9abfcfe5e8fa7a7873ed079e07102f8af8764f68a6d9279",
+   "candidate": "recipe_retrained",
+   "recipe": "props_clean_harness",
+   "harness_version": "PROPS-HARNESS-1.0",
+   "provider": "API-Football player match statistics (player_history + cup rows, re-fetched counts), built by player_model.props_harness.build_frame",
+   "run_id": "43035218594",
+   "code_sha": "6fd794964ad031b45ff0a383d996bb09b414175c",
+   "harness_artifact_sha256": "4fee5290ccd9d17fde2e41571d2abaee8e622d8badca0b7c050810c2d5e07831",
+   "training_cutoff": "2026-08-31",
+   "window": {
+    "fit_rows": 734045,
+    "calibration_rows": 130673,
+    "fit_dates": [
+     "2022-08-18",
+     "2026-01-09"
+    ],
+    "calibration_dates": [
+     "2026-01-10",
+     "2026-08-31"
+    ]
+   },
+   "holdout": {
+    "n": 55908,
+    "events": 7230,
+    "holdout_dates": [
+     "2026-09-01",
+     "2026-10-31"
+    ],
+    "rule": "hgb_nan_native not shown better than the recipe; recipe beats player_base_rate"
+   },
+   "approval": {
+    "approved_on": "2026-11-11",
+    "approval": "Fix penalties too, then promote"
+   },
+   "pickled_sklearn": [
+    "1.9.1"
+   ],
+   "runtime_sklearn": "1.9.1",
+   "features": 128,
+   "withheld_or_proxy_features": [],
+   "historical_coverage": {
+    "fit_rows": 734045,
+    "calibration_rows": 130673,
+    "first_training_date": "2022-08-18",
+    "holdout_rows": 55908
+   },
+   "batch_invariance": {
+    "with_10_others": {
+     "max_abs_diff": 5.551115123125783e-17,
+     "rows_not_bit_identical": 6,
+     "rows_differing": 0
+    },
+    "with_1000_others": {
+     "max_abs_diff": 5.551115123125783e-17,
+     "rows_not_bit_identical": 6,
+     "rows_differing": 0
+    },
+    "shuffled": {
+     "max_abs_diff": 5.551115123125783e-17,
+     "rows_not_bit_identical": 6,
+     "rows_differing": 0
+    },
+    "with_unrelated_missing_rows": {
+     "max_abs_diff": 5.551115123125783e-17,
+     "rows_not_bit_identical": 7,
+     "rows_differing": 0
+    },
+    "targets": 25,
+    "targets_scored": 25,
+    "invariant": true,
+    "informational": {
+     "mixed_dtype_float64_neighbours": {
+      "max_abs_diff": 6.691108267312118e-05,
+      "rows_not_bit_identical": 25,
+      "rows_differing": 25
+     }
+    }
+   },
+   "permission": "PRODUCTION (owner-approved clean retrain champion)",
+   "status": "VERIFIED"
+  },
+  {
+   "key": "goals3:champion",
+   "market": "goals3",
+   "role": "rare_served",
+   "model_version": "props_goals3_clean_player_base_rate_89f588a0",
+   "path": "models/model_player_goals3.pkl",
+   "checks": {
+    "file_present": {
+     "ok": true,
+     "detail": ""
+    },
+    "sha256_matches_registry": {
+     "ok": true,
+     "detail": "bytes 89f588a0614e | manifest 89f588a0614e | pointer 89f588a0614e"
+    },
+    "recipe_clean_harness": {
+     "ok": true,
+     "detail": "recipe props_clean_harness, harness PROPS-HARNESS-1.0, candidate player_base_rate, hand_adjustment none"
+    },
+    "raw_input_provenance": {
+     "ok": true,
+     "detail": "feature_rule all_prior_verified, floors 0.95/0.85; run 43035218594 status OK; harness artifact 6dade1b85f92 vs run 6dade1b85f92 (downloaded bytes re-hashed); verified share train 0.9979192656611899 / holdout 0.9884023124657462"
+    },
+    "feature_schema": {
+     "ok": true,
+     "detail": "no feature (inputs ['player_id'])"
+    },
+    "no_single_value_feature": {
+     "ok": true,
+     "detail": "0 served feature(s) one value on > 99.9% of training rows"
+    },
+    "training_window_and_cutoff": {
+     "ok": true,
+     "detail": "fit ['2022-08-18', '2026-01-09'], calibration ['2026-01-10', '2026-08-31'], cutoff 2026-08-31, holdout ['2026-09-01', '2026-10-31']"
+    },
+    "chronological_validation": {
+     "ok": true,
+     "detail": "8/8 walk-forward folds trained strictly before their test week; holdout window = run"
+    },
+    "historical_coverage": {
+     "ok": true,
+     "detail": "734045 fit + 130673 calibration rows from 2022-08-18; holdout n 55907"
+    },
+    "missing_data_handling": {
+     "ok": true,
+     "detail": "player's training-window rate (22260 players); a player never seen in training gets the training window's market rate (fitted, persisted), never a typed value"
+    },
+    "player_identity": {
+     "ok": true,
+     "detail": "22260 API-Football player ids, all positive integers"
+    },
+    "no_batch_statistics": {
+     "ok": true,
+     "detail": "25 players alone vs with 10 / 1,000 others, shuffled, beside unrelated rows with missing inputs: max |diff| 0.0 (tolerance 1e-12); mixed-dtype probe (informational) 0.0"
+    },
+    "train_serve_recipe_parity": {
+     "ok": true,
+     "detail": "serving calls the harness model's own predict() True; pickled sklearn none (no estimator) vs runtime 1.9.1"
+    },
+    "permission": {
+     "ok": true,
+     "detail": "RARE_RESEARCH_PICKS (hidden market: no normal tip; owner 2026-11-18)"
+    }
+   },
+   "sha256": "89f588a0614e4716d46fb77f96d23bb65cf08564d313ec19e212e325cbf8a0fa",
+   "candidate": "player_base_rate",
+   "recipe": "props_clean_harness",
+   "harness_version": "PROPS-HARNESS-1.0",
+   "provider": "API-Football player match statistics (player_history + cup rows, re-fetched counts), built by player_model.props_harness.build_frame",
+   "run_id": "43035218594",
+   "code_sha": "6fd794964ad031b45ff0a383d996bb09b414175c",
+   "harness_artifact_sha256": "6dade1b85f92ddcbb968df6e537d50546fbd0d62ae54b532e78c5f2e71acb437",
+   "training_cutoff": "2026-08-31",
+   "window": {
+    "fit_rows": 734045,
+    "calibration_rows": 130673,
+    "fit_dates": [
+     "2022-08-18",
+     "2026-01-09"
+    ],
+    "calibration_dates": [
+     "2026-01-10",
+     "2026-08-31"
+    ]
+   },
+   "holdout": {
+    "n": 55907,
+    "events": 52,
+    "holdout_dates": [
+     "2026-09-01",
+     "2026-10-31"
+    ],
+    "rule": "owner 2026-11-18: serve the clean player_base_rate (no ML candidate beats it: no candidate beats player_base_rate)"
+   },
+   "approval": {
+    "approved_on": "2026-11-18",
+    "approval": "serve the clean player_base_rate model (option b) - 100% real data, markets stay on; the clean ML candidates keep predicting as challengers (owner decision 2026-11-18, relayed by the go-live coordinator)"
+   },
+   "pickled_sklearn": [],
+   "runtime_sklearn": "1.9.1",
+   "features": 0,
+   "withheld_or_proxy_features": [],
+   "historical_coverage": {
+    "fit_rows": 734045,
+    "calibration_rows": 130673,
+    "first_training_date": "2022-08-18",
+    "holdout_rows": 55907
+   },
+   "batch_invariance": {
+    "with_10_others": {
+     "max_abs_diff": 0.0,
+     "rows_not_bit_identical": 0,
+     "rows_differing": 0
+    },
+    "with_1000_others": {
+     "max_abs_diff": 0.0,
+     "rows_not_bit_identical": 0,
+     "rows_differing": 0
+    },
+    "shuffled": {
+     "max_abs_diff": 0.0,
+     "rows_not_bit_identical": 0,
+     "rows_differing": 0
+    },
+    "with_unrelated_missing_rows": {
+     "max_abs_diff": 0.0,
+     "rows_not_bit_identical": 0,
+     "rows_differing": 0
+    },
+    "targets": 25,
+    "targets_scored": 25,
+    "invariant": true,
+    "informational": {
+     "mixed_dtype_float64_neighbours": {
+      "max_abs_diff": 0.0,
+      "rows_not_bit_identical": 0,
+      "rows_differing": 0
+     }
+    }
+   },
+   "permission": "RARE_RESEARCH_PICKS (hidden market: no normal tip; owner 2026-11-18)",
+   "status": "VERIFIED"
+  },
+  {
+   "key": "goals2:challenger",
+   "market": "goals2",
+   "role": "research",
+   "model_version": "props_goals2_clean_hgb_nan_native_e218cb6c",
+   "path": "models/registry/props/goals2/challenger.pkl.gz",
+   "checks": {
+    "file_present": {
+     "ok": true,
+     "detail": ""
+    },
+    "sha256_matches_registry": {
+     "ok": true,
+     "detail": "bytes e218cb6ca548 | manifest e218cb6ca548 | challenger.json e218cb6ca548"
+    },
+    "recipe_clean_harness": {
+     "ok": true,
+     "detail": "recipe props_clean_harness, harness PROPS-HARNESS-1.0, candidate hgb_nan_native, hand_adjustment none"
+    },
+    "raw_input_provenance": {
+     "ok": true,
+     "detail": "feature_rule all_prior_verified, floors 0.95/0.85; run 43035218594 status OK; harness artifact 26a741dd33cf vs run 26a741dd33cf (downloaded bytes re-hashed); verified share train 0.9979192656611899 / holdout 0.9884023124657462"
+    },
+    "feature_schema": {
+     "ok": true,
+     "detail": "128 features, withheld/proxy/removed 0, outside contract 0, = config.PLAYER_FEATURE_COLS True, schema sha 59e3dd18f769 = run"
+    },
+    "no_single_value_feature": {
+     "ok": true,
+     "detail": "0 served feature(s) one value on > 99.9% of training rows"
+    },
+    "training_window_and_cutoff": {
+     "ok": true,
+     "detail": "fit ['2022-08-18', '2026-01-09'], calibration ['2026-01-10', '2026-08-31'], cutoff 2026-08-31, holdout ['2026-09-01', '2026-10-31']"
+    },
+    "chronological_validation": {
+     "ok": true,
+     "detail": "8/8 walk-forward folds trained strictly before their test week; holdout window = run"
+    },
+    "historical_coverage": {
+     "ok": true,
+     "detail": "734045 fit + 130673 calibration rows from 2022-08-18; holdout n 55907"
+    },
+    "missing_data_handling": {
+     "ok": true,
+     "detail": "NaN-native HistGradientBoosting, no value filled anywhere"
+    },
+    "player_identity": {
+     "ok": true,
+     "detail": "scores the API-Football player_id x fixture_id rows built by build_upcoming_features (identity tests: global evidence)"
+    },
+    "no_batch_statistics": {
+     "ok": true,
+     "detail": "25 players alone vs with 10 / 1,000 others, shuffled, beside unrelated rows with missing inputs: max |diff| 0.0 (tolerance 1e-12); mixed-dtype probe (informational) 0.0"
+    },
+    "train_serve_recipe_parity": {
+     "ok": true,
+     "detail": "serving calls the harness model's own predict() True; pickled sklearn ['1.9.1'] vs runtime 1.9.1"
+    },
+    "permission": {
+     "ok": true,
+     "detail": "RESEARCH_ONLY (challenger, first-sight scoring, never a tip)"
+    }
+   },
+   "sha256": "e218cb6ca5483db2085dce67fed814065f9329134490b2bf81e29f1999d13d1a",
+   "candidate": "hgb_nan_native",
+   "recipe": "props_clean_harness",
+   "harness_version": "PROPS-HARNESS-1.0",
+   "provider": "API-Football player match statistics (player_history + cup rows, re-fetched counts), built by player_model.props_harness.build_frame",
+   "run_id": "43035218594",
+   "code_sha": "6fd794964ad031b45ff0a383d996bb09b414175c",
+   "harness_artifact_sha256": "26a741dd33cf2d2bbe01a1b92bafe9b6f908d5903fdce0f1e8e15f8ea5f4b4b3",
+   "training_cutoff": "2026-08-31",
+   "window": {
+    "fit_rows": 734045,
+    "calibration_rows": 130673,
+    "fit_dates": [
+     "2022-08-18",
+     "2026-01-09"
+    ],
+    "calibration_dates": [
+     "2026-01-10",
+     "2026-08-31"
+    ]
+   },
+   "holdout": {
+    "n": 55907,
+    "events": 480,
+    "holdout_dates": [
+     "2026-09-01",
+     "2026-10-31"
+    ],
+    "rule": "challenger: hgb_nan_native beats recipe_retrained (CI95 upper < 0)"
+   },
+   "approval": {
+    "approved_on": "2026-11-18",
+    "approval": "serve the clean player_base_rate model (option b) - 100% real data, markets stay on; the clean ML candidates keep predicting as challengers (owner decision 2026-11-18, relayed by the go-live coordinator)"
+   },
+   "pickled_sklearn": [
+    "1.9.1"
+   ],
+   "runtime_sklearn": "1.9.1",
+   "features": 128,
+   "withheld_or_proxy_features": [],
+   "historical_coverage": {
+    "fit_rows": 734045,
+    "calibration_rows": 130673,
+    "first_training_date": "2022-08-18",
+    "holdout_rows": 55907
+   },
+   "batch_invariance": {
+    "with_10_others": {
+     "max_abs_diff": 0.0,
+     "rows_not_bit_identical": 0,
+     "rows_differing": 0
+    },
+    "with_1000_others": {
+     "max_abs_diff": 0.0,
+     "rows_not_bit_identical": 0,
+     "rows_differing": 0
+    },
+    "shuffled": {
+     "max_abs_diff": 0.0,
+     "rows_not_bit_identical": 0,
+     "rows_differing": 0
+    },
+    "with_unrelated_missing_rows": {
+     "max_abs_diff": 0.0,
+     "rows_not_bit_identical": 0,
+     "rows_differing": 0
+    },
+    "targets": 25,
+    "targets_scored": 25,
+    "invariant": true,
+    "informational": {
+     "mixed_dtype_float64_neighbours": {
+      "max_abs_diff": 0.0,
+      "rows_not_bit_identical": 0,
+      "rows_differing": 0
+     }
+    }
+   },
+   "permission": "RESEARCH_ONLY (challenger, first-sight scoring, never a tip)",
+   "status": "VERIFIED"
+  },
+  {
+   "key": "goals3:challenger",
+   "market": "goals3",
+   "role": "research",
+   "model_version": "props_goals3_clean_recipe_retrained_62e5b2bb",
+   "path": "models/registry/props/goals3/challenger.pkl.gz",
+   "checks": {
+    "file_present": {
+     "ok": true,
+     "detail": ""
+    },
+    "sha256_matches_registry": {
+     "ok": true,
+     "detail": "bytes 62e5b2bb90b4 | manifest 62e5b2bb90b4 | challenger.json 62e5b2bb90b4"
+    },
+    "recipe_clean_harness": {
+     "ok": true,
+     "detail": "recipe props_clean_harness, harness PROPS-HARNESS-1.0, candidate recipe_retrained, hand_adjustment none"
+    },
+    "raw_input_provenance": {
+     "ok": true,
+     "detail": "feature_rule all_prior_verified, floors 0.95/0.85; run 43035218594 status OK; harness artifact c9ac3c846970 vs run c9ac3c846970 (downloaded bytes re-hashed); verified share train 0.9979192656611899 / holdout 0.9884023124657462"
+    },
+    "feature_schema": {
+     "ok": true,
+     "detail": "128 features, withheld/proxy/removed 0, outside contract 0, = config.PLAYER_FEATURE_COLS True, schema sha 59e3dd18f769 = run"
+    },
+    "no_single_value_feature": {
+     "ok": true,
+     "detail": "0 served feature(s) one value on > 99.9% of training rows"
+    },
+    "training_window_and_cutoff": {
+     "ok": true,
+     "detail": "fit ['2022-08-18', '2026-01-09'], calibration ['2026-01-10', '2026-08-31'], cutoff 2026-08-31, holdout ['2026-09-01', '2026-10-31']"
+    },
+    "chronological_validation": {
+     "ok": true,
+     "detail": "8/8 walk-forward folds trained strictly before their test week; holdout window = run"
+    },
+    "historical_coverage": {
+     "ok": true,
+     "detail": "734045 fit + 130673 calibration rows from 2022-08-18; holdout n 55907"
+    },
+    "missing_data_handling": {
+     "ok": true,
+     "detail": "persisted FIT-block medians for 128 features (computed at fit, never from the scoring batch)"
+    },
+    "player_identity": {
+     "ok": true,
+     "detail": "scores the API-Football player_id x fixture_id rows built by build_upcoming_features (identity tests: global evidence)"
+    },
+    "no_batch_statistics": {
+     "ok": true,
+     "detail": "25 players alone vs with 10 / 1,000 others, shuffled, beside unrelated rows with missing inputs: max |diff| 0.0 (tolerance 1e-12); mixed-dtype probe (informational) 0.0"
+    },
+    "train_serve_recipe_parity": {
+     "ok": true,
+     "detail": "serving calls the harness model's own predict() True; pickled sklearn ['1.9.1'] vs runtime 1.9.1"
+    },
+    "permission": {
+     "ok": true,
+     "detail": "RESEARCH_ONLY (challenger, first-sight scoring, never a tip)"
+    }
+   },
+   "sha256": "62e5b2bb90b4ddd2264e91802b8cb8ccc0b8c6471e1b072cb51ffde466fe0f7e",
+   "candidate": "recipe_retrained",
+   "recipe": "props_clean_harness",
+   "harness_version": "PROPS-HARNESS-1.0",
+   "provider": "API-Football player match statistics (player_history + cup rows, re-fetched counts), built by player_model.props_harness.build_frame",
+   "run_id": "43035218594",
+   "code_sha": "6fd794964ad031b45ff0a383d996bb09b414175c",
+   "harness_artifact_sha256": "c9ac3c846970f5d2c793bf35cd8261ab291e6cad5543c699ae6cc27485effb21",
+   "training_cutoff": "2026-08-31",
+   "window": {
+    "fit_rows": 734045,
+    "calibration_rows": 130673,
+    "fit_dates": [
+     "2022-08-18",
+     "2026-01-09"
+    ],
+    "calibration_dates": [
+     "2026-01-10",
+     "2026-08-31"
+    ]
+   },
+   "holdout": {
+    "n": 55907,
+    "events": 52,
+    "holdout_dates": [
+     "2026-09-01",
+     "2026-10-31"
+    ],
+    "rule": "challenger: hgb_nan_native not shown better than recipe_retrained"
+   },
+   "approval": {
+    "approved_on": "2026-11-18",
+    "approval": "serve the clean player_base_rate model (option b) - 100% real data, markets stay on; the clean ML candidates keep predicting as challengers (owner decision 2026-11-18, relayed by the go-live coordinator)"
+   },
+   "pickled_sklearn": [
+    "1.9.1"
+   ],
+   "runtime_sklearn": "1.9.1",
+   "features": 128,
+   "withheld_or_proxy_features": [],
+   "historical_coverage": {
+    "fit_rows": 734045,
+    "calibration_rows": 130673,
+    "first_training_date": "2022-08-18",
+    "holdout_rows": 55907
+   },
+   "batch_invariance": {
+    "with_10_others": {
+     "max_abs_diff": 0.0,
+     "rows_not_bit_identical": 0,
+     "rows_differing": 0
+    },
+    "with_1000_others": {
+     "max_abs_diff": 0.0,
+     "rows_not_bit_identical": 0,
+     "rows_differing": 0
+    },
+    "shuffled": {
+     "max_abs_diff": 0.0,
+     "rows_not_bit_identical": 0,
+     "rows_differing": 0
+    },
+    "with_unrelated_missing_rows": {
+     "max_abs_diff": 0.0,
+     "rows_not_bit_identical": 0,
+     "rows_differing": 0
+    },
+    "targets": 25,
+    "targets_scored": 25,
+    "invariant": true,
+    "informational": {
+     "mixed_dtype_float64_neighbours": {
+      "max_abs_diff": 0.0,
+      "rows_not_bit_identical": 0,
+      "rows_differing": 0
+     }
+    }
+   },
+   "permission": "RESEARCH_ONLY (challenger, first-sight scoring, never a tip)",
+   "status": "VERIFIED"
+  },
+  {
+   "key": "sot3:challenger",
+   "market": "sot3",
+   "role": "research",
+   "model_version": "props_sot3_clean_hgb_nan_native_a3646f1d",
+   "path": "models/registry/props/sot3/challenger.pkl.gz",
+   "checks": {
+    "file_present": {
+     "ok": true,
+     "detail": ""
+    },
+    "sha256_matches_registry": {
+     "ok": true,
+     "detail": "bytes a3646f1d284a | manifest a3646f1d284a | challenger.json a3646f1d284a"
+    },
+    "recipe_clean_harness": {
+     "ok": true,
+     "detail": "recipe props_clean_harness, harness PROPS-HARNESS-1.0, candidate hgb_nan_native, hand_adjustment none"
+    },
+    "raw_input_provenance": {
+     "ok": true,
+     "detail": "feature_rule all_prior_verified, floors 0.95/0.85; run 43035218594 status OK; harness artifact a6a3ef0f8549 vs run a6a3ef0f8549 (downloaded bytes re-hashed); verified share train 0.9979192656611899 / holdout 0.9884023124657462"
+    },
+    "feature_schema": {
+     "ok": true,
+     "detail": "128 features, withheld/proxy/removed 0, outside contract 0, = config.PLAYER_FEATURE_COLS True, schema sha 59e3dd18f769 = run"
+    },
+    "no_single_value_feature": {
+     "ok": true,
+     "detail": "0 served feature(s) one value on > 99.9% of training rows"
+    },
+    "training_window_and_cutoff": {
+     "ok": true,
+     "detail": "fit ['2022-08-18', '2026-01-09'], calibration ['2026-01-10', '2026-08-31'], cutoff 2026-08-31, holdout ['2026-09-01', '2026-10-31']"
+    },
+    "chronological_validation": {
+     "ok": true,
+     "detail": "8/8 walk-forward folds trained strictly before their test week; holdout window = run"
+    },
+    "historical_coverage": {
+     "ok": true,
+     "detail": "734045 fit + 130673 calibration rows from 2022-08-18; holdout n 55907"
+    },
+    "missing_data_handling": {
+     "ok": true,
+     "detail": "NaN-native HistGradientBoosting, no value filled anywhere"
+    },
+    "player_identity": {
+     "ok": true,
+     "detail": "scores the API-Football player_id x fixture_id rows built by build_upcoming_features (identity tests: global evidence)"
+    },
+    "no_batch_statistics": {
+     "ok": true,
+     "detail": "25 players alone vs with 10 / 1,000 others, shuffled, beside unrelated rows with missing inputs: max |diff| 0.0 (tolerance 1e-12); mixed-dtype probe (informational) 0.0"
+    },
+    "train_serve_recipe_parity": {
+     "ok": true,
+     "detail": "serving calls the harness model's own predict() True; pickled sklearn ['1.9.1'] vs runtime 1.9.1"
+    },
+    "permission": {
+     "ok": true,
+     "detail": "RESEARCH_ONLY (challenger, first-sight scoring, never a tip)"
+    }
+   },
+   "sha256": "a3646f1d284ad4191f3e4a5cdf13e3e83222104554f0e1705040435eb0c43c70",
+   "candidate": "hgb_nan_native",
+   "recipe": "props_clean_harness",
+   "harness_version": "PROPS-HARNESS-1.0",
+   "provider": "API-Football player match statistics (player_history + cup rows, re-fetched counts), built by player_model.props_harness.build_frame",
+   "run_id": "43035218594",
+   "code_sha": "6fd794964ad031b45ff0a383d996bb09b414175c",
+   "harness_artifact_sha256": "a6a3ef0f854941e2a0cc41280454542cfa5f911ba86007b1d79614a7e6571706",
+   "training_cutoff": "2026-08-31",
+   "window": {
+    "fit_rows": 734045,
+    "calibration_rows": 130673,
+    "fit_dates": [
+     "2022-08-18",
+     "2026-01-09"
+    ],
+    "calibration_dates": [
+     "2026-01-10",
+     "2026-08-31"
+    ]
+   },
+   "holdout": {
+    "n": 55907,
+    "events": 803,
+    "holdout_dates": [
+     "2026-09-01",
+     "2026-10-31"
+    ],
+    "rule": "challenger: hgb_nan_native beats recipe_retrained (CI95 upper < 0)"
+   },
+   "approval": {
+    "approved_on": "2026-11-18",
+    "approval": "serve the clean player_base_rate model (option b) - 100% real data, markets stay on; the clean ML candidates keep predicting as challengers (owner decision 2026-11-18, relayed by the go-live coordinator)"
+   },
+   "pickled_sklearn": [
+    "1.9.1"
+   ],
+   "runtime_sklearn": "1.9.1",
+   "features": 128,
+   "withheld_or_proxy_features": [],
+   "historical_coverage": {
+    "fit_rows": 734045,
+    "calibration_rows": 130673,
+    "first_training_date": "2022-08-18",
+    "holdout_rows": 55907
+   },
+   "batch_invariance": {
+    "with_10_others": {
+     "max_abs_diff": 0.0,
+     "rows_not_bit_identical": 0,
+     "rows_differing": 0
+    },
+    "with_1000_others": {
+     "max_abs_diff": 0.0,
+     "rows_not_bit_identical": 0,
+     "rows_differing": 0
+    },
+    "shuffled": {
+     "max_abs_diff": 0.0,
+     "rows_not_bit_identical": 0,
+     "rows_differing": 0
+    },
+    "with_unrelated_missing_rows": {
+     "max_abs_diff": 0.0,
+     "rows_not_bit_identical": 0,
+     "rows_differing": 0
+    },
+    "targets": 25,
+    "targets_scored": 25,
+    "invariant": true,
+    "informational": {
+     "mixed_dtype_float64_neighbours": {
+      "max_abs_diff": 0.0,
+      "rows_not_bit_identical": 0,
+      "rows_differing": 0
+     }
+    }
+   },
+   "permission": "RESEARCH_ONLY (challenger, first-sight scoring, never a tip)",
+   "status": "VERIFIED"
+  },
+  {
+   "key": "sot4:challenger",
+   "market": "sot4",
+   "role": "research",
+   "model_version": "props_sot4_clean_recipe_retrained_8ed4b805",
+   "path": "models/registry/props/sot4/challenger.pkl.gz",
+   "checks": {
+    "file_present": {
+     "ok": true,
+     "detail": ""
+    },
+    "sha256_matches_registry": {
+     "ok": true,
+     "detail": "bytes 8ed4b8055873 | manifest 8ed4b8055873 | challenger.json 8ed4b8055873"
+    },
+    "recipe_clean_harness": {
+     "ok": true,
+     "detail": "recipe props_clean_harness, harness PROPS-HARNESS-1.0, candidate recipe_retrained, hand_adjustment none"
+    },
+    "raw_input_provenance": {
+     "ok": true,
+     "detail": "feature_rule all_prior_verified, floors 0.95/0.85; run 43035218594 status OK; harness artifact 43f33dd51503 vs run 43f33dd51503 (downloaded bytes re-hashed); verified share train 0.9979192656611899 / holdout 0.9884023124657462"
+    },
+    "feature_schema": {
+     "ok": true,
+     "detail": "128 features, withheld/proxy/removed 0, outside contract 0, = config.PLAYER_FEATURE_COLS True, schema sha 59e3dd18f769 = run"
+    },
+    "no_single_value_feature": {
+     "ok": true,
+     "detail": "0 served feature(s) one value on > 99.9% of training rows"
+    },
+    "training_window_and_cutoff": {
+     "ok": true,
+     "detail": "fit ['2022-08-18', '2026-01-09'], calibration ['2026-01-10', '2026-08-31'], cutoff 2026-08-31, holdout ['2026-09-01', '2026-10-31']"
+    },
+    "chronological_validation": {
+     "ok": true,
+     "detail": "8/8 walk-forward folds trained strictly before their test week; holdout window = run"
+    },
+    "historical_coverage": {
+     "ok": true,
+     "detail": "734045 fit + 130673 calibration rows from 2022-08-18; holdout n 55907"
+    },
+    "missing_data_handling": {
+     "ok": true,
+     "detail": "persisted FIT-block medians for 128 features (computed at fit, never from the scoring batch)"
+    },
+    "player_identity": {
+     "ok": true,
+     "detail": "scores the API-Football player_id x fixture_id rows built by build_upcoming_features (identity tests: global evidence)"
+    },
+    "no_batch_statistics": {
+     "ok": true,
+     "detail": "25 players alone vs with 10 / 1,000 others, shuffled, beside unrelated rows with missing inputs: max |diff| 0.0 (tolerance 1e-12); mixed-dtype probe (informational) 2.8750873209970607e-14"
+    },
+    "train_serve_recipe_parity": {
+     "ok": true,
+     "detail": "serving calls the harness model's own predict() True; pickled sklearn ['1.9.1'] vs runtime 1.9.1"
+    },
+    "permission": {
+     "ok": true,
+     "detail": "RESEARCH_ONLY (challenger, first-sight scoring, never a tip)"
+    }
+   },
+   "sha256": "8ed4b8055873945dae348d63bbfca0d7d0891213a9230f6d37adbe2a6b35a45d",
+   "candidate": "recipe_retrained",
+   "recipe": "props_clean_harness",
+   "harness_version": "PROPS-HARNESS-1.0",
+   "provider": "API-Football player match statistics (player_history + cup rows, re-fetched counts), built by player_model.props_harness.build_frame",
+   "run_id": "43035218594",
+   "code_sha": "6fd794964ad031b45ff0a383d996bb09b414175c",
+   "harness_artifact_sha256": "43f33dd51503835856fae9994da29618108acfb060469c4fb65fd381b3c37210",
+   "training_cutoff": "2026-08-31",
+   "window": {
+    "fit_rows": 734045,
+    "calibration_rows": 130673,
+    "fit_dates": [
+     "2022-08-18",
+     "2026-01-09"
+    ],
+    "calibration_dates": [
+     "2026-01-10",
+     "2026-08-31"
+    ]
+   },
+   "holdout": {
+    "n": 55907,
+    "events": 179,
+    "holdout_dates": [
+     "2026-09-01",
+     "2026-10-31"
+    ],
+    "rule": "challenger: hgb_nan_native not shown better than recipe_retrained"
+   },
+   "approval": {
+    "approved_on": "2026-11-18",
+    "approval": "serve the clean player_base_rate model (option b) - 100% real data, markets stay on; the clean ML candidates keep predicting as challengers (owner decision 2026-11-18, relayed by the go-live coordinator)"
+   },
+   "pickled_sklearn": [
+    "1.9.1"
+   ],
+   "runtime_sklearn": "1.9.1",
+   "features": 128,
+   "withheld_or_proxy_features": [],
+   "historical_coverage": {
+    "fit_rows": 734045,
+    "calibration_rows": 130673,
+    "first_training_date": "2022-08-18",
+    "holdout_rows": 55907
+   },
+   "batch_invariance": {
+    "with_10_others": {
+     "max_abs_diff": 0.0,
+     "rows_not_bit_identical": 0,
+     "rows_differing": 0
+    },
+    "with_1000_others": {
+     "max_abs_diff": 0.0,
+     "rows_not_bit_identical": 0,
+     "rows_differing": 0
+    },
+    "shuffled": {
+     "max_abs_diff": 0.0,
+     "rows_not_bit_identical": 0,
+     "rows_differing": 0
+    },
+    "with_unrelated_missing_rows": {
+     "max_abs_diff": 0.0,
+     "rows_not_bit_identical": 0,
+     "rows_differing": 0
+    },
+    "targets": 25,
+    "targets_scored": 25,
+    "invariant": true,
+    "informational": {
+     "mixed_dtype_float64_neighbours": {
+      "max_abs_diff": 2.8750873209970607e-14,
+      "rows_not_bit_identical": 24,
+      "rows_differing": 0
+     }
+    }
+   },
+   "permission": "RESEARCH_ONLY (challenger, first-sight scoring, never a tip)",
+   "status": "VERIFIED"
+  }
+ ],
+ "global": {
+  "legacy_prep_unreachable": {
+   "ok": true,
+   "reachable_in_production": false,
+   "prep_call_sites": [
+    "player_model/model.py:443",
+    "player_model/model.py:468",
+    "player_model/model.py:255"
+   ],
+   "prep_callers_outside_model_py": [],
+   "note_props_harness_clv": "player_model/props_harness_clv.py defines its own quote _prep (a different function)",
+   "train_callers_production": [],
+   "train_callers_research_scripts": [
+    "scripts/props_r2_challengers.py:140",
+    "scripts/props_r2_challengers.py:141"
+   ],
+   "legacy_weekly_train_retired": true,
+   "payload_recipes": {
+    "goals": "props_clean_harness",
+    "goals2": "props_clean_harness",
+    "assists": "props_clean_harness",
+    "sot": "props_clean_harness",
+    "sot2": "props_clean_harness",
+    "sot3": "props_clean_harness",
+    "sot4": "props_clean_harness",
+    "cards": "props_clean_harness",
+    "goals3": "props_clean_harness",
+    "r2_shadow:assists": "props_r2_repaired",
+    "r2_shadow:cards": "props_r2_repaired",
+    "r2_shadow:goals": "props_r2_repaired",
+    "r2_shadow:goals2": "props_r2_repaired",
+    "r2_shadow:sot": "props_r2_repaired",
+    "r2_shadow:sot2": "props_r2_repaired",
+    "r2_shadow:sot3": "props_r2_repaired",
+    "r2_shadow:sot4": "props_r2_repaired"
+   },
+   "legacy_payloads_scored": [],
+   "runtime_probe": {
+    "payloads_scored": 17,
+    "prep_calls": 0,
+    "ok": true,
+    "error": ""
+   },
+   "residual_risk": "props_gate.rollback_props can re-install a legacy registry version (operator action); the certification then reports that payload FAILED (recipe), props_status STALE, and the legacy branch would run again - no code guard refuses it today"
+  },
+  "point_in_time_tests": {
+   "ok": true,
+   "tests": {
+    "tests/test_props_train_serve_parity_2026_11_09.py::test_serving_rows_equal_the_training_rows_exactly": true,
+    "tests/test_props_train_serve_parity_2026_11_09.py::test_position_is_pre_match_evidence_only": true,
+    "tests/test_props_train_serve_parity_2026_11_09.py::test_penalty_prior_does_not_read_the_rows_own_count": true,
+    "tests/test_props_train_serve_parity_2026_11_09.py::test_same_day_rows_have_one_order": true,
+    "tests/test_props_data_truth.py::test_serving_uses_the_training_definitions": true,
+    "tests/test_props_real_profiles.py::*": true
+   }
+  },
+  "identity_tests": {
+   "ok": true,
+   "tests": {
+    "tests/test_props_truth.py::test_stable_player_id_rejects_zero": true,
+    "tests/test_props_truth.py::test_fixture_side_by_team_id_then_identity": true,
+    "tests/test_props_truth.py::test_club_conflict_tip_time": true,
+    "tests/test_props_train_serve_parity_2026_11_09.py::test_identity_conflict_needs_both_conditions": true
+   }
+  },
+  "serving_vs_training_parity": {
+   "ok": true,
+   "report": "reports/props_feature_bugs_parity_2026-11-15_run43035218594_sample6316.json",
+   "paired_rows": 6316,
+   "fixtures": 224,
+   "sample": {
+    "per_league": 8,
+    "start": "2026-10-18",
+    "end": "2026-10-31"
+   },
+   "features_mismatched": 0,
+   "probabilities_not_identical": {
+    "sot": 0,
+    "sot2": 0,
+    "goals": 0,
+    "assists": 0,
+    "cards": 0
+   },
+   "markets_required": [
+    "goals",
+    "assists",
+    "sot",
+    "sot2",
+    "cards"
+   ],
+   "note": "player_base_rate markets read only player_id (no feature to mismatch)"
+  },
+  "single_training_run": {
+   "ok": true,
+   "run_ids": [
+    "43035218594"
+   ],
+   "evidence_file": "reports/p0_props_cert/run43035218594_evidence.json"
+  }
+ },
+ "offline": {
+  "identity_vs_run_artifact": {
+   "goals:champion": {
+    "ok": true,
+    "harness_sha256": "fd31c5e105c9b82d1f227c1932bb4b496486f70174f91f4c314a797a1da6b492",
+    "rows": 1200,
+    "max_abs_diff": 0.0
+   },
+   "goals2:champion": {
+    "ok": true,
+    "harness_sha256": "d22e92ebb87f4c78a881b626b855123a9cb0e8f8516b2c6a016a6320bbcecc96",
+    "rows": 1200,
+    "max_abs_diff": 0.0
+   },
+   "assists:champion": {
+    "ok": true,
+    "harness_sha256": "b2d702224b37b6c8ab0a270993c61ad6fac04219a32952b2ca4334a9e9de8d01",
+    "rows": 1200,
+    "max_abs_diff": 0.0
+   },
+   "sot:champion": {
+    "ok": true,
+    "harness_sha256": "a4ecd8bae2b56b648b21a5bb4f8f1c171ce9e5925faa5f4c8fd3850abbb169f7",
+    "rows": 1200,
+    "max_abs_diff": 0.0
+   },
+   "sot2:champion": {
+    "ok": true,
+    "harness_sha256": "b0603240f8e8da04e908b9d280491afff3dea6193f322c5de2aa1c42284ced66",
+    "rows": 1200,
+    "max_abs_diff": 0.0
+   },
+   "sot3:champion": {
+    "ok": true,
+    "harness_sha256": "89bdb2e1712dd95679c0779ccd3c6ac38e4c586a00cd1c79107439776a5cd8fe",
+    "rows": 1200,
+    "max_abs_diff": 0.0
+   },
+   "sot4:champion": {
+    "ok": true,
+    "harness_sha256": "7c8cbff0f5d2028967dde6c728124371a90fb5752d7c36ed39900cadc32c1e46",
+    "rows": 1200,
+    "max_abs_diff": 0.0
+   },
+   "cards:champion": {
+    "ok": true,
+    "harness_sha256": "4fee5290ccd9d17fde2e41571d2abaee8e622d8badca0b7c050810c2d5e07831",
+    "rows": 1200,
+    "max_abs_diff": 0.0
+   },
+   "goals3:champion": {
+    "ok": true,
+    "harness_sha256": "6dade1b85f92ddcbb968df6e537d50546fbd0d62ae54b532e78c5f2e71acb437",
+    "rows": 1200,
+    "max_abs_diff": 0.0
+   },
+   "goals2:challenger": {
+    "ok": true,
+    "harness_sha256": "26a741dd33cf2d2bbe01a1b92bafe9b6f908d5903fdce0f1e8e15f8ea5f4b4b3",
+    "rows": 1200,
+    "max_abs_diff": 0.0
+   },
+   "goals3:challenger": {
+    "ok": true,
+    "harness_sha256": "c9ac3c846970f5d2c793bf35cd8261ab291e6cad5543c699ae6cc27485effb21",
+    "rows": 1200,
+    "max_abs_diff": 0.0
+   },
+   "sot3:challenger": {
+    "ok": true,
+    "harness_sha256": "a6a3ef0f854941e2a0cc41280454542cfa5f911ba86007b1d79614a7e6571706",
+    "rows": 1200,
+    "max_abs_diff": 0.0
+   },
+   "sot4:challenger": {
+    "ok": true,
+    "harness_sha256": "43f33dd51503835856fae9994da29618108acfb060469c4fb65fd381b3c37210",
+    "rows": 1200,
+    "max_abs_diff": 0.0
+   }
+  },
+  "holdout_replay": {
+   "goals:champion": {
+    "holdout_rows": 55907,
+    "matched": 55907,
+    "identical": 46339,
+    "within_1e-9": 55579,
+    "max_abs_diff": 0.019218768793477364,
+    "share_within_1e-9": 0.9941331139213336
+   },
+   "goals2:champion": {
+    "holdout_rows": 55907,
+    "matched": 55907,
+    "identical": 55907,
+    "within_1e-9": 55907,
+    "max_abs_diff": 0.0,
+    "share_within_1e-9": 1.0
+   },
+   "assists:champion": {
+    "holdout_rows": 55907,
+    "matched": 55907,
+    "identical": 45728,
+    "within_1e-9": 55371,
+    "max_abs_diff": 0.016876284085200366,
+    "share_within_1e-9": 0.9904126495787647
+   },
+   "sot:champion": {
+    "holdout_rows": 55907,
+    "matched": 55907,
+    "identical": 47492,
+    "within_1e-9": 55544,
+    "max_abs_diff": 0.017435724761383886,
+    "share_within_1e-9": 0.9935070742483052
+   },
+   "sot2:champion": {
+    "holdout_rows": 55907,
+    "matched": 55907,
+    "identical": 46168,
+    "within_1e-9": 55541,
+    "max_abs_diff": 0.020834816869264694,
+    "share_within_1e-9": 0.9934534137049028
+   },
+   "sot3:champion": {
+    "holdout_rows": 55907,
+    "matched": 55907,
+    "identical": 55907,
+    "within_1e-9": 55907,
+    "max_abs_diff": 0.0,
+    "share_within_1e-9": 1.0
+   },
+   "sot4:champion": {
+    "holdout_rows": 55907,
+    "matched": 55907,
+    "identical": 55907,
+    "within_1e-9": 55907,
+    "max_abs_diff": 0.0,
+    "share_within_1e-9": 1.0
+   },
+   "cards:champion": {
+    "holdout_rows": 55908,
+    "matched": 55908,
+    "identical": 44780,
+    "within_1e-9": 55205,
+    "max_abs_diff": 0.09435726830764879,
+    "share_within_1e-9": 0.9874257709093511
+   },
+   "goals3:champion": {
+    "holdout_rows": 55907,
+    "matched": 55907,
+    "identical": 55907,
+    "within_1e-9": 55907,
+    "max_abs_diff": 0.0,
+    "share_within_1e-9": 1.0
+   },
+   "goals2:challenger": {
+    "holdout_rows": 55907,
+    "matched": 55907,
+    "identical": 49144,
+    "within_1e-9": 55549,
+    "max_abs_diff": 0.0004203782518061999,
+    "share_within_1e-9": 0.9935965084873093
+   },
+   "goals3:challenger": {
+    "holdout_rows": 55907,
+    "matched": 55907,
+    "identical": 55907,
+    "within_1e-9": 55907,
+    "max_abs_diff": 0.0,
+    "share_within_1e-9": 1.0
+   },
+   "sot3:challenger": {
+    "holdout_rows": 55907,
+    "matched": 55907,
+    "identical": 45513,
+    "within_1e-9": 55445,
+    "max_abs_diff": 0.012599299082435803,
+    "share_within_1e-9": 0.9917362763160248
+   },
+   "sot4:challenger": {
+    "holdout_rows": 55907,
+    "matched": 55907,
+    "identical": 45495,
+    "within_1e-9": 55420,
+    "max_abs_diff": 0.00029317067199663514,
+    "share_within_1e-9": 0.9912891051210045
+   }
+  }
+ },
+ "rule": "VERIFIED only when every check of every installed props artifact and every global check passes; props_status re-hashes the installed artifacts and reports STALE on any difference. No price is read or written."
+}
