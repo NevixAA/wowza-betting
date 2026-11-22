@@ -4,7 +4,7 @@ PRESENTATION ONLY. The page still loads output/player_tips.csv and output/player
 before (same de-duplication, same priced / unpriced split, same filters, same per-day limits). The old
 page drew each day as a hand-built HTML table with its own stylesheet and hardcoded tier colours; this
 module returns the SAME rows as numeric frames, rendered with st.dataframe + column_config, plus the
-top-of-page cards. Props are PAPER-ONLY, permanently (invariant 2): nothing here is a bet.
+top-of-page cards. Props carry no stake (owner 2026-11-22, stake by proof: props not proven yet).
 """
 from __future__ import annotations
 
@@ -175,7 +175,7 @@ def render_board(d: pd.DataFrame, priced_view: bool, limit: int) -> pd.DataFrame
 
 
 def top_priced(priced: pd.DataFrame, k: int = 3) -> pd.DataFrame:
-    """The k priced props where the model sits furthest above the price (paper only)."""
+    """The k priced props where the model sits furthest above the price (research view, no stake)."""
     if priced.empty:
         return priced
     p = priced.assign(_edge=(priced["model_prob"] - 1 / priced["market_odds"]) * 100)
@@ -193,11 +193,13 @@ def prop_card(r, container=None) -> None:
                                ("EV", f"{r['ev']:+.0%}" if pd.notna(r.get("ev")) else "—"),
                                ("Fair price", fair_basis_label(r.get("fair_basis")) or "—"),
                                ("Kickoff", when)],
-                   status=ui.status_chip("PAPER", label="PAPER · NOT A BET")
-                   + (" " + ui.status_chip(str(r["tier"])) if pd.notna(r.get("tier")) and str(r.get("tier")) else ""),
+                   status=ui.status_chip("RESEARCH", label=NO_STAKE_LABEL),
                    container=container)
     (container or st).caption(f"{r['match']} · {r['league']}")
 
+
+#: owner 2026-11-22 ("Like TOP-3: 3 per league, stake by proof"): no prop is staked until a prop cell is proven
+NO_STAKE_LABEL = "No stake: props not proven yet"
 
 RESULTS_CONFIG = {"market_odds": ui.num_col("Odds"), "pnl": ui.num_col("P/L (u)", fmt="%+.2f")}
 RAW_CONFIG = {"model_prob": ui.pct_col("Model"), "fair_odds": ui.num_col("Fair odds"),
@@ -210,11 +212,10 @@ RAW_CONFIG = {"model_prob": ui.pct_col("Model"), "fair_odds": ui.num_col("Fair o
 
 # ═══ RESULTS — settled record (rebuilt 2026-11-09, owner: "the % isn't correct, the last 2 months ════════
 # were crazy results and we don't show it") ═══════════════════════════════════════════════════════════════
-# The old section showed ONE all-time number over SNIPER + MARKSMAN only: 111 of its 117 bets were from
-# June-July, and VALUABLE (where the recent results are) was never shown. Now: a period, every tip tier
-# (VALUABLE included) with void / pending counts, a month table and a market table. Every number is
-# computed from output/player_ledger.csv; P/L comes only from rows that carry a real price (pnl present).
-# AVOID rows are logged for research, they are NOT tips, and are never counted in the tip record.
+# Owner 2026-11-22: the record is NOT grouped by the retired SNIPER / MARKSMAN / VALUABLE / PAPER labels any more.
+# The props TOP-3 record (T1 / T2 / T3, by market and league) lives in dashboard_data/props_top3_view.py; this
+# section keeps the earlier prop-signal record from output/player_ledger.csv as one summary, by market and by month.
+# P/L comes only from rows that carry a real price (pnl present). AVOID rows are logged predictions, never counted.
 PERIODS = ("Last 30 days", "Last 60 days", "This month", "All time")
 DEFAULT_PERIOD = "Last 60 days"
 NOT_A_TIP = "AVOID"
@@ -267,32 +268,27 @@ def _summary(g: pd.DataFrame) -> dict:
 
 
 def tips(d: pd.DataFrame) -> pd.DataFrame:
-    """Tip rows only: every tier except AVOID (a logged non-tip) and rows without a tier."""
+    """Signal rows only: every label except AVOID (a logged prediction) and rows without a label."""
     return d[d["T"].notna() & (d["T"] != NOT_A_TIP) & (d["T"] != "NAN")]
 
 
-def tier_table(d: pd.DataFrame) -> pd.DataFrame:
-    """One row per tip tier present (SNIPER, MARKSMAN, VALUABLE, PAPER, ...) plus 'All tips'."""
+def record_table(d: pd.DataFrame) -> pd.DataFrame:
+    """One summary row over every prop signal (every label except AVOID), no grouping by label."""
     t = tips(d)
-    order = [x for x in ("SNIPER", "MARKSMAN", "VALUABLE", "PAPER") if x in set(t["T"])]
-    order += sorted(set(t["T"]) - set(order))
-    rows = [{"Tier": tier, **_summary(t[t["T"] == tier])} for tier in order]
-    if rows:
-        rows.append({"Tier": "All tips", **_summary(t)})
-    return pd.DataFrame(rows)
+    return pd.DataFrame([{"Record": "All prop signals", **_summary(t)}]) if len(t) else pd.DataFrame()
 
 
 def month_table(d: pd.DataFrame) -> pd.DataFrame:
-    """Month x tier: settled n, wins, ROI and profit (priced rows), newest month first."""
+    """Month by month: settled n, wins, ROI and profit (priced rows), newest month first."""
     t = tips(d)
     t = t[t["md"].notna()]
     rows = []
-    for (m, tier), g in t.groupby([t["md"].dt.to_period("M"), "T"]):
+    for m, g in t.groupby(t["md"].dt.to_period("M")):
         s = _summary(g)
-        rows.append({"Month": str(m), "Tier": tier, "Settled": s["Settled"], "Wins": s["Wins"],
+        rows.append({"Month": str(m), "Settled": s["Settled"], "Wins": s["Wins"],
                      "ROI %": s["ROI %"], "Profit (u)": s["Profit (u)"], "Pending": s["Pending"]})
     out = pd.DataFrame(rows)
-    return out.sort_values(["Month", "Tier"], ascending=[False, True]) if len(out) else out
+    return out.sort_values("Month", ascending=False) if len(out) else out
 
 
 def market_table(d: pd.DataFrame) -> pd.DataFrame:

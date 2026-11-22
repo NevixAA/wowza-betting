@@ -20,6 +20,15 @@ WHERE. output/af_team_cards_std.parquet, its own file. NOT af_history.parquet: d
 af_history into the Standard leagues' training rows, so adding rows there would change model inputs.
 Append-only: a stored fixture is never re-fetched or rewritten. A fixture whose statistics were not
 answered is not stored and is retried on later days while it is inside the window.
+
+RESULTS (2026-11-22, prediction-ledger Standard settlement). The same /fixtures?date answers (no extra
+call) also carry every finished fixture's 90-minute and half-time score. They are appended to
+output/af_results_recent.parquet (RESULTS_OUTPUT) for every league with an API-Football id in config:
+fixture_id, league, kickoff, teams, status, ft_home/ft_away (score.fulltime = regular time, never the
+extra-time `goals`), ht_home/ht_away (score.halftime; missing stays missing). The prediction ledger's
+settlement reads it AFTER the football-data and af_history banks, so Standard rows settle the day after
+the match instead of waiting days for football-data's weekly upload. Append-only, first write wins; not a
+training input (data_loader never reads it).
 """
 from __future__ import annotations
 
@@ -46,6 +55,11 @@ WINDOW_DAYS = 3                       # today and the 2 days before
 FINISHED = {"FT", "AET", "PEN"}
 MIN_QUOTA = int(os.getenv("MIN_QUOTA", "20000"))
 SOURCE = "api-football /fixtures/statistics"
+RESULTS_OUTPUT = ROOT / "output" / "af_results_recent.parquet"
+RESULTS_SOURCE = "api-football /fixtures?date"
+RESULTS_COLUMNS = ["fixture_id", "league", "league_id", "season", "match_date", "kickoff_utc", "status",
+                   "home_team", "away_team", "home_team_id", "away_team_id", "ft_home", "ft_away",
+                   "ht_home", "ht_away", "source", "fetched_at"]
 
 COLUMNS = ["fixture_id", "league", "league_id", "season", "match_date", "kickoff_utc", "status",
            "home_team", "away_team", "home_team_id", "away_team_id", "FTHG", "FTAG",
@@ -56,6 +70,55 @@ def leagues() -> dict:
     """{af league id: league name} for the Standard leagues."""
     return {int(config.API_FOOTBALL_IDS[lg]): lg for lg in sorted(set(config.STANDARD_FORMAT_LEAGUES))
             if lg in config.API_FOOTBALL_IDS}
+
+
+def result_leagues() -> dict:
+    """{af league id: league name} for every config league with an API-Football id (results bank)."""
+    return {int(v): lg for lg, v in config.API_FOOTBALL_IDS.items() if v is not None}
+
+
+def parse_result(fx: dict, league: str, fetched_at: str) -> dict | None:
+    """One results-bank row from a /fixtures answer, or None when the fixture is not finished or its
+    90-minute score is not answered. score.fulltime is the regular-time score (API-Football keeps extra
+    time in score.extratime); `goals` would include extra time, so it is never used here."""
+    f, lg, tm = fx.get("fixture") or {}, fx.get("league") or {}, fx.get("teams") or {}
+    st = (f.get("status") or {}).get("short")
+    sc = fx.get("score") or {}
+    ft, ht = sc.get("fulltime") or {}, sc.get("halftime") or {}
+    if st not in FINISHED or f.get("id") is None or ft.get("home") is None or ft.get("away") is None:
+        return None
+    home, away = tm.get("home") or {}, tm.get("away") or {}
+    return {
+        "fixture_id": int(f["id"]), "league": league, "league_id": lg.get("id"),
+        "season": str(lg.get("season")) if lg.get("season") is not None else None,
+        "match_date": str(f.get("date", ""))[:10], "kickoff_utc": f.get("date"), "status": st,
+        "home_team": home.get("name"), "away_team": away.get("name"),
+        "home_team_id": home.get("id"), "away_team_id": away.get("id"),
+        "ft_home": ft.get("home"), "ft_away": ft.get("away"),
+        "ht_home": ht.get("home"), "ht_away": ht.get("away"),
+        "source": RESULTS_SOURCE, "fetched_at": fetched_at,
+    }
+
+
+def append_results(rows: list[dict], path: Path | None = None) -> int:
+    """Append new finished fixtures to the results bank (first write wins: a stored id is never rewritten)."""
+    path = path or RESULTS_OUTPUT
+    if not rows:
+        return 0
+    new = pd.DataFrame(rows).reindex(columns=RESULTS_COLUMNS).drop_duplicates("fixture_id")
+    if path.exists():
+        old = pd.read_parquet(path)
+        new = new[~new["fixture_id"].isin(set(old["fixture_id"].astype(int)))]
+        if new.empty:
+            return 0
+        out = pd.concat([old, new], ignore_index=True)
+    else:
+        out = new
+    for c in ("ft_home", "ft_away", "ht_home", "ht_away", "league_id", "home_team_id", "away_team_id"):
+        out[c] = pd.to_numeric(out[c], errors="coerce").astype("Int64")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    out.sort_values(["match_date", "league", "fixture_id"]).to_parquet(path, index=False)
+    return int(len(new))
 
 
 def window(today: str, start: str = COLLECT_FROM, days: int = WINDOW_DAYS) -> list[str]:
@@ -172,9 +235,10 @@ def run(max_calls: int = 80, dry_run: bool = False, today: str | None = None, cl
     days = window(today)
     print(f"[team_cards] {len(lg)} Standard leagues; window {days or 'empty (before COLLECT_FROM)'}; "
           f"{len(have):,} fixture(s) already stored; call cap {max_calls}")
-    todo = []
+    todo, answers = [], []
     for d in days:
         body = client.get("fixtures", {"date": d, "timezone": "UTC"})
+        answers.extend((body or {}).get("response") or [])
         for fx in (body or {}).get("response") or []:
             lid = (fx.get("league") or {}).get("id")
             st = ((fx.get("fixture") or {}).get("status") or {}).get("short")
@@ -182,6 +246,12 @@ def run(max_calls: int = 80, dry_run: bool = False, today: str | None = None, cl
             if lid in lg and st in FINISHED and fid is not None and int(fid) not in have:
                 todo.append(fx)
     fetched_at = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    rl = result_leagues()
+    results = [r for fx in answers if (fx.get("league") or {}).get("id") in rl
+               for r in [parse_result(fx, rl[fx["league"]["id"]], fetched_at)] if r is not None]
+    n_res = 0 if dry_run else append_results(results)
+    print(f"[results] {len(results)} finished fixture score(s) answered; "
+          f"{'dry-run, nothing written' if dry_run else f'+{n_res} new -> {RESULTS_OUTPUT.name}'}")
     rows, unanswered = [], 0
     for fx in todo:
         body = client.get("fixtures/statistics", {"fixture": fx["fixture"]["id"]})
@@ -199,7 +269,8 @@ def run(max_calls: int = 80, dry_run: bool = False, today: str | None = None, cl
     for k, v in sorted(by_lg.items()):
         print(f"    {k:28} {v}")
     print(f"[team_cards] API calls: {client.calls}" + (f" (stopped: {client.stopped})" if client.stopped else ""))
-    return {"calls": client.calls, "rows": n, "todo": len(todo), "unanswered": unanswered}
+    return {"calls": client.calls, "rows": n, "todo": len(todo), "unanswered": unanswered,
+            "results": n_res}
 
 
 if __name__ == "__main__":

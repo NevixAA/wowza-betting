@@ -142,6 +142,7 @@ PAGES = [
     ("pages/24_🧾_Clean_Record.py",      "Clean Record (from 21.11)", "🧾", "pro"),   # owner 2026-11-11; own page 2026-11-17
     ("pages/26_📏_Bars.py",              "Bars",              "📏", "pro"),     # owner 2026-11-17, statistics only
     ("pages/27_🩹_Fixes.py",             "What was fixed",    "🩹", "pro"),     # owner 2026-11-17, repairs log
+    ("pages/28_🔮_Predictions.py",       "Predictions",       "🔮", "pro"),     # owner 2026-11-22, learning record, no prices
     ("pages/12_💼_Portfolio.py",         "Portfolio",         "💼", "pro"),
     ("pages/16_💰_Bankroll.py",          "Bankroll",          "💰", "pro"),
     ("pages/0_🏠_Overview.py",           "Overview",          "🏠", "admin"),
@@ -170,7 +171,8 @@ SECTIONS = {"free": "Free", "pro": "Wowza Pro", "admin": "Admin center"}   # tie
 # Only DISPLAY labels live here and in PAGES - page FILE names never change (URLs, bookmarks, tests).
 NAV = {
     "Today":        ["pages/00_🎯_Home.py", "pages/free_tips.py", "pages/1_📊_Dashboard.py", "pages/6_⚡_Live.py"],
-    "Performance":  ["pages/24_🧾_Clean_Record.py", "pages/17_🏟️_Leagues.py", "pages/26_📏_Bars.py", "pages/27_🩹_Fixes.py", "pages/12_💼_Portfolio.py",
+    "Performance":  ["pages/24_🧾_Clean_Record.py", "pages/17_🏟️_Leagues.py", "pages/26_📏_Bars.py", "pages/27_🩹_Fixes.py", "pages/28_🔮_Predictions.py",
+                     "pages/12_💼_Portfolio.py",
                      "pages/16_💰_Bankroll.py", "pages/5_🎯_Success_Rates.py"],
     "Tools":        ["pages/13_⚽_Fantasy.py", "pages/11_👤_Player_Props.py", "pages/14_🧩_Bet_Builder.py"],
     "Research Lab": ["pages/18_🔧_League_Research.py", "pages/23_🎲_Specials.py", "pages/20_🧪_Model_Lab.py",

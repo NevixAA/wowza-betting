@@ -20,7 +20,7 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 20  # +5 for the shadow settlement pass + its own commit step (2026-10-20); +5 league research panel (2026-10-25)
+    timeout-minutes: 25  # +5 for the shadow settlement pass + its own commit step (2026-10-20); +5 league research panel (2026-10-25); +5 predictions page index (2026-11-22)
     permissions:
       contents: write
 
@@ -327,6 +327,35 @@ jobs:
             echo "push race - retry $i"; sleep $((RANDOM % 5 + 3))
           done
           [ "$pushed" = "1" ] || echo "::warning::side models settlement push failed after 5 retries"
+
+      # PREDICTIONS PAGE INDEX (owner 2026-11-22; scripts/build_predictions_index.py). LEARNING ONLY. Folds the v9
+      # ledgers + settled views (above) and Pro's (public NevixAA/wowzaV9-Pro, sparse clone of the two ledger dirs
+      # into RUNNER_TEMP, outside this checkout) into reports/dashboard/predictions_index.parquet + predictions_
+      # summary.csv, the two files the dashboard Predictions page reads. No price, no v11 row. Deterministic (no
+      # wall-clock value), so an unchanged ledger makes no commit. Each attempt resets to the freshest origin/main
+      # and re-derives (only this step writes them). Tolerant: a failure is a warning, never a red run.
+      - name: Predictions page index (learning only, no prices)
+        if: always() && vars.PREDICTION_LEDGER_ENABLED == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          pro="$RUNNER_TEMP/pro_ledger"
+          rm -rf "$pro"
+          if ! { git clone -q --depth 1 --filter=blob:none --sparse https://github.com/NevixAA/wowzaV9-Pro.git "$pro" \
+                 && git -C "$pro" sparse-checkout set output/prediction_ledger output/prediction_ledger_settled; }; then
+            echo "::warning::Pro ledger clone failed - the index holds v9 only this run"
+          fi
+          pushed=0
+          for i in 1 2 3 4 5; do
+            git fetch -q origin main && git reset -q --hard origin/main || { sleep 3; continue; }
+            python scripts/build_predictions_index.py --pro-root "$pro" || { echo "::warning::predictions index failed (learning only)"; pushed=1; break; }
+            git add -f reports/dashboard/predictions_index.parquet reports/dashboard/predictions_summary.csv 2>/dev/null || true
+            if git diff --staged --quiet; then pushed=1; echo "predictions index: nothing new"; break; fi
+            git commit -q -m "auto: predictions page index $(date -u '+%Y-%m-%d %H:%M UTC')"
+            git push && { pushed=1; break; }
+            echo "push race - retry $i"; sleep $((RANDOM % 5 + 3))
+          done
+          [ "$pushed" = "1" ] || echo "::warning::predictions index push failed after 5 retries"
 
       # CLV COLLECTION GUARD (P1 2026-10-22). Runs LAST, after both commits, so a failing guard can
       # never stop results or settlements from persisting. It turns the run red when certified

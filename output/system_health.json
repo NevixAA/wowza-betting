@@ -1,11 +1,10 @@
 {
  "about": "Canonical system health (src/system_health.build_artifact), written daily by evidence_refresh.yml. overall: FAIL if any RED check or protected_tracks_modified; WARN if any AMBER/NO_DATA; PASS otherwise. Every status comes from the rule stored beside it.",
  "artifact_version": "SYSTEM-HEALTH-1",
- "generated_at": "2026-11-22T18:31:01Z",
+ "generated_at": "2026-11-22T19:03:00Z",
  "overall": "FAIL",
  "reasons": [
   "NO_DATA Challenger prediction coverage: no active challenger experiment",
-  "AMBER GitHub workflow health: 1 still failing / 205 runs (24 h) \u00b7 2 fixed since",
   "RED Data truth 3: no missing data: team:model_ht_over05.pkl: 1 served feature(s) hold one value on the training rows (home_has_ht_history=1.0); team:model_ht_over15.pkl: 1 served feature(s) hold one value on the training rows (home_has_ht_history=1.0)",
   "AMBER Data truth 13a: active production violations: 0 active violation(s); props PENDING; 0 serving coverage gap(s)",
   "AMBER Data truth 13c: registered historical exceptions: 7 registered exception(s)"
@@ -20,11 +19,11 @@
   },
   "contracts_version": "CONTRACTS-1",
   "research_lock_digest": "3416ad0e5e8ae71db66cb14e70323226265a9b2377b2cd4eb998fde1a9c4cf58",
-  "code_commit": "e4d2baaa890c"
+  "code_commit": "2104b2078d67"
  },
  "counts": {
-  "GREEN": 29,
-  "AMBER": 3,
+  "GREEN": 30,
+  "AMBER": 2,
   "RED": 1,
   "NO_DATA": 1
  },
@@ -46,9 +45,9 @@
   {
    "check": "Shadow settlement coverage",
    "status": "GREEN",
-   "value": "97.1% (1167/1202)",
+   "value": "97.2% (1179/1213)",
    "rule": "GREEN >= 95% of finished shadow rows settled; AMBER >= 80%; RED < 80%",
-   "detail": "as of 2026-11-22T15:36:30Z"
+   "detail": "as of 2026-11-22T18:59:36Z"
   },
   {
    "check": "Challenger prediction coverage",
@@ -60,9 +59,9 @@
   {
    "check": "Certified CLV coverage",
    "status": "GREEN",
-   "value": "71.3% of 703 settled",
+   "value": "71.3% of 715 settled",
    "rule": "share of settled shadow rows with a close observed <= 30 min before kickoff, measured from the collection fix (clv_collection_health.json measure_from; all-time shown for context): GREEN >= 50%; AMBER >= 20%; RED < 20%",
-   "detail": "since 2026-10-23 \u00b7 all-time 46.0% of 1167"
+   "detail": "since 2026-10-23 \u00b7 all-time 46.3% of 1179"
   },
   {
    "check": "Stale artifacts",
@@ -80,10 +79,10 @@
   },
   {
    "check": "GitHub workflow health",
-   "status": "AMBER",
-   "value": "1 still failing / 205 runs (24 h) \u00b7 2 fixed since",
+   "status": "GREEN",
+   "value": "0 still failing / 232 runs (24 h) \u00b7 3 fixed since",
    "rule": "workflows whose latest run on main (last 24 h, 3 repos) failed or timed out \u2014 failures a later success superseded and branch-only research runs do not count: GREEN 0; AMBER 1-2; RED >= 3 (record > 36 h old = AMBER)",
-   "detail": "wowzaV9-Pro: Pro Player V3 Forward Test"
+   "detail": ""
   },
   {
    "check": "Fantasy V2 status",
@@ -95,7 +94,7 @@
   {
    "check": "Weekly research panel",
    "status": "GREEN",
-   "value": "20 leagues \u00b7 {'PROTECTED': 1, 'REPAIR': 6, 'LEARNING': 93} \u00b7 protected_tracks_modified=False \u00b7 tracked 20 \u00b7 with current-week data 16 \u00b7 missing 0 \u00b7 candidates 596/596 \u00b7 panel 1216 (settled 1096, pending 120) \u00b7 CLV coverage 47%",
+   "value": "20 leagues \u00b7 {'PROTECTED': 1, 'REPAIR': 6, 'LEARNING': 93} \u00b7 protected_tracks_modified=False \u00b7 tracked 20 \u00b7 with current-week data 16 \u00b7 missing 0 \u00b7 candidates 596/596 \u00b7 panel 1216 (settled 1128, pending 88) \u00b7 CLV coverage 48%",
    "rule": "RED if protected_tracks_modified (production state/thresholds/stakes/eligibility moved without re-approval) or the lock cannot be verified; AMBER if the regime registry is missing, a newly PROTECTED track awaits approval, the panel health is missing or > 48 h old, or a tracked league has fixtures this (or last) gameweek but NO panel rows (a silent disappearance; a league with no fixtures is NO_FIXTURES and is fine); GREEN otherwise",
    "detail": "registry evidence cutoff 2026-10-20; lock approved by owner (Nevo) at 2026-11-18T20:18:04Z"
   },
@@ -130,7 +129,7 @@
   {
    "check": "Data truth 2: no silent defaults",
    "status": "GREEN",
-   "value": "0 new default(s); 0 known (baseline); 195 allow-listed (counters/display); 0 baseline entr(ies) now gone; 0 allow-list entr(ies) now gone; 441 production files scanned",
+   "value": "0 new default(s); 0 known (baseline); 195 allow-listed (counters/display); 0 baseline entr(ies) now gone; 0 allow-list entr(ies) now gone; 443 production files scanned",
    "rule": "no NEW invented default in ALL production code (fillna(<non-zero literal>), literal season fallback/list, pinned football-data folder, numeric .get(<key>, <number>), an or-zero on a parsed value, a zero fillna on a price/odds): RED if any site is in neither config/data_truth_baseline.json nor config/data_truth_allowlist.json, or an allow-list entry has no reason; GREEN otherwise",
    "detail": ""
   },
@@ -718,7 +717,7 @@
   {
    "check": "Edge-engine shadow",
    "status": "GREEN",
-   "value": "market_edge_v2 UNVALIDATED_DEFAULTS, 612 rows, shadow_only=True, 0.1 h old",
+   "value": "market_edge_v2 UNVALIDATED_DEFAULTS, 612 rows, shadow_only=True, 0.6 h old",
    "rule": "RED if edge_engine_health.json is missing, older than 72 h, or shadow_only is not true (a shadow engine must never be live); AMBER if older than 24 h or it scored 0 rows; GREEN otherwise",
    "detail": ""
   },
@@ -946,7 +945,7 @@
    "frozen_digest": "b7ac2a430065f3952af902cd6f1c4096b00ef56eb410a96eadc8bc7d9e6a8151",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 2996,
+   "prior_rows": 3032,
    "prior_match": true,
    "status": "OK",
    "reasons": []
@@ -966,7 +965,7 @@
    "frozen_digest": "03a6f80041bf12a0f3fea67e9c239714daf53e287dd4688f338af13a4eb588e6",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 1362,
+   "prior_rows": 1371,
    "prior_match": true,
    "status": "OK",
    "reasons": []
@@ -976,7 +975,7 @@
    "frozen_digest": "dcda49d5db1e1eec91a8d8f13869f239fd7f2b770b11014669a4730c96bf3cb8",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 3004,
+   "prior_rows": 3040,
    "prior_match": true,
    "status": "OK",
    "reasons": []
@@ -996,7 +995,7 @@
    "frozen_digest": "74bb6e87f404e009fc656b09d0997d27cd94bdc1c30b41e76bee73ca041ba9e2",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 6567,
+   "prior_rows": 6621,
    "prior_match": true,
    "status": "OK",
    "reasons": []
@@ -1006,7 +1005,7 @@
    "frozen_digest": "02c789978e384cb0427dac2ceac5fdeba300b78e7167558c3f279fd08a23cb42",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 1017,
+   "prior_rows": 1022,
    "prior_match": true,
    "status": "OK",
    "reasons": []

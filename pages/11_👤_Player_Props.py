@@ -16,8 +16,9 @@ table, its stylesheet and its hardcoded tier colours are gone), the three priced
 furthest above the price lead the page as cards, and secondary filters live under "Advanced filters".
 PRESENTATION ONLY — the same rows, filters and limits; components in dashboard_data/props_view.py.
 
-Props are PAPER-ONLY, permanently (CLAUDE.md invariant 2): accurate model, no betting edge.
-Nothing on this page is a bet.
+Owner 2026-11-22 ("Like TOP-3: 3 per league, stake by proof"): the page leads with the props TOP-3 per league
+(T1 best value / T2 safest / T3 risky value, src/props_top3.py, read through dashboard_data/props_top3_view.py) and
+its settled record by role, market and league. No prop carries a stake: props are not proven yet.
 """
 from pathlib import Path
 
@@ -41,7 +42,7 @@ BASE_DIR = Path(__file__).resolve().parents[1]
 TIPS_FILE = BASE_DIR / "output" / "player_tips.csv"
 LEDGER_FILE = BASE_DIR / "output" / "player_ledger.csv"
 MARKET_LABEL = V.MARKET_LABEL
-_SUB = "Model vs bookmaker on every upcoming prop. Paper research — props have no proven betting edge."
+_SUB = "Props TOP-3 per league and the model vs bookmaker on every upcoming prop. No stake: props not proven yet."
 _EYEBROW = "Tools · player props"
 
 
@@ -71,7 +72,7 @@ def load_tips() -> pd.DataFrame:
 
 
 df = load_tips()
-_state_chip = ui.status_chip("PAPER", label="PAPER · RESEARCH")
+_state_chip = ui.status_chip("RESEARCH", label=V.NO_STAKE_LABEL)
 if df.empty:
     ui.page_header("Player Props", _SUB, eyebrow_text=_EYEBROW, freshness=_state_chip)
     ui.empty_state("NO_DATA", "⏳ No upcoming player-prop signals yet.")
@@ -96,7 +97,7 @@ else:
          "help": "Only these can be compared with the market."},
         {"label": "Model above the price", "value": f"{len(_beats):,}",
          "help": "Priced props where the model's probability exceeds the bookmaker's implied one. "
-                 "Paper only — props have no proven betting edge (tested 8 ways)."},
+                 "No stake: props not proven yet."},
         {"label": "Model only (no price)", "value": f"{len(unpriced):,}",
          "help": "No bookmaker offers this prop yet. Not a model rejection."},
     ], per_row=2)
@@ -130,8 +131,8 @@ else:
 
     # ═══ RESEARCH — where the model sits furthest above the price ════════════════════════════════════
     p = _filt(priced)
-    ui.section_header("Model furthest above the price", "Priced props only, after the filters. Paper research: a "
-                      "gap to the price is not an edge — props have been tested eight ways and none held.")
+    ui.section_header("Model furthest above the price", "Priced props only, after the filters. A gap to the price "
+                      "is not a proven edge: no stake on props until a prop cell is proven.")
     top = V.top_priced(p)
     if top.empty:
         ui.empty_state("NO_DATA", "No priced props match the filters. Prices usually appear 1–3 days before kickoff.")
@@ -153,7 +154,7 @@ else:
                        "does. Bookmaker prices include their margin. **Fair price** says where the fair "
                        "probability behind EV and tier came from: *two-sided price* (both sides of one "
                        "bookmaker's bet, de-vigged) or *margin assumed* (one side quoted, margin assumed). "
-                       "Model = the model's own probability. Kickoff in Israel time. Paper only.")
+                       "Model = the model's own probability. Kickoff in Israel time. No stake.")
     with tab_u:
         u = _filt(unpriced)
         if u.empty:
@@ -161,7 +162,7 @@ else:
         else:
             V.render_board(u, False, limit=25)
             st.caption("Strongest model signals per day (top 25). **Fair odds** = 1 / model probability "
-                       "— compare with your own bookmaker. No bookmaker price yet. Kickoff in Israel time. Paper only.")
+                       "— compare with your own bookmaker. No bookmaker price yet. Kickoff in Israel time. No stake.")
 
     with st.expander("Raw data — every upcoming prop"):
         show_cols = ["date", "kickoff_utc", "league", "match", "player_name", "position", "team",
@@ -170,11 +171,34 @@ else:
         ui.compact_table(df.sort_values("model_prob", ascending=False)[[c for c in show_cols if c in df.columns]],
                          V.RAW_CONFIG)
 
-# ═══ PERFORMANCE — settled record (rebuilt 2026-11-09, see dashboard_data/props_view.py) ═══════════════════
-ui.section_header("Results — settled player-prop tips",
-                  "Every prop tip, flat 1u paper stakes, for the period you pick: the Clean Record (clean props models) "
-                  "first, the pre-repair models' record below it. ROI and profit use only tips with a real bookmaker "
-                  "price; a small sample is marked. Rare prop markets are research only.")
+# ═══ PROPS TOP-3 PER LEAGUE (owner 2026-11-22, "Like TOP-3: 3 per league, stake by proof") ════════════════════
+from dashboard_data import props_top3_view as P3  # noqa: E402
+P3 = importlib.reload(P3)
+
+
+@st.cache_data(ttl=120)
+def load_props_top3():
+    return P3.load_picks()
+
+
+ui.section_header("Props TOP-3 per league",
+                  "Each prop league's 3 player props of the gameweek: T1 best value, T2 safest (highest model "
+                  "probability), T3 risky value (longest odds), each priced with positive value. Frozen 2 hours before "
+                  "the league-week's first kickoff. " + V.NO_STAKE_LABEL + ".")
+p3 = load_props_top3()
+if p3.empty:
+    ui.empty_state("NO_DATA", "No props TOP-3 week decided yet. The first picks are frozen 2 hours before each "
+                              "league-week's first kickoff.")
+else:
+    ui.compact_table(P3.latest_by_league(p3), {"Odds": ui.num_col("Odds"), "Model": ui.pct_col("Model"),
+                                               "Value": ui.num_col("Value", fmt="%+.2f")})
+    st.caption("Value = the model's EV against the de-vigged two-sided price where the bookmaker quotes both sides "
+               "(vs de-vigged fair), else against the quoted price (vs quoted price). Kickoff in UTC.")
+
+# ═══ RESULTS — props TOP-3 record by role, market and league ═══════════════════════════════════════════════════
+ui.section_header("Results — props TOP-3",
+                  "Settled props TOP-3 picks by role (T1 / T2 / T3), by market and by league. Flat 1u at the pick's "
+                  "odds, for the record only. " + V.NO_STAKE_LABEL + ".")
 
 
 @st.cache_data(ttl=120)
@@ -187,77 +211,63 @@ def load_results():
 
 
 led = load_results()
-if led.empty or "result" not in led.columns or "tier" not in led.columns:
-    ui.empty_state("NO_DATA", "No prop results yet (`output/player_ledger.csv`).")
-else:
-    from dashboard_data import clean_record as CR  # noqa: E402
+from dashboard_data import clean_record as CR  # noqa: E402
+import config as _cfg  # noqa: E402
+_start = getattr(_cfg, "CLEAN_RECORD_START", None)
+_pc = P3.prediction_counts(led, _start)
+_n3 = len(p3)
+_s3 = int(p3["R"].isin(("WIN", "LOSS")).sum()) if _n3 else 0
+ui.caption(f"Prop predictions since the Clean Record start{f' ({str(_start)[:10]})' if _start else ''}: "
+           f"{_pc['predictions']:,} recorded - {_pc['settled']:,} settled, {_pc['void']:,} void, "
+           f"{_pc['waiting']:,} waiting for their match or result. Props TOP-3 picks: {_n3} - {_s3} settled, "
+           f"{_n3 - _s3} void or waiting.")
+if _s3 == 0:
+    ui.empty_state("NO_DATA", "No props TOP-3 pick settled yet - the tables fill as the picked matches finish.")
+if _n3:
+    _cfg3 = {"Win %": ui.num_col("Win %", fmt="%.1f%%"), "ROI %": ui.num_col("ROI (1u)", fmt="%+.1f%%"),
+             "Profit (u)": ui.num_col("Profit", fmt="%+.2fu")}
+    ui.eyebrow("By role")
+    ui.compact_table(P3.role_table(p3), _cfg3)
+    ui.eyebrow("By market")
+    ui.compact_table(P3.market_table(p3), _cfg3)
+    ui.eyebrow("By league")
+    ui.compact_table(P3.league_table(p3), _cfg3)
+
+# ═══ Earlier prop signals (player_ledger.csv): one summary, by market, by month; no retired labels ══════════════
+if not (led.empty or "result" not in led.columns or "tier" not in led.columns):
     allr = V.prepare_ledger(led)
-    # THE Clean Record split (owner 2026-11-11; config.PROPS_CLEAN_MODELS_LIVE_DATE = config.CLEAN_RECORD_START):
-    # a prop tip counts in the clean-models record only when it was signalled AND played on or after the start
     allr["era"] = CR.assign(allr, "signal_date", "match_date").map(
         {CR.CLEAN: "clean models", CR.BEFORE: "pre-repair models", CR.UNPLACED: "unplaced"})
-    period = st.radio("Period", list(V.PERIODS), index=V.PERIODS.index(V.DEFAULT_PERIOD), horizontal=True,
-                      key="pp_results_period")
-    today = pd.Timestamp.now(tz="UTC").tz_convert(None).normalize()
-    d = V.in_period(allr, period, today)
-    start = V.period_start(period, today)
-    ui.caption(f"{period}: matches from {start:%d %b %Y} on" if start is not None else "All time")
-
-    def _era(de, era):
-        tt = V.tier_table(de)
-        if tt.empty:
-            return
-        tot = tt[tt["Tier"] == "All tips"].iloc[0]
-        _pre = "Clean Record " if era == "clean models" else ""          # distinct labels per record
-        ui.metric_card(f"{_pre}Flat ROI (1u, no stake)", ui.fmt_roi(tot["ROI %"] / 100) if tot["Priced"] else "—",
-                       title=f"All tips · {era} · {period.lower()}",
-                       supporting=[(f"{_pre}Settled", f"{int(tot['Settled'])}"),
-                                   (f"{_pre}Record", f"{int(tot['Wins'])}W – {int(tot['Settled'] - tot['Wins'])}L"),
-                                   ("Profit", ui.fmt_units(tot["Profit (u)"]) if tot["Priced"] else "—"),
-                                   ("Void / pending", f"{int(tot['Void'])} / {int(tot['Pending'])}")],
-                       status=ui.status_chip("PAPER", label="PAPER · NEVER STAKED")
-                       + (" " + ui.sample_marker(int(tot["Priced"])) if ui.small_sample(int(tot["Priced"])) else ""),
-                       n=int(tot["Priced"]))
-        # dashtruth 2026-11-05: rows a correction sidecar flags are IN this record; say how many
-        _st = V.tips(de)[V.tips(de)["R"].isin(V.SETTLED)]
-        import config as _cfg
-        _fl = {k: v for k, v in V.flagged(_st, _cfg.OUTPUT_DIR / "corrections").items() if v}
-        if _fl:
-            ui.caption("Includes rows flagged in output/corrections (kept, not removed): " + "; ".join(
-                f"{v} of {len(_st)} in {k} ({V.FLAG_FILES[k]})" for k, v in _fl.items()) + ".")
-        ui.eyebrow(f"{'Summary' if era == 'clean models' else 'By retired tier'} · {era}")
-        ui.compact_table(tt, V.TIER_CONFIG)
-        ui.eyebrow(f"By market · {era}")
-        ui.compact_table(V.market_table(de), V.TIER_CONFIG)
-        ui.eyebrow(f"Month by month · {era}")
-        ui.compact_table(V.month_table(de), V.TIER_CONFIG)
-
-    ui.eyebrow(CR.clean_label() + " · clean props models")
-    _clean = d[d["era"] == "clean models"]
-    if V.tips(_clean).empty:
-        ui.empty_state("NO_DATA", CR.empty_text("prop tips"))
-    else:
-        _era(_clean, "clean models")
-    with st.expander(f"{CR.before_label()} — pre-repair props models, for comparison only"):
-        st.caption(CR.BEFORE_NOTE)
-        _pre = d[d["era"] == "pre-repair models"]
-        if V.tips(_pre).empty:
-            ui.empty_state("NO_DATA", f"No pre-repair prop tips with a match date in this period ({period.lower()}).")
-        else:
-            _era(_pre, "pre-repair models")
-    if not V.tips(d).empty:
+    with st.expander("Earlier prop signals - research record (every signal the model logged above its bar)"):
+        period = st.radio("Period", list(V.PERIODS), index=V.PERIODS.index(V.DEFAULT_PERIOD), horizontal=True,
+                          key="pp_results_period")
+        today = pd.Timestamp.now(tz="UTC").tz_convert(None).normalize()
+        d = V.in_period(allr, period, today)
+        start = V.period_start(period, today)
+        ui.caption(f"{period}: matches from {start:%d %b %Y} on" if start is not None else "All time")
+        for era in ("clean models", "pre-repair models"):
+            de = d[d["era"] == era]
+            if V.tips(de).empty:
+                ui.caption(f"{era}: no prop signals in this period.")
+                continue
+            ui.eyebrow(f"Summary · {era}")
+            ui.compact_table(V.record_table(de), V.TIER_CONFIG)
+            _st = V.tips(de)[V.tips(de)["R"].isin(V.SETTLED)]
+            _fl = {k: v for k, v in V.flagged(_st, _cfg.OUTPUT_DIR / "corrections").items() if v}
+            if _fl:
+                ui.caption("Includes rows flagged in output/corrections (kept, not removed): " + "; ".join(
+                    f"{v} of {len(_st)} in {k} ({V.FLAG_FILES[k]})" for k, v in _fl.items()) + ".")
+            ui.eyebrow(f"By market · {era}")
+            ui.compact_table(V.market_table(de), V.TIER_CONFIG)
+            ui.eyebrow(f"Month by month · {era}")
+            ui.compact_table(V.month_table(de), V.TIER_CONFIG)
         n_avoid = V.avoid_count(d)
         if n_avoid:
-            ui.caption(f"Logged, not tipped: {n_avoid:,} AVOID rows in this period are recorded for research and "
-                       "are not part of the tip record above.")
-        with st.expander("Settled tips — newest first"):
-            sett = V.tips(d)[V.tips(d)["R"].isin(V.SETTLED)]
-            cols = [c for c in ["match_date", "league", "player_name", "market", "tier",
-                                "market_odds", "result", "pnl", "era"] if c in sett.columns]
-            ui.compact_table(sett.sort_values("match_date", ascending=False)[cols].head(300), V.RESULTS_CONFIG)
+            ui.caption(f"Logged predictions, not signals: {n_avoid:,} AVOID rows in this period are recorded for "
+                       "research and are not part of the record above.")
 
-st.caption("Player props are paper research only — the model is accurate but has shown no betting "
-           "edge against the market.")
+st.caption("Player props: " + V.NO_STAKE_LABEL + " - the model is accurate but has shown no proven betting edge "
+           "against the market.")
 
 # ── Disclaimer & Terms (shown on every dashboard page) ──
 from utils.disclaimer import disclaimer_footer  # noqa: E402

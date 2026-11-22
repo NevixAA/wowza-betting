@@ -807,7 +807,8 @@ TIP_RECORDS = (("bets_ledger.csv", "match_date", "signal_tier", None),
                ("ht_ledger.csv", "match_date", "signal_tier", None),
                ("player_ledger.csv", "match_date", "tier", None),
                ("stake_audit.csv", "date", "signal_tier", "tier_multiplier"),
-               ("top3_league_ledger.csv", "match_date", "tier", None))
+               ("top3_league_ledger.csv", "match_date", "tier", None),
+               ("props_top3_ledger.csv", "match_date", "role", None))   # owner 2026-11-22: props TOP-3 (T1/T2/T3)
 
 
 TIER_BOARD_FILES = ("bets.csv", "side_bets.csv")   # the current board (rule 7)

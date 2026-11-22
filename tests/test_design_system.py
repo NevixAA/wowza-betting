@@ -129,12 +129,14 @@ STAGE3_PAGES = ("pages/12_💼_Portfolio.py", "pages/16_💰_Bankroll.py", "page
                 "pages/21_📡_Market_Intelligence.py", "pages/22_🏭_Production.py",
                 "pages/24_📬_Daily_Progress.py",
                 "pages/24_🧾_Clean_Record.py", "pages/26_📏_Bars.py", "pages/27_🩹_Fixes.py",   # owner 2026-11-17
+                "pages/28_🔮_Predictions.py",   # owner 2026-11-22
                 "pages/29_🧭_Admin_Board.py")                                     # owner 2026-11-22, admin only
 STAGE3_VIEWS = ("dashboard_data/portfolio_view.py", "dashboard_data/bankroll_view.py", "dashboard_data/props_view.py",
                 "dashboard_data/builder_view.py", "dashboard_data/success_view.py",
                 "dashboard_data/model_info_view.py", "dashboard_data/research_view.py",
                 "dashboard_data/evidence_view.py",
                 "dashboard_data/bars_stats_view.py", "dashboard_data/season.py",
+                "dashboard_data/predictions_view.py",
                 "dashboard_data/admin_board.py")       # evidence panels, owner brief 2026-10-26 part D
 REDESIGNED = ("pages/00_🎯_Home.py", "pages/1_📊_Dashboard.py", "pages/18_🔧_League_Research.py",
               "pages/17_🏟️_Leagues.py", "pages/0_🏠_Overview.py", "pages/6_⚡_Live.py", "pages/13_⚽_Fantasy.py",

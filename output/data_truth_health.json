@@ -1,7 +1,7 @@
 {
  "artifact": "data_truth_health",
  "version": "DATA-TRUTH-1",
- "generated_at": "2026-11-22T18:33:46Z",
+ "generated_at": "2026-11-22T19:06:29Z",
  "checks": [
   {
    "check": "Data truth 1: one canonical name",
@@ -13,7 +13,7 @@
   {
    "check": "Data truth 2: no silent defaults",
    "status": "GREEN",
-   "value": "0 new default(s); 0 known (baseline); 195 allow-listed (counters/display); 0 baseline entr(ies) now gone; 0 allow-list entr(ies) now gone; 441 production files scanned",
+   "value": "0 new default(s); 0 known (baseline); 195 allow-listed (counters/display); 0 baseline entr(ies) now gone; 0 allow-list entr(ies) now gone; 443 production files scanned",
    "rule": "no NEW invented default in ALL production code (fillna(<non-zero literal>), literal season fallback/list, pinned football-data folder, numeric .get(<key>, <number>), an or-zero on a parsed value, a zero fillna on a price/odds): RED if any site is in neither config/data_truth_baseline.json nor config/data_truth_allowlist.json, or an allow-list entry has no reason; GREEN otherwise",
    "detail": ""
   },
