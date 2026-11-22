@@ -1,7 +1,7 @@
 {
  "about": "Canonical system health (src/system_health.build_artifact), written daily by evidence_refresh.yml. overall: FAIL if any RED check or protected_tracks_modified; WARN if any AMBER/NO_DATA; PASS otherwise. Every status comes from the rule stored beside it.",
  "artifact_version": "SYSTEM-HEALTH-1",
- "generated_at": "2026-11-22T18:03:25Z",
+ "generated_at": "2026-11-22T18:10:40Z",
  "overall": "FAIL",
  "reasons": [
   "NO_DATA Challenger prediction coverage: no active challenger experiment",
@@ -20,7 +20,7 @@
   },
   "contracts_version": "CONTRACTS-1",
   "research_lock_digest": "3416ad0e5e8ae71db66cb14e70323226265a9b2377b2cd4eb998fde1a9c4cf58",
-  "code_commit": "3acd04be6aff"
+  "code_commit": "6a1812d215fa"
  },
  "counts": {
   "GREEN": 29,
@@ -81,7 +81,7 @@
   {
    "check": "GitHub workflow health",
    "status": "GREEN",
-   "value": "0 still failing / 193 runs (24 h) \u00b7 2 fixed since",
+   "value": "0 still failing / 197 runs (24 h) \u00b7 2 fixed since",
    "rule": "workflows whose latest run on main (last 24 h, 3 repos) failed or timed out \u2014 failures a later success superseded and branch-only research runs do not count: GREEN 0; AMBER 1-2; RED >= 3 (record > 36 h old = AMBER)",
    "detail": ""
   },
@@ -130,7 +130,7 @@
   {
    "check": "Data truth 2: no silent defaults",
    "status": "GREEN",
-   "value": "0 new default(s); 0 known (baseline); 195 allow-listed (counters/display); 0 baseline entr(ies) now gone; 0 allow-list entr(ies) now gone; 438 production files scanned",
+   "value": "0 new default(s); 0 known (baseline); 195 allow-listed (counters/display); 0 baseline entr(ies) now gone; 0 allow-list entr(ies) now gone; 441 production files scanned",
    "rule": "no NEW invented default in ALL production code (fillna(<non-zero literal>), literal season fallback/list, pinned football-data folder, numeric .get(<key>, <number>), an or-zero on a parsed value, a zero fillna on a price/odds): RED if any site is in neither config/data_truth_baseline.json nor config/data_truth_allowlist.json, or an allow-list entry has no reason; GREEN otherwise",
    "detail": ""
   },
@@ -718,7 +718,7 @@
   {
    "check": "Edge-engine shadow",
    "status": "GREEN",
-   "value": "market_edge_v2 UNVALIDATED_DEFAULTS, 592 rows, shadow_only=True, 1.8 h old",
+   "value": "market_edge_v2 UNVALIDATED_DEFAULTS, 592 rows, shadow_only=True, 1.9 h old",
    "rule": "RED if edge_engine_health.json is missing, older than 72 h, or shadow_only is not true (a shadow engine must never be live); AMBER if older than 24 h or it scored 0 rows; GREEN otherwise",
    "detail": ""
   },
@@ -954,7 +954,7 @@
    "frozen_digest": "2a1e5b5faea08cad59fa2f264f864e121471776d14958a8c63baf2da063d176c",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 2912,
+   "prior_rows": 2996,
    "prior_match": true,
    "status": "OK",
    "reasons": []
@@ -974,7 +974,7 @@
    "frozen_digest": "a57f64e49dc31eec16fe7c12957d9381b16118a3083c00998a100c099d3e492e",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 1341,
+   "prior_rows": 1362,
    "prior_match": true,
    "status": "OK",
    "reasons": []
@@ -984,7 +984,7 @@
    "frozen_digest": "481fac5e6170a174279a4dbeb3f1bb16ead2b2346acac62615e36613b4797242",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 2920,
+   "prior_rows": 3004,
    "prior_match": true,
    "status": "OK",
    "reasons": []
@@ -1004,7 +1004,7 @@
    "frozen_digest": "6dee9ed093b0d21f8142b8da88d53536ea2f5fad6b5a79b50dce1bf5aca1abdb",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 6441,
+   "prior_rows": 6567,
    "prior_match": true,
    "status": "OK",
    "reasons": []
@@ -1014,7 +1014,7 @@
    "frozen_digest": "f36d9a65b941eaa2b4e58f0e55c8711fbf86babb439010b73253e478fc076bd6",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 1015,
+   "prior_rows": 1017,
    "prior_match": true,
    "status": "OK",
    "reasons": []
