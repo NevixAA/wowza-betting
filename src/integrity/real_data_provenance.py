@@ -39,7 +39,8 @@ HEALTH - three numbers, never one combined green:
     (C) NEW violations: a violation (artifact, feature, class) that config/feature_provenance.json
         (the committed registry) does not hold, or an active feature it does not list.
 GREEN only when unsupported active = 0, fabricated active = 0 and critical mismatches = 0. Props
-come from the props agent's outputs (fix/props-data-audit); until they land, props are PENDING.
+come from the props certification (src/integrity/props_certification.py, output/props_real_data_provenance.json):
+VERIFIED only when every installed props artifact verifies and still hashes as certified.
 """
 from __future__ import annotations
 
@@ -432,17 +433,36 @@ def _board() -> pd.DataFrame | None:
 
 
 def props_status() -> dict:
-    """The props agent's verdict, when its outputs have landed (fix/props-data-audit); else PENDING."""
-    for name in ("props_real_data_provenance.json", "props_feature_provenance.json"):
-        p = ROOT / "output" / name
-        if p.exists():
-            try:
-                return {"status": "REPORTED", "source": f"output/{name}",
-                        **json.loads(p.read_text(encoding="utf-8"))}
-            except Exception as e:                                     # noqa: BLE001
-                return {"status": "UNREADABLE", "source": f"output/{name}", "detail": str(e)[:120]}
-    return {"status": "PENDING", "source": None,
-            "detail": "props provenance not yet delivered (fix/props-data-audit): props are NOT verified"}
+    """The props production certification (src/integrity/props_certification.py, owner P0 item 5,
+    2026-11-22): output/props_real_data_provenance.json, computed from the installed artifacts.
+
+    VERIFIED only when the file's verdict is VERIFIED AND every installed props artifact still hashes
+    to what the file certified; a changed artifact makes it STALE, a failing check FAILED, no file
+    PENDING. Never REPORTED-because-the-file-exists (it read that way before 2026-11-22)."""
+    p = ROOT / "output" / "props_real_data_provenance.json"
+    if not p.exists():
+        return {"status": "PENDING", "source": None,
+                "detail": "props certification not generated (python -m src.integrity.props_certification "
+                          "--write): props are NOT verified"}
+    try:
+        d = json.loads(p.read_text(encoding="utf-8"))
+    except Exception as e:                                             # noqa: BLE001
+        return {"status": "UNREADABLE", "source": "output/props_real_data_provenance.json", "detail": str(e)[:120]}
+    base = {"source": "output/props_real_data_provenance.json", "generated_at": d.get("generated_at"),
+            "code_sha": d.get("code_sha"), "counts": d.get("counts"), "failing": (d.get("failing") or [])[:20]}
+    try:
+        from .props_certification import installed_hashes
+        now = installed_hashes()
+    except Exception as e:                                             # noqa: BLE001
+        return {**base, "status": "UNREADABLE", "detail": f"installed artifacts not hashable: {type(e).__name__}"}
+    rec = d.get("installed_hashes") or {}
+    changed = sorted(k for k in set(now) | set(rec) if now.get(k) != rec.get(k))
+    if changed:
+        return {**base, "status": "STALE", "changed": changed,
+                "detail": f"{len(changed)} installed props artifact(s) differ from the certified ones: re-run the certification"}
+    if d.get("verdict") != "VERIFIED":
+        return {**base, "status": "FAILED", "detail": f"{len(d.get('failing') or [])} failing check(s)"}
+    return {**base, "status": "VERIFIED", "detail": f"{(d.get('counts') or {}).get('artifacts')} installed props artifact(s) verified"}
 
 
 def _violation(r: dict) -> bool:
@@ -514,7 +534,7 @@ def health(rows: list[dict] | None = None, committed: dict | None = None) -> dic
             "team_fantasy_status": "GREEN" if green else "RED",
             "note": "GREEN only when unsupported active = 0, fabricated active = 0, critical "
                     "mismatches = 0, no active payload refused and no new violation. Props are "
-                    "reported apart and are not verified until the props agent's outputs land."}
+                    "reported apart (props_status: the props certification, VERIFIED / FAILED / STALE / PENDING)."}
 
 
 def checks(h: dict | None = None) -> list[dict]:
@@ -527,10 +547,10 @@ def checks(h: dict | None = None) -> list[dict]:
     rule = "REAL DATA ONLY (owner 2026-11-15): src/integrity/real_data_provenance"
     out = [
         {"check": "Data truth 13a: active production violations",
-         "status": "RED" if b["count"] else ("AMBER" if (gaps or props != "REPORTED") else "GREEN"),
+         "status": "RED" if b["count"] else ("AMBER" if (gaps or props != "VERIFIED") else "GREEN"),
          "value": f"{b['count']} active violation(s); props {props}; {len(gaps)} serving coverage gap(s)",
          "rule": rule + " - fabricated, unsupported, mismatched or refused inputs in a payload that scores live "
-                        "fixtures (props: not yet verified until the props agent reports)",
+                        "fixtures (props: GREEN only when output/props_real_data_provenance.json is VERIFIED and current)",
          "detail": "; ".join((b["rows"] + b["refused_active_payloads"])[:8] + gaps[:4])},
         {"check": "Data truth 13b: new provenance violations",
          "status": "RED" if c["count"] else "GREEN", "value": f"{c['count']} new violation(s)",

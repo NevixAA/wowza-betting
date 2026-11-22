@@ -1,0 +1,2171 @@
+{
+ "run_id": "43035218594",
+ "harness_version": "PROPS-HARNESS-1.0",
+ "plan_version": "PROPS-CLEAN-RETRAIN-1.0",
+ "generated_at": "2026-11-11T14:09:43Z",
+ "code_sha": "6fd794964ad031b45ff0a383d996bb09b414175c",
+ "evidence_class": "RETROSPECTIVE",
+ "hand_adjustment": "none",
+ "owner_decisions": {
+  "holdout_start": "2026-09-01",
+  "holdout_end": "2026-10-31",
+  "min_verified_share": 0.95,
+  "min_verified_share_holdout": 0.85,
+  "markets": [
+   "sot",
+   "sot2",
+   "goals",
+   "assists",
+   "cards",
+   "goals2",
+   "goals3",
+   "sot3",
+   "sot4"
+  ],
+  "feature_rule": "all_prior_verified"
+ },
+ "status": "OK",
+ "verified_share_train": 0.9979192656611899,
+ "verified_share_holdout": 0.9883850437549722,
+ "rows_in_scope": 923086,
+ "features": {
+  "n": 128,
+  "sha256": "59e3dd18f76938c74a59746a16ed41490bde1bf0168aa0e0aebbf850a4264189",
+  "profile_coverage": {
+   "age": 0.9745312934870561,
+   "age_peak_delta": 0.9745312934870561,
+   "height_advantage_score": 0.8904128872665064,
+   "height_aerial_interaction": 0.907034546788983,
+   "height_cm": 0.9153120644578242,
+   "height_diff_vs_opp_def": 0.8904128872665064,
+   "opp_def_mean_height": 0.9698299901245765
+  }
+ },
+ "markets": {
+  "sot": {
+   "target": "target_sot",
+   "rows": 930592,
+   "verified_share": {
+    "train": 0.9979192656611899,
+    "train_rows": 866521,
+    "holdout": 0.9884023124657462,
+    "holdout_rows": 56563
+   },
+   "holdout": {
+    "dates": [
+     "2026-09-01",
+     "2026-10-31"
+    ],
+    "train_rows": 864718,
+    "test_rows": 55907,
+    "status": "OK",
+    "window": {
+     "fit_rows": 734045,
+     "calibration_rows": 130673,
+     "fit_dates": [
+      "2022-08-18",
+      "2026-01-09"
+     ],
+     "calibration_dates": [
+      "2026-01-10",
+      "2026-08-31"
+     ]
+    },
+    "events": {
+     "recipe_retrained": 13472,
+     "hgb_nan_native": 13472,
+     "player_base_rate": 13472
+    },
+    "unscored": {
+     "recipe_retrained": 0,
+     "hgb_nan_native": 0,
+     "player_base_rate": 0
+    }
+   },
+   "walk_forward": [
+    {
+     "fold": 0,
+     "test_dates": [
+      "2026-07-06",
+      "2026-07-13"
+     ],
+     "status": "OK",
+     "train_rows": 836787,
+     "test_rows": 1040,
+     "window": {
+      "fit_rows": 709462,
+      "calibration_rows": 127325,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-11-29"
+      ],
+      "calibration_dates": [
+       "2025-11-30",
+       "2026-07-05"
+      ]
+     }
+    },
+    {
+     "fold": 1,
+     "test_dates": [
+      "2026-07-14",
+      "2026-07-20"
+     ],
+     "status": "OK",
+     "train_rows": 837827,
+     "test_rows": 1490,
+     "window": {
+      "fit_rows": 711875,
+      "calibration_rows": 125952,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-02"
+      ],
+      "calibration_dates": [
+       "2025-12-03",
+       "2026-07-13"
+      ]
+     }
+    },
+    {
+     "fold": 2,
+     "test_dates": [
+      "2026-07-21",
+      "2026-07-27"
+     ],
+     "status": "OK",
+     "train_rows": 839317,
+     "test_rows": 2279,
+     "window": {
+      "fit_rows": 712866,
+      "calibration_rows": 126451,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-05"
+      ],
+      "calibration_dates": [
+       "2025-12-06",
+       "2026-07-20"
+      ]
+     }
+    },
+    {
+     "fold": 3,
+     "test_dates": [
+      "2026-07-28",
+      "2026-08-03"
+     ],
+     "status": "OK",
+     "train_rows": 841596,
+     "test_rows": 2147,
+     "window": {
+      "fit_rows": 714648,
+      "calibration_rows": 126948,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-06"
+      ],
+      "calibration_dates": [
+       "2025-12-07",
+       "2026-07-27"
+      ]
+     }
+    },
+    {
+     "fold": 4,
+     "test_dates": [
+      "2026-08-04",
+      "2026-08-10"
+     ],
+     "status": "OK",
+     "train_rows": 843743,
+     "test_rows": 2840,
+     "window": {
+      "fit_rows": 716674,
+      "calibration_rows": 127069,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-08"
+      ],
+      "calibration_dates": [
+       "2025-12-09",
+       "2026-08-03"
+      ]
+     }
+    },
+    {
+     "fold": 5,
+     "test_dates": [
+      "2026-08-11",
+      "2026-08-17"
+     ],
+     "status": "OK",
+     "train_rows": 846583,
+     "test_rows": 4599,
+     "window": {
+      "fit_rows": 719216,
+      "calibration_rows": 127367,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-11"
+      ],
+      "calibration_dates": [
+       "2025-12-12",
+       "2026-08-10"
+      ]
+     }
+    },
+    {
+     "fold": 6,
+     "test_dates": [
+      "2026-08-18",
+      "2026-08-24"
+     ],
+     "status": "OK",
+     "train_rows": 851182,
+     "test_rows": 6391,
+     "window": {
+      "fit_rows": 723206,
+      "calibration_rows": 127976,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-17"
+      ],
+      "calibration_dates": [
+       "2025-12-18",
+       "2026-08-17"
+      ]
+     }
+    },
+    {
+     "fold": 7,
+     "test_dates": [
+      "2026-08-25",
+      "2026-08-31"
+     ],
+     "status": "OK",
+     "train_rows": 857573,
+     "test_rows": 7145,
+     "window": {
+      "fit_rows": 728719,
+      "calibration_rows": 128854,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-28"
+      ],
+      "calibration_dates": [
+       "2025-12-29",
+       "2026-08-24"
+      ]
+     }
+    }
+   ],
+   "artifacts": {
+    "recipe_retrained": {
+     "path": "models/challengers/props_clean/props_clean_sot_recipe_retrained.pkl",
+     "sha256_reported": "b3c6639af2f2a32136399dc33e12019189cab388e384df57d769d2bddc0a1133",
+     "sha256_downloaded": "b3c6639af2f2a32136399dc33e12019189cab388e384df57d769d2bddc0a1133"
+    },
+    "hgb_nan_native": {
+     "path": "models/challengers/props_clean/props_clean_sot_hgb_nan_native.pkl",
+     "sha256_reported": "a4ecd8bae2b56b648b21a5bb4f8f1c171ce9e5925faa5f4c8fd3850abbb169f7",
+     "sha256_downloaded": "a4ecd8bae2b56b648b21a5bb4f8f1c171ce9e5925faa5f4c8fd3850abbb169f7"
+    },
+    "player_base_rate": {
+     "path": "models/challengers/props_clean/props_clean_sot_player_base_rate.pkl",
+     "sha256_reported": "d22fa5af0d9bf70b46d0fc2e0ab9031b7789096a4cffc3208a432bec96cb8a91",
+     "sha256_downloaded": "d22fa5af0d9bf70b46d0fc2e0ab9031b7789096a4cffc3208a432bec96cb8a91"
+    }
+   }
+  },
+  "sot2": {
+   "target": "target_sot2",
+   "rows": 930592,
+   "verified_share": {
+    "train": 0.9979192656611899,
+    "train_rows": 866521,
+    "holdout": 0.9884023124657462,
+    "holdout_rows": 56563
+   },
+   "holdout": {
+    "dates": [
+     "2026-09-01",
+     "2026-10-31"
+    ],
+    "train_rows": 864718,
+    "test_rows": 55907,
+    "status": "OK",
+    "window": {
+     "fit_rows": 734045,
+     "calibration_rows": 130673,
+     "fit_dates": [
+      "2022-08-18",
+      "2026-01-09"
+     ],
+     "calibration_dates": [
+      "2026-01-10",
+      "2026-08-31"
+     ]
+    },
+    "events": {
+     "recipe_retrained": 3311,
+     "hgb_nan_native": 3311,
+     "player_base_rate": 3311
+    },
+    "unscored": {
+     "recipe_retrained": 0,
+     "hgb_nan_native": 0,
+     "player_base_rate": 0
+    }
+   },
+   "walk_forward": [
+    {
+     "fold": 0,
+     "test_dates": [
+      "2026-07-06",
+      "2026-07-13"
+     ],
+     "status": "OK",
+     "train_rows": 836787,
+     "test_rows": 1040,
+     "window": {
+      "fit_rows": 709462,
+      "calibration_rows": 127325,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-11-29"
+      ],
+      "calibration_dates": [
+       "2025-11-30",
+       "2026-07-05"
+      ]
+     }
+    },
+    {
+     "fold": 1,
+     "test_dates": [
+      "2026-07-14",
+      "2026-07-20"
+     ],
+     "status": "OK",
+     "train_rows": 837827,
+     "test_rows": 1490,
+     "window": {
+      "fit_rows": 711875,
+      "calibration_rows": 125952,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-02"
+      ],
+      "calibration_dates": [
+       "2025-12-03",
+       "2026-07-13"
+      ]
+     }
+    },
+    {
+     "fold": 2,
+     "test_dates": [
+      "2026-07-21",
+      "2026-07-27"
+     ],
+     "status": "OK",
+     "train_rows": 839317,
+     "test_rows": 2279,
+     "window": {
+      "fit_rows": 712866,
+      "calibration_rows": 126451,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-05"
+      ],
+      "calibration_dates": [
+       "2025-12-06",
+       "2026-07-20"
+      ]
+     }
+    },
+    {
+     "fold": 3,
+     "test_dates": [
+      "2026-07-28",
+      "2026-08-03"
+     ],
+     "status": "OK",
+     "train_rows": 841596,
+     "test_rows": 2147,
+     "window": {
+      "fit_rows": 714648,
+      "calibration_rows": 126948,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-06"
+      ],
+      "calibration_dates": [
+       "2025-12-07",
+       "2026-07-27"
+      ]
+     }
+    },
+    {
+     "fold": 4,
+     "test_dates": [
+      "2026-08-04",
+      "2026-08-10"
+     ],
+     "status": "OK",
+     "train_rows": 843743,
+     "test_rows": 2840,
+     "window": {
+      "fit_rows": 716674,
+      "calibration_rows": 127069,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-08"
+      ],
+      "calibration_dates": [
+       "2025-12-09",
+       "2026-08-03"
+      ]
+     }
+    },
+    {
+     "fold": 5,
+     "test_dates": [
+      "2026-08-11",
+      "2026-08-17"
+     ],
+     "status": "OK",
+     "train_rows": 846583,
+     "test_rows": 4599,
+     "window": {
+      "fit_rows": 719216,
+      "calibration_rows": 127367,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-11"
+      ],
+      "calibration_dates": [
+       "2025-12-12",
+       "2026-08-10"
+      ]
+     }
+    },
+    {
+     "fold": 6,
+     "test_dates": [
+      "2026-08-18",
+      "2026-08-24"
+     ],
+     "status": "OK",
+     "train_rows": 851182,
+     "test_rows": 6391,
+     "window": {
+      "fit_rows": 723206,
+      "calibration_rows": 127976,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-17"
+      ],
+      "calibration_dates": [
+       "2025-12-18",
+       "2026-08-17"
+      ]
+     }
+    },
+    {
+     "fold": 7,
+     "test_dates": [
+      "2026-08-25",
+      "2026-08-31"
+     ],
+     "status": "OK",
+     "train_rows": 857573,
+     "test_rows": 7145,
+     "window": {
+      "fit_rows": 728719,
+      "calibration_rows": 128854,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-28"
+      ],
+      "calibration_dates": [
+       "2025-12-29",
+       "2026-08-24"
+      ]
+     }
+    }
+   ],
+   "artifacts": {
+    "recipe_retrained": {
+     "path": "models/challengers/props_clean/props_clean_sot2_recipe_retrained.pkl",
+     "sha256_reported": "73118460c4fd54cf3cf936403d65a173fa2540a54c3dd2c6ef0e38bb0eb7b9bf",
+     "sha256_downloaded": "73118460c4fd54cf3cf936403d65a173fa2540a54c3dd2c6ef0e38bb0eb7b9bf"
+    },
+    "hgb_nan_native": {
+     "path": "models/challengers/props_clean/props_clean_sot2_hgb_nan_native.pkl",
+     "sha256_reported": "b0603240f8e8da04e908b9d280491afff3dea6193f322c5de2aa1c42284ced66",
+     "sha256_downloaded": "b0603240f8e8da04e908b9d280491afff3dea6193f322c5de2aa1c42284ced66"
+    },
+    "player_base_rate": {
+     "path": "models/challengers/props_clean/props_clean_sot2_player_base_rate.pkl",
+     "sha256_reported": "e6dda9b4b25303ca0118ac406e8d9af31d199361847c42b192df109eabce6347",
+     "sha256_downloaded": "e6dda9b4b25303ca0118ac406e8d9af31d199361847c42b192df109eabce6347"
+    }
+   }
+  },
+  "goals": {
+   "target": "target_goals",
+   "rows": 930592,
+   "verified_share": {
+    "train": 0.9979192656611899,
+    "train_rows": 866521,
+    "holdout": 0.9884023124657462,
+    "holdout_rows": 56563
+   },
+   "holdout": {
+    "dates": [
+     "2026-09-01",
+     "2026-10-31"
+    ],
+    "train_rows": 864718,
+    "test_rows": 55907,
+    "status": "OK",
+    "window": {
+     "fit_rows": 734045,
+     "calibration_rows": 130673,
+     "fit_dates": [
+      "2022-08-18",
+      "2026-01-09"
+     ],
+     "calibration_dates": [
+      "2026-01-10",
+      "2026-08-31"
+     ]
+    },
+    "events": {
+     "recipe_retrained": 4980,
+     "hgb_nan_native": 4980,
+     "player_base_rate": 4980
+    },
+    "unscored": {
+     "recipe_retrained": 0,
+     "hgb_nan_native": 0,
+     "player_base_rate": 0
+    }
+   },
+   "walk_forward": [
+    {
+     "fold": 0,
+     "test_dates": [
+      "2026-07-06",
+      "2026-07-13"
+     ],
+     "status": "OK",
+     "train_rows": 836787,
+     "test_rows": 1040,
+     "window": {
+      "fit_rows": 709462,
+      "calibration_rows": 127325,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-11-29"
+      ],
+      "calibration_dates": [
+       "2025-11-30",
+       "2026-07-05"
+      ]
+     }
+    },
+    {
+     "fold": 1,
+     "test_dates": [
+      "2026-07-14",
+      "2026-07-20"
+     ],
+     "status": "OK",
+     "train_rows": 837827,
+     "test_rows": 1490,
+     "window": {
+      "fit_rows": 711875,
+      "calibration_rows": 125952,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-02"
+      ],
+      "calibration_dates": [
+       "2025-12-03",
+       "2026-07-13"
+      ]
+     }
+    },
+    {
+     "fold": 2,
+     "test_dates": [
+      "2026-07-21",
+      "2026-07-27"
+     ],
+     "status": "OK",
+     "train_rows": 839317,
+     "test_rows": 2279,
+     "window": {
+      "fit_rows": 712866,
+      "calibration_rows": 126451,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-05"
+      ],
+      "calibration_dates": [
+       "2025-12-06",
+       "2026-07-20"
+      ]
+     }
+    },
+    {
+     "fold": 3,
+     "test_dates": [
+      "2026-07-28",
+      "2026-08-03"
+     ],
+     "status": "OK",
+     "train_rows": 841596,
+     "test_rows": 2147,
+     "window": {
+      "fit_rows": 714648,
+      "calibration_rows": 126948,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-06"
+      ],
+      "calibration_dates": [
+       "2025-12-07",
+       "2026-07-27"
+      ]
+     }
+    },
+    {
+     "fold": 4,
+     "test_dates": [
+      "2026-08-04",
+      "2026-08-10"
+     ],
+     "status": "OK",
+     "train_rows": 843743,
+     "test_rows": 2840,
+     "window": {
+      "fit_rows": 716674,
+      "calibration_rows": 127069,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-08"
+      ],
+      "calibration_dates": [
+       "2025-12-09",
+       "2026-08-03"
+      ]
+     }
+    },
+    {
+     "fold": 5,
+     "test_dates": [
+      "2026-08-11",
+      "2026-08-17"
+     ],
+     "status": "OK",
+     "train_rows": 846583,
+     "test_rows": 4599,
+     "window": {
+      "fit_rows": 719216,
+      "calibration_rows": 127367,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-11"
+      ],
+      "calibration_dates": [
+       "2025-12-12",
+       "2026-08-10"
+      ]
+     }
+    },
+    {
+     "fold": 6,
+     "test_dates": [
+      "2026-08-18",
+      "2026-08-24"
+     ],
+     "status": "OK",
+     "train_rows": 851182,
+     "test_rows": 6391,
+     "window": {
+      "fit_rows": 723206,
+      "calibration_rows": 127976,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-17"
+      ],
+      "calibration_dates": [
+       "2025-12-18",
+       "2026-08-17"
+      ]
+     }
+    },
+    {
+     "fold": 7,
+     "test_dates": [
+      "2026-08-25",
+      "2026-08-31"
+     ],
+     "status": "OK",
+     "train_rows": 857573,
+     "test_rows": 7145,
+     "window": {
+      "fit_rows": 728719,
+      "calibration_rows": 128854,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-28"
+      ],
+      "calibration_dates": [
+       "2025-12-29",
+       "2026-08-24"
+      ]
+     }
+    }
+   ],
+   "artifacts": {
+    "recipe_retrained": {
+     "path": "models/challengers/props_clean/props_clean_goals_recipe_retrained.pkl",
+     "sha256_reported": "bd91006cedf1ba3eb561ca4048c10ac6151c2577067c178d88277d65626a5d2e",
+     "sha256_downloaded": "bd91006cedf1ba3eb561ca4048c10ac6151c2577067c178d88277d65626a5d2e"
+    },
+    "hgb_nan_native": {
+     "path": "models/challengers/props_clean/props_clean_goals_hgb_nan_native.pkl",
+     "sha256_reported": "fd31c5e105c9b82d1f227c1932bb4b496486f70174f91f4c314a797a1da6b492",
+     "sha256_downloaded": "fd31c5e105c9b82d1f227c1932bb4b496486f70174f91f4c314a797a1da6b492"
+    },
+    "player_base_rate": {
+     "path": "models/challengers/props_clean/props_clean_goals_player_base_rate.pkl",
+     "sha256_reported": "8efaaa52751814300844a7d8e775b943f55c194c91f3546a1e47fa853009d3a8",
+     "sha256_downloaded": "8efaaa52751814300844a7d8e775b943f55c194c91f3546a1e47fa853009d3a8"
+    }
+   }
+  },
+  "assists": {
+   "target": "target_assists",
+   "rows": 930592,
+   "verified_share": {
+    "train": 0.9979192656611899,
+    "train_rows": 866521,
+    "holdout": 0.9884023124657462,
+    "holdout_rows": 56563
+   },
+   "holdout": {
+    "dates": [
+     "2026-09-01",
+     "2026-10-31"
+    ],
+    "train_rows": 864718,
+    "test_rows": 55907,
+    "status": "OK",
+    "window": {
+     "fit_rows": 734045,
+     "calibration_rows": 130673,
+     "fit_dates": [
+      "2022-08-18",
+      "2026-01-09"
+     ],
+     "calibration_dates": [
+      "2026-01-10",
+      "2026-08-31"
+     ]
+    },
+    "events": {
+     "recipe_retrained": 3696,
+     "hgb_nan_native": 3696,
+     "player_base_rate": 3696
+    },
+    "unscored": {
+     "recipe_retrained": 0,
+     "hgb_nan_native": 0,
+     "player_base_rate": 0
+    }
+   },
+   "walk_forward": [
+    {
+     "fold": 0,
+     "test_dates": [
+      "2026-07-06",
+      "2026-07-13"
+     ],
+     "status": "OK",
+     "train_rows": 836787,
+     "test_rows": 1040,
+     "window": {
+      "fit_rows": 709462,
+      "calibration_rows": 127325,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-11-29"
+      ],
+      "calibration_dates": [
+       "2025-11-30",
+       "2026-07-05"
+      ]
+     }
+    },
+    {
+     "fold": 1,
+     "test_dates": [
+      "2026-07-14",
+      "2026-07-20"
+     ],
+     "status": "OK",
+     "train_rows": 837827,
+     "test_rows": 1490,
+     "window": {
+      "fit_rows": 711875,
+      "calibration_rows": 125952,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-02"
+      ],
+      "calibration_dates": [
+       "2025-12-03",
+       "2026-07-13"
+      ]
+     }
+    },
+    {
+     "fold": 2,
+     "test_dates": [
+      "2026-07-21",
+      "2026-07-27"
+     ],
+     "status": "OK",
+     "train_rows": 839317,
+     "test_rows": 2279,
+     "window": {
+      "fit_rows": 712866,
+      "calibration_rows": 126451,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-05"
+      ],
+      "calibration_dates": [
+       "2025-12-06",
+       "2026-07-20"
+      ]
+     }
+    },
+    {
+     "fold": 3,
+     "test_dates": [
+      "2026-07-28",
+      "2026-08-03"
+     ],
+     "status": "OK",
+     "train_rows": 841596,
+     "test_rows": 2147,
+     "window": {
+      "fit_rows": 714648,
+      "calibration_rows": 126948,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-06"
+      ],
+      "calibration_dates": [
+       "2025-12-07",
+       "2026-07-27"
+      ]
+     }
+    },
+    {
+     "fold": 4,
+     "test_dates": [
+      "2026-08-04",
+      "2026-08-10"
+     ],
+     "status": "OK",
+     "train_rows": 843743,
+     "test_rows": 2840,
+     "window": {
+      "fit_rows": 716674,
+      "calibration_rows": 127069,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-08"
+      ],
+      "calibration_dates": [
+       "2025-12-09",
+       "2026-08-03"
+      ]
+     }
+    },
+    {
+     "fold": 5,
+     "test_dates": [
+      "2026-08-11",
+      "2026-08-17"
+     ],
+     "status": "OK",
+     "train_rows": 846583,
+     "test_rows": 4599,
+     "window": {
+      "fit_rows": 719216,
+      "calibration_rows": 127367,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-11"
+      ],
+      "calibration_dates": [
+       "2025-12-12",
+       "2026-08-10"
+      ]
+     }
+    },
+    {
+     "fold": 6,
+     "test_dates": [
+      "2026-08-18",
+      "2026-08-24"
+     ],
+     "status": "OK",
+     "train_rows": 851182,
+     "test_rows": 6391,
+     "window": {
+      "fit_rows": 723206,
+      "calibration_rows": 127976,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-17"
+      ],
+      "calibration_dates": [
+       "2025-12-18",
+       "2026-08-17"
+      ]
+     }
+    },
+    {
+     "fold": 7,
+     "test_dates": [
+      "2026-08-25",
+      "2026-08-31"
+     ],
+     "status": "OK",
+     "train_rows": 857573,
+     "test_rows": 7145,
+     "window": {
+      "fit_rows": 728719,
+      "calibration_rows": 128854,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-28"
+      ],
+      "calibration_dates": [
+       "2025-12-29",
+       "2026-08-24"
+      ]
+     }
+    }
+   ],
+   "artifacts": {
+    "recipe_retrained": {
+     "path": "models/challengers/props_clean/props_clean_assists_recipe_retrained.pkl",
+     "sha256_reported": "7407b53d2f00cc026dcea5a4b427b6a33ffea4bf1f290a2665b2758455fde859",
+     "sha256_downloaded": "7407b53d2f00cc026dcea5a4b427b6a33ffea4bf1f290a2665b2758455fde859"
+    },
+    "hgb_nan_native": {
+     "path": "models/challengers/props_clean/props_clean_assists_hgb_nan_native.pkl",
+     "sha256_reported": "b2d702224b37b6c8ab0a270993c61ad6fac04219a32952b2ca4334a9e9de8d01",
+     "sha256_downloaded": "b2d702224b37b6c8ab0a270993c61ad6fac04219a32952b2ca4334a9e9de8d01"
+    },
+    "player_base_rate": {
+     "path": "models/challengers/props_clean/props_clean_assists_player_base_rate.pkl",
+     "sha256_reported": "d3ecfb8fe8ad6b1f74a2f5beac849613c1811050c24c4ce4594df4a55b015971",
+     "sha256_downloaded": "d3ecfb8fe8ad6b1f74a2f5beac849613c1811050c24c4ce4594df4a55b015971"
+    }
+   }
+  },
+  "cards": {
+   "target": "target_cards",
+   "rows": 930593,
+   "verified_share": {
+    "train": 0.9979192656611899,
+    "train_rows": 866521,
+    "holdout": 0.9883850437549722,
+    "holdout_rows": 56565
+   },
+   "holdout": {
+    "dates": [
+     "2026-09-01",
+     "2026-10-31"
+    ],
+    "train_rows": 864718,
+    "test_rows": 55908,
+    "status": "OK",
+    "window": {
+     "fit_rows": 734045,
+     "calibration_rows": 130673,
+     "fit_dates": [
+      "2022-08-18",
+      "2026-01-09"
+     ],
+     "calibration_dates": [
+      "2026-01-10",
+      "2026-08-31"
+     ]
+    },
+    "events": {
+     "recipe_retrained": 7230,
+     "hgb_nan_native": 7230,
+     "player_base_rate": 7230
+    },
+    "unscored": {
+     "recipe_retrained": 0,
+     "hgb_nan_native": 0,
+     "player_base_rate": 0
+    }
+   },
+   "walk_forward": [
+    {
+     "fold": 0,
+     "test_dates": [
+      "2026-07-06",
+      "2026-07-13"
+     ],
+     "status": "OK",
+     "train_rows": 836787,
+     "test_rows": 1040,
+     "window": {
+      "fit_rows": 709462,
+      "calibration_rows": 127325,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-11-29"
+      ],
+      "calibration_dates": [
+       "2025-11-30",
+       "2026-07-05"
+      ]
+     }
+    },
+    {
+     "fold": 1,
+     "test_dates": [
+      "2026-07-14",
+      "2026-07-20"
+     ],
+     "status": "OK",
+     "train_rows": 837827,
+     "test_rows": 1490,
+     "window": {
+      "fit_rows": 711875,
+      "calibration_rows": 125952,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-02"
+      ],
+      "calibration_dates": [
+       "2025-12-03",
+       "2026-07-13"
+      ]
+     }
+    },
+    {
+     "fold": 2,
+     "test_dates": [
+      "2026-07-21",
+      "2026-07-27"
+     ],
+     "status": "OK",
+     "train_rows": 839317,
+     "test_rows": 2279,
+     "window": {
+      "fit_rows": 712866,
+      "calibration_rows": 126451,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-05"
+      ],
+      "calibration_dates": [
+       "2025-12-06",
+       "2026-07-20"
+      ]
+     }
+    },
+    {
+     "fold": 3,
+     "test_dates": [
+      "2026-07-28",
+      "2026-08-03"
+     ],
+     "status": "OK",
+     "train_rows": 841596,
+     "test_rows": 2147,
+     "window": {
+      "fit_rows": 714648,
+      "calibration_rows": 126948,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-06"
+      ],
+      "calibration_dates": [
+       "2025-12-07",
+       "2026-07-27"
+      ]
+     }
+    },
+    {
+     "fold": 4,
+     "test_dates": [
+      "2026-08-04",
+      "2026-08-10"
+     ],
+     "status": "OK",
+     "train_rows": 843743,
+     "test_rows": 2840,
+     "window": {
+      "fit_rows": 716674,
+      "calibration_rows": 127069,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-08"
+      ],
+      "calibration_dates": [
+       "2025-12-09",
+       "2026-08-03"
+      ]
+     }
+    },
+    {
+     "fold": 5,
+     "test_dates": [
+      "2026-08-11",
+      "2026-08-17"
+     ],
+     "status": "OK",
+     "train_rows": 846583,
+     "test_rows": 4599,
+     "window": {
+      "fit_rows": 719216,
+      "calibration_rows": 127367,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-11"
+      ],
+      "calibration_dates": [
+       "2025-12-12",
+       "2026-08-10"
+      ]
+     }
+    },
+    {
+     "fold": 6,
+     "test_dates": [
+      "2026-08-18",
+      "2026-08-24"
+     ],
+     "status": "OK",
+     "train_rows": 851182,
+     "test_rows": 6391,
+     "window": {
+      "fit_rows": 723206,
+      "calibration_rows": 127976,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-17"
+      ],
+      "calibration_dates": [
+       "2025-12-18",
+       "2026-08-17"
+      ]
+     }
+    },
+    {
+     "fold": 7,
+     "test_dates": [
+      "2026-08-25",
+      "2026-08-31"
+     ],
+     "status": "OK",
+     "train_rows": 857573,
+     "test_rows": 7145,
+     "window": {
+      "fit_rows": 728719,
+      "calibration_rows": 128854,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-28"
+      ],
+      "calibration_dates": [
+       "2025-12-29",
+       "2026-08-24"
+      ]
+     }
+    }
+   ],
+   "artifacts": {
+    "recipe_retrained": {
+     "path": "models/challengers/props_clean/props_clean_cards_recipe_retrained.pkl",
+     "sha256_reported": "4fee5290ccd9d17fde2e41571d2abaee8e622d8badca0b7c050810c2d5e07831",
+     "sha256_downloaded": "4fee5290ccd9d17fde2e41571d2abaee8e622d8badca0b7c050810c2d5e07831"
+    },
+    "hgb_nan_native": {
+     "path": "models/challengers/props_clean/props_clean_cards_hgb_nan_native.pkl",
+     "sha256_reported": "db66f8fdb1a720dec9d886cb69fe353fb233034d3c2f6379961f41bd6b2ab358",
+     "sha256_downloaded": "db66f8fdb1a720dec9d886cb69fe353fb233034d3c2f6379961f41bd6b2ab358"
+    },
+    "player_base_rate": {
+     "path": "models/challengers/props_clean/props_clean_cards_player_base_rate.pkl",
+     "sha256_reported": "5346bf9178f357418be32a5370a5bf15a4e22ea3c68c9596781f2ac3ca5bc834",
+     "sha256_downloaded": "5346bf9178f357418be32a5370a5bf15a4e22ea3c68c9596781f2ac3ca5bc834"
+    }
+   }
+  },
+  "goals2": {
+   "target": "target_goals2",
+   "rows": 930592,
+   "verified_share": {
+    "train": 0.9979192656611899,
+    "train_rows": 866521,
+    "holdout": 0.9884023124657462,
+    "holdout_rows": 56563
+   },
+   "holdout": {
+    "dates": [
+     "2026-09-01",
+     "2026-10-31"
+    ],
+    "train_rows": 864718,
+    "test_rows": 55907,
+    "status": "OK",
+    "window": {
+     "fit_rows": 734045,
+     "calibration_rows": 130673,
+     "fit_dates": [
+      "2022-08-18",
+      "2026-01-09"
+     ],
+     "calibration_dates": [
+      "2026-01-10",
+      "2026-08-31"
+     ]
+    },
+    "events": {
+     "recipe_retrained": 480,
+     "hgb_nan_native": 480,
+     "player_base_rate": 480
+    },
+    "unscored": {
+     "recipe_retrained": 0,
+     "hgb_nan_native": 0,
+     "player_base_rate": 0
+    }
+   },
+   "walk_forward": [
+    {
+     "fold": 0,
+     "test_dates": [
+      "2026-07-06",
+      "2026-07-13"
+     ],
+     "status": "OK",
+     "train_rows": 836787,
+     "test_rows": 1040,
+     "window": {
+      "fit_rows": 709462,
+      "calibration_rows": 127325,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-11-29"
+      ],
+      "calibration_dates": [
+       "2025-11-30",
+       "2026-07-05"
+      ]
+     }
+    },
+    {
+     "fold": 1,
+     "test_dates": [
+      "2026-07-14",
+      "2026-07-20"
+     ],
+     "status": "OK",
+     "train_rows": 837827,
+     "test_rows": 1490,
+     "window": {
+      "fit_rows": 711875,
+      "calibration_rows": 125952,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-02"
+      ],
+      "calibration_dates": [
+       "2025-12-03",
+       "2026-07-13"
+      ]
+     }
+    },
+    {
+     "fold": 2,
+     "test_dates": [
+      "2026-07-21",
+      "2026-07-27"
+     ],
+     "status": "OK",
+     "train_rows": 839317,
+     "test_rows": 2279,
+     "window": {
+      "fit_rows": 712866,
+      "calibration_rows": 126451,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-05"
+      ],
+      "calibration_dates": [
+       "2025-12-06",
+       "2026-07-20"
+      ]
+     }
+    },
+    {
+     "fold": 3,
+     "test_dates": [
+      "2026-07-28",
+      "2026-08-03"
+     ],
+     "status": "OK",
+     "train_rows": 841596,
+     "test_rows": 2147,
+     "window": {
+      "fit_rows": 714648,
+      "calibration_rows": 126948,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-06"
+      ],
+      "calibration_dates": [
+       "2025-12-07",
+       "2026-07-27"
+      ]
+     }
+    },
+    {
+     "fold": 4,
+     "test_dates": [
+      "2026-08-04",
+      "2026-08-10"
+     ],
+     "status": "OK",
+     "train_rows": 843743,
+     "test_rows": 2840,
+     "window": {
+      "fit_rows": 716674,
+      "calibration_rows": 127069,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-08"
+      ],
+      "calibration_dates": [
+       "2025-12-09",
+       "2026-08-03"
+      ]
+     }
+    },
+    {
+     "fold": 5,
+     "test_dates": [
+      "2026-08-11",
+      "2026-08-17"
+     ],
+     "status": "OK",
+     "train_rows": 846583,
+     "test_rows": 4599,
+     "window": {
+      "fit_rows": 719216,
+      "calibration_rows": 127367,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-11"
+      ],
+      "calibration_dates": [
+       "2025-12-12",
+       "2026-08-10"
+      ]
+     }
+    },
+    {
+     "fold": 6,
+     "test_dates": [
+      "2026-08-18",
+      "2026-08-24"
+     ],
+     "status": "OK",
+     "train_rows": 851182,
+     "test_rows": 6391,
+     "window": {
+      "fit_rows": 723206,
+      "calibration_rows": 127976,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-17"
+      ],
+      "calibration_dates": [
+       "2025-12-18",
+       "2026-08-17"
+      ]
+     }
+    },
+    {
+     "fold": 7,
+     "test_dates": [
+      "2026-08-25",
+      "2026-08-31"
+     ],
+     "status": "OK",
+     "train_rows": 857573,
+     "test_rows": 7145,
+     "window": {
+      "fit_rows": 728719,
+      "calibration_rows": 128854,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-28"
+      ],
+      "calibration_dates": [
+       "2025-12-29",
+       "2026-08-24"
+      ]
+     }
+    }
+   ],
+   "artifacts": {
+    "recipe_retrained": {
+     "path": "models/challengers/props_clean/props_clean_goals2_recipe_retrained.pkl",
+     "sha256_reported": "af1072220d25b2890e94ba25d576c5f39105c58441a3df8da04e3e8d906c444b",
+     "sha256_downloaded": "af1072220d25b2890e94ba25d576c5f39105c58441a3df8da04e3e8d906c444b"
+    },
+    "hgb_nan_native": {
+     "path": "models/challengers/props_clean/props_clean_goals2_hgb_nan_native.pkl",
+     "sha256_reported": "26a741dd33cf2d2bbe01a1b92bafe9b6f908d5903fdce0f1e8e15f8ea5f4b4b3",
+     "sha256_downloaded": "26a741dd33cf2d2bbe01a1b92bafe9b6f908d5903fdce0f1e8e15f8ea5f4b4b3"
+    },
+    "player_base_rate": {
+     "path": "models/challengers/props_clean/props_clean_goals2_player_base_rate.pkl",
+     "sha256_reported": "d22e92ebb87f4c78a881b626b855123a9cb0e8f8516b2c6a016a6320bbcecc96",
+     "sha256_downloaded": "d22e92ebb87f4c78a881b626b855123a9cb0e8f8516b2c6a016a6320bbcecc96"
+    }
+   }
+  },
+  "goals3": {
+   "target": "target_goals3",
+   "rows": 930592,
+   "verified_share": {
+    "train": 0.9979192656611899,
+    "train_rows": 866521,
+    "holdout": 0.9884023124657462,
+    "holdout_rows": 56563
+   },
+   "holdout": {
+    "dates": [
+     "2026-09-01",
+     "2026-10-31"
+    ],
+    "train_rows": 864718,
+    "test_rows": 55907,
+    "status": "OK",
+    "window": {
+     "fit_rows": 734045,
+     "calibration_rows": 130673,
+     "fit_dates": [
+      "2022-08-18",
+      "2026-01-09"
+     ],
+     "calibration_dates": [
+      "2026-01-10",
+      "2026-08-31"
+     ]
+    },
+    "events": {
+     "recipe_retrained": 52,
+     "hgb_nan_native": 52,
+     "player_base_rate": 52
+    },
+    "unscored": {
+     "recipe_retrained": 0,
+     "hgb_nan_native": 0,
+     "player_base_rate": 0
+    }
+   },
+   "walk_forward": [
+    {
+     "fold": 0,
+     "test_dates": [
+      "2026-07-06",
+      "2026-07-13"
+     ],
+     "status": "OK",
+     "train_rows": 836787,
+     "test_rows": 1040,
+     "window": {
+      "fit_rows": 709462,
+      "calibration_rows": 127325,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-11-29"
+      ],
+      "calibration_dates": [
+       "2025-11-30",
+       "2026-07-05"
+      ]
+     }
+    },
+    {
+     "fold": 1,
+     "test_dates": [
+      "2026-07-14",
+      "2026-07-20"
+     ],
+     "status": "OK",
+     "train_rows": 837827,
+     "test_rows": 1490,
+     "window": {
+      "fit_rows": 711875,
+      "calibration_rows": 125952,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-02"
+      ],
+      "calibration_dates": [
+       "2025-12-03",
+       "2026-07-13"
+      ]
+     }
+    },
+    {
+     "fold": 2,
+     "test_dates": [
+      "2026-07-21",
+      "2026-07-27"
+     ],
+     "status": "OK",
+     "train_rows": 839317,
+     "test_rows": 2279,
+     "window": {
+      "fit_rows": 712866,
+      "calibration_rows": 126451,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-05"
+      ],
+      "calibration_dates": [
+       "2025-12-06",
+       "2026-07-20"
+      ]
+     }
+    },
+    {
+     "fold": 3,
+     "test_dates": [
+      "2026-07-28",
+      "2026-08-03"
+     ],
+     "status": "OK",
+     "train_rows": 841596,
+     "test_rows": 2147,
+     "window": {
+      "fit_rows": 714648,
+      "calibration_rows": 126948,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-06"
+      ],
+      "calibration_dates": [
+       "2025-12-07",
+       "2026-07-27"
+      ]
+     }
+    },
+    {
+     "fold": 4,
+     "test_dates": [
+      "2026-08-04",
+      "2026-08-10"
+     ],
+     "status": "OK",
+     "train_rows": 843743,
+     "test_rows": 2840,
+     "window": {
+      "fit_rows": 716674,
+      "calibration_rows": 127069,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-08"
+      ],
+      "calibration_dates": [
+       "2025-12-09",
+       "2026-08-03"
+      ]
+     }
+    },
+    {
+     "fold": 5,
+     "test_dates": [
+      "2026-08-11",
+      "2026-08-17"
+     ],
+     "status": "OK",
+     "train_rows": 846583,
+     "test_rows": 4599,
+     "window": {
+      "fit_rows": 719216,
+      "calibration_rows": 127367,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-11"
+      ],
+      "calibration_dates": [
+       "2025-12-12",
+       "2026-08-10"
+      ]
+     }
+    },
+    {
+     "fold": 6,
+     "test_dates": [
+      "2026-08-18",
+      "2026-08-24"
+     ],
+     "status": "OK",
+     "train_rows": 851182,
+     "test_rows": 6391,
+     "window": {
+      "fit_rows": 723206,
+      "calibration_rows": 127976,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-17"
+      ],
+      "calibration_dates": [
+       "2025-12-18",
+       "2026-08-17"
+      ]
+     }
+    },
+    {
+     "fold": 7,
+     "test_dates": [
+      "2026-08-25",
+      "2026-08-31"
+     ],
+     "status": "OK",
+     "train_rows": 857573,
+     "test_rows": 7145,
+     "window": {
+      "fit_rows": 728719,
+      "calibration_rows": 128854,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-28"
+      ],
+      "calibration_dates": [
+       "2025-12-29",
+       "2026-08-24"
+      ]
+     }
+    }
+   ],
+   "artifacts": {
+    "recipe_retrained": {
+     "path": "models/challengers/props_clean/props_clean_goals3_recipe_retrained.pkl",
+     "sha256_reported": "c9ac3c846970f5d2c793bf35cd8261ab291e6cad5543c699ae6cc27485effb21",
+     "sha256_downloaded": "c9ac3c846970f5d2c793bf35cd8261ab291e6cad5543c699ae6cc27485effb21"
+    },
+    "hgb_nan_native": {
+     "path": "models/challengers/props_clean/props_clean_goals3_hgb_nan_native.pkl",
+     "sha256_reported": "3ac7cdc3eae2d05ef28fe53d336a5d2840bd7174f0f68ea17283cd361a39cb09",
+     "sha256_downloaded": "3ac7cdc3eae2d05ef28fe53d336a5d2840bd7174f0f68ea17283cd361a39cb09"
+    },
+    "player_base_rate": {
+     "path": "models/challengers/props_clean/props_clean_goals3_player_base_rate.pkl",
+     "sha256_reported": "6dade1b85f92ddcbb968df6e537d50546fbd0d62ae54b532e78c5f2e71acb437",
+     "sha256_downloaded": "6dade1b85f92ddcbb968df6e537d50546fbd0d62ae54b532e78c5f2e71acb437"
+    }
+   }
+  },
+  "sot3": {
+   "target": "target_sot3",
+   "rows": 930592,
+   "verified_share": {
+    "train": 0.9979192656611899,
+    "train_rows": 866521,
+    "holdout": 0.9884023124657462,
+    "holdout_rows": 56563
+   },
+   "holdout": {
+    "dates": [
+     "2026-09-01",
+     "2026-10-31"
+    ],
+    "train_rows": 864718,
+    "test_rows": 55907,
+    "status": "OK",
+    "window": {
+     "fit_rows": 734045,
+     "calibration_rows": 130673,
+     "fit_dates": [
+      "2022-08-18",
+      "2026-01-09"
+     ],
+     "calibration_dates": [
+      "2026-01-10",
+      "2026-08-31"
+     ]
+    },
+    "events": {
+     "recipe_retrained": 803,
+     "hgb_nan_native": 803,
+     "player_base_rate": 803
+    },
+    "unscored": {
+     "recipe_retrained": 0,
+     "hgb_nan_native": 0,
+     "player_base_rate": 0
+    }
+   },
+   "walk_forward": [
+    {
+     "fold": 0,
+     "test_dates": [
+      "2026-07-06",
+      "2026-07-13"
+     ],
+     "status": "OK",
+     "train_rows": 836787,
+     "test_rows": 1040,
+     "window": {
+      "fit_rows": 709462,
+      "calibration_rows": 127325,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-11-29"
+      ],
+      "calibration_dates": [
+       "2025-11-30",
+       "2026-07-05"
+      ]
+     }
+    },
+    {
+     "fold": 1,
+     "test_dates": [
+      "2026-07-14",
+      "2026-07-20"
+     ],
+     "status": "OK",
+     "train_rows": 837827,
+     "test_rows": 1490,
+     "window": {
+      "fit_rows": 711875,
+      "calibration_rows": 125952,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-02"
+      ],
+      "calibration_dates": [
+       "2025-12-03",
+       "2026-07-13"
+      ]
+     }
+    },
+    {
+     "fold": 2,
+     "test_dates": [
+      "2026-07-21",
+      "2026-07-27"
+     ],
+     "status": "OK",
+     "train_rows": 839317,
+     "test_rows": 2279,
+     "window": {
+      "fit_rows": 712866,
+      "calibration_rows": 126451,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-05"
+      ],
+      "calibration_dates": [
+       "2025-12-06",
+       "2026-07-20"
+      ]
+     }
+    },
+    {
+     "fold": 3,
+     "test_dates": [
+      "2026-07-28",
+      "2026-08-03"
+     ],
+     "status": "OK",
+     "train_rows": 841596,
+     "test_rows": 2147,
+     "window": {
+      "fit_rows": 714648,
+      "calibration_rows": 126948,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-06"
+      ],
+      "calibration_dates": [
+       "2025-12-07",
+       "2026-07-27"
+      ]
+     }
+    },
+    {
+     "fold": 4,
+     "test_dates": [
+      "2026-08-04",
+      "2026-08-10"
+     ],
+     "status": "OK",
+     "train_rows": 843743,
+     "test_rows": 2840,
+     "window": {
+      "fit_rows": 716674,
+      "calibration_rows": 127069,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-08"
+      ],
+      "calibration_dates": [
+       "2025-12-09",
+       "2026-08-03"
+      ]
+     }
+    },
+    {
+     "fold": 5,
+     "test_dates": [
+      "2026-08-11",
+      "2026-08-17"
+     ],
+     "status": "OK",
+     "train_rows": 846583,
+     "test_rows": 4599,
+     "window": {
+      "fit_rows": 719216,
+      "calibration_rows": 127367,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-11"
+      ],
+      "calibration_dates": [
+       "2025-12-12",
+       "2026-08-10"
+      ]
+     }
+    },
+    {
+     "fold": 6,
+     "test_dates": [
+      "2026-08-18",
+      "2026-08-24"
+     ],
+     "status": "OK",
+     "train_rows": 851182,
+     "test_rows": 6391,
+     "window": {
+      "fit_rows": 723206,
+      "calibration_rows": 127976,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-17"
+      ],
+      "calibration_dates": [
+       "2025-12-18",
+       "2026-08-17"
+      ]
+     }
+    },
+    {
+     "fold": 7,
+     "test_dates": [
+      "2026-08-25",
+      "2026-08-31"
+     ],
+     "status": "OK",
+     "train_rows": 857573,
+     "test_rows": 7145,
+     "window": {
+      "fit_rows": 728719,
+      "calibration_rows": 128854,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-28"
+      ],
+      "calibration_dates": [
+       "2025-12-29",
+       "2026-08-24"
+      ]
+     }
+    }
+   ],
+   "artifacts": {
+    "recipe_retrained": {
+     "path": "models/challengers/props_clean/props_clean_sot3_recipe_retrained.pkl",
+     "sha256_reported": "96fbbcb43ca2e83b0ec0bef86190bd2483c8f84075c170c65429b28b716e2f26",
+     "sha256_downloaded": "96fbbcb43ca2e83b0ec0bef86190bd2483c8f84075c170c65429b28b716e2f26"
+    },
+    "hgb_nan_native": {
+     "path": "models/challengers/props_clean/props_clean_sot3_hgb_nan_native.pkl",
+     "sha256_reported": "a6a3ef0f854941e2a0cc41280454542cfa5f911ba86007b1d79614a7e6571706",
+     "sha256_downloaded": "a6a3ef0f854941e2a0cc41280454542cfa5f911ba86007b1d79614a7e6571706"
+    },
+    "player_base_rate": {
+     "path": "models/challengers/props_clean/props_clean_sot3_player_base_rate.pkl",
+     "sha256_reported": "89bdb2e1712dd95679c0779ccd3c6ac38e4c586a00cd1c79107439776a5cd8fe",
+     "sha256_downloaded": "89bdb2e1712dd95679c0779ccd3c6ac38e4c586a00cd1c79107439776a5cd8fe"
+    }
+   }
+  },
+  "sot4": {
+   "target": "target_sot4",
+   "rows": 930592,
+   "verified_share": {
+    "train": 0.9979192656611899,
+    "train_rows": 866521,
+    "holdout": 0.9884023124657462,
+    "holdout_rows": 56563
+   },
+   "holdout": {
+    "dates": [
+     "2026-09-01",
+     "2026-10-31"
+    ],
+    "train_rows": 864718,
+    "test_rows": 55907,
+    "status": "OK",
+    "window": {
+     "fit_rows": 734045,
+     "calibration_rows": 130673,
+     "fit_dates": [
+      "2022-08-18",
+      "2026-01-09"
+     ],
+     "calibration_dates": [
+      "2026-01-10",
+      "2026-08-31"
+     ]
+    },
+    "events": {
+     "recipe_retrained": 179,
+     "hgb_nan_native": 179,
+     "player_base_rate": 179
+    },
+    "unscored": {
+     "recipe_retrained": 0,
+     "hgb_nan_native": 0,
+     "player_base_rate": 0
+    }
+   },
+   "walk_forward": [
+    {
+     "fold": 0,
+     "test_dates": [
+      "2026-07-06",
+      "2026-07-13"
+     ],
+     "status": "OK",
+     "train_rows": 836787,
+     "test_rows": 1040,
+     "window": {
+      "fit_rows": 709462,
+      "calibration_rows": 127325,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-11-29"
+      ],
+      "calibration_dates": [
+       "2025-11-30",
+       "2026-07-05"
+      ]
+     }
+    },
+    {
+     "fold": 1,
+     "test_dates": [
+      "2026-07-14",
+      "2026-07-20"
+     ],
+     "status": "OK",
+     "train_rows": 837827,
+     "test_rows": 1490,
+     "window": {
+      "fit_rows": 711875,
+      "calibration_rows": 125952,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-02"
+      ],
+      "calibration_dates": [
+       "2025-12-03",
+       "2026-07-13"
+      ]
+     }
+    },
+    {
+     "fold": 2,
+     "test_dates": [
+      "2026-07-21",
+      "2026-07-27"
+     ],
+     "status": "OK",
+     "train_rows": 839317,
+     "test_rows": 2279,
+     "window": {
+      "fit_rows": 712866,
+      "calibration_rows": 126451,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-05"
+      ],
+      "calibration_dates": [
+       "2025-12-06",
+       "2026-07-20"
+      ]
+     }
+    },
+    {
+     "fold": 3,
+     "test_dates": [
+      "2026-07-28",
+      "2026-08-03"
+     ],
+     "status": "OK",
+     "train_rows": 841596,
+     "test_rows": 2147,
+     "window": {
+      "fit_rows": 714648,
+      "calibration_rows": 126948,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-06"
+      ],
+      "calibration_dates": [
+       "2025-12-07",
+       "2026-07-27"
+      ]
+     }
+    },
+    {
+     "fold": 4,
+     "test_dates": [
+      "2026-08-04",
+      "2026-08-10"
+     ],
+     "status": "OK",
+     "train_rows": 843743,
+     "test_rows": 2840,
+     "window": {
+      "fit_rows": 716674,
+      "calibration_rows": 127069,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-08"
+      ],
+      "calibration_dates": [
+       "2025-12-09",
+       "2026-08-03"
+      ]
+     }
+    },
+    {
+     "fold": 5,
+     "test_dates": [
+      "2026-08-11",
+      "2026-08-17"
+     ],
+     "status": "OK",
+     "train_rows": 846583,
+     "test_rows": 4599,
+     "window": {
+      "fit_rows": 719216,
+      "calibration_rows": 127367,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-11"
+      ],
+      "calibration_dates": [
+       "2025-12-12",
+       "2026-08-10"
+      ]
+     }
+    },
+    {
+     "fold": 6,
+     "test_dates": [
+      "2026-08-18",
+      "2026-08-24"
+     ],
+     "status": "OK",
+     "train_rows": 851182,
+     "test_rows": 6391,
+     "window": {
+      "fit_rows": 723206,
+      "calibration_rows": 127976,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-17"
+      ],
+      "calibration_dates": [
+       "2025-12-18",
+       "2026-08-17"
+      ]
+     }
+    },
+    {
+     "fold": 7,
+     "test_dates": [
+      "2026-08-25",
+      "2026-08-31"
+     ],
+     "status": "OK",
+     "train_rows": 857573,
+     "test_rows": 7145,
+     "window": {
+      "fit_rows": 728719,
+      "calibration_rows": 128854,
+      "fit_dates": [
+       "2022-08-18",
+       "2025-12-28"
+      ],
+      "calibration_dates": [
+       "2025-12-29",
+       "2026-08-24"
+      ]
+     }
+    }
+   ],
+   "artifacts": {
+    "recipe_retrained": {
+     "path": "models/challengers/props_clean/props_clean_sot4_recipe_retrained.pkl",
+     "sha256_reported": "43f33dd51503835856fae9994da29618108acfb060469c4fb65fd381b3c37210",
+     "sha256_downloaded": "43f33dd51503835856fae9994da29618108acfb060469c4fb65fd381b3c37210"
+    },
+    "hgb_nan_native": {
+     "path": "models/challengers/props_clean/props_clean_sot4_hgb_nan_native.pkl",
+     "sha256_reported": "d58e406747621c73f33e6b434a35053909c564a33b103c2e3a9d26e314cba167",
+     "sha256_downloaded": "d58e406747621c73f33e6b434a35053909c564a33b103c2e3a9d26e314cba167"
+    },
+    "player_base_rate": {
+     "path": "models/challengers/props_clean/props_clean_sot4_player_base_rate.pkl",
+     "sha256_reported": "7c8cbff0f5d2028967dde6c728124371a90fb5752d7c36ed39900cadc32c1e46",
+     "sha256_downloaded": "7c8cbff0f5d2028967dde6c728124371a90fb5752d7c36ed39900cadc32c1e46"
+    }
+   }
+  }
+ },
+ "source": "GitHub Actions artifact 'props-clean-retrain' of run 43035218594"
+}
