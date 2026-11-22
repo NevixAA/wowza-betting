@@ -76,10 +76,11 @@ def test_cal_gate_unstakes_tips_without_calibrated_value_bar_gate_stakes_them():
         return T.freeze_due(_frame(rows), set(), _ctx(), pd.Timestamp("2026-11-20T17:45:00Z"), 120.0, {}, pol,
                             None, T.tier_stats(cfg), None, cfg)
     picks, weeks = run(_cfg(gate="CAL", lams=lams))
-    # CAL gate fails and, with lam 0, its calibrated value is 0: not stakeable and (owner 2026-11-22) never shown
+    # CAL gate fails and, with lam 0, its calibrated p equals the fair price: not stakeable and (owner 2026-11-22
+    # "Beat the fair price") never shown
     assert "fx1" not in set(picks["fixture_id"])
     ex = json.loads(weeks["excluded"].iloc[0])
-    assert ex.get("TIER_NO_VALUE") == 1 and ex.get("NO_POSITIVE_VALUE", 0) >= 1
+    assert ex.get("TIER_NO_VALUE") == 1 and ex.get("NOT_ABOVE_FAIR_PRICE", 0) >= 1
     picks, _ = run(_cfg(gate="BAR", lams=lams))
     fx1 = picks[picks["fixture_id"] == "fx1"].iloc[0]
     assert fx1["stake_reason"] == T.STAKED and float(fx1["stake"]) == 0.005

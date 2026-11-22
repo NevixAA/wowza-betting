@@ -80,9 +80,9 @@ def test_fewer_than_three_only_when_fewer_priced_candidates_and_the_message_says
     assert list(top["fixture_id"]) == ["fx1"]
     assert json.loads(weeks["excluded"].iloc[0]).get("NO_TWO_SIDED_PRICE") == 3
     msg = T.message(top, real_checker=lambda *a, **k: False, policy=POLICY)
-    assert "Only 1 priced, coherent pick with value this week." in msg
-    assert "2. T2 safest: none - no other priced, coherent pick with value" in msg
-    assert "3. T3 risky value: none - no other priced, coherent pick with value" in msg
+    assert "Only 1 priced, coherent pick above the fair price this week." in msg
+    assert "2. T2 safest: none - no other priced, coherent pick above the fair price" in msg
+    assert "3. T3 risky value: none - no other priced, coherent pick above the fair price" in msg
 
 
 def test_never_a_pick_without_a_price_even_with_a_huge_model_edge():
@@ -115,24 +115,37 @@ def test_t1_value_t2_safest_t3_longest_odds_with_positive_edge():
     assert got == {"T1_BEST_VALUE": "fx1", "T2_SAFEST": "fx2", "T3_RISKY_VALUE": "fx3"}
 
 
-def test_a_negative_value_pick_is_never_shown_and_the_slot_stays_empty():
-    """Owner 2026-11-22 (2nd decision): every slot needs value > 0 - T2 is the highest p among picks WITH value,
-    never a negative-value 'safe' pick; with none left the slot stays empty and says why."""
-    rows = [_odds(_cand(1, "OU25", "OVER", pm=0.62, pf=0.50), 2.00),       # value +0.24
-            _odds(_cand(2, "OVER15", "OVER", pm=0.84, pf=0.86), 1.15),     # highest p, value -0.034: never shown
-            _odds(_cand(3, "OVER35", "OVER", pm=0.25, pf=0.30), 3.20),     # value -0.20: never shown
-            _odds(_cand(4, "BTTS", "YES", pm=0.50, pf=0.52), 1.95)]        # value -0.025: never shown
+def test_a_pick_at_or_below_the_fair_price_is_never_shown_and_the_slot_stays_empty():
+    """Owner 2026-11-22 "Beat the fair price": a no-stake pick is shown only when the model beats the de-vigged fair
+    price; at or below fair never - with none left the slot stays empty and says why."""
+    rows = [_odds(_cand(1, "OU25", "OVER", pm=0.62, pf=0.50), 2.00),       # +12pp vs fair
+            _odds(_cand(2, "OVER15", "OVER", pm=0.84, pf=0.86), 1.15),     # highest p but below fair: never shown
+            _odds(_cand(3, "OVER35", "OVER", pm=0.25, pf=0.30), 3.20),     # below fair: never shown
+            _odds(_cand(4, "BTTS", "YES", pm=0.50, pf=0.52), 1.95)]        # below fair: never shown
     picks, weeks = _run(rows, ctx=_ctx(markets=()))
     top = _top(picks)
     assert list(top["fixture_id"]) == ["fx1"] and list(top["slot"]) == ["T1_BEST_VALUE"]
     ex = json.loads(weeks["excluded"].iloc[0])
-    assert ex.get("NO_POSITIVE_VALUE") == 4                         # fx2, fx3, fx4 and the lock row (value 0)
-    assert ex.get("EMPTY_SLOT_NO_PICK_WITH_VALUE") == 2
+    assert ex.get("NOT_ABOVE_FAIR_PRICE") == 4                      # fx2, fx3, fx4 and the lock row (exactly at fair)
+    assert ex.get("EMPTY_SLOT_NO_PICK_ABOVE_FAIR") == 2
     msg = T.message(top, real_checker=lambda *a, **k: False, policy=POLICY)
-    assert "T2 safest: none - no other priced, coherent pick with value" in msg
+    assert "T2 safest: none - no other priced, coherent pick above the fair price" in msg
 
 
-def test_every_shown_pick_has_positive_value():
+def test_a_pick_that_beats_fair_but_not_the_margin_is_shown_with_its_edge():
+    rows = [_odds(_cand(1, "BTTS", "YES", pm=0.55, pf=0.52), 1.80)]        # +3pp vs fair, value 0.55 x 1.80 - 1 < 0
+    picks, _ = _run(rows, ctx=_ctx(markets=()))
+    top = _top(picks)
+    assert list(top["fixture_id"]) == ["fx1"]
+    r = top.iloc[0].to_dict()
+    assert 0.55 * 1.80 - 1 < 0 and r["stake_reason"] == T.NS_NO_BAR
+    assert T.pick_stake_label(r) == "model +3.0pp vs fair price, no stake: no approved bar"
+    line = next(ln for ln in T.message(top, real_checker=lambda *a, **k: False, policy=POLICY).splitlines()
+                if ln.startswith("1."))
+    assert line.endswith(" · model +3.0pp vs fair price, no stake: no approved bar") and "calibrated" not in line
+
+
+def test_every_shown_unstaked_pick_beats_the_fair_price():
     import random
     rnd = random.Random(7)
     rows = [_odds(_cand(i, ("OU25", "OVER15", "OVER35", "BTTS")[i % 4], ("OVER", "OVER", "OVER", "YES")[i % 4],
@@ -140,10 +153,9 @@ def test_every_shown_pick_has_positive_value():
             for i in range(1, 25)]
     for ctx in (_ctx(), _ctx(markets=())):
         top = _top(_run(rows, ctx=ctx)[0])
+        assert len(top)
         for r in top.to_dict("records"):
-            p = float(r["p_model_raw"]) if r["value_basis"] == T.BASIS_MODEL else float(r["p_market_fair"]) + 0.5 * (
-                float(r["p_used"]) - float(r["p_market_fair"]))
-            assert r["stake_reason"] == T.STAKED or p * float(r["odds"]) - 1 > 0, r
+            assert r["stake_reason"] == T.STAKED or T.fair_edge_pp(r) > 0, r
 
 
 # ── staked picks are protected ───────────────────────────────────────────────────────────────────
@@ -231,17 +243,17 @@ def test_telegram_labels_staked_and_no_stake_picks_and_never_says_paper():
     lines = [ln for ln in msg.splitlines() if ln[:2] in ("1.", "2.", "3.")]
     by_fx = {fx: ln for fx, ln in zip(top["home_team"], lines)}
     assert by_fx["H1"].endswith(" · 0.5% stake")
-    assert by_fx["H2"].endswith(" · No stake: no approved bar")
-    assert by_fx["H3"].endswith(" · No stake: no approved bar")
+    assert by_fx["H2"].endswith(" · model +1.0pp vs fair price, no stake: no approved bar")
+    assert by_fx["H3"].endswith(" · model +3.0pp vs fair price, no stake: no approved bar")
     assert "T1 best value" in msg and "paper" not in msg.lower()
-    assert "MODEL_EDGE" not in msg and "model edge" in msg
+    assert "MODEL_EDGE" not in msg and "vs fair price" in msg
 
 
 def test_below_bar_label_and_paper_league_never_staked():
     rows = [_odds(_cand(1, "OU25", "OVER", pm=0.51, pf=0.50), 2.00)]
     picks, _ = _run(rows)
     r = _top(picks).set_index("fixture_id").loc["fx1"]
-    assert r["stake_reason"] == T.NS_BELOW and T.pick_stake_label(r.to_dict()) == "No stake: below bar"
+    assert r["stake_reason"] == T.NS_BELOW and T.pick_stake_label(r.to_dict()).endswith("vs fair price, no stake: below bar")
     paper = sorted(config.PAPER_LEAGUES)[0]
     fr = _frame([_odds(_cand(5, "OU25", "OVER", pm=0.62, pf=0.50, league=paper), 2.0)])
     fr = fr.assign(league=paper, league_week_id=f"{paper}|2026-W47")
@@ -277,7 +289,8 @@ def test_every_pick_is_ledgered_with_its_stake_and_settles_like_the_staked_ones(
     assert rep["staked"]["picks"] == 1 and rep["no_stake"]["picks"] == 2
     assert rep["staked"]["settled"] + rep["no_stake"]["settled"] == rep["settled"] == 3
     labels = {p["home_team"]: p["stake_label"] for p in rep["latest_picks"]}
-    assert labels["H1"] == "0.5% stake" and labels["H2"] == labels["H3"] == "No stake: below bar"
+    assert labels["H1"] == "0.5% stake"
+    assert labels["H2"].endswith("vs fair price, no stake: below bar") and labels["H3"].startswith("model +")
 
 
 def test_migration_adds_the_stake_columns_without_touching_a_frozen_value(tmp_path):
