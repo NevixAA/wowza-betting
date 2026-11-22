@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-21T14:59:18Z",
+  "generated_at": "2026-11-22T14:55:18Z",
   "thresholds_hours": {
     "fpl_bootstrap": {
       "aging": 12,
@@ -34,31 +34,32 @@
     "official_squads": {
       "file": "pl_squads_official.csv",
       "exists": true,
-      "age_hours": 0.44,
+      "age_hours": 0.82,
       "state": "CURRENT"
     }
   },
   "coverage": {
-    "projection_players": 395,
+    "projection_players": 393,
     "clubs": 20,
-    "available": 317,
-    "doubtful": 9,
-    "unavailable": 69,
+    "available": 307,
+    "doubtful": 15,
+    "unavailable": 70,
     "availability_breakdown": {
-      "available": 317,
+      "available": 307,
       "unavailable": 35,
       "injured": 33,
-      "doubtful": 9,
-      "suspended": 1
+      "doubtful": 15,
+      "suspended": 2,
+      "not in squad": 1
     },
-    "p_start_zero": 69,
+    "p_start_zero": 71,
     "fpl_match_rate": 1.0,
     "fixture_coverage": 1.0
   },
   "projection_log": {
-    "rows": 13866,
-    "distinct_days": 65,
-    "rows_with_gameweek": 5500,
+    "rows": 14259,
+    "distinct_days": 66,
+    "rows_with_gameweek": 5893,
     "settleable": true,
     "gameweeks_logged": [
       6,
@@ -76,7 +77,7 @@
   "live_gameweek": 11,
   "last_finished_gameweek": 10,
   "season_complete": false,
-  "hours_to_deadline": 147.5,
+  "hours_to_deadline": 123.6,
   "status": "OK",
   "settlement_ready": true,
   "defaults_audit": {
@@ -141,20 +142,20 @@
     ],
     "suspected_bugs": [],
     "fire_counts": {
-      "v1_rows": 395,
-      "p_start_exactly_0_6": 4,
+      "v1_rows": 393,
+      "p_start_exactly_0_6": 3,
       "fpl_unmatched_rows": 0,
       "fixtures_unavailable_rows": 0,
       "p_goal_all_zero": false,
       "p_assist_all_zero": false,
       "p_sot2_all_zero": false,
       "mean_dc_pts_by_position": {
-        "DEF": 0.398,
-        "FWD": 0.008,
+        "DEF": 0.4,
+        "FWD": 0.004,
         "GKP": 0.0,
-        "MID": 0.195
+        "MID": 0.2
       },
-      "v2_rows": 461,
+      "v2_rows": 459,
       "v2_blank_gw_rows": 0,
       "v2_start_rate_missing": 0
     },
