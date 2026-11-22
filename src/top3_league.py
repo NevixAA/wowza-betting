@@ -93,6 +93,35 @@ track_is_real True, and its Telegram line shows the stake. The stake is NEVER wr
 that file feeds Cloudbet and exec, so a TOP-3 stake can only be placed by hand. League-rule (own list) lines are
 not TOP-3 tips: their stake follows their cell, as before.
 
+SHOW ALL, STAKE BY PROOF (owner 2026-11-22, "3 per league, stake by proof"; tier mode only). Supersedes the
+"never padded / fewer when fewer clear the bar" text above for the P11 tier mode:
+  * Every league-week shows T1 / T2 / T3, always 3 when it has at least 3 ELIGIBLE candidates. Eligible = a real
+    two-sided bet-time price (NO_TWO_SIDED_PRICE stays out), inside its cell's own odds range where it has a cell
+    (OUTSIDE_ODDS_RANGE stays out; a league x market without a cell has no range - no global value), first seen
+    before the freeze and after the TOP-3 start, kickoff after the issue, the direction rule and the coherence gate
+    (src/tip_coherence). A candidate without its league's bar (NO_LEAGUE_BAR / BAR_NOT_OWNER_APPLIED /
+    LEAGUE_BAR_INVALID) or below it (BELOW_LEAGUE_BAR) is now eligible - shown, never staked. Fewer than 3 only
+    when fewer eligible candidates exist; the message says so.
+  * VALUE = p x odds - 1 with p the CALIBRATED probability (fair + lam (p_used - fair), the cell's frozen lam in
+    config/top3_tiers_p11.json) where the candidate has a cell AND a calibration cell (value_basis CALIBRATED),
+    else the model's own probability (lam = 1: its full edge vs the de-vigged fair price, value_basis MODEL_EDGE).
+  * T1 = highest value. T2 = highest p of the rest. T3 = of the rest, the longest odds with a positive edge
+    (p - fair > 0); none left -> the next best by value. EVERY slot needs value > 0 (owner 2026-11-22, 2nd decision):
+    a no-stake candidate without positive value is never shown (NO_POSITIVE_VALUE); a tier with no such pick left
+    stays EMPTY (EMPTY_SLOT_NO_PICK_WITH_VALUE) and the message says so.
+  * STAKED PICKS ARE PROTECTED (owner 2026-11-22): stakeable picks take their slots before the others. With 3 or
+    more, the three tiers are chosen by their own rule among the stakeable picks only (the approved P11 rule on the
+    approved picks). With 1-2, each (highest value first) goes to the tier it matches best (the tier whose order ranks
+    it highest among all candidates; tie T1 > T2 > T3; a tier already held -> its next best free tier). The other
+    tiers are then filled by their own rule. A stakeable pick's value is the one its league's approved gate measured (CAL: calibrated; BAR: the cell's
+    p_used x odds - 1), so it is never a negative-value pick under the approved rule.
+  * STAKE BY PROOF: only a pick that clears its league's own approved bar (qualify(), reason "") AND the league's
+    approved P11 tier gate (CAL: calibrated value > 0; BAR: p_used x odds - 1 > 0) carries the flat TOP-3 stake
+    (config/bankroll_policy.json top3_league.stake, unchanged). Every other pick: stake 0 and a stake_reason
+    (NO_STAKE_BELOW_BAR / NO_STAKE_NO_APPROVED_BAR / NO_STAKE_NO_VALUE ...), labelled in Telegram and on the
+    dashboard ("No stake: below bar"). All picks are frozen at first sight in the same ledger (columns stake,
+    stake_reason, value_basis), settled the same way and reported apart (staked vs no stake).
+
 FLAG. env TOP3_LEAGUE_ENABLED (true/1/yes). Off (the default): every entrypoint returns at once and writes
 nothing. The flag and the lead are read HERE, not in config.py, so turning TOP-3 on does not move the
 research lock's deployed_env; the go-live switch-on is an explicit owner step.
@@ -162,6 +191,23 @@ R_STARTED = "STARTED_BEFORE_ISSUE"
 R_DIRECTION = "DIRECTION_CONFLICT"
 R_MISMATCH = "MISMATCH_WITH_SENT_TIP"          # src/tip_coherence (owner 2026-11-19): vs a tip already sent
 R_RANK = "RANKED_BELOW_TOP3"
+R_NO_POS_VALUE = "NO_POSITIVE_VALUE"           # owner 2026-11-22: a no-stake candidate needs value > 0 to be shown
+R_EMPTY_SLOT = "EMPTY_SLOT_NO_PICK_WITH_VALUE"  # a tier left empty: no other priced, coherent pick with value
+
+# owner 2026-11-22 "3 per league, stake by proof": the stake decision of every TOP-3 pick (ledger column stake_reason)
+STAKED = "STAKED"
+NS_BELOW = "NO_STAKE_BELOW_BAR"                 # priced, eligible, below its league's own approved bar
+NS_NO_BAR = "NO_STAKE_NO_APPROVED_BAR"          # its league x market x side has no owner-approved bar
+NS_NO_VALUE = "NO_STAKE_NO_VALUE"               # cleared the bar, failed the league's approved P11 tier gate
+NS_PAPER_LEAGUE = "NO_STAKE_PAPER_LEAGUE"       # config.PAPER_LEAGUES: ledgered and graded, never sent
+NS_NOT_SET = "NO_STAKE_NOT_CONFIGURED"          # no valid top3_league.stake in the bankroll policy
+NS_LEAGUE_RULE = "LEAGUE_RULE"                  # the league's own line: its stake follows its cell, as before
+#: qualify() reason -> the no-stake reason of a candidate that is still SHOWN (tier mode)
+SHOWABLE = {R_NO_BAR: NS_NO_BAR, R_NOT_APPLIED: NS_NO_BAR, R_BAD_BAR: NS_NO_BAR, R_BELOW: NS_BELOW}
+#: (NS_NOT_SET has no label: with no TOP-3 stake configured no line carries a stake label, owner 2026-11-17)
+NO_STAKE_LABEL = {NS_BELOW: "No stake: below bar", NS_NO_BAR: "No stake: no approved bar",
+                  NS_NO_VALUE: "No stake: no value at the bar", NS_PAPER_LEAGUE: "No stake: league not staked"}
+BASIS_CAL, BASIS_MODEL = "CALIBRATED", "MODEL_EDGE"
 
 PICK_KEY = ["selection_mode", "league_week_id", "top3_rank"]
 PICK_FROZEN = [
@@ -174,6 +220,8 @@ PICK_FROZEN = [
     "ev_point", "ev_lower_bound", "p_lower_bound", "price_quality_state", "market_source", "n_books",
     "first_seen_at", "prediction_engine_version", "selection_engine_version", "policy_switch",
     "track_is_real", "stake_effect",
+    # owner 2026-11-22 "3 per league, stake by proof" (appended; older rows migrated by migrate_ledger())
+    "stake", "stake_reason", "value_basis",
 ]
 PICK_GRADING = ["home_goals", "away_goals", "result", "won", "flat_pnl", "settle_status", "settled_at"]
 PICK_COLS = PICK_FROZEN + PICK_GRADING
@@ -300,10 +348,11 @@ def qualify(cands: pd.DataFrame, ctx: dict) -> pd.DataFrame:
             res = BS.score(pd.DataFrame([{"league": str(r.get("league")), "p_side": pm, "fair": pf,
                                           "odds": _num(r.get("odds"))}]), b["cell"])
             t = str(res["tier"].iloc[0] or "")
+            # the cell's own probability, also for a row below its bar (owner 2026-11-22: shown, never staked)
+            pu = _num(res["p_used"].iloc[0])
             if not t:
                 why = R_BELOW if res["reason"].iloc[0] == BS.R_BELOW else str(res["reason"].iloc[0])
             else:
-                pu = _num(res["p_used"].iloc[0])
                 t2 = bool(res["tier2_ok"].iloc[0]) if pd.notna(res["tier2_ok"].iloc[0]) else False
                 slot = SLOT_TIER2 if (str(res["band"].iloc[0]) == "BAND_VM" and t2) else SLOT_TOP
         cols["edge"].append(e)
@@ -451,12 +500,19 @@ def select_week(q: pd.DataFrame, freeze: pd.Timestamp, issue: pd.Timestamp,
     ko = LW._ts(q["kickoff_utc"])
     if "league_wide" not in q.columns:
         q["league_wide"] = False
-    pool, own, dirs = [], [], {}
+    pool, own, dirs, nostake = [], [], {}, {}
     for i, r in enumerate(q.to_dict("records")):
         if not (pd.notna(fs.iloc[i]) and fs.iloc[i] < freeze):
             bump(R_LATE)
         elif start is not None and fs.iloc[i] < start:
             bump(R_PRE_START)
+        elif (tiers is not None and r.get("reason") in SHOWABLE and not bool(r.get("league_wide"))
+              and (stats is None or TP3.stats_valid_for_engine(r.get("prediction_engine_version"),
+                                                              stats.attrs.get("all_data"),
+                                                              stats.attrs.get("frozen_frame")))):
+            # owner 2026-11-22 "3 per league, stake by proof": priced but without / below its bar -> SHOWN, no stake
+            nostake[i] = SHOWABLE[r["reason"]]
+            pool.append((1, (1, 0.0), 0, "", i))
         elif r.get("reason"):
             bump(r["reason"])
         elif stats is not None and not TP3.stats_valid_for_engine(
@@ -498,7 +554,8 @@ def select_week(q: pd.DataFrame, freeze: pd.Timestamp, issue: pd.Timestamp,
     # 2) TOP-3 / TIER2 from MODEL cells only; a model tip opposite to an own-list tip yields
     taken = []
     if tiers is not None:
-        return _select_tiers(q, pool, own_taken, dirs, committed, issue, ko, stats, tiers, excluded, coherence=gate)
+        return _select_tiers(q, pool, own_taken, dirs, committed, issue, ko, stats, tiers, excluded, coherence=gate,
+                             nostake=nostake)
     for *_k, i in pool:
         r = q.iloc[i]
         if len(taken) >= TOP_N:
@@ -530,12 +587,20 @@ def select_week(q: pd.DataFrame, freeze: pd.Timestamp, issue: pd.Timestamp,
     return pd.concat([picks, ol], ignore_index=True), dict(excluded)
 
 
-def _select_tiers(q, pool, own_taken, dirs, committed, issue, ko, stats, tiers, excluded, coherence=None):
-    """P11: T1 = highest cal_ev, T2 = highest p_cal of the rest, T3 = of the rest odds >= the league's floor with
-    the highest ev_lo (REL: the rest's longest odds). Every tier must pass the league's gate (CAL: cal_ev > 0;
-    BAR: p_used * odds - 1 > 0). A tier without a candidate stays EMPTY (never padded); distinct fixture x
-    market and the direction rule as the R2 path."""
+def _select_tiers(q, pool, own_taken, dirs, committed, issue, ko, stats, tiers, excluded, coherence=None,
+                  nostake=None):
+    """P11 tiers, owner 2026-11-22 "3 per league, stake by proof". The pool = the bar-cleared candidates plus the
+    priced candidates without / below their league's bar (`nostake` {index: no-stake reason}).
+      T1 = highest value, T2 = highest p of the rest, T3 = of the rest the longest odds with a positive edge
+      (p - fair > 0), none left -> the next best by value; every slot needs value > 0, else it stays empty.
+      Stakeable picks take their slots first, each in the tier it matches best (module docstring).
+    value = p x odds - 1, p = the calibrated probability (cell + calibration cell: CALIBRATED) or the model's own
+    (MODEL_EDGE). Stake by proof: a bar-cleared pick that also passes the league's APPROVED P11 tier gate (CAL:
+    cal_ev > 0; BAR: p_used * odds - 1 > 0, both on the frozen calibration, unchanged) is STAKED; every other pick
+    carries its no-stake reason. 3 when 3 eligible exist, never a candidate without a price; distinct fixture x
+    market, started-before-issue, the direction rule and the coherence gate as the R2 path."""
     from src.research import top3_ranking as TR
+    nostake = nostake or {}
     idx = [i for *_k, i in pool]
     lam = {}
     if idx and stats is not None and len(stats):
@@ -548,61 +613,126 @@ def _select_tiers(q, pool, own_taken, dirs, committed, issue, ko, stats, tiers, 
     for i in idx:
         r = q.iloc[i].to_dict()
         lm, ls = lam.get(i, (np.nan, np.nan))
+        # the stake gate: the league's approved P11 gate, exactly as before (frozen lam; NaN = no statistic)
         x = _tier_metrics(r | {"lam": lm, "lam_se": ls})
         prm = (tiers.get("leagues") or {}).get(f"{r.get('track')}|{r.get('league')}") or {}
         gate = prm.get("gate", "CAL")
-        ok = bool(np.isfinite(x["cal_ev"]) and np.isfinite(x["p_cal"])) and \
-            (x["cal_ev"] > 0 if gate == "CAL" else x["ev_raw"] > 0)
-        if not ok:
-            excluded[R_TIER_GATE] += 1
+        gate_ok = (bool(np.isfinite(x["cal_ev"]) and np.isfinite(x["p_cal"]))
+                   and (x["cal_ev"] > 0 if gate == "CAL" else x["ev_raw"] > 0))
+        reason = nostake.get(i, "")
+        if not reason and not gate_ok:
+            reason = NS_NO_VALUE
+            excluded[R_TIER_GATE] += 1          # cleared its bar, failed the approved tier gate: never staked
+        # the display value: calibrated where the cell has a calibration, else the model's own edge (lam = 1)
+        if np.isfinite(x["cal_ev"]) and np.isfinite(x["p_cal"]):
+            v = x | {"basis": BASIS_CAL}
+        else:
+            v = _tier_metrics(r | {"p_used": _num(r.get("p_model_raw")), "lam": 1.0, "lam_se": 0.0}) \
+                | {"basis": BASIS_MODEL}
+        if not (np.isfinite(v["cal_ev"]) and np.isfinite(v["p_cal"]) and v["odds"] > 1):
+            excluded[R_NO_PRICE] += 1            # never a pick without a usable price
             continue
-        met[i] = x | {"floor": prm.get("t3_floor")}
-    used, taken, names = set(), [], []
+        staked = not reason
+        # owner 2026-11-22 (2nd decision): NEVER a pick without positive value. A stakeable pick passed its league's
+        # APPROVED value gate (CAL: calibrated value > 0; BAR: the cell's p_used x odds - 1 > 0), which is its value.
+        if not staked and not v["cal_ev"] > 0:
+            excluded[R_NO_POS_VALUE] += 1
+            continue
+        met[i] = v | {"stake_reason": STAKED if staked else reason, "fair": _num(r.get("fair"))}
+    used, taken, names, blocked = set(), [], [], {}
 
-    def try_take(order, name):
-        for i in order:
-            r = q.iloc[i]
-            k = (str(r["fixture_id"]), str(r["market"]))
-            if i in taken or k in used:
-                continue
-            if not (pd.notna(ko.iloc[i]) and ko.iloc[i] > issue):
-                continue
-            fx = (str(r["match_date"])[:10], str(r["home_team"]), str(r["away_team"]))
-            dr = _direction(r["market"], r["side"])
-            stood = dirs.get(fx) or (committed.get(fx) or {}).get("direction")
-            if dr and stood and dr != stood:
-                continue
-            if _gate_blocks(coherence, r):
-                excluded[R_MISMATCH] += 1
-                continue
-            if dr:
-                dirs[fx] = dr
-            _gate_take(coherence, r)
-            used.add(k)
-            taken.append(i)
-            names.append(name)
-            return
+    def ok(i) -> bool:
+        """Can candidate i take a slot now? (not taken, distinct fixture x market, kickoff after the issue, the
+        direction rule, the coherence gate). Records why not."""
+        r = q.iloc[i]
+        if i in taken or (str(r["fixture_id"]), str(r["market"])) in used:
+            return False
+        if not (pd.notna(ko.iloc[i]) and ko.iloc[i] > issue):
+            blocked[i] = R_STARTED
+            return False
+        fx = (str(r["match_date"])[:10], str(r["home_team"]), str(r["away_team"]))
+        dr = _direction(r["market"], r["side"])
+        stood = dirs.get(fx) or (committed.get(fx) or {}).get("direction")
+        if dr and stood and dr != stood:
+            blocked[i] = R_DIRECTION
+            return False
+        if _gate_blocks(coherence, r):
+            blocked[i] = R_MISMATCH
+            return False
+        return True
+
+    def take(i, name) -> None:
+        r = q.iloc[i]
+        fx = (str(r["match_date"])[:10], str(r["home_team"]), str(r["away_team"]))
+        dr = _direction(r["market"], r["side"])
+        if dr:
+            dirs[fx] = dr
+        _gate_take(coherence, r)
+        used.add((str(r["fixture_id"]), str(r["market"])))
+        taken.append(i)
+        names.append(name)
 
     cand = list(met)
     kick = {i: (ko.iloc[i].value if pd.notna(ko.iloc[i]) else float("inf"), str(q.iloc[i]["fixture_id"])) for i in cand}
-    try_take(sorted(cand, key=lambda i: (-met[i]["cal_ev"], kick[i])), TIER_NAMES[0])
-    try_take(sorted(cand, key=lambda i: (-met[i]["p_cal"], kick[i])), TIER_NAMES[1])
-    t3 = [i for i in cand if met[i]["floor"] == "REL"
-          or (met[i]["floor"] is not None and met[i]["odds"] >= float(met[i]["floor"]))]
-    if t3:
-        if met[t3[0]]["floor"] == "REL":
-            try_take(sorted(t3, key=lambda i: (-met[i]["odds"], -met[i]["ev_lo"], kick[i])), TIER_NAMES[2])
-        else:
-            try_take(sorted(t3, key=lambda i: (-met[i]["ev_lo"], kick[i])), TIER_NAMES[2])
+    # the three tier orders over every candidate with value (T3: longest odds among positive edge, then by value)
+    by_value = sorted(cand, key=lambda i: (-met[i]["cal_ev"], kick[i]))
+    by_p = sorted(cand, key=lambda i: (-met[i]["p_cal"], kick[i]))
+    pos = [i for i in cand if met[i]["p_cal"] - met[i]["fair"] > 0]
+    by_t3 = sorted(pos, key=lambda i: (-met[i]["odds"], -met[i]["cal_ev"], kick[i])) + \
+        [i for i in by_value if i not in pos]
+    orders = (by_value, by_p, by_t3)
+    # 1) PROTECT STAKED PICKS (owner 2026-11-22): every stakeable pick keeps a slot.
+    #    * 3 or more stakeable: the three tiers are chosen by their own rule AMONG the stakeable picks only (T1 best
+    #      value, T2 highest p of the rest, T3 longest odds of the rest) - the approved P11 rule on the approved
+    #      picks; a 4th+ stakeable pick ranks below (only 3 slots).
+    #    * fewer than 3: each (highest value first) goes to the tier it matches best = the tier whose order ranks it
+    #      highest among ALL candidates (tie: T1 before T2 before T3); a tier already held -> its next best free tier.
+    free = list(TIER_NAMES)
+    stk = [j for j in by_value if met[j]["stake_reason"] == STAKED]
+    if len(stk) >= len(TIER_NAMES):
+        for t, name in enumerate(TIER_NAMES):
+            for i in orders[t]:
+                if met[i]["stake_reason"] == STAKED and ok(i):
+                    take(i, name)
+                    free.remove(name)
+                    break
+    else:
+        for i in stk:
+            if not ok(i):
+                continue
+            pref = sorted(range(len(TIER_NAMES)),
+                          key=lambda t: (orders[t].index(i) if i in orders[t] else len(cand), t))
+            tier = next(TIER_NAMES[t] for t in pref if TIER_NAMES[t] in free)
+            take(i, tier)
+            free.remove(tier)
+    # 2) the remaining tiers by their own rule, T1 / T2 / T3, from the candidates left (all with value > 0)
+    for t, name in enumerate(TIER_NAMES):
+        if name not in free:
+            continue
+        for i in orders[t]:
+            if ok(i):
+                take(i, name)
+                free.remove(name)
+                break
+    for name in free:
+        excluded[R_EMPTY_SLOT] += 1              # no other priced, coherent pick with value: the slot stays empty
     for i in cand:
         if i not in taken:
-            excluded[R_RANK] += 1
+            # one reason per candidate left out: why it could not take a slot (started / direction / coherence),
+            # else it simply ranked below the three
+            excluded[blocked.get(i, R_RANK)] += 1
+    order = sorted(range(len(taken)), key=lambda k: TIER_NAMES.index(names[k]))
+    taken, names = [taken[k] for k in order], [names[k] for k in order]
     picks = q.iloc[taken].copy()
     picks["slot"] = names
     picks["top3_rank"] = [TIER_NAMES.index(n) + 1 for n in names]
-    picks["edge_calibrated"] = [met[i]["p_cal"] - _num(q.iloc[i].get("fair")) for i in taken]
+    # the calibrated edge only where it IS calibrated (never the raw edge under that name)
+    picks["edge_calibrated"] = [met[i]["p_cal"] - met[i]["fair"] if met[i]["basis"] == BASIS_CAL else np.nan
+                                for i in taken]
     picks["rank_key"] = [met[i]["cal_ev"] for i in taken]
-    picks["rank_has_stat"] = True
+    picks["rank_has_stat"] = [met[i]["basis"] == BASIS_CAL for i in taken]
+    picks["value_basis"] = [met[i]["basis"] for i in taken]
+    picks["stake_reason"] = [met[i]["stake_reason"] for i in taken]
     picks["list"] = SELECTION_MODE
     ol = q.iloc[own_taken].copy()
     ol["top3_rank"] = range(len(TIER_NAMES) + 1, len(TIER_NAMES) + 1 + len(ol))
@@ -659,6 +789,20 @@ def stake_effect_text(fraction: float | None) -> str:
             "never in output/stake_plan.csv, so no automatic execution (exec / Cloudbet)")
 
 
+def stake_reason_of(r: dict, flat: float | None) -> str:
+    """STAKED or why a pick carries no stake (owner 2026-11-22). A league-rule line keeps LEAGUE_RULE; a paper
+    league is never staked; no valid flat stake configured -> NO_STAKE_NOT_CONFIGURED; else the pick's own
+    stake_reason from the tier selection (absent = the R2 path, where every TOP-3 pick cleared its bar)."""
+    if str(r.get("list") or r.get("selection_mode") or SELECTION_MODE) == OWN_LIST_MODE:
+        return NS_LEAGUE_RULE
+    if config.is_paper_league(r.get("league")):
+        return NS_PAPER_LEAGUE
+    if flat is None:
+        return NS_NOT_SET
+    own = str(r.get("stake_reason") or "").strip()
+    return STAKED if own in ("", "nan", STAKED) else own
+
+
 def freeze_due(cands: pd.DataFrame, weeks_done: set, ctx: dict, now: pd.Timestamp, lead_min: float,
                committed: dict | None = None, policy: dict | None = None,
                real_checker=None, stats: pd.DataFrame | None = None,
@@ -702,8 +846,10 @@ def freeze_due(cands: pd.DataFrame, weeks_done: set, ctx: dict, now: pd.Timestam
             mk = MARKETS[str(r["market"])][1]
             # a league-rule line is not TOP-3; a PAPER league's pick (config.PAPER_LEAGUES, e.g. USA MLS) is never
             # sent (notify drops it), so the owner cannot place it and it never carries a stake
-            staked = (str(r["list"]) == SELECTION_MODE and flat is not None
-                      and not config.is_paper_league(r.get("league")))
+            # owner 2026-11-22 "stake by proof": only a pick whose stake_reason is STAKED (cleared its league's own
+            # approved bar and the approved tier gate) carries the flat stake; the R2 path (no tiers) keeps its rule
+            sr = stake_reason_of(r, flat)
+            staked = sr == STAKED
             picks_out.append({
                 **{k: r.get(k, "") for k in PICK_FROZEN if k in r},
                 "pick_id": LW.research_id(VERSION, week, str(r["market"]), str(r["fixture_id"]), str(r["side"])),
@@ -718,6 +864,8 @@ def freeze_due(cands: pd.DataFrame, weeks_done: set, ctx: dict, now: pd.Timestam
                 "track_is_real": True if staked else bool(real_checker(r.get("model_type"), mk, r.get("side"),
                                                                        r.get("league"))),
                 "stake_effect": stake_effect_text(flat if staked else None),
+                "stake": LW._r(flat if staked else 0.0), "stake_reason": sr,
+                "value_basis": str(r.get("value_basis") or "") if str(r["list"]) == SELECTION_MODE else "",
             })
     return (pd.DataFrame(picks_out).reindex(columns=PICK_COLS) if picks_out else pd.DataFrame(columns=PICK_COLS),
             pd.DataFrame(weeks_out).reindex(columns=WEEK_COLS) if weeks_out else pd.DataFrame(columns=WEEK_COLS))
@@ -731,6 +879,54 @@ def candidate_store(od: Path) -> FirstSightStore:
 def picks_store(od: Path) -> FirstSightStore:
     return FirstSightStore(Path(od) / PICKS_NAME, key=PICK_KEY, columns=PICK_COLS, observed_col="issued_at",
                            kickoff_col="kickoff_utc", frozen_cols=PICK_FROZEN, digest=True)
+
+
+#: columns appended to the ledger on 2026-11-22 (owner "3 per league, stake by proof")
+STAKE_COLS = ("stake", "stake_reason", "value_basis")
+
+
+def _legacy_stake(effect: str) -> tuple[str, str]:
+    """(stake, stake_reason) of a pick written before the stake columns, read from its own frozen stake_effect
+    ("REAL 0.5% ..." -> 0.005 STAKED; "NONE ..." -> 0 with no reason recorded). Never a guess."""
+    import re
+    m = re.match(r"REAL ([0-9]+(?:\.[0-9]+)?)%", str(effect or ""))
+    if m:
+        return LW._r(float(m.group(1)) / 100.0), STAKED
+    return (LW._r(0.0), "") if str(effect or "").startswith("NONE") else ("", "")
+
+
+def migrate_ledger(od: Path) -> dict:
+    """One-shot, idempotent: give a ledger written before 2026-11-22 the stake columns. The existing frozen columns
+    keep their exact values (the sidecar digest is checked first and nothing is written when it fails); stake /
+    stake_reason come from each row's own stake_effect; value_basis stays blank (not recorded then)."""
+    ps = picks_store(od)
+    if not ps._has_rows():
+        return {"migrated": False, "reason": "no ledger"}
+    d = ps.read()
+    if all(c in d.columns for c in STAKE_COLS):
+        return {"migrated": False, "reason": "up to date"}
+    v = ps.verify()
+    if v["ok"] is False:
+        raise RuntimeError(f"top3 ledger TAMPERED ({v['reason']}) - not migrating")
+    from src.research.first_sight import frozen_digest
+    old_cols = [c for c in PICK_FROZEN if c in d.columns]
+    before = frozen_digest(d, old_cols)
+    leg = [(_legacy_stake(e)) for e in d.get("stake_effect", pd.Series("", index=d.index)).astype(str)]
+    if "stake" not in d.columns:
+        d["stake"] = [a for a, _b in leg]
+    if "stake_reason" not in d.columns:
+        d["stake_reason"] = [b for _a, b in leg]
+    if "value_basis" not in d.columns:
+        d["value_basis"] = ""
+    out = d.reindex(columns=PICK_COLS).fillna("")
+    if frozen_digest(out, old_cols) != before:
+        raise RuntimeError("top3 ledger migration would alter a frozen column - refused")
+    path = od / PICKS_NAME
+    tmp = path.with_suffix(".csv.tmp")
+    out.to_csv(tmp, index=False, lineterminator="\n")
+    tmp.replace(path)
+    ps._write_sidecar()
+    return {"migrated": True, "rows": int(len(out))}
 
 
 def weeks_store(od: Path) -> FirstSightStore:
@@ -785,6 +981,7 @@ def run(now=None, out_dir: Path | None = None, root: Path | None = None, env: di
                     gate = None
                 picks, weeks = freeze_due(cs.read(), done, bars_context(root), now, lead, committed, _policy(),
                                           real_track_checker(), stats, start, tiers, gate)
+                migrate_ledger(od)               # owner 2026-11-22: stake columns before the first new append
                 res["picks_appended"] = picks_store(od).append(picks)
                 res["weeks_decided"] = ws.append(weeks)
                 res["status"] = "OK"
@@ -835,6 +1032,7 @@ def settle(now=None, out_dir: Path | None = None, env: dict | None = None) -> di
     now = LW._now(now)
     od = Path(out_dir) if out_dir else OUT
     ps = picks_store(od)
+    migrate_ledger(od)
     picks = ps.read()
     if not len(picks):
         return {"enabled": True, "settled": 0}
@@ -865,6 +1063,7 @@ def report(picks: pd.DataFrame, weeks: pd.DataFrame, now: pd.Timestamp, lead: fl
         cur = p[p["league_week_id"] == latest].sort_values("top3_rank", key=lambda s: s.astype(int))
         st = p[p["settle_status"].astype(str) == "SETTLED"]
         pnl = pd.to_numeric(st["flat_pnl"], errors="coerce")
+        stk = staked_mask(p)
         ost = own[own["settle_status"].astype(str) == "SETTLED"]
         opnl = pd.to_numeric(ost["flat_pnl"], errors="coerce")
         leagues[lg] = {
@@ -872,27 +1071,66 @@ def report(picks: pd.DataFrame, weeks: pd.DataFrame, now: pd.Timestamp, lead: fl
                             "flat_pnl_units": round(float(opnl.sum()), 3) if len(ost) else 0.0},
             "latest_league_week_id": latest,
             "latest_excluded": json.loads(w["excluded"].iloc[-1]) if len(w) and w["excluded"].iloc[-1] else {},
-            "latest_picks": [{k: r.get(k) for k in ("top3_rank", "home_team", "away_team", "kickoff_utc", "market",
-                                                    "side", "odds", "edge_calibrated", "slot", "cell_status", "result")}
+            "latest_picks": [{**{k: r.get(k) for k in ("top3_rank", "home_team", "away_team", "kickoff_utc", "market",
+                                                       "side", "odds", "edge_calibrated", "slot", "cell_status",
+                                                       "result", "stake", "stake_reason", "value_basis")},
+                              "stake_label": pick_stake_label(r)}
                              for r in cur.to_dict("records")],
+            # owner 2026-11-22 "stake by proof": staked picks and no-stake picks reported apart
+            "staked": _totals(p[stk]), "no_stake": _totals(p[~stk]),
             "weeks_decided": int(len(w)), "picks": int(len(p)), "settled": int(len(st)),
             "won": int((st["won"].astype(str) == "1").sum()),
             "flat_pnl_units": round(float(pnl.sum()), 3) if len(st) else 0.0,
             "roi": round(float(pnl.mean()), 4) if pnl.notna().any() else None}
     return {"generated_at": LW._stamp(now), "selection_mode": SELECTION_MODE, "version": VERSION,
             "freeze_lead_min": lead, "status": "OK" if lead is not None else "FREEZE_LEAD_NOT_SET",
-            "note": ("Each league's 3 best tips of the gameweek across O/U 2.5, BTTS, Over 1.5, Over 3.5 from its "
-                     "MODEL cells, each cleared its cell's one owner-approved bar, ranked by the live rule (calibrated value); fewer than 3 when "
-                     "fewer clear the bar. League-wide cells are the league's own line (league_rule), outside the 3. "
-                     + _report_stake_note()),
+            "note": ("Each league's T1 best value / T2 safest / T3 risky value of the gameweek across O/U 2.5, BTTS, "
+                     "Over 1.5, Over 3.5: always 3 when at least 3 priced, coherent candidates exist. Only a pick "
+                     "that cleared its league's own approved bar carries the stake; the others are shown with their "
+                     "no-stake reason and counted apart (staked / no_stake). League-wide cells are the league's own "
+                     "line (league_rule), outside the 3. " + _report_stake_note()),
             "leagues": leagues}
+
+
+def staked_mask(p: pd.DataFrame) -> pd.Series:
+    """Rows whose frozen stake decision is a stake: stake_reason STAKED, or (a row without the column) a REAL
+    stake_effect. Read from the ledger, never recomputed."""
+    if p is None or not len(p):
+        return pd.Series(False, index=p.index if p is not None else None, dtype=bool)
+    eff = p.get("stake_effect", pd.Series("", index=p.index)).astype(str).str.startswith("REAL ")
+    if "stake_reason" not in p.columns:
+        return eff
+    sr = p["stake_reason"].astype(str).str.strip()
+    return (sr == STAKED) | (sr.isin(["", "nan"]) & eff)
+
+
+def _totals(p: pd.DataFrame) -> dict:
+    st = p[p["settle_status"].astype(str) == "SETTLED"]
+    pnl = pd.to_numeric(st["flat_pnl"], errors="coerce")
+    return {"picks": int(len(p)), "settled": int(len(st)), "won": int((st["won"].astype(str) == "1").sum()),
+            "flat_pnl_units": round(float(pnl.sum()), 3) if len(st) else 0.0,
+            "roi": round(float(pnl.mean()), 4) if pnl.notna().any() else None}
+
+
+def pick_stake_label(r: dict, flat: float | None = None) -> str:
+    """The words a pick shows: '0.5% stake' when its frozen stake > 0, else its no-stake label ('No stake: below
+    bar'); '' for a league-rule line or a row with no recorded decision."""
+    sr = str(r.get("stake_reason") or "").strip()
+    if sr in NO_STAKE_LABEL:
+        return NO_STAKE_LABEL[sr]
+    f = _num(r.get("stake"))
+    if sr == STAKED and f > 0:
+        return f"{stake_text(f)} stake"
+    if sr == STAKED and flat is not None:
+        return f"{stake_text(flat)} stake"
+    return ""
 
 
 def _report_stake_note() -> str:
     flat = top3_stake(_policy())
     if flat is None:
         return "Flat 1u; TOP-3 sizes no stake."
-    return (f"Every TOP-3 tip: {stake_text(flat)} stake of bankroll, flat, placed manually by the owner at the "
+    return (f"A staked TOP-3 tip: {stake_text(flat)} stake of bankroll, flat, placed manually by the owner at the "
             "odds shown on the tip (never auto-executed); P/L here in flat units.")
 
 
@@ -907,6 +1145,9 @@ def _stake_label(real_checker, r: dict, flat: float | None = None) -> str:
     """'0.5% stake' on a TOP-3 / TIER2 pick when the policy's flat TOP-3 stake is set (owner 2026-11-17, "Show stake
     on TOP-3"); '' on everything else - a league-rule line, a paper league's pick, or no TOP-3 stake configured.
     Owner: an ordinary prediction carries NO stake label at all. `real_checker` is kept for the callers."""
+    sr = str(r.get("stake_reason") or "").strip()
+    if sr and sr != "nan":                       # owner 2026-11-22: the pick's own frozen stake decision
+        return pick_stake_label(r, flat)
     if (flat is not None and str(r.get("selection_mode") or SELECTION_MODE) != OWN_LIST_MODE
             and not config.is_paper_league(r.get("league"))):
         return f"{stake_text(flat)} stake"
@@ -919,9 +1160,9 @@ def _with_label(text: str, label: str) -> str:
 
 def message(picks: pd.DataFrame, real_checker=None, policy: dict | None = None) -> str:
     """Telegram text for one league-week's picks (HTML). The edge shown is the CALIBRATED one (owner 2026-11-11).
-    Each line carries its own cell's stake (Staked / Paper); `real_checker` defaults to the live policy's."""
+    Each line carries its own frozen stake decision ("0.5% stake" / "No stake: below bar"); `real_checker` defaults
+    to the live policy's."""
     from html import escape
-    from src.calibrated_edge import edge_text
     if real_checker is None:
         from src.direction_guard import real_track_checker
         real_checker = real_track_checker()
@@ -936,21 +1177,46 @@ def message(picks: pd.DataFrame, real_checker=None, policy: dict | None = None) 
     for r in picks.sort_values("top3_rank", key=lambda s: s.astype(int)).to_dict("records"):
         side = "Yes" if str(r["side"]) == "YES" else str(r["side"]).title()
         mk = lab.get(str(r["market"]), str(r["market"]))
+        cell = str(r.get("cell_status") or "").strip()
         lines.append(f"{r['top3_rank']}. {escape(str(r['home_team']))} v {escape(str(r['away_team']))} - "
-                     f"{mk} {side} @ {float(r['odds']):.2f} · {r['slot']} · {r['cell_status']} "
-                     f"({edge_text(pd.to_numeric(r.get('edge_calibrated'), errors='coerce') * 100)})")
+                     f"{mk} {side} @ {float(r['odds']):.2f} · {TIER_TEXT.get(str(r['slot']), r['slot'])}"
+                     f"{' · ' + escape(cell) if cell and cell != 'nan' else ''} ({_edge_words(r)})")
         lines[-1] = _with_label(lines[-1], _stake_label(real_checker, r, flat))
+    if picks["slot"].astype(str).isin(TIER_NAMES).any() or (len(picks) == 0 and len(rule) == 0):
+        for t, name in enumerate(TIER_NAMES):            # owner 2026-11-22: an empty tier says why
+            if name not in set(picks["slot"].astype(str)):
+                lines.append(f"{t + 1}. {TIER_TEXT[name]}: none - no other priced, coherent pick with value")
     for (mk, sd), g in rule.groupby(["market", "side"], sort=True):
         side = "Yes" if str(sd) == "YES" else str(sd).title()
         lines.append(f"📏 League rule: {lab.get(str(mk), str(mk))} {side}, every match "
                      f"({g['cell_status'].iloc[0]}, outside the 3)")       # owner 2026-11-17: no stake label
         for r in g.sort_values("top3_rank", key=lambda s: s.astype(int)).to_dict("records"):
             lines.append(f"   • {escape(str(r['home_team']))} v {escape(str(r['away_team']))} @ {float(r['odds']):.2f}")
-    head = (f"Every TOP-3 tip: {stake_text(flat)} stake of bankroll, flat, placed manually." if flat is not None
-            else "")
-    lines.append(f"<i>{head + ' ' if head else ''}Each tip cleared its league's own owner-approved bar; ranked by calibrated value "
-                 "(the live rule). Fewer than 3 = fewer cleared the bar.</i>")
+    n = int(len(picks))
+    if picks["slot"].astype(str).isin(TIER_NAMES).any():          # P11 tier mode (owner 2026-11-22 rule)
+        head = (f"Staked ({stake_text(flat)} of bankroll, flat, placed manually) only where the tip cleared its "
+                "league's own approved bar; the others show why they carry no stake." if flat is not None else "")
+        foot = ("T1 best value, T2 safest, T3 risky value."
+                + (f" Only {n} priced, coherent pick{'s' if n != 1 else ''} with value this week." if n < TOP_N else ""))
+    else:
+        head = (f"Every TOP-3 tip: {stake_text(flat)} stake of bankroll, flat, placed manually." if flat is not None
+                else "")
+        foot = "Each tip cleared its league's own owner-approved bar; ranked by calibrated value (the live rule)."
+    lines.append(f"<i>{head + ' ' if head else ''}{foot}</i>")
     return "\n".join(lines)
+
+
+TIER_TEXT = {"T1_BEST_VALUE": "T1 best value", "T2_SAFEST": "T2 safest", "T3_RISKY_VALUE": "T3 risky value"}
+
+
+def _edge_words(r) -> str:
+    """The calibrated edge where calibrated; a MODEL_EDGE pick shows the model's own edge vs the fair price,
+    named as such (never as calibrated)."""
+    from src.calibrated_edge import edge_text
+    if str(r.get("value_basis") or "") == BASIS_MODEL:
+        e = _num(r.get("edge"))
+        return f"model edge {e * 100:+.1f} pp, not calibrated" if not math.isnan(e) else "edge: not calibrated"
+    return edge_text(pd.to_numeric(r.get("edge_calibrated"), errors="coerce") * 100)
 
 
 def notify(out_dir: Path | None = None, env: dict | None = None, sender=None) -> dict:
