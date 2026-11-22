@@ -284,7 +284,24 @@ def top3_split(ledger: pd.DataFrame) -> dict:
     return split(ledger, "issued_at", "match_date")
 
 
-def top3_summaries(ledger: pd.DataFrame) -> dict:
+def top3_staked(ledger: pd.DataFrame) -> pd.Series:
+    """TOP-3 rows whose FROZEN stake decision is a stake (owner 2026-11-22 "stake by proof"): stake_reason STAKED,
+    or - a row written before that column - a REAL stake_effect. Read from the ledger, never recomputed."""
+    if ledger is None or not len(ledger):
+        return pd.Series(False, index=getattr(ledger, "index", None), dtype=bool)
+    eff = ledger.get("stake_effect", pd.Series("", index=ledger.index)).astype(str).str.startswith("REAL ")
+    if "stake_reason" not in ledger.columns:
+        return eff
+    sr = ledger["stake_reason"].fillna("").astype(str).str.strip()
+    return (sr == "STAKED") | (sr.isin(["", "nan"]) & eff)
+
+
+def top3_summaries(ledger: pd.DataFrame, staked: bool | None = None) -> dict:
+    """All TOP-3 picks (staked=None), or only the staked (True) / only the no-stake (False) ones - reported apart
+    so the Clean Record never mixes a staked result with a pick shown without a stake."""
+    if staked is not None and ledger is not None and len(ledger):
+        m = top3_staked(ledger)
+        ledger = ledger[m if staked else ~m]
     sp = top3_split(ledger)
     return {rec: summary(sp[rec], pnl="flat_pnl", date="match_date", key=f"{rec}|top3") for rec in RECORDS} \
         | {UNPLACED: int(len(sp[UNPLACED]))}

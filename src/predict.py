@@ -156,6 +156,14 @@ def _fetch_odds_api(days_ahead: int = 7) -> pd.DataFrame:
                                 pt = outcome.get("point")
                                 nm = outcome.get("name")
                                 pr = outcome.get("price")
+                                # NO DECIMAL PRICE CAN BE <= 1.0 (2026-11-22, contracts AMBER): OddsAPI
+                                # returned 1.0 from two books on a suspended Liga MX total (2026-11-19).
+                                # Such a quote is no price - it is neither captured nor selected below.
+                                try:
+                                    if pr is not None and float(pr) <= 1.0:
+                                        pr = None
+                                except (TypeError, ValueError):
+                                    pr = None
                                 # PER-BOOK CAPTURE (added 2026-08-19, additive only).
                                 #
                                 # OddsAPI returns EVERY bookmaker's price in this response and
@@ -189,8 +197,13 @@ def _fetch_odds_api(days_ahead: int = 7) -> pd.DataFrame:
                                 if pt == 3.5 and nm == "Over"  and not ov35:  ov35 = pr
                         elif mkt["key"] == "btts":
                             for outcome in mkt["outcomes"]:
-                                if outcome.get("name") == "Yes" and not btts_yes:
-                                    btts_yes = outcome.get("price")
+                                _by = outcome.get("price")
+                                try:
+                                    _by = _by if _by is not None and float(_by) > 1.0 else None
+                                except (TypeError, ValueError):
+                                    _by = None
+                                if outcome.get("name") == "Yes" and not btts_yes and _by:
+                                    btts_yes = _by
                     # Stop only once EVERY price we want is in hand. This used to break as
                     # soon as Over 2.5 was found, so if that first bookmaker didn't quote
                     # 1.5/3.5 those prices were silently lost — odds_over15 and odds_over35
@@ -211,6 +224,11 @@ def _fetch_odds_api(days_ahead: int = 7) -> pd.DataFrame:
                         for outcome in mkt.get("outcomes", []):
                             pr = outcome.get("price")
                             if outcome.get("point") != 2.5 or not pr:
+                                continue
+                            try:
+                                if float(pr) <= 1.0:            # no price (see the capture loop)
+                                    continue
+                            except (TypeError, ValueError):
                                 continue
                             # best seen price; None until a book quotes one (no typed 0.0 start)
                             if outcome.get("name") == "Over":

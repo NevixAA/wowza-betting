@@ -1,7 +1,7 @@
 {
   "version": "1",
   "declared_on": "2026-10-26",
-  "note": "Known, reviewed contract violations in HISTORICAL committed data. The system-health 'Data contracts' check is AMBER only for violations beyond these (a new column missing, more rows than the max below, or a new kind). Never use this to hide a violation in rows written after declared_on - raise the max only with a reason.",
+  "note": "Known, reviewed contract violations in HISTORICAL committed data. The system-health 'Data contracts' check is AMBER only for violations beyond these (a new column missing, more rows than the max below, or a new kind). Never use this to hide a violation in rows written after the writer was fixed - every entry added after declared_on names its acknowledged_on date, the writer fix and the corrections sidecar that holds the correction beside the original; raise the max only with a reason.",
   "acknowledged": [
     {"file": "output/book_odds_snapshots.csv", "kind": "missing_column", "column": "minutes_to_kickoff", "max_rows": null,
      "reason": "OddsAPI change-log writer predates CONTRACTS-1; derivable from kickoff + snapshot time at read (src/edge_engine_shadow does)."},
@@ -14,6 +14,15 @@
     {"file": "output/stake_audit.csv", "kind": "allowed", "column": "side", "max_rows": 110,
      "reason": "Rows written before the 2026-10-22 side-market staking fix (b4ce9e22); frozen history."},
     {"file": "output/stake_audit.csv", "kind": "null", "column": "odds", "max_rows": 110,
-     "reason": "Same 110 pre-fix rows (odds were lost before the fix); frozen history, all zero stake."}
+     "reason": "Same 110 pre-fix rows (odds were lost before the fix); frozen history, all zero stake."},
+    {"file": "output/stake_audit.csv", "kind": "rule", "column": "opposite_direction_on_fixture", "max_rows": 2,
+     "acknowledged_on": "2026-11-22",
+     "reason": "Rows 621 (2026-10-29, OU25 UNDER) and 741 (2026-11-02, BTTS YES), fixture 2026-11-04 Flamengo v Gremio: both written BEFORE the direction rule and its writer guard (2dd97e1e6, owner 2026-11-04; src/bankroll_policy step 6b + stake_plan.prior_directions). Already corrected beside the original in output/corrections/stake_audit_reconciled.csv (row 621 FIRST_STAKED_POSITION; no execution consumer, pre-go-live). Append-only audit, never rewritten."},
+    {"file": "output/bets_ledger.csv", "kind": "range", "column": "closing_odds", "max_rows": 1,
+     "acknowledged_on": "2026-11-22",
+     "reason": "One row (HJK Helsinki v AC Oulu 2026-11-08, settled with a suspended 1.0 close). Corrected beside the ledger in output/corrections/clv_invalid_close.csv (2d2c0e101, 2026-11-11; CLV blanked for every consumer by src/ledger_corrections, P/L untouched). Writer fixed 2026-11-22: update_results takes the last quote > 1.0 as the close."},
+    {"file": "output/book_odds_snapshots.csv", "kind": "range", "column": "odds", "max_rows": 2,
+     "acknowledged_on": "2026-11-22",
+     "reason": "Two OddsAPI quotes of 1.0 (suspended market; betsson + nordicbet OU25 OVER, Pachuca v Toluca 2026-11-21, captured 2026-11-19). Listed in output/corrections/book_odds_invalid_quotes.csv; every reader drops odds <= 1.0. Writer fixed 2026-11-22: src/predict.py no longer captures or selects a quote <= 1.0. The rows leave the live file when the match date rolls to the archive."}
   ]
 }
