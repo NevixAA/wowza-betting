@@ -359,6 +359,58 @@
             "assembled": "scripts/promote_clean_switch.py assemble --only ht_over05_nf,ht_over15_nf (golive nfht_1120)",
             "parity_refit": "scripts/team_train_serve_parity.py on refit_1118b (code 694995f90): 0 of 6,020 cells, 140/140 probabilities identical x12 payloads"
           }
+        },
+        {
+          "stage": "std_ht_drop_home_ht_history",
+          "approved_on": "2026-11-22",
+          "owner_quote": "Yes, retrain the 2 HT models",
+          "retrain_owner_quote": "Yes, retrain the 2 HT models",
+          "retrain_approved_on": "2026-11-22",
+          "install_approval": "PENDING: the owner approves the old-vs-new comparison first; the owner's install words and date are added here before this PR is merged.",
+          "scope": "the two Standard half-time payloads (ht_over05 / ht_over15, models/model_ht_over05.pkl / model_ht_over15.pkl) refitted with the same champion_recipe on the same frame (ebe47c041a7f595f), the same cut-offs (Standard from 2016-07-01, training 2016-08-05..2026-11-01, data end 2026-11-08) and the same rows (49,393), dropping only home_has_ht_history (config/phase2_retrain.json features.market_exclude, owner 2026-11-22): after PR #59 the flag is 1.0 on every training row, so Data truth 3 is RED on the served std_2016_refit payloads 5a76d680 / e9a12ce1. Every other artifact (standard, btts, over15, over35, newformat, ht_over05_nf, ht_over15_nf) is unchanged. Nothing beyond these two artifacts is covered.",
+          "install_window": [
+            "2026-11-22",
+            "2026-11-25"
+          ],
+          "gate": "scripts/team_train_serve_parity.py on the two Standard HT payloads: 0 differing cells and every probability identical; src.integrity.data_truth served_feature_spread GREEN on both",
+          "artifacts": {
+            "ht_over05": {
+              "sha256": "0776cea1784db55e3965fc53dba9f957148030c0bdc83215ab5d14c86e835974",
+              "sources": [
+                "standard/ht_over05"
+              ],
+              "recipe": "ht_v9_repaired"
+            },
+            "ht_over15": {
+              "sha256": "aa4c62ceece0e2a52ee8d45d75b8621194464d0eb5ac55aab3c1df8c5c07d8bc",
+              "sources": [
+                "standard/ht_over15"
+              ],
+              "recipe": "ht_v9_repaired"
+            }
+          },
+          "evidence": {
+            "refit_code_sha": "f9cfba7331adc875587e65aec7459e3a0e7ebd0d",
+            "config_sha256": "cb7309e891782bbe58826daac88c01b22eeb661cdd8f1cf66b25a1ba72174d30",
+            "data": {
+              "loaded_rows": 93375,
+              "frame_hash": "ebe47c041a7f595f"
+            },
+            "data_end": "2026-11-08",
+            "train_dates": [
+              "2016-08-05",
+              "2026-11-01"
+            ],
+            "training_rows_standard_ht": 49393,
+            "n_features": "84 (was 86: home_has_ht_history and its missing indicator)",
+            "refit_dir": "golive/ht_retrain_1122 (scripts/phase2_refit_serving.refit on the saved std_retrain_1611 frame, hash re-verified; champion_recipe, Standard ht_over05/ht_over15 only)",
+            "reproduction": "the same refit with the 2026-11-19 config reproduces the served 5a76d680 / e9a12ce1 payloads exactly (only code_sha differs)",
+            "refit_model_sha256": {
+              "ht_over05": "be4ebf55c11b8c047afd6124abcb173e179775e815605a85621dea82e631075a",
+              "ht_over15": "d62bead490b8a83bfba0af80cb06400fb3ecc573e695224e8bf3d9ea61d951af"
+            },
+            "assembled": "scripts/promote_clean_switch.py assemble --only ht_over05,ht_over15 (golive ht_retrain_1122/asm)"
+          }
         }
       ]
     }
