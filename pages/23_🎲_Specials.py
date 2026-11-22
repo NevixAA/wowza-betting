@@ -86,6 +86,9 @@ else:
                "CAL-1 probability (per outcome, with the league's own learned adjustment); empty when the "
                "league has no fitted adjustment. Best price = the highest real quote collected before "
                "logging, with the number of bookmakers quoting it; empty when none was collected.")
+    if str(data.get("prices") or "").startswith("prices private"):
+        st.caption(f"Best price: {data['prices']}. Prices are kept only in the private store; the books count "
+                   "is public.")
 
 # ── one match: the grid and the bands ────────────────────────────────────────────────────────
 ui.section_header("Exact-score grid", "Pick a logged fixture: the model's probability per score, 0-0 to 6-6, "
