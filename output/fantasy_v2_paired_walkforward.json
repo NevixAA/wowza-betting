@@ -1,0 +1,937 @@
+{
+ "calculation_version": "fantasy_paired_walkforward-1.0",
+ "generated_at": "2026-11-22T20:00:59Z",
+ "source": "output/fantasy_v2_oos.csv",
+ "residual_mode_note": "shadow only; this report changes nothing that is served",
+ "arm_labels": {
+  "FPL": "FPL baseline (ep_next)",
+  "WOWZA": "Wowza V1 (standalone projection x P(start))",
+  "LINEAR": "V2 LINEAR (FPL + OLS residual, shadow)",
+  "RIDGE": "V2 RIDGE (FPL + ridge residual, shadow)",
+  "HGB": "V2 HGB (FPL + gradient-boosting residual, shadow)"
+ },
+ "regret_unit": "raw FPL points (captain points = 2x)",
+ "primary": {
+  "population": "ALL_ARMS_PAIRED",
+  "definition": "FINAL gameweeks; rows where FPL, WOWZA, LINEAR, RIDGE and HGB all have a forecast and the actual is known; chronology checked",
+  "exclusions": {
+   "rows_in": 2959,
+   "not_final": 328,
+   "chronology_violation": 0,
+   "actual_missing": 0,
+   "missing_FPL": 0,
+   "missing_WOWZA": 1663,
+   "missing_LINEAR": 1663,
+   "missing_RIDGE": 1663,
+   "missing_HGB": 0,
+   "dropped_any_arm_missing": 1663,
+   "rows_scored": 968
+  },
+  "gameweeks": [
+   5,
+   6,
+   7,
+   8,
+   9,
+   10
+  ],
+  "rows": 968,
+  "pooled": {
+   "FPL": {
+    "n": 968,
+    "mae": 1.7872,
+    "rmse": 2.7566,
+    "bias": -0.1376,
+    "spearman_pooled": 0.5729,
+    "spearman_mean_per_gw": 0.537,
+    "top10_overlap_mean": 2.5,
+    "top10_actual_mean": 4.5167,
+    "captain_regret_total": 66.0,
+    "captain_regret_mean": 11.0
+   },
+   "WOWZA": {
+    "n": 968,
+    "mae": 2.4002,
+    "rmse": 3.0696,
+    "bias": 1.1199,
+    "spearman_pooled": 0.4186,
+    "spearman_mean_per_gw": 0.4167,
+    "top10_overlap_mean": 1.5,
+    "top10_actual_mean": 3.4,
+    "captain_regret_total": 79.0,
+    "captain_regret_mean": 13.1667
+   },
+   "LINEAR": {
+    "n": 968,
+    "mae": 1.7512,
+    "rmse": 2.6158,
+    "bias": 0.0087,
+    "spearman_pooled": 0.5994,
+    "spearman_mean_per_gw": 0.5868,
+    "top10_overlap_mean": 2.6667,
+    "top10_actual_mean": 4.4833,
+    "captain_regret_total": 73.0,
+    "captain_regret_mean": 12.1667
+   },
+   "RIDGE": {
+    "n": 968,
+    "mae": 1.7653,
+    "rmse": 2.6242,
+    "bias": 0.0106,
+    "spearman_pooled": 0.5898,
+    "spearman_mean_per_gw": 0.5683,
+    "top10_overlap_mean": 2.5,
+    "top10_actual_mean": 4.4167,
+    "captain_regret_total": 69.0,
+    "captain_regret_mean": 11.5
+   },
+   "HGB": {
+    "n": 968,
+    "mae": 1.7987,
+    "rmse": 2.646,
+    "bias": 0.0517,
+    "spearman_pooled": 0.5717,
+    "spearman_mean_per_gw": 0.5482,
+    "top10_overlap_mean": 2.0,
+    "top10_actual_mean": 4.0167,
+    "captain_regret_total": 63.0,
+    "captain_regret_mean": 10.5
+   }
+  },
+  "vs_fpl": {
+   "WOWZA": {
+    "mae_minus_fpl": 0.613,
+    "mae_ci90": [
+     0.526,
+     0.7387
+    ],
+    "rmse_minus_fpl": 0.3131,
+    "rmse_ci90": [
+     0.2131,
+     0.387
+    ],
+    "abs_bias_minus_fpl": 0.9823,
+    "abs_bias_ci90": [
+     0.7591,
+     1.1917
+    ],
+    "gws_mae_better_than_fpl": 0,
+    "gws_regret_lower_than_fpl": 0,
+    "gws": 6
+   },
+   "LINEAR": {
+    "mae_minus_fpl": -0.036,
+    "mae_ci90": [
+     -0.0849,
+     -0.008
+    ],
+    "rmse_minus_fpl": -0.1407,
+    "rmse_ci90": [
+     -0.2512,
+     -0.0588
+    ],
+    "abs_bias_minus_fpl": -0.1289,
+    "abs_bias_ci90": [
+     -0.208,
+     0.0981
+    ],
+    "gws_mae_better_than_fpl": 5,
+    "gws_regret_lower_than_fpl": 1,
+    "gws": 6
+   },
+   "RIDGE": {
+    "mae_minus_fpl": -0.0219,
+    "mae_ci90": [
+     -0.0525,
+     0.002
+    ],
+    "rmse_minus_fpl": -0.1324,
+    "rmse_ci90": [
+     -0.2138,
+     -0.0704
+    ],
+    "abs_bias_minus_fpl": -0.127,
+    "abs_bias_ci90": [
+     -0.221,
+     0.0843
+    ],
+    "gws_mae_better_than_fpl": 3,
+    "gws_regret_lower_than_fpl": 2,
+    "gws": 6
+   },
+   "HGB": {
+    "mae_minus_fpl": 0.0115,
+    "mae_ci90": [
+     -0.0422,
+     0.0554
+    ],
+    "rmse_minus_fpl": -0.1106,
+    "rmse_ci90": [
+     -0.1992,
+     -0.0429
+    ],
+    "abs_bias_minus_fpl": -0.0859,
+    "abs_bias_ci90": [
+     -0.2424,
+     0.1263
+    ],
+    "gws_mae_better_than_fpl": 4,
+    "gws_regret_lower_than_fpl": 3,
+    "gws": 6
+   }
+  },
+  "by_gw": [
+   {
+    "gw": 5,
+    "n": 217,
+    "FPL": {
+     "n": 217,
+     "mae": 2.0106,
+     "rmse": 2.9667,
+     "bias": -0.171,
+     "spearman": 0.5532,
+     "top10_overlap": 3,
+     "top10_actual_mean": 6.0,
+     "captain_element": 330,
+     "captain_name": "Jayden Bogle",
+     "captain_forecast": 9.2,
+     "captain_actual": 5.0,
+     "best_actual": 17.0,
+     "captain_regret": 12.0
+    },
+    "WOWZA": {
+     "n": 217,
+     "mae": 2.4637,
+     "rmse": 3.2425,
+     "bias": 0.9628,
+     "spearman": 0.3439,
+     "top10_overlap": 1,
+     "top10_actual_mean": 4.3,
+     "captain_element": 12,
+     "captain_name": "Bukayo Saka",
+     "captain_forecast": 8.349,
+     "captain_actual": 2.0,
+     "best_actual": 17.0,
+     "captain_regret": 15.0
+    },
+    "LINEAR": {
+     "n": 217,
+     "mae": 2.0233,
+     "rmse": 3.0036,
+     "bias": -0.1587,
+     "spearman": 0.5171,
+     "top10_overlap": 1,
+     "top10_actual_mean": 4.1,
+     "captain_element": 12,
+     "captain_name": "Bukayo Saka",
+     "captain_forecast": 8.673,
+     "captain_actual": 2.0,
+     "best_actual": 17.0,
+     "captain_regret": 15.0
+    },
+    "RIDGE": {
+     "n": 217,
+     "mae": 2.0329,
+     "rmse": 2.9556,
+     "bias": -0.1298,
+     "spearman": 0.5248,
+     "top10_overlap": 2,
+     "top10_actual_mean": 5.0,
+     "captain_element": 411,
+     "captain_name": "Erling Haaland",
+     "captain_forecast": 9.538,
+     "captain_actual": 6.0,
+     "best_actual": 17.0,
+     "captain_regret": 11.0
+    },
+    "HGB": {
+     "n": 217,
+     "mae": 2.1095,
+     "rmse": 3.007,
+     "bias": -0.1468,
+     "spearman": 0.4679,
+     "top10_overlap": 1,
+     "top10_actual_mean": 4.7,
+     "captain_element": 411,
+     "captain_name": "Erling Haaland",
+     "captain_forecast": 8.58,
+     "captain_actual": 6.0,
+     "best_actual": 17.0,
+     "captain_regret": 11.0
+    }
+   },
+   {
+    "gw": 6,
+    "n": 103,
+    "FPL": {
+     "n": 103,
+     "mae": 1.2417,
+     "rmse": 2.3775,
+     "bias": -0.2476,
+     "spearman": 0.6032,
+     "top10_overlap": 3,
+     "top10_actual_mean": 3.5,
+     "captain_element": 93,
+     "captain_name": "Jannik Schuster",
+     "captain_forecast": 8.5,
+     "captain_actual": 1.0,
+     "best_actual": 12.0,
+     "captain_regret": 11.0
+    },
+    "WOWZA": {
+     "n": 103,
+     "mae": 2.1249,
+     "rmse": 2.8041,
+     "bias": 1.1757,
+     "spearman": 0.475,
+     "top10_overlap": 1,
+     "top10_actual_mean": 2.4,
+     "captain_element": 469,
+     "captain_name": "Neco Williams",
+     "captain_forecast": 5.686,
+     "captain_actual": 1.0,
+     "best_actual": 12.0,
+     "captain_regret": 11.0
+    },
+    "LINEAR": {
+     "n": 103,
+     "mae": 1.1838,
+     "rmse": 2.1526,
+     "bias": -0.0912,
+     "spearman": 0.6687,
+     "top10_overlap": 3,
+     "top10_actual_mean": 3.6,
+     "captain_element": 350,
+     "captain_name": "Alisson Becker",
+     "captain_forecast": 5.37,
+     "captain_actual": 1.0,
+     "best_actual": 12.0,
+     "captain_regret": 11.0
+    },
+    "RIDGE": {
+     "n": 103,
+     "mae": 1.2495,
+     "rmse": 2.2571,
+     "bias": -0.0127,
+     "spearman": 0.6348,
+     "top10_overlap": 2,
+     "top10_actual_mean": 2.7,
+     "captain_element": 350,
+     "captain_name": "Alisson Becker",
+     "captain_forecast": 7.596,
+     "captain_actual": 1.0,
+     "best_actual": 12.0,
+     "captain_regret": 11.0
+    },
+    "HGB": {
+     "n": 103,
+     "mae": 1.3228,
+     "rmse": 2.3102,
+     "bias": 0.0857,
+     "spearman": 0.5772,
+     "top10_overlap": 3,
+     "top10_actual_mean": 3.3,
+     "captain_element": 93,
+     "captain_name": "Jannik Schuster",
+     "captain_forecast": 7.973,
+     "captain_actual": 1.0,
+     "best_actual": 12.0,
+     "captain_regret": 11.0
+    }
+   },
+   {
+    "gw": 7,
+    "n": 88,
+    "FPL": {
+     "n": 88,
+     "mae": 1.3739,
+     "rmse": 2.6914,
+     "bias": -0.3761,
+     "spearman": 0.512,
+     "top10_overlap": 4,
+     "top10_actual_mean": 4.5,
+     "captain_element": 166,
+     "captain_name": "Nicolas Jackson",
+     "captain_forecast": 7.5,
+     "captain_actual": 2.0,
+     "best_actual": 15.0,
+     "captain_regret": 13.0
+    },
+    "WOWZA": {
+     "n": 88,
+     "mae": 2.3158,
+     "rmse": 3.1217,
+     "bias": 1.2306,
+     "spearman": 0.4614,
+     "top10_overlap": 2,
+     "top10_actual_mean": 2.5,
+     "captain_element": 165,
+     "captain_name": "Jo\u00e3o Pedro Junqueira de Jesus",
+     "captain_forecast": 7.739,
+     "captain_actual": 2.0,
+     "best_actual": 15.0,
+     "captain_regret": 13.0
+    },
+    "LINEAR": {
+     "n": 88,
+     "mae": 1.3306,
+     "rmse": 2.4421,
+     "bias": -0.0472,
+     "spearman": 0.6085,
+     "top10_overlap": 4,
+     "top10_actual_mean": 4.1,
+     "captain_element": 166,
+     "captain_name": "Nicolas Jackson",
+     "captain_forecast": 5.31,
+     "captain_actual": 2.0,
+     "best_actual": 15.0,
+     "captain_regret": 13.0
+    },
+    "RIDGE": {
+     "n": 88,
+     "mae": 1.3749,
+     "rmse": 2.5384,
+     "bias": -0.0487,
+     "spearman": 0.5722,
+     "top10_overlap": 4,
+     "top10_actual_mean": 3.5,
+     "captain_element": 166,
+     "captain_name": "Nicolas Jackson",
+     "captain_forecast": 6.779,
+     "captain_actual": 2.0,
+     "best_actual": 15.0,
+     "captain_regret": 13.0
+    },
+    "HGB": {
+     "n": 88,
+     "mae": 1.3609,
+     "rmse": 2.4313,
+     "bias": -0.0034,
+     "spearman": 0.5524,
+     "top10_overlap": 3,
+     "top10_actual_mean": 3.6,
+     "captain_element": 113,
+     "captain_name": "Ferdi Kad\u0131o\u011flu",
+     "captain_forecast": 5.928,
+     "captain_actual": 6.0,
+     "best_actual": 15.0,
+     "captain_regret": 9.0
+    }
+   },
+   {
+    "gw": 8,
+    "n": 93,
+    "FPL": {
+     "n": 93,
+     "mae": 1.8226,
+     "rmse": 3.0319,
+     "bias": -0.5538,
+     "spearman": 0.496,
+     "top10_overlap": 2,
+     "top10_actual_mean": 3.3,
+     "captain_element": 156,
+     "captain_name": "Pedro Lomba Neto",
+     "captain_forecast": 10.0,
+     "captain_actual": 3.0,
+     "best_actual": 13.0,
+     "captain_regret": 10.0
+    },
+    "WOWZA": {
+     "n": 93,
+     "mae": 2.2775,
+     "rmse": 2.96,
+     "bias": 1.0354,
+     "spearman": 0.4854,
+     "top10_overlap": 2,
+     "top10_actual_mean": 3.3,
+     "captain_element": 165,
+     "captain_name": "Jo\u00e3o Pedro Junqueira de Jesus",
+     "captain_forecast": 7.739,
+     "captain_actual": 0.0,
+     "best_actual": 13.0,
+     "captain_regret": 13.0
+    },
+    "LINEAR": {
+     "n": 93,
+     "mae": 1.6046,
+     "rmse": 2.6001,
+     "bias": -0.2238,
+     "spearman": 0.5841,
+     "top10_overlap": 3,
+     "top10_actual_mean": 4.4,
+     "captain_element": 79,
+     "captain_name": "Francisco Evanilson de Lima Barbosa",
+     "captain_forecast": 6.174,
+     "captain_actual": 6.0,
+     "best_actual": 13.0,
+     "captain_regret": 7.0
+    },
+    "RIDGE": {
+     "n": 93,
+     "mae": 1.6851,
+     "rmse": 2.6864,
+     "bias": -0.2316,
+     "spearman": 0.5471,
+     "top10_overlap": 3,
+     "top10_actual_mean": 4.4,
+     "captain_element": 79,
+     "captain_name": "Francisco Evanilson de Lima Barbosa",
+     "captain_forecast": 7.521,
+     "captain_actual": 6.0,
+     "best_actual": 13.0,
+     "captain_regret": 7.0
+    },
+    "HGB": {
+     "n": 93,
+     "mae": 1.6597,
+     "rmse": 2.7024,
+     "bias": -0.2498,
+     "spearman": 0.5529,
+     "top10_overlap": 2,
+     "top10_actual_mean": 3.3,
+     "captain_element": 165,
+     "captain_name": "Jo\u00e3o Pedro Junqueira de Jesus",
+     "captain_forecast": 6.531,
+     "captain_actual": 0.0,
+     "best_actual": 13.0,
+     "captain_regret": 13.0
+    }
+   },
+   {
+    "gw": 9,
+    "n": 237,
+    "FPL": {
+     "n": 237,
+     "mae": 1.7895,
+     "rmse": 2.5337,
+     "bias": 0.0916,
+     "spearman": 0.517,
+     "top10_overlap": 2,
+     "top10_actual_mean": 4.9,
+     "captain_element": 411,
+     "captain_name": "Erling Haaland",
+     "captain_forecast": 9.0,
+     "captain_actual": 2.0,
+     "best_actual": 15.0,
+     "captain_regret": 13.0
+    },
+    "WOWZA": {
+     "n": 237,
+     "mae": 2.3884,
+     "rmse": 2.8902,
+     "bias": 1.3531,
+     "spearman": 0.4038,
+     "top10_overlap": 3,
+     "top10_actual_mean": 6.3,
+     "captain_element": 411,
+     "captain_name": "Erling Haaland",
+     "captain_forecast": 7.451,
+     "captain_actual": 2.0,
+     "best_actual": 15.0,
+     "captain_regret": 13.0
+    },
+    "LINEAR": {
+     "n": 237,
+     "mae": 1.7745,
+     "rmse": 2.3625,
+     "bias": 0.2902,
+     "spearman": 0.5817,
+     "top10_overlap": 3,
+     "top10_actual_mean": 5.3,
+     "captain_element": 411,
+     "captain_name": "Erling Haaland",
+     "captain_forecast": 6.308,
+     "captain_actual": 2.0,
+     "best_actual": 15.0,
+     "captain_regret": 13.0
+    },
+    "RIDGE": {
+     "n": 237,
+     "mae": 1.7488,
+     "rmse": 2.3373,
+     "bias": 0.2398,
+     "spearman": 0.568,
+     "top10_overlap": 2,
+     "top10_actual_mean": 4.7,
+     "captain_element": 411,
+     "captain_name": "Erling Haaland",
+     "captain_forecast": 7.854,
+     "captain_actual": 2.0,
+     "best_actual": 15.0,
+     "captain_regret": 13.0
+    },
+    "HGB": {
+     "n": 237,
+     "mae": 1.7796,
+     "rmse": 2.4013,
+     "bias": 0.2554,
+     "spearman": 0.5683,
+     "top10_overlap": 1,
+     "top10_actual_mean": 3.7,
+     "captain_element": 496,
+     "captain_name": "Anton\u00edn Kinsk\u00fd",
+     "captain_forecast": 6.549,
+     "captain_actual": 6.0,
+     "best_actual": 15.0,
+     "captain_regret": 9.0
+    }
+   },
+   {
+    "gw": 10,
+    "n": 230,
+    "FPL": {
+     "n": 230,
+     "mae": 1.9622,
+     "rmse": 2.8357,
+     "bias": -0.0335,
+     "spearman": 0.5406,
+     "top10_overlap": 1,
+     "top10_actual_mean": 4.9,
+     "captain_element": 79,
+     "captain_name": "Francisco Evanilson de Lima Barbosa",
+     "captain_forecast": 8.5,
+     "captain_actual": 9.0,
+     "best_actual": 16.0,
+     "captain_regret": 7.0
+    },
+    "WOWZA": {
+     "n": 230,
+     "mae": 2.5576,
+     "rmse": 3.2152,
+     "bias": 0.9944,
+     "spearman": 0.3304,
+     "top10_overlap": 0,
+     "top10_actual_mean": 1.6,
+     "captain_element": 411,
+     "captain_name": "Erling Haaland",
+     "captain_forecast": 7.451,
+     "captain_actual": 2.0,
+     "best_actual": 16.0,
+     "captain_regret": 14.0
+    },
+    "LINEAR": {
+     "n": 230,
+     "mae": 1.9449,
+     "rmse": 2.7284,
+     "bias": 0.0367,
+     "spearman": 0.5609,
+     "top10_overlap": 2,
+     "top10_actual_mean": 5.4,
+     "captain_element": 411,
+     "captain_name": "Erling Haaland",
+     "captain_forecast": 5.842,
+     "captain_actual": 2.0,
+     "best_actual": 16.0,
+     "captain_regret": 14.0
+    },
+    "RIDGE": {
+     "n": 230,
+     "mae": 1.9427,
+     "rmse": 2.7289,
+     "bias": 0.0378,
+     "spearman": 0.5631,
+     "top10_overlap": 2,
+     "top10_actual_mean": 6.2,
+     "captain_element": 411,
+     "captain_name": "Erling Haaland",
+     "captain_forecast": 7.45,
+     "captain_actual": 2.0,
+     "best_actual": 16.0,
+     "captain_regret": 14.0
+    },
+    "HGB": {
+     "n": 230,
+     "mae": 1.962,
+     "rmse": 2.718,
+     "bias": 0.1568,
+     "spearman": 0.5704,
+     "top10_overlap": 2,
+     "top10_actual_mean": 5.5,
+     "captain_element": 8,
+     "captain_name": "Riccardo Calafiori",
+     "captain_forecast": 6.453,
+     "captain_actual": 6.0,
+     "best_actual": 16.0,
+     "captain_regret": 10.0
+    }
+   }
+  ]
+ },
+ "secondary": {
+  "population": "FPL_HGB_ALL_FINAL",
+  "definition": "FINAL gameweeks; every row with an FPL and an HGB forecast",
+  "exclusions": {
+   "rows_in": 2959,
+   "not_final": 328,
+   "chronology_violation": 0,
+   "actual_missing": 0,
+   "missing_FPL": 0,
+   "missing_HGB": 0,
+   "dropped_any_arm_missing": 0,
+   "rows_scored": 2631
+  },
+  "gameweeks": [
+   5,
+   6,
+   7,
+   8,
+   9,
+   10
+  ],
+  "rows": 2631,
+  "pooled": {
+   "FPL": {
+    "n": 2631,
+    "mae": 1.7671,
+    "rmse": 2.8122,
+    "bias": -0.0515,
+    "spearman_pooled": 0.5443,
+    "spearman_mean_per_gw": 0.5473,
+    "top10_overlap_mean": 1.1667,
+    "top10_actual_mean": 4.45,
+    "captain_regret_total": 64.0,
+    "captain_regret_mean": 10.6667
+   },
+   "HGB": {
+    "n": 2631,
+    "mae": 1.7166,
+    "rmse": 2.5999,
+    "bias": 0.0497,
+    "spearman_pooled": 0.5606,
+    "spearman_mean_per_gw": 0.5639,
+    "top10_overlap_mean": 0.6667,
+    "top10_actual_mean": 3.7667,
+    "captain_regret_total": 73.0,
+    "captain_regret_mean": 12.1667
+   }
+  },
+  "vs_fpl": {
+   "HGB": {
+    "mae_minus_fpl": -0.0505,
+    "mae_ci90": [
+     -0.1256,
+     0.02
+    ],
+    "rmse_minus_fpl": -0.2124,
+    "rmse_ci90": [
+     -0.3323,
+     -0.1067
+    ],
+    "abs_bias_minus_fpl": -0.0017,
+    "abs_bias_ci90": [
+     -0.0951,
+     0.0938
+    ],
+    "gws_mae_better_than_fpl": 3,
+    "gws_regret_lower_than_fpl": 1,
+    "gws": 6
+   }
+  },
+  "by_gw": [
+   {
+    "gw": 5,
+    "n": 411,
+    "FPL": {
+     "n": 411,
+     "mae": 1.8153,
+     "rmse": 2.8726,
+     "bias": -0.1448,
+     "spearman": 0.5782,
+     "top10_overlap": 2,
+     "top10_actual_mean": 6.3,
+     "captain_element": 330,
+     "captain_name": "Jayden Bogle",
+     "captain_forecast": 9.2,
+     "captain_actual": 5.0,
+     "best_actual": 17.0,
+     "captain_regret": 12.0
+    },
+    "HGB": {
+     "n": 411,
+     "mae": 1.8915,
+     "rmse": 2.8811,
+     "bias": -0.1174,
+     "spearman": 0.5256,
+     "top10_overlap": 1,
+     "top10_actual_mean": 4.4,
+     "captain_element": 411,
+     "captain_name": "Erling Haaland",
+     "captain_forecast": 8.58,
+     "captain_actual": 6.0,
+     "best_actual": 17.0,
+     "captain_regret": 11.0
+    }
+   },
+   {
+    "gw": 6,
+    "n": 428,
+    "FPL": {
+     "n": 428,
+     "mae": 1.7832,
+     "rmse": 2.9303,
+     "bias": 0.0607,
+     "spearman": 0.5542,
+     "top10_overlap": 1,
+     "top10_actual_mean": 3.6,
+     "captain_element": 124,
+     "captain_name": "Pascal Gro\u00df",
+     "captain_forecast": 15.5,
+     "captain_actual": 6.0,
+     "best_actual": 18.0,
+     "captain_regret": 12.0
+    },
+    "HGB": {
+     "n": 428,
+     "mae": 1.7771,
+     "rmse": 2.7986,
+     "bias": 0.1242,
+     "spearman": 0.5444,
+     "top10_overlap": 0,
+     "top10_actual_mean": 2.0,
+     "captain_element": 124,
+     "captain_name": "Pascal Gro\u00df",
+     "captain_forecast": 13.23,
+     "captain_actual": 6.0,
+     "best_actual": 18.0,
+     "captain_regret": 12.0
+    }
+   },
+   {
+    "gw": 7,
+    "n": 436,
+    "FPL": {
+     "n": 436,
+     "mae": 1.9436,
+     "rmse": 3.0417,
+     "bias": 0.0963,
+     "spearman": 0.4726,
+     "top10_overlap": 1,
+     "top10_actual_mean": 2.7,
+     "captain_element": 115,
+     "captain_name": "Maxim De Cuyper",
+     "captain_forecast": 10.5,
+     "captain_actual": 6.0,
+     "best_actual": 15.0,
+     "captain_regret": 9.0
+    },
+    "HGB": {
+     "n": 436,
+     "mae": 1.7642,
+     "rmse": 2.6163,
+     "bias": 0.1333,
+     "spearman": 0.5237,
+     "top10_overlap": 0,
+     "top10_actual_mean": 2.3,
+     "captain_element": 397,
+     "captain_name": "Antoine Semenyo",
+     "captain_forecast": 7.665,
+     "captain_actual": 1.0,
+     "best_actual": 15.0,
+     "captain_regret": 14.0
+    }
+   },
+   {
+    "gw": 8,
+    "n": 449,
+    "FPL": {
+     "n": 449,
+     "mae": 1.9537,
+     "rmse": 3.0248,
+     "bias": -0.1626,
+     "spearman": 0.4781,
+     "top10_overlap": 0,
+     "top10_actual_mean": 3.0,
+     "captain_element": 101,
+     "captain_name": "Jordan Henderson",
+     "captain_forecast": 10.5,
+     "captain_actual": 2.0,
+     "best_actual": 17.0,
+     "captain_regret": 15.0
+    },
+    "HGB": {
+     "n": 449,
+     "mae": 1.7391,
+     "rmse": 2.5988,
+     "bias": -0.075,
+     "spearman": 0.5157,
+     "top10_overlap": 1,
+     "top10_actual_mean": 4.2,
+     "captain_element": 165,
+     "captain_name": "Jo\u00e3o Pedro Junqueira de Jesus",
+     "captain_forecast": 6.531,
+     "captain_actual": 0.0,
+     "best_actual": 17.0,
+     "captain_regret": 17.0
+    }
+   },
+   {
+    "gw": 9,
+    "n": 452,
+    "FPL": {
+     "n": 452,
+     "mae": 1.5038,
+     "rmse": 2.3498,
+     "bias": -0.0343,
+     "spearman": 0.5969,
+     "top10_overlap": 2,
+     "top10_actual_mean": 5.1,
+     "captain_element": 4,
+     "captain_name": "Gabriel dos Santos Magalh\u00e3es",
+     "captain_forecast": 9.0,
+     "captain_actual": 6.0,
+     "best_actual": 15.0,
+     "captain_regret": 9.0
+    },
+    "HGB": {
+     "n": 452,
+     "mae": 1.5231,
+     "rmse": 2.2271,
+     "bias": 0.1317,
+     "spearman": 0.6358,
+     "top10_overlap": 0,
+     "top10_actual_mean": 4.0,
+     "captain_element": 496,
+     "captain_name": "Anton\u00edn Kinsk\u00fd",
+     "captain_forecast": 6.549,
+     "captain_actual": 6.0,
+     "best_actual": 15.0,
+     "captain_regret": 9.0
+    }
+   },
+   {
+    "gw": 10,
+    "n": 455,
+    "FPL": {
+     "n": 455,
+     "mae": 1.6167,
+     "rmse": 2.6117,
+     "bias": -0.1218,
+     "spearman": 0.604,
+     "top10_overlap": 1,
+     "top10_actual_mean": 6.0,
+     "captain_element": 79,
+     "captain_name": "Francisco Evanilson de Lima Barbosa",
+     "captain_forecast": 8.5,
+     "captain_actual": 9.0,
+     "best_actual": 16.0,
+     "captain_regret": 7.0
+    },
+    "HGB": {
+     "n": 455,
+     "mae": 1.6261,
+     "rmse": 2.4635,
+     "bias": 0.0924,
+     "spearman": 0.6379,
+     "top10_overlap": 2,
+     "top10_actual_mean": 5.7,
+     "captain_element": 8,
+     "captain_name": "Riccardo Calafiori",
+     "captain_forecast": 6.453,
+     "captain_actual": 6.0,
+     "best_actual": 16.0,
+     "captain_regret": 10.0
+    }
+   }
+  ]
+ }
+}

@@ -328,3 +328,54 @@ def v2_benchmark_table(bench: dict, population: str = "ACTIVE", final_only: bool
                      "n": m.get("n"), "GWs": ", ".join(str(r["gw"]) for r in gws),
                      "top-10 overlap /10": (round(sum(ov) / len(ov), 1) if ov else None)})
     return pd.DataFrame(rows)
+
+
+# ── Paired walk-forward (P1 Fantasy validation, 2026-11-22) ─────────────────────────────────────
+#: arm order on the page: the baseline first, then Wowza V1, then the three shadow residual arms
+PAIRED_ARMS = ("FPL", "WOWZA", "LINEAR", "RIDGE", "HGB")
+
+
+def v2_paired_walkforward() -> dict:
+    """Every arm scored on the SAME player-gameweeks (player_model.fantasy_paired_eval)."""
+    return read_json(OUT / "fantasy_v2_paired_walkforward.json")
+
+
+def v2_paired_table(rep: dict, which: str = "primary") -> pd.DataFrame:
+    """One row per arm of the paired report: pooled MAE / RMSE / bias / Spearman, top-10 overlap,
+    captaincy regret, and the paired difference to FPL with its gameweek-cluster 90% interval.
+    FPL is always the first row. An empty frame when the report is absent."""
+    sec = (rep or {}).get(which) or {}
+    pooled, vs, labels = sec.get("pooled") or {}, sec.get("vs_fpl") or {}, (rep or {}).get("arm_labels") or {}
+    rows = []
+    for arm in PAIRED_ARMS:
+        m = pooled.get(arm)
+        if not m:
+            continue
+        d = vs.get(arm) or {}
+        ci = d.get("mae_ci90") or [None, None]
+        rows.append({"arm": arm, "model": labels.get(arm, arm), "n": m.get("n"), "MAE": m.get("mae"),
+                     "RMSE": m.get("rmse"), "bias": m.get("bias"), "Spearman": m.get("spearman_pooled"),
+                     "top-10 overlap /10": m.get("top10_overlap_mean"),
+                     "captain regret (pts)": m.get("captain_regret_total"),
+                     "MAE − FPL": d.get("mae_minus_fpl"),
+                     "MAE − FPL 90% CI": (f"{ci[0]:+.3f} to {ci[1]:+.3f}" if None not in ci else None),
+                     "GWs MAE < FPL": (f"{d.get('gws_mae_better_than_fpl')} of {d.get('gws')}"
+                                       if d else None)})
+    return pd.DataFrame(rows)
+
+
+def v2_paired_by_gw(rep: dict, which: str = "primary") -> pd.DataFrame:
+    """Long frame: gameweek x arm with MAE, bias, Spearman, top-10 overlap, captain and regret."""
+    sec = (rep or {}).get(which) or {}
+    rows = []
+    for r in sec.get("by_gw") or []:
+        for arm in PAIRED_ARMS:
+            m = r.get(arm)
+            if not m:
+                continue
+            rows.append({"gw": r["gw"], "arm": arm, "n": m.get("n"), "MAE": m.get("mae"),
+                         "RMSE": m.get("rmse"), "bias": m.get("bias"), "Spearman": m.get("spearman"),
+                         "top-10 overlap": m.get("top10_overlap"), "captain": m.get("captain_name"),
+                         "captain pts": m.get("captain_actual"), "best pts": m.get("best_actual"),
+                         "regret": m.get("captain_regret")})
+    return pd.DataFrame(rows)

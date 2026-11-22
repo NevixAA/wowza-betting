@@ -44,7 +44,9 @@ CONVENTION_LABEL = "convention-based, not fitted on data"
 #: V2 columns built from typed shares / half-life / bounds: the "Best value" figures and every
 #: 3- and 5-gameweek number (transfer gains, squad solve on those horizons)
 CONVENTION_COLS = ("xpts_3gw", "xpts_5gw", "value_5gw_per_m")
-V1_NOTE = f"Every V1 points figure (Exp pts / xPts on the V1 board) is {CONVENTION_LABEL}."
+V1_NOTE = (f"Every V1 points figure (Exp pts / xPts on the V1 board) is {CONVENTION_LABEL}. "
+           "Its P(goal) / P(assist) / P(2+ SoT) come from the props models scored on a feature "
+           "frame whose train/serve parity is not certified.")
 FIGURES_NOTE = (
     "**Which figures are fitted and which are conventions.** "
     "**Real or fitted:** Final xPts and FPL ep (FPL's own expected points), P(start), xMin and the "
@@ -476,3 +478,87 @@ def precomputed_move_card(t, container=None) -> None:
             ("Price change", f"{t['price_delta']:+.1f}m"), ("Next GW", f"{t['gain_next']:+.2f}"),
             ("3-GW", f"{t['gain_3gw']:+.2f}"), ("P(start)", ui.fmt_prob(t["in_p_start"]))])
             + "\n\n" + risk_chip(t["in_risk"]), unsafe_allow_html=True)
+
+
+# ── Player-level data and missingness (P1 Fantasy validation, 2026-11-22) ─────────────────────
+# Every field the Fantasy V2 board shows, where it comes from, and what a blank means. A missing
+# value stays blank on the page and is NAMED here; nothing is filled in for display.
+#: column -> (label, source, what a blank means). `cs_prob` is not applicable to forwards (FPL gives
+#: forwards no clean-sheet points), so a forward's blank is not counted as missing.
+MISSINGNESS_FIELDS = {
+    "fpl_ep_next": ("FPL ep", "FPL bootstrap-static ep_next (provider value)", "FPL published no forecast"),
+    "p_start": ("P(start)", "minutes model fitted on the FPL snapshot panel", "no minutes forecast"),
+    "exp_minutes": ("xMin", "minutes model fitted on the FPL snapshot panel", "no minutes forecast"),
+    "xg90": ("xG/90", "FPL expected_goals per 90", "FPL has no xG for him"),
+    "xa90": ("xA/90", "FPL expected_assists per 90", "FPL has no xA for him"),
+    "goal_prob": ("P(goal)", "FPL xG/90 x xMin x fixture factor", "an input above is missing"),
+    "assist_prob": ("P(assist)", "FPL xA/90 x xMin x fixture factor", "an input above is missing"),
+    "cs_prob": ("P(CS)", "team goals-against measured before the deadline", "team strength unknown"),
+    "min_last": ("Min last GW", "FPL cumulative minutes, snapshot difference", "no previous snapshot"),
+    "next_fixture": ("Next fixture", "FPL fixtures feed", "no fixture listed (blank gameweek)"),
+    "wowza_residual": ("Wowza adj (shadow)", "shadow residual (needs a Wowza V1 projection)",
+                       "no Wowza V1 projection before the deadline"),
+    "xpts_5gw": ("5-GW xPts", f"rate x availability x fixtures ({CONVENTION_LABEL})",
+                 "a rate or fixture input is missing"),
+}
+
+
+def _not_applicable(proj: pd.DataFrame, col: str) -> pd.Series:
+    if col == "cs_prob" and "position" in proj.columns:
+        return proj["position"].eq("FWD")
+    return pd.Series(False, index=proj.index)
+
+
+def set_piece_role(r) -> str:
+    """FPL's own set-piece order (bootstrap penalties/corners/free-kicks order). A player FPL does
+    not list is shown as 'not listed by FPL', never as a guessed role."""
+    pen = _get(r, "pen_order")
+    try:
+        pen = None if pen is None or pen != pen else int(pen)
+    except (TypeError, ValueError):
+        pen = None
+    parts = []
+    if pen is not None:
+        parts.append(f"pens #{pen}")
+    if str(_get(r, "set_piece")) in ("1", "1.0", "True"):     # FPL corner/FK order <= 2; blank = not listed
+        parts.append("corners/FKs (top 2)")
+    return ", ".join(parts) if parts else "not listed by FPL"
+
+
+def missingness_summary(proj: pd.DataFrame) -> pd.DataFrame:
+    """One row per field: source, how many players have it blank, out of how many it applies to."""
+    rows = []
+    for col, (label, source, meaning) in MISSINGNESS_FIELDS.items():
+        if col not in proj.columns:
+            rows.append({"Field": label, "Source": source, "Missing": None, "Of": None,
+                         "Share": None, "A blank means": "column not in the artifact"})
+            continue
+        na_ = _not_applicable(proj, col)
+        applies = proj[~na_]
+        miss = int(applies[col].isna().sum())
+        rows.append({"Field": label, "Source": source, "Missing": miss, "Of": int(len(applies)),
+                     "Share": (miss / len(applies)) if len(applies) else None,
+                     "A blank means": meaning + (" (forwards: not applicable)" if na_.any() else "")})
+    return pd.DataFrame(rows)
+
+
+def player_data_table(proj: pd.DataFrame) -> pd.DataFrame:
+    """Per player: the inputs behind the headline, FPL's set-piece role, and the named missing
+    fields. Values are the artifact's own; blanks stay blank."""
+    if proj is None or proj.empty:
+        return pd.DataFrame()
+    labels = []
+    for idx in proj.index:
+        miss = [lab for col, (lab, _s, _m) in MISSINGNESS_FIELDS.items()
+                if col in proj.columns and pd.isna(proj.at[idx, col])
+                and not (col == "cs_prob" and proj.at[idx, "position"] == "FWD")]
+        labels.append(miss)
+    cols = [c for c in ("web_name", "team", "position", "price", "final_xpts", "fpl_ep_next",
+                        "wowza_residual", "p_start", "exp_minutes", "min_last", "xg90", "xa90",
+                        "goal_prob", "assist_prob", "cs_prob", "next_fixture", "fdr", "chance_next_f",
+                        "news") if c in proj.columns]
+    out = proj[cols].copy()
+    out["set_piece_role"] = [set_piece_role(r) for _, r in proj.iterrows()]
+    out["n_missing"] = [len(m) for m in labels]
+    out["missing"] = [", ".join(m) if m else "none" for m in labels]
+    return out
