@@ -51,6 +51,7 @@ from __future__ import annotations
 
 import difflib
 import json
+from collections import Counter
 import logging
 import os
 import re
@@ -314,10 +315,10 @@ def gate_take(gate, r: dict) -> None:
 def select_week(g: pd.DataFrame, freeze: pd.Timestamp, issue: pd.Timestamp, gate=None
                 ) -> tuple[list[dict], dict]:
     """(picks in role order, excluded counts) for one league-week's candidates. Pure apart from the gate."""
-    excl: dict[str, int] = {}
+    counts: Counter = Counter()
 
     def bump(k):
-        excl[k] = excl.get(k, 0) + 1
+        counts[k] += 1
     seen = pd.to_datetime(g["first_seen_at"], utc=True, errors="coerce")
     ko = pd.to_datetime(g["kickoff_utc"], utc=True, errors="coerce")
     val = pd.to_numeric(g["value"], errors="coerce")
@@ -357,8 +358,8 @@ def select_week(g: pd.DataFrame, freeze: pd.Timestamp, issue: pd.Timestamp, gate
             break
     n_rest = len(pool) - len(picks) - len(blocked)
     if n_rest > 0:
-        excl[R_RANK] = n_rest
-    return picks, excl
+        counts[R_RANK] = n_rest
+    return picks, dict(counts)
 
 
 def freeze_due(cands: pd.DataFrame, weeks_done: set, now: pd.Timestamp, lead_min: float,

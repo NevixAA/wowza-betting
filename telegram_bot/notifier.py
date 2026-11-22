@@ -1712,7 +1712,7 @@ def notify_player_props() -> int:
     labelled "No stake: props not proven yet". Same switch as the team TOP-3 (TOP3_LEAGUE_ENABLED)."""
     from src import props_top3
     res = props_top3.notify()
-    return int(res.get("sent", 0) or 0)
+    return int(res["sent"]) if "sent" in res else 0     # flag off / no credentials: nothing was sent
 
 
 def notify_lineup_cashout() -> int:
