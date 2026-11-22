@@ -75,7 +75,7 @@ def _child(root: Path, pages: list[str]) -> dict:
     now = pd.Timestamp.now(tz="UTC")
     ctx = {"now_utc": now.isoformat(), "today_utc": pd.Timestamp.now(tz="UTC").strftime("%Y-%m-%d"),
            "cutoff": str(getattr(config, "PERFORMANCE_CUTOFF_DATE", "")),
-           "clean_start": str(getattr(config, "CLEAN_RECORD_START", "") or ""),
+           "clean_start": _clean_start(root, config),
            "paper_leagues": sorted(getattr(config, "PAPER_LEAGUES", []) or []),
            "thresholds": {k: getattr(config, k, None) for k in
                           ("SNIPER_THRESHOLD", "SNIPER_THRESHOLD_OVER", "SNIPER_THRESHOLD_UNDER")}}
@@ -140,18 +140,38 @@ def _total(xs) -> float:
     return float(sum(Decimal(str(x)) for x in xs))
 
 
+def _clean_start(root: Path, config) -> str:
+    """The FULL Clean Record start (config/trustworthy_performance.json clean_record_start_utc, e.g. the go-live
+    merge time 2026-11-19T06:41:48Z), read from the target tree. config.CLEAN_RECORD_START keeps only its date,
+    and a tip generated on the start day before the start time is not Clean Record (go-live rehearsal
+    2026-11-15). An older tree without the file falls back to config.CLEAN_RECORD_START; none = ""."""
+    try:
+        v = json.loads((root / "config" / "trustworthy_performance.json").read_text(encoding="utf-8"))
+        v = v.get("clean_record_start_utc")
+    except (OSError, ValueError):
+        v = None
+    return str(v or getattr(config, "CLEAN_RECORD_START", "") or "")
+
+
 def record_of(gen: pd.Series, dt: pd.Series, start: str) -> pd.Series:
-    """CLEAN / BEFORE / UNPLACED (plain pandas; the rule of dashboard_data/clean_record.assign). No start in
-    the target tree (an older tree) = every row BEFORE."""
+    """CLEAN / BEFORE / UNPLACED (plain pandas; the rule of dashboard_data/clean_record.assign): the generation
+    time against the FULL start, the match date against the start DAY; a generation date without a time on
+    the start day (player_ledger signal_date) cannot be placed. No start in the target tree (an older tree) =
+    every row BEFORE."""
     if not start:
         return pd.Series(BEFORE, index=gen.index, dtype=object)
-    s = pd.Timestamp(start[:10], tz="UTC")
+    s = pd.Timestamp(str(start))
+    s = s.tz_localize("UTC") if s.tzinfo is None else s.tz_convert("UTC")
+    s_day = s.normalize()
     g = pd.to_datetime(gen, errors="coerce", utc=True, format="mixed")
     d = pd.to_datetime(dt, errors="coerce").dt.tz_localize("UTC")
     out = pd.Series(UNPLACED, index=gen.index, dtype=object)
     out[g.notna() & (g < s)] = BEFORE
-    out[g.isna() & d.notna() & (d < s)] = BEFORE
-    out[g.notna() & (g >= s) & d.notna() & (d >= s)] = CLEAN
+    out[g.isna() & d.notna() & (d < s_day)] = BEFORE
+    out[g.notna() & (g >= s) & d.notna() & (d >= s_day)] = CLEAN
+    if s != s_day:
+        raw = gen.astype("string").str.strip()
+        out[(raw.str.len() <= 10).fillna(False).to_numpy() & (g.dt.normalize() == s_day).fillna(False).to_numpy()]             = UNPLACED
     return out
 
 
