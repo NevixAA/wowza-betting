@@ -81,6 +81,7 @@ class _FakeClient:
 def test_run_collects_only_new_finished_standard_fixtures(monkeypatch, tmp_path):
     out = tmp_path / "cards.parquet"
     monkeypatch.setattr(TC, "OUTPUT", out)
+    monkeypatch.setattr(TC, "RESULTS_OUTPUT", tmp_path / "results.parquet")
     by_date = {"2026-11-17": [_fx(11), _fx(12, lid=71), _fx(13, status="NS"), _fx(14, lid=179), _fx(15)],
                "2026-11-18": [_fx(16, lid=62)]}
     stats = {11: [_block(1, 2, None), _block(2, 1, 0)], 14: [_block(1, None, None), _block(2, 4, 1)],

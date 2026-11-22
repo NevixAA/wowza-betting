@@ -89,6 +89,9 @@ jobs:
       # (~16/day), capped at 80 calls a run and stopping at the shared account floor. Written to its
       # own file, output/af_team_cards_std.parquet (never af_history, which feeds Standard training).
       # OFF SWITCH: repo variable STD_TEAM_CARDS_ENABLED != 'true'.
+      # The same /fixtures?date answers also write output/af_results_recent.parquet (90-minute + HT scores
+      # of every finished fixture in a config league; no extra call) - the prediction ledger's Standard
+      # settlement source until football-data uploads the round (src/prediction_ledger_v9.TeamResults).
       - name: Collect Standard-league team cards
         if: vars.STD_TEAM_CARDS_ENABLED == 'true'
         env:
@@ -103,6 +106,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -f output/af_history.parquet 2>/dev/null || true
           git add -f output/af_team_cards_std.parquet 2>/dev/null || true
+          git add -f output/af_results_recent.parquet 2>/dev/null || true
           git diff --staged --quiet || \
             git commit -m "auto: af_history extend $(date -u '+%Y-%m-%d %H:%M UTC')"
           pushed=0
