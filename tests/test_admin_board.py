@@ -252,7 +252,10 @@ def test_page_renders_all_three_sections_for_admin(monkeypatch):
     assert "Registry: config/research_tracker.json" in txt
     assert TOKEN not in txt
     assert "paper" not in txt.lower()
-    assert len(at.dataframe) == 4
+    # bars, picks, league-weeks, tracker + the Clean Record evaluation tab (totals, historical figures, forward
+    # cells, and every cell of history / research / learning rows: P1 item 8, 2026-11-22)
+    assert "Post-repair evaluation (every record apart)" in txt
+    assert len(at.dataframe) == 4 + 6
 
 
 def test_page_odds_private_when_no_store_and_no_public_prices(monkeypatch, tmp_path):

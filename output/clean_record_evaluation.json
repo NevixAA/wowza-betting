@@ -1,0 +1,1664 @@
+{
+ "schema": "CRE-1",
+ "about": "Honest post-repair performance record (owner deep-repair brief 2026-11-22, P1 item 8).",
+ "clean_record_start_utc": "2026-11-19T06:41:48Z",
+ "performance_claims_enabled": false,
+ "claim_status": "EVALUATION ONLY - NOT A PERFORMANCE CLAIM (performance_claims_enabled is false)",
+ "as_of_last_settled_match": "2026-11-22",
+ "inputs": {
+  "bets_ledger.csv": "68271e5043f5ba47",
+  "side_bets_ledger.csv": "06b657289e93103c",
+  "ht_ledger.csv": "992175ec44dee45e",
+  "top3_league_ledger.csv": "c4fc852b9ec6fcff",
+  "props_top3_ledger.csv": "ec602fdb69162e05",
+  "player_ledger.csv": "e31f9565da405cf7",
+  "league_weekly_research.csv": "4d5faaf64a18dfc4",
+  "sharp_ledger.csv": "86f9096a24698c12",
+  "edge_engine_shadow.csv": "66164990d996c3bb",
+  "edge_engine_shadow_pre_reseed_2026-11-20.csv": "f4d0f80e4b225bf7",
+  "v91_shadow.csv": "38b282be6669cd22",
+  "stake_audit.csv": "38e21fd07b191ea0",
+  "stake_plan.csv": "738d4bce09faaf86"
+ },
+ "method": {
+  "cell": "league x market x model version; market carries the side where the market has two",
+  "settled": "WIN / LOSS / PUSH / HALF_WIN / HALF_LOSS with a recorded P/L; VOID is not a settled bet",
+  "matchdays": "distinct match dates among settled rows (the bootstrap block)",
+  "real_odds_coverage": "share of settled rows with a recorded entry price > 1 (P/L and ROI use those rows only)",
+  "roi": "flat 1u P/L / priced settled rows; CI = matchday block bootstrap, config/trustworthy_performance.json",
+  "staked": "src/staked.py (a recorded policy stake > 0); TOP-3 by the frozen stake_reason; both apart from not staked; ROI at the recorded stake where stake units were recorded",
+  "max_drawdown": "largest peak-to-trough fall of cumulative flat-1u P/L in match-date order",
+  "probability_scores": "log loss and Brier of the model probability of the tipped side, WIN/LOSS rows only; the de-vigged bookmaker probability (power method, output/edge_engine_shadow.csv and its pre-re-seed archive, the latest quote at or before the tip time; TOP-3 and research carry their own first-sight fair probability) scored on the same rows; d_* = model minus market (negative = model better)",
+  "calibration": "mean model probability vs hit rate (calibration_gap = hit rate - mean p); 10 bins once the cell has the minimum settled rows",
+  "clv": "certified close only (strictly pre-kickoff, within 30 minutes; the research panel's close_status OK). Team ledger rows carry no certified close: their stored CLV is shown apart as uncertified",
+  "forward_test": "config/track_registry.json entry of the league x market x side x model type and the preregistered hypotheses that cover it (registry/preregistered_hypotheses.json)",
+  "never": "no raw price, mean price or mean market probability is written; segments are never pooled"
+ },
+ "verdicts": {
+  "NOT_ENOUGH_DATA": "below the owner's minimums (config/trustworthy_performance.json): numbers shown, not readable yet",
+  "NEGATIVE_EDGE_CI_BELOW_ZERO": "enough data and the ROI CI is entirely below 0",
+  "NO_PROVEN_EDGE": "enough data, the ROI CI includes 0",
+  "POSITIVE_ROI_UNCONFIRMED": "ROI CI above 0 but no certified CLV evidence at its minimum, or not a forward record: a hypothesis, never a proven edge (backtests and history prove nothing)",
+  "EDGE_CANDIDATE_FOR_OWNER_REVIEW": "forward record only: ROI CI above 0 AND certified CLV CI above 0 at its minimum; goes to the owner for review. Not PROVEN, no stake or bar change follows from it"
+ },
+ "headline": {
+  "verdict": "NO PROVEN EDGE YET",
+  "forward_cells": 9,
+  "forward_cells_by_verdict": {
+   "NOT_ENOUGH_DATA": 9
+  },
+  "forward_settled": {
+   "top3_staked": 1,
+   "top3_unstaked": 0,
+   "bets_ledger.csv": 4,
+   "ht_ledger.csv": 1,
+   "side_bets_ledger.csv": 6,
+   "player_ledger.csv": 0
+  },
+  "minimums": {
+   "settled": 30,
+   "matchdays": 8,
+   "clv": 150
+  }
+ },
+ "registered_hypotheses": [
+  {
+   "id": "H-BTTS-01",
+   "status": "REGISTERED",
+   "title": "BTTS edge persists in Argentina Primera Division",
+   "n_min": 150,
+   "confirmation_starts": "2026-10-02"
+  },
+  {
+   "id": "H-BTTS-02",
+   "status": "REGISTERED",
+   "title": "BTTS edge exists OUTSIDE Argentina",
+   "n_min": 150,
+   "confirmation_starts": "2026-10-02"
+  },
+  {
+   "id": "H-MOVE-01",
+   "status": "REGISTERED",
+   "title": "Market movement carries information per model track, not globally",
+   "n_min": 200,
+   "confirmation_starts": "2026-10-02"
+  },
+  {
+   "id": "H-MOVE-02",
+   "status": "REGISTERED",
+   "title": "The production CONFIRMED upgrade rule is not justified",
+   "n_min": 200,
+   "confirmation_starts": "2026-10-02"
+  },
+  {
+   "id": "H-MODEL-01",
+   "status": "REGISTERED",
+   "title": "HGB beats the corrected v9 stack on Over 2.5, prospectively",
+   "n_min": 1000,
+   "confirmation_starts": "2026-10-02"
+  },
+  {
+   "id": "H-V11-01",
+   "status": "REGISTERED",
+   "title": "V11 market+Wowza beats market alone in a defined segment",
+   "n_min": 500,
+   "confirmation_starts": "2026-10-02"
+  },
+  {
+   "id": "H-BTTS-03",
+   "status": "REGISTERED",
+   "title": "Argentina BTTS beats the CLOSING price, not just the result",
+   "n_min": 150,
+   "confirmation_starts": "2026-10-05"
+  },
+  {
+   "id": "H-BTTS-04",
+   "status": "REGISTERED",
+   "title": "Argentina BTTS probabilities are better calibrated than the market's",
+   "n_min": 150,
+   "confirmation_starts": "2026-10-05"
+  }
+ ],
+ "segments": {
+  "pre_repair_historical": {
+   "label": "Before the repairs: settled live tips generated before the Clean Record start (unrepaired system, older models), corrections sidecars applied. Never part of a Clean Record figure.",
+   "tips": {
+    "bets_ledger.csv": {
+     "total": {
+      "rows": 1716,
+      "settled": 1716,
+      "matchdays": 145,
+      "first_match_date": "2026-04-26",
+      "last_match_date": "2026-11-21",
+      "real_odds_coverage": 1.0,
+      "priced_settled": 1716,
+      "pnl_units": -115.99,
+      "roi": -0.0676,
+      "roi_ci": [
+       -0.1209,
+       -0.0138
+      ],
+      "max_drawdown_units": 131.74,
+      "staked": {
+       "n": 122,
+       "pnl_units_flat": -11.68,
+       "roi_flat": -0.0957,
+       "roi_at_recorded_stake": -0.1297
+      },
+      "not_staked": {
+       "n": 1594,
+       "roi_flat": -0.0654
+      },
+      "n_prob": 205,
+      "log_loss_model": 0.6989,
+      "brier_model": 0.2528,
+      "mean_p_model": 0.4864,
+      "hit_rate": 0.439,
+      "calibration_gap": -0.0474,
+      "n_vs_market": 205,
+      "log_loss_model_same_rows": 0.6989,
+      "log_loss_market": 0.6717,
+      "brier_model_same_rows": 0.2528,
+      "brier_market": 0.2394,
+      "d_log_loss_model_minus_market": 0.0271,
+      "d_brier_model_minus_market": 0.0134,
+      "calibration": [
+       {
+        "bin": "0.3-0.4",
+        "n": 7,
+        "mean_p": 0.3907,
+        "observed": 0.4286
+       },
+       {
+        "bin": "0.4-0.5",
+        "n": 122,
+        "mean_p": 0.4551,
+        "observed": 0.4508
+       },
+       {
+        "bin": "0.5-0.6",
+        "n": 68,
+        "mean_p": 0.5364,
+        "observed": 0.4118
+       },
+       {
+        "bin": "0.6-0.7",
+        "n": 8,
+        "mean_p": 0.6229,
+        "observed": 0.5
+       }
+      ],
+      "clv": {
+       "eligible": 1716,
+       "certified_n": 0,
+       "coverage": 0.0,
+       "mean_pct": null,
+       "mean_ci": [
+        null,
+        null
+       ],
+       "status": "NOT_ENOUGH_DATA",
+       "stored_uncertified_n": 1450,
+       "stored_uncertified_mean_pct": 0.0793
+      },
+      "verdict": "NEGATIVE_EDGE_CI_BELOW_ZERO"
+     },
+     "n_cells": 82
+    },
+    "ht_ledger.csv": {
+     "total": {
+      "rows": 14,
+      "settled": 14,
+      "matchdays": 3,
+      "first_match_date": "2026-09-26",
+      "last_match_date": "2026-10-03",
+      "real_odds_coverage": 1.0,
+      "priced_settled": 14,
+      "pnl_units": 5.57,
+      "roi": 0.3979,
+      "roi_ci": [
+       -0.1133,
+       0.888
+      ],
+      "max_drawdown_units": 1.84,
+      "staked": {
+       "n": 0,
+       "pnl_units_flat": null,
+       "roi_flat": null,
+       "roi_at_recorded_stake": null
+      },
+      "not_staked": {
+       "n": 14,
+       "roi_flat": 0.3979
+      },
+      "n_prob": 14,
+      "log_loss_model": 0.6151,
+      "brier_model": 0.2103,
+      "mean_p_model": 0.7904,
+      "hit_rate": 0.7143,
+      "calibration_gap": -0.0761,
+      "n_vs_market": 0,
+      "log_loss_model_same_rows": null,
+      "log_loss_market": null,
+      "brier_model_same_rows": null,
+      "brier_market": null,
+      "d_log_loss_model_minus_market": null,
+      "d_brier_model_minus_market": null,
+      "calibration": [],
+      "clv": {
+       "eligible": 14,
+       "certified_n": 0,
+       "coverage": 0.0,
+       "mean_pct": null,
+       "mean_ci": [
+        null,
+        null
+       ],
+       "status": "NOT_ENOUGH_DATA",
+       "stored_uncertified_n": 14,
+       "stored_uncertified_mean_pct": -0.6264
+      },
+      "verdict": "NOT_ENOUGH_DATA"
+     },
+     "n_cells": 5
+    },
+    "side_bets_ledger.csv": {
+     "total": {
+      "rows": 736,
+      "settled": 736,
+      "matchdays": 84,
+      "first_match_date": "2026-08-09",
+      "last_match_date": "2026-11-21",
+      "real_odds_coverage": 1.0,
+      "priced_settled": 736,
+      "pnl_units": 34.91,
+      "roi": 0.0474,
+      "roi_ci": [
+       -0.0268,
+       0.1272
+      ],
+      "max_drawdown_units": 22.185,
+      "staked": {
+       "n": 21,
+       "pnl_units_flat": -5.475,
+       "roi_flat": -0.2607,
+       "roi_at_recorded_stake": -0.2541
+      },
+      "not_staked": {
+       "n": 715,
+       "roi_flat": 0.0565
+      },
+      "n_prob": 736,
+      "log_loss_model": 0.6662,
+      "brier_model": 0.2369,
+      "mean_p_model": 0.5727,
+      "hit_rate": 0.5639,
+      "calibration_gap": -0.0088,
+      "n_vs_market": 86,
+      "log_loss_model_same_rows": 0.6924,
+      "log_loss_market": 0.6893,
+      "brier_model_same_rows": 0.2491,
+      "brier_market": 0.2481,
+      "d_log_loss_model_minus_market": 0.0031,
+      "d_brier_model_minus_market": 0.001,
+      "calibration": [
+       {
+        "bin": "0.2-0.3",
+        "n": 20,
+        "mean_p": 0.2533,
+        "observed": 0.15
+       },
+       {
+        "bin": "0.3-0.4",
+        "n": 6,
+        "mean_p": 0.3472,
+        "observed": 0.5
+       },
+       {
+        "bin": "0.4-0.5",
+        "n": 72,
+        "mean_p": 0.4815,
+        "observed": 0.4722
+       },
+       {
+        "bin": "0.5-0.6",
+        "n": 432,
+        "mean_p": 0.5456,
+        "observed": 0.5509
+       },
+       {
+        "bin": "0.6-0.7",
+        "n": 101,
+        "mean_p": 0.6582,
+        "observed": 0.6535
+       },
+       {
+        "bin": "0.7-0.8",
+        "n": 102,
+        "mean_p": 0.7356,
+        "observed": 0.6667
+       },
+       {
+        "bin": "0.8-0.9",
+        "n": 3,
+        "mean_p": 0.812,
+        "observed": 1.0
+       }
+      ],
+      "clv": {
+       "eligible": 736,
+       "certified_n": 0,
+       "coverage": 0.0,
+       "mean_pct": null,
+       "mean_ci": [
+        null,
+        null
+       ],
+       "status": "NOT_ENOUGH_DATA",
+       "stored_uncertified_n": 661,
+       "stored_uncertified_mean_pct": 0.1083
+      },
+      "verdict": "NO_PROVEN_EDGE"
+     },
+     "n_cells": 69
+    }
+   },
+   "prediction_ledger_learning": {
+    "total": {
+     "rows": 32504,
+     "settled": 32504,
+     "matchdays": 5,
+     "first_match_date": "2026-11-18",
+     "last_match_date": "2026-11-22",
+     "n_prob": 32504,
+     "log_loss_model": 0.2196,
+     "brier_model": 0.0636,
+     "mean_p_model": 0.0834,
+     "hit_rate": 0.0848,
+     "calibration_gap": 0.0014,
+     "n_vs_market": 530,
+     "log_loss_model_same_rows": 0.6524,
+     "log_loss_market": 0.6557,
+     "brier_model_same_rows": 0.2302,
+     "brier_market": 0.2325,
+     "d_log_loss_model_minus_market": -0.0033,
+     "d_brier_model_minus_market": -0.0023,
+     "calibration": [
+      {
+       "bin": "0.0-0.1",
+       "n": 23900,
+       "mean_p": 0.0292,
+       "observed": 0.0295
+      },
+      {
+       "bin": "0.1-0.2",
+       "n": 5453,
+       "mean_p": 0.1348,
+       "observed": 0.1557
+      },
+      {
+       "bin": "0.2-0.3",
+       "n": 1152,
+       "mean_p": 0.2428,
+       "observed": 0.2543
+      },
+      {
+       "bin": "0.3-0.4",
+       "n": 584,
+       "mean_p": 0.3451,
+       "observed": 0.3116
+      },
+      {
+       "bin": "0.4-0.5",
+       "n": 531,
+       "mean_p": 0.4517,
+       "observed": 0.4313
+      },
+      {
+       "bin": "0.5-0.6",
+       "n": 423,
+       "mean_p": 0.5442,
+       "observed": 0.4775
+      },
+      {
+       "bin": "0.6-0.7",
+       "n": 222,
+       "mean_p": 0.6471,
+       "observed": 0.6081
+      },
+      {
+       "bin": "0.7-0.8",
+       "n": 190,
+       "mean_p": 0.7486,
+       "observed": 0.6737
+      },
+      {
+       "bin": "0.8-0.9",
+       "n": 46,
+       "mean_p": 0.8276,
+       "observed": 0.6957
+      },
+      {
+       "bin": "0.9-1.0",
+       "n": 3,
+       "mean_p": 0.9141,
+       "observed": 0.0
+      }
+     ],
+     "clv": {
+      "eligible": 0,
+      "certified_n": 0,
+      "coverage": 0.0,
+      "mean_pct": null,
+      "mean_ci": [
+       null,
+       null
+      ],
+      "status": "NOT_ENOUGH_DATA",
+      "stored_uncertified_n": 0,
+      "stored_uncertified_mean_pct": null
+     },
+     "verdict": "NOT_ENOUGH_DATA"
+    },
+    "n_cells": 304
+   },
+   "owner_historical_figures": [
+    {
+     "figure": "Std O/U 2.5",
+     "owner_n": 164,
+     "owner_roi_pct": -16.0,
+     "definition": "live tips generated before the Clean Record start, signal_tier SNIPER or MARKSMAN (the retired tier basis of 'staked' before 2026-11-04), match_date on or after config.PERFORMANCE_CUTOFF_DATE, settled WIN/LOSS/PUSH/HALF (VOID out), flat 1u",
+     "raw_ledger": {
+      "n": 167,
+      "pnl_units": -23.34,
+      "roi_pct": -13.98,
+      "roi_ci_pct": [
+       -31.1,
+       1.1
+      ]
+     },
+     "corrections_applied": {
+      "n": 165,
+      "pnl_units": -25.16,
+      "roi_pct": -15.25,
+      "roi_ci_pct": [
+       -31.6,
+       0.7
+      ]
+     },
+     "matches_owner_figure_now": false
+    },
+    {
+     "figure": "NF O/U 2.5",
+     "owner_n": 501,
+     "owner_roi_pct": -8.8,
+     "definition": "live tips generated before the Clean Record start, signal_tier SNIPER or MARKSMAN (the retired tier basis of 'staked' before 2026-11-04), match_date on or after config.PERFORMANCE_CUTOFF_DATE, settled WIN/LOSS/PUSH/HALF (VOID out), flat 1u",
+     "raw_ledger": {
+      "n": 503,
+      "pnl_units": -43.64,
+      "roi_pct": -8.68,
+      "roi_ci_pct": [
+       -18.8,
+       0.7
+      ]
+     },
+     "corrections_applied": {
+      "n": 502,
+      "pnl_units": -44.62,
+      "roi_pct": -8.89,
+      "roi_ci_pct": [
+       -19.1,
+       1.0
+      ]
+     },
+     "matches_owner_figure_now": false
+    },
+    {
+     "figure": "NF BTTS",
+     "owner_n": 155,
+     "owner_roi_pct": 16.1,
+     "definition": "live tips generated before the Clean Record start, signal_tier SNIPER or MARKSMAN (the retired tier basis of 'staked' before 2026-11-04), match_date on or after config.PERFORMANCE_CUTOFF_DATE, settled WIN/LOSS/PUSH/HALF (VOID out), flat 1u",
+     "raw_ledger": {
+      "n": 155,
+      "pnl_units": 24.87,
+      "roi_pct": 16.05,
+      "roi_ci_pct": [
+       -2.3,
+       33.5
+      ]
+     },
+     "corrections_applied": {
+      "n": 155,
+      "pnl_units": 24.87,
+      "roi_pct": 16.05,
+      "roi_ci_pct": [
+       -2.2,
+       32.7
+      ]
+     },
+     "matches_owner_figure_now": true
+    },
+    {
+     "figure": "NF O1.5",
+     "owner_n": 115,
+     "owner_roi_pct": 8.7,
+     "definition": "live tips generated before the Clean Record start, signal_tier SNIPER or MARKSMAN (the retired tier basis of 'staked' before 2026-11-04), match_date on or after config.PERFORMANCE_CUTOFF_DATE, settled WIN/LOSS/PUSH/HALF (VOID out), flat 1u",
+     "raw_ledger": {
+      "n": 115,
+      "pnl_units": 9.99,
+      "roi_pct": 8.69,
+      "roi_ci_pct": [
+       -4.6,
+       21.3
+      ]
+     },
+     "corrections_applied": {
+      "n": 115,
+      "pnl_units": 9.99,
+      "roi_pct": 8.69,
+      "roi_ci_pct": [
+       -4.1,
+       21.3
+      ]
+     },
+     "matches_owner_figure_now": true
+    }
+   ],
+   "corrections_applied": [
+    {
+     "sidecar": "team_ledgers_extra_time_restated.csv",
+     "applied_to": "bets_ledger.csv",
+     "present": false,
+     "effect": "result/pnl restated on 90 minutes",
+     "rows_changed": 0
+    },
+    {
+     "sidecar": "clv_first_half_contaminated.csv",
+     "applied_to": "bets_ledger.csv",
+     "present": true,
+     "effect": "first-half close (or an impossible close <= 1.0): CLV blanked (P/L kept)",
+     "rows_changed": 171
+    },
+    {
+     "sidecar": "bets_ledger_post_kickoff.csv",
+     "applied_to": "bets_ledger.csv",
+     "present": true,
+     "effect": "post-kickoff tips excluded",
+     "rows_changed": 6
+    },
+    {
+     "sidecar": "bets_ledger_multi_tip_fixtures.csv",
+     "applied_to": "bets_ledger.csv",
+     "present": true,
+     "effect": "opposite-tip pairs: the later tip excluded (first tip only); other multi-tip rows flagged, never regraded",
+     "rows_changed": 43
+    },
+    {
+     "sidecar": "team_ledgers_extra_time_restated.csv",
+     "applied_to": "side_bets_ledger.csv",
+     "present": false,
+     "effect": "result/pnl restated on 90 minutes",
+     "rows_changed": 0
+    },
+    {
+     "sidecar": "side_clv_first_half_contaminated.csv",
+     "applied_to": "side_bets_ledger.csv",
+     "present": true,
+     "effect": "first-half close (or an impossible close <= 1.0): CLV blanked (P/L kept)",
+     "rows_changed": 6
+    },
+    {
+     "sidecar": "team_ledgers_extra_time_restated.csv",
+     "applied_to": "ht_ledger.csv",
+     "present": false,
+     "effect": "result/pnl restated on 90 minutes",
+     "rows_changed": 0
+    },
+    {
+     "sidecar": "ht_ledger_unpriced.csv",
+     "applied_to": "ht_ledger.csv",
+     "present": true,
+     "effect": "unpriced HT rows excluded from P/L",
+     "rows_changed": 66
+    },
+    {
+     "sidecar": "player_ledger_duplicates.csv",
+     "applied_to": "player_ledger.csv",
+     "present": true,
+     "effect": "duplicate player tips excluded",
+     "rows_changed": 1695
+    },
+    {
+     "sidecar": "props_sentinel_prob.csv",
+     "applied_to": "player_ledger.csv",
+     "present": true,
+     "effect": "excluded: model probability was a cap value",
+     "rows_changed": 376
+    },
+    {
+     "sidecar": "props_ghost_tips.csv",
+     "applied_to": "player_ledger.csv",
+     "present": true,
+     "effect": "excluded: tip not tied to the player's real fixture",
+     "rows_changed": 170
+    },
+    {
+     "sidecar": "sharp_ledger_restated.csv",
+     "applied_to": "sharp_ledger.csv",
+     "present": true,
+     "effect": "P/L restated at the signal-time price",
+     "rows_changed": 805
+    },
+    {
+     "sidecar": "bets_ledger_removed_backtest_rows_2026-11-01.csv",
+     "applied_to": null,
+     "present": true,
+     "effect": "listed, not applied: rows already removed from bets_ledger; listed for audit",
+     "rows_changed": 0
+    },
+    {
+     "sidecar": "stake_audit_reconciled.csv",
+     "applied_to": null,
+     "present": true,
+     "effect": "listed, not applied: Staked is decided by src/staked.py on stake_audit / stake_plan records",
+     "rows_changed": 0
+    }
+   ]
+  },
+  "post_repair_forward": {
+   "label": "Clean Record: generated AND played on or after the start, on the repaired data and clean models.",
+   "top3_staked": {
+    "total": {
+     "rows": 3,
+     "settled": 1,
+     "matchdays": 1,
+     "first_match_date": "2026-11-21",
+     "last_match_date": "2026-11-21",
+     "real_odds_coverage": 1.0,
+     "priced_settled": 1,
+     "pnl_units": 0.48,
+     "roi": 0.48,
+     "roi_ci": [
+      null,
+      null
+     ],
+     "max_drawdown_units": 0.0,
+     "staked": {
+      "n": 1,
+      "pnl_units_flat": 0.48,
+      "roi_flat": 0.48,
+      "roi_at_recorded_stake": null
+     },
+     "not_staked": {
+      "n": 0,
+      "roi_flat": null
+     },
+     "n_prob": 1,
+     "log_loss_model": 0.3105,
+     "brier_model": 0.0713,
+     "mean_p_model": 0.7331,
+     "hit_rate": 1.0,
+     "calibration_gap": 0.2669,
+     "n_vs_market": 1,
+     "log_loss_model_same_rows": 0.3105,
+     "log_loss_market": 0.4292,
+     "brier_model_same_rows": 0.0713,
+     "brier_market": 0.1218,
+     "d_log_loss_model_minus_market": -0.1186,
+     "d_brier_model_minus_market": -0.0505,
+     "calibration": [],
+     "clv": {
+      "eligible": 1,
+      "certified_n": 0,
+      "coverage": 0.0,
+      "mean_pct": null,
+      "mean_ci": [
+       null,
+       null
+      ],
+      "status": "NOT_ENOUGH_DATA",
+      "stored_uncertified_n": 0,
+      "stored_uncertified_mean_pct": null
+     },
+     "verdict": "NOT_ENOUGH_DATA"
+    },
+    "n_cells": 1
+   },
+   "top3_unstaked": {
+    "total": null,
+    "n_cells": 0
+   },
+   "tips": {
+    "bets_ledger.csv": {
+     "total": {
+      "rows": 4,
+      "settled": 4,
+      "matchdays": 1,
+      "first_match_date": "2026-11-21",
+      "last_match_date": "2026-11-21",
+      "real_odds_coverage": 1.0,
+      "priced_settled": 4,
+      "pnl_units": 0.05,
+      "roi": 0.0125,
+      "roi_ci": [
+       null,
+       null
+      ],
+      "max_drawdown_units": 2.0,
+      "staked": {
+       "n": 0,
+       "pnl_units_flat": null,
+       "roi_flat": null,
+       "roi_at_recorded_stake": null
+      },
+      "not_staked": {
+       "n": 4,
+       "roi_flat": 0.0125
+      },
+      "n_prob": 4,
+      "log_loss_model": 0.6943,
+      "brier_model": 0.2506,
+      "mean_p_model": 0.5242,
+      "hit_rate": 0.5,
+      "calibration_gap": -0.0242,
+      "n_vs_market": 4,
+      "log_loss_model_same_rows": 0.6943,
+      "log_loss_market": 0.6699,
+      "brier_model_same_rows": 0.2506,
+      "brier_market": 0.2385,
+      "d_log_loss_model_minus_market": 0.0243,
+      "d_brier_model_minus_market": 0.0121,
+      "calibration": [],
+      "clv": {
+       "eligible": 4,
+       "certified_n": 0,
+       "coverage": 0.0,
+       "mean_pct": null,
+       "mean_ci": [
+        null,
+        null
+       ],
+       "status": "NOT_ENOUGH_DATA",
+       "stored_uncertified_n": 4,
+       "stored_uncertified_mean_pct": -0.595
+      },
+      "verdict": "NOT_ENOUGH_DATA"
+     },
+     "n_cells": 3
+    },
+    "ht_ledger.csv": {
+     "total": {
+      "rows": 1,
+      "settled": 1,
+      "matchdays": 1,
+      "first_match_date": "2026-11-21",
+      "last_match_date": "2026-11-21",
+      "real_odds_coverage": 1.0,
+      "priced_settled": 1,
+      "pnl_units": 0.25,
+      "roi": 0.25,
+      "roi_ci": [
+       null,
+       null
+      ],
+      "max_drawdown_units": 0.0,
+      "staked": {
+       "n": 0,
+       "pnl_units_flat": null,
+       "roi_flat": null,
+       "roi_at_recorded_stake": null
+      },
+      "not_staked": {
+       "n": 1,
+       "roi_flat": 0.25
+      },
+      "n_prob": 1,
+      "log_loss_model": 0.2858,
+      "brier_model": 0.0618,
+      "mean_p_model": 0.7514,
+      "hit_rate": 1.0,
+      "calibration_gap": 0.2486,
+      "n_vs_market": 0,
+      "log_loss_model_same_rows": null,
+      "log_loss_market": null,
+      "brier_model_same_rows": null,
+      "brier_market": null,
+      "d_log_loss_model_minus_market": null,
+      "d_brier_model_minus_market": null,
+      "calibration": [],
+      "clv": {
+       "eligible": 1,
+       "certified_n": 0,
+       "coverage": 0.0,
+       "mean_pct": null,
+       "mean_ci": [
+        null,
+        null
+       ],
+       "status": "NOT_ENOUGH_DATA",
+       "stored_uncertified_n": 1,
+       "stored_uncertified_mean_pct": 0.0
+      },
+      "verdict": "NOT_ENOUGH_DATA"
+     },
+     "n_cells": 1
+    },
+    "side_bets_ledger.csv": {
+     "total": {
+      "rows": 6,
+      "settled": 6,
+      "matchdays": 2,
+      "first_match_date": "2026-11-20",
+      "last_match_date": "2026-11-21",
+      "real_odds_coverage": 1.0,
+      "priced_settled": 6,
+      "pnl_units": -2.76,
+      "roi": -0.46,
+      "roi_ci": [
+       -0.6175,
+       -0.145
+      ],
+      "max_drawdown_units": 3.29,
+      "staked": {
+       "n": 1,
+       "pnl_units_flat": 0.53,
+       "roi_flat": 0.53,
+       "roi_at_recorded_stake": 0.53
+      },
+      "not_staked": {
+       "n": 5,
+       "roi_flat": -0.658
+      },
+      "n_prob": 6,
+      "log_loss_model": 0.6066,
+      "brier_model": 0.2092,
+      "mean_p_model": 0.5183,
+      "hit_rate": 0.3333,
+      "calibration_gap": -0.1849,
+      "n_vs_market": 6,
+      "log_loss_model_same_rows": 0.6066,
+      "log_loss_market": 0.5941,
+      "brier_model_same_rows": 0.2092,
+      "brier_market": 0.2016,
+      "d_log_loss_model_minus_market": 0.0124,
+      "d_brier_model_minus_market": 0.0076,
+      "calibration": [],
+      "clv": {
+       "eligible": 6,
+       "certified_n": 0,
+       "coverage": 0.0,
+       "mean_pct": null,
+       "mean_ci": [
+        null,
+        null
+       ],
+       "status": "NOT_ENOUGH_DATA",
+       "stored_uncertified_n": 6,
+       "stored_uncertified_mean_pct": -0.0317
+      },
+      "verdict": "NOT_ENOUGH_DATA"
+     },
+     "n_cells": 4
+    }
+   },
+   "props_tips": {
+    "player_ledger.csv": {
+     "total": {
+      "rows": 6,
+      "settled": 0,
+      "matchdays": 0,
+      "first_match_date": null,
+      "last_match_date": null,
+      "real_odds_coverage": null,
+      "priced_settled": 0,
+      "pnl_units": null,
+      "roi": null,
+      "roi_ci": [
+       null,
+       null
+      ],
+      "max_drawdown_units": null,
+      "staked": {
+       "n": 0,
+       "pnl_units_flat": null,
+       "roi_flat": null,
+       "roi_at_recorded_stake": null
+      },
+      "not_staked": {
+       "n": 0,
+       "roi_flat": null
+      },
+      "n_prob": 0,
+      "log_loss_model": null,
+      "brier_model": null,
+      "mean_p_model": null,
+      "hit_rate": null,
+      "calibration_gap": null,
+      "n_vs_market": 0,
+      "log_loss_model_same_rows": null,
+      "log_loss_market": null,
+      "brier_model_same_rows": null,
+      "brier_market": null,
+      "d_log_loss_model_minus_market": null,
+      "d_brier_model_minus_market": null,
+      "calibration": [],
+      "clv": {
+       "eligible": 0,
+       "certified_n": 0,
+       "coverage": null,
+       "mean_pct": null,
+       "mean_ci": [
+        null,
+        null
+       ],
+       "status": "NOT_ENOUGH_DATA",
+       "stored_uncertified_n": 0,
+       "stored_uncertified_mean_pct": null
+      },
+      "verdict": "NOT_ENOUGH_DATA"
+     },
+     "n_cells": 0
+    }
+   },
+   "prediction_ledger_learning": {
+    "first_sight": {
+     "total": {
+      "rows": 52005,
+      "settled": 52005,
+      "matchdays": 4,
+      "first_match_date": "2026-11-19",
+      "last_match_date": "2026-11-22",
+      "n_prob": 51971,
+      "log_loss_model": 0.1621,
+      "brier_model": 0.0472,
+      "mean_p_model": 0.072,
+      "hit_rate": 0.0706,
+      "calibration_gap": -0.0014,
+      "n_vs_market": 884,
+      "log_loss_model_same_rows": 0.6545,
+      "log_loss_market": 0.6525,
+      "brier_model_same_rows": 0.2312,
+      "brier_market": 0.2311,
+      "d_log_loss_model_minus_market": 0.002,
+      "d_brier_model_minus_market": 0.0,
+      "calibration": [
+       {
+        "bin": "0.0-0.1",
+        "n": 41546,
+        "mean_p": 0.0184,
+        "observed": 0.0167
+       },
+       {
+        "bin": "0.1-0.2",
+        "n": 5329,
+        "mean_p": 0.1368,
+        "observed": 0.1499
+       },
+       {
+        "bin": "0.2-0.3",
+        "n": 1469,
+        "mean_p": 0.243,
+        "observed": 0.2546
+       },
+       {
+        "bin": "0.3-0.4",
+        "n": 891,
+        "mean_p": 0.3495,
+        "observed": 0.3378
+       },
+       {
+        "bin": "0.4-0.5",
+        "n": 890,
+        "mean_p": 0.4474,
+        "observed": 0.418
+       },
+       {
+        "bin": "0.5-0.6",
+        "n": 802,
+        "mean_p": 0.551,
+        "observed": 0.5337
+       },
+       {
+        "bin": "0.6-0.7",
+        "n": 519,
+        "mean_p": 0.6472,
+        "observed": 0.6127
+       },
+       {
+        "bin": "0.7-0.8",
+        "n": 380,
+        "mean_p": 0.7488,
+        "observed": 0.7316
+       },
+       {
+        "bin": "0.8-0.9",
+        "n": 125,
+        "mean_p": 0.824,
+        "observed": 0.768
+       },
+       {
+        "bin": "0.9-1.0",
+        "n": 20,
+        "mean_p": 0.9309,
+        "observed": 0.65
+       }
+      ],
+      "clv": {
+       "eligible": 0,
+       "certified_n": 0,
+       "coverage": 0.0,
+       "mean_pct": null,
+       "mean_ci": [
+        null,
+        null
+       ],
+       "status": "NOT_ENOUGH_DATA",
+       "stored_uncertified_n": 0,
+       "stored_uncertified_mean_pct": null
+      },
+      "verdict": "NOT_ENOUGH_DATA"
+     },
+     "n_cells": 828
+    },
+    "final": {
+     "total": {
+      "rows": 25782,
+      "settled": 25782,
+      "matchdays": 4,
+      "first_match_date": "2026-11-19",
+      "last_match_date": "2026-11-22",
+      "n_prob": 25782,
+      "log_loss_model": 0.1511,
+      "brier_model": 0.0437,
+      "mean_p_model": 0.0653,
+      "hit_rate": 0.0639,
+      "calibration_gap": -0.0014,
+      "n_vs_market": 212,
+      "log_loss_model_same_rows": 0.6341,
+      "log_loss_market": 0.5873,
+      "brier_model_same_rows": 0.2208,
+      "brier_market": 0.2014,
+      "d_log_loss_model_minus_market": 0.0469,
+      "d_brier_model_minus_market": 0.0195,
+      "calibration": [
+       {
+        "bin": "0.0-0.1",
+        "n": 20935,
+        "mean_p": 0.0184,
+        "observed": 0.0155
+       },
+       {
+        "bin": "0.1-0.2",
+        "n": 2685,
+        "mean_p": 0.136,
+        "observed": 0.1534
+       },
+       {
+        "bin": "0.2-0.3",
+        "n": 664,
+        "mean_p": 0.2419,
+        "observed": 0.262
+       },
+       {
+        "bin": "0.3-0.4",
+        "n": 404,
+        "mean_p": 0.3503,
+        "observed": 0.3342
+       },
+       {
+        "bin": "0.4-0.5",
+        "n": 359,
+        "mean_p": 0.4453,
+        "observed": 0.4095
+       },
+       {
+        "bin": "0.5-0.6",
+        "n": 315,
+        "mean_p": 0.5497,
+        "observed": 0.5333
+       },
+       {
+        "bin": "0.6-0.7",
+        "n": 227,
+        "mean_p": 0.6444,
+        "observed": 0.6079
+       },
+       {
+        "bin": "0.7-0.8",
+        "n": 127,
+        "mean_p": 0.7448,
+        "observed": 0.7244
+       },
+       {
+        "bin": "0.8-0.9",
+        "n": 53,
+        "mean_p": 0.8302,
+        "observed": 0.8302
+       },
+       {
+        "bin": "0.9-1.0",
+        "n": 13,
+        "mean_p": 0.9286,
+        "observed": 0.9231
+       }
+      ],
+      "clv": {
+       "eligible": 0,
+       "certified_n": 0,
+       "coverage": 0.0,
+       "mean_pct": null,
+       "mean_ci": [
+        null,
+        null
+       ],
+       "status": "NOT_ENOUGH_DATA",
+       "stored_uncertified_n": 0,
+       "stored_uncertified_mean_pct": null
+      },
+      "verdict": "NOT_ENOUGH_DATA"
+     },
+     "n_cells": 631
+    },
+    "note": "learning rows, not bets: every fixture x market the models scored (owner 'predict every match'). No P/L. The de-vigged market comparison exists for team markets with an edge-shadow quote."
+   },
+   "unplaced_rows": {
+    "top3": 0,
+    "props": 15,
+    "prediction_ledger": 0
+   }
+  },
+  "research_only": {
+   "label": "Research only: never staked, never part of the Clean Record.",
+   "league_weekly_research.csv": {
+    "total": {
+     "rows": 765,
+     "settled": 765,
+     "matchdays": 24,
+     "first_match_date": "2026-10-25",
+     "last_match_date": "2026-11-22",
+     "real_odds_coverage": 1.0,
+     "priced_settled": 765,
+     "pnl_units": -73.78,
+     "roi": -0.0964,
+     "roi_ci": [
+      -0.1834,
+      -0.017
+     ],
+     "max_drawdown_units": 79.16,
+     "staked": {
+      "n": 0,
+      "pnl_units_flat": null,
+      "roi_flat": null,
+      "roi_at_recorded_stake": null
+     },
+     "not_staked": {
+      "n": 765,
+      "roi_flat": -0.0964
+     },
+     "n_prob": 765,
+     "log_loss_model": 0.6744,
+     "brier_model": 0.2406,
+     "mean_p_model": 0.5257,
+     "hit_rate": 0.5425,
+     "calibration_gap": 0.0168,
+     "n_vs_market": 765,
+     "log_loss_model_same_rows": 0.6744,
+     "log_loss_market": 0.6653,
+     "brier_model_same_rows": 0.2406,
+     "brier_market": 0.2364,
+     "d_log_loss_model_minus_market": 0.0091,
+     "d_brier_model_minus_market": 0.0042,
+     "calibration": [
+      {
+       "bin": "0.2-0.3",
+       "n": 31,
+       "mean_p": 0.2747,
+       "observed": 0.3871
+      },
+      {
+       "bin": "0.3-0.4",
+       "n": 89,
+       "mean_p": 0.3418,
+       "observed": 0.3146
+      },
+      {
+       "bin": "0.4-0.5",
+       "n": 110,
+       "mean_p": 0.4663,
+       "observed": 0.5273
+      },
+      {
+       "bin": "0.5-0.6",
+       "n": 393,
+       "mean_p": 0.5494,
+       "observed": 0.5751
+      },
+      {
+       "bin": "0.6-0.7",
+       "n": 96,
+       "mean_p": 0.6262,
+       "observed": 0.6042
+      },
+      {
+       "bin": "0.7-0.8",
+       "n": 31,
+       "mean_p": 0.7631,
+       "observed": 0.7097
+      },
+      {
+       "bin": "0.8-0.9",
+       "n": 15,
+       "mean_p": 0.8144,
+       "observed": 0.7333
+      }
+     ],
+     "clv": {
+      "eligible": 765,
+      "certified_n": 544,
+      "coverage": 0.7111,
+      "mean_pct": -1.392,
+      "mean_ci": [
+       -1.8574,
+       -0.9464
+      ],
+      "status": "OK",
+      "stored_uncertified_n": 0,
+      "stored_uncertified_mean_pct": null
+     },
+     "verdict": "NEGATIVE_EDGE_CI_BELOW_ZERO"
+    },
+    "n_cells": 96
+   },
+   "sharp_ledger.csv": {
+    "total": {
+     "rows": 2010,
+     "settled": 2010,
+     "matchdays": 122,
+     "first_match_date": "2026-06-16",
+     "last_match_date": "2026-11-01",
+     "real_odds_coverage": 1.0,
+     "priced_settled": 2010,
+     "pnl_units": -159.145,
+     "roi": -0.0792,
+     "roi_ci": [
+      -0.1311,
+      -0.027
+     ],
+     "max_drawdown_units": 165.595,
+     "staked": {
+      "n": 0,
+      "pnl_units_flat": null,
+      "roi_flat": null,
+      "roi_at_recorded_stake": null
+     },
+     "not_staked": {
+      "n": 2010,
+      "roi_flat": -0.0792
+     },
+     "n_prob": 0,
+     "log_loss_model": null,
+     "brier_model": null,
+     "mean_p_model": null,
+     "hit_rate": null,
+     "calibration_gap": null,
+     "n_vs_market": 0,
+     "log_loss_model_same_rows": null,
+     "log_loss_market": null,
+     "brier_model_same_rows": null,
+     "brier_market": null,
+     "d_log_loss_model_minus_market": null,
+     "d_brier_model_minus_market": null,
+     "calibration": [],
+     "clv": {
+      "eligible": 0,
+      "certified_n": 0,
+      "coverage": 0.0,
+      "mean_pct": null,
+      "mean_ci": [
+       null,
+       null
+      ],
+      "status": "NOT_ENOUGH_DATA",
+      "stored_uncertified_n": 0,
+      "stored_uncertified_mean_pct": null
+     },
+     "verdict": "NEGATIVE_EDGE_CI_BELOW_ZERO"
+    },
+    "n_cells": 100
+   }
+  },
+  "shadow_experiments": {
+   "label": "Shadow experiments: logged beside production, never sent or staked.",
+   "inventory": [
+    {
+     "file": "edge_engine_shadow.csv",
+     "what": "market_edge_v2 selection shadow",
+     "present": true,
+     "rows": 3044,
+     "first": "2026-10-25T09:25Z",
+     "last": "2026-11-22T19:24Z",
+     "settled_rows": null
+    },
+    {
+     "file": "side_edge_devig_shadow.csv",
+     "what": "side-market de-vig edge shadow",
+     "present": true,
+     "rows": 1074,
+     "first": "2026-11-01T09:43Z",
+     "last": "2026-11-22T18:25Z",
+     "settled_rows": null
+    },
+    {
+     "file": "quality_tier_shadow.csv",
+     "what": "quality tier shadow",
+     "present": true,
+     "rows": 467,
+     "first": "2026-10-26T10:52Z",
+     "last": "2026-11-22T19:24Z",
+     "settled_rows": null
+    },
+    {
+     "file": "drift_shadow.csv",
+     "what": "drift tier shadow",
+     "present": true,
+     "rows": 297,
+     "first": "2026-10-26T09:50Z",
+     "last": "2026-11-22T19:24Z",
+     "settled_rows": null
+    },
+    {
+     "file": "v91_shadow.csv",
+     "what": "v9.1 / Pro HGB vs v9 O/U 2.5 shadow",
+     "present": true,
+     "rows": 1374,
+     "first": "2026-10-04T13:11Z",
+     "last": "2026-11-22T19:24Z",
+     "settled_rows": 1179
+    },
+    {
+     "file": "props_r2_shadow.csv",
+     "what": "props R2 shadow",
+     "present": true,
+     "rows": 358784,
+     "first": "2026-11-01T17:29Z",
+     "last": "2026-11-22T13:05Z",
+     "settled_rows": null
+    },
+    {
+     "file": "edge_engine_shadow_pre_reseed_2026-11-20.csv",
+     "what": "edge shadow, archived pre re-seed",
+     "present": true,
+     "rows": 2628,
+     "first": "2026-10-25T09:25Z",
+     "last": "2026-11-20T07:03Z",
+     "settled_rows": null
+    }
+   ],
+   "v91_shadow_scored": {
+    "target": "O/U 2.5 OVER (outcome)",
+    "settled": 1179,
+    "matchdays": 46,
+    "scores": {
+     "p_v9": {
+      "n_prob": 1179,
+      "log_loss_model": 0.6917,
+      "brier_model": 0.2493,
+      "n_vs_market": 1179,
+      "log_loss_market": 0.6781,
+      "brier_market": 0.2426,
+      "d_log_loss_model_minus_market": 0.0136,
+      "d_brier_model_minus_market": 0.0067
+     },
+     "p_v91": {
+      "n_prob": 0,
+      "log_loss_model": null,
+      "brier_model": null,
+      "n_vs_market": 0,
+      "log_loss_market": null,
+      "brier_market": null,
+      "d_log_loss_model_minus_market": null,
+      "d_brier_model_minus_market": null
+     },
+     "p_pro_hgb": {
+      "n_prob": 513,
+      "log_loss_model": 0.685,
+      "brier_model": 0.2459,
+      "n_vs_market": 513,
+      "log_loss_market": 0.6734,
+      "brier_market": 0.2405,
+      "d_log_loss_model_minus_market": 0.0116,
+      "d_brier_model_minus_market": 0.0054
+     },
+     "p_goal_distribution": {
+      "n_prob": 1176,
+      "log_loss_model": 0.8015,
+      "brier_model": 0.2842,
+      "n_vs_market": 1176,
+      "log_loss_market": 0.6779,
+      "brier_market": 0.2425,
+      "d_log_loss_model_minus_market": 0.1236,
+      "d_brier_model_minus_market": 0.0416
+     }
+    },
+    "note": "probability scores of each shadow model vs the de-vigged market on the same rows; a lower log loss than the market is the only edge a shadow can show"
+   }
+  },
+  "real_price_backtests": {
+   "label": "Backtests at real bookmaker prices on OLDER models. A backtest proves nothing (owner rule: live proof only); inventory only.",
+   "inventory": [
+    {
+     "file": "backtest_results_standard.csv",
+     "present": true,
+     "rows": 19416,
+     "real_price_columns": [
+      "odds_over25",
+      "odds_under25",
+      "odds_btts",
+      "odds_over15",
+      "odds_over35",
+      "max_odds_blocked",
+      "min_odds_blocked"
+     ],
+     "status": "OLDER_MODELS_BACKTEST_NOT_PROOF"
+    },
+    {
+     "file": "backtest_results_newformat.csv",
+     "present": true,
+     "rows": 3260,
+     "real_price_columns": [
+      "odds_over25",
+      "odds_under25",
+      "odds_btts",
+      "odds_over15",
+      "odds_over35",
+      "max_odds_blocked",
+      "min_odds_blocked"
+     ],
+     "status": "OLDER_MODELS_BACKTEST_NOT_PROOF"
+    },
+    {
+     "file": "backtest_results_btts.csv",
+     "present": true,
+     "rows": 19669,
+     "real_price_columns": [
+      "odds_over25",
+      "odds_under25",
+      "odds_btts",
+      "odds_over15",
+      "odds_over35"
+     ],
+     "status": "OLDER_MODELS_BACKTEST_NOT_PROOF"
+    },
+    {
+     "file": "backtest_results_over15.csv",
+     "present": true,
+     "rows": 19669,
+     "real_price_columns": [
+      "odds_over25",
+      "odds_under25",
+      "odds_btts",
+      "odds_over15",
+      "odds_over35"
+     ],
+     "status": "OLDER_MODELS_BACKTEST_NOT_PROOF"
+    },
+    {
+     "file": "backtest_results_over35.csv",
+     "present": true,
+     "rows": 19669,
+     "real_price_columns": [
+      "odds_over25",
+      "odds_under25",
+      "odds_btts",
+      "odds_over15",
+      "odds_over35"
+     ],
+     "status": "OLDER_MODELS_BACKTEST_NOT_PROOF"
+    },
+    {
+     "file": "backtest_all_leagues.csv",
+     "present": true,
+     "rows": 40060,
+     "real_price_columns": [
+      "odds_over25",
+      "odds_under25",
+      "min_odds_blocked"
+     ],
+     "status": "OLDER_MODELS_BACKTEST_NOT_PROOF"
+    },
+    {
+     "file": "edge_engine_backtest.csv",
+     "present": true,
+     "rows": 3945,
+     "real_price_columns": [
+      "board_odds_a",
+      "board_odds_b",
+      "legacy_odds",
+      "new_odds",
+      "new_side_a_odds",
+      "new_side_b_odds"
+     ],
+     "status": "OLDER_MODELS_BACKTEST_NOT_PROOF"
+    },
+    {
+     "file": "bars_opt/",
+     "present": true,
+     "rows": null,
+     "files": 52,
+     "status": "REAL_PRICE_REPLAY_FOR_BARS_NOT_PROOF",
+     "note": "per-cell walk-forward replays at real prices that set the approved bars; read on the Admin Board 'Bars' tab"
+    }
+   ]
+  },
+  "synthetic_price_diagnostics": {
+   "label": "QUARANTINED: ROI against synthetic prices. Never a performance figure; listed for audit only.",
+   "inventory": [
+    {
+     "file": "output/player_props_calibration.json",
+     "present": true,
+     "quarantine_marker_in_file": true,
+     "why": "ROI computed against synthetic implied prices derived from base rates (implied odds ~ 1 / base rate), never a bookmaker quote; in-sample; reports/MODEL_DATA_AUDIT_2026-08-10.md M9",
+     "figures_carried": false,
+     "refused_purposes": [
+      "betting_performance",
+      "roi",
+      "staking",
+      "bankroll",
+      "promotion",
+      "edge_validation",
+      "dashboard_profitability",
+      "dashboard_ranking",
+      "telegram",
+      "pro_research_roi"
+     ]
+    }
+   ]
+  }
+ },
+ "immutability": {
+  "bets_ledger.csv": {
+   "present": true,
+   "pre_start_rows": 1936,
+   "identity_fields": [
+    "generated_at",
+    "match_date",
+    "league",
+    "home_team",
+    "away_team",
+    "side",
+    "model_type",
+    "signal_tier",
+    "model_version"
+   ],
+   "identity_sha256": "034218ee784fcf3df3b1e685d1f9efc3ad4905584508d444e0a7e8ed6241b5c4",
+   "clean_rows_generated_before_start": 0
+  },
+  "side_bets_ledger.csv": {
+   "present": true,
+   "pre_start_rows": 765,
+   "identity_fields": [
+    "generated_at",
+    "match_date",
+    "league",
+    "home_team",
+    "away_team",
+    "market",
+    "model_type",
+    "signal_tier",
+    "model_version"
+   ],
+   "identity_sha256": "eca7a21a9953c87c882a6bbaa80383a852dffc317ab0990365989cfd1a064e4c",
+   "clean_rows_generated_before_start": 0
+  },
+  "ht_ledger.csv": {
+   "present": true,
+   "pre_start_rows": 80,
+   "identity_fields": [
+    "generated_at",
+    "match_date",
+    "league",
+    "home_team",
+    "away_team",
+    "market",
+    "side",
+    "model_type",
+    "model_version"
+   ],
+   "identity_sha256": "366f15df6242b2cb303f5e999c226f2734b0ab78d02645d65d3ffb10306a8ed5",
+   "clean_rows_generated_before_start": 0
+  },
+  "top3_league_ledger.csv": {
+   "present": true,
+   "pre_start_rows": 0,
+   "identity_fields": [
+    "pick_id",
+    "issued_at",
+    "match_date",
+    "league",
+    "home_team",
+    "away_team",
+    "market",
+    "side",
+    "stake_reason",
+    "prediction_engine_version"
+   ],
+   "identity_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "clean_rows_generated_before_start": 0
+  },
+  "player_ledger.csv": {
+   "present": true,
+   "pre_start_rows": 44761,
+   "identity_fields": [
+    "signal_date",
+    "match_date",
+    "league",
+    "player_name",
+    "market",
+    "tier"
+   ],
+   "identity_sha256": "efe670c95c883d4cf340eff58181a9a85e0216905cdf85da4d7ad8ca88ab2d65",
+   "clean_rows_generated_before_start": 0
+  }
+ },
+ "cells_file": "output/clean_record_evaluation_cells.csv"
+}
