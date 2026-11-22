@@ -106,9 +106,11 @@ SHOW ALL, STAKE BY PROOF (owner 2026-11-22, "3 per league, stake by proof"; tier
     config/top3_tiers_p11.json) where the candidate has a cell AND a calibration cell (value_basis CALIBRATED),
     else the model's own probability (lam = 1: its full edge vs the de-vigged fair price, value_basis MODEL_EDGE).
   * T1 = highest value. T2 = highest p of the rest. T3 = of the rest, the longest odds with a positive edge
-    (p - fair > 0); none left -> the next best by value. EVERY slot needs value > 0 (owner 2026-11-22, 2nd decision):
-    a no-stake candidate without positive value is never shown (NO_POSITIVE_VALUE); a tier with no such pick left
-    stays EMPTY (EMPTY_SLOT_NO_PICK_WITH_VALUE) and the message says so.
+    (p - fair > 0); none left -> the next best by value. A no-stake candidate is shown only when its model BEATS THE
+    FAIR PRICE (owner 2026-11-22 "Beat the fair price": p - fair > 0, p calibrated where available - it need not
+    beat the margin); at or below fair it is never shown (NOT_ABOVE_FAIR_PRICE). A tier with no such pick left
+    stays EMPTY (EMPTY_SLOT_NO_PICK_ABOVE_FAIR) and the message says so. Each unstaked pick is labelled with its
+    edge vs the fair price ("model +2.1pp vs fair price, no stake: below bar").
   * STAKED PICKS ARE PROTECTED (owner 2026-11-22): stakeable picks take their slots before the others. With 3 or
     more, the three tiers are chosen by their own rule among the stakeable picks only (the approved P11 rule on the
     approved picks). With 1-2, each (highest value first) goes to the tier it matches best (the tier whose order ranks
@@ -191,8 +193,10 @@ R_STARTED = "STARTED_BEFORE_ISSUE"
 R_DIRECTION = "DIRECTION_CONFLICT"
 R_MISMATCH = "MISMATCH_WITH_SENT_TIP"          # src/tip_coherence (owner 2026-11-19): vs a tip already sent
 R_RANK = "RANKED_BELOW_TOP3"
-R_NO_POS_VALUE = "NO_POSITIVE_VALUE"           # owner 2026-11-22: a no-stake candidate needs value > 0 to be shown
-R_EMPTY_SLOT = "EMPTY_SLOT_NO_PICK_WITH_VALUE"  # a tier left empty: no other priced, coherent pick with value
+# owner 2026-11-22 "Beat the fair price": a no-stake candidate is shown only when its model beats the de-vigged fair
+# price (p - fair > 0, p calibrated where available); at or below fair it is never shown
+R_NOT_ABOVE_FAIR = "NOT_ABOVE_FAIR_PRICE"
+R_EMPTY_SLOT = "EMPTY_SLOT_NO_PICK_ABOVE_FAIR"  # a tier left empty: no other priced, coherent pick above the fair price
 
 # owner 2026-11-22 "3 per league, stake by proof": the stake decision of every TOP-3 pick (ledger column stake_reason)
 STAKED = "STAKED"
@@ -592,7 +596,7 @@ def _select_tiers(q, pool, own_taken, dirs, committed, issue, ko, stats, tiers, 
     """P11 tiers, owner 2026-11-22 "3 per league, stake by proof". The pool = the bar-cleared candidates plus the
     priced candidates without / below their league's bar (`nostake` {index: no-stake reason}).
       T1 = highest value, T2 = highest p of the rest, T3 = of the rest the longest odds with a positive edge
-      (p - fair > 0), none left -> the next best by value; every slot needs value > 0, else it stays empty.
+      (p - fair > 0), none left -> the next best by value; a no-stake pick must beat the fair price, else empty.
       Stakeable picks take their slots first, each in the tier it matches best (module docstring).
     value = p x odds - 1, p = the calibrated probability (cell + calibration cell: CALIBRATED) or the model's own
     (MODEL_EDGE). Stake by proof: a bar-cleared pick that also passes the league's APPROVED P11 tier gate (CAL:
@@ -635,8 +639,8 @@ def _select_tiers(q, pool, own_taken, dirs, committed, issue, ko, stats, tiers, 
         staked = not reason
         # owner 2026-11-22 (2nd decision): NEVER a pick without positive value. A stakeable pick passed its league's
         # APPROVED value gate (CAL: calibrated value > 0; BAR: the cell's p_used x odds - 1 > 0), which is its value.
-        if not staked and not v["cal_ev"] > 0:
-            excluded[R_NO_POS_VALUE] += 1
+        if not staked and not v["p_cal"] - _num(r.get("fair")) > 0:
+            excluded[R_NOT_ABOVE_FAIR] += 1      # owner 2026-11-22 "Beat the fair price": at / below fair, never shown
             continue
         met[i] = v | {"stake_reason": STAKED if staked else reason, "fair": _num(r.get("fair"))}
     used, taken, names, blocked = set(), [], [], {}
@@ -674,7 +678,7 @@ def _select_tiers(q, pool, own_taken, dirs, committed, issue, ko, stats, tiers, 
 
     cand = list(met)
     kick = {i: (ko.iloc[i].value if pd.notna(ko.iloc[i]) else float("inf"), str(q.iloc[i]["fixture_id"])) for i in cand}
-    # the three tier orders over every candidate with value (T3: longest odds among positive edge, then by value)
+    # the three tier orders over every eligible candidate (T3: longest odds among positive edge, then by value)
     by_value = sorted(cand, key=lambda i: (-met[i]["cal_ev"], kick[i]))
     by_p = sorted(cand, key=lambda i: (-met[i]["p_cal"], kick[i]))
     pos = [i for i in cand if met[i]["p_cal"] - met[i]["fair"] > 0]
@@ -705,7 +709,7 @@ def _select_tiers(q, pool, own_taken, dirs, committed, issue, ko, stats, tiers, 
             tier = next(TIER_NAMES[t] for t in pref if TIER_NAMES[t] in free)
             take(i, tier)
             free.remove(tier)
-    # 2) the remaining tiers by their own rule, T1 / T2 / T3, from the candidates left (all with value > 0)
+    # 2) the remaining tiers by their own rule, T1 / T2 / T3, from the candidates left (all above the fair price)
     for t, name in enumerate(TIER_NAMES):
         if name not in free:
             continue
@@ -715,7 +719,7 @@ def _select_tiers(q, pool, own_taken, dirs, committed, issue, ko, stats, tiers, 
                 free.remove(name)
                 break
     for name in free:
-        excluded[R_EMPTY_SLOT] += 1              # no other priced, coherent pick with value: the slot stays empty
+        excluded[R_EMPTY_SLOT] += 1              # no other priced, coherent pick above fair: the slot stays empty
     for i in cand:
         if i not in taken:
             # one reason per candidate left out: why it could not take a slot (started / direction / coherence),
@@ -1112,12 +1116,25 @@ def _totals(p: pd.DataFrame) -> dict:
             "roi": round(float(pnl.mean()), 4) if pnl.notna().any() else None}
 
 
+def fair_edge_pp(r: dict) -> float:
+    """The pick's recorded edge vs the de-vigged fair price, in percentage points: the calibrated edge for a
+    CALIBRATED pick, the model's own edge for a MODEL_EDGE pick (NaN when not recorded). Read, never recomputed."""
+    col = "edge" if str(r.get("value_basis") or "") == BASIS_MODEL else "edge_calibrated"
+    e = _num(r.get(col))
+    return e * 100 if not math.isnan(e) else float("nan")
+
+
 def pick_stake_label(r: dict, flat: float | None = None) -> str:
-    """The words a pick shows: '0.5% stake' when its frozen stake > 0, else its no-stake label ('No stake: below
-    bar'); '' for a league-rule line or a row with no recorded decision."""
+    """The words a pick shows: '0.5% stake' when its frozen stake > 0; an unstaked pick shows its edge vs the fair
+    price and why it has no stake ('model +2.1pp vs fair price, no stake: below bar', owner 2026-11-22); a row
+    without a recorded edge keeps the bare label ('No stake: below bar'); '' for a league-rule line."""
     sr = str(r.get("stake_reason") or "").strip()
     if sr in NO_STAKE_LABEL:
-        return NO_STAKE_LABEL[sr]
+        e = fair_edge_pp(r)
+        if math.isnan(e):
+            return NO_STAKE_LABEL[sr]
+        why = NO_STAKE_LABEL[sr].split(": ", 1)[-1]
+        return f"model {e:+.1f}pp vs fair price, no stake: {why}"
     f = _num(r.get("stake"))
     if sr == STAKED and f > 0:
         return f"{stake_text(f)} stake"
@@ -1178,14 +1195,16 @@ def message(picks: pd.DataFrame, real_checker=None, policy: dict | None = None) 
         side = "Yes" if str(r["side"]) == "YES" else str(r["side"]).title()
         mk = lab.get(str(r["market"]), str(r["market"]))
         cell = str(r.get("cell_status") or "").strip()
+        lab_r = _stake_label(real_checker, r, flat)
+        edge_w = "" if "vs fair price" in lab_r else f" ({_edge_words(r)})"     # the label already carries the edge
         lines.append(f"{r['top3_rank']}. {escape(str(r['home_team']))} v {escape(str(r['away_team']))} - "
                      f"{mk} {side} @ {float(r['odds']):.2f} · {TIER_TEXT.get(str(r['slot']), r['slot'])}"
-                     f"{' · ' + escape(cell) if cell and cell != 'nan' else ''} ({_edge_words(r)})")
-        lines[-1] = _with_label(lines[-1], _stake_label(real_checker, r, flat))
+                     f"{' · ' + escape(cell) if cell and cell != 'nan' else ''}{edge_w}")
+        lines[-1] = _with_label(lines[-1], lab_r)
     if picks["slot"].astype(str).isin(TIER_NAMES).any() or (len(picks) == 0 and len(rule) == 0):
         for t, name in enumerate(TIER_NAMES):            # owner 2026-11-22: an empty tier says why
             if name not in set(picks["slot"].astype(str)):
-                lines.append(f"{t + 1}. {TIER_TEXT[name]}: none - no other priced, coherent pick with value")
+                lines.append(f"{t + 1}. {TIER_TEXT[name]}: none - no other priced, coherent pick above the fair price")
     for (mk, sd), g in rule.groupby(["market", "side"], sort=True):
         side = "Yes" if str(sd) == "YES" else str(sd).title()
         lines.append(f"📏 League rule: {lab.get(str(mk), str(mk))} {side}, every match "
@@ -1197,7 +1216,7 @@ def message(picks: pd.DataFrame, real_checker=None, policy: dict | None = None) 
         head = (f"Staked ({stake_text(flat)} of bankroll, flat, placed manually) only where the tip cleared its "
                 "league's own approved bar; the others show why they carry no stake." if flat is not None else "")
         foot = ("T1 best value, T2 safest, T3 risky value."
-                + (f" Only {n} priced, coherent pick{'s' if n != 1 else ''} with value this week." if n < TOP_N else ""))
+                + (f" Only {n} priced, coherent pick{'s' if n != 1 else ''} above the fair price this week." if n < TOP_N else ""))
     else:
         head = (f"Every TOP-3 tip: {stake_text(flat)} stake of bankroll, flat, placed manually." if flat is not None
                 else "")
