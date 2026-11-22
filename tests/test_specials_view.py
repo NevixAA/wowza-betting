@@ -106,3 +106,26 @@ def test_page_renders_with_stored_rows(monkeypatch, tmp_path):
     root = Path(__file__).resolve().parents[1]
     at = AppTest.from_file(str(root / "pages" / "23_🎲_Specials.py"), default_timeout=60).run()
     assert not at.exception, [e.value for e in at.exception]
+
+
+def test_private_prices_join_on_row_id_and_never_change_public_rows():
+    log = pd.DataFrame([_row(cand_ge6=1.0, price_ge6_books=7), _row(row_id="r2", cand_ge6=1.0)])
+    assert not V.price_value_columns(log.columns)                      # the public log holds no price
+    private = pd.DataFrame([{"row_id": "r1", "price_ge6_best": 9.5, "price_under15": 3.1, "p_ge6": 0.99,
+                             "price_ge6_books": 1}])
+    out = V.merge_private_prices(log, private)
+    assert len(out) == 2 and list(out["row_id"]) == ["r1", "r2"]
+    assert out.loc[0, "price_ge6_best"] == 9.5 and pd.isna(out.loc[1, "price_ge6_best"])
+    assert out.loc[0, "p_ge6"] == 0.10 and out.loc[0, "price_ge6_books"] == 7   # public numbers kept
+    f = V.flagged_frame(out, NOW, V.HIGH)
+    assert set(f["best price"].dropna()) == {9.5}
+
+
+def test_without_the_private_store_prices_stay_empty_and_the_page_says_why(monkeypatch):
+    from dashboard_data import pro as PRO
+    log = pd.DataFrame([_row(cand_ge6=1.0)])
+    assert V.merge_private_prices(log, None) is log
+    monkeypatch.delenv(PRO.RO_SECRET, raising=False)
+    monkeypatch.setattr(PRO, "_ro_token", lambda: "")
+    frame, why = PRO.private_specials_log()
+    assert frame is None and why == "read-only token not set"

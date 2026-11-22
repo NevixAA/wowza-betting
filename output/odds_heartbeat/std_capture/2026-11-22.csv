@@ -29,51 +29,66 @@ snapshot_ts,match_date,kickoff_utc,league,match,market,odds,writer
 2026-11-22T13:29:30Z,2026-11-22,2026-11-22T13:30:00Z,Dutch Eredivisie,Ajax vs ADO Den Haag,under15,10.0,std_capture
 2026-11-22T13:29:30Z,2026-11-22,2026-11-22T13:30:00Z,Dutch Eredivisie,Ajax vs ADO Den Haag,under25,4.0,std_capture
 2026-11-22T13:29:30Z,2026-11-22,2026-11-22T13:30:00Z,Dutch Eredivisie,Ajax vs ADO Den Haag,under35,2.2,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,Belgian First Division A,Anderlecht vs OH Leuven,btts_no,2.05,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,Belgian First Division A,Anderlecht vs OH Leuven,btts_yes,1.7,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,Belgian First Division A,Anderlecht vs OH Leuven,h2h_away,6.0,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,Belgian First Division A,Anderlecht vs OH Leuven,h2h_draw,4.2,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,Belgian First Division A,Anderlecht vs OH Leuven,h2h_home,1.45,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,Belgian First Division A,Anderlecht vs OH Leuven,ht_over05,1.25,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,Belgian First Division A,Anderlecht vs OH Leuven,ht_over15,2.2,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,Belgian First Division A,Anderlecht vs OH Leuven,ht_under05,3.75,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,Belgian First Division A,Anderlecht vs OH Leuven,ht_under15,1.62,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,Belgian First Division A,Anderlecht vs OH Leuven,over15,1.17,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,Belgian First Division A,Anderlecht vs OH Leuven,over25,1.57,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,Belgian First Division A,Anderlecht vs OH Leuven,over35,2.38,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,Belgian First Division A,Anderlecht vs OH Leuven,under15,5.0,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,Belgian First Division A,Anderlecht vs OH Leuven,under25,2.35,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,Belgian First Division A,Anderlecht vs OH Leuven,under35,1.53,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T16:15:00Z,Serie B,Arezzo vs Padova,btts_no,1.95,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T16:15:00Z,Serie B,Arezzo vs Padova,btts_yes,1.8,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T16:15:00Z,Serie B,Arezzo vs Padova,h2h_away,3.2,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T16:15:00Z,Serie B,Arezzo vs Padova,h2h_draw,3.2,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T16:15:00Z,Serie B,Arezzo vs Padova,h2h_home,2.3,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T16:15:00Z,Serie B,Arezzo vs Padova,ht_over05,1.4,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T16:15:00Z,Serie B,Arezzo vs Padova,ht_over15,3.0,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T16:15:00Z,Serie B,Arezzo vs Padova,ht_under05,2.75,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T16:15:00Z,Serie B,Arezzo vs Padova,ht_under15,1.36,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T16:15:00Z,Serie B,Arezzo vs Padova,over15,1.3,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T16:15:00Z,Serie B,Arezzo vs Padova,over25,2.05,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T16:15:00Z,Serie B,Arezzo vs Padova,over35,3.5,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T16:15:00Z,Serie B,Arezzo vs Padova,under15,3.4,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T16:15:00Z,Serie B,Arezzo vs Padova,under25,1.75,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T16:15:00Z,Serie B,Arezzo vs Padova,under35,1.28,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T14:00:00Z,Serie B,Avellino vs Mantova,btts_no,2.0,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T14:00:00Z,Serie B,Avellino vs Mantova,btts_yes,1.75,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T14:00:00Z,Serie B,Avellino vs Mantova,h2h_away,2.88,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T14:00:00Z,Serie B,Avellino vs Mantova,h2h_draw,3.2,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T14:00:00Z,Serie B,Avellino vs Mantova,h2h_home,2.45,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T14:00:00Z,Serie B,Avellino vs Mantova,ht_over05,1.4,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T14:00:00Z,Serie B,Avellino vs Mantova,ht_over15,2.75,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T14:00:00Z,Serie B,Avellino vs Mantova,ht_under05,2.75,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T14:00:00Z,Serie B,Avellino vs Mantova,ht_under15,1.4,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T14:00:00Z,Serie B,Avellino vs Mantova,over15,1.28,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T14:00:00Z,Serie B,Avellino vs Mantova,over25,1.95,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T14:00:00Z,Serie B,Avellino vs Mantova,over35,3.25,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T14:00:00Z,Serie B,Avellino vs Mantova,under15,3.5,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T14:00:00Z,Serie B,Avellino vs Mantova,under25,1.85,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T14:00:00Z,Serie B,Avellino vs Mantova,under35,1.33,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,Belgian First Division A,Anderlecht vs OH Leuven,btts_no,2.05,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,Belgian First Division A,Anderlecht vs OH Leuven,btts_yes,1.7,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,Belgian First Division A,Anderlecht vs OH Leuven,h2h_away,6.0,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,Belgian First Division A,Anderlecht vs OH Leuven,h2h_draw,4.2,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,Belgian First Division A,Anderlecht vs OH Leuven,h2h_home,1.45,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,Belgian First Division A,Anderlecht vs OH Leuven,ht_over05,1.25,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,Belgian First Division A,Anderlecht vs OH Leuven,ht_over15,2.2,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,Belgian First Division A,Anderlecht vs OH Leuven,ht_under05,3.75,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,Belgian First Division A,Anderlecht vs OH Leuven,ht_under15,1.62,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,Belgian First Division A,Anderlecht vs OH Leuven,over15,1.17,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,Belgian First Division A,Anderlecht vs OH Leuven,over25,1.57,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,Belgian First Division A,Anderlecht vs OH Leuven,over35,2.38,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,Belgian First Division A,Anderlecht vs OH Leuven,under15,5.0,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,Belgian First Division A,Anderlecht vs OH Leuven,under25,2.35,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,Belgian First Division A,Anderlecht vs OH Leuven,under35,1.53,std_capture
+2026-11-22T16:13:12Z,2026-11-22,2026-11-22T16:15:00Z,Serie B,Arezzo vs Padova,btts_no,1.95,std_capture
+2026-11-22T16:13:12Z,2026-11-22,2026-11-22T16:15:00Z,Serie B,Arezzo vs Padova,btts_yes,1.8,std_capture
+2026-11-22T16:13:12Z,2026-11-22,2026-11-22T16:15:00Z,Serie B,Arezzo vs Padova,h2h_away,3.1,std_capture
+2026-11-22T16:13:12Z,2026-11-22,2026-11-22T16:15:00Z,Serie B,Arezzo vs Padova,h2h_draw,3.2,std_capture
+2026-11-22T16:13:12Z,2026-11-22,2026-11-22T16:15:00Z,Serie B,Arezzo vs Padova,h2h_home,2.38,std_capture
+2026-11-22T16:13:12Z,2026-11-22,2026-11-22T16:15:00Z,Serie B,Arezzo vs Padova,ht_over05,1.4,std_capture
+2026-11-22T16:13:12Z,2026-11-22,2026-11-22T16:15:00Z,Serie B,Arezzo vs Padova,ht_over15,3.0,std_capture
+2026-11-22T16:13:12Z,2026-11-22,2026-11-22T16:15:00Z,Serie B,Arezzo vs Padova,ht_under05,2.75,std_capture
+2026-11-22T16:13:12Z,2026-11-22,2026-11-22T16:15:00Z,Serie B,Arezzo vs Padova,ht_under15,1.36,std_capture
+2026-11-22T16:13:12Z,2026-11-22,2026-11-22T16:15:00Z,Serie B,Arezzo vs Padova,over15,1.3,std_capture
+2026-11-22T16:13:12Z,2026-11-22,2026-11-22T16:15:00Z,Serie B,Arezzo vs Padova,over25,2.05,std_capture
+2026-11-22T16:13:12Z,2026-11-22,2026-11-22T16:15:00Z,Serie B,Arezzo vs Padova,over35,3.5,std_capture
+2026-11-22T16:13:12Z,2026-11-22,2026-11-22T16:15:00Z,Serie B,Arezzo vs Padova,under15,3.4,std_capture
+2026-11-22T16:13:12Z,2026-11-22,2026-11-22T16:15:00Z,Serie B,Arezzo vs Padova,under25,1.75,std_capture
+2026-11-22T16:13:12Z,2026-11-22,2026-11-22T16:15:00Z,Serie B,Arezzo vs Padova,under35,1.28,std_capture
+2026-11-22T13:58:18Z,2026-11-22,2026-11-22T14:00:00Z,Serie B,Avellino vs Mantova,btts_no,2.0,std_capture
+2026-11-22T13:58:18Z,2026-11-22,2026-11-22T14:00:00Z,Serie B,Avellino vs Mantova,btts_yes,1.75,std_capture
+2026-11-22T13:58:18Z,2026-11-22,2026-11-22T14:00:00Z,Serie B,Avellino vs Mantova,h2h_away,2.88,std_capture
+2026-11-22T13:58:18Z,2026-11-22,2026-11-22T14:00:00Z,Serie B,Avellino vs Mantova,h2h_draw,3.2,std_capture
+2026-11-22T13:58:18Z,2026-11-22,2026-11-22T14:00:00Z,Serie B,Avellino vs Mantova,h2h_home,2.45,std_capture
+2026-11-22T13:58:18Z,2026-11-22,2026-11-22T14:00:00Z,Serie B,Avellino vs Mantova,ht_over05,1.4,std_capture
+2026-11-22T13:58:18Z,2026-11-22,2026-11-22T14:00:00Z,Serie B,Avellino vs Mantova,ht_over15,2.75,std_capture
+2026-11-22T13:58:18Z,2026-11-22,2026-11-22T14:00:00Z,Serie B,Avellino vs Mantova,ht_under05,2.75,std_capture
+2026-11-22T13:58:18Z,2026-11-22,2026-11-22T14:00:00Z,Serie B,Avellino vs Mantova,ht_under15,1.4,std_capture
+2026-11-22T13:58:18Z,2026-11-22,2026-11-22T14:00:00Z,Serie B,Avellino vs Mantova,over15,1.28,std_capture
+2026-11-22T13:58:18Z,2026-11-22,2026-11-22T14:00:00Z,Serie B,Avellino vs Mantova,over25,1.95,std_capture
+2026-11-22T13:58:18Z,2026-11-22,2026-11-22T14:00:00Z,Serie B,Avellino vs Mantova,over35,3.25,std_capture
+2026-11-22T13:58:18Z,2026-11-22,2026-11-22T14:00:00Z,Serie B,Avellino vs Mantova,under15,3.5,std_capture
+2026-11-22T13:58:18Z,2026-11-22,2026-11-22T14:00:00Z,Serie B,Avellino vs Mantova,under25,1.85,std_capture
+2026-11-22T13:58:18Z,2026-11-22,2026-11-22T14:00:00Z,Serie B,Avellino vs Mantova,under35,1.33,std_capture
+2026-11-22T17:09:21Z,2026-11-22,2026-11-22T20:00:00Z,La Liga 2,Burgos vs Albacete,btts_no,1.8,std_capture
+2026-11-22T17:09:21Z,2026-11-22,2026-11-22T20:00:00Z,La Liga 2,Burgos vs Albacete,btts_yes,1.91,std_capture
+2026-11-22T17:09:21Z,2026-11-22,2026-11-22T20:00:00Z,La Liga 2,Burgos vs Albacete,h2h_away,3.75,std_capture
+2026-11-22T17:09:21Z,2026-11-22,2026-11-22T20:00:00Z,La Liga 2,Burgos vs Albacete,h2h_draw,3.25,std_capture
+2026-11-22T17:09:21Z,2026-11-22,2026-11-22T20:00:00Z,La Liga 2,Burgos vs Albacete,h2h_home,2.05,std_capture
+2026-11-22T17:09:21Z,2026-11-22,2026-11-22T20:00:00Z,La Liga 2,Burgos vs Albacete,ht_over05,1.44,std_capture
+2026-11-22T17:09:21Z,2026-11-22,2026-11-22T20:00:00Z,La Liga 2,Burgos vs Albacete,ht_over15,3.25,std_capture
+2026-11-22T17:09:21Z,2026-11-22,2026-11-22T20:00:00Z,La Liga 2,Burgos vs Albacete,ht_under05,2.62,std_capture
+2026-11-22T17:09:21Z,2026-11-22,2026-11-22T20:00:00Z,La Liga 2,Burgos vs Albacete,ht_under15,1.33,std_capture
+2026-11-22T17:09:21Z,2026-11-22,2026-11-22T20:00:00Z,La Liga 2,Burgos vs Albacete,over15,1.33,std_capture
+2026-11-22T17:09:21Z,2026-11-22,2026-11-22T20:00:00Z,La Liga 2,Burgos vs Albacete,over25,2.1,std_capture
+2026-11-22T17:09:21Z,2026-11-22,2026-11-22T20:00:00Z,La Liga 2,Burgos vs Albacete,over35,3.75,std_capture
+2026-11-22T17:09:21Z,2026-11-22,2026-11-22T20:00:00Z,La Liga 2,Burgos vs Albacete,under15,3.25,std_capture
+2026-11-22T17:09:21Z,2026-11-22,2026-11-22T20:00:00Z,La Liga 2,Burgos vs Albacete,under25,1.7,std_capture
+2026-11-22T17:09:21Z,2026-11-22,2026-11-22T20:00:00Z,La Liga 2,Burgos vs Albacete,under35,1.25,std_capture
 2026-11-22T11:58:22Z,2026-11-22,2026-11-22T12:00:00Z,Championship,Burnley vs Blackburn,btts_no,2.0,std_capture
 2026-11-22T11:58:22Z,2026-11-22,2026-11-22T12:00:00Z,Championship,Burnley vs Blackburn,btts_yes,1.73,std_capture
 2026-11-22T11:58:22Z,2026-11-22,2026-11-22T12:00:00Z,Championship,Burnley vs Blackburn,h2h_away,3.6,std_capture
@@ -88,21 +103,21 @@ snapshot_ts,match_date,kickoff_utc,league,match,market,odds,writer
 2026-11-22T11:58:22Z,2026-11-22,2026-11-22T12:00:00Z,Championship,Burnley vs Blackburn,over35,3.0,std_capture
 2026-11-22T11:58:22Z,2026-11-22,2026-11-22T12:00:00Z,Championship,Burnley vs Blackburn,under15,4.0,std_capture
 2026-11-22T11:58:22Z,2026-11-22,2026-11-22T12:00:00Z,Championship,Burnley vs Blackburn,under35,1.4,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Celta de Vigo II vs Valladolid,btts_no,2.2,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Celta de Vigo II vs Valladolid,btts_yes,1.62,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Celta de Vigo II vs Valladolid,h2h_away,2.1,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Celta de Vigo II vs Valladolid,h2h_draw,3.4,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Celta de Vigo II vs Valladolid,h2h_home,3.4,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Celta de Vigo II vs Valladolid,ht_over05,1.33,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Celta de Vigo II vs Valladolid,ht_over15,2.62,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Celta de Vigo II vs Valladolid,ht_under05,3.25,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Celta de Vigo II vs Valladolid,ht_under15,1.44,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Celta de Vigo II vs Valladolid,over15,1.22,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Celta de Vigo II vs Valladolid,over25,1.8,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Celta de Vigo II vs Valladolid,over35,2.75,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Celta de Vigo II vs Valladolid,under15,4.0,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Celta de Vigo II vs Valladolid,under25,2.0,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Celta de Vigo II vs Valladolid,under35,1.4,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Celta de Vigo II vs Valladolid,btts_no,2.2,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Celta de Vigo II vs Valladolid,btts_yes,1.62,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Celta de Vigo II vs Valladolid,h2h_away,2.1,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Celta de Vigo II vs Valladolid,h2h_draw,3.4,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Celta de Vigo II vs Valladolid,h2h_home,3.4,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Celta de Vigo II vs Valladolid,ht_over05,1.33,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Celta de Vigo II vs Valladolid,ht_over15,2.62,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Celta de Vigo II vs Valladolid,ht_under05,3.25,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Celta de Vigo II vs Valladolid,ht_under15,1.44,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Celta de Vigo II vs Valladolid,over15,1.22,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Celta de Vigo II vs Valladolid,over25,1.8,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Celta de Vigo II vs Valladolid,over35,2.75,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Celta de Vigo II vs Valladolid,under15,4.0,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Celta de Vigo II vs Valladolid,under25,2.0,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Celta de Vigo II vs Valladolid,under35,1.4,std_capture
 2026-11-22T12:58:35Z,2026-11-22,2026-11-22T13:00:00Z,La Liga 2,Cordoba vs Oviedo,btts_no,2.38,std_capture
 2026-11-22T12:58:35Z,2026-11-22,2026-11-22T13:00:00Z,La Liga 2,Cordoba vs Oviedo,btts_yes,1.53,std_capture
 2026-11-22T12:58:35Z,2026-11-22,2026-11-22T13:00:00Z,La Liga 2,Cordoba vs Oviedo,h2h_away,3.75,std_capture
@@ -148,36 +163,36 @@ snapshot_ts,match_date,kickoff_utc,league,match,market,odds,writer
 2026-11-22T10:29:03Z,2026-11-22,2026-11-22T10:30:00Z,Turkish Super Lig,Erzurumspor FK vs Göztepe,under15,3.4,std_capture
 2026-11-22T10:29:03Z,2026-11-22,2026-11-22T10:30:00Z,Turkish Super Lig,Erzurumspor FK vs Göztepe,under25,1.8,std_capture
 2026-11-22T10:29:03Z,2026-11-22,2026-11-22T10:30:00Z,Turkish Super Lig,Erzurumspor FK vs Göztepe,under35,1.28,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:45:00Z,Dutch Eredivisie,GO Ahead Eagles vs Fortuna Sittard,btts_no,2.38,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:45:00Z,Dutch Eredivisie,GO Ahead Eagles vs Fortuna Sittard,btts_yes,1.53,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:45:00Z,Dutch Eredivisie,GO Ahead Eagles vs Fortuna Sittard,h2h_away,4.1,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:45:00Z,Dutch Eredivisie,GO Ahead Eagles vs Fortuna Sittard,h2h_draw,3.8,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:45:00Z,Dutch Eredivisie,GO Ahead Eagles vs Fortuna Sittard,h2h_home,1.83,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:45:00Z,Dutch Eredivisie,GO Ahead Eagles vs Fortuna Sittard,ht_over05,1.25,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:45:00Z,Dutch Eredivisie,GO Ahead Eagles vs Fortuna Sittard,ht_over15,2.2,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:45:00Z,Dutch Eredivisie,GO Ahead Eagles vs Fortuna Sittard,ht_under05,3.75,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:45:00Z,Dutch Eredivisie,GO Ahead Eagles vs Fortuna Sittard,ht_under15,1.62,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:45:00Z,Dutch Eredivisie,GO Ahead Eagles vs Fortuna Sittard,over15,1.17,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:45:00Z,Dutch Eredivisie,GO Ahead Eagles vs Fortuna Sittard,over25,1.57,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:45:00Z,Dutch Eredivisie,GO Ahead Eagles vs Fortuna Sittard,over35,2.38,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:45:00Z,Dutch Eredivisie,GO Ahead Eagles vs Fortuna Sittard,under15,5.0,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:45:00Z,Dutch Eredivisie,GO Ahead Eagles vs Fortuna Sittard,under25,2.35,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:45:00Z,Dutch Eredivisie,GO Ahead Eagles vs Fortuna Sittard,under35,1.53,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Girona vs Eibar,btts_no,2.0,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Girona vs Eibar,btts_yes,1.73,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Girona vs Eibar,h2h_away,4.0,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Girona vs Eibar,h2h_draw,3.5,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Girona vs Eibar,h2h_home,1.91,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Girona vs Eibar,ht_over05,1.36,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Girona vs Eibar,ht_over15,2.62,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Girona vs Eibar,ht_under05,3.0,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Girona vs Eibar,ht_under15,1.44,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Girona vs Eibar,over15,1.25,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Girona vs Eibar,over25,1.85,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Girona vs Eibar,over35,3.0,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Girona vs Eibar,under15,3.75,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Girona vs Eibar,under25,1.95,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Girona vs Eibar,under35,1.36,std_capture
+2026-11-22T15:44:23Z,2026-11-22,2026-11-22T15:45:00Z,Dutch Eredivisie,GO Ahead Eagles vs Fortuna Sittard,btts_no,2.38,std_capture
+2026-11-22T15:44:23Z,2026-11-22,2026-11-22T15:45:00Z,Dutch Eredivisie,GO Ahead Eagles vs Fortuna Sittard,btts_yes,1.53,std_capture
+2026-11-22T15:44:23Z,2026-11-22,2026-11-22T15:45:00Z,Dutch Eredivisie,GO Ahead Eagles vs Fortuna Sittard,h2h_away,4.1,std_capture
+2026-11-22T15:44:23Z,2026-11-22,2026-11-22T15:45:00Z,Dutch Eredivisie,GO Ahead Eagles vs Fortuna Sittard,h2h_draw,3.8,std_capture
+2026-11-22T15:44:23Z,2026-11-22,2026-11-22T15:45:00Z,Dutch Eredivisie,GO Ahead Eagles vs Fortuna Sittard,h2h_home,1.83,std_capture
+2026-11-22T15:44:23Z,2026-11-22,2026-11-22T15:45:00Z,Dutch Eredivisie,GO Ahead Eagles vs Fortuna Sittard,ht_over05,1.25,std_capture
+2026-11-22T15:44:23Z,2026-11-22,2026-11-22T15:45:00Z,Dutch Eredivisie,GO Ahead Eagles vs Fortuna Sittard,ht_over15,2.2,std_capture
+2026-11-22T15:44:23Z,2026-11-22,2026-11-22T15:45:00Z,Dutch Eredivisie,GO Ahead Eagles vs Fortuna Sittard,ht_under05,3.75,std_capture
+2026-11-22T15:44:23Z,2026-11-22,2026-11-22T15:45:00Z,Dutch Eredivisie,GO Ahead Eagles vs Fortuna Sittard,ht_under15,1.62,std_capture
+2026-11-22T15:44:23Z,2026-11-22,2026-11-22T15:45:00Z,Dutch Eredivisie,GO Ahead Eagles vs Fortuna Sittard,over15,1.17,std_capture
+2026-11-22T15:44:23Z,2026-11-22,2026-11-22T15:45:00Z,Dutch Eredivisie,GO Ahead Eagles vs Fortuna Sittard,over25,1.57,std_capture
+2026-11-22T15:44:23Z,2026-11-22,2026-11-22T15:45:00Z,Dutch Eredivisie,GO Ahead Eagles vs Fortuna Sittard,over35,2.38,std_capture
+2026-11-22T15:44:23Z,2026-11-22,2026-11-22T15:45:00Z,Dutch Eredivisie,GO Ahead Eagles vs Fortuna Sittard,under15,5.0,std_capture
+2026-11-22T15:44:23Z,2026-11-22,2026-11-22T15:45:00Z,Dutch Eredivisie,GO Ahead Eagles vs Fortuna Sittard,under25,2.35,std_capture
+2026-11-22T15:44:23Z,2026-11-22,2026-11-22T15:45:00Z,Dutch Eredivisie,GO Ahead Eagles vs Fortuna Sittard,under35,1.53,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Girona vs Eibar,btts_no,2.0,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Girona vs Eibar,btts_yes,1.73,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Girona vs Eibar,h2h_away,4.0,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Girona vs Eibar,h2h_draw,3.5,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Girona vs Eibar,h2h_home,1.91,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Girona vs Eibar,ht_over05,1.36,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Girona vs Eibar,ht_over15,2.62,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Girona vs Eibar,ht_under05,3.0,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Girona vs Eibar,ht_under15,1.44,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Girona vs Eibar,over15,1.25,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Girona vs Eibar,over25,1.85,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Girona vs Eibar,over35,3.0,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Girona vs Eibar,under15,3.75,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Girona vs Eibar,under25,1.95,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,La Liga 2,Girona vs Eibar,under35,1.36,std_capture
 2026-11-22T12:29:40Z,2026-11-22,2026-11-22T12:30:00Z,Bundesliga 2,Karlsruher SC vs VfL Osnabrück,btts_no,2.38,std_capture
 2026-11-22T12:29:40Z,2026-11-22,2026-11-22T12:30:00Z,Bundesliga 2,Karlsruher SC vs VfL Osnabrück,btts_yes,1.53,std_capture
 2026-11-22T12:29:40Z,2026-11-22,2026-11-22T12:30:00Z,Bundesliga 2,Karlsruher SC vs VfL Osnabrück,h2h_away,2.75,std_capture
@@ -223,96 +238,96 @@ snapshot_ts,match_date,kickoff_utc,league,match,market,odds,writer
 2026-11-22T12:58:35Z,2026-11-22,2026-11-22T13:00:00Z,Turkish Super Lig,Konyaspor vs Beşiktaş,under15,4.33,std_capture
 2026-11-22T12:58:35Z,2026-11-22,2026-11-22T13:00:00Z,Turkish Super Lig,Konyaspor vs Beşiktaş,under25,2.1,std_capture
 2026-11-22T12:58:35Z,2026-11-22,2026-11-22T13:00:00Z,Turkish Super Lig,Konyaspor vs Beşiktaş,under35,1.44,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:00:00Z,Belgian First Division A,Kortrijk vs Union St. Gilloise,btts_no,1.95,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:00:00Z,Belgian First Division A,Kortrijk vs Union St. Gilloise,btts_yes,1.8,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:00:00Z,Belgian First Division A,Kortrijk vs Union St. Gilloise,h2h_away,1.36,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:00:00Z,Belgian First Division A,Kortrijk vs Union St. Gilloise,h2h_draw,5.0,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:00:00Z,Belgian First Division A,Kortrijk vs Union St. Gilloise,h2h_home,6.5,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:00:00Z,Belgian First Division A,Kortrijk vs Union St. Gilloise,ht_over05,1.25,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:00:00Z,Belgian First Division A,Kortrijk vs Union St. Gilloise,ht_over15,2.2,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:00:00Z,Belgian First Division A,Kortrijk vs Union St. Gilloise,ht_under05,3.75,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:00:00Z,Belgian First Division A,Kortrijk vs Union St. Gilloise,ht_under15,1.62,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:00:00Z,Belgian First Division A,Kortrijk vs Union St. Gilloise,over15,1.17,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:00:00Z,Belgian First Division A,Kortrijk vs Union St. Gilloise,over25,1.53,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:00:00Z,Belgian First Division A,Kortrijk vs Union St. Gilloise,over35,2.25,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:00:00Z,Belgian First Division A,Kortrijk vs Union St. Gilloise,under15,5.0,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:00:00Z,Belgian First Division A,Kortrijk vs Union St. Gilloise,under25,2.4,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:00:00Z,Belgian First Division A,Kortrijk vs Union St. Gilloise,under35,1.57,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T14:00:00Z,Greek Super League,Levadiakos vs Atromitos,btts_no,1.7,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T14:00:00Z,Greek Super League,Levadiakos vs Atromitos,btts_yes,2.05,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T14:00:00Z,Greek Super League,Levadiakos vs Atromitos,h2h_away,3.1,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T14:00:00Z,Greek Super League,Levadiakos vs Atromitos,h2h_draw,2.88,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T14:00:00Z,Greek Super League,Levadiakos vs Atromitos,h2h_home,2.5,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T14:00:00Z,Greek Super League,Levadiakos vs Atromitos,ht_over05,1.5,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T14:00:00Z,Greek Super League,Levadiakos vs Atromitos,ht_over15,3.5,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T14:00:00Z,Greek Super League,Levadiakos vs Atromitos,ht_under05,2.5,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T14:00:00Z,Greek Super League,Levadiakos vs Atromitos,ht_under15,1.28,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T14:00:00Z,Greek Super League,Levadiakos vs Atromitos,over15,1.44,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T14:00:00Z,Greek Super League,Levadiakos vs Atromitos,over25,2.5,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T14:00:00Z,Greek Super League,Levadiakos vs Atromitos,over35,5.0,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T14:00:00Z,Greek Super League,Levadiakos vs Atromitos,under15,2.62,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T14:00:00Z,Greek Super League,Levadiakos vs Atromitos,under25,1.5,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T14:00:00Z,Greek Super League,Levadiakos vs Atromitos,under35,1.17,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T18:15:00Z,Belgian First Division A,Lommel United vs Standard Liege,btts_no,2.5,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T18:15:00Z,Belgian First Division A,Lommel United vs Standard Liege,btts_yes,1.5,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T18:15:00Z,Belgian First Division A,Lommel United vs Standard Liege,h2h_away,2.05,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T18:15:00Z,Belgian First Division A,Lommel United vs Standard Liege,h2h_draw,3.6,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T18:15:00Z,Belgian First Division A,Lommel United vs Standard Liege,h2h_home,3.0,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T18:15:00Z,Belgian First Division A,Lommel United vs Standard Liege,ht_over05,1.25,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T18:15:00Z,Belgian First Division A,Lommel United vs Standard Liege,ht_over15,2.2,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T18:15:00Z,Belgian First Division A,Lommel United vs Standard Liege,ht_under05,3.75,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T18:15:00Z,Belgian First Division A,Lommel United vs Standard Liege,ht_under15,1.62,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T18:15:00Z,Belgian First Division A,Lommel United vs Standard Liege,over15,1.14,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T18:15:00Z,Belgian First Division A,Lommel United vs Standard Liege,over25,1.53,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T18:15:00Z,Belgian First Division A,Lommel United vs Standard Liege,over35,2.2,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T18:15:00Z,Belgian First Division A,Lommel United vs Standard Liege,under15,5.5,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T18:15:00Z,Belgian First Division A,Lommel United vs Standard Liege,under25,2.4,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T18:15:00Z,Belgian First Division A,Lommel United vs Standard Liege,under35,1.62,std_capture
-2026-11-22T13:37:43Z,2026-11-22,2026-11-22T17:00:00Z,Greek Super League,Olympiakos Piraeus vs Iraklis 1908,btts_no,1.5,std_capture
-2026-11-22T13:37:43Z,2026-11-22,2026-11-22T17:00:00Z,Greek Super League,Olympiakos Piraeus vs Iraklis 1908,btts_yes,2.5,std_capture
-2026-11-22T13:37:43Z,2026-11-22,2026-11-22T17:00:00Z,Greek Super League,Olympiakos Piraeus vs Iraklis 1908,h2h_away,12.0,std_capture
-2026-11-22T13:37:43Z,2026-11-22,2026-11-22T17:00:00Z,Greek Super League,Olympiakos Piraeus vs Iraklis 1908,h2h_draw,8.0,std_capture
-2026-11-22T13:37:43Z,2026-11-22,2026-11-22T17:00:00Z,Greek Super League,Olympiakos Piraeus vs Iraklis 1908,h2h_home,1.17,std_capture
-2026-11-22T13:37:43Z,2026-11-22,2026-11-22T17:00:00Z,Greek Super League,Olympiakos Piraeus vs Iraklis 1908,ht_over05,1.25,std_capture
-2026-11-22T13:37:43Z,2026-11-22,2026-11-22T17:00:00Z,Greek Super League,Olympiakos Piraeus vs Iraklis 1908,ht_over15,2.25,std_capture
-2026-11-22T13:37:43Z,2026-11-22,2026-11-22T17:00:00Z,Greek Super League,Olympiakos Piraeus vs Iraklis 1908,ht_under05,3.75,std_capture
-2026-11-22T13:37:43Z,2026-11-22,2026-11-22T17:00:00Z,Greek Super League,Olympiakos Piraeus vs Iraklis 1908,ht_under15,1.57,std_capture
-2026-11-22T13:37:43Z,2026-11-22,2026-11-22T17:00:00Z,Greek Super League,Olympiakos Piraeus vs Iraklis 1908,over15,1.18,std_capture
-2026-11-22T13:37:43Z,2026-11-22,2026-11-22T17:00:00Z,Greek Super League,Olympiakos Piraeus vs Iraklis 1908,over25,1.57,std_capture
-2026-11-22T13:37:43Z,2026-11-22,2026-11-22T17:00:00Z,Greek Super League,Olympiakos Piraeus vs Iraklis 1908,over35,2.5,std_capture
-2026-11-22T13:37:43Z,2026-11-22,2026-11-22T17:00:00Z,Greek Super League,Olympiakos Piraeus vs Iraklis 1908,under15,4.5,std_capture
-2026-11-22T13:37:43Z,2026-11-22,2026-11-22T17:00:00Z,Greek Super League,Olympiakos Piraeus vs Iraklis 1908,under25,2.35,std_capture
-2026-11-22T13:37:43Z,2026-11-22,2026-11-22T17:00:00Z,Greek Super League,Olympiakos Piraeus vs Iraklis 1908,under35,1.5,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,Greek Super League,PAOK vs Kifisia,btts_no,1.75,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,Greek Super League,PAOK vs Kifisia,btts_yes,2.0,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,Greek Super League,PAOK vs Kifisia,h2h_away,8.5,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,Greek Super League,PAOK vs Kifisia,h2h_draw,4.5,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,Greek Super League,PAOK vs Kifisia,h2h_home,1.36,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,Greek Super League,PAOK vs Kifisia,ht_over05,1.3,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,Greek Super League,PAOK vs Kifisia,ht_over15,2.5,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,Greek Super League,PAOK vs Kifisia,ht_under05,3.4,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,Greek Super League,PAOK vs Kifisia,ht_under15,1.5,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,Greek Super League,PAOK vs Kifisia,over15,1.22,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,Greek Super League,PAOK vs Kifisia,over25,1.7,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,Greek Super League,PAOK vs Kifisia,over35,2.62,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,Greek Super League,PAOK vs Kifisia,under15,4.0,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,Greek Super League,PAOK vs Kifisia,under25,2.1,std_capture
-2026-11-22T13:27:26Z,2026-11-22,2026-11-22T17:30:00Z,Greek Super League,PAOK vs Kifisia,under35,1.44,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:30:00Z,Greek Super League,Panathinaikos vs OFI,btts_no,1.75,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:30:00Z,Greek Super League,Panathinaikos vs OFI,btts_yes,2.0,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:30:00Z,Greek Super League,Panathinaikos vs OFI,h2h_away,9.0,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:30:00Z,Greek Super League,Panathinaikos vs OFI,h2h_draw,6.5,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:30:00Z,Greek Super League,Panathinaikos vs OFI,h2h_home,1.25,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:30:00Z,Greek Super League,Panathinaikos vs OFI,ht_over05,1.22,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:30:00Z,Greek Super League,Panathinaikos vs OFI,ht_over15,2.1,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:30:00Z,Greek Super League,Panathinaikos vs OFI,ht_under05,4.0,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:30:00Z,Greek Super League,Panathinaikos vs OFI,ht_under15,1.67,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:30:00Z,Greek Super League,Panathinaikos vs OFI,over15,1.14,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:30:00Z,Greek Super League,Panathinaikos vs OFI,over25,1.48,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:30:00Z,Greek Super League,Panathinaikos vs OFI,over35,2.1,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:30:00Z,Greek Super League,Panathinaikos vs OFI,under15,5.5,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:30:00Z,Greek Super League,Panathinaikos vs OFI,under25,2.6,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:30:00Z,Greek Super League,Panathinaikos vs OFI,under35,1.67,std_capture
+2026-11-22T14:58:51Z,2026-11-22,2026-11-22T15:00:00Z,Belgian First Division A,Kortrijk vs Union St. Gilloise,btts_no,1.95,std_capture
+2026-11-22T14:58:51Z,2026-11-22,2026-11-22T15:00:00Z,Belgian First Division A,Kortrijk vs Union St. Gilloise,btts_yes,1.8,std_capture
+2026-11-22T14:58:51Z,2026-11-22,2026-11-22T15:00:00Z,Belgian First Division A,Kortrijk vs Union St. Gilloise,h2h_away,1.36,std_capture
+2026-11-22T14:58:51Z,2026-11-22,2026-11-22T15:00:00Z,Belgian First Division A,Kortrijk vs Union St. Gilloise,h2h_draw,5.0,std_capture
+2026-11-22T14:58:51Z,2026-11-22,2026-11-22T15:00:00Z,Belgian First Division A,Kortrijk vs Union St. Gilloise,h2h_home,6.5,std_capture
+2026-11-22T14:58:51Z,2026-11-22,2026-11-22T15:00:00Z,Belgian First Division A,Kortrijk vs Union St. Gilloise,ht_over05,1.25,std_capture
+2026-11-22T14:58:51Z,2026-11-22,2026-11-22T15:00:00Z,Belgian First Division A,Kortrijk vs Union St. Gilloise,ht_over15,2.2,std_capture
+2026-11-22T14:58:51Z,2026-11-22,2026-11-22T15:00:00Z,Belgian First Division A,Kortrijk vs Union St. Gilloise,ht_under05,3.75,std_capture
+2026-11-22T14:58:51Z,2026-11-22,2026-11-22T15:00:00Z,Belgian First Division A,Kortrijk vs Union St. Gilloise,ht_under15,1.62,std_capture
+2026-11-22T14:58:51Z,2026-11-22,2026-11-22T15:00:00Z,Belgian First Division A,Kortrijk vs Union St. Gilloise,over15,1.17,std_capture
+2026-11-22T14:58:51Z,2026-11-22,2026-11-22T15:00:00Z,Belgian First Division A,Kortrijk vs Union St. Gilloise,over25,1.53,std_capture
+2026-11-22T14:58:51Z,2026-11-22,2026-11-22T15:00:00Z,Belgian First Division A,Kortrijk vs Union St. Gilloise,over35,2.25,std_capture
+2026-11-22T14:58:51Z,2026-11-22,2026-11-22T15:00:00Z,Belgian First Division A,Kortrijk vs Union St. Gilloise,under15,5.0,std_capture
+2026-11-22T14:58:51Z,2026-11-22,2026-11-22T15:00:00Z,Belgian First Division A,Kortrijk vs Union St. Gilloise,under25,2.4,std_capture
+2026-11-22T14:58:51Z,2026-11-22,2026-11-22T15:00:00Z,Belgian First Division A,Kortrijk vs Union St. Gilloise,under35,1.57,std_capture
+2026-11-22T13:58:18Z,2026-11-22,2026-11-22T14:00:00Z,Greek Super League,Levadiakos vs Atromitos,btts_no,1.7,std_capture
+2026-11-22T13:58:18Z,2026-11-22,2026-11-22T14:00:00Z,Greek Super League,Levadiakos vs Atromitos,btts_yes,2.05,std_capture
+2026-11-22T13:58:18Z,2026-11-22,2026-11-22T14:00:00Z,Greek Super League,Levadiakos vs Atromitos,h2h_away,3.1,std_capture
+2026-11-22T13:58:18Z,2026-11-22,2026-11-22T14:00:00Z,Greek Super League,Levadiakos vs Atromitos,h2h_draw,2.88,std_capture
+2026-11-22T13:58:18Z,2026-11-22,2026-11-22T14:00:00Z,Greek Super League,Levadiakos vs Atromitos,h2h_home,2.5,std_capture
+2026-11-22T13:58:18Z,2026-11-22,2026-11-22T14:00:00Z,Greek Super League,Levadiakos vs Atromitos,ht_over05,1.5,std_capture
+2026-11-22T13:58:18Z,2026-11-22,2026-11-22T14:00:00Z,Greek Super League,Levadiakos vs Atromitos,ht_over15,3.5,std_capture
+2026-11-22T13:58:18Z,2026-11-22,2026-11-22T14:00:00Z,Greek Super League,Levadiakos vs Atromitos,ht_under05,2.5,std_capture
+2026-11-22T13:58:18Z,2026-11-22,2026-11-22T14:00:00Z,Greek Super League,Levadiakos vs Atromitos,ht_under15,1.28,std_capture
+2026-11-22T13:58:18Z,2026-11-22,2026-11-22T14:00:00Z,Greek Super League,Levadiakos vs Atromitos,over15,1.44,std_capture
+2026-11-22T13:58:18Z,2026-11-22,2026-11-22T14:00:00Z,Greek Super League,Levadiakos vs Atromitos,over25,2.5,std_capture
+2026-11-22T13:58:18Z,2026-11-22,2026-11-22T14:00:00Z,Greek Super League,Levadiakos vs Atromitos,over35,5.0,std_capture
+2026-11-22T13:58:18Z,2026-11-22,2026-11-22T14:00:00Z,Greek Super League,Levadiakos vs Atromitos,under15,2.62,std_capture
+2026-11-22T13:58:18Z,2026-11-22,2026-11-22T14:00:00Z,Greek Super League,Levadiakos vs Atromitos,under25,1.5,std_capture
+2026-11-22T13:58:18Z,2026-11-22,2026-11-22T14:00:00Z,Greek Super League,Levadiakos vs Atromitos,under35,1.17,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T18:15:00Z,Belgian First Division A,Lommel United vs Standard Liege,btts_no,2.5,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T18:15:00Z,Belgian First Division A,Lommel United vs Standard Liege,btts_yes,1.5,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T18:15:00Z,Belgian First Division A,Lommel United vs Standard Liege,h2h_away,2.05,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T18:15:00Z,Belgian First Division A,Lommel United vs Standard Liege,h2h_draw,3.6,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T18:15:00Z,Belgian First Division A,Lommel United vs Standard Liege,h2h_home,3.0,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T18:15:00Z,Belgian First Division A,Lommel United vs Standard Liege,ht_over05,1.25,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T18:15:00Z,Belgian First Division A,Lommel United vs Standard Liege,ht_over15,2.2,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T18:15:00Z,Belgian First Division A,Lommel United vs Standard Liege,ht_under05,3.75,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T18:15:00Z,Belgian First Division A,Lommel United vs Standard Liege,ht_under15,1.62,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T18:15:00Z,Belgian First Division A,Lommel United vs Standard Liege,over15,1.14,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T18:15:00Z,Belgian First Division A,Lommel United vs Standard Liege,over25,1.53,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T18:15:00Z,Belgian First Division A,Lommel United vs Standard Liege,over35,2.2,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T18:15:00Z,Belgian First Division A,Lommel United vs Standard Liege,under15,5.5,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T18:15:00Z,Belgian First Division A,Lommel United vs Standard Liege,under25,2.4,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T18:15:00Z,Belgian First Division A,Lommel United vs Standard Liege,under35,1.62,std_capture
+2026-11-22T16:59:01Z,2026-11-22,2026-11-22T17:00:00Z,Greek Super League,Olympiakos Piraeus vs Iraklis 1908,btts_no,1.5,std_capture
+2026-11-22T16:59:01Z,2026-11-22,2026-11-22T17:00:00Z,Greek Super League,Olympiakos Piraeus vs Iraklis 1908,btts_yes,2.5,std_capture
+2026-11-22T16:59:01Z,2026-11-22,2026-11-22T17:00:00Z,Greek Super League,Olympiakos Piraeus vs Iraklis 1908,h2h_away,12.0,std_capture
+2026-11-22T16:59:01Z,2026-11-22,2026-11-22T17:00:00Z,Greek Super League,Olympiakos Piraeus vs Iraklis 1908,h2h_draw,8.5,std_capture
+2026-11-22T16:59:01Z,2026-11-22,2026-11-22T17:00:00Z,Greek Super League,Olympiakos Piraeus vs Iraklis 1908,h2h_home,1.17,std_capture
+2026-11-22T16:59:01Z,2026-11-22,2026-11-22T17:00:00Z,Greek Super League,Olympiakos Piraeus vs Iraklis 1908,ht_over05,1.25,std_capture
+2026-11-22T16:59:01Z,2026-11-22,2026-11-22T17:00:00Z,Greek Super League,Olympiakos Piraeus vs Iraklis 1908,ht_over15,2.25,std_capture
+2026-11-22T16:59:01Z,2026-11-22,2026-11-22T17:00:00Z,Greek Super League,Olympiakos Piraeus vs Iraklis 1908,ht_under05,3.75,std_capture
+2026-11-22T16:59:01Z,2026-11-22,2026-11-22T17:00:00Z,Greek Super League,Olympiakos Piraeus vs Iraklis 1908,ht_under15,1.57,std_capture
+2026-11-22T16:59:01Z,2026-11-22,2026-11-22T17:00:00Z,Greek Super League,Olympiakos Piraeus vs Iraklis 1908,over15,1.17,std_capture
+2026-11-22T16:59:01Z,2026-11-22,2026-11-22T17:00:00Z,Greek Super League,Olympiakos Piraeus vs Iraklis 1908,over25,1.53,std_capture
+2026-11-22T16:59:01Z,2026-11-22,2026-11-22T17:00:00Z,Greek Super League,Olympiakos Piraeus vs Iraklis 1908,over35,2.38,std_capture
+2026-11-22T16:59:01Z,2026-11-22,2026-11-22T17:00:00Z,Greek Super League,Olympiakos Piraeus vs Iraklis 1908,under15,5.0,std_capture
+2026-11-22T16:59:01Z,2026-11-22,2026-11-22T17:00:00Z,Greek Super League,Olympiakos Piraeus vs Iraklis 1908,under25,2.4,std_capture
+2026-11-22T16:59:01Z,2026-11-22,2026-11-22T17:00:00Z,Greek Super League,Olympiakos Piraeus vs Iraklis 1908,under35,1.53,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,Greek Super League,PAOK vs Kifisia,btts_no,1.75,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,Greek Super League,PAOK vs Kifisia,btts_yes,2.0,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,Greek Super League,PAOK vs Kifisia,h2h_away,8.5,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,Greek Super League,PAOK vs Kifisia,h2h_draw,4.5,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,Greek Super League,PAOK vs Kifisia,h2h_home,1.36,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,Greek Super League,PAOK vs Kifisia,ht_over05,1.3,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,Greek Super League,PAOK vs Kifisia,ht_over15,2.5,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,Greek Super League,PAOK vs Kifisia,ht_under05,3.4,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,Greek Super League,PAOK vs Kifisia,ht_under15,1.5,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,Greek Super League,PAOK vs Kifisia,over15,1.22,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,Greek Super League,PAOK vs Kifisia,over25,1.7,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,Greek Super League,PAOK vs Kifisia,over35,2.62,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,Greek Super League,PAOK vs Kifisia,under15,4.0,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,Greek Super League,PAOK vs Kifisia,under25,2.1,std_capture
+2026-11-22T17:19:41Z,2026-11-22,2026-11-22T17:30:00Z,Greek Super League,PAOK vs Kifisia,under35,1.44,std_capture
+2026-11-22T15:29:48Z,2026-11-22,2026-11-22T15:30:00Z,Greek Super League,Panathinaikos vs OFI,btts_no,1.75,std_capture
+2026-11-22T15:29:48Z,2026-11-22,2026-11-22T15:30:00Z,Greek Super League,Panathinaikos vs OFI,btts_yes,2.0,std_capture
+2026-11-22T15:29:48Z,2026-11-22,2026-11-22T15:30:00Z,Greek Super League,Panathinaikos vs OFI,h2h_away,9.0,std_capture
+2026-11-22T15:29:48Z,2026-11-22,2026-11-22T15:30:00Z,Greek Super League,Panathinaikos vs OFI,h2h_draw,6.5,std_capture
+2026-11-22T15:29:48Z,2026-11-22,2026-11-22T15:30:00Z,Greek Super League,Panathinaikos vs OFI,h2h_home,1.25,std_capture
+2026-11-22T15:29:48Z,2026-11-22,2026-11-22T15:30:00Z,Greek Super League,Panathinaikos vs OFI,ht_over05,1.22,std_capture
+2026-11-22T15:29:48Z,2026-11-22,2026-11-22T15:30:00Z,Greek Super League,Panathinaikos vs OFI,ht_over15,2.1,std_capture
+2026-11-22T15:29:48Z,2026-11-22,2026-11-22T15:30:00Z,Greek Super League,Panathinaikos vs OFI,ht_under05,4.0,std_capture
+2026-11-22T15:29:48Z,2026-11-22,2026-11-22T15:30:00Z,Greek Super League,Panathinaikos vs OFI,ht_under15,1.67,std_capture
+2026-11-22T15:29:48Z,2026-11-22,2026-11-22T15:30:00Z,Greek Super League,Panathinaikos vs OFI,over15,1.14,std_capture
+2026-11-22T15:29:48Z,2026-11-22,2026-11-22T15:30:00Z,Greek Super League,Panathinaikos vs OFI,over25,1.48,std_capture
+2026-11-22T15:29:48Z,2026-11-22,2026-11-22T15:30:00Z,Greek Super League,Panathinaikos vs OFI,over35,2.1,std_capture
+2026-11-22T15:29:48Z,2026-11-22,2026-11-22T15:30:00Z,Greek Super League,Panathinaikos vs OFI,under15,5.5,std_capture
+2026-11-22T15:29:48Z,2026-11-22,2026-11-22T15:30:00Z,Greek Super League,Panathinaikos vs OFI,under25,2.6,std_capture
+2026-11-22T15:29:48Z,2026-11-22,2026-11-22T15:30:00Z,Greek Super League,Panathinaikos vs OFI,under35,1.67,std_capture
 2026-11-22T11:58:22Z,2026-11-22,2026-11-22T15:00:00Z,Greek Super League,Panetolikos vs Volos NFC,btts_no,1.95,std_capture
 2026-11-22T11:58:22Z,2026-11-22,2026-11-22T15:00:00Z,Greek Super League,Panetolikos vs Volos NFC,btts_yes,1.8,std_capture
 2026-11-22T11:58:22Z,2026-11-22,2026-11-22T15:00:00Z,Greek Super League,Panetolikos vs Volos NFC,h2h_away,3.2,std_capture
@@ -358,36 +373,36 @@ snapshot_ts,match_date,kickoff_utc,league,match,market,odds,writer
 2026-11-22T13:29:30Z,2026-11-22,2026-11-22T13:30:00Z,Dutch Eredivisie,Sparta Rotterdam vs AZ Alkmaar,under15,6.0,std_capture
 2026-11-22T13:29:30Z,2026-11-22,2026-11-22T13:30:00Z,Dutch Eredivisie,Sparta Rotterdam vs AZ Alkmaar,under25,2.7,std_capture
 2026-11-22T13:29:30Z,2026-11-22,2026-11-22T13:30:00Z,Dutch Eredivisie,Sparta Rotterdam vs AZ Alkmaar,under35,1.73,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:15:00Z,La Liga 2,Sporting Gijon vs Las Palmas,btts_no,2.0,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:15:00Z,La Liga 2,Sporting Gijon vs Las Palmas,btts_yes,1.73,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:15:00Z,La Liga 2,Sporting Gijon vs Las Palmas,h2h_away,3.1,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:15:00Z,La Liga 2,Sporting Gijon vs Las Palmas,h2h_draw,3.3,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:15:00Z,La Liga 2,Sporting Gijon vs Las Palmas,h2h_home,2.25,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:15:00Z,La Liga 2,Sporting Gijon vs Las Palmas,ht_over05,1.36,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:15:00Z,La Liga 2,Sporting Gijon vs Las Palmas,ht_over15,2.75,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:15:00Z,La Liga 2,Sporting Gijon vs Las Palmas,ht_under05,3.0,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:15:00Z,La Liga 2,Sporting Gijon vs Las Palmas,ht_under15,1.4,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:15:00Z,La Liga 2,Sporting Gijon vs Las Palmas,over15,1.28,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:15:00Z,La Liga 2,Sporting Gijon vs Las Palmas,over25,2.0,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:15:00Z,La Liga 2,Sporting Gijon vs Las Palmas,over35,3.4,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:15:00Z,La Liga 2,Sporting Gijon vs Las Palmas,under15,3.5,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:15:00Z,La Liga 2,Sporting Gijon vs Las Palmas,under25,1.8,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T15:15:00Z,La Liga 2,Sporting Gijon vs Las Palmas,under35,1.3,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T16:00:00Z,Turkish Super Lig,Trabzonspor vs Eyüpspor,btts_no,1.67,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T16:00:00Z,Turkish Super Lig,Trabzonspor vs Eyüpspor,btts_yes,2.1,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T16:00:00Z,Turkish Super Lig,Trabzonspor vs Eyüpspor,h2h_away,17.0,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T16:00:00Z,Turkish Super Lig,Trabzonspor vs Eyüpspor,h2h_draw,8.5,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T16:00:00Z,Turkish Super Lig,Trabzonspor vs Eyüpspor,h2h_home,1.11,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T16:00:00Z,Turkish Super Lig,Trabzonspor vs Eyüpspor,ht_over05,1.2,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T16:00:00Z,Turkish Super Lig,Trabzonspor vs Eyüpspor,ht_over15,1.91,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T16:00:00Z,Turkish Super Lig,Trabzonspor vs Eyüpspor,ht_under05,4.33,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T16:00:00Z,Turkish Super Lig,Trabzonspor vs Eyüpspor,ht_under15,1.8,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T16:00:00Z,Turkish Super Lig,Trabzonspor vs Eyüpspor,over15,1.08,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T16:00:00Z,Turkish Super Lig,Trabzonspor vs Eyüpspor,over25,1.3,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T16:00:00Z,Turkish Super Lig,Trabzonspor vs Eyüpspor,over35,1.8,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T16:00:00Z,Turkish Super Lig,Trabzonspor vs Eyüpspor,under15,8.0,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T16:00:00Z,Turkish Super Lig,Trabzonspor vs Eyüpspor,under25,3.5,std_capture
-2026-11-22T13:39:47Z,2026-11-22,2026-11-22T16:00:00Z,Turkish Super Lig,Trabzonspor vs Eyüpspor,under35,1.91,std_capture
+2026-11-22T15:13:18Z,2026-11-22,2026-11-22T15:15:00Z,La Liga 2,Sporting Gijon vs Las Palmas,btts_no,2.0,std_capture
+2026-11-22T15:13:18Z,2026-11-22,2026-11-22T15:15:00Z,La Liga 2,Sporting Gijon vs Las Palmas,btts_yes,1.73,std_capture
+2026-11-22T15:13:18Z,2026-11-22,2026-11-22T15:15:00Z,La Liga 2,Sporting Gijon vs Las Palmas,h2h_away,3.1,std_capture
+2026-11-22T15:13:18Z,2026-11-22,2026-11-22T15:15:00Z,La Liga 2,Sporting Gijon vs Las Palmas,h2h_draw,3.3,std_capture
+2026-11-22T15:13:18Z,2026-11-22,2026-11-22T15:15:00Z,La Liga 2,Sporting Gijon vs Las Palmas,h2h_home,2.25,std_capture
+2026-11-22T15:13:18Z,2026-11-22,2026-11-22T15:15:00Z,La Liga 2,Sporting Gijon vs Las Palmas,ht_over05,1.36,std_capture
+2026-11-22T15:13:18Z,2026-11-22,2026-11-22T15:15:00Z,La Liga 2,Sporting Gijon vs Las Palmas,ht_over15,2.75,std_capture
+2026-11-22T15:13:18Z,2026-11-22,2026-11-22T15:15:00Z,La Liga 2,Sporting Gijon vs Las Palmas,ht_under05,3.0,std_capture
+2026-11-22T15:13:18Z,2026-11-22,2026-11-22T15:15:00Z,La Liga 2,Sporting Gijon vs Las Palmas,ht_under15,1.4,std_capture
+2026-11-22T15:13:18Z,2026-11-22,2026-11-22T15:15:00Z,La Liga 2,Sporting Gijon vs Las Palmas,over15,1.28,std_capture
+2026-11-22T15:13:18Z,2026-11-22,2026-11-22T15:15:00Z,La Liga 2,Sporting Gijon vs Las Palmas,over25,2.0,std_capture
+2026-11-22T15:13:18Z,2026-11-22,2026-11-22T15:15:00Z,La Liga 2,Sporting Gijon vs Las Palmas,over35,3.4,std_capture
+2026-11-22T15:13:18Z,2026-11-22,2026-11-22T15:15:00Z,La Liga 2,Sporting Gijon vs Las Palmas,under15,3.5,std_capture
+2026-11-22T15:13:18Z,2026-11-22,2026-11-22T15:15:00Z,La Liga 2,Sporting Gijon vs Las Palmas,under25,1.8,std_capture
+2026-11-22T15:13:18Z,2026-11-22,2026-11-22T15:15:00Z,La Liga 2,Sporting Gijon vs Las Palmas,under35,1.3,std_capture
+2026-11-22T15:58:48Z,2026-11-22,2026-11-22T16:00:00Z,Turkish Super Lig,Trabzonspor vs Eyüpspor,btts_no,1.67,std_capture
+2026-11-22T15:58:48Z,2026-11-22,2026-11-22T16:00:00Z,Turkish Super Lig,Trabzonspor vs Eyüpspor,btts_yes,2.1,std_capture
+2026-11-22T15:58:48Z,2026-11-22,2026-11-22T16:00:00Z,Turkish Super Lig,Trabzonspor vs Eyüpspor,h2h_away,17.0,std_capture
+2026-11-22T15:58:48Z,2026-11-22,2026-11-22T16:00:00Z,Turkish Super Lig,Trabzonspor vs Eyüpspor,h2h_draw,8.5,std_capture
+2026-11-22T15:58:48Z,2026-11-22,2026-11-22T16:00:00Z,Turkish Super Lig,Trabzonspor vs Eyüpspor,h2h_home,1.11,std_capture
+2026-11-22T15:58:48Z,2026-11-22,2026-11-22T16:00:00Z,Turkish Super Lig,Trabzonspor vs Eyüpspor,ht_over05,1.2,std_capture
+2026-11-22T15:58:48Z,2026-11-22,2026-11-22T16:00:00Z,Turkish Super Lig,Trabzonspor vs Eyüpspor,ht_over15,1.91,std_capture
+2026-11-22T15:58:48Z,2026-11-22,2026-11-22T16:00:00Z,Turkish Super Lig,Trabzonspor vs Eyüpspor,ht_under05,4.33,std_capture
+2026-11-22T15:58:48Z,2026-11-22,2026-11-22T16:00:00Z,Turkish Super Lig,Trabzonspor vs Eyüpspor,ht_under15,1.8,std_capture
+2026-11-22T15:58:48Z,2026-11-22,2026-11-22T16:00:00Z,Turkish Super Lig,Trabzonspor vs Eyüpspor,over15,1.08,std_capture
+2026-11-22T15:58:48Z,2026-11-22,2026-11-22T16:00:00Z,Turkish Super Lig,Trabzonspor vs Eyüpspor,over25,1.3,std_capture
+2026-11-22T15:58:48Z,2026-11-22,2026-11-22T16:00:00Z,Turkish Super Lig,Trabzonspor vs Eyüpspor,over35,1.8,std_capture
+2026-11-22T15:58:48Z,2026-11-22,2026-11-22T16:00:00Z,Turkish Super Lig,Trabzonspor vs Eyüpspor,under15,8.0,std_capture
+2026-11-22T15:58:48Z,2026-11-22,2026-11-22T16:00:00Z,Turkish Super Lig,Trabzonspor vs Eyüpspor,under25,3.5,std_capture
+2026-11-22T15:58:48Z,2026-11-22,2026-11-22T16:00:00Z,Turkish Super Lig,Trabzonspor vs Eyüpspor,under35,1.91,std_capture
 2026-11-22T11:13:08Z,2026-11-22,2026-11-22T11:15:00Z,Dutch Eredivisie,Twente vs Willem II,btts_no,1.75,std_capture
 2026-11-22T11:13:08Z,2026-11-22,2026-11-22T11:15:00Z,Dutch Eredivisie,Twente vs Willem II,btts_yes,2.0,std_capture
 2026-11-22T11:13:08Z,2026-11-22,2026-11-22T11:15:00Z,Dutch Eredivisie,Twente vs Willem II,h2h_away,21.0,std_capture

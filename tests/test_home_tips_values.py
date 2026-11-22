@@ -76,10 +76,15 @@ def _old_home_values():
                          _pnl=pd.to_numeric(d.get("pnl"), errors="coerce"), _staked=S.is_staked(lab),
                          _mkt=d[mkc].astype(str) if mkc and mkc in d.columns else const)
             # since 2026-11-11 these pre-redesign figures are Home's "Before the repairs" card: tips generated
-            # before config.CLEAN_RECORD_START (or, with no generation time, played before it)
-            _start = pd.Timestamp(config.CLEAN_RECORD_START)
+            # before the FULL Clean Record start (config/trustworthy_performance.json clean_record_start_utc, the
+            # go-live merge time: a tip generated on the start day before it is "before"), or, with no generation
+            # time, played before the start day. config.CLEAN_RECORD_START keeps only the date.
+            import json
+            _su = json.loads((config.BASE_DIR / "config" / "trustworthy_performance.json")
+                             .read_text(encoding="utf-8"))["clean_record_start_utc"]
+            _start = pd.Timestamp(_su).tz_convert("UTC").tz_convert(None)
             _gen = pd.to_datetime(d.get("generated_at"), errors="coerce", utc=True, format="mixed").dt.tz_convert(None)
-            _pre = (_gen < _start) | (_gen.isna() & (d["_dt"] < _start))
+            _pre = (_gen < _start) | (_gen.isna() & (d["_dt"] < _start.normalize()))
             parts.append(d[d["_pnl"].notna() & (d["_dt"] >= cut) & _pre][["signal_tier", "_mkt", "_pnl", "_staked"]])
         except Exception:                                   # noqa: BLE001
             continue
@@ -288,9 +293,24 @@ def test_tips_attach_keeps_rows_and_copies_stake_plan_values():
         b[["home_team", "away_team", "market", "odds"]].astype(str).values.tolist()
     p = plan.assign(side=plan["side"].astype(str).str.upper()).drop_duplicates(["fixture", "market", "side"], keep="last")
     p = p.set_index(["fixture", "market", "side"])
+    # a TOP-3 pick (owner 2026-11-17) is never in the stake plan: attach() overlays it from its own ledger
+    # (src/staked.top3_records_frame), so its stake values are checked against that ledger, not the plan
+    from src.staked import top3_records_frame
+    t3 = top3_records_frame(TV._top3_frame())
+    t3 = (t3.assign(market=t3["market"].astype(str).str.upper(), side=t3["side"].astype(str).str.upper())
+          .drop_duplicates(["fixture", "market", "side"], keep="last").set_index(["fixture", "market", "side"])
+          if len(t3) else None)
     for _, r in a[a["in_plan"]].iterrows():
         code, side = TV.plan_key(r["market"])
-        src = p.loc[(f"{str(r['date'])[:10]}|{r['home_team']}|{r['away_team']}", code, side)]
+        key = (f"{str(r['date'])[:10]}|{r['home_team']}|{r['away_team']}", code, side)
+        if pd.notna(r["top3_fraction"]):
+            src = t3.loc[(key[0], str(code).upper(), str(side).upper())]
+            assert r["deployment_state"] == "ACTIVE"
+            for c in ("final_fraction", "base_fraction", "stake_amount"):
+                assert (pd.isna(r[c]) and pd.isna(src[c])) or abs(float(r[c]) - float(src[c])) < 1e-12, c
+            assert r["top3_fraction"] == src["final_fraction"]
+            continue
+        src = p.loc[key]
         assert r["deployment_state"] == src["deployment_state"]
         for c in ("final_fraction", "p_market_fair", "p_decision", "ev_lower_bound"):
             assert (pd.isna(r[c]) and pd.isna(src[c])) or abs(float(r[c]) - float(src[c])) < 1e-12, c
