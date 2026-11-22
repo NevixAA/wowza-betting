@@ -1326,7 +1326,14 @@ def main(argv=None) -> int:
     fails = gate(checks=checks)
     doc = {"artifact": "data_truth_health", "version": VERSION,
            "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"), "checks": checks,
-           "stoplight": "RED" if fails else "GREEN", "gate_reasons": fails}
+           "stoplight": "RED" if fails else "GREEN", "gate_reasons": fails,
+           # P0 item 2 (2026-11-22): `stoplight` is the CI/change-control gate only. The operational
+           # verdict is the WORST check, gated or not - a RED ungated rule (e.g. 3, missing data) is RED here
+           "stoplight_scope": "CI/change-control gate: gated rules + known-defaults ratchet; NOT data quality",
+           "operational_status": min((c["status"] for c in checks),
+                                     key=lambda s: (0 if s == RED else 1 if s == AMBER else 3 if s == GREEN else 2)),
+           "operational_failing": [{"check": c["check"], "status": c["status"], "gated": is_gated(c["check"])}
+                                   for c in checks if c["status"] != GREEN]}
     HEALTH.write_text(json.dumps(doc, indent=1, default=str) + "\n", encoding="utf-8")
     for c in checks:
         print(f"{c['status']:7} {c['check']}: {c['value']}" + (f"  [{c['detail']}]" if c["detail"] else ""))

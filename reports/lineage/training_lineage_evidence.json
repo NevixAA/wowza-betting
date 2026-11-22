@@ -1,0 +1,677 @@
+{
+ "artifact": "training_lineage_evidence",
+ "version": "training-lineage-1.0",
+ "generated_at": "2026-11-22T17:32:47Z",
+ "generated_by": "scripts/verify_training_lineage.py",
+ "inputs": {
+  "std_frame_hash": "ebe47c041a7f595f",
+  "std_frame_rows": 77327,
+  "nf_keys_frame_hash": "9ed237ebc04aee09",
+  "nf_keys_rows": 328434
+ },
+ "code": {
+  "047442d9501e0f018d5263fee519e2ff8ce49b92": {
+   "status": "PASS",
+   "findings": [],
+   "safe_left_enrich_calls_in_loader": 10,
+   "files": [
+    "src/data_loader.py",
+    "src/feature_engineering.py",
+    "src/integrity/joins.py",
+    "src/retrain_harness/protocol.py"
+   ],
+   "code_sha": "047442d9501e0f018d5263fee519e2ff8ce49b92",
+   "on_remote": false
+  },
+  "694995f90b90920f596d7290d624ce6d99301612": {
+   "status": "PASS",
+   "findings": [],
+   "safe_left_enrich_calls_in_loader": 10,
+   "files": [
+    "src/data_loader.py",
+    "src/feature_engineering.py",
+    "src/integrity/joins.py",
+    "src/retrain_harness/protocol.py"
+   ],
+   "code_sha": "694995f90b90920f596d7290d624ce6d99301612",
+   "on_remote": true
+  }
+ },
+ "point_in_time": {
+  "status": "PASS",
+  "feature": "home/away_scored_last5",
+  "home": {
+   "rows": 76792,
+   "matches_previous_window": 1.0,
+   "matches_window_with_current_match": 0.2614
+  },
+  "away": {
+   "rows": 76807,
+   "matches_previous_window": 1.0,
+   "matches_window_with_current_match": 0.2686
+  }
+ },
+ "payloads": {
+  "model_v9_standard.pkl": {
+   "artifact_sha256": "67ee36668c21109d3ec8bf5050ac87d51997056299fa4472a501d39e3e7553b4",
+   "install_record_sha256": "67ee36668c21109d3ec8bf5050ac87d51997056299fa4472a501d39e3e7553b4",
+   "parts": [
+    {
+     "track": "standard",
+     "market": "over25",
+     "code_sha": "047442d9501e0f018d5263fee519e2ff8ce49b92",
+     "payload_frame_hash": "823d465eeb05f5a0",
+     "training_rows": 49407,
+     "training_end": "2026-11-01",
+     "source": {
+      "frame": "saved Standard training frame",
+      "frame_hash": "ebe47c041a7f595f",
+      "recorded_frame_hash": "ebe47c041a7f595f",
+      "refit_code_sha": "047442d9501e0f018d5263fee519e2ff8ce49b92"
+     },
+     "link_ok": true,
+     "frame_audit": {
+      "rows": 49597,
+      "duplicate_fixture_keys": 0,
+      "club_twice_same_day": 0,
+      "leagues": 17,
+      "leagues_not_in_registry": [],
+      "leagues_on_other_track": [],
+      "date_min": "2016-08-05",
+      "date_max": "2026-11-16",
+      "rows_after_train_end": 190,
+      "rows_to_train_end": 49407,
+      "payload_training_rows": 49407,
+      "row_count_matches_payload": true,
+      "status": "PASS"
+     },
+     "code_audit_status": "PASS",
+     "status": "PASS"
+    }
+   ],
+   "status": "PASS",
+   "summary": "standard/over25: 49,597 rows (49407 to train end = payload 49407), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS"
+  },
+  "model_v9_newformat.pkl": {
+   "artifact_sha256": "303c9a05071e7afd4e7dfd42074052554b74213a0ae92d9e6421a1cdc138ca71",
+   "install_record_sha256": null,
+   "parts": [
+    {
+     "track": "new_format",
+     "market": "over25",
+     "code_sha": "694995f90b90920f596d7290d624ce6d99301612",
+     "payload_frame_hash": "25ea42fe32607275",
+     "training_rows": 26846,
+     "training_end": "2026-11-01",
+     "source": {
+      "frame": "training keys saved by the 2026-11-18 refit",
+      "frame_hash": "9ed237ebc04aee09",
+      "recorded_frame_hash": "9ed237ebc04aee09",
+      "refit_code_sha": "694995f90b90920f596d7290d624ce6d99301612"
+     },
+     "link_ok": true,
+     "frame_audit": {
+      "rows": 26965,
+      "duplicate_fixture_keys": 0,
+      "club_twice_same_day": 0,
+      "leagues": 15,
+      "leagues_not_in_registry": [],
+      "leagues_on_other_track": [],
+      "date_min": "2019-02-22",
+      "date_max": "2026-11-08",
+      "rows_after_train_end": 119,
+      "rows_to_train_end": 26846,
+      "payload_training_rows": 26846,
+      "row_count_matches_payload": true,
+      "status": "PASS"
+     },
+     "code_audit_status": "PASS",
+     "status": "PASS"
+    }
+   ],
+   "status": "PASS",
+   "summary": "new_format/over25: 26,965 rows (26846 to train end = payload 26846), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS"
+  },
+  "model_v9_btts.pkl": {
+   "artifact_sha256": "44c670490d5101c13423b715a92f3b2d40396d35b1d9fc7c83f2c688a9afc1f1",
+   "install_record_sha256": "44c670490d5101c13423b715a92f3b2d40396d35b1d9fc7c83f2c688a9afc1f1",
+   "parts": [
+    {
+     "track": "standard",
+     "market": "btts",
+     "code_sha": "047442d9501e0f018d5263fee519e2ff8ce49b92",
+     "payload_frame_hash": "0c4cdc31d41d19f0",
+     "training_rows": 49407,
+     "training_end": "2026-11-01",
+     "source": {
+      "frame": "saved Standard training frame",
+      "frame_hash": "ebe47c041a7f595f",
+      "recorded_frame_hash": "ebe47c041a7f595f",
+      "refit_code_sha": "047442d9501e0f018d5263fee519e2ff8ce49b92"
+     },
+     "link_ok": true,
+     "frame_audit": {
+      "rows": 49597,
+      "duplicate_fixture_keys": 0,
+      "club_twice_same_day": 0,
+      "leagues": 17,
+      "leagues_not_in_registry": [],
+      "leagues_on_other_track": [],
+      "date_min": "2016-08-05",
+      "date_max": "2026-11-16",
+      "rows_after_train_end": 190,
+      "rows_to_train_end": 49407,
+      "payload_training_rows": 49407,
+      "row_count_matches_payload": true,
+      "status": "PASS"
+     },
+     "code_audit_status": "PASS",
+     "status": "PASS"
+    },
+    {
+     "track": "new_format",
+     "market": "btts",
+     "code_sha": "694995f90b90920f596d7290d624ce6d99301612",
+     "payload_frame_hash": "d3f6d80a374fc72d",
+     "training_rows": 26846,
+     "training_end": "2026-11-01",
+     "source": {
+      "frame": "training keys saved by the 2026-11-18 refit",
+      "frame_hash": "9ed237ebc04aee09",
+      "recorded_frame_hash": "9ed237ebc04aee09",
+      "refit_code_sha": "694995f90b90920f596d7290d624ce6d99301612"
+     },
+     "link_ok": true,
+     "frame_audit": {
+      "rows": 26965,
+      "duplicate_fixture_keys": 0,
+      "club_twice_same_day": 0,
+      "leagues": 15,
+      "leagues_not_in_registry": [],
+      "leagues_on_other_track": [],
+      "date_min": "2019-02-22",
+      "date_max": "2026-11-08",
+      "rows_after_train_end": 119,
+      "rows_to_train_end": 26846,
+      "payload_training_rows": 26846,
+      "row_count_matches_payload": true,
+      "status": "PASS"
+     },
+     "code_audit_status": "PASS",
+     "status": "PASS"
+    }
+   ],
+   "status": "PASS",
+   "summary": "standard/btts: 49,597 rows (49407 to train end = payload 49407), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS; new_format/btts: 26,965 rows (26846 to train end = payload 26846), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS"
+  },
+  "model_v9_over15.pkl": {
+   "artifact_sha256": "ca01b7d3a4f6fcae12ec4fe58691d736245415a09efdcbecdb8ab62f3e865bb7",
+   "install_record_sha256": "ca01b7d3a4f6fcae12ec4fe58691d736245415a09efdcbecdb8ab62f3e865bb7",
+   "parts": [
+    {
+     "track": "standard",
+     "market": "over15",
+     "code_sha": "047442d9501e0f018d5263fee519e2ff8ce49b92",
+     "payload_frame_hash": "23839609719fc515",
+     "training_rows": 49407,
+     "training_end": "2026-11-01",
+     "source": {
+      "frame": "saved Standard training frame",
+      "frame_hash": "ebe47c041a7f595f",
+      "recorded_frame_hash": "ebe47c041a7f595f",
+      "refit_code_sha": "047442d9501e0f018d5263fee519e2ff8ce49b92"
+     },
+     "link_ok": true,
+     "frame_audit": {
+      "rows": 49597,
+      "duplicate_fixture_keys": 0,
+      "club_twice_same_day": 0,
+      "leagues": 17,
+      "leagues_not_in_registry": [],
+      "leagues_on_other_track": [],
+      "date_min": "2016-08-05",
+      "date_max": "2026-11-16",
+      "rows_after_train_end": 190,
+      "rows_to_train_end": 49407,
+      "payload_training_rows": 49407,
+      "row_count_matches_payload": true,
+      "status": "PASS"
+     },
+     "code_audit_status": "PASS",
+     "status": "PASS"
+    },
+    {
+     "track": "new_format",
+     "market": "over15",
+     "code_sha": "694995f90b90920f596d7290d624ce6d99301612",
+     "payload_frame_hash": "33bacb811e7f56e8",
+     "training_rows": 26846,
+     "training_end": "2026-11-01",
+     "source": {
+      "frame": "training keys saved by the 2026-11-18 refit",
+      "frame_hash": "9ed237ebc04aee09",
+      "recorded_frame_hash": "9ed237ebc04aee09",
+      "refit_code_sha": "694995f90b90920f596d7290d624ce6d99301612"
+     },
+     "link_ok": true,
+     "frame_audit": {
+      "rows": 26965,
+      "duplicate_fixture_keys": 0,
+      "club_twice_same_day": 0,
+      "leagues": 15,
+      "leagues_not_in_registry": [],
+      "leagues_on_other_track": [],
+      "date_min": "2019-02-22",
+      "date_max": "2026-11-08",
+      "rows_after_train_end": 119,
+      "rows_to_train_end": 26846,
+      "payload_training_rows": 26846,
+      "row_count_matches_payload": true,
+      "status": "PASS"
+     },
+     "code_audit_status": "PASS",
+     "status": "PASS"
+    }
+   ],
+   "status": "PASS",
+   "summary": "standard/over15: 49,597 rows (49407 to train end = payload 49407), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS; new_format/over15: 26,965 rows (26846 to train end = payload 26846), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS"
+  },
+  "model_v9_over35.pkl": {
+   "artifact_sha256": "e8b12d74f1b0d51a75355321b5d10c7868d22c1c4ccb8a8452ba3bfdd814cb86",
+   "install_record_sha256": "e8b12d74f1b0d51a75355321b5d10c7868d22c1c4ccb8a8452ba3bfdd814cb86",
+   "parts": [
+    {
+     "track": "standard",
+     "market": "over35",
+     "code_sha": "047442d9501e0f018d5263fee519e2ff8ce49b92",
+     "payload_frame_hash": "054d6a550c7bd908",
+     "training_rows": 49407,
+     "training_end": "2026-11-01",
+     "source": {
+      "frame": "saved Standard training frame",
+      "frame_hash": "ebe47c041a7f595f",
+      "recorded_frame_hash": "ebe47c041a7f595f",
+      "refit_code_sha": "047442d9501e0f018d5263fee519e2ff8ce49b92"
+     },
+     "link_ok": true,
+     "frame_audit": {
+      "rows": 49597,
+      "duplicate_fixture_keys": 0,
+      "club_twice_same_day": 0,
+      "leagues": 17,
+      "leagues_not_in_registry": [],
+      "leagues_on_other_track": [],
+      "date_min": "2016-08-05",
+      "date_max": "2026-11-16",
+      "rows_after_train_end": 190,
+      "rows_to_train_end": 49407,
+      "payload_training_rows": 49407,
+      "row_count_matches_payload": true,
+      "status": "PASS"
+     },
+     "code_audit_status": "PASS",
+     "status": "PASS"
+    },
+    {
+     "track": "new_format",
+     "market": "over35",
+     "code_sha": "694995f90b90920f596d7290d624ce6d99301612",
+     "payload_frame_hash": "bfe9e3425792535e",
+     "training_rows": 26846,
+     "training_end": "2026-11-01",
+     "source": {
+      "frame": "training keys saved by the 2026-11-18 refit",
+      "frame_hash": "9ed237ebc04aee09",
+      "recorded_frame_hash": "9ed237ebc04aee09",
+      "refit_code_sha": "694995f90b90920f596d7290d624ce6d99301612"
+     },
+     "link_ok": true,
+     "frame_audit": {
+      "rows": 26965,
+      "duplicate_fixture_keys": 0,
+      "club_twice_same_day": 0,
+      "leagues": 15,
+      "leagues_not_in_registry": [],
+      "leagues_on_other_track": [],
+      "date_min": "2019-02-22",
+      "date_max": "2026-11-08",
+      "rows_after_train_end": 119,
+      "rows_to_train_end": 26846,
+      "payload_training_rows": 26846,
+      "row_count_matches_payload": true,
+      "status": "PASS"
+     },
+     "code_audit_status": "PASS",
+     "status": "PASS"
+    }
+   ],
+   "status": "PASS",
+   "summary": "standard/over35: 49,597 rows (49407 to train end = payload 49407), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS; new_format/over35: 26,965 rows (26846 to train end = payload 26846), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS"
+  },
+  "model_ht_over05.pkl": {
+   "artifact_sha256": "5a76d680e2fc53d6d8841781d6100bfbd1df2c54ccce9c55d7d782c778e52a75",
+   "install_record_sha256": "5a76d680e2fc53d6d8841781d6100bfbd1df2c54ccce9c55d7d782c778e52a75",
+   "parts": [
+    {
+     "track": "standard",
+     "market": "ht_over05",
+     "code_sha": "047442d9501e0f018d5263fee519e2ff8ce49b92",
+     "payload_frame_hash": "17be13b413bd7a0e",
+     "training_rows": 49256,
+     "training_end": "2026-11-01",
+     "source": {
+      "frame": "saved Standard training frame",
+      "frame_hash": "ebe47c041a7f595f",
+      "recorded_frame_hash": "ebe47c041a7f595f",
+      "refit_code_sha": "047442d9501e0f018d5263fee519e2ff8ce49b92"
+     },
+     "link_ok": true,
+     "frame_audit": {
+      "rows": 49446,
+      "duplicate_fixture_keys": 0,
+      "club_twice_same_day": 0,
+      "leagues": 17,
+      "leagues_not_in_registry": [],
+      "leagues_on_other_track": [],
+      "date_min": "2016-08-05",
+      "date_max": "2026-11-16",
+      "rows_after_train_end": 190,
+      "rows_to_train_end": 49256,
+      "payload_training_rows": 49256,
+      "row_count_matches_payload": true,
+      "status": "PASS"
+     },
+     "code_audit_status": "PASS",
+     "status": "PASS"
+    }
+   ],
+   "status": "PASS",
+   "summary": "standard/ht_over05: 49,446 rows (49256 to train end = payload 49256), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS"
+  },
+  "model_ht_over15.pkl": {
+   "artifact_sha256": "e9a12ce1b6af077fc9dc8efb9f663d2c757eb07880a2378b18049ba891e6552b",
+   "install_record_sha256": "e9a12ce1b6af077fc9dc8efb9f663d2c757eb07880a2378b18049ba891e6552b",
+   "parts": [
+    {
+     "track": "standard",
+     "market": "ht_over15",
+     "code_sha": "047442d9501e0f018d5263fee519e2ff8ce49b92",
+     "payload_frame_hash": "1c02282b9a293157",
+     "training_rows": 49256,
+     "training_end": "2026-11-01",
+     "source": {
+      "frame": "saved Standard training frame",
+      "frame_hash": "ebe47c041a7f595f",
+      "recorded_frame_hash": "ebe47c041a7f595f",
+      "refit_code_sha": "047442d9501e0f018d5263fee519e2ff8ce49b92"
+     },
+     "link_ok": true,
+     "frame_audit": {
+      "rows": 49446,
+      "duplicate_fixture_keys": 0,
+      "club_twice_same_day": 0,
+      "leagues": 17,
+      "leagues_not_in_registry": [],
+      "leagues_on_other_track": [],
+      "date_min": "2016-08-05",
+      "date_max": "2026-11-16",
+      "rows_after_train_end": 190,
+      "rows_to_train_end": 49256,
+      "payload_training_rows": 49256,
+      "row_count_matches_payload": true,
+      "status": "PASS"
+     },
+     "code_audit_status": "PASS",
+     "status": "PASS"
+    }
+   ],
+   "status": "PASS",
+   "summary": "standard/ht_over15: 49,446 rows (49256 to train end = payload 49256), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS"
+  },
+  "model_v9_ht_over05_nf.pkl": {
+   "artifact_sha256": "ae89ea10ee628636bb308e26952cb20937536bed8c0ce79dc83b93d45bc89a84",
+   "install_record_sha256": null,
+   "parts": [
+    {
+     "track": "new_format",
+     "market": "ht_over05",
+     "code_sha": "694995f90b90920f596d7290d624ce6d99301612",
+     "payload_frame_hash": "f66c0a73b4de730a",
+     "training_rows": 26759,
+     "training_end": "2026-11-01",
+     "source": {
+      "frame": "training keys saved by the 2026-11-18 refit",
+      "frame_hash": "9ed237ebc04aee09",
+      "recorded_frame_hash": "9ed237ebc04aee09",
+      "refit_code_sha": "694995f90b90920f596d7290d624ce6d99301612"
+     },
+     "link_ok": true,
+     "frame_audit": {
+      "rows": 26786,
+      "duplicate_fixture_keys": 0,
+      "club_twice_same_day": 0,
+      "leagues": 15,
+      "leagues_not_in_registry": [],
+      "leagues_on_other_track": [],
+      "date_min": "2019-02-22",
+      "date_max": "2026-11-06",
+      "rows_after_train_end": 27,
+      "rows_to_train_end": 26759,
+      "payload_training_rows": 26759,
+      "row_count_matches_payload": true,
+      "status": "PASS"
+     },
+     "code_audit_status": "PASS",
+     "status": "PASS"
+    }
+   ],
+   "status": "PASS",
+   "summary": "new_format/ht_over05: 26,786 rows (26759 to train end = payload 26759), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS"
+  },
+  "model_v9_ht_over15_nf.pkl": {
+   "artifact_sha256": "ead4bb74188de2de80a00b10f2bbcfcf4453c4a5c4389ac46c5eae17caa9057c",
+   "install_record_sha256": null,
+   "parts": [
+    {
+     "track": "new_format",
+     "market": "ht_over15",
+     "code_sha": "694995f90b90920f596d7290d624ce6d99301612",
+     "payload_frame_hash": "a13e2088d9b8453a",
+     "training_rows": 26759,
+     "training_end": "2026-11-01",
+     "source": {
+      "frame": "training keys saved by the 2026-11-18 refit",
+      "frame_hash": "9ed237ebc04aee09",
+      "recorded_frame_hash": "9ed237ebc04aee09",
+      "refit_code_sha": "694995f90b90920f596d7290d624ce6d99301612"
+     },
+     "link_ok": true,
+     "frame_audit": {
+      "rows": 26786,
+      "duplicate_fixture_keys": 0,
+      "club_twice_same_day": 0,
+      "leagues": 15,
+      "leagues_not_in_registry": [],
+      "leagues_on_other_track": [],
+      "date_min": "2019-02-22",
+      "date_max": "2026-11-06",
+      "rows_after_train_end": 27,
+      "rows_to_train_end": 26759,
+      "payload_training_rows": 26759,
+      "row_count_matches_payload": true,
+      "status": "PASS"
+     },
+     "code_audit_status": "PASS",
+     "status": "PASS"
+    }
+   ],
+   "status": "PASS",
+   "summary": "new_format/ht_over15: 26,786 rows (26759 to train end = payload 26759), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS"
+  }
+ },
+ "props": {
+  "model_player_assists.pkl": {
+   "artifact_sha256": "abf39bb5abbb2d6097d9d2d83082e3b7abefc22bf7fd91689b01ba8f810c499b",
+   "code_sha": "6fd794964ad031b45ff0a383d996bb09b414175c",
+   "run_id": "43035218594",
+   "code_on_remote": true,
+   "code_audit": {
+    "status": "PASS",
+    "findings": [],
+    "safe_left_enrich_calls_in_loader": 0,
+    "files": [
+     "player_model/feature_engineering.py",
+     "player_model/props_harness.py"
+    ]
+   },
+   "imports_team_enrichment_joins": false,
+   "status": "PASS",
+   "summary": "code PASS at 6fd794964; joins fixture_id / league keyed; team enrichment joins not imported; row-level props frame not re-run here"
+  },
+  "model_player_cards.pkl": {
+   "artifact_sha256": "bfd5e1cc51835a63f9abfcfe5e8fa7a7873ed079e07102f8af8764f68a6d9279",
+   "code_sha": "6fd794964ad031b45ff0a383d996bb09b414175c",
+   "run_id": "43035218594",
+   "code_on_remote": true,
+   "code_audit": {
+    "status": "PASS",
+    "findings": [],
+    "safe_left_enrich_calls_in_loader": 0,
+    "files": [
+     "player_model/feature_engineering.py",
+     "player_model/props_harness.py"
+    ]
+   },
+   "imports_team_enrichment_joins": false,
+   "status": "PASS",
+   "summary": "code PASS at 6fd794964; joins fixture_id / league keyed; team enrichment joins not imported; row-level props frame not re-run here"
+  },
+  "model_player_goals.pkl": {
+   "artifact_sha256": "5de94714b722dbc3fd1ecd294fa246725749cc8ea5dced294d7487f934110038",
+   "code_sha": "6fd794964ad031b45ff0a383d996bb09b414175c",
+   "run_id": "43035218594",
+   "code_on_remote": true,
+   "code_audit": {
+    "status": "PASS",
+    "findings": [],
+    "safe_left_enrich_calls_in_loader": 0,
+    "files": [
+     "player_model/feature_engineering.py",
+     "player_model/props_harness.py"
+    ]
+   },
+   "imports_team_enrichment_joins": false,
+   "status": "PASS",
+   "summary": "code PASS at 6fd794964; joins fixture_id / league keyed; team enrichment joins not imported; row-level props frame not re-run here"
+  },
+  "model_player_goals2.pkl": {
+   "artifact_sha256": "81b5b8641e2a0ee41677d6fda5057a224d42a7e35f1118898a1650416707e8de",
+   "code_sha": "6fd794964ad031b45ff0a383d996bb09b414175c",
+   "run_id": "43035218594",
+   "code_on_remote": true,
+   "code_audit": {
+    "status": "PASS",
+    "findings": [],
+    "safe_left_enrich_calls_in_loader": 0,
+    "files": [
+     "player_model/feature_engineering.py",
+     "player_model/props_harness.py"
+    ]
+   },
+   "imports_team_enrichment_joins": false,
+   "status": "PASS",
+   "summary": "code PASS at 6fd794964; joins fixture_id / league keyed; team enrichment joins not imported; row-level props frame not re-run here"
+  },
+  "model_player_goals3.pkl": {
+   "artifact_sha256": "89f588a0614e4716d46fb77f96d23bb65cf08564d313ec19e212e325cbf8a0fa",
+   "code_sha": "6fd794964ad031b45ff0a383d996bb09b414175c",
+   "run_id": "43035218594",
+   "code_on_remote": true,
+   "code_audit": {
+    "status": "PASS",
+    "findings": [],
+    "safe_left_enrich_calls_in_loader": 0,
+    "files": [
+     "player_model/feature_engineering.py",
+     "player_model/props_harness.py"
+    ]
+   },
+   "imports_team_enrichment_joins": false,
+   "status": "PASS",
+   "summary": "code PASS at 6fd794964; joins fixture_id / league keyed; team enrichment joins not imported; row-level props frame not re-run here"
+  },
+  "model_player_sot.pkl": {
+   "artifact_sha256": "571b102c4214f619b2d2d9c4f390c214481c74f68c3db88ef6812befa843025c",
+   "code_sha": "6fd794964ad031b45ff0a383d996bb09b414175c",
+   "run_id": "43035218594",
+   "code_on_remote": true,
+   "code_audit": {
+    "status": "PASS",
+    "findings": [],
+    "safe_left_enrich_calls_in_loader": 0,
+    "files": [
+     "player_model/feature_engineering.py",
+     "player_model/props_harness.py"
+    ]
+   },
+   "imports_team_enrichment_joins": false,
+   "status": "PASS",
+   "summary": "code PASS at 6fd794964; joins fixture_id / league keyed; team enrichment joins not imported; row-level props frame not re-run here"
+  },
+  "model_player_sot2.pkl": {
+   "artifact_sha256": "5b5fad604a126baac702bef3ade27cbac662625b0e4936ba7fe48337b2621734",
+   "code_sha": "6fd794964ad031b45ff0a383d996bb09b414175c",
+   "run_id": "43035218594",
+   "code_on_remote": true,
+   "code_audit": {
+    "status": "PASS",
+    "findings": [],
+    "safe_left_enrich_calls_in_loader": 0,
+    "files": [
+     "player_model/feature_engineering.py",
+     "player_model/props_harness.py"
+    ]
+   },
+   "imports_team_enrichment_joins": false,
+   "status": "PASS",
+   "summary": "code PASS at 6fd794964; joins fixture_id / league keyed; team enrichment joins not imported; row-level props frame not re-run here"
+  },
+  "model_player_sot3.pkl": {
+   "artifact_sha256": "f11626d93c30cac4eb37deb721ebb1b15b18cde346e91b27ed566f61d52e0dd8",
+   "code_sha": "6fd794964ad031b45ff0a383d996bb09b414175c",
+   "run_id": "43035218594",
+   "code_on_remote": true,
+   "code_audit": {
+    "status": "PASS",
+    "findings": [],
+    "safe_left_enrich_calls_in_loader": 0,
+    "files": [
+     "player_model/feature_engineering.py",
+     "player_model/props_harness.py"
+    ]
+   },
+   "imports_team_enrichment_joins": false,
+   "status": "PASS",
+   "summary": "code PASS at 6fd794964; joins fixture_id / league keyed; team enrichment joins not imported; row-level props frame not re-run here"
+  },
+  "model_player_sot4.pkl": {
+   "artifact_sha256": "e0d074b89ef75a41f079b86f7d431681238c0b6fabaa1d1252feaf8c7655b8b0",
+   "code_sha": "6fd794964ad031b45ff0a383d996bb09b414175c",
+   "run_id": "43035218594",
+   "code_on_remote": true,
+   "code_audit": {
+    "status": "PASS",
+    "findings": [],
+    "safe_left_enrich_calls_in_loader": 0,
+    "files": [
+     "player_model/feature_engineering.py",
+     "player_model/props_harness.py"
+    ]
+   },
+   "imports_team_enrichment_joins": false,
+   "status": "PASS",
+   "summary": "code PASS at 6fd794964; joins fixture_id / league keyed; team enrichment joins not imported; row-level props frame not re-run here"
+  }
+ },
+ "status": "PASS"
+}
