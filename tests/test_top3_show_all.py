@@ -80,7 +80,9 @@ def test_fewer_than_three_only_when_fewer_priced_candidates_and_the_message_says
     assert list(top["fixture_id"]) == ["fx1"]
     assert json.loads(weeks["excluded"].iloc[0]).get("NO_TWO_SIDED_PRICE") == 3
     msg = T.message(top, real_checker=lambda *a, **k: False, policy=POLICY)
-    assert "Only 1 priced, coherent candidate this week." in msg
+    assert "Only 1 priced, coherent pick with value this week." in msg
+    assert "2. T2 safest: none - no other priced, coherent pick with value" in msg
+    assert "3. T3 risky value: none - no other priced, coherent pick with value" in msg
 
 
 def test_never_a_pick_without_a_price_even_with_a_huge_model_edge():
@@ -106,23 +108,77 @@ def test_outside_the_cells_odds_range_stays_out():
 def test_t1_value_t2_safest_t3_longest_odds_with_positive_edge():
     rows = [_odds(_cand(1, "OU25", "OVER", pm=0.62, pf=0.50), 2.00),       # best value
             _odds(_cand(2, "OVER15", "OVER", pm=0.84, pf=0.78), 1.30),     # highest p
-            _odds(_cand(3, "OVER35", "OVER", pm=0.31, pf=0.30), 3.20),     # longest odds, edge > 0
+            _odds(_cand(3, "OVER35", "OVER", pm=0.34, pf=0.30), 3.20),     # longest odds, value > 0
             _odds(_cand(4, "BTTS", "YES", pm=0.60, pf=0.55), 1.85)]
     picks, _ = _run(rows, ctx=_ctx(markets=()))
     got = dict(zip(_top(picks)["slot"], _top(picks)["fixture_id"]))
     assert got == {"T1_BEST_VALUE": "fx1", "T2_SAFEST": "fx2", "T3_RISKY_VALUE": "fx3"}
 
 
-def test_t3_falls_back_to_the_next_best_value_when_no_positive_edge_is_left():
+def test_a_negative_value_pick_is_never_shown_and_the_slot_stays_empty():
+    """Owner 2026-11-22 (2nd decision): every slot needs value > 0 - T2 is the highest p among picks WITH value,
+    never a negative-value 'safe' pick; with none left the slot stays empty and says why."""
+    rows = [_odds(_cand(1, "OU25", "OVER", pm=0.62, pf=0.50), 2.00),       # value +0.24
+            _odds(_cand(2, "OVER15", "OVER", pm=0.84, pf=0.86), 1.15),     # highest p, value -0.034: never shown
+            _odds(_cand(3, "OVER35", "OVER", pm=0.25, pf=0.30), 3.20),     # value -0.20: never shown
+            _odds(_cand(4, "BTTS", "YES", pm=0.50, pf=0.52), 1.95)]        # value -0.025: never shown
+    picks, weeks = _run(rows, ctx=_ctx(markets=()))
+    top = _top(picks)
+    assert list(top["fixture_id"]) == ["fx1"] and list(top["slot"]) == ["T1_BEST_VALUE"]
+    ex = json.loads(weeks["excluded"].iloc[0])
+    assert ex.get("NO_POSITIVE_VALUE") == 4                         # fx2, fx3, fx4 and the lock row (value 0)
+    assert ex.get("EMPTY_SLOT_NO_PICK_WITH_VALUE") == 2
+    msg = T.message(top, real_checker=lambda *a, **k: False, policy=POLICY)
+    assert "T2 safest: none - no other priced, coherent pick with value" in msg
+
+
+def test_every_shown_pick_has_positive_value():
+    import random
+    rnd = random.Random(7)
+    rows = [_odds(_cand(i, ("OU25", "OVER15", "OVER35", "BTTS")[i % 4], ("OVER", "OVER", "OVER", "YES")[i % 4],
+                        pm=rnd.uniform(0.2, 0.9), pf=rnd.uniform(0.2, 0.9)), rnd.uniform(1.1, 4.0))
+            for i in range(1, 25)]
+    for ctx in (_ctx(), _ctx(markets=())):
+        top = _top(_run(rows, ctx=ctx)[0])
+        for r in top.to_dict("records"):
+            p = float(r["p_model_raw"]) if r["value_basis"] == T.BASIS_MODEL else float(r["p_market_fair"]) + 0.5 * (
+                float(r["p_used"]) - float(r["p_market_fair"]))
+            assert r["stake_reason"] == T.STAKED or p * float(r["odds"]) - 1 > 0, r
+
+
+# ── staked picks are protected ───────────────────────────────────────────────────────────────────
+def test_a_stakeable_pick_is_never_pushed_out_by_unstaked_ones():
+    """Four no-bar picks beat the one stakeable pick on value, p and odds; it still keeps a slot (owner 2026-11-22)."""
+    ctx = _ctx(markets=("ou25",))                                      # only O/U 2.5 has an approved bar
+    rows = [_odds(_cand(1, "OU25", "OVER", pm=0.56, pf=0.50), 1.95),       # stakeable: edge +0.06 >= bar 0.02
+            _odds(_cand(2, "BTTS", "YES", pm=0.75, pf=0.50), 2.00),        # no bar, far more value
+            _odds(_cand(3, "OVER15", "OVER", pm=0.95, pf=0.80), 1.25),     # no bar, highest p
+            _odds(_cand(4, "OVER35", "OVER", pm=0.45, pf=0.30), 3.40),     # no bar, longest odds
+            _odds(_cand(5, "BTTS", "YES", pm=0.70, pf=0.50, home="H5b"), 1.90)]
+    picks, _ = _run(rows, ctx=ctx)
+    top = _top(picks)
+    assert len(top) == 3 and "fx1" in set(top["fixture_id"])
+    r = top.set_index("fixture_id").loc["fx1"]
+    assert r["stake_reason"] == T.STAKED and float(r["stake"]) == 0.005
+
+
+def test_staked_pick_goes_to_the_tier_it_matches_best():
+    ctx = _ctx(markets=("over15",))                                    # only Over 1.5 has an approved bar
+    rows = [_odds(_cand(1, "OVER15", "OVER", pm=0.93, pf=0.80), 1.22),     # stakeable, the highest p of all
+            _odds(_cand(2, "BTTS", "YES", pm=0.75, pf=0.50), 2.00),        # no bar, best value
+            _odds(_cand(3, "OVER35", "OVER", pm=0.40, pf=0.30), 3.40)]     # no bar, longest odds
+    top = _top(_run(rows, ctx=ctx)[0])
+    got = dict(zip(top["slot"], top["fixture_id"]))
+    assert got == {"T1_BEST_VALUE": "fx2", "T2_SAFEST": "fx1", "T3_RISKY_VALUE": "fx3"}
+
+
+def test_three_or_more_stakeable_fill_the_tiers_among_themselves():
     rows = [_odds(_cand(1, "OU25", "OVER", pm=0.62, pf=0.50), 2.00),
             _odds(_cand(2, "OVER15", "OVER", pm=0.84, pf=0.78), 1.30),
-            _odds(_cand(3, "OVER35", "OVER", pm=0.25, pf=0.30), 3.20),     # longest odds but edge < 0
-            _odds(_cand(4, "BTTS", "YES", pm=0.50, pf=0.52), 1.95)]        # edge < 0, better value than fx3
-    picks, _ = _run(rows, ctx=_ctx(markets=()))
-    got = dict(zip(_top(picks)["slot"], _top(picks)["fixture_id"]))
-    # no remaining candidate has p - fair > 0 (the lock row fx99 has edge 0): T3 = the best remaining value
-    vals = {"fx4": 0.50 * 1.95 - 1, "fx3": 0.25 * 3.20 - 1, "fx99": 0.5 * 2.0 - 1}
-    assert got["T3_RISKY_VALUE"] == max(vals, key=vals.get)
+            _odds(_cand(3, "OVER35", "OVER", pm=0.36, pf=0.30), 3.40),
+            _odds(_cand(4, "BTTS", "YES", pm=0.60, pf=0.55), 1.85)]
+    top = _top(_run(rows)[0])
+    assert set(top["stake_reason"]) == {T.STAKED} and len(top) == 3
 
 
 # ── coherence and direction ───────────────────────────────────────────────────────────────────────

@@ -106,7 +106,15 @@ SHOW ALL, STAKE BY PROOF (owner 2026-11-22, "3 per league, stake by proof"; tier
     config/top3_tiers_p11.json) where the candidate has a cell AND a calibration cell (value_basis CALIBRATED),
     else the model's own probability (lam = 1: its full edge vs the de-vigged fair price, value_basis MODEL_EDGE).
   * T1 = highest value. T2 = highest p of the rest. T3 = of the rest, the longest odds with a positive edge
-    (p - fair > 0); none left -> the next best by value.
+    (p - fair > 0); none left -> the next best by value. EVERY slot needs value > 0 (owner 2026-11-22, 2nd decision):
+    a no-stake candidate without positive value is never shown (NO_POSITIVE_VALUE); a tier with no such pick left
+    stays EMPTY (EMPTY_SLOT_NO_PICK_WITH_VALUE) and the message says so.
+  * STAKED PICKS ARE PROTECTED (owner 2026-11-22): stakeable picks take their slots before the others. With 3 or
+    more, the three tiers are chosen by their own rule among the stakeable picks only (the approved P11 rule on the
+    approved picks). With 1-2, each (highest value first) goes to the tier it matches best (the tier whose order ranks
+    it highest among all candidates; tie T1 > T2 > T3; a tier already held -> its next best free tier). The other
+    tiers are then filled by their own rule. A stakeable pick's value is the one its league's approved gate measured (CAL: calibrated; BAR: the cell's
+    p_used x odds - 1), so it is never a negative-value pick under the approved rule.
   * STAKE BY PROOF: only a pick that clears its league's own approved bar (qualify(), reason "") AND the league's
     approved P11 tier gate (CAL: calibrated value > 0; BAR: p_used x odds - 1 > 0) carries the flat TOP-3 stake
     (config/bankroll_policy.json top3_league.stake, unchanged). Every other pick: stake 0 and a stake_reason
@@ -183,6 +191,8 @@ R_STARTED = "STARTED_BEFORE_ISSUE"
 R_DIRECTION = "DIRECTION_CONFLICT"
 R_MISMATCH = "MISMATCH_WITH_SENT_TIP"          # src/tip_coherence (owner 2026-11-19): vs a tip already sent
 R_RANK = "RANKED_BELOW_TOP3"
+R_NO_POS_VALUE = "NO_POSITIVE_VALUE"           # owner 2026-11-22: a no-stake candidate needs value > 0 to be shown
+R_EMPTY_SLOT = "EMPTY_SLOT_NO_PICK_WITH_VALUE"  # a tier left empty: no other priced, coherent pick with value
 
 # owner 2026-11-22 "3 per league, stake by proof": the stake decision of every TOP-3 pick (ledger column stake_reason)
 STAKED = "STAKED"
@@ -582,7 +592,8 @@ def _select_tiers(q, pool, own_taken, dirs, committed, issue, ko, stats, tiers, 
     """P11 tiers, owner 2026-11-22 "3 per league, stake by proof". The pool = the bar-cleared candidates plus the
     priced candidates without / below their league's bar (`nostake` {index: no-stake reason}).
       T1 = highest value, T2 = highest p of the rest, T3 = of the rest the longest odds with a positive edge
-      (p - fair > 0), none left -> the next best by value.
+      (p - fair > 0), none left -> the next best by value; every slot needs value > 0, else it stays empty.
+      Stakeable picks take their slots first, each in the tier it matches best (module docstring).
     value = p x odds - 1, p = the calibrated probability (cell + calibration cell: CALIBRATED) or the model's own
     (MODEL_EDGE). Stake by proof: a bar-cleared pick that also passes the league's APPROVED P11 tier gate (CAL:
     cal_ev > 0; BAR: p_used * odds - 1 > 0, both on the frozen calibration, unchanged) is STAKED; every other pick
@@ -606,61 +617,112 @@ def _select_tiers(q, pool, own_taken, dirs, committed, issue, ko, stats, tiers, 
         x = _tier_metrics(r | {"lam": lm, "lam_se": ls})
         prm = (tiers.get("leagues") or {}).get(f"{r.get('track')}|{r.get('league')}") or {}
         gate = prm.get("gate", "CAL")
-        gate_ok = bool(np.isfinite(x["cal_ev"]) and np.isfinite(x["p_cal"])) and             (x["cal_ev"] > 0 if gate == "CAL" else x["ev_raw"] > 0)
+        gate_ok = (bool(np.isfinite(x["cal_ev"]) and np.isfinite(x["p_cal"]))
+                   and (x["cal_ev"] > 0 if gate == "CAL" else x["ev_raw"] > 0))
         reason = nostake.get(i, "")
         if not reason and not gate_ok:
             reason = NS_NO_VALUE
-            excluded[R_TIER_GATE] += 1          # counted as before: it cleared its bar but is shown without a stake
+            excluded[R_TIER_GATE] += 1          # cleared its bar, failed the approved tier gate: never staked
         # the display value: calibrated where the cell has a calibration, else the model's own edge (lam = 1)
         if np.isfinite(x["cal_ev"]) and np.isfinite(x["p_cal"]):
             v = x | {"basis": BASIS_CAL}
         else:
-            v = _tier_metrics(r | {"p_used": _num(r.get("p_model_raw")), "lam": 1.0, "lam_se": 0.0})                 | {"basis": BASIS_MODEL}
+            v = _tier_metrics(r | {"p_used": _num(r.get("p_model_raw")), "lam": 1.0, "lam_se": 0.0}) \
+                | {"basis": BASIS_MODEL}
         if not (np.isfinite(v["cal_ev"]) and np.isfinite(v["p_cal"]) and v["odds"] > 1):
             excluded[R_NO_PRICE] += 1            # never a pick without a usable price
             continue
-        met[i] = v | {"stake_reason": reason or STAKED, "fair": _num(r.get("fair"))}
+        staked = not reason
+        # owner 2026-11-22 (2nd decision): NEVER a pick without positive value. A stakeable pick passed its league's
+        # APPROVED value gate (CAL: calibrated value > 0; BAR: the cell's p_used x odds - 1 > 0), which is its value.
+        if not staked and not v["cal_ev"] > 0:
+            excluded[R_NO_POS_VALUE] += 1
+            continue
+        met[i] = v | {"stake_reason": STAKED if staked else reason, "fair": _num(r.get("fair"))}
     used, taken, names, blocked = set(), [], [], {}
 
-    def try_take(order, name):
-        for i in order:
-            r = q.iloc[i]
-            k = (str(r["fixture_id"]), str(r["market"]))
-            if i in taken or k in used:
-                continue
-            if not (pd.notna(ko.iloc[i]) and ko.iloc[i] > issue):
-                blocked[i] = R_STARTED
-                continue
-            fx = (str(r["match_date"])[:10], str(r["home_team"]), str(r["away_team"]))
-            dr = _direction(r["market"], r["side"])
-            stood = dirs.get(fx) or (committed.get(fx) or {}).get("direction")
-            if dr and stood and dr != stood:
-                blocked[i] = R_DIRECTION
-                continue
-            if _gate_blocks(coherence, r):
-                blocked[i] = R_MISMATCH
-                continue
-            if dr:
-                dirs[fx] = dr
-            _gate_take(coherence, r)
-            used.add(k)
-            taken.append(i)
-            names.append(name)
-            return
+    def ok(i) -> bool:
+        """Can candidate i take a slot now? (not taken, distinct fixture x market, kickoff after the issue, the
+        direction rule, the coherence gate). Records why not."""
+        r = q.iloc[i]
+        if i in taken or (str(r["fixture_id"]), str(r["market"])) in used:
+            return False
+        if not (pd.notna(ko.iloc[i]) and ko.iloc[i] > issue):
+            blocked[i] = R_STARTED
+            return False
+        fx = (str(r["match_date"])[:10], str(r["home_team"]), str(r["away_team"]))
+        dr = _direction(r["market"], r["side"])
+        stood = dirs.get(fx) or (committed.get(fx) or {}).get("direction")
+        if dr and stood and dr != stood:
+            blocked[i] = R_DIRECTION
+            return False
+        if _gate_blocks(coherence, r):
+            blocked[i] = R_MISMATCH
+            return False
+        return True
+
+    def take(i, name) -> None:
+        r = q.iloc[i]
+        fx = (str(r["match_date"])[:10], str(r["home_team"]), str(r["away_team"]))
+        dr = _direction(r["market"], r["side"])
+        if dr:
+            dirs[fx] = dr
+        _gate_take(coherence, r)
+        used.add((str(r["fixture_id"]), str(r["market"])))
+        taken.append(i)
+        names.append(name)
 
     cand = list(met)
     kick = {i: (ko.iloc[i].value if pd.notna(ko.iloc[i]) else float("inf"), str(q.iloc[i]["fixture_id"])) for i in cand}
+    # the three tier orders over every candidate with value (T3: longest odds among positive edge, then by value)
     by_value = sorted(cand, key=lambda i: (-met[i]["cal_ev"], kick[i]))
-    try_take(by_value, TIER_NAMES[0])
-    try_take(sorted(cand, key=lambda i: (-met[i]["p_cal"], kick[i])), TIER_NAMES[1])
+    by_p = sorted(cand, key=lambda i: (-met[i]["p_cal"], kick[i]))
     pos = [i for i in cand if met[i]["p_cal"] - met[i]["fair"] > 0]
-    try_take(sorted(pos, key=lambda i: (-met[i]["odds"], -met[i]["cal_ev"], kick[i]))
-             + [i for i in by_value if i not in pos], TIER_NAMES[2])
+    by_t3 = sorted(pos, key=lambda i: (-met[i]["odds"], -met[i]["cal_ev"], kick[i])) + \
+        [i for i in by_value if i not in pos]
+    orders = (by_value, by_p, by_t3)
+    # 1) PROTECT STAKED PICKS (owner 2026-11-22): every stakeable pick keeps a slot.
+    #    * 3 or more stakeable: the three tiers are chosen by their own rule AMONG the stakeable picks only (T1 best
+    #      value, T2 highest p of the rest, T3 longest odds of the rest) - the approved P11 rule on the approved
+    #      picks; a 4th+ stakeable pick ranks below (only 3 slots).
+    #    * fewer than 3: each (highest value first) goes to the tier it matches best = the tier whose order ranks it
+    #      highest among ALL candidates (tie: T1 before T2 before T3); a tier already held -> its next best free tier.
+    free = list(TIER_NAMES)
+    stk = [j for j in by_value if met[j]["stake_reason"] == STAKED]
+    if len(stk) >= len(TIER_NAMES):
+        for t, name in enumerate(TIER_NAMES):
+            for i in orders[t]:
+                if met[i]["stake_reason"] == STAKED and ok(i):
+                    take(i, name)
+                    free.remove(name)
+                    break
+    else:
+        for i in stk:
+            if not ok(i):
+                continue
+            pref = sorted(range(len(TIER_NAMES)),
+                          key=lambda t: (orders[t].index(i) if i in orders[t] else len(cand), t))
+            tier = next(TIER_NAMES[t] for t in pref if TIER_NAMES[t] in free)
+            take(i, tier)
+            free.remove(tier)
+    # 2) the remaining tiers by their own rule, T1 / T2 / T3, from the candidates left (all with value > 0)
+    for t, name in enumerate(TIER_NAMES):
+        if name not in free:
+            continue
+        for i in orders[t]:
+            if ok(i):
+                take(i, name)
+                free.remove(name)
+                break
+    for name in free:
+        excluded[R_EMPTY_SLOT] += 1              # no other priced, coherent pick with value: the slot stays empty
     for i in cand:
         if i not in taken:
             # one reason per candidate left out: why it could not take a slot (started / direction / coherence),
             # else it simply ranked below the three
             excluded[blocked.get(i, R_RANK)] += 1
+    order = sorted(range(len(taken)), key=lambda k: TIER_NAMES.index(names[k]))
+    taken, names = [taken[k] for k in order], [names[k] for k in order]
     picks = q.iloc[taken].copy()
     picks["slot"] = names
     picks["top3_rank"] = [TIER_NAMES.index(n) + 1 for n in names]
@@ -1120,6 +1182,10 @@ def message(picks: pd.DataFrame, real_checker=None, policy: dict | None = None) 
                      f"{mk} {side} @ {float(r['odds']):.2f} · {TIER_TEXT.get(str(r['slot']), r['slot'])}"
                      f"{' · ' + escape(cell) if cell and cell != 'nan' else ''} ({_edge_words(r)})")
         lines[-1] = _with_label(lines[-1], _stake_label(real_checker, r, flat))
+    if picks["slot"].astype(str).isin(TIER_NAMES).any() or (len(picks) == 0 and len(rule) == 0):
+        for t, name in enumerate(TIER_NAMES):            # owner 2026-11-22: an empty tier says why
+            if name not in set(picks["slot"].astype(str)):
+                lines.append(f"{t + 1}. {TIER_TEXT[name]}: none - no other priced, coherent pick with value")
     for (mk, sd), g in rule.groupby(["market", "side"], sort=True):
         side = "Yes" if str(sd) == "YES" else str(sd).title()
         lines.append(f"📏 League rule: {lab.get(str(mk), str(mk))} {side}, every match "
@@ -1131,7 +1197,7 @@ def message(picks: pd.DataFrame, real_checker=None, policy: dict | None = None) 
         head = (f"Staked ({stake_text(flat)} of bankroll, flat, placed manually) only where the tip cleared its "
                 "league's own approved bar; the others show why they carry no stake." if flat is not None else "")
         foot = ("T1 best value, T2 safest, T3 risky value."
-                + (f" Only {n} priced, coherent candidate{'s' if n != 1 else ''} this week." if n < TOP_N else ""))
+                + (f" Only {n} priced, coherent pick{'s' if n != 1 else ''} with value this week." if n < TOP_N else ""))
     else:
         head = (f"Every TOP-3 tip: {stake_text(flat)} stake of bankroll, flat, placed manually." if flat is not None
                 else "")
