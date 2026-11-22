@@ -75,7 +75,8 @@ def worst(statuses) -> str:
     s = [x for x in statuses if x is not None]
     if not s:
         return "UNKNOWN"
-    w = max(s, key=lambda x: _RANK.get(x, 1))
+    # an unknown status word ranks with UNKNOWN (never as PASS)
+    w = max(s, key=lambda x: _RANK[x] if x in _RANK else _RANK["UNKNOWN"])
     return w if w in (PASS, FAIL) else (UNVERIFIED if w == UNVERIFIED else WARN)
 
 

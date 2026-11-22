@@ -202,7 +202,8 @@ def model_integrity(docs: dict, now=None) -> dict:
             "meaning": "active serving tracks (train/serve parity, chronology, holdout, active serving joins, "
                        "training lineage). legacy_replay_status is historical evidence and does not count.",
             "scopes": scopes, "source": src, "generated_at": gen, "age_h": _age(gen, now),
-            "failing": sorted(failing, key=lambda x: {"FAIL": 0, NO_DATA: 1, "UNVERIFIED": 1}.get(x["status"], 2))}
+            "failing": sorted(failing, key=lambda x: 0 if x["status"] == "FAIL" else 1 if x["status"] in (NO_DATA, "UNVERIFIED")
+                              else 2)}
 
 
 # ── 4 full-system certification ───────────────────────────────────────────────────────────────

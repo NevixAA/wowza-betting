@@ -1330,7 +1330,7 @@ def main(argv=None) -> int:
            # verdict is the WORST check, gated or not - a RED ungated rule (e.g. 3, missing data) is RED here
            "stoplight_scope": "CI/change-control gate: gated rules + known-defaults ratchet; NOT data quality",
            "operational_status": min((c["status"] for c in checks),
-                                     key=lambda s: {RED: 0, AMBER: 1, GREY: 2, GREEN: 3}.get(s, 2)),
+                                     key=lambda s: (0 if s == RED else 1 if s == AMBER else 3 if s == GREEN else 2)),
            "operational_failing": [{"check": c["check"], "status": c["status"], "gated": is_gated(c["check"])}
                                    for c in checks if c["status"] != GREEN]}
     HEALTH.write_text(json.dumps(doc, indent=1, default=str) + "\n", encoding="utf-8")
