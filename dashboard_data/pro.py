@@ -315,7 +315,60 @@ def specials() -> dict:
             out[name] = read_csv(_f(base + f"{name}.csv"), low_memory=False)
         except Exception:                                             # noqa: BLE001 - one missing file never hides the rest
             out[name] = pd.DataFrame()
+    # prices are private (2026-11-22): the public log has none; join them from the private store when readable
+    from dashboard_data import specials_view as V
+    log = out["specials_log"]
+    if not log.empty and not V.price_value_columns(log.columns):
+        private, why = private_specials_log()
+        out["specials_log"] = V.merge_private_prices(log, private)
+        out["prices"] = "private store" if why is None else f"prices private ({why})"
+    else:
+        out["prices"] = "public file" if not log.empty else None
     return out
+
+
+#: Pro's specials price store (Pro src/specials/price_store.py): private repo, read-only token only
+SPECIALS_STORE = ("NevixAA/wowza-exec", "specials-prices", "data/specials_log.csv")
+RO_SECRET = "PRICE_STORE_RO_TOKEN"
+
+
+def _ro_token() -> str:
+    import os
+    tok = None
+    try:
+        import streamlit as st
+        tok = st.secrets.get(RO_SECRET)
+    except Exception:                                                  # noqa: BLE001 - no secrets file
+        tok = None
+    return str(tok or os.getenv(RO_SECRET) or "").strip()
+
+
+def private_specials_log(timeout: int = 20) -> tuple[pd.DataFrame | None, str | None]:
+    """The FULL specials log (with prices) from the private store, read server-side with the read-only
+    Streamlit secret PRICE_STORE_RO_TOKEN. Returns (frame, None) or (None, reason); the reason never
+    carries the token, and nothing read here is written to disk."""
+    import io
+    import urllib.error
+    import urllib.request
+    tok = _ro_token()
+    if not tok:
+        return None, "read-only token not set"
+    repo, ref, path = SPECIALS_STORE
+    req = urllib.request.Request(f"https://api.github.com/repos/{repo}/contents/{path}?ref={ref}", headers={
+        "Accept": "application/vnd.github.raw", "Authorization": f"Bearer {tok}",
+        "X-GitHub-Api-Version": "2022-11-28", "User-Agent": "wowza-dashboard"})
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as resp:
+            body = resp.read()
+    except urllib.error.HTTPError as exc:
+        return None, {401: "token invalid or expired", 403: "token may not read the store",
+                      404: "not in the private store"}.get(exc.code, f"HTTP {exc.code}")
+    except Exception as exc:                                           # noqa: BLE001
+        return None, f"store unreachable ({type(exc).__name__})"
+    try:
+        return pd.read_csv(io.BytesIO(body), low_memory=False), None
+    except Exception as exc:                                           # noqa: BLE001
+        return None, f"store file unreadable ({type(exc).__name__})"
 
 
 def candidate_forward() -> dict:
