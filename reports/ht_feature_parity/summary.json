@@ -1,0 +1,78 @@
+{
+ "new_ebe47c041a7f595f": {
+  "rows": 77327,
+  "ht_market_eligible_rows": 76232,
+  "home_mismatch_vs_independent": 0,
+  "home_training_missing": 0,
+  "home_flag_eq_ht_scored_last5_present": "77327/77327",
+  "home_standard_eligible_rows": 49446,
+  "home_standard_eligible_share_1": 1.0,
+  "home_standard_eligible_zeros": 0,
+  "home_new_format_eligible_rows": 26786,
+  "home_new_format_eligible_share_1": 0.999888,
+  "home_new_format_eligible_zeros": 3,
+  "away_mismatch_vs_independent": 0,
+  "away_training_missing": 0,
+  "away_flag_eq_ht_scored_last5_present": "77327/77327",
+  "away_standard_eligible_rows": 49446,
+  "away_standard_eligible_share_1": 0.999939,
+  "away_standard_eligible_zeros": 3,
+  "away_new_format_eligible_rows": 26786,
+  "away_new_format_eligible_share_1": 0.999925,
+  "away_new_format_eligible_zeros": 2
+ },
+ "old_pre_pr59_1118": {
+  "rows": 59462,
+  "ht_market_eligible_rows": 46782,
+  "home_mismatch_vs_independent": 0,
+  "home_training_missing": 0,
+  "home_flag_eq_ht_scored_last5_present": "59462/59462",
+  "home_standard_eligible_rows": 19996,
+  "home_standard_eligible_share_1": 0.992248,
+  "home_standard_eligible_zeros": 155,
+  "home_new_format_eligible_rows": 26786,
+  "home_new_format_eligible_share_1": 0.999888,
+  "home_new_format_eligible_zeros": 3,
+  "away_mismatch_vs_independent": 0,
+  "away_training_missing": 0,
+  "away_flag_eq_ht_scored_last5_present": "59462/59462",
+  "away_standard_eligible_rows": 19996,
+  "away_standard_eligible_share_1": 0.991848,
+  "away_standard_eligible_zeros": 163,
+  "away_new_format_eligible_rows": 26786,
+  "away_new_format_eligible_share_1": 0.999925,
+  "away_new_format_eligible_zeros": 2
+ },
+ "serving_sample": {
+  "dates": 40,
+  "fixtures": 1468,
+  "cells": 2936,
+  "leagues": 32,
+  "leagues_by_track": {
+   "new_format": 15,
+   "standard": 17
+  },
+  "mismatched_cells": 172,
+  "mismatch_reasons": {
+   "training value missing": 172
+  },
+  "serving_share_1": 0.9874,
+  "expected_share_1": 0.9874
+ },
+ "live_board": {
+  "fixtures": 151,
+  "cells": 302,
+  "leagues_by_track": {
+   "new_format": 9,
+   "standard": 7
+  },
+  "renamed_board_clubs": 172,
+  "mismatched_cells": 0,
+  "served_share_1": 1.0,
+  "expected_share_1": 1.0,
+  "min_window_matches": 5,
+  "generated_at": "2026-11-22T14:54:54Z"
+ },
+ "committed_history_half_ht_rows": 0,
+ "committed_history_rows": 93383
+}

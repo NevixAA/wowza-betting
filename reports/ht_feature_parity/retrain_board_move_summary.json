@@ -1,0 +1,48 @@
+{
+ "board_rows": 151,
+ "standard_rows": 94,
+ "generated_at": "2026-11-22T14:54:54Z",
+ "dates": [
+  "2026-11-22",
+  "2026-11-29"
+ ],
+ "leagues": 7,
+ "markets": {
+  "ht_over05": {
+   "rows_scored": 94,
+   "sanity_old_vs_served_max_pp": 0.0,
+   "mean_abs_pp": 0.013,
+   "mean_signed_pp": 0.008,
+   "max_abs_pp": 0.087,
+   "over_1pp": 0,
+   "over_2pp": 0,
+   "over_5pp": 0,
+   "range_pp_old": [
+    65.2,
+    75.5
+   ],
+   "range_pp_new": [
+    65.3,
+    75.5
+   ]
+  },
+  "ht_over15": {
+   "rows_scored": 94,
+   "sanity_old_vs_served_max_pp": 0.0,
+   "mean_abs_pp": 0.0,
+   "mean_signed_pp": -0.0,
+   "max_abs_pp": 0.001,
+   "over_1pp": 0,
+   "over_2pp": 0,
+   "over_5pp": 0,
+   "range_pp_old": [
+    31.1,
+    43.8
+   ],
+   "range_pp_new": [
+    31.1,
+    43.8
+   ]
+  }
+ }
+}
