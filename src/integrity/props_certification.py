@@ -275,6 +275,14 @@ def _forbidden_features() -> set:
     return s
 
 
+def _num(v) -> float:
+    """A number, or NaN when absent / not numeric: every comparison with NaN is False (fails closed)."""
+    try:
+        return float(v)
+    except (TypeError, ValueError):
+        return float("nan")
+
+
 def _chk(ok: bool, detail="") -> dict:
     return {"ok": bool(ok), "detail": detail}
 
@@ -321,8 +329,8 @@ def certify_artifact(a: dict, rows: pd.DataFrame | None, ev: dict | None, runtim
         f"recipe {pl.get('recipe')}, harness {pl.get('harness_version')}, candidate {cand}, "
         f"hand_adjustment {pl.get('hand_adjustment')}")
     # raw input provenance: owner feature rule + floors, the run, the run's own artifact sha
-    floors_ok = (dec.get("feature_rule") == FEATURE_RULE and float(dec.get("min_verified_share", 0)) >= MIN_TRAIN_SHARE
-                 and float(dec.get("min_verified_share_holdout", 0)) >= MIN_HOLDOUT_SHARE)
+    floors_ok = (dec.get("feature_rule") == FEATURE_RULE and _num(dec.get("min_verified_share")) >= MIN_TRAIN_SHARE
+                 and _num(dec.get("min_verified_share_holdout")) >= MIN_HOLDOUT_SHARE)
     run_ok, run_detail = False, "no committed run evidence"
     if ev:
         e_m = (ev.get("markets") or {}).get(a["market"]) or {}
@@ -332,8 +340,8 @@ def certify_artifact(a: dict, rows: pd.DataFrame | None, ev: dict | None, runtim
                   and ev.get("code_sha") == prov.get("code_sha")
                   and prov.get("artifact_sha256") == e_a.get("sha256_reported")
                   and (e_a.get("sha256_downloaded") in (None, e_a.get("sha256_reported")))
-                  and float(vs.get("train", 0)) >= float(dec.get("min_verified_share", 1))
-                  and float(vs.get("holdout", 0)) >= float(dec.get("min_verified_share_holdout", 1))
+                  and _num(vs.get("train")) >= _num(dec.get("min_verified_share"))
+                  and _num(vs.get("holdout")) >= _num(dec.get("min_verified_share_holdout"))
                   and ev.get("owner_decisions") == dec)
         run_detail = (f"run {ev.get('run_id')} status {ev.get('status')}; harness artifact "
                       f"{str(prov.get('artifact_sha256'))[:12]} vs run {str(e_a.get('sha256_reported'))[:12]}"
@@ -361,7 +369,7 @@ def certify_artifact(a: dict, rows: pd.DataFrame | None, ev: dict | None, runtim
     rec["withheld_or_proxy_features"] = forbidden
     c["feature_schema"] = _chk(schema_ok, detail)
     prof = getattr(m, "training_profile_", None) or {}
-    degen = sorted(f for f, e in prof.items() if f in fcols and (e.get("top_share") or 0) > SINGLE_VALUE_MAX_SHARE)
+    degen = sorted(f for f, e in prof.items() if f in fcols and _num(e.get("top_share")) > SINGLE_VALUE_MAX_SHARE)
     c["no_single_value_feature"] = _chk(not degen, f"{len(degen)} served feature(s) one value on > 99.9% of "
                                                    f"training rows{': ' + ', '.join(degen[:6]) if degen else ''}")
     # training window, cutoff, chronological validation
