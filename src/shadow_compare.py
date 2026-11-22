@@ -37,6 +37,10 @@ COLUMNS = [
     "fixture_id", "market", "logged_at", "match_date", "kickoff_utc", "league", "model_type",
     # what each model believed, before kickoff
     "p_v9", "p_v91", "p_pro_hgb", "p_goal_distribution", "p_market",
+    # The probability predict SERVED (post NF O/U 2.5 recalibration, owner 2026-11-01; p_v9 is the raw
+    # number). pipeline.py has written it since ddec2fc37 and V91_SHADOW_ROW requires it, but this list
+    # dropped it until 2026-11-22, so rows before then carry it blank (missing stays missing).
+    "p_v9_served",
     # what each would have done
     "v9_side", "v91_side", "v9_tier", "v91_tier", "v9_edge", "v91_edge",
     # execution and outcome, filled at settlement
@@ -77,6 +81,11 @@ IDENTITY = ("home_team", "away_team")
 
 #: Everything predict wrote at first sight. Settlement must leave these byte-identical.
 FROZEN = tuple(c for c in COLUMNS if c not in GRADING_ONLY and c not in IDENTITY)
+
+#: First-sight columns added to the file AFTER system_health began recording its daily frozen digest of
+#: v91_shadow.csv. They are frozen for settlement (FROZEN) but kept out of that cross-day digest: the rows
+#: already recorded never held them, so hashing them would report every recorded row as rewritten.
+LATE_FIRST_SIGHT = ("p_v9_served",)                                  # 2026-11-22
 
 
 def append_shadow(rows: list[dict] | pd.DataFrame) -> int:
