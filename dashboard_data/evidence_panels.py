@@ -24,6 +24,8 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+from src import tier_labels as TL
+
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "output"
 POLICY_FILE = ROOT / "config" / "bankroll_policy.json"          # read only — json.loads, never written
@@ -455,7 +457,9 @@ def edge2_report(progress: dict | None, shadow: pd.DataFrame | None = None) -> t
 #: `price_synthetic` flag, so — like market_edge.exclude_synthetic_prices — a row priced exactly at the
 #: fill constant is dropped (fail closed): it cannot be told apart from a filled one.
 O15_FILL_PRICE = 1.40
-GAP_BANDS = ("SNIPER", "MARKSMAN", "VALUABLE")          # shown with src/tier_labels words (BIG/MEDIUM/SMALL GAP)
+#: every tipped code is a band, so the bands add up to ALL: the legacy gap tiers (BIG/MEDIUM/SMALL GAP, historical
+#: rows) + QUALIFIED ("Tip", every tip from go-live - src/tier_labels). Shown with src/tier_labels words.
+GAP_BANDS = TL.LEGACY_TIERS + (TL.QUALIFIED,)
 O15_WINDOWS = (("30d", 30), ("60d", 60), ("season", None))
 SMALL_N = 30
 
