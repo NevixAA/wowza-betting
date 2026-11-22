@@ -95,6 +95,7 @@ OWNER_PRO_PAGES = [
     ("pages/24_🧾_Clean_Record.py", "Performance"),
     ("pages/26_📏_Bars.py", "Performance"),
     ("pages/27_🩹_Fixes.py", "Performance"),
+    ("pages/28_🔮_Predictions.py", "Performance"),   # owner 2026-11-22, prediction ledger viewer
 ]
 
 
