@@ -181,7 +181,6 @@ def test_overall_status_rules():
 def test_overview_renders_same_values_offline(monkeypatch):
     """Pro / V11 unreachable (no network in tests): the page still renders, says FEED NOT CONNECTED, and
     the production numbers equal the adapter's."""
-    import dashboard_ui as ui
     from dashboard_data import core, v9
     monkeypatch.setattr(core, "RAW_BASE", {})
     for k in ("pro", "v11"):
@@ -191,9 +190,12 @@ def test_overview_renders_same_values_offline(monkeypatch):
     perf = v9.performance()
     if perf.get("available"):
         tracks = {k: v for k, v in perf["by_track"].items() if k != "unknown"}
-        assert m["Staked P/L"] == ui.units(sum(t["staked_only"]["pnl"] for t in tracks.values()))
+        # the page's arithmetic is src/units (issue #19): exact decimal total, half-up display. The old
+        # expectation (float sum + "%.2f") showed an exact half, -16.625u, as -16.62u; the page shows -16.63u
+        from src import units as U
+        assert m["Staked P/L"] == U.fmt(U.total(t["staked_only"]["pnl"] for t in tracks.values()))
         for name, t in tracks.items():
-            assert m[name.replace("_", "-")] == ui.units(t["staked_only"]["pnl"])
+            assert m[name.replace("_", "-")] == U.fmt(t["staked_only"]["pnl"])
     from src.system_health import evaluate
     from dashboard_data import overview_view as V
     md = " ".join(x.value for x in at.markdown)

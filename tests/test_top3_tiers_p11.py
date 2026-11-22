@@ -55,21 +55,35 @@ def test_three_named_tiers_value_safest_risky():
     assert weeks["n_picks"].iloc[0] == 3
 
 
-def test_t3_floor_and_never_padded():
+def test_show_all_fills_t3_from_the_rest_never_by_the_old_floor():
+    """Owner 2026-11-22 "3 per league, stake by proof": the old t3_floor no longer leaves T3 empty - T3 is the
+    longest-odds remaining candidate with a positive edge (here the lock row fx99, edge 0, is not positive, so
+    fx3 at 1.85 takes it), and a priced candidate below the bar is still eligible (shown, never staked)."""
     rows = [_odds(_cand(1, "OU25", "OVER", pm=0.62, pf=0.50), 2.00),
             _odds(_cand(2, "OVER15", "OVER", pm=0.84, pf=0.78), 1.30),
             _odds(_cand(3, "BTTS", "YES", pm=0.60, pf=0.55), 1.85)]
-    picks, _ = _run(rows, _cfg(floor=2.5))                     # nobody left at odds >= 2.50: T3 stays EMPTY
-    assert set(picks["slot"]) == {"T1_BEST_VALUE", "T2_SAFEST"} and len(picks) == 2
+    picks, _ = _run(rows, _cfg(floor=2.5))
+    assert list(picks["slot"]) == ["T1_BEST_VALUE", "T2_SAFEST", "T3_RISKY_VALUE"]
+    assert dict(zip(picks["slot"], picks["fixture_id"]))["T3_RISKY_VALUE"] == "fx3"
 
 
-def test_cal_gate_drops_tips_without_calibrated_value_bar_gate_keeps_them():
+def test_cal_gate_unstakes_tips_without_calibrated_value_bar_gate_stakes_them():
     rows = [_odds(_cand(1, "OU25", "OVER", pm=0.62, pf=0.50), 1.90)]   # raw EV +0.18; lam 0 -> cal_ev < 0
     lams = {"over25_over": 0.0}
-    picks, weeks = _run(rows, _cfg(gate="CAL", lams=lams))
-    assert len(picks) == 0 and json.loads(weeks["excluded"].iloc[0]).get("TIER_NO_VALUE") == 1
-    picks, _ = _run(rows, _cfg(gate="BAR", lams=lams))
-    assert list(picks["slot"]) == ["T1_BEST_VALUE"]
+    pol = {"top3_league": {"stake": {"rule": "FLAT", "fraction": 0.005, "execution": "MANUAL"}}}
+
+    def run(cfg):
+        return T.freeze_due(_frame(rows), set(), _ctx(), pd.Timestamp("2026-11-20T17:45:00Z"), 120.0, {}, pol,
+                            None, T.tier_stats(cfg), None, cfg)
+    picks, weeks = run(_cfg(gate="CAL", lams=lams))
+    # CAL gate fails and, with lam 0, its calibrated value is 0: not stakeable and (owner 2026-11-22) never shown
+    assert "fx1" not in set(picks["fixture_id"])
+    ex = json.loads(weeks["excluded"].iloc[0])
+    assert ex.get("TIER_NO_VALUE") == 1 and ex.get("NO_POSITIVE_VALUE", 0) >= 1
+    picks, _ = run(_cfg(gate="BAR", lams=lams))
+    fx1 = picks[picks["fixture_id"] == "fx1"].iloc[0]
+    assert fx1["stake_reason"] == T.STAKED and float(fx1["stake"]) == 0.005
+    assert fx1["stake_effect"].startswith("REAL 0.5%")
 
 
 def test_no_tier_config_keeps_the_v6_r2_top3():

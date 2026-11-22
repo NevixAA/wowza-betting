@@ -289,4 +289,12 @@ def test_committed_ht_sidecar_lists_the_47_unpriced_bets():
     settled = h[h["result"].isin(["WIN", "LOSS"])]
     assert len(s) == 47 and round(float(s["pnl"].sum()), 2) == -12.16
     real = settled[CC.ht_priced_mask(settled)]
-    assert len(real) == 14 and round(float(real["pnl"].sum()), 2) == 5.57
+    # the 14 / +5.57u pin is the ledger as it stood when the sidecar was built (commit 541f9dc9e,
+    # 2026-11-02): HT tips generated after that keep settling into the committed ledger, so the pin is
+    # taken on that same snapshot, never on whatever the bot has added since
+    gen = pd.to_datetime(real["generated_at"], errors="coerce", format="mixed")
+    snap = real[gen < pd.Timestamp("2026-11-02")]
+    assert len(snap) == 14 and round(float(snap["pnl"].sum()), 2) == 5.57
+    # every row counted as real - then or since - carries a real market price and is not in the sidecar
+    px = pd.to_numeric(real["odds"], errors="coerce").fillna(pd.to_numeric(real["entry_odds"], errors="coerce"))
+    assert px.gt(1.0).all() and gen.notna().all()
