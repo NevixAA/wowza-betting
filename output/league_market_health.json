@@ -1,28 +1,24 @@
 {
- "generated_at": "2026-11-23T19:28:09Z",
+ "generated_at": "2026-11-23T20:35:23Z",
  "panel_version": "LWR-1",
  "tracked_leagues": 20,
  "current_tip_day": "2026-11-23",
- "leagues_with_current_week_data": 15,
- "missing_leagues": [
-  "Denmark Superliga",
-  "Sweden Allsvenskan"
- ],
+ "leagues_with_current_week_data": 16,
+ "missing_leagues": [],
  "missing_leagues_previous_week": [],
  "no_fixture_leagues": [
   "China Super League",
   "Finland Veikkausliiga",
   "Ireland Premier Division",
-  "Mexico Liga MX",
   "Romanian Superliga"
  ],
  "panel_start": "2026-10-25T09:25:36Z",
  "market_gap_leagues": [],
- "expected_candidate_rows": 652,
- "actual_candidate_rows": 644,
- "panel_rows": 1216,
+ "expected_candidate_rows": 680,
+ "actual_candidate_rows": 672,
+ "panel_rows": 1284,
  "settled_rows": 1182,
- "pending_rows": 34,
+ "pending_rows": 102,
  "clv_certified_rows": 581,
  "clv_coverage": 0.4915,
  "protected_tracks_modified": false,
@@ -31,33 +27,33 @@
    "current": {
     "league_week_id": "Argentina Primera Division|2026-W48",
     "state": "PROVISIONAL",
-    "fixtures_known": 6,
+    "fixtures_known": 7,
     "fixtures_before_panel_start": 0,
-    "fixtures_with_candidates": 4,
+    "fixtures_with_candidates": 5,
     "fixtures_without_candidates": 2,
     "week_lock_ts": "2026-11-26T00:00:00Z",
     "late_after_lock": 0,
     "market_gaps": [],
     "markets": {
      "OU25": {
-      "candidates": 4,
+      "candidates": 5,
       "panel_rows": 0
      },
      "BTTS": {
-      "candidates": 4,
+      "candidates": 5,
       "panel_rows": 0
      },
      "OVER15": {
-      "candidates": 4,
+      "candidates": 5,
       "panel_rows": 0
      },
      "OVER35": {
-      "candidates": 4,
+      "candidates": 5,
       "panel_rows": 0
      }
     },
-    "expected_candidate_rows": 24,
-    "actual_candidate_rows": 16
+    "expected_candidate_rows": 28,
+    "actual_candidate_rows": 20
    },
    "previous": {
     "league_week_id": "Argentina Primera Division|2026-W47",
@@ -402,7 +398,7 @@
   "Denmark Superliga": {
    "current": {
     "league_week_id": "Denmark Superliga|2026-W48",
-    "state": "LOCKED_NOT_FROZEN",
+    "state": "FROZEN",
     "fixtures_known": 6,
     "fixtures_before_panel_start": 0,
     "fixtures_with_candidates": 6,
@@ -413,19 +409,19 @@
     "markets": {
      "OU25": {
       "candidates": 6,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "BTTS": {
       "candidates": 6,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER15": {
       "candidates": 6,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER35": {
       "candidates": 6,
-      "panel_rows": 0
+      "panel_rows": 5
      }
     },
     "expected_candidate_rows": 24,
@@ -650,7 +646,7 @@
   "La Liga 2": {
    "current": {
     "league_week_id": "La Liga 2|2026-W48",
-    "state": "PROVISIONAL",
+    "state": "FROZEN",
     "fixtures_known": 11,
     "fixtures_before_panel_start": 0,
     "fixtures_with_candidates": 11,
@@ -661,19 +657,19 @@
     "markets": {
      "OU25": {
       "candidates": 11,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "BTTS": {
       "candidates": 11,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER15": {
       "candidates": 11,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER35": {
       "candidates": 11,
-      "panel_rows": 0
+      "panel_rows": 5
      }
     },
     "expected_candidate_rows": 44,
@@ -836,7 +832,7 @@
   "Ligue 2": {
    "current": {
     "league_week_id": "Ligue 2|2026-W48",
-    "state": "PROVISIONAL",
+    "state": "FROZEN",
     "fixtures_known": 2,
     "fixtures_before_panel_start": 0,
     "fixtures_with_candidates": 2,
@@ -847,19 +843,19 @@
     "markets": {
      "OU25": {
       "candidates": 2,
-      "panel_rows": 0
+      "panel_rows": 2
      },
      "BTTS": {
       "candidates": 2,
-      "panel_rows": 0
+      "panel_rows": 2
      },
      "OVER15": {
       "candidates": 2,
-      "panel_rows": 0
+      "panel_rows": 2
      },
      "OVER35": {
       "candidates": 2,
-      "panel_rows": 0
+      "panel_rows": 2
      }
     },
     "expected_candidate_rows": 8,
@@ -898,34 +894,34 @@
   "Mexico Liga MX": {
    "current": {
     "league_week_id": "Mexico Liga MX|2026-W48",
-    "state": "NO_FIXTURES",
-    "fixtures_known": 0,
+    "state": "PROVISIONAL",
+    "fixtures_known": 4,
     "fixtures_before_panel_start": 0,
-    "fixtures_with_candidates": 0,
+    "fixtures_with_candidates": 4,
     "fixtures_without_candidates": 0,
-    "week_lock_ts": null,
+    "week_lock_ts": "2026-11-26T01:00:00Z",
     "late_after_lock": 0,
     "market_gaps": [],
     "markets": {
      "OU25": {
-      "candidates": 0,
+      "candidates": 4,
       "panel_rows": 0
      },
      "BTTS": {
-      "candidates": 0,
+      "candidates": 4,
       "panel_rows": 0
      },
      "OVER15": {
-      "candidates": 0,
+      "candidates": 4,
       "panel_rows": 0
      },
      "OVER35": {
-      "candidates": 0,
+      "candidates": 4,
       "panel_rows": 0
      }
     },
-    "expected_candidate_rows": 0,
-    "actual_candidate_rows": 0
+    "expected_candidate_rows": 16,
+    "actual_candidate_rows": 16
    },
    "previous": {
     "league_week_id": "Mexico Liga MX|2026-W47",
@@ -1146,34 +1142,34 @@
   "Sweden Allsvenskan": {
    "current": {
     "league_week_id": "Sweden Allsvenskan|2026-W48",
-    "state": "LOCKED_NOT_FROZEN",
-    "fixtures_known": 8,
+    "state": "FROZEN",
+    "fixtures_known": 10,
     "fixtures_before_panel_start": 0,
-    "fixtures_with_candidates": 8,
+    "fixtures_with_candidates": 10,
     "fixtures_without_candidates": 0,
     "week_lock_ts": "2026-11-23T18:00:00Z",
-    "late_after_lock": 0,
+    "late_after_lock": 8,
     "market_gaps": [],
     "markets": {
      "OU25": {
-      "candidates": 8,
-      "panel_rows": 0
+      "candidates": 10,
+      "panel_rows": 5
      },
      "BTTS": {
-      "candidates": 8,
-      "panel_rows": 0
+      "candidates": 10,
+      "panel_rows": 5
      },
      "OVER15": {
-      "candidates": 8,
-      "panel_rows": 0
+      "candidates": 10,
+      "panel_rows": 5
      },
      "OVER35": {
-      "candidates": 8,
-      "panel_rows": 0
+      "candidates": 10,
+      "panel_rows": 5
      }
     },
-    "expected_candidate_rows": 32,
-    "actual_candidate_rows": 32
+    "expected_candidate_rows": 40,
+    "actual_candidate_rows": 40
    },
    "previous": {
     "league_week_id": "Sweden Allsvenskan|2026-W47",

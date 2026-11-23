@@ -1,7 +1,7 @@
 {
  "artifact": "data_truth_health",
  "version": "DATA-TRUTH-1",
- "generated_at": "2026-11-23T18:55:00Z",
+ "generated_at": "2026-11-23T20:36:36Z",
  "checks": [
   {
    "check": "Data truth 1: one canonical name",
@@ -13,7 +13,7 @@
   {
    "check": "Data truth 2: no silent defaults",
    "status": "GREEN",
-   "value": "0 new default(s); 0 known (baseline); 196 allow-listed (counters/display); 0 baseline entr(ies) now gone; 1 allow-list entr(ies) now gone; 458 production files scanned",
+   "value": "0 new default(s); 0 known (baseline); 196 allow-listed (counters/display); 0 baseline entr(ies) now gone; 1 allow-list entr(ies) now gone; 465 production files scanned",
    "rule": "no NEW invented default in ALL production code (fillna(<non-zero literal>), literal season fallback/list, pinned football-data folder, numeric .get(<key>, <number>), an or-zero on a parsed value, a zero fillna on a price/odds): RED if any site is in neither config/data_truth_baseline.json nor config/data_truth_allowlist.json, or an allow-list entry has no reason; GREEN otherwise",
    "detail": ""
   },
@@ -26,84 +26,84 @@
    "tracks": {
     "standard|O/U 2.5": {
      "status": "GREEN",
-     "fixtures": 95,
+     "fixtures": 94,
      "worst_pct": 3.2,
      "missing": {},
      "n_inputs": 43
     },
     "new_format|O/U 2.5": {
      "status": "GREEN",
-     "fixtures": 66,
+     "fixtures": 71,
      "worst_pct": 0.0,
      "missing": {},
      "n_inputs": 36
     },
     "standard|BTTS": {
      "status": "GREEN",
-     "fixtures": 95,
+     "fixtures": 94,
      "worst_pct": 3.2,
      "missing": {},
      "n_inputs": 43
     },
     "new_format|BTTS": {
      "status": "GREEN",
-     "fixtures": 66,
+     "fixtures": 71,
      "worst_pct": 0.0,
      "missing": {},
      "n_inputs": 36
     },
     "standard|Over 1.5": {
      "status": "GREEN",
-     "fixtures": 95,
+     "fixtures": 94,
      "worst_pct": 3.2,
      "missing": {},
      "n_inputs": 43
     },
     "new_format|Over 1.5": {
      "status": "GREEN",
-     "fixtures": 66,
+     "fixtures": 71,
      "worst_pct": 0.0,
      "missing": {},
      "n_inputs": 36
     },
     "standard|Over 3.5": {
      "status": "GREEN",
-     "fixtures": 95,
+     "fixtures": 94,
      "worst_pct": 3.2,
      "missing": {},
      "n_inputs": 43
     },
     "new_format|Over 3.5": {
      "status": "GREEN",
-     "fixtures": 66,
+     "fixtures": 71,
      "worst_pct": 0.0,
      "missing": {},
      "n_inputs": 36
     },
     "standard|HT Over 0.5": {
      "status": "GREEN",
-     "fixtures": 95,
+     "fixtures": 94,
      "worst_pct": 3.2,
      "missing": {},
      "n_inputs": 42
     },
     "standard|HT Over 1.5": {
      "status": "GREEN",
-     "fixtures": 95,
+     "fixtures": 94,
      "worst_pct": 3.2,
      "missing": {},
      "n_inputs": 42
     },
     "new_format|HT Over 0.5": {
      "status": "GREEN",
-     "fixtures": 66,
+     "fixtures": 71,
      "worst_pct": 0.0,
      "missing": {},
      "n_inputs": 36
     },
     "new_format|HT Over 1.5": {
      "status": "GREEN",
-     "fixtures": 66,
+     "fixtures": 71,
      "worst_pct": 0.0,
      "missing": {},
      "n_inputs": 36
@@ -227,7 +227,7 @@
   {
    "check": "Data truth 5: one match, one row",
    "status": "GREEN",
-   "value": "0 duplicate pair(s), 0 self-containing row(s) after the loader's identity pipeline (107,117 bank rows -> 71,853; 35,264 copies removed); 0 provider fixture(s) claimed by 2+ served rows, 0 by 2+ af_history provider rows, 0 unsettled provider score conflict(s)",
+   "value": "0 duplicate pair(s), 0 self-containing row(s) after the loader's identity pipeline (107,252 bank rows -> 71,988; 35,264 copies removed); 0 provider fixture(s) claimed by 2+ served rows, 0 by 2+ af_history provider rows, 0 unsettled provider score conflict(s)",
    "rule": "one match, one row: fd_history + the backtest archive + the provider supplement, through data_loader.one_club_one_match, hold 0 duplicate-match pairs (same league, canonical clubs, same score, dates <= 3 d apart; or same day, same score, one side the same club), 0 rows whose last-5 window holds their own match, 0 provider fixtures (API-Football fixture id) claimed by two served rows or by two served af_history provider rows, and 0 served rows whose score differs from the provider's 90-minute score without a settled decision: RED on any, or when the provider fixture lists are missing; NO_DATA if fd_history is missing",
    "detail": ""
   },
@@ -255,7 +255,7 @@
   {
    "check": "Data truth 9: clean ledgers",
    "status": "GREEN",
-   "value": "clean since 2026-11-19 (7 live tip(s), 2873 player row(s), 126 v91 row(s))",
+   "value": "clean since 2026-11-19 (9 live tip(s), 2873 player row(s), 137 v91 row(s))",
    "rule": "from the Clean Record start: 0 multi-tip / opposite-tip fixtures, 0 post-kickoff tips, 0 closes <= 1.0, 0 |CLV| > 50 new-format rows, 0 duplicate player tips, 0 v91_shadow fixtures logged twice: RED on any; NO_DATA before the start is set",
    "detail": ""
   },
@@ -576,6 +576,27 @@
    "value": "0 violation(s) in 539 partition(s)",
    "rule": "Data truth 12: prediction ledger - every model x market prediction stored once, in its own model/market/league/season partition, before kickoff: RED on a duplicate key, a row whose repo/model/market/league/season does not match its partition, an unknown league, a pre-kickoff snapshot written at/after kickoff, a price-like column, or rows under a model x market that is not an active entry of config/prediction_ledger_markets.json",
    "detail": ""
+  },
+  {
+   "check": "Data truth 14: prediction GW dataset",
+   "status": "GREEN",
+   "value": "0 finding(s); 8495 row(s), 3010 closed, 353591 question link(s)",
+   "rule": "Data truth 14: prediction GW dataset - (src/prediction_gw_dataset) every row re-derives EXACTLY from its question-level link rows (predictions = settled + void + pending + unscorable, hits, Brier / log-loss sums, source digest), row_id = digest of its key, no rate on a row without a settled question (no default), no price column, no v11 row, a CLOSED row has no pending question",
+   "detail": ""
+  },
+  {
+   "check": "Data truth 16: prediction GW dataset vs ledger",
+   "status": "GREEN",
+   "value": "0 unexplained difference(s) in 413 closed v9 row(s)",
+   "rule": "Data truth 16: prediction GW dataset vs ledger - every CLOSED v9 row equals a fresh derivation from the committed v9 ledgers, or a correction sits beside it in output/corrections/prediction_gw_dataset_corrections.csv",
+   "detail": ""
+  },
+  {
+   "check": "Data truth 15: one fixture, one identity",
+   "status": "AMBER",
+   "value": "the committed index predates the canonical identity (rebuilt by update_results)",
+   "rule": "Data truth 15: one fixture, one identity - across models (src/fixture_identity): the committed Predictions index carries the canonical identity the resolver gives today (accents, club-name variants and kickoff drift between sources unified; API-Football kickoff authoritative). RED when a stored identity differs from the resolver or a match is still split; AMBER when sources disagree on a kickoff (counted, never silently picked)",
+   "detail": ""
   }
  ],
  "stoplight": "GREEN",
@@ -585,6 +606,11 @@
  "operational_failing": [
   {
    "check": "Data truth 13c: registered historical exceptions",
+   "status": "AMBER",
+   "gated": false
+  },
+  {
+   "check": "Data truth 15: one fixture, one identity",
    "status": "AMBER",
    "gated": false
   }
