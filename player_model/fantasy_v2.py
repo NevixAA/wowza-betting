@@ -237,6 +237,11 @@ def project(panel: pd.DataFrame, bench: dict) -> pd.DataFrame:
     pend["v2_candidate_xpts"] = (pend["ep_next"] + pend["wowza_residual"]).round(3)
     for c in contrib.columns:
         pend[f"adj_{c}"] = contrib[c].round(3)
+    # SECOND SHADOW (owner decision 2026-11-23): the V1-free HGB residual. Same FINAL-only training
+    # rows and the same floor; published beside the LINEAR shadow, never added to final_xpts.
+    v1f = R.make("HGB_V1FREE").fit(train, r)
+    pend["v1free_residual"] = np.round(np.maximum(v1f.predict(pend), -pend["ep_next"].to_numpy(float)), 3)
+    pend["v2_v1free_candidate_xpts"] = (pend["ep_next"] + pend["v1free_residual"]).round(3)
 
     P = mm.predict_proba(pend)
     pend["p_0"], pend["p_1_59"], pend["p_60"] = P["m0"].round(3), P["m1_59"].round(3), P["m60"].round(3)
@@ -255,6 +260,11 @@ def project(panel: pd.DataFrame, bench: dict) -> pd.DataFrame:
                       index=pend.index)
     for c in ("p6", "p10", "p15", "p90", "median"):
         pend[f"cand_{c}"] = D2[c]
+    D3 = pd.DataFrame([R.dist_summary(R.point_distribution(float(mu), P.loc[i].to_dict(), pos, mm))
+                       for i, mu, pos in zip(pend.index, pend["v2_v1free_candidate_xpts"],
+                                             pend["position"])], index=pend.index)
+    for c in ("p6", "p10", "p15", "p90"):
+        pend[f"cand_v1free_{c}"] = D3[c]
     rel = pend["sd"] / pend["final_xpts"].clip(lower=0.5)
     pend["uncertainty_score"] = (100 * (1 - np.exp(-rel))).round(0)
     pend["uncertainty"] = pd.cut(pend["uncertainty_score"], [-1, 45, 60, 101],
@@ -274,6 +284,7 @@ def project(panel: pd.DataFrame, bench: dict) -> pd.DataFrame:
     keep = ["gw", "element", "player_name", "web_name", "team", "team_id", "position", "price",
             "status", "chance_next_f", "news", "ownership", "net_transfers_k", "fpl_ep_next",
             "wowza_residual", "residual_applied", "final_xpts", "v2_candidate_xpts",
+            "v1free_residual", "v2_v1free_candidate_xpts",
             "adj_calibration", "adj_availability", "adj_minutes", "adj_attacking_role",
             "adj_fixture", "adj_wowza_projection", "adj_base",
             "p_0", "p_1_59", "p_60", "p_start", "p_play", "exp_minutes", "goal_prob",
@@ -283,7 +294,8 @@ def project(panel: pd.DataFrame, bench: dict) -> pd.DataFrame:
             "xg90", "xa90", "pen_first", "pen_order", "set_piece", "start_rate", "min_last",
             "n_fix", "fdr", "next_fixture", "fixture_run", "fdr_run", "xpts_3gw", "xpts_5gw",
             "value_per_m", "value_5gw_per_m", "wowza_uncond",
-            "cand_p6", "cand_p10", "cand_p15", "cand_p90", "cand_median"]
+            "cand_p6", "cand_p10", "cand_p15", "cand_p90", "cand_median",
+            "cand_v1free_p6", "cand_v1free_p10", "cand_v1free_p15", "cand_v1free_p90"]
     out = pend[[c for c in keep if c in pend.columns]].copy()
     out = out.sort_values("final_xpts", ascending=False).reset_index(drop=True)
     out["rank"] = np.arange(1, len(out) + 1)
@@ -419,8 +431,9 @@ def _reason(r, kind: str) -> str:
 
 
 def captaincy(proj: pd.DataFrame, view: str = "headline") -> dict:
-    """SAFE / BALANCED / HIGH_UPSIDE captains. view='shadow' ranks on FPL + residual instead of
-    the headline mean, so the page can show where the shadow model would disagree."""
+    """SAFE / BALANCED / HIGH_UPSIDE captains. view='shadow' ranks on FPL + LINEAR residual and
+    view='shadow_v1free' on FPL + V1-free HGB residual instead of the headline mean, so the page
+    can show where each shadow model would disagree."""
     if proj.empty:
         return {}
     d = proj[~proj["risk"].isin(["Unavailable", "Doubtful"])].copy()
@@ -429,6 +442,13 @@ def captaincy(proj: pd.DataFrame, view: str = "headline") -> dict:
         d["residual_applied"] = True
         for c in ("p6", "p10", "p15", "p90"):
             d[c] = d[f"cand_{c}"]
+        d["ceiling"] = d["p90"]
+    elif view == "shadow_v1free" and "v2_v1free_candidate_xpts" in d:
+        d["final_xpts"] = d["v2_v1free_candidate_xpts"]
+        d["wowza_residual"] = d["v1free_residual"]
+        d["residual_applied"] = True
+        for c in ("p6", "p10", "p15", "p90"):
+            d[c] = d[f"cand_v1free_{c}"]
         d["ceiling"] = d["p90"]
     nailed = d[d["p_start"] >= 0.85]
     likely = d[d["p_start"] >= 0.75]
@@ -562,6 +582,7 @@ def summary(proj: pd.DataFrame, panel: pd.DataFrame, bench: dict, fetched_at: fl
             "wowza_old": pooled.get("WOWZA")},
         "captaincy": captaincy(proj),
         "captaincy_shadow": captaincy(proj, view="shadow"),
+        "captaincy_shadow_v1free": captaincy(proj, view="shadow_v1free"),
     }
 
 
@@ -589,7 +610,8 @@ def run(write: bool = True) -> dict:
         BENCHMARK.write_text(json.dumps(bench, indent=1, default=str), encoding="utf-8")
         if not oos.empty:
             cols = ["gw", "status", "element", "player_name", "team", "position", "price",
-                    "in_ledger", "ep_next", "WOWZA", "LINEAR", "RIDGE", "HGB", "actual_points",
+                    "in_ledger", "ep_next", "WOWZA", "LINEAR", "RIDGE", "HGB", "HGB_V1FREE",
+                    "actual_points",
                     "actual_minutes", "train_gws"]
             oos[[c for c in cols if c in oos.columns]].round(3).to_csv(OOS, index=False,
                                                                        encoding="utf-8",

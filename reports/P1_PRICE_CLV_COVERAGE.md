@@ -439,3 +439,17 @@ CI green, merged as b6ed915a.
 2. **Yes**: per-book OddsAPI near-kickoff capture, ~677 credits / 30 days (section 7).
 3. **Yes**: whether a cross-feed close (Bet365 capture vs OddsAPI entry) may count as certified CLV, and
    whether to record the entry bookmaker in predict + shadow (free; schema change).
+
+## 11. Owner decision 2026-11-23 ("approve all") - implemented
+
+* Item 2: per-book OddsAPI near-kickoff capture. `.github/workflows/oddsapi_book_close.yml` +
+  `scripts/capture_oddsapi_book_close.py` + `src/oddsapi_book_close.py`. Region eu, market totals (the entry
+  feed), one bulk call per (league, kickoff) slot in CLOSE_30 (10, 30] and CLOSE_10 (1, 10] minutes before
+  kickoff, 1 credit each. Prices go only to the private store NevixAA/wowza-exec branch `oddsapi-book-close`
+  (deploy key PRICE_STORE_KEY); nothing is committed here. Guards before every paid call: remaining - cost
+  >= 260,000 (lower floor refused), run cap 30 (scheduled) / 20 (test), day cap 100, month cap 1,000
+  (journaled in the store). Switch: repo variable `ODDSAPI_BOOK_CLOSE` = 1 (default off).
+* Item 3 (entry bookmaker): predict records `odds_over25_book` / `odds_under25_book` (the OddsAPI book key behind
+  `odds_over25` / `odds_under25`); `bets_ledger.csv` appends `entry_bookmaker`; `v91_shadow.csv` appends
+  `entry_bookmaker`. Rows written before stay blank (unknown), never back-filled. Same-book CLV grading from the
+  private store is the next step (not in this change); the certification rule is unchanged.

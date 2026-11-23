@@ -389,6 +389,10 @@ def _log_shadow(preds: "pd.DataFrame", exp_rows: "pd.DataFrame | None" = None) -
             # only an OddsAPI event id and could never be graded (P0 2026-10-20).
             "home_team": d.get("home_team", pd.NA),
             "away_team": d.get("away_team", pd.NA),
+            # the OddsAPI book behind entry_odds (owner 2026-11-23); blank when predict recorded none
+            "entry_bookmaker": np.where(d.get("best_side", "").astype(str).str.upper() == "UNDER",
+                                        d.get("odds_under25_book", pd.Series(pd.NA, index=d.index)),
+                                        d.get("odds_over25_book", pd.Series(pd.NA, index=d.index))),
         })
         n = append_shadow(rows)
         log.info(f"shadow: logged {n} new fixture(s) of {len(rows)} scored")

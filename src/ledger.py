@@ -113,8 +113,23 @@ LEDGER_COLS = [
     # edge"): the tip's cell status, its qualifying bar and the edge a person is shown (percent; blank = not
     # calibrated). The raw edge_pct stays for study. Rows written before stay blank, never back-filled.
     "cell_status", "qualifying_bar", "edge_calibrated_pct",
+    # ENTRY BOOK, appended (owner 2026-11-23 "approve all", reports/P1_PRICE_CLV_COVERAGE.md section 10): the
+    # OddsAPI book key whose price became `odds` (predict's odds_over25_book / odds_under25_book), so the close
+    # can be taken from the SAME book (scripts/capture_oddsapi_book_close.py). Blank when unknown; rows
+    # written before stay blank, never back-filled.
+    "entry_bookmaker",
 ]
 VERSION_FIELDS = ("model_version", "retrain_batch_id", "training_cutoff", "prediction_role")
+
+
+def _entry_book(row, side: str) -> str:
+    """The OddsAPI book key behind the tip's price (predict odds_over25_book / odds_under25_book); '' when
+    the board row carries none. Never guessed."""
+    v = row.get("odds_under25_book" if str(side).strip().upper() == "UNDER" else "odds_over25_book")
+    if v is None or (isinstance(v, float) and v != v):
+        return ""
+    v = str(v).strip()
+    return "" if v in ("nan", "None") else v
 
 
 def _version_fields(row, model_key: str | None) -> dict:
@@ -444,6 +459,7 @@ def append_tips(bets_df: pd.DataFrame, source: str = "live") -> None:
             **_fixture_identity(row),
             "cell_p_used":  _num(row.get("cell_p_used")),
             **_cell_fields(row),
+            "entry_bookmaker": _entry_book(row, side),
         })
 
     if flips:

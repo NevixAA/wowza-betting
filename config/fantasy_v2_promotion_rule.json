@@ -1,0 +1,39 @@
+{
+  "rule_id": "FANTASY_V2_PROMOTION_RULE",
+  "version": "1.0",
+  "pre_registered_on": "2026-11-23",
+  "owner_decision": {
+    "date": "2026-11-23",
+    "words": "approve all",
+    "approved_text": "Pre-register the V2 promotion rule: promote only when, over at least 10 completed gameweeks on the identical paired population, the MAE difference vs the FPL baseline has its 90% interval (gameweek-block resampling) entirely below 0 AND captain regret is no worse than FPL; promotion still requires an explicit owner approval (the rule makes a candidate eligible; it never auto-promotes).",
+    "source": "reports/P1_FANTASY_VALIDATION.md, section 6 item 1 (suggested rule), approved by the owner 2026-11-23"
+  },
+  "baseline_arm": "FPL",
+  "candidate_arms": ["LINEAR", "HGB_V1FREE"],
+  "population": {
+    "name": "IDENTICAL_PAIRED_PER_CANDIDATE",
+    "definition": "FINAL (completed) gameweeks of output/fantasy_v2_oos.csv; rows where the candidate AND the FPL baseline both have a forecast and the actual is known; rows with a chronology violation (empty training window, or training on the row's own or a later gameweek) are excluded; duplicate (gw, element) rows are refused. Both arms are scored on exactly the same rows."
+  },
+  "conditions": {
+    "min_completed_gameweeks": 10,
+    "mae_diff_interval": {
+      "statistic": "MAE(candidate) - MAE(FPL) on the paired rows",
+      "interval_level": 0.90,
+      "interval": "percentile, 5th to 95th",
+      "resampling": "gameweek-block bootstrap: whole gameweeks drawn with replacement",
+      "resamples": 2000,
+      "seed": 20261123,
+      "pass_if": "upper bound < 0 (the whole interval below 0)"
+    },
+    "captain_regret": {
+      "statistic": "sum over the paired gameweeks of (best actual score - actual score of the arm's top forecast), raw FPL points, ties broken by FPL element id",
+      "pass_if": "candidate total <= FPL total"
+    }
+  },
+  "outcome": {
+    "all_conditions_pass": "ELIGIBLE_AWAITING_OWNER_APPROVAL",
+    "otherwise": "NOT_ELIGIBLE",
+    "auto_promote": false,
+    "note": "Eligibility never changes FANTASY_V2_RESIDUAL_MODE, the workflow, or any served number. Promotion needs an explicit owner approval and a separate reviewed change."
+  }
+}
