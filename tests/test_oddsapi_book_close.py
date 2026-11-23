@@ -260,6 +260,9 @@ def test_workflow_is_gated_capped_and_private():
     assert "--floor 260000" in wf and "secrets.PRICE_STORE_KEY" in wf and "oddsapi-book-close" in wf
     assert "test mode is capped at 20 credits" in wf
     assert "git add -A" not in wf and "output/book_odds" not in wf
+    # cron is often dropped: completed capture / predict runs also start it, behind the same switch
+    assert "workflow_run:" in wf and "- Predict" in wf
+    assert "(github.event_name == 'schedule' || github.event_name == 'workflow_run') && vars.ODDSAPI_BOOK_CLOSE == '1'" in wf
 
 
 # ── entry bookmaker ────────────────────────────────────────────────────────────────────────────────
