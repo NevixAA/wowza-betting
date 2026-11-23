@@ -94,9 +94,11 @@ def test_producer_emits_the_contract():
     # threshold_source (fix9/defaults 2026-11-04): which bar tiered the tip, for ledger / Telegram / dashboard;
     # bar_mode (2026-11-09): MODEL / LEAGUE_WIDE of a bars_opt cell ("" for a legacy own-bars entry)
     # cell_status / qualifying_bar (owner 2026-11-11): the tip's cell status and its one approved bar
+    # entry_bookmaker / entry_captured_at (owner 2026-11-23 "Yes, do all", D6): the source of market_odds
     assert list(side.columns) == list(sp.SIDE_SELECTION_COLUMNS) + ["market_odds", "threshold_source", "bar_mode",
                                                                      "cell_p_used", "cell_status", "qualifying_bar",
-                                                                     "edge_calibrated"]
+                                                                     "edge_calibrated", "entry_bookmaker",
+                                                                     "entry_captured_at"]
     assert set(side["signal_tier"]) == {"QUALIFIED"}
     # owner 2026-11-09: a tip exists only on the league's OWN owner-applied bars, so the source is LEAGUE
     assert (side["threshold_source"] == "LEAGUE").all()

@@ -35,8 +35,9 @@ from player_model.data_fetcher import (
 from player_model.league_quality import enrich_league_quality
 from player_model.feature_engineering import build_features
 from player_model.model import train, load_model
-from player_model.predict import run_player_predictions, enrich_with_odds, enrich_no_odds_markets, RESEARCH_TIER
-from player_model.odds_fetcher import fetch_prop_odds, match_odds_to_tips, match_fair_to_tips
+from player_model.predict import (run_player_predictions, enrich_with_odds, enrich_no_odds_markets, RESEARCH_TIER,
+                                  attach_entry_source)
+from player_model.odds_fetcher import fetch_prop_odds, match_odds_to_tips, match_fair_to_tips, match_meta_to_tips
 from player_model.ledger import append_player_signals
 from player_model import history_integrity as HI
 from player_model.referee_names import canonicalise_rows as canonicalise_referee_rows
@@ -657,6 +658,8 @@ def mode_predict() -> None:
                 # answer, de-vigged); the assumed overround only where none does (2026-11-05).
                 fair_mapped = match_fair_to_tips(tips)
                 tips = enrich_with_odds(tips, odds_mapped, fair_mapped)
+                # D6 (owner 2026-11-23): the book + capture time of each tip's price (blank when unknown)
+                tips = attach_entry_source(tips, match_meta_to_tips(tips))
                 # Rare markets (goals2/goals3/sot3/sot4): RESEARCH picks only, priced from the SAME
                 # answer, at most 3 per gameweek, each market only with its own study bar (owner 2026-11-09)
                 try:

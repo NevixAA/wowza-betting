@@ -71,6 +71,9 @@ COLUMNS = [
     # ENTRY BOOK (owner 2026-11-23, appended): the OddsAPI book key whose price is entry_odds, written at
     # first sight by predict so a same-book close can grade it. Rows before stay blank (unknown).
     "entry_bookmaker",
+    # ENTRY CAPTURE TIME (owner 2026-11-23 "Yes, do all", D6, appended): the UTC time of the provider call behind
+    # entry_odds (predict's odds_over25_captured_at / odds_under25_captured_at). Rows before stay blank (unknown).
+    "entry_captured_at",
 ]
 
 #: Columns that are knowable only AFTER the bet. §6: they may grade a signal, never select one.
@@ -88,7 +91,8 @@ FROZEN = tuple(c for c in COLUMNS if c not in GRADING_ONLY and c not in IDENTITY
 #: First-sight columns added to the file AFTER system_health began recording its daily frozen digest of
 #: v91_shadow.csv. They are frozen for settlement (FROZEN) but kept out of that cross-day digest: the rows
 #: already recorded never held them, so hashing them would report every recorded row as rewritten.
-LATE_FIRST_SIGHT = ("p_v9_served",)                                  # 2026-11-22
+# entry_bookmaker (2026-11-23, PR #87) and entry_captured_at (D6, 2026-11-23) join it for the same reason.
+LATE_FIRST_SIGHT = ("p_v9_served", "entry_bookmaker", "entry_captured_at")
 
 
 def _identity(fixture_id, market, match_date) -> list[tuple]:

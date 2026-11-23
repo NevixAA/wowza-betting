@@ -247,6 +247,8 @@ V91_SHADOW_ROW = Schema(
         Col("home_team"), Col("away_team"),
         Col("outcome", allowed=("OVER", "UNDER", "YES", "NO")), Col("home_goals", "int", min=0),
         Col("away_goals", "int", min=0), Col("close_status"), Col("settle_status"),
+        # entry book + capture time (2026-11-23: PR #87 / owner "Yes, do all" D6); blank on rows before them
+        Col("entry_bookmaker", required=False), Col("entry_captured_at", "datetime", required=False),
     ),
     rules=(
         _after_kickoff("logged_at"),

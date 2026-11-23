@@ -1214,6 +1214,26 @@ def enrich_with_odds(tips_df: pd.DataFrame, odds_data: dict,
     return tips_df
 
 
+def attach_entry_source(tips_df: pd.DataFrame, meta: dict | None) -> pd.DataFrame:
+    """entry_bookmaker / entry_captured_at of each PRICED tip (owner 2026-11-23 "Yes, do all", D6), from
+    odds_fetcher.match_meta_to_tips ({tip_price_key: (book, captured_at)}, the same fixture-scoped key
+    enrich_with_odds prices with). Blank for an unpriced tip and for a price whose source names no book."""
+    if tips_df.empty:
+        return tips_df
+    _date_col = "date" if "date" in tips_df.columns else "match_date"
+    books, times = [], []
+    for _, row in tips_df.iterrows():
+        scoped = (f"{row['player_name']}|{row['market']}|{str(row.get(_date_col, '') or '')[:10]}"
+                  f"|{row.get('match', '')}")
+        priced = pd.notna(pd.to_numeric(row.get("market_odds"), errors="coerce"))
+        b, t = (meta or {}).get(scoped, ("", "")) if priced else ("", "")
+        books.append(b or None)
+        times.append(t or None)
+    tips_df["entry_bookmaker"] = pd.Series(books, index=tips_df.index, dtype="object")
+    tips_df["entry_captured_at"] = pd.Series(times, index=tips_df.index, dtype="object")
+    return tips_df
+
+
 # Markets with no live Odds API coverage.
 _NO_ODDS_MARKETS = {"assists"}
 

@@ -106,6 +106,11 @@ _MAX_ODDS = 1000.0
 # research (Pro player_v3), impossible from the over-only history.
 QUOTES: list[dict] = []
 
+# CAPTURE TIME per fixture answer (owner 2026-11-23 "Yes, do all", D6): {(match_date, our match): UTC fetch time of
+# the /odds answer fetch() priced it from, or None when unknown}. Filled by fetch(); read by
+# odds_fetcher._fill_from_api_football for the entry_captured_at of an API-Football prop price.
+CAPTURED_AT: dict[tuple[str, str], str | None] = {}
+
 
 def drain_quotes() -> list[dict]:
     out = list(QUOTES)
@@ -260,6 +265,11 @@ def fetch(fixtures: list[dict], *, verbose: bool = True) -> tuple[dict[str, floa
         if not fid:
             continue
         resp = fixture_odds_raw(int(fid), cache_hours=1)
+        try:                                       # D6: when the answer above was fetched (cache stamp)
+            from player_model.api_football import cached_at_utc
+            CAPTURED_AT[(match_date, match)] = cached_at_utc("/odds", {"fixture": int(fid)})
+        except Exception:                                              # noqa: BLE001
+            CAPTURED_AT[(match_date, match)] = None
         n_before = len(records)
         for block in resp:
             for bm in (block.get("bookmakers") or []):
