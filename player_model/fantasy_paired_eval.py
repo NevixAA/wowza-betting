@@ -37,17 +37,18 @@ import pandas as pd
 OUT = Path(__file__).resolve().parents[1] / "output"
 OOS = OUT / "fantasy_v2_oos.csv"
 REPORT = OUT / "fantasy_v2_paired_walkforward.json"
-VERSION = "fantasy_paired_walkforward-1.0"
+VERSION = "fantasy_paired_walkforward-1.1"
 
-ARMS = ["FPL", "WOWZA", "LINEAR", "RIDGE", "HGB"]
+ARMS = ["FPL", "WOWZA", "LINEAR", "RIDGE", "HGB", "HGB_V1FREE"]
 #: arms that cover every FINAL row (HGB is NaN-native; FPL is the provider value)
-FULL_COVERAGE_ARMS = ["FPL", "HGB"]
+FULL_COVERAGE_ARMS = ["FPL", "HGB", "HGB_V1FREE"]
 ARM_LABEL = {
     "FPL": "FPL baseline (ep_next)",
     "WOWZA": "Wowza V1 (standalone projection x P(start))",
     "LINEAR": "V2 LINEAR (FPL + OLS residual, shadow)",
     "RIDGE": "V2 RIDGE (FPL + ridge residual, shadow)",
     "HGB": "V2 HGB (FPL + gradient-boosting residual, shadow)",
+    "HGB_V1FREE": "V2 HGB V1-free (FPL + gradient-boosting residual, no Wowza V1 input, shadow)",
 }
 TOP_K = 10
 BOOT_N = 2000
@@ -227,11 +228,20 @@ def score(pop: pd.DataFrame, arms=ARMS) -> dict:
             "by_gw": per_gw}
 
 
+def _present(oos: pd.DataFrame, arms) -> list:
+    """Arms the OOS frame carries (an older frame has no HGB_V1FREE column; it is left out, not
+    filled)."""
+    return [a for a in arms if a in oos.columns or (a == "FPL" and "ep_next" in oos.columns)]
+
+
 def evaluate(oos: pd.DataFrame) -> dict:
-    """Primary: all five arms on identical FINAL rows. Secondary: FPL vs HGB on every FINAL row
-    (both cover it), so the restriction the primary needs is visible."""
-    prim, prim_x = paired_population(oos, ARMS)
-    sec, sec_x = paired_population(oos, FULL_COVERAGE_ARMS)
+    """Primary: every arm on identical FINAL rows. Secondary: the full-coverage arms (FPL, HGB,
+    HGB V1-free) on every FINAL row, so the restriction the primary needs is visible. The
+    pre-registered promotion rule's status is attached; it decides nothing."""
+    from player_model import fantasy_promotion_rule as rule
+    arms, full = _present(oos, ARMS), _present(oos, FULL_COVERAGE_ARMS)
+    prim, prim_x = paired_population(oos, arms)
+    sec, sec_x = paired_population(oos, full)
     res = {
         "calculation_version": VERSION,
         "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
@@ -240,13 +250,14 @@ def evaluate(oos: pd.DataFrame) -> dict:
         "arm_labels": ARM_LABEL,
         "regret_unit": "raw FPL points (captain points = 2x)",
         "primary": {"population": "ALL_ARMS_PAIRED",
-                    "definition": "FINAL gameweeks; rows where FPL, WOWZA, LINEAR, RIDGE and HGB all "
-                                  "have a forecast and the actual is known; chronology checked",
-                    "exclusions": prim_x, **(score(prim, ARMS) if len(prim) else {"rows": 0})},
+                    "definition": f"FINAL gameweeks; rows where {', '.join(arms)} all have a forecast "
+                                  "and the actual is known; chronology checked",
+                    "exclusions": prim_x, **(score(prim, arms) if len(prim) else {"rows": 0})},
         "secondary": {"population": "FPL_HGB_ALL_FINAL",
-                      "definition": "FINAL gameweeks; every row with an FPL and an HGB forecast",
+                      "definition": f"FINAL gameweeks; every row with a {', '.join(full)} forecast",
                       "exclusions": sec_x,
-                      **(score(sec, FULL_COVERAGE_ARMS) if len(sec) else {"rows": 0})},
+                      **(score(sec, full) if len(sec) else {"rows": 0})},
+        "promotion_rule": rule.evaluate(oos),
     }
     return _round(res)
 
