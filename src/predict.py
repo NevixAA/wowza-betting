@@ -147,6 +147,9 @@ def _fetch_odds_api(days_ahead: int = 7) -> pd.DataFrame:
                     continue
 
                 ov25, un25 = None, None
+                # ENTRY BOOK (owner 2026-11-23): the OddsAPI book key whose price became odds_over25 /
+                # odds_under25, so a same-book close (scripts/capture_oddsapi_book_close.py) can grade it.
+                ov25_book, un25_book = None, None
                 ov15, ov35 = None, None
                 btts_yes    = None
                 for bm in event.get("bookmakers", []):
@@ -191,8 +194,10 @@ def _fetch_odds_api(days_ahead: int = 7) -> pd.DataFrame:
                                         "side":         nm.upper(),
                                         "odds":         float(pr),
                                     })
-                                if pt == 2.5 and nm == "Over"  and not ov25:  ov25 = pr
-                                if pt == 2.5 and nm == "Under" and not un25:  un25 = pr
+                                if pt == 2.5 and nm == "Over"  and not ov25 and pr:
+                                    ov25, ov25_book = pr, bm.get("key") or None
+                                if pt == 2.5 and nm == "Under" and not un25 and pr:
+                                    un25, un25_book = pr, bm.get("key") or None
                                 if pt == 1.5 and nm == "Over"  and not ov15:  ov15 = pr
                                 if pt == 3.5 and nm == "Over"  and not ov35:  ov35 = pr
                         elif mkt["key"] == "btts":
@@ -245,6 +250,8 @@ def _fetch_odds_api(days_ahead: int = 7) -> pd.DataFrame:
                         "away_team":    event.get("away_team", ""),
                         "odds_over25":  float(ov25),
                         "odds_under25": float(un25),
+                        "odds_over25_book":  ov25_book,
+                        "odds_under25_book": un25_book,
                         "best_over25":  best_ov25,
                         "best_under25": best_un25,
                         "odds_over15":  float(ov15) if ov15 else None,

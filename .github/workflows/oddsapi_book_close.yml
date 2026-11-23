@@ -1,0 +1,188 @@
+name: OddsAPI Book Close Capture (private store)
+
+# Per-book OddsAPI near-kickoff close capture (owner decision 2026-11-23 "approve all";
+# reports/P1_PRICE_CLV_COVERAGE.md sections 7 and 10). Same feed as predict's entry price (region eu,
+# market totals, every book), bought twice per (league, kickoff) slot: CLOSE_30 (10, 30] and CLOSE_10
+# (1, 10] minutes before kickoff, 1 credit a call. Measured estimate: ~677 credits / 30 days.
+#
+# PRIVATE. OddsAPI terms forbid redistribution and this repo is PUBLIC: prices are written ONLY to the
+# private repo NevixAA/wowza-exec, orphan branch `oddsapi-book-close`, through the write deploy key
+# PRICE_STORE_KEY, cloned outside the workspace ($RUNNER_TEMP). Nothing is committed here. Logs carry
+# counts and credits only - never a price, never a key.
+#
+# GUARDS (scripts/capture_oddsapi_book_close.py, src/oddsapi_book_close.py): before every paid call
+# x-requests-remaining - cost >= 260,000 (a lower floor is refused); run / UTC-day / month credit caps
+# journaled in the store (ledger/usage.json); an answer without x-requests-last stops the run.
+#
+# SWITCH (default off). Scheduled and chained runs do nothing unless vars.ODDSAPI_BOOK_CLOSE == '1':
+#   gh variable set ODDSAPI_BOOK_CLOSE --body 1 --repo NevixAA/wowza-betting      (on)
+#   gh variable set ODDSAPI_BOOK_CLOSE --body 0 --repo NevixAA/wowza-betting      (off)
+# Optional cap overrides: vars.ODDSAPI_BOOK_CLOSE_DAY_CAP (default 100), ..._MONTH_CAP (default 1000).
+# A manual dispatch (chained != true) always runs, for capped tests (mode test / dry-run).
+#
+# CADENCE. Scheduled runs here are often dropped, so a run loops (up to 170 min) while a band opens inside
+# its window, then chains the next run when a band opens within the next 170 min (depth cap 8). The cron is
+# the fallback. A run with nothing due exits in seconds.
+
+on:
+  schedule:
+    - cron: '11,41 * * * *'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'dry-run (free call only) | test (capped real snapshot, stored under test/) | capture'
+        required: true
+        default: dry-run
+        type: choice
+        options: [dry-run, test, capture]
+      run_credit_cap:
+        description: 'most credits this run may spend'
+        required: true
+        default: '20'
+        type: string
+      max_calls:
+        description: 'test mode: most slots bought'
+        required: false
+        default: '3'
+        type: string
+      chained:
+        description: 'internal: set by the chain step'
+        required: false
+        default: 'false'
+        type: string
+      chain_depth:
+        description: 'internal: chain depth'
+        required: false
+        default: '0'
+        type: string
+
+concurrency:
+  group: oddsapi-book-close
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  capture:
+    if: >-
+      (github.event_name == 'schedule' && vars.ODDSAPI_BOOK_CLOSE == '1') ||
+      (github.event_name == 'workflow_dispatch' && (inputs.chained != 'true' || vars.ODDSAPI_BOOK_CLOSE == '1'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 185
+    permissions:
+      contents: read
+      actions: write
+    env:
+      MODE: ${{ github.event_name == 'schedule' && 'capture' || inputs.mode }}
+      RUN_CAP: ${{ github.event_name == 'schedule' && '30' || inputs.run_credit_cap }}
+      MAX_CALLS: ${{ github.event_name == 'schedule' && '0' || inputs.max_calls }}
+      DAY_CAP: ${{ vars.ODDSAPI_BOOK_CLOSE_DAY_CAP || '100' }}
+      MONTH_CAP: ${{ vars.ODDSAPI_BOOK_CLOSE_MONTH_CAP || '1000' }}
+      DEPTH: ${{ github.event_name == 'schedule' && '0' || inputs.chain_depth }}
+      PYTHONIOENCODING: utf-8
+    steps:
+      - name: Check the inputs
+        run: |
+          for v in "$RUN_CAP" "$MAX_CALLS" "$DAY_CAP" "$MONTH_CAP" "$DEPTH"; do
+            [[ "$v" =~ ^[0-9]+$ ]] || { echo "::error::numbers only"; exit 1; }
+          done
+          if [ "$MODE" = "test" ] && [ "$RUN_CAP" -gt 20 ]; then
+            echo "::error::test mode is capped at 20 credits"; exit 1
+          fi
+
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout: |
+            src/__init__.py
+            src/oddsapi_book_close.py
+            scripts/capture_oddsapi_book_close.py
+            output/predictions.csv
+          sparse-checkout-cone-mode: false
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install (the two packages the capture imports)
+        run: pip install -q "pandas>=2.0.0" "requests>=2.31.0"
+
+      - name: Open the private store (deploy key, branch oddsapi-book-close)
+        env:
+          PRICE_STORE_KEY: ${{ secrets.PRICE_STORE_KEY }}
+        run: |
+          if [ -z "${PRICE_STORE_KEY}" ]; then
+            echo "::error title=book close::secret PRICE_STORE_KEY is not set"; exit 1
+          fi
+          ( umask 077; printf '%s\n' "$PRICE_STORE_KEY" > "$RUNNER_TEMP/book_close_key" )
+          # GitHub's published ed25519 host key (docs.github.com, "GitHub's SSH key fingerprints").
+          echo "github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl" > "$RUNNER_TEMP/book_close_known_hosts"
+          echo "GIT_SSH_COMMAND=ssh -i $RUNNER_TEMP/book_close_key -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile=$RUNNER_TEMP/book_close_known_hosts" >> "$GITHUB_ENV"
+          export GIT_SSH_COMMAND="ssh -i $RUNNER_TEMP/book_close_key -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile=$RUNNER_TEMP/book_close_known_hosts"
+          git clone --quiet --depth 1 --branch oddsapi-book-close git@github.com:NevixAA/wowza-exec.git "$RUNNER_TEMP/book_close_store"
+          [ -f "$RUNNER_TEMP/book_close_store/.book_close_store" ] || { echo "::error::store marker missing"; exit 1; }
+          echo "[book_close] private store open"
+
+      - name: Capture (counts and credits only in this log)
+        id: capture
+        env:
+          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+        run: |
+          set -o pipefail
+          LOOP=0
+          [ "$MODE" = "capture" ] && LOOP=170
+          python scripts/capture_oddsapi_book_close.py --store "$RUNNER_TEMP/book_close_store" \
+            --predictions output/predictions.csv --mode "$MODE" --run-cap "$RUN_CAP" \
+            --day-cap "$DAY_CAP" --month-cap "$MONTH_CAP" --max-calls "$MAX_CALLS" \
+            --loop-minutes "$LOOP" --floor 260000 | tee "$RUNNER_TEMP/book_close.log"
+          python3 - <<'PY'
+          import json, os, datetime
+          line = [l for l in open(os.path.join(os.environ["RUNNER_TEMP"], "book_close.log"), encoding="utf-8")
+                  if l.startswith("[oddsapi_usage] ")][-1]
+          u = json.loads(line.split(" ", 1)[1])
+          chain = 0
+          nxt = u.get("next_band_open")
+          if os.environ["MODE"] == "capture" and nxt and not u.get("stopped") and int(os.environ["DEPTH"]) < 8:
+              t = datetime.datetime.fromisoformat(nxt.replace("Z", "+00:00"))
+              chain = int((t - datetime.datetime.now(datetime.timezone.utc)).total_seconds() <= 170 * 60)
+          with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+              f.write(f"chain={chain}\nchain_depth={int(os.environ['DEPTH']) + 1}\n")
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as f:
+              keep = {k: u.get(k) for k in ("mode", "calls", "free_calls", "credits", "requests_remaining",
+                                            "stopped", "floor", "caps", "day_spent", "month_spent",
+                                            "slots_on_board", "summary", "next_band_open")}
+              f.write("### OddsAPI book close (counts only)\n```json\n" + json.dumps(keep, indent=1) + "\n```\n")
+          PY
+
+      - name: Commit the store (private branch oddsapi-book-close)
+        if: always()
+        run: |
+          cd "$RUNNER_TEMP/book_close_store" 2>/dev/null || exit 0
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          for p in data test ledger; do [ -e "$p" ] && git add "$p"; done
+          if git diff --staged --quiet; then echo "[book_close] nothing new"; exit 0; fi
+          FILES=$(git diff --staged --name-only | wc -l)
+          git commit --quiet -m "book-close: run ${GITHUB_RUN_ID} (${MODE}, ${FILES} file(s))"
+          for i in 1 2 3 4 5; do
+            if git pull --quiet --rebase origin oddsapi-book-close && git push --quiet origin HEAD:oddsapi-book-close; then
+              echo "[book_close] pushed ${FILES} file(s) -> private store"; exit 0
+            fi
+            echo "[book_close] push race - retry $i"; sleep $((RANDOM % 5 + 3))
+          done
+          echo "::error title=book close::push to the private store failed after 5 tries"; exit 1
+
+      - name: Remove the key
+        if: always()
+        run: rm -f "$RUNNER_TEMP/book_close_key"
+
+      - name: Chain the next run
+        if: always() && steps.capture.outputs.chain == '1' && vars.ODDSAPI_BOOK_CLOSE == '1'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NEXT_DEPTH: ${{ steps.capture.outputs.chain_depth }}
+        run: |
+          gh workflow run oddsapi_book_close.yml --repo "$GITHUB_REPOSITORY" --ref main \
+            -f mode=capture -f run_credit_cap=30 -f max_calls=0 -f chained=true -f chain_depth="$NEXT_DEPTH" \
+            || echo "::warning::chain dispatch failed - the next cron firing is the fallback"
