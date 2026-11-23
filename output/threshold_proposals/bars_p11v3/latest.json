@@ -1,0 +1,1262 @@
+{
+ "proposal_id": "TP-2026-11-23-d5bb8581",
+ "proposal_hash": "d5bb85818f9c9f9dec2e1383032fc6c5c9d38d595567570f707b6347149e2257",
+ "path": "output/threshold_proposals/bars_p11v3/2026-11.json",
+ "summary_md": "output/threshold_proposals/bars_p11v3/2026-11.md",
+ "created_at": "2026-11-23T19:33:21Z",
+ "month": "2026-11",
+ "status": "AWAITING_OWNER",
+ "n_entries": 53,
+ "n_serving_changes": 52,
+ "serving_changes": [
+  {
+   "entry_id": "ou25|Argentina Primera Division",
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for Argentina Primera Division",
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for Argentina Primera Division",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.02,
+    "marksman": 0.02,
+    "valuable": 0.02,
+    "sniper_source": "best_params_standard[Argentina Primera Division] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_standard[Argentina Primera Division] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "bets_oos": null,
+   "oos_matchdays": null,
+   "roi_oos": null,
+   "oos_roi_ci95": null
+  },
+  {
+   "entry_id": "ou25|Austrian Bundesliga",
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "served_now": {
+    "sniper": 0.02,
+    "marksman": 0.02,
+    "valuable": 0.02,
+    "sniper_source": "best_params_standard[Austrian Bundesliga] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_standard[Austrian Bundesliga] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "served_if_approved": {
+    "sniper": 0.04,
+    "marksman": 0.04,
+    "valuable": 0.02,
+    "sniper_source": "best_params_standard[Austrian Bundesliga] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_standard[Austrian Bundesliga] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "bets_oos": null,
+   "oos_matchdays": null,
+   "roi_oos": null,
+   "oos_roi_ci95": null
+  },
+  {
+   "entry_id": "ou25|Belgian First Division A",
+   "change": "REMOVE",
+   "served_now": {
+    "sniper": 0.02,
+    "marksman": 0.02,
+    "valuable": 0.02,
+    "sniper_source": "best_params_standard[Belgian First Division A] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_standard[Belgian First Division A] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "served_if_approved": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for Belgian First Division A",
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for Belgian First Division A",
+    "own_bars": false
+   },
+   "bets_oos": null,
+   "oos_matchdays": null,
+   "roi_oos": null,
+   "oos_roi_ci95": null
+  },
+  {
+   "entry_id": "ou25|Brazil Serie A",
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for Brazil Serie A",
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for Brazil Serie A",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.12,
+    "marksman": 0.12,
+    "valuable": 0.1,
+    "sniper_source": "best_params_standard[Brazil Serie A] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_standard[Brazil Serie A] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "bets_oos": null,
+   "oos_matchdays": null,
+   "roi_oos": null,
+   "oos_roi_ci95": null
+  },
+  {
+   "entry_id": "ou25|Championship",
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for Championship",
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for Championship",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.12,
+    "marksman": 0.12,
+    "valuable": 0.11,
+    "sniper_source": "best_params_standard[Championship] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_standard[Championship] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "bets_oos": null,
+   "oos_matchdays": null,
+   "roi_oos": null,
+   "oos_roi_ci95": null
+  },
+  {
+   "entry_id": "ou25|Finland Veikkausliiga",
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for Finland Veikkausliiga",
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for Finland Veikkausliiga",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.02,
+    "marksman": 0.02,
+    "valuable": 0.02,
+    "sniper_source": "best_params_standard[Finland Veikkausliiga] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_standard[Finland Veikkausliiga] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "bets_oos": null,
+   "oos_matchdays": null,
+   "roi_oos": null,
+   "oos_roi_ci95": null
+  },
+  {
+   "entry_id": "ou25|Greek Super League",
+   "change": "REMOVE",
+   "served_now": {
+    "sniper": 0.11,
+    "marksman": 0.1,
+    "valuable": 0.1,
+    "sniper_source": "best_params_standard[Greek Super League] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_standard[Greek Super League] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "served_if_approved": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for Greek Super League",
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for Greek Super League",
+    "own_bars": false
+   },
+   "bets_oos": null,
+   "oos_matchdays": null,
+   "roi_oos": null,
+   "oos_roi_ci95": null
+  },
+  {
+   "entry_id": "ou25|Japan J-League",
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "served_now": {
+    "sniper": 0.03,
+    "marksman": 0.02,
+    "valuable": 0.02,
+    "sniper_source": "best_params_standard[Japan J-League] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_standard[Japan J-League] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "served_if_approved": {
+    "sniper": 0.04,
+    "marksman": 0.04,
+    "valuable": 0.02,
+    "sniper_source": "best_params_standard[Japan J-League] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_standard[Japan J-League] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "bets_oos": null,
+   "oos_matchdays": null,
+   "roi_oos": null,
+   "oos_roi_ci95": null
+  },
+  {
+   "entry_id": "ou25|K-League 1",
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "served_now": {
+    "sniper": 0.03,
+    "marksman": 0.02,
+    "valuable": 0.02,
+    "sniper_source": "best_params_standard[K-League 1] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_standard[K-League 1] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "served_if_approved": {
+    "sniper": 0.04,
+    "marksman": 0.04,
+    "valuable": 0.02,
+    "sniper_source": "best_params_standard[K-League 1] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_standard[K-League 1] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "bets_oos": null,
+   "oos_matchdays": null,
+   "roi_oos": null,
+   "oos_roi_ci95": null
+  },
+  {
+   "entry_id": "ou25|La Liga 2",
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "served_now": {
+    "sniper": 0.17,
+    "marksman": 0.17,
+    "valuable": 0.13,
+    "sniper_source": "best_params_standard[La Liga 2] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_standard[La Liga 2] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "served_if_approved": {
+    "sniper": 0.11,
+    "marksman": 0.11,
+    "valuable": 0.11,
+    "sniper_source": "best_params_standard[La Liga 2] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_standard[La Liga 2] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "bets_oos": null,
+   "oos_matchdays": null,
+   "roi_oos": null,
+   "oos_roi_ci95": null
+  },
+  {
+   "entry_id": "ou25|League One",
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "served_now": {
+    "sniper": 0.13,
+    "marksman": 0.13,
+    "valuable": 0.11,
+    "sniper_source": "best_params_standard[League One] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_standard[League One] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "served_if_approved": {
+    "sniper": 0.11,
+    "marksman": 0.11,
+    "valuable": 0.11,
+    "sniper_source": "best_params_standard[League One] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_standard[League One] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "bets_oos": null,
+   "oos_matchdays": null,
+   "roi_oos": null,
+   "oos_roi_ci95": null
+  },
+  {
+   "entry_id": "ou25|League Two",
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for League Two",
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for League Two",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.11,
+    "marksman": 0.11,
+    "valuable": 0.11,
+    "sniper_source": "best_params_standard[League Two] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_standard[League Two] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "bets_oos": null,
+   "oos_matchdays": null,
+   "roi_oos": null,
+   "oos_roi_ci95": null
+  },
+  {
+   "entry_id": "ou25|Ligue 2",
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "served_now": {
+    "sniper": 0.14,
+    "marksman": 0.14,
+    "valuable": 0.14,
+    "sniper_source": "best_params_standard[Ligue 2] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_standard[Ligue 2] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "served_if_approved": {
+    "sniper": 0.11,
+    "marksman": 0.11,
+    "valuable": 0.11,
+    "sniper_source": "best_params_standard[Ligue 2] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_standard[Ligue 2] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "bets_oos": null,
+   "oos_matchdays": null,
+   "roi_oos": null,
+   "oos_roi_ci95": null
+  },
+  {
+   "entry_id": "ou25|Mexico Liga MX",
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for Mexico Liga MX",
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for Mexico Liga MX",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.04,
+    "marksman": 0.02,
+    "valuable": 0.02,
+    "sniper_source": "best_params_standard[Mexico Liga MX] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_standard[Mexico Liga MX] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "bets_oos": null,
+   "oos_matchdays": null,
+   "roi_oos": null,
+   "oos_roi_ci95": null
+  },
+  {
+   "entry_id": "ou25|Norway Eliteserien",
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for Norway Eliteserien",
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for Norway Eliteserien",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.03,
+    "marksman": 0.02,
+    "valuable": 0.02,
+    "sniper_source": "best_params_standard[Norway Eliteserien] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_standard[Norway Eliteserien] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "bets_oos": null,
+   "oos_matchdays": null,
+   "roi_oos": null,
+   "oos_roi_ci95": null
+  },
+  {
+   "entry_id": "ou25|Portuguese Primeira Liga",
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for Portuguese Primeira Liga",
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for Portuguese Primeira Liga",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.11,
+    "marksman": 0.11,
+    "valuable": 0.11,
+    "sniper_source": "best_params_standard[Portuguese Primeira Liga] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_standard[Portuguese Primeira Liga] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "bets_oos": null,
+   "oos_matchdays": null,
+   "roi_oos": null,
+   "oos_roi_ci95": null
+  },
+  {
+   "entry_id": "ou25|Saudi Pro League",
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "served_now": {
+    "sniper": 0.02,
+    "marksman": 0.02,
+    "valuable": 0.02,
+    "sniper_source": "best_params_standard[Saudi Pro League] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_standard[Saudi Pro League] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "served_if_approved": {
+    "sniper": 0.14,
+    "marksman": 0.14,
+    "valuable": 0.1,
+    "sniper_source": "best_params_standard[Saudi Pro League] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_standard[Saudi Pro League] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "bets_oos": null,
+   "oos_matchdays": null,
+   "roi_oos": null,
+   "oos_roi_ci95": null
+  },
+  {
+   "entry_id": "ou25|Serie B",
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "served_now": {
+    "sniper": 0.16,
+    "marksman": 0.1,
+    "valuable": 0.09,
+    "sniper_source": "best_params_standard[Serie B] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_standard[Serie B] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "served_if_approved": {
+    "sniper": 0.13,
+    "marksman": 0.12,
+    "valuable": 0.11,
+    "sniper_source": "best_params_standard[Serie B] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_standard[Serie B] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "bets_oos": null,
+   "oos_matchdays": null,
+   "roi_oos": null,
+   "oos_roi_ci95": null
+  },
+  {
+   "entry_id": "ou25|Sweden Allsvenskan",
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for Sweden Allsvenskan",
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for Sweden Allsvenskan",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.02,
+    "marksman": 0.02,
+    "valuable": 0.02,
+    "sniper_source": "best_params_standard[Sweden Allsvenskan] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_standard[Sweden Allsvenskan] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "bets_oos": null,
+   "oos_matchdays": null,
+   "roi_oos": null,
+   "oos_roi_ci95": null
+  },
+  {
+   "entry_id": "ou25|USA MLS",
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no ou25 params entry for USA MLS",
+    "marksman_source": "NO_LEAGUE_BAR: no ou25 params entry for USA MLS",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.03,
+    "marksman": 0.03,
+    "valuable": 0.02,
+    "sniper_source": "best_params_standard[USA MLS] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_standard[USA MLS] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "bets_oos": null,
+   "oos_matchdays": null,
+   "roi_oos": null,
+   "oos_roi_ci95": null
+  },
+  {
+   "entry_id": "btts|Belgian First Division A",
+   "change": "REMOVE",
+   "served_now": {
+    "sniper": 0.03,
+    "marksman": 0.02,
+    "valuable": 0.02,
+    "sniper_source": "best_params_side_markets[btts][Belgian First Division A] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[btts][Belgian First Division A] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "served_if_approved": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no btts params entry for Belgian First Division A",
+    "marksman_source": "NO_LEAGUE_BAR: no btts params entry for Belgian First Division A",
+    "own_bars": false
+   },
+   "bets_oos": null,
+   "oos_matchdays": null,
+   "roi_oos": null,
+   "oos_roi_ci95": null
+  },
+  {
+   "entry_id": "btts|Greek Super League",
+   "change": "REMOVE",
+   "served_now": {
+    "sniper": 0.02,
+    "marksman": 0.02,
+    "valuable": 0.02,
+    "sniper_source": "best_params_side_markets[btts][Greek Super League] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[btts][Greek Super League] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "served_if_approved": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no btts params entry for Greek Super League",
+    "marksman_source": "NO_LEAGUE_BAR: no btts params entry for Greek Super League",
+    "own_bars": false
+   },
+   "bets_oos": null,
+   "oos_matchdays": null,
+   "roi_oos": null,
+   "oos_roi_ci95": null
+  },
+  {
+   "entry_id": "btts|League Two",
+   "change": "REMOVE",
+   "served_now": {
+    "sniper": 0.03,
+    "marksman": 0.02,
+    "valuable": 0.02,
+    "sniper_source": "best_params_side_markets[btts][League Two] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[btts][League Two] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "served_if_approved": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no btts params entry for League Two",
+    "marksman_source": "NO_LEAGUE_BAR: no btts params entry for League Two",
+    "own_bars": false
+   },
+   "bets_oos": null,
+   "oos_matchdays": null,
+   "roi_oos": null,
+   "oos_roi_ci95": null
+  },
+  {
+   "entry_id": "btts|Ligue 2",
+   "change": "REMOVE",
+   "served_now": {
+    "sniper": 0.03,
+    "marksman": 0.02,
+    "valuable": 0.02,
+    "sniper_source": "best_params_side_markets[btts][Ligue 2] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[btts][Ligue 2] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "served_if_approved": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no btts params entry for Ligue 2",
+    "marksman_source": "NO_LEAGUE_BAR: no btts params entry for Ligue 2",
+    "own_bars": false
+   },
+   "bets_oos": null,
+   "oos_matchdays": null,
+   "roi_oos": null,
+   "oos_roi_ci95": null
+  },
+  {
+   "entry_id": "btts|Portuguese Primeira Liga",
+   "change": "REMOVE",
+   "served_now": {
+    "sniper": 0.03,
+    "marksman": 0.02,
+    "valuable": 0.02,
+    "sniper_source": "best_params_side_markets[btts][Portuguese Primeira Liga] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[btts][Portuguese Primeira Liga] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "served_if_approved": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no btts params entry for Portuguese Primeira Liga",
+    "marksman_source": "NO_LEAGUE_BAR: no btts params entry for Portuguese Primeira Liga",
+    "own_bars": false
+   },
+   "bets_oos": null,
+   "oos_matchdays": null,
+   "roi_oos": null,
+   "oos_roi_ci95": null
+  },
+  {
+   "entry_id": "btts|Scottish Premiership",
+   "change": "REMOVE",
+   "served_now": {
+    "sniper": 0.03,
+    "marksman": 0.02,
+    "valuable": 0.02,
+    "sniper_source": "best_params_side_markets[btts][Scottish Premiership] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[btts][Scottish Premiership] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "served_if_approved": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no btts params entry for Scottish Premiership",
+    "marksman_source": "NO_LEAGUE_BAR: no btts params entry for Scottish Premiership",
+    "own_bars": false
+   },
+   "bets_oos": null,
+   "oos_matchdays": null,
+   "roi_oos": null,
+   "oos_roi_ci95": null
+  },
+  {
+   "entry_id": "btts|Serie B",
+   "change": "REMOVE",
+   "served_now": {
+    "sniper": 0.03,
+    "marksman": 0.03,
+    "valuable": 0.02,
+    "sniper_source": "best_params_side_markets[btts][Serie B] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[btts][Serie B] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "served_if_approved": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no btts params entry for Serie B",
+    "marksman_source": "NO_LEAGUE_BAR: no btts params entry for Serie B",
+    "own_bars": false
+   },
+   "bets_oos": null,
+   "oos_matchdays": null,
+   "roi_oos": null,
+   "oos_roi_ci95": null
+  },
+  {
+   "entry_id": "btts|Turkish Super Lig",
+   "change": "REMOVE",
+   "served_now": {
+    "sniper": 0.03,
+    "marksman": 0.02,
+    "valuable": 0.02,
+    "sniper_source": "best_params_side_markets[btts][Turkish Super Lig] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[btts][Turkish Super Lig] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "served_if_approved": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no btts params entry for Turkish Super Lig",
+    "marksman_source": "NO_LEAGUE_BAR: no btts params entry for Turkish Super Lig",
+    "own_bars": false
+   },
+   "bets_oos": null,
+   "oos_matchdays": null,
+   "roi_oos": null,
+   "oos_roi_ci95": null
+  },
+  {
+   "entry_id": "over15|Argentina Primera Division",
+   "change": "REMOVE",
+   "served_now": {
+    "sniper": 0.18,
+    "marksman": 0.09,
+    "valuable": 0.05,
+    "sniper_source": "best_params_side_markets[over15][Argentina Primera Division] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[over15][Argentina Primera Division] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "served_if_approved": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over15 params entry for Argentina Primera Division",
+    "marksman_source": "NO_LEAGUE_BAR: no over15 params entry for Argentina Primera Division",
+    "own_bars": false
+   },
+   "bets_oos": null,
+   "oos_matchdays": null,
+   "roi_oos": null,
+   "oos_roi_ci95": null
+  },
+  {
+   "entry_id": "over15|Brazil Serie A",
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "served_now": {
+    "sniper": 0.3,
+    "marksman": 0.02,
+    "valuable": 0.02,
+    "sniper_source": "best_params_side_markets[over15][Brazil Serie A] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[over15][Brazil Serie A] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "served_if_approved": {
+    "sniper": 0.02,
+    "marksman": 0.02,
+    "valuable": 0.02,
+    "sniper_source": "best_params_side_markets[over15][Brazil Serie A] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[over15][Brazil Serie A] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "bets_oos": null,
+   "oos_matchdays": null,
+   "roi_oos": null,
+   "oos_roi_ci95": null
+  },
+  {
+   "entry_id": "over15|Denmark Superliga",
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over15 params entry for Denmark Superliga",
+    "marksman_source": "NO_LEAGUE_BAR: no over15 params entry for Denmark Superliga",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.02,
+    "marksman": 0.02,
+    "valuable": 0.02,
+    "sniper_source": "best_params_side_markets[over15][Denmark Superliga] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[over15][Denmark Superliga] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "bets_oos": null,
+   "oos_matchdays": null,
+   "roi_oos": null,
+   "oos_roi_ci95": null
+  },
+  {
+   "entry_id": "over15|Finland Veikkausliiga",
+   "change": "REMOVE",
+   "served_now": {
+    "sniper": 0.17,
+    "marksman": 0.17,
+    "valuable": 0.02,
+    "sniper_source": "best_params_side_markets[over15][Finland Veikkausliiga] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[over15][Finland Veikkausliiga] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "served_if_approved": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over15 params entry for Finland Veikkausliiga",
+    "marksman_source": "NO_LEAGUE_BAR: no over15 params entry for Finland Veikkausliiga",
+    "own_bars": false
+   },
+   "bets_oos": null,
+   "oos_matchdays": null,
+   "roi_oos": null,
+   "oos_roi_ci95": null
+  },
+  {
+   "entry_id": "over15|Greek Super League",
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "served_now": {
+    "sniper": 0.02,
+    "marksman": 0.02,
+    "valuable": 0.02,
+    "sniper_source": "best_params_side_markets[over15][Greek Super League] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[over15][Greek Super League] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "served_if_approved": {
+    "sniper": 0.04,
+    "marksman": 0.02,
+    "valuable": 0.02,
+    "sniper_source": "best_params_side_markets[over15][Greek Super League] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[over15][Greek Super League] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "bets_oos": null,
+   "oos_matchdays": null,
+   "roi_oos": null,
+   "oos_roi_ci95": null
+  },
+  {
+   "entry_id": "over15|Ireland Premier Division",
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "served_now": {
+    "sniper": 0.06,
+    "marksman": 0.02,
+    "valuable": 0.02,
+    "sniper_source": "best_params_side_markets[over15][Ireland Premier Division] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[over15][Ireland Premier Division] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "served_if_approved": {
+    "sniper": 0.04,
+    "marksman": 0.04,
+    "valuable": 0.02,
+    "sniper_source": "best_params_side_markets[over15][Ireland Premier Division] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[over15][Ireland Premier Division] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "bets_oos": null,
+   "oos_matchdays": null,
+   "roi_oos": null,
+   "oos_roi_ci95": null
+  },
+  {
+   "entry_id": "over15|Japan J-League",
+   "change": "REMOVE",
+   "served_now": {
+    "sniper": 0.06,
+    "marksman": 0.02,
+    "valuable": 0.02,
+    "sniper_source": "best_params_side_markets[over15][Japan J-League] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[over15][Japan J-League] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "served_if_approved": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over15 params entry for Japan J-League",
+    "marksman_source": "NO_LEAGUE_BAR: no over15 params entry for Japan J-League",
+    "own_bars": false
+   },
+   "bets_oos": null,
+   "oos_matchdays": null,
+   "roi_oos": null,
+   "oos_roi_ci95": null
+  },
+  {
+   "entry_id": "over15|K-League 1",
+   "change": "REMOVE",
+   "served_now": {
+    "sniper": 0.14,
+    "marksman": 0.14,
+    "valuable": 0.1,
+    "sniper_source": "best_params_side_markets[over15][K-League 1] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[over15][K-League 1] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "served_if_approved": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over15 params entry for K-League 1",
+    "marksman_source": "NO_LEAGUE_BAR: no over15 params entry for K-League 1",
+    "own_bars": false
+   },
+   "bets_oos": null,
+   "oos_matchdays": null,
+   "roi_oos": null,
+   "oos_roi_ci95": null
+  },
+  {
+   "entry_id": "over15|La Liga 2",
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over15 params entry for La Liga 2",
+    "marksman_source": "NO_LEAGUE_BAR: no over15 params entry for La Liga 2",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.13,
+    "marksman": 0.13,
+    "valuable": 0.12,
+    "sniper_source": "best_params_side_markets[over15][La Liga 2] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[over15][La Liga 2] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "bets_oos": null,
+   "oos_matchdays": null,
+   "roi_oos": null,
+   "oos_roi_ci95": null
+  },
+  {
+   "entry_id": "over15|League Two",
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over15 params entry for League Two",
+    "marksman_source": "NO_LEAGUE_BAR: no over15 params entry for League Two",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.02,
+    "marksman": 0.02,
+    "valuable": 0.02,
+    "sniper_source": "best_params_side_markets[over15][League Two] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[over15][League Two] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "bets_oos": null,
+   "oos_matchdays": null,
+   "roi_oos": null,
+   "oos_roi_ci95": null
+  },
+  {
+   "entry_id": "over15|Ligue 2",
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "served_now": {
+    "sniper": 0.02,
+    "marksman": 0.02,
+    "valuable": 0.02,
+    "sniper_source": "best_params_side_markets[over15][Ligue 2] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[over15][Ligue 2] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "served_if_approved": {
+    "sniper": 0.09,
+    "marksman": 0.09,
+    "valuable": 0.04,
+    "sniper_source": "best_params_side_markets[over15][Ligue 2] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[over15][Ligue 2] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "bets_oos": null,
+   "oos_matchdays": null,
+   "roi_oos": null,
+   "oos_roi_ci95": null
+  },
+  {
+   "entry_id": "over15|Norway Eliteserien",
+   "change": "REMOVE",
+   "served_now": {
+    "sniper": 0.08,
+    "marksman": 0.04,
+    "valuable": 0.02,
+    "sniper_source": "best_params_side_markets[over15][Norway Eliteserien] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[over15][Norway Eliteserien] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "served_if_approved": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over15 params entry for Norway Eliteserien",
+    "marksman_source": "NO_LEAGUE_BAR: no over15 params entry for Norway Eliteserien",
+    "own_bars": false
+   },
+   "bets_oos": null,
+   "oos_matchdays": null,
+   "roi_oos": null,
+   "oos_roi_ci95": null
+  },
+  {
+   "entry_id": "over15|Scottish Premiership",
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over15 params entry for Scottish Premiership",
+    "marksman_source": "NO_LEAGUE_BAR: no over15 params entry for Scottish Premiership",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.1,
+    "marksman": 0.1,
+    "valuable": 0.09,
+    "sniper_source": "best_params_side_markets[over15][Scottish Premiership] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[over15][Scottish Premiership] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "bets_oos": null,
+   "oos_matchdays": null,
+   "roi_oos": null,
+   "oos_roi_ci95": null
+  },
+  {
+   "entry_id": "over15|Serie B",
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "served_now": {
+    "sniper": 0.02,
+    "marksman": 0.02,
+    "valuable": 0.02,
+    "sniper_source": "best_params_side_markets[over15][Serie B] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[over15][Serie B] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "served_if_approved": {
+    "sniper": 0.1,
+    "marksman": 0.02,
+    "valuable": 0.02,
+    "sniper_source": "best_params_side_markets[over15][Serie B] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[over15][Serie B] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "bets_oos": null,
+   "oos_matchdays": null,
+   "roi_oos": null,
+   "oos_roi_ci95": null
+  },
+  {
+   "entry_id": "over15|Sweden Allsvenskan",
+   "change": "REMOVE",
+   "served_now": {
+    "sniper": 0.03,
+    "marksman": 0.03,
+    "valuable": 0.02,
+    "sniper_source": "best_params_side_markets[over15][Sweden Allsvenskan] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[over15][Sweden Allsvenskan] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "served_if_approved": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over15 params entry for Sweden Allsvenskan",
+    "marksman_source": "NO_LEAGUE_BAR: no over15 params entry for Sweden Allsvenskan",
+    "own_bars": false
+   },
+   "bets_oos": null,
+   "oos_matchdays": null,
+   "roi_oos": null,
+   "oos_roi_ci95": null
+  },
+  {
+   "entry_id": "over15|Turkish Super Lig",
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over15 params entry for Turkish Super Lig",
+    "marksman_source": "NO_LEAGUE_BAR: no over15 params entry for Turkish Super Lig",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.09,
+    "marksman": 0.09,
+    "valuable": 0.09,
+    "sniper_source": "best_params_side_markets[over15][Turkish Super Lig] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[over15][Turkish Super Lig] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "bets_oos": null,
+   "oos_matchdays": null,
+   "roi_oos": null,
+   "oos_roi_ci95": null
+  },
+  {
+   "entry_id": "over15|USA MLS",
+   "change": "REMOVE",
+   "served_now": {
+    "sniper": 0.17,
+    "marksman": 0.17,
+    "valuable": 0.06,
+    "sniper_source": "best_params_side_markets[over15][USA MLS] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[over15][USA MLS] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "served_if_approved": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over15 params entry for USA MLS",
+    "marksman_source": "NO_LEAGUE_BAR: no over15 params entry for USA MLS",
+    "own_bars": false
+   },
+   "bets_oos": null,
+   "oos_matchdays": null,
+   "roi_oos": null,
+   "oos_roi_ci95": null
+  },
+  {
+   "entry_id": "over35|China Super League",
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "served_now": {
+    "sniper": 0.03,
+    "marksman": 0.03,
+    "valuable": 0.02,
+    "sniper_source": "best_params_side_markets[over35][China Super League] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[over35][China Super League] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "served_if_approved": {
+    "sniper": 0.03,
+    "marksman": 0.03,
+    "valuable": 0.03,
+    "sniper_source": "best_params_side_markets[over35][China Super League] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[over35][China Super League] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "bets_oos": null,
+   "oos_matchdays": null,
+   "roi_oos": null,
+   "oos_roi_ci95": null
+  },
+  {
+   "entry_id": "over35|Denmark Superliga",
+   "change": "REMOVE",
+   "served_now": {
+    "sniper": 0.03,
+    "marksman": 0.03,
+    "valuable": 0.02,
+    "sniper_source": "best_params_side_markets[over35][Denmark Superliga] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[over35][Denmark Superliga] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "served_if_approved": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over35 params entry for Denmark Superliga",
+    "marksman_source": "NO_LEAGUE_BAR: no over35 params entry for Denmark Superliga",
+    "own_bars": false
+   },
+   "bets_oos": null,
+   "oos_matchdays": null,
+   "roi_oos": null,
+   "oos_roi_ci95": null
+  },
+  {
+   "entry_id": "over35|Dutch Eredivisie",
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over35 params entry for Dutch Eredivisie",
+    "marksman_source": "NO_LEAGUE_BAR: no over35 params entry for Dutch Eredivisie",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.02,
+    "marksman": 0.02,
+    "valuable": 0.02,
+    "sniper_source": "best_params_side_markets[over35][Dutch Eredivisie] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[over35][Dutch Eredivisie] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "bets_oos": null,
+   "oos_matchdays": null,
+   "roi_oos": null,
+   "oos_roi_ci95": null
+  },
+  {
+   "entry_id": "over35|Finland Veikkausliiga",
+   "change": "REMOVE",
+   "served_now": {
+    "sniper": 0.02,
+    "marksman": 0.02,
+    "valuable": 0.02,
+    "sniper_source": "best_params_side_markets[over35][Finland Veikkausliiga] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[over35][Finland Veikkausliiga] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "served_if_approved": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over35 params entry for Finland Veikkausliiga",
+    "marksman_source": "NO_LEAGUE_BAR: no over35 params entry for Finland Veikkausliiga",
+    "own_bars": false
+   },
+   "bets_oos": null,
+   "oos_matchdays": null,
+   "roi_oos": null,
+   "oos_roi_ci95": null
+  },
+  {
+   "entry_id": "over35|Mexico Liga MX",
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "served_now": {
+    "sniper": null,
+    "marksman": null,
+    "valuable": null,
+    "sniper_source": "NO_LEAGUE_BAR: no over35 params entry for Mexico Liga MX",
+    "marksman_source": "NO_LEAGUE_BAR: no over35 params entry for Mexico Liga MX",
+    "own_bars": false
+   },
+   "served_if_approved": {
+    "sniper": 0.05,
+    "marksman": 0.02,
+    "valuable": 0.02,
+    "sniper_source": "best_params_side_markets[over35][Mexico Liga MX] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[over35][Mexico Liga MX] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "bets_oos": null,
+   "oos_matchdays": null,
+   "roi_oos": null,
+   "oos_roi_ci95": null
+  },
+  {
+   "entry_id": "over35|Norway Eliteserien",
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "served_now": {
+    "sniper": 0.03,
+    "marksman": 0.03,
+    "valuable": 0.02,
+    "sniper_source": "best_params_side_markets[over35][Norway Eliteserien] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[over35][Norway Eliteserien] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "served_if_approved": {
+    "sniper": 0.04,
+    "marksman": 0.03,
+    "valuable": 0.03,
+    "sniper_source": "best_params_side_markets[over35][Norway Eliteserien] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[over35][Norway Eliteserien] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "bets_oos": null,
+   "oos_matchdays": null,
+   "roi_oos": null,
+   "oos_roi_ci95": null
+  },
+  {
+   "entry_id": "over35|Romanian Superliga",
+   "change": "UNAPPROVED_VALUE_CHANGE",
+   "served_now": {
+    "sniper": 0.04,
+    "marksman": 0.04,
+    "valuable": 0.02,
+    "sniper_source": "best_params_side_markets[over35][Romanian Superliga] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[over35][Romanian Superliga] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "served_if_approved": {
+    "sniper": 0.05,
+    "marksman": 0.05,
+    "valuable": 0.02,
+    "sniper_source": "best_params_side_markets[over35][Romanian Superliga] (owner-applied, threshold_apply)",
+    "marksman_source": "best_params_side_markets[over35][Romanian Superliga] (owner-applied, threshold_apply)",
+    "own_bars": true
+   },
+   "bets_oos": null,
+   "oos_matchdays": null,
+   "roi_oos": null,
+   "oos_roi_ci95": null
+  }
+ ],
+ "markets_missing": []
+}

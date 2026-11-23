@@ -331,6 +331,11 @@ def _cov_table(cov: dict, leagues=None, markets=None) -> list[str]:
     return lines
 
 
+def _n_proven(ev: dict) -> int:
+    """PROVEN cells of an evidence file (a status absent from status_counts has no cell)."""
+    return sum(1 for r in ev["league_market_status"] if r["status"] == "PROVEN")
+
+
 def render(rows: list[dict], cov: dict, old_ev: dict, new_ev: dict, latest: dict) -> str:
     pt = cov["price_tiers"]
     L = ["# P11 v3: bars re-measured on the enlarged priced universes (PROPOSAL, awaiting owner approval)", "",
@@ -354,7 +359,20 @@ def render(rows: list[dict], cov: dict, old_ev: dict, new_ev: dict, latest: dict
          f"- New proposal: `{latest.get('proposal_id')}` (hash `{str(latest.get('proposal_hash'))[:12]}`), "
          f"{latest.get('n_entries')} entries, {latest.get('n_serving_changes')} would change serving IF approved.",
          "- PROVEN still needs >= 150 validation bets + Holm + CI lower bound > 0. The validation window was scored "
-         "before (P9, P11 v1, v2): these are re-validation numbers, never proof (only live tips prove a cell).", ""]
+         "before (P9, P11 v1, v2): these are re-validation numbers, never proof (only live tips prove a cell).",
+         f"- PROVEN cells: old {_n_proven(old_ev)}, new {_n_proven(new_ev)}.",
+         "- **Read the Standard differences with care.** Old vs new on the Standard track moves two things at once: the "
+         "price inputs AND the predictions (P11 v2 used the refit_1118b frame `9ed237eb`, 2021/22 start; the models "
+         "served since 2026-11-19 train from 2016/17 on frame `ebe47c04`, so their out-of-sample universe has "
+         f"{pt['standard']['universe_rows']:,} rows). New-Format predictions are identical, so New-Format differences "
+         "come from the prices only.",
+         "- Tier parameters (T1/T2/T3) were re-fitted on the fit window only (`tier_fit.json`); the tier validation was "
+         "NOT re-run. The proposed tier config is `output/threshold_proposals/bars_p11v3/top3_tiers_p11v3_PROPOSED.json`; "
+         "the served `config/top3_tiers_p11.json` is unchanged.", ""]
+    efl_on = [(r["league"], r["mside"], (r["old"] or {}).get("status"), (r["new"] or {}).get("status")) for r in rows
+              if r["league"] in EFL and ((r["old"] or {}).get("status") != (r["new"] or {}).get("status"))]
+    L += ["- EFL status changes (old -> new): " + ("; ".join(f"{lg} {ms}: {o} -> {n}" for lg, ms, o, n in efl_on)
+                                                  if efl_on else "none") + ".", ""]
     for t in TRACKS:
         L.append(f"- {t}: price source before {pt[t]['before']['price_source']}, after {pt[t]['after']['price_source']}; "
                  f"integrity failures after: {sum((pt[t]['after']['integrity'] or {}).get('failures', {}).values())}; "
