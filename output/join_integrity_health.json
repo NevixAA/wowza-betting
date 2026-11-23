@@ -1,8 +1,9 @@
 {
   "artifact": "join_integrity_health",
   "helper_version": "safe_left_enrich-1.0",
-  "generated_at": "2026-11-22T19:10:00Z",
+  "generated_at": "2026-11-22T19:58:58Z",
   "status": "FAIL",
+  "status_scope": "worst of EVERY report, the legacy replay included; read the scopes below for what serves (P0 item 3, 2026-11-22)",
   "joins": {
     "af_history_shots.legacy": {
       "name": "af_history_shots.legacy",
@@ -329,7 +330,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
       "left_rows": 80532,
-      "right_rows": 36918,
+      "right_rows": 36927,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -360,7 +361,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "safe",
       "left_rows": 80532,
-      "right_rows": 6413,
+      "right_rows": 6414,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -382,6 +383,25 @@
       "notes": []
     }
   },
+  "active_serving_join_status": "PASS",
+  "active_serving_joins": {
+    "af_history_shots": "PASS",
+    "fd_history_ht_fill": "PASS",
+    "af_stats_fill": "PASS",
+    "af_fullstats_fill": "PASS",
+    "af_restored_rows": "PASS",
+    "std_sidemarket_odds": "PASS",
+    "ou25_captures": "PASS"
+  },
+  "active_joins_that_changed_row_count": [],
+  "legacy_replay_status": "FAIL",
+  "legacy_replay_joins": {
+    "af_history_shots.legacy": "PASS",
+    "fd_history_ht_fill.legacy": "FAIL",
+    "std_sidemarket_odds.legacy": "PASS",
+    "ou25_captures.legacy": "PASS"
+  },
+  "legacy_replay_note": "counterfactual replay of the league-free merge + positional copy-back removed 2026-11-01; audit-only, writes no value into any frame",
   "serving_join_mode": "safe",
   "flag": "none - league-keyed joins always serve (WOWZA_SAFE_ENRICH_JOINS removed 2026-11-01)",
   "fixture_level_enrichment_joins_in_v9": [

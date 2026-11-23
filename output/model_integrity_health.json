@@ -1,8 +1,272 @@
 {
   "artifact": "model_integrity_health",
-  "version": "model-integrity-health-0.1",
-  "generated_at": "2026-11-22T19:13:48Z",
+  "version": "model-integrity-health-0.2",
+  "generated_at": "2026-11-22T20:03:05Z",
   "status": "FAIL",
+  "active_serving_join_status": "PASS",
+  "active_training_lineage_status": "PASS",
+  "legacy_replay_status": "FAIL",
+  "overall_model_integrity_status": "FAIL",
+  "join_scopes": {
+    "active_serving_join_status": "PASS",
+    "active_serving_joins": {
+      "af_history_shots": "PASS",
+      "fd_history_ht_fill": "PASS",
+      "af_stats_fill": "PASS",
+      "af_fullstats_fill": "PASS",
+      "af_restored_rows": "PASS",
+      "std_sidemarket_odds": "PASS",
+      "ou25_captures": "PASS"
+    },
+    "active_joins_that_changed_row_count": [],
+    "legacy_replay_status": "FAIL",
+    "legacy_replay_joins": {
+      "af_history_shots.legacy": "PASS",
+      "fd_history_ht_fill.legacy": "FAIL",
+      "std_sidemarket_odds.legacy": "PASS",
+      "ou25_captures.legacy": "PASS"
+    },
+    "legacy_replay_note": "counterfactual replay of the league-free merge + positional copy-back removed 2026-11-01; audit-only, writes no value into any frame"
+  },
+  "training_lineage": {
+    "version": "training-lineage-1.0",
+    "status": "PASS",
+    "evidence_file": "reports/lineage/training_lineage_evidence.json",
+    "evidence_generated_at": "2026-11-22T17:32:47Z",
+    "models": {
+      "standard": {
+        "payload": "model_v9_standard.pkl",
+        "artifact_sha256_16": "67ee36668c21109d",
+        "status": "PASS",
+        "why": "standard/over25: 49,597 rows (49407 to train end = payload 49407), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS",
+        "registry_sha256_16": "67ee36668c21109d"
+      },
+      "newformat": {
+        "payload": "model_v9_newformat.pkl",
+        "artifact_sha256_16": "303c9a05071e7afd",
+        "status": "PASS",
+        "why": "new_format/over25: 26,965 rows (26846 to train end = payload 26846), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS",
+        "registry_sha256_16": "303c9a05071e7afd"
+      },
+      "btts": {
+        "payload": "model_v9_btts.pkl",
+        "artifact_sha256_16": "44c670490d5101c1",
+        "status": "PASS",
+        "why": "standard/btts: 49,597 rows (49407 to train end = payload 49407), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS; new_format/btts: 26,965 rows (26846 to train end = payload 26846), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS",
+        "registry_sha256_16": "44c670490d5101c1"
+      },
+      "over15": {
+        "payload": "model_v9_over15.pkl",
+        "artifact_sha256_16": "ca01b7d3a4f6fcae",
+        "status": "PASS",
+        "why": "standard/over15: 49,597 rows (49407 to train end = payload 49407), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS; new_format/over15: 26,965 rows (26846 to train end = payload 26846), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS",
+        "registry_sha256_16": "ca01b7d3a4f6fcae"
+      },
+      "over35": {
+        "payload": "model_v9_over35.pkl",
+        "artifact_sha256_16": "e8b12d74f1b0d51a",
+        "status": "PASS",
+        "why": "standard/over35: 49,597 rows (49407 to train end = payload 49407), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS; new_format/over35: 26,965 rows (26846 to train end = payload 26846), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS",
+        "registry_sha256_16": "e8b12d74f1b0d51a"
+      },
+      "ht_over05": {
+        "payload": "model_ht_over05.pkl",
+        "artifact_sha256_16": "5a76d680e2fc53d6",
+        "status": "PASS",
+        "why": "standard/ht_over05: 49,446 rows (49256 to train end = payload 49256), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS",
+        "registry_sha256_16": "5a76d680e2fc53d6"
+      },
+      "ht_over15": {
+        "payload": "model_ht_over15.pkl",
+        "artifact_sha256_16": "e9a12ce1b6af077f",
+        "status": "PASS",
+        "why": "standard/ht_over15: 49,446 rows (49256 to train end = payload 49256), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS",
+        "registry_sha256_16": "e9a12ce1b6af077f"
+      },
+      "ht_over05_nf": {
+        "payload": "model_v9_ht_over05_nf.pkl",
+        "artifact_sha256_16": "ae89ea10ee628636",
+        "status": "PASS",
+        "why": "new_format/ht_over05: 26,786 rows (26759 to train end = payload 26759), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS",
+        "registry_sha256_16": "ae89ea10ee628636"
+      },
+      "ht_over15_nf": {
+        "payload": "model_v9_ht_over15_nf.pkl",
+        "artifact_sha256_16": "ead4bb74188de2de",
+        "status": "PASS",
+        "why": "new_format/ht_over15: 26,786 rows (26759 to train end = payload 26759), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS",
+        "registry_sha256_16": "ead4bb74188de2de"
+      },
+      "props:model_player_assists.pkl": {
+        "payload": "model_player_assists.pkl",
+        "artifact_sha256_16": "abf39bb5abbb2d60",
+        "status": "PASS",
+        "why": "code PASS at 6fd794964; joins fixture_id / league keyed; team enrichment joins not imported; row-level props frame not re-run here"
+      },
+      "props:model_player_cards.pkl": {
+        "payload": "model_player_cards.pkl",
+        "artifact_sha256_16": "bfd5e1cc51835a63",
+        "status": "PASS",
+        "why": "code PASS at 6fd794964; joins fixture_id / league keyed; team enrichment joins not imported; row-level props frame not re-run here"
+      },
+      "props:model_player_goals.pkl": {
+        "payload": "model_player_goals.pkl",
+        "artifact_sha256_16": "5de94714b722dbc3",
+        "status": "PASS",
+        "why": "code PASS at 6fd794964; joins fixture_id / league keyed; team enrichment joins not imported; row-level props frame not re-run here"
+      },
+      "props:model_player_goals2.pkl": {
+        "payload": "model_player_goals2.pkl",
+        "artifact_sha256_16": "81b5b8641e2a0ee4",
+        "status": "PASS",
+        "why": "code PASS at 6fd794964; joins fixture_id / league keyed; team enrichment joins not imported; row-level props frame not re-run here"
+      },
+      "props:model_player_goals3.pkl": {
+        "payload": "model_player_goals3.pkl",
+        "artifact_sha256_16": "89f588a0614e4716",
+        "status": "PASS",
+        "why": "code PASS at 6fd794964; joins fixture_id / league keyed; team enrichment joins not imported; row-level props frame not re-run here"
+      },
+      "props:model_player_sot.pkl": {
+        "payload": "model_player_sot.pkl",
+        "artifact_sha256_16": "571b102c4214f619",
+        "status": "PASS",
+        "why": "code PASS at 6fd794964; joins fixture_id / league keyed; team enrichment joins not imported; row-level props frame not re-run here"
+      },
+      "props:model_player_sot2.pkl": {
+        "payload": "model_player_sot2.pkl",
+        "artifact_sha256_16": "5b5fad604a126baa",
+        "status": "PASS",
+        "why": "code PASS at 6fd794964; joins fixture_id / league keyed; team enrichment joins not imported; row-level props frame not re-run here"
+      },
+      "props:model_player_sot3.pkl": {
+        "payload": "model_player_sot3.pkl",
+        "artifact_sha256_16": "f11626d93c30cac4",
+        "status": "PASS",
+        "why": "code PASS at 6fd794964; joins fixture_id / league keyed; team enrichment joins not imported; row-level props frame not re-run here"
+      },
+      "props:model_player_sot4.pkl": {
+        "payload": "model_player_sot4.pkl",
+        "artifact_sha256_16": "e0d074b89ef75a41",
+        "status": "PASS",
+        "why": "code PASS at 6fd794964; joins fixture_id / league keyed; team enrichment joins not imported; row-level props frame not re-run here"
+      }
+    }
+  },
+  "failing_tracks": [
+    {
+      "track": "standard|OU25",
+      "status": "WARN",
+      "checks": {
+        "parity": "WARN",
+        "weight_alignment": "UNKNOWN"
+      }
+    },
+    {
+      "track": "new_format|OU25",
+      "status": "FAIL",
+      "checks": {
+        "parity": "FAIL",
+        "weight_alignment": "UNKNOWN",
+        "price_provenance": "WARN"
+      }
+    },
+    {
+      "track": "standard|BTTS",
+      "status": "FAIL",
+      "checks": {
+        "parity": "FAIL",
+        "weight_alignment": "UNKNOWN",
+        "price_provenance": "WARN"
+      }
+    },
+    {
+      "track": "new_format|BTTS",
+      "status": "FAIL",
+      "checks": {
+        "parity": "FAIL",
+        "weight_alignment": "UNKNOWN",
+        "price_provenance": "WARN"
+      }
+    },
+    {
+      "track": "standard|OU15",
+      "status": "FAIL",
+      "checks": {
+        "parity": "FAIL",
+        "weight_alignment": "UNKNOWN",
+        "price_provenance": "WARN"
+      }
+    },
+    {
+      "track": "new_format|OU15",
+      "status": "FAIL",
+      "checks": {
+        "parity": "FAIL",
+        "weight_alignment": "UNKNOWN",
+        "price_provenance": "WARN"
+      }
+    },
+    {
+      "track": "standard|OU35",
+      "status": "FAIL",
+      "checks": {
+        "parity": "FAIL",
+        "weight_alignment": "UNKNOWN",
+        "price_provenance": "WARN"
+      }
+    },
+    {
+      "track": "new_format|OU35",
+      "status": "FAIL",
+      "checks": {
+        "parity": "FAIL",
+        "weight_alignment": "UNKNOWN",
+        "price_provenance": "WARN"
+      }
+    },
+    {
+      "track": "standard|HT_O05",
+      "status": "FAIL",
+      "checks": {
+        "parity": "FAIL",
+        "weight_alignment": "UNKNOWN",
+        "price_provenance": "UNKNOWN"
+      }
+    },
+    {
+      "track": "standard|HT_O15",
+      "status": "FAIL",
+      "checks": {
+        "parity": "FAIL",
+        "weight_alignment": "UNKNOWN",
+        "price_provenance": "UNKNOWN"
+      }
+    },
+    {
+      "track": "new_format|HT_O05",
+      "status": "WARN",
+      "checks": {
+        "parity": "UNKNOWN",
+        "weight_alignment": "UNKNOWN",
+        "price_provenance": "UNKNOWN"
+      }
+    },
+    {
+      "track": "new_format|HT_O15",
+      "status": "WARN",
+      "checks": {
+        "parity": "UNKNOWN",
+        "weight_alignment": "UNKNOWN",
+        "price_provenance": "UNKNOWN"
+      }
+    },
+    {
+      "track": "props|ALL",
+      "status": "WARN",
+      "checks": {}
+    }
+  ],
   "inputs_present": {
     "feature_parity_health": true,
     "price_provenance_health": true,
@@ -23,7 +287,7 @@
       "model_recipe_version": "r2-repaired-1.0",
       "serving_version": "standard_20261119T134019Z_67ee3666",
       "training_cutoff": "2026-11-01",
-      "code_sha": "b955f4fa1d32",
+      "code_sha": "c0053fdaa7f2",
       "data_hash": "823d465eeb05f5a0",
       "identity_version": null,
       "feature_recipe_version": null,
@@ -99,10 +363,19 @@
       "missing_feature_policy": "persisted train-only imputer",
       "serving_fallback_policy": "row-level fallback to legacy_v9 when repaired features are unavailable; invalid STANDARD_OU25_SERVING_RECIPE silently becomes legacy_v9 (finding 17: fails OPEN)",
       "join_integrity": {
-        "status": "FAIL",
+        "status": "PASS",
+        "scope": "active serving joins (mode safe); the legacy replay is not in the serving or training path (training_lineage)",
+        "legacy_replay_status": "FAIL",
         "af_history_join_mode": "safe"
       },
-      "status": "FAIL",
+      "training_lineage": {
+        "payload": "model_v9_standard.pkl",
+        "artifact_sha256_16": "67ee36668c21109d",
+        "status": "PASS",
+        "why": "standard/over25: 49,597 rows (49407 to train end = payload 49407), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS",
+        "registry_sha256_16": "67ee36668c21109d"
+      },
+      "status": "WARN",
       "unknown_checks": [
         "weight_alignment"
       ]
@@ -116,7 +389,7 @@
       "model_recipe_version": "r2-repaired-1.0",
       "serving_version": "newformat_20261118T172020Z_303c9a05",
       "training_cutoff": "2026-11-01",
-      "code_sha": "b955f4fa1d32",
+      "code_sha": "c0053fdaa7f2",
       "data_hash": "25ea42fe32607275",
       "identity_version": null,
       "feature_recipe_version": null,
@@ -160,8 +433,8 @@
       "parity": {
         "status": "FAIL",
         "counts": {
-          "PASS": 39,
-          "WARN": 15,
+          "PASS": 43,
+          "WARN": 11,
           "FAIL": 2
         },
         "fail_features": [
@@ -195,8 +468,17 @@
       "missing_feature_policy": "persisted train-only imputer",
       "serving_fallback_policy": "missing NF payload falls back to the standard payload (src/predict.py:332)",
       "join_integrity": {
-        "status": "FAIL",
+        "status": "PASS",
+        "scope": "active serving joins (mode safe); the legacy replay is not in the serving or training path (training_lineage)",
+        "legacy_replay_status": "FAIL",
         "af_history_join_mode": "safe"
+      },
+      "training_lineage": {
+        "payload": "model_v9_newformat.pkl",
+        "artifact_sha256_16": "303c9a05071e7afd",
+        "status": "PASS",
+        "why": "new_format/over25: 26,965 rows (26846 to train end = payload 26846), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS",
+        "registry_sha256_16": "303c9a05071e7afd"
       },
       "status": "FAIL",
       "unknown_checks": [
@@ -212,7 +494,7 @@
       "model_recipe_version": "r2-repaired-1.0",
       "serving_version": "btts_20261119T134019Z_44c67049",
       "training_cutoff": "2026-11-01",
-      "code_sha": "b955f4fa1d32",
+      "code_sha": "c0053fdaa7f2",
       "data_hash": "0c4cdc31d41d19f0",
       "identity_version": null,
       "feature_recipe_version": null,
@@ -289,7 +571,7 @@
         "placed_rows_synthetic": 0,
         "production_edge_rule": "p - (1/odds)/1.08 (fixed 8% margin assumption)",
         "devig_shadow_ledger": {
-          "CONFIRMED_BY_DEVIG": 241,
+          "CONFIRMED_BY_DEVIG": 242,
           "ONLY_BECAUSE_OF_1_08": 220,
           "UNVERIFIABLE_ONE_SIDED": 99
         },
@@ -299,8 +581,17 @@
       "missing_feature_policy": "persisted train-only imputer",
       "serving_fallback_policy": "unknown leagues are scored by the STANDARD payload (finding 8: fails OPEN)",
       "join_integrity": {
-        "status": "FAIL",
+        "status": "PASS",
+        "scope": "active serving joins (mode safe); the legacy replay is not in the serving or training path (training_lineage)",
+        "legacy_replay_status": "FAIL",
         "af_history_join_mode": "safe"
+      },
+      "training_lineage": {
+        "payload": "model_v9_btts.pkl",
+        "artifact_sha256_16": "44c670490d5101c1",
+        "status": "PASS",
+        "why": "standard/btts: 49,597 rows (49407 to train end = payload 49407), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS; new_format/btts: 26,965 rows (26846 to train end = payload 26846), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS",
+        "registry_sha256_16": "44c670490d5101c1"
       },
       "status": "FAIL",
       "unknown_checks": [
@@ -316,7 +607,7 @@
       "model_recipe_version": "r2-repaired-1.0",
       "serving_version": "btts_20261119T134019Z_44c67049",
       "training_cutoff": "2026-11-01",
-      "code_sha": "b955f4fa1d32",
+      "code_sha": "c0053fdaa7f2",
       "data_hash": "d3f6d80a374fc72d",
       "identity_version": null,
       "feature_recipe_version": null,
@@ -360,8 +651,8 @@
       "parity": {
         "status": "FAIL",
         "counts": {
-          "PASS": 58,
-          "WARN": 26,
+          "PASS": 61,
+          "WARN": 23,
           "FAIL": 2
         },
         "fail_features": [
@@ -393,7 +684,7 @@
         "placed_rows_synthetic": 0,
         "production_edge_rule": "p - (1/odds)/1.08 (fixed 8% margin assumption)",
         "devig_shadow_ledger": {
-          "CONFIRMED_BY_DEVIG": 241,
+          "CONFIRMED_BY_DEVIG": 242,
           "ONLY_BECAUSE_OF_1_08": 220,
           "UNVERIFIABLE_ONE_SIDED": 99
         },
@@ -403,8 +694,17 @@
       "missing_feature_policy": "persisted train-only imputer",
       "serving_fallback_policy": "missing NF payload falls back to the standard payload (src/predict.py:332)",
       "join_integrity": {
-        "status": "FAIL",
+        "status": "PASS",
+        "scope": "active serving joins (mode safe); the legacy replay is not in the serving or training path (training_lineage)",
+        "legacy_replay_status": "FAIL",
         "af_history_join_mode": "safe"
+      },
+      "training_lineage": {
+        "payload": "model_v9_btts.pkl",
+        "artifact_sha256_16": "44c670490d5101c1",
+        "status": "PASS",
+        "why": "standard/btts: 49,597 rows (49407 to train end = payload 49407), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS; new_format/btts: 26,965 rows (26846 to train end = payload 26846), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS",
+        "registry_sha256_16": "44c670490d5101c1"
       },
       "status": "FAIL",
       "unknown_checks": [
@@ -420,7 +720,7 @@
       "model_recipe_version": "r2-repaired-1.0",
       "serving_version": "over15_20261119T134019Z_ca01b7d3",
       "training_cutoff": "2026-11-01",
-      "code_sha": "b955f4fa1d32",
+      "code_sha": "c0053fdaa7f2",
       "data_hash": "23839609719fc515",
       "identity_version": null,
       "feature_recipe_version": null,
@@ -507,8 +807,17 @@
       "missing_feature_policy": "persisted train-only imputer",
       "serving_fallback_policy": "unknown leagues are scored by the STANDARD payload (finding 8: fails OPEN)",
       "join_integrity": {
-        "status": "FAIL",
+        "status": "PASS",
+        "scope": "active serving joins (mode safe); the legacy replay is not in the serving or training path (training_lineage)",
+        "legacy_replay_status": "FAIL",
         "af_history_join_mode": "safe"
+      },
+      "training_lineage": {
+        "payload": "model_v9_over15.pkl",
+        "artifact_sha256_16": "ca01b7d3a4f6fcae",
+        "status": "PASS",
+        "why": "standard/over15: 49,597 rows (49407 to train end = payload 49407), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS; new_format/over15: 26,965 rows (26846 to train end = payload 26846), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS",
+        "registry_sha256_16": "ca01b7d3a4f6fcae"
       },
       "status": "FAIL",
       "unknown_checks": [
@@ -524,7 +833,7 @@
       "model_recipe_version": "r2-repaired-1.0",
       "serving_version": "over15_20261119T134019Z_ca01b7d3",
       "training_cutoff": "2026-11-01",
-      "code_sha": "b955f4fa1d32",
+      "code_sha": "c0053fdaa7f2",
       "data_hash": "33bacb811e7f56e8",
       "identity_version": null,
       "feature_recipe_version": null,
@@ -568,8 +877,8 @@
       "parity": {
         "status": "FAIL",
         "counts": {
-          "PASS": 58,
-          "WARN": 26,
+          "PASS": 61,
+          "WARN": 23,
           "FAIL": 2
         },
         "fail_features": [
@@ -611,8 +920,17 @@
       "missing_feature_policy": "persisted train-only imputer",
       "serving_fallback_policy": "missing NF payload falls back to the standard payload (src/predict.py:332)",
       "join_integrity": {
-        "status": "FAIL",
+        "status": "PASS",
+        "scope": "active serving joins (mode safe); the legacy replay is not in the serving or training path (training_lineage)",
+        "legacy_replay_status": "FAIL",
         "af_history_join_mode": "safe"
+      },
+      "training_lineage": {
+        "payload": "model_v9_over15.pkl",
+        "artifact_sha256_16": "ca01b7d3a4f6fcae",
+        "status": "PASS",
+        "why": "standard/over15: 49,597 rows (49407 to train end = payload 49407), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS; new_format/over15: 26,965 rows (26846 to train end = payload 26846), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS",
+        "registry_sha256_16": "ca01b7d3a4f6fcae"
       },
       "status": "FAIL",
       "unknown_checks": [
@@ -628,7 +946,7 @@
       "model_recipe_version": "r2-repaired-1.0",
       "serving_version": "over35_20261119T134019Z_e8b12d74",
       "training_cutoff": "2026-11-01",
-      "code_sha": "b955f4fa1d32",
+      "code_sha": "c0053fdaa7f2",
       "data_hash": "054d6a550c7bd908",
       "identity_version": null,
       "feature_recipe_version": null,
@@ -715,8 +1033,17 @@
       "missing_feature_policy": "persisted train-only imputer",
       "serving_fallback_policy": "unknown leagues are scored by the STANDARD payload (finding 8: fails OPEN)",
       "join_integrity": {
-        "status": "FAIL",
+        "status": "PASS",
+        "scope": "active serving joins (mode safe); the legacy replay is not in the serving or training path (training_lineage)",
+        "legacy_replay_status": "FAIL",
         "af_history_join_mode": "safe"
+      },
+      "training_lineage": {
+        "payload": "model_v9_over35.pkl",
+        "artifact_sha256_16": "e8b12d74f1b0d51a",
+        "status": "PASS",
+        "why": "standard/over35: 49,597 rows (49407 to train end = payload 49407), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS; new_format/over35: 26,965 rows (26846 to train end = payload 26846), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS",
+        "registry_sha256_16": "e8b12d74f1b0d51a"
       },
       "status": "FAIL",
       "unknown_checks": [
@@ -732,7 +1059,7 @@
       "model_recipe_version": "r2-repaired-1.0",
       "serving_version": "over35_20261119T134019Z_e8b12d74",
       "training_cutoff": "2026-11-01",
-      "code_sha": "b955f4fa1d32",
+      "code_sha": "c0053fdaa7f2",
       "data_hash": "bfe9e3425792535e",
       "identity_version": null,
       "feature_recipe_version": null,
@@ -776,8 +1103,8 @@
       "parity": {
         "status": "FAIL",
         "counts": {
-          "PASS": 58,
-          "WARN": 26,
+          "PASS": 61,
+          "WARN": 23,
           "FAIL": 2
         },
         "fail_features": [
@@ -819,8 +1146,17 @@
       "missing_feature_policy": "persisted train-only imputer",
       "serving_fallback_policy": "missing NF payload falls back to the standard payload (src/predict.py:332)",
       "join_integrity": {
-        "status": "FAIL",
+        "status": "PASS",
+        "scope": "active serving joins (mode safe); the legacy replay is not in the serving or training path (training_lineage)",
+        "legacy_replay_status": "FAIL",
         "af_history_join_mode": "safe"
+      },
+      "training_lineage": {
+        "payload": "model_v9_over35.pkl",
+        "artifact_sha256_16": "e8b12d74f1b0d51a",
+        "status": "PASS",
+        "why": "standard/over35: 49,597 rows (49407 to train end = payload 49407), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS; new_format/over35: 26,965 rows (26846 to train end = payload 26846), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS",
+        "registry_sha256_16": "e8b12d74f1b0d51a"
       },
       "status": "FAIL",
       "unknown_checks": [
@@ -836,7 +1172,7 @@
       "model_recipe_version": "r2-repaired-1.0",
       "serving_version": "ht_over05_20261119T134019Z_5a76d680",
       "training_cutoff": "2026-11-01",
-      "code_sha": "b955f4fa1d32",
+      "code_sha": "c0053fdaa7f2",
       "data_hash": "17be13b413bd7a0e",
       "identity_version": null,
       "feature_recipe_version": null,
@@ -915,8 +1251,17 @@
       "missing_feature_policy": "persisted train-only imputer",
       "serving_fallback_policy": "unknown leagues are scored by the STANDARD payload (finding 8: fails OPEN)",
       "join_integrity": {
-        "status": "FAIL",
+        "status": "PASS",
+        "scope": "active serving joins (mode safe); the legacy replay is not in the serving or training path (training_lineage)",
+        "legacy_replay_status": "FAIL",
         "af_history_join_mode": "safe"
+      },
+      "training_lineage": {
+        "payload": "model_ht_over05.pkl",
+        "artifact_sha256_16": "5a76d680e2fc53d6",
+        "status": "PASS",
+        "why": "standard/ht_over05: 49,446 rows (49256 to train end = payload 49256), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS",
+        "registry_sha256_16": "5a76d680e2fc53d6"
       },
       "status": "FAIL",
       "unknown_checks": [
@@ -933,7 +1278,7 @@
       "model_recipe_version": "r2-repaired-1.0",
       "serving_version": "ht_over15_20261119T134019Z_e9a12ce1",
       "training_cutoff": "2026-11-01",
-      "code_sha": "b955f4fa1d32",
+      "code_sha": "c0053fdaa7f2",
       "data_hash": "1c02282b9a293157",
       "identity_version": null,
       "feature_recipe_version": null,
@@ -1012,8 +1357,17 @@
       "missing_feature_policy": "persisted train-only imputer",
       "serving_fallback_policy": "unknown leagues are scored by the STANDARD payload (finding 8: fails OPEN)",
       "join_integrity": {
-        "status": "FAIL",
+        "status": "PASS",
+        "scope": "active serving joins (mode safe); the legacy replay is not in the serving or training path (training_lineage)",
+        "legacy_replay_status": "FAIL",
         "af_history_join_mode": "safe"
+      },
+      "training_lineage": {
+        "payload": "model_ht_over15.pkl",
+        "artifact_sha256_16": "e9a12ce1b6af077f",
+        "status": "PASS",
+        "why": "standard/ht_over15: 49,446 rows (49256 to train end = payload 49256), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS",
+        "registry_sha256_16": "e9a12ce1b6af077f"
       },
       "status": "FAIL",
       "unknown_checks": [
@@ -1030,7 +1384,7 @@
       "model_recipe_version": "r2-repaired-1.0",
       "serving_version": "ht_over05_nf_20261120T085150Z_ae89ea10",
       "training_cutoff": "2026-11-01",
-      "code_sha": "b955f4fa1d32",
+      "code_sha": "c0053fdaa7f2",
       "data_hash": "f66c0a73b4de730a",
       "identity_version": null,
       "feature_recipe_version": null,
@@ -1102,10 +1456,19 @@
       "missing_feature_policy": "persisted train-only imputer",
       "serving_fallback_policy": "missing NF payload falls back to the standard payload (src/predict.py:332)",
       "join_integrity": {
-        "status": "FAIL",
+        "status": "PASS",
+        "scope": "active serving joins (mode safe); the legacy replay is not in the serving or training path (training_lineage)",
+        "legacy_replay_status": "FAIL",
         "af_history_join_mode": "safe"
       },
-      "status": "FAIL",
+      "training_lineage": {
+        "payload": "model_v9_ht_over05_nf.pkl",
+        "artifact_sha256_16": "ae89ea10ee628636",
+        "status": "PASS",
+        "why": "new_format/ht_over05: 26,786 rows (26759 to train end = payload 26759), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS",
+        "registry_sha256_16": "ae89ea10ee628636"
+      },
+      "status": "WARN",
       "unknown_checks": [
         "parity",
         "weight_alignment",
@@ -1121,7 +1484,7 @@
       "model_recipe_version": "r2-repaired-1.0",
       "serving_version": "ht_over15_nf_20261120T085150Z_ead4bb74",
       "training_cutoff": "2026-11-01",
-      "code_sha": "b955f4fa1d32",
+      "code_sha": "c0053fdaa7f2",
       "data_hash": "a13e2088d9b8453a",
       "identity_version": null,
       "feature_recipe_version": null,
@@ -1193,10 +1556,19 @@
       "missing_feature_policy": "persisted train-only imputer",
       "serving_fallback_policy": "missing NF payload falls back to the standard payload (src/predict.py:332)",
       "join_integrity": {
-        "status": "FAIL",
+        "status": "PASS",
+        "scope": "active serving joins (mode safe); the legacy replay is not in the serving or training path (training_lineage)",
+        "legacy_replay_status": "FAIL",
         "af_history_join_mode": "safe"
       },
-      "status": "FAIL",
+      "training_lineage": {
+        "payload": "model_v9_ht_over15_nf.pkl",
+        "artifact_sha256_16": "ead4bb74188de2de",
+        "status": "PASS",
+        "why": "new_format/ht_over15: 26,786 rows (26759 to train end = payload 26759), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS",
+        "registry_sha256_16": "ead4bb74188de2de"
+      },
+      "status": "WARN",
       "unknown_checks": [
         "parity",
         "weight_alignment",

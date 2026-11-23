@@ -16,7 +16,7 @@ import json
 from datetime import datetime, timezone
 from pathlib import Path
 
-HEALTH_VERSION = "model-integrity-health-0.1"
+HEALTH_VERSION = "model-integrity-health-0.2"
 UNKNOWN = "UNKNOWN"
 RANK = {"PASS": 0, "WARN": 1, "UNKNOWN": 1, "FAIL": 2}
 
@@ -113,6 +113,13 @@ def build(root: Path) -> dict:
     prov = _read(out_dir / "price_provenance_health.json")
     side = _read(out_dir / "side_edge_devig_health.json")
     joins = _read(out_dir / "join_integrity_health.json") or {}
+    # P0 item 3 (2026-11-22): the join artifact's aggregate status includes the LEGACY REPLAY (an
+    # audit of the league-free merge removed 2026-11-01 - it writes nothing). A track is judged on
+    # the joins that SERVE (mode safe) and on its own training lineage; the replay is reported beside.
+    from src.integrity import training_lineage as _TL
+    scopes = _TL.join_scopes(joins) if joins else {"active_serving_join_status": UNKNOWN,
+                                                     "legacy_replay_status": UNKNOWN}
+    lineage = _TL.evaluate(root)
     ext = {n: _read(out_dir / f"{n}.json") for n in ("identity_health", "season_resolution_health",
                                                        "league_registry_health",
                                                        "player_props_integrity_health")}
@@ -178,28 +185,48 @@ def build(root: Path) -> dict:
                 "unknown leagues are scored by the STANDARD payload (finding 8: fails OPEN)"
                 if mt == "standard" else
                 "missing NF payload falls back to the standard payload (src/predict.py:332)"),
-            "join_integrity": {"status": joins.get("status", UNKNOWN),
+            "join_integrity": {"status": scopes["active_serving_join_status"],
+                               "scope": "active serving joins (mode safe); the legacy replay is not in "
+                                        "the serving or training path (training_lineage)",
+                               "legacy_replay_status": scopes["legacy_replay_status"],
                                "af_history_join_mode": joins.get("serving_join_mode", UNKNOWN)},
+            "training_lineage": {k: v for k, v in (lineage["models"].get(_TL.TRACK_MODEL[key]) or
+                                                   {"status": _TL.UNVERIFIED,
+                                                    "why": "not an active champion in the registry"}).items()},
         }
         checks = [rec["chronology"]["status"], rec["parity"]["status"], rec["batch_invariance"]["status"],
                   rec["weight_alignment"]["status"], rec["holdout_independence"]["status"],
-                  rec["price_provenance"].get("status", UNKNOWN), rec["join_integrity"]["status"]]
+                  rec["price_provenance"].get("status", UNKNOWN), rec["join_integrity"]["status"],
+                  rec["training_lineage"]["status"]]
         if "fails OPEN" in rec["serving_fallback_policy"] or "falls back" in rec["serving_fallback_policy"]:
             checks.append("WARN")
         worst = max(checks, key=lambda s: RANK.get(s, 1))
-        rec["status"] = "FAIL" if worst == "FAIL" else "WARN" if worst in ("WARN", UNKNOWN) else "PASS"
+        rec["status"] = "FAIL" if worst == "FAIL" else "PASS" if worst == "PASS" else "WARN"   # UNKNOWN / UNVERIFIED never PASS
         rec["unknown_checks"] = [n for n, s in zip(
             ["chronology", "parity", "batch_invariance", "weight_alignment", "holdout_independence",
-             "price_provenance", "join_integrity"], checks) if s == UNKNOWN]
+             "price_provenance", "join_integrity", "training_lineage"], checks) if s in (UNKNOWN, "UNVERIFIED")]
         tracks[key] = rec
     props = ext["player_props_integrity_health"]
     tracks["props|ALL"] = {"model_type": "props", "market": "ALL",
                            "status": (props or {}).get("status", UNKNOWN),
                            "note": "owned by the props workstream (player_props_integrity_health.json)"}
     statuses = [t["status"] for t in tracks.values()]
+    overall = "FAIL" if "FAIL" in statuses else "WARN" if any(s != "PASS" for s in statuses) else "PASS"
+    failing = [{"track": k, "status": t["status"],
+                "checks": {n: (t.get(n) or {}).get("status") for n in
+                           ("chronology", "parity", "batch_invariance", "weight_alignment", "holdout_independence",
+                            "price_provenance", "join_integrity", "training_lineage")
+                           if (t.get(n) or {}).get("status") not in (None, "PASS")}}
+               for k, t in tracks.items() if t["status"] != "PASS"]
     return {"artifact": "model_integrity_health", "version": HEALTH_VERSION,
             "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-            "status": "FAIL" if "FAIL" in statuses else "WARN" if any(s != "PASS" for s in statuses) else "PASS",
+            "status": overall,
+            # four scopes, never one aggregate (P0 item 3, 2026-11-22)
+            "active_serving_join_status": scopes["active_serving_join_status"],
+            "active_training_lineage_status": lineage["status"],
+            "legacy_replay_status": scopes["legacy_replay_status"],
+            "overall_model_integrity_status": overall,
+            "join_scopes": scopes, "training_lineage": lineage, "failing_tracks": failing,
             "inputs_present": {"feature_parity_health": bool(parity), "price_provenance_health": prov is not None,
                                "side_edge_devig_health": side is not None, "join_integrity_health": bool(joins),
                                **{k: v is not None for k, v in ext.items()}},

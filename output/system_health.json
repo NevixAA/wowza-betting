@@ -1,12 +1,12 @@
 {
- "about": "Canonical system health (src/system_health.build_artifact), written daily by evidence_refresh.yml. overall: FAIL if any RED check or protected_tracks_modified; WARN if any AMBER/NO_DATA; PASS otherwise. Every status comes from the rule stored beside it.",
+ "about": "Canonical system health (src/system_health.build_artifact), written daily by evidence_refresh.yml. overall: FAIL if any RED check or protected_tracks_modified; WARN if any AMBER/NO_DATA; PASS otherwise. Every status comes from the rule stored beside it. `indicators` holds FOUR separate verdicts (CI gate, operational data quality, production model integrity, full-system certification) - never one GREEN for all four.",
  "artifact_version": "SYSTEM-HEALTH-1",
- "generated_at": "2026-11-22T19:03:00Z",
+ "generated_at": "2026-11-22T20:05:20Z",
  "overall": "FAIL",
  "reasons": [
   "NO_DATA Challenger prediction coverage: no active challenger experiment",
+  "AMBER GitHub workflow health: 1 still failing / 267 runs (24 h) \u00b7 4 fixed since",
   "RED Data truth 3: no missing data: team:model_ht_over05.pkl: 1 served feature(s) hold one value on the training rows (home_has_ht_history=1.0); team:model_ht_over15.pkl: 1 served feature(s) hold one value on the training rows (home_has_ht_history=1.0)",
-  "AMBER Data truth 13a: active production violations: 0 active violation(s); props PENDING; 0 serving coverage gap(s)",
   "AMBER Data truth 13c: registered historical exceptions: 7 registered exception(s)"
  ],
  "protected_tracks_modified": false,
@@ -19,7 +19,7 @@
   },
   "contracts_version": "CONTRACTS-1",
   "research_lock_digest": "3416ad0e5e8ae71db66cb14e70323226265a9b2377b2cd4eb998fde1a9c4cf58",
-  "code_commit": "2104b2078d67"
+  "code_commit": "ad7037fe417d"
  },
  "counts": {
   "GREEN": 30,
@@ -31,7 +31,7 @@
   {
    "check": "Side-market routing",
    "status": "GREEN",
-   "value": "10 side tips, 0 unknown|*",
+   "value": "7 side tips, 0 unknown|*",
    "rule": "RED if any ACTIVE/ACTIVE_LOW policy track has tips and 100% map to UNSUPPORTED; GREEN otherwise",
    "detail": ""
   },
@@ -40,7 +40,7 @@
    "status": "GREEN",
    "value": "0.0% unmapped",
    "rule": "GREEN 0% of tips on unknown|* tracks, on an O/U side-less *_UNKNOWN_SIDE track, without odds or with a side outside their market (2026-11-03); AMBER < 5%; RED >= 5%",
-   "detail": "generated 2026-11-22 18:25:50"
+   "detail": "generated 2026-11-22 19:24:38"
   },
   {
    "check": "Shadow settlement coverage",
@@ -79,10 +79,10 @@
   },
   {
    "check": "GitHub workflow health",
-   "status": "GREEN",
-   "value": "0 still failing / 232 runs (24 h) \u00b7 3 fixed since",
+   "status": "AMBER",
+   "value": "1 still failing / 267 runs (24 h) \u00b7 4 fixed since",
    "rule": "workflows whose latest run on main (last 24 h, 3 repos) failed or timed out \u2014 failures a later success superseded and branch-only research runs do not count: GREEN 0; AMBER 1-2; RED >= 3 (record > 36 h old = AMBER)",
-   "detail": ""
+   "detail": "wowza-betting: Player Props"
   },
   {
    "check": "Fantasy V2 status",
@@ -129,7 +129,7 @@
   {
    "check": "Data truth 2: no silent defaults",
    "status": "GREEN",
-   "value": "0 new default(s); 0 known (baseline); 195 allow-listed (counters/display); 0 baseline entr(ies) now gone; 0 allow-list entr(ies) now gone; 443 production files scanned",
+   "value": "0 new default(s); 0 known (baseline); 195 allow-listed (counters/display); 0 baseline entr(ies) now gone; 0 allow-list entr(ies) now gone; 451 production files scanned",
    "rule": "no NEW invented default in ALL production code (fillna(<non-zero literal>), literal season fallback/list, pinned football-data folder, numeric .get(<key>, <number>), an or-zero on a parsed value, a zero fillna on a price/odds): RED if any site is in neither config/data_truth_baseline.json nor config/data_truth_allowlist.json, or an allow-list entry has no reason; GREEN otherwise",
    "detail": ""
   },
@@ -142,7 +142,7 @@
    "tracks": {
     "standard|O/U 2.5": {
      "status": "GREEN",
-     "fixtures": 93,
+     "fixtures": 94,
      "worst_pct": 3.2,
      "missing": {},
      "n_inputs": 43
@@ -156,7 +156,7 @@
     },
     "standard|BTTS": {
      "status": "GREEN",
-     "fixtures": 93,
+     "fixtures": 94,
      "worst_pct": 3.2,
      "missing": {},
      "n_inputs": 43
@@ -170,7 +170,7 @@
     },
     "standard|Over 1.5": {
      "status": "GREEN",
-     "fixtures": 93,
+     "fixtures": 94,
      "worst_pct": 3.2,
      "missing": {},
      "n_inputs": 43
@@ -184,7 +184,7 @@
     },
     "standard|Over 3.5": {
      "status": "GREEN",
-     "fixtures": 93,
+     "fixtures": 94,
      "worst_pct": 3.2,
      "missing": {},
      "n_inputs": 43
@@ -198,14 +198,14 @@
     },
     "standard|HT Over 0.5": {
      "status": "GREEN",
-     "fixtures": 93,
+     "fixtures": 94,
      "worst_pct": 3.2,
      "missing": {},
      "n_inputs": 43
     },
     "standard|HT Over 1.5": {
      "status": "GREEN",
-     "fixtures": 93,
+     "fixtures": 94,
      "worst_pct": 3.2,
      "missing": {},
      "n_inputs": 43
@@ -385,7 +385,7 @@
   {
    "check": "Data truth 9: clean ledgers",
    "status": "GREEN",
-   "value": "clean since 2026-11-19 (6 live tip(s), 2264 player row(s), 105 v91 row(s))",
+   "value": "clean since 2026-11-19 (7 live tip(s), 2264 player row(s), 108 v91 row(s))",
    "rule": "from the Clean Record start: 0 multi-tip / opposite-tip fixtures, 0 post-kickoff tips, 0 closes <= 1.0, 0 |CLV| > 50 new-format rows, 0 duplicate player tips, 0 v91_shadow fixtures logged twice: RED on any; NO_DATA before the start is set",
    "detail": ""
   },
@@ -398,9 +398,9 @@
   },
   {
    "check": "Data truth 13a: active production violations",
-   "status": "AMBER",
-   "value": "0 active violation(s); props PENDING; 0 serving coverage gap(s)",
-   "rule": "REAL DATA ONLY (owner 2026-11-15): src/integrity/real_data_provenance - fabricated, unsupported, mismatched or refused inputs in a payload that scores live fixtures (props: not yet verified until the props agent reports)",
+   "status": "GREEN",
+   "value": "0 active violation(s); props VERIFIED; 0 serving coverage gap(s)",
+   "rule": "REAL DATA ONLY (owner 2026-11-15): src/integrity/real_data_provenance - fabricated, unsupported, mismatched or refused inputs in a payload that scores live fixtures (props: GREEN only when output/props_real_data_provenance.json is VERIFIED and current)",
    "detail": ""
   },
   {
@@ -717,7 +717,7 @@
   {
    "check": "Edge-engine shadow",
    "status": "GREEN",
-   "value": "market_edge_v2 UNVALIDATED_DEFAULTS, 612 rows, shadow_only=True, 0.6 h old",
+   "value": "market_edge_v2 UNVALIDATED_DEFAULTS, 616 rows, shadow_only=True, 0.7 h old",
    "rule": "RED if edge_engine_health.json is missing, older than 72 h, or shadow_only is not true (a shadow engine must never be live); AMBER if older than 24 h or it scored 0 rows; GREEN otherwise",
    "detail": ""
   },
@@ -754,7 +754,7 @@
     "schema": "PREDICTION_ROW",
     "schema_version": "1",
     "present": true,
-    "rows": 153,
+    "rows": 154,
     "n_violations": 0,
     "violations": []
    },
@@ -762,7 +762,7 @@
     "schema": "MARKET_SNAPSHOT_ROW",
     "schema_version": "1",
     "present": true,
-    "rows": 33658,
+    "rows": 34023,
     "n_violations": 5,
     "violations": [
      {
@@ -777,28 +777,28 @@
      {
       "kind": "missing_column",
       "column": "minutes_to_kickoff",
-      "n_rows": 33658,
+      "n_rows": 34023,
       "detail": "required column absent",
       "examples": []
      },
      {
       "kind": "missing_column",
       "column": "overround",
-      "n_rows": 33658,
+      "n_rows": 34023,
       "detail": "required column absent",
       "examples": []
      },
      {
       "kind": "missing_column",
       "column": "opposite_odds",
-      "n_rows": 33658,
+      "n_rows": 34023,
       "detail": "required column absent",
       "examples": []
      },
      {
       "kind": "missing_column",
       "column": "source",
-      "n_rows": 33658,
+      "n_rows": 34023,
       "detail": "required column absent",
       "examples": []
      }
@@ -808,7 +808,7 @@
     "schema": "SELECTION_DECISION",
     "schema_version": "1",
     "present": true,
-    "rows": 3032,
+    "rows": 3044,
     "n_violations": 0,
     "violations": []
    },
@@ -816,7 +816,7 @@
     "schema": "V91_SHADOW_ROW",
     "schema_version": "1",
     "present": true,
-    "rows": 1371,
+    "rows": 1374,
     "n_violations": 0,
     "violations": []
    },
@@ -856,7 +856,7 @@
     "schema": "STAKE_PLAN_ROW",
     "schema_version": "1",
     "present": true,
-    "rows": 12,
+    "rows": 10,
     "n_violations": 0,
     "violations": []
    },
@@ -864,7 +864,7 @@
     "schema": "STAKE_AUDIT_ROW",
     "schema_version": "1",
     "present": true,
-    "rows": 1022,
+    "rows": 1024,
     "n_violations": 3,
     "violations": [
      {
@@ -899,7 +899,7 @@
     "schema": "SETTLEMENT_ROW",
     "schema_version": "1",
     "present": true,
-    "rows": 1942,
+    "rows": 1943,
     "n_violations": 1,
     "violations": [
      {
@@ -917,7 +917,7 @@
     "schema": "SETTLEMENT_ROW",
     "schema_version": "1",
     "present": true,
-    "rows": 788,
+    "rows": 789,
     "n_violations": 0,
     "violations": []
    },
@@ -941,11 +941,11 @@
  },
  "first_sight": {
   "edge_engine_shadow.csv": {
-   "rows": 3032,
-   "frozen_digest": "b7ac2a430065f3952af902cd6f1c4096b00ef56eb410a96eadc8bc7d9e6a8151",
+   "rows": 3044,
+   "frozen_digest": "ceef8165a975e619c5745d1fccd1ca384a350304d219317fa311bd5d80d3b89f",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 3032,
+   "prior_rows": 3044,
    "prior_match": true,
    "status": "OK",
    "reasons": []
@@ -961,21 +961,21 @@
    "reasons": []
   },
   "v91_shadow.csv": {
-   "rows": 1371,
-   "frozen_digest": "03a6f80041bf12a0f3fea67e9c239714daf53e287dd4688f338af13a4eb588e6",
+   "rows": 1374,
+   "frozen_digest": "4bf91db2f13e00e6d39947b2cedee857339a1a14ba1590c1efd689d49e0bf979",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 1371,
+   "prior_rows": 1374,
    "prior_match": true,
    "status": "OK",
    "reasons": []
   },
   "league_weekly_candidates.csv": {
-   "rows": 3040,
-   "frozen_digest": "dcda49d5db1e1eec91a8d8f13869f239fd7f2b770b11014669a4730c96bf3cb8",
+   "rows": 3052,
+   "frozen_digest": "f90ee416447b2d873e7ef2d15b719475c35f50599fd8e68f7ccbc6ccf5a66399",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 3040,
+   "prior_rows": 3052,
    "prior_match": true,
    "status": "OK",
    "reasons": []
@@ -991,21 +991,21 @@
    "reasons": []
   },
   "model_lineage/shadow_h2h.csv": {
-   "rows": 6621,
-   "frozen_digest": "74bb6e87f404e009fc656b09d0997d27cd94bdc1c30b41e76bee73ca041ba9e2",
+   "rows": 6639,
+   "frozen_digest": "18b5fd189da029f935a8be896f8001f66a9c19fb9ad19468606b80c6a27e11de",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 6621,
+   "prior_rows": 6639,
    "prior_match": true,
    "status": "OK",
    "reasons": []
   },
   "stake_audit.csv": {
-   "rows": 1022,
-   "frozen_digest": "02c789978e384cb0427dac2ceac5fdeba300b78e7167558c3f279fd08a23cb42",
+   "rows": 1024,
+   "frozen_digest": "93979fa255a0c042dab466296f05a22893ee549f2105cb1c7f0cf3a784d34a2d",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 1022,
+   "prior_rows": 1024,
    "prior_match": true,
    "status": "OK",
    "reasons": []
@@ -1045,13 +1045,13 @@
    "feature_version": null
   },
   "bets_ledger.csv": {
-   "model_version": 0.1813,
+   "model_version": 0.1817,
    "selection_engine_version": null,
    "policy_version": null,
    "feature_version": null
   },
   "side_bets_ledger.csv": {
-   "model_version": 0.3071,
+   "model_version": 0.308,
    "selection_engine_version": null,
    "policy_version": null,
    "feature_version": null
@@ -1109,6 +1109,258 @@
    "selection_engine_version": null,
    "policy_version": null,
    "feature_version": null
+  }
+ },
+ "data_truth_gate": {
+  "stoplight": "GREEN",
+  "gate_reasons": [],
+  "scope": "CI/change-control: gated rules + known-defaults ratchet only"
+ },
+ "indicators": {
+  "ci_gate": {
+   "indicator": "ci_gate",
+   "label": "CI / change-control gate",
+   "status": "GREEN",
+   "meaning": "may a commit merge: the data truth --gate (gated rules + ratchet) and the research lock. It does NOT say the current data is clean.",
+   "parts": {
+    "data_truth_gate": "GREEN",
+    "research_lock": "GREEN"
+   },
+   "source": "output/system_health.json",
+   "generated_at": "2026-11-22T20:05:20Z",
+   "age_h": 0.0,
+   "failing": []
+  },
+  "operational_data_quality": {
+   "indicator": "operational_data_quality",
+   "label": "Operational data quality",
+   "status": "RED",
+   "meaning": "the WORST current data truth check, gated or not (an ungated RED is RED here)",
+   "source": "output/system_health.json",
+   "generated_at": "2026-11-22T20:05:20Z",
+   "age_h": 0.0,
+   "failing": [
+    {
+     "component": "Data truth 3: no missing data",
+     "status": "RED",
+     "detail": "team:model_ht_over05.pkl: 1 served feature(s) hold one value on the training rows (home_has_ht_history=1.0); team:model_ht_over15.pkl: 1 served feature(s) hold one value on the training rows (home_has_ht_history=1.0)",
+     "source": "output/system_health.json",
+     "generated_at": "2026-11-22T20:05:20Z",
+     "gated": false
+    },
+    {
+     "component": "Data truth 13c: registered historical exceptions",
+     "status": "AMBER",
+     "detail": "7 registered exception(s)",
+     "source": "output/system_health.json",
+     "generated_at": "2026-11-22T20:05:20Z",
+     "gated": false
+    }
+   ]
+  },
+  "production_model_integrity": {
+   "indicator": "production_model_integrity",
+   "label": "Production model integrity",
+   "status": "FAIL",
+   "meaning": "active serving tracks (train/serve parity, chronology, holdout, active serving joins, training lineage). legacy_replay_status is historical evidence and does not count.",
+   "scopes": {
+    "active_serving_join_status": "PASS",
+    "active_training_lineage_status": "PASS",
+    "legacy_replay_status": "FAIL"
+   },
+   "source": "output/model_integrity_health.json",
+   "generated_at": "2026-11-22T20:03:05Z",
+   "age_h": 0.0,
+   "failing": [
+    {
+     "component": "model new_format|OU25",
+     "status": "FAIL",
+     "detail": "parity FAIL, weight_alignment UNKNOWN, price_provenance WARN (parity FAIL features: home_has_ht_history, away_has_ht_history)",
+     "source": "output/model_integrity_health.json",
+     "generated_at": "2026-11-22T20:03:05Z"
+    },
+    {
+     "component": "model standard|BTTS",
+     "status": "FAIL",
+     "detail": "parity FAIL, weight_alignment UNKNOWN, price_provenance WARN (parity FAIL features: home_has_ht_history, away_has_ht_history)",
+     "source": "output/model_integrity_health.json",
+     "generated_at": "2026-11-22T20:03:05Z"
+    },
+    {
+     "component": "model new_format|BTTS",
+     "status": "FAIL",
+     "detail": "parity FAIL, weight_alignment UNKNOWN, price_provenance WARN (parity FAIL features: home_has_ht_history, away_has_ht_history)",
+     "source": "output/model_integrity_health.json",
+     "generated_at": "2026-11-22T20:03:05Z"
+    },
+    {
+     "component": "model standard|OU15",
+     "status": "FAIL",
+     "detail": "parity FAIL, weight_alignment UNKNOWN, price_provenance WARN (parity FAIL features: home_has_ht_history, away_has_ht_history)",
+     "source": "output/model_integrity_health.json",
+     "generated_at": "2026-11-22T20:03:05Z"
+    },
+    {
+     "component": "model new_format|OU15",
+     "status": "FAIL",
+     "detail": "parity FAIL, weight_alignment UNKNOWN, price_provenance WARN (parity FAIL features: home_has_ht_history, away_has_ht_history)",
+     "source": "output/model_integrity_health.json",
+     "generated_at": "2026-11-22T20:03:05Z"
+    },
+    {
+     "component": "model standard|OU35",
+     "status": "FAIL",
+     "detail": "parity FAIL, weight_alignment UNKNOWN, price_provenance WARN (parity FAIL features: home_has_ht_history, away_has_ht_history)",
+     "source": "output/model_integrity_health.json",
+     "generated_at": "2026-11-22T20:03:05Z"
+    },
+    {
+     "component": "model new_format|OU35",
+     "status": "FAIL",
+     "detail": "parity FAIL, weight_alignment UNKNOWN, price_provenance WARN (parity FAIL features: home_has_ht_history, away_has_ht_history)",
+     "source": "output/model_integrity_health.json",
+     "generated_at": "2026-11-22T20:03:05Z"
+    },
+    {
+     "component": "model standard|HT_O05",
+     "status": "FAIL",
+     "detail": "parity FAIL, weight_alignment UNKNOWN, price_provenance UNKNOWN (parity FAIL features: home_has_ht_history, away_has_ht_history)",
+     "source": "output/model_integrity_health.json",
+     "generated_at": "2026-11-22T20:03:05Z"
+    },
+    {
+     "component": "model standard|HT_O15",
+     "status": "FAIL",
+     "detail": "parity FAIL, weight_alignment UNKNOWN, price_provenance UNKNOWN (parity FAIL features: home_has_ht_history, away_has_ht_history)",
+     "source": "output/model_integrity_health.json",
+     "generated_at": "2026-11-22T20:03:05Z"
+    },
+    {
+     "component": "model standard|OU25",
+     "status": "WARN",
+     "detail": "parity WARN, weight_alignment UNKNOWN",
+     "source": "output/model_integrity_health.json",
+     "generated_at": "2026-11-22T20:03:05Z"
+    },
+    {
+     "component": "model new_format|HT_O05",
+     "status": "WARN",
+     "detail": "parity UNKNOWN, weight_alignment UNKNOWN, price_provenance UNKNOWN",
+     "source": "output/model_integrity_health.json",
+     "generated_at": "2026-11-22T20:03:05Z"
+    },
+    {
+     "component": "model new_format|HT_O15",
+     "status": "WARN",
+     "detail": "parity UNKNOWN, weight_alignment UNKNOWN, price_provenance UNKNOWN",
+     "source": "output/model_integrity_health.json",
+     "generated_at": "2026-11-22T20:03:05Z"
+    },
+    {
+     "component": "model props|ALL",
+     "status": "WARN",
+     "detail": "owned by the props workstream (player_props_integrity_health.json)",
+     "source": "output/model_integrity_health.json",
+     "generated_at": "2026-11-22T20:03:05Z"
+    }
+   ]
+  },
+  "full_system_certification": {
+   "indicator": "full_system_certification",
+   "label": "Full-system certification",
+   "status": "NOT CERTIFIED",
+   "meaning": "every required component has current evidence (<= 36 h) and passes",
+   "components": [
+    {
+     "component": "system health",
+     "status": "FAIL",
+     "source": "output/system_health.json",
+     "generated_at": "2026-11-22T20:05:20Z",
+     "age_h": 0.0,
+     "ok": false
+    },
+    {
+     "component": "data truth (operational)",
+     "status": "RED",
+     "source": "output/data_truth_health.json",
+     "generated_at": "2026-11-22T20:00:50Z",
+     "age_h": 0.1,
+     "ok": false
+    },
+    {
+     "component": "data truth gate",
+     "status": "GREEN",
+     "source": "output/data_truth_health.json",
+     "generated_at": "2026-11-22T20:00:50Z",
+     "age_h": 0.1,
+     "ok": true
+    },
+    {
+     "component": "model integrity",
+     "status": "FAIL",
+     "source": "output/model_integrity_health.json",
+     "generated_at": "2026-11-22T20:03:05Z",
+     "age_h": 0.0,
+     "ok": false
+    },
+    {
+     "component": "active serving joins",
+     "status": "PASS",
+     "source": "output/join_integrity_health.json",
+     "generated_at": "2026-11-22T19:58:58Z",
+     "age_h": 0.1,
+     "ok": true
+    },
+    {
+     "component": "train/serve feature parity",
+     "status": "FAIL",
+     "source": "output/feature_parity_health.json",
+     "generated_at": "2026-11-22T20:01:33Z",
+     "age_h": 0.1,
+     "ok": false
+    },
+    {
+     "component": "training lineage",
+     "status": "PASS",
+     "source": "output/model_integrity_health.json",
+     "generated_at": "2026-11-22T20:03:05Z",
+     "age_h": 0.0,
+     "ok": true
+    }
+   ],
+   "source": null,
+   "generated_at": null,
+   "age_h": null,
+   "failing": [
+    {
+     "component": "system health",
+     "status": "FAIL",
+     "detail": "status FAIL (needs PASS)",
+     "source": "output/system_health.json",
+     "generated_at": "2026-11-22T20:05:20Z"
+    },
+    {
+     "component": "data truth (operational)",
+     "status": "RED",
+     "detail": "status RED (needs GREEN)",
+     "source": "output/data_truth_health.json",
+     "generated_at": "2026-11-22T20:00:50Z"
+    },
+    {
+     "component": "model integrity",
+     "status": "FAIL",
+     "detail": "status FAIL (needs PASS)",
+     "source": "output/model_integrity_health.json",
+     "generated_at": "2026-11-22T20:03:05Z"
+    },
+    {
+     "component": "train/serve feature parity",
+     "status": "FAIL",
+     "detail": "status FAIL (needs PASS)",
+     "source": "output/feature_parity_health.json",
+     "generated_at": "2026-11-22T20:01:33Z"
+    }
+   ]
   }
  }
 }

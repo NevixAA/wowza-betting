@@ -83,8 +83,10 @@ DEFAULTS: list[dict] = [dict(zip(
     ("v1_home_factor_legacy", "fantasy.py build_fantasy_projections_fixtures", "x1.10 home / x0.92 away, 0.6-1.5",
      "DOMAIN_PRIOR", "DEAD", "LOW", False, "REMOVED 2026-11-05 (propsdef): no caller"),
     # ---- V2 (production product)
-    ("v2_p_start_from_mix", "fantasy_residual.py:708", "p_start = P60 + 0.35*P(1-59)", "DOMAIN_PRIOR",
-     "V2", "HIGH", False, "unfitted; drives Confidence/Risk labels and captain pools"),
+    ("v2_p_start_from_mix", "fantasy_residual.py:811", "p_start = P60 + 0.227*P(1-59)", "TRAIN_FITTED_PRIOR",
+     "V2", "HIGH", False, "MEASURED 2026-11-01 (P_START_GIVEN_1_59: 95% CI 0.213-0.241, n=3,652 PL "
+     "appearances; re-tested in tests/test_fantasy_fpl_rules.py). Was an unfitted 0.35. Drives "
+     "Confidence/Risk labels and captain pools (register text corrected 2026-11-22, P1 Fantasy)"),
     ("v2_attack_defence_share", "fantasy_v2.py:67-68", "FWD .55/0, MID .45/.08, DEF .20/.40, GKP .05/.45",
      "DOMAIN_PRIOR", "V2", "MED", False, "feeds xpts_3gw / xpts_5gw / value_5gw_per_m only"),
     ("v2_fixture_mult_clip", "fantasy_v2.py:212", "fixture multiplier clipped 0.55-1.6", "DOMAIN_PRIOR",
@@ -106,8 +108,8 @@ DEFAULTS: list[dict] = [dict(zip(
     ("v2_home_adv", "fantasy_panel.py:145", "1.10 / 0.91", "DOMAIN_PRIOR", "V2", "MED", False, "FIXED 2026-11-01 (data truth, dt/fantasy): measured from fixtures finished before the deadline"),
     ("v2_pos_xg_xa_prior", "fantasy_panel.py:216-217", "per-position xG/xA per 90 priors", "DOMAIN_PRIOR",
      "V2", "MED", False, "FIXED 2026-11-01 (data truth, dt/fantasy): position priors (xG, xA, BPS, bonus) measured on the same snapshot"),
-    ("v2_chance_fill", "fantasy_panel.py:229", "NaN chance -> 100 if status 'a' else 0",
-     "MISSING_DATA_FALLBACK", "V2", "HIGH", False, "FIXED 2026-11-01 (data truth, dt/fantasy): null chance on a non-'a' status -> NaN (the residual's prepare still imputes)"),
+    ("v2_chance_fill", "fantasy_panel.py:295", "NaN chance -> 100 if status 'a' else 0",
+     "MISSING_DATA_FALLBACK", "V2", "HIGH", False, "FIXED 2026-11-01 (data truth, dt/fantasy): null chance on a non-'a' status -> NaN; status 'a' with a null chance -> 100 (FPL's own convention: the API leaves chance null for fully available players). The residual's prepare no longer imputes (checked 2026-11-22, P1 Fantasy)"),
     ("v2_matrix_nan0", "fantasy_residual.py:84", "every residual feature NaN -> 0", "MISSING_DATA_FALLBACK",
      "V2 (shadow residual)", "MED", False,
      "FIXED 2026-11-02 (data truth, dt2/producers): prepare/_matrix keep NaN; HGB arms and the "
