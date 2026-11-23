@@ -1,0 +1,1655 @@
+{
+ "artifact": "real_data_certification",
+ "version": "REAL-DATA-CERT-1.0",
+ "generated_at": "2026-11-23T09:52:01Z",
+ "generated_by": "scripts/certify_real_data.py",
+ "code_sha": "5a6727f424eed3d26fea772958224aada26a170b",
+ "classes": [
+  "PROVIDER_OBSERVED",
+  "VERIFIED_DERIVED",
+  "CORRECTED_BESIDE_ORIGINAL",
+  "MISSING_KEPT_MISSING",
+  "DEFAULT_OR_SYNTHETIC",
+  "UNVERIFIED_VALUE"
+ ],
+ "datasets": {
+  "history_banks": {
+   "fd_history.parquet": {
+    "rows": 66484,
+    "provider": "football-data.co.uk CSV",
+    "cells": {
+     "PROVIDER_OBSERVED": 511672,
+     "VERIFIED_DERIVED": 0,
+     "CORRECTED_BESIDE_ORIGINAL": 0,
+     "MISSING_KEPT_MISSING": 286136,
+     "DEFAULT_OR_SYNTHETIC": 0,
+     "UNVERIFIED_VALUE": 0
+    },
+    "per_column": {
+     "home_goals": {
+      "PROVIDER_OBSERVED": 66483,
+      "MISSING_KEPT_MISSING": 1
+     },
+     "away_goals": {
+      "PROVIDER_OBSERVED": 66483,
+      "MISSING_KEPT_MISSING": 1
+     },
+     "home_shots": {
+      "PROVIDER_OBSERVED": 43569,
+      "MISSING_KEPT_MISSING": 22915
+     },
+     "away_shots": {
+      "PROVIDER_OBSERVED": 43569,
+      "MISSING_KEPT_MISSING": 22915
+     },
+     "home_sot": {
+      "PROVIDER_OBSERVED": 43559,
+      "MISSING_KEPT_MISSING": 22925
+     },
+     "away_sot": {
+      "PROVIDER_OBSERVED": 43559,
+      "MISSING_KEPT_MISSING": 22925
+     },
+     "home_corners": {
+      "PROVIDER_OBSERVED": 39195,
+      "MISSING_KEPT_MISSING": 27289
+     },
+     "away_corners": {
+      "PROVIDER_OBSERVED": 39195,
+      "MISSING_KEPT_MISSING": 27289
+     },
+     "home_fouls": {
+      "PROVIDER_OBSERVED": 39199,
+      "MISSING_KEPT_MISSING": 27285
+     },
+     "away_fouls": {
+      "PROVIDER_OBSERVED": 39199,
+      "MISSING_KEPT_MISSING": 27285
+     },
+     "ht_home_goals": {
+      "PROVIDER_OBSERVED": 23831,
+      "MISSING_KEPT_MISSING": 42653
+     },
+     "ht_away_goals": {
+      "PROVIDER_OBSERVED": 23831,
+      "MISSING_KEPT_MISSING": 42653
+     }
+    },
+    "verdict": "REAL_100_WITH_MISSING_KEPT_MISSING"
+   },
+   "af_history.parquet": {
+    "rows": 93553,
+    "provider": "API-Football /fixtures + /fixtures/statistics",
+    "cells": {
+     "PROVIDER_OBSERVED": 465167,
+     "VERIFIED_DERIVED": 0,
+     "CORRECTED_BESIDE_ORIGINAL": 0,
+     "MISSING_KEPT_MISSING": 1218787,
+     "DEFAULT_OR_SYNTHETIC": 0,
+     "UNVERIFIED_VALUE": 0
+    },
+    "per_column": {
+     "FTHG": {
+      "PROVIDER_OBSERVED": 2656,
+      "MISSING_KEPT_MISSING": 90897
+     },
+     "FTAG": {
+      "PROVIDER_OBSERVED": 2656,
+      "MISSING_KEPT_MISSING": 90897
+     },
+     "HS": {
+      "PROVIDER_OBSERVED": 93512,
+      "MISSING_KEPT_MISSING": 41
+     },
+     "AS": {
+      "PROVIDER_OBSERVED": 93515,
+      "MISSING_KEPT_MISSING": 38
+     },
+     "HST": {
+      "PROVIDER_OBSERVED": 93507,
+      "MISSING_KEPT_MISSING": 46
+     },
+     "AST": {
+      "PROVIDER_OBSERVED": 93517,
+      "MISSING_KEPT_MISSING": 36
+     },
+     "HC": {
+      "PROVIDER_OBSERVED": 2636,
+      "MISSING_KEPT_MISSING": 90917
+     },
+     "AC": {
+      "PROVIDER_OBSERVED": 2636,
+      "MISSING_KEPT_MISSING": 90917
+     },
+     "HF": {
+      "PROVIDER_OBSERVED": 2574,
+      "MISSING_KEPT_MISSING": 90979
+     },
+     "AF": {
+      "PROVIDER_OBSERVED": 2574,
+      "MISSING_KEPT_MISSING": 90979
+     },
+     "HY": {
+      "PROVIDER_OBSERVED": 2575,
+      "MISSING_KEPT_MISSING": 90978
+     },
+     "AY": {
+      "PROVIDER_OBSERVED": 2575,
+      "MISSING_KEPT_MISSING": 90978
+     },
+     "HR": {
+      "PROVIDER_OBSERVED": 1116,
+      "MISSING_KEPT_MISSING": 92437
+     },
+     "AR": {
+      "PROVIDER_OBSERVED": 1116,
+      "MISSING_KEPT_MISSING": 92437
+     },
+     "HXG": {
+      "PROVIDER_OBSERVED": 15307,
+      "MISSING_KEPT_MISSING": 78246
+     },
+     "AXG": {
+      "PROVIDER_OBSERVED": 15307,
+      "MISSING_KEPT_MISSING": 78246
+     },
+     "HIB": {
+      "PROVIDER_OBSERVED": 18694,
+      "MISSING_KEPT_MISSING": 74859
+     },
+     "AIB": {
+      "PROVIDER_OBSERVED": 18694,
+      "MISSING_KEPT_MISSING": 74859
+     }
+    },
+    "verdict": "REAL_100_WITH_MISSING_KEPT_MISSING"
+   },
+   "corrections_beside_originals": {
+    "rows_by_file": {
+     "history_date_corrections.csv": 352,
+     "history_score_90min.csv": 6,
+     "history_score_conflicts_resolved.csv": 8,
+     "history_awarded_results.csv": 4,
+     "history_provider_supplement.csv": 574,
+     "history_removed_duplicates.csv": 989,
+     "history_excluded_cup_rows.csv": 404,
+     "af_history_removed_duplicates.csv": 22002,
+     "af_history_restored_provider_rows_2026-11_excluded.csv": 10113,
+     "af_history_restored_provider_rows_2026-11_verified.parquet": 21686
+    },
+    "note": "corrections are applied by the loader at read time; the bank files keep the provider rows. Removed duplicates / excluded cup rows are rows taken OUT of training (kept in the file for audit)."
+   },
+   "ht_fill_from_api_football": {
+    "filled_rows_total": 36393,
+    "class": "PROVIDER_OBSERVED",
+    "note": "half-time scores for bank rows lacking them, taken from API-Football (a second provider's own number; refused on a full-time mismatch). fd_history.parquet itself is not modified."
+   },
+   "verdict": "REAL_100_WITH_MISSING_KEPT_MISSING"
+  },
+  "team_training": {
+   "payloads": {
+    "Standard O/U 2.5 [standard]": {
+     "payload": "model_v9_standard.pkl",
+     "status": "active",
+     "training_rows": 49407,
+     "imputer_fit_rows": 39523,
+     "n_features": 86,
+     "cells": {
+      "PROVIDER_OBSERVED": 0,
+      "VERIFIED_DERIVED": 3232403,
+      "CORRECTED_BESIDE_ORIGINAL": 0,
+      "MISSING_KEPT_MISSING": 166541,
+      "DEFAULT_OR_SYNTHETIC": 0,
+      "UNVERIFIED_VALUE": 34
+     },
+     "untraced_features": [],
+     "constant_on_training_rows": [],
+     "fabricated_features": [],
+     "verdict": "NOT_REAL",
+     "basis": "payload imputer record (count / missing_rate per feature over the fit block)",
+     "low_coverage_features": {
+      "home_xg_last5": 0.0754,
+      "away_xg_last5": 0.0753,
+      "home_insidebox_last5": 0.4491,
+      "away_insidebox_last5": 0.4489
+     },
+     "row_level_saved_frame": {
+      "frame_hash": "ebe47c041a7f595f",
+      "rows": 49407,
+      "payload_training_rows": 49407,
+      "backtest_archive_rows": {
+       "archive_rows_in_frame": 2,
+       "rows": 2,
+       "stat_cells_agree_with_a_provider": 1,
+       "stat_cells_contradicted_by_a_provider": 7,
+       "stat_cells_no_provider_holds": 8,
+       "downstream_training_rows_reading_them": 19,
+       "matches": [
+        "Belgian First Division A 2022-10-23 Standard v Anderlecht",
+        "Belgian First Division A 2022-11-12 Charleroi v Mechelen"
+       ]
+      },
+      "rows_every_input_present": 8226,
+      "rows_with_any_input_missing": 41181,
+      "row_source": {
+       "football_data_raw": 29454,
+       "fd_cache": 19624,
+       "provider_supplement": 327,
+       "backtest_archive": 2
+      },
+      "missing_inputs_by_feature": {
+       "home_corners_pg_roll": 7986,
+       "away_corners_pg_roll": 8007,
+       "home_fouls_pg_roll": 9312,
+       "away_fouls_pg_roll": 9336,
+       "home_xg_last5": 40655,
+       "away_xg_last5": 40652,
+       "home_insidebox_last5": 23688,
+       "away_insidebox_last5": 23702,
+       "home_ht_scored_last5": 18,
+       "away_ht_scored_last5": 21,
+       "home_ht_conceded_last5": 18,
+       "away_ht_conceded_last5": 21,
+       "home_ht_over05_rate": 18,
+       "away_ht_over05_rate": 21,
+       "home_ht_over15_rate": 18,
+       "away_ht_over15_rate": 21,
+       "combined_sot_ratio": 8079,
+       "home_ht_attack_str": 18,
+       "away_ht_attack_str": 21,
+       "combined_ht_goals_avg": 39,
+       "home_advantage": 408,
+       "away_home_adv_factor": 147,
+       "home_season_goals_h": 2327,
+       "away_season_goals_a": 2344,
+       "home_season_conceded_h": 2327,
+       "away_season_conceded_a": 2344,
+       "home_cs_rate_h": 2327,
+       "away_cs_rate_a": 2344
+      }
+     },
+     "rows_with_unverified_inputs": 21
+    },
+    "New Format O/U 2.5 [new_format]": {
+     "payload": "model_v9_newformat.pkl",
+     "status": "active",
+     "training_rows": 26846,
+     "imputer_fit_rows": 21475,
+     "n_features": 56,
+     "cells": {
+      "PROVIDER_OBSERVED": 0,
+      "VERIFIED_DERIVED": 1189065,
+      "CORRECTED_BESIDE_ORIGINAL": 0,
+      "MISSING_KEPT_MISSING": 13535,
+      "DEFAULT_OR_SYNTHETIC": 0,
+      "UNVERIFIED_VALUE": 0
+     },
+     "untraced_features": [],
+     "constant_on_training_rows": [],
+     "fabricated_features": [],
+     "verdict": "REAL_100_WITH_MISSING_KEPT_MISSING",
+     "basis": "payload imputer record (count / missing_rate per feature over the fit block)",
+     "low_coverage_features": {}
+    },
+    "BTTS [standard]": {
+     "payload": "model_v9_btts.pkl",
+     "status": "active",
+     "training_rows": 49407,
+     "imputer_fit_rows": 39523,
+     "n_features": 86,
+     "cells": {
+      "PROVIDER_OBSERVED": 0,
+      "VERIFIED_DERIVED": 3232403,
+      "CORRECTED_BESIDE_ORIGINAL": 0,
+      "MISSING_KEPT_MISSING": 166541,
+      "DEFAULT_OR_SYNTHETIC": 0,
+      "UNVERIFIED_VALUE": 34
+     },
+     "untraced_features": [],
+     "constant_on_training_rows": [],
+     "fabricated_features": [],
+     "verdict": "NOT_REAL",
+     "basis": "payload imputer record (count / missing_rate per feature over the fit block)",
+     "low_coverage_features": {
+      "home_xg_last5": 0.0754,
+      "away_xg_last5": 0.0753,
+      "home_insidebox_last5": 0.4491,
+      "away_insidebox_last5": 0.4489
+     },
+     "row_level_saved_frame": {
+      "frame_hash": "ebe47c041a7f595f",
+      "rows": 49407,
+      "payload_training_rows": 49407,
+      "backtest_archive_rows": {
+       "archive_rows_in_frame": 2,
+       "rows": 2,
+       "stat_cells_agree_with_a_provider": 1,
+       "stat_cells_contradicted_by_a_provider": 7,
+       "stat_cells_no_provider_holds": 8,
+       "downstream_training_rows_reading_them": 19,
+       "matches": [
+        "Belgian First Division A 2022-10-23 Standard v Anderlecht",
+        "Belgian First Division A 2022-11-12 Charleroi v Mechelen"
+       ]
+      },
+      "rows_every_input_present": 8226,
+      "rows_with_any_input_missing": 41181,
+      "row_source": {
+       "football_data_raw": 29454,
+       "fd_cache": 19624,
+       "provider_supplement": 327,
+       "backtest_archive": 2
+      },
+      "missing_inputs_by_feature": {
+       "home_corners_pg_roll": 7986,
+       "away_corners_pg_roll": 8007,
+       "home_fouls_pg_roll": 9312,
+       "away_fouls_pg_roll": 9336,
+       "home_xg_last5": 40655,
+       "away_xg_last5": 40652,
+       "home_insidebox_last5": 23688,
+       "away_insidebox_last5": 23702,
+       "home_ht_scored_last5": 18,
+       "away_ht_scored_last5": 21,
+       "home_ht_conceded_last5": 18,
+       "away_ht_conceded_last5": 21,
+       "home_ht_over05_rate": 18,
+       "away_ht_over05_rate": 21,
+       "home_ht_over15_rate": 18,
+       "away_ht_over15_rate": 21,
+       "combined_sot_ratio": 8079,
+       "home_ht_attack_str": 18,
+       "away_ht_attack_str": 21,
+       "combined_ht_goals_avg": 39,
+       "home_advantage": 408,
+       "away_home_adv_factor": 147,
+       "home_season_goals_h": 2327,
+       "away_season_goals_a": 2344,
+       "home_season_conceded_h": 2327,
+       "away_season_conceded_a": 2344,
+       "home_cs_rate_h": 2327,
+       "away_cs_rate_a": 2344
+      }
+     },
+     "rows_with_unverified_inputs": 21
+    },
+    "BTTS [new_format]": {
+     "payload": "model_v9_btts.pkl",
+     "status": "active",
+     "training_rows": 26846,
+     "imputer_fit_rows": 21475,
+     "n_features": 56,
+     "cells": {
+      "PROVIDER_OBSERVED": 0,
+      "VERIFIED_DERIVED": 1189065,
+      "CORRECTED_BESIDE_ORIGINAL": 0,
+      "MISSING_KEPT_MISSING": 13535,
+      "DEFAULT_OR_SYNTHETIC": 0,
+      "UNVERIFIED_VALUE": 0
+     },
+     "untraced_features": [],
+     "constant_on_training_rows": [],
+     "fabricated_features": [],
+     "verdict": "REAL_100_WITH_MISSING_KEPT_MISSING",
+     "basis": "payload imputer record (count / missing_rate per feature over the fit block)",
+     "low_coverage_features": {}
+    },
+    "Over 1.5 [standard]": {
+     "payload": "model_v9_over15.pkl",
+     "status": "active",
+     "training_rows": 49407,
+     "imputer_fit_rows": 39523,
+     "n_features": 86,
+     "cells": {
+      "PROVIDER_OBSERVED": 0,
+      "VERIFIED_DERIVED": 3232403,
+      "CORRECTED_BESIDE_ORIGINAL": 0,
+      "MISSING_KEPT_MISSING": 166541,
+      "DEFAULT_OR_SYNTHETIC": 0,
+      "UNVERIFIED_VALUE": 34
+     },
+     "untraced_features": [],
+     "constant_on_training_rows": [],
+     "fabricated_features": [],
+     "verdict": "NOT_REAL",
+     "basis": "payload imputer record (count / missing_rate per feature over the fit block)",
+     "low_coverage_features": {
+      "home_xg_last5": 0.0754,
+      "away_xg_last5": 0.0753,
+      "home_insidebox_last5": 0.4491,
+      "away_insidebox_last5": 0.4489
+     },
+     "row_level_saved_frame": {
+      "frame_hash": "ebe47c041a7f595f",
+      "rows": 49407,
+      "payload_training_rows": 49407,
+      "backtest_archive_rows": {
+       "archive_rows_in_frame": 2,
+       "rows": 2,
+       "stat_cells_agree_with_a_provider": 1,
+       "stat_cells_contradicted_by_a_provider": 7,
+       "stat_cells_no_provider_holds": 8,
+       "downstream_training_rows_reading_them": 19,
+       "matches": [
+        "Belgian First Division A 2022-10-23 Standard v Anderlecht",
+        "Belgian First Division A 2022-11-12 Charleroi v Mechelen"
+       ]
+      },
+      "rows_every_input_present": 8226,
+      "rows_with_any_input_missing": 41181,
+      "row_source": {
+       "football_data_raw": 29454,
+       "fd_cache": 19624,
+       "provider_supplement": 327,
+       "backtest_archive": 2
+      },
+      "missing_inputs_by_feature": {
+       "home_corners_pg_roll": 7986,
+       "away_corners_pg_roll": 8007,
+       "home_fouls_pg_roll": 9312,
+       "away_fouls_pg_roll": 9336,
+       "home_xg_last5": 40655,
+       "away_xg_last5": 40652,
+       "home_insidebox_last5": 23688,
+       "away_insidebox_last5": 23702,
+       "home_ht_scored_last5": 18,
+       "away_ht_scored_last5": 21,
+       "home_ht_conceded_last5": 18,
+       "away_ht_conceded_last5": 21,
+       "home_ht_over05_rate": 18,
+       "away_ht_over05_rate": 21,
+       "home_ht_over15_rate": 18,
+       "away_ht_over15_rate": 21,
+       "combined_sot_ratio": 8079,
+       "home_ht_attack_str": 18,
+       "away_ht_attack_str": 21,
+       "combined_ht_goals_avg": 39,
+       "home_advantage": 408,
+       "away_home_adv_factor": 147,
+       "home_season_goals_h": 2327,
+       "away_season_goals_a": 2344,
+       "home_season_conceded_h": 2327,
+       "away_season_conceded_a": 2344,
+       "home_cs_rate_h": 2327,
+       "away_cs_rate_a": 2344
+      }
+     },
+     "rows_with_unverified_inputs": 21
+    },
+    "Over 1.5 [new_format]": {
+     "payload": "model_v9_over15.pkl",
+     "status": "active",
+     "training_rows": 26846,
+     "imputer_fit_rows": 21475,
+     "n_features": 56,
+     "cells": {
+      "PROVIDER_OBSERVED": 0,
+      "VERIFIED_DERIVED": 1189065,
+      "CORRECTED_BESIDE_ORIGINAL": 0,
+      "MISSING_KEPT_MISSING": 13535,
+      "DEFAULT_OR_SYNTHETIC": 0,
+      "UNVERIFIED_VALUE": 0
+     },
+     "untraced_features": [],
+     "constant_on_training_rows": [],
+     "fabricated_features": [],
+     "verdict": "REAL_100_WITH_MISSING_KEPT_MISSING",
+     "basis": "payload imputer record (count / missing_rate per feature over the fit block)",
+     "low_coverage_features": {}
+    },
+    "Over 3.5 [standard]": {
+     "payload": "model_v9_over35.pkl",
+     "status": "active",
+     "training_rows": 49407,
+     "imputer_fit_rows": 39523,
+     "n_features": 86,
+     "cells": {
+      "PROVIDER_OBSERVED": 0,
+      "VERIFIED_DERIVED": 3232403,
+      "CORRECTED_BESIDE_ORIGINAL": 0,
+      "MISSING_KEPT_MISSING": 166541,
+      "DEFAULT_OR_SYNTHETIC": 0,
+      "UNVERIFIED_VALUE": 34
+     },
+     "untraced_features": [],
+     "constant_on_training_rows": [],
+     "fabricated_features": [],
+     "verdict": "NOT_REAL",
+     "basis": "payload imputer record (count / missing_rate per feature over the fit block)",
+     "low_coverage_features": {
+      "home_xg_last5": 0.0754,
+      "away_xg_last5": 0.0753,
+      "home_insidebox_last5": 0.4491,
+      "away_insidebox_last5": 0.4489
+     },
+     "row_level_saved_frame": {
+      "frame_hash": "ebe47c041a7f595f",
+      "rows": 49407,
+      "payload_training_rows": 49407,
+      "backtest_archive_rows": {
+       "archive_rows_in_frame": 2,
+       "rows": 2,
+       "stat_cells_agree_with_a_provider": 1,
+       "stat_cells_contradicted_by_a_provider": 7,
+       "stat_cells_no_provider_holds": 8,
+       "downstream_training_rows_reading_them": 19,
+       "matches": [
+        "Belgian First Division A 2022-10-23 Standard v Anderlecht",
+        "Belgian First Division A 2022-11-12 Charleroi v Mechelen"
+       ]
+      },
+      "rows_every_input_present": 8226,
+      "rows_with_any_input_missing": 41181,
+      "row_source": {
+       "football_data_raw": 29454,
+       "fd_cache": 19624,
+       "provider_supplement": 327,
+       "backtest_archive": 2
+      },
+      "missing_inputs_by_feature": {
+       "home_corners_pg_roll": 7986,
+       "away_corners_pg_roll": 8007,
+       "home_fouls_pg_roll": 9312,
+       "away_fouls_pg_roll": 9336,
+       "home_xg_last5": 40655,
+       "away_xg_last5": 40652,
+       "home_insidebox_last5": 23688,
+       "away_insidebox_last5": 23702,
+       "home_ht_scored_last5": 18,
+       "away_ht_scored_last5": 21,
+       "home_ht_conceded_last5": 18,
+       "away_ht_conceded_last5": 21,
+       "home_ht_over05_rate": 18,
+       "away_ht_over05_rate": 21,
+       "home_ht_over15_rate": 18,
+       "away_ht_over15_rate": 21,
+       "combined_sot_ratio": 8079,
+       "home_ht_attack_str": 18,
+       "away_ht_attack_str": 21,
+       "combined_ht_goals_avg": 39,
+       "home_advantage": 408,
+       "away_home_adv_factor": 147,
+       "home_season_goals_h": 2327,
+       "away_season_goals_a": 2344,
+       "home_season_conceded_h": 2327,
+       "away_season_conceded_a": 2344,
+       "home_cs_rate_h": 2327,
+       "away_cs_rate_a": 2344
+      }
+     },
+     "rows_with_unverified_inputs": 21
+    },
+    "Over 3.5 [new_format]": {
+     "payload": "model_v9_over35.pkl",
+     "status": "active",
+     "training_rows": 26846,
+     "imputer_fit_rows": 21475,
+     "n_features": 56,
+     "cells": {
+      "PROVIDER_OBSERVED": 0,
+      "VERIFIED_DERIVED": 1189065,
+      "CORRECTED_BESIDE_ORIGINAL": 0,
+      "MISSING_KEPT_MISSING": 13535,
+      "DEFAULT_OR_SYNTHETIC": 0,
+      "UNVERIFIED_VALUE": 0
+     },
+     "untraced_features": [],
+     "constant_on_training_rows": [],
+     "fabricated_features": [],
+     "verdict": "REAL_100_WITH_MISSING_KEPT_MISSING",
+     "basis": "payload imputer record (count / missing_rate per feature over the fit block)",
+     "low_coverage_features": {}
+    },
+    "HT Over 0.5 [standard]": {
+     "payload": "model_ht_over05.pkl",
+     "status": "active",
+     "training_rows": 49256,
+     "imputer_fit_rows": 39400,
+     "n_features": 84,
+     "cells": {
+      "PROVIDER_OBSERVED": 0,
+      "VERIFIED_DERIVED": 3143681,
+      "CORRECTED_BESIDE_ORIGINAL": 0,
+      "MISSING_KEPT_MISSING": 165900,
+      "DEFAULT_OR_SYNTHETIC": 0,
+      "UNVERIFIED_VALUE": 19
+     },
+     "untraced_features": [],
+     "constant_on_training_rows": [],
+     "fabricated_features": [],
+     "verdict": "NOT_REAL",
+     "basis": "payload imputer record (count / missing_rate per feature over the fit block)",
+     "low_coverage_features": {
+      "home_xg_last5": 0.0752,
+      "away_xg_last5": 0.0751,
+      "home_insidebox_last5": 0.4485,
+      "away_insidebox_last5": 0.4481
+     },
+     "row_level_saved_frame": {
+      "frame_hash": "ebe47c041a7f595f",
+      "rows": 49256,
+      "payload_training_rows": 49256,
+      "backtest_archive_rows": {
+       "archive_rows_in_frame": 2,
+       "rows": 0,
+       "stat_cells_agree_with_a_provider": 0,
+       "stat_cells_contradicted_by_a_provider": 0,
+       "stat_cells_no_provider_holds": 0,
+       "downstream_training_rows_reading_them": 19,
+       "matches": [],
+       "note": "no archive row is a training row of this payload; later rows read them in their windows"
+      },
+      "rows_every_input_present": 8187,
+      "rows_with_any_input_missing": 41069,
+      "row_source": {
+       "football_data_raw": 29396,
+       "fd_cache": 19533,
+       "provider_supplement": 327
+      },
+      "missing_inputs_by_feature": {
+       "home_corners_pg_roll": 7968,
+       "away_corners_pg_roll": 7990,
+       "home_fouls_pg_roll": 9292,
+       "away_fouls_pg_roll": 9317,
+       "home_xg_last5": 40544,
+       "away_xg_last5": 40540,
+       "home_insidebox_last5": 23652,
+       "away_insidebox_last5": 23669,
+       "away_ht_scored_last5": 3,
+       "away_ht_conceded_last5": 3,
+       "away_ht_over05_rate": 3,
+       "away_ht_over15_rate": 3,
+       "combined_sot_ratio": 8044,
+       "away_ht_attack_str": 3,
+       "combined_ht_goals_avg": 3,
+       "home_advantage": 407,
+       "away_home_adv_factor": 147,
+       "home_season_goals_h": 2325,
+       "away_season_goals_a": 2341,
+       "home_season_conceded_h": 2325,
+       "away_season_conceded_a": 2341,
+       "home_cs_rate_h": 2325,
+       "away_cs_rate_a": 2341
+      }
+     },
+     "rows_with_unverified_inputs": 19
+    },
+    "HT Over 1.5 [standard]": {
+     "payload": "model_ht_over15.pkl",
+     "status": "active",
+     "training_rows": 49256,
+     "imputer_fit_rows": 39400,
+     "n_features": 84,
+     "cells": {
+      "PROVIDER_OBSERVED": 0,
+      "VERIFIED_DERIVED": 3143681,
+      "CORRECTED_BESIDE_ORIGINAL": 0,
+      "MISSING_KEPT_MISSING": 165900,
+      "DEFAULT_OR_SYNTHETIC": 0,
+      "UNVERIFIED_VALUE": 19
+     },
+     "untraced_features": [],
+     "constant_on_training_rows": [],
+     "fabricated_features": [],
+     "verdict": "NOT_REAL",
+     "basis": "payload imputer record (count / missing_rate per feature over the fit block)",
+     "low_coverage_features": {
+      "home_xg_last5": 0.0752,
+      "away_xg_last5": 0.0751,
+      "home_insidebox_last5": 0.4485,
+      "away_insidebox_last5": 0.4481
+     },
+     "row_level_saved_frame": {
+      "frame_hash": "ebe47c041a7f595f",
+      "rows": 49256,
+      "payload_training_rows": 49256,
+      "backtest_archive_rows": {
+       "archive_rows_in_frame": 2,
+       "rows": 0,
+       "stat_cells_agree_with_a_provider": 0,
+       "stat_cells_contradicted_by_a_provider": 0,
+       "stat_cells_no_provider_holds": 0,
+       "downstream_training_rows_reading_them": 19,
+       "matches": [],
+       "note": "no archive row is a training row of this payload; later rows read them in their windows"
+      },
+      "rows_every_input_present": 8187,
+      "rows_with_any_input_missing": 41069,
+      "row_source": {
+       "football_data_raw": 29396,
+       "fd_cache": 19533,
+       "provider_supplement": 327
+      },
+      "missing_inputs_by_feature": {
+       "home_corners_pg_roll": 7968,
+       "away_corners_pg_roll": 7990,
+       "home_fouls_pg_roll": 9292,
+       "away_fouls_pg_roll": 9317,
+       "home_xg_last5": 40544,
+       "away_xg_last5": 40540,
+       "home_insidebox_last5": 23652,
+       "away_insidebox_last5": 23669,
+       "away_ht_scored_last5": 3,
+       "away_ht_conceded_last5": 3,
+       "away_ht_over05_rate": 3,
+       "away_ht_over15_rate": 3,
+       "combined_sot_ratio": 8044,
+       "away_ht_attack_str": 3,
+       "combined_ht_goals_avg": 3,
+       "home_advantage": 407,
+       "away_home_adv_factor": 147,
+       "home_season_goals_h": 2325,
+       "away_season_goals_a": 2341,
+       "home_season_conceded_h": 2325,
+       "away_season_conceded_a": 2341,
+       "home_cs_rate_h": 2325,
+       "away_cs_rate_a": 2341
+      }
+     },
+     "rows_with_unverified_inputs": 19
+    },
+    "New Format HT Over 0.5 [new_format]": {
+     "payload": "model_v9_ht_over05_nf.pkl",
+     "status": "active",
+     "training_rows": 26759,
+     "imputer_fit_rows": 21362,
+     "n_features": 56,
+     "cells": {
+      "PROVIDER_OBSERVED": 0,
+      "VERIFIED_DERIVED": 1182828,
+      "CORRECTED_BESIDE_ORIGINAL": 0,
+      "MISSING_KEPT_MISSING": 13444,
+      "DEFAULT_OR_SYNTHETIC": 0,
+      "UNVERIFIED_VALUE": 0
+     },
+     "untraced_features": [],
+     "constant_on_training_rows": [],
+     "fabricated_features": [],
+     "verdict": "REAL_100_WITH_MISSING_KEPT_MISSING",
+     "basis": "payload imputer record (count / missing_rate per feature over the fit block)",
+     "low_coverage_features": {}
+    },
+    "New Format HT Over 1.5 [new_format]": {
+     "payload": "model_v9_ht_over15_nf.pkl",
+     "status": "active",
+     "training_rows": 26759,
+     "imputer_fit_rows": 21362,
+     "n_features": 56,
+     "cells": {
+      "PROVIDER_OBSERVED": 0,
+      "VERIFIED_DERIVED": 1182828,
+      "CORRECTED_BESIDE_ORIGINAL": 0,
+      "MISSING_KEPT_MISSING": 13444,
+      "DEFAULT_OR_SYNTHETIC": 0,
+      "UNVERIFIED_VALUE": 0
+     },
+     "untraced_features": [],
+     "constant_on_training_rows": [],
+     "fabricated_features": [],
+     "verdict": "REAL_100_WITH_MISSING_KEPT_MISSING",
+     "basis": "payload imputer record (count / missing_rate per feature over the fit block)",
+     "low_coverage_features": {}
+    }
+   },
+   "cells": {
+    "PROVIDER_OBSERVED": 0,
+    "VERIFIED_DERIVED": 26338890,
+    "CORRECTED_BESIDE_ORIGINAL": 0,
+    "MISSING_KEPT_MISSING": 1078992,
+    "DEFAULT_OR_SYNTHETIC": 0,
+    "UNVERIFIED_VALUE": 174
+   },
+   "verdict": "NOT_REAL",
+   "training_fitted_imputations": [
+    {
+     "scope": "Standard O/U 2.5 [standard]",
+     "payload": "model_v9_standard.pkl",
+     "imputer_version": "v9-train-only-imputer-1.1",
+     "fitted_on_rows": 39523,
+     "fitted_on_dates": [
+      "2016-08-05",
+      "2025-02-13"
+     ],
+     "rule": "train-only median per feature + `__missing` indicator, clipped to the training range; a REQUIRED form feature missing at serving gives no probability (src/model.py serving guard)",
+     "features_with_missing_cells": 28,
+     "cells_filled_in_fit_block": 166541,
+     "validated_by": "tests/test_real_data_pipeline_trace.py; tests/test_imputer*.py; scripts/team_train_serve_parity.py (feature parity)"
+    },
+    {
+     "scope": "New Format O/U 2.5 [new_format]",
+     "payload": "model_v9_newformat.pkl",
+     "imputer_version": "v9-train-only-imputer-1.1",
+     "fitted_on_rows": 21475,
+     "fitted_on_dates": [
+      "2019-02-22",
+      "2025-08-24"
+     ],
+     "rule": "train-only median per feature + `__missing` indicator, clipped to the training range; a REQUIRED form feature missing at serving gives no probability (src/model.py serving guard)",
+     "features_with_missing_cells": 13,
+     "cells_filled_in_fit_block": 13535,
+     "validated_by": "tests/test_real_data_pipeline_trace.py; tests/test_imputer*.py; scripts/team_train_serve_parity.py (feature parity)"
+    },
+    {
+     "scope": "BTTS [standard]",
+     "payload": "model_v9_btts.pkl",
+     "imputer_version": "v9-train-only-imputer-1.1",
+     "fitted_on_rows": 39523,
+     "fitted_on_dates": [
+      "2016-08-05",
+      "2025-02-13"
+     ],
+     "rule": "train-only median per feature + `__missing` indicator, clipped to the training range; a REQUIRED form feature missing at serving gives no probability (src/model.py serving guard)",
+     "features_with_missing_cells": 28,
+     "cells_filled_in_fit_block": 166541,
+     "validated_by": "tests/test_real_data_pipeline_trace.py; tests/test_imputer*.py; scripts/team_train_serve_parity.py (feature parity)"
+    },
+    {
+     "scope": "BTTS [new_format]",
+     "payload": "model_v9_btts.pkl",
+     "imputer_version": "v9-train-only-imputer-1.1",
+     "fitted_on_rows": 21475,
+     "fitted_on_dates": [
+      "2019-02-22",
+      "2025-08-24"
+     ],
+     "rule": "train-only median per feature + `__missing` indicator, clipped to the training range; a REQUIRED form feature missing at serving gives no probability (src/model.py serving guard)",
+     "features_with_missing_cells": 13,
+     "cells_filled_in_fit_block": 13535,
+     "validated_by": "tests/test_real_data_pipeline_trace.py; tests/test_imputer*.py; scripts/team_train_serve_parity.py (feature parity)"
+    },
+    {
+     "scope": "Over 1.5 [standard]",
+     "payload": "model_v9_over15.pkl",
+     "imputer_version": "v9-train-only-imputer-1.1",
+     "fitted_on_rows": 39523,
+     "fitted_on_dates": [
+      "2016-08-05",
+      "2025-02-13"
+     ],
+     "rule": "train-only median per feature + `__missing` indicator, clipped to the training range; a REQUIRED form feature missing at serving gives no probability (src/model.py serving guard)",
+     "features_with_missing_cells": 28,
+     "cells_filled_in_fit_block": 166541,
+     "validated_by": "tests/test_real_data_pipeline_trace.py; tests/test_imputer*.py; scripts/team_train_serve_parity.py (feature parity)"
+    },
+    {
+     "scope": "Over 1.5 [new_format]",
+     "payload": "model_v9_over15.pkl",
+     "imputer_version": "v9-train-only-imputer-1.1",
+     "fitted_on_rows": 21475,
+     "fitted_on_dates": [
+      "2019-02-22",
+      "2025-08-24"
+     ],
+     "rule": "train-only median per feature + `__missing` indicator, clipped to the training range; a REQUIRED form feature missing at serving gives no probability (src/model.py serving guard)",
+     "features_with_missing_cells": 13,
+     "cells_filled_in_fit_block": 13535,
+     "validated_by": "tests/test_real_data_pipeline_trace.py; tests/test_imputer*.py; scripts/team_train_serve_parity.py (feature parity)"
+    },
+    {
+     "scope": "Over 3.5 [standard]",
+     "payload": "model_v9_over35.pkl",
+     "imputer_version": "v9-train-only-imputer-1.1",
+     "fitted_on_rows": 39523,
+     "fitted_on_dates": [
+      "2016-08-05",
+      "2025-02-13"
+     ],
+     "rule": "train-only median per feature + `__missing` indicator, clipped to the training range; a REQUIRED form feature missing at serving gives no probability (src/model.py serving guard)",
+     "features_with_missing_cells": 28,
+     "cells_filled_in_fit_block": 166541,
+     "validated_by": "tests/test_real_data_pipeline_trace.py; tests/test_imputer*.py; scripts/team_train_serve_parity.py (feature parity)"
+    },
+    {
+     "scope": "Over 3.5 [new_format]",
+     "payload": "model_v9_over35.pkl",
+     "imputer_version": "v9-train-only-imputer-1.1",
+     "fitted_on_rows": 21475,
+     "fitted_on_dates": [
+      "2019-02-22",
+      "2025-08-24"
+     ],
+     "rule": "train-only median per feature + `__missing` indicator, clipped to the training range; a REQUIRED form feature missing at serving gives no probability (src/model.py serving guard)",
+     "features_with_missing_cells": 13,
+     "cells_filled_in_fit_block": 13535,
+     "validated_by": "tests/test_real_data_pipeline_trace.py; tests/test_imputer*.py; scripts/team_train_serve_parity.py (feature parity)"
+    },
+    {
+     "scope": "HT Over 0.5 [standard]",
+     "payload": "model_ht_over05.pkl",
+     "imputer_version": "v9-train-only-imputer-1.1",
+     "fitted_on_rows": 39400,
+     "fitted_on_dates": [
+      "2016-08-05",
+      "2025-02-10"
+     ],
+     "rule": "train-only median per feature + `__missing` indicator, clipped to the training range; a REQUIRED form feature missing at serving gives no probability (src/model.py serving guard)",
+     "features_with_missing_cells": 23,
+     "cells_filled_in_fit_block": 165900,
+     "validated_by": "tests/test_real_data_pipeline_trace.py; tests/test_imputer*.py; scripts/team_train_serve_parity.py (feature parity)"
+    },
+    {
+     "scope": "HT Over 1.5 [standard]",
+     "payload": "model_ht_over15.pkl",
+     "imputer_version": "v9-train-only-imputer-1.1",
+     "fitted_on_rows": 39400,
+     "fitted_on_dates": [
+      "2016-08-05",
+      "2025-02-10"
+     ],
+     "rule": "train-only median per feature + `__missing` indicator, clipped to the training range; a REQUIRED form feature missing at serving gives no probability (src/model.py serving guard)",
+     "features_with_missing_cells": 23,
+     "cells_filled_in_fit_block": 165900,
+     "validated_by": "tests/test_real_data_pipeline_trace.py; tests/test_imputer*.py; scripts/team_train_serve_parity.py (feature parity)"
+    },
+    {
+     "scope": "New Format HT Over 0.5 [new_format]",
+     "payload": "model_v9_ht_over05_nf.pkl",
+     "imputer_version": "v9-train-only-imputer-1.1",
+     "fitted_on_rows": 21362,
+     "fitted_on_dates": [
+      "2019-02-22",
+      "2025-08-23"
+     ],
+     "rule": "train-only median per feature + `__missing` indicator, clipped to the training range; a REQUIRED form feature missing at serving gives no probability (src/model.py serving guard)",
+     "features_with_missing_cells": 13,
+     "cells_filled_in_fit_block": 13444,
+     "validated_by": "tests/test_real_data_pipeline_trace.py; tests/test_imputer*.py; scripts/team_train_serve_parity.py (feature parity)"
+    },
+    {
+     "scope": "New Format HT Over 1.5 [new_format]",
+     "payload": "model_v9_ht_over15_nf.pkl",
+     "imputer_version": "v9-train-only-imputer-1.1",
+     "fitted_on_rows": 21362,
+     "fitted_on_dates": [
+      "2019-02-22",
+      "2025-08-23"
+     ],
+     "rule": "train-only median per feature + `__missing` indicator, clipped to the training range; a REQUIRED form feature missing at serving gives no probability (src/model.py serving guard)",
+     "features_with_missing_cells": 13,
+     "cells_filled_in_fit_block": 13444,
+     "validated_by": "tests/test_real_data_pipeline_trace.py; tests/test_imputer*.py; scripts/team_train_serve_parity.py (feature parity)"
+    }
+   ],
+   "backtest_archive_scope": {
+    "file": "output/backtest_all_leagues.csv",
+    "rows": 40060,
+    "by_track": {
+     "standard": {
+      "leagues": 17,
+      "rows": 40060
+     }
+    },
+    "note": "an archive row enters training only where the identity pipeline keeps it over the provider rows; the saved Standard frame counts are in team_training.payloads[*].row_level_saved_frame"
+   }
+  },
+  "serving_board": {
+   "board_rows": 161,
+   "tracks": {
+    "standard|O/U 2.5": {
+     "fixtures": 95,
+     "cells": {
+      "PROVIDER_OBSERVED": 0,
+      "VERIFIED_DERIVED": 4079,
+      "CORRECTED_BESIDE_ORIGINAL": 0,
+      "MISSING_KEPT_MISSING": 6,
+      "DEFAULT_OR_SYNTHETIC": 0,
+      "UNVERIFIED_VALUE": 0
+     },
+     "inputs_not_on_board": 0,
+     "verdict": "REAL_100_WITH_MISSING_KEPT_MISSING"
+    },
+    "new_format|O/U 2.5": {
+     "fixtures": 66,
+     "cells": {
+      "PROVIDER_OBSERVED": 0,
+      "VERIFIED_DERIVED": 1848,
+      "CORRECTED_BESIDE_ORIGINAL": 0,
+      "MISSING_KEPT_MISSING": 0,
+      "DEFAULT_OR_SYNTHETIC": 0,
+      "UNVERIFIED_VALUE": 0
+     },
+     "inputs_not_on_board": 0,
+     "verdict": "REAL_100"
+    },
+    "standard|BTTS": {
+     "fixtures": 95,
+     "cells": {
+      "PROVIDER_OBSERVED": 0,
+      "VERIFIED_DERIVED": 4079,
+      "CORRECTED_BESIDE_ORIGINAL": 0,
+      "MISSING_KEPT_MISSING": 6,
+      "DEFAULT_OR_SYNTHETIC": 0,
+      "UNVERIFIED_VALUE": 0
+     },
+     "inputs_not_on_board": 0,
+     "verdict": "REAL_100_WITH_MISSING_KEPT_MISSING"
+    },
+    "new_format|BTTS": {
+     "fixtures": 66,
+     "cells": {
+      "PROVIDER_OBSERVED": 0,
+      "VERIFIED_DERIVED": 1848,
+      "CORRECTED_BESIDE_ORIGINAL": 0,
+      "MISSING_KEPT_MISSING": 0,
+      "DEFAULT_OR_SYNTHETIC": 0,
+      "UNVERIFIED_VALUE": 0
+     },
+     "inputs_not_on_board": 0,
+     "verdict": "REAL_100"
+    },
+    "standard|Over 1.5": {
+     "fixtures": 95,
+     "cells": {
+      "PROVIDER_OBSERVED": 0,
+      "VERIFIED_DERIVED": 4079,
+      "CORRECTED_BESIDE_ORIGINAL": 0,
+      "MISSING_KEPT_MISSING": 6,
+      "DEFAULT_OR_SYNTHETIC": 0,
+      "UNVERIFIED_VALUE": 0
+     },
+     "inputs_not_on_board": 0,
+     "verdict": "REAL_100_WITH_MISSING_KEPT_MISSING"
+    },
+    "new_format|Over 1.5": {
+     "fixtures": 66,
+     "cells": {
+      "PROVIDER_OBSERVED": 0,
+      "VERIFIED_DERIVED": 1848,
+      "CORRECTED_BESIDE_ORIGINAL": 0,
+      "MISSING_KEPT_MISSING": 0,
+      "DEFAULT_OR_SYNTHETIC": 0,
+      "UNVERIFIED_VALUE": 0
+     },
+     "inputs_not_on_board": 0,
+     "verdict": "REAL_100"
+    },
+    "standard|Over 3.5": {
+     "fixtures": 95,
+     "cells": {
+      "PROVIDER_OBSERVED": 0,
+      "VERIFIED_DERIVED": 4079,
+      "CORRECTED_BESIDE_ORIGINAL": 0,
+      "MISSING_KEPT_MISSING": 6,
+      "DEFAULT_OR_SYNTHETIC": 0,
+      "UNVERIFIED_VALUE": 0
+     },
+     "inputs_not_on_board": 0,
+     "verdict": "REAL_100_WITH_MISSING_KEPT_MISSING"
+    },
+    "new_format|Over 3.5": {
+     "fixtures": 66,
+     "cells": {
+      "PROVIDER_OBSERVED": 0,
+      "VERIFIED_DERIVED": 1848,
+      "CORRECTED_BESIDE_ORIGINAL": 0,
+      "MISSING_KEPT_MISSING": 0,
+      "DEFAULT_OR_SYNTHETIC": 0,
+      "UNVERIFIED_VALUE": 0
+     },
+     "inputs_not_on_board": 0,
+     "verdict": "REAL_100"
+    },
+    "standard|HT Over 0.5": {
+     "fixtures": 95,
+     "cells": {
+      "PROVIDER_OBSERVED": 0,
+      "VERIFIED_DERIVED": 3984,
+      "CORRECTED_BESIDE_ORIGINAL": 0,
+      "MISSING_KEPT_MISSING": 6,
+      "DEFAULT_OR_SYNTHETIC": 0,
+      "UNVERIFIED_VALUE": 0
+     },
+     "inputs_not_on_board": 0,
+     "verdict": "REAL_100_WITH_MISSING_KEPT_MISSING"
+    },
+    "standard|HT Over 1.5": {
+     "fixtures": 95,
+     "cells": {
+      "PROVIDER_OBSERVED": 0,
+      "VERIFIED_DERIVED": 3984,
+      "CORRECTED_BESIDE_ORIGINAL": 0,
+      "MISSING_KEPT_MISSING": 6,
+      "DEFAULT_OR_SYNTHETIC": 0,
+      "UNVERIFIED_VALUE": 0
+     },
+     "inputs_not_on_board": 0,
+     "verdict": "REAL_100_WITH_MISSING_KEPT_MISSING"
+    },
+    "new_format|HT Over 0.5": {
+     "fixtures": 66,
+     "cells": {
+      "PROVIDER_OBSERVED": 0,
+      "VERIFIED_DERIVED": 1848,
+      "CORRECTED_BESIDE_ORIGINAL": 0,
+      "MISSING_KEPT_MISSING": 0,
+      "DEFAULT_OR_SYNTHETIC": 0,
+      "UNVERIFIED_VALUE": 0
+     },
+     "inputs_not_on_board": 0,
+     "verdict": "REAL_100"
+    },
+    "new_format|HT Over 1.5": {
+     "fixtures": 66,
+     "cells": {
+      "PROVIDER_OBSERVED": 0,
+      "VERIFIED_DERIVED": 1848,
+      "CORRECTED_BESIDE_ORIGINAL": 0,
+      "MISSING_KEPT_MISSING": 0,
+      "DEFAULT_OR_SYNTHETIC": 0,
+      "UNVERIFIED_VALUE": 0
+     },
+     "inputs_not_on_board": 0,
+     "verdict": "REAL_100"
+    }
+   },
+   "cells": {
+    "PROVIDER_OBSERVED": 0,
+    "VERIFIED_DERIVED": 35372,
+    "CORRECTED_BESIDE_ORIGINAL": 0,
+    "MISSING_KEPT_MISSING": 36,
+    "DEFAULT_OR_SYNTHETIC": 0,
+    "UNVERIFIED_VALUE": 0
+   },
+   "verdict": "REAL_100_WITH_MISSING_KEPT_MISSING",
+   "note": "inputs computed at scoring and not exported to the board are counted by the train/serve parity evidence, not here"
+  },
+  "props": {
+   "source_rows": 966274,
+   "count_source": {
+    "refetched": 959081,
+    "provider_rule": 5311,
+    "zeros_unverified": 1882
+   },
+   "classes_of_rows": {
+    "PROVIDER_OBSERVED": 959081,
+    "VERIFIED_DERIVED": 5311,
+    "CORRECTED_BESIDE_ORIGINAL": 0,
+    "MISSING_KEPT_MISSING": 1882,
+    "DEFAULT_OR_SYNTHETIC": 0,
+    "UNVERIFIED_VALUE": 0
+   },
+   "home_away_side_corrected_beside_original": 3598,
+   "keeper_goals_conceded_contradicting_score_set_missing_value_kept_beside": 335,
+   "population_rows": 938059,
+   "training_eligible_all_prior_verified": 934014,
+   "excluded_not_all_prior_verified": 4045,
+   "stored_placeholders_in_player_history": {
+    "columns": {
+     "age": {
+      "placeholder": 25.0,
+      "rows": 887907,
+      "of": 891912
+     },
+     "height_cm": {
+      "placeholder": 180.0,
+      "rows": 888192,
+      "of": 891912
+     },
+     "weight_kg": {
+      "placeholder": 75.0,
+      "rows": 888142,
+      "of": 891912
+     },
+     "age_peak_delta": {
+      "placeholder": 0.0,
+      "rows": 887907,
+      "of": 891912
+     }
+    },
+    "reaches_model": false,
+    "why_not": "player_model/feature_engineering.py _PROFILE_PLACEHOLDERS: the placeholder value is read as missing; profile features come from output/collect/player_profiles.parquet (NaN if unknown); props certification: no served feature holds one value on > 99.9% of training rows"
+   },
+   "certification": {
+    "verdict": "VERIFIED",
+    "artifacts": 13,
+    "verified": 13,
+    "generated_at": "2026-11-22T18:06:37Z",
+    "code_sha": "2a86ab87a824d37df2ac1cd032438af91135552b"
+   },
+   "training_fitted_imputations": [
+    {
+     "scope": "props goals / assists / sot / sot2 (hgb_nan_native)",
+     "rule": "none: NaN-native trees, nothing filled"
+    },
+    {
+     "scope": "props cards (recipe_retrained) + recipe challengers",
+     "rule": "fit-block medians persisted in the payload for 128 features (RecipeRetrained._fill)",
+     "validated_by": "output/props_real_data_provenance.json batch_invariance + serving-vs-training parity (6,316 rows)"
+    },
+    {
+     "scope": "rare props goals2 / goals3 / sot3 / sot4 (player_base_rate)",
+     "rule": "an unseen player gets the fitted window market rate (beta prior, method of moments)"
+    }
+   ],
+   "verdict": "REAL_100_WITH_MISSING_KEPT_MISSING"
+  },
+  "side_models": {
+   "model_version": "side_nb_v1_2026-11-09_c9e06a6a9c92",
+   "data_end": "2026-11-09",
+   "families": {
+    "corners": {
+     "leagues_served": 18,
+     "leagues_refused": [
+      "Finland Veikkausliiga",
+      "Ireland Premier Division"
+     ],
+     "fixtures": {
+      "two_source_verified": 13015,
+      "single_source_sane": 17043,
+      "fixtures_in_window": 30966,
+      "not_verified_or_no_stats": 908
+     },
+     "zero_fill_suspect_fixtures": 5,
+     "cells": {
+      "PROVIDER_OBSERVED": 30058,
+      "VERIFIED_DERIVED": 0,
+      "CORRECTED_BESIDE_ORIGINAL": 0,
+      "MISSING_KEPT_MISSING": 908,
+      "DEFAULT_OR_SYNTHETIC": 0,
+      "UNVERIFIED_VALUE": 0
+     },
+     "note": "a fixture whose counts are not verified (two sources disagree / no stats / failed sanity) is NaN, never a training row; single-source leagues pass a sanity rule, not a second source"
+    },
+    "cards": {
+     "leagues_served": 17,
+     "leagues_refused": [
+      "Finland Veikkausliiga",
+      "Ireland Premier Division",
+      "La Liga 2"
+     ],
+     "fixtures": {
+      "two_source_verified": 11102,
+      "single_source_sane": 17043,
+      "fixtures_in_window": 28943,
+      "not_verified_or_no_stats": 798
+     },
+     "zero_fill_suspect_fixtures": 5,
+     "cells": {
+      "PROVIDER_OBSERVED": 28145,
+      "VERIFIED_DERIVED": 0,
+      "CORRECTED_BESIDE_ORIGINAL": 0,
+      "MISSING_KEPT_MISSING": 798,
+      "DEFAULT_OR_SYNTHETIC": 0,
+      "UNVERIFIED_VALUE": 0
+     },
+     "note": "a fixture whose counts are not verified (two sources disagree / no stats / failed sanity) is NaN, never a training row; single-source leagues pass a sanity rule, not a second source"
+    }
+   },
+   "cells": {
+    "PROVIDER_OBSERVED": 58203,
+    "VERIFIED_DERIVED": 0,
+    "CORRECTED_BESIDE_ORIGINAL": 0,
+    "MISSING_KEPT_MISSING": 1706,
+    "DEFAULT_OR_SYNTHETIC": 0,
+    "UNVERIFIED_VALUE": 0
+   },
+   "verdict": "REAL_100_WITH_MISSING_KEPT_MISSING"
+  },
+  "fantasy": {
+   "register_counts": {
+    "MISSING_DATA_FALLBACK_FIXED": 14,
+    "DOMAIN_PRIOR": 18,
+    "OBSERVED_FIXED": 1,
+    "DOMAIN_PRIOR_FIXED": 3,
+    "TRAIN_FITTED_PRIOR": 5,
+    "MISSING_DATA_FALLBACK": 1,
+    "OBSERVED": 1
+   },
+   "missing_data_fallbacks_not_fixed": [],
+   "fallbacks_unreachable_per_props_certification": [
+    "props_batch_median"
+   ],
+   "domain_priors_unfitted": [
+    "p_start_blend_0_6_0_4",
+    "fdr_heuristic_xg",
+    "cs_lambda_blend",
+    "dc_thresholds",
+    "fixture_mult_clip_v1",
+    "v1_cs_plausibility_band",
+    "v1_bonus_formula",
+    "v1_fdr_step_home_edge",
+    "v1_home_factor_legacy",
+    "v2_attack_defence_share",
+    "v2_fixture_mult_clip",
+    "v2_availability_half_life",
+    "v2_m60_mean_clip",
+    "v2_attack_fixture_clip",
+    "v2_lambda_clip",
+    "v2_long_play_rate",
+    "v2_home_adv",
+    "v2_pos_xg_xa_prior",
+    "v2_confidence_thresholds",
+    "v2_captain_pools",
+    "v2_minutes_model_C"
+   ],
+   "runtime_fire_counts": {
+    "v1_rows": 393,
+    "p_start_exactly_0_6": 3,
+    "fpl_unmatched_rows": 0,
+    "fixtures_unavailable_rows": 0,
+    "p_goal_all_zero": false,
+    "p_assist_all_zero": false,
+    "p_sot2_all_zero": false,
+    "v2_rows": 459,
+    "v2_blank_gw_rows": 0,
+    "v2_start_rate_missing": 0
+   },
+   "oos_rows": 2959,
+   "evidence": "reports/P1_FANTASY_VALIDATION.md: 2,631 of 2,631 FINAL player-gameweeks equal FPL event/live",
+   "verdict": "REAL_100_WITH_MISSING_KEPT_MISSING",
+   "note": "DOMAIN_PRIOR constants are unfitted conventions in the projection formula (not observations); a MISSING_DATA_FALLBACK not marked FIXED still substitutes a value for a missing input"
+  },
+  "ledgers": {
+   "files": {
+    "bets_ledger.csv": {
+     "rows": 1943,
+     "price_column": "odds",
+     "price_cells": {
+      "PROVIDER_OBSERVED": 1943,
+      "VERIFIED_DERIVED": 0,
+      "CORRECTED_BESIDE_ORIGINAL": 0,
+      "MISSING_KEPT_MISSING": 0,
+      "DEFAULT_OR_SYNTHETIC": 0,
+      "UNVERIFIED_VALUE": 0
+     },
+     "book_or_source_column": null,
+     "verdict": "REAL_100",
+     "note": "PROVIDER_OBSERVED = a quote > 1 is stored (counts only); the bookmaker / capture time is recorded only where book_or_source_column says so (reports/P0_SYNTHETIC_ROI_QUARANTINE.md)"
+    },
+    "side_bets_ledger.csv": {
+     "rows": 795,
+     "price_column": "odds",
+     "price_cells": {
+      "PROVIDER_OBSERVED": 795,
+      "VERIFIED_DERIVED": 0,
+      "CORRECTED_BESIDE_ORIGINAL": 0,
+      "MISSING_KEPT_MISSING": 0,
+      "DEFAULT_OR_SYNTHETIC": 0,
+      "UNVERIFIED_VALUE": 0
+     },
+     "book_or_source_column": null,
+     "verdict": "REAL_100",
+     "note": "PROVIDER_OBSERVED = a quote > 1 is stored (counts only); the bookmaker / capture time is recorded only where book_or_source_column says so (reports/P0_SYNTHETIC_ROI_QUARANTINE.md)"
+    },
+    "ht_ledger.csv": {
+     "rows": 84,
+     "price_column": "entry_odds",
+     "price_cells": {
+      "PROVIDER_OBSERVED": 15,
+      "VERIFIED_DERIVED": 0,
+      "CORRECTED_BESIDE_ORIGINAL": 0,
+      "MISSING_KEPT_MISSING": 69,
+      "DEFAULT_OR_SYNTHETIC": 0,
+      "UNVERIFIED_VALUE": 0
+     },
+     "book_or_source_column": null,
+     "verdict": "REAL_100_WITH_MISSING_KEPT_MISSING",
+     "note": "PROVIDER_OBSERVED = a quote > 1 is stored (counts only); the bookmaker / capture time is recorded only where book_or_source_column says so (reports/P0_SYNTHETIC_ROI_QUARANTINE.md)"
+    },
+    "player_ledger.csv": {
+     "rows": 47426,
+     "price_column": "market_odds",
+     "price_cells": {
+      "PROVIDER_OBSERVED": 7473,
+      "VERIFIED_DERIVED": 0,
+      "CORRECTED_BESIDE_ORIGINAL": 0,
+      "MISSING_KEPT_MISSING": 39953,
+      "DEFAULT_OR_SYNTHETIC": 0,
+      "UNVERIFIED_VALUE": 0
+     },
+     "book_or_source_column": null,
+     "verdict": "REAL_100_WITH_MISSING_KEPT_MISSING",
+     "note": "PROVIDER_OBSERVED = a quote > 1 is stored (counts only); the bookmaker / capture time is recorded only where book_or_source_column says so (reports/P0_SYNTHETIC_ROI_QUARANTINE.md)"
+    },
+    "top3_league_ledger.csv": {
+     "rows": 3,
+     "price_column": "odds",
+     "price_cells": {
+      "PROVIDER_OBSERVED": 3,
+      "VERIFIED_DERIVED": 0,
+      "CORRECTED_BESIDE_ORIGINAL": 0,
+      "MISSING_KEPT_MISSING": 0,
+      "DEFAULT_OR_SYNTHETIC": 0,
+      "UNVERIFIED_VALUE": 0
+     },
+     "book_or_source_column": "market_source",
+     "verdict": "REAL_100",
+     "note": "PROVIDER_OBSERVED = a quote > 1 is stored (counts only); the bookmaker / capture time is recorded only where book_or_source_column says so (reports/P0_SYNTHETIC_ROI_QUARANTINE.md)"
+    },
+    "props_top3_ledger.csv": {
+     "rows": 0,
+     "price_column": "odds",
+     "price_cells": {
+      "PROVIDER_OBSERVED": 0,
+      "VERIFIED_DERIVED": 0,
+      "CORRECTED_BESIDE_ORIGINAL": 0,
+      "MISSING_KEPT_MISSING": 0,
+      "DEFAULT_OR_SYNTHETIC": 0,
+      "UNVERIFIED_VALUE": 0
+     },
+     "book_or_source_column": null,
+     "verdict": "REAL_100",
+     "note": "PROVIDER_OBSERVED = a quote > 1 is stored (counts only); the bookmaker / capture time is recorded only where book_or_source_column says so (reports/P0_SYNTHETIC_ROI_QUARANTINE.md)"
+    },
+    "v91_shadow.csv": {
+     "rows": 1394,
+     "price_column": "entry_odds",
+     "price_cells": {
+      "PROVIDER_OBSERVED": 1394,
+      "VERIFIED_DERIVED": 0,
+      "CORRECTED_BESIDE_ORIGINAL": 0,
+      "MISSING_KEPT_MISSING": 0,
+      "DEFAULT_OR_SYNTHETIC": 0,
+      "UNVERIFIED_VALUE": 0
+     },
+     "book_or_source_column": null,
+     "verdict": "REAL_100",
+     "note": "PROVIDER_OBSERVED = a quote > 1 is stored (counts only); the bookmaker / capture time is recorded only where book_or_source_column says so (reports/P0_SYNTHETIC_ROI_QUARANTINE.md)"
+    },
+    "prediction_ledger (v9, all partitions)": {
+     "partitions": 539,
+     "rows": 351882,
+     "cells": {
+      "PROVIDER_OBSERVED": 0,
+      "VERIFIED_DERIVED": 351786,
+      "CORRECTED_BESIDE_ORIGINAL": 0,
+      "MISSING_KEPT_MISSING": 96,
+      "DEFAULT_OR_SYNTHETIC": 0
+     },
+     "unscored_without_reason": 0,
+     "verdict": "REAL_100_WITH_MISSING_KEPT_MISSING",
+     "note": "a probability is a model output on the inputs above (VERIFIED_DERIVED); an unscored row keeps its reason and no number (MISSING_KEPT_MISSING). No price is stored in this ledger."
+    }
+   },
+   "cells": {
+    "PROVIDER_OBSERVED": 11623,
+    "VERIFIED_DERIVED": 351786,
+    "CORRECTED_BESIDE_ORIGINAL": 0,
+    "MISSING_KEPT_MISSING": 40118,
+    "DEFAULT_OR_SYNTHETIC": 0,
+    "UNVERIFIED_VALUE": 0
+   },
+   "verdict": "REAL_100_WITH_MISSING_KEPT_MISSING"
+  },
+  "external_repos": {
+   "repos": {
+    "wowzaV9-Pro (grid / research inputs)": {
+     "verdict": "UNVERIFIED",
+     "evidence": "reports/P1_PRO_RECONCILIATION.md",
+     "evidence_present": true,
+     "what_is_proven": "registry reconciled as-of its own timestamp (26 tables); calculation versions deduped; no row-level provenance class per value"
+    },
+    "wowza_v11 (research inputs)": {
+     "verdict": "UNVERIFIED",
+     "evidence": "reports/P1_V11_RECONCILIATION.md",
+     "evidence_present": true,
+     "what_is_proven": "ledger identity / schema / chronology reconciled with v9 and Pro (0 duplicate keys, 0 post-kickoff rows); no row-level provenance class per value"
+    },
+    "wowza-exec (private price + ledger stores)": {
+     "verdict": "UNVERIFIED",
+     "evidence": "reports/P1_PRICE_CLV_COVERAGE.md",
+     "evidence_present": true,
+     "what_is_proven": "dual-write stores; certified-close coverage measured; no row-level provenance class per value"
+    }
+   },
+   "verdict": "UNVERIFIED"
+  }
+ },
+ "errors": {},
+ "defaults_found": [
+  {
+   "dataset": "Standard O/U 2.5 [standard]",
+   "columns": [
+    "home_shots",
+    "away_shots",
+    "home_sot",
+    "away_sot",
+    "home_corners",
+    "away_corners",
+    "home_fouls",
+    "away_fouls"
+   ],
+   "cells": 34,
+   "rows": 21,
+   "cause": "row_source backtest_archive (output/backtest_all_leagues.csv, an internal backtest output): stat values no provider holds or a provider contradicts; read by the row itself and by the next ROLLING_N matches of both clubs",
+   "reaches_model": true,
+   "class": "UNVERIFIED_VALUE"
+  },
+  {
+   "dataset": "BTTS [standard]",
+   "columns": [
+    "home_shots",
+    "away_shots",
+    "home_sot",
+    "away_sot",
+    "home_corners",
+    "away_corners",
+    "home_fouls",
+    "away_fouls"
+   ],
+   "cells": 34,
+   "rows": 21,
+   "cause": "row_source backtest_archive (output/backtest_all_leagues.csv, an internal backtest output): stat values no provider holds or a provider contradicts; read by the row itself and by the next ROLLING_N matches of both clubs",
+   "reaches_model": true,
+   "class": "UNVERIFIED_VALUE"
+  },
+  {
+   "dataset": "Over 1.5 [standard]",
+   "columns": [
+    "home_shots",
+    "away_shots",
+    "home_sot",
+    "away_sot",
+    "home_corners",
+    "away_corners",
+    "home_fouls",
+    "away_fouls"
+   ],
+   "cells": 34,
+   "rows": 21,
+   "cause": "row_source backtest_archive (output/backtest_all_leagues.csv, an internal backtest output): stat values no provider holds or a provider contradicts; read by the row itself and by the next ROLLING_N matches of both clubs",
+   "reaches_model": true,
+   "class": "UNVERIFIED_VALUE"
+  },
+  {
+   "dataset": "Over 3.5 [standard]",
+   "columns": [
+    "home_shots",
+    "away_shots",
+    "home_sot",
+    "away_sot",
+    "home_corners",
+    "away_corners",
+    "home_fouls",
+    "away_fouls"
+   ],
+   "cells": 34,
+   "rows": 21,
+   "cause": "row_source backtest_archive (output/backtest_all_leagues.csv, an internal backtest output): stat values no provider holds or a provider contradicts; read by the row itself and by the next ROLLING_N matches of both clubs",
+   "reaches_model": true,
+   "class": "UNVERIFIED_VALUE"
+  },
+  {
+   "dataset": "HT Over 0.5 [standard]",
+   "columns": [
+    "home_shots",
+    "away_shots",
+    "home_sot",
+    "away_sot",
+    "home_corners",
+    "away_corners",
+    "home_fouls",
+    "away_fouls"
+   ],
+   "cells": 19,
+   "rows": 19,
+   "cause": "row_source backtest_archive (output/backtest_all_leagues.csv, an internal backtest output): stat values no provider holds or a provider contradicts; read by the row itself and by the next ROLLING_N matches of both clubs",
+   "reaches_model": true,
+   "class": "UNVERIFIED_VALUE"
+  },
+  {
+   "dataset": "HT Over 1.5 [standard]",
+   "columns": [
+    "home_shots",
+    "away_shots",
+    "home_sot",
+    "away_sot",
+    "home_corners",
+    "away_corners",
+    "home_fouls",
+    "away_fouls"
+   ],
+   "cells": 19,
+   "rows": 19,
+   "cause": "row_source backtest_archive (output/backtest_all_leagues.csv, an internal backtest output): stat values no provider holds or a provider contradicts; read by the row itself and by the next ROLLING_N matches of both clubs",
+   "reaches_model": true,
+   "class": "UNVERIFIED_VALUE"
+  },
+  {
+   "dataset": "player_history.parquet (stored)",
+   "columns": [
+    "age"
+   ],
+   "cells": 887907,
+   "cause": "legacy build_features placeholder 25.0 written on every row",
+   "reaches_model": false
+  },
+  {
+   "dataset": "player_history.parquet (stored)",
+   "columns": [
+    "height_cm"
+   ],
+   "cells": 888192,
+   "cause": "legacy build_features placeholder 180.0 written on every row",
+   "reaches_model": false
+  },
+  {
+   "dataset": "player_history.parquet (stored)",
+   "columns": [
+    "weight_kg"
+   ],
+   "cells": 888142,
+   "cause": "legacy build_features placeholder 75.0 written on every row",
+   "reaches_model": false
+  },
+  {
+   "dataset": "player_history.parquet (stored)",
+   "columns": [
+    "age_peak_delta"
+   ],
+   "cells": 887907,
+   "cause": "legacy build_features placeholder 0.0 written on every row",
+   "reaches_model": false
+  }
+ ],
+ "summary": {
+  "history_banks": "REAL_100_WITH_MISSING_KEPT_MISSING",
+  "team_training": "NOT_REAL",
+  "serving_board": "REAL_100_WITH_MISSING_KEPT_MISSING",
+  "props": "REAL_100_WITH_MISSING_KEPT_MISSING",
+  "side_models": "REAL_100_WITH_MISSING_KEPT_MISSING",
+  "fantasy": "REAL_100_WITH_MISSING_KEPT_MISSING",
+  "ledgers": "REAL_100_WITH_MISSING_KEPT_MISSING",
+  "external_repos": "UNVERIFIED"
+ }
+}
