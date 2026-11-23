@@ -1,12 +1,12 @@
 {
   "artifact": "model_integrity_health",
   "version": "model-integrity-health-0.2",
-  "generated_at": "2026-11-23T10:47:18Z",
-  "status": "FAIL",
+  "generated_at": "2026-11-23T18:46:34Z",
+  "status": "WARN",
   "active_serving_join_status": "PASS",
   "active_training_lineage_status": "UNVERIFIED",
   "legacy_replay_status": "FAIL",
-  "overall_model_integrity_status": "FAIL",
+  "overall_model_integrity_status": "WARN",
   "join_scopes": {
     "active_serving_join_status": "PASS",
     "active_serving_joins": {
@@ -164,72 +164,72 @@
     },
     {
       "track": "new_format|OU25",
-      "status": "FAIL",
+      "status": "WARN",
       "checks": {
-        "parity": "FAIL",
+        "parity": "WARN",
         "weight_alignment": "UNKNOWN",
         "price_provenance": "WARN"
       }
     },
     {
       "track": "standard|BTTS",
-      "status": "FAIL",
+      "status": "WARN",
       "checks": {
-        "parity": "FAIL",
+        "parity": "WARN",
         "weight_alignment": "UNKNOWN",
         "price_provenance": "WARN"
       }
     },
     {
       "track": "new_format|BTTS",
-      "status": "FAIL",
+      "status": "WARN",
       "checks": {
-        "parity": "FAIL",
+        "parity": "WARN",
         "weight_alignment": "UNKNOWN",
         "price_provenance": "WARN"
       }
     },
     {
       "track": "standard|OU15",
-      "status": "FAIL",
+      "status": "WARN",
       "checks": {
-        "parity": "FAIL",
+        "parity": "WARN",
         "weight_alignment": "UNKNOWN",
         "price_provenance": "WARN"
       }
     },
     {
       "track": "new_format|OU15",
-      "status": "FAIL",
+      "status": "WARN",
       "checks": {
-        "parity": "FAIL",
+        "parity": "WARN",
         "weight_alignment": "UNKNOWN",
         "price_provenance": "WARN"
       }
     },
     {
       "track": "standard|OU35",
-      "status": "FAIL",
+      "status": "WARN",
       "checks": {
-        "parity": "FAIL",
+        "parity": "WARN",
         "weight_alignment": "UNKNOWN",
         "price_provenance": "WARN"
       }
     },
     {
       "track": "new_format|OU35",
-      "status": "FAIL",
+      "status": "WARN",
       "checks": {
-        "parity": "FAIL",
+        "parity": "WARN",
         "weight_alignment": "UNKNOWN",
         "price_provenance": "WARN"
       }
     },
     {
       "track": "standard|HT_O05",
-      "status": "FAIL",
+      "status": "WARN",
       "checks": {
-        "parity": "FAIL",
+        "parity": "WARN",
         "weight_alignment": "UNKNOWN",
         "price_provenance": "UNKNOWN",
         "training_lineage": "UNVERIFIED"
@@ -237,9 +237,9 @@
     },
     {
       "track": "standard|HT_O15",
-      "status": "FAIL",
+      "status": "WARN",
       "checks": {
-        "parity": "FAIL",
+        "parity": "WARN",
         "weight_alignment": "UNKNOWN",
         "price_provenance": "UNKNOWN",
         "training_lineage": "UNVERIFIED"
@@ -249,7 +249,7 @@
       "track": "new_format|HT_O05",
       "status": "WARN",
       "checks": {
-        "parity": "UNKNOWN",
+        "parity": "WARN",
         "weight_alignment": "UNKNOWN",
         "price_provenance": "UNKNOWN"
       }
@@ -258,7 +258,7 @@
       "track": "new_format|HT_O15",
       "status": "WARN",
       "checks": {
-        "parity": "UNKNOWN",
+        "parity": "WARN",
         "weight_alignment": "UNKNOWN",
         "price_provenance": "UNKNOWN"
       }
@@ -333,8 +333,8 @@
       "parity": {
         "status": "WARN",
         "counts": {
-          "PASS": 31,
-          "WARN": 10,
+          "PASS": 32,
+          "WARN": 11,
           "FAIL": 0
         },
         "fail_features": []
@@ -433,16 +433,13 @@
         }
       },
       "parity": {
-        "status": "FAIL",
+        "status": "WARN",
         "counts": {
-          "PASS": 43,
-          "WARN": 11,
-          "FAIL": 2
+          "PASS": 15,
+          "WARN": 13,
+          "FAIL": 0
         },
-        "fail_features": [
-          "home_has_ht_history",
-          "away_has_ht_history"
-        ]
+        "fail_features": []
       },
       "batch_invariance": {
         "status": "PASS",
@@ -482,7 +479,7 @@
         "why": "new_format/over25: 26,965 rows (26846 to train end = payload 26846), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS",
         "registry_sha256_16": "303c9a05071e7afd"
       },
-      "status": "FAIL",
+      "status": "WARN",
       "unknown_checks": [
         "weight_alignment"
       ]
@@ -538,16 +535,13 @@
         }
       },
       "parity": {
-        "status": "FAIL",
+        "status": "WARN",
         "counts": {
-          "PASS": 65,
-          "WARN": 19,
-          "FAIL": 2
+          "PASS": 32,
+          "WARN": 11,
+          "FAIL": 0
         },
-        "fail_features": [
-          "home_has_ht_history",
-          "away_has_ht_history"
-        ]
+        "fail_features": []
       },
       "batch_invariance": {
         "status": "PASS",
@@ -595,7 +589,7 @@
         "why": "standard/btts: 49,597 rows (49407 to train end = payload 49407), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS; new_format/btts: 26,965 rows (26846 to train end = payload 26846), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS",
         "registry_sha256_16": "44c670490d5101c1"
       },
-      "status": "FAIL",
+      "status": "WARN",
       "unknown_checks": [
         "weight_alignment"
       ]
@@ -651,16 +645,13 @@
         }
       },
       "parity": {
-        "status": "FAIL",
+        "status": "WARN",
         "counts": {
-          "PASS": 61,
-          "WARN": 23,
-          "FAIL": 2
+          "PASS": 15,
+          "WARN": 13,
+          "FAIL": 0
         },
-        "fail_features": [
-          "home_has_ht_history",
-          "away_has_ht_history"
-        ]
+        "fail_features": []
       },
       "batch_invariance": {
         "status": "PASS",
@@ -708,7 +699,7 @@
         "why": "standard/btts: 49,597 rows (49407 to train end = payload 49407), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS; new_format/btts: 26,965 rows (26846 to train end = payload 26846), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS",
         "registry_sha256_16": "44c670490d5101c1"
       },
-      "status": "FAIL",
+      "status": "WARN",
       "unknown_checks": [
         "weight_alignment"
       ]
@@ -764,16 +755,13 @@
         }
       },
       "parity": {
-        "status": "FAIL",
+        "status": "WARN",
         "counts": {
-          "PASS": 65,
-          "WARN": 19,
-          "FAIL": 2
+          "PASS": 32,
+          "WARN": 11,
+          "FAIL": 0
         },
-        "fail_features": [
-          "home_has_ht_history",
-          "away_has_ht_history"
-        ]
+        "fail_features": []
       },
       "batch_invariance": {
         "status": "PASS",
@@ -821,7 +809,7 @@
         "why": "standard/over15: 49,597 rows (49407 to train end = payload 49407), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS; new_format/over15: 26,965 rows (26846 to train end = payload 26846), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS",
         "registry_sha256_16": "ca01b7d3a4f6fcae"
       },
-      "status": "FAIL",
+      "status": "WARN",
       "unknown_checks": [
         "weight_alignment"
       ]
@@ -877,16 +865,13 @@
         }
       },
       "parity": {
-        "status": "FAIL",
+        "status": "WARN",
         "counts": {
-          "PASS": 61,
-          "WARN": 23,
-          "FAIL": 2
+          "PASS": 15,
+          "WARN": 13,
+          "FAIL": 0
         },
-        "fail_features": [
-          "home_has_ht_history",
-          "away_has_ht_history"
-        ]
+        "fail_features": []
       },
       "batch_invariance": {
         "status": "PASS",
@@ -934,7 +919,7 @@
         "why": "standard/over15: 49,597 rows (49407 to train end = payload 49407), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS; new_format/over15: 26,965 rows (26846 to train end = payload 26846), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS",
         "registry_sha256_16": "ca01b7d3a4f6fcae"
       },
-      "status": "FAIL",
+      "status": "WARN",
       "unknown_checks": [
         "weight_alignment"
       ]
@@ -990,16 +975,13 @@
         }
       },
       "parity": {
-        "status": "FAIL",
+        "status": "WARN",
         "counts": {
-          "PASS": 65,
-          "WARN": 19,
-          "FAIL": 2
+          "PASS": 32,
+          "WARN": 11,
+          "FAIL": 0
         },
-        "fail_features": [
-          "home_has_ht_history",
-          "away_has_ht_history"
-        ]
+        "fail_features": []
       },
       "batch_invariance": {
         "status": "PASS",
@@ -1047,7 +1029,7 @@
         "why": "standard/over35: 49,597 rows (49407 to train end = payload 49407), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS; new_format/over35: 26,965 rows (26846 to train end = payload 26846), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS",
         "registry_sha256_16": "e8b12d74f1b0d51a"
       },
-      "status": "FAIL",
+      "status": "WARN",
       "unknown_checks": [
         "weight_alignment"
       ]
@@ -1103,16 +1085,13 @@
         }
       },
       "parity": {
-        "status": "FAIL",
+        "status": "WARN",
         "counts": {
-          "PASS": 61,
-          "WARN": 23,
-          "FAIL": 2
+          "PASS": 15,
+          "WARN": 13,
+          "FAIL": 0
         },
-        "fail_features": [
-          "home_has_ht_history",
-          "away_has_ht_history"
-        ]
+        "fail_features": []
       },
       "batch_invariance": {
         "status": "PASS",
@@ -1160,7 +1139,7 @@
         "why": "standard/over35: 49,597 rows (49407 to train end = payload 49407), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS; new_format/over35: 26,965 rows (26846 to train end = payload 26846), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS",
         "registry_sha256_16": "e8b12d74f1b0d51a"
       },
-      "status": "FAIL",
+      "status": "WARN",
       "unknown_checks": [
         "weight_alignment"
       ]
@@ -1216,15 +1195,13 @@
         }
       },
       "parity": {
-        "status": "FAIL",
+        "status": "WARN",
         "counts": {
-          "PASS": 64,
-          "WARN": 19,
-          "FAIL": 1
+          "PASS": 31,
+          "WARN": 11,
+          "FAIL": 0
         },
-        "fail_features": [
-          "away_has_ht_history"
-        ]
+        "fail_features": []
       },
       "batch_invariance": {
         "status": "PASS",
@@ -1264,7 +1241,7 @@
         "why": "evidence is for another file version (payload changed since it was verified)",
         "registry_sha256_16": "0776cea1784db55e"
       },
-      "status": "FAIL",
+      "status": "WARN",
       "unknown_checks": [
         "weight_alignment",
         "price_provenance",
@@ -1322,15 +1299,13 @@
         }
       },
       "parity": {
-        "status": "FAIL",
+        "status": "WARN",
         "counts": {
-          "PASS": 64,
-          "WARN": 19,
-          "FAIL": 1
+          "PASS": 31,
+          "WARN": 11,
+          "FAIL": 0
         },
-        "fail_features": [
-          "away_has_ht_history"
-        ]
+        "fail_features": []
       },
       "batch_invariance": {
         "status": "PASS",
@@ -1370,7 +1345,7 @@
         "why": "evidence is for another file version (payload changed since it was verified)",
         "registry_sha256_16": "aa4c62ceece0e2a5"
       },
-      "status": "FAIL",
+      "status": "WARN",
       "unknown_checks": [
         "weight_alignment",
         "price_provenance",
@@ -1428,8 +1403,12 @@
         }
       },
       "parity": {
-        "status": "UNKNOWN",
-        "counts": null,
+        "status": "WARN",
+        "counts": {
+          "PASS": 15,
+          "WARN": 13,
+          "FAIL": 0
+        },
         "fail_features": []
       },
       "batch_invariance": {
@@ -1472,7 +1451,6 @@
       },
       "status": "WARN",
       "unknown_checks": [
-        "parity",
         "weight_alignment",
         "price_provenance"
       ]
@@ -1528,8 +1506,12 @@
         }
       },
       "parity": {
-        "status": "UNKNOWN",
-        "counts": null,
+        "status": "WARN",
+        "counts": {
+          "PASS": 15,
+          "WARN": 13,
+          "FAIL": 0
+        },
         "fail_features": []
       },
       "batch_invariance": {
@@ -1572,7 +1554,6 @@
       },
       "status": "WARN",
       "unknown_checks": [
-        "parity",
         "weight_alignment",
         "price_provenance"
       ]
