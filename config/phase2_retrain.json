@@ -96,7 +96,11 @@
                      "home_ht_attack_str", "away_ht_attack_str", "combined_ht_goals_avg",
                      "home_ht_over05_rate", "away_ht_over05_rate", "home_ht_over15_rate", "away_ht_over15_rate"]
     },
-    "track_exclude_note": "new_format keeps the serving champion's exclusion list (pipeline.mode_train _NF_DROP) so the retrained champion recipe is the same recipe. Owner 2026-11-07: the HT block comes back for new_format as an ADDITIONAL candidate variant (see owner_decisions.new_format_ht_variant); the holdout decides, nothing is forced in."
+    "track_exclude_note": "new_format keeps the serving champion's exclusion list (pipeline.mode_train _NF_DROP) so the retrained champion recipe is the same recipe. Owner 2026-11-07: the HT block comes back for new_format as an ADDITIONAL candidate variant (see owner_decisions.new_format_ht_variant); the holdout decides, nothing is forced in.",
+    "market_exclude": {
+      "standard": {"ht_over05": ["home_has_ht_history"], "ht_over15": ["home_has_ht_history"]}
+    },
+    "market_exclude_note": "Owner 2026-11-22 (\"Yes, retrain the 2 HT models\"): the Standard HT O/U 0.5 and 1.5 models drop home_has_ht_history and nothing else. After the HT data fix (PR #59) the flag is 1.0 on every Standard HT training row (served payloads 5a76d680 / e9a12ce1, frame ebe47c041a7f595f: imputer min == max == 1.0, 39,400 base rows), so it carries no information and Data truth 3 (served feature spread, src.integrity.data_truth.team_payload_spread) flags it RED. Exactly the inputs that rule flags are dropped: away_has_ht_history is NOT flagged (min 0, max 1; one 0 in 39,400 base rows) and stays an input. Applies only to these two markets of the Standard track (protocol.feature_list market=...); every other track x market keeps its feature list unchanged."
   },
 
   "candidates": {

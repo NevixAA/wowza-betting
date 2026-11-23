@@ -77,6 +77,33 @@ CLOSE_MAX_MIN = 30.0
 #: would freeze such a row as STALE before its close landed — settled rows are never re-graded.
 CLOSE_SETTLE_DELAY_MIN = 240
 
+#: SAME-BOOK IDENTITY (P1 item 7, 2026-11-22). A shadow row's `entry_odds` is the predict run's
+#: OddsAPI eu `totals` price (src/predict.py: the FIRST listed book quoting the side; the book's
+#: name is not recorded). Only two archives are written from that same response: the predict
+#: dense archives below, one per model type (src/drift._append_persistent_archive). Every other
+#: archive is an API-Football Bet365 capture. So a close from the entry feed is SAME_FEED (the same
+#: provider and selection rule; the exact book is still unrecorded, so it is never called
+#: same-book), and a close from a capture archive is CROSS_FEED: a Bet365 close against an OddsAPI
+#: entry, i.e. cross-book CLV. Labelling only - the certification rule is unchanged.
+ENTRY_FEED_ARCHIVE = {"standard": "standard_odds_history.csv",
+                      "new_format": "newformat_odds_dense.csv"}
+SAME_FEED = "SAME_FEED_BOOK_UNRECORDED"
+CROSS_FEED = "CROSS_FEED_BET365_VS_ODDSAPI"
+NO_CLOSE_FEED = "NO_CERTIFIED_CLOSE"
+UNKNOWN_FEED = "UNKNOWN_ENTRY_FEED"
+
+
+def close_feed_identity(model_type, close_source, close_status=CLOSE_OK) -> str:
+    """Whether a certified close came from the feed that produced the entry price (see above).
+
+    Never returns a same-BOOK claim: no archive records which OddsAPI book was first-listed."""
+    if str(close_status) != CLOSE_OK or _blank(close_source):
+        return NO_CLOSE_FEED
+    entry = ENTRY_FEED_ARCHIVE.get(str(model_type))
+    if entry is None:
+        return UNKNOWN_FEED
+    return SAME_FEED if str(close_source) == entry else CROSS_FEED
+
 
 # ── small helpers ─────────────────────────────────────────────────────────────────────────────
 def resolve_api_season(league, match_date) -> str:

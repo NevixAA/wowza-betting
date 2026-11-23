@@ -22,6 +22,7 @@ resets mtime on every CI run).
 from __future__ import annotations
 
 import json
+from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -97,7 +98,26 @@ def shadow_section(df: pd.DataFrame, since: pd.Timestamp | None = None) -> dict:
         # A row with no market is counted under "" (unknown), not relabelled ou25.
         out["by_market"] = {str(k): _shadow_counts(g) for k, g in
                             d.assign(market=d["market"].fillna("").astype(str)).groupby("market")}
+        # P1 item 7 (2026-11-22): an all-time share mixes the pre-capture-fix weeks (W40-W42, ~8%
+        # certified) with the weeks after it; the kickoff-week timeline keeps the two apart.
+        wk = pd.to_datetime(d["kickoff_utc"], errors="coerce", utc=True).dt.strftime("%G-W%V")
+        out["by_kickoff_week"] = {str(k): _shadow_counts(g) for k, g in
+                                  d.assign(_wk=wk.fillna("")).groupby("_wk")}
+        out["close_feed_identity"] = _feed_identity_counts(d)
     return out
+
+
+def _feed_identity_counts(d: pd.DataFrame) -> dict:
+    """Counts of certified closes by feed identity (shadow_settlement.close_feed_identity): from the
+    entry's own OddsAPI feed vs a Bet365 capture. Counts only; the close rule is unchanged."""
+    from src.shadow_settlement import close_feed_identity
+    mins = pd.to_numeric(d["close_minutes_to_kickoff"], errors="coerce")
+    ok = d["close_status"].astype(str).eq(CLOSE_OK) & mins.le(CLOSE_MAX_MIN)
+    src = d["close_source"] if "close_source" in d.columns else pd.Series("", index=d.index)
+    mt = d["model_type"] if "model_type" in d.columns else pd.Series("", index=d.index)
+    lab = [close_feed_identity(m, s, CLOSE_OK if o else "")
+           for m, s, o in zip(mt.fillna(""), src.fillna(""), ok)]
+    return dict(sorted(Counter(lab).items()))
 
 
 # ── collection (every fixture the captures saw) ──────────────────────────────────────────────
@@ -139,6 +159,10 @@ def collection_section(archives: list[tuple[str, pd.DataFrame | None]], now: pd.
         d["_ko"] = ko[d.index]
         d["_ts"] = pd.to_datetime(d["snapshot_ts"].astype(str), errors="coerce", utc=True)
         d = d[d["_ts"].notna() & (d["_ts"] < d["_ko"])]          # strictly pre-kickoff only
+        # NO DECIMAL PRICE CAN BE <= 1.0 (PR #72): a suspended book's 1.0 quote is no observation of
+        # the close, so it cannot count as coverage either (the certifier already refuses it).
+        if "odds" in d.columns:
+            d = d[pd.to_numeric(d["odds"], errors="coerce").gt(1.0)]
         if d.empty:
             continue
         last = d.groupby(["league", "match", "market"], as_index=False).agg(
@@ -177,7 +201,22 @@ def collection_section(archives: list[tuple[str, pd.DataFrame | None]], now: pd.
     out["by_track"] = {k: counts(g) for k, g in a.groupby("track")}
     out["by_market"] = {k: counts(g) for k, g in a.groupby("market")}
     out["by_league"] = {k: counts(g) for k, g in a.groupby("league")}
+    out["ladder"] = ladder_counts(a)
+    out["ladder_by_league_market"] = {
+        str(lg): {str(mk): ladder_counts(g2) for mk, g2 in g.groupby("market")}
+        for lg, g in a.groupby("league")}
     return out
+
+
+#: P1 item 7 (2026-11-22): the kickoff-relative ladder the owner asked for. A fixture-market is
+#: covered at T-x when its LAST strictly pre-kickoff observation (change-log + heartbeat, odds > 1.0)
+#: lies within x minutes of kickoff. Counts only - never a price.
+LADDER = (("T-6h", 360.0), ("T-3h", 180.0), ("T-1h", 60.0), ("T-30m", 30.0), ("T-10m", 10.0))
+
+
+def ladder_counts(g: pd.DataFrame) -> dict:
+    m = pd.to_numeric(g["minutes"], errors="coerce")
+    return {"fixture_markets": int(len(g)), **{k: int(m.le(v).sum()) for k, v in LADDER}}
 
 
 # ── artifact + guard ─────────────────────────────────────────────────────────────────────────

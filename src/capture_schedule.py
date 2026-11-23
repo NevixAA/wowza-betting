@@ -329,19 +329,83 @@ def record_wide_from_env(started: float, calls: int) -> None:
         print(f"[wide] state not recorded ({e})")
 
 
+# ── CHAIN: the ending run dispatches the next one (P1 item 7, 2026-11-22) ─────────────────────────
+# WHY. The bridge (above) keeps a run alive while a reachable close is ahead, but a run still has to
+# END at CAP_MIN, and the next one then depends on GitHub delivering a cron firing. Measured from the
+# Actions run history 2026-11-15..11-22: std_odds_capture had 37 gaps > 60 min with no run alive
+# (e.g. 13:57 -> 17:53 on 11-20, across a 17:30 slot) and nf_odds_capture 26 (15:41 -> 19:48 on
+# 11-22: the run hit its cap at T-19m of a 16:00 kickoff, and the 17:00/18:15/18:30 closes were
+# never observed). Of 1,726 fixture-markets that kicked off in that week, 88 lost their close
+# because NO capture run was alive inside T-30m.
+#
+# HOW. When the loop ends with an upcoming kickoff no further than CHAIN_MAX_MIN away (a fresh run
+# can reach it before its own cap), the workflow dispatches itself once (workflow_dispatch with
+# max_hours=12, i.e. NEAR mode - never a forced WIDE pass). workflow_dispatch events, unlike cron,
+# are delivered at once. The concurrency group queues the new run behind the finishing one.
+# Replayed on the recorded run times 2026-11-15..11-22: a capture alive inside T-30m for
+# 1,087 -> 1,111 of 1,111 standard and 551 -> 615 of 615 new-format fixture-markets.
+#
+# COST. API-Football only (no OddsAPI credit): a chained run prices only what the per-fixture due
+# intervals ask for, exactly as a cron-delivered run would. Replay: +~200 (std) / +~290 (nf) runner
+# minutes a day; at the measured ~6 odds calls per busy minute that is at most ~1,200 / ~1,800 AF
+# calls a day per job, inside the daily plan and above every MIN_QUOTA floor. Actions minutes are
+# free on this public repository.
+#
+# HARD GUARDS. CHAIN_MAX_DEPTH consecutive chained runs at most (a cron firing restarts at 0), no
+# chain without a measured next kickoff (a failed pass prints none), and the repository variable
+# CAPTURE_CHAIN_DISABLED='true' switches chaining off without a code change.
+CHAIN_MAX_MIN = CAP_MIN       # a fresh run reaches a kickoff this far away before its own cap
+CHAIN_MAX_DEPTH = 8
+CHAIN_START_DEPTH = 0          # a cron-delivered or manual run is the first link of a chain
+
+
+def chain_due(next_ko_min: float | None, depth: int = 0, *, cap_min: float = CHAIN_MAX_MIN,
+              max_depth: int = CHAIN_MAX_DEPTH) -> tuple[bool, str]:
+    """(dispatch the next NEAR run now?, reason). Pure: no I/O and no clock of its own.
+
+    `next_ko_min` is the nearest upcoming kickoff the LAST pass saw (NEXT_KO_MIN), `depth` how
+    many chained runs led to this one."""
+    if next_ko_min is None or not math.isfinite(next_ko_min):
+        return False, "NO_NEXT_KICKOFF"
+    if next_ko_min <= 0:
+        return False, "NO_UPCOMING_KICKOFF"
+    if depth >= max_depth:
+        return False, f"DEPTH_CAP({depth}>={max_depth})"
+    if next_ko_min > cap_min:
+        return False, f"BEYOND_REACH({next_ko_min:.0f}m>{cap_min:.0f}m)"
+    return True, f"KICKOFF_IN_REACH({next_ko_min:.0f}m)"
+
+
 def main(argv: list[str] | None = None) -> int:
-    """`python -m src.capture_schedule wide-due --state PATH` -> WIDE_DUE=0|1 and WIDE_REASON=."""
+    """`python -m src.capture_schedule wide-due --state PATH` -> WIDE_DUE=0|1 and WIDE_REASON=;
+    `python -m src.capture_schedule chain-due --next-ko-min M --depth D` -> CHAIN=0|1,
+    CHAIN_REASON= and CHAIN_DEPTH_NEXT=."""
     import argparse
     ap = argparse.ArgumentParser()
-    ap.add_argument("cmd", choices=["wide-due"])
-    ap.add_argument("--state", required=True)
+    ap.add_argument("cmd", choices=["wide-due", "chain-due"])
+    ap.add_argument("--state", default="")
     ap.add_argument("--next-ko-min", default="",
                     help="minutes to the nearest kickoff from the last NEAR pass (blank = unknown)")
+    ap.add_argument("--depth", default="0", help="chained runs that led to this one (chain-due)")
     a = ap.parse_args(argv)
     try:
         next_ko = float(a.next_ko_min) if str(a.next_ko_min).strip() else None
     except ValueError:
         next_ko = None
+    if a.cmd == "chain-due":
+        raw = str(a.depth).strip()
+        # A cron or manual run has no chain depth: it is the first link. An unreadable depth is
+        # refused (treated as the cap) rather than allowed to loop.
+        depth = int(raw) if raw.isdigit() else (CHAIN_START_DEPTH if raw == "" else CHAIN_MAX_DEPTH)
+        ok, why = chain_due(next_ko, depth,
+                            cap_min=_env_float("LOOP_CAP_MIN", CHAIN_MAX_MIN),
+                            max_depth=int(_env_float("CAPTURE_CHAIN_MAX_DEPTH", CHAIN_MAX_DEPTH)))
+        print(f"CHAIN={1 if ok else 0}")
+        print(f"CHAIN_REASON={why}")
+        print(f"CHAIN_DEPTH_NEXT={depth + 1}")
+        return 0
+    if not a.state:
+        ap.error("wide-due needs --state")
     now = time.time()
     start = os.getenv("LOOP_START_S")
     try:

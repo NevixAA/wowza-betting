@@ -10,7 +10,6 @@ from __future__ import annotations
 import html
 import json
 import re
-import shutil
 from pathlib import Path
 
 import pandas as pd
@@ -21,7 +20,7 @@ from dashboard_data import cells_view as CV
 from dashboard_data import clean_record as CR
 from src import units as U
 
-from tests.clean_record_pin import pinned_start  # noqa: F401  (fixture)
+from tests.clean_record_pin import PINNED_UTC, pinned_start  # noqa: F401  (fixture)
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -257,12 +256,21 @@ HOME, AWAY = "Sim Home FC", "Sim Away FC"
 def golive_out(tmp_path, monkeypatch):
     """A copy of the committed ledgers plus synthetic rows after 2026-11-21: three Clean Record team tips (one
     staked through a recorded ACTIVE_LOW stake), one trap tip generated before the start for a match after it,
-    and one clean props tip. config.OUTPUT_DIR points at the copy for the test only."""
+    and one clean props tip. config.OUTPUT_DIR points at the copy for the test only.
+
+    The copy keeps only committed rows PLAYED BEFORE the pinned start (2026-11-21): since go-live the committed
+    ledgers carry real Clean Record tips (settled from 2026-11-22), and a real row played on or after the pinned
+    start would land in the simulated Clean Record and move its exact figures with every results run (main red
+    2026-11-23). A row played before the start can never be a Clean Record row, so the copy is the real
+    pre-repair history and the synthetic rows below are the WHOLE simulated Clean Record."""
     out = tmp_path / "output"
     out.mkdir()
     for f in SIM_FILES:
         if (config.OUTPUT_DIR / f).exists():
-            shutil.copy(config.OUTPUT_DIR / f, out / f)
+            d = pd.read_csv(config.OUTPUT_DIR / f, low_memory=False)
+            day = next(c for c in ("match_date", "date") if c in d.columns)
+            played = pd.to_datetime(d[day].astype(str).str[:10], errors="coerce")
+            d[played.notna() & (played < pd.Timestamp(PINNED_UTC[:10]))].to_csv(out / f, index=False)
     b = pd.read_csv(out / "bets_ledger.csv", low_memory=False)
     base = {c: pd.NA for c in b.columns}
     rows = [

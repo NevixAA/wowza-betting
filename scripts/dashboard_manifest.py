@@ -66,6 +66,21 @@ DATA_EXT = (".csv", ".json", ".parquet", ".txt", ".jsonl", ".xlsx", ".pkl", ".ym
 #: Largest single file the mirror will fetch. Above this a page must degrade instead.
 MAX_DATA_BYTES = 25_000_000
 
+#: Data a page reads only on a TIME-DEPENDENT branch, so a trace run at the wrong hour never sees it. The
+#: Dashboard / Home 'Top picks' run the fixture coherence gate (src/top_picks._coherent -> src/tip_coherence
+#: CoherenceGate.load) only while today's UTC day still has a tip that has not kicked off; a trace after the
+#: day's last kickoff returns early and never opens the sent-tip stores. That is why a --write/--check run at
+#: one hour passed and the CI trace at 05:38 UTC failed (main red 2026-11-23; same on Windows and Linux at the
+#: same hour and data). These are shipped whenever git carries them, whatever the trace reached.
+CONDITIONAL_DATA = {
+    "telegram_bot/notified.json": "sent-tip store read by the coherence gate (src/tip_coherence.NOTIFIED_FILE) "
+                                  "while today's tips have not all kicked off",
+    "output/top3_league_notified.json": "sent TOP-3 weeks read by the coherence gate (src/tip_coherence."
+                                        "TOP3_NOTIFIED) while today's tips have not all kicked off",
+    "output/props_top3_notified.json": "sent props TOP-3 weeks read by the coherence gate (src/tip_coherence."
+                                       "PROPS_TOP3_NOTIFIED) while today's tips have not all kicked off",
+}
+
 #: Data the dashboard can reach but the slim deployment deliberately does NOT mirror, and why.
 #: The static test accepts literals naming these; the page in question must degrade gracefully.
 KNOWN_EXCLUDED = {
@@ -511,6 +526,17 @@ def build_manifest(trace: dict, root: Path = ROOT) -> dict:
             else:
                 data.append({"path": rel, "bytes": size, "pages": ["<static literal: " + lit + ">"]})
             have.add(rel)
+    for rel, why in CONDITIONAL_DATA.items():
+        if rel in have or rel in code:
+            continue
+        p = root / rel
+        if not p.is_file():
+            data.append({"path": rel, "bytes": None, "optional": True, "pages": ["<conditional: " + why + ">"]})
+        elif tracked and rel not in tracked:
+            excluded.append({"path": rel, "bytes": p.stat().st_size, "reason": NOT_COMMITTED})
+        else:
+            data.append({"path": rel, "bytes": p.stat().st_size, "pages": ["<conditional: " + why + ">"]})
+        have.add(rel)
     data.sort(key=lambda e: e["path"])
     code_e = [{"path": c, "bytes": (root / c).stat().st_size} for c in sorted(code) if (root / c).is_file()]
     unsafe = check_pipeline_only(root)

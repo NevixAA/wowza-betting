@@ -175,6 +175,7 @@ def run(feat: pd.DataFrame, cfg: dict, out_dir, *, stages=STAGES, only=None, tra
         features[track] = {"features": fsets[""][0], "excluded": fsets[""][1],
                            "variants": {s: {"features": f, "excluded": ex} for s, (f, ex) in fsets.items() if s}}
         for market in cfg["markets"]:
+            fsets = P.feature_sets(cfg, track, feat.columns, market)
             rows = P.eligible_rows(feat, cfg, track, market)
             pre, hold, _after = P.split_holdout(rows, cfg)
             if "walk_forward" in stages:
