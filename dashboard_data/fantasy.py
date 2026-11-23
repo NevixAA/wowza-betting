@@ -237,6 +237,7 @@ V2_COLUMNS = [
     "rank", "pos_rank", "element", "player_name", "web_name", "team", "team_id", "position",
     "price", "status", "chance_next_f", "news", "ownership", "net_transfers_k", "fpl_ep_next",
     "wowza_residual", "residual_applied", "final_xpts", "v2_candidate_xpts",
+    "v1free_residual", "v2_v1free_candidate_xpts",
     "adj_calibration", "adj_availability", "adj_minutes", "adj_attacking_role", "adj_fixture",
     "adj_wowza_projection", "adj_base", "p_0", "p_1_59", "p_60", "p_start", "p_play",
     "exp_minutes", "goal_prob", "assist_prob", "cs_prob", "team_cs_prob", "exp_bonus",
@@ -244,7 +245,8 @@ V2_COLUMNS = [
     "p15", "uncertainty_score", "uncertainty", "minutes_disagreement", "confidence", "risk",
     "xg90", "xa90", "pen_first", "set_piece", "n_fix", "fdr", "next_fixture", "fixture_run",
     "fdr_run", "xpts_3gw", "xpts_5gw", "value_per_m", "value_5gw_per_m",
-    "cand_p6", "cand_p10", "cand_p15", "cand_p90"]
+    "cand_p6", "cand_p10", "cand_p15", "cand_p90",
+    "cand_v1free_p6", "cand_v1free_p10", "cand_v1free_p15", "cand_v1free_p90"]
 
 
 def v2_projections() -> pd.DataFrame:
@@ -331,8 +333,8 @@ def v2_benchmark_table(bench: dict, population: str = "ACTIVE", final_only: bool
 
 
 # ── Paired walk-forward (P1 Fantasy validation, 2026-11-22) ─────────────────────────────────────
-#: arm order on the page: the baseline first, then Wowza V1, then the three shadow residual arms
-PAIRED_ARMS = ("FPL", "WOWZA", "LINEAR", "RIDGE", "HGB")
+#: arm order on the page: the baseline first, then Wowza V1, then the shadow residual arms
+PAIRED_ARMS = ("FPL", "WOWZA", "LINEAR", "RIDGE", "HGB", "HGB_V1FREE")
 
 
 def v2_paired_walkforward() -> dict:
@@ -378,4 +380,34 @@ def v2_paired_by_gw(rep: dict, which: str = "primary") -> pd.DataFrame:
                          "top-10 overlap": m.get("top10_overlap"), "captain": m.get("captain_name"),
                          "captain pts": m.get("captain_actual"), "best pts": m.get("best_actual"),
                          "regret": m.get("captain_regret")})
+    return pd.DataFrame(rows)
+
+
+# -- V2 promotion rule (pre-registered 2026-11-23, config/fantasy_v2_promotion_rule.json) --------
+PROMOTION_STATUS_LABEL = {"ELIGIBLE_AWAITING_OWNER_APPROVAL": "Eligible - awaiting owner approval",
+                          "NOT_ELIGIBLE": "Not eligible", "NO_DATA": "No data yet"}
+
+
+def v2_promotion_table(rep: dict) -> pd.DataFrame:
+    """One row per candidate arm of the pre-registered promotion rule: status, completed gameweeks,
+    MAE - FPL with its 90% gameweek-block interval, captain regret vs FPL, and why it is not
+    eligible. Reads the paired report only; an empty frame when the rule status is absent."""
+    pr = (rep or {}).get("promotion_rule") or {}
+    labels = (rep or {}).get("arm_labels") or {}
+    rows = []
+    for arm, r in (pr.get("arms") or {}).items():
+        ch = r.get("checks") or {}
+        gw = ch.get("completed_gameweeks") or {}
+        md = ch.get("mae_diff_ci90_below_zero") or {}
+        cr = ch.get("captain_regret_no_worse") or {}
+        ci = md.get("ci90") or [None, None]
+        rows.append({
+            "arm": arm, "model": labels.get(arm, arm),
+            "status": PROMOTION_STATUS_LABEL.get(r.get("status"), r.get("status")),
+            "completed GWs": (f"{gw.get('value')} of {gw.get('need')}" if gw else None),
+            "MAE − FPL": md.get("point"),
+            "MAE − FPL 90% CI": (f"{ci[0]:+.3f} to {ci[1]:+.3f}" if None not in ci else None),
+            "captain regret (arm / FPL)": (f"{cr.get('candidate'):.0f} / {cr.get('baseline'):.0f}"
+                                           if cr else None),
+            "why not eligible": "; ".join(r.get("reasons") or []) or None})
     return pd.DataFrame(rows)

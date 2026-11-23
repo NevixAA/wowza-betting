@@ -1,6 +1,6 @@
 {
- "calculation_version": "fantasy_paired_walkforward-1.0",
- "generated_at": "2026-11-22T20:00:59Z",
+ "calculation_version": "fantasy_paired_walkforward-1.1",
+ "generated_at": "2026-11-23T10:05:10Z",
  "source": "output/fantasy_v2_oos.csv",
  "residual_mode_note": "shadow only; this report changes nothing that is served",
  "arm_labels": {
@@ -8,12 +8,13 @@
   "WOWZA": "Wowza V1 (standalone projection x P(start))",
   "LINEAR": "V2 LINEAR (FPL + OLS residual, shadow)",
   "RIDGE": "V2 RIDGE (FPL + ridge residual, shadow)",
-  "HGB": "V2 HGB (FPL + gradient-boosting residual, shadow)"
+  "HGB": "V2 HGB (FPL + gradient-boosting residual, shadow)",
+  "HGB_V1FREE": "V2 HGB V1-free (FPL + gradient-boosting residual, no Wowza V1 input, shadow)"
  },
  "regret_unit": "raw FPL points (captain points = 2x)",
  "primary": {
   "population": "ALL_ARMS_PAIRED",
-  "definition": "FINAL gameweeks; rows where FPL, WOWZA, LINEAR, RIDGE and HGB all have a forecast and the actual is known; chronology checked",
+  "definition": "FINAL gameweeks; rows where FPL, WOWZA, LINEAR, RIDGE, HGB, HGB_V1FREE all have a forecast and the actual is known; chronology checked",
   "exclusions": {
    "rows_in": 2959,
    "not_final": 328,
@@ -24,6 +25,7 @@
    "missing_LINEAR": 1663,
    "missing_RIDGE": 1663,
    "missing_HGB": 0,
+   "missing_HGB_V1FREE": 0,
    "dropped_any_arm_missing": 1663,
    "rows_scored": 968
   },
@@ -94,6 +96,18 @@
     "spearman_mean_per_gw": 0.5482,
     "top10_overlap_mean": 2.0,
     "top10_actual_mean": 4.0167,
+    "captain_regret_total": 63.0,
+    "captain_regret_mean": 10.5
+   },
+   "HGB_V1FREE": {
+    "n": 968,
+    "mae": 1.7858,
+    "rmse": 2.6473,
+    "bias": -0.0047,
+    "spearman_pooled": 0.569,
+    "spearman_mean_per_gw": 0.5409,
+    "top10_overlap_mean": 2.1667,
+    "top10_actual_mean": 4.2333,
     "captain_regret_total": 63.0,
     "captain_regret_mean": 10.5
    }
@@ -178,6 +192,26 @@
     "gws_mae_better_than_fpl": 4,
     "gws_regret_lower_than_fpl": 3,
     "gws": 6
+   },
+   "HGB_V1FREE": {
+    "mae_minus_fpl": -0.0014,
+    "mae_ci90": [
+     -0.0619,
+     0.0501
+    ],
+    "rmse_minus_fpl": -0.1092,
+    "rmse_ci90": [
+     -0.1966,
+     -0.0423
+    ],
+    "abs_bias_minus_fpl": -0.1329,
+    "abs_bias_ci90": [
+     -0.1879,
+     0.0682
+    ],
+    "gws_mae_better_than_fpl": 4,
+    "gws_regret_lower_than_fpl": 3,
+    "gws": 6
    }
   },
   "by_gw": [
@@ -255,6 +289,21 @@
      "captain_element": 411,
      "captain_name": "Erling Haaland",
      "captain_forecast": 8.58,
+     "captain_actual": 6.0,
+     "best_actual": 17.0,
+     "captain_regret": 11.0
+    },
+    "HGB_V1FREE": {
+     "n": 217,
+     "mae": 2.1181,
+     "rmse": 3.0041,
+     "bias": -0.1588,
+     "spearman": 0.456,
+     "top10_overlap": 1,
+     "top10_actual_mean": 5.1,
+     "captain_element": 411,
+     "captain_name": "Erling Haaland",
+     "captain_forecast": 8.429,
      "captain_actual": 6.0,
      "best_actual": 17.0,
      "captain_regret": 11.0
@@ -337,6 +386,21 @@
      "captain_actual": 1.0,
      "best_actual": 12.0,
      "captain_regret": 11.0
+    },
+    "HGB_V1FREE": {
+     "n": 103,
+     "mae": 1.3011,
+     "rmse": 2.3273,
+     "bias": -0.0308,
+     "spearman": 0.5637,
+     "top10_overlap": 3,
+     "top10_actual_mean": 3.3,
+     "captain_element": 93,
+     "captain_name": "Jannik Schuster",
+     "captain_forecast": 8.148,
+     "captain_actual": 1.0,
+     "best_actual": 12.0,
+     "captain_regret": 11.0
     }
    },
    {
@@ -413,6 +477,21 @@
      "captain_element": 113,
      "captain_name": "Ferdi Kad\u0131o\u011flu",
      "captain_forecast": 5.928,
+     "captain_actual": 6.0,
+     "best_actual": 15.0,
+     "captain_regret": 9.0
+    },
+    "HGB_V1FREE": {
+     "n": 88,
+     "mae": 1.3348,
+     "rmse": 2.4066,
+     "bias": -0.1164,
+     "spearman": 0.5472,
+     "top10_overlap": 3,
+     "top10_actual_mean": 3.6,
+     "captain_element": 113,
+     "captain_name": "Ferdi Kad\u0131o\u011flu",
+     "captain_forecast": 5.626,
      "captain_actual": 6.0,
      "best_actual": 15.0,
      "captain_regret": 9.0
@@ -495,6 +574,21 @@
      "captain_actual": 0.0,
      "best_actual": 13.0,
      "captain_regret": 13.0
+    },
+    "HGB_V1FREE": {
+     "n": 93,
+     "mae": 1.6337,
+     "rmse": 2.7255,
+     "bias": -0.359,
+     "spearman": 0.5401,
+     "top10_overlap": 3,
+     "top10_actual_mean": 4.2,
+     "captain_element": 165,
+     "captain_name": "Jo\u00e3o Pedro Junqueira de Jesus",
+     "captain_forecast": 6.666,
+     "captain_actual": 0.0,
+     "best_actual": 13.0,
+     "captain_regret": 13.0
     }
    },
    {
@@ -571,6 +665,21 @@
      "captain_element": 496,
      "captain_name": "Anton\u00edn Kinsk\u00fd",
      "captain_forecast": 6.549,
+     "captain_actual": 6.0,
+     "best_actual": 15.0,
+     "captain_regret": 9.0
+    },
+    "HGB_V1FREE": {
+     "n": 237,
+     "mae": 1.7717,
+     "rmse": 2.4128,
+     "bias": 0.2169,
+     "spearman": 0.5645,
+     "top10_overlap": 1,
+     "top10_actual_mean": 3.7,
+     "captain_element": 496,
+     "captain_name": "Anton\u00edn Kinsk\u00fd",
+     "captain_forecast": 6.54,
      "captain_actual": 6.0,
      "best_actual": 15.0,
      "captain_regret": 9.0
@@ -653,13 +762,28 @@
      "captain_actual": 6.0,
      "best_actual": 16.0,
      "captain_regret": 10.0
+    },
+    "HGB_V1FREE": {
+     "n": 230,
+     "mae": 1.9378,
+     "rmse": 2.7088,
+     "bias": 0.11,
+     "spearman": 0.574,
+     "top10_overlap": 2,
+     "top10_actual_mean": 5.5,
+     "captain_element": 8,
+     "captain_name": "Riccardo Calafiori",
+     "captain_forecast": 6.619,
+     "captain_actual": 6.0,
+     "best_actual": 16.0,
+     "captain_regret": 10.0
     }
    }
   ]
  },
  "secondary": {
   "population": "FPL_HGB_ALL_FINAL",
-  "definition": "FINAL gameweeks; every row with an FPL and an HGB forecast",
+  "definition": "FINAL gameweeks; every row with a FPL, HGB, HGB_V1FREE forecast",
   "exclusions": {
    "rows_in": 2959,
    "not_final": 328,
@@ -667,6 +791,7 @@
    "actual_missing": 0,
    "missing_FPL": 0,
    "missing_HGB": 0,
+   "missing_HGB_V1FREE": 0,
    "dropped_any_arm_missing": 0,
    "rows_scored": 2631
   },
@@ -703,6 +828,18 @@
     "top10_actual_mean": 3.7667,
     "captain_regret_total": 73.0,
     "captain_regret_mean": 12.1667
+   },
+   "HGB_V1FREE": {
+    "n": 2631,
+    "mae": 1.7227,
+    "rmse": 2.602,
+    "bias": 0.0482,
+    "spearman_pooled": 0.5586,
+    "spearman_mean_per_gw": 0.5613,
+    "top10_overlap_mean": 0.8333,
+    "top10_actual_mean": 4.0167,
+    "captain_regret_total": 73.0,
+    "captain_regret_mean": 12.1667
    }
   },
   "vs_fpl": {
@@ -723,6 +860,26 @@
      0.0938
     ],
     "gws_mae_better_than_fpl": 3,
+    "gws_regret_lower_than_fpl": 1,
+    "gws": 6
+   },
+   "HGB_V1FREE": {
+    "mae_minus_fpl": -0.0444,
+    "mae_ci90": [
+     -0.1206,
+     0.0277
+    ],
+    "rmse_minus_fpl": -0.2103,
+    "rmse_ci90": [
+     -0.3287,
+     -0.1014
+    ],
+    "abs_bias_minus_fpl": -0.0033,
+    "abs_bias_ci90": [
+     -0.097,
+     0.0957
+    ],
+    "gws_mae_better_than_fpl": 4,
     "gws_regret_lower_than_fpl": 1,
     "gws": 6
    }
@@ -760,6 +917,21 @@
      "captain_actual": 6.0,
      "best_actual": 17.0,
      "captain_regret": 11.0
+    },
+    "HGB_V1FREE": {
+     "n": 411,
+     "mae": 1.9172,
+     "rmse": 2.8922,
+     "bias": -0.1086,
+     "spearman": 0.5095,
+     "top10_overlap": 1,
+     "top10_actual_mean": 4.4,
+     "captain_element": 411,
+     "captain_name": "Erling Haaland",
+     "captain_forecast": 8.429,
+     "captain_actual": 6.0,
+     "best_actual": 17.0,
+     "captain_regret": 11.0
     }
    },
    {
@@ -791,6 +963,21 @@
      "captain_element": 124,
      "captain_name": "Pascal Gro\u00df",
      "captain_forecast": 13.23,
+     "captain_actual": 6.0,
+     "best_actual": 18.0,
+     "captain_regret": 12.0
+    },
+    "HGB_V1FREE": {
+     "n": 428,
+     "mae": 1.7795,
+     "rmse": 2.7966,
+     "bias": 0.1125,
+     "spearman": 0.5423,
+     "top10_overlap": 0,
+     "top10_actual_mean": 1.8,
+     "captain_element": 124,
+     "captain_name": "Pascal Gro\u00df",
+     "captain_forecast": 13.573,
      "captain_actual": 6.0,
      "best_actual": 18.0,
      "captain_regret": 12.0
@@ -828,6 +1015,21 @@
      "captain_actual": 1.0,
      "best_actual": 15.0,
      "captain_regret": 14.0
+    },
+    "HGB_V1FREE": {
+     "n": 436,
+     "mae": 1.7818,
+     "rmse": 2.618,
+     "bias": 0.1585,
+     "spearman": 0.5266,
+     "top10_overlap": 1,
+     "top10_actual_mean": 3.0,
+     "captain_element": 397,
+     "captain_name": "Antoine Semenyo",
+     "captain_forecast": 8.373,
+     "captain_actual": 1.0,
+     "best_actual": 15.0,
+     "captain_regret": 14.0
     }
    },
    {
@@ -859,6 +1061,21 @@
      "captain_element": 165,
      "captain_name": "Jo\u00e3o Pedro Junqueira de Jesus",
      "captain_forecast": 6.531,
+     "captain_actual": 0.0,
+     "best_actual": 17.0,
+     "captain_regret": 17.0
+    },
+    "HGB_V1FREE": {
+     "n": 449,
+     "mae": 1.7396,
+     "rmse": 2.6047,
+     "bias": -0.0839,
+     "spearman": 0.5123,
+     "top10_overlap": 1,
+     "top10_actual_mean": 4.7,
+     "captain_element": 165,
+     "captain_name": "Jo\u00e3o Pedro Junqueira de Jesus",
+     "captain_forecast": 6.666,
      "captain_actual": 0.0,
      "best_actual": 17.0,
      "captain_regret": 17.0
@@ -896,6 +1113,21 @@
      "captain_actual": 6.0,
      "best_actual": 15.0,
      "captain_regret": 9.0
+    },
+    "HGB_V1FREE": {
+     "n": 452,
+     "mae": 1.5304,
+     "rmse": 2.2346,
+     "bias": 0.1229,
+     "spearman": 0.6334,
+     "top10_overlap": 0,
+     "top10_actual_mean": 4.0,
+     "captain_element": 496,
+     "captain_name": "Anton\u00edn Kinsk\u00fd",
+     "captain_forecast": 6.54,
+     "captain_actual": 6.0,
+     "best_actual": 15.0,
+     "captain_regret": 9.0
     }
    },
    {
@@ -930,8 +1162,136 @@
      "captain_actual": 6.0,
      "best_actual": 16.0,
      "captain_regret": 10.0
+    },
+    "HGB_V1FREE": {
+     "n": 455,
+     "mae": 1.611,
+     "rmse": 2.452,
+     "bias": 0.0795,
+     "spearman": 0.6437,
+     "top10_overlap": 2,
+     "top10_actual_mean": 6.2,
+     "captain_element": 8,
+     "captain_name": "Riccardo Calafiori",
+     "captain_forecast": 6.619,
+     "captain_actual": 6.0,
+     "best_actual": 16.0,
+     "captain_regret": 10.0
     }
    }
   ]
+ },
+ "promotion_rule": {
+  "rule_id": "FANTASY_V2_PROMOTION_RULE",
+  "rule_version": "1.0",
+  "pre_registered_on": "2026-11-23",
+  "owner_decision_date": "2026-11-23",
+  "auto_promote": false,
+  "note": "Eligibility never changes FANTASY_V2_RESIDUAL_MODE, the workflow, or any served number. Promotion needs an explicit owner approval and a separate reviewed change.",
+  "arms": {
+   "LINEAR": {
+    "arm": "LINEAR",
+    "baseline": "FPL",
+    "status": "NOT_ELIGIBLE",
+    "eligible": false,
+    "auto_promote": false,
+    "min_completed_gameweeks": 10,
+    "exclusions": {
+     "rows_in": 2959,
+     "not_final": 328,
+     "chronology_violation": 0,
+     "actual_missing": 0,
+     "missing_FPL": 0,
+     "missing_LINEAR": 1663,
+     "dropped_any_arm_missing": 1663,
+     "rows_scored": 968
+    },
+    "rows": 968,
+    "gameweeks": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10
+    ],
+    "checks": {
+     "completed_gameweeks": {
+      "value": 6,
+      "need": 10,
+      "pass": false
+     },
+     "mae_diff_ci90_below_zero": {
+      "point": -0.036,
+      "ci90": [
+       -0.0836,
+       -0.008
+      ],
+      "pass": true
+     },
+     "captain_regret_no_worse": {
+      "candidate": 73.0,
+      "baseline": 66.0,
+      "pass": false
+     }
+    },
+    "reasons": [
+     "6 of 10 completed gameweeks",
+     "captain regret 73 vs FPL 66"
+    ]
+   },
+   "HGB_V1FREE": {
+    "arm": "HGB_V1FREE",
+    "baseline": "FPL",
+    "status": "NOT_ELIGIBLE",
+    "eligible": false,
+    "auto_promote": false,
+    "min_completed_gameweeks": 10,
+    "exclusions": {
+     "rows_in": 2959,
+     "not_final": 328,
+     "chronology_violation": 0,
+     "actual_missing": 0,
+     "missing_FPL": 0,
+     "missing_HGB_V1FREE": 0,
+     "dropped_any_arm_missing": 0,
+     "rows_scored": 2631
+    },
+    "rows": 2631,
+    "gameweeks": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10
+    ],
+    "checks": {
+     "completed_gameweeks": {
+      "value": 6,
+      "need": 10,
+      "pass": false
+     },
+     "mae_diff_ci90_below_zero": {
+      "point": -0.0444,
+      "ci90": [
+       -0.1206,
+       0.0285
+      ],
+      "pass": false
+     },
+     "captain_regret_no_worse": {
+      "candidate": 73.0,
+      "baseline": 64.0,
+      "pass": false
+     }
+    },
+    "reasons": [
+     "6 of 10 completed gameweeks",
+     "MAE - FPL 90% interval -0.121 to +0.028 is not entirely below 0",
+     "captain regret 73 vs FPL 64"
+    ]
+   }
+  }
  }
 }

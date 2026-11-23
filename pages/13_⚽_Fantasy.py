@@ -41,7 +41,8 @@ from dashboard_data import fantasy_view as fv  # noqa: E402
 if not all(hasattr(fdata, f) for f in ("v2_projections", "v2_summary", "v2_benchmark", "v2_transfers",
                                        "v2_fixture_matrix", "v2_scoreboard",
                                        "v2_scoreboard_reliability", "v2_pooled_reliability",
-                                       "v2_paired_walkforward", "v2_paired_table", "v2_paired_by_gw")):
+                                       "v2_paired_walkforward", "v2_paired_table", "v2_paired_by_gw",
+                                       "v2_promotion_table")):
     import importlib  # noqa: E402
     fdata = importlib.reload(fdata)
 if not all(hasattr(fv, f) for f in ("player_card", "captain_card", "transfer_card", "fixture_heatmap_spec",
@@ -367,12 +368,18 @@ with t_tr:
 
 # ══ CAPTAINCY ══════════════════════════════════════════════════════════════════════════════════
 with t_cap:
-    view = st.radio("Mean used", ["Headline", "Shadow (FPL + residual)"], horizontal=True,
-                    help="Headline = the board's mean. Shadow = ranked with the Wowza residual "
-                         "added, so you can see where the not-yet-accepted model disagrees.")
+    view = st.radio("Mean used", ["Headline", "Shadow (FPL + residual)",
+                                  "Shadow V1-free (FPL + HGB residual)"], horizontal=True,
+                    help="Headline = the board's mean. Shadow = ranked with the Wowza LINEAR residual "
+                         "added. Shadow V1-free = ranked with the gradient-boosting residual that uses "
+                         "no Wowza V1 input. Both show where a not-yet-accepted model disagrees.")
+    v1free_ = view.startswith("Shadow V1-free")
     if view != "Headline":
-        st.markdown(ui.status_chip("SHADOW") + " FPL baseline + Wowza residual — not the headline mean.")
-    cap = summ.get("captaincy" if view == "Headline" else "captaincy_shadow") or {}
+        st.markdown(ui.status_chip("SHADOW") + (" FPL baseline + V1-free HGB residual" if v1free_ else
+                                                " FPL baseline + Wowza residual")
+                    + " — not the headline mean.")
+    cap = summ.get("captaincy" if view == "Headline" else
+                   ("captaincy_shadow_v1free" if v1free_ else "captaincy_shadow")) or {}
     for col, key, title in zip(st.columns(3), ("SAFE", "BALANCED", "HIGH_UPSIDE"),
                                ("SAFE", "BALANCED", "HIGH UPSIDE")):
         c = cap.get(key)
@@ -384,9 +391,16 @@ with t_cap:
     ui.section_header("Expected points vs upside", "Startable pool (P(start) ≥ 60 %, not doubtful), "
                       "top 40.")
     pool = proj[(proj["p_start"] >= 0.6) & ~proj["risk"].isin(["Unavailable", "Doubtful"])]
-    pool = pool.nlargest(40, "final_xpts" if view == "Headline" else "v2_candidate_xpts").copy()
-    pool["EV"] = pool["final_xpts"] if view == "Headline" else pool["v2_candidate_xpts"]
-    pool["P(15+)"] = pool["p15"] if view == "Headline" else pool["cand_p15"]
+    ev_col_, p15_col_ = (("final_xpts", "p15") if view == "Headline" else
+                         ("v2_v1free_candidate_xpts", "cand_v1free_p15") if v1free_ else
+                         ("v2_candidate_xpts", "cand_p15"))
+    if ev_col_ not in pool.columns:                    # board built before the V1-free shadow existed
+        ev_col_, p15_col_ = "final_xpts", "p15"
+        ui.empty_state("NO_DATA", "This shadow is not on the current board yet; the chart shows the "
+                       "headline mean.")
+    pool = pool.nlargest(40, ev_col_).copy()
+    pool["EV"] = pool[ev_col_]
+    pool["P(15+)"] = pool[p15_col_]
     # only the columns the chart encodes are shipped (was every projection column, ~70)
     pool = pool[["web_name", "team", "position", "EV", "P(15+)", "p_start", "p_blank", "next_fixture"]]
     top10 = pool.nlargest(10, "EV").index                  # the ten labelled dots, as before
@@ -464,6 +478,19 @@ with t_sq:
 with t_lab:
     st.markdown(ui.status_chip("RESEARCH") + " How the forecast is built and how it has scored. "
                 "Fantasy V2 = **FPL baseline + Wowza residual** (shadow). Charts first, tables second.")
+    # -- pre-registered V2 promotion rule (owner decision 2026-11-23) --
+    prom_ = fdata.v2_promotion_table(fdata.v2_paired_walkforward())
+    ui.section_header("V2 promotion rule", "Pre-registered 2026-11-23. A shadow arm becomes eligible "
+                      "only when, over at least 10 completed gameweeks on its paired rows with FPL, the "
+                      "90% interval of MAE − FPL (whole gameweeks resampled) is entirely below 0 AND "
+                      "its captain regret is no worse than FPL's. Eligible never promotes by itself: "
+                      "the owner must approve, and the headline stays FPL until then.")
+    if prom_.empty:
+        ui.empty_state("NO_DATA", "No rule status yet. It is written with the paired report by the "
+                       "Fantasy Refresh workflow.")
+    else:
+        ui.dataframe(prom_, hide_index=True, width="stretch",
+                     column_config={"MAE − FPL": st.column_config.NumberColumn(format="%+.3f")})
     m_pair, m_bench, m_sb, m_cal, m_dec = st.tabs(["Paired walk-forward", "Benchmark",
                                                    "Gameweek scoreboard", "Calibration & method",
                                                    "Decomposition"])
@@ -471,16 +498,16 @@ with t_lab:
     # ── Paired walk-forward: every arm on the same player-gameweeks (P1 2026-11-22) ──
     with m_pair:
         prep_ = fdata.v2_paired_walkforward()
-        ui.section_header("Paired walk-forward", "FPL baseline, Wowza V1 and the three shadow residual "
+        ui.section_header("Paired walk-forward", "FPL baseline, Wowza V1 and the shadow residual "
                           "arms scored on the SAME player-gameweeks, completed gameweeks only. Each "
                           "gameweek is forecast only by models fitted on earlier gameweeks.")
         if not prep_:
             ui.empty_state("NO_DATA", "No paired report yet. It is written by the Fantasy Refresh "
                            "workflow (`python -m player_model.fantasy_paired_eval`).")
         else:
-            which = st.radio("Population", ["All five arms", "FPL vs HGB (every completed row)"],
+            which = st.radio("Population", ["All arms", "FPL vs HGB arms (every completed row)"],
                              horizontal=True, key="pair_pop")
-            wkey = "primary" if which == "All five arms" else "secondary"
+            wkey = "primary" if which == "All arms" else "secondary"
             sec_ = prep_.get(wkey) or {}
             ex_ = sec_.get("exclusions") or {}
             ui.metric_grid([
