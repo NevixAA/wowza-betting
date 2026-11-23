@@ -70,7 +70,9 @@ def test_player_ledger_column_list_is_unchanged():
     assert PLAYER_LEDGER_COLS == [
         "signal_date", "match_date", "league", "home_team", "away_team", "player_id", "fixture_id",
         "player_name", "team", "position", "market", "tier", "model_prob", "market_odds", "ev",
-        "edge_rel", "n_games", "is_played", "result", "pnl", "notes", "resolved_date"]
+        "edge_rel", "n_games", "is_played", "result", "pnl", "notes", "resolved_date",
+        # appended by the owner's 2026-11-23 "Yes, do all" (D6): entry book + capture time
+        "entry_bookmaker", "entry_captured_at"]
 
 
 # ── 2. real two-sided price first, assumed margin only without one ───────────────────────────────

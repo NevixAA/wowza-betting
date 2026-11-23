@@ -118,18 +118,36 @@ LEDGER_COLS = [
     # can be taken from the SAME book (scripts/capture_oddsapi_book_close.py). Blank when unknown; rows
     # written before stay blank, never back-filled.
     "entry_bookmaker",
+    # ENTRY CAPTURE TIME, appended (owner 2026-11-23 "Yes, do all", D6): the UTC time of the provider call whose
+    # answer produced `odds` (predict's odds_over25_captured_at / odds_under25_captured_at). Blank when unknown;
+    # rows written before stay blank, never back-filled.
+    "entry_captured_at",
 ]
 VERSION_FIELDS = ("model_version", "retrain_batch_id", "training_cutoff", "prediction_role")
+
+
+def _text(v) -> str:
+    """A recorded text value, or '' for a missing one (None / NaN / NA / 'nan'). Never guessed."""
+    try:
+        if v is None or pd.isna(v):
+            return ""
+    except (TypeError, ValueError):
+        pass
+    v = str(v).strip()
+    return "" if v in ("nan", "None", "NaT", "<NA>") else v
 
 
 def _entry_book(row, side: str) -> str:
     """The OddsAPI book key behind the tip's price (predict odds_over25_book / odds_under25_book); '' when
     the board row carries none. Never guessed."""
-    v = row.get("odds_under25_book" if str(side).strip().upper() == "UNDER" else "odds_over25_book")
-    if v is None or (isinstance(v, float) and v != v):
-        return ""
-    v = str(v).strip()
-    return "" if v in ("nan", "None") else v
+    return _text(row.get("odds_under25_book" if str(side).strip().upper() == "UNDER" else "odds_over25_book"))
+
+
+def _entry_time(row, side: str) -> str:
+    """D6 (owner 2026-11-23): the capture time of the tip's price (predict odds_over25_captured_at /
+    odds_under25_captured_at); '' when the board row carries none. Never guessed."""
+    return _text(row.get("odds_under25_captured_at" if str(side).strip().upper() == "UNDER"
+                         else "odds_over25_captured_at"))
 
 
 def _version_fields(row, model_key: str | None) -> dict:
@@ -460,6 +478,7 @@ def append_tips(bets_df: pd.DataFrame, source: str = "live") -> None:
             "cell_p_used":  _num(row.get("cell_p_used")),
             **_cell_fields(row),
             "entry_bookmaker": _entry_book(row, side),
+            "entry_captured_at": _entry_time(row, side),
         })
 
     if flips:
@@ -498,6 +517,11 @@ SIDE_LEDGER_COLS = [
     # Blank when no cell scored the tip; rows written before it stay blank, never back-filled.
     "cell_p_used",
     "cell_status", "qualifying_bar", "edge_calibrated_pct",      # see LEDGER_COLS (owner 2026-11-11)
+    # ENTRY BOOK + CAPTURE TIME, appended (owner 2026-11-23 "Yes, do all", D6): carried from the board column that
+    # became `odds` (pipeline._generate_side_bets: odds_<market>_book / _captured_at). A cross-book median
+    # (src/btts_odds) carries its "median:<books>" label, never one invented book. Blank when unknown; rows
+    # written before stay blank, never back-filled.
+    "entry_bookmaker", "entry_captured_at",
 ]
 _SIDE_RANK = _TIER_RANK
 
@@ -614,6 +638,9 @@ def append_side_market_tips(side_df: pd.DataFrame, source: str = "live") -> pd.D
                                  if pd.notna(row.get("threshold_source")) else ""),
             "cell_p_used": _num(row.get("cell_p_used")),
             **_cell_fields(row),
+            # D6: book + time of the price above; blank when that price is blank (no price, no source)
+            "entry_bookmaker": _text(row.get("entry_bookmaker")) if odds != "" else "",
+            "entry_captured_at": _text(row.get("entry_captured_at")) if odds != "" else "",
         })
 
     _record_tiers_seen(tier_seen_rows, tier_seen_path)
@@ -643,7 +670,18 @@ HT_LEDGER_COLS = [
     "entry_odds", "closing_odds", "clv_pct", "result", "pnl", "notes",
     # model attribution, appended (2026-10-18) — see LEDGER_COLS
     *VERSION_FIELDS,
+    # ENTRY BOOK + CAPTURE TIME, appended (owner 2026-11-23 "Yes, do all", D6): the book and the snapshot_ts of
+    # the standard_sidemarket_odds_history row whose price became `odds` (see _ht_price_lookup: that file's only
+    # writer keeps API-Football bookmaker id 8 = Bet365). Blank when the row has no price; rows written before
+    # stay blank, never back-filled.
+    "entry_bookmaker", "entry_captured_at",
 ]
+
+#: THE BOOK OF EVERY standard_sidemarket_odds_history PRICE (D6, verified 2026-11-23). The file's only writer is
+#: scripts/capture_std_sidemarket_odds_forward.py; its _parse_all_odds skips every bookmaker block whose id is not
+#: BET365 = 8 (`if bk.get("id") != BET365: continue`) in every committed version of that script, also when the
+#: request drops the bookmaker filter for per-book capture. Every ht_* row (first 2026-08-21) came from it.
+HT_PRICE_BOOK = "bet365"
 
 #: Informational only. HT is PAPER — these labels let HT be read on the same axis as the other
 #: ledgers; they do NOT authorise a stake, and nothing reads them to size one.
@@ -655,10 +693,12 @@ def _ht_tier(edge: float | None) -> str:
     return "PAPER"
 
 
-def _ht_price_lookup():
+def _ht_price_lookup(with_source: bool = False):
     """Latest captured price per (date, league, home, away, market) for the ht_* markets.
 
-    Returns a callable, or None when no capture file exists. Club names are resolved
+    Returns a callable, or None when no capture file exists. With `with_source` (D6, owner 2026-11-23) the
+    callable returns (price, book, snapshot_ts) of the row used - (None, "", "") when unpriced - instead of the
+    bare price; the bare-price form is unchanged for its other readers. Club names are resolved
     LEAGUE-SCOPED via src.team_names (invariant 11): the ledger carries the predict-side name
     while the capture carries the OddsAPI event name, and they disagree — `Accrington ST`
     against `Accrington Stanley`, `Cheltenham` against `Cheltenham Town`. A bare key match
@@ -684,21 +724,27 @@ def _ht_price_lookup():
         return None
 
     def _get(day: str, league: str, home: str, away: str, market: str):
+        none = (None, "", "") if with_source else None
         g = by.get((str(day)[:10], str(league)))
         if g is None or g.empty:
-            return None
+            return none
         h = resolve(str(home), list(g["_h"]))
         a = resolve(str(away), list(g["_a"]))
         if not h or not a:
-            return None
+            return none
         m = g[(g["_h"] == h) & (g["_a"] == a) & (g["market"].astype(str) == market)]
         if m.empty:
-            return None
+            return none
         try:
             o = float(m.iloc[-1]["odds"])          # most recent snapshot = price now
-            return o if o > 1.0 else None
         except (TypeError, ValueError):
-            return None
+            return none
+        if not o > 1.0:
+            return none
+        if not with_source:
+            return o
+        # the book of every row of this file (HT_PRICE_BOOK) and the snapshot_ts of THIS row (its capture time)
+        return o, HT_PRICE_BOOK, _text(m.iloc[-1].get("snapshot_ts"))
     return _get
 
 
@@ -728,6 +774,8 @@ def append_ht_tips(preds_df: pd.DataFrame, source: str = "live") -> None:
              str(r["market"]), str(r["source"])) for _, r in existing.iterrows()} if not existing.empty else set()
     now = datetime.utcnow().strftime("%Y-%m-%d %H:%M")
     price = _ht_price_lookup()
+    # D6: the source (book, snapshot_ts) of the price used; read only when a price lookup exists
+    source = _ht_price_lookup(with_source=True) if price else None
     new_rows = []
     for _, row in preds_df.iterrows():
         try:
@@ -759,6 +807,11 @@ def append_ht_tips(preds_df: pd.DataFrame, source: str = "live") -> None:
         # measures nothing about the market.
         lg = str(row.get("league", ""))
         mkt_odds = price(md, lg, home, away, market) if price else None
+        ent_book, ent_ts = "", ""
+        if mkt_odds and source:
+            _o, _b, _t = source(md, lg, home, away, market)
+            if _o == mkt_odds:                       # the book/time describe THIS price, never another
+                ent_book, ent_ts = _b, _t
         edge = (prob - 1.0 / mkt_odds) if mkt_odds else None
         new_rows.append({
             "source": source, "generated_at": now, "match_date": md,
@@ -773,6 +826,9 @@ def append_ht_tips(preds_df: pd.DataFrame, source: str = "live") -> None:
             "entry_odds": round(mkt_odds, 3) if mkt_odds else "",
             "closing_odds": "", "clv_pct": "", "result": "", "pnl": "", "notes": "",
             **_version_fields({}, "ht_over15" if market.endswith("15") else "ht_over05"),
+            # D6: blank with the price when there is none
+            "entry_bookmaker": ent_book if mkt_odds else "",
+            "entry_captured_at": ent_ts if mkt_odds else "",
         })
     if not new_rows:
         return

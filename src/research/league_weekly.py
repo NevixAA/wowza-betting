@@ -139,7 +139,13 @@ CAND_COLS = [
     "n_books", "price_timestamp", "minutes_to_kickoff", "uncertainty", "decision_state", "decision_reason",
     "price_quality_state", "legacy_engine_version", "legacy_edge", "legacy_tier", "legacy_side",
     "research_regime", "production_state", "production_selected", "actually_bet", "stake", "observe_only",
+    # ENTRY BOOK + CAPTURE TIME, appended (owner 2026-11-23 "Yes, do all", D6): who quoted `odds` and when (see
+    # entry_source). Blank when the price source carries none; rows written before stay blank, never back-filled.
+    "entry_bookmaker", "entry_captured_at",
 ]
+#: The D6 columns above. First-sight values like the rest, but kept out of src/system_health's cross-day frozen
+#: digest: the rows it recorded before 2026-11-23 never held them (same rule as shadow_compare.LATE_FIRST_SIGHT).
+CAND_LATE = ("entry_bookmaker", "entry_captured_at")
 
 PANEL_KEY = ["selection_engine_version", "league_week_id", "market", "league_market_rank"]
 PANEL_FROZEN = [
@@ -305,6 +311,41 @@ def side_view(r: dict, want: str | None, P: dict, board_odds: tuple = (float("na
     return out
 
 
+def entry_source(r: dict, sv: dict, b: dict, fam: str, P: dict) -> tuple[str, str]:
+    """(entry_bookmaker, entry_captured_at) of a candidate's `odds` (D6, owner 2026-11-23). Pure; never a guess.
+
+    1. The board price of the candidate's side (predict / btts_odds column, e.g. odds_over25) IS the candidate's
+       price and was captured no later than the candidate's first sight (the shadow row's prediction_ts): that
+       column's own book + capture time (odds_<x>_book / odds_<x>_captured_at). Covers the engine's ROW price, the
+       unpriced fallback to the board price and a reconstructed side read from the board without a haircut.
+    2. Otherwise, the engine's own cross-book MEDIAN of the side (odds_source MEDIAN_VALID_BOOKS, no odds haircut):
+       the median label of its books_used (src.btts_odds.book_label, never one invented book) and its
+       price_timestamp, which src/market_edge records as the OLDEST quote among those books.
+    3. Anything else - a BEST_VALID_BOOK price (the winning book is not recorded), a haircut-adjusted price (no book
+       quoted it), a board price that has moved since first sight - stays blank."""
+    odds = _f(sv.get("odds"))
+    if not odds > 1.0:
+        return "", ""
+    a, _b = ME.SIDES[fam]
+    col = BOARD_ODDS[fam][0 if sv.get("side") == a else 1]
+    bo = _f(b.get(col))
+    bt = _s(b.get(f"{col}_captured_at"))
+    fs = pd.to_datetime(r.get("prediction_ts"), utc=True, errors="coerce")
+    bts = pd.to_datetime(bt, utc=True, errors="coerce") if bt else pd.NaT
+    if bo > 1.0 and round(bo, 4) == round(odds, 4) and not pd.isna(bts) and not pd.isna(fs) and bts <= fs:
+        book = _s(b.get(f"{col}_book"))
+        return (book, bt) if book else ("", "")
+    haircut = float(P.get("odds_haircut", 0.0) or 0.0)
+    if (sv.get("side_source") == "ENGINE_SIDE" and _s(r.get("odds_source")) == "MEDIAN_VALID_BOOKS"
+            and haircut == 0.0):
+        from src.btts_odds import book_label
+        label = book_label(_s(r.get("books_used")).split(";"))
+        ts = _s(r.get("price_timestamp"))
+        if label and ts:
+            return label, ts
+    return "", ""
+
+
 # ── candidates ──────────────────────────────────────────────────────────────────────────────────
 def _board(preds: pd.DataFrame) -> dict:
     if preds is None or preds.empty:
@@ -361,6 +402,7 @@ def build_candidates(shadow: pd.DataFrame, preds: pd.DataFrame | None, registry:
             ver = _s((champions.get(slot) or {}).get("model_version"))
         sel = _s(r.get("legacy_tier")) in LEGACY_TIERS and _s(r.get("legacy_side")) == side
         bet, stake = stakes.get((f"{md}|{home}|{away}", pm_name, side), (False, 0.0))
+        e_book, e_ts = entry_source(r, sv, b, fam, params)
         rows.append({
             "selection_engine_version": ME.ENGINE_VERSION, "fixture_id": str(r.get("fixture_id")),
             "market": pm_name, "engine_market": fam, "first_seen_at": _stamp(fs), "created_at": created,
@@ -385,6 +427,7 @@ def build_candidates(shadow: pd.DataFrame, preds: pd.DataFrame | None, registry:
             "production_state": e.get("production_state", "UNREGISTERED"),
             "production_selected": bool(sel), "actually_bet": bool(bet), "stake": round(float(stake), 4),
             "observe_only": pm_name in OBSERVE_ONLY,
+            "entry_bookmaker": e_book, "entry_captured_at": e_ts,
         })
     if not rows:
         return pd.DataFrame(columns=CAND_COLS)
@@ -396,7 +439,8 @@ def build_candidates(shadow: pd.DataFrame, preds: pd.DataFrame | None, registry:
 
 def candidate_store(path: Path | None = None) -> FirstSightStore:
     return FirstSightStore(Path(path) if path else CANDIDATES_FILE, key=CAND_KEY, columns=CAND_COLS,
-                           observed_col="first_seen_at", kickoff_col="kickoff_utc")
+                           observed_col="first_seen_at", kickoff_col="kickoff_utc",
+                           frozen_cols=[c for c in CAND_COLS if c not in CAND_LATE])
 
 
 def panel_store(path: Path | None = None) -> FirstSightStore:

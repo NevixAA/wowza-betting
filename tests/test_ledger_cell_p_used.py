@@ -10,8 +10,10 @@ from src import ledger as L
 def test_both_ledgers_declare_the_appended_cell_columns_in_order():
     # cell_p_used (2026-11-10), then cell_status / qualifying_bar / edge_calibrated_pct (owner 2026-11-11)
     tail = ["cell_p_used", "cell_status", "qualifying_bar", "edge_calibrated_pct"]
-    # bets_ledger appends entry_bookmaker after them (owner 2026-11-23)
-    assert L.LEDGER_COLS[-5:-1] == tail and L.SIDE_LEDGER_COLS[-4:] == tail
+    # both append entry_bookmaker (bets_ledger, owner 2026-11-23) and entry_captured_at (D6) after them
+    entry = ["entry_bookmaker", "entry_captured_at"]
+    assert L.LEDGER_COLS[-6:-2] == tail and L.SIDE_LEDGER_COLS[-6:-2] == tail
+    assert L.LEDGER_COLS[-2:] == entry and L.SIDE_LEDGER_COLS[-2:] == entry
 
 
 def test_missing_cell_probability_stays_missing_never_zero():

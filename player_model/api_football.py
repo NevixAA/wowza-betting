@@ -82,6 +82,26 @@ def _load_cache(key: str, max_age_h: int = 24) -> Optional[dict]:
     return None
 
 
+def cached_at_utc(endpoint: str, params: dict) -> Optional[str]:
+    """UTC time ('%Y-%m-%dT%H:%M:%SZ') the stored answer for (endpoint, params) was fetched from the provider, or
+    None when there is no stored answer / no stamp. _save_cache stamps a naive LOCAL datetime.now() on the machine
+    that called (the same runner that reads it), so it is read as local time. D6 (owner 2026-11-23): the capture
+    time of an API-Football prop price. Never raises, never calls the provider."""
+    try:
+        p = _cache_path(f"{endpoint}_{json.dumps(params, sort_keys=True)}")
+        if not p.exists():
+            return None
+        raw = json.loads(p.read_text(encoding="utf-8")).get("_cached_at")
+        if not raw:
+            return None
+        t = datetime.fromisoformat(str(raw))
+        t = t.astimezone() if t.tzinfo is None else t
+        from datetime import timezone as _tz
+        return t.astimezone(_tz.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    except Exception:                                                  # noqa: BLE001
+        return None
+
+
 def _save_cache(key: str, data: dict) -> None:
     data["_cached_at"] = datetime.now().isoformat()
     _cache_path(key).write_text(

@@ -128,6 +128,10 @@ def _fetch_odds_api(days_ahead: int = 7) -> pd.DataFrame:
                 log.warning(f"OddsAPI {league}: HTTP {r.status_code} — league skipped this run")
                 continue
             n_ok += 1
+            # CAPTURE TIME (owner 2026-11-23 "Yes, do all", D6): the UTC instant THIS league's provider answer
+            # arrived. Every board price below came from this one response, so it is the capture time of
+            # odds_over25 / under25 / over15 / over35 (the *_captured_at columns).
+            _call_ts = pd.Timestamp.now(tz="UTC").strftime("%Y-%m-%dT%H:%M:%SZ")
 
             for event in r.json():
                 dt = pd.to_datetime(event.get("commence_time", ""), errors="coerce", utc=True)
@@ -151,6 +155,9 @@ def _fetch_odds_api(days_ahead: int = 7) -> pd.DataFrame:
                 # odds_under25, so a same-book close (scripts/capture_oddsapi_book_close.py) can grade it.
                 ov25_book, un25_book = None, None
                 ov15, ov35 = None, None
+                # D6 (owner 2026-11-23): the book of the first-listed Over 1.5 / 3.5 / BTTS-Yes price, the same
+                # first-book rule as ov25_book. Blank when no book quoted it.
+                ov15_book, ov35_book, btts_book = None, None, None
                 btts_yes    = None
                 for bm in event.get("bookmakers", []):
                     for mkt in bm.get("markets", []):
@@ -198,8 +205,10 @@ def _fetch_odds_api(days_ahead: int = 7) -> pd.DataFrame:
                                     ov25, ov25_book = pr, bm.get("key") or None
                                 if pt == 2.5 and nm == "Under" and not un25 and pr:
                                     un25, un25_book = pr, bm.get("key") or None
-                                if pt == 1.5 and nm == "Over"  and not ov15:  ov15 = pr
-                                if pt == 3.5 and nm == "Over"  and not ov35:  ov35 = pr
+                                if pt == 1.5 and nm == "Over"  and not ov15 and pr:
+                                    ov15, ov15_book = pr, bm.get("key") or None
+                                if pt == 3.5 and nm == "Over"  and not ov35 and pr:
+                                    ov35, ov35_book = pr, bm.get("key") or None
                         elif mkt["key"] == "btts":
                             for outcome in mkt["outcomes"]:
                                 _by = outcome.get("price")
@@ -208,7 +217,7 @@ def _fetch_odds_api(days_ahead: int = 7) -> pd.DataFrame:
                                 except (TypeError, ValueError):
                                     _by = None
                                 if outcome.get("name") == "Yes" and not btts_yes and _by:
-                                    btts_yes = _by
+                                    btts_yes, btts_book = _by, bm.get("key") or None
                     # Stop only once EVERY price we want is in hand. This used to break as
                     # soon as Over 2.5 was found, so if that first bookmaker didn't quote
                     # 1.5/3.5 those prices were silently lost — odds_over15 and odds_over35
@@ -257,6 +266,18 @@ def _fetch_odds_api(days_ahead: int = 7) -> pd.DataFrame:
                         "odds_over15":  float(ov15) if ov15 else None,
                         "odds_over35":  float(ov35) if ov35 else None,
                         "odds_btts":    float(btts_yes) if btts_yes else None,
+                        # ENTRY BOOK + CAPTURE TIME per board price (owner 2026-11-23 "Yes, do all", D6): the
+                        # OddsAPI book key and the UTC time of the call behind each price that can become a tip
+                        # price. Blank (None) when the price is blank. src/btts_odds.py replaces a price it fills
+                        # (odds_btts, odds_btts_no, an empty odds_over15/35) together with its book + time.
+                        "odds_over25_captured_at":  _call_ts,
+                        "odds_under25_captured_at": _call_ts,
+                        "odds_over15_book":         ov15_book if ov15 else None,
+                        "odds_over15_captured_at":  _call_ts if ov15 else None,
+                        "odds_over35_book":         ov35_book if ov35 else None,
+                        "odds_over35_captured_at":  _call_ts if ov35 else None,
+                        "odds_btts_book":           btts_book if btts_yes else None,
+                        "odds_btts_captured_at":    _call_ts if btts_yes else None,
                         # Kept so BTTS can be fetched per-event afterwards. Free: both come from
                         # the response we already paid for.
                         "_oa_event_id": event.get("id", ""),
