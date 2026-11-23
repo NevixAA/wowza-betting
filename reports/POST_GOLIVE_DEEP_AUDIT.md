@@ -79,7 +79,7 @@ Data truth 9 at the final refresh: **RED - 2 v91_shadow fixtures logged twice (`
 3. **Files / SHAs (this PR).** `scripts/certify_real_data.py`, `tests/test_certify_real_data.py`,
    `output/real_data_certification.json`, `config/feature_provenance.json`, this report and
    `reports/FINAL_DATA_TRUTH_CERTIFICATION.md`; base main `5a6727f42`; PR head and merge SHAs are in the PR.
-4. **Tests.** SUITE_PLACEHOLDER
+4. **Tests.** Full suite on this branch (Windows, local): 4,191 passed, 50 skipped, 6 xfailed, 1 failed - `test_fix16_readers::test_every_history_bank_reader_is_classified` flagged the new script as an unclassified raw-bank reader; classified as RAW (it counts raw provider cells, serves nothing), re-run green. New: `tests/test_certify_real_data.py` (5 tests: verdict never passes a default / unverified value; untraced feature never counted real; archive stats checked against both providers; committed JSON holds no price value; unmeasured repos UNVERIFIED). `data_truth --gate` STOPLIGHT GREEN; `research_lock --check` protected_tracks_modified=False; `build_track_registry --check` in sync (100 entries); `dashboard_manifest --write` then `--check`: missing code [], missing data [].
 5. **Per-repo health.** Table above: all 5 repos have green CI on main now; v9 operational data RED on Data truth 9
    only; Pro weekly audit FAIL recorded on pre-fix code.
 6. **Active model integrity verdict.** Lineage PASS on all 12 team parts (evidence 2026-11-22; the 2 Standard HT
