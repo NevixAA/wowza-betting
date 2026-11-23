@@ -6,6 +6,8 @@
   2. TOP-3      every league's T1/T2/T3 for the current and recent gameweeks, stake label, result and P/L, plus
                 each league-week's exclusion reasons (output/top3_league_weeks.csv).
   3. Research   config/research_tracker.json (curated) + live GitHub Actions state and each tool's record file.
+  4. Evaluation the committed post-repair evaluation (src/clean_record_eval.py -> output/clean_record_evaluation.json
+                + output/clean_record_evaluation_cells.csv), every record apart, every cell.
 
 PRICES. The tip odds are read server-side from the PRIVATE price store (wowza-exec af-prices-live, the layout of
 price_store_sync) with the read-only Streamlit secret PRICE_STORE_RO_TOKEN (dashboard_data/private_prices.py),
@@ -92,7 +94,7 @@ def _store_top3_odds() -> tuple[dict | None, str]:
         return None, str(e)
 
 
-tab_bars, tab_top3, tab_res = st.tabs(["Bars", "TOP-3", "Research & Pro tools"])
+tab_bars, tab_top3, tab_res, tab_eval = st.tabs(["Bars", "TOP-3", "Research & Pro tools", "Clean Record evaluation"])
 
 # ══ 1. BARS ═════════════════════════════════════════════════════════════════════════════════════
 with tab_bars:
@@ -237,6 +239,11 @@ with tab_res:
             st.caption("Live state unknown for: " + "; ".join(f"{repos[k]['label']} ({v})" for k, v in rproblems.items()))
         st.caption(f"Registry: config/research_tracker.json (updated {reg.get('updated', 'unknown')}). Live state: "
                    f"GitHub Actions API, cached {TTL // 60} min; last run = newest of the repo's last 100 runs.")
+
+# ══ 4. CLEAN RECORD EVALUATION (committed; src/clean_record_eval.py) ══════════════════════════════════
+with tab_eval:
+    from dashboard_data import clean_record_eval as CRE  # noqa: E402
+    CRE.render(st, ui, admin=True)
 
 from utils.disclaimer import disclaimer_footer  # noqa: E402
 disclaimer_footer()

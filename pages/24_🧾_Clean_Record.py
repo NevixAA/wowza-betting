@@ -157,5 +157,9 @@ with st.expander(f"{CR.before_label()} — by market, for reference"):
     ui.compact_table(CR.group_table(D["sp"][CR.BEFORE], "_mkt", pnl="_pnl", date="_dt", key="before|mkt")
                      .rename(columns={"_mkt": "Market"}), _cfg)
 
+# ── the committed post-repair evaluation (src/clean_record_eval.py; every record apart) ──────────────────
+from dashboard_data import clean_record_eval as CRE  # noqa: E402
+CRE.render(st, ui)
+
 from utils.disclaimer import disclaimer_footer  # noqa: E402
 disclaimer_footer()
