@@ -1,10 +1,10 @@
 {
   "artifact": "model_integrity_health",
   "version": "model-integrity-health-0.2",
-  "generated_at": "2026-11-22T20:03:05Z",
+  "generated_at": "2026-11-23T10:47:18Z",
   "status": "FAIL",
   "active_serving_join_status": "PASS",
-  "active_training_lineage_status": "PASS",
+  "active_training_lineage_status": "UNVERIFIED",
   "legacy_replay_status": "FAIL",
   "overall_model_integrity_status": "FAIL",
   "join_scopes": {
@@ -30,7 +30,7 @@
   },
   "training_lineage": {
     "version": "training-lineage-1.0",
-    "status": "PASS",
+    "status": "UNVERIFIED",
     "evidence_file": "reports/lineage/training_lineage_evidence.json",
     "evidence_generated_at": "2026-11-22T17:32:47Z",
     "models": {
@@ -71,17 +71,17 @@
       },
       "ht_over05": {
         "payload": "model_ht_over05.pkl",
-        "artifact_sha256_16": "5a76d680e2fc53d6",
-        "status": "PASS",
-        "why": "standard/ht_over05: 49,446 rows (49256 to train end = payload 49256), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS",
-        "registry_sha256_16": "5a76d680e2fc53d6"
+        "artifact_sha256_16": "0776cea1784db55e",
+        "status": "UNVERIFIED",
+        "why": "evidence is for another file version (payload changed since it was verified)",
+        "registry_sha256_16": "0776cea1784db55e"
       },
       "ht_over15": {
         "payload": "model_ht_over15.pkl",
-        "artifact_sha256_16": "e9a12ce1b6af077f",
-        "status": "PASS",
-        "why": "standard/ht_over15: 49,446 rows (49256 to train end = payload 49256), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS",
-        "registry_sha256_16": "e9a12ce1b6af077f"
+        "artifact_sha256_16": "aa4c62ceece0e2a5",
+        "status": "UNVERIFIED",
+        "why": "evidence is for another file version (payload changed since it was verified)",
+        "registry_sha256_16": "aa4c62ceece0e2a5"
       },
       "ht_over05_nf": {
         "payload": "model_v9_ht_over05_nf.pkl",
@@ -231,7 +231,8 @@
       "checks": {
         "parity": "FAIL",
         "weight_alignment": "UNKNOWN",
-        "price_provenance": "UNKNOWN"
+        "price_provenance": "UNKNOWN",
+        "training_lineage": "UNVERIFIED"
       }
     },
     {
@@ -240,7 +241,8 @@
       "checks": {
         "parity": "FAIL",
         "weight_alignment": "UNKNOWN",
-        "price_provenance": "UNKNOWN"
+        "price_provenance": "UNKNOWN",
+        "training_lineage": "UNVERIFIED"
       }
     },
     {
@@ -287,7 +289,7 @@
       "model_recipe_version": "r2-repaired-1.0",
       "serving_version": "standard_20261119T134019Z_67ee3666",
       "training_cutoff": "2026-11-01",
-      "code_sha": "c0053fdaa7f2",
+      "code_sha": "697afc61cf2d",
       "data_hash": "823d465eeb05f5a0",
       "identity_version": null,
       "feature_recipe_version": null,
@@ -389,7 +391,7 @@
       "model_recipe_version": "r2-repaired-1.0",
       "serving_version": "newformat_20261118T172020Z_303c9a05",
       "training_cutoff": "2026-11-01",
-      "code_sha": "c0053fdaa7f2",
+      "code_sha": "697afc61cf2d",
       "data_hash": "25ea42fe32607275",
       "identity_version": null,
       "feature_recipe_version": null,
@@ -494,7 +496,7 @@
       "model_recipe_version": "r2-repaired-1.0",
       "serving_version": "btts_20261119T134019Z_44c67049",
       "training_cutoff": "2026-11-01",
-      "code_sha": "c0053fdaa7f2",
+      "code_sha": "697afc61cf2d",
       "data_hash": "0c4cdc31d41d19f0",
       "identity_version": null,
       "feature_recipe_version": null,
@@ -571,7 +573,7 @@
         "placed_rows_synthetic": 0,
         "production_edge_rule": "p - (1/odds)/1.08 (fixed 8% margin assumption)",
         "devig_shadow_ledger": {
-          "CONFIRMED_BY_DEVIG": 242,
+          "CONFIRMED_BY_DEVIG": 246,
           "ONLY_BECAUSE_OF_1_08": 220,
           "UNVERIFIABLE_ONE_SIDED": 99
         },
@@ -607,7 +609,7 @@
       "model_recipe_version": "r2-repaired-1.0",
       "serving_version": "btts_20261119T134019Z_44c67049",
       "training_cutoff": "2026-11-01",
-      "code_sha": "c0053fdaa7f2",
+      "code_sha": "697afc61cf2d",
       "data_hash": "d3f6d80a374fc72d",
       "identity_version": null,
       "feature_recipe_version": null,
@@ -684,7 +686,7 @@
         "placed_rows_synthetic": 0,
         "production_edge_rule": "p - (1/odds)/1.08 (fixed 8% margin assumption)",
         "devig_shadow_ledger": {
-          "CONFIRMED_BY_DEVIG": 242,
+          "CONFIRMED_BY_DEVIG": 246,
           "ONLY_BECAUSE_OF_1_08": 220,
           "UNVERIFIABLE_ONE_SIDED": 99
         },
@@ -720,7 +722,7 @@
       "model_recipe_version": "r2-repaired-1.0",
       "serving_version": "over15_20261119T134019Z_ca01b7d3",
       "training_cutoff": "2026-11-01",
-      "code_sha": "c0053fdaa7f2",
+      "code_sha": "697afc61cf2d",
       "data_hash": "23839609719fc515",
       "identity_version": null,
       "feature_recipe_version": null,
@@ -833,7 +835,7 @@
       "model_recipe_version": "r2-repaired-1.0",
       "serving_version": "over15_20261119T134019Z_ca01b7d3",
       "training_cutoff": "2026-11-01",
-      "code_sha": "c0053fdaa7f2",
+      "code_sha": "697afc61cf2d",
       "data_hash": "33bacb811e7f56e8",
       "identity_version": null,
       "feature_recipe_version": null,
@@ -946,7 +948,7 @@
       "model_recipe_version": "r2-repaired-1.0",
       "serving_version": "over35_20261119T134019Z_e8b12d74",
       "training_cutoff": "2026-11-01",
-      "code_sha": "c0053fdaa7f2",
+      "code_sha": "697afc61cf2d",
       "data_hash": "054d6a550c7bd908",
       "identity_version": null,
       "feature_recipe_version": null,
@@ -1023,7 +1025,7 @@
         "placed_rows_synthetic": 0,
         "production_edge_rule": "p - (1/odds)/1.08 (fixed 8% margin assumption)",
         "devig_shadow_ledger": {
-          "ONLY_BECAUSE_OF_1_08": 45,
+          "ONLY_BECAUSE_OF_1_08": 47,
           "CONFIRMED_BY_DEVIG": 11,
           "UNVERIFIABLE_ONE_SIDED": 9
         },
@@ -1059,7 +1061,7 @@
       "model_recipe_version": "r2-repaired-1.0",
       "serving_version": "over35_20261119T134019Z_e8b12d74",
       "training_cutoff": "2026-11-01",
-      "code_sha": "c0053fdaa7f2",
+      "code_sha": "697afc61cf2d",
       "data_hash": "bfe9e3425792535e",
       "identity_version": null,
       "feature_recipe_version": null,
@@ -1136,7 +1138,7 @@
         "placed_rows_synthetic": 0,
         "production_edge_rule": "p - (1/odds)/1.08 (fixed 8% margin assumption)",
         "devig_shadow_ledger": {
-          "ONLY_BECAUSE_OF_1_08": 45,
+          "ONLY_BECAUSE_OF_1_08": 47,
           "CONFIRMED_BY_DEVIG": 11,
           "UNVERIFIABLE_ONE_SIDED": 9
         },
@@ -1167,19 +1169,19 @@
       "model_type": "standard",
       "market": "HT_O05",
       "payload": "model_ht_over05.pkl",
-      "payload_sha256_16": "5a76d680e2fc53d6",
+      "payload_sha256_16": "0776cea1784db55e",
       "recipe": "ht_v9_repaired",
       "model_recipe_version": "r2-repaired-1.0",
-      "serving_version": "ht_over05_20261119T134019Z_5a76d680",
+      "serving_version": "ht_over05_20261122T170741Z_0776cea1",
       "training_cutoff": "2026-11-01",
-      "code_sha": "c0053fdaa7f2",
+      "code_sha": "697afc61cf2d",
       "data_hash": "17be13b413bd7a0e",
       "identity_version": null,
       "feature_recipe_version": null,
       "imputer_version": "v9-train-only-imputer-1.1",
       "season_resolver_version": "UNKNOWN",
       "league_registry_version": "UNKNOWN",
-      "n_features": 86,
+      "n_features": 84,
       "chronology": {
         "status": "PASS",
         "blocks": {
@@ -1216,12 +1218,11 @@
       "parity": {
         "status": "FAIL",
         "counts": {
-          "PASS": 65,
+          "PASS": 64,
           "WARN": 19,
-          "FAIL": 2
+          "FAIL": 1
         },
         "fail_features": [
-          "home_has_ht_history",
           "away_has_ht_history"
         ]
       },
@@ -1258,34 +1259,35 @@
       },
       "training_lineage": {
         "payload": "model_ht_over05.pkl",
-        "artifact_sha256_16": "5a76d680e2fc53d6",
-        "status": "PASS",
-        "why": "standard/ht_over05: 49,446 rows (49256 to train end = payload 49256), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS",
-        "registry_sha256_16": "5a76d680e2fc53d6"
+        "artifact_sha256_16": "0776cea1784db55e",
+        "status": "UNVERIFIED",
+        "why": "evidence is for another file version (payload changed since it was verified)",
+        "registry_sha256_16": "0776cea1784db55e"
       },
       "status": "FAIL",
       "unknown_checks": [
         "weight_alignment",
-        "price_provenance"
+        "price_provenance",
+        "training_lineage"
       ]
     },
     "standard|HT_O15": {
       "model_type": "standard",
       "market": "HT_O15",
       "payload": "model_ht_over15.pkl",
-      "payload_sha256_16": "e9a12ce1b6af077f",
+      "payload_sha256_16": "aa4c62ceece0e2a5",
       "recipe": "ht_v9_repaired",
       "model_recipe_version": "r2-repaired-1.0",
-      "serving_version": "ht_over15_20261119T134019Z_e9a12ce1",
+      "serving_version": "ht_over15_20261122T170742Z_aa4c62ce",
       "training_cutoff": "2026-11-01",
-      "code_sha": "c0053fdaa7f2",
+      "code_sha": "697afc61cf2d",
       "data_hash": "1c02282b9a293157",
       "identity_version": null,
       "feature_recipe_version": null,
       "imputer_version": "v9-train-only-imputer-1.1",
       "season_resolver_version": "UNKNOWN",
       "league_registry_version": "UNKNOWN",
-      "n_features": 86,
+      "n_features": 84,
       "chronology": {
         "status": "PASS",
         "blocks": {
@@ -1322,12 +1324,11 @@
       "parity": {
         "status": "FAIL",
         "counts": {
-          "PASS": 65,
+          "PASS": 64,
           "WARN": 19,
-          "FAIL": 2
+          "FAIL": 1
         },
         "fail_features": [
-          "home_has_ht_history",
           "away_has_ht_history"
         ]
       },
@@ -1364,15 +1365,16 @@
       },
       "training_lineage": {
         "payload": "model_ht_over15.pkl",
-        "artifact_sha256_16": "e9a12ce1b6af077f",
-        "status": "PASS",
-        "why": "standard/ht_over15: 49,446 rows (49256 to train end = payload 49256), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS",
-        "registry_sha256_16": "e9a12ce1b6af077f"
+        "artifact_sha256_16": "aa4c62ceece0e2a5",
+        "status": "UNVERIFIED",
+        "why": "evidence is for another file version (payload changed since it was verified)",
+        "registry_sha256_16": "aa4c62ceece0e2a5"
       },
       "status": "FAIL",
       "unknown_checks": [
         "weight_alignment",
-        "price_provenance"
+        "price_provenance",
+        "training_lineage"
       ]
     },
     "new_format|HT_O05": {
@@ -1384,7 +1386,7 @@
       "model_recipe_version": "r2-repaired-1.0",
       "serving_version": "ht_over05_nf_20261120T085150Z_ae89ea10",
       "training_cutoff": "2026-11-01",
-      "code_sha": "c0053fdaa7f2",
+      "code_sha": "697afc61cf2d",
       "data_hash": "f66c0a73b4de730a",
       "identity_version": null,
       "feature_recipe_version": null,
@@ -1484,7 +1486,7 @@
       "model_recipe_version": "r2-repaired-1.0",
       "serving_version": "ht_over15_nf_20261120T085150Z_ead4bb74",
       "training_cutoff": "2026-11-01",
-      "code_sha": "c0053fdaa7f2",
+      "code_sha": "697afc61cf2d",
       "data_hash": "a13e2088d9b8453a",
       "identity_version": null,
       "feature_recipe_version": null,

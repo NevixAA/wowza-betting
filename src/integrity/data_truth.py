@@ -1049,6 +1049,10 @@ def ledgers(start=None, bets: pd.DataFrame | None = None, players: pd.DataFrame 
     bets = _read(OUT / "bets_ledger.csv") if bets is None else bets
     players = _read(OUT / "player_ledger.csv") if players is None else players
     v91 = _read(OUT / "v91_shadow.csv") if v91 is None else v91
+    # v91_shadow as every reader serves it (read_v91_shadow): the second copies listed beside the log
+    # (output/corrections/v91_shadow_duplicates.csv) dropped - the rule-5 af_history pattern. A copy
+    # not listed there is a new double write and stays RED.
+    v91 = LC.drop_v91_duplicates(v91)
     b = since(bets, "generated_at")
     if "source" in b.columns:
         b = b[b["source"].astype(str) == "live"]

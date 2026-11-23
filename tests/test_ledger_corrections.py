@@ -120,12 +120,29 @@ def test_rule6_ignores_rows_before_the_start_and_waits_for_go_live(monkeypatch):
     assert DT.ledgers()["status"] == DT.GREY
 
 
+def test_rule9_reads_v91_as_the_readers_serve_it(tmp_path, monkeypatch):
+    """2026-11-23: a twice-logged v91 fixture listed beside the log (v91_shadow_duplicates.csv) is
+    dropped before rule 9 counts, as read_v91_shadow drops it; an unlisted copy stays RED."""
+    v = pd.DataFrame({"fixture_id": ["f1", "f1"], "market": ["ou25"] * 2,
+                      "match_date": ["2026-11-28 00:00:00", "2026-11-29 00:00:00"],
+                      "kickoff_utc": ["2026-11-28 15:00:00", "2026-11-29 00:00:00"],
+                      "logged_at": ["2026-11-23T02:06:03+00:00", "2026-11-23T08:30:40+00:00"]})
+    kw = dict(start="2026-11-19", bets=pd.DataFrame(), players=pd.DataFrame(), pool=EMPTY_POOL)
+    monkeypatch.setattr(LC, "CORR", tmp_path / "corrections")
+    c = DT.ledgers(v91=v, **kw)
+    assert c["status"] == DT.RED and "1 v91_shadow fixture(s) logged twice" in c["value"]
+    (tmp_path / "corrections").mkdir()
+    LC.v91_duplicate_rows(v).to_csv(tmp_path / "corrections" / LC.V91_DUP, index=False)
+    c = DT.ledgers(v91=v, **kw)
+    assert c["status"] == DT.GREEN and "1 v91 row(s)" in c["value"]
+
+
 def test_rule6_is_reported_but_not_gated():
     assert not "Data truth 9".startswith(DT.GATED)
 
 
 # ── the committed sidecars (built from main's live ledgers, 2026-11-11) ──────────────────────────
-@pytest.mark.parametrize("name,n", [(LC.POST_KO, 6), (LC.BAD_CLOSE, 1), (LC.V91_DUP, 9)])
+@pytest.mark.parametrize("name,n", [(LC.POST_KO, 6), (LC.BAD_CLOSE, 1), (LC.V91_DUP, 12)])
 def test_committed_sidecar_counts(name, n):
     assert len(pd.read_csv(ROOT / "output" / "corrections" / name)) == n
 

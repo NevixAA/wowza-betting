@@ -281,7 +281,7 @@ def _log_shadow(preds: "pd.DataFrame", exp_rows: "pd.DataFrame | None" = None) -
     before kickoff and the later runs see more of the price curve and more team news. Keeping
     the latest would quietly convert a prospective log into a retrospective one -- the model
     would be judged on its best-informed opinion while appearing to be judged on its first.
-    `append_shadow` dedups on (fixture_id, match_date) and keeps the EARLIEST, so a logged
+    `append_shadow` dedups on (fixture_id, market) and keeps the EARLIEST, so a logged
     opinion cannot be revised once the world has moved.
 
     Every scored fixture is logged, not only the tipped ones. Tips fire on ~14% of the board, so
