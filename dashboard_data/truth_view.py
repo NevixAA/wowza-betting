@@ -5,8 +5,11 @@ runs a check, fetches, or fills a gap. A missing input is NO_DATA, never a typed
 
   stoplight     output/data_truth_health.json (python -m src.integrity.data_truth, evidence_refresh.yml) and
                 the "Data truth N" lines of output/system_health.json - the NEWER recorded copy is shown, with
-                its time. `stoplight` is the gate verdict when the artifact records it (written since
-                2026-11-05); otherwise the panel shows the worst recorded check status, labelled as such.
+                its time. `status` is ALWAYS the worst recorded check, gated or not (P0 item 2, 2026-11-22:
+                it used to prefer the CI gate verdict, so a RED ungated check showed GREEN). The gate
+                verdict is reported beside it as `gate`, never in its place.
+  indicators    dashboard_data/health_status.indicators: CI gate, operational data quality, production
+                model integrity, full-system certification - four separate verdicts.
   unverified    zeros_unverified player rows   output/collect/<player history>_refetch_audit.json
                                                (plan.rows_to_verify, stored_rows: recorded, not recounted)
                 unproven cup rows              output/corrections/history_cup_unproven_rows.csv (rows, reason)
@@ -94,12 +97,12 @@ def stoplight(out_dir=None, now=None) -> dict:
     age = round((now - t).total_seconds() / 3600.0, 1) if t is not None else None
     # an unknown status word ranks with NO_DATA (never as GREEN)
     worst = min((str(c.get("status", NO_DATA)) for c in checks), key=lambda s: ORDER[s] if s in ORDER else ORDER[NO_DATA])
-    if gate in ("GREEN", "RED"):
-        status, basis = gate, "gate verdict as recorded"
-    else:
-        status, basis = worst, "worst recorded check status (this artifact records no gate verdict)"
+    # P0 item 2 (2026-11-22): the operational status is the worst check, gated or not. The CI gate
+    # verdict ("may this commit merge") is a different question and is returned beside it.
+    status, basis = worst, "worst recorded check status, gated or not"
     return {"status": status, "basis": basis, "source": src, "generated_at": gen, "age_h": age,
             "stale": (age is None or age > MAX_AGE_H), "gate_reasons": reasons or [],
+            "gate": gate if gate in ("GREEN", "RED") else NO_DATA,
             "checks": [{"check": c.get("check"), "status": c.get("status"), "value": c.get("value")}
                        for c in checks]}
 
@@ -172,8 +175,9 @@ def collection(out_dir=None) -> dict:
 
 
 def panel(out_dir=None, now=None) -> dict:
+    from dashboard_data import health_status
     return {"stoplight": stoplight(out_dir, now), "unverified": unverified(out_dir),
-            "collection": collection(out_dir)}
+            "collection": collection(out_dir), "indicators": health_status.indicators(out_dir, now)}
 
 
 # ── presentation ──────────────────────────────────────────────────────────────────────────────
@@ -182,6 +186,7 @@ def render(p: dict, compact: bool = False) -> None:
     import streamlit as st
 
     import dashboard_ui as ui
+    from dashboard_data import health_status
     s = p["stoplight"]
     when = (f"recorded {s['generated_at']} ({s['age_h']:.1f} h old)" if s.get("age_h") is not None
             else "no recorded time")
@@ -193,14 +198,21 @@ def render(p: dict, compact: bool = False) -> None:
     if compact:
         with st.container(border=True):
             ui.eyebrow("D · Data truth")
-            st.metric("Data truth stoplight", s["status"] + (" · STALE" if s.get("stale") else ""), help=f"{s['basis']}. Source: {s.get('source') or '-'}.")
+            if p.get("indicators"):
+                health_status.render(p["indicators"], compact=True)
+            st.metric("Operational data quality (worst check)", s["status"] + (" · STALE" if s.get("stale") else ""),
+                      help=f"{s['basis']}. CI gate verdict (merge control, not data quality): {s.get('gate')}. "
+                           f"Source: {s.get('source') or '-'}.")
             ui.stat_line([("Player rows zeros_unverified", _v(unv.get("Player rows still zeros_unverified", NO_DATA))),
                           ("Unproven cup rows", _v(unv.get("Unproven cup rows (kept in history)", NO_DATA))),
                           ("Refused scores", _v(unv.get("Refused scores (history vs provider)", NO_DATA))),
                           ("Last collection", str(p["collection"]["last_collection"]))])
             st.caption(f"{s.get('source') or 'no artifact'} · {when}{stale}. Full panel on System Health.")
         return
-    st.markdown(f"**Stoplight: {s['status']}{' (STALE)' if s.get('stale') else ''}** - {s['basis']} · {s.get('source') or 'no artifact'} · {when}{stale}")
+    if p.get("indicators"):
+        health_status.render(p["indicators"])
+    st.markdown(f"**Operational data quality: {s['status']}{' (STALE)' if s.get('stale') else ''}** - {s['basis']} · "
+                f"CI gate: {s.get('gate')} · {s.get('source') or 'no artifact'} · {when}{stale}")
     if s.get("gate_reasons"):
         st.error(" · ".join(map(str, s["gate_reasons"])))
     if s["checks"]:

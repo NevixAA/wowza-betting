@@ -135,6 +135,35 @@ def test_tracker_registry_is_well_formed_and_v9_workflows_exist():
         assert "paper" not in (t["name"] + t["purpose"] + t.get("schedule", "") + t.get("record_note", "")).lower()
 
 
+def test_tracker_records_point_at_what_is_real():
+    """Bars monthly shows the APPLIED proposal (what serves), not the last generated proposal; the Cloudbet shadow
+    has no record file and says so (owner 2026-11-22 follow-up)."""
+    reg, _ = AB.load_tracker()
+    tools = {t["id"]: t for t in reg["tools"]}
+    bars = tools["v9_bars_monthly"]["record"]
+    assert bars["path"] == "config/threshold_applied.json"
+    applied = json.loads((ROOT / bars["path"]).read_text(encoding="utf-8"))
+    text = AB.record_text(bars, json.dumps(applied), "")
+    assert f"applied proposal {applied['last_applied']['proposal_id']}" in text and "missing" not in text
+    cb = tools["exec_cloudbet_shadow"]
+    assert "record" not in cb and cb["record_note"].startswith("No record file (DRY, produces nothing)")
+
+
+def test_top3_price_files_are_mirrored_to_the_private_store():
+    """The TOP-3 ledger + candidates carry prices: price_store_sync mirrors them (the Admin Board reads the ledger's
+    odds from the store copy at wowza-betting/main/output/top3_league_ledger.csv)."""
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("price_store_sync", ROOT / "scripts" / "price_store_sync.py")
+    pss = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(pss)
+    cfg = pss.load_config()
+    for rel in ("output/top3_league_ledger.csv", "output/top3_league_candidates.csv",
+                "output/top3_league_candidates_pre_reseed_2026-11-20.csv"):
+        assert pss.selected(cfg, "wowza-betting", rel), rel
+    assert PP.store_path("wowza-betting", "main", "output/top3_league_ledger.csv") == \
+        "wowza-betting/main/output/top3_league_ledger.csv"
+
+
 def test_pick_and_record_text():
     doc = {"models": [{"model_id": "m", "market": "x", "rows": 2}, {"model_id": "m", "market": "y", "rows": 3},
                       {"model_id": "n", "rows": 9}], "a": {"b": 4}, "items": [1, 2, 3]}

@@ -40,11 +40,13 @@ from dashboard_data import fantasy_view as fv  # noqa: E402
 # readers this page needs are missing.
 if not all(hasattr(fdata, f) for f in ("v2_projections", "v2_summary", "v2_benchmark", "v2_transfers",
                                        "v2_fixture_matrix", "v2_scoreboard",
-                                       "v2_scoreboard_reliability", "v2_pooled_reliability")):
+                                       "v2_scoreboard_reliability", "v2_pooled_reliability",
+                                       "v2_paired_walkforward", "v2_paired_table", "v2_paired_by_gw")):
     import importlib  # noqa: E402
     fdata = importlib.reload(fdata)
 if not all(hasattr(fv, f) for f in ("player_card", "captain_card", "transfer_card", "fixture_heatmap_spec",
-                                    "recommendations", "transfer_candidates", "fixture_agg")):
+                                    "recommendations", "transfer_candidates", "fixture_agg",
+                                    "player_data_table", "missingness_summary")):
     import importlib  # noqa: E402
     fv = importlib.reload(fv)
 
@@ -268,6 +270,40 @@ with t_play:
         "next_fixture": "Next", "risk": "Risk", "confidence": "Confidence"})
     st.caption(f"{len(v)} of {len(proj)} players. 3-GW, 5-GW and 5-GW/£m are {fv.CONVENTION_LABEL}.")
 
+    ui.section_header("Player data & missingness", "Where every input comes from, and which players "
+                      "have a blank. A blank stays blank: nothing is filled in for display.")
+    ms = fv.missingness_summary(proj)
+    ui.dataframe(ms, hide_index=True, width="stretch", column_config={
+        "Share": st.column_config.NumberColumn("Share", format="percent")})
+    pdt = fv.player_data_table(proj)
+    only_gaps = st.toggle("Only players with a missing input", value=False, key="fx_only_gaps")
+    if only_gaps and not pdt.empty:
+        pdt = pdt[pdt["n_missing"] > 0]
+    ui.dataframe(pdt.sort_values(["n_missing", "final_xpts"], ascending=[False, False]) if not pdt.empty
+                 else pdt, hide_index=True, width="stretch", height=420, column_config={
+                     "web_name": "Player", "team": "Team", "position": "Pos",
+                     "price": st.column_config.NumberColumn("£m", format="%.1f"),
+                     "final_xpts": st.column_config.NumberColumn("Final xPts", format="%.2f"),
+                     "fpl_ep_next": st.column_config.NumberColumn("FPL ep", format="%.1f"),
+                     "wowza_residual": st.column_config.NumberColumn("Wowza adj (shadow)", format="%+.2f"),
+                     "p_start": st.column_config.NumberColumn("P(start)", format="percent"),
+                     "exp_minutes": st.column_config.NumberColumn("xMin", format="%.0f"),
+                     "min_last": st.column_config.NumberColumn("Min last GW", format="%.0f"),
+                     "xg90": st.column_config.NumberColumn("xG/90 (FPL)", format="%.2f"),
+                     "xa90": st.column_config.NumberColumn("xA/90 (FPL)", format="%.2f"),
+                     "goal_prob": st.column_config.NumberColumn("P(goal)", format="percent"),
+                     "assist_prob": st.column_config.NumberColumn("P(assist)", format="percent"),
+                     "cs_prob": st.column_config.NumberColumn("P(CS)", format="percent"),
+                     "next_fixture": "Next", "fdr": st.column_config.NumberColumn("FDR", format="%.0f"),
+                     "chance_next_f": st.column_config.NumberColumn("FPL chance", format="percent"),
+                     "news": "FPL news", "set_piece_role": "Set-piece role (FPL order)",
+                     "n_missing": st.column_config.NumberColumn("# missing", format="%d"),
+                     "missing": "Missing inputs"})
+    st.caption("Set-piece roles are FPL's own penalty / corner / free-kick order; a player FPL does not "
+               "list is shown as not listed, never guessed. FPL chance 100% with no news = FPL lists "
+               "him as fully available. Wowza adj is blank where no Wowza V1 projection existed before "
+               "the deadline; the headline is FPL ep for every player while the residual is shadow.")
+
     ui.section_header("More player tools", f"On the V1 projection board. {fv.V1_NOTE}")
     p_diff, p_lead, p_sp = st.tabs(["Differentials", "Prop leaderboards", "Set-pieces & pens"])
     with p_diff:
@@ -428,8 +464,57 @@ with t_sq:
 with t_lab:
     st.markdown(ui.status_chip("RESEARCH") + " How the forecast is built and how it has scored. "
                 "Fantasy V2 = **FPL baseline + Wowza residual** (shadow). Charts first, tables second.")
-    m_bench, m_sb, m_cal, m_dec = st.tabs(["Benchmark", "Gameweek scoreboard", "Calibration & method",
-                                           "Decomposition"])
+    m_pair, m_bench, m_sb, m_cal, m_dec = st.tabs(["Paired walk-forward", "Benchmark",
+                                                   "Gameweek scoreboard", "Calibration & method",
+                                                   "Decomposition"])
+
+    # ── Paired walk-forward: every arm on the same player-gameweeks (P1 2026-11-22) ──
+    with m_pair:
+        prep_ = fdata.v2_paired_walkforward()
+        ui.section_header("Paired walk-forward", "FPL baseline, Wowza V1 and the three shadow residual "
+                          "arms scored on the SAME player-gameweeks, completed gameweeks only. Each "
+                          "gameweek is forecast only by models fitted on earlier gameweeks.")
+        if not prep_:
+            ui.empty_state("NO_DATA", "No paired report yet. It is written by the Fantasy Refresh "
+                           "workflow (`python -m player_model.fantasy_paired_eval`).")
+        else:
+            which = st.radio("Population", ["All five arms", "FPL vs HGB (every completed row)"],
+                             horizontal=True, key="pair_pop")
+            wkey = "primary" if which == "All five arms" else "secondary"
+            sec_ = prep_.get(wkey) or {}
+            ex_ = sec_.get("exclusions") or {}
+            ui.metric_grid([
+                {"label": "Player-gameweeks scored", "value": str(sec_.get("rows", "—"))},
+                {"label": "Gameweeks", "value": ", ".join(str(g) for g in sec_.get("gameweeks") or [])
+                 or "—"},
+                {"label": "Chronology violations", "value": str(ex_.get("chronology_violation", "—"))},
+            ], per_row=3)
+            pcfg = {c: st.column_config.NumberColumn(format="%.3f")
+                    for c in ("MAE", "RMSE", "Spearman", "MAE − FPL")}
+            pcfg.update({"bias": st.column_config.NumberColumn(format="%+.3f"),
+                         "top-10 overlap /10": st.column_config.NumberColumn(format="%.1f"),
+                         "captain regret (pts)": st.column_config.NumberColumn(format="%.0f")})
+            ui.dataframe(fdata.v2_paired_table(prep_, wkey), hide_index=True, width="stretch",
+                         column_config=pcfg)
+            gwt = fdata.v2_paired_by_gw(prep_, wkey)
+            if not gwt.empty:
+                ch_ = alt.Chart(gwt).mark_line(point=True).encode(
+                    x=alt.X("gw:O", title="Gameweek"), y=alt.Y("MAE:Q", title="MAE (points)"),
+                    color=alt.Color("arm:N", legend=alt.Legend(orient="top", title=None)),
+                    tooltip=["gw", "arm", "n", alt.Tooltip("MAE:Q", format=".3f"),
+                             alt.Tooltip("bias:Q", format="+.3f"), "captain", "regret"]
+                ).properties(height=240)
+                st.altair_chart(ch_, width="stretch")
+                ui.dataframe(gwt, hide_index=True, width="stretch")
+            st.caption(f"Excluded before scoring: {ex_.get('not_final', '—')} rows of an unfinished "
+                       f"gameweek, {ex_.get('dropped_any_arm_missing', '—')} rows where an arm had no "
+                       "forecast (Wowza V1 covers only the players it projected, and the LINEAR/RIDGE "
+                       "residuals need that projection). Captain regret = best actual score of the "
+                       "gameweek minus the actual score of the arm's top pick, in single FPL points "
+                       "(a captain doubles both). The 90% interval resamples whole gameweeks, so with "
+                       "few gameweeks it is wide. The residual arms are shadow only: none of them "
+                       "changes the headline. Wowza V1 scores the props models on a feature frame "
+                       "whose train/serve parity is not certified.")
 
     # ── FPL vs Wowza benchmark ──
     with m_bench:
@@ -477,7 +562,9 @@ with t_lab:
                                         "Spearman": st.column_config.NumberColumn(format="%.3f"),
                                         "bias": st.column_config.NumberColumn(format="%+.3f")})
             st.caption(f"Lowest MAE here: **{best}**. FPL ep_next MAE {fpl_row['MAE']:.3f}. Walk-forward: "
-                       "each gameweek is predicted only by models fitted on earlier gameweeks.")
+                       "each gameweek is predicted only by models fitted on earlier gameweeks. On ACTIVE "
+                       "the arms cover different players (see `n`); the Paired walk-forward tab scores "
+                       "them on identical rows.")
         pub = bench.get("published_ledger") or {}
         if pub.get("available"):
             st.caption(f"Published ledger recomputed (GWs {pub.get('gameweeks')}, n={pub['FPL'].get('n')}): "
