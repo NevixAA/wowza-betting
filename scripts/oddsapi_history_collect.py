@@ -5,6 +5,7 @@ OddsAPI HISTORICAL collector CLI (src/oddsapi_history.py). The data goes ONLY to
   --store DIR                   run: buy the plan in priority order into DIR (a checkout of the PRIVATE
                                 wowza-exec branch `odds-history`), resuming from its ledger
   --store DIR --probe-s         the correct_score probe (one P7 probe event per league)
+  --store DIR --probe-ht        the first-half over/under probe at the BT lead time (gates tier HTB)
 
 Run settings come from the environment and have no fallback:
   ODDS_API_KEY                  the provider key (a secret; never printed)
@@ -48,6 +49,7 @@ def main(argv=None) -> int:
     ap.add_argument("--plan-out", type=Path)
     ap.add_argument("--store", type=Path)
     ap.add_argument("--probe-s", action="store_true")
+    ap.add_argument("--probe-ht", action="store_true")
     ap.add_argument("--probe-keys", action="store_true",
                     help="the keyless leagues against the provider's sports list + one historical event each")
     ap.add_argument("--max-minutes", type=float)
@@ -62,11 +64,14 @@ def main(argv=None) -> int:
     if a.dry_run:
         if a.plan_out is None:
             raise SystemExit("--dry-run needs --plan-out")
-        plan = OH.build_plan(days, tiers, s_ok=OH.s_probe_leagues(a.store))
+        plan = OH.build_plan(days, tiers, s_ok=OH.s_probe_leagues(a.store), ht=OH.ht_probe_result(a.store))
         s = OH.summarise_plan(plan, days)
         s["planned_at"] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
         s["plan_digest"] = OH.plan_digest(plan)
         s["s_probe"] = "applied" if OH.s_probe_leagues(a.store) is not None else "not run: S counted for every team league"
+        h = OH.ht_probe_result(a.store)
+        s["ht_probe"] = ("not run: HTB counted for every HT market and region (maximum)" if h is None
+                         else {"markets": list(h[0]), "regions": list(h[1])})
         s["props_markets_from_probe"] = {k: list(v) for k, v in OH.probe_props_markets().items()}
         a.plan_out.parent.mkdir(parents=True, exist_ok=True)
         a.plan_out.write_text(json.dumps(s, indent=1, sort_keys=False) + "\n", encoding="utf-8")
@@ -88,11 +93,15 @@ def main(argv=None) -> int:
     if a.probe_s:
         res = OH.probe_s(meter, a.store)
         return OH.EXIT_ERROR if res.get("stopped") else OH.EXIT_DONE
+    if a.probe_ht:
+        res = OH.probe_ht(meter, a.store)
+        return OH.EXIT_ERROR if res.get("stopped") and not res.get("confirmed_leagues") else OH.EXIT_DONE
     if a.probe_keys:
         run_id = os.getenv("GITHUB_RUN_ID") or datetime.now(timezone.utc).strftime("local%Y%m%d%H%M%S")
         res = OH.probe_keys(meter, OH.Store(a.store, f"{run_id}-probe-keys"), days, spell)
         return OH.EXIT_ERROR if res.get("stopped") else OH.EXIT_DONE
-    plan = OH.build_plan(days, tiers, s_ok=OH.s_probe_leagues(a.store) or set())
+    plan = OH.build_plan(days, tiers, s_ok=OH.s_probe_leagues(a.store) or set(),
+                         ht=OH.ht_probe_result(a.store) or ((), ()))
     run_id = os.getenv("GITHUB_RUN_ID") or datetime.now(timezone.utc).strftime("local%Y%m%d%H%M%S")
     run_id = f"{run_id}-{os.getenv('GITHUB_RUN_ATTEMPT', '1')}-{datetime.now(timezone.utc):%H%M%S}"
     store = OH.Store(a.store, run_id)

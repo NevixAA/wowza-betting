@@ -26,6 +26,7 @@ ODDS_DEDUPE = ["unit_key", "event_id", "bookmaker", "market", "outcome_name", "o
 UNMATCHED_COLS = ["kind", "league", "date", "home", "away", "event_id", "commence_time"]
 TOTAL_MARKETS = {"totals", "alternate_totals"}
 TEAM_TOTAL_MARKETS = {"team_totals", "alternate_team_totals"}
+HT_TOTAL_MARKETS = {"totals_h1", "alternate_totals_h1"}
 
 
 def load_store(store_root: Path) -> pd.DataFrame:
@@ -61,6 +62,10 @@ def classify(market: str, name, desc, point, home: str, away: str) -> dict | Non
         return {"market": "btts", "side": name.lower(), "line": None, "team": None, "player": None}
     if market in TOTAL_MARKETS and name in ("Over", "Under") and pt is not None:
         return {"market": _line_name(pt) or "total_line", "side": "yes" if name == "Over" else "no",
+                "line": pt, "team": None, "player": None}
+    if market in HT_TOTAL_MARKETS and name in ("Over", "Under") and pt is not None:
+        ln = _line_name(pt)
+        return {"market": f"ht_{ln}" if ln else "ht_total_line", "side": "yes" if name == "Over" else "no",
                 "line": pt, "team": None, "player": None}
     if market in TEAM_TOTAL_MARKETS and name in ("Over", "Under") and pt is not None:
         team = "home" if desc == home else ("away" if desc == away else None)
