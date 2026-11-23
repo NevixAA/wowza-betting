@@ -1,0 +1,106 @@
+{
+  "dates": [
+    "2026-11-14",
+    "2026-11-15",
+    "2026-11-16",
+    "2026-11-18",
+    "2026-11-19",
+    "2026-11-20"
+  ],
+  "raw_columns": [
+    "away_attack_str",
+    "away_conceded_last5",
+    "away_corners_pg_roll",
+    "away_cs_rate_a",
+    "away_defense_str",
+    "away_fouls_pg_roll",
+    "away_has_ht_history",
+    "away_home_adv_factor",
+    "away_ht_attack_str",
+    "away_ht_conceded_last5",
+    "away_ht_over05_rate",
+    "away_ht_over15_rate",
+    "away_ht_scored_last5",
+    "away_insidebox_last5",
+    "away_over25_last5",
+    "away_rest_days",
+    "away_scored_last5",
+    "away_season_conceded_a",
+    "away_season_goals_a",
+    "away_xg_last5",
+    "combined_ht_goals_avg",
+    "combined_sot_ratio",
+    "home_advantage",
+    "home_attack_str",
+    "home_conceded_last5",
+    "home_corners_pg_roll",
+    "home_cs_rate_h",
+    "home_defense_str",
+    "home_fouls_pg_roll",
+    "home_ht_attack_str",
+    "home_ht_conceded_last5",
+    "home_ht_over05_rate",
+    "home_ht_over15_rate",
+    "home_ht_scored_last5",
+    "home_insidebox_last5",
+    "home_over25_last5",
+    "home_rest_days",
+    "home_scored_last5",
+    "home_season_conceded_h",
+    "home_season_goals_h",
+    "home_xg_last5",
+    "p_over25_poisson_dc"
+  ],
+  "per_date": {
+    "2026-11-14": {
+      "fixtures": 48,
+      "cells": 2016,
+      "mismatched_cells": 0
+    },
+    "2026-11-15": {
+      "fixtures": 4,
+      "cells": 168,
+      "mismatched_cells": 0
+    },
+    "2026-11-16": {
+      "fixtures": 1,
+      "cells": 42,
+      "mismatched_cells": 0
+    },
+    "2026-11-18": {
+      "fixtures": 4,
+      "cells": 168,
+      "mismatched_cells": 0
+    },
+    "2026-11-19": {
+      "fixtures": 4,
+      "cells": 168,
+      "mismatched_cells": 0
+    },
+    "2026-11-20": {
+      "fixtures": 1,
+      "cells": 42,
+      "mismatched_cells": 0
+    }
+  },
+  "total_mismatched_cells": 0,
+  "mismatched_cells_by_column": {},
+  "probability": {
+    "models/model_ht_over05.pkl": {
+      "rows": 62,
+      "nan_rows": 0,
+      "mean_abs_pp": 0.0,
+      "max_abs_pp": 0.0,
+      "rows_over_1pp": 0,
+      "rows_exact": 62
+    },
+    "models/model_ht_over15.pkl": {
+      "rows": 62,
+      "nan_rows": 0,
+      "mean_abs_pp": 0.0,
+      "max_abs_pp": 0.0,
+      "rows_over_1pp": 0,
+      "rows_exact": 62
+    }
+  }
+}

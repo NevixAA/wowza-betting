@@ -169,6 +169,15 @@ def _add_ht_flags(tc: pd.DataFrame) -> bool:
     has_ht_history indicator."""
     has_ht = "ht_scored" in tc.columns and tc["ht_scored"].notna().any()
     if has_ht:
+        # A half-time score is ATOMIC (owner P0 item 4, 2026-11-22): a match with only one HT side
+        # recorded has no real HT score, so neither side feeds the HT form. Before this the present
+        # side fed ht_scored/ht_conceded_last5 while ht_known (has_ht_history) said "no HT score":
+        # an HT form value next to has_ht_history=0. 0 such rows in the committed history
+        # (reports/P0_HT_FEATURE_PARITY.md), so no trained or served value changes.
+        half = tc["ht_scored"].isna() | tc["ht_conceded"].isna()
+        tc.loc[half, ["ht_scored", "ht_conceded"]] = np.nan
+        has_ht = bool(tc["ht_scored"].notna().any())
+    if has_ht:
         tc["ht_total"] = tc["ht_scored"] + tc["ht_conceded"]
         tc["ht_over05_flag"] = (tc["ht_total"] >= 1).astype(float).where(tc["ht_total"].notna())
         tc["ht_over15_flag"] = (tc["ht_total"] >= 2).astype(float).where(tc["ht_total"].notna())

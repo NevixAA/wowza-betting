@@ -14,9 +14,9 @@
   "gradient_boost": {
     "accuracy": 0.7299,
     "auc": 0.5476,
-    "log_loss": 0.58138,
-    "brier": 0.19629,
-    "ece": 0.01716,
+    "log_loss": 0.58139,
+    "brier": 0.1963,
+    "ece": 0.01718,
     "n_train": 39400,
     "n_cal": 4919,
     "n_meta": 4937,
@@ -37,10 +37,10 @@
   },
   "__meta__": {
     "accuracy": 0.7299,
-    "auc": 0.5489,
-    "log_loss": 0.58047,
-    "brier": 0.19595,
-    "ece": 0.02708,
+    "auc": 0.5492,
+    "log_loss": 0.58048,
+    "brier": 0.19596,
+    "ece": 0.02712,
     "n_meta": 4937,
     "n_test": 137,
     "evaluated_on": "holdout"

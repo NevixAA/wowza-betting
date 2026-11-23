@@ -91,6 +91,17 @@ def validate_config(cfg: dict) -> None:
         raise ValueError("comparison.reference must be one of the candidates")
     if cmp_.get("correction") != "holm":
         raise ValueError("comparison.correction must be 'holm' (pre-registered)")
+    me = cfg["features"].get("market_exclude") or {}
+    grouped = {c for g in cfg["features"]["groups"].values() for c in g["columns"]}
+    for track, per in me.items():
+        if track not in TRACKS:
+            raise ValueError(f"features.market_exclude: unknown track {track!r}")
+        for market, cols in (per or {}).items():
+            if market not in cfg["markets"]:
+                raise ValueError(f"features.market_exclude.{track}: unknown market {market!r}")
+            off = [c for c in cols or () if c not in grouped]
+            if off:
+                raise ValueError(f"features.market_exclude.{track}.{market}: {off} not in a feature group")
     od = cfg.get("owner_decisions") or {}
     if "new_format_ht_variant" in od and not isinstance(od["new_format_ht_variant"], bool):
         raise ValueError("owner_decisions.new_format_ht_variant must be true or false")
@@ -141,16 +152,27 @@ def assert_run_folder(path: Path | str, root: Path | None = None) -> Path:
 
 # ── features ────────────────────────────────────────────────────────────────────────────────
 
-def feature_list(cfg: dict, track: str, columns, restore=()) -> tuple[list[str], dict]:
-    """(features, excluded{column: reason}) for a track, given the frame's columns.
+def market_exclude(cfg: dict, track: str, market: str | None) -> list[str]:
+    """features.market_exclude[track][market]: inputs dropped for ONE market of a track only (owner
+    2026-11-22: the Standard HT models drop the degenerate home_has_ht_history). [] when not set."""
+    if not market:
+        return []
+    return list(((cfg["features"].get("market_exclude") or {}).get(track) or {}).get(market) or ())
+
+
+def feature_list(cfg: dict, track: str, columns, restore=(), market: str | None = None) -> tuple[list[str], dict]:
+    """(features, excluded{column: reason}) for a track (and, with `market`, that market), given the
+    frame's columns.
 
     A configured column that the frame does not have is EXCLUDED and listed - never created.
     `restore` lifts those columns out of the track's exclusion list (the HT variant); it never
-    adds a column that is not in an included group or that is price-derived."""
+    adds a column that is not in an included group or that is price-derived. `market` applies
+    features.market_exclude[track][market] on top (no market -> the track list, unchanged)."""
     fcfg = cfg["features"]
     cols = set(columns)
     never = set(fcfg.get("never_model_inputs") or ())
     track_ex = set((fcfg.get("track_exclude") or {}).get(track) or ()) - set(restore)
+    market_ex = set(market_exclude(cfg, track, market))
     feats, excluded = [], {}
     for gname, g in fcfg["groups"].items():
         for c in g["columns"]:
@@ -160,6 +182,8 @@ def feature_list(cfg: dict, track: str, columns, restore=()) -> tuple[list[str],
                 excluded[c] = "price-derived (never a model input)"
             elif c in track_ex:
                 excluded[c] = f"excluded for track {track}"
+            elif c in market_ex:
+                excluded[c] = f"excluded for track {track} market {market}"
             elif c not in cols:
                 excluded[c] = "not in the feature frame"
             elif c not in feats:
@@ -209,12 +233,13 @@ def ht_variant_blockers(cfg: dict, columns=None) -> list[str]:
     return [f"new_format HT variant (owner_decisions.new_format_ht_variant) cannot run: {w}" for w in why]
 
 
-def feature_sets(cfg: dict, track: str, columns) -> dict:
+def feature_sets(cfg: dict, track: str, columns, market: str | None = None) -> dict:
     """{suffix: (features, excluded)} for a track: '' is the champion exclusion list; '+ht' (new_format,
-    flag on) is the same list with the HT block restored."""
-    out = {"": feature_list(cfg, track, columns)}
+    flag on) is the same list with the HT block restored. `market` applies that market's
+    features.market_exclude entry to every set."""
+    out = {"": feature_list(cfg, track, columns, market=market)}
     if ht_variant_on(cfg) and track == HT_VARIANT_TRACK:
-        out[HT_VARIANT_SUFFIX] = feature_list(cfg, track, columns, restore=ht_block(cfg))
+        out[HT_VARIANT_SUFFIX] = feature_list(cfg, track, columns, restore=ht_block(cfg), market=market)
     return out
 
 
@@ -399,6 +424,7 @@ def build_plan(feat: pd.DataFrame, cfg: dict) -> dict:
                                   "holdout_meets_min_league_n": (n_hold >= min_league) if min_league else None}
             t["markets"][market] = {
                 "eligible_rows": int(len(rows)), "walk_forward_region": int(len(pre)),
+                "market_excluded_features": market_exclude(cfg, track, market),
                 "holdout": int(len(hold)), "after_holdout_unused": int(len(after)),
                 "walk_forward_matchdays": int(pd.to_datetime(pre["date"]).nunique()) if len(pre) else 0,
                 "holdout_matchdays": int(pd.to_datetime(hold["date"]).nunique()) if len(hold) else 0,

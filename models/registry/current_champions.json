@@ -50,23 +50,23 @@
     "gate_version": "PG-1.0"
   },
   "ht_over05": {
-    "model_version": "ht_over05_20261119T134019Z_5a76d680",
-    "champion_since": "2026-11-19T13:40:19Z",
+    "model_version": "ht_over05_20261122T170741Z_0776cea1",
+    "champion_since": "2026-11-22T17:07:41Z",
     "retrain_batch_id": "phase2_refit_clean-data-switch-2026-11-09",
     "training_cutoff": "2026-11-01",
-    "artifact_sha256": "5a76d680e2fc53d6d8841781d6100bfbd1df2c54ccce9c55d7d782c778e52a75",
+    "artifact_sha256": "0776cea1784db55e3965fc53dba9f957148030c0bdc83215ab5d14c86e835974",
     "promotion_source": "OWNER_CLEAN_SWITCH",
-    "promotion_reason": "OWNER_CLEAN_SWITCH [clean-data-switch-2026-11-09] stage std_2016_refit by Nevo (owner) (2026-11-19): \"Install (Recommended)\" - the Standard track only: the same champion_recipe (scripts/phase2_refit_serving.py) refitted with Standard training starting at the 2016/17 season (config/phase2_retrain.json data.train_start standard=2016-07-01) on the football-data seasons connected by PR #59 (frame ebe4",
+    "promotion_reason": "OWNER_CLEAN_SWITCH [clean-data-switch-2026-11-09] stage std_ht_drop_home_ht_history by Nevo (owner) (2026-11-22): \"Yes, retrain the 2 HT models\" - the two Standard half-time payloads (ht_over05 / ht_over15, models/model_ht_over05.pkl / model_ht_over15.pkl) refitted with the same champion_recipe on the same frame (ebe47c041a7f595f), the same cut-offs (Standard from 2016-07-01, training 2016-08-05..",
     "gate_version": "PG-1.0"
   },
   "ht_over15": {
-    "model_version": "ht_over15_20261119T134019Z_e9a12ce1",
-    "champion_since": "2026-11-19T13:40:19Z",
+    "model_version": "ht_over15_20261122T170742Z_aa4c62ce",
+    "champion_since": "2026-11-22T17:07:42Z",
     "retrain_batch_id": "phase2_refit_clean-data-switch-2026-11-09",
     "training_cutoff": "2026-11-01",
-    "artifact_sha256": "e9a12ce1b6af077fc9dc8efb9f663d2c757eb07880a2378b18049ba891e6552b",
+    "artifact_sha256": "aa4c62ceece0e2a52ee8d45d75b8621194464d0eb5ac55aab3c1df8c5c07d8bc",
     "promotion_source": "OWNER_CLEAN_SWITCH",
-    "promotion_reason": "OWNER_CLEAN_SWITCH [clean-data-switch-2026-11-09] stage std_2016_refit by Nevo (owner) (2026-11-19): \"Install (Recommended)\" - the Standard track only: the same champion_recipe (scripts/phase2_refit_serving.py) refitted with Standard training starting at the 2016/17 season (config/phase2_retrain.json data.train_start standard=2016-07-01) on the football-data seasons connected by PR #59 (frame ebe4",
+    "promotion_reason": "OWNER_CLEAN_SWITCH [clean-data-switch-2026-11-09] stage std_ht_drop_home_ht_history by Nevo (owner) (2026-11-22): \"Yes, retrain the 2 HT models\" - the two Standard half-time payloads (ht_over05 / ht_over15, models/model_ht_over05.pkl / model_ht_over15.pkl) refitted with the same champion_recipe on the same frame (ebe47c041a7f595f), the same cut-offs (Standard from 2016-07-01, training 2016-08-05..",
     "gate_version": "PG-1.0"
   },
   "standard_repaired": {
