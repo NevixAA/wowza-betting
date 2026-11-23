@@ -1,11 +1,10 @@
 {
  "about": "Canonical system health (src/system_health.build_artifact), written daily by evidence_refresh.yml. overall: FAIL if any RED check or protected_tracks_modified; WARN if any AMBER/NO_DATA; PASS otherwise. Every status comes from the rule stored beside it. `indicators` holds FOUR separate verdicts (CI gate, operational data quality, production model integrity, full-system certification) - never one GREEN for all four.",
  "artifact_version": "SYSTEM-HEALTH-1",
- "generated_at": "2026-11-23T08:35:46Z",
- "overall": "FAIL",
+ "generated_at": "2026-11-23T10:45:27Z",
+ "overall": "WARN",
  "reasons": [
   "NO_DATA Challenger prediction coverage: no active challenger experiment",
-  "RED Data truth 9: clean ledgers: 2 v91_shadow fixture(s) logged twice",
   "AMBER Data truth 13c: registered historical exceptions: 7 registered exception(s)"
  ],
  "protected_tracks_modified": false,
@@ -18,12 +17,12 @@
   },
   "contracts_version": "CONTRACTS-1",
   "research_lock_digest": "3416ad0e5e8ae71db66cb14e70323226265a9b2377b2cd4eb998fde1a9c4cf58",
-  "code_commit": "8eee7627d155"
+  "code_commit": "e2bc9f9d636b"
  },
  "counts": {
-  "GREEN": 31,
+  "GREEN": 32,
   "AMBER": 1,
-  "RED": 1,
+  "RED": 0,
   "NO_DATA": 1
  },
  "checks": [
@@ -79,7 +78,7 @@
   {
    "check": "GitHub workflow health",
    "status": "GREEN",
-   "value": "0 still failing / 315 runs (24 h) \u00b7 6 fixed since",
+   "value": "0 still failing / 326 runs (24 h) \u00b7 6 fixed since",
    "rule": "workflows whose latest run on main (last 24 h, 3 repos) failed or timed out \u2014 failures a later success superseded and branch-only research runs do not count: GREEN 0; AMBER 1-2; RED >= 3 (record > 36 h old = AMBER)",
    "detail": ""
   },
@@ -128,7 +127,7 @@
   {
    "check": "Data truth 2: no silent defaults",
    "status": "GREEN",
-   "value": "0 new default(s); 0 known (baseline); 194 allow-listed (counters/display); 0 baseline entr(ies) now gone; 1 allow-list entr(ies) now gone; 452 production files scanned",
+   "value": "0 new default(s); 0 known (baseline); 194 allow-listed (counters/display); 0 baseline entr(ies) now gone; 1 allow-list entr(ies) now gone; 454 production files scanned",
    "rule": "no NEW invented default in ALL production code (fillna(<non-zero literal>), literal season fallback/list, pinned football-data folder, numeric .get(<key>, <number>), an or-zero on a parsed value, a zero fillna on a price/odds): RED if any site is in neither config/data_truth_baseline.json nor config/data_truth_allowlist.json, or an allow-list entry has no reason; GREEN otherwise",
    "detail": ""
   },
@@ -369,8 +368,8 @@
   },
   {
    "check": "Data truth 9: clean ledgers",
-   "status": "RED",
-   "value": "2 v91_shadow fixture(s) logged twice",
+   "status": "GREEN",
+   "value": "clean since 2026-11-19 (7 live tip(s), 2665 player row(s), 126 v91 row(s))",
    "rule": "from the Clean Record start: 0 multi-tip / opposite-tip fixtures, 0 post-kickoff tips, 0 closes <= 1.0, 0 |CLV| > 50 new-format rows, 0 duplicate player tips, 0 v91_shadow fixtures logged twice: RED on any; NO_DATA before the start is set",
    "detail": ""
   },
@@ -702,7 +701,7 @@
   {
    "check": "Edge-engine shadow",
    "status": "GREEN",
-   "value": "market_edge_v2 UNVALIDATED_DEFAULTS, 644 rows, shadow_only=True, 0.1 h old",
+   "value": "market_edge_v2 UNVALIDATED_DEFAULTS, 644 rows, shadow_only=True, 2.2 h old",
    "rule": "RED if edge_engine_health.json is missing, older than 72 h, or shadow_only is not true (a shadow engine must never be live); AMBER if older than 24 h or it scored 0 rows; GREEN otherwise",
    "detail": ""
   },
@@ -817,7 +816,7 @@
     "schema": "TOP_PICKS_ROW",
     "schema_version": "1",
     "present": true,
-    "rows": 381,
+    "rows": 391,
     "n_violations": 0,
     "violations": []
    },
@@ -825,7 +824,7 @@
     "schema": "PROPS_SHOWN_ROW",
     "schema_version": "1",
     "present": true,
-    "rows": 478,
+    "rows": 498,
     "n_violations": 0,
     "violations": []
    },
@@ -930,7 +929,7 @@
    "frozen_digest": "2d91adb7971dc8419372559980307ccf74f9ce9d93d4d8dbc3e6841e70aa80c9",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 3044,
+   "prior_rows": 3116,
    "prior_match": true,
    "status": "OK",
    "reasons": []
@@ -950,7 +949,7 @@
    "frozen_digest": "7e16bc046005e46d3bc1e5798e5f48097515b5d4f342a6161587c681aa79784d",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 1374,
+   "prior_rows": 1394,
    "prior_match": true,
    "status": "OK",
    "reasons": []
@@ -960,7 +959,7 @@
    "frozen_digest": "d26736a4036c4a962a5b735bb59bba874a13c1d8dc8db322c7d8773f23b17ab9",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 3052,
+   "prior_rows": 3124,
    "prior_match": true,
    "status": "OK",
    "reasons": []
@@ -980,7 +979,7 @@
    "frozen_digest": "50912285d5bfe989acc148bb6be4d6b9261ffebca87712456126dbbd46fcd2fb",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 6639,
+   "prior_rows": 6753,
    "prior_match": true,
    "status": "OK",
    "reasons": []
@@ -990,27 +989,27 @@
    "frozen_digest": "b383d4f4f756e767d1da7a697157c7e32cc9a89d7034801f260a5f8e1276ec26",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 1024,
+   "prior_rows": 1030,
    "prior_match": true,
    "status": "OK",
    "reasons": []
   },
   "top_picks_log.csv": {
-   "rows": 381,
-   "frozen_digest": "263cda2171778493794840b1cd6c192cf84fae1139a4a00126c9e7430173c633",
+   "rows": 391,
+   "frozen_digest": "31f9c8fe22555b02cbfdc86aad333e94230e5c45649f1087f8c516649f2549cc",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 381,
+   "prior_rows": 391,
    "prior_match": true,
    "status": "OK",
    "reasons": []
   },
   "props_shown_log.csv": {
-   "rows": 478,
-   "frozen_digest": "695431c32e758e24e87b67b62cc49622ea339bf3fd486f037d1fd196ffc2b797",
+   "rows": 498,
+   "frozen_digest": "0759e27d90f34ac6b9a99023e4c9374bce9907c887d247b2eed44c054534b931",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 478,
+   "prior_rows": 498,
    "prior_match": true,
    "status": "OK",
    "reasons": []
@@ -1112,33 +1111,25 @@
     "research_lock": "GREEN"
    },
    "source": "output/system_health.json",
-   "generated_at": "2026-11-23T08:35:46Z",
+   "generated_at": "2026-11-23T10:45:27Z",
    "age_h": 0.0,
    "failing": []
   },
   "operational_data_quality": {
    "indicator": "operational_data_quality",
    "label": "Operational data quality",
-   "status": "RED",
+   "status": "AMBER",
    "meaning": "the WORST current data truth check, gated or not (an ungated RED is RED here)",
    "source": "output/system_health.json",
-   "generated_at": "2026-11-23T08:35:46Z",
+   "generated_at": "2026-11-23T10:45:27Z",
    "age_h": 0.0,
    "failing": [
-    {
-     "component": "Data truth 9: clean ledgers",
-     "status": "RED",
-     "detail": "2 v91_shadow fixture(s) logged twice",
-     "source": "output/system_health.json",
-     "generated_at": "2026-11-23T08:35:46Z",
-     "gated": false
-    },
     {
      "component": "Data truth 13c: registered historical exceptions",
      "status": "AMBER",
      "detail": "7 registered exception(s)",
      "source": "output/system_health.json",
-     "generated_at": "2026-11-23T08:35:46Z",
+     "generated_at": "2026-11-23T10:45:27Z",
      "gated": false
     }
    ]
@@ -1155,7 +1146,7 @@
    },
    "source": "output/model_integrity_health.json",
    "generated_at": "2026-11-22T20:03:05Z",
-   "age_h": 12.5,
+   "age_h": 14.7,
    "failing": [
     {
      "component": "model new_format|OU25",
@@ -1258,26 +1249,26 @@
    "components": [
     {
      "component": "system health",
-     "status": "FAIL",
+     "status": "WARN",
      "source": "output/system_health.json",
-     "generated_at": "2026-11-23T08:35:46Z",
+     "generated_at": "2026-11-23T10:45:27Z",
      "age_h": 0.0,
      "ok": false
     },
     {
      "component": "data truth (operational)",
-     "status": "RED",
+     "status": "AMBER",
      "source": "output/data_truth_health.json",
-     "generated_at": "2026-11-22T20:08:47Z",
-     "age_h": 12.4,
+     "generated_at": "2026-11-23T10:43:32Z",
+     "age_h": 0.0,
      "ok": false
     },
     {
      "component": "data truth gate",
      "status": "GREEN",
      "source": "output/data_truth_health.json",
-     "generated_at": "2026-11-22T20:08:47Z",
-     "age_h": 12.4,
+     "generated_at": "2026-11-23T10:43:32Z",
+     "age_h": 0.0,
      "ok": true
     },
     {
@@ -1285,7 +1276,7 @@
      "status": "FAIL",
      "source": "output/model_integrity_health.json",
      "generated_at": "2026-11-22T20:03:05Z",
-     "age_h": 12.5,
+     "age_h": 14.7,
      "ok": false
     },
     {
@@ -1293,7 +1284,7 @@
      "status": "PASS",
      "source": "output/join_integrity_health.json",
      "generated_at": "2026-11-22T19:58:58Z",
-     "age_h": 12.6,
+     "age_h": 14.8,
      "ok": true
     },
     {
@@ -1301,7 +1292,7 @@
      "status": "FAIL",
      "source": "output/feature_parity_health.json",
      "generated_at": "2026-11-22T20:01:33Z",
-     "age_h": 12.6,
+     "age_h": 14.7,
      "ok": false
     },
     {
@@ -1309,7 +1300,7 @@
      "status": "PASS",
      "source": "output/model_integrity_health.json",
      "generated_at": "2026-11-22T20:03:05Z",
-     "age_h": 12.5,
+     "age_h": 14.7,
      "ok": true
     }
    ],
@@ -1319,17 +1310,17 @@
    "failing": [
     {
      "component": "system health",
-     "status": "FAIL",
-     "detail": "status FAIL (needs PASS)",
+     "status": "WARN",
+     "detail": "status WARN (needs PASS)",
      "source": "output/system_health.json",
-     "generated_at": "2026-11-23T08:35:46Z"
+     "generated_at": "2026-11-23T10:45:27Z"
     },
     {
      "component": "data truth (operational)",
-     "status": "RED",
-     "detail": "status RED (needs GREEN)",
+     "status": "AMBER",
+     "detail": "status AMBER (needs GREEN)",
      "source": "output/data_truth_health.json",
-     "generated_at": "2026-11-22T20:08:47Z"
+     "generated_at": "2026-11-23T10:43:32Z"
     },
     {
      "component": "model integrity",

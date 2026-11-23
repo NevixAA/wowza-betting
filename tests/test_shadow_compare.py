@@ -27,10 +27,46 @@ def test_a_fixture_is_logged_once_however_often_predict_runs():
     assert len(pd.read_csv(sc.SHADOW_FILE)) == 5
 
 
+def _rows_from(start, n, day="2026-10-05"):
+    return [{**r, "fixture_id": r["fixture_id"] + start} for r in _rows(n, day)]
+
+
 def test_new_fixtures_still_append():
     sc.append_shadow(_rows(3))
-    assert sc.append_shadow(_rows(3, day="2026-10-06")) == 3
+    assert sc.append_shadow(_rows_from(10, 3, day="2026-10-06")) == 3
     assert len(pd.read_csv(sc.SHADOW_FILE)) == 6
+
+
+def test_a_moved_kickoff_never_logs_the_fixture_twice():
+    """2026-11-23 data truth 9 RED: Rosario Central v Barracas Central was first logged for 2026-11-28
+    15:00; the provider moved it to 2026-11-29 00:00 and the next predict run appended a second row,
+    because the key held the match date. First sight wins: the fixture id x market is logged once."""
+    first = [{"fixture_id": "3c55be4d38980e11540c96a994695d51", "market": "ou25",
+              "logged_at": "2026-11-23T02:06:03+00:00", "match_date": "2026-11-28 00:00:00",
+              "kickoff_utc": "2026-11-28 15:00:00", "p_v9": 0.4826}]
+    moved = [{**first[0], "logged_at": "2026-11-23T08:30:40+00:00", "match_date": "2026-11-29 00:00:00",
+              "kickoff_utc": "2026-11-29 00:00:00", "p_v9": 0.4827}]
+    assert sc.append_shadow(first) == 1
+    assert sc.append_shadow(moved) == 0
+    d = pd.read_csv(sc.SHADOW_FILE, dtype=str)
+    assert len(d) == 1 and d.iloc[0]["match_date"] == "2026-11-28 00:00:00"
+    assert d.iloc[0]["p_v9"] == "0.4826"                      # the first-sight opinion, never revised
+    # another market on the same fixture is a different unit and still appends
+    assert sc.append_shadow([{**moved[0], "market": "btts"}]) == 1
+
+
+def test_one_batch_never_writes_a_fixture_twice():
+    rows = _rows(2) + [{**_rows(1)[0], "match_date": "2026-10-06", "p_v9": 0.9}]
+    assert sc.append_shadow(rows) == 2
+    d = pd.read_csv(sc.SHADOW_FILE)
+    assert len(d) == 2 and d.loc[d["fixture_id"] == 0, "p_v9"].iloc[0] == 0.5   # first row wins
+    assert sc.append_shadow(rows) == 0
+
+
+def test_rows_without_a_fixture_id_are_never_merged_across_dates():
+    rows = [{"fixture_id": "", "match_date": "2026-10-05", "league": "L"},
+            {"fixture_id": "", "match_date": "2026-10-06", "league": "L"}]
+    assert sc.append_shadow(rows) == 2
 
 
 def test_prospective_window_excludes_rows_logged_before_registration():
