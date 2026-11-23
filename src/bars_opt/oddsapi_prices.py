@@ -23,7 +23,9 @@ new is invented here):
     order as OddsAPI bookmaker keys; the provider's eu region carries no Bet365, so the history prices
     with Pinnacle or not at all.
   * EXACT LINE, PER SIDE. over15 / over25 / over35 take only the provider's 1.5 / 2.5 / 3.5 Over AND Under;
-    a 2.25 / 2.75 (or any quarter / whole) line never stands in. BTTS takes Yes AND No. A book quoting two
+    a 2.25 / 2.75 (or any quarter / whole) line never stands in. ht_over05 / ht_over15 take only the provider's
+    FIRST-HALF 0.5 / 1.5 Over AND Under (totals_h1 / alternate_totals_h1, BET-role tier HTB; the adapter names
+    them ht_over05 / ht_over15, a full-match line never prices a first-half market). BTTS takes Yes AND No. A book quoting two
     different prices for the same outcome in one snapshot is ambiguous and dropped (counted).
   * NEVER ACROSS LEAGUES OR FIXTURES. The event -> fixture map is the adapter's (src.oddsapi_history_adapter.
     match_universe: one league's sport keys, one match day, both clubs proven, one-to-one).
@@ -44,10 +46,14 @@ ROOT = Path(__file__).resolve().parents[2]
 #: the study's own same-book order (src.league_bars.fd_ou25_pairs: Bet365, else Pinnacle), as OddsAPI keys
 BOOK_ORDER = ("bet365", "pinnacle")
 #: per-market extension of BOOK_ORDER (books tried AFTER Bet365 / Pinnacle). Empty by default; set only by a protocol
-#: that names it (P11 v2, owner 2026-11-18 "O1 APPROVED": BTTS falls back to William Hill, then 1xBet / Ladbrokes)
+#: that names it (P11 v2, owner 2026-11-18 "O1 APPROVED": BTTS falls back to William Hill, then 1xBet / Ladbrokes;
+#: P11 v3, owner 2026-11-23 "Extend to all markets (Recommended)": the same order for more markets, per track - a
+#: protocol passes its own map to price_track(fallback=...) instead of this module default)
 BOOK_FALLBACK_BY_MARKET: dict = {}
-#: the exact provider line of each universe market (None = no line: BTTS)
-LINE_OF = {"over15": 1.5, "over25": 2.5, "over35": 3.5, "btts": None}
+#: the owner's O1 fallback order (2026-11-18), the only fallback books any protocol may name
+O1_FALLBACK_BOOKS = ("williamhill", "onexbet", "ladbrokes_uk")
+#: the exact provider line of each universe market (None = no line: BTTS). ht_*: the FIRST-HALF line (tier HTB)
+LINE_OF = {"over15": 1.5, "over25": 2.5, "over35": 3.5, "btts": None, "ht_over05": 0.5, "ht_over15": 1.5}
 SRC_OWN, SRC_HIST = "own", "oddsapi_hist"
 HIST_COLS = ["oh_event_id", "oh_book", "oh_snapshot_ts", "oh_commence_time", "oh_snapshot_ts_close"]
 
@@ -120,8 +126,16 @@ def history_pairs(long: pd.DataFrame) -> tuple[pd.DataFrame, dict]:
     return w[cols].reset_index(drop=True), st
 
 
+def _midnight(ts: pd.Series) -> pd.Series:
+    """True where a timestamp sits exactly on 00:00:00 UTC - the stamp of a date-only backfill, never a proven
+    capture time (protocol v4 / data-truth rule: a 00:00-stamped price cannot be proven pre-kickoff)."""
+    t = pd.to_datetime(ts, utc=True)
+    return (t.dt.hour == 0) & (t.dt.minute == 0) & (t.dt.second == 0) & (t.dt.microsecond == 0)
+
+
 def pick_pairs(pairs: pd.DataFrame, fixture_dates: pd.Series, stats: dict | None = None,
-               bet_role: bool = False) -> pd.DataFrame:
+               bet_role: bool = False, fallback: dict | None = None,
+               drop_midnight: bool = False) -> pd.DataFrame:
     """Per (fixture_id, market): the first book of BOOK_ORDER with a provable pre-kickoff pair; its EARLIEST
     pair is the bet-time price, its LATEST the closing pair (src.league_bars.snapshot_pairs timing).
     fixture_dates: {fixture_id: our match date}. A pair whose provider kickoff is unknown or outside the
@@ -130,7 +144,11 @@ def pick_pairs(pairs: pd.DataFrame, fixture_dates: pd.Series, stats: dict | None
     bet_role (protocol v4/v5 price_evidence (c)): the pairs come ONLY from BET-role snapshots (tier BT, taken at
     the measured live-tip lead time, src.oddsapi_history.BT_LEAD_HOURS: T-125h Standard / T-153h New-Format). Such
     a snapshot is the bet price by construction, so the "from match day - 1" lower bound (written for close /
-    movement snapshots) does not apply; snapshot < kickoff still does."""
+    movement snapshots) does not apply; snapshot < kickoff still does.
+    fallback: {market: books tried after BOOK_ORDER} for this call (None = the module's BOOK_FALLBACK_BY_MARKET).
+    Only O1_FALLBACK_BOOKS may be named, in the owner's order (ValueError otherwise).
+    drop_midnight (P11 v3, owner 2026-11-23 "same bet-time proof rules"): a pair whose snapshot is stamped exactly
+    00:00:00 UTC is not a proven capture time and never prices (counted)."""
     from src import oddsapi_history as OH
     out_cols = ["fixture_id", "market", "league", "event_id", "bookmaker", "ts", "ko", "yes", "no",
                 "ts_c", "yes_c", "no_c"]
@@ -150,7 +168,13 @@ def pick_pairs(pairs: pd.DataFrame, fixture_dates: pd.Series, stats: dict | None
     pre = p["ts"] < p["ko"]
     lower = pd.Series(True, index=p.index) if bet_role else (p["ts"] >= p["day0"] - pd.Timedelta(days=1))
     p = p[pre & p["day0"].notna() & lower]
-    orders = {m: tuple(BOOK_ORDER) + tuple(BOOK_FALLBACK_BY_MARKET.get(m, ())) for m in p["market"].unique()}
+    if drop_midnight:
+        mid = _midnight(p["ts"])
+        stats["pairs_midnight_stamp_dropped"] = int(mid.sum())
+        p = p[~mid]
+    fb = BOOK_FALLBACK_BY_MARKET if fallback is None else fallback
+    check_fallback(fb)
+    orders = {m: tuple(BOOK_ORDER) + tuple(fb.get(m, ())) for m in p["market"].unique()}
     rank = [({b: i for i, b in enumerate(orders[m])}).get(b) for m, b in zip(p["market"], p["bookmaker"])]
     p = p.assign(rank=rank)
     p = p[p["rank"].notna()]
@@ -170,6 +194,14 @@ def pick_pairs(pairs: pd.DataFrame, fixture_dates: pd.Series, stats: dict | None
         out[c] = np.where(same, np.nan, out[c].astype(float))
     out["ts_c"] = out["ts_c"].where(~same)
     return out
+
+
+def check_fallback(fb: dict) -> None:
+    """A fallback list names only books of the owner's O1 order, in that order (never Bet365 / Pinnacle again)."""
+    for m, books in (fb or {}).items():
+        books = tuple(books)
+        if not set(books) <= set(O1_FALLBACK_BOOKS) or list(books) != sorted(books, key=O1_FALLBACK_BOOKS.index):
+            raise ValueError(f"fallback books for {m} must follow the owner's O1 order {O1_FALLBACK_BOOKS}: {books}")
 
 
 # ── the priced universe ──────────────────────────────────────────────────────────────────────────
@@ -241,11 +273,12 @@ def verify_join(priced: pd.DataFrame, fmap: dict, event_sport: dict) -> dict:
 
 # ── one track, from the store ────────────────────────────────────────────────────────────────────
 
-def price_track(universe: pd.DataFrame, store_root: Path, tiers=None, close_tiers=None) -> dict:
+def price_track(universe: pd.DataFrame, store_root: Path, tiers=None, close_tiers=None,
+                fallback: dict | None = None, drop_midnight: bool = False) -> dict:
     """The whole chain for one track's universe: adapter match + attach, pairs, pick, priced universe,
     integrity check. `tiers`: the collector tiers whose prices may be the BET price (the protocol pins them; None =
     every stored tier). `close_tiers` (protocol v4): tiers read ONLY for the closing pair (CLV), never as a bet
-    price. Returns {"priced", "overlap", "stats"}."""
+    price. `fallback` / `drop_midnight`: see pick_pairs. Returns {"priced", "overlap", "stats"}."""
     from src import oddsapi_history_adapter as AD
     store = AD.load_store(store_root)
     odds = store[store["tier"].isin(list(tiers))] if tiers is not None else store
@@ -253,7 +286,8 @@ def price_track(universe: pd.DataFrame, store_root: Path, tiers=None, close_tier
     from src import oddsapi_history as OH
     bet_role = tiers is not None and len(list(tiers)) > 0 and all(OH.snapshot_role(t, OH.BT_LABEL) == "BET"
                                                                    for t in tiers)
-    return price_frames(universe, odds, AD.load_context(store_root, universe), close, bet_role=bet_role)
+    return price_frames(universe, odds, AD.load_context(store_root, universe), close, bet_role=bet_role,
+                        fallback=fallback, drop_midnight=drop_midnight)
 
 
 def clean_fixture_map(fmap: dict, odds: pd.DataFrame) -> tuple[dict, dict]:
@@ -284,7 +318,8 @@ def clean_fixture_map(fmap: dict, odds: pd.DataFrame) -> tuple[dict, dict]:
                    "map_fixtures_dropped_ambiguous": len(keep) - len(clean)}
 
 
-def close_pairs(universe: pd.DataFrame, odds: pd.DataFrame, ctx: dict | None) -> pd.DataFrame:
+def close_pairs(universe: pd.DataFrame, odds: pd.DataFrame, ctx: dict | None,
+                fallback: dict | None = None) -> pd.DataFrame:
     """The LATEST provable pre-kickoff same-book pair per fixture x market from CLOSE-role tiers (CLV only)."""
     from src import oddsapi_history_adapter as AD
     odds = odds[odds["league"].isin(set(universe["league"]))]
@@ -294,7 +329,7 @@ def close_pairs(universe: pd.DataFrame, odds: pd.DataFrame, ctx: dict | None) ->
     long = long[long["fixture_id"].isin(set(fmap))] if len(long) else long
     pairs, _st = history_pairs(long)
     fx = universe.assign(fixture_id=universe["row_id"].astype(str)).drop_duplicates("fixture_id")
-    pk = pick_pairs(pairs, fx.set_index("fixture_id")["date"], {})
+    pk = pick_pairs(pairs, fx.set_index("fixture_id")["date"], {}, fallback=fallback)
     # the LATEST of the close-role snapshots is the closing pair (pick_pairs puts it in ts_c / yes_c / no_c,
     # or, for a single snapshot, in ts / yes / no)
     last_ts = pk["ts_c"].where(pk["ts_c"].notna(), pk["ts"])
@@ -304,7 +339,8 @@ def close_pairs(universe: pd.DataFrame, odds: pd.DataFrame, ctx: dict | None) ->
 
 
 def price_frames(universe: pd.DataFrame, odds: pd.DataFrame, ctx: dict | None,
-                 close_odds: pd.DataFrame | None = None, bet_role: bool = False) -> dict:
+                 close_odds: pd.DataFrame | None = None, bet_role: bool = False,
+                 fallback: dict | None = None, drop_midnight: bool = False) -> dict:
     """price_track on frames (ctx None = the events the odds rows carry, the adapter's own fallback).
     close_odds (protocol v4): close-role prices, read ONLY to fill the closing pair of history-priced rows."""
     from src import oddsapi_history_adapter as AD
@@ -316,10 +352,13 @@ def price_frames(universe: pd.DataFrame, odds: pd.DataFrame, ctx: dict | None,
     pairs, pst = history_pairs(long)
     pst.update(clean)
     fx = universe.assign(fixture_id=universe["row_id"].astype(str)).drop_duplicates("fixture_id")
-    picked = pick_pairs(pairs, fx.set_index("fixture_id")["date"], pst, bet_role=bet_role)
+    if fallback and not bet_role:
+        raise ValueError("fallback books price only from BET-role tiers (the owner's O1: bet-time quotes only)")
+    picked = pick_pairs(pairs, fx.set_index("fixture_id")["date"], pst, bet_role=bet_role, fallback=fallback,
+                        drop_midnight=drop_midnight)
     pst["bet_role_only"] = bool(bet_role)
     if close_odds is not None and len(picked):
-        cp = close_pairs(universe, close_odds, ctx)
+        cp = close_pairs(universe, close_odds, ctx, fallback=fallback)
         picked = picked.merge(cp, on=["fixture_id", "market"], how="left")
         later = picked["ts_close"].notna() & (picked["ts_close"] > picked["ts"])
         picked["ts_c"] = picked["ts_close"].where(later)
