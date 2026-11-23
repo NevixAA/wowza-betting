@@ -158,7 +158,9 @@ def norm_side(v) -> str | None:
 
 
 def row_key(fixture_id, market, match_date) -> tuple[str, str, str]:
-    """Same identity append_shadow dedups on."""
+    """Row identity in the stored file. Keeps the match date: rows logged before 2026-11-23 hold a few
+    fixtures twice (a moved kick-off; listed in output/corrections/v91_shadow_duplicates.csv), and each
+    stored row must stay addressable. append_shadow now dedups new rows on (fixture_id, market) alone."""
     return (str(fixture_id).strip(), norm_market(market), str(match_date).strip()[:10])
 
 
