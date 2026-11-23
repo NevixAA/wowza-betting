@@ -159,6 +159,17 @@ def append_book_rows(new_rows: list[dict]) -> None:
     roll(path)
 
 
+def book_label(books) -> str | None:
+    """The honest "book" of a CROSS-BOOK MEDIAN price (owner 2026-11-23 "Yes, do all", D6): one book -> its key
+    (the median of one quote is that book's price); several -> "median:" + the sorted distinct keys joined by
+    ";" (an even count's median is no single book's price, so no single book is ever named). None when no
+    book is known."""
+    keys = sorted({str(b).strip() for b in books or [] if str(b or "").strip()})
+    if not keys:
+        return None
+    return keys[0] if len(keys) == 1 else "median:" + ";".join(keys)
+
+
 def _log_usage(*, calls, credits, rows, fresh, nokey, err, capped, near, regions, by_league,
                calls_by_league, remaining) -> None:
     """One machine-readable line per run for src/integrity/oddsapi_quota.py (R2-C). Never raises,
@@ -275,13 +286,18 @@ def fetch(rows: list[dict]) -> list[dict]:
                 continue
             data = resp.json()
             fetched[match] = now
+            # CAPTURE TIME (D6, owner 2026-11-23): the UTC instant THIS event's answer arrived; every price
+            # filled from it below carries it (odds_btts_captured_at, odds_over15/35_captured_at).
+            call_ts = pd.Timestamp(datetime.now(timezone.utc)).strftime("%Y-%m-%dT%H:%M:%SZ")
         except Exception:
             n_err += 1
             out.append(r)
             continue
 
         yes, no = [], []
+        yes_books, no_books = [], []                  # D6: the books behind each median
         alt = {1.5: ([], []), 3.5: ([], [])}          # line -> (over prices, under prices)
+        alt_books = {1.5: [], 3.5: []}                # line -> the books of the over prices
         for bm in data.get("bookmakers", []):
             for mkt in bm.get("markets", []):
                 if mkt.get("key") == "alternate_totals":
@@ -294,6 +310,8 @@ def fetch(rows: list[dict]) -> list[dict]:
                         if pt not in alt or pr <= 1.0 or side not in ("OVER", "UNDER"):
                             continue
                         alt[pt][0 if side == "OVER" else 1].append(pr)
+                        if side == "OVER":
+                            alt_books[pt].append(bm.get("key", ""))
                         book_rows.append({
                             "snapshot_ts": snap_ts, "league": r.get("league", ""),
                             "match_date": str(r.get("date", ""))[:10],
@@ -310,8 +328,10 @@ def fetch(rows: list[dict]) -> list[dict]:
                         continue
                     if nm == "YES":
                         yes.append(float(pr))
+                        yes_books.append(bm.get("key", ""))
                     elif nm == "NO":
                         no.append(float(pr))
+                        no_books.append(bm.get("key", ""))
                     book_rows.append({
                         "snapshot_ts": snap_ts, "league": r.get("league", ""),
                         "match_date": str(r.get("date", ""))[:10],
@@ -330,6 +350,12 @@ def fetch(rows: list[dict]) -> list[dict]:
             iy, ino = 1.0 / r["odds_btts"], 1.0 / r["odds_btts_no"]
             r["btts_overround"] = round(iy + ino - 1.0, 4)
             r["btts_fair_yes"] = round(iy / (iy + ino), 4)
+            # D6: the price is a cross-book MEDIAN, so its "book" is the honest median label, never one book;
+            # the bulk call's own BTTS book/time (if any) is replaced together with the price it described.
+            r["odds_btts_book"] = book_label(yes_books)
+            r["odds_btts_captured_at"] = call_ts
+            r["odds_btts_no_book"] = book_label(no_books)
+            r["odds_btts_no_captured_at"] = call_ts
             filled += 1
         # Over 1.5 / 3.5 from alternate_totals: both sides required (as for BTTS), and a price the
         # bulk call already supplied is never overwritten.
@@ -338,6 +364,8 @@ def fetch(rows: list[dict]) -> list[dict]:
             if ov and un and pd.isna(r.get(col)):
                 r = dict(r)
                 r[col] = float(statistics.median(ov))
+                r[f"{col}_book"] = book_label(alt_books[pt])        # D6: median label, see book_label
+                r[f"{col}_captured_at"] = call_ts
                 filled_alt[col] = filled_alt.get(col, 0) + 1
         out.append(r)
 

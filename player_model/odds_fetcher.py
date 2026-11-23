@@ -835,6 +835,8 @@ def fetch_prop_odds(signals_df) -> dict[str, float]:
     fixture_prices: dict[tuple[str, str], dict[str, float]] = {}
     # Per-FIXTURE real two-sided pairs (same book, same answer), for the de-vigged fair probability.
     fixture_pairs: dict[tuple[str, str], dict[str, list[dict]]] = {}
+    # D6: the (book, capture time) of the quotes at each best price (see _LAST_FIXTURE_META)
+    fixture_meta: dict = {}
 
     from datetime import datetime as _dt, timezone as _tz
     today = _dt.now(_tz.utc).strftime("%Y-%m-%d")
@@ -879,6 +881,7 @@ def fetch_prop_odds(signals_df) -> dict[str, float]:
             # Actions cache restore resets to extraction time, breaking the TTL check).
             import time
             bookmakers = None
+            _fetched_epoch = None                       # D6: when the answer used below was fetched
             if cache_f.exists():
                 try:
                     obj = json.loads(cache_f.read_text(encoding="utf-8"))
@@ -888,6 +891,7 @@ def fetch_prop_odds(signals_df) -> dict[str, float]:
                         # no recorded fetch time -> expired (it was age-from-epoch via a typed 0)
                         if obj.get("fetched_at") is not None and (time.time() - obj["fetched_at"]) < ttl:
                             bookmakers = obj["bookmakers"]
+                            _fetched_epoch = obj["fetched_at"]
                     # Old format (plain list) — treat as expired; will re-fetch below
                 except Exception:
                     pass
@@ -900,6 +904,7 @@ def fetch_prop_odds(signals_df) -> dict[str, float]:
                 )
                 if data is None:
                     continue
+                _fetched_epoch = time.time()
                 bookmakers = data.get("bookmakers", [])
                 _coverage_record(cov, sport_key, today, bool(bookmakers),
                                  hours_to_kickoff=hours_to_kickoff(
@@ -909,7 +914,7 @@ def fetch_prop_odds(signals_df) -> dict[str, float]:
                           f'{event.get("home_team","")} v {event.get("away_team","")} '
                           f"(regions={_REGIONS})")
                 cache_f.write_text(
-                    json.dumps({"fetched_at": time.time(), "bookmakers": bookmakers}, ensure_ascii=False),
+                    json.dumps({"fetched_at": _fetched_epoch, "bookmakers": bookmakers}, ensure_ascii=False),
                     encoding="utf-8",
                 )
 
@@ -922,6 +927,16 @@ def fetch_prop_odds(signals_df) -> dict[str, float]:
                 quotes.extend(_ev_quotes)
                 # Real two-sided pairs of THIS answer, keyed by OUR fixture name like fixture_prices.
                 _add_fixture_pairs(fixture_pairs, _match_date, f"{_hit[0]} vs {_hit[1]}", _ev_quotes)
+                # D6: book + capture time of every over/yes quote, at OUR fixture name like fixture_prices
+                try:
+                    _cap = _dt.fromtimestamp(float(_fetched_epoch), _tz.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+                except (TypeError, ValueError, OverflowError, OSError):
+                    _cap = ""
+                for _q in _ev_quotes:
+                    if str(_q.get("side") or "").lower() in ("no", "under"):
+                        continue
+                    _add_fixture_meta(fixture_meta, _match_date, f"{_hit[0]} vs {_hit[1]}", _q.get("player"),
+                                      _q.get("market"), _q.get("odds"), _q.get("bookmaker"), _cap)
             except Exception as _qe:                         # logging must never break pricing
                 print(f"[odds_fetcher] quote log skipped for {_match_str}: {type(_qe).__name__}")
             for our_market, (api_key, point) in _MARKET_MAP.items():
@@ -960,17 +975,18 @@ def fetch_prop_odds(signals_df) -> dict[str, float]:
     # and the top five cost nothing extra.
     try:
         _af_added = _fill_from_api_football(signals_df, result, history_records, cov, today,
-                                            fixture_prices=fixture_prices)
+                                            fixture_prices=fixture_prices, fixture_meta=fixture_meta)
         if _af_added:
             print(f"[odds_fetcher] api-football second source: +{_af_added} quote(s)")
     except Exception as e:                                       # noqa: BLE001
         # Never take the primary source down: a failure here must leave OddsAPI's result intact.
         print(f"[odds_fetcher] api-football second source skipped ({type(e).__name__}: {e})")
 
-    global _LAST_PRICE_DATES, _LAST_FIXTURE_PRICES, _LAST_FIXTURE_PAIRS
+    global _LAST_PRICE_DATES, _LAST_FIXTURE_PRICES, _LAST_FIXTURE_PAIRS, _LAST_FIXTURE_META
     _LAST_PRICE_DATES = _price_dates(history_records)
     _LAST_FIXTURE_PRICES = fixture_prices
     _LAST_FIXTURE_PAIRS = fixture_pairs
+    _LAST_FIXTURE_META = fixture_meta
 
     try:
         from player_model import prop_odds_af as _af
@@ -1006,7 +1022,8 @@ def fetch_prop_odds(signals_df) -> dict[str, float]:
 
 def _fill_from_api_football(signals_df, result: dict[str, float],
                             history_records: list[dict], cov: dict, today: str,
-                            fixture_prices: Optional[dict] = None) -> int:
+                            fixture_prices: Optional[dict] = None,
+                            fixture_meta: Optional[dict] = None) -> int:
     """Top up `result` and `history_records` from API-Football. Returns quotes added.
 
     Only touches leagues OddsAPI did NOT price. `result` keys stay in OddsAPI's normalised form
@@ -1078,6 +1095,12 @@ def _fill_from_api_football(signals_df, result: dict[str, float],
             _add_fixture_price(fixture_prices, r.get("match_date", ""), r.get("match", ""),
                                _norm(str(r.get("player", ""))), r.get("market", ""),
                                r.get("odds"))
+    if fixture_meta is not None:                 # D6: the record's book + its answer's fetch time
+        for r in records:
+            _add_fixture_meta(fixture_meta, r.get("match_date", ""), r.get("match", ""),
+                              _norm(str(r.get("player", ""))), r.get("market", ""), r.get("odds"),
+                              r.get("bookmaker"),
+                              af.CAPTURED_AT.get((str(r.get("match_date", ""))[:10], str(r.get("match", "")))))
 
     # Same ledger, so coverage is answered from evidence for BOTH sources. Keyed by league name
     # rather than an OddsAPI sport key, because that is what this source is addressed by.
@@ -1137,6 +1160,13 @@ _LAST_FIXTURE_PRICES: Optional[dict[tuple[str, str], dict[str, float]]] = None
 # the real two-sided prices match_fair_to_tips de-vigs (owner decision 2026-11-05).
 _LAST_FIXTURE_PAIRS: Optional[dict[tuple[str, str], dict[str, list[dict]]]] = None
 
+# ENTRY BOOK + CAPTURE TIME (owner 2026-11-23 "Yes, do all", D6). Beside every best price in the fixture price map:
+# the (book, capture time) of every quote AT that best price - capture time = the UTC time of the provider answer
+# that carried it (OddsAPI: the per-event call or its cache's fetched_at; API-Football: the /odds answer's cache
+# stamp). Filled by fetch_prop_odds: {(match_date, our "home vs away"): {"<norm player>|<market>":
+# {"odds": best price, "src": {(book, captured_at), ...}}}}. Read by match_meta_to_tips.
+_LAST_FIXTURE_META: Optional[dict] = None
+
 # OddsAPI dates a fixture by its UTC kickoff, the tips by theirs; allow one day of slack. A
 # different fixture can never pass, because BOTH clubs must also match.
 _FIXTURE_DATE_SLACK_DAYS = 1
@@ -1153,6 +1183,57 @@ def _add_fixture_price(fixture_prices: dict, match_date, match, player_norm: str
         return
     fx = fixture_prices.setdefault((str(match_date or "")[:10], str(match)), {})
     _keep_best(fx, f"{player_norm}|{market}", odds)
+
+
+def _add_fixture_meta(meta: dict, match_date, match, player_norm: str, market: str, odds, book,
+                      captured_at) -> None:
+    """Track the (book, captured_at) of the quotes at the BEST over/yes price per player and market within ONE
+    fixture (the same rule as _add_fixture_price): a higher price replaces them, an equal price adds its own."""
+    try:
+        odds = float(odds)
+    except (TypeError, ValueError):
+        return
+    if not (odds > 1.0) or not player_norm or not market or not match:
+        return
+    fx = meta.setdefault((str(match_date or "")[:10], str(match)), {})
+    k = f"{player_norm}|{market}"
+    src = (str(book or "").strip(), str(captured_at or "").strip())
+    cur = fx.get(k)
+    if cur is None or odds > cur["odds"]:
+        fx[k] = {"odds": odds, "src": {src}}
+    elif odds == cur["odds"]:
+        cur["src"].add(src)
+
+
+def meta_for_fixture(fixture_meta: dict, match_date, match) -> dict:
+    """The meta of THIS fixture only (same rule as prices_for_fixture: entries naming the same fixture merge; the
+    best price wins, an equal best price unions its sources)."""
+    out: dict = {}
+    for (fd, fm), entries in (fixture_meta or {}).items():
+        if not _dates_close(fd, match_date) or not same_fixture(match, fm):
+            continue
+        for k, m in entries.items():
+            cur = out.get(k)
+            if cur is None or m["odds"] > cur["odds"]:
+                out[k] = {"odds": m["odds"], "src": set(m["src"])}
+            elif m["odds"] == cur["odds"]:
+                cur["src"] |= m["src"]
+    return out
+
+
+def entry_of(m: Optional[dict]) -> tuple[str, str]:
+    """(entry_bookmaker, entry_captured_at) of one best price's sources. Only quotes that name their book count:
+    one book -> its name; several books at the same best price -> "tie:" + the sorted names joined by ";" (any of
+    them offered it; none is singled out). Time = the earliest known capture among those quotes; '' when none is
+    known. ('', '') when no quote names a book - never guessed."""
+    if not m:
+        return "", ""
+    named = [(b, t) for b, t in m.get("src") or () if b]
+    if not named:
+        return "", ""
+    books = sorted({b for b, _t in named})
+    times = sorted(t for _b, t in named if t)
+    return (books[0] if len(books) == 1 else "tie:" + ";".join(books)), (times[0] if times else "")
 
 
 def _split_match(match) -> Optional[tuple[str, str]]:
@@ -1245,6 +1326,30 @@ def match_odds_to_tips(tips_df, odds_raw: dict[str, float],
         print(f"[odds_fetcher] name match: {fuzzy} priced by initial+surname, "
               f"{refused} refused as ambiguous")
     return {out_key: price for out_key, (_ck, _name_key, price) in resolved.items()}
+
+
+def match_meta_to_tips(tips_df, fixture_meta: Optional[dict] = None,
+                       fixture_prices: Optional[dict] = None) -> dict[str, tuple[str, str]]:
+    """{tip_price_key: (entry_bookmaker, entry_captured_at)} for the tips match_odds_to_tips prices (same fixture
+    price map, same name rule), ONLY where the recorded sources are at exactly the price the tip is given. A tip
+    whose sources name no book is absent (blank). D6, owner 2026-11-23."""
+    fixture_prices = _LAST_FIXTURE_PRICES if fixture_prices is None else fixture_prices
+    fixture_meta = _LAST_FIXTURE_META if fixture_meta is None else fixture_meta
+    if not fixture_prices or not fixture_meta:
+        return {}
+    resolved, _f, _r = _resolve_tip_prices(tips_df, fixture_prices)
+    cache: dict = {}
+    out: dict[str, tuple[str, str]] = {}
+    for out_key, (ck, name_key, price) in resolved.items():
+        if ck not in cache:
+            cache[ck] = meta_for_fixture(fixture_meta, *ck)
+        m = cache[ck].get(name_key)
+        if m is None or m["odds"] != price:
+            continue                                   # the sources describe another price: blank
+        book, ts = entry_of(m)
+        if book:
+            out[out_key] = (book, ts)
+    return out
 
 
 def match_fair_to_tips(tips_df, fixture_pairs: Optional[dict] = None,

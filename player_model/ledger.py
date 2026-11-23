@@ -29,6 +29,11 @@ PLAYER_LEDGER_COLS = [
     "player_name", "team", "position", "market", "tier",
     "model_prob", "market_odds", "ev", "edge_rel", "n_games",
     "is_played", "result", "pnl", "notes", "resolved_date",
+    # ENTRY BOOK + CAPTURE TIME, appended (owner 2026-11-23 "Yes, do all", D6): who quoted market_odds and the UTC
+    # time of the provider answer behind it (player_tips.csv entry_bookmaker / entry_captured_at, set by
+    # player_model.predict.attach_entry_source). Blank when unknown; rows written before stay blank, never
+    # back-filled.
+    "entry_bookmaker", "entry_captured_at",
 ]
 
 SHARP_LEDGER_COLS = [
@@ -83,6 +88,17 @@ def _has_id(x) -> bool:
 
 def _id(x) -> int | None:
     return int(float(x)) if _has_id(x) else None
+
+
+def _txt(v) -> str:
+    """A recorded text value, '' for a missing one (None / NaN / 'nan'). Never guessed (D6)."""
+    try:
+        if v is None or pd.isna(v):
+            return ""
+    except (TypeError, ValueError):
+        pass
+    v = str(v).strip()
+    return "" if v in ("nan", "None", "NaT", "<NA>") else v
 
 
 def _ledger_key(r) -> tuple:
@@ -158,6 +174,8 @@ def append_player_signals(
             "pnl":           "",
             "notes":         "",
             "resolved_date": "",
+            "entry_bookmaker":   _txt(r.get("entry_bookmaker")) if pd.notna(r.get("market_odds")) else "",
+            "entry_captured_at": _txt(r.get("entry_captured_at")) if pd.notna(r.get("market_odds")) else "",
         })
 
     if any(refused.values()):

@@ -260,6 +260,9 @@ def test_workflow_is_gated_capped_and_private():
     assert "--floor 260000" in wf and "secrets.PRICE_STORE_KEY" in wf and "oddsapi-book-close" in wf
     assert "test mode is capped at 20 credits" in wf
     assert "git add -A" not in wf and "output/book_odds" not in wf
+    # cron is often dropped: completed capture / predict runs also start it, behind the same switch
+    assert "workflow_run:" in wf and "- Predict" in wf
+    assert "(github.event_name == 'schedule' || github.event_name == 'workflow_run') && vars.ODDSAPI_BOOK_CLOSE == '1'" in wf
 
 
 # ── entry bookmaker ────────────────────────────────────────────────────────────────────────────────
@@ -302,9 +305,9 @@ def test_ledger_entry_book_follows_the_side_and_stays_blank_when_unknown():
     row = {"odds_over25_book": "b_over", "odds_under25_book": "b_under"}
     assert L._entry_book(row, "OVER") == "b_over" and L._entry_book(row, "UNDER") == "b_under"
     assert L._entry_book({}, "OVER") == "" and L._entry_book({"odds_over25_book": float("nan")}, "OVER") == ""
-    assert L.LEDGER_COLS[-1] == "entry_bookmaker"
+    assert L.LEDGER_COLS[-2:] == ["entry_bookmaker", "entry_captured_at"]       # D6 appends the time after it
 
 
 def test_shadow_schema_carries_the_entry_book():
     from src import shadow_compare as sc
-    assert sc.COLUMNS[-1] == "entry_bookmaker" and "entry_bookmaker" not in sc.GRADING_ONLY
+    assert sc.COLUMNS[-2:] == ["entry_bookmaker", "entry_captured_at"] and "entry_bookmaker" not in sc.GRADING_ONLY

@@ -20,11 +20,19 @@ name: OddsAPI Book Close Capture (private store)
 # Optional cap overrides: vars.ODDSAPI_BOOK_CLOSE_DAY_CAP (default 100), ..._MONTH_CAP (default 1000).
 # A manual dispatch (chained != true) always runs, for capped tests (mode test / dry-run).
 #
-# CADENCE. Scheduled runs here are often dropped, so a run loops (up to 170 min) while a band opens inside
-# its window, then chains the next run when a band opens within the next 170 min (depth cap 8). The cron is
-# the fallback. A run with nothing due exits in seconds.
+# CADENCE. Scheduled runs here are often dropped (the first 2 h after switch-on 2026-11-23 delivered none of
+# 4), so a run also starts when a capture or predict run completes (workflow_run events are delivered
+# reliably, see price_store_sync.yml). A run loops (up to 170 min) while a band opens inside its window, then
+# chains the next run when a band opens within the next 170 min (depth cap 8). A run with nothing due exits
+# in seconds.
 
 on:
+  workflow_run:
+    workflows:
+      - Predict
+      - Standard Side-Market Odds Capture
+      - New-Format Odds Capture
+    types: [completed]
   schedule:
     - cron: '11,41 * * * *'
   workflow_dispatch:
@@ -66,7 +74,7 @@ permissions:
 jobs:
   capture:
     if: >-
-      (github.event_name == 'schedule' && vars.ODDSAPI_BOOK_CLOSE == '1') ||
+      ((github.event_name == 'schedule' || github.event_name == 'workflow_run') && vars.ODDSAPI_BOOK_CLOSE == '1') ||
       (github.event_name == 'workflow_dispatch' && (inputs.chained != 'true' || vars.ODDSAPI_BOOK_CLOSE == '1'))
     runs-on: ubuntu-latest
     timeout-minutes: 185
@@ -74,12 +82,12 @@ jobs:
       contents: read
       actions: write
     env:
-      MODE: ${{ github.event_name == 'schedule' && 'capture' || inputs.mode }}
-      RUN_CAP: ${{ github.event_name == 'schedule' && '30' || inputs.run_credit_cap }}
-      MAX_CALLS: ${{ github.event_name == 'schedule' && '0' || inputs.max_calls }}
+      MODE: ${{ github.event_name != 'workflow_dispatch' && 'capture' || inputs.mode }}
+      RUN_CAP: ${{ github.event_name != 'workflow_dispatch' && '30' || inputs.run_credit_cap }}
+      MAX_CALLS: ${{ github.event_name != 'workflow_dispatch' && '0' || inputs.max_calls }}
       DAY_CAP: ${{ vars.ODDSAPI_BOOK_CLOSE_DAY_CAP || '100' }}
       MONTH_CAP: ${{ vars.ODDSAPI_BOOK_CLOSE_MONTH_CAP || '1000' }}
-      DEPTH: ${{ github.event_name == 'schedule' && '0' || inputs.chain_depth }}
+      DEPTH: ${{ github.event_name != 'workflow_dispatch' && '0' || inputs.chain_depth }}
       PYTHONIOENCODING: utf-8
     steps:
       - name: Check the inputs

@@ -5,17 +5,17 @@
     output/feature_parity_health.json      all tracks / all serving models
     output/nf_feature_parity_health.json   the new-format slice (NF OU2.5 + side models on NF rows)
 
-TRAIN side: the training frame rebuilt OFFLINE from the committed caches exactly as the CI loader
-builds it (scripts/integrity_af_join_replay.base_history + the serving enrichment joins, which are
-always league-keyed), COVID seasons excluded per league (config.covid_season_mask), then the feature
-builder the model was trained with:
-  standard OU2.5     v9_repaired recipe (src/features_repaired), standard-format leagues
-  new-format OU2.5   legacy_v9 recipe, new-format leagues (27-feature NF payload)
-  BTTS/O1.5/O3.5     legacy_v9 recipe, pooled training, reported per track
-  HT O0.5/O1.5       legacy_v9 recipe, standard track (the only track HT serves)
-Rows = the training filter (over25 and home_scored_last5 present). Time-decay weights are NOT applied
-to the statistics, so a feature whose distribution drifted across seasons can show a PSI the
-weighted training distribution would not; the verdict notes the training window used.
+TRAIN side: EXACTLY the trainers' rows (D3, owner 2026-11-23 "Yes, do all"). Every serving payload is
+fitted by scripts/phase2_refit_serving.refit on src.retrain_harness.protocol.load_committed_frame
+(load_all_matches on the committed banks, offline, every loader correction incl. the football-data
+season files and the half-time fills, COVID seasons excluded) restricted to
+protocol.eligible_rows(track, market) between the payload part's training_start and training_end.
+This monitor builds the same frame through the same function and takes the same rows per payload
+part (track x market), so a FAIL is a real train/serve difference, never a reference built another
+way. (Until 2026-11-23 the reference was integrity_af_join_replay.base_history + the legacy
+enrichment joins: no football-data season files, no HT fills, the retired v9_repaired recipe for
+Standard O/U 2.5 - it reported FAIL on tracks the cell-level check passes, 0 of 2,666 cells.)
+Statistics are unweighted (time-decay weights are not applied).
 
 LIVE side: output/predictions.csv as committed (the latest predict board), split by model_type.
 """
@@ -34,46 +34,77 @@ sys.path.insert(0, str(ROOT / "scripts"))
 os.chdir(ROOT)
 
 
-def _models():
+#: parity key -> (payload file, track part). Track-split payloads (BTTS / O1.5 / O3.5) hold the
+#: Standard part at the top level and the New-Format part under tracks["new_format"].
+def _payload_specs() -> dict:
     import config
-    from src.model import load_models
-    m = {"standard|OU25": config.MODEL_FILE_STANDARD_REPAIRED,
-         "new_format|OU25": config.MODEL_FILE_NEWFORMAT}
+    from src.integrity.model_health import serving_file
+    m = {"standard|OU25": (config.MODELS_DIR / serving_file("standard|OU25", "model_v9_standard.pkl"), "standard"),
+         "new_format|OU25": (Path(config.MODEL_FILE_NEWFORMAT), "new_format")}
     for t, f in config.SIDE_MARKETS.items():
-        m[f"side|{t}"] = f
+        m[f"standard|{t}"] = (Path(f), "standard")
+        m[f"new_format|{t}"] = (Path(f), "new_format")
     for nm in ("ht_over05", "ht_over15"):
-        m[f"ht|{nm}"] = config.MODELS_DIR / f"model_{nm}.pkl"
+        m[f"standard|{nm}"] = (config.MODELS_DIR / f"model_{nm}.pkl", "standard")
+        m[f"new_format|{nm}"] = (config.MODELS_DIR / f"model_v9_{nm}_nf.pkl", "new_format")
+    return m
+
+
+def payload_part(pay: dict, track: str) -> dict:
+    """The part of a payload that serves `track` (top level unless it is under tracks[track])."""
+    tracks = pay.get("tracks") if isinstance(pay, dict) else None
+    if isinstance(tracks, dict) and track in tracks:
+        return tracks[track]
+    return pay
+
+
+def _models() -> dict:
+    """parity key -> (payload file, part) for every serving payload part that exists."""
+    import joblib
     out = {}
-    for k, f in m.items():
-        f = Path(f)
-        if f.exists():
-            try:
-                out[k] = (f, load_models(model_file=f)["feature_cols"])
-            except Exception as e:                                # noqa: BLE001
-                out[k] = (f, None)
-                print(f"[parity] could not load {f.name}: {e}")
+    for k, (f, track) in _payload_specs().items():
+        if not f.exists():
+            continue
+        try:
+            out[k] = (f, payload_part(joblib.load(f), track))
+        except Exception as e:                                    # noqa: BLE001
+            out[k] = (f, None)
+            print(f"[parity] could not load {f.name}: {e}")
     return out
 
 
-def train_frames():
-    import config
-    from integrity_af_join_replay import base_history
-    from src import data_loader as DL
-    from src.feature_engineering import build_features
-    os.environ.pop("APIFOOTBALL_KEY", None)
-    config.API_KEY = ""
-    raw = base_history()
-    raw = DL._enrich_with_api_shots(raw)
-    raw = DL._enrich_with_standard_sidemarket_odds(raw)
-    raw = DL._enrich_ou25_from_captures(raw)
-    if config.EXCLUDE_COVID_SEASONS:
-        raw = raw[~config.covid_season_mask(raw)]
-    legacy = build_features(raw)
-    legacy = legacy.dropna(subset=["over25", "home_scored_last5"])
-    std_raw = raw[raw["league"].isin(config.STANDARD_FORMAT_LEAGUES)]
-    rep = build_features(std_raw, recipe="v9_repaired")
-    rep = rep.dropna(subset=[c for c in ("over25", "home_scored_last5") if c in rep.columns])
-    return legacy, rep
+def train_frame(frame: str | None = None):
+    """The trainers' feature frame: protocol.load_committed_frame (or a saved copy of it, --frame)."""
+    import pandas as pd
+    from src.retrain_harness import protocol as P
+    cfg = P.load_config()
+    if frame:
+        feat = pd.read_parquet(frame)
+        feat["date"] = pd.to_datetime(feat["date"])
+        from src.standard_repair import frame_hash
+        info = {"frame_file": frame, "frame_hash": frame_hash(feat)}
+    else:
+        feat, info = P.load_committed_frame(cfg)
+    return feat, info, cfg
+
+
+def training_rows(feat, cfg: dict, track: str, part: dict):
+    """The rows the payload part was fitted on: protocol.eligible_rows for its market, dated
+    training_start..training_end (the recipe's own tail after training_end is never fitted)."""
+    import pandas as pd
+    from src.retrain_harness import protocol as P
+    target = part.get("target")
+    market = next((m for m, spec in (cfg.get("markets") or {}).items() if spec.get("target") == target), None)
+    if market is None:
+        raise ValueError(f"no harness market for target {target!r}")
+    rows = P.eligible_rows(feat, cfg, track, market)
+    d = pd.to_datetime(rows["date"]).dt.normalize()
+    if part.get("training_start"):
+        rows = rows[d >= pd.Timestamp(part["training_start"])]
+        d = d.loc[rows.index]
+    if part.get("training_end"):
+        rows = rows[d <= pd.Timestamp(part["training_end"])]
+    return rows, market
 
 
 def main(argv=None) -> int:
@@ -81,51 +112,53 @@ def main(argv=None) -> int:
     ap.add_argument("--board", default="output/predictions.csv")
     ap.add_argument("--out-all", default="output/feature_parity_health.json")
     ap.add_argument("--out-nf", default="output/nf_feature_parity_health.json")
+    ap.add_argument("--frame", default=None, help="a saved copy of protocol.load_committed_frame (local "
+                    "reproduction); default: build it, as the trainers do")
     a = ap.parse_args(argv)
     import logging
     logging.basicConfig(level=logging.WARNING)
     import pandas as pd
-    import config
     from src.integrity.parity import parity_report, PARITY_RULE_VERSION
 
     board = pd.read_csv(ROOT / a.board, low_memory=False)
-    live_std = board[board["model_type"] == "standard"]
-    live_nf = board[board["model_type"] == "new_format"]
-    legacy, rep = train_frames()
-    tr_std = legacy[legacy["league"].isin(config.STANDARD_FORMAT_LEAGUES)]
-    tr_nf = legacy[legacy["league"].isin(config.NEW_FORMAT_LEAGUES)]
+    live = {"standard": board[board["model_type"] == "standard"],
+            "new_format": board[board["model_type"] == "new_format"]}
+    feat, frame_info, cfg = train_frame(a.frame)
     models = _models()
 
     reports = {}
-    for key, (f, feats) in models.items():
+    for key, (f, part) in models.items():
+        feats = (part or {}).get("feature_cols")
         if not feats:
             reports[key] = {"status": "UNKNOWN", "reason": f"payload {Path(f).name} unreadable"}
             continue
-        kind, name = key.split("|")
-        if kind == "standard":
-            reports[key] = parity_report(rep, live_std, feats, "standard", f"{Path(f).name}")
-        elif kind == "new_format":
-            reports[key] = parity_report(tr_nf, live_nf, feats, "new_format", f"{Path(f).name}")
-        elif kind == "side":
-            reports[f"standard|{name}"] = parity_report(tr_std, live_std, feats, "standard", Path(f).name)
-            reports[f"new_format|{name}"] = parity_report(tr_nf, live_nf, feats, "new_format", Path(f).name)
-        elif kind == "ht":
-            reports[f"standard|{name}"] = parity_report(tr_std, live_std, feats, "standard", Path(f).name)
+        track = key.split("|")[0]
+        rows, market = training_rows(feat, cfg, track, part)
+        served = [c for c in feats if not str(c).endswith("__missing")]
+        r = parity_report(rows, live[track], served, track, Path(f).name)
+        r["train_reference"] = {"market": market, "training_start": part.get("training_start"),
+                                "training_end": part.get("training_end"),
+                                "payload_training_rows": part.get("training_rows"),
+                                "payload_frame_hash": part.get("frame_hash"),
+                                "missing_indicators_not_compared": len(feats) - len(served)}
+        reports[key] = r
 
     gen = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     board_meta = {"path": a.board, "rows": int(len(board)),
                   "generated_at": str(board["generated_at"].iloc[0]) if "generated_at" in board and len(board) else None,
                   "git_sha": str(board["git_sha"].iloc[0]) if "git_sha" in board and len(board) else None,
-                  "rows_standard": int(len(live_std)), "rows_new_format": int(len(live_nf))}
+                  "rows_standard": int(len(live["standard"])), "rows_new_format": int(len(live["new_format"]))}
 
     def _overall(rs):
         st = [r.get("status") for r in rs.values()]
         return "FAIL" if "FAIL" in st else "WARN" if "WARN" in st else "PASS" if st else "UNKNOWN"
 
     common = {"generated_at": gen, "rule_version": PARITY_RULE_VERSION, "live_board": board_meta,
-              "train_source": "offline rebuild from committed caches (fd_history + backtest archive + "
-                              "af_history + odds captures), serving enrichment joins "
-                              "(league-keyed), unweighted, COVID seasons excluded",
+              "train_source": "the trainers' frame: src.retrain_harness.protocol.load_committed_frame "
+                              "(offline, committed data, COVID seasons excluded), rows = "
+                              "protocol.eligible_rows per payload part between its training_start and "
+                              "training_end; unweighted",
+              "train_frame": frame_info,
               "nf_feature_parity_flag": os.getenv("NF_FEATURE_PARITY", "1")}
     all_doc = {"artifact": "feature_parity_health", **common, "status": _overall(reports),
                "models": reports}
