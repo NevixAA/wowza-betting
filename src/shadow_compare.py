@@ -68,6 +68,9 @@ COLUMNS = [
     # Owner rule 2026-10-22: a close counts only within 30 min of kickoff. A price observed earlier
     # is kept here (grading-only, never a close) so the observation is not lost.
     "last_pre_kickoff_odds",
+    # ENTRY BOOK (owner 2026-11-23, appended): the OddsAPI book key whose price is entry_odds, written at
+    # first sight by predict so a same-book close can grade it. Rows before stay blank (unknown).
+    "entry_bookmaker",
 ]
 
 #: Columns that are knowable only AFTER the bet. §6: they may grade a signal, never select one.
