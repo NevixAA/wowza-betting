@@ -1,6 +1,6 @@
 {
  "calculation_version": "fantasy_paired_walkforward-1.1",
- "generated_at": "2026-11-23T10:05:10Z",
+ "generated_at": "2026-11-23T18:48:17Z",
  "source": "output/fantasy_v2_oos.csv",
  "residual_mode_note": "shadow only; this report changes nothing that is served",
  "arm_labels": {
@@ -16,8 +16,8 @@
   "population": "ALL_ARMS_PAIRED",
   "definition": "FINAL gameweeks; rows where FPL, WOWZA, LINEAR, RIDGE, HGB, HGB_V1FREE all have a forecast and the actual is known; chronology checked",
   "exclusions": {
-   "rows_in": 2959,
-   "not_final": 328,
+   "rows_in": 3051,
+   "not_final": 420,
    "chronology_violation": 0,
    "actual_missing": 0,
    "missing_FPL": 0,
@@ -785,8 +785,8 @@
   "population": "FPL_HGB_ALL_FINAL",
   "definition": "FINAL gameweeks; every row with a FPL, HGB, HGB_V1FREE forecast",
   "exclusions": {
-   "rows_in": 2959,
-   "not_final": 328,
+   "rows_in": 3051,
+   "not_final": 420,
    "chronology_violation": 0,
    "actual_missing": 0,
    "missing_FPL": 0,
@@ -1197,8 +1197,8 @@
     "auto_promote": false,
     "min_completed_gameweeks": 10,
     "exclusions": {
-     "rows_in": 2959,
-     "not_final": 328,
+     "rows_in": 3051,
+     "not_final": 420,
      "chronology_violation": 0,
      "actual_missing": 0,
      "missing_FPL": 0,
@@ -1248,8 +1248,8 @@
     "auto_promote": false,
     "min_completed_gameweeks": 10,
     "exclusions": {
-     "rows_in": 2959,
-     "not_final": 328,
+     "rows_in": 3051,
+     "not_final": 420,
      "chronology_violation": 0,
      "actual_missing": 0,
      "missing_FPL": 0,

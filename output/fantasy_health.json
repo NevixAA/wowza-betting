@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-22T14:55:18Z",
+  "generated_at": "2026-11-23T18:46:06Z",
   "thresholds_hours": {
     "fpl_bootstrap": {
       "aging": 12,
@@ -34,32 +34,32 @@
     "official_squads": {
       "file": "pl_squads_official.csv",
       "exists": true,
-      "age_hours": 0.82,
+      "age_hours": 0.14,
       "state": "CURRENT"
     }
   },
   "coverage": {
     "projection_players": 393,
     "clubs": 20,
-    "available": 307,
-    "doubtful": 15,
-    "unavailable": 70,
+    "available": 306,
+    "doubtful": 13,
+    "unavailable": 73,
     "availability_breakdown": {
-      "available": 307,
+      "available": 306,
       "unavailable": 35,
-      "injured": 33,
-      "doubtful": 15,
-      "suspended": 2,
+      "injured": 34,
+      "doubtful": 13,
+      "suspended": 4,
       "not in squad": 1
     },
-    "p_start_zero": 71,
+    "p_start_zero": 74,
     "fpl_match_rate": 1.0,
     "fixture_coverage": 1.0
   },
   "projection_log": {
-    "rows": 14259,
-    "distinct_days": 66,
-    "rows_with_gameweek": 5893,
+    "rows": 14652,
+    "distinct_days": 67,
+    "rows_with_gameweek": 6286,
     "settleable": true,
     "gameweeks_logged": [
       6,
@@ -77,16 +77,16 @@
   "live_gameweek": 11,
   "last_finished_gameweek": 10,
   "season_complete": false,
-  "hours_to_deadline": 123.6,
+  "hours_to_deadline": 95.7,
   "status": "OK",
   "settlement_ready": true,
   "defaults_audit": {
     "register_version": "FANTASY-DEFAULTS-1.0",
     "counts_by_class": {
       "MISSING_DATA_FALLBACK": 15,
-      "DOMAIN_PRIOR": 22,
+      "DOMAIN_PRIOR": 21,
       "OBSERVED": 2,
-      "TRAIN_FITTED_PRIOR": 4
+      "TRAIN_FITTED_PRIOR": 5
     },
     "important": [
       {
@@ -111,23 +111,23 @@
       },
       {
         "id": "v2_p_start_from_mix",
-        "where": "fantasy_residual.py:708",
-        "value": "p_start = P60 + 0.35*P(1-59)",
-        "class": "DOMAIN_PRIOR",
+        "where": "fantasy_residual.py:811",
+        "value": "p_start = P60 + 0.227*P(1-59)",
+        "class": "TRAIN_FITTED_PRIOR",
         "reach": "V2",
         "importance": "HIGH",
         "detectable": false,
-        "note": "unfitted; drives Confidence/Risk labels and captain pools"
+        "note": "MEASURED 2026-11-01 (P_START_GIVEN_1_59: 95% CI 0.213-0.241, n=3,652 PL appearances; re-tested in tests/test_fantasy_fpl_rules.py). Was an unfitted 0.35. Drives Confidence/Risk labels and captain pools (register text corrected 2026-11-22, P1 Fantasy)"
       },
       {
         "id": "v2_chance_fill",
-        "where": "fantasy_panel.py:229",
+        "where": "fantasy_panel.py:295",
         "value": "NaN chance -> 100 if status 'a' else 0",
         "class": "MISSING_DATA_FALLBACK",
         "reach": "V2",
         "importance": "HIGH",
         "detectable": false,
-        "note": "FIXED 2026-11-01 (data truth, dt/fantasy): null chance on a non-'a' status -> NaN (the residual's prepare still imputes)"
+        "note": "FIXED 2026-11-01 (data truth, dt/fantasy): null chance on a non-'a' status -> NaN; status 'a' with a null chance -> 100 (FPL's own convention: the API leaves chance null for fully available players). The residual's prepare no longer imputes (checked 2026-11-22, P1 Fantasy)"
       },
       {
         "id": "v2_captain_pools",
@@ -150,12 +150,12 @@
       "p_assist_all_zero": false,
       "p_sot2_all_zero": false,
       "mean_dc_pts_by_position": {
-        "DEF": 0.4,
-        "FWD": 0.004,
+        "DEF": 0.405,
+        "FWD": 0.005,
         "GKP": 0.0,
-        "MID": 0.2
+        "MID": 0.198
       },
-      "v2_rows": 459,
+      "v2_rows": 462,
       "v2_blank_gw_rows": 0,
       "v2_start_rate_missing": 0
     },

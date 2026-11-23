@@ -89,3 +89,16 @@ def test_committed_board_nf_home_advantage_is_not_constant():
     s = PT.feature_stats(pd.Series(rng.uniform(0, 1, 100)), nf["home_advantage"])
     v, _ = PT.classify("home_advantage", s)
     assert not s["constant_live"] and v != "FAIL"
+
+
+def test_constant_live_equal_to_a_dominant_training_mode_is_expected_not_fail():
+    """Rule 1.1 (D3, 2026-11-23): has_ht_history = 1.0 on ~99.96% of training rows -> 95 live 1.0s are
+    what training predicts, not a defect; the same constant off the mode still FAILs."""
+    tr = pd.DataFrame({"f": [1.0] * 9996 + [0.0] * 4})
+    live = pd.DataFrame({"f": [1.0] * 95})
+    r = PT.parity_report(tr, live, ["f"], "t", "m")["features"]["f"]
+    assert r["status"] == "PASS" and r["constant_live"] is False and r["constant_live_expected"] is True
+    live0 = pd.DataFrame({"f": [0.0] * 95})
+    assert PT.parity_report(tr, live0, ["f"], "t", "m")["features"]["f"]["status"] == "FAIL"
+    tr2 = pd.DataFrame({"f": [1.0] * 900 + [0.0] * 100})        # mode share 0.9: 0.9**95 ~ 5e-5
+    assert PT.parity_report(tr2, live, ["f"], "t", "m")["features"]["f"]["status"] == "FAIL"
