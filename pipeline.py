@@ -125,6 +125,9 @@ def _generate_side_bets(preds: "pd.DataFrame", side_markets: dict) -> "pd.DataFr
         _src_cols = ["date", "league", "home_team", "away_team", prob_col, odds_col]
         if "model_type" in preds.columns:
             _src_cols.append("model_type")
+        # D6 (owner 2026-11-23 "Yes, do all"): the book + capture time of odds_col travel with it
+        _meta_cols = [c for c in (f"{odds_col}_book", f"{odds_col}_captured_at") if c in preds.columns]
+        _src_cols += _meta_cols
         df = preds[_src_cols].dropna(subset=[prob_col, odds_col]).copy()
         # BLIND-FIXTURE GUARD, same rule as the O/U path (betting.evaluate_value): no rolling form
         # means median-imputed features and a confident-looking wrong edge. Until 2026-11-01 side
@@ -159,6 +162,13 @@ def _generate_side_bets(preds: "pd.DataFrame", side_markets: dict) -> "pd.DataFr
         df["model_prob"]  = df[prob_col]
         df["market_odds"] = df[odds_col]
         df["odds"]        = df["market_odds"]   # canonical name (src/stake_plan.SIDE_SELECTION_COLUMNS)
+        # D6: the book + capture time of the board column that became market_odds (src/predict, src/btts_odds);
+        # blank (NA) when the board carries none - never another column's book
+        df["entry_bookmaker"] = (df[f"{odds_col}_book"] if f"{odds_col}_book" in df.columns
+                                 else pd.Series(pd.NA, index=df.index, dtype="object"))
+        df["entry_captured_at"] = (df[f"{odds_col}_captured_at"] if f"{odds_col}_captured_at" in df.columns
+                                   else pd.Series(pd.NA, index=df.index, dtype="object"))
+        df = df.drop(columns=_meta_cols)
         df["fair_prob"] = (_SE.production_fair_probs(df, target, _quotes, _asof)
                            if _quotes is not None else np.nan)
         _n0 = len(df)
@@ -246,9 +256,10 @@ def _generate_side_bets(preds: "pd.DataFrame", side_markets: dict) -> "pd.DataFr
         # ONE SCHEMA, defined once in src/stake_plan.py and read by the stake plan. `market_odds`
         # is kept beside the canonical `odds` for the side_bets.csv / ledger / notify readers;
         # `threshold_source` beside both for the ledger / Telegram / dashboard (not a stake input).
+        # entry_bookmaker / entry_captured_at (D6, owner 2026-11-23): the source of market_odds, for the ledger
         frames.append(df[list(SIDE_SELECTION_COLUMNS) + ["market_odds", "threshold_source", "bar_mode",
                                                          "cell_p_used", "cell_status", "qualifying_bar",
-                                                         "edge_calibrated"]])
+                                                         "edge_calibrated", "entry_bookmaker", "entry_captured_at"]])
 
     if not frames:
         return pd.DataFrame()
@@ -393,6 +404,10 @@ def _log_shadow(preds: "pd.DataFrame", exp_rows: "pd.DataFrame | None" = None) -
             "entry_bookmaker": np.where(d.get("best_side", "").astype(str).str.upper() == "UNDER",
                                         d.get("odds_under25_book", pd.Series(pd.NA, index=d.index)),
                                         d.get("odds_over25_book", pd.Series(pd.NA, index=d.index))),
+            # D6 (owner 2026-11-23): the capture time of entry_odds; blank when predict recorded none
+            "entry_captured_at": np.where(d.get("best_side", "").astype(str).str.upper() == "UNDER",
+                                          d.get("odds_under25_captured_at", pd.Series(pd.NA, index=d.index)),
+                                          d.get("odds_over25_captured_at", pd.Series(pd.NA, index=d.index))),
         })
         n = append_shadow(rows)
         log.info(f"shadow: logged {n} new fixture(s) of {len(rows)} scored")

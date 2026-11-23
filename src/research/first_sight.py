@@ -41,6 +41,7 @@ is a recorder that must not be able to stop predict.
 """
 from __future__ import annotations
 
+import csv
 import hashlib
 import json
 import logging
@@ -179,6 +180,31 @@ class FirstSightStore:
             encoding="utf-8")
 
     # ── write side ───────────────────────────────────────────────────────────────────────────
+    def widen(self) -> bool:
+        """Columns APPENDED to `columns` after the file was written (its header is a strict prefix of them): rewrite
+        the file once with those columns blank, so an append never writes wider rows under a shorter header.
+        Every stored value is copied verbatim (read as text); no row is added, removed or reordered. A header that
+        is not a prefix is left alone (a store that inserts columns migrates itself, e.g.
+        top3_league.migrate_ledger). Returns True when the file was rewritten. Added 2026-11-23 (owner "Yes, do
+        all", D6: entry book + capture time appended to the TOP-3 / props candidate and pick stores)."""
+        if not self._has_rows():
+            return False
+        with self.path.open(encoding="utf-8", newline="") as fh:
+            header = next(csv.reader(fh), [])
+        n = len(header)
+        if not n or n >= len(self.columns) or header != self.columns[:n]:
+            return False
+        d = self.read()
+        before = frozen_digest(d, header)
+        out = d.reindex(columns=self.columns, fill_value="")
+        if frozen_digest(out, header) != before:                       # cannot happen: guard, never rewrite
+            raise RuntimeError(f"{self.path.name}: widening would alter a stored value - refused")
+        tmp = self.path.with_suffix(self.path.suffix + ".tmp")
+        kw = {"lineterminator": self.lineterminator} if self.lineterminator is not None else {}
+        out.to_csv(tmp, index=False, **kw)
+        tmp.replace(self.path)
+        return True
+
     def select_new(self, rows: pd.DataFrame) -> pd.DataFrame:
         """Rules 1-4: the rows append() would write. Pure w.r.t. the file (reads keys only)."""
         new = rows.reindex(columns=self.columns)
@@ -205,6 +231,7 @@ class FirstSightStore:
             new = self.select_new(rows)
             if new.empty:
                 return empty
+            self.widen()
             self.path.parent.mkdir(parents=True, exist_ok=True)
             header = not self._has_rows()
             kw = {"lineterminator": self.lineterminator} if self.lineterminator is not None else {}

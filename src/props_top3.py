@@ -104,7 +104,11 @@ R_RANK = "RANKED_BELOW_TOP3"
 CAND_KEY = ["league_week_id", "fixture_id", "player_id", "market"]
 CAND_COLS = CAND_KEY + [
     "league", "match_date", "kickoff_utc", "match", "home_team", "away_team", "player_name", "team", "position",
-    "model_prob", "odds", "fair_prob", "fair_basis", "value", "value_basis", "first_seen_at"]
+    "model_prob", "odds", "fair_prob", "fair_basis", "value", "value_basis", "first_seen_at",
+    # owner 2026-11-23 "Yes, do all" (D6), appended: the book + capture time of `odds`, carried from the board row
+    # (player_tips.csv entry_bookmaker / entry_captured_at, player_model/odds_fetcher.match_meta_to_tips). Blank when
+    # the board carries none; older rows stay blank (FirstSightStore.widen), never back-filled.
+    "entry_bookmaker", "entry_captured_at"]
 
 PICK_KEY = ["selection_mode", "league_week_id", "props_rank"]
 PICK_FROZEN = [
@@ -112,9 +116,13 @@ PICK_FROZEN = [
     "issued_at", "league", "fixture_id", "match_date", "kickoff_utc", "match", "home_team", "away_team",
     "board_home_team", "board_away_team", "player_id", "player_name", "team", "position", "market", "odds",
     "model_prob", "fair_prob", "fair_basis", "value", "value_basis", "first_seen_at", "cell_status", "stake",
-    "stake_label"]
+    "stake_label",
+    # owner 2026-11-23 "Yes, do all" (D6): who quoted `odds` and when (from the candidate). Frozen like the rest, but
+    # stored AFTER the grading columns so the written ledger's header stays a prefix (FirstSightStore.widen).
+    "entry_bookmaker", "entry_captured_at"]
 PICK_GRADING = ["result", "won", "flat_pnl", "settle_status", "settled_at"]
-PICK_COLS = PICK_FROZEN + PICK_GRADING
+ENTRY_COLS = ("entry_bookmaker", "entry_captured_at")
+PICK_COLS = [c for c in PICK_FROZEN if c not in ENTRY_COLS] + PICK_GRADING + list(ENTRY_COLS)
 
 WEEK_KEY = ["selection_mode", "league_week_id"]
 WEEK_COLS = ["selection_mode", "version", "league_week_id", "league", "week_lock_ts", "freeze_ts", "issued_at",
@@ -224,7 +232,10 @@ def build_candidates(board: pd.DataFrame, now: pd.Timestamp, prop_league=None) -
             "team": LW._s(r.get("team")), "position": LW._s(r.get("position")),
             "model_prob": LW._r(r["_p"]), "odds": LW._r(r["_odds"]),
             "fair_prob": LW._r(r["_fair"]), "fair_basis": LW._s(r.get("fair_basis")),
-            "value": LW._r(val), "value_basis": basis, "first_seen_at": stamp})
+            "value": LW._r(val), "value_basis": basis, "first_seen_at": stamp,
+            # D6: the board row's own book + capture time of market_odds; blank when it carries none
+            "entry_bookmaker": LW._s(r.get("entry_bookmaker")),
+            "entry_captured_at": LW._s(r.get("entry_captured_at"))})
     out = pd.DataFrame(rows).reindex(columns=CAND_COLS)
     out = out[(out["league_week_id"] != "") & (out["fixture_id"] != "") & (out["player_id"] != "")]
     return out.drop_duplicates(CAND_KEY, keep="first")

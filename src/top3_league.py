@@ -226,6 +226,10 @@ PICK_FROZEN = [
     "track_is_real", "stake_effect",
     # owner 2026-11-22 "3 per league, stake by proof" (appended; older rows migrated by migrate_ledger())
     "stake", "stake_reason", "value_basis",
+    # owner 2026-11-23 "Yes, do all" (D6): who quoted the pick's `odds` and when, carried from its candidate
+    # (src/research/league_weekly.entry_source). Blank when that source carries none; older rows migrated blank by
+    # migrate_ledger(), never back-filled.
+    "entry_bookmaker", "entry_captured_at",
 ]
 PICK_GRADING = ["home_goals", "away_goals", "result", "won", "flat_pnl", "settle_status", "settled_at"]
 PICK_COLS = PICK_FROZEN + PICK_GRADING
@@ -887,6 +891,8 @@ def picks_store(od: Path) -> FirstSightStore:
 
 #: columns appended to the ledger on 2026-11-22 (owner "3 per league, stake by proof")
 STAKE_COLS = ("stake", "stake_reason", "value_basis")
+#: columns appended on 2026-11-23 (owner "Yes, do all", D6); migrated blank - not recorded before
+ENTRY_COLS = ("entry_bookmaker", "entry_captured_at")
 
 
 def _legacy_stake(effect: str) -> tuple[str, str]:
@@ -900,14 +906,15 @@ def _legacy_stake(effect: str) -> tuple[str, str]:
 
 
 def migrate_ledger(od: Path) -> dict:
-    """One-shot, idempotent: give a ledger written before 2026-11-22 the stake columns. The existing frozen columns
-    keep their exact values (the sidecar digest is checked first and nothing is written when it fails); stake /
-    stake_reason come from each row's own stake_effect; value_basis stays blank (not recorded then)."""
+    """One-shot, idempotent: give a ledger written before 2026-11-22 the stake columns, and one written before
+    2026-11-23 the entry book / capture time columns. The existing frozen columns keep their exact values (the sidecar
+    digest is checked first and nothing is written when it fails); stake / stake_reason come from each row's own
+    stake_effect; value_basis, entry_bookmaker and entry_captured_at stay blank (not recorded then)."""
     ps = picks_store(od)
     if not ps._has_rows():
         return {"migrated": False, "reason": "no ledger"}
     d = ps.read()
-    if all(c in d.columns for c in STAKE_COLS):
+    if all(c in d.columns for c in PICK_COLS):
         return {"migrated": False, "reason": "up to date"}
     v = ps.verify()
     if v["ok"] is False:
@@ -922,6 +929,9 @@ def migrate_ledger(od: Path) -> dict:
         d["stake_reason"] = [b for _a, b in leg]
     if "value_basis" not in d.columns:
         d["value_basis"] = ""
+    for c in ENTRY_COLS:
+        if c not in d.columns:
+            d[c] = ""
     out = d.reindex(columns=PICK_COLS).fillna("")
     if frozen_digest(out, old_cols) != before:
         raise RuntimeError("top3 ledger migration would alter a frozen column - refused")
