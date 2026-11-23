@@ -65,7 +65,7 @@ ui.stat_line([("Predictions", f"{len(idx):,}"),
 # ═══ PICK A MATCH ═════════════════════════════════════════════════════════════════════════════════════════════════
 ui.section_header("Pick a match", "Kickoff dates in UTC. Ledger-only leagues are predicted every match but never "
                                   "tipped.")
-ko = idx["kickoff_utc"].dropna()
+ko = idx["match_kickoff_utc"].dropna()
 lo_d, hi_d = ko.min().date(), ko.max().date()
 today = pd.Timestamp.now(tz="UTC").date()
 d0 = min(max(today - timedelta(days=2), lo_d), hi_d)
@@ -83,7 +83,7 @@ snapshot = c3.radio("Snapshot", ["first_sight", "final"], key="pred_snapshot", h
                     help="First sight = the first prediction a model made for the match. Final = the last one, "
                          "at most 120 minutes before kickoff (only where a run fell in that window).")
 
-day = idx["kickoff_utc"].dt.date
+day = idx["match_kickoff_utc"].dt.date
 sel = idx[(day >= start_d) & (day <= end_d) & (idx["snapshot"] == snapshot)]
 if league != "ALL":
     sel = sel[sel["league_slug"] == league]
@@ -94,11 +94,22 @@ else:
     labels = {r.match_key: f"{r.kickoff_utc:%d.%m %H:%M} · {r.home_team} v {r.away_team} · {r.league}"
               + (f" ({V.LEDGER_ONLY_LABEL})" if r.ledger_only else "") for r in M.itertuples()}
     mk = st.selectbox(f"Match ({len(M)} in range)", list(labels), key="pred_match", format_func=labels.get)
-    rows = V.match_rows(sel, mk)
+    all_versions = st.toggle("Show all versions", value=False, key="pred_all_versions",
+                             help="Off: one row per question - the model version that was serving at this snapshot "
+                                  "(the latest prediction before kickoff). On: every stored version, e.g. the legacy "
+                                  "props model next to the clean rebuild. The ledger keeps every version either way.")
+    rows_all = V.match_rows(sel, mk)
+    rows = rows_all if all_versions else V.serving_rows(rows_all)
     m = M[M["match_key"] == mk].iloc[0]
     ui.stat_line([("Kickoff", f"{m.kickoff_utc:%a %d.%m.%Y %H:%M} UTC"), ("League", m.league),
-                  ("Models", str(m.models)), ("Predictions", f"{m.predictions:,}"),
-                  ("Settled rows", f"{m.settled:,}")])
+                  ("Models", str(m.models)), ("Predictions", f"{len(rows):,}"),
+                  ("Settled rows", f"{int((rows['outcome_status'] == 'SETTLED').sum()):,}")])
+    if m.kickoff_source == "conflict":
+        st.caption("The prediction sources disagree on this kickoff and no API-Football fixture settles it: each "
+                   "row keeps its own kickoff (a data-truth finding).")
+    elif int(m.refs) > 1:
+        st.caption(f"One match, {int(m.refs)} provider references across the models (merged into one identity; "
+                   f"kickoff: {m.kickoff_source}).")
     if m.ledger_only:
         st.markdown(ui.status_chip("OBSERVE", label="LEDGER ONLY — NO TIPS") + "  "
                     + ui.tone_text("This league is predicted for learning only; no tip is ever sent from it.",
@@ -170,6 +181,73 @@ else:
                "combos, goal bands) the most likely outcome is usually NO, so their hit rate is high by "
                "construction: judge them on log loss, Brier and average probability against how often it "
                "happened.")
+
+# ═══ SUCCESS BY GAMEWEEK (owner 2026-11-23) ═══════════════════════════════════════════════════════════════════════
+from dashboard_data import prediction_gw_view as GV  # noqa: E402
+
+ui.section_header("Success by gameweek",
+                  "The stored learning dataset: for every gameweek, league, market, model and model version, how often "
+                  "the model's own pick happened (success), with Brier and log loss on the settled predictions. "
+                  "Gameweek = the TOP-3 league week (Monday–Sunday tip days). A closed gameweek never changes; a later "
+                  "correction is stored beside it. Model versions are never pooled.")
+
+
+@st.cache_data(ttl=300, show_spinner=False)
+def _gw():
+    try:
+        return GV.load(), GV.load_corrections(), None
+    except (OSError, ValueError) as e:
+        return None, None, f"output/{GV.DATASET.name} cannot be read ({type(e).__name__})"
+
+
+G, GC, gerr = _gw()
+if G is None:
+    ui.empty_state("NO_DATA", f"{gerr}. It is written after settlement by the results update.")
+elif G.empty:
+    ui.empty_state("NO_DATA", "No gameweek in the dataset yet.")
+else:
+    g1, g2, g3, g4, g5 = st.columns([2, 2, 2, 2, 2])
+    rec = g1.radio("Record", [True, False], format_func=GV.RECORD_LABEL.get, key="gw_record",
+                   help="Clean Record = predictions made on or after the Clean Record start. The two are never mixed.")
+    Gs = G[(G["clean_record"] == rec) & (G["snapshot"] == snapshot)]
+    lg_opts = sorted(Gs["league"].unique())
+    gw_league = g2.selectbox("League", ["ALL"] + lg_opts, key="gw_league",
+                             format_func=lambda s: "All leagues" if s == "ALL" else s)
+    md_opts = sorted(Gs["model_id"].unique(), key=lambda m: list(V.MODEL_LABEL).index(m)
+                     if m in V.MODEL_LABEL else 99)
+    gw_model = g3.selectbox("Model", ["ALL"] + md_opts, key="gw_model",
+                            format_func=lambda m: "All models" if m == "ALL" else V.model_label(m))
+    if gw_league != "ALL":
+        Gs = Gs[Gs["league"] == gw_league]
+    if gw_model != "ALL":
+        Gs = Gs[Gs["model_id"] == gw_model]
+    mk_opts = sorted(Gs["market"].unique(), key=lambda x: list(V.MARKET_LABEL).index(x)
+                     if x in V.MARKET_LABEL else 99)
+    gw_market = g4.selectbox("Market", ["ALL"] + mk_opts, key="gw_market",
+                             format_func=lambda m: "All markets" if m == "ALL" else V.market_label(m))
+    if gw_market != "ALL":
+        Gs = Gs[Gs["market"] == gw_market]
+    gw_opts = sorted(Gs["gw"].unique(), reverse=True)
+    gw_pick = g5.multiselect("Gameweeks", gw_opts, default=gw_opts, key="gw_weeks")
+    Gs = Gs[Gs["gw"].isin(gw_pick)]
+    if Gs.empty:
+        ui.empty_state("NO_DATA", "No gameweek row for these filters.")
+    else:
+        ui.stat_line([("Gameweeks", str(Gs["gw"].nunique())),
+                      ("Predictions", f"{int(Gs['predictions'].sum()):,}"),
+                      ("Settled", f"{int(Gs['settled'].sum()):,}"),
+                      ("Closed rows", f"{int((Gs['status'] == 'CLOSED').sum()):,} of {len(Gs):,}")])
+        tr = GV.trend(Gs, V.MODEL_LABEL, V.MARKET_LABEL)
+        if len(tr) >= 2:
+            st.caption("Success % by gameweek (the series with the most settled predictions; leagues summed).")
+            st.line_chart(tr, height=260)
+        elif len(tr) == 1:
+            st.caption("One gameweek so far: the trend line starts with the second.")
+        gcfg = {"Success": ui.pct_col("Success", help="Hits / settled: the model's most likely outcome happened."),
+                "Brier": ui.num_col("Brier", fmt="%.3f"), "Log loss": ui.num_col("Log loss", fmt="%.3f")}
+        ui.compact_table(GV.table(Gs, set(GC["row_id"]), V.MODEL_LABEL, V.MARKET_LABEL), gcfg)
+        st.caption("Rates are re-derived from the stored sums. For rare events (props, combos, goal bands) the most "
+                   "likely outcome is usually NO, so success is high by construction: read Brier and log loss.")
 
 from utils.disclaimer import disclaimer_footer  # noqa: E402
 disclaimer_footer()

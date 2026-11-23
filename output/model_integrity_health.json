@@ -1,7 +1,7 @@
 {
   "artifact": "model_integrity_health",
   "version": "model-integrity-health-0.2",
-  "generated_at": "2026-11-23T18:46:34Z",
+  "generated_at": "2026-11-23T20:40:30Z",
   "status": "WARN",
   "active_serving_join_status": "PASS",
   "active_training_lineage_status": "UNVERIFIED",
@@ -289,7 +289,7 @@
       "model_recipe_version": "r2-repaired-1.0",
       "serving_version": "standard_20261119T134019Z_67ee3666",
       "training_cutoff": "2026-11-01",
-      "code_sha": "697afc61cf2d",
+      "code_sha": "4a7aaaf84f95",
       "data_hash": "823d465eeb05f5a0",
       "identity_version": null,
       "feature_recipe_version": null,
@@ -333,8 +333,8 @@
       "parity": {
         "status": "WARN",
         "counts": {
-          "PASS": 32,
-          "WARN": 11,
+          "PASS": 29,
+          "WARN": 14,
           "FAIL": 0
         },
         "fail_features": []
@@ -391,7 +391,7 @@
       "model_recipe_version": "r2-repaired-1.0",
       "serving_version": "newformat_20261118T172020Z_303c9a05",
       "training_cutoff": "2026-11-01",
-      "code_sha": "697afc61cf2d",
+      "code_sha": "4a7aaaf84f95",
       "data_hash": "25ea42fe32607275",
       "identity_version": null,
       "feature_recipe_version": null,
@@ -435,8 +435,8 @@
       "parity": {
         "status": "WARN",
         "counts": {
-          "PASS": 15,
-          "WARN": 13,
+          "PASS": 13,
+          "WARN": 15,
           "FAIL": 0
         },
         "fail_features": []
@@ -493,7 +493,7 @@
       "model_recipe_version": "r2-repaired-1.0",
       "serving_version": "btts_20261119T134019Z_44c67049",
       "training_cutoff": "2026-11-01",
-      "code_sha": "697afc61cf2d",
+      "code_sha": "4a7aaaf84f95",
       "data_hash": "0c4cdc31d41d19f0",
       "identity_version": null,
       "feature_recipe_version": null,
@@ -537,8 +537,8 @@
       "parity": {
         "status": "WARN",
         "counts": {
-          "PASS": 32,
-          "WARN": 11,
+          "PASS": 29,
+          "WARN": 14,
           "FAIL": 0
         },
         "fail_features": []
@@ -603,7 +603,7 @@
       "model_recipe_version": "r2-repaired-1.0",
       "serving_version": "btts_20261119T134019Z_44c67049",
       "training_cutoff": "2026-11-01",
-      "code_sha": "697afc61cf2d",
+      "code_sha": "4a7aaaf84f95",
       "data_hash": "d3f6d80a374fc72d",
       "identity_version": null,
       "feature_recipe_version": null,
@@ -647,8 +647,8 @@
       "parity": {
         "status": "WARN",
         "counts": {
-          "PASS": 15,
-          "WARN": 13,
+          "PASS": 13,
+          "WARN": 15,
           "FAIL": 0
         },
         "fail_features": []
@@ -713,7 +713,7 @@
       "model_recipe_version": "r2-repaired-1.0",
       "serving_version": "over15_20261119T134019Z_ca01b7d3",
       "training_cutoff": "2026-11-01",
-      "code_sha": "697afc61cf2d",
+      "code_sha": "4a7aaaf84f95",
       "data_hash": "23839609719fc515",
       "identity_version": null,
       "feature_recipe_version": null,
@@ -757,8 +757,8 @@
       "parity": {
         "status": "WARN",
         "counts": {
-          "PASS": 32,
-          "WARN": 11,
+          "PASS": 29,
+          "WARN": 14,
           "FAIL": 0
         },
         "fail_features": []
@@ -787,7 +787,7 @@
         "placed_rows_synthetic": 0,
         "production_edge_rule": "p - (1/odds)/1.08 (fixed 8% margin assumption)",
         "devig_shadow_ledger": {
-          "CONFIRMED_BY_DEVIG": 72,
+          "CONFIRMED_BY_DEVIG": 73,
           "ONLY_BECAUSE_OF_1_08": 33,
           "UNVERIFIABLE_ONE_SIDED": 25
         },
@@ -823,7 +823,7 @@
       "model_recipe_version": "r2-repaired-1.0",
       "serving_version": "over15_20261119T134019Z_ca01b7d3",
       "training_cutoff": "2026-11-01",
-      "code_sha": "697afc61cf2d",
+      "code_sha": "4a7aaaf84f95",
       "data_hash": "33bacb811e7f56e8",
       "identity_version": null,
       "feature_recipe_version": null,
@@ -867,8 +867,8 @@
       "parity": {
         "status": "WARN",
         "counts": {
-          "PASS": 15,
-          "WARN": 13,
+          "PASS": 13,
+          "WARN": 15,
           "FAIL": 0
         },
         "fail_features": []
@@ -897,7 +897,7 @@
         "placed_rows_synthetic": 0,
         "production_edge_rule": "p - (1/odds)/1.08 (fixed 8% margin assumption)",
         "devig_shadow_ledger": {
-          "CONFIRMED_BY_DEVIG": 72,
+          "CONFIRMED_BY_DEVIG": 73,
           "ONLY_BECAUSE_OF_1_08": 33,
           "UNVERIFIABLE_ONE_SIDED": 25
         },
@@ -933,7 +933,7 @@
       "model_recipe_version": "r2-repaired-1.0",
       "serving_version": "over35_20261119T134019Z_e8b12d74",
       "training_cutoff": "2026-11-01",
-      "code_sha": "697afc61cf2d",
+      "code_sha": "4a7aaaf84f95",
       "data_hash": "054d6a550c7bd908",
       "identity_version": null,
       "feature_recipe_version": null,
@@ -977,8 +977,8 @@
       "parity": {
         "status": "WARN",
         "counts": {
-          "PASS": 32,
-          "WARN": 11,
+          "PASS": 29,
+          "WARN": 14,
           "FAIL": 0
         },
         "fail_features": []
@@ -1007,8 +1007,8 @@
         "placed_rows_synthetic": 0,
         "production_edge_rule": "p - (1/odds)/1.08 (fixed 8% margin assumption)",
         "devig_shadow_ledger": {
-          "ONLY_BECAUSE_OF_1_08": 47,
-          "CONFIRMED_BY_DEVIG": 11,
+          "ONLY_BECAUSE_OF_1_08": 48,
+          "CONFIRMED_BY_DEVIG": 12,
           "UNVERIFIABLE_ONE_SIDED": 9
         },
         "status": "WARN",
@@ -1043,7 +1043,7 @@
       "model_recipe_version": "r2-repaired-1.0",
       "serving_version": "over35_20261119T134019Z_e8b12d74",
       "training_cutoff": "2026-11-01",
-      "code_sha": "697afc61cf2d",
+      "code_sha": "4a7aaaf84f95",
       "data_hash": "bfe9e3425792535e",
       "identity_version": null,
       "feature_recipe_version": null,
@@ -1087,8 +1087,8 @@
       "parity": {
         "status": "WARN",
         "counts": {
-          "PASS": 15,
-          "WARN": 13,
+          "PASS": 13,
+          "WARN": 15,
           "FAIL": 0
         },
         "fail_features": []
@@ -1117,8 +1117,8 @@
         "placed_rows_synthetic": 0,
         "production_edge_rule": "p - (1/odds)/1.08 (fixed 8% margin assumption)",
         "devig_shadow_ledger": {
-          "ONLY_BECAUSE_OF_1_08": 47,
-          "CONFIRMED_BY_DEVIG": 11,
+          "ONLY_BECAUSE_OF_1_08": 48,
+          "CONFIRMED_BY_DEVIG": 12,
           "UNVERIFIABLE_ONE_SIDED": 9
         },
         "status": "WARN",
@@ -1153,7 +1153,7 @@
       "model_recipe_version": "r2-repaired-1.0",
       "serving_version": "ht_over05_20261122T170741Z_0776cea1",
       "training_cutoff": "2026-11-01",
-      "code_sha": "697afc61cf2d",
+      "code_sha": "4a7aaaf84f95",
       "data_hash": "17be13b413bd7a0e",
       "identity_version": null,
       "feature_recipe_version": null,
@@ -1197,8 +1197,8 @@
       "parity": {
         "status": "WARN",
         "counts": {
-          "PASS": 31,
-          "WARN": 11,
+          "PASS": 28,
+          "WARN": 14,
           "FAIL": 0
         },
         "fail_features": []
@@ -1257,7 +1257,7 @@
       "model_recipe_version": "r2-repaired-1.0",
       "serving_version": "ht_over15_20261122T170742Z_aa4c62ce",
       "training_cutoff": "2026-11-01",
-      "code_sha": "697afc61cf2d",
+      "code_sha": "4a7aaaf84f95",
       "data_hash": "1c02282b9a293157",
       "identity_version": null,
       "feature_recipe_version": null,
@@ -1301,8 +1301,8 @@
       "parity": {
         "status": "WARN",
         "counts": {
-          "PASS": 31,
-          "WARN": 11,
+          "PASS": 28,
+          "WARN": 14,
           "FAIL": 0
         },
         "fail_features": []
@@ -1361,7 +1361,7 @@
       "model_recipe_version": "r2-repaired-1.0",
       "serving_version": "ht_over05_nf_20261120T085150Z_ae89ea10",
       "training_cutoff": "2026-11-01",
-      "code_sha": "697afc61cf2d",
+      "code_sha": "4a7aaaf84f95",
       "data_hash": "f66c0a73b4de730a",
       "identity_version": null,
       "feature_recipe_version": null,
@@ -1405,8 +1405,8 @@
       "parity": {
         "status": "WARN",
         "counts": {
-          "PASS": 15,
-          "WARN": 13,
+          "PASS": 11,
+          "WARN": 17,
           "FAIL": 0
         },
         "fail_features": []
@@ -1464,7 +1464,7 @@
       "model_recipe_version": "r2-repaired-1.0",
       "serving_version": "ht_over15_nf_20261120T085150Z_ead4bb74",
       "training_cutoff": "2026-11-01",
-      "code_sha": "697afc61cf2d",
+      "code_sha": "4a7aaaf84f95",
       "data_hash": "a13e2088d9b8453a",
       "identity_version": null,
       "feature_recipe_version": null,
@@ -1508,8 +1508,8 @@
       "parity": {
         "status": "WARN",
         "counts": {
-          "PASS": 15,
-          "WARN": 13,
+          "PASS": 11,
+          "WARN": 17,
           "FAIL": 0
         },
         "fail_features": []
