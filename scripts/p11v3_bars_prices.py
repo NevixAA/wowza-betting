@@ -272,10 +272,14 @@ def _fmt_study(s: dict | None) -> tuple[str, str, str]:
             "-" if clv is None else f"{clv:+.2%} (n {s.get('clv_n')})")
 
 
+def _efl_rank(league: str) -> int:
+    """EFL leagues first, in pyramid order; every other league after them (report order only)."""
+    return EFL.index(league) if league in EFL else len(EFL)
+
+
 def compare_rows(old: dict, new: dict) -> list[dict]:
     rows = []
-    for k in sorted(set(old) | set(new), key=lambda k: (k[1] not in EFL, EFL.index(k[1]) if k[1] in EFL else 0,
-                                                         k[0], k[1], k[2])):
+    for k in sorted(set(old) | set(new), key=lambda k: (_efl_rank(k[1]), k[0], k[1], k[2])):
         o, n = old.get(k, {}), new.get(k, {})
         rows.append({"track": k[0], "league": k[1], "mside": k[2], "old": o, "new": n})
     return rows
@@ -317,8 +321,7 @@ def _cov_table(cov: dict, leagues=None, markets=None) -> list[str]:
         ["hist_bet365", "hist_pinnacle", "hist_williamhill", "hist_onexbet", "hist_ladbrokes_uk"]].sum()
     lines = ["| Track | League | Market | Rows | Priced before (v2 rules) | Priced after (v3 rules) | Added | "
              "After: Pinnacle / WH / 1xBet / Ladbrokes (history rows) |", "|---|---|---|---|---|---|---|---|"]
-    order = {lg: i for i, lg in enumerate(EFL)}
-    g = g.assign(_o=g["league"].map(lambda x: order.get(x, 99))).sort_values(["_o", "track", "league", "market"])
+    g = g.assign(_o=g["league"].map(_efl_rank)).sort_values(["_o", "track", "league", "market"])
     for r in g.itertuples(index=False):
         h = a_hist.loc[(r.track, r.league, r.market)] if (r.track, r.league, r.market) in a_hist.index else None
         hs = "-" if h is None else f"{int(h['hist_pinnacle'])} / {int(h['hist_williamhill'])} / " \
