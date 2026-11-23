@@ -9,7 +9,7 @@ acceptance matrix are in `reports/FINAL_DATA_TRUTH_CERTIFICATION.md`; row-level 
 
 | Repo | main (at final refresh) | main CI, last 24 h |
 |---|---|---|
-| NevixAA/wowza-betting | `5a6727f42` (Merge #84) | 36 success / 1 failure (Tests and gates 05:36Z on `73c18f399`, fixed by #85: next run on `e4a3a9847` success) |
+| NevixAA/wowza-betting | `6de281c97` (after Merge #86; #84 = `5a6727f42`) | 36 success / 1 failure (Tests and gates 05:36Z on `73c18f399`, fixed by #85: next run on `e4a3a9847` success) |
 | NevixAA/wowzaV9-Pro | `17d6faabc` | 38 success / 2 failures (Specials 11-22 15:42Z, Player V3 11-22 17:34Z; both green on their next run) |
 | NevixAA/wowza_v11 | `4b336541f` | 4 / 4 success |
 | NevixAA/wowza-dashboard | `eda50a6b2` (BUILD_INFO v9_head_at_build `a1e459f3f`, built 09:11:46Z) | 6 / 6 success |
@@ -30,6 +30,7 @@ acceptance matrix are in `reports/FINAL_DATA_TRUTH_CERTIFICATION.md`; row-level 
 | P1-11 Fantasy validation | #81 | `cf53f2cd7` | `reports/P1_FANTASY_VALIDATION.md` |
 | Standard ledger settlement | #76 | `5df8750be` | `tests/test_prediction_ledger_std_settle.py` |
 | Main red fix | #85 | `e4a3a9847` | time/data-dependent tests, NaN bar max, coherence gate off the notifier |
+| Data truth 9 (v91_shadow first-sight key) | #86 | `e2bc9f9d6` | `output/corrections/v91_shadow_duplicates.csv` |
 
 ## New findings in this audit
 
@@ -49,15 +50,15 @@ Four indicators (PR #75), from the committed artifacts at the final refresh:
 | Indicator | Status | Source |
 |---|---|---|
 | CI / change-control gate | GREEN (`data_truth --gate` and `research_lock --check` on this branch, below) | local run on `5a6727f42` + this PR |
-| Operational data quality | **RED**: Data truth 9 "2 v91_shadow fixture(s) logged twice" (ungated); 13c AMBER (7 registered exceptions). Data truth 3 is GREEN since #78 | `output/data_truth_health.json` 2026-11-23T08:39:19Z, `output/system_health.json` 08:35:46Z (31 GREEN / 1 RED / 1 AMBER / 1 NO_DATA) |
-| Production model integrity | **FAIL** (D3 parity monitor; artifact predates #78) | `output/model_integrity_health.json` 2026-11-22T20:03:05Z |
+| Operational data quality | **AMBER**: 13c (7 registered historical exceptions). Data truth 3 GREEN since #78; Data truth 9 GREEN since #86 | `output/data_truth_health.json` 2026-11-23T10:47:40Z, `output/system_health.json` 10:45:27Z (32 GREEN / 0 RED / 1 AMBER / 1 NO_DATA, overall WARN) |
+| Production model integrity | **FAIL** (D3 parity monitor; refreshed after #78: Standard HT `0776cea1` / `aa4c62ce` read) | `output/model_integrity_health.json` 2026-11-23T10:47:18Z |
 | Full-system certification | **NOT CERTIFIED** | follows from the two rows above |
 
-Data truth 9 at the final refresh: **RED - 2 v91_shadow fixtures logged twice (`output/data_truth_health.json` 08:39:19Z); its fix had NOT merged to main at this refresh (another agent owns it)**
+Data truth 9 at the final refresh: **GREEN** - the 2 v91_shadow fixtures logged twice (RED at 08:39Z) were fixed by PR #86 (`e2bc9f9d6`, first-sight key (fixture_id, market); duplicates kept beside in `output/corrections/v91_shadow_duplicates.csv`), merged into this branch before the final checks.
 
 | Repo | Health |
 |---|---|
-| wowza-betting | CI green after #85; operational RED on Data truth 9 only; model integrity FAIL (D3 measurement) |
+| wowza-betting | CI green after #85; operational AMBER (13c registered exceptions only); model integrity FAIL (D3 measurement) |
 | wowzaV9-Pro | collectors green; weekly audit FAIL recorded 2026-11-22 19:49Z on pre-fix code (2 FAIL: near-kickoff per-book snapshot coverage - a different measure from the v9 certified close, see P1_PRICE_CLV_COVERAGE section 1; registry reconciliation, fixed by Pro #18). The next scheduled audit had not committed at this refresh |
 | wowza_v11 | V11 Collect green; `v11_research_health.json` PASS; team_names byte-identical to v9 |
 | wowza-dashboard | Sync from v9 green; byte-level rebuild 0 differences at `61e86987` (P1-12); known inf/NaN column-config exception on the Dashboard page (not fixed) |
@@ -78,14 +79,14 @@ Data truth 9 at the final refresh: **RED - 2 v91_shadow fixtures logged twice (`
    model truth rule; Fantasy FPL inputs 2,631 / 2,631 = `event/live`; dashboard byte-level sync.
 3. **Files / SHAs (this PR).** `scripts/certify_real_data.py`, `tests/test_certify_real_data.py`,
    `output/real_data_certification.json`, `config/feature_provenance.json`, this report and
-   `reports/FINAL_DATA_TRUTH_CERTIFICATION.md`; base main `5a6727f42`; PR head and merge SHAs are in the PR.
+   `reports/FINAL_DATA_TRUTH_CERTIFICATION.md`; base main `6de281c97` (suite run on `5a6727f42`); PR head and merge SHAs are in the PR.
 4. **Tests.** Full suite on this branch (Windows, local): 4,191 passed, 50 skipped, 6 xfailed, 1 failed - `test_fix16_readers::test_every_history_bank_reader_is_classified` flagged the new script as an unclassified raw-bank reader; classified as RAW (it counts raw provider cells, serves nothing), re-run green. New: `tests/test_certify_real_data.py` (5 tests: verdict never passes a default / unverified value; untraced feature never counted real; archive stats checked against both providers; committed JSON holds no price value; unmeasured repos UNVERIFIED). `data_truth --gate` STOPLIGHT GREEN; `research_lock --check` protected_tracks_modified=False; `build_track_registry --check` in sync (100 entries); `dashboard_manifest --write` then `--check`: missing code [], missing data [].
-5. **Per-repo health.** Table above: all 5 repos have green CI on main now; v9 operational data RED on Data truth 9
-   only; Pro weekly audit FAIL recorded on pre-fix code.
+5. **Per-repo health.** Table above: all 5 repos have green CI on main now; v9 operational data AMBER (13c registered
+   exceptions only); Pro weekly audit FAIL recorded on pre-fix code.
 6. **Active model integrity verdict.** Lineage PASS on all 12 team parts (evidence 2026-11-22; the 2 Standard HT
    parts were reinstalled by #78 from the same frame `ebe47c041a7f595f`, whose refit without the exclusion
    reproduces the old payloads exactly); cell-level parity 0 differing cells; but
-   the production indicator is **FAIL** (parity monitor reference defect D3; the artifact predates #78). Real data:
+   the production indicator is **FAIL** (parity monitor reference defect D3; artifact 2026-11-23T10:47Z, after #78). Real data:
    the 6 Standard parts are **NOT_REAL** (D1, 21 / 19 rows); the 6 NF parts are REAL_100 with missing kept missing.
 7. **Props provenance verdict.** **VERIFIED 13 / 13** installed artifacts (sha256, schema, chronology, parity
    6,316 rows bit-identical, batch invariance). Row level: 959,081 provider-observed + 5,311 provider-rule rows;
@@ -101,8 +102,7 @@ Data truth 9 at the final refresh: **RED - 2 v91_shadow fixtures logged twice (`
    bets 1,943 / 1,943, side 795 / 795, TOP-3 3 / 3, HT 15 / 84, player 7,473 / 47,426; no team / player ledger
    records the bookmaker or capture time.
 10. **Unresolved blockers.** D1 (owner: refit Standard without unconfirmed archive cells); D3 (parity monitor
-    reference); D4 (stored placeholders); D6 (book + capture time per tip); Data truth 9 (2 duplicated v91_shadow
-    fixtures, fix in flight by another agent); Fantasy V1 frame parity; row-level provenance of Pro / v11 / exec;
+    reference); D4 (stored placeholders); D6 (book + capture time per tip); Fantasy V1 frame parity; row-level provenance of Pro / v11 / exec;
     Pro weekly audit near-kickoff snapshot coverage.
 11. **Statistically validated edge?** **NO PROVEN EDGE YET.** Clean Record (from 2026-11-19T06:41:48Z): 19 settled
     forward bets (TOP-3 staked 2, O/U 2.5 tips 5, side tips 10, HT 1, props 1); 12 / 12 forward cells
