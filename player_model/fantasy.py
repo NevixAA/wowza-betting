@@ -426,7 +426,7 @@ def fpl_crosswalk(players: pd.DataFrame, fpl: pd.DataFrame, norm=None,
     return ids
 
 
-def _v1_context(raw: pd.DataFrame, pl: pd.DataFrame) -> pd.DataFrame:
+def _v1_context(raw: pd.DataFrame, pl: pd.DataFrame, rows: list[dict] | None = None) -> pd.DataFrame:
     """The rows of the props source frame that every feature of V1's rows reads: the fantasy league's
     rows, every row of a fixture involving one of its clubs (any competition: opponent / team tables),
     every row of V1's players (career / position), every fixture of a referee who took charge in the
@@ -442,28 +442,76 @@ def _v1_context(raw: pd.DataFrame, pl: pd.DataFrame) -> pd.DataFrame:
             | pd.to_numeric(raw["player_id"], errors="coerce").isin(ids))
     if "referee" in raw.columns:
         rk = raw["referee"].map(_referee_key)
-        keep |= rk.isin(set(rk[raw.index.isin(fl.index)].dropna()))
+        refs = set(rk[raw.index.isin(fl.index)].dropna())
+        refs |= {k for k in (_referee_key(r.get("referee")) for r in (rows or [])) if k}
+        keep |= rk.isin(refs)
     return raw[keep]
 
 
-def v1_model_inputs(pl: pd.DataFrame, raw: pd.DataFrame | None = None) -> pd.DataFrame:
-    """Model inputs for V1's rows (each player's latest fantasy-league match, as before), built by
-    player_model.feature_engineering.build_features on the props source frame
-    (props_harness.source_frame: player_history + cup rows, re-fetched counts, keeper check,
-    identity conflicts) - the build props training (props_harness.build_frame) and props serving
-    (build_upcoming_features) both run. Shift-based / strictly-earlier, so a row's inputs never read
-    its own result. Index = pl.index; `_v1_built` says whether the build produced the row."""
-    from player_model.feature_engineering import build_features
+def upcoming_fixture_list(days: int = 14) -> list[dict]:
+    """The fantasy league's fixtures from today to today + `days` (API-Football /fixtures, cached), not
+    started. Empty without a key / league id / season, or off-season."""
+    try:
+        from player_model.api_football import get_fixtures_between
+        lid = _fantasy_league_id()
+        season = config.prop_season(FANTASY_LEAGUE) if FANTASY_LEAGUE else None
+        if lid is None or not str(season).isdigit():
+            return []
+        today = pd.Timestamp.utcnow().normalize()
+        fx = get_fixtures_between(lid, season, today.strftime("%Y-%m-%d"),
+                                  (today + pd.Timedelta(days=days)).strftime("%Y-%m-%d"))
+        return [f for f in fx if str(((f.get("fixture") or {}).get("status") or {}).get("short", "")) in ("NS", "TBD")]
+    except Exception as e:                                                  # noqa: BLE001
+        log.warning("fantasy: upcoming fixtures unavailable (%s: %s)", type(e).__name__, e)
+        return []
+
+
+def next_fixture_rows(pl: pd.DataFrame, fixtures: list[dict]) -> list[dict]:
+    """One PRE-MATCH serving row per V1 player: his club's next fixture (club = the team of his latest
+    fantasy-league row, API-Football naming on both sides), in the shape props predict builds
+    (identity + context only, no result). A player whose club has no listed fixture gets no row."""
+    nxt: dict = {}
+    for f in sorted(fixtures, key=lambda f: str((f.get("fixture") or {}).get("date", ""))):
+        fx, tm = f.get("fixture") or {}, f.get("teams") or {}
+        h, a = (tm.get("home") or {}).get("name"), (tm.get("away") or {}).get("name")
+        if not (fx.get("id") and fx.get("date") and h and a):
+            continue
+        rec = {"fixture_id": int(fx["id"]), "date": str(fx["date"])[:10], "home_team": h, "away_team": a,
+               "referee": fx.get("referee")}
+        nxt.setdefault(h, rec)
+        nxt.setdefault(a, rec)
+    rows = []
+    for r in pl.to_dict("records"):
+        n = nxt.get(r.get("team"))
+        if n is None:
+            continue
+        rows.append({"player_id": r["player_id"], "player_name": r.get("player_name", ""), "league": FANTASY_LEAGUE,
+                     "team": r["team"], "is_home": float(r["team"] == n["home_team"]), **n})
+    return rows
+
+
+def v1_model_inputs(pl: pd.DataFrame, raw: pd.DataFrame | None = None,
+                    rows: list[dict] | None = None) -> pd.DataFrame:
+    """PRE-MATCH model inputs for V1's players: player_model.feature_engineering.build_upcoming_features
+    (the props serving build, exactly what props predict runs) for each player's NEXT fixture
+    (next_fixture_rows), on the props source frame (props_harness.source_frame) restricted by
+    _v1_context. Never a row the props models were fitted or calibrated on (owner 2026-11-23: V1 used
+    each player's latest PLAYED row, inside the props training window for 425 of 738 players).
+    Index = pl.index; `_v1_built` says whether the build produced the player's row."""
+    from player_model.feature_engineering import build_upcoming_features
     from player_model.props_harness import source_frame
     raw = source_frame() if raw is None else raw
-    built = build_features(_v1_context(raw, pl), copy=False)
-    key = ["fixture_id", "player_id"]
-    left = pl[key].copy()
-    for c in key:
-        left[c] = pd.to_numeric(left[c], errors="coerce")
-        built[c] = pd.to_numeric(built[c], errors="coerce")
-    built = built.drop_duplicates(key)
-    out = left.merge(built.assign(_v1_built=True), on=key, how="left")
+    rows = next_fixture_rows(pl, upcoming_fixture_list()) if rows is None else rows
+    built = build_upcoming_features(rows, _v1_context(raw, pl, rows)) if rows else pd.DataFrame()
+    left = pl[["player_id"]].copy()
+    left["player_id"] = pd.to_numeric(left["player_id"], errors="coerce")
+    if built.empty:
+        out = left.assign(_v1_built=False)
+        out.index = pl.index
+        return out
+    built["player_id"] = pd.to_numeric(built["player_id"], errors="coerce")
+    built = built.drop_duplicates("player_id")
+    out = left.merge(built.assign(_v1_built=True), on="player_id", how="left")
     out.index = pl.index
     out["_v1_built"] = out["_v1_built"].eq(True)
     return out
@@ -500,11 +548,11 @@ def build_fantasy_projections(parquet_path: Path | None = None, min_minutes: flo
         return pd.DataFrame()
 
     from player_model.model import load_model, predict_proba
-    # MODEL INPUTS FROM THE PROPS BUILD (owner 2026-11-23 "Fix V1, then D4"): the payloads score
-    # v1_model_inputs - player_model.feature_engineering.build_features on the props source frame,
-    # the one definition props training and serving use - never the stored player_history feature
-    # columns (a legacy build: 124 of 128 inputs differed from the training frame, certification
-    # 2026-11-23). A player whose row the build does not produce (no earlier match) gets no probability.
+    # MODEL INPUTS FROM THE PROPS SERVING BUILD (owner 2026-11-23 "Fix V1, then D4"): the payloads score
+    # v1_model_inputs - build_upcoming_features for each player's NEXT fixture on the props source
+    # frame, exactly what props predict runs - never the stored player_history feature columns (a
+    # legacy build: 124 of 128 inputs differed from the training frame) and never a played row the
+    # props models were fitted / calibrated on. No next fixture or no earlier match -> no probability.
     if source is None:
         from player_model.props_harness import source_frame
         source = source_frame(history=df)
@@ -523,7 +571,7 @@ def build_fantasy_projections(parquet_path: Path | None = None, min_minutes: flo
         pl[col] = p.to_numpy()
     n_unbuilt = int((~X["_v1_built"]).sum())
     if n_unbuilt:
-        log.info("fantasy: %d player(s) without a props feature row (no earlier match) - no probability",
+        log.info("fantasy: %d player(s) without a pre-match props row (no next fixture / no earlier match) - no probability",
                  n_unbuilt)
     # From here on the profile placeholders still stored in player_history are read as missing
     # (see _mask_profile_placeholders); the model inputs above never read them.

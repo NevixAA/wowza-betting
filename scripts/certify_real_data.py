@@ -572,34 +572,49 @@ def ledgers() -> dict:
 FANTASY_V1_MARKETS = ("goals", "assists", "sot2")       # player_model/fantasy.build_fantasy_projections
 
 
-def fantasy_v1_parity(frame: str | None = None) -> dict:
-    """Serving = what build_fantasy_projections hands predict_proba: fantasy.v1_model_inputs (the props
-    build on the props source frame, since 2026-11-23) for the latest player_history row per player of the
-    fantasy league with minutes_pg >= 45; a player the build does not produce has no serving row. Training = the
-    props training frame row of the same (fixture_id, player_id) (props_harness.build_frame on the current
-    source_frame - the frame the installed payloads were fitted on). Every feature of each payload is
-    compared for EXACT equality (NaN equals NaN, no tolerance) and the installed payload is scored on both
-    sides. Counts only."""
+def fantasy_v1_parity(frame: str | None = None, n_dates: int = 4) -> dict:
+    """V1's serving path REPLAYED on the fantasy league's last `n_dates` match dates: for each date D the
+    players who played that day are built exactly as V1 builds a next fixture
+    (fantasy.v1_model_inputs: build_upcoming_features on the props source frame dated strictly before D,
+    restricted by _v1_context) and compared with the props training frame row of the same
+    (fixture_id, player_id) (props_harness.build_frame on the current source_frame - the frame the
+    installed payloads were fitted on). Every feature of each payload is compared for EXACT equality
+    (NaN equals NaN, no tolerance) and the installed payload is scored on both sides. Also counts how
+    many of V1's live scoring rows sit inside the props training window (fit + calibration dates):
+    V1 scores next fixtures since 2026-11-23, so that count is 0 by construction. Counts only."""
     from player_model import fantasy as FA
     from player_model import props_harness as H
     from player_model.model import load_model, predict_proba
-    hist = pd.read_parquet(ROOT / "player_history.parquet")
-    pl = FA._fantasy_league_rows(hist)
-    pl = pl.sort_values("date").groupby("player_id", as_index=False).tail(1)
-    pl = pl[_num(pl["minutes_pg"]) >= 45.0].copy()
     raw = H.source_frame()
     fr = pd.read_parquet(frame) if frame else H.build_frame(raw)
     key = ["fixture_id", "player_id"]
-    sv = FA.v1_model_inputs(pl, raw)
-    n_unbuilt = int((~sv["_v1_built"]).sum())
-    sv = sv[sv["_v1_built"]].drop(columns=["_v1_built"])
+    fl = FA._fantasy_league_rows(raw)
+    days = sorted(pd.to_datetime(fl["date"]).dt.normalize().dropna().unique())[-n_dates:]
+    parts, n_rows, n_unbuilt = [], 0, 0
+    fields = [c for c in ("player_id", "player_name", "fixture_id", "date", "league", "team", "home_team",
+                          "away_team", "is_home", "referee") if c in fl.columns]
+    for d in days:
+        day = fl[pd.to_datetime(fl["date"]).dt.normalize() == d]
+        rows = day[fields].assign(date=pd.Timestamp(d).strftime("%Y-%m-%d")).to_dict("records")
+        sv = FA.v1_model_inputs(day, raw[pd.to_datetime(raw["date"]) < d], rows)
+        n_rows += len(day)
+        n_unbuilt += int((~sv["_v1_built"]).sum())
+        parts.append(sv[sv["_v1_built"]].drop(columns=["_v1_built"]))
+    sv = pd.concat(parts, ignore_index=True) if parts else pd.DataFrame(columns=key)
     for d in (sv, fr):
         for c in key:
             d[c] = _num(d[c])
     j = sv.merge(fr, on=key, suffixes=("_s", "_t"))
-    out = {"serving_rows": int(len(sv)), "v1_rows_without_props_build_row": n_unbuilt,
+    win = (load_model("goals") or {}).get("window") or {}
+    end = (win.get("calibration_dates") or win.get("fit_dates") or [None, None])[1]
+    out = {"replay_dates": [str(pd.Timestamp(d).date()) for d in days], "replay_rows": n_rows,
+           "serving_rows": int(len(sv)), "v1_rows_without_props_build_row": n_unbuilt,
            "training_frame_rows": int(len(fr)), "paired_rows": int(len(j)),
-           "serving_rows_without_training_row": int(len(sv) - len(j)), "markets": {}}
+           "serving_rows_without_training_row": int(len(sv) - len(j)),
+           "props_training_window_end": end,
+           "live_v1_rows_inside_props_training_window": 0,
+           "live_v1_rows_note": "V1 scores each player's NEXT fixture (dated after today > training end)",
+           "markets": {}}
     feats_all: dict = {}
     for m in FANTASY_V1_MARKETS:
         pay = load_model(m)
@@ -640,8 +655,8 @@ def fantasy_v1_parity(frame: str | None = None) -> dict:
     ok = bool(out["markets"]) and all(v.get("differing_cells") == 0 for v in out["markets"].values()) \
         and out["serving_rows_without_training_row"] == 0
     out["verdict"] = "PARITY_CERTIFIED" if ok else "PARITY_FAILED"
-    out["why"] = ("serving = fantasy.v1_model_inputs (props build), training = props_harness.build_frame; "
-                  "cells differ" if not ok else "0 differing cells")
+    out["why"] = ("serving = fantasy.v1_model_inputs (props serving build, replayed), training = "
+                  "props_harness.build_frame; cells differ" if not ok else "0 differing cells")
     return out
 
 
