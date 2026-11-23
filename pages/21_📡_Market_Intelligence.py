@@ -27,10 +27,7 @@ _require_tier("admin")  # tier guard (dashboard_access.PAGES) - admin, like Mark
 
 from dashboard_data import freshness, market_intel, pro  # noqa: E402
 
-# STREAMLIT CLOUD KEEPS IMPORTED MODULES ACROSS A REDEPLOY (see 15_League_Scout): reload the helpers.
-import importlib  # noqa: E402
-freshness = importlib.reload(freshness)
-market_intel = importlib.reload(market_intel)
+# Page/helper version skew after a redeploy is handled by dashboard_build_guard (app.py router).
 
 st.set_page_config(page_title="Wowza | Market Intelligence", page_icon="📡", layout="wide")
 import dashboard_ui as ui  # noqa: E402
@@ -301,7 +298,6 @@ def _evidence_panels(today: str):
 
 
 from dashboard_data import evidence_view as EV  # noqa: E402
-EV = importlib.reload(EV)
 (_e2m, _e2items), (_o15m, _o15rows) = _evidence_panels(pd.Timestamp.now(tz="UTC").strftime("%Y-%m-%d"))
 EV.edge2_report_panel(_e2m, _e2items)
 EV.over15_panel(_o15m, _o15rows)

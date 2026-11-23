@@ -48,8 +48,6 @@ from src.tier_labels import PAPER_TIER_LABEL, STAKED_LABEL, display_frame, relab
 from dashboard_data import freshness as _fresh, success_view as V  # noqa: E402
 from dashboard_data import clean_record as CR  # noqa: E402
 from src import units as U  # noqa: E402
-import importlib  # noqa: E402
-V = importlib.reload(V)              # page + helper always the same version (see 15_League_Scout)
 
 st.set_page_config(page_title="Success Rates | Wowza", page_icon="🎯", layout="wide")
 

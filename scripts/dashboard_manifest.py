@@ -163,6 +163,86 @@ def _imports(path: Path, lazy: bool = True) -> set[str]:
     return mods
 
 
+#: Calls that load a .py FILE by path instead of by module name - invisible to the import scan above, and
+#: to the runtime trace too (spec_from_file_location never enters sys.modules). Admin Board -> Bars crashed
+#: in the slim app with FileNotFoundError because src/league_bars.py loads scripts/league_thresholds.py
+#: this way and the manifest never shipped it (2026-11-23). call name -> (path arg index, keyword).
+FILE_LOAD_CALLS = {"spec_from_file_location": (1, "location"), "SourceFileLoader": (1, "path"),
+                   "run_path": (0, "path_name")}
+
+
+def _path_parts(node: ast.AST) -> list[str] | None:
+    """String pieces of a path expression built from constants: "a/b.py", X / "a" / "b.py",
+    Path(X, "a", "b.py"), X.joinpath("a", "b.py"), os.path.join(X, "a", "b.py"). Names, attributes and
+    other calls count as the ANCHOR (ROOT, Path(__file__).parent, parents[1]) and add nothing. None when a
+    piece after the anchor is not a constant (an f-string, a variable file name)."""
+    if isinstance(node, ast.Constant) and isinstance(node.value, str):
+        return [node.value]
+    if isinstance(node, ast.BinOp) and isinstance(node.op, ast.Div):
+        left, right = _path_parts(node.left), _path_parts(node.right)
+        if right is None or left is None:
+            return None
+        return left + right
+    if isinstance(node, ast.Call):
+        fn = node.func.attr if isinstance(node.func, ast.Attribute) else getattr(node.func, "id", "")
+        if fn in ("Path", "PurePath", "joinpath", "join"):
+            parts = []
+            if fn == "joinpath" and isinstance(node.func, ast.Attribute):
+                base = _path_parts(node.func.value)
+                if base is None:
+                    return None
+                parts += base
+            for a in node.args:
+                p = _path_parts(a)
+                if p is None:
+                    return None
+                parts += p
+            return parts
+        return []
+    if isinstance(node, (ast.Name, ast.Attribute, ast.Subscript)):
+        return []
+    return None
+
+
+def file_loads(path: Path, root: Path = ROOT) -> tuple[set[str], list[str]]:
+    """(repo .py files `path` loads by file path, unresolved call descriptions). A target resolves
+    against the repo root first, then against the loading file's own directory."""
+    try:
+        tree = ast.parse(path.read_text(encoding="utf-8"))
+    except Exception:                                                # noqa: BLE001
+        return set(), []
+    found, unresolved = set(), []
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.Call):
+            continue
+        fn = node.func.attr if isinstance(node.func, ast.Attribute) else getattr(node.func, "id", "")
+        if fn not in FILE_LOAD_CALLS:
+            continue
+        idx, kw = FILE_LOAD_CALLS[fn]
+        arg = node.args[idx] if len(node.args) > idx else next((k.value for k in node.keywords if k.arg == kw), None)
+        parts = _path_parts(arg) if arg is not None else None
+        rel = "/".join(p.strip("/") for p in parts if p) if parts else ""
+        hit = None
+        if rel.endswith(".py"):
+            for base in (root, path.parent):
+                cand = (base / rel).resolve()
+                if cand.is_file():
+                    try:
+                        hit = cand.relative_to(root.resolve()).as_posix()
+                    except ValueError:
+                        pass
+                    break
+        if hit:
+            found.add(hit)
+        else:
+            try:
+                where = path.relative_to(root).as_posix()
+            except ValueError:
+                where = str(path)
+            unresolved.append(f"{where}:{node.lineno} {fn}({ast.unparse(arg) if arg is not None else '?'})")
+    return found, unresolved
+
+
 VIEWER_LAYER = ("app.py", "pages/", "dashboard_", "dashboard_data/", "utils/")
 
 #: Pipeline entry points the slim dashboard never runs. The static closure does not ship them, or anything
@@ -214,7 +294,21 @@ def static_closure(root: Path = ROOT, entries: list[str] | None = None,
             for p in _module_file(root, m):
                 if p not in seen:
                     todo.append(p)
+        for rel in file_loads(f, root)[0]:                           # loaded by file path (FILE_LOAD_CALLS)
+            if root / rel not in seen:
+                todo.append(root / rel)
     return {p.relative_to(root).as_posix() for p in seen}
+
+
+def unresolved_file_loads(root: Path = ROOT, code: set[str] | None = None) -> list[str]:
+    """Load-by-path calls in shipped code whose target the scanner cannot pin to a repo file: each is a
+    dependency the slim tree may miss, so --static fails on any."""
+    code = static_closure(root) if code is None else code
+    out = []
+    for rel in sorted(code):
+        if rel.endswith(".py"):
+            out += file_loads(root / rel, root)[1]
+    return out
 
 
 def check_pipeline_only(root: Path = ROOT, entries: list[str] | None = None) -> list[str]:
@@ -581,10 +675,12 @@ def main(argv=None) -> int:
         bad = unmatched_literals(cur)
         unsafe = check_pipeline_only()
         stale = stale_exclusions(cur)
+        unres = unresolved_file_loads()
         print(f"static: {len(miss_code)} code file(s) missing {miss_code}; {len(bad)} unmatched data literal(s) {bad}; "
               f"{len(unsafe)} unsafe pipeline-only import(s) {unsafe}; "
-              f"{len(stale)} committed file(s) wrongly excluded as not committed {stale}")
-        return 1 if (miss_code or bad or unsafe or stale) else 0
+              f"{len(stale)} committed file(s) wrongly excluded as not committed {stale}; "
+              f"{len(unres)} unresolved load-by-path call(s) {unres}")
+        return 1 if (miss_code or bad or unsafe or stale or unres) else 0
     trace = run_trace()
     new = build_manifest(trace)
     errs = {p: i["exceptions"] for p, i in trace["pages"].items() if i["exceptions"]}

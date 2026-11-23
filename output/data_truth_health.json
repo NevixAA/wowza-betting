@@ -1,7 +1,7 @@
 {
  "artifact": "data_truth_health",
  "version": "DATA-TRUTH-1",
- "generated_at": "2026-11-23T13:51:14Z",
+ "generated_at": "2026-11-23T18:55:00Z",
  "checks": [
   {
    "check": "Data truth 1: one canonical name",
@@ -255,7 +255,7 @@
   {
    "check": "Data truth 9: clean ledgers",
    "status": "GREEN",
-   "value": "clean since 2026-11-19 (7 live tip(s), 2665 player row(s), 126 v91 row(s))",
+   "value": "clean since 2026-11-19 (7 live tip(s), 2873 player row(s), 126 v91 row(s))",
    "rule": "from the Clean Record start: 0 multi-tip / opposite-tip fixtures, 0 post-kickoff tips, 0 closes <= 1.0, 0 |CLV| > 50 new-format rows, 0 duplicate player tips, 0 v91_shadow fixtures logged twice: RED on any; NO_DATA before the start is set",
    "detail": ""
   },
@@ -290,9 +290,9 @@
   {
    "check": "Data truth 10a: keeper goals_conceded = match score",
    "status": "GREEN",
-   "value": "0 disagreement(s) in 61,656 checkable keeper value(s) read by the features; 335 provider value(s) contradicted the score and are missing",
+   "value": "0 disagreement(s) in 61,660 checkable keeper value(s) read by the features; 335 provider value(s) contradicted the score and are missing",
    "rule": "a keeper who was his side's only keeper for the full 90 minutes of a match finished in 90 minutes has goals_conceded = the opponent's 90-minute goals, or missing - never another value",
-   "detail": "2026-06: 0/84 contradicted before, 0 missing after; 2026-07: 4/407 contradicted before, 54 missing after; 2026-08: 13/1566 contradicted before, 105 missing after; 2026-09: 10/1700 contradicted before, 222 missing after; 2026-10: 29/2146 contradicted before, 1003 missing after; 2026-11: 87/1008 contradicted before, 847 missing after",
+   "detail": "2026-06: 0/84 contradicted before, 0 missing after; 2026-07: 4/407 contradicted before, 54 missing after; 2026-08: 13/1566 contradicted before, 105 missing after; 2026-09: 10/1700 contradicted before, 222 missing after; 2026-10: 29/2146 contradicted before, 1003 missing after; 2026-11: 87/1092 contradicted before, 927 missing after",
    "by_month": {
     "2022-08": {
      "rows": 354,
@@ -550,9 +550,9 @@
      "missing_after": 1003
     },
     "2026-11": {
-     "rows": 1008,
+     "rows": 1092,
      "contradicted_before_check": 87,
-     "missing_after": 847
+     "missing_after": 927
     }
    }
   },
@@ -568,7 +568,7 @@
    "status": "GREEN",
    "value": "goals_conceded: 28,036 provider null(s), 0 read as a value, penalty_missed: 28,036 provider null(s), 0 read as a value",
    "rule": "a NULL_IS_MISSING count (goals_conceded, penalty_missed) the provider sent as null is missing on the props frame - never 0; a real provider 0 stays 0",
-   "detail": "2026-06: 7 missed / 24 scored on known rows, 106 null miss count(s); 2026-07: 10 missed / 44 scored on known rows, 968 null miss count(s); 2026-08: 46 missed / 169 scored on known rows, 1440 null miss count(s); 2026-09: 38 missed / 137 scored on known rows, 3146 null miss count(s); 2026-10: 38 missed / 140 scored on known rows, 14472 null miss count(s); 2026-11: 2 missed / 26 scored on known rows, 11315 null miss count(s)"
+   "detail": "2026-06: 7 missed / 24 scored on known rows, 106 null miss count(s); 2026-07: 10 missed / 44 scored on known rows, 968 null miss count(s); 2026-08: 46 missed / 169 scored on known rows, 1440 null miss count(s); 2026-09: 38 missed / 137 scored on known rows, 3146 null miss count(s); 2026-10: 38 missed / 140 scored on known rows, 14472 null miss count(s); 2026-11: 2 missed / 26 scored on known rows, 12766 null miss count(s)"
   },
   {
    "check": "Data truth 12: prediction ledger",
