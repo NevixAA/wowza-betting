@@ -12,7 +12,12 @@ live board of several fixtures is FAIL, whatever its value.
 
 RULES (PARITY_RULE_VERSION)
   FAIL  live all-missing while training is mostly present (train missing < 50%)
-  FAIL  constant live (>= MIN_LIVE_N non-null, one distinct value) while training varies
+  FAIL  constant live (>= MIN_LIVE_N non-null, one distinct value) while training varies - unless
+        the live value IS the training mode and a run of that many mode values is likely under the
+        training distribution (mode_share ** live_n >= CONSTANT_LIVE_P_MIN). Rule 1.1 (2026-11-23, D3):
+        has_ht_history is 1.0 on 99.96% of training rows, so 95 live 1.0s are what training predicts
+        (P ~ 0.97), not a serving defect. A hard-coded value off the training mode (home_advantage
+        1.0 vs mean 0.45) or a plausible constant of a varying feature still FAILs.
   FAIL  PSI >= PSI_FAIL and |mean shift| >= 1 training std
   FAIL  live missing exceeds training missing by >= 50pp (the live value is mostly imputed)
   WARN  PSI >= PSI_WARN, or |mean shift| >= 1 training std, or live missing exceeds training
@@ -28,7 +33,9 @@ import math
 import numpy as np
 import pandas as pd
 
-PARITY_RULE_VERSION = "feature-parity-1.0"
+PARITY_RULE_VERSION = "feature-parity-1.1"
+#: a constant live value equal to the training mode is expected when mode_share ** n >= this
+CONSTANT_LIVE_P_MIN = 0.05
 MIN_LIVE_N = 5
 PSI_WARN = 0.25
 PSI_FAIL = 1.0
@@ -87,6 +94,8 @@ def feature_stats(train: pd.Series, live: pd.Series) -> dict:
         "train_distinct": int(tn.nunique()),
         "live_distinct": int(ln.nunique()),
         "live_non_null": int(len(ln)),
+        "train_mode": _f(tn.mode().iloc[0]) if len(tn) else None,
+        "train_mode_share": _f(float((tn == tn.mode().iloc[0]).mean())) if len(tn) else None,
         "psi": _f(psi(t, l)),
     }
 
@@ -98,6 +107,13 @@ def classify(feature: str, s: dict) -> tuple[str, list]:
     t_std = s.get("train_std") or 0.0
     constant_live = (s.get("live_non_null", 0) >= MIN_LIVE_N and s.get("live_distinct", 0) == 1
                      and s.get("train_distinct", 0) > 1 and t_std > 0)
+    share = s.get("train_mode_share")
+    if constant_live and s.get("train_mode") is not None and s.get("live_mean") is not None and share is not None:
+        p_run = share ** s["live_non_null"]
+        s["p_constant_run_under_training"] = round(float(p_run), 6)
+        if math.isclose(s["live_mean"], s["train_mode"], rel_tol=0, abs_tol=1e-9) and p_run >= CONSTANT_LIVE_P_MIN:
+            constant_live = False
+            s["constant_live_expected"] = True
     s["constant_live"] = bool(constant_live)
     shift = None
     if s.get("train_mean") is not None and s.get("live_mean") is not None and t_std > 0:
