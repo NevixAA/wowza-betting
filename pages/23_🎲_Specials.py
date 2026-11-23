@@ -23,9 +23,6 @@ import dashboard_ui as ui  # noqa: E402
 from dashboard_data import pro as PRO  # noqa: E402
 from dashboard_data import specials_view as V  # noqa: E402
 
-import importlib  # noqa: E402
-PRO = importlib.reload(PRO)
-V = importlib.reload(V)
 
 st.set_page_config(page_title="Wowza | Specials", page_icon="🎲", layout="wide")
 

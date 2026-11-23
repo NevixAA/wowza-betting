@@ -34,22 +34,7 @@ import dashboard_ui as ui  # noqa: E402
 from dashboard_data import fantasy as fdata  # noqa: E402
 from dashboard_data import fantasy_view as fv  # noqa: E402
 
-# STALE-MODULE GUARD (2026-10-22). Streamlit Cloud re-runs page files on every deploy but keeps
-# modules it already imported, so after the V2 update the long-running process served the OLD
-# dashboard_data.fantasy and the page died with AttributeError on v2_projections. Reload once if the
-# readers this page needs are missing.
-if not all(hasattr(fdata, f) for f in ("v2_projections", "v2_summary", "v2_benchmark", "v2_transfers",
-                                       "v2_fixture_matrix", "v2_scoreboard",
-                                       "v2_scoreboard_reliability", "v2_pooled_reliability",
-                                       "v2_paired_walkforward", "v2_paired_table", "v2_paired_by_gw",
-                                       "v2_promotion_table")):
-    import importlib  # noqa: E402
-    fdata = importlib.reload(fdata)
-if not all(hasattr(fv, f) for f in ("player_card", "captain_card", "transfer_card", "fixture_heatmap_spec",
-                                    "recommendations", "transfer_candidates", "fixture_agg",
-                                    "player_data_table", "missingness_summary")):
-    import importlib  # noqa: E402
-    fv = importlib.reload(fv)
+# Page/helper version skew after a redeploy is handled by dashboard_build_guard (app.py router).
 
 st.set_page_config(page_title="Fantasy | Wowza", page_icon="⚽", layout="wide")
 from dashboard_access import require as _require_tier  # noqa: E402
@@ -137,11 +122,6 @@ if rc2.button("Reload artifacts"):
     st.rerun()
 
 import dashboard_fantasy_tools as tools  # noqa: E402
-if not all(hasattr(tools, f) for f in ("board", "differentials", "prop_leaderboards", "set_pieces",
-                                       "transfer_helper", "alerts", "chip_advisor", "lineup",
-                                       "mini_league", "club_squads")):
-    import importlib  # noqa: E402
-    tools = importlib.reload(tools)
 
 v1 = tools.board()
 

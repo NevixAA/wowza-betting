@@ -27,10 +27,7 @@ _require_tier("admin")  # tier guard (dashboard_access.PAGES), 2026-10-18
 import dashboard_ui as ui  # noqa: E402
 from dashboard_data import pro, v11  # noqa: E402
 
-# Streamlit Cloud keeps imported modules across a redeploy (see the Pro page); reload so this page and
-# the helper are always the same version.
-import importlib  # noqa: E402
-pro = importlib.reload(pro)
+# Page/helper version skew after a redeploy is handled by dashboard_build_guard (app.py router).
 
 st.set_page_config(page_title="Wowza | V11", page_icon="🛰️", layout="wide")
 _TITLE, _SUB = "Market Lab", "V11 — the market-first shadow. It observes and logs: no Telegram, no stakes, no write path into v9."

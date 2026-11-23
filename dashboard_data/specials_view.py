@@ -37,7 +37,9 @@ def upcoming(log: pd.DataFrame, now: pd.Timestamp) -> pd.DataFrame:
     if log is None or log.empty or "kickoff_utc" not in log:
         return pd.DataFrame()
     ko = pd.to_datetime(log["kickoff_utc"], utc=True, errors="coerce")
-    return log[ko > now].assign(_ko=ko[ko > now]).sort_values("_ko")
+    up = log[ko > now].copy()                    # consolidated: a wide per-column-block frame warns on insert
+    up["_ko"] = ko[ko > now]
+    return up.sort_values("_ko")
 
 
 def flagged_frame(log: pd.DataFrame, now: pd.Timestamp, group: tuple[str, ...]) -> pd.DataFrame:

@@ -45,6 +45,33 @@ def test_every_page_and_import_is_in_the_manifest():
         assert (ROOT / rel).is_file(), f"manifest code file missing: {rel}"
 
 
+def test_files_loaded_by_path_are_shipped(tmp_path):
+    """src/league_bars.py loads scripts/league_thresholds.py with spec_from_file_location; the import scan and
+    the runtime trace both missed it, so Admin Board -> Bars crashed in the slim app (2026-11-23)."""
+    (tmp_path / "src").mkdir()
+    (tmp_path / "scripts").mkdir()
+    (tmp_path / "scripts" / "helper.py").write_text("import scripts_dep\n", encoding="utf-8")
+    (tmp_path / "scripts_dep.py").write_text("X = 1\n", encoding="utf-8")
+    (tmp_path / "scripts" / "other.py").write_text("", encoding="utf-8")
+    (tmp_path / "src" / "near.py").write_text("", encoding="utf-8")
+    (tmp_path / "app.py").write_text("import src.bars\n", encoding="utf-8")
+    (tmp_path / "src" / "bars.py").write_text(
+        "import importlib.util, os, runpy\nfrom pathlib import Path\nROOT = Path(__file__).resolve().parents[1]\n"
+        "s = importlib.util.spec_from_file_location('_h', ROOT / 'scripts' / 'helper.py')\n"
+        "t = importlib.util.spec_from_file_location('_o', location=os.path.join(ROOT, 'scripts', 'other.py'))\n"
+        "u = importlib.util.spec_from_file_location('_n', Path(__file__).parent / 'near.py')\n"
+        "def later(name):\n    return runpy.run_path(ROOT / 'scripts' / f'{name}.py')\n", encoding="utf-8")
+    closure = DM.static_closure(tmp_path, entries=["app.py"])
+    assert {"scripts/helper.py", "scripts/other.py", "src/near.py", "scripts_dep.py"} <= closure
+    unresolved = DM.unresolved_file_loads(tmp_path, closure)
+    assert len(unresolved) == 1 and "run_path" in unresolved[0]
+
+
+def test_real_load_by_path_targets_are_in_the_manifest():
+    assert {"scripts/league_thresholds.py", "scripts/build_track_registry.py"} <= CODE
+    assert DM.unresolved_file_loads(ROOT) == []
+
+
 def test_every_literal_data_file_is_in_the_manifest():
     bad = DM.unmatched_literals(MANIFEST, ROOT)
     assert not bad, ("viewer code names v9 data files the slim deployment would not mirror - run "

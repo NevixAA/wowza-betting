@@ -20,10 +20,7 @@ _require_tier("admin")  # tier guard (dashboard_access.PAGES) - admin: shows the
 
 from dashboard_data import freshness, production_view  # noqa: E402
 
-# STREAMLIT CLOUD KEEPS IMPORTED MODULES ACROSS A REDEPLOY (see 15_League_Scout): reload the helpers.
-import importlib  # noqa: E402
-freshness = importlib.reload(freshness)
-production_view = importlib.reload(production_view)
+# Page/helper version skew after a redeploy is handled by dashboard_build_guard (app.py router).
 
 st.set_page_config(page_title="Wowza | Production", page_icon="🏭", layout="wide")
 import dashboard_ui as ui  # noqa: E402
