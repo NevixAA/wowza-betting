@@ -1,7 +1,7 @@
 {
  "artifact": "data_truth_health",
  "version": "DATA-TRUTH-1",
- "generated_at": "2026-11-23T08:39:19Z",
+ "generated_at": "2026-11-23T10:43:32Z",
  "checks": [
   {
    "check": "Data truth 1: one canonical name",
@@ -13,7 +13,7 @@
   {
    "check": "Data truth 2: no silent defaults",
    "status": "GREEN",
-   "value": "0 new default(s); 0 known (baseline); 194 allow-listed (counters/display); 0 baseline entr(ies) now gone; 1 allow-list entr(ies) now gone; 452 production files scanned",
+   "value": "0 new default(s); 0 known (baseline); 194 allow-listed (counters/display); 0 baseline entr(ies) now gone; 1 allow-list entr(ies) now gone; 454 production files scanned",
    "rule": "no NEW invented default in ALL production code (fillna(<non-zero literal>), literal season fallback/list, pinned football-data folder, numeric .get(<key>, <number>), an or-zero on a parsed value, a zero fillna on a price/odds): RED if any site is in neither config/data_truth_baseline.json nor config/data_truth_allowlist.json, or an allow-list entry has no reason; GREEN otherwise",
    "detail": ""
   },
@@ -254,8 +254,8 @@
   },
   {
    "check": "Data truth 9: clean ledgers",
-   "status": "RED",
-   "value": "2 v91_shadow fixture(s) logged twice",
+   "status": "GREEN",
+   "value": "clean since 2026-11-19 (7 live tip(s), 2665 player row(s), 126 v91 row(s))",
    "rule": "from the Clean Record start: 0 multi-tip / opposite-tip fixtures, 0 post-kickoff tips, 0 closes <= 1.0, 0 |CLV| > 50 new-format rows, 0 duplicate player tips, 0 v91_shadow fixtures logged twice: RED on any; NO_DATA before the start is set",
    "detail": ""
   },
@@ -581,13 +581,8 @@
  "stoplight": "GREEN",
  "gate_reasons": [],
  "stoplight_scope": "CI/change-control gate: gated rules + known-defaults ratchet; NOT data quality",
- "operational_status": "RED",
+ "operational_status": "AMBER",
  "operational_failing": [
-  {
-   "check": "Data truth 9: clean ledgers",
-   "status": "RED",
-   "gated": false
-  },
   {
    "check": "Data truth 13c: registered historical exceptions",
    "status": "AMBER",
