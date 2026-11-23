@@ -49,6 +49,14 @@ LINEAR_FEATURES = ["ep_next", "chance_next_f", "start_rate", "min_last_imp", "at
                    "cs_exp_x_start", "n_fix", "wowza_gap", "has_wowza"]
 ARMS = ["FPL", "WOWZA", "LINEAR", "RIDGE", "HGB"]
 RESIDUAL_ARMS = ["LINEAR", "RIDGE", "HGB"]
+#: inputs that come from Wowza V1 (the standalone projection and its P(start)). V1 runs the props
+#: models on a frame whose train/serve parity is not certified (P1 Fantasy validation 2026-11-22).
+V1_FEATURES = ["wowza_gap", "has_wowza", "wowza_p_start_imp"]
+V1FREE_FEATURES = [c for c in FEATURES if c not in V1_FEATURES]
+#: shadow-only arms scored in the walk-forward but kept out of the benchmark acceptance gate.
+#: HGB_V1FREE (owner decision 2026-11-23): the HGB residual without any V1 input, so it covers every
+#: row and does not depend on the uncertified V1 frame. It sits next to the LINEAR shadow.
+SHADOW_EXTRA_ARMS = ["HGB_V1FREE"]
 
 
 def prepare(d: pd.DataFrame) -> pd.DataFrame:
@@ -243,8 +251,14 @@ class HGBResidual:
         return self.m_.predict(_matrix(x, self.cols)[:, self.keep_])
 
 
+class HGBV1FreeResidual(HGBResidual):
+    """The HGB residual with every Wowza V1 input removed (V1_FEATURES)."""
+    cols = V1FREE_FEATURES
+
+
 def make(arm: str):
-    return {"LINEAR": LinearResidual, "RIDGE": RidgeResidual, "HGB": HGBResidual}[arm]()
+    return {"LINEAR": LinearResidual, "RIDGE": RidgeResidual, "HGB": HGBResidual,
+            "HGB_V1FREE": HGBV1FreeResidual}[arm]()
 
 
 # ── metrics ───────────────────────────────────────────────────────────────────────────────────
@@ -339,7 +353,7 @@ def walk_forward(panel: pd.DataFrame, min_train_gws: int = 1) -> pd.DataFrame:
         r = (train["actual_points"] - train["ep_next"]).to_numpy(float)
         test["FPL"] = test["ep_next"]
         test["WOWZA"] = test["wowza_uncond"]
-        for arm in RESIDUAL_ARMS:
+        for arm in RESIDUAL_ARMS + SHADOW_EXTRA_ARMS:
             m = make(arm)
             m.fit(train, r, groups=train["gw"].to_numpy())
             # Expected FPL points cannot be negative in any useful sense; an additive residual on
