@@ -29,12 +29,8 @@ import dashboard_ui as ui  # noqa: E402
 from dashboard_data import league_research as LR  # noqa: E402
 from dashboard_data import league_research_view as V  # noqa: E402
 
-# STREAMLIT CLOUD KEEPS IMPORTED MODULES ACROSS A REDEPLOY (see 15_League_Scout): reload the helpers.
-import importlib  # noqa: E402
+# Page/helper version skew after a redeploy is handled by dashboard_build_guard (app.py router).
 from src.research import league_weekly_eval as _EV  # noqa: E402
-_EV = importlib.reload(_EV)
-LR = importlib.reload(LR)
-V = importlib.reload(V)
 
 st.set_page_config(page_title="Wowza | League Repair Lab", page_icon="🔧", layout="wide")
 

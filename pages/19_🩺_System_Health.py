@@ -24,12 +24,7 @@ _require_tier("admin")  # tier guard (dashboard_access.PAGES) - admin, like Over
 
 from dashboard_data import freshness, system_view, truth_view  # noqa: E402
 
-# STREAMLIT CLOUD KEEPS IMPORTED MODULES ACROSS A REDEPLOY (see 15_League_Scout): reload the helpers
-# so the page and its data modules are always the same version.
-import importlib  # noqa: E402
-freshness = importlib.reload(freshness)
-system_view = importlib.reload(system_view)
-truth_view = importlib.reload(truth_view)
+# Page/helper version skew after a redeploy is handled by dashboard_build_guard (app.py router).
 
 st.set_page_config(page_title="Wowza | System Health", page_icon="🩺", layout="wide")
 import dashboard_ui as ui  # noqa: E402

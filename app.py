@@ -17,6 +17,14 @@ import streamlit as st
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+# STALE-MODULE GUARD (2026-11-23). Streamlit Cloud pulls a new build into the running process but keeps
+# the old project modules in memory, so a new page ran against an old helper (TypeError: top3_summaries()
+# got an unexpected keyword argument 'staked'). This router runs before every page on every rerun, so the
+# guard runs here FIRST, before any other project import: on a new deploy/BUILD_INFO.json build id it
+# purges every project module and the Streamlit caches, and the imports below load the new build.
+import dashboard_build_guard  # noqa: E402
+_build_guard = dashboard_build_guard.ensure_current_build()
+
 from dashboard_access import current_tier, pages_for  # noqa: E402
 from dashboard_data import remote_mirror  # noqa: E402
 
@@ -50,6 +58,9 @@ with st.sidebar:
                        + f" · **{_c.get('status')}**")
             if not _c.get("healthy"):
                 st.warning(_c.get("warning") or _c.get("status"))
+            if _build_guard["status"] not in ("OK", "RECORDED", "PURGED"):
+                st.warning(f"Stale-module guard: {_build_guard['status']} - a new build cannot be detected, "
+                           "so a redeploy may run new pages against old helpers until the app restarts.")
         elif _c.get("status") == "INCOMPATIBLE":
             st.warning("Some figures may be out of date while the dashboard updates.")
 nav.run()

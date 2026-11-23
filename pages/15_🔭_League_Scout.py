@@ -32,12 +32,7 @@ _require_tier("admin")  # tier guard (dashboard_access.PAGES), 2026-10-18
 import dashboard_ui as ui  # noqa: E402
 from dashboard_data import pro  # noqa: E402
 
-# STREAMLIT CLOUD KEEPS IMPORTED MODULES ACROSS A REDEPLOY. A page and its helper changed in the same
-# commit, and the server ran the NEW page against the OLD dashboard_data.pro still in memory:
-# AttributeError on pro.tip_scoreboard (2026-10-08). Reloading this small module on every run
-# makes the page and its helper always the same version.
-import importlib  # noqa: E402
-pro = importlib.reload(pro)
+# Page/helper version skew after a redeploy is handled by dashboard_build_guard (app.py router).
 
 st.set_page_config(page_title="Wowza | League Scout", page_icon="🔭", layout="wide")
 _TITLE, _SUB = "League Scout", "Collecting evidence on leagues Wowza does not bet. Nothing here is a tip."

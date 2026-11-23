@@ -26,9 +26,6 @@ from src.tier_labels import tier_label  # noqa: E402
 from dashboard_data import bankroll_view as V, pro  # noqa: E402
 from dashboard_data import freshness as _fresh  # noqa: E402  (P1-3: never show stale evidence as current)
 
-import importlib  # noqa: E402
-pro = importlib.reload(pro)          # keep page + helper the same version (see 15_League_Scout)
-V = importlib.reload(V)
 
 st.set_page_config(page_title="Wowza | Bankroll", page_icon="💰", layout="wide")
 
@@ -104,7 +101,6 @@ def _since_review(rec_key: str):
 
 
 from dashboard_data import evidence_view as EV  # noqa: E402
-EV = importlib.reload(EV)
 _sm, _srows = _since_review(str(rec.get("generated_at")))
 EV.bankroll_since_panel(_sm, _srows)
 
