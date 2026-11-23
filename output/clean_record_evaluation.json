@@ -6,19 +6,19 @@
  "claim_status": "EVALUATION ONLY - NOT A PERFORMANCE CLAIM (performance_claims_enabled is false)",
  "as_of_last_settled_match": "2026-11-22",
  "inputs": {
-  "bets_ledger.csv": "68271e5043f5ba47",
-  "side_bets_ledger.csv": "06b657289e93103c",
+  "bets_ledger.csv": "fa203835bc39d8f0",
+  "side_bets_ledger.csv": "ed403a6b9a4ef714",
   "ht_ledger.csv": "992175ec44dee45e",
-  "top3_league_ledger.csv": "c4fc852b9ec6fcff",
+  "top3_league_ledger.csv": "87b3fdfd258deccc",
   "props_top3_ledger.csv": "ec602fdb69162e05",
-  "player_ledger.csv": "e31f9565da405cf7",
-  "league_weekly_research.csv": "4d5faaf64a18dfc4",
-  "sharp_ledger.csv": "86f9096a24698c12",
-  "edge_engine_shadow.csv": "66164990d996c3bb",
+  "player_ledger.csv": "e487f28a52401330",
+  "league_weekly_research.csv": "85bc45722ef6d7ba",
+  "sharp_ledger.csv": "884bb4ac4765a5db",
+  "edge_engine_shadow.csv": "4a01de87abe5650d",
   "edge_engine_shadow_pre_reseed_2026-11-20.csv": "f4d0f80e4b225bf7",
-  "v91_shadow.csv": "38b282be6669cd22",
-  "stake_audit.csv": "38e21fd07b191ea0",
-  "stake_plan.csv": "738d4bce09faaf86"
+  "v91_shadow.csv": "aa6414b3afb52a8b",
+  "stake_audit.csv": "29693a025260588b",
+  "stake_plan.csv": "830f54ecf0ef569c"
  },
  "method": {
   "cell": "league x market x model version; market carries the side where the market has two",
@@ -43,17 +43,17 @@
  },
  "headline": {
   "verdict": "NO PROVEN EDGE YET",
-  "forward_cells": 9,
+  "forward_cells": 12,
   "forward_cells_by_verdict": {
-   "NOT_ENOUGH_DATA": 9
+   "NOT_ENOUGH_DATA": 12
   },
   "forward_settled": {
-   "top3_staked": 1,
+   "top3_staked": 2,
    "top3_unstaked": 0,
-   "bets_ledger.csv": 4,
+   "bets_ledger.csv": 5,
    "ht_ledger.csv": 1,
-   "side_bets_ledger.csv": 6,
-   "player_ledger.csv": 0
+   "side_bets_ledger.csv": 10,
+   "player_ledger.csv": 1
   },
   "minimums": {
    "settled": 30,
@@ -125,18 +125,18 @@
    "tips": {
     "bets_ledger.csv": {
      "total": {
-      "rows": 1716,
-      "settled": 1716,
-      "matchdays": 145,
+      "rows": 1728,
+      "settled": 1728,
+      "matchdays": 146,
       "first_match_date": "2026-04-26",
-      "last_match_date": "2026-11-21",
+      "last_match_date": "2026-11-22",
       "real_odds_coverage": 1.0,
-      "priced_settled": 1716,
-      "pnl_units": -115.99,
-      "roi": -0.0676,
+      "priced_settled": 1728,
+      "pnl_units": -115.92,
+      "roi": -0.0671,
       "roi_ci": [
-       -0.1209,
-       -0.0138
+       -0.1213,
+       -0.016
       ],
       "max_drawdown_units": 131.74,
       "staked": {
@@ -146,40 +146,40 @@
        "roi_at_recorded_stake": -0.1297
       },
       "not_staked": {
-       "n": 1594,
-       "roi_flat": -0.0654
+       "n": 1606,
+       "roi_flat": -0.0649
       },
-      "n_prob": 205,
-      "log_loss_model": 0.6989,
-      "brier_model": 0.2528,
-      "mean_p_model": 0.4864,
-      "hit_rate": 0.439,
+      "n_prob": 217,
+      "log_loss_model": 0.6994,
+      "brier_model": 0.2531,
+      "mean_p_model": 0.4852,
+      "hit_rate": 0.4378,
       "calibration_gap": -0.0474,
-      "n_vs_market": 205,
-      "log_loss_model_same_rows": 0.6989,
-      "log_loss_market": 0.6717,
-      "brier_model_same_rows": 0.2528,
-      "brier_market": 0.2394,
-      "d_log_loss_model_minus_market": 0.0271,
+      "n_vs_market": 217,
+      "log_loss_model_same_rows": 0.6994,
+      "log_loss_market": 0.6723,
+      "brier_model_same_rows": 0.2531,
+      "brier_market": 0.2396,
+      "d_log_loss_model_minus_market": 0.0272,
       "d_brier_model_minus_market": 0.0134,
       "calibration": [
        {
         "bin": "0.3-0.4",
-        "n": 7,
-        "mean_p": 0.3907,
-        "observed": 0.4286
+        "n": 8,
+        "mean_p": 0.3898,
+        "observed": 0.5
        },
        {
         "bin": "0.4-0.5",
-        "n": 122,
+        "n": 130,
         "mean_p": 0.4551,
-        "observed": 0.4508
+        "observed": 0.4462
        },
        {
         "bin": "0.5-0.6",
-        "n": 68,
-        "mean_p": 0.5364,
-        "observed": 0.4118
+        "n": 71,
+        "mean_p": 0.5355,
+        "observed": 0.4085
        },
        {
         "bin": "0.6-0.7",
@@ -189,7 +189,7 @@
        }
       ],
       "clv": {
-       "eligible": 1716,
+       "eligible": 1728,
        "certified_n": 0,
        "coverage": 0.0,
        "mean_pct": null,
@@ -198,8 +198,8 @@
         null
        ],
        "status": "NOT_ENOUGH_DATA",
-       "stored_uncertified_n": 1450,
-       "stored_uncertified_mean_pct": 0.0793
+       "stored_uncertified_n": 1462,
+       "stored_uncertified_mean_pct": 0.1161
       },
       "verdict": "NEGATIVE_EDGE_CI_BELOW_ZERO"
      },
@@ -264,43 +264,43 @@
     },
     "side_bets_ledger.csv": {
      "total": {
-      "rows": 736,
-      "settled": 736,
-      "matchdays": 84,
+      "rows": 741,
+      "settled": 741,
+      "matchdays": 85,
       "first_match_date": "2026-08-09",
-      "last_match_date": "2026-11-21",
+      "last_match_date": "2026-11-22",
       "real_odds_coverage": 1.0,
-      "priced_settled": 736,
-      "pnl_units": 34.91,
-      "roi": 0.0474,
+      "priced_settled": 741,
+      "pnl_units": 35.5,
+      "roi": 0.0479,
       "roi_ci": [
-       -0.0268,
-       0.1272
+       -0.0262,
+       0.1208
       ],
       "max_drawdown_units": 22.185,
       "staked": {
-       "n": 21,
-       "pnl_units_flat": -5.475,
-       "roi_flat": -0.2607,
-       "roi_at_recorded_stake": -0.2541
+       "n": 23,
+       "pnl_units_flat": -3.97,
+       "roi_flat": -0.1726,
+       "roi_at_recorded_stake": -0.1643
       },
       "not_staked": {
-       "n": 715,
-       "roi_flat": 0.0565
+       "n": 718,
+       "roi_flat": 0.055
       },
-      "n_prob": 736,
+      "n_prob": 741,
       "log_loss_model": 0.6662,
       "brier_model": 0.2369,
       "mean_p_model": 0.5727,
-      "hit_rate": 0.5639,
-      "calibration_gap": -0.0088,
-      "n_vs_market": 86,
-      "log_loss_model_same_rows": 0.6924,
-      "log_loss_market": 0.6893,
-      "brier_model_same_rows": 0.2491,
-      "brier_market": 0.2481,
-      "d_log_loss_model_minus_market": 0.0031,
-      "d_brier_model_minus_market": 0.001,
+      "hit_rate": 0.5641,
+      "calibration_gap": -0.0086,
+      "n_vs_market": 91,
+      "log_loss_model_same_rows": 0.6907,
+      "log_loss_market": 0.6898,
+      "brier_model_same_rows": 0.2484,
+      "brier_market": 0.2484,
+      "d_log_loss_model_minus_market": 0.0009,
+      "d_brier_model_minus_market": -0.0,
       "calibration": [
        {
         "bin": "0.2-0.3",
@@ -322,9 +322,9 @@
        },
        {
         "bin": "0.5-0.6",
-        "n": 432,
-        "mean_p": 0.5456,
-        "observed": 0.5509
+        "n": 436,
+        "mean_p": 0.5455,
+        "observed": 0.5505
        },
        {
         "bin": "0.6-0.7",
@@ -334,9 +334,9 @@
        },
        {
         "bin": "0.7-0.8",
-        "n": 102,
-        "mean_p": 0.7356,
-        "observed": 0.6667
+        "n": 103,
+        "mean_p": 0.7357,
+        "observed": 0.6699
        },
        {
         "bin": "0.8-0.9",
@@ -346,7 +346,7 @@
        }
       ],
       "clv": {
-       "eligible": 736,
+       "eligible": 741,
        "certified_n": 0,
        "coverage": 0.0,
        "mean_pct": null,
@@ -355,8 +355,8 @@
         null
        ],
        "status": "NOT_ENOUGH_DATA",
-       "stored_uncertified_n": 661,
-       "stored_uncertified_mean_pct": 0.1083
+       "stored_uncertified_n": 666,
+       "stored_uncertified_mean_pct": 0.102
       },
       "verdict": "NO_PROVEN_EDGE"
      },
@@ -469,21 +469,21 @@
      "owner_roi_pct": -16.0,
      "definition": "live tips generated before the Clean Record start, signal_tier SNIPER or MARKSMAN (the retired tier basis of 'staked' before 2026-11-04), match_date on or after config.PERFORMANCE_CUTOFF_DATE, settled WIN/LOSS/PUSH/HALF (VOID out), flat 1u",
      "raw_ledger": {
-      "n": 167,
-      "pnl_units": -23.34,
-      "roi_pct": -13.98,
+      "n": 168,
+      "pnl_units": -24.34,
+      "roi_pct": -14.49,
       "roi_ci_pct": [
-       -31.1,
-       1.1
+       -31.2,
+       1.7
       ]
      },
      "corrections_applied": {
-      "n": 165,
-      "pnl_units": -25.16,
-      "roi_pct": -15.25,
+      "n": 166,
+      "pnl_units": -26.16,
+      "roi_pct": -15.76,
       "roi_ci_pct": [
-       -31.6,
-       0.7
+       -32.1,
+       0.0
       ]
      },
      "matches_owner_figure_now": false
@@ -494,21 +494,21 @@
      "owner_roi_pct": -8.8,
      "definition": "live tips generated before the Clean Record start, signal_tier SNIPER or MARKSMAN (the retired tier basis of 'staked' before 2026-11-04), match_date on or after config.PERFORMANCE_CUTOFF_DATE, settled WIN/LOSS/PUSH/HALF (VOID out), flat 1u",
      "raw_ledger": {
-      "n": 503,
-      "pnl_units": -43.64,
-      "roi_pct": -8.68,
+      "n": 504,
+      "pnl_units": -44.64,
+      "roi_pct": -8.86,
       "roi_ci_pct": [
-       -18.8,
+       -18.7,
        0.7
       ]
      },
      "corrections_applied": {
-      "n": 502,
-      "pnl_units": -44.62,
-      "roi_pct": -8.89,
+      "n": 503,
+      "pnl_units": -45.62,
+      "roi_pct": -9.07,
       "roi_ci_pct": [
-       -19.1,
-       1.0
+       -19.2,
+       0.4
       ]
      },
      "matches_owner_figure_now": false
@@ -519,24 +519,24 @@
      "owner_roi_pct": 16.1,
      "definition": "live tips generated before the Clean Record start, signal_tier SNIPER or MARKSMAN (the retired tier basis of 'staked' before 2026-11-04), match_date on or after config.PERFORMANCE_CUTOFF_DATE, settled WIN/LOSS/PUSH/HALF (VOID out), flat 1u",
      "raw_ledger": {
-      "n": 155,
-      "pnl_units": 24.87,
-      "roi_pct": 16.05,
+      "n": 156,
+      "pnl_units": 26.0,
+      "roi_pct": 16.67,
       "roi_ci_pct": [
-       -2.3,
+       -1.5,
        33.5
       ]
      },
      "corrections_applied": {
-      "n": 155,
-      "pnl_units": 24.87,
-      "roi_pct": 16.05,
+      "n": 156,
+      "pnl_units": 26.0,
+      "roi_pct": 16.67,
       "roi_ci_pct": [
-       -2.2,
-       32.7
+       -1.4,
+       34.1
       ]
      },
-     "matches_owner_figure_now": true
+     "matches_owner_figure_now": false
     },
     {
      "figure": "NF O1.5",
@@ -670,45 +670,45 @@
    "top3_staked": {
     "total": {
      "rows": 3,
-     "settled": 1,
-     "matchdays": 1,
+     "settled": 2,
+     "matchdays": 2,
      "first_match_date": "2026-11-21",
-     "last_match_date": "2026-11-21",
+     "last_match_date": "2026-11-22",
      "real_odds_coverage": 1.0,
-     "priced_settled": 1,
-     "pnl_units": 0.48,
-     "roi": 0.48,
+     "priced_settled": 2,
+     "pnl_units": 0.88,
+     "roi": 0.44,
      "roi_ci": [
-      null,
-      null
+      0.4,
+      0.48
      ],
      "max_drawdown_units": 0.0,
      "staked": {
-      "n": 1,
-      "pnl_units_flat": 0.48,
-      "roi_flat": 0.48,
+      "n": 2,
+      "pnl_units_flat": 0.88,
+      "roi_flat": 0.44,
       "roi_at_recorded_stake": null
      },
      "not_staked": {
       "n": 0,
       "roi_flat": null
      },
-     "n_prob": 1,
-     "log_loss_model": 0.3105,
-     "brier_model": 0.0713,
-     "mean_p_model": 0.7331,
+     "n_prob": 2,
+     "log_loss_model": 0.294,
+     "brier_model": 0.065,
+     "mean_p_model": 0.7454,
      "hit_rate": 1.0,
-     "calibration_gap": 0.2669,
-     "n_vs_market": 1,
-     "log_loss_model_same_rows": 0.3105,
-     "log_loss_market": 0.4292,
-     "brier_model_same_rows": 0.0713,
-     "brier_market": 0.1218,
-     "d_log_loss_model_minus_market": -0.1186,
-     "d_brier_model_minus_market": -0.0505,
+     "calibration_gap": 0.2546,
+     "n_vs_market": 2,
+     "log_loss_model_same_rows": 0.294,
+     "log_loss_market": 0.403,
+     "brier_model_same_rows": 0.065,
+     "brier_market": 0.1102,
+     "d_log_loss_model_minus_market": -0.109,
+     "d_brier_model_minus_market": -0.0452,
      "calibration": [],
      "clv": {
-      "eligible": 1,
+      "eligible": 2,
       "certified_n": 0,
       "coverage": 0.0,
       "mean_pct": null,
@@ -731,18 +731,18 @@
    "tips": {
     "bets_ledger.csv": {
      "total": {
-      "rows": 4,
-      "settled": 4,
-      "matchdays": 1,
+      "rows": 5,
+      "settled": 5,
+      "matchdays": 2,
       "first_match_date": "2026-11-21",
-      "last_match_date": "2026-11-21",
+      "last_match_date": "2026-11-22",
       "real_odds_coverage": 1.0,
-      "priced_settled": 4,
-      "pnl_units": 0.05,
-      "roi": 0.0125,
+      "priced_settled": 5,
+      "pnl_units": -0.95,
+      "roi": -0.19,
       "roi_ci": [
-       null,
-       null
+       -1.0,
+       0.0125
       ],
       "max_drawdown_units": 2.0,
       "staked": {
@@ -752,25 +752,25 @@
        "roi_at_recorded_stake": null
       },
       "not_staked": {
-       "n": 4,
-       "roi_flat": 0.0125
+       "n": 5,
+       "roi_flat": -0.19
       },
-      "n_prob": 4,
-      "log_loss_model": 0.6943,
-      "brier_model": 0.2506,
-      "mean_p_model": 0.5242,
-      "hit_rate": 0.5,
-      "calibration_gap": -0.0242,
-      "n_vs_market": 4,
-      "log_loss_model_same_rows": 0.6943,
-      "log_loss_market": 0.6699,
-      "brier_model_same_rows": 0.2506,
-      "brier_market": 0.2385,
-      "d_log_loss_model_minus_market": 0.0243,
-      "d_brier_model_minus_market": 0.0121,
+      "n_prob": 5,
+      "log_loss_model": 0.7101,
+      "brier_model": 0.2585,
+      "mean_p_model": 0.527,
+      "hit_rate": 0.4,
+      "calibration_gap": -0.127,
+      "n_vs_market": 5,
+      "log_loss_model_same_rows": 0.7101,
+      "log_loss_market": 0.6592,
+      "brier_model_same_rows": 0.2585,
+      "brier_market": 0.2331,
+      "d_log_loss_model_minus_market": 0.0509,
+      "d_brier_model_minus_market": 0.0253,
       "calibration": [],
       "clv": {
-       "eligible": 4,
+       "eligible": 5,
        "certified_n": 0,
        "coverage": 0.0,
        "mean_pct": null,
@@ -779,12 +779,12 @@
         null
        ],
        "status": "NOT_ENOUGH_DATA",
-       "stored_uncertified_n": 4,
-       "stored_uncertified_mean_pct": -0.595
+       "stored_uncertified_n": 5,
+       "stored_uncertified_mean_pct": -0.476
       },
       "verdict": "NOT_ENOUGH_DATA"
      },
-     "n_cells": 3
+     "n_cells": 4
     },
     "ht_ledger.csv": {
      "total": {
@@ -845,18 +845,18 @@
     },
     "side_bets_ledger.csv": {
      "total": {
-      "rows": 6,
-      "settled": 6,
-      "matchdays": 2,
+      "rows": 10,
+      "settled": 10,
+      "matchdays": 3,
       "first_match_date": "2026-11-20",
-      "last_match_date": "2026-11-21",
+      "last_match_date": "2026-11-22",
       "real_odds_coverage": 1.0,
-      "priced_settled": 6,
-      "pnl_units": -2.76,
-      "roi": -0.46,
+      "priced_settled": 10,
+      "pnl_units": 0.45,
+      "roi": 0.045,
       "roi_ci": [
        -0.6175,
-       -0.145
+       0.8025
       ],
       "max_drawdown_units": 3.29,
       "staked": {
@@ -866,25 +866,25 @@
        "roi_at_recorded_stake": 0.53
       },
       "not_staked": {
-       "n": 5,
-       "roi_flat": -0.658
+       "n": 9,
+       "roi_flat": -0.0089
       },
-      "n_prob": 6,
-      "log_loss_model": 0.6066,
-      "brier_model": 0.2092,
-      "mean_p_model": 0.5183,
-      "hit_rate": 0.3333,
-      "calibration_gap": -0.1849,
-      "n_vs_market": 6,
-      "log_loss_model_same_rows": 0.6066,
-      "log_loss_market": 0.5941,
-      "brier_model_same_rows": 0.2092,
-      "brier_market": 0.2016,
-      "d_log_loss_model_minus_market": 0.0124,
-      "d_brier_model_minus_market": 0.0076,
+      "n_prob": 10,
+      "log_loss_model": 0.6765,
+      "brier_model": 0.2427,
+      "mean_p_model": 0.4688,
+      "hit_rate": 0.5,
+      "calibration_gap": 0.0312,
+      "n_vs_market": 10,
+      "log_loss_model_same_rows": 0.6765,
+      "log_loss_market": 0.7068,
+      "brier_model_same_rows": 0.2427,
+      "brier_market": 0.2552,
+      "d_log_loss_model_minus_market": -0.0303,
+      "d_brier_model_minus_market": -0.0125,
       "calibration": [],
       "clv": {
-       "eligible": 6,
+       "eligible": 10,
        "certified_n": 0,
        "coverage": 0.0,
        "mean_pct": null,
@@ -893,31 +893,31 @@
         null
        ],
        "status": "NOT_ENOUGH_DATA",
-       "stored_uncertified_n": 6,
-       "stored_uncertified_mean_pct": -0.0317
+       "stored_uncertified_n": 10,
+       "stored_uncertified_mean_pct": 0.025
       },
       "verdict": "NOT_ENOUGH_DATA"
      },
-     "n_cells": 4
+     "n_cells": 5
     }
    },
    "props_tips": {
     "player_ledger.csv": {
      "total": {
       "rows": 6,
-      "settled": 0,
-      "matchdays": 0,
-      "first_match_date": null,
-      "last_match_date": null,
-      "real_odds_coverage": null,
-      "priced_settled": 0,
-      "pnl_units": null,
-      "roi": null,
+      "settled": 1,
+      "matchdays": 1,
+      "first_match_date": "2026-11-22",
+      "last_match_date": "2026-11-22",
+      "real_odds_coverage": 1.0,
+      "priced_settled": 1,
+      "pnl_units": -1.0,
+      "roi": -1.0,
       "roi_ci": [
        null,
        null
       ],
-      "max_drawdown_units": null,
+      "max_drawdown_units": 1.0,
       "staked": {
        "n": 0,
        "pnl_units_flat": null,
@@ -925,15 +925,15 @@
        "roi_at_recorded_stake": null
       },
       "not_staked": {
-       "n": 0,
-       "roi_flat": null
+       "n": 1,
+       "roi_flat": -1.0
       },
-      "n_prob": 0,
-      "log_loss_model": null,
-      "brier_model": null,
-      "mean_p_model": null,
-      "hit_rate": null,
-      "calibration_gap": null,
+      "n_prob": 1,
+      "log_loss_model": 0.3653,
+      "brier_model": 0.0936,
+      "mean_p_model": 0.306,
+      "hit_rate": 0.0,
+      "calibration_gap": -0.306,
       "n_vs_market": 0,
       "log_loss_model_same_rows": null,
       "log_loss_market": null,
@@ -943,9 +943,9 @@
       "d_brier_model_minus_market": null,
       "calibration": [],
       "clv": {
-       "eligible": 0,
+       "eligible": 1,
        "certified_n": 0,
-       "coverage": null,
+       "coverage": 0.0,
        "mean_pct": null,
        "mean_ci": [
         null,
@@ -957,22 +957,22 @@
       },
       "verdict": "NOT_ENOUGH_DATA"
      },
-     "n_cells": 0
+     "n_cells": 1
     }
    },
    "prediction_ledger_learning": {
     "first_sight": {
      "total": {
-      "rows": 52005,
-      "settled": 52005,
+      "rows": 52787,
+      "settled": 52787,
       "matchdays": 4,
       "first_match_date": "2026-11-19",
       "last_match_date": "2026-11-22",
-      "n_prob": 51971,
-      "log_loss_model": 0.1621,
-      "brier_model": 0.0472,
-      "mean_p_model": 0.072,
-      "hit_rate": 0.0706,
+      "n_prob": 52753,
+      "log_loss_model": 0.169,
+      "brier_model": 0.0498,
+      "mean_p_model": 0.0784,
+      "hit_rate": 0.077,
       "calibration_gap": -0.0014,
       "n_vs_market": 884,
       "log_loss_model_same_rows": 0.6545,
@@ -984,63 +984,63 @@
       "calibration": [
        {
         "bin": "0.0-0.1",
-        "n": 41546,
+        "n": 41547,
         "mean_p": 0.0184,
         "observed": 0.0167
        },
        {
         "bin": "0.1-0.2",
-        "n": 5329,
-        "mean_p": 0.1368,
-        "observed": 0.1499
+        "n": 5357,
+        "mean_p": 0.1369,
+        "observed": 0.1501
        },
        {
         "bin": "0.2-0.3",
-        "n": 1469,
-        "mean_p": 0.243,
-        "observed": 0.2546
+        "n": 1549,
+        "mean_p": 0.244,
+        "observed": 0.255
        },
        {
         "bin": "0.3-0.4",
-        "n": 891,
-        "mean_p": 0.3495,
-        "observed": 0.3378
+        "n": 1034,
+        "mean_p": 0.3505,
+        "observed": 0.3424
        },
        {
         "bin": "0.4-0.5",
-        "n": 890,
-        "mean_p": 0.4474,
-        "observed": 0.418
+        "n": 1029,
+        "mean_p": 0.4481,
+        "observed": 0.414
        },
        {
         "bin": "0.5-0.6",
-        "n": 802,
-        "mean_p": 0.551,
-        "observed": 0.5337
+        "n": 941,
+        "mean_p": 0.5504,
+        "observed": 0.5452
        },
        {
         "bin": "0.6-0.7",
-        "n": 519,
-        "mean_p": 0.6472,
-        "observed": 0.6127
+        "n": 662,
+        "mean_p": 0.6463,
+        "observed": 0.6163
        },
        {
         "bin": "0.7-0.8",
-        "n": 380,
-        "mean_p": 0.7488,
-        "observed": 0.7316
+        "n": 460,
+        "mean_p": 0.7468,
+        "observed": 0.7326
        },
        {
         "bin": "0.8-0.9",
-        "n": 125,
-        "mean_p": 0.824,
-        "observed": 0.768
+        "n": 153,
+        "mean_p": 0.8261,
+        "observed": 0.7778
        },
        {
         "bin": "0.9-1.0",
-        "n": 20,
-        "mean_p": 0.9309,
-        "observed": 0.65
+        "n": 21,
+        "mean_p": 0.9302,
+        "observed": 0.6667
        }
       ],
       "clv": {
@@ -1062,16 +1062,16 @@
     },
     "final": {
      "total": {
-      "rows": 25782,
-      "settled": 25782,
+      "rows": 26258,
+      "settled": 26258,
       "matchdays": 4,
       "first_match_date": "2026-11-19",
       "last_match_date": "2026-11-22",
-      "n_prob": 25782,
-      "log_loss_model": 0.1511,
-      "brier_model": 0.0437,
-      "mean_p_model": 0.0653,
-      "hit_rate": 0.0639,
+      "n_prob": 26258,
+      "log_loss_model": 0.1597,
+      "brier_model": 0.0468,
+      "mean_p_model": 0.0731,
+      "hit_rate": 0.0718,
       "calibration_gap": -0.0014,
       "n_vs_market": 212,
       "log_loss_model_same_rows": 0.6341,
@@ -1083,63 +1083,63 @@
       "calibration": [
        {
         "bin": "0.0-0.1",
-        "n": 20935,
+        "n": 20936,
         "mean_p": 0.0184,
         "observed": 0.0155
        },
        {
         "bin": "0.1-0.2",
-        "n": 2685,
-        "mean_p": 0.136,
-        "observed": 0.1534
+        "n": 2706,
+        "mean_p": 0.1363,
+        "observed": 0.1537
        },
        {
         "bin": "0.2-0.3",
-        "n": 664,
-        "mean_p": 0.2419,
-        "observed": 0.262
+        "n": 712,
+        "mean_p": 0.2434,
+        "observed": 0.2626
        },
        {
         "bin": "0.3-0.4",
-        "n": 404,
-        "mean_p": 0.3503,
-        "observed": 0.3342
+        "n": 486,
+        "mean_p": 0.3508,
+        "observed": 0.3416
        },
        {
         "bin": "0.4-0.5",
-        "n": 359,
-        "mean_p": 0.4453,
-        "observed": 0.4095
+        "n": 445,
+        "mean_p": 0.4467,
+        "observed": 0.4045
        },
        {
         "bin": "0.5-0.6",
-        "n": 315,
-        "mean_p": 0.5497,
-        "observed": 0.5333
+        "n": 401,
+        "mean_p": 0.5493,
+        "observed": 0.5511
        },
        {
         "bin": "0.6-0.7",
-        "n": 227,
-        "mean_p": 0.6444,
-        "observed": 0.6079
+        "n": 309,
+        "mean_p": 0.645,
+        "observed": 0.6117
        },
        {
         "bin": "0.7-0.8",
-        "n": 127,
-        "mean_p": 0.7448,
-        "observed": 0.7244
+        "n": 175,
+        "mean_p": 0.7424,
+        "observed": 0.7257
        },
        {
         "bin": "0.8-0.9",
-        "n": 53,
-        "mean_p": 0.8302,
-        "observed": 0.8302
+        "n": 74,
+        "mean_p": 0.8303,
+        "observed": 0.8243
        },
        {
         "bin": "0.9-1.0",
-        "n": 13,
-        "mean_p": 0.9286,
-        "observed": 0.9231
+        "n": 14,
+        "mean_p": 0.9277,
+        "observed": 0.9286
        }
       ],
       "clv": {
@@ -1171,20 +1171,20 @@
    "label": "Research only: never staked, never part of the Clean Record.",
    "league_weekly_research.csv": {
     "total": {
-     "rows": 765,
-     "settled": 765,
+     "rows": 811,
+     "settled": 811,
      "matchdays": 24,
      "first_match_date": "2026-10-25",
      "last_match_date": "2026-11-22",
      "real_odds_coverage": 1.0,
-     "priced_settled": 765,
-     "pnl_units": -73.78,
-     "roi": -0.0964,
+     "priced_settled": 811,
+     "pnl_units": -85.135,
+     "roi": -0.105,
      "roi_ci": [
-      -0.1834,
-      -0.017
+      -0.1906,
+      -0.0202
      ],
-     "max_drawdown_units": 79.16,
+     "max_drawdown_units": 90.515,
      "staked": {
       "n": 0,
       "pnl_units_flat": null,
@@ -1192,22 +1192,22 @@
       "roi_at_recorded_stake": null
      },
      "not_staked": {
-      "n": 765,
-      "roi_flat": -0.0964
+      "n": 811,
+      "roi_flat": -0.105
      },
-     "n_prob": 765,
-     "log_loss_model": 0.6744,
-     "brier_model": 0.2406,
-     "mean_p_model": 0.5257,
-     "hit_rate": 0.5425,
-     "calibration_gap": 0.0168,
-     "n_vs_market": 765,
-     "log_loss_model_same_rows": 0.6744,
-     "log_loss_market": 0.6653,
-     "brier_model_same_rows": 0.2406,
-     "brier_market": 0.2364,
-     "d_log_loss_model_minus_market": 0.0091,
-     "d_brier_model_minus_market": 0.0042,
+     "n_prob": 811,
+     "log_loss_model": 0.6726,
+     "brier_model": 0.2397,
+     "mean_p_model": 0.53,
+     "hit_rate": 0.5413,
+     "calibration_gap": 0.0113,
+     "n_vs_market": 811,
+     "log_loss_model_same_rows": 0.6726,
+     "log_loss_market": 0.6644,
+     "brier_model_same_rows": 0.2397,
+     "brier_market": 0.236,
+     "d_log_loss_model_minus_market": 0.0082,
+     "d_brier_model_minus_market": 0.0038,
      "calibration": [
       {
        "bin": "0.2-0.3",
@@ -1217,49 +1217,49 @@
       },
       {
        "bin": "0.3-0.4",
-       "n": 89,
-       "mean_p": 0.3418,
-       "observed": 0.3146
+       "n": 93,
+       "mean_p": 0.3415,
+       "observed": 0.3011
       },
       {
        "bin": "0.4-0.5",
-       "n": 110,
-       "mean_p": 0.4663,
-       "observed": 0.5273
+       "n": 115,
+       "mean_p": 0.4667,
+       "observed": 0.5304
       },
       {
        "bin": "0.5-0.6",
-       "n": 393,
+       "n": 410,
        "mean_p": 0.5494,
-       "observed": 0.5751
+       "observed": 0.5683
       },
       {
        "bin": "0.6-0.7",
-       "n": 96,
-       "mean_p": 0.6262,
-       "observed": 0.6042
+       "n": 104,
+       "mean_p": 0.6277,
+       "observed": 0.6058
       },
       {
        "bin": "0.7-0.8",
-       "n": 31,
-       "mean_p": 0.7631,
-       "observed": 0.7097
+       "n": 38,
+       "mean_p": 0.7642,
+       "observed": 0.6842
       },
       {
        "bin": "0.8-0.9",
-       "n": 15,
-       "mean_p": 0.8144,
-       "observed": 0.7333
+       "n": 20,
+       "mean_p": 0.8161,
+       "observed": 0.8
       }
      ],
      "clv": {
-      "eligible": 765,
-      "certified_n": 544,
-      "coverage": 0.7111,
-      "mean_pct": -1.392,
+      "eligible": 811,
+      "certified_n": 580,
+      "coverage": 0.7152,
+      "mean_pct": -1.4993,
       "mean_ci": [
-       -1.8574,
-       -0.9464
+       -1.9797,
+       -1.0233
       ],
       "status": "OK",
       "stored_uncertified_n": 0,
@@ -1334,27 +1334,27 @@
      "file": "edge_engine_shadow.csv",
      "what": "market_edge_v2 selection shadow",
      "present": true,
-     "rows": 3044,
+     "rows": 3116,
      "first": "2026-10-25T09:25Z",
-     "last": "2026-11-22T19:24Z",
+     "last": "2026-11-23T07:30Z",
      "settled_rows": null
     },
     {
      "file": "side_edge_devig_shadow.csv",
      "what": "side-market de-vig edge shadow",
      "present": true,
-     "rows": 1074,
+     "rows": 1078,
      "first": "2026-11-01T09:43Z",
-     "last": "2026-11-22T18:25Z",
+     "last": "2026-11-22T19:24Z",
      "settled_rows": null
     },
     {
      "file": "quality_tier_shadow.csv",
      "what": "quality tier shadow",
      "present": true,
-     "rows": 467,
+     "rows": 473,
      "first": "2026-10-26T10:52Z",
-     "last": "2026-11-22T19:24Z",
+     "last": "2026-11-23T07:30Z",
      "settled_rows": null
     },
     {
@@ -1370,18 +1370,18 @@
      "file": "v91_shadow.csv",
      "what": "v9.1 / Pro HGB vs v9 O/U 2.5 shadow",
      "present": true,
-     "rows": 1374,
+     "rows": 1393,
      "first": "2026-10-04T13:11Z",
-     "last": "2026-11-22T19:24Z",
-     "settled_rows": 1179
+     "last": "2026-11-23T07:30Z",
+     "settled_rows": 1200
     },
     {
      "file": "props_r2_shadow.csv",
      "what": "props R2 shadow",
      "present": true,
-     "rows": 358784,
+     "rows": 364056,
      "first": "2026-11-01T17:29Z",
-     "last": "2026-11-22T13:05Z",
+     "last": "2026-11-23T03:55Z",
      "settled_rows": null
     },
     {
@@ -1396,18 +1396,18 @@
    ],
    "v91_shadow_scored": {
     "target": "O/U 2.5 OVER (outcome)",
-    "settled": 1179,
+    "settled": 1200,
     "matchdays": 46,
     "scores": {
      "p_v9": {
-      "n_prob": 1179,
-      "log_loss_model": 0.6917,
-      "brier_model": 0.2493,
-      "n_vs_market": 1179,
-      "log_loss_market": 0.6781,
-      "brier_market": 0.2426,
-      "d_log_loss_model_minus_market": 0.0136,
-      "d_brier_model_minus_market": 0.0067
+      "n_prob": 1200,
+      "log_loss_model": 0.6918,
+      "brier_model": 0.2494,
+      "n_vs_market": 1200,
+      "log_loss_market": 0.6786,
+      "brier_market": 0.2428,
+      "d_log_loss_model_minus_market": 0.0133,
+      "d_brier_model_minus_market": 0.0065
      },
      "p_v91": {
       "n_prob": 0,
@@ -1420,24 +1420,24 @@
       "d_brier_model_minus_market": null
      },
      "p_pro_hgb": {
-      "n_prob": 513,
-      "log_loss_model": 0.685,
-      "brier_model": 0.2459,
-      "n_vs_market": 513,
-      "log_loss_market": 0.6734,
+      "n_prob": 533,
+      "log_loss_model": 0.6855,
+      "brier_model": 0.2462,
+      "n_vs_market": 533,
+      "log_loss_market": 0.6733,
       "brier_market": 0.2405,
-      "d_log_loss_model_minus_market": 0.0116,
-      "d_brier_model_minus_market": 0.0054
+      "d_log_loss_model_minus_market": 0.0122,
+      "d_brier_model_minus_market": 0.0057
      },
      "p_goal_distribution": {
-      "n_prob": 1176,
-      "log_loss_model": 0.8015,
-      "brier_model": 0.2842,
-      "n_vs_market": 1176,
-      "log_loss_market": 0.6779,
-      "brier_market": 0.2425,
-      "d_log_loss_model_minus_market": 0.1236,
-      "d_brier_model_minus_market": 0.0416
+      "n_prob": 1196,
+      "log_loss_model": 0.8007,
+      "brier_model": 0.284,
+      "n_vs_market": 1196,
+      "log_loss_market": 0.6783,
+      "brier_market": 0.2427,
+      "d_log_loss_model_minus_market": 0.1223,
+      "d_brier_model_minus_market": 0.0412
      }
     },
     "note": "probability scores of each shadow model vs the de-vigged market on the same rows; a lower log loss than the market is the only edge a shadow can show"
