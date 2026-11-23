@@ -1,0 +1,66 @@
+{
+  "protocol": "p11-bars-tiers-clean/3",
+  "status": "PROPOSAL ONLY - amendment v3 written and committed BEFORE the v3 re-measure (prepare / bars / tiers-fit / propose). Everything of v2 is unchanged except the price inputs below and the predictions of the models served now. The serving bars (TP-2026-11-18-1ddfc9f1) stay served; nothing is installed, approved or switched on by this protocol.",
+  "owner_request": "Owner 2026-11-23 (exact answers to the price-gap questions): HT prices = \"Wire in + re-measure (Recommended)\"; fallback books = \"Extend to all markets (Recommended)\". Re-measured bars are a PROPOSAL for owner approval; serving stays unchanged.",
+  "background": "C:\\Users\\nevo\\dev\\price-gaps-1123\\PRICE_GAPS_PLAN.md (read-only audit 2026-11-23, counts only): B3 bug - Pinnacle first-half totals sit in the BET-role tier HTB but LINE_OF lacked ht_over05 / ht_over15 and the P11 bet tiers (BT, BTU, OUU) left HTB out; B4 rule gap - the O1 fallback books (William Hill, then 1xBet / Ladbrokes) were set for BTTS only.",
+  "predictions": {
+    "rule": "the CURRENTLY SERVING models' recipe and frame, out of sample (walk-forward folds + holdout), same harness as v2 (src.retrain_harness.runner, candidate champion_recipe)",
+    "standard": "harness on main (train_start standard 2016-07-01, owner 2026-11-19 \"Yes, from 2016/17\"; HT market_exclude home_has_ht_history, owner 2026-11-22 \"Install (Recommended)\") on the SAVED frame ebe47c041a7f595f of the serving Standard refit (golive/std_retrain_1611/feat_new.parquet; hash recomputed and must match). Serving payloads 67ee3666 (O/U 2.5), 44c67049 (BTTS), ca01b7d3 (O1.5), e8b12d74 (O3.5), 0776cea1 (HT O0.5), aa4c62ce (HT O1.5).",
+    "new_format": "unchanged from v2: harness code 694995f90 on frame 9ed237ebc04aee09, the frame and recipe of the serving New-Format payload 303c9a05 and its sub-models (byte-identical since final_refit).",
+    "not_used": "the pending Standard refit D1 (draft PR of another agent, awaiting owner approval) is NOT used."
+  },
+  "prices": {
+    "rule": "rule 8: BET-time prices only, never a closing price as a bet price",
+    "own": "unchanged from v2: own pre-kickoff captures with the 00:00-stamped backfill stripped (src.bars_opt.oddsapi_prices.strip_unproven_own) + football-data PRE-MATCH Bet365/Pinnacle through the certified join for Standard O/U 2.5",
+    "history": "OddsAPI history from the private exec odds-history branch, BET-role tiers only: BT (eu), BTU (uk BTTS), OUU (uk alternate totals) and NEW in v3 HTB (eu + uk first-half totals: totals_h1 / alternate_totals_h1) - all taken at the measured live-tip lead time (T-125h Standard / T-153h New-Format). Same-book pair, exact line (ht_over05 = first-half 0.5, ht_over15 = first-half 1.5; a full-match line never prices a first-half market), snapshot strictly before the provider kickoff, join integrity re-verified on every row. Own pairs always win. No credits are spent: only prices the store already holds.",
+    "bet_time_proof": "unchanged: a fallback book prices only from BET-role snapshots (src.bars_opt.oddsapi_prices.price_frames refuses a fallback without BET-role tiers); a closing price is never a bet price; NEW in v3: a history pair stamped exactly 00:00:00 UTC is dropped and counted (pick_pairs drop_midnight), as own 00:00-stamped backfill already is",
+    "close": "tier B1 (closing) is read ONLY for CLV, never as a bet price",
+    "privacy": "prices and per-pick frames stay local; only counts and statistics are committed",
+    "books_by_track_market": {
+      "standard": {
+        "over25": "own / football-data certified join, then Bet365 > Pinnacle (unchanged, no fallback)",
+        "btts": "Bet365 > Pinnacle > William Hill > 1xBet > Ladbrokes (v2 O1, unchanged)",
+        "over15": "Bet365 > Pinnacle > William Hill > 1xBet > Ladbrokes (v3)",
+        "over35": "Bet365 > Pinnacle > William Hill > 1xBet > Ladbrokes (v3)",
+        "ht_over05": "Bet365 > Pinnacle > William Hill > 1xBet > Ladbrokes (v3, tier HTB)",
+        "ht_over15": "Bet365 > Pinnacle > William Hill > 1xBet > Ladbrokes (v3, tier HTB)"
+      },
+      "new_format": {
+        "over25": "Bet365 > Pinnacle > William Hill > 1xBet > Ladbrokes (v3)",
+        "btts": "Bet365 > Pinnacle > William Hill > 1xBet > Ladbrokes (v2 O1, unchanged)",
+        "over15": "Bet365 > Pinnacle > William Hill > 1xBet > Ladbrokes (v3)",
+        "over35": "Bet365 > Pinnacle > William Hill > 1xBet > Ladbrokes (v3)",
+        "ht_over05": "Bet365 > Pinnacle > William Hill > 1xBet > Ladbrokes (v3, tier HTB)",
+        "ht_over15": "Bet365 > Pinnacle > William Hill > 1xBet > Ladbrokes (v3, tier HTB)"
+      },
+      "provider_keys": ["bet365", "pinnacle", "williamhill", "onexbet", "ladbrokes_uk"]
+    }
+  },
+  "windows": {
+    "fit": "every out-of-sample row dated < 2026-09-01 (walk-forward folds + the holdout models' 2026-04-01..2026-08-31 rows)",
+    "validation": [
+      "2026-09-01",
+      "2026-11-08"
+    ],
+    "validation_note": "Unchanged from v2. Untouched by every choice of this protocol. Its outcomes were read by P9 v6/v7, P11 v1 and P11 v2: reported as 're-validation after a price-input amendment, outcomes previously seen', never as proof (owner 2026-11-17: only live tips prove a cell)."
+  },
+  "bars": {
+    "method": "unchanged from v2: src.bars_opt.study (pre-registered selection: per family the configuration chosen by nested inner validation on the fit window, per league its OWN bars - never global - with MODEL vs LEAGUE_WIDE switch), run_select on fit, run_final once on validation",
+    "proven_rule": "unchanged from v2: PROVEN = >= 150 validation bets AND Holm-adjusted one-sided p < 0.025 AND matchday-block-bootstrap 95% CI lower bound > 0 (Holm family = every cell tested on the validation window + every configuration searched); PROMISING = validation ROI > 0 and CLV > 0 (or no CLV); else UNPROVEN; OFF with its reason",
+    "serving_cells": "unchanged from v2: src.bars_opt.cells.build on every priced row before 2026-11-01 (allow_blend, OFF rules unchanged) with the validation verdicts -> threshold_proposals candidates -> one proposal id"
+  },
+  "tiers": {
+    "rule": "unchanged from v2 (config/p11_bars_tiers_protocol_v2.json 'tiers'): T1 / T2 / T3, gates CAL / BAR, per-league gate + T3 floor fitted on the fit window's inner out-of-sample bets. The v3 tier parameters are written to the proposal folder only, never to config/top3_tiers_p11.json (the served tier config)."
+  },
+  "reporting": {
+    "per_cell": "old (P11 v2, TP-2026-11-18-1ddfc9f1) vs new (v3) per track x league x market-side: status, VALUABLE bar, walk-forward bets, validation (study) bets, validation ROI + matchday-block 95% CI, CLV; EFL cells first",
+    "coverage": "priced rows per track x league x market, before (v2 price rules) and after (v3 price rules), by source, fit and validation windows (counts only)"
+  },
+  "amendment_v3": {
+    "owner_decision": "Owner 2026-11-23: HT prices = \"Wire in + re-measure (Recommended)\"; fallback books = \"Extend to all markets (Recommended)\" - the 2026-11-18 O1 fallback order already approved for BTTS (William Hill, then 1xBet/Ladbrokes, only when the primary books have no price) now applies to Over 1.5, Over 3.5, HT 0.5/1.5 and New-Format O/U 2.5 too, filling ONLY from prices we already hold (no credits). Re-measured bars are a PROPOSAL for owner approval; serving stays unchanged.",
+    "change": "(1) BET tiers BT, BTU, OUU + HTB; ht_over05 / ht_over15 priced from the first-half 0.5 / 1.5 lines; (2) the O1 fallback order on the markets listed in prices.books_by_track_market; (3) 00:00:00-stamped history pairs dropped; (4) predictions of the models served now (see predictions).",
+    "supersedes": "nothing until the owner approves; p11-bars-tiers-clean/2 (TP-2026-11-18-1ddfc9f1) stays served",
+    "validation_label": "validation window 2026-09-01..11-08 scored a THIRD time by P11 (v1, v2 already scored it): \"re-validation after a price-input amendment, outcomes previously seen\"",
+    "outputs": "output/research/p11_bars_tiers_v3/, output/threshold_proposals/bars_p11v3/ (proposal + evidence + the PROPOSED tier config), reports/P11V3_PRICE_GAPS_REMEASURE.md"
+  }
+}
