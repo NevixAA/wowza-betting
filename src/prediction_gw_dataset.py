@@ -69,6 +69,8 @@ DATASET_CSV = OUT / "prediction_gw_dataset.csv"
 META = OUT / "prediction_gw_dataset.meta.json"
 LINKS_DIR = OUT / "prediction_gw_dataset_links"
 CORRECTIONS = OUT / "corrections" / "prediction_gw_dataset_corrections.csv"
+#: readable release names per model version (src.model_releases) - metadata BESIDE the immutable rows
+VERSIONS = OUT / "prediction_gw_dataset_versions.csv"
 
 KEY = ["gw", "league_slug", "repo", "model_id", "model_version", "market", "line", "selection_group", "snapshot",
        "clean_record"]
@@ -492,6 +494,24 @@ def reconcile_with_ledger(rows: pd.DataFrame, recomputed: pd.DataFrame, correcti
     return issues
 
 
+def version_names(rows: pd.DataFrame) -> pd.DataFrame:
+    """model_id x market x model_version -> release name, install date, serving windows (src.model_releases;
+    config/model_release_registry.json). 'unknown release' where no install record exists - never a guess."""
+    from src.model_releases import UNKNOWN, Releases
+    R = Releases()
+    out = []
+    for m, k, v in rows[["model_id", "market", "model_version"]].drop_duplicates().sort_values(
+            ["model_id", "market", "model_version"]).itertuples(index=False, name=None):
+        rec = R.records(m, k, v)
+        name, day = R.name(m, k, v)
+        out.append({"model_id": m, "market": k, "model_version": v, "release_name": name,
+                    "install_date": min(r["installed_at"] for r in rec)[:10] if rec and name != UNKNOWN else "",
+                    "role": rec[0].get("role", "champion") if rec else "",
+                    "served_windows": "; ".join(f"{r['served_from']}..{r.get('served_to') or ''}" for r in rec)})
+    return pd.DataFrame(out, columns=["model_id", "market", "model_version", "release_name", "install_date", "role",
+                                      "served_windows"])
+
+
 # ── orchestration ─────────────────────────────────────────────────────────────────────────────────────────────────
 def build_from_roots(v9_root: Path, pro_root: Path | None, clean_cfg: Path | None = None):
     """(questions, start, identity split report, source hashes) from the ledgers (the Predictions page's sources)."""
@@ -547,5 +567,7 @@ def run(*, v9_root: Path = ROOT, pro_root: Path | None = None, out: Path = OUT, 
             "gws": sorted(rows["gw"].unique().tolist()), "unassigned_questions": info["unassigned_questions"],
             "fixture_identity": ident, "private": "v11 never read; no price column"}
     res = store(rows, links, corr, meta, out=out)
+    if _write_text_if_changed(version_names(rows).to_csv(index=False, lineterminator="\n"), out / VERSIONS.name):
+        res["changed"].append(VERSIONS.name)
     return {"rows": int(len(rows)), "closed": meta["closed_rows"], "links": int(len(links)),
             "corrections_new": len(corr), **res}

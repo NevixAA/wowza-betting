@@ -373,7 +373,7 @@ jobs:
           for i in 1 2 3 4 5; do
             git fetch -q origin main && git reset -q --hard origin/main || { sleep 3; continue; }
             python scripts/build_prediction_gw_dataset.py --pro-root "$pro" || { echo "::warning::prediction GW dataset failed (learning only)"; pushed=1; break; }
-            git add -f output/prediction_gw_dataset.parquet output/prediction_gw_dataset.csv output/prediction_gw_dataset.meta.json output/prediction_gw_dataset_links/ 2>/dev/null || true
+            git add -f output/prediction_gw_dataset.parquet output/prediction_gw_dataset.csv output/prediction_gw_dataset.meta.json output/prediction_gw_dataset_versions.csv output/prediction_gw_dataset_links/ 2>/dev/null || true
             if [ -f output/corrections/prediction_gw_dataset_corrections.csv ]; then git add -f output/corrections/prediction_gw_dataset_corrections.csv; fi
             if git diff --staged --quiet; then pushed=1; echo "prediction GW dataset: nothing new"; break; fi
             git commit -q -m "auto: prediction GW dataset $(date -u '+%Y-%m-%d %H:%M UTC')"

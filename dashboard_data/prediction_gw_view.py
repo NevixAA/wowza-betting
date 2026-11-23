@@ -18,16 +18,22 @@ DATASET = ROOT / "output" / "prediction_gw_dataset.parquet"
 CORRECTIONS = ROOT / "output" / "corrections" / "prediction_gw_dataset_corrections.csv"
 
 RECORD_LABEL = {True: "Clean Record", False: "Before the Clean Record"}
-GROUP = ["gw", "gw_start_date", "gw_end_date", "league", "model_id", "model_version", "version_label", "market",
+GROUP = ["gw", "gw_start_date", "gw_end_date", "league", "model_id", "model_version", "release", "market",
          "line", "status"]
 SUMS = ["predictions", "settled", "hits", "void", "pending", "unscorable", "brier_sum", "log_loss_sum"]
 
 
 def load(path: Path | None = None) -> pd.DataFrame:
-    """The dataset. Raises OSError / ValueError when it is missing or unreadable."""
+    """The dataset + a readable `release` per row ('<release name> · <install date>', src.model_releases; the raw
+    model_version stays beside it). Raises OSError / ValueError when it is missing or unreadable."""
     d = pd.read_parquet(path or DATASET)
     for c in ("clean_record", "version_pre_clean_record"):
         d[c] = d[c].astype(str).str.lower().isin(["true", "1"])
+    from src.model_releases import Releases
+    R = Releases()
+    keys = d[["model_id", "market", "model_version"]].drop_duplicates()
+    lab = {(m, k, v): R.display(m, k, v) for m, k, v in keys.itertuples(index=False, name=None)}
+    d["release"] = [lab[(m, k, v)] for m, k, v in zip(d["model_id"], d["market"], d["model_version"])]
     return d
 
 
@@ -63,7 +69,8 @@ def table(d: pd.DataFrame, corrected: set, labels: dict, markets: dict) -> pd.Da
         "Dates": [f"{a} – {b}" for a, b in zip(t["gw_start_date"], t["gw_end_date"])],
         "League": t["league"].values,
         "Model": t["model_id"].map(lambda m: labels.get(m, m)).values,
-        "Version": t["version_label"].values,
+        "Version": t["release"].values,
+        "Version id": t["model_version"].values,
         "Market": t["market"].map(lambda m: markets.get(m, m)).values,
         "Line": t["line"].astype(str).values,
         "Predictions": t["predictions"].astype(int).values,
@@ -84,12 +91,12 @@ def trend(d: pd.DataFrame, labels: dict, markets: dict, max_series: int = 12) ->
     `max_series` series with the most settled questions."""
     if d.empty:
         return pd.DataFrame()
-    t = rollup(d, ["gw", "model_id", "version_label", "market"])
+    t = rollup(d, ["gw", "model_id", "release", "market"])
     t = t[t["settled"] > 0]
     if t.empty:
         return pd.DataFrame()
     t["series"] = [f"{labels.get(m, m)} · {v} · {markets.get(k, k)}"
-                   for m, v, k in zip(t["model_id"], t["version_label"], t["market"])]
+                   for m, v, k in zip(t["model_id"], t["release"], t["market"])]
     top = t.groupby("series")["settled"].sum().sort_values(ascending=False).head(max_series).index
     t = t[t["series"].isin(top)]
     return t.pivot_table(index="gw", columns="series", values="success", aggfunc="first").sort_index() * 100

@@ -11,7 +11,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from src.model_version_label import version_label
+from src.model_releases import Releases
 
 ROOT = Path(__file__).resolve().parents[1]
 INDEX = ROOT / "reports" / "dashboard" / "predictions_index.parquet"
@@ -169,8 +169,62 @@ def pick_text(row) -> str:
     return str(row["selection"]) if float(row["probability"]) >= 0.5 else f"not {row['selection']}"
 
 
+def pick_rows(rows: pd.DataFrame) -> pd.DataFrame:
+    """The model's pick of each question only (owner 2026-11-23: one row per market and line - the complementary
+    NO / UNDER row is 1 - p and adds nothing). Display only."""
+    return rows[rows["pick"].astype(bool)] if len(rows) else rows
+
+
+def pick_side(row) -> tuple[str, float, object]:
+    """(picked side, its probability, did it happen 1/0/None) of a pick row. A single-selection question whose
+    probability is below 0.5 picks 'not <selection>' at 1 - p."""
+    p, y = float(row["probability"]), row["y"]
+    if int(row["q_size"]) > 1 or p >= 0.5:
+        return str(row["selection"]), p, (None if pd.isna(y) else int(y))
+    return f"not {row['selection']}", 1 - p, (None if pd.isna(y) else 1 - int(y))
+
+
+_RELEASES: list = []
+
+
+def releases() -> Releases:
+    """The release registry (config/model_release_registry.json), read once per process."""
+    if not _RELEASES:
+        _RELEASES.append(Releases())
+    return _RELEASES[0]
+
+
+def version_names(rows: pd.DataFrame) -> list[str]:
+    """'<release> · <install date> · <status at kickoff>' per row; unknown -> 'unknown release · <raw id>'."""
+    R = releases()
+    ko = rows["match_kickoff_utc"] if "match_kickoff_utc" in rows.columns else rows["kickoff_utc"]
+    return [R.display(m, k, v, t) for m, k, v, t in zip(rows["model_id"], rows["market"], rows["model_version"], ko)]
+
+
+def pick_table(rows: pd.DataFrame) -> pd.DataFrame:
+    """Default view: ONE row per question - the serving version's pick, its probability, outcome and result."""
+    if rows.empty:
+        return pd.DataFrame()
+    r = rows.sort_values(["model_id", "market", "line", "player_name"], kind="mergesort")
+    sides = [pick_side(x) for _, x in r.iterrows()]
+    out = pd.DataFrame({"Model": r["model_id"].map(model_label).values,
+                        "Market": r["market"].map(market_label).values,
+                        "Line": r["line"].astype(str).replace("nan", "").values})
+    if (r["player_name"] != "").any():
+        out["Player"] = r["player_name"].values
+        out["Team"] = r["team"].astype(str).replace("nan", "").values
+    out["Pick"] = [s for s, _, _ in sides]
+    out["Probability"] = [p for _, p, _ in sides]
+    out["Outcome"] = [("happened" if h == 1 else "did not happen") if st == "SETTLED" and h is not None
+                      else outcome_text(st, None) for (_, _, h), st in zip(sides, r["outcome_status"])]
+    out["Result"] = [result_text(x) for _, x in r.iterrows()]
+    out["Model version"] = version_names(r)
+    return out.reset_index(drop=True)
+
+
 def prediction_table(rows: pd.DataFrame) -> pd.DataFrame:
-    """Display rows for one match and one family: model, market, line, selection, probability, pick, outcome."""
+    """All versions / both sides: every stored row with its selection, probability, pick, outcome, the readable
+    version name and the raw version id."""
     if rows.empty:
         return pd.DataFrame()
     r = rows.sort_values(["model_id", "market", "line", "player_name", "model_version", "selection"],
@@ -188,7 +242,8 @@ def prediction_table(rows: pd.DataFrame) -> pd.DataFrame:
     out["Pick"] = [pick_text(x) for _, x in r.iterrows()]
     out["Outcome"] = [outcome_text(s, y) for s, y in zip(r["outcome_status"], r["y"])]
     out["Result"] = [result_text(x) for _, x in r.iterrows()]
-    out["Model version"] = r["model_version"].map(version_label).values
+    out["Model version"] = version_names(r)
+    out["Version id"] = r["model_version"].values
     return out.reset_index(drop=True)
 
 
