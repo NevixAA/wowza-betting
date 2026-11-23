@@ -573,8 +573,9 @@ FANTASY_V1_MARKETS = ("goals", "assists", "sot2")       # player_model/fantasy.b
 
 
 def fantasy_v1_parity(frame: str | None = None) -> dict:
-    """Serving = what build_fantasy_projections hands predict_proba: the latest player_history row per
-    player of the fantasy league with minutes_pg >= 45 (stored feature columns, unmasked). Training = the
+    """Serving = what build_fantasy_projections hands predict_proba: fantasy.v1_model_inputs (the props
+    build on the props source frame, since 2026-11-23) for the latest player_history row per player of the
+    fantasy league with minutes_pg >= 45; a player the build does not produce has no serving row. Training = the
     props training frame row of the same (fixture_id, player_id) (props_harness.build_frame on the current
     source_frame - the frame the installed payloads were fitted on). Every feature of each payload is
     compared for EXACT equality (NaN equals NaN, no tolerance) and the installed payload is scored on both
@@ -586,14 +587,19 @@ def fantasy_v1_parity(frame: str | None = None) -> dict:
     pl = FA._fantasy_league_rows(hist)
     pl = pl.sort_values("date").groupby("player_id", as_index=False).tail(1)
     pl = pl[_num(pl["minutes_pg"]) >= 45.0].copy()
-    fr = pd.read_parquet(frame) if frame else H.build_frame(H.source_frame())
+    raw = H.source_frame()
+    fr = pd.read_parquet(frame) if frame else H.build_frame(raw)
     key = ["fixture_id", "player_id"]
-    for d in (pl, fr):
+    sv = FA.v1_model_inputs(pl, raw)
+    n_unbuilt = int((~sv["_v1_built"]).sum())
+    sv = sv[sv["_v1_built"]].drop(columns=["_v1_built"])
+    for d in (sv, fr):
         for c in key:
             d[c] = _num(d[c])
-    j = pl.merge(fr, on=key, suffixes=("_s", "_t"))
-    out = {"serving_rows": int(len(pl)), "training_frame_rows": int(len(fr)), "paired_rows": int(len(j)),
-           "serving_rows_without_training_row": int(len(pl) - len(j)), "markets": {}}
+    j = sv.merge(fr, on=key, suffixes=("_s", "_t"))
+    out = {"serving_rows": int(len(sv)), "v1_rows_without_props_build_row": n_unbuilt,
+           "training_frame_rows": int(len(fr)), "paired_rows": int(len(j)),
+           "serving_rows_without_training_row": int(len(sv) - len(j)), "markets": {}}
     feats_all: dict = {}
     for m in FANTASY_V1_MARKETS:
         pay = load_model(m)
@@ -634,8 +640,8 @@ def fantasy_v1_parity(frame: str | None = None) -> dict:
     ok = bool(out["markets"]) and all(v.get("differing_cells") == 0 for v in out["markets"].values()) \
         and out["serving_rows_without_training_row"] == 0
     out["verdict"] = "PARITY_CERTIFIED" if ok else "PARITY_FAILED"
-    out["why"] = ("serving = stored player_history feature columns (legacy build), training = props_harness.build_frame; "
-                  "the two builds differ" if not ok else "0 differing cells")
+    out["why"] = ("serving = fantasy.v1_model_inputs (props build), training = props_harness.build_frame; "
+                  "cells differ" if not ok else "0 differing cells")
     return out
 
 
