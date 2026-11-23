@@ -1,7 +1,7 @@
 {
  "about": "Canonical system health (src/system_health.build_artifact), written daily by evidence_refresh.yml. overall: FAIL if any RED check or protected_tracks_modified; WARN if any AMBER/NO_DATA; PASS otherwise. Every status comes from the rule stored beside it. `indicators` holds FOUR separate verdicts (CI gate, operational data quality, production model integrity, full-system certification) - never one GREEN for all four.",
  "artifact_version": "SYSTEM-HEALTH-1",
- "generated_at": "2026-11-23T10:41:22Z",
+ "generated_at": "2026-11-23T10:45:27Z",
  "overall": "WARN",
  "reasons": [
   "NO_DATA Challenger prediction coverage: no active challenger experiment",
@@ -999,7 +999,7 @@
    "frozen_digest": "31f9c8fe22555b02cbfdc86aad333e94230e5c45649f1087f8c516649f2549cc",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 381,
+   "prior_rows": 391,
    "prior_match": true,
    "status": "OK",
    "reasons": []
@@ -1009,7 +1009,7 @@
    "frozen_digest": "0759e27d90f34ac6b9a99023e4c9374bce9907c887d247b2eed44c054534b931",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 478,
+   "prior_rows": 498,
    "prior_match": true,
    "status": "OK",
    "reasons": []
@@ -1111,7 +1111,7 @@
     "research_lock": "GREEN"
    },
    "source": "output/system_health.json",
-   "generated_at": "2026-11-23T10:41:22Z",
+   "generated_at": "2026-11-23T10:45:27Z",
    "age_h": 0.0,
    "failing": []
   },
@@ -1121,7 +1121,7 @@
    "status": "AMBER",
    "meaning": "the WORST current data truth check, gated or not (an ungated RED is RED here)",
    "source": "output/system_health.json",
-   "generated_at": "2026-11-23T10:41:22Z",
+   "generated_at": "2026-11-23T10:45:27Z",
    "age_h": 0.0,
    "failing": [
     {
@@ -1129,7 +1129,7 @@
      "status": "AMBER",
      "detail": "7 registered exception(s)",
      "source": "output/system_health.json",
-     "generated_at": "2026-11-23T10:41:22Z",
+     "generated_at": "2026-11-23T10:45:27Z",
      "gated": false
     }
    ]
@@ -1146,7 +1146,7 @@
    },
    "source": "output/model_integrity_health.json",
    "generated_at": "2026-11-22T20:03:05Z",
-   "age_h": 14.6,
+   "age_h": 14.7,
    "failing": [
     {
      "component": "model new_format|OU25",
@@ -1251,24 +1251,24 @@
      "component": "system health",
      "status": "WARN",
      "source": "output/system_health.json",
-     "generated_at": "2026-11-23T10:41:22Z",
+     "generated_at": "2026-11-23T10:45:27Z",
      "age_h": 0.0,
      "ok": false
     },
     {
      "component": "data truth (operational)",
-     "status": "RED",
+     "status": "AMBER",
      "source": "output/data_truth_health.json",
-     "generated_at": "2026-11-23T08:39:19Z",
-     "age_h": 2.0,
+     "generated_at": "2026-11-23T10:43:32Z",
+     "age_h": 0.0,
      "ok": false
     },
     {
      "component": "data truth gate",
      "status": "GREEN",
      "source": "output/data_truth_health.json",
-     "generated_at": "2026-11-23T08:39:19Z",
-     "age_h": 2.0,
+     "generated_at": "2026-11-23T10:43:32Z",
+     "age_h": 0.0,
      "ok": true
     },
     {
@@ -1276,7 +1276,7 @@
      "status": "FAIL",
      "source": "output/model_integrity_health.json",
      "generated_at": "2026-11-22T20:03:05Z",
-     "age_h": 14.6,
+     "age_h": 14.7,
      "ok": false
     },
     {
@@ -1284,7 +1284,7 @@
      "status": "PASS",
      "source": "output/join_integrity_health.json",
      "generated_at": "2026-11-22T19:58:58Z",
-     "age_h": 14.7,
+     "age_h": 14.8,
      "ok": true
     },
     {
@@ -1300,7 +1300,7 @@
      "status": "PASS",
      "source": "output/model_integrity_health.json",
      "generated_at": "2026-11-22T20:03:05Z",
-     "age_h": 14.6,
+     "age_h": 14.7,
      "ok": true
     }
    ],
@@ -1313,14 +1313,14 @@
      "status": "WARN",
      "detail": "status WARN (needs PASS)",
      "source": "output/system_health.json",
-     "generated_at": "2026-11-23T10:41:22Z"
+     "generated_at": "2026-11-23T10:45:27Z"
     },
     {
      "component": "data truth (operational)",
-     "status": "RED",
-     "detail": "status RED (needs GREEN)",
+     "status": "AMBER",
+     "detail": "status AMBER (needs GREEN)",
      "source": "output/data_truth_health.json",
-     "generated_at": "2026-11-23T08:39:19Z"
+     "generated_at": "2026-11-23T10:43:32Z"
     },
     {
      "component": "model integrity",
