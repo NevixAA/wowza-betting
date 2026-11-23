@@ -11,17 +11,23 @@ import pytest
 PINNED_UTC = "2026-11-21T00:00:00Z"
 
 
-@pytest.fixture()
-def pinned_start(tmp_path, monkeypatch):
+def pin_start(tmp_path, monkeypatch, utc: str) -> str:
+    """Point every reader of the Clean Record start (clean_record, season, config) at `utc` for one test."""
     import config
     from dashboard_data import clean_record as CR
     from dashboard_data import season
     cfg = json.loads(CR.TP_CONFIG.read_text(encoding="utf-8"))
-    cfg["clean_record_start_utc"] = PINNED_UTC
-    p = tmp_path / "trustworthy_performance_pinned.json"
+    cfg["clean_record_start_utc"] = utc
+    p = tmp_path / "_clean_record_pin" / "trustworthy_performance_pinned.json"
+    p.parent.mkdir(exist_ok=True)
     p.write_text(json.dumps(cfg), encoding="utf-8")
     monkeypatch.setattr(CR, "TP_CONFIG", p)
     monkeypatch.setattr(season, "TP_CONFIG", p)
-    monkeypatch.setattr(season, "OWNER_DECISION", PINNED_UTC[:10])
-    monkeypatch.setattr(config, "CLEAN_RECORD_START", PINNED_UTC[:10])
-    yield PINNED_UTC
+    monkeypatch.setattr(season, "OWNER_DECISION", utc[:10])
+    monkeypatch.setattr(config, "CLEAN_RECORD_START", utc[:10])
+    return utc
+
+
+@pytest.fixture()
+def pinned_start(tmp_path, monkeypatch):
+    yield pin_start(tmp_path, monkeypatch, PINNED_UTC)

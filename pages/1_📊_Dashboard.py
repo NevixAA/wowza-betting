@@ -298,7 +298,11 @@ else:
                       "ledgers, first side per fixture, paper leagues excluded) · Edge is as recorded when the tip "
                       "was sent · not betting advice.")
     _tab = TV.selections_table(loc, research=(mode == "Research"))
-    _emax = max(float(pd.to_numeric(board["edge"], errors="coerce").max() or 0), 1.0)
+    # NaN-safe: a board whose tips carry no recorded edge (every value missing) has max() == NaN, and
+    # `NaN or 0` is NaN, so the bar's max_value reached Streamlit as NaN and the page raised "Out of range float
+    # values are not JSON compliant" (main red 2026-11-23). Missing edges stay missing; the bar scale is 1.
+    _emx = pd.to_numeric(board["edge"], errors="coerce").max()
+    _emax = max(float(_emx), 1.0) if pd.notna(_emx) else 1.0
     _cfg = {
         "Day": st.column_config.DateColumn("Day", format="ddd D MMM", width="small"),
         "Kickoff": st.column_config.DatetimeColumn("Kickoff", format="HH:mm", width="small"),
