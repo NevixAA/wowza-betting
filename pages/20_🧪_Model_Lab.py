@@ -26,10 +26,7 @@ _require_tier("admin")  # tier guard (dashboard_access.PAGES) - admin, like Mode
 
 from dashboard_data import freshness, model_lab  # noqa: E402
 
-# STREAMLIT CLOUD KEEPS IMPORTED MODULES ACROSS A REDEPLOY (see 15_League_Scout): reload the helpers.
-import importlib  # noqa: E402
-freshness = importlib.reload(freshness)
-model_lab = importlib.reload(model_lab)
+# Page/helper version skew after a redeploy is handled by dashboard_build_guard (app.py router).
 
 st.set_page_config(page_title="Wowza | Model Lab", page_icon="🧪", layout="wide")
 import dashboard_ui as ui  # noqa: E402
@@ -151,7 +148,6 @@ def _hmodel():
 
 
 from dashboard_data import evidence_view as EV  # noqa: E402
-EV = importlib.reload(EV)
 EV.hmodel_panel(*_hmodel())
 
 # ── latest retrain ─────────────────────────────────────────────────────────────────────────────

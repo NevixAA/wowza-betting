@@ -46,8 +46,6 @@ ui.autorefresh(minutes=5, key="builder_refresh")
 
 from dashboard_data.core import read_csv as _read_any, reachable, resolve_file  # noqa: E402
 from dashboard_data import builder_view as V, freshness as _fresh  # noqa: E402
-import importlib  # noqa: E402
-V = importlib.reload(V)              # page + helper always the same version (see 15_League_Scout)
 
 _TITLE, _SUB = "Bet Builder & Multi", "Same-match builders and cross-match multiples, priced with measured correlation"
 _EYEBROW = "Tools · combo research"
