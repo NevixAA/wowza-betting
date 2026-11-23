@@ -1386,5 +1386,120 @@ def evaluate(now: datetime | None = None) -> list[dict]:                 # noqa:
 GATED = tuple(GATED) + ("Data truth 12",)
 
 
+
+# ── 14 PREDICTION GW DATASET + 15 ONE FIXTURE, ONE IDENTITY (owner 2026-11-23) ──────────────────────────────────────
+# Appended as an extension like rule 12. 14-16 are the next free numbers (13 = real data only). The ledger
+# comparison is 16, not '14b': a gated 14 would gate '14b' too (is_gated: id + letter suffix).
+GW_RULE = ("Data truth 14: prediction GW dataset - (src/prediction_gw_dataset) every row re-derives EXACTLY from its "
+           "question-level link rows (predictions = settled + void + pending + unscorable, hits, Brier / log-loss "
+           "sums, source digest), row_id = digest of its key, no rate on a row without a settled question (no "
+           "default), no price column, no v11 row, a CLOSED row has no pending question")
+GW_LEDGER_RULE = ("Data truth 16: prediction GW dataset vs ledger - every CLOSED v9 row equals a fresh derivation "
+                  "from the committed v9 ledgers, or a correction sits beside it in "
+                  "output/corrections/prediction_gw_dataset_corrections.csv")
+IDENTITY_RULE = ("Data truth 15: one fixture, one identity - across models (src/fixture_identity): the committed "
+                 "Predictions index carries the canonical identity the resolver gives today (accents, club-name "
+                 "variants and kickoff drift between sources unified; API-Football kickoff authoritative). RED when "
+                 "a stored identity differs from the resolver or a match is still split; AMBER when sources disagree "
+                 "on a kickoff (counted, never silently picked)")
+
+
+def prediction_gw_dataset() -> dict:
+    lab = "Data truth 14: prediction GW dataset"
+    try:
+        from src import prediction_gw_dataset as G
+    except ImportError as e:                                           # the slim dashboard tree
+        return _c(lab, GREY, "not run in this tree", GW_RULE, f"{e}"[:200])
+    if not G.DATASET.exists():
+        return _c(lab, GREY, "no dataset yet (update_results writes it after settlement)", GW_RULE)
+    if not G.LINKS_DIR.exists():                                       # the slim dashboard tree mirrors no links
+        return _c(lab, GREY, "no question links in this tree", GW_RULE)
+    rows, links = G.read_dataset(), G.read_links()
+    issues = G.verify(rows, links)
+    return _c(lab, RED if issues else GREEN,
+              f"{len(issues)} finding(s); {len(rows)} row(s), {int((rows['status'] == 'CLOSED').sum())} closed, "
+              f"{len(links)} question link(s)", GW_RULE, "; ".join(issues)[:600])
+
+
+def prediction_gw_vs_ledger() -> dict:
+    lab = "Data truth 16: prediction GW dataset vs ledger"
+    try:
+        from src import prediction_gw_dataset as G
+        from scripts import build_predictions_index  # noqa: F401  (pipeline tree only)
+    except ImportError as e:
+        return _c(lab, GREY, "not run in this tree", GW_LEDGER_RULE, f"{e}"[:200])
+    if not G.DATASET.exists():
+        return _c(lab, GREY, "no dataset yet", GW_LEDGER_RULE)
+    if not (ROOT / "output" / "prediction_ledger").exists():           # the slim dashboard tree
+        return _c(lab, GREY, "no prediction ledger in this tree", GW_LEDGER_RULE)
+    rows = G.read_dataset()
+    if not ((rows["status"] == "CLOSED") & (rows["repo"] == "v9")).any():
+        return _c(lab, GREEN, "no closed v9 row yet", GW_LEDGER_RULE)
+    try:
+        q, start, _, _ = G.build_from_roots(ROOT, None)
+    except SystemExit as e:                                            # no ledger rows: never kill the caller
+        return _c(lab, GREY, "no ledger rows", GW_LEDGER_RULE, str(e)[:200])
+    new, _, _ = G.derive(q, start, pd.Timestamp.now(tz="UTC"))
+    issues = G.reconcile_with_ledger(rows, new, G.read_corrections(), repos=("v9",))
+    n = int(((rows["status"] == "CLOSED") & (rows["repo"] == "v9")).sum())
+    return _c(lab, RED if issues else GREEN, f"{len(issues)} unexplained difference(s) in {n} closed v9 row(s)",
+              GW_LEDGER_RULE, "; ".join(issues)[:600])
+
+
+def one_fixture_identity(index_path: Path | None = None) -> dict:
+    lab = "Data truth 15: one fixture, one identity"
+    p = Path(index_path) if index_path else ROOT / "reports" / "dashboard" / "predictions_index.parquet"
+    try:
+        from src import fixture_identity as FI
+    except ImportError as e:
+        return _c(lab, GREY, "not run in this tree", IDENTITY_RULE, f"{e}"[:200])
+    if not p.exists():
+        return _c(lab, GREY, "no Predictions index", IDENTITY_RULE)
+    cols = ["fixture_ref", "league_slug", "league", "kickoff_utc", "home_team", "away_team", "predicted_at",
+            "canonical_fixture_ref", "kickoff_source"]
+    try:
+        d = pd.read_parquet(p, columns=cols)
+    except (ValueError, KeyError, OSError):
+        return _c(lab, AMBER, "the committed index predates the canonical identity (rebuilt by update_results)",
+                  IDENTITY_RULE)
+    for c in d.columns:
+        if isinstance(d[c].dtype, pd.CategoricalDtype):
+            d[c] = d[c].astype(str)
+    d["kickoff_utc"] = pd.to_datetime(d["kickoff_utc"], utc=True).dt.strftime("%Y-%m-%dT%H:%M:%SZ")
+    ident = FI.resolve_identities(d)
+    stored = d.drop_duplicates("fixture_ref").set_index("fixture_ref")["canonical_fixture_ref"].astype(str)
+    fresh = ident.set_index("fixture_ref")["canonical_fixture_ref"]
+    diff = [r for r in fresh.index if stored.get(r) != fresh[r]]
+    rep = FI.split_report(d, ident)
+    value = (f"{rep['page_keys_before']} page keys -> {rep['canonical_fixtures_after']} matches "
+             f"({rep['matches_split_before']} split before: accent {rep['kinds']['accent']}, name variant "
+             f"{rep['kinds']['name_variant']}, kickoff drift {rep['kinds']['kickoff_drift']}); "
+             f"{len(diff)} stored identity mismatch(es); {rep['kickoff_conflicts_unresolved']} ref(s) with an "
+             f"unresolved kickoff conflict; {rep['af_id_conflicts']} AF-id conflict(s)")
+    status = RED if diff else (AMBER if rep["kinds"]["kickoff_drift"] or rep["af_id_conflicts"] else GREEN)
+    return _c(lab, status, value, IDENTITY_RULE, ("mismatch: " + ", ".join(diff[:20])) if diff else "")
+
+
+_evaluate_rules_1_to_12 = evaluate
+
+
+def evaluate(now: datetime | None = None) -> list[dict]:                 # noqa: F811
+    """The rule checks above plus Data truth 14 / 15 / 16. Never raises: a check that cannot run is itself RED."""
+    out = _evaluate_rules_1_to_12(now)
+    for lab, fn in (("Data truth 14: prediction GW dataset", prediction_gw_dataset),
+                    ("Data truth 16: prediction GW dataset vs ledger", prediction_gw_vs_ledger),
+                    ("Data truth 15: one fixture, one identity", one_fixture_identity)):
+        try:
+            out.append(fn())
+        except Exception as e:                                         # noqa: BLE001
+            out.append(_c(lab, RED, "check failed", "must run", f"{type(e).__name__}: {e}"[:200]))
+    return out
+
+
+#: Rule 14 (the stored dataset reconciles with its own question records) blocks a push/PR. 16 (lags the live ledger
+#: between runs) and 15 (rebuilt by update_results) are system health only, like rules 3 / 9 / 11.
+GATED = tuple(GATED) + ("Data truth 14",)
+
+
 if __name__ == "__main__":
     raise SystemExit(main())

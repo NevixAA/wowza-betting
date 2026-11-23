@@ -1,0 +1,41 @@
+{
+ "artifact": "prediction_gw_dataset",
+ "clean_record_start_utc": "2026-11-19T06:41:48Z",
+ "closed_rows": 3010,
+ "fixture_identity": {
+  "af_id_conflicts": 0,
+  "canonical_fixtures_after": 569,
+  "fixture_refs": 869,
+  "identity_version": "fid/1.0",
+  "kickoff_conflicts_unresolved": 2,
+  "kickoff_drift_groups": 42,
+  "kinds": {
+   "accent": 41,
+   "kickoff_drift": 42,
+   "name_variant": 170,
+   "ref_only": 83
+  },
+  "matches_split_before": 213,
+  "page_keys_before": 782
+ },
+ "gameweek_rule": "GW-1: src/gameweek.league_week_id on the tip day (src/tip_day, rollover 10:00 Asia/Jerusalem) - the TOP-3 gameweek (src/top3_league.py)",
+ "gws": [
+  "2026-W47",
+  "2026-W48"
+ ],
+ "link_rows": 353591,
+ "private": "v11 never read; no price column",
+ "repos": [
+  "pro",
+  "v9"
+ ],
+ "rows": 8495,
+ "schema_version": "pgw/1.0",
+ "sources_sha256": {
+  "pro:prediction_ledger": "3c33e3e1e36c697a395af7475350a66b57c2dba0ce12e3ff0060a9ebc3ba1ab8",
+  "pro:prediction_ledger_settled": "efc408ec3b86913fe4ce5ae0973d5703431e7a3d58c17de0e60d8f44e000e0fc",
+  "v9:prediction_ledger": "3a2e4fe1e17fa2791768c5a25a495ef8e089a800879f79968694129c1dbe426e",
+  "v9:prediction_ledger_settled": "b48be8e0503e0308272d4f3c4d2b6e26185e7095e610ee8841a584c2f39205d2"
+ },
+ "unassigned_questions": 0
+}
