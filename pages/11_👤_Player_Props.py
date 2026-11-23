@@ -34,8 +34,6 @@ from dashboard_access import require as _require_tier  # noqa: E402
 _require_tier("pro")  # tier guard (dashboard_access.PAGES), 2026-10-18
 
 from dashboard_data import props_view as V  # noqa: E402
-import importlib  # noqa: E402
-V = importlib.reload(V)              # page + helper always the same version (see 15_League_Scout)
 
 ui.autorefresh(minutes=2, key="11_player_props_refresh")
 BASE_DIR = Path(__file__).resolve().parents[1]
@@ -173,7 +171,6 @@ else:
 
 # ═══ PROPS TOP-3 PER LEAGUE (owner 2026-11-22, "Like TOP-3: 3 per league, stake by proof") ════════════════════
 from dashboard_data import props_top3_view as P3  # noqa: E402
-P3 = importlib.reload(P3)
 
 
 @st.cache_data(ttl=120)
