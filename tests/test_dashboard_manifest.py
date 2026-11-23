@@ -72,6 +72,16 @@ def test_no_committed_file_is_excluded_as_not_committed():
                        f"`python scripts/dashboard_manifest.py --write`: {stale}")
 
 
+def test_time_dependent_reads_are_shipped_whatever_hour_the_trace_ran():
+    """main red 2026-11-23: the Top picks coherence gate opens the sent-tip stores only while today's tips have not
+    all kicked off, so a manifest written after the day's last kickoff left them out and the CI trace at 05:38 UTC
+    failed. CONDITIONAL_DATA ships them regardless; the gate never imports the pipeline-only notifier."""
+    for rel in DM.CONDITIONAL_DATA:
+        assert rel in DATA or not (ROOT / rel).is_file(), f"{rel} missing - run dashboard_manifest.py --write"
+    assert "telegram_bot/notifier.py" not in CODE
+    assert not {m for m in DM._imports(ROOT / "src" / "tip_coherence.py") if m.startswith("telegram_bot")}
+
+
 # ── committed = git tree, not working tree or .gitignore ─────────────────────────────────────────
 def _git_repo(tmp_path):
     import shutil

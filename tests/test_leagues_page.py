@@ -34,6 +34,11 @@ def env(tmp_path, monkeypatch):
     from src import stake_plan
     from dashboard_data import core
     monkeypatch.setattr(config, "OUTPUT_DIR", tmp_path)
+    # The rows below are PRE-REPAIR rows dated relative to today (RECENT = today - 3 for the 7-day column), so the
+    # Clean Record start is pinned at today 00:00 UTC: with the committed start (2026-11-19 06:41 UTC) RECENT
+    # crossed into the Clean Record from 2026-11-23 and every pre-repair figure moved (main red 2026-11-23).
+    from tests.clean_record_pin import pin_start
+    pin_start(tmp_path, monkeypatch, f"{TODAY}T00:00:00Z")
     monkeypatch.setattr(stake_plan, "load_league_ratings", lambda *a, **k: {"Brazil Serie A": 9, "League One": 2})
     monkeypatch.setattr(core, "RAW_BASE", {})                         # no network in tests
     monkeypatch.setitem(core.REPOS, "pro", {**core.REPOS["pro"], "candidates": []})
