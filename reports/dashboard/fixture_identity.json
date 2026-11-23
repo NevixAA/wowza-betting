@@ -1,0 +1,673 @@
+{
+ "identity_version": "fid/1.0",
+ "fixture_refs": 885,
+ "page_keys_before": 798,
+ "canonical_fixtures_after": 578,
+ "matches_split_before": 220,
+ "kinds": {
+  "accent": 41,
+  "name_variant": 176,
+  "kickoff_drift": 45,
+  "ref_only": 83
+ },
+ "kickoff_conflicts_unresolved": 2,
+ "kickoff_drift_groups": 45,
+ "af_id_conflicts": 0,
+ "per_league": {
+  "Argentina Primera Division": {
+   "accent": 1,
+   "name_variant": 5,
+   "kickoff_drift": 7,
+   "ref_only": 0,
+   "matches_split": 8
+  },
+  "Austrian Bundesliga": {
+   "accent": 0,
+   "name_variant": 11,
+   "kickoff_drift": 0,
+   "ref_only": 1,
+   "matches_split": 11
+  },
+  "Brazil Serie A": {
+   "accent": 6,
+   "name_variant": 8,
+   "kickoff_drift": 0,
+   "ref_only": 17,
+   "matches_split": 12
+  },
+  "Bundesliga 2": {
+   "accent": 0,
+   "name_variant": 5,
+   "kickoff_drift": 0,
+   "ref_only": 13,
+   "matches_split": 5
+  },
+  "Championship": {
+   "accent": 0,
+   "name_variant": 32,
+   "kickoff_drift": 0,
+   "ref_only": 4,
+   "matches_split": 32
+  },
+  "Denmark Superliga": {
+   "accent": 2,
+   "name_variant": 9,
+   "kickoff_drift": 0,
+   "ref_only": 3,
+   "matches_split": 9
+  },
+  "Japan J-League": {
+   "accent": 9,
+   "name_variant": 10,
+   "kickoff_drift": 0,
+   "ref_only": 7,
+   "matches_split": 15
+  },
+  "La Liga 2": {
+   "accent": 6,
+   "name_variant": 14,
+   "kickoff_drift": 10,
+   "ref_only": 1,
+   "matches_split": 20
+  },
+  "League One": {
+   "accent": 0,
+   "name_variant": 19,
+   "kickoff_drift": 0,
+   "ref_only": 9,
+   "matches_split": 19
+  },
+  "League Two": {
+   "accent": 0,
+   "name_variant": 18,
+   "kickoff_drift": 0,
+   "ref_only": 8,
+   "matches_split": 18
+  },
+  "Ligue 2": {
+   "accent": 0,
+   "name_variant": 5,
+   "kickoff_drift": 3,
+   "ref_only": 2,
+   "matches_split": 6
+  },
+  "Mexico Liga MX": {
+   "accent": 3,
+   "name_variant": 7,
+   "kickoff_drift": 5,
+   "ref_only": 0,
+   "matches_split": 11
+  },
+  "Norway Eliteserien": {
+   "accent": 4,
+   "name_variant": 11,
+   "kickoff_drift": 0,
+   "ref_only": 4,
+   "matches_split": 12
+  },
+  "Serie B": {
+   "accent": 3,
+   "name_variant": 7,
+   "kickoff_drift": 20,
+   "ref_only": 6,
+   "matches_split": 23
+  },
+  "Sweden Allsvenskan": {
+   "accent": 7,
+   "name_variant": 10,
+   "kickoff_drift": 0,
+   "ref_only": 3,
+   "matches_split": 14
+  },
+  "USA MLS": {
+   "accent": 0,
+   "name_variant": 5,
+   "kickoff_drift": 0,
+   "ref_only": 5,
+   "matches_split": 5
+  }
+ },
+ "kickoff_disagreements": [
+  {
+   "canonical_fixture_ref": "af:1551038",
+   "league": "Mexico Liga MX",
+   "match": "Club Tijuana v Atlante FC",
+   "kickoff_source": "api-football",
+   "canonical_kickoff_utc": "2026-11-21T03:00:00Z",
+   "drift_min": 10.0,
+   "sources": {
+    "af:1551038": "2026-11-21T03:00:00Z",
+    "oa:264c6eae15dd1aa5e2189c58d409c5b0": "2026-11-21T03:10:00Z"
+   }
+  },
+  {
+   "canonical_fixture_ref": "af:1551041",
+   "league": "Mexico Liga MX",
+   "match": "CF Pachuca v Toluca",
+   "kickoff_source": "api-football",
+   "canonical_kickoff_utc": "2026-11-21T23:00:00Z",
+   "drift_min": 10.0,
+   "sources": {
+    "af:1551041": "2026-11-21T23:00:00Z",
+    "oa:7bbb07868081773728289235e9d22f42": "2026-11-21T22:50:00Z"
+   }
+  },
+  {
+   "canonical_fixture_ref": "af:1551046",
+   "league": "Mexico Liga MX",
+   "match": "Club Queretaro v Necaxa",
+   "kickoff_source": "api-football",
+   "canonical_kickoff_utc": "2026-11-23T01:00:00Z",
+   "drift_min": 10.0,
+   "sources": {
+    "af:1551046": "2026-11-23T01:00:00Z",
+    "oa:3030284e28d18889f35f9c419d8b0fee": "2026-11-23T01:10:00Z"
+   }
+  },
+  {
+   "canonical_fixture_ref": "af:1552533",
+   "league": "Ligue 2",
+   "match": "Laval v Montpellier",
+   "kickoff_source": "api-football",
+   "canonical_kickoff_utc": "2026-11-20T19:00:00Z",
+   "drift_min": 1080.0,
+   "sources": {
+    "af:1552533": "2026-11-20T19:00:00Z",
+    "oa:191168adac12a304f49c685e057e97e7": "2026-11-21T13:00:00Z"
+   }
+  },
+  {
+   "canonical_fixture_ref": "af:1552536",
+   "league": "Ligue 2",
+   "match": "Nantes v Grenoble",
+   "kickoff_source": "api-football",
+   "canonical_kickoff_utc": "2026-11-20T19:00:00Z",
+   "drift_min": 1080.0,
+   "sources": {
+    "af:1552536": "2026-11-20T19:00:00Z",
+    "nk:ligue_2|2026-11-21|Nantes|Grenoble": "2026-11-21T13:00:00Z",
+    "oa:3bf2c36a64fc68acc802eeee9c947049": "2026-11-21T13:00:00Z"
+   }
+  },
+  {
+   "canonical_fixture_ref": "af:1552538",
+   "league": "Ligue 2",
+   "match": "Reims v Saint Etienne",
+   "kickoff_source": "api-football",
+   "canonical_kickoff_utc": "2026-11-20T19:00:00Z",
+   "drift_min": 1440.0,
+   "sources": {
+    "af:1552538": "2026-11-20T19:00:00Z",
+    "oa:67037ebf2ce5b3dd7e7cd6b30d5fbacb": "2026-11-21T19:00:00Z"
+   }
+  },
+  {
+   "canonical_fixture_ref": "af:1570036",
+   "league": "La Liga 2",
+   "match": "Albacete v Tenerife",
+   "kickoff_source": "api-football",
+   "canonical_kickoff_utc": "2026-11-29T16:00:00Z",
+   "drift_min": 1485.0,
+   "sources": {
+    "af:1570036": "2026-11-29T16:00:00Z",
+    "oa:ae50a7300cd534a4c83d3cb35d618463": "2026-11-28T15:15:00Z"
+   }
+  },
+  {
+   "canonical_fixture_ref": "af:1570037",
+   "league": "La Liga 2",
+   "match": "Almeria v Sporting Gijon",
+   "kickoff_source": "api-football",
+   "canonical_kickoff_utc": "2026-11-29T16:00:00Z",
+   "drift_min": 240.0,
+   "sources": {
+    "af:1570037": "2026-11-29T16:00:00Z",
+    "oa:d12e5cab1c311e27cef5a36e8a545f3b": "2026-11-29T20:00:00Z"
+   }
+  },
+  {
+   "canonical_fixture_ref": "af:1570038",
+   "league": "La Liga 2",
+   "match": "Cadiz v Cordoba",
+   "kickoff_source": "api-football",
+   "canonical_kickoff_utc": "2026-11-29T16:00:00Z",
+   "drift_min": 90.0,
+   "sources": {
+    "af:1570038": "2026-11-29T16:00:00Z",
+    "oa:48a0a5242bc33406117258635a4b327f": "2026-11-29T17:30:00Z"
+   }
+  },
+  {
+   "canonical_fixture_ref": "af:1570039",
+   "league": "La Liga 2",
+   "match": "Eibar v Burgos",
+   "kickoff_source": "api-football",
+   "canonical_kickoff_utc": "2026-11-29T16:00:00Z",
+   "drift_min": 1350.0,
+   "sources": {
+    "af:1570039": "2026-11-29T16:00:00Z",
+    "oa:80c3b1eccde4b39e3e000a65c0b4422b": "2026-11-28T17:30:00Z"
+   }
+  },
+  {
+   "canonical_fixture_ref": "af:1570040",
+   "league": "La Liga 2",
+   "match": "Eldense v Girona",
+   "kickoff_source": "api-football",
+   "canonical_kickoff_utc": "2026-11-29T16:00:00Z",
+   "drift_min": 1485.0,
+   "sources": {
+    "af:1570040": "2026-11-29T16:00:00Z",
+    "oa:075a62d557b6f549eed6c35aede8a738": "2026-11-28T15:15:00Z"
+   }
+  },
+  {
+   "canonical_fixture_ref": "af:1570041",
+   "league": "La Liga 2",
+   "match": "Granada CF v AD Ceuta FC",
+   "kickoff_source": "api-football",
+   "canonical_kickoff_utc": "2026-11-29T16:00:00Z",
+   "drift_min": 180.0,
+   "sources": {
+    "af:1570041": "2026-11-29T16:00:00Z",
+    "oa:468ebf38336fb839032102bc570787b7": "2026-11-29T13:00:00Z"
+   }
+  },
+  {
+   "canonical_fixture_ref": "af:1570042",
+   "league": "La Liga 2",
+   "match": "Las Palmas v FC Andorra",
+   "kickoff_source": "api-football",
+   "canonical_kickoff_utc": "2026-11-29T16:00:00Z",
+   "drift_min": 1620.0,
+   "sources": {
+    "af:1570042": "2026-11-29T16:00:00Z",
+    "oa:39696af332003b194c8cb15d82735fc3": "2026-11-28T13:00:00Z"
+   }
+  },
+  {
+   "canonical_fixture_ref": "af:1570044",
+   "league": "La Liga 2",
+   "match": "Mallorca v Castellón",
+   "kickoff_source": "api-football",
+   "canonical_kickoff_utc": "2026-11-29T16:00:00Z",
+   "drift_min": 45.0,
+   "sources": {
+    "af:1570044": "2026-11-29T16:00:00Z",
+    "oa:f745c0453880329819da1ecfde118f1c": "2026-11-29T15:15:00Z"
+   }
+  },
+  {
+   "canonical_fixture_ref": "af:1570045",
+   "league": "La Liga 2",
+   "match": "Oviedo v Celta de Vigo II",
+   "kickoff_source": "api-football",
+   "canonical_kickoff_utc": "2026-11-29T16:00:00Z",
+   "drift_min": 1650.0,
+   "sources": {
+    "af:1570045": "2026-11-29T16:00:00Z",
+    "oa:8062a6d60846fbc6dd33e70f2eb17163": "2026-11-30T19:30:00Z"
+   }
+  },
+  {
+   "canonical_fixture_ref": "af:1570046",
+   "league": "La Liga 2",
+   "match": "Valladolid v Real Sociedad II",
+   "kickoff_source": "api-football",
+   "canonical_kickoff_utc": "2026-11-29T16:00:00Z",
+   "drift_min": 1200.0,
+   "sources": {
+    "af:1570046": "2026-11-29T16:00:00Z",
+    "oa:47ae19df7db7edc8ff768d66493a1f5a": "2026-11-28T20:00:00Z"
+   }
+  },
+  {
+   "canonical_fixture_ref": "af:1601603",
+   "league": "Serie B",
+   "match": "Arezzo v Padova",
+   "kickoff_source": "api-football",
+   "canonical_kickoff_utc": "2026-11-21T14:00:00Z",
+   "drift_min": 1575.0,
+   "sources": {
+    "af:1601603": "2026-11-21T14:00:00Z",
+    "oa:f4f0f11087c7acf67a389b6c505c23f1": "2026-11-22T16:15:00Z"
+   }
+  },
+  {
+   "canonical_fixture_ref": "af:1601605",
+   "league": "Serie B",
+   "match": "Avellino v Mantova",
+   "kickoff_source": "api-football",
+   "canonical_kickoff_utc": "2026-11-21T14:00:00Z",
+   "drift_min": 1440.0,
+   "sources": {
+    "af:1601605": "2026-11-21T14:00:00Z",
+    "oa:fd618797e9872c203a31aeba26aa0c70": "2026-11-22T14:00:00Z"
+   }
+  },
+  {
+   "canonical_fixture_ref": "af:1601607",
+   "league": "Serie B",
+   "match": "Catanzaro v Palermo",
+   "kickoff_source": "api-football",
+   "canonical_kickoff_utc": "2026-11-21T14:00:00Z",
+   "drift_min": 135.0,
+   "sources": {
+    "af:1601607": "2026-11-21T14:00:00Z",
+    "oa:70a62fb21cb43f0d0b6593ea809f9f20": "2026-11-21T16:15:00Z"
+   }
+  },
+  {
+   "canonical_fixture_ref": "af:1601608",
+   "league": "Serie B",
+   "match": "Empoli v Pisa",
+   "kickoff_source": "api-football",
+   "canonical_kickoff_utc": "2026-11-21T14:00:00Z",
+   "drift_min": 270.0,
+   "sources": {
+    "af:1601608": "2026-11-21T14:00:00Z",
+    "oa:ff32d41dd08acf21dc6b8fefa660e94a": "2026-11-21T18:30:00Z"
+   }
+  },
+  {
+   "canonical_fixture_ref": "af:1601613",
+   "league": "Serie B",
+   "match": "Benevento v Empoli",
+   "kickoff_source": "api-football",
+   "canonical_kickoff_utc": "2026-11-24T14:00:00Z",
+   "drift_min": 300.0,
+   "sources": {
+    "af:1601613": "2026-11-24T14:00:00Z",
+    "oa:8a83b64c5a2da01e0be02f81c52c24c1": "2026-11-24T19:00:00Z"
+   }
+  },
+  {
+   "canonical_fixture_ref": "af:1601614",
+   "league": "Serie B",
+   "match": "Cesena v Ascoli",
+   "kickoff_source": "api-football",
+   "canonical_kickoff_utc": "2026-11-24T14:00:00Z",
+   "drift_min": 300.0,
+   "sources": {
+    "af:1601614": "2026-11-24T14:00:00Z",
+    "oa:1266361213aa65b3a2f950e194f93351": "2026-11-24T19:00:00Z"
+   }
+  },
+  {
+   "canonical_fixture_ref": "af:1601615",
+   "league": "Serie B",
+   "match": "Cremonese v Avellino",
+   "kickoff_source": "api-football",
+   "canonical_kickoff_utc": "2026-11-24T14:00:00Z",
+   "drift_min": 1680.0,
+   "sources": {
+    "af:1601615": "2026-11-24T14:00:00Z",
+    "oa:e9dde1a356f9972fdba7493f024c1416": "2026-11-25T18:00:00Z"
+   }
+  },
+  {
+   "canonical_fixture_ref": "af:1601616",
+   "league": "Serie B",
+   "match": "Virtus Entella v Hellas Verona",
+   "kickoff_source": "api-football",
+   "canonical_kickoff_utc": "2026-11-24T14:00:00Z",
+   "drift_min": 300.0,
+   "sources": {
+    "af:1601616": "2026-11-24T14:00:00Z",
+    "oa:1126881ccd5628bc2a3e896fd7e05fed": "2026-11-24T19:00:00Z"
+   }
+  },
+  {
+   "canonical_fixture_ref": "af:1601617",
+   "league": "Serie B",
+   "match": "Juve Stabia v Catanzaro",
+   "kickoff_source": "api-football",
+   "canonical_kickoff_utc": "2026-11-24T14:00:00Z",
+   "drift_min": 240.0,
+   "sources": {
+    "af:1601617": "2026-11-24T14:00:00Z",
+    "oa:9bd0adf3b04503ead04425bca117973f": "2026-11-24T18:00:00Z"
+   }
+  },
+  {
+   "canonical_fixture_ref": "af:1601618",
+   "league": "Serie B",
+   "match": "Vicenza Virtus v Carrarese",
+   "kickoff_source": "api-football",
+   "canonical_kickoff_utc": "2026-11-24T14:00:00Z",
+   "drift_min": 300.0,
+   "sources": {
+    "af:1601618": "2026-11-24T14:00:00Z",
+    "oa:155d48f7d5af716b832e611847eecfe8": "2026-11-24T19:00:00Z"
+   }
+  },
+  {
+   "canonical_fixture_ref": "af:1601619",
+   "league": "Serie B",
+   "match": "Mantova v Arezzo",
+   "kickoff_source": "api-football",
+   "canonical_kickoff_utc": "2026-11-24T14:00:00Z",
+   "drift_min": 1740.0,
+   "sources": {
+    "af:1601619": "2026-11-24T14:00:00Z",
+    "oa:9c57ff58a8b71d7648b7914d3fe2c839": "2026-11-25T19:00:00Z"
+   }
+  },
+  {
+   "canonical_fixture_ref": "af:1601620",
+   "league": "Serie B",
+   "match": "Padova v Sampdoria",
+   "kickoff_source": "api-football",
+   "canonical_kickoff_utc": "2026-11-24T14:00:00Z",
+   "drift_min": 1740.0,
+   "sources": {
+    "af:1601620": "2026-11-24T14:00:00Z",
+    "oa:30fb25fc45cd386b33e223302ff98f4d": "2026-11-25T19:00:00Z"
+   }
+  },
+  {
+   "canonical_fixture_ref": "af:1601621",
+   "league": "Serie B",
+   "match": "Palermo v Sudtirol",
+   "kickoff_source": "api-football",
+   "canonical_kickoff_utc": "2026-11-24T14:00:00Z",
+   "drift_min": 300.0,
+   "sources": {
+    "af:1601621": "2026-11-24T14:00:00Z",
+    "oa:83a913029df6521a5822f1a77e619b78": "2026-11-24T19:00:00Z"
+   }
+  },
+  {
+   "canonical_fixture_ref": "af:1601622",
+   "league": "Serie B",
+   "match": "Pisa v Modena",
+   "kickoff_source": "api-football",
+   "canonical_kickoff_utc": "2026-11-24T14:00:00Z",
+   "drift_min": 1740.0,
+   "sources": {
+    "af:1601622": "2026-11-24T14:00:00Z",
+    "oa:8cf80807dee1ee73aefb295b560dc78e": "2026-11-25T19:00:00Z"
+   }
+  },
+  {
+   "canonical_fixture_ref": "af:1601623",
+   "league": "Serie B",
+   "match": "Arezzo v Pisa",
+   "kickoff_source": "api-football",
+   "canonical_kickoff_utc": "2026-11-28T14:00:00Z",
+   "drift_min": 1710.0,
+   "sources": {
+    "af:1601623": "2026-11-28T14:00:00Z",
+    "oa:febb69ba2ceb16db0f4a78dd9f640e40": "2026-11-29T18:30:00Z"
+   }
+  },
+  {
+   "canonical_fixture_ref": "af:1601628",
+   "league": "Serie B",
+   "match": "Vicenza Virtus v Cesena",
+   "kickoff_source": "api-football",
+   "canonical_kickoff_utc": "2026-11-28T14:00:00Z",
+   "drift_min": 135.0,
+   "sources": {
+    "af:1601628": "2026-11-28T14:00:00Z",
+    "oa:95250c5fc5cc81a1d7831130f3976f81": "2026-11-28T16:15:00Z"
+   }
+  },
+  {
+   "canonical_fixture_ref": "af:1601629",
+   "league": "Serie B",
+   "match": "Modena v Padova",
+   "kickoff_source": "api-football",
+   "canonical_kickoff_utc": "2026-11-28T14:00:00Z",
+   "drift_min": 1440.0,
+   "sources": {
+    "af:1601629": "2026-11-28T14:00:00Z",
+    "oa:50363e80c9c22c3c07a593bc1b165d87": "2026-11-29T14:00:00Z"
+   }
+  },
+  {
+   "canonical_fixture_ref": "af:1601630",
+   "league": "Serie B",
+   "match": "Palermo v Benevento",
+   "kickoff_source": "api-football",
+   "canonical_kickoff_utc": "2026-11-28T14:00:00Z",
+   "drift_min": 270.0,
+   "sources": {
+    "af:1601630": "2026-11-28T14:00:00Z",
+    "oa:0f46a75e864e6435f0f67be78907c344": "2026-11-28T18:30:00Z"
+   }
+  },
+  {
+   "canonical_fixture_ref": "af:1601631",
+   "league": "Serie B",
+   "match": "Sampdoria v Cremonese",
+   "kickoff_source": "api-football",
+   "canonical_kickoff_utc": "2026-11-28T14:00:00Z",
+   "drift_min": 1575.0,
+   "sources": {
+    "af:1601631": "2026-11-28T14:00:00Z",
+    "oa:b8581e80dcea9ac4065a9d464304c23b": "2026-11-29T16:15:00Z"
+   }
+  },
+  {
+   "canonical_fixture_ref": "af:1601632",
+   "league": "Serie B",
+   "match": "Sudtirol v Mantova",
+   "kickoff_source": "api-football",
+   "canonical_kickoff_utc": "2026-11-28T14:00:00Z",
+   "drift_min": 1440.0,
+   "sources": {
+    "af:1601632": "2026-11-28T14:00:00Z",
+    "oa:fa8f94062f7c69818493b5bcf1cabda3": "2026-11-29T14:00:00Z"
+   }
+  },
+  {
+   "canonical_fixture_ref": "af:1649564",
+   "league": "Argentina Primera Division",
+   "match": "Argentinos JRS v Independiente",
+   "kickoff_source": "api-football",
+   "canonical_kickoff_utc": "2026-11-22T21:00:00Z",
+   "drift_min": 1500.0,
+   "sources": {
+    "af:1649564": "2026-11-22T21:00:00Z",
+    "oa:6b2698cd0223a200eb12269b69c00a51": "2026-11-21T20:00:00Z"
+   }
+  },
+  {
+   "canonical_fixture_ref": "af:1649566",
+   "league": "Argentina Primera Division",
+   "match": "Defensa Y Justicia v Barracas Central",
+   "kickoff_source": "api-football",
+   "canonical_kickoff_utc": "2026-11-22T21:00:00Z",
+   "drift_min": 1620.0,
+   "sources": {
+    "af:1649566": "2026-11-22T21:00:00Z",
+    "oa:229d907883b7d02487ddc10f306547bc": "2026-11-21T18:00:00Z"
+   }
+  },
+  {
+   "canonical_fixture_ref": "af:1649567",
+   "league": "Argentina Primera Division",
+   "match": "Gimnasia L.P. v Newells Old Boys",
+   "kickoff_source": "api-football",
+   "canonical_kickoff_utc": "2026-11-22T21:00:00Z",
+   "drift_min": 1380.0,
+   "sources": {
+    "af:1649567": "2026-11-22T21:00:00Z",
+    "oa:08d2a1ac62f06510d528e357ff1dbdc5": "2026-11-23T20:00:00Z"
+   }
+  },
+  {
+   "canonical_fixture_ref": "af:1649568",
+   "league": "Argentina Primera Division",
+   "match": "Instituto Cordoba v Huracan",
+   "kickoff_source": "api-football",
+   "canonical_kickoff_utc": "2026-11-22T21:00:00Z",
+   "drift_min": 240.0,
+   "sources": {
+    "af:1649568": "2026-11-22T21:00:00Z",
+    "oa:7e78da68a53d24cbdcb7d19860b74374": "2026-11-23T01:00:00Z"
+   }
+  },
+  {
+   "canonical_fixture_ref": "af:1649569",
+   "league": "Argentina Primera Division",
+   "match": "River Plate v Lanus",
+   "kickoff_source": "api-football",
+   "canonical_kickoff_utc": "2026-11-22T21:00:00Z",
+   "drift_min": 60.0,
+   "sources": {
+    "af:1649569": "2026-11-22T21:00:00Z",
+    "oa:15bf5434d75b19b377d6a6867af1ef31": "2026-11-22T22:00:00Z"
+   }
+  },
+  {
+   "canonical_fixture_ref": "af:1649570",
+   "league": "Argentina Primera Division",
+   "match": "Rosario Central v Gimnasia M.",
+   "kickoff_source": "api-football",
+   "canonical_kickoff_utc": "2026-11-22T21:00:00Z",
+   "drift_min": 120.0,
+   "sources": {
+    "af:1649570": "2026-11-22T21:00:00Z",
+    "oa:77a009ce637f0b9d8ffbdb5f81d194ba": "2026-11-22T19:00:00Z"
+   }
+  },
+  {
+   "canonical_fixture_ref": "af:1651503",
+   "league": "Mexico Liga MX",
+   "match": "Monterrey v Club America",
+   "kickoff_source": "api-football",
+   "canonical_kickoff_utc": "2026-11-25T21:00:00Z",
+   "drift_min": 370.0,
+   "sources": {
+    "af:1651503": "2026-11-25T21:00:00Z",
+    "oa:62616fc8a07a92e905749968501d260d": "2026-11-26T03:10:00Z"
+   }
+  },
+  {
+   "canonical_fixture_ref": "af:1651505",
+   "league": "Mexico Liga MX",
+   "match": "Toluca v Atlas",
+   "kickoff_source": "api-football",
+   "canonical_kickoff_utc": "2026-11-25T21:00:00Z",
+   "drift_min": 240.0,
+   "sources": {
+    "af:1651505": "2026-11-25T21:00:00Z",
+    "oa:200e4a0ac803d6e2b62e56245eb81336": "2026-11-26T01:00:00Z"
+   }
+  },
+  {
+   "canonical_fixture_ref": "oa:3c55be4d38980e11540c96a994695d51",
+   "league": "Argentina Primera Division",
+   "match": "Rosario Central v Barracas Central",
+   "kickoff_source": "conflict",
+   "canonical_kickoff_utc": null,
+   "drift_min": 1800.0,
+   "sources": {
+    "oa:3c55be4d38980e11540c96a994695d51": "2026-11-28T15:00:00Z",
+    "oa:8799cd4788843ece1b91f71b59c955eb": "2026-11-29T21:00:00Z"
+   }
+  }
+ ]
+}
