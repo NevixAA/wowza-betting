@@ -6,7 +6,7 @@ player_id,player_name,team,position,number,age
 403064,H. Amass,Manchester United,D,5.0,18
 407026,Daniel Armer,Manchester United,D,4.0,18
 886,Diogo Dalot,Manchester United,D,2.0,27
-382452,P. Dorgu,Manchester United,D,13.0,21
+382452,P. Dorgu,Manchester United,M,13.0,21
 402329,A. Heaven,Manchester United,D,26.0,19
 402330,J. Kamason,Manchester United,D,2.0,19
 2935,H. Maguire,Manchester United,D,5.0,32
@@ -24,7 +24,7 @@ player_id,player_name,team,position,number,age
 19220,M. Mount,Manchester United,M,7.0,26
 2926,Y. Tielemans,Manchester United,M,18.0,28
 51494,M. Ugarte,Manchester United,M,25.0,25
-1165,Matheus Cunha,Manchester United,F,10.0,26
+1165,Matheus Cunha,Manchester United,M,10.0,26
 157997,A. Diallo,Manchester United,F,16.0,23
 517227,J. Gabriel,Manchester United,F,77.0,15
 557462,S. Lacey,Manchester United,F,31.0,19
@@ -57,7 +57,7 @@ player_id,player_name,team,position,number,age
 469321,Sean Steur,Newcastle,M,14.0,17
 387643,B. Touré,Newcastle,M,17.0,19
 1463,J. Willock,Newcastle,M,28.0,26
-18778,H. Barnes,Newcastle,F,11.0,28
+18778,H. Barnes,Newcastle,M,11.0,28
 153430,A. Elanga,Newcastle,F,19.0,23
 340077,M. Fernandez-Pardo,Newcastle,F,20.0,20
 639204,M. Mills,Newcastle,F,77.0,16
@@ -82,7 +82,7 @@ player_id,player_name,team,position,number,age
 363333,J. Soler,Bournemouth,D,6.0,20
 162267,A. Truffert,Bournemouth,D,3.0,24
 1150,T. Adams,Bournemouth,M,12.0,26
-129682,A. Adli,Bournemouth,M,21.0,25
+129682,A. Adli,Bournemouth,F,21.0,25
 1125,R. Christie,Bournemouth,M,10.0,30
 671665,Z. Christie,Bournemouth,M,4.0,16
 18872,L. Cook,Bournemouth,M,4.0,28
@@ -91,13 +91,13 @@ player_id,player_name,team,position,number,age
 573755,C. Stevens,Bournemouth,M,10.0,18
 19245,M. Tavernier,Bournemouth,M,16.0,26
 361485,A. Tóth,Bournemouth,M,27.0,20
-18870,D. Brooks,Bournemouth,F,7.0,28
+18870,D. Brooks,Bournemouth,M,7.0,28
 152856,Evanilson,Bournemouth,F,9.0,26
 343576,B. Doak,Bournemouth,F,11.0,20
 296458,D. Jebbison,Bournemouth,F,29.0,22
-792,J. Kluivert,Bournemouth,F,19.0,26
+792,J. Kluivert,Bournemouth,M,19.0,26
 368030,E. Kroupi,Bournemouth,F,22.0,19
-407806,Rayan,Bournemouth,F,37.0,19
+407806,Rayan,Bournemouth,M,37.0,19
 343202,Á. Rodríguez,Bournemouth,F,30.0,21
 21566,B. Lecomte,Fulham,G,23.0,34
 1438,B. Leno,Fulham,G,1.0,33
@@ -120,7 +120,7 @@ player_id,player_name,team,position,number,age
 349684,C. Nwoko,Fulham,M,6.0,20
 386306,César Palacios,Fulham,M,8.0,21
 19480,H. Reed,Fulham,M,6.0,30
-19032,R. Sessegnon,Fulham,M,30.0,25
+19032,R. Sessegnon,Fulham,D,30.0,25
 1161,E. Smith Rowe,Fulham,M,32.0,25
 336711,Gonzalo García,Fulham,F,7.0,21
 237819,Kevin,Fulham,F,11.0,22
@@ -141,7 +141,7 @@ player_id,player_name,team,position,number,age
 1600,K. Tsimikas,Liverpool,D,21.0,29
 290,V. van Dijk,Liverpool,D,4.0,34
 8500,W. Endo,Liverpool,M,3.0,32
-152654,J. Frimpong,Liverpool,M,30.0,25
+152654,J. Frimpong,Liverpool,D,30.0,25
 542,R. Gravenberch,Liverpool,M,38.0,23
 339205,M. Laffey,Liverpool,M,8.0,20
 6716,A. Mac Allister,Liverpool,M,10.0,27
@@ -150,14 +150,14 @@ player_id,player_name,team,position,number,age
 1096,D. Szoboszlai,Liverpool,M,8.0,25
 203224,F. Wirtz,Liverpool,M,7.0,22
 588501,Joshua Abe,Liverpool,F,40.0,15
-161904,B. Barcola,Liverpool,F,29.0,23
+161904,B. Barcola,Liverpool,M,29.0,23
 30410,F. Chiesa,Liverpool,F,14.0,28
 314661,J. Danns,Liverpool,F,76.0,19
 247,C. Gakpo,Liverpool,F,18.0,26
 2864,A. Isak,Liverpool,F,9.0,26
 328107,L. Koumas,Liverpool,F,67.0,20
 338751,Víctor Muñoz,Liverpool,F,23.0,22
-452685,R. Ngumoha,Liverpool,F,73.0,17
+452685,R. Ngumoha,Liverpool,M,73.0,17
 437561,J. Lambie,Liverpool,F,7.0,18
 2273,Kepa,Arsenal,G,13.0,31
 20619,I. Meslier,Arsenal,G,30.0,25
@@ -189,7 +189,7 @@ player_id,player_name,team,position,number,age
 457731,A. Annous,Arsenal,F,9.0,18
 18979,V. Gyökeres,Arsenal,F,14.0,28
 978,K. Havertz,Arsenal,F,29.0,26
-136723,N. Madueke,Arsenal,F,20.0,23
+136723,N. Madueke,Arsenal,M,20.0,23
 446017,C. O’Neill,Arsenal,F,53.0,17
 1460,B. Saka,Arsenal,F,7.0,24
 161800,C. Tzolis,Arsenal,F,17.0,23
@@ -225,7 +225,7 @@ player_id,player_name,team,position,number,age
 265826,A. Kinský,Tottenham,G,31.0,22
 19145,T. Adarabioyo,Tottenham,D,4.0,28
 164,B. Davies,Tottenham,D,33.0,32
-328089,A. Gray,Tottenham,D,14.0,19
+328089,A. Gray,Tottenham,M,14.0,19
 459203,M. Hardy,Tottenham,D,5.0,17
 47519,Pedro Porro,Tottenham,D,23.0,26
 289,A. Robertson,Tottenham,D,3.0,31
@@ -244,14 +244,14 @@ player_id,player_name,team,position,number,age
 18784,J. Maddison,Tottenham,M,10.0,29
 380689,C. Olusesi,Tottenham,M,10.0,18
 31146,S. Tonali,Tottenham,M,16.0,25
-30435,D. Kulusevski,Tottenham,F,21.0,25
+30435,D. Kulusevski,Tottenham,M,21.0,25
 81573,Omar Marmoush,Tottenham,F,22.0,26
 63577,M. Mudryk,Tottenham,F,27.0,24
 2413,Richarlison,Tottenham,F,9.0,28
 18883,D. Solanke,Tottenham,F,19.0,28
 266657,Sávio,Tottenham,F,17.0,21
 270510,M. Tel,Tottenham,F,11.0,20
-465310,L. Williams-Barnett,Tottenham,F,68.0,17
+465310,L. Williams-Barnett,Tottenham,M,68.0,17
 19599,E. Martínez,Chelsea,G,1.0,33
 340151,M. Penders,Chelsea,G,39.0,20
 180940,T. Sharman-Lowe,Chelsea,G,28.0,22
@@ -266,7 +266,7 @@ player_id,player_name,team,position,number,age
 19545,R. James,Chelsea,D,24.0,26
 20995,M. Lacroix,Chelsea,D,5.0,25
 383018,M. Palestra,Chelsea,D,2.0,20
-458588,O. Subuloye,Chelsea,D,3.0,18
+458588,O. Subuloye,Chelsea,D,37.0,18
 319572,V. Barco,Chelsea,M,4.0,21
 116117,M. Caicedo,Chelsea,M,25.0,24
 292,J. Henderson,Chelsea,M,14.0,35
@@ -277,11 +277,11 @@ player_id,player_name,team,position,number,age
 586131,R. Watson,Chelsea,M,6.0,16
 496411,M. Eboue,Chelsea,F,11.0,16
 203762,E. Emegha,Chelsea,F,22.0,22
-425733,Estêvão,Chelsea,F,41.0,18
+425733,Estêvão,Chelsea,M,41.0,18
 286894,J. Bynoe-Gittens,Chelsea,F,11.0,21
 10329,João Pedro,Chelsea,F,9.0,24
 1864,Pedro Neto,Chelsea,F,7.0,26
-419582,Geovany Tcherno Quenda,Chelsea,F,23.0,19
+419582,Geovany Tcherno Quenda,Chelsea,M,23.0,19
 1469,D. Welbeck,Chelsea,F,18.0,35
 19012,M. Bettinelli,Manchester City,G,13.0,33
 1622,G. Donnarumma,Manchester City,G,1.0,26
@@ -294,7 +294,7 @@ player_id,player_name,team,position,number,age
 360114,A. Khusanov,Manchester City,D,45.0,21
 284230,R. Lewis,Manchester City,D,82.0,21
 414359,Vitor Nunes,Manchester City,D,22.0,19
-425714,Allan,Manchester City,M,37.0,21
+425714,Allan,Manchester City,F,37.0,21
 138908,E. Anderson,Manchester City,M,5.0,23
 438688,A. Bouaddi,Manchester City,M,32.0,18
 156477,R. Cherki,Manchester City,M,10.0,22
@@ -303,12 +303,12 @@ player_id,player_name,team,position,number,age
 2291,M. Kovačić,Manchester City,M,8.0,31
 442048,R. McAidoo,Manchester City,M,7.0,17
 41621,Matheus Nunes,Manchester City,M,27.0,27
-307123,N. O&apos;Reilly,Manchester City,M,33.0,20
+307123,N. O&apos;Reilly,Manchester City,D,33.0,20
 637701,D. Oliver,Manchester City,M,10.0,17
 568008,F. Samba,Manchester City,M,75.0,16
-1422,J. Doku,Manchester City,F,11.0,23
+1422,J. Doku,Manchester City,M,11.0,23
 1100,E. Haaland,Manchester City,F,9.0,25
-18592,I. Ndiaye,Manchester City,F,7.0,25
+18592,I. Ndiaye,Manchester City,M,7.0,25
 19281,A. Semenyo,Manchester City,F,42.0,25
 350353,S. Hall,Brighton,G,61.0,20
 167663,T. McGill,Brighton,G,38.0,25
@@ -316,7 +316,7 @@ player_id,player_name,team,position,number,age
 129058,B. Verbruggen,Brighton,G,1.0,23
 22160,O. Boscagli,Brighton,D,21.0,28
 204037,Costinha,Brighton,D,20.0,26
-162007,M. De Cuyper,Brighton,D,29.0,25
+162007,M. De Cuyper,Brighton,M,29.0,25
 18963,L. Dunk,Brighton,D,5.0,34
 271539,J. Hadjam,Brighton,D,3.0,22
 1361,F. Kadıoğlu,Brighton,D,24.0,26
@@ -372,13 +372,13 @@ player_id,player_name,team,position,number,age
 405534,S. Williams,Crystal Palace,M,10.0,18
 412227,Z. Gozo,Crystal Palace,F,12.0,18
 137303,E. Guessand,Crystal Palace,F,29.0,24
-338735,A. Khalaili,Crystal Palace,F,25.0,21
+338735,A. Khalaili,Crystal Palace,D,25.0,21
 2032,J. Strand Larsen,Crystal Palace,F,22.0,25
 25927,J. Mateta,Crystal Palace,F,14.0,28
 313636,Adler Nascimento,Crystal Palace,F,10.0,21
 1468,E. Nketiah,Crystal Palace,F,9.0,26
 307117,D. Osorio,Crystal Palace,F,24.0,21
-184226,Yeremy Pino,Crystal Palace,F,10.0,23
+184226,Yeremy Pino,Crystal Palace,M,10.0,23
 2218,I. Sarr,Crystal Palace,F,7.0,27
 19340,E. Balcombe,Brentford,G,31.0,26
 281,C. Kelleher,Brentford,G,1.0,27
@@ -420,7 +420,7 @@ player_id,player_name,team,position,number,age
 17597,D. O&apos;Shea,Ipswich,D,26.0,26
 646285,C. Compton,Ipswich,M,8.0,18
 70747,J. Enciso,Ipswich,M,10.0,21
-36927,Z. Flemming,Ipswich,M,9.0,27
+36927,Z. Flemming,Ipswich,F,9.0,27
 575,Florentino,Ipswich,M,12.0,26
 2823,S. Lukić,Ipswich,M,23.0,29
 37236,A. Matusiwa,Ipswich,M,5.0,27
@@ -432,7 +432,7 @@ player_id,player_name,team,position,number,age
 342654,S. Egeli,Ipswich,F,8.0,19
 321648,Emersonn,Ipswich,F,19.0,21
 303467,A. Fatawu,Ipswich,F,7.0,22
-33224,D. Maeda,Ipswich,F,38.0,28
+33224,D. Maeda,Ipswich,M,38.0,28
 283290,K. McAteer,Ipswich,F,20.0,24
 286349,A. Mehmeti,Ipswich,F,33.0,24
 138931,J. Philogene,Ipswich,F,11.0,23
@@ -441,12 +441,12 @@ player_id,player_name,team,position,number,age
 328116,Darryl Merveil Ombang,Leeds,G,12.0,20
 162489,J. Trafford,Leeds,G,1.0,23
 7288,M. Zetterer,Leeds,G,16.0,30
-2279,E. Ampadu,Leeds,D,4.0,25
+2279,E. Ampadu,Leeds,M,4.0,25
 162465,M. Bard,Leeds,D,26.0,25
 833,J. Bijol,Leeds,D,15.0,26
-19201,J. Bogle,Leeds,D,2.0,25
+19201,J. Bogle,Leeds,M,2.0,25
 2803,N. Elvedi,Leeds,D,30.0,29
-47969,G. Gudmundsson,Leeds,D,3.0,26
+47969,G. Gudmundsson,Leeds,M,3.0,26
 19760,J. Justin,Leeds,D,24.0,27
 449237,F. Lane,Leeds,D,2.0,18
 545996,J. Lienou,Leeds,D,3.0,17
@@ -457,16 +457,16 @@ player_id,player_name,team,position,number,age
 557343,R. Chadwick-Chaplin,Leeds,M,8.0,18
 389303,Alfie Cresswell,Leeds,M,4.0,18
 129142,I. Gruev,Leeds,M,44.0,25
-19329,D. James,Leeds,M,7.0,28
+19329,D. James,Leeds,F,7.0,28
 18901,S. Longstaff,Leeds,M,8.0,28
 579147,C. Mills,Leeds,M,72.0,17
 557507,O. Pickles,Leeds,M,10.0,18
 177665,A. Stach,Leeds,M,18.0,27
 32966,A. Tanaka,Leeds,M,22.0,27
-19221,H. Wilson,Leeds,M,10.0,28
+19221,H. Wilson,Leeds,F,10.0,28
 18766,D. Calvert-Lewin,Leeds,F,9.0,28
 19461,L. Nmecha,Leeds,F,14.0,27
-48389,N. Okafor,Leeds,F,19.0,25
+48389,N. Okafor,Leeds,M,19.0,25
 2930,J. Butland,Hull City,G,1.0,32
 615629,Archie Howard,Hull City,G,55.0,19
 19811,D. Phillips,Hull City,G,12.0,30
@@ -509,10 +509,10 @@ player_id,player_name,team,position,number,age
 362711,Jair,Nottingham Forest,D,23.0,20
 354753,O. Diomande,Nottingham Forest,D,2.0,22
 2817,N. Milenković,Nottingham Forest,D,31.0,28
-13736,D. Muñoz,Nottingham Forest,D,27.0,29
+13736,D. Muñoz,Nottingham Forest,M,27.0,29
 363695,Murillo,Nottingham Forest,D,5.0,23
 163069,L. Netz,Nottingham Forest,D,25.0,22
-138780,N. Williams,Nottingham Forest,D,3.0,24
+138780,N. Williams,Nottingham Forest,M,3.0,24
 6056,N. Domínguez,Nottingham Forest,M,8.0,27
 18746,M. Gibbs-White,Nottingham Forest,M,10.0,25
 2298,C. Hudson-Odoi,Nottingham Forest,M,7.0,25
@@ -526,7 +526,7 @@ player_id,player_name,team,position,number,age
 161948,L. Delap,Nottingham Forest,F,19.0,22
 9366,Igor Jesus,Nottingham Forest,F,11.0,24
 147831,A. Kalimuendo,Nottingham Forest,F,15.0,23
-48648,D. Ndoye,Nottingham Forest,F,14.0,25
+48648,D. Ndoye,Nottingham Forest,M,14.0,25
 18931,C. Wood,Nottingham Forest,F,9.0,34
 36878,M. Bizot,Aston Villa,G,40.0,34
 199578,Z. Suzuki,Aston Villa,G,1.0,23
@@ -554,7 +554,7 @@ player_id,player_name,team,position,number,age
 19191,J.  McGinn,Aston Villa,M,7.0,31
 162714,A. Onana,Aston Villa,M,24.0,24
 19194,T. Abraham,Aston Villa,F,18.0,28
-464004,Alysson Edward,Aston Villa,F,47.0,19
+464004,Alysson Edward,Aston Villa,M,47.0,19
 284324,A. Garnacho,Aston Villa,F,17.0,21
 364566,George Hemmings,Aston Villa,F,53.0,18
 283058,N. Jackson,Aston Villa,F,11.0,24
@@ -568,7 +568,7 @@ player_id,player_name,team,position,number,age
 141133,A. Alese,Sunderland,D,5.0,24
 55904,D. Ballard,Sunderland,D,5.0,26
 25287,K. Danso,Sunderland,D,4.0,27
-119121,T. Hume,Sunderland,D,32.0,23
+119121,T. Hume,Sunderland,M,32.0,23
 381014,Jenson Jones,Sunderland,D,2.0,19
 557538,B. Kindon,Sunderland,D,6.0,18
 553846,A. Lightfoot,Sunderland,D,3.0,18
@@ -598,7 +598,7 @@ player_id,player_name,team,position,number,age
 284414,R. Mundle,Sunderland,F,14.0,22
 400739,T. Ogunsuyi,Sunderland,F,47.0,19
 553730,F. Scott,Sunderland,F,11.0,18
-336659,C. Talbi,Sunderland,F,7.0,20
+336659,C. Talbi,Sunderland,M,7.0,20
 400033,Timur Tuterov,Sunderland,F,57.0,20
 19341,D. Bentley,Coventry,G,25.0,32
 278088,C. Rushworth,Coventry,G,19.0,24
@@ -622,7 +622,7 @@ player_id,player_name,team,position,number,age
 475575,Caleb Marfo Yirenkyi,Coventry,M,8.0,19
 8598,T. Awoniyi,Coventry,F,14.0,28
 421875,S. Cherif,Coventry,F,49.0,19
-84128,Y. Gboho,Coventry,F,34.0,24
+84128,Y. Gboho,Coventry,M,34.0,24
 18404,E. Mason-Clark,Coventry,F,10.0,26
 138786,E. Simms,Coventry,F,9.0,24
 161621,L. Tchaouna,Coventry,F,17.0,22
