@@ -25,8 +25,6 @@ st.set_page_config(page_title="Wowza | Predictions", page_icon="🔮", layout="w
 import dashboard_ui as ui  # noqa: E402
 from dashboard_data import predictions_view as V  # noqa: E402
 
-import importlib  # noqa: E402
-V = importlib.reload(V)              # page + helper always the same version (see 15_League_Scout)
 
 ui.page_header("Predictions",
                "Every model's prediction for every market of a match, and how each one turned out. A learning "

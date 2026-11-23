@@ -34,7 +34,7 @@ permissions:
 jobs:
   health:
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 75   # D3 2026-11-23: the parity reference is the trainers' full committed frame (load_all_matches + build_features)
     steps:
       - uses: actions/checkout@v4
         with:

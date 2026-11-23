@@ -35,11 +35,7 @@ from src import units as U  # noqa: E402
 from dashboard_data import leagues_view as V  # noqa: E402
 from dashboard_data import clean_record as CR  # noqa: E402
 
-# STREAMLIT CLOUD KEEPS IMPORTED MODULES ACROSS A REDEPLOY (see 15_League_Scout): reload the helper
-# so the page and its data module are always the same version.
-import importlib  # noqa: E402
-leagues = importlib.reload(leagues)
-V = importlib.reload(V)
+# Page/helper version skew after a redeploy is handled by dashboard_build_guard (app.py router).
 
 st.set_page_config(page_title="Wowza | Leagues", page_icon="🏟️", layout="wide")
 
