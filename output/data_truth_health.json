@@ -1,7 +1,7 @@
 {
  "artifact": "data_truth_health",
  "version": "DATA-TRUTH-1",
- "generated_at": "2026-11-22T20:08:47Z",
+ "generated_at": "2026-11-23T08:39:19Z",
  "checks": [
   {
    "check": "Data truth 1: one canonical name",
@@ -13,97 +13,97 @@
   {
    "check": "Data truth 2: no silent defaults",
    "status": "GREEN",
-   "value": "0 new default(s); 0 known (baseline); 195 allow-listed (counters/display); 0 baseline entr(ies) now gone; 0 allow-list entr(ies) now gone; 451 production files scanned",
+   "value": "0 new default(s); 0 known (baseline); 194 allow-listed (counters/display); 0 baseline entr(ies) now gone; 1 allow-list entr(ies) now gone; 452 production files scanned",
    "rule": "no NEW invented default in ALL production code (fillna(<non-zero literal>), literal season fallback/list, pinned football-data folder, numeric .get(<key>, <number>), an or-zero on a parsed value, a zero fillna on a price/odds): RED if any site is in neither config/data_truth_baseline.json nor config/data_truth_allowlist.json, or an allow-list entry has no reason; GREEN otherwise",
    "detail": ""
   },
   {
    "check": "Data truth 3: no missing data",
-   "status": "RED",
-   "value": "team:model_ht_over05.pkl: 1 served feature(s) hold one value on the training rows (home_has_ht_history=1.0); team:model_ht_over15.pkl: 1 served feature(s) hold one value on the training rows (home_has_ht_history=1.0)",
+   "status": "GREEN",
+   "value": "board priced, features present on 12 served tracks",
    "rule": "live board: every fixture priced (odds_over25); on EVERY served model track (standard and new_format x O/U 2.5, BTTS, Over 1.5, Over 3.5; HT O/U on standard) each input the scoring payload needs, plus the HT form and rest-day inputs, is present (RED if > 50% missing on a track, AMBER if > 20%); history banks fresh (AMBER if the newest match is > 10 days old); every served model feature (team and props payloads) carries data on its training rows (RED if one value - a placeholder, a constant or NaN - covers > 99.9% of them)",
    "detail": "",
    "tracks": {
     "standard|O/U 2.5": {
      "status": "GREEN",
-     "fixtures": 94,
+     "fixtures": 95,
      "worst_pct": 3.2,
      "missing": {},
      "n_inputs": 43
     },
     "new_format|O/U 2.5": {
      "status": "GREEN",
-     "fixtures": 60,
+     "fixtures": 66,
      "worst_pct": 0.0,
      "missing": {},
      "n_inputs": 36
     },
     "standard|BTTS": {
      "status": "GREEN",
-     "fixtures": 94,
+     "fixtures": 95,
      "worst_pct": 3.2,
      "missing": {},
      "n_inputs": 43
     },
     "new_format|BTTS": {
      "status": "GREEN",
-     "fixtures": 60,
+     "fixtures": 66,
      "worst_pct": 0.0,
      "missing": {},
      "n_inputs": 36
     },
     "standard|Over 1.5": {
      "status": "GREEN",
-     "fixtures": 94,
+     "fixtures": 95,
      "worst_pct": 3.2,
      "missing": {},
      "n_inputs": 43
     },
     "new_format|Over 1.5": {
      "status": "GREEN",
-     "fixtures": 60,
+     "fixtures": 66,
      "worst_pct": 0.0,
      "missing": {},
      "n_inputs": 36
     },
     "standard|Over 3.5": {
      "status": "GREEN",
-     "fixtures": 94,
+     "fixtures": 95,
      "worst_pct": 3.2,
      "missing": {},
      "n_inputs": 43
     },
     "new_format|Over 3.5": {
      "status": "GREEN",
-     "fixtures": 60,
+     "fixtures": 66,
      "worst_pct": 0.0,
      "missing": {},
      "n_inputs": 36
     },
     "standard|HT Over 0.5": {
      "status": "GREEN",
-     "fixtures": 94,
+     "fixtures": 95,
      "worst_pct": 3.2,
      "missing": {},
-     "n_inputs": 43
+     "n_inputs": 42
     },
     "standard|HT Over 1.5": {
      "status": "GREEN",
-     "fixtures": 94,
+     "fixtures": 95,
      "worst_pct": 3.2,
      "missing": {},
-     "n_inputs": 43
+     "n_inputs": 42
     },
     "new_format|HT Over 0.5": {
      "status": "GREEN",
-     "fixtures": 60,
+     "fixtures": 66,
      "worst_pct": 0.0,
      "missing": {},
      "n_inputs": 36
     },
     "new_format|HT Over 1.5": {
      "status": "GREEN",
-     "fixtures": 60,
+     "fixtures": 66,
      "worst_pct": 0.0,
      "missing": {},
      "n_inputs": 36
@@ -151,27 +151,13 @@
      "note": ""
     },
     "team:model_ht_over05.pkl": {
-     "status": "RED",
-     "single_value": {
-      "home_has_ht_history": {
-       "value": 1.0,
-       "share": 1.0,
-       "how": "imputer: training min == max",
-       "placeholder": false
-      }
-     },
+     "status": "GREEN",
+     "single_value": {},
      "note": ""
     },
     "team:model_ht_over15.pkl": {
-     "status": "RED",
-     "single_value": {
-      "home_has_ht_history": {
-       "value": 1.0,
-       "share": 1.0,
-       "how": "imputer: training min == max",
-       "placeholder": false
-      }
-     },
+     "status": "GREEN",
+     "single_value": {},
      "note": ""
     },
     "team:model_v9_ht_over05_nf.pkl": {
@@ -268,15 +254,15 @@
   },
   {
    "check": "Data truth 9: clean ledgers",
-   "status": "GREEN",
-   "value": "clean since 2026-11-19 (7 live tip(s), 2264 player row(s), 108 v91 row(s))",
+   "status": "RED",
+   "value": "2 v91_shadow fixture(s) logged twice",
    "rule": "from the Clean Record start: 0 multi-tip / opposite-tip fixtures, 0 post-kickoff tips, 0 closes <= 1.0, 0 |CLV| > 50 new-format rows, 0 duplicate player tips, 0 v91_shadow fixtures logged twice: RED on any; NO_DATA before the start is set",
    "detail": ""
   },
   {
    "check": "Data truth 11: injuries/lineups freshness",
    "status": "GREEN",
-   "value": "fresh: 42 open registry league(s), 226 finished fixture(s) checked for lineups, 14 active injuries-covered league-season(s)",
+   "value": "fresh: 42 open registry league(s), 269 finished fixture(s) checked for lineups, 14 active injuries-covered league-season(s)",
    "rule": "per registry league with an open season: fixture lists read within 36 h; every finished fixture of a lineups-covered season >= 2 days old (last 14 days) has a lineups answer; an injuries-covered league with a match in the last / next 7 days has an injuries answer within 36 h: RED on any",
    "detail": ""
   },
@@ -306,7 +292,7 @@
    "status": "GREEN",
    "value": "0 disagreement(s) in 61,656 checkable keeper value(s) read by the features; 335 provider value(s) contradicted the score and are missing",
    "rule": "a keeper who was his side's only keeper for the full 90 minutes of a match finished in 90 minutes has goals_conceded = the opponent's 90-minute goals, or missing - never another value",
-   "detail": "2026-06: 0/84 contradicted before, 0 missing after; 2026-07: 4/407 contradicted before, 54 missing after; 2026-08: 13/1566 contradicted before, 105 missing after; 2026-09: 10/1700 contradicted before, 222 missing after; 2026-10: 29/2146 contradicted before, 1003 missing after; 2026-11: 87/997 contradicted before, 836 missing after",
+   "detail": "2026-06: 0/84 contradicted before, 0 missing after; 2026-07: 4/407 contradicted before, 54 missing after; 2026-08: 13/1566 contradicted before, 105 missing after; 2026-09: 10/1700 contradicted before, 222 missing after; 2026-10: 29/2146 contradicted before, 1003 missing after; 2026-11: 87/1008 contradicted before, 847 missing after",
    "by_month": {
     "2022-08": {
      "rows": 354,
@@ -564,9 +550,9 @@
      "missing_after": 1003
     },
     "2026-11": {
-     "rows": 997,
+     "rows": 1008,
      "contradicted_before_check": 87,
-     "missing_after": 836
+     "missing_after": 847
     }
    }
   },
@@ -598,7 +584,7 @@
  "operational_status": "RED",
  "operational_failing": [
   {
-   "check": "Data truth 3: no missing data",
+   "check": "Data truth 9: clean ledgers",
    "status": "RED",
    "gated": false
   },
