@@ -110,17 +110,70 @@ def test_bars_statistics_hold_no_price():
     keys = _keys(d, set())
     # the only odds-named fields are a cell's odds RANGE rule (a filter, not a price)
     assert {k for k in keys if PRICE_KEYS.search(k)} <= {"odds_min", "odds_max"}
-    ids = {p["proposal_id"]: p for p in d["proposals"]}
-    assert set(ids) == {"TP-2026-11-15-bade2c0b", "TP-2026-11-16-500964af"}
-    assert ids["TP-2026-11-15-bade2c0b"]["state"] == "APPROVED"
-    assert ids["TP-2026-11-16-500964af"]["state"] == "AWAITING_OWNER"
-    for p in d["proposals"]:
-        assert len(p["source"]["commit"]) == 40
-        assert sum(p["counts"].values()) == len(p["cells"])
-        assert {c["status"] for c in p["cells"]} <= {"PROVEN", "PROMISING", "UNPROVEN", "OFF"}
-        for c in p["cells"]:
-            if c["status"] == "OFF":
-                assert c["stake_state"] == "OFF" and not c["stake_fraction"]
+    (p,) = d["proposals"]
+    assert p["key"] == "serving" and p["state"] == "SERVING"
+    assert sum(p["counts"].values()) == len(p["cells"])
+    assert {c["status"] for c in p["cells"]} <= {"PROVEN", "PROMISING", "UNPROVEN", "OFF"}
+    for c in p["cells"]:
+        if c["status"] == "OFF":
+            assert c["stake_state"] == "OFF" and not c["stake_fraction"]
+            assert c["off_reason"]                               # every OFF cell carries its reason
+        if not c["counts_recorded"]:                             # nothing filled where the evidence has no count
+            assert all(c[k] is None for k in ("wf_bets", "wf_roi", "study_bets", "study_roi", "study_ci_lo",
+                                              "study_ci_hi", "study_clv"))
+
+
+# ── the page shows the proposal production SERVES (price-gaps audit 2026-11-23, B1) ─────────────────
+def _applied() -> dict:
+    return json.loads((ROOT / "config" / "threshold_applied.json").read_text(encoding="utf-8"))["last_applied"]
+
+
+def test_bars_page_proposal_is_the_serving_proposal():
+    """The page's proposal id == config/threshold_applied.json last_applied (what production serves)."""
+    from dashboard_data import bars_stats_view as B
+    d = B.load()["data"]
+    la = _applied()
+    p = B.serving(d)
+    assert p["proposal_id"] == la["proposal_id"] and p["proposal_hash"] == la["proposal_hash"]
+    assert d["serving"]["proposal_id"] == la["proposal_id"]
+    assert B.serving_problems(d) == []
+    t = _text(_render("26_*Bars.py"))
+    assert f"Serving now: {la['proposal_id']}" in t
+
+
+def test_bars_statistics_match_a_rebuild_from_the_serving_config():
+    """The committed file is exactly what the builder makes from the serving config (no stale copy)."""
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("bbs", ROOT / "scripts" / "build_bars_statistics.py")
+    m = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(m)
+    assert STATS.read_text(encoding="utf-8") == json.dumps(m.build(), indent=1, ensure_ascii=False) + "\n"
+
+
+def test_no_hard_coded_proposal_id_in_the_builder_view_or_page():
+    for rel in ("scripts/build_bars_statistics.py", "dashboard_data/bars_stats_view.py"):
+        assert not re.search(r"TP-20\d\d-\d\d-\d\d-[0-9a-f]{8}", (ROOT / rel).read_text(encoding="utf-8")), rel
+    page = next((ROOT / "pages").glob("26_*Bars.py"))
+    assert not re.search(r"TP-20\d\d-\d\d-\d\d-[0-9a-f]{8}", page.read_text(encoding="utf-8"))
+
+
+def test_stale_statistics_file_is_named_on_the_page(monkeypatch):
+    from dashboard_data import bars_stats_view as B
+    d = B.load()["data"]
+    monkeypatch.setattr(B, "applied_id", lambda: "TP-2099-01-01-00000000")
+    (prob,) = B.serving_problems(d)
+    assert "production serves TP-2099-01-01-00000000" in prob
+
+
+def test_off_cells_are_shown_by_default_with_their_reason():
+    at = _render("26_*Bars.py")
+    (ms,) = [m for m in at.multiselect if m.label == "Status"]
+    assert "OFF" in ms.value
+    from dashboard_data import bars_stats_view as B
+    f = B.frame(B.serving(B.load()["data"]))
+    off = f[f["Status"] == "OFF"]
+    assert len(off) and off["Why OFF"].notna().all()
+    assert (off.loc[off["WF bets"].isna(), "Counts"] == B.NOT_RECORDED).all()
 
 
 def test_stake_plan_has_no_staked_cell_only_the_top3_flat_stake():
@@ -149,8 +202,8 @@ def test_repairs_log_is_cited_and_newest_first():
 def test_bars_page_renders_with_the_committed_statistics():
     at = _render("26_*Bars.py")
     t = _text(at)
-    assert "AWAITING OWNER APPROVAL ON NOV 20" in t and "APPROVED BY THE OWNER" in t
-    assert "TP-2026-11-15-bade2c0b" in t and "TP-2026-11-16-500964af" in t
+    assert "SERVING · APPROVED BY THE OWNER" in t and "Approval history" in t
+    assert "AWAITING OWNER" not in t and "NOV 20" not in t.upper()
     assert "Season to 20.11" not in t
 
 
@@ -182,18 +235,6 @@ def test_clean_record_page_before_the_split_is_an_honest_empty_state():
         assert "starts 21.11" in t.lower() or "STARTS 21.11" in t
         assert "Not enough data yet" in t
         assert not at.metric                                     # no number before the clean system exists
-
-
-def test_calibration_variants_are_shown_as_not_adopted():
-    d = json.loads(STATS.read_text(encoding="utf-8"))
-    (na,) = d["not_adopted"]
-    assert na["proposal_id"] == "TP-2026-11-16-9cef8a02" and na["state"] == "NOT_ADOPTED"
-    assert len(na["commit"]) == 40
-    assert all(r["PROVEN"] == 0 for r in na["counts"])
-    for r in na["counts"]:                                       # 194 cells per variant (HT cells OFF included)
-        assert r["PROVEN"] + r["PROMISING"] + r["UNPROVEN"] + r["OFF"] == 194, r
-    t = _text(_render("26_*Bars.py"))
-    assert "TESTED · NOT ADOPTED" in t and "TP-2026-11-16-9cef8a02" in t
 
 
 def test_started_follows_the_start_date():
