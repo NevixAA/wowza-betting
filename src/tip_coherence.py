@@ -537,12 +537,11 @@ class CoherenceGate:
     @classmethod
     def load(cls, notified_keys=None, out_dir: Path | None = None, board: pd.DataFrame | None = None,
              notified_file: Path | None = None) -> "CoherenceGate":
-        if notified_keys is None and notified_file is None:
-            try:                                   # the notifier's own reader (its path, its key migration)
-                from telegram_bot.notifier import _load_notified
-                notified_keys = _load_notified()
-            except Exception:                                          # noqa: BLE001
-                notified_keys = None
+        # The store is read HERE, never through telegram_bot.notifier (a pipeline-only sender the slim dashboard
+        # does not ship, scripts/dashboard_manifest.PIPELINE_ONLY): the dashboard's Top picks reach this gate
+        # (src/top_picks._coherent), and importing the sender from a page made the deployed app depend on it
+        # (main red 2026-11-23). Same file as the notifier's NOTIFIED_FILE; the notifier's only migration
+        # (PLAYER keys) is for keys parse_notified_key ignores, and the notifier passes its own keys anyway.
         if notified_keys is None:
             try:
                 f = notified_file or NOTIFIED_FILE
