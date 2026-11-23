@@ -43,6 +43,8 @@ M = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(M)
 
 PROTOCOL = ROOT / "config" / "p11_bars_tiers_protocol_v3.json"
+#: addendum (committed before the re-run fit): Standard predictions = the D1 serving models (PR #96)
+ADDENDUM = ROOT / "config" / "p11_bars_tiers_protocol_v3_addendum_d1.json"
 OUT = ROOT / "output" / "research" / "p11_bars_tiers_v3"
 NAMESPACE = "bars_p11v3"
 TAG = "p11v3"
@@ -70,6 +72,16 @@ EFL = ("Championship", "League One", "League Two", "National League")
 OLD_EVIDENCE = ROOT / "output" / "threshold_proposals" / "bars_p11v2" / "evidence_2026-11_p11v2.json"
 OLD_STUDY_REF = "origin/bars/v6-tiers-clean-1118:output/research/p11_bars_tiers_v2/bars_study.json"
 OLD_PROPOSAL_ID = "TP-2026-11-18-1ddfc9f1"
+
+
+def predictions_rule() -> tuple[dict, dict]:
+    """(predictions section in force, addendum record): the addendum's when it exists, else the protocol's."""
+    proto = json.loads(PROTOCOL.read_text(encoding="utf-8"))
+    if not ADDENDUM.exists():
+        return proto["predictions"], {}
+    add = json.loads(ADDENDUM.read_text(encoding="utf-8"))
+    return add["predictions"], {"addendum": add["addendum"], "file": ADDENDUM.relative_to(ROOT).as_posix(),
+                                "sha256_lf": M.sha_lf(ADDENDUM)}
 
 
 def _point_m_at_v3() -> None:
@@ -111,6 +123,7 @@ def cmd_prepare(a) -> int:
     aliases = json.loads(Path(a.aliases).read_text(encoding="utf-8"))
     st = {"protocol": json.loads(PROTOCOL.read_text(encoding="utf-8"))["protocol"],
           "protocol_sha256_lf": M.sha_lf(PROTOCOL), "owner": OWNER_QUOTES,
+          "predictions": predictions_rule()[0], "addendum": predictions_rule()[1],
           "before": {"bet_tiers": V2_BET_TIERS, "fallback": {k: list(v) for k, v in V2_FALLBACK.items()},
                      "drop_midnight": False},
           "after": {"bet_tiers": V3_BET_TIERS, "fallback": {t: {k: list(v) for k, v in f.items()}
@@ -171,7 +184,7 @@ def cmd_propose(a) -> int:
     meta = {"protocol": proto["protocol"], "protocol_sha256_lf": M.sha_lf(PROTOCOL),
             "status": "PROPOSAL - AWAITING OWNER APPROVAL; not installed, serving unchanged "
                       f"({OLD_PROPOSAL_ID} stays served)",
-            "owner": OWNER_QUOTES, "predictions": proto["predictions"],
+            "owner": OWNER_QUOTES, "predictions": predictions_rule()[0], "addendum": predictions_rule()[1],
             "price_tiers": {"bet": V3_BET_TIERS + ["own (backfill stripped)", "FD pre-match certified join"],
                             "fallback_books_by_track_market": {t: {k: list(v) for k, v in f.items()}
                                                                for t, f in V3_FALLBACK.items()},
@@ -349,8 +362,10 @@ def render(rows: list[dict], cov: dict, old_ev: dict, new_ev: dict, latest: dict
          "- The owner's O1 fallback order (Bet365 > Pinnacle > William Hill > 1xBet > Ladbrokes) on BTTS, O1.5, O3.5, "
          "HT 0.5 / 1.5 (both tracks) and New-Format O/U 2.5. Standard O/U 2.5 keeps football-data / Bet365 > Pinnacle.",
          "- History pairs stamped exactly 00:00:00 UTC are dropped (counted). Own 00:00 backfill stays stripped.",
-         "- Predictions: the models served now. Standard = serving recipe (2016/17 start, HT without "
-         "`home_has_ht_history`) on the serving frame `ebe47c041a7f595f`; New-Format = v2's (unchanged serving NF).",
+         f"- Predictions (models served now): Standard: {pt['predictions']['standard']}",
+         f"- New-Format: {pt['predictions']['new_format']}",
+         (f"- Addendum `{pt['addendum']['file']}` (sha256 LF `{pt['addendum']['sha256_lf'][:16]}`), committed before "
+          "this re-run's fit." if pt.get("addendum") else "- No addendum."),
          "- **Not used:** the pending Standard refit D1 (another agent's draft PR, awaiting owner approval).",
          f"- Store: wowza-exec `odds-history` @ `{(pt.get('store_commit') or '?')[:8]}`. No credits spent.", "",
          "## Result in brief", "",
@@ -363,7 +378,7 @@ def render(rows: list[dict], cov: dict, old_ev: dict, new_ev: dict, latest: dict
          f"- PROVEN cells: old {_n_proven(old_ev)}, new {_n_proven(new_ev)}.",
          "- **Read the Standard differences with care.** Old vs new on the Standard track moves two things at once: the "
          "price inputs AND the predictions (P11 v2 used the refit_1118b frame `9ed237eb`, 2021/22 start; the models "
-         "served since 2026-11-19 train from 2016/17 on frame `ebe47c04`, so their out-of-sample universe has "
+         "served now train from 2016/17 (see Predictions), so their out-of-sample universe has "
          f"{pt['standard']['universe_rows']:,} rows). New-Format predictions are identical, so New-Format differences "
          "come from the prices only.",
          "- Tier parameters (T1/T2/T3) were re-fitted on the fit window only (`tier_fit.json`); the tier validation was "
@@ -402,7 +417,7 @@ def render(rows: list[dict], cov: dict, old_ev: dict, new_ev: dict, latest: dict
     L += _cov_table(cov)
     L += ["", "## Reproduce", "",
           "1. Standard predictions: `src.retrain_harness.runner.run` (champion_recipe, walk_forward + holdout, track "
-          "standard) on main with the saved frame `ebe47c041a7f595f` (hash re-checked). New-Format: the P11 v2 harness "
+          "standard) on main with the saved serving frame named under Predictions (hash re-checked). New-Format: the P11 v2 harness "
           "run (code 694995f90, frame 9ed237ebc04aee09).",
           "2. `scripts/bars_opt.py universe` (Standard with `--certified-fd`); New-Format universe of P11 v2.",
           "3. `scripts/p11v3_bars_prices.py prepare`, `bars`, `tiers-fit`, `propose`, `compare`.",

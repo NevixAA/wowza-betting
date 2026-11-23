@@ -159,3 +159,14 @@ def test_v3_script_points_away_from_served_outputs():
     assert "over25" not in V.V3_FALLBACK["standard"] and "over25" in V.V3_FALLBACK["new_format"]
     for t in V.TRACKS:
         P.check_fallback(V.V3_FALLBACK[t])
+
+
+def test_d1_addendum_names_the_d1_frame_and_keeps_protocol_v3():
+    add = json.loads((ROOT / "config" / "p11_bars_tiers_protocol_v3_addendum_d1.json").read_text(encoding="utf-8"))
+    assert add["protocol"] == "p11-bars-tiers-clean/3"
+    assert "Standard predictions = D1 serving models" in add["predictions"]["standard"]
+    assert "57382c902c57328b" in add["predictions"]["standard"]
+    sys.path.insert(0, str(ROOT / "scripts"))
+    import p11v3_bars_prices as V
+    pred, rec = V.predictions_rule()
+    assert rec["addendum"] == "d1-standard-predictions" and pred["standard"] == add["predictions"]["standard"]

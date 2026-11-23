@@ -1,0 +1,13 @@
+{
+  "protocol": "p11-bars-tiers-clean/3",
+  "addendum": "d1-standard-predictions",
+  "status": "ADDENDUM to the pre-registered protocol v3 (config/p11_bars_tiers_protocol_v3.json, unchanged), written and committed BEFORE the re-run fit. It changes ONE input: which Standard predictions the re-measure reads. Everything else of v3 (price rules, windows, bars method, PROVEN rule, tiers) is unchanged. PROPOSAL ONLY; nothing is installed or approved.",
+  "reason": "Coordinator 2026-11-23: the owner approved D1 (Standard refit without the 2 unconfirmed Belgian archive rows, PR #96). The served Standard models become the D1 payloads, so the re-measure must use the D1 serving models' predictions.",
+  "predictions": {
+    "rule": "the CURRENTLY SERVING models' recipe and frame, out of sample (walk-forward folds + holdout), same harness as v2 (src.retrain_harness.runner, candidate champion_recipe)",
+    "standard": "Standard predictions = D1 serving models: harness on main (train_start standard 2016-07-01; HT market_exclude home_has_ht_history) on the SAVED D1 frame 57382c902c57328b (golive/d1_1123/feat_new.parquet; hash recomputed and must match) - the frame the merged D1 payloads were refitted on. D1 payloads (sha256/16): standard 72b38fd71e3e485e, btts e6a51f2e80f65647, over15 44d014a13a79ba60, over35 540aa360b2310b5c, ht_over05 8ee194e4827eb8a0, ht_over15 b886cd05ffec43b6 - verified against main after PR #96 merged.",
+    "new_format": "unchanged from v2/v3: harness code 694995f90 on frame 9ed237ebc04aee09 (serving New-Format payload 303c9a05 and its byte-identical sub-models).",
+    "supersedes": "the v3 run on frame ebe47c041a7f595f (TP-2026-11-23-d5bb8581, draft PR #99), replaced by this re-run's proposal"
+  },
+  "validation_label": "validation window 2026-09-01..11-08: outcomes previously seen (P9, P11 v1, v2, v3 run 1); re-validation numbers, never proof"
+}
