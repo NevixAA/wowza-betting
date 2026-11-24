@@ -1,0 +1,79 @@
+{
+  "model_type": "ht_over15",
+  "model_version": "ht_over15_20261123T183910Z_b886cd05",
+  "retrain_batch_id": "phase2_refit_clean-data-switch-2026-11-09",
+  "trained_at": "2026-11-23T18:39:10Z",
+  "training_start": "2016-08-05",
+  "training_end": "2026-11-01",
+  "training_cutoff": "2026-11-01",
+  "training_rows": 49256,
+  "target": "ht_over15",
+  "recipe": "ht_v9_repaired",
+  "model_recipe_version": "r2-repaired-1.0",
+  "imputer_version": "v9-train-only-imputer-1.1",
+  "feature_schema_version": "80c92954dac5",
+  "n_features": 84,
+  "track_split": null,
+  "code_commit_sha": "d9d135426bd6",
+  "artifact_sha256": "b886cd05ffec43b6c28c8c9e242b4886f7d504862dec73fd9492f741b298d4b6",
+  "parent_champion_version": "ht_over15_20261122T170742Z_aa4c62ce",
+  "validation_metrics": {
+    "served_holdout": {
+      "accuracy": 0.6204,
+      "auc": 0.479,
+      "log_loss": 0.66988,
+      "brier": 0.23831,
+      "ece": 0.03565
+    },
+    "blocks": {
+      "base": {
+        "rows": 39400,
+        "dates": [
+          "2016-08-05",
+          "2025-02-10"
+        ]
+      },
+      "calibration": {
+        "rows": 4919,
+        "dates": [
+          "2025-02-11",
+          "2025-12-20"
+        ]
+      },
+      "meta": {
+        "rows": 4937,
+        "dates": [
+          "2025-12-21",
+          "2026-11-01"
+        ]
+      },
+      "holdout": {
+        "rows": 137,
+        "dates": [
+          "2026-11-02",
+          "2026-11-08"
+        ]
+      }
+    },
+    "evidence": {
+      "phase2_runs": "reports/phase2_runs/ (leak-fixed re-run)",
+      "sources": [
+        "standard/ht_over15"
+      ]
+    }
+  },
+  "promotion_status": "OWNER_CLEAN_SWITCH",
+  "model_role": "CHAMPION",
+  "owner_approval": {
+    "override_id": "clean-data-switch-2026-11-09",
+    "override_stage": "std_d1_archive_rows_excluded",
+    "stage_quote": "PENDING install approval",
+    "owner_quote": "Override for this switch.",
+    "approved_by": "Nevo (owner)",
+    "approved_on": "2026-11-09",
+    "scope": "the one-time switch of every team model to the Phase 2 clean-retrain recipe on the repaired data, in exactly the stages below (first_refit, second_refit, final_refit); the 1,000-settled-row prospective rule (PG-1.0 Period 2) stays in force for every later promotion",
+    "installed_at": "2026-11-23T18:39:10Z",
+    "gate_version_overridden": "PG-1.0",
+    "rule_overridden": "PG-1.0 Period 2: >= 1,000 prospective first-sight settled rows per track before PROMOTE"
+  }
+}

@@ -411,6 +411,86 @@
             },
             "assembled": "scripts/promote_clean_switch.py assemble --only ht_over05,ht_over15 (golive ht_retrain_1122/asm)"
           }
+        },
+        {
+          "stage": "std_d1_archive_rows_excluded",
+          "approved_on": "2026-11-24",
+          "owner_quote": "Yes, install D1 (Recommended)",
+          "retrain_owner_quote": "Yes, do all",
+          "retrain_approved_on": "2026-11-23",
+          "install_approval": "APPROVED by the owner directly in the main session: 2026-11-23 \"Install (Recommended)\" after the old-vs-new comparison in the PR (D1 of reports/FINAL_DATA_TRUTH_CERTIFICATION.md), confirmed 2026-11-24 \"Yes, install D1 (Recommended)\".",
+          "scope": "the six Standard serving payloads (standard O/U 2.5, the Standard parts of btts / over15 / over35, Standard ht_over05 / ht_over15) refitted with the same champion_recipe and config (cb7309e8, incl. features.market_exclude for HT home_has_ht_history), the same cut-offs (Standard from 2016-07-01, training 2016-08-05..2026-11-01, data end 2026-11-08), on the committed frame with the two Belgian First Division A backtest-archive rows (2022-10-23 Standard v Anderlecht, 2022-11-12 Charleroi v Mechelen; awarded results no provider confirms) excluded by the loader (output/corrections/backtest_archive_excluded_rows.csv). The New-Format parts of btts / over15 / over35 are the installed objects, byte-identical. newformat, ht_over05_nf, ht_over15_nf are untouched.",
+          "install_window": [
+            "2026-11-23",
+            "2026-11-30"
+          ],
+          "gate": "scripts/team_train_serve_parity.py on the six assembled payloads: 0 differing cells and every probability identical; src.integrity.data_truth --gate GREEN; scripts/certify_real_data.py: Standard team + HT REAL_100",
+          "artifacts": {
+            "standard": {
+              "sha256": "72b38fd71e3e485e0fe09e13efe9e8a6f04d729af1a8045c648297ad3c5024d4",
+              "sources": [
+                "standard/over25"
+              ],
+              "recipe": "std_v9_repaired"
+            },
+            "ht_over05": {
+              "sha256": "8ee194e4827eb8a0a8f6cabfc4c1b6c56bac3e0d2b0f450d2c377249ae931b30",
+              "sources": [
+                "standard/ht_over05"
+              ],
+              "recipe": "ht_v9_repaired"
+            },
+            "ht_over15": {
+              "sha256": "b886cd05ffec43b6c28c8c9e242b4886f7d504862dec73fd9492f741b298d4b6",
+              "sources": [
+                "standard/ht_over15"
+              ],
+              "recipe": "ht_v9_repaired"
+            },
+            "btts": {
+              "sha256": "e6a51f2e80f65647fd3cf9fe40a2044505c39fd33f27ce4f130b1f9f527bebd7",
+              "sources": [
+                "standard/btts",
+                "new_format/btts"
+              ],
+              "recipe": "side_v9_repaired"
+            },
+            "over15": {
+              "sha256": "44d014a13a79ba606f5aedd1cbd5f91e771ad6b818253360fff5152ed05c8e9e",
+              "sources": [
+                "standard/over15",
+                "new_format/over15"
+              ],
+              "recipe": "side_v9_repaired"
+            },
+            "over35": {
+              "sha256": "540aa360b2310b5c20647b0356a8858d708c578f2bd9f666a524cbc9615aa2cd",
+              "sources": [
+                "standard/over35",
+                "new_format/over35"
+              ],
+              "recipe": "side_v9_repaired"
+            }
+          },
+          "evidence": {
+            "refit_code_sha": "d9d135426bd60f88244a6441a86926f052ccbb44",
+            "config_sha256": "cb7309e891782bbe58826daac88c01b22eeb661cdd8f1cf66b25a1ba72174d30",
+            "data": {
+              "loaded_rows": 93382,
+              "frame_hash": "57382c902c57328b",
+              "frame_file": "C:/Users/nevo/dev/golive/d1_1123/feat_new.parquet"
+            },
+            "data_end": "2026-11-08",
+            "train_dates": [
+              "2016-08-05",
+              "2026-11-01"
+            ],
+            "training_rows_standard": 49405,
+            "training_rows_standard_ht": 49256,
+            "reproduction": "the same refit on main's frame without the exclusion reproduces the installed 67ee3666 / 44c67049 / ca01b7d3 / e8b12d74 / 0776cea1 / aa4c62ce probabilities exactly (861 Standard rows from 2026-10-01, 0 differ, x6)",
+            "refit_dir": "golive/d1_1123 (scripts/phase2_refit_serving.refit on the saved frame 57382c902c57328b, hash re-verified)",
+            "assembled": "scripts/promote_clean_switch.py assemble --only standard,btts,over15,over35,ht_over05,ht_over15 (golive d1_1123/asm; NF parts from the installed payloads)"
+          }
         }
       ]
     }
