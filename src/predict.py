@@ -101,16 +101,30 @@ def _fetch_odds_api(days_ahead: int = 7) -> pd.DataFrame:
     # output/book_odds_snapshots.csv below; see the note at the capture site.
     _book_rows: list[dict] = []
     _snap_ts = pd.Timestamp.now(tz="UTC").strftime("%Y-%m-%dT%H:%M:%SZ")
+    # REGIONS eu,uk (owner 2026-11-24, #104 alignment with the bars): the median real price and the bars read the
+    # SAME set of books. Cost = markets x regions = 2 credits per league call instead of 1. CREDIT FLOOR GUARD: once
+    # the provider reports fewer remaining credits than ODDS_CREDIT_FLOOR (the 260k plan floor), the rest of the run
+    # asks eu only (1 credit) - logged, never silent.
+    import os as _os
+    _ou_regions = _os.getenv("ODDS_OU25_REGIONS", "eu,uk")
+    try:
+        _floor = int(_os.getenv("ODDS_CREDIT_FLOOR", "260000"))
+    except ValueError:
+        _floor = 260000
+    _remaining = None
     for league, sport_key in config.ODDS_API_SPORT_KEYS.items():
         if league not in config.ENABLED_LEAGUES:
             continue
         n_queried += 1
+        _regions = _ou_regions if (_remaining is None or _remaining >= _floor) else "eu"
+        if _regions != _ou_regions:
+            log.warning(f"OddsAPI {league}: {_remaining} credits left < floor {_floor} - regions eu only")
         try:
             r = requests.get(
                 f"https://api.the-odds-api.com/v4/sports/{sport_key}/odds",
                 params={
                     "apiKey": config.ODDS_API_KEY,
-                    "regions": "eu",
+                    "regions": _regions,
                     # BTTS is NOT supported on the /odds LIST endpoint — requesting
                     # "totals,btts" 422s the WHOLE call ("Markets not supported: btts"),
                     # which silently skipped every league and killed all tips since v9.2
@@ -120,6 +134,10 @@ def _fetch_odds_api(days_ahead: int = 7) -> pd.DataFrame:
                 },
                 timeout=15,
             )
+            try:
+                _remaining = int((getattr(r, "headers", None) or {}).get("x-requests-remaining"))
+            except (TypeError, ValueError):
+                pass
             if r.status_code != 200:
                 n_err += 1
                 # WARNING and named: at DEBUG a single league could drop off the board with no
@@ -227,6 +245,17 @@ def _fetch_odds_api(days_ahead: int = 7) -> pd.DataFrame:
                     if ov25 and un25 and ov15 and ov35:
                         break
 
+                # BET PRICE = MEDIAN REAL PRICE (owner 2026-11-24, deciding #104): odds_over25 / odds_under25 are the
+                # median of the real (vigged) 2.5 prices of every valid two-sided book, only with >= 3 books
+                # (src/reference_price.py); the label is "median:<books>". The de-vigged power-median consensus is kept
+                # beside it as fair_over25 / fair_under25 (reference only, never qualifies or scores), with the book
+                # count, the best price per side + its book and the first-listed pair (comparison only).
+                # Fewer than 3 books -> the match STAYS on the board with an empty price: never tipped, no fallback.
+                # No served model reads odds_over25 / under25 as a feature.
+                from src import reference_price as _rp
+                _cs = _rp.reference(event.get("bookmakers", []), 2.5)
+                ov25, un25, ov25_book, un25_book = _cs.over, _cs.under, _cs.label, _cs.label
+
                 # Best price per side across EVERY book (the loop above stops early). Feeds only
                 # the new-format bookmaker_overround FEATURE, to match its best-of-books training
                 # prices (src/feature_engineering.py); odds_over25/under25 are unchanged.
@@ -250,17 +279,27 @@ def _fetch_odds_api(days_ahead: int = 7) -> pd.DataFrame:
                             elif outcome.get("name") == "Under":
                                 best_un25 = float(pr) if best_un25 is None else max(best_un25, float(pr))
 
-                if ov25 and un25:
+                if True:                       # every match stays (owner 2026-11-24); an unpriced one has no price
                     rows.append({
                         "league":       league,
                         "date":         dt.normalize(),   # UTC calendar day — JOIN KEY, do not change
                         "kickoff_utc":  dt,                # full UTC kickoff datetime — for local-tz DISPLAY only
                         "home_team":    event.get("home_team", ""),
                         "away_team":    event.get("away_team", ""),
-                        "odds_over25":  float(ov25),
-                        "odds_under25": float(un25),
+                        "odds_over25":  float(ov25) if ov25 else None,
+                        "odds_under25": float(un25) if un25 else None,
                         "odds_over25_book":  ov25_book,
                         "odds_under25_book": un25_book,
+                        # beside the median real price (owner 2026-11-24): the de-vigged fair reference, how many books,
+                        # the best price per side + its book, and the first-listed pair (comparison only, never a basis)
+                        "fair_over25":           _cs.fair_over,
+                        "fair_under25":          _cs.fair_under,
+                        "odds_ou25_n_books":     _cs.n_books,
+                        "best_over25_book":      _cs.best_over_book,
+                        "best_under25_book":     _cs.best_under_book,
+                        "first_listed_over25":   _cs.first_over,
+                        "first_listed_under25":  _cs.first_under,
+                        "first_listed_ou25_book": _cs.first_book,
                         "best_over25":  best_ov25,
                         "best_under25": best_un25,
                         "odds_over15":  float(ov15) if ov15 else None,
@@ -270,8 +309,8 @@ def _fetch_odds_api(days_ahead: int = 7) -> pd.DataFrame:
                         # OddsAPI book key and the UTC time of the call behind each price that can become a tip
                         # price. Blank (None) when the price is blank. src/btts_odds.py replaces a price it fills
                         # (odds_btts, odds_btts_no, an empty odds_over15/35) together with its book + time.
-                        "odds_over25_captured_at":  _call_ts,
-                        "odds_under25_captured_at": _call_ts,
+                        "odds_over25_captured_at":  _call_ts if ov25 else None,
+                        "odds_under25_captured_at": _call_ts if un25 else None,
                         "odds_over15_book":         ov15_book if ov15 else None,
                         "odds_over15_captured_at":  _call_ts if ov15 else None,
                         "odds_over35_book":         ov35_book if ov35 else None,

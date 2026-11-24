@@ -294,10 +294,15 @@ def test_predict_records_the_book_behind_each_entry_price(tmp_path, monkeypatch)
             {"name": n, "point": 2.5, "price": p} for n, p in outs]}]}
 
     ev = [{"commence_time": ko, "home_team": "H", "away_team": "A",
-           "bookmakers": [book("overonly", [("Over", 2.0)]), book("both", [("Over", 2.1), ("Under", 1.8)])]}]
+           "bookmakers": [book("overonly", [("Over", 2.0)]), book("both", [("Over", 2.1), ("Under", 1.8)]),
+                          book("both2", [("Over", 2.0), ("Under", 1.85)]), book("both3", [("Over", 2.05), ("Under", 1.8)])]}]
     monkeypatch.setattr(requests, "get", lambda *a, **k: _Resp(ev))
     out = P._fetch_odds_api()
-    assert out.iloc[0]["odds_over25_book"] == "overonly" and out.iloc[0]["odds_under25_book"] == "both"
+    # median real price (owner 2026-11-24): one-sided books never count; the label lists the books, the best
+    # executable price keeps its book
+    r = out.iloc[0]
+    assert r["odds_over25_book"] == r["odds_under25_book"] == "median:both;both2;both3"
+    assert r["best_over25_book"] == "both" and r["first_listed_ou25_book"] == "both"
 
 
 def test_ledger_entry_book_follows_the_side_and_stays_blank_when_unknown():

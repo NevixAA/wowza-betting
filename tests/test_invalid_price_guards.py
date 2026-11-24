@@ -78,11 +78,14 @@ def test_predict_never_captures_or_selects_a_quote_at_or_below_one(tmp_path, mon
             {"name": "Over", "point": 2.5, "price": over}, {"name": "Under", "point": 2.5, "price": under}]}]}
 
     ev = [{"commence_time": ko, "home_team": "H", "away_team": "A",
-           "bookmakers": [book("suspended", 1.0, 1.9), book("real", 2.05, 1.8)]}]
+           "bookmakers": [book("suspended", 1.0, 1.9), book("real", 2.05, 1.8), book("real2", 2.0, 1.85),
+                          book("real3", 2.1, 1.78)]}]
     monkeypatch.setattr(requests, "get", lambda *a, **k: _Resp(ev))
     out = P._fetch_odds_api()
     assert len(out) == 1
-    assert out["odds_over25"].iloc[0] == 2.05                       # the 1.0 quote is no price
+    # the 1.0 quote is no price: the median real price uses the 3 real books only (src/reference_price)
+    assert out["odds_ou25_n_books"].iloc[0] == 3 and out["best_over25_book"].iloc[0] == "real3"
+    assert out["odds_over25"].iloc[0] == 2.05
     snap = pd.read_csv(tmp_path / "book_odds_snapshots.csv")
     assert (snap["odds"] > 1.0).all()
-    assert len(snap) == 3
+    assert len(snap) == 7

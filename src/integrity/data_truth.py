@@ -524,7 +524,9 @@ def _spread_issues(spread: dict) -> list[str]:
 
 def missing(now: datetime | None = None, features: dict | None = None,
             spread: dict | None = None) -> dict:
-    rule = ("live board: every fixture priced (odds_over25); on EVERY served model track (standard and "
+    rule = ("live board: every fixture priced (odds_over25), except a fixture with fewer than 3 two-sided books "
+            "(odds_ou25_n_books < 3: kept unpriced, owner 2026-11-24 #104 - counted, never tipped); on EVERY served "
+            "model track (standard and "
             "new_format x O/U 2.5, BTTS, Over 1.5, Over 3.5; HT O/U on standard) each input the scoring "
             "payload needs, plus the HT form and rest-day inputs, is present (RED if > 50% missing on a "
             "track, AMBER if > 20%); history banks fresh (AMBER if the newest match is > 10 days old); "
@@ -541,10 +543,16 @@ def missing(now: datetime | None = None, features: dict | None = None,
         out["served_feature_spread"] = spread
         return out
     issues, worst = list(sp_issues), RED if sp_issues else GREEN
-    unpriced = int(p["odds_over25"].isna().sum()) if "odds_over25" in p.columns else len(p)
+    unpriced_m = p["odds_over25"].isna() if "odds_over25" in p.columns else pd.Series(True, index=p.index)
+    # owner 2026-11-24 (#104): a fixture with < 3 two-sided books keeps its row with an empty price (median real
+    # price needs 3 books) - a counted, explained gap; an unpriced row WITHOUT that record is still RED
+    few = (pd.to_numeric(p["odds_ou25_n_books"], errors="coerce") < 3) if "odds_ou25_n_books" in p.columns         else pd.Series(False, index=p.index)
+    unpriced, below = int((unpriced_m & ~few).sum()), int((unpriced_m & few).sum())
     if unpriced:
         issues.append(f"{unpriced} unpriced fixture(s)")
         worst = RED
+    if below:
+        issues.append(f"{below} fixture(s) below 3 books (kept unpriced, never tipped)")
     tracks = track_gaps(p, serving_features() if features is None else features)
     rank = {GREEN: 0, GREY: 0, AMBER: 1, RED: 2}
     for key, t in tracks.items():

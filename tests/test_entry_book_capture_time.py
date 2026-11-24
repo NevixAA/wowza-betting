@@ -54,12 +54,17 @@ def test_board_records_book_and_capture_time_per_price(tmp_path, monkeypatch):
     monkeypatch.setattr(RS, "roll", lambda *a, **k: {})
     ev = [{"commence_time": _ko(), "home_team": "H", "away_team": "A", "bookmakers": [
         _totals("b1", [("Over", 2.5, 2.0), ("Under", 2.5, 1.8), ("Over", 1.5, 1.3)]),
-        _totals("b2", [("Over", 2.5, 2.1), ("Under", 2.5, 1.7), ("Over", 1.5, 1.4)])]}]
+        _totals("b2", [("Over", 2.5, 2.1), ("Under", 2.5, 1.7), ("Over", 1.5, 1.4)]),
+        _totals("b3", [("Over", 2.5, 2.05), ("Under", 2.5, 1.75)])]}]
     t0 = pd.Timestamp.now(tz="UTC").floor("s")
     monkeypatch.setattr(requests, "get", lambda *a, **k: _Resp(ev))
     r = P._fetch_odds_api().iloc[0]
     t1 = pd.Timestamp.now(tz="UTC").ceil("s")
-    assert r["odds_over25_book"] == "b1" and r["odds_under25_book"] == "b1" and r["odds_over15_book"] == "b1"
+    # O/U 2.5 is the median real price of 3+ books (src/reference_price, owner 2026-11-24): labelled "median:<books>",
+    # never one book; the first-listed pair is kept beside it for comparison; O1.5 keeps the first-listed book
+    assert r["odds_over25_book"] == r["odds_under25_book"] == "median:b1;b2;b3"
+    assert (r["odds_over25"], r["odds_under25"]) == (2.05, 1.75)
+    assert r["first_listed_ou25_book"] == "b1" and r["odds_ou25_n_books"] == 3 and r["odds_over15_book"] == "b1"
     for c in ("odds_over25_captured_at", "odds_under25_captured_at", "odds_over15_captured_at"):
         assert t0 <= pd.Timestamp(r[c]) <= t1, c
     # no book quoted Over 3.5 / BTTS: no price, no book, no time - never another price's source
