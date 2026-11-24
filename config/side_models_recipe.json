@@ -120,5 +120,5 @@
   "output/strength/competition_fixtures.parquet": "3ebade920ceb9eca2b9188f4033fc1cca1b885d0"
  },
  "inputs_digest": "5d2131df3fa304871c6cf760a4fbb78a18b04d8aeaec3312e39b0ab6c2707d9d",
- "scheduled_refit": "OFF. The training workflow is workflow_dispatch only and uploads an artifact; any schedule or install needs the owner's approval."
+ "scheduled_refit": "MONTHLY CANDIDATE (owner 2026-11-24 'yes'): .github/workflows/train_side_models.yml refits on the 3rd of each month only when data_truth --gate is GREEN and this lineage PASSes, compares on held-out games and opens a PR 'awaiting owner approval'. Install is never automatic: merging that PR is the owner's approval."
 }
