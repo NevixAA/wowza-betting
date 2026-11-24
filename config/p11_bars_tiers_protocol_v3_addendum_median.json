@@ -1,0 +1,20 @@
+{
+  "protocol": "p11-bars-tiers-clean/3",
+  "addendum": "median-real-price-ou25",
+  "status": "ADDENDUM 2 to the pre-registered protocol v3 (config/p11_bars_tiers_protocol_v3.json and addendum d1, both unchanged), written and committed BEFORE any fit on this basis. PROPOSAL ONLY; nothing is installed or approved; config/threshold_approvals.json is not touched.",
+  "owner_decision": "Owner 2026-11-24 (decided directly, relayed by the coordinator): for Standard and New-Format O/U 2.5, the bars must ALSO be re-measured on a new price basis, the \"median real price\": the median of the real (vigged) prices across all books, minimum 3 two-sided books. It replaces the fixed one-book order. Serving side: PR #104 (draft).",
+  "basis": {
+    "markets": "over25 only (cells over25_over and over25_under), both tracks. Every other market keeps the v3 fixed-order prices of the D1 run, row for row.",
+    "books": "every bookmaker in the private store's BET-role tiers BT (eu) and OUU (uk) with a two-sided pair on the exact 2.5 line; each book's EARLIEST provable bet-time pair (same timing rules as v3: provider kickoff inside the fixture's day window, snapshot strictly before kickoff, 00:00:00-stamped pairs dropped, join integrity re-verified)",
+    "price": "Over price = median of the books' Over prices; Under price = median of the books' Under prices (real, vigged prices; the study de-vigs the resulting pair exactly as it de-vigs any pair)",
+    "min_books": 3,
+    "fewer_books": "no price: the row is unpriced on this basis (no fallback to one book, nothing invented)",
+    "own_prices": "own captures and the football-data single-book pairs (Bet365 / Pinnacle) do NOT price O/U 2.5 on this basis (they are one book each); history before 2023-05-03 has no per-book bet-time quotes, so those rows are unpriced on this basis",
+    "close": "CLV only: median of each book's LATEST pre-kickoff close-role (B1) pair, >= 3 books; never a bet price",
+    "note_vs_pr104": "PR #104 (serving draft) builds the reference as the median of per-book DE-VIGGED fair probabilities. This addendum follows the owner's words as relayed (median of the REAL, vigged prices per side). The two differ; reported, not resolved here."
+  },
+  "coverage_check_first": "before any fit: per track x league x window, O/U 2.5 rows with >= 1 and >= 3 books at bet time (output/research/p11_bars_tiers_v3/median_coverage.json). If the store cannot build the median for enough history the basis is reported as a gap and only the fixed-order D1 re-measure runs.",
+  "method": "unchanged: the v3 bars method (src.bars_opt.study select on fit < 2026-09-01, final once on validation 2026-09-01..11-08, per-league own bars, no global bars, strict PROVEN rule), run on the median-basis priced universes; serving cells + proposal in namespace bars_p11v3med",
+  "outputs": "a separate PROPOSAL (namespace bars_p11v3med) + a side-by-side of the O/U 2.5 cells, median basis vs fixed-order basis, in reports/P11V3_PRICE_GAPS_REMEASURE.md",
+  "validation_label": "the validation window's outcomes were seen before (P9, P11 v1, v2, v3 run 1): re-validation numbers, never proof"
+}

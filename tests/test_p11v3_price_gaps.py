@@ -170,3 +170,25 @@ def test_d1_addendum_names_the_d1_frame_and_keeps_protocol_v3():
     import p11v3_bars_prices as V
     pred, rec = V.predictions_rule()
     assert rec["addendum"] == "d1-standard-predictions" and pred["standard"] == add["predictions"]["standard"]
+
+
+def _mpairs(books, fid="f1", market="over25"):
+    ko = pd.Timestamp("2026-10-04T15:00:00Z")
+    ts = ko - pd.Timedelta(hours=125)
+    return pd.DataFrame([{"fixture_id": fid, "market": market, "league": "L", "event_id": "e1", "bookmaker": b,
+                          "ts": ts, "ko": ko, "yes": y, "no": n} for b, y, n in books])
+
+
+def test_median_real_price_needs_three_books_and_takes_per_side_medians():
+    dates = pd.Series({"f1": "2026-10-04"})
+    two = _mpairs([("pinnacle", 1.9, 1.95), ("williamhill", 1.85, 1.95)])
+    assert P.median_pick(two, dates).empty                                     # < 3 books: no price, no fallback
+    three = _mpairs([("pinnacle", 1.9, 1.95), ("williamhill", 1.85, 2.0), ("onexbet", 2.0, 1.9)])
+    r = P.median_pick(three, dates).iloc[0]
+    assert (r["yes"], r["no"], r["n_books"]) == (1.9, 1.95, 3) and r["bookmaker"] == "median:n=3"
+
+
+def test_median_basis_addendum_is_registered():
+    add = json.loads((ROOT / "config" / "p11_bars_tiers_protocol_v3_addendum_median.json").read_text(encoding="utf-8"))
+    assert add["basis"]["min_books"] == P.MEDIAN_MIN_BOOKS == 3
+    assert "median of the real (vigged) prices" in add["owner_decision"]

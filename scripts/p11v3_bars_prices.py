@@ -45,6 +45,8 @@ _spec.loader.exec_module(M)
 PROTOCOL = ROOT / "config" / "p11_bars_tiers_protocol_v3.json"
 #: addendum (committed before the re-run fit): Standard predictions = the D1 serving models (PR #96)
 ADDENDUM = ROOT / "config" / "p11_bars_tiers_protocol_v3_addendum_d1.json"
+#: addendum 2 (owner 2026-11-24, committed before any fit): O/U 2.5 also on the "median real price" basis
+MEDIAN_ADDENDUM = ROOT / "config" / "p11_bars_tiers_protocol_v3_addendum_median.json"
 OUT = ROOT / "output" / "research" / "p11_bars_tiers_v3"
 NAMESPACE = "bars_p11v3"
 TAG = "p11v3"
@@ -82,6 +84,12 @@ def predictions_rule() -> tuple[dict, dict]:
     add = json.loads(ADDENDUM.read_text(encoding="utf-8"))
     return add["predictions"], {"addendum": add["addendum"], "file": ADDENDUM.relative_to(ROOT).as_posix(),
                                 "sha256_lf": M.sha_lf(ADDENDUM)}
+
+
+def _median_addendum_record() -> dict:
+    if not MEDIAN_ADDENDUM.exists():
+        return {}
+    return {"file": MEDIAN_ADDENDUM.relative_to(ROOT).as_posix(), "sha256_lf": M.sha_lf(MEDIAN_ADDENDUM)}
 
 
 def _point_m_at_v3() -> None:
@@ -450,6 +458,111 @@ def cmd_coverage_report(a) -> int:
     return 0
 
 
+# ── addendum 2 (owner 2026-11-24): "median real price" basis for O/U 2.5 ───────────────────────────
+
+MEDIAN_MARKET = "over25"
+
+
+def _hist_pairs(u: pd.DataFrame, store: Path, tiers) -> tuple[pd.DataFrame, pd.Series, dict, pd.DataFrame]:
+    """(two-sided exact-line pairs of the BET tiers, fixture dates, clean fixture->event map, odds) for a universe."""
+    from src import oddsapi_history_adapter as AD
+    st = AD.load_store(store)
+    odds = st[st["tier"].isin(list(tiers)) & st["league"].isin(set(u["league"]))]
+    ctx = AD.load_context(store, u)
+    fmap, _ = AD.match_universe(u, odds, ctx)
+    fmap, _ = P.clean_fixture_map(fmap, odds)
+    long, _s, _u = AD.attach(u, odds, ctx)
+    long = long[long["fixture_id"].isin(set(fmap))] if len(long) else long
+    pairs, _st = P.history_pairs(long)
+    fx = u.assign(fixture_id=u["row_id"].astype(str)).drop_duplicates("fixture_id")
+    return pairs, fx.set_index("fixture_id")["date"], fmap, odds
+
+
+def cmd_median_coverage(a) -> int:
+    """Counts only: per track x league, O/U 2.5 fit + validation rows with a result, and how many have >= 1 / >= 3
+    two-sided books at bet time in the store (BET tiers BT + OUU, eu + uk)."""
+    rows = []
+    for t in TRACKS:
+        u = pd.read_parquet(Path(a.universe) / f"universe_{t}.parquet")
+        u = u[u["market"] == MEDIAN_MARKET].copy()
+        u["date"] = pd.to_datetime(u["date"])
+        u = u[((u["date"] < M.FIT_END) | ((u["date"] >= M.VAL_START) & (u["date"] <= M.VAL_END))) & u["y"].notna()]
+        pairs, dates, _f, _o = _hist_pairs(u, Path(a.store), ["BT", "OUU"])
+        bc = P.book_counts(pairs[pairs["market"] == MEDIAN_MARKET], dates)
+        n = u.assign(fixture_id=u["row_id"].astype(str)).merge(bc[["fixture_id", "n_books"]], on="fixture_id", how="left")
+        n["win"] = np.where(n["date"] < M.FIT_END, "fit", "validation")
+        for (lg, w), x in n.groupby(["league", "win"]):
+            k = x["n_books"]
+            rows.append({"track": t, "league": lg, "window": w, "rows": int(len(x)),
+                         "rows_since_2023_05_03": int((x["date"] >= "2023-05-03").sum()),
+                         "books_ge1": int((k >= 1).sum()), "books_ge3": int((k >= P.MEDIAN_MIN_BOOKS).sum()),
+                         "median_books": float(k.median()) if k.notna().any() else None})
+    OUT.mkdir(parents=True, exist_ok=True)
+    (OUT / "median_coverage.json").write_text(json.dumps(rows, indent=1) + "\n", encoding="utf-8")
+    df = pd.DataFrame(rows)
+    print(df.groupby(["track", "window"])[["rows", "rows_since_2023_05_03", "books_ge1", "books_ge3"]].sum().to_string())
+    return 0
+
+
+SRC_MEDIAN = "oddsapi_median"
+
+
+def _median_close(u: pd.DataFrame, store: Path) -> pd.DataFrame:
+    """CLV pair on the same basis: per fixture the median of each book's LATEST pre-kickoff close-role (B1) pair,
+    >= MEDIAN_MIN_BOOKS books (never a bet price)."""
+    pairs, dates, _f, _o = _hist_pairs(u, store, CLOSE_TIERS)
+    pairs = pairs[pairs["market"] == MEDIAN_MARKET]
+    if pairs.empty:
+        return pd.DataFrame(columns=["fixture_id", "yes_c", "no_c"])
+    v = P._valid_pairs(pairs, dates, {}, False, True)
+    last = v.sort_values("ts").groupby(["fixture_id", "bookmaker"], as_index=False).last()
+    g = last.groupby("fixture_id").agg(yes_c=("yes", "median"), no_c=("no", "median"), n=("bookmaker", "nunique"))
+    return g[g["n"] >= P.MEDIAN_MIN_BOOKS].reset_index()[["fixture_id", "yes_c", "no_c"]]
+
+
+def cmd_prepare_median(a) -> int:
+    """The median-basis priced universes: a copy of --base-work's v3 priced universes where every O/U 2.5 row is
+    re-priced ONLY by the median real price (>= 3 two-sided books at bet time; own / football-data single-book
+    pairs no longer price O/U 2.5 on this basis); every other market is byte-identical."""
+    base, work = P.assert_outside_repo(a.base_work), P.assert_outside_repo(a.work)
+    (work / "priced").mkdir(parents=True, exist_ok=True)
+    st = {"addendum": predictions_rule()[1], "median_addendum": _median_addendum_record(), "tracks": {}}
+    for t in TRACKS:
+        pu = pd.read_parquet(base / "priced" / f"universe_{t}.parquet")
+        m = pu["market"] == MEDIAN_MARKET
+        u = pu[m]
+        pairs, dates, fmap, odds = _hist_pairs(u, Path(a.store), ["BT", "OUU"])
+        ps = {}
+        med = P.median_pick(pairs[pairs["market"] == MEDIAN_MARKET], dates, ps)
+        cl = _median_close(u, Path(a.store))
+        med = med.merge(cl, on="fixture_id", how="left", suffixes=("", "_cl"))
+        for c in ("yes_c", "no_c"):
+            med[c] = med[c + "_cl"]
+        mm = med.set_index("fixture_id")
+        fid = pu["row_id"].astype(str)
+        hit = m & fid.isin(mm.index)
+        for c in ("yes", "no", "yes_c", "no_c"):
+            pu.loc[m, c] = np.nan
+            pu.loc[hit, c] = fid[hit].map(mm[c]).astype(float).to_numpy()
+        pu.loc[m, "price_source"] = np.where(hit[m], SRC_MEDIAN, None)
+        pu.loc[m, "close_source"] = np.where(hit[m] & pu.loc[m, "yes_c"].notna(), SRC_MEDIAN, None)
+        pu.loc[m, "oh_book"] = np.where(hit[m], fid[m].map(mm["bookmaker"]), None)
+        pu.loc[m, "oh_event_id"] = np.where(hit[m], fid[m].map(mm["event_id"]), None)
+        pu.loc[m, "oh_snapshot_ts"] = np.where(hit[m], fid[m].map(mm["ts"]).astype(str), None)
+        pu.loc[m, "oh_commence_time"] = np.where(hit[m], fid[m].map(mm["ko"]).astype(str), None)
+        pu.loc[m, "h_league"] = np.where(hit[m], fid[m].map(mm["league"]), None)
+        chk = pu[hit].assign(fixture_id=fid[hit], price_source=P.SRC_HIST)
+        es = odds.drop_duplicates("event_id").set_index("event_id")["sport_key"].to_dict()
+        integ = P.verify_join(chk, fmap, es)
+        pu.to_parquet(work / "priced" / f"universe_{t}.parquet", index=False)
+        st["tracks"][t] = {"ou25_rows": int(m.sum()), "ou25_priced_median": int(hit.sum()),
+                           "ou25_close_median": int((hit & pu["yes_c"].notna()).sum()), "pairs": ps, "integrity": integ}
+    (work / "prepare_stats.json").write_text(json.dumps(st, indent=1, default=str), encoding="utf-8")
+    print(json.dumps({t: {k: v for k, v in x.items() if k != "pairs"} for t, x in st["tracks"].items()}, indent=1,
+                     default=str))
+    return 0
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -462,6 +575,12 @@ def main(argv=None) -> int:
         s.add_argument("--workers", type=int, default=4)
         s.add_argument("--no-resolve", action="store_true")
     sub.add_parser("compare")
+    pm = sub.add_parser("prepare-median")
+    for x in ("--base-work", "--work", "--store"):
+        pm.add_argument(x, required=True)
+    mc = sub.add_parser("median-coverage")
+    mc.add_argument("--universe", required=True)
+    mc.add_argument("--store", required=True)
     c = sub.add_parser("coverage-report")
     c.add_argument("--coverage", required=True)
     c.add_argument("--out", required=True)
@@ -470,7 +589,8 @@ def main(argv=None) -> int:
     a = ap.parse_args(argv)
     return {"prepare": cmd_prepare, "bars": M.cmd_bars, "tiers-fit": M.cmd_tiers_fit, "propose": cmd_propose,
             "compare": cmd_compare,
-            "coverage-report": cmd_coverage_report}[a.cmd](a)
+            "coverage-report": cmd_coverage_report, "median-coverage": cmd_median_coverage,
+            "prepare-median": cmd_prepare_median}[a.cmd](a)
 
 
 if __name__ == "__main__":
