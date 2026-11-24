@@ -94,7 +94,10 @@ def _store_top3_odds() -> tuple[dict | None, str]:
         return None, str(e)
 
 
-tab_bars, tab_top3, tab_res, tab_eval = st.tabs(["Bars", "TOP-3", "Research & Pro tools", "Clean Record evaluation"])
+tab_bars, tab_top3, tab_drought, tab_res, tab_eval, tab_side = st.tabs(["Bars", "TOP-3", "Stake drought",
+                                                                       "Research & Pro tools",
+                                                                       "Clean Record evaluation",
+                                                                       "Side-model candidate"])
 
 # ══ 1. BARS ═════════════════════════════════════════════════════════════════════════════════════
 with tab_bars:
@@ -188,6 +191,37 @@ with tab_top3:
                        + ", ".join(missing) + ".")
         st.caption("Source: output/top3_league_ledger.csv and output/top3_league_weeks.csv.")
 
+# ══ 2b. STAKE DROUGHT (owner rule 2026-11-24; src/stake_drought.py) ══════════════════════════════════
+with tab_drought:
+    ui.section_header("Stake drought: repair & research",
+                      "Owner rule 2026-11-24: a family (league × market × tier) with no staked pick for 30 days "
+                      "needs repair and research. Flags only: this never changes bars, stakes, tiers or models.")
+    ddoc = AB.read_json(AB.DROUGHT)
+    if not ddoc:
+        ui.empty_state("NO_DATA", "output/stake_drought.json is absent (written by the results workflow after the "
+                                  "TOP-3 settlement).")
+    else:
+        dt = ddoc.get("total") or {}
+
+        def _cnt(d: dict, k: str) -> str:
+            return str(d[k]) if k in d else "missing"       # never a made-up zero
+        ui.stat_line([("Repair & research", _cnt(dt, "REPAIR_RESEARCH_NEEDED")),
+                      ("Pending (< 30 days)", _cnt(dt, "PENDING")),
+                      ("Off-season", _cnt(dt, "OFF_SEASON")), ("OK", _cnt(dt, "OK")),
+                      ("Families", _cnt(ddoc, "n_families"))])
+        dfr = AB.drought_frame(ddoc)
+        flagged = dfr[dfr["State"] == "REPAIR_RESEARCH_NEEDED"]
+        ffp = ddoc.get("first_possible_flag") or {}
+        if flagged.empty:
+            st.caption("No family is flagged. First possible flag: TOP-3 " + str(ffp.get("TOP3", "?"))
+                       + ", props TOP-3 " + str(ffp.get("PROPS_TOP3", "?")) + ".")
+        else:
+            ui.compact_table(flagged.drop(columns=["State"]).reset_index(drop=True), height=420)
+        with st.expander("Pending, off-season and OK families"):
+            ui.compact_table(dfr[dfr["State"] != "REPAIR_RESEARCH_NEEDED"].reset_index(drop=True), height=420)
+        st.caption(f"Source: output/stake_drought.json (as of {ddoc.get('as_of', '?')}). Cause = the largest count "
+                   "over the 30-day window; every count is listed.")
+
 # ══ 3. RESEARCH & PRO TOOLS ═════════════════════════════════════════════════════════════════════
 with tab_res:
     reg, probs = AB.load_tracker()
@@ -244,6 +278,31 @@ with tab_res:
 with tab_eval:
     from dashboard_data import clean_record_eval as CRE  # noqa: E402
     CRE.render(st, ui, admin=True)
+
+# ══ 5. SIDE-MODEL CANDIDATE (monthly corners / cards refit; owner 2026-11-24) ════════════════════════════
+with tab_side:
+    from dashboard_data import side_candidate_view as SCV  # noqa: E402
+    ui.section_header("Side-model candidate",
+                      "Corners / cards: the serving model and the latest monthly candidate, compared on recent held-out "
+                      "games neither model trained on. A candidate is installed only when the owner merges its "
+                      "'awaiting owner approval' PR.")
+    try:
+        _reg = json.loads(Path("config/track_registry.json").read_text(encoding="utf-8"))
+    except Exception:                                                  # noqa: BLE001
+        _reg = None
+    ui.stat_line(SCV.serving_lines(_reg))
+    _sb, _se = _record_body("NevixAA/wowza-betting", False, SCV.CANDIDATE_REF, SCV.SUMMARY_PATH)
+    _summ = SCV.parse_summary(_sb)
+    if _summ is None:
+        ui.empty_state("NO_DATA", f"No monthly candidate yet ({_se or 'no summary on ' + SCV.CANDIDATE_REF}).")
+    else:
+        ui.stat_line(SCV.candidate_lines(_summ))
+        _hb, _ = _record_body("NevixAA/wowza-betting", False, SCV.CANDIDATE_REF, SCV.HELDOUT_PATH)
+        _hf = SCV.heldout_frame(_hb)
+        if len(_hf):
+            ui.compact_table(_hf.reset_index(drop=True))
+        st.caption("Delta = candidate minus serving (negative = candidate better). Source: branch "
+                   f"{SCV.CANDIDATE_REF}, written by .github/workflows/train_side_models.yml.")
 
 from utils.disclaimer import disclaimer_footer  # noqa: E402
 disclaimer_footer()

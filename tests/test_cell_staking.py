@@ -78,7 +78,16 @@ def test_committed_policy_stakes_exactly_the_owner_cells():
                                 "new_format|OU25_OVER|Finland Veikkausliiga", "new_format|OVER35|Finland Veikkausliiga"}
     assert set(cs["block_overrides"]) == {"new_format|OVER35|Finland Veikkausliiga"}
     assert pol["tracks"]["new_format|OVER35"]["state"] == "BLOCKED"
-    assert cs["approved"]["proposal_id"] == "TP-2026-11-15-bade2c0b"
+    # owner 2026-11-24 "Update to P11 v2 (Recommended)": the stake record names the SERVED bars (bookkeeping only;
+    # the cells above stay derived from TP-2026-11-15-bade2c0b, kept in approved_history)
+    applied = json.loads((ROOT / "config" / "threshold_applied.json").read_text(encoding="utf-8"))["last_applied"]
+    assert {k: cs["approved"][k] for k in ("proposal_id", "proposal_hash")} == \
+        {k: applied[k] for k in ("proposal_id", "proposal_hash")} == \
+        {"proposal_id": "TP-2026-11-18-1ddfc9f1",
+         "proposal_hash": "1ddfc9f1c7dc4e2e4692e81d7e27aeb36960efd5963250541ed401b6cc852a92"}
+    assert cs["approved"]["repoint_owner_words"] == "Update to P11 v2 (Recommended)"
+    old = [h for h in cs["approved_history"] if h["proposal_id"] == "TP-2026-11-15-bade2c0b"]
+    assert len(old) == 1 and old[0]["proposal_hash"] == prop["proposal_hash"] and old[0]["until"] == "2026-11-24"
     assert "Reduce to 0.5%" in cs["cells"][f"new_format|BTTS|{ARG}"]["staking_basis"]
     for k, v in cs["cells"].items():
         if k != f"new_format|BTTS|{ARG}":

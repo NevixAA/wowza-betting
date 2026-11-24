@@ -1,11 +1,11 @@
 {
  "about": "Canonical system health (src/system_health.build_artifact), written daily by evidence_refresh.yml. overall: FAIL if any RED check or protected_tracks_modified; WARN if any AMBER/NO_DATA; PASS otherwise. Every status comes from the rule stored beside it. `indicators` holds FOUR separate verdicts (CI gate, operational data quality, production model integrity, full-system certification) - never one GREEN for all four.",
  "artifact_version": "SYSTEM-HEALTH-1",
- "generated_at": "2026-11-24T16:22:40Z",
+ "generated_at": "2026-11-24T17:58:42Z",
  "overall": "WARN",
  "reasons": [
   "NO_DATA Challenger prediction coverage: no active challenger experiment",
-  "AMBER GitHub workflow health: 2 still failing / 299 runs (24 h) \u00b7 1 fixed since",
+  "AMBER GitHub workflow health: 1 still failing / 339 runs (24 h) \u00b7 1 fixed since",
   "AMBER Data truth 13c: registered historical exceptions: 7 registered exception(s)",
   "AMBER Data truth 15: one fixture, one identity: 797 page keys -> 577 matches (220 split before: accent 41, name variant 176, kickoff drift 45); 0 stored identity mismatch(es); 2 ref(s) with an unresolved kickoff conflict; 0 AF-id conflict(s)"
  ],
@@ -19,10 +19,10 @@
   },
   "contracts_version": "CONTRACTS-1",
   "research_lock_digest": "3416ad0e5e8ae71db66cb14e70323226265a9b2377b2cd4eb998fde1a9c4cf58",
-  "code_commit": "8b25e9848a8e"
+  "code_commit": "ca0d2c0ea326"
  },
  "counts": {
-  "GREEN": 34,
+  "GREEN": 35,
   "AMBER": 3,
   "RED": 0,
   "NO_DATA": 1
@@ -80,9 +80,9 @@
   {
    "check": "GitHub workflow health",
    "status": "AMBER",
-   "value": "2 still failing / 299 runs (24 h) \u00b7 1 fixed since",
+   "value": "1 still failing / 339 runs (24 h) \u00b7 1 fixed since",
    "rule": "workflows whose latest run on main (last 24 h, 3 repos) failed or timed out \u2014 failures a later success superseded and branch-only research runs do not count: GREEN 0; AMBER 1-2; RED >= 3 (record > 36 h old = AMBER)",
-   "detail": "wowza-betting: Side models (corners / cards) - reproducible training, artifact only; wowzaV9-Pro: Pro Props Learner Study"
+   "detail": "wowzaV9-Pro: Pro Props Learner Study"
   },
   {
    "check": "Fantasy V2 status",
@@ -129,7 +129,7 @@
   {
    "check": "Data truth 2: no silent defaults",
    "status": "GREEN",
-   "value": "0 new default(s); 0 known (baseline); 196 allow-listed (counters/display); 0 baseline entr(ies) now gone; 1 allow-list entr(ies) now gone; 470 production files scanned",
+   "value": "0 new default(s); 0 known (baseline); 196 allow-listed (counters/display); 0 baseline entr(ies) now gone; 1 allow-list entr(ies) now gone; 473 production files scanned",
    "rule": "no NEW invented default in ALL production code (fillna(<non-zero literal>), literal season fallback/list, pinned football-data folder, numeric .get(<key>, <number>), an or-zero on a parsed value, a zero fillna on a price/odds): RED if any site is in neither config/data_truth_baseline.json nor config/data_truth_allowlist.json, or an allow-list entry has no reason; GREEN otherwise",
    "detail": ""
   },
@@ -717,21 +717,21 @@
   {
    "check": "Data truth 17: no public prices",
    "status": "GREEN",
-   "value": "0 retired price file(s) committed, 0 unclassified price file(s); 465 classified price file(s) still public (classes not yet retired: their move is pending), 199 allowlisted (not bookmaker prices / class F), 2877 scanned",
+   "value": "0 retired price file(s) committed, 0 unclassified price file(s); 465 classified price file(s) still public (classes not yet retired: their move is pending), 199 allowlisted (not bookmaker prices / class F), 2879 scanned",
    "rule": "no committed file on a retired price path (config/price_store_paths.json public_retired), and every committed price column belongs to a class that moves private or is allowlisted with a reason (config/public_price_allowlist.json)",
    "detail": ""
   },
   {
    "check": "Promotion gate",
    "status": "GREEN",
-   "value": "89 decision(s), last 2026-11-22 17:07Z",
+   "value": "95 decision(s), last 2026-11-23 18:39Z",
    "rule": "RED if output/model_lineage/promotion_decisions.csv is missing/unreadable, or a champion in models/registry/current_champions.json differs from the latest PROMOTED decision for its model type (the champion moved without the gate); AMBER if the latest decision is > 8 days old (retrain is weekly) or carries a gate_version other than the configured one; GREEN otherwise",
    "detail": ""
   },
   {
    "check": "Edge-engine shadow",
    "status": "GREEN",
-   "value": "market_edge_v2 UNVALIDATED_DEFAULTS, 664 rows, shadow_only=True, 6.6 h old",
+   "value": "market_edge_v2 UNVALIDATED_DEFAULTS, 664 rows, shadow_only=True, 8.2 h old",
    "rule": "RED if edge_engine_health.json is missing, older than 72 h, or shadow_only is not true (a shadow engine must never be live); AMBER if older than 24 h or it scored 0 rows; GREEN otherwise",
    "detail": ""
   },
@@ -748,6 +748,14 @@
    "value": "legacy_v9 (switch off)",
    "rule": "GREEN if the committed board has no serving_recipe column (switch off: legacy_v9) or every Standard row is served by v9_repaired with a registered standard_repaired model_version; RED if any Standard row fell back to legacy (legacy_v9_fallback, pre-R2 boards), failed closed with no probability (v9_repaired_failed) or a repaired row's model is unregistered",
    "detail": ""
+  },
+  {
+   "check": "Stake drought",
+   "status": "GREEN",
+   "value": "0 flagged, 701 pending, 0 off-season, 4 OK (as of 2026-11-24)",
+   "rule": "AMBER if any TOP-3 / props TOP-3 family is REPAIR_RESEARCH_NEEDED (no staked pick for 30 days since 2026-11-21); GREEN otherwise; NO_DATA if output/stake_drought.json is missing. Ungated: never blocks CI or merges",
+   "detail": "",
+   "gated": false
   }
  ],
  "research_lock": {
@@ -1132,7 +1140,7 @@
     "research_lock": "GREEN"
    },
    "source": "output/system_health.json",
-   "generated_at": "2026-11-24T16:22:40Z",
+   "generated_at": "2026-11-24T17:58:42Z",
    "age_h": 0.0,
    "failing": []
   },
@@ -1142,7 +1150,7 @@
    "status": "AMBER",
    "meaning": "the WORST current data truth check, gated or not (an ungated RED is RED here)",
    "source": "output/system_health.json",
-   "generated_at": "2026-11-24T16:22:40Z",
+   "generated_at": "2026-11-24T17:58:42Z",
    "age_h": 0.0,
    "failing": [
     {
@@ -1150,7 +1158,7 @@
      "status": "AMBER",
      "detail": "7 registered exception(s)",
      "source": "output/system_health.json",
-     "generated_at": "2026-11-24T16:22:40Z",
+     "generated_at": "2026-11-24T17:58:42Z",
      "gated": false
     },
     {
@@ -1158,7 +1166,7 @@
      "status": "AMBER",
      "detail": "797 page keys -> 577 matches (220 split before: accent 41, name variant 176, kickoff drift 45); 0 stored identity mismatch(es); 2 ref(s) with an unresolved kickoff conflict; 0 AF-id conflict(s)",
      "source": "output/system_health.json",
-     "generated_at": "2026-11-24T16:22:40Z",
+     "generated_at": "2026-11-24T17:58:42Z",
      "gated": false
     }
    ]
@@ -1174,106 +1182,106 @@
     "legacy_replay_status": "FAIL"
    },
    "source": "output/model_integrity_health.json",
-   "generated_at": "2026-11-24T15:46:49Z",
-   "age_h": 0.6,
+   "generated_at": "2026-11-24T17:08:35Z",
+   "age_h": 0.8,
    "failing": [
     {
      "component": "active_training_lineage_status",
      "status": "UNVERIFIED",
      "detail": "scope not PASS",
      "source": "output/model_integrity_health.json",
-     "generated_at": "2026-11-24T15:46:49Z"
+     "generated_at": "2026-11-24T17:08:35Z"
     },
     {
      "component": "model standard|OU25",
      "status": "WARN",
-     "detail": "parity WARN, weight_alignment UNKNOWN",
+     "detail": "parity WARN, weight_alignment UNKNOWN, training_lineage UNVERIFIED",
      "source": "output/model_integrity_health.json",
-     "generated_at": "2026-11-24T15:46:49Z"
+     "generated_at": "2026-11-24T17:08:35Z"
     },
     {
      "component": "model new_format|OU25",
      "status": "WARN",
      "detail": "parity WARN, weight_alignment UNKNOWN, price_provenance WARN",
      "source": "output/model_integrity_health.json",
-     "generated_at": "2026-11-24T15:46:49Z"
+     "generated_at": "2026-11-24T17:08:35Z"
     },
     {
      "component": "model standard|BTTS",
      "status": "WARN",
-     "detail": "parity WARN, weight_alignment UNKNOWN, price_provenance WARN",
+     "detail": "parity WARN, weight_alignment UNKNOWN, price_provenance WARN, training_lineage UNVERIFIED",
      "source": "output/model_integrity_health.json",
-     "generated_at": "2026-11-24T15:46:49Z"
+     "generated_at": "2026-11-24T17:08:35Z"
     },
     {
      "component": "model new_format|BTTS",
      "status": "WARN",
-     "detail": "parity WARN, weight_alignment UNKNOWN, price_provenance WARN",
+     "detail": "parity WARN, weight_alignment UNKNOWN, price_provenance WARN, training_lineage UNVERIFIED",
      "source": "output/model_integrity_health.json",
-     "generated_at": "2026-11-24T15:46:49Z"
+     "generated_at": "2026-11-24T17:08:35Z"
     },
     {
      "component": "model standard|OU15",
      "status": "WARN",
-     "detail": "parity WARN, weight_alignment UNKNOWN, price_provenance WARN",
+     "detail": "parity WARN, weight_alignment UNKNOWN, price_provenance WARN, training_lineage UNVERIFIED",
      "source": "output/model_integrity_health.json",
-     "generated_at": "2026-11-24T15:46:49Z"
+     "generated_at": "2026-11-24T17:08:35Z"
     },
     {
      "component": "model new_format|OU15",
      "status": "WARN",
-     "detail": "parity WARN, weight_alignment UNKNOWN, price_provenance WARN",
+     "detail": "parity WARN, weight_alignment UNKNOWN, price_provenance WARN, training_lineage UNVERIFIED",
      "source": "output/model_integrity_health.json",
-     "generated_at": "2026-11-24T15:46:49Z"
+     "generated_at": "2026-11-24T17:08:35Z"
     },
     {
      "component": "model standard|OU35",
      "status": "WARN",
-     "detail": "parity WARN, weight_alignment UNKNOWN, price_provenance WARN",
+     "detail": "parity WARN, weight_alignment UNKNOWN, price_provenance WARN, training_lineage UNVERIFIED",
      "source": "output/model_integrity_health.json",
-     "generated_at": "2026-11-24T15:46:49Z"
+     "generated_at": "2026-11-24T17:08:35Z"
     },
     {
      "component": "model new_format|OU35",
      "status": "WARN",
-     "detail": "parity WARN, weight_alignment UNKNOWN, price_provenance WARN",
+     "detail": "parity WARN, weight_alignment UNKNOWN, price_provenance WARN, training_lineage UNVERIFIED",
      "source": "output/model_integrity_health.json",
-     "generated_at": "2026-11-24T15:46:49Z"
+     "generated_at": "2026-11-24T17:08:35Z"
     },
     {
      "component": "model standard|HT_O05",
      "status": "WARN",
      "detail": "parity WARN, weight_alignment UNKNOWN, price_provenance UNKNOWN, training_lineage UNVERIFIED",
      "source": "output/model_integrity_health.json",
-     "generated_at": "2026-11-24T15:46:49Z"
+     "generated_at": "2026-11-24T17:08:35Z"
     },
     {
      "component": "model standard|HT_O15",
      "status": "WARN",
      "detail": "parity WARN, weight_alignment UNKNOWN, price_provenance UNKNOWN, training_lineage UNVERIFIED",
      "source": "output/model_integrity_health.json",
-     "generated_at": "2026-11-24T15:46:49Z"
+     "generated_at": "2026-11-24T17:08:35Z"
     },
     {
      "component": "model new_format|HT_O05",
      "status": "WARN",
      "detail": "parity WARN, weight_alignment UNKNOWN, price_provenance UNKNOWN",
      "source": "output/model_integrity_health.json",
-     "generated_at": "2026-11-24T15:46:49Z"
+     "generated_at": "2026-11-24T17:08:35Z"
     },
     {
      "component": "model new_format|HT_O15",
      "status": "WARN",
      "detail": "parity WARN, weight_alignment UNKNOWN, price_provenance UNKNOWN",
      "source": "output/model_integrity_health.json",
-     "generated_at": "2026-11-24T15:46:49Z"
+     "generated_at": "2026-11-24T17:08:35Z"
     },
     {
      "component": "model props|ALL",
      "status": "WARN",
      "detail": "owned by the props workstream (player_props_integrity_health.json)",
      "source": "output/model_integrity_health.json",
-     "generated_at": "2026-11-24T15:46:49Z"
+     "generated_at": "2026-11-24T17:08:35Z"
     }
    ]
   },
@@ -1287,7 +1295,7 @@
      "component": "system health",
      "status": "WARN",
      "source": "output/system_health.json",
-     "generated_at": "2026-11-24T16:22:40Z",
+     "generated_at": "2026-11-24T17:58:42Z",
      "age_h": 0.0,
      "ok": false
     },
@@ -1295,7 +1303,7 @@
      "component": "data truth (operational)",
      "status": "AMBER",
      "source": "output/data_truth_health.json",
-     "generated_at": "2026-11-24T15:45:34Z",
+     "generated_at": "2026-11-24T17:25:37Z",
      "age_h": 0.6,
      "ok": false
     },
@@ -1303,7 +1311,7 @@
      "component": "data truth gate",
      "status": "GREEN",
      "source": "output/data_truth_health.json",
-     "generated_at": "2026-11-24T15:45:34Z",
+     "generated_at": "2026-11-24T17:25:37Z",
      "age_h": 0.6,
      "ok": true
     },
@@ -1311,32 +1319,32 @@
      "component": "model integrity",
      "status": "WARN",
      "source": "output/model_integrity_health.json",
-     "generated_at": "2026-11-24T15:46:49Z",
-     "age_h": 0.6,
+     "generated_at": "2026-11-24T17:08:35Z",
+     "age_h": 0.8,
      "ok": false
     },
     {
      "component": "active serving joins",
      "status": "PASS",
      "source": "output/join_integrity_health.json",
-     "generated_at": "2026-11-24T15:41:20Z",
-     "age_h": 0.7,
+     "generated_at": "2026-11-24T17:03:07Z",
+     "age_h": 0.9,
      "ok": true
     },
     {
      "component": "train/serve feature parity",
      "status": "WARN",
      "source": "output/feature_parity_health.json",
-     "generated_at": "2026-11-24T15:44:01Z",
-     "age_h": 0.6,
+     "generated_at": "2026-11-24T17:06:15Z",
+     "age_h": 0.9,
      "ok": false
     },
     {
      "component": "training lineage",
      "status": "UNVERIFIED",
      "source": "output/model_integrity_health.json",
-     "generated_at": "2026-11-24T15:46:49Z",
-     "age_h": 0.6,
+     "generated_at": "2026-11-24T17:08:35Z",
+     "age_h": 0.8,
      "ok": false
     }
    ],
@@ -1349,35 +1357,35 @@
      "status": "WARN",
      "detail": "status WARN (needs PASS)",
      "source": "output/system_health.json",
-     "generated_at": "2026-11-24T16:22:40Z"
+     "generated_at": "2026-11-24T17:58:42Z"
     },
     {
      "component": "data truth (operational)",
      "status": "AMBER",
      "detail": "status AMBER (needs GREEN)",
      "source": "output/data_truth_health.json",
-     "generated_at": "2026-11-24T15:45:34Z"
+     "generated_at": "2026-11-24T17:25:37Z"
     },
     {
      "component": "model integrity",
      "status": "WARN",
      "detail": "status WARN (needs PASS)",
      "source": "output/model_integrity_health.json",
-     "generated_at": "2026-11-24T15:46:49Z"
+     "generated_at": "2026-11-24T17:08:35Z"
     },
     {
      "component": "train/serve feature parity",
      "status": "WARN",
      "detail": "status WARN (needs PASS)",
      "source": "output/feature_parity_health.json",
-     "generated_at": "2026-11-24T15:44:01Z"
+     "generated_at": "2026-11-24T17:06:15Z"
     },
     {
      "component": "training lineage",
      "status": "UNVERIFIED",
      "detail": "status UNVERIFIED (needs PASS)",
      "source": "output/model_integrity_health.json",
-     "generated_at": "2026-11-24T15:46:49Z"
+     "generated_at": "2026-11-24T17:08:35Z"
     }
    ]
   }

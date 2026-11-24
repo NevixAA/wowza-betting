@@ -14,7 +14,7 @@
   },
   "bankroll_policy": {
    "path": "config/bankroll_policy.json",
-   "sha256_16": "ce2e64dec26a4b8e"
+   "sha256_16": "8cdc392083bc6bd7"
   },
   "current_champions": {
    "path": "models/registry/current_champions.json",
@@ -6531,8 +6531,8 @@
   "recipe_model_version": "side_nb_v1_2026-11-09_c9e06a6a9c92",
   "data_ref": "156374b87840060a04ab03ee1db453c247e8dfce",
   "until": null,
-  "training_workflow": ".github/workflows/train_side_models.yml (workflow_dispatch only, artifact only)",
-  "scheduled_refit": "OFF (owner approval required)",
+  "training_workflow": ".github/workflows/train_side_models.yml (dispatch: reproduce / refit_candidate; monthly: monthly_candidate -> PR awaiting owner approval)",
+  "scheduled_refit": "MONTHLY CANDIDATE (owner 2026-11-24): gated on data truth GREEN + lineage PASS; install only by merging the owner-approval PR, never automatic",
   "lineage": {
    "status": "PASS",
    "why": "re-trained from the git tree of 156374b87 with the recorded recipe: byte-identical (line endings normalised), max |p diff| 0.0 over 462910 probabilities"
