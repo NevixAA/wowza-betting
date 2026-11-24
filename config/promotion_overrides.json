@@ -414,11 +414,11 @@
         },
         {
           "stage": "std_d1_archive_rows_excluded",
-          "approved_on": "PENDING",
-          "owner_quote": "PENDING install approval",
+          "approved_on": "2026-11-24",
+          "owner_quote": "Yes, install D1 (Recommended)",
           "retrain_owner_quote": "Yes, do all",
           "retrain_approved_on": "2026-11-23",
-          "install_approval": "PENDING: the owner approves or rejects this install after the old-vs-new comparison in the PR (D1 of reports/FINAL_DATA_TRUTH_CERTIFICATION.md). Until then this PR stays a draft and nothing is installed on main.",
+          "install_approval": "APPROVED by the owner directly in the main session: 2026-11-23 \"Install (Recommended)\" after the old-vs-new comparison in the PR (D1 of reports/FINAL_DATA_TRUTH_CERTIFICATION.md), confirmed 2026-11-24 \"Yes, install D1 (Recommended)\".",
           "scope": "the six Standard serving payloads (standard O/U 2.5, the Standard parts of btts / over15 / over35, Standard ht_over05 / ht_over15) refitted with the same champion_recipe and config (cb7309e8, incl. features.market_exclude for HT home_has_ht_history), the same cut-offs (Standard from 2016-07-01, training 2016-08-05..2026-11-01, data end 2026-11-08), on the committed frame with the two Belgian First Division A backtest-archive rows (2022-10-23 Standard v Anderlecht, 2022-11-12 Charleroi v Mechelen; awarded results no provider confirms) excluded by the loader (output/corrections/backtest_archive_excluded_rows.csv). The New-Format parts of btts / over15 / over35 are the installed objects, byte-identical. newformat, ht_over05_nf, ht_over15_nf are untouched.",
           "install_window": [
             "2026-11-23",
