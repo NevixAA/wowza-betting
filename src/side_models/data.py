@@ -257,19 +257,25 @@ KEEP = ["fixture_id", *FLAGS, "home_corners", "away_corners", "home_cards", "awa
 
 
 def build(leagues: list, *, single_source: dict | None = None, fixtures_path=None, fill_path=None,
-          fd_dir=None, sidecar_path=None) -> tuple[pd.DataFrame, dict]:
+          fd_dir=None, sidecar_path=None, until: str | None = None) -> tuple[pd.DataFrame, dict]:
     """(verified match table, audit). `leagues` are two-source (football-data + API-Football);
     `single_source` maps a league to its window start ('YYYY-MM-DD') under the API-Football single
     certified source rule. The table holds every finished AF fixture of those leagues (also ones without
     usable stats, with NaN counts) so the as-of features see a team's real fixture sequence and count
-    the matches whose statistics are not usable. Column `basis`: 'two_source' / 'single_source'."""
+    the matches whose statistics are not usable. Column `basis`: 'two_source' / 'single_source'.
+    `until` ('YYYY-MM-DD', optional): the DATA CUT-OFF of a recorded refit - fixtures and football-data rows
+    dated after it are left out (None = every committed row, the serving default)."""
     single_source = dict(single_source or {})
     two = [lg for lg in leagues if lg not in single_source]
     allg = two + list(single_source)
     af = load_af(allg, fixtures_path, fill_path, sidecar_path)
+    if until is not None:
+        af = af[af["date"] <= until].reset_index(drop=True)
     parts, audit = [], {}
     if two:
         fd = load_fd_raw(two, fd_dir)
+        if until is not None:
+            fd = fd[fd["date"] <= until].reset_index(drop=True)
         af2 = af[af["league"].isin(two)]
         xw, xaudit = crosswalk(fd, af2)
         j = verify(join(fd, af2, xw))

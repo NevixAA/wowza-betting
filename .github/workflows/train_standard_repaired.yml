@@ -79,6 +79,15 @@ jobs:
           echo "::error title=Retired::standard_repaired / v9_repaired was RETIRED by the owner on 2026-11-15 (\"fix what you need\"); see docs/STANDARD_REPAIRED_FAILCLOSED_ROLLBACK.md"
           exit 1
       - uses: actions/checkout@v4          # code = the dispatched ref (the branch before landing)
+      - name: Price store - open (private prices, owner 2026-11-24)
+        # Live price files exist only in the private store (scripts/price_store_live.sh). This puts them at
+        # their usual paths before any work and keeps them out of every public commit. Rollback: set the
+        # repo variable PRICE_STORE_LIVE to anything but 1.
+        env:
+          PRICE_STORE_LIVE: ${{ vars.PRICE_STORE_LIVE }}
+          PRICE_STORE_RO_KEY: ${{ secrets.PRICE_STORE_RO_KEY }}
+        run: bash scripts/price_store_live.sh open wowza-betting
+
       - name: Board, ledgers, odds history and data banks from MAIN (latest committed state)
         run: |
           set -euo pipefail
@@ -134,6 +143,15 @@ jobs:
         with:
           ref: main                         # never a stale queued SHA
           token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Price store - open (private prices, owner 2026-11-24)
+        # Live price files exist only in the private store (scripts/price_store_live.sh). This puts them at
+        # their usual paths before any work and keeps them out of every public commit. Rollback: set the
+        # repo variable PRICE_STORE_LIVE to anything but 1.
+        env:
+          PRICE_STORE_LIVE: ${{ vars.PRICE_STORE_LIVE }}
+          PRICE_STORE_KEY: ${{ secrets.PRICE_STORE_KEY }}
+        run: bash scripts/price_store_live.sh open wowza-betting
+
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
@@ -175,3 +193,7 @@ jobs:
             echo "push race - retry $i"; sleep $((RANDOM % 5 + 3))
           done
           exit 1
+
+      - name: Price store - push (private prices)
+        if: ${{ !cancelled() }}
+        run: bash scripts/price_store_live.sh push train_standard_repaired
