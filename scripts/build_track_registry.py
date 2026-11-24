@@ -41,6 +41,8 @@ POLICY_PATH = ROOT / "config" / "bankroll_policy.json"
 CHAMPIONS_PATH = ROOT / "models" / "registry" / "current_champions.json"
 LOCK_PATH = ROOT / "config" / "research_lock_snapshot.json"
 EDGE_CFG_PATH = ROOT / "config" / "market_edge_v2.json"
+SIDE_ARTIFACT_PATH = ROOT / "models" / "side_models" / "side_models.json"
+SIDE_RECIPE_PATH = ROOT / "config" / "side_models_recipe.json"
 
 REGISTRY_VERSION = "TRACK-REGISTRY-1"
 REAL_STATES = ("PROBATION", "ACTIVE_LOW", "ACTIVE", "ACTIVE_STRONG", "DEGRADED")
@@ -121,9 +123,37 @@ def evidence_status(e: dict) -> str:
     return "ADEQUATE" if (n >= 30 and md >= 8) else "INSUFFICIENT"
 
 
+def side_models_view(art: dict, recipe: dict, lineage: dict | None, art_sha16: str | None) -> dict:
+    """The corners / cards count models (learning ledger only: no tips, no stakes) - what is served, from which
+    recipe and data cut-off, how it is re-trained, and whether its lineage is verified. Pure."""
+    fams = {}
+    for fam, cov in sorted((art.get("coverage") or {}).items()):
+        models = (art.get("models") or {}).get(fam, {})
+        leagues = {}
+        for lg, c in sorted(cov.items()):
+            m = models.get(lg)
+            leagues[lg] = ({"served": True, "basis": c.get("basis"), "window_from": c.get("window_from"),
+                            "n_fit": m.get("n_fit"), "fit_from": m.get("fit_from"), "fit_to": m.get("fit_to")}
+                           if c.get("covered") and m else {"served": False, "basis": c.get("basis"),
+                                                             "reason": c.get("reason")})
+        fams[fam] = {"model_id": ((art.get("config") or {}).get("families") or {}).get(fam, {}).get("model_id"),
+                     "n_served_leagues": sum(1 for v in leagues.values() if v["served"]), "leagues": leagues}
+    return {
+        "role": "learning ledger only (prediction_ledger_v9 side rows) - never a tip or a stake",
+        "artifact": "models/side_models/side_models.json", "artifact_sha256_16": art_sha16,
+        "model_version": art.get("model_version"), "data_end": art.get("data_end"),
+        "recipe": "config/side_models_recipe.json", "recipe_model_version": recipe.get("model_version"),
+        "data_ref": recipe.get("data_ref"), "until": recipe.get("until"),
+        "training_workflow": ".github/workflows/train_side_models.yml (workflow_dispatch only, artifact only)",
+        "scheduled_refit": "OFF (owner approval required)",
+        "lineage": {"status": (lineage or {}).get("status", "UNVERIFIED"), "why": (lineage or {}).get("why")},
+        "families": fams,
+    }
+
+
 def build(regimes: dict, policy: dict, champions: dict, elig: dict, gates: dict, lock: dict,
-          edge_cfg: dict) -> dict:
-    """Pure: same inputs -> byte-identical output."""
+          edge_cfg: dict, side: dict | None = None) -> dict:
+    """Pure: same inputs -> byte-identical output. `side`: side_models_view (omitted when None)."""
     entries = []
     for e in sorted(regimes.get("entries", []), key=lambda x: x["key"]):
         lg, mk, sd, mt = e["league"], e["market"], e["side"], e["model_type"]
@@ -188,6 +218,7 @@ def build(regimes: dict, policy: dict, champions: dict, elig: dict, gates: dict,
         },
         "n_entries": len(entries), "production_state_counts": dict(sorted(counts.items())),
         "entries": entries,
+        **({"side_models": side} if side is not None else {}),
     }
 
 
@@ -203,8 +234,14 @@ def generate() -> dict:
     cells = sorted({(e["league"], GATE_MARKET[e["market"]], e["side"] if e["market"] == "OU25" else "")
                     for e in regimes.get("entries", [])})
     elig, gates = resolve_deployed([list(c) for c in cells])
+    side = None
+    if SIDE_ARTIFACT_PATH.exists():
+        from src.integrity import training_lineage as TL
+        lin = TL.side_lineage(ROOT)
+        side = side_models_view(_read(SIDE_ARTIFACT_PATH), _read(SIDE_RECIPE_PATH), lin,
+                                (lin or {}).get("artifact_sha256_16"))
     return build(regimes, _read(POLICY_PATH), _read(CHAMPIONS_PATH), elig, gates, _read(LOCK_PATH),
-                 _read(EDGE_CFG_PATH))
+                 _read(EDGE_CFG_PATH), side)
 
 
 def render(reg: dict) -> str:
