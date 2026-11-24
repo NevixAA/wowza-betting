@@ -1,10 +1,12 @@
 {
- "generated_at": "2026-11-24T09:49:25Z",
+ "generated_at": "2026-11-24T19:02:27Z",
  "panel_version": "LWR-1",
  "tracked_leagues": 20,
  "current_tip_day": "2026-11-24",
  "leagues_with_current_week_data": 16,
- "missing_leagues": [],
+ "missing_leagues": [
+  "Serie B"
+ ],
  "missing_leagues_previous_week": [],
  "no_fixture_leagues": [
   "China Super League",
@@ -17,10 +19,10 @@
  "expected_candidate_rows": 700,
  "actual_candidate_rows": 692,
  "panel_rows": 1324,
- "settled_rows": 1208,
- "pending_rows": 116,
- "clv_certified_rows": 581,
- "clv_coverage": 0.481,
+ "settled_rows": 1221,
+ "pending_rows": 103,
+ "clv_certified_rows": 587,
+ "clv_coverage": 0.4808,
  "protected_tracks_modified": false,
  "leagues": {
   "Argentina Primera Division": {
@@ -1080,7 +1082,7 @@
   "Serie B": {
    "current": {
     "league_week_id": "Serie B|2026-W48",
-    "state": "PROVISIONAL",
+    "state": "LOCKED_NOT_FROZEN",
     "fixtures_known": 19,
     "fixtures_before_panel_start": 0,
     "fixtures_with_candidates": 19,
