@@ -92,6 +92,19 @@ def _median_addendum_record() -> dict:
     return {"file": MEDIAN_ADDENDUM.relative_to(ROOT).as_posix(), "sha256_lf": M.sha_lf(MEDIAN_ADDENDUM)}
 
 
+MED_NAMESPACE, MED_TAG = "bars_p11v3med", "p11v3med"
+MED_OUT = ROOT / "output" / "research" / "p11_bars_tiers_v3_median"
+
+
+def point_at_median_basis() -> None:
+    """Addendum 2/3: the median-basis run writes to its own namespace / research folder (never the fixed-order
+    proposal's, never config/top3_tiers_p11.json)."""
+    global NAMESPACE, TAG, OUT, TIER_CONFIG_PROPOSED
+    NAMESPACE, TAG, OUT = MED_NAMESPACE, MED_TAG, MED_OUT
+    TIER_CONFIG_PROPOSED = ROOT / "output" / "threshold_proposals" / MED_NAMESPACE / "top3_tiers_p11v3med_PROPOSED.json"
+    M.OUT, M.NAMESPACE, M.TAG, M.TIER_CONFIG = OUT, NAMESPACE, TAG, TIER_CONFIG_PROPOSED
+
+
 def _point_m_at_v3() -> None:
     """scripts/p11_bars_tiers.py's steps run unchanged; only its output / protocol constants point at v3."""
     M.PROTOCOL, M.OUT, M.NAMESPACE, M.TAG = PROTOCOL, OUT, NAMESPACE, TAG
@@ -321,10 +334,50 @@ def cmd_compare(a) -> int:
     latest = json.loads((TP.PROPOSAL_DIR / NAMESPACE / "latest.json").read_text(encoding="utf-8"))
     rows = compare_rows(_cells(old_ev, old_st), _cells(new_ev, new_st))
     (OUT / "old_vs_new.json").write_text(json.dumps(rows, indent=1, default=str) + "\n", encoding="utf-8")
-    REPORT.write_text(render(rows, cov, old_ev, new_ev, latest), encoding="utf-8")
+    text = render(rows, cov, old_ev, new_ev, latest)
+    med_ev_path = TP.PROPOSAL_DIR / MED_NAMESPACE / f"evidence_{MONTH}_{MED_TAG}.json"
+    if med_ev_path.exists():
+        med_ev = json.loads(med_ev_path.read_text(encoding="utf-8"))
+        med_st = json.loads((MED_OUT / "bars_study.json").read_text(encoding="utf-8"))
+        med_latest = json.loads((TP.PROPOSAL_DIR / MED_NAMESPACE / "latest.json").read_text(encoding="utf-8"))
+        text += render_median(_cells(old_ev, old_st), _cells(new_ev, new_st), _cells(med_ev, med_st), med_ev, med_latest)
+    REPORT.write_text(text, encoding="utf-8")
     print(json.dumps({"cells": len(rows), "old": old_ev["status_counts"], "new": new_ev["status_counts"],
                       "report": str(REPORT.relative_to(ROOT))}, indent=1))
     return 0
+
+
+def render_median(old: dict, fixed: dict, med: dict, med_ev: dict, med_latest: dict) -> str:
+    """O/U 2.5 cells side by side: old (P11 v2) / fixed-order D1 / median real price basis (a). EFL first."""
+    keys = sorted({k for k in set(old) | set(fixed) | set(med) if k[2].startswith("over25_")},
+                  key=lambda k: (_efl_rank(k[1]), k[0], k[1], k[2]))
+    L = ["", "## O/U 2.5 on two bases: fixed-order (D1) vs median real price (addenda 2 + 3)", "",
+         "Median basis (owner 2026-11-24, option (a)): per side the median of the real (vigged) prices of every eu + "
+         "uk book with a bet-time two-sided 2.5 pair whose overround is inside config/market_edge_v2.json and that "
+         "de-vigs; >= 3 books, else unpriced. No single-book own / football-data price on this basis, and nothing "
+         "before 2023-05-03 (no per-book history), so the fit window is much shorter.",
+         f"Median-basis proposal: `{med_latest.get('proposal_id')}` (hash `{str(med_latest.get('proposal_hash'))[:12]}`), "
+         f"{med_latest.get('n_entries')} entries, namespace `{MED_NAMESPACE}` - a separate PROPOSAL, not installed. "
+         f"Statuses (all cells of that run): {med_ev['status_counts']}. Only its O/U 2.5 cells differ from the fixed run.",
+         "The validation window (2026-09-01..11-08) was seen before: re-validation numbers, never proof.", "",
+         "| Track | League | Cell | Old v2 status / bar / study bets / ROI [CI] | Fixed D1 status / bar / WF / study bets / "
+         "ROI [CI] / CLV | Median status / bar / WF / study bets / ROI [CI] / CLV |", "|---|---|---|---|---|---|"]
+
+    def cell(d, short=False):
+        if not d:
+            return "-"
+        b, roi, clv = _fmt_study(d.get("study"))
+        st = d.get("status") or "-"
+        if st == "OFF" and (d.get("reason") or d.get("study_cell_reason")):
+            st += f" ({d.get('reason') or d.get('study_cell_reason')})"
+        bar = "-" if d.get("bar") is None else f"{d['bar']:.2f}"
+        wf = d.get("wf_bets") if d.get("wf_bets") is not None else d.get("wf_bets_study")
+        if short:
+            return f"{st} / {bar} / {b} / {roi}"
+        return f"{st} / {bar} / {'-' if wf is None else wf} / {b} / {roi} / {clv}"
+    for k in keys:
+        L.append(f"| {k[0]} | {k[1]} | {k[2]} | {cell(old.get(k), True)} | {cell(fixed.get(k))} | {cell(med.get(k))} |")
+    return "\n".join(L) + "\n"
 
 
 def _cov_table(cov: dict, leagues=None, markets=None) -> list[str]:
@@ -585,6 +638,8 @@ def main(argv=None) -> int:
     for name in ("bars", "tiers-fit", "propose"):
         s = sub.add_parser(name)
         s.add_argument("--work", required=True)
+        s.add_argument("--basis", choices=["fixed", "median"], default="fixed",
+                       help="median = addendum 2/3 O/U 2.5 median real price basis (namespace bars_p11v3med)")
         s.add_argument("--workers", type=int, default=4)
         s.add_argument("--no-resolve", action="store_true")
     sub.add_parser("compare")
@@ -600,6 +655,8 @@ def main(argv=None) -> int:
     c.add_argument("--title", default="P11 v3 price coverage before / after")
     c.add_argument("--universe-note", default="")
     a = ap.parse_args(argv)
+    if getattr(a, "basis", "fixed") == "median":
+        point_at_median_basis()
     return {"prepare": cmd_prepare, "bars": M.cmd_bars, "tiers-fit": M.cmd_tiers_fit, "propose": cmd_propose,
             "compare": cmd_compare,
             "coverage-report": cmd_coverage_report, "median-coverage": cmd_median_coverage,
