@@ -24,12 +24,14 @@ def test_allocation_cell_pnl_is_exact_half_up():
     assert cells[0].pnl == -0.02
 
 
-def test_builder_summary_total_is_exact():
+def test_builder_summary_has_no_pnl_at_a_derived_price():
+    """Owner 2026-11-24: combos have no market price, so no P/L is computed at our fair price (hit rate only)."""
     from dashboard_data import builder_view as B
     s = pd.DataFrame({"combo_result": ["WON", "WON", "WON", "LOST"],
                       "fair_combo_odds": [1.1, 1.1, 1.1, 2.0]})
-    # returns 0.1 + 0.1 + 0.1 - 1.0, exact -0.7 (the float sum is -0.7000000000000001)
-    assert B.settled_summary(s)["pnl"] == -0.7
+    out = B.settled_summary(s)
+    assert "pnl" not in out and (out["won"], out["decided"]) == (3, 4)
+    assert list(B.shown(s, ("combo_result", "fair_combo_odds")).columns) == ["combo_result"]
 
 
 def test_leagues_summarise_is_exact():

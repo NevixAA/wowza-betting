@@ -33,6 +33,10 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parents[2]
 EVIDENCE = ROOT / "reports" / "lineage" / "training_lineage_evidence.json"
 CHAMPIONS = ROOT / "models" / "registry" / "current_champions.json"
+#: side models (corners / cards, learning ledger only): their own evidence, written by
+#: `python -m src.side_models.reproduce --evidence` (re-trained from the recorded data ref, byte + probability parity)
+SIDE_EVIDENCE_REL = "reports/lineage/side_models_lineage_evidence.json"
+SIDE_ARTIFACT_REL = "models/side_models/side_models.json"
 LINEAGE_VERSION = "training-lineage-1.0"
 PASS, WARN, FAIL, UNVERIFIED = "PASS", "WARN", "FAIL", "UNVERIFIED"
 _RANK = {PASS: 0, WARN: 1, UNVERIFIED: 1, "UNKNOWN": 1, FAIL: 2}
@@ -261,10 +265,43 @@ def evaluate(root: Path | None = None, evidence: dict | None = None) -> dict:
         models["props:" + pfile] = {"payload": pfile, "artifact_sha256_16": (sha or "")[:16], "status": st,
                                     "why": e.get("summary", "") if st != UNVERIFIED else
                                     "evidence is for another file version"}
+    side = side_lineage(root)
+    if side is not None:
+        models["side:side_models.json"] = side
     status = worst(m["status"] for m in models.values()) if models else UNVERIFIED
     return {"version": LINEAGE_VERSION, "status": status,
             "evidence_file": "reports/lineage/training_lineage_evidence.json",
             "evidence_generated_at": (evidence or {}).get("generated_at"), "models": models}
+
+
+def side_lineage(root: Path | None = None) -> dict | None:
+    """The side-model artifact's lineage: PASS only when its evidence names the artifact's CURRENT sha256, the
+    recipe's model_version equals the artifact's, and the recorded reproduction passed. None when the tree has
+    no side-model artifact (nothing to verify)."""
+    root = root or ROOT
+    art = root / SIDE_ARTIFACT_REL
+    sha = _sha256(art)
+    if sha is None:
+        return None
+    try:
+        ev = json.loads((root / SIDE_EVIDENCE_REL).read_text(encoding="utf-8"))
+    except Exception:                                                  # noqa: BLE001
+        ev = None
+    try:
+        mv = json.loads(art.read_text(encoding="utf-8")).get("model_version")
+        recipe = json.loads((root / "config" / "side_models_recipe.json").read_text(encoding="utf-8"))
+    except Exception:                                                  # noqa: BLE001
+        mv, recipe = None, {}
+    if ev is None:
+        st, why = UNVERIFIED, "no lineage evidence for the side-model artifact"
+    elif ev.get("artifact_sha256") != sha:
+        st, why = UNVERIFIED, "evidence is for another file version (side models changed since they were verified)"
+    elif not (mv and recipe.get("model_version") == mv == ev.get("model_version")):
+        st, why = UNVERIFIED, "config/side_models_recipe.json does not record the served model_version"
+    else:
+        st, why = ev.get("status", UNVERIFIED), ev.get("summary", "")
+    return {"payload": SIDE_ARTIFACT_REL, "artifact_sha256_16": sha[:16], "status": st, "why": why,
+            "model_version": mv, "data_ref": (ev or {}).get("data_ref")}
 
 
 #: serving track key (src.integrity.model_health.TRACKS) -> registry model type
