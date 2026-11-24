@@ -225,8 +225,15 @@ FANTASY_FEATURES = {
                              VALID_MODEL_ESTIMATE, "unknown FDR -> NaN (2026-11-15; was x1.0)"),
 }
 
-#: registered, documented historical exceptions (A). Each is NOT reaching a served model today.
+#: registered, documented exceptions (A). Each is NOT reaching a served model today, except an entry
+#: whose status says the OWNER registered it as a known served defect with a dated fix point.
 HISTORICAL_EXCEPTIONS = (
+    {"id": "props-cards-fit-median", "artifact": "served props cards model (candidate recipe_retrained, "
+                                                "promoted 2026-11-15, run 43035218594)",
+     "what": "the payload's imputer fills every missing feature with a persisted fit-block median "
+             "(model.fill_, 128 features, e.g. prev_season_goals_pg) - a filled value, not a measurement",
+     "status": "KNOWN SERVED DEFECT, registered by the owner 2026-11-24: fixed at the next owner-approved "
+               "props refit (NaN-native or explicit-missing recipe); no change to the served model today"},
     {"id": "standard-repaired-xg-zero", "artifact": "Standard O/U 2.5 (retired v9_repaired)",
      "what": "the 2026-10-28 repaired Standard payload's 1.0 imputer filled xG and inside-box shots "
              "(0% training coverage) with 0.0 on every training row",

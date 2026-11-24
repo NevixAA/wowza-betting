@@ -1,6 +1,6 @@
 {
  "calculation_version": "fantasy_paired_walkforward-1.1",
- "generated_at": "2026-11-23T18:48:17Z",
+ "generated_at": "2026-11-24T18:17:18Z",
  "source": "output/fantasy_v2_oos.csv",
  "residual_mode_note": "shadow only; this report changes nothing that is served",
  "arm_labels": {
@@ -16,18 +16,18 @@
   "population": "ALL_ARMS_PAIRED",
   "definition": "FINAL gameweeks; rows where FPL, WOWZA, LINEAR, RIDGE, HGB, HGB_V1FREE all have a forecast and the actual is known; chronology checked",
   "exclusions": {
-   "rows_in": 3051,
-   "not_final": 420,
+   "rows_in": 3092,
+   "not_final": 0,
    "chronology_violation": 0,
    "actual_missing": 0,
    "missing_FPL": 0,
-   "missing_WOWZA": 1663,
-   "missing_LINEAR": 1663,
-   "missing_RIDGE": 1663,
+   "missing_WOWZA": 1789,
+   "missing_LINEAR": 1789,
+   "missing_RIDGE": 1789,
    "missing_HGB": 0,
    "missing_HGB_V1FREE": 0,
-   "dropped_any_arm_missing": 1663,
-   "rows_scored": 968
+   "dropped_any_arm_missing": 1789,
+   "rows_scored": 1303
   },
   "gameweeks": [
    5,
@@ -35,183 +35,184 @@
    7,
    8,
    9,
-   10
+   10,
+   11
   ],
-  "rows": 968,
+  "rows": 1303,
   "pooled": {
    "FPL": {
-    "n": 968,
-    "mae": 1.7872,
-    "rmse": 2.7566,
-    "bias": -0.1376,
-    "spearman_pooled": 0.5729,
-    "spearman_mean_per_gw": 0.537,
-    "top10_overlap_mean": 2.5,
-    "top10_actual_mean": 4.5167,
-    "captain_regret_total": 66.0,
-    "captain_regret_mean": 11.0
+    "n": 1303,
+    "mae": 1.8468,
+    "rmse": 2.843,
+    "bias": -0.1285,
+    "spearman_pooled": 0.555,
+    "spearman_mean_per_gw": 0.5326,
+    "top10_overlap_mean": 2.2857,
+    "top10_actual_mean": 4.4143,
+    "captain_regret_total": 80.0,
+    "captain_regret_mean": 11.4286
    },
    "WOWZA": {
-    "n": 968,
-    "mae": 2.4002,
-    "rmse": 3.0696,
-    "bias": 1.1199,
-    "spearman_pooled": 0.4186,
-    "spearman_mean_per_gw": 0.4167,
-    "top10_overlap_mean": 1.5,
-    "top10_actual_mean": 3.4,
-    "captain_regret_total": 79.0,
-    "captain_regret_mean": 13.1667
+    "n": 1303,
+    "mae": 2.3956,
+    "rmse": 3.0769,
+    "bias": 1.0083,
+    "spearman_pooled": 0.395,
+    "spearman_mean_per_gw": 0.4054,
+    "top10_overlap_mean": 1.2857,
+    "top10_actual_mean": 3.3,
+    "captain_regret_total": 94.0,
+    "captain_regret_mean": 13.4286
    },
    "LINEAR": {
-    "n": 968,
-    "mae": 1.7512,
-    "rmse": 2.6158,
-    "bias": 0.0087,
-    "spearman_pooled": 0.5994,
-    "spearman_mean_per_gw": 0.5868,
-    "top10_overlap_mean": 2.6667,
-    "top10_actual_mean": 4.4833,
-    "captain_regret_total": 73.0,
-    "captain_regret_mean": 12.1667
+    "n": 1303,
+    "mae": 1.8026,
+    "rmse": 2.6691,
+    "bias": 0.0015,
+    "spearman_pooled": 0.5826,
+    "spearman_mean_per_gw": 0.5793,
+    "top10_overlap_mean": 2.2857,
+    "top10_actual_mean": 4.3571,
+    "captain_regret_total": 87.0,
+    "captain_regret_mean": 12.4286
    },
    "RIDGE": {
-    "n": 968,
-    "mae": 1.7653,
-    "rmse": 2.6242,
-    "bias": 0.0106,
-    "spearman_pooled": 0.5898,
-    "spearman_mean_per_gw": 0.5683,
-    "top10_overlap_mean": 2.5,
-    "top10_actual_mean": 4.4167,
-    "captain_regret_total": 69.0,
-    "captain_regret_mean": 11.5
+    "n": 1303,
+    "mae": 1.8115,
+    "rmse": 2.6746,
+    "bias": -0.0073,
+    "spearman_pooled": 0.5745,
+    "spearman_mean_per_gw": 0.5627,
+    "top10_overlap_mean": 2.1429,
+    "top10_actual_mean": 4.4,
+    "captain_regret_total": 83.0,
+    "captain_regret_mean": 11.8571
    },
    "HGB": {
-    "n": 968,
-    "mae": 1.7987,
-    "rmse": 2.646,
-    "bias": 0.0517,
-    "spearman_pooled": 0.5717,
-    "spearman_mean_per_gw": 0.5482,
-    "top10_overlap_mean": 2.0,
-    "top10_actual_mean": 4.0167,
-    "captain_regret_total": 63.0,
-    "captain_regret_mean": 10.5
+    "n": 1303,
+    "mae": 1.8386,
+    "rmse": 2.7026,
+    "bias": 0.0307,
+    "spearman_pooled": 0.5625,
+    "spearman_mean_per_gw": 0.546,
+    "top10_overlap_mean": 1.8571,
+    "top10_actual_mean": 4.1286,
+    "captain_regret_total": 78.0,
+    "captain_regret_mean": 11.1429
    },
    "HGB_V1FREE": {
-    "n": 968,
-    "mae": 1.7858,
-    "rmse": 2.6473,
-    "bias": -0.0047,
-    "spearman_pooled": 0.569,
-    "spearman_mean_per_gw": 0.5409,
-    "top10_overlap_mean": 2.1667,
-    "top10_actual_mean": 4.2333,
-    "captain_regret_total": 63.0,
-    "captain_regret_mean": 10.5
+    "n": 1303,
+    "mae": 1.8264,
+    "rmse": 2.7004,
+    "bias": -0.0184,
+    "spearman_pooled": 0.562,
+    "spearman_mean_per_gw": 0.5407,
+    "top10_overlap_mean": 2.0,
+    "top10_actual_mean": 4.3857,
+    "captain_regret_total": 78.0,
+    "captain_regret_mean": 11.1429
    }
   },
   "vs_fpl": {
    "WOWZA": {
-    "mae_minus_fpl": 0.613,
+    "mae_minus_fpl": 0.5488,
     "mae_ci90": [
-     0.526,
-     0.7387
+     0.458,
+     0.6763
     ],
-    "rmse_minus_fpl": 0.3131,
+    "rmse_minus_fpl": 0.2339,
     "rmse_ci90": [
-     0.2131,
-     0.387
+     0.1197,
+     0.3516
     ],
-    "abs_bias_minus_fpl": 0.9823,
+    "abs_bias_minus_fpl": 0.8798,
     "abs_bias_ci90": [
-     0.7591,
-     1.1917
+     0.6879,
+     1.1188
     ],
     "gws_mae_better_than_fpl": 0,
     "gws_regret_lower_than_fpl": 0,
-    "gws": 6
+    "gws": 7
    },
    "LINEAR": {
-    "mae_minus_fpl": -0.036,
+    "mae_minus_fpl": -0.0442,
     "mae_ci90": [
-     -0.0849,
-     -0.008
+     -0.0791,
+     -0.0156
     ],
-    "rmse_minus_fpl": -0.1407,
+    "rmse_minus_fpl": -0.174,
     "rmse_ci90": [
-     -0.2512,
-     -0.0588
-    ],
-    "abs_bias_minus_fpl": -0.1289,
-    "abs_bias_ci90": [
-     -0.208,
-     0.0981
-    ],
-    "gws_mae_better_than_fpl": 5,
-    "gws_regret_lower_than_fpl": 1,
-    "gws": 6
-   },
-   "RIDGE": {
-    "mae_minus_fpl": -0.0219,
-    "mae_ci90": [
-     -0.0525,
-     0.002
-    ],
-    "rmse_minus_fpl": -0.1324,
-    "rmse_ci90": [
-     -0.2138,
-     -0.0704
+     -0.2535,
+     -0.0858
     ],
     "abs_bias_minus_fpl": -0.127,
     "abs_bias_ci90": [
-     -0.221,
-     0.0843
+     -0.1804,
+     0.0648
     ],
-    "gws_mae_better_than_fpl": 3,
+    "gws_mae_better_than_fpl": 6,
+    "gws_regret_lower_than_fpl": 1,
+    "gws": 7
+   },
+   "RIDGE": {
+    "mae_minus_fpl": -0.0353,
+    "mae_ci90": [
+     -0.062,
+     -0.0064
+    ],
+    "rmse_minus_fpl": -0.1684,
+    "rmse_ci90": [
+     -0.2325,
+     -0.0919
+    ],
+    "abs_bias_minus_fpl": -0.1212,
+    "abs_bias_ci90": [
+     -0.1848,
+     0.0404
+    ],
+    "gws_mae_better_than_fpl": 4,
     "gws_regret_lower_than_fpl": 2,
-    "gws": 6
+    "gws": 7
    },
    "HGB": {
-    "mae_minus_fpl": 0.0115,
+    "mae_minus_fpl": -0.0082,
     "mae_ci90": [
-     -0.0422,
-     0.0554
+     -0.0496,
+     0.0388
     ],
-    "rmse_minus_fpl": -0.1106,
+    "rmse_minus_fpl": -0.1405,
     "rmse_ci90": [
-     -0.1992,
-     -0.0429
+     -0.207,
+     -0.0672
     ],
-    "abs_bias_minus_fpl": -0.0859,
+    "abs_bias_minus_fpl": -0.0978,
     "abs_bias_ci90": [
-     -0.2424,
-     0.1263
+     -0.2079,
+     0.0843
     ],
-    "gws_mae_better_than_fpl": 4,
+    "gws_mae_better_than_fpl": 5,
     "gws_regret_lower_than_fpl": 3,
-    "gws": 6
+    "gws": 7
    },
    "HGB_V1FREE": {
-    "mae_minus_fpl": -0.0014,
+    "mae_minus_fpl": -0.0204,
     "mae_ci90": [
-     -0.0619,
-     0.0501
+     -0.0655,
+     0.0311
     ],
-    "rmse_minus_fpl": -0.1092,
+    "rmse_minus_fpl": -0.1426,
     "rmse_ci90": [
-     -0.1966,
-     -0.0423
+     -0.2114,
+     -0.0645
     ],
-    "abs_bias_minus_fpl": -0.1329,
+    "abs_bias_minus_fpl": -0.1101,
     "abs_bias_ci90": [
-     -0.1879,
-     0.0682
+     -0.1556,
+     0.0382
     ],
-    "gws_mae_better_than_fpl": 4,
+    "gws_mae_better_than_fpl": 5,
     "gws_regret_lower_than_fpl": 3,
-    "gws": 6
+    "gws": 7
    }
   },
   "by_gw": [
@@ -778,6 +779,100 @@
      "best_actual": 16.0,
      "captain_regret": 10.0
     }
+   },
+   {
+    "gw": 11,
+    "n": 335,
+    "FPL": {
+     "n": 335,
+     "mae": 2.0191,
+     "rmse": 3.0793,
+     "bias": -0.1021,
+     "spearman": 0.5064,
+     "top10_overlap": 1,
+     "top10_actual_mean": 3.8,
+     "captain_element": 166,
+     "captain_name": "Nicolas Jackson",
+     "captain_forecast": 11.0,
+     "captain_actual": 2.0,
+     "best_actual": 16.0,
+     "captain_regret": 14.0
+    },
+    "WOWZA": {
+     "n": 335,
+     "mae": 2.3825,
+     "rmse": 3.098,
+     "bias": 0.686,
+     "spearman": 0.3378,
+     "top10_overlap": 0,
+     "top10_actual_mean": 2.7,
+     "captain_element": 427,
+     "captain_name": "Bryan Mbeumo",
+     "captain_forecast": 6.433,
+     "captain_actual": 1.0,
+     "best_actual": 16.0,
+     "captain_regret": 15.0
+    },
+    "LINEAR": {
+     "n": 335,
+     "mae": 1.951,
+     "rmse": 2.8173,
+     "bias": -0.0195,
+     "spearman": 0.5343,
+     "top10_overlap": 0,
+     "top10_actual_mean": 3.6,
+     "captain_element": 249,
+     "captain_name": "Thierno Barry",
+     "captain_forecast": 6.39,
+     "captain_actual": 2.0,
+     "best_actual": 16.0,
+     "captain_regret": 14.0
+    },
+    "RIDGE": {
+     "n": 335,
+     "mae": 1.945,
+     "rmse": 2.8153,
+     "bias": -0.059,
+     "spearman": 0.5288,
+     "top10_overlap": 0,
+     "top10_actual_mean": 4.3,
+     "captain_element": 166,
+     "captain_name": "Nicolas Jackson",
+     "captain_forecast": 7.26,
+     "captain_actual": 2.0,
+     "best_actual": 16.0,
+     "captain_regret": 14.0
+    },
+    "HGB": {
+     "n": 335,
+     "mae": 1.9539,
+     "rmse": 2.8599,
+     "bias": -0.0299,
+     "spearman": 0.533,
+     "top10_overlap": 1,
+     "top10_actual_mean": 4.8,
+     "captain_element": 31,
+     "captain_name": "Ezri Konsa Ngoyo",
+     "captain_forecast": 7.907,
+     "captain_actual": 1.0,
+     "best_actual": 16.0,
+     "captain_regret": 15.0
+    },
+    "HGB_V1FREE": {
+     "n": 335,
+     "mae": 1.9437,
+     "rmse": 2.8482,
+     "bias": -0.0579,
+     "spearman": 0.5394,
+     "top10_overlap": 1,
+     "top10_actual_mean": 5.3,
+     "captain_element": 4,
+     "captain_name": "Gabriel dos Santos Magalh\u00e3es",
+     "captain_forecast": 7.521,
+     "captain_actual": 1.0,
+     "best_actual": 16.0,
+     "captain_regret": 15.0
+    }
    }
   ]
  },
@@ -785,15 +880,15 @@
   "population": "FPL_HGB_ALL_FINAL",
   "definition": "FINAL gameweeks; every row with a FPL, HGB, HGB_V1FREE forecast",
   "exclusions": {
-   "rows_in": 3051,
-   "not_final": 420,
+   "rows_in": 3092,
+   "not_final": 0,
    "chronology_violation": 0,
    "actual_missing": 0,
    "missing_FPL": 0,
    "missing_HGB": 0,
    "missing_HGB_V1FREE": 0,
    "dropped_any_arm_missing": 0,
-   "rows_scored": 2631
+   "rows_scored": 3092
   },
   "gameweeks": [
    5,
@@ -801,87 +896,88 @@
    7,
    8,
    9,
-   10
+   10,
+   11
   ],
-  "rows": 2631,
+  "rows": 3092,
   "pooled": {
    "FPL": {
-    "n": 2631,
-    "mae": 1.7671,
-    "rmse": 2.8122,
-    "bias": -0.0515,
-    "spearman_pooled": 0.5443,
-    "spearman_mean_per_gw": 0.5473,
-    "top10_overlap_mean": 1.1667,
-    "top10_actual_mean": 4.45,
-    "captain_regret_total": 64.0,
-    "captain_regret_mean": 10.6667
+    "n": 3092,
+    "mae": 1.7634,
+    "rmse": 2.8201,
+    "bias": -0.0641,
+    "spearman_pooled": 0.5456,
+    "spearman_mean_per_gw": 0.5485,
+    "top10_overlap_mean": 1.1429,
+    "top10_actual_mean": 4.3571,
+    "captain_regret_total": 78.0,
+    "captain_regret_mean": 11.1429
    },
    "HGB": {
-    "n": 2631,
-    "mae": 1.7166,
-    "rmse": 2.5999,
-    "bias": 0.0497,
-    "spearman_pooled": 0.5606,
-    "spearman_mean_per_gw": 0.5639,
-    "top10_overlap_mean": 0.6667,
-    "top10_actual_mean": 3.7667,
-    "captain_regret_total": 73.0,
-    "captain_regret_mean": 12.1667
+    "n": 3092,
+    "mae": 1.7144,
+    "rmse": 2.6116,
+    "bias": 0.038,
+    "spearman_pooled": 0.5643,
+    "spearman_mean_per_gw": 0.5668,
+    "top10_overlap_mean": 0.7143,
+    "top10_actual_mean": 3.9143,
+    "captain_regret_total": 88.0,
+    "captain_regret_mean": 12.5714
    },
    "HGB_V1FREE": {
-    "n": 2631,
-    "mae": 1.7227,
-    "rmse": 2.602,
-    "bias": 0.0482,
-    "spearman_pooled": 0.5586,
-    "spearman_mean_per_gw": 0.5613,
-    "top10_overlap_mean": 0.8333,
-    "top10_actual_mean": 4.0167,
-    "captain_regret_total": 73.0,
-    "captain_regret_mean": 12.1667
+    "n": 3092,
+    "mae": 1.7187,
+    "rmse": 2.6119,
+    "bias": 0.035,
+    "spearman_pooled": 0.5632,
+    "spearman_mean_per_gw": 0.5654,
+    "top10_overlap_mean": 0.8571,
+    "top10_actual_mean": 4.2,
+    "captain_regret_total": 88.0,
+    "captain_regret_mean": 12.5714
    }
   },
   "vs_fpl": {
    "HGB": {
-    "mae_minus_fpl": -0.0505,
+    "mae_minus_fpl": -0.049,
     "mae_ci90": [
-     -0.1256,
-     0.02
+     -0.1131,
+     0.0124
     ],
-    "rmse_minus_fpl": -0.2124,
+    "rmse_minus_fpl": -0.2086,
     "rmse_ci90": [
-     -0.3323,
-     -0.1067
+     -0.3083,
+     -0.1129
     ],
-    "abs_bias_minus_fpl": -0.0017,
+    "abs_bias_minus_fpl": -0.0261,
     "abs_bias_ci90": [
-     -0.0951,
-     0.0938
-    ],
-    "gws_mae_better_than_fpl": 3,
-    "gws_regret_lower_than_fpl": 1,
-    "gws": 6
-   },
-   "HGB_V1FREE": {
-    "mae_minus_fpl": -0.0444,
-    "mae_ci90": [
-     -0.1206,
-     0.0277
-    ],
-    "rmse_minus_fpl": -0.2103,
-    "rmse_ci90": [
-     -0.3287,
-     -0.1014
-    ],
-    "abs_bias_minus_fpl": -0.0033,
-    "abs_bias_ci90": [
-     -0.097,
-     0.0957
+     -0.104,
+     0.079
     ],
     "gws_mae_better_than_fpl": 4,
     "gws_regret_lower_than_fpl": 1,
-    "gws": 6
+    "gws": 7
+   },
+   "HGB_V1FREE": {
+    "mae_minus_fpl": -0.0446,
+    "mae_ci90": [
+     -0.11,
+     0.0173
+    ],
+    "rmse_minus_fpl": -0.2082,
+    "rmse_ci90": [
+     -0.3078,
+     -0.1104
+    ],
+    "abs_bias_minus_fpl": -0.0292,
+    "abs_bias_ci90": [
+     -0.1024,
+     0.0793
+    ],
+    "gws_mae_better_than_fpl": 5,
+    "gws_regret_lower_than_fpl": 1,
+    "gws": 7
    }
   },
   "by_gw": [
@@ -1178,6 +1274,55 @@
      "best_actual": 16.0,
      "captain_regret": 10.0
     }
+   },
+   {
+    "gw": 11,
+    "n": 461,
+    "FPL": {
+     "n": 461,
+     "mae": 1.7421,
+     "rmse": 2.8648,
+     "bias": -0.1364,
+     "spearman": 0.5555,
+     "top10_overlap": 1,
+     "top10_actual_mean": 3.8,
+     "captain_element": 166,
+     "captain_name": "Nicolas Jackson",
+     "captain_forecast": 11.0,
+     "captain_actual": 2.0,
+     "best_actual": 16.0,
+     "captain_regret": 14.0
+    },
+    "HGB": {
+     "n": 461,
+     "mae": 1.7017,
+     "rmse": 2.6774,
+     "bias": -0.0291,
+     "spearman": 0.5847,
+     "top10_overlap": 1,
+     "top10_actual_mean": 4.8,
+     "captain_element": 31,
+     "captain_name": "Ezri Konsa Ngoyo",
+     "captain_forecast": 7.907,
+     "captain_actual": 1.0,
+     "best_actual": 16.0,
+     "captain_regret": 15.0
+    },
+    "HGB_V1FREE": {
+     "n": 461,
+     "mae": 1.6962,
+     "rmse": 2.6679,
+     "bias": -0.0404,
+     "spearman": 0.59,
+     "top10_overlap": 1,
+     "top10_actual_mean": 5.3,
+     "captain_element": 4,
+     "captain_name": "Gabriel dos Santos Magalh\u00e3es",
+     "captain_forecast": 7.521,
+     "captain_actual": 1.0,
+     "best_actual": 16.0,
+     "captain_regret": 15.0
+    }
    }
   ]
  },
@@ -1197,47 +1342,48 @@
     "auto_promote": false,
     "min_completed_gameweeks": 10,
     "exclusions": {
-     "rows_in": 3051,
-     "not_final": 420,
+     "rows_in": 3092,
+     "not_final": 0,
      "chronology_violation": 0,
      "actual_missing": 0,
      "missing_FPL": 0,
-     "missing_LINEAR": 1663,
-     "dropped_any_arm_missing": 1663,
-     "rows_scored": 968
+     "missing_LINEAR": 1789,
+     "dropped_any_arm_missing": 1789,
+     "rows_scored": 1303
     },
-    "rows": 968,
+    "rows": 1303,
     "gameweeks": [
      5,
      6,
      7,
      8,
      9,
-     10
+     10,
+     11
     ],
     "checks": {
      "completed_gameweeks": {
-      "value": 6,
+      "value": 7,
       "need": 10,
       "pass": false
      },
      "mae_diff_ci90_below_zero": {
-      "point": -0.036,
+      "point": -0.0442,
       "ci90": [
-       -0.0836,
-       -0.008
+       -0.0786,
+       -0.016
       ],
       "pass": true
      },
      "captain_regret_no_worse": {
-      "candidate": 73.0,
-      "baseline": 66.0,
+      "candidate": 87.0,
+      "baseline": 80.0,
       "pass": false
      }
     },
     "reasons": [
-     "6 of 10 completed gameweeks",
-     "captain regret 73 vs FPL 66"
+     "7 of 10 completed gameweeks",
+     "captain regret 87 vs FPL 80"
     ]
    },
    "HGB_V1FREE": {
@@ -1248,48 +1394,49 @@
     "auto_promote": false,
     "min_completed_gameweeks": 10,
     "exclusions": {
-     "rows_in": 3051,
-     "not_final": 420,
+     "rows_in": 3092,
+     "not_final": 0,
      "chronology_violation": 0,
      "actual_missing": 0,
      "missing_FPL": 0,
      "missing_HGB_V1FREE": 0,
      "dropped_any_arm_missing": 0,
-     "rows_scored": 2631
+     "rows_scored": 3092
     },
-    "rows": 2631,
+    "rows": 3092,
     "gameweeks": [
      5,
      6,
      7,
      8,
      9,
-     10
+     10,
+     11
     ],
     "checks": {
      "completed_gameweeks": {
-      "value": 6,
+      "value": 7,
       "need": 10,
       "pass": false
      },
      "mae_diff_ci90_below_zero": {
-      "point": -0.0444,
+      "point": -0.0446,
       "ci90": [
-       -0.1206,
-       0.0285
+       -0.11,
+       0.0165
       ],
       "pass": false
      },
      "captain_regret_no_worse": {
-      "candidate": 73.0,
-      "baseline": 64.0,
+      "candidate": 88.0,
+      "baseline": 78.0,
       "pass": false
      }
     },
     "reasons": [
-     "6 of 10 completed gameweeks",
-     "MAE - FPL 90% interval -0.121 to +0.028 is not entirely below 0",
-     "captain regret 73 vs FPL 64"
+     "7 of 10 completed gameweeks",
+     "MAE - FPL 90% interval -0.110 to +0.016 is not entirely below 0",
+     "captain regret 88 vs FPL 78"
     ]
    }
   }
