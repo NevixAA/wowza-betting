@@ -284,9 +284,14 @@ def test_page_renders_all_three_sections_for_admin(monkeypatch):
     # bars, picks, league-weeks, tracker + the Clean Record evaluation tab (totals, historical figures, forward
     # cells, and every cell of history / research / learning rows: P1 item 8, 2026-11-22)
     assert "Post-repair evaluation (every record apart)" in txt
+    # + the Stake drought tab (owner rule 2026-11-24): the flagged table when any family is flagged, and the
+    # pending / off-season / OK table
+    assert "Stake drought: repair & research" in txt
+    dd = AB.read_json(AB.DROUGHT)
+    n_dr = 0 if not dd else (1 + int(bool((dd.get("total") or {}).get("REPAIR_RESEARCH_NEEDED"))))
     # + the all-leagues "Today's and upcoming" table (owner 2026-11-24) when a pick kicks off in its window
     assert "Today's and upcoming TOP-3, all leagues" in txt
-    assert len(at.dataframe) in (4 + 6, 4 + 6 + 1)
+    assert len(at.dataframe) in (4 + 6 + n_dr, 4 + 6 + n_dr + 1)
 
 
 def test_page_odds_private_when_no_store_and_no_public_prices(monkeypatch, tmp_path):
