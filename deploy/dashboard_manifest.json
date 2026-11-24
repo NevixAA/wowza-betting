@@ -2101,6 +2101,11 @@
    "reason": "workflow file: read only by the live research-lock check, which the slim app replaces with the CI-recorded result"
   },
   {
+   "path": ".github/workflows/train_side_models.yml",
+   "bytes": 4617,
+   "reason": "workflow file: read only by the live research-lock check, which the slim app replaces with the CI-recorded result"
+  },
+  {
    "path": ".github/workflows/train_standard_repaired.yml",
    "bytes": 9334,
    "reason": "workflow file: read only by the live research-lock check, which the slim app replaces with the CI-recorded result"
