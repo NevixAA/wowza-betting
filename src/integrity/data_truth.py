@@ -1501,8 +1501,38 @@ def evaluate(now: datetime | None = None) -> list[dict]:                 # noqa:
 GATED = tuple(GATED) + ("Data truth 14",)
 
 
-# ── 17 TIP TRUTH (owner 2026-11-24 "no duplicates, no unreal data, not unreal markets") ──────────────────────────
-TIP_TRUTH_RULE = ("Data truth 17: tip truth - every frozen TOP-3 / props TOP-3 pick resolves to ONE real "
+# ── Data truth 17: no bookmaker price in a public file (owner 2026-11-24, "especially the public odds") ──────────
+PUBLIC_PRICES_RULE = ("no committed file on a retired price path (config/price_store_paths.json public_retired), and "
+                      "every committed price column belongs to a class that moves private or is allowlisted with a "
+                      "reason (config/public_price_allowlist.json)")
+
+
+def public_prices() -> dict:
+    lab = "Data truth 17: no public prices"
+    from src.integrity import public_prices as PP
+    ok, value, detail = PP.check("wowza-betting")
+    return _c(lab, GREEN if ok else RED, value, PUBLIC_PRICES_RULE, detail)
+
+
+_evaluate_rules_1_to_16 = evaluate
+
+
+def evaluate(now: datetime | None = None) -> list[dict]:                 # noqa: F811
+    """Rules 1-16 plus Data truth 17. Never raises: a check that cannot run is itself RED."""
+    out = _evaluate_rules_1_to_16(now)
+    try:
+        out.append(public_prices())
+    except Exception as e:                                             # noqa: BLE001
+        out.append(_c("Data truth 17: no public prices", RED, "check failed", "must run", f"{type(e).__name__}: {e}"[:200]))
+    return out
+
+
+#: Rule 17 blocks a push/PR: a commit that publishes a retired price file or an unclassified price column must not merge.
+GATED = tuple(GATED) + ("Data truth 17",)
+
+
+# ── 18 TIP TRUTH (owner 2026-11-24 "no duplicates, no unreal data, not unreal markets") ──────────────────────────
+TIP_TRUTH_RULE = ("Data truth 18: tip truth - every frozen TOP-3 / props TOP-3 pick resolves to ONE real "
                   "API-Football fixture, carries a real named-book two-sided price captured before its issue and a "
                   "real approved market, and no canonical match carries two picks on one market x side "
                   "(src/tip_truth). A pick failing any of these is RED unless a correction sits beside it in "
@@ -1510,7 +1540,7 @@ TIP_TRUTH_RULE = ("Data truth 17: tip truth - every frozen TOP-3 / props TOP-3 p
 
 
 def tip_truth() -> dict:
-    lab = "Data truth 17: tip truth"
+    lab = "Data truth 18: tip truth"
     try:
         from src import tip_truth as TT
     except ImportError as e:
@@ -1531,20 +1561,21 @@ def tip_truth() -> dict:
               ("uncorrected: " + ", ".join(open_["pick_id"].astype(str).head(20))) if len(open_) else "")
 
 
-_evaluate_rules_to_16 = evaluate
+_evaluate_rules_to_17 = evaluate
 
 
 def evaluate(now: datetime | None = None) -> list[dict]:                 # noqa: F811
-    out = _evaluate_rules_to_16(now)
+    out = _evaluate_rules_to_17(now)
     try:
         out.append(tip_truth())
     except Exception as e:                                             # noqa: BLE001
-        out.append(_c("Data truth 17: tip truth", RED, "check failed", "must run", f"{type(e).__name__}: {e}"[:200]))
+        out.append(_c("Data truth 18: tip truth", RED, "check failed", "must run", f"{type(e).__name__}: {e}"[:200]))
     return out
 
 
-#: Rule 17 blocks a push / PR (owner 2026-11-24: "fails CI if the TOP-3 / props ledgers ever contain ...").
-GATED = tuple(GATED) + ("Data truth 17",)
+#: Rule 18 blocks a push / PR (owner 2026-11-24: "fails CI if the TOP-3 / props ledgers ever contain ...").
+GATED = tuple(GATED) + ("Data truth 18",)
+
 
 
 if __name__ == "__main__":

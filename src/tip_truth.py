@@ -486,7 +486,7 @@ def prior_keys(truth, d: pd.DataFrame, kind: str = "team", key_cols=("market", "
     return {(cm,) + tuple(str(x) for x in rest) for cm, *rest in zip(g["canonical_match"], *[g[c] for c in key_cols])}
 
 
-# ── scan of the frozen ledgers (data truth rule 17 + the owner's per-failure counts) ───────────────────────────────
+# ── scan of the frozen ledgers (data truth rule 18 + the owner's per-failure counts) ───────────────────────────────
 LEDGERS = {"top3": ("top3_league_ledger.csv", "team", ("market", "side")),
            "props_top3": ("props_top3_ledger.csv", "props", ("player_id", "market"))}
 CORRECTIONS = Path("output") / "corrections" / "tip_truth_corrections.csv"

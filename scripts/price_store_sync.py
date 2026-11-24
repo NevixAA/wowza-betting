@@ -68,7 +68,20 @@ def load_config(path: Path = CONFIG) -> dict:
     return cfg
 
 
-def selected(cfg: dict, repo: str, path: str) -> bool:
+def selected(cfg: dict, repo: str, path: str, branch: str | None = None) -> bool:
+    """A class A / B / O path this mirror copies. Once a class is LIVE (repo variable PRICE_STORE_LIVE=1,
+    classes under "live" in the config) its files on the source's main branch are written straight
+    to the store by the jobs themselves (scripts/price_store_live.py): the mirror must neither copy
+    nor remove them there, so they are not selected for <repo>@main."""
+    if branch == "main" and os.environ.get("PRICE_STORE_LIVE") == "1":
+        live = [re.compile(p) for c in (cfg.get("live") or {}).get(repo, []) for p in cfg["rules"][repo].get(c, [])]
+        if any(r.search(path) for r in live):
+            return False
+    return any(rx.search(path) for rx in cfg["_rx"].get(repo, []))
+
+
+def _is_rule_path(cfg: dict, repo: str, path: str) -> bool:
+    """Any class rule matches (live or not): used so a live file is never seen as 'extra'."""
     return any(rx.search(path) for rx in cfg["_rx"].get(repo, []))
 
 
@@ -175,12 +188,13 @@ def sync_source(cfg, store: Path, store_url: str, branch: str, work: Path, repo:
                 public_url: str, dry_run: bool, max_push_mb: int, log) -> dict:
     pub = work / "pub" / f"{repo}__{src_branch.replace('/', '__')}"
     pub_head = clone_public(public_url, src_branch, pub)
-    desired = {p: v for p, v in ls_tree(pub, pub_head).items() if selected(cfg, repo, p)}
+    desired = {p: v for p, v in ls_tree(pub, pub_head).items() if selected(cfg, repo, p, src_branch)}
     pre = prefix_of(repo, src_branch)
     res = {"source": f"{repo}@{src_branch}", "public_commit": pub_head, "files": len(desired)}
     for attempt in range(1, 6):
         base = open_store(store_url, branch, store)
-        current = {p[len(pre):]: v for p, v in ls_tree(store, base, pre).items()}
+        current = {p[len(pre):]: v for p, v in ls_tree(store, base, pre).items()
+                   if selected(cfg, repo, p[len(pre):], src_branch) or not _is_rule_path(cfg, repo, p[len(pre):])}
         add, chg, rem = plan(desired, current)
         res.update(added=len(add), changed=len(chg), removed=len(rem), store_base=base)
         has_record = record_path(repo, src_branch) in ls_tree(store, base, record_path(repo, src_branch))
@@ -292,7 +306,8 @@ def cmd_check(a, cfg, log) -> int:
         pub = work / "pub" / f"{repo}__{br.replace('/', '__')}"
         pub_head = clone_public(url, br, pub)
         pre = prefix_of(repo, br)
-        have = {p[len(pre):]: v for p, v in ls_tree(store, base, pre).items()}
+        have = {p[len(pre):]: v for p, v in ls_tree(store, base, pre).items()
+                if selected(cfg, repo, p[len(pre):], br) or not _is_rule_path(cfg, repo, p[len(pre):])}
         rec = sync_record(store, base, repo, br)
         if rec is None:
             log(f"::error title=price store check::{repo}@{br}: no _sync record in the store (never synced)")
@@ -303,9 +318,9 @@ def cmd_check(a, cfg, log) -> int:
         # The store mirrors the public source as of the recorded commit; compare against exactly
         # that commit, so rows appended after the last sync (lag) are not counted as differences.
         _git(["fetch", "--quiet", "--depth", "1", "--filter=blob:none", "origin", pin], cwd=pub)
-        desired = {p: v for p, v in ls_tree(pub, pin).items() if selected(cfg, repo, p)}
+        desired = {p: v for p, v in ls_tree(pub, pin).items() if selected(cfg, repo, p, br)}
         add, chg, rem = plan(desired, have)
-        head_sel = {p: v for p, v in ls_tree(pub, pub_head).items() if selected(cfg, repo, p)}
+        head_sel = {p: v for p, v in ls_tree(pub, pub_head).items() if selected(cfg, repo, p, br)}
         la, lc, lr = plan(head_sel, have)
         r = {"source": f"{repo}@{br}", "pinned_public_commit": pin, "store_commit": base,
              "public_files": len(desired), "store_files": len(have),

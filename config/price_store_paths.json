@@ -129,7 +129,11 @@
     "^reports/au4_data/price_postko_newformat_odds_dense\\.csv$",
     "^reports/au4_data/price_postko_standard_odds_history\\.csv$",
     "^reports/au4_data/props_mvm_oot_predictions\\.csv$",
-    "^reports/au4_data/props_regrade\\.csv$"
+    "^reports/au4_data/props_regrade\\.csv$",
+    "^output/edge_engine_shadow_pre_reseed_2026\\-11\\-20\\.csv$",
+    "^output/model_lineage/shadow_experiments\\.csv$",
+    "^output/props_top3_candidates\\.csv$",
+    "^output/props_top3_ledger\\.csv$"
    ]
   },
   "wowzaV9-Pro": {
@@ -183,5 +187,10 @@
     "^output/v11_shadow_snapshots\\.csv$"
    ]
   }
+ },
+ "live": {
+  "wowza-betting": [
+   "A_O"
+  ]
  }
 }

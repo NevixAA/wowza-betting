@@ -86,6 +86,15 @@ jobs:
           # read a stale output/capture_wide state and could repeat a WIDE pass already done.
           ref: main
 
+      - name: Price store - open (private prices, owner 2026-11-24)
+        # Live price files exist only in the private store (scripts/price_store_live.sh). This puts them at
+        # their usual paths before any work and keeps them out of every public commit. Rollback: set the
+        # repo variable PRICE_STORE_LIVE to anything but 1.
+        env:
+          PRICE_STORE_LIVE: ${{ vars.PRICE_STORE_LIVE }}
+          PRICE_STORE_KEY: ${{ secrets.PRICE_STORE_KEY }}
+        run: bash scripts/price_store_live.sh open wowza-betting
+
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
@@ -299,6 +308,10 @@ jobs:
       - name: Push corners/cards odds to the private store
         if: always() && vars.SIDE_ODDS_ENABLED == 'true'
         run: bash scripts/side_odds_store.sh push nf
+
+      - name: Price store - push (private prices)
+        if: ${{ !cancelled() }}
+        run: bash scripts/price_store_live.sh push nf_odds_capture
 
       # CHAIN (P1 item 7, 2026-11-22). Last, after the commit and the private push, so it can never
       # affect them. GitHub delivers workflow_dispatch at once (cron runs arrive hours late or not at
