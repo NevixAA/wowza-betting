@@ -129,6 +129,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Price store - open (private prices, owner 2026-11-24; read-only)
+        # The data-truth gate reads the board / ledger files, whose live price files exist only in the private store
+        # (scripts/price_store_live.sh). Read-only key: this job writes no price file, and the store's pre-commit hook
+        # keeps live files out of the candidate branch commit. Rollback: repo variable PRICE_STORE_LIVE != 1.
+        env:
+          PRICE_STORE_LIVE: ${{ vars.PRICE_STORE_LIVE }}
+          PRICE_STORE_RO_KEY: ${{ secrets.PRICE_STORE_RO_KEY }}
+        run: bash scripts/price_store_live.sh open wowza-betting
+
       - name: Output dir (runner temp, outside the checkout)
         run: echo "OUT=$RUNNER_TEMP/side_candidate" >> "$GITHUB_ENV"
 
