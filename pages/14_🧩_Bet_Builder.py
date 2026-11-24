@@ -15,13 +15,11 @@ says so plainly rather than rendering an empty grid that looks like "no combos t
 
 WHAT THE NUMBERS MEAN, STATED ON SCREEN
 
-* `fair_odds` is OUR price. No bookmaker sells a same-game-builder price we collect, so there is
-  no market price to compare against and no EV. The comparison a reader makes is against their
-  own book.
-* `naive` is what multiplying the legs would ask. The gap between the two IS the research
-  finding — on a four-leg builder it reached 6.7x.
-* P/L is settled at the FAIR price, so it measures whether the probabilities were right, not
-  whether anyone could have won that much.
+* NO MARKET PRICE: HIT RATE ONLY (owner 2026-11-24). Neither provider (API-Football /odds, OddsAPI)
+  sells a bet-builder / same-game-multi price for these combos, so no price is shown: not a fair
+  price (1 / our probability), not a naive multiplied price, and no P/L at either. A combo shows its
+  joint probability beside the chance if the legs were independent; the record is the hit rate
+  against the model's expected rate.
 """
 
 # Visual redesign 2026-10-25 (stage 3): settled record first as one card (hit rate beside the model's own
@@ -83,8 +81,8 @@ if cand.empty and settled.empty:
 # ═══ PERFORMANCE — settled record first ══════════════════════════════════════════════════════════
 # Results first. A candidate list with no record of how the last ones went is a wish list, and
 # this page should not be one.
-ui.section_header("Settled record", "P/L is settled at OUR fair price — no bookmaker builder price exists — so it "
-                  "measures whether the probabilities were right, not what anyone could have won.")
+ui.section_header("Settled record", f"{V.NO_MARKET_PRICE.capitalize()}: no bookmaker builder price exists, so "
+                  "combos are judged on how often they won against the chance the model gave them.")
 if settled.empty:
     ui.empty_state("NO_DATA", "Nothing settled yet — results appear once the fixtures finish and Pro's "
                               "settlement pass has run.")
@@ -107,50 +105,49 @@ else:
                        f"Void {int((r=='VOID').sum())}.")
         st.caption("VOID and UNKNOWN are excluded — a player who never came on has not lost.")
     with st.expander(f"Settled combos — {min(len(settled), 60)} shown"):
-        ui.compact_table(settled.sort_values("combo_result").head(60)[
-            [c for c in ("match", "legs", "leg_probs", "joint_probability", "fair_odds",
-                         "final_score", "combo_result", "leg_results") if c in settled.columns]], V.SETTLED_CONFIG)
+        ui.compact_table(V.shown(settled.sort_values("combo_result").head(60),
+                                 ("match", "legs", "leg_probs", "joint_probability", "final_score", "combo_result",
+                                  "leg_results")), V.SETTLED_CONFIG)
 
 # ═══ RESEARCH — current candidates ═══════════════════════════════════════════════════════════════
-ui.section_header("Current candidates", "`fair_odds` is our price, not a market price. The naive price is what "
-                  "multiplying the legs would ask; the gap between them is the whole point of this system.")
+ui.section_header("Current candidates", f"{V.NO_MARKET_PRICE.capitalize()}. The joint probability beside the "
+                  "chance if the legs were independent; the gap between them is the whole point of this system.")
 if cand.empty:
     ui.empty_state("NO_DATA", "No current candidates.")
 else:
     _legs = sorted(cand["n_legs"].dropna().unique().tolist())
     n_legs = st.multiselect("Legs", _legs, default=_legs)
-    odds_col = "fair_combo_odds" if "fair_combo_odds" in cand.columns else "fair_odds"
     with st.expander("Advanced filters"):
         c2, c3 = st.columns([1, 1.4])
-        lo, hi = c2.slider("Fair odds", 1.0, 50.0, (2.0, 15.0), 0.5)
+        lo, hi = c2.slider("Joint probability (%)", 0.0, 100.0, (0.0, 100.0), 1.0)
         only_corr = c3.checkbox(
             "Only where correlation matters (ratio ≥ 1.15)", value=True,
             help="Combos whose true joint differs materially from multiplying the legs. Where the "
                  "ratio is ~1.00 we are offering no insight the market does not already have.")
 
     d = cand[cand["n_legs"].isin(n_legs)] if n_legs else cand
-    o = pd.to_numeric(d.get(odds_col), errors="coerce")
-    d = d[o.between(lo, hi)]
+    jp = 100 * pd.to_numeric(d.get("joint_probability"), errors="coerce")
+    d = d[jp.between(lo, hi)]
     if only_corr and "dependency_ratio" in d.columns:
         d = d[pd.to_numeric(d["dependency_ratio"], errors="coerce") >= 1.15]
     st.caption(f"{len(d):,} of {len(cand):,} candidates after filters.")
 
     show = [c for c in ("match", "league", "match_date", "legs", "leg_probs",
                         "joint_probability", "independence_probability", "dependency_ratio",
-                        odds_col, "independence_fair_odds", "leg_flags", "data_quality")
+                        "leg_flags", "data_quality")
             if c in d.columns]
-    sort_col = "dependency_ratio" if "dependency_ratio" in d.columns else odds_col
+    sort_col = "dependency_ratio" if "dependency_ratio" in d.columns else "joint_probability"
     ordered = d.sort_values(sort_col, ascending=False)
     if ordered.empty:
         ui.empty_state("NO_DATA", "No candidates match the filters.")
     else:
         for col, (_, row) in zip(st.columns(3), ordered.head(3).iterrows()):
-            V.candidate_card(row, odds_col, container=col)
-        ui.compact_table(ordered.head(200)[show], V.CANDIDATE_CONFIG, height=520)
+            V.candidate_card(row, container=col)
+        ui.compact_table(V.shown(ordered.head(200), show), V.CANDIDATE_CONFIG, height=520)
     st.caption(
-        "No bookmaker same-game-builder price is collected anywhere, so there is no EV column — the comparison to "
-        "make is against your own book. **`independence_fair_odds`** is what naively multiplying the legs would "
-        "ask; on a four-leg builder the gap has reached **6.7×**.")
+        "No bookmaker same-game-builder price exists for these combos (API-Football and OddsAPI sell none), so no "
+        "price, EV or P/L is shown. **If independent** is the chance multiplying the legs would give; the gap to "
+        "the joint probability is the research finding.")
 
 # ═══ RESEARCH — the measured dependence ══════════════════════════════════════════════════════════
 if not dep.empty:

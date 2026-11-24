@@ -565,7 +565,9 @@ def run(*, v9_root: Path = ROOT, pro_root: Path | None = None, out: Path = OUT, 
             "repos": sorted(rows["repo"].unique().tolist()), "rows": int(len(rows)),
             "closed_rows": int((rows["status"] == "CLOSED").sum()), "link_rows": int(len(links)),
             "gws": sorted(rows["gw"].unique().tolist()), "unassigned_questions": info["unassigned_questions"],
-            "fixture_identity": ident, "private": "v11 never read; no price column"}
+            "fixture_identity": ident, "private": "v11 never read; no price column",
+            # owner 2026-11-24: Pro combos have no bookmaker builder price anywhere (API-Football, OddsAPI)
+            "price_basis": {"pro:pro_bb_combo": "no market price: hit rate only"}}
     res = store(rows, links, corr, meta, out=out)
     if _write_text_if_changed(version_names(rows).to_csv(index=False, lineterminator="\n"), out / VERSIONS.name):
         res["changed"].append(VERSIONS.name)

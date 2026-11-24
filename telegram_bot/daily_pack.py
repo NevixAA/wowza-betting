@@ -1005,7 +1005,8 @@ def coherent_combos(d: pd.DataFrame, gate=None) -> pd.DataFrame:
 def bet_builder_image(today: str, cutoff=None, ko: pd.DataFrame | None = None, gate=None) -> list[bytes]:
     """Today's Bet Builder combos (owner 2026-10-18: moved here from Pro's separate Telegram
     messages, which were "spammy"). Pro chooses them with its own tip rules; this only draws them:
-    one band per combo (match, joint probability, fair odds), one row per leg. A combo with a leg that is a
+    one band per combo (match, joint probability - never a price: no bookmaker builder price exists and a fair price
+    is derived; owner 2026-11-24 "no market price: hit rate only"), one row per leg. A combo with a leg that is a
     mismatch with a tip already sent or shown in the same album is left out (coherent_combos)."""
     d = _pro_bet_builder()
     if d.empty or "match_date" not in d.columns:
@@ -1019,11 +1020,9 @@ def bet_builder_image(today: str, cutoff=None, ko: pd.DataFrame | None = None, g
     cols = [("", 34), ("Leg", 640), ("Leg chance", 120)]
     blocks = []                                   # one block = a combo's band + its legs
     for _, r in d.iterrows():
-        fair = pd.to_numeric(pd.Series([r.get("fair_odds")]), errors="coerce").iloc[0]
         p = pd.to_numeric(pd.Series([r.get("joint_probability")]), errors="coerce").iloc[0]
         b = [{"band": f"{r.get('match')} · {r.get('league')} · all legs "
-                      + ("–" if pd.isna(p) else f"{p:.1%}")
-                      + (f" · fair odds {fair:.2f}" if pd.notna(fair) else "")}]
+                      + ("–" if pd.isna(p) else f"{p:.1%}")}]
         for i, leg in enumerate(str(r.get("legs") or "").split(" · "), start=1):
             label, _, pct = leg.rpartition(" (")
             b.append({"cells": [f"{i}.", label or leg, pct.rstrip(")") if label else ""]})
@@ -1043,8 +1042,8 @@ def bet_builder_image(today: str, cutoff=None, ko: pd.DataFrame | None = None, g
         out += render_table(f"Bet Builder — {label}" + (f"  ({n}/{len(pages)})" if len(pages) > 1 else ""),
                             cols, rows,
                             subtitle="Same-match combos where the legs are correlated more than a book "
-                                     "pricing them separately assumes. FAIR odds - no bookmaker builder "
-                                     "price is collected. Research, never staked.",
+                                     "pricing them separately assumes. No market price: hit rate only - "
+                                     "no bookmaker builder price exists. Research, never staked.",
                             footer="One combo per match · chosen by Pro's combo rules · not betting advice")
     return out
 

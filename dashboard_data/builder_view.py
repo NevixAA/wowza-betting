@@ -4,6 +4,10 @@ PRESENTATION ONLY. The page reads Pro's committed combo output (bet_builder_cand
 bet_builder_settled.csv, combo_dependency_matrix.csv) exactly as before; nothing here generates, prices,
 settles or filters a combo differently. This module holds the settled-record arithmetic the page already
 did (so the test can pin it), the candidate cards, the dependence chart and the column formats.
+
+NO MARKET PRICE: HIT RATE ONLY (owner 2026-11-24, "so fix it!"). Neither provider (API-Football /odds, OddsAPI)
+sells a bet-builder / same-game-multi price for Pro's combos, so a combo is shown with its joint probability and
+judged on its hit rate. No fair, naive or derived price and no P/L at such a price is shown anywhere.
 """
 from __future__ import annotations
 
@@ -11,21 +15,23 @@ import pandas as pd
 import streamlit as st
 
 import dashboard_ui as ui
-from src import units as U
+
+#: the label every combo result carries (owner 2026-11-24)
+NO_MARKET_PRICE = "no market price: hit rate only"
+#: combo columns that hold a DERIVED price (1 / probability): never displayed
+DERIVED_PRICE_COLS = ("fair_odds", "fair_combo_odds", "independence_fair_odds", "combined_odds")
 
 
 def settled_summary(settled: pd.DataFrame) -> dict:
-    """The page's settled-record numbers (identical arithmetic to the pre-redesign page)."""
+    """The page's settled-record numbers: counts, hit rate inputs and the model's expected rate. No P/L: a combo has
+    no market price, and a P/L at our own fair price would be a derived number shown as money (owner 2026-11-24)."""
     r = settled["combo_result"]
     won, lost = int((r == "WON").sum()), int((r == "LOST").sum())
     decided = won + lost
-    odds = pd.to_numeric(settled.get("fair_combo_odds", settled.get("fair_odds")), errors="coerce")
-    pnl = U.total(U.profit(odds).where(r == "WON", -1.0).where(r != "VOID", 0.0)
-                  .where(r != "UNKNOWN", 0.0))
     # THE EXPECTATION MUST COME FROM THE DECIDED ROWS ONLY (see the page for why).
     exp = pd.to_numeric(settled.loc[r.isin(["WON", "LOST"]), "joint_probability"],
                         errors="coerce").mean() if "joint_probability" in settled.columns else None
-    return {"won": won, "lost": lost, "decided": decided, "pnl": pnl, "exp": exp,
+    return {"won": won, "lost": lost, "decided": decided, "exp": exp,
             "void": int((r == "VOID").sum()), "unknown": int((r == "UNKNOWN").sum())}
 
 
@@ -36,33 +42,36 @@ def settled_card(s: dict, container=None) -> None:
                    help="Compare against the model's expected rate beside it, not against 50%.",
                    supporting=[("Settled", f"{decided:,}"), ("Won", f"{won:,}"),
                                ("Model expected", f"{100 * exp:.1f}%" if exp is not None and exp == exp else "—"),
-                               ("P/L at fair odds", U.fmt(s['pnl'])), ("Void", f"{s['void']}")],
-                   status=ui.status_chip("RESEARCH", label="RESEARCH · PAPER"), n=decided, container=container)
+                               ("Void", f"{s['void']}")],
+                   status=ui.status_chip("RESEARCH", label=f"RESEARCH · PAPER · {NO_MARKET_PRICE.upper()}"),
+                   n=decided, container=container)
 
 
-def candidate_card(r: pd.Series, odds_col: str, container=None) -> None:
-    """One combo: the fair (our) price is the main number; the naive multiplied price beside it is the point."""
+def candidate_card(r: pd.Series, container=None) -> None:
+    """One combo: the joint probability is the main number, beside the chance if the legs were independent - the
+    gap is the point. No price of any kind (no market price exists; a fair price is derived)."""
     jp = pd.to_numeric(r.get("joint_probability"), errors="coerce")
     ip = pd.to_numeric(r.get("independence_probability"), errors="coerce")
-    nv = pd.to_numeric(r.get("independence_fair_odds"), errors="coerce")
     dr = pd.to_numeric(r.get("dependency_ratio"), errors="coerce")
-    ui.metric_card("Fair odds (ours)", ui.fmt_odds(pd.to_numeric(r.get(odds_col), errors="coerce")),
+    ui.metric_card("Joint probability", ui.fmt_prob(jp, 1) if jp == jp else "—",
                    title=f"{r.get('match', '')} · {r.get('league', '')}",
-                   supporting=[("Joint probability", ui.fmt_prob(jp, 1) if jp == jp else "—"),
-                               ("If legs were independent", ui.fmt_prob(ip, 1) if ip == ip else "—"),
-                               ("Naive odds", ui.fmt_odds(nv)), ("Dependency ratio", "—" if dr != dr else f"{dr:.3f}"),
+                   supporting=[("If legs were independent", ui.fmt_prob(ip, 1) if ip == ip else "—"),
+                               ("Dependency ratio", "—" if dr != dr else f"{dr:.3f}"),
                                ("Legs", str(r.get("n_legs", "—")))],
-                   status=ui.status_chip("RESEARCH", label="RESEARCH · PAPER · NO MARKET PRICE"), container=container)
+                   status=ui.status_chip("RESEARCH", label=f"RESEARCH · PAPER · {NO_MARKET_PRICE.upper()}"),
+                   container=container)
     (container or st).caption(f"{r.get('legs', '')} · {str(r.get('match_date', ''))[:10]}")
 
 
-SETTLED_CONFIG = {"joint_probability": ui.pct_col("Joint probability"), "fair_odds": ui.num_col("Fair odds"),
-                  "combo_result": ui.text_col("Result")}
+SETTLED_CONFIG = {"joint_probability": ui.pct_col("Joint probability"), "combo_result": ui.text_col("Result")}
 CANDIDATE_CONFIG = {"joint_probability": ui.pct_col("Joint probability"),
                     "independence_probability": ui.pct_col("If independent"),
-                    "dependency_ratio": ui.num_col("Dependency ratio", fmt="%.3f"),
-                    "fair_odds": ui.num_col("Fair odds"), "fair_combo_odds": ui.num_col("Fair odds"),
-                    "independence_fair_odds": ui.num_col("Naive odds")}
+                    "dependency_ratio": ui.num_col("Dependency ratio", fmt="%.3f")}
+
+
+def shown(d: pd.DataFrame, cols) -> pd.DataFrame:
+    """`cols` of `d` that exist, never a derived-price column."""
+    return d[[c for c in cols if c in d.columns and c not in DERIVED_PRICE_COLS]]
 DEP_CONFIG = {"n": st.column_config.NumberColumn("n", format="%d"), "p_joint": ui.num_col("P(joint)", fmt="%.4f"),
               "independent_joint": ui.num_col("If independent", fmt="%.4f"),
               "dependency_ratio": ui.num_col("Dependency ratio", fmt="%.4f"),

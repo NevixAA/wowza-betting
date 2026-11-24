@@ -27,7 +27,7 @@ MODEL_LABEL = {
     "v9_corners": "v9 Corners",
     "v9_cards": "v9 Cards",
     "pro_bb_dc": "Pro score grid",
-    "pro_bb_combo": "Pro combos",
+    "pro_bb_combo": "Pro combos (no market price: hit rate only)",
 }
 #: The page's tabs: (title, model ids) - every model belongs to exactly one.
 FAMILIES = [
