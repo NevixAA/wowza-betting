@@ -460,3 +460,33 @@ def tracker_frame(reg: dict, states: dict, runs: dict, records: dict, problems: 
                      "Record": records.get(t["id"], "no record file" if not t.get("record") else ""),
                      "Record note": t.get("record_note") or "", "Link": link})
     return pd.DataFrame(rows)
+
+
+# ── stake drought (owner rule 2026-11-24; src/stake_drought.py writes output/stake_drought.json) ──────────────
+DROUGHT = ROOT / "output" / "stake_drought.json"
+DROUGHT_STATES = ("REPAIR_RESEARCH_NEEDED", "PENDING", "OFF_SEASON", "OK")
+DROUGHT_PRODUCT = {"TOP3": "TOP-3", "PROPS_TOP3": "Props TOP-3"}
+
+
+def drought_frame(doc: dict | None) -> pd.DataFrame:
+    """The flagged families first (cause, days since the last stake), then the rest; one row per family."""
+    rows = []
+    for r in (doc or {}).get("families") or []:
+        d = r.get("days_since_last_stake")
+        rows.append({"State": r.get("state", ""), "Product": DROUGHT_PRODUCT.get(r.get("product"), r.get("product")),
+                     "League": r.get("league", ""), "Market": MARKET_LABEL.get(r.get("market"), r.get("market")),
+                     "Side": r.get("side") or "", "Tier": TIER_LABEL.get(r.get("tier"), r.get("tier", "")),
+                     "Cause": r.get("dominant_cause") or "",
+                     "Days since last stake": "never" if d is None else str(d),
+                     "Staked (30d)": r.get("n_staked_window"), "Picks (30d)": r.get("n_picks_window"),
+                     "Candidates (30d)": r.get("n_candidates_window"),
+                     "Fixtures (30d)": r.get("calendar_fixtures_window"),
+                     "Cause counts": ", ".join(f"{k[2:].upper()} {v}" for k, v in r.items()
+                                               if k.startswith("n_") and not k.endswith("_window") and v)})
+    df = pd.DataFrame(rows, columns=["State", "Product", "League", "Market", "Side", "Tier", "Cause",
+                                     "Days since last stake", "Staked (30d)", "Picks (30d)", "Candidates (30d)",
+                                     "Fixtures (30d)", "Cause counts"])
+    if len(df):
+        df["_o"] = df["State"].map({s: i for i, s in enumerate(DROUGHT_STATES)})
+        df = df.sort_values(["_o", "Product", "League", "Market", "Side", "Tier"], kind="stable").drop(columns="_o")
+    return df.reset_index(drop=True)
