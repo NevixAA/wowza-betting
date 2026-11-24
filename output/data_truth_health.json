@@ -1,7 +1,7 @@
 {
  "artifact": "data_truth_health",
  "version": "DATA-TRUTH-1",
- "generated_at": "2026-11-24T16:25:14Z",
+ "generated_at": "2026-11-24T17:25:37Z",
  "checks": [
   {
    "check": "Data truth 1: one canonical name",
@@ -13,7 +13,7 @@
   {
    "check": "Data truth 2: no silent defaults",
    "status": "GREEN",
-   "value": "0 new default(s); 0 known (baseline); 196 allow-listed (counters/display); 0 baseline entr(ies) now gone; 1 allow-list entr(ies) now gone; 470 production files scanned",
+   "value": "0 new default(s); 0 known (baseline); 196 allow-listed (counters/display); 0 baseline entr(ies) now gone; 1 allow-list entr(ies) now gone; 472 production files scanned",
    "rule": "no NEW invented default in ALL production code (fillna(<non-zero literal>), literal season fallback/list, pinned football-data folder, numeric .get(<key>, <number>), an or-zero on a parsed value, a zero fillna on a price/odds): RED if any site is in neither config/data_truth_baseline.json nor config/data_truth_allowlist.json, or an allow-list entry has no reason; GREEN otherwise",
    "detail": ""
   },
@@ -601,7 +601,7 @@
   {
    "check": "Data truth 17: no public prices",
    "status": "GREEN",
-   "value": "0 retired price file(s) committed, 0 unclassified price file(s); 465 classified price file(s) still public (classes not yet retired: their move is pending), 199 allowlisted (not bookmaker prices / class F), 2877 scanned",
+   "value": "0 retired price file(s) committed, 0 unclassified price file(s); 465 classified price file(s) still public (classes not yet retired: their move is pending), 199 allowlisted (not bookmaker prices / class F), 2878 scanned",
    "rule": "no committed file on a retired price path (config/price_store_paths.json public_retired), and every committed price column belongs to a class that moves private or is allowlisted with a reason (config/public_price_allowlist.json)",
    "detail": ""
   }
