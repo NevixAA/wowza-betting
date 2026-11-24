@@ -1276,7 +1276,7 @@ def exec_scope(exec_root: Path | None, refs=EXEC_REFS, pro_root=None, v11_root=N
             qua = {t: v for t, v in tables.items() if _QUARANTINE.search(t) and t not in sup}
             tables = {t: v for t, v in tables.items() if t not in sup and t not in qua}
             tot = _scope_total(tables)
-            unflagged = sum(v.get("rows_without_own_exclusion_flag", 0) for v in qua.values())
+            unflagged = sum(v["rows_without_own_exclusion_flag"] for v in qua.values())
             branches[ref] = {"commit": sha, "data_files": len(blobs), "unreadable_files": unreadable,
                              "originals_kept_beside_corrections": {
                                  t: {"rows": v["rows"], "verdict": v["verdict"], "cells": v["cells"],
@@ -1284,7 +1284,7 @@ def exec_scope(exec_root: Path | None, refs=EXEC_REFS, pro_root=None, v11_root=N
                                  for t, v in sup.items()},
                              "quarantined_beside_store": {
                                  t: {"rows": v["rows"], "rows_without_own_exclusion_flag":
-                                     v.get("rows_without_own_exclusion_flag", 0),
+                                     v["rows_without_own_exclusion_flag"],
                                      "rules_fired": {r: x for r, x in v["rules"].items() if x.get("rows") or x.get("cells")}}
                                  for t, v in qua.items()},
                              "tables": len(tables), "rows": sum(v["rows"] for v in tables.values()),
