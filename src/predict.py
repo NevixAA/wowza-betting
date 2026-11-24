@@ -101,16 +101,30 @@ def _fetch_odds_api(days_ahead: int = 7) -> pd.DataFrame:
     # output/book_odds_snapshots.csv below; see the note at the capture site.
     _book_rows: list[dict] = []
     _snap_ts = pd.Timestamp.now(tz="UTC").strftime("%Y-%m-%dT%H:%M:%SZ")
+    # REGIONS eu,uk (owner 2026-11-24, #104 alignment with the bars): the median real price and the bars read the
+    # SAME set of books. Cost = markets x regions = 2 credits per league call instead of 1. CREDIT FLOOR GUARD: once
+    # the provider reports fewer remaining credits than ODDS_CREDIT_FLOOR (the 260k plan floor), the rest of the run
+    # asks eu only (1 credit) - logged, never silent.
+    import os as _os
+    _ou_regions = _os.getenv("ODDS_OU25_REGIONS", "eu,uk")
+    try:
+        _floor = int(_os.getenv("ODDS_CREDIT_FLOOR", "260000"))
+    except ValueError:
+        _floor = 260000
+    _remaining = None
     for league, sport_key in config.ODDS_API_SPORT_KEYS.items():
         if league not in config.ENABLED_LEAGUES:
             continue
         n_queried += 1
+        _regions = _ou_regions if (_remaining is None or _remaining >= _floor) else "eu"
+        if _regions != _ou_regions:
+            log.warning(f"OddsAPI {league}: {_remaining} credits left < floor {_floor} - regions eu only")
         try:
             r = requests.get(
                 f"https://api.the-odds-api.com/v4/sports/{sport_key}/odds",
                 params={
                     "apiKey": config.ODDS_API_KEY,
-                    "regions": "eu",
+                    "regions": _regions,
                     # BTTS is NOT supported on the /odds LIST endpoint — requesting
                     # "totals,btts" 422s the WHOLE call ("Markets not supported: btts"),
                     # which silently skipped every league and killed all tips since v9.2
@@ -120,6 +134,10 @@ def _fetch_odds_api(days_ahead: int = 7) -> pd.DataFrame:
                 },
                 timeout=15,
             )
+            try:
+                _remaining = int((getattr(r, "headers", None) or {}).get("x-requests-remaining"))
+            except (TypeError, ValueError):
+                pass
             if r.status_code != 200:
                 n_err += 1
                 # WARNING and named: at DEBUG a single league could drop off the board with no

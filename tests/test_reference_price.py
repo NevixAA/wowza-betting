@@ -101,3 +101,30 @@ def test_no_served_model_reads_the_bet_price():
     for f in files:
         hit = sorted(c for c in set(cols(joblib.load(f))) if "odds" in c or "implied" in c or "overround" in c)
         assert not hit, (Path(f).name, hit)
+
+
+def test_ou25_fetch_asks_eu_uk_and_drops_to_eu_below_the_credit_floor(tmp_path, monkeypatch):
+    """Owner 2026-11-24 (#104 alignment): regions eu,uk so serving and the bars read the same books; once the provider
+    reports fewer credits than the floor, the rest of the run asks eu only."""
+    import requests
+
+    import src.btts_odds as B
+    import src.predict as P
+    import src.rolling_store as RS
+    leagues = sorted(set(config.ODDS_API_SPORT_KEYS) & set(config.ENABLED_LEAGUES))[:2]
+    monkeypatch.setattr(config, "ODDS_API_SPORT_KEYS", {lg: config.ODDS_API_SPORT_KEYS[lg] for lg in leagues})
+    monkeypatch.setattr(config, "OUTPUT_DIR", tmp_path)
+    monkeypatch.setattr(B, "fetch", lambda rows: rows)
+    monkeypatch.setattr(RS, "roll", lambda *a, **k: {})
+    monkeypatch.setenv("ODDS_CREDIT_FLOOR", "1000")
+    asked = []
+
+    class _R(_Resp):
+        headers = {"x-requests-remaining": "999"}
+
+    def get(url, params=None, **k):
+        asked.append(params["regions"])
+        return _R([])
+    monkeypatch.setattr(requests, "get", get)
+    P._fetch_odds_api()
+    assert asked == ["eu,uk", "eu"]
