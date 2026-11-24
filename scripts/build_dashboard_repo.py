@@ -10,7 +10,16 @@ DATA files from v9's public raw URLs at runtime.
 
 OUT_DIR may be an existing clone of the slim repo: everything in it except .git/ is replaced, so
 files dropped from the manifest disappear from the slim repo on the next push. It refuses to build
-inside this v9 checkout.
+inside this v9 checkout. That includes .github/: building straight into a clone and pushing would
+delete the slim repo's own sync job, so do not do that by hand.
+
+The normal path is wowza-dashboard's .github/workflows/sync_from_v9.yml (hourly, and on the
+'v9-main-updated' dispatch from .github/workflows/dashboard_sync_dispatch.yml). It builds into a temp
+dir and mirrors with rsync --delete excluding /.git and /.github, so that workflow and its
+.github/scripts/sync_from_v9.sh are kept and are edited in wowza-dashboard, not here. It commits only
+when a code or manifest file changed (README.md / BUILD_INFO.json carry build stamps). On a rejected
+push it never rebases: it resets to the new main, rebuilds from the same v9 SHA and retries (bounded,
+never forced).
 
 Regenerate the manifest first when pages change: python scripts/dashboard_manifest.py --write
 """
