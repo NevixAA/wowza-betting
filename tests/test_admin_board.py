@@ -284,7 +284,9 @@ def test_page_renders_all_three_sections_for_admin(monkeypatch):
     # bars, picks, league-weeks, tracker + the Clean Record evaluation tab (totals, historical figures, forward
     # cells, and every cell of history / research / learning rows: P1 item 8, 2026-11-22)
     assert "Post-repair evaluation (every record apart)" in txt
-    assert len(at.dataframe) == 4 + 6
+    # + the all-leagues "Today's and upcoming" table (owner 2026-11-24) when a pick kicks off in its window
+    assert "Today's and upcoming TOP-3, all leagues" in txt
+    assert len(at.dataframe) in (4 + 6, 4 + 6 + 1)
 
 
 def test_page_odds_private_when_no_store_and_no_public_prices(monkeypatch, tmp_path):

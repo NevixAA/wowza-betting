@@ -270,6 +270,48 @@ def top3_frame(ledger: pd.DataFrame, odds: dict | None = None) -> pd.DataFrame:
     return d.sort_values(["Week", "League", "Tier"], ascending=[False, True, True], kind="mergesort").reset_index(drop=True)
 
 
+#: owner 2026-11-24 ("why no one table for all today's top 3?"): the all-leagues table on top of the TOP-3 tab
+UPCOMING_WINDOWS = ("Today", "Next 7 days")
+IL_TZ = "Asia/Jerusalem"
+
+
+def pick_kickoff(r: dict):
+    """The API-Football kickoff (authoritative, src/tip_truth) when the pick records it, else its frozen kickoff."""
+    af = pd.to_datetime(r.get("af_kickoff_utc"), utc=True, errors="coerce")
+    return af if pd.notna(af) else pd.to_datetime(r.get("kickoff_utc"), utc=True, errors="coerce")
+
+
+def upcoming_top3(ledger: pd.DataFrame, odds: dict | None, now, window: str = "Next 7 days") -> pd.DataFrame:
+    """ONE table of every league's TOP-3 picks kicking off TODAY (Israel day) or from today through the next 7 days,
+    sorted by kickoff; a pick already played shows its result. Columns: Kickoff (Israel), League, Match, Tier, Pick,
+    Odds at tip, Stake, Result. `odds` = {pick_id: odds at tip} from the private reader, or None. Pure."""
+    from zoneinfo import ZoneInfo
+    cols = ["Kickoff (Israel)", "League", "Match", "Tier", "Pick", "Odds at tip", "Stake", "Result"]
+    if ledger is None or ledger.empty:
+        return pd.DataFrame(columns=cols)
+    tz = ZoneInfo(IL_TZ)
+    start = pd.Timestamp(now).tz_convert(tz).normalize()
+    end = start + pd.Timedelta(days=1 if window == "Today" else 8)
+    base = top3_frame(ledger, odds).drop_duplicates("pick_id").set_index("pick_id")
+    rows = []
+    for r in ledger.to_dict("records"):
+        ko = pick_kickoff(r)
+        pid = str(r.get("pick_id"))
+        if pd.isna(ko) or pid not in base.index:
+            continue
+        k = ko.tz_convert(tz)
+        if not (start <= k < end):
+            continue
+        b = base.loc[pid]
+        rows.append({"_ko": k, "Kickoff (Israel)": k.strftime("%a %d %b %H:%M"), "League": r.get("league"),
+                     "Match": b["Match"], "Tier": b["Tier"], "Pick": b["Pick"], "Odds at tip": b["Odds at tip"],
+                     "Stake": b["Stake"], "Result": b["Result"]})
+    if not rows:
+        return pd.DataFrame(columns=cols)
+    d = pd.DataFrame(rows).sort_values(["_ko", "League", "Tier"], kind="mergesort")
+    return d[cols].reset_index(drop=True)
+
+
 def odds_from_csv(text: str) -> dict:
     """{pick_id: odds} from a TOP-3 ledger CSV text (the private store copy or the public file). Pure."""
     out = {}

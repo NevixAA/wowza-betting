@@ -251,11 +251,11 @@ def test_store_settle_and_notify_round_trip(tmp_path):
     assert r["result"] == "WIN" and float(r["flat_pnl"]) == pytest.approx(1.0)
     sent = []
     env = {T.FLAG_ENV: "1"}
-    assert T.notify(out_dir=tmp_path, env=env, sender=lambda t: sent.append(t) or True)["sent"] == 1
-    assert T.notify(out_dir=tmp_path, env=env, sender=lambda t: sent.append(t) or True)["sent"] == 0
-    # owner 2026-11-17 (final): the committed policy stakes every TOP-3 tip 0.5% flat, placed manually
-    assert "TOP-3 La Liga 2" in sent[0] and "own owner-approved bar" in sent[0]
-    assert "0.5% stake of bankroll, flat, placed manually" in sent[0] and "paper" not in sent[0].lower()
+    assert T.notify(out_dir=tmp_path, env=env, sender=lambda t: sent.append(t) or True, now=NOW)["sent"] == 1
+    assert T.notify(out_dir=tmp_path, env=env, sender=lambda t: sent.append(t) or True, now=NOW)["sent"] == 0
+    # owner 2026-11-24: ONE table for all leagues; the 2026-11-17 stake rule rides in its footer
+    assert "TOP-3 · all leagues" in sent[0] and "La Liga 2" in sent[0] and "<pre>" in sent[0]
+    assert "0.5% of bankroll, flat, placed manually" in sent[0] and "paper" not in sent[0].lower()
     assert not any(w in sent[0] for w in ("SNIPER", "MARKSMAN", "VALUABLE"))
 
 

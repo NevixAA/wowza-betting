@@ -292,7 +292,8 @@ def test_top3_notify_leaves_out_a_pick_that_now_mismatches(tmp_path, monkeypatch
     monkeypatch.setattr(CoherenceGate, "load", classmethod(
         lambda cls, **k: CoherenceGate(TC.sent_from_notified([f"SIDE|{d}|X|Y|btts"]), {})))
     sent = []
-    assert T.notify(out_dir=tmp_path, env={T.FLAG_ENV: "1"}, sender=lambda t: sent.append(t) or True)["sent"] == 1
+    assert T.notify(out_dir=tmp_path, env={T.FLAG_ENV: "1"}, sender=lambda t: sent.append(t) or True,
+                    now=NOW)["sent"] == 1
     assert "P v Q" in sent[0] and "X v Y" not in sent[0]
     monkeypatch.setattr(CoherenceGate, "load", real_load)
 

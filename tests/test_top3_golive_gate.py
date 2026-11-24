@@ -73,7 +73,7 @@ def test_notify_never_sends_a_paper_league(tmp_path, monkeypatch):
     T.picks_store(tmp_path).append(pd.concat([p1, p2], ignore_index=True))
     sent: list[str] = []
     monkeypatch.setattr("src.direction_guard.real_track_checker", lambda: (lambda *a, **k: False))
-    r = T.notify(out_dir=tmp_path, env={T.FLAG_ENV: "1"}, sender=lambda t: sent.append(t) or True)
+    r = T.notify(out_dir=tmp_path, env={T.FLAG_ENV: "1"}, sender=lambda t: sent.append(t) or True, now=NOW)
     assert r["sent"] == 1 and len(sent) == 1
     assert paper not in sent[0] and "P1" not in sent[0]
 

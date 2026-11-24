@@ -653,6 +653,21 @@ def message(picks: pd.DataFrame, label: str = STAKE_LABEL_DEFAULT) -> str:
     return "\n".join(lines)
 
 
+def table_rows(picks: pd.DataFrame, label: str = STAKE_LABEL_DEFAULT) -> list[dict]:
+    """Rows of the all-leagues table (src.top3_league.combined_messages), kickoff order."""
+    out = []
+    for r in picks.to_dict("records"):
+        ko = pd.to_datetime(r.get("kickoff_utc"), utc=True, errors="coerce")
+        role = str(r.get("role"))
+        out.append({"ko": ko, "league": str(r["league"]), "match": str(r["match"]).replace(" vs ", " v "),
+                    "tier": {"T1_BEST_VALUE": "T1", "T2_SAFEST": "T2", "T3_RISKY_VALUE": "T3"}.get(role, role),
+                    "pick": f"{r['player_name']} {MARKET_TEXT.get(str(r['market']), str(r['market']))}",
+                    "odds": f"{_num(r['odds']):.2f}", "stake": "No stake" if label else "-",
+                    "pick_id": str(r.get("pick_id")), "week": str(r.get("league_week_id")),
+                    "_order": (ko.value if pd.notna(ko) else float("inf"), str(r["league"]), role)})
+    return sorted(out, key=lambda x: x["_order"])
+
+
 def _mark_player_notified(g: pd.DataFrame) -> None:
     """Record the sent picks in telegram_bot/player_notified.json (the props cash-out alert reads it)."""
     try:
@@ -692,10 +707,13 @@ def notify(out_dir: Path | None = None, env: dict | None = None, sender=None, no
     # PAPER leagues (config.PAPER_LEAGUES) are never sent - ledgered and graded only, as on every other send path
     picks = config.drop_paper_leagues(picks_store(od).read())
     nf = od / NOTIFIED_NAME
-    sent = set(LW._json(nf).get("weeks", []))
-    before = set(sent)
+    doc = LW._json(nf)
+    sent = set(doc.get("weeks", []))
+    sent_ids = set(doc.get("picks", []))                  # once per PICK (a week may span several messages)
+    before, before_ids = set(sent), set(sent_ids)
     n = 0
     label = stake_label()
+    keep_all, week_ids = [], {}
     pending = picks[~picks["league_week_id"].isin(sent)] if len(picks) else picks
     if len(pending):
         from src import tip_truth as TT
@@ -708,6 +726,7 @@ def notify(out_dir: Path | None = None, env: dict | None = None, sender=None, no
     for week, g in (picks.groupby("league_week_id", sort=True) if len(picks) else []):
         if week in sent:
             continue
+        g = g[~g["pick_id"].astype(str).isin(sent_ids)]
         ko = pd.to_datetime(g["kickoff_utc"], utc=True, errors="coerce")
         g = g[ko > now]                                   # never sent after kickoff
         if len(g):                                        # the truth gate at send time (owner 2026-11-24)
@@ -731,19 +750,31 @@ def notify(out_dir: Path | None = None, env: dict | None = None, sender=None, no
                 else:
                     keep.append(i)
             g = g.loc[keep]
-        if g.empty:
-            sent.add(week)                                # nothing left to send; never retried
-            continue
-        if sender(message(g, label)):
+        week_ids[week] = set(g["pick_id"].astype(str))
+        if len(g):
+            keep_all.append(g)
+    # owner 2026-11-24 "one table for all": every league's new props picks in ONE table per run (split > 4096 chars)
+    if keep_all:
+        from src import top3_league as TL
+        allp = pd.concat(keep_all)
+        for text, ids in TL.combined_messages(table_rows(allp, label), title="Props TOP-3 · all leagues",
+                                              foot=f"{label}. T1 best value, T2 safest, T3 risky value - each with "
+                                                   "positive value at a real bookmaker price."):
+            if sender(text):
+                n += 1
+                done_ids = set(ids)
+                g = allp[allp["pick_id"].astype(str).isin(done_ids)]
+                if gate:
+                    for r in g.to_dict("records"):
+                        gate_take(gate, r)
+                if mark:
+                    _mark_player_notified(g)
+                sent_ids.update(done_ids)
+    for week, ids in week_ids.items():
+        if ids <= sent_ids:                               # all its picks went out, or none was left to send
             sent.add(week)
-            n += 1
-            if gate:
-                for r in g.to_dict("records"):
-                    gate_take(gate, r)
-            if mark:
-                _mark_player_notified(g)
-    if sent != before:
-        LW._write_json(nf, {"weeks": sorted(sent)})
+    if sent != before or sent_ids != before_ids:
+        LW._write_json(nf, {"weeks": sorted(sent), "picks": sorted(sent_ids)})
     return {"enabled": True, "sent": n}
 
 
