@@ -147,7 +147,8 @@ def test_run_freeze_settle_notify_end_to_end(tmp_path):
     res = P.notify(od, ENV, sender=lambda t: sent.append(t) or True, now=at, gate=gate)
     assert res["sent"] == 1 and len(sent) == 1
     msg = sent[0]
-    assert "PROPS TOP-3 Championship" in msg and "T1 best value" in msg and "T2 safest" in msg \
+    # owner 2026-11-24: ONE table for all leagues
+    assert "Props TOP-3 · all leagues" in msg and "Championship" in msg and "<pre>" in msg and "T1 best value" in msg and "T2 safest" in msg \
         and "T3 risky value" in msg and "No stake: props not proven yet" in msg
     assert not RETIRED.search(msg) and "paper" not in msg.lower()
     assert P.notify(od, ENV, sender=lambda t: sent.append(t) or True, now=at, gate=gate)["sent"] == 0   # once

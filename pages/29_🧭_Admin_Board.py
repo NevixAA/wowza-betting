@@ -152,6 +152,18 @@ with tab_top3:
             src = "public file (until the price cut-over)"
         picks = AB.top3_frame(led, odds)
         weeks = AB.top3_weeks(wk, led)
+        # owner 2026-11-24: ONE table for every league, today's and upcoming picks, sorted by kickoff
+        ui.section_header("Today's and upcoming TOP-3, all leagues",
+                          "Every league's T1 / T2 / T3 by kickoff (Israel time); a played pick shows its result.")
+        win = st.radio("Show", AB.UPCOMING_WINDOWS, index=1, horizontal=True, key="t_up_win")
+        up = AB.upcoming_top3(led, odds, pd.Timestamp.now(tz="UTC"), win)
+        if odds is None and len(up):
+            up = up.assign(**{"Odds at tip": f"odds: private ({why})"})
+        if up.empty:
+            st.caption(f"No TOP-3 pick kicks off {'today' if win == 'Today' else 'today or in the next 7 days'}.")
+        else:
+            ui.compact_table(up, {})
+        st.divider()
         all_weeks = sorted(set(picks["Week"]) | set(weeks["Week"]) - {""}, reverse=True)
         w1, w2 = st.columns([1, 2])
         sel_w = w1.multiselect("Gameweeks", all_weeks, default=all_weeks[:2], key="t_wk")

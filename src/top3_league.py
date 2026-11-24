@@ -1286,9 +1286,108 @@ def _edge_words(r) -> str:
     return edge_text(pd.to_numeric(r.get("edge_calibrated"), errors="coerce") * 100)
 
 
+# ── ONE TABLE FOR ALL LEAGUES (owner 2026-11-24: "why it's a message? why no one table for all today's top 3?") ────
+TG_LIMIT = 4096                                    # Telegram's message length limit
+IL_TZ = "Asia/Jerusalem"
+MARKET_SHORT = {"OU25": "O/U2.5", "BTTS": "BTTS", "OVER15": "O1.5", "OVER35": "O3.5"}
+TIER_SHORT = {"T1_BEST_VALUE": "T1", "T2_SAFEST": "T2", "T3_RISKY_VALUE": "T3"}
+
+
+def pick_kickoff(r) -> pd.Timestamp:
+    """The pick's kickoff: the API-Football kickoff (authoritative, src/tip_truth) when recorded, else the frozen one."""
+    af = pd.to_datetime(r.get("af_kickoff_utc"), utc=True, errors="coerce")
+    ko = pd.to_datetime(r.get("kickoff_utc"), utc=True, errors="coerce")
+    return af if pd.notna(af) else ko
+
+
+def _short(s, n: int) -> str:
+    s = str(s or "")
+    return s if len(s) <= n else s[: n - 1] + "."
+
+
+def table_rows(picks: pd.DataFrame, real_checker=None, flat: float | None = None) -> list[dict]:
+    """One display row per pick (tiers and league-rule lines) in kickoff order. Pure apart from `real_checker`."""
+    out = []
+    for r in picks.to_dict("records"):
+        side = "Yes" if str(r["side"]) == "YES" else str(r["side"]).title()
+        mode = str(r.get("selection_mode") or SELECTION_MODE)
+        tier = "Rule" if mode == OWN_LIST_MODE else TIER_SHORT.get(str(r.get("slot")), f"#{r.get('top3_rank')}")
+        ko = pick_kickoff(r)
+        out.append({"ko": ko, "league": str(r["league"]), "match": f"{r['home_team']} v {r['away_team']}",
+                    "tier": tier, "pick": f"{MARKET_SHORT.get(str(r['market']), str(r['market']))} {side}",
+                    "odds": f"{float(r['odds']):.2f}", "stake": _stake_label(real_checker, r, flat) or "-",
+                    "pick_id": str(r.get("pick_id")), "week": str(r.get("league_week_id")),
+                    "_order": (ko.value if pd.notna(ko) else float("inf"), str(r["league"]), tier)})
+    return sorted(out, key=lambda x: x["_order"])
+
+
+def combined_messages(rows: list[dict], title: str = "TOP-3 · all leagues", foot: str = "") -> list[tuple[str, list]]:
+    """[(Telegram HTML text, pick_ids in it)]: ONE table of every pick, grouped by kickoff day (Israel time), in a
+    <pre> block. Columns: kickoff (Israel), league, match, tier, market/side, odds, stake label. Split into several
+    texts only when one would exceed Telegram's 4096 characters. Pure."""
+    from html import escape as _esc
+
+    def escape(x):
+        return _esc(str(x), quote=False)
+    from zoneinfo import ZoneInfo
+    tz = ZoneInfo(IL_TZ)
+    n = len(rows)
+    head = f"🏆 <b>{escape(title)}</b> · {n} pick{'s' if n != 1 else ''} · Israel time"
+    tail = f"<i>{escape(foot)}</i>" if foot else ""
+    hdr = escape(f"{'Time':<5} {'League':<14} {'Match':<30} {'Tier':<4} {'Pick':<11} {'Odds':>5} Stake")
+    lines = []                                         # (text, pick_id or None)
+    day0 = None
+    for x in rows:
+        k = x["ko"].tz_convert(tz) if pd.notna(x["ko"]) else None
+        day = k.strftime("%a %d %b") if k is not None else "kickoff unknown"
+        if day != day0:
+            lines.append((f"── {escape(day)} ──", None))
+            day0 = day
+        t = k.strftime("%H:%M") if k is not None else "--:--"
+        lines.append((escape(f"{t} {_short(x['league'], 14):<14} {_short(x['match'], 30):<30} {x['tier']:<4} "
+                             f"{_short(x['pick'], 11):<11} {x['odds']:>5} {x['stake']}"), x["pick_id"]))
+
+    def text(body, first, last):
+        parts = [head if first else f"{head} (cont.)", f"<pre>{hdr}\n" + "\n".join(b for b, _ in body) + "</pre>"]
+        return "\n".join(parts + ([tail] if last and tail else []))
+
+    msgs, cur, day_hdr = [], [], None
+    for ln in lines:
+        if ln[1] is None:
+            day_hdr = ln
+        if cur and len(text(cur + [ln], not msgs, True)) > TG_LIMIT:
+            msgs.append((text(cur, not msgs, False), [i for _, i in cur if i]))
+            cur = [day_hdr] if ln[1] is not None and day_hdr is not None else []   # the day header carries over
+        cur.append(ln)
+    if cur or not msgs:
+        msgs.append((text(cur, not msgs, True), [i for _, i in cur if i]))
+    return msgs
+
+
+def _foot(picks: pd.DataFrame, flat: float | None) -> str:
+    """Stake rule + legend + every league-week tier left empty (owner 2026-11-22: an empty tier says why)."""
+    out = []
+    if flat is not None:
+        out.append(f"Staked ({stake_text(flat)} of bankroll, flat, placed manually) only where the tip cleared its "
+                   "league's own approved bar; the others say why they carry no stake.")
+    out.append("T1 best value, T2 safest, T3 risky value; Rule = the league's own line, outside the 3.")
+    mode = picks["selection_mode"].astype(str) if "selection_mode" in picks.columns else pd.Series(SELECTION_MODE,
+                                                                                                   index=picks.index)
+    tiers = picks[mode != OWN_LIST_MODE]
+    for week, g in tiers.groupby("league_week_id", sort=True):
+        if g["slot"].astype(str).isin(TIER_NAMES).any():
+            empty = [TIER_SHORT[t] for t in TIER_NAMES if t not in set(g["slot"].astype(str))]
+            if empty:
+                lg, wk = str(week).split("|")[0], str(week).split("|")[-1]
+                out.append(f"{lg} {wk}: {', '.join(empty)} empty - no other priced, coherent pick above the fair price.")
+    return " ".join(out)
+
+
 def notify(out_dir: Path | None = None, env: dict | None = None, sender=None, now=None, truth=None) -> dict:
-    """Send each frozen league-week's picks once. Needs TELEGRAM_TOKEN / TELEGRAM_CHAT_ID (or `sender`).
-    Every pick passes the truth gate (src/tip_truth) at send time; the gate unavailable -> nothing is sent."""
+    """Send every newly frozen pick of every league ONCE, as ONE table per run (owner 2026-11-24), split only above
+    Telegram's 4096 characters. A pick is never sent at/after its kickoff (the API-Football kickoff when recorded).
+    Every pick passes the coherence gate and the truth gate (src/tip_truth) at send time; the truth gate unavailable
+    -> nothing is sent. Needs TELEGRAM_TOKEN / TELEGRAM_CHAT_ID (or `sender`)."""
     if not enabled(env):
         return {"enabled": False}
     od = Path(out_dir) if out_dir else OUT
@@ -1306,61 +1405,73 @@ def notify(out_dir: Path | None = None, env: dict | None = None, sender=None, no
     # other send path (go-live rehearsal 2026-11-15)
     picks = config.drop_paper_leagues(picks_store(od).read())
     nf = od / NOTIFIED_NAME
-    sent = set(_read_json(nf).get("weeks", []))
-    n = 0
+    doc = _read_json(nf)
+    sent = set(doc.get("weeks", []))
+    sent_picks = set(doc.get("picks", []))             # once per PICK (a week split across messages)
     now = LW._now(now)
     pending = picks[~picks["league_week_id"].isin(sent)] if len(picks) else picks
-    if len(pending):
-        from src import tip_truth as TT
-        try:
-            truth = truth or TT.default(out_dir=od, bars_ok=truth_bars_ok(bars_context()))
-        except Exception as e:                                         # noqa: BLE001
-            log.warning(f"[top3_league] truth gate unavailable ({type(e).__name__}: {e}) - nothing sent")
-            return {"enabled": True, "sent": 0, "status": "TRUTH_GATE_UNAVAILABLE"}
-        prior = TT.prior_keys(truth, picks[picks["league_week_id"].isin(sent)], "team")
-    checker = None
-    gate = None
-    for week, g in (picks.groupby("league_week_id", sort=True) if len(picks) else []):
-        if week in sent:
-            continue
-        if checker is None:
-            from src.direction_guard import real_track_checker
-            checker = real_track_checker()
-        # last check at send time (src/tip_coherence, owner 2026-11-19): a pick that now mismatches a tip SENT
-        # since its freeze is left out of the message (logged); picks are checked in TOP-3 rank order
-        if gate is None:
-            try:
-                from src.tip_coherence import CoherenceGate
-                gate = CoherenceGate.load(out_dir=od)
-            except Exception as e:                                     # noqa: BLE001
-                log.warning(f"[top3_league] coherence gate unavailable ({type(e).__name__}: {e})")
-                gate = False
-        if gate:
-            keep = []
+    if pending.empty:
+        return {"enabled": True, "sent": 0}
+    from src import tip_truth as TT
+    try:
+        truth = truth or TT.default(out_dir=od, bars_ok=truth_bars_ok(bars_context()))
+    except Exception as ex:                                            # noqa: BLE001
+        log.warning(f"[top3_league] truth gate unavailable ({type(ex).__name__}: {ex}) - nothing sent")
+        return {"enabled": True, "sent": 0, "status": "TRUTH_GATE_UNAVAILABLE"}
+    done = picks[picks["league_week_id"].isin(sent) | picks["pick_id"].astype(str).isin(sent_picks)]
+    prior = TT.prior_keys(truth, done, "team")
+    from src.direction_guard import real_track_checker
+    checker = real_track_checker()
+    try:
+        from src.tip_coherence import CoherenceGate
+        gate = CoherenceGate.load(out_dir=od)
+    except Exception as ex:                                            # noqa: BLE001
+        log.warning(f"[top3_league] coherence gate unavailable ({type(ex).__name__}: {ex})")
+        gate = False
+    keep, week_ids = [], {}
+    for week, g in pending.groupby("league_week_id", sort=True):
+        g = g[~g["pick_id"].astype(str).isin(sent_picks)]
+        ko = pd.Series([pick_kickoff(r) for r in g.to_dict("records")], index=g.index)
+        late = g[~(ko > now)]
+        for r in late.to_dict("records"):
+            log.warning(f"[top3_league] SKIP {r['home_team']} v {r['away_team']} {r['market']} ({week}): "
+                        "kickoff passed - never sent after kickoff")
+        g = g[ko > now]
+        if gate and len(g):
+            ok = []
             for i, r in g.sort_values("top3_rank", key=lambda x: pd.to_numeric(x, errors="coerce")).iterrows():
                 why = _gate_blocks(gate, r)
                 if why:
                     log.warning(f"[top3_league] SKIP {r['home_team']} v {r['away_team']} {r['market']} {r['side']} "
                                 f"({week}): {why}")
                 else:
-                    keep.append(i)
-            g = g.loc[keep]
-        # the truth gate at send time (owner 2026-11-24): real fixture, no duplicate, real price, real market
-        tg = truth.gate(g, now, "team", prior=prior)
-        TT.log_blocks(tg, f"TOP-3 send {week}")
-        g = g.loc[tg.index[tg["truth_reason"] == ""]]
-        if g.empty:
-            sent.add(week)                       # nothing left to send for this week; never retried
-            continue
-        if sender(message(g, checker)):
+                    ok.append(i)
+            g = g.loc[ok]
+        if len(g):
+            # the truth gate at send time (owner 2026-11-24): real fixture, no duplicate, real price, real market
+            tg = truth.gate(g, now, "team", prior=prior)
+            TT.log_blocks(tg, f"TOP-3 send {week}")
+            g = g.loc[tg.index[tg["truth_reason"] == ""]]
             prior |= TT.pick_keys(tg[tg["truth_reason"] == ""])
+        week_ids[week] = set(g["pick_id"].astype(str))
+        if len(g):
+            keep.append(g)
+    n = 0
+    if keep:
+        allp = pd.concat(keep)
+        flat = top3_stake(_policy())
+        for text, ids in combined_messages(table_rows(allp, checker, flat), foot=_foot(allp, flat)):
+            if sender(text):
+                n += 1
+                sent_picks |= set(ids)
+                if gate:
+                    for _, r in allp[allp["pick_id"].astype(str).isin(ids)].iterrows():
+                        _gate_take(gate, r)
+    for week, ids in week_ids.items():
+        if ids <= sent_picks:                     # every pick of the week went out (or none was left to send)
             sent.add(week)
-            n += 1
-            if gate:
-                for _, r in g.iterrows():
-                    _gate_take(gate, r)
-    if n:
-        LW._write_json(nf, {"weeks": sorted(sent)})
+    if sent != set(doc.get("weeks", [])) or sent_picks != set(doc.get("picks", [])):
+        LW._write_json(nf, {"weeks": sorted(sent), "picks": sorted(sent_picks)})
     return {"enabled": True, "sent": n}
 
 
