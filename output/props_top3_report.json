@@ -1,9 +1,184 @@
 {
- "generated_at": "2026-11-23T15:49:01Z",
+ "generated_at": "2026-11-24T15:42:10Z",
  "selection_mode": "PROPS_TOP3_LEAGUE_GW",
  "version": "PROPS-TOP3-1",
  "freeze_lead_min": 120.0,
  "status": "OK",
  "note": "Each prop league's 3 player props of the gameweek: T1 best value, T2 safest (highest model probability), T3 risky value (longest odds), all priced with positive value. No stake: props not proven yet; the record is flat 1u for tracking.",
- "leagues": {}
+ "leagues": {
+  "Argentina Primera Division": {
+   "latest_league_week_id": "Argentina Primera Division|2026-W48",
+   "latest_excluded": {
+    "NO_POSITIVE_VALUE": 3
+   },
+   "latest_picks": [],
+   "weeks_decided": 1,
+   "picks": 0,
+   "settled": 0,
+   "won": 0,
+   "flat_pnl_units": 0.0
+  },
+  "Brazil Serie A": {
+   "latest_league_week_id": "Brazil Serie A|2026-W48",
+   "latest_excluded": {
+    "FIRST_SEEN_AFTER_FREEZE": 4,
+    "MISMATCH_WITH_SENT_TIP": 1,
+    "NO_POSITIVE_VALUE": 10
+   },
+   "latest_picks": [],
+   "weeks_decided": 1,
+   "picks": 0,
+   "settled": 0,
+   "won": 0,
+   "flat_pnl_units": 0.0
+  },
+  "Denmark Superliga": {
+   "latest_league_week_id": "Denmark Superliga|2026-W48",
+   "latest_excluded": {
+    "NO_POSITIVE_VALUE": 3
+   },
+   "latest_picks": [],
+   "weeks_decided": 1,
+   "picks": 0,
+   "settled": 0,
+   "won": 0,
+   "flat_pnl_units": 0.0
+  },
+  "La Liga": {
+   "latest_league_week_id": "La Liga|2026-W48",
+   "latest_excluded": {
+    "NO_POSITIVE_VALUE": 14
+   },
+   "latest_picks": [],
+   "weeks_decided": 1,
+   "picks": 0,
+   "settled": 0,
+   "won": 0,
+   "flat_pnl_units": 0.0
+  },
+  "La Liga 2": {
+   "latest_league_week_id": "La Liga 2|2026-W48",
+   "latest_excluded": {
+    "NO_POSITIVE_VALUE": 2,
+    "STARTED_BEFORE_ISSUE": 2
+   },
+   "latest_picks": [],
+   "weeks_decided": 1,
+   "picks": 0,
+   "settled": 0,
+   "won": 0,
+   "flat_pnl_units": 0.0
+  },
+  "Ligue 2": {
+   "latest_league_week_id": "Ligue 2|2026-W48",
+   "latest_excluded": {
+    "NO_POSITIVE_VALUE": 3
+   },
+   "latest_picks": [],
+   "weeks_decided": 1,
+   "picks": 0,
+   "settled": 0,
+   "won": 0,
+   "flat_pnl_units": 0.0
+  },
+  "Premier League": {
+   "latest_league_week_id": "Premier League|2026-W48",
+   "latest_excluded": {
+    "NO_POSITIVE_VALUE": 13,
+    "STARTED_BEFORE_ISSUE": 5
+   },
+   "latest_picks": [
+    {
+     "role": "T1_BEST_VALUE",
+     "player_name": "L. Delap",
+     "team": "Nottingham Forest",
+     "match": "Nottingham Forest vs Chelsea",
+     "kickoff_utc": "2026-11-27T20:00:00Z",
+     "market": "goals",
+     "value_basis": "vs quoted price",
+     "stake_label": "No stake: props not proven yet",
+     "result": ""
+    }
+   ],
+   "weeks_decided": 1,
+   "picks": 1,
+   "settled": 0,
+   "won": 0,
+   "flat_pnl_units": 0.0
+  },
+  "Serie A": {
+   "latest_league_week_id": "Serie A|2026-W48",
+   "latest_excluded": {
+    "FIRST_SEEN_AFTER_FREEZE": 15,
+    "NO_POSITIVE_VALUE": 27,
+    "STARTED_BEFORE_ISSUE": 3
+   },
+   "latest_picks": [
+    {
+     "role": "T1_BEST_VALUE",
+     "player_name": "A. Adams",
+     "team": "Venezia",
+     "match": "Venezia vs Bologna",
+     "kickoff_utc": "2026-11-27T19:45:00Z",
+     "market": "goals",
+     "value_basis": "vs quoted price",
+     "stake_label": "No stake: props not proven yet",
+     "result": ""
+    }
+   ],
+   "weeks_decided": 1,
+   "picks": 1,
+   "settled": 0,
+   "won": 0,
+   "flat_pnl_units": 0.0
+  },
+  "Sweden Allsvenskan": {
+   "latest_league_week_id": "Sweden Allsvenskan|2026-W48",
+   "latest_excluded": {
+    "NO_POSITIVE_VALUE": 5
+   },
+   "latest_picks": [],
+   "weeks_decided": 1,
+   "picks": 0,
+   "settled": 0,
+   "won": 0,
+   "flat_pnl_units": 0.0
+  },
+  "USA MLS": {
+   "latest_league_week_id": "USA MLS|2026-W48",
+   "latest_excluded": {
+    "FIRST_SEEN_AFTER_FREEZE": 2,
+    "NO_POSITIVE_VALUE": 26
+   },
+   "latest_picks": [
+    {
+     "role": "T1_BEST_VALUE",
+     "player_name": "L. Walta",
+     "team": "Los Angeles FC",
+     "match": "St. Louis City vs Los Angeles FC",
+     "kickoff_utc": "2026-11-24T01:00:00Z",
+     "market": "goals",
+     "value_basis": "vs quoted price",
+     "stake_label": "No stake: props not proven yet",
+     "result": ""
+    },
+    {
+     "role": "T2_SAFEST",
+     "player_name": "D. Bouanga",
+     "team": "Los Angeles FC",
+     "match": "St. Louis City vs Los Angeles FC",
+     "kickoff_utc": "2026-11-24T01:00:00Z",
+     "market": "sot",
+     "value_basis": "vs quoted price",
+     "stake_label": "No stake: props not proven yet",
+     "result": ""
+    }
+   ],
+   "weeks_decided": 1,
+   "picks": 2,
+   "settled": 0,
+   "won": 0,
+   "flat_pnl_units": 0.0
+  }
+ }
 }
