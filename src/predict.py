@@ -227,13 +227,15 @@ def _fetch_odds_api(days_ahead: int = 7) -> pd.DataFrame:
                     if ov25 and un25 and ov15 and ov35:
                         break
 
-                # ENTRY BOOK ORDER (owner 2026-11-24, "so fix it!"): the O/U 2.5 board price is ONE book's two-sided
-                # pair from the FIRST book of the named order in config/entry_book_order.json (Bet365, Pinnacle, then
-                # William Hill / 1xBet / Ladbrokes), never the first book OddsAPI lists. No listed book -> no price.
-                # Only the price source changes; no served model reads odds_over25 / under25 (src/entry_book.py).
-                from src import entry_book as _eb
-                _ep = _eb.pick_pair(event.get("bookmakers", []), 2.5, track=config.model_type_for_league(league))
-                ov25, un25, ov25_book, un25_book = _ep.over, _ep.under, _ep.book, _ep.book
+                # REFERENCE PRICE (owner 2026-11-24, "as many bookmakers as we can have"): the O/U 2.5 board price is a
+                # multi-book consensus - every book's two-sided 2.5 pair de-vigged (src.market_edge.power_devig), the
+                # median fair probability, only with >= 3 books (src/reference_price.py). Fewer books -> no price, no
+                # fallback. The label (odds_over25_book) is "consensus:power_median:n=<k>", never a book name. The best
+                # executable price + its book and the first-listed pair are recorded beside it, for comparison only.
+                # No served model reads odds_over25 / under25 as a feature.
+                from src import reference_price as _rp
+                _cs = _rp.consensus(event.get("bookmakers", []), 2.5)
+                ov25, un25, ov25_book, un25_book = _cs.over, _cs.under, _cs.label, _cs.label
 
                 # Best price per side across EVERY book (the loop above stops early). Feeds only
                 # the new-format bookmaker_overround FEATURE, to match its best-of-books training
@@ -269,6 +271,14 @@ def _fetch_odds_api(days_ahead: int = 7) -> pd.DataFrame:
                         "odds_under25": float(un25),
                         "odds_over25_book":  ov25_book,
                         "odds_under25_book": un25_book,
+                        # beside the consensus (owner 2026-11-24): how many books, the best executable price per side
+                        # + its book, and the first-listed pair (comparison only, never a basis)
+                        "odds_ou25_n_books":     _cs.n_books,
+                        "best_over25_book":      _cs.best_over_book,
+                        "best_under25_book":     _cs.best_under_book,
+                        "first_listed_over25":   _cs.first_over,
+                        "first_listed_under25":  _cs.first_under,
+                        "first_listed_ou25_book": _cs.first_book,
                         "best_over25":  best_ov25,
                         "best_under25": best_un25,
                         "odds_over15":  float(ov15) if ov15 else None,

@@ -1,7 +1,0 @@
-{
- "about": "ENTRY BOOK ORDER for the O/U 2.5 board price (src/entry_book.py, read by src/predict._fetch_odds_api). The price that becomes odds_over25 / odds_under25 is ONE book's two-sided pair at the exact 2.5 line, from the FIRST book in this order that quotes both sides - never the first book OddsAPI happens to list, never a best-of or a median. A fixture with no pair from a listed book gets no board price (missing stays missing). The book key is recorded on the row (odds_over25_book / odds_under25_book -> ledger entry_bookmaker).",
- "rule_source": "owner bars rule (P11 v2 O1 2026-11-18; P11 v3 2026-11-23): Bet365, then Pinnacle, then William Hill, 1xBet, Ladbrokes only as fallbacks",
- "order": ["bet365", "pinnacle", "williamhill", "onexbet", "ladbrokes_uk"],
- "order_by_track": {},
- "measured_basis_note": "What the installed bars (P11 v2) measured for O/U 2.5: Standard = own captures / football-data pre-match Bet365 else Pinnacle (no fallback); New-Format = OddsAPI history Bet365 else Pinnacle (no fallback). P11 v3 (draft PR #99, not installed) adds the William Hill / 1xBet / Ladbrokes fallback for New-Format O/U 2.5 only and keeps Standard O/U 2.5 at Bet365 > Pinnacle. To serve exactly the measured basis, set order_by_track {\"standard\": [\"bet365\", \"pinnacle\"], \"new_format\": [\"bet365\", \"pinnacle\"]} (owner decision). OddsAPI's eu region (the board's region) lists no Bet365."
-}
