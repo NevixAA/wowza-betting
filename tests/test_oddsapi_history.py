@@ -967,3 +967,98 @@ def test_cli_probe_ht_runs_only_the_probe(monkeypatch, tmp_path):
     monkeypatch.setenv("ODDS_HIST_RUN_CREDIT_CAP", "100")
     assert CLI.main(["--store", str(tmp_path / "store"), "--probe-ht", "--max-minutes", "5"]) == OH.EXIT_DONE
     assert seen["store"] == tmp_path / "store"
+
+
+# ── --only-day: ONE league-day bought on its own (owner 2026-11-24, Saudi 2026-09-01) ────────────────
+D2 = "2024-06-08"
+DAYS2 = {(LG, D): DAYS[(LG, D)], (LG, D2): [("Austin", "Portland Timbers")]}
+
+
+def test_parse_only_day():
+    assert OH.parse_only_day("Saudi Pro League|2026-09-01") == ("Saudi Pro League", "2026-09-01")
+    for bad in ("Saudi Pro League", "|2026-09-01", "X|2026-9-1", "X|2026-02-30", "X|"):
+        with pytest.raises(ValueError):
+            OH.parse_only_day(bad)
+
+
+def test_restrict_plan_cuts_one_day_and_changes_nothing_else():
+    full = OH.build_plan(DAYS2, _tiers("B1", "BT"), props={}, nf={LG})
+    before = OH.plan_digest(full)
+    cut = OH.restrict_plan(full, LG, D2)
+    assert OH.plan_digest(full) == before                                # the full plan is not mutated
+    for t in ("B1", "BT"):
+        assert cut["units"][t] == [u for u in full["units"][t] if u.date == D2]   # same Unit objects, unchanged
+        assert all(u.date == D2 for u in cut["units"][t])
+    assert cut["lookups"]["B1"] == [(LG, D2)] and cut["lookups"]["BT"] == []
+    assert OH.plan_max_credits(cut) == 1 + sum(u.max_cost for us in cut["units"].values() for u in us)
+
+
+def test_default_plan_is_unchanged_by_the_only_day_code():
+    """build_plan without --only-day: every tier, every day, as before (default collect behaviour)."""
+    full = OH.build_plan(DAYS2, OH.TIERS, props={}, s_ok=set(), nf={LG})
+    assert {u.date for us in full["units"].values() for u in us} == {D, D2}
+    assert OH.restrict_plan(full, LG, D)["units"]["BT"] + OH.restrict_plan(full, LG, D2)["units"]["BT"] \
+        == full["units"]["BT"]
+
+
+def _cli_env(monkeypatch, cap):
+    monkeypatch.setenv("ODDS_API_KEY", KEY)
+    monkeypatch.setenv("ODDS_HIST_FLOOR", str(OH.MIN_FLOOR))
+    monkeypatch.setenv("ODDS_HIST_RUN_CREDIT_CAP", str(cap))
+    fx = pd.DataFrame([{"league": lg, "date": d, "home": h, "away": a, "source": "v9"}
+                       for (lg, d), ps in DAYS2.items() for h, a in ps])
+    monkeypatch.setattr("oddsapi_history_collect.OH.load_fixtures", lambda include=(): (fx, {}))
+    monkeypatch.setattr("oddsapi_history_collect.OH.new_format_leagues", lambda: {LG})
+
+
+def test_cli_only_day_runs_the_cut_plan(monkeypatch, tmp_path):
+    import oddsapi_history_collect as CLI
+    _cli_env(monkeypatch, 21)
+    seen = {}
+
+    class C:
+        def __init__(self, store, meter, days, plan, tiers, spell=None):
+            seen.update(days=days, plan=plan, tiers=tiers, cap=meter.run_cap)
+
+        def run(self):
+            return OH.EXIT_DONE, "done"
+    monkeypatch.setattr(CLI.OH, "Collector", C)
+    assert CLI.main(["--store", str(tmp_path / "store"), "--max-minutes", "5", "--tiers", "BT",
+                     "--only-day", f"{LG}|{D2}"]) == OH.EXIT_DONE
+    assert seen["tiers"] == ["BT"] and seen["cap"] == 21
+    assert {(u.league, u.date) for u in seen["plan"]["units"]["BT"]} == {(LG, D2)}
+    assert len(seen["plan"]["units"]["BT"]) == 1 and seen["plan"]["lookups"]["BT"] == [(LG, D2)]
+    assert set(seen["days"]) == set(DAYS2)                          # alias proof still reads every day
+    assert OH.plan_max_credits(seen["plan"]) == 21                  # 1 listing + BT 10 x 2 markets x eu
+
+
+def test_cli_only_day_refuses_over_cap_without_tiers_and_unknown_days(monkeypatch, tmp_path):
+    import oddsapi_history_collect as CLI
+    _cli_env(monkeypatch, 20)
+    monkeypatch.setattr(CLI.OH, "Collector", lambda *a, **k: (_ for _ in ()).throw(AssertionError("no run")))
+    args = ["--store", str(tmp_path / "store"), "--max-minutes", "5"]
+    with pytest.raises(SystemExit, match="run cap 20"):
+        CLI.main(args + ["--tiers", "BT", "--only-day", f"{LG}|{D2}"])
+    with pytest.raises(SystemExit, match="needs --tiers"):
+        CLI.main(args + ["--only-day", f"{LG}|{D2}"])
+    with pytest.raises(SystemExit, match="no fixture"):
+        CLI.main(args + ["--tiers", "BT", "--only-day", f"{LG}|2024-06-03"])
+    with pytest.raises(SystemExit, match="probe"):
+        CLI.main(args + ["--tiers", "BT", "--only-day", f"{LG}|{D2}", "--probe-ht"])
+
+
+def test_only_day_run_spends_one_listing_then_bt_and_stops_without_an_event(tmp_path):
+    """Real Collector on the fake API: with a provider event, 1 listing + 1 BT call (21 credits);
+    with an empty listing, 0 odds calls."""
+    for events, odds_calls in ((EV, 1), ([], 0)):
+        api = FakeAPI(events=events)
+        store = OH.Store(tmp_path / f"s{len(events)}", "r1")
+        meter = OH.Meter(KEY, floor=OH.MIN_FLOOR, run_cap=21, max_seconds=600, session=api, pause=0,
+                         sleep=lambda s: None)
+        days = {(LG, D): [("Austin", "Dallas")]}
+        plan = OH.restrict_plan(OH.build_plan(days, _tiers("BT"), props={}, nf={LG}), LG, D)
+        code, _ = OH.Collector(store, meter, days, plan, ["BT"]).run()
+        assert code == OH.EXIT_DONE
+        assert sum("/events/" in u for u, _ in api.calls) == odds_calls
+        assert sum(u.endswith("/events") for u, _ in api.calls) == 1
+        assert meter.spent <= 21
