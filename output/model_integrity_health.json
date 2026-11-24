@@ -1,7 +1,7 @@
 {
   "artifact": "model_integrity_health",
   "version": "model-integrity-health-0.2",
-  "generated_at": "2026-11-24T16:28:20Z",
+  "generated_at": "2026-11-24T17:08:35Z",
   "status": "WARN",
   "active_serving_join_status": "PASS",
   "active_training_lineage_status": "UNVERIFIED",
@@ -36,10 +36,10 @@
     "models": {
       "standard": {
         "payload": "model_v9_standard.pkl",
-        "artifact_sha256_16": "67ee36668c21109d",
-        "status": "PASS",
-        "why": "standard/over25: 49,597 rows (49407 to train end = payload 49407), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS",
-        "registry_sha256_16": "67ee36668c21109d"
+        "artifact_sha256_16": "72b38fd71e3e485e",
+        "status": "UNVERIFIED",
+        "why": "evidence is for another file version (payload changed since it was verified)",
+        "registry_sha256_16": "72b38fd71e3e485e"
       },
       "newformat": {
         "payload": "model_v9_newformat.pkl",
@@ -50,38 +50,38 @@
       },
       "btts": {
         "payload": "model_v9_btts.pkl",
-        "artifact_sha256_16": "44c670490d5101c1",
-        "status": "PASS",
-        "why": "standard/btts: 49,597 rows (49407 to train end = payload 49407), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS; new_format/btts: 26,965 rows (26846 to train end = payload 26846), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS",
-        "registry_sha256_16": "44c670490d5101c1"
+        "artifact_sha256_16": "e6a51f2e80f65647",
+        "status": "UNVERIFIED",
+        "why": "evidence is for another file version (payload changed since it was verified)",
+        "registry_sha256_16": "e6a51f2e80f65647"
       },
       "over15": {
         "payload": "model_v9_over15.pkl",
-        "artifact_sha256_16": "ca01b7d3a4f6fcae",
-        "status": "PASS",
-        "why": "standard/over15: 49,597 rows (49407 to train end = payload 49407), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS; new_format/over15: 26,965 rows (26846 to train end = payload 26846), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS",
-        "registry_sha256_16": "ca01b7d3a4f6fcae"
+        "artifact_sha256_16": "44d014a13a79ba60",
+        "status": "UNVERIFIED",
+        "why": "evidence is for another file version (payload changed since it was verified)",
+        "registry_sha256_16": "44d014a13a79ba60"
       },
       "over35": {
         "payload": "model_v9_over35.pkl",
-        "artifact_sha256_16": "e8b12d74f1b0d51a",
-        "status": "PASS",
-        "why": "standard/over35: 49,597 rows (49407 to train end = payload 49407), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS; new_format/over35: 26,965 rows (26846 to train end = payload 26846), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS",
-        "registry_sha256_16": "e8b12d74f1b0d51a"
+        "artifact_sha256_16": "540aa360b2310b5c",
+        "status": "UNVERIFIED",
+        "why": "evidence is for another file version (payload changed since it was verified)",
+        "registry_sha256_16": "540aa360b2310b5c"
       },
       "ht_over05": {
         "payload": "model_ht_over05.pkl",
-        "artifact_sha256_16": "0776cea1784db55e",
+        "artifact_sha256_16": "8ee194e4827eb8a0",
         "status": "UNVERIFIED",
         "why": "evidence is for another file version (payload changed since it was verified)",
-        "registry_sha256_16": "0776cea1784db55e"
+        "registry_sha256_16": "8ee194e4827eb8a0"
       },
       "ht_over15": {
         "payload": "model_ht_over15.pkl",
-        "artifact_sha256_16": "aa4c62ceece0e2a5",
+        "artifact_sha256_16": "b886cd05ffec43b6",
         "status": "UNVERIFIED",
         "why": "evidence is for another file version (payload changed since it was verified)",
-        "registry_sha256_16": "aa4c62ceece0e2a5"
+        "registry_sha256_16": "b886cd05ffec43b6"
       },
       "ht_over05_nf": {
         "payload": "model_v9_ht_over05_nf.pkl",
@@ -167,7 +167,8 @@
       "status": "WARN",
       "checks": {
         "parity": "WARN",
-        "weight_alignment": "UNKNOWN"
+        "weight_alignment": "UNKNOWN",
+        "training_lineage": "UNVERIFIED"
       }
     },
     {
@@ -185,7 +186,8 @@
       "checks": {
         "parity": "WARN",
         "weight_alignment": "UNKNOWN",
-        "price_provenance": "WARN"
+        "price_provenance": "WARN",
+        "training_lineage": "UNVERIFIED"
       }
     },
     {
@@ -194,7 +196,8 @@
       "checks": {
         "parity": "WARN",
         "weight_alignment": "UNKNOWN",
-        "price_provenance": "WARN"
+        "price_provenance": "WARN",
+        "training_lineage": "UNVERIFIED"
       }
     },
     {
@@ -203,7 +206,8 @@
       "checks": {
         "parity": "WARN",
         "weight_alignment": "UNKNOWN",
-        "price_provenance": "WARN"
+        "price_provenance": "WARN",
+        "training_lineage": "UNVERIFIED"
       }
     },
     {
@@ -212,7 +216,8 @@
       "checks": {
         "parity": "WARN",
         "weight_alignment": "UNKNOWN",
-        "price_provenance": "WARN"
+        "price_provenance": "WARN",
+        "training_lineage": "UNVERIFIED"
       }
     },
     {
@@ -221,7 +226,8 @@
       "checks": {
         "parity": "WARN",
         "weight_alignment": "UNKNOWN",
-        "price_provenance": "WARN"
+        "price_provenance": "WARN",
+        "training_lineage": "UNVERIFIED"
       }
     },
     {
@@ -230,7 +236,8 @@
       "checks": {
         "parity": "WARN",
         "weight_alignment": "UNKNOWN",
-        "price_provenance": "WARN"
+        "price_provenance": "WARN",
+        "training_lineage": "UNVERIFIED"
       }
     },
     {
@@ -292,13 +299,13 @@
       "model_type": "standard",
       "market": "OU25",
       "payload": "model_v9_standard.pkl",
-      "payload_sha256_16": "67ee36668c21109d",
+      "payload_sha256_16": "72b38fd71e3e485e",
       "recipe": "std_v9_repaired",
       "model_recipe_version": "r2-repaired-1.0",
       "serving_version": "standard_20261119T134019Z_67ee3666",
       "training_cutoff": "2026-11-01",
       "code_sha": "56e4920cf95f",
-      "data_hash": "823d465eeb05f5a0",
+      "data_hash": "c1b182ab96342f4b",
       "identity_version": null,
       "feature_recipe_version": null,
       "imputer_version": "v9-train-only-imputer-1.1",
@@ -309,7 +316,7 @@
         "status": "PASS",
         "blocks": {
           "base": {
-            "rows": 39523,
+            "rows": 39521,
             "dates": [
               "2016-08-05",
               "2025-02-13"
@@ -380,14 +387,15 @@
       },
       "training_lineage": {
         "payload": "model_v9_standard.pkl",
-        "artifact_sha256_16": "67ee36668c21109d",
-        "status": "PASS",
-        "why": "standard/over25: 49,597 rows (49407 to train end = payload 49407), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS",
-        "registry_sha256_16": "67ee36668c21109d"
+        "artifact_sha256_16": "72b38fd71e3e485e",
+        "status": "UNVERIFIED",
+        "why": "evidence is for another file version (payload changed since it was verified)",
+        "registry_sha256_16": "72b38fd71e3e485e"
       },
       "status": "WARN",
       "unknown_checks": [
-        "weight_alignment"
+        "weight_alignment",
+        "training_lineage"
       ]
     },
     "new_format|OU25": {
@@ -496,13 +504,13 @@
       "model_type": "standard",
       "market": "BTTS",
       "payload": "model_v9_btts.pkl",
-      "payload_sha256_16": "44c670490d5101c1",
+      "payload_sha256_16": "e6a51f2e80f65647",
       "recipe": "side_v9_repaired",
       "model_recipe_version": "r2-repaired-1.0",
       "serving_version": "btts_20261119T134019Z_44c67049",
       "training_cutoff": "2026-11-01",
       "code_sha": "56e4920cf95f",
-      "data_hash": "0c4cdc31d41d19f0",
+      "data_hash": "489c97b5e27825ec",
       "identity_version": null,
       "feature_recipe_version": null,
       "imputer_version": "v9-train-only-imputer-1.1",
@@ -513,7 +521,7 @@
         "status": "PASS",
         "blocks": {
           "base": {
-            "rows": 39523,
+            "rows": 39521,
             "dates": [
               "2016-08-05",
               "2025-02-13"
@@ -592,21 +600,22 @@
       },
       "training_lineage": {
         "payload": "model_v9_btts.pkl",
-        "artifact_sha256_16": "44c670490d5101c1",
-        "status": "PASS",
-        "why": "standard/btts: 49,597 rows (49407 to train end = payload 49407), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS; new_format/btts: 26,965 rows (26846 to train end = payload 26846), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS",
-        "registry_sha256_16": "44c670490d5101c1"
+        "artifact_sha256_16": "e6a51f2e80f65647",
+        "status": "UNVERIFIED",
+        "why": "evidence is for another file version (payload changed since it was verified)",
+        "registry_sha256_16": "e6a51f2e80f65647"
       },
       "status": "WARN",
       "unknown_checks": [
-        "weight_alignment"
+        "weight_alignment",
+        "training_lineage"
       ]
     },
     "new_format|BTTS": {
       "model_type": "new_format",
       "market": "BTTS",
       "payload": "model_v9_btts.pkl",
-      "payload_sha256_16": "44c670490d5101c1",
+      "payload_sha256_16": "e6a51f2e80f65647",
       "recipe": "side_v9_repaired",
       "model_recipe_version": "r2-repaired-1.0",
       "serving_version": "btts_20261119T134019Z_44c67049",
@@ -702,27 +711,28 @@
       },
       "training_lineage": {
         "payload": "model_v9_btts.pkl",
-        "artifact_sha256_16": "44c670490d5101c1",
-        "status": "PASS",
-        "why": "standard/btts: 49,597 rows (49407 to train end = payload 49407), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS; new_format/btts: 26,965 rows (26846 to train end = payload 26846), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS",
-        "registry_sha256_16": "44c670490d5101c1"
+        "artifact_sha256_16": "e6a51f2e80f65647",
+        "status": "UNVERIFIED",
+        "why": "evidence is for another file version (payload changed since it was verified)",
+        "registry_sha256_16": "e6a51f2e80f65647"
       },
       "status": "WARN",
       "unknown_checks": [
-        "weight_alignment"
+        "weight_alignment",
+        "training_lineage"
       ]
     },
     "standard|OU15": {
       "model_type": "standard",
       "market": "OU15",
       "payload": "model_v9_over15.pkl",
-      "payload_sha256_16": "ca01b7d3a4f6fcae",
+      "payload_sha256_16": "44d014a13a79ba60",
       "recipe": "side_v9_repaired",
       "model_recipe_version": "r2-repaired-1.0",
       "serving_version": "over15_20261119T134019Z_ca01b7d3",
       "training_cutoff": "2026-11-01",
       "code_sha": "56e4920cf95f",
-      "data_hash": "23839609719fc515",
+      "data_hash": "bc4fdd8edb0e18a7",
       "identity_version": null,
       "feature_recipe_version": null,
       "imputer_version": "v9-train-only-imputer-1.1",
@@ -733,7 +743,7 @@
         "status": "PASS",
         "blocks": {
           "base": {
-            "rows": 39523,
+            "rows": 39521,
             "dates": [
               "2016-08-05",
               "2025-02-13"
@@ -812,21 +822,22 @@
       },
       "training_lineage": {
         "payload": "model_v9_over15.pkl",
-        "artifact_sha256_16": "ca01b7d3a4f6fcae",
-        "status": "PASS",
-        "why": "standard/over15: 49,597 rows (49407 to train end = payload 49407), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS; new_format/over15: 26,965 rows (26846 to train end = payload 26846), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS",
-        "registry_sha256_16": "ca01b7d3a4f6fcae"
+        "artifact_sha256_16": "44d014a13a79ba60",
+        "status": "UNVERIFIED",
+        "why": "evidence is for another file version (payload changed since it was verified)",
+        "registry_sha256_16": "44d014a13a79ba60"
       },
       "status": "WARN",
       "unknown_checks": [
-        "weight_alignment"
+        "weight_alignment",
+        "training_lineage"
       ]
     },
     "new_format|OU15": {
       "model_type": "new_format",
       "market": "OU15",
       "payload": "model_v9_over15.pkl",
-      "payload_sha256_16": "ca01b7d3a4f6fcae",
+      "payload_sha256_16": "44d014a13a79ba60",
       "recipe": "side_v9_repaired",
       "model_recipe_version": "r2-repaired-1.0",
       "serving_version": "over15_20261119T134019Z_ca01b7d3",
@@ -922,27 +933,28 @@
       },
       "training_lineage": {
         "payload": "model_v9_over15.pkl",
-        "artifact_sha256_16": "ca01b7d3a4f6fcae",
-        "status": "PASS",
-        "why": "standard/over15: 49,597 rows (49407 to train end = payload 49407), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS; new_format/over15: 26,965 rows (26846 to train end = payload 26846), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS",
-        "registry_sha256_16": "ca01b7d3a4f6fcae"
+        "artifact_sha256_16": "44d014a13a79ba60",
+        "status": "UNVERIFIED",
+        "why": "evidence is for another file version (payload changed since it was verified)",
+        "registry_sha256_16": "44d014a13a79ba60"
       },
       "status": "WARN",
       "unknown_checks": [
-        "weight_alignment"
+        "weight_alignment",
+        "training_lineage"
       ]
     },
     "standard|OU35": {
       "model_type": "standard",
       "market": "OU35",
       "payload": "model_v9_over35.pkl",
-      "payload_sha256_16": "e8b12d74f1b0d51a",
+      "payload_sha256_16": "540aa360b2310b5c",
       "recipe": "side_v9_repaired",
       "model_recipe_version": "r2-repaired-1.0",
       "serving_version": "over35_20261119T134019Z_e8b12d74",
       "training_cutoff": "2026-11-01",
       "code_sha": "56e4920cf95f",
-      "data_hash": "054d6a550c7bd908",
+      "data_hash": "90a74429ebd0954a",
       "identity_version": null,
       "feature_recipe_version": null,
       "imputer_version": "v9-train-only-imputer-1.1",
@@ -953,7 +965,7 @@
         "status": "PASS",
         "blocks": {
           "base": {
-            "rows": 39523,
+            "rows": 39521,
             "dates": [
               "2016-08-05",
               "2025-02-13"
@@ -1032,21 +1044,22 @@
       },
       "training_lineage": {
         "payload": "model_v9_over35.pkl",
-        "artifact_sha256_16": "e8b12d74f1b0d51a",
-        "status": "PASS",
-        "why": "standard/over35: 49,597 rows (49407 to train end = payload 49407), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS; new_format/over35: 26,965 rows (26846 to train end = payload 26846), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS",
-        "registry_sha256_16": "e8b12d74f1b0d51a"
+        "artifact_sha256_16": "540aa360b2310b5c",
+        "status": "UNVERIFIED",
+        "why": "evidence is for another file version (payload changed since it was verified)",
+        "registry_sha256_16": "540aa360b2310b5c"
       },
       "status": "WARN",
       "unknown_checks": [
-        "weight_alignment"
+        "weight_alignment",
+        "training_lineage"
       ]
     },
     "new_format|OU35": {
       "model_type": "new_format",
       "market": "OU35",
       "payload": "model_v9_over35.pkl",
-      "payload_sha256_16": "e8b12d74f1b0d51a",
+      "payload_sha256_16": "540aa360b2310b5c",
       "recipe": "side_v9_repaired",
       "model_recipe_version": "r2-repaired-1.0",
       "serving_version": "over35_20261119T134019Z_e8b12d74",
@@ -1142,21 +1155,22 @@
       },
       "training_lineage": {
         "payload": "model_v9_over35.pkl",
-        "artifact_sha256_16": "e8b12d74f1b0d51a",
-        "status": "PASS",
-        "why": "standard/over35: 49,597 rows (49407 to train end = payload 49407), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS; new_format/over35: 26,965 rows (26846 to train end = payload 26846), dup keys 0, club twice/day 0, other-track/unregistered leagues 0/0, code PASS",
-        "registry_sha256_16": "e8b12d74f1b0d51a"
+        "artifact_sha256_16": "540aa360b2310b5c",
+        "status": "UNVERIFIED",
+        "why": "evidence is for another file version (payload changed since it was verified)",
+        "registry_sha256_16": "540aa360b2310b5c"
       },
       "status": "WARN",
       "unknown_checks": [
-        "weight_alignment"
+        "weight_alignment",
+        "training_lineage"
       ]
     },
     "standard|HT_O05": {
       "model_type": "standard",
       "market": "HT_O05",
       "payload": "model_ht_over05.pkl",
-      "payload_sha256_16": "0776cea1784db55e",
+      "payload_sha256_16": "8ee194e4827eb8a0",
       "recipe": "ht_v9_repaired",
       "model_recipe_version": "r2-repaired-1.0",
       "serving_version": "ht_over05_20261122T170741Z_0776cea1",
@@ -1244,10 +1258,10 @@
       },
       "training_lineage": {
         "payload": "model_ht_over05.pkl",
-        "artifact_sha256_16": "0776cea1784db55e",
+        "artifact_sha256_16": "8ee194e4827eb8a0",
         "status": "UNVERIFIED",
         "why": "evidence is for another file version (payload changed since it was verified)",
-        "registry_sha256_16": "0776cea1784db55e"
+        "registry_sha256_16": "8ee194e4827eb8a0"
       },
       "status": "WARN",
       "unknown_checks": [
@@ -1260,7 +1274,7 @@
       "model_type": "standard",
       "market": "HT_O15",
       "payload": "model_ht_over15.pkl",
-      "payload_sha256_16": "aa4c62ceece0e2a5",
+      "payload_sha256_16": "b886cd05ffec43b6",
       "recipe": "ht_v9_repaired",
       "model_recipe_version": "r2-repaired-1.0",
       "serving_version": "ht_over15_20261122T170742Z_aa4c62ce",
@@ -1348,10 +1362,10 @@
       },
       "training_lineage": {
         "payload": "model_ht_over15.pkl",
-        "artifact_sha256_16": "aa4c62ceece0e2a5",
+        "artifact_sha256_16": "b886cd05ffec43b6",
         "status": "UNVERIFIED",
         "why": "evidence is for another file version (payload changed since it was verified)",
-        "registry_sha256_16": "aa4c62ceece0e2a5"
+        "registry_sha256_16": "b886cd05ffec43b6"
       },
       "status": "WARN",
       "unknown_checks": [

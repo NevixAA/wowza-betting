@@ -23,18 +23,26 @@ from src import oddsapi_history as OH
 
 FIXTURE_KEY = ["league", "date", "home", "away"]
 ODDS_DEDUPE = ["unit_key", "event_id", "bookmaker", "market", "outcome_name", "outcome_description", "point"]
-UNMATCHED_COLS = ["kind", "league", "date", "home", "away", "event_id", "commence_time"]
+EXCLUDE_FLAGS = ("post_kickoff", "dup_conflict", "kickoff_disputed")   # a store row's own flag: never a pre-match price
+UNMATCHED_COLS =["kind", "league", "date", "home", "away", "event_id", "commence_time"]
 TOTAL_MARKETS = {"totals", "alternate_totals"}
 TEAM_TOTAL_MARKETS = {"team_totals", "alternate_team_totals"}
 HT_TOTAL_MARKETS = {"totals_h1", "alternate_totals_h1"}
 
 
 def load_store(store_root: Path) -> pd.DataFrame:
-    """Every stored odds row (deduplicated: a unit re-bought after a crash counts once)."""
+    """Every stored odds row (deduplicated: a unit re-bought after a crash counts once).
+    Reads data/odds ONLY: the store's quarantine/ (rows moved out by the 2026-11-24 repair: snapshots at or after
+    the canonical kickoff, same-key quotes with conflicting values) and archive/ (byte-exact originals) are never
+    read. A row that carries an exclusion flag of its own (post_kickoff / dup_conflict / kickoff_disputed
+    = 1) is dropped too."""
     files = sorted((Path(store_root) / "data" / "odds").glob("*.parquet"))
     if not files:
         return pd.DataFrame(columns=OH.ODDS_COLS)
     o = pd.concat([pd.read_parquet(f) for f in files], ignore_index=True)
+    for c in EXCLUDE_FLAGS:
+        if c in o.columns:
+            o = o[~o[c].astype(str).str.lower().isin(("true", "1", "1.0"))]
     return o.drop_duplicates(ODDS_DEDUPE).reset_index(drop=True)
 
 

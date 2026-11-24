@@ -144,3 +144,24 @@ def test_exec_table_grouping():
     assert C._exec_table("prediction_ledger/v11/v11_shadow/ou25/la_liga_2/2026/x.csv") == \
         "prediction_ledger/v11/v11_shadow/ou25"
     assert C._exec_table("wowza-betting/main/output/bets_ledger.csv") == "wowza-betting/main/output/bets_ledger"
+
+
+def test_exec_quarantine_rows_need_their_own_exclusion_flag():
+    """odds-history repair 2026-11-24: a quarantine table is outside the store's verdict only while every row carries
+    its own exclusion flag (post_kickoff / dup_conflict); the count of rows without one is reported."""
+    df = pd.DataFrame({"event_id": ["e1", "e2", "e3"], "bookmaker": ["b"] * 3, "price": [2.0, 2.1, 2.2],
+                       "snapshot_ts": ["2026-11-01T16:00:00Z"] * 3, "commence_time": ["2026-11-01T15:00:00Z"] * 3,
+                       "post_kickoff": [1, 1, 0]})
+    ta = C._TableAudit("quarantine/odds_post_kickoff", "provider", True, set())
+    ta.add(df)
+    r = ta.finish(private=True)
+    assert r["rows_without_own_exclusion_flag"] == 1
+    assert r["rules"][C.R_POSTKO]["rows"] == 3                          # measured, not hidden
+    assert C._QUARANTINE.search("quarantine/odds_post_kickoff") and not C._QUARANTINE.search("data/odds")
+    assert C._exec_table("quarantine/odds_post_kickoff/42802646906-1-105239-00001.parquet") == \
+        "quarantine/odds_post_kickoff"
+    assert C._exec_table("archive/odds_pre_repair_2026-11-24/data/odds/42802646906-1-105239-00001.parquet") == \
+        "archive/odds_pre_repair_2026-11-24/data/odds"
+    plain = C._TableAudit("data/odds", "provider", True, set())
+    plain.add(df)
+    assert "rows_without_own_exclusion_flag" not in plain.finish(private=True)

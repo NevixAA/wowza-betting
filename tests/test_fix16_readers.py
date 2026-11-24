@@ -249,6 +249,9 @@ RAW = {                # why the raw file is the right input
                                                "written there)"),
     "scripts/probe_oddsapi_history.py": ("P7: reads league / date only to pick one probe match day per "
                                          "league for the OddsAPI history probe (no result is served)"),
+    "src/tip_truth.py": ("2026-11-24 tip truth gate: reads only the club name -> API-Football team id pairs of the "
+                         "RAW af_history (league, home/away name and id; no score, no result is served) to resolve a "
+                         "tip to its API-Football fixture"),
     "scripts/certify_real_data.py": ("2026-11-23 certification: counts the RAW provider cells of both banks "
                                      "(observed / missing) and checks backtest-archive stats against them; "
                                      "read-only, serves nothing"),

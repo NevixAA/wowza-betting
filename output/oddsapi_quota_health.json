@@ -1,7 +1,7 @@
 {
   "artifact": "oddsapi_quota_health",
   "rule_version": "oddsapi-quota-1.0",
-  "generated_at": "2026-11-24T16:28:19Z",
+  "generated_at": "2026-11-24T17:08:34Z",
   "window_hours": 24.0,
   "runs_listed": 200,
   "runs_parsed": 200,
@@ -14,14 +14,20 @@
   "projected_days_to_exhaustion": 190.8,
   "monthly_allowance_assumed": 100000,
   "by_workflow": {
-    "train_side_models.yml": {
-      "runs": 1,
+    "data_truth_gate.yml": {
+      "runs": 46,
       "credits": 0,
       "calls": 0,
       "runs_with_unknown_credits": 0
     },
     "dashboard_sync_dispatch.yml": {
-      "runs": 12,
+      "runs": 11,
+      "credits": 0,
+      "calls": 0,
+      "runs_with_unknown_credits": 0
+    },
+    "af_history_extend.yml": {
+      "runs": 1,
       "credits": 0,
       "calls": 0,
       "runs_with_unknown_credits": 0
@@ -32,8 +38,14 @@
       "calls": 0,
       "runs_with_unknown_credits": 0
     },
-    "data_truth_gate.yml": {
-      "runs": 43,
+    "price_store_sync.yml": {
+      "runs": 36,
+      "credits": 0,
+      "calls": 0,
+      "runs_with_unknown_credits": 0
+    },
+    "train_side_models.yml": {
+      "runs": 1,
       "credits": 0,
       "calls": 0,
       "runs_with_unknown_credits": 0
@@ -50,8 +62,8 @@
       "calls": 0,
       "runs_with_unknown_credits": 0
     },
-    "price_store_sync.yml": {
-      "runs": 35,
+    "evidence_refresh.yml": {
+      "runs": 3,
       "credits": 0,
       "calls": 0,
       "runs_with_unknown_credits": 0
@@ -62,20 +74,20 @@
       "calls": 114,
       "runs_with_unknown_credits": 0
     },
+    "nf_odds_capture.yml": {
+      "runs": 6,
+      "credits": 0,
+      "calls": 0,
+      "runs_with_unknown_credits": 0
+    },
     "daily_injuries_lineups.yml": {
       "runs": 2,
       "credits": 0,
       "calls": 0,
       "runs_with_unknown_credits": 0
     },
-    "evidence_refresh.yml": {
-      "runs": 4,
-      "credits": 0,
-      "calls": 0,
-      "runs_with_unknown_credits": 0
-    },
     "integrity_health.yml": {
-      "runs": 4,
+      "runs": 3,
       "credits": 0,
       "calls": 0,
       "runs_with_unknown_credits": 0
@@ -87,7 +99,7 @@
       "runs_with_unknown_credits": 0
     },
     "daily_summary.yml": {
-      "runs": 5,
+      "runs": 4,
       "credits": 0,
       "calls": 0,
       "runs_with_unknown_credits": 0
@@ -110,6 +122,18 @@
       "calls": 0,
       "runs_with_unknown_credits": 0
     },
+    "prematch_capture.yml": {
+      "runs": 2,
+      "credits": 0,
+      "calls": 0,
+      "runs_with_unknown_credits": 0
+    },
+    "live_scanner.yml": {
+      "runs": 2,
+      "credits": 0,
+      "calls": 0,
+      "runs_with_unknown_credits": 0
+    },
     "warm_nf_shot_cache.yml": {
       "runs": 1,
       "credits": 0,
@@ -128,12 +152,6 @@
       "calls": 0,
       "runs_with_unknown_credits": 0
     },
-    "nf_odds_capture.yml": {
-      "runs": 5,
-      "credits": 0,
-      "calls": 0,
-      "runs_with_unknown_credits": 0
-    },
     "predict.yml": {
       "runs": 2,
       "credits": 744,
@@ -147,36 +165,12 @@
       "runs_with_unknown_credits": 0
     },
     "update_results.yml": {
-      "runs": 4,
-      "credits": 0,
-      "calls": 0,
-      "runs_with_unknown_credits": 0
-    },
-    "prematch_capture.yml": {
-      "runs": 1,
-      "credits": 0,
-      "calls": 0,
-      "runs_with_unknown_credits": 0
-    },
-    "live_scanner.yml": {
-      "runs": 1,
+      "runs": 2,
       "credits": 0,
       "calls": 0,
       "runs_with_unknown_credits": 0
     },
     "weekly_summary.yml": {
-      "runs": 1,
-      "credits": 0,
-      "calls": 0,
-      "runs_with_unknown_credits": 0
-    },
-    "sharp_move_alert.yml": {
-      "runs": 1,
-      "credits": 0,
-      "calls": 0,
-      "runs_with_unknown_credits": 0
-    },
-    "fantasy_refresh.yml": {
       "runs": 1,
       "credits": 0,
       "calls": 0,

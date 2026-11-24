@@ -1,12 +1,12 @@
 {
   "standard": {
-    "model_version": "standard_20261119T134019Z_67ee3666",
-    "champion_since": "2026-11-19T13:40:19Z",
+    "model_version": "standard_20261123T183910Z_72b38fd7",
+    "champion_since": "2026-11-23T18:39:10Z",
     "retrain_batch_id": "phase2_refit_clean-data-switch-2026-11-09",
     "training_cutoff": "2026-11-01",
-    "artifact_sha256": "67ee36668c21109d3ec8bf5050ac87d51997056299fa4472a501d39e3e7553b4",
+    "artifact_sha256": "72b38fd71e3e485e0fe09e13efe9e8a6f04d729af1a8045c648297ad3c5024d4",
     "promotion_source": "OWNER_CLEAN_SWITCH",
-    "promotion_reason": "OWNER_CLEAN_SWITCH [clean-data-switch-2026-11-09] stage std_2016_refit by Nevo (owner) (2026-11-19): \"Install (Recommended)\" - the Standard track only: the same champion_recipe (scripts/phase2_refit_serving.py) refitted with Standard training starting at the 2016/17 season (config/phase2_retrain.json data.train_start standard=2016-07-01) on the football-data seasons connected by PR #59 (frame ebe4",
+    "promotion_reason": "OWNER_CLEAN_SWITCH [clean-data-switch-2026-11-09] stage std_d1_archive_rows_excluded by Nevo (owner) (PENDING): \"PENDING install approval\" - the six Standard serving payloads (standard O/U 2.5, the Standard parts of btts / over15 / over35, Standard ht_over05 / ht_over15) refitted with the same champion_recipe and config (cb7309e8, incl. features.market_exclude for HT home_has_ht_history), the same",
     "gate_version": "PG-1.0"
   },
   "newformat": {
@@ -20,53 +20,53 @@
     "gate_version": "PG-1.0"
   },
   "btts": {
-    "model_version": "btts_20261119T134019Z_44c67049",
-    "champion_since": "2026-11-19T13:40:19Z",
+    "model_version": "btts_20261123T183910Z_e6a51f2e",
+    "champion_since": "2026-11-23T18:39:10Z",
     "retrain_batch_id": "phase2_refit_clean-data-switch-2026-11-09",
     "training_cutoff": "2026-11-01",
-    "artifact_sha256": "44c670490d5101c13423b715a92f3b2d40396d35b1d9fc7c83f2c688a9afc1f1",
+    "artifact_sha256": "e6a51f2e80f65647fd3cf9fe40a2044505c39fd33f27ce4f130b1f9f527bebd7",
     "promotion_source": "OWNER_CLEAN_SWITCH",
-    "promotion_reason": "OWNER_CLEAN_SWITCH [clean-data-switch-2026-11-09] stage std_2016_refit by Nevo (owner) (2026-11-19): \"Install (Recommended)\" - the Standard track only: the same champion_recipe (scripts/phase2_refit_serving.py) refitted with Standard training starting at the 2016/17 season (config/phase2_retrain.json data.train_start standard=2016-07-01) on the football-data seasons connected by PR #59 (frame ebe4",
+    "promotion_reason": "OWNER_CLEAN_SWITCH [clean-data-switch-2026-11-09] stage std_d1_archive_rows_excluded by Nevo (owner) (PENDING): \"PENDING install approval\" - the six Standard serving payloads (standard O/U 2.5, the Standard parts of btts / over15 / over35, Standard ht_over05 / ht_over15) refitted with the same champion_recipe and config (cb7309e8, incl. features.market_exclude for HT home_has_ht_history), the same",
     "gate_version": "PG-1.0"
   },
   "over15": {
-    "model_version": "over15_20261119T134019Z_ca01b7d3",
-    "champion_since": "2026-11-19T13:40:19Z",
+    "model_version": "over15_20261123T183910Z_44d014a1",
+    "champion_since": "2026-11-23T18:39:10Z",
     "retrain_batch_id": "phase2_refit_clean-data-switch-2026-11-09",
     "training_cutoff": "2026-11-01",
-    "artifact_sha256": "ca01b7d3a4f6fcae12ec4fe58691d736245415a09efdcbecdb8ab62f3e865bb7",
+    "artifact_sha256": "44d014a13a79ba606f5aedd1cbd5f91e771ad6b818253360fff5152ed05c8e9e",
     "promotion_source": "OWNER_CLEAN_SWITCH",
-    "promotion_reason": "OWNER_CLEAN_SWITCH [clean-data-switch-2026-11-09] stage std_2016_refit by Nevo (owner) (2026-11-19): \"Install (Recommended)\" - the Standard track only: the same champion_recipe (scripts/phase2_refit_serving.py) refitted with Standard training starting at the 2016/17 season (config/phase2_retrain.json data.train_start standard=2016-07-01) on the football-data seasons connected by PR #59 (frame ebe4",
+    "promotion_reason": "OWNER_CLEAN_SWITCH [clean-data-switch-2026-11-09] stage std_d1_archive_rows_excluded by Nevo (owner) (PENDING): \"PENDING install approval\" - the six Standard serving payloads (standard O/U 2.5, the Standard parts of btts / over15 / over35, Standard ht_over05 / ht_over15) refitted with the same champion_recipe and config (cb7309e8, incl. features.market_exclude for HT home_has_ht_history), the same",
     "gate_version": "PG-1.0"
   },
   "over35": {
-    "model_version": "over35_20261119T134019Z_e8b12d74",
-    "champion_since": "2026-11-19T13:40:19Z",
+    "model_version": "over35_20261123T183911Z_540aa360",
+    "champion_since": "2026-11-23T18:39:11Z",
     "retrain_batch_id": "phase2_refit_clean-data-switch-2026-11-09",
     "training_cutoff": "2026-11-01",
-    "artifact_sha256": "e8b12d74f1b0d51a75355321b5d10c7868d22c1c4ccb8a8452ba3bfdd814cb86",
+    "artifact_sha256": "540aa360b2310b5c20647b0356a8858d708c578f2bd9f666a524cbc9615aa2cd",
     "promotion_source": "OWNER_CLEAN_SWITCH",
-    "promotion_reason": "OWNER_CLEAN_SWITCH [clean-data-switch-2026-11-09] stage std_2016_refit by Nevo (owner) (2026-11-19): \"Install (Recommended)\" - the Standard track only: the same champion_recipe (scripts/phase2_refit_serving.py) refitted with Standard training starting at the 2016/17 season (config/phase2_retrain.json data.train_start standard=2016-07-01) on the football-data seasons connected by PR #59 (frame ebe4",
+    "promotion_reason": "OWNER_CLEAN_SWITCH [clean-data-switch-2026-11-09] stage std_d1_archive_rows_excluded by Nevo (owner) (PENDING): \"PENDING install approval\" - the six Standard serving payloads (standard O/U 2.5, the Standard parts of btts / over15 / over35, Standard ht_over05 / ht_over15) refitted with the same champion_recipe and config (cb7309e8, incl. features.market_exclude for HT home_has_ht_history), the same",
     "gate_version": "PG-1.0"
   },
   "ht_over05": {
-    "model_version": "ht_over05_20261122T170741Z_0776cea1",
-    "champion_since": "2026-11-22T17:07:41Z",
+    "model_version": "ht_over05_20261123T183910Z_8ee194e4",
+    "champion_since": "2026-11-23T18:39:10Z",
     "retrain_batch_id": "phase2_refit_clean-data-switch-2026-11-09",
     "training_cutoff": "2026-11-01",
-    "artifact_sha256": "0776cea1784db55e3965fc53dba9f957148030c0bdc83215ab5d14c86e835974",
+    "artifact_sha256": "8ee194e4827eb8a0a8f6cabfc4c1b6c56bac3e0d2b0f450d2c377249ae931b30",
     "promotion_source": "OWNER_CLEAN_SWITCH",
-    "promotion_reason": "OWNER_CLEAN_SWITCH [clean-data-switch-2026-11-09] stage std_ht_drop_home_ht_history by Nevo (owner) (2026-11-22): \"Yes, retrain the 2 HT models\" - the two Standard half-time payloads (ht_over05 / ht_over15, models/model_ht_over05.pkl / model_ht_over15.pkl) refitted with the same champion_recipe on the same frame (ebe47c041a7f595f), the same cut-offs (Standard from 2016-07-01, training 2016-08-05..",
+    "promotion_reason": "OWNER_CLEAN_SWITCH [clean-data-switch-2026-11-09] stage std_d1_archive_rows_excluded by Nevo (owner) (PENDING): \"PENDING install approval\" - the six Standard serving payloads (standard O/U 2.5, the Standard parts of btts / over15 / over35, Standard ht_over05 / ht_over15) refitted with the same champion_recipe and config (cb7309e8, incl. features.market_exclude for HT home_has_ht_history), the same",
     "gate_version": "PG-1.0"
   },
   "ht_over15": {
-    "model_version": "ht_over15_20261122T170742Z_aa4c62ce",
-    "champion_since": "2026-11-22T17:07:42Z",
+    "model_version": "ht_over15_20261123T183910Z_b886cd05",
+    "champion_since": "2026-11-23T18:39:10Z",
     "retrain_batch_id": "phase2_refit_clean-data-switch-2026-11-09",
     "training_cutoff": "2026-11-01",
-    "artifact_sha256": "aa4c62ceece0e2a52ee8d45d75b8621194464d0eb5ac55aab3c1df8c5c07d8bc",
+    "artifact_sha256": "b886cd05ffec43b6c28c8c9e242b4886f7d504862dec73fd9492f741b298d4b6",
     "promotion_source": "OWNER_CLEAN_SWITCH",
-    "promotion_reason": "OWNER_CLEAN_SWITCH [clean-data-switch-2026-11-09] stage std_ht_drop_home_ht_history by Nevo (owner) (2026-11-22): \"Yes, retrain the 2 HT models\" - the two Standard half-time payloads (ht_over05 / ht_over15, models/model_ht_over05.pkl / model_ht_over15.pkl) refitted with the same champion_recipe on the same frame (ebe47c041a7f595f), the same cut-offs (Standard from 2016-07-01, training 2016-08-05..",
+    "promotion_reason": "OWNER_CLEAN_SWITCH [clean-data-switch-2026-11-09] stage std_d1_archive_rows_excluded by Nevo (owner) (PENDING): \"PENDING install approval\" - the six Standard serving payloads (standard O/U 2.5, the Standard parts of btts / over15 / over35, Standard ht_over05 / ht_over15) refitted with the same champion_recipe and config (cb7309e8, incl. features.market_exclude for HT home_has_ht_history), the same",
     "gate_version": "PG-1.0"
   },
   "standard_repaired": {
