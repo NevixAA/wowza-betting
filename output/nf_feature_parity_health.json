@@ -1,6 +1,6 @@
 {
   "artifact": "nf_feature_parity_health",
-  "generated_at": "2026-11-24T16:25:57Z",
+  "generated_at": "2026-11-24T17:06:15Z",
   "rule_version": "feature-parity-1.1",
   "live_board": {
     "path": "output/predictions.csv",
@@ -12,26 +12,26 @@
   },
   "train_source": "the trainers' frame: src.retrain_harness.protocol.load_committed_frame (offline, committed data, COVID seasons excluded), rows = protocol.eligible_rows per payload part between its training_start and training_end; unweighted",
   "train_frame": {
-    "loaded_rows": 93604,
+    "loaded_rows": 93602,
     "af_written_back_not_served": {
       "home_shots": {
-        "blanked": 11720,
-        "provider_replaced": 6608,
+        "blanked": 11718,
+        "provider_replaced": 6606,
         "missing": 5112
       },
       "away_shots": {
-        "blanked": 11720,
-        "provider_replaced": 6608,
+        "blanked": 11718,
+        "provider_replaced": 6606,
         "missing": 5112
       },
       "home_sot": {
-        "blanked": 11730,
-        "provider_replaced": 6618,
+        "blanked": 11728,
+        "provider_replaced": 6616,
         "missing": 5112
       },
       "away_sot": {
-        "blanked": 11730,
-        "provider_replaced": 6618,
+        "blanked": 11728,
+        "provider_replaced": 6616,
         "missing": 5112
       },
       "home_xg": {
@@ -57,8 +57,8 @@
     },
     "ou25_pairs_flagged_not_a_price": 326,
     "covid_rows_excluded": 16048,
-    "feature_rows": 77556,
-    "frame_hash": "07c610287d7d6f4c"
+    "feature_rows": 77554,
+    "frame_hash": "62f69cb94a541563"
   },
   "nf_feature_parity_flag": "1",
   "status": "WARN",

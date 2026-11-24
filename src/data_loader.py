@@ -1096,6 +1096,41 @@ def _drop_misfiled_league_rows(d: pd.DataFrame, source: str) -> pd.DataFrame:
     return d[~bad]
 
 
+#: archive rows the owner excluded (2026-11-23, D1): matches no provider confirms, listed beside the
+#: untouched archive with their original values and the evidence (output/corrections/, never deleted)
+ARCHIVE_EXCLUDED = Path("output") / "corrections" / "backtest_archive_excluded_rows.csv"
+
+
+def _drop_excluded_archive_rows(d: pd.DataFrame, excluded: Path | None = None) -> pd.DataFrame:
+    """Rows of output/backtest_all_leagues.csv listed in ARCHIVE_EXCLUDED, removed from THIS READ ONLY.
+
+    Owner 2026-11-23 ("Yes, do all", D1 of reports/FINAL_DATA_TRUTH_CERTIFICATION.md): the two
+    Belgian First Division A rows 2022-10-23 Standard v Anderlecht and 2022-11-12 Charleroi v
+    Mechelen are awarded results (football-data provider_not_played vs API-Football) whose stat cells
+    no provider confirms; the archive copy slipped past the football-data not-served rule. Matched on
+    (league, date, home_team, away_team) as the archive spells them. A listed row that is not found is
+    logged (the list is evidence, not a filter that can silently widen). An unreadable list raises:
+    training must never quietly read the excluded rows again."""
+    p = excluded or (Path(__file__).resolve().parents[1] / ARCHIVE_EXCLUDED)
+    if d is None or d.empty or not p.exists():
+        if not p.exists():
+            log.warning(f"[archive] exclusion list {ARCHIVE_EXCLUDED.as_posix()} missing - nothing excluded")
+        return d
+    ex = pd.read_csv(p, dtype=str)
+    key = ["league", "date", "home_team", "away_team"]
+    ex_keys = set(map(tuple, ex[key].apply(lambda c: c.astype(str).str.strip()).to_numpy()))
+    dk = pd.DataFrame({"league": d["league"].astype(str), "date": pd.to_datetime(d["date"]).dt.strftime("%Y-%m-%d"),
+                       "home_team": d["home_team"].astype(str), "away_team": d["away_team"].astype(str)},
+                      index=d.index)
+    hit = pd.Series([tuple(x) in ex_keys for x in dk[key].to_numpy()], index=d.index)
+    found = set(map(tuple, dk.loc[hit, key].to_numpy()))
+    for k in sorted(ex_keys - found):
+        log.warning(f"[archive] listed exclusion not found in the archive: {' / '.join(k)}")
+    if hit.any():
+        log.info(f"[archive] excluded {int(hit.sum())} row(s) listed in {ARCHIVE_EXCLUDED.as_posix()} (owner 2026-11-23, D1)")
+    return d[~hit]
+
+
 def _load_backtest_archive() -> pd.DataFrame:
     """Three extra seasons we already own, in a file nothing has ever read.
 
@@ -1142,6 +1177,7 @@ def _load_backtest_archive() -> pd.DataFrame:
         if c not in ("date", "league", "season", "home_team", "away_team", "ftr"):
             d[c] = pd.to_numeric(d[c], errors="coerce")
     d = _drop_misfiled_league_rows(d, "archive")
+    d = _drop_excluded_archive_rows(d)
     log.info(f"[archive] {len(d):,} rows from backtest_all_leagues.csv "
              f"({d['date'].min().date()}..{d['date'].max().date()}, "
              f"{d['league'].nunique()} leagues)")
