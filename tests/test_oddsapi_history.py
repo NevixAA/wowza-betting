@@ -967,3 +967,20 @@ def test_cli_probe_ht_runs_only_the_probe(monkeypatch, tmp_path):
     monkeypatch.setenv("ODDS_HIST_RUN_CREDIT_CAP", "100")
     assert CLI.main(["--store", str(tmp_path / "store"), "--probe-ht", "--max-minutes", "5"]) == OH.EXIT_DONE
     assert seen["store"] == tmp_path / "store"
+
+
+def test_load_store_reads_data_odds_only_and_drops_own_exclusion_flags(tmp_path):
+    """Repair 2026-11-24: quarantine/ and archive/ are never read; a row flagged post_kickoff / dup_conflict by its
+    own column is never a price."""
+    root = tmp_path / "store"
+    row = {"unit_key": "u", "event_id": "e", "bookmaker": "b", "market": "h2h", "outcome_name": "X",
+           "outcome_description": None, "point": np.nan, "price": 2.0}
+    for sub in ("data/odds", "quarantine/odds_post_kickoff", "archive/odds_pre_repair_2026-11-24/data/odds"):
+        (root / sub).mkdir(parents=True)
+    pd.DataFrame([row]).to_parquet(root / "data/odds/1-1.parquet")
+    pd.DataFrame([{**row, "outcome_name": "Y", "post_kickoff": 1}]).to_parquet(root / "quarantine/odds_post_kickoff/1-1.parquet")
+    pd.DataFrame([{**row, "outcome_name": "Z"}]).to_parquet(root / "archive/odds_pre_repair_2026-11-24/data/odds/1-1.parquet")
+    assert AD.load_store(root)["outcome_name"].tolist() == ["X"]
+    pd.DataFrame([{**row, "outcome_name": "W", "post_kickoff": 1}, {**row, "outcome_name": "V", "dup_conflict": 1}]
+                 ).to_parquet(root / "data/odds/1-2.parquet")
+    assert AD.load_store(root)["outcome_name"].tolist() == ["X"]
