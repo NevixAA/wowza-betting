@@ -1531,5 +1531,52 @@ def evaluate(now: datetime | None = None) -> list[dict]:                 # noqa:
 GATED = tuple(GATED) + ("Data truth 17",)
 
 
+# ── 18 TIP TRUTH (owner 2026-11-24 "no duplicates, no unreal data, not unreal markets") ──────────────────────────
+TIP_TRUTH_RULE = ("Data truth 18: tip truth - every frozen TOP-3 / props TOP-3 pick resolves to ONE real "
+                  "API-Football fixture, carries a real named-book two-sided price captured before its issue and a "
+                  "real approved market, and no canonical match carries two picks on one market x side "
+                  "(src/tip_truth). A pick failing any of these is RED unless a correction sits beside it in "
+                  "output/corrections/tip_truth_corrections.csv (nothing is deleted)")
+
+
+def tip_truth() -> dict:
+    lab = "Data truth 18: tip truth"
+    try:
+        from src import tip_truth as TT
+    except ImportError as e:
+        return _c(lab, GREY, "not run in this tree", TIP_TRUTH_RULE, f"{e}"[:200])
+    if not any((ROOT / "output" / f).exists() for f, _k, _c2 in TT.LEDGERS.values()):
+        return _c(lab, GREY, "no TOP-3 ledger in this tree", TIP_TRUTH_RULE)
+    res = TT.scan(ROOT)
+    dups = set(TT.duplicate_picks(res)["pick_id"])
+    fail = res[(res["truth_reason"] != "") | res["pick_id"].isin(dups) | (res["fixture_reason"] != "")
+               | (res["price_reason"] != "") | (res["market_reason"] != "")]
+    corr = set(TT.read_corrections(ROOT)["pick_id"])
+    open_ = fail[~fail["pick_id"].isin(corr)]
+    c = TT.counts(res)
+    value = (f"{len(res)} pick(s), {len(fail)} failing ({len(dups)} duplicate), {len(fail) - len(open_)} with a "
+             f"correction, {len(open_)} without; "
+             + "; ".join(f"{k}: {v['each_check']}" for k, v in c.items()))
+    return _c(lab, RED if len(open_) else GREEN, value[:900], TIP_TRUTH_RULE,
+              ("uncorrected: " + ", ".join(open_["pick_id"].astype(str).head(20))) if len(open_) else "")
+
+
+_evaluate_rules_to_17 = evaluate
+
+
+def evaluate(now: datetime | None = None) -> list[dict]:                 # noqa: F811
+    out = _evaluate_rules_to_17(now)
+    try:
+        out.append(tip_truth())
+    except Exception as e:                                             # noqa: BLE001
+        out.append(_c("Data truth 18: tip truth", RED, "check failed", "must run", f"{type(e).__name__}: {e}"[:200]))
+    return out
+
+
+#: Rule 18 blocks a push / PR (owner 2026-11-24: "fails CI if the TOP-3 / props ledgers ever contain ...").
+GATED = tuple(GATED) + ("Data truth 18",)
+
+
+
 if __name__ == "__main__":
     raise SystemExit(main())

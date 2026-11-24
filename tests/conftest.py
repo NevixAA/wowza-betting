@@ -76,6 +76,7 @@ def _offline_connect_ex(self, addr):
 
 
 def pytest_configure(config):
+    config.addinivalue_line("markers", "real_tip_truth: run with the production tip truth gate (no pass-all double)")
     # Session-wide, not a function fixture: module-scoped fixtures (AppTest page renders) are set up
     # before any function-scoped autouse fixture and would run unguarded.
     if not _REAL_CONNECT:
@@ -132,3 +133,23 @@ def pytest_sessionfinish(session, exitstatus):
     else:
         print(msg)
     session.exitstatus = pytest.ExitCode.TESTS_FAILED
+
+
+# ── tip truth gate (src/tip_truth, owner 2026-11-24) ───────────────────────────────────────────────────────────────
+# The TOP-3 / props / notifier tests build synthetic fixtures that API-Football never listed; they test selection,
+# stakes and messages, so they run behind the pass-all double (rule 2, duplicates, still applies). The real gate is
+# exercised by tests/test_tip_truth.py, which marks itself `real_tip_truth`.
+@pytest.fixture(autouse=True)
+def _tip_truth_pass_all(request, monkeypatch):
+    if request.node.get_closest_marker("real_tip_truth"):
+        yield
+        return
+    from src import tip_truth as TT
+    monkeypatch.setattr(TT, "_factory", lambda **k: TT.PassAll())
+    try:
+        from telegram_bot import notifier as N
+        monkeypatch.setattr(N, "_TRUTH", None)
+        monkeypatch.setattr(N, "_TRUTH_SENT", set())
+    except Exception:                                                   # noqa: BLE001
+        pass
+    yield

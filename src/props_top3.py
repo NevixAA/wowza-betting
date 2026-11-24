@@ -323,6 +323,17 @@ def gate_take(gate, r: dict) -> None:
             gate.commit(c)
 
 
+#: rule 2 of src/tip_truth for props: one pick per (canonical match, player, market)
+TRUTH_KEY = ("player_id", "market")
+
+
+def truth_bars_ok(league, market, side=None) -> bool:
+    """Rule 4 of src/tip_truth for props: the market must carry an owner-applied bar. No prop market has one
+    (config/threshold_applied.json holds team markets only; no prop cell is proven), so every prop fails closed until
+    the owner applies a props bar."""
+    return False
+
+
 def select_week(g: pd.DataFrame, freeze: pd.Timestamp, issue: pd.Timestamp, gate=None
                 ) -> tuple[list[dict], dict]:
     """(picks in role order, excluded counts) for one league-week's candidates. Pure apart from the gate."""
@@ -375,9 +386,13 @@ def select_week(g: pd.DataFrame, freeze: pd.Timestamp, issue: pd.Timestamp, gate
 
 def freeze_due(cands: pd.DataFrame, weeks_done: set, now: pd.Timestamp, lead_min: float,
                start_ts: pd.Timestamp | None, gate=None, team_board: pd.DataFrame | None = None,
-               label: str = STAKE_LABEL_DEFAULT) -> tuple[pd.DataFrame, pd.DataFrame]:
+               label: str = STAKE_LABEL_DEFAULT, truth=None, prior: set | None = None
+               ) -> tuple[pd.DataFrame, pd.DataFrame]:
     """(new pick rows, new week rows) for every league-week whose FREEZE has passed, not decided yet, and whose
-    FREEZE is at/after the props TOP-3 start. A week with 0 picks is still recorded once, with its reasons."""
+    FREEZE is at/after the props TOP-3 start. A week with 0 picks is still recorded once, with its reasons.
+    `truth` (src/tip_truth, owner 2026-11-24; run() always passes it): a candidate failing the real fixture / real
+    price / real market checks, or repeating a (canonical match, player, market) already picked (`prior`), is never a
+    member (counted under its truth reason)."""
     empty = (pd.DataFrame(columns=PICK_COLS), pd.DataFrame(columns=WEEK_COLS))
     if cands is None or cands.empty or start_ts is None:
         return empty
@@ -405,12 +420,25 @@ def freeze_due(cands: pd.DataFrame, weeks_done: set, now: pd.Timestamp, lead_min
         freeze = lock - pd.Timedelta(minutes=float(lead_min))
         if now < freeze or freeze < start_ts:
             continue
-        picks, excl = select_week(g, freeze, now, gate)
-        league = str(g["league"].iloc[0])
-        n_elig = int((pd.to_numeric(g["value"], errors="coerce") > 0).sum())
+        truth_excl: Counter = Counter()
+        g0 = g
+        if truth is not None:
+            from src import tip_truth as TT
+            gq = truth.gate(g, now, "props", prior=prior, key_cols=TRUTH_KEY)
+            bad = gq[gq["truth_reason"] != ""]
+            TT.log_blocks(bad, f"props TOP-3 {week}")
+            truth_excl.update(bad["truth_reason"])
+            g = gq[gq["truth_reason"] == ""]
+        picks, excl = (select_week(g, freeze, now, gate) if len(g) else ([], {}))
+        excl = dict(Counter(excl) + truth_excl)
+        if prior is not None:
+            prior.update((str(r.get("canonical_match")), str(r["player_id"]), str(r["market"])) for r in picks
+                         if str(r.get("canonical_match") or ""))
+        league = str(g0["league"].iloc[0])
+        n_elig = int((pd.to_numeric(g0["value"], errors="coerce") > 0).sum())
         weeks_out.append({"selection_mode": SELECTION_MODE, "version": VERSION, "league_week_id": week,
                           "league": league, "week_lock_ts": LW._stamp(lock), "freeze_ts": LW._stamp(freeze),
-                          "issued_at": stamp, "n_candidates": int(len(g)), "n_eligible": n_elig,
+                          "issued_at": stamp, "n_candidates": int(len(g0)), "n_eligible": n_elig,
                           "n_picks": len(picks), "excluded": json.dumps(excl, sort_keys=True), "frozen_at": stamp})
         for rank, r in enumerate(picks, start=1):
             picks_out.append({
@@ -478,7 +506,12 @@ def run(now=None, out_dir: Path | None = None, root: Path | None = None, env: di
             ws = weeks_store(od)
             w = ws.read()
             done = set(w["league_week_id"]) if len(w) else set()
-            picks, weeks = freeze_due(cs.read(), done, now, lead, st, gate, _team_board(od), stake_label(root))
+            # the truth gate (src/tip_truth, owner 2026-11-24): FAIL CLOSED - unavailable -> nothing frozen
+            from src import tip_truth as TT
+            truth = TT.default(out_dir=od, root=root, bars_ok=truth_bars_ok)
+            prior = TT.prior_keys(truth, picks_store(od).read(), "props", key_cols=TRUTH_KEY)
+            picks, weeks = freeze_due(cs.read(), done, now, lead, st, gate, _team_board(od), stake_label(root),
+                                      truth, prior)
             res["picks_appended"] = picks_store(od).append(picks)
             res["weeks_decided"] = ws.append(weeks)
             res["status"] = "OK"
@@ -636,9 +669,11 @@ def _mark_player_notified(g: pd.DataFrame) -> None:
         log.warning(f"[props_top3] player_notified not updated ({type(e).__name__})")
 
 
-def notify(out_dir: Path | None = None, env: dict | None = None, sender=None, now=None, gate=None) -> dict:
+def notify(out_dir: Path | None = None, env: dict | None = None, sender=None, now=None, gate=None,
+           truth=None) -> dict:
     """Send each frozen league-week's picks once, never after a pick's kickoff. Needs TELEGRAM_TOKEN /
-    TELEGRAM_CHAT_ID (or `sender`)."""
+    TELEGRAM_CHAT_ID (or `sender`). Every pick passes the truth gate (src/tip_truth) at send time; the gate
+    unavailable -> nothing is sent."""
     if not enabled(env):
         return {"enabled": False}
     od = Path(out_dir) if out_dir else OUT
@@ -661,11 +696,25 @@ def notify(out_dir: Path | None = None, env: dict | None = None, sender=None, no
     before = set(sent)
     n = 0
     label = stake_label()
+    pending = picks[~picks["league_week_id"].isin(sent)] if len(picks) else picks
+    if len(pending):
+        from src import tip_truth as TT
+        try:
+            truth = truth or TT.default(out_dir=od, bars_ok=truth_bars_ok)
+        except Exception as ex:                                        # noqa: BLE001
+            log.warning(f"[props_top3] truth gate unavailable ({type(ex).__name__}: {ex}) - nothing sent")
+            return {"enabled": True, "sent": 0, "status": "TRUTH_GATE_UNAVAILABLE"}
+        prior = TT.prior_keys(truth, picks[picks["league_week_id"].isin(sent)], "props", key_cols=TRUTH_KEY)
     for week, g in (picks.groupby("league_week_id", sort=True) if len(picks) else []):
         if week in sent:
             continue
         ko = pd.to_datetime(g["kickoff_utc"], utc=True, errors="coerce")
         g = g[ko > now]                                   # never sent after kickoff
+        if len(g):                                        # the truth gate at send time (owner 2026-11-24)
+            tg = truth.gate(g, now, "props", prior=prior, key_cols=TRUTH_KEY)
+            TT.log_blocks(tg, f"props TOP-3 send {week}")
+            g = g.loc[tg.index[tg["truth_reason"] == ""]]
+            prior |= TT.pick_keys(tg[tg["truth_reason"] == ""], TRUTH_KEY)
         if gate is None:
             try:
                 from src.tip_coherence import CoherenceGate

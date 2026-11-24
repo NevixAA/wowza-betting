@@ -330,7 +330,7 @@ def test_top3_migration_adds_the_entry_columns_blank_and_keeps_every_frozen_valu
 
 def test_top3_pick_carries_its_candidates_entry_source():
     from src import top3_league as T
-    assert T.PICK_FROZEN[-2:] == ENTRY
+    assert T.PICK_FROZEN[-4:-2] == ENTRY and tuple(T.PICK_FROZEN[-2:]) == T.TRUTH_COLS   # 2026-11-24 truth cols after
     r = {"entry_bookmaker": "bk", "entry_captured_at": "2026-11-20T09:59:00Z", "odds": 2.0}
     assert {k: r.get(k, "") for k in T.PICK_FROZEN if k in r}["entry_bookmaker"] == "bk"
 

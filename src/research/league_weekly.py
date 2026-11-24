@@ -432,9 +432,18 @@ def build_candidates(shadow: pd.DataFrame, preds: pd.DataFrame | None, registry:
     if not rows:
         return pd.DataFrame(columns=CAND_COLS)
     d = pd.DataFrame(rows).reindex(columns=CAND_COLS)
-    # one candidate per real match: two fixture ids for the same match keep the earliest first sight
+    # one candidate per real match: two fixture ids for the same match keep the earliest first sight. The match is
+    # its CANONICAL identity (src/fixture_identity: same league, same clubs, kickoff dates within +-1 day), not the
+    # match DATE - owner 2026-11-24: Rosario Central v Barracas Central came as two OddsAPI event ids one day apart
+    # (2026-11-28 / 2026-11-29) and filled two TOP-3 slots with the same bet
     d = d.sort_values(["first_seen_at", "fixture_id"], kind="mergesort")
-    return d.drop_duplicates(["market", "match_date", "home_team", "away_team"], keep="first")
+    from src import fixture_identity as FI
+    fx = pd.DataFrame({"fixture_ref": "oa:" + d["fixture_id"].astype(str), "league_slug": d["league"].astype(str),
+                       "league": d["league"].astype(str), "kickoff_utc": d["kickoff_utc"],
+                       "home_team": d["home_team"].astype(str), "away_team": d["away_team"].astype(str)})
+    canon = FI.resolve_identities(fx).set_index("fixture_ref")["canonical_fixture_ref"]
+    d["_canon"] = fx["fixture_ref"].map(canon).fillna(fx["fixture_ref"]).values
+    return d.drop_duplicates(["market", "_canon"], keep="first").drop(columns="_canon")
 
 
 def candidate_store(path: Path | None = None) -> FirstSightStore:
