@@ -1,0 +1,71 @@
+{
+ "addendum": {
+  "addendum": "d1-standard-predictions",
+  "file": "config/p11_bars_tiers_protocol_v3_addendum_d1.json",
+  "sha256_lf": "7876526da7ee4709b23b32cd7428a99a149a07274054f7c50ba1e67fe3c8b68b"
+ },
+ "median_addendum": {
+  "file": "config/p11_bars_tiers_protocol_v3_addendum_median.json",
+  "sha256_lf": "90882af9676acb262197a0f979f4cd2c3d7ed8ac1849343366739b1325e7027e"
+ },
+ "median_addendum_3": {
+  "file": "config/p11_bars_tiers_protocol_v3_addendum_median_a.json",
+  "sha256_lf": "e6a8e7c3a3791efde558e5c3b01556aadddc6cea5c87a66050af65c75f35b670"
+ },
+ "overround": [
+  0.0,
+  0.15
+ ],
+ "tracks": {
+  "standard": {
+   "ou25_rows": 40881,
+   "ou25_priced_median": 12564,
+   "ou25_close_median": 11280,
+   "pairs": {
+    "pairs_kickoff_outside_fixture_window": 0,
+    "fixtures_kickoff_outside_fixture_window": 0,
+    "pairs_midnight_stamp_dropped": 0,
+    "median_books_dropped_overround": 1646,
+    "median_fixture_markets_any_book": 14088,
+    "median_fixture_markets_below_min_books": 1524
+   },
+   "integrity": {
+    "rows_checked": 12564,
+    "events": 12564,
+    "failures": {
+     "fixture_event": 0,
+     "event_to_many_fixtures": 0,
+     "league": 0,
+     "sport_key": 0,
+     "kickoff_window": 0,
+     "snapshot_after_kickoff": 0
+    }
+   }
+  },
+  "new_format": {
+   "ou25_rows": 23639,
+   "ou25_priced_median": 6040,
+   "ou25_close_median": 5202,
+   "pairs": {
+    "pairs_kickoff_outside_fixture_window": 0,
+    "fixtures_kickoff_outside_fixture_window": 0,
+    "pairs_midnight_stamp_dropped": 0,
+    "median_books_dropped_overround": 492,
+    "median_fixture_markets_any_book": 9212,
+    "median_fixture_markets_below_min_books": 3172
+   },
+   "integrity": {
+    "rows_checked": 6040,
+    "events": 6040,
+    "failures": {
+     "fixture_event": 0,
+     "event_to_many_fixtures": 0,
+     "league": 0,
+     "sport_key": 0,
+     "kickoff_window": 0,
+     "snapshot_after_kickoff": 0
+    }
+   }
+  }
+ }
+}

@@ -159,3 +159,53 @@ def test_v3_script_points_away_from_served_outputs():
     assert "over25" not in V.V3_FALLBACK["standard"] and "over25" in V.V3_FALLBACK["new_format"]
     for t in V.TRACKS:
         P.check_fallback(V.V3_FALLBACK[t])
+
+
+def test_d1_addendum_names_the_d1_frame_and_keeps_protocol_v3():
+    add = json.loads((ROOT / "config" / "p11_bars_tiers_protocol_v3_addendum_d1.json").read_text(encoding="utf-8"))
+    assert add["protocol"] == "p11-bars-tiers-clean/3"
+    assert "Standard predictions = D1 serving models" in add["predictions"]["standard"]
+    assert "57382c902c57328b" in add["predictions"]["standard"]
+    sys.path.insert(0, str(ROOT / "scripts"))
+    import p11v3_bars_prices as V
+    pred, rec = V.predictions_rule()
+    assert rec["addendum"] == "d1-standard-predictions" and pred["standard"] == add["predictions"]["standard"]
+
+
+def _mpairs(books, fid="f1", market="over25"):
+    ko = pd.Timestamp("2026-10-04T15:00:00Z")
+    ts = ko - pd.Timedelta(hours=125)
+    return pd.DataFrame([{"fixture_id": fid, "market": market, "league": "L", "event_id": "e1", "bookmaker": b,
+                          "ts": ts, "ko": ko, "yes": y, "no": n} for b, y, n in books])
+
+
+def test_median_real_price_needs_three_books_and_takes_per_side_medians():
+    dates = pd.Series({"f1": "2026-10-04"})
+    two = _mpairs([("pinnacle", 1.9, 1.95), ("williamhill", 1.85, 1.95)])
+    assert P.median_pick(two, dates).empty                                     # < 3 books: no price, no fallback
+    three = _mpairs([("pinnacle", 1.9, 1.95), ("williamhill", 1.85, 2.0), ("onexbet", 2.0, 1.9)])
+    r = P.median_pick(three, dates).iloc[0]
+    assert (r["yes"], r["no"], r["n_books"]) == (1.9, 1.95, 3) and r["bookmaker"] == "median:n=3"
+
+
+def test_median_basis_addendum_is_registered():
+    add = json.loads((ROOT / "config" / "p11_bars_tiers_protocol_v3_addendum_median.json").read_text(encoding="utf-8"))
+    assert add["basis"]["min_books"] == P.MEDIAN_MIN_BOOKS == 3
+    assert "median of the real (vigged) prices" in add["owner_decision"]
+
+
+def test_median_overround_filter_matches_the_serving_rule():
+    dates = pd.Series({"f1": "2026-10-04"})
+    books = [("pinnacle", 1.9, 1.95), ("williamhill", 1.85, 2.0), ("onexbet", 2.0, 1.9), ("ladbrokes_uk", 1.5, 1.6)]
+    assert P.median_pick(_mpairs(books), dates)["n_books"].iloc[0] == 4
+    st = {}
+    r = P.median_pick(_mpairs(books), dates, st, overround=(0.0, 0.15))      # ladbrokes overround ~0.29: out
+    assert r["n_books"].iloc[0] == 3 and st["median_books_dropped_overround"] == 1
+
+
+def test_addendum_3_records_option_a_and_the_serving_bounds():
+    add = json.loads((ROOT / "config" / "p11_bars_tiers_protocol_v3_addendum_median_a.json").read_text(encoding="utf-8"))
+    assert "option (a)" in add["decision"]
+    sys.path.insert(0, str(ROOT / "scripts"))
+    import p11v3_bars_prices as V
+    assert V.serving_overround() == (0.0, 0.15)

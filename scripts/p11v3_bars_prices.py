@@ -43,6 +43,10 @@ M = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(M)
 
 PROTOCOL = ROOT / "config" / "p11_bars_tiers_protocol_v3.json"
+#: addendum (committed before the re-run fit): Standard predictions = the D1 serving models (PR #96)
+ADDENDUM = ROOT / "config" / "p11_bars_tiers_protocol_v3_addendum_d1.json"
+#: addendum 2 (owner 2026-11-24, committed before any fit): O/U 2.5 also on the "median real price" basis
+MEDIAN_ADDENDUM = ROOT / "config" / "p11_bars_tiers_protocol_v3_addendum_median.json"
 OUT = ROOT / "output" / "research" / "p11_bars_tiers_v3"
 NAMESPACE = "bars_p11v3"
 TAG = "p11v3"
@@ -70,6 +74,35 @@ EFL = ("Championship", "League One", "League Two", "National League")
 OLD_EVIDENCE = ROOT / "output" / "threshold_proposals" / "bars_p11v2" / "evidence_2026-11_p11v2.json"
 OLD_STUDY_REF = "origin/bars/v6-tiers-clean-1118:output/research/p11_bars_tiers_v2/bars_study.json"
 OLD_PROPOSAL_ID = "TP-2026-11-18-1ddfc9f1"
+
+
+def predictions_rule() -> tuple[dict, dict]:
+    """(predictions section in force, addendum record): the addendum's when it exists, else the protocol's."""
+    proto = json.loads(PROTOCOL.read_text(encoding="utf-8"))
+    if not ADDENDUM.exists():
+        return proto["predictions"], {}
+    add = json.loads(ADDENDUM.read_text(encoding="utf-8"))
+    return add["predictions"], {"addendum": add["addendum"], "file": ADDENDUM.relative_to(ROOT).as_posix(),
+                                "sha256_lf": M.sha_lf(ADDENDUM)}
+
+
+def _median_addendum_record() -> dict:
+    if not MEDIAN_ADDENDUM.exists():
+        return {}
+    return {"file": MEDIAN_ADDENDUM.relative_to(ROOT).as_posix(), "sha256_lf": M.sha_lf(MEDIAN_ADDENDUM)}
+
+
+MED_NAMESPACE, MED_TAG = "bars_p11v3med", "p11v3med"
+MED_OUT = ROOT / "output" / "research" / "p11_bars_tiers_v3_median"
+
+
+def point_at_median_basis() -> None:
+    """Addendum 2/3: the median-basis run writes to its own namespace / research folder (never the fixed-order
+    proposal's, never config/top3_tiers_p11.json)."""
+    global NAMESPACE, TAG, OUT, TIER_CONFIG_PROPOSED
+    NAMESPACE, TAG, OUT = MED_NAMESPACE, MED_TAG, MED_OUT
+    TIER_CONFIG_PROPOSED = ROOT / "output" / "threshold_proposals" / MED_NAMESPACE / "top3_tiers_p11v3med_PROPOSED.json"
+    M.OUT, M.NAMESPACE, M.TAG, M.TIER_CONFIG = OUT, NAMESPACE, TAG, TIER_CONFIG_PROPOSED
 
 
 def _point_m_at_v3() -> None:
@@ -111,6 +144,7 @@ def cmd_prepare(a) -> int:
     aliases = json.loads(Path(a.aliases).read_text(encoding="utf-8"))
     st = {"protocol": json.loads(PROTOCOL.read_text(encoding="utf-8"))["protocol"],
           "protocol_sha256_lf": M.sha_lf(PROTOCOL), "owner": OWNER_QUOTES,
+          "predictions": predictions_rule()[0], "addendum": predictions_rule()[1],
           "before": {"bet_tiers": V2_BET_TIERS, "fallback": {k: list(v) for k, v in V2_FALLBACK.items()},
                      "drop_midnight": False},
           "after": {"bet_tiers": V3_BET_TIERS, "fallback": {t: {k: list(v) for k, v in f.items()}
@@ -171,7 +205,7 @@ def cmd_propose(a) -> int:
     meta = {"protocol": proto["protocol"], "protocol_sha256_lf": M.sha_lf(PROTOCOL),
             "status": "PROPOSAL - AWAITING OWNER APPROVAL; not installed, serving unchanged "
                       f"({OLD_PROPOSAL_ID} stays served)",
-            "owner": OWNER_QUOTES, "predictions": proto["predictions"],
+            "owner": OWNER_QUOTES, "predictions": predictions_rule()[0], "addendum": predictions_rule()[1],
             "price_tiers": {"bet": V3_BET_TIERS + ["own (backfill stripped)", "FD pre-match certified join"],
                             "fallback_books_by_track_market": {t: {k: list(v) for k, v in f.items()}
                                                                for t, f in V3_FALLBACK.items()},
@@ -300,10 +334,50 @@ def cmd_compare(a) -> int:
     latest = json.loads((TP.PROPOSAL_DIR / NAMESPACE / "latest.json").read_text(encoding="utf-8"))
     rows = compare_rows(_cells(old_ev, old_st), _cells(new_ev, new_st))
     (OUT / "old_vs_new.json").write_text(json.dumps(rows, indent=1, default=str) + "\n", encoding="utf-8")
-    REPORT.write_text(render(rows, cov, old_ev, new_ev, latest), encoding="utf-8")
+    text = render(rows, cov, old_ev, new_ev, latest)
+    med_ev_path = TP.PROPOSAL_DIR / MED_NAMESPACE / f"evidence_{MONTH}_{MED_TAG}.json"
+    if med_ev_path.exists():
+        med_ev = json.loads(med_ev_path.read_text(encoding="utf-8"))
+        med_st = json.loads((MED_OUT / "bars_study.json").read_text(encoding="utf-8"))
+        med_latest = json.loads((TP.PROPOSAL_DIR / MED_NAMESPACE / "latest.json").read_text(encoding="utf-8"))
+        text += render_median(_cells(old_ev, old_st), _cells(new_ev, new_st), _cells(med_ev, med_st), med_ev, med_latest)
+    REPORT.write_text(text, encoding="utf-8")
     print(json.dumps({"cells": len(rows), "old": old_ev["status_counts"], "new": new_ev["status_counts"],
                       "report": str(REPORT.relative_to(ROOT))}, indent=1))
     return 0
+
+
+def render_median(old: dict, fixed: dict, med: dict, med_ev: dict, med_latest: dict) -> str:
+    """O/U 2.5 cells side by side: old (P11 v2) / fixed-order D1 / median real price basis (a). EFL first."""
+    keys = sorted({k for k in set(old) | set(fixed) | set(med) if k[2].startswith("over25_")},
+                  key=lambda k: (_efl_rank(k[1]), k[0], k[1], k[2]))
+    L = ["", "## O/U 2.5 on two bases: fixed-order (D1) vs median real price (addenda 2 + 3)", "",
+         "Median basis (owner 2026-11-24, option (a)): per side the median of the real (vigged) prices of every eu + "
+         "uk book with a bet-time two-sided 2.5 pair whose overround is inside config/market_edge_v2.json and that "
+         "de-vigs; >= 3 books, else unpriced. No single-book own / football-data price on this basis, and nothing "
+         "before 2023-05-03 (no per-book history), so the fit window is much shorter.",
+         f"Median-basis proposal: `{med_latest.get('proposal_id')}` (hash `{str(med_latest.get('proposal_hash'))[:12]}`), "
+         f"{med_latest.get('n_entries')} entries, namespace `{MED_NAMESPACE}` - a separate PROPOSAL, not installed. "
+         f"Statuses (all cells of that run): {med_ev['status_counts']}. Only its O/U 2.5 cells differ from the fixed run.",
+         "The validation window (2026-09-01..11-08) was seen before: re-validation numbers, never proof.", "",
+         "| Track | League | Cell | Old v2 status / bar / study bets / ROI [CI] | Fixed D1 status / bar / WF / study bets / "
+         "ROI [CI] / CLV | Median status / bar / WF / study bets / ROI [CI] / CLV |", "|---|---|---|---|---|---|"]
+
+    def cell(d, short=False):
+        if not d:
+            return "-"
+        b, roi, clv = _fmt_study(d.get("study"))
+        st = d.get("status") or "-"
+        if st == "OFF" and (d.get("reason") or d.get("study_cell_reason")):
+            st += f" ({d.get('reason') or d.get('study_cell_reason')})"
+        bar = "-" if d.get("bar") is None else f"{d['bar']:.2f}"
+        wf = d.get("wf_bets") if d.get("wf_bets") is not None else d.get("wf_bets_study")
+        if short:
+            return f"{st} / {bar} / {b} / {roi}"
+        return f"{st} / {bar} / {'-' if wf is None else wf} / {b} / {roi} / {clv}"
+    for k in keys:
+        L.append(f"| {k[0]} | {k[1]} | {k[2]} | {cell(old.get(k), True)} | {cell(fixed.get(k))} | {cell(med.get(k))} |")
+    return "\n".join(L) + "\n"
 
 
 def _cov_table(cov: dict, leagues=None, markets=None) -> list[str]:
@@ -331,6 +405,11 @@ def _cov_table(cov: dict, leagues=None, markets=None) -> list[str]:
     return lines
 
 
+def _n_proven(ev: dict) -> int:
+    """PROVEN cells of an evidence file (a status absent from status_counts has no cell)."""
+    return sum(1 for r in ev["league_market_status"] if r["status"] == "PROVEN")
+
+
 def render(rows: list[dict], cov: dict, old_ev: dict, new_ev: dict, latest: dict) -> str:
     pt = cov["price_tiers"]
     L = ["# P11 v3: bars re-measured on the enlarged priced universes (PROPOSAL, awaiting owner approval)", "",
@@ -344,8 +423,10 @@ def render(rows: list[dict], cov: dict, old_ev: dict, new_ev: dict, latest: dict
          "- The owner's O1 fallback order (Bet365 > Pinnacle > William Hill > 1xBet > Ladbrokes) on BTTS, O1.5, O3.5, "
          "HT 0.5 / 1.5 (both tracks) and New-Format O/U 2.5. Standard O/U 2.5 keeps football-data / Bet365 > Pinnacle.",
          "- History pairs stamped exactly 00:00:00 UTC are dropped (counted). Own 00:00 backfill stays stripped.",
-         "- Predictions: the models served now. Standard = serving recipe (2016/17 start, HT without "
-         "`home_has_ht_history`) on the serving frame `ebe47c041a7f595f`; New-Format = v2's (unchanged serving NF).",
+         f"- Predictions (models served now): Standard: {pt['predictions']['standard']}",
+         f"- New-Format: {pt['predictions']['new_format']}",
+         (f"- Addendum `{pt['addendum']['file']}` (sha256 LF `{pt['addendum']['sha256_lf'][:16]}`), committed before "
+          "this re-run's fit." if pt.get("addendum") else "- No addendum."),
          "- **Not used:** the pending Standard refit D1 (another agent's draft PR, awaiting owner approval).",
          f"- Store: wowza-exec `odds-history` @ `{(pt.get('store_commit') or '?')[:8]}`. No credits spent.", "",
          "## Result in brief", "",
@@ -354,7 +435,20 @@ def render(rows: list[dict], cov: dict, old_ev: dict, new_ev: dict, latest: dict
          f"- New proposal: `{latest.get('proposal_id')}` (hash `{str(latest.get('proposal_hash'))[:12]}`), "
          f"{latest.get('n_entries')} entries, {latest.get('n_serving_changes')} would change serving IF approved.",
          "- PROVEN still needs >= 150 validation bets + Holm + CI lower bound > 0. The validation window was scored "
-         "before (P9, P11 v1, v2): these are re-validation numbers, never proof (only live tips prove a cell).", ""]
+         "before (P9, P11 v1, v2): these are re-validation numbers, never proof (only live tips prove a cell).",
+         f"- PROVEN cells: old {_n_proven(old_ev)}, new {_n_proven(new_ev)}.",
+         "- **Read the Standard differences with care.** Old vs new on the Standard track moves two things at once: the "
+         "price inputs AND the predictions (P11 v2 used the refit_1118b frame `9ed237eb`, 2021/22 start; the models "
+         "served now train from 2016/17 (see Predictions), so their out-of-sample universe has "
+         f"{pt['standard']['universe_rows']:,} rows). New-Format predictions are identical, so New-Format differences "
+         "come from the prices only.",
+         "- Tier parameters (T1/T2/T3) were re-fitted on the fit window only (`tier_fit.json`); the tier validation was "
+         "NOT re-run. The proposed tier config is `output/threshold_proposals/bars_p11v3/top3_tiers_p11v3_PROPOSED.json`; "
+         "the served `config/top3_tiers_p11.json` is unchanged.", ""]
+    efl_on = [(r["league"], r["mside"], (r["old"] or {}).get("status"), (r["new"] or {}).get("status")) for r in rows
+              if r["league"] in EFL and ((r["old"] or {}).get("status") != (r["new"] or {}).get("status"))]
+    L += ["- EFL status changes (old -> new): " + ("; ".join(f"{lg} {ms}: {o} -> {n}" for lg, ms, o, n in efl_on)
+                                                  if efl_on else "none") + ".", ""]
     for t in TRACKS:
         L.append(f"- {t}: price source before {pt[t]['before']['price_source']}, after {pt[t]['after']['price_source']}; "
                  f"integrity failures after: {sum((pt[t]['after']['integrity'] or {}).get('failures', {}).values())}; "
@@ -384,7 +478,7 @@ def render(rows: list[dict], cov: dict, old_ev: dict, new_ev: dict, latest: dict
     L += _cov_table(cov)
     L += ["", "## Reproduce", "",
           "1. Standard predictions: `src.retrain_harness.runner.run` (champion_recipe, walk_forward + holdout, track "
-          "standard) on main with the saved frame `ebe47c041a7f595f` (hash re-checked). New-Format: the P11 v2 harness "
+          "standard) on main with the saved serving frame named under Predictions (hash re-checked). New-Format: the P11 v2 harness "
           "run (code 694995f90, frame 9ed237ebc04aee09).",
           "2. `scripts/bars_opt.py universe` (Standard with `--certified-fd`); New-Format universe of P11 v2.",
           "3. `scripts/p11v3_bars_prices.py prepare`, `bars`, `tiers-fit`, `propose`, `compare`.",
@@ -417,6 +511,124 @@ def cmd_coverage_report(a) -> int:
     return 0
 
 
+# ── addendum 2 (owner 2026-11-24): "median real price" basis for O/U 2.5 ───────────────────────────
+
+MEDIAN_MARKET = "over25"
+
+
+def _hist_pairs(u: pd.DataFrame, store: Path, tiers) -> tuple[pd.DataFrame, pd.Series, dict, pd.DataFrame]:
+    """(two-sided exact-line pairs of the BET tiers, fixture dates, clean fixture->event map, odds) for a universe."""
+    from src import oddsapi_history_adapter as AD
+    st = AD.load_store(store)
+    odds = st[st["tier"].isin(list(tiers)) & st["league"].isin(set(u["league"]))]
+    ctx = AD.load_context(store, u)
+    fmap, _ = AD.match_universe(u, odds, ctx)
+    fmap, _ = P.clean_fixture_map(fmap, odds)
+    long, _s, _u = AD.attach(u, odds, ctx)
+    long = long[long["fixture_id"].isin(set(fmap))] if len(long) else long
+    pairs, _st = P.history_pairs(long)
+    fx = u.assign(fixture_id=u["row_id"].astype(str)).drop_duplicates("fixture_id")
+    return pairs, fx.set_index("fixture_id")["date"], fmap, odds
+
+
+def cmd_median_coverage(a) -> int:
+    """Counts only: per track x league, O/U 2.5 fit + validation rows with a result, and how many have >= 1 / >= 3
+    two-sided books at bet time in the store (BET tiers BT + OUU, eu + uk)."""
+    rows = []
+    for t in TRACKS:
+        u = pd.read_parquet(Path(a.universe) / f"universe_{t}.parquet")
+        u = u[u["market"] == MEDIAN_MARKET].copy()
+        u["date"] = pd.to_datetime(u["date"])
+        u = u[((u["date"] < M.FIT_END) | ((u["date"] >= M.VAL_START) & (u["date"] <= M.VAL_END))) & u["y"].notna()]
+        pairs, dates, _f, _o = _hist_pairs(u, Path(a.store), ["BT", "OUU"])
+        bc = P.book_counts(pairs[pairs["market"] == MEDIAN_MARKET], dates)
+        n = u.assign(fixture_id=u["row_id"].astype(str)).merge(bc[["fixture_id", "n_books"]], on="fixture_id", how="left")
+        n["win"] = np.where(n["date"] < M.FIT_END, "fit", "validation")
+        for (lg, w), x in n.groupby(["league", "win"]):
+            k = x["n_books"]
+            rows.append({"track": t, "league": lg, "window": w, "rows": int(len(x)),
+                         "rows_since_2023_05_03": int((x["date"] >= "2023-05-03").sum()),
+                         "books_ge1": int((k >= 1).sum()), "books_ge3": int((k >= P.MEDIAN_MIN_BOOKS).sum()),
+                         "median_books": float(k.median()) if k.notna().any() else None})
+    OUT.mkdir(parents=True, exist_ok=True)
+    (OUT / "median_coverage.json").write_text(json.dumps(rows, indent=1) + "\n", encoding="utf-8")
+    df = pd.DataFrame(rows)
+    print(df.groupby(["track", "window"])[["rows", "rows_since_2023_05_03", "books_ge1", "books_ge3"]].sum().to_string())
+    return 0
+
+
+SRC_MEDIAN = "oddsapi_median"
+#: addendum 3 (coordinator decision 2026-11-24, option (a)): the serving rule's overround bounds (PR #104)
+MEDIAN_ADDENDUM_3 = ROOT / "config" / "p11_bars_tiers_protocol_v3_addendum_median_a.json"
+
+
+def serving_overround() -> tuple[float, float]:
+    """The overround bounds the serving reference price uses (config/market_edge_v2.json overround_min / max, the
+    file PR #104 src/reference_price.py reads); a missing key stops the run (no stand-in bounds)."""
+    cfg = json.loads((ROOT / "config" / "market_edge_v2.json").read_text(encoding="utf-8"))
+    if "overround_min" not in cfg or "overround_max" not in cfg:
+        raise SystemExit("config/market_edge_v2.json has no overround_min / overround_max: refused")
+    return float(cfg["overround_min"]), float(cfg["overround_max"])
+
+
+def _median_close(u: pd.DataFrame, store: Path) -> pd.DataFrame:
+    """CLV pair on the same basis: per fixture the median of each book's LATEST pre-kickoff close-role (B1) pair,
+    >= MEDIAN_MIN_BOOKS books (never a bet price)."""
+    pairs, dates, _f, _o = _hist_pairs(u, store, CLOSE_TIERS)
+    pairs = pairs[pairs["market"] == MEDIAN_MARKET]
+    if pairs.empty:
+        return pd.DataFrame(columns=["fixture_id", "yes_c", "no_c"])
+    v = P._valid_pairs(pairs, dates, {}, False, True)
+    last = v.sort_values("ts").groupby(["fixture_id", "bookmaker"], as_index=False).last()
+    g = last.groupby("fixture_id").agg(yes_c=("yes", "median"), no_c=("no", "median"), n=("bookmaker", "nunique"))
+    return g[g["n"] >= P.MEDIAN_MIN_BOOKS].reset_index()[["fixture_id", "yes_c", "no_c"]]
+
+
+def cmd_prepare_median(a) -> int:
+    """The median-basis priced universes: a copy of --base-work's v3 priced universes where every O/U 2.5 row is
+    re-priced ONLY by the median real price (>= 3 two-sided books at bet time; own / football-data single-book
+    pairs no longer price O/U 2.5 on this basis); every other market is byte-identical."""
+    base, work = P.assert_outside_repo(a.base_work), P.assert_outside_repo(a.work)
+    (work / "priced").mkdir(parents=True, exist_ok=True)
+    st = {"addendum": predictions_rule()[1], "median_addendum": _median_addendum_record(),
+          "median_addendum_3": {"file": MEDIAN_ADDENDUM_3.relative_to(ROOT).as_posix(), "sha256_lf": M.sha_lf(MEDIAN_ADDENDUM_3)},
+          "overround": serving_overround(), "tracks": {}}
+    for t in TRACKS:
+        pu = pd.read_parquet(base / "priced" / f"universe_{t}.parquet")
+        m = pu["market"] == MEDIAN_MARKET
+        u = pu[m]
+        pairs, dates, fmap, odds = _hist_pairs(u, Path(a.store), ["BT", "OUU"])
+        ps = {}
+        med = P.median_pick(pairs[pairs["market"] == MEDIAN_MARKET], dates, ps, overround=serving_overround())
+        cl = _median_close(u, Path(a.store))
+        med = med.merge(cl, on="fixture_id", how="left", suffixes=("", "_cl"))
+        for c in ("yes_c", "no_c"):
+            med[c] = med[c + "_cl"]
+        mm = med.set_index("fixture_id")
+        fid = pu["row_id"].astype(str)
+        hit = m & fid.isin(mm.index)
+        for c in ("yes", "no", "yes_c", "no_c"):
+            pu.loc[m, c] = np.nan
+            pu.loc[hit, c] = fid[hit].map(mm[c]).astype(float).to_numpy()
+        pu.loc[m, "price_source"] = np.where(hit[m], SRC_MEDIAN, None)
+        pu.loc[m, "close_source"] = np.where(hit[m] & pu.loc[m, "yes_c"].notna(), SRC_MEDIAN, None)
+        pu.loc[m, "oh_book"] = np.where(hit[m], fid[m].map(mm["bookmaker"]), None)
+        pu.loc[m, "oh_event_id"] = np.where(hit[m], fid[m].map(mm["event_id"]), None)
+        pu.loc[m, "oh_snapshot_ts"] = np.where(hit[m], fid[m].map(mm["ts"]).astype(str), None)
+        pu.loc[m, "oh_commence_time"] = np.where(hit[m], fid[m].map(mm["ko"]).astype(str), None)
+        pu.loc[m, "h_league"] = np.where(hit[m], fid[m].map(mm["league"]), None)
+        chk = pu[hit].assign(fixture_id=fid[hit], price_source=P.SRC_HIST)
+        es = odds.drop_duplicates("event_id").set_index("event_id")["sport_key"].to_dict()
+        integ = P.verify_join(chk, fmap, es)
+        pu.to_parquet(work / "priced" / f"universe_{t}.parquet", index=False)
+        st["tracks"][t] = {"ou25_rows": int(m.sum()), "ou25_priced_median": int(hit.sum()),
+                           "ou25_close_median": int((hit & pu["yes_c"].notna()).sum()), "pairs": ps, "integrity": integ}
+    (work / "prepare_stats.json").write_text(json.dumps(st, indent=1, default=str), encoding="utf-8")
+    print(json.dumps({t: {k: v for k, v in x.items() if k != "pairs"} for t, x in st["tracks"].items()}, indent=1,
+                     default=str))
+    return 0
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -426,18 +638,29 @@ def main(argv=None) -> int:
     for name in ("bars", "tiers-fit", "propose"):
         s = sub.add_parser(name)
         s.add_argument("--work", required=True)
+        s.add_argument("--basis", choices=["fixed", "median"], default="fixed",
+                       help="median = addendum 2/3 O/U 2.5 median real price basis (namespace bars_p11v3med)")
         s.add_argument("--workers", type=int, default=4)
         s.add_argument("--no-resolve", action="store_true")
     sub.add_parser("compare")
+    pm = sub.add_parser("prepare-median")
+    for x in ("--base-work", "--work", "--store"):
+        pm.add_argument(x, required=True)
+    mc = sub.add_parser("median-coverage")
+    mc.add_argument("--universe", required=True)
+    mc.add_argument("--store", required=True)
     c = sub.add_parser("coverage-report")
     c.add_argument("--coverage", required=True)
     c.add_argument("--out", required=True)
     c.add_argument("--title", default="P11 v3 price coverage before / after")
     c.add_argument("--universe-note", default="")
     a = ap.parse_args(argv)
+    if getattr(a, "basis", "fixed") == "median":
+        point_at_median_basis()
     return {"prepare": cmd_prepare, "bars": M.cmd_bars, "tiers-fit": M.cmd_tiers_fit, "propose": cmd_propose,
             "compare": cmd_compare,
-            "coverage-report": cmd_coverage_report}[a.cmd](a)
+            "coverage-report": cmd_coverage_report, "median-coverage": cmd_median_coverage,
+            "prepare-median": cmd_prepare_median}[a.cmd](a)
 
 
 if __name__ == "__main__":

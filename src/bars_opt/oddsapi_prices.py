@@ -133,6 +133,31 @@ def _midnight(ts: pd.Series) -> pd.Series:
     return (t.dt.hour == 0) & (t.dt.minute == 0) & (t.dt.second == 0) & (t.dt.microsecond == 0)
 
 
+def _valid_pairs(pairs: pd.DataFrame, fixture_dates: pd.Series, stats: dict, bet_role: bool,
+                 drop_midnight: bool) -> pd.DataFrame:
+    """pick_pairs' timing rules: provider kickoff inside the collector's day window of OUR fixture date, snapshot
+    strictly before kickoff, the day - 1 lower bound unless BET-role, 00:00:00 stamps dropped when asked."""
+    from src import oddsapi_history as OH
+    p = pairs.copy()
+    p["fdate"] = p["fixture_id"].map(fixture_dates)
+    p["day0"] = pd.to_datetime(p["fdate"]).dt.tz_localize("UTC")
+    win = {d: OH.day_window(pd.Timestamp(d).strftime("%Y-%m-%d")) for d in p["fdate"].dropna().unique()}
+    lo = p["fdate"].map(lambda d: win[d][0] if d in win else None)
+    hi = p["fdate"].map(lambda d: win[d][1] if d in win else None)
+    ko_ok = p["ko"].notna() & lo.notna() & (p["ko"] >= pd.to_datetime(lo, utc=True)) & (p["ko"] < pd.to_datetime(hi, utc=True))
+    stats["pairs_kickoff_outside_fixture_window"] = int((~ko_ok).sum())
+    stats["fixtures_kickoff_outside_fixture_window"] = int(p.loc[~ko_ok, "fixture_id"].nunique())
+    p = p[ko_ok]
+    pre = p["ts"] < p["ko"]
+    lower = pd.Series(True, index=p.index) if bet_role else (p["ts"] >= p["day0"] - pd.Timedelta(days=1))
+    p = p[pre & p["day0"].notna() & lower]
+    if drop_midnight:
+        mid = _midnight(p["ts"])
+        stats["pairs_midnight_stamp_dropped"] = int(mid.sum())
+        p = p[~mid]
+    return p
+
+
 def pick_pairs(pairs: pd.DataFrame, fixture_dates: pd.Series, stats: dict | None = None,
                bet_role: bool = False, fallback: dict | None = None,
                drop_midnight: bool = False) -> pd.DataFrame:
@@ -155,23 +180,7 @@ def pick_pairs(pairs: pd.DataFrame, fixture_dates: pd.Series, stats: dict | None
     stats = stats if stats is not None else {}
     if pairs.empty:
         return pd.DataFrame(columns=out_cols)
-    p = pairs.copy()
-    p["fdate"] = p["fixture_id"].map(fixture_dates)
-    p["day0"] = pd.to_datetime(p["fdate"]).dt.tz_localize("UTC")
-    win = {d: OH.day_window(pd.Timestamp(d).strftime("%Y-%m-%d")) for d in p["fdate"].dropna().unique()}
-    lo = p["fdate"].map(lambda d: win[d][0] if d in win else None)
-    hi = p["fdate"].map(lambda d: win[d][1] if d in win else None)
-    ko_ok = p["ko"].notna() & lo.notna() & (p["ko"] >= pd.to_datetime(lo, utc=True)) & (p["ko"] < pd.to_datetime(hi, utc=True))
-    stats["pairs_kickoff_outside_fixture_window"] = int((~ko_ok).sum())
-    stats["fixtures_kickoff_outside_fixture_window"] = int(p.loc[~ko_ok, "fixture_id"].nunique())
-    p = p[ko_ok]
-    pre = p["ts"] < p["ko"]
-    lower = pd.Series(True, index=p.index) if bet_role else (p["ts"] >= p["day0"] - pd.Timedelta(days=1))
-    p = p[pre & p["day0"].notna() & lower]
-    if drop_midnight:
-        mid = _midnight(p["ts"])
-        stats["pairs_midnight_stamp_dropped"] = int(mid.sum())
-        p = p[~mid]
+    p = _valid_pairs(pairs, fixture_dates, stats, bet_role, drop_midnight)
     fb = BOOK_FALLBACK_BY_MARKET if fallback is None else fallback
     check_fallback(fb)
     orders = {m: tuple(BOOK_ORDER) + tuple(fb.get(m, ())) for m in p["market"].unique()}
@@ -531,3 +540,54 @@ def tiers_complete(store_root: Path, tiers) -> tuple[bool, str]:
 
 def b1_complete(store_root: Path) -> tuple[bool, str]:
     return tier_complete(store_root, "B1")
+
+
+# ── P11 v3 addendum 2 (owner 2026-11-24): the "median real price" basis for O/U 2.5 ─────────────────
+
+#: the fewest two-sided books a median real price needs (owner 2026-11-24: "minimum 3 two-sided books")
+MEDIAN_MIN_BOOKS = 3
+
+
+def median_pick(pairs: pd.DataFrame, fixture_dates: pd.Series, stats: dict | None = None, bet_role: bool = True,
+                min_books: int = MEDIAN_MIN_BOOKS, drop_midnight: bool = True,
+                overround: tuple | None = None) -> pd.DataFrame:
+    """Per (fixture_id, market): the MEDIAN of the real (vigged) prices across every book with a provable
+    bet-time two-sided pair on the exact line - each book's EARLIEST valid pair (pick_pairs' timing rules), Over
+    and Under medians taken separately; fewer than `min_books` books = no price (nothing invented, no one-book
+    fallback). Columns as pick_pairs (bookmaker = "median:n=<k>", ts = the latest snapshot used) + n_books.
+    overround (addendum 3, the serving rule of PR #104 src/reference_price.py): (lo, hi) - a book counts only when
+    its pair's overround 1/yes + 1/no - 1 lies in [lo, hi] AND src.market_edge.power_devig de-vigs it (counted)."""
+    out_cols = ["fixture_id", "market", "league", "event_id", "bookmaker", "ts", "ko", "yes", "no",
+                "ts_c", "yes_c", "no_c", "n_books"]
+    stats = stats if stats is not None else {}
+    if pairs.empty:
+        return pd.DataFrame(columns=out_cols)
+    p = _valid_pairs(pairs, fixture_dates, stats, bet_role, drop_midnight)
+    if p.empty:
+        return pd.DataFrame(columns=out_cols)
+    first = p.sort_values("ts").groupby(["fixture_id", "market", "bookmaker"], as_index=False).first()
+    if overround is not None:
+        from src.market_edge import power_devig
+        ovr = 1.0 / first["yes"] + 1.0 / first["no"] - 1.0
+        ok = (ovr >= overround[0]) & (ovr <= overround[1])
+        ok &= np.array([power_devig(float(a), float(b)) is not None for a, b in zip(first["yes"], first["no"])], dtype=bool)
+        stats["median_books_dropped_overround"] = int((~ok).sum())
+        first = first[ok]
+    g = first.groupby(["fixture_id", "market"])
+    agg = g.agg(league=("league", "first"), event_id=("event_id", "first"), ts=("ts", "max"), ko=("ko", "first"),
+                yes=("yes", "median"), no=("no", "median"), n_books=("bookmaker", "nunique")).reset_index()
+    stats["median_fixture_markets_any_book"] = int(len(agg))
+    stats["median_fixture_markets_below_min_books"] = int((agg["n_books"] < min_books).sum())
+    agg = agg[agg["n_books"] >= min_books].copy()
+    agg["bookmaker"] = "median:n=" + agg["n_books"].astype(str)
+    agg["ts_c"], agg["yes_c"], agg["no_c"] = pd.NaT, np.nan, np.nan
+    return agg[out_cols].reset_index(drop=True)
+
+
+def book_counts(pairs: pd.DataFrame, fixture_dates: pd.Series, bet_role: bool = True) -> pd.DataFrame:
+    """Counts only: per (fixture_id, market) the number of books with a provable bet-time two-sided pair."""
+    p = _valid_pairs(pairs, fixture_dates, {}, bet_role, True)
+    if p.empty:
+        return pd.DataFrame(columns=["fixture_id", "market", "league", "n_books"])
+    return p.groupby(["fixture_id", "market"]).agg(league=("league", "first"),
+                                                   n_books=("bookmaker", "nunique")).reset_index()
