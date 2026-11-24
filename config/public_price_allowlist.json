@@ -1,0 +1,54 @@
+{
+ "rule": "Data truth 17 (src/integrity/public_prices.py): a committed CSV / Parquet with a per-row price column must belong to a class of config/price_store_paths.json (it then moves private with its class) or be listed here with the reason it is not a bookmaker price we may not publish. Add an entry only with a reason; remove it when the file goes.",
+ "entries": [
+  {
+   "path": "^output/collect/fd_raw(_history)?/",
+   "columns": "*",
+   "class": "F",
+   "reason": "football-data.co.uk raw downloads (free public source with its own terms): class F, owner decision pending (docs/AF_PRICES_PRIVATE_MIGRATION.md section 1)"
+  },
+  {
+   "path": "^output/fd_history\\.parquet$",
+   "columns": "*",
+   "class": "F",
+   "reason": "football-data.co.uk history: class F, owner decision pending"
+  },
+  {
+   "path": "^output/fantasy_",
+   "columns": [
+    "price",
+    "in_price",
+    "out_price",
+    "price_delta"
+   ],
+   "class": "not a bookmaker price",
+   "reason": "Fantasy Premier League player prices (FPL cost), not betting odds"
+  },
+  {
+   "path": "^output/live_(games|tips|signals_history)\\.csv$",
+   "columns": [
+    "fair_under_odds",
+    "fair_over_odds"
+   ],
+   "class": "not a bookmaker price",
+   "reason": "the live scanner's own model fair odds (1 / model probability, src/live_scanner.py), no bookmaker price"
+  },
+  {
+   "path": "^output/league_market_gate_research\\.csv$",
+   "columns": [
+    "live_mean_price"
+   ],
+   "class": "C",
+   "reason": "per-league mean over settled tips (aggregate statistic, class C)"
+  },
+  {
+   "path": "^reports/au4_data/props_mvm_calibration\\.csv$",
+   "columns": [
+    "implied",
+    "p_market_recal"
+   ],
+   "class": "C",
+   "reason": "10-bin calibration table (bin means over hundreds of rows, class C)"
+  }
+ ]
+}

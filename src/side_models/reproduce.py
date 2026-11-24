@@ -53,6 +53,10 @@ INPUTS = ("output/collect/af_history_fullstats_fill.parquet", "output/strength/c
 CODE = ("src/side_models/data.py", "src/side_models/features.py", "src/side_models/model.py",
         "src/side_models/train.py")
 OUTPUT_FILES = ("side_models.json", "holdout_metrics.csv")
+#: cross-platform float tolerance on a probability (first Linux run 2026-11-24: max |p diff| 1.3e-12 vs the Windows-built
+#: artifact; the fitted parameters differ only in their last bits, so the params hash in model_version differs too).
+#: Parity = byte-identical (same platform) OR every probability within this tolerance with the same leagues served.
+PROB_TOL = 1e-9
 
 
 def _git(*args, text=True):
@@ -151,7 +155,7 @@ def compare(out_dir: Path, ref_dir: Path, table, cfg: dict) -> dict:
             "json_equal_except_trained_at": strip(new_art) == strip(ref_art),
             "probability": probs,
             "byte_parity": byte_ok,
-            "probability_parity": probs["max_abs_prob_diff"] == 0.0 and not probs["only_in_new"]
+            "probability_parity": probs["max_abs_prob_diff"] <= PROB_TOL and not probs["only_in_new"]
             and not probs["only_in_ref"]}
 
 
@@ -192,7 +196,11 @@ def run(out_dir: Path, *, data_ref: str | None = None, until: str | None = None,
         "libraries": libraries(), "comparison": cmp,
         "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
     }
-    report["parity"] = bool(cmp["byte_parity"] and cmp["probability_parity"])
+    # byte parity on the same platform; across platforms the fitted floats differ in their last bits, so the proof is
+    # probability parity within PROB_TOL (both are reported; neither is ever relaxed beyond PROB_TOL)
+    report["parity"] = bool(cmp["probability_parity"])
+    report["parity_basis"] = ("byte_identical" if cmp["byte_parity"] else
+                              f"probability_within_{PROB_TOL:g}" if cmp["probability_parity"] else "none")
     (out_dir / "reproduction.json").write_text(json.dumps(report, indent=1) + "\n", encoding="utf-8", newline="\n")
     return report
 
@@ -217,7 +225,8 @@ def evidence(report: dict, artifact: Path | None = None) -> dict:
         "model_version": c["model_version_ref"], "recipe": "config/side_models_recipe.json",
         "data_ref": report["data_ref"], "inputs_digest": report["inputs_digest"], "until": report["until"],
         "data_end": report["data_end"], "libraries": report["libraries"],
-        "reproduction": {"byte_parity_eol_normalised": c["byte_parity"],
+        "reproduction": {"parity_basis": report.get("parity_basis"), "prob_tolerance": PROB_TOL,
+                         "byte_parity_eol_normalised": c["byte_parity"],
                          "raw_bytes_equal": {f: v["raw_bytes_equal"] for f, v in c["files"].items()},
                          "json_equal_except_trained_at": c["json_equal_except_trained_at"],
                          "max_abs_prob_diff": c["probability"]["max_abs_prob_diff"],
