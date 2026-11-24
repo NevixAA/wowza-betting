@@ -1,14 +1,14 @@
 {
  "identity_version": "fid/1.0",
- "fixture_refs": 885,
- "page_keys_before": 798,
- "canonical_fixtures_after": 578,
- "matches_split_before": 220,
+ "fixture_refs": 922,
+ "page_keys_before": 831,
+ "canonical_fixtures_after": 605,
+ "matches_split_before": 226,
  "kinds": {
-  "accent": 41,
-  "name_variant": 176,
+  "accent": 43,
+  "name_variant": 180,
   "kickoff_drift": 45,
-  "ref_only": 83
+  "ref_only": 87
  },
  "kickoff_conflicts_unresolved": 2,
  "kickoff_drift_groups": 45,
@@ -57,11 +57,11 @@
    "matches_split": 9
   },
   "Japan J-League": {
-   "accent": 9,
-   "name_variant": 10,
+   "accent": 11,
+   "name_variant": 11,
    "kickoff_drift": 0,
-   "ref_only": 7,
-   "matches_split": 15
+   "ref_only": 8,
+   "matches_split": 18
   },
   "La Liga 2": {
    "accent": 6,
@@ -121,10 +121,10 @@
   },
   "USA MLS": {
    "accent": 0,
-   "name_variant": 5,
+   "name_variant": 8,
    "kickoff_drift": 0,
-   "ref_only": 5,
-   "matches_split": 5
+   "ref_only": 8,
+   "matches_split": 8
   }
  },
  "kickoff_disagreements": [
