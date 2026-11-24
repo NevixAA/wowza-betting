@@ -551,6 +551,29 @@ VERSION_ALIASES = {"model_version": ("champion_version", "challenger_version", "
                                                                                          "engine_version")}
 
 
+def stake_drought_check(doc: dict | None = None) -> dict:
+    """Owner rule 2026-11-24 (src/stake_drought.py): a family (league x market x tier) with no staked pick for 30
+    days -> repair & research. UNGATED: informational only - it never blocks CI or a merge and never changes bars,
+    stakes, tiers or models."""
+    rule = ("AMBER if any TOP-3 / props TOP-3 family is REPAIR_RESEARCH_NEEDED (no staked pick for 30 days since "
+            "2026-11-21); GREEN otherwise; NO_DATA if output/stake_drought.json is missing. Ungated: never blocks "
+            "CI or merges")
+    doc = doc if doc is not None else _json(OUT / "stake_drought.json")
+    if not doc or "total" not in doc:
+        c = _c("Stake drought", GREY, "no stake_drought.json", rule)
+    else:
+        t = doc.get("total") or {}
+        n = int(t["REPAIR_RESEARCH_NEEDED"]) if "REPAIR_RESEARCH_NEEDED" in t else None
+        value = (f"{n} flagged, {t.get('PENDING')} pending, {t.get('OFF_SEASON')} off-season, "
+                 f"{t.get('OK')} OK (as of {doc.get('as_of')})")
+        flagged = [f"{r.get('product')} {r.get('league')} {r.get('market')} {r.get('side') or ''} {r.get('tier')}: "
+                   f"{r.get('dominant_cause')}".replace("  ", " ")
+                   for r in (doc.get("families") or []) if r.get("state") == "REPAIR_RESEARCH_NEEDED"][:5]
+        c = _c("Stake drought", GREY if n is None else AMBER if n else GREEN, value, rule, "; ".join(flagged))
+    c["gated"] = False
+    return c
+
+
 def version_field_coverage() -> dict:
     """{file: {field: share of rows filled | 'alias:<col> <share>' | None}} for the committed frames."""
     out = {}
@@ -604,7 +627,7 @@ def build_artifact(now: datetime | None = None, prior: dict | None = None) -> di
         checks.append(_c("Data truth checks", RED, "failed", "src/integrity/data_truth must run",
                          f"{type(e).__name__}: {e}"[:200]))
     for fn in (lambda: promotion_gate_health(now), lambda: edge_shadow_health(now), track_registry_check,
-               standard_serving_health):
+               standard_serving_health, stake_drought_check):
         try:
             checks.append(fn())
         except Exception as e:                                         # noqa: BLE001
