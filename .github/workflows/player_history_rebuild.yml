@@ -1,0 +1,61 @@
+# Dependencies: canonical requirements.txt
+name: Player History Rebuild (prev_season, one-off)
+
+# One-off: fills the stored-empty prev_season_* / shot_accuracy_l10 cells of player_history.parquet
+# from one build_features pass over the stored history (player_model/history_rebuild.py).
+# write=false (default) is a DRY RUN: counts only, nothing committed. write=true needs the owner's
+# approval (2026-11-24: draft PR first, then an explicit go).
+
+on:
+  workflow_dispatch:
+    inputs:
+      write:
+        description: 'Write and commit the rebuilt cells (owner approval required)'
+        type: boolean
+        default: false
+
+# ONE WRITER AT A TIME: shared with player_history_extend.yml and injury_refresh.yml.
+concurrency:
+  group: player-history-writer
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install -r requirements.txt
+      - name: Rebuild (dry run unless write)
+        env:
+          WRITE: ${{ inputs.write }}
+        run: |
+          if [ "$WRITE" = "true" ]; then
+            python -m player_model.pipeline --mode rebuild-prev-season --write | tee rebuild.txt
+          else
+            python -m player_model.pipeline --mode rebuild-prev-season | tee rebuild.txt
+          fi
+      - name: Commit player_history only
+        if: ${{ inputs.write }}
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A -f player_history.parquet
+          git diff --staged --quiet && { echo "nothing to commit"; exit 0; }
+          git commit -m "data: rebuild stored prev_season_* / shot_accuracy_l10 (owner-approved one-off)"
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin main && git push && exit 0
+            sleep $((RANDOM % 5 + 3))
+          done
+          exit 1
+      - name: Summary
+        if: always()
+        run: cat rebuild.txt >> "$GITHUB_STEP_SUMMARY" 2>/dev/null || true

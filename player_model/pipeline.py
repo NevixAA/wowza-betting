@@ -457,6 +457,29 @@ def mode_merge_cups(dry_run: bool = False) -> None:
     _save_history(combined)
 
 
+def mode_rebuild_prev_season(write: bool = False) -> dict | None:
+    """One-off: fill the stored-empty prev_season_* / shot_accuracy_l10 cells of player_history
+    from one build_features pass over the stored history (player_model.history_rebuild). DRY RUN
+    unless write=True; the write needs the owner's approval (2026-11-24: draft PR first)."""
+    import json
+    from player_model import history_rebuild as HR
+    if not HISTORY_CACHE.exists():
+        print("[rebuild-prev-season] No player_history.parquet.")
+        return None
+    existing = pd.read_parquet(HISTORY_CACHE)
+    out, rep = HR.rebuild(existing)
+    rep["mode"] = "WRITE" if write else "DRY RUN (nothing written)"
+    print(json.dumps(rep, indent=1))
+    if not write:
+        return rep
+    if not any(v["cells_filled"] for v in rep["columns"].values()):
+        print("[rebuild-prev-season] nothing to fill")
+        return rep
+    _save_history(out)
+    print("[rebuild-prev-season] written")
+    return rep
+
+
 # ── Phase 3: Train ────────────────────────────────────────────────────────────
 
 
@@ -1030,10 +1053,13 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Player Model Pipeline")
     parser.add_argument("--mode", choices=["collect", "collect-wc", "train", "predict", "all",
                                            "enrich-season", "enrich-profiles", "enrich-sidelined",
-                                           "enrich-sidelined-live", "squad-sync", "merge-cups"],
+                                           "enrich-sidelined-live", "squad-sync", "merge-cups",
+                                           "rebuild-prev-season"],
                         required=True)
     parser.add_argument("--dry-run", action="store_true",
                         help="merge-cups: report what would be appended, write nothing")
+    parser.add_argument("--write", action="store_true",
+                        help="rebuild-prev-season: write the rebuilt cells (owner approval); default is a dry run")
     parser.add_argument("--extended", action="store_true",
                         help="Also collect Champions League / Europa League / Conference League")
     parser.add_argument("--last-n", type=int, default=99,
@@ -1056,6 +1082,8 @@ def main() -> None:
         mode_squad_sync()
     if args.mode == "merge-cups":
         mode_merge_cups(dry_run=args.dry_run)
+    if args.mode == "rebuild-prev-season":
+        mode_rebuild_prev_season(write=args.write)
     if args.mode == "train" or args.mode == "all":
         mode_train()
     if args.mode == "predict" or args.mode == "all":
