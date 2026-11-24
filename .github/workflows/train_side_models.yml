@@ -8,8 +8,9 @@ name: Side models (corners / cards) - reproducible training, artifact only
 #
 #   mode=reproduce        re-trains from the git tree of the recorded data ref (config/side_models_recipe.json),
 #                         with the recorded cut-off and trained_at stamp, and FAILS unless the result equals the
-#                         committed models/side_models/ (byte parity with line endings normalised, and max |p diff|
-#                         0 over every training fixture). This is the lineage proof of the served artifact.
+#                         committed models/side_models/: every probability over every training fixture within 1e-9
+#                         (src.side_models.reproduce.PROB_TOL; byte-identical on the platform that built it - Windows -
+#                         and within 1.3e-12 on ubuntu, where float last bits differ). Lineage proof of the artifact.
 #   mode=refit_candidate  trains on the dispatched ref's committed data with an optional `until` cut-off and
 #                         reports the old-vs-new comparison (model_version, per-league n_fit, max |p diff|). A
 #                         candidate is evidence for an owner decision, never an install.
@@ -93,7 +94,8 @@ jobs:
           print(f"### Side models: {r['mode']}")
           print(f"- data_ref `{r['data_ref'][:9]}`, until `{r['until']}`, model_version `{r['model_version']}`")
           print(f"- committed model_version `{c['model_version_ref']}`")
-          print(f"- inputs match recipe: {r['inputs_match_recipe']}; byte parity (EOL normalised): {c['byte_parity']}")
+          print(f"- inputs match recipe: {r['inputs_match_recipe']}; byte parity (EOL normalised): {c['byte_parity']}; "
+                f"parity basis: {r.get('parity_basis')}")
           print(f"- max |p diff| {c['probability']['max_abs_prob_diff']} over {c['probability']['probabilities']} probabilities")
           print("- NOT installed: artifact only (owner approval required)")
           PY

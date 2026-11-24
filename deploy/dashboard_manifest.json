@@ -590,7 +590,7 @@
   },
   {
    "path": "src/integrity/data_truth.py",
-   "bytes": 89579
+   "bytes": 90972
   },
   {
    "path": "src/integrity/duplicate_matches.py",
@@ -607,6 +607,10 @@
   {
    "path": "src/integrity/price_provenance.py",
    "bytes": 8588
+  },
+  {
+   "path": "src/integrity/public_prices.py",
+   "bytes": 6218
   },
   {
    "path": "src/integrity/training_lineage.py",
@@ -2491,8 +2495,8 @@
   "tzdata"
  ],
  "totals": {
-  "code_files": 201,
-  "code_bytes": 3696690,
+  "code_files": 202,
+  "code_bytes": 3704301,
   "data_files": 138,
   "data_bytes": 38690035
  },

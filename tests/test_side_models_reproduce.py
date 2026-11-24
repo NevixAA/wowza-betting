@@ -123,3 +123,8 @@ def test_build_until_cuts_rows(tmp_path):
     cut, audit = D.build([], until="2026-01-15", **kw)
     assert list(full["fixture_id"]) == [1, 2]
     assert list(cut["fixture_id"]) == [1] and audit["L"]["af_fixtures_in_window"] == 1
+
+
+def test_cross_platform_tolerance_is_a_float_noise_bound():
+    from src.side_models import reproduce as R
+    assert 0 < R.PROB_TOL <= 1e-9

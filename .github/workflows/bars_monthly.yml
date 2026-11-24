@@ -36,6 +36,15 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
+      - name: Price store - open (private prices, owner 2026-11-24)
+        # Live price files exist only in the private store (scripts/price_store_live.sh). This puts them at
+        # their usual paths before any work and keeps them out of every public commit. Rollback: set the
+        # repo variable PRICE_STORE_LIVE to anything but 1.
+        env:
+          PRICE_STORE_LIVE: ${{ vars.PRICE_STORE_LIVE }}
+          PRICE_STORE_KEY: ${{ secrets.PRICE_STORE_KEY }}
+        run: bash scripts/price_store_live.sh open wowza-betting
+
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
@@ -59,3 +68,7 @@ jobs:
           git diff --cached --name-only | grep -v '^output/threshold_proposals/' && { echo "::error::staged a file outside output/threshold_proposals"; exit 1; } || true
           git commit -m "auto: bars monthly re-selection proposals $(date -u +%Y-%m-%d)"
           for i in 1 2 3; do git pull --rebase -q && git push -q && break; sleep 10; done
+
+      - name: Price store - push (private prices)
+        if: ${{ !cancelled() }}
+        run: bash scripts/price_store_live.sh push bars_monthly
