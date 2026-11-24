@@ -31,7 +31,7 @@ def test_recipe_records_the_served_artifact():
     assert rec["trained_at"] == art["trained_at"]
     assert re.fullmatch(r"[0-9a-f]{40}", rec["data_ref"])
     assert rec["inputs"] and rec["inputs_digest"]
-    assert "OFF" in rec["scheduled_refit"]
+    assert "never automatic" in rec["scheduled_refit"]
     for k in ("data_end", "api_football_fullstats_fill", "competition_fixtures", "football_data_raw"):
         assert rec["data_cutoffs"][k]
 
@@ -83,13 +83,22 @@ def test_reproduce_never_writes_into_models():
         R.run(ROOT / "models" / "side_models")
 
 
-def test_workflow_is_dispatch_only_read_only_artifact_only():
+def test_workflow_never_writes_main_and_never_installs():
+    """Monthly schedule + dispatch (owner 2026-11-24); read-only by default; the candidate job pushes ONLY
+    side-models/ branches and opens a PR awaiting owner approval - no push to main, no merge."""
     t = WF.read_text(encoding="utf-8")
     on = t.split("\non:", 1)[1].split("\npermissions:", 1)[0]
-    assert "workflow_dispatch" in on and "schedule" not in on and "push" not in on and "pull_request" not in on
+    assert "workflow_dispatch" in on and re.search(r"cron: '\d+ \d+ \d+ \* \*'", on)          # monthly
+    assert "push:" not in on and "pull_request" not in on
     assert re.search(r"^permissions:\s*\n\s+contents: read", t, re.M)
-    assert "git push" not in t and "git commit" not in t and "contents: write" not in t
-    assert "upload-artifact" in t
+    pushes = [ln.strip() for ln in t.splitlines() if "git push" in ln]
+    assert pushes and all("$br" in ln or "refs/heads/side-models/" in ln for ln in pushes), pushes
+    assert 'br="side-models/candidate-' in t
+    for bad in ("HEAD:main", "origin main", "refs/heads/main", "gh pr merge", "--admin"):
+        assert bad not in t, bad
+    assert "awaiting owner approval" in t and "upload-artifact" in t
+    train = t.split("\n  train:", 1)[1].split("\n  candidate:", 1)[0]
+    assert "contents: write" not in train and "git push" not in train
 
 
 def test_track_registry_lists_side_models():
@@ -98,7 +107,7 @@ def test_track_registry_lists_side_models():
     art = json.loads(ART.read_text(encoding="utf-8"))
     assert s["model_version"] == art["model_version"]
     assert s["lineage"]["status"] == "PASS"
-    assert s["scheduled_refit"].startswith("OFF")
+    assert s["scheduled_refit"].startswith("MONTHLY CANDIDATE") and "never automatic" in s["scheduled_refit"]
     for fam, cov in art["coverage"].items():
         served = {lg for lg, c in cov.items() if c.get("covered")}
         assert {lg for lg, v in s["families"][fam]["leagues"].items() if v["served"]} == served

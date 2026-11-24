@@ -1,31 +1,40 @@
-name: Side models (corners / cards) - reproducible training, artifact only
+name: Side models (corners / cards) - reproducible training + monthly candidate
 
-# DISPATCH ONLY, ARTIFACT ONLY (owner 2026-11-24, data architecture map gap: "corners and cards have no training
-# workflow"). Nothing here is scheduled, nothing is committed, nothing is installed: the job has read-only repo
-# permissions and uploads one artifact. A new side model reaches models/side_models/ only by a separate,
-# owner-approved commit (rule: retrain only when wired, parity 0). A scheduled refit stays OFF until the owner
-# approves one.
+# Owner 2026-11-24: reproducible training (data architecture map gap) and, approved the same day ("yes"), a MONTHLY
+# automatic CANDIDATE refit. NOTHING HERE WRITES TO main AND NOTHING INSTALLS A MODEL: a candidate reaches
+# models/side_models/ only when the owner merges the PR this workflow opens ("... awaiting owner approval").
 #
-#   mode=reproduce        re-trains from the git tree of the recorded data ref (config/side_models_recipe.json),
-#                         with the recorded cut-off and trained_at stamp, and FAILS unless the result equals the
-#                         committed models/side_models/: every probability over every training fixture within 1e-9
-#                         (src.side_models.reproduce.PROB_TOL; byte-identical on the platform that built it - Windows -
-#                         and within 1.3e-12 on ubuntu, where float last bits differ). Lineage proof of the artifact.
-#   mode=refit_candidate  trains on the dispatched ref's committed data with an optional `until` cut-off and
-#                         reports the old-vs-new comparison (model_version, per-league n_fit, max |p diff|). A
-#                         candidate is evidence for an owner decision, never an install.
+#   mode=reproduce          re-trains from the git tree of the recorded data ref (config/side_models_recipe.json),
+#                           with the recorded cut-off and trained_at stamp, and FAILS unless every probability over
+#                           every training fixture is within 1e-9 of the committed models/side_models/
+#                           (src.side_models.reproduce.PROB_TOL; byte-identical on the platform that built it).
+#   mode=refit_candidate    trains on the dispatched ref's committed data with an optional `until` cut-off and
+#                           reports old vs new. Artifact only.
+#   mode=monthly_candidate  (also the monthly schedule) src/side_models/candidate.py:
+#                             1. GATE: runs only if `data_truth --gate` is GREEN and the side-model lineage PASSes;
+#                                otherwise skips with the reason (summary + Telegram).
+#                             2. REFIT on every verified game up to the day before the run date, same recipe.
+#                             3. COMPARE candidate vs serving on recent HELD-OUT games neither trained on: log loss /
+#                                Brier per league x market x side x line, with counts.
+#                             4. REPORT: Telegram (short, no prices), run summary, and the branch
+#                                side-models/candidate-latest (read by the Admin Board "Side-model candidate").
+#                             5. PR "Side models candidate <date> - awaiting owner approval" from a candidate
+#                                branch, with the artifact + recipe + lineage + track registry. Merging it is the
+#                                owner's approval. CI on that branch is dispatched (a GITHUB_TOKEN push starts none).
 #
-# Library versions are pinned to the ones the recorded reproduction was proven with (byte parity depends on them).
+# Library versions for training are pinned to the ones the recorded reproduction was proven with.
 
 on:
+  schedule:
+    - cron: '17 4 3 * *'          # monthly, the 3rd at 04:17 UTC
   workflow_dispatch:
     inputs:
       mode:
-        description: 'reproduce | refit_candidate'
+        description: 'reproduce | refit_candidate | monthly_candidate'
         required: true
         default: 'reproduce'
         type: choice
-        options: [reproduce, refit_candidate]
+        options: [reproduce, refit_candidate, monthly_candidate]
       until:
         description: 'refit_candidate: data cut-off YYYY-MM-DD (blank = every committed row)'
         required: false
@@ -43,6 +52,7 @@ concurrency:
 
 jobs:
   train:
+    if: github.event_name == 'workflow_dispatch' && inputs.mode != 'monthly_candidate'
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -107,3 +117,102 @@ jobs:
           path: ${{ runner.temp }}/side_models_out
           if-no-files-found: warn
           retention-days: 30
+
+  candidate:
+    if: github.event_name == 'schedule' || inputs.mode == 'monthly_candidate'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    permissions:
+      contents: write          # pushes the candidate BRANCHES only; never main
+      pull-requests: write     # opens the "awaiting owner approval" PR
+      actions: write           # dispatches tests.yml on the candidate branch
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Output dir (runner temp, outside the checkout)
+        run: echo "OUT=$RUNNER_TEMP/side_candidate" >> "$GITHUB_ENV"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install (repo requirements for the gates; training libraries pinned)
+        run: |
+          pip install -r requirements.txt pyyaml
+          pip install pandas==3.1.0 numpy==2.4.6 scipy==1.17.1 pyarrow==26.0.0
+
+      - name: Gate - data truth GREEN and side-model lineage PASS
+        id: gate
+        run: |
+          mkdir -p "$OUT"
+          set +e
+          python -m src.integrity.data_truth --gate > "$OUT/data_truth_gate.log" 2>&1
+          rc=$?
+          set -e
+          tail -3 "$OUT/data_truth_gate.log"
+          python -m src.side_models.candidate gate --dt-rc "$rc" --out "$OUT"
+
+      - name: Refit + held-out comparison (writes only to the runner temp dir)
+        id: build
+        if: steps.gate.outputs.go == 'true'
+        run: python -m src.side_models.candidate build --out "$OUT" --run-date "$(date -u +%F)"
+
+      - name: Candidate branch + PR awaiting owner approval (never main)
+        if: steps.gate.outputs.go == 'true' && steps.build.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          d=$(date -u +%F)
+          br="side-models/candidate-$d"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$br"
+          I="$OUT/install"
+          cp "$I/models/side_models/side_models.json" models/side_models/side_models.json
+          cp "$I/models/side_models/holdout_metrics.csv" models/side_models/holdout_metrics.csv
+          cp "$I/config/side_models_recipe.json" config/side_models_recipe.json
+          cp "$I/reports/lineage/side_models_lineage_evidence.json" reports/lineage/side_models_lineage_evidence.json
+          mkdir -p reports/side_models
+          cp "$I/reports/side_models/candidate_summary.json" reports/side_models/candidate_summary.json
+          cp "$I/reports/side_models/candidate_heldout_summary.csv" reports/side_models/candidate_heldout_summary.csv
+          python scripts/build_track_registry.py
+          git add models/side_models/side_models.json models/side_models/holdout_metrics.csv \
+            config/side_models_recipe.json reports/lineage/side_models_lineage_evidence.json \
+            reports/side_models/candidate_summary.json reports/side_models/candidate_heldout_summary.csv \
+            config/track_registry.json
+          git commit -q -m "Side models candidate $d - awaiting owner approval (monthly refit, not installed until merged)"
+          git push -q origin "$br"
+          git push -q -f origin "HEAD:refs/heads/side-models/candidate-latest"
+          python3 - "$OUT/candidate_summary.json" > "$OUT/pr_body.md" <<'PY'
+          import json, sys
+          s = json.load(open(sys.argv[1])); h = s["heldout"]
+          print("Monthly side-model (corners/cards) candidate - **awaiting owner approval. Merging this PR installs it.**\n")
+          print(f"- candidate `{s['candidate_model_version']}` (data to {s['candidate_data_end']}) vs serving "
+                f"`{s['serving_model_version']}`")
+          print(f"- held-out {h['start']}..{h['end']}: {h['rule']}")
+          print(f"- log loss better in {s['candidate_better_logloss']} / worse in {s['candidate_worse_logloss']} of "
+                f"{s['cells']} league x market cells (mean delta {s['mean_logloss_delta']}); Brier better "
+                f"{s['candidate_better_brier']} / worse {s['candidate_worse_brier']}")
+          print(f"- lineage {s['lineage']['status']} ({s['lineage']['parity_basis']})")
+          print("- per league x market: reports/side_models/candidate_heldout_summary.csv")
+          PY
+          gh pr create --base main --head "$br" --title "Side models candidate $d - awaiting owner approval" \
+            --body-file "$OUT/pr_body.md" \
+            || echo "::warning title=PR not opened::open it from https://github.com/${GITHUB_REPOSITORY}/compare/main...$br"
+          gh workflow run tests.yml --ref "$br" || echo "::warning::tests.yml dispatch on $br failed"
+
+      - name: Notify the owner (Telegram, no prices)
+        if: always()
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python -m src.side_models.candidate notify --out "$OUT" | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: side-models-candidate-${{ github.run_id }}
+          path: ${{ runner.temp }}/side_candidate
+          if-no-files-found: warn
+          retention-days: 90

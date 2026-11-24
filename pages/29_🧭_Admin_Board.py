@@ -94,7 +94,8 @@ def _store_top3_odds() -> tuple[dict | None, str]:
         return None, str(e)
 
 
-tab_bars, tab_top3, tab_res, tab_eval = st.tabs(["Bars", "TOP-3", "Research & Pro tools", "Clean Record evaluation"])
+tab_bars, tab_top3, tab_res, tab_eval, tab_side = st.tabs(["Bars", "TOP-3", "Research & Pro tools",
+                                                          "Clean Record evaluation", "Side-model candidate"])
 
 # ══ 1. BARS ═════════════════════════════════════════════════════════════════════════════════════
 with tab_bars:
@@ -244,6 +245,31 @@ with tab_res:
 with tab_eval:
     from dashboard_data import clean_record_eval as CRE  # noqa: E402
     CRE.render(st, ui, admin=True)
+
+# ══ 5. SIDE-MODEL CANDIDATE (monthly corners / cards refit; owner 2026-11-24) ════════════════════════════
+with tab_side:
+    from dashboard_data import side_candidate_view as SCV  # noqa: E402
+    ui.section_header("Side-model candidate",
+                      "Corners / cards: the serving model and the latest monthly candidate, compared on recent held-out "
+                      "games neither model trained on. A candidate is installed only when the owner merges its "
+                      "'awaiting owner approval' PR.")
+    try:
+        _reg = json.loads(Path("config/track_registry.json").read_text(encoding="utf-8"))
+    except Exception:                                                  # noqa: BLE001
+        _reg = None
+    ui.stat_line(SCV.serving_lines(_reg))
+    _sb, _se = _record_body("NevixAA/wowza-betting", False, SCV.CANDIDATE_REF, SCV.SUMMARY_PATH)
+    _summ = SCV.parse_summary(_sb)
+    if _summ is None:
+        ui.empty_state("NO_DATA", f"No monthly candidate yet ({_se or 'no summary on ' + SCV.CANDIDATE_REF}).")
+    else:
+        ui.stat_line(SCV.candidate_lines(_summ))
+        _hb, _ = _record_body("NevixAA/wowza-betting", False, SCV.CANDIDATE_REF, SCV.HELDOUT_PATH)
+        _hf = SCV.heldout_frame(_hb)
+        if len(_hf):
+            ui.compact_table(_hf.reset_index(drop=True))
+        st.caption("Delta = candidate minus serving (negative = candidate better). Source: branch "
+                   f"{SCV.CANDIDATE_REF}, written by .github/workflows/train_side_models.yml.")
 
 from utils.disclaimer import disclaimer_footer  # noqa: E402
 disclaimer_footer()
