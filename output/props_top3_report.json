@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-24T15:42:10Z",
+ "generated_at": "2026-11-24T22:19:24Z",
  "selection_mode": "PROPS_TOP3_LEAGUE_GW",
  "version": "PROPS-TOP3-1",
  "freeze_lead_min": 120.0,
@@ -28,6 +28,103 @@
    "latest_picks": [],
    "weeks_decided": 1,
    "picks": 0,
+   "settled": 0,
+   "won": 0,
+   "flat_pnl_units": 0.0
+  },
+  "Champions League": {
+   "latest_league_week_id": "Champions League|2026-W48",
+   "latest_excluded": {
+    "NO_POSITIVE_VALUE": 177,
+    "RANKED_BELOW_TOP3": 13,
+    "STARTED_BEFORE_ISSUE": 14
+   },
+   "latest_picks": [
+    {
+     "role": "T1_BEST_VALUE",
+     "player_name": "P. Christiansen",
+     "team": "Viking",
+     "match": "Atletico Madrid vs Viking",
+     "kickoff_utc": "2026-11-25T20:00:00Z",
+     "market": "sot2",
+     "value_basis": "vs quoted price",
+     "stake_label": "No stake: props not proven yet",
+     "result": ""
+    },
+    {
+     "role": "T2_SAFEST",
+     "player_name": "E. Botheim",
+     "team": "Viking",
+     "match": "Atletico Madrid vs Viking",
+     "kickoff_utc": "2026-11-25T20:00:00Z",
+     "market": "sot",
+     "value_basis": "vs quoted price",
+     "stake_label": "No stake: props not proven yet",
+     "result": ""
+    },
+    {
+     "role": "T3_RISKY_VALUE",
+     "player_name": "Z. Tripi\u0107",
+     "team": "Viking",
+     "match": "Atletico Madrid vs Viking",
+     "kickoff_utc": "2026-11-25T20:00:00Z",
+     "market": "sot2",
+     "value_basis": "vs quoted price",
+     "stake_label": "No stake: props not proven yet",
+     "result": ""
+    }
+   ],
+   "weeks_decided": 1,
+   "picks": 3,
+   "settled": 0,
+   "won": 0,
+   "flat_pnl_units": 0.0
+  },
+  "Championship": {
+   "latest_league_week_id": "Championship|2026-W48",
+   "latest_excluded": {
+    "FIRST_SEEN_AFTER_FREEZE": 2,
+    "NO_POSITIVE_VALUE": 50,
+    "RANKED_BELOW_TOP3": 3,
+    "STARTED_BEFORE_ISSUE": 2
+   },
+   "latest_picks": [
+    {
+     "role": "T1_BEST_VALUE",
+     "player_name": "A. Priske",
+     "team": "Birmingham",
+     "match": "Burnley vs Birmingham",
+     "kickoff_utc": "2026-11-25T19:45:00Z",
+     "market": "goals",
+     "value_basis": "vs quoted price",
+     "stake_label": "No stake: props not proven yet",
+     "result": ""
+    },
+    {
+     "role": "T2_SAFEST",
+     "player_name": "A. Priske",
+     "team": "Birmingham",
+     "match": "Birmingham vs Bolton",
+     "kickoff_utc": "2026-11-28T15:00:00Z",
+     "market": "goals",
+     "value_basis": "vs quoted price",
+     "stake_label": "No stake: props not proven yet",
+     "result": ""
+    },
+    {
+     "role": "T3_RISKY_VALUE",
+     "player_name": "S. Dalby",
+     "team": "Bolton",
+     "match": "Birmingham vs Bolton",
+     "kickoff_utc": "2026-11-28T15:00:00Z",
+     "market": "goals",
+     "value_basis": "vs quoted price",
+     "stake_label": "No stake: props not proven yet",
+     "result": ""
+    }
+   ],
+   "weeks_decided": 1,
+   "picks": 3,
    "settled": 0,
    "won": 0,
    "flat_pnl_units": 0.0
@@ -65,6 +162,101 @@
    "latest_picks": [],
    "weeks_decided": 1,
    "picks": 0,
+   "settled": 0,
+   "won": 0,
+   "flat_pnl_units": 0.0
+  },
+  "League One": {
+   "latest_league_week_id": "League One|2026-W48",
+   "latest_excluded": {
+    "NO_POSITIVE_VALUE": 41,
+    "RANKED_BELOW_TOP3": 6,
+    "STARTED_BEFORE_ISSUE": 2
+   },
+   "latest_picks": [
+    {
+     "role": "T1_BEST_VALUE",
+     "player_name": "D. Keillor-Dunn",
+     "team": "Sheffield Wednesday",
+     "match": "Sheffield Wednesday vs Reading",
+     "kickoff_utc": "2026-11-28T15:00:00Z",
+     "market": "goals",
+     "value_basis": "vs quoted price",
+     "stake_label": "No stake: props not proven yet",
+     "result": ""
+    },
+    {
+     "role": "T2_SAFEST",
+     "player_name": "K. Wootton",
+     "team": "Stockport County",
+     "match": "Stockport County vs Leyton Orient",
+     "kickoff_utc": "2026-11-28T15:00:00Z",
+     "market": "goals",
+     "value_basis": "vs quoted price",
+     "stake_label": "No stake: props not proven yet",
+     "result": ""
+    },
+    {
+     "role": "T3_RISKY_VALUE",
+     "player_name": "J. Russell",
+     "team": "Mansfield Town",
+     "match": "Leicester vs Mansfield Town",
+     "kickoff_utc": "2026-11-28T15:00:00Z",
+     "market": "goals",
+     "value_basis": "vs quoted price",
+     "stake_label": "No stake: props not proven yet",
+     "result": ""
+    }
+   ],
+   "weeks_decided": 1,
+   "picks": 3,
+   "settled": 0,
+   "won": 0,
+   "flat_pnl_units": 0.0
+  },
+  "League Two": {
+   "latest_league_week_id": "League Two|2026-W48",
+   "latest_excluded": {
+    "NO_POSITIVE_VALUE": 36,
+    "RANKED_BELOW_TOP3": 2
+   },
+   "latest_picks": [
+    {
+     "role": "T1_BEST_VALUE",
+     "player_name": "A. Drinan",
+     "team": "Swindon Town",
+     "match": "Swindon Town vs Chesterfield",
+     "kickoff_utc": "2026-11-28T15:00:00Z",
+     "market": "goals",
+     "value_basis": "vs quoted price",
+     "stake_label": "No stake: props not proven yet",
+     "result": ""
+    },
+    {
+     "role": "T2_SAFEST",
+     "player_name": "A. Pressley",
+     "team": "Walsall",
+     "match": "Walsall vs Northampton",
+     "kickoff_utc": "2026-11-28T15:00:00Z",
+     "market": "goals",
+     "value_basis": "vs quoted price",
+     "stake_label": "No stake: props not proven yet",
+     "result": ""
+    },
+    {
+     "role": "T3_RISKY_VALUE",
+     "player_name": "M. Sesay",
+     "team": "Colchester",
+     "match": "Colchester vs York",
+     "kickoff_utc": "2026-11-28T15:00:00Z",
+     "market": "goals",
+     "value_basis": "vs quoted price",
+     "stake_label": "No stake: props not proven yet",
+     "result": ""
+    }
+   ],
+   "weeks_decided": 1,
+   "picks": 3,
    "settled": 0,
    "won": 0,
    "flat_pnl_units": 0.0
@@ -128,6 +320,55 @@
    ],
    "weeks_decided": 1,
    "picks": 1,
+   "settled": 0,
+   "won": 0,
+   "flat_pnl_units": 0.0
+  },
+  "Serie B": {
+   "latest_league_week_id": "Serie B|2026-W48",
+   "latest_excluded": {
+    "FIRST_SEEN_AFTER_FREEZE": 1,
+    "NO_POSITIVE_VALUE": 50,
+    "RANKED_BELOW_TOP3": 4,
+    "STARTED_BEFORE_ISSUE": 2
+   },
+   "latest_picks": [
+    {
+     "role": "T1_BEST_VALUE",
+     "player_name": "W. Cheddira",
+     "team": "Avellino",
+     "match": "Cremonese vs Avellino",
+     "kickoff_utc": "2026-11-25T18:00:00Z",
+     "market": "goals",
+     "value_basis": "vs quoted price",
+     "stake_label": "No stake: props not proven yet",
+     "result": ""
+    },
+    {
+     "role": "T2_SAFEST",
+     "player_name": "C. Shpendi",
+     "team": "Cesena",
+     "match": "Vicenza Virtus vs Cesena",
+     "kickoff_utc": "2026-11-28T14:00:00Z",
+     "market": "goals",
+     "value_basis": "vs quoted price",
+     "stake_label": "No stake: props not proven yet",
+     "result": ""
+    },
+    {
+     "role": "T3_RISKY_VALUE",
+     "player_name": "R. Russo",
+     "team": "Avellino",
+     "match": "Cremonese vs Avellino",
+     "kickoff_utc": "2026-11-25T18:00:00Z",
+     "market": "goals",
+     "value_basis": "vs quoted price",
+     "stake_label": "No stake: props not proven yet",
+     "result": ""
+    }
+   ],
+   "weeks_decided": 1,
+   "picks": 3,
    "settled": 0,
    "won": 0,
    "flat_pnl_units": 0.0
