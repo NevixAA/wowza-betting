@@ -1,10 +1,13 @@
 {
- "generated_at": "2026-11-23T20:35:23Z",
+ "generated_at": "2026-11-24T04:26:24Z",
  "panel_version": "LWR-1",
  "tracked_leagues": 20,
- "current_tip_day": "2026-11-23",
+ "current_tip_day": "2026-11-24",
  "leagues_with_current_week_data": 16,
- "missing_leagues": [],
+ "missing_leagues": [
+  "Brazil Serie A",
+  "USA MLS"
+ ],
  "missing_leagues_previous_week": [],
  "no_fixture_leagues": [
   "China Super League",
@@ -17,10 +20,10 @@
  "expected_candidate_rows": 680,
  "actual_candidate_rows": 672,
  "panel_rows": 1284,
- "settled_rows": 1182,
- "pending_rows": 102,
+ "settled_rows": 1208,
+ "pending_rows": 76,
  "clv_certified_rows": 581,
- "clv_coverage": 0.4915,
+ "clv_coverage": 0.481,
  "protected_tracks_modified": false,
  "leagues": {
   "Argentina Primera Division": {
@@ -150,7 +153,7 @@
   "Brazil Serie A": {
    "current": {
     "league_week_id": "Brazil Serie A|2026-W48",
-    "state": "PROVISIONAL",
+    "state": "LOCKED_NOT_FROZEN",
     "fixtures_known": 14,
     "fixtures_before_panel_start": 0,
     "fixtures_with_candidates": 14,
@@ -1204,7 +1207,7 @@
   "USA MLS": {
    "current": {
     "league_week_id": "USA MLS|2026-W48",
-    "state": "PROVISIONAL",
+    "state": "LOCKED_NOT_FROZEN",
     "fixtures_known": 9,
     "fixtures_before_panel_start": 0,
     "fixtures_with_candidates": 9,
