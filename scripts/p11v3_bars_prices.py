@@ -505,6 +505,17 @@ def cmd_median_coverage(a) -> int:
 
 
 SRC_MEDIAN = "oddsapi_median"
+#: addendum 3 (coordinator decision 2026-11-24, option (a)): the serving rule's overround bounds (PR #104)
+MEDIAN_ADDENDUM_3 = ROOT / "config" / "p11_bars_tiers_protocol_v3_addendum_median_a.json"
+
+
+def serving_overround() -> tuple[float, float]:
+    """The overround bounds the serving reference price uses (config/market_edge_v2.json overround_min / max, the
+    file PR #104 src/reference_price.py reads); a missing key stops the run (no stand-in bounds)."""
+    cfg = json.loads((ROOT / "config" / "market_edge_v2.json").read_text(encoding="utf-8"))
+    if "overround_min" not in cfg or "overround_max" not in cfg:
+        raise SystemExit("config/market_edge_v2.json has no overround_min / overround_max: refused")
+    return float(cfg["overround_min"]), float(cfg["overround_max"])
 
 
 def _median_close(u: pd.DataFrame, store: Path) -> pd.DataFrame:
@@ -526,14 +537,16 @@ def cmd_prepare_median(a) -> int:
     pairs no longer price O/U 2.5 on this basis); every other market is byte-identical."""
     base, work = P.assert_outside_repo(a.base_work), P.assert_outside_repo(a.work)
     (work / "priced").mkdir(parents=True, exist_ok=True)
-    st = {"addendum": predictions_rule()[1], "median_addendum": _median_addendum_record(), "tracks": {}}
+    st = {"addendum": predictions_rule()[1], "median_addendum": _median_addendum_record(),
+          "median_addendum_3": {"file": MEDIAN_ADDENDUM_3.relative_to(ROOT).as_posix(), "sha256_lf": M.sha_lf(MEDIAN_ADDENDUM_3)},
+          "overround": serving_overround(), "tracks": {}}
     for t in TRACKS:
         pu = pd.read_parquet(base / "priced" / f"universe_{t}.parquet")
         m = pu["market"] == MEDIAN_MARKET
         u = pu[m]
         pairs, dates, fmap, odds = _hist_pairs(u, Path(a.store), ["BT", "OUU"])
         ps = {}
-        med = P.median_pick(pairs[pairs["market"] == MEDIAN_MARKET], dates, ps)
+        med = P.median_pick(pairs[pairs["market"] == MEDIAN_MARKET], dates, ps, overround=serving_overround())
         cl = _median_close(u, Path(a.store))
         med = med.merge(cl, on="fixture_id", how="left", suffixes=("", "_cl"))
         for c in ("yes_c", "no_c"):

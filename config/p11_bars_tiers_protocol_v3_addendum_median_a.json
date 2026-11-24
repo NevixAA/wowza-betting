@@ -1,0 +1,26 @@
+{
+  "protocol": "p11-bars-tiers-clean/3",
+  "addendum": "median-real-price-ou25-option-a",
+  "status": "ADDENDUM 3 to the pre-registered protocol v3 (protocol, addendum d1 and addendum median unchanged), written and committed BEFORE any fit on the median basis. It aligns the bars' median basis with the serving rule of PR #104. PROPOSAL ONLY; config/threshold_approvals.json is not touched.",
+  "decision": "Coordinator 2026-11-24, from the owner's own words (\"as many bookmakers as we can have\"): option (a) - serving adds regions=eu,uk; bars apply the same overround filter as PR #104 (src/reference_price.py: overround inside config/market_edge_v2.json [overround_min, overround_max] = [0.0, 0.15] and de-viggable by src.market_edge.power_devig).",
+  "rule": {
+    "books": "every book of the store's BET-role tiers BT (eu) and OUU (uk) - regions eu + uk, as serving will request - with a two-sided exact-2.5 pair",
+    "valid_book": "the book's earliest bet-time pair: overround 1/over + 1/under - 1 inside [overround_min, overround_max] of config/market_edge_v2.json AND power_devig returns a value; otherwise the book does not count (counted in prepare stats)",
+    "price": "per side, the median of the valid books' real (vigged) prices; >= 3 valid books, else no price (unchanged from addendum 2)",
+    "close": "unchanged from addendum 2 (CLV only)"
+  },
+  "market_key_check": {
+    "question": "serving reads the featured `totals` market, the store's bet-time tiers hold `alternate_totals`: is a book's 2.5 price the same in both?",
+    "method": "private store (wowza-exec odds-history @ 2ea84459), every quote at point 2.5 of markets totals and alternate_totals; same event, same book, same outcome",
+    "same_snapshot": "104,224 quote pairs at the identical snapshot time: 10 differ (0.01%)",
+    "within_10_minutes": "113,190 quote pairs within 10 minutes (featured tiers B4/C3 vs event tiers B1/C1; 6 books, 14,559 events): 721 differ (0.64%), median relative difference when they differ 2.6% - consistent with the price moving between the two requests",
+    "conclusion": "the two market keys carry the same price for a book at the same moment; no adjustment"
+  },
+  "snapshot_timing": {
+    "bars": "unchanged: the measured live-tip lead time, T-125h Standard / T-153h New-Format (src.oddsapi_history.BT_LEAD_HOURS)",
+    "serving": "serving scores each logical bet at the board snapshot taken when the tip is issued (PR #104)",
+    "known_gap": "real issued TOP-3 tips (output/top3_league_ledger.csv on main, track_is_real, 2026-11-20..11-24): 7 picks, all New-Format; median lead kickoff - issued_at 66.2 h (IQR 48.4-125.8 h); median kickoff - first_seen_at 132.9 h. Bars use 153 h for New-Format. No real Standard TOP-3 tip issued yet, so the Standard gap (bars 125 h) is unmeasured. Recorded as a known gap, not corrected."
+  },
+  "method": "unchanged (addendum 2): v3 bars method on the median-basis priced universes; namespace bars_p11v3med; side-by-side with the fixed-order D1 basis",
+  "validation_label": "the validation window's outcomes were seen before: re-validation numbers, never proof"
+}

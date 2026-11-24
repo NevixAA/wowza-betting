@@ -549,11 +549,14 @@ MEDIAN_MIN_BOOKS = 3
 
 
 def median_pick(pairs: pd.DataFrame, fixture_dates: pd.Series, stats: dict | None = None, bet_role: bool = True,
-                min_books: int = MEDIAN_MIN_BOOKS, drop_midnight: bool = True) -> pd.DataFrame:
+                min_books: int = MEDIAN_MIN_BOOKS, drop_midnight: bool = True,
+                overround: tuple | None = None) -> pd.DataFrame:
     """Per (fixture_id, market): the MEDIAN of the real (vigged) prices across every book with a provable
     bet-time two-sided pair on the exact line - each book's EARLIEST valid pair (pick_pairs' timing rules), Over
     and Under medians taken separately; fewer than `min_books` books = no price (nothing invented, no one-book
-    fallback). Columns as pick_pairs (bookmaker = "median:n=<k>", ts = the latest snapshot used) + n_books."""
+    fallback). Columns as pick_pairs (bookmaker = "median:n=<k>", ts = the latest snapshot used) + n_books.
+    overround (addendum 3, the serving rule of PR #104 src/reference_price.py): (lo, hi) - a book counts only when
+    its pair's overround 1/yes + 1/no - 1 lies in [lo, hi] AND src.market_edge.power_devig de-vigs it (counted)."""
     out_cols = ["fixture_id", "market", "league", "event_id", "bookmaker", "ts", "ko", "yes", "no",
                 "ts_c", "yes_c", "no_c", "n_books"]
     stats = stats if stats is not None else {}
@@ -563,6 +566,13 @@ def median_pick(pairs: pd.DataFrame, fixture_dates: pd.Series, stats: dict | Non
     if p.empty:
         return pd.DataFrame(columns=out_cols)
     first = p.sort_values("ts").groupby(["fixture_id", "market", "bookmaker"], as_index=False).first()
+    if overround is not None:
+        from src.market_edge import power_devig
+        ovr = 1.0 / first["yes"] + 1.0 / first["no"] - 1.0
+        ok = (ovr >= overround[0]) & (ovr <= overround[1])
+        ok &= np.array([power_devig(float(a), float(b)) is not None for a, b in zip(first["yes"], first["no"])], dtype=bool)
+        stats["median_books_dropped_overround"] = int((~ok).sum())
+        first = first[ok]
     g = first.groupby(["fixture_id", "market"])
     agg = g.agg(league=("league", "first"), event_id=("event_id", "first"), ts=("ts", "max"), ko=("ko", "first"),
                 yes=("yes", "median"), no=("no", "median"), n_books=("bookmaker", "nunique")).reset_index()

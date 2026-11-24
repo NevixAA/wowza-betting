@@ -192,3 +192,20 @@ def test_median_basis_addendum_is_registered():
     add = json.loads((ROOT / "config" / "p11_bars_tiers_protocol_v3_addendum_median.json").read_text(encoding="utf-8"))
     assert add["basis"]["min_books"] == P.MEDIAN_MIN_BOOKS == 3
     assert "median of the real (vigged) prices" in add["owner_decision"]
+
+
+def test_median_overround_filter_matches_the_serving_rule():
+    dates = pd.Series({"f1": "2026-10-04"})
+    books = [("pinnacle", 1.9, 1.95), ("williamhill", 1.85, 2.0), ("onexbet", 2.0, 1.9), ("ladbrokes_uk", 1.5, 1.6)]
+    assert P.median_pick(_mpairs(books), dates)["n_books"].iloc[0] == 4
+    st = {}
+    r = P.median_pick(_mpairs(books), dates, st, overround=(0.0, 0.15))      # ladbrokes overround ~0.29: out
+    assert r["n_books"].iloc[0] == 3 and st["median_books_dropped_overround"] == 1
+
+
+def test_addendum_3_records_option_a_and_the_serving_bounds():
+    add = json.loads((ROOT / "config" / "p11_bars_tiers_protocol_v3_addendum_median_a.json").read_text(encoding="utf-8"))
+    assert "option (a)" in add["decision"]
+    sys.path.insert(0, str(ROOT / "scripts"))
+    import p11v3_bars_prices as V
+    assert V.serving_overround() == (0.0, 0.15)
