@@ -391,6 +391,10 @@ jobs:
           done
           [ "$pushed" = "1" ] || echo "::warning::prediction GW dataset push failed after 5 retries"
 
+      - name: Price store - push (private prices)
+        if: ${{ !cancelled() }}
+        run: bash scripts/price_store_live.sh push update_results
+
       # CLV COLLECTION GUARD (P1 2026-10-22). Runs LAST, after both commits, so a failing guard can
       # never stop results or settlements from persisting. It turns the run red when certified
       # T-30m close coverage falls below config/clv_collection_expectation.json - the failure that
@@ -400,8 +404,4 @@ jobs:
         run: |
           git fetch -q origin main && git checkout -q origin/main -- output/clv_collection_health.json config/clv_collection_expectation.json 2>/dev/null || true
           python scripts/check_clv_collection_health.py
-
-      - name: Price store - push (private prices)
-        if: ${{ !cancelled() }}
-        run: bash scripts/price_store_live.sh push update_results
 # schedule re-registered after the 2026-10-26 history clean-up (comment only)

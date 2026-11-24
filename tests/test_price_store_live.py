@@ -248,7 +248,13 @@ def test_every_job_that_commits_opens_the_store_first():
                 ck = [i for i, s in enumerate(steps) if str(s.get("uses", "")).startswith("actions/checkout")]
                 assert ck and ck[0] < k, f"{wf.name}:{name} opens the store before its checkout"
                 if "PRICE_STORE_KEY" in (steps[k].get("env") or {}):
-                    if "price_store_live.sh push" not in str(steps[-1].get("run", "")):
+                    # the push follows the job's last public commit (final read-only steps such as
+                    # update_results' CLV guard or a capture's NEAR-run chain may come after it)
+                    pushes = [i for i, s in enumerate(steps) if "price_store_live.sh push" in str(s.get("run", ""))]
+                    commits = [i for i, s in enumerate(steps)
+                               if any(x in str(s.get("run", "")) for x in ("git push", "sync-push", "git_push"))]
+                    if not pushes or (commits and pushes[-1] < commits[-1]) \
+                            or str(steps[pushes[-1]].get("if", "")) != "${{ !cancelled() }}":
                         bad.append(f"{wf.name}:{name}")
                 continue
             if "git push" in runs or "sync-push" in runs or "git_push" in runs:
