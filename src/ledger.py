@@ -1144,6 +1144,10 @@ def sync_snapshot(dest: Path, repo: Path | None = None) -> list[str]:
         if not p.exists():
             continue
         tracked = _git(repo, "cat-file", "-e", f"HEAD:{rel}", check=False).returncode == 0
+        if not tracked and _git(repo, "check-ignore", "-q", "--", rel, check=False).returncode == 0:
+            # A PRIVATE ledger (price cut-over 2026-11-24): it lives only in the private store and the job's
+            # `price_store_live.sh push` merges it there row by row. Never snapshot or remove it here.
+            continue
         if tracked and _git(repo, "diff", "--quiet", "HEAD", "--", rel, check=False).returncode == 0:
             continue                                 # this run did not change it
         name = rel.replace("/", "__")

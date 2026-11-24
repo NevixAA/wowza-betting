@@ -262,3 +262,58 @@ def test_every_job_that_commits_opens_the_store_first():
                     missing.append(f"{wf.name}:{name}")
     assert missing == [], missing
     assert bad == [], bad
+
+
+# ── stage 2: class B private, price-free public views ─────────────────────────────────────────────
+def test_projection_drops_only_price_columns_and_keeps_every_other_cell():
+    src = (b'source,match_date,home_team,side,odds,closing_odds,clv_pct,stake,pnl,result,odds_over25_book,note\n'
+           b'live,2026-11-24,"A, FC",over,1.11,1.22,3.5,0.5,0.06,WIN,Bet365,"x ""q"""\n')
+    out = psl.project_csv(src).decode()
+    assert out.splitlines()[0] == "source,match_date,home_team,side,clv_pct,stake,pnl,result,odds_over25_book,note"
+    assert out.splitlines()[1] == 'live,2026-11-24,"A, FC",over,3.5,0.5,0.06,WIN,Bet365,"x ""q"""'
+    j = json.loads(psl.project_json(b'{"a": {"odds": 1.5, "n_tips": 3, "rows": [{"entry_odds": 2, "pnl": 1}]}}'))
+    assert j == {"a": {"n_tips": 3, "rows": [{"pnl": 1}]}}
+
+
+def test_projection_pattern_is_the_data_truth_17_pattern():
+    from src.integrity import public_prices as PP
+    assert psl.PRICE_COL.pattern == PP.PRICE_COL.pattern and psl.NOT_PRICE.pattern == PP.NOT_PRICE.pattern
+
+
+def test_hook_writes_public_views_and_keeps_the_private_file_out(tmp_path):
+    ws = tmp_path / "ws"
+    git("init", "--quiet", "-b", "main", str(ws))
+    (ws / "output").mkdir()
+    (ws / "output/bets_ledger.csv").write_bytes(b"match_date,side,odds,stake,pnl\n2026-11-24,over,1.11,0.5,0.06\n")
+    (ws / "README.md").write_text("x\n")
+    cfg = {"rules": {"wowza-betting": {"A_O": [], "B": [r"^output/bets_ledger\.csv$"]}},
+           "live": {"wowza-betting": ["B"]}, "views": {"wowza-betting": [r"^output/bets_ledger\.csv$"]}}
+    cfgp = tmp_path / "cfg.json"
+    cfgp.write_text(json.dumps(cfg))
+    psl.install_hook(ws, "wowza-betting", cfgp)
+    git("add", "-f", "README.md", "output/bets_ledger.csv", cwd=ws)
+    git("commit", "--quiet", "-m", "job", cwd=ws)
+    committed = sorted(git("show", "--name-only", "--format=", "HEAD", cwd=ws).splitlines())
+    assert committed == ["README.md", "output/public/bets_ledger.csv"]
+    assert git("show", "HEAD:output/public/bets_ledger.csv", cwd=ws).splitlines() == [
+        "match_date,side,stake,pnl", "2026-11-24,over,0.5,0.06"]
+
+
+def test_ledger_sync_leaves_a_private_ledger_alone(tmp_path):
+    from src import ledger as L
+    ws = tmp_path / "ws"
+    git("init", "--quiet", "-b", "main", str(ws))
+    (ws / ".gitignore").write_text("/output/bets_ledger.csv\n")
+    (ws / "output").mkdir()
+    (ws / "output/bets_ledger.csv").write_text("source,match_date,home_team,away_team,side\nlive,1,a,b,o\n")
+    git("add", ".gitignore", cwd=ws)
+    git("commit", "--quiet", "-m", "x", cwd=ws)
+    assert L.sync_snapshot(tmp_path / "snap", repo=ws) == []
+    assert (ws / "output/bets_ledger.csv").exists()                     # never removed
+
+
+def test_repo_views_are_live_class_b_files():
+    cfg = psl.load()
+    for repo, pats in (cfg.get("views") or {}).items():
+        live = [p for c in cfg["live"][repo] for p in cfg["rules"][repo][c]]
+        assert set(pats) <= set(live), set(pats) - set(live)

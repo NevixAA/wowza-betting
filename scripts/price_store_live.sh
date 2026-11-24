@@ -60,7 +60,7 @@ case "$CMD" in
       exit 1
     fi
     "$PY" "$HERE/price_store_live.py" open --repo "$REPO" --workspace . --store-dir "$STORE" \
-      --manifest "$MANIFEST" --live "${PRICE_STORE_LIVE:-}" ${ONLY:+--only "$ONLY"}
+      --manifest "$MANIFEST" --live "${PRICE_STORE_LIVE:-}" ${ONLY:+--only "$ONLY"} ${PRICE_STORE_ANY_BRANCH:+--any-branch}
     ;;
   read)
     REPO="${2:?repo}"

@@ -28,6 +28,17 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - name: Price store - open (private prices, owner 2026-11-24)
+        # Live price files exist only in the private store (scripts/price_store_live.sh). This puts them at
+        # their usual paths before any work and keeps them out of every public commit. Rollback: set the
+        # repo variable PRICE_STORE_LIVE to anything but 1.
+        env:
+          PRICE_STORE_LIVE: ${{ vars.PRICE_STORE_LIVE }}
+          PRICE_STORE_RO_KEY: ${{ secrets.PRICE_STORE_RO_KEY }}
+          # CI checks out a PR merge ref: read main's store files only when the change targets main.
+          PRICE_STORE_ANY_BRANCH: ${{ (github.base_ref == 'main' || github.ref_name == 'main') && '1' || '' }}
+        run: bash scripts/price_store_live.sh open wowza-betting
+
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
