@@ -36,9 +36,7 @@ from src.tier_labels import PAPER_TIER_LABEL, tier_label  # noqa: E402
 from dashboard_data import freshness as _fresh, portfolio_view as V  # noqa: E402
 from src import units as U  # noqa: E402
 
-# STREAMLIT CLOUD KEEPS IMPORTED MODULES ACROSS A REDEPLOY (see 15_League_Scout): reload the helper.
-import importlib  # noqa: E402
-V = importlib.reload(V)
+# Page/helper version skew after a redeploy is handled by dashboard_build_guard (app.py router).
 
 st.set_page_config(page_title="Portfolio | Wowza", page_icon="💼", layout="wide")
 

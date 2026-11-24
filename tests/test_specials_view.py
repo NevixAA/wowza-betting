@@ -129,3 +129,32 @@ def test_without_the_private_store_prices_stay_empty_and_the_page_says_why(monke
     monkeypatch.setattr(PRO, "_ro_token", lambda: "")
     frame, why = PRO.private_specials_log()
     assert frame is None and why == "read-only token not set"
+
+
+def test_wide_specials_log_is_not_fragmented(tmp_path, monkeypatch):
+    """pandas 3 read_csv returns one block per column; the ~200-column specials log then raised
+    'DataFrame is highly fragmented' on every assign (specials_view.upcoming, Specials page grid).
+    pro.specials() consolidates at the read, and upcoming() never inserts into a fragmented frame."""
+    import io
+    import warnings
+
+    import numpy as np
+    import pandas as pd
+
+    from dashboard_data import pro as PRO
+    from dashboard_data import specials_view as V
+
+    cols = {f"p_cs_{i}_{j}": np.random.rand(4) for i in range(7) for j in range(7)}
+    cols.update({f"x_{i}": np.random.rand(4) for i in range(150)})
+    cols.update({"row_id": range(4), "kickoff_utc": ["2099-01-01T12:00:00Z"] * 4, "league": "E0",
+                 "home_team": "A", "away_team": "B", "price_under15": 1.5})
+    text = pd.DataFrame(cols).to_csv(index=False)
+    monkeypatch.setattr(PRO, "read_csv", lambda _p, **k: pd.read_csv(io.StringIO(text), **k))
+    monkeypatch.setattr(PRO, "read_json", lambda _p: {})
+    with warnings.catch_warnings():
+        warnings.simplefilter("error", pd.errors.PerformanceWarning)
+        log = PRO.specials()["specials_log"]
+        assert len(log) == 4
+        log.assign(_ko=pd.to_datetime(log["kickoff_utc"], utc=True))          # the page's grid picker
+        raw = pd.read_csv(io.StringIO(text), low_memory=False)              # fragmented, straight from disk
+        assert len(V.upcoming(raw, pd.Timestamp("2026-11-23", tz="UTC"))) == 4

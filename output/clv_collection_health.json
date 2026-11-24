@@ -1,27 +1,27 @@
 {
-  "generated_at": "2026-11-23T03:58:23Z",
+  "generated_at": "2026-11-24T04:26:21Z",
   "close_rule": "strictly pre-kickoff, observed within 30 minutes",
   "shadow_all_time": {
-    "eligible": 1200,
-    "with_t30_close": 561,
-    "with_t10_close": 483,
-    "stale_close": 639,
+    "eligible": 1214,
+    "with_t30_close": 565,
+    "with_t10_close": 487,
+    "stale_close": 649,
     "no_close": 0,
-    "certified_t30_pct": 46.8,
-    "certified_t10_pct": 40.2,
+    "certified_t30_pct": 46.5,
+    "certified_t10_pct": 40.1,
     "median_close_minutes_certified": 1.2,
-    "median_last_pre_kickoff_minutes": 51.1,
+    "median_last_pre_kickoff_minutes": 54.1,
     "by_league": {
       "Argentina Primera Division": {
-        "eligible": 96,
-        "with_t30_close": 33,
-        "with_t10_close": 29,
-        "stale_close": 63,
+        "eligible": 99,
+        "with_t30_close": 34,
+        "with_t10_close": 30,
+        "stale_close": 65,
         "no_close": 0,
-        "certified_t30_pct": 34.4,
-        "certified_t10_pct": 30.2,
-        "median_close_minutes_certified": 0.8,
-        "median_last_pre_kickoff_minutes": 167.2
+        "certified_t30_pct": 34.3,
+        "certified_t10_pct": 30.3,
+        "median_close_minutes_certified": 0.9,
+        "median_last_pre_kickoff_minutes": 182.8
       },
       "Austrian Bundesliga": {
         "eligible": 36,
@@ -35,15 +35,15 @@
         "median_last_pre_kickoff_minutes": 46.0
       },
       "Brazil Serie A": {
-        "eligible": 77,
-        "with_t30_close": 39,
-        "with_t10_close": 31,
-        "stale_close": 38,
+        "eligible": 80,
+        "with_t30_close": 41,
+        "with_t10_close": 33,
+        "stale_close": 39,
         "no_close": 0,
-        "certified_t30_pct": 50.6,
-        "certified_t10_pct": 40.3,
+        "certified_t30_pct": 51.2,
+        "certified_t10_pct": 41.2,
         "median_close_minutes_certified": 1.5,
-        "median_last_pre_kickoff_minutes": 25.9
+        "median_last_pre_kickoff_minutes": 24.9
       },
       "Bundesliga 2": {
         "eligible": 54,
@@ -79,15 +79,15 @@
         "median_last_pre_kickoff_minutes": 28.0
       },
       "Denmark Superliga": {
-        "eligible": 35,
+        "eligible": 36,
         "with_t30_close": 13,
         "with_t10_close": 11,
-        "stale_close": 22,
+        "stale_close": 23,
         "no_close": 0,
-        "certified_t30_pct": 37.1,
-        "certified_t10_pct": 31.4,
+        "certified_t30_pct": 36.1,
+        "certified_t10_pct": 30.6,
         "median_close_minutes_certified": 1.6,
-        "median_last_pre_kickoff_minutes": 174.2
+        "median_last_pre_kickoff_minutes": 199.6
       },
       "Finland Veikkausliiga": {
         "eligible": 29,
@@ -123,15 +123,15 @@
         "median_last_pre_kickoff_minutes": 34.6
       },
       "La Liga 2": {
-        "eligible": 81,
+        "eligible": 82,
         "with_t30_close": 44,
         "with_t10_close": 32,
-        "stale_close": 37,
+        "stale_close": 38,
         "no_close": 0,
-        "certified_t30_pct": 54.3,
-        "certified_t10_pct": 39.5,
+        "certified_t30_pct": 53.7,
+        "certified_t10_pct": 39.0,
         "median_close_minutes_certified": 1.6,
-        "median_last_pre_kickoff_minutes": 20.1
+        "median_last_pre_kickoff_minutes": 20.5
       },
       "League One": {
         "eligible": 85,
@@ -156,26 +156,26 @@
         "median_last_pre_kickoff_minutes": 226.4
       },
       "Ligue 2": {
-        "eligible": 52,
+        "eligible": 54,
         "with_t30_close": 23,
         "with_t10_close": 19,
-        "stale_close": 29,
+        "stale_close": 31,
         "no_close": 0,
-        "certified_t30_pct": 44.2,
-        "certified_t10_pct": 36.5,
+        "certified_t30_pct": 42.6,
+        "certified_t10_pct": 35.2,
         "median_close_minutes_certified": 1.9,
-        "median_last_pre_kickoff_minutes": 162.3
+        "median_last_pre_kickoff_minutes": 174.3
       },
       "Mexico Liga MX": {
-        "eligible": 66,
+        "eligible": 67,
         "with_t30_close": 26,
         "with_t10_close": 23,
-        "stale_close": 40,
+        "stale_close": 41,
         "no_close": 0,
-        "certified_t30_pct": 39.4,
-        "certified_t10_pct": 34.8,
+        "certified_t30_pct": 38.8,
+        "certified_t10_pct": 34.3,
         "median_close_minutes_certified": 0.8,
-        "median_last_pre_kickoff_minutes": 154.0
+        "median_last_pre_kickoff_minutes": 154.9
       },
       "Norway Eliteserien": {
         "eligible": 48,
@@ -200,63 +200,169 @@
         "median_last_pre_kickoff_minutes": 1.9
       },
       "Sweden Allsvenskan": {
-        "eligible": 55,
+        "eligible": 57,
         "with_t30_close": 20,
         "with_t10_close": 15,
-        "stale_close": 35,
+        "stale_close": 37,
         "no_close": 0,
-        "certified_t30_pct": 36.4,
-        "certified_t10_pct": 27.3,
+        "certified_t30_pct": 35.1,
+        "certified_t10_pct": 26.3,
         "median_close_minutes_certified": 1.0,
-        "median_last_pre_kickoff_minutes": 126.3
+        "median_last_pre_kickoff_minutes": 135.0
       },
       "USA MLS": {
-        "eligible": 113,
-        "with_t30_close": 55,
-        "with_t10_close": 50,
+        "eligible": 114,
+        "with_t30_close": 56,
+        "with_t10_close": 51,
         "stale_close": 58,
         "no_close": 0,
-        "certified_t30_pct": 48.7,
-        "certified_t10_pct": 44.2,
+        "certified_t30_pct": 49.1,
+        "certified_t10_pct": 44.7,
         "median_close_minutes_certified": 1.2,
-        "median_last_pre_kickoff_minutes": 46.3
+        "median_last_pre_kickoff_minutes": 43.2
       }
     },
     "by_market": {
       "ou25": {
-        "eligible": 1200,
-        "with_t30_close": 561,
-        "with_t10_close": 483,
-        "stale_close": 639,
+        "eligible": 1214,
+        "with_t30_close": 565,
+        "with_t10_close": 487,
+        "stale_close": 649,
         "no_close": 0,
-        "certified_t30_pct": 46.8,
-        "certified_t10_pct": 40.2,
+        "certified_t30_pct": 46.5,
+        "certified_t10_pct": 40.1,
         "median_close_minutes_certified": 1.2,
-        "median_last_pre_kickoff_minutes": 51.1
+        "median_last_pre_kickoff_minutes": 54.1
       }
+    },
+    "by_kickoff_week": {
+      "2026-W40": {
+        "eligible": 8,
+        "with_t30_close": 1,
+        "with_t10_close": 0,
+        "stale_close": 7,
+        "no_close": 0,
+        "certified_t30_pct": 12.5,
+        "certified_t10_pct": 0.0,
+        "median_close_minutes_certified": 18.8,
+        "median_last_pre_kickoff_minutes": 308.0
+      },
+      "2026-W41": {
+        "eligible": 180,
+        "with_t30_close": 14,
+        "with_t10_close": 4,
+        "stale_close": 166,
+        "no_close": 0,
+        "certified_t30_pct": 7.8,
+        "certified_t10_pct": 2.2,
+        "median_close_minutes_certified": 17.0,
+        "median_last_pre_kickoff_minutes": 348.4
+      },
+      "2026-W42": {
+        "eligible": 219,
+        "with_t30_close": 17,
+        "with_t10_close": 4,
+        "stale_close": 202,
+        "no_close": 0,
+        "certified_t30_pct": 7.8,
+        "certified_t10_pct": 1.8,
+        "median_close_minutes_certified": 20.1,
+        "median_last_pre_kickoff_minutes": 309.2
+      },
+      "2026-W43": {
+        "eligible": 221,
+        "with_t30_close": 121,
+        "with_t10_close": 97,
+        "stale_close": 100,
+        "no_close": 0,
+        "certified_t30_pct": 54.8,
+        "certified_t10_pct": 43.9,
+        "median_close_minutes_certified": 1.4,
+        "median_last_pre_kickoff_minutes": 19.7
+      },
+      "2026-W44": {
+        "eligible": 209,
+        "with_t30_close": 141,
+        "with_t10_close": 134,
+        "stale_close": 68,
+        "no_close": 0,
+        "certified_t30_pct": 67.5,
+        "certified_t10_pct": 64.1,
+        "median_close_minutes_certified": 1.0,
+        "median_last_pre_kickoff_minutes": 1.7
+      },
+      "2026-W45": {
+        "eligible": 186,
+        "with_t30_close": 122,
+        "with_t10_close": 110,
+        "stale_close": 64,
+        "no_close": 0,
+        "certified_t30_pct": 65.6,
+        "certified_t10_pct": 59.1,
+        "median_close_minutes_certified": 1.1,
+        "median_last_pre_kickoff_minutes": 1.9
+      },
+      "2026-W46": {
+        "eligible": 33,
+        "with_t30_close": 23,
+        "with_t10_close": 22,
+        "stale_close": 10,
+        "no_close": 0,
+        "certified_t30_pct": 69.7,
+        "certified_t10_pct": 66.7,
+        "median_close_minutes_certified": 0.8,
+        "median_last_pre_kickoff_minutes": 0.8
+      },
+      "2026-W47": {
+        "eligible": 145,
+        "with_t30_close": 122,
+        "with_t10_close": 112,
+        "stale_close": 23,
+        "no_close": 0,
+        "certified_t30_pct": 84.1,
+        "certified_t10_pct": 77.2,
+        "median_close_minutes_certified": 0.9,
+        "median_last_pre_kickoff_minutes": 1.4
+      },
+      "2026-W48": {
+        "eligible": 13,
+        "with_t30_close": 4,
+        "with_t10_close": 4,
+        "stale_close": 9,
+        "no_close": 0,
+        "certified_t30_pct": 30.8,
+        "certified_t10_pct": 30.8,
+        "median_close_minutes_certified": 0.8,
+        "median_last_pre_kickoff_minutes": 570.5
+      }
+    },
+    "close_feed_identity": {
+      "CROSS_FEED_BET365_VS_ODDSAPI": 444,
+      "NO_CERTIFIED_CLOSE": 649,
+      "SAME_FEED_BOOK_UNRECORDED": 121
     }
   },
   "shadow_since_measure_from": {
-    "eligible": 736,
-    "with_t30_close": 525,
-    "with_t10_close": 475,
-    "stale_close": 211,
+    "eligible": 750,
+    "with_t30_close": 529,
+    "with_t10_close": 479,
+    "stale_close": 221,
     "no_close": 0,
-    "certified_t30_pct": 71.3,
-    "certified_t10_pct": 64.5,
-    "median_close_minutes_certified": 1.1,
+    "certified_t30_pct": 70.5,
+    "certified_t10_pct": 63.9,
+    "median_close_minutes_certified": 1.0,
     "median_last_pre_kickoff_minutes": 1.7,
     "by_league": {
       "Argentina Primera Division": {
-        "eligible": 57,
-        "with_t30_close": 28,
-        "with_t10_close": 26,
-        "stale_close": 29,
+        "eligible": 60,
+        "with_t30_close": 29,
+        "with_t10_close": 27,
+        "stale_close": 31,
         "no_close": 0,
-        "certified_t30_pct": 49.1,
-        "certified_t10_pct": 45.6,
+        "certified_t30_pct": 48.3,
+        "certified_t10_pct": 45.0,
         "median_close_minutes_certified": 0.6,
-        "median_last_pre_kickoff_minutes": 35.4
+        "median_last_pre_kickoff_minutes": 39.5
       },
       "Austrian Bundesliga": {
         "eligible": 24,
@@ -270,13 +376,13 @@
         "median_last_pre_kickoff_minutes": 15.0
       },
       "Brazil Serie A": {
-        "eligible": 47,
-        "with_t30_close": 35,
-        "with_t10_close": 30,
-        "stale_close": 12,
+        "eligible": 50,
+        "with_t30_close": 37,
+        "with_t10_close": 32,
+        "stale_close": 13,
         "no_close": 0,
-        "certified_t30_pct": 74.5,
-        "certified_t10_pct": 63.8,
+        "certified_t30_pct": 74.0,
+        "certified_t10_pct": 64.0,
         "median_close_minutes_certified": 1.4,
         "median_last_pre_kickoff_minutes": 1.7
       },
@@ -314,15 +420,15 @@
         "median_last_pre_kickoff_minutes": 1.0
       },
       "Denmark Superliga": {
-        "eligible": 23,
+        "eligible": 24,
         "with_t30_close": 13,
         "with_t10_close": 11,
-        "stale_close": 10,
+        "stale_close": 11,
         "no_close": 0,
-        "certified_t30_pct": 56.5,
-        "certified_t10_pct": 47.8,
+        "certified_t30_pct": 54.2,
+        "certified_t10_pct": 45.8,
         "median_close_minutes_certified": 1.6,
-        "median_last_pre_kickoff_minutes": 17.2
+        "median_last_pre_kickoff_minutes": 22.4
       },
       "Finland Veikkausliiga": {
         "eligible": 13,
@@ -358,13 +464,13 @@
         "median_last_pre_kickoff_minutes": 3.4
       },
       "La Liga 2": {
-        "eligible": 53,
+        "eligible": 54,
         "with_t30_close": 42,
         "with_t10_close": 32,
-        "stale_close": 11,
+        "stale_close": 12,
         "no_close": 0,
-        "certified_t30_pct": 79.2,
-        "certified_t10_pct": 60.4,
+        "certified_t30_pct": 77.8,
+        "certified_t10_pct": 59.3,
         "median_close_minutes_certified": 1.5,
         "median_last_pre_kickoff_minutes": 2.0
       },
@@ -391,24 +497,24 @@
         "median_last_pre_kickoff_minutes": 0.8
       },
       "Ligue 2": {
-        "eligible": 34,
+        "eligible": 36,
         "with_t30_close": 19,
         "with_t10_close": 19,
-        "stale_close": 15,
-        "no_close": 0,
-        "certified_t30_pct": 55.9,
-        "certified_t10_pct": 55.9,
-        "median_close_minutes_certified": 1.4,
-        "median_last_pre_kickoff_minutes": 2.2
-      },
-      "Mexico Liga MX": {
-        "eligible": 39,
-        "with_t30_close": 22,
-        "with_t10_close": 22,
         "stale_close": 17,
         "no_close": 0,
-        "certified_t30_pct": 56.4,
-        "certified_t10_pct": 56.4,
+        "certified_t30_pct": 52.8,
+        "certified_t10_pct": 52.8,
+        "median_close_minutes_certified": 1.4,
+        "median_last_pre_kickoff_minutes": 2.5
+      },
+      "Mexico Liga MX": {
+        "eligible": 40,
+        "with_t30_close": 22,
+        "with_t10_close": 22,
+        "stale_close": 18,
+        "no_close": 0,
+        "certified_t30_pct": 55.0,
+        "certified_t10_pct": 55.0,
         "median_close_minutes_certified": 0.6,
         "median_last_pre_kickoff_minutes": 6.2
       },
@@ -435,142 +541,215 @@
         "median_last_pre_kickoff_minutes": 1.6
       },
       "Sweden Allsvenskan": {
-        "eligible": 39,
+        "eligible": 41,
         "with_t30_close": 20,
         "with_t10_close": 15,
-        "stale_close": 19,
+        "stale_close": 21,
         "no_close": 0,
-        "certified_t30_pct": 51.3,
-        "certified_t10_pct": 38.5,
+        "certified_t30_pct": 48.8,
+        "certified_t10_pct": 36.6,
         "median_close_minutes_certified": 1.0,
-        "median_last_pre_kickoff_minutes": 28.8
+        "median_last_pre_kickoff_minutes": 30.9
       },
       "USA MLS": {
-        "eligible": 66,
-        "with_t30_close": 54,
-        "with_t10_close": 50,
+        "eligible": 67,
+        "with_t30_close": 55,
+        "with_t10_close": 51,
         "stale_close": 12,
         "no_close": 0,
-        "certified_t30_pct": 81.8,
-        "certified_t10_pct": 75.8,
+        "certified_t30_pct": 82.1,
+        "certified_t10_pct": 76.1,
         "median_close_minutes_certified": 1.2,
         "median_last_pre_kickoff_minutes": 1.4
       }
     },
     "by_market": {
       "ou25": {
-        "eligible": 736,
-        "with_t30_close": 525,
-        "with_t10_close": 475,
-        "stale_close": 211,
+        "eligible": 750,
+        "with_t30_close": 529,
+        "with_t10_close": 479,
+        "stale_close": 221,
         "no_close": 0,
-        "certified_t30_pct": 71.3,
-        "certified_t10_pct": 64.5,
-        "median_close_minutes_certified": 1.1,
+        "certified_t30_pct": 70.5,
+        "certified_t10_pct": 63.9,
+        "median_close_minutes_certified": 1.0,
         "median_last_pre_kickoff_minutes": 1.7
       }
+    },
+    "by_kickoff_week": {
+      "2026-W43": {
+        "eligible": 164,
+        "with_t30_close": 117,
+        "with_t10_close": 97,
+        "stale_close": 47,
+        "no_close": 0,
+        "certified_t30_pct": 71.3,
+        "certified_t10_pct": 59.1,
+        "median_close_minutes_certified": 1.4,
+        "median_last_pre_kickoff_minutes": 1.8
+      },
+      "2026-W44": {
+        "eligible": 209,
+        "with_t30_close": 141,
+        "with_t10_close": 134,
+        "stale_close": 68,
+        "no_close": 0,
+        "certified_t30_pct": 67.5,
+        "certified_t10_pct": 64.1,
+        "median_close_minutes_certified": 1.0,
+        "median_last_pre_kickoff_minutes": 1.7
+      },
+      "2026-W45": {
+        "eligible": 186,
+        "with_t30_close": 122,
+        "with_t10_close": 110,
+        "stale_close": 64,
+        "no_close": 0,
+        "certified_t30_pct": 65.6,
+        "certified_t10_pct": 59.1,
+        "median_close_minutes_certified": 1.1,
+        "median_last_pre_kickoff_minutes": 1.9
+      },
+      "2026-W46": {
+        "eligible": 33,
+        "with_t30_close": 23,
+        "with_t10_close": 22,
+        "stale_close": 10,
+        "no_close": 0,
+        "certified_t30_pct": 69.7,
+        "certified_t10_pct": 66.7,
+        "median_close_minutes_certified": 0.8,
+        "median_last_pre_kickoff_minutes": 0.8
+      },
+      "2026-W47": {
+        "eligible": 145,
+        "with_t30_close": 122,
+        "with_t10_close": 112,
+        "stale_close": 23,
+        "no_close": 0,
+        "certified_t30_pct": 84.1,
+        "certified_t10_pct": 77.2,
+        "median_close_minutes_certified": 0.9,
+        "median_last_pre_kickoff_minutes": 1.4
+      },
+      "2026-W48": {
+        "eligible": 13,
+        "with_t30_close": 4,
+        "with_t10_close": 4,
+        "stale_close": 9,
+        "no_close": 0,
+        "certified_t30_pct": 30.8,
+        "certified_t10_pct": 30.8,
+        "median_close_minutes_certified": 0.8,
+        "median_last_pre_kickoff_minutes": 570.5
+      }
+    },
+    "close_feed_identity": {
+      "CROSS_FEED_BET365_VS_ODDSAPI": 444,
+      "NO_CERTIFIED_CLOSE": 221,
+      "SAME_FEED_BOOK_UNRECORDED": 85
     }
   },
   "measure_from": "2026-10-23T00:00:00Z",
   "collection": {
     "window_days": 7.0,
-    "from": "2026-11-16 03:58:23.172088+00:00",
-    "fixture_markets": 1838,
-    "fixtures": 230,
-    "t30_pct": 89.9,
-    "t10_pct": 84.7,
-    "t60_pct": 91.1,
+    "from": "2026-11-17 04:26:21.463413+00:00",
+    "fixture_markets": 1918,
+    "fixtures": 240,
+    "t30_pct": 89.0,
+    "t10_pct": 84.0,
+    "t60_pct": 90.2,
     "median_last_obs_minutes": 0.9,
     "including_incidents": {
-      "fixture_markets": 1838,
-      "fixtures": 230,
-      "t30_pct": 89.9,
-      "t10_pct": 84.7,
-      "t60_pct": 91.1,
+      "fixture_markets": 1918,
+      "fixtures": 240,
+      "t30_pct": 89.0,
+      "t10_pct": 84.0,
+      "t60_pct": 90.2,
       "median_last_obs_minutes": 0.9
     },
     "excluded_incidents": [],
     "by_track": {
       "new_format": {
-        "fixture_markets": 719,
-        "fixtures": 90,
-        "t30_pct": 83.2,
-        "t10_pct": 75.5,
-        "t60_pct": 86.4,
-        "median_last_obs_minutes": 1.4
+        "fixture_markets": 783,
+        "fixtures": 98,
+        "t30_pct": 80.3,
+        "t10_pct": 73.3,
+        "t60_pct": 83.3,
+        "median_last_obs_minutes": 1.5
       },
       "standard": {
-        "fixture_markets": 1119,
-        "fixtures": 140,
-        "t30_pct": 94.2,
-        "t10_pct": 90.6,
-        "t60_pct": 94.2,
+        "fixture_markets": 1135,
+        "fixtures": 142,
+        "t30_pct": 95.0,
+        "t10_pct": 91.5,
+        "t60_pct": 95.0,
         "median_last_obs_minutes": 0.8
       }
     },
     "by_market": {
       "btts_no": {
-        "fixture_markets": 230,
-        "fixtures": 230,
-        "t30_pct": 91.3,
-        "t10_pct": 86.1,
-        "t60_pct": 92.6,
+        "fixture_markets": 240,
+        "fixtures": 240,
+        "t30_pct": 90.4,
+        "t10_pct": 85.4,
+        "t60_pct": 91.7,
         "median_last_obs_minutes": 0.9
       },
       "btts_yes": {
-        "fixture_markets": 230,
-        "fixtures": 230,
-        "t30_pct": 91.3,
-        "t10_pct": 86.1,
-        "t60_pct": 92.6,
+        "fixture_markets": 240,
+        "fixtures": 240,
+        "t30_pct": 90.4,
+        "t10_pct": 85.4,
+        "t60_pct": 91.7,
         "median_last_obs_minutes": 0.9
       },
       "over15": {
-        "fixture_markets": 230,
-        "fixtures": 230,
-        "t30_pct": 91.3,
-        "t10_pct": 86.1,
-        "t60_pct": 92.6,
+        "fixture_markets": 240,
+        "fixtures": 240,
+        "t30_pct": 90.4,
+        "t10_pct": 85.4,
+        "t60_pct": 91.7,
         "median_last_obs_minutes": 0.9
       },
       "over25": {
-        "fixture_markets": 228,
-        "fixtures": 228,
-        "t30_pct": 86.8,
-        "t10_pct": 82.5,
-        "t60_pct": 87.7,
+        "fixture_markets": 238,
+        "fixtures": 238,
+        "t30_pct": 86.1,
+        "t10_pct": 81.9,
+        "t60_pct": 87.0,
         "median_last_obs_minutes": 0.9
       },
       "over35": {
-        "fixture_markets": 230,
-        "fixtures": 230,
-        "t30_pct": 91.3,
-        "t10_pct": 86.1,
-        "t60_pct": 92.6,
+        "fixture_markets": 240,
+        "fixtures": 240,
+        "t30_pct": 90.4,
+        "t10_pct": 85.4,
+        "t60_pct": 91.7,
         "median_last_obs_minutes": 0.9
       },
       "under15": {
-        "fixture_markets": 230,
-        "fixtures": 230,
-        "t30_pct": 91.3,
-        "t10_pct": 86.1,
-        "t60_pct": 92.6,
+        "fixture_markets": 240,
+        "fixtures": 240,
+        "t30_pct": 90.4,
+        "t10_pct": 85.4,
+        "t60_pct": 91.7,
         "median_last_obs_minutes": 0.9
       },
       "under25": {
-        "fixture_markets": 230,
-        "fixtures": 230,
-        "t30_pct": 84.3,
-        "t10_pct": 78.7,
-        "t60_pct": 85.7,
+        "fixture_markets": 240,
+        "fixtures": 240,
+        "t30_pct": 83.3,
+        "t10_pct": 77.9,
+        "t60_pct": 84.6,
         "median_last_obs_minutes": 1.0
       },
       "under35": {
-        "fixture_markets": 230,
-        "fixtures": 230,
-        "t30_pct": 91.3,
-        "t10_pct": 86.1,
-        "t60_pct": 92.6,
+        "fixture_markets": 240,
+        "fixtures": 240,
+        "t30_pct": 90.4,
+        "t10_pct": 85.4,
+        "t60_pct": 91.7,
         "median_last_obs_minutes": 0.9
       }
     },
@@ -600,11 +779,11 @@
         "median_last_obs_minutes": 0.4
       },
       "Brazil Serie A": {
-        "fixture_markets": 120,
-        "fixtures": 15,
-        "t30_pct": 91.7,
-        "t10_pct": 91.7,
-        "t60_pct": 91.7,
+        "fixture_markets": 144,
+        "fixtures": 18,
+        "t30_pct": 92.4,
+        "t10_pct": 92.4,
+        "t60_pct": 92.4,
         "median_last_obs_minutes": 1.4
       },
       "Bundesliga 2": {
@@ -624,12 +803,12 @@
         "median_last_obs_minutes": 0.8
       },
       "Denmark Superliga": {
-        "fixture_markets": 40,
-        "fixtures": 5,
-        "t30_pct": 60.0,
-        "t10_pct": 60.0,
-        "t60_pct": 77.5,
-        "median_last_obs_minutes": 1.5
+        "fixture_markets": 48,
+        "fixtures": 6,
+        "t30_pct": 50.0,
+        "t10_pct": 50.0,
+        "t60_pct": 64.6,
+        "median_last_obs_minutes": 21.9
       },
       "Dutch Eredivisie": {
         "fixture_markets": 72,
@@ -640,12 +819,12 @@
         "median_last_obs_minutes": 0.6
       },
       "Greek Super League": {
-        "fixture_markets": 48,
-        "fixtures": 6,
-        "t30_pct": 83.3,
-        "t10_pct": 66.7,
-        "t60_pct": 83.3,
-        "median_last_obs_minutes": 1.6
+        "fixture_markets": 56,
+        "fixtures": 7,
+        "t30_pct": 71.4,
+        "t10_pct": 57.1,
+        "t60_pct": 71.4,
+        "median_last_obs_minutes": 1.7
       },
       "Japan J-League": {
         "fixture_markets": 80,
@@ -690,9 +869,9 @@
       "Ligue 2": {
         "fixture_markets": 72,
         "fixtures": 9,
-        "t30_pct": 77.8,
-        "t10_pct": 77.8,
-        "t60_pct": 77.8,
+        "t30_pct": 100.0,
+        "t10_pct": 100.0,
+        "t60_pct": 100.0,
         "median_last_obs_minutes": 1.9
       },
       "Mexico Liga MX": {
@@ -720,12 +899,12 @@
         "median_last_obs_minutes": 18.4
       },
       "Romanian Superliga": {
-        "fixture_markets": 56,
-        "fixtures": 7,
-        "t30_pct": 67.9,
-        "t10_pct": 67.9,
-        "t60_pct": 67.9,
-        "median_last_obs_minutes": 1.0
+        "fixture_markets": 64,
+        "fixtures": 8,
+        "t30_pct": 59.4,
+        "t10_pct": 59.4,
+        "t60_pct": 59.4,
+        "median_last_obs_minutes": 1.5
       },
       "Saudi Pro League": {
         "fixture_markets": 8,
@@ -776,28 +955,1886 @@
         "median_last_obs_minutes": 0.9
       },
       "Sweden Allsvenskan": {
-        "fixture_markets": 56,
-        "fixtures": 7,
-        "t30_pct": 98.2,
-        "t10_pct": 83.9,
-        "t60_pct": 98.2,
-        "median_last_obs_minutes": 1.0
+        "fixture_markets": 72,
+        "fixtures": 9,
+        "t30_pct": 76.4,
+        "t10_pct": 65.3,
+        "t60_pct": 76.4,
+        "median_last_obs_minutes": 1.5
       },
       "Turkish Super Lig": {
-        "fixture_markets": 64,
-        "fixtures": 8,
+        "fixture_markets": 72,
+        "fixtures": 9,
         "t30_pct": 100.0,
         "t10_pct": 100.0,
         "t60_pct": 100.0,
         "median_last_obs_minutes": 1.4
       },
       "USA MLS": {
-        "fixture_markets": 64,
-        "fixtures": 8,
+        "fixture_markets": 72,
+        "fixtures": 9,
         "t30_pct": 100.0,
         "t10_pct": 100.0,
         "t60_pct": 100.0,
-        "median_last_obs_minutes": 1.3
+        "median_last_obs_minutes": 1.6
+      }
+    },
+    "ladder": {
+      "fixture_markets": 1918,
+      "T-6h": 1830,
+      "T-3h": 1772,
+      "T-1h": 1730,
+      "T-30m": 1707,
+      "T-10m": 1612
+    },
+    "ladder_by_league_market": {
+      "Argentina Primera Division": {
+        "btts_no": {
+          "fixture_markets": 8,
+          "T-6h": 4,
+          "T-3h": 3,
+          "T-1h": 3,
+          "T-30m": 3,
+          "T-10m": 3
+        },
+        "btts_yes": {
+          "fixture_markets": 8,
+          "T-6h": 4,
+          "T-3h": 3,
+          "T-1h": 3,
+          "T-30m": 3,
+          "T-10m": 3
+        },
+        "over15": {
+          "fixture_markets": 8,
+          "T-6h": 4,
+          "T-3h": 3,
+          "T-1h": 3,
+          "T-30m": 3,
+          "T-10m": 3
+        },
+        "over25": {
+          "fixture_markets": 8,
+          "T-6h": 4,
+          "T-3h": 3,
+          "T-1h": 3,
+          "T-30m": 3,
+          "T-10m": 3
+        },
+        "over35": {
+          "fixture_markets": 8,
+          "T-6h": 4,
+          "T-3h": 3,
+          "T-1h": 3,
+          "T-30m": 3,
+          "T-10m": 3
+        },
+        "under15": {
+          "fixture_markets": 8,
+          "T-6h": 4,
+          "T-3h": 3,
+          "T-1h": 3,
+          "T-30m": 3,
+          "T-10m": 3
+        },
+        "under25": {
+          "fixture_markets": 8,
+          "T-6h": 4,
+          "T-3h": 3,
+          "T-1h": 2,
+          "T-30m": 2,
+          "T-10m": 2
+        },
+        "under35": {
+          "fixture_markets": 8,
+          "T-6h": 4,
+          "T-3h": 3,
+          "T-1h": 3,
+          "T-30m": 3,
+          "T-10m": 3
+        }
+      },
+      "Austrian Bundesliga": {
+        "btts_no": {
+          "fixture_markets": 6,
+          "T-6h": 6,
+          "T-3h": 5,
+          "T-1h": 5,
+          "T-30m": 5,
+          "T-10m": 4
+        },
+        "btts_yes": {
+          "fixture_markets": 6,
+          "T-6h": 6,
+          "T-3h": 5,
+          "T-1h": 5,
+          "T-30m": 5,
+          "T-10m": 4
+        },
+        "over15": {
+          "fixture_markets": 6,
+          "T-6h": 6,
+          "T-3h": 5,
+          "T-1h": 5,
+          "T-30m": 5,
+          "T-10m": 4
+        },
+        "over25": {
+          "fixture_markets": 5,
+          "T-6h": 4,
+          "T-3h": 3,
+          "T-1h": 3,
+          "T-30m": 3,
+          "T-10m": 3
+        },
+        "over35": {
+          "fixture_markets": 6,
+          "T-6h": 6,
+          "T-3h": 5,
+          "T-1h": 5,
+          "T-30m": 5,
+          "T-10m": 4
+        },
+        "under15": {
+          "fixture_markets": 6,
+          "T-6h": 6,
+          "T-3h": 5,
+          "T-1h": 5,
+          "T-30m": 5,
+          "T-10m": 4
+        },
+        "under25": {
+          "fixture_markets": 6,
+          "T-6h": 6,
+          "T-3h": 5,
+          "T-1h": 5,
+          "T-30m": 5,
+          "T-10m": 4
+        },
+        "under35": {
+          "fixture_markets": 6,
+          "T-6h": 6,
+          "T-3h": 5,
+          "T-1h": 5,
+          "T-30m": 5,
+          "T-10m": 4
+        }
+      },
+      "Belgian First Division A": {
+        "btts_no": {
+          "fixture_markets": 9,
+          "T-6h": 9,
+          "T-3h": 9,
+          "T-1h": 9,
+          "T-30m": 9,
+          "T-10m": 8
+        },
+        "btts_yes": {
+          "fixture_markets": 9,
+          "T-6h": 9,
+          "T-3h": 9,
+          "T-1h": 9,
+          "T-30m": 9,
+          "T-10m": 8
+        },
+        "over15": {
+          "fixture_markets": 9,
+          "T-6h": 9,
+          "T-3h": 9,
+          "T-1h": 9,
+          "T-30m": 9,
+          "T-10m": 8
+        },
+        "over25": {
+          "fixture_markets": 9,
+          "T-6h": 9,
+          "T-3h": 9,
+          "T-1h": 9,
+          "T-30m": 9,
+          "T-10m": 8
+        },
+        "over35": {
+          "fixture_markets": 9,
+          "T-6h": 9,
+          "T-3h": 9,
+          "T-1h": 9,
+          "T-30m": 9,
+          "T-10m": 8
+        },
+        "under15": {
+          "fixture_markets": 9,
+          "T-6h": 9,
+          "T-3h": 9,
+          "T-1h": 9,
+          "T-30m": 9,
+          "T-10m": 8
+        },
+        "under25": {
+          "fixture_markets": 9,
+          "T-6h": 9,
+          "T-3h": 9,
+          "T-1h": 9,
+          "T-30m": 9,
+          "T-10m": 8
+        },
+        "under35": {
+          "fixture_markets": 9,
+          "T-6h": 9,
+          "T-3h": 9,
+          "T-1h": 9,
+          "T-30m": 9,
+          "T-10m": 8
+        }
+      },
+      "Brazil Serie A": {
+        "btts_no": {
+          "fixture_markets": 18,
+          "T-6h": 18,
+          "T-3h": 17,
+          "T-1h": 17,
+          "T-30m": 17,
+          "T-10m": 17
+        },
+        "btts_yes": {
+          "fixture_markets": 18,
+          "T-6h": 18,
+          "T-3h": 17,
+          "T-1h": 17,
+          "T-30m": 17,
+          "T-10m": 17
+        },
+        "over15": {
+          "fixture_markets": 18,
+          "T-6h": 18,
+          "T-3h": 17,
+          "T-1h": 17,
+          "T-30m": 17,
+          "T-10m": 17
+        },
+        "over25": {
+          "fixture_markets": 18,
+          "T-6h": 18,
+          "T-3h": 17,
+          "T-1h": 17,
+          "T-30m": 17,
+          "T-10m": 17
+        },
+        "over35": {
+          "fixture_markets": 18,
+          "T-6h": 18,
+          "T-3h": 17,
+          "T-1h": 17,
+          "T-30m": 17,
+          "T-10m": 17
+        },
+        "under15": {
+          "fixture_markets": 18,
+          "T-6h": 18,
+          "T-3h": 17,
+          "T-1h": 17,
+          "T-30m": 17,
+          "T-10m": 17
+        },
+        "under25": {
+          "fixture_markets": 18,
+          "T-6h": 16,
+          "T-3h": 14,
+          "T-1h": 14,
+          "T-30m": 14,
+          "T-10m": 14
+        },
+        "under35": {
+          "fixture_markets": 18,
+          "T-6h": 18,
+          "T-3h": 17,
+          "T-1h": 17,
+          "T-30m": 17,
+          "T-10m": 17
+        }
+      },
+      "Bundesliga 2": {
+        "btts_no": {
+          "fixture_markets": 9,
+          "T-6h": 9,
+          "T-3h": 7,
+          "T-1h": 7,
+          "T-30m": 7,
+          "T-10m": 6
+        },
+        "btts_yes": {
+          "fixture_markets": 9,
+          "T-6h": 9,
+          "T-3h": 7,
+          "T-1h": 7,
+          "T-30m": 7,
+          "T-10m": 6
+        },
+        "over15": {
+          "fixture_markets": 9,
+          "T-6h": 9,
+          "T-3h": 7,
+          "T-1h": 7,
+          "T-30m": 7,
+          "T-10m": 6
+        },
+        "over25": {
+          "fixture_markets": 9,
+          "T-6h": 8,
+          "T-3h": 7,
+          "T-1h": 7,
+          "T-30m": 7,
+          "T-10m": 6
+        },
+        "over35": {
+          "fixture_markets": 9,
+          "T-6h": 9,
+          "T-3h": 7,
+          "T-1h": 7,
+          "T-30m": 7,
+          "T-10m": 6
+        },
+        "under15": {
+          "fixture_markets": 9,
+          "T-6h": 9,
+          "T-3h": 7,
+          "T-1h": 7,
+          "T-30m": 7,
+          "T-10m": 6
+        },
+        "under25": {
+          "fixture_markets": 9,
+          "T-6h": 8,
+          "T-3h": 7,
+          "T-1h": 7,
+          "T-30m": 7,
+          "T-10m": 6
+        },
+        "under35": {
+          "fixture_markets": 9,
+          "T-6h": 9,
+          "T-3h": 7,
+          "T-1h": 7,
+          "T-30m": 7,
+          "T-10m": 6
+        }
+      },
+      "Championship": {
+        "btts_no": {
+          "fixture_markets": 12,
+          "T-6h": 12,
+          "T-3h": 12,
+          "T-1h": 12,
+          "T-30m": 12,
+          "T-10m": 12
+        },
+        "btts_yes": {
+          "fixture_markets": 12,
+          "T-6h": 12,
+          "T-3h": 12,
+          "T-1h": 12,
+          "T-30m": 12,
+          "T-10m": 12
+        },
+        "over15": {
+          "fixture_markets": 12,
+          "T-6h": 12,
+          "T-3h": 12,
+          "T-1h": 12,
+          "T-30m": 12,
+          "T-10m": 12
+        },
+        "over25": {
+          "fixture_markets": 12,
+          "T-6h": 11,
+          "T-3h": 11,
+          "T-1h": 11,
+          "T-30m": 11,
+          "T-10m": 11
+        },
+        "over35": {
+          "fixture_markets": 12,
+          "T-6h": 12,
+          "T-3h": 12,
+          "T-1h": 12,
+          "T-30m": 12,
+          "T-10m": 12
+        },
+        "under15": {
+          "fixture_markets": 12,
+          "T-6h": 12,
+          "T-3h": 12,
+          "T-1h": 12,
+          "T-30m": 12,
+          "T-10m": 12
+        },
+        "under25": {
+          "fixture_markets": 12,
+          "T-6h": 11,
+          "T-3h": 11,
+          "T-1h": 11,
+          "T-30m": 11,
+          "T-10m": 11
+        },
+        "under35": {
+          "fixture_markets": 12,
+          "T-6h": 12,
+          "T-3h": 12,
+          "T-1h": 12,
+          "T-30m": 12,
+          "T-10m": 12
+        }
+      },
+      "Denmark Superliga": {
+        "btts_no": {
+          "fixture_markets": 6,
+          "T-6h": 5,
+          "T-3h": 5,
+          "T-1h": 4,
+          "T-30m": 3,
+          "T-10m": 3
+        },
+        "btts_yes": {
+          "fixture_markets": 6,
+          "T-6h": 5,
+          "T-3h": 5,
+          "T-1h": 4,
+          "T-30m": 3,
+          "T-10m": 3
+        },
+        "over15": {
+          "fixture_markets": 6,
+          "T-6h": 5,
+          "T-3h": 5,
+          "T-1h": 4,
+          "T-30m": 3,
+          "T-10m": 3
+        },
+        "over25": {
+          "fixture_markets": 6,
+          "T-6h": 4,
+          "T-3h": 4,
+          "T-1h": 3,
+          "T-30m": 3,
+          "T-10m": 3
+        },
+        "over35": {
+          "fixture_markets": 6,
+          "T-6h": 5,
+          "T-3h": 5,
+          "T-1h": 4,
+          "T-30m": 3,
+          "T-10m": 3
+        },
+        "under15": {
+          "fixture_markets": 6,
+          "T-6h": 5,
+          "T-3h": 5,
+          "T-1h": 4,
+          "T-30m": 3,
+          "T-10m": 3
+        },
+        "under25": {
+          "fixture_markets": 6,
+          "T-6h": 5,
+          "T-3h": 5,
+          "T-1h": 4,
+          "T-30m": 3,
+          "T-10m": 3
+        },
+        "under35": {
+          "fixture_markets": 6,
+          "T-6h": 5,
+          "T-3h": 5,
+          "T-1h": 4,
+          "T-30m": 3,
+          "T-10m": 3
+        }
+      },
+      "Dutch Eredivisie": {
+        "btts_no": {
+          "fixture_markets": 9,
+          "T-6h": 9,
+          "T-3h": 9,
+          "T-1h": 9,
+          "T-30m": 9,
+          "T-10m": 9
+        },
+        "btts_yes": {
+          "fixture_markets": 9,
+          "T-6h": 9,
+          "T-3h": 9,
+          "T-1h": 9,
+          "T-30m": 9,
+          "T-10m": 9
+        },
+        "over15": {
+          "fixture_markets": 9,
+          "T-6h": 9,
+          "T-3h": 9,
+          "T-1h": 9,
+          "T-30m": 9,
+          "T-10m": 9
+        },
+        "over25": {
+          "fixture_markets": 9,
+          "T-6h": 9,
+          "T-3h": 9,
+          "T-1h": 8,
+          "T-30m": 8,
+          "T-10m": 8
+        },
+        "over35": {
+          "fixture_markets": 9,
+          "T-6h": 9,
+          "T-3h": 9,
+          "T-1h": 9,
+          "T-30m": 9,
+          "T-10m": 9
+        },
+        "under15": {
+          "fixture_markets": 9,
+          "T-6h": 9,
+          "T-3h": 9,
+          "T-1h": 9,
+          "T-30m": 9,
+          "T-10m": 9
+        },
+        "under25": {
+          "fixture_markets": 9,
+          "T-6h": 9,
+          "T-3h": 9,
+          "T-1h": 9,
+          "T-30m": 9,
+          "T-10m": 9
+        },
+        "under35": {
+          "fixture_markets": 9,
+          "T-6h": 9,
+          "T-3h": 9,
+          "T-1h": 9,
+          "T-30m": 9,
+          "T-10m": 9
+        }
+      },
+      "Greek Super League": {
+        "btts_no": {
+          "fixture_markets": 7,
+          "T-6h": 6,
+          "T-3h": 5,
+          "T-1h": 5,
+          "T-30m": 5,
+          "T-10m": 4
+        },
+        "btts_yes": {
+          "fixture_markets": 7,
+          "T-6h": 6,
+          "T-3h": 5,
+          "T-1h": 5,
+          "T-30m": 5,
+          "T-10m": 4
+        },
+        "over15": {
+          "fixture_markets": 7,
+          "T-6h": 6,
+          "T-3h": 5,
+          "T-1h": 5,
+          "T-30m": 5,
+          "T-10m": 4
+        },
+        "over25": {
+          "fixture_markets": 7,
+          "T-6h": 6,
+          "T-3h": 5,
+          "T-1h": 5,
+          "T-30m": 5,
+          "T-10m": 4
+        },
+        "over35": {
+          "fixture_markets": 7,
+          "T-6h": 6,
+          "T-3h": 5,
+          "T-1h": 5,
+          "T-30m": 5,
+          "T-10m": 4
+        },
+        "under15": {
+          "fixture_markets": 7,
+          "T-6h": 6,
+          "T-3h": 5,
+          "T-1h": 5,
+          "T-30m": 5,
+          "T-10m": 4
+        },
+        "under25": {
+          "fixture_markets": 7,
+          "T-6h": 6,
+          "T-3h": 5,
+          "T-1h": 5,
+          "T-30m": 5,
+          "T-10m": 4
+        },
+        "under35": {
+          "fixture_markets": 7,
+          "T-6h": 6,
+          "T-3h": 5,
+          "T-1h": 5,
+          "T-30m": 5,
+          "T-10m": 4
+        }
+      },
+      "Japan J-League": {
+        "btts_no": {
+          "fixture_markets": 10,
+          "T-6h": 10,
+          "T-3h": 10,
+          "T-1h": 10,
+          "T-30m": 10,
+          "T-10m": 10
+        },
+        "btts_yes": {
+          "fixture_markets": 10,
+          "T-6h": 10,
+          "T-3h": 10,
+          "T-1h": 10,
+          "T-30m": 10,
+          "T-10m": 10
+        },
+        "over15": {
+          "fixture_markets": 10,
+          "T-6h": 10,
+          "T-3h": 10,
+          "T-1h": 10,
+          "T-30m": 10,
+          "T-10m": 10
+        },
+        "over25": {
+          "fixture_markets": 10,
+          "T-6h": 10,
+          "T-3h": 10,
+          "T-1h": 10,
+          "T-30m": 10,
+          "T-10m": 10
+        },
+        "over35": {
+          "fixture_markets": 10,
+          "T-6h": 10,
+          "T-3h": 10,
+          "T-1h": 10,
+          "T-30m": 10,
+          "T-10m": 10
+        },
+        "under15": {
+          "fixture_markets": 10,
+          "T-6h": 10,
+          "T-3h": 10,
+          "T-1h": 10,
+          "T-30m": 10,
+          "T-10m": 10
+        },
+        "under25": {
+          "fixture_markets": 10,
+          "T-6h": 10,
+          "T-3h": 10,
+          "T-1h": 9,
+          "T-30m": 9,
+          "T-10m": 9
+        },
+        "under35": {
+          "fixture_markets": 10,
+          "T-6h": 10,
+          "T-3h": 10,
+          "T-1h": 10,
+          "T-30m": 10,
+          "T-10m": 10
+        }
+      },
+      "K-League 1": {
+        "btts_no": {
+          "fixture_markets": 6,
+          "T-6h": 6,
+          "T-3h": 6,
+          "T-1h": 6,
+          "T-30m": 6,
+          "T-10m": 6
+        },
+        "btts_yes": {
+          "fixture_markets": 6,
+          "T-6h": 6,
+          "T-3h": 6,
+          "T-1h": 6,
+          "T-30m": 6,
+          "T-10m": 6
+        },
+        "over15": {
+          "fixture_markets": 6,
+          "T-6h": 6,
+          "T-3h": 6,
+          "T-1h": 6,
+          "T-30m": 6,
+          "T-10m": 6
+        },
+        "over25": {
+          "fixture_markets": 6,
+          "T-6h": 6,
+          "T-3h": 6,
+          "T-1h": 6,
+          "T-30m": 6,
+          "T-10m": 6
+        },
+        "over35": {
+          "fixture_markets": 6,
+          "T-6h": 6,
+          "T-3h": 6,
+          "T-1h": 6,
+          "T-30m": 6,
+          "T-10m": 6
+        },
+        "under15": {
+          "fixture_markets": 6,
+          "T-6h": 6,
+          "T-3h": 6,
+          "T-1h": 6,
+          "T-30m": 6,
+          "T-10m": 6
+        },
+        "under25": {
+          "fixture_markets": 6,
+          "T-6h": 6,
+          "T-3h": 6,
+          "T-1h": 6,
+          "T-30m": 6,
+          "T-10m": 6
+        },
+        "under35": {
+          "fixture_markets": 6,
+          "T-6h": 6,
+          "T-3h": 6,
+          "T-1h": 6,
+          "T-30m": 6,
+          "T-10m": 6
+        }
+      },
+      "La Liga 2": {
+        "btts_no": {
+          "fixture_markets": 11,
+          "T-6h": 11,
+          "T-3h": 11,
+          "T-1h": 10,
+          "T-30m": 10,
+          "T-10m": 8
+        },
+        "btts_yes": {
+          "fixture_markets": 11,
+          "T-6h": 11,
+          "T-3h": 11,
+          "T-1h": 10,
+          "T-30m": 10,
+          "T-10m": 8
+        },
+        "over15": {
+          "fixture_markets": 11,
+          "T-6h": 11,
+          "T-3h": 11,
+          "T-1h": 10,
+          "T-30m": 10,
+          "T-10m": 8
+        },
+        "over25": {
+          "fixture_markets": 11,
+          "T-6h": 11,
+          "T-3h": 11,
+          "T-1h": 10,
+          "T-30m": 10,
+          "T-10m": 8
+        },
+        "over35": {
+          "fixture_markets": 11,
+          "T-6h": 11,
+          "T-3h": 11,
+          "T-1h": 10,
+          "T-30m": 10,
+          "T-10m": 8
+        },
+        "under15": {
+          "fixture_markets": 11,
+          "T-6h": 11,
+          "T-3h": 11,
+          "T-1h": 10,
+          "T-30m": 10,
+          "T-10m": 8
+        },
+        "under25": {
+          "fixture_markets": 11,
+          "T-6h": 11,
+          "T-3h": 11,
+          "T-1h": 10,
+          "T-30m": 10,
+          "T-10m": 8
+        },
+        "under35": {
+          "fixture_markets": 11,
+          "T-6h": 11,
+          "T-3h": 11,
+          "T-1h": 10,
+          "T-30m": 10,
+          "T-10m": 8
+        }
+      },
+      "League One": {
+        "btts_no": {
+          "fixture_markets": 12,
+          "T-6h": 12,
+          "T-3h": 12,
+          "T-1h": 12,
+          "T-30m": 12,
+          "T-10m": 12
+        },
+        "btts_yes": {
+          "fixture_markets": 12,
+          "T-6h": 12,
+          "T-3h": 12,
+          "T-1h": 12,
+          "T-30m": 12,
+          "T-10m": 12
+        },
+        "over15": {
+          "fixture_markets": 12,
+          "T-6h": 12,
+          "T-3h": 12,
+          "T-1h": 12,
+          "T-30m": 12,
+          "T-10m": 12
+        },
+        "over25": {
+          "fixture_markets": 12,
+          "T-6h": 12,
+          "T-3h": 12,
+          "T-1h": 12,
+          "T-30m": 12,
+          "T-10m": 12
+        },
+        "over35": {
+          "fixture_markets": 12,
+          "T-6h": 12,
+          "T-3h": 12,
+          "T-1h": 12,
+          "T-30m": 12,
+          "T-10m": 12
+        },
+        "under15": {
+          "fixture_markets": 12,
+          "T-6h": 12,
+          "T-3h": 12,
+          "T-1h": 12,
+          "T-30m": 12,
+          "T-10m": 12
+        },
+        "under25": {
+          "fixture_markets": 12,
+          "T-6h": 11,
+          "T-3h": 10,
+          "T-1h": 9,
+          "T-30m": 9,
+          "T-10m": 9
+        },
+        "under35": {
+          "fixture_markets": 12,
+          "T-6h": 12,
+          "T-3h": 12,
+          "T-1h": 12,
+          "T-30m": 12,
+          "T-10m": 12
+        }
+      },
+      "League Two": {
+        "btts_no": {
+          "fixture_markets": 12,
+          "T-6h": 12,
+          "T-3h": 12,
+          "T-1h": 12,
+          "T-30m": 12,
+          "T-10m": 12
+        },
+        "btts_yes": {
+          "fixture_markets": 12,
+          "T-6h": 12,
+          "T-3h": 12,
+          "T-1h": 12,
+          "T-30m": 12,
+          "T-10m": 12
+        },
+        "over15": {
+          "fixture_markets": 12,
+          "T-6h": 12,
+          "T-3h": 12,
+          "T-1h": 12,
+          "T-30m": 12,
+          "T-10m": 12
+        },
+        "over25": {
+          "fixture_markets": 12,
+          "T-6h": 12,
+          "T-3h": 12,
+          "T-1h": 11,
+          "T-30m": 11,
+          "T-10m": 11
+        },
+        "over35": {
+          "fixture_markets": 12,
+          "T-6h": 12,
+          "T-3h": 12,
+          "T-1h": 12,
+          "T-30m": 12,
+          "T-10m": 12
+        },
+        "under15": {
+          "fixture_markets": 12,
+          "T-6h": 12,
+          "T-3h": 12,
+          "T-1h": 12,
+          "T-30m": 12,
+          "T-10m": 12
+        },
+        "under25": {
+          "fixture_markets": 12,
+          "T-6h": 11,
+          "T-3h": 11,
+          "T-1h": 11,
+          "T-30m": 11,
+          "T-10m": 11
+        },
+        "under35": {
+          "fixture_markets": 12,
+          "T-6h": 12,
+          "T-3h": 12,
+          "T-1h": 12,
+          "T-30m": 12,
+          "T-10m": 12
+        }
+      },
+      "Ligue 2": {
+        "btts_no": {
+          "fixture_markets": 9,
+          "T-6h": 9,
+          "T-3h": 9,
+          "T-1h": 9,
+          "T-30m": 9,
+          "T-10m": 9
+        },
+        "btts_yes": {
+          "fixture_markets": 9,
+          "T-6h": 9,
+          "T-3h": 9,
+          "T-1h": 9,
+          "T-30m": 9,
+          "T-10m": 9
+        },
+        "over15": {
+          "fixture_markets": 9,
+          "T-6h": 9,
+          "T-3h": 9,
+          "T-1h": 9,
+          "T-30m": 9,
+          "T-10m": 9
+        },
+        "over25": {
+          "fixture_markets": 9,
+          "T-6h": 9,
+          "T-3h": 9,
+          "T-1h": 9,
+          "T-30m": 9,
+          "T-10m": 9
+        },
+        "over35": {
+          "fixture_markets": 9,
+          "T-6h": 9,
+          "T-3h": 9,
+          "T-1h": 9,
+          "T-30m": 9,
+          "T-10m": 9
+        },
+        "under15": {
+          "fixture_markets": 9,
+          "T-6h": 9,
+          "T-3h": 9,
+          "T-1h": 9,
+          "T-30m": 9,
+          "T-10m": 9
+        },
+        "under25": {
+          "fixture_markets": 9,
+          "T-6h": 9,
+          "T-3h": 9,
+          "T-1h": 9,
+          "T-30m": 9,
+          "T-10m": 9
+        },
+        "under35": {
+          "fixture_markets": 9,
+          "T-6h": 9,
+          "T-3h": 9,
+          "T-1h": 9,
+          "T-30m": 9,
+          "T-10m": 9
+        }
+      },
+      "Mexico Liga MX": {
+        "btts_no": {
+          "fixture_markets": 9,
+          "T-6h": 9,
+          "T-3h": 9,
+          "T-1h": 9,
+          "T-30m": 9,
+          "T-10m": 8
+        },
+        "btts_yes": {
+          "fixture_markets": 9,
+          "T-6h": 9,
+          "T-3h": 9,
+          "T-1h": 9,
+          "T-30m": 9,
+          "T-10m": 8
+        },
+        "over15": {
+          "fixture_markets": 9,
+          "T-6h": 9,
+          "T-3h": 9,
+          "T-1h": 9,
+          "T-30m": 9,
+          "T-10m": 8
+        },
+        "over25": {
+          "fixture_markets": 9,
+          "T-6h": 9,
+          "T-3h": 9,
+          "T-1h": 9,
+          "T-30m": 9,
+          "T-10m": 8
+        },
+        "over35": {
+          "fixture_markets": 9,
+          "T-6h": 9,
+          "T-3h": 9,
+          "T-1h": 9,
+          "T-30m": 9,
+          "T-10m": 8
+        },
+        "under15": {
+          "fixture_markets": 9,
+          "T-6h": 9,
+          "T-3h": 9,
+          "T-1h": 9,
+          "T-30m": 9,
+          "T-10m": 8
+        },
+        "under25": {
+          "fixture_markets": 9,
+          "T-6h": 9,
+          "T-3h": 9,
+          "T-1h": 9,
+          "T-30m": 9,
+          "T-10m": 7
+        },
+        "under35": {
+          "fixture_markets": 9,
+          "T-6h": 9,
+          "T-3h": 9,
+          "T-1h": 9,
+          "T-30m": 9,
+          "T-10m": 8
+        }
+      },
+      "National League": {
+        "btts_no": {
+          "fixture_markets": 12,
+          "T-6h": 12,
+          "T-3h": 12,
+          "T-1h": 12,
+          "T-30m": 12,
+          "T-10m": 12
+        },
+        "btts_yes": {
+          "fixture_markets": 12,
+          "T-6h": 12,
+          "T-3h": 12,
+          "T-1h": 12,
+          "T-30m": 12,
+          "T-10m": 12
+        },
+        "over15": {
+          "fixture_markets": 12,
+          "T-6h": 12,
+          "T-3h": 12,
+          "T-1h": 12,
+          "T-30m": 12,
+          "T-10m": 12
+        },
+        "over25": {
+          "fixture_markets": 11,
+          "T-6h": 11,
+          "T-3h": 11,
+          "T-1h": 11,
+          "T-30m": 11,
+          "T-10m": 11
+        },
+        "over35": {
+          "fixture_markets": 12,
+          "T-6h": 12,
+          "T-3h": 12,
+          "T-1h": 12,
+          "T-30m": 12,
+          "T-10m": 12
+        },
+        "under15": {
+          "fixture_markets": 12,
+          "T-6h": 12,
+          "T-3h": 12,
+          "T-1h": 12,
+          "T-30m": 12,
+          "T-10m": 12
+        },
+        "under25": {
+          "fixture_markets": 12,
+          "T-6h": 11,
+          "T-3h": 11,
+          "T-1h": 9,
+          "T-30m": 9,
+          "T-10m": 9
+        },
+        "under35": {
+          "fixture_markets": 12,
+          "T-6h": 12,
+          "T-3h": 12,
+          "T-1h": 12,
+          "T-30m": 12,
+          "T-10m": 12
+        }
+      },
+      "Norway Eliteserien": {
+        "btts_no": {
+          "fixture_markets": 8,
+          "T-6h": 8,
+          "T-3h": 8,
+          "T-1h": 7,
+          "T-30m": 5,
+          "T-10m": 2
+        },
+        "btts_yes": {
+          "fixture_markets": 8,
+          "T-6h": 8,
+          "T-3h": 8,
+          "T-1h": 7,
+          "T-30m": 5,
+          "T-10m": 2
+        },
+        "over15": {
+          "fixture_markets": 8,
+          "T-6h": 8,
+          "T-3h": 8,
+          "T-1h": 7,
+          "T-30m": 5,
+          "T-10m": 2
+        },
+        "over25": {
+          "fixture_markets": 8,
+          "T-6h": 7,
+          "T-3h": 7,
+          "T-1h": 6,
+          "T-30m": 4,
+          "T-10m": 2
+        },
+        "over35": {
+          "fixture_markets": 8,
+          "T-6h": 8,
+          "T-3h": 8,
+          "T-1h": 7,
+          "T-30m": 5,
+          "T-10m": 2
+        },
+        "under15": {
+          "fixture_markets": 8,
+          "T-6h": 8,
+          "T-3h": 8,
+          "T-1h": 7,
+          "T-30m": 5,
+          "T-10m": 2
+        },
+        "under25": {
+          "fixture_markets": 8,
+          "T-6h": 8,
+          "T-3h": 8,
+          "T-1h": 7,
+          "T-30m": 5,
+          "T-10m": 2
+        },
+        "under35": {
+          "fixture_markets": 8,
+          "T-6h": 8,
+          "T-3h": 8,
+          "T-1h": 7,
+          "T-30m": 5,
+          "T-10m": 2
+        }
+      },
+      "Romanian Superliga": {
+        "btts_no": {
+          "fixture_markets": 8,
+          "T-6h": 7,
+          "T-3h": 6,
+          "T-1h": 5,
+          "T-30m": 5,
+          "T-10m": 5
+        },
+        "btts_yes": {
+          "fixture_markets": 8,
+          "T-6h": 7,
+          "T-3h": 6,
+          "T-1h": 5,
+          "T-30m": 5,
+          "T-10m": 5
+        },
+        "over15": {
+          "fixture_markets": 8,
+          "T-6h": 7,
+          "T-3h": 6,
+          "T-1h": 5,
+          "T-30m": 5,
+          "T-10m": 5
+        },
+        "over25": {
+          "fixture_markets": 8,
+          "T-6h": 6,
+          "T-3h": 5,
+          "T-1h": 4,
+          "T-30m": 4,
+          "T-10m": 4
+        },
+        "over35": {
+          "fixture_markets": 8,
+          "T-6h": 7,
+          "T-3h": 6,
+          "T-1h": 5,
+          "T-30m": 5,
+          "T-10m": 5
+        },
+        "under15": {
+          "fixture_markets": 8,
+          "T-6h": 7,
+          "T-3h": 6,
+          "T-1h": 5,
+          "T-30m": 5,
+          "T-10m": 5
+        },
+        "under25": {
+          "fixture_markets": 8,
+          "T-6h": 7,
+          "T-3h": 5,
+          "T-1h": 4,
+          "T-30m": 4,
+          "T-10m": 4
+        },
+        "under35": {
+          "fixture_markets": 8,
+          "T-6h": 7,
+          "T-3h": 6,
+          "T-1h": 5,
+          "T-30m": 5,
+          "T-10m": 5
+        }
+      },
+      "Saudi Pro League": {
+        "btts_no": {
+          "fixture_markets": 1,
+          "T-6h": 1,
+          "T-3h": 1,
+          "T-1h": 1,
+          "T-30m": 1,
+          "T-10m": 0
+        },
+        "btts_yes": {
+          "fixture_markets": 1,
+          "T-6h": 1,
+          "T-3h": 1,
+          "T-1h": 1,
+          "T-30m": 1,
+          "T-10m": 0
+        },
+        "over15": {
+          "fixture_markets": 1,
+          "T-6h": 1,
+          "T-3h": 1,
+          "T-1h": 1,
+          "T-30m": 1,
+          "T-10m": 0
+        },
+        "over25": {
+          "fixture_markets": 1,
+          "T-6h": 1,
+          "T-3h": 1,
+          "T-1h": 1,
+          "T-30m": 1,
+          "T-10m": 0
+        },
+        "over35": {
+          "fixture_markets": 1,
+          "T-6h": 1,
+          "T-3h": 1,
+          "T-1h": 1,
+          "T-30m": 1,
+          "T-10m": 0
+        },
+        "under15": {
+          "fixture_markets": 1,
+          "T-6h": 1,
+          "T-3h": 1,
+          "T-1h": 1,
+          "T-30m": 1,
+          "T-10m": 0
+        },
+        "under25": {
+          "fixture_markets": 1,
+          "T-6h": 1,
+          "T-3h": 1,
+          "T-1h": 1,
+          "T-30m": 1,
+          "T-10m": 0
+        },
+        "under35": {
+          "fixture_markets": 1,
+          "T-6h": 1,
+          "T-3h": 1,
+          "T-1h": 1,
+          "T-30m": 1,
+          "T-10m": 0
+        }
+      },
+      "Scottish Championship": {
+        "btts_no": {
+          "fixture_markets": 5,
+          "T-6h": 5,
+          "T-3h": 5,
+          "T-1h": 5,
+          "T-30m": 5,
+          "T-10m": 5
+        },
+        "btts_yes": {
+          "fixture_markets": 5,
+          "T-6h": 5,
+          "T-3h": 5,
+          "T-1h": 5,
+          "T-30m": 5,
+          "T-10m": 5
+        },
+        "over15": {
+          "fixture_markets": 5,
+          "T-6h": 5,
+          "T-3h": 5,
+          "T-1h": 5,
+          "T-30m": 5,
+          "T-10m": 5
+        },
+        "over25": {
+          "fixture_markets": 5,
+          "T-6h": 5,
+          "T-3h": 5,
+          "T-1h": 5,
+          "T-30m": 5,
+          "T-10m": 5
+        },
+        "over35": {
+          "fixture_markets": 5,
+          "T-6h": 5,
+          "T-3h": 5,
+          "T-1h": 5,
+          "T-30m": 5,
+          "T-10m": 5
+        },
+        "under15": {
+          "fixture_markets": 5,
+          "T-6h": 5,
+          "T-3h": 5,
+          "T-1h": 5,
+          "T-30m": 5,
+          "T-10m": 5
+        },
+        "under25": {
+          "fixture_markets": 5,
+          "T-6h": 5,
+          "T-3h": 5,
+          "T-1h": 5,
+          "T-30m": 5,
+          "T-10m": 5
+        },
+        "under35": {
+          "fixture_markets": 5,
+          "T-6h": 5,
+          "T-3h": 5,
+          "T-1h": 5,
+          "T-30m": 5,
+          "T-10m": 5
+        }
+      },
+      "Scottish League One": {
+        "btts_no": {
+          "fixture_markets": 5,
+          "T-6h": 5,
+          "T-3h": 5,
+          "T-1h": 5,
+          "T-30m": 5,
+          "T-10m": 5
+        },
+        "btts_yes": {
+          "fixture_markets": 5,
+          "T-6h": 5,
+          "T-3h": 5,
+          "T-1h": 5,
+          "T-30m": 5,
+          "T-10m": 5
+        },
+        "over15": {
+          "fixture_markets": 5,
+          "T-6h": 5,
+          "T-3h": 5,
+          "T-1h": 5,
+          "T-30m": 5,
+          "T-10m": 5
+        },
+        "over25": {
+          "fixture_markets": 5,
+          "T-6h": 5,
+          "T-3h": 5,
+          "T-1h": 5,
+          "T-30m": 5,
+          "T-10m": 5
+        },
+        "over35": {
+          "fixture_markets": 5,
+          "T-6h": 5,
+          "T-3h": 5,
+          "T-1h": 5,
+          "T-30m": 5,
+          "T-10m": 5
+        },
+        "under15": {
+          "fixture_markets": 5,
+          "T-6h": 5,
+          "T-3h": 5,
+          "T-1h": 5,
+          "T-30m": 5,
+          "T-10m": 5
+        },
+        "under25": {
+          "fixture_markets": 5,
+          "T-6h": 5,
+          "T-3h": 5,
+          "T-1h": 4,
+          "T-30m": 4,
+          "T-10m": 4
+        },
+        "under35": {
+          "fixture_markets": 5,
+          "T-6h": 5,
+          "T-3h": 5,
+          "T-1h": 5,
+          "T-30m": 5,
+          "T-10m": 5
+        }
+      },
+      "Scottish League Two": {
+        "btts_no": {
+          "fixture_markets": 5,
+          "T-6h": 5,
+          "T-3h": 5,
+          "T-1h": 5,
+          "T-30m": 5,
+          "T-10m": 5
+        },
+        "btts_yes": {
+          "fixture_markets": 5,
+          "T-6h": 5,
+          "T-3h": 5,
+          "T-1h": 5,
+          "T-30m": 5,
+          "T-10m": 5
+        },
+        "over15": {
+          "fixture_markets": 5,
+          "T-6h": 5,
+          "T-3h": 5,
+          "T-1h": 5,
+          "T-30m": 5,
+          "T-10m": 5
+        },
+        "over25": {
+          "fixture_markets": 5,
+          "T-6h": 4,
+          "T-3h": 4,
+          "T-1h": 4,
+          "T-30m": 4,
+          "T-10m": 4
+        },
+        "over35": {
+          "fixture_markets": 5,
+          "T-6h": 5,
+          "T-3h": 5,
+          "T-1h": 5,
+          "T-30m": 5,
+          "T-10m": 5
+        },
+        "under15": {
+          "fixture_markets": 5,
+          "T-6h": 5,
+          "T-3h": 5,
+          "T-1h": 5,
+          "T-30m": 5,
+          "T-10m": 5
+        },
+        "under25": {
+          "fixture_markets": 5,
+          "T-6h": 5,
+          "T-3h": 5,
+          "T-1h": 4,
+          "T-30m": 4,
+          "T-10m": 4
+        },
+        "under35": {
+          "fixture_markets": 5,
+          "T-6h": 5,
+          "T-3h": 5,
+          "T-1h": 5,
+          "T-30m": 5,
+          "T-10m": 5
+        }
+      },
+      "Scottish Premiership": {
+        "btts_no": {
+          "fixture_markets": 6,
+          "T-6h": 6,
+          "T-3h": 6,
+          "T-1h": 6,
+          "T-30m": 6,
+          "T-10m": 6
+        },
+        "btts_yes": {
+          "fixture_markets": 6,
+          "T-6h": 6,
+          "T-3h": 6,
+          "T-1h": 6,
+          "T-30m": 6,
+          "T-10m": 6
+        },
+        "over15": {
+          "fixture_markets": 6,
+          "T-6h": 6,
+          "T-3h": 6,
+          "T-1h": 6,
+          "T-30m": 6,
+          "T-10m": 6
+        },
+        "over25": {
+          "fixture_markets": 6,
+          "T-6h": 6,
+          "T-3h": 5,
+          "T-1h": 5,
+          "T-30m": 5,
+          "T-10m": 5
+        },
+        "over35": {
+          "fixture_markets": 6,
+          "T-6h": 6,
+          "T-3h": 6,
+          "T-1h": 6,
+          "T-30m": 6,
+          "T-10m": 6
+        },
+        "under15": {
+          "fixture_markets": 6,
+          "T-6h": 6,
+          "T-3h": 6,
+          "T-1h": 6,
+          "T-30m": 6,
+          "T-10m": 6
+        },
+        "under25": {
+          "fixture_markets": 6,
+          "T-6h": 6,
+          "T-3h": 6,
+          "T-1h": 6,
+          "T-30m": 6,
+          "T-10m": 6
+        },
+        "under35": {
+          "fixture_markets": 6,
+          "T-6h": 6,
+          "T-3h": 6,
+          "T-1h": 6,
+          "T-30m": 6,
+          "T-10m": 6
+        }
+      },
+      "Serie B": {
+        "btts_no": {
+          "fixture_markets": 10,
+          "T-6h": 10,
+          "T-3h": 10,
+          "T-1h": 10,
+          "T-30m": 10,
+          "T-10m": 10
+        },
+        "btts_yes": {
+          "fixture_markets": 10,
+          "T-6h": 10,
+          "T-3h": 10,
+          "T-1h": 10,
+          "T-30m": 10,
+          "T-10m": 10
+        },
+        "over15": {
+          "fixture_markets": 10,
+          "T-6h": 10,
+          "T-3h": 10,
+          "T-1h": 10,
+          "T-30m": 10,
+          "T-10m": 10
+        },
+        "over25": {
+          "fixture_markets": 10,
+          "T-6h": 10,
+          "T-3h": 10,
+          "T-1h": 9,
+          "T-30m": 9,
+          "T-10m": 9
+        },
+        "over35": {
+          "fixture_markets": 10,
+          "T-6h": 10,
+          "T-3h": 10,
+          "T-1h": 10,
+          "T-30m": 10,
+          "T-10m": 10
+        },
+        "under15": {
+          "fixture_markets": 10,
+          "T-6h": 10,
+          "T-3h": 10,
+          "T-1h": 10,
+          "T-30m": 10,
+          "T-10m": 10
+        },
+        "under25": {
+          "fixture_markets": 10,
+          "T-6h": 9,
+          "T-3h": 9,
+          "T-1h": 9,
+          "T-30m": 9,
+          "T-10m": 9
+        },
+        "under35": {
+          "fixture_markets": 10,
+          "T-6h": 10,
+          "T-3h": 10,
+          "T-1h": 10,
+          "T-30m": 10,
+          "T-10m": 10
+        }
+      },
+      "Sweden Allsvenskan": {
+        "btts_no": {
+          "fixture_markets": 9,
+          "T-6h": 7,
+          "T-3h": 7,
+          "T-1h": 7,
+          "T-30m": 7,
+          "T-10m": 6
+        },
+        "btts_yes": {
+          "fixture_markets": 9,
+          "T-6h": 7,
+          "T-3h": 7,
+          "T-1h": 7,
+          "T-30m": 7,
+          "T-10m": 6
+        },
+        "over15": {
+          "fixture_markets": 9,
+          "T-6h": 7,
+          "T-3h": 7,
+          "T-1h": 7,
+          "T-30m": 7,
+          "T-10m": 6
+        },
+        "over25": {
+          "fixture_markets": 9,
+          "T-6h": 6,
+          "T-3h": 6,
+          "T-1h": 6,
+          "T-30m": 6,
+          "T-10m": 5
+        },
+        "over35": {
+          "fixture_markets": 9,
+          "T-6h": 7,
+          "T-3h": 7,
+          "T-1h": 7,
+          "T-30m": 7,
+          "T-10m": 6
+        },
+        "under15": {
+          "fixture_markets": 9,
+          "T-6h": 7,
+          "T-3h": 7,
+          "T-1h": 7,
+          "T-30m": 7,
+          "T-10m": 6
+        },
+        "under25": {
+          "fixture_markets": 9,
+          "T-6h": 7,
+          "T-3h": 7,
+          "T-1h": 7,
+          "T-30m": 7,
+          "T-10m": 6
+        },
+        "under35": {
+          "fixture_markets": 9,
+          "T-6h": 7,
+          "T-3h": 7,
+          "T-1h": 7,
+          "T-30m": 7,
+          "T-10m": 6
+        }
+      },
+      "Turkish Super Lig": {
+        "btts_no": {
+          "fixture_markets": 9,
+          "T-6h": 9,
+          "T-3h": 9,
+          "T-1h": 9,
+          "T-30m": 9,
+          "T-10m": 9
+        },
+        "btts_yes": {
+          "fixture_markets": 9,
+          "T-6h": 9,
+          "T-3h": 9,
+          "T-1h": 9,
+          "T-30m": 9,
+          "T-10m": 9
+        },
+        "over15": {
+          "fixture_markets": 9,
+          "T-6h": 9,
+          "T-3h": 9,
+          "T-1h": 9,
+          "T-30m": 9,
+          "T-10m": 9
+        },
+        "over25": {
+          "fixture_markets": 9,
+          "T-6h": 9,
+          "T-3h": 9,
+          "T-1h": 9,
+          "T-30m": 9,
+          "T-10m": 9
+        },
+        "over35": {
+          "fixture_markets": 9,
+          "T-6h": 9,
+          "T-3h": 9,
+          "T-1h": 9,
+          "T-30m": 9,
+          "T-10m": 9
+        },
+        "under15": {
+          "fixture_markets": 9,
+          "T-6h": 9,
+          "T-3h": 9,
+          "T-1h": 9,
+          "T-30m": 9,
+          "T-10m": 9
+        },
+        "under25": {
+          "fixture_markets": 9,
+          "T-6h": 9,
+          "T-3h": 9,
+          "T-1h": 9,
+          "T-30m": 9,
+          "T-10m": 9
+        },
+        "under35": {
+          "fixture_markets": 9,
+          "T-6h": 9,
+          "T-3h": 9,
+          "T-1h": 9,
+          "T-30m": 9,
+          "T-10m": 9
+        }
+      },
+      "USA MLS": {
+        "btts_no": {
+          "fixture_markets": 9,
+          "T-6h": 9,
+          "T-3h": 9,
+          "T-1h": 9,
+          "T-30m": 9,
+          "T-10m": 9
+        },
+        "btts_yes": {
+          "fixture_markets": 9,
+          "T-6h": 9,
+          "T-3h": 9,
+          "T-1h": 9,
+          "T-30m": 9,
+          "T-10m": 9
+        },
+        "over15": {
+          "fixture_markets": 9,
+          "T-6h": 9,
+          "T-3h": 9,
+          "T-1h": 9,
+          "T-30m": 9,
+          "T-10m": 9
+        },
+        "over25": {
+          "fixture_markets": 9,
+          "T-6h": 9,
+          "T-3h": 9,
+          "T-1h": 9,
+          "T-30m": 9,
+          "T-10m": 9
+        },
+        "over35": {
+          "fixture_markets": 9,
+          "T-6h": 9,
+          "T-3h": 9,
+          "T-1h": 9,
+          "T-30m": 9,
+          "T-10m": 9
+        },
+        "under15": {
+          "fixture_markets": 9,
+          "T-6h": 9,
+          "T-3h": 9,
+          "T-1h": 9,
+          "T-30m": 9,
+          "T-10m": 9
+        },
+        "under25": {
+          "fixture_markets": 9,
+          "T-6h": 9,
+          "T-3h": 9,
+          "T-1h": 9,
+          "T-30m": 9,
+          "T-10m": 9
+        },
+        "under35": {
+          "fixture_markets": 9,
+          "T-6h": 9,
+          "T-3h": 9,
+          "T-1h": 9,
+          "T-30m": 9,
+          "T-10m": 9
+        }
       }
     }
   },

@@ -312,7 +312,9 @@ def specials() -> dict:
            "cutoffs": read_json(_f(base + "cutoffs.json"))}
     for name in ("specials_log", "specials_settled", "study_calibration_grid", "study_calibration_bands"):
         try:
-            out[name] = read_csv(_f(base + f"{name}.csv"), low_memory=False)
+            # .copy() consolidates: pandas 3 read_csv returns one block per column, so the ~200-column log
+            # raised "DataFrame is highly fragmented" on every later assign (specials_view.upcoming, the page)
+            out[name] = read_csv(_f(base + f"{name}.csv"), low_memory=False).copy()
         except Exception:                                             # noqa: BLE001 - one missing file never hides the rest
             out[name] = pd.DataFrame()
     # prices are private (2026-11-22): the public log has none; join them from the private store when readable

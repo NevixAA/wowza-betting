@@ -11,6 +11,8 @@ from pathlib import Path
 
 import pandas as pd
 
+from src.model_releases import Releases
+
 ROOT = Path(__file__).resolve().parents[1]
 INDEX = ROOT / "reports" / "dashboard" / "predictions_index.parquet"
 SUMMARY = ROOT / "reports" / "dashboard" / "predictions_summary.csv"
@@ -69,7 +71,37 @@ def load_index(path: Path | None = None) -> pd.DataFrame:
     for c in ("player_name", "player_id", "home_team", "away_team", "fixture_ref"):
         if c in d:
             d[c] = d[c].fillna("").astype(str)
+    return with_identity(d)
+
+
+def with_identity(d: pd.DataFrame) -> pd.DataFrame:
+    """Canonical fixture identity columns (src.fixture_identity via the index builder). An index written before
+    they existed falls back to each row's own ref / kickoff / names, i.e. the old behaviour, never a guess."""
+    d = d.copy()
+    if "canonical_fixture_ref" not in d.columns:
+        d["canonical_fixture_ref"] = d["fixture_ref"]
+        d["canonical_kickoff_utc"] = d["kickoff_utc"]
+        d["kickoff_source"] = ""
+        d["canonical_home"], d["canonical_away"] = d["home_team"], d["away_team"]
+    d["canonical_kickoff_utc"] = pd.to_datetime(d["canonical_kickoff_utc"], utc=True, errors="coerce")
+    for c in ("canonical_fixture_ref", "canonical_home", "canonical_away", "kickoff_source"):
+        d[c] = d[c].fillna("").astype(str).replace("nan", "")
+    # display kickoff: the authoritative (API-Football) / unanimous one; a source conflict shows the row's own
+    d["match_kickoff_utc"] = d["canonical_kickoff_utc"].where(d["canonical_kickoff_utc"].notna(), d["kickoff_utc"])
     return d
+
+
+def serving_rows(rows: pd.DataFrame) -> pd.DataFrame:
+    """ONE version per question for display (owner 2026-11-23 "why duplicates?"): per model x market x line x player
+    x snapshot x match, the version that was serving at that snapshot = the latest predicted_at strictly before the
+    kickoff (else the latest). Display only - the ledger keeps every version's rows."""
+    if rows.empty:
+        return rows
+    d = rows.assign(_before=(rows["predicted_at"] < rows["kickoff_utc"]).astype(int))
+    q = ["model_id", "market", "line", "player_id", "snapshot", "canonical_fixture_ref"]
+    best = (d.sort_values(["_before", "predicted_at", "model_version"], kind="mergesort")
+            .drop_duplicates(q, keep="last")[q + ["model_version"]])
+    return d.merge(best, on=q + ["model_version"], how="inner").drop(columns="_before")
 
 
 def load_summary(path: Path | None = None) -> pd.DataFrame:
@@ -85,26 +117,30 @@ def league_options(idx: pd.DataFrame) -> dict[str, str]:
 
 
 def matches(idx: pd.DataFrame) -> pd.DataFrame:
-    """One row per match in `idx` (a fixture can carry an OddsAPI and an API-Football ref: grouped by
-    league + kickoff + teams, which is what the reader sees)."""
+    """One row per match in `idx`: its CANONICAL fixture identity (src.fixture_identity - one match is one identity
+    whatever ref, club spelling or kickoff minute each model's source carries; owner bug 2026-11-23)."""
+    cols = ["match_key", "kickoff_utc", "league_slug", "league", "home_team", "away_team", "models", "predictions",
+            "settled", "ledger_only", "kickoff_source", "refs"]
     if idx.empty:
-        return pd.DataFrame(columns=["match_key", "kickoff_utc", "league_slug", "league", "home_team", "away_team",
-                                     "models", "predictions", "settled", "ledger_only"])
-    d = idx.assign(match_key=idx["league_slug"] + "|" + idx["kickoff_utc"].dt.strftime("%Y-%m-%dT%H:%MZ")
-                   + "|" + idx["home_team"] + "|" + idx["away_team"])
+        return pd.DataFrame(columns=cols)
+    if "canonical_fixture_ref" not in idx.columns:
+        idx = with_identity(idx)
+    d = idx.assign(match_key=idx["canonical_fixture_ref"])
     g = d.groupby("match_key", sort=False)
-    out = g.agg(kickoff_utc=("kickoff_utc", "first"), league_slug=("league_slug", "first"),
-                league=("league", "first"), home_team=("home_team", "first"), away_team=("away_team", "first"),
-                models=("model_id", "nunique"), predictions=("probability", "size"),
+    out = g.agg(kickoff_utc=("match_kickoff_utc", "first"), league_slug=("league_slug", "first"),
+                league=("league", "first"), home_team=("canonical_home", "first"),
+                away_team=("canonical_away", "first"), models=("model_id", "nunique"),
+                predictions=("probability", "size"),
                 settled=("outcome_status", lambda s: int((s == "SETTLED").sum())),
-                ledger_only=("ledger_only", "any")).reset_index()
-    return out.sort_values(["kickoff_utc", "league", "home_team"], kind="mergesort").reset_index(drop=True)
+                ledger_only=("ledger_only", "any"), kickoff_source=("kickoff_source", "first"),
+                refs=("fixture_ref", "nunique")).reset_index()
+    return out[cols].sort_values(["kickoff_utc", "league", "home_team"], kind="mergesort").reset_index(drop=True)
 
 
 def match_rows(idx: pd.DataFrame, match_key: str) -> pd.DataFrame:
-    k = (idx["league_slug"] + "|" + idx["kickoff_utc"].dt.strftime("%Y-%m-%dT%H:%MZ") + "|" + idx["home_team"]
-         + "|" + idx["away_team"])
-    return idx[k == match_key]
+    if "canonical_fixture_ref" not in idx.columns:
+        idx = with_identity(idx)
+    return idx[idx["canonical_fixture_ref"] == match_key]
 
 
 def outcome_text(status: str, y) -> str:
@@ -133,8 +169,62 @@ def pick_text(row) -> str:
     return str(row["selection"]) if float(row["probability"]) >= 0.5 else f"not {row['selection']}"
 
 
+def pick_rows(rows: pd.DataFrame) -> pd.DataFrame:
+    """The model's pick of each question only (owner 2026-11-23: one row per market and line - the complementary
+    NO / UNDER row is 1 - p and adds nothing). Display only."""
+    return rows[rows["pick"].astype(bool)] if len(rows) else rows
+
+
+def pick_side(row) -> tuple[str, float, object]:
+    """(picked side, its probability, did it happen 1/0/None) of a pick row. A single-selection question whose
+    probability is below 0.5 picks 'not <selection>' at 1 - p."""
+    p, y = float(row["probability"]), row["y"]
+    if int(row["q_size"]) > 1 or p >= 0.5:
+        return str(row["selection"]), p, (None if pd.isna(y) else int(y))
+    return f"not {row['selection']}", 1 - p, (None if pd.isna(y) else 1 - int(y))
+
+
+_RELEASES: list = []
+
+
+def releases() -> Releases:
+    """The release registry (config/model_release_registry.json), read once per process."""
+    if not _RELEASES:
+        _RELEASES.append(Releases())
+    return _RELEASES[0]
+
+
+def version_names(rows: pd.DataFrame) -> list[str]:
+    """'<release> · <install date> · <status at kickoff>' per row; unknown -> 'unknown release · <raw id>'."""
+    R = releases()
+    ko = rows["match_kickoff_utc"] if "match_kickoff_utc" in rows.columns else rows["kickoff_utc"]
+    return [R.display(m, k, v, t) for m, k, v, t in zip(rows["model_id"], rows["market"], rows["model_version"], ko)]
+
+
+def pick_table(rows: pd.DataFrame) -> pd.DataFrame:
+    """Default view: ONE row per question - the serving version's pick, its probability, outcome and result."""
+    if rows.empty:
+        return pd.DataFrame()
+    r = rows.sort_values(["model_id", "market", "line", "player_name"], kind="mergesort")
+    sides = [pick_side(x) for _, x in r.iterrows()]
+    out = pd.DataFrame({"Model": r["model_id"].map(model_label).values,
+                        "Market": r["market"].map(market_label).values,
+                        "Line": r["line"].astype(str).replace("nan", "").values})
+    if (r["player_name"] != "").any():
+        out["Player"] = r["player_name"].values
+        out["Team"] = r["team"].astype(str).replace("nan", "").values
+    out["Pick"] = [s for s, _, _ in sides]
+    out["Probability"] = [p for _, p, _ in sides]
+    out["Outcome"] = [("happened" if h == 1 else "did not happen") if st == "SETTLED" and h is not None
+                      else outcome_text(st, None) for (_, _, h), st in zip(sides, r["outcome_status"])]
+    out["Result"] = [result_text(x) for _, x in r.iterrows()]
+    out["Model version"] = version_names(r)
+    return out.reset_index(drop=True)
+
+
 def prediction_table(rows: pd.DataFrame) -> pd.DataFrame:
-    """Display rows for one match and one family: model, market, line, selection, probability, pick, outcome."""
+    """All versions / both sides: every stored row with its selection, probability, pick, outcome, the readable
+    version name and the raw version id."""
     if rows.empty:
         return pd.DataFrame()
     r = rows.sort_values(["model_id", "market", "line", "player_name", "model_version", "selection"],
@@ -152,7 +242,8 @@ def prediction_table(rows: pd.DataFrame) -> pd.DataFrame:
     out["Pick"] = [pick_text(x) for _, x in r.iterrows()]
     out["Outcome"] = [outcome_text(s, y) for s, y in zip(r["outcome_status"], r["y"])]
     out["Result"] = [result_text(x) for _, x in r.iterrows()]
-    out["Model version"] = r["model_version"].values
+    out["Model version"] = version_names(r)
+    out["Version id"] = r["model_version"].values
     return out.reset_index(drop=True)
 
 

@@ -32,6 +32,13 @@ Single-selection questions also carry calibration sums (single_p_sum / single_y_
 mean probability against how often the selection happened - for rare events the hit rate alone says little.
 VOID_DID_NOT_PLAY / NO_RESULT rows are counted as void, never scored. Deterministic: no wall-clock value is
 written, so an unchanged ledger gives byte-identical files and no commit.
+
+ONE FIXTURE, ONE IDENTITY (owner bug 2026-11-23: Puebla v Atletico San Luis showed as two matches). Every row also
+carries its CANONICAL fixture identity from src.fixture_identity (API-Football ref when any model carries one, the
+API-Football kickoff as the authoritative one, club spellings unified by src.team_names; the original fixture_ref,
+kickoff_utc and team names stay as they are). The counts of matches the old page key split - per kind (accent,
+name variant, kickoff drift) and per league - and every kickoff disagreement go to
+reports/dashboard/fixture_identity.json (a data-truth finding, never silently picked).
 """
 from __future__ import annotations
 
@@ -48,11 +55,13 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from src import fixture_identity as FI  # noqa: E402
 from src import prediction_ledger as PL  # noqa: E402
 
 OUT_DIR = ROOT / "reports" / "dashboard"
 INDEX_NAME = "predictions_index.parquet"
 SUMMARY_NAME = "predictions_summary.csv"
+IDENTITY_NAME = "fixture_identity.json"
 CLEAN_CFG = ROOT / "config" / "trustworthy_performance.json"
 
 #: Repos the public page may show. v11 is private (wowza-exec) and is never read here.
@@ -61,7 +70,8 @@ PUBLIC_REPOS = ("v9", "pro")
 INDEX_COLS = ["repo", "model_id", "model_version", "market", "line", "selection", "fixture_ref", "league",
               "league_slug", "kickoff_utc", "home_team", "away_team", "player_id", "player_name", "team",
               "probability", "snapshot", "predicted_at", "ledger_only", "outcome_status", "y", "pick", "hit",
-              "q_size"]
+              "q_size", "canonical_fixture_ref", "canonical_kickoff_utc", "kickoff_source", "canonical_home",
+              "canonical_away"]
 SUMMARY_COLS = ["repo", "model_id", "market", "league_slug", "league", "ledger_only", "snapshot", "predictions",
                 "settled", "void", "pending", "hits", "hit_rate", "log_loss", "brier", "mean_pick_prob",
                 "log_loss_sum", "brier_sum", "pick_prob_sum", "single_settled", "single_p_sum", "single_y_sum",
@@ -190,7 +200,7 @@ def score(rows: pd.DataFrame) -> pd.DataFrame:
 
 def build_index(scored: pd.DataFrame) -> pd.DataFrame:
     out = scored[INDEX_COLS].copy()
-    for c in ("kickoff_utc", "predicted_at"):
+    for c in ("kickoff_utc", "predicted_at", "canonical_kickoff_utc"):
         out[c] = pd.to_datetime(out[c], utc=True, errors="coerce")
     out["probability"] = out["probability"].astype("float32")
     out["y"] = out["y"].astype("Int8")
@@ -199,7 +209,7 @@ def build_index(scored: pd.DataFrame) -> pd.DataFrame:
     out["pick"] = out["pick"].astype(bool)
     out["ledger_only"] = out["ledger_only"].astype(bool)
     for c in ("repo", "model_id", "model_version", "market", "line", "selection", "league", "league_slug",
-              "snapshot", "outcome_status", "team"):
+              "snapshot", "outcome_status", "team", "kickoff_source"):
         out[c] = out[c].astype("category")
     out = out.sort_values(["kickoff_utc", "fixture_ref", "repo", "model_id", "market", "line", "player_id",
                            "selection", "snapshot", "model_version"], kind="mergesort").reset_index(drop=True)
@@ -255,6 +265,31 @@ def build_summary(scored: pd.DataFrame, start: pd.Timestamp) -> pd.DataFrame:
     return out
 
 
+def with_identity(rows: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Ledger rows + their canonical identity columns (src.fixture_identity), and the identity table."""
+    ident = FI.resolve_identities(rows)
+    out = rows.merge(ident[["fixture_ref", "canonical_fixture_ref", "canonical_kickoff_utc", "kickoff_source",
+                            "canonical_home", "canonical_away"]], on="fixture_ref", how="left", validate="m:1")
+    return out, ident
+
+
+def identity_doc(rows: pd.DataFrame, ident: pd.DataFrame) -> dict:
+    """Split counts (before / after, per kind, per league) and every kickoff disagreement (data-truth findings)."""
+    rep = FI.split_report(rows, ident)
+    fx = FI._fixtures(rows).merge(ident, on="fixture_ref")
+    drift = []
+    for cref, g in fx[fx["kickoff_drift_min"] > 0].groupby("canonical_fixture_ref", sort=True):
+        drift.append({"canonical_fixture_ref": cref, "league": str(g["league"].iloc[0]),
+                      "match": f"{g['canonical_home'].iloc[0]} v {g['canonical_away'].iloc[0]}",
+                      "kickoff_source": str(g["kickoff_source"].iloc[0]),
+                      "canonical_kickoff_utc": (g["canonical_kickoff_utc"].iloc[0].strftime("%Y-%m-%dT%H:%M:%SZ")
+                                                if pd.notna(g["canonical_kickoff_utc"].iloc[0]) else None),
+                      "drift_min": float(g["kickoff_drift_min"].iloc[0]),
+                      "sources": {r.fixture_ref: r.kickoff_utc.strftime("%Y-%m-%dT%H:%M:%SZ")
+                                  for r in g.sort_values("fixture_ref").itertuples() if pd.notna(r.kickoff_utc)}})
+    return {**rep, "kickoff_disagreements": drift}
+
+
 def run(*, v9_root: Path = ROOT, pro_root: Path | None = None, out_dir: Path = OUT_DIR,
         clean_cfg: Path = CLEAN_CFG) -> dict:
     frames = []
@@ -264,7 +299,7 @@ def run(*, v9_root: Path = ROOT, pro_root: Path | None = None, out_dir: Path = O
             frames.append(d)
     if not frames:
         raise SystemExit("no prediction ledger rows found - nothing written")
-    rows = pd.concat(frames, ignore_index=True)
+    rows, ident = with_identity(pd.concat(frames, ignore_index=True))
     scored = score(rows)
     start = clean_record_start(clean_cfg)
     index, summary = build_index(scored), build_summary(scored, start)
@@ -272,9 +307,14 @@ def run(*, v9_root: Path = ROOT, pro_root: Path | None = None, out_dir: Path = O
     out_dir.mkdir(parents=True, exist_ok=True)
     index.to_parquet(out_dir / INDEX_NAME, index=False, compression="zstd")
     summary.to_csv(out_dir / SUMMARY_NAME, index=False, encoding="utf-8", lineterminator="\n")
+    idoc = identity_doc(rows, ident)
+    (out_dir / IDENTITY_NAME).write_text(json.dumps(idoc, indent=1, ensure_ascii=False) + "\n", encoding="utf-8",
+                                         newline="\n")
     return {"rows": int(len(index)), "repos": sorted(index["repo"].astype(str).unique()),
             "summary_rows": int(len(summary)), "settled_questions": int(summary["settled"].sum()),
-            "index_bytes": (out_dir / INDEX_NAME).stat().st_size}
+            "index_bytes": (out_dir / INDEX_NAME).stat().st_size,
+            "matches_split_before": idoc["matches_split_before"], "page_keys_before": idoc["page_keys_before"],
+            "canonical_fixtures_after": idoc["canonical_fixtures_after"]}
 
 
 def main(argv=None) -> int:

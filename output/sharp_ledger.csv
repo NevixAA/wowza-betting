@@ -2408,7 +2408,7 @@ signal_date,match_date,league,home_team,away_team,market_label,side,signal,openi
 2026-11-09,2026-11-21,Championship,West Ham United,Preston North End,1X2 AWAY (Preston North End),AWAY,STEAM_SHARP,12.8,11.93,-6.8,100,18,LOSS,-1.0,2026-11-22,signal_price
 2026-11-10,2026-11-20,Argentina Primera Division,River Plate,Lanus,1X2 AWAY (Lanus),AWAY,STRONG,5.77,5.11,-11.4,100,3,LOSS,-1.0,2026-11-23,signal_price
 2026-11-10,2026-11-22,Argentina Primera Division,Boca Juniors,Independiente Rivadavia,1X2 AWAY (Independiente Rivadavia),AWAY,STEAM_STRONG,5.4,4.8,-11.1,100,7,,,,
-2026-11-10,2026-11-23,Ligue 2,Sochaux,USL Dunkerque,1X2 HOME (Sochaux),HOME,STEAM_SHARP,2.39,2.22,-7.1,100,10,,,,
+2026-11-10,2026-11-23,Ligue 2,Sochaux,USL Dunkerque,1X2 HOME (Sochaux),HOME,STEAM_SHARP,2.39,2.22,-7.1,100,10,LOSS,-1.0,2026-11-24,signal_price
 2026-11-10,2026-11-22,Argentina Primera Division,Boca Juniors,Independiente Rivadavia,1X2 DRAW (Draw),DRAW,STEAM_SHARP,3.85,3.6,-6.5,100,7,,,,
 2026-11-10,2026-11-20,Ligue 2,Nancy,Dijon,1X2 AWAY (Dijon),AWAY,STEAM_SHARP,4.1,3.85,-6.1,100,10,LOSS,-1.0,2026-11-21,signal_price
 2026-11-10,2026-11-14,League Two,Rotherham United,Crawley Town,1X2 AWAY (Crawley Town),AWAY,STEAM_SHARP,3.55,3.35,-5.6,100,5,VOID,0.0,2026-11-19,
@@ -2424,7 +2424,7 @@ signal_date,match_date,league,home_team,away_team,market_label,side,signal,openi
 2026-11-12,2026-11-22,Argentina Primera Division,River Plate,Lanus,O/U 2.5 OVER,OVER,STRONG,2.48,2.23,-10.1,100,3,WIN,1.23,2026-11-23,signal_price
 2026-11-13,2026-11-24,USA MLS,St. Louis City SC,Los Angeles FC,O/U 2.5 UNDER,UNDER,STEAM_SHARP,2.45,2.29,-6.5,100,4,,,,
 2026-11-13,2026-11-20,Japan J-League,Kashima Antlers,Shimizu S Pulse,1X2 AWAY (Shimizu S Pulse),AWAY,STEAM_SHARP,5.8,5.5,-5.2,100,12,LOSS,-1.0,2026-11-21,signal_price
-2026-11-13,2026-11-23,Mexico Liga MX,Querétaro,Necaxa,O/U 2.5 OVER,OVER,STEAM_SHARP,1.59,1.51,-5.0,100,6,,,,
+2026-11-13,2026-11-23,Mexico Liga MX,Querétaro,Necaxa,O/U 2.5 OVER,OVER,STEAM_SHARP,1.59,1.51,-5.0,100,6,WIN,0.51,2026-11-24,signal_price
 2026-11-14,2026-11-15,La Liga 2,Granada CF,Las Palmas,1X2 AWAY (Las Palmas),AWAY,STEAM_STRONG,4.35,3.45,-20.7,100,21,LOSS,-1.0,2026-11-16,
 2026-11-14,2026-11-14,League One,Wimbledon,Blackpool,1X2 HOME (Wimbledon),HOME,STEAM_STRONG,2.62,2.13,-18.7,100,16,WIN,1.62,2026-11-16,
 2026-11-14,2026-11-14,League One,Sheffield Wednesday,Plymouth Argyle,O/U 2.5 UNDER,UNDER,STEAM_STRONG,2.315,2.0,-13.6,100,10,LOSS,-1.0,2026-11-16,
@@ -2441,8 +2441,8 @@ signal_date,match_date,league,home_team,away_team,market_label,side,signal,openi
 2026-11-14,2026-11-14,League Two,Rochdale,York City,1X2 DRAW (Draw),DRAW,STEAM_SHARP,3.835,3.625,-5.5,100,16,LOSS,-1.0,2026-11-16,
 2026-11-14,2026-11-14,League One,Stockport County FC,Reading,1X2 HOME (Stockport County FC),HOME,STEAM_SHARP,1.73,1.64,-5.2,100,16,WIN,0.73,2026-11-16,
 2026-11-14,2026-11-20,League One,Barnsley,Sheffield Wednesday,1X2 HOME (Barnsley),HOME,STEAM_SHARP,2.85,2.66,-6.7,94,10,LOSS,-1.0,2026-11-21,signal_price
-2026-11-15,2026-11-23,Mexico Liga MX,Querétaro,Necaxa,1X2 AWAY (Necaxa),AWAY,STEAM_STRONG,5.6,4.19,-25.2,93,11,,,,
-2026-11-15,2026-11-23,Mexico Liga MX,Querétaro,Necaxa,1X2 DRAW (Draw),DRAW,STEAM_SHARP,4.33,4.05,-6.5,93,11,,,,
+2026-11-15,2026-11-23,Mexico Liga MX,Querétaro,Necaxa,1X2 AWAY (Necaxa),AWAY,STEAM_STRONG,5.6,4.19,-25.2,93,11,LOSS,-1.0,2026-11-24,signal_price
+2026-11-15,2026-11-23,Mexico Liga MX,Querétaro,Necaxa,1X2 DRAW (Draw),DRAW,STEAM_SHARP,4.33,4.05,-6.5,93,11,WIN,3.05,2026-11-24,signal_price
 2026-11-15,2026-11-22,Mexico Liga MX,Guadalajara,Cruz Azul,1X2 AWAY (Cruz Azul),AWAY,STEAM_SHARP,2.7,2.55,-5.6,93,11,LOSS,-1.0,2026-11-23,signal_price
 2026-11-15,2026-11-21,USA MLS,New England Revolution,Philadelphia Union,O/U 2.5 UNDER,UNDER,STEAM_SHARP,2.5,2.3,-8.0,100,5,WIN,1.3,2026-11-22,signal_price
 2026-11-15,2026-11-15,La Liga 2,SD Eibar,Cádiz CF,1X2 HOME (SD Eibar),HOME,STEAM_SHARP,1.62,1.5,-7.4,100,21,LOSS,-1.0,2026-11-16,
@@ -2468,8 +2468,8 @@ signal_date,match_date,league,home_team,away_team,market_label,side,signal,openi
 2026-11-16,2026-11-21,League One,Notts County,Stevenage,1X2 HOME (Notts County),HOME,STEAM_SHARP,2.39,2.25,-5.9,100,15,LOSS,-1.0,2026-11-22,signal_price
 2026-11-16,2026-11-22,Bundesliga 2,1. FC Kaiserslautern,Dynamo Dresden,1X2 AWAY (Dynamo Dresden),AWAY,STEAM_SHARP,3.25,3.08,-5.2,100,17,LOSS,-1.0,2026-11-23,signal_price
 2026-11-16,2026-11-16,La Liga 2,Albacete,Celta Fortuna,1X2 HOME (Albacete),HOME,STEAM_SHARP,1.63,1.545,-5.2,100,20,WIN,0.545,2026-11-19,signal_price
-2026-11-16,2026-11-23,La Liga 2,AD Ceuta FC,Almería,1X2 HOME (AD Ceuta FC),HOME,STEAM_SHARP,3.535,3.35,-5.2,100,10,,,,
-2026-11-16,2026-11-23,La Liga 2,AD Ceuta FC,Almería,O/U 2.5 UNDER,UNDER,STEAM_SHARP,2.28,2.165,-5.0,100,4,,,,
+2026-11-16,2026-11-23,La Liga 2,AD Ceuta FC,Almería,1X2 HOME (AD Ceuta FC),HOME,STEAM_SHARP,3.535,3.35,-5.2,100,10,LOSS,-1.0,2026-11-24,signal_price
+2026-11-16,2026-11-23,La Liga 2,AD Ceuta FC,Almería,O/U 2.5 UNDER,UNDER,STEAM_SHARP,2.28,2.165,-5.0,100,4,LOSS,-1.0,2026-11-24,signal_price
 2026-11-17,2026-11-22,Norway Eliteserien,KFUM,SK Brann,1X2 HOME (KFUM),HOME,STEAM_STRONG,3.08,2.7,-12.3,100,19,LOSS,-1.0,2026-11-23,signal_price
 2026-11-17,2026-11-21,Austrian Bundesliga,WSG Tirol,Austria Lustenau,O/U 2.5 UNDER,UNDER,STEAM_STRONG,2.52,2.23,-11.5,98,7,WIN,1.23,2026-11-22,signal_price
 2026-11-17,2026-11-22,La Liga 2,Burgos CF,Albacete,1X2 HOME (Burgos CF),HOME,STEAM_SHARP,1.99,1.835,-7.8,98,18,WIN,0.835,2026-11-23,signal_price
@@ -2478,7 +2478,7 @@ signal_date,match_date,league,home_team,away_team,market_label,side,signal,openi
 2026-11-17,2026-11-22,Austrian Bundesliga,Wolfsberger AC,Ried,O/U 2.5 UNDER,UNDER,STEAM_STRONG,2.38,2.12,-10.9,100,7,LOSS,-1.0,2026-11-23,signal_price
 2026-11-17,2026-11-21,League One,Plymouth Argyle,Peterborough United,1X2 AWAY (Peterborough United),AWAY,STEAM_STRONG,3.9,3.5,-10.3,100,15,WIN,2.5,2026-11-22,signal_price
 2026-11-17,2026-11-21,League One,Plymouth Argyle,Peterborough United,1X2 DRAW (Draw),DRAW,STEAM_SHARP,4.2,3.9,-7.1,100,15,LOSS,-1.0,2026-11-22,signal_price
-2026-11-17,2026-11-22,Argentina Primera Division,Gimnasia La Plata,Newells Old Boys,O/U 2.5 UNDER,UNDER,STEAM_SHARP,1.7,1.6,-5.9,100,7,,,,
+2026-11-17,2026-11-22,Argentina Primera Division,Gimnasia La Plata,Newells Old Boys,O/U 2.5 UNDER,UNDER,STEAM_SHARP,1.7,1.6,-5.9,100,7,LOSS,-1.0,2026-11-24,signal_price
 2026-11-18,2026-11-24,Championship,Wolverhampton Wanderers,Derby County,1X2 AWAY (Derby County),AWAY,STEAM_SHARP,8.25,7.475,-9.4,97,10,,,,
 2026-11-18,2026-11-24,Championship,Cardiff City,Preston North End,1X2 AWAY (Preston North End),AWAY,STEAM_SHARP,5.25,4.95,-5.7,97,10,,,,
 2026-11-18,2026-11-18,Brazil Serie A,Remo,Chapecoense,1X2 HOME (Remo),HOME,STEAM_STRONG,1.63,1.45,-11.0,100,24,WIN,0.63,2026-11-19,
@@ -2517,7 +2517,7 @@ signal_date,match_date,league,home_team,away_team,market_label,side,signal,openi
 2026-11-20,2026-11-21,Championship,Southampton,Derby County,O/U 2.5 OVER,OVER,STRONG,1.52,1.47,-3.3,99,3,LOSS,-1.0,2026-11-22,signal_price
 2026-11-20,2026-11-22,Brazil Serie A,Fluminense,Mirassol,1X2 HOME (Fluminense),HOME,STRONG,1.675,1.62,-3.3,1,24,WIN,0.62,2026-11-23,signal_price
 2026-11-20,2026-11-21,La Liga 2,Real Sociedad B,Cádiz CF,1X2 AWAY (Cádiz CF),AWAY,STRONG,3.65,3.375,-7.5,100,20,WIN,2.375,2026-11-22,signal_price
-2026-11-20,2026-11-23,USA MLS,Vancouver Whitecaps FC,Real Salt Lake,O/U 2.5 UNDER,UNDER,STRONG,3.0,2.85,-5.0,100,3,,,,
+2026-11-20,2026-11-23,USA MLS,Vancouver Whitecaps FC,Real Salt Lake,O/U 2.5 UNDER,UNDER,STRONG,3.0,2.85,-5.0,100,3,WIN,1.85,2026-11-24,signal_price
 2026-11-20,2026-11-21,Sweden Allsvenskan,AIK,Degerfors IF,O/U 2.5 OVER,OVER,STRONG,1.61,1.55,-3.7,100,10,LOSS,-1.0,2026-11-22,signal_price
 2026-11-20,2026-11-21,Norway Eliteserien,HamKam,Fredrikstad FK,O/U 2.5 UNDER,UNDER,STRONG,2.2,2.15,-2.3,0,14,WIN,1.15,2026-11-22,signal_price
 2026-11-21,2026-11-21,League Two,York City,Walsall,1X2 DRAW (Draw),DRAW,STEAM_STRONG,3.9,3.72,-4.6,96,16,WIN,2.72,2026-11-22,signal_price
@@ -2528,14 +2528,14 @@ signal_date,match_date,league,home_team,away_team,market_label,side,signal,openi
 2026-11-21,2026-11-22,Mexico Liga MX,Pumas,Monterrey,O/U 2.5 UNDER,UNDER,STEAM_STRONG,2.215,2.06,-7.0,97,14,WIN,1.06,2026-11-23,signal_price
 2026-11-21,2026-11-21,La Liga 2,Tenerife,Mallorca,1X2 DRAW (Draw),DRAW,STRONG,3.1,2.95,-4.8,100,20,WIN,1.95,2026-11-22,signal_price
 2026-11-21,2026-11-22,Argentina Primera Division,Instituto de Córdoba,Atlético Huracán,1X2 DRAW (Draw),DRAW,STRONG,3.1,3.0,-3.2,100,16,LOSS,-1.0,2026-11-23,signal_price
-2026-11-21,2026-11-23,USA MLS,Vancouver Whitecaps FC,Real Salt Lake,1X2 DRAW (Draw),DRAW,STRONG,4.75,4.6,-3.2,0,21,,,,
+2026-11-21,2026-11-23,USA MLS,Vancouver Whitecaps FC,Real Salt Lake,1X2 DRAW (Draw),DRAW,STRONG,4.75,4.6,-3.2,0,21,LOSS,-1.0,2026-11-24,signal_price
 2026-11-21,2026-11-21,Sweden Allsvenskan,GAIS,Västerås SK,1X2 AWAY (Västerås SK),AWAY,STEAM_STRONG,3.69,2.86,-22.5,100,21,LOSS,-1.0,2026-11-22,signal_price
 2026-11-21,2026-11-21,Argentina Primera Division,Argentinos Juniors,Independiente,1X2 DRAW (Draw),DRAW,STEAM_SHARP,3.1,3.0,-3.2,99,16,LOSS,-1.0,2026-11-22,signal_price
 2026-11-21,2026-11-22,Bundesliga 2,FC Energie Cottbus,Hertha Berlin,1X2 AWAY (Hertha Berlin),AWAY,STRONG,1.6,1.56,-2.5,99,21,WIN,0.56,2026-11-23,signal_price
 2026-11-21,2026-11-22,Brazil Serie A,Atletico Paranaense,Remo,1X2 DRAW (Draw),DRAW,STEAM_STRONG,4.3,4.05,-5.8,100,22,LOSS,-1.0,2026-11-23,signal_price
 2026-11-21,2026-11-22,Brazil Serie A,Bragantino-SP,Vasco da Gama,1X2 AWAY (Vasco da Gama),AWAY,STRONG,2.85,2.58,-9.5,100,24,LOSS,-1.0,2026-11-23,signal_price
 2026-11-21,2026-11-22,Norway Eliteserien,Sarpsborg FK,Lillestrom,1X2 HOME (Sarpsborg FK),HOME,STRONG,2.17,2.08,-4.1,94,22,LOSS,-1.0,2026-11-23,signal_price
-2026-11-21,2026-11-23,Sweden Allsvenskan,Hammarby IF,IFK Goteborg,O/U 2.5 OVER,OVER,STRONG,1.43,1.41,-1.4,94,3,,,,
+2026-11-21,2026-11-23,Sweden Allsvenskan,Hammarby IF,IFK Goteborg,O/U 2.5 OVER,OVER,STRONG,1.43,1.41,-1.4,94,3,WIN,0.41,2026-11-24,signal_price
 2026-11-22,2026-11-22,Sweden Allsvenskan,BK Hacken,IF Elfsborg,1X2 HOME (BK Hacken),HOME,STEAM_SHARP,1.83,1.73,-5.5,98,21,WIN,0.73,2026-11-23,signal_price
 2026-11-22,2026-11-24,Brazil Serie A,Chapecoense,Palmeiras,1X2 HOME (Chapecoense),HOME,STRONG,6.7,3.61,-46.1,2,17,,,,
 2026-11-22,2026-11-24,Serie B,Benevento,Empoli,1X2 HOME (Benevento),HOME,STRONG,1.66,1.53,-7.8,0,20,,,,
@@ -2551,5 +2551,19 @@ signal_date,match_date,league,home_team,away_team,market_label,side,signal,openi
 2026-11-22,2026-11-24,League One,Blackpool,Leicester City,1X2 AWAY (Leicester City),AWAY,STRONG,1.835,1.74,-5.2,100,13,,,,
 2026-11-22,2026-11-24,League One,Stevenage,Sheffield Wednesday,O/U 2.5 UNDER,UNDER,STRONG,1.9,1.85,-2.6,98,11,,,,
 2026-11-22,2026-11-24,League One,Bradford City,Barnsley,O/U 2.5 UNDER,UNDER,STRONG,2.25,2.25,0.0,0,7,,,,
-2026-11-23,2026-11-23,Sweden Allsvenskan,Hammarby IF,IFK Goteborg,1X2 HOME (Hammarby IF),HOME,STRONG,1.22,1.2,-1.6,98,21,,,,
+2026-11-23,2026-11-23,Sweden Allsvenskan,Hammarby IF,IFK Goteborg,1X2 HOME (Hammarby IF),HOME,STRONG,1.22,1.2,-1.6,98,21,WIN,0.2,2026-11-24,signal_price
 2026-11-23,2026-11-24,Serie B,Vicenza,Carrarese,O/U 2.5 UNDER,UNDER,STRONG,1.85,1.8,-2.7,98,14,,,,
+2026-11-23,2026-11-23,Brazil Serie A,Internacional,Vitoria,O/U 2.5 UNDER,UNDER,STEAM_STRONG,1.97,1.78,-9.6,100,17,LOSS,-1.0,2026-11-24,signal_price
+2026-11-23,2026-11-25,Japan J-League,JEF United Chiba,Nagoya Grampus,O/U 2.5 UNDER,UNDER,STEAM_STRONG,2.1,1.98,-5.7,100,13,,,,
+2026-11-23,2026-11-25,Serie B,Pisa,Modena,O/U 2.5 OVER,OVER,STRONG,1.85,1.76,-4.9,100,15,,,,
+2026-11-23,2026-11-24,Championship,Cardiff City,Preston North End,O/U 2.5 UNDER,UNDER,STRONG,2.98,2.75,-7.7,100,3,,,,
+2026-11-23,2026-11-25,Japan J-League,Avispa Fukuoka,Yokohama F Marinos,1X2 AWAY (Yokohama F Marinos),AWAY,STRONG,2.52,2.41,-4.4,100,19,,,,
+2026-11-23,2026-11-25,Serie B,Padova,Sampdoria,1X2 AWAY (Sampdoria),AWAY,STRONG,2.58,2.5,-3.1,100,21,,,,
+2026-11-23,2026-11-26,Argentina Primera Division,Boca Juniors,Independiente Rivadavia,O/U 2.5 UNDER,UNDER,STRONG,1.72,1.7,-1.2,100,8,,,,
+2026-11-23,2026-11-24,League Two,Port Vale,Northampton Town,O/U 2.5 UNDER,UNDER,STRONG,1.66,1.65,-0.6,100,13,,,,
+2026-11-23,2026-11-25,Japan J-League,V-Varen Nagasaki,Kawasaki Frontale,1X2 AWAY (Kawasaki Frontale),AWAY,STRONG,1.84,1.84,0.0,100,19,,,,
+2026-11-23,2026-11-24,League Two,Port Vale,Northampton Town,1X2 DRAW (Draw),DRAW,STRONG,3.225,3.2,-0.8,100,17,,,,
+2026-11-23,2026-11-25,Serie B,Mantova,Arezzo,O/U 2.5 OVER,OVER,STRONG,1.78,1.775,-0.3,100,14,,,,
+2026-11-24,2026-11-24,League One,Bradford City,Barnsley,O/U 2.5 OVER,OVER,STEAM_STRONG,1.55,1.485,-4.2,99,6,,,,
+2026-11-24,2026-11-24,League One,Bromley FC,Wycombe Wanderers,1X2 AWAY (Wycombe Wanderers),AWAY,STRONG,1.88,1.8,-4.3,99,16,,,,
+2026-11-24,2026-11-24,League One,Blackpool,Leicester City,O/U 2.5 UNDER,UNDER,STRONG,2.62,2.52,-3.8,99,3,,,,

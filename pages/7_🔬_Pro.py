@@ -32,13 +32,7 @@ from dashboard_data import pro  # noqa: E402
 from src import units as U  # noqa: E402
 from dashboard_data import research_view as V  # noqa: E402
 
-# STREAMLIT CLOUD KEEPS IMPORTED MODULES ACROSS A REDEPLOY. A page and its helper changed in the same
-# commit, and the server ran the NEW page against the OLD dashboard_data.pro still in memory:
-# AttributeError on pro.tip_scoreboard (2026-10-08). Reloading this small module on every run
-# makes the page and its helper always the same version.
-import importlib  # noqa: E402
-pro = importlib.reload(pro)
-V = importlib.reload(V)
+# Page/helper version skew after a redeploy is handled by dashboard_build_guard (app.py router).
 
 st.set_page_config(page_title="Wowza | Pro", page_icon="🔬", layout="wide")
 _TITLE, _SUB = "Research", "Pro — the evidence layer. It validates and stores evidence; it never stakes and never writes into v9."

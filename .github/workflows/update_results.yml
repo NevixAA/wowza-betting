@@ -349,13 +349,38 @@ jobs:
           for i in 1 2 3 4 5; do
             git fetch -q origin main && git reset -q --hard origin/main || { sleep 3; continue; }
             python scripts/build_predictions_index.py --pro-root "$pro" || { echo "::warning::predictions index failed (learning only)"; pushed=1; break; }
-            git add -f reports/dashboard/predictions_index.parquet reports/dashboard/predictions_summary.csv 2>/dev/null || true
+            git add -f reports/dashboard/predictions_index.parquet reports/dashboard/predictions_summary.csv reports/dashboard/fixture_identity.json 2>/dev/null || true
             if git diff --staged --quiet; then pushed=1; echo "predictions index: nothing new"; break; fi
             git commit -q -m "auto: predictions page index $(date -u '+%Y-%m-%d %H:%M UTC')"
             git push && { pushed=1; break; }
             echo "push race - retry $i"; sleep $((RANDOM % 5 + 3))
           done
           [ "$pushed" = "1" ] || echo "::warning::predictions index push failed after 5 retries"
+
+      # SUCCESS BY GAMEWEEK DATASET (owner 2026-11-23; src/prediction_gw_dataset.py). LEARNING DATA. After the settled
+      # views and the index above: one row per gameweek x league x model x version x market x line x selection group x
+      # snapshot x Clean Record flag, appended to output/prediction_gw_dataset.parquet/.csv + per-question links. A
+      # CLOSED gameweek row is never rewritten (a later difference goes to output/corrections/). Reuses the Pro
+      # ledger clone of the step above (unreachable -> Pro's open rows are kept as they were). Idempotent: an
+      # unchanged ledger makes no commit. Tolerant: a failure is a warning, never a red run.
+      - name: Prediction success by gameweek dataset (learning only, no prices)
+        if: always() && vars.PREDICTION_LEDGER_ENABLED == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          pro="$RUNNER_TEMP/pro_ledger"
+          pushed=0
+          for i in 1 2 3 4 5; do
+            git fetch -q origin main && git reset -q --hard origin/main || { sleep 3; continue; }
+            python scripts/build_prediction_gw_dataset.py --pro-root "$pro" || { echo "::warning::prediction GW dataset failed (learning only)"; pushed=1; break; }
+            git add -f output/prediction_gw_dataset.parquet output/prediction_gw_dataset.csv output/prediction_gw_dataset.meta.json output/prediction_gw_dataset_versions.csv output/prediction_gw_dataset_links/ 2>/dev/null || true
+            if [ -f output/corrections/prediction_gw_dataset_corrections.csv ]; then git add -f output/corrections/prediction_gw_dataset_corrections.csv; fi
+            if git diff --staged --quiet; then pushed=1; echo "prediction GW dataset: nothing new"; break; fi
+            git commit -q -m "auto: prediction GW dataset $(date -u '+%Y-%m-%d %H:%M UTC')"
+            git push && { pushed=1; break; }
+            echo "push race - retry $i"; sleep $((RANDOM % 5 + 3))
+          done
+          [ "$pushed" = "1" ] || echo "::warning::prediction GW dataset push failed after 5 retries"
 
       # CLV COLLECTION GUARD (P1 2026-10-22). Runs LAST, after both commits, so a failing guard can
       # never stop results or settlements from persisting. It turns the run red when certified
