@@ -446,6 +446,33 @@ def build_plan(days: dict, tiers: Iterable[Tier] = TIERS, props: dict | None = N
     return plan
 
 
+def parse_only_day(spec: str) -> tuple[str, str]:
+    """'<league>|YYYY-MM-DD' -> (league, date). Owner 2026-11-24: ONE league-day bought on its own."""
+    lg, sep, d = str(spec).partition("|")
+    lg, d = lg.strip(), d.strip()
+    try:
+        ok = bool(sep and lg) and datetime.strptime(d, "%Y-%m-%d").strftime("%Y-%m-%d") == d
+    except ValueError:
+        ok = False
+    if not ok:
+        raise ValueError(f"--only-day must be '<league>|YYYY-MM-DD', got {spec!r}")
+    return lg, d
+
+
+def restrict_plan(plan: dict, league: str, date: str) -> dict:
+    """The same plan cut to ONE league-day: the units and lookups of (league, date) only, nothing added or
+    changed (tiers, markets, regions, offsets and max costs stay what build_plan made them)."""
+    return {"units": {t: [u for u in us if (u.league, u.date) == (league, date)]
+                      for t, us in plan["units"].items()},
+            "lookups": {t: [x for x in ls if tuple(x) == (league, date)] for t, ls in plan["lookups"].items()}}
+
+
+def plan_max_credits(plan: dict) -> int:
+    """Most credits a plan can spend: 1 per lookup plus each unit's maximum."""
+    return (sum(len(v) for v in plan["lookups"].values()) * LOOKUP_MAX_COST
+            + sum(u.max_cost for us in plan["units"].values() for u in us))
+
+
 def summarise_plan(plan: dict, days: dict, sec_per_call: tuple = (0.5, 1.0),
                    conditional: tuple = ("Saudi Pro League",)) -> dict:
     """Exact calls and MAXIMUM credits per tier (a call is billed only for markets returned; empty

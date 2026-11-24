@@ -6,6 +6,9 @@ OddsAPI HISTORICAL collector CLI (src/oddsapi_history.py). The data goes ONLY to
                                 wowza-exec branch `odds-history`), resuming from its ledger
   --store DIR --probe-s         the correct_score probe (one P7 probe event per league)
   --store DIR --probe-ht        the first-half over/under probe at the BT lead time (gates tier HTB)
+  --only-day '<league>|DATE'    with a run or --dry-run: the same plan cut to ONE league-day (its listing
+                                and that day's units of --tiers); refused when the cut plan's maximum
+                                credits exceed ODDS_HIST_RUN_CREDIT_CAP (owner 2026-11-24)
 
 Run settings come from the environment and have no fallback:
   ODDS_API_KEY                  the provider key (a secret; never printed)
@@ -54,18 +57,39 @@ def main(argv=None) -> int:
                     help="the keyless leagues against the provider's sports list + one historical event each")
     ap.add_argument("--max-minutes", type=float)
     ap.add_argument("--tiers", help="comma list, a subset of the priority order (default: every tier)")
+    ap.add_argument("--only-day", help="'<league>|YYYY-MM-DD': cut the plan to this one league-day")
     a = ap.parse_args(argv)
 
     fx, identity = OH.load_fixtures(include=tuple(OH.KEYLESS_SEARCH) if a.probe_keys else ())
     days = OH.fixture_days(fx)
     spell = OH.club_spellings(identity, days)
     tiers = OH.TIERS if not a.tiers else tuple(t for t in OH.TIERS if t.name in set(a.tiers.split(",")))
+    only = None
+    if a.only_day:
+        if not a.tiers:
+            raise SystemExit("--only-day needs --tiers (name the tiers to buy for that day)")
+        try:
+            only = OH.parse_only_day(a.only_day)
+        except ValueError as e:
+            raise SystemExit(str(e))
+        if only not in days:
+            raise SystemExit("--only-day: no fixture of ours on that league-day")
+        if a.probe_s or a.probe_ht or a.probe_keys:
+            raise SystemExit("--only-day cuts a collect plan; it does not combine with a probe")
 
     if a.dry_run:
         if a.plan_out is None:
             raise SystemExit("--dry-run needs --plan-out")
         plan = OH.build_plan(days, tiers, s_ok=OH.s_probe_leagues(a.store), ht=OH.ht_probe_result(a.store))
+        if only:
+            plan = OH.restrict_plan(plan, *only)
         s = OH.summarise_plan(plan, days)
+        if only:
+            s["only_day"] = {"lookups": sum(len(v) for v in plan["lookups"].values()),
+                             "units": {t: len(v) for t, v in plan["units"].items()},
+                             "max_credits": OH.plan_max_credits(plan)}
+            OH.say(f"only-day plan: lookups {s['only_day']['lookups']}, units {s['only_day']['units']}, "
+                   f"max credits {s['only_day']['max_credits']}")
         s["planned_at"] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
         s["plan_digest"] = OH.plan_digest(plan)
         s["s_probe"] = "applied" if OH.s_probe_leagues(a.store) is not None else "not run: S counted for every team league"
@@ -102,6 +126,13 @@ def main(argv=None) -> int:
         return OH.EXIT_ERROR if res.get("stopped") else OH.EXIT_DONE
     plan = OH.build_plan(days, tiers, s_ok=OH.s_probe_leagues(a.store) or set(),
                          ht=OH.ht_probe_result(a.store) or ((), ()))
+    if only:
+        plan = OH.restrict_plan(plan, *only)
+        mx = OH.plan_max_credits(plan)
+        OH.say(f"only-day plan: lookups {sum(len(v) for v in plan['lookups'].values())}, "
+               f"units {sum(len(v) for v in plan['units'].values())}, max credits {mx}, run cap {cap}")
+        if mx > cap:
+            raise SystemExit(f"--only-day: the plan may spend {mx} credits > run cap {cap}: refused before any call")
     run_id = os.getenv("GITHUB_RUN_ID") or datetime.now(timezone.utc).strftime("local%Y%m%d%H%M%S")
     run_id = f"{run_id}-{os.getenv('GITHUB_RUN_ATTEMPT', '1')}-{datetime.now(timezone.utc):%H%M%S}"
     store = OH.Store(a.store, run_id)
