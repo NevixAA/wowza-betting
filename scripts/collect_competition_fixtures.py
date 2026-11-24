@@ -164,13 +164,32 @@ def replace_upcoming(rows: list[dict], league_id: int, season: str, path: Path |
     return len(out)
 
 
+#: a journaled season is re-read until its last fetch is this many days past the season end (owner 2026-11-24
+#: "no unreal data"): a provider adds play-off / final-stage fixtures AFTER the regular season's stated end
+#: (Argentina Primera Division 2026: regular season end 2026-11-08, play-offs from 2026-11-28), and the old
+#: rule (end < last fetch = done forever) never read them, so those matches had no API-Football fixture at all
+SEASON_TAIL_D = 21
+
+
+def season_end_of(seasons: list[dict], season: str, journal_end) -> pd.Timestamp:
+    """The provider's CURRENT end of `season` (its /leagues answer this run), else the journaled one."""
+    for s in seasons:
+        if str(s["season"]) == str(season) and pd.notna(s.get("end")):
+            return pd.Timestamp(s["end"])
+    return pd.to_datetime(journal_end, errors="coerce")
+
+
 def plan_seasons(seasons: list[dict], journal: pd.DataFrame, league_id: int, start, today) -> list[dict]:
-    """Seasons overlapping [start, today], minus ENDED seasons already journaled."""
+    """Seasons overlapping [start, today], minus ENDED seasons already journaled. ENDED = last fetched more than
+    SEASON_TAIL_D days after the provider's CURRENT season end (a season the provider extended is re-read)."""
     done = set()
     if not journal.empty:
         j = journal[pd.to_numeric(journal["league_id"], errors="coerce") == league_id]
-        ended = pd.to_datetime(j["season_end"], errors="coerce") < pd.to_datetime(j["fetched_at"], errors="coerce").dt.tz_localize(None).dt.normalize()
-        done = set(j.loc[ended, "season"].astype(str))
+        fetched = pd.to_datetime(j["fetched_at"], errors="coerce", utc=True).dt.tz_localize(None).dt.normalize()
+        for season, jend, f in zip(j["season"].astype(str), j["season_end"], fetched):
+            end = season_end_of(seasons, season, jend)
+            if pd.notna(end) and pd.notna(f) and end + pd.Timedelta(days=SEASON_TAIL_D) < f:
+                done.add(season)
     return [s for s in seasons if s["end"] >= start and s["start"] <= today and s["season"] not in done]
 
 

@@ -123,7 +123,8 @@ def fixture_lists_fresh(now: datetime) -> str | None:
     st = pd.to_datetime(j["season_start"], errors="coerce")
     en = pd.to_datetime(j["season_end"], errors="coerce")
     t = pd.to_datetime(j["fetched_at"], errors="coerce", utc=True)
-    reread = (st <= today) & ~(en < t.dt.tz_localize(None).dt.normalize())
+    # the same tail as collect_competition_fixtures.plan_seasons (late play-off fixtures, owner 2026-11-24)
+    reread = (st <= today) & ~(en + pd.Timedelta(days=CF.SEASON_TAIL_D) < t.dt.tz_localize(None).dt.normalize())
     if not reread.any() or t[reread].isna().any():
         return None
     oldest = t[reread].min()

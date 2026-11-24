@@ -291,6 +291,64 @@ def _countable_props(df):
     return _valid_fixture_rows(_bet_tiers_only(df))
 
 
+# -- TIP TRUTH GATE (owner 2026-11-24 "no duplicates, no unreal data, not unreal markets") --------------------------
+# Every tip sender below asks src/tip_truth before it sends: ONE real API-Football fixture, a real named-book
+# two-sided bet-time price captured before the send, a market with its league's own applied bar quoted by that book,
+# and no second tip on the same canonical match x market x side (across senders: the TOP-3 ledger + this run).
+# FAIL CLOSED: the gate cannot load -> the tip is not sent. Market-movement alerts (sharp jumps, WC drift) carry no
+# pick to bet, so they are information, not tips, and are not gated.
+_TRUTH = None
+_TRUTH_SENT: set = set()
+
+
+def _truth_gate():
+    global _TRUTH, _TRUTH_SENT
+    if _TRUTH is None:
+        try:
+            from src import tip_truth as TT
+            from src import top3_league as TL
+            ctx = TL.bars_context()
+            team_ok = TL.truth_bars_ok(ctx)
+
+            def bars_ok(league, market, side):
+                m = str(market)
+                if m.startswith("HT_"):
+                    return ht_bar(str(league), m.split("_", 1)[1], str(side))[0] is not None
+                return team_ok(league, m, side)
+            _TRUTH = TT.default(bars_ok=bars_ok)
+            _TRUTH_SENT = TT.prior_keys(_TRUTH, TL.picks_store(app_config.OUTPUT_DIR).read(), "team")
+        except Exception as e:                                          # noqa: BLE001
+            print(f"  TRUTH GATE unavailable ({type(e).__name__}: {e}) - no tip is sent")
+            _TRUTH = False
+    return _TRUTH
+
+
+def _truth_check(row, market: str, side: str, odds=None, opposite_odds=None, book="", captured_at="",
+                 home=None, away=None) -> tuple:
+    """('' or the blocking reason, canonical key). Never prints a price."""
+    t = _truth_gate()
+    if not t:
+        return "TRUTH_GATE_UNAVAILABLE", None
+    from datetime import timezone as _tz
+    from src import tip_truth as TT
+    r = {"league": row.get("league"), "kickoff_utc": row.get("kickoff_utc") or row.get("date"),
+         "match_date": str(row.get("date") or row.get("match_date") or "")[:10],
+         "home_team": home if home is not None else row.get("home_team"),
+         "away_team": away if away is not None else row.get("away_team"),
+         "market": market, "side": side, "odds": odds, "opposite_side_odds": opposite_odds,
+         "entry_bookmaker": book, "entry_captured_at": captured_at}
+    why, info = t.check(r, datetime.now(_tz.utc))
+    key = (f"af:{info['af_fixture_id']}", market, side) if info.get("af_fixture_id") is not None else None
+    if not why and key in _TRUTH_SENT:
+        why = TT.DUPLICATE
+    return why, key
+
+
+def _truth_commit(key) -> None:
+    if key is not None:
+        _TRUTH_SENT.add(key)
+
+
 def send_fantasy_tips(max_per_pos: int = 3) -> int:
     """FANTASY (FPL) family — captaincy + top picks per position. PREDICTIONS, not bets;
     kept visibly separate from the SNIPER/MARKSMAN betting tips.
@@ -673,6 +731,13 @@ def notify_new_snipers(gate=None) -> int:
         tier  = row["signal_tier"]
         side  = row.get("best_side") or row.get("bet", "")
         odds  = row["odds_under25"] if side == "UNDER" else row["odds_over25"]
+        _col = "odds_under25" if side == "UNDER" else "odds_over25"
+        _twhy, _tkey = _truth_check(row, "OU25", str(side), odds,
+                                    row.get("odds_over25" if side == "UNDER" else "odds_under25"),
+                                    row.get(f"{_col}_book", ""), row.get(f"{_col}_captured_at", ""))
+        if _twhy:
+            print(f"  TRUTH BLOCK {row['home_team']} vs {row['away_team']} O/U 2.5 {side}: {_twhy}")
+            continue
         # A tip goes out only with its recorded edge, price and model; a missing one is a
         # skipped send (logged), never a 0% edge or a guessed model label.
         edge  = pd.to_numeric(row.get("best_edge"), errors="coerce") * 100
@@ -720,6 +785,7 @@ def notify_new_snipers(gate=None) -> int:
         if _send(token, chat_id, msg):
             notified.add(key)
             gate.commit(_cand)
+            _truth_commit(_tkey)
             sent += 1
             _save_notified(notified)  # save after each send so crashes don't cause duplicates
             print(f"  Sent [{tier}]: {row['home_team']} vs {row['away_team']} — {side}")
@@ -780,6 +846,14 @@ def notify_live_signals() -> int:
         # signal is never sent as a tip until the scanner records a real in-play price; it stays collected.
         if pd.isna(pd.to_numeric(row.get("market_odds"), errors="coerce")):
             print(f"  SKIP live {row['match']} [{row['signal_type']}]: NO_MARKET_PRICE (fair price only)")
+            continue
+        _h, _, _a = str(row.get("match") or "").partition(" vs ")
+        _lside = "UNDER" if "UNDER" in str(row.get("bet")) else "OVER"
+        _twhy, _tkey = _truth_check(row, "OU25", _lside, row.get("market_odds"), None,
+                                    row.get("market_odds_book", ""), row.get("market_odds_captured_at", ""),
+                                    home=_h.strip(), away=_a.strip())
+        if _twhy:
+            print(f"  TRUTH BLOCK live {row['match']} [{row['signal_type']}]: {_twhy}")
             continue
 
         emoji   = SIGNAL_EMOJI.get(row["signal_type"], "📌")
@@ -1080,6 +1154,11 @@ def notify_ht_tips(gate=None) -> int:
             continue
         why = c["reason"] or gate.check(_ht_candidate(c))
         r = c["row"]
+        _tkey = None
+        if not why:
+            # the HT price lookup carries no book / capture time: the truth gate blocks it until it does
+            why, _tkey = _truth_check(r, f"HT_{c['line']}", c["side"], c["odds"], None, "", "")
+            why = f"TRUTH {why}" if why else ""
         if why:
             counts[why.split(":")[0].split(" (")[0]] += 1
             skipped.setdefault(f"{r['home_team']} v {r['away_team']}", []).append(f"{c['market']} {why}")
@@ -1099,6 +1178,7 @@ def notify_ht_tips(gate=None) -> int:
         if _send(token, chat_id, msg):
             notified.add(key)
             gate.commit(_ht_candidate(c))
+            _truth_commit(_tkey)
             sent += 1
             _save_notified(notified)
             print(f"  HT tip: {r['home_team']} vs {r['away_team']} — HT {side} {line} ({prob*100:.0f}%)")
@@ -2744,6 +2824,13 @@ def notify_side_bets(gate=None) -> int:
         if _why:
             print(f"  SKIP side {row['home_team']} vs {row['away_team']} {row['market']}: {_why}")
             continue
+        _tm = {"btts": ("BTTS", "YES"), "over15": ("OVER15", "OVER"), "over35": ("OVER35", "OVER")}.get(
+            str(row["market"]), (str(row["market"]).upper(), str(row.get("side") or "")))
+        _twhy, _tkey = _truth_check(row, _tm[0], _tm[1], row.get("market_odds"), row.get("opposite_odds"),
+                                    row.get("market_odds_book", ""), row.get("market_odds_captured_at", ""))
+        if _twhy:
+            print(f"  TRUTH BLOCK side {row['home_team']} vs {row['away_team']} {row['market']}: {_twhy}")
+            continue
 
         tier  = row["signal_tier"]
         mkt   = row["market"]
@@ -2789,6 +2876,7 @@ def notify_side_bets(gate=None) -> int:
         if _send(token, chat_id, msg):
             notified.add(key)
             gate.commit(_cand)
+            _truth_commit(_tkey)
             sent += 1
             _save_notified(notified)
             print(f"  Side [{tier}]: {row['home_team']} vs {row['away_team']} — {label} @ {row['market_odds']:.2f}")

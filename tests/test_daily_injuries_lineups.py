@@ -324,15 +324,20 @@ def test_fixture_lists_fresh_window(env):
     assert D.fixture_lists_fresh(NOW) == (NOW - timedelta(hours=17)).isoformat()
     _lists_read_at(NOW - timedelta(hours=19))
     assert D.fixture_lists_fresh(NOW) is None                        # older than FIXTURE_REFRESH_H
-    # an ended season is not re-read by step 1, so its old fetch does not make the lists stale
+    # an ended season is not re-read by step 1, so its old fetch does not make the lists stale. ENDED = last read
+    # more than CF.SEASON_TAIL_D days after its end (2026-11-24: late play-off fixtures are read in the tail)
     j = pd.read_parquet(CF.JOURNAL)
     old = {**j.iloc[0].to_dict(), "season": "2025", "season_start": "2025-08-01", "season_end": "2026-05-30",
-           "fetched_at": "2026-06-10T00:00:00+00:00"}
+           "fetched_at": "2026-07-01T00:00:00+00:00"}
     pd.concat([j.assign(fetched_at=(NOW - timedelta(hours=2)).isoformat()), pd.DataFrame([old])])         .to_parquet(CF.JOURNAL)
     assert D.fixture_lists_fresh(NOW) == (NOW - timedelta(hours=2)).isoformat()
     # a season read BEFORE it ended is re-read once more: it counts
     pd.concat([j.assign(fetched_at=(NOW - timedelta(hours=2)).isoformat()),
                pd.DataFrame([{**old, "fetched_at": "2026-05-01T00:00:00+00:00"}])]).to_parquet(CF.JOURNAL)
+    assert D.fixture_lists_fresh(NOW) is None
+    # read inside the tail after its end (a play-off fixture may still be added): re-read, it counts
+    pd.concat([j.assign(fetched_at=(NOW - timedelta(hours=2)).isoformat()),
+               pd.DataFrame([{**old, "fetched_at": "2026-06-10T00:00:00+00:00"}])]).to_parquet(CF.JOURNAL)
     assert D.fixture_lists_fresh(NOW) is None
     CF.JOURNAL.unlink()
     assert D.fixture_lists_fresh(NOW) is None                        # no journal: never fresh
