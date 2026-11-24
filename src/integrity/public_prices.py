@@ -36,7 +36,8 @@ PRICE_COL = re.compile(
 NOT_PRICE = re.compile(
     r"^(avg|mean|median|min|max|n|count|has|is|num|share|pct|real)_"
     r"|_(min|max|band|bands|source|sources|ts|at|time|utc|status|reason|flag|n|count|book|books|bookmaker|"
-    r"key|id|ok|missing|kind|type|rule|class|provenance|capture|coverage|method|derived|seen|age_min|age_h)$", re.I)
+    r"key|id|ok|missing|kind|type|rule|class|provenance|capture|coverage|method|derived|seen|age_min|age_h|"
+    r"minutes|timestamp|state|snapshots)$", re.I)
 
 
 def _cfg(path: Path = PATHS) -> dict:

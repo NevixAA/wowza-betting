@@ -402,6 +402,104 @@ def cmd_guard_staged(a) -> int:
         subprocess.run(["git", "reset", "-q", "--", *bad[i:i + 200]], capture_output=True)
     if bad:
         print(f"[price_store_live] pre-commit: {len(bad)} private price file(s) kept out of this public commit")
+    # Price-free public VIEWS (stage 2, owner 2026-11-24): every live ledger / tip file listed under
+    # "views" is re-projected into output/public/<name> on each public commit, so the public tree keeps
+    # stake, P/L, ROI, CLV %, result and bookmaker name without a single odds column.
+    written = write_views(Path.cwd(), cfg, a.repo)
+    for i in range(0, len(written), 200):
+        subprocess.run(["git", "add", "-f", "--", *written[i:i + 200]], capture_output=True)
+    return 0
+
+
+# ── price-free public views (class B) ──────────────────────────────────────────────────────────────
+#: a per-row price column. KEEP IN STEP with src/integrity/public_prices.py (Data truth 17 fails a view that
+#: still carries one; tests/test_price_store_live.py asserts the two patterns are identical).
+PRICE_COL = re.compile(
+    r"(^|_)(odds|price|prices|implied|overround|p_market|market_prob|devig)(_|$)"
+    r"|^(b365|bw|iw|ps|wh|vc|max|avg|bb|bbmx|bbav|lb|sj|gb|sb|so|sy)c?(h|d|a|>2\.5|<2\.5|ahh|aha)$", re.I)
+NOT_PRICE = re.compile(
+    r"^(avg|mean|median|min|max|n|count|has|is|num|share|pct|real)_"
+    r"|_(min|max|band|bands|source|sources|ts|at|time|utc|status|reason|flag|n|count|book|books|bookmaker|"
+    r"key|id|ok|missing|kind|type|rule|class|provenance|capture|coverage|method|derived|seen|age_min|age_h|"
+    r"minutes|timestamp|state|snapshots)$", re.I)
+VIEW_ROOT = "output/public/"
+
+
+def is_price_col(c: str) -> bool:
+    return bool(PRICE_COL.search(c)) and not NOT_PRICE.search(c)
+
+
+def view_path(rel: str) -> str:
+    return VIEW_ROOT + (rel[len("output/"):] if rel.startswith("output/") else rel)
+
+
+def project_csv(data: bytes) -> bytes:
+    """The file without its price columns; every other cell kept as written (text in, text out)."""
+    import csv
+    text = data.decode("utf-8-sig")
+    eol = "\r\n" if "\r\n" in text[:4096] else "\n"
+    rows = list(csv.reader(io.StringIO(text, newline="")))
+    if not rows:
+        return data
+    keep = [i for i, c in enumerate(rows[0]) if not is_price_col(c.strip())]
+    buf = io.StringIO()
+    w = csv.writer(buf, lineterminator=eol)
+    for r in rows:
+        w.writerow([r[i] if i < len(r) else "" for i in keep])
+    return buf.getvalue().encode("utf-8")
+
+
+def project_json(data: bytes) -> bytes:
+    def strip(o):
+        if isinstance(o, dict):
+            return {k: strip(v) for k, v in o.items() if not is_price_col(str(k))}
+        if isinstance(o, list):
+            return [strip(v) for v in o]
+        return o
+    return (json.dumps(strip(json.loads(data)), indent=1, ensure_ascii=False) + "\n").encode("utf-8")
+
+
+def project(rel: str, data: bytes) -> bytes | None:
+    if rel.endswith(".csv"):
+        return project_csv(data)
+    if rel.endswith(".json"):
+        return project_json(data)
+    return None                                           # binary: no public view
+
+
+def view_patterns(cfg: dict, repo: str) -> list[re.Pattern]:
+    return [re.compile(p) for p in (cfg.get("views") or {}).get(repo, [])]
+
+
+def write_views(ws: Path, cfg: dict, repo: str) -> list[str]:
+    """(Re)write output/public/<name> for every view-listed live file present in the workspace.
+    Returns the view paths whose bytes changed. A file that cannot be projected gets no view."""
+    vrx = view_patterns(cfg, repo)
+    if not vrx:
+        return []
+    out = []
+    for rel, p in sorted(workspace_live_files(ws, live_patterns(cfg, repo)).items()):
+        if not any(r.search(rel) for r in vrx):
+            continue
+        try:
+            v = project(rel, p.read_bytes())
+        except (ValueError, UnicodeDecodeError, OSError):
+            v = None
+        if v is None:
+            continue
+        dst = ws / view_path(rel)
+        if dst.exists() and dst.read_bytes() == v:
+            continue
+        dst.parent.mkdir(parents=True, exist_ok=True)
+        dst.write_bytes(v)
+        out.append(view_path(rel))
+    return out
+
+
+def cmd_views(a) -> int:
+    cfg = load(a.config)
+    n = write_views(Path(a.workspace).resolve(), cfg, a.repo)
+    print(f"[price_store_live] {a.repo}: {len(n)} public view(s) written")
     return 0
 
 
@@ -430,9 +528,14 @@ def main(argv=None) -> int:
     g = sub.add_parser("guard-staged")
     g.add_argument("--repo", required=True)
     g.add_argument("--config", default=str(CONFIG))
+    v = sub.add_parser("views", help="write the price-free public views of the live files in the workspace")
+    v.add_argument("--repo", required=True)
+    v.add_argument("--workspace", default=".")
+    v.add_argument("--config", default=str(CONFIG))
     a = ap.parse_args(argv)
     try:
-        return {"open": cmd_open, "push": cmd_push, "guard-staged": cmd_guard_staged}[a.cmd](a)
+        return {"open": cmd_open, "push": cmd_push, "guard-staged": cmd_guard_staged,
+                "views": cmd_views}[a.cmd](a)
     except S.StoreError as e:
         print(f"::error title=price store::{e}")
         return 1

@@ -8,7 +8,9 @@ name: Tests and gates
 #   gates  - research lock, track registry, dashboard manifest (--check each; every step runs)
 # The data truth stoplight (--gate, with its ratchet) stays in data_truth_gate.yml, which now also
 # runs on pushes to data-truth-100.
-# No secret is passed to either job: a test that needs an API key or the network is a bug.
+# The only secret either job gets is the READ-ONLY price store key (PRICE_STORE_RO_KEY): since the price cut-over
+# (owner 2026-11-24) the price files live only in the private store, and the suite and the gates read them from
+# there (scripts/price_store_live.sh open). A test that needs an API key or the network is still a bug.
 # Bot pushes (collect, predict, results) use GITHUB_TOKEN and so do not trigger this workflow.
 
 on:
@@ -31,6 +33,17 @@ jobs:
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
+      - name: Price store - open (private prices, owner 2026-11-24)
+        # Live price files exist only in the private store (scripts/price_store_live.sh). This puts them at
+        # their usual paths before any work and keeps them out of every public commit. Rollback: set the
+        # repo variable PRICE_STORE_LIVE to anything but 1.
+        env:
+          PRICE_STORE_LIVE: ${{ vars.PRICE_STORE_LIVE }}
+          PRICE_STORE_RO_KEY: ${{ secrets.PRICE_STORE_RO_KEY }}
+          # CI checks out a PR merge ref: read main's store files only when the change targets main.
+          PRICE_STORE_ANY_BRANCH: ${{ (github.base_ref == 'main' || github.ref_name == 'main') && '1' || '' }}
+        run: bash scripts/price_store_live.sh open wowza-betting
+
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
@@ -55,6 +68,17 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
+      - name: Price store - open (private prices, owner 2026-11-24)
+        # Live price files exist only in the private store (scripts/price_store_live.sh). This puts them at
+        # their usual paths before any work and keeps them out of every public commit. Rollback: set the
+        # repo variable PRICE_STORE_LIVE to anything but 1.
+        env:
+          PRICE_STORE_LIVE: ${{ vars.PRICE_STORE_LIVE }}
+          PRICE_STORE_RO_KEY: ${{ secrets.PRICE_STORE_RO_KEY }}
+          # CI checks out a PR merge ref: read main's store files only when the change targets main.
+          PRICE_STORE_ANY_BRANCH: ${{ (github.base_ref == 'main' || github.ref_name == 'main') && '1' || '' }}
+        run: bash scripts/price_store_live.sh open wowza-betting
+
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'

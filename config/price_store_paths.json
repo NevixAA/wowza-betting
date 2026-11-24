@@ -190,7 +190,44 @@
  },
  "live": {
   "wowza-betting": [
-   "A_O"
+   "A_O",
+   "B"
+  ]
+ },
+ "views": {
+  "wowza-betting": [
+   "^output/bets\\.csv$",
+   "^output/bets_ledger\\.csv$",
+   "^output/clv_records\\.csv$",
+   "^output/direction_conflicts\\.csv$",
+   "^output/drift_shadow\\.csv$",
+   "^output/edge_engine_backtest\\.csv$",
+   "^output/edge_engine_shadow\\.csv$",
+   "^output/ht_ledger\\.csv$",
+   "^output/ht_observations\\.csv$",
+   "^output/league_weekly_candidates\\.csv$",
+   "^output/league_weekly_research\\.csv$",
+   "^output/ledger_tier_seen\\.csv$",
+   "^output/player_ledger\\.csv$",
+   "^output/player_tips\\.csv$",
+   "^output/predictions\\.csv$",
+   "^output/props_shown_log\\.csv$",
+   "^output/quality_tier_shadow\\.csv$",
+   "^output/sharp_ledger\\.csv$",
+   "^output/sharp_tips\\.csv$",
+   "^output/side_bets_ledger\\.csv$",
+   "^output/side_edge_devig_shadow\\.csv$",
+   "^output/stake_audit\\.csv$",
+   "^output/stake_plan\\.csv$",
+   "^output/top3_league_candidates\\.csv$",
+   "^output/top3_league_ledger\\.csv$",
+   "^output/top_picks_log\\.csv$",
+   "^output/v91_shadow\\.csv$",
+   "^output/weekly_league_report\\.json$",
+   "^output/worldcup_tips\\.csv$",
+   "^output/model_lineage/shadow_experiments\\.csv$",
+   "^output/props_top3_candidates\\.csv$",
+   "^output/props_top3_ledger\\.csv$"
   ]
  }
 }
