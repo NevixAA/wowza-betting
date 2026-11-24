@@ -144,8 +144,10 @@ def side_models_view(art: dict, recipe: dict, lineage: dict | None, art_sha16: s
         "model_version": art.get("model_version"), "data_end": art.get("data_end"),
         "recipe": "config/side_models_recipe.json", "recipe_model_version": recipe.get("model_version"),
         "data_ref": recipe.get("data_ref"), "until": recipe.get("until"),
-        "training_workflow": ".github/workflows/train_side_models.yml (workflow_dispatch only, artifact only)",
-        "scheduled_refit": "OFF (owner approval required)",
+        "training_workflow": ".github/workflows/train_side_models.yml (dispatch: reproduce / refit_candidate; monthly: "
+                             "monthly_candidate -> PR awaiting owner approval)",
+        "scheduled_refit": "MONTHLY CANDIDATE (owner 2026-11-24): gated on data truth GREEN + lineage PASS; install only "
+                           "by merging the owner-approval PR, never automatic",
         "lineage": {"status": (lineage or {}).get("status", "UNVERIFIED"), "why": (lineage or {}).get("why")},
         "families": fams,
     }
