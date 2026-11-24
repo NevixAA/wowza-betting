@@ -74,3 +74,25 @@ dashboard_data/_remote_cache/
 # summary lives in output/system_health.json.
 output/contract_violations.json
 output/contract_violations.json.tmp
+
+# PRIVATE PRICES (owner 2026-11-24, "so fix it! especially the public odds"). Class A/O price files live
+# ONLY in the private store NevixAA/wowza-exec, branch af-prices-live, at wowza-betting/main/<path>
+# (config/price_store_paths.json "live" / "public_retired"). Jobs place them here with
+# scripts/price_store_live.sh open and write them back with push; a pre-commit hook keeps them out of
+# every public commit and Data truth 17 fails a commit that tracks one again.
+/odds_history_v9.json
+/output/book_odds_snapshots.csv
+/output/book_odds_snapshots_archive/
+/output/book_quotes/
+/output/exchange_quotes/
+/output/newformat_odds_dense.csv
+/output/newformat_odds_history.csv
+/output/odds_heartbeat/
+/output/player_prop_odds_history.csv
+/output/player_prop_odds_history_archive/
+/output/prop_quotes/
+/output/sharp_history/
+/output/specials_quotes/
+/output/standard_odds_history.csv
+/output/standard_sidemarket_odds_history.csv
+/output/worldcup_history.json
