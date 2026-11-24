@@ -426,8 +426,100 @@ def fpl_crosswalk(players: pd.DataFrame, fpl: pd.DataFrame, norm=None,
     return ids
 
 
+def _v1_context(raw: pd.DataFrame, pl: pd.DataFrame, rows: list[dict] | None = None) -> pd.DataFrame:
+    """The rows of the props source frame that every feature of V1's rows reads: the fantasy league's
+    rows, every row of a fixture involving one of its clubs (any competition: opponent / team tables),
+    every row of V1's players (career / position), every fixture of a referee who took charge in the
+    fantasy league (referee tables, by provider referee key). Proven identical to the full frame on
+    every model input (tests/test_fantasy_v1_props_build.py; scripts/certify_real_data.py
+    fantasy_v1_parity rebuilds the full training frame and compares). Restricting it keeps the build
+    ~7x smaller than the full ~1M-row build (13 GB peak locally) on the 16 GB runner."""
+    from player_model.feature_engineering import _referee_key
+    fl = _fantasy_league_rows(raw)
+    teams = set(fl["home_team"].dropna()) | set(fl["away_team"].dropna())
+    ids = set(pd.to_numeric(pl["player_id"], errors="coerce").dropna())
+    keep = (raw.index.isin(fl.index) | raw["home_team"].isin(teams) | raw["away_team"].isin(teams)
+            | pd.to_numeric(raw["player_id"], errors="coerce").isin(ids))
+    if "referee" in raw.columns:
+        rk = raw["referee"].map(_referee_key)
+        refs = set(rk[raw.index.isin(fl.index)].dropna())
+        refs |= {k for k in (_referee_key(r.get("referee")) for r in (rows or [])) if k}
+        keep |= rk.isin(refs)
+    return raw[keep]
+
+
+def upcoming_fixture_list(days: int = 14) -> list[dict]:
+    """The fantasy league's fixtures from today to today + `days` (API-Football /fixtures, cached), not
+    started. Empty without a key / league id / season, or off-season."""
+    try:
+        from player_model.api_football import get_fixtures_between
+        lid = _fantasy_league_id()
+        season = config.prop_season(FANTASY_LEAGUE) if FANTASY_LEAGUE else None
+        if lid is None or not str(season).isdigit():
+            return []
+        today = pd.Timestamp.utcnow().normalize()
+        fx = get_fixtures_between(lid, season, today.strftime("%Y-%m-%d"),
+                                  (today + pd.Timedelta(days=days)).strftime("%Y-%m-%d"))
+        return [f for f in fx if str(((f.get("fixture") or {}).get("status") or {}).get("short", "")) in ("NS", "TBD")]
+    except Exception as e:                                                  # noqa: BLE001
+        log.warning("fantasy: upcoming fixtures unavailable (%s: %s)", type(e).__name__, e)
+        return []
+
+
+def next_fixture_rows(pl: pd.DataFrame, fixtures: list[dict]) -> list[dict]:
+    """One PRE-MATCH serving row per V1 player: his club's next fixture (club = the team of his latest
+    fantasy-league row, API-Football naming on both sides), in the shape props predict builds
+    (identity + context only, no result). A player whose club has no listed fixture gets no row."""
+    nxt: dict = {}
+    for f in sorted(fixtures, key=lambda f: str((f.get("fixture") or {}).get("date", ""))):
+        fx, tm = f.get("fixture") or {}, f.get("teams") or {}
+        h, a = (tm.get("home") or {}).get("name"), (tm.get("away") or {}).get("name")
+        if not (fx.get("id") and fx.get("date") and h and a):
+            continue
+        rec = {"fixture_id": int(fx["id"]), "date": str(fx["date"])[:10], "home_team": h, "away_team": a,
+               "referee": fx.get("referee")}
+        nxt.setdefault(h, rec)
+        nxt.setdefault(a, rec)
+    rows = []
+    for r in pl.to_dict("records"):
+        n = nxt.get(r.get("team"))
+        if n is None:
+            continue
+        rows.append({"player_id": r["player_id"], "player_name": r.get("player_name", ""), "league": FANTASY_LEAGUE,
+                     "team": r["team"], "is_home": float(r["team"] == n["home_team"]), **n})
+    return rows
+
+
+def v1_model_inputs(pl: pd.DataFrame, raw: pd.DataFrame | None = None,
+                    rows: list[dict] | None = None) -> pd.DataFrame:
+    """PRE-MATCH model inputs for V1's players: player_model.feature_engineering.build_upcoming_features
+    (the props serving build, exactly what props predict runs) for each player's NEXT fixture
+    (next_fixture_rows), on the props source frame (props_harness.source_frame) restricted by
+    _v1_context. Never a row the props models were fitted or calibrated on (owner 2026-11-23: V1 used
+    each player's latest PLAYED row, inside the props training window for 425 of 738 players).
+    Index = pl.index; `_v1_built` says whether the build produced the player's row."""
+    from player_model.feature_engineering import build_upcoming_features
+    from player_model.props_harness import source_frame
+    raw = source_frame() if raw is None else raw
+    rows = next_fixture_rows(pl, upcoming_fixture_list()) if rows is None else rows
+    built = build_upcoming_features(rows, _v1_context(raw, pl, rows)) if rows else pd.DataFrame()
+    left = pl[["player_id"]].copy()
+    left["player_id"] = pd.to_numeric(left["player_id"], errors="coerce")
+    if built.empty:
+        out = left.assign(_v1_built=False)
+        out.index = pl.index
+        return out
+    built["player_id"] = pd.to_numeric(built["player_id"], errors="coerce")
+    built = built.drop_duplicates("player_id")
+    out = left.merge(built.assign(_v1_built=True), on="player_id", how="left")
+    out.index = pl.index
+    out["_v1_built"] = out["_v1_built"].eq(True)
+    return out
+
+
 def build_fantasy_projections(parquet_path: Path | None = None, min_minutes: float = 45.0,
-                              use_fpl: bool = True, next_n: int = 5) -> pd.DataFrame:
+                              use_fpl: bool = True, next_n: int = 5,
+                              source: pd.DataFrame | None = None) -> pd.DataFrame:
     """Per-player FPL expected-points projections.
 
     fantasy_pts = appearance + attack (P(goal)*pos_pts + P(assist)*3 + P(sot2)*1 bonus proxy)
@@ -456,6 +548,15 @@ def build_fantasy_projections(parquet_path: Path | None = None, min_minutes: flo
         return pd.DataFrame()
 
     from player_model.model import load_model, predict_proba
+    # MODEL INPUTS FROM THE PROPS SERVING BUILD (owner 2026-11-23 "Fix V1, then D4"): the payloads score
+    # v1_model_inputs - build_upcoming_features for each player's NEXT fixture on the props source
+    # frame, exactly what props predict runs - never the stored player_history feature columns (a
+    # legacy build: 124 of 128 inputs differed from the training frame) and never a played row the
+    # props models were fitted / calibrated on. No next fixture or no earlier match -> no probability.
+    if source is None:
+        from player_model.props_harness import source_frame
+        source = source_frame(history=df)
+    X = v1_model_inputs(pl, source)
     for market, col in [("goals", "p_goal"), ("assists", "p_assist"), ("sot2", "p_sot2")]:
         payload = load_model(market)
         if payload is None:
@@ -463,9 +564,17 @@ def build_fantasy_projections(parquet_path: Path | None = None, min_minutes: flo
             # point). No projections are published; the previous CSV is left untouched.
             log.error("fantasy: prop model %r not found - fantasy projections not built", market)
             return pd.DataFrame()
-        pl[col] = predict_proba(pl, payload).values
-    # Scored on the frame the payload was fitted on; from here on the profile placeholders are
-    # missing values (see _mask_profile_placeholders for why the model input is left as is).
+        p = pd.Series(np.nan, index=X.index, dtype=float)
+        ok = X["_v1_built"].to_numpy()
+        if ok.any():
+            p[ok] = predict_proba(X[ok], payload).to_numpy(dtype=float)
+        pl[col] = p.to_numpy()
+    n_unbuilt = int((~X["_v1_built"]).sum())
+    if n_unbuilt:
+        log.info("fantasy: %d player(s) without a pre-match props row (no next fixture / no earlier match) - no probability",
+                 n_unbuilt)
+    # From here on the profile placeholders still stored in player_history are read as missing
+    # (see _mask_profile_placeholders); the model inputs above never read them.
     pl = _mask_profile_placeholders(pl)
 
     m = pd.to_numeric(pl["minutes_pg"], errors="coerce")
