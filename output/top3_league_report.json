@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-24T19:02:36Z",
+ "generated_at": "2026-11-24T19:33:26Z",
  "selection_mode": "TOP3_LEAGUE_GW",
  "version": "TOP3-2",
  "freeze_lead_min": 120.0,
@@ -255,12 +255,65 @@
     "settled": 0,
     "flat_pnl_units": 0.0
    },
-   "latest_league_week_id": "Championship|2026-W47",
+   "latest_league_week_id": "Championship|2026-W48",
    "latest_excluded": {
-    "NO_LEAGUE_BAR": 42,
-    "NO_TWO_SIDED_PRICE": 6
+    "NOT_ABOVE_FAIR_PRICE": 33,
+    "NO_TWO_SIDED_PRICE": 45,
+    "RANKED_BELOW_TOP3": 15
    },
-   "latest_picks": [],
+   "latest_picks": [
+    {
+     "top3_rank": "1",
+     "home_team": "West Bromwich Albion",
+     "away_team": "Bristol City",
+     "kickoff_utc": "2026-11-28T15:00:00Z",
+     "market": "OU25",
+     "side": "OVER",
+     "odds": "1.85",
+     "edge_calibrated": "",
+     "slot": "T1_BEST_VALUE",
+     "cell_status": "",
+     "result": "",
+     "stake": "0.0",
+     "stake_reason": "NO_STAKE_NO_APPROVED_BAR",
+     "value_basis": "MODEL_EDGE",
+     "stake_label": "model +10.5pp vs fair price, no stake: no approved bar"
+    },
+    {
+     "top3_rank": "2",
+     "home_team": "Middlesbrough",
+     "away_team": "Swansea City",
+     "kickoff_utc": "2026-11-24T19:45:00Z",
+     "market": "OU25",
+     "side": "OVER",
+     "odds": "1.54",
+     "edge_calibrated": "",
+     "slot": "T2_SAFEST",
+     "cell_status": "",
+     "result": "",
+     "stake": "0.0",
+     "stake_reason": "NO_STAKE_NO_APPROVED_BAR",
+     "value_basis": "MODEL_EDGE",
+     "stake_label": "model +3.4pp vs fair price, no stake: no approved bar"
+    },
+    {
+     "top3_rank": "3",
+     "home_team": "Blackburn Rovers",
+     "away_team": "Charlton Athletic",
+     "kickoff_utc": "2026-11-28T12:30:00Z",
+     "market": "OU25",
+     "side": "OVER",
+     "odds": "1.89",
+     "edge_calibrated": "",
+     "slot": "T3_RISKY_VALUE",
+     "cell_status": "",
+     "result": "",
+     "stake": "0.0",
+     "stake_reason": "NO_STAKE_NO_APPROVED_BAR",
+     "value_basis": "MODEL_EDGE",
+     "stake_label": "model +3.3pp vs fair price, no stake: no approved bar"
+    }
+   ],
    "staked": {
     "picks": 0,
     "settled": 0,
@@ -269,14 +322,14 @@
     "roi": null
    },
    "no_stake": {
-    "picks": 0,
+    "picks": 3,
     "settled": 0,
     "won": 0,
     "flat_pnl_units": 0.0,
     "roi": null
    },
-   "weeks_decided": 1,
-   "picks": 0,
+   "weeks_decided": 2,
+   "picks": 3,
    "settled": 0,
    "won": 0,
    "flat_pnl_units": 0.0,
@@ -462,13 +515,64 @@
     "settled": 0,
     "flat_pnl_units": 0.0
    },
-   "latest_league_week_id": "League One|2026-W47",
+   "latest_league_week_id": "League One|2026-W48",
    "latest_excluded": {
-    "BELOW_LEAGUE_BAR": 11,
-    "NO_LEAGUE_BAR": 30,
-    "NO_TWO_SIDED_PRICE": 7
+    "NOT_ABOVE_FAIR_PRICE": 32,
+    "NO_TWO_SIDED_PRICE": 29
    },
-   "latest_picks": [],
+   "latest_picks": [
+    {
+     "top3_rank": "1",
+     "home_team": "Stockport County FC",
+     "away_team": "Leyton Orient",
+     "kickoff_utc": "2026-11-28T15:00:00Z",
+     "market": "BTTS",
+     "side": "YES",
+     "odds": "1.645",
+     "edge_calibrated": "",
+     "slot": "T1_BEST_VALUE",
+     "cell_status": "",
+     "result": "",
+     "stake": "0.0",
+     "stake_reason": "NO_STAKE_NO_APPROVED_BAR",
+     "value_basis": "MODEL_EDGE",
+     "stake_label": "model +0.3pp vs fair price, no stake: no approved bar"
+    },
+    {
+     "top3_rank": "2",
+     "home_team": "Stevenage",
+     "away_team": "Sheffield Wednesday",
+     "kickoff_utc": "2026-11-24T19:45:00Z",
+     "market": "BTTS",
+     "side": "YES",
+     "odds": "1.68",
+     "edge_calibrated": "",
+     "slot": "T2_SAFEST",
+     "cell_status": "",
+     "result": "",
+     "stake": "0.0",
+     "stake_reason": "NO_STAKE_NO_APPROVED_BAR",
+     "value_basis": "MODEL_EDGE",
+     "stake_label": "model +0.6pp vs fair price, no stake: no approved bar"
+    },
+    {
+     "top3_rank": "3",
+     "home_team": "Stevenage",
+     "away_team": "Blackpool",
+     "kickoff_utc": "2026-11-28T15:00:00Z",
+     "market": "BTTS",
+     "side": "YES",
+     "odds": "1.71",
+     "edge_calibrated": "",
+     "slot": "T3_RISKY_VALUE",
+     "cell_status": "",
+     "result": "",
+     "stake": "0.0",
+     "stake_reason": "NO_STAKE_NO_APPROVED_BAR",
+     "value_basis": "MODEL_EDGE",
+     "stake_label": "model +0.3pp vs fair price, no stake: no approved bar"
+    }
+   ],
    "staked": {
     "picks": 0,
     "settled": 0,
@@ -477,14 +581,14 @@
     "roi": null
    },
    "no_stake": {
-    "picks": 0,
+    "picks": 3,
     "settled": 0,
     "won": 0,
     "flat_pnl_units": 0.0,
     "roi": null
    },
-   "weeks_decided": 1,
-   "picks": 0,
+   "weeks_decided": 2,
+   "picks": 3,
    "settled": 0,
    "won": 0,
    "flat_pnl_units": 0.0,
@@ -496,13 +600,65 @@
     "settled": 0,
     "flat_pnl_units": 0.0
    },
-   "latest_league_week_id": "League Two|2026-W47",
+   "latest_league_week_id": "League Two|2026-W48",
    "latest_excluded": {
-    "BELOW_LEAGUE_BAR": 12,
-    "NO_LEAGUE_BAR": 28,
-    "NO_TWO_SIDED_PRICE": 8
+    "NOT_ABOVE_FAIR_PRICE": 22,
+    "NO_TWO_SIDED_PRICE": 26,
+    "RANKED_BELOW_TOP3": 5
    },
-   "latest_picks": [],
+   "latest_picks": [
+    {
+     "top3_rank": "1",
+     "home_team": "Fleetwood Town",
+     "away_team": "Accrington Stanley",
+     "kickoff_utc": "2026-11-28T15:00:00Z",
+     "market": "OU25",
+     "side": "OVER",
+     "odds": "1.88",
+     "edge_calibrated": "",
+     "slot": "T1_BEST_VALUE",
+     "cell_status": "",
+     "result": "",
+     "stake": "0.0",
+     "stake_reason": "NO_STAKE_NO_APPROVED_BAR",
+     "value_basis": "MODEL_EDGE",
+     "stake_label": "model +8.2pp vs fair price, no stake: no approved bar"
+    },
+    {
+     "top3_rank": "2",
+     "home_team": "Shrewsbury Town",
+     "away_team": "Cheltenham Town",
+     "kickoff_utc": "2026-11-28T15:00:00Z",
+     "market": "OU25",
+     "side": "OVER",
+     "odds": "1.95",
+     "edge_calibrated": "",
+     "slot": "T2_SAFEST",
+     "cell_status": "",
+     "result": "",
+     "stake": "0.0",
+     "stake_reason": "NO_STAKE_NO_APPROVED_BAR",
+     "value_basis": "MODEL_EDGE",
+     "stake_label": "model +7.8pp vs fair price, no stake: no approved bar"
+    },
+    {
+     "top3_rank": "3",
+     "home_team": "Exeter City",
+     "away_team": "Crawley Town",
+     "kickoff_utc": "2026-11-28T12:30:00Z",
+     "market": "OU25",
+     "side": "UNDER",
+     "odds": "2.0",
+     "edge_calibrated": "",
+     "slot": "T3_RISKY_VALUE",
+     "cell_status": "",
+     "result": "",
+     "stake": "0.0",
+     "stake_reason": "NO_STAKE_NO_APPROVED_BAR",
+     "value_basis": "MODEL_EDGE",
+     "stake_label": "model +4.7pp vs fair price, no stake: no approved bar"
+    }
+   ],
    "staked": {
     "picks": 0,
     "settled": 0,
@@ -511,14 +667,14 @@
     "roi": null
    },
    "no_stake": {
-    "picks": 0,
+    "picks": 3,
     "settled": 0,
     "won": 0,
     "flat_pnl_units": 0.0,
     "roi": null
    },
-   "weeks_decided": 1,
-   "picks": 0,
+   "weeks_decided": 2,
+   "picks": 3,
    "settled": 0,
    "won": 0,
    "flat_pnl_units": 0.0,
@@ -636,14 +792,66 @@
     "settled": 0,
     "flat_pnl_units": 0.0
    },
-   "latest_league_week_id": "Serie B|2026-W47",
+   "latest_league_week_id": "Serie B|2026-W48",
    "latest_excluded": {
-    "BELOW_LEAGUE_BAR": 26,
-    "NO_LEAGUE_BAR": 5,
-    "NO_TWO_SIDED_PRICE": 8,
-    "TIER_NO_VALUE": 1
+    "NOT_ABOVE_FAIR_PRICE": 18,
+    "NO_TWO_SIDED_PRICE": 38,
+    "RANKED_BELOW_TOP3": 17,
+    "TIER_NO_VALUE": 4
    },
-   "latest_picks": [],
+   "latest_picks": [
+    {
+     "top3_rank": "1",
+     "home_team": "Mantova",
+     "away_team": "Arezzo",
+     "kickoff_utc": "2026-11-25T19:00:00Z",
+     "market": "OU25",
+     "side": "UNDER",
+     "odds": "1.89",
+     "edge_calibrated": "",
+     "slot": "T1_BEST_VALUE",
+     "cell_status": "",
+     "result": "",
+     "stake": "0.0",
+     "stake_reason": "NO_STAKE_NO_APPROVED_BAR",
+     "value_basis": "MODEL_EDGE",
+     "stake_label": "model +4.8pp vs fair price, no stake: no approved bar"
+    },
+    {
+     "top3_rank": "2",
+     "home_team": "Pisa",
+     "away_team": "Modena",
+     "kickoff_utc": "2026-11-25T19:00:00Z",
+     "market": "BTTS",
+     "side": "YES",
+     "odds": "1.68",
+     "edge_calibrated": "0.009835",
+     "slot": "T2_SAFEST",
+     "cell_status": "PROMISING",
+     "result": "",
+     "stake": "0.0",
+     "stake_reason": "NO_STAKE_BELOW_BAR",
+     "value_basis": "CALIBRATED",
+     "stake_label": "model +1.0pp vs fair price, no stake: below bar"
+    },
+    {
+     "top3_rank": "3",
+     "home_team": "Arezzo",
+     "away_team": "Pisa",
+     "kickoff_utc": "2026-11-29T18:30:00Z",
+     "market": "OU25",
+     "side": "OVER",
+     "odds": "1.93",
+     "edge_calibrated": "0.016746",
+     "slot": "T3_RISKY_VALUE",
+     "cell_status": "UNPROVEN",
+     "result": "",
+     "stake": "0.0",
+     "stake_reason": "NO_STAKE_BELOW_BAR",
+     "value_basis": "CALIBRATED",
+     "stake_label": "model +1.7pp vs fair price, no stake: below bar"
+    }
+   ],
    "staked": {
     "picks": 0,
     "settled": 0,
@@ -652,14 +860,14 @@
     "roi": null
    },
    "no_stake": {
-    "picks": 0,
+    "picks": 3,
     "settled": 0,
     "won": 0,
     "flat_pnl_units": 0.0,
     "roi": null
    },
-   "weeks_decided": 1,
-   "picks": 0,
+   "weeks_decided": 2,
+   "picks": 3,
    "settled": 0,
    "won": 0,
    "flat_pnl_units": 0.0,

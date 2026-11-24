@@ -1,12 +1,10 @@
 {
- "generated_at": "2026-11-24T19:02:27Z",
+ "generated_at": "2026-11-24T19:33:12Z",
  "panel_version": "LWR-1",
  "tracked_leagues": 20,
  "current_tip_day": "2026-11-24",
  "leagues_with_current_week_data": 16,
- "missing_leagues": [
-  "Serie B"
- ],
+ "missing_leagues": [],
  "missing_leagues_previous_week": [],
  "no_fixture_leagues": [
   "China Super League",
@@ -16,11 +14,11 @@
  ],
  "panel_start": "2026-10-25T09:25:36Z",
  "market_gap_leagues": [],
- "expected_candidate_rows": 700,
- "actual_candidate_rows": 692,
- "panel_rows": 1324,
+ "expected_candidate_rows": 704,
+ "actual_candidate_rows": 696,
+ "panel_rows": 1344,
  "settled_rows": 1221,
- "pending_rows": 103,
+ "pending_rows": 123,
  "clv_certified_rows": 587,
  "clv_coverage": 0.4808,
  "protected_tracks_modified": false,
@@ -897,33 +895,33 @@
    "current": {
     "league_week_id": "Mexico Liga MX|2026-W48",
     "state": "PROVISIONAL",
-    "fixtures_known": 4,
+    "fixtures_known": 5,
     "fixtures_before_panel_start": 0,
-    "fixtures_with_candidates": 4,
+    "fixtures_with_candidates": 5,
     "fixtures_without_candidates": 0,
     "week_lock_ts": "2026-11-26T01:00:00Z",
     "late_after_lock": 0,
     "market_gaps": [],
     "markets": {
      "OU25": {
-      "candidates": 4,
+      "candidates": 5,
       "panel_rows": 0
      },
      "BTTS": {
-      "candidates": 4,
+      "candidates": 5,
       "panel_rows": 0
      },
      "OVER15": {
-      "candidates": 4,
+      "candidates": 5,
       "panel_rows": 0
      },
      "OVER35": {
-      "candidates": 4,
+      "candidates": 5,
       "panel_rows": 0
      }
     },
-    "expected_candidate_rows": 16,
-    "actual_candidate_rows": 16
+    "expected_candidate_rows": 20,
+    "actual_candidate_rows": 20
    },
    "previous": {
     "league_week_id": "Mexico Liga MX|2026-W47",
@@ -1082,7 +1080,7 @@
   "Serie B": {
    "current": {
     "league_week_id": "Serie B|2026-W48",
-    "state": "LOCKED_NOT_FROZEN",
+    "state": "FROZEN",
     "fixtures_known": 19,
     "fixtures_before_panel_start": 0,
     "fixtures_with_candidates": 19,
@@ -1093,19 +1091,19 @@
     "markets": {
      "OU25": {
       "candidates": 19,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "BTTS": {
       "candidates": 19,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER15": {
       "candidates": 19,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER35": {
       "candidates": 19,
-      "panel_rows": 0
+      "panel_rows": 5
      }
     },
     "expected_candidate_rows": 76,
