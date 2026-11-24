@@ -94,12 +94,14 @@ else:
     labels = {r.match_key: f"{r.kickoff_utc:%d.%m %H:%M} · {r.home_team} v {r.away_team} · {r.league}"
               + (f" ({V.LEDGER_ONLY_LABEL})" if r.ledger_only else "") for r in M.itertuples()}
     mk = st.selectbox(f"Match ({len(M)} in range)", list(labels), key="pred_match", format_func=labels.get)
-    all_versions = st.toggle("Show all versions", value=False, key="pred_all_versions",
-                             help="Off: one row per question - the model version that was serving at this snapshot "
-                                  "(the latest prediction before kickoff). On: every stored version, e.g. the legacy "
-                                  "props model next to the clean rebuild. The ledger keeps every version either way.")
+    all_versions = st.toggle("Show all versions / both sides", value=False, key="pred_all_versions",
+                             help="Off: one row per market and line - the model version that was serving at this "
+                                  "snapshot (the latest prediction before kickoff) and its pick, with the pick's "
+                                  "probability. On: every stored version and both sides of each question (the "
+                                  "other side is 1 - p), with the raw version id. The ledger keeps everything.")
     rows_all = V.match_rows(sel, mk)
-    rows = rows_all if all_versions else V.serving_rows(rows_all)
+    rows_q = rows_all if all_versions else V.serving_rows(rows_all)          # every selection of the shown versions
+    rows = rows_q if all_versions else V.pick_rows(rows_q)
     m = M[M["match_key"] == mk].iloc[0]
     ui.stat_line([("Kickoff", f"{m.kickoff_utc:%a %d.%m.%Y %H:%M} UTC"), ("League", m.league),
                   ("Models", str(m.models)), ("Predictions", f"{len(rows):,}"),
@@ -115,7 +117,8 @@ else:
                     + ui.tone_text("This league is predicted for learning only; no tip is ever sent from it.",
                                    "NEUTRAL"))
 
-    cfg = {"Probability": ui.pct_col("Probability", help="The model's probability for this selection."),
+    cfg = {"Probability": ui.pct_col("Probability", help="The model's probability for this selection (default view: "
+                                                         "for the picked side)."),
            "Pick": ui.text_col("Pick", help="The model's most likely outcome for the question."),
            "Result": ui.text_col("Result", help="hit / miss of the pick once the match is settled.")}
     tabs = st.tabs([t for t, _ in V.FAMILIES])
@@ -133,7 +136,7 @@ else:
                 pm = st.selectbox("Props market", mkts, key="pred_props_market", format_func=V.market_label)
                 fam = fam[fam["market"] == pm].sort_values("probability", ascending=False)
             if title == "Pro score grid":
-                grid = V.score_grid(fam)
+                grid = V.score_grid(rows_q[rows_q["model_id"].isin(models)])
                 if not grid.empty:
                     st.caption("Correct score: probability of each exact score (rows = home goals).")
                     ui.compact_table(grid, {c: ui.pct_col(c) for c in grid.columns if c.startswith("Away")})
@@ -143,7 +146,7 @@ else:
                     r0 = cs.iloc[0]
                     st.caption(f"Most likely score {r0['selection']} ({r0['probability']:.1%}) · "
                                f"{V.result_text(r0)}.")
-            ui.compact_table(V.prediction_table(fam), cfg)
+            ui.compact_table(V.prediction_table(fam) if all_versions else V.pick_table(fam), cfg)
 
 # ═══ LEARNING RECORD ══════════════════════════════════════════════════════════════════════════════════════════════
 S, serr = _summary()

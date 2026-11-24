@@ -800,6 +800,7 @@ class _TableAudit:
         self.rule_cols = {r: set() for r in RULES}
         self.postko_own_flag = 0
         self.agg_price_cells = 0
+        self.unflagged_quarantine = 0     # quarantine table: rows NOT carrying their own exclusion flag
 
     def _base(self, c: str) -> str:
         if _META.match(c):
@@ -957,6 +958,12 @@ class _TableAudit:
                     st[3] += int(g.sum())
         for r, m in ((R_WRONG, r_wrong), (R_IMPUTED, r_imp), (R_POSTKO, r_post), (R_NOID, noid_hit)):
             self.rules[r]["rows"] += int(m.sum())
+        if _QUARANTINE.search(self.name):
+            own = np.zeros(n, bool)
+            for c in _QUARANTINE_FLAGS:
+                if c in df.columns:
+                    own |= df[c].astype(str).str.lower().isin(("true", "1", "1.0")).to_numpy()
+            self.unflagged_quarantine += int((~own).sum())
         if r_post.any() and "is_post_kickoff" in df.columns:
             self.postko_own_flag += int((r_post & df["is_post_kickoff"].astype(str).str.lower()
                                          .isin(("true", "1", "1.0")).to_numpy()).sum())
@@ -1022,6 +1029,8 @@ class _TableAudit:
             out["table_level_provider"] = self.table_provider
         if self.agg_price_cells:
             out["across_books_derived_price_cells"] = self.agg_price_cells
+        if _QUARANTINE.search(self.name):
+            out["rows_without_own_exclusion_flag"] = self.unflagged_quarantine
         if not private:
             out["key_columns"] = sorted(self.key_cols) if self.checkable[R_DUP] else []
         return out
@@ -1236,6 +1245,13 @@ class _CatFile:
 # an ORIGINAL kept beside its correction (e.g. the specials prices before the 2026-11-23 dedupe): measured and
 # reported, read by no model, and not part of the store's verdict (the corrected table is)
 _SUPERSEDED = re.compile(r"(^|/)archive/[^/]*pre_")
+# rows MOVED OUT of a store because no pre-match reader may use them (odds-history repair 2026-11-24: snapshots at or
+# after the canonical kickoff, same-key quotes with different values no rule can choose between, kickoffs the
+# two providers dispute). Every row carries
+# its own exclusion flag; a quarantine row WITHOUT one makes the branch NOT_REAL. Measured and reported, read by no
+# reader (they read data/ only), not part of the store's verdict.
+_QUARANTINE = re.compile(r"(^|/)quarantine/")
+_QUARANTINE_FLAGS = ("post_kickoff", "dup_conflict", "kickoff_disputed")
 
 
 def exec_scope(exec_root: Path | None, refs=EXEC_REFS, pro_root=None, v11_root=None) -> dict:
@@ -1278,17 +1294,24 @@ def exec_scope(exec_root: Path | None, refs=EXEC_REFS, pro_root=None, v11_root=N
                 for b, _ in fs:
                     unique.setdefault(b, None)
             sup = {t: v for t, v in tables.items() if _SUPERSEDED.search(t)}
-            tables = {t: v for t, v in tables.items() if t not in sup}
+            qua = {t: v for t, v in tables.items() if _QUARANTINE.search(t) and t not in sup}
+            tables = {t: v for t, v in tables.items() if t not in sup and t not in qua}
             tot = _scope_total(tables)
+            unflagged = sum(v["rows_without_own_exclusion_flag"] for v in qua.values())
             branches[ref] = {"commit": sha, "data_files": len(blobs), "unreadable_files": unreadable,
                              "originals_kept_beside_corrections": {
                                  t: {"rows": v["rows"], "verdict": v["verdict"], "cells": v["cells"],
                                      "rules_fired": {r: x for r, x in v["rules"].items() if x.get("rows") or x.get("cells")}}
                                  for t, v in sup.items()},
+                             "quarantined_beside_store": {
+                                 t: {"rows": v["rows"], "rows_without_own_exclusion_flag":
+                                     v["rows_without_own_exclusion_flag"],
+                                     "rules_fired": {r: x for r, x in v["rules"].items() if x.get("rows") or x.get("cells")}}
+                                 for t, v in qua.items()},
                              "tables": len(tables), "rows": sum(v["rows"] for v in tables.values()),
                              "cells": tot, "rule_totals": _rule_totals(tables),
                              "tables_not_real": sum(1 for v in tables.values() if v["verdict"] == NOT_REAL),
-                             "verdict": UNVERIFIED if unreadable else _verdict(tot),
+                             "verdict": UNVERIFIED if unreadable else (NOT_REAL if unflagged else _verdict(tot)),
                              "per_table": {t: {"rows": v["rows"], "verdict": v["verdict"],
                                                "cells": v["cells"],
                                                "rules_fired": {r: x for r, x in v["rules"].items()

@@ -1,0 +1,26 @@
+{
+ "about": "Readable release names for config/model_release_registry.json (owner 2026-11-23). Key = the release key the registry builder derives from the install record (team: '<retrain_batch_id>:<stage>'; props: 'props:<promotion_source>:<recipe>'; side: 'side:<family version>'; Pro: 'pro:<model>:<calc version>'). A key missing here shows as 'unknown release' with the raw version id - never a guessed name. Owner-given names: Go-live refit, Pre-live refit, October model.",
+ "names": {
+  "rb_2026-10-04_legacy:": "October model",
+  "rb_2026-10-05_legacy:": "October model",
+  "rb_2026-10-18_legacy:": "October model",
+  "rb_20261025T081424Z:": "Champion-gate refit",
+  "owner_20261028T123040Z:": "Repaired Standard install",
+  "phase2_refit_clean-data-switch-2026-11-09:": "Clean switch refit",
+  "phase2_refit_clean-data-switch-2026-11-09:second_refit": "Second clean refit",
+  "phase2_refit_clean-data-switch-2026-11-09:final_refit": "Pre-live refit",
+  "phase2_refit_clean-data-switch-2026-11-09:std_2016_refit": "Go-live refit",
+  "phase2_refit_clean-data-switch-2026-11-09:nf_ht_connect": "NF half-time install",
+  "phase2_refit_clean-data-switch-2026-11-09:std_ht_drop_home_ht_history": "Standard half-time install",
+  "props:REGISTERED_LEGACY:legacy": "Legacy props model",
+  "props:OWNER_APPROVED_CLEAN_RETRAIN:clean_hgb_nan_native": "Clean props retrain",
+  "props:OWNER_APPROVED_CLEAN_RETRAIN:clean_recipe_retrained": "Clean props retrain",
+  "props:OWNER_APPROVED_CLEAN_RETRAIN:clean_player_base_rate": "Clean props base rate",
+  "props:CHALLENGER:hgb_nan_native": "Clean props challenger",
+  "props:CHALLENGER:recipe_retrained": "Clean props challenger",
+  "side:side_nb_v1_2026-11-09": "Side models v1",
+  "pro:pro_bb_dc:1.0.0": "Pro score grid 1.0",
+  "pro:pro_bb_combo:1.0.0": "Pro combos 1.0",
+  "phase2_refit_clean-data-switch-2026-11-09:std_d1_archive_rows_excluded": "Clean refit (D1)"
+ }
+}

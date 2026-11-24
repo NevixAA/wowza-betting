@@ -121,6 +121,9 @@ jobs:
         if: contains(steps.mode.outputs.mode, 'sync')
         env:
           EXTRA: ${{ steps.mode.outputs.extra }}
+          # LIVE classes (config "live") are written to the store by the jobs themselves once
+          # PRICE_STORE_LIVE is 1: the mirror then neither copies nor removes them for <repo>@main.
+          PRICE_STORE_LIVE: ${{ vars.PRICE_STORE_LIVE }}
         run: |
           # shellcheck disable=SC2086
           python3 scripts/price_store_sync.py sync --work "$RUNNER_TEMP/price_store" \
@@ -130,6 +133,7 @@ jobs:
         if: contains(steps.mode.outputs.mode, 'check')
         env:
           EXTRA: ${{ steps.mode.outputs.extra }}
+          PRICE_STORE_LIVE: ${{ vars.PRICE_STORE_LIVE }}
         run: |
           src=""
           case "$EXTRA" in *--source*) src="--source ${EXTRA##*--source }" ;; esac

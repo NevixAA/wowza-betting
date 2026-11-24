@@ -257,16 +257,11 @@ def test_builder_settled_summary_equals_the_old_arithmetic():
                             "joint_probability": [0.4, 0.33, 0.55, 0.45, 0.25, 0.62]})
     s = V.settled_summary(settled)
     r = settled["combo_result"]
-    odds = pd.to_numeric(settled.get("fair_combo_odds", settled.get("fair_odds")), errors="coerce")
-    # The old arithmetic summed float returns (odds - 1.0 = 1.5000000000000002 ...); since issue #19 the
-    # P/L is the exact decimal sum (src.units.profit / src.units.total) - same rows, same signs.
-    from src import units as U
-    pnl = U.total(U.profit(odds).where(r == "WON", -1.0).where(r != "VOID", 0.0).where(r != "UNKNOWN", 0.0))
-    assert abs(pnl - float(((odds - 1.0).where(r == "WON", -1.0).where(r != "VOID", 0.0)
-                            .where(r != "UNKNOWN", 0.0)).sum())) < 1e-9
+    # owner 2026-11-24: no market price -> no P/L at a derived (fair) price, hit rate only
+    assert "pnl" not in s
     exp = pd.to_numeric(settled.loc[r.isin(["WON", "LOST"]), "joint_probability"], errors="coerce").mean()
     assert (s["won"], s["lost"], s["decided"], s["void"], s["unknown"]) == (2, 2, 4, 1, 1)
-    assert s["pnl"] == pnl and s["exp"] == exp
+    assert s["exp"] == exp
 
 
 def test_builder_dependence_frame_is_the_old_ten_pairs():

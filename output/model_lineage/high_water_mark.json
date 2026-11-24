@@ -1,13 +1,13 @@
 {
   "standard": {
-    "champion_version": "standard_20261119T134019Z_67ee3666",
+    "champion_version": "standard_20261123T183910Z_72b38fd7",
     "historical": {
-      "accuracy": 0.5109,
-      "auc": 0.4852,
-      "log_loss": 0.69477,
-      "brier": 0.25068,
-      "ece": 0.04543,
-      "promoted_at": "2026-11-19T13:40:19Z",
+      "accuracy": 0.5182,
+      "auc": 0.4841,
+      "log_loss": 0.69372,
+      "brier": 0.25021,
+      "ece": 0.03745,
+      "promoted_at": "2026-11-23T18:39:10Z",
       "gate_version": "PG-1.0",
       "promotion_source": "OWNER_CLEAN_SWITCH"
     },
@@ -31,7 +31,7 @@
       ],
       "gate_version": "PG-1.0"
     },
-    "updated_at": "2026-11-19T13:40:19Z"
+    "updated_at": "2026-11-23T18:39:10Z"
   },
   "newformat": {
     "champion_version": "newformat_20261118T172020Z_303c9a05",
@@ -68,14 +68,14 @@
     "updated_at": "2026-11-18T17:20:21Z"
   },
   "btts": {
-    "champion_version": "btts_20261119T134019Z_44c67049",
+    "champion_version": "btts_20261123T183910Z_e6a51f2e",
     "historical": {
-      "accuracy": 0.5474,
-      "auc": 0.5617,
-      "log_loss": 0.68396,
-      "brier": 0.24545,
-      "ece": 0.01322,
-      "promoted_at": "2026-11-19T13:40:19Z",
+      "accuracy": 0.5547,
+      "auc": 0.5559,
+      "log_loss": 0.68454,
+      "brier": 0.24573,
+      "ece": 0.00514,
+      "promoted_at": "2026-11-23T18:39:10Z",
       "gate_version": "PG-1.0",
       "promotion_source": "OWNER_CLEAN_SWITCH"
     },
@@ -99,17 +99,17 @@
       ],
       "gate_version": "PG-1.0"
     },
-    "updated_at": "2026-11-19T13:40:19Z"
+    "updated_at": "2026-11-23T18:39:10Z"
   },
   "over15": {
-    "champion_version": "over15_20261119T134019Z_ca01b7d3",
+    "champion_version": "over15_20261123T183910Z_44d014a1",
     "historical": {
       "accuracy": 0.7737,
-      "auc": 0.5718,
-      "log_loss": 0.53249,
-      "brier": 0.17434,
-      "ece": 0.01373,
-      "promoted_at": "2026-11-19T13:40:19Z",
+      "auc": 0.57,
+      "log_loss": 0.5319,
+      "brier": 0.17412,
+      "ece": 0.00769,
+      "promoted_at": "2026-11-23T18:39:10Z",
       "gate_version": "PG-1.0",
       "promotion_source": "OWNER_CLEAN_SWITCH"
     },
@@ -133,17 +133,17 @@
       ],
       "gate_version": "PG-1.0"
     },
-    "updated_at": "2026-11-19T13:40:19Z"
+    "updated_at": "2026-11-23T18:39:11Z"
   },
   "over35": {
-    "champion_version": "over35_20261119T134019Z_e8b12d74",
+    "champion_version": "over35_20261123T183911Z_540aa360",
     "historical": {
-      "accuracy": 0.6715,
-      "auc": 0.5349,
-      "log_loss": 0.62653,
-      "brier": 0.2173,
-      "ece": 0.0668,
-      "promoted_at": "2026-11-19T13:40:19Z",
+      "accuracy": 0.6642,
+      "auc": 0.5283,
+      "log_loss": 0.62996,
+      "brier": 0.21894,
+      "ece": 0.03139,
+      "promoted_at": "2026-11-23T18:39:11Z",
       "gate_version": "PG-1.0",
       "promotion_source": "OWNER_CLEAN_SWITCH"
     },
@@ -167,17 +167,17 @@
       ],
       "gate_version": "PG-1.0"
     },
-    "updated_at": "2026-11-19T13:40:19Z"
+    "updated_at": "2026-11-23T18:39:11Z"
   },
   "ht_over05": {
-    "champion_version": "ht_over05_20261122T170741Z_0776cea1",
+    "champion_version": "ht_over05_20261123T183910Z_8ee194e4",
     "historical": {
       "accuracy": 0.7299,
-      "auc": 0.5492,
-      "log_loss": 0.58048,
-      "brier": 0.19596,
-      "ece": 0.02712,
-      "promoted_at": "2026-11-22T17:07:41Z",
+      "auc": 0.5359,
+      "log_loss": 0.58175,
+      "brier": 0.19648,
+      "ece": 0.02541,
+      "promoted_at": "2026-11-23T18:39:10Z",
       "gate_version": "PG-1.0",
       "promotion_source": "OWNER_CLEAN_SWITCH"
     },
@@ -201,17 +201,17 @@
       ],
       "gate_version": "PG-1.0"
     },
-    "updated_at": "2026-11-22T17:07:41Z"
+    "updated_at": "2026-11-23T18:39:10Z"
   },
   "ht_over15": {
-    "champion_version": "ht_over15_20261122T170742Z_aa4c62ce",
+    "champion_version": "ht_over15_20261123T183910Z_b886cd05",
     "historical": {
       "accuracy": 0.6204,
-      "auc": 0.5029,
-      "log_loss": 0.66779,
-      "brier": 0.23734,
-      "ece": 0.01368,
-      "promoted_at": "2026-11-22T17:07:42Z",
+      "auc": 0.479,
+      "log_loss": 0.66988,
+      "brier": 0.23831,
+      "ece": 0.03565,
+      "promoted_at": "2026-11-23T18:39:10Z",
       "gate_version": "PG-1.0",
       "promotion_source": "OWNER_CLEAN_SWITCH"
     },
@@ -235,7 +235,7 @@
       ],
       "gate_version": "PG-1.0"
     },
-    "updated_at": "2026-11-22T17:07:42Z"
+    "updated_at": "2026-11-23T18:39:10Z"
   },
   "standard_repaired": {
     "champion_version": "standard_repaired_20261028T123040Z_1f5805e6",

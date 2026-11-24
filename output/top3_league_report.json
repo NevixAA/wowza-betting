@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-23T20:35:32Z",
+ "generated_at": "2026-11-24T09:49:32Z",
  "selection_mode": "TOP3_LEAGUE_GW",
  "version": "TOP3-2",
  "freeze_lead_min": 120.0,
@@ -123,6 +123,94 @@
    },
    "weeks_decided": 1,
    "picks": 0,
+   "settled": 0,
+   "won": 0,
+   "flat_pnl_units": 0.0,
+   "roi": null
+  },
+  "Brazil Serie A": {
+   "league_rule": {
+    "picks": 0,
+    "settled": 0,
+    "flat_pnl_units": 0.0
+   },
+   "latest_league_week_id": "Brazil Serie A|2026-W48",
+   "latest_excluded": {
+    "DIRECTION_CONFLICT": 1,
+    "NOT_ABOVE_FAIR_PRICE": 13,
+    "NO_TWO_SIDED_PRICE": 23,
+    "OUTSIDE_ODDS_RANGE": 4,
+    "RANKED_BELOW_TOP3": 12
+   },
+   "latest_picks": [
+    {
+     "top3_rank": "1",
+     "home_team": "Sao Paulo",
+     "away_team": "Remo",
+     "kickoff_utc": "2026-11-26T23:00:00Z",
+     "market": "BTTS",
+     "side": "YES",
+     "odds": "1.92",
+     "edge_calibrated": "0.050583",
+     "slot": "T1_BEST_VALUE",
+     "cell_status": "UNPROVEN",
+     "result": "",
+     "stake": "0.005",
+     "stake_reason": "STAKED",
+     "value_basis": "CALIBRATED",
+     "stake_label": "0.5% stake"
+    },
+    {
+     "top3_rank": "2",
+     "home_team": "Corinthians",
+     "away_team": "Gr\u00eamio",
+     "kickoff_utc": "2026-11-29T21:30:00Z",
+     "market": "BTTS",
+     "side": "YES",
+     "odds": "1.92",
+     "edge_calibrated": "0.046718",
+     "slot": "T2_SAFEST",
+     "cell_status": "UNPROVEN",
+     "result": "",
+     "stake": "0.005",
+     "stake_reason": "STAKED",
+     "value_basis": "CALIBRATED",
+     "stake_label": "0.5% stake"
+    },
+    {
+     "top3_rank": "3",
+     "home_team": "Vitoria",
+     "away_team": "Santos",
+     "kickoff_utc": "2026-11-29T19:00:00Z",
+     "market": "OU25",
+     "side": "UNDER",
+     "odds": "1.88",
+     "edge_calibrated": "",
+     "slot": "T3_RISKY_VALUE",
+     "cell_status": "",
+     "result": "",
+     "stake": "0.0",
+     "stake_reason": "NO_STAKE_NO_APPROVED_BAR",
+     "value_basis": "MODEL_EDGE",
+     "stake_label": "model +2.4pp vs fair price, no stake: no approved bar"
+    }
+   ],
+   "staked": {
+    "picks": 2,
+    "settled": 0,
+    "won": 0,
+    "flat_pnl_units": 0.0,
+    "roi": null
+   },
+   "no_stake": {
+    "picks": 1,
+    "settled": 0,
+    "won": 0,
+    "flat_pnl_units": 0.0,
+    "roi": null
+   },
+   "weeks_decided": 1,
+   "picks": 3,
    "settled": 0,
    "won": 0,
    "flat_pnl_units": 0.0,
@@ -660,6 +748,43 @@
    },
    "weeks_decided": 2,
    "picks": 3,
+   "settled": 0,
+   "won": 0,
+   "flat_pnl_units": 0.0,
+   "roi": null
+  },
+  "USA MLS": {
+   "league_rule": {
+    "picks": 0,
+    "settled": 0,
+    "flat_pnl_units": 0.0
+   },
+   "latest_league_week_id": "USA MLS|2026-W48",
+   "latest_excluded": {
+    "EMPTY_SLOT_NO_PICK_ABOVE_FAIR": 3,
+    "FIRST_SEEN_AFTER_FREEZE": 4,
+    "NOT_ABOVE_FAIR_PRICE": 23,
+    "NO_TWO_SIDED_PRICE": 9,
+    "OUTSIDE_ODDS_RANGE": 2,
+    "STARTED_BEFORE_ISSUE": 2
+   },
+   "latest_picks": [],
+   "staked": {
+    "picks": 0,
+    "settled": 0,
+    "won": 0,
+    "flat_pnl_units": 0.0,
+    "roi": null
+   },
+   "no_stake": {
+    "picks": 0,
+    "settled": 0,
+    "won": 0,
+    "flat_pnl_units": 0.0,
+    "roi": null
+   },
+   "weeks_decided": 1,
+   "picks": 0,
    "settled": 0,
    "won": 0,
    "flat_pnl_units": 0.0,

@@ -1,7 +1,7 @@
 {
  "artifact": "prediction_gw_dataset",
  "clean_record_start_utc": "2026-11-19T06:41:48Z",
- "closed_rows": 3890,
+ "closed_rows": 5020,
  "fixture_identity": {
   "af_id_conflicts": 0,
   "canonical_fixtures_after": 578,
@@ -23,19 +23,19 @@
   "2026-W47",
   "2026-W48"
  ],
- "link_rows": 353639,
+ "link_rows": 355151,
  "private": "v11 never read; no price column",
  "repos": [
   "pro",
   "v9"
  ],
- "rows": 8501,
+ "rows": 8591,
  "schema_version": "pgw/1.0",
  "sources_sha256": {
-  "pro:prediction_ledger": "3c33e3e1e36c697a395af7475350a66b57c2dba0ce12e3ff0060a9ebc3ba1ab8",
-  "pro:prediction_ledger_settled": "efc408ec3b86913fe4ce5ae0973d5703431e7a3d58c17de0e60d8f44e000e0fc",
-  "v9:prediction_ledger": "1d91e158c9d3fc4a4b79178c5cf22821c6c3ef84c871ef7bdd09151bdbcd97ef",
-  "v9:prediction_ledger_settled": "b9966083aa4b720cd40f50b561d164f5b141701590fcaf2e5deaae9192d3919b"
+  "pro:prediction_ledger": "9302e25b51816b6fe8d8777145bd3fe1b4adb8a4643e43d7a0e9115aec7fc611",
+  "pro:prediction_ledger_settled": "f4ff68890377fa74f41e9c6349c0d2a3521bf01784cb53498a0a18cf80ba537f",
+  "v9:prediction_ledger": "4c5644f69bd9a8b72e4e3f97139945eaee601d422ae9958601232e15d806f4e5",
+  "v9:prediction_ledger_settled": "7aa26ef52cfe0648ebf039e8d035b486c60ed9a230343985d3fd4cc8458840cd"
  },
  "unassigned_questions": 0
 }

@@ -1501,5 +1501,35 @@ def evaluate(now: datetime | None = None) -> list[dict]:                 # noqa:
 GATED = tuple(GATED) + ("Data truth 14",)
 
 
+# ── Data truth 17: no bookmaker price in a public file (owner 2026-11-24, "especially the public odds") ──────────
+PUBLIC_PRICES_RULE = ("no committed file on a retired price path (config/price_store_paths.json public_retired), and "
+                      "every committed price column belongs to a class that moves private or is allowlisted with a "
+                      "reason (config/public_price_allowlist.json)")
+
+
+def public_prices() -> dict:
+    lab = "Data truth 17: no public prices"
+    from src.integrity import public_prices as PP
+    ok, value, detail = PP.check("wowza-betting")
+    return _c(lab, GREEN if ok else RED, value, PUBLIC_PRICES_RULE, detail)
+
+
+_evaluate_rules_1_to_16 = evaluate
+
+
+def evaluate(now: datetime | None = None) -> list[dict]:                 # noqa: F811
+    """Rules 1-16 plus Data truth 17. Never raises: a check that cannot run is itself RED."""
+    out = _evaluate_rules_1_to_16(now)
+    try:
+        out.append(public_prices())
+    except Exception as e:                                             # noqa: BLE001
+        out.append(_c("Data truth 17: no public prices", RED, "check failed", "must run", f"{type(e).__name__}: {e}"[:200]))
+    return out
+
+
+#: Rule 17 blocks a push/PR: a commit that publishes a retired price file or an unclassified price column must not merge.
+GATED = tuple(GATED) + ("Data truth 17",)
+
+
 if __name__ == "__main__":
     raise SystemExit(main())
