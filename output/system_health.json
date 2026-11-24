@@ -1,11 +1,11 @@
 {
  "about": "Canonical system health (src/system_health.build_artifact), written daily by evidence_refresh.yml. overall: FAIL if any RED check or protected_tracks_modified; WARN if any AMBER/NO_DATA; PASS otherwise. Every status comes from the rule stored beside it. `indicators` holds FOUR separate verdicts (CI gate, operational data quality, production model integrity, full-system certification) - never one GREEN for all four.",
  "artifact_version": "SYSTEM-HEALTH-1",
- "generated_at": "2026-11-24T17:58:42Z",
+ "generated_at": "2026-11-24T18:22:44Z",
  "overall": "WARN",
  "reasons": [
   "NO_DATA Challenger prediction coverage: no active challenger experiment",
-  "AMBER GitHub workflow health: 1 still failing / 339 runs (24 h) \u00b7 1 fixed since",
+  "AMBER GitHub workflow health: 1 still failing / 351 runs (24 h) \u00b7 1 fixed since",
   "AMBER Data truth 13c: registered historical exceptions: 7 registered exception(s)",
   "AMBER Data truth 15: one fixture, one identity: 797 page keys -> 577 matches (220 split before: accent 41, name variant 176, kickoff drift 45); 0 stored identity mismatch(es); 2 ref(s) with an unresolved kickoff conflict; 0 AF-id conflict(s)"
  ],
@@ -19,7 +19,7 @@
   },
   "contracts_version": "CONTRACTS-1",
   "research_lock_digest": "3416ad0e5e8ae71db66cb14e70323226265a9b2377b2cd4eb998fde1a9c4cf58",
-  "code_commit": "ca0d2c0ea326"
+  "code_commit": "ad093a3fa14b"
  },
  "counts": {
   "GREEN": 35,
@@ -80,7 +80,7 @@
   {
    "check": "GitHub workflow health",
    "status": "AMBER",
-   "value": "1 still failing / 339 runs (24 h) \u00b7 1 fixed since",
+   "value": "1 still failing / 351 runs (24 h) \u00b7 1 fixed since",
    "rule": "workflows whose latest run on main (last 24 h, 3 repos) failed or timed out \u2014 failures a later success superseded and branch-only research runs do not count: GREEN 0; AMBER 1-2; RED >= 3 (record > 36 h old = AMBER)",
    "detail": "wowzaV9-Pro: Pro Props Learner Study"
   },
@@ -89,7 +89,7 @@
    "status": "GREEN",
    "value": "mode shadow (workflow)",
    "rule": "GREEN if the V2 summary is < 72 h old and the residual mode is shadow or gated; RED if older or missing",
-   "detail": "{\"decision_residual\": \"GO\", \"residual_mode\": \"shadow\", \"residual_applied\": false, \"mean_forecast\": \"FPL ep_next\", \"gws_evaluated\": [5, 6, 7, 8, 9, 10, 11], \"fpl\": {\"n\": 3051, \"mae\": 1.7562, \"rmse\": 2."
+   "detail": "{\"decision_residual\": \"GO\", \"residual_mode\": \"shadow\", \"residual_applied\": false, \"mean_forecast\": \"FPL ep_next\", \"gws_evaluated\": [5, 6, 7, 8, 9, 10, 11], \"fpl\": {\"n\": 3092, \"mae\": 1.7634, \"rmse\": 2."
   },
   {
    "check": "Weekly research panel",
@@ -731,7 +731,7 @@
   {
    "check": "Edge-engine shadow",
    "status": "GREEN",
-   "value": "market_edge_v2 UNVALIDATED_DEFAULTS, 664 rows, shadow_only=True, 8.2 h old",
+   "value": "market_edge_v2 UNVALIDATED_DEFAULTS, 664 rows, shadow_only=True, 8.6 h old",
    "rule": "RED if edge_engine_health.json is missing, older than 72 h, or shadow_only is not true (a shadow engine must never be live); AMBER if older than 24 h or it scored 0 rows; GREEN otherwise",
    "detail": ""
   },
@@ -1140,7 +1140,7 @@
     "research_lock": "GREEN"
    },
    "source": "output/system_health.json",
-   "generated_at": "2026-11-24T17:58:42Z",
+   "generated_at": "2026-11-24T18:22:44Z",
    "age_h": 0.0,
    "failing": []
   },
@@ -1150,7 +1150,7 @@
    "status": "AMBER",
    "meaning": "the WORST current data truth check, gated or not (an ungated RED is RED here)",
    "source": "output/system_health.json",
-   "generated_at": "2026-11-24T17:58:42Z",
+   "generated_at": "2026-11-24T18:22:44Z",
    "age_h": 0.0,
    "failing": [
     {
@@ -1158,7 +1158,7 @@
      "status": "AMBER",
      "detail": "7 registered exception(s)",
      "source": "output/system_health.json",
-     "generated_at": "2026-11-24T17:58:42Z",
+     "generated_at": "2026-11-24T18:22:44Z",
      "gated": false
     },
     {
@@ -1166,7 +1166,7 @@
      "status": "AMBER",
      "detail": "797 page keys -> 577 matches (220 split before: accent 41, name variant 176, kickoff drift 45); 0 stored identity mismatch(es); 2 ref(s) with an unresolved kickoff conflict; 0 AF-id conflict(s)",
      "source": "output/system_health.json",
-     "generated_at": "2026-11-24T17:58:42Z",
+     "generated_at": "2026-11-24T18:22:44Z",
      "gated": false
     }
    ]
@@ -1183,7 +1183,7 @@
    },
    "source": "output/model_integrity_health.json",
    "generated_at": "2026-11-24T17:08:35Z",
-   "age_h": 0.8,
+   "age_h": 1.2,
    "failing": [
     {
      "component": "active_training_lineage_status",
@@ -1295,7 +1295,7 @@
      "component": "system health",
      "status": "WARN",
      "source": "output/system_health.json",
-     "generated_at": "2026-11-24T17:58:42Z",
+     "generated_at": "2026-11-24T18:22:44Z",
      "age_h": 0.0,
      "ok": false
     },
@@ -1303,16 +1303,16 @@
      "component": "data truth (operational)",
      "status": "AMBER",
      "source": "output/data_truth_health.json",
-     "generated_at": "2026-11-24T17:25:37Z",
-     "age_h": 0.6,
+     "generated_at": "2026-11-24T18:01:00Z",
+     "age_h": 0.4,
      "ok": false
     },
     {
      "component": "data truth gate",
      "status": "GREEN",
      "source": "output/data_truth_health.json",
-     "generated_at": "2026-11-24T17:25:37Z",
-     "age_h": 0.6,
+     "generated_at": "2026-11-24T18:01:00Z",
+     "age_h": 0.4,
      "ok": true
     },
     {
@@ -1320,7 +1320,7 @@
      "status": "WARN",
      "source": "output/model_integrity_health.json",
      "generated_at": "2026-11-24T17:08:35Z",
-     "age_h": 0.8,
+     "age_h": 1.2,
      "ok": false
     },
     {
@@ -1328,7 +1328,7 @@
      "status": "PASS",
      "source": "output/join_integrity_health.json",
      "generated_at": "2026-11-24T17:03:07Z",
-     "age_h": 0.9,
+     "age_h": 1.3,
      "ok": true
     },
     {
@@ -1336,7 +1336,7 @@
      "status": "WARN",
      "source": "output/feature_parity_health.json",
      "generated_at": "2026-11-24T17:06:15Z",
-     "age_h": 0.9,
+     "age_h": 1.3,
      "ok": false
     },
     {
@@ -1344,7 +1344,7 @@
      "status": "UNVERIFIED",
      "source": "output/model_integrity_health.json",
      "generated_at": "2026-11-24T17:08:35Z",
-     "age_h": 0.8,
+     "age_h": 1.2,
      "ok": false
     }
    ],
@@ -1357,14 +1357,14 @@
      "status": "WARN",
      "detail": "status WARN (needs PASS)",
      "source": "output/system_health.json",
-     "generated_at": "2026-11-24T17:58:42Z"
+     "generated_at": "2026-11-24T18:22:44Z"
     },
     {
      "component": "data truth (operational)",
      "status": "AMBER",
      "detail": "status AMBER (needs GREEN)",
      "source": "output/data_truth_health.json",
-     "generated_at": "2026-11-24T17:25:37Z"
+     "generated_at": "2026-11-24T18:01:00Z"
     },
     {
      "component": "model integrity",
