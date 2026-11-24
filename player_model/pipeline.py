@@ -228,7 +228,14 @@ def mode_collect(extended: bool = False, last_n: int = 100) -> None:
     _n_ref = canonicalise_referee_rows(rows)
     if _n_ref:
         print(f"[collect] referee: {_n_ref} row(s) given the canonical spelling")
-    df = build_features(rows)
+    try:
+        _ctx = _stored_history()
+    except Exception as e:
+        print(f"[collect] reading player_history.parquet for the feature context FAILED ({e}) - "
+              f"refusing to build or write a collect without it")
+        return
+    df = build_collected_rows(rows, _ctx)
+    del _ctx
     if df.empty:
         print("[collect] Feature engineering returned empty DataFrame.")
         return
@@ -328,6 +335,48 @@ def mode_collect(extended: bool = False, last_n: int = 100) -> None:
             print(f"  {market} ({target_col}): {rate:.1%} positive rate")
 
 
+# ── Collected rows: features in the STORED-HISTORY context (owner 2026-11-24) ─────────────────────
+
+def _stored_history() -> "pd.DataFrame | None":
+    """The stored player_history, or None when there is none yet (first collect)."""
+    return pd.read_parquet(HISTORY_CACHE) if HISTORY_CACHE.exists() else None
+
+
+def build_collected_rows(rows, existing: "pd.DataFrame | None") -> "pd.DataFrame":
+    """Feature rows for freshly collected player rows, built by ONE build_features pass over the
+    stored history plus the fresh rows, so they carry the values serving computes
+    (build_upcoming_features also builds over the full history).
+
+    Before 2026-11-24 a collect built features over the fetched batch alone. Anything that needs
+    earlier rows the batch did not hold came out missing or short: the nine player prev_season_*
+    features (5+ rows of the player's previous season) were empty on every stored row, and the
+    rolling / rest-day / team features of a player's first rows in the batch saw no earlier match.
+
+    Context: every stored row whose (fixture_id, player_id) was NOT re-fetched, plus every fresh
+    row. A re-fetched row is represented by its FRESH raw values, as before, so
+    history_integrity.merge_history still compares fresh raw facts with the stored ones (the
+    corrections sidecar) and still keeps every committed cell as first written. Returned: only
+    the rows of the fresh keys that build_features emits."""
+    if existing is None or existing.empty or rows is None or len(rows) == 0:
+        return build_features(rows)                  # first collect: the batch is all there is
+    fresh = rows.copy() if isinstance(rows, pd.DataFrame) else pd.DataFrame(rows)
+    key = ["fixture_id", "player_id"]
+    if not set(key).issubset(fresh.columns) or not set(key).issubset(existing.columns):
+        return build_features(rows)
+    raw = [c for c in fresh.columns if c != "fixture_status"]
+    raw += [c for c in (*_SP_RAW, "height_cm", "weight_kg", "age") if c in existing.columns and c not in raw]
+    fk = pd.MultiIndex.from_frame(fresh[key].apply(pd.to_numeric, errors="coerce"))
+    ek = pd.MultiIndex.from_frame(existing[key].apply(pd.to_numeric, errors="coerce"))
+    ctx = pd.concat([existing.loc[~ek.isin(fk), [c for c in raw if c in existing.columns]].reindex(columns=raw),
+                     fresh.reindex(columns=raw)], ignore_index=True)
+    built = build_features(ctx, copy=False)
+    del ctx
+    if built.empty:
+        return built
+    bk = pd.MultiIndex.from_frame(built[key].apply(pd.to_numeric, errors="coerce"))
+    return built[bk.isin(fk)].reset_index(drop=True)
+
+
 # ── WC26 national team collect ────────────────────────────────────────────────
 
 def mode_collect_wc(last_n: int = 10) -> None:
@@ -340,7 +389,14 @@ def mode_collect_wc(last_n: int = 10) -> None:
     rows = enrich_sp_events(rows)
     rows = enrich_league_quality(rows)
     canonicalise_referee_rows(rows)
-    new_df = build_features(rows)
+    try:
+        _ctx = _stored_history()
+    except Exception as e:
+        print(f"[collect-wc] reading player_history.parquet for the feature context FAILED ({e}) - "
+              f"refusing to build or write a collect without it")
+        return
+    new_df = build_collected_rows(rows, _ctx)
+    del _ctx
     if new_df.empty:
         print("[collect-wc] Feature engineering returned empty DataFrame.")
         return
