@@ -1,21 +1,18 @@
-"""O/U 2.5 tip REFERENCE PRICE: a multi-book, de-vigged, two-sided consensus (owner 2026-11-24).
-==============================================================================================
+"""O/U 2.5 bet price: the MEDIAN REAL PRICE across bookmakers (owner 2026-11-24 decision on #104).
+=================================================================================================
 
-Owner direction 2026-11-24: "right now I'm not betting anything ... as many bookmakers as we can have". The board's
-O/U 2.5 reference price is no longer one book's quote (before: the first book OddsAPI happened to list). It is:
+Owner 2026-11-24: "as many bookmakers as we can have"; then, deciding #104 - "Median real price": tips are recorded,
+scored and qualified at the MEDIAN of the real (vigged) prices across all books, minimum 3 two-sided books.
 
-  * EVERY book in the response that quotes BOTH sides at the exact 2.5 line, each price > 1.0, one unambiguous
-    price per side, overround inside market_edge_v2's [overround_min, overround_max] (config/market_edge_v2.json)
-  * de-vigged per book with src.market_edge.power_devig (the engine's own helper, reused - not forked)
-  * the MEDIAN of the per-book fair P(Over) across those books
-  * only when at least MIN_BOOKS (3) books pass; fewer -> no reference price (missing stays missing, never a
-    fallback to one book or an invented price)
-
-Recorded beside it: n_books, the BEST available price per side + its bookmaker (executable), and the FIRST-LISTED
-book's pair (comparison only, never a basis). The consensus fair price is 1 / median fair probability: a market
-estimate, not a bookmaker's offer; its label is "consensus:power_median:n=<k>", never a book name.
-No served model reads odds_over25 / odds_under25 as a feature (tests/test_reference_price.py checks every payload),
-so model probabilities do not move; only edges and therefore which rows clear a bar.
+  * VALID BOOK: quotes BOTH sides at the exact 2.5 line, each price > 1.0, one unambiguous price per side, overround
+    inside market_edge_v2's [overround_min, overround_max] (config/market_edge_v2.json) and de-viggable.
+  * BET PRICE (odds_over25 / odds_under25): per side, the median of the valid books' real prices - only with
+    >= MIN_BOOKS (3) books. Fewer -> NO price (the match stays on the board and in the learning ledger with an empty
+    price; never tipped or staked; no fallback). Label (odds_over25_book) = src.btts_odds.book_label: "median:<books>".
+  * FAIR REFERENCE (fair_over25 / fair_under25): the de-vigged consensus - per book src.market_edge.power_devig
+    (reused, not forked), median fair P(Over), 1 / P. Shown beside the bet price; never used to qualify or score.
+  * COMPARISON ONLY: the best price per side + its book, and the first-listed book's pair.
+No served model reads odds_over25 / odds_under25 as a feature (tests/test_reference_price.py checks every payload).
 """
 from __future__ import annotations
 
@@ -28,14 +25,15 @@ from src import market_edge as ME
 
 ROOT = Path(__file__).resolve().parents[1]
 MIN_BOOKS = 3
-METHOD = "power_median"
 
 
-class Consensus(NamedTuple):
-    over: float | None            # consensus fair price, Over 2.5 (1 / median fair P)
+class Reference(NamedTuple):
+    over: float | None            # BET price: median real Over 2.5 price (>= MIN_BOOKS books) else None
     under: float | None
-    label: str | None             # "consensus:power_median:n=<k>" or None
+    label: str | None             # "median:<sorted books>" or None
     n_books: int                  # valid two-sided books (also when below MIN_BOOKS)
+    fair_over: float | None       # de-vigged power-median consensus (reference only)
+    fair_under: float | None
     best_over: float | None
     best_over_book: str | None
     best_under: float | None
@@ -73,7 +71,8 @@ def book_pairs(bookmakers: list, line: float = 2.5, market: str = "totals") -> l
     return out
 
 
-def consensus(bookmakers: list, line: float = 2.5, min_books: int = MIN_BOOKS) -> Consensus:
+def reference(bookmakers: list, line: float = 2.5, min_books: int = MIN_BOOKS) -> Reference:
+    from src.btts_odds import book_label
     pairs = book_pairs(bookmakers, line)
     first = pairs[0] if pairs else (None, None, None)
     lo, hi = _overround_bounds()
@@ -86,6 +85,7 @@ def consensus(bookmakers: list, line: float = 2.5, min_books: int = MIN_BOOKS) -
                   best_under=bu[2] if bu else None, best_under_book=bu[0] if bu else None,
                   first_over=first[1], first_under=first[2], first_book=first[0])
     if n < min_books:
-        return Consensus(None, None, None, **common)
+        return Reference(None, None, None, fair_over=None, fair_under=None, **common)
     p = statistics.median(ME.power_devig(o, u) for _, o, u in valid)
-    return Consensus(1.0 / p, 1.0 / (1.0 - p), f"consensus:{METHOD}:n={n}", **common)
+    return Reference(float(statistics.median(o for _, o, _ in valid)), float(statistics.median(u for *_, u in valid)),
+                     book_label([b for b, _, _ in valid]), fair_over=1.0 / p, fair_under=1.0 / (1.0 - p), **common)

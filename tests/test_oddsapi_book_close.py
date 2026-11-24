@@ -298,10 +298,10 @@ def test_predict_records_the_book_behind_each_entry_price(tmp_path, monkeypatch)
                           book("both2", [("Over", 2.0), ("Under", 1.85)]), book("both3", [("Over", 2.05), ("Under", 1.8)])]}]
     monkeypatch.setattr(requests, "get", lambda *a, **k: _Resp(ev))
     out = P._fetch_odds_api()
-    # consensus reference price (owner 2026-11-24): one-sided books never count; the label names the method, the
-    # best executable price keeps its book
+    # median real price (owner 2026-11-24): one-sided books never count; the label lists the books, the best
+    # executable price keeps its book
     r = out.iloc[0]
-    assert r["odds_over25_book"] == r["odds_under25_book"] == "consensus:power_median:n=3"
+    assert r["odds_over25_book"] == r["odds_under25_book"] == "median:both;both2;both3"
     assert r["best_over25_book"] == "both" and r["first_listed_ou25_book"] == "both"
 
 

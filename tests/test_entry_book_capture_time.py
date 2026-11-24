@@ -60,9 +60,10 @@ def test_board_records_book_and_capture_time_per_price(tmp_path, monkeypatch):
     monkeypatch.setattr(requests, "get", lambda *a, **k: _Resp(ev))
     r = P._fetch_odds_api().iloc[0]
     t1 = pd.Timestamp.now(tz="UTC").ceil("s")
-    # O/U 2.5 is the multi-book consensus (src/reference_price, owner 2026-11-24): labelled as one, never a book name;
-    # the first-listed pair is kept beside it for comparison; O1.5 keeps the first-listed book
-    assert r["odds_over25_book"] == r["odds_under25_book"] == "consensus:power_median:n=3"
+    # O/U 2.5 is the median real price of 3+ books (src/reference_price, owner 2026-11-24): labelled "median:<books>",
+    # never one book; the first-listed pair is kept beside it for comparison; O1.5 keeps the first-listed book
+    assert r["odds_over25_book"] == r["odds_under25_book"] == "median:b1;b2;b3"
+    assert (r["odds_over25"], r["odds_under25"]) == (2.05, 1.75)
     assert r["first_listed_ou25_book"] == "b1" and r["odds_ou25_n_books"] == 3 and r["odds_over15_book"] == "b1"
     for c in ("odds_over25_captured_at", "odds_under25_captured_at", "odds_over15_captured_at"):
         assert t0 <= pd.Timestamp(r[c]) <= t1, c
