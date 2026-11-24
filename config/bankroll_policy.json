@@ -155,10 +155,23 @@
     "rule": "Owner 2026-11-09 'Paper + PROMISING small': staking is per CELL (league x market x side, key '<track>|<league>', src/bankroll_policy.cell_key). Only a cell listed here stakes; every other cell is PAPER (shown and recorded, stake 0, reason NO_REAL_STAKE_PAPER_NO_CELL_ENTRY) - never inherited from its track. Portfolio caps, drawdown throttle, paper_leagues and the direction rule are unchanged. Cloudbet stays PAPER_ONLY: the stake plan sizes and records, no bet is placed. TOP-3 picks follow their cell's state (no extra stake). FLAT PER CELL (owner 2026-11-11 'Clean rebuild'): no tier multiplier - every tip that clears its cell's one approved bar stakes the cell's base fraction. OWNER 2026-11-17 (final): every cell is PAPER - no cell stakes on its own; the only real stake is the flat TOP-3 stake (top3_league.stake), placed manually and never written to the stake plan.",
     "decided": "2026-11-09",
     "approved": {
-      "proposal_id": "TP-2026-11-15-bade2c0b",
-      "proposal_hash": "bade2c0baf41858f5b65f05bbf62fb5b6832873d8c743efb30da2fe3e193e74e",
-      "owner": "owner 2026-11-15 'Approve, PROMISING small' (protocol v5 re-run; supersedes TP-2026-11-10-d999073a). Stakes from 2026-11-21: ACTIVE_LOW 0.5% on Standard O/U 2.5 Over La Liga 2 and NF O/U 2.5 Over Finland; NF Over 3.5 Finland ACTIVE_LOW 0.5% by owner override 2026-11-15 \"Lift for Finland only\" (the new_format|OVER35 track stays BLOCKED for every other cell); Argentina NF BTTS REDUCED to 0.5% ('Reduce to 0.5%': UNPROVEN on real prices, kept small as a league rule); Japan and Austria NF Unders PAPER (owner NF-Under rule); everything else PAPER; Cloudbet PAPER_ONLY; TOP-3 a paper track; flat per cell"
+      "proposal_id": "TP-2026-11-18-1ddfc9f1",
+      "proposal_hash": "1ddfc9f1c7dc4e2e4692e81d7e27aeb36960efd5963250541ed401b6cc852a92",
+      "owner": "owner 2026-11-18 chat: O2 approved (\"use the P11 bars + T1/T2/T3 from 21.11\"), O1 BTTS fallback approved (config/threshold_approvals.json); the served bars (config/threshold_applied.json last_applied). Stake record re-pointed by owner 2026-11-24: \"Update to P11 v2 (Recommended)\" - bookkeeping only: cells are NOT re-derived from this proposal (scripts/cell_staking_from_proposal.py refuses while top3_league.stake is set); every cell stays PAPER at 0 and the only real stake stays top3_league.stake (0.5% flat, manual)",
+      "repointed_at": "2026-11-24",
+      "repoint_owner_words": "Update to P11 v2 (Recommended)"
     },
+    "approved_history": [
+      {
+        "until": "2026-11-24",
+        "replaced_by": "TP-2026-11-18-1ddfc9f1",
+        "replaced_because": "owner 2026-11-24 \"Update to P11 v2 (Recommended)\": the stake record named the superseded bars; P11 v2 is what serves. No stake changed (stake outputs on the board and the TOP-3 ledger identical before and after).",
+        "proposal_id": "TP-2026-11-15-bade2c0b",
+        "proposal_hash": "bade2c0baf41858f5b65f05bbf62fb5b6832873d8c743efb30da2fe3e193e74e",
+        "note": "the cells' source / before_2026_11_17 values below were derived from this proposal and are kept as history",
+        "owner": "owner 2026-11-15 'Approve, PROMISING small' (protocol v5 re-run; supersedes TP-2026-11-10-d999073a). Stakes from 2026-11-21: ACTIVE_LOW 0.5% on Standard O/U 2.5 Over La Liga 2 and NF O/U 2.5 Over Finland; NF Over 3.5 Finland ACTIVE_LOW 0.5% by owner override 2026-11-15 \"Lift for Finland only\" (the new_format|OVER35 track stays BLOCKED for every other cell); Argentina NF BTTS REDUCED to 0.5% ('Reduce to 0.5%': UNPROVEN on real prices, kept small as a league rule); Japan and Austria NF Unders PAPER (owner NF-Under rule); everything else PAPER; Cloudbet PAPER_ONLY; TOP-3 a paper track; flat per cell"
+      }
+    ],
     "previous_state": "per-track staking (tracks{} below), unchanged and still read when enabled is false",
     "cells": {
       "new_format|BTTS|Argentina Primera Division": {
