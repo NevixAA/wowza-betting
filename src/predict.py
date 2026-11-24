@@ -227,6 +227,14 @@ def _fetch_odds_api(days_ahead: int = 7) -> pd.DataFrame:
                     if ov25 and un25 and ov15 and ov35:
                         break
 
+                # ENTRY BOOK ORDER (owner 2026-11-24, "so fix it!"): the O/U 2.5 board price is ONE book's two-sided
+                # pair from the FIRST book of the named order in config/entry_book_order.json (Bet365, Pinnacle, then
+                # William Hill / 1xBet / Ladbrokes), never the first book OddsAPI lists. No listed book -> no price.
+                # Only the price source changes; no served model reads odds_over25 / under25 (src/entry_book.py).
+                from src import entry_book as _eb
+                _ep = _eb.pick_pair(event.get("bookmakers", []), 2.5, track=config.model_type_for_league(league))
+                ov25, un25, ov25_book, un25_book = _ep.over, _ep.under, _ep.book, _ep.book
+
                 # Best price per side across EVERY book (the loop above stops early). Feeds only
                 # the new-format bookmaker_overround FEATURE, to match its best-of-books training
                 # prices (src/feature_engineering.py); odds_over25/under25 are unchanged.

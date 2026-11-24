@@ -78,7 +78,7 @@ def test_predict_never_captures_or_selects_a_quote_at_or_below_one(tmp_path, mon
             {"name": "Over", "point": 2.5, "price": over}, {"name": "Under", "point": 2.5, "price": under}]}]}
 
     ev = [{"commence_time": ko, "home_team": "H", "away_team": "A",
-           "bookmakers": [book("suspended", 1.0, 1.9), book("real", 2.05, 1.8)]}]
+           "bookmakers": [book("pinnacle", 1.0, 1.9), book("williamhill", 2.05, 1.8)]}]
     monkeypatch.setattr(requests, "get", lambda *a, **k: _Resp(ev))
     out = P._fetch_odds_api()
     assert len(out) == 1

@@ -294,10 +294,13 @@ def test_predict_records_the_book_behind_each_entry_price(tmp_path, monkeypatch)
             {"name": n, "point": 2.5, "price": p} for n, p in outs]}]}
 
     ev = [{"commence_time": ko, "home_team": "H", "away_team": "A",
-           "bookmakers": [book("overonly", [("Over", 2.0)]), book("both", [("Over", 2.1), ("Under", 1.8)])]}]
+           "bookmakers": [book("pinnacle", [("Over", 2.0)]), book("williamhill", [("Over", 2.1), ("Under", 1.8)])]}]
     monkeypatch.setattr(requests, "get", lambda *a, **k: _Resp(ev))
     out = P._fetch_odds_api()
-    assert out.iloc[0]["odds_over25_book"] == "overonly" and out.iloc[0]["odds_under25_book"] == "both"
+    # entry book order (owner 2026-11-24): ONE book's two-sided pair; Pinnacle quotes no Under, so William Hill
+    # prices both sides (before: Over from the first-listed book, Under from another)
+    assert out.iloc[0]["odds_over25_book"] == "williamhill" and out.iloc[0]["odds_under25_book"] == "williamhill"
+    assert out.iloc[0]["odds_over25"] == 2.1
 
 
 def test_ledger_entry_book_follows_the_side_and_stays_blank_when_unknown():
