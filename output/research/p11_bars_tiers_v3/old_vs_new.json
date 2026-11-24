@@ -25,7 +25,7 @@
   },
   "new": {
    "status": "OFF",
-   "reason": "OFF_NO_VALUE",
+   "reason": "OFF_NO_OWN_ESTIMATE",
    "bar": null,
    "wf_bets": null,
    "study": {
@@ -70,7 +70,7 @@
   },
   "new": {
    "status": "OFF",
-   "reason": "INSUFFICIENT_BETS",
+   "reason": "OWN_DATA_TOO_THIN",
    "bar": null,
    "wf_bets": null,
    "study": {
@@ -86,7 +86,7 @@
    },
    "wf_bets_study": null,
    "study_cell_verdict": "OFF",
-   "study_cell_reason": "INSUFFICIENT_BETS"
+   "study_cell_reason": "OWN_DATA_TOO_THIN"
   }
  },
  {
@@ -119,18 +119,18 @@
    "bar": 0.02,
    "wf_bets": null,
    "study": {
-    "bets": 76,
-    "roi": -0.0909,
+    "bets": 79,
+    "roi": -0.1254,
     "matchdays": 22,
     "ci95": [
-     -0.3974,
-     0.2135
+     -0.4124,
+     0.1603
     ],
-    "p_one_sided": 0.7501,
-    "clv": -0.0042,
-    "clv_n": 51
+    "p_one_sided": 0.8451,
+    "clv": -0.0039,
+    "clv_n": 54
    },
-   "wf_bets_study": 264,
+   "wf_bets_study": 265,
    "study_cell_verdict": "UNPROVEN",
    "study_cell_reason": null
   }
@@ -160,10 +160,10 @@
    "study_cell_reason": "OWN_DATA_TOO_THIN"
   },
   "new": {
-   "status": "OFF",
-   "reason": "OFF_NO_VALUE",
-   "bar": null,
-   "wf_bets": null,
+   "status": "UNPROVEN",
+   "reason": null,
+   "bar": 0.08,
+   "wf_bets": 42,
    "study": {
     "bets": 0,
     "roi": null,
@@ -175,9 +175,10 @@
     "clv": null,
     "clv_n": 0
    },
-   "wf_bets_study": null,
-   "study_cell_verdict": "OFF",
-   "study_cell_reason": "NO_POSITIVE_BAR"
+   "study_verdict": "UNPROVEN",
+   "mode": "MODEL",
+   "study_cell_verdict": "UNPROVEN",
+   "study_cell_reason": null
   }
  },
  {
@@ -207,8 +208,8 @@
   "new": {
    "status": "UNPROVEN",
    "reason": null,
-   "bar": 0.11,
-   "wf_bets": 81,
+   "bar": 0.16,
+   "wf_bets": 144,
    "study": {
     "bets": 0,
     "roi": null,
@@ -268,7 +269,7 @@
    },
    "wf_bets_study": null,
    "study_cell_verdict": "OFF",
-   "study_cell_reason": "OWN_DATA_TOO_THIN"
+   "study_cell_reason": "NO_POSITIVE_BAR"
   }
  },
  {
@@ -297,7 +298,7 @@
   },
   "new": {
    "status": "OFF",
-   "reason": "OFF_NO_VALUE",
+   "reason": "OFF_NO_OWN_ESTIMATE",
    "bar": null,
    "wf_bets": null,
    "study": {
@@ -342,7 +343,7 @@
   },
   "new": {
    "status": "OFF",
-   "reason": "OFF_NO_VALUE",
+   "reason": "OFF_NO_OWN_ESTIMATE",
    "bar": null,
    "wf_bets": null,
    "study": {
@@ -387,7 +388,7 @@
   },
   "new": {
    "status": "OFF",
-   "reason": "INSUFFICIENT_BETS",
+   "reason": "OWN_DATA_TOO_THIN",
    "bar": null,
    "wf_bets": null,
    "study": {
@@ -403,7 +404,7 @@
    },
    "wf_bets_study": null,
    "study_cell_verdict": "OFF",
-   "study_cell_reason": "INSUFFICIENT_BETS"
+   "study_cell_reason": "OWN_DATA_TOO_THIN"
   }
  },
  {
@@ -526,8 +527,8 @@
   "new": {
    "status": "UNPROVEN",
    "reason": null,
-   "bar": 0.11,
-   "wf_bets": 56,
+   "bar": 0.16,
+   "wf_bets": 84,
    "study": {
     "bets": 0,
     "roi": null,
@@ -587,7 +588,7 @@
    },
    "wf_bets_study": null,
    "study_cell_verdict": "OFF",
-   "study_cell_reason": "OWN_DATA_TOO_THIN"
+   "study_cell_reason": "NO_POSITIVE_BAR"
   }
  },
  {
@@ -616,7 +617,7 @@
   },
   "new": {
    "status": "OFF",
-   "reason": "OFF_NO_VALUE",
+   "reason": "OFF_NO_OWN_ESTIMATE",
    "bar": null,
    "wf_bets": null,
    "study": {
@@ -662,7 +663,7 @@
   },
   "new": {
    "status": "OFF",
-   "reason": "OFF_NO_VALUE",
+   "reason": "OFF_NO_OWN_ESTIMATE",
    "bar": null,
    "wf_bets": null,
    "study": {
@@ -707,7 +708,7 @@
   },
   "new": {
    "status": "OFF",
-   "reason": "INSUFFICIENT_BETS",
+   "reason": "OWN_DATA_TOO_THIN",
    "bar": null,
    "wf_bets": null,
    "study": {
@@ -723,7 +724,7 @@
    },
    "wf_bets_study": null,
    "study_cell_verdict": "OFF",
-   "study_cell_reason": "INSUFFICIENT_BETS"
+   "study_cell_reason": "OWN_DATA_TOO_THIN"
   }
  },
  {
@@ -798,8 +799,8 @@
   "new": {
    "status": "UNPROVEN",
    "reason": null,
-   "bar": 0.02,
-   "wf_bets": 54,
+   "bar": 0.03,
+   "wf_bets": 48,
    "study": {
     "bets": 1,
     "roi": 0.4,
@@ -845,8 +846,8 @@
   "new": {
    "status": "UNPROVEN",
    "reason": null,
-   "bar": 0.11,
-   "wf_bets": 47,
+   "bar": 0.17,
+   "wf_bets": 66,
    "study": {
     "bets": 1,
     "roi": -1.0,
@@ -936,7 +937,7 @@
   },
   "new": {
    "status": "OFF",
-   "reason": "OFF_NO_VALUE",
+   "reason": "OFF_NO_OWN_ESTIMATE",
    "bar": null,
    "wf_bets": null,
    "study": {
@@ -980,10 +981,10 @@
    "study_cell_reason": "NO_SELECT_ROWS"
   },
   "new": {
-   "status": "OFF",
-   "reason": "OFF_NO_VALUE",
-   "bar": null,
-   "wf_bets": null,
+   "status": "UNPROVEN",
+   "reason": null,
+   "bar": 0.02,
+   "wf_bets": 2,
    "study": {
     "bets": 0,
     "roi": null,
@@ -995,7 +996,8 @@
     "clv": null,
     "clv_n": 0
    },
-   "wf_bets_study": null,
+   "study_verdict": "OFF",
+   "mode": "MODEL",
    "study_cell_verdict": "OFF",
    "study_cell_reason": "NO_SELECT_ROWS"
   }
@@ -1222,7 +1224,7 @@
    },
    "wf_bets_study": null,
    "study_cell_verdict": "OFF",
-   "study_cell_reason": "OWN_DATA_TOO_THIN"
+   "study_cell_reason": "NO_POSITIVE_BAR"
   }
  },
  {
@@ -1251,7 +1253,7 @@
   },
   "new": {
    "status": "OFF",
-   "reason": "OFF_NO_VALUE",
+   "reason": "OFF_NO_OWN_ESTIMATE",
    "bar": null,
    "wf_bets": null,
    "study": {
@@ -4924,7 +4926,7 @@
   },
   "new": {
    "status": "OFF",
-   "reason": "OFF_NO_VALUE",
+   "reason": "OFF_NO_OWN_ESTIMATE",
    "bar": null,
    "wf_bets": null,
    "study": {
@@ -5195,7 +5197,7 @@
   },
   "new": {
    "status": "OFF",
-   "reason": "OFF_NO_VALUE",
+   "reason": "OFF_NO_OWN_ESTIMATE",
    "bar": null,
    "wf_bets": null,
    "study": {
@@ -5240,7 +5242,7 @@
   },
   "new": {
    "status": "OFF",
-   "reason": "OFF_NO_VALUE",
+   "reason": "OFF_NO_OWN_ESTIMATE",
    "bar": null,
    "wf_bets": null,
    "study": {
@@ -5285,7 +5287,7 @@
   },
   "new": {
    "status": "OFF",
-   "reason": "INSUFFICIENT_BETS",
+   "reason": "OWN_DATA_TOO_THIN",
    "bar": null,
    "wf_bets": null,
    "study": {
@@ -5301,7 +5303,7 @@
    },
    "wf_bets_study": null,
    "study_cell_verdict": "OFF",
-   "study_cell_reason": "INSUFFICIENT_BETS"
+   "study_cell_reason": "OWN_DATA_TOO_THIN"
   }
  },
  {
@@ -5481,7 +5483,7 @@
    },
    "wf_bets_study": null,
    "study_cell_verdict": "OFF",
-   "study_cell_reason": "OWN_DATA_TOO_THIN"
+   "study_cell_reason": "NO_POSITIVE_BAR"
   }
  },
  {
@@ -5510,7 +5512,7 @@
   },
   "new": {
    "status": "OFF",
-   "reason": "OFF_NO_VALUE",
+   "reason": "OFF_NO_OWN_ESTIMATE",
    "bar": null,
    "wf_bets": null,
    "study": {
@@ -5555,7 +5557,7 @@
   },
   "new": {
    "status": "OFF",
-   "reason": "OFF_NO_VALUE",
+   "reason": "OFF_NO_OWN_ESTIMATE",
    "bar": null,
    "wf_bets": null,
    "study": {
@@ -5600,7 +5602,7 @@
   },
   "new": {
    "status": "OFF",
-   "reason": "INSUFFICIENT_BETS",
+   "reason": "NO_POSITIVE_BAR",
    "bar": null,
    "wf_bets": null,
    "study": {
@@ -5616,7 +5618,7 @@
    },
    "wf_bets_study": null,
    "study_cell_verdict": "OFF",
-   "study_cell_reason": "INSUFFICIENT_BETS"
+   "study_cell_reason": "NO_POSITIVE_BAR"
   }
  },
  {
@@ -5734,24 +5736,26 @@
    "study_cell_reason": "NO_POSITIVE_BAR"
   },
   "new": {
-   "status": "OFF",
-   "reason": "OFF_NO_VALUE",
-   "bar": null,
-   "wf_bets": null,
+   "status": "PROMISING",
+   "reason": null,
+   "bar": 0.11,
+   "wf_bets": 46,
    "study": {
-    "bets": 0,
-    "roi": null,
+    "bets": 1,
+    "roi": 1.55,
+    "matchdays": 1,
     "ci95": [
      null,
      null
     ],
     "p_one_sided": null,
-    "clv": null,
-    "clv_n": 0
+    "clv": 0.6242,
+    "clv_n": 1
    },
-   "wf_bets_study": null,
-   "study_cell_verdict": "OFF",
-   "study_cell_reason": "NO_POSITIVE_BAR"
+   "study_verdict": "PROMISING",
+   "mode": "MODEL",
+   "study_cell_verdict": "PROMISING",
+   "study_cell_reason": null
   }
  },
  {
@@ -5796,7 +5800,7 @@
    },
    "wf_bets_study": null,
    "study_cell_verdict": "OFF",
-   "study_cell_reason": "OWN_DATA_TOO_THIN"
+   "study_cell_reason": "NO_POSITIVE_BAR"
   }
  },
  {
@@ -5827,23 +5831,22 @@
    "status": "UNPROVEN",
    "reason": null,
    "bar": 0.02,
-   "wf_bets": 277,
+   "wf_bets": 386,
    "study": {
-    "bets": 72,
-    "roi": 0.1501,
-    "matchdays": 26,
+    "bets": 0,
+    "roi": null,
     "ci95": [
-     -0.126,
-     0.4262
+     null,
+     null
     ],
-    "p_one_sided": 0.1389,
-    "clv": -0.0169,
-    "clv_n": 72
+    "p_one_sided": null,
+    "clv": null,
+    "clv_n": 0
    },
-   "study_verdict": "UNPROVEN",
+   "study_verdict": "OFF",
    "mode": "MODEL",
-   "study_cell_verdict": "UNPROVEN",
-   "study_cell_reason": null
+   "study_cell_verdict": "OFF",
+   "study_cell_reason": "NO_POSITIVE_BAR"
   }
  },
  {
@@ -5873,7 +5876,7 @@
   },
   "new": {
    "status": "OFF",
-   "reason": "OFF_NO_VALUE",
+   "reason": "OFF_NO_OWN_ESTIMATE",
    "bar": null,
    "wf_bets": null,
    "study": {
@@ -5918,7 +5921,7 @@
   },
   "new": {
    "status": "OFF",
-   "reason": "INSUFFICIENT_BETS",
+   "reason": "OWN_DATA_TOO_THIN",
    "bar": null,
    "wf_bets": null,
    "study": {
@@ -5934,7 +5937,7 @@
    },
    "wf_bets_study": null,
    "study_cell_verdict": "OFF",
-   "study_cell_reason": "INSUFFICIENT_BETS"
+   "study_cell_reason": "OWN_DATA_TOO_THIN"
   }
  },
  {
@@ -6011,7 +6014,7 @@
    "status": "UNPROVEN",
    "reason": null,
    "bar": 0.02,
-   "wf_bets": 97,
+   "wf_bets": 101,
    "study": {
     "bets": 0,
     "roi": null,
@@ -6056,23 +6059,24 @@
    "study_cell_reason": null
   },
   "new": {
-   "status": "OFF",
-   "reason": "OFF_NO_VALUE",
-   "bar": null,
-   "wf_bets": null,
+   "status": "UNPROVEN",
+   "reason": null,
+   "bar": 0.11,
+   "wf_bets": 130,
    "study": {
-    "bets": 1,
-    "roi": 1.25,
-    "matchdays": 1,
+    "bets": 2,
+    "roi": 0.125,
+    "matchdays": 2,
     "ci95": [
-     null,
-     null
+     -2.08,
+     2.33
     ],
     "p_one_sided": null,
-    "clv": -0.0625,
-    "clv_n": 1
+    "clv": -0.0095,
+    "clv_n": 2
    },
-   "wf_bets_study": 56,
+   "study_verdict": "UNPROVEN",
+   "mode": "MODEL",
    "study_cell_verdict": "UNPROVEN",
    "study_cell_reason": null
   }
@@ -6119,7 +6123,7 @@
    },
    "wf_bets_study": null,
    "study_cell_verdict": "OFF",
-   "study_cell_reason": "OWN_DATA_TOO_THIN"
+   "study_cell_reason": "NO_POSITIVE_BAR"
   }
  },
  {
@@ -6148,7 +6152,7 @@
   },
   "new": {
    "status": "OFF",
-   "reason": "OFF_NO_VALUE",
+   "reason": "OFF_NO_OWN_ESTIMATE",
    "bar": null,
    "wf_bets": null,
    "study": {
@@ -6193,7 +6197,7 @@
   },
   "new": {
    "status": "OFF",
-   "reason": "OFF_NO_VALUE",
+   "reason": "OFF_NO_OWN_ESTIMATE",
    "bar": null,
    "wf_bets": null,
    "study": {
@@ -6238,7 +6242,7 @@
   },
   "new": {
    "status": "OFF",
-   "reason": "INSUFFICIENT_BETS",
+   "reason": "OWN_DATA_TOO_THIN",
    "bar": null,
    "wf_bets": null,
    "study": {
@@ -6254,7 +6258,7 @@
    },
    "wf_bets_study": null,
    "study_cell_verdict": "OFF",
-   "study_cell_reason": "INSUFFICIENT_BETS"
+   "study_cell_reason": "OWN_DATA_TOO_THIN"
   }
  },
  {
@@ -6330,7 +6334,7 @@
    "status": "UNPROVEN",
    "reason": null,
    "bar": 0.12,
-   "wf_bets": 87,
+   "wf_bets": 92,
    "study": {
     "bets": 2,
     "roi": 0.555,
@@ -6378,8 +6382,8 @@
   "new": {
    "status": "PROMISING",
    "reason": null,
-   "bar": 0.11,
-   "wf_bets": 109,
+   "bar": 0.17,
+   "wf_bets": 416,
    "study": {
     "bets": 6,
     "roi": 0.3333,
@@ -6440,7 +6444,7 @@
    },
    "wf_bets_study": null,
    "study_cell_verdict": "OFF",
-   "study_cell_reason": "OWN_DATA_TOO_THIN"
+   "study_cell_reason": "NO_POSITIVE_BAR"
   }
  },
  {
@@ -6515,7 +6519,7 @@
   },
   "new": {
    "status": "OFF",
-   "reason": "OFF_NO_VALUE",
+   "reason": "OFF_NO_OWN_ESTIMATE",
    "bar": null,
    "wf_bets": null,
    "study": {
@@ -6653,7 +6657,7 @@
    "status": "UNPROVEN",
    "reason": null,
    "bar": 0.04,
-   "wf_bets": 136,
+   "wf_bets": 135,
    "study": {
     "bets": 2,
     "roi": -0.28,
@@ -6700,8 +6704,8 @@
   "new": {
    "status": "UNPROVEN",
    "reason": null,
-   "bar": 0.11,
-   "wf_bets": 54,
+   "bar": 0.16,
+   "wf_bets": 124,
    "study": {
     "bets": 1,
     "roi": -1.0,
@@ -6762,7 +6766,7 @@
    },
    "wf_bets_study": null,
    "study_cell_verdict": "OFF",
-   "study_cell_reason": "OWN_DATA_TOO_THIN"
+   "study_cell_reason": "NO_POSITIVE_BAR"
   }
  },
  {
@@ -6791,7 +6795,7 @@
   },
   "new": {
    "status": "OFF",
-   "reason": "OFF_NO_VALUE",
+   "reason": "OFF_NO_OWN_ESTIMATE",
    "bar": null,
    "wf_bets": null,
    "study": {
@@ -6837,7 +6841,7 @@
   },
   "new": {
    "status": "OFF",
-   "reason": "OFF_NO_VALUE",
+   "reason": "OFF_NO_OWN_ESTIMATE",
    "bar": null,
    "wf_bets": null,
    "study": {
@@ -7018,19 +7022,19 @@
   "new": {
    "status": "PROMISING",
    "reason": null,
-   "bar": 0.11,
-   "wf_bets": 50,
+   "bar": 0.16,
+   "wf_bets": 88,
    "study": {
-    "bets": 2,
-    "roi": 0.125,
-    "matchdays": 2,
+    "bets": 4,
+    "roi": 0.0325,
+    "matchdays": 3,
     "ci95": [
-     -2.08,
-     2.33
+     -1.1452,
+     1.25
     ],
-    "p_one_sided": null,
-    "clv": 0.0876,
-    "clv_n": 2
+    "p_one_sided": 0.4008,
+    "clv": 0.0604,
+    "clv_n": 4
    },
    "study_verdict": "PROMISING",
    "mode": "MODEL",
@@ -7080,7 +7084,7 @@
    },
    "wf_bets_study": null,
    "study_cell_verdict": "OFF",
-   "study_cell_reason": "OWN_DATA_TOO_THIN"
+   "study_cell_reason": "NO_POSITIVE_BAR"
   }
  },
  {
@@ -7123,7 +7127,234 @@
     "clv": null,
     "clv_n": 0
    },
-   "wf_bets_study": 43,
+   "wf_bets_study": null,
+   "study_cell_verdict": "OFF",
+   "study_cell_reason": "NO_POSITIVE_BAR"
+  }
+ },
+ {
+  "track": "standard",
+  "league": "Scottish Championship",
+  "mside": "btts_yes",
+  "old": {
+   "status": "OFF",
+   "reason": "OFF_NO_OWN_ESTIMATE",
+   "bar": null,
+   "wf_bets": null,
+   "study": {
+    "bets": 0,
+    "roi": null,
+    "ci95": [
+     null,
+     null
+    ],
+    "p_one_sided": null,
+    "clv": null,
+    "clv_n": 0
+   },
+   "wf_bets_study": null,
+   "study_cell_verdict": "OFF",
+   "study_cell_reason": "NO_SELECT_ROWS"
+  },
+  "new": {
+   "status": "OFF",
+   "reason": "OFF_NO_OWN_ESTIMATE",
+   "bar": null,
+   "wf_bets": null,
+   "study": {
+    "bets": 0,
+    "roi": null,
+    "ci95": [
+     null,
+     null
+    ],
+    "p_one_sided": null,
+    "clv": null,
+    "clv_n": 0
+   },
+   "wf_bets_study": null,
+   "study_cell_verdict": "OFF",
+   "study_cell_reason": "NO_SELECT_ROWS"
+  }
+ },
+ {
+  "track": "standard",
+  "league": "Scottish Championship",
+  "mside": "ht_over05_over",
+  "old": {
+   "status": "OFF",
+   "reason": "INSUFFICIENT_SELECTION_EVIDENCE",
+   "bar": null,
+   "wf_bets": null,
+   "study": {
+    "bets": 0,
+    "roi": null,
+    "ci95": [
+     null,
+     null
+    ],
+    "p_one_sided": null,
+    "clv": null,
+    "clv_n": 0
+   },
+   "wf_bets_study": null,
+   "study_cell_verdict": "OFF",
+   "study_cell_reason": "INSUFFICIENT_SELECTION_EVIDENCE"
+  },
+  "new": {
+   "status": "OFF",
+   "reason": "NO_SELECT_ROWS",
+   "bar": null,
+   "wf_bets": null,
+   "study": {
+    "bets": 0,
+    "roi": null,
+    "ci95": [
+     null,
+     null
+    ],
+    "p_one_sided": null,
+    "clv": null,
+    "clv_n": 0
+   },
+   "wf_bets_study": null,
+   "study_cell_verdict": "OFF",
+   "study_cell_reason": "NO_SELECT_ROWS"
+  }
+ },
+ {
+  "track": "standard",
+  "league": "Scottish Championship",
+  "mside": "ht_over15_over",
+  "old": {
+   "status": "OFF",
+   "reason": "INSUFFICIENT_SELECTION_EVIDENCE",
+   "bar": null,
+   "wf_bets": null,
+   "study": {
+    "bets": 0,
+    "roi": null,
+    "ci95": [
+     null,
+     null
+    ],
+    "p_one_sided": null,
+    "clv": null,
+    "clv_n": 0
+   },
+   "wf_bets_study": null,
+   "study_cell_verdict": "OFF",
+   "study_cell_reason": "INSUFFICIENT_SELECTION_EVIDENCE"
+  },
+  "new": {
+   "status": "OFF",
+   "reason": "NO_SELECT_ROWS",
+   "bar": null,
+   "wf_bets": null,
+   "study": {
+    "bets": 0,
+    "roi": null,
+    "ci95": [
+     null,
+     null
+    ],
+    "p_one_sided": null,
+    "clv": null,
+    "clv_n": 0
+   },
+   "wf_bets_study": null,
+   "study_cell_verdict": "OFF",
+   "study_cell_reason": "NO_SELECT_ROWS"
+  }
+ },
+ {
+  "track": "standard",
+  "league": "Scottish Championship",
+  "mside": "over15_over",
+  "old": {
+   "status": "OFF",
+   "reason": "OFF_NO_OWN_ESTIMATE",
+   "bar": null,
+   "wf_bets": null,
+   "study": {
+    "bets": 0,
+    "roi": null,
+    "ci95": [
+     null,
+     null
+    ],
+    "p_one_sided": null,
+    "clv": null,
+    "clv_n": 0
+   },
+   "wf_bets_study": null,
+   "study_cell_verdict": "OFF",
+   "study_cell_reason": "NO_SELECT_ROWS"
+  },
+  "new": {
+   "status": "OFF",
+   "reason": "OFF_NO_OWN_ESTIMATE",
+   "bar": null,
+   "wf_bets": null,
+   "study": {
+    "bets": 0,
+    "roi": null,
+    "ci95": [
+     null,
+     null
+    ],
+    "p_one_sided": null,
+    "clv": null,
+    "clv_n": 0
+   },
+   "wf_bets_study": null,
+   "study_cell_verdict": "OFF",
+   "study_cell_reason": "NO_SELECT_ROWS"
+  }
+ },
+ {
+  "track": "standard",
+  "league": "Scottish Championship",
+  "mside": "over25_over",
+  "old": {
+   "status": "OFF",
+   "reason": "OFF_NO_VALUE",
+   "bar": null,
+   "wf_bets": null,
+   "study": {
+    "bets": 0,
+    "roi": null,
+    "ci95": [
+     null,
+     null
+    ],
+    "p_one_sided": null,
+    "clv": null,
+    "clv_n": 0
+   },
+   "wf_bets_study": null,
+   "study_cell_verdict": "OFF",
+   "study_cell_reason": "NO_POSITIVE_BAR"
+  },
+  "new": {
+   "status": "UNPROVEN",
+   "reason": null,
+   "bar": 0.12,
+   "wf_bets": 66,
+   "study": {
+    "bets": 1,
+    "roi": -1.0,
+    "matchdays": 1,
+    "ci95": [
+     null,
+     null
+    ],
+    "p_one_sided": null,
+    "clv": -0.0426,
+    "clv_n": 1
+   },
+   "study_verdict": "UNPROVEN",
+   "mode": "MODEL",
    "study_cell_verdict": "UNPROVEN",
    "study_cell_reason": null
   }
@@ -7131,231 +7362,6 @@
  {
   "track": "standard",
   "league": "Scottish Championship",
-  "mside": "btts_yes",
-  "old": {
-   "status": "OFF",
-   "reason": "OFF_NO_OWN_ESTIMATE",
-   "bar": null,
-   "wf_bets": null,
-   "study": {
-    "bets": 0,
-    "roi": null,
-    "ci95": [
-     null,
-     null
-    ],
-    "p_one_sided": null,
-    "clv": null,
-    "clv_n": 0
-   },
-   "wf_bets_study": null,
-   "study_cell_verdict": "OFF",
-   "study_cell_reason": "NO_SELECT_ROWS"
-  },
-  "new": {
-   "status": "OFF",
-   "reason": "OFF_NO_VALUE",
-   "bar": null,
-   "wf_bets": null,
-   "study": {
-    "bets": 0,
-    "roi": null,
-    "ci95": [
-     null,
-     null
-    ],
-    "p_one_sided": null,
-    "clv": null,
-    "clv_n": 0
-   },
-   "wf_bets_study": null,
-   "study_cell_verdict": "OFF",
-   "study_cell_reason": "NO_SELECT_ROWS"
-  }
- },
- {
-  "track": "standard",
-  "league": "Scottish Championship",
-  "mside": "ht_over05_over",
-  "old": {
-   "status": "OFF",
-   "reason": "INSUFFICIENT_SELECTION_EVIDENCE",
-   "bar": null,
-   "wf_bets": null,
-   "study": {
-    "bets": 0,
-    "roi": null,
-    "ci95": [
-     null,
-     null
-    ],
-    "p_one_sided": null,
-    "clv": null,
-    "clv_n": 0
-   },
-   "wf_bets_study": null,
-   "study_cell_verdict": "OFF",
-   "study_cell_reason": "INSUFFICIENT_SELECTION_EVIDENCE"
-  },
-  "new": {
-   "status": "OFF",
-   "reason": "NO_SELECT_ROWS",
-   "bar": null,
-   "wf_bets": null,
-   "study": {
-    "bets": 0,
-    "roi": null,
-    "ci95": [
-     null,
-     null
-    ],
-    "p_one_sided": null,
-    "clv": null,
-    "clv_n": 0
-   },
-   "wf_bets_study": null,
-   "study_cell_verdict": "OFF",
-   "study_cell_reason": "NO_SELECT_ROWS"
-  }
- },
- {
-  "track": "standard",
-  "league": "Scottish Championship",
-  "mside": "ht_over15_over",
-  "old": {
-   "status": "OFF",
-   "reason": "INSUFFICIENT_SELECTION_EVIDENCE",
-   "bar": null,
-   "wf_bets": null,
-   "study": {
-    "bets": 0,
-    "roi": null,
-    "ci95": [
-     null,
-     null
-    ],
-    "p_one_sided": null,
-    "clv": null,
-    "clv_n": 0
-   },
-   "wf_bets_study": null,
-   "study_cell_verdict": "OFF",
-   "study_cell_reason": "INSUFFICIENT_SELECTION_EVIDENCE"
-  },
-  "new": {
-   "status": "OFF",
-   "reason": "NO_SELECT_ROWS",
-   "bar": null,
-   "wf_bets": null,
-   "study": {
-    "bets": 0,
-    "roi": null,
-    "ci95": [
-     null,
-     null
-    ],
-    "p_one_sided": null,
-    "clv": null,
-    "clv_n": 0
-   },
-   "wf_bets_study": null,
-   "study_cell_verdict": "OFF",
-   "study_cell_reason": "NO_SELECT_ROWS"
-  }
- },
- {
-  "track": "standard",
-  "league": "Scottish Championship",
-  "mside": "over15_over",
-  "old": {
-   "status": "OFF",
-   "reason": "OFF_NO_OWN_ESTIMATE",
-   "bar": null,
-   "wf_bets": null,
-   "study": {
-    "bets": 0,
-    "roi": null,
-    "ci95": [
-     null,
-     null
-    ],
-    "p_one_sided": null,
-    "clv": null,
-    "clv_n": 0
-   },
-   "wf_bets_study": null,
-   "study_cell_verdict": "OFF",
-   "study_cell_reason": "NO_SELECT_ROWS"
-  },
-  "new": {
-   "status": "OFF",
-   "reason": "OFF_NO_OWN_ESTIMATE",
-   "bar": null,
-   "wf_bets": null,
-   "study": {
-    "bets": 0,
-    "roi": null,
-    "ci95": [
-     null,
-     null
-    ],
-    "p_one_sided": null,
-    "clv": null,
-    "clv_n": 0
-   },
-   "wf_bets_study": null,
-   "study_cell_verdict": "OFF",
-   "study_cell_reason": "NO_SELECT_ROWS"
-  }
- },
- {
-  "track": "standard",
-  "league": "Scottish Championship",
-  "mside": "over25_over",
-  "old": {
-   "status": "OFF",
-   "reason": "OFF_NO_VALUE",
-   "bar": null,
-   "wf_bets": null,
-   "study": {
-    "bets": 0,
-    "roi": null,
-    "ci95": [
-     null,
-     null
-    ],
-    "p_one_sided": null,
-    "clv": null,
-    "clv_n": 0
-   },
-   "wf_bets_study": null,
-   "study_cell_verdict": "OFF",
-   "study_cell_reason": "NO_POSITIVE_BAR"
-  },
-  "new": {
-   "status": "OFF",
-   "reason": "OFF_NO_VALUE",
-   "bar": null,
-   "wf_bets": null,
-   "study": {
-    "bets": 0,
-    "roi": null,
-    "ci95": [
-     null,
-     null
-    ],
-    "p_one_sided": null,
-    "clv": null,
-    "clv_n": 0
-   },
-   "wf_bets_study": null,
-   "study_cell_verdict": "OFF",
-   "study_cell_reason": "NO_POSITIVE_BAR"
-  }
- },
- {
-  "track": "standard",
-  "league": "Scottish Championship",
   "mside": "over25_under",
   "old": {
    "status": "OFF",
@@ -7395,7 +7401,7 @@
    },
    "wf_bets_study": null,
    "study_cell_verdict": "OFF",
-   "study_cell_reason": "OWN_DATA_TOO_THIN"
+   "study_cell_reason": "NO_POSITIVE_BAR"
   }
  },
  {
@@ -7424,7 +7430,7 @@
   },
   "new": {
    "status": "OFF",
-   "reason": "OFF_NO_VALUE",
+   "reason": "OFF_NO_OWN_ESTIMATE",
    "bar": null,
    "wf_bets": null,
    "study": {
@@ -7469,7 +7475,7 @@
   },
   "new": {
    "status": "OFF",
-   "reason": "OFF_NO_VALUE",
+   "reason": "OFF_NO_OWN_ESTIMATE",
    "bar": null,
    "wf_bets": null,
    "study": {
@@ -7710,7 +7716,7 @@
    },
    "wf_bets_study": null,
    "study_cell_verdict": "OFF",
-   "study_cell_reason": "OWN_DATA_TOO_THIN"
+   "study_cell_reason": "NO_POSITIVE_BAR"
   }
  },
  {
@@ -7739,7 +7745,7 @@
   },
   "new": {
    "status": "OFF",
-   "reason": "OFF_NO_VALUE",
+   "reason": "OFF_NO_OWN_ESTIMATE",
    "bar": null,
    "wf_bets": null,
    "study": {
@@ -7784,7 +7790,7 @@
   },
   "new": {
    "status": "OFF",
-   "reason": "OFF_NO_VALUE",
+   "reason": "OFF_NO_OWN_ESTIMATE",
    "bar": null,
    "wf_bets": null,
    "study": {
@@ -8025,7 +8031,7 @@
    },
    "wf_bets_study": null,
    "study_cell_verdict": "OFF",
-   "study_cell_reason": "OWN_DATA_TOO_THIN"
+   "study_cell_reason": "NO_POSITIVE_BAR"
   }
  },
  {
@@ -8054,7 +8060,7 @@
   },
   "new": {
    "status": "OFF",
-   "reason": "OFF_NO_VALUE",
+   "reason": "OFF_NO_OWN_ESTIMATE",
    "bar": null,
    "wf_bets": null,
    "study": {
@@ -8100,7 +8106,7 @@
   },
   "new": {
    "status": "OFF",
-   "reason": "OFF_NO_VALUE",
+   "reason": "OFF_NO_OWN_ESTIMATE",
    "bar": null,
    "wf_bets": null,
    "study": {
@@ -8342,7 +8348,7 @@
    },
    "wf_bets_study": null,
    "study_cell_verdict": "OFF",
-   "study_cell_reason": "OWN_DATA_TOO_THIN"
+   "study_cell_reason": "NO_POSITIVE_BAR"
   }
  },
  {
@@ -8371,7 +8377,7 @@
   },
   "new": {
    "status": "OFF",
-   "reason": "OFF_NO_VALUE",
+   "reason": "OFF_NO_OWN_ESTIMATE",
    "bar": null,
    "wf_bets": null,
    "study": {
@@ -8417,23 +8423,24 @@
    "study_cell_reason": null
   },
   "new": {
-   "status": "OFF",
-   "reason": "OFF_NO_VALUE",
-   "bar": null,
-   "wf_bets": null,
+   "status": "UNPROVEN",
+   "reason": null,
+   "bar": 0.02,
+   "wf_bets": 846,
    "study": {
-    "bets": 54,
+    "bets": 56,
     "roi": -0.0852,
-    "matchdays": 23,
+    "matchdays": 22,
     "ci95": [
-     -0.3747,
-     0.2044
+     -0.4214,
+     0.2511
     ],
-    "p_one_sided": 0.7376,
-    "clv": 0.0115,
-    "clv_n": 54
+    "p_one_sided": 0.7206,
+    "clv": 0.0116,
+    "clv_n": 56
    },
-   "wf_bets_study": 719,
+   "study_verdict": "UNPROVEN",
+   "mode": "MODEL",
    "study_cell_verdict": "UNPROVEN",
    "study_cell_reason": null
   }
@@ -8464,7 +8471,7 @@
   },
   "new": {
    "status": "OFF",
-   "reason": "INSUFFICIENT_BETS",
+   "reason": "OWN_DATA_TOO_THIN",
    "bar": null,
    "wf_bets": null,
    "study": {
@@ -8480,7 +8487,7 @@
    },
    "wf_bets_study": null,
    "study_cell_verdict": "OFF",
-   "study_cell_reason": "INSUFFICIENT_BETS"
+   "study_cell_reason": "OWN_DATA_TOO_THIN"
   }
  },
  {
@@ -8558,18 +8565,18 @@
    "status": "PROMISING",
    "reason": null,
    "bar": 0.02,
-   "wf_bets": 298,
+   "wf_bets": 297,
    "study": {
-    "bets": 4,
-    "roi": 0.415,
-    "matchdays": 3,
+    "bets": 3,
+    "roi": 0.42,
+    "matchdays": 2,
     "ci95": [
-     0.3962,
-     0.44
+     0.3939,
+     0.4461
     ],
-    "p_one_sided": 0.0005,
-    "clv": 0.0152,
-    "clv_n": 4
+    "p_one_sided": null,
+    "clv": 0.0105,
+    "clv_n": 3
    },
    "study_verdict": "PROMISING",
    "mode": "MODEL",
@@ -8607,18 +8614,18 @@
    "status": "PROMISING",
    "reason": null,
    "bar": 0.11,
-   "wf_bets": 98,
+   "wf_bets": 316,
    "study": {
-    "bets": 3,
-    "roi": 0.55,
-    "matchdays": 3,
+    "bets": 7,
+    "roi": 0.2929,
+    "matchdays": 7,
     "ci95": [
-     -1.0,
-     2.0714
+     -0.6571,
+     1.1924
     ],
-    "p_one_sided": 0.2639,
-    "clv": 0.1209,
-    "clv_n": 3
+    "p_one_sided": 0.3023,
+    "clv": 0.078,
+    "clv_n": 7
    },
    "study_verdict": "PROMISING",
    "mode": "MODEL",
@@ -8668,7 +8675,7 @@
    },
    "wf_bets_study": null,
    "study_cell_verdict": "OFF",
-   "study_cell_reason": "OWN_DATA_TOO_THIN"
+   "study_cell_reason": "NO_POSITIVE_BAR"
   }
  },
  {
@@ -8697,7 +8704,7 @@
   },
   "new": {
    "status": "OFF",
-   "reason": "OFF_NO_VALUE",
+   "reason": "OFF_NO_OWN_ESTIMATE",
    "bar": null,
    "wf_bets": null,
    "study": {
@@ -8743,7 +8750,7 @@
   },
   "new": {
    "status": "OFF",
-   "reason": "OFF_NO_VALUE",
+   "reason": "OFF_NO_OWN_ESTIMATE",
    "bar": null,
    "wf_bets": null,
    "study": {
@@ -8879,7 +8886,7 @@
   "new": {
    "status": "UNPROVEN",
    "reason": null,
-   "bar": 0.09,
+   "bar": 0.08,
    "wf_bets": 2,
    "study": {
     "bets": 0,
@@ -9014,7 +9021,7 @@
   },
   "new": {
    "status": "OFF",
-   "reason": "OFF_NO_VALUE",
+   "reason": "OFF_NO_OWN_ESTIMATE",
    "bar": null,
    "wf_bets": null,
    "study": {

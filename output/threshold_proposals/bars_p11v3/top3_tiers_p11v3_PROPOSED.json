@@ -1,8 +1,8 @@
 {
  "protocol": "p11-bars-tiers-clean/3",
  "status": "PROPOSED ONLY - AWAITING OWNER APPROVAL. Not installed: the served tier config is config/top3_tiers_p11.json (P11 v2).",
- "bars_proposal_id": "TP-2026-11-23-d5bb8581",
- "bars_proposal_hash": "d5bb85818f9c9f9dec2e1383032fc6c5c9d38d595567570f707b6347149e2257",
+ "bars_proposal_id": "TP-2026-11-24-7e5f3889",
+ "bars_proposal_hash": "7e5f38899ab1463db312fbfdaec02d5991303c579b83f0cc19d7f5411d352d97",
  "tiers": {
   "T1_BEST_VALUE": "highest cal_ev",
   "T2_SAFEST": "highest p_cal of the rest",
@@ -112,11 +112,11 @@
   "standard|Dutch Eredivisie": {
    "gate": "CAL",
    "t3_floor": "REL",
-   "gate_basis": "NO_FIT_POOL (cell switched on by the serving refit only): CAL, unvalidated",
-   "t3_basis": "NO_FIT_POOL: REL, unvalidated"
+   "gate_basis": "UNFITTED (< 40 fit picks): CAL",
+   "t3_basis": "UNFITTED (no floor with >= 40 fit T3 picks): REL"
   },
   "standard|Greek Super League": {
-   "gate": "BAR",
+   "gate": "CAL",
    "t3_floor": "REL",
    "gate_basis": "FIT",
    "t3_basis": "UNFITTED (no floor with >= 40 fit T3 picks): REL"
@@ -145,7 +145,19 @@
    "gate_basis": "FIT",
    "t3_basis": "UNFITTED (no floor with >= 40 fit T3 picks): REL"
   },
+  "standard|National League": {
+   "gate": "CAL",
+   "t3_floor": "REL",
+   "gate_basis": "NO_FIT_POOL (cell switched on by the serving refit only): CAL, unvalidated",
+   "t3_basis": "NO_FIT_POOL: REL, unvalidated"
+  },
   "standard|Portuguese Primeira Liga": {
+   "gate": "BAR",
+   "t3_floor": "REL",
+   "gate_basis": "FIT",
+   "t3_basis": "UNFITTED (no floor with >= 40 fit T3 picks): REL"
+  },
+  "standard|Scottish Championship": {
    "gate": "CAL",
    "t3_floor": "REL",
    "gate_basis": "UNFITTED (< 40 fit picks): CAL",
@@ -425,33 +437,57 @@
    {
     "track": "standard",
     "league": "Championship",
+    "mside": "over15_over",
+    "lam": 0.123888,
+    "lam_se": 0.539162,
+    "lam_rows": 151
+   },
+   {
+    "track": "standard",
+    "league": "Championship",
     "mside": "over25_over",
-    "lam": 0.193826,
-    "lam_se": 0.179479,
-    "lam_rows": 2350
+    "lam": 0.123888,
+    "lam_se": 0.174084,
+    "lam_rows": 2384
+   },
+   {
+    "track": "standard",
+    "league": "Dutch Eredivisie",
+    "mside": "over25_over",
+    "lam": 0.0,
+    "lam_se": 0.158445,
+    "lam_rows": 1330
    },
    {
     "track": "standard",
     "league": "Dutch Eredivisie",
     "mside": "over35_over",
     "lam": 1.0,
-    "lam_se": 1.033355,
+    "lam_se": 0.962824,
     "lam_rows": 534
    },
    {
     "track": "standard",
     "league": "Greek Super League",
     "mside": "over15_over",
-    "lam": 0.776918,
-    "lam_se": 0.725203,
+    "lam": 0.279455,
+    "lam_se": 0.716239,
     "lam_rows": 135
+   },
+   {
+    "track": "standard",
+    "league": "Greek Super League",
+    "mside": "over25_over",
+    "lam": 0.279455,
+    "lam_se": 0.219402,
+    "lam_rows": 1005
    },
    {
     "track": "standard",
     "league": "La Liga 2",
     "mside": "over15_over",
     "lam": 0.0,
-    "lam_se": 0.223715,
+    "lam_se": 0.221323,
     "lam_rows": 633
    },
    {
@@ -459,23 +495,23 @@
     "league": "La Liga 2",
     "mside": "over25_over",
     "lam": 0.0,
-    "lam_se": 0.184113,
-    "lam_rows": 1565
+    "lam_se": 0.129776,
+    "lam_rows": 1980
    },
    {
     "track": "standard",
     "league": "League One",
     "mside": "over25_over",
     "lam": 0.0,
-    "lam_se": 0.191331,
-    "lam_rows": 2347
+    "lam_se": 0.188478,
+    "lam_rows": 2359
    },
    {
     "track": "standard",
     "league": "League Two",
     "mside": "over15_over",
-    "lam": 0.851379,
-    "lam_se": 0.947484,
+    "lam": 0.565209,
+    "lam_se": 0.983492,
     "lam_rows": 72
    },
    {
@@ -483,48 +519,72 @@
     "league": "League Two",
     "mside": "over25_over",
     "lam": 0.0,
-    "lam_se": 0.192037,
-    "lam_rows": 2349
+    "lam_se": 0.187134,
+    "lam_rows": 2373
    },
    {
     "track": "standard",
     "league": "Ligue 2",
     "mside": "over15_over",
-    "lam": 0.136136,
-    "lam_se": 0.438125,
+    "lam": 0.11356,
+    "lam_se": 0.436682,
     "lam_rows": 172
    },
    {
     "track": "standard",
     "league": "Ligue 2",
     "mside": "over25_over",
-    "lam": 0.136136,
-    "lam_se": 0.226995,
-    "lam_rows": 1386
+    "lam": 0.11356,
+    "lam_se": 0.204111,
+    "lam_rows": 1466
+   },
+   {
+    "track": "standard",
+    "league": "National League",
+    "mside": "btts_yes",
+    "lam": 1.0,
+    "lam_se": 2.019873,
+    "lam_rows": 70
    },
    {
     "track": "standard",
     "league": "Portuguese Primeira Liga",
     "mside": "over25_over",
-    "lam": 0.036203,
-    "lam_se": 0.187329,
-    "lam_rows": 1292
+    "lam": 0.025252,
+    "lam_se": 0.18078,
+    "lam_rows": 1318
+   },
+   {
+    "track": "standard",
+    "league": "Scottish Championship",
+    "mside": "over25_over",
+    "lam": 0.25508,
+    "lam_se": 0.32294,
+    "lam_rows": 786
+   },
+   {
+    "track": "standard",
+    "league": "Serie B",
+    "mside": "btts_yes",
+    "lam": 0.845388,
+    "lam_se": 0.293235,
+    "lam_rows": 1011
    },
    {
     "track": "standard",
     "league": "Serie B",
     "mside": "over15_over",
-    "lam": 0.807271,
-    "lam_se": 0.325015,
+    "lam": 0.797902,
+    "lam_se": 0.326132,
     "lam_rows": 328
    },
    {
     "track": "standard",
     "league": "Serie B",
     "mside": "over25_over",
-    "lam": 0.250213,
-    "lam_se": 0.19893,
-    "lam_rows": 1570
+    "lam": 0.392641,
+    "lam_se": 0.185276,
+    "lam_rows": 1621
    }
   ]
  },
