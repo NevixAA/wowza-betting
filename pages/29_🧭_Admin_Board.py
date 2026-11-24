@@ -202,10 +202,13 @@ with tab_drought:
                                   "TOP-3 settlement).")
     else:
         dt = ddoc.get("total") or {}
-        ui.stat_line([("Repair & research", str(dt.get("REPAIR_RESEARCH_NEEDED", 0))),
-                      ("Pending (< 30 days)", str(dt.get("PENDING", 0))),
-                      ("Off-season", str(dt.get("OFF_SEASON", 0))), ("OK", str(dt.get("OK", 0))),
-                      ("Families", str(ddoc.get("n_families", 0)))])
+
+        def _cnt(d: dict, k: str) -> str:
+            return str(d[k]) if k in d else "missing"       # never a made-up zero
+        ui.stat_line([("Repair & research", _cnt(dt, "REPAIR_RESEARCH_NEEDED")),
+                      ("Pending (< 30 days)", _cnt(dt, "PENDING")),
+                      ("Off-season", _cnt(dt, "OFF_SEASON")), ("OK", _cnt(dt, "OK")),
+                      ("Families", _cnt(ddoc, "n_families"))])
         dfr = AB.drought_frame(ddoc)
         flagged = dfr[dfr["State"] == "REPAIR_RESEARCH_NEEDED"]
         ffp = ddoc.get("first_possible_flag") or {}

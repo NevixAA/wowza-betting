@@ -563,13 +563,13 @@ def stake_drought_check(doc: dict | None = None) -> dict:
         c = _c("Stake drought", GREY, "no stake_drought.json", rule)
     else:
         t = doc.get("total") or {}
-        n = int(t.get("REPAIR_RESEARCH_NEEDED") or 0)
-        value = (f"{n} flagged, {int(t.get('PENDING') or 0)} pending, {int(t.get('OFF_SEASON') or 0)} off-season, "
-                 f"{int(t.get('OK') or 0)} OK (as of {doc.get('as_of', '?')})")
+        n = int(t["REPAIR_RESEARCH_NEEDED"]) if "REPAIR_RESEARCH_NEEDED" in t else None
+        value = (f"{n} flagged, {t.get('PENDING')} pending, {t.get('OFF_SEASON')} off-season, "
+                 f"{t.get('OK')} OK (as of {doc.get('as_of')})")
         flagged = [f"{r.get('product')} {r.get('league')} {r.get('market')} {r.get('side') or ''} {r.get('tier')}: "
                    f"{r.get('dominant_cause')}".replace("  ", " ")
                    for r in (doc.get("families") or []) if r.get("state") == "REPAIR_RESEARCH_NEEDED"][:5]
-        c = _c("Stake drought", AMBER if n else GREEN, value, rule, "; ".join(flagged))
+        c = _c("Stake drought", GREY if n is None else AMBER if n else GREEN, value, rule, "; ".join(flagged))
     c["gated"] = False
     return c
 

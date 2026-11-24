@@ -74,6 +74,7 @@ import json
 import math
 import os
 import sys
+from collections import Counter
 from pathlib import Path
 
 import pandas as pd
@@ -281,16 +282,16 @@ def due_mask(f: pd.DataFrame, start, day, week_freeze: dict) -> pd.Series:
     return m & ~early
 
 
-def calendar_counts(frames: list, start, end, day=None, week_freeze: dict | None = None) -> dict:
+def calendar_counts(frames: list, start, end, day=None, week_freeze: dict | None = None) -> Counter:
     """{league: distinct fixtures} = the MAX over sources: kickoff in [start, end), or - with `day` - the due
     fixtures only (due_mask)."""
-    out: dict = {}
+    out: Counter = Counter()
     for f in frames:
         if f is None or f.empty:
             continue
         g = f[due_mask(f, start, day, week_freeze or {})] if day is not None else             f[(f["kickoff"] >= start) & (f["kickoff"] < end)]
         for lg, n in g.groupby("league")["fixture"].nunique().items():
-            out[lg] = max(out.get(lg, 0), int(n))
+            out[lg] = max(out[lg], int(n))
     return out
 
 
@@ -358,7 +359,7 @@ def _dominant(counts: dict) -> str:
     best = max(counts.values()) if counts else 0
     if best <= 0:
         return C_FIX
-    return next(c for c in CAUSES if counts.get(c, 0) == best)
+    return next(c for c in CAUSES if counts[c] == best)
 
 
 def _gate_week_count(weeks: pd.DataFrame, league: str) -> int:
@@ -422,7 +423,7 @@ def evaluate_product(product: str, universe: list, ledger: pd.DataFrame, weeks: 
         fpw = fp[(fp["_at"] >= start) & (fp["_at"] < end)] if len(fp) else fp
         n_staked = int(fpw["_staked"].sum()) if len(fpw) else 0
         last = fp.loc[fp["_staked"], "_at"].max() if len(fp) and fp["_staked"].any() else None
-        n_cal, n_due = int(cal.get(lg, 0)), int(due.get(lg, 0))
+        n_cal, n_due = int(cal[lg]), int(due[lg])           # Counter: a league never seen counted 0 fixtures
         counts = {k: 0 for k in CAUSES}
         counts[C_SIDE] = n_other_side
         for r in fam_c.to_dict("records"):
