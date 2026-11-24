@@ -1,81 +1,61 @@
 date,league,match,market,opening_odds,current_odds,drift_pct,signal,steam,consensus_pct,n_books,snapshots,updated_at,move_pp,threshold_pp,threshold_n,lead_h,open_lead_h
-2026-11-23,Brazil Serie A,Internacional vs Vitoria,O/U 2.5 UNDER,1.97,1.78,-9.6,STEAM_STRONG,True,100,17,27,2026-11-23 20:24,5.53,5.34,158,2.1,70.4
-2026-11-24,Brazil Serie A,Chapecoense vs Palmeiras,1X2 DRAW (Draw),4.275,3.6,-15.8,STEAM_STRONG,True,100,23,21,2026-11-23 20:24,4.26,0.98,177,24.6,71.2
-2026-11-25,Japan J-League,JEF United Chiba vs Nagoya Grampus,O/U 2.5 UNDER,2.1,1.98,-5.7,STEAM_STRONG,True,100,13,10,2026-11-23 20:24,2.72,0.9,150,37.6,71.9
-2026-11-24,Brazil Serie A,Chapecoense vs Palmeiras,1X2 HOME (Chapecoense),6.7,3.49,-47.9,STRONG,False,100,23,21,2026-11-23 20:24,12.84,2.89,177,24.6,71.2
-2026-11-24,Serie B,Benevento vs Empoli,1X2 HOME (Benevento),1.66,1.52,-8.4,STRONG,False,0,21,14,2026-11-23 20:24,6.12,2.54,115,22.6,74.7
-2026-11-24,Serie B,Juve Stabia vs US Catanzaro 1929,O/U 2.5 OVER,1.85,1.69,-8.6,STRONG,False,0,12,14,2026-11-23 20:24,5.72,0.88,115,21.6,73.7
-2026-11-24,Serie B,Palermo vs Südtirol,O/U 2.5 OVER,1.7,1.58,-7.1,STRONG,False,100,11,14,2026-11-23 20:24,4.66,0.88,115,22.6,74.7
-2026-11-24,Serie B,Benevento vs Empoli,O/U 2.5 OVER,1.79,1.7,-5.0,STRONG,False,0,13,14,2026-11-23 20:24,3.67,0.88,115,22.6,74.7
-2026-11-24,League One,Blackpool vs Leicester City,1X2 AWAY (Leicester City),1.835,1.73,-5.7,STRONG,False,0,16,14,2026-11-23 20:24,3.56,1.92,172,23.4,70.0
-2026-11-24,Serie B,Palermo vs Südtirol,1X2 HOME (Palermo),1.48,1.43,-3.4,STRONG,False,0,21,14,2026-11-23 20:24,3.39,2.54,115,22.6,74.7
-2026-11-25,Serie B,Pisa vs Modena,O/U 2.5 OVER,1.85,1.76,-4.9,STRONG,False,100,15,12,2026-11-23 20:24,2.88,0.63,120,46.6,73.0
-2026-11-24,Championship,Cardiff City vs Preston North End,O/U 2.5 UNDER,2.98,2.75,-7.7,STRONG,False,100,3,8,2026-11-23 20:24,2.7,2.31,177,23.4,70.0
-2026-11-24,Serie B,Juve Stabia vs US Catanzaro 1929,1X2 HOME (Juve Stabia),1.95,1.9,-2.6,STRONG,False,0,21,14,2026-11-23 20:24,2.55,2.54,115,21.6,73.7
-2026-11-24,Serie B,Vicenza vs Carrarese,O/U 2.5 UNDER,1.85,1.8,-2.7,STRONG,False,0,15,14,2026-11-23 20:24,2.06,0.88,115,22.6,74.7
-2026-11-25,Japan J-League,Avispa Fukuoka vs Yokohama F Marinos,1X2 AWAY (Yokohama F Marinos),2.52,2.41,-4.4,STRONG,False,100,19,10,2026-11-23 20:24,1.83,0.98,150,37.6,71.9
-2026-11-25,Serie B,Padova vs Sampdoria,1X2 AWAY (Sampdoria),2.58,2.5,-3.1,STRONG,False,100,21,12,2026-11-23 20:24,1.81,1.2,120,46.6,73.0
-2026-11-24,League One,Stevenage vs Sheffield Wednesday,O/U 2.5 UNDER,1.9,1.86,-2.1,STRONG,False,100,12,14,2026-11-23 20:24,1.66,1.44,172,23.4,70.0
-2026-11-26,Argentina Primera Division,Boca Juniors vs Independiente Rivadavia,O/U 2.5 UNDER,1.72,1.7,-1.2,STRONG,False,100,8,26,2026-11-23 20:24,1.47,1.28,236,51.6,72.3
-2026-11-24,League Two,Port Vale vs Northampton Town,O/U 2.5 UNDER,1.66,1.65,-0.6,STRONG,False,100,13,8,2026-11-23 20:24,1.4,1.16,176,23.4,70.0
-2026-11-25,Japan J-League,V-Varen Nagasaki vs Kawasaki Frontale,1X2 AWAY (Kawasaki Frontale),1.84,1.84,0.0,STRONG,False,100,19,10,2026-11-23 20:24,1.04,0.98,150,37.6,71.9
-2026-11-24,League Two,Port Vale vs Northampton Town,1X2 DRAW (Draw),3.225,3.2,-0.8,STRONG,False,100,17,8,2026-11-23 20:24,0.71,0.61,176,23.4,70.0
-2026-11-25,Serie B,Mantova vs Arezzo,O/U 2.5 OVER,1.78,1.775,-0.3,STRONG,False,100,14,12,2026-11-23 20:24,0.64,0.63,120,46.6,73.0
-2026-11-24,USA MLS,St. Louis City SC vs Los Angeles FC,1X2 AWAY (Los Angeles FC),2.8,2.55,-8.9,SHARP,False,100,23,36,2026-11-23 20:24,3.4,2.88,290,4.6,72.9
-2026-11-24,Championship,Middlesbrough vs Swansea City,O/U 2.5 OVER,1.54,1.5,-2.6,SHARP,False,0,3,17,2026-11-23 20:24,2.3,1.06,177,23.4,70.0
-2026-11-25,Championship,Watford vs Blackburn Rovers,O/U 2.5 OVER,1.87,1.82,-2.7,SHARP,False,100,16,17,2026-11-23 20:24,1.27,0.76,183,47.4,73.8
-2026-11-24,League One,Bromley FC vs Wycombe Wanderers,1X2 AWAY (Wycombe Wanderers),1.88,1.85,-1.6,SHARP,False,0,16,8,2026-11-23 20:24,1.24,1.13,172,23.4,70.0
-2026-11-24,League One,Bradford City vs Barnsley,O/U 2.5 UNDER,2.25,2.25,0.0,SHARP,False,0,10,14,2026-11-23 20:24,1.17,0.73,172,23.4,70.0
-2026-11-24,League Two,Crawley Town vs Barnet,1X2 HOME (Crawley Town),3.875,3.75,-3.2,SHARP,False,100,17,8,2026-11-23 20:24,1.15,0.95,176,23.4,70.0
-2026-11-24,Brazil Serie A,Chapecoense vs Palmeiras,O/U 2.5 OVER,1.68,1.66,-1.2,SHARP,False,0,14,21,2026-11-23 20:24,1.0,0.81,177,24.6,71.2
-2026-11-24,Serie B,Virtus Entella vs Hellas Verona,1X2 AWAY (Hellas Verona),2.25,2.23,-0.9,SHARP,False,100,21,14,2026-11-23 20:24,1.0,0.91,115,22.6,74.7
-2026-11-25,Championship,Burnley vs Birmingham City,1X2 AWAY (Birmingham City),2.505,2.45,-2.2,SHARP,False,0,22,17,2026-11-23 20:24,0.98,0.93,183,47.4,73.8
-2026-11-25,Serie B,Pisa vs Modena,1X2 HOME (Pisa),2.35,2.3,-2.1,SHARP,False,100,21,12,2026-11-23 20:24,0.87,0.67,120,46.6,73.0
-2026-11-25,Serie B,Cremonese vs Avellino,1X2 DRAW (Draw),3.25,3.2,-1.5,SHARP,False,0,21,12,2026-11-23 20:24,0.68,0.43,120,45.6,72.0
-2026-11-25,Japan J-League,FC Tokyo vs Hiroshima Sanfrecce FC,O/U 2.5 UNDER,2.14,2.15,0.5,SHARP,False,0,11,10,2026-11-23 20:24,0.53,0.51,150,37.6,71.9
-2026-11-24,League Two,Crawley Town vs Barnet,1X2 DRAW (Draw),3.775,3.75,-0.7,SHARP,False,0,17,8,2026-11-23 20:24,0.52,0.32,176,23.4,70.0
-2026-11-25,Japan J-League,JEF United Chiba vs Nagoya Grampus,1X2 DRAW (Draw),3.5,3.45,-1.4,SHARP,False,0,19,10,2026-11-23 20:24,0.49,0.33,150,37.6,71.9
-2026-11-26,Argentina Primera Division,Boca Juniors vs Independiente Rivadavia,1X2 DRAW (Draw),3.85,3.85,0.0,SHARP,False,100,15,26,2026-11-23 20:24,0.48,0.36,242,51.6,72.3
-2026-11-24,Championship,Sheffield United vs Southampton,1X2 DRAW (Draw),3.575,3.5,-2.1,SHARP,False,0,22,17,2026-11-23 20:24,0.47,0.45,177,23.4,70.0
-2026-11-25,Serie B,Cremonese vs Avellino,O/U 2.5 UNDER,1.75,1.73,-1.1,SHARP,False,100,13,12,2026-11-23 20:24,0.42,0.28,120,45.6,72.0
-2026-11-25,Japan J-League,Fagiano Okayama vs Shimizu S Pulse,1X2 DRAW (Draw),3.25,3.25,0.0,SHARP,False,0,19,9,2026-11-23 20:24,0.38,0.33,150,37.6,71.9
-2026-11-25,Serie B,Cremonese vs Avellino,O/U 2.5 OVER,1.975,1.98,0.3,FADING,False,100,13,12,2026-11-23 20:24,-0.42,0.28,120,45.6,72.0
-2026-11-24,Championship,Middlesbrough vs Swansea City,1X2 DRAW (Draw),4.5,4.675,3.9,FADING,False,100,22,17,2026-11-23 20:24,-0.51,0.45,177,23.4,70.0
-2026-11-25,Japan J-League,Mito HollyHock vs Tokyo Verdy,1X2 DRAW (Draw),2.95,3.0,1.7,FADING,False,100,19,10,2026-11-23 20:24,-0.53,0.33,150,37.6,71.9
-2026-11-25,Japan J-League,FC Tokyo vs Hiroshima Sanfrecce FC,O/U 2.5 OVER,1.62,1.65,1.9,FADING,False,100,11,10,2026-11-23 20:24,-0.53,0.51,150,37.6,71.9
-2026-11-24,League One,Bromley FC vs Wycombe Wanderers,1X2 DRAW (Draw),3.6,3.725,3.5,FADING,False,100,16,8,2026-11-23 20:24,-0.64,0.42,172,23.4,70.0
-2026-11-25,Serie B,Mantova vs Arezzo,O/U 2.5 UNDER,1.9,1.94,2.1,FADING,False,100,14,12,2026-11-23 20:24,-0.64,0.28,120,46.6,73.0
-2026-11-25,Serie B,Cremonese vs Avellino,1X2 HOME (Cremonese),1.9,1.95,2.6,FADING,False,100,21,12,2026-11-23 20:24,-0.86,0.67,120,45.6,72.0
-2026-11-24,League One,Blackpool vs Leicester City,1X2 DRAW (Draw),3.85,4.05,5.2,FADING,False,100,16,14,2026-11-23 20:24,-0.98,0.42,172,23.4,70.0
-2026-11-24,Brazil Serie A,Chapecoense vs Palmeiras,O/U 2.5 UNDER,2.08,2.135,2.6,FADING,False,0,14,21,2026-11-23 20:24,-1.0,0.81,177,24.6,71.2
-2026-11-25,Championship,Stoke City vs Millwall,1X2 AWAY (Millwall),3.0,3.1,3.3,FADING,False,100,22,17,2026-11-23 20:24,-1.02,0.93,183,47.6,74.0
-2026-11-25,Japan J-League,JEF United Chiba vs Nagoya Grampus,1X2 AWAY (Nagoya Grampus),2.04,2.1,2.9,FADING,False,100,19,10,2026-11-23 20:24,-1.09,0.53,150,37.6,71.9
-2026-11-24,League Two,Port Vale vs Northampton Town,1X2 HOME (Port Vale),1.965,2.05,4.3,FADING,False,100,17,8,2026-11-23 20:24,-1.15,0.95,176,23.4,70.0
-2026-11-24,League One,Bradford City vs Barnsley,O/U 2.5 OVER,1.55,1.6,3.2,FADING,False,100,10,14,2026-11-23 20:24,-1.17,0.73,172,23.4,70.0
-2026-11-26,Argentina Primera Division,Boca Juniors vs Independiente Rivadavia,1X2 HOME (Boca Juniors),1.48,1.54,4.1,FADING,False,100,15,26,2026-11-23 20:24,-1.22,0.85,242,51.6,72.3
-2026-11-25,Japan J-League,V-Varen Nagasaki vs Kawasaki Frontale,1X2 HOME (V-Varen Nagasaki),3.4,3.64,7.1,FADING,False,100,19,10,2026-11-23 20:24,-1.23,0.66,150,37.6,71.9
-2026-11-25,Championship,Watford vs Blackburn Rovers,O/U 2.5 UNDER,1.88,1.915,1.9,FADING,False,100,16,17,2026-11-23 20:24,-1.27,0.76,183,47.4,73.8
-2026-11-25,Serie B,Pisa vs Modena,1X2 DRAW (Draw),3.05,3.2,4.9,FADING,False,100,21,12,2026-11-23 20:24,-1.4,0.43,120,46.6,73.0
-2026-11-24,League Two,Port Vale vs Northampton Town,O/U 2.5 OVER,2.05,2.16,5.4,FADING,False,100,13,8,2026-11-23 20:24,-1.4,0.56,176,23.4,70.0
-2026-11-24,Serie B,Palermo vs Südtirol,1X2 AWAY (Südtirol),5.7,6.4,12.3,FADING,False,100,21,14,2026-11-23 20:24,-1.46,0.91,115,22.6,74.7
-2026-11-25,Serie B,Padova vs Sampdoria,1X2 HOME (Padova),2.65,2.82,6.4,FADING,False,100,21,12,2026-11-23 20:24,-1.47,0.67,120,46.6,73.0
-2026-11-26,Argentina Primera Division,Boca Juniors vs Independiente Rivadavia,O/U 2.5 OVER,2.01,2.105,4.7,FADING,False,100,8,26,2026-11-23 20:24,-1.47,0.64,236,51.6,72.3
-2026-11-25,Japan J-League,Avispa Fukuoka vs Yokohama F Marinos,1X2 HOME (Avispa Fukuoka),2.62,2.75,5.0,FADING,False,100,19,10,2026-11-23 20:24,-1.51,0.66,150,37.6,71.9
-2026-11-24,League One,Stevenage vs Sheffield Wednesday,O/U 2.5 OVER,1.81,1.88,3.9,FADING,False,100,12,14,2026-11-23 20:24,-1.66,0.73,172,23.4,70.0
-2026-11-24,League Two,Crawley Town vs Barnet,1X2 AWAY (Barnet),1.765,1.85,4.8,FADING,False,100,17,8,2026-11-23 20:24,-1.67,0.75,176,23.4,70.0
-2026-11-24,Serie B,Palermo vs Südtirol,1X2 DRAW (Draw),3.95,4.4,11.4,FADING,False,100,21,14,2026-11-23 20:24,-1.94,0.54,115,22.6,74.7
-2026-11-24,Serie B,Vicenza vs Carrarese,O/U 2.5 OVER,1.86,1.95,4.8,FADING,False,100,15,14,2026-11-23 20:24,-2.06,0.55,115,22.6,74.7
-2026-11-24,Serie B,Benevento vs Empoli,1X2 DRAW (Draw),3.55,3.95,11.3,FADING,False,100,21,14,2026-11-23 20:24,-2.12,0.54,115,22.6,74.7
-2026-11-24,Championship,Middlesbrough vs Swansea City,O/U 2.5 UNDER,2.35,2.52,7.2,FADING,False,100,3,17,2026-11-23 20:24,-2.3,1.06,177,23.4,70.0
-2026-11-24,Serie B,Juve Stabia vs US Catanzaro 1929,1X2 AWAY (US Catanzaro 1929),3.35,3.8,13.4,FADING,False,0,21,14,2026-11-23 20:24,-2.5,0.91,115,21.6,73.7
-2026-11-24,League One,Blackpool vs Leicester City,1X2 HOME (Blackpool),3.65,4.1,12.3,FADING,False,100,16,14,2026-11-23 20:24,-2.58,1.3,172,23.4,70.0
-2026-11-24,Championship,Cardiff City vs Preston North End,O/U 2.5 OVER,1.39,1.44,3.6,FADING,False,100,3,8,2026-11-23 20:24,-2.7,1.06,177,23.4,70.0
-2026-11-25,Japan J-League,JEF United Chiba vs Nagoya Grampus,O/U 2.5 OVER,1.68,1.75,4.2,FADING,False,100,13,10,2026-11-23 20:24,-2.72,0.51,150,37.6,71.9
-2026-11-25,Serie B,Pisa vs Modena,O/U 2.5 UNDER,1.85,1.95,5.4,FADING,False,100,15,12,2026-11-23 20:24,-2.88,0.28,120,46.6,73.0
-2026-11-24,Serie B,Benevento vs Empoli,O/U 2.5 UNDER,1.89,2.05,8.5,FADING,False,100,13,14,2026-11-23 20:24,-3.67,0.55,115,22.6,74.7
-2026-11-24,Serie B,Benevento vs Empoli,1X2 AWAY (Empoli),4.35,5.5,26.4,FADING,False,100,21,14,2026-11-23 20:24,-4.0,0.91,115,22.6,74.7
-2026-11-24,USA MLS,St. Louis City SC vs Los Angeles FC,1X2 HOME (St. Louis City SC),2.33,2.61,12.0,FADING,False,100,23,36,2026-11-23 20:24,-4.22,3.37,290,4.6,72.9
-2026-11-24,Serie B,Palermo vs Südtirol,O/U 2.5 UNDER,2.02,2.22,9.9,FADING,False,100,11,14,2026-11-23 20:24,-4.66,0.55,115,22.6,74.7
-2026-11-23,Brazil Serie A,Internacional vs Vitoria,O/U 2.5 OVER,1.8,1.99,10.6,FADING,False,100,17,27,2026-11-23 20:24,-5.53,3.56,158,2.1,70.4
-2026-11-24,Serie B,Juve Stabia vs US Catanzaro 1929,O/U 2.5 UNDER,1.83,2.05,12.0,FADING,False,100,12,14,2026-11-23 20:24,-5.72,0.55,115,21.6,73.7
-2026-11-24,Brazil Serie A,Chapecoense vs Palmeiras,1X2 AWAY (Palmeiras),1.415,1.94,37.1,FADING,False,100,23,21,2026-11-23 20:24,-17.1,1.25,177,24.6,71.2
+2026-11-24,League One,Bradford City vs Barnsley,O/U 2.5 OVER,1.55,1.485,-4.2,STEAM_STRONG,True,99,6,15,2026-11-24 04:55,3.57,1.54,146,14.8,70.0
+2026-11-24,League One,Blackpool vs Leicester City,1X2 AWAY (Leicester City),1.835,1.72,-6.3,STRONG,False,99,16,15,2026-11-24 04:55,3.65,2.41,146,14.8,70.0
+2026-11-25,Serie B,Pisa vs Modena,O/U 2.5 OVER,1.85,1.76,-4.9,STRONG,False,1,15,13,2026-11-24 04:55,2.88,0.63,120,38.1,73.0
+2026-11-25,Japan J-League,JEF United Chiba vs Nagoya Grampus,O/U 2.5 UNDER,2.1,1.99,-5.2,STRONG,False,1,13,11,2026-11-24 04:55,2.59,1.34,146,29.1,71.9
+2026-11-24,Championship,Cardiff City vs Preston North End,O/U 2.5 UNDER,2.98,2.78,-6.7,STRONG,False,1,3,9,2026-11-24 04:55,2.54,2.22,134,14.8,70.0
+2026-11-24,League One,Bromley FC vs Wycombe Wanderers,1X2 AWAY (Wycombe Wanderers),1.88,1.8,-4.3,STRONG,False,99,16,9,2026-11-24 04:55,2.47,2.41,146,14.8,70.0
+2026-11-24,League One,Blackpool vs Leicester City,O/U 2.5 UNDER,2.62,2.52,-3.8,STRONG,False,99,3,8,2026-11-24 04:55,2.07,1.54,146,14.8,70.0
+2026-11-25,Serie B,Padova vs Sampdoria,1X2 AWAY (Sampdoria),2.58,2.5,-3.1,STRONG,False,1,21,13,2026-11-24 04:55,1.84,1.2,120,38.1,73.0
+2026-11-25,Japan J-League,Avispa Fukuoka vs Yokohama F Marinos,1X2 AWAY (Yokohama F Marinos),2.52,2.41,-4.4,STRONG,False,1,19,11,2026-11-24 04:55,1.83,1.49,146,29.1,71.9
+2026-11-24,League Two,Port Vale vs Northampton Town,1X2 DRAW (Draw),3.225,3.2,-0.8,STRONG,False,1,17,9,2026-11-24 04:55,0.86,0.79,171,14.8,70.0
+2026-11-25,Serie B,Mantova vs Arezzo,O/U 2.5 OVER,1.78,1.775,-0.3,STRONG,False,1,14,13,2026-11-24 04:55,0.64,0.63,120,38.1,73.0
+2026-11-25,Championship,Watford vs Blackburn Rovers,O/U 2.5 OVER,1.87,1.82,-2.7,SHARP,False,1,15,18,2026-11-24 04:55,1.47,0.76,183,38.8,73.8
+2026-11-25,Championship,Watford vs Blackburn Rovers,1X2 AWAY (Blackburn Rovers),2.75,2.655,-3.5,SHARP,False,100,20,18,2026-11-24 04:55,1.46,0.93,183,38.8,73.8
+2026-11-24,League Two,Crawley Town vs Barnet,1X2 HOME (Crawley Town),3.875,3.7,-4.5,SHARP,False,100,17,9,2026-11-24 04:55,1.4,1.25,171,14.8,70.0
+2026-11-24,League One,Stevenage vs Sheffield Wednesday,O/U 2.5 UNDER,1.9,1.85,-2.6,SHARP,False,100,12,15,2026-11-24 04:55,1.36,0.81,146,14.8,70.0
+2026-11-25,Japan J-League,FC Tokyo vs Hiroshima Sanfrecce FC,1X2 HOME (FC Tokyo),2.4,2.33,-2.9,SHARP,False,99,19,11,2026-11-24 04:55,1.35,0.85,146,29.1,71.9
+2026-11-24,League Two,Port Vale vs Northampton Town,O/U 2.5 UNDER,1.66,1.65,-0.6,SHARP,False,1,13,9,2026-11-24 04:55,1.2,0.79,171,14.8,70.0
+2026-11-25,Championship,Burnley vs Birmingham City,1X2 AWAY (Birmingham City),2.505,2.45,-2.2,SHARP,False,0,22,18,2026-11-24 04:55,1.16,0.93,183,38.8,73.8
+2026-11-24,Championship,Middlesbrough vs Swansea City,O/U 2.5 OVER,1.54,1.51,-1.9,SHARP,False,0,7,18,2026-11-24 04:55,1.16,1.05,134,14.8,70.0
+2026-11-26,Argentina Primera Division,Boca Juniors vs Independiente Rivadavia,O/U 2.5 UNDER,1.72,1.7,-1.2,SHARP,False,1,9,27,2026-11-24 04:55,0.97,0.64,236,43.1,72.3
+2026-11-25,Japan J-League,V-Varen Nagasaki vs Kawasaki Frontale,1X2 AWAY (Kawasaki Frontale),1.84,1.84,0.0,SHARP,False,1,19,11,2026-11-24 04:55,0.9,0.75,146,29.1,71.9
+2026-11-25,Serie B,Pisa vs Modena,1X2 HOME (Pisa),2.35,2.3,-2.1,SHARP,False,1,21,13,2026-11-24 04:55,0.87,0.67,120,38.1,73.0
+2026-11-24,Championship,Cardiff City vs Preston North End,1X2 DRAW (Draw),4.65,4.5,-3.2,SHARP,False,100,22,18,2026-11-24 04:55,0.76,0.46,134,14.8,70.0
+2026-11-25,Serie B,Cremonese vs Avellino,1X2 DRAW (Draw),3.25,3.2,-1.5,SHARP,False,0,21,13,2026-11-24 04:55,0.59,0.43,120,37.1,72.0
+2026-11-24,Championship,Sheffield United vs Southampton,1X2 DRAW (Draw),3.575,3.495,-2.2,SHARP,False,99,22,18,2026-11-24 04:55,0.52,0.46,134,14.8,70.0
+2026-11-25,Japan J-League,JEF United Chiba vs Nagoya Grampus,1X2 DRAW (Draw),3.5,3.45,-1.4,SHARP,False,0,19,11,2026-11-24 04:55,0.49,0.42,146,29.1,71.9
+2026-11-24,Championship,Norwich City vs Queens Park Rangers,1X2 DRAW (Draw),3.67,3.615,-1.5,SHARP,False,99,22,18,2026-11-24 04:55,0.47,0.46,134,14.8,70.0
+2026-11-24,League Two,Crawley Town vs Barnet,1X2 DRAW (Draw),3.775,3.75,-0.7,SHARP,False,0,17,9,2026-11-24 04:55,0.44,0.43,171,14.8,70.0
+2026-11-25,Serie B,Cremonese vs Avellino,O/U 2.5 UNDER,1.75,1.73,-1.1,SHARP,False,1,13,13,2026-11-24 04:55,0.42,0.28,120,37.1,72.0
+2026-11-25,Serie B,Cremonese vs Avellino,O/U 2.5 OVER,1.975,1.98,0.3,FADING,False,100,13,13,2026-11-24 04:55,-0.42,0.28,120,37.1,72.0
+2026-11-24,Championship,Middlesbrough vs Swansea City,1X2 DRAW (Draw),4.5,4.675,3.9,FADING,False,100,22,18,2026-11-24 04:55,-0.52,0.46,134,14.8,70.0
+2026-11-25,Japan J-League,Mito HollyHock vs Tokyo Verdy,1X2 DRAW (Draw),2.95,3.0,1.7,FADING,False,100,19,11,2026-11-24 04:55,-0.53,0.42,146,29.1,71.9
+2026-11-25,Serie B,Mantova vs Arezzo,O/U 2.5 UNDER,1.9,1.94,2.1,FADING,False,100,14,13,2026-11-24 04:55,-0.64,0.28,120,38.1,73.0
+2026-11-24,League One,Blackpool vs Leicester City,1X2 DRAW (Draw),3.85,4.0,3.9,FADING,False,1,16,15,2026-11-24 04:55,-0.79,0.48,146,14.8,70.0
+2026-11-24,League One,Bromley FC vs Wycombe Wanderers,1X2 DRAW (Draw),3.6,3.75,4.2,FADING,False,100,16,9,2026-11-24 04:55,-0.89,0.48,146,14.8,70.0
+2026-11-24,League One,Bradford City vs Barnsley,1X2 DRAW (Draw),4.1,4.3,4.9,FADING,False,99,16,15,2026-11-24 04:55,-0.9,0.48,146,14.8,70.0
+2026-11-25,Championship,Watford vs Blackburn Rovers,1X2 DRAW (Draw),3.3,3.44,4.2,FADING,False,99,20,18,2026-11-24 04:55,-0.96,0.33,183,38.8,73.8
+2026-11-26,Argentina Primera Division,Boca Juniors vs Independiente Rivadavia,O/U 2.5 OVER,2.01,2.06,2.5,FADING,False,1,9,27,2026-11-24 04:55,-0.97,0.64,236,43.1,72.3
+2026-11-25,Serie B,Cremonese vs Avellino,1X2 HOME (Cremonese),1.9,1.95,2.6,FADING,False,100,21,13,2026-11-24 04:55,-1.0,0.67,120,37.1,72.0
+2026-11-25,Japan J-League,V-Varen Nagasaki vs Kawasaki Frontale,1X2 HOME (V-Varen Nagasaki),3.4,3.6,5.9,FADING,False,1,19,11,2026-11-24 04:55,-1.02,0.85,146,29.1,71.9
+2026-11-25,Championship,Stoke City vs Millwall,1X2 AWAY (Millwall),3.0,3.1,3.3,FADING,False,100,22,18,2026-11-24 04:55,-1.03,0.93,183,39.1,74.0
+2026-11-25,Japan J-League,FC Tokyo vs Hiroshima Sanfrecce FC,1X2 AWAY (Hiroshima Sanfrecce FC),2.65,2.75,3.8,FADING,False,100,19,11,2026-11-24 04:55,-1.08,0.75,146,29.1,71.9
+2026-11-25,Japan J-League,JEF United Chiba vs Nagoya Grampus,1X2 AWAY (Nagoya Grampus),2.04,2.1,2.9,FADING,False,100,19,11,2026-11-24 04:55,-1.09,0.75,146,29.1,71.9
+2026-11-24,Championship,Middlesbrough vs Swansea City,O/U 2.5 UNDER,2.35,2.4,2.1,FADING,False,1,7,18,2026-11-24 04:55,-1.16,1.05,134,14.8,70.0
+2026-11-24,League Two,Port Vale vs Northampton Town,O/U 2.5 OVER,2.05,2.14,4.4,FADING,False,1,13,9,2026-11-24 04:55,-1.2,0.79,171,14.8,70.0
+2026-11-24,League One,Stevenage vs Sheffield Wednesday,O/U 2.5 OVER,1.81,1.85,2.2,FADING,False,1,12,15,2026-11-24 04:55,-1.36,0.81,146,14.8,70.0
+2026-11-25,Championship,Burnley vs Birmingham City,1X2 HOME (Burnley),2.515,2.635,4.8,FADING,False,100,22,18,2026-11-24 04:55,-1.38,1.1,183,38.8,73.8
+2026-11-25,Serie B,Pisa vs Modena,1X2 DRAW (Draw),3.05,3.2,4.9,FADING,False,100,21,13,2026-11-24 04:55,-1.4,0.43,120,38.1,73.0
+2026-11-25,Serie B,Padova vs Sampdoria,1X2 HOME (Padova),2.65,2.82,6.4,FADING,False,100,21,13,2026-11-24 04:55,-1.44,0.67,120,38.1,73.0
+2026-11-25,Championship,Watford vs Blackburn Rovers,O/U 2.5 UNDER,1.88,1.93,2.7,FADING,False,100,15,18,2026-11-24 04:55,-1.47,0.76,183,38.8,73.8
+2026-11-25,Japan J-League,Avispa Fukuoka vs Yokohama F Marinos,1X2 HOME (Avispa Fukuoka),2.62,2.75,5.0,FADING,False,100,19,11,2026-11-24 04:55,-1.51,0.85,146,29.1,71.9
+2026-11-24,League One,Bromley FC vs Wycombe Wanderers,1X2 HOME (Bromley FC),3.7,3.97,7.3,FADING,False,100,16,9,2026-11-24 04:55,-1.57,1.46,146,14.8,70.0
+2026-11-24,League Two,Port Vale vs Northampton Town,1X2 HOME (Port Vale),1.965,2.08,5.9,FADING,False,100,17,9,2026-11-24 04:55,-1.58,1.25,171,14.8,70.0
+2026-11-24,League Two,Crawley Town vs Barnet,1X2 AWAY (Barnet),1.765,1.85,4.8,FADING,False,100,17,9,2026-11-24 04:55,-1.83,0.88,171,14.8,70.0
+2026-11-24,League One,Blackpool vs Leicester City,O/U 2.5 OVER,1.44,1.49,3.5,FADING,False,100,3,8,2026-11-24 04:55,-2.07,0.81,146,14.8,70.0
+2026-11-24,Championship,Cardiff City vs Preston North End,O/U 2.5 OVER,1.39,1.44,3.6,FADING,False,100,3,9,2026-11-24 04:55,-2.54,1.05,134,14.8,70.0
+2026-11-25,Japan J-League,JEF United Chiba vs Nagoya Grampus,O/U 2.5 OVER,1.68,1.75,4.2,FADING,False,100,13,11,2026-11-24 04:55,-2.59,0.66,146,29.1,71.9
+2026-11-24,League One,Blackpool vs Leicester City,1X2 HOME (Blackpool),3.65,4.135,13.3,FADING,False,100,16,15,2026-11-24 04:55,-2.87,1.46,146,14.8,70.0
+2026-11-25,Serie B,Pisa vs Modena,O/U 2.5 UNDER,1.85,1.95,5.4,FADING,False,100,15,13,2026-11-24 04:55,-2.88,0.28,120,38.1,73.0
+2026-11-24,League One,Bradford City vs Barnsley,O/U 2.5 UNDER,2.25,2.485,10.4,FADING,False,100,6,15,2026-11-24 04:55,-3.57,0.81,146,14.8,70.0
