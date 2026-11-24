@@ -1,0 +1,34 @@
+{
+ "artifact": "side_models_lineage_evidence",
+ "version": "side-lineage-1.0",
+ "generated_by": "python -m src.side_models.reproduce --evidence",
+ "generated_at": "2026-11-24T07:14:14Z",
+ "payload": "side_models/side_models.json",
+ "artifact_sha256": "1503bb86559c7c910993b66c9d30402bf99869bdd773a8fb8ef99d6e1a53c79c",
+ "model_version": "side_nb_v1_2026-11-09_c9e06a6a9c92",
+ "recipe": "config/side_models_recipe.json",
+ "data_ref": "156374b87840060a04ab03ee1db453c247e8dfce",
+ "inputs_digest": "5d2131df3fa304871c6cf760a4fbb78a18b04d8aeaec3312e39b0ab6c2707d9d",
+ "until": null,
+ "data_end": "2026-11-09",
+ "libraries": {
+  "python": "3.11.9",
+  "pandas": "3.1.0",
+  "numpy": "2.4.6",
+  "scipy": "1.17.1",
+  "pyarrow": "26.0.0",
+  "platform": "Windows"
+ },
+ "reproduction": {
+  "byte_parity_eol_normalised": true,
+  "raw_bytes_equal": {
+   "side_models.json": false,
+   "holdout_metrics.csv": true
+  },
+  "json_equal_except_trained_at": true,
+  "max_abs_prob_diff": 0.0,
+  "probabilities_compared": 462910
+ },
+ "status": "PASS",
+ "summary": "re-trained from the git tree of 156374b87 with the recorded recipe: byte-identical (line endings normalised), max |p diff| 0.0 over 462910 probabilities"
+}

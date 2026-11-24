@@ -164,12 +164,15 @@ def evaluate(train: pd.DataFrame, test: pd.DataFrame, family: str, markets: dict
     return rows
 
 
-def run(*, write: bool = True, out_dir: Path | None = None) -> dict:
+def run(*, write: bool = True, out_dir: Path | None = None, until: str | None = None,
+        trained_at: str | None = None) -> dict:
+    """`until`: the data cut-off (src.side_models.data.build); `trained_at`: pins the artifact's stamp (a
+    reproduction, src/side_models/reproduce.py). Both None = the original offline run."""
     cfg = load_config()
     fcfg = cfg["features"]
     tracked = tracked_leagues()
     fd_leagues = [e["name"] for e in tracked if has_fd_stats(e)]
-    table, audit = D.build(fd_leagues, single_source=single_source_leagues(cfg, tracked))
+    table, audit = D.build(fd_leagues, single_source=single_source_leagues(cfg, tracked), until=until)
     cov = coverage(cfg, tracked, audit)
     split = cfg["holdout_split_date"]
     metrics, models = [], {}
@@ -194,16 +197,18 @@ def run(*, write: bool = True, out_dir: Path | None = None) -> dict:
             "crosswalk": {lg: a["crosswalk"] for lg, a in audit.items() if "crosswalk" in a}, "models": models}
     sha = M.params_sha(body)
     art = {"schema_version": "side/1.0", "model_version": f"side_nb_v1_{data_end}_{sha}",
-           "trained_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-           "sources": {"api_football": str(D.FILL.relative_to(ROOT)).replace("\\", "/"),
-                       "fixtures": str(D.FIXTURES.relative_to(ROOT)).replace("\\", "/"),
-                       "football_data": str(D.FD_RAW.relative_to(ROOT)).replace("\\", "/") + "/manifest.json"},
+           "trained_at": trained_at or datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+           "sources": {"api_football": str(D.FILL.relative_to(D.ROOT)).replace("\\", "/"),
+                       "fixtures": str(D.FIXTURES.relative_to(D.ROOT)).replace("\\", "/"),
+                       "football_data": str(D.FD_RAW.relative_to(D.ROOT)).replace("\\", "/") + "/manifest.json"},
            **body}
     mdf = pd.DataFrame(metrics)
     if write:
         out_dir = Path(out_dir or (ROOT / "models" / "side_models"))
         out_dir.mkdir(parents=True, exist_ok=True)
-        (out_dir / "side_models.json").write_text(json.dumps(art, indent=1) + "\n", encoding="utf-8")
+        # newline="\n": the same bytes on every platform (the 2026-11-18 artifact was written on Windows: CRLF)
+        (out_dir / "side_models.json").write_text(json.dumps(art, indent=1) + "\n", encoding="utf-8",
+                                                  newline="\n")
         mdf.to_csv(out_dir / "holdout_metrics.csv", index=False, lineterminator="\n")
     return {"artifact": art, "metrics": mdf, "table": table}
 
