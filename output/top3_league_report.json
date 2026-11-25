@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-25T08:24:46Z",
+ "generated_at": "2026-11-25T18:10:18Z",
  "selection_mode": "TOP3_LEAGUE_GW",
  "version": "TOP3-2",
  "freeze_lead_min": 120.0,
@@ -481,7 +481,7 @@
      "edge_calibrated": "0.068503",
      "slot": "T3_RISKY_VALUE",
      "cell_status": "UNPROVEN",
-     "result": "",
+     "result": "LOSS",
      "stake": "0.005",
      "stake_reason": "STAKED",
      "value_basis": "CALIBRATED",
@@ -490,10 +490,10 @@
    ],
    "staked": {
     "picks": 3,
-    "settled": 0,
+    "settled": 1,
     "won": 0,
-    "flat_pnl_units": 0.0,
-    "roi": null
+    "flat_pnl_units": -1.0,
+    "roi": -1.0
    },
    "no_stake": {
     "picks": 0,
@@ -504,10 +504,10 @@
    },
    "weeks_decided": 1,
    "picks": 3,
-   "settled": 0,
+   "settled": 1,
    "won": 0,
-   "flat_pnl_units": 0.0,
-   "roi": null
+   "flat_pnl_units": -1.0,
+   "roi": -1.0
   },
   "La Liga 2": {
    "league_rule": {
