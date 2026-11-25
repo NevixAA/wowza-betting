@@ -1,10 +1,12 @@
 {
- "generated_at": "2026-11-25T08:24:39Z",
+ "generated_at": "2026-11-25T18:10:05Z",
  "panel_version": "LWR-1",
  "tracked_leagues": 20,
  "current_tip_day": "2026-11-25",
  "leagues_with_current_week_data": 16,
- "missing_leagues": [],
+ "missing_leagues": [
+  "Japan J-League"
+ ],
  "missing_leagues_previous_week": [],
  "no_fixture_leagues": [
   "China Super League",
@@ -17,10 +19,10 @@
  "expected_candidate_rows": 704,
  "actual_candidate_rows": 696,
  "panel_rows": 1404,
- "settled_rows": 1230,
- "pending_rows": 174,
- "clv_certified_rows": 593,
- "clv_coverage": 0.4821,
+ "settled_rows": 1273,
+ "pending_rows": 131,
+ "clv_certified_rows": 610,
+ "clv_coverage": 0.4792,
  "protected_tracks_modified": false,
  "leagues": {
   "Argentina Primera Division": {
@@ -584,7 +586,7 @@
   "Japan J-League": {
    "current": {
     "league_week_id": "Japan J-League|2026-W48",
-    "state": "PROVISIONAL",
+    "state": "LOCKED_NOT_FROZEN",
     "fixtures_known": 16,
     "fixtures_before_panel_start": 0,
     "fixtures_with_candidates": 16,
