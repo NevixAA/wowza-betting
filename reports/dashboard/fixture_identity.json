@@ -1,25 +1,25 @@
 {
  "identity_version": "fid/1.0",
- "fixture_refs": 958,
- "page_keys_before": 866,
- "canonical_fixtures_after": 632,
- "matches_split_before": 234,
+ "fixture_refs": 983,
+ "page_keys_before": 889,
+ "canonical_fixtures_after": 652,
+ "matches_split_before": 237,
  "kinds": {
   "accent": 43,
-  "name_variant": 188,
-  "kickoff_drift": 45,
-  "ref_only": 88
+  "name_variant": 191,
+  "kickoff_drift": 47,
+  "ref_only": 89
  },
- "kickoff_conflicts_unresolved": 2,
- "kickoff_drift_groups": 45,
+ "kickoff_conflicts_unresolved": 0,
+ "kickoff_drift_groups": 47,
  "af_id_conflicts": 0,
  "per_league": {
   "Argentina Primera Division": {
    "accent": 1,
-   "name_variant": 5,
-   "kickoff_drift": 7,
+   "name_variant": 7,
+   "kickoff_drift": 9,
    "ref_only": 0,
-   "matches_split": 8
+   "matches_split": 10
   },
   "Austrian Bundesliga": {
    "accent": 0,
@@ -121,10 +121,10 @@
   },
   "USA MLS": {
    "accent": 0,
-   "name_variant": 8,
+   "name_variant": 9,
    "kickoff_drift": 0,
-   "ref_only": 8,
-   "matches_split": 8
+   "ref_only": 9,
+   "matches_split": 9
   }
  },
  "kickoff_disagreements": [
@@ -658,15 +658,40 @@
    }
   },
   {
-   "canonical_fixture_ref": "oa:3c55be4d38980e11540c96a994695d51",
+   "canonical_fixture_ref": "af:1651630",
+   "league": "Argentina Primera Division",
+   "match": "Instituto Cordoba v River Plate",
+   "kickoff_source": "api-football",
+   "canonical_kickoff_utc": "2026-11-29T21:00:00Z",
+   "drift_min": 360.0,
+   "sources": {
+    "af:1651630": "2026-11-29T21:00:00Z",
+    "oa:12d8d17b18ba164a3ed6b61efca82f5e": "2026-11-29T15:00:00Z"
+   }
+  },
+  {
+   "canonical_fixture_ref": "af:1651631",
    "league": "Argentina Primera Division",
    "match": "Rosario Central v Barracas Central",
-   "kickoff_source": "conflict",
-   "canonical_kickoff_utc": null,
+   "kickoff_source": "api-football",
+   "canonical_kickoff_utc": "2026-11-29T21:00:00Z",
    "drift_min": 1800.0,
    "sources": {
+    "af:1651631": "2026-11-29T21:00:00Z",
     "oa:3c55be4d38980e11540c96a994695d51": "2026-11-28T15:00:00Z",
     "oa:8799cd4788843ece1b91f71b59c955eb": "2026-11-29T21:00:00Z"
+   }
+  },
+  {
+   "canonical_fixture_ref": "af:1651632",
+   "league": "Argentina Primera Division",
+   "match": "Velez Sarsfield v Independiente",
+   "kickoff_source": "api-football",
+   "canonical_kickoff_utc": "2026-11-29T21:00:00Z",
+   "drift_min": 1800.0,
+   "sources": {
+    "af:1651632": "2026-11-29T21:00:00Z",
+    "oa:ae74ca664c7e7b2ba3b1a7ddb2d5f542": "2026-11-28T15:00:00Z"
    }
   }
  ]
