@@ -1,10 +1,14 @@
 {
- "generated_at": "2026-11-24T19:33:12Z",
+ "generated_at": "2026-11-25T03:11:34Z",
  "panel_version": "LWR-1",
  "tracked_leagues": 20,
- "current_tip_day": "2026-11-24",
+ "current_tip_day": "2026-11-25",
  "leagues_with_current_week_data": 16,
- "missing_leagues": [],
+ "missing_leagues": [
+  "Championship",
+  "League One",
+  "League Two"
+ ],
  "missing_leagues_previous_week": [],
  "no_fixture_leagues": [
   "China Super League",
@@ -17,10 +21,10 @@
  "expected_candidate_rows": 704,
  "actual_candidate_rows": 696,
  "panel_rows": 1344,
- "settled_rows": 1221,
- "pending_rows": 123,
- "clv_certified_rows": 587,
- "clv_coverage": 0.4808,
+ "settled_rows": 1240,
+ "pending_rows": 104,
+ "clv_certified_rows": 593,
+ "clv_coverage": 0.4782,
  "protected_tracks_modified": false,
  "leagues": {
   "Argentina Primera Division": {
@@ -274,7 +278,7 @@
   "Championship": {
    "current": {
     "league_week_id": "Championship|2026-W48",
-    "state": "PROVISIONAL",
+    "state": "LOCKED_NOT_FROZEN",
     "fixtures_known": 24,
     "fixtures_before_panel_start": 0,
     "fixtures_with_candidates": 24,
@@ -708,7 +712,7 @@
   "League One": {
    "current": {
     "league_week_id": "League One|2026-W48",
-    "state": "PROVISIONAL",
+    "state": "LOCKED_NOT_FROZEN",
     "fixtures_known": 16,
     "fixtures_before_panel_start": 0,
     "fixtures_with_candidates": 16,
@@ -770,7 +774,7 @@
   "League Two": {
    "current": {
     "league_week_id": "League Two|2026-W48",
-    "state": "PROVISIONAL",
+    "state": "LOCKED_NOT_FROZEN",
     "fixtures_known": 14,
     "fixtures_before_panel_start": 0,
     "fixtures_with_candidates": 14,
