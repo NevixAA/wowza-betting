@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-25T15:31:00Z",
+ "generated_at": "2026-11-25T21:36:07Z",
  "selection_mode": "PROPS_TOP3_LEAGUE_GW",
  "version": "PROPS-TOP3-1",
  "freeze_lead_min": 120.0,
@@ -282,6 +282,55 @@
    "latest_picks": [],
    "weeks_decided": 1,
    "picks": 0,
+   "settled": 0,
+   "won": 0,
+   "flat_pnl_units": 0.0
+  },
+  "Mexico Liga MX": {
+   "latest_league_week_id": "Mexico Liga MX|2026-W48",
+   "latest_excluded": {
+    "FIRST_SEEN_AFTER_FREEZE": 1,
+    "NO_POSITIVE_VALUE": 60,
+    "RANKED_BELOW_TOP3": 4,
+    "STARTED_BEFORE_ISSUE": 4
+   },
+   "latest_picks": [
+    {
+     "role": "T1_BEST_VALUE",
+     "player_name": "L. Ocampos",
+     "team": "Monterrey",
+     "match": "Monterrey vs Club America",
+     "kickoff_utc": "2026-11-26T03:10:00Z",
+     "market": "sot2",
+     "value_basis": "vs quoted price",
+     "stake_label": "No stake: props not proven yet",
+     "result": ""
+    },
+    {
+     "role": "T2_SAFEST",
+     "player_name": "L. Ocampos",
+     "team": "Monterrey",
+     "match": "Monterrey vs Club America",
+     "kickoff_utc": "2026-11-26T03:10:00Z",
+     "market": "sot",
+     "value_basis": "vs quoted price",
+     "stake_label": "No stake: props not proven yet",
+     "result": ""
+    },
+    {
+     "role": "T3_RISKY_VALUE",
+     "player_name": "B. Rodr\u00edguez",
+     "team": "Club America",
+     "match": "Monterrey vs Club America",
+     "kickoff_utc": "2026-11-26T03:10:00Z",
+     "market": "sot2",
+     "value_basis": "vs quoted price",
+     "stake_label": "No stake: props not proven yet",
+     "result": ""
+    }
+   ],
+   "weeks_decided": 1,
+   "picks": 3,
    "settled": 0,
    "won": 0,
    "flat_pnl_units": 0.0
