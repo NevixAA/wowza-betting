@@ -1,12 +1,10 @@
 {
- "generated_at": "2026-11-25T18:10:05Z",
+ "generated_at": "2026-11-25T18:42:18Z",
  "panel_version": "LWR-1",
  "tracked_leagues": 20,
  "current_tip_day": "2026-11-25",
  "leagues_with_current_week_data": 16,
- "missing_leagues": [
-  "Japan J-League"
- ],
+ "missing_leagues": [],
  "missing_leagues_previous_week": [],
  "no_fixture_leagues": [
   "China Super League",
@@ -16,11 +14,11 @@
  ],
  "panel_start": "2026-10-25T09:25:36Z",
  "market_gap_leagues": [],
- "expected_candidate_rows": 704,
- "actual_candidate_rows": 696,
- "panel_rows": 1404,
+ "expected_candidate_rows": 708,
+ "actual_candidate_rows": 700,
+ "panel_rows": 1424,
  "settled_rows": 1273,
- "pending_rows": 131,
+ "pending_rows": 151,
  "clv_certified_rows": 610,
  "clv_coverage": 0.4792,
  "protected_tracks_modified": false,
@@ -586,34 +584,34 @@
   "Japan J-League": {
    "current": {
     "league_week_id": "Japan J-League|2026-W48",
-    "state": "LOCKED_NOT_FROZEN",
-    "fixtures_known": 16,
+    "state": "FROZEN",
+    "fixtures_known": 17,
     "fixtures_before_panel_start": 0,
-    "fixtures_with_candidates": 16,
+    "fixtures_with_candidates": 17,
     "fixtures_without_candidates": 0,
     "week_lock_ts": "2026-11-25T10:00:00Z",
-    "late_after_lock": 0,
+    "late_after_lock": 4,
     "market_gaps": [],
     "markets": {
      "OU25": {
-      "candidates": 16,
-      "panel_rows": 0
+      "candidates": 17,
+      "panel_rows": 5
      },
      "BTTS": {
-      "candidates": 16,
-      "panel_rows": 0
+      "candidates": 17,
+      "panel_rows": 5
      },
      "OVER15": {
-      "candidates": 16,
-      "panel_rows": 0
+      "candidates": 17,
+      "panel_rows": 5
      },
      "OVER35": {
-      "candidates": 16,
-      "panel_rows": 0
+      "candidates": 17,
+      "panel_rows": 5
      }
     },
-    "expected_candidate_rows": 64,
-    "actual_candidate_rows": 64
+    "expected_candidate_rows": 68,
+    "actual_candidate_rows": 68
    },
    "previous": {
     "league_week_id": "Japan J-League|2026-W47",
