@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-25T03:13:21Z",
+ "generated_at": "2026-11-25T08:24:46Z",
  "selection_mode": "TOP3_LEAGUE_GW",
  "version": "TOP3-2",
  "freeze_lead_min": 120.0,
@@ -417,6 +417,92 @@
     "roi": null
    },
    "weeks_decided": 2,
+   "picks": 3,
+   "settled": 0,
+   "won": 0,
+   "flat_pnl_units": 0.0,
+   "roi": null
+  },
+  "Japan J-League": {
+   "league_rule": {
+    "picks": 0,
+    "settled": 0,
+    "flat_pnl_units": 0.0
+   },
+   "latest_league_week_id": "Japan J-League|2026-W48",
+   "latest_excluded": {
+    "NOT_ABOVE_FAIR_PRICE": 14,
+    "NO_TWO_SIDED_PRICE": 32,
+    "RANKED_BELOW_TOP3": 15
+   },
+   "latest_picks": [
+    {
+     "top3_rank": "1",
+     "home_team": "FC Machida Zelvia",
+     "away_team": "Tokyo Verdy",
+     "kickoff_utc": "2026-11-29T07:00:00Z",
+     "market": "BTTS",
+     "side": "YES",
+     "odds": "2.1",
+     "edge_calibrated": "0.089058",
+     "slot": "T1_BEST_VALUE",
+     "cell_status": "UNPROVEN",
+     "result": "",
+     "stake": "0.005",
+     "stake_reason": "STAKED",
+     "value_basis": "CALIBRATED",
+     "stake_label": "0.5% stake"
+    },
+    {
+     "top3_rank": "2",
+     "home_team": "Vissel Kobe",
+     "away_team": "JEF United Chiba",
+     "kickoff_utc": "2026-11-28T06:00:00Z",
+     "market": "BTTS",
+     "side": "YES",
+     "odds": "1.82",
+     "edge_calibrated": "0.053807",
+     "slot": "T2_SAFEST",
+     "cell_status": "UNPROVEN",
+     "result": "",
+     "stake": "0.005",
+     "stake_reason": "STAKED",
+     "value_basis": "CALIBRATED",
+     "stake_label": "0.5% stake"
+    },
+    {
+     "top3_rank": "3",
+     "home_team": "Mito HollyHock",
+     "away_team": "Tokyo Verdy",
+     "kickoff_utc": "2026-11-25T10:00:00Z",
+     "market": "BTTS",
+     "side": "YES",
+     "odds": "1.98",
+     "edge_calibrated": "0.068503",
+     "slot": "T3_RISKY_VALUE",
+     "cell_status": "UNPROVEN",
+     "result": "",
+     "stake": "0.005",
+     "stake_reason": "STAKED",
+     "value_basis": "CALIBRATED",
+     "stake_label": "0.5% stake"
+    }
+   ],
+   "staked": {
+    "picks": 3,
+    "settled": 0,
+    "won": 0,
+    "flat_pnl_units": 0.0,
+    "roi": null
+   },
+   "no_stake": {
+    "picks": 0,
+    "settled": 0,
+    "won": 0,
+    "flat_pnl_units": 0.0,
+    "roi": null
+   },
+   "weeks_decided": 1,
    "picks": 3,
    "settled": 0,
    "won": 0,
