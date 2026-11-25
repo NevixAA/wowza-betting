@@ -1,16 +1,16 @@
 {
  "calculation_version": "fantasy_v2-1.0.0",
- "generated_at": "2026-11-24T18:44:35Z",
+ "generated_at": "2026-11-25T17:39:20Z",
  "gameweek": 12,
  "deadline": "2026-11-27T18:30:00Z",
- "fpl_fetched_at": "2026-11-24T18:15:43Z",
- "fpl_age_hours_at_build": 0.5,
+ "fpl_fetched_at": "2026-11-25T17:37:40Z",
+ "fpl_age_hours_at_build": 0.0,
  "projection_health": {
   "players": 463,
   "with_fixture": 463,
   "blank_gw_players": 0,
   "double_gw_players": 0,
-  "minutes_disagreements": 8,
+  "minutes_disagreements": 9,
   "archived_gameweeks": [
    4,
    5,
@@ -215,9 +215,9 @@
     "p10": 0.276,
     "p15": 0.16,
     "p_blank": 0.29,
-    "p_start": 0.927,
+    "p_start": 0.926,
     "ceiling": 19.0,
-    "sd": 7.509,
+    "sd": 7.513,
     "next_fixture": "FUL(A)"
    },
    {
@@ -274,10 +274,10 @@
     "p6": 0.405,
     "p10": 0.235,
     "p15": 0.128,
-    "p_blank": 0.329,
-    "p_start": 0.893,
+    "p_blank": 0.328,
+    "p_start": 0.894,
     "ceiling": 17.0,
-    "sd": 6.884,
+    "sd": 6.873,
     "next_fixture": "LEE(A)"
    },
    {
@@ -530,10 +530,10 @@
     "p6": 0.284,
     "p10": 0.123,
     "p15": 0.047,
-    "p_blank": 0.329,
-    "p_start": 0.893,
+    "p_blank": 0.328,
+    "p_start": 0.894,
     "ceiling": 11.0,
-    "sd": 6.884,
+    "sd": 6.873,
     "next_fixture": "LEE(A)"
    },
    {
@@ -573,12 +573,12 @@
     "position": "MID",
     "final_xpts": 4.66,
     "p6": 0.266,
-    "p10": 0.102,
+    "p10": 0.101,
     "p15": 0.033,
     "p_blank": 0.371,
-    "p_start": 0.972,
+    "p_start": 0.973,
     "ceiling": 10.0,
-    "sd": 3.976,
+    "sd": 3.974,
     "next_fixture": "BRE(H)"
    }
   ]
@@ -633,27 +633,27 @@
    "note": ""
   },
   "HIGH_UPSIDE": {
-   "player": "Nicolas Jackson",
-   "web_name": "N.Jackson",
-   "team": "Aston Villa",
-   "position": "FWD",
-   "price": 7.3,
-   "final_xpts": 5.391,
-   "captain_ev": 10.78,
-   "fpl_ep_next": 7.3,
-   "wowza_residual": -1.909,
-   "p6": 0.3219,
-   "p10": 0.1602,
-   "p15": 0.0727,
-   "p_blank": 0.3425,
-   "p_start": 0.864,
-   "exp_minutes": 73.5,
-   "ceiling": 12.0,
-   "next_fixture": "IPS(A)",
-   "opponent_weakness": 1.42,
+   "player": "Gabriel dos Santos Magalh\u00e3es",
+   "web_name": "Gabriel",
+   "team": "Arsenal",
+   "position": "DEF",
+   "price": 8.1,
+   "final_xpts": 5.818,
+   "captain_ev": 11.64,
+   "fpl_ep_next": 5.0,
+   "wowza_residual": 0.818,
+   "p6": 0.3519,
+   "p10": 0.1743,
+   "p15": 0.0779,
+   "p_blank": 0.366,
+   "p_start": 0.945,
+   "exp_minutes": 80.2,
+   "ceiling": 13.0,
+   "next_fixture": "MCI(H)",
+   "opponent_weakness": 1.53,
    "pen_first": 0,
    "set_piece": 0,
-   "reasoning": "Biggest haul chance within reach of the best EV: 5.4 xPts (FPL 7.3, Wowza residual -1.9 included); P(start) 86%, ~74 min; vs IPS(A) (team goal expectancy 1.42); P(10+) 16%, ceiling 12.",
+   "reasoning": "Biggest haul chance within reach of the best EV: 5.8 xPts (FPL 5.0, Wowza residual +0.8 included); P(start) 94%, ~80 min; vs MCI(H) (team goal expectancy 1.53); P(10+) 17%, ceiling 13.",
    "note": "Vuskovic also has the biggest haul chance"
   },
   "candidates": [
@@ -673,6 +673,21 @@
     "next_fixture": "NEW(H)"
    },
    {
+    "player_name": "Gabriel dos Santos Magalh\u00e3es",
+    "web_name": "Gabriel",
+    "team": "Arsenal",
+    "position": "DEF",
+    "final_xpts": 5.818,
+    "p6": 0.352,
+    "p10": 0.174,
+    "p15": 0.078,
+    "p_blank": 0.366,
+    "p_start": 0.945,
+    "ceiling": 13.0,
+    "sd": 4.541,
+    "next_fixture": "MCI(H)"
+   },
+   {
     "player_name": "Diego G\u00f3mez Amarilla",
     "web_name": "Gomez",
     "team": "Brighton",
@@ -686,21 +701,6 @@
     "ceiling": 12.0,
     "sd": 4.341,
     "next_fixture": "NEW(H)"
-   },
-   {
-    "player_name": "Gabriel dos Santos Magalh\u00e3es",
-    "web_name": "Gabriel",
-    "team": "Arsenal",
-    "position": "DEF",
-    "final_xpts": 5.627,
-    "p6": 0.34,
-    "p10": 0.164,
-    "p15": 0.071,
-    "p_blank": 0.366,
-    "p_start": 0.945,
-    "ceiling": 12.0,
-    "sd": 4.541,
-    "next_fixture": "MCI(H)"
    },
    {
     "player_name": "Dominic Calvert-Lewin",
@@ -718,6 +718,21 @@
     "next_fixture": "COV(H)"
    },
    {
+    "player_name": "Tarik Muharemovi\u0107",
+    "web_name": "Muharemovi\u0107",
+    "team": "Leeds",
+    "position": "DEF",
+    "final_xpts": 5.588,
+    "p6": 0.337,
+    "p10": 0.158,
+    "p15": 0.066,
+    "p_blank": 0.356,
+    "p_start": 0.967,
+    "ceiling": 12.0,
+    "sd": 4.394,
+    "next_fixture": "COV(H)"
+   },
+   {
     "player_name": "Enzo Le F\u00e9e",
     "web_name": "E.Le F\u00e9e",
     "team": "Sunderland",
@@ -731,21 +746,6 @@
     "ceiling": 12.0,
     "sd": 6.672,
     "next_fixture": "TOT(H)"
-   },
-   {
-    "player_name": "Tarik Muharemovi\u0107",
-    "web_name": "Muharemovi\u0107",
-    "team": "Leeds",
-    "position": "DEF",
-    "final_xpts": 5.478,
-    "p6": 0.33,
-    "p10": 0.152,
-    "p15": 0.062,
-    "p_blank": 0.356,
-    "p_start": 0.967,
-    "ceiling": 12.0,
-    "sd": 4.394,
-    "next_fixture": "COV(H)"
    },
    {
     "player_name": "Marcus Tavernier",
@@ -787,9 +787,9 @@
     "p10": 0.136,
     "p15": 0.052,
     "p_blank": 0.371,
-    "p_start": 0.972,
+    "p_start": 0.973,
     "ceiling": 11.0,
-    "sd": 3.976,
+    "sd": 3.974,
     "next_fixture": "BRE(H)"
    },
    {
@@ -832,9 +832,9 @@
     "p10": 0.136,
     "p15": 0.054,
     "p_blank": 0.29,
-    "p_start": 0.927,
+    "p_start": 0.926,
     "ceiling": 11.0,
-    "sd": 7.509,
+    "sd": 7.513,
     "next_fixture": "FUL(A)"
    }
   ]
