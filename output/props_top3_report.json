@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-24T22:19:24Z",
+ "generated_at": "2026-11-25T05:47:48Z",
  "selection_mode": "PROPS_TOP3_LEAGUE_GW",
  "version": "PROPS-TOP3-1",
  "freeze_lead_min": 120.0,
@@ -401,7 +401,7 @@
      "market": "goals",
      "value_basis": "vs quoted price",
      "stake_label": "No stake: props not proven yet",
-     "result": ""
+     "result": "LOSS"
     },
     {
      "role": "T2_SAFEST",
@@ -412,14 +412,14 @@
      "market": "sot",
      "value_basis": "vs quoted price",
      "stake_label": "No stake: props not proven yet",
-     "result": ""
+     "result": "WIN"
     }
    ],
    "weeks_decided": 1,
    "picks": 2,
-   "settled": 0,
-   "won": 0,
-   "flat_pnl_units": 0.0
+   "settled": 2,
+   "won": 1,
+   "flat_pnl_units": -0.75
   }
  }
 }
