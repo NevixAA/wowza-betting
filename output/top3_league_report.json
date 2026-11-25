@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-24T19:33:26Z",
+ "generated_at": "2026-11-25T03:11:47Z",
  "selection_mode": "TOP3_LEAGUE_GW",
  "version": "TOP3-2",
  "freeze_lead_min": 120.0,
@@ -290,7 +290,7 @@
      "edge_calibrated": "",
      "slot": "T2_SAFEST",
      "cell_status": "",
-     "result": "",
+     "result": "WIN",
      "stake": "0.0",
      "stake_reason": "NO_STAKE_NO_APPROVED_BAR",
      "value_basis": "MODEL_EDGE",
@@ -323,17 +323,17 @@
    },
    "no_stake": {
     "picks": 3,
-    "settled": 0,
-    "won": 0,
-    "flat_pnl_units": 0.0,
-    "roi": null
+    "settled": 1,
+    "won": 1,
+    "flat_pnl_units": 0.54,
+    "roi": 0.54
    },
    "weeks_decided": 2,
    "picks": 3,
-   "settled": 0,
-   "won": 0,
-   "flat_pnl_units": 0.0,
-   "roi": null
+   "settled": 1,
+   "won": 1,
+   "flat_pnl_units": 0.54,
+   "roi": 0.54
   },
   "Denmark Superliga": {
    "league_rule": {
@@ -549,7 +549,7 @@
      "edge_calibrated": "",
      "slot": "T2_SAFEST",
      "cell_status": "",
-     "result": "",
+     "result": "LOSS",
      "stake": "0.0",
      "stake_reason": "NO_STAKE_NO_APPROVED_BAR",
      "value_basis": "MODEL_EDGE",
@@ -582,17 +582,17 @@
    },
    "no_stake": {
     "picks": 3,
-    "settled": 0,
+    "settled": 1,
     "won": 0,
-    "flat_pnl_units": 0.0,
-    "roi": null
+    "flat_pnl_units": -1.0,
+    "roi": -1.0
    },
    "weeks_decided": 2,
    "picks": 3,
-   "settled": 0,
+   "settled": 1,
    "won": 0,
-   "flat_pnl_units": 0.0,
-   "roi": null
+   "flat_pnl_units": -1.0,
+   "roi": -1.0
   },
   "League Two": {
    "league_rule": {
