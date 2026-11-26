@@ -1,7 +1,7 @@
 {
  "artifact": "data_truth_health",
  "version": "DATA-TRUTH-1",
- "generated_at": "2026-11-25T17:43:25Z",
+ "generated_at": "2026-11-26T17:25:28Z",
  "checks": [
   {
    "check": "Data truth 1: one canonical name",
@@ -26,84 +26,84 @@
    "tracks": {
     "standard|O/U 2.5": {
      "status": "GREEN",
-     "fixtures": 83,
-     "worst_pct": 3.6,
+     "fixtures": 75,
+     "worst_pct": 4.0,
      "missing": {},
      "n_inputs": 43
     },
     "new_format|O/U 2.5": {
      "status": "GREEN",
-     "fixtures": 71,
+     "fixtures": 61,
      "worst_pct": 0.0,
      "missing": {},
      "n_inputs": 36
     },
     "standard|BTTS": {
      "status": "GREEN",
-     "fixtures": 83,
-     "worst_pct": 3.6,
+     "fixtures": 75,
+     "worst_pct": 4.0,
      "missing": {},
      "n_inputs": 43
     },
     "new_format|BTTS": {
      "status": "GREEN",
-     "fixtures": 71,
+     "fixtures": 61,
      "worst_pct": 0.0,
      "missing": {},
      "n_inputs": 36
     },
     "standard|Over 1.5": {
      "status": "GREEN",
-     "fixtures": 83,
-     "worst_pct": 3.6,
+     "fixtures": 75,
+     "worst_pct": 4.0,
      "missing": {},
      "n_inputs": 43
     },
     "new_format|Over 1.5": {
      "status": "GREEN",
-     "fixtures": 71,
+     "fixtures": 61,
      "worst_pct": 0.0,
      "missing": {},
      "n_inputs": 36
     },
     "standard|Over 3.5": {
      "status": "GREEN",
-     "fixtures": 83,
-     "worst_pct": 3.6,
+     "fixtures": 75,
+     "worst_pct": 4.0,
      "missing": {},
      "n_inputs": 43
     },
     "new_format|Over 3.5": {
      "status": "GREEN",
-     "fixtures": 71,
+     "fixtures": 61,
      "worst_pct": 0.0,
      "missing": {},
      "n_inputs": 36
     },
     "standard|HT Over 0.5": {
      "status": "GREEN",
-     "fixtures": 83,
-     "worst_pct": 3.6,
+     "fixtures": 75,
+     "worst_pct": 4.0,
      "missing": {},
      "n_inputs": 42
     },
     "standard|HT Over 1.5": {
      "status": "GREEN",
-     "fixtures": 83,
-     "worst_pct": 3.6,
+     "fixtures": 75,
+     "worst_pct": 4.0,
      "missing": {},
      "n_inputs": 42
     },
     "new_format|HT Over 0.5": {
      "status": "GREEN",
-     "fixtures": 71,
+     "fixtures": 61,
      "worst_pct": 0.0,
      "missing": {},
      "n_inputs": 36
     },
     "new_format|HT Over 1.5": {
      "status": "GREEN",
-     "fixtures": 71,
+     "fixtures": 61,
      "worst_pct": 0.0,
      "missing": {},
      "n_inputs": 36
@@ -255,14 +255,14 @@
   {
    "check": "Data truth 9: clean ledgers",
    "status": "GREEN",
-   "value": "clean since 2026-11-19 (10 live tip(s), 7465 player row(s), 152 v91 row(s))",
+   "value": "clean since 2026-11-19 (10 live tip(s), 7708 player row(s), 154 v91 row(s))",
    "rule": "from the Clean Record start: 0 multi-tip / opposite-tip fixtures, 0 post-kickoff tips, 0 closes <= 1.0, 0 |CLV| > 50 new-format rows, 0 duplicate player tips, 0 v91_shadow fixtures logged twice: RED on any; NO_DATA before the start is set",
    "detail": ""
   },
   {
    "check": "Data truth 11: injuries/lineups freshness",
    "status": "GREEN",
-   "value": "fresh: 41 open registry league(s), 371 finished fixture(s) checked for lineups, 14 active injuries-covered league-season(s)",
+   "value": "fresh: 41 open registry league(s), 413 finished fixture(s) checked for lineups, 14 active injuries-covered league-season(s)",
    "rule": "per registry league with an open season: fixture lists read within 36 h; every finished fixture of a lineups-covered season >= 2 days old (last 14 days) has a lineups answer; an injuries-covered league with a match in the last / next 7 days has an injuries answer within 36 h: RED on any",
    "detail": ""
   },
@@ -580,28 +580,28 @@
   {
    "check": "Data truth 14: prediction GW dataset",
    "status": "GREEN",
-   "value": "0 finding(s); 8919 row(s), 6846 closed, 418805 question link(s)",
+   "value": "0 finding(s); 9571 row(s), 6903 closed, 465095 question link(s)",
    "rule": "Data truth 14: prediction GW dataset - (src/prediction_gw_dataset) every row re-derives EXACTLY from its question-level link rows (predictions = settled + void + pending + unscorable, hits, Brier / log-loss sums, source digest), row_id = digest of its key, no rate on a row without a settled question (no default), no price column, no v11 row, a CLOSED row has no pending question",
    "detail": ""
   },
   {
    "check": "Data truth 16: prediction GW dataset vs ledger",
    "status": "GREEN",
-   "value": "0 unexplained difference(s) in 1535 closed v9 row(s)",
+   "value": "0 unexplained difference(s) in 1556 closed v9 row(s)",
    "rule": "Data truth 16: prediction GW dataset vs ledger - every CLOSED v9 row equals a fresh derivation from the committed v9 ledgers, or a correction sits beside it in output/corrections/prediction_gw_dataset_corrections.csv",
    "detail": ""
   },
   {
    "check": "Data truth 15: one fixture, one identity",
    "status": "AMBER",
-   "value": "866 page keys -> 632 matches (234 split before: accent 43, name variant 188, kickoff drift 45); 0 stored identity mismatch(es); 2 ref(s) with an unresolved kickoff conflict; 0 AF-id conflict(s)",
+   "value": "905 page keys -> 668 matches (237 split before: accent 43, name variant 191, kickoff drift 47); 0 stored identity mismatch(es); 0 ref(s) with an unresolved kickoff conflict; 0 AF-id conflict(s)",
    "rule": "Data truth 15: one fixture, one identity - across models (src/fixture_identity): the committed Predictions index carries the canonical identity the resolver gives today (accents, club-name variants and kickoff drift between sources unified; API-Football kickoff authoritative). RED when a stored identity differs from the resolver or a match is still split; AMBER when sources disagree on a kickoff (counted, never silently picked)",
    "detail": ""
   },
   {
    "check": "Data truth 17: no public prices",
    "status": "GREEN",
-   "value": "0 retired price file(s) committed, 0 unclassified price file(s); 475 classified price file(s) still public (classes not yet retired: their move is pending), 199 allowlisted (not bookmaker prices / class F), 2906 scanned",
+   "value": "0 retired price file(s) committed, 0 unclassified price file(s); 484 classified price file(s) still public (classes not yet retired: their move is pending), 199 allowlisted (not bookmaker prices / class F), 2933 scanned",
    "rule": "no committed file on a retired price path (config/price_store_paths.json public_retired), and every committed price column belongs to a class that moves private or is allowlisted with a reason (config/public_price_allowlist.json)",
    "detail": ""
   }
