@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-26T02:01:37Z",
+ "generated_at": "2026-11-26T08:09:49Z",
  "label": "PAPER/RESEARCH",
  "status": "NOT_RUN: statistics not frozen (no record in the freeze ledger)",
  "protocol_sha256": "5b35327fdd2353e4ecdad4c56e713f1593f16df0ba5920e8aa9a457fcc639f73",
@@ -23,13 +23,13 @@
  },
  "live_R3_from_production_ledger": {
   "picks": 34,
-  "settled": 6,
-  "won": 4,
-  "flat_pnl_units": 0.58,
-  "roi": 0.0967,
+  "settled": 8,
+  "won": 5,
+  "flat_pnl_units": 0.26,
+  "roi": 0.0325,
   "ci95": [
-   -0.6165,
-   0.8098
+   -0.5807,
+   0.736
   ],
   "no_stat_picks": 0,
   "rank_basis": {},
