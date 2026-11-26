@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-25T21:36:07Z",
+ "generated_at": "2026-11-26T05:27:19Z",
  "selection_mode": "PROPS_TOP3_LEAGUE_GW",
  "version": "PROPS-TOP3-1",
  "freeze_lead_min": 120.0,
@@ -49,7 +49,7 @@
      "market": "sot2",
      "value_basis": "vs quoted price",
      "stake_label": "No stake: props not proven yet",
-     "result": ""
+     "result": "LOSS"
     },
     {
      "role": "T2_SAFEST",
@@ -60,7 +60,7 @@
      "market": "sot",
      "value_basis": "vs quoted price",
      "stake_label": "No stake: props not proven yet",
-     "result": ""
+     "result": "LOSS"
     },
     {
      "role": "T3_RISKY_VALUE",
@@ -71,14 +71,14 @@
      "market": "sot2",
      "value_basis": "vs quoted price",
      "stake_label": "No stake: props not proven yet",
-     "result": ""
+     "result": "LOSS"
     }
    ],
    "weeks_decided": 1,
    "picks": 3,
-   "settled": 0,
+   "settled": 3,
    "won": 0,
-   "flat_pnl_units": 0.0
+   "flat_pnl_units": -3.0
   },
   "Championship": {
    "latest_league_week_id": "Championship|2026-W48",
@@ -98,7 +98,7 @@
      "market": "goals",
      "value_basis": "vs quoted price",
      "stake_label": "No stake: props not proven yet",
-     "result": ""
+     "result": "WIN"
     },
     {
      "role": "T2_SAFEST",
@@ -125,9 +125,9 @@
    ],
    "weeks_decided": 1,
    "picks": 3,
-   "settled": 0,
-   "won": 0,
-   "flat_pnl_units": 0.0
+   "settled": 1,
+   "won": 1,
+   "flat_pnl_units": 1.88
   },
   "Denmark Superliga": {
    "latest_league_week_id": "Denmark Superliga|2026-W48",
@@ -404,7 +404,7 @@
      "market": "goals",
      "value_basis": "vs quoted price",
      "stake_label": "No stake: props not proven yet",
-     "result": ""
+     "result": "LOSS"
     },
     {
      "role": "T2_SAFEST",
@@ -426,14 +426,14 @@
      "market": "goals",
      "value_basis": "vs quoted price",
      "stake_label": "No stake: props not proven yet",
-     "result": ""
+     "result": "WIN"
     }
    ],
    "weeks_decided": 1,
    "picks": 3,
-   "settled": 0,
-   "won": 0,
-   "flat_pnl_units": 0.0
+   "settled": 2,
+   "won": 1,
+   "flat_pnl_units": 3.0
   },
   "Sweden Allsvenskan": {
    "latest_league_week_id": "Sweden Allsvenskan|2026-W48",
